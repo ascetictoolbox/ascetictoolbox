@@ -1,1 +1,52 @@
 * text=auto !eol
+paas/virtual-machine-contextualizer/runtime/VmContextualizer.jar -text
+paas/virtual-machine-contextualizer/runtime/agents/vpn.tar.gz -text
+paas/virtual-machine-contextualizer/runtime/config.properties.example -text
+paas/virtual-machine-contextualizer/runtime/templates/patchs/qemu-0.15.1-scsi.patch -text
+paas/virtual-machine-contextualizer/runtime/templates/scripts/linux/context_application -text
+paas/virtual-machine-contextualizer/runtime/templates/scripts/linux/context_network -text
+paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/Classes.PNG -text svneol=unset#image/png
+paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/Classes.ucls -text
+paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/Core/Core.PNG -text svneol=unset#image/png
+paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/Core/Core.ucls -text
+paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/DataAggregator/DataAggregator.PNG -text svneol=unset#image/png
+paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/DataAggregator/DataAggregator.ucls -text
+paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/DataModel/DataModel.PNG -text svneol=unset#image/png
+paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/DataModel/DataModel.ucls -text
+paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/DataModel/Packages.PNG -text svneol=unset#image/png
+paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/DataModel/Packages.ucls -text
+paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/ImageConverter/ImageConverter.PNG -text svneol=unset#image/png
+paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/ImageConverter/ImageConverter.ucls -text
+paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/ImageFabricator/ImageFabricator.PNG -text svneol=unset#image/png
+paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/ImageFabricator/ImageFabricator.ucls -text
+paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/IsoCreator/IsoCreator.PNG -text svneol=unset#image/png
+paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/IsoCreator/IsoCreator.ucls -text
+paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/Packages.PNG -text svneol=unset#image/png
+paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/Packages.ucls -text
+utils/libvirt/AUTHORS -text
+utils/libvirt/ChangeLog -text
+utils/libvirt/LICENSE -text
+utils/libvirt/NEWS -text
+utils/libvirt/patch1.patch -text
+utils/libvirt/patch10.patch -text
+utils/libvirt/patch11.patch -text
+utils/libvirt/patch12.patch -text
+utils/libvirt/patch2.patch -text
+utils/libvirt/patch3.patch -text
+utils/libvirt/patch4.patch -text
+utils/libvirt/patch5.patch -text
+utils/libvirt/patch6.patch -text
+utils/libvirt/patch7.patch -text
+utils/libvirt/patch8.patch -text
+utils/libvirt/patch9.patch -text
+utils/ovf-xmlbeans/src/main/xsdconfig/ovf.xsdconfig -text
+utils/wattsup-java-sdk/LICENSE -text
+utils/wattsup-java-sdk/README.md -text
+utils/wattsup-java-sdk/conf/cli.conf -text
+utils/wattsup-java-sdk/lib/jcommon-1.0.17.jar -text
+utils/wattsup-java-sdk/lib/jfreechart-1.0.14.jar -text
+utils/wattsup-java-sdk/lib/nrjavaserial-3.8.8.jar -text
+utils/wattsup-java-sdk/wattsup-jsdk-console/src/main/resources/META-INF/services/org.clamshellcli.api.Plugin -text
+utils/wattsup-java-sdk/wattsup-jsdk-console/src/main/resources/console.msg -text
+utils/wattsup-java-sdk/wattsup-jsdk-core/src/main/resources/db.sql -text
+utils/wattsup-java-sdk/wattsup-jsdk-core/src/test/resources/database.yml -text

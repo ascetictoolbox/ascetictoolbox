@@ -1,0 +1,140 @@
+ src/main/java/eu/optimis/vc/libvirt/Connect.java     |   68 ++++++++++++++++++++++++++++
+ src/main/java/eu/optimis/vc/libvirt/Domain.java      |   17 +++++++
+ src/main/java/eu/optimis/vc/libvirt/jna/Libvirt.java |    7 +++
+ 3 files changed, 92 insertions(+)
+
+diff --git a/src/main/java/eu/optimis/vc/libvirt/Connect.java
+b/src/main/java/eu/optimis/vc/libvirt/Connect.java
+index 380aca2..84cb0df 100644
+--- a/src/main/java/eu/optimis/vc/libvirt/Connect.java
++++ b/src/main/java/eu/optimis/vc/libvirt/Connect.java
+@@ -66,6 +66,27 @@ public class Connect {
+
+             void onReboot(Connect connect, Domain domain);
+         }
++
++        /**
++         * @see <a href="http://libvirt.org/html/libvirt-libvirt.html#virConnectDomainEventCallback">virConnectDomainEventCallback</a>
++         */
++        public interface LifecycleCallback {
++            public static enum Event {
++                DEFINED,
++                UNDEFINED,
++                STARTED,
++                SUSPENDED,
++                RESUMED,
++                STOPPED,
++                SHUTDOWN;
++            }
++
++            final int eventID = DomainEventID.LIFECYCLE;
++
++            void onLifecycleChange(Connect connect, Domain domain,
++                                   Event event,
++                                   int detail);
++        }
+     }
+
+     /**
+@@ -457,6 +478,53 @@ public class Connect {
+         return domainEventRegister(domain, cb.eventID, virCB);
+     }
+
++    int domainEventRegister(Domain domain, final DomainEvent.LifecycleCallback cb) throws LibvirtException {
++        if (cb == null)
++            throw new IllegalArgumentException("LifecycleCallback cannot be null");
++
++        final DomainEvent.LifecycleCallback.Event events[] = DomainEvent.LifecycleCallback.Event.values();
++
++        Libvirt.VirConnectDomainEventCallback virCB = new Libvirt.VirConnectDomainEventCallback() {
++                @Override
++                public int eventCallback(ConnectionPointer virConnectPtr, DomainPointer virDomainPointer,
++                                         int event,
++                                         int detail,
++                                         com.sun.jna.Pointer opaque)
++                {
++                    assert(VCP.equals(virConnectPtr));
++
++                    if (0 <= event && event < events.length) {
++                        Domain d = new Domain(Connect.this, virDomainPointer);
++                        cb.onLifecycleChange(Connect.this, d,
++                                             events[event],
++                                             detail);
++                    } else {
++                        // TODO: throw an exception?
++                    }
++                    return 0;
++                }
++            };
++
++        return domainEventRegister(domain, cb.eventID, virCB);
++    }
++
++    /**
++     * Adds a callback to receive notifications of domain lifecycle events
++     * occurring on some domain.
++     *
++     * @see <a
++     * href="http://www.libvirt.org/html/libvirt-libvirt.html#virConnectDomainEventRegisterAny">Libvirt
++     *      Documentation</a>
++     * @param cb
++     *            the LifecycleCallback instance
++     * @return The return value from this method is a positive integer identifier for the callback.
++     * @throws LibvirtException on failure
++     */
++    public int domainEventRegister(final DomainEvent.LifecycleCallback cb) throws LibvirtException
++    {
++        return domainEventRegister(null, cb);
++    }
++
+     /**
+      * Adds a callback to receive notifications of Reboot domain events
+      * occurring on an arbitrary domain.
+diff --git a/src/main/java/eu/optimis/vc/libvirt/Domain.java
+b/src/main/java/eu/optimis/vc/libvirt/Domain.java
+index 650018f..e6ffaa0 100644
+--- a/src/main/java/eu/optimis/vc/libvirt/Domain.java
++++ b/src/main/java/eu/optimis/vc/libvirt/Domain.java
+@@ -899,6 +899,23 @@ public class Domain {
+     }
+
+     /**
++     * Adds a callback to receive notifications of domain lifecycle events
++     * occurring on this domain.
++     *
++     * @see <a
++     * href="http://www.libvirt.org/html/libvirt-libvirt.html#virConnectDomainEventRegisterAny">Libvirt
++     *      Documentation</a>
++     * @param cb
++     *            the LifecycleCallback instance
++     * @return The return value from this method is a positive integer identifier for the callback.
++     * @throws LibvirtException on failure
++     */
++    public int register(final Connect.DomainEvent.LifecycleCallback cb) throws LibvirtException
++    {
++        return virConnect.domainEventRegister(this, cb);
++    }
++
++    /**
+      * Revert the domain to a given snapshot.
+      *
+      * @see <a href=
+diff --git a/src/main/java/eu/optimis/vc/libvirt/jna/Libvirt.java
+b/src/main/java/eu/optimis/vc/libvirt/jna/Libvirt.java
+index 566cff6..210a471 100644
+--- a/src/main/java/eu/optimis/vc/libvirt/jna/Libvirt.java
++++ b/src/main/java/eu/optimis/vc/libvirt/jna/Libvirt.java
+@@ -89,6 +89,13 @@ public interface Libvirt extends Library {
+         void eventCallback(ConnectionPointer virConnectPtr, DomainPointer virDomainPointer, Pointer opaque);
+     }
+
++    interface VirConnectDomainEventCallback extends VirDomainEventCallback {
++        int eventCallback(ConnectionPointer virConnectPtr, DomainPointer virDomainPointer,
++                          int event,
++                          int detail,
++                          Pointer opaque);
++    }
++
+     /**
+      * Error callback
+      */

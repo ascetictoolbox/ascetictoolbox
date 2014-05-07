@@ -1,0 +1,26 @@
+ src/main/java/eu/optimis/vc/libvirt/Connect.java |    9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
+
+diff --git a/src/main/java/eu/optimis/vc/libvirt/Connect.java
+b/src/main/java/eu/optimis/vc/libvirt/Connect.java
+index b26fca4..1b05f6f 100644
+--- a/src/main/java/eu/optimis/vc/libvirt/Connect.java
++++ b/src/main/java/eu/optimis/vc/libvirt/Connect.java
+@@ -307,14 +307,11 @@ public class Connect {
+      * href="http://www.libvirt.org/html/libvirt-libvirt.html#virConnectDomainEventDeregisterAny">Libvirt
+      *      Documentation</a>
+      * @param callbackID
+-     *            the callback to deregister
+-     * @return 0 on success, -1 on failure
++     *            the callback identifier
+      * @throws LibvirtException
+      */
+-    public int domainEventDeregisterAny(int callbackID) throws LibvirtException {
+-        int returnValue = libvirt.virConnectDomainEventDeregisterAny(VCP, callbackID);
+-        processError();
+-        return returnValue;
++    public void domainEventDeregister(int callbackID) throws LibvirtException {
++        processError(libvirt.virConnectDomainEventDeregisterAny(VCP, callbackID));
+     }
+
+     /**

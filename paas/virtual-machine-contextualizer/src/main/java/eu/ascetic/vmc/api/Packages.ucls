@@ -1,0 +1,122 @@
+<class-diagram version="1.0.9" icons="true" automaticImage="PNG" always-add-relationships="true" generalizations="true" 
+  realizations="true" associations="true" dependencies="true" nesting-relationships="true">  
+  <package id="1" corner="BOTTOM_RIGHT" language="java" name="eu.optimis.vc.api.DataModel" project="VmContextualizer-v2" 
+    file="/VmContextualizer-v2/src/main/java/eu/optimis/vc/api/DataModel" binary="false">    
+    <position height="-1" width="-1" x="396" y="320"/>    
+    <display autosize="true" stereotype="true"/>  
+  </package>  
+  <package id="2" corner="BOTTOM_RIGHT" language="java" name="eu.optimis.vc.api.DataAggregator" 
+    project="VmContextualizer-v2" file="/VmContextualizer-v2/src/main/java/eu/optimis/vc/api/DataAggregator" 
+    binary="false">    
+    <position height="-1" width="-1" x="409" y="420"/>    
+    <display autosize="true" stereotype="true"/>  
+  </package>  
+  <package id="3" corner="BOTTOM_RIGHT" language="java" name="eu.optimis.vc.api.ImageConverter" 
+    project="VmContextualizer-v2" file="/VmContextualizer-v2/src/main/java/eu/optimis/vc/api/ImageConverter" 
+    binary="false">    
+    <position height="49" width="213" x="41" y="215"/>    
+    <display autosize="true" stereotype="true"/>  
+  </package>  
+  <package id="4" corner="BOTTOM_RIGHT" language="java" name="eu.optimis.vc.api.IsoCreator" 
+    project="VmContextualizer-v2" file="/VmContextualizer-v2/src/main/java/eu/optimis/vc/api/IsoCreator" binary="false">    
+    <position height="49" width="182" x="549" y="215"/>    
+    <display autosize="true" stereotype="true"/>  
+  </package>  
+  <package id="5" corner="BOTTOM_RIGHT" language="java" name="eu.optimis.vc.api.Core" project="VmContextualizer-v2" 
+    file="/VmContextualizer-v2/src/main/java/eu/optimis/vc/api/Core" binary="false">    
+    <position height="49" width="247" x="147" y="55"/>    
+    <display autosize="false" stereotype="true"/>  
+  </package>  
+  <package id="6" corner="BOTTOM_RIGHT" language="java" name="eu.optimis.vc.api.ImageFabricator" 
+    project="VmContextualizer-v2" file="/VmContextualizer-v2/src/main/java/eu/optimis/vc/api/ImageFabricator" 
+    binary="false">    
+    <position height="49" width="215" x="294" y="215"/>    
+    <display autosize="true" stereotype="true"/>  
+  </package>  
+  <package id="7" corner="BOTTOM_RIGHT" language="java" name="eu.optimis.vc.api" project="VmContextualizer-v2" 
+    file="/VmContextualizer-v2/src/main/java/eu/optimis/vc/api" binary="false">    
+    <position height="-1" width="-1" x="602" y="80"/>    
+    <display autosize="true" stereotype="true"/>  
+  </package>  
+  <dependency id="8">    
+    <bendpoint x="181" y="157"/>    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="5"/>  
+  </dependency>  
+  <dependency id="9">    
+    <bendpoint x="432" y="375"/>    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="1"/>  
+  </dependency>  
+  <dependency id="10">    
+    <bendpoint x="590" y="183"/>    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="4"/>  
+  </dependency>  
+  <dependency id="11">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="6"/>  
+  </dependency>  
+  <dependency id="12">    
+    <bendpoint x="484" y="96"/>    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="7"/>  
+  </dependency>  
+  <dependency id="13">    
+    <bendpoint x="746" y="86"/>    
+    <bendpoint x="746" y="326"/>    
+    <end type="SOURCE" refId="7"/>    
+    <end type="TARGET" refId="1"/>  
+  </dependency>  
+  <dependency id="14">    
+    <bendpoint x="230" y="175"/>    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
+  <dependency id="15">    
+    <bendpoint x="540" y="307"/>    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="1"/>  
+  </dependency>  
+  <dependency id="16">    
+    <bendpoint x="379" y="375"/>    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="2"/>  
+  </dependency>  
+  <dependency id="17">    
+    <bendpoint x="271" y="409"/>    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="2"/>  
+  </dependency>  
+  <dependency id="18">    
+    <bendpoint x="528" y="219"/>    
+    <bendpoint x="529" y="267"/>    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="1"/>  
+  </dependency>  
+  <dependency id="19">    
+    <bendpoint x="206" y="326"/>    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="1"/>  
+  </dependency>  
+  <dependency id="20">    
+    <bendpoint x="480" y="65"/>    
+    <end type="SOURCE" refId="7"/>    
+    <end type="TARGET" refId="5"/>  
+  </dependency>  
+  <dependency id="21">    
+    <bendpoint x="638" y="153"/>    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="5"/>  
+  </dependency>  
+  <dependency id="22">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="1"/>  
+  </dependency>  
+  <classifier-display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
+    visibility="true">    
+    <attributes public="true" package="true" protected="true" private="true"/>    
+    <operations public="true" package="true" protected="true" private="true"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>

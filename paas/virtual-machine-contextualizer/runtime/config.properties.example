@@ -1,0 +1,4 @@
+#Use full paths only
+installDirectory=/opt/optimis/vmc/runtime
+repository=/opt/optimis/vmc/runtime/repository
+addRecontextFiles=false

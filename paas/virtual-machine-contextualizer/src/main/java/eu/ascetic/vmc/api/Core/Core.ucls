@@ -1,0 +1,62 @@
+<class-diagram version="1.0.9" icons="true" automaticImage="PNG" always-add-relationships="true" generalizations="true" 
+  realizations="true" associations="true" dependencies="true" nesting-relationships="true">  
+  <class id="1" corner="BOTTOM_RIGHT" language="java" name="eu.optimis.vc.api.Core.VirtualMachineContextualizer" 
+    project="VmContextualizer-v2" 
+    file="/VmContextualizer-v2/src/main/java/eu/optimis/vc/api/Core/VirtualMachineContextualizer.java" binary="false">    
+    <position height="311" width="372" x="651" y="37"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="2" corner="BOTTOM_RIGHT" language="java" name="eu.optimis.vc.api.Core.SystemCallException" 
+    project="VmContextualizer-v2" 
+    file="/VmContextualizer-v2/src/main/java/eu/optimis/vc/api/Core/SystemCallException.java" binary="false">    
+    <position height="129" width="265" x="499" y="388"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="3" corner="BOTTOM_RIGHT" language="java" name="eu.optimis.vc.api.Core.SystemCall" 
+    project="VmContextualizer-v2" file="/VmContextualizer-v2/src/main/java/eu/optimis/vc/api/Core/SystemCall.java" 
+    binary="false">    
+    <position height="248" width="265" x="346" y="37"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="4" corner="BOTTOM_RIGHT" language="java" name="eu.optimis.vc.api.Core.ProgressException" 
+    project="VmContextualizer-v2" 
+    file="/VmContextualizer-v2/src/main/java/eu/optimis/vc/api/Core/ProgressException.java" binary="false">    
+    <position height="129" width="265" x="41" y="37"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="5" corner="BOTTOM_RIGHT" language="java" name="eu.optimis.vc.api.Core.PerformanceEvaluation" 
+    project="VmContextualizer-v2" 
+    file="/VmContextualizer-v2/src/main/java/eu/optimis/vc/api/Core/PerformanceEvaluation.java" binary="false">    
+    <position height="79" width="157" x="1063" y="37"/>    
+    <display autosize="false" stereotype="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <dependency id="6">    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="2"/>  
+  </dependency>  
+  <dependency id="7">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="2"/>  
+  </dependency>  
+  <classifier-display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
+    visibility="true">    
+    <attributes public="true" package="true" protected="true" private="true"/>    
+    <operations public="true" package="true" protected="true" private="true"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>

@@ -1,0 +1,148 @@
+diff -crB a/block/vmdk.c b/block/vmdk.c
+*** a/block/vmdk.c	2011-10-12 17:41:43.000000000 +0100
+--- b/block/vmdk.c	2012-05-10 13:44:51.000000000 +0100
+***************
+*** 1134,1140 ****
+          "ddb.geometry.cylinders = \"%" PRId64 "\"\n"
+          "ddb.geometry.heads = \"16\"\n"
+          "ddb.geometry.sectors = \"63\"\n"
+!         "ddb.adapterType = \"ide\"\n";
+  
+      if (filename_decompose(filename, path, prefix, postfix, PATH_MAX)) {
+          return -EINVAL;
+--- 1134,1140 ----
+          "ddb.geometry.cylinders = \"%" PRId64 "\"\n"
+          "ddb.geometry.heads = \"16\"\n"
+          "ddb.geometry.sectors = \"63\"\n"
+!         "ddb.adapterType = \"%s\"\n";
+  
+      if (filename_decompose(filename, path, prefix, postfix, PATH_MAX)) {
+          return -EINVAL;
+***************
+*** 1149,1154 ****
+--- 1149,1156 ----
+              flags |= options->value.n ? BLOCK_FLAG_COMPAT6 : 0;
+          } else if (!strcmp(options->name, BLOCK_OPT_SUBFMT)) {
+              fmt = options->value.s;
++         } else if (!strcmp(options->name, BLOCK_OPT_SCSI)) {
++             flags |= options->value.n ? BLOCK_FLAG_SCSI: 0;
+          }
+          options++;
+      }
+***************
+*** 1238,1244 ****
+              parent_desc_line,
+              ext_desc_lines,
+              (flags & BLOCK_FLAG_COMPAT6 ? 6 : 4),
+!             total_size / (int64_t)(63 * 16 * 512));
+      if (split || flat) {
+          fd = open(
+                  filename,
+--- 1240,1247 ----
+              parent_desc_line,
+              ext_desc_lines,
+              (flags & BLOCK_FLAG_COMPAT6 ? 6 : 4),
+!             total_size / (int64_t)(63 * 16 * 512),
+!             flags & BLOCK_FLAG_SCSI ? "lsilogic" : "ide");
+      if (split || flat) {
+          fd = open(
+                  filename,
+***************
+*** 1336,1341 ****
+--- 1339,1349 ----
+              "VMDK flat extent format, can be one of "
+              "{monolithicSparse (default) | monolithicFlat | twoGbMaxExtentSparse | twoGbMaxExtentFlat} "
+      },
++     {
++         .name = BLOCK_OPT_SCSI,
++         .type = OPT_FLAG,
++         .help = "SCSI image"
++     },
+      { NULL }
+  };
+  
+diff -crB a/block.c b/block.c
+*** a/block.c	2011-10-12 17:41:43.000000000 +0100
+--- b/block.c	2012-05-10 13:28:21.000000000 +0100
+***************
+*** 2900,2906 ****
+                      char *options, uint64_t img_size, int flags)
+  {
+      QEMUOptionParameter *param = NULL, *create_options = NULL;
+!     QEMUOptionParameter *backing_fmt, *backing_file, *size;
+      BlockDriverState *bs = NULL;
+      BlockDriver *drv, *proto_drv;
+      BlockDriver *backing_drv = NULL;
+--- 2900,2906 ----
+                      char *options, uint64_t img_size, int flags)
+  {
+      QEMUOptionParameter *param = NULL, *create_options = NULL;
+!     QEMUOptionParameter *backing_fmt, *backing_file, *size, *scsi;
+      BlockDriverState *bs = NULL;
+      BlockDriver *drv, *proto_drv;
+      BlockDriver *backing_drv = NULL;
+***************
+*** 3010,3015 ****
+--- 3010,3018 ----
+  
+      printf("Formatting '%s', fmt=%s ", filename, fmt);
+      print_option_parameters(param);
++     scsi = get_option_parameter(param, BLOCK_OPT_SCSI);
++     if (scsi && scsi->value.n)
++         printf(", SCSI");
+      puts("");
+  
+      ret = bdrv_create(drv, filename, param);
+diff -crB a/block_int.h b/block_int.h
+*** a/block_int.h	2011-10-12 17:41:43.000000000 +0100
+--- b/block_int.h	2012-05-10 13:28:21.000000000 +0100
+***************
+*** 30,39 ****
+--- 30,41 ----
+  
+  #define BLOCK_FLAG_ENCRYPT	1
+  #define BLOCK_FLAG_COMPAT6	4
++ #define BLOCK_FLAG_SCSI	8
+  
+  #define BLOCK_OPT_SIZE          "size"
+  #define BLOCK_OPT_ENCRYPT       "encryption"
+  #define BLOCK_OPT_COMPAT6       "compat6"
++ #define BLOCK_OPT_SCSI          "scsi"
+  #define BLOCK_OPT_BACKING_FILE  "backing_file"
+  #define BLOCK_OPT_BACKING_FMT   "backing_fmt"
+  #define BLOCK_OPT_CLUSTER_SIZE  "cluster_size"
+diff -crB a/qemu-img.c b/qemu-img.c
+*** a/qemu-img.c	2011-10-12 17:41:43.000000000 +0100
+--- b/qemu-img.c	2012-05-10 13:28:21.000000000 +0100
+***************
+*** 636,642 ****
+      const uint8_t *buf1;
+      BlockDriverInfo bdi;
+      QEMUOptionParameter *param = NULL, *create_options = NULL;
+!     QEMUOptionParameter *out_baseimg_param;
+      char *options = NULL;
+      const char *snapshot_name = NULL;
+      float local_progress;
+--- 636,642 ----
+      const uint8_t *buf1;
+      BlockDriverInfo bdi;
+      QEMUOptionParameter *param = NULL, *create_options = NULL;
+!     QEMUOptionParameter *out_baseimg_param, *scsi;
+      char *options = NULL;
+      const char *snapshot_name = NULL;
+      float local_progress;
+***************
+*** 802,807 ****
+--- 802,813 ----
+          }
+      }
+  
++     if ((scsi = get_option_parameter(param, BLOCK_OPT_SCSI)) && scsi->value.n && strcmp(drv->format_name, "vmdk")) {
++         error_report("SCSI devices not supported for this file format");
++         ret = -1;
++         goto out;
++     }
++ 
+      /* Create the new image */
+      ret = bdrv_create(drv, out_filename, param);
+      if (ret < 0) {

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>eu.ascetic.ascetic-architecture</groupId>
+		<artifactId>utils</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
+	<groupId>eu.ascetic.ascetic-architecture.utils</groupId>
+	<artifactId>wattsup</artifactId>
+	<name>Watts-Up</name>
+	<description>Module to read data from a watts up meter using wattsup-java-sdk</description>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+	<version>0.0.1-SNAPSHOT</version>
+	<url>http://www.ascetic.eu</url>
+	<dependencies>
+		<dependency>
+			<groupId>wattsup-java-sdk</groupId>
+			<artifactId>wattsup-java-sdk-console</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+			<type>jar</type>
+		</dependency>
+	</dependencies>
+</project>
