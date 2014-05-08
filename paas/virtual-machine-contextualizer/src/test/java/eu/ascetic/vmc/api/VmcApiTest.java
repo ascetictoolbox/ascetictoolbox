@@ -75,17 +75,19 @@ public class VmcApiTest extends TestCase {
 		ProgressData progressData = null;
 
 		try {
-			// Decide which getOvfDefinition we are going to test with
+			// Decide which OvfDefinition we are going to test with
 			OvfDefinition ovfDefinition;
 			if (testOvfDefinition != null) {
 				ovfDefinition = testOvfDefinition;
 			} else {
-				String serviceId = "3";
-				// FIXME
-				ovfDefinition = XmlBeanEnvelopeDocument.Factory.newInstance();
+				XmlBeanEnvelopeDocument xmlBeanEnvelopeDocument = XmlBeanEnvelopeDocument.Factory.newInstance();
+				
+				// TODO: Generate a default OVF doc here
+				
+				ovfDefinition = new OvfDefinition(xmlBeanEnvelopeDocument.getEnvelope());
 			}
 
-			log.info("TEST: Service getOvfDefinition is:\n" + ovfDefinition.toString());
+			log.info("TEST: Service OvfDefinition is:\n" + ovfDefinition.toString());
 
 			// Initialise the VMC's configuration providing the path of the
 			// config.properties file...
@@ -236,8 +238,7 @@ public class VmcApiTest extends TestCase {
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
-						// FIXME
-						testOvfDefinition = XmlBeanEnvelopeDocument.Factory.newInstance(doc);
+						testOvfDefinition = new OvfDefinition(doc.getEnvelope());
 					}
 
 					if (args.length == 4) {
