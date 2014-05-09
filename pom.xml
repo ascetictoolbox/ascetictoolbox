@@ -34,7 +34,7 @@
 				<updatePolicy>never</updatePolicy>
 			</releases>
 			<name>repo</name>
-			<url>https://artifactory.ascetic-dev.cit.tu-berlin.de/artifactory/repo</url>
+			<url>https://ascetic-artifactory.cit.tu-berlin.de/artifactory/repo</url>
 		</repository>
 	</repositories>
 
@@ -47,16 +47,16 @@
 
 	<distributionManagement>
 		<repository>
-			<id>ascetic-repository</id>
-			<name>ascetic-repo-releases</name>
-			<url>https://artifactory.ascetic-dev.cit.tu-berlin.de/artifactory/libs-release-local</url>
+			<id>artifactory.ascetic-dev.cit.tu-berlin.de</id>
+			<name>artifactory.ascetic-dev.cit.tu-berlin.de-releases</name>
+			<url>http://ascetic-artifactory.cit.tu-berlin.de/artifactory/libs-release-local</url>
 		</repository>
 		<snapshotRepository>
-			<id>ascetic-repository</id>
+			<id>artifactory.ascetic-dev.cit.tu-berlin.de</id>
+			<name>artifactory.ascetic-dev.cit.tu-berlin.de-snapshots</name>
+			<url>http://ascetic-artifactory.cit.tu-berlin.de/artifactory/libs-snapshot-local</url>
 			<uniqueVersion>false</uniqueVersion>
-			<name>ascetic-repo-snapshots</name>
-			<url>https://artifactory.ascetic-dev.cit.tu-berlin.de/artifactory/libs-snapshot-local</url>
-		</snapshotRepository>
+		</snapshotRepository>		
 	</distributionManagement>
 	
 	<dependencyManagement>
