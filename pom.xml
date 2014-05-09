@@ -45,7 +45,20 @@
 		<module>utils</module>
 	</modules>
 
-
+	<distributionManagement>
+		<repository>
+			<id>ascetic-repository</id>
+			<name>ascetic-repo-releases</name>
+			<url>https://artifactory.ascetic-dev.cit.tu-berlin.de/artifactory/libs-release-local</url>
+		</repository>
+		<snapshotRepository>
+			<id>ascetic-repository</id>
+			<uniqueVersion>false</uniqueVersion>
+			<name>ascetic-repo-snapshots</name>
+			<url>https://artifactory.ascetic-dev.cit.tu-berlin.de/artifactory/libs-snapshot-local</url>
+		</snapshotRepository>
+	</distributionManagement>
+	
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -66,9 +79,7 @@
 		</dependencies>
 	</dependencyManagement>
 
-
 	<build>
-
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -82,7 +93,6 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
-
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
