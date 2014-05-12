@@ -10,11 +10,11 @@
     <relativePath>..</relativePath>
   </parent>
 
-	<groupId>wattsup-java-sdk</groupId>
-	<artifactId>wattsup-java-sdk-pom</artifactId>
+	<groupId>eu.ascetic.ascetic-architecture.utils</groupId>
+	<artifactId>wattsup-java-sdk</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>wattsup-java-sdk</name>
+	<name>Wattsup Java SDK</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -211,4 +211,6 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+	<url>https://github.com/alessandroleite/wattsup-java-sdk</url>
+	<description>A Java client for the Watts Up Power Meter</description>
 </project>

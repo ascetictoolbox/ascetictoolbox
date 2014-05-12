@@ -4,9 +4,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>wattsup-java-sdk</groupId>
-		<artifactId>wattsup-java-sdk-pom</artifactId>
+		<groupId>eu.ascetic.ascetic-architecture.utils</groupId>
+		<artifactId>wattsup-java-sdk</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>..</relativePath>
 	</parent>
 
 	<artifactId>wattsup-java-sdk-client</artifactId>
@@ -19,10 +20,9 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>wattsup-java-sdk</groupId>
+			<groupId>eu.ascetic.ascetic-architecture.utils.wattsup-java-sdk</groupId>
 			<artifactId>wattsup-java-sdk-remote</artifactId>
 			<version>${project.version}</version>
-			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
@@ -72,4 +72,6 @@
 		</plugins>
 	</build>
 
+	<groupId>eu.ascetic.ascetic-architecture.utils.wattsup-java-sdk</groupId>
+	<name>Wattsup Java SDK Client</name>
 </project>

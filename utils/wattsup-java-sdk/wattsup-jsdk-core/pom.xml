@@ -4,13 +4,16 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>wattsup-java-sdk</groupId>
-		<artifactId>wattsup-java-sdk-pom</artifactId>
+		<groupId>eu.ascetic.ascetic-architecture.utils</groupId>
+		<artifactId>wattsup-java-sdk</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>..</relativePath>
 	</parent>
 
 	<artifactId>wattsup-java-sdk-core</artifactId>
 	<packaging>jar</packaging>
+	<groupId>eu.ascetic.ascetic-architecture.utils.wattsup-java-sdk</groupId>
+	<name>Wattsup Java SDK Core</name>
 
 	<properties>
 		<license-header-file>${basedir}/../LICENSE</license-header-file>
