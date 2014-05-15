@@ -103,8 +103,8 @@ public final class WattsUpConfig
     /**
      * Configure the duration to collect data from the meter.
      * 
-     * @param intervalInSeconds
-     *            The interval in seconds to collect the data.
+     * @param intervalInSeconds This gives the duration in seconds to 
+     * collect data for. If the number is less than zero, it will carry on indefinitely. 
      * @return The same instance but configured the {@code scheduleDurationInSeconds} with the given value.
      */
     public WattsUpConfig scheduleDuration(long intervalInSeconds)
