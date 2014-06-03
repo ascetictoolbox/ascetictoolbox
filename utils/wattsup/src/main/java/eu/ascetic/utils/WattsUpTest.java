@@ -21,9 +21,11 @@ public final class WattsUpTest {
     private static final SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
 
     /**
-     * Creates an {@link WattsUp} for monitoring during three minutes.
+     * Connects to a WattsUp meter and outputs continously
+     * the values recorded, to standard out.
      *
-     * @param args The reference to the arguments.
+     * @param args The first argument should be the comp port in use.
+     * The default is "COM9".
      * @throws IOException If the power meter is not connected.
      */
     public static void main(String[] args) throws IOException {
@@ -53,7 +55,6 @@ public final class WattsUpTest {
                 System.out.println("Watts: " + watts);
                 System.out.println("Volts: " + volts);
                 System.out.println("Amps: " + amps);
-//                System.out.println("Power Ratio: " + Power Ratio);
                 System.out.print("\n\r");
             }
         });
@@ -61,7 +62,7 @@ public final class WattsUpTest {
         meter.registerListener(new WattsUpMemoryCleanListener() {
             @Override
             public void processWattsUpReset(WattsUpMemoryCleanEvent event) {
-                System.out.println("Memory Just Cleaned"); //To change body of generated methods, choose Tools | Templates.
+                System.out.println("Memory Just Cleaned");
             }
         });
 

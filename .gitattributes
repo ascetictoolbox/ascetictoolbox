@@ -87,3 +87,5 @@ utils/wattsup-java-sdk/wattsup-jsdk-console/src/main/resources/META-INF/services
 utils/wattsup-java-sdk/wattsup-jsdk-console/src/main/resources/console.msg -text
 utils/wattsup-java-sdk/wattsup-jsdk-core/src/main/resources/db.sql -text
 utils/wattsup-java-sdk/wattsup-jsdk-core/src/test/resources/database.yml -text
+utils/wattsup/src/main/java/eu/ascetic/utils/Settings.java -text
+utils/wattsup/src/main/java/eu/ascetic/utils/WattsUpLanConfigurationTool.java -text
