@@ -39,10 +39,10 @@
 	</repositories>
 
 	<modules>
+		<module>utils</module>
 		<module>iaas</module>
 		<module>paas</module>
 		<module>saas</module>
-		<module>utils</module>
 	</modules>
 
 	<distributionManagement>
