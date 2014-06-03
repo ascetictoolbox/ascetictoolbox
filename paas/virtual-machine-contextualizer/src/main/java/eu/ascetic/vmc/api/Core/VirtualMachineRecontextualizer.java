@@ -32,9 +32,9 @@ import org.apache.log4j.Logger;
 import eu.ascetic.vmc.api.VmcApi;
 import eu.ascetic.vmc.api.Core.Libvirt.LibvirtControlBridge;
 import eu.ascetic.vmc.api.Core.Libvirt.LibvirtEventBridge;
-import eu.optimis.vc.libvirt.Connect;
-import eu.optimis.vc.libvirt.Domain;
-import eu.optimis.vc.libvirt.LibvirtException;
+import eu.ascetic.vmc.libvirt.Connect;
+import eu.ascetic.vmc.libvirt.Domain;
+import eu.ascetic.vmc.libvirt.LibvirtException;
 
 /**
  * Core logic of the Recontextualizer.

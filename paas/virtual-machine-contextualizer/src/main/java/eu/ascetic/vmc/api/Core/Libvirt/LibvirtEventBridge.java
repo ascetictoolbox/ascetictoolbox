@@ -22,10 +22,10 @@ import org.apache.log4j.Logger;
 
 import eu.ascetic.vmc.api.Core.DomainContextualizer;
 import eu.ascetic.vmc.api.Core.DomainStartedListener;
-import eu.optimis.vc.libvirt.Connect;
-import eu.optimis.vc.libvirt.Connect.DomainEvent.LifecycleCallback;
-import eu.optimis.vc.libvirt.Domain;
-import eu.optimis.vc.libvirt.LibvirtException;
+import eu.ascetic.vmc.libvirt.Connect;
+import eu.ascetic.vmc.libvirt.Domain;
+import eu.ascetic.vmc.libvirt.LibvirtException;
+import eu.ascetic.vmc.libvirt.Connect.DomainEvent.LifecycleCallback;
 
 /**
  * Event bridge converting from Libvirtevents to more easily managed events in the LibvirtEventListener
@@ -129,7 +129,7 @@ public class LibvirtEventBridge implements LifecycleCallback {
 
 	/*
 	 * Called by libvirt to indicate a change in lifecycle
-	 * @see eu.optimis.vc.libvirt.Connect.DomainEvent.LifecycleCallback#onLifecycleChange(eu.optimis.vc.libvirt.Connect, eu.optimis.vc.libvirt.Domain, eu.optimis.vc.libvirt.Connect.DomainEvent.LifecycleCallback.Event, int)
+	 * @see eu.ascetic.vmc.libvirt.Connect.DomainEvent.LifecycleCallback#onLifecycleChange(eu.ascetic.vmc.libvirt.Connect, eu.ascetic.vmc.libvirt.Domain, eu.ascetic.vmc.libvirt.Connect.DomainEvent.LifecycleCallback.Event, int)
 	 */
 	@Override
 	public void onLifecycleChange(Connect connect, Domain domain, Event event,

@@ -29,7 +29,7 @@ import eu.ascetic.vmc.api.DataModel.VirtualMachine;
 import eu.ascetic.vmc.api.DataModel.ContextDataTypes.EndPoint;
 import eu.ascetic.vmc.api.DataModel.Image.Iso;
 import eu.ascetic.vmc.api.IsoCreator.IsoImageCreation;
-import eu.optimis.vc.libvirt.LibvirtException;
+import eu.ascetic.vmc.libvirt.LibvirtException;
 /**
  * Responds to events regarding the domain and manages the actual context changes
  * 

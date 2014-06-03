@@ -1,7 +1,7 @@
 package org.libvirt;
 
-import eu.optimis.vc.libvirt.Connect;
-import eu.optimis.vc.libvirt.LibvirtException;
+import eu.ascetic.vmc.libvirt.Connect;
+import eu.ascetic.vmc.libvirt.LibvirtException;
 import junit.framework.TestCase;
 
 /**

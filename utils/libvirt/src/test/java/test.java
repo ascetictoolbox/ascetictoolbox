@@ -1,6 +1,6 @@
 import java.util.UUID;
 
-import eu.optimis.vc.libvirt.*;
+import eu.ascetic.vmc.libvirt.*;
 
 public class test {
 

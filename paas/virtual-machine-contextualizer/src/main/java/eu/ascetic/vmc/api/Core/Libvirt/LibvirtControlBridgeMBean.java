@@ -15,7 +15,7 @@
  */
 package eu.ascetic.vmc.api.Core.Libvirt;
 
-import eu.optimis.vc.libvirt.LibvirtException;
+import eu.ascetic.vmc.libvirt.LibvirtException;
 
 public interface LibvirtControlBridgeMBean {
 

@@ -21,9 +21,9 @@ import org.apache.log4j.Logger;
 import eu.ascetic.vmc.api.Core.DomainContextualizer;
 import eu.ascetic.vmc.api.Core.SystemCall;
 import eu.ascetic.vmc.api.Core.SystemCallException;
-import eu.optimis.vc.libvirt.Connect;
-import eu.optimis.vc.libvirt.Domain;
-import eu.optimis.vc.libvirt.LibvirtException;
+import eu.ascetic.vmc.libvirt.Connect;
+import eu.ascetic.vmc.libvirt.Domain;
+import eu.ascetic.vmc.libvirt.LibvirtException;
 
 /**
  * Control bridge wrapping the calls to libvirt and/or system processes

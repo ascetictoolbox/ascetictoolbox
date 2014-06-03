@@ -2,16 +2,16 @@ package org.libvirt;
 
 import java.util.UUID;
 
-import eu.optimis.vc.libvirt.Connect;
-import eu.optimis.vc.libvirt.Domain;
-import eu.optimis.vc.libvirt.Interface;
-import eu.optimis.vc.libvirt.LibvirtException;
-import eu.optimis.vc.libvirt.Network;
-import eu.optimis.vc.libvirt.NodeInfo;
-import eu.optimis.vc.libvirt.SchedParameter;
-import eu.optimis.vc.libvirt.SchedUintParameter;
-import eu.optimis.vc.libvirt.StoragePool;
-import eu.optimis.vc.libvirt.jna.Libvirt;
+import eu.ascetic.vmc.libvirt.Connect;
+import eu.ascetic.vmc.libvirt.Domain;
+import eu.ascetic.vmc.libvirt.Interface;
+import eu.ascetic.vmc.libvirt.LibvirtException;
+import eu.ascetic.vmc.libvirt.Network;
+import eu.ascetic.vmc.libvirt.NodeInfo;
+import eu.ascetic.vmc.libvirt.SchedParameter;
+import eu.ascetic.vmc.libvirt.SchedUintParameter;
+import eu.ascetic.vmc.libvirt.StoragePool;
+import eu.ascetic.vmc.libvirt.jna.Libvirt;
 
 import junit.framework.TestCase;
 
