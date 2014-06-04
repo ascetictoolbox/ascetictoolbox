@@ -21,6 +21,7 @@
 	<modules>	
 	    <!-- PaaS Modules -->
 		<module>virtual-machine-contextualizer</module>
+		<module>provider-registry</module>
 	</modules>
 	<url>http://www.ascetic.eu</url>
 	<version>0.0.1-SNAPSHOT</version>
