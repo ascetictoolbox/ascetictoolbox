@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="20110701" xmlns:xmi="http://www.omg.org/spec/XMI/20110701" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ASCETICProfile="http:///schemas/ASCETICProfile/_boswIOswEeOsSf0lAkOcAA/31" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/4.0.0/UML" xsi:schemaLocation="http:///schemas/ASCETICProfile/_boswIOswEeOsSf0lAkOcAA/31 ../Ascetic%20Papyrus%20KPI%20Profile/model.profile.uml#_boswIeswEeOsSf0lAkOcAA">
+  <uml:Model xmi:id="_BHwJIN-MEeOanJwEUOB9pQ" name="NewsAsset-model">
+    <ownedComment xmi:type="uml:Comment" xmi:id="__D9AwOAMEeOanJwEUOB9pQ" annotatedElement="_f7CgEN-gEeOanJwEUOB9pQ">
+      <body>Question:&#xD;
+Does the ChiefNewsEditor effectively perform the distribution &#xD;
+of a news items or does he only tag a News Item as being &#xD;
+approved for distribution and it is then the job of a Sending &#xD;
+service to send a news item (or a batch of news items)</body>
+    </ownedComment>
+    <ownedComment xmi:type="uml:Comment" xmi:id="_CvaT8OAPEeOanJwEUOB9pQ" annotatedElement="_ripSYOAOEeOanJwEUOB9pQ">
+      <body>Question:&#xD;
+Since there is a component call Sender, I assume that &#xD;
+the ChiefNewsEditor does not actually launch the&#xD;
+send directive but only &quot;tag&quot; news items as approved&#xD;
+to be sent to customer. Subsequently, the sender software &#xD;
+agent distribute &quot;tag items&quot; to relevant customers. &#xD;
+Does the Sender send one news item at a time or by batch &#xD;
+(or both are possible)?&#xD;
+</body>
+    </ownedComment>
+    <ownedComment xmi:type="uml:Comment" xmi:id="_Wd1CgOATEeOanJwEUOB9pQ" annotatedElement="_tRyxQOANEeOanJwEUOB9pQ">
+      <body>(NOTE: from my understanding the NewsItemReceiver is a piece of &#xD;
+software which must automatically handle the reception and storage &#xD;
+of news items in the appropriate format.)&#xD;
+Question:&#xD;
+1. How are received news items (1 at a time or in batch or both)?&#xD;
+2. What actions are by the NewsItemReceicerAgent?: &#xD;
+2.1 Does it need to reformat the received news items?&#xD;
+2.2 Does it make decision to reject or accept news items?&#xD;
+2.3 Does it need to perform an indexing of news items received?&#xD;
+2.4 If so, based on what? a list of keywords given by a news item in a given field?&#xD;
+2.5 Does it index each news item as it is received or is automatically &#xD;
+performed by the RDBMS system? ...</body>
+    </ownedComment>
+    <ownedComment xmi:type="uml:Comment" xmi:id="_OZJk8OAUEeOanJwEUOB9pQ" annotatedElement="_tRyxQOANEeOanJwEUOB9pQ">
+      <body>COMMENT:&#xD;
+Given the volume of received news items (5.000 to 20.000 per day), &#xD;
+it would seem relevant to want to know the energy behavior of the &#xD;
+News Item receiver functionality vs its time performence. &#xD;
+In particular, with regards to indexing (how, when, ...)&#xD;
+</body>
+    </ownedComment>
+    <ownedComment xmi:type="uml:Comment" xmi:id="_mL1PoOAXEeOanJwEUOB9pQ" annotatedElement="_gTmYwN-aEeOanJwEUOB9pQ">
+      <body>COMMENT:&#xD;
+To perform relevant measurements of the &quot;search for News items&quot; functionality, &#xD;
+we must define various parameters that will affect the search algorithm.&#xD;
+This means that we must identify &#xD;
+various number of news item in search repository, &#xD;
+various search terms (simple keyword, long phrase) &#xD;
+various search criteria (exact match, partial or approximative search, etc.)&#xD;
+</body>
+    </ownedComment>
+    <ownedComment xmi:type="uml:Comment" xmi:id="_GWF7MOAZEeOanJwEUOB9pQ" annotatedElement="_ripSYOAOEeOanJwEUOB9pQ">
+      <body>COMMENT:&#xD;
+Given the huge volume of distribution, it would seem relevant &#xD;
+to understand the behaviour of the &quot;Send/Distribute a News Item&quot; &#xD;
+in terms of performance but even more in terms of energy consummed.</body>
+    </ownedComment>
+    <ownedComment xmi:type="uml:Comment" xmi:id="_zGgrcOAZEeOanJwEUOB9pQ" annotatedElement="_nZak4N-aEeOanJwEUOB9pQ">
+      <body>COMMENT:&#xD;
+Unless I misunderstand something, Edit a News Item, is mostly a concern &#xD;
+on the client side device, which we are not concerned with in ASCETIC &#xD;
+(at least at this point in time)&#xD;
+&#xD;
+So this functionality is not of interest for ASCETIC</body>
+    </ownedComment>
+    <ownedComment xmi:type="uml:Comment" xmi:id="_UskUcOC8EeO8GOIf1l3bJg">
+      <body>Questions:&#xD;
+Not sure on dependencies:&#xD;
+- Do the Receiver and Sender directly access the RDBMS or do they go through the NewsAsset Server?&#xD;
+- Is there a dependency from the NewsAsset Server to Receiver or does the Receiver interacts with the RDBMS directly and works completely independent from the NewsAsset Server?&#xD;
+- same question above for Sender </body>
+    </ownedComment>
+    <ownedComment xmi:type="uml:Comment" xmi:id="_WyWOAODkEeO8GOIf1l3bJg">
+      <body>Questions:&#xD;
+1. What are the packages to which these 3 classes belong?&#xD;
+2. Are these three classes part of the NewsAsset server? &#xD;
+3. If not, what other component(s) in the LogicalView-Component&#xD;
+do they belong to?&#xD;
+4. How is the Core and its operations (methods) connected to&#xD;
+Connector and RemoteObjects?&#xD;
+5. Are the Read/WriteFileBuffer directly connect to the Data &#xD;
+storage server through a socket?&#xD;
+6. What are the methods invoked to perform the &#xD;
+function &quot;Search for News Items&quot;? Probably &#xD;
+sqlExecuteDataSet/Table but probably also other methods?&#xD;
+</body>
+    </ownedComment>
+    <ownedComment xmi:type="uml:Comment" xmi:id="_MrN00OHHEeO8GOIf1l3bJg">
+      <body>Questions:&#xD;
+Are the News Item Receiver&#xD;
+and Sender directly dependent &#xD;
+on the Oracle DB connection&#xD;
+or do they get access to DB &#xD;
+through the NewsAsset server&#xD;
+</body>
+    </ownedComment>
+    <packagedElement xmi:type="uml:Activity" xmi:id="_BHwwMN-MEeOanJwEUOB9pQ" name="Write an new News Item" node="_9LSwkOC9EeO8GOIf1l3bJg _0HkekODDEeO8GOIf1l3bJg _AjU0oODEEeO8GOIf1l3bJg _Cv5kcODFEeO8GOIf1l3bJg _XbAhkODFEeO8GOIf1l3bJg _siUnoODHEeO8GOIf1l3bJg _ZY5dsODdEeO8GOIf1l3bJg _HdxfcODeEeO8GOIf1l3bJg">
+      <ownedComment xmi:type="uml:Comment" xmi:id="_l2LTMODcEeO8GOIf1l3bJg">
+        <body>COMMENT:&#xD;
+Not sure that this diagram will provide any useful information &#xD;
+to express energy monitoring needs:&#xD;
+From my understanding Editing a news News Item mostly happens &#xD;
+on the client side with little interaction with the NewsAsset server. &#xD;
+Beside searching for News Items (already mentioned in Scenario View) &#xD;
+that requires computing on the server side, only saving an updated &#xD;
+news item will involve server-side computing and storing.&#xD;
+</body>
+      </ownedComment>
+      <ownedBehavior xmi:type="uml:Activity" xmi:id="_x2Uo4OswEeOsSf0lAkOcAA" name="Activity1" node="_eXB7sODJEeO8GOIf1l3bJg">
+        <node xmi:type="uml:OpaqueAction" xmi:id="_eXB7sODJEeO8GOIf1l3bJg" name="Click on Save to Update News Item" outgoing="_yf68kODJEeO8GOIf1l3bJg" incoming="_n7J9UODJEeO8GOIf1l3bJg"/>
+      </ownedBehavior>
+      <edge xmi:type="uml:ControlFlow" xmi:id="_AjjeIODEEeO8GOIf1l3bJg" name="" source="_0HkekODDEeO8GOIf1l3bJg" target="_AjU0oODEEeO8GOIf1l3bJg"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="_YilDEODEEeO8GOIf1l3bJg" name="" source="_9LSwkOC9EeO8GOIf1l3bJg" target="_0HkekODDEeO8GOIf1l3bJg"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="_HovisODFEeO8GOIf1l3bJg" name="" source="_9LSwkOC9EeO8GOIf1l3bJg" target="_Cv5kcODFEeO8GOIf1l3bJg"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="_O2PEIODFEeO8GOIf1l3bJg" name="search for related news items" source="_AjU0oODEEeO8GOIf1l3bJg" target="_Cv5kcODFEeO8GOIf1l3bJg"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="_tC_hMODGEeO8GOIf1l3bJg" name="" source="_Cv5kcODFEeO8GOIf1l3bJg" target="_XbAhkODFEeO8GOIf1l3bJg"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="_siltYODHEeO8GOIf1l3bJg" name="cite news items" source="_XbAhkODFEeO8GOIf1l3bJg" target="_siUnoODHEeO8GOIf1l3bJg"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="_3bRHIODHEeO8GOIf1l3bJg" name="if not exists new News Item " source="_siUnoODHEeO8GOIf1l3bJg" target="_0HkekODDEeO8GOIf1l3bJg">
+        <guard xmi:type="uml:LiteralBoolean" xmi:id="_OzU9QODJEeO8GOIf1l3bJg" name="existsNewsItems"/>
+      </edge>
+      <edge xmi:type="uml:ControlFlow" xmi:id="_SMrUIODIEeO8GOIf1l3bJg" name="if exists new News Item" source="_siUnoODHEeO8GOIf1l3bJg" target="_AjU0oODEEeO8GOIf1l3bJg">
+        <guard xmi:type="uml:LiteralBoolean" xmi:id="_VzZGsODJEeO8GOIf1l3bJg" name="existNewsItem" value="true"/>
+      </edge>
+      <edge xmi:type="uml:ControlFlow" xmi:id="_nXqEIODIEeO8GOIf1l3bJg" name="exploit existing search results" source="_0HkekODDEeO8GOIf1l3bJg" target="_siUnoODHEeO8GOIf1l3bJg"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="_n7J9UODJEeO8GOIf1l3bJg" name="" source="_AjU0oODEEeO8GOIf1l3bJg" target="_eXB7sODJEeO8GOIf1l3bJg"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="_yf68kODJEeO8GOIf1l3bJg" name="" source="_eXB7sODJEeO8GOIf1l3bJg" target="_AjU0oODEEeO8GOIf1l3bJg"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="_HeM9QODeEeO8GOIf1l3bJg" name="" source="_ZY5dsODdEeO8GOIf1l3bJg" target="_HdxfcODeEeO8GOIf1l3bJg"/>
+      <node xmi:type="uml:InitialNode" xmi:id="_9LSwkOC9EeO8GOIf1l3bJg" name="InitialNode" outgoing="_YilDEODEEeO8GOIf1l3bJg _HovisODFEeO8GOIf1l3bJg"/>
+      <node xmi:type="uml:OpaqueAction" xmi:id="_0HkekODDEeO8GOIf1l3bJg" name="Create a initial empty News Item " outgoing="_AjjeIODEEeO8GOIf1l3bJg _nXqEIODIEeO8GOIf1l3bJg" incoming="_YilDEODEEeO8GOIf1l3bJg _3bRHIODHEeO8GOIf1l3bJg"/>
+      <node xmi:type="uml:OpaqueAction" xmi:id="_AjU0oODEEeO8GOIf1l3bJg" name="Edit News Item Content" outgoing="_O2PEIODFEeO8GOIf1l3bJg _n7J9UODJEeO8GOIf1l3bJg" incoming="_AjjeIODEEeO8GOIf1l3bJg _SMrUIODIEeO8GOIf1l3bJg _yf68kODJEeO8GOIf1l3bJg"/>
+      <node xmi:type="uml:OpaqueAction" xmi:id="_Cv5kcODFEeO8GOIf1l3bJg" name="Search News Item Archive Repository" outgoing="_tC_hMODGEeO8GOIf1l3bJg" incoming="_HovisODFEeO8GOIf1l3bJg _O2PEIODFEeO8GOIf1l3bJg"/>
+      <node xmi:type="uml:OpaqueAction" xmi:id="_XbAhkODFEeO8GOIf1l3bJg" name="Identify relevant news items" outgoing="_siltYODHEeO8GOIf1l3bJg" incoming="_tC_hMODGEeO8GOIf1l3bJg"/>
+      <node xmi:type="uml:ForkNode" xmi:id="_siUnoODHEeO8GOIf1l3bJg" name="Fork-ExistNewsItems" outgoing="_3bRHIODHEeO8GOIf1l3bJg _SMrUIODIEeO8GOIf1l3bJg" incoming="_siltYODHEeO8GOIf1l3bJg _nXqEIODIEeO8GOIf1l3bJg"/>
+      <node xmi:type="uml:OpaqueAction" xmi:id="_ZY5dsODdEeO8GOIf1l3bJg" name="Mark as &quot;Proposed for distribtion&quot;" outgoing="_HeM9QODeEeO8GOIf1l3bJg"/>
+      <node xmi:type="uml:ActivityFinalNode" xmi:id="_HdxfcODeEeO8GOIf1l3bJg" name="ActivityFinalNode" incoming="_HeM9QODeEeO8GOIf1l3bJg"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Actor" xmi:id="_diotAN-aEeOanJwEUOB9pQ" clientDependency="_1aU64N-aEeOanJwEUOB9pQ _86Xk4N-aEeOanJwEUOB9pQ" name="NewsEditor"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_gTmYwN-aEeOanJwEUOB9pQ" name="Search for News Items"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_nZak4N-aEeOanJwEUOB9pQ" name="Edit a new News Item"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_1aU64N-aEeOanJwEUOB9pQ" name="search News Item Repository" client="_diotAN-aEeOanJwEUOB9pQ" supplier="_gTmYwN-aEeOanJwEUOB9pQ"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_86Xk4N-aEeOanJwEUOB9pQ" name="edit a News Item" client="_diotAN-aEeOanJwEUOB9pQ" supplier="_nZak4N-aEeOanJwEUOB9pQ"/>
+    <packagedElement xmi:type="uml:Actor" xmi:id="_RzDRsN-gEeOanJwEUOB9pQ" clientDependency="_8AmckN-gEeOanJwEUOB9pQ" name="ChiefNewsEditor"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_f7CgEN-gEeOanJwEUOB9pQ" name="(Mark as?) Distribute a News Item"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_0OAC8N-gEeOanJwEUOB9pQ" name="Approve a News Item">
+      <include xmi:type="uml:Include" xmi:id="_6amIEN-gEeOanJwEUOB9pQ" addition="_f7CgEN-gEeOanJwEUOB9pQ"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_8AmckN-gEeOanJwEUOB9pQ" name="distribute a News Item" client="_RzDRsN-gEeOanJwEUOB9pQ" supplier="_f7CgEN-gEeOanJwEUOB9pQ"/>
+    <packagedElement xmi:type="uml:Actor" xmi:id="_m2dskOANEeOanJwEUOB9pQ" clientDependency="_QUZ_cOAOEeOanJwEUOB9pQ" name="NewsItemReceiverSoftwareAgent"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_tRyxQOANEeOanJwEUOB9pQ" name="Receive a News Item"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_QUZ_cOAOEeOanJwEUOB9pQ" name="receive a News Item" client="_m2dskOANEeOanJwEUOB9pQ" supplier="_tRyxQOANEeOanJwEUOB9pQ"/>
+    <packagedElement xmi:type="uml:Actor" xmi:id="_jSGYgOAOEeOanJwEUOB9pQ" clientDependency="_8zDDMOAOEeOanJwEUOB9pQ" name="NewsItemSenderSoftwareAgent"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="_ripSYOAOEeOanJwEUOB9pQ" name="Distribute a Marked/Approved News Item"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_8zDDMOAOEeOanJwEUOB9pQ" name="Distribute a News Item" client="_jSGYgOAOEeOanJwEUOB9pQ" supplier="_ripSYOAOEeOanJwEUOB9pQ"/>
+    <packagedElement xmi:type="uml:Component" xmi:id="_ywz0gOBWEeOrqJsLB4VSYw" name="NewsAsset Server">
+      <ownedAttribute xmi:type="uml:Port" xmi:id="_JgWSEOBYEeOrqJsLB4VSYw" clientDependency="_fUfg8OCyEeO8GOIf1l3bJg" name="ADO.Net Reader/Writer" visibility="public" aggregation="composite">
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_KdNi8OBYEeOrqJsLB4VSYw" value="1"/>
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_KdNi8eBYEeOrqJsLB4VSYw" value="1"/>
+        <defaultValue xmi:type="uml:LiteralString" xmi:id="_KdOKAOBYEeOrqJsLB4VSYw">
+          <value xsi:nil="true"/>
+        </defaultValue>
+      </ownedAttribute>
+      <nestedClassifier xmi:type="uml:Component" xmi:id="_gkCFkOBXEeOrqJsLB4VSYw" clientDependency="_IkxyUOCzEeO8GOIf1l3bJg" name="NewsAsset Data Reader/Writer"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Component" xmi:id="_qYBvMOBXEeOrqJsLB4VSYw" clientDependency="_L2QmoOCyEeO8GOIf1l3bJg _Aq9gIODkEeO8GOIf1l3bJg _KrmeoODkEeO8GOIf1l3bJg" name="Database RDBMS Server"/>
+    <packagedElement xmi:type="uml:Interface" xmi:id="_L172gOCyEeO8GOIf1l3bJg" name="SQL-Connection"/>
+    <packagedElement xmi:type="uml:InterfaceRealization" xmi:id="_L2QmoOCyEeO8GOIf1l3bJg" name="Realization0" client="_qYBvMOBXEeOrqJsLB4VSYw" supplier="_L172gOCyEeO8GOIf1l3bJg" contract="_L172gOCyEeO8GOIf1l3bJg"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_fUfg8OCyEeO8GOIf1l3bJg" name="Usage0" client="_JgWSEOBYEeOrqJsLB4VSYw" supplier="_L172gOCyEeO8GOIf1l3bJg"/>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="_IkxyUOCzEeO8GOIf1l3bJg" name="depends on ADO.Net" client="_gkCFkOBXEeOrqJsLB4VSYw" supplier="_JgWSEOBYEeOrqJsLB4VSYw"/>
+    <packagedElement xmi:type="uml:Component" xmi:id="_Jl0CcOC8EeO8GOIf1l3bJg" clientDependency="_ND7A4ODkEeO8GOIf1l3bJg" name="News Item Receiver"/>
+    <packagedElement xmi:type="uml:Component" xmi:id="_Mvr9cOC8EeO8GOIf1l3bJg" clientDependency="_I4OcgODkEeO8GOIf1l3bJg" name="News Item Sender"/>
+    <packagedElement xmi:type="uml:Class" xmi:id="_2yFv0ODeEeO8GOIf1l3bJg" name="Core">
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_API5EODfEeO8GOIf1l3bJg" name="AssignementStatus"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_ESQJMODfEeO8GOIf1l3bJg" name="FinishDocument"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_GWw-oODfEeO8GOIf1l3bJg" name="ReturnDocToUser"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_IerGUODfEeO8GOIf1l3bJg" name="ReassignFinishedDocument"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_Zxc1sODfEeO8GOIf1l3bJg" name="StoreDocument"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_bM4R4ODfEeO8GOIf1l3bJg" name="SendDocument"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_hLtn0ODfEeO8GOIf1l3bJg" name="WorkflowStatus"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_ls8XUODfEeO8GOIf1l3bJg" name="TakeOverDoc"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="_rrq_kODfEeO8GOIf1l3bJg" name="Connector">
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_RRgYcODgEeO8GOIf1l3bJg" name="remoteObjects" type="_uJE2IODfEeO8GOIf1l3bJg" association="_RR9EYODgEeO8GOIf1l3bJg">
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RRgYceDgEeO8GOIf1l3bJg" value="1"/>
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_RRgYcuDgEeO8GOIf1l3bJg" value="*"/>
+      </ownedAttribute>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_yvZhAODfEeO8GOIf1l3bJg" name="CreateObject"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_1jnVEODfEeO8GOIf1l3bJg" name="CreateAssetsObject"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="_uJE2IODfEeO8GOIf1l3bJg" name="RemoteObjects">
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_5B4LsODfEeO8GOIf1l3bJg" name="ReadFileBuffer"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_9KQWUODfEeO8GOIf1l3bJg" name="sqlExecuteDataSet"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_-3GSoODfEeO8GOIf1l3bJg" name="sqlExecuteDataTable"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_BZnSsODgEeO8GOIf1l3bJg" name="sqlExecuteCommand"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_EUlPAODgEeO8GOIf1l3bJg" name="WriteFileBuffer"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="_RR9EYODgEeO8GOIf1l3bJg" name="connector_remoteObjects_1" memberEnd="_RR9EYeDgEeO8GOIf1l3bJg _RRgYcODgEeO8GOIf1l3bJg">
+      <ownedEnd xmi:type="uml:Property" xmi:id="_RR9EYeDgEeO8GOIf1l3bJg" name="connector" type="_rrq_kODfEeO8GOIf1l3bJg" association="_RR9EYODgEeO8GOIf1l3bJg">
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RR9EYuDgEeO8GOIf1l3bJg" value="1"/>
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_RR9EY-DgEeO8GOIf1l3bJg" value="1"/>
+      </ownedEnd>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Interface" xmi:id="_Aqp-IODkEeO8GOIf1l3bJg" name="SQL-Connection"/>
+    <packagedElement xmi:type="uml:InterfaceRealization" xmi:id="_Aq9gIODkEeO8GOIf1l3bJg" name="Realization1" client="_qYBvMOBXEeOrqJsLB4VSYw" supplier="_Aqp-IODkEeO8GOIf1l3bJg" contract="_Aqp-IODkEeO8GOIf1l3bJg"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_I4OcgODkEeO8GOIf1l3bJg" name="Usage1" client="_Mvr9cOC8EeO8GOIf1l3bJg" supplier="_Aqp-IODkEeO8GOIf1l3bJg"/>
+    <packagedElement xmi:type="uml:Interface" xmi:id="_KraRYODkEeO8GOIf1l3bJg" name="SQL-Connection"/>
+    <packagedElement xmi:type="uml:InterfaceRealization" xmi:id="_KrmeoODkEeO8GOIf1l3bJg" name="Realization2" client="_qYBvMOBXEeOrqJsLB4VSYw" supplier="_KraRYODkEeO8GOIf1l3bJg" contract="_KraRYODkEeO8GOIf1l3bJg"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_ND7A4ODkEeO8GOIf1l3bJg" name="Usage2" client="_Jl0CcOC8EeO8GOIf1l3bJg" supplier="_KraRYODkEeO8GOIf1l3bJg"/>
+    <packagedElement xmi:type="uml:ExecutionEnvironment" xmi:id="_XAHHgOGEEeO8GOIf1l3bJg" name="TUB-ATC-VM1">
+      <nestedNode xmi:type="uml:ExecutionEnvironment" xmi:id="_Xk52oOGEEeO8GOIf1l3bJg" clientDependency="_iSW30OGEEeO8GOIf1l3bJg" name="Windows Server 2008 (with .Net Framework)"/>
+      <nestedNode xmi:type="uml:ExecutionEnvironment" xmi:id="_kcQRoOGGEeO8GOIf1l3bJg" name="IIS (for Remoting)"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="_iSW30OGEEeO8GOIf1l3bJg" name="Dependency1" client="_Xk52oOGEEeO8GOIf1l3bJg"/>
+    <packagedElement xmi:type="uml:ExecutionEnvironment" xmi:id="_UxccQOGfEeO8GOIf1l3bJg" name="TUB-ATC-VM2">
+      <nestedNode xmi:type="uml:ExecutionEnvironment" xmi:id="_YL1fgOGfEeO8GOIf1l3bJg" name="Windows Server 2008 (with .Net Framework)"/>
+      <nestedNode xmi:type="uml:ExecutionEnvironment" xmi:id="_itECkOGfEeO8GOIf1l3bJg" name="Oracle Express - Database"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Artifact" xmi:id="_9TVhUOHFEeO8GOIf1l3bJg" clientDependency="_2xH8EOHGEeO8GOIf1l3bJg _CYxUoOHHEeO8GOIf1l3bJg" name="NewsAsset Server - Packaged Software " fileName="Artifact1.file"/>
+    <packagedElement xmi:type="uml:Artifact" xmi:id="_BHwOIOHGEeO8GOIf1l3bJg" name="NewsAsset Client - Packaged Software" fileName="Artifact1.file"/>
+    <packagedElement xmi:type="uml:Artifact" xmi:id="_JCLuEOHGEeO8GOIf1l3bJg" name="News Item Receiver - Packaged Software" fileName="Artifact1.file"/>
+    <packagedElement xmi:type="uml:Artifact" xmi:id="_X_0yEOHGEeO8GOIf1l3bJg" name="News Item Sender - Packaged Software" fileName="Artifact1.file"/>
+    <packagedElement xmi:type="uml:Artifact" xmi:id="_c6euMOHGEeO8GOIf1l3bJg" clientDependency="_nkINcOHGEeO8GOIf1l3bJg" name="NewsAsset Database - Pacakged Software" fileName="Artifact1.file"/>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="_nkINcOHGEeO8GOIf1l3bJg" name="dependent on OracleDB" client="_c6euMOHGEeO8GOIf1l3bJg" supplier="_itECkOGfEeO8GOIf1l3bJg"/>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="_2xH8EOHGEeO8GOIf1l3bJg" name="dependent on .Net Remoting" client="_9TVhUOHFEeO8GOIf1l3bJg" supplier="_kcQRoOGGEeO8GOIf1l3bJg"/>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="_CYxUoOHHEeO8GOIf1l3bJg" name="dependent on sql server config" client="_9TVhUOHFEeO8GOIf1l3bJg" supplier="_itECkOGfEeO8GOIf1l3bJg"/>
+    <packagedElement xmi:type="uml:Association" xmi:id="_m2yEEOsuEeOsSf0lAkOcAA" name="" memberEnd="_m2yEEesuEeOsSf0lAkOcAA _m2xdAOsuEeOsSf0lAkOcAA">
+      <ownedEnd xmi:type="uml:Property" xmi:id="_m2yEEesuEeOsSf0lAkOcAA" name="core" type="_2yFv0ODeEeO8GOIf1l3bJg" association="_m2yEEOsuEeOsSf0lAkOcAA">
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_m2yEEusuEeOsSf0lAkOcAA" value="1"/>
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_m2yEE-suEeOsSf0lAkOcAA" value="1"/>
+      </ownedEnd>
+      <ownedEnd xmi:type="uml:Property" xmi:id="_m2xdAOsuEeOsSf0lAkOcAA" name="connector" type="_rrq_kODfEeO8GOIf1l3bJg" aggregation="composite" association="_m2yEEOsuEeOsSf0lAkOcAA">
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_m2xdAesuEeOsSf0lAkOcAA" value="1"/>
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_m2xdAusuEeOsSf0lAkOcAA" value="*"/>
+      </ownedEnd>
+    </packagedElement>
+    <profileApplication xmi:type="uml:ProfileApplication" xmi:id="_jZa40OHMEeOE-fH0MbPO6w">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_jZ4L0OHMEeOE-fH0MbPO6w" source="http://www.eclipse.org/uml2/2.0.0/UML">
+        <references xmi:type="ecore:EPackage" href="../Ascetic%20Papyrus%20KPI%20Profile/model.profile.uml#_boswIeswEeOsSf0lAkOcAA"/>
+      </eAnnotations>
+      <appliedProfile xmi:type="uml:Profile" href="../Ascetic%20Papyrus%20KPI%20Profile/model.profile.uml#_h2AQQMO6EeO6370zt3rC0Q"/>
+    </profileApplication>
+  </uml:Model>
+  <ASCETICProfile:MeasuredUseCase xmi:id="_DbWxkOJMEeOsSf0lAkOcAA" base_UseCase="_gTmYwN-aEeOanJwEUOB9pQ">
+    <KPIs xmi:type="ASCETICProfile:KPI" xmi:id="_F-akMOJMEeOsSf0lAkOcAA"/>
+  </ASCETICProfile:MeasuredUseCase>
+  <ASCETICProfile:MeasuredUseCase xmi:id="_K6QzIOJMEeOsSf0lAkOcAA" base_UseCase="_tRyxQOANEeOanJwEUOB9pQ">
+    <KPIs xmi:type="ASCETICProfile:KPI" xmi:id="_M5guEOJMEeOsSf0lAkOcAA"/>
+  </ASCETICProfile:MeasuredUseCase>
+  <ASCETICProfile:MeasuredUseCase xmi:id="_mE7YMOJNEeOsSf0lAkOcAA" base_UseCase="_ripSYOAOEeOanJwEUOB9pQ">
+    <KPIs xmi:type="ASCETICProfile:KPI" xmi:id="_rGRLIOJNEeOsSf0lAkOcAA"/>
+  </ASCETICProfile:MeasuredUseCase>
+  <ASCETICProfile:MeasuredDeploymentTarget xmi:id="_gFFqwOJPEeOsSf0lAkOcAA" base_DeploymentTarget="_YL1fgOGfEeO8GOIf1l3bJg">
+    <KPIs xmi:type="ASCETICProfile:KPI" xmi:id="_kD8F8OJPEeOsSf0lAkOcAA"/>
+  </ASCETICProfile:MeasuredDeploymentTarget>
+  <ASCETICProfile:MeasuredComponent xmi:id="_RHI0MOKQEeOsSf0lAkOcAA" base_Component="_ywz0gOBWEeOrqJsLB4VSYw">
+    <KPIs xmi:type="ASCETICProfile:KPI" xmi:id="_SIDeoOKQEeOsSf0lAkOcAA"/>
+  </ASCETICProfile:MeasuredComponent>
+  <ASCETICProfile:MeasuredOperation xmi:id="_7SUqwOKUEeOsSf0lAkOcAA" base_Operation="_9KQWUODfEeO8GOIf1l3bJg">
+    <KPIs xmi:type="ASCETICProfile:KPI" xmi:id="__WFbIOKUEeOsSf0lAkOcAA"/>
+  </ASCETICProfile:MeasuredOperation>
+  <ASCETICProfile:MeasuredOperation xmi:id="_PM6J4OKVEeOsSf0lAkOcAA" base_Operation="_-3GSoODfEeO8GOIf1l3bJg">
+    <KPIs xmi:type="ASCETICProfile:KPI" xmi:id="_QRAEIOKVEeOsSf0lAkOcAA"/>
+  </ASCETICProfile:MeasuredOperation>
+  <ASCETICProfile:MeasuredUseCase xmi:id="_yi5QcOsvEeOsSf0lAkOcAA" base_UseCase="_nZak4N-aEeOanJwEUOB9pQ">
+    <KPIs xmi:type="ASCETICProfile:KPI" xmi:id="_z1-B4OsvEeOsSf0lAkOcAA"/>
+  </ASCETICProfile:MeasuredUseCase>
+</xmi:XMI>

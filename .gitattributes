@@ -1,4 +1,8 @@
 * text=auto !eol
+IndustryPilotes/ATC/NewsAsset/NewsAsset_KPI_Modelling/.project -text
+IndustryPilotes/ATC/NewsAsset/NewsAsset_KPI_Modelling/NewsAsset-model.di -text
+IndustryPilotes/ATC/NewsAsset/NewsAsset_KPI_Modelling/NewsAsset-model.notation -text
+IndustryPilotes/ATC/NewsAsset/NewsAsset_KPI_Modelling/NewsAsset-model.uml -text
 iaas/EnergyModeller/LICENCE.TXT -text
 iaas/EnergyModeller/pom.xml -text
 iaas/EnergyModeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/EnergyModeller.java -text
