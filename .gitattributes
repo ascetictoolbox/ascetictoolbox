@@ -60,6 +60,10 @@ paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/IsoCreator/
 paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/IsoCreator/IsoCreator.ucls -text
 paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/Packages.PNG -text svneol=unset#image/png
 paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/Packages.ucls -text
+saas/SaaSModelling/ASCETIC_Papyrus_KPI_Profile/.project -text
+saas/SaaSModelling/ASCETIC_Papyrus_KPI_Profile/model.profile.di -text
+saas/SaaSModelling/ASCETIC_Papyrus_KPI_Profile/model.profile.notation -text
+saas/SaaSModelling/ASCETIC_Papyrus_KPI_Profile/model.profile.uml -text
 utils/libvirt/AUTHORS -text
 utils/libvirt/ChangeLog -text
 utils/libvirt/LICENSE -text
