@@ -15,6 +15,7 @@
 		<module>wattsup-java-sdk</module>
 		<module>wattsup</module>
 		<module>libvirt</module>
+		<module>kwapi-patch</module>
 	</modules>
 	
 	<url>http://www.ascetic.eu</url>
