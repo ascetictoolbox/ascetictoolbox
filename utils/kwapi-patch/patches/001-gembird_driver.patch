@@ -1,0 +1,70 @@
+diff -rupN orig/kwapi/drivers/gembird.py modified/kwapi/drivers/gembird.py
+--- orig/kwapi/drivers/gembird.py	1970-01-01 01:00:00.000000000 +0100
++++ modified/kwapi/drivers/gembird.py	2014-06-04 14:56:22.449807048 +0200
+@@ -0,0 +1,66 @@
++# -*- coding: utf-8 -*-
++#
++# Author: Michael Kammer <michael.kammer@tu-berlin.de>
++#
++# Licensed under the Apache License, Version 2.0 (the "License"); you may
++# not use this file except in compliance with the License. You may obtain
++# a copy of the License at
++#
++# http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing, software
++# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
++# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
++# License for the specific language governing permissions and limitations
++# under the License.
++
++import re
++import urllib2
++import time
++
++from kwapi.openstack.common import log
++from driver import Driver
++
++LOG = log.getLogger(__name__)
++
++
++class Gembird(Driver):
++    """Driver for Gembird PWM LAN devices."""
++
++    def __init__(self, probe_ids, **kwargs):
++        """Initializes the driver.
++
++        Keyword arguments:
++        probe_ids -- list containing the probes IDs
++                     (a wattmeter monitor sometimes several probes)
++        kwargs -- keywords (host, password) defining the Gembird parameters
++
++        """
++        Driver.__init__(self, probe_ids, kwargs)
++
++    def run(self):
++        """Starts the driver thread."""
++        measurements = {}
++        while not self.stop_request_pending():
++            data = self.get_data()
++            if data is not None:
++                (p, u, i) = data
++                measurements['v'] = u
++                measurements['a'] = i
++                measurements['w'] = p
++                self.send_measurements(self.probe_ids[0], measurements)
++            time.sleep(1)
++
++    def get_data(self):
++        # Get real-time measurements
++        try:
++            output = urllib2.urlopen('http://' + self.kwargs.get('host') + '/login.html', 'pw=' + self.kwargs.get('password')).read()
++            d = re.split('.*<script>.*V *= *([0-9]+);.*I *= *([0-9]+);.*P *= *([0-9]+);.*<\/script><script src.*', output);
++            u = float(d[1]) / 10;
++            i = float(d[2]) / 100;
++            p = float(d[3]) / 466;
++            return (p, u, i);
++        except:
++            LOG.error('Received data from probe %s is invalid'
++                      % (self.probe_ids[0]));
++

@@ -69,6 +69,9 @@ saas/SaaSModelling/ASCETIC_Papyrus_KPI_Profile/.project -text
 saas/SaaSModelling/ASCETIC_Papyrus_KPI_Profile/model.profile.di -text
 saas/SaaSModelling/ASCETIC_Papyrus_KPI_Profile/model.profile.notation -text
 saas/SaaSModelling/ASCETIC_Papyrus_KPI_Profile/model.profile.uml -text
+utils/kwapi-patch/make.sh -text
+utils/kwapi-patch/patches/001-gembird_driver.patch -text
+utils/kwapi-patch/pom.xml -text
 utils/libvirt/AUTHORS -text
 utils/libvirt/ChangeLog -text
 utils/libvirt/LICENSE -text
