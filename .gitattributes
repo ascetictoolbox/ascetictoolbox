@@ -34,7 +34,9 @@ iaas/EnergyModeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymode
 iaas/EnergyModeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/energyuser/EnergyUsageSource.java -text
 iaas/EnergyModeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/energyuser/Host.java -text
 iaas/EnergyModeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/energyuser/VM.java -text
-iaas/EnergyModeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/input/VMWorkloadProfile.java -text
+iaas/EnergyModeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/input/VMProjectedWorkload.java -text
+iaas/EnergyModeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/input/VMProjectedWorkloadElement.java -text
+iaas/EnergyModeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/input/VMWorkload.java -text
 iaas/EnergyModeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/usage/CurrentUsageRecord.java -text
 iaas/EnergyModeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/usage/EnergyUsagePrediction.java -text
 iaas/EnergyModeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/usage/EnergyUsageRecord.java -text

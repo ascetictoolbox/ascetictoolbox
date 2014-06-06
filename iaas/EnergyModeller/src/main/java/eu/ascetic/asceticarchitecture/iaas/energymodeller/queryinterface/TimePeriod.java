@@ -16,15 +16,16 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface;
 
 import java.util.Calendar;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This represents a duration of time/a time period, it
- * is to be used as part of the ASCETiC energy modellers query system.
+ * This represents a duration of time/a time period, it is to be used as part of
+ * the ASCETiC energy modellers query system.
  *
  * @author Richard
  */
-public class TimePeriod {
+public class TimePeriod implements Comparable {
 
     private final Calendar startTime;
     private final Calendar endTime;
@@ -147,5 +148,39 @@ public class TimePeriod {
      */
     public Calendar getEndTime() {
         return endTime;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof TimePeriod) {
+            TimePeriod comp = (TimePeriod) obj;
+            return (startTime.equals(comp.startTime)
+                    && endTime.equals(comp.endTime));
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 29 * hash + Objects.hashCode(this.startTime);
+        hash = 29 * hash + Objects.hashCode(this.endTime);
+        return hash;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        if (o instanceof TimePeriod) {
+            TimePeriod comp = (TimePeriod) o;
+            int start = startTime.compareTo(comp.startTime);
+            if (start != 0) {
+                return start;
+            }
+            int end = endTime.compareTo(comp.endTime);
+            return end;
+        } else {
+            throw new ClassCastException();
+        }
     }
 }

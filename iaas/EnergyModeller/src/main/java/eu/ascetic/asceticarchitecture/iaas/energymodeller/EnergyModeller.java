@@ -21,7 +21,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.TimePer
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.CandidateVMHostMapping;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.input.VMWorkloadProfile;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.input.VMProjectedWorkload;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HistoricUsageRecord;
@@ -247,7 +247,7 @@ public class EnergyModeller {
      * used (kWh) during life of VM
      *
      */
-    public HashSet<EnergyUsagePrediction> getPredictedEnergyForVM(VM vmImage, VMWorkloadProfile workload, Collection<Host> hosts) {
+    public HashSet<EnergyUsagePrediction> getPredictedEnergyForVM(VM vmImage, VMProjectedWorkload workload, Collection<Host> hosts) {
         HashSet<EnergyUsagePrediction> answer = new HashSet<>();
 
         for (Host host : hosts) {
@@ -268,7 +268,7 @@ public class EnergyModeller {
      * Avg Watts that is expected to use over time by the VM Predicted energy
      * used (kWh) during life of VM
      */
-    public EnergyUsagePrediction getPredictedEnergyForVM(VM vmImage, VMWorkloadProfile workload, Host host) {
+    public EnergyUsagePrediction getPredictedEnergyForVM(VM vmImage, VMProjectedWorkload workload, Host host) {
         return new EnergyUsagePrediction(new CandidateVMHostMapping(vmImage, host));
     }
 
@@ -284,7 +284,7 @@ public class EnergyModeller {
      * Avg Watts that is expected to use over time by the VM Predicted energy
      * used (kWh) during life of VM
      */
-    public EnergyUsagePrediction getPredictedEnergyForVM(VM virtualMachine, VMWorkloadProfile workload) {
+    public EnergyUsagePrediction getPredictedEnergyForVM(VM virtualMachine, VMProjectedWorkload workload) {
         return new EnergyUsagePrediction(virtualMachine);
     }
 
@@ -300,10 +300,10 @@ public class EnergyModeller {
      * Avg Watts that is expected to use over time by the VM Predicted energy
      * used (kWh) during life of VM
      */
-    public HashSet<EnergyUsagePrediction> getPredictedEnergyForVM(Collection<VM> virtualMachines, Collection<VMWorkloadProfile> workload) {
+    public HashSet<EnergyUsagePrediction> getPredictedEnergyForVM(Collection<VM> virtualMachines, Collection<VMProjectedWorkload> workload) {
         HashSet<EnergyUsagePrediction> answer = new HashSet<>();
         for (VM vmImage : virtualMachines) {
-            for (VMWorkloadProfile vMWorkloadProfile : workload) {
+            for (VMProjectedWorkload vMWorkloadProfile : workload) {
                 answer.add(getPredictedEnergyForVM(vmImage, vMWorkloadProfile));
             }
         }
@@ -321,7 +321,7 @@ public class EnergyModeller {
      * functionality would be difficult to implement and the outcome would not
      * be clear regarding its value.
      */
-    public EnergyUsagePrediction getPredictedEnergyForMachine(Host host, Collection<VMWorkloadProfile> workload) {
+    public EnergyUsagePrediction getPredictedEnergyForMachine(Host host, Collection<VMProjectedWorkload> workload) {
         return null;
     }
 }
