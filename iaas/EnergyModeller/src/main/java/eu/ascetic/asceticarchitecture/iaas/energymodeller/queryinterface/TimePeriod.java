@@ -183,4 +183,10 @@ public class TimePeriod implements Comparable {
             throw new ClassCastException();
         }
     }
+
+    @Override
+    public String toString() {
+        return "Start: " + startTime.getTime() + " End: " + endTime.getTime();
+    }
+    
 }

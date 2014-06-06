@@ -25,7 +25,7 @@ import java.util.Calendar;
  * @author Richard
  */
 public class VMProjectedWorkloadElement implements Comparable<Object> {
-
+    
     /**
      * Either null for ongoing long term jobs providing averages or a projected
      * period of time for the deployment should be specified.
@@ -42,7 +42,7 @@ public class VMProjectedWorkloadElement implements Comparable<Object> {
     public double networkUsage;
     public double diskUsage;
     public double memoryUsage;
-
+    
     public Calendar getStartTime() {
         if (duration == null) {
             return null;
@@ -66,6 +66,22 @@ public class VMProjectedWorkloadElement implements Comparable<Object> {
     public boolean isLongTermDeployment() {
         return duration == null;
     }
+    
+    /**
+     * This returns the duration of the projected workload element
+     * @return 
+     */
+    public TimePeriod getDuration() {
+        return duration;
+    }    
+    
+    /**
+     * This sets the duration of the projected workload element
+     * @param duration 
+     */
+    public void setDuration(TimePeriod duration) {
+        this.duration = duration;
+    }  
 
     @Override
     public int compareTo(Object o) {
@@ -78,11 +94,11 @@ public class VMProjectedWorkloadElement implements Comparable<Object> {
                 if (comparable.isLongTermDeployment()) {
                     return EQUAL;
                 } else {
-                    return BEFORE;
+                    return AFTER;
                 }
             }
             if (comparable.isLongTermDeployment()) {
-                return AFTER;
+                return BEFORE;
             }
             return duration.compareTo(comparable.duration);
         } else {

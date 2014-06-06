@@ -42,6 +42,8 @@ iaas/EnergyModeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymode
 iaas/EnergyModeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/usage/EnergyUsageRecord.java -text
 iaas/EnergyModeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/usage/HistoricUsageRecord.java -text
 iaas/EnergyModeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/AppTest.java -text
+iaas/EnergyModeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/TimePeriodTest.java -text
+iaas/EnergyModeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/input/VMProjectedWorkloadElementTest.java -text
 paas/provider-registry/pom.xml -text
 paas/virtual-machine-contextualizer/runtime/VmContextualizer.jar -text
 paas/virtual-machine-contextualizer/runtime/agents/vpn.tar.gz -text
