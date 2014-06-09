@@ -1,8 +1,4 @@
 * text=auto !eol
-IndustryPilotes/ATC/NewsAsset/NewsAsset_KPI_Modelling/.project -text
-IndustryPilotes/ATC/NewsAsset/NewsAsset_KPI_Modelling/NewsAsset-model.di -text
-IndustryPilotes/ATC/NewsAsset/NewsAsset_KPI_Modelling/NewsAsset-model.notation -text
-IndustryPilotes/ATC/NewsAsset/NewsAsset_KPI_Modelling/NewsAsset-model.uml -text
 iaas/energy-modeller/LICENCE.TXT -text
 iaas/energy-modeller/pom.xml -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/EnergyModeller.java -text
@@ -69,10 +65,12 @@ paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/IsoCreator/
 paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/IsoCreator/IsoCreator.ucls -text
 paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/Packages.PNG -text svneol=unset#image/png
 paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/Packages.ucls -text
-saas/SaaSModelling/ASCETIC_Papyrus_KPI_Profile/.project -text
-saas/SaaSModelling/ASCETIC_Papyrus_KPI_Profile/model.profile.di -text
-saas/SaaSModelling/ASCETIC_Papyrus_KPI_Profile/model.profile.notation -text
-saas/SaaSModelling/ASCETIC_Papyrus_KPI_Profile/model.profile.uml -text
+saas/saas-modelling/papyrus-kpi-profile/model.profile.di -text
+saas/saas-modelling/papyrus-kpi-profile/model.profile.notation -text
+saas/saas-modelling/papyrus-kpi-profile/model.profile.uml -text
+use-cases/atc/newsasset/kpi-modelling/NewsAsset-model.di -text
+use-cases/atc/newsasset/kpi-modelling/NewsAsset-model.notation -text
+use-cases/atc/newsasset/kpi-modelling/NewsAsset-model.uml -text
 utils/kwapi-patch/make.sh -text
 utils/kwapi-patch/patches/001-gembird_driver.patch -text
 utils/kwapi-patch/pom.xml -text
