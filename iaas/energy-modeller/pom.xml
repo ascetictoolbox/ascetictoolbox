@@ -10,7 +10,7 @@
     <groupId>eu.ascetic.ascetic-architecture.iaas</groupId>
     <artifactId>energy-modeller</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>EnergyModeller</name>
+    <name>IaaS Energy Modeller</name>
     <url>http://maven.apache.org</url>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
