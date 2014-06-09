@@ -8,7 +8,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <groupId>eu.ascetic.ascetic-architecture.iaas</groupId>
-    <artifactId>EnergyModeller</artifactId>
+    <artifactId>energy-modeller</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>EnergyModeller</name>
     <url>http://maven.apache.org</url>

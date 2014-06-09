@@ -16,7 +16,7 @@
 	<modules>	
 		<!-- IaaS Modules -->
 		<!-- <module>my-module-name</module> -->
-    <module>EnergyModeller</module>
+    <module>energy-modeller</module>
   </modules>
 	<version>0.0.1-SNAPSHOT</version>
 	
