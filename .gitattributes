@@ -43,6 +43,7 @@ iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymod
 iaas/vm-manager/pom.xml -text
 iaas/vm-manager/src/main/java/eu/ascetic/asceticarchitecture/iaas/App.java -text
 iaas/vm-manager/src/test/java/eu/ascetic/asceticarchitecture/iaas/AppTest.java -text
+paas/application-monitor/ERASE.ME -text
 paas/provider-registry/pom.xml -text
 paas/virtual-machine-contextualizer/runtime/VmContextualizer.jar -text
 paas/virtual-machine-contextualizer/runtime/agents/vpn.tar.gz -text
