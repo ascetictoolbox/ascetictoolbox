@@ -40,11 +40,9 @@ iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymod
 iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/AppTest.java -text
 iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/TimePeriodTest.java -text
 iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/input/VMProjectedWorkloadElementTest.java -text
-iaas/vm-manager/bin/main/java/eu/ascetic/ascetic-architecture/iaas/App.class -text
-iaas/vm-manager/bin/test/java/eu/ascetic/ascetic-architecture/iaas/AppTest.class -text
 iaas/vm-manager/pom.xml -text
-iaas/vm-manager/src/main/java/eu/ascetic/ascetic-architecture/iaas/App.java -text
-iaas/vm-manager/src/test/java/eu/ascetic/ascetic-architecture/iaas/AppTest.java -text
+iaas/vm-manager/src/main/java/eu/ascetic/asceticarchitecture/iaas/App.java -text
+iaas/vm-manager/src/test/java/eu/ascetic/asceticarchitecture/iaas/AppTest.java -text
 paas/provider-registry/pom.xml -text
 paas/virtual-machine-contextualizer/runtime/VmContextualizer.jar -text
 paas/virtual-machine-contextualizer/runtime/agents/vpn.tar.gz -text

@@ -1,4 +1,4 @@
-package eu.ascetic.ascetic-architecture.iaas;
+package eu.ascetic.asceticarchitecture.iaas;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
