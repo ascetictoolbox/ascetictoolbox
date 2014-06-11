@@ -261,6 +261,8 @@ saas/saas-modelling/papyrus-kpi-profile/model.profile.uml -text
 use-cases/atc/newsasset/kpi-modelling/NewsAsset-model.di -text
 use-cases/atc/newsasset/kpi-modelling/NewsAsset-model.notation -text
 use-cases/atc/newsasset/kpi-modelling/NewsAsset-model.uml -text
+utils/ascetic-dfs/make.sh -text
+utils/ascetic-dfs/pom.xml -text
 utils/ascetic-zabbix-api/.classpath -text
 utils/ascetic-zabbix-api/.project -text
 utils/ascetic-zabbix-api/.settings/org.eclipse.jdt.core.prefs -text
@@ -300,6 +302,8 @@ utils/libvirt/patch6.patch -text
 utils/libvirt/patch7.patch -text
 utils/libvirt/patch8.patch -text
 utils/libvirt/patch9.patch -text
+utils/openstack-patch/make.sh -text
+utils/openstack-patch/pom.xml -text
 utils/ovf-xmlbeans/src/main/xsdconfig/ovf.xsdconfig -text
 utils/wattsup-java-sdk/LICENSE -text
 utils/wattsup-java-sdk/README.md -text
