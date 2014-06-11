@@ -57,6 +57,7 @@ iaas/vm-manager/GangliaMonitoring/src/main/java/es/bsc/monitoring/ganglia/infras
 iaas/vm-manager/GangliaMonitoring/src/main/java/es/bsc/monitoring/ganglia/parsing/ParseGanglia.java -text
 iaas/vm-manager/GangliaMonitoring/src/main/resources/ganglia_connection.properties -text
 iaas/vm-manager/GangliaMonitoring/src/test/java/es/bsc/monitoring/GangliaTest.java -text
+iaas/vm-manager/README -text
 iaas/vm-manager/pom.xml -text
 iaas/vm-manager/vmmanagercore/pom.xml -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/cloudmiddleware/CloudMiddleware.java -text
