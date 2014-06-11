@@ -277,14 +277,14 @@ public class ZabbixClient {
 				String token = getAuth();
 				if (token != null){
 					String jsonRequest = 
-							"{\"jsonrpc\":\""+ Dictionary.JSON_RPC_VERSION + "\","
-									+ "\"method\":\"item.get\","
-									+ "\"params\":{\"output\":\"extend\","
-									+ "\"hostids\":\""+ host.getHostid() +"\","
-									+ "\"sortfield\":\"name\""
-									+ "},"
-									+ "\"auth\":\"" + token + "\","
-									+ "\"id\":0}";
+							"{\"jsonrpc\":\"" + Dictionary.JSON_RPC_VERSION + "\","
+						   + "\"method\":\"item.get\","
+						   + "\"params\":{\"output\":\"extend\","
+						   			   + "\"hostids\":\"" + host.getHostid() + "\","
+						   			   + "\"search\":{\"name\":\"" + itemName + "\"},"
+						   			   + "\"sortfield\":\"name\"},"
+						   + "\"auth\":\"" + token + "\","
+						   + "\"id\": 0}";
 
 					HttpResponse response = postAndGet(jsonRequest);
 					HttpEntity entity = response.getEntity();
@@ -320,50 +320,5 @@ public class ZabbixClient {
 	    httpPost.addHeader("Content-Type", "application/json-rpc");
 	    return client.execute(httpPost);
 	}
-	
-	
-	/**
-	 * Gets the last value from item.
-	 *
-	 * @param itemName the item name
-	 * @param hostName the host name
-	 * @param u the u
-	 * @return the last value from item
-	 */
-	public Item getLastValueFromItem(String itemName, String hostName, User u){
-		Item item = null;
-		
-		return item;
-	}
-	
-	
-	/**
-	 * Gets the last values from items.
-	 *
-	 * @param hostName the host name
-	 * @param u the u
-	 * @return the last values from items
-	 */
-	public List<Item> getLastValuesFromItems(String hostName, User u){
-		ArrayList<Item> items = null;
-		
-		return items;
-	}
-	
-	/**
-	 * Gets the last values from item.
-	 *
-	 * @param numberOfValues the number of values
-	 * @param itemName the item name
-	 * @param hostname the hostname
-	 * @param u the u
-	 * @return the last values from item
-	 */
-	public List<Item> getLastValuesFromItem(int numberOfValues, String itemName, String hostname, User u){
-		ArrayList<Item> items = null;
-
-		return items;
-	}
-
 	
 }
