@@ -34,12 +34,12 @@ public abstract class EnergyUsageRecord {
         return energyUser;
     }
     
-    protected void addEnergyUser(EnergyUsageSource EnergyUser) {
-        energyUser.add(EnergyUser);
+    protected void addEnergyUser(EnergyUsageSource energyUser) {
+        this.energyUser.add(energyUser);
     }        
     
-    protected void addEnergyUser(Collection<EnergyUsageSource> EnergyUsers) {
-        energyUser.addAll(EnergyUsers);
+    protected void addEnergyUser(Collection<EnergyUsageSource> energyUsers) {
+        energyUser.addAll(energyUsers);
     }    
     
     /**
