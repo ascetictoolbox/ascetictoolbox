@@ -1,0 +1,333 @@
+<?page title="COMPSs Task Monitor"?>
+<zk xmlns:n="native">
+	<window>
+		<vlayout spacing="15px">
+
+			<hlayout spacing="15px" valign="middle">
+				<image src="/images/bsc/logo.jpg" height="120px"></image>
+				<label value="COMPSs Task Monitor">
+					<attribute name="style">
+						font-size: 30px; font-weight: bold;
+					</attribute>
+				</label>
+			</hlayout>
+			
+			<grid id="workersGrid" width="100%" height="30%">
+				<auxhead>
+					<auxheader colspan="7" label="Resources status" />
+				</auxhead>
+				<columns>
+					<column width="50px" label="Status" />
+					<column width="400px" label="Resource Name" />
+					<column width="100px" label="CPU count" />
+					<column width="100px" label="Memory size" />
+					<column width="100px" label="Disk size" />
+					<column label="Running Tasks" />
+					<column width="90px" label="Usage" />
+				</columns>
+			</grid>
+
+			<grid id="coresGrid" width="100%" height="300px">
+				<auxhead>
+					<auxheader colspan="5" label="Task Info" />
+				</auxhead>
+				<columns>
+					<column label="Color" width="50px" />
+					<column width="300px" label="Name" />
+					<column label="Parameters" />
+					<column width="120px" label="Avg. Exec. time" />
+					<column width="120px" label="Executed Count" />
+				</columns>
+			</grid>
+						
+			<image id="graph">
+				<attribute name="onLoad">
+	{
+		String monitorLocation;
+
+		if (System.getenv("IT_MONITOR") == null){
+			monitorLocation = System.getProperty("user.home")+"/monitor.dot";
+		}else{
+			monitorLocation = System.getenv("IT_MONITOR")+"/monitor.dot";
+		}
+		
+		String[] cmd = {
+				"/bin/sh",
+				"-c",
+				"dot -Tpng "+ monitorLocation +" > "+System.getProperty("catalina.base")+"/webapps/compss-monitor/images/graph.png"};
+				
+		Process p = Runtime.getRuntime().exec(cmd);
+		MonitoringParser.parse();
+		workersGrid.setModel(new ListModelList(MonitoringParser.getWorkersDataArray()));
+		workersGrid.setRowRenderer(new RowRenderer() {
+
+			public void render(Row row, Object model, int index)
+					throws Exception {
+				String[] data = (String[]) model;
+
+				//add something to row...
+				Image state = new Image();
+				state.setWidth("25px");
+				if (data[3].compareTo("Ready")==0){
+				state.setSrc("/images/state/green.jpg");
+				}else if (data[3].compareTo("Removing")==0){
+				state.setSrc("/images/state/yellow.jpg");
+				}else if(data[3].compareTo("Waiting")==0){
+				state.setSrc("/images/state/red.jpg");
+				}
+				row.appendChild(state);
+				row.appendChild(new Label(data[0]));
+				row.appendChild(new Label(data[4]));
+				System.out.println("CALCULANT DATA5");
+				if (data[5]!=null){
+					System.out.println("No es null");
+					if (data[5].startsWith("0.")) {
+						System.out.println("Comença en 0.");
+						Float memsize= Float.parseFloat(data[5]);
+						row.appendChild(new Label((memsize*1024)+ " MB"));
+					}else{
+						System.out.println("esta en GB");
+						row.appendChild(new Label(data[5]+ " GB"));
+					}
+				}else{
+					System.out.println("Es null");
+					row.appendChild(new Label(data[5]));
+				}
+
+				if (data[6]!=null){
+					if (data[6].startsWith("0.")) {
+						Float disksize= Float.parseFloat(data[6]);
+						row.appendChild(new Label((disksize*1024)+ " MB"));
+					}else{
+						row.appendChild(new Label(data[6]+ " GB"));
+					}
+				}else{
+					row.appendChild(new Label(data[6]));
+				}
+				row.appendChild(new Label(data[1]));
+				row.appendChild(new Label(data[2]));
+			}
+		});
+		
+		coresGrid.setModel(new ListModelList(MonitoringParser.getCoresDataArray()));
+		coresGrid.setRowRenderer(new RowRenderer() {
+
+			public void render(Row row, Object model, int index)
+					throws Exception {
+				String[] data = (String[]) model;
+
+				//add something to row...
+				int i = Integer.parseInt(data[0]) % 12;
+				Image color = new Image();
+				color.setWidth("25px");
+				color.setSrc("/images/colors/"+ i +".png");
+				row.appendChild(color);
+				row.appendChild(new Label(data[1]));	
+				row.appendChild(new Label(data[2]));			
+				row.appendChild(new Label(data[3]));
+				row.appendChild(new Label(data[4]));
+			}
+		});
+		
+		
+		p.waitFor();
+		graph.setSrc("/images/graph.png");
+		graph.setStyle("max-width:100%;");
+		graph.invalidate();
+	}
+</attribute>
+				<attribute name="onError">
+	{
+		String monitorLocation;
+		if (System.getenv("IT_MONITOR") == null){
+			monitorLocation = System.getProperty("user.home")+"/monitor.dot";
+		}else{
+			monitorLocation = System.getenv("IT_MONITOR")+"/monitor.dot";
+		}
+		
+		String[] cmd = {
+				"/bin/sh",
+				"-c",
+				"dot -Tpng "+ monitorLocation +" > "+System.getProperty("catalina.base")+"/webapps/compss-monitor/images/graph.png"};
+										
+		Process p = Runtime.getRuntime().exec(cmd);
+		MonitoringParser.parse();
+		workersGrid.setModel(new ListModelList(MonitoringParser.getWorkersDataArray()));
+		workersGrid.setRowRenderer(new RowRenderer() {
+
+			public void render(Row row, Object model, int index)
+					throws Exception {
+				String[] data = (String[]) model;
+
+				//add something to row...
+				Image state = new Image();
+				state.setWidth("25px");
+				if (data[3].compareTo("Ready")==0){
+				state.setSrc("/images/state/green.jpg");
+				}else if (data[3].compareTo("Removing")==0){
+				state.setSrc("/images/state/yellow.jpg");
+				}else if(data[3].compareTo("Waiting")==0){
+				state.setSrc("/images/state/red.jpg");
+				}
+				row.appendChild(state);
+				row.appendChild(new Label(data[0]));
+				row.appendChild(new Label(data[4]));
+				if (data[5]!=null){
+					System.out.println("No es null");
+					if (data[5].startsWith("0.")) {
+						System.out.println("Comença en 0.");
+						Float memsize= Float.parseFloat(data[5]);
+						row.appendChild(new Label((memsize*1024)+ " MB"));
+					}else{
+						System.out.println("esta en GB");
+						row.appendChild(new Label(data[5]+ " GB"));
+					}
+				}else{
+					System.out.println("Es null");
+					row.appendChild(new Label(data[5]));
+				}
+
+				if (data[6]!=null){
+					if (data[6].startsWith("0.")) {
+						Float disksize= Float.parseFloat(data[6]);
+						row.appendChild(new Label((disksize*1024)+ " MB"));
+					}else{
+						row.appendChild(new Label(data[6]+ " GB"));
+					}
+				}else{
+					row.appendChild(new Label(data[6]));
+				}
+				row.appendChild(new Label(data[1]));
+				row.appendChild(new Label(data[2]));
+			}
+		});
+		
+		
+		
+		coresGrid.setModel(new ListModelList(MonitoringParser.getCoresDataArray()));
+		coresGrid.setRowRenderer(new RowRenderer() {
+
+			public void render(Row row, Object model, int index)
+					throws Exception {
+				String[] data = (String[]) model;
+
+				//add something to row...
+				int i = Integer.parseInt(data[0]) % 12;
+				Image color = new Image();
+				color.setWidth("25px");
+				color.setSrc("/images/colors/"+i+".png");
+				row.appendChild(color);
+				row.appendChild(new Label(data[1]));	
+				row.appendChild(new Label(data[2]));			
+				row.appendChild(new Label(data[3]));
+				row.appendChild(new Label(data[4]));
+			}
+		});
+		
+		
+		p.waitFor();
+		graph.setSrc("/images/graph.png");
+		graph.setStyle("max-width:100%;");
+		graph.invalidate();
+	}
+</attribute>
+			</image>
+		</vlayout>
+
+		<timer id="timer" delay="5000" repeats="true">
+			<attribute name="onTimer">
+	{
+		String monitorLocation;
+		
+		if (System.getenv("IT_MONITOR") == null){
+			monitorLocation = System.getProperty("user.home")+"/monitor.dot";
+		}else{
+			monitorLocation = System.getenv("IT_MONITOR")+"/monitor.dot";
+		}
+		
+		String[] cmd = {
+				"/bin/sh",
+				"-c",
+				"dot -Tpng "+ monitorLocation +" > "+System.getProperty("catalina.base")+"/webapps/compss-monitor/images/graph.png"};
+				
+					
+		Process p = Runtime.getRuntime().exec(cmd);
+		MonitoringParser.parse();
+		workersGrid.setModel(new ListModelList(MonitoringParser.getWorkersDataArray()));
+		workersGrid.setRowRenderer(new RowRenderer() {
+
+			public void render(Row row, Object model, int index)
+					throws Exception {
+				String[] data = (String[]) model;
+
+				//add something to row...
+				Image state = new Image();
+				state.setWidth("25px");
+				if (data[3].compareTo("Ready")==0){
+				state.setSrc("/images/state/green.jpg");
+				}else if (data[3].compareTo("Removing")==0){
+				state.setSrc("/images/state/yellow.jpg");
+				}else if(data[3].compareTo("Waiting")==0){
+				state.setSrc("/images/state/red.jpg");
+				}
+				row.appendChild(state);
+				row.appendChild(new Label(data[0]));
+				row.appendChild(new Label(data[4]));
+				if (data[5]!=null){
+					if (data[5].startsWith("0.")) {
+						Float memsize= Float.parseFloat(data[5]);
+						row.appendChild(new Label((memsize*1024)+ " MB"));
+					}else{
+						row.appendChild(new Label(data[5]+ " GB"));
+					}
+				}else{
+					row.appendChild(new Label(data[5]));
+				}
+				
+				if (data[6]!=null){
+					if (data[6].startsWith("0.")) {
+						Float disksize= Float.parseFloat(data[6]);
+						row.appendChild(new Label((disksize*1024)+ " MB"));
+					}else{
+						row.appendChild(new Label(data[6]+ " GB"));
+					}
+				}else{
+					row.appendChild(new Label(data[6]));
+				}
+				row.appendChild(new Label(data[1]));
+				row.appendChild(new Label(data[2]));
+			}
+		});
+		
+		
+		
+		coresGrid.setModel(new ListModelList(MonitoringParser.getCoresDataArray()));
+		coresGrid.setRowRenderer(new RowRenderer() {
+
+			public void render(Row row, Object model, int index)
+					throws Exception {
+				String[] data = (String[]) model;
+
+				//add something to row...
+				int i = Integer.parseInt(data[0]) % 12;
+				Image color = new Image();
+				color.setWidth("25px");
+				color.setSrc("/images/colors/"+i+".png");
+				row.appendChild(color);
+				row.appendChild(new Label(data[1]));	
+				row.appendChild(new Label(data[2]));			
+				row.appendChild(new Label(data[3]));
+				row.appendChild(new Label(data[4]));
+			}
+		});
+		
+		
+		p.waitFor();
+		graph.setSrc("/images/graph.png");
+		graph.setStyle("max-width:100%;");
+		graph.invalidate();
+	}
+</attribute>
+		</timer>
+	</window>
+</zk>
