@@ -8,13 +8,13 @@ import javax.ws.rs.core.Response.Status;
 
 public class VmManagerRestException extends WebApplicationException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public VmManagerRestException(String message) {
-		super(Response.status(Status.BAD_REQUEST)
-				.entity(message)
-				.type(MediaType.TEXT_PLAIN)
-				.build());
-	}
+    public VmManagerRestException(String message) {
+        super(Response.status(Status.BAD_REQUEST)
+                .entity(message)
+                .type(MediaType.TEXT_PLAIN)
+                .build());
+    }
 
 }

@@ -74,5 +74,5 @@ public interface CloudMiddleware {
     
     ImageUploaded getVmImage(String imageId);
 
-	void deleteVmImage(String id);
+    void deleteVmImage(String id);
 }

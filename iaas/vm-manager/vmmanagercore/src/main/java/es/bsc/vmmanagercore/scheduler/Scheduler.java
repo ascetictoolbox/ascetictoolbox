@@ -14,15 +14,15 @@ import es.bsc.vmmanagercore.monitoring.HostInfo;
  */
 public interface Scheduler {
 
-	/**
-	 * Decides on which host deploy each of the VMs that need to be deployed
-	 * @param vmDescriptions the description of the VMs that need to be scheduled
-	 * @param hostsInfo information of the hosts of the infrastructure where the 
-	 * VMs need to be deployed
-	 * @return HashMap that contains for each VM description, the name of the host where
-	 * the VM should be deployed according to the scheduling algorithm
-	 */
-	public HashMap<Vm, String> schedule(ArrayList<Vm> vmDescriptions, 
-			ArrayList<HostInfo> hostsInfo);
-	
+    /**
+     * Decides on which host deploy each of the VMs that need to be deployed
+     * @param vmDescriptions the description of the VMs that need to be scheduled
+     * @param hostsInfo information of the hosts of the infrastructure where the
+     * VMs need to be deployed
+     * @return HashMap that contains for each VM description, the name of the host where
+     * the VM should be deployed according to the scheduling algorithm
+     */
+    public HashMap<Vm, String> schedule(ArrayList<Vm> vmDescriptions,
+            ArrayList<HostInfo> hostsInfo);
+
 }
