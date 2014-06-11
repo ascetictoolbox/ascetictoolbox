@@ -1,5 +1,6 @@
 package eu.ascetic.monitoring.api.datamodel;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class User.
  * 
@@ -20,11 +21,16 @@ public class User {
 	/** The auth. */
 	private String auth;
 	
+
 	/**
 	 * Instantiates a new user.
+	 *
+	 * @param login the login
+	 * @param password the password
 	 */
-	public User(){
-		
+	public User(String login, String password){
+		setLogin(login);
+		setPassword(password);
 	}
 	
 	/**

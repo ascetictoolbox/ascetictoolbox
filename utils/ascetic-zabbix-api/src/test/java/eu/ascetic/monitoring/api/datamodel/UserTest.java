@@ -14,9 +14,7 @@ public class UserTest {
 	 */
 	@Test
 	public void pojoTest() {
-		User user = new User();
-		user.setLogin("Admin");
-		user.setPassword("zabbix");
+		User user = new User("Admin", "zabbix");
 		user.setUserid("1");
 		user.setAuth("cc911407fd49dcea238da2654d5ee929");
 		

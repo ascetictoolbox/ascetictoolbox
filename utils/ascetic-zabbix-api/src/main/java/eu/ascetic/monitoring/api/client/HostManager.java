@@ -1,8 +1,8 @@
-package eu.ascetic.monitoring.api.manager;
+package eu.ascetic.monitoring.api.client;
 
 import org.apache.log4j.Logger;
 
-import eu.ascetic.monitoring.api.rpc.client.ZabbixApiClient;
+import eu.ascetic.monitoring.api.rpc.client.ZabbixApiClientTest;
 
 
 /**
@@ -16,14 +16,14 @@ public class HostManager {
 	Logger log = Logger.getLogger(this.getClass().getName());
 	
 	/** The client. */
-	ZabbixApiClient client;
+	ZabbixApiClientTest client;
 	
 	/**
 	 * Instantiates a new host manager.
 	 *
 	 * @param c the c
 	 */
-	public HostManager(ZabbixApiClient c){
+	public HostManager(ZabbixApiClientTest c){
 		client = c;
 	}
 }

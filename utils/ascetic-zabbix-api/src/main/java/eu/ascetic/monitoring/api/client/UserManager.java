@@ -1,8 +1,8 @@
-package eu.ascetic.monitoring.api.manager;
+package eu.ascetic.monitoring.api.client;
 
 import org.apache.log4j.Logger;
 
-import eu.ascetic.monitoring.api.rpc.client.ZabbixApiClient;
+import eu.ascetic.monitoring.api.rpc.client.ZabbixApiClientTest;
 
 /**
  * The Class UserManager.
@@ -15,14 +15,14 @@ public class UserManager {
 	Logger log = Logger.getLogger(this.getClass().getName());
 	
 	/** The client. */
-	ZabbixApiClient client;
+	ZabbixApiClientTest client;
 	
 	/**
 	 * Instantiates a new user manager.
 	 *
 	 * @param c the c
 	 */
-	public UserManager(ZabbixApiClient c){
+	public UserManager(ZabbixApiClientTest c){
 		client = c;
 	}
 	
