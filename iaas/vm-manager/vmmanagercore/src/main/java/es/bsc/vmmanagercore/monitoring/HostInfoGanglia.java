@@ -15,18 +15,14 @@ import es.bsc.monitoring.ganglia.infrastructure.Host;
  */
 public class HostInfoGanglia extends HostInfo {
 	
-	private Ganglia ganglia;
+	//private Ganglia ganglia;
 	public Host gangliaHost;
 
 	public HostInfoGanglia(String hostname) {
 		super(hostname);
 		
-		//create the Ganglia connector
-		ganglia = new Ganglia();
-		
 		//get the Ganglia host from its hostname
-		ArrayList<Cluster> cluster_list;
-        cluster_list = ganglia.getGridInfo();
+		ArrayList<Cluster> cluster_list = new Ganglia().getGridInfo();
         for (Cluster cluster : cluster_list) {
             List<Host> hosts = cluster.getHosts();
             for (Host host: hosts) {

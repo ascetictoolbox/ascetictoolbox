@@ -38,12 +38,12 @@ public class SchedulerDistributionTest {
 		HostInfoFake hostInfo2 = new HostInfoFake("host2", 2, 4096, 8, 1, 2048, 4);
 		
 		//build the array of hosts that will be passed to the schedule function
-		ArrayList<HostInfo> hostsInfo = new ArrayList<HostInfo>();
+		ArrayList<HostInfo> hostsInfo = new ArrayList<>();
 		hostsInfo.add(hostInfo1);
 		hostsInfo.add(hostInfo2);
 		
 		//create a VM with {cpus=1, memory=1GB, disk=1GB}
-		ArrayList<Vm> vmDescriptions = new ArrayList<Vm>();
+		ArrayList<Vm> vmDescriptions = new ArrayList<>();
 		Vm vmDescription = 
 				new Vm("TestVM1", "fakeImageId", 1, 1024, 1, null, "app1");
 		vmDescriptions.add(vmDescription);
@@ -68,12 +68,12 @@ public class SchedulerDistributionTest {
 		HostInfoFake hostInfo2 = new HostInfoFake("host2", 4, 4096, 8, 1, 1024, 4);
 		
 		//build the array of hosts that will be passed to the schedule function
-		ArrayList<HostInfo> hostsInfo = new ArrayList<HostInfo>();
+		ArrayList<HostInfo> hostsInfo = new ArrayList<>();
 		hostsInfo.add(hostInfo1);
 		hostsInfo.add(hostInfo2);
 		
 		//create a VM with {cpus=1, memory=1GB, disk=1GB}
-		ArrayList<Vm> vmDescriptions = new ArrayList<Vm>();
+		ArrayList<Vm> vmDescriptions = new ArrayList<>();
 		Vm vmDescription = 
 				new Vm("TestVM1", "fakeImageId", 1, 1024, 1, null, "app1");
 		vmDescriptions.add(vmDescription);
@@ -99,12 +99,12 @@ public class SchedulerDistributionTest {
 		HostInfoFake hostInfo2 = new HostInfoFake("host2", 4, 4096, 8, 1, 1024, 2);
 		
 		//build the array of hosts that will be passed to the schedule function
-		ArrayList<HostInfo> hostsInfo = new ArrayList<HostInfo>();
+		ArrayList<HostInfo> hostsInfo = new ArrayList<>();
 		hostsInfo.add(hostInfo1);
 		hostsInfo.add(hostInfo2);
 		
 		//create a VM with {cpus=1, memory=1GB, disk=1GB}
-		ArrayList<Vm> vmDescriptions = new ArrayList<Vm>();
+		ArrayList<Vm> vmDescriptions = new ArrayList<>();
 		Vm vmDescription = 
 				new Vm("TestVM1", "fakeImageId", 1, 1024, 1, null, "app1");
 		vmDescriptions.add(vmDescription);
@@ -138,14 +138,14 @@ public class SchedulerDistributionTest {
 		HostInfoFake hostInfo4 = new HostInfoFake("host4", 4, 4096, 4, 4, 4096, 4);
 		
 		//build the array of hosts that will be passed to the schedule function
-		ArrayList<HostInfo> hostsInfo = new ArrayList<HostInfo>();
+		ArrayList<HostInfo> hostsInfo = new ArrayList<>();
 		hostsInfo.add(hostInfo1);
 		hostsInfo.add(hostInfo2);
 		hostsInfo.add(hostInfo3);
 		hostsInfo.add(hostInfo4);
 		
 		//create a VM with {cpus=1, memory=1GB, disk=1GB}
-		ArrayList<Vm> vmDescriptions = new ArrayList<Vm>();
+		ArrayList<Vm> vmDescriptions = new ArrayList<>();
 		Vm vmDescription = 
 				new Vm("TestVM1", "fakeImageId", 1, 1024, 1, null, "app1");
 		vmDescriptions.add(vmDescription);
@@ -171,12 +171,12 @@ public class SchedulerDistributionTest {
 		HostInfoFake hostInfo2 = new HostInfoFake("host2", 6, 4096, 4, 1, 4096, 1);
 		
 		//build the array of hosts that will be passed to the schedule function
-		ArrayList<HostInfo> hostsInfo = new ArrayList<HostInfo>();
+		ArrayList<HostInfo> hostsInfo = new ArrayList<>();
 		hostsInfo.add(hostInfo1);
 		hostsInfo.add(hostInfo2);
 		
 		//create a VM with {cpus=1, memory=1GB, disk=1GB}
-		ArrayList<Vm> vmDescriptions = new ArrayList<Vm>();
+		ArrayList<Vm> vmDescriptions = new ArrayList<>();
 		Vm vmDescription = 
 				new Vm("TestVM1", "fakeImageId", 1, 1024, 1, null, "app1");
 		vmDescriptions.add(vmDescription);
@@ -197,11 +197,11 @@ public class SchedulerDistributionTest {
 		HostInfoFake hostInfo1 = new HostInfoFake("host1", 2, 1024, 2, 0, 0, 0);
 
 		//build the array of hosts that will be passed to the schedule function
-		ArrayList<HostInfo> hostsInfo = new ArrayList<HostInfo>();
+		ArrayList<HostInfo> hostsInfo = new ArrayList<>();
 		hostsInfo.add(hostInfo1);
 		
 		//create two VMs with {cpus=2, memory=512MB, disk=1GB}
-		ArrayList<Vm> vmDescriptions = new ArrayList<Vm>();
+		ArrayList<Vm> vmDescriptions = new ArrayList<>();
 		Vm vmDescription1 = 
 				new Vm("TestVM1", "fakeImageId", 2, 512, 1, null, "app1");
 		vmDescriptions.add(vmDescription1);

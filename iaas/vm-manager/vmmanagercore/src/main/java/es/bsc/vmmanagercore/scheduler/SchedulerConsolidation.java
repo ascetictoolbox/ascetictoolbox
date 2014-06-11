@@ -72,7 +72,7 @@ public class SchedulerConsolidation implements Scheduler {
 	@Override
 	public HashMap<Vm, String> schedule(ArrayList<Vm> vmDescriptions, 
 			ArrayList<HostInfo> hostsInfo) {
-		HashMap<Vm, String> scheduling = new HashMap<Vm, String> ();
+		HashMap<Vm, String> scheduling = new HashMap<>();
 		
 		//for each of the VMs to be scheduled
         for (Vm vmDescription: vmDescriptions) {

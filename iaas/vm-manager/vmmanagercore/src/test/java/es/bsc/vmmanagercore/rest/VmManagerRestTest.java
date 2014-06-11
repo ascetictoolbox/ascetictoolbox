@@ -38,7 +38,7 @@ public class VmManagerRestTest {
 	private static Vm vmDescription1;
 	private static Vm vmDescription2;
 
-	private static ArrayList<String> idsVmsDeployedBeforeTests = new ArrayList<String>();
+	private static ArrayList<String> idsVmsDeployedBeforeTests = new ArrayList<>();
 	
 	private static Gson gson = new Gson();
 	private static JsonParser parser = new JsonParser();
@@ -73,7 +73,7 @@ public class VmManagerRestTest {
 	public static void tearDownAfterClass() {
 		// Make sure that all the VMs that existed before the tests are still there
 		String json = get(testDeploymentBaseUrl + "vms/").asString();
-		ArrayList<String> idsVmsDeployedAfterTests = new ArrayList<String>();
+		ArrayList<String> idsVmsDeployedAfterTests = new ArrayList<>();
 		JsonObject jsonObject = gson.fromJson(json, JsonObject.class);
     	JsonArray jsonVmsArray = jsonObject.get("vms").getAsJsonArray();
     	for (JsonElement vmJson: jsonVmsArray) {
@@ -103,7 +103,7 @@ public class VmManagerRestTest {
 		
 		// Check that the response for the get operation contains 2 IDs
 		String json = get(testDeploymentBaseUrl + "vms/").asString();
-		ArrayList<String> idsVmsDeployed = new ArrayList<String>();
+		ArrayList<String> idsVmsDeployed = new ArrayList<>();
 		JsonObject jsonObject = gson.fromJson(json, JsonObject.class);
     	JsonArray jsonVmsArray = jsonObject.get("vms").getAsJsonArray();
     	for (JsonElement vmJson: jsonVmsArray) {
@@ -243,7 +243,7 @@ public class VmManagerRestTest {
 		// Get the IDs of the VMs that are part of the application "myApplication1"
 		String vmsOfApplicationJson = 
 				get(testDeploymentBaseUrl + "vmsapp/myApplication1").asString();
-		ArrayList<String> idsVmsOfApp = new ArrayList<String>();
+		ArrayList<String> idsVmsOfApp = new ArrayList<>();
 		JsonObject jsonObject = gson.fromJson(vmsOfApplicationJson, JsonObject.class);
     	JsonArray jsonVmsArray = jsonObject.get("vms").getAsJsonArray();
     	for (JsonElement vmJson: jsonVmsArray) {
@@ -362,7 +362,7 @@ public class VmManagerRestTest {
     	String availableSchedAlgs = get(testDeploymentBaseUrl + "scheduling_algorithms/").asString();
     	JsonArray availableSchedAlgsJson = (JsonArray) gson.fromJson(availableSchedAlgs, 
     			JsonObject.class).get("scheduling_algorithms");
-    	ArrayList<String> availableSchedAlgNames = new ArrayList<String>();
+    	ArrayList<String> availableSchedAlgNames = new ArrayList<>();
     	for (JsonElement availableSchedAlgJson: availableSchedAlgsJson) {
     		availableSchedAlgNames.add(availableSchedAlgJson.getAsJsonObject()
     				.get("name").getAsString());
@@ -478,7 +478,7 @@ public class VmManagerRestTest {
     		.post(testDeploymentBaseUrl + "vms/").asString();
     	
     	// Return the IDs of the VMs deployed
-    	ArrayList<String> idsVmsDeployed = new ArrayList<String>();
+    	ArrayList<String> idsVmsDeployed = new ArrayList<>();
     	JsonObject jsonObject = gson.fromJson(jsonString, JsonObject.class);
     	JsonArray jsonIdsArray = jsonObject.get("ids").getAsJsonArray();
     	for (JsonElement jsonId: jsonIdsArray) {

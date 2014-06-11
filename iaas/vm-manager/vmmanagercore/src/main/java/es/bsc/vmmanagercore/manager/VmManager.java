@@ -61,7 +61,7 @@ public class VmManager {
 		Collection<String> allVmsIds = cloudMiddleware.getAllVMsId();
 		
 		// Retrieve the information of each VM
-		ArrayList<VmDeployed> vmsInfo = new ArrayList<VmDeployed>();
+		ArrayList<VmDeployed> vmsInfo = new ArrayList<>();
 		for (String vmId: allVmsIds) {
 			vmsInfo.add(cloudMiddleware.getVMInfo(vmId));
 		}
@@ -78,7 +78,7 @@ public class VmManager {
 		ArrayList<String> vmsIds = db.getVmsOfApp(appId);
 
 		// Get the information for each of the VMs
-		ArrayList<VmDeployed> vmsInfo = new ArrayList<VmDeployed>();
+		ArrayList<VmDeployed> vmsInfo = new ArrayList<>();
 		for (String vmId: vmsIds) {
 			vmsInfo.add(cloudMiddleware.getVMInfo(vmId));
 		}
@@ -103,7 +103,7 @@ public class VmManager {
 	public ArrayList<String> deployVms(ArrayList<Vm> vmDescriptions) {
 		// HashMap VmDescription -> ID after deployment. 
 		// This is used to return the IDs in the same order of the input
-		HashMap<Vm, String> ids = new HashMap<Vm, String>();
+		HashMap<Vm, String> ids = new HashMap<>();
 		
 		// Decide where to deploy each VM of the application
 		HashMap<Vm, String> vmsScheduling = 
@@ -132,7 +132,7 @@ public class VmManager {
 		db.closeConnection();
 		
 		// Return the IDs of the VMs deployed in the same order that they were received
-		ArrayList<String> idsDeployedVms = new ArrayList<String>();
+		ArrayList<String> idsDeployedVms = new ArrayList<>();
 		for (Vm vmDescription: vmDescriptions) {
 			idsDeployedVms.add(ids.get(vmDescription));
 		}
@@ -189,7 +189,7 @@ public class VmManager {
 	}
 	
 	public ArrayList<String> getVmImagesIds() {
-		ArrayList<String> vmImagesIds = new ArrayList<String>();
+		ArrayList<String> vmImagesIds = new ArrayList<>();
 		Collection<ImageUploaded> imagesDescriptions = cloudMiddleware.getVmImages();
 		for (ImageUploaded imageDesc: imagesDescriptions) {
 			vmImagesIds.add(imageDesc.getId());
@@ -237,7 +237,7 @@ public class VmManager {
 	}
 
 	private void selectMonitoring(VmManagerConfiguration.Monitoring monitoring, String[] hosts) {
-		hostsInfo = new ArrayList<HostInfo>();
+		hostsInfo = new ArrayList<>();
 		switch (monitoring) {
 		case GANGLIA:
 			for (String hostname: hosts) {

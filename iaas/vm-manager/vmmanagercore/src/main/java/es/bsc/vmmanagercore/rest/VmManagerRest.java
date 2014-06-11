@@ -77,7 +77,7 @@ public class VmManagerRest {
 		}
 		
 		// Get the information of the VMs to deploy
-		ArrayList<Vm> vmsToDeploy = new ArrayList<Vm>();
+		ArrayList<Vm> vmsToDeploy = new ArrayList<>();
 		JsonArray vmsArrayJson = vmsJson.getAsJsonArray("vms");
 		for (JsonElement vmJson: vmsArrayJson) {
 			Vm vm = gson.fromJson(vmJson, Vm.class);

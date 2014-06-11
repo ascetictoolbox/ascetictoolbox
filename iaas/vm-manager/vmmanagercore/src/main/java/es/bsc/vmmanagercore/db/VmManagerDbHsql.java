@@ -41,7 +41,7 @@ public class VmManagerDbHsql implements VmManagerDb {
 	
     public VmManagerDbHsql(String dbFileNamePrefix) throws Exception {
     	// Define the available scheduling algorithms
-    	availableSchedAlg = new ArrayList<SchedulingAlgorithm>();
+    	availableSchedAlg = new ArrayList<>();
     	availableSchedAlg.add(SchedulingAlgorithm.CONSOLIDATION);
     	availableSchedAlg.add(SchedulingAlgorithm.DISTRIBUTION);
     	availableSchedAlg.add(SchedulingAlgorithm.RANDOM);
@@ -93,7 +93,7 @@ public class VmManagerDbHsql implements VmManagerDb {
         // assume we are pointing to BEFORE the first row
         // rs.next() points to next row and returns true
         // or false if there is no next row, which breaks the loop
-        ArrayList<String> result = new ArrayList<String> ();
+        ArrayList<String> result = new ArrayList<>();
         for (; rs.next(); ) {
             for (i = 0; i < colmax; ++i) {
                 o = rs.getObject(i + 1); // In SQL the first column is indexed with 1 not 0
@@ -188,7 +188,7 @@ public class VmManagerDbHsql implements VmManagerDb {
     // Returns "" if the VM does not have an app associated or if a VM with that ID does not exist
     @Override
     public String getAppIdOfVm(String vmId) {
-    	ArrayList<String> appId = new ArrayList<String>();
+    	ArrayList<String> appId = new ArrayList<>();
     	try {
     		appId = query("SELECT appId FROM virtual_machines WHERE id = '" + vmId + "'");
 		} catch (SQLException e) {
@@ -213,7 +213,7 @@ public class VmManagerDbHsql implements VmManagerDb {
 	
     @Override
 	public ArrayList<String> getVmsOfApp(String appId) {
-    	ArrayList<String> vmIds = new ArrayList<String>();
+    	ArrayList<String> vmIds = new ArrayList<>();
     	try {
     		vmIds = query("SELECT id FROM virtual_machines WHERE appId = '" + appId + "'");
 		} catch (SQLException e) {
@@ -250,7 +250,7 @@ public class VmManagerDbHsql implements VmManagerDb {
 		} catch (SQLException e) {
 			return null;
 		}
-    	ArrayList<SchedulingAlgorithm> result = new ArrayList<SchedulingAlgorithm>();
+    	ArrayList<SchedulingAlgorithm> result = new ArrayList<>();
     	for (String schedAlg: schedulingAlgorithms) {
     		if (schedAlg.equals("consolidation")) {
     			result.add(SchedulingAlgorithm.CONSOLIDATION);

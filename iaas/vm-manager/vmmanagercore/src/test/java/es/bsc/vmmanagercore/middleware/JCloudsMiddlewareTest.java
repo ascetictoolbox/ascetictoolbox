@@ -50,7 +50,7 @@ public class JCloudsMiddlewareTest {
 	private static void saveIdsOfInstancesThatExistBeforeTheTest() {
 		for (String zone: zones) {
 			ServerApi serverApi = novaApi.getServerApiForZone(zone);
-			vmsIdsBeforeTests = new ArrayList<String>();
+			vmsIdsBeforeTests = new ArrayList<>();
 			for (Server server: serverApi.listInDetail().concat()) {
 				vmsIdsBeforeTests.add(server.getId());
 			}
@@ -60,7 +60,7 @@ public class JCloudsMiddlewareTest {
 	private static void saveIdsOfFlavorsThatExistBeforeTheTest() {
 		for (String zone: zones) {
 			FlavorApi flavorApi = novaApi.getFlavorApiForZone(zone);
-			flavorIdsBeforeTests = new ArrayList<String>();
+			flavorIdsBeforeTests = new ArrayList<>();
 			for (Flavor flavor: flavorApi.listInDetail().concat()) {
 				flavorIdsBeforeTests.add(flavor.getId());
 			}
@@ -91,10 +91,10 @@ public class JCloudsMiddlewareTest {
 	@AfterClass
 	public static void tearDownAfterClass() {
 		//make sure that the VMs deployed before beginning these tests are still there
-		ArrayList<String> vmsIdsAfterTests = new ArrayList<String>();
+		ArrayList<String> vmsIdsAfterTests = new ArrayList<>();
 		for (String zone: zones) {
 			ServerApi serverApi = novaApi.getServerApiForZone(zone);
-			vmsIdsAfterTests = new ArrayList<String>();
+			vmsIdsAfterTests = new ArrayList<>();
 			for (Server server: serverApi.listInDetail().concat()) {
 				vmsIdsAfterTests.add(server.getId());
 			}
@@ -102,10 +102,10 @@ public class JCloudsMiddlewareTest {
 		assertTrue(vmsIdsAfterTests.containsAll(vmsIdsBeforeTests));
 		
 		//make sure that the flavors that existed before the tests are still there
-		ArrayList<String> flavorIdsAfterTests = new ArrayList<String>();
+		ArrayList<String> flavorIdsAfterTests = new ArrayList<>();
 		for (String zone: zones) {
 			FlavorApi flavorApi = novaApi.getFlavorApiForZone(zone);
-			flavorIdsAfterTests = new ArrayList<String>();
+			flavorIdsAfterTests = new ArrayList<>();
 			for (Flavor flavor: flavorApi.listInDetail().concat()) {
 				flavorIdsAfterTests.add(flavor.getId());
 			}

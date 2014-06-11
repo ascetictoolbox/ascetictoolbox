@@ -64,7 +64,7 @@ public class JCloudsMiddleware implements CloudMiddleware {
 	
     /**
      * Class constructor.
-     * @param db 
+     * @param db Database used by the VM Manager
      */
 	public JCloudsMiddleware(VmManagerDb db) {
 		//connect to the infrastructure and initialize JClouds attributes
@@ -121,7 +121,7 @@ public class JCloudsMiddleware implements CloudMiddleware {
 				}
 				
 				//check whether the user specified an image ID or a URL containing the image
-				String imageId = null;
+				String imageId;
 				UrlValidator urlValidator = new UrlValidator();
 				//if it is a URL
 				if (urlValidator.isValid(vmDescription.getImage())) { 
@@ -244,7 +244,7 @@ public class JCloudsMiddleware implements CloudMiddleware {
 
 	@Override
 	public Collection<String> getAllVMsId() {
-		ArrayList<String> vmIds = new ArrayList<String>();
+		ArrayList<String> vmIds = new ArrayList<>();
 		for (String zone: zones) {
 			ServerApi serverApi = novaApi.getServerApiForZone(zone);
 			for (Server server: serverApi.listInDetail().concat()) {
@@ -300,7 +300,7 @@ public class JCloudsMiddleware implements CloudMiddleware {
 	
 	@Override
 	public Collection<ImageUploaded> getVmImages() {
-		ArrayList<ImageUploaded> vmImages = new ArrayList<ImageUploaded>();
+		ArrayList<ImageUploaded> vmImages = new ArrayList<>();
 		for (String zone: zones) {
 			ImageApi imageApi = novaApi.getImageApiForZone(zone);
 			for (Image image: imageApi.listInDetail().concat()) {
@@ -379,7 +379,7 @@ public class JCloudsMiddleware implements CloudMiddleware {
 	 * Creates a flavor with the specified characteristics.
 	 * @param zone the zone where the flavor needs to be located
 	 * @param cpus the number of CPUs of the flavor
-	 * @param memoryMb the amount of RAM of the flavor in MB
+	 * @param ramMb the amount of RAM of the flavor in MB
 	 * @param diskGb the amount of disk space of the flavor in GB
 	 * @return The ID of the created flavor.
 	 */

@@ -23,7 +23,7 @@ public class Vm {
 	
 	/**
 	 * Class constructor.
-	 * @param instanceName The name of the instance.
+	 * @param name The name of the instance.
 	 * @param image The ID of the image or a URL containing it.
 	 * @param cpus The number of CPUs.
 	 * @param ramMb The amount of RAM in MB.

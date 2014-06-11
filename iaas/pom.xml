@@ -18,7 +18,6 @@
 		<!-- <module>my-module-name</module> -->
     <module>energy-modeller</module>
     <module>vm-manager</module>
-    <module>pricing-modeller</module>
     <module>iaas-pricing-modeller</module>
   </modules>
 	<version>0.0.1-SNAPSHOT</version>

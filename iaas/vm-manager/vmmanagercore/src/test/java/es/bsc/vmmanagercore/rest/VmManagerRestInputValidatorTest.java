@@ -14,14 +14,14 @@ public class VmManagerRestInputValidatorTest {
 	public void imageDoesNotExist() {
 		String[] imagesIds = {"imageId1", "imageId2"};
 		assertFalse(VmManagerRestInputValidator.checkImageExists("imageId3", 
-				new ArrayList<String>(Arrays.asList(imagesIds))));
+				new ArrayList<>(Arrays.asList(imagesIds))));
 	}
 
 	@Test
 	public void imageExists() {
 		String[] imagesIds = {"imageId1", "imageId2"};
 		assertTrue(VmManagerRestInputValidator.checkImageExists("imageId1", 
-				new ArrayList<String>(Arrays.asList(imagesIds))));
+				new ArrayList<>(Arrays.asList(imagesIds))));
 	}
 	
 }

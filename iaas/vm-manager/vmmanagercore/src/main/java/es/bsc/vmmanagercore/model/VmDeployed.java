@@ -53,7 +53,7 @@ public class VmDeployed extends Vm {
 		infoVmJson.put("cpus", getCpus());
 		infoVmJson.put("ramMb", getRamMb());
 		infoVmJson.put("diskGb", getDiskGb());
-		infoVmJson.put("state", state.toString());
+		infoVmJson.put("state", state);
 		infoVmJson.put("ipAddress", ipAddress);
 		infoVmJson.put("dateCreated", created.toString());
 		infoVmJson.put("applicationId", getApplicationId());

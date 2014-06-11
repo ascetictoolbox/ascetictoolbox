@@ -40,7 +40,6 @@ public interface CloudMiddleware {
     /**
      * Gets the identifiers of the VMs that a user is running. If the user is
      * not running any VM, returns null
-     * @param user User credentials
      * @return A Collection containing the identifiers of the VMs that a user
      * is running. If the user is not running any VM, returns null
      */

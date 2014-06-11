@@ -16,7 +16,7 @@ public class SchedulerRandom implements Scheduler {
 	@Override
 	public HashMap<Vm, String> schedule(ArrayList<Vm> vmDescriptions, 
 			ArrayList<HostInfo> hostsInfo) {
-		HashMap<Vm, String> scheduling = new HashMap<Vm, String> ();
+		HashMap<Vm, String> scheduling = new HashMap<>();
 		
 		// For each of the VMs to be scheduled
 		for (Vm vmDescription: vmDescriptions) {
