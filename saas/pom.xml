@@ -17,6 +17,7 @@
 	    <!-- SaaS Modules -->
 		<!-- <module>my-module-name</module> -->
     <module>virtual-machine-image-constructor</module>
+    <module>programming-model</module>
   </modules>
 	<url>http://www.ascetic.eu</url>
 	<version>0.0.1-SNAPSHOT</version>
