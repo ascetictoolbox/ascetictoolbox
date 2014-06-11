@@ -40,6 +40,9 @@ iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymod
 iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/AppTest.java -text
 iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/TimePeriodTest.java -text
 iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/input/VMProjectedWorkloadElementTest.java -text
+iaas/iaas-pricing-modeller/pom.xml -text
+iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/App.java -text
+iaas/iaas-pricing-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/AppTest.java -text
 iaas/vm-manager/GangliaMonitoring/pom.xml -text
 iaas/vm-manager/GangliaMonitoring/src/main/java/es/bsc/monitoring/exceptions/MonitoringException.java -text
 iaas/vm-manager/GangliaMonitoring/src/main/java/es/bsc/monitoring/ganglia/Ganglia.java -text
