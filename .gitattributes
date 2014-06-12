@@ -43,6 +43,8 @@ iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymod
 iaas/iaas-pricing-modeller/pom.xml -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/App.java -text
 iaas/iaas-pricing-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/AppTest.java -text
+iaas/iaas-slamanager/planning-optimization/src/main/resources/ascetic-ovf-example.ovf -text
+iaas/iaas-slamanager/profile4osgi/eu/ascetic/architecture/iaas/iaas/0.1.SNAPSHOT/iaas-0.1.SNAPSHOT.composite -text
 iaas/vm-manager/GangliaMonitoring/pom.xml -text
 iaas/vm-manager/GangliaMonitoring/src/main/java/es/bsc/monitoring/exceptions/MonitoringException.java -text
 iaas/vm-manager/GangliaMonitoring/src/main/java/es/bsc/monitoring/ganglia/Ganglia.java -text

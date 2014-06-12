@@ -1,0 +1,205 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+	                    http://maven.apache.org/maven-v4_0_0.xsd ">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>eu.ascetic.architecture.iaas.iaas-slamanager</groupId>
+		<artifactId>iaas-slamanager</artifactId>
+		<version>0.1-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
+
+	<groupId>eu.ascetic.architecture.iaas.iaas-slamanager</groupId>
+	<artifactId>iaas-main</artifactId>
+	<packaging>bundle</packaging>
+	<name>iaas-main</name>
+	<version>0.1-SNAPSHOT</version>
+
+	<properties>
+		<org.slasoi.slam.license.loc>${basedir}</org.slasoi.slam.license.loc>
+		<org.slasoi.slam.export.version>${project.artifact.version}</org.slasoi.slam.export.version>
+		<slam.required.bundles>iaas-pac,iaas-poc</slam.required.bundles>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.slasoi.models</groupId>
+			<artifactId>slamodel</artifactId>
+			<version>0.3-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slasoi.models</groupId>
+			<artifactId>scm</artifactId>
+			<version>${slasoi-version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slasoi.business-manager</groupId>
+			<artifactId>bmanager-common-service</artifactId>
+			<version>${slasoi-version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- Generic SLA Manager :: Core :: Components -->
+		<dependency>
+			<groupId>org.slasoi.generic-slamanager.core</groupId>
+			<artifactId>context</artifactId>
+			<version>${slasoi-version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slasoi.generic-slamanager.core</groupId>
+			<artifactId>monitoring-manager</artifactId>
+			<version>${slasoi-version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slasoi.generic-slamanager.core</groupId>
+			<artifactId>negotiation</artifactId>
+			<version>${slasoi-version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slasoi.generic-slamanager.core</groupId>
+			<artifactId>planning-optimization</artifactId>
+			<version>0.2-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slasoi.generic-slamanager.core</groupId>
+			<artifactId>provisioning-adjustment</artifactId>
+			<version>${slasoi-version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slasoi.generic-slamanager.commons</groupId>
+			<artifactId>gslam-utils</artifactId>
+			<version>${slasoi-version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Generic SLA Manager :: References :: Components -->
+
+
+		<!-- SkeletonSLA Manager :: References :: Domain Specific -->
+		<dependency>
+			<groupId>eu.ascetic.architecture.iaas.iaas-slamanager</groupId>
+			<artifactId>iaas-poc</artifactId>
+			<version>${__slam-version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>eu.ascetic.architecture.iaas.iaas-slamanager</groupId>
+			<artifactId>iaas-pac</artifactId>
+			<version>${__slam-version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- :: Classes contained in 'iaas-core' artifact, will be exposed by this 
+			bundle within OSGi -->
+		<dependency>
+			<groupId>eu.ascetic.architecture.iaas.iaas-slamanager</groupId>
+			<artifactId>iaas-core</artifactId>
+			<version>${__slam-version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Generic SLA Manager :: OSGi -->
+		<dependency>
+			<groupId>org.springframework.osgi</groupId>
+			<artifactId>spring-osgi-annotation</artifactId>
+			<version>1.2.0</version>
+			<type>jar</type>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.osgi</groupId>
+			<artifactId>spring-osgi-core</artifactId>
+			<version>1.2.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>2.5.6</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.framework</artifactId>
+			<version>${felix-version}</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.12</version>
+			<scope>provided</scope>
+		</dependency>		
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>1.3.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.3</version>
+		</dependency>
+
+	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>activator</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<!-- enable bundlor -->
+				<bundlor.enabled>true</bundlor.enabled>
+			</properties>
+
+			<build>
+				<plugins>
+					<plugin>    <!-- (2) START -->
+						<groupId>org.apache.felix</groupId>
+						<artifactId>maven-bundle-plugin</artifactId>
+						<extensions>true</extensions>
+						<!-- FIXME -->
+						<!-- DO EDIT ACCORDING THE DEPENDENCIES USED BY THIS POM -->
+						<configuration>
+							<instructions>
+								<Bundle-Name>iaas-slam4osgi</Bundle-Name>
+								<Bundle-SymbolicName>iaas-slam4osgi</Bundle-SymbolicName>
+								<Export-Package>eu.ascetic.architecture.iaas.main.beans*;version="${__slam-version}"</Export-Package>
+								<Embed-Transitive>false</Embed-Transitive>
+								<Embed-Dependency>iaas-core;inline=true</Embed-Dependency>
+								<Import-Package>
+									org.osgi.framework;resolution:=optional,
+									org.apache.log4j;resolution:=optional,
+									*;resolution:=optional
+								</Import-Package>
+								<Require-Bundle>${slam.required.bundles}</Require-Bundle>
+							</instructions>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+</project>

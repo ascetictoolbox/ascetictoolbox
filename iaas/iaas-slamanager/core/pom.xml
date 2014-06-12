@@ -1,0 +1,97 @@
+<project
+	xmlns="http://maven.apache.org/POM/4.0.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+	                    http://maven.apache.org/maven-v4_0_0.xsd ">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>eu.ascetic.architecture.iaas.iaas-slamanager</groupId>
+		<artifactId>iaas-slamanager</artifactId>
+		<version>0.1-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
+	
+	<groupId>eu.ascetic.architecture.iaas.iaas-slamanager</groupId>
+	<artifactId>iaas-core</artifactId>
+	<packaging>bundle</packaging>
+	<name>iaas-core</name>
+	<version>0.1-SNAPSHOT</version>
+
+    <properties>
+		<org.slasoi.slam.license.loc>${basedir}</org.slasoi.slam.license.loc>
+		<org.slasoi.slam.export.version>${project.artifact.version}</org.slasoi.slam.export.version>
+		<org.slasoi.slam.core.export>org.ow2.contrail.provider.core.*</org.slasoi.slam.core.export>
+		<org.slasoi.slam.core.export.version>${slasoi-version}</org.slasoi.slam.core.export.version>
+	</properties>
+	
+    <repositories>
+      <repository>
+         <id>maven-central</id>
+         <name>maven-central</name>
+         <releases>
+           <enabled>true</enabled>
+         </releases>
+         <snapshots>
+           <enabled>true</enabled>
+         </snapshots>
+         <url>http://repo1.maven.org/maven2/</url>
+       </repository>
+     </repositories>
+ 
+
+     <pluginRepositories>
+        <pluginRepository>
+           <id>maven-central-plugins</id>
+           <url>http://repo1.maven.org/maven2/</url>
+           <snapshots>
+              <enabled>true</enabled>
+           </snapshots>
+        </pluginRepository>
+     </pluginRepositories>
+	<dependencies>
+		<dependency>
+			<groupId>org.slasoi.models</groupId>
+			<artifactId>slamodel</artifactId>
+			<version>0.3-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+	
+  <profiles>
+		<profile>
+			<id>activator</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<!-- enable bundlor -->
+				<bundlor.enabled>true</bundlor.enabled>
+			</properties>
+			<build>
+
+				<plugins>
+					<plugin>    <!-- (2) START -->
+						<groupId>org.apache.felix</groupId>
+						<artifactId>maven-bundle-plugin</artifactId>
+						<version>${felix-version}</version>
+						<extensions>true</extensions>
+						<configuration>
+							<instructions>
+							    <Bundle-Name>iaas-core</Bundle-Name>
+								<Bundle-SymbolicName>iaas-core</Bundle-SymbolicName>
+								<Import-Package>
+								org.springframework.osgi.extensions.annotation;resolution:=optional,
+								<!--log-->
+								org.apache.log4j;resolution:=optional
+								</Import-Package>
+								<Export-Package>${org.slasoi.slam.core.export};version="${org.slasoi.slam.core.export.version}"</Export-Package>
+							</instructions>
+						</configuration>
+					</plugin>
+
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>
