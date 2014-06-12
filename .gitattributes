@@ -305,6 +305,8 @@ paas/provider-registry/src/main/java/eu/ascetic/providerregistry/xml/Converter.j
 paas/provider-registry/src/main/resources/META-INF/persistence.mysql.xml -text
 paas/provider-registry/src/main/resources/applicationContext.xml -text
 paas/provider-registry/src/main/resources/log4j.properties -text
+paas/provider-registry/src/main/webapp/META-INF/MANIFEST.MF -text
+paas/provider-registry/src/main/webapp/WEB-INF/web.xml -text
 paas/provider-registry/src/test/java/eu/ascetic/providerregistry/model/ProviderTest.java -text
 paas/provider-registry/src/test/java/eu/ascetic/providerregistry/service/jpa/ProviderDAOJpaTest.java -text
 paas/provider-registry/src/test/java/eu/ascetic/providerregistry/xml/ConverterTest.java -text
