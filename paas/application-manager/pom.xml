@@ -1,0 +1,326 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+   <parent>
+  	<groupId>net.atos.ari.seip.CloudManager</groupId>
+ 	<artifactId>CloudManager</artifactId>
+  	<version>1.0-SNAPSHOT</version>
+  </parent>
+
+  <groupId>net.atos.ari.seip.CloudManager</groupId>
+  <artifactId>CloudSLM</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>war</packaging>
+
+  <name>CloudSLM</name>
+  <url>http://maven.apache.org</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>tomcat-maven-plugin</artifactId>
+				<version>1.1</version>
+			</plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.1.1</version>
+				<configuration>
+					<webXml>src/main/webapp/WEB-INF/web.xml</webXml>
+				</configuration>
+			</plugin>
+				<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>hibernate3-maven-plugin</artifactId>
+				<version>2.2</version>
+				<executions>
+	  				<execution>
+						<id>hbm2ddl</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>hbm2ddl</goal>
+						</goals>
+						<configuration>
+							<components>
+								<component>
+									<name>hbm2ddl</name>
+								</component>
+					
+							</components>
+							<componentProperties>
+								<drop>true</drop>
+								<configurationfile>/src/main/resources/hibernate.cfg.xml</configurationfile>
+								<propertyfile>/src/main/resources/database.properties</propertyfile>
+								<create>true</create>
+								<export>false</export>
+								<jdk5>true</jdk5>
+								<format>true</format>
+								<outputfilename>schema-rootcloud.sql</outputfilename>
+							</componentProperties>
+						</configuration>
+					</execution>
+					 
+ 				   <execution>
+						<id>hbm2cfgxml</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>hbm2cfgxml</goal>
+						</goals>
+						<inherited>false</inherited>
+						<configuration>
+							<components>
+								<component>
+									<name>hbm2cfgxml</name>
+									<implementation>jdbcconfiguration</implementation>
+									<outputDirectory>src/main/resources</outputDirectory>
+								</component>
+							</components>
+							<componentProperties>
+								<packagename>net.atos.ari.seip.CloudManager.db.model</packagename>
+							</componentProperties>
+						</configuration>
+					</execution>
+					<execution>
+						<id>hbm2hbmxml</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>hbm2hbmxml</goal>
+						</goals>
+						<inherited>false</inherited>
+						<configuration>
+							<components>
+								<component>
+									<name>hbm2hbmxml</name>
+									<outputDirectory>src/main/resources</outputDirectory>
+								</component>
+							</components>
+							<componentProperties>
+								<packagename>net.atos.ari.seip.CloudManager.db.model</packagename>
+							</componentProperties>
+						</configuration>
+					</execution>
+					<execution>
+						<id>hbm2java</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>hbm2java</goal>
+						</goals>
+						<inherited>false</inherited>
+						<configuration>
+							<components>
+								<component>
+									<name>hbm2java</name>
+									<implementation>configuration</implementation>
+									<outputDirectory>src/main/java</outputDirectory>
+								</component>
+							</components>
+							<componentProperties>
+								<packagename>net.atos.ari.seip.CloudManager.db.model</packagename>
+								<configurationfile>src/main/resources/hibernateTRECDDBBSP.cfg.xml</configurationfile>
+							</componentProperties>
+						</configuration>
+					</execution>
+					<execution>
+						<id>hbm2dao</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>hbm2dao</goal>
+						</goals>
+						<inherited>false</inherited>
+						<configuration>
+							<components>
+								<component>
+									<name>hbm2dao</name>
+									<outputDirectory>src/main/java</outputDirectory>
+								</component>
+							</components>
+							<componentProperties>
+								<packagename>net.atos.ari.seip.CloudManager.db.dao</packagename>
+								<configurationfile>src/main/resources/hibernate.cfg.xml</configurationfile>
+							</componentProperties>
+						</configuration>
+					</execution>
+
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>mysql</groupId>
+						<artifactId>mysql-connector-java</artifactId>
+						<version>5.1.14</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+		</plugins>
+		<finalName>CloudSLM</finalName>
+	</build>
+	
+	<repositories>       
+  <repository>
+   <id>optimis-repo</id>
+   <snapshots>
+    <enabled>true</enabled>
+    <updatePolicy>daily</updatePolicy>
+   </snapshots>
+   <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+   <name>repo</name>
+   <url>http://optimis-artifactory.es.atos.net/artifactory/repo</url>
+  </repository>          
+ </repositories>
+  	
+  	
+  
+  <dependencies>
+	<dependency>
+      	<groupId>eu.optimis.servicemanifest</groupId>
+    	<artifactId>service-manifest-api</artifactId>
+    	<version>1.0.6</version>
+    </dependency>
+    
+    <dependency>
+		<groupId>com.sun.jersey</groupId>
+		<artifactId>jersey-server</artifactId>
+		<version>1.14</version>
+	</dependency>
+	
+    <dependency>
+		<groupId>com.sun.jersey</groupId>
+		<artifactId>jersey-client</artifactId>
+		<version>1.14</version>
+	</dependency>
+	
+    <dependency>
+		<groupId>log4j</groupId>
+		<artifactId>log4j</artifactId>
+		<version>1.2.17</version>
+	</dependency>
+            
+    <dependency>
+		<groupId>com.sun.jersey</groupId>
+		<artifactId>jersey-bundle</artifactId>
+		<version>1.14</version>
+	</dependency>
+
+    <dependency>
+		<groupId>com.sun.jersey</groupId>
+		<artifactId>jersey-json</artifactId>
+		<version>1.14</version>
+	</dependency>
+	
+    <dependency>
+		<groupId>org.codehaus.jackson</groupId>
+		<artifactId>jackson-mapper-asl</artifactId>
+		<version>1.9.9</version>
+	</dependency>
+    
+   <!-- DeltaCloud -->    
+   <dependency>
+		<groupId>org.deltacloud</groupId>
+  		<artifactId>deltacloud-client-java</artifactId> 
+  		<version>0.0.1-SNAPSHOT</version>
+	</dependency>
+	
+	
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    
+    <!--  Opennebula dependencies -->
+    <dependency>
+	    <groupId>org.opennebula.client</groupId>
+	  	<artifactId>oca</artifactId>
+	  	 <!--<version>3.8.3</version>-->
+	  	<version>4.4.0</version>
+  	</dependency>
+  	
+	
+    <dependency>
+		<groupId>org.apache.xmlrpc</groupId>
+		<artifactId>xmlrpc-client</artifactId>
+		<version>3.1.3</version>
+	</dependency>
+            
+    <dependency>
+		<groupId>ws-commons-util</groupId>
+		<artifactId>ws-commons-util</artifactId>
+		<version>1.0.1</version>
+	</dependency>
+            
+    <!-- Mysql connector -->
+    <dependency>
+		<groupId>mysql</groupId>
+		<artifactId>mysql-connector-java</artifactId>
+		<version>5.1.14</version>
+	</dependency>
+	
+   	<!-- Hibernate framework -->
+	<dependency>
+		<groupId>org.codehaus.mojo</groupId>
+		<artifactId>hibernate3-maven-plugin</artifactId>
+		<version>2.2</version>
+	</dependency>
+		
+    <!-- Hibernate library dependecy start -->
+		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>3.2.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib</artifactId>
+			<version>2.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.6.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.6.6</version>
+		</dependency>
+            
+		<!-- Hibernate library dependecy end -->
+		
+		<!-- Properties configuration -->
+		<dependency>
+            <groupId>commons-configuration</groupId>
+            <artifactId>commons-configuration</artifactId>
+            <version>1.5</version>
+        </dependency>
+  </dependencies>
+</project>

@@ -1,0 +1,1 @@
+mvn install:install-file -Dfile=org.opennebula.client.jar -DgroupId=org.opennebula.client -DartifactId=org.opennebula.client -Dversion=4.4.0 -Dpackaging=jar

@@ -1,0 +1,214 @@
+package net.atos.ari.seip.CloudManager.atomicActions;
+
+import org.apache.log4j.Logger;
+import org.opennebula.client.Client;
+import org.opennebula.client.OneResponse;
+import org.opennebula.client.vm.VirtualMachine;
+
+public class InstanceActions {
+	
+	Logger log = Logger.getLogger(this.getClass().getName());
+	//Client oneClient;
+	//DeltaCloudClient dcc;
+
+	//Client oneClient = new Client("oneadmin:52f288011f6fe0515429dc5717744d36","http://recs1.coolemall.eu:2633/RPC2");
+
+		
+	public InstanceActions(Client oneClient) {
+		super();
+		//this.dcc = dcc;
+	}
+
+	public String createInstance(Client oneClient, String template) {
+		try {
+			
+			log.debug("Trying to allocate the virtual machine... ");
+			OneResponse rc = VirtualMachine. allocate(oneClient, template);
+			if( rc.isError() )
+		    {
+				log.error("Trying to allocate VM: FAILED ");
+		        throw new Exception( rc.getErrorMessage() );
+		    }
+			
+			// The response message is the new VM's ID
+		    //int newVMID = Integer.parseInt(rc.getMessage());
+			String newVMID = rc.getMessage();
+		    log.debug("OK instanceID " + newVMID + ".");
+		    
+		    return newVMID;
+		    
+		} catch (Exception e) {
+			log.error("error creating Instance " + template);
+			return null;
+		}
+	}
+	public String restartInstance(Client oneClient, int newVMID) {
+		try {
+			
+			log.debug("Trying to restart the virtual machine... ");
+			VirtualMachine vm = new VirtualMachine(newVMID, oneClient);
+		    //vm.info();
+		    OneResponse rc = vm.restart();
+		    if( rc.isError() )
+            {
+              log.error( "Instance restart: " + rc.getErrorMessage() );
+            }
+        	else
+            {
+         
+        		 log.debug( "Instance restart: " + rc.getMessage());
+            }
+		    
+		    //vm.lcmStateStr();
+		    return vm.getId();
+		    
+		} catch (Exception e) {
+			log.error("error restart Instance " + newVMID);
+			return null;
+		}
+	}
+	public int deleteInstance(Client oneClient, int newVMID) {
+		try {
+			
+			log.debug("Trying to delete the virtual machine... ");
+			VirtualMachine vm = new VirtualMachine(newVMID, oneClient);
+		    //vm.info();
+		    vm.finalizeVM();
+		    
+		    //vm.lcmStateStr();
+		    
+		    return newVMID;
+		    
+		} catch (Exception e) {
+			log.error("error delete Instance " + newVMID);
+			return newVMID;
+		}
+	}
+	public int shutdownInstance(Client oneClient, int newVMID) {
+		try {
+			
+			log.debug("Trying to shutdown the virtual machine... ");
+			VirtualMachine vm = new VirtualMachine(newVMID, oneClient);
+		    //vm.info();
+		    vm.shutdown();
+		    
+		    //vm.lcmStateStr();
+		    
+		    return newVMID;
+		    
+		} catch (Exception e) {
+			log.error("error shutdown Instance " + newVMID);
+			return newVMID;
+		}
+	}
+	public int stopInstance(Client oneClient, int newVMID) {
+		try {
+			
+			log.debug("Trying to stop the virtual machine... ");
+			VirtualMachine vm = new VirtualMachine(newVMID, oneClient);
+		    //vm.info();
+		    vm.stop();
+		    
+		    //vm.lcmStateStr();
+		    
+		    return newVMID;
+		    
+		} catch (Exception e) {
+			log.error("error stop Instance " + newVMID);
+			return newVMID;
+		}
+	}
+	public int migrateInstance(Client oneClient, int newVMID, int host) {
+		try {
+			
+			log.debug("Trying to migrate the virtual machine... ");
+			VirtualMachine vm = new VirtualMachine(newVMID, oneClient);
+		    //vm.info();
+		    vm.migrate(host);
+		    
+		    //vm.lcmStateStr();
+		    
+		    return newVMID;
+		    
+		} catch (Exception e) {
+			log.error("error migrate Instance " + newVMID);
+			return newVMID;
+		}
+	}
+	public int livemigrateInstance(Client oneClient, int newVMID, int host) {
+		try {
+			
+			log.debug("Trying to migrate the virtual machine... ");
+			VirtualMachine vm = new VirtualMachine(newVMID, oneClient);
+		    //vm.info();
+		    vm.liveMigrate(host);
+		    
+		    //vm.lcmStateStr();
+		    
+		    return newVMID;
+		    
+		} catch (Exception e) {
+			log.error("error migrate Instance " + newVMID);
+			return newVMID;
+		}
+	}
+	public String getdiskInstance(Client oneClient, int newVMID) {
+		try {
+			
+			log.debug("Trying to getDisk of the virtual machine... ");
+			VirtualMachine vm = new VirtualMachine(newVMID, oneClient);
+		    //vm.info();
+		    return vm.xpath("//template/disk/source");
+		    
+		    //vm.lcmStateStr();
+		    
+		} catch (Exception e) {
+			log.error("error getDisk Instance " + newVMID);
+			return null;
+		}
+	}
+	public String getinfoInstance(Client oneClient, int newVMID) {
+		try {
+			
+			log.debug("Trying to getInfo of the virtual machine... ");
+			VirtualMachine vm = new VirtualMachine(newVMID, oneClient);
+		    //vm.info();
+		    OneResponse rc = vm.info();
+		    return rc.getMessage();
+		    
+		    
+		} catch (Exception e) {
+			log.error("error getInfo Instance " + newVMID);
+			return null;
+		}
+	}
+	
+
+
+/*	public Instance listInstance(String instanceId){
+		try {
+			return dcc.listInstances(instanceId);
+		} catch (DeltaCloudClientException e) {
+			log.error("unable to list instance: "+ instanceId);
+		}
+		return null;
+	}
+	
+	public List<Instance> listInstances(){
+		try {
+			return dcc.listInstances();
+		} catch (DeltaCloudClientException e) {
+			log.error("unable to list instances");
+		}
+		return null;
+	}
+	
+	public void performAction(Action<?> action){
+		try {
+			dcc.performAction(action);
+		} catch (DeltaCloudClientException e) {
+			log.error("unable to perform action: "+action.getName());
+		}
+	}*/
+
+}

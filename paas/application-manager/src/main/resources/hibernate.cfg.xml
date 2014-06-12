@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="hibernate.connection.password">secreta</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/cloud_slm</property>
+        <property name="hibernate.connection.username">david</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+        <mapping resource="net/atos/ari/seip/CloudManager/db/model/ServiceInfo.hbm.xml" />
+        <mapping resource="net/atos/ari/seip/CloudManager/db/model/Networks.hbm.xml" />
+        <mapping resource="net/atos/ari/seip/CloudManager/db/model/InstanceStatus.hbm.xml" />
+        <mapping resource="net/atos/ari/seip/CloudManager/db/model/ServiceStatus.hbm.xml" />
+        <mapping resource="net/atos/ari/seip/CloudManager/db/model/Leases.hbm.xml" />
+        <mapping resource="net/atos/ari/seip/CloudManager/db/model/IntanceInfo.hbm.xml" />
+        <mapping resource="net/atos/ari/seip/CloudManager/db/model/InstanceNetwork.hbm.xml" />
+        <mapping resource="net/atos/ari/seip/CloudManager/db/model/ServiceRealm.hbm.xml" />
+        <mapping resource="net/atos/ari/seip/CloudManager/db/model/ServiceNetwork.hbm.xml" />
+    </session-factory>
+</hibernate-configuration>
