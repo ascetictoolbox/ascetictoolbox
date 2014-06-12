@@ -15,6 +15,7 @@ import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import eu.ascetic.monitoring.api.conf.Configuration;
 import eu.ascetic.monitoring.api.datamodel.Host;
 import eu.ascetic.monitoring.api.datamodel.Item;
 import eu.ascetic.monitoring.api.datamodel.User;
@@ -71,14 +72,14 @@ public class ZabbixClient {
 
 			if (auth == null) {
 				throw new IllegalArgumentException("Authorization failed to : " 
-						+ Dictionary.ZABBIX_SERVER_URL + ", using login: "
+						+ Configuration.zabbixUrl + ", using login: "
 						+ user.getLogin());
 			}
 			log.info("Successfully connected to the server\n");
 
 		} catch (IOException e) {
 			log.error("Could not connect to the Zabbix Server at : " 
-					+ Dictionary.ZABBIX_SERVER_URL + ". Exception: " 
+					+ Configuration.zabbixUrl + ". Exception: " 
 					+ e.getMessage() + "\n"); 
 		}
 		return auth;
@@ -315,7 +316,7 @@ public class ZabbixClient {
 	 */
 	private HttpResponse postAndGet(String request) throws IOException {
 	    HttpClient client = new DefaultHttpClient();
-	    HttpPost httpPost = new HttpPost(Dictionary.ZABBIX_SERVER_URL);
+	    HttpPost httpPost = new HttpPost(Configuration.zabbixUrl);
 	    httpPost.setEntity(new StringEntity(request));
 	    httpPost.addHeader("Content-Type", "application/json-rpc");
 	    return client.execute(httpPost);

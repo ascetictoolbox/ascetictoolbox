@@ -7,10 +7,7 @@ package eu.ascetic.monitoring.api.utils;
  * @author David Rojo Antona - ATOS
  */
 public class Dictionary {
-	
-	/** The zabbix server url. */
-	public static String ZABBIX_SERVER_URL = "http://172.24.76.30/zabbix/api_jsonrpc.php";
-	
+		
 	/** The json rpc version. */
 	public static String JSON_RPC_VERSION = "2.0";
 	

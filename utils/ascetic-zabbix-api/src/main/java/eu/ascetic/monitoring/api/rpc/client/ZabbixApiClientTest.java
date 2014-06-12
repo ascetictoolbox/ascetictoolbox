@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import eu.ascetic.monitoring.api.client.ZabbixClient;
+import eu.ascetic.monitoring.api.conf.Configuration;
 import eu.ascetic.monitoring.api.datamodel.Host;
 import eu.ascetic.monitoring.api.datamodel.Item;
 
@@ -23,7 +24,7 @@ public class ZabbixApiClientTest {
 	 * @param args the arguments
 	 */
 	public static void main(String[] args) {		
-			ZabbixClient client = new ZabbixClient("Admin","zabbix");
+			ZabbixClient client = new ZabbixClient(Configuration.zabbixUser,Configuration.zabbixPassword);
 			testGetAllHosts(client);
 			insertSeparator();
 			testItemsFromHost(client);
