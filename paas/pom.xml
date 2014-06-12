@@ -21,6 +21,7 @@
 	    <!-- PaaS Modules -->
 		<module>virtual-machine-contextualizer</module>
 		<module>provider-registry</module>
+		<module>paas-energy-modeller</module>
     <module>paas-pricing-modeller</module>
   </modules>
 	<url>http://www.ascetic.eu</url>
