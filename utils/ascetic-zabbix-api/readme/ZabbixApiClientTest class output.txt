@@ -1,0 +1,184 @@
+HOST 0:
+host: Zabbix server
+host id: 10084
+available: 1
+
+********************************************************
+********************************************************
+********************************************************
+********************************************************
+ITEM 0:
+name: Agent ping
+key: agent.ping
+hostid: 10084
+delay: 60
+history: 7
+lastvalue: 1.0
+lastclock: 1402579867
+
+ITEM 1:
+name: Available memory
+key: vm.memory.size[available]
+hostid: 10084
+delay: 60
+history: 7
+lastvalue: 2.60050944E8
+lastclock: 1402579896
+
+ITEM 2:
+name: CPU $2 time
+key: system.cpu.util[,idle]
+hostid: 10084
+delay: 60
+history: 7
+lastvalue: 97.3277
+lastclock: 1402579879
+
+ITEM 3:
+name: CPU $2 time
+key: system.cpu.util[,interrupt]
+hostid: 10084
+delay: 60
+history: 7
+lastvalue: 0.0
+lastclock: 1402579880
+
+ITEM 4:
+name: CPU $2 time
+key: system.cpu.util[,iowait]
+hostid: 10084
+delay: 60
+history: 7
+lastvalue: 0.7058
+lastclock: 1402579881
+
+ITEM 5:
+name: CPU $2 time
+key: system.cpu.util[,nice]
+hostid: 10084
+delay: 60
+history: 7
+lastvalue: 0.0
+lastclock: 1402579882
+
+ITEM 6:
+name: CPU $2 time
+key: system.cpu.util[,softirq]
+hostid: 10084
+delay: 60
+history: 7
+lastvalue: 0.0504
+lastclock: 1402579883
+
+ITEM 7:
+name: CPU $2 time
+key: system.cpu.util[,steal]
+hostid: 10084
+delay: 60
+history: 7
+lastvalue: 0.0
+lastclock: 1402579884
+
+ITEM 8:
+name: CPU $2 time
+key: system.cpu.util[,system]
+hostid: 10084
+delay: 60
+history: 7
+lastvalue: 0.1847
+lastclock: 1402579885
+
+ITEM 9:
+name: CPU $2 time
+key: system.cpu.util[,user]
+hostid: 10084
+delay: 60
+history: 7
+lastvalue: 0.2351
+lastclock: 1402579886
+
+ITEM 10:
+name: Checksum of $1
+key: vfs.file.cksum[/etc/passwd]
+hostid: 10084
+delay: 3600
+history: 7
+lastvalue: 3.877453742E9
+lastclock: 1402579715
+
+ITEM 11:
+name: Context switches per second
+key: system.cpu.switches
+hostid: 10084
+delay: 60
+history: 7
+lastvalue: 144.0
+lastclock: 1402579878
+
+ITEM 12:
+name: Free disk space on $1
+key: vfs.fs.size[/,free]
+hostid: 10084
+delay: 60
+history: 7
+lastvalue: 5.8891649024E10
+lastclock: 1402579901
+
+ITEM 13:
+name: Free disk space on $1 (percentage)
+key: vfs.fs.size[/,pfree]
+hostid: 10084
+delay: 60
+history: 7
+lastvalue: 97.8405
+lastclock: 1402579902
+
+ITEM 14:
+name: Free inodes on $1 (percentage)
+key: vfs.fs.inode[/,pfree]
+hostid: 10084
+delay: 60
+history: 7
+lastvalue: 99.1194
+lastclock: 1402579900
+
+ITEM 15:
+name: Free swap space
+key: system.swap.size[,free]
+hostid: 10084
+delay: 60
+history: 7
+lastvalue: 0.0
+lastclock: 1402579889
+
+ITEM 16:
+name: Free swap space in %
+key: system.swap.size[,pfree]
+hostid: 10084
+delay: 60
+history: 7
+lastvalue: 0.0
+lastclock: 1402579890
+
+ITEM 17:
+name: Host boot time
+key: system.boottime
+hostid: 10084
+delay: 600
+history: 7
+lastvalue: 1.402559587E9
+lastclock: 1402579693
+
+ITEM 18:
+name: Host local time
+key: system.localtime
+hostid: 10084
+delay: 60
+history: 7
+lastvalue: 1.402579888E9
+lastclock: 1402579888
+
+********************************************************
+********************************************************
+********************************************************
+********************************************************

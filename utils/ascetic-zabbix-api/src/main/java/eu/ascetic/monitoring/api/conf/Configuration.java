@@ -5,14 +5,21 @@ import java.io.File;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 
+/**
+ * The Class Configuration.
+ * 
+ * @author David Rojo Antona - ATOS
+ */
 public class Configuration {
 	
 	private static Logger logger = Logger.getLogger(Configuration.class);
+	
+	/** The zabbix user. */
 	public static String zabbixUser = "Admin";
 	public static String zabbixPassword = "zabbix";
 	public static String zabbixUrl = "http://172.24.76.124/zabbix/api_jsonrpc.php";
 	
-	private static final String zabbixConfigurationFile = "C://tests/ascetic-zabbix-api.properties";
+	private static final String zabbixConfigurationFile = "ascetic-zabbix-api.properties";
 	
 	static {
         try {

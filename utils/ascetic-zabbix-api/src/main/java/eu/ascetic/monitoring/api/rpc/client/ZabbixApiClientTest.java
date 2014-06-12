@@ -24,7 +24,7 @@ public class ZabbixApiClientTest {
 	 * @param args the arguments
 	 */
 	public static void main(String[] args) {		
-			ZabbixClient client = new ZabbixClient(Configuration.zabbixUser,Configuration.zabbixPassword);
+			ZabbixClient client = new ZabbixClient();
 			testGetAllHosts(client);
 			insertSeparator();
 			testItemsFromHost(client);

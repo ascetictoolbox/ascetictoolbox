@@ -1,0 +1,5 @@
+eu.ascetic.monitoring.api.client
+eu.ascetic.monitoring.api.conf
+eu.ascetic.monitoring.api.datamodel
+eu.ascetic.monitoring.api.rpc.client
+eu.ascetic.monitoring.api.utils

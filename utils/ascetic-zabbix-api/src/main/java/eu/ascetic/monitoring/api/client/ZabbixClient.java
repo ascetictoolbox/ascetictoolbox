@@ -37,20 +37,25 @@ public class ZabbixClient {
 	
 
 	/**
-	 * Instantiates a new zabbix manager.
+	 * Instantiates a new zabbix client. Get user data from properties file
+	 */
+	public ZabbixClient(){
+		user = new User(Configuration.zabbixUser,Configuration.zabbixPassword);		
+	}
+	
+	/**
+	 * Instantiates a new zabbix client.
 	 *
 	 * @param login the login
 	 * @param password the password
 	 */
 	public ZabbixClient(String login, String password){
-		user = new User(login,password);		
+		user = new User(login, password);
 	}
 		
 	/**
 	 * Gets the auth.
 	 *
-	 * @param user the user
-	 * @param password the password
 	 * @return the auth
 	 */
 	private String getAuth(){
@@ -87,9 +92,9 @@ public class ZabbixClient {
 
 	
 	/**
-	 * Gets the all hosts.
+	 * Gets all hosts in Zabbix server.
 	 *
-	 * @return the all hosts
+	 * @return List of all hosts
 	 */
 	public List<Host> getAllHosts(){		
 		ArrayList<Host> hosts = null;
@@ -127,10 +132,10 @@ public class ZabbixClient {
 	}
 	
 	/**
-	 * Gets the host by name.
+	 * Gets a specific host by name.
 	 *
 	 * @param hostName the host name
-	 * @return the host by name
+	 * @return the host 
 	 */
 	public Host getHostByName(String hostName){
 		Host host = null;
@@ -168,10 +173,9 @@ public class ZabbixClient {
 	}
 	
 	/**
-	 * Gets the all items.
+	 * Gets all items.
 	 *
-	 * @param u the u
-	 * @return the all items
+	 * @return List of items
 	 */
 	public List<Item> getAllItems(){
 		ArrayList<Item> items = null;
@@ -209,7 +213,7 @@ public class ZabbixClient {
 	}
 	
 	/**
-	 * Gets the items from host.
+	 * Gets  all items available from host.
 	 *
 	 * @param hostName the host name
 	 * @return the items from host
@@ -261,7 +265,7 @@ public class ZabbixClient {
 		
 	
 	/**
-	 * Gets the item from host.
+	 * Gets a specific item from one host.
 	 *
 	 * @param itemName the item name
 	 * @param hostName the host name
