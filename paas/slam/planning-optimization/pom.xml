@@ -1,0 +1,158 @@
+<project
+	xmlns="http://maven.apache.org/POM/4.0.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+	                    http://maven.apache.org/maven-v4_0_0.xsd ">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>eu.ascetic.paas.slam.slam-slamanager</groupId>
+		<artifactId>slam-slamanager</artifactId>
+		<version>0.1-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
+	
+	<groupId>eu.ascetic.paas.slam.slam-slamanager</groupId>
+	<artifactId>slam-poc</artifactId>
+	<packaging>bundle</packaging>
+	<name>slam-poc</name>
+	<version>0.1-SNAPSHOT</version>
+
+    <properties>
+		<slam.required.bundles></slam.required.bundles>
+	</properties>
+	
+	<dependencies>
+	
+		<dependency>
+			<groupId>org.slasoi.generic-slamanager.core</groupId>
+			<artifactId>negotiation</artifactId>
+			<version>${slasoi-version}</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+            <groupId>org.slasoi.generic-slamanager.core</groupId>
+            <artifactId>monitoring-manager</artifactId>
+            <version>${slasoi-version}</version>
+            <scope>provided</scope>
+        </dependency>
+		
+		<dependency>
+			<groupId>org.slasoi.generic-slamanager.core</groupId>
+			<artifactId>planning-optimization</artifactId>
+			<version>${slasoi-version}</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.slasoi.generic-slamanager.core</groupId>
+			<artifactId>provisioning-adjustment</artifactId>
+			<version>${slasoi-version}</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.slasoi.generic-slamanager.core</groupId>
+			<artifactId>context</artifactId>
+			<version>${slasoi-version}</version>
+			<scope>provided</scope>
+		</dependency>
+		
+	 	<dependency>
+			<groupId>org.slasoi.models</groupId>
+			<artifactId>slamodel</artifactId>
+			<version>${slasoi-version}</version>
+			<scope>provided</scope>
+	 	</dependency>
+	 			
+		<!-- PLAN -->
+		<dependency>
+            <groupId>org.slasoi.generic-slamanager.commons.plan</groupId>
+            <artifactId>gslam-plan</artifactId>
+            <version>${slasoi-version}</version>
+            <scope>provided</scope>
+        </dependency>
+		
+		<dependency>
+            <groupId>org.slasoi.infrastructure-slamanager.commons</groupId>
+            <artifactId>plan</artifactId>
+            <version>${slasoi-version}</version>
+            <scope>provided</scope>
+        </dependency>
+		
+	 	<!--<dependency>
+			<groupId>eu.ascetic.paas.slam.slam-slamanager</groupId>
+			<artifactId>slam-core</artifactId>
+			<version>${__slam-version}</version>
+			<scope>provided</scope>
+	 	</dependency>  -->
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>2.5.6</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+	       <groupId>org.apache.felix</groupId>
+	       <artifactId>org.osgi.core</artifactId>
+	       <version>1.0.0</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.12</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.4</version>
+			<scope>test</scope>
+		</dependency>
+
+		
+	</dependencies>
+	
+	<!-- -->
+	<profiles>
+		<profile>
+			<id>activator</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<bundlor.enabled>true</bundlor.enabled>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.felix</groupId>
+						<artifactId>maven-bundle-plugin</artifactId>
+						<version>${felix-version}</version>
+						<extensions>true</extensions>
+						<!--  FIXME -->
+						<!--  DO EDIT ACCORDING THE DEPENDENCIES USED BY THIS POM -->
+						<configuration>
+							<instructions>
+								<Bundle-Name>slam-negotiation</Bundle-Name>
+								<Bundle-SymbolicName>slam-negotiation</Bundle-SymbolicName>
+								<Export-Package>eu.ascetic.paas.slam.poc;version="${__slam-version}"</Export-Package>
+								<Import-Package>
+									*;resolution:=optional
+								</Import-Package>	
+                          	    <Require-Bundle>${slam.required.bundles}</Require-Bundle> 
+							</instructions>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>	 
+
+</project>

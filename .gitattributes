@@ -408,6 +408,7 @@ paas/provider-registry/src/test/java/eu/ascetic/providerregistry/service/jpa/Pro
 paas/provider-registry/src/test/java/eu/ascetic/providerregistry/xml/ConverterTest.java -text
 paas/provider-registry/src/test/resources/META-INF/persistence.test.xml -text
 paas/provider-registry/src/test/resources/provider-registry-db-JPA-test-context.xml -text
+paas/slam/profile4osgi/eu/ascetic/paas/slam/slam/0.1.SNAPSHOT/slam-0.1.SNAPSHOT.composite -text
 paas/virtual-machine-contextualizer/runtime/VmContextualizer.jar -text
 paas/virtual-machine-contextualizer/runtime/agents/vpn.tar.gz -text
 paas/virtual-machine-contextualizer/runtime/config.properties.example -text

@@ -1,0 +1,74 @@
+<project
+	xmlns="http://maven.apache.org/POM/4.0.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+	                    http://maven.apache.org/maven-v4_0_0.xsd ">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>eu.ascetic.paas.slam.slam-slamanager</groupId>
+		<artifactId>slam-slamanager</artifactId>
+		<version>0.1-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
+	
+	<groupId>eu.ascetic.paas.slam.slam-slamanager</groupId>
+	<artifactId>slam-core</artifactId>
+	<packaging>bundle</packaging>
+	<name>slam-core</name>
+	<version>0.1-SNAPSHOT</version>
+
+    <properties>
+		<org.slasoi.slam.license.loc>${basedir}</org.slasoi.slam.license.loc>
+		<org.slasoi.slam.export.version>${project.artifact.version}</org.slasoi.slam.export.version>
+		<org.slasoi.slam.core.export>eu.ascetic.paas.slam.slam-manager.core.*</org.slasoi.slam.core.export>
+		<org.slasoi.slam.core.export.version>${slasoi-version}</org.slasoi.slam.core.export.version>
+	</properties>
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.slasoi.models</groupId>
+			<artifactId>slamodel</artifactId>
+			<version>${slasoi-version}</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+	
+  <profiles>
+		<profile>
+			<id>activator</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<!-- enable bundlor -->
+				<bundlor.enabled>true</bundlor.enabled>
+			</properties>
+			<build>
+
+				<plugins>
+					<plugin>    <!-- (2) START -->
+						<groupId>org.apache.felix</groupId>
+						<artifactId>maven-bundle-plugin</artifactId>
+						<version>${felix-version}</version>
+						<extensions>true</extensions>
+						<configuration>
+
+							<instructions>
+							    <Bundle-Name>slam-core</Bundle-Name>
+								<Bundle-SymbolicName>slam-core</Bundle-SymbolicName>
+								<Import-Package>
+								org.springframework.osgi.extensions.annotation;resolution:=optional,
+								<!--log-->
+								org.apache.log4j;resolution:=optional
+								</Import-Package>
+								<Export-Package>${org.slasoi.slam.core.export};version="${org.slasoi.slam.core.export.version}"</Export-Package>
+							</instructions>
+						</configuration>
+					</plugin>
+
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>

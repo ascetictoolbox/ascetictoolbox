@@ -22,6 +22,7 @@
 		<module>virtual-machine-contextualizer</module>
 		<module>provider-registry</module>
 		<module>paas-energy-modeller</module>
+		<module>slam</module>
     <module>paas-pricing-modeller</module>
   </modules>
 	<url>http://www.ascetic.eu</url>
