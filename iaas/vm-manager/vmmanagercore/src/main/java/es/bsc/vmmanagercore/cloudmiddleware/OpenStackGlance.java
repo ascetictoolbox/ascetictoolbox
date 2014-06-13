@@ -142,7 +142,7 @@ public class OpenStackGlance {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return tokenJson.asText();
+       return tokenJson.asText();
     }
 
 }

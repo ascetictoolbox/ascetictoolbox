@@ -63,14 +63,16 @@ public class HttpUtils {
         HttpRequestBase request = null;
 
         //instantiate the request according to its type (GET, POST...)
-        if (methodType.equals("GET")) {
-            request = new HttpGet(uri);
-        }
-        else if (methodType.equals("POST")) {
-            request = new HttpPost(uri);
-        }
-        else if (methodType.equals("DELETE")) {
-            request = new HttpDelete(uri);
+        switch (methodType) {
+            case "GET":
+                request = new HttpGet(uri);
+                break;
+            case "POST":
+                request = new HttpPost(uri);
+                break;
+            case "DELETE":
+                request = new HttpDelete(uri);
+                break;
         }
 
         //set the headers of the request

@@ -22,22 +22,15 @@ public class VmManagerDbHsql implements VmManagerDb {
     private ArrayList<SchedulingAlgorithm> availableSchedAlg;
 
     // Error messages
-    private final String ERROR_SETUP_DB = "There was an error while trying to set up the DB.";
-    private final String ERROR_CLOSE_CONNECTION = "There was an error while trying to close"
-            + " the connection to the DB.";
-    private final String ERROR_CLEAN_DB = "There was an error while trying to clean the DB.";
-    private final String ERROR_INSERT_VM = "There was an error while trying to insert a VM "
-            + "in the DB.";
-    private final String ERROR_DELETE_VM = "There was an error while trying to delete a VM "
-            + "from the DB.";
-    private final String ERROR_DELETE_ALL_VMS = "There was an error while trying to delete "
-            + "the VMs from the DB.";
-    private final String ERROR_GET_VMS_OF_APP = "There was an error while trying to get the "
-            + "VMs IDs from the DB.";
-    private final String ERROR_INSERT_SCHED_ALGS = "There was an error while inserting "
-            + "the scheduling algorithms on the DB.";
-    private final String ERROR_SET_SCHED_ALG = "There was an error while setting the scheduling "
-            + "algorithm";
+    private static final String ERROR_SETUP_DB = "There was an error while trying to set up the DB.";
+    private static final String ERROR_CLOSE_CONNECTION = "There was an error while closing the connection to the DB.";
+    private static final String ERROR_CLEAN_DB = "There was an error while trying to clean the DB.";
+    private static final String ERROR_INSERT_VM = "There was an error while inserting a VM in the DB.";
+    private static final String ERROR_DELETE_VM = "There was an error while trying to delete a VM from the DB.";
+    private static final String ERROR_DELETE_ALL_VMS = "There was an error while deleting the VMs from the DB.";
+    private static final String ERROR_GET_VMS_OF_APP = "There was an error while getting the VMs IDs from the DB.";
+    private static final String ERROR_INSERT_SCHED_ALGS = "There was an error saving the sched. algorithms on the DB.";
+    private static final String ERROR_SET_SCHED_ALG = "There was an error while setting the scheduling algorithm";
 
     public VmManagerDbHsql(String dbFileNamePrefix) throws Exception {
         // Define the available scheduling algorithms
@@ -49,20 +42,17 @@ public class VmManagerDbHsql implements VmManagerDb {
         // Load the HSQL Database Engine JDBC driver
         Class.forName("org.hsqldb.jdbcDriver");
 
-        // Connect to the database. This will load the DB files and start the
-        // database if it is not already running.
+        // Connect to the database. This will load the DB files and start the DB if it is not already running.
         conn = DriverManager.getConnection("jdbc:hsqldb:file:db/" + dbFileNamePrefix, "sa", "");
         setupDb();
     }
     
     // Use for SQL command SELECT
     private synchronized ArrayList<String> query(String expression) throws SQLException {
-        Statement st = null;
-        ResultSet rs = null;
-        st = conn.createStatement();
+        Statement st = conn.createStatement();
         
         // Run the query
-        rs = st.executeQuery(expression);    
+        ResultSet rs = st.executeQuery(expression);
 
         ArrayList<String> result = getResult(rs);
         st.close();
@@ -71,8 +61,7 @@ public class VmManagerDbHsql implements VmManagerDb {
     
     // Use for SQL commands CREATE, DROP, INSERT, and UPDATE
     private synchronized void update(String expression) throws SQLException {
-        Statement st = null;
-        st = conn.createStatement();
+        Statement st = conn.createStatement();
         int i = st.executeUpdate(expression);
         if (i == -1) {
             System.out.println("db error : " + expression);
@@ -85,8 +74,6 @@ public class VmManagerDbHsql implements VmManagerDb {
         // are implementation dependent unless you use the SQL ORDER statement
         ResultSetMetaData meta = rs.getMetaData();
         int colmax = meta.getColumnCount();
-        int i;
-        Object o = null;
 
         // the result set is a cursor into the data.  You can only
         // point to one row at a time
@@ -95,8 +82,8 @@ public class VmManagerDbHsql implements VmManagerDb {
         // or false if there is no next row, which breaks the loop
         ArrayList<String> result = new ArrayList<>();
         for (; rs.next(); ) {
-            for (i = 0; i < colmax; ++i) {
-                o = rs.getObject(i + 1); // In SQL the first column is indexed with 1 not 0
+            for (int i = 0; i < colmax; ++i) {
+                Object o = rs.getObject(i + 1); // In SQL the first column is indexed with 1 not 0
                 result.add(o.toString());
             }
         }
@@ -137,11 +124,9 @@ public class VmManagerDbHsql implements VmManagerDb {
     
     @Override
     public void closeConnection() {
-        Statement st = null;
         try {
-            st = conn.createStatement();
-            // DB writes out to files and performs clean shuts down
-            st.execute("SHUTDOWN");
+            Statement st = conn.createStatement();
+            st.execute("SHUTDOWN"); // DB writes out to files and performs clean shuts down
             conn.close(); // if there are no other open connections
         } catch (SQLException e) {
             System.out.println(ERROR_CLOSE_CONNECTION);
@@ -160,8 +145,7 @@ public class VmManagerDbHsql implements VmManagerDb {
     @Override
     public void insertVm(String vmId, String appId) {
         try {
-            update("INSERT INTO virtual_machines (id, appId) "
-                    + "VALUES ('" + vmId + "', '" + appId + "')");
+            update("INSERT INTO virtual_machines (id, appId) VALUES ('" + vmId + "', '" + appId + "')");
         } catch (SQLException e) {
             System.out.println(ERROR_INSERT_VM);
         }
@@ -224,7 +208,7 @@ public class VmManagerDbHsql implements VmManagerDb {
     
     @Override
     public SchedulingAlgorithm getCurrentSchedulingAlg() {
-        ArrayList<String> schedulingAlgorithms = null;
+        ArrayList<String> schedulingAlgorithms;
         try {
             schedulingAlgorithms = query("SELECT algorithm FROM scheduling_alg WHERE selected = 1");
         } catch (SQLException e) {
@@ -244,7 +228,7 @@ public class VmManagerDbHsql implements VmManagerDb {
     
     @Override
     public ArrayList<SchedulingAlgorithm> getAvailableSchedulingAlg() {
-        ArrayList<String> schedulingAlgorithms = null;
+        ArrayList<String> schedulingAlgorithms;
         try {
             schedulingAlgorithms = query("SELECT algorithm FROM scheduling_alg");
         } catch (SQLException e) {
@@ -252,14 +236,16 @@ public class VmManagerDbHsql implements VmManagerDb {
         }
         ArrayList<SchedulingAlgorithm> result = new ArrayList<>();
         for (String schedAlg: schedulingAlgorithms) {
-            if (schedAlg.equals("consolidation")) {
-                result.add(SchedulingAlgorithm.CONSOLIDATION);
-            }
-            else if (schedAlg.equals("distribution")) {
-                result.add(SchedulingAlgorithm.DISTRIBUTION);
-            }
-            else if (schedAlg.equals("random")) {
-                result.add(SchedulingAlgorithm.RANDOM);
+            switch (schedAlg) {
+                case "consolidation":
+                    result.add(SchedulingAlgorithm.CONSOLIDATION);
+                    break;
+                case "distribution":
+                    result.add(SchedulingAlgorithm.DISTRIBUTION);
+                    break;
+                case "random":
+                    result.add(SchedulingAlgorithm.RANDOM);
+                    break;
             }
         }
         return result;

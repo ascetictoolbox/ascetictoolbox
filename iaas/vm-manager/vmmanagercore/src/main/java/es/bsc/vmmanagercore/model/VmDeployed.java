@@ -44,20 +44,4 @@ public class VmDeployed extends Vm {
         return created;
     }
 
-    public ObjectNode getJsonNode() {
-        JsonNodeFactory factory = JsonNodeFactory.instance;
-        ObjectNode infoVmJson = factory.objectNode();
-        infoVmJson.put("id", id);
-        infoVmJson.put("name", getName());
-        infoVmJson.put("image", getImage());
-        infoVmJson.put("cpus", getCpus());
-        infoVmJson.put("ramMb", getRamMb());
-        infoVmJson.put("diskGb", getDiskGb());
-        infoVmJson.put("state", state);
-        infoVmJson.put("ipAddress", ipAddress);
-        infoVmJson.put("dateCreated", created.toString());
-        infoVmJson.put("applicationId", getApplicationId());
-        return infoVmJson;
-    }
-
 }

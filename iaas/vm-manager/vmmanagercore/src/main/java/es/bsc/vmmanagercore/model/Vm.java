@@ -116,8 +116,7 @@ public class Vm {
             // Check that the path is valid and the file can be read
             File f = new File(initScript);
             if (!f.isFile() || !f.canRead()) {
-                throw new IllegalArgumentException("The path specified for the init script"
-                        + " is not valid");
+                throw new IllegalArgumentException("The path for the init script is not valid");
             }
         }
         this.initScript = initScript;
@@ -125,20 +124,6 @@ public class Vm {
 
     public String getApplicationId() {
         return applicationId;
-    }
-
-    public ObjectNode getJson() {
-        ObjectNode vm = JsonNodeFactory.instance.objectNode();
-        vm.put("name", name);
-        vm.put("image", image);
-        vm.put("cpus", cpus);
-        vm.put("ramMb", ramMb);
-        vm.put("diskGb", diskGb);
-        if (initScript != null) {
-            vm.put("initScript", initScript);
-        }
-        vm.put("applicationId", applicationId);
-        return vm;
     }
 
 }

@@ -41,7 +41,7 @@ public class VmManagerRest {
     private Gson gson = new Gson();
     private static JsonParser parser = new JsonParser();
 
-    VmManager vmManager = new VmManager(DB_NAME);
+    private VmManager vmManager = new VmManager(DB_NAME);
 
     //================================================================================
     // VM Methods
@@ -265,7 +265,7 @@ public class VmManagerRest {
         }
         String algorithm = jsonObject.get("algorithm").getAsString();
 
-        SchedulingAlgorithm schedulingAlg = null;
+        SchedulingAlgorithm schedulingAlg;
         if (algorithm.equals(SchedulingAlgorithm.CONSOLIDATION.getAlgorithm())) {
             schedulingAlg = SchedulingAlgorithm.CONSOLIDATION;
         }

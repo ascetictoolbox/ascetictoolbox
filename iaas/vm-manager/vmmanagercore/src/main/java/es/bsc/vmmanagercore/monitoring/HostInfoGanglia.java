@@ -15,7 +15,6 @@ import es.bsc.monitoring.ganglia.infrastructure.Host;
  */
 public class HostInfoGanglia extends HostInfo {
 
-    //private Ganglia ganglia;
     public Host gangliaHost;
 
     public HostInfoGanglia(String hostname) {

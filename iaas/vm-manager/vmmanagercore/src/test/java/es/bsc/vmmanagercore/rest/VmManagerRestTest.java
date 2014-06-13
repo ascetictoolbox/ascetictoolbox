@@ -67,6 +67,10 @@ public class VmManagerRestTest {
             VmDeployed vm = gson.fromJson(vmJson, VmDeployed.class);
             idsVmsDeployedBeforeTests.add(vm.getId());
         }
+
+        for (String id: idsVmsDeployedBeforeTests) {
+            System.out.println(id);
+        }
     }
 
     @AfterClass
@@ -370,8 +374,7 @@ public class VmManagerRestTest {
 
         // Get the scheduling algorithm being used now
         String currentSchedAlg = get(testDeploymentBaseUrl + "scheduling_algorithms/current").asString();
-        String currentSchedAlgName = gson.fromJson(currentSchedAlg, JsonObject.class)
-                .get("name").getAsString();
+        String currentSchedAlgName = gson.fromJson(currentSchedAlg, JsonObject.class).get("name").getAsString();
 
         // Make sure that the algorithm used now is one of the available ones
         assertTrue(availableSchedAlgNames.contains(currentSchedAlgName));

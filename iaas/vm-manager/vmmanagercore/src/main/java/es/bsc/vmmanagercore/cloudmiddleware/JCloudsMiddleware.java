@@ -9,13 +9,7 @@ import java.util.Set;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.validator.UrlValidator;
 import org.jclouds.ContextBuilder;
-import org.jclouds.openstack.nova.v2_0.domain.Address;
-import org.jclouds.openstack.nova.v2_0.domain.Flavor;
-import org.jclouds.openstack.nova.v2_0.domain.Image;
-import org.jclouds.openstack.nova.v2_0.domain.RebootType;
-import org.jclouds.openstack.nova.v2_0.domain.Server;
-import org.jclouds.openstack.nova.v2_0.domain.ServerCreated;
-import org.jclouds.openstack.nova.v2_0.domain.ServerExtendedStatus;
+import org.jclouds.openstack.nova.v2_0.domain.*;
 import org.jclouds.openstack.nova.v2_0.extensions.ServerAdminApi;
 import org.jclouds.openstack.nova.v2_0.NovaApi;
 import org.jclouds.openstack.nova.v2_0.NovaApiMetadata;
@@ -50,17 +44,13 @@ public class JCloudsMiddleware implements CloudMiddleware {
     private static final String BUILD = "BUILD";
     private static final String DELETING = "deleting";
 
-    //OpenStack host resources
-    public final String TOTAL_RESOURCES = "(total)";
-    public final String USED_RESOURCES = "(used_now)";
-
     //needed by JClouds
     private NovaApi novaApi;
     private Set<String> zones;
 
     private String[] hosts; //hosts in the cluster
     private OpenStackGlance glanceConnector = new OpenStackGlance(); //connector for OS Glance
-    private VmManagerDb db; //DB that contains the relationship VM-application
+    private VmManagerDb db; //DB that contains the relationship VM-application, the scheduling algorithms, etc.
 
     /**
      * Class constructor.
@@ -78,83 +68,84 @@ public class JCloudsMiddleware implements CloudMiddleware {
         this.db = db;
     }
 
+    private void includeDstNodeInDeploymentOption(String dstNode, CreateServerOptions options) {
+        if (dstNode != null) {
+            options.availabilityZone("nova:" + dstNode);
+        }
+    }
+
+    private void includeInitScriptInDeploymentOptions(Vm vmDescription, CreateServerOptions options) {
+        String initScript = vmDescription.getInitScript();
+        if (initScript != null) {
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(initScript);
+            try {
+                options.userData(IOUtils.toByteArray(inputStream));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     @Override
     public String deploy(Vm vmDescription, String dstNode) {
         String vmId = null;
 
-        for (String zone: zones) {
-            //TODO for now I assume that there is only one zone called "regionOne"
-            if ("regionOne".equals(zone)) {
+        // TODO This could be important/problematic in the future.
+        // Right now I am assuming that the cluster only has one zone configured for deployments.
+        String zone = zones.toArray()[0].toString();
 
-                //specs of the flavor
-                int cpus = vmDescription.getCpus();
-                int ram = vmDescription.getRamMb();
-                int disk = vmDescription.getDiskGb();
+        //specs of the flavor
+        int cpus = vmDescription.getCpus();
+        int ram = vmDescription.getRamMb();
+        int disk = vmDescription.getDiskGb();
 
-                //check if exists a flavor with the same specs as the one we need to use
-                String flavorId = getFlavorId(zone, cpus, ram, disk);
+        //check if exists a flavor with the same specs as the one we need to use
+        String flavorId = getFlavorId(zone, cpus, ram, disk);
 
-                //create the flavor if it does not exist
-                if (flavorId == null) {
-                    String id, name;
-                    id = name = cpus + "-" + disk + "-" + ram;
-                    flavorId = createFlavor(zone, id, name, cpus, ram, disk);
-                }
+        //create the flavor if it does not exist
+        if (flavorId == null) {
+            String id, name;
+            id = name = cpus + "-" + disk + "-" + ram;
+            flavorId = createFlavor(zone, id, name, cpus, ram, disk);
+        }
 
-                //specify the node on which the VM needs to be deployed
-                CreateServerOptions options = new CreateServerOptions();
-                if (dstNode != null) {
-                    options.availabilityZone("nova:" + dstNode);
-                }
+        //specify deployment options
+        CreateServerOptions options = new CreateServerOptions();
+        includeDstNodeInDeploymentOption(dstNode, options);
+        includeInitScriptInDeploymentOptions(vmDescription, options);
 
-                //specify an init-script
-                String initScript = vmDescription.getInitScript();
-                if (initScript != null) {
-                    InputStream inputStream =
-                            getClass().getClassLoader().getResourceAsStream(initScript);
-                    try {
-                        options.userData(IOUtils.toByteArray(inputStream));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-
-                //check whether the user specified an image ID or a URL containing the image
-                String imageId;
-                UrlValidator urlValidator = new UrlValidator();
-                //if it is a URL
-                if (urlValidator.isValid(vmDescription.getImage())) {
-                    //create the image in Glance
-                    imageId = glanceConnector.createImageFromUrl(new ImageToUpload(
-                            vmDescription.getImage(), vmDescription.getImage()));
-                }
-                //if it is an ID
-                else {
-                    imageId = vmDescription.getImage();
-                    //throw an exception if the ID is not valid
-                    if (!existsImageWithId(imageId)) {
-                        throw new IllegalArgumentException("There is not an image with the"
-                                + " specified ID");
-                    }
-                    //throw an exception if the image is not active
-                    if (!glanceConnector.imageIsActive(imageId)) {
-                        throw new IllegalArgumentException("The image specified is not active");
-                    }
-                }
-
-                //deploy the VM
-                ServerApi serverApi = novaApi.getServerApiForZone(zone);
-                ServerCreated server = serverApi.create(vmDescription.getName(),
-                        imageId, flavorId, options);
-
-                //wait until the VM is deployed
-                while (serverApi.get(server.getId()).getStatus().toString().equals(BUILD));
-
-                //get the VM id
-                vmId = server.getId();
+        //check whether the user specified an image ID or a URL containing the image
+        String imageId;
+        UrlValidator urlValidator = new UrlValidator();
+        //if it is a URL
+        if (urlValidator.isValid(vmDescription.getImage())) {
+            //create the image in Glance
+            imageId = glanceConnector.createImageFromUrl(new ImageToUpload(
+                    vmDescription.getImage(), vmDescription.getImage()));
+        }
+        //if it is an ID
+        else {
+            imageId = vmDescription.getImage();
+            //throw an exception if the ID is not valid
+            if (!existsImageWithId(imageId)) {
+                throw new IllegalArgumentException("There is not an image with the specified ID");
+            }
+            //throw an exception if the image is not active
+            if (!glanceConnector.imageIsActive(imageId)) {
+                throw new IllegalArgumentException("The image specified is not active");
             }
         }
+
+        //deploy the VM
+        ServerApi serverApi = novaApi.getServerApiForZone(zone);
+        ServerCreated server = serverApi.create(vmDescription.getName(), imageId, flavorId, options);
+
+        //wait until the VM is deployed
+        while (serverApi.get(server.getId()).getStatus().toString().equals(BUILD));
+
+        //get the VM id
+        vmId = server.getId();
+
         return vmId;
     }
 
@@ -178,14 +169,11 @@ public class JCloudsMiddleware implements CloudMiddleware {
 
             //if the server is in the zone
             if (server != null) {
-
                 //get the API with admin functions
-                Optional<? extends ServerAdminApi> serverAdminApi =
-                        novaApi.getServerAdminExtensionForZone(zone);
+                Optional<? extends ServerAdminApi> serverAdminApi = novaApi.getServerAdminExtensionForZone(zone);
 
                 //live-migrate the VM to the destination node
                 serverAdminApi.get().liveMigrate(vmId, destinationNode, false, false);
-
             }
         }
     }
@@ -249,17 +237,28 @@ public class JCloudsMiddleware implements CloudMiddleware {
             ServerApi serverApi = novaApi.getServerApiForZone(zone);
             for (Server server: serverApi.listInDetail().concat()) {
                 ServerExtendedStatus vmStatus = server.getExtendedStatus().get();
-                String vmState = vmStatus.getVmState();
-                String vmTask = vmStatus.getTaskState();
 
                 //add the VM to the result if it is active and it is not being deleted
-                if (ACTIVE.equals(vmState) && !(DELETING.equals(vmTask))) {
+                boolean vmIsActive = ACTIVE.equals(vmStatus.getVmState());
+                boolean vmIsBeingDeleted = DELETING.equals(vmStatus.getTaskState());
+                if (vmIsActive && !vmIsBeingDeleted) {
                     vmIds.add(server.getId());
                 }
-
             }
         }
         return vmIds;
+    }
+
+    // TODO I need to redo this. The name of the network should be obtained automatically
+    private String getVmIp(Server server) {
+        String vmIp;
+        if (server.getAddresses().get("vmnet").toArray().length != 0) { // VM network
+            vmIp = ((Address) server.getAddresses().get("vmnet").toArray()[0]).getAddr();
+        }
+        else { // Nat network
+            vmIp = (((Address) server.getAddresses().get("NattedNetwork").toArray()[0]).getAddr());
+        }
+        return vmIp;
     }
 
     @Override
@@ -272,20 +271,14 @@ public class JCloudsMiddleware implements CloudMiddleware {
 
             //if the VM is in the zone
             if (server != null ) {
-
-                //check the state of the VM
+                //if the VM is active and is not being deleted. Get its information.
                 ServerExtendedStatus vmStatus = server.getExtendedStatus().get();
-                String vmState = vmStatus.getVmState();
-                String vmTask = vmStatus.getTaskState();
-
-                //if the VM is active and is not being deleted
-                if (ACTIVE.equals(vmState) && !(DELETING.equals(vmTask))) {
-
-                    //get the information of the VM
+                boolean vmIsActive = ACTIVE.equals(vmStatus.getVmState());
+                boolean vmIsBeingDeleted = DELETING.equals(vmStatus.getTaskState());
+                if (vmIsActive && !vmIsBeingDeleted) {
                     FlavorApi flavorApi = novaApi.getFlavorApiForZone(zone);
                     Flavor flavor = flavorApi.get(server.getFlavor().getId());
-                    String vmIp = ((Address) server.getAddresses().get("vmnet").toArray()[0])
-                            .getAddr();
+                    String vmIp = getVmIp(server);
                     vmDescription = new VmDeployed(server.getName(),
                             server.getImage().getId(), flavor.getVcpus(), flavor.getRam(),
                             flavor.getDisk(), null, db.getAppIdOfVm(vmId), vmId,
@@ -293,6 +286,7 @@ public class JCloudsMiddleware implements CloudMiddleware {
 
                 }
             }
+
         }
 
         return vmDescription;
@@ -304,8 +298,7 @@ public class JCloudsMiddleware implements CloudMiddleware {
         for (String zone: zones) {
             ImageApi imageApi = novaApi.getImageApiForZone(zone);
             for (Image image: imageApi.listInDetail().concat()) {
-                vmImages.add(new ImageUploaded(image.getId(), image.getName(),
-                        image.getStatus().toString()));
+                vmImages.add(new ImageUploaded(image.getId(), image.getName(), image.getStatus().toString()));
             }
         }
         return vmImages;
@@ -317,8 +310,7 @@ public class JCloudsMiddleware implements CloudMiddleware {
         for (String zone: zones) {
             ImageApi imageApi = novaApi.getImageApiForZone(zone);
             Image image = imageApi.get(imageId);
-            imageDescription = new ImageUploaded(image.getId(), image.getName(),
-                    image.getStatus().toString());
+            imageDescription = new ImageUploaded(image.getId(), image.getName(), image.getStatus().toString());
         }
         return imageDescription;
     }
@@ -367,8 +359,7 @@ public class JCloudsMiddleware implements CloudMiddleware {
     private String getFlavorId(String zone, int cpus, int memoryMb, int diskGb) {
         FlavorApi flavorApi = novaApi.getFlavorApiForZone(zone);
         for (Flavor flavor: flavorApi.listInDetail().concat()) {
-            if (flavor.getVcpus() == cpus && flavor.getRam() == memoryMb &&
-                    flavor.getDisk() == diskGb) {
+            if (flavor.getVcpus() == cpus && flavor.getRam() == memoryMb && flavor.getDisk() == diskGb) {
                 return flavor.getId();
             }
         }
@@ -383,12 +374,9 @@ public class JCloudsMiddleware implements CloudMiddleware {
      * @param diskGb the amount of disk space of the flavor in GB
      * @return The ID of the created flavor.
      */
-    private String createFlavor(String zone, String id, String name, int cpus, int ramMb,
-            int diskGb) {
-        FlavorApi flavorApi = novaApi.getFlavorApiForZone(zone);
-        Flavor flavor = Flavor.builder().id(id).name(name).
-                vcpus(cpus).ram(ramMb).disk(diskGb).build();
-        flavorApi.create(flavor);
+    private String createFlavor(String zone, String id, String name, int cpus, int ramMb, int diskGb) {
+        Flavor flavor = Flavor.builder().id(id).name(name).vcpus(cpus).ram(ramMb).disk(diskGb).build();
+        novaApi.getFlavorApiForZone(zone).create(flavor);
         return id;
     }
 

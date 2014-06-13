@@ -140,26 +140,28 @@ public class VmManager {
     }
 
     public void performActionOnVm(String vmId, String action) {
-        if (action.equals("rebootHard")) {
-            cloudMiddleware.rebootHardVm(vmId);
-        }
-        else if (action.equals("rebootSoft")) {
-            cloudMiddleware.rebootSoftVm(vmId);
-        }
-        else if (action.equals("start")) {
-            cloudMiddleware.startVm(vmId);
-        }
-        else if (action.equals("stop")) {
-            cloudMiddleware.stopVm(vmId);
-        }
-        else if (action.equals("suspend")) {
-            cloudMiddleware.suspendVm(vmId);
-        }
-        else if (action.equals("resume")) {
-            cloudMiddleware.resumeVm(vmId);
-        }
-        else {
-            // TODO: error case
+        switch (action) {
+            case "rebootHard":
+                cloudMiddleware.rebootHardVm(vmId);
+                break;
+            case "rebootSoft":
+                cloudMiddleware.rebootSoftVm(vmId);
+                break;
+            case "start":
+                cloudMiddleware.startVm(vmId);
+                break;
+            case "stop":
+                cloudMiddleware.stopVm(vmId);
+                break;
+            case "suspend":
+                cloudMiddleware.suspendVm(vmId);
+                break;
+            case "resume":
+                cloudMiddleware.resumeVm(vmId);
+                break;
+            default:
+                // TODO: error case
+                break;
         }
     }
 

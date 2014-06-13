@@ -12,7 +12,7 @@ import java.util.Properties;
 public class VmManagerConfiguration {
 
     // Configuration file
-    private String CONF_FILE_LOCATION = "configBSC.properties";
+    private static final String CONF_FILE_LOCATION = "configBSC.properties";
 
     // OpenStack configuration
     public String openStackIP;
@@ -80,7 +80,7 @@ public class VmManagerConfiguration {
         testingDeploymentBaseUrl = prop.getProperty("testingDeploymentBaseUrl");
         deployBaseUrl = prop.getProperty("deployBaseUrl");
         deployPackage = prop.getProperty("deployPackage");
-        hosts = prop.getProperty("hosts").toString().split(",");
+        hosts = prop.getProperty("hosts").split(",");
 
         if(prop.getProperty("monitoring").equals("openstack")) {
             monitoring = Monitoring.OPENSTACK;
