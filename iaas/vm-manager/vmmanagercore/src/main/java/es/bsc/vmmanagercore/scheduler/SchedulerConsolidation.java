@@ -35,10 +35,8 @@ public class SchedulerConsolidation implements Scheduler {
 
             //calculate the future usage of the host if the VM was deployed in that host
             double futureCpus = hostInfo.getAssignedCpus() + hostInfo.getReservedCpus() + vmCpus;
-            double futureRamMb = hostInfo.getAssignedMemoryMb() +
-                    hostInfo.getReservedMemoryMb() + vmMemory;
-            double futureDiskGb = hostInfo.getAssignedDiskGb() +
-                    hostInfo.getReservedDiskGb() + vmDisk;
+            double futureRamMb = hostInfo.getAssignedMemoryMb() + hostInfo.getReservedMemoryMb() + vmMemory;
+            double futureDiskGb = hostInfo.getAssignedDiskGb() + hostInfo.getReservedDiskGb() + vmDisk;
 
             //calculate the future load (%) of the host if the VM is deployed in that host
             double futureCpuLoad = futureCpus/hostInfo.getTotalCpus();
@@ -47,8 +45,7 @@ public class SchedulerConsolidation implements Scheduler {
 
             //check if the host will have the highest load after deploying the VM
             boolean moreCpu = futureCpuLoad > maxFutureCpuLoad;
-            boolean sameCpuMoreMemory = (futureCpuLoad == maxFutureCpuLoad) &&
-                    (futureMemoryLoad > maxFutureMemoryLoad);
+            boolean sameCpuMoreMemory = (futureCpuLoad == maxFutureCpuLoad) && (futureMemoryLoad > maxFutureMemoryLoad);
             boolean sameCpuSameMemoryMoreDisk = (futureCpuLoad == maxFutureCpuLoad) &&
                     (futureMemoryLoad == maxFutureMemoryLoad) &&
                     (futureDiskLoad > maxFutureDiskLoad);
@@ -70,8 +67,7 @@ public class SchedulerConsolidation implements Scheduler {
     }
 
     @Override
-    public HashMap<Vm, String> schedule(ArrayList<Vm> vmDescriptions,
-            ArrayList<HostInfo> hostsInfo) {
+    public HashMap<Vm, String> schedule(ArrayList<Vm> vmDescriptions, ArrayList<HostInfo> hostsInfo) {
         HashMap<Vm, String> scheduling = new HashMap<>();
 
         //for each of the VMs to be scheduled

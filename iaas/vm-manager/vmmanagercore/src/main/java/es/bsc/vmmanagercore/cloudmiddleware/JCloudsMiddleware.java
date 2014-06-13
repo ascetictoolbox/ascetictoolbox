@@ -36,6 +36,10 @@ import es.bsc.vmmanagercore.model.VmDeployed;
  */
 public class JCloudsMiddleware implements CloudMiddleware {
 
+    /* NOTE: in the deployment function, I am assuming that there is only one OpenStack zone configured.
+    The rest of the functions should work fine even with several zones configured, but this scenario has
+    not been tested. */
+
     //OpenStack default flavors
     public static final String[] DEFAULT_FLAVORS = new String[] {"1","2","3","4","5"};
 
