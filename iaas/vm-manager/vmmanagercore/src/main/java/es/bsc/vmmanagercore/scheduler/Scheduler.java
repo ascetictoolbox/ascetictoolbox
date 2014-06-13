@@ -22,7 +22,6 @@ public interface Scheduler {
      * @return HashMap that contains for each VM description, the name of the host where
      * the VM should be deployed according to the scheduling algorithm
      */
-    public HashMap<Vm, String> schedule(ArrayList<Vm> vmDescriptions,
-            ArrayList<HostInfo> hostsInfo);
+    public HashMap<Vm, String> schedule(ArrayList<Vm> vmDescriptions, ArrayList<HostInfo> hostsInfo);
 
 }

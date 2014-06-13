@@ -47,14 +47,12 @@ public class SchedulerConsolidation implements Scheduler {
             boolean moreCpu = futureCpuLoad > maxFutureCpuLoad;
             boolean sameCpuMoreMemory = (futureCpuLoad == maxFutureCpuLoad) && (futureMemoryLoad > maxFutureMemoryLoad);
             boolean sameCpuSameMemoryMoreDisk = (futureCpuLoad == maxFutureCpuLoad) &&
-                    (futureMemoryLoad == maxFutureMemoryLoad) &&
-                    (futureDiskLoad > maxFutureDiskLoad);
+                    (futureMemoryLoad == maxFutureMemoryLoad) && (futureDiskLoad > maxFutureDiskLoad);
 
             //if the host will be the most loaded according to the specified criteria (CPU more
             //important than memory, and memory more important than disk)
             if (moreCpu || sameCpuMoreMemory || sameCpuSameMemoryMoreDisk) {
-                //save its information so we can compare the
-                //hosts that we have not analyzed yet against it
+                //save its information so we can compare the hosts that we have not analyzed yet against it
                 selectedHost = hostInfo.getHostname();
                 maxFutureCpuLoad = futureCpuLoad;
                 maxFutureMemoryLoad = futureMemoryLoad;
