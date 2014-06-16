@@ -67,10 +67,6 @@ public class VmManagerRestTest {
             VmDeployed vm = gson.fromJson(vmJson, VmDeployed.class);
             idsVmsDeployedBeforeTests.add(vm.getId());
         }
-
-        for (String id: idsVmsDeployedBeforeTests) {
-            System.out.println(id);
-        }
     }
 
     @AfterClass

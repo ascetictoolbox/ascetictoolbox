@@ -25,7 +25,7 @@ public class CorsSupportFilter implements ContainerResponseFilter {
 
         String reqHead = req.getHeaderValue("Access-Control-Request-Headers");
 
-        if(null != reqHead && !reqHead.equals(null)){
+        if (null != reqHead && !reqHead.equals(null)){
             resp.header("Access-Control-Allow-Headers", reqHead);
         }
 

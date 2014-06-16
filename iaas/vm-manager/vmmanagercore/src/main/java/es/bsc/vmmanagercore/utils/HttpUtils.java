@@ -37,12 +37,7 @@ public class HttpUtils {
     public static URI buildURI(String scheme, String host, int port, String path) {
         URI uri = null;
         try {
-            uri = new URIBuilder()
-                    .setScheme(scheme)
-                    .setHost(host)
-                    .setPort(port)
-                    .setPath(path)
-                    .build();
+            uri = new URIBuilder().setScheme(scheme).setHost(host).setPort(port).setPath(path).build();
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -121,8 +116,7 @@ public class HttpUtils {
      * @param entity Entity of the request.
      * @return @return The response of the HTTP request
      */
-    public static String executeHttpRequest(String methodType,
-            URI uri, HashMap<String, String> header, String entity) {
+    public static String executeHttpRequest(String methodType, URI uri, HashMap<String, String> header, String entity) {
         //build the request
         HttpRequestBase request = buildHttpRequest(methodType, uri, header, entity);
 

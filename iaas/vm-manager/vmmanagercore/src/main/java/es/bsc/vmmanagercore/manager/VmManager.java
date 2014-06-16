@@ -18,9 +18,6 @@ import es.bsc.vmmanagercore.monitoring.HostInfo;
 import es.bsc.vmmanagercore.monitoring.HostInfoGanglia;
 import es.bsc.vmmanagercore.monitoring.HostInfoOpenStack;
 import es.bsc.vmmanagercore.scheduler.Scheduler;
-import es.bsc.vmmanagercore.scheduler.SchedulerConsolidation;
-import es.bsc.vmmanagercore.scheduler.SchedulerDistribution;
-import es.bsc.vmmanagercore.scheduler.SchedulerRandom;
 
 /**
  * VM Manager.
@@ -48,7 +45,7 @@ public class VmManager {
         VmManagerConfiguration conf = VmManagerConfiguration.getInstance();
         selectMiddleware(conf.middleware);
         selectMonitoring(conf.monitoring, conf.hosts);
-        selectSchedulingPolicy();
+        scheduler = new Scheduler(db.getCurrentSchedulingAlg());
     }
 
 
@@ -220,23 +217,6 @@ public class VmManager {
     //================================================================================
     // Auxiliary Methods
     //================================================================================
-
-    private void selectSchedulingPolicy() {
-        SchedulingAlgorithm currentSchedAlg = db.getCurrentSchedulingAlg();
-        switch(currentSchedAlg) {
-        case CONSOLIDATION:
-            scheduler = new SchedulerConsolidation();
-            break;
-        case DISTRIBUTION:
-            scheduler = new SchedulerDistribution();
-            break;
-        case RANDOM:
-            scheduler = new SchedulerRandom();
-            break;
-        default:
-            break;
-        }
-    }
 
     private void selectMonitoring(VmManagerConfiguration.Monitoring monitoring, String[] hosts) {
         hostsInfo = new ArrayList<>();

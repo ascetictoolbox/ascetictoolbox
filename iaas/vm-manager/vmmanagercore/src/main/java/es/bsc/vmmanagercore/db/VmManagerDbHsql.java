@@ -7,6 +7,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import es.bsc.vmmanagercore.model.SchedulingAlgorithm;
 
@@ -90,7 +91,7 @@ public class VmManagerDbHsql implements VmManagerDb {
         return result;
     }
     
-    private void insertAvailableSchedAlg() {
+    private synchronized void insertAvailableSchedAlg() {
         try {
             for (SchedulingAlgorithm schedAlg: availableSchedAlg) {
                 update("INSERT INTO scheduling_alg (algorithm, selected) VALUES "
@@ -106,7 +107,7 @@ public class VmManagerDbHsql implements VmManagerDb {
         }
     }
     
-    private void setupDb() {
+    private synchronized void setupDb() {
         try {
             update("CREATE TABLE IF NOT EXISTS virtual_machines "
                     + "(id VARCHAR(255), appId VARCHAR(255), PRIMARY KEY (id)) ");
@@ -117,6 +118,7 @@ public class VmManagerDbHsql implements VmManagerDb {
         }
 
         // Insert algorithms just when the DB is created
+        // TODO The if is executed more than once. This needs to be fixed.
         if (getAvailableSchedulingAlg().size() == 0) {
             insertAvailableSchedAlg();
         }
@@ -248,6 +250,13 @@ public class VmManagerDbHsql implements VmManagerDb {
                     break;
             }
         }
+
+        // Return the list without duplicates.
+        // TODO there should not be duplicates. I need to fix the setupDb function.
+        HashSet<SchedulingAlgorithm> hashSet = new HashSet<>();
+        hashSet.addAll(result);
+        result.clear();
+        result.addAll(hashSet);
         return result;
     }
     

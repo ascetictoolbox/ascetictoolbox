@@ -1,7 +1,6 @@
 package es.bsc.vmmanagercore.scheduler;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import es.bsc.vmmanagercore.model.Vm;
 import es.bsc.vmmanagercore.monitoring.HostInfo;
@@ -12,20 +11,18 @@ import es.bsc.vmmanagercore.monitoring.HostInfo;
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  *
  */
-public class SchedulerConsolidation implements Scheduler {
+public class SchedAlgConsolidation implements SchedAlgorithm {
 
-    public SchedulerConsolidation() {}
+    public SchedAlgConsolidation() {}
 
     /**
      * Decides on which host deploy a VM according to its CPU, memory and disk requirements
      * @param hostsInfo Information of the hosts of the infrastructure
-     * @param vmCpus Number of available CPUs required
-     * @param vmMemory Amount of memory required
-     * @param vmDisk Amount of disk space required
+     * @param vm VM that needs to be deployed
      * @return The name of the host on which the VM should be deployed. Null if none of the hosts
      * has enough resources available
      */
-    private String chooseHost(ArrayList<HostInfo> hostsInfo, int vmCpus, int vmMemory, int vmDisk) {
+    public String chooseHost(ArrayList<HostInfo> hostsInfo, Vm vm) {
         double maxFutureCpuLoad, maxFutureMemoryLoad, maxFutureDiskLoad;
         maxFutureCpuLoad = maxFutureMemoryLoad = maxFutureDiskLoad = 0;
         String selectedHost = null;
@@ -34,9 +31,9 @@ public class SchedulerConsolidation implements Scheduler {
         for (HostInfo hostInfo: hostsInfo) {
 
             //calculate the future usage of the host if the VM was deployed in that host
-            double futureCpus = hostInfo.getAssignedCpus() + hostInfo.getReservedCpus() + vmCpus;
-            double futureRamMb = hostInfo.getAssignedMemoryMb() + hostInfo.getReservedMemoryMb() + vmMemory;
-            double futureDiskGb = hostInfo.getAssignedDiskGb() + hostInfo.getReservedDiskGb() + vmDisk;
+            double futureCpus = hostInfo.getAssignedCpus() + hostInfo.getReservedCpus() + vm.getCpus();
+            double futureRamMb = hostInfo.getAssignedMemoryMb() + hostInfo.getReservedMemoryMb() + vm.getRamMb();
+            double futureDiskGb = hostInfo.getAssignedDiskGb() + hostInfo.getReservedDiskGb() + vm.getDiskGb();
 
             //calculate the future load (%) of the host if the VM is deployed in that host
             double futureCpuLoad = futureCpus/hostInfo.getTotalCpus();
@@ -62,40 +59,6 @@ public class SchedulerConsolidation implements Scheduler {
         }
 
         return selectedHost;
-    }
-
-    @Override
-    public HashMap<Vm, String> schedule(ArrayList<Vm> vmDescriptions, ArrayList<HostInfo> hostsInfo) {
-        HashMap<Vm, String> scheduling = new HashMap<>();
-
-        //for each of the VMs to be scheduled
-        for (Vm vmDescription: vmDescriptions) {
-
-            //get hosts with enough resources
-            ArrayList<HostInfo> hostsWithEnoughResources = HostFilter.filter(
-                    hostsInfo, vmDescription.getCpus(), vmDescription.getRamMb(),
-                    vmDescription.getDiskGb());
-
-            //from the hosts with enough available resources, get the host that will have
-            //less free resources after deploying the VM
-            String selectedHost = chooseHost(hostsWithEnoughResources, vmDescription.getCpus(),
-                    vmDescription.getRamMb(), vmDescription.getDiskGb());
-
-            //add the host to the result
-            scheduling.put(vmDescription, selectedHost);
-
-            //reserve the resources that the VM needs
-            for (HostInfo host: hostsWithEnoughResources) {
-                if (host.getHostname().equals(selectedHost)) {
-                    host.setReservedCpus(vmDescription.getCpus());
-                    host.setReservedMemoryMb(vmDescription.getRamMb());
-                    host.setReservedDiskGb(vmDescription.getDiskGb());
-                }
-            }
-
-        }
-
-        return scheduling;
     }
 
 }

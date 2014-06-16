@@ -50,7 +50,6 @@ public class Vm {
         this.initScript = null;
         if (json.has("initScript")) {
             if (!json.get("initScript").asText().equals("")) {
-                System.out.println(json.get("initScript").asText());
                 setInitScript(json.get("initScript").asText());
             }
         }

@@ -40,28 +40,28 @@ public class JCloudsMiddleware implements CloudMiddleware {
     The rest of the functions should work fine even with several zones configured, but this scenario has
     not been tested. */
 
-    //OpenStack default flavors
+    // OpenStack default flavors
     public static final String[] DEFAULT_FLAVORS = new String[] {"1","2","3","4","5"};
 
-    //OpenStack VMs state
+    // OpenStack VMs state
     private static final String ACTIVE = "active";
     private static final String BUILD = "BUILD";
     private static final String DELETING = "deleting";
 
-    //needed by JClouds
+    // Needed by JClouds
     private NovaApi novaApi;
     private Set<String> zones;
 
     private String[] hosts; //hosts in the cluster
-    private OpenStackGlance glanceConnector = new OpenStackGlance(); //connector for OS Glance
-    private VmManagerDb db; //DB that contains the relationship VM-application, the scheduling algorithms, etc.
+    private OpenStackGlance glanceConnector = new OpenStackGlance(); // Connector for OS Glance
+    private VmManagerDb db; // DB that contains the relationship VM-application, the scheduling algorithms, etc.
 
     /**
      * Class constructor.
      * @param db Database used by the VM Manager
      */
     public JCloudsMiddleware(VmManagerDb db) {
-        //connect to the infrastructure and initialize JClouds attributes
+        // Connect to the infrastructure and initialize JClouds attributes
         VmManagerConfiguration conf = VmManagerConfiguration.getInstance();
         novaApi = ContextBuilder.newBuilder(new NovaApiMetadata())
                 .endpoint("http://" + conf.openStackIP + ":" + conf.keyStonePort + "/v2.0")
@@ -92,62 +92,62 @@ public class JCloudsMiddleware implements CloudMiddleware {
 
     @Override
     public String deploy(Vm vmDescription, String dstNode) {
-        String vmId = null;
+        String vmId;
 
         // TODO This could be important/problematic in the future.
         // Right now I am assuming that the cluster only has one zone configured for deployments.
         String zone = zones.toArray()[0].toString();
 
-        //specs of the flavor
+        // Specs of the flavor
         int cpus = vmDescription.getCpus();
         int ram = vmDescription.getRamMb();
         int disk = vmDescription.getDiskGb();
 
-        //check if exists a flavor with the same specs as the one we need to use
+        // Check if exists a flavor with the same specs as the one we need to use
         String flavorId = getFlavorId(zone, cpus, ram, disk);
 
-        //create the flavor if it does not exist
+        // Create the flavor if it does not exist
         if (flavorId == null) {
             String id, name;
             id = name = cpus + "-" + disk + "-" + ram;
             flavorId = createFlavor(zone, id, name, cpus, ram, disk);
         }
 
-        //specify deployment options
+        // Specify deployment options
         CreateServerOptions options = new CreateServerOptions();
         includeDstNodeInDeploymentOption(dstNode, options);
         includeInitScriptInDeploymentOptions(vmDescription, options);
 
-        //check whether the user specified an image ID or a URL containing the image
+        // Check whether the user specified an image ID or a URL containing the image
         String imageId;
         UrlValidator urlValidator = new UrlValidator();
-        //if it is a URL
+        // If it is a URL
         if (urlValidator.isValid(vmDescription.getImage())) {
-            //create the image in Glance
+            // Create the image in Glance
             imageId = glanceConnector.createImageFromUrl(new ImageToUpload(
                     vmDescription.getImage(), vmDescription.getImage()));
         }
-        //if it is an ID
+        // If it is an ID
         else {
             imageId = vmDescription.getImage();
-            //throw an exception if the ID is not valid
+            // Throw an exception if the ID is not valid
             if (!existsImageWithId(imageId)) {
                 throw new IllegalArgumentException("There is not an image with the specified ID");
             }
-            //throw an exception if the image is not active
+            // Throw an exception if the image is not active
             if (!glanceConnector.imageIsActive(imageId)) {
                 throw new IllegalArgumentException("The image specified is not active");
             }
         }
 
-        //deploy the VM
+        // Deploy the VM
         ServerApi serverApi = novaApi.getServerApiForZone(zone);
         ServerCreated server = serverApi.create(vmDescription.getName(), imageId, flavorId, options);
 
-        //wait until the VM is deployed
+        // Wait until the VM is deployed
         while (serverApi.get(server.getId()).getStatus().toString().equals(BUILD));
 
-        //get the VM id
+        // Get the VM id
         vmId = server.getId();
 
         return vmId;
@@ -158,7 +158,7 @@ public class JCloudsMiddleware implements CloudMiddleware {
         for (String zone: zones) {
             ServerApi serverApi = novaApi.getServerApiForZone(zone);
             Server server = serverApi.get(vmId);
-            if (server != null) { //if the VM is in the zone
+            if (server != null) { // If the VM is in the zone
                 serverApi.delete(vmId); // Delete the VM
                 while (server.getStatus().toString().equals(DELETING)); // Wait while deleting
             }
@@ -171,12 +171,12 @@ public class JCloudsMiddleware implements CloudMiddleware {
             ServerApi serverApi = novaApi.getServerApiForZone(zone);
             Server server = serverApi.get(vmId);
 
-            //if the server is in the zone
+            // If the server is in the zone
             if (server != null) {
-                //get the API with admin functions
+                // Get the API with admin functions
                 Optional<? extends ServerAdminApi> serverAdminApi = novaApi.getServerAdminExtensionForZone(zone);
 
-                //live-migrate the VM to the destination node
+                // Live-migrate the VM to the destination node
                 serverAdminApi.get().liveMigrate(vmId, destinationNode, false, false);
             }
         }
@@ -242,7 +242,7 @@ public class JCloudsMiddleware implements CloudMiddleware {
             for (Server server: serverApi.listInDetail().concat()) {
                 ServerExtendedStatus vmStatus = server.getExtendedStatus().get();
 
-                //add the VM to the result if it is active and it is not being deleted
+                // Add the VM to the result if it is active and it is not being deleted
                 boolean vmIsActive = ACTIVE.equals(vmStatus.getVmState());
                 boolean vmIsBeingDeleted = DELETING.equals(vmStatus.getTaskState());
                 if (vmIsActive && !vmIsBeingDeleted) {
@@ -273,9 +273,9 @@ public class JCloudsMiddleware implements CloudMiddleware {
             ServerApi serverApi = novaApi.getServerApiForZone(zone);
             Server server = serverApi.get(vmId);
 
-            //if the VM is in the zone
+            // If the VM is in the zone
             if (server != null ) {
-                //if the VM is active and is not being deleted. Get its information.
+                // Get the information of the VM if it is active and it is not being deleted
                 ServerExtendedStatus vmStatus = server.getExtendedStatus().get();
                 boolean vmIsActive = ACTIVE.equals(vmStatus.getVmState());
                 boolean vmIsBeingDeleted = DELETING.equals(vmStatus.getTaskState());
@@ -287,7 +287,6 @@ public class JCloudsMiddleware implements CloudMiddleware {
                             server.getImage().getId(), flavor.getVcpus(), flavor.getRam(),
                             flavor.getDisk(), null, db.getAppIdOfVm(vmId), vmId,
                             vmIp, server.getStatus().toString(), server.getCreated());
-
                 }
             }
 
