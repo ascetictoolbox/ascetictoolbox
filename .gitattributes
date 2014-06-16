@@ -626,6 +626,16 @@ utils/libvirt/patch9.patch -text
 utils/openstack-patch/make.sh -text
 utils/openstack-patch/pom.xml -text
 utils/ovf-xmlbeans/src/main/xsdconfig/ovf.xsdconfig -text
+utils/provider-registry-database/README.TXT -text
+utils/provider-registry-database/db/changelog/db.changelog-1.0.xml -text
+utils/provider-registry-database/db/changelog/db.changelog-master.xml -text
+utils/provider-registry-database/liquibase/LICENSE.txt -text
+utils/provider-registry-database/liquibase/lib/README.txt -text
+utils/provider-registry-database/liquibase/lib/mysql-connector-java-5.1.25-bin.jar -text
+utils/provider-registry-database/liquibase/lib/snakeyaml-1.12.jar -text
+utils/provider-registry-database/liquibase/liquibase -text
+utils/provider-registry-database/liquibase/liquibase.bat -text
+utils/provider-registry-database/liquibase/liquibase.jar -text
 utils/wattsup-java-sdk/LICENSE -text
 utils/wattsup-java-sdk/README.md -text
 utils/wattsup-java-sdk/conf/cli.conf -text
