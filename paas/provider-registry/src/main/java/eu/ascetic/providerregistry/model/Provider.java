@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name="provider", namespace=PROVIDER_REGISTRY_NAMESPACE)
 // JPA Annotations:
 @Entity
-@Table(name="Providers")
+@Table(name="providers")
 @NamedQueries( { 
   @NamedQuery(name="Provider.findAll", query="SELECT p FROM Provider p")
 } )
