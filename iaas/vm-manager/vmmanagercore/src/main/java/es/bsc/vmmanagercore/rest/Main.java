@@ -4,7 +4,10 @@ import com.sun.jersey.api.container.grizzly2.GrizzlyServerFactory;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.api.core.ResourceConfig;
 import es.bsc.vmmanagercore.manager.VmManagerConfiguration;
+import org.apache.log4j.BasicConfigurator;
 import org.glassfish.grizzly.http.server.HttpServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -32,7 +35,14 @@ public class Main {
         return null;
     }
 
+    private static void logSystemStart() {
+        BasicConfigurator.configure();
+        Logger logger = LoggerFactory.getLogger(Main.class);
+        logger.info("Starting server");
+    }
+
     public static void main(String[] args) throws IOException {
+        logSystemStart();
         final HttpServer server = startServer();
         server.start();
         System.out.println(STOP_MESSAGE);
