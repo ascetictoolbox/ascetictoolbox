@@ -1,7 +1,8 @@
 package es.bsc.vmmanagercore.scheduler;
 
-import java.util.ArrayList;
 import es.bsc.vmmanagercore.monitoring.HostInfo;
+
+import java.util.ArrayList;
 
 public class HostFilter {
 

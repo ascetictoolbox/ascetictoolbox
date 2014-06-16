@@ -1,11 +1,11 @@
 package es.bsc.vmmanagercore.monitoring;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import es.bsc.monitoring.ganglia.Ganglia;
 import es.bsc.monitoring.ganglia.infrastructure.Cluster;
 import es.bsc.monitoring.ganglia.infrastructure.Host;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 

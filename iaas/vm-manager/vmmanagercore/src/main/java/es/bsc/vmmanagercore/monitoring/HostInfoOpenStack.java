@@ -1,12 +1,10 @@
 package es.bsc.vmmanagercore.monitoring;
 
-import org.jclouds.openstack.nova.v2_0.domain.HostResourceUsage;
-import org.jclouds.openstack.nova.v2_0.extensions.HostAdministrationApi;
-
 import com.google.common.base.Optional;
 import com.google.common.collect.FluentIterable;
-
 import es.bsc.vmmanagercore.cloudmiddleware.JCloudsMiddleware;
+import org.jclouds.openstack.nova.v2_0.domain.HostResourceUsage;
+import org.jclouds.openstack.nova.v2_0.extensions.HostAdministrationApi;
 
 /**
  * This class contains information about the status of a host of an OpenStack infrastructure.

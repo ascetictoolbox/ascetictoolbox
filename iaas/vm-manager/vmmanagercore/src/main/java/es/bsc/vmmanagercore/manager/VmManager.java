@@ -1,23 +1,19 @@
 package es.bsc.vmmanagercore.manager;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map.Entry;
-
 import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddleware;
 import es.bsc.vmmanagercore.cloudmiddleware.JCloudsMiddleware;
 import es.bsc.vmmanagercore.db.VmManagerDb;
 import es.bsc.vmmanagercore.db.VmManagerDbHsql;
-import es.bsc.vmmanagercore.model.ImageToUpload;
-import es.bsc.vmmanagercore.model.ImageUploaded;
-import es.bsc.vmmanagercore.model.SchedulingAlgorithm;
-import es.bsc.vmmanagercore.model.Vm;
-import es.bsc.vmmanagercore.model.VmDeployed;
+import es.bsc.vmmanagercore.model.*;
 import es.bsc.vmmanagercore.monitoring.HostInfo;
 import es.bsc.vmmanagercore.monitoring.HostInfoGanglia;
 import es.bsc.vmmanagercore.monitoring.HostInfoOpenStack;
 import es.bsc.vmmanagercore.scheduler.Scheduler;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 /**
  * VM Manager.

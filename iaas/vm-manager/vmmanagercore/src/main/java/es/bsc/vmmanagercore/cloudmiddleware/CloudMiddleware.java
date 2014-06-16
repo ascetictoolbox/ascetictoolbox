@@ -1,12 +1,11 @@
 package es.bsc.vmmanagercore.cloudmiddleware;
 
-import java.util.Collection;
-import java.util.HashMap;
-
 import es.bsc.vmmanagercore.model.ImageToUpload;
 import es.bsc.vmmanagercore.model.ImageUploaded;
 import es.bsc.vmmanagercore.model.Vm;
 import es.bsc.vmmanagercore.model.VmDeployed;
+
+import java.util.Collection;
 
 /**
  * Interface to the Cloud Middleware infrastructure (e.g. OpenNebula, OpenStack,

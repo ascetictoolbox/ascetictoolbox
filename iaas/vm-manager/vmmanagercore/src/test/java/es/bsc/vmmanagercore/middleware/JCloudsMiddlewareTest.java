@@ -1,11 +1,9 @@
 package es.bsc.vmmanagercore.middleware;
 
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Set;
-
+import es.bsc.vmmanagercore.cloudmiddleware.JCloudsMiddleware;
+import es.bsc.vmmanagercore.db.VmManagerDbHsql;
+import es.bsc.vmmanagercore.manager.VmManagerConfiguration;
+import es.bsc.vmmanagercore.model.Vm;
 import org.jclouds.openstack.nova.v2_0.NovaApi;
 import org.jclouds.openstack.nova.v2_0.domain.Flavor;
 import org.jclouds.openstack.nova.v2_0.domain.Server;
@@ -17,10 +15,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import es.bsc.vmmanagercore.cloudmiddleware.JCloudsMiddleware;
-import es.bsc.vmmanagercore.db.VmManagerDbHsql;
-import es.bsc.vmmanagercore.manager.VmManagerConfiguration;
-import es.bsc.vmmanagercore.model.Vm;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Set;
+
+import static org.junit.Assert.*;
 
 
 /**

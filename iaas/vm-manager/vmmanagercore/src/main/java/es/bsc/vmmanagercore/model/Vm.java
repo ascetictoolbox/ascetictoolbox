@@ -1,8 +1,8 @@
 package es.bsc.vmmanagercore.model;
 
-import java.io.File;
-
 import org.codehaus.jackson.JsonNode;
+
+import java.io.File;
 
 /**
  * 

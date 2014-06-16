@@ -1,15 +1,14 @@
 package es.bsc.vmmanagercore.cloudmiddleware;
 
-import java.net.URI;
-import java.util.HashMap;
-
+import es.bsc.vmmanagercore.manager.VmManagerConfiguration;
+import es.bsc.vmmanagercore.model.ImageToUpload;
+import es.bsc.vmmanagercore.utils.HttpUtils;
 import org.apache.commons.validator.UrlValidator;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import es.bsc.vmmanagercore.manager.VmManagerConfiguration;
-import es.bsc.vmmanagercore.model.ImageToUpload;
-import es.bsc.vmmanagercore.utils.HttpUtils;
+import java.net.URI;
+import java.util.HashMap;
 
 /** 
  * This class is a connector for the OpenStack image service (Glance). It is needed because

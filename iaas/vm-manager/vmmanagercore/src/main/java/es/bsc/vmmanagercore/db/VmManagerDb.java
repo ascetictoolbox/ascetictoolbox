@@ -1,8 +1,8 @@
 package es.bsc.vmmanagercore.db;
 
-import java.util.ArrayList;
-
 import es.bsc.vmmanagercore.model.SchedulingAlgorithm;
+
+import java.util.ArrayList;
 
 /**
  * 

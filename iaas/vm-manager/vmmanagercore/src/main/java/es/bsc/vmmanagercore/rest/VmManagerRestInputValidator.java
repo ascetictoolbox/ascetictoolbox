@@ -1,14 +1,13 @@
 package es.bsc.vmmanagercore.rest;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.codehaus.jackson.JsonNode;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import org.codehaus.jackson.JsonNode;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class VmManagerRestInputValidator {
 

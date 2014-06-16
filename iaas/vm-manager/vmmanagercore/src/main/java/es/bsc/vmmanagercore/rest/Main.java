@@ -1,14 +1,12 @@
 package es.bsc.vmmanagercore.rest;
 
-import java.io.IOException;
-
-import org.glassfish.grizzly.http.server.HttpServer;
-
 import com.sun.jersey.api.container.grizzly2.GrizzlyServerFactory;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.api.core.ResourceConfig;
-
 import es.bsc.vmmanagercore.manager.VmManagerConfiguration;
+import org.glassfish.grizzly.http.server.HttpServer;
+
+import java.io.IOException;
 
 /**
  * 

@@ -31,17 +31,15 @@ public class SchedAlgGroupByApp implements SchedAlgorithm {
         return false;
     }
 
-    @Override
-    public String chooseHost(ArrayList<HostInfo> hostsInfo, Vm vm) {
-        this.hostsInfo = hostsInfo;
-        String appOfVmToDeploy = vm.getApplicationId();
-        // Host -> number of VMs that belong to the same application as the one that we need to deploy
+    /**
+     * Returns a hashmap that contains, for each host, the number of VMs that belong to the same
+     * application as the one that we need to deploy.
+     */
+    private HashMap<String, Integer> getNumberOfVmsThatBelongToTheAppForEachHost(String app) {
         HashMap<String, Integer> vmsOfAppPerHost = new HashMap<>();
-
-        // Calculate the number of VMs that belong to the app for each host
         for (VmDeployed vmDeployed: vmsDeployed) {
-            // If it is a VM that belongs to the same application, increase the counter
-            if (vmDeployed.getApplicationId().equals(appOfVmToDeploy)) {
+            // Increase the counter if it is a VM that belongs to the same application
+            if (vmDeployed.getApplicationId().equals(app)) {
                 if (vmsOfAppPerHost.get(vmDeployed.getHostName()) == null) {
                     vmsOfAppPerHost.put(vmDeployed.getHostName(), 1);
                 }
@@ -50,8 +48,13 @@ public class SchedAlgGroupByApp implements SchedAlgorithm {
                 }
             }
         }
+        return vmsOfAppPerHost;
+    }
 
-        // Get the host with more VMs of the same app. The hosts needs to have enough resources available.
+    /**
+     * Get the host with more VMs of the same app. The hosts needs to have enough resources available.
+     */
+    private String getHostWithMoreVmsOfTheApp(HashMap<String, Integer> vmsOfAppPerHost) {
         String host = null;
         int maxNumberOfVMsOfApp = 0;
         for (Map.Entry<String, Integer> entry : vmsOfAppPerHost.entrySet()) {
@@ -60,7 +63,13 @@ public class SchedAlgGroupByApp implements SchedAlgorithm {
                 maxNumberOfVMsOfApp = entry.getValue();
             }
         }
-
         return host;
+    }
+
+    @Override
+    public String chooseHost(ArrayList<HostInfo> hostsInfo, Vm vm) {
+        this.hostsInfo = hostsInfo;
+        HashMap<String, Integer> vmsOfAppPerHost = getNumberOfVmsThatBelongToTheAppForEachHost(vm.getApplicationId());
+        return getHostWithMoreVmsOfTheApp(vmsOfAppPerHost);
     }
 }
