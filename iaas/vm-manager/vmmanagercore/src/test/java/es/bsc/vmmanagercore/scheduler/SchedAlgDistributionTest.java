@@ -1,16 +1,14 @@
 package es.bsc.vmmanagercore.scheduler;
 
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import es.bsc.vmmanagercore.model.Vm;
 import es.bsc.vmmanagercore.monitoring.HostInfo;
 import es.bsc.vmmanagercore.monitoring.HostInfoFake;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import java.util.ArrayList;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -20,10 +18,10 @@ import es.bsc.vmmanagercore.monitoring.HostInfoFake;
  */
 public class SchedAlgDistributionTest {
 
-    private SchedAlgDistribution scheduler;
+    private static SchedAlgDistribution scheduler;
 
-    @Before
-    public void setUp() {
+    @BeforeClass
+    public static void setUp() {
         scheduler = new SchedAlgDistribution();
     }
 

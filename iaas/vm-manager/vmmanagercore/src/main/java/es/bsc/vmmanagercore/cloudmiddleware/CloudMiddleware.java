@@ -1,6 +1,7 @@
 package es.bsc.vmmanagercore.cloudmiddleware;
 
 import java.util.Collection;
+import java.util.HashMap;
 
 import es.bsc.vmmanagercore.model.ImageToUpload;
 import es.bsc.vmmanagercore.model.ImageUploaded;

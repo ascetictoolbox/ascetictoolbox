@@ -2,9 +2,6 @@ package es.bsc.vmmanagercore.model;
 
 import java.util.Date;
 
-import org.codehaus.jackson.node.JsonNodeFactory;
-import org.codehaus.jackson.node.ObjectNode;
-
 /**
  * 
  *
@@ -17,15 +14,17 @@ public class VmDeployed extends Vm {
     private String ipAddress;
     private String state;
     private Date created;
+    private String hostName;
 
     public VmDeployed(String name, String image, int cpus, int ramMb,
             int diskGb, String initScript, String applicationId, String id,
-            String ipAddress, String state, Date created) {
+            String ipAddress, String state, Date created, String hostName) {
         super(name, image, cpus, ramMb, diskGb, initScript, applicationId);
         this.id = id;
         this.ipAddress = ipAddress;
         this.state = state;
         this.created = created;
+        this.hostName = hostName;
     }
 
     public String getId() {
@@ -42,6 +41,10 @@ public class VmDeployed extends Vm {
 
     public Date getCreated() {
         return created;
+    }
+
+    public String getHostName() {
+        return hostName;
     }
 
 }

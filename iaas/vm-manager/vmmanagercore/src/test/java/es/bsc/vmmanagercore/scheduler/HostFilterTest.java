@@ -1,13 +1,12 @@
 package es.bsc.vmmanagercore.scheduler;
 
-import static org.junit.Assert.*;
+import es.bsc.vmmanagercore.monitoring.HostInfo;
+import es.bsc.vmmanagercore.monitoring.HostInfoFake;
+import org.junit.Test;
 
 import java.util.ArrayList;
 
-import org.junit.Test;
-
-import es.bsc.vmmanagercore.monitoring.HostInfo;
-import es.bsc.vmmanagercore.monitoring.HostInfoFake;
+import static org.junit.Assert.assertTrue;
 
 public class HostFilterTest {
 

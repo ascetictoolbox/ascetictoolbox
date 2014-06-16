@@ -3,8 +3,6 @@ package es.bsc.vmmanagercore.model;
 import java.io.File;
 
 import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.JsonNodeFactory;
-import org.codehaus.jackson.node.ObjectNode;
 
 /**
  * 
@@ -30,8 +28,7 @@ public class Vm {
      * @param diskGb The size of the disk in GB.
      * @param initScript Script that will be executed when the VM is deployed.
      */
-    public Vm(String name, String image, int cpus, int ramMb, int diskGb,
-            String initScript, String applicationId) {
+    public Vm(String name, String image, int cpus, int ramMb, int diskGb, String initScript, String applicationId) {
         this.name = name;
         this.image = image;
         setCpus(cpus);

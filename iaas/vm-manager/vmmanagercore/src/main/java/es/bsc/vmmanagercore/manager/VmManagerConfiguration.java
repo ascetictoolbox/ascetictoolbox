@@ -12,12 +12,11 @@ import java.util.Properties;
 public class VmManagerConfiguration {
 
     // Configuration file
-    private static final String CONF_FILE_LOCATION = "configTUB.properties";
+    private static final String CONF_FILE_LOCATION = "configBSC.properties";
 
     // OpenStack configuration
     public String openStackIP;
     public int keyStonePort;
-    public int novaPort;
     public int glancePort;
 
     // OpenStack login credentials
@@ -64,7 +63,6 @@ public class VmManagerConfiguration {
     private void initializeClassAttributes(Properties prop) {
         openStackIP = prop.getProperty("openStackIP");
         keyStonePort = Integer.parseInt(prop.getProperty("keyStonePort"));
-        novaPort = Integer.parseInt(prop.getProperty("novaPort"));
         glancePort = Integer.parseInt(prop.getProperty("glancePort"));
         keyStoneUser = prop.getProperty("keyStoneUser");
         keyStoneTenant = prop.getProperty("keyStoneTenant");

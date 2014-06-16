@@ -45,7 +45,7 @@ public class VmManager {
         VmManagerConfiguration conf = VmManagerConfiguration.getInstance();
         selectMiddleware(conf.middleware);
         selectMonitoring(conf.monitoring, conf.hosts);
-        scheduler = new Scheduler(db.getCurrentSchedulingAlg());
+        scheduler = new Scheduler(db.getCurrentSchedulingAlg(), getAllVms());
     }
 
 

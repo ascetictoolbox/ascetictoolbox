@@ -272,10 +272,12 @@ public class VmManagerRest {
         else if (algorithm.equals(SchedulingAlgorithm.DISTRIBUTION.getAlgorithm())) {
             schedulingAlg = SchedulingAlgorithm.DISTRIBUTION;
         }
+        else if (algorithm.equals(SchedulingAlgorithm.GROUP_BY_APP.getAlgorithm())) {
+            schedulingAlg = SchedulingAlgorithm.GROUP_BY_APP;
+        }
         else if (algorithm.equals(SchedulingAlgorithm.RANDOM.getAlgorithm())) {
             schedulingAlg = SchedulingAlgorithm.RANDOM;
         }
-
         else { // Invalid algorithm. Throw error.
             throw new WebApplicationException(400);
         }

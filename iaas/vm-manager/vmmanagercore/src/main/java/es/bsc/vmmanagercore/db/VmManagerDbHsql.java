@@ -20,7 +20,7 @@ import es.bsc.vmmanagercore.model.SchedulingAlgorithm;
 public class VmManagerDbHsql implements VmManagerDb {
 
     private Connection conn;
-    private ArrayList<SchedulingAlgorithm> availableSchedAlg;
+    private ArrayList<SchedulingAlgorithm> availableSchedAlg = new ArrayList<>();
 
     // Error messages
     private static final String ERROR_SETUP_DB = "There was an error while trying to set up the DB.";
@@ -34,10 +34,10 @@ public class VmManagerDbHsql implements VmManagerDb {
     private static final String ERROR_SET_SCHED_ALG = "There was an error while setting the scheduling algorithm";
 
     public VmManagerDbHsql(String dbFileNamePrefix) throws Exception {
-        // Define the available scheduling algorithms
-        availableSchedAlg = new ArrayList<>();
+        // Add the available scheduling algorithms
         availableSchedAlg.add(SchedulingAlgorithm.CONSOLIDATION);
         availableSchedAlg.add(SchedulingAlgorithm.DISTRIBUTION);
+        availableSchedAlg.add(SchedulingAlgorithm.GROUP_BY_APP);
         availableSchedAlg.add(SchedulingAlgorithm.RANDOM);
 
         // Load the HSQL Database Engine JDBC driver
@@ -216,14 +216,16 @@ public class VmManagerDbHsql implements VmManagerDb {
         } catch (SQLException e) {
             return null;
         }
-        if (schedulingAlgorithms.get(0).equals("consolidation")) {
-            return SchedulingAlgorithm.CONSOLIDATION;
-        }
-        else if (schedulingAlgorithms.get(0).equals("distribution")) {
-            return SchedulingAlgorithm.DISTRIBUTION;
-        }
-        else if (schedulingAlgorithms.get(0).equals("random")) {
-            return SchedulingAlgorithm.RANDOM;
+        String currentSchedAlg = schedulingAlgorithms.get(0);
+        switch (currentSchedAlg) {
+            case "consolidation":
+                return SchedulingAlgorithm.CONSOLIDATION;
+            case "distribution":
+                return SchedulingAlgorithm.DISTRIBUTION;
+            case "groupByApp":
+                return SchedulingAlgorithm.GROUP_BY_APP;
+            case "random":
+                return SchedulingAlgorithm.RANDOM;
         }
         return null;
     }
@@ -244,6 +246,9 @@ public class VmManagerDbHsql implements VmManagerDb {
                     break;
                 case "distribution":
                     result.add(SchedulingAlgorithm.DISTRIBUTION);
+                    break;
+                case "groupByApp":
+                    result.add(SchedulingAlgorithm.GROUP_BY_APP);
                     break;
                 case "random":
                     result.add(SchedulingAlgorithm.RANDOM);

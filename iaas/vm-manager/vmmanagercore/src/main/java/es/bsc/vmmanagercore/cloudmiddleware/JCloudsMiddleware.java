@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
@@ -145,7 +146,7 @@ public class JCloudsMiddleware implements CloudMiddleware {
         ServerCreated server = serverApi.create(vmDescription.getName(), imageId, flavorId, options);
 
         // Wait until the VM is deployed
-        while (serverApi.get(server.getId()).getStatus().toString().equals(BUILD));
+        while (serverApi.get(server.getId()).getStatus().toString().equals(BUILD)) { }
 
         // Get the VM id
         vmId = server.getId();
@@ -160,7 +161,7 @@ public class JCloudsMiddleware implements CloudMiddleware {
             Server server = serverApi.get(vmId);
             if (server != null) { // If the VM is in the zone
                 serverApi.delete(vmId); // Delete the VM
-                while (server.getStatus().toString().equals(DELETING)); // Wait while deleting
+                while (server.getStatus().toString().equals(DELETING)) { } // Wait while deleting
             }
         }
     }
@@ -253,7 +254,7 @@ public class JCloudsMiddleware implements CloudMiddleware {
         return vmIds;
     }
 
-    // TODO I need to redo this. The name of the network should be obtained automatically
+    // TODO Redo this. The name of the network should be obtained automatically. This might only work in TUB and BSC.
     private String getVmIp(Server server) {
         String vmIp;
         if (server.getAddresses().get("vmnet").toArray().length != 0) { // VM network
@@ -286,7 +287,8 @@ public class JCloudsMiddleware implements CloudMiddleware {
                     vmDescription = new VmDeployed(server.getName(),
                             server.getImage().getId(), flavor.getVcpus(), flavor.getRam(),
                             flavor.getDisk(), null, db.getAppIdOfVm(vmId), vmId,
-                            vmIp, server.getStatus().toString(), server.getCreated());
+                            vmIp, server.getStatus().toString(), server.getCreated(),
+                            server.getExtendedAttributes().get().getHostName());
                 }
             }
 

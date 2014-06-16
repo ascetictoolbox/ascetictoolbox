@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import es.bsc.vmmanagercore.model.SchedulingAlgorithm;
 import es.bsc.vmmanagercore.model.Vm;
+import es.bsc.vmmanagercore.model.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.HostInfo;
 
 
@@ -16,8 +17,10 @@ import es.bsc.vmmanagercore.monitoring.HostInfo;
 public class Scheduler {
 
     private SchedAlgorithm schedAlgorithm;
+    private ArrayList<VmDeployed> vmsDeployed;
 
-    public Scheduler(SchedulingAlgorithm schedAlg) {
+    public Scheduler(SchedulingAlgorithm schedAlg, ArrayList<VmDeployed> vmsDeployed) {
+        this.vmsDeployed = vmsDeployed;
         setSchedAlgorithm(schedAlg);
     }
 
@@ -28,6 +31,9 @@ public class Scheduler {
                 break;
             case DISTRIBUTION:
                 schedAlgorithm = new SchedAlgDistribution();
+                break;
+            case GROUP_BY_APP:
+                schedAlgorithm = new SchedAlgGroupByApp(vmsDeployed);
                 break;
             case RANDOM:
                 schedAlgorithm = new SchedAlgRandom();

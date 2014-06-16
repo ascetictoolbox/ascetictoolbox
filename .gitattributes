@@ -86,6 +86,7 @@ iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/rest/VmManagerR
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/scheduler/HostFilter.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/scheduler/SchedAlgConsolidation.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/scheduler/SchedAlgDistribution.java -text
+iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/scheduler/SchedAlgGroupByApp.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/scheduler/SchedAlgRandom.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/scheduler/SchedAlgorithm.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/scheduler/Scheduler.java -text
@@ -106,6 +107,7 @@ iaas/vm-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/rest/VmManagerR
 iaas/vm-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/HostFilterTest.java -text
 iaas/vm-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/SchedAlgConsolidationTest.java -text
 iaas/vm-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/SchedAlgDistributionTest.java -text
+iaas/vm-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/SchedAlgGroupByAppTest.java -text
 iaas/vm-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/SchedAlgRandomTest.java -text
 paas/application-manager/.settings/org.eclipse.core.resources.prefs -text
 paas/application-manager/.settings/org.eclipse.jdt.core.prefs -text
