@@ -18,12 +18,17 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser;
 /**
  * This class stores the energy values for a physical machine and is used to map
  * a machine to a VM.
+ * TODO see which class is best to keep!!
+ * This represents a host in the energy modeller. An important similar class is!
+ * @see eu.ascetic.monitoring.api.datamodel.host
  *
  * @author Richard
  */
-public class Host extends EnergyUsageSource {
-
-    public String id = "";
+public class Host extends EnergyUsageSource {  
+    
+    private int id = -1;
+    private String hostName = "";
+    private boolean available = true;
     /**
      * E_i^0: is the "idle power consumption" in Watts (with zero number of VMs
      * running) E_i^c: power consumption of a CPU cycle (or instruction) E_i^m:
@@ -47,6 +52,64 @@ public class Host extends EnergyUsageSource {
     public double powerConsumptionMemoryAccess = 0.0;
     public double powerConsumptionDiskAccess = 0.0;
     public double powerConsumptionNetworkAccess = 0.0;
+
+    /**
+     * This creates a new instance of a host
+     * @param id The host id
+     * @param hostName The host name
+     */
+    public Host(int id, String hostName) {
+        this.id = id;
+        this.hostName = hostName;
+    }    
+    
+    /**
+     * This returns the host's id.
+     * @return the id
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * This sets the host's id.
+     * @param id the id to set
+     */
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    /**
+     * This returns the host's name.
+     * @return the hostName
+     */
+    public String getHostName() {
+        return hostName;
+    }
+
+    /**
+     * This sets the hosts name.
+     * @param hostName the hostName to set
+     */
+    public void setHostName(String hostName) {
+        this.hostName = hostName;
+    }
+
+    /**
+     * This indicates if the host is currently available.
+     * @return the available
+     */
+    public boolean isAvailable() {
+        return available;
+    }
+
+    /**
+     * This sets the flag to state the host is available.
+     * @param available the available to set
+     */
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
     
     /**
      * TODO: look at the implementation of this class further.
