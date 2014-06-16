@@ -40,6 +40,6 @@ public class ProviderTest {
 		provider.addLink(link);
 		
 		assertEquals(1, provider.getLinks().size());
-		assertEquals(link, provider.getLinks().get(1));
+		assertEquals(link, provider.getLinks().get(0));
 	}
 }

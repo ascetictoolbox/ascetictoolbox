@@ -34,20 +34,18 @@ import javax.xml.bind.annotation.XmlRootElement;
   @NamedQuery(name="Provider.findAll", query="SELECT p FROM Provider p")
 } )
 public class Provider {
-	@Transient
 	@XmlAttribute
 	private String href;
-
 	@XmlElement(name="id", namespace=PROVIDER_REGISTRY_NAMESPACE)
 	private int id;
 	@XmlElement(name="name", namespace=PROVIDER_REGISTRY_NAMESPACE)
 	private String name;
 	@XmlElement(name="endpoint", namespace=PROVIDER_REGISTRY_NAMESPACE)
 	private String endpoint;
-	@Transient
 	@XmlElement(name="link", namespace = PROVIDER_REGISTRY_NAMESPACE)
 	private List<Link> links;
 
+	@Transient
 	public String getHref() {
 		return href;
 	}
@@ -81,6 +79,7 @@ public class Provider {
 		this.name = name;
 	}
 	
+	@Transient
 	public List<Link> getLinks() {
 		return links;
 	}
