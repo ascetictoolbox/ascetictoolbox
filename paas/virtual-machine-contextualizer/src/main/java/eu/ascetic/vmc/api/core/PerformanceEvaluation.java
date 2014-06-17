@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package eu.ascetic.vmc.api.DataModel.ContextDataTypes;
+package eu.ascetic.vmc.api.core;
 
 /**
  * TODO: Description here...
@@ -21,6 +21,6 @@ package eu.ascetic.vmc.api.DataModel.ContextDataTypes;
  * @author Django Armstrong (ULeeds)
  * @version 0.0.1
  */
-public class OperatingSystem {
+public class PerformanceEvaluation {
 
 }
