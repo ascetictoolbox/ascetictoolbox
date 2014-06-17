@@ -16,11 +16,11 @@
 package eu.ascetic.vmc.api.datamodel.contextdatatypes;
 
 /**
- * TODO: Description here...
+ * Data type for holding information of the Operating System version in use
  * 
  * @author Django Armstrong (ULeeds)
  * @version 0.0.1
  */
 public class OperatingSystem {
-
+	// TODO
 }

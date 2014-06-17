@@ -36,8 +36,8 @@ public class GlobalState {
 	private boolean recontextRunning = false;
 
 	/**
-	 * Default constructor that creates a {@link ProgressData} {@link Map}
-	 * for storing the state of all service's being contextualized.
+	 * Default constructor that creates a {@link ProgressData} {@link Map} for
+	 * storing the state of all service's being contextualized.
 	 * 
 	 * @param globalConfiguration
 	 *            The global configuration object storing environmental
@@ -109,15 +109,19 @@ public class GlobalState {
 	}
 
 	/**
-	 * Set the ovfDefinition to be returned through the API via a services associated
-	 * ProgressData object.
+	 * Set the ovfDefinition to be returned through the API via a services
+	 * associated ProgressData object.
 	 * 
 	 * @param ovfDefinition
 	 *            The ovfDefinition to return.
 	 */
 	public void setOvfDefinition(OvfDefinition ovfDefinition) {
-		// FIXME: Should we be getting the serviceId from a property here, confirm with consortium?
-		progressDataHashMap.get(ovfDefinition.getVirtualSystemArray(0).getProductSection().getPropertyByKey("serviceId").getValue()).setOvfDefinition(ovfDefinition);
+		// FIXME: Should we be getting the serviceId from a property here,
+		// confirm with consortium?
+		progressDataHashMap.get(
+				ovfDefinition.getVirtualSystemArray(0).getProductSection()
+						.getPropertyByKey("serviceId").getValue())
+				.setOvfDefinition(ovfDefinition);
 	}
 
 	/**

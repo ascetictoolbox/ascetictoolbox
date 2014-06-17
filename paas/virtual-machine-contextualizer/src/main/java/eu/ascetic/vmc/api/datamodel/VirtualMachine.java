@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import eu.ascetic.vmc.api.datamodel.contextdatatypes.EndPoint;
-import eu.ascetic.vmc.api.datamodel.contextdatatypes.LicenseToken;
 import eu.ascetic.vmc.api.datamodel.contextdatatypes.OperatingSystem;
 import eu.ascetic.vmc.api.datamodel.contextdatatypes.SoftwareDependency;
 import eu.ascetic.vmc.api.datamodel.image.HardDisk;
@@ -40,12 +39,7 @@ public class VirtualMachine {
 	private Map<String, EndPoint> endPoints;
 	private OperatingSystem operatingSystem;
 	private Map<String, SoftwareDependency> softwareDependencies;
-	private Map<String, LicenseToken> licenseTokens;
-	private boolean hasVPNKey = false;
-	private boolean hasSSHKey = true;
-	private boolean hasBTKey = false;
-	private boolean hasIPS = false;
-	private boolean hasDMKey = false;
+	private boolean hasKey = true;
 
 	/**
 	 * Constructor creates a {@link HashMap} containers for context data related
@@ -62,7 +56,6 @@ public class VirtualMachine {
 		endPoints = new HashMap<String, EndPoint>();
 		operatingSystem = new OperatingSystem();
 		softwareDependencies = new HashMap<String, SoftwareDependency>();
-		licenseTokens = new HashMap<String, LicenseToken>();
 	}
 
 	/**
@@ -73,12 +66,13 @@ public class VirtualMachine {
 	}
 
 	/**
-	 * @param componentId the componentId to set
+	 * @param componentId
+	 *            the componentId to set
 	 */
 	public void setComponentId(String componentId) {
 		this.componentId = componentId;
 	}
-	
+
 	/**
 	 * @return the hardDisks
 	 */
@@ -171,89 +165,17 @@ public class VirtualMachine {
 	}
 
 	/**
-	 * @return the licenseTokens
+	 * @return the hasKey
 	 */
-	public Map<String, LicenseToken> getLicenseTokens() {
-		return licenseTokens;
+	public boolean isHasKey() {
+		return hasKey;
 	}
 
 	/**
-	 * @param licenseTokens
-	 *            the licenseTokens to set
-	 */
-	public void setLicenseTokens(Map<String, LicenseToken> licenseTokens) {
-		this.licenseTokens = licenseTokens;
-	}
-
-	/**
-	 * @return the hasVPNKey
-	 */
-	public boolean isHasVPNKey() {
-		return hasVPNKey;
-	}
-
-	/**
-	 * @param hasVPNKey
-	 *            the hasVPNKey to set
-	 */
-	public void setHasVPNKey(boolean hasVPNKey) {
-		this.hasVPNKey = hasVPNKey;
-	}
-
-	/**
-	 * @return the hasSSHKey
-	 */
-	public boolean isHasSSHKey() {
-		return hasSSHKey;
-	}
-
-	/**
-	 * @param hasSSHKey
+	 * @param hasKey
 	 *            the hasSSHKey to set
 	 */
-	public void setHasSSHKey(boolean hasSSHKey) {
-		this.hasSSHKey = hasSSHKey;
-	}
-
-	/**
-	 * @return the hasBTKey
-	 */
-	public boolean isHasBTKey() {
-		return hasBTKey;
-	}
-
-	/**
-	 * @param hasBTKey the hasBTKey to set
-	 */
-	public void setHasBTKey(boolean hasBTKey) {
-		this.hasBTKey = hasBTKey;
-	}
-
-	/**
-	 * @return the hasIPS
-	 */
-	public boolean isHasIPS() {
-		return hasIPS;
-	}
-
-	/**
-	 * @param hasIPS the hasIPS to set
-	 */
-	public void setHasIPS(boolean hasIPS) {
-		this.hasIPS = hasIPS;
-	}
-
-	/**
-	 * @return the hasDMKey
-	 */
-	public boolean isHasDMKey() {
-		return hasDMKey;
-	}
-
-	/**
-	 * @param hasDMKey the hasDMKey to set
-	 */
-	public void setHasDMKey(boolean hasDMKey) {
-		this.hasDMKey = hasDMKey;
+	public void setHasKey(boolean hasKey) {
+		this.hasKey = hasKey;
 	}
 }

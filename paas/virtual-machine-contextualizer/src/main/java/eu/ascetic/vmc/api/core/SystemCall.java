@@ -47,6 +47,8 @@ public class SystemCall {
 
 	/**
 	 * Initialises an instance of the SystemCall object.
+	 * 
+	 * @param workingDirectory The directory to work within
 	 */
 	public SystemCall(String workingDirectory) {
 		this.workingDirectory = workingDirectory;

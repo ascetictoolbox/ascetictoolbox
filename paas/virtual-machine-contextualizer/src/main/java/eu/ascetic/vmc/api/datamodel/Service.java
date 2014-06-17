@@ -34,7 +34,7 @@ public class Service {
 	private SecurityClient securityClient;
 
 	/**
-	 * Constructor.
+	 * Default Constructor
 	 * 
 	 * @param ovfDefinition
 	 *            The OVF to associate with a given service.

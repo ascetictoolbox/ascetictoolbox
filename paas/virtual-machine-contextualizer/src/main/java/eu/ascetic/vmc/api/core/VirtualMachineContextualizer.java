@@ -73,9 +73,8 @@ public class VirtualMachineContextualizer implements Runnable {
 	}
 
 	/**
-	 * Overloaded constructor for supporting image conversion in Year 2.
+	 * Overloaded constructor for supporting image conversion.
 	 * 
-	 * ###################### TODO: Remove After year 2 #######################
 	 * 
 	 * @param vmcApi
 	 *            The initial invocation of the API for accessing global state.

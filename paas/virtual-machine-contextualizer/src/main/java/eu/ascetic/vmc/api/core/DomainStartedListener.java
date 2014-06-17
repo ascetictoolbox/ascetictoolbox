@@ -17,14 +17,19 @@ package eu.ascetic.vmc.api.core;
 
 /**
  * Listener for when new VM domains are started
- * @author espling
- *
+ * 
+ * @author Django Armstrong (ULeeds), Daniel Espling (UMU)
+ * @version 0.0.1
  */
 public interface DomainStartedListener {
 
 	/**
-	 * Signalled to indicate that a domain has been started
-	 * @param domainName The domain name of the new domain
+	 * Called by EventBridge to indicate that a new domain has started. Check
+	 * list of domains that are due for recontextualization and see if this is
+	 * one of the missing domains that we're waiting for
+	 * 
+	 * @param domainName
+	 *            The domain name of the new domain
 	 */
 	void vmDomainCreated(String domainName);
 

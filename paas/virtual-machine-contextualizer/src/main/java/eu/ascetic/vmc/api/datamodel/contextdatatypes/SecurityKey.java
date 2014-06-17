@@ -18,7 +18,7 @@ package eu.ascetic.vmc.api.datamodel.contextdatatypes;
 import java.util.Arrays;
 
 /**
- * Class for sotring seucirty key attributes and keyData.
+ * Class for storing security key attributes and keyData.
  * 
  * @author Django Armstrong (ULeeds)
  * @version 0.0.2
@@ -31,7 +31,8 @@ public class SecurityKey {
 	/**
 	 * Creates a new instance of a security key.
 	 * 
-	 * @param keyData
+	 * @param name The key name
+	 * @param initialKeyData The data representing the key
 	 */
 	public SecurityKey(String name, byte[] initialKeyData) {
 		this.name = name;

@@ -25,7 +25,7 @@ import org.apache.log4j.Logger;
 /**
  * Class to stores the configuration details of the VMC
  * 	
- * TODO: check for OS and dependency requirements
+ * TODO: Check for OS and dependency requirements
  * 
  * @author Django Armstrong (ULeeds)
  * @version 0.0.2
@@ -52,12 +52,13 @@ public class GlobalConfiguration {
 	/**
 	 * Constructor for setting configuration variables.
 	 * 
- 	 * @throws Exception Thrown if config file is not present or unreadable.
+	 * @param configFilePath The file path to the configuration file (Not the file name FIXME?)
+	 * @throws Exception If config file is not present or unreadable.
 	 */
 	public GlobalConfiguration(String configFilePath) throws Exception {
 		
 		this.configFilePath = configFilePath;
-		LOGGER.info("Using configFilePath: '"+configFilePath+"'");
+		LOGGER.info("Using configFilePath: '" + configFilePath + "'");
 		defaultValues = false;
 		
 		config();

@@ -56,7 +56,7 @@ public class OvfDefinitionClient {
 	 * 
 	 * TODO: Split this into discrete methods on a per context data type basis?
 	 * 
-	 * @return contextData the ContextData parsed from the OVF Definition
+	 * @return The ContextData parsed from the OVF Definition
 	 */
 	public ContextData parse() {
 		ContextData contextData = new ContextData();

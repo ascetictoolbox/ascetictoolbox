@@ -34,16 +34,17 @@ public class HardDisk extends Image {
 	 * Constructor for creating a HardDisk object
 	 * 
 	 * @param imageId
-	 *            The id of the hard disk image taken from the OVF as
-	 *            diskId (see {@link Image#Image(String, String, String, String)} for
+	 *            The id of the hard disk image taken from the OVF as diskId
+	 *            (see {@link Image#Image(String, String, String, String)} for
 	 *            details).
 	 * @param fileName
 	 *            The filename of the ISO image as a URI including full system
-	 *            path (see {@link Image#Image(String, String, String, String)} for
-	 *            details).
+	 *            path (see {@link Image#Image(String, String, String, String)}
+	 *            for details).
 	 * @param format
 	 *            The format of the disk image (see
-	 *            {@link Image#Image(String, String, String, String)} for details).
+	 *            {@link Image#Image(String, String, String, String)} for
+	 *            details).
 	 * @param diskCapacity
 	 *            The capacity of the disk image.
 	 * @param diskFormatString
@@ -113,7 +114,8 @@ public class HardDisk extends Image {
 	}
 
 	/**
-	 * @param converted the converted to set
+	 * @param converted
+	 *            the converted to set
 	 */
 	public void setConverted(boolean converted) {
 		this.converted = converted;

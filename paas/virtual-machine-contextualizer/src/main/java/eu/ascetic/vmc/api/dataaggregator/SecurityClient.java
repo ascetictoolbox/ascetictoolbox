@@ -18,7 +18,8 @@ package eu.ascetic.vmc.api.dataaggregator;
 import eu.ascetic.vmc.api.datamodel.ContextData;
 
 /**
- * TODO: Description here...
+ * Class to generate keys using PKC to enable remote password free access to a
+ * VM
  * 
  * @author Django Armstrong (ULeeds)
  * @version 0.0.1
@@ -26,15 +27,19 @@ import eu.ascetic.vmc.api.datamodel.ContextData;
 public class SecurityClient {
 
 	/**
-	 * TODO
+	 * Constructor initiates PKC library.
 	 */
 	public SecurityClient() {
-
+		// TODO
 	}
 
 	/**
+	 * Generates keys for the given context data.
+	 * 
 	 * @param contextData
-	 * @return contextData
+	 *            The Context data to generate keys for.
+	 * @return A new context data object with the references to the security
+	 *         keys
 	 */
 	public ContextData generateKeys(ContextData contextData) {
 		// TODO

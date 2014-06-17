@@ -15,14 +15,33 @@
  */
 package eu.ascetic.vmc.api.core;
 
+/**
+ * Manageable interface (via JMX) for responding to events regarding the domain
+ * and manages the actual context changes
+ * 
+ * @author Django Armstrong (ULeeds), Daniel Espling (UMU)
+ * @version 0.0.1
+ */
 public interface DomainContextualizerMBean {
 
+	/**
+	 * Domain started event handler
+	 */
 	void vmDomainStarted();
 
+	/**
+	 * Domain stopped event handler
+	 */
 	void vmDomainStopped();
 
+	/**
+	 * Domain migration started event handler
+	 */
 	void vmDomainMigrationStarted();
 
+	/**
+	 * Domain migration completed event handler
+	 */
 	void vmDomainMigrationCompleted();
 
 }

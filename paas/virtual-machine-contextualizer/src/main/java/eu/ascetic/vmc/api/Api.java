@@ -20,7 +20,7 @@ import eu.ascetic.vmc.api.core.ProgressException;
 import eu.ascetic.vmc.api.datamodel.ProgressData;
 
 /**
- * Static Year2 Interface to VMC capabilities
+ * Interface to VMC capabilities
  * 
  * @author Django Armstrong (ULeeds)
  * @version 0.0.4

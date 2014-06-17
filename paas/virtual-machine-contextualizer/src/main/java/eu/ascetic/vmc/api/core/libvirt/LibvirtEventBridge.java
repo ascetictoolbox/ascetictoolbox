@@ -28,65 +28,76 @@ import eu.ascetic.vmc.libvirt.LibvirtException;
 import eu.ascetic.vmc.libvirt.Connect.DomainEvent.LifecycleCallback;
 
 /**
- * Event bridge converting from Libvirtevents to more easily managed events in the LibvirtEventListener
+ * Event bridge converting from Libvirtevents to more easily managed events in
+ * the LibvirtEventListener
  * 
  * @author Django Armstrong (ULeeds), Daniel Espling (UMU)
  * @version 0.0.1
  */
 public class LibvirtEventBridge implements LifecycleCallback {
-	
+
 	protected static final Logger LOGGER = Logger
 			.getLogger(LibvirtEventBridge.class);
-	
+
 	private List<Integer> callbackIds;
 	private Connect connection;
 
 	private List<DomainContextualizer> domainContextualizers;
 	private List<DomainStartedListener> domainStartedListeners;
-	
+
 	/**
 	 * Create a new bridge for a specific Libvirt connection
-	 * @param connection The connection to listen to
-	 * @throws LibvirtException 
+	 * 
+	 * @param connection
+	 *            The connection to listen to
+	 * @throws LibvirtException
 	 */
 	public LibvirtEventBridge(Connect connection) throws LibvirtException {
 		this.connection = connection;
 		this.callbackIds = new ArrayList<Integer>(1);
 		this.domainContextualizers = new ArrayList<DomainContextualizer>(1);
 		this.domainStartedListeners = new ArrayList<DomainStartedListener>(1);
-		
-		//Register for events
+
+		// Register for events
 		int cb1 = connection.domainEventRegister(this);
 		callbackIds.add(cb1);
-		
+
 		LOGGER.info("Received callbackid: " + cb1);
 	}
-	
+
 	/**
-	 * Add a domaincontextualizer (with inherit VM-Domain) to signal when events are found
-	 * @param domainContextualizer The new domaincontextualizer
+	 * Add a domaincontextualizer (with inherit VM-Domain) to signal when events
+	 * are found
+	 * 
+	 * @param domainContextualizer
+	 *            The new domaincontextualizer
 	 */
 	public void addListener(DomainContextualizer domainContextualizer) {
 		domainContextualizers.add(domainContextualizer);
-		LOGGER.info("Added listener for domain: " + domainContextualizer.getDomainName());
+		LOGGER.info("Added listener for domain: "
+				+ domainContextualizer.getDomainName());
 	}
-	
-	
+
 	/**
 	 * Add a domainStatedListener to signal when new domains are detected
-	 * @param domainStatedListener The new domainStatedListener
+	 * 
+	 * @param domainStatedListener
+	 *            The new domainStatedListener
 	 */
-	public void addDomainStartedListener(DomainStartedListener domainStatedListener) {
+	public void addDomainStartedListener(
+			DomainStartedListener domainStatedListener) {
 		domainStartedListeners.add(domainStatedListener);
 		LOGGER.info("Added domainStartedListener");
 	}
-	
-	
+
 	/**
 	 * Remove a domainStatedListener
-	 * @param domainStatedListener The domainStatedListener to remove
+	 * 
+	 * @param domainStatedListener
+	 *            The domainStatedListener to remove
 	 */
-	public void removeDomainStartedListener(DomainStartedListener domainStatedListener) {
+	public void removeDomainStartedListener(
+			DomainStartedListener domainStatedListener) {
 		boolean result = domainStartedListeners.remove(domainStatedListener);
 		if (result) {
 			LOGGER.info("Removed domainStartedListener.");
@@ -94,51 +105,61 @@ public class LibvirtEventBridge implements LifecycleCallback {
 			LOGGER.warn("Failed to remove domainStartedListener");
 		}
 	}
-	
+
 	/**
-	 * Remove a domaincontextualizer (with inherit VM-Domain) from the set to signal when events are found
-	 * @param domainName The domaincontextualizer to remove
+	 * Remove a domaincontextualizer (with inherit VM-Domain) from the set to
+	 * signal when events are found
+	 * 
+	 * @param domainName
+	 *            The domaincontextualizer to remove
 	 * @return True if the listerner was successfully removed, false otherwise
 	 */
 	public boolean removeListener(String domainName) {
 		DomainContextualizer contextualizer = null;
-		for (DomainContextualizer contextCandidate: domainContextualizers) {
+		for (DomainContextualizer contextCandidate : domainContextualizers) {
 			if (contextCandidate.watchesDomainName(domainName)) {
 				contextualizer = contextCandidate;
 				break;
 			}
 		}
-		
+
 		if (contextualizer != null) {
 			return domainContextualizers.remove(contextualizer);
 		}
-		
+
 		return false;
 	}
-	
+
+	/**
+	 * Unregisters domain events
+	 */
 	public void close() {
-		//Unregister events
+		// Unregister events
 		for (int callbackIdentifier : callbackIds) {
 			try {
 				connection.domainEventDeregister(callbackIdentifier);
 			} catch (LibvirtException e) {
-				LOGGER.warn("Failed to deregister event, cbID: " + callbackIdentifier + " on LibVirt connection", e);
+				LOGGER.warn("Failed to deregister event, cbID: "
+						+ callbackIdentifier + " on LibVirt connection", e);
 			}
 		}
 	}
 
 	/*
 	 * Called by libvirt to indicate a change in lifecycle
-	 * @see eu.ascetic.vmc.libvirt.Connect.DomainEvent.LifecycleCallback#onLifecycleChange(eu.ascetic.vmc.libvirt.Connect, eu.ascetic.vmc.libvirt.Domain, eu.ascetic.vmc.libvirt.Connect.DomainEvent.LifecycleCallback.Event, int)
+	 * 
+	 * @see eu.ascetic.vmc.libvirt.Connect.DomainEvent.LifecycleCallback#
+	 * onLifecycleChange(eu.ascetic.vmc.libvirt.Connect,
+	 * eu.ascetic.vmc.libvirt.Domain,
+	 * eu.ascetic.vmc.libvirt.Connect.DomainEvent.LifecycleCallback.Event, int)
 	 */
 	@Override
 	public void onLifecycleChange(Connect connect, Domain domain, Event event,
 			int detail) {
-		
-		//TODO: change to logger.debug
+
+		// TODO: change to logger.debug
 		LOGGER.info("lifecycle change: " + domain + " " + event + " " + detail);
 
-		
 		String domainName;
 		try {
 			domainName = domain.getName();
@@ -147,46 +168,48 @@ public class LibvirtEventBridge implements LifecycleCallback {
 			LOGGER.info("Event ignored: Domain object seems broken");
 			return;
 		}
-		
-		
-		/* Signal domainStartedListener that a new Domain has been created. This gives it a change
-		 * to create a new DomainContextualizer for this domain if there isn't one already
+
+		/*
+		 * Signal domainStartedListener that a new Domain has been created. This
+		 * gives it a change to create a new DomainContextualizer for this
+		 * domain if there isn't one already
 		 */
-		if ((event.equals(Event.DEFINED) || event.equals(Event.STARTED)) && detail == 0) {
-			for (DomainStartedListener dListener: domainStartedListeners) {
+		if ((event.equals(Event.DEFINED) || event.equals(Event.STARTED))
+				&& detail == 0) {
+			for (DomainStartedListener dListener : domainStartedListeners) {
 				dListener.vmDomainCreated(domainName);
 			}
 		}
-		
-		
-		//Fetch associated DomainContextualizer
+
+		// Fetch associated DomainContextualizer
 		DomainContextualizer contextualizer = null;
-		for (DomainContextualizer contextCandidate: domainContextualizers) {
+		for (DomainContextualizer contextCandidate : domainContextualizers) {
 			if (contextCandidate.watchesDomainName(domainName)) {
 				contextualizer = contextCandidate;
 				break;
 			}
 		}
-		
-		//If no DomainContextualizer is registered for this domain, return
+
+		// If no DomainContextualizer is registered for this domain, return
 		if (contextualizer == null) {
 			try {
-				LOGGER.info("No DomainContextualizer found for domain: " + domain.getName() + ", ignoring lifecycle event");
+				LOGGER.info("No DomainContextualizer found for domain: "
+						+ domain.getName() + ", ignoring lifecycle event");
 			} catch (LibvirtException e) {
 				LOGGER.info("No DomainContextualizer found for domain with unresolvable name.");
 			}
 			return;
 		}
-		
-		//These events are the same as used in Python (Hopefully!)
+
+		// These events are the same as used in Python (Hopefully!)
 		if (event.equals(Event.RESUMED) && detail == 1) {
 			contextualizer.vmDomainMigrationCompleted();
 		} else if (event.equals(Event.SUSPENDED) && detail == 1) {
 			contextualizer.vmDomainMigrationStarted();
 		} else if (event.equals(Event.STARTED) && detail == 0) {
 			contextualizer.vmDomainStarted();
-		}  else if (event.equals(Event.STOPPED) && detail == 0) {
+		} else if (event.equals(Event.STOPPED) && detail == 0) {
 			contextualizer.vmDomainStopped();
-		} 
+		}
 	}
 }

@@ -16,14 +16,21 @@
 package eu.ascetic.vmc.api.imageconverter;
 
 /**
- * TODO: Description here...
+ * Provides functionality to detect the format of a virtual machine image
  * 
  * @author Django Armstrong (ULeeds)
  * @version 0.0.1
  */
 public class FormatDetection {
 
-	public String detect() {
+	/**
+	 * Method to detect the format of a VM
+	 * 
+	 * @param pathToImage Path to the image
+	 * @return The detected image format
+	 */
+	public String detect(String pathToImage) {
+		// TODO
 		return null;
 	}
 }

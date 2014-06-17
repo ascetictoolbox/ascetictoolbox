@@ -30,7 +30,7 @@ import eu.ascetic.vmc.api.datamodel.GlobalState;
 import eu.ascetic.vmc.api.datamodel.ProgressData;
 
 /**
- * Core API to access VM Contextualizer
+ * Implementation of the core API providing access to VM Contextualizer functionality
  * 
  * @author Django Armstrong (ULeeds)
  * @version 0.0.5

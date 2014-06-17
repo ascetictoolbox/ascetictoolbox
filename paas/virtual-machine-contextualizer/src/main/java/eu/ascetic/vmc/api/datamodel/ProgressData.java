@@ -31,6 +31,7 @@ import eu.ascetic.utils.ovf.api.OvfDefinition;
 public class ProgressData {
 
 	public static final double COMPLETED_PERCENTAGE = 100.0;
+
 	// Index of contextualization PHASES.
 	/**
 	 * 0
@@ -43,23 +44,15 @@ public class ProgressData {
 	/**
 	 * 2
 	 */
-	public static final int REVERT_ALTERATIONS_PHASE_ID = 2;
+	public static final int CONVERT_IMAGE_PHASE_ID = 2;
 	/**
 	 * 3
 	 */
-	public static final int CONVERT_IMAGE_PHASE_ID = 3;
+	public static final int CREATE_ISOS_PHASE_ID = 3;
 	/**
 	 * 4
 	 */
-	public static final int PREPARE_IMAGES_PHASE_ID = 4;
-	/**
-	 * 5
-	 */
-	public static final int CREATE_ISOS_PHASE_ID = 5;
-	/**
-	 * 6
-	 */
-	public static final int FINALISE_PHASE_ID = 6;
+	public static final int FINALISE_PHASE_ID = 4;
 
 	// Textual representation of PHASES of contextualization in order.
 	/**
@@ -71,17 +64,9 @@ public class ProgressData {
 	 */
 	private static final String RETRIEVE_DATA_PHASE_TEXT = "Retrieving Contextualization Data";
 	/**
-	 * "Starting Contextualization Process"
-	 */
-	private static final String REVERT_ALTERATIONS_PHASE_TEXT = "Reverting Alterations To Image(s)";
-	/**
 	 * "Converting Image(s)"
 	 */
 	private static final String COVNERT_IMAGES_PHASE_TEXT = "Converting Image(s)";
-	/**
-	 * "Preparing Image(s)"
-	 */
-	private static final String PREPARE_IMAGES_PHASE_TEXT = "Preparing Image(s)";
 	/**
 	 * "Creating ISO Image(s)"
 	 */
@@ -95,8 +80,7 @@ public class ProgressData {
 	 * Phase text in order of execution.
 	 */
 	private static final String[] PHASES = { INITIALISE_PHASE_TEXT,
-			RETRIEVE_DATA_PHASE_TEXT, REVERT_ALTERATIONS_PHASE_TEXT,
-			COVNERT_IMAGES_PHASE_TEXT, PREPARE_IMAGES_PHASE_TEXT,
+			RETRIEVE_DATA_PHASE_TEXT, COVNERT_IMAGES_PHASE_TEXT,
 			CREATE_ISOS_PHASE_TEXT, FINALISE_PHASE_TEXT };
 
 	/**
@@ -110,8 +94,8 @@ public class ProgressData {
 	private Double currentPercentageCompletion;
 
 	/**
-	 * Used to store an altered version of the ovfDefinition for passing image URI's
-	 * back through the API.
+	 * Used to store an altered version of the ovfDefinition for passing image
+	 * URI's back through the API.
 	 */
 	private OvfDefinition ovfDefinition = null;
 
@@ -130,11 +114,11 @@ public class ProgressData {
 	 */
 	private Exception exception = null;
 
-	/** 
+	/**
 	 * Stores the history of progress
 	 */
-	private Map<Integer, Double> history; 
-	
+	private Map<Integer, Double> history;
+
 	/**
 	 * Constructor with default progress values.
 	 */
@@ -166,7 +150,7 @@ public class ProgressData {
 	public String getPhaseName(int phaseId) {
 		return PHASES[phaseId];
 	}
-	
+
 	/**
 	 * @return the currentPhaseId.
 	 */
@@ -202,7 +186,8 @@ public class ProgressData {
 	}
 
 	/**
-	 * The ovfDefinition altered by the VMC during the contextualization process.
+	 * The ovfDefinition altered by the VMC during the contextualization
+	 * process.
 	 * 
 	 * @return the ovfDefinition.
 	 */
@@ -264,17 +249,18 @@ public class ProgressData {
 	public void setException(Exception exception) {
 		this.exception = exception;
 	}
-	
+
 	/**
-	 * HashMap<PhaseId, PhasePercentageCompletion>, use getPhaseName() to get text name of the phase.
+	 * HashMap<PhaseId, PhasePercentageCompletion>, use getPhaseName() to get
+	 * text name of the phase.
 	 * 
 	 * @return the history of progress
 	 */
 	public Map<Integer, Double> getHistory() {
 		return history;
 	}
-	
-		/**
+
+	/**
 	 * The total progress of the VMC.
 	 * 
 	 * @return the totalProgress
@@ -282,12 +268,11 @@ public class ProgressData {
 	public Double getTotalProgress() {
 		if (currentPhaseId == 0) {
 			return 0.0;
+		} else {
+			return COMPLETED_PERCENTAGE / (PHASES.length / (currentPhaseId));
 		}
-		else {
-			return COMPLETED_PERCENTAGE / (PHASES.length/(currentPhaseId));
-			}
 	}
-		
+
 	/**
 	 * The number of PHASES in the VMC.
 	 * 

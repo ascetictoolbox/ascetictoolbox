@@ -71,7 +71,7 @@ public class ImageConversion implements Runnable {
 	public void run() {
 
 		FormatDetection formatDetection = new FormatDetection();
-		String currentFormat = formatDetection.detect();
+		String currentFormat = formatDetection.detect(hardDisk.getUri());
 
 		String commandName = "qemu-img";
 		ArrayList<String> arguments = new ArrayList<String>();
