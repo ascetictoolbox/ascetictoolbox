@@ -4,19 +4,17 @@ import net.atos.ari.seip.CloudManager.db.model.Leases;
 import net.atos.ari.seip.CloudManager.db.model.Networks;
 import net.atos.ari.seip.CloudManager.db.utils.HibernateUtil;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 public class LeasesDAO {
-
-	final static Logger logger = LoggerFactory.getLogger(LeasesDAO.class
-			.getName());
+	private final static Logger logger = Logger.getLogger(LeasesDAO.class);
 
 	public boolean addLease(String ip, String mac, String networkId, String type)
 			throws Exception {

@@ -3,15 +3,15 @@ package net.atos.ari.seip.CloudManager.atomicActions;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.deltacloud.client.DeltaCloudClient;
+/* import org.deltacloud.client.DeltaCloudClient;
 import org.deltacloud.client.DeltaCloudClientException;
-import org.deltacloud.client.Key;
+import org.deltacloud.client.Key; */
 
 public class KeysActions {
 
 	Logger log = Logger.getLogger(this.getClass().getName());
 
-	DeltaCloudClient dcc;
+/*	DeltaCloudClient dcc;
 
 	public KeysActions(DeltaCloudClient dcc) {
 		super();
@@ -43,6 +43,6 @@ public class KeysActions {
 			log.error("unable to list keys");
 		}
 		return null;
-	}
+	} */
 	
 }

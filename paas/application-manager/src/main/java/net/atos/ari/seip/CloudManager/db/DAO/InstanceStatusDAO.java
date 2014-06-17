@@ -3,17 +3,14 @@ package net.atos.ari.seip.CloudManager.db.DAO;
 import net.atos.ari.seip.CloudManager.db.model.InstanceStatus;
 import net.atos.ari.seip.CloudManager.db.model.IntanceInfo;
 
+import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class InstanceStatusDAO {
-
-	final static Logger logger = LoggerFactory
-			.getLogger(InstanceInfoDAO.class.getName());
+	private final static Logger logger = Logger.getLogger(InstanceStatusDAO.class);
 
 	public boolean addInstanceStatus(String instanceId, String instanceStatus)
 			throws Exception {

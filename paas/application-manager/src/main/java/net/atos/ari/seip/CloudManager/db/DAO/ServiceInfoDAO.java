@@ -5,6 +5,7 @@ import java.util.List;
 import net.atos.ari.seip.CloudManager.db.model.ServiceInfo;
 import net.atos.ari.seip.CloudManager.db.utils.HibernateUtil;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -12,13 +13,9 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ServiceInfoDAO {
-
-	final static Logger logger = LoggerFactory
-			.getLogger(ServiceInfoDAO.class.getName());
+	private final static Logger logger = Logger.getLogger(ServiceInfoDAO.class);
 
 	public boolean addService(String serviceId, String serviceManifest)
 			throws Exception {

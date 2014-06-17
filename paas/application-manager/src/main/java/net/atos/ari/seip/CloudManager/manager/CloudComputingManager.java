@@ -1,16 +1,16 @@
 package net.atos.ari.seip.CloudManager.manager;
 
 import org.apache.log4j.Logger;
-import org.opennebula.client.Client;
-import org.opennebula.client.ClientConfigurationException;
-import org.opennebula.client.OneResponse;
-import org.opennebula.client.user.User;
-import org.opennebula.client.vm.VirtualMachinePool;
+//import org.opennebula.client.Client;
+//import org.opennebula.client.ClientConfigurationException;
+//import org.opennebula.client.OneResponse;
+//import org.opennebula.client.user.User;
+//import org.opennebula.client.vm.VirtualMachinePool;
 
 public class CloudComputingManager {
 
 	Logger log = Logger.getLogger(this.getClass().getName());	
-	Client client = null;
+	//Client client = null;
 	String secret;
 	String baseurl;
 	InstanceManager instanceManager = null;
@@ -21,28 +21,28 @@ public class CloudComputingManager {
 		this.baseurl = baseurl;
 	}
 	
-	private Client getClient(){
-		if (client == null) {
-			try {
-				client = new Client(secret, baseurl);
-			} catch (ClientConfigurationException e1) {
-				e1.printStackTrace();
-			}
-		}
-		return client;
-	}
+//	private Client getClient(){
+//		if (client == null) {
+//			try {
+//				client = new Client(secret, baseurl);
+//			} catch (ClientConfigurationException e1) {
+//				e1.printStackTrace();
+//			}
+//		}
+//		return client;
+//	}
 	
 	
 	private InstanceManager getInstanceManager(){
 		if (instanceManager == null){
-			instanceManager = new InstanceManager(getClient());
+			instanceManager = new InstanceManager(/*getClient()*/);
 		}
 		return instanceManager;
 	}
 	
 	private TemplateManager getTemplateManager(){
 		if (templateManager == null){
-			templateManager = new TemplateManager(getClient());
+			templateManager = new TemplateManager(/*getClient()*/);
 		}
 		return templateManager;
 	}
@@ -101,32 +101,32 @@ public class CloudComputingManager {
 	}
 	
 	public void testUserConnection() {
-		User user = new User (-1, getClient());
-    	OneResponse res = user.info();
-    	if( res.isError() )
-        {
-            System.out.println( "User name:" + res.getErrorMessage());
-        }
-        else
-        {
-        	System.out.println("Connected!");
-            System.out.println( "User name: " + user.getName() );
-        }    	
+//		User user = new User (-1, getClient());
+//    	OneResponse res = user.info();
+//    	if( res.isError() )
+//        {
+//            System.out.println( "User name:" + res.getErrorMessage());
+//        }
+//        else
+//        {
+//        	System.out.println("Connected!");
+//            System.out.println( "User name: " + user.getName() );
+//        }    	
 	}
 	
 	
 	public void testVirtualMachinePool() {
-		VirtualMachinePool vpool = new VirtualMachinePool(getClient());
-	    OneResponse rpool = vpool.infoAll(getClient());    	
-	    if( rpool.isError() )
-	    {
-	    	System.out.println( "Vpool: " + rpool.getErrorMessage() );
-	    }
-	    else
-	    {
-	    	System.out.println( "Vpool: " + rpool.getMessage() );
-
-	    }
+//		VirtualMachinePool vpool = new VirtualMachinePool(getClient());
+//	    OneResponse rpool = vpool.infoAll(getClient());    	
+//	    if( rpool.isError() )
+//	    {
+//	    	System.out.println( "Vpool: " + rpool.getErrorMessage() );
+//	    }
+//	    else
+//	    {
+//	    	System.out.println( "Vpool: " + rpool.getMessage() );
+//
+//	    }
 	}
 	
 }

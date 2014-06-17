@@ -2,23 +2,29 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-   <parent>
-  	<groupId>net.atos.ari.seip.CloudManager</groupId>
- 	<artifactId>CloudManager</artifactId>
-  	<version>1.0-SNAPSHOT</version>
+  <parent>
+      <groupId>eu.ascetic.ascetic-architecture</groupId>
+      <version>0.0.1-SNAPSHOT</version>
+      <relativePath>..</relativePath>
+      <artifactId>paas</artifactId>
   </parent>
 
-  <groupId>net.atos.ari.seip.CloudManager</groupId>
-  <artifactId>CloudSLM</artifactId>
-  <version>1.0-SNAPSHOT</version>
+
+  <groupId>eu.ascetic.ascetic-architecture.paas</groupId>
+  <artifactId>application-manager</artifactId>
+  <version>0.1-SNAPSHOT</version>
   <packaging>war</packaging>
 
-  <name>CloudSLM</name>
-  <url>http://maven.apache.org</url>
+  <name>Application Manager</name>
+  <url>http://www.ascetic.eu</url>
 
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<jersey-version>1.18.1</jersey-version>
+		<spring-version>3.2.9.RELEASE</spring-version>
+		<hibernate-version>4.3.5.Final</hibernate-version>
   </properties>
+  
 
   <build>
 		<plugins>
@@ -73,7 +79,7 @@
 						</configuration>
 					</execution>
 					 
- 				   <execution>
+ 				<!--   <execution>
 						<id>hbm2cfgxml</id>
 						<phase>generate-resources</phase>
 						<goals>
@@ -152,7 +158,7 @@
 								<configurationfile>src/main/resources/hibernate.cfg.xml</configurationfile>
 							</componentProperties>
 						</configuration>
-					</execution>
+					</execution> -->
 
 				</executions>
 				<dependencies>
@@ -167,7 +173,7 @@
 		<finalName>CloudSLM</finalName>
 	</build>
 	
-	<repositories>       
+ 	<repositories>       
   <repository>
    <id>optimis-repo</id>
    <snapshots>
@@ -181,73 +187,182 @@
    <name>repo</name>
    <url>http://optimis-artifactory.es.atos.net/artifactory/repo</url>
   </repository>          
- </repositories>
+ </repositories> 
   	
   	
   
   <dependencies>
+  
+  		<!-- General -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<!-- <version>1.2.17</version> -->
+		</dependency>
+		
+		<!-- Test -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<!-- <version>4.11</version> -->
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jdom</groupId>
+			<artifactId>jdom</artifactId>
+			<version>1.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>jaxen</groupId>
+			<artifactId>jaxen</artifactId>
+			<version>1.1.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<version>2.3.0</version>
+			<scope>test</scope>
+		</dependency> 
+		
+		<!-- Jersey + Spring -->
+		<dependency>
+			<groupId>com.sun.jersey.contribs</groupId>
+			<artifactId>jersey-spring</artifactId>
+			<version>${jersey-version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-web</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-beans</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-aop</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>1.18.1</version>
+		</dependency>
+				
+		<!-- Spring 3 dependencies -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<version>${spring-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring-version}</version>
+		</dependency>
+ 
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring-version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${spring-version}</version>
+		</dependency>    
+ 
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${spring-version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>		
+			<version>${spring-version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${spring-version}</version>
+		</dependency>   
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring-version}</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>${hibernate-version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>${hibernate-version}</version>
+		</dependency>
+		   
+		<dependency>
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.0-api</artifactId>
+			<version>1.0.0.Final</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-c3p0</artifactId>
+			<version>${hibernate-version}</version>
+		</dependency>
+		
+		<!-- Original ones -->
 	<dependency>
       	<groupId>eu.optimis.servicemanifest</groupId>
     	<artifactId>service-manifest-api</artifactId>
     	<version>1.0.6</version>
     </dependency>
-    
-    <dependency>
-		<groupId>com.sun.jersey</groupId>
-		<artifactId>jersey-server</artifactId>
-		<version>1.14</version>
-	</dependency>
-	
-    <dependency>
-		<groupId>com.sun.jersey</groupId>
-		<artifactId>jersey-client</artifactId>
-		<version>1.14</version>
-	</dependency>
-	
-    <dependency>
-		<groupId>log4j</groupId>
-		<artifactId>log4j</artifactId>
-		<version>1.2.17</version>
-	</dependency>
-            
-    <dependency>
-		<groupId>com.sun.jersey</groupId>
-		<artifactId>jersey-bundle</artifactId>
-		<version>1.14</version>
-	</dependency>
-
-    <dependency>
-		<groupId>com.sun.jersey</groupId>
-		<artifactId>jersey-json</artifactId>
-		<version>1.14</version>
-	</dependency>
 	
     <dependency>
 		<groupId>org.codehaus.jackson</groupId>
 		<artifactId>jackson-mapper-asl</artifactId>
 		<version>1.9.9</version>
-	</dependency>
+	</dependency> 
     
    <!-- DeltaCloud -->    
-   <dependency>
+   <!-- <dependency>
 		<groupId>org.deltacloud</groupId>
   		<artifactId>deltacloud-client-java</artifactId> 
   		<version>0.0.1-SNAPSHOT</version>
-	</dependency>
-	
-	
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
+	</dependency> -->
     
     <!--  Opennebula dependencies -->
-    <dependency>
+   <!--  <dependency>
 	    <groupId>org.opennebula.client</groupId>
 	  	<artifactId>oca</artifactId>
-	  	 <!--<version>3.8.3</version>-->
 	  	<version>4.4.0</version>
   	</dependency>
   	
@@ -262,7 +377,7 @@
 		<groupId>ws-commons-util</groupId>
 		<artifactId>ws-commons-util</artifactId>
 		<version>1.0.1</version>
-	</dependency>
+	</dependency> -->
             
     <!-- Mysql connector -->
     <dependency>
@@ -272,14 +387,14 @@
 	</dependency>
 	
    	<!-- Hibernate framework -->
-	<dependency>
+	<!--  <dependency>
 		<groupId>org.codehaus.mojo</groupId>
 		<artifactId>hibernate3-maven-plugin</artifactId>
 		<version>2.2</version>
-	</dependency>
+	</dependency> -->
 		
     <!-- Hibernate library dependecy start -->
-		<dependency>
+	<!-- 	<dependency>
 			<groupId>dom4j</groupId>
 			<artifactId>dom4j</artifactId>
 			<version>1.6.1</version>
@@ -312,7 +427,7 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.6.6</version>
-		</dependency>
+		</dependency> -->
             
 		<!-- Hibernate library dependecy end -->
 		
@@ -322,30 +437,5 @@
             <artifactId>commons-configuration</artifactId>
             <version>1.5</version>
         </dependency>
-        
-        <!-- Spring 3 dependencies -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-aop</artifactId>
-			<version>3.2.4.RELEASE</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-			<version>3.2.4.RELEASE</version>
-		</dependency>
- 
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>3.2.4.RELEASE</version>
-			<!--<exclusions>
-				<exclusion>
-					<groupId>org.springframework</groupId>
-					<artifactId>spring-asm</artifactId>
-				<exclusion>
-			</exclusions> -->
-		</dependency>
   </dependencies>
 </project>

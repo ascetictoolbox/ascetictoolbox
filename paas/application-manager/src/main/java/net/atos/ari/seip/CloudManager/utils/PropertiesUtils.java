@@ -7,13 +7,12 @@ import java.io.InputStream;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 
 public class PropertiesUtils {
 
-	private static Logger log = LoggerFactory.getLogger("net.atos.ari.seip.CloudManager.utils.PropertiesUtils");
+	private static Logger log = Logger.getLogger(PropertiesUtils.class);
 
 	private static final String CLOUD_SLM_CONFIG_FILE = "/etc/CloudManager.properties";
 	private static final String LOG4J_CONFIG_FILE = "/etc/log4j.properties";

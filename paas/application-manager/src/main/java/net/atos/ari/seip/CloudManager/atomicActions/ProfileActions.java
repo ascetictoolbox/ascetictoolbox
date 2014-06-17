@@ -3,15 +3,15 @@ package net.atos.ari.seip.CloudManager.atomicActions;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.deltacloud.client.DeltaCloudClient;
+/* import org.deltacloud.client.DeltaCloudClient;
 import org.deltacloud.client.DeltaCloudClientException;
-import org.deltacloud.client.HardwareProfile;
+import org.deltacloud.client.HardwareProfile; */
 
 public class ProfileActions {
 
 	Logger log = Logger.getLogger(this.getClass().getName());
 
-	DeltaCloudClient dcc;
+/*	DeltaCloudClient dcc;
 
 	public ProfileActions(DeltaCloudClient dcc) {
 		super();
@@ -35,6 +35,6 @@ public class ProfileActions {
 			log.error("unable to list profiles");
 		}
 		return null;
-	}
+	} */
 	
 }

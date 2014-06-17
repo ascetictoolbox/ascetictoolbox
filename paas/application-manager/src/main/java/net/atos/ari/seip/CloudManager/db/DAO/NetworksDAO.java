@@ -5,19 +5,16 @@ import java.util.List;
 import net.atos.ari.seip.CloudManager.db.model.Networks;
 import net.atos.ari.seip.CloudManager.db.utils.HibernateUtil;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class NetworksDAO {
-
-	final static Logger logger = LoggerFactory
-			.getLogger(NetworksDAO.class.getName());
+	private final static Logger logger = Logger.getLogger(NetworksDAO.class);
 
 	public boolean addNetwork(String netwokId, String serviceId, String networkRange, String networkType)
 			throws Exception {

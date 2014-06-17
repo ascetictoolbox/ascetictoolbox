@@ -6,19 +6,17 @@ import net.atos.ari.seip.CloudManager.db.model.ServiceInfo;
 import net.atos.ari.seip.CloudManager.db.model.ServiceRealm;
 import net.atos.ari.seip.CloudManager.db.utils.HibernateUtil;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 public class ServiceRealmDAO {
-
-	final static Logger logger = LoggerFactory
-			.getLogger(ServiceRealmDAO.class.getName());
+	private final static Logger logger = Logger.getLogger(ServiceRealmDAO.class);
 
 	public boolean addServiceRealm(String serviceId, String serviceRealm)
 			throws Exception {

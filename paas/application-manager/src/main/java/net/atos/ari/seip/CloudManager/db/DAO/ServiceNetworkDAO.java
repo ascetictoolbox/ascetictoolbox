@@ -8,19 +8,16 @@ import net.atos.ari.seip.CloudManager.db.model.ServiceInfo;
 import net.atos.ari.seip.CloudManager.db.model.ServiceNetwork;
 import net.atos.ari.seip.CloudManager.db.utils.HibernateUtil;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ServiceNetworkDAO {
-
-	final static Logger logger = LoggerFactory
-			.getLogger(ServiceNetworkDAO.class.getName());
+	private final static Logger logger = Logger.getLogger(ServiceNetworkDAO.class);
 
 	public boolean addNetwork(String networkId, String serviceId)
 			throws Exception {

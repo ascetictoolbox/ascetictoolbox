@@ -3,15 +3,15 @@ package net.atos.ari.seip.CloudManager.atomicActions;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.deltacloud.client.DeltaCloudClient;
+/* import org.deltacloud.client.DeltaCloudClient;
 import org.deltacloud.client.DeltaCloudClientException;
-import org.deltacloud.client.Realm;
+import org.deltacloud.client.Realm; */
 
 public class RealmActions {
 
 	Logger log = Logger.getLogger(this.getClass().getName());
 
-	DeltaCloudClient dcc;
+/*	DeltaCloudClient dcc;
 
 	public RealmActions(DeltaCloudClient dcc) {
 		super();
@@ -34,5 +34,5 @@ public class RealmActions {
 			log.error("unable to list realms");
 		}
 		return null;
-	}
+	} */
 }
