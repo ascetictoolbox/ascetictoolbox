@@ -41,39 +41,40 @@ public class Scheduler {
         }
     }
 
+    private void reserveResourcesForVmInHost(Vm vm, String hostForDeployment, ArrayList<HostInfo> hosts) {
+        for (HostInfo host: hosts) {
+            if (host.getHostname().equals(hostForDeployment)) {
+                host.setReservedCpus(vm.getCpus());
+                host.setReservedMemoryMb(vm.getRamMb());
+                host.setReservedDiskGb(vm.getDiskGb());
+            }
+        }
+    }
+
     /**
      * Decides on which host deploy each of the VMs that need to be deployed
-     * @param vmDescriptions the description of the VMs that need to be scheduled
+     * @param vms the description of the VMs that need to be scheduled
      * @param hostsInfo information of the hosts of the infrastructure where the VMs need to be deployed
      * @return HashMap that contains for each VM description, the name of the host where
      * the VM should be deployed according to the scheduling algorithm
      */
-    public HashMap<Vm, String> schedule(ArrayList<Vm> vmDescriptions, ArrayList<HostInfo> hostsInfo) {
-        // HashMap VM -> host where it is going to be deployed
-        HashMap<Vm, String> scheduling = new HashMap<>();
+    public HashMap<Vm, String> schedule(ArrayList<Vm> vms, ArrayList<HostInfo> hostsInfo) {
+        HashMap<Vm, String> scheduling = new HashMap<>(); // HashMap VM -> host where it is going to be deployed
 
         // For each of the VMs to be scheduled
-        for (Vm vmDescription: vmDescriptions) {
-
+        for (Vm vm: vms) {
             // Get hosts with enough resources
-            ArrayList<HostInfo> hostsWithEnoughResources = HostFilter.filter(hostsInfo, vmDescription.getCpus(),
-                    vmDescription.getRamMb(), vmDescription.getDiskGb());
+            ArrayList<HostInfo> hostsWithEnoughResources = HostFilter.filter(hostsInfo, vm.getCpus(),
+                    vm.getRamMb(), vm.getDiskGb());
 
-            // From the hosts with enough available resources, get one according to the scheduling algorithm selected
-            String selectedHost = schedAlgorithm.chooseHost(hostsWithEnoughResources, vmDescription);
+            // From the hosts with enough available resources, select one according to the scheduling algorithm used
+            String selectedHost = schedAlgorithm.chooseHost(hostsWithEnoughResources, vm);
 
             // Add the host to the result
-            scheduling.put(vmDescription, selectedHost);
+            scheduling.put(vm, selectedHost);
 
             // Reserve the resources that the VM needs
-            for (HostInfo host: hostsWithEnoughResources) {
-                if (host.getHostname().equals(selectedHost)) {
-                    host.setReservedCpus(vmDescription.getCpus());
-                    host.setReservedMemoryMb(vmDescription.getRamMb());
-                    host.setReservedDiskGb(vmDescription.getDiskGb());
-                }
-            }
-
+            reserveResourcesForVmInHost(vm, selectedHost, hostsWithEnoughResources);
         }
 
         return scheduling;

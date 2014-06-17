@@ -38,7 +38,7 @@ public class Main {
     private static void logSystemStart() {
         BasicConfigurator.configure();
         Logger logger = LoggerFactory.getLogger(Main.class);
-        logger.info("Starting server");
+        logger.debug("Starting server");
     }
 
     public static void main(String[] args) throws IOException {
