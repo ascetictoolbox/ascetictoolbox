@@ -1,5 +1,5 @@
 package net.atos.ari.seip.CloudManager.db.model;
-// Generated 05-May-2014 15:45:16 by Hibernate Tools 3.2.2.GA
+// Generated 17-Jun-2014 11:35:53 by Hibernate Tools 3.2.2.GA
 
 
 import java.util.HashSet;
@@ -11,12 +11,7 @@ import java.util.Set;
 public class Leases  implements java.io.Serializable {
 
 
-     /**
-	 * 
-	 */
-	private static final long serialVersionUID = 4459243260950239377L;
-	
-	private Integer idleases;
+     private Integer idleases;
      private Networks networks;
      private String ip;
      private String mac;

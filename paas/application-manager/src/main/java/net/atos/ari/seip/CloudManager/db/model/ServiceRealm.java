@@ -1,5 +1,5 @@
 package net.atos.ari.seip.CloudManager.db.model;
-// Generated 05-May-2014 15:45:16 by Hibernate Tools 3.2.2.GA
+// Generated 17-Jun-2014 11:35:53 by Hibernate Tools 3.2.2.GA
 
 
 
@@ -9,12 +9,7 @@ package net.atos.ari.seip.CloudManager.db.model;
 public class ServiceRealm  implements java.io.Serializable {
 
 
-     /**
-	 * 
-	 */
-	private static final long serialVersionUID = 2872944326456871478L;
-	
-	private Integer idserviceRealm;
+     private Integer idserviceRealm;
      private ServiceInfo serviceInfo;
      private String realmId;
 

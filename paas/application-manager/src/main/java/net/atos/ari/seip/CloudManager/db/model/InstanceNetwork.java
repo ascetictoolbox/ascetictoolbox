@@ -1,5 +1,5 @@
 package net.atos.ari.seip.CloudManager.db.model;
-// Generated 05-May-2014 15:45:16 by Hibernate Tools 3.2.2.GA
+// Generated 17-Jun-2014 11:35:53 by Hibernate Tools 3.2.2.GA
 
 
 
@@ -9,12 +9,7 @@ package net.atos.ari.seip.CloudManager.db.model;
 public class InstanceNetwork  implements java.io.Serializable {
 
 
-     /**
-	 * 
-	 */
-	private static final long serialVersionUID = -2717818275362478383L;
-	
-	private Integer idinstanceNetwork;
+     private Integer idinstanceNetwork;
      private Leases leases;
      private IntanceInfo intanceInfo;
      private ServiceNetwork serviceNetwork;

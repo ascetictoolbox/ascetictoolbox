@@ -1,5 +1,5 @@
 package net.atos.ari.seip.CloudManager.db.model;
-// Generated 05-May-2014 15:45:17 by Hibernate Tools 3.2.2.GA
+// Generated 17-Jun-2014 11:35:53 by Hibernate Tools 3.2.2.GA
 
 
 import java.util.List;

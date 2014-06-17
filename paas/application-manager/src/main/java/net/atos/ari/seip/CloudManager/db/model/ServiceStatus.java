@@ -1,5 +1,5 @@
 package net.atos.ari.seip.CloudManager.db.model;
-// Generated 05-May-2014 15:45:16 by Hibernate Tools 3.2.2.GA
+// Generated 17-Jun-2014 11:35:53 by Hibernate Tools 3.2.2.GA
 
 
 import java.util.Date;
@@ -10,12 +10,7 @@ import java.util.Date;
 public class ServiceStatus  implements java.io.Serializable {
 
 
-     /**
-	 * 
-	 */
-	private static final long serialVersionUID = 2068803309704340675L;
-	
-	private Integer idserviceStatus;
+     private Integer idserviceStatus;
      private ServiceInfo serviceInfo;
      private String serviceStatus;
      private Date time;

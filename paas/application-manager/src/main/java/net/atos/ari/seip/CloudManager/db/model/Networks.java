@@ -1,5 +1,5 @@
 package net.atos.ari.seip.CloudManager.db.model;
-// Generated 05-May-2014 15:45:16 by Hibernate Tools 3.2.2.GA
+// Generated 17-Jun-2014 11:35:53 by Hibernate Tools 3.2.2.GA
 
 
 import java.util.HashSet;
@@ -11,12 +11,7 @@ import java.util.Set;
 public class Networks  implements java.io.Serializable {
 
 
-     /**
-	 * 
-	 */
-	private static final long serialVersionUID = -7962593386467737991L;
-	
-	private Integer idnetworks;
+     private Integer idnetworks;
      private String netwokId;
      private String serviceId;
      private String networkType;
