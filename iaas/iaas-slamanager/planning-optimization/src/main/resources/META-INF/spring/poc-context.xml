@@ -8,22 +8,10 @@
 		http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 	<!-- BEANS DEFINITION -->
-	<bean name="iaasPOCServices" class="eu.ascetic.architecture.iaas.poc.PlanningOptimizationServices" />
+	<bean name="iaasPOCServices" class="eu.ascetic.architecture.iaas.slamanager.poc.PlanningOptimizationServices" />
 	
 	
-	<bean name="cee2SlaConverter" class="eu.ascetic.architecture.iaas.poc.cee.converter.Cee2SlaConverter" />
-	
-	<bean name="sla2ceeConverter" class="eu.ascetic.architecture.iaas.poc.cee.converter.Sla2CeeConverter " />
-	
-	<bean name="contrailSlaParser" class="eu.ascetic.architecture.iaas.poc.slatemplate.parser.ContrailSlaTemplateParser " />
-	
-	<bean name="pricingManager" class="eu.ascetic.architecture.iaas.poc.manager.pricing.PricingManagerImpl" />
-	
-	<bean name="negotiationManager" class="eu.ascetic.architecture.iaas.poc.manager.negotiation.NegotiationManagerImpl" />
-	
-	<bean name="supplyManager" class="eu.ascetic.architecture.iaas.poc.manager.supply.SupplyManagerImpl" />
-	
-	<bean name="planningOptimizationImpl" class="eu.ascetic.architecture.iaas.poc.PlanningOptimizationImpl" />
+	<bean name="planningOptimizationImpl" class="eu.ascetic.architecture.iaas.slamanager.poc.PlanningOptimizationImpl" />
 	
 </beans>
 

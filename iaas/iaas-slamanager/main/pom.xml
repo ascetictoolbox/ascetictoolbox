@@ -4,13 +4,13 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>eu.ascetic.architecture.iaas.iaas-slamanager</groupId>
+		<groupId>eu.ascetic.architecture.iaas.slamanager</groupId>
 		<artifactId>iaas-slamanager</artifactId>
 		<version>0.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 
-	<groupId>eu.ascetic.architecture.iaas.iaas-slamanager</groupId>
+	<groupId>eu.ascetic.architecture.iaas.slamanager</groupId>
 	<artifactId>iaas-main</artifactId>
 	<packaging>bundle</packaging>
 	<name>iaas-main</name>
@@ -90,13 +90,13 @@
 
 		<!-- SkeletonSLA Manager :: References :: Domain Specific -->
 		<dependency>
-			<groupId>eu.ascetic.architecture.iaas.iaas-slamanager</groupId>
+			<groupId>eu.ascetic.architecture.iaas.slamanager</groupId>
 			<artifactId>iaas-poc</artifactId>
 			<version>${__slam-version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>eu.ascetic.architecture.iaas.iaas-slamanager</groupId>
+			<groupId>eu.ascetic.architecture.iaas.slamanager</groupId>
 			<artifactId>iaas-pac</artifactId>
 			<version>${__slam-version}</version>
 			<scope>provided</scope>
@@ -105,7 +105,7 @@
 		<!-- :: Classes contained in 'iaas-core' artifact, will be exposed by this 
 			bundle within OSGi -->
 		<dependency>
-			<groupId>eu.ascetic.architecture.iaas.iaas-slamanager</groupId>
+			<groupId>eu.ascetic.architecture.iaas.slamanager</groupId>
 			<artifactId>iaas-core</artifactId>
 			<version>${__slam-version}</version>
 			<scope>provided</scope>
@@ -185,7 +185,7 @@
 							<instructions>
 								<Bundle-Name>iaas-slam4osgi</Bundle-Name>
 								<Bundle-SymbolicName>iaas-slam4osgi</Bundle-SymbolicName>
-								<Export-Package>eu.ascetic.architecture.iaas.main.beans*;version="${__slam-version}"</Export-Package>
+								<Export-Package>eu.ascetic.architecture.iaas.slamanager.main.beans*;version="${__slam-version}"</Export-Package>
 								<Embed-Transitive>false</Embed-Transitive>
 								<Embed-Dependency>iaas-core;inline=true</Embed-Dependency>
 								<Import-Package>

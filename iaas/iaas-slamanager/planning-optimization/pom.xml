@@ -6,13 +6,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<parent>
-		<groupId>eu.ascetic.architecture.iaas.iaas-slamanager</groupId>
+		<groupId>eu.ascetic.architecture.iaas.slamanager</groupId>
 		<artifactId>iaas-slamanager</artifactId>
 		<version>0.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 	
-	<groupId>eu.ascetic.architecture.iaas.iaas-slamanager</groupId>
+	<groupId>eu.ascetic.architecture.iaas.slamanager</groupId>
 	<artifactId>iaas-poc</artifactId>
 	<packaging>bundle</packaging>
 	<name>iaas-poc</name>
@@ -169,7 +169,7 @@
 							<instructions>
 								<Bundle-Name>iaas-poc</Bundle-Name>
 								<Bundle-SymbolicName>iaas-poc</Bundle-SymbolicName>
-								<Export-Package>eu.ascetic.architecture.iaas.poc;version="${__slam-version}"</Export-Package>
+								<Export-Package>eu.ascetic.architecture.iaas.slamanager.poc;version="${__slam-version}"</Export-Package>
 								<Import-Package>
 								org.slasoi.businessManager.common.service.*;version=${pom.version},
 								org.ow2.contrail.common.*;version="1.0.0.SNAPSHOT",

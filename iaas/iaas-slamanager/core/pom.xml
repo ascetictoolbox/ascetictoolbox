@@ -6,13 +6,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<parent>
-		<groupId>eu.ascetic.architecture.iaas.iaas-slamanager</groupId>
+		<groupId>eu.ascetic.architecture.iaas.slamanager</groupId>
 		<artifactId>iaas-slamanager</artifactId>
 		<version>0.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 	
-	<groupId>eu.ascetic.architecture.iaas.iaas-slamanager</groupId>
+	<groupId>eu.ascetic.architecture.iaas.slamanager</groupId>
 	<artifactId>iaas-core</artifactId>
 	<packaging>bundle</packaging>
 	<name>iaas-core</name>
@@ -21,7 +21,7 @@
     <properties>
 		<org.slasoi.slam.license.loc>${basedir}</org.slasoi.slam.license.loc>
 		<org.slasoi.slam.export.version>${project.artifact.version}</org.slasoi.slam.export.version>
-		<org.slasoi.slam.core.export>org.ow2.contrail.provider.core.*</org.slasoi.slam.core.export>
+		<org.slasoi.slam.core.export>eu.ascetic.architecture.iaas.slamanager.core.*</org.slasoi.slam.core.export>
 		<org.slasoi.slam.core.export.version>${slasoi-version}</org.slasoi.slam.core.export.version>
 	</properties>
 	

@@ -11,7 +11,7 @@
 
 	<!-- annotation processor -->
 <!--	<bean class="org.springframework.osgi.extensions.annotation.ServiceReferenceInjectionBeanPostProcessor" />-->
-	<bean id="iaas-main-Bean" class="eu.ascetic.architecture.iaas.main.beans.SkeletonSLAMBean"	  init-method="start"
+	<bean id="iaas-main-Bean" class="eu.ascetic.architecture.iaas.slamanager.main.beans.SkeletonSLAMBean"	  init-method="start"
 destroy-method="stop" />
 	
 	<!-- BEANS DEFINITION -->

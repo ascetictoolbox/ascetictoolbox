@@ -3,13 +3,13 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>eu.ascetic.architecture.iaas.iaas-slamanager</groupId>
+		<groupId>eu.ascetic.architecture.iaas.slamanager</groupId>
 		<artifactId>iaas-slamanager</artifactId>
 		<version>0.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 	
-	<groupId>eu.ascetic.architecture.iaas.iaas-slamanager</groupId>
+	<groupId>eu.ascetic.architecture.iaas.slamanager</groupId>
 	<artifactId>iaas-pac</artifactId>
 	<packaging>bundle</packaging>
 	<version>0.1-SNAPSHOT</version>
@@ -73,7 +73,7 @@
 			<version>3.2</version>
 		</dependency>
 		<dependency>
-			<groupId>eu.ascetic.architecture.iaas.iaas-slamanager</groupId>
+			<groupId>eu.ascetic.architecture.iaas.slamanager</groupId>
 			<artifactId>iaas-core</artifactId>
 			<version>${__slam-version}</version>
 			<scope>provided</scope>
@@ -167,7 +167,7 @@
 						  <Bundle-Name>iaas-pac</Bundle-Name>
 						  <Bundle-SymbolicName>iaas-pac</Bundle-SymbolicName>
 					      <Export-Package>
-								eu.ascetic.architecture.iaas.pac;version="${__slam-version}"
+								eu.ascetic.architecture.iaas.slamanager.pac;version="${__slam-version}"
 						  </Export-Package>
 						  <Import-Package>
 						  		org.osgi.framework;resolution:=optional,

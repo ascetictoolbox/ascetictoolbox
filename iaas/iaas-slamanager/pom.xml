@@ -10,7 +10,7 @@
   </parent>
   
 	<!-- SLAM - namespace -->
-	<groupId>eu.ascetic.architecture.iaas.iaas-slamanager</groupId>
+	<groupId>eu.ascetic.architecture.iaas.slamanager</groupId>
 	<artifactId>iaas-slamanager</artifactId>
 	<packaging>pom</packaging>
 	<name>iaas-slamanager</name>
@@ -217,18 +217,6 @@
 			<id>slasoi-hp-releases</id>
 			<name>SLA@SOI SOURCEFORGE repository for releases</name>
 			<url>http://sourceforge.net/projects/contra-slaatsoi/files/m2-repo/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-
-		<repository>
-			<id>jboss</id>
-			<name>JBoss Repository</name>
-			<url>http://repository.jboss.org/maven2/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
