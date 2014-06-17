@@ -91,7 +91,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>eu.optimis.vc.api.VmcApiTest</mainClass>
+							<mainClass>eu.ascetic.vmc.api.VmcApiTest</mainClass>
 						</manifest>
 					</archive>
 					<descriptors>

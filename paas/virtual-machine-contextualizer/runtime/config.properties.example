@@ -1,4 +1,4 @@
 #Use full paths only
-installDirectory=/opt/optimis/vmc/runtime
-repository=/opt/optimis/vmc/runtime/repository
+installDirectory=/opt/ascetic/vmc/runtime
+repository=/opt/ascetic/vmc/runtime/repository
 addRecontextFiles=false

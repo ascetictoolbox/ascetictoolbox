@@ -13,19 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#WARNING All these manifests are out of date...
+#WARNING These OVF Definitions are out of date...
 
 #Test conversion of linux cqow2 image
-#java -jar VmContextualizer.jar 1 /opt/optimis/vmc/runtime /opt/optimis/vmc/runtime/optimisCentosHVM.qcow2.testManifest.xml vmdk
+#java -jar VmContextualizer.jar 1 /opt/ascetic/vmc/runtime /opt/ascetic/vmc/runtime/some-ovf.xml vmdk
 
 #Test conversion of windows cqow2 image
-#java -jar VmContextualizer.jar 1 /opt/optimis/vmc/runtime /opt/optimis/vmc/runtime/optimisWinxpHVM.qcow2.testManifest.xml vmdk
+#java -jar VmContextualizer.jar 1 /opt/ascetic/vmc/runtime /opt/ascetic/vmc/runtime/some-ovf.xml vmdk
 
-#Test the dummy manifest configured for ATOS testbed
-#java -jar VmContextualizer.jar 1 /opt/optimis/vmc/runtime /opt/optimis/vmc/runtime/DummySPManifest.xml
-
-#Test the programming model manifest
-#java -jar VmContextualizer.jar 1 /opt/optimis/vmc/runtime /opt/optimis/vmc/runtime/PM_Manifest.xml
+#Test the programming model ovf
+#java -jar VmContextualizer.jar 1 /opt/ascetic/vmc/runtime /opt/ascetic/vmc/runtime/some-ovf.xml 
 
 #Test with defaults
 java -jar VmContextualizer.jar 1 `pwd`
@@ -47,7 +44,7 @@ do
   echo ""
 done
 
-echo "### TEST: eu.optimis.vc.ImageScripts.bash:50) COMPLETE ###"
+echo "### TEST: eu.ascetic.vc.ImageScripts.bash:50) COMPLETE ###"
 
 echo ""
 echo "OK (3 tests)"

@@ -18,7 +18,7 @@ package eu.ascetic.vmc.api;
 import org.apache.log4j.Logger;
 
 import eu.ascetic.vmc.api.VmcApi;
-import eu.ascetic.vmc.api.DataModel.GlobalConfiguration;
+import eu.ascetic.vmc.api.datamodel.GlobalConfiguration;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

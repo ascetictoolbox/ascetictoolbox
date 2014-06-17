@@ -23,9 +23,9 @@ import org.apache.xmlbeans.XmlException;
 
 import eu.ascetic.utils.ovf.api.OvfDefinition;
 import eu.ascetic.vmc.api.VmcApi;
-import eu.ascetic.vmc.api.Core.ProgressException;
-import eu.ascetic.vmc.api.DataModel.GlobalConfiguration;
-import eu.ascetic.vmc.api.DataModel.ProgressData;
+import eu.ascetic.vmc.api.core.ProgressException;
+import eu.ascetic.vmc.api.datamodel.GlobalConfiguration;
+import eu.ascetic.vmc.api.datamodel.ProgressData;
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanEnvelopeDocument;
 
 import junit.framework.TestCase;

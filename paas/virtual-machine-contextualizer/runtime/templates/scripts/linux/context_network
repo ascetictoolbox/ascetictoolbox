@@ -130,71 +130,9 @@ then
   STATIC_SUBNET="10.0.0.0"
   STATIC_DNS[1]="129.11.144.1"
   STATIC_DNS[2]="8.8.8.8"
-  STATIC_DNS_SEARCH="OptimisBase"
+  STATIC_DNS_SEARCH="BaseImage"
   EXTRA_HOSTS=""
   echo_static_network_vars "PROVIDER A) LEEDS: (10.*)"
-# PROVIDER B) ATOS: (192.168.252.*)
-elif [ "`mac2ip $MAC | cut -d'.' -f1,2,3`" == "192.168.252" ]
-then
-  STATIC_HOSTNAME="" #Leave blank for IP generated name
-  STATIC_NETMASK="255.255.255.0"
-  STATIC_GATEWAY="192.168.252.62"
-  STATIC_SUBNET="192.168.252.0"
-  STATIC_DNS[1]="212.170.156.7"
-  STATIC_DNS[2]="212.170.156.77"
-  STATIC_DNS_SEARCH="OptimisBase"
-  EXTRA_HOSTS[1]="192.168.252.36 optimis1"
-  EXTRA_HOSTS[2]="192.168.252.2 optimis2"
-  EXTRA_HOSTS[3]="192.168.252.27 optimis3"
-  EXTRA_HOSTS[4]="192.168.252.26 optimis4"
-  echo_static_network_vars "PROVIDER B) ATOS: (192.168.252.*)"
-# PROVIDER C) UMU: (130.239.48.*)
-elif [ "`mac2ip $MAC | cut -d'.' -f1,2,3`" == "130.239.48" ]
-then
-  STATIC_HOSTNAME="" #Leave blank for IP generated name
-  STATIC_NETMASK="255.255.255.128"
-  STATIC_GATEWAY="130.239.48.1"
-  STATIC_SUBNET="130.239.48.0"
-  STATIC_DNS[1]="130.239.40.2"
-  STATIC_DNS_SEARCH="OptimisBase"
-  EXTRA_HOSTS=""
-  echo_static_network_vars "PROVIDER C) UMU: (130.239.48.*)"
-# PROVIDER D) FLEX FULL: (109.231.120.*)
-elif [ "`mac2ip $MAC | cut -d'.' -f1,2,3`" == "109.231.120" ]
-then
-  STATIC_HOSTNAME="" #Leave blank for IP generated name
-  STATIC_NETMASK="255.255.255.240"
-  STATIC_GATEWAY="109.231.120.17"
-  STATIC_SUBNET="109.231.120.16"
-  STATIC_DNS[1]="8.8.4.4"
-  STATIC_DNS[2]="8.8.8.8"
-  STATIC_DNS_SEARCH="OptimisBase"
-  EXTRA_HOSTS=""
-  echo_static_network_vars "PROVIDER D) FLEX FULL: (109.231.120.*)"
-# PROVIDER E) FLEX ENHANCED: (109.231.123.*)
-elif [ "`mac2ip $MAC | cut -d'.' -f1,2,3`" == "109.231.123" ]
-then
-  STATIC_HOSTNAME="" #Leave blank for IP generated name
-  STATIC_NETMASK="255.255.255.128"
-  STATIC_GATEWAY="109.231.123.1"
-  STATIC_SUBNET="109.231.123.0"
-  STATIC_DNS[1]="8.8.4.4"
-  STATIC_DNS[2]="8.8.8.8"
-  STATIC_DNS_SEARCH="OptimisBase"
-  EXTRA_HOSTS=""
-  echo_static_network_vars "PROVIDER E) FLEX ENHANCED: (109.231.123.*)"
-# PROVIDER F) ARSYS FULL: (82.223.250.*)
-elif [ "`mac2ip $MAC | cut -d'.' -f1,2,3`" == "82.223.250" ]
-then
-  STATIC_HOSTNAME="" #Leave blank for IP generated name
-  STATIC_NETMASK="255.255.255.0"
-  STATIC_GATEWAY="82.223.250.1"
-  STATIC_SUBNET="82.223.250.0"
-  STATIC_DNS[1]="8.8.4.4"
-  STATIC_DNS[2]="8.8.8.8"
-  STATIC_DNS_SEARCH="servidoresdns.net"
-  EXTRA_HOSTS=""
-  echo_static_network_vars "PROVIDER F) ARSYS FULL: (82.223.250.*)"
 else
   echo "WARNING: Unknown Networking Environment (Ignore if using ISO or DHCP)!"
 fi
