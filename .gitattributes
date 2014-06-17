@@ -482,24 +482,8 @@ paas/virtual-machine-contextualizer/runtime/config.properties.example -text
 paas/virtual-machine-contextualizer/runtime/templates/patchs/qemu-0.15.1-scsi.patch -text
 paas/virtual-machine-contextualizer/runtime/templates/scripts/linux/context_application -text
 paas/virtual-machine-contextualizer/runtime/templates/scripts/linux/context_network -text
-paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/Classes.PNG -text svneol=unset#image/png
-paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/Classes.ucls -text
-paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/Core/Core.PNG -text svneol=unset#image/png
-paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/Core/Core.ucls -text
 paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/DataAggregator/DataAggregator.PNG -text svneol=unset#image/png
 paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/DataAggregator/DataAggregator.ucls -text
-paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/DataModel/DataModel.PNG -text svneol=unset#image/png
-paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/DataModel/DataModel.ucls -text
-paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/DataModel/Packages.PNG -text svneol=unset#image/png
-paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/DataModel/Packages.ucls -text
-paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/ImageConverter/ImageConverter.PNG -text svneol=unset#image/png
-paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/ImageConverter/ImageConverter.ucls -text
-paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/ImageFabricator/ImageFabricator.PNG -text svneol=unset#image/png
-paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/ImageFabricator/ImageFabricator.ucls -text
-paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/IsoCreator/IsoCreator.PNG -text svneol=unset#image/png
-paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/IsoCreator/IsoCreator.ucls -text
-paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/Packages.PNG -text svneol=unset#image/png
-paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/Packages.ucls -text
 saas/application-descriptor-tool/pom.xml -text
 saas/application-packager/pom.xml -text
 saas/compss-packager/.classpath -text
