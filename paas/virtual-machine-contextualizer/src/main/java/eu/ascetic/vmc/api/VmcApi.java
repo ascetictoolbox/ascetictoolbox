@@ -46,7 +46,7 @@ public class VmcApi implements Api {
 	private VirtualMachineRecontextualizer virtualMachineRecontextualizer;
 
 	/**
-	 * Constructor providing a configuration to VMC
+	 * Constructor providing configuration to VMC
 	 * 
 	 * @param globalConfiguration
 	 *            The configuration object to pass (see

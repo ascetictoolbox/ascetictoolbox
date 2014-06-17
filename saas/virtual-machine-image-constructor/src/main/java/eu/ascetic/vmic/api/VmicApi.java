@@ -29,6 +29,8 @@ import eu.ascetic.vmic.api.datamodel.GlobalConfiguration;
 import eu.ascetic.vmic.api.datamodel.GlobalState;
 
 /**
+ * Implementation of the core API providing access to VMIC functionality
+ * 
  * @author Django Armstrong (ULeeds)
  *
  */
@@ -41,7 +43,9 @@ public class VmicApi implements Api {
 	private Map<String, Thread> threads;
 	
 	/**
+	 * Constructor for setting up the VMIC with configuration data
 	 * 
+	 * @param globalConfiguration The config data to use
 	 */
 	public VmicApi(GlobalConfiguration globalConfiguration) {
 		globalState = new GlobalState(globalConfiguration);
@@ -91,8 +95,7 @@ public class VmicApi implements Api {
 	 */
 	@Override
 	public void uploadFile(String ovfDefinitionId, File file) {
-		// TODO Auto-generated method stub
-		
+		// FIXME change this method once the interface technology has been selected for this component to enable remote invocation
 	}
 
 }

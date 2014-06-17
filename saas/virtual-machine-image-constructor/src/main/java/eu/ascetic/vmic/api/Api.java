@@ -29,21 +29,29 @@ import eu.ascetic.vmic.api.datamodel.ProgressData;
 public interface Api {
 	
 	/**
+	 * Generates a suitable image from an OVF definition
+	 * 
 	 * @param ovfDefinition
 	 */
 	void generateImage(OvfDefinition ovfDefinition);
 
 	/**
-	 * @param ovfDefinitionId
-	 * @return progressData
-	 * @throws ProgressException
+	 * Given a ovfDefinitionId this function returns the progress status and
+	 * percentage completion of a previous call to generateImage() as a
+	 * ProgressData object.
+	 * 
+	 * @param ovfDefinitionId The OVF ID to get progress details on
+	 * @return progressData An object containing details of progress
+	 * @throws ProgressException Thrown if an error occurred during the generation of an image
 	 */
 	public ProgressData progressCallback(String ovfDefinitionId)
 			throws ProgressException;
 	
 	/**
-	 * @param ovfDefinitionId
-	 * @param file
+	 * Functionality to enable uploading of images to the SaaS local repository
+	 * 
+	 * @param ovfDefinitionId The OVF ID this file is associated with
+	 * @param file The file to upload
 	 */
 	void uploadFile(String ovfDefinitionId, File file);
 }
