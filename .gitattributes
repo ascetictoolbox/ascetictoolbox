@@ -204,7 +204,6 @@ paas/application-manager/src/test/java/net/atos/ari/seip/CloudManager/deployServ
 paas/application-manager/src/test/java/net/atos/ari/seip/CloudManager/jmeterCOOLEMALLManifestTest.java -text
 paas/application-manager/src/test/java/net/atos/ari/seip/CloudManager/undeployServTest.java -text
 paas/application-manager/src/test/resources/DemoApp6Manifest.xml -text
-paas/application-manager/velocity.log -text
 paas/application-monitor/cube/.npmignore -text
 paas/application-monitor/cube/LICENSE -text
 paas/application-monitor/cube/Makefile -text
