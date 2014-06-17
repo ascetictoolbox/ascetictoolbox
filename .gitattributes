@@ -445,6 +445,8 @@ paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/IsoCreator/
 paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/IsoCreator/IsoCreator.ucls -text
 paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/Packages.PNG -text svneol=unset#image/png
 paas/virtual-machine-contextualizer/src/main/java/eu/ascetic/vmc/api/Packages.ucls -text
+saas/application-descriptor-tool/pom.xml -text
+saas/application-packager/pom.xml -text
 saas/compss-packager/.classpath -text
 saas/compss-packager/.project -text
 saas/compss-packager/.settings/org.eclipse.jdt.core.prefs -text
