@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package eu.ascetic.vmc.api.DataModel.Image;
+package eu.ascetic.vmc.api.datamodel.image;
 
 /**
  * Class for defining inheritable attributes of an image.

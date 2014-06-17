@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package eu.ascetic.vmc.api.DataModel;
+package eu.ascetic.vmc.api.datamodel;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -13,11 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package eu.ascetic.vmc.api.DataModel;
+package eu.ascetic.vmc.api.datamodel;
 
 import eu.ascetic.utils.ovf.api.OvfDefinition;
-import eu.ascetic.vmc.api.DataAggregator.SecurityClient;
-import eu.ascetic.vmc.api.DataAggregator.ServiceManifestClient;
+import eu.ascetic.vmc.api.dataaggregator.SecurityClient;
+import eu.ascetic.vmc.api.dataaggregator.OvfDefinitionClient;
 
 /**
  * Contains functions for the purpose of gathering context data and storing the
@@ -29,34 +29,34 @@ import eu.ascetic.vmc.api.DataAggregator.ServiceManifestClient;
 public class Service {
 
 	private String serviceId;
-	private ServiceManifestClient serviceManifestClient;
+	private OvfDefinitionClient ovfDefinitionClient;
 	private ContextData contextData;
 	private SecurityClient securityClient;
 
 	/**
 	 * Constructor.
 	 * 
-	 * @param manifest
-	 *            The manifest to associate with a given service.
+	 * @param ovfDefinition
+	 *            The OVF to associate with a given service.
 	 */
 	public Service(OvfDefinition ovfDefinition) {
 		if (ovfDefinition != null) {
 			
 			// FIXME: Should we be getting the serviceId from a property here, confirm with consortium? 
 			serviceId = ovfDefinition.getVirtualSystemArray(0).getProductSection().getPropertyByKey("serviceId").getValue();
-			serviceManifestClient = new ServiceManifestClient(ovfDefinition);
+			ovfDefinitionClient = new OvfDefinitionClient(ovfDefinition);
 		}
 	}
 
 	/**
-	 * Parses the Service Manifest for contextualization data
+	 * Parses the OVF Definition for contextualization data
 	 */
-	public void parseManifest() {
-		contextData = serviceManifestClient.parse();
+	public void parseOvfDefinition() {
+		contextData = ovfDefinitionClient.parse();
 	}
 
 	/**
-	 * Generates contextualization data from other OPTIMIS components
+	 * Generates contextualization data from other ASCETiC components
 	 */
 	public void generateContextData() {
 		securityClient = new SecurityClient();

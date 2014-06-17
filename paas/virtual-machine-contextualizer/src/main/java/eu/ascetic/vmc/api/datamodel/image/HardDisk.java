@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package eu.ascetic.vmc.api.DataModel.Image;
+package eu.ascetic.vmc.api.datamodel.image;
 
 /**
  * Class for storing the attributes of a virtual Hard Disk Drive
@@ -26,7 +26,7 @@ public class HardDisk extends Image {
 	private String diskCapacity;
 	private String diskFormatString;
 	// TODO: use fileNameId when there is support for multiple disk in the
-	// Manifest API
+	// OVF API
 	private String fileNameId;
 	private boolean converted;
 
@@ -34,7 +34,7 @@ public class HardDisk extends Image {
 	 * Constructor for creating a HardDisk object
 	 * 
 	 * @param imageId
-	 *            The id of the hard disk image taken from the manifest as
+	 *            The id of the hard disk image taken from the OVF as
 	 *            diskId (see {@link Image#Image(String, String, String, String)} for
 	 *            details).
 	 * @param fileName
@@ -47,7 +47,7 @@ public class HardDisk extends Image {
 	 * @param diskCapacity
 	 *            The capacity of the disk image.
 	 * @param diskFormatString
-	 *            The format string taken from the manifest.
+	 *            The format string taken from the OVF.
 	 */
 	public HardDisk(String imageId, String fileName, String uri, String format,
 			String diskCapacity, String diskFormatString/* , String fileNameId */) {
@@ -56,7 +56,7 @@ public class HardDisk extends Image {
 		this.diskCapacity = diskCapacity;
 		this.diskFormatString = diskFormatString;
 		// TODO: use fileNameId when there is support for multiple disk in the
-		// Manifest API "this.fileNameId = fileNameId;"
+		// OVF API "this.fileNameId = fileNameId;"
 		this.converted = false;
 	}
 

@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package eu.ascetic.vmc.api.DataModel.ContextDataTypes;
+package eu.ascetic.vmc.api.datamodel.contextdatatypes;
 
 /**
  * Class for storing the attributes associated with a given software dependency.

@@ -13,17 +13,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package eu.ascetic.vmc.api.DataModel;
+package eu.ascetic.vmc.api.datamodel;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import eu.ascetic.vmc.api.DataModel.ContextDataTypes.EndPoint;
-import eu.ascetic.vmc.api.DataModel.ContextDataTypes.LicenseToken;
-import eu.ascetic.vmc.api.DataModel.ContextDataTypes.OperatingSystem;
-import eu.ascetic.vmc.api.DataModel.ContextDataTypes.SoftwareDependency;
-import eu.ascetic.vmc.api.DataModel.Image.HardDisk;
-import eu.ascetic.vmc.api.DataModel.Image.Iso;
+import eu.ascetic.vmc.api.datamodel.contextdatatypes.EndPoint;
+import eu.ascetic.vmc.api.datamodel.contextdatatypes.LicenseToken;
+import eu.ascetic.vmc.api.datamodel.contextdatatypes.OperatingSystem;
+import eu.ascetic.vmc.api.datamodel.contextdatatypes.SoftwareDependency;
+import eu.ascetic.vmc.api.datamodel.image.HardDisk;
+import eu.ascetic.vmc.api.datamodel.image.Iso;
 
 /**
  * Class for storing data related to a given virtual machine.
