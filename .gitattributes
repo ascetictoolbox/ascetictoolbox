@@ -175,6 +175,8 @@ paas/application-manager/lib/org.opennebula.client.jar.old -text
 paas/application-manager/pom.xml -text
 paas/application-manager/src/main/java/eu/ascetic/application/manager/rest/ApplicationManagerServiceRest.java -text
 paas/application-manager/src/main/java/eu/ascetic/application/manager/rest/api/ApplicationAPI.java -text
+paas/application-manager/src/main/java/eu/ascetic/application/manager/rest/service/ApplicationManagerService.java -text
+paas/application-manager/src/main/java/eu/ascetic/application/manager/rest/service/ApplicationManagerServiceAbstractImpl.java -text
 paas/application-manager/src/main/java/net/atos/ari/seip/CloudManager/REST/api/InstanceAPI.java -text
 paas/application-manager/src/main/java/net/atos/ari/seip/CloudManager/REST/api/NetworkAPI.java -text
 paas/application-manager/src/main/java/net/atos/ari/seip/CloudManager/REST/api/ServiceAPI.java -text
