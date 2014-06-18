@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <meta>
+        <filters directoryPatterns="" filePatterns=""
+            positiveFilePatterns="" showHiddenFiles="false"/>
+        <options/>
+    </meta>
+    <projectTree name="ovf-schemas-examples.xpr">
+        <folder name="Descriptors">
+            <file name="dsp8023.xsd"/>
+            <file name="dsp8027.xsd"/>
+        </folder>
+        <folder name="Examples">
+            <folder name="Extensions Example">
+                <file name="examples/custom-extension.ovf"/>
+                <file name="examples/custom-extension.xsd"/>
+            </folder>
+            <folder name="LAMP Example">
+                <file name="examples/lamp-multi-vm.ovf"/>
+                <file name="examples/lamp.ovf"/>
+            </folder>
+            <folder name="MyService Example">
+                <file name="examples/de-DE-bundle.xml"/>
+                <file name="examples/myservice-dbvm1-env.xml"/>
+                <file name="examples/myservice-webvm-env.xml"/>
+                <file name="examples/myservice.ovf"/>
+            </folder>
+        </folder>
+    </projectTree>
+</project>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- External I18N bundles -->
+<Strings xsi:type="ovf:Strings_Type" xml:lang="de-DE"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"
+    xmlns="http://schemas.dmtf.org/ovf/envelope/1"
+    xsi:schemaLocation="http://schemas.dmtf.org/ovf/envelope/1 ../dsp8023.xsd">
+
+    <!-- This example reference a local schema file, to validate against online schema use:
+    xsi:schemaLocation="http://schemas.dmtf.org/ovf/envelope/1 http://schemas.dmtf.org/ovf/envelope/1/dsp8023_1.0.0.xsd"
+    -->
+    
+    <Msg ovf:msgid="network.description">Das Netzwerk MyService werden verfügbar auf</Msg>
+    <Msg ovf:msgid="annotation.annotation">Kontakt Kunden-Support für alle dringenden
+        Fragen</Msg>
+    <Msg ovf:msgid="property.email.description">Emailadresse des Administrators</Msg>
+    <Msg ovf:msgid="property.appip.description">IP-Adresse für den Service</Msg>
+    <Msg ovf:msgid="property.dpip.description">Primär IP-adresse für die Datenbank</Msg>
+    <Msg ovf:msgid="property.dpip2.description">Sekundär IP-Adresse für die Datenbank</Msg>
+    <Msg ovf:msgid="property.loglevel.description">Log-Ebene für den Service</Msg>
+    <Msg ovf:msgid="minimal.label">Minimal</Msg>
+    <Msg ovf:msgid="minimal.description">Installieren mit minimal Nutzung der Ressourcen</Msg>
+    <Msg ovf:msgid="standard.label">Normal</Msg>
+    <Msg ovf:msgid="standard.description">Installieren mit normalen Nutzung der
+        Ressourcen</Msg>
+</Strings>

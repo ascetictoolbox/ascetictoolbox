@@ -666,6 +666,12 @@ utils/libvirt/patch8.patch -text
 utils/libvirt/patch9.patch -text
 utils/openstack-patch/make.sh -text
 utils/openstack-patch/pom.xml -text
+utils/ovf-xmlbeans-api/examples/DSP2021_1.0.0/examples/custom-extension.ovf -text
+utils/ovf-xmlbeans-api/examples/DSP2021_1.0.0/examples/lamp-multi-vm.ovf -text
+utils/ovf-xmlbeans-api/examples/DSP2021_1.0.0/examples/lamp.ovf -text
+utils/ovf-xmlbeans-api/examples/DSP2021_1.0.0/examples/myservice.ovf -text
+utils/ovf-xmlbeans-api/examples/DSP2021_1.0.0/ovf-schemas-examples.xpr -text
+utils/ovf-xmlbeans-api/specification/DSP0243_1.1.1.pdf -text svneol=unset#application/pdf
 utils/ovf-xmlbeans/src/main/xsdconfig/ovf.xsdconfig -text
 utils/provider-registry-database/README.TXT -text
 utils/provider-registry-database/db/changelog/db.changelog-1.0.xml -text
