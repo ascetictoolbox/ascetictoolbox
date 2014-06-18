@@ -1,7 +1,7 @@
 diff -rupN orig/kwapi/drivers/gembird.py modified/kwapi/drivers/gembird.py
 --- orig/kwapi/drivers/gembird.py	1970-01-01 01:00:00.000000000 +0100
-+++ modified/kwapi/drivers/gembird.py	2014-06-04 14:56:22.449807048 +0200
-@@ -0,0 +1,66 @@
++++ modified/kwapi/drivers/gembird.py	2014-06-18 16:07:20.189276904 +0200
+@@ -0,0 +1,153 @@
 +# -*- coding: utf-8 -*-
 +#
 +# Author: Michael Kammer <michael.kammer@tu-berlin.de>
@@ -19,7 +19,8 @@ diff -rupN orig/kwapi/drivers/gembird.py modified/kwapi/drivers/gembird.py
 +# under the License.
 +
 +import re
-+import urllib2
++import urllib2 # Needed for web interface parser (port = 80)
++import socket  # Needed for reverse engineered protocol (port != 80)
 +import time
 +
 +from kwapi.openstack.common import log
@@ -37,7 +38,7 @@ diff -rupN orig/kwapi/drivers/gembird.py modified/kwapi/drivers/gembird.py
 +        Keyword arguments:
 +        probe_ids -- list containing the probes IDs
 +                     (a wattmeter monitor sometimes several probes)
-+        kwargs -- keywords (host, password) defining the Gembird parameters
++        kwargs -- keywords (host, port, password) defining the Gembird parameters
 +
 +        """
 +        Driver.__init__(self, probe_ids, kwargs)
@@ -46,7 +47,10 @@ diff -rupN orig/kwapi/drivers/gembird.py modified/kwapi/drivers/gembird.py
 +        """Starts the driver thread."""
 +        measurements = {}
 +        while not self.stop_request_pending():
-+            data = self.get_data()
++            if self.kwargs.get('port') == 80:
++                data = self.get_data_from_http()
++            else:
++                data = self.get_data_from_socket()
 +            if data is not None:
 +                (p, u, i) = data
 +                measurements['v'] = u
@@ -55,16 +59,99 @@ diff -rupN orig/kwapi/drivers/gembird.py modified/kwapi/drivers/gembird.py
 +                self.send_measurements(self.probe_ids[0], measurements)
 +            time.sleep(1)
 +
-+    def get_data(self):
-+        # Get real-time measurements
++    def decrypt(self, crypt, key, task):
++        """Decrypt char for use in power manager protocol"""
++        return 0xff & (((((0xff & crypt) - ord(key[6]))^ord(key[7]))-ord(task[3]))^ord(task[2]))
++
++    def encrypt(self, plain, key, task):
++        """Encrypt char for use in power manager protocol"""
++        return 0xff & ((((0xff & plain) ^ ord(task[2])) + ord(task[3])) ^ ord(key[7])) + ord(key[6])
++
++    def get_data_from_socket(self):
++        """Get real-time measurements by using the reverse-engineered power manager protocol"""
++        key = self.kwargs.get('password')[:8].rjust(8)
++        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
++        try:
++            s.settimeout(1.0)
++            s.connect((self.kwargs.get('host'), self.kwargs.get('port')))
++
++            # Protocol handshake
++            s.send(b'\x11')
++            task = s.recv(4)
++
++            i1 = ((ord(task[0]) ^ ord(key[5])) * ord(key[7])) ^ (ord(key[1]) | (ord(key[3])<<8)) ^ ord(task[2])
++            i2 = ((ord(task[1]) ^ ord(key[4])) * ord(key[6])) ^ (ord(key[0]) | (ord(key[2])<<8)) ^ ord(task[3])
++
++            data = bytearray()
++            data.append(i1 & 0xff)
++            data.append(i1 >> 8 & 0xff)
++            data.append(i2 & 0xff)
++            data.append(i2 >> 8 & 0xff)
++            s.send(data)
++
++            # Status response
++            s.recv(4)
++
++            # Dummy
++            now = int(time.time())          # Seconds since 01/01/1970 00:00:00
++            data = bytearray()
++            data.append(self.encrypt(0x04, key, task))
++            data.append(self.encrypt(0x04, key, task))
++            data.append(self.encrypt(0x04, key, task))
++            data.append(self.encrypt(0x04, key, task))
++            data.append(0x64)
++            data.append((now >> 24) & 0xff)
++            data.append((now >> 16) & 0xff)
++            data.append((now >>  8) & 0xff)
++            data.append((now >>  0) & 0xff)
++            data.append(0x00)               # Time value is 64-bit long, but
++            data.append(0x00)               # we only use the lowest 32 bits
++            data.append(0x00)               # currently. You can blame me
++            data.append(0x00)               # after 19/01/2038 03:14:07
++            data.append(0x00)
++            s.send(data)
++
++            # Reply
++            s.recv(4)
++
++            # Dummy
++            data = bytearray()
++            for i in range(0, 44):
++                data.append(self.encrypt(0x00, key, task))
++            s.send(data)
++            s.recv(41)
++
++            # Get measurements
++            data = bytearray()
++            data.append(self.encrypt(4, key, task))
++            data.append(self.encrypt(3, key, task))
++            data.append(self.encrypt(2, key, task))
++            data.append(self.encrypt(1, key, task))
++            s.send(data)
++
++            # Measurements reply
++            data = s.recv(43)
++
++            s.close
++            u = 0
++            i = 0
++            p = float((ord(data[10]) << 16) | (ord(data[11]) << 8) | ord(data[12])) / 466
++            return (p, u, i)
++        except:
++            LOG.error('Error when reading from probe %s. Try using the webinterface parser instead (set port to 80 in config)'
++                      % (self.probe_ids[0]));
++
++    def get_data_from_http(self):
++        """Get real-time measurements by parsing the energy meter's web interface"""
++        output = ''
 +        try:
 +            output = urllib2.urlopen('http://' + self.kwargs.get('host') + '/login.html', 'pw=' + self.kwargs.get('password')).read()
-+            d = re.split('.*<script>.*V *= *([0-9]+);.*I *= *([0-9]+);.*P *= *([0-9]+);.*<\/script><script src.*', output);
-+            u = float(d[1]) / 10;
-+            i = float(d[2]) / 100;
-+            p = float(d[3]) / 466;
-+            return (p, u, i);
++            d = re.split('.*<script>.*V *= *([0-9]+);.*I *= *([0-9]+);.*P *= *([0-9]+);.*<\/script><script src.*', output)
++            u = float(d[1]) / 10
++            i = float(d[2]) / 100
++            p = float(d[3]) / 466
++            return (p, u, i)
 +        except:
 +            LOG.error('Received data from probe %s is invalid'
-+                      % (self.probe_ids[0]));
++                      % (self.probe_ids[0]))
 +
