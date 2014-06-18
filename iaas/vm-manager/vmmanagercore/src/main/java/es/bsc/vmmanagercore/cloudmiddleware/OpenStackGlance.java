@@ -25,7 +25,7 @@ public class OpenStackGlance {
     private String keyStoneUser;
     private String keyStonePassword;
     private String keyStoneTenantId;
-    private String token;
+    private String token; // token needed for authentication
 
     public OpenStackGlance() {
         VmManagerConfiguration conf = VmManagerConfiguration.getInstance();
@@ -35,11 +35,16 @@ public class OpenStackGlance {
         this.keyStoneUser = conf.keyStoneUser;
         this.keyStonePassword = conf.keyStonePassword;
         this.keyStoneTenantId = conf.keyStoneTenantId;
-
-        //get the token needed for authentication
         token = getToken();
     }
 
+
+    /**
+     * Uploads an image to OpenStack. The image is downloaded from a given URL.
+     *
+     * @param imageToUpload the image to upload
+     * @return the ID of the image just created. This ID is the same as the ID assigned in OpenStack.
+     */
     public String createImageFromUrl(ImageToUpload imageToUpload) {
         //check that the URL received is valid
         UrlValidator urlValidator = new UrlValidator();
@@ -75,6 +80,11 @@ public class OpenStackGlance {
         return imageIdJson.asText();
     }
 
+    /**
+     * Deletes an image from the OpenStack infrastructure.
+     *
+     * @param imageId the ID of the image to be deleted.
+     */
     public void deleteImage(String imageId) {
         //build the URI of the HTTP request
         URI uri = HttpUtils.buildURI("http", openStackIp, glancePort, "/v2/images/" + imageId);
@@ -87,6 +97,13 @@ public class OpenStackGlance {
         HttpUtils.executeHttpRequest("DELETE", uri, headers, "");
     }
 
+    /**
+     * Checks whether an image is active. In OpenStack, an image can be in different statuses: active, deleted,
+     * queued, etc. An image is only fully available if it is in the active state.
+     *
+     * @param imageId the id of the image.
+     * @return true if the image is active, false otherwise.
+     */
     public boolean imageIsActive(String imageId) {
         //build the URI of the HTTP request
         URI uri = HttpUtils.buildURI("http", openStackIp, glancePort, "/v2/images/" + imageId);
