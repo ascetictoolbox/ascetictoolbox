@@ -101,7 +101,7 @@ public class ServiceService {
 	 * @param manifest
 	 *            Manifest contents as a Manifest object
 	 */	
-	public String DeployService(Manifest mani){
+	public String DeployService(Manifest mani) {
 		
 		//Read Manifest and create each instances as defined
 		String vmID;

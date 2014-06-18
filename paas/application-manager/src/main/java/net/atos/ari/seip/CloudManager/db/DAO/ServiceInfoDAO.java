@@ -17,12 +17,10 @@ import org.hibernate.criterion.Restrictions;
 public class ServiceInfoDAO {
 	private final static Logger logger = Logger.getLogger(ServiceInfoDAO.class);
 
-	public boolean addService(String serviceId, String serviceManifest)
-			throws Exception {
+	public boolean addService(String serviceId, String serviceManifest) throws Exception {
 		Session session = null;
 		ServiceInfo si = new ServiceInfo();
-		SessionFactory sf = net.atos.ari.seip.CloudManager.db.utils.HibernateUtil
-				.getSessionFactory();
+		SessionFactory sf = net.atos.ari.seip.CloudManager.db.utils.HibernateUtil.getSessionFactory();
 		try {
 			session = sf.openSession();
 			Transaction tx = session.beginTransaction();

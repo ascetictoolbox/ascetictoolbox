@@ -15,14 +15,11 @@ import javax.ws.rs.core.MediaType;
 import net.atos.ari.seip.CloudManager.REST.service.ServiceService;
 import net.atos.ari.seip.CloudManager.REST.utils.Paths;
 import net.atos.ari.seip.CloudManager.json.ServiceDeployData;
-import net.atos.ari.seip.CloudManager.utils.ManifestUtils;
 import net.atos.ari.seip.CloudManager.utils.PropertiesUtils;
 
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
-
-import eu.optimis.manifest.api.sp.Manifest;
 
 @Path(Paths.SERVICE)
 public class ServiceAPI {
@@ -34,7 +31,6 @@ public class ServiceAPI {
 	private String manifest;
 	
 	private String CLM_CONFIG = "CLM";
-	private String CLM_LOG = "LOG";
 	
 	public ServiceAPI(){
 		endpoint = PropertiesUtils.getProperty(CLM_CONFIG, "endpoint.url");
