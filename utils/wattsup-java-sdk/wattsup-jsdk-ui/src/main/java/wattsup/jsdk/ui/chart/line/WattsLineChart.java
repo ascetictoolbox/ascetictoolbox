@@ -41,7 +41,7 @@ public class WattsLineChart extends LineChartPanelSupport<List<WattsUpPacket>>
     public WattsLineChart(List<WattsUpPacket> data)
     {
         super("Watts", "", data, ChartPanelSupport.DEFAULT_DELAY);
-        setRangeAxisRange(0, 180);
+        setRangeAxisRange(0, 80);
     }
 
     @Override
