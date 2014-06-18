@@ -19,7 +19,6 @@ import eu.ascetic.monitoring.api.client.ZabbixClient;
 import eu.ascetic.monitoring.api.datamodel.Host;
 import eu.ascetic.monitoring.api.datamodel.Item;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -40,20 +39,19 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
      * @param args the arguments
      */
     public static void main(String[] args) {
-        
+
         ZabbixDataSourceAdaptor adaptor = new ZabbixDataSourceAdaptor();
-//        getAllHosts(client);
-//        getHostInformation(client);
-        ArrayList<eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host> hosts = adaptor.getHostList();
+        List<eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host> hosts = adaptor.getHostList();
         for (eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host : hosts) {
             System.out.println(host);
         }
         System.out.println("----------------");
         for (HostMeasurement measurement : adaptor.getHostData(hosts)) {
-//            System.out.println(measurement.getHost() + " Metric Count: " + measurement.getMetrics().size() + " Clock Diff: " + measurement.getMaximumClockDifference());
             System.out.println(measurement);
         }
-//        getAllHostInformation(client);
+        System.out.println("----------------");
+        HostMeasurement measure = adaptor.getHostData(adaptor.getHostByName("asok10.cit.tu-berlin.de"));
+        System.out.println(measure);
     }
 
     /**
@@ -78,34 +76,73 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
     }
 
     /**
+     * This returns a host given its unique name.
+     *
+     * @param hostname The name of the host to get.
+     * @return The object representation of a host in the energy modeller.
+     */
+    @Override
+    public eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host getHostByName(String hostname) {
+        Host host = client.getHostByName(hostname);
+        return convert(host);
+    }
+
+    /**
      * This provides a list of hosts for the energy modeller
      *
      * @param client The client to get the host list from
      * @return A list of hosts for the energy modeller.
      */
     @Override
-    public ArrayList<eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host> getHostList() {
+    public List<eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host> getHostList() {
         List<Host> hostsList = client.getAllHosts();
         ArrayList<eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host> hosts = new ArrayList<>();
         for (Host h : hostsList) {
-            String hostname = h.getHost();
-            int hostId = Integer.parseInt(h.getHostid());
-            eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host = new eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host(hostId, hostname);
-            host.setAvailable((h.getAvailable()).equals("0") ? false : true);
-            hosts.add(host);
+            hosts.add(convert(h));
         }
         return hosts;
     }
 
     /**
-     * This for all hosts lists all the metric data on them.
+     * This converts a monitoring infrastructure host into a Energy Modeller
+     * host.
+     *
+     * @param host The host to convert
+     * @return The converted host.
+     */
+    private eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host convert(Host host) {
+        String hostname = host.getHost();
+        int hostId = Integer.parseInt(host.getHostid());
+        eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host answer = new eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host(hostId, hostname);
+        answer.setAvailable((host.getAvailable()).equals("0") ? false : true);
+        return answer;
+    }
+
+    /**
+     * This lists for all host all the metric data on them.
      *
      * @param client The client to get the metrics from
      * @return A list of host measurements
      */
     @Override
-    public Collection<HostMeasurement> getHostData() {
+    public List<HostMeasurement> getHostData() {
         return getHostData(getHostList());
+    }
+
+    /**
+     * This provides for the named host all the information that is available.
+     * @param host The host to get the measurement data for.
+     * @return The host measurement data
+     */
+    @Override
+    public HostMeasurement getHostData(eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host) {
+        ArrayList<eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host> hostList = new ArrayList<>();
+        hostList.add(host);
+        List<HostMeasurement> measurement = getHostData(hostList);
+        if (!measurement.isEmpty()) {
+            return measurement.get(0);
+        }
+        return null;
     }
 
     /**
@@ -116,7 +153,7 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
      * @return A list of host measurements
      */
     @Override
-    public Collection<HostMeasurement> getHostData(List<eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host> hostList) {
+    public List<HostMeasurement> getHostData(List<eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host> hostList) {
         HashMap<Integer, HostMeasurement> hostMeasurements = new HashMap<>();
         for (eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host : hostList) {
             hostMeasurements.put(host.getId(), new HostMeasurement(host));
@@ -141,7 +178,7 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
             }
 
         }
-        return hostMeasurements.values();
+        return new ArrayList<>(hostMeasurements.values());
     }
 
     /**
@@ -184,6 +221,7 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
 
     /**
      * This returns the Zabbix client that is used to get at the data.
+     *
      * @return The client used to get the dataset.
      */
     public ZabbixClient getClient() {
@@ -192,6 +230,7 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
 
     /**
      * This sets the Zabbix client that is used to get at the data.
+     *
      * @param client the client to use to gather the data.
      */
     public void setClient(ZabbixClient client) {

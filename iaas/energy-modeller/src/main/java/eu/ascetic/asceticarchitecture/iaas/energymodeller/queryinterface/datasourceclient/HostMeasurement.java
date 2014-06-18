@@ -17,6 +17,7 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.dataso
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.monitoring.api.datamodel.Item;
+import java.util.Collection;
 import java.util.HashMap;
 
 /**
@@ -118,6 +119,14 @@ public class HostMeasurement {
      */
     public HashMap<String, Item> getMetrics() {
         return metrics;
+    }
+    
+    /**
+     * This returns the set of items for the host measurement.
+     * @return 
+     */
+    public Collection<Item> getItems() {
+        return metrics.values();
     }
 
     /**

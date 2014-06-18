@@ -15,11 +15,13 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser;
 
+import java.util.Set;
+
 /**
- * This class stores the energy values for a physical machine and is used to map
- * a machine to a VM.
- * TODO see which class is best to keep!!
- * This represents a host in the energy modeller. An important similar class is!
+ * This class stores the basic data for physical machine.
+ * This represents a host in the energy modeller.
+ * 
+ * An important similar class is!
  * @see eu.ascetic.monitoring.api.datamodel.host
  *
  * @author Richard
@@ -110,6 +112,15 @@ public class Host extends EnergyUsageSource {
     public void setAvailable(boolean available) {
         this.available = available;
     }
+     
+    /**
+     * This returns the list of vms on this machine.
+     * @return The set of VMs that are currently on this machine.
+     */
+    public Set<VM> getVMsOnHost() {
+        //TODO: implement the get VMs on host mechanism.
+        throw new UnsupportedOperationException("I've not implemented this yet");
+    }    
     
     /**
      * TODO: look at the implementation of this class further.

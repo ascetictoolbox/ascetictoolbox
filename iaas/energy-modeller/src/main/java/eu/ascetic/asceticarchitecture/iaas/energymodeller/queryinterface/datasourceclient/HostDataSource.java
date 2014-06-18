@@ -16,7 +16,6 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -26,8 +25,10 @@ import java.util.List;
  */
 public interface HostDataSource {
     
-    public Collection<Host> getHostList();
-    public Collection<HostMeasurement> getHostData();
-    public Collection<HostMeasurement> getHostData(List<Host> hostList);
+    public Host getHostByName(String hostname);
+    public List<Host> getHostList();
+    public HostMeasurement getHostData(Host host);    
+    public List<HostMeasurement> getHostData();
+    public List<HostMeasurement> getHostData(List<Host> hostList);
     
 }

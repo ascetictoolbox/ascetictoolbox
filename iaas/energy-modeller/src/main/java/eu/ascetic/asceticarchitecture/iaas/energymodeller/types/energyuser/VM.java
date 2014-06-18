@@ -177,7 +177,7 @@ public class VM extends EnergyUsageSource {
      */
     public double getPowerConsumptionVMOverhead() {
         return powerConsumptionVMOverhead;
-    }
+    }    
 
     /**
      * @param powerConsumptionVMOverhead the powerConsumptionVMOverhead to set
