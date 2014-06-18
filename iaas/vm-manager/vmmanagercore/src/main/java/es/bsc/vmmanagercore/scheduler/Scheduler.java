@@ -1,6 +1,7 @@
 package es.bsc.vmmanagercore.scheduler;
 
 import es.bsc.vmmanagercore.model.SchedulingAlgorithm;
+import es.bsc.vmmanagercore.model.ServerLoad;
 import es.bsc.vmmanagercore.model.Vm;
 import es.bsc.vmmanagercore.model.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.HostInfo;
@@ -79,4 +80,18 @@ public class Scheduler {
 
         return scheduling;
     }
+
+    /**
+     * Returns the load that a host would have if a VM was deployed in it
+     * @param vm the VM to deploy
+     * @param host the host where the VM would be deployed
+     * @return the future load
+     */
+    public static ServerLoad getFutureLoadIfVMDeployedInHost(Vm vm, HostInfo host) {
+        double cpus = host.getAssignedCpus() + host.getReservedCpus() + vm.getCpus();
+        double ramMb = host.getAssignedMemoryMb() + host.getReservedMemoryMb() + vm.getRamMb();
+        double diskGb = host.getAssignedDiskGb() + host.getReservedDiskGb() + vm.getDiskGb();
+        return new ServerLoad(cpus/host.getTotalCpus(), ramMb/host.getTotalMemoryMb(), diskGb/host.getTotalDiskGb());
+    }
+
 }

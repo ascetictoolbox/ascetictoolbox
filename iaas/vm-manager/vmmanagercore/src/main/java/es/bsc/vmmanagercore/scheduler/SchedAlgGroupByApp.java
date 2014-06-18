@@ -4,8 +4,8 @@ import es.bsc.vmmanagercore.model.Vm;
 import es.bsc.vmmanagercore.model.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.HostInfo;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -15,10 +15,10 @@ import java.util.Map;
  */
 public class SchedAlgGroupByApp implements SchedAlgorithm {
 
-    private ArrayList<VmDeployed> vmsDeployed;
-    private ArrayList<HostInfo> hostsInfo;
+    private List<VmDeployed> vmsDeployed;
+    private List<HostInfo> hostsInfo;
 
-    public SchedAlgGroupByApp(ArrayList<VmDeployed> vmsDeployed) {
+    public SchedAlgGroupByApp(List<VmDeployed> vmsDeployed) {
         this.vmsDeployed = vmsDeployed;
     }
 
@@ -67,7 +67,7 @@ public class SchedAlgGroupByApp implements SchedAlgorithm {
     }
 
     @Override
-    public String chooseHost(ArrayList<HostInfo> hostsInfo, Vm vm) {
+    public String chooseHost(List<HostInfo> hostsInfo, Vm vm) {
         this.hostsInfo = hostsInfo;
         HashMap<String, Integer> vmsOfAppPerHost = getNumberOfVmsThatBelongToTheAppForEachHost(vm.getApplicationId());
         return getHostWithMoreVmsOfTheApp(vmsOfAppPerHost);

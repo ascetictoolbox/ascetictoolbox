@@ -1,11 +1,12 @@
 package es.bsc.vmmanagercore.scheduler;
 
+import es.bsc.vmmanagercore.model.ServerLoad;
 import es.bsc.vmmanagercore.model.Vm;
 import es.bsc.vmmanagercore.monitoring.HostInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -15,7 +16,7 @@ import java.util.ArrayList;
  */
 public class SchedAlgDistribution implements SchedAlgorithm {
 
-    Logger logger = LoggerFactory.getLogger(SchedAlgDistribution.class);
+    Logger logger = LogManager.getLogger(SchedAlgDistribution.class);
 
     public SchedAlgDistribution() {}
 
@@ -26,45 +27,42 @@ public class SchedAlgDistribution implements SchedAlgorithm {
      * @return The name of the host on which the VM should be deployed. Null if none of the hosts
      * has enough resources available (hostsInfo is an empty list).
      */
-    public String chooseHost(ArrayList<HostInfo> hostsInfo, Vm vm) {
-        logger.debug("Applying distribution algorithm to schedule VM { name: " + vm.getName() + ", cpus: " +
-                vm.getCpus() + ", ram(MB): " + vm.getRamMb() + ", disk(GB): " + vm.getDiskGb() + " }");
+    @Override
+    public String chooseHost(List<HostInfo> hostsInfo, Vm vm) {
+        logger.debug("\n [VMM] ---DISTRIBUTION ALG. START--- \n " +
+                "Applying distribution algorithm to schedule VM " + vm.toString());
 
-        double minFutureCpuLoad, minFutureMemoryLoad, minFutureDiskLoad;
-        minFutureCpuLoad = minFutureMemoryLoad = minFutureDiskLoad = Double.MAX_VALUE;
+        ServerLoad minFutureLoad = new ServerLoad(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
         String selectedHost = null;
 
         //for each host
         for (HostInfo hostInfo: hostsInfo) {
 
-            //calculate the future usage of the host if the VM was deployed in that host
-            double futureCpus = hostInfo.getAssignedCpus() + hostInfo.getReservedCpus() + vm.getCpus();
-            double futureRamMb = hostInfo.getAssignedMemoryMb() + hostInfo.getReservedMemoryMb() + vm.getRamMb();
-            double futureDiskGb = hostInfo.getAssignedDiskGb() + hostInfo.getReservedDiskGb() + vm.getDiskGb();
-
             //calculate the future load (%) of the host if the VM is deployed in that host
-            double futureCpuLoad = futureCpus/hostInfo.getTotalCpus();
-            double futureMemoryLoad = futureRamMb/hostInfo.getTotalMemoryMb();
-            double futureDiskLoad = futureDiskGb/hostInfo.getTotalDiskGb();
+            ServerLoad futureServerLoad = Scheduler.getFutureLoadIfVMDeployedInHost(vm, hostInfo);
+            logger.debug("[VMM] The load of host " + hostInfo.getHostname() + " would be "
+                    + futureServerLoad.toString());
 
             //check if the host will have the lowest load after deploying the VM
-            boolean lessCpu = futureCpuLoad < minFutureCpuLoad;
-            boolean sameCpuLessMemory = (futureCpuLoad == minFutureCpuLoad)
-                    && (futureMemoryLoad < minFutureMemoryLoad);
-            boolean sameCpuSameMemoryLessDisk = (futureCpuLoad == minFutureCpuLoad)
-                    && (futureMemoryLoad == minFutureMemoryLoad) && (futureDiskLoad < minFutureDiskLoad);
+            boolean lessCpu = futureServerLoad.getCpuLoad() < minFutureLoad.getCpuLoad();
+            boolean sameCpuLessMemory = (futureServerLoad.getCpuLoad() == minFutureLoad.getCpuLoad())
+                    && (futureServerLoad.getRamLoad() < minFutureLoad.getRamLoad());
+            boolean sameCpuSameMemoryLessDisk = (futureServerLoad.getCpuLoad() == minFutureLoad.getCpuLoad())
+                    && (futureServerLoad.getRamLoad() == minFutureLoad.getRamLoad())
+                    && (futureServerLoad.getDiskLoad() < minFutureLoad.getDiskLoad());
 
             //if the host will be the least loaded according to the specified criteria (CPU more
-            //important than memory, and memory more important than disk)
+            //important than memory, and memory more important than disk), save it
             if (lessCpu || sameCpuLessMemory || sameCpuSameMemoryLessDisk) {
-                //save its information so we can compare the hosts that we have not analyzed yet against it
                 selectedHost = hostInfo.getHostname();
-                minFutureCpuLoad = futureCpuLoad;
-                minFutureMemoryLoad = futureMemoryLoad;
-                minFutureDiskLoad = futureDiskLoad;
+                minFutureLoad = futureServerLoad;
             }
 
         }
+
+        logger.debug("[VMM] VM " + vm.toString() + " is going to be deployed in " + selectedHost +
+            "\n [VMM] ---DISTRIBUTION ALG. END---");
+        LogManager.shutdown();
 
         return selectedHost;
     }

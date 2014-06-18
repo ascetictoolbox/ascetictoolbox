@@ -1,5 +1,6 @@
 package es.bsc.vmmanagercore.model;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.codehaus.jackson.JsonNode;
 
 import java.io.File;
@@ -120,6 +121,11 @@ public class Vm {
 
     public String getApplicationId() {
         return applicationId;
+    }
+
+    @Override
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this);
     }
 
 }

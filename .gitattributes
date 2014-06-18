@@ -127,6 +127,7 @@ iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/manager/VmManag
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/ImageToUpload.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/ImageUploaded.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/SchedulingAlgorithm.java -text
+iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/ServerLoad.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/Vm.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/VmDeployed.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/monitoring/HostInfo.java -text
@@ -149,6 +150,7 @@ iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/utils/HttpUtils
 iaas/vm-manager/vmmanagercore/src/main/resources/configBSC.properties -text
 iaas/vm-manager/vmmanagercore/src/main/resources/configTUB.properties -text
 iaas/vm-manager/vmmanagercore/src/main/resources/init-scripts/hello.sh -text
+iaas/vm-manager/vmmanagercore/src/main/resources/log4j.xml -text
 iaas/vm-manager/vmmanagercore/src/main/webapp/META-INF/context.xml -text
 iaas/vm-manager/vmmanagercore/src/main/webapp/index.jsp -text
 iaas/vm-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/db/VmManagerDbHsqlTest.java -text

@@ -3,9 +3,12 @@ package es.bsc.vmmanagercore.rest;
 import com.google.gson.*;
 import es.bsc.vmmanagercore.manager.VmManager;
 import es.bsc.vmmanagercore.model.*;
+import org.apache.commons.io.IOUtils;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -19,7 +22,8 @@ import java.util.Collection;
 @Path("/vmmanager")
 public class VmManagerRest {
 
-    private static String DB_NAME = "VmManagerDb";
+    private static final String DB_NAME = "VmManagerDb";
+    private static final String LOGS_DIR = "/log/vmmanager.log";
     private Gson gson = new Gson();
     private static JsonParser parser = new JsonParser();
 
@@ -285,6 +289,29 @@ public class VmManagerRest {
     public String getVMsDeployedInNode(@PathParam("hostname") String hostname) {
         //TODO
         return null;
+    }
+
+
+    //================================================================================
+    // Logs Methods
+    //================================================================================
+
+    @GET
+    @Path("/logs")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getLogs() {
+        String logs = null;
+        InputStream inputStream = getClass().getResourceAsStream(LOGS_DIR);
+        StringWriter writer = new StringWriter();
+        try {
+            IOUtils.copy(inputStream, writer);
+            inputStream.close();
+            logs = writer.toString();
+            writer.close();
+        } catch (Exception e) {
+            return logs;
+        }
+        return logs;
     }
 
 }

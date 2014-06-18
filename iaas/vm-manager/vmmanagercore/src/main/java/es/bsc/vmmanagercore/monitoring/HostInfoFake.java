@@ -28,11 +28,10 @@ public class HostInfoFake extends HostInfo {
      * @param assignedMemoryMb assigned memory of the host (in MB)
      * @param assignedDiskGb assigned disk space of the host (in GB)
      */
-    public HostInfoFake(String hostname, int totalCpus, int totalMemoryMb, int totalDiskGb,
-            double assignedCpus, int assignedMemoryMb, int assignedDiskGb) {
+    public HostInfoFake(String hostname, int totalCpus, int totalMemoryMb, int totalDiskGb, double assignedCpus,
+            int assignedMemoryMb, int assignedDiskGb) {
         super(hostname);
-        checkConstructorParams(totalCpus, totalMemoryMb, totalDiskGb, assignedCpus,
-                assignedMemoryMb, assignedDiskGb);
+        checkConstructorParams(totalCpus, totalMemoryMb, totalDiskGb, assignedCpus, assignedMemoryMb, assignedDiskGb);
         this.totalCpus = totalCpus;
         this.totalMemoryMb = totalMemoryMb;
         this.totalDiskGb = totalDiskGb;

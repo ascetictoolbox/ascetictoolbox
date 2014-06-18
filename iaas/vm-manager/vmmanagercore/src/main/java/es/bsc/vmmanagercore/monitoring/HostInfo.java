@@ -50,7 +50,6 @@ public abstract class HostInfo {
      */
     public void setHostname(String hostname) {
         this.hostname = hostname;
-        reservedCpus = reservedMemoryMb = reservedDiskGb = 0;
     }
 
     /**

@@ -18,12 +18,10 @@ import static org.junit.Assert.assertEquals;
  */
 public class SchedAlgDistributionTest {
 
-    private static SchedAlgDistribution scheduler;
+    private static SchedAlgDistribution scheduler = new SchedAlgDistribution();
 
     @BeforeClass
-    public static void setUp() {
-        scheduler = new SchedAlgDistribution();
-    }
+    public static void setUp() { }
 
     @Test
     public void oneHostHasLessCpuLoad() {
@@ -88,7 +86,7 @@ public class SchedAlgDistributionTest {
         hostsInfo.add(hostInfo2);
 
         //schedule a VM
-        String hostChosen = scheduler.chooseHost(hostsInfo, new Vm("TestVM1", "fakeId", 1, 1024, 1, null, "app1"));
+        String hostChosen = scheduler.chooseHost(hostsInfo, new Vm("TestVM1", "fakeId", 1, 1024, 2, null, "app1"));
 
         //after deploying the VM, the CPU and memory load of the two hosts should be the same.
         //The disk load of host1 should be 75% whereas the disk load of host2 should be 50%,
@@ -107,7 +105,7 @@ public class SchedAlgDistributionTest {
         HostInfoFake hostInfo2 = new HostInfoFake("host2", 6, 4096, 4, 3, 1024, 1);
 
         //create a fake host with total={cpus=4, memory=4GB, disk=4GB} and
-        //used={cpus=1, memory=1GB, disk=1GB}
+        //used={cpus=3, memory=3GB, disk=3GB}
         HostInfoFake hostInfo3 = new HostInfoFake("host3", 4, 4096, 4, 3, 3072, 3);
 
         //build the array of hosts that will be passed to the schedule function

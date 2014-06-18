@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd" >
+<log4j:configuration debug="false">
+
+    <appender name="default.console" class="org.apache.log4j.ConsoleAppender">
+        <param name="target" value="System.out" />
+        <param name="threshold" value="debug" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{ISO8601} %-5p [%c{1}] - %m%n" />
+        </layout>
+        <filter class="org.apache.log4j.varia.DenyAllFilter" />
+    </appender>
+
+    <appender name="default.file" class="org.apache.log4j.FileAppender">
+        <param name="file" value="iaas/vm-manager/vmmanagercore/src/main/resources/log/vmmanager.log" />
+        <param name="append" value="true" />
+        <param name="threshold" value="debug" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{ISO8601} %-5p [%c{1}] - %m%n" />
+        </layout>
+        <filter class="org.apache.log4j.varia.StringMatchFilter">
+            <param name="StringToMatch" value="[VMM]" />
+            <param name="AcceptOnMatch" value="true" />
+        </filter>
+        <filter class="org.apache.log4j.varia.DenyAllFilter" />
+    </appender>
+
+    <root>
+        <priority value="debug" />
+        <appender-ref ref="default.console" />
+        <appender-ref ref="default.file" />
+    </root>
+
+</log4j:configuration>
