@@ -1,0 +1,95 @@
+<opt:OVFDefinition>
+    #set($fileIdImage = "${componentId}-img-file")
+    #set($fileIdContext = "${componentId}-context-file")
+    <ovf:References>
+        <!--vm image -->
+        <ovf:File ovf:href="${vmImageFile}"
+                  ovf:id="${fileIdImage}"/>
+        <ovf:File ovf:href="${contextualizationImageFile}"
+                  ovf:id="${fileIdContext}"/>
+    </ovf:References>
+    <ovf:DiskSection>
+        <ovf:Info/>
+        <ovf:Disk ovf:capacity="${vmImageCapacity}" ovf:diskId="${componentId}-img-disk"
+                  ovf:fileRef="${fileIdImage}"
+                  ovf:format="${vmImageFormat}"/>
+        <ovf:Disk ovf:capacity="${contextualizationImageCapacity}"
+                  ovf:diskId="${componentId}-context-disk"
+                  ovf:fileRef="${fileIdContext}"
+                  ovf:format="${contextualizationImageFormat}"/>
+    </ovf:DiskSection>
+    <ovf:NetworkSection>
+        <ovf:Info/>
+        <ovf:Network ovf:name="${componentId}-net">
+            <ovf:Description>Network to connect to system-${componentId}</ovf:Description>
+        </ovf:Network>
+    </ovf:NetworkSection>
+    <!-- Virtual System Instances Template -->
+    <ovf:VirtualSystem ovf:id="system-${componentId}">
+        <ovf:Info>${componentId} VM description</ovf:Info>
+        <ovf:ProductSection ovf:class="com.sun.master">
+            <ovf:Info>Product customization for the installed software</ovf:Info>
+            <ovf:Product></ovf:Product>
+            <ovf:Version></ovf:Version>
+        </ovf:ProductSection>
+        <!-- this is the default operating system -->
+        <ovf:OperatingSystemSection ovf:id="${operatingSystemId}">
+            <ovf:Info>Specifies the operating system installed</ovf:Info>
+            <ovf:Description>${operatingSystemDescription}</ovf:Description>
+        </ovf:OperatingSystemSection>
+        <ovf:VirtualHardwareSection>
+            <ovf:Info>Virtual Hardware Requirements: ${memorySize}Mb, ${numberOfVirtualCPUs}CPU,
+                2 disks, 1 nic
+            </ovf:Info>
+            <ovf:System>
+                <vssd:ElementName>Virtual Hardware Family</vssd:ElementName>
+                <vssd:InstanceID>0</vssd:InstanceID>
+                <vssd:VirtualSystemType>${virtualHardwareFamily}</vssd:VirtualSystemType>
+            </ovf:System>
+            <ovf:Item>
+                <rasd:Description>Number of virtual CPUs</rasd:Description>
+                <rasd:ElementName>${numberOfVirtualCPUs} virtual CPU</rasd:ElementName>
+                <rasd:InstanceID>1</rasd:InstanceID>
+                <rasd:ResourceType>3</rasd:ResourceType>
+                <rasd:VirtualQuantity>${numberOfVirtualCPUs}</rasd:VirtualQuantity>
+            </ovf:Item>
+            <ovf:Item>
+                <rasd:AllocationUnits>MegaBytes</rasd:AllocationUnits>
+                <rasd:Description>Memory Size</rasd:Description>
+                <rasd:ElementName>${memorySize} MB of memory</rasd:ElementName>
+                <rasd:InstanceID>2</rasd:InstanceID>
+                <rasd:ResourceType>4</rasd:ResourceType>
+                <rasd:VirtualQuantity>${memorySize}</rasd:VirtualQuantity>
+            </ovf:Item>
+            <ovf:Item>
+                <rasd:AllocationUnits>MHz</rasd:AllocationUnits>
+                <rasd:ElementName>MHz reservation</rasd:ElementName>
+                <rasd:InstanceID>1</rasd:InstanceID>
+                <rasd:Reservation>${cpuSpeed}</rasd:Reservation>
+                <rasd:ResourceType>3</rasd:ResourceType>
+            </ovf:Item>
+            <ovf:Item>
+                <rasd:AutomaticAllocation>true</rasd:AutomaticAllocation>
+                <rasd:Connection>${componentId}-net</rasd:Connection>
+                <rasd:ElementName>Ethernet adapter on ${componentId}-net network
+                </rasd:ElementName>
+                <rasd:InstanceID>3</rasd:InstanceID>
+                <rasd:ResourceType>10</rasd:ResourceType>
+            </ovf:Item>
+            <ovf:Item>
+                <rasd:ElementName>Harddisk 1</rasd:ElementName>
+                <rasd:HostResource>ovf:/disk/${componentId}-img-disk</rasd:HostResource>
+                <rasd:InstanceID>4</rasd:InstanceID>
+                <rasd:Parent>4</rasd:Parent>
+                <rasd:ResourceType>17</rasd:ResourceType>
+            </ovf:Item>
+            <ovf:Item>
+                <rasd:ElementName>Harddisk 2</rasd:ElementName>
+                <rasd:HostResource>ovf:/disk/${componentId}-context-disk</rasd:HostResource>
+                <rasd:InstanceID>4</rasd:InstanceID>
+                <rasd:Parent>4</rasd:Parent>
+                <rasd:ResourceType>17</rasd:ResourceType>
+            </ovf:Item>
+        </ovf:VirtualHardwareSection>
+    </ovf:VirtualSystem>
+</opt:OVFDefinition>

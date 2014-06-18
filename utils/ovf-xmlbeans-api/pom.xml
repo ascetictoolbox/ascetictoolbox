@@ -5,6 +5,7 @@
 		<groupId>eu.ascetic.ascetic-architecture</groupId>
 		<artifactId>utils</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>..</relativePath>
 	</parent>
 	<groupId>eu.ascetic.ascetic-architecture.utils</groupId>
 	<artifactId>ovf-xmlbeans-api</artifactId>
@@ -15,6 +16,19 @@
 			<groupId>eu.ascetic.ascetic-architecture.utils</groupId>
 			<artifactId>ovf-xmlbeans</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<version>1.7</version>
 		</dependency>
 	</dependencies>
 	<version>0.0.1-SNAPSHOT</version>
