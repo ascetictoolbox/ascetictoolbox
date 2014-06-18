@@ -20,6 +20,6 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.dataso
  * data source that provides energy data in the ASCETiC architecture.
  * @author Richard
  */
-public class DefaultEnergyClient implements EnergyDataSource {
+public abstract class DefaultEnergyClient implements EnergyDataSource {
     
 }

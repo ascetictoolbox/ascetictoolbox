@@ -115,10 +115,16 @@ public class Host extends EnergyUsageSource {
      * TODO: look at the implementation of this class further.
      * 
      * Should this look more like??:
-     * 
-     * <Host, Resting_energy_usage, 
-     * max_energy_usage_cpu_intensive_app, 
+     *
+     * <Host, Resting_energy_usage,
+     * max_energy_usage_cpu_intensive_app,
      * max_energy_usage_io_intensive_app, 
      * max_energy_usage_network_intensive_app>
      */
+    
+    @Override
+    public String toString() {
+        return "HostID: " + id + " Host Name: " + hostName + " Available :" + available;
+    }    
+    
 }
