@@ -658,14 +658,6 @@ utils/energy-modeller-data-logger/src/main/java/eu/ascetic/asceticarchitecture/i
 utils/energy-modeller-data-logger/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodellerdatalogger/ResultsIO.java -text
 utils/energy-modeller-data-logger/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodellerdatalogger/ResultsStore.java -text
 utils/energy-modeller-data-logger/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodellerdatalogger/AppTest.java -text
-utils/energy-modeller-data-logger/target/classes/ascetic-zabbix-api.properties -text
-utils/energy-modeller-data-logger/target/classes/eu/ascetic/asceticarchitecture/iaas/energymodellerdatalogger/GenericLogger.class -text
-utils/energy-modeller-data-logger/target/classes/eu/ascetic/asceticarchitecture/iaas/energymodellerdatalogger/Logger.class -text
-utils/energy-modeller-data-logger/target/classes/eu/ascetic/asceticarchitecture/iaas/energymodellerdatalogger/MeasurementLogger.class -text
-utils/energy-modeller-data-logger/target/classes/eu/ascetic/asceticarchitecture/iaas/energymodellerdatalogger/ResultsIO.class -text
-utils/energy-modeller-data-logger/target/classes/eu/ascetic/asceticarchitecture/iaas/energymodellerdatalogger/ResultsStore.class -text
-utils/energy-modeller-data-logger/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst -text
-utils/energy-modeller-data-logger/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst -text
 utils/kwapi-patch/make.sh -text
 utils/kwapi-patch/patches/001-gembird_driver.patch -text
 utils/kwapi-patch/pom.xml -text
