@@ -4,7 +4,7 @@
 	<groupId>eu.ascetic.api.zabbix</groupId>
 	<artifactId>ascetic-zabbix-api</artifactId>
 	<packaging>jar</packaging>
-	<version>0.1</version>
+	<version>0.1-SNAPSHOT</version>
 	<name>ascetic-zabbix-api</name>
 	<url>http://www.ascetic.eu</url>
 
