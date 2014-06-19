@@ -23,7 +23,6 @@ import java.util.Collection;
 public class VmManagerRest {
 
     private static final String DB_NAME = "VmManagerDb";
-    private static final String LOGS_DIR = "/log/vmmanager.log";
     private Gson gson = new Gson();
     private static JsonParser parser = new JsonParser();
 
@@ -300,18 +299,19 @@ public class VmManagerRest {
     @Path("/logs")
     @Produces(MediaType.TEXT_PLAIN)
     public String getLogs() {
-        String logs = null;
-        InputStream inputStream = getClass().getResourceAsStream(LOGS_DIR);
-        StringWriter writer = new StringWriter();
+        String logs;
+        InputStream inputStream;
         try {
+            inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("log/vmmanager.log");
+            StringWriter writer = new StringWriter();
             IOUtils.copy(inputStream, writer);
-            inputStream.close();
             logs = writer.toString();
-            writer.close();
+            inputStream.close();
         } catch (Exception e) {
-            return logs;
+            return "";
         }
         return logs;
+
     }
 
 }

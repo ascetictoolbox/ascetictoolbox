@@ -62,7 +62,6 @@ public class SchedAlgDistribution implements SchedAlgorithm {
 
         logger.debug("[VMM] VM " + vm.toString() + " is going to be deployed in " + selectedHost +
             "\n [VMM] ---DISTRIBUTION ALG. END---");
-        LogManager.shutdown();
 
         return selectedHost;
     }
