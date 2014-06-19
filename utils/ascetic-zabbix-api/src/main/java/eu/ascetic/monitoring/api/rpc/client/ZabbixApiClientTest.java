@@ -40,7 +40,7 @@ public class ZabbixApiClientTest {
 	}
 	
 	public static void testItemsFromHost(ZabbixClient client){
-		List<Item> itemsList = client.getItemsFromHost("Zabbix server");
+		List<Item> itemsList = client.getItemsFromHost("asok10.cit.tu-berlin.de");
 		int index = 0;
 		for (Item i : itemsList){
 			System.out.println("ITEM " + index + ":");

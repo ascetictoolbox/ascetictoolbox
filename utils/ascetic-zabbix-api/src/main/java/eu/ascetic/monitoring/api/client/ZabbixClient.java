@@ -67,7 +67,7 @@ public class ZabbixClient {
 							+ "\"user\":\"" + user.getLogin() + "\"},"
 				+ "\"method\":\"user.login\","
 				+ "\"id\": 0}";
-		
+
 		try {
 			HttpResponse response = postAndGet(jsonRequest);
 			HttpEntity entity = response.getEntity();
@@ -237,7 +237,7 @@ public class ZabbixClient {
 										+ "},"
 							+ "\"auth\":\"" + token + "\","
 							+ "\"id\":0}";
-						
+
 						HttpResponse response = postAndGet(jsonRequest);
 						HttpEntity entity = response.getEntity();
 						ObjectMapper mapper = new ObjectMapper ();
