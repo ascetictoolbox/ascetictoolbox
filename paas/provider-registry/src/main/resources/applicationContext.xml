@@ -47,8 +47,8 @@
 	<bean id="dataSource" 
     	      class="org.springframework.jdbc.datasource.DriverManagerDataSource"
 			  p:driverClassName="com.mysql.jdbc.Driver" 
-			  p:url="jdbc:mysql://localhost:3306/provider_registry"
-		      p:username="username" p:password="password" />
+			  p:url="jdbc:mysql://localhost:3000/provider_registry"
+		      p:username="provider" p:password="registry" />
 	
 	<bean id="transactionManager" 
 		  class="org.springframework.orm.jpa.JpaTransactionManager"

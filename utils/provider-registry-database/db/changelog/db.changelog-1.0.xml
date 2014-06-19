@@ -11,10 +11,10 @@
             <column name="id" type="int">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="name" type="varchar(50)">
+            <column name="name" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="endpoint" type="varchar(50)">
+            <column name="endpoint" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
