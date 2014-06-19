@@ -236,7 +236,7 @@ news item will involve server-side computing and storing.&#xD;
     </packagedElement>
     <profileApplication xmi:type="uml:ProfileApplication" xmi:id="_jZa40OHMEeOE-fH0MbPO6w">
       <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_jZ4L0OHMEeOE-fH0MbPO6w" source="http://www.eclipse.org/uml2/2.0.0/UML">
-        <references xmi:type="ecore:EPackage" href="../Ascetic%20Papyrus%20KPI%20Profile/model.profile.uml#_boswIeswEeOsSf0lAkOcAA"/>
+        <references xmi:type="ecore:EPackage" href="../Ascetic%20Papyrus%20KPI%20Profile/model.profile.uml#_5CAZwPfkEeOzV5IJKRYHOg"/>
       </eAnnotations>
       <appliedProfile xmi:type="uml:Profile" href="../Ascetic%20Papyrus%20KPI%20Profile/model.profile.uml#_h2AQQMO6EeO6370zt3rC0Q"/>
     </profileApplication>
