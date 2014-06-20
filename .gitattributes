@@ -166,10 +166,6 @@ iaas/vm-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/Sched
 iaas/vm-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/SchedAlgDistributionTest.java -text
 iaas/vm-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/SchedAlgGroupByAppTest.java -text
 iaas/vm-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/SchedAlgRandomTest.java -text
-paas/application-manager/.settings/org.eclipse.core.resources.prefs -text
-paas/application-manager/.settings/org.eclipse.jdt.core.prefs -text
-paas/application-manager/.settings/org.eclipse.m2e.core.prefs -text
-paas/application-manager/.settings/org.maven.ide.eclipse.prefs -text
 paas/application-manager/pom.xml -text
 paas/application-manager/src/main/resources/META-INF/persistence.mysql.xml -text
 paas/application-manager/src/main/resources/applicationContext.xml -text
