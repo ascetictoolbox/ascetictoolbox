@@ -134,11 +134,11 @@ through the NewsAsset server&#xD;
       <edge xmi:type="uml:ControlFlow" xmi:id="_nXqEIODIEeO8GOIf1l3bJg" name="news item selected" source="_0HkekODDEeO8GOIf1l3bJg" target="_siUnoODHEeO8GOIf1l3bJg"/>
       <edge xmi:type="uml:ControlFlow" xmi:id="_n7J9UODJEeO8GOIf1l3bJg" name="" source="_AjU0oODEEeO8GOIf1l3bJg" target="_eXB7sODJEeO8GOIf1l3bJg"/>
       <edge xmi:type="uml:ControlFlow" xmi:id="_-aYCoPhSEeOjOP_PVdMAFg" name="inform on save status" source="_Zwz-YPhKEeOjOP_PVdMAFg" target="_AjU0oODEEeO8GOIf1l3bJg"/>
-      <edge xmi:type="uml:ControlFlow" xmi:id="_6Tl-APhTEeOjOP_PVdMAFg" name="" source="_0HkekODDEeO8GOIf1l3bJg" target="_ZY5dsODdEeO8GOIf1l3bJg"/>
+      <edge xmi:type="uml:ControlFlow" xmi:id="_6Tl-APhTEeOjOP_PVdMAFg" name="" source="_AjU0oODEEeO8GOIf1l3bJg" target="_ZY5dsODdEeO8GOIf1l3bJg"/>
       <edge xmi:type="uml:ControlFlow" xmi:id="_Aj8hwPhUEeOjOP_PVdMAFg" name="" source="_ZY5dsODdEeO8GOIf1l3bJg" target="_HdxfcODeEeO8GOIf1l3bJg"/>
       <node xmi:type="uml:InitialNode" xmi:id="_9LSwkOC9EeO8GOIf1l3bJg" name="InitialNode" outgoing="_YilDEODEEeO8GOIf1l3bJg _HovisODFEeO8GOIf1l3bJg"/>
-      <node xmi:type="uml:OpaqueAction" xmi:id="_0HkekODDEeO8GOIf1l3bJg" name="Create a initial empty News Item or load existing one" outgoing="_AjjeIODEEeO8GOIf1l3bJg _nXqEIODIEeO8GOIf1l3bJg _6Tl-APhTEeOjOP_PVdMAFg" incoming="_YilDEODEEeO8GOIf1l3bJg"/>
-      <node xmi:type="uml:OpaqueAction" xmi:id="_AjU0oODEEeO8GOIf1l3bJg" name="Edit News Item Content" outgoing="_O2PEIODFEeO8GOIf1l3bJg _n7J9UODJEeO8GOIf1l3bJg" incoming="_AjjeIODEEeO8GOIf1l3bJg _SMrUIODIEeO8GOIf1l3bJg _-aYCoPhSEeOjOP_PVdMAFg"/>
+      <node xmi:type="uml:OpaqueAction" xmi:id="_0HkekODDEeO8GOIf1l3bJg" name="Create a initial empty News Item or load existing one" outgoing="_AjjeIODEEeO8GOIf1l3bJg _nXqEIODIEeO8GOIf1l3bJg" incoming="_YilDEODEEeO8GOIf1l3bJg"/>
+      <node xmi:type="uml:OpaqueAction" xmi:id="_AjU0oODEEeO8GOIf1l3bJg" name="Edit News Item Content" outgoing="_O2PEIODFEeO8GOIf1l3bJg _n7J9UODJEeO8GOIf1l3bJg _6Tl-APhTEeOjOP_PVdMAFg" incoming="_AjjeIODEEeO8GOIf1l3bJg _SMrUIODIEeO8GOIf1l3bJg _-aYCoPhSEeOjOP_PVdMAFg"/>
       <node xmi:type="uml:OpaqueAction" xmi:id="_Cv5kcODFEeO8GOIf1l3bJg" name="Search News Item Archive Repository" outgoing="_tC_hMODGEeO8GOIf1l3bJg" incoming="_HovisODFEeO8GOIf1l3bJg _O2PEIODFEeO8GOIf1l3bJg"/>
       <node xmi:type="uml:OpaqueAction" xmi:id="_XbAhkODFEeO8GOIf1l3bJg" name="Identify relevant news items" outgoing="_siltYODHEeO8GOIf1l3bJg" incoming="_tC_hMODGEeO8GOIf1l3bJg"/>
       <node xmi:type="uml:ForkNode" xmi:id="_siUnoODHEeO8GOIf1l3bJg" name="Fork-ExistNewsItems" outgoing="_SMrUIODIEeO8GOIf1l3bJg" incoming="_siltYODHEeO8GOIf1l3bJg _nXqEIODIEeO8GOIf1l3bJg"/>

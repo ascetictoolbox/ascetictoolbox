@@ -578,7 +578,7 @@
       <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_-aqWgPhSEeOjOP_PVdMAFg" id="(0.19230769230769232,0.125)"/>
       <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_-aqWgfhSEeOjOP_PVdMAFg" id="(0.02909090909090909,0.65)"/>
     </edges>
-    <edges xmi:type="notation:Connector" xmi:id="_6TpBUPhTEeOjOP_PVdMAFg" type="4004" source="_0HsaYODDEeO8GOIf1l3bJg" target="_ZY7S4ODdEeO8GOIf1l3bJg">
+    <edges xmi:type="notation:Connector" xmi:id="_6TpBUPhTEeOjOP_PVdMAFg" type="4004" source="_AjZGEODEEeO8GOIf1l3bJg" target="_ZY7S4ODdEeO8GOIf1l3bJg">
       <children xmi:type="notation:DecorationNode" xmi:id="_6TpBU_hTEeOjOP_PVdMAFg" type="6003">
         <layoutConstraint xmi:type="notation:Location" xmi:id="_6TpBVPhTEeOjOP_PVdMAFg" x="-49" y="17"/>
       </children>
@@ -593,8 +593,8 @@
       </children>
       <styles xmi:type="notation:FontStyle" xmi:id="_6TpBUfhTEeOjOP_PVdMAFg"/>
       <element xmi:type="uml:ControlFlow" href="NewsAsset-model.uml#_6Tl-APhTEeOjOP_PVdMAFg"/>
-      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_6TpBUvhTEeOjOP_PVdMAFg" points="[0, -12, -810, 53]$[0, -98, -810, -33]$[810, -98, 0, -33]$[810, -69, 0, -4]"/>
-      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_6TvH8PhTEeOjOP_PVdMAFg" id="(0.2109375,0.3)"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_6TpBUvhTEeOjOP_PVdMAFg" points="[-31, -6, -861, 142]$[-67, -6, -897, 142]$[-67, -179, -897, -31]$[830, -179, 0, -31]$[830, -152, 0, -4]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_6TvH8PhTEeOjOP_PVdMAFg" id="(0.11272727272727273,0.25)"/>
       <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_6TvH8fhTEeOjOP_PVdMAFg" id="(0.49184782608695654,0.08695652173913043)"/>
     </edges>
     <edges xmi:type="notation:Connector" xmi:id="_AkCoYPhUEeOjOP_PVdMAFg" type="4004" source="_ZY7S4ODdEeO8GOIf1l3bJg" target="_Hd1w4ODeEeO8GOIf1l3bJg">
