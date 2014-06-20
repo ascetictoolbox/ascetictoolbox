@@ -29,66 +29,64 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>tomcat-maven-plugin</artifactId>
-				<version>1.1</version>
-			</plugin>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>2.1.1</version>
+				<version>2.3</version>
 				<configuration>
 					<webXml>src/main/webapp/WEB-INF/web.xml</webXml>
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>hibernate3-maven-plugin</artifactId>
-				<version>2.2</version>
+				<!-- Default jar with main method to run unit tests on testbed. -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
 				<executions>
 					<execution>
-						<id>hbm2ddl</id>
-						<phase>generate-resources</phase>
 						<goals>
-							<goal>hbm2ddl</goal>
+							<goal>test-jar</goal>
 						</goals>
-						<configuration>
-							<components>
-								<component>
-									<name>hbm2ddl</name>
-								</component>
-
-							</components>
-							<componentProperties>
-								<drop>true</drop>
-								<configurationfile>/src/main/resources/hibernate.cfg.xml</configurationfile>
-								<propertyfile>/src/main/resources/database.properties</propertyfile>
-								<create>true</create>
-								<export>false</export>
-								<jdk5>true</jdk5>
-								<format>true</format>
-								<outputfilename>schema-rootcloud.sql</outputfilename>
-							</componentProperties>
-						</configuration>
 					</execution>
-
 				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>mysql</groupId>
-						<artifactId>mysql-connector-java</artifactId>
-					</dependency>
-				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
+				<configuration>
+					<show>private</show>
+					<nohelp>true</nohelp>
+				</configuration>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
 			</plugin>
 		</plugins>
-		<finalName>CloudSLM</finalName>
 	</build>
 
 	<dependencies>

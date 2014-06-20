@@ -171,6 +171,11 @@ paas/application-manager/.settings/org.eclipse.jdt.core.prefs -text
 paas/application-manager/.settings/org.eclipse.m2e.core.prefs -text
 paas/application-manager/.settings/org.maven.ide.eclipse.prefs -text
 paas/application-manager/pom.xml -text
+paas/application-manager/src/main/resources/META-INF/persistence.mysql.xml -text
+paas/application-manager/src/main/resources/applicationContext.xml -text
+paas/application-manager/src/main/resources/log4j.properties -text
+paas/application-manager/src/main/webapp/META-INF/MANIFEST.MF -text
+paas/application-manager/src/main/webapp/WEB-INF/web.xml -text
 paas/application-monitor/cube/.npmignore -text
 paas/application-monitor/cube/LICENSE -text
 paas/application-monitor/cube/Makefile -text
