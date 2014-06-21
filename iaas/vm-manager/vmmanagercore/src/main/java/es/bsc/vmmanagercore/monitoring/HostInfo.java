@@ -2,7 +2,7 @@ package es.bsc.vmmanagercore.monitoring;
 
 
 /**
- * This class contains information about the status of a host of the infrastructure.
+ * Status of a host of an infrastructure.
  * 
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  *

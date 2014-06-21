@@ -9,6 +9,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ *
+ *
+ * @author David Ortiz Lopez (david.ortiz@bsc.es)
+ *
+ */
 public class VmManagerRestInputValidator {
 
     private static List<String> validActions =

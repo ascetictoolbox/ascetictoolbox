@@ -7,12 +7,13 @@ import org.jclouds.openstack.nova.v2_0.domain.HostResourceUsage;
 import org.jclouds.openstack.nova.v2_0.extensions.HostAdministrationApi;
 
 /**
- * This class contains information about the status of a host of an OpenStack infrastructure.
+ * Status of a host of an OpenStack infrastructure.
  * 
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  *
  */
-public class HostInfoOpenStack extends HostInfo{
+public class HostInfoOpenStack extends HostInfo {
+
     private JCloudsMiddleware jcm;
 
     public HostInfoOpenStack(String name, JCloudsMiddleware jcm) {

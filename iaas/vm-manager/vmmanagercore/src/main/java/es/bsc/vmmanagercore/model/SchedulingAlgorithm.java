@@ -1,5 +1,11 @@
 package es.bsc.vmmanagercore.model;
 
+/**
+ * The scheduling algorithms that can be applied in the VM Manager.
+ *
+ * @author David Ortiz Lopez (david.ortiz@bsc.es)
+ *
+ */
 public enum SchedulingAlgorithm {
 
     CONSOLIDATION("consolidation"), DISTRIBUTION("distribution"), GROUP_BY_APP("groupByApp"), RANDOM("random");

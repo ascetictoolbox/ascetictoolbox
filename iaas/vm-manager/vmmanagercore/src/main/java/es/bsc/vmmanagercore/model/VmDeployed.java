@@ -3,7 +3,7 @@ package es.bsc.vmmanagercore.model;
 import java.util.Date;
 
 /**
- * 
+ * VM that has been deployed in the cloud middleware.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  *

@@ -6,6 +6,8 @@ import es.bsc.vmmanagercore.monitoring.HostInfo;
 import java.util.List;
 
 /**
+ *
+ *
  *  @author David Ortiz Lopez (david.ortiz@bsc.es)
  */
 public interface SchedAlgorithm {

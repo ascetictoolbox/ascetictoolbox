@@ -1,7 +1,7 @@
 package es.bsc.vmmanagercore.model;
 
 /**
- * 
+ * Image that has been uploaded to the cloud middleware.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  *

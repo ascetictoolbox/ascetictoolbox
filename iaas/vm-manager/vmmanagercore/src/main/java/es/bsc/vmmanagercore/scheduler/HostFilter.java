@@ -4,6 +4,12 @@ import es.bsc.vmmanagercore.monitoring.HostInfo;
 
 import java.util.ArrayList;
 
+/**
+ *
+ *
+ * @author David Ortiz Lopez (david.ortiz@bsc.es)
+ *
+ */
 public class HostFilter {
 
     public static ArrayList<HostInfo> filter(ArrayList<HostInfo> hosts, int minCpus, int minRamMb, int minDiskGb) {

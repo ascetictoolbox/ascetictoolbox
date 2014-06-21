@@ -8,8 +8,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 /**
- * I could not connect to the REST service from an external application without applying this
- * CORS (cross-origin resource sharing) filter. For more information about CORS check 
+ * CORS (cross-origin resource sharing) support filter. I could not connect to the REST service from an
+ * external application without applying this CORS filter. For more information about CORS check
  * http://enable-cors.org/
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)

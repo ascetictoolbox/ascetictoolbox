@@ -99,8 +99,7 @@ public class VmManager {
         HashMap<Vm, String> ids = new HashMap<>();
 
         // Decide where to deploy each VM of the application
-        HashMap<Vm, String> vmsScheduling =
-                scheduler.schedule(vmDescriptions, hostsInfo);
+        HashMap<Vm, String> vmsScheduling = scheduler.schedule(vmDescriptions, hostsInfo);
 
         // TODO si devuelve null es que no hay host disponible. Que hacer en ese caso?
         // For each VM that is part of the application

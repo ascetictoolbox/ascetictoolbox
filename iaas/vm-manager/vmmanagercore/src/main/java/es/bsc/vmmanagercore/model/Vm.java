@@ -6,7 +6,7 @@ import org.codehaus.jackson.JsonNode;
 import java.io.File;
 
 /**
- * 
+ * VM.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  *

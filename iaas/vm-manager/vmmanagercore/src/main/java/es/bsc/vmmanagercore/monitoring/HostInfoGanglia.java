@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
+ * Status of a host of an infrastructure monitored by Ganglia.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  *

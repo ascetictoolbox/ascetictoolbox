@@ -5,7 +5,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-
+/**
+ *
+ *
+ * @author David Ortiz Lopez (david.ortiz@bsc.es)
+ *
+ */
 public class VmManagerRestException extends WebApplicationException {
 
     private static final long serialVersionUID = 1L;

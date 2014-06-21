@@ -7,12 +7,14 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
- *
+ * This class implements the interaction of the VM Manager with a HSQL database.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  *
  */
 public class VmManagerDbHsql implements VmManagerDb {
+
+    /* NOTE: For now, we are using DBHSQL. In the future, it may be needed to use a different DB. */
 
     private Connection conn;
     private ArrayList<SchedulingAlgorithm> availableSchedAlg = new ArrayList<>();
@@ -183,7 +185,7 @@ public class VmManagerDbHsql implements VmManagerDb {
     
     @Override
     public ArrayList<String> getAllVmIds() {
-        ArrayList<String> vmIds = null;
+        ArrayList<String> vmIds = new ArrayList<>();
         try {
             vmIds = query("SELECT id FROM virtual_machines");
         } catch (SQLException e) {

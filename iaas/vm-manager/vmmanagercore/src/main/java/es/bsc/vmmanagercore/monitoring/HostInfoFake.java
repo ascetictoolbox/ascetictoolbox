@@ -2,7 +2,7 @@ package es.bsc.vmmanagercore.monitoring;
 
 
 /**
- * This class contains information about the status of a fake host of the infrastructure.
+ * Information about the status of a fake host.
  * This class is useful to perform tests without configuring real hosts.
  * 
  * @author David Ortiz Lopez (david.ortiz@bsc.es)

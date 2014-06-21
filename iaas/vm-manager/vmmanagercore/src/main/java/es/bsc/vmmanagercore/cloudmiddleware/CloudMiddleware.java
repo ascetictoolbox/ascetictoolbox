@@ -8,7 +8,7 @@ import es.bsc.vmmanagercore.model.VmDeployed;
 import java.util.Collection;
 
 /**
- * Interface to the Cloud Middleware infrastructure (e.g. OpenNebula, OpenStack,
+ * Interface for the Cloud Middleware infrastructure (e.g. OpenNebula, OpenStack,
  * EMOTIVE...). It provides a common interface with the most common operations
  * of a cloud Middleware: deploy, cancel, migrate, get information, etc.
  * 

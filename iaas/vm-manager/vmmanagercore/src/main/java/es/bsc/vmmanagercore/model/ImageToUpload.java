@@ -1,6 +1,13 @@
 package es.bsc.vmmanagercore.model;
 
+/**
+ * Image to be uploaded to the cloud middleware.
+ *
+ * @author David Ortiz Lopez (david.ortiz@bsc.es)
+ *
+ */
 public class ImageToUpload {
+
     private String name;
     private String url;
 
@@ -24,4 +31,5 @@ public class ImageToUpload {
     public void setUrl(String url) {
         this.url = url;
     }
+
 }

@@ -117,10 +117,6 @@ public class HttpUtils {
      * @return @return The response of the HTTP request
      */
     public static String executeHttpRequest(String methodType, URI uri, HashMap<String, String> header, String entity) {
-        //build the request
-        HttpRequestBase request = buildHttpRequest(methodType, uri, header, entity);
-
-        //execute and return the response
-        return getHttpResponse(request);
+        return getHttpResponse(buildHttpRequest(methodType, uri, header, entity));
     }
 }

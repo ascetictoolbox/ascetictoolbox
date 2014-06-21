@@ -5,6 +5,12 @@ import es.bsc.vmmanagercore.monitoring.HostInfo;
 
 import java.util.List;
 
+/**
+ *
+ *
+ * @author David Ortiz Lopez (david.ortiz@bsc.es)
+ *
+ */
 public class SchedAlgRandom implements SchedAlgorithm {
 
     public SchedAlgRandom() { }

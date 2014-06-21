@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- *
+ * REST interface for the VM Manager.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  *

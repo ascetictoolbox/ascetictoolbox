@@ -3,6 +3,8 @@ package es.bsc.vmmanagercore.model;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 /**
+ * Load of a server (% of cpu, ram, and disk used).
+ *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  */
 public class ServerLoad {
