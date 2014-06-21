@@ -28,7 +28,7 @@ public class CollectionTest {
 
 	@Test
 	public void collectionOfExperiments() throws Exception {
-		String testbedsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+		String collectionXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 				+ "<collection xmlns=\"http://application_manager.ascetic.eu/doc/schemas/xml\" href=\"/\">"
 					+ "<items offset=\"0\" total=\"2\">"
 						+ "<application href=\"/101\">"
@@ -51,7 +51,7 @@ public class CollectionTest {
 
 		JAXBContext jaxbContext = JAXBContext.newInstance(Collection.class);
 		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-		Collection collection = (Collection) jaxbUnmarshaller.unmarshal(new StringReader(testbedsXML));
+		Collection collection = (Collection) jaxbUnmarshaller.unmarshal(new StringReader(collectionXML));
 
 		assertEquals(2, collection.getItems().getApplications().size());
 		//assertEquals(2, collection.getItems().getProviders().get(0).getLinks().size());

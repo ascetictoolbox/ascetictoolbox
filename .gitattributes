@@ -182,6 +182,7 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/model/
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/model/CollectionTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/model/ItemTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/model/LinkTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/model/converter/ModelConverterTest.java -text
 paas/application-monitor/cube/.npmignore -text
 paas/application-monitor/cube/LICENSE -text
 paas/application-monitor/cube/Makefile -text
