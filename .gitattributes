@@ -172,7 +172,9 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/model/
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/model/Collection.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/model/Items.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/model/Link.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/model/Root.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/model/converter/ModelConverter.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/ApplicationRest.java -text
 paas/application-manager/src/main/resources/META-INF/persistence.mysql.xml -text
 paas/application-manager/src/main/resources/applicationContext.xml -text
 paas/application-manager/src/main/resources/log4j.properties -text
@@ -182,7 +184,9 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/model/
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/model/CollectionTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/model/ItemTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/model/LinkTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/model/RootTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/model/converter/ModelConverterTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/ApplicationRestTest.java -text
 paas/application-monitor/cube/.npmignore -text
 paas/application-monitor/cube/LICENSE -text
 paas/application-monitor/cube/Makefile -text

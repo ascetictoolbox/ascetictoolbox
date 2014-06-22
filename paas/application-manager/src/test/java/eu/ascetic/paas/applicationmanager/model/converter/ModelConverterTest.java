@@ -20,12 +20,70 @@ import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Collection;
 import eu.ascetic.paas.applicationmanager.model.Items;
 import eu.ascetic.paas.applicationmanager.model.Link;
+import eu.ascetic.paas.applicationmanager.model.Root;
 
 /**
  * Verifies the right work of the class responsible of converting XML representations and viceversa for the Application Manager
  * @author David Garcia Perez - Atos
  */
 public class ModelConverterTest {
+	
+	@Test
+	public void objectRootToXMLNullTest() {
+		String xml = ModelConverter.objectRootToXML(null);
+		assertEquals(null, xml);
+	}
+	
+	@Test
+	public void objectRootToXMLTest() throws JDOMException, IOException {
+		Root root = new Root();
+		root.setHref("/");
+		root.setTimestamp("111");
+		root.setVersion("0.1-SNAPSHOOT");
+		
+		Link link = new Link();
+		link.setRel("applications");
+		link.setType(MediaType.APPLICATION_XML);
+		link.setHref("/applications");
+		root.addLink(link);
+		
+		String xml = ModelConverter.objectRootToXML(root);
+		
+		//We now verify the XML has the right format... a bit a pain in the a**...
+		SAXBuilder builder = new SAXBuilder();
+		builder.setValidation(false);
+		builder.setIgnoringElementContentWhitespace(true);
+		Document xmldoc = builder.build(new StringReader(xml));
+		XPath xpath = XPath.newInstance("//bnf:root");
+		xpath.addNamespace("bnf", APPLICATION_MANAGER_NAMESPACE);
+		List listxpath = xpath.selectNodes(xmldoc);
+		assertEquals(1, listxpath.size());
+		Element element = (Element) listxpath.get(0);
+		assertEquals("/", element.getAttributeValue("href"));
+		
+		XPath xpathName = XPath.newInstance("//bnf:version");
+		xpathName.addNamespace("bnf", APPLICATION_MANAGER_NAMESPACE);
+		List listxpathName = xpathName.selectNodes(xmldoc);
+		assertEquals(1, listxpathName.size());
+		element = (Element) listxpathName.get(0);
+		assertEquals("0.1-SNAPSHOOT", element.getValue());
+		
+		xpathName = XPath.newInstance("//bnf:timestamp");
+		xpathName.addNamespace("bnf", APPLICATION_MANAGER_NAMESPACE);
+		listxpathName = xpathName.selectNodes(xmldoc);
+		assertEquals(1, listxpathName.size());
+		element = (Element) listxpathName.get(0);
+		assertEquals("111", element.getValue());
+		
+		xpathName = XPath.newInstance("//bnf:link");
+		xpathName.addNamespace("bnf", APPLICATION_MANAGER_NAMESPACE);
+		listxpathName = xpathName.selectNodes(xmldoc);
+		assertEquals(1, listxpathName.size());
+		element = (Element) listxpathName.get(0);
+		assertEquals("applications", element.getAttributeValue("rel"));
+		assertEquals(MediaType.APPLICATION_XML, element.getAttributeValue("type"));
+		assertEquals("/applications", element.getAttributeValue("href"));
+	}
 	
 	@Test
 	public void objectCollectionToXMLNullTest() {
