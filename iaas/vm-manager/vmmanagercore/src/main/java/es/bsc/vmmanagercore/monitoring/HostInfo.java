@@ -17,8 +17,8 @@ public abstract class HostInfo {
     protected int assignedMemoryMb;
     protected double assignedDiskGb;
 
-    //these reserved attributes are used when it has been decided to deploy a VM on a host, but
-    //the deployment has not been done yet
+    // These reserved attributes are used when it has been decided to deploy a VM on a host, but
+    // the deployment has not been done yet
     protected double reservedCpus;
     protected int reservedMemoryMb;
     protected int reservedDiskGb;
@@ -41,8 +41,7 @@ public abstract class HostInfo {
      * Returns false if the host does not have enough available resources
      */
     public boolean hasEnoughResources(int cpus, int memoryMb, int diskGb) {
-        return (getFreeCpus() >= cpus) && (getFreeMemoryMb() >= memoryMb) &&
-                (getFreeDiskGb() >= diskGb);
+        return (getFreeCpus() >= cpus) && (getFreeMemoryMb() >= memoryMb) && (getFreeDiskGb() >= diskGb);
     }
 
     /**

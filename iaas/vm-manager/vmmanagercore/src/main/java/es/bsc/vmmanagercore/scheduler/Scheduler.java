@@ -11,9 +11,10 @@ import java.util.HashMap;
 
 
 /**
- *
+ *  Scheduler that decides where to place the VMs that need to be deployed.
+ *  This scheduler can be configured to use different scheduling algorithms (consolidation, distribution, etc.)
  * 
- * @author David Ortiz Lopez (david.ortiz@bsc.es)
+ *  @author David Ortiz Lopez (david.ortiz@bsc.es)
  */
 public class Scheduler {
 
@@ -53,7 +54,8 @@ public class Scheduler {
     }
 
     /**
-     * Decides on which host deploy each of the VMs that need to be deployed
+     * Decides on which host deploy each of the VMs that need to be deployed.
+     *
      * @param vms the description of the VMs that need to be scheduled
      * @param hostsInfo information of the hosts of the infrastructure where the VMs need to be deployed
      * @return HashMap that contains for each VM description, the name of the host where
@@ -82,7 +84,8 @@ public class Scheduler {
     }
 
     /**
-     * Returns the load that a host would have if a VM was deployed in it
+     * Returns the load that a host would have if a VM was deployed in it.
+     *
      * @param vm the VM to deploy
      * @param host the host where the VM would be deployed
      * @return the future load

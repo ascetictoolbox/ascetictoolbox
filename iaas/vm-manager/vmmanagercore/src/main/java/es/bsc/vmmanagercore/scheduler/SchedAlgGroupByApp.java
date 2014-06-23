@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
+ * Scheduling algorithm that groups VMs by the application which they belong to.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  */

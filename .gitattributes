@@ -134,10 +134,10 @@ iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/monitoring/Host
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/monitoring/HostInfoFake.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/monitoring/HostInfoGanglia.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/monitoring/HostInfoOpenStack.java -text
+iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/monitoring/HostInfoZabbix.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/rest/CorsSupportFilter.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/rest/Main.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/rest/VmManagerRest.java -text
-iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/rest/VmManagerRestException.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/rest/VmManagerRestInputValidator.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/scheduler/HostFilter.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/scheduler/SchedAlgConsolidation.java -text

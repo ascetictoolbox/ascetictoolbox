@@ -45,7 +45,7 @@ public class VmManagerConfiguration {
     public String deployPackage;
 
     // Software used
-    public enum Monitoring { OPENSTACK, GANGLIA }
+    public enum Monitoring { OPENSTACK, GANGLIA, ZABBIX }
     public enum Middleware { OPENSTACK }
     public Monitoring monitoring;
     public Middleware middleware;
@@ -85,6 +85,9 @@ public class VmManagerConfiguration {
         }
         else if (prop.getProperty("monitoring").equals("ganglia")) {
             monitoring = Monitoring.GANGLIA;
+        }
+        else if (prop.getProperty("monitoring").equals("zabbix")) {
+            monitoring = Monitoring.ZABBIX;
         }
         else {
             //TODO - invalid

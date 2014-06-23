@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
 import java.util.List;
 
 /**
- *
+ * Distribution scheduling algorithm.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  *
@@ -20,13 +20,6 @@ public class SchedAlgDistribution implements SchedAlgorithm {
 
     public SchedAlgDistribution() {}
 
-    /**
-     * Decides on which host deploy a VM according to its CPU, memory and disk requirements
-     * @param hostsInfo Information of the hosts of the infrastructure
-     * @param vm VM that needs to be deployed
-     * @return The name of the host on which the VM should be deployed. Null if none of the hosts
-     * has enough resources available (hostsInfo is an empty list).
-     */
     @Override
     public String chooseHost(List<HostInfo> hostsInfo, Vm vm) {
         logger.debug("\n [VMM] ---DISTRIBUTION ALG. START--- \n " +

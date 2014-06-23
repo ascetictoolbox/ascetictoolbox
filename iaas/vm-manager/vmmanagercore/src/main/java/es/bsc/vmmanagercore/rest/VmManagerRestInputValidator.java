@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- *
+ * Validates the input of the REST calls.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  *

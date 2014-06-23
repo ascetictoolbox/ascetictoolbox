@@ -6,7 +6,7 @@ import es.bsc.vmmanagercore.monitoring.HostInfo;
 import java.util.List;
 
 /**
- *
+ * Scheduling algorithms that places VMs at random hosts.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  *

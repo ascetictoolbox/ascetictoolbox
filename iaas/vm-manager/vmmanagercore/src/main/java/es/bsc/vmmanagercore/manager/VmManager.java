@@ -8,6 +8,7 @@ import es.bsc.vmmanagercore.model.*;
 import es.bsc.vmmanagercore.monitoring.HostInfo;
 import es.bsc.vmmanagercore.monitoring.HostInfoGanglia;
 import es.bsc.vmmanagercore.monitoring.HostInfoOpenStack;
+import es.bsc.vmmanagercore.monitoring.HostInfoZabbix;
 import es.bsc.vmmanagercore.scheduler.Scheduler;
 
 import java.util.ArrayList;
@@ -226,6 +227,10 @@ public class VmManager {
                 hostsInfo.add(new HostInfoOpenStack(hostname, (JCloudsMiddleware) cloudMiddleware));
             }
             break;
+        case ZABBIX:
+            for (String hostname: hosts) {
+                hostsInfo.add(new HostInfoZabbix(hostname));
+            }
         default:
             //TODO - invalid
             break;

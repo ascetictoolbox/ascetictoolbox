@@ -21,8 +21,8 @@ public class HostInfoGanglia extends HostInfo {
         super(hostname);
 
         //get the Ganglia host from its hostname
-        ArrayList<Cluster> cluster_list = new Ganglia().getGridInfo();
-        for (Cluster cluster : cluster_list) {
+        ArrayList<Cluster> clusterList = new Ganglia().getGridInfo();
+        for (Cluster cluster : clusterList) {
             List<Host> hosts = cluster.getHosts();
             for (Host host: hosts) {
                 if (host.getName().equals(hostname)) {
