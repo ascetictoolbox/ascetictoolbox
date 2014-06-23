@@ -211,7 +211,7 @@ public class DomainContextualizer implements DomainContextualizerMBean {
 				existingIsoPath);
 
 		// Create Virtual Machine object
-		// FIXME
+		// FIXME: Remove this hardcoding
 		String componentId = "hardcoded_in_domContext";
 		HashMap<String, VirtualMachine> vms = new HashMap<String, VirtualMachine>();
 		VirtualMachine virtualMachine = new VirtualMachine(componentId, 1);

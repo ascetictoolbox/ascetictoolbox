@@ -43,7 +43,7 @@ public class Service {
 		if (ovfDefinition != null) {
 			
 			// FIXME: Should we be getting the serviceId from a property here, confirm with consortium? 
-			serviceId = ovfDefinition.getVirtualSystemArray(0).getProductSection().getPropertyByKey("serviceId").getValue();
+			serviceId = ovfDefinition.getVirtualSystemCollection().getId();
 			ovfDefinitionClient = new OvfDefinitionClient(ovfDefinition);
 		}
 	}

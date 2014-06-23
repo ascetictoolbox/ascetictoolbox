@@ -13,11 +13,11 @@ import java.io.Writer;
 import java.util.Properties;
 
 public class TemplateLoader {
-	private static final String TEMPLATE = "/ovf.template";
+	private static final String TEMPLATE = "/ovf.template.xml";
 
-	public static final String SERVICE_ID_KEY = "serviceId";
+	public static final String APPLICATION_ID_KEY = "applicationId";
 
-	public static final String COMPONENT_ID_KEY = "componentId";
+	public static final String VIRTUAL_MACHINE_ID_KEY = "virtualMachineId";
 
 	private Properties defaultProperties;
 
@@ -28,25 +28,24 @@ public class TemplateLoader {
 		Velocity.setProperty("classpath.resource.loader.class",
 				ClasspathResourceLoader.class.getName());
 		Velocity.init();
-		
+
 		// Load the default properties
 		loadDefaultProperties();
 	}
 
 	public XmlBeanEnvelopeDocument loadOvfDefinitionTemplate(String serviceId,
-			String componentId) {
+			String virtualMachineId) {
 
-		return loadOvfDefinitionTemplate(serviceId, componentId,
+		return loadOvfDefinitionTemplate(serviceId, virtualMachineId,
 				defaultProperties);
 	}
 
-	public XmlBeanEnvelopeDocument loadOvfDefinitionTemplate(String serviceId,
-			String componentId, Properties properties) {
+	public XmlBeanEnvelopeDocument loadOvfDefinitionTemplate(
+			String applicationId, String virtualMachineId, Properties properties) {
 		Template t = Velocity.getTemplate(TEMPLATE);
 		VelocityContext ctx = createVelocityContext(properties);
-		ctx.put(COMPONENT_ID_KEY, componentId);
-		// FIXME Add service ID somewhere in the template
-		ctx.put(SERVICE_ID_KEY, serviceId);
+		ctx.put(VIRTUAL_MACHINE_ID_KEY, virtualMachineId);
+		ctx.put(APPLICATION_ID_KEY, applicationId);
 
 		// Add all properties to the velocity context
 		putPropertiesToVelocityContext(properties, ctx);
@@ -63,7 +62,7 @@ public class TemplateLoader {
 		}
 		return xmlBeanEnvelopeDocument;
 	}
-	
+
 	private void loadDefaultProperties() {
 		if (defaultProperties == null) {
 			defaultProperties = new OvfDefinitionProperties();
@@ -75,7 +74,7 @@ public class TemplateLoader {
 		putPropertiesToVelocityContext(properties, ctx);
 		return ctx;
 	}
-	
+
 	private void putPropertiesToVelocityContext(Properties properties,
 			VelocityContext ctx) {
 		for (Object key : properties.keySet()) {

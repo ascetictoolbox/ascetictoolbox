@@ -43,88 +43,76 @@ import org.dmtf.schemas.ovf.envelope.x1.XmlBeanVirtualHardwareSectionType;
 import eu.ascetic.utils.ovf.api.AbstractElement;
 import eu.ascetic.utils.ovf.api.utils.XmlSimpleTypeConverter;
 
-public class VirtualHardwareSection extends AbstractElement<XmlBeanVirtualHardwareSectionType>
-{
-    public VirtualHardwareSection( XmlBeanVirtualHardwareSectionType base )
-    {
-        super( base );
-    }
+public class VirtualHardwareSection extends
+		AbstractElement<XmlBeanVirtualHardwareSectionType> {
+	public VirtualHardwareSection(XmlBeanVirtualHardwareSectionType base) {
+		super(base);
+	}
 
-    public String getInfo()
-    {
-        return delegate.getInfo().getStringValue();
-    }
+	public String getInfo() {
+		return delegate.getInfo().getStringValue();
+	}
 
-    public System getSystem()
-    {
-        return new System( delegate.getSystem() );
-    }
+	public System getSystem() {
+		return new System(delegate.getSystem());
+	}
 
-    public Item[] getItemArray()
-    {
-        List<Item> vector = new Vector<Item>();
-        for ( XmlBeanRASDType type : delegate.getItemArray() )
-        {
-            vector.add( new Item( type ) );
-        }
-        return vector.toArray( new Item[vector.size()] );
-    }
+	public Item[] getItemArray() {
+		List<Item> vector = new Vector<Item>();
+		for (XmlBeanRASDType type : delegate.getItemArray()) {
+			vector.add(new Item(type));
+		}
+		return vector.toArray(new Item[vector.size()]);
+	}
 
-    public Item getItemArray( int i )
-    {
-        return new Item( delegate.getItemArray( i ) );
-    }
+	public Item getItemAtIndex(int i) {
+		return new Item(delegate.getItemArray(i));
+	}
 
-    public String getVirtualHardwareFamily()
-    {
-        return delegate.getSystem().getVirtualSystemType().getStringValue();
-    }
+	public String getVirtualHardwareFamily() {
+		return delegate.getSystem().getVirtualSystemType().getStringValue();
+	}
 
-    public void setVirtualHardwareFamily( String virtualHardwareFamily )
-    {
-        delegate.getSystem()
-                .setVirtualSystemType( XmlSimpleTypeConverter.toCimString( virtualHardwareFamily ) );
-    }
+	public void setVirtualHardwareFamily(String virtualHardwareFamily) {
+		delegate.getSystem().setVirtualSystemType(
+				XmlSimpleTypeConverter.toCimString(virtualHardwareFamily));
+	}
 
-    public int getNumberOfVirtualCPUs()
-    {
-        return delegate.getItemArray( 0 ).getVirtualQuantity().getBigIntegerValue().intValue();
-    }
+	public int getNumberOfVirtualCPUs() {
+		return delegate.getItemArray(0).getVirtualQuantity()
+				.getBigIntegerValue().intValue();
+	}
 
-    public void setNumberOfVirtualCPUs( int numberOfVirtualCPUs )
-    {
-        delegate.getItemArray( 0 ).setVirtualQuantity(
-            XmlSimpleTypeConverter.toCimUnsignedLong( numberOfVirtualCPUs ) );
-    }
+	public void setNumberOfVirtualCPUs(int numberOfVirtualCPUs) {
+		delegate.getItemArray(0).setVirtualQuantity(
+				XmlSimpleTypeConverter.toCimUnsignedLong(numberOfVirtualCPUs));
+	}
 
-    public int getMemorySize()
-    {
-        return delegate.getItemArray( 1 ).getVirtualQuantity().getBigIntegerValue().intValue();
-    }
+	public int getMemorySize() {
+		return delegate.getItemArray(1).getVirtualQuantity()
+				.getBigIntegerValue().intValue();
+	}
 
-    public void setMemorySize( int memorySize )
-    {
-        if ( memorySize < 0 )
-        {
-            throw new IllegalArgumentException( "memory size must be > -1" );
-        }
+	public void setMemorySize(int memorySize) {
+		if (memorySize < 0) {
+			throw new IllegalArgumentException("Memory size must be > -1");
+		}
 
-        delegate.getItemArray( 1 )
-                .setVirtualQuantity( XmlSimpleTypeConverter.toCimUnsignedLong( memorySize ) );
-    }
+		delegate.getItemArray(1).setVirtualQuantity(
+				XmlSimpleTypeConverter.toCimUnsignedLong(memorySize));
+	}
 
-    public void setCPUSpeed( int cpuSpeed )
-    {
-        if ( !( cpuSpeed > -1 ) )
-        {
-            throw new IllegalArgumentException( "cpu speed must be > -1" );
-        }
-        delegate.getItemArray( 2 ).setReservation( XmlSimpleTypeConverter.toCimUnsignedLong( cpuSpeed ) );
-    }
+	public void setCPUSpeed(int cpuSpeed) {
+		if (!(cpuSpeed > -1)) {
+			throw new IllegalArgumentException("CPU speed must be > -1");
+		}
+		delegate.getItemArray(2).setReservation(
+				XmlSimpleTypeConverter.toCimUnsignedLong(cpuSpeed));
+	}
 
-    public int getCPUSpeed()
-    {
-        return delegate.getItemArray( 2 ).getReservation().getBigIntegerValue().intValue();
-    }
+	public int getCPUSpeed() {
+		return delegate.getItemArray(2).getReservation().getBigIntegerValue()
+				.intValue();
+	}
 
 }

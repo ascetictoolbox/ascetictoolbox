@@ -52,7 +52,7 @@ public class GlobalConfiguration {
 	/**
 	 * Constructor for setting configuration variables.
 	 * 
-	 * @param configFilePath The file path to the configuration file (Not the file name FIXME?)
+	 * @param configFilePath The file path to the configuration file (FIXME: Not the file name)
 	 * @throws Exception If config file is not present or unreadable.
 	 */
 	public GlobalConfiguration(String configFilePath) throws Exception {

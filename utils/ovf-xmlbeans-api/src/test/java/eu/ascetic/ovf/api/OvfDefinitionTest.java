@@ -28,38 +28,81 @@ import eu.ascetic.utils.ovf.api.OvfDefinition;
 
 /**
  * @author Django Armstrong (ULeeds)
- *
+ * 
  */
 public class OvfDefinitionTest extends TestCase {
-	
-	public void testOvfDefinition() {
-		OvfDefinition ovfDefinition = OvfDefinition.Factory.newInstance("a-service-id", "a-component-id");
-		
-		// TODO ...
-		ovfDefinition.getVirtualSystemCollectionProductSectionArray()[0].setVersion("Supa-dupa");
-	}
-	
-    protected void writeToFile( XmlBeanEnvelopeDocument ovfDefinition, String fileName )
-    {
-        try
-        {
-            // If system property is not set (i.e. test case was started from IDE )
-            // we use the current directory to store the file
-            String targetDir = System.getProperty( "manifestSampleDir", "." );
 
-            File file = new File( targetDir + File.separator + File.separator + fileName + ".xml" );
-            FileWriter fstream = new FileWriter( file );
-            BufferedWriter out = new BufferedWriter( fstream );
-            out.write( ovfDefinition.xmlText( new XmlOptions().setSavePrettyPrint() ) );
-            System.out.println( fileName + " was written to " + file.getAbsolutePath() );
-            // Close the output stream
-            out.close();
-        }
-        catch ( Exception e )
-        {
-            // Catch exception if any
-            System.err.println( "Error: " + e.getMessage() );
-            fail( e.getMessage() );
-        }
-    }
+	public void testOvfDefinition() {
+		OvfDefinition ovfDefinition = OvfDefinition.Factory.newInstance(
+				"an-application-id", "a-vm-id");
+
+		// Global product details
+
+		// Stores the Application's ID
+		String applicationId = ovfDefinition.getVirtualSystemCollection()
+				.getId();
+		assertNotNull(applicationId);
+		ovfDefinition.getVirtualSystemCollection().getProductSectionAtIndex(0)
+				.setInfo("Some global infomation");
+		ovfDefinition.getVirtualSystemCollection().getProductSectionAtIndex(0)
+				.setProduct("Global Product Name");
+		ovfDefinition.getVirtualSystemCollection().getProductSectionAtIndex(0)
+				.setVersion("Version 1.0");
+		ovfDefinition.getVirtualSystemCollection().getProductSectionAtIndex(0)
+				.addNewProperty("probe1", "string", "uri://some-end-point");
+		String probeUri = ovfDefinition.getVirtualSystemCollection()
+				.getProductSectionAtIndex(0).getPropertyByKey("probe1")
+				.getValue();
+		assertNotNull(probeUri);
+
+		// Global product details
+
+		// Stores the Virtual Machine's ID
+		String virtualMachineId = ovfDefinition.getVirtualSystemCollection()
+				.getVirtualSystemAtIndex(0).getId();
+		assertNotNull(virtualMachineId);
+		ovfDefinition.getVirtualSystemCollection().getVirtualSystemAtIndex(0)
+				.getProductSectionAtIndex(0)
+				.setInfo("Some VM specific infomation");
+		ovfDefinition.getVirtualSystemCollection().getVirtualSystemAtIndex(0)
+				.getProductSectionAtIndex(0).setProduct("VM Specific Name");
+		ovfDefinition.getVirtualSystemCollection().getVirtualSystemAtIndex(0)
+				.getProductSectionAtIndex(0).setVersion("Version 1.0");
+		ovfDefinition.getVirtualSystemCollection().getVirtualSystemAtIndex(0)
+				.getProductSectionAtIndex(0)
+				.addNewProperty("probe1", "string", "uri://some-end-point");
+		probeUri = ovfDefinition.getVirtualSystemCollection()
+				.getVirtualSystemAtIndex(0).getProductSectionAtIndex(0)
+				.getPropertyByKey("probe1").getValue();
+		assertNotNull(probeUri);
+
+		System.out.println(ovfDefinition.toString());
+
+		writeToFile(ovfDefinition.getXmlObject(), "test.ovf");
+	}
+
+	protected void writeToFile(XmlBeanEnvelopeDocument ovfDefinition,
+			String fileName) {
+		try {
+			// If system property is not set (i.e. test case was started from
+			// IDE )
+			// we use the current directory to store the file
+			String targetDir = System.getProperty("ovfSampleDir", "target");
+
+			File file = new File(targetDir + File.separator + File.separator
+					+ fileName + ".xml");
+			FileWriter fstream = new FileWriter(file);
+			BufferedWriter out = new BufferedWriter(fstream);
+			out.write(ovfDefinition.xmlText(new XmlOptions()
+					.setSavePrettyPrint()));
+			System.out.println(fileName + ".xml was written to "
+					+ file.getAbsolutePath());
+			// Close the output stream
+			out.close();
+		} catch (Exception e) {
+			// Catch exception if any
+			System.err.println("Error: " + e.getMessage());
+			fail(e.getMessage());
+		}
+	}
 }

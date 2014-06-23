@@ -21,18 +21,17 @@ import eu.ascetic.utils.ovf.api.utils.XmlValidator;
 
 /**
  * @author Django Armstrong (ULeeds)
- *
+ * 
  */
 public class InvalidDocumentException extends RuntimeException {
 
-    /**
+	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 7045796285018934681L;
 
-	public InvalidDocumentException( String message, XmlObject document )
-    {
-        super( message.concat(XmlValidator.getErrors( document )) );
-    }
+	public InvalidDocumentException(String message, XmlObject document) {
+		super(message.concat(XmlValidator.getErrors(document)));
+	}
 
 }

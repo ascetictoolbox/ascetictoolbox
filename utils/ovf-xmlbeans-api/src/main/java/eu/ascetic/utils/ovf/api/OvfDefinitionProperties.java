@@ -35,7 +35,7 @@ public class OvfDefinitionProperties extends Properties {
 
 	/**
 	 * This will create a properties object that contains all default values for
-	 * an ovf definition loaded from the ovf.properties file.
+	 * an OVF definition loaded from the ovf.properties file.
 	 */
 	public OvfDefinitionProperties() {
 		try {

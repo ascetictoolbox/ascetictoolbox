@@ -61,8 +61,7 @@ public class VmicApi implements Api {
 				this, ovfDefinition);
 		Thread thread = new Thread(virtualMachineImageConstructor);
 		
-		// FIXME: Should we be getting the serviceId from a property here, confirm with consortium? 
-		threads.put(ovfDefinition.getVirtualSystemArray(0).getProductSection().getPropertyByKey("serviceId").getValue(), thread);
+		threads.put(ovfDefinition.getVirtualSystemCollection().getId(), thread);
 		thread.start();	
 	}
 
@@ -95,7 +94,7 @@ public class VmicApi implements Api {
 	 */
 	@Override
 	public void uploadFile(String ovfDefinitionId, File file) {
-		// FIXME change this method once the interface technology has been selected for this component to enable remote invocation
+		// FIXME: Change this method once the interface technology has been selected for this component to enable remote invocation
 	}
 
 }

@@ -6,57 +6,46 @@ import org.dmtf.schemas.ovf.envelope.x1.XmlBeanFileType;
 
 import eu.ascetic.utils.ovf.api.AbstractElement;
 
-public class File extends AbstractElement<XmlBeanFileType>
-{
+public class File extends AbstractElement<XmlBeanFileType> {
 
-    public File( XmlBeanFileType base )
-    {
-        super( base );
-    }
+	public File(XmlBeanFileType base) {
+		super(base);
+	}
 
-    public String getId()
-    {
-        return delegate.getId();
-    }
+	public String getId() {
+		return delegate.getId();
+	}
 
-    public String getHref()
-    {
-        return delegate.getHref();
-    }
+	public String getHref() {
+		return delegate.getHref();
+	}
 
-    public void setHref( String href )
-    {
-        delegate.setHref( href );
-    }
+	public void setHref(String href) {
+		delegate.setHref(href);
+	}
 
-    public BigInteger getSize()
-    {
-        return delegate.getSize();
-    }
+	public BigInteger getSize() {
+		return delegate.getSize();
+	}
 
-    public void setSize( BigInteger size )
-    {
-        delegate.setSize( size );
-    }
+	public void setSize(BigInteger size) {
+		delegate.setSize(size);
+	}
 
-    public String getCompression()
-    {
-        return delegate.getCompression();
-    }
+	public String getCompression() {
+		return delegate.getCompression();
+	}
 
-    public void setCompression( String compression )
-    {
-        delegate.setCompression( compression );
-    }
+	public void setCompression(String compression) {
+		delegate.setCompression(compression);
+	}
 
-    public long getChunkSize()
-    {
-        return delegate.getChunkSize();
-    }
+	public long getChunkSize() {
+		return delegate.getChunkSize();
+	}
 
-    public void setChunkSize( long chunkSize )
-    {
-        delegate.setChunkSize( chunkSize );
-    }
+	public void setChunkSize(long chunkSize) {
+		delegate.setChunkSize(chunkSize);
+	}
 
 }

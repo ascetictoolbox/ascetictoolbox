@@ -119,8 +119,7 @@ public class GlobalState {
 		// FIXME: Should we be getting the serviceId from a property here,
 		// confirm with consortium?
 		progressDataHashMap.get(
-				ovfDefinition.getVirtualSystemArray(0).getProductSection()
-						.getPropertyByKey("serviceId").getValue())
+				ovfDefinition.getVirtualSystemCollection().getId())
 				.setOvfDefinition(ovfDefinition);
 	}
 

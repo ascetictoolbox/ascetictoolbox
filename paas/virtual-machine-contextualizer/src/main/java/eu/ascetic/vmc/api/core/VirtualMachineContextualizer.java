@@ -96,7 +96,7 @@ public class VirtualMachineContextualizer implements Runnable {
 	 */
 	public void run() {
 		// FIXME: Should we be getting the serviceId from a property here, confirm with consortium? 
-		serviceId = ovfDefinition.getVirtualSystemArray(0).getProductSection().getPropertyByKey("serviceId").getValue();
+		serviceId = ovfDefinition.getVirtualSystemCollection().getId();
 		LOGGER.debug("Service ID is: " + serviceId);
 
 		// Initialise progress...
@@ -276,7 +276,7 @@ public class VirtualMachineContextualizer implements Runnable {
 
 			// Add the HardDisk image URI's to the ovfDefinition
 			LOGGER.info("Adding altered HardDisk URI's to ovfDefinition with id: "
-					+ ovfDefinition.getVirtualSystemArray(0).getProductSection().getPropertyByKey("serviceId").getValue());
+					+ ovfDefinition.getVirtualSystemCollection().getId());
 			OvfDefinitionClient ovfDefinitionClient = new OvfDefinitionClient(
 					ovfDefinition);
 			ovfDefinition = ovfDefinitionClient
@@ -370,7 +370,7 @@ public class VirtualMachineContextualizer implements Runnable {
 		// Add the ISO URI's to the OVF Definition
 		// FIXME: Should we be getting the serviceId from a property here, confirm with consortium? 
 		LOGGER.info("Adding ISOs to OVF Definition with id: "
-				+ ovfDefinition.getVirtualSystemArray(0).getProductSection().getPropertyByKey("serviceId").getValue());
+				+ ovfDefinition.getVirtualSystemCollection().getId());
 		OvfDefinitionClient ovfDefinitionClient = new OvfDefinitionClient(
 				ovfDefinition);
 		ovfDefinition = ovfDefinitionClient.addIsosToOvfDefinition(virtualMachines);

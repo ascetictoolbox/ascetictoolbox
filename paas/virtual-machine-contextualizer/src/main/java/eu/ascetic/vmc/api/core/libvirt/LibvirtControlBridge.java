@@ -83,7 +83,8 @@ public class LibvirtControlBridge implements LibvirtControlBridgeMBean {
 			arguments.add("block-attach");
 			arguments.add(domainName);
 			arguments.add("file:" + isoPath);
-			// arguments.add(interfaceName + ":cdrom"); //FIXME
+			// FIXME: should this be :cdrom?
+			// arguments.add(interfaceName + ":cdrom");
 			// FIXME: This needs to be different for XEN PV vs HVM images e.g.
 			// "xvda:cdrom"
 			arguments.add("/dev/" + interfaceName);

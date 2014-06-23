@@ -22,40 +22,43 @@ import eu.ascetic.utils.ovf.api.exceptions.InvalidDocumentException;
 
 /**
  * @author Django Armstrong (ULeeds)
- *
+ * 
  */
 public class OvfDefinitionFactory {
 
-	
-    public OvfDefinition newInstance( String serviceId, String componentId )
-    {
-        TemplateLoader loader = new TemplateLoader();
-        return new OvfDefinition( loader.loadOvfDefinitionTemplate( serviceId, componentId ).getEnvelope() );
-    }
-	
-	public OvfDefinition newInstance( XmlBeanEnvelopeDocument ovfDefinitionAsXmlBeans ) {
-        if ( !ovfDefinitionAsXmlBeans.validate() )
-        {
-            throw new InvalidDocumentException( "Document to be imported is invalid!",
-            		ovfDefinitionAsXmlBeans );
-        }
-        return new OvfDefinition( ovfDefinitionAsXmlBeans.getEnvelope() );
+	public OvfDefinition newInstance(String applicationId,
+			String virtualMachineId) {
+		TemplateLoader loader = new TemplateLoader();
+		return new OvfDefinition(loader.loadOvfDefinitionTemplate(
+				applicationId, virtualMachineId));
 	}
 
-	public OvfDefinition newInstance( String ovfDefinitionAsString ) {
-        XmlBeanEnvelopeDocument newDoc;
-		try {
-			newDoc = XmlBeanEnvelopeDocument.Factory.parse(ovfDefinitionAsString);
-		} catch (XmlException e) {
-		    throw new RuntimeException( "Problem parsing ovfDefinition from String.", e );
+	public OvfDefinition newInstance(
+			XmlBeanEnvelopeDocument ovfDefinitionAsXmlBeans) {
+		if (!ovfDefinitionAsXmlBeans.validate()) {
+			throw new InvalidDocumentException(
+					"Document to be imported is invalid!",
+					ovfDefinitionAsXmlBeans);
 		}
-		
-        if ( !newDoc.validate() )
-        {
-            throw new InvalidDocumentException( "Document to be imported is invalid!", newDoc );
-        }
-
-        return new OvfDefinition( newDoc.getEnvelope() );
+		return new OvfDefinition(ovfDefinitionAsXmlBeans);
 	}
-	
+
+	public OvfDefinition newInstance(String ovfDefinitionAsString) {
+		XmlBeanEnvelopeDocument newDoc;
+		try {
+			newDoc = XmlBeanEnvelopeDocument.Factory
+					.parse(ovfDefinitionAsString);
+		} catch (XmlException e) {
+			throw new RuntimeException(
+					"Problem parsing ovfDefinition from String.", e);
+		}
+
+		if (!newDoc.validate()) {
+			throw new InvalidDocumentException(
+					"Document to be imported is invalid!", newDoc);
+		}
+
+		return new OvfDefinition(newDoc);
+	}
+
 }

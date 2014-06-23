@@ -84,7 +84,7 @@ public class VmcApiTest extends TestCase {
 				
 				// TODO: Generate a default OVF doc here
 				
-				ovfDefinition = new OvfDefinition(xmlBeanEnvelopeDocument.getEnvelope());
+				ovfDefinition = new OvfDefinition(xmlBeanEnvelopeDocument);
 			}
 
 			log.info("TEST: Service OvfDefinition is:\n" + ovfDefinition.toString());
@@ -111,8 +111,7 @@ public class VmcApiTest extends TestCase {
 				try {
 					log.info("TEST: Trying to fetch progress data...");
 					
-					// FIXME: Should we be getting the serviceId from a property here, confirm with consortium? 
-					vmcApi.contextualizeServiceCallback(ovfDefinition.getVirtualSystemArray(0).getProductSection().getPropertyByKey("serviceId").getValue());
+					vmcApi.contextualizeServiceCallback(ovfDefinition.getVirtualSystemCollection().getId());
 					log.info("TEST: No ProgressException...");
 					break;
 				} catch (ProgressException e) {
@@ -126,8 +125,7 @@ public class VmcApiTest extends TestCase {
 			while (true) {
 
 				// We have progress data, do something with it...
-				// FIXME: Should we be getting the serviceId from a property here, confirm with consortium?
-				progressData = vmcApi.contextualizeServiceCallback(ovfDefinition.getVirtualSystemArray(0).getProductSection().getPropertyByKey("serviceId").getValue());
+				progressData = vmcApi.contextualizeServiceCallback(ovfDefinition.getVirtualSystemCollection().getId());
 
 				// We have an error so stop everything!
 				if (progressData.isError()) {
@@ -155,7 +153,7 @@ public class VmcApiTest extends TestCase {
 				// Test to see if contextualization has finished...
 				// FIXME: Should we be getting the serviceId from a property here, confirm with consortium?
 				if (vmcApi.contextualizeServiceCallback(
-						ovfDefinition.getVirtualSystemArray(0).getProductSection().getPropertyByKey("serviceId").getValue()).isComplete()) {
+						ovfDefinition.getVirtualSystemCollection().getId()).isComplete()) {
 					log.warn("TEST: Detected contextualization has completed!");
 					break;
 				}
@@ -238,7 +236,7 @@ public class VmcApiTest extends TestCase {
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
-						testOvfDefinition = new OvfDefinition(doc.getEnvelope());
+						testOvfDefinition = new OvfDefinition(doc);
 					}
 
 					if (args.length == 4) {

@@ -63,12 +63,12 @@ public class OvfDefinitionClient {
 
 		// Parse VM description here...
 		LOGGER.debug("Parsing VM Description from OVF Definition...");
-		int virtualSystems = ovfDefinition.getVirtualSystemArray().length;
+		int virtualSystems = ovfDefinition.getVirtualSystemCollection().getVirtualSystemArray().length;
 		
 		LOGGER.debug("Number of virtualSystems is: "
 				+ virtualSystems);
 		
-		VirtualSystem[] virtualSystemArray = ovfDefinition.getVirtualSystemArray();
+		VirtualSystem[] virtualSystemArray = ovfDefinition.getVirtualSystemCollection().getVirtualSystemArray();
 		
 		// Iterate over all VM components getting details of disk images...
 		for (int i = 0; i < virtualSystemArray.length; i++) {
@@ -77,7 +77,9 @@ public class OvfDefinitionClient {
 			LOGGER.debug("Processing virtualMachineComponent with component ID: "
 					+ componentId);
 			
-			int upperBound = Integer.parseInt(virtualSystemArray[i].getProductSection().getPropertyByKey("upperBound").getValue());
+			// FIXME: Are we always using the first instances of ProductSection here?
+			// FIXME: Add helper methods to ProductSection class to fetch the UpperBound with a hardcorded key
+			int upperBound = Integer.parseInt(virtualSystemArray[i].getProductSectionAtIndex(0).getPropertyByKey("upperBound").getValue());
 			LOGGER.debug("Allocation constraint upper bound is: " + upperBound);
 
 			// Add data to appropriate object(s) in data model.
@@ -126,8 +128,8 @@ public class OvfDefinitionClient {
 			// Get service end points for this virtual machine component	
 			int k = 1;
 			while (true) {				
-				// FIXME: Need a better way to fetch end points so that they have a useful name 
-				ProductProperty productProperty = virtualSystemArray[i].getProductSection().getPropertyByKey("endpoint" + k);
+				// FIXME: Add helper methods to ProductSection class to fetch the endpoint with a hardcorded key
+				ProductProperty productProperty = virtualSystemArray[i].getProductSectionAtIndex(0).getPropertyByKey("endpoint" + k);
 				if (productProperty == null) {
 					break;
 				} else {

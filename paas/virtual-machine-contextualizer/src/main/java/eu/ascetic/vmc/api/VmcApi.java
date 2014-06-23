@@ -69,8 +69,7 @@ public class VmcApi implements Api {
 				this, ovfDefinition);
 		Thread thread = new Thread(virtualMachineContextualizer);
 		
-		// FIXME: Should we be getting the serviceId from a property here, confirm with consortium? 
-		threads.put(ovfDefinition.getVirtualSystemArray(0).getProductSection().getPropertyByKey("serviceId").getValue(), thread);
+		threads.put(ovfDefinition.getVirtualSystemCollection().getId(), thread);
 		thread.start();
 	}
 
@@ -92,7 +91,7 @@ public class VmcApi implements Api {
 				this, ovfDefinition, imageFormat);
 		Thread thread = new Thread(virtualMachineContextualizer);
 		// FIXME: Should we be getting the serviceId from a property here, confirm with consortium? 
-		threads.put(ovfDefinition.getVirtualSystemArray(0).getProductSection().getPropertyByKey("serviceId").getValue(), thread);
+		threads.put(ovfDefinition.getVirtualSystemCollection().getId(), thread);
 		thread.start();
 	}
 

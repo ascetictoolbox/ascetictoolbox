@@ -343,7 +343,7 @@ public class IsoImageCreation {
 	 */
 	private void refactorFiles(boolean addRecontextScripts) {
 		LOGGER.debug("addRecontextFiles : " + addRecontextFiles);
-		// FIXME changes this to the an ISO structure version number
+		// FIXME: Change this to an ISO structure version number
 		if (addRecontextFiles) {
 			LOGGER.debug("Performing ISO recontextualization changes...");
 
