@@ -12,7 +12,7 @@
     </appender>
 
     <appender name="default.file" class="org.apache.log4j.FileAppender">
-        <param name="file" value="iaas/vm-manager/vmmanagercore/src/main/resources/log/vmmanager.log" />
+        <param name="file" value="log/vmmanager.log" />
         <param name="append" value="true" />
         <param name="threshold" value="debug" />
         <layout class="org.apache.log4j.PatternLayout">

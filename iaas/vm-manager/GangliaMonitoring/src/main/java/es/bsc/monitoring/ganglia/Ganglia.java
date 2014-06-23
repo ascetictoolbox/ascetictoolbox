@@ -1,17 +1,19 @@
 package es.bsc.monitoring.ganglia;
 
 import es.bsc.monitoring.exceptions.MonitoringException;
-import static es.bsc.monitoring.ganglia.configuration.GangliaMetKeys.QUERY_SUMMARY;
 import es.bsc.monitoring.ganglia.infrastructure.Cluster;
 import es.bsc.monitoring.ganglia.infrastructure.ClusterSummary;
 import es.bsc.monitoring.ganglia.infrastructure.Host;
 import es.bsc.monitoring.ganglia.parsing.ParseGanglia;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static es.bsc.monitoring.ganglia.configuration.GangliaMetKeys.QUERY_SUMMARY;
 
 /**
  * Class that returns metrics from Ganglia

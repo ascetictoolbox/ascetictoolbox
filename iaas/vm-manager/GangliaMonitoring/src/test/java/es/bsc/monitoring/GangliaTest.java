@@ -4,12 +4,12 @@ import es.bsc.monitoring.ganglia.Ganglia;
 import es.bsc.monitoring.ganglia.infrastructure.Cluster;
 import es.bsc.monitoring.ganglia.infrastructure.ClusterSummary;
 import es.bsc.monitoring.ganglia.infrastructure.Host;
+import junit.framework.Assert;
+import org.junit.Test;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import junit.framework.Assert;
-
-import org.junit.Test;
 
 /**
  *

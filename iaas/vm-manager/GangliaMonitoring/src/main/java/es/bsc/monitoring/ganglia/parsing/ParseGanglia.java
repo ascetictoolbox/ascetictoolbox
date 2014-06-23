@@ -5,17 +5,14 @@ import es.bsc.monitoring.ganglia.configuration.GangliaSummaryXMLParser;
 import es.bsc.monitoring.ganglia.configuration.GangliaXMLParser;
 import es.bsc.monitoring.ganglia.infrastructure.Cluster;
 import es.bsc.monitoring.ganglia.infrastructure.ClusterSummary;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.StringReader;
-import java.net.Socket;
-import java.util.List;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
+import java.io.*;
+import java.net.Socket;
+import java.util.List;
 
 /**
  *

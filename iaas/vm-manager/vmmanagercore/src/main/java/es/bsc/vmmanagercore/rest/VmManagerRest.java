@@ -3,12 +3,11 @@ package es.bsc.vmmanagercore.rest;
 import com.google.gson.*;
 import es.bsc.vmmanagercore.manager.VmManager;
 import es.bsc.vmmanagercore.model.*;
-import org.apache.commons.io.IOUtils;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.io.InputStream;
-import java.io.StringWriter;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -299,19 +298,23 @@ public class VmManagerRest {
     @Path("/logs")
     @Produces(MediaType.TEXT_PLAIN)
     public String getLogs() {
+        // Read the logs file and return its content.
+        // If for some reason the logs cannot be read, return an empty string
         String logs;
-        InputStream inputStream;
         try {
-            inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("log/vmmanager.log");
-            StringWriter writer = new StringWriter();
-            IOUtils.copy(inputStream, writer);
-            logs = writer.toString();
-            inputStream.close();
+            BufferedReader br = new BufferedReader(new FileReader("log/vmmanager.log"));
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+            while (line != null) {
+                sb.append(line);
+                sb.append(System.lineSeparator());
+                line = br.readLine();
+            }
+            logs = sb.toString();
         } catch (Exception e) {
             return "";
         }
         return logs;
-
     }
 
 }

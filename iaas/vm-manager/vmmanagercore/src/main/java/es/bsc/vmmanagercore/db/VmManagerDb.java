@@ -61,7 +61,7 @@ public interface VmManagerDb {
      * Returns the IDs of the VMs that belong to an application.
      *
      * @param appId the ID of the application
-     * @return
+     * @return the IDs of the VMs that belong to the application
      */
     public ArrayList<String> getVmsOfApp(String appId);
 

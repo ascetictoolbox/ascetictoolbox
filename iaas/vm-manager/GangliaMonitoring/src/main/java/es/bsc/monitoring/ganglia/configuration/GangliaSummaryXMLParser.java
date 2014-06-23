@@ -2,10 +2,13 @@
 package es.bsc.monitoring.ganglia.configuration;
 
 
-import es.bsc.monitoring.ganglia.infrastructure.*;
+import es.bsc.monitoring.ganglia.infrastructure.ClusterSummary;
+import es.bsc.monitoring.ganglia.infrastructure.HostsSummary;
+import es.bsc.monitoring.ganglia.infrastructure.Metric;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
