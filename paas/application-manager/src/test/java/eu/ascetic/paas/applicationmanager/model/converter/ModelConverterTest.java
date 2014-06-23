@@ -97,7 +97,7 @@ public class ModelConverterTest {
 		application.setDeploymentPlanId("deployment");
 		application.setHref("href");
 		application.setId(1);
-		application.setState("RUNNING");
+		application.setStatus("RUNNING");
 		
 		Items items = new Items();
 		items.setOffset(1);
@@ -210,7 +210,7 @@ public class ModelConverterTest {
 		application.setDeploymentPlanId("deployment");
 		application.setHref("href");
 		application.setId(1);
-		application.setState("RUNNING");
+		application.setStatus("RUNNING");
 		
 		Link link = new Link();
 		link.setRel("self");
@@ -246,7 +246,7 @@ public class ModelConverterTest {
 		element = (Element) listxpathName.get(0);
 		assertEquals("deployment", element.getValue());
 		
-		xpathName = XPath.newInstance("//bnf:state");
+		xpathName = XPath.newInstance("//bnf:status");
 		xpathName.addNamespace("bnf", APPLICATION_MANAGER_NAMESPACE);
 		listxpathName = xpathName.selectNodes(xmldoc);
 		assertEquals(1, listxpathName.size());
@@ -277,7 +277,7 @@ public class ModelConverterTest {
 		String applicationXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 								+ "<application xmlns=\"http://application_manager.ascetic.eu/doc/schemas/xml\" href=\"/101\">"
 									+ "<id>101</id>"
-									+ "<state>STATE1</state>"
+									+ "<status>STATE1</status>"
 									+ "<deployment-plan-id>d1</deployment-plan-id>"
 									+ "<link rel=\"parent\" href=\"/\" type=\"application/xml\" />"
 									+ "<link rel=\"self\" href=\"/101\" type=\"application/xml\" />"
@@ -286,7 +286,7 @@ public class ModelConverterTest {
 		Application application = ModelConverter.xmlApplicationToObject(applicationXML);
 		assertEquals("/101", application.getHref());
 		assertEquals(101, application.getId());
-		assertEquals("STATE1", application.getState());
+		assertEquals("STATE1", application.getStatus());
 		assertEquals("d1", application.getDeploymentPlanId());
 		assertEquals(2, application.getLinks().size());
 		assertEquals("parent", application.getLinks().get(0).getRel());

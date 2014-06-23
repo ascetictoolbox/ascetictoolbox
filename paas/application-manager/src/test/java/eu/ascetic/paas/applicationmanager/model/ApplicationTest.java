@@ -23,9 +23,9 @@ public class ApplicationTest {
 		application.setId(1);
 		List<Link> links = new ArrayList<Link>();
 		application.setLinks(links);
-		application.setState(Dictionary.APPLICATION_STATUS_DEPLOYED);
+		application.setStatus(Dictionary.APPLICATION_STATUS_DEPLOYED);
 		
-		assertEquals(Dictionary.APPLICATION_STATUS_DEPLOYED, application.getState());
+		assertEquals(Dictionary.APPLICATION_STATUS_DEPLOYED, application.getStatus());
 		assertEquals(links, application.getLinks());
 		assertEquals(1, application.getId());
 		assertEquals("href", application.getHref());
