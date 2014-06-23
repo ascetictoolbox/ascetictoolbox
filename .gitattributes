@@ -166,6 +166,7 @@ iaas/vm-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/Sched
 iaas/vm-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/SchedAlgDistributionTest.java -text
 iaas/vm-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/SchedAlgGroupByAppTest.java -text
 iaas/vm-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/SchedAlgRandomTest.java -text
+iaas/vm-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/SchedulerTest.java -text
 paas/application-manager/pom.xml -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/Dictionary.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/model/Application.java -text
