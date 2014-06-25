@@ -86,6 +86,9 @@ public class ZabbixClient {
 			log.error("Could not connect to the Zabbix Server at : " 
 					+ Configuration.zabbixUrl + ". Exception: " 
 					+ e.getMessage() + "\n"); 
+			System.out.println("Could not connect to the Zabbix Server at : " 
+					+ Configuration.zabbixUrl + ". Exception: " 
+					+ e.getMessage() + "\n");
 		}
 		return auth;
 	}
