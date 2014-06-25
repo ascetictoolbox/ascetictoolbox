@@ -15,9 +15,12 @@ public class Configuration {
 	private static Logger logger = Logger.getLogger(Configuration.class);
 	
 	/** The zabbix user. */
-	public static String zabbixUser = "Admin";
-	public static String zabbixPassword = "zabbix";
-	public static String zabbixUrl = "http://172.24.76.124/zabbix/api_jsonrpc.php";
+//	public static String zabbixUser = "Admin";
+	public static String zabbixUser = "admin";
+//	public static String zabbixPassword = "zabbix";
+	public static String zabbixPassword = "73046447cce977b10167";
+//	public static String zabbixUrl = "http://172.24.76.124/zabbix/api_jsonrpc.php";
+	public static String zabbixUrl = "https://130.149.248.169/zabbix/api_jsonrpc.php";
 	
 	private static final String zabbixConfigurationFile = "ascetic-zabbix-api.properties";
 	
