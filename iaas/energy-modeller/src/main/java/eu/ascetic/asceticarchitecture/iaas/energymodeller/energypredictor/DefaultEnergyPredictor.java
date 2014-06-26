@@ -15,12 +15,29 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor;
 
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
+import java.util.Collection;
+
 /**
  * This implements the default behaviour for an energy predictor. 
  * It is expected that any energy predictor loaded into the ASCETiC architecture, 
  * will override this class.
  * @author Richard
  */
-public class DefaultEnergyPredictor extends EnergyPredictorInterface {
+public class DefaultEnergyPredictor implements EnergyPredictorInterface {
+
+    @Override
+    public EnergyUsagePrediction getHostPredictedEnergy(Collection<VM> virtualMachines, Host host) {
+        EnergyUsagePrediction answer = new EnergyUsagePrediction(host);
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public EnergyUsagePrediction getVMPredictedEnergy(VM vm, Collection<VM> virtualMachines, Host host) {
+        EnergyUsagePrediction answer = new EnergyUsagePrediction(vm);
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

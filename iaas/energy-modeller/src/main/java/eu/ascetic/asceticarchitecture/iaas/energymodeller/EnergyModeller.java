@@ -21,10 +21,11 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.TimePer
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.CandidateVMHostMapping;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.input.VMProjectedWorkload;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HistoricUsageRecord;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.logging.Level;
@@ -52,6 +53,8 @@ public class EnergyModeller {
     }
     private static final String DEFAULT_PREDICTOR_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor";
     EnergyPredictorInterface predictor = new DefaultEnergyPredictor();
+    HashSet<Host> hostList = new HashSet<>();
+    HashSet<VmDeployed> vmDeployedList = new HashSet<>();
 
     /**
      * This allows the energy predictor to be set
@@ -83,7 +86,7 @@ public class EnergyModeller {
     }
 
     /**
-     * This provides for a collection of VMs the amount of energy that has 
+     * This provides for a collection of VMs the amount of energy that has
      * historically been used.
      *
      * @param vms The set of virtual machines.
@@ -98,14 +101,14 @@ public class EnergyModeller {
      * Historic Values: Avg Watts over time Avg Current (useful??) Avg Voltage
      * (useful??) kWh of energy used since instantiation
      */
-    public HashSet<HistoricUsageRecord> getEnergyRecordForVM(Collection<VM> vms, TimePeriod timePeriod) {
+    public HashSet<HistoricUsageRecord> getEnergyRecordForVM(Collection<VmDeployed> vms, TimePeriod timePeriod) {
         HashSet<HistoricUsageRecord> answer = new HashSet<>();
-        for (VM vm : vms) {
+        for (VmDeployed vm : vms) {
             answer.add(getEnergyRecordForVM(vm, timePeriod));
         }
         return answer;
-    }    
-    
+    }
+
     /**
      * This provides for a collection of VMs the amount of energy currently in
      * use.
@@ -119,11 +122,11 @@ public class EnergyModeller {
      * been used by an SLA.
      *
      * Current Values: Watts, current and voltage
-     * 
+     *
      */
-    public HashSet<CurrentUsageRecord> getCurrentEnergyForVM(Collection<VM> vms) {
+    public HashSet<CurrentUsageRecord> getCurrentEnergyForVM(Collection<VmDeployed> vms) {
         HashSet<CurrentUsageRecord> answer = new HashSet<>();
-        for (VM vm : vms) {
+        for (VmDeployed vm : vms) {
             answer.add(getCurrentEnergyForVM(vm));
         }
         return answer;
@@ -151,7 +154,7 @@ public class EnergyModeller {
         }
         return answer;
     }
-    
+
     /**
      * This provides for a collection of physical machines the amount of energy
      * currently in use.
@@ -170,7 +173,7 @@ public class EnergyModeller {
             answer.add(getCurrentEnergyForHost(host));
         }
         return answer;
-    }    
+    }
 
     /**
      * This returns the energy usage for a named virtual machine.
@@ -179,9 +182,9 @@ public class EnergyModeller {
      * @return
      *
      * Current Values: Watts, current and voltage
-     * 
+     *
      */
-    public CurrentUsageRecord getCurrentEnergyForVM(VM virtualMachine) {
+    public CurrentUsageRecord getCurrentEnergyForVM(VmDeployed virtualMachine) {
         CurrentUsageRecord answer = new CurrentUsageRecord(virtualMachine); //TODO Replace with method call
         return answer;
     }
@@ -196,7 +199,7 @@ public class EnergyModeller {
      * Historic Values: Avg Watts over time Avg Current (useful??) Avg Voltage
      * (useful??) kWh of energy used since instantiation
      */
-    public HistoricUsageRecord getEnergyRecordForVM(VM virtualMachine, TimePeriod timePeriod) {
+    public HistoricUsageRecord getEnergyRecordForVM(VmDeployed virtualMachine, TimePeriod timePeriod) {
         HistoricUsageRecord answer = new HistoricUsageRecord(virtualMachine); //TODO Replace with method call
         answer.setDuration(timePeriod);
         return answer;
@@ -239,7 +242,6 @@ public class EnergyModeller {
      * tested all at once.
      *
      * @param vmImage A reference to the VM image to be deployed
-     * @param workload A description of the workload
      * @param hosts The set of machines to provide energy estimates for
      * @return
      *
@@ -247,11 +249,10 @@ public class EnergyModeller {
      * used (kWh) during life of VM
      *
      */
-    public HashSet<EnergyUsagePrediction> getPredictedEnergyForVM(VM vmImage, VMProjectedWorkload workload, Collection<Host> hosts) {
+    public HashSet<EnergyUsagePrediction> getPredictedEnergyForVM(VM vmImage, Collection<Host> hosts) {
         HashSet<EnergyUsagePrediction> answer = new HashSet<>();
-
         for (Host host : hosts) {
-            answer.add(getPredictedEnergyForVM(vmImage, workload, host));
+            answer.add(getPredictedEnergyForVM(vmImage, host));
         }
         return answer;
     }
@@ -261,14 +262,13 @@ public class EnergyModeller {
      * of a VM.
      *
      * @param vmImage A reference to the VM image to be deployed
-     * @param workload A description of the workload
      * @param host The machine to provide an energy estimate for
      * @return
      *
      * Avg Watts that is expected to use over time by the VM Predicted energy
      * used (kWh) during life of VM
      */
-    public EnergyUsagePrediction getPredictedEnergyForVM(VM vmImage, VMProjectedWorkload workload, Host host) {
+    public EnergyUsagePrediction getPredictedEnergyForVM(VM vmImage, Host host) {
         return new EnergyUsagePrediction(new CandidateVMHostMapping(vmImage, host));
     }
 
@@ -278,13 +278,12 @@ public class EnergyModeller {
      *
      * @param virtualMachine A reference to the VM, that future energy usage is
      * to be predicted for.
-     * @param workload The workload for the VM
      * @return
      *
      * Avg Watts that is expected to use over time by the VM Predicted energy
      * used (kWh) during life of VM
      */
-    public EnergyUsagePrediction getPredictedEnergyForVM(VM virtualMachine, VMProjectedWorkload workload) {
+    public EnergyUsagePrediction getPredictedEnergyForVM(VM virtualMachine) {
         return new EnergyUsagePrediction(virtualMachine);
     }
 
@@ -294,34 +293,76 @@ public class EnergyModeller {
      *
      * @param virtualMachines A reference to the VMs, that future energy usage
      * is to be predicted for.
-     * @param workload The workload for the VMs
      * @return
      *
      * Avg Watts that is expected to use over time by the VM Predicted energy
      * used (kWh) during life of VM
      */
-    public HashSet<EnergyUsagePrediction> getPredictedEnergyForVM(Collection<VM> virtualMachines, Collection<VMProjectedWorkload> workload) {
+    public HashSet<EnergyUsagePrediction> getPredictedEnergyForVM(Collection<VM> virtualMachines) {
         HashSet<EnergyUsagePrediction> answer = new HashSet<>();
         for (VM vmImage : virtualMachines) {
-            for (VMProjectedWorkload vMWorkloadProfile : workload) {
-                answer.add(getPredictedEnergyForVM(vmImage, vMWorkloadProfile));
-            }
+            answer.add(getPredictedEnergyForVM(vmImage));
+        }
+        return answer;
+    }
+
+    //Use a program called stress, benchmarking tool to test this
+    /**
+     * This takes a set of hostname names and provides the object representation
+     * of this host.
+     *
+     * @param hostname The hostname
+     * @return
+     */
+    public Collection<Host> getHost(Collection<String> hostname) {
+        Collection<Host> answer = new ArrayList<>();
+        for (String string : hostname) {
+            answer.add(getHost(string));
         }
         return answer;
     }
 
     /**
-     * This method is not considered part of the scope of 1st Year work. The
-     * workload would be difficult to describe and has no forseen usage.
+     * This takes a host name and provides the object representation of this
+     * host.
      *
-     * @param host The physical machine to predict future energy usage for
-     * @param workload The workload for the VMs
+     * @param hostname
      * @return
-     * @deprecated Not needed as the workload is hard to describe! Such
-     * functionality would be difficult to implement and the outcome would not
-     * be clear regarding its value.
      */
-    public EnergyUsagePrediction getPredictedEnergyForMachine(Host host, Collection<VMProjectedWorkload> workload) {
+    public Host getHost(String hostname) {
+        for (Host host : hostList) {
+            if (host.getHostName().equals(hostname)) {
+                return host;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * This creates a VM object in cases where the VM has yet to be
+     * instantiated.
+     *
+     * @param cpuCount
+     * @param ramMb
+     * @param diskGb
+     * @return
+     */
+    public static VM getVM(int cpuCount, int ramMb, int diskGb) {
+        return new VM(cpuCount, ramMb, diskGb);
+    }
+
+    /**
+     * This given a name of a VM provides the object representation of it
+     *
+     * @param name The name of the VM
+     * @return
+     */
+    public VmDeployed getVM(String name) {
+        for (VmDeployed vm : vmDeployedList) {
+            if (vm.getName().equals(name)) {
+                return vm;
+            }
+        }
         return null;
     }
 }

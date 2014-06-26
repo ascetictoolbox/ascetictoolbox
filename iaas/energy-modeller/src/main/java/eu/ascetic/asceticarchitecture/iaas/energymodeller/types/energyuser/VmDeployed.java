@@ -30,6 +30,7 @@ import java.util.Calendar;
 public class VmDeployed extends VM {
 
     private String id;
+    private String name;
     private String ipAddress;
     private Host allocatedTo;
     private String state;
@@ -38,7 +39,6 @@ public class VmDeployed extends VM {
     /**
      *
      * @param name
-     * @param image
      * @param cpus
      * @param ramMb
      * @param diskGb
@@ -47,10 +47,11 @@ public class VmDeployed extends VM {
      * @param state
      * @param created
      */
-    public VmDeployed(String name, String image, int cpus, int ramMb,
+    public VmDeployed(String name, int cpus, int ramMb,
             int diskGb, String initScript, String applicationId, String id,
             String ipAddress, String state, Calendar created, Host allocatedTo) {
-        super(name, image, cpus, ramMb, diskGb);
+        super(cpus, ramMb, diskGb);
+        this.name = name;
         this.id = id;
         this.ipAddress = ipAddress;
         this.state = state;
@@ -59,16 +60,17 @@ public class VmDeployed extends VM {
     }
 
     /**
-     * This takes a previously uninstantiated VM and adds the additional 
+     * This takes a previously uninstantiated VM and adds the additional
      * information to represent the newly created VM.
+     *
      * @param vm
      * @param id
      * @param ipAddress
      * @param state
      * @param created
-     * @param allocatedTo 
+     * @param allocatedTo
      */
-    public VmDeployed(VM vm, String id, String ipAddress, String state, 
+    public VmDeployed(VM vm, String id, String ipAddress, String state,
             Calendar created, Host allocatedTo) {
         super(vm);
         this.id = id;
@@ -84,6 +86,14 @@ public class VmDeployed extends VM {
      */
     public String getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**

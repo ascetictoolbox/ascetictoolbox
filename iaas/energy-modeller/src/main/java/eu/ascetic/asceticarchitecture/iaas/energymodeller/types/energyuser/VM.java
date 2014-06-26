@@ -28,8 +28,6 @@ import javax.json.JsonObject;
  */
 public class VM extends EnergyUsageSource {
 
-    private String name;
-    private String image; // It can be an ID or a URL
     private int cpus;
     private int ramMb;
     private int diskGb;
@@ -43,15 +41,11 @@ public class VM extends EnergyUsageSource {
     /**
      * This creates a VM that represents a energy usage source.
      *
-     * @param name The name of the instance.
-     * @param image The ID of the image or a URL containing it.
      * @param cpus The number of CPUs.
      * @param ramMb The amount of RAM in MB.
      * @param diskGb The size of the disk in GB.
      */
-    public VM(String name, String image, int cpus, int ramMb, int diskGb) {
-        this.name = name;
-        this.image = image;
+    public VM(int cpus, int ramMb, int diskGb) {
         this.cpus = cpus;
         this.ramMb = ramMb;
         this.diskGb = diskGb;
@@ -62,8 +56,6 @@ public class VM extends EnergyUsageSource {
      * @param vm T
      */
     public VM(VM vm) {
-        this.name = vm.name;
-        this.image = vm.image;
         this.cpus = vm.cpus;
         this.ramMb = vm.ramMb;
         this.diskGb = vm.diskGb;        
@@ -76,43 +68,9 @@ public class VM extends EnergyUsageSource {
      * @param json 
      */
     public VM(JsonObject json) {
-        this.name = json.getJsonString("name").getString();
-        this.image = json.getJsonString("image").getString();
         this.cpus = json.getJsonNumber("cpus").intValue();
         this.ramMb = json.getJsonNumber("ramMb").intValue();
         this.diskGb = json.getJsonNumber("diskGb").intValue();
-    }
-
-    /**
-     * 
-     * @return 
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * 
-     * @param name 
-     */
-    public void setInstanceName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * 
-     * @return 
-     */
-    public String getImage() {
-        return image;
-    }
-
-    /**
-     * 
-     * @param image 
-     */
-    public void setImage(String image) {
-        this.image = image;
     }
 
     /**
