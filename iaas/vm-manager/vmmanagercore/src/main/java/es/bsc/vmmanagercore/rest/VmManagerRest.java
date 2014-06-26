@@ -256,6 +256,9 @@ public class VmManagerRest {
         else if (algorithm.equals(SchedulingAlgorithm.DISTRIBUTION.getAlgorithm())) {
             schedulingAlg = SchedulingAlgorithm.DISTRIBUTION;
         }
+        else if (algorithm.equals(SchedulingAlgorithm.ENERGY_AWARE.getAlgorithm())) {
+            schedulingAlg = SchedulingAlgorithm.ENERGY_AWARE;
+        }
         else if (algorithm.equals(SchedulingAlgorithm.GROUP_BY_APP.getAlgorithm())) {
             schedulingAlg = SchedulingAlgorithm.GROUP_BY_APP;
         }

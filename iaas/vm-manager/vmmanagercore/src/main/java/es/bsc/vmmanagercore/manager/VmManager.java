@@ -217,34 +217,34 @@ public class VmManager {
     private void selectMonitoring(VmManagerConfiguration.Monitoring monitoring, String[] hosts) {
         hostsInfo = new ArrayList<>();
         switch (monitoring) {
-        case GANGLIA:
-            for (String hostname: hosts) {
-                hostsInfo.add(new HostInfoGanglia(hostname));
-            }
-            break;
-        case OPENSTACK:
-            for (String hostname: hosts) {
-                hostsInfo.add(new HostInfoOpenStack(hostname, (JCloudsMiddleware) cloudMiddleware));
-            }
-            break;
-        case ZABBIX:
-            for (String hostname: hosts) {
-                hostsInfo.add(new HostInfoZabbix(hostname));
-            }
-        default:
-            //TODO - invalid
-            break;
+            case GANGLIA:
+                for (String hostname: hosts) {
+                    hostsInfo.add(new HostInfoGanglia(hostname));
+                }
+                break;
+            case OPENSTACK:
+                for (String hostname: hosts) {
+                    hostsInfo.add(new HostInfoOpenStack(hostname, (JCloudsMiddleware) cloudMiddleware));
+                }
+                break;
+            case ZABBIX:
+                for (String hostname: hosts) {
+                    hostsInfo.add(new HostInfoZabbix(hostname));
+                }
+            default:
+                //TODO - invalid
+                break;
         }
     }
 
     private void selectMiddleware(VmManagerConfiguration.Middleware middleware) {
         switch (middleware) {
-        case OPENSTACK:
-            cloudMiddleware = new JCloudsMiddleware(db);
-            break;
-        default:
-            //TODO - invalid
-            break;
+            case OPENSTACK:
+                cloudMiddleware = new JCloudsMiddleware(db);
+                break;
+            default:
+                //TODO - invalid
+                break;
         }
     }
 

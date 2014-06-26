@@ -122,6 +122,7 @@ iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/cloudmiddleware
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/cloudmiddleware/OpenStackGlance.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/db/VmManagerDb.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/db/VmManagerDbHsql.java -text
+iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/integration/VMMToEMConversor.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/manager/VmManager.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/manager/VmManagerConfiguration.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/ImageToUpload.java -text

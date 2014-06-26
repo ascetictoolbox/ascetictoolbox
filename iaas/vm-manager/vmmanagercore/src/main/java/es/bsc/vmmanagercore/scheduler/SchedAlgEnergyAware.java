@@ -57,7 +57,6 @@ public class SchedAlgEnergyAware implements SchedAlgorithm {
                 minimumAvgPower = predictedAvgPower;
             }
         }
-        System.out.println(bestHost + " " + minimumAvgPower);
         return bestHost;
     }
 
