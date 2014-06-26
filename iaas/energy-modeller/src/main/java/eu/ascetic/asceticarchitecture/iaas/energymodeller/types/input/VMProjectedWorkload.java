@@ -28,6 +28,10 @@ public class VMProjectedWorkload {
     private VM vm;
     private TreeSet<VMProjectedWorkloadElement> workload = new TreeSet<>();
 
+    /**
+     * This creates an instance of a projected workload for a given VM
+     * @param vm The VM to create the projected workload for
+     */
     public VMProjectedWorkload(VM vm) {
         this.vm = vm;
     }
@@ -40,18 +44,38 @@ public class VMProjectedWorkload {
         return vm;
     }
     
+    /**
+     * This adds a workload element to the overall workload
+     * @param element a part of the workload.
+     * @return 
+     */
     public boolean add(VMProjectedWorkloadElement element) {
         return workload.add(element);
     }
     
+    /**
+     * This adds a collection of workload elements to the overall workload
+     * @param collection
+     * @return 
+     */
     public boolean addAll(Collection<VMProjectedWorkloadElement> collection) {
         return workload.addAll(collection);
     }
     
+    /**
+     * This removes a workload element to the overall workload
+     * @param element
+     * @return 
+     */
     public boolean remove(VMProjectedWorkloadElement element) {
         return workload.remove(element);
     } 
     
+    /**
+     * This removes a collection of workload elements from the overall workload
+     * @param collection
+     * @return 
+     */
     public boolean removeAll(Collection<VMProjectedWorkloadElement> collection) {
         return workload.removeAll(collection);
     }    
