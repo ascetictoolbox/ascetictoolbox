@@ -13,14 +13,14 @@ import eu.ascetic.monitoring.api.datamodel.Item;
 /**
  * The Class ZabbixApiClient.
  */
-public class ZabbixApiClientTest {	
-	
+public class ZabbixApiClientTest {
+
 	/**
 	 * The main method.
 	 *
 	 * @param args the arguments
 	 */
-	public static void main(String[] args) {		
+	public static void main(String[] args) {
 			ZabbixClient client = new ZabbixClient();
 			insertSeparator("getAllHosts");
 			testGetAllHosts(client);
@@ -28,8 +28,8 @@ public class ZabbixApiClientTest {
 			testItemsFromHost(client);
 			
 	}
-	
-	
+
+
 	public static void insertSeparator(String message){
 		System.out.println("********************************************************");
 		System.out.println("********************************************************");
@@ -37,7 +37,7 @@ public class ZabbixApiClientTest {
 		System.out.println("********************************************************");
 		System.out.println("********************************************************");
 	}
-	
+
 	public static void testItemsFromHost(ZabbixClient client){
 		String hostname = "asok10.cit.tu-berlin.de";
 		List<Item> itemsList = client.getItemsFromHost(hostname);
@@ -60,8 +60,8 @@ public class ZabbixApiClientTest {
 			System.out.println("No items available for host " + hostname);
 		}
 	}
-	
-	
+
+
 	public static void testGetAllHosts(ZabbixClient client){
 		List<Host> hostsList = client.getAllHosts();
 		int index = 0;
@@ -78,11 +78,11 @@ public class ZabbixApiClientTest {
 		else {
 			System.out.println("No hosts available in system");
 		}
-		
+
 		
 	}
-	
 
-	
+
+
 
 }
