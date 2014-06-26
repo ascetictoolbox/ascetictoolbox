@@ -35,7 +35,7 @@ public class Scheduler {
                 schedAlgorithm = new SchedAlgDistribution();
                 break;
             case ENERGY_AWARE:
-                schedAlgorithm = new SchedAlgEnergyAware();
+                schedAlgorithm = new SchedAlgEnergyAware(vmsDeployed);
                 break;
             case GROUP_BY_APP:
                 schedAlgorithm = new SchedAlgGroupByApp(vmsDeployed);
