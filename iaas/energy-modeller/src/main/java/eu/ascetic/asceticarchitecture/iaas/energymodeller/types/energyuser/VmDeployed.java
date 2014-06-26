@@ -48,7 +48,7 @@ public class VmDeployed extends VM {
      * @param created
      */
     public VmDeployed(String name, int cpus, int ramMb,
-            int diskGb, String initScript, String applicationId, String id,
+            int diskGb, String id,
             String ipAddress, String state, Calendar created, Host allocatedTo) {
         super(cpus, ramMb, diskGb);
         this.name = name;

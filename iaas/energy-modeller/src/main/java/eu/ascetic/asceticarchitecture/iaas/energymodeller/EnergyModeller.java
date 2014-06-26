@@ -26,6 +26,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsag
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HistoricUsageRecord;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -291,7 +292,12 @@ public class EnergyModeller {
                 return host;
             }
         }
-        return null;
+        //TODO Remove this dummy code
+        Host answer = new Host(0, hostname);
+        hostList.add(answer);
+        return answer;
+        //END OF DUMMY CODE
+//        return null;
     }
 
     /**
@@ -319,6 +325,11 @@ public class EnergyModeller {
                 return vm;
             }
         }
-        return null;
+        //TODO Remove this dummy code
+        VmDeployed answer = new VmDeployed(name, 1, 1024, 50, name, "127.0.0.1", "working", new GregorianCalendar(), null);
+        vmDeployedList.add(answer);
+        return answer;        
+        //END OF DUMMY CODE
+//        return null;
     }
 }
