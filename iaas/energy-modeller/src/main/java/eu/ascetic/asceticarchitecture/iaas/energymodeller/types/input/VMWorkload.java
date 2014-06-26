@@ -16,7 +16,7 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.input;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.TimePeriod;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 
 /**
  * This class represents a record of a workload for a virtual machine 
@@ -32,7 +32,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 public class VMWorkload {
     
     private TimePeriod duration;
-    private VM virtualMachine;
+    private VmDeployed virtualMachine;
     /**
      * TODO The exact type of these values may need refining.
      */
@@ -58,14 +58,14 @@ public class VMWorkload {
     /**
      * @return the virtualMachine
      */
-    public VM getVirtualMachine() {
+    public VmDeployed getVirtualMachine() {
         return virtualMachine;
     }
 
     /**
      * @param virtualMachine the virtualMachine to set
      */
-    public void setVirtualMachine(VM virtualMachine) {
+    public void setVirtualMachine(VmDeployed virtualMachine) {
         this.virtualMachine = virtualMachine;
     }
 

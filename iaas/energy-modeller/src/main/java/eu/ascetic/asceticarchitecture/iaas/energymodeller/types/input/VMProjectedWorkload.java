@@ -20,7 +20,7 @@ import java.util.*;
 
 /**
  * This represents a projected workload on a VM.  
- *
+ * @deprecated Not needed in the 1st year. 100% Load only should be considered.
  * @author Richard Kavanagh
  */
 public class VMProjectedWorkload {

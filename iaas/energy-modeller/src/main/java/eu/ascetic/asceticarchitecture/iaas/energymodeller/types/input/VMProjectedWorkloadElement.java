@@ -21,6 +21,7 @@ import java.util.Calendar;
 /**
  * This class represents an estimated workload for a virtual machine that is due
  * to be executed.
+ * @deprecated Not needed in the 1st year. 100% Load only should be considered.
  *
  * @author Richard
  */
