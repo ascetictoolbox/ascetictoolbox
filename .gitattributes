@@ -142,6 +142,7 @@ iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/rest/VmManagerR
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/scheduler/HostFilter.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/scheduler/SchedAlgConsolidation.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/scheduler/SchedAlgDistribution.java -text
+iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/scheduler/SchedAlgEnergyAware.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/scheduler/SchedAlgGroupByApp.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/scheduler/SchedAlgRandom.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/scheduler/SchedAlgorithm.java -text

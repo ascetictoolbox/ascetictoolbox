@@ -19,9 +19,6 @@ public class HostInfoZabbix extends HostInfo {
     public HostInfoZabbix(String hostname) {
         super(hostname);
         hostItems = zabbixClient.getItemsFromHost(hostname);
-        for (Item host: hostItems) {
-            System.out.println(host.getName());
-        }
     }
 
 }

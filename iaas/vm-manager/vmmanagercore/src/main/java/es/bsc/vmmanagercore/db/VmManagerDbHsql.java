@@ -34,6 +34,7 @@ public class VmManagerDbHsql implements VmManagerDb {
         // Add the available scheduling algorithms
         availableSchedAlg.add(SchedulingAlgorithm.CONSOLIDATION);
         availableSchedAlg.add(SchedulingAlgorithm.DISTRIBUTION);
+        availableSchedAlg.add(SchedulingAlgorithm.ENERGY_AWARE);
         availableSchedAlg.add(SchedulingAlgorithm.GROUP_BY_APP);
         availableSchedAlg.add(SchedulingAlgorithm.RANDOM);
 
@@ -219,6 +220,8 @@ public class VmManagerDbHsql implements VmManagerDb {
                 return SchedulingAlgorithm.CONSOLIDATION;
             case "distribution":
                 return SchedulingAlgorithm.DISTRIBUTION;
+            case "energyAware":
+                return SchedulingAlgorithm.ENERGY_AWARE;
             case "groupByApp":
                 return SchedulingAlgorithm.GROUP_BY_APP;
             case "random":
@@ -243,6 +246,9 @@ public class VmManagerDbHsql implements VmManagerDb {
                     break;
                 case "distribution":
                     result.add(SchedulingAlgorithm.DISTRIBUTION);
+                    break;
+                case "energyAware":
+                    result.add(SchedulingAlgorithm.ENERGY_AWARE);
                     break;
                 case "groupByApp":
                     result.add(SchedulingAlgorithm.GROUP_BY_APP);
