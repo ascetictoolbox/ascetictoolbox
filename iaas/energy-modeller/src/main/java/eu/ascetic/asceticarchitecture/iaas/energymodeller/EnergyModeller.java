@@ -18,6 +18,8 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.DefaultEnergyPredictor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.EnergyPredictorInterface;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.TimePeriod;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
@@ -27,6 +29,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HistoricUs
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,12 +52,31 @@ import java.util.logging.Logger;
  */
 public class EnergyModeller {
 
-    public EnergyModeller() {
-    }
     private static final String DEFAULT_PREDICTOR_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor";
     EnergyPredictorInterface predictor = new DefaultEnergyPredictor();
-    HashSet<Host> hostList = new HashSet<>();
+    HostDataSource datasource = new ZabbixDataSourceAdaptor();
+    HashMap<String, Host> hostList = new HashMap<>();
     HashSet<VmDeployed> vmDeployedList = new HashSet<>();
+
+    public EnergyModeller() {
+        try {
+            populateHostList();
+        } catch (Exception ex) {
+            Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The host list was not populated");
+        }
+    }
+
+    /**
+     * This populates the list of hosts that is known to the energy modeller.
+     */
+    private void populateHostList() {
+        Collection<Host> hosts = datasource.getHostList();
+        for (Host host : hosts) {
+            if (!hostList.containsKey(host.getHostName())) {
+                hostList.put(host.getHostName(), host);
+            }
+        }
+    }
 
     /**
      * This allows the energy predictor to be set
@@ -232,7 +254,7 @@ public class EnergyModeller {
      * Current Values for: Power (Watts), current and voltage
      */
     public CurrentUsageRecord getCurrentEnergyForHost(Host host) {
-        CurrentUsageRecord answer = new CurrentUsageRecord(host); //TODO Replace with method call
+        CurrentUsageRecord answer = datasource.getCurrentEnergyUsage(host);
         return answer;
     }
 
@@ -287,14 +309,17 @@ public class EnergyModeller {
      * @return
      */
     public Host getHost(String hostname) {
-        for (Host host : hostList) {
-            if (host.getHostName().equals(hostname)) {
-                return host;
+        if (hostList.containsKey(hostname)) {
+            return hostList.get(hostname);
+        } else {
+            populateHostList();
+            if (hostList.containsKey(hostname)) {
+                return hostList.get(hostname);
             }
         }
         //TODO Remove this dummy code
         Host answer = new Host(0, hostname);
-        hostList.add(answer);
+        hostList.put(hostname, answer);
         return answer;
         //END OF DUMMY CODE
 //        return null;
@@ -328,7 +353,7 @@ public class EnergyModeller {
         //TODO Remove this dummy code
         VmDeployed answer = new VmDeployed(name, 1, 1024, 50, name, "127.0.0.1", "working", new GregorianCalendar(), null);
         vmDeployedList.add(answer);
-        return answer;        
+        return answer;
         //END OF DUMMY CODE
 //        return null;
     }
