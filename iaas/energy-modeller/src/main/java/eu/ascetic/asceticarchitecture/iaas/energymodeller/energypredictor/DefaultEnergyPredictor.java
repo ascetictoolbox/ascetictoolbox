@@ -15,10 +15,13 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor;
 
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
 import java.util.Collection;
+import java.util.GregorianCalendar;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This implements the default behaviour for an energy predictor. 
@@ -32,6 +35,10 @@ public class DefaultEnergyPredictor implements EnergyPredictorInterface {
     public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines) {
         EnergyUsagePrediction answer = new EnergyUsagePrediction(host);
         //TODO add model code here
+        TimePeriod duration = new TimePeriod(new GregorianCalendar(), 1, TimeUnit.HOURS);
+        answer.setDuration(duration);
+        answer.setAvgPowerUsed(Math.random() * 20);
+        answer.setTotalEnergyUsed(Math.random() * 20);
         return answer;
     }
 
@@ -39,6 +46,10 @@ public class DefaultEnergyPredictor implements EnergyPredictorInterface {
     public EnergyUsagePrediction getVMPredictedEnergy(VM vm, Collection<VM> virtualMachines, Host host) {
         EnergyUsagePrediction answer = new EnergyUsagePrediction(vm);
         //TODO add model code here
+        TimePeriod duration = new TimePeriod(new GregorianCalendar(), 1, TimeUnit.HOURS);
+        answer.setDuration(duration);
+        answer.setAvgPowerUsed(Math.random() * 20);
+        answer.setTotalEnergyUsed(Math.random() * 20);
         return answer;
     }
     
