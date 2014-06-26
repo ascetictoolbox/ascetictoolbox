@@ -29,15 +29,17 @@ import java.util.Collection;
 public class DefaultEnergyPredictor implements EnergyPredictorInterface {
 
     @Override
-    public EnergyUsagePrediction getHostPredictedEnergy(Collection<VM> virtualMachines, Host host) {
+    public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines) {
         EnergyUsagePrediction answer = new EnergyUsagePrediction(host);
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //TODO add model code here
+        return answer;
     }
 
     @Override
     public EnergyUsagePrediction getVMPredictedEnergy(VM vm, Collection<VM> virtualMachines, Host host) {
         EnergyUsagePrediction answer = new EnergyUsagePrediction(vm);
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //TODO add model code here
+        return answer;
     }
     
 }

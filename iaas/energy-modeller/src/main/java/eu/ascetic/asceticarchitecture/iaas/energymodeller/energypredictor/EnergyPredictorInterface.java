@@ -29,11 +29,11 @@ public interface EnergyPredictorInterface {
     
     /**
      * This provides a prediction of how much energy is to be used by a host
-     * @param virtualMachines The virtual machines giving a workload on the host machine
      * @param host The host to get the energy prediction for
+     * @param virtualMachines The virtual machines giving a workload on the host machine
      * @return 
      */
-    public EnergyUsagePrediction getHostPredictedEnergy(Collection<VM> virtualMachines, Host host);
+    public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines);
     
     /**
      * 

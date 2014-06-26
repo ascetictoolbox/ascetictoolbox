@@ -18,7 +18,6 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.DefaultEnergyPredictor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.EnergyPredictorInterface;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.TimePeriod;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.CandidateVMHostMapping;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
@@ -238,72 +237,29 @@ public class EnergyModeller {
 
     /**
      * This provides the amount of energy predicted to be used by the placement
-     * of a VM. This allows for a set of possible placement positions to be
-     * tested all at once.
-     *
-     * @param vmImage A reference to the VM image to be deployed
-     * @param hosts The set of machines to provide energy estimates for
-     * @return
-     *
-     * Avg Watts that is expected to use over time by the VM Predicted energy
-     * used (kWh) during life of VM
-     *
-     */
-    public HashSet<EnergyUsagePrediction> getPredictedEnergyForVM(VM vmImage, Collection<Host> hosts) {
-        HashSet<EnergyUsagePrediction> answer = new HashSet<>();
-        for (Host host : hosts) {
-            answer.add(getPredictedEnergyForVM(vmImage, host));
-        }
-        return answer;
-    }
-
-    /**
-     * This provides the amount of energy predicted to be used by the placement
      * of a VM.
      *
-     * @param vmImage A reference to the VM image to be deployed
-     * @param host The machine to provide an energy estimate for
+     * @param vmImage The VM that is to be deployed
+     * @param vMsOnHost The VMs that are already on the host
+     * @param host The host on which the VM is to be placed
      * @return
      *
      * Avg Watts that is expected to use over time by the VM Predicted energy
      * used (kWh) during life of VM
      */
-    public EnergyUsagePrediction getPredictedEnergyForVM(VM vmImage, Host host) {
-        return new EnergyUsagePrediction(new CandidateVMHostMapping(vmImage, host));
+    public EnergyUsagePrediction getPredictedEnergyForVM(VM vmImage, Collection<VM> vMsOnHost, Host host) {
+        return predictor.getVMPredictedEnergy(vmImage, vMsOnHost, host);
     }
 
     /**
-     * This provides the amount of energy predicted to be used by a VM that has
-     * already been placed on the infrastructure.
+     * This provides the amount of energy predicted to be used by a given host.
      *
-     * @param virtualMachine A reference to the VM, that future energy usage is
-     * to be predicted for.
+     * @param host The host that the energy prediction is for
+     * @param virtualMachines The VMs that are on the host.
      * @return
-     *
-     * Avg Watts that is expected to use over time by the VM Predicted energy
-     * used (kWh) during life of VM
      */
-    public EnergyUsagePrediction getPredictedEnergyForVM(VM virtualMachine) {
-        return new EnergyUsagePrediction(virtualMachine);
-    }
-
-    /**
-     * This provides the amount of energy predicted to be used by a set of VMs
-     * (i.e. a whole SLA) that has already been placed on the infrastructure.
-     *
-     * @param virtualMachines A reference to the VMs, that future energy usage
-     * is to be predicted for.
-     * @return
-     *
-     * Avg Watts that is expected to use over time by the VM Predicted energy
-     * used (kWh) during life of VM
-     */
-    public HashSet<EnergyUsagePrediction> getPredictedEnergyForVM(Collection<VM> virtualMachines) {
-        HashSet<EnergyUsagePrediction> answer = new HashSet<>();
-        for (VM vmImage : virtualMachines) {
-            answer.add(getPredictedEnergyForVM(vmImage));
-        }
-        return answer;
+    public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines) {
+        return predictor.getHostPredictedEnergy(host, virtualMachines);
     }
 
     //Use a program called stress, benchmarking tool to test this
