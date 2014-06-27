@@ -55,11 +55,12 @@ public class JCloudsMiddleware implements CloudMiddleware {
     private VmManagerDb db; // DB that contains the relationship VM-application, the scheduling algorithms, etc.
 
     /**
-     * Class constructor.
+     * Class constructor. It performs the connection to the infrastructure and initializes
+     * JClouds attributes.
+     *
      * @param db Database used by the VM Manager
      */
     public JCloudsMiddleware(VmManagerDb db) {
-        // Connect to the infrastructure and initialize JClouds attributes
         VmManagerConfiguration conf = VmManagerConfiguration.getInstance();
         novaApi = ContextBuilder.newBuilder(new NovaApiMetadata())
                 .endpoint("http://" + conf.openStackIP + ":" + conf.keyStonePort + "/v2.0")
@@ -70,12 +71,24 @@ public class JCloudsMiddleware implements CloudMiddleware {
         this.db = db;
     }
 
+    /**
+     * Specifies in the VM deployment options the server on which to deploy the VM.
+     *
+     * @param dstNode the node where to deploy the VM
+     * @param options VM deployment options
+     */
     private void includeDstNodeInDeploymentOption(String dstNode, CreateServerOptions options) {
         if (dstNode != null) {
             options.availabilityZone("nova:" + dstNode);
         }
     }
 
+    /**
+     * Specifies in the VM deployment options a script that will be executed when the VM is deployed.
+     *
+     * @param vmDescription VM that will use the init script
+     * @param options VM deployment options
+     */
     private void includeInitScriptInDeploymentOptions(Vm vmDescription, CreateServerOptions options) {
         String initScript = vmDescription.getInitScript();
         if (initScript != null) {
@@ -83,72 +96,81 @@ public class JCloudsMiddleware implements CloudMiddleware {
             try {
                 options.userData(IOUtils.toByteArray(inputStream));
             } catch (IOException e) {
-                e.printStackTrace();
+                // Do not include anything in the VM deployment options
             }
         }
     }
 
-    @Override
-    public String deploy(Vm vmDescription, String dstNode) {
-        String vmId;
+    /**
+     * Returns the ID of the flavor that a VM should use when it is deployed.
+     * If a flavor with the specs of the VM already exists, the function returns the ID of that flavor.
+     * Otherwise, the function creates a new flavor and returns its ID.
+     *
+     * @param vm the VM to be deployed
+     * @param zone the zone where the VM will be deployed
+     * @return the flavor ID that the VM should use
+     */
+    private String getFlavorIdForDeployment(Vm vm, String zone) {
+        // Specs of the flavor
+        int cpus = vm.getCpus();
+        int ram = vm.getRamMb();
+        int disk = vm.getDiskGb();
 
+        // If there is a flavor with the same specs as the ones we need to use return it
+        String flavorId = getFlavorId(zone, cpus, ram, disk);
+        if (flavorId != null) {
+            return flavorId;
+        }
+        //If the flavor does not exist, create it and return the ID
+        String id, name;
+        id = name = cpus + "-" + disk + "-" + ram;
+        return createFlavor(zone, id, name, cpus, ram, disk);
+    }
+
+    /**
+     * Returns the ID of the image that a VM should use when it is deployed.
+     *
+     * @param vm the VM to be deployed
+     * @return the ID of the image
+     */
+    private String getImageIdForDeployment(Vm vm) {
+        // If the vm description contains a URL, create the image using Glance and return its ID
+        if (new UrlValidator().isValid(vm.getImage())) {
+            return glanceConnector.createImageFromUrl(new ImageToUpload(vm.getImage(), vm.getImage()));
+        }
+        else { // If the VM description contains the ID of an image, return it unless there is an error
+            String imageId = vm.getImage();
+            if (!existsImageWithId(imageId)) {
+                throw new IllegalArgumentException("There is not an image with the specified ID");
+            }
+            if (!glanceConnector.imageIsActive(imageId)) {
+                throw new IllegalArgumentException("The image specified is not active");
+            }
+            return imageId;
+        }
+    }
+
+    @Override
+    public String deploy(Vm vm, String dstNode) {
         // TODO This could be important/problematic in the future.
         // Right now I am assuming that the cluster only has one zone configured for deployments.
         String zone = zones.toArray()[0].toString();
 
-        // Specs of the flavor
-        int cpus = vmDescription.getCpus();
-        int ram = vmDescription.getRamMb();
-        int disk = vmDescription.getDiskGb();
-
-        // Check if exists a flavor with the same specs as the one we need to use
-        String flavorId = getFlavorId(zone, cpus, ram, disk);
-
-        // Create the flavor if it does not exist
-        if (flavorId == null) {
-            String id, name;
-            id = name = cpus + "-" + disk + "-" + ram;
-            flavorId = createFlavor(zone, id, name, cpus, ram, disk);
-        }
-
         // Specify deployment options
         CreateServerOptions options = new CreateServerOptions();
         includeDstNodeInDeploymentOption(dstNode, options);
-        includeInitScriptInDeploymentOptions(vmDescription, options);
-
-        // Check whether the user specified an image ID or a URL containing the image
-        String imageId;
-        UrlValidator urlValidator = new UrlValidator();
-        // If it is a URL
-        if (urlValidator.isValid(vmDescription.getImage())) {
-            // Create the image in Glance
-            imageId = glanceConnector.createImageFromUrl(new ImageToUpload(
-                    vmDescription.getImage(), vmDescription.getImage()));
-        }
-        // If it is an ID
-        else {
-            imageId = vmDescription.getImage();
-            // Throw an exception if the ID is not valid
-            if (!existsImageWithId(imageId)) {
-                throw new IllegalArgumentException("There is not an image with the specified ID");
-            }
-            // Throw an exception if the image is not active
-            if (!glanceConnector.imageIsActive(imageId)) {
-                throw new IllegalArgumentException("The image specified is not active");
-            }
-        }
+        includeInitScriptInDeploymentOptions(vm, options);
 
         // Deploy the VM
         ServerApi serverApi = novaApi.getServerApiForZone(zone);
-        ServerCreated server = serverApi.create(vmDescription.getName(), imageId, flavorId, options);
+        ServerCreated server = serverApi.create(vm.getName(), getImageIdForDeployment(vm),
+                getFlavorIdForDeployment(vm, zone), options);
 
         // Wait until the VM is deployed
         while (serverApi.get(server.getId()).getStatus().toString().equals(BUILD)) { }
 
-        // Get the VM id
-        vmId = server.getId();
-
-        return vmId;
+        // Return the VM id
+        return server.getId();
     }
 
     @Override
@@ -253,14 +275,10 @@ public class JCloudsMiddleware implements CloudMiddleware {
 
     // TODO Redo this. The name of the network should be obtained automatically. This might only work in TUB and BSC.
     private String getVmIp(Server server) {
-        String vmIp;
         if (server.getAddresses().get("vmnet").toArray().length != 0) { // VM network
-            vmIp = ((Address) server.getAddresses().get("vmnet").toArray()[0]).getAddr();
+            return ((Address) server.getAddresses().get("vmnet").toArray()[0]).getAddr();
         }
-        else { // Nat network
-            vmIp = (((Address) server.getAddresses().get("NattedNetwork").toArray()[0]).getAddr());
-        }
-        return vmIp;
+        return (((Address) server.getAddresses().get("NattedNetwork").toArray()[0]).getAddr()); // Nat network
     }
 
     @Override
@@ -382,10 +400,15 @@ public class JCloudsMiddleware implements CloudMiddleware {
         return id;
     }
 
+    /**
+     * Checks whether an image with the given ID has been uploaded to the infrastructure.
+     *
+     * @param id the ID of the image
+     * @return true if an image exists with the given Id, false otherwise
+     */
     private boolean existsImageWithId(String id) {
         for (String zone: zones) {
-            ImageApi imageApi = novaApi.getImageApiForZone(zone);
-            if (imageApi.get(id) != null) {
+            if (novaApi.getImageApiForZone(zone).get(id) != null) {
                 return true;
             }
         }
