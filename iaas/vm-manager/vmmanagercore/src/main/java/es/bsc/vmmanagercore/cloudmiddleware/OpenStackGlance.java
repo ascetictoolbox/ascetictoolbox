@@ -9,6 +9,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.Map;
 
 /** 
  * This class is a connector for the OpenStack image service (Glance). It is needed because
@@ -56,7 +57,7 @@ public class OpenStackGlance {
         URI uri = HttpUtils.buildURI("http", openStackIp, glancePort, "/v1/images");
 
         //build the headers of the HTTP request
-        HashMap<String, String> headers = new HashMap<>();
+        Map<String, String> headers = new HashMap<>();
         headers.put("X-Auth-Token", token);
         headers.put("x-image-meta-container_format", "bare");
         headers.put("User-Agent", "python-glanceclient");
@@ -90,7 +91,7 @@ public class OpenStackGlance {
         URI uri = HttpUtils.buildURI("http", openStackIp, glancePort, "/v2/images/" + imageId);
 
         //build the headers of the HTTP request
-        HashMap<String, String> headers = new HashMap<>();
+        Map<String, String> headers = new HashMap<>();
         headers.put("X-Auth-Token", token);
 
         //execute the HTTP request
@@ -109,7 +110,7 @@ public class OpenStackGlance {
         URI uri = HttpUtils.buildURI("http", openStackIp, glancePort, "/v2/images/" + imageId);
 
         //build the headers of the HTTP request
-        HashMap<String, String> headers = new HashMap<>();
+        Map<String, String> headers = new HashMap<>();
         headers.put("X-Auth-Token", token);
         headers.put("User-Agent", "python-glanceclient");
         headers.put("Content-Type", "application/octet-stream");
@@ -138,7 +139,7 @@ public class OpenStackGlance {
         URI uri = HttpUtils.buildURI("http", openStackIp, keyStonePort, "/v2.0/tokens");
 
         //build the headers of the HTTP request
-        HashMap<String, String> headers = new HashMap<>();
+        Map<String, String> headers = new HashMap<>();
         headers.put("Content-type", "application/json");
 
         //build the parameters of the HTTP request

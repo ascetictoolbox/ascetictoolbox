@@ -3,7 +3,7 @@ package es.bsc.vmmanagercore.db;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -89,7 +89,7 @@ public class VmManagerDbHsqlTest {
 	public void getAllVmsIds() {
 		db.insertVm("vmId1", "appId1");
 		db.insertVm("vmId2", "appId2");
-		ArrayList<String> vmIds = db.getAllVmIds();
+		List<String> vmIds = db.getAllVmIds();
 		assertTrue(vmIds.contains("vmId1") && vmIds.contains("vmId2"));
 	}
 	
@@ -102,7 +102,7 @@ public class VmManagerDbHsqlTest {
 	public void getVmsIdsOfAnAppWithVms() {
 		db.insertVm("vmId1", "appId1");
 		db.insertVm("vmId2", "appId1");
-		ArrayList<String> vmIdsOfApp = db.getVmsOfApp("appId1");
+		List<String> vmIdsOfApp = db.getVmsOfApp("appId1");
 		assertTrue(vmIdsOfApp.contains("vmId1") && vmIdsOfApp.contains("vmId2"));
 	}
 	

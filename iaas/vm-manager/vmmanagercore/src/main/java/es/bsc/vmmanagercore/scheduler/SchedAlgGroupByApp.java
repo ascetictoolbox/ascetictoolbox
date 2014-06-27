@@ -35,8 +35,8 @@ public class SchedAlgGroupByApp implements SchedAlgorithm {
      * Returns a hashmap that contains, for each host, the number of VMs that belong to the same
      * application as the one that we need to deploy.
      */
-    private HashMap<String, Integer> getNumberOfVmsThatBelongToTheAppForEachHost(String app) {
-        HashMap<String, Integer> vmsOfAppPerHost = new HashMap<>();
+    private Map<String, Integer> getNumberOfVmsThatBelongToTheAppForEachHost(String app) {
+        Map<String, Integer> vmsOfAppPerHost = new HashMap<>();
         for (VmDeployed vmDeployed: vmsDeployed) {
             // Increase the counter if it is a VM that belongs to the same application
             if (vmDeployed.getApplicationId().equals(app)) {
@@ -54,7 +54,7 @@ public class SchedAlgGroupByApp implements SchedAlgorithm {
     /**
      * Get the host with more VMs of the same app. The hosts needs to have enough resources available.
      */
-    private String getHostWithMoreVmsOfTheApp(HashMap<String, Integer> vmsOfAppPerHost) {
+    private String getHostWithMoreVmsOfTheApp(Map<String, Integer> vmsOfAppPerHost) {
         String host = null;
         int maxNumberOfVMsOfApp = 0;
         for (Map.Entry<String, Integer> entry : vmsOfAppPerHost.entrySet()) {
@@ -69,7 +69,7 @@ public class SchedAlgGroupByApp implements SchedAlgorithm {
     @Override
     public String chooseHost(List<HostInfo> hostsInfo, Vm vm) {
         this.hostsInfo = hostsInfo;
-        HashMap<String, Integer> vmsOfAppPerHost = getNumberOfVmsThatBelongToTheAppForEachHost(vm.getApplicationId());
+        Map<String, Integer> vmsOfAppPerHost = getNumberOfVmsThatBelongToTheAppForEachHost(vm.getApplicationId());
         return getHostWithMoreVmsOfTheApp(vmsOfAppPerHost);
     }
 }

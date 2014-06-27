@@ -3,6 +3,7 @@ package es.bsc.vmmanagercore.scheduler;
 import es.bsc.vmmanagercore.monitoring.HostInfo;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Host filter. Selects hosts that meet a certain criteria about free CPUs, RAM, and disk.
@@ -21,8 +22,8 @@ public class HostFilter {
      * @param minDiskGb the minimum amount of free disk (GB)
      * @return hosts from the input that meet the CPU, RAM, and disk requirements
      */
-    public static ArrayList<HostInfo> filter(ArrayList<HostInfo> hosts, int minCpus, int minRamMb, int minDiskGb) {
-        ArrayList<HostInfo> filteredHosts = new ArrayList<>();
+    public static List<HostInfo> filter(List<HostInfo> hosts, int minCpus, int minRamMb, int minDiskGb) {
+        List<HostInfo> filteredHosts = new ArrayList<>();
         for (HostInfo host: hosts) {
             if (host.hasEnoughResources(minCpus, minRamMb, minDiskGb)) {
                 filteredHosts.add(host);

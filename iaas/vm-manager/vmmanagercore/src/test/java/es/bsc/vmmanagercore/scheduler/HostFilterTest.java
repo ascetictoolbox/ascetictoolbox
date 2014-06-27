@@ -5,6 +5,7 @@ import es.bsc.vmmanagercore.monitoring.HostInfoFake;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
@@ -21,7 +22,7 @@ public class HostFilterTest {
         hosts.add(new HostInfoFake("host4", 4, 4096, 4, 1, 1024, 3)); // not enough disk
 
         // Filter hosts and check that only host1 is in the result
-        ArrayList<HostInfo> filteredHosts = HostFilter.filter(hosts, 2, 2048, 2);
+        List<HostInfo> filteredHosts = HostFilter.filter(hosts, 2, 2048, 2);
         assertTrue(filteredHosts.size() == 1 && filteredHosts.get(0).getHostname().equals("host1"));
     }
 

@@ -3,6 +3,7 @@ package es.bsc.vmmanagercore.monitoring;
 import eu.ascetic.monitoring.api.client.ZabbixClient;
 import eu.ascetic.monitoring.api.datamodel.Item;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,11 +14,12 @@ import java.util.List;
  */
 public class HostInfoZabbix extends HostInfo {
 
-    ZabbixClient zabbixClient = new ZabbixClient();
-    List<Item> hostItems;
+    ZabbixClient zabbixClient;
+    List<Item> hostItems = new ArrayList<>();
 
     public HostInfoZabbix(String hostname) {
         super(hostname);
+        zabbixClient = new ZabbixClient();
         hostItems = zabbixClient.getItemsFromHost(hostname);
     }
 

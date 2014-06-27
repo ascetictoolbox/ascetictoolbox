@@ -1,10 +1,10 @@
 package es.bsc.vmmanagercore.scheduler;
 
+import es.bsc.vmmanagercore.integration.VMMToEMConversor;
 import es.bsc.vmmanagercore.model.Vm;
 import es.bsc.vmmanagercore.model.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.HostInfo;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller;
-import es.bsc.vmmanagercore.integration.VMMToEMConversor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +19,10 @@ import java.util.List;
  */
 public class SchedAlgEnergyAware implements SchedAlgorithm {
 
-    ArrayList<VmDeployed> vmsDeployed = new ArrayList<>();
+    List<VmDeployed> vmsDeployed = new ArrayList<>();
     EnergyModeller energyModeller = new EnergyModeller();
 
-    public SchedAlgEnergyAware(ArrayList<VmDeployed> vmsDeployed) {
+    public SchedAlgEnergyAware(List<VmDeployed> vmsDeployed) {
         this.vmsDeployed = vmsDeployed;
     }
 
@@ -32,8 +32,8 @@ public class SchedAlgEnergyAware implements SchedAlgorithm {
      * @param hostname the host name
      * @return the VMs deployed in the host
      */
-    private ArrayList<Vm> getVmsDeployedInHost(String hostname) {
-        ArrayList<Vm> vms = new ArrayList<>();
+    private List<Vm> getVmsDeployedInHost(String hostname) {
+        List<Vm> vms = new ArrayList<>();
         for (VmDeployed vm: vmsDeployed) {
             if (vm.getHostName().equals(hostname)) {
                 vms.add(vm);

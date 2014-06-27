@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -54,7 +53,7 @@ public class HttpUtils {
      * @return The HTTP Request built.
      */
     public static HttpRequestBase buildHttpRequest(String methodType,
-            URI uri, HashMap<String, String> header, String entity) {
+            URI uri, Map<String, String> header, String entity) {
         HttpRequestBase request = null;
 
         //instantiate the request according to its type (GET, POST...)
@@ -116,7 +115,7 @@ public class HttpUtils {
      * @param entity Entity of the request.
      * @return @return The response of the HTTP request
      */
-    public static String executeHttpRequest(String methodType, URI uri, HashMap<String, String> header, String entity) {
+    public static String executeHttpRequest(String methodType, URI uri, Map<String, String> header, String entity) {
         return getHttpResponse(buildHttpRequest(methodType, uri, header, entity));
     }
 }

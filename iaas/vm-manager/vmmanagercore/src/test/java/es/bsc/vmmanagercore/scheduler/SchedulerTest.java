@@ -8,7 +8,7 @@ import es.bsc.vmmanagercore.monitoring.HostInfoFake;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -32,7 +32,7 @@ public class SchedulerTest {
         vms.add(vm);
 
         // Schedule and make sure that a host was assigned
-        HashMap<Vm, String> selectedHost = scheduler.schedule(vms, hosts);
+        Map<Vm, String> selectedHost = scheduler.schedule(vms, hosts);
         assertNotNull(selectedHost.get(vm));
     }
 

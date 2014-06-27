@@ -5,7 +5,7 @@ import es.bsc.vmmanagercore.model.ImageUploaded;
 import es.bsc.vmmanagercore.model.Vm;
 import es.bsc.vmmanagercore.model.VmDeployed;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * Interface for the Cloud Middleware infrastructure (e.g. OpenNebula, OpenStack,
@@ -47,7 +47,7 @@ public interface CloudMiddleware {
      * @return A Collection containing the identifiers of the VMs that a user
      * is running. If the user is not running any VM, returns null
      */
-    Collection<String> getAllVMsId();
+    List<String> getAllVMsId();
     
     /**
      * Gets the complete information of a virtual machine given its identifier.
@@ -113,7 +113,7 @@ public interface CloudMiddleware {
      *
      * @return the images in the infrastructure
      */
-    Collection<ImageUploaded> getVmImages();
+    List<ImageUploaded> getVmImages();
 
     /**
      * Creates a new image in the infrastructure.

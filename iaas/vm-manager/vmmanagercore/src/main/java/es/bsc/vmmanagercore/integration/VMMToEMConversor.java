@@ -5,7 +5,7 @@ import es.bsc.vmmanagercore.monitoring.HostInfo;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 /**
  * This class converts the classes used in the VMM to the classes used in the Energy Modeller.
@@ -20,8 +20,8 @@ public class VMMToEMConversor {
                 vm.getCpus(), vm.getRamMb(), vm.getDiskGb());
     }
 
-    public static ArrayList<VM> getVmsEnergyModFromVms(Collection<Vm> vms) {
-        ArrayList<eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM> result = new ArrayList<>();
+    public static List<VM> getVmsEnergyModFromVms(List<Vm> vms) {
+        List<eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM> result = new ArrayList<>();
         for (Vm vm: vms) {
             result.add(getVmEnergyModFromVM(vm));
         }

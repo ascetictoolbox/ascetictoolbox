@@ -9,7 +9,7 @@ import javax.ws.rs.core.MediaType;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 /**
  * REST interface for the VM Manager.
@@ -35,7 +35,7 @@ public class VmManagerRest {
     @Path("/vms")
     @Produces(MediaType.APPLICATION_JSON)
     public String getAllVms() {
-        ArrayList<VmDeployed> vmsDeployed = vmManager.getAllVms();
+        List<VmDeployed> vmsDeployed = vmManager.getAllVms();
         JsonArray jsonVmsArray = new JsonArray();
         for (VmDeployed vmDeployed: vmsDeployed) {
             JsonObject vmJson =
@@ -61,7 +61,7 @@ public class VmManagerRest {
         }
 
         // Get the information of the VMs to deploy
-        ArrayList<Vm> vmsToDeploy = new ArrayList<>();
+        List<Vm> vmsToDeploy = new ArrayList<>();
         JsonArray vmsArrayJson = vmsJson.getAsJsonArray("vms");
         for (JsonElement vmJson: vmsArrayJson) {
             Vm vm = gson.fromJson(vmJson, Vm.class);
@@ -69,7 +69,7 @@ public class VmManagerRest {
         }
 
         // Deploy the VMs
-        ArrayList<String> idsVmsDeployed = vmManager.deployVms(vmsToDeploy);
+        List<String> idsVmsDeployed = vmManager.deployVms(vmsToDeploy);
 
         // Return the JSON with the IDs of the VMs deployed
         JsonArray idsArrayJson = new JsonArray();
@@ -130,7 +130,7 @@ public class VmManagerRest {
     @Produces(MediaType.APPLICATION_JSON)
     public String getVmsOfApp(@PathParam("appId") String appId) {
         JsonArray vmsDeployedJsonArray = new JsonArray();
-        ArrayList<VmDeployed> vmsDeployed = vmManager.getVmsOfApp(appId);
+        List<VmDeployed> vmsDeployed = vmManager.getVmsOfApp(appId);
         for (VmDeployed vmDeployed: vmsDeployed) {
             JsonElement vmJsonElement = gson.toJsonTree(vmDeployed, VmDeployed.class);
             vmsDeployedJsonArray.add(vmJsonElement);
@@ -150,7 +150,7 @@ public class VmManagerRest {
     @Produces(MediaType.APPLICATION_JSON)
     public String getAllImages() {
         JsonArray jsonImagesArray = new JsonArray();
-        Collection<ImageUploaded> images = vmManager.getVmImages();
+        List<ImageUploaded> images = vmManager.getVmImages();
         for (ImageUploaded image: images) {
             JsonObject imageJson =
                     (JsonObject) parser.parse(gson.toJson(image, ImageUploaded.class));
@@ -216,7 +216,7 @@ public class VmManagerRest {
     @Path("/scheduling_algorithms")
     @Produces(MediaType.APPLICATION_JSON)
     public String getSchedulingAlgorithms() {
-        ArrayList<SchedulingAlgorithm> schedAlgs = vmManager.getAvailableSchedulingAlgorithms();
+        List<SchedulingAlgorithm> schedAlgs = vmManager.getAvailableSchedulingAlgorithms();
         JsonArray schedAlgsArrayJson = new JsonArray();
         for (SchedulingAlgorithm schedAlg: schedAlgs) {
             JsonObject schedAlgJson = new JsonObject();

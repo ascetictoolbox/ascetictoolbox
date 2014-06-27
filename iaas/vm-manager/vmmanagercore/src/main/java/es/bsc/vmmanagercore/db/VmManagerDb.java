@@ -2,7 +2,7 @@ package es.bsc.vmmanagercore.db;
 
 import es.bsc.vmmanagercore.model.SchedulingAlgorithm;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Interface for the connection of the VM Manager with the DB.
@@ -55,7 +55,7 @@ public interface VmManagerDb {
      *
      * @return IDs of the VMs present in the DB
      */
-    public ArrayList<String> getAllVmIds();
+    public List<String> getAllVmIds();
 
     /**
      * Returns the IDs of the VMs that belong to an application.
@@ -63,7 +63,7 @@ public interface VmManagerDb {
      * @param appId the ID of the application
      * @return the IDs of the VMs that belong to the application
      */
-    public ArrayList<String> getVmsOfApp(String appId);
+    public List<String> getVmsOfApp(String appId);
 
     /**
      * Returns the scheduling algorithm being used.
@@ -77,7 +77,7 @@ public interface VmManagerDb {
      *
      * @return the scheduling algorithms
      */
-    public ArrayList<SchedulingAlgorithm> getAvailableSchedulingAlg();
+    public List<SchedulingAlgorithm> getAvailableSchedulingAlg();
 
     /**
      * Changes the current scheduling algorithm.

@@ -5,6 +5,7 @@ import es.bsc.vmmanagercore.model.SchedulingAlgorithm;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * This class implements the interaction of the VM Manager with a HSQL database.
@@ -17,7 +18,7 @@ public class VmManagerDbHsql implements VmManagerDb {
     /* NOTE: For now, we are using DBHSQL. In the future, it may be needed to use a different DB. */
 
     private Connection conn;
-    private ArrayList<SchedulingAlgorithm> availableSchedAlg = new ArrayList<>();
+    private List<SchedulingAlgorithm> availableSchedAlg = new ArrayList<>();
 
     // Error messages
     private static final String ERROR_SETUP_DB = "There was an error while trying to set up the DB.";
@@ -47,13 +48,13 @@ public class VmManagerDbHsql implements VmManagerDb {
     }
     
     // Use for SQL command SELECT
-    private synchronized ArrayList<String> query(String expression) throws SQLException {
+    private synchronized List<String> query(String expression) throws SQLException {
         Statement st = conn.createStatement();
         
         // Run the query
         ResultSet rs = st.executeQuery(expression);
 
-        ArrayList<String> result = getResult(rs);
+        List<String> result = getResult(rs);
         st.close();
         return result;
     }
@@ -68,7 +69,7 @@ public class VmManagerDbHsql implements VmManagerDb {
         st.close();
     }
     
-    private static ArrayList<String> getResult(ResultSet rs) throws SQLException {
+    private static List<String> getResult(ResultSet rs) throws SQLException {
         // the order of the rows in a cursor
         // are implementation dependent unless you use the SQL ORDER statement
         ResultSetMetaData meta = rs.getMetaData();
@@ -79,7 +80,7 @@ public class VmManagerDbHsql implements VmManagerDb {
         // assume we are pointing to BEFORE the first row
         // rs.next() points to next row and returns true
         // or false if there is no next row, which breaks the loop
-        ArrayList<String> result = new ArrayList<>();
+        List<String> result = new ArrayList<>();
         for (; rs.next(); ) {
             for (int i = 0; i < colmax; ++i) {
                 Object o = rs.getObject(i + 1); // In SQL the first column is indexed with 1 not 0
@@ -172,7 +173,7 @@ public class VmManagerDbHsql implements VmManagerDb {
     // Returns "" if the VM does not have an app associated or if a VM with that ID does not exist
     @Override
     public String getAppIdOfVm(String vmId) {
-        ArrayList<String> appId = new ArrayList<>();
+        List<String> appId = new ArrayList<>();
         try {
             appId = query("SELECT appId FROM virtual_machines WHERE id = '" + vmId + "'");
         } catch (SQLException e) {
@@ -185,8 +186,8 @@ public class VmManagerDbHsql implements VmManagerDb {
     }
     
     @Override
-    public ArrayList<String> getAllVmIds() {
-        ArrayList<String> vmIds = new ArrayList<>();
+    public List<String> getAllVmIds() {
+        List<String> vmIds = new ArrayList<>();
         try {
             vmIds = query("SELECT id FROM virtual_machines");
         } catch (SQLException e) {
@@ -196,8 +197,8 @@ public class VmManagerDbHsql implements VmManagerDb {
     }
 
     @Override
-    public ArrayList<String> getVmsOfApp(String appId) {
-        ArrayList<String> vmIds = new ArrayList<>();
+    public List<String> getVmsOfApp(String appId) {
+        List<String> vmIds = new ArrayList<>();
         try {
             vmIds = query("SELECT id FROM virtual_machines WHERE appId = '" + appId + "'");
         } catch (SQLException e) {
@@ -208,7 +209,7 @@ public class VmManagerDbHsql implements VmManagerDb {
     
     @Override
     public SchedulingAlgorithm getCurrentSchedulingAlg() {
-        ArrayList<String> schedulingAlgorithms;
+        List<String> schedulingAlgorithms;
         try {
             schedulingAlgorithms = query("SELECT algorithm FROM scheduling_alg WHERE selected = 1");
         } catch (SQLException e) {
@@ -231,14 +232,14 @@ public class VmManagerDbHsql implements VmManagerDb {
     }
     
     @Override
-    public ArrayList<SchedulingAlgorithm> getAvailableSchedulingAlg() {
-        ArrayList<String> schedulingAlgorithms;
+    public List<SchedulingAlgorithm> getAvailableSchedulingAlg() {
+        List<String> schedulingAlgorithms;
         try {
             schedulingAlgorithms = query("SELECT algorithm FROM scheduling_alg");
         } catch (SQLException e) {
             return null;
         }
-        ArrayList<SchedulingAlgorithm> result = new ArrayList<>();
+        List<SchedulingAlgorithm> result = new ArrayList<>();
         for (String schedAlg: schedulingAlgorithms) {
             switch (schedAlg) {
                 case "consolidation":

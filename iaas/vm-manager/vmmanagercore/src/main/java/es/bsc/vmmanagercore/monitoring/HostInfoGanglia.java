@@ -4,7 +4,6 @@ import es.bsc.monitoring.ganglia.Ganglia;
 import es.bsc.monitoring.ganglia.infrastructure.Cluster;
 import es.bsc.monitoring.ganglia.infrastructure.Host;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,7 +20,7 @@ public class HostInfoGanglia extends HostInfo {
         super(hostname);
 
         //get the Ganglia host from its hostname
-        ArrayList<Cluster> clusterList = new Ganglia().getGridInfo();
+        List<Cluster> clusterList = new Ganglia().getGridInfo();
         for (Cluster cluster : clusterList) {
             List<Host> hosts = cluster.getHosts();
             for (Host host: hosts) {

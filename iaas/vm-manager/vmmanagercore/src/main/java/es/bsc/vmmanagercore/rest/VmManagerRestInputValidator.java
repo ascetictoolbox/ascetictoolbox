@@ -5,7 +5,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.codehaus.jackson.JsonNode;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -57,7 +56,7 @@ public class VmManagerRestInputValidator {
         return true;
     }
 
-    public static boolean checkImageExists(String imageId, ArrayList<String> imagesIds) {
+    public static boolean checkImageExists(String imageId, List<String> imagesIds) {
         return imagesIds.contains(imageId);
     }
 

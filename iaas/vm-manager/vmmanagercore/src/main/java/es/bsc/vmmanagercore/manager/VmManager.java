@@ -12,8 +12,9 @@ import es.bsc.vmmanagercore.monitoring.HostInfoZabbix;
 import es.bsc.vmmanagercore.scheduler.Scheduler;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 /**
@@ -27,7 +28,7 @@ public class VmManager {
     private CloudMiddleware cloudMiddleware;
     private VmManagerDb db;
     private Scheduler scheduler;
-    private ArrayList<HostInfo> hostsInfo;
+    private List<HostInfo> hostsInfo;
 
     public VmManager(String dbName) {
         // Choose the DB
@@ -50,12 +51,12 @@ public class VmManager {
     // VM Methods
     //================================================================================
 
-    public ArrayList<VmDeployed> getAllVms() {
+    public List<VmDeployed> getAllVms() {
         // Get the IDs of all the VMs deployed
-        Collection<String> allVmsIds = cloudMiddleware.getAllVMsId();
+        List<String> allVmsIds = cloudMiddleware.getAllVMsId();
 
         // Retrieve the information of each VM
-        ArrayList<VmDeployed> vmsInfo = new ArrayList<>();
+        List<VmDeployed> vmsInfo = new ArrayList<>();
         for (String vmId: allVmsIds) {
             vmsInfo.add(cloudMiddleware.getVMInfo(vmId));
         }
@@ -67,12 +68,12 @@ public class VmManager {
         return cloudMiddleware.getVMInfo(vmId);
     }
 
-    public ArrayList<VmDeployed> getVmsOfApp(String appId) {
+    public List<VmDeployed> getVmsOfApp(String appId) {
         // Get the IDs of the VMs of the application
-        ArrayList<String> vmsIds = db.getVmsOfApp(appId);
+        List<String> vmsIds = db.getVmsOfApp(appId);
 
         // Get the information for each of the VMs
-        ArrayList<VmDeployed> vmsInfo = new ArrayList<>();
+        List<VmDeployed> vmsInfo = new ArrayList<>();
         for (String vmId: vmsIds) {
             vmsInfo.add(cloudMiddleware.getVMInfo(vmId));
         }
@@ -94,13 +95,13 @@ public class VmManager {
         }
     }
 
-    public ArrayList<String> deployVms(ArrayList<Vm> vmDescriptions) {
+    public List<String> deployVms(List<Vm> vmDescriptions) {
         // HashMap VmDescription -> ID after deployment.
         // This is used to return the IDs in the same order of the input
-        HashMap<Vm, String> ids = new HashMap<>();
+        Map<Vm, String> ids = new HashMap<>();
 
         // Decide where to deploy each VM of the application
-        HashMap<Vm, String> vmsScheduling = scheduler.schedule(vmDescriptions, hostsInfo);
+        Map<Vm, String> vmsScheduling = scheduler.schedule(vmDescriptions, hostsInfo);
 
         // TODO si devuelve null es que no hay host disponible. Que hacer en ese caso?
         // For each VM that is part of the application
@@ -125,7 +126,7 @@ public class VmManager {
         db.closeConnection();
 
         // Return the IDs of the VMs deployed in the same order that they were received
-        ArrayList<String> idsDeployedVms = new ArrayList<>();
+        List<String> idsDeployedVms = new ArrayList<>();
         for (Vm vmDescription: vmDescriptions) {
             idsDeployedVms.add(ids.get(vmDescription));
         }
@@ -167,7 +168,7 @@ public class VmManager {
     // Images Methods
     //================================================================================
  
-    public Collection<ImageUploaded> getVmImages() {
+    public List<ImageUploaded> getVmImages() {
         return cloudMiddleware.getVmImages();
     }
 
@@ -183,9 +184,9 @@ public class VmManager {
         cloudMiddleware.deleteVmImage(id);
     }
 
-    public ArrayList<String> getVmImagesIds() {
-        ArrayList<String> vmImagesIds = new ArrayList<>();
-        Collection<ImageUploaded> imagesDescriptions = cloudMiddleware.getVmImages();
+    public List<String> getVmImagesIds() {
+        List<String> vmImagesIds = new ArrayList<>();
+        List<ImageUploaded> imagesDescriptions = cloudMiddleware.getVmImages();
         for (ImageUploaded imageDesc: imagesDescriptions) {
             vmImagesIds.add(imageDesc.getId());
         }
@@ -197,7 +198,7 @@ public class VmManager {
     // Scheduling Algorithms Methods
     //================================================================================
 
-    public ArrayList<SchedulingAlgorithm> getAvailableSchedulingAlgorithms() {
+    public List<SchedulingAlgorithm> getAvailableSchedulingAlgorithms() {
         return db.getAvailableSchedulingAlg();
     }
 
@@ -231,6 +232,7 @@ public class VmManager {
                 for (String hostname: hosts) {
                     hostsInfo.add(new HostInfoZabbix(hostname));
                 }
+                break;
             default:
                 //TODO - invalid
                 break;

@@ -22,7 +22,7 @@ import org.jclouds.openstack.nova.v2_0.options.CreateServerOptions;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 
@@ -233,8 +233,8 @@ public class JCloudsMiddleware implements CloudMiddleware {
     }
 
     @Override
-    public Collection<String> getAllVMsId() {
-        ArrayList<String> vmIds = new ArrayList<>();
+    public List<String> getAllVMsId() {
+        List<String> vmIds = new ArrayList<>();
         for (String zone: zones) {
             ServerApi serverApi = novaApi.getServerApiForZone(zone);
             for (Server server: serverApi.listInDetail().concat()) {
@@ -295,8 +295,8 @@ public class JCloudsMiddleware implements CloudMiddleware {
     }
 
     @Override
-    public Collection<ImageUploaded> getVmImages() {
-        ArrayList<ImageUploaded> vmImages = new ArrayList<>();
+    public List<ImageUploaded> getVmImages() {
+        List<ImageUploaded> vmImages = new ArrayList<>();
         for (String zone: zones) {
             ImageApi imageApi = novaApi.getImageApiForZone(zone);
             for (Image image: imageApi.listInDetail().concat()) {

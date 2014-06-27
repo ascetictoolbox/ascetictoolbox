@@ -6,8 +6,9 @@ import es.bsc.vmmanagercore.model.Vm;
 import es.bsc.vmmanagercore.model.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.HostInfo;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -19,9 +20,9 @@ import java.util.HashMap;
 public class Scheduler {
 
     private SchedAlgorithm schedAlgorithm;
-    private ArrayList<VmDeployed> vmsDeployed;
+    private List<VmDeployed> vmsDeployed;
 
-    public Scheduler(SchedulingAlgorithm schedAlg, ArrayList<VmDeployed> vmsDeployed) {
+    public Scheduler(SchedulingAlgorithm schedAlg, List<VmDeployed> vmsDeployed) {
         this.vmsDeployed = vmsDeployed;
         setSchedAlgorithm(schedAlg);
     }
@@ -46,7 +47,7 @@ public class Scheduler {
         }
     }
 
-    private void reserveResourcesForVmInHost(Vm vm, String hostForDeployment, ArrayList<HostInfo> hosts) {
+    private void reserveResourcesForVmInHost(Vm vm, String hostForDeployment, List<HostInfo> hosts) {
         for (HostInfo host: hosts) {
             if (host.getHostname().equals(hostForDeployment)) {
                 host.setReservedCpus(vm.getCpus());
@@ -65,7 +66,7 @@ public class Scheduler {
      * @param vm the VM
      * @return the name of the host where the VM should be deployed
      */
-    private String chooseHost(ArrayList<HostInfo> allHosts, ArrayList<HostInfo> hostsWithEnoughResources, Vm vm) {
+    private String chooseHost(List<HostInfo> allHosts, List<HostInfo> hostsWithEnoughResources, Vm vm) {
         String selectedHost;
         if (hostsWithEnoughResources.isEmpty()) {
             selectedHost = new SchedAlgRandom().chooseHost(allHosts, vm);
@@ -85,13 +86,13 @@ public class Scheduler {
      * @return HashMap that contains for each VM description, the name of the host where
      * the VM should be deployed according to the scheduling algorithm
      */
-    public HashMap<Vm, String> schedule(ArrayList<Vm> vms, ArrayList<HostInfo> hosts) {
-        HashMap<Vm, String> scheduling = new HashMap<>(); // HashMap VM -> host where it is going to be deployed
+    public Map<Vm, String> schedule(List<Vm> vms, List<HostInfo> hosts) {
+        Map<Vm, String> scheduling = new HashMap<>(); // HashMap VM -> host where it is going to be deployed
 
         // For each of the VMs to be scheduled
         for (Vm vm: vms) {
             // Get hosts with enough resources
-            ArrayList<HostInfo> hostsWithEnoughResources = HostFilter.filter(hosts, vm.getCpus(),
+            List<HostInfo> hostsWithEnoughResources = HostFilter.filter(hosts, vm.getCpus(),
                     vm.getRamMb(), vm.getDiskGb());
 
             // Chose the host to deploy the VM
