@@ -42,7 +42,7 @@ public class VmManager {
         // according to what is specified in the configuration file
         VmManagerConfiguration conf = VmManagerConfiguration.getInstance();
         selectMiddleware(conf.middleware);
-        selectMonitoring(conf.monitoring, conf.hosts);
+        selectMonitoring(conf.monitoring, conf.hosts, conf.hostsZabbix);
         scheduler = new Scheduler(db.getCurrentSchedulingAlg(), getAllVms());
     }
 
@@ -215,7 +215,9 @@ public class VmManager {
     // Auxiliary Methods
     //================================================================================
 
-    private void selectMonitoring(VmManagerConfiguration.Monitoring monitoring, String[] hosts) {
+    // The third parameter is required because Zabbix uses different host names. I should look more into that.
+    // Passing that parameter is a temporary solution.
+    private void selectMonitoring(VmManagerConfiguration.Monitoring monitoring, String[] hosts, String[] hostsZabbix) {
         hostsInfo = new ArrayList<>();
         switch (monitoring) {
             case GANGLIA:
@@ -229,7 +231,7 @@ public class VmManager {
                 }
                 break;
             case ZABBIX:
-                for (String hostname: hosts) {
+                for (String hostname: hostsZabbix) {
                     hostsInfo.add(new HostInfoZabbix(hostname));
                 }
                 break;

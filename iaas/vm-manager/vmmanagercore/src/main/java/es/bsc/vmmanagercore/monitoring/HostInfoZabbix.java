@@ -14,13 +14,16 @@ import java.util.List;
  */
 public class HostInfoZabbix extends HostInfo {
 
-    ZabbixClient zabbixClient;
-    List<Item> hostItems = new ArrayList<>();
+    private final static ZabbixClient zabbixClient = new ZabbixClient();
+    private List<Item> hostItems = new ArrayList<>();
 
     public HostInfoZabbix(String hostname) {
         super(hostname);
-        zabbixClient = new ZabbixClient();
         hostItems = zabbixClient.getItemsFromHost(hostname);
+        /*System.out.println(hostname);
+        for (Item item: hostItems) {
+            System.out.println(item.getName());
+        }*/
     }
 
 }
