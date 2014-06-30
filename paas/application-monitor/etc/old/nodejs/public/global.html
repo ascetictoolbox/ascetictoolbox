@@ -1,0 +1,29 @@
+<div class="row">
+	<div id="globalGraph">
+		<script src="lib/js/d3.v3.min.js"></script>
+		<script src="lib/js/rickshaw.min.js"></script>
+
+        <div id="chart"></div>
+        <script>
+            var
+            var graph = new Rickshaw.Graph( {
+                element: document.querySelector("#chart"),
+                width: 300,
+                height: 200,
+                series: [{
+                    color: 'steelblue',
+                    data: [
+                        { x: 0, y: 40 },
+                        { x: 1, y: 49 },
+                        { x: 2, y: 38 },
+                        { x: 3, y: 30 },
+                        { x: 4, y: 32 } ]
+                }]
+            });
+            graph.render();
+        </script>
+    </div>
+	<div id="globalLog">
+		<h2>Logging info here</h2>
+	</div>
+</div>
