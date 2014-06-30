@@ -490,8 +490,8 @@ paas/application-monitor/test/IntegrationTest.java -text
 paas/application-monitor/test/MappingTest.java -text
 paas/application-monitor/test/TreeTest.java -text
 paas/paas-pricing-modeller/pom.xml -text
-paas/paas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/paaspricingmodeller/App.java -text
-paas/paas-pricing-modeller/src/test/java/eu/ascetic/asceticarchitecture/paas/paaspricingmodeller/AppTest.java -text
+paas/paas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/paaspricingmodeller/PaaSPricingModeller.java -text
+paas/paas-pricing-modeller/src/test/java/eu/ascetic/asceticarchitecture/paas/paaspricingmodeller/PaaSPricingModellerTest.java -text
 paas/provider-registry/pom.xml -text
 paas/provider-registry/src/main/java/eu/ascetic/providerregistry/Dictionary.java -text
 paas/provider-registry/src/main/java/eu/ascetic/providerregistry/model/Collection.java -text
