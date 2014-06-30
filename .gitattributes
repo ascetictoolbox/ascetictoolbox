@@ -216,7 +216,6 @@ paas/application-monitor/app/es/bsc/amon/util/tree/TreeNode.java -text
 paas/application-monitor/app/es/bsc/amon/util/tree/TreeNodeFactory.java -text
 paas/application-monitor/app/es/bsc/amon/util/tree/Value.java -text
 paas/application-monitor/app/es/bsc/amon/util/tree/ValueArray.java -text
-paas/application-monitor/build.sbt -text
 paas/application-monitor/conf/application.conf -text
 paas/application-monitor/conf/routes -text
 paas/application-monitor/etc/db/README.md -text
@@ -386,8 +385,7 @@ paas/application-monitor/etc/old/nodejs/views/error.ejs -text
 paas/application-monitor/etc/probes/fakeprobe.rb -text
 paas/application-monitor/etc/probes/oldprobe.rb -text
 paas/application-monitor/etc/probes/probe.rb -text
-paas/application-monitor/project/build.properties -text
-paas/application-monitor/project/plugins.sbt -text
+paas/application-monitor/pom.xml -text
 paas/application-monitor/public/config.json -text
 paas/application-monitor/public/css/bsc.css -text
 paas/application-monitor/public/global.html -text

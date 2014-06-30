@@ -1,0 +1,107 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<parent>
+		<groupId>eu.ascetic.ascetic-architecture</groupId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+		<artifactId>paas</artifactId>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>eu.ascetic.ascetic-architecture.paas</groupId>
+	<artifactId>application-monitor</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>play2</packaging>
+
+	<name>Play! Framework 2.3.x Maven Test Project</name>
+
+	<repositories>
+		<repository>
+			<id>typesafe</id>
+			<name>Typesafe - releases</name>
+			<url>http://repo.typesafe.com/typesafe/releases/</url>
+		</repository>
+	</repositories>
+
+	<properties>
+		<play2.version>2.3.1</play2.version>
+		<scala.version>2.11.1</scala.version>
+
+		<play2.plugin.version>1.0.0-alpha7</play2.plugin.version>
+		<sbt-compiler.plugin.version>1.0.0-beta4</sbt-compiler.plugin.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.scala-lang</groupId>
+			<artifactId>scala-library</artifactId>
+			<version>${scala.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.typesafe.play</groupId>
+			<artifactId>play_2.11</artifactId>
+			<version>${play2.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.typesafe.play</groupId>
+			<artifactId>play-exceptions</artifactId>
+			<version>2.3.1</version>
+		</dependency>
+
+		<!-- only if using Java -->
+		<dependency>
+			<groupId>com.typesafe.play</groupId>
+			<artifactId>play-java_2.11</artifactId>
+			<version>${play2.version}</version>
+		</dependency>
+
+
+		<!-- only if there are tests in the project -->
+		<dependency>
+			<groupId>com.typesafe.play</groupId>
+			<artifactId>play-test_2.11</artifactId>
+			<version>${play2.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<sourceDirectory>${basedir}/app</sourceDirectory>
+		<resources>
+			<resource>
+				<directory>${basedir}/conf</directory>
+			</resource>
+			<resource>
+				<directory>${basedir}</directory>
+				<includes>
+					<include>public/**</include>
+				</includes>
+			</resource>
+		</resources>
+
+		<plugins>
+			<plugin>
+				<groupId>com.google.code.sbt-compiler-maven-plugin</groupId>
+				<artifactId>sbt-compiler-maven-plugin</artifactId>
+				<version>${sbt-compiler.plugin.version}</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.17</version>
+			</plugin>
+			<plugin>
+				<groupId>com.google.code.play2-maven-plugin</groupId>
+				<artifactId>play2-maven-plugin</artifactId>
+				<version>${play2.plugin.version}</version>
+				<extensions>true</extensions>
+				<executions>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

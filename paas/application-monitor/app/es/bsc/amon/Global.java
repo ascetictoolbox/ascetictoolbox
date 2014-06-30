@@ -41,6 +41,7 @@ public class Global extends GlobalSettings {
 
 	@Override
 	public F.Promise<SimpleResult> onError(Http.RequestHeader request, Throwable t) {
+
 		if(t.getCause()!=null) t = t.getCause();
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
