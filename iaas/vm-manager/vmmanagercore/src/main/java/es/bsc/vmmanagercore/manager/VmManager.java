@@ -95,13 +95,13 @@ public class VmManager {
         }
     }
 
-    public List<String> deployVms(List<Vm> vmDescriptions) {
+    public List<String> deployVms(List<Vm> vms) {
         // HashMap VmDescription -> ID after deployment.
         // This is used to return the IDs in the same order of the input
         Map<Vm, String> ids = new HashMap<>();
 
         // Decide where to deploy each VM of the application
-        Map<Vm, String> vmsScheduling = scheduler.schedule(vmDescriptions, hostsInfo);
+        Map<Vm, String> vmsScheduling = scheduler.schedule(vms, hostsInfo);
 
         // TODO si devuelve null es que no hay host disponible. Que hacer en ese caso?
         // For each VM that is part of the application
@@ -127,8 +127,8 @@ public class VmManager {
 
         // Return the IDs of the VMs deployed in the same order that they were received
         List<String> idsDeployedVms = new ArrayList<>();
-        for (Vm vmDescription: vmDescriptions) {
-            idsDeployedVms.add(ids.get(vmDescription));
+        for (Vm vm: vms) {
+            idsDeployedVms.add(ids.get(vm));
         }
         return idsDeployedVms;
     }
@@ -186,8 +186,8 @@ public class VmManager {
 
     public List<String> getVmImagesIds() {
         List<String> vmImagesIds = new ArrayList<>();
-        List<ImageUploaded> imagesDescriptions = cloudMiddleware.getVmImages();
-        for (ImageUploaded imageDesc: imagesDescriptions) {
+        List<ImageUploaded> images = cloudMiddleware.getVmImages();
+        for (ImageUploaded imageDesc: images) {
             vmImagesIds.add(imageDesc.getId());
         }
         return vmImagesIds;

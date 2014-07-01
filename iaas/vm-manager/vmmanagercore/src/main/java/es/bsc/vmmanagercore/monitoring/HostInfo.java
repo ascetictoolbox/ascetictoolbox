@@ -1,6 +1,7 @@
 package es.bsc.vmmanagercore.monitoring;
 
 
+import es.bsc.vmmanagercore.model.ServerLoad;
 import es.bsc.vmmanagercore.model.Vm;
 
 import java.util.List;
@@ -177,6 +178,19 @@ public abstract class HostInfo {
             throw new IllegalArgumentException("The amount of reserved disk cannot be negative");
         }
         this.reservedDiskGb = reservedDiskGb;
+    }
+
+    /**
+     * Returns the load that a host would have if a VM was deployed in it.
+     *
+     * @param vm the VM to deploy
+     * @return the future load
+     */
+    public ServerLoad getFutureLoadIfVMDeployed(Vm vm) {
+        double cpus = getAssignedCpus() + getReservedCpus() + vm.getCpus();
+        double ramMb = getAssignedMemoryMb() + getReservedMemoryMb() + vm.getRamMb();
+        double diskGb = getAssignedDiskGb() + getReservedDiskGb() + vm.getDiskGb();
+        return new ServerLoad(cpus/getTotalCpus(), ramMb/getTotalMemoryMb(), diskGb/getTotalDiskGb());
     }
 
 }

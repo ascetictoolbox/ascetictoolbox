@@ -1,5 +1,6 @@
 package es.bsc.vmmanagercore.monitoring;
 
+import es.bsc.vmmanagercore.model.ServerLoad;
 import es.bsc.vmmanagercore.model.Vm;
 import org.junit.Rule;
 import org.junit.Test;
@@ -310,6 +311,13 @@ public class HostInfoFakeTest {
         HostInfoFake hostInfo = new HostInfoFake("hostName", 4, 4096, 4, 2, 2048, 2);
         exception.expect(IllegalArgumentException.class);
         hostInfo.setReservedDiskGb(-1);
+    }
+
+    @Test
+    public void getFutureLoadIfVMDeployedInHost() {
+        HostInfoFake hostInfo = new HostInfoFake("hostName", 4, 4096, 4, 2, 2048, 2);
+        ServerLoad futureLoad = hostInfo.getFutureLoadIfVMDeployed(new Vm("vm1", "image", 1, 1024, 1, null, ""));
+        assert(futureLoad.getCpuLoad() == 0.75 && futureLoad.getRamLoad() == 0.75 && futureLoad.getDiskLoad() == 0.75);
     }
 
 }

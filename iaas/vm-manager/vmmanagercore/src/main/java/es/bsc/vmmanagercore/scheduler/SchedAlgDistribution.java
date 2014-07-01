@@ -32,7 +32,7 @@ public class SchedAlgDistribution implements SchedAlgorithm {
         for (HostInfo hostInfo: hostsInfo) {
 
             //calculate the future load (%) of the host if the VM is deployed in that host
-            ServerLoad futureServerLoad = Scheduler.getFutureLoadIfVMDeployedInHost(vm, hostInfo);
+            ServerLoad futureServerLoad = hostInfo.getFutureLoadIfVMDeployed(vm);
             logger.debug("[VMM] The load of host " + hostInfo.getHostname() + " would be "
                     + futureServerLoad.toString());
 

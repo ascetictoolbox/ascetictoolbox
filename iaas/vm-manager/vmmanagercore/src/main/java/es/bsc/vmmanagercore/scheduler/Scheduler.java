@@ -95,7 +95,7 @@ public class Scheduler {
             List<HostInfo> hostsWithEnoughResources = HostFilter.filter(hosts, vm.getCpus(),
                     vm.getRamMb(), vm.getDiskGb());
 
-            // Chose the host to deploy the VM
+            // Choose the host to deploy the VM
             String selectedHost = chooseHost(hosts, hostsWithEnoughResources, vm);
 
             // Add the host to the result
@@ -106,20 +106,6 @@ public class Scheduler {
         }
 
         return scheduling;
-    }
-
-    /**
-     * Returns the load that a host would have if a VM was deployed in it.
-     *
-     * @param vm the VM to deploy
-     * @param host the host where the VM would be deployed
-     * @return the future load
-     */
-    public static ServerLoad getFutureLoadIfVMDeployedInHost(Vm vm, HostInfo host) {
-        double cpus = host.getAssignedCpus() + host.getReservedCpus() + vm.getCpus();
-        double ramMb = host.getAssignedMemoryMb() + host.getReservedMemoryMb() + vm.getRamMb();
-        double diskGb = host.getAssignedDiskGb() + host.getReservedDiskGb() + vm.getDiskGb();
-        return new ServerLoad(cpus/host.getTotalCpus(), ramMb/host.getTotalMemoryMb(), diskGb/host.getTotalDiskGb());
     }
 
 }
