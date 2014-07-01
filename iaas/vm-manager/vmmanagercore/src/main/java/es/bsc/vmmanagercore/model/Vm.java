@@ -39,21 +39,6 @@ public class Vm {
         this.applicationId = applicationId;
     }
 
-    public Vm(JsonNode json) {
-        this.name = json.get("name").asText();
-        this.image = json.get("image").asText();
-        setCpus(json.get("cpus").asInt());
-        setRamMb(json.get("ramMb").asInt());
-        setDiskGb(json.get("diskGb").asInt());
-        this.initScript = null;
-        if (json.has("initScript")) {
-            if (!json.get("initScript").asText().equals("")) {
-                setInitScript(json.get("initScript").asText());
-            }
-        }
-        this.applicationId = json.get("applicationId").asText();
-    }
-
     public String getName() {
         return name;
     }

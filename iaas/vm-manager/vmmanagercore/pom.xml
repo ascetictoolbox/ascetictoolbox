@@ -93,8 +93,8 @@
             <version>1.2.16</version>
         </dependency>
         <dependency>
-            <groupId>eu.ascetic.api.zabbix</groupId>
-            <artifactId>ascetic-zabbix-api</artifactId>
+            <groupId>eu.ascetic.ascetic-architecture.iaas</groupId>
+            <artifactId>zabbix-api</artifactId>
             <version>0.1-SNAPSHOT</version>
         </dependency>
         <dependency>

@@ -125,11 +125,13 @@ iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/db/VmManagerDbH
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/integration/VMMToEMConversor.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/manager/VmManager.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/manager/VmManagerConfiguration.java -text
+iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/DeploymentPlan.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/ImageToUpload.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/ImageUploaded.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/SchedulingAlgorithm.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/ServerLoad.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/Vm.java -text
+iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/VmAssignmentToHost.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/VmDeployed.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/monitoring/HostInfo.java -text
 iaas/vm-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/monitoring/HostInfoFake.java -text

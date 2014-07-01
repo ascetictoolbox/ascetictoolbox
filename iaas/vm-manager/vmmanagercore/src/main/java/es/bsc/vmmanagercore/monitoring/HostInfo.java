@@ -1,6 +1,10 @@
 package es.bsc.vmmanagercore.monitoring;
 
 
+import es.bsc.vmmanagercore.model.Vm;
+
+import java.util.List;
+
 /**
  * Status of a host of an infrastructure.
  * 
@@ -42,6 +46,23 @@ public abstract class HostInfo {
      */
     public boolean hasEnoughResources(int cpus, int memoryMb, int diskGb) {
         return (getFreeCpus() >= cpus) && (getFreeMemoryMb() >= memoryMb) && (getFreeDiskGb() >= diskGb);
+    }
+
+    /**
+     * Checks whether a specific host has enough resources to deploy a set of VMs.
+     *
+     * @param vms the list of VMs
+     * @return true if the host has enough resources available, false otherwise
+     */
+    public boolean hasEnoughResourcesToDeployVms(List<Vm> vms) {
+        int totalCpus, totalRamMb, totalDiskGb;
+        totalCpus = totalRamMb = totalDiskGb = 0;
+        for (Vm vm: vms) {
+            totalCpus += vm.getCpus();
+            totalRamMb += vm.getRamMb();
+            totalDiskGb += vm.getDiskGb();
+        }
+        return hasEnoughResources(totalCpus, totalRamMb, totalDiskGb);
     }
 
     /**
