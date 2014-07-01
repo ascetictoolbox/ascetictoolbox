@@ -1,3 +1,10 @@
+paas/application-monitor/etc/db/data/applicationmonitor.0
+paas/application-monitor/etc/db/data/applicationmonitor.ns
+paas/application-monitor/etc/db/data/journal
+paas/application-monitor/etc/db/data/local.0
+paas/application-monitor/etc/db/data/local.ns
+paas/application-monitor/etc/db/data/mongod.lock
+paas/application-monitor/target
 saas/compss-packager/.classpath
 saas/compss-packager/.project
 saas/compss-plugin/ascetic-deployer/target

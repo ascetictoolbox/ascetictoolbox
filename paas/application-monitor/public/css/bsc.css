@@ -1,0 +1,49 @@
+footer {
+    width: 100%;
+    position: fixed;
+    bottom: 0px;
+    margin: 0 10px 2px 0;
+    vertical-align: middle;
+    text-align: right
+}
+
+.bsc-apps-list {
+	overflow: scroll;
+	max-height: 25%;
+}
+
+@media screen and (min-width: 979px) {
+	.bsc-apps-list {
+		position: fixed;
+		max-height: 100%;
+	}
+}
+
+.bsc-apps-list ul {
+	text-indent: 0px;
+	margin-left: 0px;
+	padding-left: 0px;
+	font-weight: bold;
+}
+.bsc-apps-list li {
+	list-style: none;
+}
+
+.bsc-apps-list ul ul {
+	margin-left: 15px;
+	font-weight: normal;
+}
+
+.bsc-graph-panel {
+	min-height: 300px;
+}
+
+#globalGraph {
+    width: 600px;
+    overflow-style: scrollbar;
+}
+
+#globalLog {
+    min-height: 50%;
+    background-color: red;
+}

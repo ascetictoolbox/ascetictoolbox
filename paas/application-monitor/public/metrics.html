@@ -1,0 +1,54 @@
+<!--main-->
+
+<div class="row">
+	<!--left-->
+	<div class="col-md-3" id="leftCol">
+		<div class="panel panel-primary bsc-apps-list">
+			<div class="panel-heading">Registerd Apps</div>
+			<div class="panel-body container-fluid" ng-controller="AppsListController as alc">
+				<ul ng-repeat="(appName,nodes) in alc.appsTree">
+					<li>{{appName}}
+						<ul ng-repeat="node in nodes">
+							<li>{{node}}</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div><!--/left-->
+
+	<!--right-->
+	<div class="col-md-9">
+		<div class="row" ng-controller="GraphicsPanelController as gpc">
+			<div class="col-md-12 ">
+				<button type="button" class="btn btn-default" ng-click="gpc.addNewPanel()">
+					<i class="glyphicon glyphicon-plus-sign"></i> Add new graph...
+				</button>
+			</div>
+			<div class="col-md-6" ng-repeat="(id,info) in gpc.panels">
+				<div class="panel panel-info bsc-graph-panel">
+					<div class="panel-heading">
+						{{info.title}}
+						<div class="btn-group pull-right">
+							<a href="#" ng-click="gpc.removePanel(id)"><i class="glyphicon glyphicon-remove"></i></a>
+						</div>
+						<div class="clearfix"></div>
+					</div>
+					<div class="panel-body" ng-controller="TypeAheadCtrl">
+						<input type="text" ng-model="asyncSelected" placeholder="Metrics loaded via $http" typeahead="metrics for metrics in getMetrics($viewValue)" typeahead-loading="loadingMetrics" class="form-control">
+						<i ng-show="loadingMetrics" class="glyphicon glyphicon-refresh"></i>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div><!--/right-->
+</div><!--/row-->
+</div><!--/container-->
+
+<!--script>
+	http://stackoverflow.com/questions/13103671/how-to-integrate-flot-with-angularjs
+
+			http://chinmaymk.github.io/angular-charts/#data
+
+					http://www.highcharts.com/demo/dynamic-update
+-->

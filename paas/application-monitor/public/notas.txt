@@ -1,0 +1,32 @@
+Obtener aplicaciones
+curl "http://localhost:1081/1.0/types"
+["cube_compute","cube_request","idea","jarpleich","jurl","random","test"]
+
+Obtener metricas de una aplicacion e.g. vlc
+curl "http://localhost:1081/1.0/event?expression=vlc(metrics)&limit=1"
+[{"time":"2014-06-06T11:27:04.000Z",
+"data":{
+	"metrics":{
+		"ps":[{"user":"mmacias","pid":"375","%cpu":"0.3","%mem":"0.7","vsz":"2719316",
+				"rss":"54784","tt":"??","stat":"S","started":"11:32AM","time":"1:39.99",
+				"command":"/Applications/VLC.app/Contents/MacOS/VLC"}],
+		"iostat":{
+			"disk0":{"KB/t":"28.73","tps":"18","MB/s":"0.51"},
+			"cpu":{"us":"5","sy":"2","id":"93"},
+			"load":{"1m":"1.91","5m":"1.67","15m":"1.44"}}}}}]
+
+Obtener nodos para una aplicación concreta usados entre dos intervalos de tiempo:
+curl "http://localhost:1081/1.0/event?start=2014-06-06T11:22:27&end=2014-06-06T12:36:31&expression=vlc(nodeId)"
+[{"time":"2014-06-06T11:22:27.000Z","data":{"nodeId":"MyMac"}},
+{"time":"2014-06-06T11:27:01.000Z","data":{"nodeId":"mac"}},
+{"time":"2014-06-06T11:27:02.000Z","data":{"nodeId":"mac"}},
+{"time":"2014-06-06T11:27:03.000Z","data":{"nodeId":"mac"}},{"time":"2014-06-06T11:27:04.000Z","data":{"nodeId":"mac"}},
+{"time":"2014-06-06T12:36:30.000Z","data":{"nodeId":"macOtro"}},{"time":"2014-06-06T12:36:31.000Z","data":{"nodeId":"macOtro"}},
+{"time":"2014-06-06T12:36:32.000Z","data":{"nodeId":"macOtro"}},{"time":"2014-06-06T12:36:33.000Z","data":{"nodeId":"macOtro"}},
+{"time":"2014-06-06T12:36:34.000Z","data":{"nodeId":"macOtro"}},{"time":"2014-06-06T12:36:35.000Z","data":{"nodeId":"macOtro"}},
+{"time":"2014-06-06T12:36:36.000Z","data":{"nodeId":"macOtro"}},{"time":"2014-06-06T12:36:37.000Z","data":{"nodeId":"macOtro"}},
+{"time":"2014-06-06T12:36:38.000Z","data":{"nodeId":"macOtro"}},{"time":"2014-06-06T12:36:39.000Z","data":{"nodeId":"macOtro"}},
+{"time":"2014-06-06T12:36:40.000Z","data":{"nodeId":"macOtro"}},{"time":"2014-06-06T12:36:41.000Z","data":{"nodeId":"macOtro"}},
+{"time":"2014-06-06T12:36:42.000Z","data":{"nodeId":"macOtro"}},{"time":"2014-06-06T12:36:43.000Z","data":{"nodeId":"macOtro"}}]
+
+
