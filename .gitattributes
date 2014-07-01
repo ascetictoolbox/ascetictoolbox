@@ -573,6 +573,7 @@ paas/application-monitor/.idea/libraries/SBT__org_jboss_logging_jboss_logging_3_
 paas/application-monitor/.idea/libraries/SBT__org_joda_joda_convert_1_6.xml -text
 paas/application-monitor/.idea/libraries/SBT__org_json_json_20080701_test.xml -text
 paas/application-monitor/.idea/libraries/SBT__org_mockito_mockito_core_1_9_5_test.xml -text
+paas/application-monitor/.idea/libraries/SBT__org_mongodb_mongo_java_driver_2_12_2.xml -text
 paas/application-monitor/.idea/libraries/SBT__org_objenesis_objenesis_1_0_test.xml -text
 paas/application-monitor/.idea/libraries/SBT__org_reflections_reflections_0_9_8.xml -text
 paas/application-monitor/.idea/libraries/SBT__org_scala_lang_modules_scala_parser_combinators_2_11_1_0_1.xml -text
@@ -625,6 +626,7 @@ paas/application-monitor/.idea/modules.xml -text
 paas/application-monitor/.idea/projectCodeStyle.xml -text
 paas/application-monitor/.idea/scala_compiler.xml -text
 paas/application-monitor/.idea/vcs.xml -text
+paas/application-monitor/.idea/workspace.xml -text
 paas/application-monitor/.idea_modules/application-monitor-build.iml -text
 paas/application-monitor/.idea_modules/application-monitor.iml -text
 paas/application-monitor/.settings/org.eclipse.core.resources.prefs -text
