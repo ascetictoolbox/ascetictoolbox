@@ -15,7 +15,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
-import javax.xml.ws.soap.AddressingFeature.Responses;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

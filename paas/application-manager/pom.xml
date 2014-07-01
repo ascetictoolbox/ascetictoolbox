@@ -90,6 +90,13 @@
 	</build>
 
 	<dependencies>
+	
+		<!-- ASCETiC Dependencies -->
+		<dependency>
+			<groupId>eu.ascetic.ascetic-architecture.paas</groupId>
+			<artifactId>application-manager-datamodel</artifactId>
+			<version>0.1-SNAPSHOT</version>
+		</dependency>
 
 		<!-- General -->
 		<dependency>
@@ -218,15 +225,14 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.hibernate.javax.persistence</groupId>
-			<artifactId>hibernate-jpa-2.0-api</artifactId>
-			<version>1.0.0.Final</version>
-		</dependency>
-
-		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-c3p0</artifactId>
 			<version>${hibernate-version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.0-api</artifactId>
 		</dependency>
 
 		<!-- Mysql connector -->

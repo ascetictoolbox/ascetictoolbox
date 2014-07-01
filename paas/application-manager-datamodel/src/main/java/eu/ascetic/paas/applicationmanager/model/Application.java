@@ -1,6 +1,6 @@
 package eu.ascetic.paas.applicationmanager.model;
 
-import static eu.ascetic.paas.applicationmanager.Dictionary.APPLICATION_MANAGER_NAMESPACE;
+import static eu.ascetic.paas.applicationmanager.model.Dictionary.APPLICATION_MANAGER_NAMESPACE;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,10 +38,10 @@ public class Application {
 	private String href;
 	@XmlElement(name = "id", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private int id;
-	@XmlElement(name = "status", namespace = APPLICATION_MANAGER_NAMESPACE)
-	private String status;
-	@XmlElement(name = "deployment-plan-id", namespace = APPLICATION_MANAGER_NAMESPACE)
-	private String deploymentPlanId;
+	@XmlElement(name = "name", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private String name;
+	@XmlElement(name = "deployments", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private List<Deployment> deployments;
 	//TODO Add OVF description...
 	@XmlElement(name="link", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private List<Link> links;
@@ -56,20 +56,12 @@ public class Application {
 		this.id = id;
 	}
 	
-	@Column(name = "application_status", nullable = false)
-	public String getStatus() {
-		return status;
+	@Column(name = "name", nullable = false)
+	public String getName() {
+		return name;
 	}
-	public void setStatus(String status) {
-		this.status = status;
-	}
-	
-	@Column(name = "deployment_plan", nullable = true)
-	public String getDeploymentPlanId() {
-		return deploymentPlanId;
-	}
-	public void setDeploymentPlanId(String deploymentPlanId) {
-		this.deploymentPlanId = deploymentPlanId;
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	@Transient
@@ -82,6 +74,18 @@ public class Application {
 	public void addLink(Link link) {
 		if(links==null) links = new ArrayList<Link>();
 		links.add(link);
+	}
+	
+	@Transient
+	public List<Deployment> getDeployments() {
+		return deployments;
+	}
+	public void setDeployments(List<Deployment> deployments) {
+		this.deployments = deployments;
+	}
+	public void addDeployment(Deployment deployment) {
+		if(deployments==null) deployments = new ArrayList<Deployment>();
+		deployments.add(deployment);
 	}
 	
 	@Transient

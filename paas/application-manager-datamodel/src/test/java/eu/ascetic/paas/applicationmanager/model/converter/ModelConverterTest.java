@@ -1,13 +1,11 @@
 package eu.ascetic.paas.applicationmanager.model.converter;
 
-import static eu.ascetic.paas.applicationmanager.Dictionary.APPLICATION_MANAGER_NAMESPACE;
+import static eu.ascetic.paas.applicationmanager.model.Dictionary.APPLICATION_MANAGER_NAMESPACE;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
-
-import javax.ws.rs.core.MediaType;
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -43,7 +41,7 @@ public class ModelConverterTest {
 		
 		Link link = new Link();
 		link.setRel("applications");
-		link.setType(MediaType.APPLICATION_XML);
+		link.setType("application/xml");
 		link.setHref("/applications");
 		root.addLink(link);
 		
@@ -81,7 +79,7 @@ public class ModelConverterTest {
 		assertEquals(1, listxpathName.size());
 		element = (Element) listxpathName.get(0);
 		assertEquals("applications", element.getAttributeValue("rel"));
-		assertEquals(MediaType.APPLICATION_XML, element.getAttributeValue("type"));
+		assertEquals("application/xml", element.getAttributeValue("type"));
 		assertEquals("/applications", element.getAttributeValue("href"));
 	}
 	
@@ -94,10 +92,8 @@ public class ModelConverterTest {
 	@Test
 	public void objectCollectionToXMLTest() throws JDOMException, IOException {
 		Application application = new Application();
-		application.setDeploymentPlanId("deployment");
 		application.setHref("href");
 		application.setId(1);
-		application.setStatus("RUNNING");
 		
 		Items items = new Items();
 		items.setOffset(1);
@@ -110,7 +106,7 @@ public class ModelConverterTest {
 		
 		Link link = new Link();
 		link.setRel("self");
-		link.setType(MediaType.APPLICATION_XML);
+		link.setType("application/xml");
 		link.setHref("href2");
 		collection.addLink(link);
 		
@@ -156,7 +152,7 @@ public class ModelConverterTest {
 		assertEquals(1, listxpathName.size());
 		element = (Element) listxpathName.get(0);
 		assertEquals("self", element.getAttributeValue("rel"));
-		assertEquals(MediaType.APPLICATION_XML, element.getAttributeValue("type"));
+		assertEquals("application/xml", element.getAttributeValue("type"));
 		assertEquals("href2", element.getAttributeValue("href"));
 	}
 	
@@ -176,14 +172,12 @@ public class ModelConverterTest {
 						+ "<application href=\"/101\">"
 							+ "<id>101</id>"
 							+ "<state>STATE1</state>"
-							+ "<deployment-plan-id>d1</deployment-plan-id>"
 							+ "<link rel=\"parent\" href=\"/\" type=\"application/xml\" />"
 							+ "<link rel=\"self\" href=\"/101\" type=\"application/xml\" />"
 						+ "</application>"
 						+ "<application href=\"/102\">"
 							+ "<id>102</id>"
 							+ "<state>STATE2</state>"
-							+ "<deployment-plan-id>d2</deployment-plan-id>"
 							+ "<link rel=\"parent\" href=\"/\" type=\"application/xml\" />"
 							+ "<link rel=\"self\" href=\"/102\" type=\"application/xml\" />"
 						+ "</application>"
@@ -195,7 +189,7 @@ public class ModelConverterTest {
 		assertEquals(2, collection.getItems().getApplications().size());
 		assertEquals(102, collection.getItems().getApplications().get(1).getId());
 		assertEquals(2, collection.getItems().getTotal());
-		assertEquals(MediaType.APPLICATION_XML, collection.getLinks().get(0).getType());
+		assertEquals("application/xml", collection.getLinks().get(0).getType());
 	}
 	
 	@Test
@@ -207,14 +201,12 @@ public class ModelConverterTest {
 	@Test
 	public void objectApplicationToXMLTest() throws JDOMException, IOException {
 		Application application = new Application();
-		application.setDeploymentPlanId("deployment");
 		application.setHref("href");
 		application.setId(1);
-		application.setStatus("RUNNING");
 		
 		Link link = new Link();
 		link.setRel("self");
-		link.setType(MediaType.APPLICATION_XML);
+		link.setType("application/xml");
 		link.setHref("href2");
 		application.addLink(link);
 		
@@ -238,20 +230,6 @@ public class ModelConverterTest {
 		assertEquals(1, listxpathName.size());
 		element = (Element) listxpathName.get(0);
 		assertEquals("1", element.getValue());
-
-		xpathName = XPath.newInstance("//bnf:deployment-plan-id");
-		xpathName.addNamespace("bnf", APPLICATION_MANAGER_NAMESPACE);
-		listxpathName = xpathName.selectNodes(xmldoc);
-		assertEquals(1, listxpathName.size());
-		element = (Element) listxpathName.get(0);
-		assertEquals("deployment", element.getValue());
-		
-		xpathName = XPath.newInstance("//bnf:status");
-		xpathName.addNamespace("bnf", APPLICATION_MANAGER_NAMESPACE);
-		listxpathName = xpathName.selectNodes(xmldoc);
-		assertEquals(1, listxpathName.size());
-		element = (Element) listxpathName.get(0);
-		assertEquals("RUNNING", element.getValue());
 		
 		xpathName = XPath.newInstance("//bnf:link");
 		xpathName.addNamespace("bnf", APPLICATION_MANAGER_NAMESPACE);
@@ -259,7 +237,7 @@ public class ModelConverterTest {
 		assertEquals(1, listxpathName.size());
 		element = (Element) listxpathName.get(0);
 		assertEquals("self", element.getAttributeValue("rel"));
-		assertEquals(MediaType.APPLICATION_XML, element.getAttributeValue("type"));
+		assertEquals("application/xml", element.getAttributeValue("type"));
 		assertEquals("href2", element.getAttributeValue("href"));
 	}
 	
@@ -277,8 +255,6 @@ public class ModelConverterTest {
 		String applicationXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 								+ "<application xmlns=\"http://application_manager.ascetic.eu/doc/schemas/xml\" href=\"/101\">"
 									+ "<id>101</id>"
-									+ "<status>STATE1</status>"
-									+ "<deployment-plan-id>d1</deployment-plan-id>"
 									+ "<link rel=\"parent\" href=\"/\" type=\"application/xml\" />"
 									+ "<link rel=\"self\" href=\"/101\" type=\"application/xml\" />"
 								+ "</application>";
@@ -286,15 +262,13 @@ public class ModelConverterTest {
 		Application application = ModelConverter.xmlApplicationToObject(applicationXML);
 		assertEquals("/101", application.getHref());
 		assertEquals(101, application.getId());
-		assertEquals("STATE1", application.getStatus());
-		assertEquals("d1", application.getDeploymentPlanId());
 		assertEquals(2, application.getLinks().size());
 		assertEquals("parent", application.getLinks().get(0).getRel());
 		assertEquals("/", application.getLinks().get(0).getHref());
-		assertEquals(MediaType.APPLICATION_XML, application.getLinks().get(0).getType());
+		assertEquals("application/xml", application.getLinks().get(0).getType());
 		assertEquals("self", application.getLinks().get(1).getRel());
 		assertEquals("/101", application.getLinks().get(1).getHref());
-		assertEquals(MediaType.APPLICATION_XML, application.getLinks().get(1).getType());
+		assertEquals("application/xml", application.getLinks().get(1).getType());
 	}
 	
 }

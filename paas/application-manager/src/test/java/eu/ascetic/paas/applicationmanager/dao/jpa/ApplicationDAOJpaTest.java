@@ -32,8 +32,7 @@ public class ApplicationDAOJpaTest extends AbstractTransactionalJUnit4SpringCont
 		int size = applicationDAO.getAll().size();
 		
 		Application application = new Application();
-		application.setDeploymentPlanId("deployment-plan");
-		application.setStatus("RUNNING");
+		application.setName("name");
 		
 		boolean saved = applicationDAO.save(application);
 		assertTrue(saved);
@@ -43,8 +42,7 @@ public class ApplicationDAOJpaTest extends AbstractTransactionalJUnit4SpringCont
 		assertEquals(size, applications.size());
 		
 		Application applicationFromDatabase = applications.get(size-1);
-		assertEquals("RUNNING", applicationFromDatabase.getStatus());
-		assertEquals("deployment-plan", applicationFromDatabase.getDeploymentPlanId());
+		assertEquals("name", applicationFromDatabase.getName());
 	}
 	
 	@Test
@@ -52,8 +50,7 @@ public class ApplicationDAOJpaTest extends AbstractTransactionalJUnit4SpringCont
 		int size = applicationDAO.getAll().size();
 		
 		Application application = new Application();
-		application.setDeploymentPlanId("deployment-plan");
-		application.setStatus("RUNNING");
+		application.setName("name");
 		
 		boolean saved = applicationDAO.save(application);
 		assertTrue(saved);
@@ -61,8 +58,7 @@ public class ApplicationDAOJpaTest extends AbstractTransactionalJUnit4SpringCont
 		Application applicationFromDatabase = applicationDAO.getAll().get(size);
 		int id = applicationFromDatabase.getId();
 		applicationFromDatabase = applicationDAO.getById(id);
-		assertEquals("RUNNING", applicationFromDatabase.getStatus());
-		assertEquals("deployment-plan", applicationFromDatabase.getDeploymentPlanId());
+		assertEquals("name", applicationFromDatabase.getName());
 		
 		Application nullApplication = applicationDAO.getById(30000);
 		assertEquals(null, nullApplication);
@@ -73,8 +69,7 @@ public class ApplicationDAOJpaTest extends AbstractTransactionalJUnit4SpringCont
 		int size = applicationDAO.getAll().size();
 		
 		Application application = new Application();
-		application.setDeploymentPlanId("deployment-plan");
-		application.setStatus("RUNNING");
+		application.setName("name");
 		
 		boolean saved = applicationDAO.save(application);
 		assertTrue(saved);
@@ -97,26 +92,22 @@ public class ApplicationDAOJpaTest extends AbstractTransactionalJUnit4SpringCont
 		int size = applicationDAO.getAll().size();
 		
 		Application application = new Application();
-		application.setDeploymentPlanId("deployment-plan");
-		application.setStatus("RUNNING");
+		application.setName("name");
 		
 		boolean saved = applicationDAO.save(application);
 		assertTrue(saved);
 		
 		Application applicationFromDatabase = applicationDAO.getAll().get(size);
 		int id = applicationFromDatabase.getId();
-		assertEquals("RUNNING", applicationFromDatabase.getStatus());
-		assertEquals("deployment-plan", applicationFromDatabase.getDeploymentPlanId());
-			
-		applicationFromDatabase.setDeploymentPlanId("deployment-plan2");
-		applicationFromDatabase.setStatus("STOPPED");
+		assertEquals("name", applicationFromDatabase.getName());
+		
+		applicationFromDatabase.setName("name2");
 
 		boolean updated = applicationDAO.update(applicationFromDatabase);
 		assertTrue(updated);
 		
 		applicationFromDatabase = applicationDAO.getById(id);
-		assertEquals("STOPPED", applicationFromDatabase.getStatus());
-		assertEquals("deployment-plan2", applicationFromDatabase.getDeploymentPlanId());
+		assertEquals("name2", applicationFromDatabase.getName());
 	}
 }
 

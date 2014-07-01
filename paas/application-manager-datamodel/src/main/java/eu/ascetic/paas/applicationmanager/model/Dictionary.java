@@ -1,4 +1,4 @@
-package eu.ascetic.paas.applicationmanager;
+package eu.ascetic.paas.applicationmanager.model;
 
 /**
  * Collection of variables to maintain equal through the entire application
