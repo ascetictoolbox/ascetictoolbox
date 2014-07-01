@@ -641,7 +641,6 @@ paas/application-monitor/app/api/Events.java -text
 paas/application-monitor/app/api/Metrics.java -text
 paas/application-monitor/app/api/Misc.java -text
 paas/application-monitor/app/api/Queries.java -text
-paas/application-monitor/app/controllers/Application.java -text
 paas/application-monitor/app/es/bsc/amon/DBManager.java -text
 paas/application-monitor/app/es/bsc/amon/Global.java -text
 paas/application-monitor/app/es/bsc/amon/controller/AppsDBMapper.java -text
@@ -656,8 +655,6 @@ paas/application-monitor/app/es/bsc/amon/util/tree/TreeNode.java -text
 paas/application-monitor/app/es/bsc/amon/util/tree/TreeNodeFactory.java -text
 paas/application-monitor/app/es/bsc/amon/util/tree/Value.java -text
 paas/application-monitor/app/es/bsc/amon/util/tree/ValueArray.java -text
-paas/application-monitor/app/views/index.scala.html -text
-paas/application-monitor/app/views/main.scala.html -text
 paas/application-monitor/build.sbt -text
 paas/application-monitor/conf/application.conf -text
 paas/application-monitor/conf/routes -text

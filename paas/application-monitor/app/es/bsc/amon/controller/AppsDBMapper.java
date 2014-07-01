@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.mongodb.BasicDBList;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 import es.bsc.amon.DBManager;
+import play.Logger;
 
 import java.util.*;
 
@@ -27,21 +29,30 @@ public class AppsDBMapper {
         DBObject query = (DBObject) JSON.parse("{$orderby : {timestamp : -1}, $query : { $and : [ { timestamp : { $gte : " + start
                 + " }}, { timestamp : {$lte : " + end + "}} ] } }");
 
-        ArrayNode ret = DBManager.instance.find(EventsDBMapper.COLL_NAME, query);
+        BasicDBList ret = DBManager.instance.find(EventsDBMapper.COLL_NAME, query);
 
         Map<String,Set<String>> appsInfo = new HashMap<>();
 
-        Iterator<JsonNode> iter = ret.iterator();
+        Iterator<Object> iter = ret.iterator();
         while(iter.hasNext()) {
-            JsonNode event = iter.next();
-            String appName = event.get(EventsDBMapper.APPID).asText();
-            String nodeName = event.get(EventsDBMapper.NODEID).asText();
-            Set<String> appSet = appsInfo.get(appName);
-            if (appSet == null) {
-                appSet = new TreeSet<>();
-                appsInfo.put(appName, appSet);
+            DBObject event = (DBObject) iter.next();
+            try {
+                String appName = event.get(EventsDBMapper.APPID).toString();
+                String nodeName = event.get(EventsDBMapper.NODEID).toString();
+                Set<String> appSet = appsInfo.get(appName);
+                if (appSet == null) {
+                    appSet = new TreeSet<>();
+                    appsInfo.put(appName, appSet);
+                }
+                appSet.add(nodeName);
+            } catch(NullPointerException ex) {
+                Logger.warn("This element did not parsed as an application: " + event.toString() + ". Removing it from DB...");
+                try {
+                    EventsDBMapper.getInstance().remove(event);
+                } catch(Exception e) {
+                    Logger.error("Cannot remove it from database");
+                }
             }
-            appSet.add(nodeName);
         }
 
         ObjectNode all = new ObjectNode(JsonNodeFactory.instance);

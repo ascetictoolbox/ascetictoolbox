@@ -1,8 +1,5 @@
 package es.bsc.amon;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.mongodb.*;
 import play.Logger;
 import play.libs.Json;
@@ -56,8 +53,9 @@ public class DBManager {
         return config;
     }
 
-    public ArrayNode find(String collectionName, DBObject query) {
-        ArrayNode result = new ArrayNode(JsonNodeFactory.instance);
+    public BasicDBList find(String collectionName, DBObject query) {
+        BasicDBList result = new BasicDBList();
+
         DBCursor c = null;
         if(query == null) {
             c = database.getCollection(collectionName).find();
@@ -65,26 +63,21 @@ public class DBManager {
             c = database.getCollection(collectionName).find(query);
         }
         while(c.hasNext()) {
-            result.add(Json.parse(c.next().toString()));
+            result.add(c.next());
         }
         c.close();
         return result;
     }
 
-    public JsonNode findOne(String collectionName, DBObject query) {
+    public DBObject findOne(String collectionName, DBObject query) {
         DBObject o = null;
         if(query == null) {
             o = database.getCollection(collectionName).findOne();
         } else {
             o = database.getCollection(collectionName).findOne(query);
         }
-        if(o == null) {
-            return null;
-        } else {
-            return Json.parse(o.toString());
-        }
+        return o;
     }
-
 
 
 }

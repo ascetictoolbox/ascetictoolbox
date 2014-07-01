@@ -11,7 +11,7 @@ import com.mongodb.util.JSON;
 import es.bsc.amon.DBManager;
 import org.bson.types.ObjectId;
 import play.Logger;
-import play.api.libs.json.Json;
+import play.libs.Json;
 
 import java.util.Calendar;
 import java.util.Properties;
@@ -94,7 +94,7 @@ public class EventsDBMapper {
 	public JsonNode getLastEvent(String appId, String nodeId) {
 		DBObject query = (DBObject) JSON.parse("{$orderby : {timestamp : -1}, $query : { $and : [ { appId : \"" + appId
 				+ "\" }, { nodeId : \"" + nodeId + "\"} ] } }");
-		return DBManager.instance.findOne(COLL_NAME,query);
+		return Json.parse(DBManager.instance.findOne(COLL_NAME,query).toString());
 	}
 
 	public ObjectNode get(String id) {
@@ -136,6 +136,15 @@ public class EventsDBMapper {
 
 		return on;
 	}
+
+    public void remove(DBObject dbo) {
+        colEvents.remove(dbo);
+    }
+
+    public void remove(String id) {
+        BasicDBObjectBuilder q = BasicDBObjectBuilder.start().add(_ID,new ObjectId(id));
+        colEvents.findAndRemove(q.get());
+    }
 
 
 }
