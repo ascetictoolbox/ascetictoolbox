@@ -1,8 +1,12 @@
 package es.bsc.vmmanagercore.monitoring;
 
+import es.bsc.vmmanagercore.model.Vm;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -141,6 +145,32 @@ public class HostInfoFakeTest {
 
         //case where the host does not have enough CPU, memory, nor disk
         assertFalse(hostInfo.hasEnoughResources(3, 3072, 3));
+    }
+
+    @Test
+    public void hasEnoughResourcesForVms() {
+        HostInfoFake hostInfo = new HostInfoFake("hostName", 4, 4096, 4, 1, 1024, 1);
+
+        // Create list of VMs
+        List<Vm> vms = new ArrayList<>();
+        vms.add(new Vm("vm1", "image", 1, 1024, 1, null, ""));
+        vms.add(new Vm("vm2", "image", 1, 1024, 1, null, ""));
+        vms.add(new Vm("vm3", "image", 1, 1024, 1, null, ""));
+
+        assertTrue(hostInfo.hasEnoughResourcesToDeployVms(vms));
+    }
+
+    @Test
+    public void doesNotHaveEnoughResourcesForVms() {
+        HostInfoFake hostInfo = new HostInfoFake("hostName", 4, 4096, 4, 1, 1024, 1);
+
+        // Create list of VMs
+        List<Vm> vms = new ArrayList<>();
+        vms.add(new Vm("vm1", "image", 2, 1024, 1, null, ""));
+        vms.add(new Vm("vm2", "image", 2, 1024, 1, null, ""));
+        vms.add(new Vm("vm3", "image", 2, 1024, 1, null, ""));
+
+        assertFalse(hostInfo.hasEnoughResourcesToDeployVms(vms));
     }
 
     @Test
