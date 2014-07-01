@@ -2,12 +2,12 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<parent>
+	<!--parent>
 		<groupId>eu.ascetic.ascetic-architecture</groupId>
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 		<artifactId>paas</artifactId>
-	</parent>
+	</parent-->
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.ascetic.ascetic-architecture.paas</groupId>
@@ -70,38 +70,42 @@
 	</dependencies>
 
 	<build>
-		<sourceDirectory>${basedir}/app</sourceDirectory>
-		<resources>
-			<resource>
-				<directory>${basedir}/conf</directory>
-			</resource>
-			<resource>
-				<directory>${basedir}</directory>
-				<includes>
-					<include>public/**</include>
-				</includes>
-			</resource>
-		</resources>
-
-		<plugins>
-			<plugin>
-				<groupId>com.google.code.sbt-compiler-maven-plugin</groupId>
-				<artifactId>sbt-compiler-maven-plugin</artifactId>
-				<version>${sbt-compiler.plugin.version}</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.17</version>
-			</plugin>
-			<plugin>
-				<groupId>com.google.code.play2-maven-plugin</groupId>
-				<artifactId>play2-maven-plugin</artifactId>
-				<version>${play2.plugin.version}</version>
-				<extensions>true</extensions>
-				<executions>
-				</executions>
-			</plugin>
-		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>com.google.code.play2-maven-plugin</groupId>
+					<artifactId>play2</artifactId>
+					<version>${play2.plugin.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>com.google.code.play2-maven-plugin</groupId>
+					<artifactId>play2-maven-plugin</artifactId>
+					<version>${play2.plugin.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>com.google.code.sbt-compiler-maven-plugin</groupId>
+					<artifactId>sbt-compiler-maven-plugin</artifactId>
+					<version>${sbt-compiler.plugin.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.17</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>2.4</version>
+					<configuration>
+						<archive>
+							<manifest>
+								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+								<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+							</manifest>
+						</archive>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 </project>
