@@ -24,6 +24,8 @@
 		<module>paas-energy-modeller</module>
 		<module>slam</module>
                 <module>paas-pricing-modeller</module>
+		<module>application-manager</module>
+		<module>application-manager-datamodel</module>
         </modules>
 	
         <url>http://www.ascetic.eu</url>
