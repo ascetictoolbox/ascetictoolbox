@@ -1,4 +1,4 @@
-package eu.ascetic.asceticarchitecture.paas.energymodeller.datatype;
+package eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype;
 
 import javax.measure.quantity.Duration;
 import javax.measure.quantity.Energy;

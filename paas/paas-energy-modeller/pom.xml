@@ -9,30 +9,58 @@
   <groupId>eu.ascetic.ascetic-architecture.paas</groupId>
   <artifactId>paas-energy-modeller</artifactId>
   <name>ASCETiC PaaS Energy Modeller</name>
-  <packaging>war</packaging>
+  <packaging>jar</packaging>
   <description>ASCETiC PaaS Energy Modeller </description>
   <url>http://www.ascetic.eu</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<paasem.jersey>1.8</paasem.jersey>
+		<paasem.jscience>4.3.1</paasem.jscience>
+		<paasem.mysql>5.1.31</paasem.mysql>
+		<paasem.jackson>2.4.0</paasem.jackson>
 	</properties>
 	
 	<dependencies>
   
 	    <dependency>
-		  <groupId>com.sun.jersey</groupId>
-		  <artifactId>jersey-server</artifactId>
-		  <version>1.8</version>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-server</artifactId>
+			<version>${paasem.jersey}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jscience</groupId>
 			<artifactId>jscience</artifactId>
-			<version>4.3.1</version>
+			<version>${paasem.jscience}</version>
 		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>log4j</groupId>
+		    <artifactId>log4j</artifactId>
+		</dependency>
+		<dependency>
+		  <groupId>com.fasterxml.jackson.core</groupId>
+		  <artifactId>jackson-core</artifactId>
+		  <version>${paasem.jackson}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.jmeter</groupId>
+			<artifactId>ApacheJMeter_core</artifactId>
+			<version>2.10</version>
+		</dependency>	
+		<dependency>
+			<groupId>org.apache.jmeter</groupId>
+			<artifactId>jorphan</artifactId>
+			<version>2.10</version>
+		</dependency>
+				
 	    <dependency>
-	      <groupId>junit</groupId>
-	      <artifactId>junit</artifactId>
-	      <scope>test</scope>
+	    	<groupId>junit</groupId>
+	    	<artifactId>junit</artifactId>
+	    	<scope>test</scope>
 	    </dependency>
     
   	</dependencies>
@@ -47,13 +75,6 @@
 					<target>1.7</target>
 				</configuration>
 			</plugin>
-			<plugin>
-		        <artifactId>maven-war-plugin</artifactId>
-		        <version>2.3</version>
-		        <configuration>
-                    <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
-                </configuration>
-		    </plugin>
 		</plugins>
 		
 	 </build> 
