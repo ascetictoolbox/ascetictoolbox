@@ -1,184 +1,1209 @@
+********************************************************
+********************************************************
+***************  getAllHosts  *********************
+********************************************************
+********************************************************
 HOST 0:
-host: Zabbix server
+host: asok10.cit.tu-berlin.de
 host id: 10084
+available: 1
+
+HOST 1:
+host: asok09.cit.tu-berlin.de
+host id: 10105
+available: 1
+
+HOST 2:
+host: asok12.cit.tu-berlin.de
+host id: 10106
+available: 1
+
+HOST 3:
+host: asok11.cit.tu-berlin.de
+host id: 10107
 available: 1
 
 ********************************************************
 ********************************************************
+***************  getItemsFromHost  *********************
 ********************************************************
 ********************************************************
 ITEM 0:
 name: Agent ping
 key: agent.ping
-hostid: 10084
+hostid: 10105
 delay: 60
 history: 7
-lastvalue: 1.0
-lastclock: 1402579867
+lastvalue: 1
+lastclock: 1404221684
 
 ITEM 1:
 name: Available memory
 key: vm.memory.size[available]
-hostid: 10084
+hostid: 10105
 delay: 60
 history: 7
-lastvalue: 2.60050944E8
-lastclock: 1402579896
+lastvalue: 27193602048
+lastclock: 1404221473
 
 ITEM 2:
-name: CPU $2 time
-key: system.cpu.util[,idle]
-hostid: 10084
-delay: 60
+name: Checksum of $1
+key: vfs.file.cksum[/etc/passwd]
+hostid: 10105
+delay: 3600
 history: 7
-lastvalue: 97.3277
-lastclock: 1402579879
+lastvalue: 731976336
+lastclock: 1404218098
 
 ITEM 3:
-name: CPU $2 time
-key: system.cpu.util[,interrupt]
-hostid: 10084
+name: Context switches per second
+key: system.cpu.switches
+hostid: 10105
 delay: 60
 history: 7
-lastvalue: 0.0
-lastclock: 1402579880
+lastvalue: 1824
+lastclock: 1404221501
 
 ITEM 4:
 name: CPU $2 time
-key: system.cpu.util[,iowait]
-hostid: 10084
+key: system.cpu.util[,idle]
+hostid: 10105
 delay: 60
 history: 7
-lastvalue: 0.7058
-lastclock: 1402579881
+lastvalue: 85.9764
+lastclock: 1404221502
 
 ITEM 5:
 name: CPU $2 time
-key: system.cpu.util[,nice]
-hostid: 10084
+key: system.cpu.util[,interrupt]
+hostid: 10105
 delay: 60
 history: 7
-lastvalue: 0.0
-lastclock: 1402579882
+lastvalue: 0.0000
+lastclock: 1404221503
 
 ITEM 6:
 name: CPU $2 time
-key: system.cpu.util[,softirq]
-hostid: 10084
+key: system.cpu.util[,iowait]
+hostid: 10105
 delay: 60
 history: 7
-lastvalue: 0.0504
-lastclock: 1402579883
+lastvalue: 0.0542
+lastclock: 1404221504
 
 ITEM 7:
 name: CPU $2 time
-key: system.cpu.util[,steal]
-hostid: 10084
+key: system.cpu.util[,nice]
+hostid: 10105
 delay: 60
 history: 7
-lastvalue: 0.0
-lastclock: 1402579884
+lastvalue: 0.0000
+lastclock: 1404221458
 
 ITEM 8:
 name: CPU $2 time
-key: system.cpu.util[,system]
-hostid: 10084
+key: system.cpu.util[,softirq]
+hostid: 10105
 delay: 60
 history: 7
-lastvalue: 0.1847
-lastclock: 1402579885
+lastvalue: 0.0146
+lastclock: 1404221336
 
 ITEM 9:
 name: CPU $2 time
-key: system.cpu.util[,user]
-hostid: 10084
+key: system.cpu.util[,steal]
+hostid: 10105
 delay: 60
 history: 7
-lastvalue: 0.2351
-lastclock: 1402579886
+lastvalue: 0.0000
+lastclock: 1404220007
 
 ITEM 10:
-name: Checksum of $1
-key: vfs.file.cksum[/etc/passwd]
-hostid: 10084
-delay: 3600
+name: CPU $2 time
+key: system.cpu.util[,system]
+hostid: 10105
+delay: 60
 history: 7
-lastvalue: 3.877453742E9
-lastclock: 1402579715
+lastvalue: 0.6735
+lastclock: 1404220608
 
 ITEM 11:
-name: Context switches per second
-key: system.cpu.switches
-hostid: 10084
+name: CPU $2 time
+key: system.cpu.util[,user]
+hostid: 10105
 delay: 60
 history: 7
-lastvalue: 144.0
-lastclock: 1402579878
+lastvalue: 14.0000
+lastclock: 1404220981
 
 ITEM 12:
-name: Free disk space on $1
-key: vfs.fs.size[/,free]
-hostid: 10084
-delay: 60
-history: 7
-lastvalue: 5.8891649024E10
-lastclock: 1402579901
+name: Energy
+key: energy
+hostid: 10105
+delay: 0
+history: 90
+lastvalue: 89838.6083
+lastclock: 1404221778
 
 ITEM 13:
-name: Free disk space on $1 (percentage)
-key: vfs.fs.size[/,pfree]
-hostid: 10084
+name: Free disk space on $1
+key: vfs.fs.size[/,free]
+hostid: 10105
 delay: 60
 history: 7
-lastvalue: 97.8405
-lastclock: 1402579902
+lastvalue: 1544830976
+lastclock: 1404220354
 
 ITEM 14:
-name: Free inodes on $1 (percentage)
-key: vfs.fs.inode[/,pfree]
-hostid: 10084
+name: Free disk space on $1
+key: vfs.fs.size[/boot,free]
+hostid: 10105
 delay: 60
 history: 7
-lastvalue: 99.1194
-lastclock: 1402579900
+lastvalue: 68057088
+lastclock: 1404219982
 
 ITEM 15:
-name: Free swap space
-key: system.swap.size[,free]
-hostid: 10084
+name: Free disk space on $1 (percentage)
+key: vfs.fs.size[/,pfree]
+hostid: 10105
 delay: 60
 history: 7
-lastvalue: 0.0
-lastclock: 1402579889
+lastvalue: 41.3376
+lastclock: 1404219983
 
 ITEM 16:
-name: Free swap space in %
-key: system.swap.size[,pfree]
-hostid: 10084
+name: Free disk space on $1 (percentage)
+key: vfs.fs.size[/boot,pfree]
+hostid: 10105
 delay: 60
 history: 7
-lastvalue: 0.0
-lastclock: 1402579890
+lastvalue: 75.1875
+lastclock: 1404220770
 
 ITEM 17:
-name: Host boot time
-key: system.boottime
-hostid: 10084
-delay: 600
-history: 7
-lastvalue: 1.402559587E9
-lastclock: 1402579693
-
-ITEM 18:
-name: Host local time
-key: system.localtime
-hostid: 10084
+name: Free inodes on $1 (percentage)
+key: vfs.fs.inode[/,pfree]
+hostid: 10105
 delay: 60
 history: 7
-lastvalue: 1.402579888E9
-lastclock: 1402579888
+lastvalue: 63.8581
+lastclock: 1404220832
+
+ITEM 18:
+name: Free inodes on $1 (percentage)
+key: vfs.fs.inode[/boot,pfree]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 99.8962
+lastclock: 1404221240
+
+ITEM 19:
+name: Free swap space
+key: system.swap.size[,free]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 34359689216
+lastclock: 1404221764
+
+ITEM 20:
+name: Free swap space in %
+key: system.swap.size[,pfree]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 99.9999
+lastclock: 1404220802
+
+ITEM 21:
+name: Host boot time
+key: system.boottime
+hostid: 10105
+delay: 600
+history: 7
+lastvalue: 1394536283
+lastclock: 1404218676
+
+ITEM 22:
+name: Host local time
+key: system.localtime
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 1404221031
+lastclock: 1404221031
+
+ITEM 23:
+name: Host name
+key: system.hostname
+hostid: 10105
+delay: 3600
+history: 7
+lastvalue: asok09
+lastclock: 1404218090
+
+ITEM 24:
+name: Host name of zabbix_agentd running
+key: agent.hostname
+hostid: 10105
+delay: 3600
+history: 7
+lastvalue: Zabbix server
+lastclock: 1404218069
+
+ITEM 25:
+name: Incoming network traffic on $1
+key: net.if.in[tapdebb1198-fc]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 0
+
+ITEM 26:
+name: Incoming network traffic on $1
+key: net.if.in[qvbdebb1198-fc]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 0
+
+ITEM 27:
+name: Incoming network traffic on $1
+key: net.if.in[qvodebb1198-fc]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 0
+
+ITEM 28:
+name: Incoming network traffic on $1
+key: net.if.in[qbrdebb1198-fc]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 0
+
+ITEM 29:
+name: Incoming network traffic on $1
+key: net.if.in[tap45873eed-f1]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 1404221499
+
+ITEM 30:
+name: Incoming network traffic on $1
+key: net.if.in[qbrf9d18ad8-0f]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 8
+lastclock: 1404221500
+
+ITEM 31:
+name: Incoming network traffic on $1
+key: net.if.in[ovs-system]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 1404221652
+
+ITEM 32:
+name: Incoming network traffic on $1
+key: net.if.in[qvb45873eed-f1]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 120
+lastclock: 1404221748
+
+ITEM 33:
+name: Incoming network traffic on $1
+key: net.if.in[br-tun]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 1404221305
+
+ITEM 34:
+name: Incoming network traffic on $1
+key: net.if.in[qvo45873eed-f1]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 1404221502
+
+ITEM 35:
+name: Incoming network traffic on $1
+key: net.if.in[br-int]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 128
+lastclock: 1404219251
+
+ITEM 36:
+name: Incoming network traffic on $1
+key: net.if.in[tapf9d18ad8-0f]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 1224
+lastclock: 1404221503
+
+ITEM 37:
+name: Incoming network traffic on $1
+key: net.if.in[eth1]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 54424
+lastclock: 1404221537
+
+ITEM 38:
+name: Incoming network traffic on $1
+key: net.if.in[qvbf9d18ad8-0f]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 976
+lastclock: 1404221504
+
+ITEM 39:
+name: Incoming network traffic on $1
+key: net.if.in[eth0]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 45592
+lastclock: 1404221367
+
+ITEM 40:
+name: Incoming network traffic on $1
+key: net.if.in[qvof9d18ad8-0f]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 896
+lastclock: 1404220305
+
+ITEM 41:
+name: Incoming network traffic on $1
+key: net.if.in[qbr45873eed-f1]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 8
+lastclock: 1404220006
+
+ITEM 42:
+name: Incoming network traffic on $1
+key: net.if.in[qbraecad323-51]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 1404221495
+
+ITEM 43:
+name: Incoming network traffic on $1
+key: net.if.in[qvbaecad323-51]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 1404221496
+
+ITEM 44:
+name: Incoming network traffic on $1
+key: net.if.in[qvoaecad323-51]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 1404221497
+
+ITEM 45:
+name: Incoming network traffic on $1
+key: net.if.in[qbrdcd008f0-34]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 1404221489
+
+ITEM 46:
+name: Incoming network traffic on $1
+key: net.if.in[qvbdcd008f0-34]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 88
+lastclock: 1404221492
+
+ITEM 47:
+name: Incoming network traffic on $1
+key: net.if.in[qvodcd008f0-34]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 1404221493
+
+ITEM 48:
+name: Incoming network traffic on $1
+key: net.if.in[qbr3bde2356-6a]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 1404221397
+
+ITEM 49:
+name: Incoming network traffic on $1
+key: net.if.in[tap3bde2356-6a]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 1404221587
+
+ITEM 50:
+name: Incoming network traffic on $1
+key: net.if.in[qvb3bde2356-6a]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 104
+lastclock: 1404221413
+
+ITEM 51:
+name: Incoming network traffic on $1
+key: net.if.in[qvo3bde2356-6a]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 8
+lastclock: 1404221700
+
+ITEM 52:
+name: Incoming network traffic on $1
+key: net.if.in[qbrd76a7714-9b]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 8
+lastclock: 1404219981
+
+ITEM 53:
+name: Incoming network traffic on $1
+key: net.if.in[tapd76a7714-9b]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 1404220522
+
+ITEM 54:
+name: Incoming network traffic on $1
+key: net.if.in[qvbd76a7714-9b]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 112
+lastclock: 1404220589
+
+ITEM 55:
+name: Incoming network traffic on $1
+key: net.if.in[qvod76a7714-9b]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 1404221553
+
+ITEM 56:
+name: Incoming network traffic on $1
+key: net.if.in[qbr918f5f68-02]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 8
+lastclock: 1404221497
+
+ITEM 57:
+name: Incoming network traffic on $1
+key: net.if.in[tap918f5f68-02]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 1404221498
+
+ITEM 58:
+name: Incoming network traffic on $1
+key: net.if.in[qvb918f5f68-02]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 128
+lastclock: 1404221499
+
+ITEM 59:
+name: Incoming network traffic on $1
+key: net.if.in[qvo918f5f68-02]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 32
+lastclock: 1404221635
+
+ITEM 60:
+name: Incoming network traffic on $1
+key: net.if.in[qbr25af11aa-51]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 0
+
+ITEM 61:
+name: Incoming network traffic on $1
+key: net.if.in[tap25af11aa-51]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 0
+
+ITEM 62:
+name: Incoming network traffic on $1
+key: net.if.in[qvb25af11aa-51]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 0
+
+ITEM 63:
+name: Incoming network traffic on $1
+key: net.if.in[qvo25af11aa-51]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 0
+
+ITEM 64:
+name: Incoming network traffic on $1
+key: net.if.in[qbr177d4799-e4]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 0
+
+ITEM 65:
+name: Incoming network traffic on $1
+key: net.if.in[tap177d4799-e4]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 0
+
+ITEM 66:
+name: Incoming network traffic on $1
+key: net.if.in[qvb177d4799-e4]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 0
+
+ITEM 67:
+name: Incoming network traffic on $1
+key: net.if.in[qvo177d4799-e4]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 0
+
+ITEM 68:
+name: Interrupts per second
+key: system.cpu.intr
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 1944
+lastclock: 1404221497
+
+ITEM 69:
+name: Maximum number of opened files
+key: kernel.maxfiles
+hostid: 10105
+delay: 3600
+history: 7
+lastvalue: 3300532
+lastclock: 1404218072
+
+ITEM 70:
+name: Maximum number of processes
+key: kernel.maxproc
+hostid: 10105
+delay: 3600
+history: 7
+lastvalue: 32768
+lastclock: 1404218073
+
+ITEM 71:
+name: Number of logged in users
+key: system.users.num
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 1404221397
+
+ITEM 72:
+name: Number of processes
+key: proc.num[]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 127
+lastclock: 1404221619
+
+ITEM 73:
+name: Number of running processes
+key: proc.num[,,run]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 3
+lastclock: 1404221554
+
+ITEM 74:
+name: Outgoing network traffic on $1
+key: net.if.out[tap177d4799-e4]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 0
+
+ITEM 75:
+name: Outgoing network traffic on $1
+key: net.if.out[qvb177d4799-e4]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 0
+
+ITEM 76:
+name: Outgoing network traffic on $1
+key: net.if.out[qvo177d4799-e4]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 0
+
+ITEM 77:
+name: Outgoing network traffic on $1
+key: net.if.out[tapdebb1198-fc]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 0
+
+ITEM 78:
+name: Outgoing network traffic on $1
+key: net.if.out[qvbdebb1198-fc]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 0
+
+ITEM 79:
+name: Outgoing network traffic on $1
+key: net.if.out[qvodebb1198-fc]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 0
+
+ITEM 80:
+name: Outgoing network traffic on $1
+key: net.if.out[qbrdebb1198-fc]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 0
+
+ITEM 81:
+name: Outgoing network traffic on $1
+key: net.if.out[ovs-system]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 1404220817
+
+ITEM 82:
+name: Outgoing network traffic on $1
+key: net.if.out[br-tun]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 1404221125
+
+ITEM 83:
+name: Outgoing network traffic on $1
+key: net.if.out[tap45873eed-f1]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 1404220787
+
+ITEM 84:
+name: Outgoing network traffic on $1
+key: net.if.out[br-int]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 1404221428
+
+ITEM 85:
+name: Outgoing network traffic on $1
+key: net.if.out[qbrf9d18ad8-0f]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 1404220008
+
+ITEM 86:
+name: Outgoing network traffic on $1
+key: net.if.out[eth1]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 35808
+lastclock: 1404221668
+
+ITEM 87:
+name: Outgoing network traffic on $1
+key: net.if.out[qvb45873eed-f1]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 1404221749
+
+ITEM 88:
+name: Outgoing network traffic on $1
+key: net.if.out[eth0]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 30688
+lastclock: 1404221189
+
+ITEM 89:
+name: Outgoing network traffic on $1
+key: net.if.out[qvo45873eed-f1]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 112
+lastclock: 1404221030
+
+ITEM 90:
+name: Outgoing network traffic on $1
+key: net.if.out[tapf9d18ad8-0f]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 1328
+lastclock: 1404220371
+
+ITEM 91:
+name: Outgoing network traffic on $1
+key: net.if.out[qvbf9d18ad8-0f]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 1408
+lastclock: 1404221046
+
+ITEM 92:
+name: Outgoing network traffic on $1
+key: net.if.out[qvof9d18ad8-0f]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 904
+lastclock: 1404220028
+
+ITEM 93:
+name: Outgoing network traffic on $1
+key: net.if.out[qbraecad323-51]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 1404221498
+
+ITEM 94:
+name: Outgoing network traffic on $1
+key: net.if.out[qbr45873eed-f1]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 1404221109
+
+ITEM 95:
+name: Outgoing network traffic on $1
+key: net.if.out[qvbaecad323-51]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 1404221499
+
+ITEM 96:
+name: Outgoing network traffic on $1
+key: net.if.out[qvoaecad323-51]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 1404221500
+
+ITEM 97:
+name: Outgoing network traffic on $1
+key: net.if.out[qbrdcd008f0-34]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 1404221497
+
+ITEM 98:
+name: Outgoing network traffic on $1
+key: net.if.out[qvbdcd008f0-34]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 1404221500
+
+ITEM 99:
+name: Outgoing network traffic on $1
+key: net.if.out[qvodcd008f0-34]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 72
+lastclock: 1404221501
+
+ITEM 100:
+name: Outgoing network traffic on $1
+key: net.if.out[qbr3bde2356-6a]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 1404221521
+
+ITEM 101:
+name: Outgoing network traffic on $1
+key: net.if.out[tap3bde2356-6a]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 1404220997
+
+ITEM 102:
+name: Outgoing network traffic on $1
+key: net.if.out[qvb3bde2356-6a]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 16
+lastclock: 1404220337
+
+ITEM 103:
+name: Outgoing network traffic on $1
+key: net.if.out[qvo3bde2356-6a]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 112
+lastclock: 1404221239
+
+ITEM 104:
+name: Outgoing network traffic on $1
+key: net.if.out[qbrd76a7714-9b]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 1404221305
+
+ITEM 105:
+name: Outgoing network traffic on $1
+key: net.if.out[tapd76a7714-9b]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 8
+lastclock: 1404221079
+
+ITEM 106:
+name: Outgoing network traffic on $1
+key: net.if.out[qvbd76a7714-9b]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 16
+lastclock: 1404218967
+
+ITEM 107:
+name: Outgoing network traffic on $1
+key: net.if.out[qvod76a7714-9b]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 104
+lastclock: 1404220708
+
+ITEM 108:
+name: Outgoing network traffic on $1
+key: net.if.out[qbr918f5f68-02]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 1404221501
+
+ITEM 109:
+name: Outgoing network traffic on $1
+key: net.if.out[tap918f5f68-02]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 8
+lastclock: 1404221502
+
+ITEM 110:
+name: Outgoing network traffic on $1
+key: net.if.out[qvb918f5f68-02]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 8
+lastclock: 1404221503
+
+ITEM 111:
+name: Outgoing network traffic on $1
+key: net.if.out[qvo918f5f68-02]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 112
+lastclock: 1404221504
+
+ITEM 112:
+name: Outgoing network traffic on $1
+key: net.if.out[qbr25af11aa-51]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 0
+
+ITEM 113:
+name: Outgoing network traffic on $1
+key: net.if.out[tap25af11aa-51]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 0
+
+ITEM 114:
+name: Outgoing network traffic on $1
+key: net.if.out[qvb25af11aa-51]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 0
+
+ITEM 115:
+name: Outgoing network traffic on $1
+key: net.if.out[qvo25af11aa-51]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 0
+
+ITEM 116:
+name: Outgoing network traffic on $1
+key: net.if.out[qbr177d4799-e4]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0
+lastclock: 0
+
+ITEM 117:
+name: Power
+key: power
+hostid: 10105
+delay: 0
+history: 7
+lastvalue: 344.5429
+lastclock: 1404221778
+
+ITEM 118:
+name: Processor load (1 min average per core)
+key: system.cpu.load[percpu,avg1]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0.1300
+lastclock: 1404221499
+
+ITEM 119:
+name: Processor load (15 min average per core)
+key: system.cpu.load[percpu,avg15]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0.1338
+lastclock: 1404221498
+
+ITEM 120:
+name: Processor load (5 min average per core)
+key: system.cpu.load[percpu,avg5]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 0.1375
+lastclock: 1404221570
+
+ITEM 121:
+name: System information
+key: system.uname
+hostid: 10105
+delay: 3600
+history: 7
+lastvalue: Linux asok09 3.2.0-4-amd64 #1 SMP Debian 3.2.51-1 x86_64
+lastclock: 1404218095
+
+ITEM 122:
+name: System uptime
+key: system.uptime
+hostid: 10105
+delay: 600
+history: 7
+lastvalue: 9682413
+lastclock: 1404218696
+
+ITEM 123:
+name: Total disk space on $1
+key: vfs.fs.size[/,total]
+hostid: 10105
+delay: 3600
+history: 7
+lastvalue: 3937460224
+lastclock: 1404218245
+
+ITEM 124:
+name: Total disk space on $1
+key: vfs.fs.size[/boot,total]
+hostid: 10105
+delay: 3600
+history: 7
+lastvalue: 95443968
+lastclock: 1404218246
+
+ITEM 125:
+name: Total memory
+key: vm.memory.size[total]
+hostid: 10105
+delay: 3600
+history: 7
+lastvalue: 33811226624
+lastclock: 1404218100
+
+ITEM 126:
+name: Total swap space
+key: system.swap.size[,total]
+hostid: 10105
+delay: 3600
+history: 7
+lastvalue: 34359734272
+lastclock: 1404218094
+
+ITEM 127:
+name: Used disk space on $1
+key: vfs.fs.size[/,used]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 2192732160
+lastclock: 1404220660
+
+ITEM 128:
+name: Used disk space on $1
+key: vfs.fs.size[/boot,used]
+hostid: 10105
+delay: 60
+history: 7
+lastvalue: 22459392
+lastclock: 1404221428
+
+ITEM 129:
+name: Version of zabbix_agent(d) running
+key: agent.version
+hostid: 10105
+delay: 3600
+history: 7
+lastvalue: 2.2.3
+lastclock: 1404218071
 
 ********************************************************
 ********************************************************
+***************  itemsCountFromHosts  *********************
 ********************************************************
 ********************************************************
+asok10.cit.tu-berlin.de: 114 items
+asok09.cit.tu-berlin.de: 130 items
+asok12.cit.tu-berlin.de: 106 items
+asok11.cit.tu-berlin.de: 53 items
