@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>eu.ascetic.api.zabbix</groupId>
-	<artifactId>ascetic-zabbix-api</artifactId>
+	<groupId>eu.ascetic.ascetic-architecture.iaas</groupId>
+	<artifactId>zabbix-api</artifactId>
 	<packaging>jar</packaging>
 	<version>0.1-SNAPSHOT</version>
-	<name>ascetic-zabbix-api</name>
+	<name>Ascetic Zabbix Api</name>
 	<url>http://www.ascetic.eu</url>
 
 	<build>

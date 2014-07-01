@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.User;
+
 /**
  * The Class UserTest.
  */

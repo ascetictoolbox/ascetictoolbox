@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Item;
+
 /**
  * The Class ItemTest.
  */
@@ -21,7 +23,7 @@ public class ItemTest {
 		item.setItemid("23298");
 		item.setKey("vm.memory.size[available]");
 		item.setLastClock(1351090998);
-		item.setLastValue(2552);
+		item.setLastValue("2552");
 		item.setTrends("365");
 		
 		assertEquals("Available memory", item.getName());
@@ -31,7 +33,7 @@ public class ItemTest {
 		assertEquals("23298", item.getItemid());
 		assertEquals("vm.memory.size[available]", item.getKey());
 		assertEquals(1351090998, item.getLastClock());
-		assertEquals(2552, item.getLastValue());
+		assertEquals("2552", item.getLastValue());
 		assertEquals("365", item.getTrends());
 	}
 

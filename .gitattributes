@@ -1048,6 +1048,12 @@ utils/ascetic-zabbix-api/doc/allclasses-frame.html -text
 utils/ascetic-zabbix-api/doc/allclasses-noframe.html -text
 utils/ascetic-zabbix-api/doc/constant-values.html -text
 utils/ascetic-zabbix-api/doc/deprecated-list.html -text
+utils/ascetic-zabbix-api/doc/eu/ascetic/asceticarchitecture/iaas/zabbixApi/client/ZabbixClient.html -text
+utils/ascetic-zabbix-api/doc/eu/ascetic/asceticarchitecture/iaas/zabbixApi/client/class-use/ZabbixClient.html -text
+utils/ascetic-zabbix-api/doc/eu/ascetic/asceticarchitecture/iaas/zabbixApi/client/package-frame.html -text
+utils/ascetic-zabbix-api/doc/eu/ascetic/asceticarchitecture/iaas/zabbixApi/client/package-summary.html -text
+utils/ascetic-zabbix-api/doc/eu/ascetic/asceticarchitecture/iaas/zabbixApi/client/package-tree.html -text
+utils/ascetic-zabbix-api/doc/eu/ascetic/asceticarchitecture/iaas/zabbixApi/client/package-use.html -text
 utils/ascetic-zabbix-api/doc/eu/ascetic/monitoring/api/client/HostManager.html -text
 utils/ascetic-zabbix-api/doc/eu/ascetic/monitoring/api/client/ItemManager.html -text
 utils/ascetic-zabbix-api/doc/eu/ascetic/monitoring/api/client/UserManager.html -text
@@ -1121,6 +1127,14 @@ utils/ascetic-zabbix-api/pom.xml -text
 utils/ascetic-zabbix-api/readme/README.TXT -text
 utils/ascetic-zabbix-api/readme/ZabbixApiClientTest[!!-~]class[!!-~]output.txt -text
 utils/ascetic-zabbix-api/readme/ascetic-zabbix-api.properties -text
+utils/ascetic-zabbix-api/src/main/java/eu/ascetic/asceticarchitecture/iaas/zabbixApi/client/ZabbixClient.java -text
+utils/ascetic-zabbix-api/src/main/java/eu/ascetic/asceticarchitecture/iaas/zabbixApi/conf/Configuration.java -text
+utils/ascetic-zabbix-api/src/main/java/eu/ascetic/asceticarchitecture/iaas/zabbixApi/datamodel/Host.java -text
+utils/ascetic-zabbix-api/src/main/java/eu/ascetic/asceticarchitecture/iaas/zabbixApi/datamodel/Item.java -text
+utils/ascetic-zabbix-api/src/main/java/eu/ascetic/asceticarchitecture/iaas/zabbixApi/datamodel/User.java -text
+utils/ascetic-zabbix-api/src/main/java/eu/ascetic/asceticarchitecture/iaas/zabbixApi/rpc/client/ZabbixApiClientTest.java -text
+utils/ascetic-zabbix-api/src/main/java/eu/ascetic/asceticarchitecture/iaas/zabbixApi/utils/Dictionary.java -text
+utils/ascetic-zabbix-api/src/main/java/eu/ascetic/asceticarchitecture/iaas/zabbixApi/utils/Json2ObjectMapper.java -text
 utils/ascetic-zabbix-api/src/main/java/eu/ascetic/monitoring/api/client/HostManager.java -text
 utils/ascetic-zabbix-api/src/main/java/eu/ascetic/monitoring/api/client/ItemManager.java -text
 utils/ascetic-zabbix-api/src/main/java/eu/ascetic/monitoring/api/client/UserManager.java -text
