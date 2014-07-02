@@ -5,6 +5,7 @@ import play.Configuration;
 import play.GlobalSettings;
 import play.libs.F;
 import play.mvc.Http;
+import play.mvc.Result;
 import play.mvc.Results;
 import play.mvc.SimpleResult;
 import scala.concurrent.Future;
@@ -39,13 +40,23 @@ public class Global extends GlobalSettings {
 		DBManager.instance.close();
 	}
 
-/*	@Override
-	public F.Promise<SimpleResult> onError(Http.RequestHeader request, Throwable t) {
+    @Override
+    public F.Promise<Result> onBadRequest(Http.RequestHeader requestHeader, String s) {
+        return F.Promise.<Result>pure(Results.internalServerError("BAD REQUEST: " + s));
+    }
+
+    @Override
+	public F.Promise<Result> onError(Http.RequestHeader request, Throwable t) {
 		if(t.getCause()!=null) t = t.getCause();
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
 		t.printStackTrace(pw);
-		return F.Promise.<SimpleResult>pure(Results.internalServerError(sw.toString()));
+		return F.Promise.<Result>pure(Results.internalServerError("INTERNAL SERVER ERROR: " + sw.toString()));
 	}
-*/
+
+    @Override
+    public F.Promise<Result> onHandlerNotFound(Http.RequestHeader requestHeader) {
+        return F.Promise.<Result>pure(Results.internalServerError("HANDLER NOT FOUND: " + requestHeader.uri()));
+
+    }
 }

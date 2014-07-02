@@ -13,6 +13,7 @@ import org.bson.types.ObjectId;
 import play.Logger;
 import play.libs.Json;
 
+import javax.persistence.Basic;
 import java.util.Calendar;
 import java.util.Properties;
 
@@ -24,6 +25,7 @@ public class EventsDBMapper {
 	public static final String ENDTIME = "endtime";
     public static final String APPID = "appId";
     public static final String NODEID = "nodeId";
+    public static final String INSTANCEID = "instanceId";
     public static final String DATA = "data";
 	public static final String _ID = "_id";
 	public static final String _ID_OID = "$oid";
@@ -145,6 +147,16 @@ public class EventsDBMapper {
         BasicDBObjectBuilder q = BasicDBObjectBuilder.start().add(_ID,new ObjectId(id));
         colEvents.findAndRemove(q.get());
     }
+
+    public BasicDBList find(DBObject query) {
+        BasicDBList dbl = new BasicDBList();
+        DBCursor dbc = colEvents.find(query);
+        while(dbc.hasNext()) {
+            dbl.add(dbc.next());
+        }
+        return dbl;
+    }
+
 
 
 }

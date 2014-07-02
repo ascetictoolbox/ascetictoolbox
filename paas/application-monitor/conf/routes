@@ -16,7 +16,7 @@ PATCH       /event                                   api.Events.update()
 GET         /event/:id                               api.Events.get(id:String)
 PATCH       /event/:id                               api.Events.finish(id:String)
 
-#PUT         /query                                   controllers.QueriesController
+POST         /query                                   api.Queries.post()
 
 
 # Navigation through metrics (Ajax helper services)

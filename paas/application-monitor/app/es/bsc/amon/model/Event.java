@@ -11,7 +11,7 @@ import java.util.HashMap;
 public class Event {
 	public ObjectNode _id;
 	public long timestamp;
-	public Long endTime;
+	public Long endtime;
 	public String appId;
 	public String nodeId;
 	public String instanceId;
