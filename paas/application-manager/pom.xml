@@ -3,14 +3,14 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>eu.ascetic.ascetic-architecture</groupId>
+		<groupId>eu.ascetic.ascetic</groupId>
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 		<artifactId>paas</artifactId>
 	</parent>
 
 
-	<groupId>eu.ascetic.ascetic-architecture.paas</groupId>
+	<groupId>eu.ascetic.ascetic.paas</groupId>
 	<artifactId>application-manager</artifactId>
 	<version>0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
@@ -93,7 +93,7 @@
 	
 		<!-- ASCETiC Dependencies -->
 		<dependency>
-			<groupId>eu.ascetic.ascetic-architecture.paas</groupId>
+			<groupId>eu.ascetic.ascetic.paas</groupId>
 			<artifactId>application-manager-datamodel</artifactId>
 			<version>0.1-SNAPSHOT</version>
 		</dependency>
@@ -126,6 +126,12 @@
 			<groupId>org.hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
 			<version>2.3.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.9.5</version>
 			<scope>test</scope>
 		</dependency>
 
