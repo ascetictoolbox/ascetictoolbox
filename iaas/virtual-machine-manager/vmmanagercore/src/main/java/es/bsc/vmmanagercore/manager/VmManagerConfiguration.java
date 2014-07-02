@@ -39,7 +39,6 @@ public class VmManagerConfiguration {
 
     // Servers host names
     public String[] hosts;
-    public String[] hostsZabbix;
 
     // Deploy
     public String deployBaseUrl;
@@ -80,7 +79,6 @@ public class VmManagerConfiguration {
         deployBaseUrl = prop.getProperty("deployBaseUrl");
         deployPackage = prop.getProperty("deployPackage");
         hosts = prop.getProperty("hosts").split(",");
-        hostsZabbix = prop.getProperty("hosts_zabbix").split(",");
 
         if(prop.getProperty("monitoring").equals("openstack")) {
             monitoring = Monitoring.OPENSTACK;
