@@ -62,8 +62,6 @@ public class ImageCreation {
 
 	private static Logger log = Logger.getLogger(ImageCreation.class);
 	private final static String IMAGE_DEPLOYMENT_FOLDER = "/optimis_service/";
-	private final static String SHARED_ENCRYPTED_FOLDER = "/encrypted/";
-	private final static String SHARED_FOLDER = "/storage/";
 
 	private final static String CONTEXT_FOLDER = "/mnt/context";
 	private static final String OPTIMIS_USER = "root";
@@ -198,12 +196,6 @@ public class ImageCreation {
 			waitUntilReady(resource, image_id, monitor);
 		}
 		monitor.worked(1);
-		file = new File(pr_meta.getRuntimeLocation()
-				+ "/../certs/Demo_ISV.pem");
-		if (f != null && f.exists()) {
-			uploadFile(resource, file, image_id);
-			waitUntilReady(resource, image_id, monitor);
-		}
 		file = new File(pr_meta.getRuntimeLocation()
 				+ "/../worker/worker.sh");
 		if (f != null && f.exists()) {

@@ -4,7 +4,7 @@
     <maven>3.0</maven>
   </prerequisites>
   
-  <groupId>ascetic.ascetic-architecture.saas.compss-plugin</groupId>
+  <groupId>eu.ascetic.ascetic-architecture.saas.compss-plugin</groupId>
   <artifactId>ascetic.deployer.plugin</artifactId>
   <packaging>eclipse-plugin</packaging>
   <parent>  

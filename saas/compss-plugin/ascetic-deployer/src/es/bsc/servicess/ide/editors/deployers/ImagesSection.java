@@ -176,6 +176,11 @@ public class ImagesSection extends ServiceEditorSection {
 			throws Exception {
 		String location = icsText.getText().trim();
 		if (location != null && location.length() > 0) {
+			if (deployer.getManifest() == null) {
+				deployer.generateNewManifest();
+				deployer.writeManifestToFile();
+			}
+			
 			Client c = Client.create();
 			WebResource resource = c.resource(location);
 			if (resource != null) {
