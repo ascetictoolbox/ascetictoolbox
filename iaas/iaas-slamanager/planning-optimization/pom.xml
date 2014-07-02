@@ -6,13 +6,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<parent>
-		<groupId>eu.ascetic.architecture.iaas.slamanager</groupId>
+		<groupId>eu.ascetic.ascetic-architecture.iaas.slamanager</groupId>
 		<artifactId>iaas-slamanager</artifactId>
 		<version>0.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 	
-	<groupId>eu.ascetic.architecture.iaas.slamanager</groupId>
+	<groupId>eu.ascetic.ascetic-architecture.iaas.slamanager</groupId>
 	<artifactId>iaas-poc</artifactId>
 	<packaging>bundle</packaging>
 	<name>iaas-poc</name>

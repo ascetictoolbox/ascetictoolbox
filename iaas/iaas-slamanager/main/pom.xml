@@ -4,13 +4,13 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>eu.ascetic.architecture.iaas.slamanager</groupId>
+		<groupId>eu.ascetic.ascetic-architecture.iaas.slamanager</groupId>
 		<artifactId>iaas-slamanager</artifactId>
 		<version>0.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 
-	<groupId>eu.ascetic.architecture.iaas.slamanager</groupId>
+	<groupId>eu.ascetic.ascetic-architecture.iaas.slamanager</groupId>
 	<artifactId>iaas-main</artifactId>
 	<packaging>bundle</packaging>
 	<name>iaas-main</name>
@@ -190,6 +190,7 @@
 								<Embed-Dependency>iaas-core;inline=true</Embed-Dependency>
 								<Import-Package>
 									org.osgi.framework;resolution:=optional,
+									org.slasoi.gslam.syntaxconverter.webservice,
 									org.apache.log4j;resolution:=optional,
 									*;resolution:=optional
 								</Import-Package>

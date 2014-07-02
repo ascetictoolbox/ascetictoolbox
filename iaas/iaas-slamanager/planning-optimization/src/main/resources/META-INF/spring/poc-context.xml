@@ -13,5 +13,6 @@
 	
 	<bean name="planningOptimizationImpl" class="eu.ascetic.architecture.iaas.slamanager.poc.PlanningOptimizationImpl" />
 	
+	<bean name="negotiationManager" class="eu.ascetic.architecture.iaas.slamanager.poc.manager.negotiation.NegotiationManagerImpl" />
 </beans>
 

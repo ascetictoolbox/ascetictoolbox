@@ -10,7 +10,7 @@
   </parent>
   
 	<!-- SLAM - namespace -->
-	<groupId>eu.ascetic.architecture.iaas.slamanager</groupId>
+	<groupId>eu.ascetic.ascetic-architecture.iaas.slamanager</groupId>
 	<artifactId>iaas-slamanager</artifactId>
 	<packaging>pom</packaging>
 	<name>iaas-slamanager</name>
