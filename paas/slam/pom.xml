@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<!--  SLAM - namespace  -->
-	<groupId>eu.ascetic.paas.slam.slam-slamanager</groupId>
+	<groupId>eu.ascetic.ascetic-architecture.paas</groupId>
 	<artifactId>slam-slamanager</artifactId>
 	<packaging>pom</packaging>
 	<name>slam-slamanager</name>

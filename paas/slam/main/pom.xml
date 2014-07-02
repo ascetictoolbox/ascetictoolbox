@@ -6,13 +6,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<parent>
-		<groupId>eu.ascetic.paas.slam.slam-slamanager</groupId>
+		<groupId>eu.ascetic.ascetic-architecture.paas</groupId>
 		<artifactId>slam-slamanager</artifactId>
 		<version>0.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 	
-	<groupId>eu.ascetic.paas.slam.slam-slamanager</groupId>
+	<groupId>eu.ascetic.ascetic-architecture.paas.slam-slamanager</groupId>
 	<artifactId>slam-main</artifactId>
 	<packaging>bundle</packaging>
 	<name>slam-main</name>
@@ -86,13 +86,13 @@
 
 		<!--  SkeletonSLA Manager :: References :: Domain Specific -->
 		<dependency>
-			<groupId>eu.ascetic.paas.slam.slam-slamanager</groupId>
+			<groupId>eu.ascetic.ascetic-architecture.paas.slam-slamanager</groupId>
 			<artifactId>slam-poc</artifactId>
 			<version>${__slam-version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>eu.ascetic.paas.slam.slam-slamanager</groupId>
+			<groupId>eu.ascetic.ascetic-architecture.paas.slam-slamanager</groupId>
 			<artifactId>slam-pac</artifactId>
 			<version>${__slam-version}</version>
 			<scope>provided</scope>
@@ -103,7 +103,7 @@
 			    will be exposed by this bundle within OSGi
 		-->
 		<dependency>
-			<groupId>eu.ascetic.paas.slam.slam-slamanager</groupId>
+			<groupId>eu.ascetic.ascetic-architecture.paas.slam-slamanager</groupId>
 			<artifactId>slam-core</artifactId>
 			<version>${__slam-version}</version>
 			<scope>provided</scope>

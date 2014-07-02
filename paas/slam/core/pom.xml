@@ -6,13 +6,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<parent>
-		<groupId>eu.ascetic.paas.slam.slam-slamanager</groupId>
+		<groupId>eu.ascetic.ascetic-architecture.paas</groupId>
 		<artifactId>slam-slamanager</artifactId>
 		<version>0.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 	
-	<groupId>eu.ascetic.paas.slam.slam-slamanager</groupId>
+	<groupId>eu.ascetic.ascetic-architecture.paas.slam-slamanager</groupId>
 	<artifactId>slam-core</artifactId>
 	<packaging>bundle</packaging>
 	<name>slam-core</name>
