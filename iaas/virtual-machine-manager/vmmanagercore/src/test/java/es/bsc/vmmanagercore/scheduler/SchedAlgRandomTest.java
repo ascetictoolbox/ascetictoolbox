@@ -7,6 +7,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
@@ -22,7 +23,7 @@ public class SchedAlgRandomTest {
     @Test
     public void schedule() {
         // Build the array of hosts that will be passed to the schedule function (both have enough resources)
-        ArrayList<HostInfo> hostsInfo = new ArrayList<>();
+        List<HostInfo> hostsInfo = new ArrayList<>();
         hostsInfo.add(new HostInfoFake("host1", 4, 4096, 8, 1, 2048, 4));
         hostsInfo.add(new HostInfoFake("host2", 4, 4096, 8, 1, 2048, 2));
 

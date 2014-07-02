@@ -19,7 +19,7 @@ public class HostFilterTest {
     public void filter() {
         // Create fake hosts {name, totalCpus, totalRamMb, totalDiskGb,
         // usedCpus, usedRamMb, usedDiskGb}
-        ArrayList<HostInfo> hosts = new ArrayList<>();
+        List<HostInfo> hosts = new ArrayList<>();
         hosts.add(new HostInfoFake("host1", 4, 4096, 4, 1, 1024, 1)); // OK
         hosts.add(new HostInfoFake("host2", 4, 4096, 4, 3, 1024, 1)); // not enough CPUs
         hosts.add(new HostInfoFake("host3", 4, 4096, 4, 1, 3072, 1)); // not enough RAM

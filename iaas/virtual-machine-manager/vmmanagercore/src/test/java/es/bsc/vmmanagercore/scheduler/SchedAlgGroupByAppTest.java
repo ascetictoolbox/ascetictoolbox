@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -21,9 +22,8 @@ import static org.junit.Assert.assertEquals;
 public class SchedAlgGroupByAppTest {
 
     private static SchedAlgGroupByApp scheduler;
-    private static ArrayList<VmDeployed> vmsDeployed = new ArrayList<>();
-    private static ArrayList<HostInfo> hostsInfo = new ArrayList<>();
-
+    private static List<VmDeployed> vmsDeployed = new ArrayList<>();
+    private static List<HostInfo> hostsInfo = new ArrayList<>();
 
     private static void setUpHosts() {
         hostsInfo.add(new HostInfoFake("host1", 4, 4096, 8, 1, 2048, 4));

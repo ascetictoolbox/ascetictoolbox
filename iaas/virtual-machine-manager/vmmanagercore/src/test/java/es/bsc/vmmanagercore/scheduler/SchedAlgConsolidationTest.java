@@ -7,6 +7,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -36,7 +37,7 @@ public class SchedAlgConsolidationTest {
         HostInfoFake hostInfo2 = new HostInfoFake("host2", 2, 4096, 8, 1, 2048, 4);
 
         //build the array of hosts that will be passed to the schedule function
-        ArrayList<HostInfo> hostsInfo = new ArrayList<>();
+        List<HostInfo> hostsInfo = new ArrayList<>();
         hostsInfo.add(hostInfo1);
         hostsInfo.add(hostInfo2);
 
@@ -60,7 +61,7 @@ public class SchedAlgConsolidationTest {
         HostInfoFake hostInfo2 = new HostInfoFake("host2", 4, 4096, 8, 1, 1024, 4);
 
         //build the array of hosts that will be passed to the schedule function
-        ArrayList<HostInfo> hostsInfo = new ArrayList<>();
+        List<HostInfo> hostsInfo = new ArrayList<>();
         hostsInfo.add(hostInfo1);
         hostsInfo.add(hostInfo2);
 
@@ -84,7 +85,7 @@ public class SchedAlgConsolidationTest {
         HostInfoFake hostInfo2 = new HostInfoFake("host2", 4, 4096, 8, 1, 1024, 2);
 
         //build the array of hosts that will be passed to the schedule function
-        ArrayList<HostInfo> hostsInfo = new ArrayList<>();
+        List<HostInfo> hostsInfo = new ArrayList<>();
         hostsInfo.add(hostInfo1);
         hostsInfo.add(hostInfo2);
 
@@ -112,7 +113,7 @@ public class SchedAlgConsolidationTest {
         HostInfoFake hostInfo3 = new HostInfoFake("host3", 4, 4096, 4, 1, 1024, 1);
 
         //build the array of hosts that will be passed to the schedule function
-        ArrayList<HostInfo> hostsInfo = new ArrayList<>();
+        List<HostInfo> hostsInfo = new ArrayList<>();
         hostsInfo.add(hostInfo1);
         hostsInfo.add(hostInfo2);
         hostsInfo.add(hostInfo3);

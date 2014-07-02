@@ -8,6 +8,7 @@ import es.bsc.vmmanagercore.monitoring.HostInfoFake;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertNotNull;
@@ -23,11 +24,11 @@ public class SchedulerTest {
 
     @Test
     public void vmShouldBeDeployedEvenWhenThereAreNoHostsWithEnoughResources() {
-        ArrayList<HostInfo> hosts = new ArrayList<>();
+        List<HostInfo> hosts = new ArrayList<>();
         hosts.add(new HostInfoFake("host1", 2, 2048, 2, 1, 2048, 2)); // Host with 100% load
 
         // VM to deploy
-        ArrayList<Vm> vms = new ArrayList<>();
+        List<Vm> vms = new ArrayList<>();
         Vm vm = new Vm("TestVM1", "fakeImageId", 1, 1024, 1, null, "app1");
         vms.add(vm);
 

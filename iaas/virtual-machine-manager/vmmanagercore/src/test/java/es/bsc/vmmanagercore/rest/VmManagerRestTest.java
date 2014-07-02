@@ -11,6 +11,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.jayway.restassured.RestAssured.*;
 import static org.junit.Assert.*;
@@ -27,7 +28,7 @@ public class VmManagerRestTest {
     private static Vm vmDescription1;
     private static Vm vmDescription2;
 
-    private static ArrayList<String> idsVmsDeployedBeforeTests = new ArrayList<>();
+    private static List<String> idsVmsDeployedBeforeTests = new ArrayList<>();
 
     private static Gson gson = new Gson();
     private static JsonParser parser = new JsonParser();
@@ -62,7 +63,7 @@ public class VmManagerRestTest {
     public static void tearDownAfterClass() {
         // Make sure that all the VMs that existed before the tests are still there
         String json = get(testDeploymentBaseUrl + "vms/").asString();
-        ArrayList<String> idsVmsDeployedAfterTests = new ArrayList<>();
+        List<String> idsVmsDeployedAfterTests = new ArrayList<>();
         JsonObject jsonObject = gson.fromJson(json, JsonObject.class);
         JsonArray jsonVmsArray = jsonObject.get("vms").getAsJsonArray();
         for (JsonElement vmJson: jsonVmsArray) {
@@ -92,7 +93,7 @@ public class VmManagerRestTest {
 
         // Check that the response for the get operation contains 2 IDs
         String json = get(testDeploymentBaseUrl + "vms/").asString();
-        ArrayList<String> idsVmsDeployed = new ArrayList<>();
+        List<String> idsVmsDeployed = new ArrayList<>();
         JsonObject jsonObject = gson.fromJson(json, JsonObject.class);
         JsonArray jsonVmsArray = jsonObject.get("vms").getAsJsonArray();
         for (JsonElement vmJson: jsonVmsArray) {
@@ -108,7 +109,7 @@ public class VmManagerRestTest {
     @Test
     public void deployVmsWithValidJson() {
         // Deploy 2 VMs
-        ArrayList<String> idsVmsDeployed = deployTestVms();
+        List<String> idsVmsDeployed = deployTestVms();
 
         // Make sure that we get two IDs in the response
         assertEquals(2, idsVmsDeployed.size());
@@ -131,7 +132,7 @@ public class VmManagerRestTest {
     @Test
     public void getExistingVm() {
         // Deploy 2 VMs
-        ArrayList<String> idsVmsDeployed = deployTestVms();
+        List<String> idsVmsDeployed = deployTestVms();
 
         // Get the first VM deployed and check that all the information is correct
         String getVmDeployedResponse = get(testDeploymentBaseUrl + "vms/" + idsVmsDeployed.get(0)).asString();
@@ -158,7 +159,7 @@ public class VmManagerRestTest {
     @Test
     public void changeStateValid() {
         // Deploy 2 VMs
-        ArrayList<String> idsVmsDeployed = deployTestVms();
+        List<String> idsVmsDeployed = deployTestVms();
 
         // Change the state of the VMs performing a valid action.
         // Also, make sure that the status code of the response is 204.
@@ -179,7 +180,7 @@ public class VmManagerRestTest {
     @Test
     public void changeStateInvalidOption() {
         // Deploy 2 VMs
-        ArrayList<String> idsVmsDeployed = deployTestVms();
+        List<String> idsVmsDeployed = deployTestVms();
 
         expect()
             .statusCode(400)
@@ -205,7 +206,7 @@ public class VmManagerRestTest {
     @Test
     public void destroyVm() {
         // Deploy 2 VMs
-        ArrayList<String> idsVmsDeployed = deployTestVms();
+        List<String> idsVmsDeployed = deployTestVms();
 
         // Delete the VMs and check status code 204
         for (String idVmDeployed: idsVmsDeployed) {
@@ -227,12 +228,12 @@ public class VmManagerRestTest {
     @Test
     public void getAllVmsOfAnApplication() {
         // Deploy 2 VMs (one of them is part of "myApplication1", and the other is part of
-        ArrayList<String> idsVmsDeployed = deployTestVms();
+        List<String> idsVmsDeployed = deployTestVms();
 
         // Get the IDs of the VMs that are part of the application "myApplication1"
         String vmsOfApplicationJson =
                 get(testDeploymentBaseUrl + "vmsapp/myApplication1").asString();
-        ArrayList<String> idsVmsOfApp = new ArrayList<>();
+        List<String> idsVmsOfApp = new ArrayList<>();
         JsonObject jsonObject = gson.fromJson(vmsOfApplicationJson, JsonObject.class);
         JsonArray jsonVmsArray = jsonObject.get("vms").getAsJsonArray();
         for (JsonElement vmJson: jsonVmsArray) {
@@ -351,7 +352,7 @@ public class VmManagerRestTest {
         String availableSchedAlgs = get(testDeploymentBaseUrl + "scheduling_algorithms/").asString();
         JsonArray availableSchedAlgsJson = (JsonArray) gson.fromJson(availableSchedAlgs,
                 JsonObject.class).get("scheduling_algorithms");
-        ArrayList<String> availableSchedAlgNames = new ArrayList<>();
+        List<String> availableSchedAlgNames = new ArrayList<>();
         for (JsonElement availableSchedAlgJson: availableSchedAlgsJson) {
             availableSchedAlgNames.add(availableSchedAlgJson.getAsJsonObject()
                     .get("name").getAsString());
@@ -449,7 +450,7 @@ public class VmManagerRestTest {
         return jsonObject.toString();
     }
 
-    private void deleteVms(ArrayList<String> ids) {
+    private void deleteVms(List<String> ids) {
         for (String id: ids) {
             if (!idsVmsDeployedBeforeTests.contains(id)) {
                 delete(testDeploymentBaseUrl + "vms/" + id);
@@ -457,7 +458,7 @@ public class VmManagerRestTest {
         }
     }
 
-    private ArrayList<String> deployTestVms() {
+    private List<String> deployTestVms() {
         // Deploy 2 VMs
         String jsonString =
             given()
@@ -466,7 +467,7 @@ public class VmManagerRestTest {
             .post(testDeploymentBaseUrl + "vms/").asString();
 
         // Return the IDs of the VMs deployed
-        ArrayList<String> idsVmsDeployed = new ArrayList<>();
+        List<String> idsVmsDeployed = new ArrayList<>();
         JsonObject jsonObject = gson.fromJson(jsonString, JsonObject.class);
         JsonArray jsonIdsArray = jsonObject.get("ids").getAsJsonArray();
         for (JsonElement jsonId: jsonIdsArray) {

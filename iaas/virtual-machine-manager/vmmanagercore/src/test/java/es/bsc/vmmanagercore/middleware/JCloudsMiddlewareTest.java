@@ -17,6 +17,7 @@ import org.junit.rules.ExpectedException;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.*;
@@ -37,10 +38,10 @@ public class JCloudsMiddlewareTest {
 	private static String testingImageId; // ID of the image used by the VMs created in this test
 	
 	//IDs of the instances that exist before running the tests
-	private static ArrayList<String> vmsIdsBeforeTests;
+	private static List<String> vmsIdsBeforeTests;
 	
 	//IDs of the flavors that exist before running the tests
-	private static ArrayList<String> flavorIdsBeforeTests;
+	private static List<String> flavorIdsBeforeTests;
 	
 	//needed by JClouds
 	private static NovaApi novaApi;
@@ -90,7 +91,7 @@ public class JCloudsMiddlewareTest {
 	@AfterClass
 	public static void tearDownAfterClass() {
 		//make sure that the VMs deployed before beginning these tests are still there
-		ArrayList<String> vmsIdsAfterTests = new ArrayList<>();
+		List<String> vmsIdsAfterTests = new ArrayList<>();
 		for (String zone: zones) {
 			ServerApi serverApi = novaApi.getServerApiForZone(zone);
 			vmsIdsAfterTests = new ArrayList<>();
@@ -101,7 +102,7 @@ public class JCloudsMiddlewareTest {
 		assertTrue(vmsIdsAfterTests.containsAll(vmsIdsBeforeTests));
 		
 		//make sure that the flavors that existed before the tests are still there
-		ArrayList<String> flavorIdsAfterTests = new ArrayList<>();
+		List<String> flavorIdsAfterTests = new ArrayList<>();
 		for (String zone: zones) {
 			FlavorApi flavorApi = novaApi.getFlavorApiForZone(zone);
 			flavorIdsAfterTests = new ArrayList<>();
@@ -202,7 +203,7 @@ public class JCloudsMiddlewareTest {
 		jCloudsMiddleware.destroy(instanceId);
 		
 		//check that the instance no longer exists
-		ArrayList<String> instancesIds = (ArrayList<String>) jCloudsMiddleware.getAllVMsId();
+		List<String> instancesIds = jCloudsMiddleware.getAllVMsId();
 		assertFalse(instancesIds.contains(instanceId));
 	}
 	
@@ -215,7 +216,7 @@ public class JCloudsMiddlewareTest {
 		String instanceId2 = jCloudsMiddleware.deploy(vmDescription2, null);
 		
 		//get the list of IDs
-		Collection<String> ids = jCloudsMiddleware.getAllVMsId();
+		List<String> ids = jCloudsMiddleware.getAllVMsId();
 		
 		//check that the two VMs exist
 		assertTrue(ids.contains(instanceId1) && ids.contains(instanceId2));
