@@ -3,20 +3,20 @@
   <prerequisites>
     <maven>3.0</maven>
   </prerequisites>
-  
-  <groupId>eu.ascetic.ascetic-architecture.saas.compss-plugin</groupId>
+
+  <groupId>eu.ascetic.saas.compss-plugin</groupId>
   <artifactId>ascetic.deployer.plugin</artifactId>
   <packaging>eclipse-plugin</packaging>
-  <parent>  
-	  	<groupId>eu.ascetic.ascetic-architecture.saas</groupId>  
-  		<artifactId>compss-plugin</artifactId>  
-  		<version>0.0.1-SNAPSHOT</version>  
-  		<relativePath>../</relativePath>  
-  </parent>  
+  <parent>
+	  	<groupId>eu.ascetic.saas</groupId>
+  		<artifactId>compss-plugin</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  		<relativePath>../</relativePath>
+  </parent>
 
   <repositories>
   </repositories>
-  
+
   <dependencies>
 	<dependency>
 		<groupId>commons-io</groupId>
@@ -76,7 +76,7 @@
              			</fileset>
            		</filesets>
          	</configuration>
-       	</plugin>	
+       	</plugin>
     </plugins>
   </build>
 </project>

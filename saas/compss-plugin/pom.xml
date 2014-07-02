@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>eu.ascetic.ascetic-architecture</groupId>
+    <groupId>eu.ascetic</groupId>
     <artifactId>saas</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <groupId>eu.ascetic.ascetic-architecture.saas</groupId>
+  <groupId>eu.ascetic.saas</groupId>
   <artifactId>compss-plugin</artifactId>
   <name>COMP Superscalar eclipse plug-in</name>
   <description>Provides the IDE to implement application with the COMPSs programming model and deploy it in the ASCETIC infrastructure</description>

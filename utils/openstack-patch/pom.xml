@@ -4,7 +4,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>eu.ascetic.ascetic-architecture.utils</groupId>
+	<groupId>eu.ascetic.utils</groupId>
 	<artifactId>openstack-patch</artifactId>
         <packaging>jar</packaging>
 	<version>0.1-SNAPSHOT</version>
@@ -22,7 +22,7 @@
 	</scm>
 
 	<parent>
-		<groupId>eu.ascetic.ascetic-architecture</groupId>
+		<groupId>eu.ascetic</groupId>
 		<artifactId>utils</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>

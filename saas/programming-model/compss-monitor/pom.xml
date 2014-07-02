@@ -3,20 +3,20 @@
   	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>eu.ascetic.ascetic-architecture.saas</groupId>
+		<groupId>eu.ascetic.saas</groupId>
 		<artifactId>programming-model</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 
-	<groupId>eu.ascetic.ascetic-architecture.saas.programming-model</groupId>
+	<groupId>eu.ascetic.saas.programming-model</groupId>
 	<artifactId>monitor</artifactId>
 	<packaging>war</packaging>
 	<name>Tasks Monitor</name>
 	<description>Programming Model Monitor</description>
 
 
-	<dependencies>	
+	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -61,7 +61,7 @@
 			<version>2.4</version>
 		</dependency>
 	</dependencies>
-	
+
 	<build>
 		<finalName>${project.artifactId}</finalName>
 		<plugins>
@@ -75,9 +75,9 @@
 			</plugin>
 		</plugins>
 	</build>
-	
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-	
+
 </project>

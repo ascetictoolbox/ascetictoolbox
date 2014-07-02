@@ -7,7 +7,7 @@
 
   <name>vmmanagercore</name>
   <url>http://maven.apache.org</url>
-  
+
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -15,7 +15,7 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>eu.ascetic.ascetic-architecture.iaas</groupId>
+			<groupId>eu.ascetic.iaas</groupId>
 			<artifactId>GangliaMonitoring</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
@@ -93,12 +93,12 @@
             <version>1.2.16</version>
         </dependency>
         <dependency>
-            <groupId>eu.ascetic.ascetic-architecture.iaas</groupId>
+            <groupId>eu.ascetic.iaas</groupId>
             <artifactId>zabbix-api</artifactId>
             <version>0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>eu.ascetic.ascetic-architecture.iaas</groupId>
+            <groupId>eu.ascetic.iaas</groupId>
             <artifactId>energy-modeller</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
@@ -143,7 +143,7 @@
 	</build>
 
 	<parent>
-		<groupId>eu.ascetic.ascetic-architecture.iaas</groupId>
+		<groupId>eu.ascetic.iaas</groupId>
 		<artifactId>virtual-machine-manager</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>

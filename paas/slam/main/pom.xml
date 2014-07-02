@@ -1,18 +1,18 @@
 <project
-	xmlns="http://maven.apache.org/POM/4.0.0" 
+	xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
 	                    http://maven.apache.org/maven-v4_0_0.xsd ">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<parent>
-		<groupId>eu.ascetic.ascetic-architecture.paas</groupId>
+		<groupId>eu.ascetic.paas</groupId>
 		<artifactId>slam-slamanager</artifactId>
 		<version>0.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	
-	<groupId>eu.ascetic.ascetic-architecture.paas.slam-slamanager</groupId>
+
+	<groupId>eu.ascetic.paas.slam-slamanager</groupId>
 	<artifactId>slam-main</artifactId>
 	<packaging>bundle</packaging>
 	<name>slam-main</name>
@@ -23,7 +23,7 @@
 		<org.slasoi.slam.export.version>${project.artifact.version}</org.slasoi.slam.export.version>
 		<slam.required.bundles>slam-pac,slam-poc</slam.required.bundles>
 	</properties>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>org.slasoi.models</groupId>
@@ -37,7 +37,7 @@
 			<version>${slasoi-version}</version>
 			<scope>provided</scope>
 		</dependency>
-	
+
 		<!--  Generic SLA Manager :: Core :: Components -->
 		<dependency>
 			<groupId>org.slasoi.generic-slamanager.core</groupId>
@@ -45,65 +45,65 @@
 			<version>${slasoi-version}</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.slasoi.generic-slamanager.core</groupId>
 			<artifactId>monitoring-manager</artifactId>
 			<version>${slasoi-version}</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.slasoi.generic-slamanager.core</groupId>
 			<artifactId>negotiation</artifactId>
 			<version>${slasoi-version}</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.slasoi.generic-slamanager.core</groupId>
 			<artifactId>planning-optimization</artifactId>
 			<version>${slasoi-version}</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.slasoi.generic-slamanager.core</groupId>
 			<artifactId>provisioning-adjustment</artifactId>
 			<version>${slasoi-version}</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.slasoi.generic-slamanager.commons</groupId>
 			<artifactId>gslam-utils</artifactId>
 			<version>${slasoi-version}</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<!--  Generic SLA Manager :: References :: Components -->
 
 
 		<!--  SkeletonSLA Manager :: References :: Domain Specific -->
 		<dependency>
-			<groupId>eu.ascetic.ascetic-architecture.paas.slam-slamanager</groupId>
+			<groupId>eu.ascetic.paas.slam-slamanager</groupId>
 			<artifactId>slam-poc</artifactId>
 			<version>${__slam-version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>eu.ascetic.ascetic-architecture.paas.slam-slamanager</groupId>
+			<groupId>eu.ascetic.paas.slam-slamanager</groupId>
 			<artifactId>slam-pac</artifactId>
 			<version>${__slam-version}</version>
 			<scope>provided</scope>
 		</dependency>
-		
-		<!-- 
-			::  Classes contained in 'slam-core' artifact, 
+
+		<!--
+			::  Classes contained in 'slam-core' artifact,
 			    will be exposed by this bundle within OSGi
 		-->
 		<dependency>
-			<groupId>eu.ascetic.ascetic-architecture.paas.slam-slamanager</groupId>
+			<groupId>eu.ascetic.paas.slam-slamanager</groupId>
 			<artifactId>slam-core</artifactId>
 			<version>${__slam-version}</version>
 			<scope>provided</scope>
@@ -124,28 +124,28 @@
 			<version>1.2.0</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 			<version>2.5.6</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.framework</artifactId>
 			<version>${felix-version}</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.12</version>
 			<scope>provided</scope>
-		</dependency>		
-		
+		</dependency>
+
 	</dependencies>
 
 	<profiles>
@@ -187,5 +187,5 @@
 			</build>
 		</profile>
 	</profiles>
-	
+
 </project>

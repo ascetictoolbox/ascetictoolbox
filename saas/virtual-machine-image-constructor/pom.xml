@@ -2,12 +2,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>eu.ascetic.ascetic-architecture</groupId>
+		<groupId>eu.ascetic</groupId>
 		<artifactId>saas</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<groupId>eu.ascetic.ascetic-architecture.saas</groupId>
+	<groupId>eu.ascetic.saas</groupId>
 	<artifactId>virtual-machine-image-constructor</artifactId>
 	<name>Virtual Machine Image Constructor</name>
 	<description>Provides facilities to create and configure base VM images</description>
@@ -20,7 +20,7 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>eu.ascetic.ascetic-architecture.utils</groupId>
+			<groupId>eu.ascetic.utils</groupId>
 			<artifactId>ovf-xmlbeans-api</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>

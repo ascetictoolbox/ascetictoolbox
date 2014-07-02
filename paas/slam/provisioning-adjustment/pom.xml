@@ -3,18 +3,18 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>eu.ascetic.ascetic-architecture.paas</groupId>
+		<groupId>eu.ascetic.paas</groupId>
 		<artifactId>slam-slamanager</artifactId>
 		<version>0.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	
-	<groupId>eu.ascetic.ascetic-architecture.paas.slam-slamanager</groupId>
+
+	<groupId>eu.ascetic.paas.slam-slamanager</groupId>
 	<artifactId>slam-pac</artifactId>
 	<packaging>bundle</packaging>
 	<version>0.1-SNAPSHOT</version>
 	<name>slam-pac</name>
-  
+
   <dependencies>
 		<dependency>
 			<groupId>log4j</groupId>
@@ -22,7 +22,7 @@
 			<version>1.2.12</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -109,7 +109,7 @@
 								</execution> <execution> <id>update-headers</id>
 								<phase>package</phase> <goals> <goal>format</goal> </goals>
 								</execution> </executions>
-							
+
 	-->
 					</plugin>
 				</plugins>
@@ -144,7 +144,7 @@
 						  <Import-Package>
 						  		org.osgi.framework;resolution:=optional,
 								*;resolution:=optional
-						  </Import-Package>	
+						  </Import-Package>
 					    </instructions>
 					  </configuration>
 					</plugin>
@@ -152,6 +152,6 @@
 			</build>
 		</profile>
 	</profiles>
-	
+
 </project>
 

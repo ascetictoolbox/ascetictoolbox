@@ -4,13 +4,13 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>eu.ascetic.ascetic-architecture</groupId>
+		<groupId>eu.ascetic</groupId>
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 		<artifactId>saas</artifactId>
 	</parent>
 
-	<groupId>eu.ascetic.ascetic-architecture.saas</groupId>
+	<groupId>eu.ascetic.saas</groupId>
 	<artifactId>application-packager</artifactId>
 	<packaging>jar</packaging>
 	<version>0.0.1-SNAPSHOT</version>
@@ -78,6 +78,6 @@
 	</build>
 
 	<dependencies>
-	
-	</dependencies>	
+
+	</dependencies>
 </project>

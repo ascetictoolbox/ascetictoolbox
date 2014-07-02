@@ -1,19 +1,19 @@
-<project 
-	xmlns="http://maven.apache.org/POM/4.0.0" 
+<project
+	xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
 	                    http://maven.apache.org/maven-v4_0_0.xsd ">
 	<modelVersion>4.0.0</modelVersion>
 
 	<!--  SLAM - namespace  -->
-	<groupId>eu.ascetic.ascetic-architecture.paas</groupId>
+	<groupId>eu.ascetic.paas</groupId>
 	<artifactId>slam-slamanager</artifactId>
 	<packaging>pom</packaging>
 	<name>slam-slamanager</name>
 	<version>0.1-SNAPSHOT</version>
 
 	<parent>
-		<groupId>eu.ascetic.ascetic-architecture</groupId>
+		<groupId>eu.ascetic</groupId>
 		<artifactId>paas</artifactId>
 		<relativePath>..</relativePath>
 		<version>0.0.1-SNAPSHOT</version>
@@ -28,7 +28,7 @@
 		<module>planning-optimization</module>
 		<module>provisioning-adjustment</module>
 	</modules>
-	
+
 	<!--  GLOBAL - properties  -->
 	<properties>
 		<jdk.version>1.7</jdk.version>
@@ -39,7 +39,7 @@
 		<slasoi-version>0.1-SNAPSHOT</slasoi-version>
 		<__slam-version>0.1-SNAPSHOT</__slam-version>
 	</properties>
-	
+
 	<!--  GLOBAL - licenses  -->
 	<licenses>
 		<license>
@@ -198,8 +198,8 @@
 		<snapshots>
 			<enabled>false</enabled>
 		</snapshots>
-	</repository> 
-		
+	</repository>
+
 
 	<!-- this is uniquely to force blacklisting of Atlassian repo -->
 		<repository>
@@ -224,7 +224,7 @@
 						<enabled>false</enabled>
 				</snapshots>
 		</repository>
-		
+
 		<repository>
 			<id>jboss</id>
 			<name>JBoss Repository</name>
@@ -243,38 +243,38 @@
 			<url>http://download.java.net/maven/2/</url>
 			<layout>default</layout>
 		</repository>
-		
+
 		<repository>
 			<id>apache</id>
 			<name>Apache repository</name>
 			<url>http://ftp.cica.es/mirrors/maven2</url>
-		</repository>	
-		
+		</repository>
 
-		
+
+
 		<repository>
 			<id>codehaus</id>
 			<name>Codehaus repository</name>
 			<url>http://repository.codehaus.org//</url>
-		</repository>			
+		</repository>
 		<repository>
 			<id>glassfish</id>
 			<name>Glassfish repository</name>
 			<url>http://download.java.net/maven/glassfish/</url>
 		</repository>
-		
+
 		<repository>
 			<id>javanet</id>
 			<name>JavaNet repository</name>
 			<url>http://download.java.net/maven/2/</url>
 		</repository>
-		
+
 		<repository>
 			<id>objectweb</id>
 			<name>ObjectWeb repository</name>
 			<url>http://maven.objectweb.org/maven2/</url>
-		</repository>				
-		
+		</repository>
+
 	</repositories>
 
 	<pluginRepositories>

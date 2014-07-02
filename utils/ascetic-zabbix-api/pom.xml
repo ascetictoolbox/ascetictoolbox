@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>eu.ascetic.ascetic-architecture.iaas</groupId>
+	<groupId>eu.ascetic.iaas</groupId>
 	<artifactId>zabbix-api</artifactId>
 	<packaging>jar</packaging>
 	<version>0.1-SNAPSHOT</version>
@@ -9,7 +9,7 @@
 	<url>http://www.ascetic.eu</url>
 
 	<build>
-		
+
 	</build>
 
 	<dependencies>
@@ -34,12 +34,12 @@
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpcore</artifactId>
 			<version>4.3.2</version>
-		</dependency>	
+		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpmime</artifactId>
 			<version>4.3.2</version>
-		</dependency>	
+		</dependency>
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>

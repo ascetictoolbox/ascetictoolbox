@@ -1,12 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>eu.ascetic.ascetic-architecture</groupId>
+    <groupId>eu.ascetic</groupId>
     <artifactId>paas</artifactId>
     <relativePath>..</relativePath>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <groupId>eu.ascetic.ascetic-architecture.paas</groupId>
+  <groupId>eu.ascetic.paas</groupId>
   <artifactId>paas-energy-modeller</artifactId>
   <name>ASCETiC PaaS Energy Modeller</name>
   <packaging>jar</packaging>
@@ -20,9 +20,9 @@
 		<paasem.mysql>5.1.31</paasem.mysql>
 		<paasem.jackson>2.4.0</paasem.jackson>
 	</properties>
-	
+
 	<dependencies>
-  
+
 	    <dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-server</artifactId>
@@ -50,21 +50,21 @@
 			<groupId>org.apache.jmeter</groupId>
 			<artifactId>ApacheJMeter_core</artifactId>
 			<version>2.10</version>
-		</dependency>	
+		</dependency>
 		<dependency>
 			<groupId>org.apache.jmeter</groupId>
 			<artifactId>jorphan</artifactId>
 			<version>2.10</version>
 		</dependency>
-				
+
 	    <dependency>
 	    	<groupId>junit</groupId>
 	    	<artifactId>junit</artifactId>
 	    	<scope>test</scope>
 	    </dependency>
-    
+
   	</dependencies>
-	
+
 	<build>
 		<plugins>
 			<plugin>
@@ -76,6 +76,6 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		
-	 </build> 
+
+	 </build>
 </project>

@@ -3,11 +3,11 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>eu.ascetic.ascetic-architecture</groupId>
+    <groupId>eu.ascetic</groupId>
     <artifactId>iaas</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <groupId>eu.ascetic.ascetic-architecture.iaas</groupId>
+  <groupId>eu.ascetic.iaas</groupId>
   <artifactId>iaas-pricing-modeller</artifactId>
   <version>1.0-SNAPSHOT</version>
   <name>IaaS Pricing Modeller</name>

@@ -1,18 +1,18 @@
 <project
-	xmlns="http://maven.apache.org/POM/4.0.0" 
+	xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
 	                    http://maven.apache.org/maven-v4_0_0.xsd ">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<parent>
-		<groupId>eu.ascetic.ascetic-architecture.iaas.slamanager</groupId>
+		<groupId>eu.ascetic.iaas.slamanager</groupId>
 		<artifactId>iaas-slamanager</artifactId>
 		<version>0.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	
-	<groupId>eu.ascetic.ascetic-architecture.iaas.slamanager</groupId>
+
+	<groupId>eu.ascetic.iaas.slamanager</groupId>
 	<artifactId>iaas-poc</artifactId>
 	<packaging>bundle</packaging>
 	<name>iaas-poc</name>
@@ -21,51 +21,51 @@
     <properties>
 		<slam.required.bundles></slam.required.bundles>
 	</properties>
-	
+
 	<dependencies>
-	
+
 	<dependency>
         	<groupId>org.slasoi.business-manager</groupId>
 			<artifactId>bmanager-common-service</artifactId>
 			<version>${slasoi-version}</version>
 			<scope>provided</scope>
         </dependency>
-        
+
         <dependency>
         	<groupId>org.slasoi.business-manager</groupId>
 			<artifactId>bmanager-common-model</artifactId>
 			<version>${slasoi-version}</version>
 			<scope>provided</scope>
         </dependency>
-        
+
 		<dependency>
 			<groupId>org.slasoi.generic-slamanager.core</groupId>
 			<artifactId>negotiation</artifactId>
 			<version>${slasoi-version}</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
             <groupId>org.slasoi.generic-slamanager.core</groupId>
             <artifactId>monitoring-manager</artifactId>
             <version>${slasoi-version}</version>
             <scope>provided</scope>
         </dependency>
-		
+
 		<dependency>
 			<groupId>org.slasoi.generic-slamanager.core</groupId>
 			<artifactId>planning-optimization</artifactId>
 			<version>0.2-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.slasoi.generic-slamanager.core</groupId>
 			<artifactId>provisioning-adjustment</artifactId>
 			<version>${slasoi-version}</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.slasoi.generic-slamanager.core</groupId>
 			<artifactId>context</artifactId>
@@ -79,7 +79,7 @@
 			<version>0.3-SNAPSHOT</version>
 			<scope>provided</scope>
 	 	</dependency>
-	 			
+
 		<!-- PLAN -->
 		<dependency>
             <groupId>org.slasoi.generic-slamanager.commons.plan</groupId>
@@ -87,20 +87,20 @@
             <version>${slasoi-version}</version>
             <scope>provided</scope>
         </dependency>
-		
+
 		<dependency>
             <groupId>org.slasoi.infrastructure-slamanager.commons</groupId>
             <artifactId>plan</artifactId>
             <version>${slasoi-version}</version>
             <scope>provided</scope>
         </dependency>
-		
+
 			<dependency>
 	<groupId>org.codehaus.jettison</groupId>
 	<artifactId>jettison</artifactId>
 	<version>1.3</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
@@ -114,38 +114,38 @@
 	       <version>1.0.0</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.12</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.4</version>
 			<scope>test</scope>
 		</dependency>
-		
-		<!-- dependency>		
+
+		<!-- dependency>
 		  <groupId>org.ow2.contrail.common</groupId>
   		   <artifactId>ovf-parser-bundle</artifactId>
            <version>1.0-SNAPSHOT</version>
            <scope>provided</scope>
  	    </dependency-->
-            
- 	    
+
+
 	<!-- test -->
 	<dependency>
 		<groupId>org.slasoi.generic-slamanager.syntaxconverter</groupId>
 	<artifactId>gslam-syntaxconverter</artifactId>
 		<version>0.1-SNAPSHOT</version>
 	</dependency>
-		
+
 	</dependencies>
-	
+
 	<!-- -->
 	<profiles>
 		<profile>
@@ -169,19 +169,19 @@
 							<instructions>
 								<Bundle-Name>iaas-poc</Bundle-Name>
 								<Bundle-SymbolicName>iaas-poc</Bundle-SymbolicName>
-								<Export-Package>eu.ascetic.architecture.iaas.slamanager.poc;version="${__slam-version}"</Export-Package>
+								<Export-Package>eu.ascetic.iaas.slamanager.poc;version="${__slam-version}"</Export-Package>
 								<Import-Package>
 								org.slasoi.businessManager.common.service.*;version=${pom.version},
 								org.ow2.contrail.common.*;version="1.0.0.SNAPSHOT",
 								org.codehaus.jettison.*;version="1.3",
 									*;resolution:=optional
-								</Import-Package>	
+								</Import-Package>
 							</instructions>
 						</configuration>
 					</plugin>
 				</plugins>
 			</build>
 		</profile>
-	</profiles>	 
+	</profiles>
 
 </project>

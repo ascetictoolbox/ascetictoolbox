@@ -2,9 +2,9 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>ascetic.deployer.feature</artifactId>
   <packaging>eclipse-feature</packaging>
-  <groupId>eu.ascetic.ascetic-architecture.saas.compss-plugin</groupId>	
+  <groupId>eu.ascetic.saas.compss-plugin</groupId>
   <parent>
-  	<groupId>eu.ascetic.ascetic-architecture.saas</groupId>
+  	<groupId>eu.ascetic.saas</groupId>
   	<artifactId>compss-plugin</artifactId>
   	<version>0.0.1-SNAPSHOT</version>
   	<relativePath>../</relativePath>

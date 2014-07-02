@@ -4,13 +4,13 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>eu.ascetic.ascetic-architecture</groupId>
+		<groupId>eu.ascetic</groupId>
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 		<artifactId>paas</artifactId>
 	</parent>
 
-	<groupId>eu.ascetic.ascetic-architecture.paas</groupId>
+	<groupId>eu.ascetic.paas</groupId>
 	<artifactId>virtual-machine-contextualizer</artifactId>
 	<version>3.3.0-SNAPSHOT</version>
 
@@ -145,12 +145,12 @@
 			<artifactId>log4j</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>eu.ascetic.ascetic-architecture.utils</groupId>
+			<groupId>eu.ascetic.utils</groupId>
 			<artifactId>ovf-xmlbeans-api</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>eu.ascetic.ascetic-architecture.utils</groupId>
+			<groupId>eu.ascetic.utils</groupId>
 			<artifactId>libvirt</artifactId>
 			<version>0.4.9-SNAPSHOT</version>
 		</dependency>

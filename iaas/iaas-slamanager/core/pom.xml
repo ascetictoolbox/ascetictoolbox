@@ -1,18 +1,18 @@
 <project
-	xmlns="http://maven.apache.org/POM/4.0.0" 
+	xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
 	                    http://maven.apache.org/maven-v4_0_0.xsd ">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<parent>
-		<groupId>eu.ascetic.ascetic-architecture.iaas.slamanager</groupId>
+		<groupId>eu.ascetic.iaas.slamanager</groupId>
 		<artifactId>iaas-slamanager</artifactId>
 		<version>0.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	
-	<groupId>eu.ascetic.ascetic-architecture.iaas.slamanager</groupId>
+
+	<groupId>eu.ascetic.iaas.slamanager</groupId>
 	<artifactId>iaas-core</artifactId>
 	<packaging>bundle</packaging>
 	<name>iaas-core</name>
@@ -21,10 +21,10 @@
     <properties>
 		<org.slasoi.slam.license.loc>${basedir}</org.slasoi.slam.license.loc>
 		<org.slasoi.slam.export.version>${project.artifact.version}</org.slasoi.slam.export.version>
-		<org.slasoi.slam.core.export>eu.ascetic.architecture.iaas.slamanager.core.*</org.slasoi.slam.core.export>
+		<org.slasoi.slam.core.export>eu.ascetic.iaas.slamanager.core.*</org.slasoi.slam.core.export>
 		<org.slasoi.slam.core.export.version>${slasoi-version}</org.slasoi.slam.core.export.version>
 	</properties>
-	
+
     <repositories>
       <repository>
          <id>maven-central</id>
@@ -38,7 +38,7 @@
          <url>http://repo1.maven.org/maven2/</url>
        </repository>
      </repositories>
- 
+
 
      <pluginRepositories>
         <pluginRepository>
@@ -57,7 +57,7 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
-	
+
   <profiles>
 		<profile>
 			<id>activator</id>
