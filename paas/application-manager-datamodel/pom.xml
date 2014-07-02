@@ -3,14 +3,14 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>eu.ascetic.ascetic</groupId>
+		<groupId>eu.ascetic.ascetic-architecture</groupId>
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 		<artifactId>paas</artifactId>
 	</parent>
 
 
-	<groupId>eu.ascetic.ascetic.paas</groupId>
+	<groupId>eu.ascetic.ascetic-architecture.paas</groupId>
 	<artifactId>application-manager-datamodel</artifactId>
 	<version>0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
