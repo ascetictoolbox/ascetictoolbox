@@ -193,4 +193,16 @@ public abstract class HostInfo {
         return new ServerLoad(cpus/getTotalCpus(), ramMb/getTotalMemoryMb(), diskGb/getTotalDiskGb());
     }
 
+    public void updateAssignedCpus(double assignedCpus) {
+        this.assignedCpus = assignedCpus;
+    }
+
+    public void updateAssignedMemoryMb(int assignedMemoryMb) {
+        this.assignedMemoryMb = assignedMemoryMb;
+    }
+
+    public void updateAssignedDiskGb(double assignedDiskGb) {
+        this.assignedDiskGb = assignedDiskGb;
+    }
+
 }

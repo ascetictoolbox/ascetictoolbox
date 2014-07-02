@@ -42,18 +42,6 @@ public class HostInfoOpenStack extends HostInfo {
         }
     }
 
-    private void updateAssignedCpus(int assignedCpus) {
-        this.assignedCpus = assignedCpus;
-    }
-
-    private void updateAssignedMemoryMb(int assignedMemoryMb) {
-        this.assignedMemoryMb = assignedMemoryMb;
-    }
-
-    private void updateAssignedDiskGb(int assignedDiskGb) {
-        this.assignedDiskGb = assignedDiskGb;
-    }
-
     @Override
     public double getAssignedCpus() {
         int assignedCpus = 0;

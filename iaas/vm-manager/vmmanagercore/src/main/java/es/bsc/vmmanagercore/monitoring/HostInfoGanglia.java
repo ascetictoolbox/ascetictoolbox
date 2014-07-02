@@ -40,18 +40,6 @@ public class HostInfoGanglia extends HostInfo {
         totalDiskGb = gangliaHost.getDiskTotal();
     }
 
-    private void updateAssignedCpus(double assignedCpus) {
-        this.assignedCpus = assignedCpus;
-    }
-
-    private void updateAssignedMemoryMb(int assignedMemoryMb) {
-        this.assignedMemoryMb = assignedMemoryMb;
-    }
-
-    private void updateAssignedDiskGb(double assignedDiskGb) {
-        this.assignedDiskGb = assignedDiskGb;
-    }
-
     @Override
     public double getAssignedCpus() {
         double assignedCpus = gangliaHost.getLoadOne();
