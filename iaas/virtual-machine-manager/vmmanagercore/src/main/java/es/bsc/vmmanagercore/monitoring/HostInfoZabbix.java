@@ -19,15 +19,15 @@ public class HostInfoZabbix extends HostInfo {
     private static final String NUMBER_OF_CPUS_KEY = "system.cpu.num";
     private static final String SYSTEM_CPU_LOAD_KEY = "system.cpu.load[all,avg1]";
     private static final String TOTAL_MEMORY_BYTES_KEY = "vm.memory.size[total]";
-    private static final String USED_MEMORY_BYTES_KEY = "vm.memory.size[used]";
+    private static final String AVAILABLE_MEMORY_BYTES_KEY = "vm.memory.size[used]";
     private static final String TOTAL_DISK_BYTES_KEY = "vfs.fs.size[/var/lib/nova/instances,total]";
     private static final String USED_DISK_BYTES_KEY = "vfs.fs.size[/var/lib/nova/instances,used]";
 
     private final static ZabbixClient zabbixClient = new ZabbixClient();
-    private List<Item> hostItems = new ArrayList<>(); // Metrics available in the host
+    private List<Item> items = new ArrayList<>(); // Metrics available in the host
 
     private Item getItemByKey(String key) {
-        for (Item item: hostItems) {
+        for (Item item: items) {
             if (item.getKey().equals(key)) {
                 return item;
             }
@@ -43,7 +43,7 @@ public class HostInfoZabbix extends HostInfo {
 
     public HostInfoZabbix(String hostname) {
         super(hostname);
-        hostItems = zabbixClient.getItemsFromHost(hostname);
+        items = zabbixClient.getItemsFromHost(hostname);
         initTotalResources();
     }
 
@@ -56,14 +56,17 @@ public class HostInfoZabbix extends HostInfo {
 
     @Override
     public int getAssignedMemoryMb() {
-        int assignedMemoryMb = Integer.parseInt(getItemByKey(USED_MEMORY_BYTES_KEY).getLastValue());
+        int availableMemoryMb = (int) (Long.parseLong(getItemByKey(AVAILABLE_MEMORY_BYTES_KEY)
+                .getLastValue())/(1024*1024));
+        int assignedMemoryMb = totalMemoryMb - availableMemoryMb;
         updateAssignedMemoryMb(assignedMemoryMb);
         return assignedMemoryMb;
     }
 
     @Override
     public double getAssignedDiskGb() {
-        double assignedDiskGb = Double.parseDouble(getItemByKey(USED_DISK_BYTES_KEY).getLastValue());
+        double assignedDiskGb = (Double.parseDouble(getItemByKey(USED_DISK_BYTES_KEY)
+                .getLastValue())/(1024.0*1024*1024));
         updateAssignedDiskGb(assignedDiskGb);
         return assignedDiskGb;
     }

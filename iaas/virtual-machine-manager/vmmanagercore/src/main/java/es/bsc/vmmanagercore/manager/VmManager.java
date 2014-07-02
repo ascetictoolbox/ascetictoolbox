@@ -106,6 +106,7 @@ public class VmManager {
         // TODO si devuelve null es que no hay host disponible. Que hacer en ese caso?
         // For each VM that is part of the application
         for(Entry<Vm, String> vmScheduling: vmsScheduling.entrySet()) {
+
             // Get the host name of the server where the VM is going to be deployed
             String hostname = vmScheduling.getValue();
 
