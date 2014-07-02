@@ -45,7 +45,7 @@ public class ZabbixApiClientTest {
 	 * @param client the client
 	 */
 	public static void testItemsFromHost(ZabbixClient client){
-		String hostname = "asok09.cit.tu-berlin.de";
+		String hostname = "asok09";
 		List<Item> itemsList = client.getItemsFromHost(hostname);
 		int index = 0;
 		if (itemsList != null && !itemsList.isEmpty()){
