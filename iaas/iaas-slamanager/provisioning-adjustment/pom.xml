@@ -73,7 +73,7 @@
 			<version>3.2</version>
 		</dependency>
 		<dependency>
-			<groupId>eu.ascetic.architecture.iaas.slamanager</groupId>
+			<groupId>eu.ascetic.ascetic-architecture.iaas.slamanager</groupId>
 			<artifactId>iaas-core</artifactId>
 			<version>${__slam-version}</version>
 			<scope>provided</scope>
@@ -167,7 +167,11 @@
 						  <Bundle-Name>iaas-pac</Bundle-Name>
 						  <Bundle-SymbolicName>iaas-pac</Bundle-SymbolicName>
 					      <Export-Package>
-								eu.ascetic.architecture.iaas.slamanager.pac;version="${__slam-version}"
+								eu.ascetic.architecture.iaas.slamanager.pac;version="${__slam-version}",
+								org.antlr.runtime.*,
+								org.antlr.stringtemplate,
+								org.antlr.stringtemplate.language,
+								antlr.*						
 						  </Export-Package>
 						  <Import-Package>
 						  		org.osgi.framework;resolution:=optional,

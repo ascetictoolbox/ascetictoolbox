@@ -90,8 +90,6 @@ iaas/iaas-slamanager/provisioning-adjustment/src/main/java/eu/ascetic/architectu
 iaas/iaas-slamanager/provisioning-adjustment/src/main/java/eu/ascetic/architecture/iaas/slamanager/pac/action/ActionInvocation.java -text
 iaas/iaas-slamanager/provisioning-adjustment/src/main/java/eu/ascetic/architecture/iaas/slamanager/pac/action/ViolationAction.java -text
 iaas/iaas-slamanager/provisioning-adjustment/src/main/java/eu/ascetic/architecture/iaas/slamanager/pac/events/EventHandler.java -text
-iaas/iaas-slamanager/provisioning-adjustment/src/main/java/eu/ascetic/architecture/iaas/slamanager/pac/events/EventViolationFederationForwardingHandler.java -text
-iaas/iaas-slamanager/provisioning-adjustment/src/main/java/eu/ascetic/architecture/iaas/slamanager/pac/events/EventWarningCustomActionHandler.java -text
 iaas/iaas-slamanager/provisioning-adjustment/src/main/java/eu/ascetic/architecture/iaas/slamanager/pac/events/Value.java -text
 iaas/iaas-slamanager/provisioning-adjustment/src/main/java/eu/ascetic/architecture/iaas/slamanager/pac/events/ViolationMessage.java -text
 iaas/iaas-slamanager/provisioning-adjustment/src/main/java/eu/ascetic/architecture/iaas/slamanager/pac/events/ViolationMessageTranslator.java -text
