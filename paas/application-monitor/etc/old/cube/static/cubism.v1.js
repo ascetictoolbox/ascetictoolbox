@@ -220,7 +220,7 @@ cubism_contextPrototype.graphite = function(host) {
 
   source.find = function(pattern, callback) {
     d3.json(host + "/metrics/find?format=completer"
-        + "&query=" + encodeURIComponent(pattern), function(result) {
+        + "&data=" + encodeURIComponent(pattern), function(result) {
       if (!result) return callback(new Error("unable to find metrics"));
       callback(null, result.metrics.map(function(d) { return d.path; }));
     });

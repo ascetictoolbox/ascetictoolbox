@@ -183,7 +183,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
       }
 
       //create a child scope for the typeahead directive so we are not polluting original scope
-      //with typeahead-specific data (matches, query etc.)
+      //with typeahead-specific data (matches, data etc.)
       var scope = originalScope.$new();
       originalScope.$on('$destroy', function(){
         scope.$destroy();
@@ -237,7 +237,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
 
       resetMatches();
 
-      //we need to propagate user's query so we can higlight matches
+      //we need to propagate user's data so we can higlight matches
       scope.query = undefined;
 
       //Declare the timeout promise var outside the function scope so that stacked calls can be cancelled later 

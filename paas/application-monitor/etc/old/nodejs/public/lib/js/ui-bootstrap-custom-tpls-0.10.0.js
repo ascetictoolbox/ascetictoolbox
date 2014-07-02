@@ -184,7 +184,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
       }
 
       //create a child scope for the typeahead directive so we are not polluting original scope
-      //with typeahead-specific data (matches, query etc.)
+      //with typeahead-specific data (matches, data etc.)
       var scope = originalScope.$new();
       originalScope.$on('$destroy', function(){
         scope.$destroy();
@@ -238,7 +238,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
 
       resetMatches();
 
-      //we need to propagate user's query so we can higlight matches
+      //we need to propagate user's data so we can higlight matches
       scope.query = undefined;
 
       //Declare the timeout promise var outside the function scope so that stacked calls can be cancelled later 
@@ -449,14 +449,14 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
   });
 angular.module("template/typeahead/typeahead-match.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/typeahead/typeahead-match.html",
-    "<a tabindex=\"-1\" bind-html-unsafe=\"match.label | typeaheadHighlight:query\"></a>");
+    "<a tabindex=\"-1\" bind-html-unsafe=\"match.label | typeaheadHighlight:data\"></a>");
 }]);
 
 angular.module("template/typeahead/typeahead-popup.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/typeahead/typeahead-popup.html",
     "<ul class=\"dropdown-menu\" ng-style=\"{display: isOpen()&&'block' || 'none', top: position.top+'px', left: position.left+'px'}\">\n" +
     "    <li ng-repeat=\"match in matches\" ng-class=\"{active: isActive($index) }\" ng-mouseenter=\"selectActive($index)\" ng-click=\"selectMatch($index)\">\n" +
-    "        <div typeahead-match index=\"$index\" match=\"match\" query=\"query\" template-url=\"templateUrl\"></div>\n" +
+    "        <div typeahead-match index=\"$index\" match=\"match\" data=\"data\" template-url=\"templateUrl\"></div>\n" +
     "    </li>\n" +
     "</ul>");
 }]);
@@ -465,7 +465,7 @@ angular.module("template/typeahead/typeahead.html", []).run(["$templateCache", f
   $templateCache.put("template/typeahead/typeahead.html",
     "<ul class=\"typeahead dropdown-menu\" ng-style=\"{display: isOpen()&&'block' || 'none', top: position.top+'px', left: position.left+'px'}\">\n" +
     "    <li ng-repeat=\"match in matches\" ng-class=\"{active: isActive($index) }\" ng-mouseenter=\"selectActive($index)\">\n" +
-    "        <a tabindex=\"-1\" ng-click=\"selectMatch($index)\" ng-bind-html-unsafe=\"match.label | typeaheadHighlight:query\"></a>\n" +
+    "        <a tabindex=\"-1\" ng-click=\"selectMatch($index)\" ng-bind-html-unsafe=\"match.label | typeaheadHighlight:data\"></a>\n" +
     "    </li>\n" +
     "</ul>");
 }]);

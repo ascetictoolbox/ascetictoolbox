@@ -26,7 +26,7 @@ public class AppsDBMapper {
     }
 
     public ObjectNode getAllApps(long start, long end) {
-        DBObject query = (DBObject) JSON.parse("{$orderby : {timestamp : -1}, $query : { $and : [ { timestamp : { $gte : " + start
+        DBObject query = (DBObject) JSON.parse("{$orderby : {timestamp : -1}, $data : { $and : [ { timestamp : { $gte : " + start
                 + " }}, { timestamp : {$lte : " + end + "}} ] } }");
 
         BasicDBList ret = DBManager.instance.find(EventsDBMapper.COLL_NAME, query);

@@ -75,7 +75,7 @@ public class EventsDBMapper {
 
 
     // cuando quiera encontrar métricas ordenándolas por timestamp:
-    // {$orderby : {timestamp : -1}, $query : { $and : [ { timestamp : { $gte : 1402162324197 }}, { timestamp : {$lte : 1402162469099}} ] } }
+    // {$orderby : {timestamp : -1}, $data : { $and : [ { timestamp : { $gte : 1402162324197 }}, { timestamp : {$lte : 1402162469099}} ] } }
     // el -1 ordena de mayor a menor y un 1 ordenaría de menor a mayor
     public ObjectNode storeEvent(ObjectNode event) {
 	    long timestamp = Calendar.getInstance().getTimeInMillis();
@@ -94,7 +94,7 @@ public class EventsDBMapper {
     }
 
 	public JsonNode getLastEvent(String appId, String nodeId) {
-		DBObject query = (DBObject) JSON.parse("{$orderby : {timestamp : -1}, $query : { $and : [ { appId : \"" + appId
+		DBObject query = (DBObject) JSON.parse("{$orderby : {timestamp : -1}, $data : { $and : [ { appId : \"" + appId
 				+ "\" }, { nodeId : \"" + nodeId + "\"} ] } }");
 		return Json.parse(DBManager.instance.findOne(COLL_NAME,query).toString());
 	}

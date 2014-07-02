@@ -166,7 +166,7 @@ exports.getter = function(db) {
     var options = {sort: {t: -1}, batchSize: 1000};
     if ("limit" in request) options.limit = +request.limit;
 
-    // Copy any expression filters into the query object.
+    // Copy any expression filters into the data object.
     var filter = {t: {$gte: start, $lt: stop}};
     expression.filter(filter);
 
@@ -181,7 +181,7 @@ exports.getter = function(db) {
         cursor.each(function(error, event) {
 
           // If the callback is closed (i.e., if the WebSocket connection was
-          // closed), then abort the query. Note that closing the cursor mid-
+          // closed), then abort the data. Note that closing the cursor mid-
           // loop causes an error, which we subsequently ignore!
           if (callback.closed) return cursor.close();
 

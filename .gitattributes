@@ -650,7 +650,6 @@ paas/application-monitor/app/es/bsc/amon/controller/AppsDBMapper.java -text
 paas/application-monitor/app/es/bsc/amon/controller/EventsDBMapper.java -text
 paas/application-monitor/app/es/bsc/amon/controller/QueriesDBMapper.java -text
 paas/application-monitor/app/es/bsc/amon/model/Event.java -text
-paas/application-monitor/app/es/bsc/amon/model/Query.java -text
 paas/application-monitor/app/es/bsc/amon/util/tree/NodeArray.java -text
 paas/application-monitor/app/es/bsc/amon/util/tree/NumberValue.java -text
 paas/application-monitor/app/es/bsc/amon/util/tree/ObjNode.java -text

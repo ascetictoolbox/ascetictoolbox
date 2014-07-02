@@ -118,7 +118,7 @@ exports.getter = function(db) {
         filter = {t: {}},
         fields = {t: 1};
 
-    // Copy any expression filters into the query object.
+    // Copy any expression filters into the data object.
     expression.filter(filter);
 
     // Request any needed fields.

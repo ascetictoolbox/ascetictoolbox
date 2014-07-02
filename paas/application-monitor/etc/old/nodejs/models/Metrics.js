@@ -66,7 +66,7 @@ module.exports = function(mongoose) {
 		query.exec(callback);
 	};
 
-	// indexing query values for accelerating search
+	// indexing data values for accelerating search
 	return mongoose.model("Metrics", MetricsSchema);
 
 }

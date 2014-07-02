@@ -1,6 +1,5 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
 import es.bsc.amon.model.Event;
-import es.bsc.amon.model.Query;
 import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -53,14 +52,14 @@ public class MappingTest {
 				"\"end\":1402162495485,\n" +
 				"\"appId\":\"demoApp\",\n" +
 				"\"op\":\"array\",\n" +
-				"\"query\":{\"eventType\":\"VM_EXECUTION\"}\n" +
+				"\"data\":{\"eventType\":\"VM_EXECUTION\"}\n" +
 				"}";
 
 		ObjectMapper om = new ObjectMapper();
 		try {
 			Query e = om.readValue(json.getBytes(), Query.class);
 			assertThat(e.appId).isEqualToIgnoringCase("demoApp");
-			assertThat(e.query.get("eventType").asText()).isEqualTo("VM_EXECUTION");
+			assertThat(e.data.get("eventType").asText()).isEqualTo("VM_EXECUTION");
 
 			om.writeValue(System.out,e);
 		} catch(Exception ex) {
