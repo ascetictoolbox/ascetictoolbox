@@ -17,7 +17,7 @@
 		<!-- IaaS Modules -->
 		<!-- <module>my-module-name</module> -->
     <module>energy-modeller</module>
-    <module>vm-manager</module>
+    <module>virtual-machine-manager</module>
 	<module>iaas-slamanager</module>
     <module>iaas-pricing-modeller</module>
   </modules>

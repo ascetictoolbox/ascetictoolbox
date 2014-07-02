@@ -134,7 +134,7 @@ public class GangliaTest {
             System.out.println("No host '" + hostName + "' found in cluster '" + clusterName);
         } else {
             System.out.println("Host '" + hostName + "'");
-            
+
             /*
             Float load_one = host.getLoadOne();
             Assert.assertTrue(load_one >= 0);
@@ -184,12 +184,12 @@ public class GangliaTest {
         System.out.println("----------");
     }
 
-    
-    
-    
+
+
+
     //@Test
     public void fetchDataTest() throws IOException{
-      
-      
+
+
     }
 }

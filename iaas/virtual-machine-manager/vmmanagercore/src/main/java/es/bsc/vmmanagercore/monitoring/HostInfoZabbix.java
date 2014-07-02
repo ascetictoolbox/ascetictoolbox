@@ -15,10 +15,13 @@ import java.util.List;
 public class HostInfoZabbix extends HostInfo {
 
     // Keys to identify each metric in Zabbix.
-    // Note: The metric used for the disk space is specific for Ascetic.
+    // Note: The metrics used for the disk space are specific for the Ascetic project.
     private static final String NUMBER_OF_CPUS_KEY = "system.cpu.num";
+    private static final String SYSTEM_CPU_LOAD_KEY = "system.cpu.load[all,avg1]";
     private static final String TOTAL_MEMORY_BYTES_KEY = "vm.memory.size[total]";
+    private static final String USED_MEMORY_BYTES_KEY = "vm.memory.size[used]";
     private static final String TOTAL_DISK_BYTES_KEY = "vfs.fs.size[/var/lib/nova/instances,total]";
+    private static final String USED_DISK_BYTES_KEY = "vfs.fs.size[/var/lib/nova/instances,used]";
 
     private final static ZabbixClient zabbixClient = new ZabbixClient();
     private List<Item> hostItems = new ArrayList<>(); // Metrics available in the host
@@ -46,20 +49,23 @@ public class HostInfoZabbix extends HostInfo {
 
     @Override
     public double getAssignedCpus() {
-
-        return 0;
+        double assignedCpus = Double.parseDouble(getItemByKey(SYSTEM_CPU_LOAD_KEY).getLastValue());
+        updateAssignedCpus(assignedCpus);
+        return assignedCpus;
     }
 
     @Override
     public int getAssignedMemoryMb() {
-
-        return 0;
+        int assignedMemoryMb = Integer.parseInt(getItemByKey(USED_MEMORY_BYTES_KEY).getLastValue());
+        updateAssignedMemoryMb(assignedMemoryMb);
+        return assignedMemoryMb;
     }
 
     @Override
     public double getAssignedDiskGb() {
-
-        return 0;
+        double assignedDiskGb = Double.parseDouble(getItemByKey(USED_DISK_BYTES_KEY).getLastValue());
+        updateAssignedDiskGb(assignedDiskGb);
+        return assignedDiskGb;
     }
 
     /**

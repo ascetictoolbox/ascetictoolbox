@@ -16,9 +16,9 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
-import eu.ascetic.monitoring.api.client.ZabbixClient;
-import eu.ascetic.monitoring.api.datamodel.Host;
-import eu.ascetic.monitoring.api.datamodel.Item;
+import eu.ascetic.asceticarchitecture.iaas.zabbixApi.client.ZabbixClient;
+import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Item;
+import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Host;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -244,7 +244,7 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
     public CurrentUsageRecord getCurrentEnergyUsage(eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host) {
         CurrentUsageRecord answer = new CurrentUsageRecord(host);
         HostMeasurement measurement = getHostData(host);
-        answer.setPower(measurement.getMetric(POWER_KPI_NAME).getLastValue());
+        answer.setPower(Double.parseDouble(measurement.getMetric(POWER_KPI_NAME).getLastValue()));
         answer.setVoltage(-1);
         answer.setCurrent(-1);
         return answer;
