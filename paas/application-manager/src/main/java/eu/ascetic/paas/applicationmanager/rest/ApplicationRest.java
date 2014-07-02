@@ -14,9 +14,11 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 import eu.ascetic.paas.applicationmanager.model.Link;
 import eu.ascetic.paas.applicationmanager.model.Root;
 import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
@@ -31,6 +33,8 @@ import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
 @Scope("request")
 public class ApplicationRest {
 	private static Logger logger = Logger.getLogger(ApplicationRest.class);
+	@Autowired
+	protected ApplicationDAO applicationDAO;
 	
 	/**
 	 * Root element of the Application Manager REST API
