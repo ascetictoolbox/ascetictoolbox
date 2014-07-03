@@ -50,6 +50,11 @@ public class VmManagerConfiguration {
     public Monitoring monitoring;
     public Middleware middleware;
 
+    /**
+     * Returns a properties file that contains the configuration parameters for the VM Manager.
+     *
+     * @return the properties file
+     */
     private Properties getPropertiesObjectFromConfigFile() {
         Properties prop = new Properties();
         try {
@@ -60,6 +65,11 @@ public class VmManagerConfiguration {
         return prop;
     }
 
+    /**
+     * Initializes all the configuration parameters.
+     *
+     * @param prop properties file that contains the configuration parameters
+     */
     private void initializeClassAttributes(Properties prop) {
         openStackIP = prop.getProperty("openStackIP");
         keyStonePort = Integer.parseInt(prop.getProperty("keyStonePort"));
@@ -101,15 +111,26 @@ public class VmManagerConfiguration {
         }
     }
 
-    // Private constructor prevents instantiation from other classes
+    /**
+     * Private constructor that prevents instantiation from other classes (singleton pattern)
+     */
     private VmManagerConfiguration() {
         initializeClassAttributes(getPropertiesObjectFromConfigFile());
     }
- 
+
+    /**
+     * Singleton holder.
+     */
     private static class SingletonHolder {
         private static final VmManagerConfiguration CONF_INSTANCE = new VmManagerConfiguration();
     }
- 
+
+    /**
+     * Returns an instance of the VmManagerConfiguration class. It contains all the configuration parameters
+     * that the VM Manager needs.
+     *
+     * @return the instance of VmManagerConfiguration
+     */
     public static VmManagerConfiguration getInstance() {
         return SingletonHolder.CONF_INSTANCE;
     }

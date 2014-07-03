@@ -30,6 +30,11 @@ public class VmManager {
     private Scheduler scheduler;
     private List<HostInfo> hostsInfo;
 
+    /**
+     * Constructs a VmManager with the name of the database to be used.
+     *
+     * @param dbName the name of the DB
+     */
     public VmManager(String dbName) {
         // Choose the DB
         try {
@@ -51,6 +56,11 @@ public class VmManager {
     // VM Methods
     //================================================================================
 
+    /**
+     * Returns a list of the VMs deployed.
+     *
+     * @return the list of VMs deployed.
+     */
     public List<VmDeployed> getAllVms() {
         // Get the IDs of all the VMs deployed
         List<String> allVmsIds = cloudMiddleware.getAllVMsId();
@@ -64,10 +74,22 @@ public class VmManager {
         return vmsInfo;
     }
 
+    /**
+     * Returns a specific VM deployed.
+     *
+     * @param vmId the ID of the VM
+     * @return the VM
+     */
     public VmDeployed getVm(String vmId) {
         return cloudMiddleware.getVMInfo(vmId);
     }
 
+    /**
+     * Returns all the VMs deployed that belong to a specific application.
+     *
+     * @param appId the ID of the application
+     * @return the list of VMs
+     */
     public List<VmDeployed> getVmsOfApp(String appId) {
         // Get the IDs of the VMs of the application
         List<String> vmsIds = db.getVmsOfApp(appId);
@@ -81,12 +103,22 @@ public class VmManager {
         return vmsInfo;
     }
 
+    /**
+     * Deletes a VM.
+     *
+     * @param vmId the ID of the VM
+     */
     public void deleteVm(String vmId) {
         cloudMiddleware.destroy(vmId);
         db.deleteVm(vmId);
         db.closeConnection();
     }
 
+    /**
+     * Frees the resources of a host.
+     *
+     * @param hostname the name of the host
+     */
     private void freeHostResources(String hostname) {
         for (HostInfo host: hostsInfo) {
             if (host.getHostname().equals(hostname)) {
@@ -95,6 +127,12 @@ public class VmManager {
         }
     }
 
+    /**
+     * Deploys a list of VMs and returns its IDs.
+     *
+     * @param vms the VMs to deploy
+     * @return the IDs of the VMs deployed in the same order that they were received
+     */
     public List<String> deployVms(List<Vm> vms) {
         // HashMap VmDescription -> ID after deployment.
         // This is used to return the IDs in the same order of the input
@@ -134,6 +172,12 @@ public class VmManager {
         return idsDeployedVms;
     }
 
+    /**
+     * Performs an action on a VM (reboot, suspend, etc.).
+     *
+     * @param vmId the Id of the VM
+     * @param action the action to perform
+     */
     public void performActionOnVm(String vmId, String action) {
         switch (action) {
             case "rebootHard":
@@ -160,6 +204,12 @@ public class VmManager {
         }
     }
 
+    /**
+     * Checks whether a VM exists.
+     *
+     * @param vmId the ID of the VM
+     * @return True if exists a VM with the input ID, false otherwise
+     */
     public boolean existsVm(String vmId) {
         return cloudMiddleware.existsVm(vmId);
     }
@@ -168,23 +218,50 @@ public class VmManager {
     //================================================================================
     // Images Methods
     //================================================================================
- 
+
+    /**
+     * Returns all the VM images in the system.
+     *
+     * @return the VM images
+     */
     public List<ImageUploaded> getVmImages() {
         return cloudMiddleware.getVmImages();
     }
 
+    /**
+     * Creates an image in the system.
+     *
+     * @param imageToUpload the image to be created/uploaded in the system
+     * @return the ID of the image
+     */
     public String createVmImage(ImageToUpload imageToUpload) {
         return cloudMiddleware.createVmImage(imageToUpload);
     }
 
+    /**
+     * Returns an image with the ID.
+     *
+     * @param imageId the ID of the image
+     * @return the image
+     */
     public ImageUploaded getVmImage(String imageId) {
         return cloudMiddleware.getVmImage(imageId);
     }
 
+    /**
+     * Deletes a VM image.
+     *
+     * @param id the ID of the VM image
+     */
     public void deleteVmImage(String id) {
         cloudMiddleware.deleteVmImage(id);
     }
 
+    /**
+     * Returns the IDs of all the images in the system.
+     *
+     * @return the list of IDs
+     */
     public List<String> getVmImagesIds() {
         List<String> vmImagesIds = new ArrayList<>();
         List<ImageUploaded> images = cloudMiddleware.getVmImages();
@@ -199,14 +276,29 @@ public class VmManager {
     // Scheduling Algorithms Methods
     //================================================================================
 
+    /**
+     * Returns the scheduling algorithms that can be applied.
+     *
+     * @return the list of scheduling algorithms
+     */
     public List<SchedulingAlgorithm> getAvailableSchedulingAlgorithms() {
         return db.getAvailableSchedulingAlg();
     }
 
+    /**
+     * Returns the scheduling algorithm that is being used now.
+     *
+     * @return the scheduling algorithm being used
+     */
     public SchedulingAlgorithm getCurrentSchedulingAlgorithm() {
         return db.getCurrentSchedulingAlg();
     }
 
+    /**
+     * Changes the scheduling algorithm.
+     *
+     * @param schedulingAlg the scheduling algorithm to be used
+     */
     public void setSchedulingAlgorithm(SchedulingAlgorithm schedulingAlg) {
         db.setCurrentSchedulingAlg(schedulingAlg);
     }
@@ -216,6 +308,12 @@ public class VmManager {
     // Auxiliary Methods
     //================================================================================
 
+    /**
+     * Instantiates the hosts according to the monitoring software selected.
+     *
+     * @param monitoring the monitoring software (Ganglia, Zabbix, etc.)
+     * @param hosts the hosts
+     */
     private void selectMonitoring(VmManagerConfiguration.Monitoring monitoring, String[] hosts) {
         hostsInfo = new ArrayList<>();
         switch (monitoring) {
@@ -240,6 +338,11 @@ public class VmManager {
         }
     }
 
+    /**
+     * Instantiates the cloud middleware.
+     *
+     * @param middleware the cloud middleware to be used (OpenStack, CloudStack, etc.)
+     */
     private void selectMiddleware(VmManagerConfiguration.Middleware middleware) {
         switch (middleware) {
             case OPENSTACK:
