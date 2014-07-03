@@ -1180,6 +1180,15 @@ utils/ascetic-zabbix-api/target/classes/eu/ascetic/monitoring/api/utils/Json2Obj
 utils/ascetic-zabbix-api/target/test-classes/eu/ascetic/monitoring/api/datamodel/HostTest.class -text
 utils/ascetic-zabbix-api/target/test-classes/eu/ascetic/monitoring/api/datamodel/ItemTest.class -text
 utils/ascetic-zabbix-api/target/test-classes/eu/ascetic/monitoring/api/datamodel/UserTest.class -text
+utils/chef/cookbooks/README.md -text
+utils/chef/cookbooks/ascetic-iaas/CHANGELOG.md -text
+utils/chef/cookbooks/ascetic-iaas/README.md -text
+utils/chef/cookbooks/ascetic-iaas/definitions/apt-repo.rb -text
+utils/chef/cookbooks/ascetic-iaas/definitions/ppa.rb -text
+utils/chef/cookbooks/ascetic-iaas/files/default/slam-installer.sh -text
+utils/chef/cookbooks/ascetic-iaas/files/default/vmm-installer.sh -text
+utils/chef/cookbooks/ascetic-iaas/metadata.rb -text
+utils/chef/cookbooks/ascetic-iaas/recipes/default.rb -text
 utils/energy-modeller-data-logger/Dataset[!!-~]-[!!-~]Copy.txt -text
 utils/energy-modeller-data-logger/Dataset.txt -text
 utils/energy-modeller-data-logger/nbactions.xml -text
