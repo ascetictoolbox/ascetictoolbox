@@ -41,4 +41,5 @@ public class Events extends Controller {
 		}
 		return notFound("Didn't find event with _id " + id);
 	}
+
 }

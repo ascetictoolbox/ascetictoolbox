@@ -20,7 +20,7 @@ public class Queries extends Controller {
 
         String qs = request().body().asJson().toString();
 
-        return ok(QueriesDBMapper.instance.find(qs));
+        return ok(QueriesDBMapper.instance.aggregate(qs));
     }
 
 }

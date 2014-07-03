@@ -1,7 +1,9 @@
 package es.bsc.amon.controller;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBObject;
@@ -22,6 +24,18 @@ public class QueriesDBMapper {
         return (ArrayNode)Json.parse(EventsDBMapper.getInstance().find(dbo).toString());
     }
 
+    public ArrayNode aggregate(String query) {
+        Object raw = JSON.parse(query);
+        ArrayNode ret = new ArrayNode(JsonNodeFactory.instance);
+
+        if(raw instanceof BasicDBObject) {
+            ret = (ArrayNode)Json.parse(EventsDBMapper.getInstance().aggregate((BasicDBObject)raw).toString());
+        } else if(raw instanceof BasicDBList) {
+            ret = (ArrayNode)Json.parse(EventsDBMapper.getInstance().aggregate((BasicDBList)raw).toString());
+        }
+
+        return ret;
+    }
     public static final String START = "start";
     public static final String END = "end";
     public static final String APPID = "appId";

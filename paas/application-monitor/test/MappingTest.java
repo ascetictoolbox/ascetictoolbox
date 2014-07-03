@@ -45,25 +45,5 @@ public class MappingTest {
 		}
 	}
 
-	@Test
-	public void queryMappingTest() {
-		String json ="{\n" +
-				"\"start\":1402162485485,\n" +
-				"\"end\":1402162495485,\n" +
-				"\"appId\":\"demoApp\",\n" +
-				"\"op\":\"array\",\n" +
-				"\"data\":{\"eventType\":\"VM_EXECUTION\"}\n" +
-				"}";
 
-		ObjectMapper om = new ObjectMapper();
-		try {
-			Query e = om.readValue(json.getBytes(), Query.class);
-			assertThat(e.appId).isEqualToIgnoringCase("demoApp");
-			assertThat(e.data.get("eventType").asText()).isEqualTo("VM_EXECUTION");
-
-			om.writeValue(System.out,e);
-		} catch(Exception ex) {
-			ex.printStackTrace();
-		}
-	}
 }

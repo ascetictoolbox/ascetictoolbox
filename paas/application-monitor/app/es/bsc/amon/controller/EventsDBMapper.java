@@ -14,8 +14,7 @@ import play.Logger;
 import play.libs.Json;
 
 import javax.persistence.Basic;
-import java.util.Calendar;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Created by mmacias on 07/06/14.
@@ -153,6 +152,31 @@ public class EventsDBMapper {
         DBCursor dbc = colEvents.find(query);
         while(dbc.hasNext()) {
             dbl.add(dbc.next());
+        }
+        return dbl;
+    }
+
+    public BasicDBList aggregate(BasicDBObject dbo) {
+        List<DBObject> query = new ArrayList<>(1);
+        query.add(dbo);
+        AggregationOutput aggOut = colEvents.aggregate(query);
+        BasicDBList dbl = new BasicDBList();
+        Iterator<DBObject> it = aggOut.results().iterator();
+        while(it.hasNext()) {
+            dbl.add(it.next());
+        }
+        return dbl;
+    }
+
+    public BasicDBList aggregate(BasicDBList query) {
+        List<DBObject> ql = new ArrayList<>(query.size());
+        Iterator<Object> itq = query.iterator();
+        while(itq.hasNext()) ql.add((DBObject)itq.next());
+        AggregationOutput aggOut = colEvents.aggregate(ql);
+        BasicDBList dbl = new BasicDBList();
+        Iterator<DBObject> it = aggOut.results().iterator();
+        while(it.hasNext()) {
+            dbl.add(it.next());
         }
         return dbl;
     }

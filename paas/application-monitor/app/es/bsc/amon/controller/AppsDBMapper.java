@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
+import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 import es.bsc.amon.DBManager;
@@ -26,8 +28,8 @@ public class AppsDBMapper {
     }
 
     public ObjectNode getAllApps(long start, long end) {
-        DBObject query = (DBObject) JSON.parse("{$orderby : {timestamp : -1}, $data : { $and : [ { timestamp : { $gte : " + start
-                + " }}, { timestamp : {$lte : " + end + "}} ] } }");
+        DBObject query = (DBObject) JSON.parse("{'$query' : { '$and' : [ { timestamp : { '$gte' : " + start
+                + " }}, { timestamp : {'$lte' : " + end + "}} ] } ,'$orderby' : {timestamp : -1}}");
 
         BasicDBList ret = DBManager.instance.find(EventsDBMapper.COLL_NAME, query);
 
