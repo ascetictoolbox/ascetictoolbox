@@ -1,7 +1,6 @@
 package es.bsc.vmmanagercore.model;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.codehaus.jackson.JsonNode;
 
 import java.io.File;
 

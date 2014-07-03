@@ -35,9 +35,8 @@ public class VmManagerRest {
     @Path("/vms")
     @Produces(MediaType.APPLICATION_JSON)
     public String getAllVms() {
-        List<VmDeployed> vmsDeployed = vmManager.getAllVms();
         JsonArray jsonVmsArray = new JsonArray();
-        for (VmDeployed vmDeployed: vmsDeployed) {
+        for (VmDeployed vmDeployed: vmManager.getAllVms()) {
             JsonObject vmJson =
                     (JsonObject) parser.parse(gson.toJson(vmDeployed, VmDeployed.class));
             jsonVmsArray.add(vmJson);
@@ -56,7 +55,7 @@ public class VmManagerRest {
         JsonObject vmsJson = gson.fromJson(vmDescriptions, JsonObject.class);
 
         // Check if the JSON that contains the VMs is specified correctly
-        if (!VmManagerRestInputValidator.checkVmDescriptions(vmsJson)) {
+        if (!VmmRestInputValidator.checkVmDescriptions(vmsJson)) {
             throw new WebApplicationException(400);
         }
 
@@ -87,11 +86,10 @@ public class VmManagerRest {
     @Path("/vms/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public String getVm(@PathParam("id") String vmId) {
-        VmDeployed vmDescription = vmManager.getVm(vmId);
-        if (vmDescription == null) { // If the VM does not exist, return 404 error
+        if (vmManager.getVm(vmId) == null) { // If the VM does not exist, return 404 error
             throw new WebApplicationException(404);
         }
-        return gson.toJson(vmDescription);
+        return gson.toJson(vmManager.getVm(vmId));
     }
 
     @PUT
@@ -107,13 +105,12 @@ public class VmManagerRest {
         if (jsonObject.get("action") == null) {
             throw new WebApplicationException(400);
         }
-        String action = jsonObject.get("action").getAsString();
 
         // Perform the action or return a 400 error if the user did not specify a valid action
-        if (!VmManagerRestInputValidator.isValidAction(action)) {
+        if (!VmmRestInputValidator.isValidAction(jsonObject.get("action").getAsString())) {
             throw new WebApplicationException(400);
         }
-        vmManager.performActionOnVm(vmId, action);
+        vmManager.performActionOnVm(vmId, jsonObject.get("action").getAsString());
     }
 
     @DELETE
@@ -130,8 +127,7 @@ public class VmManagerRest {
     @Produces(MediaType.APPLICATION_JSON)
     public String getVmsOfApp(@PathParam("appId") String appId) {
         JsonArray vmsDeployedJsonArray = new JsonArray();
-        List<VmDeployed> vmsDeployed = vmManager.getVmsOfApp(appId);
-        for (VmDeployed vmDeployed: vmsDeployed) {
+        for (VmDeployed vmDeployed: vmManager.getVmsOfApp(appId)) {
             JsonElement vmJsonElement = gson.toJsonTree(vmDeployed, VmDeployed.class);
             vmsDeployedJsonArray.add(vmJsonElement);
         }
@@ -150,8 +146,7 @@ public class VmManagerRest {
     @Produces(MediaType.APPLICATION_JSON)
     public String getAllImages() {
         JsonArray jsonImagesArray = new JsonArray();
-        List<ImageUploaded> images = vmManager.getVmImages();
-        for (ImageUploaded image: images) {
+        for (ImageUploaded image: vmManager.getVmImages()) {
             JsonObject imageJson =
                     (JsonObject) parser.parse(gson.toJson(image, ImageUploaded.class));
             jsonImagesArray.add(imageJson);
@@ -187,7 +182,7 @@ public class VmManagerRest {
     @Produces(MediaType.APPLICATION_JSON)
     public String getImage(@PathParam("id") String imageId) {
         // Throw error if the image does not exist
-        if (!VmManagerRestInputValidator.checkImageExists(imageId, vmManager.getVmImagesIds())) {
+        if (!VmmRestInputValidator.checkImageExists(imageId, vmManager.getVmImagesIds())) {
             throw new WebApplicationException(404);
         }
 
@@ -199,7 +194,7 @@ public class VmManagerRest {
     @Path("/images/{id}")
     public void deleteImage(@PathParam("id") String imageId) {
         // Throw error if the image does not exist
-        if (!VmManagerRestInputValidator.checkImageExists(imageId, vmManager.getVmImagesIds())) {
+        if (!VmmRestInputValidator.checkImageExists(imageId, vmManager.getVmImagesIds())) {
             throw new WebApplicationException(404);
         }
 
@@ -216,11 +211,10 @@ public class VmManagerRest {
     @Path("/scheduling_algorithms")
     @Produces(MediaType.APPLICATION_JSON)
     public String getSchedulingAlgorithms() {
-        List<SchedulingAlgorithm> schedAlgs = vmManager.getAvailableSchedulingAlgorithms();
         JsonArray schedAlgsArrayJson = new JsonArray();
-        for (SchedulingAlgorithm schedAlg: schedAlgs) {
+        for (SchedulingAlgorithm schedAlg: vmManager.getAvailableSchedulingAlgorithms()) {
             JsonObject schedAlgJson = new JsonObject();
-            schedAlgJson.addProperty("name", schedAlg.getAlgorithm());
+            schedAlgJson.addProperty("name", schedAlg.getName());
             schedAlgsArrayJson.add(schedAlgJson);
         }
         JsonObject result = new JsonObject();
@@ -232,9 +226,8 @@ public class VmManagerRest {
     @Path("/scheduling_algorithms/current")
     @Produces(MediaType.APPLICATION_JSON)
     public String getCurrentSchedulingAlgorithm() {
-        SchedulingAlgorithm schedAlg = vmManager.getCurrentSchedulingAlgorithm();
         JsonObject result = new JsonObject();
-        result.addProperty("name", schedAlg.getAlgorithm());
+        result.addProperty("name", vmManager.getCurrentSchedulingAlgorithm().getName());
         return result.toString();
     }
 
@@ -250,19 +243,19 @@ public class VmManagerRest {
         String algorithm = jsonObject.get("algorithm").getAsString();
 
         SchedulingAlgorithm schedulingAlg;
-        if (algorithm.equals(SchedulingAlgorithm.CONSOLIDATION.getAlgorithm())) {
+        if (algorithm.equals(SchedulingAlgorithm.CONSOLIDATION.getName())) {
             schedulingAlg = SchedulingAlgorithm.CONSOLIDATION;
         }
-        else if (algorithm.equals(SchedulingAlgorithm.DISTRIBUTION.getAlgorithm())) {
+        else if (algorithm.equals(SchedulingAlgorithm.DISTRIBUTION.getName())) {
             schedulingAlg = SchedulingAlgorithm.DISTRIBUTION;
         }
-        else if (algorithm.equals(SchedulingAlgorithm.ENERGY_AWARE.getAlgorithm())) {
+        else if (algorithm.equals(SchedulingAlgorithm.ENERGY_AWARE.getName())) {
             schedulingAlg = SchedulingAlgorithm.ENERGY_AWARE;
         }
-        else if (algorithm.equals(SchedulingAlgorithm.GROUP_BY_APP.getAlgorithm())) {
+        else if (algorithm.equals(SchedulingAlgorithm.GROUP_BY_APP.getName())) {
             schedulingAlg = SchedulingAlgorithm.GROUP_BY_APP;
         }
-        else if (algorithm.equals(SchedulingAlgorithm.RANDOM.getAlgorithm())) {
+        else if (algorithm.equals(SchedulingAlgorithm.RANDOM.getName())) {
             schedulingAlg = SchedulingAlgorithm.RANDOM;
         }
         else { // Invalid algorithm. Throw error.

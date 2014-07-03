@@ -9,19 +9,19 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 
-public class VmManagerRestInputValidatorTest {
+public class VmmRestInputValidatorTest {
 
     @Test
     public void imageDoesNotExist() {
         String[] imagesIds = {"imageId1", "imageId2"};
-        assertFalse(VmManagerRestInputValidator.checkImageExists("imageId3",
+        assertFalse(VmmRestInputValidator.checkImageExists("imageId3",
                 new ArrayList<>(Arrays.asList(imagesIds))));
     }
 
     @Test
     public void imageExists() {
         String[] imagesIds = {"imageId1", "imageId2"};
-        assertTrue(VmManagerRestInputValidator.checkImageExists("imageId1",
+        assertTrue(VmmRestInputValidator.checkImageExists("imageId1",
                 new ArrayList<>(Arrays.asList(imagesIds))));
     }
 

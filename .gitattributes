@@ -139,7 +139,7 @@ iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/mo
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/rest/CorsSupportFilter.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/rest/Main.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/rest/VmManagerRest.java -text
-iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/rest/VmManagerRestInputValidator.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/rest/VmmRestInputValidator.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/scheduler/HostFilter.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/scheduler/SchedAlgConsolidation.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/scheduler/SchedAlgDistribution.java -text
@@ -161,8 +161,8 @@ iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/mi
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/model/ImageDescriptionTest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/model/VmTest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/monitoring/HostInfoFakeTest.java -text
-iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/rest/VmManagerRestInputValidatorTest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/rest/VmManagerRestTest.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/rest/VmmRestInputValidatorTest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/HostFilterTest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/SchedAlgConsolidationTest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/SchedAlgDistributionTest.java -text

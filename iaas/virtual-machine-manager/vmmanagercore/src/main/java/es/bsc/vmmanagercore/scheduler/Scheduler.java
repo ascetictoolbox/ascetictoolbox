@@ -1,7 +1,6 @@
 package es.bsc.vmmanagercore.scheduler;
 
 import es.bsc.vmmanagercore.model.SchedulingAlgorithm;
-import es.bsc.vmmanagercore.model.ServerLoad;
 import es.bsc.vmmanagercore.model.Vm;
 import es.bsc.vmmanagercore.model.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.HostInfo;

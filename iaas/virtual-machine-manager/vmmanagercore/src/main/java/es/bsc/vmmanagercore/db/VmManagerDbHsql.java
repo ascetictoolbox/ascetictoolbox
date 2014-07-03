@@ -32,19 +32,22 @@ public class VmManagerDbHsql implements VmManagerDb {
     private static final String ERROR_SET_SCHED_ALG = "There was an error while setting the scheduling algorithm";
 
     public VmManagerDbHsql(String dbFileNamePrefix) throws Exception {
-        // Add the available scheduling algorithms
+        initializeListOfAvailableSchedAlgorithms();
+
+        // Load the HSQL Database Engine JDBC driver
+        Class.forName("org.hsqldb.jdbcDriver");
+
+        // Connect to the database. This will load the DB files and start the DB if it is not already running
+        conn = DriverManager.getConnection("jdbc:hsqldb:file:db/" + dbFileNamePrefix, "sa", "");
+        setupDb();
+    }
+
+    private void initializeListOfAvailableSchedAlgorithms() {
         availableSchedAlg.add(SchedulingAlgorithm.CONSOLIDATION);
         availableSchedAlg.add(SchedulingAlgorithm.DISTRIBUTION);
         availableSchedAlg.add(SchedulingAlgorithm.ENERGY_AWARE);
         availableSchedAlg.add(SchedulingAlgorithm.GROUP_BY_APP);
         availableSchedAlg.add(SchedulingAlgorithm.RANDOM);
-
-        // Load the HSQL Database Engine JDBC driver
-        Class.forName("org.hsqldb.jdbcDriver");
-
-        // Connect to the database. This will load the DB files and start the DB if it is not already running.
-        conn = DriverManager.getConnection("jdbc:hsqldb:file:db/" + dbFileNamePrefix, "sa", "");
-        setupDb();
     }
     
     // Use for SQL command SELECT
@@ -94,7 +97,7 @@ public class VmManagerDbHsql implements VmManagerDb {
         try {
             for (SchedulingAlgorithm schedAlg: availableSchedAlg) {
                 update("INSERT INTO scheduling_alg (algorithm, selected) VALUES "
-                        + " ('" + schedAlg.getAlgorithm() + "', 0)");
+                        + " ('" + schedAlg.getName() + "', 0)");
             }
         } catch (SQLException e) {
             System.out.println(ERROR_INSERT_SCHED_ALGS);
@@ -126,8 +129,7 @@ public class VmManagerDbHsql implements VmManagerDb {
     @Override
     public void closeConnection() {
         try {
-            Statement st = conn.createStatement();
-            st.execute("SHUTDOWN"); // DB writes out to files and performs clean shuts down
+            conn.createStatement().execute("SHUTDOWN"); // DB writes out to files and performs clean shuts down
             conn.close(); // if there are no other open connections
         } catch (SQLException e) {
             System.out.println(ERROR_CLOSE_CONNECTION);
@@ -215,8 +217,7 @@ public class VmManagerDbHsql implements VmManagerDb {
         } catch (SQLException e) {
             return null;
         }
-        String currentSchedAlg = schedulingAlgorithms.get(0);
-        switch (currentSchedAlg) {
+        switch (schedulingAlgorithms.get(0)) { // There can be only one, so get the elem with index 0
             case "consolidation":
                 return SchedulingAlgorithm.CONSOLIDATION;
             case "distribution":
@@ -271,10 +272,9 @@ public class VmManagerDbHsql implements VmManagerDb {
     
     @Override
     public void setCurrentSchedulingAlg(SchedulingAlgorithm alg) {
-        String schedAlg = alg.getAlgorithm();
         try {
             update("UPDATE scheduling_alg SET selected = 0");
-            update("UPDATE scheduling_alg SET selected = 1 WHERE algorithm = '" + schedAlg + "'");
+            update("UPDATE scheduling_alg SET selected = 1 WHERE algorithm = '" + alg.getName() + "'");
         } catch (SQLException e) {
             System.out.println(ERROR_SET_SCHED_ALG);
         }

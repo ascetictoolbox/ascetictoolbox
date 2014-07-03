@@ -11,14 +11,14 @@ public enum SchedulingAlgorithm {
     CONSOLIDATION("consolidation"), DISTRIBUTION("distribution"), ENERGY_AWARE("energyAware"),
         GROUP_BY_APP("groupByApp"), RANDOM("random");
 
-    private String algorithm;
+    private String name;
 
-    private SchedulingAlgorithm(String algorithm) {
-        this.algorithm = algorithm;
+    private SchedulingAlgorithm(String name) {
+        this.name = name;
     }
 
-    public String getAlgorithm() {
-        return algorithm;
+    public String getName() {
+        return name;
     }
 
 }

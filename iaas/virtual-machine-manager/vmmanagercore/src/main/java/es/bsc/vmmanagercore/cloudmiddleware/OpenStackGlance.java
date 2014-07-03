@@ -7,7 +7,6 @@ import org.apache.commons.validator.UrlValidator;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,13 +47,9 @@ public class OpenStackGlance {
      */
     public String createImageFromUrl(ImageToUpload imageToUpload) {
         //check that the URL received is valid
-        UrlValidator urlValidator = new UrlValidator();
-        if (!urlValidator.isValid(imageToUpload.getUrl())) {
+        if (!new UrlValidator().isValid(imageToUpload.getUrl())) {
             throw new IllegalArgumentException("The URL received to create the image is not valid");
         }
-
-        //build the URI of the HTTP request
-        URI uri = HttpUtils.buildURI("http", openStackIp, glancePort, "/v1/images");
 
         //build the headers of the HTTP request
         Map<String, String> headers = new HashMap<>();
@@ -68,13 +63,13 @@ public class OpenStackGlance {
         headers.put("x-image-meta-name", imageToUpload.getName());
 
         //execute the HTTP request
-        String responseContent = HttpUtils.executeHttpRequest("POST", uri, headers, "");
+        String responseContent = HttpUtils.executeHttpRequest("POST",
+                HttpUtils.buildURI("http", openStackIp, glancePort, "/v1/images"), headers, "");
 
         //return the image ID
-        ObjectMapper mapper = new ObjectMapper();
         JsonNode imageIdJson = null;
         try {
-            imageIdJson = mapper.readTree(responseContent).get("image").get("id");
+            imageIdJson = new ObjectMapper().readTree(responseContent).get("image").get("id");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -87,15 +82,13 @@ public class OpenStackGlance {
      * @param imageId the ID of the image to be deleted.
      */
     public void deleteImage(String imageId) {
-        //build the URI of the HTTP request
-        URI uri = HttpUtils.buildURI("http", openStackIp, glancePort, "/v2/images/" + imageId);
-
         //build the headers of the HTTP request
         Map<String, String> headers = new HashMap<>();
         headers.put("X-Auth-Token", token);
 
         //execute the HTTP request
-        HttpUtils.executeHttpRequest("DELETE", uri, headers, "");
+        HttpUtils.executeHttpRequest("DELETE",
+                HttpUtils.buildURI("http", openStackIp, glancePort, "/v2/images/" + imageId), headers, "");
     }
 
     /**
@@ -106,9 +99,6 @@ public class OpenStackGlance {
      * @return true if the image is active, false otherwise.
      */
     public boolean imageIsActive(String imageId) {
-        //build the URI of the HTTP request
-        URI uri = HttpUtils.buildURI("http", openStackIp, glancePort, "/v2/images/" + imageId);
-
         //build the headers of the HTTP request
         Map<String, String> headers = new HashMap<>();
         headers.put("X-Auth-Token", token);
@@ -116,13 +106,13 @@ public class OpenStackGlance {
         headers.put("Content-Type", "application/octet-stream");
 
         //execute the HTTP request
-        String responseContent = HttpUtils.executeHttpRequest("GET", uri, headers, "");
+        String responseContent = HttpUtils.executeHttpRequest("GET",
+                HttpUtils.buildURI("http", openStackIp, glancePort, "/v2/images/" + imageId), headers, "");
 
         //get the image status
-        ObjectMapper mapper = new ObjectMapper();
         String imageStatus = "";
         try {
-            imageStatus = mapper.readTree(responseContent).get("status").asText();
+            imageStatus = new ObjectMapper().readTree(responseContent).get("status").asText();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -135,9 +125,6 @@ public class OpenStackGlance {
      * @return Token needed for authentication.
      */
     private String getToken() {
-        //build the URI of the HTTP request
-        URI uri = HttpUtils.buildURI("http", openStackIp, keyStonePort, "/v2.0/tokens");
-
         //build the headers of the HTTP request
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-type", "application/json");
@@ -149,13 +136,13 @@ public class OpenStackGlance {
                 + ", \"tenantId\":" + "\"" + keyStoneTenantId + "\"}}";
 
         //execute the HTTP request
-        String responseContent = HttpUtils.executeHttpRequest("POST", uri, headers, params);
+        String responseContent = HttpUtils.executeHttpRequest("POST",
+                HttpUtils.buildURI("http", openStackIp, keyStonePort, "/v2.0/tokens"), headers, params);
 
         //get the token
-        ObjectMapper mapper = new ObjectMapper();
         JsonNode tokenJson = null;
         try {
-            tokenJson = mapper.readTree(responseContent).get("access").get("token").get("id");
+            tokenJson = new ObjectMapper().readTree(responseContent).get("access").get("token").get("id");
         } catch (Exception e) {
             e.printStackTrace();
         }

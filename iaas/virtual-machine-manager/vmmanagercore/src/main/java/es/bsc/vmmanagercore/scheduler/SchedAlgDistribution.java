@@ -8,7 +8,10 @@ import es.bsc.vmmanagercore.monitoring.HostInfo;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Distribution scheduling algorithm.

@@ -62,16 +62,11 @@ public class VmManager {
      * @return the list of VMs deployed.
      */
     public List<VmDeployed> getAllVms() {
-        // Get the IDs of all the VMs deployed
-        List<String> allVmsIds = cloudMiddleware.getAllVMsId();
-
-        // Retrieve the information of each VM
-        List<VmDeployed> vmsInfo = new ArrayList<>();
-        for (String vmId: allVmsIds) {
-            vmsInfo.add(cloudMiddleware.getVMInfo(vmId));
+        List<VmDeployed> result = new ArrayList<>();
+        for (String vmId: cloudMiddleware.getAllVMsId()) {
+            result.add(cloudMiddleware.getVMInfo(vmId));
         }
-
-        return vmsInfo;
+        return result;
     }
 
     /**
@@ -91,16 +86,11 @@ public class VmManager {
      * @return the list of VMs
      */
     public List<VmDeployed> getVmsOfApp(String appId) {
-        // Get the IDs of the VMs of the application
-        List<String> vmsIds = db.getVmsOfApp(appId);
-
-        // Get the information for each of the VMs
-        List<VmDeployed> vmsInfo = new ArrayList<>();
-        for (String vmId: vmsIds) {
-            vmsInfo.add(cloudMiddleware.getVMInfo(vmId));
+        List<VmDeployed> result = new ArrayList<>();
+        for (String vmId: db.getVmsOfApp(appId)) {
+            result.add(cloudMiddleware.getVMInfo(vmId));
         }
-
-        return vmsInfo;
+        return result;
     }
 
     /**
@@ -264,8 +254,7 @@ public class VmManager {
      */
     public List<String> getVmImagesIds() {
         List<String> vmImagesIds = new ArrayList<>();
-        List<ImageUploaded> images = cloudMiddleware.getVmImages();
-        for (ImageUploaded imageDesc: images) {
+        for (ImageUploaded imageDesc: cloudMiddleware.getVmImages()) {
             vmImagesIds.add(imageDesc.getId());
         }
         return vmImagesIds;

@@ -14,7 +14,7 @@ import java.util.List;
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  *
  */
-public class VmManagerRestInputValidator {
+public class VmmRestInputValidator {
 
     private static List<String> validActions =
             Arrays.asList("rebootHard", "rebootSoft", "start", "stop", "suspend", "resume");
