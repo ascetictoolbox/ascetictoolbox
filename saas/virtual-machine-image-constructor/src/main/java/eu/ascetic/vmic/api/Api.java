@@ -52,6 +52,7 @@ public interface Api {
 	 * 
 	 * @param ovfDefinitionId The OVF ID this file is associated with
 	 * @param file The file to upload
+	 * @returns A URI reference to the uploaded file for use in the OVF Definition
 	 */
-	void uploadFile(String ovfDefinitionId, File file);
+	public String uploadFile(String ovfDefinitionId, File file);
 }

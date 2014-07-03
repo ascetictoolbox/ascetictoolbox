@@ -93,8 +93,9 @@ public class VmicApi implements Api {
 	 * @see eu.ascetic.vmic.api.Api#uploadFile(java.lang.String, java.io.File)
 	 */
 	@Override
-	public void uploadFile(String ovfDefinitionId, File file) {
+	public String uploadFile(String ovfDefinitionId, File file) {
 		// FIXME: Change this method once the interface technology has been selected for this component to enable remote invocation
+		return null;
 	}
 
 }

@@ -75,5 +75,10 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
 
 	// TODO: Add additional helper methods here standardise access to ASCETIC
 	// specific product properties (e.g. probe end-points)
-
+	
+	// TODO: add function to store and fetch upper and lower bound of VMs per Virtual System
+	
+	// TODO: store and fetch deployment ID
+	
+	// TODO: store and fetch SSH key (decide when to add keys construction VMIC or deployment VMC duplicate?)
 }
