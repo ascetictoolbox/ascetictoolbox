@@ -320,4 +320,12 @@ public class HostInfoFakeTest {
         assert(futureLoad.getCpuLoad() == 0.75 && futureLoad.getRamLoad() == 0.75 && futureLoad.getDiskLoad() == 0.75);
     }
 
+    @Test
+    public void getServerLoad() {
+        ServerLoad serverLoad = new HostInfoFake("hostName", 4, 4096, 4, 1, 2048, 3).getServerLoad();
+        assertEquals(0.25, serverLoad.getCpuLoad(), 0);
+        assertEquals(0.5, serverLoad.getRamLoad(), 0);
+        assertEquals(0.75, serverLoad.getDiskLoad(), 0);
+    }
+
 }

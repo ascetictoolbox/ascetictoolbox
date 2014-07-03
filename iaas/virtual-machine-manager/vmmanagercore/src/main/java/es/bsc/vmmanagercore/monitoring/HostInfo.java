@@ -16,10 +16,10 @@ public abstract class HostInfo {
 
     protected String hostname;
     protected int totalCpus;
-    protected int totalMemoryMb;
+    protected double totalMemoryMb;
     protected double totalDiskGb;
     protected double assignedCpus;
-    protected int assignedMemoryMb;
+    protected double assignedMemoryMb;
     protected double assignedDiskGb;
 
     // These reserved attributes are used when it has been decided to deploy a VM on a host, but
@@ -90,7 +90,7 @@ public abstract class HostInfo {
     /**
      * @return total memory of the host (in MB)
      */
-    public int getTotalMemoryMb() {
+    public double getTotalMemoryMb() {
         return totalMemoryMb;
     }
 
@@ -111,7 +111,7 @@ public abstract class HostInfo {
     /**
      * @return assigned memory of the host (in MB)
      */
-    public int getAssignedMemoryMb() {
+    public double getAssignedMemoryMb() {
         return assignedMemoryMb;
     }
 
@@ -132,7 +132,7 @@ public abstract class HostInfo {
     /**
      * @return available memory of the host (in MB)
      */
-    public int getFreeMemoryMb() {
+    public double getFreeMemoryMb() {
         return totalMemoryMb - assignedMemoryMb - reservedMemoryMb;
     }
 
@@ -197,12 +197,18 @@ public abstract class HostInfo {
         this.assignedCpus = assignedCpus;
     }
 
-    public void updateAssignedMemoryMb(int assignedMemoryMb) {
+    public void updateAssignedMemoryMb(double assignedMemoryMb) {
         this.assignedMemoryMb = assignedMemoryMb;
     }
 
     public void updateAssignedDiskGb(double assignedDiskGb) {
         this.assignedDiskGb = assignedDiskGb;
+    }
+
+    public ServerLoad getServerLoad() {
+        return new ServerLoad((assignedCpus + reservedCpus)/totalCpus,
+                (assignedMemoryMb + reservedMemoryMb)/totalMemoryMb,
+                (assignedDiskGb + reservedDiskGb)/totalDiskGb);
     }
 
 }

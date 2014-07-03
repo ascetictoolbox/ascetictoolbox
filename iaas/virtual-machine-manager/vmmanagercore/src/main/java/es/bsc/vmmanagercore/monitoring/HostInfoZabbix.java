@@ -55,10 +55,10 @@ public class HostInfoZabbix extends HostInfo {
     }
 
     @Override
-    public int getAssignedMemoryMb() {
+    public double getAssignedMemoryMb() {
         int availableMemoryMb = (int) (Long.parseLong(getItemByKey(AVAILABLE_MEMORY_BYTES_KEY)
                 .getLastValue())/(1024*1024));
-        int assignedMemoryMb = totalMemoryMb - availableMemoryMb;
+        double assignedMemoryMb = totalMemoryMb - availableMemoryMb;
         updateAssignedMemoryMb(assignedMemoryMb);
         return assignedMemoryMb;
     }
@@ -83,7 +83,7 @@ public class HostInfoZabbix extends HostInfo {
      * @return available memory of the host (in MB)
      */
     @Override
-    public int getFreeMemoryMb() {
+    public double getFreeMemoryMb() {
         return totalMemoryMb - getAssignedMemoryMb() - reservedMemoryMb;
     }
 
