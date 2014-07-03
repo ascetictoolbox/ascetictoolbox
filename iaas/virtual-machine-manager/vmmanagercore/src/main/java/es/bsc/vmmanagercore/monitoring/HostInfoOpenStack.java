@@ -66,7 +66,7 @@ public class HostInfoOpenStack extends HostInfo {
     }
 
     @Override
-    public int getAssignedMemoryMb() {
+    public double getAssignedMemoryMb() {
         int assignedMemoryMb = 0;
         for (String zone: jcm.getZones()) {
             //get the host administration API
@@ -121,7 +121,7 @@ public class HostInfoOpenStack extends HostInfo {
      * @return available memory of the host (in MB)
      */
     @Override
-    public int getFreeMemoryMb() {
+    public double getFreeMemoryMb() {
         return totalMemoryMb - getAssignedMemoryMb() - reservedMemoryMb;
     }
 

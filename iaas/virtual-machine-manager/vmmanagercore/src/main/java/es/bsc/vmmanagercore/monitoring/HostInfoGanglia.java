@@ -48,7 +48,7 @@ public class HostInfoGanglia extends HostInfo {
     }
 
     @Override
-    public int getAssignedMemoryMb() {
+    public double getAssignedMemoryMb() {
         int assignedMemoryMb = Math.round(
                 (gangliaHost.getMemTotal() - gangliaHost.getMemFree() -
                 gangliaHost.getMemCached() - gangliaHost.getMemBuffers())/1024);
@@ -75,7 +75,7 @@ public class HostInfoGanglia extends HostInfo {
      * @return available memory of the host (in MB)
      */
     @Override
-    public int getFreeMemoryMb() {
+    public double getFreeMemoryMb() {
         return totalMemoryMb - getAssignedMemoryMb() - reservedMemoryMb;
     }
 
