@@ -974,6 +974,15 @@ paas/virtual-machine-contextualizer/runtime/templates/scripts/linux/context_appl
 paas/virtual-machine-contextualizer/runtime/templates/scripts/linux/context_network -text
 saas/application-descriptor-tool/pom.xml -text
 saas/application-packager/pom.xml -text
+saas/application-uploader/.classpath -text
+saas/application-uploader/.project -text
+saas/application-uploader/.settings/org.eclipse.core.resources.prefs -text
+saas/application-uploader/.settings/org.eclipse.jdt.core.prefs -text
+saas/application-uploader/.settings/org.eclipse.m2e.core.prefs -text
+saas/application-uploader/.settings/org.sonar.ide.eclipse.core.prefs -text
+saas/application-uploader/pom.xml -text
+saas/application-uploader/src/main/java/eu/ascetic/saas/application_uploader/ApplicationUploader.java -text
+saas/application-uploader/src/main/java/eu/ascetic/saas/application_uploader/ApplicationUploaderException.java -text
 saas/compss-packager/.classpath -text
 saas/compss-packager/.project -text
 saas/compss-packager/.settings/org.eclipse.jdt.core.prefs -text
