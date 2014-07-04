@@ -1,6 +1,8 @@
 package es.bsc.vmmanagercore.scheduler;
 
+import es.bsc.vmmanagercore.model.DeploymentPlan;
 import es.bsc.vmmanagercore.model.Vm;
+import es.bsc.vmmanagercore.model.VmAssignmentToHost;
 import es.bsc.vmmanagercore.monitoring.HostInfo;
 import es.bsc.vmmanagercore.monitoring.HostInfoFake;
 import org.junit.BeforeClass;
@@ -10,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -121,6 +124,33 @@ public class SchedAlgDistributionTest {
         //after deploying the VM, the CPU load of host1 should be 62.5%, the load of host2 should be
         //66.6%, the load of host3 should be 100%. Therefore, host1 should be chosen
         assertEquals("host1", hostChosen);
+    }
+
+    @Test
+    public void chooseBestDeploymentPlan() {
+        // Create VMs and hosts
+        List<Vm> vms = new ArrayList<>();
+        vms.add(new Vm("vm1", "image", 2, 2048, 2, null, ""));
+        vms.add(new Vm("vm2", "image", 1, 1024, 1, null, ""));
+        List<HostInfo> hosts = new ArrayList<>();
+        hosts.add(new HostInfoFake("host1", 8, 8192, 8, 1, 1024, 1));
+        hosts.add(new HostInfoFake("host2", 4, 4096, 4, 1, 1024, 1));
+
+        /* Create the deployment plans (4 combinations) and make sure that the chosen is the most distributed one
+        vm1-host1, vm2-host1 : loadCpuHost1 = 0.5, loadCpuHost2 = 0.25
+        vm1-host1, vm2-host2 : loadCpuHost1 = 0.375, loadCpuHost2 = 0.5 (best plan)
+        vm1-host2, vm2-host1 : loadCpuHost1 = 0.25, loadCpuHost2 = 0.75
+        vm1-host2, vm2-host2 : loadCpuHost1 = 0.125, loadCpuHost2 = 1 */
+        DeploymentPlan bestDeploymentPlan = scheduler.chooseBestDeploymentPlan(
+                new HostFilter().getAllPossibleDeploymentPlans(vms, hosts), hosts);
+        for (VmAssignmentToHost vmAssignmentToHost: bestDeploymentPlan.getVmsAssignationsToHosts()) {
+            if (vmAssignmentToHost.getVm().getName().equals("vm1")) {
+                assertTrue(vmAssignmentToHost.getHost().getHostname().equals("host1"));
+            }
+            else if (vmAssignmentToHost.getVm().getName().equals("vm2")) {
+                assertTrue(vmAssignmentToHost.getHost().getHostname().equals("host2"));
+            }
+        }
     }
 
 }

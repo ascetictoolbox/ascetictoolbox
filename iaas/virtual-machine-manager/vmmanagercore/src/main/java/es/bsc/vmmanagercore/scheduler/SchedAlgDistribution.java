@@ -3,15 +3,13 @@ package es.bsc.vmmanagercore.scheduler;
 import es.bsc.vmmanagercore.model.DeploymentPlan;
 import es.bsc.vmmanagercore.model.ServerLoad;
 import es.bsc.vmmanagercore.model.Vm;
-import es.bsc.vmmanagercore.model.VmAssignmentToHost;
 import es.bsc.vmmanagercore.monitoring.HostInfo;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Distribution scheduling algorithm.
@@ -64,38 +62,32 @@ public class SchedAlgDistribution implements SchedAlgorithm {
         return selectedHost;
     }
 
-
-    private Collection<ServerLoad> getServersLoadAfterDeploymentPlanExecuted(DeploymentPlan deploymentPlan,
-            List<HostInfo> hosts) {
-        Map<HostInfo, ServerLoad> serversLoad = new HashMap<>();
-
-        // Initialize the Map with the current server load of each host
-        for (HostInfo host: hosts) {
-            serversLoad.put(host, host.getServerLoad());
-        }
-
-        // Update the map according to the deployment plan
-        for (VmAssignmentToHost vmAssignmentToHost: deploymentPlan.getVmsAssignationsToHosts()) {
-            Vm vmAssigned = vmAssignmentToHost.getVm();
-            HostInfo deploymentHost = vmAssignmentToHost.getHost();
-            double newCpuLoad = serversLoad.get(deploymentHost).getCpuLoad()
-                    + vmAssigned.getCpus()/deploymentHost.getTotalCpus();
-            double newRamLoad = serversLoad.get(deploymentHost).getRamLoad()
-                    + vmAssigned.getCpus()/deploymentHost.getTotalMemoryMb();
-            double newDiskLoad = serversLoad.get(deploymentHost).getDiskLoad()
-                    + vmAssigned.getCpus()/deploymentHost.getTotalDiskGb();
-            serversLoad.get(deploymentHost).setCpuLoad(newCpuLoad);
-            serversLoad.get(deploymentHost).setRamLoad(newRamLoad);
-            serversLoad.get(deploymentHost).setDiskLoad(newDiskLoad);
-        }
-
-        // Return just the loads
-        return serversLoad.values();
+    private boolean serversLoadAreMoreDistributed(Collection<ServerLoad> serversLoad1,
+            Collection<ServerLoad> serversLoad2) {
+        boolean lessStDevCpu =
+                Scheduler.calculateStDevCpuLoad(serversLoad1) < Scheduler.calculateStDevCpuLoad(serversLoad2);
+        boolean sameStDevCpuAndLessStDevMem =
+                (Scheduler.calculateStDevCpuLoad(serversLoad1) == Scheduler.calculateStDevCpuLoad(serversLoad2))
+                && (Scheduler.calculateStDevMemLoad(serversLoad1) < Scheduler.calculateStDevMemLoad(serversLoad2));
+        boolean sameStDevCpuAndSameStDevMemAndLessStDevDisk =
+                (Scheduler.calculateStDevCpuLoad(serversLoad1) == Scheduler.calculateStDevCpuLoad(serversLoad2))
+                && (Scheduler.calculateStDevMemLoad(serversLoad1) == Scheduler.calculateStDevMemLoad(serversLoad2))
+                && (Scheduler.calculateStDevDiskLoad(serversLoad1) < Scheduler.calculateStDevDiskLoad(serversLoad2));
+        return lessStDevCpu || sameStDevCpuAndLessStDevMem || sameStDevCpuAndSameStDevMemAndLessStDevDisk;
     }
 
     public DeploymentPlan chooseBestDeploymentPlan(List<DeploymentPlan> deploymentPlans, List<HostInfo> hosts) {
-        //TODO
-        return null;
+        DeploymentPlan bestDeploymentPlan = null;
+        Collection<ServerLoad> serversLoadBestPlan = null;
+        for (DeploymentPlan deploymentPlan: deploymentPlans) {
+            Collection<ServerLoad> serversLoad = new ArrayList<>
+                    (Scheduler.getServersLoadsAfterDeploymentPlanExecuted(deploymentPlan, hosts).values());
+            if (bestDeploymentPlan == null || serversLoadAreMoreDistributed(serversLoad, serversLoadBestPlan)) {
+                bestDeploymentPlan = deploymentPlan;
+                serversLoadBestPlan = new ArrayList<>(serversLoad);
+            }
+        }
+        return bestDeploymentPlan;
     }
 
 }
