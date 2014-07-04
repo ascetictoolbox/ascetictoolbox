@@ -3,10 +3,11 @@ package es.bsc.vmmanagercore.scheduler;
 import es.bsc.vmmanagercore.model.DeploymentPlan;
 import es.bsc.vmmanagercore.model.ServerLoad;
 import es.bsc.vmmanagercore.model.Vm;
-import es.bsc.vmmanagercore.monitoring.HostInfo;
+import es.bsc.vmmanagercore.monitoring.Host;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -22,7 +23,7 @@ public class SchedAlgConsolidation implements SchedAlgorithm {
     public SchedAlgConsolidation() {}
 
     @Override
-    public String chooseHost(List<HostInfo> hostsInfo, Vm vm) {
+    public String chooseHost(List<Host> hostsInfo, Vm vm) {
         logger.debug("\n [VMM] ---CONSOLIDATION ALG. START--- \n " +
                 "Applying consolidation algorithm to schedule VM " + vm.toString());
 
@@ -30,11 +31,11 @@ public class SchedAlgConsolidation implements SchedAlgorithm {
         String selectedHost = null;
 
         //for each host
-        for (HostInfo hostInfo: hostsInfo) {
+        for (Host host : hostsInfo) {
 
             //calculate the future load (%) of the host if the VM is deployed in that host
-            ServerLoad futureServerLoad = hostInfo.getFutureLoadIfVMDeployed(vm);
-            logger.debug("[VMM] The load of host " + hostInfo.getHostname() + " would be "
+            ServerLoad futureServerLoad = host.getFutureLoadIfVMDeployed(vm);
+            logger.debug("[VMM] The load of host " + host.getHostname() + " would be "
                     + futureServerLoad.toString());
 
             //check if the host will have the highest load after deploying the VM
@@ -49,7 +50,7 @@ public class SchedAlgConsolidation implements SchedAlgorithm {
             //important than memory, and memory more important than disk)
             if (moreCpu || sameCpuMoreMemory || sameCpuSameMemoryMoreDisk) {
                 //save its information so we can compare the hosts that we have not analyzed yet against it
-                selectedHost = hostInfo.getHostname();
+                selectedHost = host.getHostname();
                 maxFutureLoad = futureServerLoad;
             }
 
@@ -61,10 +62,26 @@ public class SchedAlgConsolidation implements SchedAlgorithm {
         return selectedHost;
     }
 
+    private boolean serverLoadsAreMoreConsolidated(Collection<ServerLoad> serversLoad1,
+            Collection<ServerLoad> serversLoad2) {
+        boolean moreStDevCpu =
+                Scheduler.calculateStDevCpuLoad(serversLoad1) > Scheduler.calculateStDevCpuLoad(serversLoad2);
+        boolean sameStDevCpuAndMoreStDevMem =
+                (Scheduler.calculateStDevCpuLoad(serversLoad1) == Scheduler.calculateStDevCpuLoad(serversLoad2))
+                && (Scheduler.calculateStDevMemLoad(serversLoad1) > Scheduler.calculateStDevMemLoad(serversLoad2));
+        boolean sameStDevCpuAndSameStDevMemAndMoreStDevDisk =
+                (Scheduler.calculateStDevCpuLoad(serversLoad1) == Scheduler.calculateStDevCpuLoad(serversLoad2))
+                && (Scheduler.calculateStDevMemLoad(serversLoad1) == Scheduler.calculateStDevMemLoad(serversLoad2))
+                && (Scheduler.calculateStDevDiskLoad(serversLoad1) > Scheduler.calculateStDevDiskLoad(serversLoad2));
+        return moreStDevCpu || sameStDevCpuAndMoreStDevMem || sameStDevCpuAndSameStDevMemAndMoreStDevDisk;
+    }
+
     @Override
     public boolean isBetterDeploymentPlan(DeploymentPlan deploymentPlan1, DeploymentPlan deploymentPlan2,
-            List<HostInfo> hosts) {
-        return false;
+            List<Host> hosts) {
+        return serverLoadsAreMoreConsolidated(
+                Scheduler.getServersLoadsAfterDeploymentPlanExecuted(deploymentPlan1, hosts).values(),
+                Scheduler.getServersLoadsAfterDeploymentPlanExecuted(deploymentPlan2, hosts).values());
     }
 
 }

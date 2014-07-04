@@ -5,10 +5,10 @@ import es.bsc.vmmanagercore.cloudmiddleware.JCloudsMiddleware;
 import es.bsc.vmmanagercore.db.VmManagerDb;
 import es.bsc.vmmanagercore.db.VmManagerDbHsql;
 import es.bsc.vmmanagercore.model.*;
-import es.bsc.vmmanagercore.monitoring.HostInfo;
-import es.bsc.vmmanagercore.monitoring.HostInfoGanglia;
-import es.bsc.vmmanagercore.monitoring.HostInfoOpenStack;
-import es.bsc.vmmanagercore.monitoring.HostInfoZabbix;
+import es.bsc.vmmanagercore.monitoring.HostGanglia;
+import es.bsc.vmmanagercore.monitoring.Host;
+import es.bsc.vmmanagercore.monitoring.HostOpenStack;
+import es.bsc.vmmanagercore.monitoring.HostZabbix;
 import es.bsc.vmmanagercore.scheduler.Scheduler;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class VmManager {
     private CloudMiddleware cloudMiddleware;
     private VmManagerDb db;
     private Scheduler scheduler;
-    private List<HostInfo> hostsInfo;
+    private List<Host> hostsInfo;
 
     /**
      * Constructs a VmManager with the name of the database to be used.
@@ -110,7 +110,7 @@ public class VmManager {
      * @param hostname the name of the host
      */
     private void freeHostResources(String hostname) {
-        for (HostInfo host: hostsInfo) {
+        for (Host host: hostsInfo) {
             if (host.getHostname().equals(hostname)) {
                 host.resetReserved();
             }
@@ -308,17 +308,17 @@ public class VmManager {
         switch (monitoring) {
             case GANGLIA:
                 for (String hostname: hosts) {
-                    hostsInfo.add(new HostInfoGanglia(hostname));
+                    hostsInfo.add(new HostGanglia(hostname));
                 }
                 break;
             case OPENSTACK:
                 for (String hostname: hosts) {
-                    hostsInfo.add(new HostInfoOpenStack(hostname, (JCloudsMiddleware) cloudMiddleware));
+                    hostsInfo.add(new HostOpenStack(hostname, (JCloudsMiddleware) cloudMiddleware));
                 }
                 break;
             case ZABBIX:
                 for (String hostname: hosts) {
-                    hostsInfo.add(new HostInfoZabbix(hostname));
+                    hostsInfo.add(new HostZabbix(hostname));
                 }
                 break;
             default:

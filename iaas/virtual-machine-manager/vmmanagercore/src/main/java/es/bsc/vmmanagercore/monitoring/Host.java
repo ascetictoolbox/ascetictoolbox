@@ -12,7 +12,7 @@ import java.util.List;
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  *
  */
-public abstract class HostInfo {
+public abstract class Host {
 
     protected String hostname;
     protected int totalCpus;
@@ -32,7 +32,7 @@ public abstract class HostInfo {
      * Class constructor
      * @param hostname host name
      */
-    public HostInfo(String hostname) {
+    public Host(String hostname) {
         this.hostname = hostname;
         reservedCpus = reservedMemoryMb = reservedDiskGb = 0;
     }

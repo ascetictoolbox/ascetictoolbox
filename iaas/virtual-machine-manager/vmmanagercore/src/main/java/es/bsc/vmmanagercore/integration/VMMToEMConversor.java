@@ -1,7 +1,7 @@
 package es.bsc.vmmanagercore.integration;
 
 import es.bsc.vmmanagercore.model.Vm;
-import es.bsc.vmmanagercore.monitoring.HostInfo;
+import es.bsc.vmmanagercore.monitoring.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class VMMToEMConversor {
     }
 
     public static eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host getHostEnergyModFromHost(
-            HostInfo host) {
+            Host host) {
         return new eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host(1, host.getHostname());
     }
 }

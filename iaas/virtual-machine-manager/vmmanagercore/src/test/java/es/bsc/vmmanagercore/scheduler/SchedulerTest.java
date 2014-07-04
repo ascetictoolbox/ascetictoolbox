@@ -1,8 +1,8 @@
 package es.bsc.vmmanagercore.scheduler;
 
 import es.bsc.vmmanagercore.model.*;
-import es.bsc.vmmanagercore.monitoring.HostInfo;
-import es.bsc.vmmanagercore.monitoring.HostInfoFake;
+import es.bsc.vmmanagercore.monitoring.HostFake;
+import es.bsc.vmmanagercore.monitoring.Host;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -23,8 +23,8 @@ public class SchedulerTest {
 
     @Test
     public void vmShouldBeDeployedEvenWhenThereAreNoHostsWithEnoughResources() {
-        List<HostInfo> hosts = new ArrayList<>();
-        hosts.add(new HostInfoFake("host1", 2, 2048, 2, 1, 2048, 2)); // Host with 100% load
+        List<Host> hosts = new ArrayList<>();
+        hosts.add(new HostFake("host1", 2, 2048, 2, 1, 2048, 2)); // Host with 100% load
 
         // VM to deploy
         List<Vm> vms = new ArrayList<>();
@@ -67,9 +67,9 @@ public class SchedulerTest {
         vms.add(new Vm("vm1", "image", 2, 1024, 1, null, ""));
         vms.add(new Vm("vm2", "image", 1, 1024, 3, null, ""));
         vms.add(new Vm("vm3", "image", 1, 1024, 2, null, ""));
-        List<HostInfo> hosts = new ArrayList<>();
-        hosts.add(new HostInfoFake("host1", 8, 8192, 8, 1, 1024, 1));
-        hosts.add(new HostInfoFake("host2", 4, 4096, 4, 1, 1024, 1));
+        List<Host> hosts = new ArrayList<>();
+        hosts.add(new HostFake("host1", 8, 8192, 8, 1, 1024, 1));
+        hosts.add(new HostFake("host2", 4, 4096, 4, 1, 1024, 1));
 
         // Create deployment plan
         List<VmAssignmentToHost> vmAssignments = new ArrayList<>();

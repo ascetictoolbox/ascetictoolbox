@@ -12,11 +12,11 @@ import org.jclouds.openstack.nova.v2_0.extensions.HostAdministrationApi;
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  *
  */
-public class HostInfoOpenStack extends HostInfo {
+public class HostOpenStack extends Host {
 
     private JCloudsMiddleware jcm;
 
-    public HostInfoOpenStack(String name, JCloudsMiddleware jcm) {
+    public HostOpenStack(String name, JCloudsMiddleware jcm) {
         super(name);
         this.jcm = jcm;
         initTotalResources();

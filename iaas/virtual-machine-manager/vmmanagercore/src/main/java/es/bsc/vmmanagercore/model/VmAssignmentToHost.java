@@ -1,6 +1,6 @@
 package es.bsc.vmmanagercore.model;
 
-import es.bsc.vmmanagercore.monitoring.HostInfo;
+import es.bsc.vmmanagercore.monitoring.Host;
 
 /**
  *
@@ -9,9 +9,9 @@ import es.bsc.vmmanagercore.monitoring.HostInfo;
  */
 public class VmAssignmentToHost {
     private Vm vm;
-    private HostInfo host;
+    private Host host;
 
-    public VmAssignmentToHost(Vm vm, HostInfo host) {
+    public VmAssignmentToHost(Vm vm, Host host) {
         this.vm = vm;
         this.host = host;
     }
@@ -20,7 +20,7 @@ public class VmAssignmentToHost {
         return vm;
     }
 
-    public HostInfo getHost() {
+    public Host getHost() {
         return host;
     }
 }

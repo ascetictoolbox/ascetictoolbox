@@ -1,7 +1,7 @@
 package es.bsc.vmmanagercore.scheduler;
 
 import es.bsc.vmmanagercore.model.*;
-import es.bsc.vmmanagercore.monitoring.HostInfo;
+import es.bsc.vmmanagercore.monitoring.Host;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -45,8 +45,8 @@ public class Scheduler {
         }
     }
 
-    private void reserveResourcesForVmInHost(Vm vm, String hostForDeployment, List<HostInfo> hosts) {
-        for (HostInfo host: hosts) {
+    private void reserveResourcesForVmInHost(Vm vm, String hostForDeployment, List<Host> hosts) {
+        for (Host host: hosts) {
             if (host.getHostname().equals(hostForDeployment)) {
                 host.setReservedCpus(vm.getCpus());
                 host.setReservedMemoryMb(vm.getRamMb());
@@ -64,7 +64,7 @@ public class Scheduler {
      * @param vm the VM
      * @return the name of the host where the VM should be deployed
      */
-    private String chooseHost(List<HostInfo> allHosts, List<HostInfo> hostsWithEnoughResources, Vm vm) {
+    private String chooseHost(List<Host> allHosts, List<Host> hostsWithEnoughResources, Vm vm) {
         String selectedHost;
         if (hostsWithEnoughResources.isEmpty()) {
             selectedHost = new SchedAlgRandom().chooseHost(allHosts, vm);
@@ -170,11 +170,11 @@ public class Scheduler {
      * @return the load for each host
      */
     public static Map<String, ServerLoad> getServersLoadsAfterDeploymentPlanExecuted(DeploymentPlan deploymentPlan,
-            List<HostInfo> hosts) {
+            List<Host> hosts) {
         Map<String, ServerLoad> serversLoad = new HashMap<>();
 
         // Initialize the Map with the current server load of each host
-        for (HostInfo host: hosts) {
+        for (Host host: hosts) {
             serversLoad.put(host.getHostname(), new ServerLoad(host.getServerLoad().getCpuLoad(),
                     host.getServerLoad().getRamLoad(), host.getServerLoad().getDiskLoad()));
         }
@@ -182,7 +182,7 @@ public class Scheduler {
         // Update the map according to the deployment plan
         for (VmAssignmentToHost vmAssignmentToHost: deploymentPlan.getVmsAssignationsToHosts()) {
             Vm vmAssigned = vmAssignmentToHost.getVm();
-            HostInfo deploymentHost = vmAssignmentToHost.getHost();
+            Host deploymentHost = vmAssignmentToHost.getHost();
             double newCpuLoad = serversLoad.get(deploymentHost.getHostname()).getCpuLoad()
                     + (double) vmAssigned.getCpus()/deploymentHost.getTotalCpus();
             double newRamLoad = serversLoad.get(deploymentHost.getHostname()).getRamLoad()
@@ -206,13 +206,13 @@ public class Scheduler {
      * @return HashMap that contains for each VM description, the name of the host where
      * the VM should be deployed according to the scheduling algorithm
      */
-    public Map<Vm, String> schedule(List<Vm> vms, List<HostInfo> hosts) {
+    public Map<Vm, String> schedule(List<Vm> vms, List<Host> hosts) {
         Map<Vm, String> scheduling = new HashMap<>(); // HashMap VM -> host where it is going to be deployed
 
         // For each of the VMs to be scheduled
         for (Vm vm: vms) {
             // Get hosts with enough resources
-            List<HostInfo> hostsWithEnoughResources = HostFilter.filter(hosts, vm.getCpus(),
+            List<Host> hostsWithEnoughResources = HostFilter.filter(hosts, vm.getCpus(),
                     vm.getRamMb(), vm.getDiskGb());
 
             // Choose the host to deploy the VM
@@ -236,7 +236,7 @@ public class Scheduler {
      * @param hosts the hosts of the infrastructure
      * @return the best deployment plan according to the algorithm applied
      */
-    public DeploymentPlan chooseBestDeploymentPlan(List<DeploymentPlan> deploymentPlans, List<HostInfo> hosts) {
+    public DeploymentPlan chooseBestDeploymentPlan(List<DeploymentPlan> deploymentPlans, List<Host> hosts) {
         DeploymentPlan bestDeploymentPlan = null;
         for (DeploymentPlan deploymentPlan: deploymentPlans) {
             if (bestDeploymentPlan == null ||
@@ -246,8 +246,5 @@ public class Scheduler {
         }
         return bestDeploymentPlan;
     }
-
-
-
 
 }

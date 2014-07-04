@@ -3,7 +3,7 @@ package es.bsc.vmmanagercore.scheduler;
 import es.bsc.vmmanagercore.model.DeploymentPlan;
 import es.bsc.vmmanagercore.model.ServerLoad;
 import es.bsc.vmmanagercore.model.Vm;
-import es.bsc.vmmanagercore.monitoring.HostInfo;
+import es.bsc.vmmanagercore.monitoring.Host;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -23,7 +23,7 @@ public class SchedAlgDistribution implements SchedAlgorithm {
     public SchedAlgDistribution() {}
 
     @Override
-    public String chooseHost(List<HostInfo> hostsInfo, Vm vm) {
+    public String chooseHost(List<Host> hostsInfo, Vm vm) {
         logger.debug("\n [VMM] ---DISTRIBUTION ALG. START--- \n " +
                 "Applying distribution algorithm to schedule VM " + vm.toString());
 
@@ -31,11 +31,11 @@ public class SchedAlgDistribution implements SchedAlgorithm {
         String selectedHost = null;
 
         //for each host
-        for (HostInfo hostInfo: hostsInfo) {
+        for (Host host : hostsInfo) {
 
             //calculate the future load (%) of the host if the VM is deployed in that host
-            ServerLoad futureServerLoad = hostInfo.getFutureLoadIfVMDeployed(vm);
-            logger.debug("[VMM] The load of host " + hostInfo.getHostname() + " would be "
+            ServerLoad futureServerLoad = host.getFutureLoadIfVMDeployed(vm);
+            logger.debug("[VMM] The load of host " + host.getHostname() + " would be "
                     + futureServerLoad.toString());
 
             //check if the host will have the lowest load after deploying the VM
@@ -49,7 +49,7 @@ public class SchedAlgDistribution implements SchedAlgorithm {
             //if the host will be the least loaded according to the specified criteria (CPU more
             //important than memory, and memory more important than disk), save it
             if (lessCpu || sameCpuLessMemory || sameCpuSameMemoryLessDisk) {
-                selectedHost = hostInfo.getHostname();
+                selectedHost = host.getHostname();
                 minFutureLoad = futureServerLoad;
             }
 
@@ -66,7 +66,7 @@ public class SchedAlgDistribution implements SchedAlgorithm {
      *
      * @param serversLoad1 first set of server loads
      * @param serversLoad2 second set of server loads
-     * @return True if serversLoad1 is more distributed than serversLoad2, false otherwise.
+     * @return True if serversLoad1 is more distributed than serversLoad2, false otherwise
      *
      */
     private boolean serverLoadsAreMoreDistributed(Collection<ServerLoad> serversLoad1,
@@ -85,7 +85,7 @@ public class SchedAlgDistribution implements SchedAlgorithm {
 
     @Override
     public boolean isBetterDeploymentPlan(DeploymentPlan deploymentPlan1, DeploymentPlan deploymentPlan2,
-            List<HostInfo> hosts) {
+            List<Host> hosts) {
         return serverLoadsAreMoreDistributed(
                 Scheduler.getServersLoadsAfterDeploymentPlanExecuted(deploymentPlan1, hosts).values(),
                 Scheduler.getServersLoadsAfterDeploymentPlanExecuted(deploymentPlan2, hosts).values());

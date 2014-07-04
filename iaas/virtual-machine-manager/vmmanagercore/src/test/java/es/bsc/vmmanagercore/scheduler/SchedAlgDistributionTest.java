@@ -3,8 +3,8 @@ package es.bsc.vmmanagercore.scheduler;
 import es.bsc.vmmanagercore.model.DeploymentPlan;
 import es.bsc.vmmanagercore.model.Vm;
 import es.bsc.vmmanagercore.model.VmAssignmentToHost;
-import es.bsc.vmmanagercore.monitoring.HostInfo;
-import es.bsc.vmmanagercore.monitoring.HostInfoFake;
+import es.bsc.vmmanagercore.monitoring.HostFake;
+import es.bsc.vmmanagercore.monitoring.Host;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -31,14 +32,14 @@ public class SchedAlgDistributionTest {
     public void oneHostHasLessCpuLoad() {
         //create a fake host with total={cpus=4, memory=4GB, disk=8GB} and
         //used={cpus=1, memory=2GB, disk=4GB}
-        HostInfoFake hostInfo1 = new HostInfoFake("host1", 4, 4096, 8, 1, 2048, 4);
+        HostFake hostInfo1 = new HostFake("host1", 4, 4096, 8, 1, 2048, 4);
 
         //create a fake host with total={cpus=2, memory=4GB, disk=8GB} and
         //used={cpus=1, memory=2GB, disk=4GB}
-        HostInfoFake hostInfo2 = new HostInfoFake("host2", 2, 4096, 8, 1, 2048, 4);
+        HostFake hostInfo2 = new HostFake("host2", 2, 4096, 8, 1, 2048, 4);
 
         //build the array of hosts that will be passed to the schedule function
-        List<HostInfo> hostsInfo = new ArrayList<>();
+        List<Host> hostsInfo = new ArrayList<>();
         hostsInfo.add(hostInfo1);
         hostsInfo.add(hostInfo2);
 
@@ -54,14 +55,14 @@ public class SchedAlgDistributionTest {
     public void oneHostHasLessMemory() {
         //create a fake host with total={cpus=4, memory=4GB, disk=8GB} and
         //used={cpus=1, memory=2GB, disk=4GB}
-        HostInfoFake hostInfo1 = new HostInfoFake("host1", 4, 4096, 8, 1, 2048, 4);
+        HostFake hostInfo1 = new HostFake("host1", 4, 4096, 8, 1, 2048, 4);
 
         //create a fake host with total={cpus=4, memory=4GB, disk=8GB} and
         //used={cpus=1, memory=1GB, disk=4GB}
-        HostInfoFake hostInfo2 = new HostInfoFake("host2", 4, 4096, 8, 1, 1024, 4);
+        HostFake hostInfo2 = new HostFake("host2", 4, 4096, 8, 1, 1024, 4);
 
         //build the array of hosts that will be passed to the schedule function
-        List<HostInfo> hostsInfo = new ArrayList<>();
+        List<Host> hostsInfo = new ArrayList<>();
         hostsInfo.add(hostInfo1);
         hostsInfo.add(hostInfo2);
 
@@ -78,14 +79,14 @@ public class SchedAlgDistributionTest {
     public void oneHostHasLessDisk() {
         //create a fake host with total={cpus=4, memory=4GB, disk=8GB} and
         //used={cpus=1, memory=1GB, disk=4GB}
-        HostInfoFake hostInfo1 = new HostInfoFake("host1", 4, 4096, 8, 1, 1024, 4);
+        HostFake hostInfo1 = new HostFake("host1", 4, 4096, 8, 1, 1024, 4);
 
         //create a fake host with total={cpus=4, memory=4GB, disk=8GB} and
         //used={cpus=1, memory=1GB, disk=2GB}
-        HostInfoFake hostInfo2 = new HostInfoFake("host2", 4, 4096, 8, 1, 1024, 2);
+        HostFake hostInfo2 = new HostFake("host2", 4, 4096, 8, 1, 1024, 2);
 
         //build the array of hosts that will be passed to the schedule function
-        List<HostInfo> hostsInfo = new ArrayList<>();
+        List<Host> hostsInfo = new ArrayList<>();
         hostsInfo.add(hostInfo1);
         hostsInfo.add(hostInfo2);
 
@@ -102,18 +103,18 @@ public class SchedAlgDistributionTest {
     public void standardCaseWithThreeHosts() {
         //create a fake host with total={cpus=8, memory=4GB, disk=4GB} and
         //used={cpus=4, memory=1GB, disk=1GB}
-        HostInfoFake hostInfo1 = new HostInfoFake("host1", 8, 4096, 4, 4, 1024, 1);
+        HostFake hostInfo1 = new HostFake("host1", 8, 4096, 4, 4, 1024, 1);
 
         //create a fake host with total={cpus=6, memory=4GB, disk=4GB} and
         //used={cpus=3, memory=1GB, disk=1GB}
-        HostInfoFake hostInfo2 = new HostInfoFake("host2", 6, 4096, 4, 3, 1024, 1);
+        HostFake hostInfo2 = new HostFake("host2", 6, 4096, 4, 3, 1024, 1);
 
         //create a fake host with total={cpus=4, memory=4GB, disk=4GB} and
         //used={cpus=3, memory=3GB, disk=3GB}
-        HostInfoFake hostInfo3 = new HostInfoFake("host3", 4, 4096, 4, 3, 3072, 3);
+        HostFake hostInfo3 = new HostFake("host3", 4, 4096, 4, 3, 3072, 3);
 
         //build the array of hosts that will be passed to the schedule function
-        List<HostInfo> hostsInfo = new ArrayList<>();
+        List<Host> hostsInfo = new ArrayList<>();
         hostsInfo.add(hostInfo1);
         hostsInfo.add(hostInfo2);
         hostsInfo.add(hostInfo3);
@@ -127,14 +128,14 @@ public class SchedAlgDistributionTest {
     }
 
     @Test
-    public void returnTrueWhenLessStdDevCpuLoad() {
+    public void isBetterPlanReturnsTrueWhenLessStdDevCpuLoad() {
         // Create VMs and hosts
         List<Vm> vms = new ArrayList<>();
         vms.add(new Vm("vm1", "image", 2, 2048, 2, null, ""));
         vms.add(new Vm("vm2", "image", 1, 1024, 1, null, ""));
-        List<HostInfo> hosts = new ArrayList<>();
-        hosts.add(new HostInfoFake("host1", 8, 8192, 8, 1, 1024, 1));
-        hosts.add(new HostInfoFake("host2", 4, 4096, 4, 1, 1024, 1));
+        List<Host> hosts = new ArrayList<>();
+        hosts.add(new HostFake("host1", 8, 8192, 8, 1, 1024, 1));
+        hosts.add(new HostFake("host2", 4, 4096, 4, 1, 1024, 1));
 
         // Create deployment plans
         List<VmAssignmentToHost> assignmentsPlan1 = new ArrayList<>();
@@ -150,21 +151,22 @@ public class SchedAlgDistributionTest {
         // deploymentPlan2: cpu loads = 0.75 and 0.25
         // deploymentPlan1 is better (more distributed)
         assertTrue(scheduler.isBetterDeploymentPlan(deploymentPlan1, deploymentPlan2, hosts));
+        assertFalse(scheduler.isBetterDeploymentPlan(deploymentPlan2, deploymentPlan1, hosts));
     }
 
     /*
     @Test
-    public void returnTrueWhenSameStDevCpuLoadAndLessStdDevRamLoad() {
+    public void isBetterPlanReturnsTrueWhenSameStDevCpuLoadAndLessStdDevRamLoad() {
         // TODO: implement me!
     }
 
     @Test
-    public void returnTrueWhenSameStdDevCpuLoadSameStdDevRamLoadAndLessStdDevDiskLoad() {
+    public void isBetterPlanReturnsTrueWhenSameStdDevCpuSameStdDevRamAndLessStdDevDiskLoad() {
         // TODO: implement me!
     }
 
     @Test
-    public void returnFalseWhenIsWorseOption() {
+    public void isBetterPlanReturnsFalseWhenIsWorseOption() {
         // TODO: implement me!
     }
     */

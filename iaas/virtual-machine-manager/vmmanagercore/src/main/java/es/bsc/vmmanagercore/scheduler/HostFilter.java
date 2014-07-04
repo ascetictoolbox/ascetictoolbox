@@ -3,7 +3,7 @@ package es.bsc.vmmanagercore.scheduler;
 import es.bsc.vmmanagercore.model.DeploymentPlan;
 import es.bsc.vmmanagercore.model.Vm;
 import es.bsc.vmmanagercore.model.VmAssignmentToHost;
-import es.bsc.vmmanagercore.monitoring.HostInfo;
+import es.bsc.vmmanagercore.monitoring.Host;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,9 +20,9 @@ public class HostFilter {
 
     private class PossibleHostsForVm {
         public final Vm vm;
-        public final List<HostInfo> hosts;
+        public final List<Host> hosts;
 
-        public PossibleHostsForVm(Vm vm, List<HostInfo> hosts) {
+        public PossibleHostsForVm(Vm vm, List<Host> hosts) {
             this.vm = vm;
             this.hosts = hosts;
         }
@@ -37,9 +37,9 @@ public class HostFilter {
      * @param minDiskGb the minimum amount of free disk (GB)
      * @return hosts from the input that meet the CPU, RAM, and disk requirements
      */
-    public static List<HostInfo> filter(List<HostInfo> hosts, int minCpus, int minRamMb, int minDiskGb) {
-        List<HostInfo> filteredHosts = new ArrayList<>();
-        for (HostInfo host: hosts) {
+    public static List<Host> filter(List<Host> hosts, int minCpus, int minRamMb, int minDiskGb) {
+        List<Host> filteredHosts = new ArrayList<>();
+        for (Host host: hosts) {
             if (host.hasEnoughResources(minCpus, minRamMb, minDiskGb)) {
                 filteredHosts.add(host);
             }
@@ -55,7 +55,7 @@ public class HostFilter {
      * @param hosts the available hosts
      * @return the list where each position contains a VM and a list of hosts where it can be deployed
      */
-    private List<PossibleHostsForVm> getPossibleHostsForVms(List<Vm> vms, List<HostInfo> hosts) {
+    private List<PossibleHostsForVm> getPossibleHostsForVms(List<Vm> vms, List<Host> hosts) {
         List<PossibleHostsForVm> result = new ArrayList<>();
         for (Vm vm: vms) {
             result.add(new PossibleHostsForVm(vm, filter(hosts, vm.getCpus(), vm.getRamMb(), vm.getDiskGb())));
@@ -72,9 +72,9 @@ public class HostFilter {
      */
     private boolean deploymentPlanCanBeApplied(DeploymentPlan deploymentPlan) {
         // Build a map that contains for each host, the VMs that are going to be deployed in it
-        Map<HostInfo, List<Vm>> vmsOfEachHost = new HashMap<>();
+        Map<Host, List<Vm>> vmsOfEachHost = new HashMap<>();
         for (VmAssignmentToHost vmAssignmentToHost: deploymentPlan.getVmsAssignationsToHosts()) {
-            HostInfo host = vmAssignmentToHost.getHost();
+            Host host = vmAssignmentToHost.getHost();
             if (!vmsOfEachHost.containsKey(host)) {
                 vmsOfEachHost.put(host, new ArrayList<Vm>());
             }
@@ -83,7 +83,7 @@ public class HostFilter {
 
         // For each of the host, check whether it has enough resources to host all the VMs that it
         // has been assigned
-        for (Map.Entry<HostInfo, List<Vm>> entry : vmsOfEachHost.entrySet()) {
+        for (Map.Entry<Host, List<Vm>> entry : vmsOfEachHost.entrySet()) {
             if (!entry.getKey().hasEnoughResourcesToDeployVms(entry.getValue())) {
                 return false;
             }
@@ -127,7 +127,7 @@ public class HostFilter {
         }
         else {
             PossibleHostsForVm currentPossibleHostsForVm = possibleHostsForEachVm.get(currentVmIndex);
-            for (HostInfo possibleHost: currentPossibleHostsForVm.hosts) {
+            for (Host possibleHost: currentPossibleHostsForVm.hosts) {
                 DeploymentPlan deploymentPlan = new DeploymentPlan(currentDeploymentPlan.getVmsAssignationsToHosts());
                 deploymentPlan.addVmAssignmentToPlan(new VmAssignmentToHost(currentPossibleHostsForVm.vm,
                         possibleHost));
@@ -147,7 +147,7 @@ public class HostFilter {
      * @param hosts the list of hosts
      * @return the list of deployment plans that can be applied
      */
-    public List<DeploymentPlan> getAllPossibleDeploymentPlans(List<Vm> vms, List<HostInfo> hosts) {
+    public List<DeploymentPlan> getAllPossibleDeploymentPlans(List<Vm> vms, List<Host> hosts) {
         List<DeploymentPlan> result = new ArrayList<>();
         generateDeploymentPlans(getPossibleHostsForVms(vms, hosts), result, 0,
                 new DeploymentPlan(new ArrayList<VmAssignmentToHost>()));

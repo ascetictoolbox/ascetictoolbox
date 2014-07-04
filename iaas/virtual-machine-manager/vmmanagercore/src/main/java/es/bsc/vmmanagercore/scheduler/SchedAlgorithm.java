@@ -2,7 +2,7 @@ package es.bsc.vmmanagercore.scheduler;
 
 import es.bsc.vmmanagercore.model.DeploymentPlan;
 import es.bsc.vmmanagercore.model.Vm;
-import es.bsc.vmmanagercore.monitoring.HostInfo;
+import es.bsc.vmmanagercore.monitoring.Host;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public interface SchedAlgorithm {
      * @param vm VM that needs to be deployed
      * @return The name of the host on which the VM should be deployed.
      */
-    public String chooseHost(List<HostInfo> hostsInfo, Vm vm);
+    public String chooseHost(List<Host> hostsInfo, Vm vm);
 
     /**
      * Checks whether a deployment plan is considered better than other deployment plan
@@ -31,5 +31,5 @@ public interface SchedAlgorithm {
      * @return true if deploymentPlan1 is better than deploymentPlan2, false otherwise
      */
     public boolean isBetterDeploymentPlan(DeploymentPlan deploymentPlan1, DeploymentPlan deploymentPlan2,
-                                          List<HostInfo> hosts);
+                                          List<Host> hosts);
 }

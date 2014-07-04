@@ -3,8 +3,9 @@ package es.bsc.vmmanagercore.scheduler;
 import es.bsc.vmmanagercore.integration.VMMToEMConversor;
 import es.bsc.vmmanagercore.model.DeploymentPlan;
 import es.bsc.vmmanagercore.model.Vm;
+import es.bsc.vmmanagercore.model.VmAssignmentToHost;
 import es.bsc.vmmanagercore.model.VmDeployed;
-import es.bsc.vmmanagercore.monitoring.HostInfo;
+import es.bsc.vmmanagercore.monitoring.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller;
 
 import java.util.ArrayList;
@@ -44,10 +45,10 @@ public class SchedAlgEnergyAware implements SchedAlgorithm {
     }
 
     @Override
-    public String chooseHost(List<HostInfo> hostsInfo, Vm vm) {
+    public String chooseHost(List<Host> hostsInfo, Vm vm) {
         String bestHost = null; // Host that consumes less energy
         double minimumAvgPower = Integer.MAX_VALUE; // Avg. power consumed in the host that consumes less energy
-        for (HostInfo host: hostsInfo) {
+        for (Host host: hostsInfo) {
             double predictedAvgPower = energyModeller.getPredictedEnergyForVM(
                    VMMToEMConversor.getVmEnergyModFromVM(vm),
                    VMMToEMConversor.getVmsEnergyModFromVms(getVmsDeployedInHost(host.getHostname())),
@@ -61,10 +62,27 @@ public class SchedAlgEnergyAware implements SchedAlgorithm {
         return bestHost;
     }
 
+    private double getPredictedAvgPowerVm(Vm vm, Host host) {
+        return energyModeller.getPredictedEnergyForVM(
+                VMMToEMConversor.getVmEnergyModFromVM(vm),
+                VMMToEMConversor.getVmsEnergyModFromVms(getVmsDeployedInHost(host.getHostname())),
+                VMMToEMConversor.getHostEnergyModFromHost(host))
+                .getAvgPowerUsed();
+    }
+
+    private double getPredictedAvgPowerDeploymentPlan(DeploymentPlan deploymentPlan) {
+        double result = 0;
+        for (VmAssignmentToHost vmAssignmentToHost: deploymentPlan.getVmsAssignationsToHosts()) {
+            result += getPredictedAvgPowerVm(vmAssignmentToHost.getVm(), vmAssignmentToHost.getHost());
+        }
+        return result;
+    }
+
     @Override
     public boolean isBetterDeploymentPlan(DeploymentPlan deploymentPlan1, DeploymentPlan deploymentPlan2,
-            List<HostInfo> hosts) {
-        return false;
+            List<Host> hosts) {
+        return getPredictedAvgPowerDeploymentPlan(deploymentPlan1) <=
+                getPredictedAvgPowerDeploymentPlan(deploymentPlan2);
     }
 
 }

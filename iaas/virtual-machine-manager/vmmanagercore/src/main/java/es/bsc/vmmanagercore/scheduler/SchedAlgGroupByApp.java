@@ -3,7 +3,7 @@ package es.bsc.vmmanagercore.scheduler;
 import es.bsc.vmmanagercore.model.DeploymentPlan;
 import es.bsc.vmmanagercore.model.Vm;
 import es.bsc.vmmanagercore.model.VmDeployed;
-import es.bsc.vmmanagercore.monitoring.HostInfo;
+import es.bsc.vmmanagercore.monitoring.Host;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,15 +17,15 @@ import java.util.Map;
 public class SchedAlgGroupByApp implements SchedAlgorithm {
 
     private List<VmDeployed> vmsDeployed;
-    private List<HostInfo> hostsInfo;
+    private List<Host> hostsInfo;
 
     public SchedAlgGroupByApp(List<VmDeployed> vmsDeployed) {
         this.vmsDeployed = vmsDeployed;
     }
 
     private boolean hostHasEnoughResources(String hostname) {
-        for (HostInfo hostInfo: hostsInfo) {
-            if (hostname.equals(hostInfo.getHostname())) {
+        for (Host host : hostsInfo) {
+            if (hostname.equals(host.getHostname())) {
                 return true;
             }
         }
@@ -68,7 +68,7 @@ public class SchedAlgGroupByApp implements SchedAlgorithm {
     }
 
     @Override
-    public String chooseHost(List<HostInfo> hostsInfo, Vm vm) {
+    public String chooseHost(List<Host> hostsInfo, Vm vm) {
         this.hostsInfo = hostsInfo;
         Map<String, Integer> vmsOfAppPerHost = getNumberOfVmsThatBelongToTheAppForEachHost(vm.getApplicationId());
         return getHostWithMoreVmsOfTheApp(vmsOfAppPerHost);
@@ -76,7 +76,8 @@ public class SchedAlgGroupByApp implements SchedAlgorithm {
 
     @Override
     public boolean isBetterDeploymentPlan(DeploymentPlan deploymentPlan1, DeploymentPlan deploymentPlan2,
-            List<HostInfo> hosts) {
+            List<Host> hosts) {
+        // TODO: implement me!
         return false;
     }
 }

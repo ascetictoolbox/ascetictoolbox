@@ -12,7 +12,7 @@ import java.util.List;
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  *
  */
-public class HostInfoZabbix extends HostInfo {
+public class HostZabbix extends Host {
 
     // Keys to identify each metric in Zabbix.
     // Note: The metrics used for the disk space are specific for the Ascetic project.
@@ -41,7 +41,7 @@ public class HostInfoZabbix extends HostInfo {
         totalDiskGb = (Long.parseLong(getItemByKey(TOTAL_DISK_BYTES_KEY).getLastValue()))/(1024.0*1024*1024);
     }
 
-    public HostInfoZabbix(String hostname) {
+    public HostZabbix(String hostname) {
         super(hostname);
         items = zabbixClient.getItemsFromHost(hostname);
         initTotalResources();

@@ -2,7 +2,6 @@ package es.bsc.vmmanagercore.monitoring;
 
 import es.bsc.monitoring.ganglia.Ganglia;
 import es.bsc.monitoring.ganglia.infrastructure.Cluster;
-import es.bsc.monitoring.ganglia.infrastructure.Host;
 
 import java.util.List;
 
@@ -12,18 +11,18 @@ import java.util.List;
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  *
  */
-public class HostInfoGanglia extends HostInfo {
+public class HostGanglia extends Host {
 
-    public Host gangliaHost;
+    public es.bsc.monitoring.ganglia.infrastructure.Host gangliaHost;
 
-    public HostInfoGanglia(String hostname) {
+    public HostGanglia(String hostname) {
         super(hostname);
 
         //get the Ganglia host from its hostname
         List<Cluster> clusterList = new Ganglia().getGridInfo();
         for (Cluster cluster : clusterList) {
-            List<Host> hosts = cluster.getHosts();
-            for (Host host: hosts) {
+            List<es.bsc.monitoring.ganglia.infrastructure.Host> hosts = cluster.getHosts();
+            for (es.bsc.monitoring.ganglia.infrastructure.Host host: hosts) {
                 if (host.getName().equals(hostname)) {
                     gangliaHost = host;
                 }

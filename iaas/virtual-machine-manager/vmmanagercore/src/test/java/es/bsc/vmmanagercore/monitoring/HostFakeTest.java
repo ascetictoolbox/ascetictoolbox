@@ -17,7 +17,7 @@ import static org.junit.Assert.*;
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  *
  */
-public class HostInfoFakeTest {
+public class HostFakeTest {
 
     @Rule
     public ExpectedException exception = ExpectedException.none();
@@ -25,66 +25,66 @@ public class HostInfoFakeTest {
     @Test
     public void constructorDoesNotAcceptNonPositiveTotalCpus() {
         exception.expect(IllegalArgumentException.class);
-        new HostInfoFake("hostName", -1, 1024, 1, 0, 0, 0);
+        new HostFake("hostName", -1, 1024, 1, 0, 0, 0);
     }
 
     @Test
     public void constructorDoesNotAcceptNonPositiveTotalMemoryMb() {
         exception.expect(IllegalArgumentException.class);
-        new HostInfoFake("hostName", 1, -1024, 1, 0, 0, 0);
+        new HostFake("hostName", 1, -1024, 1, 0, 0, 0);
     }
 
     @Test
     public void constructorDoesNotAcceptNonPositiveTotalDiskGb() {
         exception.expect(IllegalArgumentException.class);
-        new HostInfoFake("hostName", 1, 1024, -1, 0, 0, 0);
+        new HostFake("hostName", 1, 1024, -1, 0, 0, 0);
     }
 
     @Test
     public void constructorDoesNotAcceptNegativeAssignedCpus() {
         exception.expect(IllegalArgumentException.class);
-        new HostInfoFake("hostName", 1, 1024, 1, -1, 0, 0);
+        new HostFake("hostName", 1, 1024, 1, -1, 0, 0);
     }
 
     @Test
     public void constructorDoesNotAcceptNegativeAssignedMemoryMb() {
         exception.expect(IllegalArgumentException.class);
-        new HostInfoFake("hostName", 1, 1024, 1, 0, -1024, 0);
+        new HostFake("hostName", 1, 1024, 1, 0, -1024, 0);
     }
 
     @Test
     public void constructorDoesNotAcceptNegativeAssignedDiskGb() {
         exception.expect(IllegalArgumentException.class);
-        new HostInfoFake("hostName", 1, 1024, 1, 0, 0, -1);
+        new HostFake("hostName", 1, 1024, 1, 0, 0, -1);
     }
 
     @Test
     public void constructorDoesNotAcceptMoreAssignedCpusThanTotal() {
         exception.expect(IllegalArgumentException.class);
-        new HostInfoFake("hostName", 1, 1024, 1, 2, 0, 0);
+        new HostFake("hostName", 1, 1024, 1, 2, 0, 0);
     }
 
     @Test
     public void constructorDoesNotAcceptMoreAssignedMemoryThanTotal() {
         exception.expect(IllegalArgumentException.class);
-        new HostInfoFake("hostName", 1, 1024, 1, 0, 2048, 0);
+        new HostFake("hostName", 1, 1024, 1, 0, 2048, 0);
     }
 
     @Test
     public void constructorDoesNotAcceptMoreAssignedDiskThanTotal() {
         exception.expect(IllegalArgumentException.class);
-        new HostInfoFake("hostName", 1, 1024, 1, 0, 0, 2);
+        new HostFake("hostName", 1, 1024, 1, 0, 0, 2);
     }
 
     @Test
     public void constructorWithHostName() {
-        HostInfoFake hostInfo = new HostInfoFake("hostName");
+        HostFake hostInfo = new HostFake("hostName");
         assertEquals("hostName", hostInfo.getHostname());
     }
 
     @Test
     public void hasEnoughResources() {
-        HostInfoFake hostInfo = new HostInfoFake("hostName", 4, 4096, 4, 1, 1024, 1);
+        HostFake hostInfo = new HostFake("hostName", 4, 4096, 4, 1, 1024, 1);
 
         //case where the host would be full
         assertTrue(hostInfo.hasEnoughResources(3, 3072, 3));
@@ -95,7 +95,7 @@ public class HostInfoFakeTest {
 
     @Test
     public void doesNotHaveEnoughResources() {
-        HostInfoFake hostInfo = new HostInfoFake("hostName", 4, 4096, 4, 2, 2048, 2);
+        HostFake hostInfo = new HostFake("hostName", 4, 4096, 4, 2, 2048, 2);
 
         //case where the host does not have enough CPUs available
         assertFalse(hostInfo.hasEnoughResources(4, 1024, 1));
@@ -112,7 +112,7 @@ public class HostInfoFakeTest {
 
     @Test
     public void hasEnoughResourcesUsingReservations() {
-        HostInfoFake hostInfo = new HostInfoFake("hostName", 4, 4096, 4, 1, 1024, 1);
+        HostFake hostInfo = new HostFake("hostName", 4, 4096, 4, 1, 1024, 1);
 
         //reserve some resources
         hostInfo.setReservedCpus(1);
@@ -128,7 +128,7 @@ public class HostInfoFakeTest {
 
     @Test
     public void doesNotHaveEnoughResourcesUsingReservations() {
-        HostInfoFake hostInfo = new HostInfoFake("hostName", 4, 4096, 4, 1, 1024, 1);
+        HostFake hostInfo = new HostFake("hostName", 4, 4096, 4, 1, 1024, 1);
 
         //reserve some resources
         hostInfo.setReservedCpus(1);
@@ -150,7 +150,7 @@ public class HostInfoFakeTest {
 
     @Test
     public void hasEnoughResourcesForVms() {
-        HostInfoFake hostInfo = new HostInfoFake("hostName", 4, 4096, 4, 1, 1024, 1);
+        HostFake hostInfo = new HostFake("hostName", 4, 4096, 4, 1, 1024, 1);
 
         // Create list of VMs
         List<Vm> vms = new ArrayList<>();
@@ -163,7 +163,7 @@ public class HostInfoFakeTest {
 
     @Test
     public void doesNotHaveEnoughResourcesForVms() {
-        HostInfoFake hostInfo = new HostInfoFake("hostName", 4, 4096, 4, 1, 1024, 1);
+        HostFake hostInfo = new HostFake("hostName", 4, 4096, 4, 1, 1024, 1);
 
         // Create list of VMs
         List<Vm> vms = new ArrayList<>();
@@ -176,50 +176,50 @@ public class HostInfoFakeTest {
 
     @Test
     public void setGetHostName() {
-        HostInfoFake hostInfo = new HostInfoFake("hostName", 4, 4096, 4, 2, 2048, 2);
+        HostFake hostInfo = new HostFake("hostName", 4, 4096, 4, 2, 2048, 2);
         hostInfo.setHostname("newHostName");
         assertEquals("newHostName", hostInfo.getHostname());
     }
 
     @Test
     public void getTotalCpus() {
-        HostInfoFake hostInfo = new HostInfoFake("hostName", 4, 4096, 4, 2, 2048, 2);
+        HostFake hostInfo = new HostFake("hostName", 4, 4096, 4, 2, 2048, 2);
         assertTrue(hostInfo.getTotalCpus() == 4);
     }
 
     @Test
     public void getTotalMemoryMb() {
-        HostInfoFake hostInfo = new HostInfoFake("hostName", 4, 4096, 4, 2, 2048, 2);
+        HostFake hostInfo = new HostFake("hostName", 4, 4096, 4, 2, 2048, 2);
         assertTrue(hostInfo.getTotalMemoryMb() == 4096);
     }
 
     @Test
     public void getTotalDiskGb() {
-        HostInfoFake hostInfo = new HostInfoFake("hostName", 4, 4096, 4, 2, 2048, 2);
+        HostFake hostInfo = new HostFake("hostName", 4, 4096, 4, 2, 2048, 2);
         assertTrue(hostInfo.getTotalDiskGb() == 4);
     }
 
     @Test
     public void getAssignedCpus() {
-        HostInfoFake hostInfo = new HostInfoFake("hostName", 4, 4096, 4, 2, 2048, 2);
+        HostFake hostInfo = new HostFake("hostName", 4, 4096, 4, 2, 2048, 2);
         assertTrue(hostInfo.getAssignedCpus() == 2);
     }
 
     @Test
     public void getAssignedMemoryMb() {
-        HostInfoFake hostInfo = new HostInfoFake("hostName", 4, 4096, 4, 2, 2048, 2);
+        HostFake hostInfo = new HostFake("hostName", 4, 4096, 4, 2, 2048, 2);
         assertTrue(hostInfo.getAssignedMemoryMb() == 2048);
     }
 
     @Test
     public void getAssignedDiskGb() {
-        HostInfoFake hostInfo = new HostInfoFake("hostName", 4, 4096, 4, 2, 2048, 2);
+        HostFake hostInfo = new HostFake("hostName", 4, 4096, 4, 2, 2048, 2);
         assertTrue(hostInfo.getAssignedDiskGb() == 2);
     }
 
     @Test
     public void getFreeCpus() {
-        HostInfoFake hostInfo = new HostInfoFake("hostName", 4, 4096, 4, 2, 2048, 2);
+        HostFake hostInfo = new HostFake("hostName", 4, 4096, 4, 2, 2048, 2);
 
         //before a reservation
         assertTrue(hostInfo.getFreeCpus() == 2);
@@ -231,7 +231,7 @@ public class HostInfoFakeTest {
 
     @Test
     public void getFreeMemoryMb() {
-        HostInfoFake hostInfo = new HostInfoFake("hostName", 4, 4096, 4, 2, 2048, 2);
+        HostFake hostInfo = new HostFake("hostName", 4, 4096, 4, 2, 2048, 2);
 
         //before a reservation
         assertTrue(hostInfo.getFreeMemoryMb() == 2048);
@@ -243,7 +243,7 @@ public class HostInfoFakeTest {
 
     @Test
     public void getFreeDiskGb() {
-        HostInfoFake hostInfo = new HostInfoFake("hostName", 4, 4096, 4, 2, 2048, 2);
+        HostFake hostInfo = new HostFake("hostName", 4, 4096, 4, 2, 2048, 2);
 
         //before a reservation
         assertTrue(hostInfo.getFreeDiskGb() == 2);
@@ -255,7 +255,7 @@ public class HostInfoFakeTest {
 
     @Test
     public void resetReserved() {
-        HostInfoFake hostInfo = new HostInfoFake("hostName", 4, 4096, 4, 2, 2048, 2);
+        HostFake hostInfo = new HostFake("hostName", 4, 4096, 4, 2, 2048, 2);
 
         //reserve some resources
         hostInfo.setReservedCpus(1);
@@ -273,56 +273,56 @@ public class HostInfoFakeTest {
 
     @Test
     public void setGetReservedCpus() {
-        HostInfoFake hostInfo = new HostInfoFake("hostName", 4, 4096, 4, 2, 2048, 2);
+        HostFake hostInfo = new HostFake("hostName", 4, 4096, 4, 2, 2048, 2);
         hostInfo.setReservedCpus(1);
         assertTrue(hostInfo.getReservedCpus() == 1);
     }
 
     @Test
     public void paramSetReservedCpusCannotBeNegative() {
-        HostInfoFake hostInfo = new HostInfoFake("hostName", 4, 4096, 4, 2, 2048, 2);
+        HostFake hostInfo = new HostFake("hostName", 4, 4096, 4, 2, 2048, 2);
         exception.expect(IllegalArgumentException.class);
         hostInfo.setReservedCpus(-1);
     }
 
     @Test
     public void setGetReservedMemoryMb() {
-        HostInfoFake hostInfo = new HostInfoFake("hostName", 4, 4096, 4, 2, 2048, 2);
+        HostFake hostInfo = new HostFake("hostName", 4, 4096, 4, 2, 2048, 2);
         hostInfo.setReservedMemoryMb(1024);
         assertTrue(hostInfo.getReservedMemoryMb() == 1024);
     }
 
     @Test
     public void paramSetReservedMemoryCannotBeNegative() {
-        HostInfoFake hostInfo = new HostInfoFake("hostName", 4, 4096, 4, 2, 2048, 2);
+        HostFake hostInfo = new HostFake("hostName", 4, 4096, 4, 2, 2048, 2);
         exception.expect(IllegalArgumentException.class);
         hostInfo.setReservedMemoryMb(-1024);
     }
 
     @Test
     public void setGetReservedDiskGb() {
-        HostInfoFake hostInfo = new HostInfoFake("hostName", 4, 4096, 4, 2, 2048, 2);
+        HostFake hostInfo = new HostFake("hostName", 4, 4096, 4, 2, 2048, 2);
         hostInfo.setReservedDiskGb(1);
         assertTrue(hostInfo.getReservedDiskGb() == 1);
     }
 
     @Test
     public void paramSetReservedDiskCannotBeNegative() {
-        HostInfoFake hostInfo = new HostInfoFake("hostName", 4, 4096, 4, 2, 2048, 2);
+        HostFake hostInfo = new HostFake("hostName", 4, 4096, 4, 2, 2048, 2);
         exception.expect(IllegalArgumentException.class);
         hostInfo.setReservedDiskGb(-1);
     }
 
     @Test
     public void getFutureLoadIfVMDeployedInHost() {
-        HostInfoFake hostInfo = new HostInfoFake("hostName", 4, 4096, 4, 2, 2048, 2);
+        HostFake hostInfo = new HostFake("hostName", 4, 4096, 4, 2, 2048, 2);
         ServerLoad futureLoad = hostInfo.getFutureLoadIfVMDeployed(new Vm("vm1", "image", 1, 1024, 1, null, ""));
         assert(futureLoad.getCpuLoad() == 0.75 && futureLoad.getRamLoad() == 0.75 && futureLoad.getDiskLoad() == 0.75);
     }
 
     @Test
     public void getServerLoad() {
-        ServerLoad serverLoad = new HostInfoFake("hostName", 4, 4096, 4, 1, 2048, 3).getServerLoad();
+        ServerLoad serverLoad = new HostFake("hostName", 4, 4096, 4, 1, 2048, 3).getServerLoad();
         assertEquals(0.25, serverLoad.getCpuLoad(), 0);
         assertEquals(0.5, serverLoad.getRamLoad(), 0);
         assertEquals(0.75, serverLoad.getDiskLoad(), 0);

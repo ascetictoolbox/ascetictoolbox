@@ -2,8 +2,8 @@ package es.bsc.vmmanagercore.scheduler;
 
 import es.bsc.vmmanagercore.model.Vm;
 import es.bsc.vmmanagercore.model.VmDeployed;
-import es.bsc.vmmanagercore.monitoring.HostInfo;
-import es.bsc.vmmanagercore.monitoring.HostInfoFake;
+import es.bsc.vmmanagercore.monitoring.HostFake;
+import es.bsc.vmmanagercore.monitoring.Host;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -23,11 +23,11 @@ public class SchedAlgGroupByAppTest {
 
     private static SchedAlgGroupByApp scheduler;
     private static List<VmDeployed> vmsDeployed = new ArrayList<>();
-    private static List<HostInfo> hostsInfo = new ArrayList<>();
+    private static List<Host> hostsInfo = new ArrayList<>();
 
     private static void setUpHosts() {
-        hostsInfo.add(new HostInfoFake("host1", 4, 4096, 8, 1, 2048, 4));
-        hostsInfo.add(new HostInfoFake("host2", 2, 4096, 8, 1, 2048, 4));
+        hostsInfo.add(new HostFake("host1", 4, 4096, 8, 1, 2048, 4));
+        hostsInfo.add(new HostFake("host2", 2, 4096, 8, 1, 2048, 4));
     }
 
     // Set up 2 VMs of app1 in host1 and 1 VM of app2 in host2. Also, 1 VM of app2 in host2
