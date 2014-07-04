@@ -7,7 +7,6 @@ import es.bsc.vmmanagercore.monitoring.HostInfo;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -62,7 +61,15 @@ public class SchedAlgDistribution implements SchedAlgorithm {
         return selectedHost;
     }
 
-    private boolean serversLoadAreMoreDistributed(Collection<ServerLoad> serversLoad1,
+    /**
+     * Compares two sets of server loads.
+     *
+     * @param serversLoad1 first set of server loads
+     * @param serversLoad2 second set of server loads
+     * @return True if serversLoad1 is more distributed than serversLoad2, false otherwise.
+     *
+     */
+    private boolean serverLoadsAreMoreDistributed(Collection<ServerLoad> serversLoad1,
             Collection<ServerLoad> serversLoad2) {
         boolean lessStDevCpu =
                 Scheduler.calculateStDevCpuLoad(serversLoad1) < Scheduler.calculateStDevCpuLoad(serversLoad2);
@@ -76,18 +83,12 @@ public class SchedAlgDistribution implements SchedAlgorithm {
         return lessStDevCpu || sameStDevCpuAndLessStDevMem || sameStDevCpuAndSameStDevMemAndLessStDevDisk;
     }
 
-    public DeploymentPlan chooseBestDeploymentPlan(List<DeploymentPlan> deploymentPlans, List<HostInfo> hosts) {
-        DeploymentPlan bestDeploymentPlan = null;
-        Collection<ServerLoad> serversLoadBestPlan = null;
-        for (DeploymentPlan deploymentPlan: deploymentPlans) {
-            Collection<ServerLoad> serversLoad = new ArrayList<>
-                    (Scheduler.getServersLoadsAfterDeploymentPlanExecuted(deploymentPlan, hosts).values());
-            if (bestDeploymentPlan == null || serversLoadAreMoreDistributed(serversLoad, serversLoadBestPlan)) {
-                bestDeploymentPlan = deploymentPlan;
-                serversLoadBestPlan = new ArrayList<>(serversLoad);
-            }
-        }
-        return bestDeploymentPlan;
+    @Override
+    public boolean isBetterDeploymentPlan(DeploymentPlan deploymentPlan1, DeploymentPlan deploymentPlan2,
+            List<HostInfo> hosts) {
+        return serverLoadsAreMoreDistributed(
+                Scheduler.getServersLoadsAfterDeploymentPlanExecuted(deploymentPlan1, hosts).values(),
+                Scheduler.getServersLoadsAfterDeploymentPlanExecuted(deploymentPlan2, hosts).values());
     }
 
 }

@@ -1,5 +1,6 @@
 package es.bsc.vmmanagercore.scheduler;
 
+import es.bsc.vmmanagercore.model.DeploymentPlan;
 import es.bsc.vmmanagercore.model.ServerLoad;
 import es.bsc.vmmanagercore.model.Vm;
 import es.bsc.vmmanagercore.monitoring.HostInfo;
@@ -58,6 +59,12 @@ public class SchedAlgConsolidation implements SchedAlgorithm {
                 "\n [VMM] ---CONSOLIDATION ALG. END---");
 
         return selectedHost;
+    }
+
+    @Override
+    public boolean isBetterDeploymentPlan(DeploymentPlan deploymentPlan1, DeploymentPlan deploymentPlan2,
+            List<HostInfo> hosts) {
+        return false;
     }
 
 }

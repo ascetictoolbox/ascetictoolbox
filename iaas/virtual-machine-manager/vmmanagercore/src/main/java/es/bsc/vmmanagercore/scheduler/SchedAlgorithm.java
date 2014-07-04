@@ -1,5 +1,6 @@
 package es.bsc.vmmanagercore.scheduler;
 
+import es.bsc.vmmanagercore.model.DeploymentPlan;
 import es.bsc.vmmanagercore.model.Vm;
 import es.bsc.vmmanagercore.monitoring.HostInfo;
 
@@ -21,4 +22,14 @@ public interface SchedAlgorithm {
      */
     public String chooseHost(List<HostInfo> hostsInfo, Vm vm);
 
+    /**
+     * Checks whether a deployment plan is considered better than other deployment plan
+     *
+     * @param deploymentPlan1 first deployment plan
+     * @param deploymentPlan2 second deployment plan
+     * @param hosts the hosts in the infrastructure
+     * @return true if deploymentPlan1 is better than deploymentPlan2, false otherwise
+     */
+    public boolean isBetterDeploymentPlan(DeploymentPlan deploymentPlan1, DeploymentPlan deploymentPlan2,
+                                          List<HostInfo> hosts);
 }

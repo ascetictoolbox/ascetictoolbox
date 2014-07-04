@@ -1,5 +1,6 @@
 package es.bsc.vmmanagercore.scheduler;
 
+import es.bsc.vmmanagercore.model.DeploymentPlan;
 import es.bsc.vmmanagercore.model.Vm;
 import es.bsc.vmmanagercore.model.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.HostInfo;
@@ -71,5 +72,11 @@ public class SchedAlgGroupByApp implements SchedAlgorithm {
         this.hostsInfo = hostsInfo;
         Map<String, Integer> vmsOfAppPerHost = getNumberOfVmsThatBelongToTheAppForEachHost(vm.getApplicationId());
         return getHostWithMoreVmsOfTheApp(vmsOfAppPerHost);
+    }
+
+    @Override
+    public boolean isBetterDeploymentPlan(DeploymentPlan deploymentPlan1, DeploymentPlan deploymentPlan2,
+            List<HostInfo> hosts) {
+        return false;
     }
 }

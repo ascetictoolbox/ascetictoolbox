@@ -228,4 +228,26 @@ public class Scheduler {
         return scheduling;
     }
 
+    /**
+     * Returns the best deployment plan from a list of deployment plans. The deployment plan chosen depends
+     * on the algorithm used (distribution, consolidation, energy-aware, etc.).
+     *
+     * @param deploymentPlans the deployment plans
+     * @param hosts the hosts of the infrastructure
+     * @return the best deployment plan according to the algorithm applied
+     */
+    public DeploymentPlan chooseBestDeploymentPlan(List<DeploymentPlan> deploymentPlans, List<HostInfo> hosts) {
+        DeploymentPlan bestDeploymentPlan = null;
+        for (DeploymentPlan deploymentPlan: deploymentPlans) {
+            if (bestDeploymentPlan == null ||
+                    schedAlgorithm.isBetterDeploymentPlan(deploymentPlan, bestDeploymentPlan, hosts)) {
+                bestDeploymentPlan = deploymentPlan;
+            }
+        }
+        return bestDeploymentPlan;
+    }
+
+
+
+
 }

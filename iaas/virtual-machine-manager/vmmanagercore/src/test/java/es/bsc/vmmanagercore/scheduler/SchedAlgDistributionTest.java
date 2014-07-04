@@ -127,7 +127,7 @@ public class SchedAlgDistributionTest {
     }
 
     @Test
-    public void chooseBestDeploymentPlan() {
+    public void returnTrueWhenLessStdDevCpuLoad() {
         // Create VMs and hosts
         List<Vm> vms = new ArrayList<>();
         vms.add(new Vm("vm1", "image", 2, 2048, 2, null, ""));
@@ -136,21 +136,36 @@ public class SchedAlgDistributionTest {
         hosts.add(new HostInfoFake("host1", 8, 8192, 8, 1, 1024, 1));
         hosts.add(new HostInfoFake("host2", 4, 4096, 4, 1, 1024, 1));
 
-        /* Create the deployment plans (4 combinations) and make sure that the chosen is the most distributed one
-        vm1-host1, vm2-host1 : loadCpuHost1 = 0.5, loadCpuHost2 = 0.25
-        vm1-host1, vm2-host2 : loadCpuHost1 = 0.375, loadCpuHost2 = 0.5 (best plan)
-        vm1-host2, vm2-host1 : loadCpuHost1 = 0.25, loadCpuHost2 = 0.75
-        vm1-host2, vm2-host2 : loadCpuHost1 = 0.125, loadCpuHost2 = 1 */
-        DeploymentPlan bestDeploymentPlan = scheduler.chooseBestDeploymentPlan(
-                new HostFilter().getAllPossibleDeploymentPlans(vms, hosts), hosts);
-        for (VmAssignmentToHost vmAssignmentToHost: bestDeploymentPlan.getVmsAssignationsToHosts()) {
-            if (vmAssignmentToHost.getVm().getName().equals("vm1")) {
-                assertTrue(vmAssignmentToHost.getHost().getHostname().equals("host1"));
-            }
-            else if (vmAssignmentToHost.getVm().getName().equals("vm2")) {
-                assertTrue(vmAssignmentToHost.getHost().getHostname().equals("host2"));
-            }
-        }
+        // Create deployment plans
+        List<VmAssignmentToHost> assignmentsPlan1 = new ArrayList<>();
+        assignmentsPlan1.add(new VmAssignmentToHost(vms.get(0), hosts.get(0))); // vm1 -> host1
+        assignmentsPlan1.add(new VmAssignmentToHost(vms.get(1), hosts.get(1))); // vm2 -> host2
+        DeploymentPlan deploymentPlan1 = new DeploymentPlan(assignmentsPlan1);
+        List<VmAssignmentToHost> assignmentsPlan2 = new ArrayList<>();
+        assignmentsPlan2.add(new VmAssignmentToHost(vms.get(0), hosts.get(1))); // vm1 -> host2
+        assignmentsPlan2.add(new VmAssignmentToHost(vms.get(1), hosts.get(0))); // vm2 -> host1
+        DeploymentPlan deploymentPlan2 = new DeploymentPlan(assignmentsPlan2);
+
+        // deploymentPlan1: cpu loads = 0.375 and 0.5
+        // deploymentPlan2: cpu loads = 0.75 and 0.25
+        // deploymentPlan1 is better (more distributed)
+        assertTrue(scheduler.isBetterDeploymentPlan(deploymentPlan1, deploymentPlan2, hosts));
     }
 
+    /*
+    @Test
+    public void returnTrueWhenSameStDevCpuLoadAndLessStdDevRamLoad() {
+        // TODO: implement me!
+    }
+
+    @Test
+    public void returnTrueWhenSameStdDevCpuLoadSameStdDevRamLoadAndLessStdDevDiskLoad() {
+        // TODO: implement me!
+    }
+
+    @Test
+    public void returnFalseWhenIsWorseOption() {
+        // TODO: implement me!
+    }
+    */
 }
