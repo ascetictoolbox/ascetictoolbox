@@ -2,9 +2,11 @@ package es.bsc.vmmanagercore.scheduler;
 
 import es.bsc.vmmanagercore.model.DeploymentPlan;
 import es.bsc.vmmanagercore.model.Vm;
+import es.bsc.vmmanagercore.model.VmAssignmentToHost;
 import es.bsc.vmmanagercore.model.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.Host;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,10 +76,38 @@ public class SchedAlgGroupByApp implements SchedAlgorithm {
         return getHostWithMoreVmsOfTheApp(vmsOfAppPerHost);
     }
 
+    private List<VmDeployed> getVmsDeployedInHost(String hostName) {
+        List<VmDeployed> result = new ArrayList<>();
+        for (VmDeployed vm: vmsDeployed) {
+            if (vm.getHostName().equals(hostName)) {
+                result.add(vm);
+            }
+        }
+        return result;
+    }
+
+    private int getNumberOfVmsThatBelongToAppInHost(String appId, String hostName) {
+        int result = 0;
+        for (VmDeployed vm: getVmsDeployedInHost(hostName)) {
+            if (vm.getApplicationId().equals(appId)) {
+                ++result;
+            }
+        }
+        return result;
+    }
+
+    private int getVmsInSameHostForDeploymentPlan(DeploymentPlan deploymentPlan) {
+        int result = 0;
+        for (VmAssignmentToHost vmAssignmentToHost: deploymentPlan.getVmsAssignationsToHosts()) {
+            result += getNumberOfVmsThatBelongToAppInHost(vmAssignmentToHost.getVm().getApplicationId(),
+                    vmAssignmentToHost.getHost().getHostname());
+        }
+        return result;
+    }
+
     @Override
     public boolean isBetterDeploymentPlan(DeploymentPlan deploymentPlan1, DeploymentPlan deploymentPlan2,
             List<Host> hosts) {
-        // TODO: implement me!
-        return false;
+        return getVmsInSameHostForDeploymentPlan(deploymentPlan1) >= getVmsInSameHostForDeploymentPlan(deploymentPlan2);
     }
 }
