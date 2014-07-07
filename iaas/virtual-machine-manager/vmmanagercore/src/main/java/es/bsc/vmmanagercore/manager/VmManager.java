@@ -115,11 +115,9 @@ public class VmManager {
         // This is used to return the IDs in the same order of the input
         Map<Vm, String> ids = new HashMap<>();
 
-        // Decide where to deploy each VM of the application
-        // Map<Vm, String> vmsScheduling = scheduler.schedule(vms, hostsInfo);
-
         // Choose the best deployment plan
-        List<DeploymentPlan> possibleDeploymentPlans = new DeploymentPlanGenerator().getAllPossibleDeploymentPlans(vms, hostsInfo);
+        List<DeploymentPlan> possibleDeploymentPlans =
+                new DeploymentPlanGenerator().getAllPossibleDeploymentPlans(vms, hostsInfo);
         DeploymentPlan deploymentPlan = scheduler.chooseBestDeploymentPlan(possibleDeploymentPlans, hostsInfo);
 
         // If there are no possible deployment plans, get a best effort with overbooking
@@ -180,8 +178,7 @@ public class VmManager {
                 cloudMiddleware.resumeVm(vmId);
                 break;
             default:
-                // TODO: error case
-                break;
+                throw new IllegalArgumentException("The action selected is not supported.");
         }
     }
 
@@ -285,6 +282,21 @@ public class VmManager {
 
 
     //================================================================================
+    // VM price and energy estimates
+    //================================================================================
+
+    /**
+     * Returns price and energy estimates for a list of VMs.
+     *
+     * @return a list with price and energy estimates for each VM
+     */
+    public List<VmEstimate> getVmEstimates(List<VmToBeEstimated> vmsToBeEstimated) {
+        //TODO implement me!
+        return null;
+    }
+
+
+    //================================================================================
     // Auxiliary Methods
     //================================================================================
 
@@ -313,8 +325,7 @@ public class VmManager {
                 }
                 break;
             default:
-                //TODO - invalid
-                break;
+                throw new IllegalArgumentException("The monitoring software selected is not supported.");
         }
     }
 
@@ -329,8 +340,7 @@ public class VmManager {
                 cloudMiddleware = new JCloudsMiddleware(db);
                 break;
             default:
-                //TODO - invalid
-                break;
+                throw new IllegalArgumentException("The cloud middleware selected is not supported");
         }
     }
 

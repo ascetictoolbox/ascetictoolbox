@@ -37,8 +37,7 @@ public class VmManagerRest {
     public String getAllVms() {
         JsonArray jsonVmsArray = new JsonArray();
         for (VmDeployed vmDeployed: vmManager.getAllVms()) {
-            JsonObject vmJson =
-                    (JsonObject) parser.parse(gson.toJson(vmDeployed, VmDeployed.class));
+            JsonObject vmJson = (JsonObject) parser.parse(gson.toJson(vmDeployed, VmDeployed.class));
             jsonVmsArray.add(vmJson);
         }
         JsonObject result = new JsonObject();
@@ -311,6 +310,37 @@ public class VmManagerRest {
             return "";
         }
         return logs;
+    }
+
+
+    //================================================================================
+    // VM pricing and energy estimates
+    //================================================================================
+
+    @GET
+    @Path("/estimates")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getEstimates(String vms) {
+        // Get the JSON object that contains the VMs that need to be deployed
+        JsonObject vmsToBeEstimatedJson = gson.fromJson(vms, JsonObject.class);
+
+        // Get the information of the VMs to estimate
+        List<VmToBeEstimated> vmsToBeEstimated = new ArrayList<>();
+        JsonArray vmsToBeEstimatedArrayJson = vmsToBeEstimatedJson.getAsJsonArray("vms");
+        for (JsonElement vmToBeEstimatedJson: vmsToBeEstimatedArrayJson) {
+            VmToBeEstimated vmToBeEstimated = gson.fromJson(vmToBeEstimatedJson, VmToBeEstimated.class);
+            vmsToBeEstimated.add(vmToBeEstimated);
+        }
+
+        // Return the JSON with the estimates
+        JsonArray vmEstimatesJsonArray = new JsonArray();
+        for (VmEstimate vmEstimate: vmManager.getVmEstimates(vmsToBeEstimated)) {
+            JsonElement vmJsonElement = gson.toJsonTree(vmEstimate, VmEstimate.class);
+            vmEstimatesJsonArray.add(vmJsonElement);
+        }
+        JsonObject result = new JsonObject();
+        result.add("estimates", vmEstimatesJsonArray);
+        return result.toString();
     }
 
 }
