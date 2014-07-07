@@ -14,11 +14,11 @@ public class EnergyModellerHandlerTest {
 	
 	@BeforeClass
 	public static void setup() {
-		// TODO in future mock the sub component of EM PaaS
 		testsettings = new EMSettings();
 		serviceEM = new EnergyModellerHandler();
 		serviceEM.setEmsettings(testsettings);
 	}
+	
 	
 	@Test
 	public void testEnergyModellerApplicationConsumption() {
@@ -54,5 +54,11 @@ public class EnergyModellerHandlerTest {
 	public void trainApplication() {
 		boolean training = serviceEM.trainApplication("providerid", "applicationid", "deploymentid","event");
 		Assert.assertTrue(training);
+	}
+	
+	@Test
+	public void testTasks() {
+		serviceEM.startTasks();
+		serviceEM.stopTasks();
 	}
 }

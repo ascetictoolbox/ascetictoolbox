@@ -1,0 +1,2 @@
+DROP DATABASE IF EXISTS testpaasemdb;
+CREATE DATABASE IF NOT EXISTS testpaasemdb;

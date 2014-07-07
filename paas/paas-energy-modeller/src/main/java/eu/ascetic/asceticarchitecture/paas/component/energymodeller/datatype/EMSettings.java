@@ -15,7 +15,10 @@ public class EMSettings {
 	private String paasdbuser="user";
 	private String paasdbpassword="user";
 	private String paasdatabase="paasdb";
+	private String dataloadinterval="10000";
+	private String eventsloadinterval="10000";
 	
+
 	public EMSettings() {
 		
 	}
@@ -28,13 +31,27 @@ public class EMSettings {
 		this.setPaasdbpassword(props.getProperty("paasdbuser"));
 		this.setPaasdbuser(props.getProperty("paasdbpassword"));
 		this.setPaasportport(props.getProperty("paasdatabase"));
-		
-		props.getProperty("iaasdb");
-		props.getProperty("iaasportport");
-		props.getProperty("iaasdbuser");
-		props.getProperty("iaasdbpassword");
-		props.getProperty("iaasdatabase");
-		
+		this.setDataloadinterval((props.getProperty("dataloadinterval")));
+		this.setEventsloadinterval((props.getProperty("eventloadinterval")));
+				
+	}
+	public String getDataloadinterval() {
+		return dataloadinterval;
+	}
+
+
+	public void setDataloadinterval(String dataloadinterval) {
+		this.dataloadinterval = dataloadinterval;
+	}
+
+
+	public String getEventsloadinterval() {
+		return eventsloadinterval;
+	}
+
+
+	public void setEventsloadinterval(String eventsloadinterval) {
+		this.eventsloadinterval = eventsloadinterval;
 	}
 
 	public String getIaasdb() {

@@ -3,11 +3,15 @@ package eu.ascetic.asceticarchitecture.paas.component.energymodeller.service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.Timer;
 
 import org.apache.log4j.Logger;
 
+import eu.ascetic.asceticarchitecture.paas.component.common.database.PaaSEMDatabaseManager;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EMSettings;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.PaaSEnergyModellerExternal;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.task.EnergyDataCollector;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.task.EventsDataCollector;
 
 /**
  * @author davide sommacampagna
@@ -16,19 +20,21 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.P
 
 public class EnergyModellerHandler implements PaaSEnergyModellerExternal {
 
-	/**
-	 * property file from which EM will load the settings
-	 */
 	private final static String propertyFile = "config.properties";
-	/**
-	 * the class representing the settings
-	 */
-	private EMSettings emsettings;
-
+	
 	private final static Logger LOGGER = Logger.getLogger(EnergyModellerHandler.class.getName());
 
+	private EMSettings emsettings;
+	
+	private PaaSEMDatabaseManager dbmanager;
+	
+	private EnergyDataCollector taskenergy;
+	private Timer datatimer;
+	private EventsDataCollector taskevents;
+	private Timer eventimer;
+	
 	/**
-	 * constructor, load from the configuration file the settings
+	 * Constructor, load from the configuration file the settings
 	 */
 	public EnergyModellerHandler() {
 		
@@ -38,6 +44,7 @@ public class EnergyModellerHandler implements PaaSEnergyModellerExternal {
 	@Override
 	public boolean initialize(){
 		LOGGER.info("Initializing component");
+		
 		InputStream inputStream = getClass().getClassLoader()
 				.getResourceAsStream(propertyFile);
 		if (inputStream == null) {
@@ -46,10 +53,16 @@ public class EnergyModellerHandler implements PaaSEnergyModellerExternal {
 		}
 		Properties props = new Properties();
 		try {
+			
 			props.load(inputStream);
 			emsettings = new EMSettings(props);
 			LOGGER.info("Properties loaded");
-			
+			dbmanager = new PaaSEMDatabaseManager();
+			dbmanager.setup("spring.xml");;
+			LOGGER.info("Database Configured");
+			startTasks();
+			LOGGER.info("Data collection tasks started");
+			LOGGER.info("EM Initialization complete");
 			return true;
 		} catch (IOException e) {
 			LOGGER.error("Properties not loaded due to a failure");
@@ -103,5 +116,26 @@ public class EnergyModellerHandler implements PaaSEnergyModellerExternal {
 	public void setEmsettings(EMSettings emsettings) {
 		this.emsettings = emsettings;
 	}
-
+	
+	public void startTasks(){
+		LOGGER.info("Creating the tasks that collect data ");
+		taskenergy = new EnergyDataCollector();
+		taskevents = new EventsDataCollector();
+		LOGGER.info("Starting the tasks that collect data ");
+		datatimer = new Timer();
+		datatimer.scheduleAtFixedRate(taskenergy, 1000, Long.parseLong(emsettings.getDataloadinterval()));
+		eventimer = new Timer();
+		eventimer.scheduleAtFixedRate(taskevents, 1000, Long.parseLong(emsettings.getEventsloadinterval()));
+		LOGGER.info("Task started ");
+	}
+	
+	public void stopTasks(){
+		LOGGER.info("Closing the tasks that collect data ");
+		datatimer.cancel();
+		eventimer.cancel();
+		LOGGER.info("Closed the tasks that collect data ");
+		
+		
+	}
+	
 }
