@@ -1251,5 +1251,11 @@ utils/wattsup-java-sdk/wattsup-jsdk-console/src/main/resources/META-INF/services
 utils/wattsup-java-sdk/wattsup-jsdk-console/src/main/resources/console.msg -text
 utils/wattsup-java-sdk/wattsup-jsdk-core/src/main/resources/db.sql -text
 utils/wattsup-java-sdk/wattsup-jsdk-core/src/test/resources/database.yml -text
+utils/wattsup/Dataset.csv -text
+utils/wattsup/src/main/java/eu/ascetic/utils/GenericLogger.java -text
+utils/wattsup/src/main/java/eu/ascetic/utils/Logger.java -text
+utils/wattsup/src/main/java/eu/ascetic/utils/ResultsIO.java -text
+utils/wattsup/src/main/java/eu/ascetic/utils/ResultsStore.java -text
 utils/wattsup/src/main/java/eu/ascetic/utils/Settings.java -text
 utils/wattsup/src/main/java/eu/ascetic/utils/WattsUpLanConfigurationTool.java -text
+utils/wattsup/src/main/java/eu/ascetic/utils/WattsUpLogger.java -text
