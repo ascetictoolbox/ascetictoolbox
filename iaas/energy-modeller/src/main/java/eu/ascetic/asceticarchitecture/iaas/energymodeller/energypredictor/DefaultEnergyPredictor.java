@@ -21,6 +21,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
 import java.util.Collection;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -31,14 +32,27 @@ import java.util.concurrent.TimeUnit;
  */
 public class DefaultEnergyPredictor implements EnergyPredictorInterface {
 
+    
+    HashMap<Host, Double> tempAvgPowerUsed = new HashMap<>();
+    HashMap<Host, Double> tempTotalEnergyUsed = new HashMap<>();
+     
     @Override
     public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines) {
         EnergyUsagePrediction answer = new EnergyUsagePrediction(host);
         //TODO add model code here
         TimePeriod duration = new TimePeriod(new GregorianCalendar(), 1, TimeUnit.HOURS);
         answer.setDuration(duration);
-        answer.setAvgPowerUsed(Math.random() * 20);
-        answer.setTotalEnergyUsed(Math.random() * 20);
+        if (tempAvgPowerUsed.containsKey(host)) {
+            answer.setAvgPowerUsed(tempAvgPowerUsed.get(host));
+            answer.setTotalEnergyUsed(tempTotalEnergyUsed.get(host));             
+        } else {
+            double tempPower = Math.random() * 20;
+            double tempEnergy = Math.random() * 20;
+            tempAvgPowerUsed.put(host, tempPower);
+            tempTotalEnergyUsed.put(host, tempEnergy);
+            answer.setAvgPowerUsed(tempPower);
+            answer.setTotalEnergyUsed(tempEnergy); 
+        }
         return answer;
     }
 

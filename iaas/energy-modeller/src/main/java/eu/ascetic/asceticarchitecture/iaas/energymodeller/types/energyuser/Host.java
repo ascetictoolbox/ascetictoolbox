@@ -15,19 +15,21 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser;
 
+import java.util.Objects;
 import java.util.Set;
 
 /**
- * This class stores the basic data for physical machine.
- * This represents a host in the energy modeller.
- * 
+ * This class stores the basic data for physical machine. This represents a host
+ * in the energy modeller.
+ *
  * An important similar class is!
+ *
  * @see eu.ascetic.monitoring.api.datamodel.host
  *
  * @author Richard
  */
-public class Host extends EnergyUsageSource {  
-    
+public class Host extends EnergyUsageSource implements Comparable<Host> {
+
     private int id = -1;
     private String hostName = "";
     private boolean available = true;
@@ -57,16 +59,18 @@ public class Host extends EnergyUsageSource {
 
     /**
      * This creates a new instance of a host
+     *
      * @param id The host id
      * @param hostName The host name
      */
     public Host(int id, String hostName) {
         this.id = id;
         this.hostName = hostName;
-    }    
-    
+    }
+
     /**
      * This returns the host's id.
+     *
      * @return the id
      */
     public int getId() {
@@ -75,6 +79,7 @@ public class Host extends EnergyUsageSource {
 
     /**
      * This sets the host's id.
+     *
      * @param id the id to set
      */
     public void setId(int id) {
@@ -83,6 +88,7 @@ public class Host extends EnergyUsageSource {
 
     /**
      * This returns the host's name.
+     *
      * @return the hostName
      */
     public String getHostName() {
@@ -91,6 +97,7 @@ public class Host extends EnergyUsageSource {
 
     /**
      * This sets the hosts name.
+     *
      * @param hostName the hostName to set
      */
     public void setHostName(String hostName) {
@@ -99,6 +106,7 @@ public class Host extends EnergyUsageSource {
 
     /**
      * This indicates if the host is currently available.
+     *
      * @return the available
      */
     public boolean isAvailable() {
@@ -107,35 +115,57 @@ public class Host extends EnergyUsageSource {
 
     /**
      * This sets the flag to state the host is available.
+     *
      * @param available the available to set
      */
     public void setAvailable(boolean available) {
         this.available = available;
     }
-     
+
     /**
      * This returns the list of vms on this machine.
+     *
      * @return The set of VMs that are currently on this machine.
      */
     public Set<VM> getVMsOnHost() {
         //TODO: implement the get VMs on host mechanism.
         throw new UnsupportedOperationException("I've not implemented this yet");
-    }    
-    
+    }
+
     /**
      * TODO: look at the implementation of this class further.
-     * 
+     *
      * Should this look more like??:
      *
-     * <Host, Resting_energy_usage,
-     * max_energy_usage_cpu_intensive_app,
-     * max_energy_usage_io_intensive_app, 
+     * <Host, Resting_energy_usage, max_energy_usage_cpu_intensive_app,
+     * max_energy_usage_io_intensive_app,
      * max_energy_usage_network_intensive_app>
      */
-    
     @Override
     public String toString() {
         return "HostID: " + id + " Host Name: " + hostName + " Available :" + available;
-    }    
-    
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Host) {
+            Host host = (Host) obj;
+            if (hostName != null && host.getHostName() != null) {
+                return this.hostName.equals(host.getHostName());
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 67 * hash + Objects.hashCode(this.hostName);
+        return hash;
+    }
+
+    @Override
+    public int compareTo(Host o) {
+        return this.getHostName().compareTo(o.getHostName());
+    }
 }
