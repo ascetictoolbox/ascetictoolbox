@@ -12,12 +12,12 @@ public class VMMLogger {
 
     private static Logger logger = LogManager.getLogger(VMMLogger.class);
 
-    public static void logStartOfDeploymentPlansEvaluation() {
-        logger.debug("[VMM] ***EVALUATION OF DEPLOYMENT PLANS STARTS***");
+    public static void logStartOfDeploymentPlansEvaluation(String schedAlgorithmName) {
+        logger.debug("[VMM] ***EVALUATION OF DEPLOYMENT PLANS STARTS: " + schedAlgorithmName + " ***");
     }
 
-    public static void logEndOfDeploymentPlansEvaluation() {
-        logger.debug("[VMM] ***EVALUATION OF DEPLOYMENT PLANS ENDS***");
+    public static void logEndOfDeploymentPlansEvaluation(String schedAlgorithmName) {
+        logger.debug("[VMM] ***EVALUATION OF DEPLOYMENT PLANS ENDS: " + schedAlgorithmName + " ***");
     }
 
     public static void logStartOfDeploymentPlanComparison(String deploymentPlan1, String deploymentPlan2) {
@@ -35,11 +35,21 @@ public class VMMLogger {
     }
 
     public static void logPredictedAvgPowerOfVmInHost(String vmName, String hostName, double avgPower) {
-        logger.debug("[VMM] predicted avg power vm=" + vmName + ", host=" + hostName
-                + " is " + avgPower + "W");
+        logger.debug("[VMM] predicted avg power vm=" + vmName + ", host=" + hostName + " is " + avgPower + "W");
     }
 
     public static void logPredictedAvgPowerForDeploymentPlan(int deploymentPlanNumber, double avgPower) {
         logger.debug("[VMM] predicted avg power deployment plan" + deploymentPlanNumber + ": " + avgPower + "W");
+    }
+
+    public static void logVmsSameAppInSameHost(int deploymentPlanNumber, int numberOfVmsSameAppSameHost) {
+        logger.debug("[VMM] number of VMs of same application in the same host for deployment plan " +
+                deploymentPlanNumber + ": " + numberOfVmsSameAppSameHost);
+    }
+
+    public static void logServersLoadsAfterDeploymentPlan(int deploymentPlanNumber, double stdDevCpu,
+            double stdDevRam, double stdDevDisk) {
+        logger.debug("[VMM] Server loads for deployment plan" + deploymentPlanNumber + " stdDevCpu:" +
+                stdDevCpu + ", stdDevRam: " + stdDevRam + ", stdDevDisk: " + stdDevDisk);
     }
 }

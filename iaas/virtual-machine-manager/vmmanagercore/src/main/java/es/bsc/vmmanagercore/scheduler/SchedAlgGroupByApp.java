@@ -1,5 +1,6 @@
 package es.bsc.vmmanagercore.scheduler;
 
+import es.bsc.vmmanagercore.logging.VMMLogger;
 import es.bsc.vmmanagercore.model.DeploymentPlan;
 import es.bsc.vmmanagercore.model.Vm;
 import es.bsc.vmmanagercore.model.VmAssignmentToHost;
@@ -72,7 +73,10 @@ public class SchedAlgGroupByApp implements SchedAlgorithm {
     @Override
     public boolean isBetterDeploymentPlan(DeploymentPlan deploymentPlan1, DeploymentPlan deploymentPlan2,
             List<Host> hosts) {
-        return getVmsSameAppInSameHostForDeploymentPlan(deploymentPlan1) >=
-                getVmsSameAppInSameHostForDeploymentPlan(deploymentPlan2);
+        int vmsSameAppInSameHostPlan1 = getVmsSameAppInSameHostForDeploymentPlan(deploymentPlan1);
+        int vmsSameAppInSameHostPlan2 = getVmsSameAppInSameHostForDeploymentPlan(deploymentPlan2);
+        VMMLogger.logVmsSameAppInSameHost(1, vmsSameAppInSameHostPlan1);
+        VMMLogger.logVmsSameAppInSameHost(2, vmsSameAppInSameHostPlan2);
+        return vmsSameAppInSameHostPlan1 >= vmsSameAppInSameHostPlan2;
     }
 }

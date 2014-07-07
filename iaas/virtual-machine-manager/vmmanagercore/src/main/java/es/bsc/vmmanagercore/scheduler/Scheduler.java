@@ -20,10 +20,12 @@ public class Scheduler {
 
     private SchedAlgorithm schedAlgorithm;
     private List<VmDeployed> vmsDeployed;
+    private String schedAlgorithmName;
 
     public Scheduler(SchedulingAlgorithm schedAlg, List<VmDeployed> vmsDeployed) {
         this.vmsDeployed = vmsDeployed;
         setSchedAlgorithm(schedAlg);
+        schedAlgorithmName = schedAlg.getName();
     }
 
     private void setSchedAlgorithm(SchedulingAlgorithm schedAlg) {
@@ -177,7 +179,7 @@ public class Scheduler {
      * @return the best deployment plan according to the algorithm applied
      */
     public DeploymentPlan chooseBestDeploymentPlan(List<DeploymentPlan> deploymentPlans, List<Host> hosts) {
-        VMMLogger.logStartOfDeploymentPlansEvaluation();
+        VMMLogger.logStartOfDeploymentPlansEvaluation(schedAlgorithmName);
 
         DeploymentPlan bestDeploymentPlan = null;
         for (DeploymentPlan deploymentPlan: deploymentPlans) {
@@ -199,7 +201,7 @@ public class Scheduler {
         if (bestDeploymentPlan != null) {
             VMMLogger.logChosenDeploymentPlan(bestDeploymentPlan.toString());
         }
-        VMMLogger.logEndOfDeploymentPlansEvaluation();
+        VMMLogger.logEndOfDeploymentPlansEvaluation(schedAlgorithmName);
 
         return bestDeploymentPlan;
     }
