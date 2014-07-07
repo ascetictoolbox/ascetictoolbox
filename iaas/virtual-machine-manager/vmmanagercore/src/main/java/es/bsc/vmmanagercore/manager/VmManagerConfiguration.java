@@ -100,14 +100,14 @@ public class VmManagerConfiguration {
             monitoring = Monitoring.ZABBIX;
         }
         else {
-            //TODO - invalid
+            throw new IllegalArgumentException("The monitoring software selected is not supported.");
         }
 
         if(prop.getProperty("middleware").equals("openstack")) {
             middleware = Middleware.OPENSTACK;
         }
         else {
-            //TODO - invalid
+            throw new IllegalArgumentException("The cloud middleware selected is not supported");
         }
     }
 

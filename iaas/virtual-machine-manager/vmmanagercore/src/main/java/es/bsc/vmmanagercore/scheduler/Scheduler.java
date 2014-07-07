@@ -1,5 +1,6 @@
 package es.bsc.vmmanagercore.scheduler;
 
+import es.bsc.vmmanagercore.logging.VMMLogger;
 import es.bsc.vmmanagercore.model.*;
 import es.bsc.vmmanagercore.monitoring.Host;
 
@@ -176,13 +177,30 @@ public class Scheduler {
      * @return the best deployment plan according to the algorithm applied
      */
     public DeploymentPlan chooseBestDeploymentPlan(List<DeploymentPlan> deploymentPlans, List<Host> hosts) {
+        VMMLogger.logStartOfDeploymentPlansEvaluation();
+
         DeploymentPlan bestDeploymentPlan = null;
         for (DeploymentPlan deploymentPlan: deploymentPlans) {
-            if (bestDeploymentPlan == null ||
+            boolean firstDeploymentPlan = (bestDeploymentPlan == null);
+            if (!firstDeploymentPlan) {
+                VMMLogger.logStartOfDeploymentPlanComparison(deploymentPlan.toString(), bestDeploymentPlan.toString());
+            }
+
+            if (firstDeploymentPlan ||
                     schedAlgorithm.isBetterDeploymentPlan(deploymentPlan, bestDeploymentPlan, hosts)) {
                 bestDeploymentPlan = deploymentPlan;
             }
+
+            if (!firstDeploymentPlan) {
+                VMMLogger.logEndOfDeploymentPlanComparison();
+            }
         }
+
+        if (bestDeploymentPlan != null) {
+            VMMLogger.logChosenDeploymentPlan(bestDeploymentPlan.toString());
+        }
+        VMMLogger.logEndOfDeploymentPlansEvaluation();
+
         return bestDeploymentPlan;
     }
 

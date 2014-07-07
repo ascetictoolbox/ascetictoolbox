@@ -23,6 +23,15 @@ public class DeploymentPlan {
         return new ArrayList<>(vmsAssignationsToHosts);
     }
 
+    @Override
+    public String toString() {
+        String result = "";
+        for (VmAssignmentToHost vmAssignmentToHost: vmsAssignationsToHosts) {
+            result += vmAssignmentToHost.getVm().getName() + "-->" + vmAssignmentToHost.getHost().getHostname() + ", ";
+        }
+        return result;
+    }
+
 }
 
 

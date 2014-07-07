@@ -1,6 +1,7 @@
 package es.bsc.vmmanagercore.scheduler;
 
 import es.bsc.vmmanagercore.integration.VMMToEMConversor;
+import es.bsc.vmmanagercore.logging.VMMLogger;
 import es.bsc.vmmanagercore.model.DeploymentPlan;
 import es.bsc.vmmanagercore.model.Vm;
 import es.bsc.vmmanagercore.model.VmAssignmentToHost;
@@ -45,11 +46,15 @@ public class SchedAlgEnergyAware implements SchedAlgorithm {
     }
 
     private double getPredictedAvgPowerVm(Vm vm, Host host) {
-        return energyModeller.getPredictedEnergyForVM(
+        double predictedAvgPower = energyModeller.getPredictedEnergyForVM(
                 VMMToEMConversor.getVmEnergyModFromVM(vm),
                 VMMToEMConversor.getVmsEnergyModFromVms(getVmsDeployedInHost(host.getHostname())),
                 VMMToEMConversor.getHostEnergyModFromHost(host))
                 .getAvgPowerUsed();
+
+        VMMLogger.logPredictedAvgPowerOfVmInHost(vm.getName(), host.getHostname(), predictedAvgPower);
+
+        return predictedAvgPower;
     }
 
     private double getPredictedAvgPowerDeploymentPlan(DeploymentPlan deploymentPlan) {
@@ -63,8 +68,13 @@ public class SchedAlgEnergyAware implements SchedAlgorithm {
     @Override
     public boolean isBetterDeploymentPlan(DeploymentPlan deploymentPlan1, DeploymentPlan deploymentPlan2,
             List<Host> hosts) {
-        return getPredictedAvgPowerDeploymentPlan(deploymentPlan1) <=
-                getPredictedAvgPowerDeploymentPlan(deploymentPlan2);
+        double predictedAvgPowerPlan1 = getPredictedAvgPowerDeploymentPlan(deploymentPlan1);
+        double predictedAvgPowerPlan2 = getPredictedAvgPowerDeploymentPlan(deploymentPlan2);
+
+        VMMLogger.logPredictedAvgPowerForDeploymentPlan(1, predictedAvgPowerPlan1);
+        VMMLogger.logPredictedAvgPowerForDeploymentPlan(2, predictedAvgPowerPlan2);
+
+        return predictedAvgPowerPlan1 <= predictedAvgPowerPlan2;
     }
 
 }
