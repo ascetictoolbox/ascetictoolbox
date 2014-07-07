@@ -70,17 +70,17 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
 	
     @Override
     public void setEnergyCost(double energycost){
-    	energycost=this.energycost;
+    	this.energycost=energycost;
     }
 	
     @Override
     public void setAmortHostCost(double amorthostcost){
-    	amorthostcost=this.amorthostcost;
+    	this.amorthostcost=amorthostcost;
     }
 	
     @Override
     public void setPUE(double PUE){
-    	PUE=this.PUE;
+    	this.PUE=PUE;
     }
 	
 	
