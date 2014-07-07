@@ -11,10 +11,13 @@ package eu.ascetic.asceticarchitecture.paas.paaspricingmodeller;
  * The price estimation can be also given without the provision of an PaaS price. 
  *
  */
+
+//TO BE ADDED: CONNECTION WITH DATABASE FOR RETRIEVING INFORMATION
 public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 	
 
-    public PaaSPricingModeller() { }
+    public PaaSPricingModeller() {
+    }
 
     @Override
     public double getAppPriceEstimation(double totalEnergyUsed, int deploymentId, int appId, int iaasId, double iaasPrice) {
@@ -26,15 +29,16 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
  
     public double getAppPriceEstimation(int deploymentId, int appId, int iaasId, double iaasPrice) {
     	 double price=0.0;
-       //  price=iaasPrice + iaasPrice*20/100;
+         price=iaasPrice + iaasPrice*20/100;
+      
      	return price; 
     }
 
-    public double getAppPriceEstimation(double totalEnergyUsed, int deploymentId, int appId, int iaasId) {
-    	 double price=0.0;
-         
+  /*  public double getAppPriceEstimation(double totalEnergyUsed, int deploymentId, int appId, int iaasId) {
+    	double price=0.0;
+        price=iaasPrice + iaasPrice*20/100;
      	return price; 
-    }
+    }*/
     
 
 }
