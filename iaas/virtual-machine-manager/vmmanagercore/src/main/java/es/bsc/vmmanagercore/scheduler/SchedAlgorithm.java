@@ -1,7 +1,6 @@
 package es.bsc.vmmanagercore.scheduler;
 
 import es.bsc.vmmanagercore.model.DeploymentPlan;
-import es.bsc.vmmanagercore.model.Vm;
 import es.bsc.vmmanagercore.monitoring.Host;
 
 import java.util.List;
@@ -12,15 +11,6 @@ import java.util.List;
  *  @author David Ortiz Lopez (david.ortiz@bsc.es)
  */
 public interface SchedAlgorithm {
-
-    /**
-     * Decides on which host deploy a VM according to its CPU, memory and disk requirements.
-     *
-     * @param hostsInfo Information of the hosts of the infrastructure
-     * @param vm VM that needs to be deployed
-     * @return The name of the host on which the VM should be deployed.
-     */
-    public String chooseHost(List<Host> hostsInfo, Vm vm);
 
     /**
      * Checks whether a deployment plan is considered better than other deployment plan

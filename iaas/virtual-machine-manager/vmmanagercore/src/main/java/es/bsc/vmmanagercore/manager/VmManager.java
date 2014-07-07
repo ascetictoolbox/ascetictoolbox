@@ -9,13 +9,13 @@ import es.bsc.vmmanagercore.monitoring.HostGanglia;
 import es.bsc.vmmanagercore.monitoring.Host;
 import es.bsc.vmmanagercore.monitoring.HostOpenStack;
 import es.bsc.vmmanagercore.monitoring.HostZabbix;
+import es.bsc.vmmanagercore.scheduler.DeploymentPlanGenerator;
 import es.bsc.vmmanagercore.scheduler.Scheduler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * VM Manager.
@@ -105,19 +105,6 @@ public class VmManager {
     }
 
     /**
-     * Frees the resources of a host.
-     *
-     * @param hostname the name of the host
-     */
-    private void freeHostResources(String hostname) {
-        for (Host host: hostsInfo) {
-            if (host.getHostname().equals(hostname)) {
-                host.resetReserved();
-            }
-        }
-    }
-
-    /**
      * Deploys a list of VMs and returns its IDs.
      *
      * @param vms the VMs to deploy
@@ -129,26 +116,30 @@ public class VmManager {
         Map<Vm, String> ids = new HashMap<>();
 
         // Decide where to deploy each VM of the application
-        Map<Vm, String> vmsScheduling = scheduler.schedule(vms, hostsInfo);
+        // Map<Vm, String> vmsScheduling = scheduler.schedule(vms, hostsInfo);
 
-        // TODO si devuelve null es que no hay host disponible. Que hacer en ese caso?
-        // For each VM that is part of the application
-        for(Entry<Vm, String> vmScheduling: vmsScheduling.entrySet()) {
+        // Choose the best deployment plan
+        List<DeploymentPlan> possibleDeploymentPlans = new DeploymentPlanGenerator().getAllPossibleDeploymentPlans(vms, hostsInfo);
+        DeploymentPlan deploymentPlan = scheduler.chooseBestDeploymentPlan(possibleDeploymentPlans, hostsInfo);
 
-            // Get the host name of the server where the VM is going to be deployed
-            String hostname = vmScheduling.getValue();
+        // If there are no possible deployment plans, get a best effort with overbooking
+        if (deploymentPlan == null) {
+            deploymentPlan = new DeploymentPlanGenerator().generateBestEffortDeploymentPlan(vms, hostsInfo);
+        }
+
+        // Loop through the VM assignments to hosts defined in the best deployment plan
+        for (VmAssignmentToHost vmAssignmentToHost: deploymentPlan.getVmsAssignationsToHosts()) {
+            Vm vmToDeploy = vmAssignmentToHost.getVm();
+            Host hostForDeployment = vmAssignmentToHost.getHost();
 
             // Deploy the VM
-            String vmId = cloudMiddleware.deploy(vmScheduling.getKey(), hostname);
-
-            // Free the resources that were reserved on the host during the scheduling process
-            freeHostResources(hostname);
+            String vmId = cloudMiddleware.deploy(vmToDeploy, hostForDeployment.getHostname());
 
             // Insert the VM info in the DB
-            db.insertVm(vmId, vmScheduling.getKey().getApplicationId()); // vmId -> appId
+            db.insertVm(vmId, vmToDeploy.getApplicationId());
 
             // Save the ID of the VM deployed
-            ids.put(vmScheduling.getKey(), vmId);
+            ids.put(vmToDeploy, vmId);
         }
 
         // Close the DB connection

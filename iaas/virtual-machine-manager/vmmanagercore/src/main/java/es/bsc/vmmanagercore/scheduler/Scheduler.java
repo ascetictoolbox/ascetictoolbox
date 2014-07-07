@@ -45,36 +45,6 @@ public class Scheduler {
         }
     }
 
-    private void reserveResourcesForVmInHost(Vm vm, String hostForDeployment, List<Host> hosts) {
-        for (Host host: hosts) {
-            if (host.getHostname().equals(hostForDeployment)) {
-                host.setReservedCpus(vm.getCpus());
-                host.setReservedMemoryMb(vm.getRamMb());
-                host.setReservedDiskGb(vm.getDiskGb());
-            }
-        }
-    }
-
-    /**
-     * Chooses the host where a VM should be deployed. If none of the hosts has enough resources available,
-     * then chooses one randomly. Otherwise, selects a host according to the scheduling algorithm used.
-     *
-     * @param allHosts all the hosts of the cluster
-     * @param hostsWithEnoughResources the hosts of the clusted with enough resources available to deploy the VM
-     * @param vm the VM
-     * @return the name of the host where the VM should be deployed
-     */
-    private String chooseHost(List<Host> allHosts, List<Host> hostsWithEnoughResources, Vm vm) {
-        String selectedHost;
-        if (hostsWithEnoughResources.isEmpty()) {
-            selectedHost = new SchedAlgRandom().chooseHost(allHosts, vm);
-        }
-        else {
-            selectedHost = schedAlgorithm.chooseHost(hostsWithEnoughResources, vm);
-        }
-        return selectedHost;
-    }
-
     /**
      * Returns the average CPU load in a collection of server loads.
      *
@@ -195,37 +165,6 @@ public class Scheduler {
         }
 
         return serversLoad;
-    }
-
-    /**
-     * Decides on which host deploy each of the VMs that need to be deployed. When there are no hosts that
-     * satisfy the requirements for a specific VM, that VM is deployed in a host chosen randomly.
-     *
-     * @param vms the description of the VMs that need to be scheduled
-     * @param hosts information of the hosts of the infrastructure where the VMs need to be deployed
-     * @return HashMap that contains for each VM description, the name of the host where
-     * the VM should be deployed according to the scheduling algorithm
-     */
-    public Map<Vm, String> schedule(List<Vm> vms, List<Host> hosts) {
-        Map<Vm, String> scheduling = new HashMap<>(); // HashMap VM -> host where it is going to be deployed
-
-        // For each of the VMs to be scheduled
-        for (Vm vm: vms) {
-            // Get hosts with enough resources
-            List<Host> hostsWithEnoughResources = HostFilter.filter(hosts, vm.getCpus(),
-                    vm.getRamMb(), vm.getDiskGb());
-
-            // Choose the host to deploy the VM
-            String selectedHost = chooseHost(hosts, hostsWithEnoughResources, vm);
-
-            // Add the host to the result
-            scheduling.put(vm, selectedHost);
-
-            // Reserve the resources that the VM needs
-            reserveResourcesForVmInHost(vm, selectedHost, hostsWithEnoughResources);
-        }
-
-        return scheduling;
     }
 
     /**

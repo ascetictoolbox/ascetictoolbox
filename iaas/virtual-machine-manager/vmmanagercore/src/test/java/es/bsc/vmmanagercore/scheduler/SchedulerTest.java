@@ -1,8 +1,11 @@
 package es.bsc.vmmanagercore.scheduler;
 
-import es.bsc.vmmanagercore.model.*;
-import es.bsc.vmmanagercore.monitoring.HostFake;
+import es.bsc.vmmanagercore.model.DeploymentPlan;
+import es.bsc.vmmanagercore.model.ServerLoad;
+import es.bsc.vmmanagercore.model.Vm;
+import es.bsc.vmmanagercore.model.VmAssignmentToHost;
 import es.bsc.vmmanagercore.monitoring.Host;
+import es.bsc.vmmanagercore.monitoring.HostFake;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -10,7 +13,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -18,23 +22,6 @@ import static org.junit.Assert.*;
  *  @author David Ortiz Lopez (david.ortiz@bsc.es)
  */
 public class SchedulerTest {
-
-    private static Scheduler scheduler = new Scheduler(SchedulingAlgorithm.CONSOLIDATION, new ArrayList<VmDeployed>());
-
-    @Test
-    public void vmShouldBeDeployedEvenWhenThereAreNoHostsWithEnoughResources() {
-        List<Host> hosts = new ArrayList<>();
-        hosts.add(new HostFake("host1", 2, 2048, 2, 1, 2048, 2)); // Host with 100% load
-
-        // VM to deploy
-        List<Vm> vms = new ArrayList<>();
-        Vm vm = new Vm("TestVM1", "fakeImageId", 1, 1024, 1, null, "app1");
-        vms.add(vm);
-
-        // Schedule and make sure that a host was assigned
-        Map<Vm, String> selectedHost = scheduler.schedule(vms, hosts);
-        assertNotNull(selectedHost.get(vm));
-    }
 
     @Test
     public void calculateStDevCpuLoad() {

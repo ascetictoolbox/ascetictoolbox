@@ -44,24 +44,6 @@ public class SchedAlgEnergyAware implements SchedAlgorithm {
         return vms;
     }
 
-    @Override
-    public String chooseHost(List<Host> hostsInfo, Vm vm) {
-        String bestHost = null; // Host that consumes less energy
-        double minimumAvgPower = Integer.MAX_VALUE; // Avg. power consumed in the host that consumes less energy
-        for (Host host: hostsInfo) {
-            double predictedAvgPower = energyModeller.getPredictedEnergyForVM(
-                   VMMToEMConversor.getVmEnergyModFromVM(vm),
-                   VMMToEMConversor.getVmsEnergyModFromVms(getVmsDeployedInHost(host.getHostname())),
-                   VMMToEMConversor.getHostEnergyModFromHost(host))
-                   .getAvgPowerUsed();
-            if (bestHost == null || predictedAvgPower < minimumAvgPower) {
-                bestHost = host.getHostname();
-                minimumAvgPower = predictedAvgPower;
-            }
-        }
-        return bestHost;
-    }
-
     private double getPredictedAvgPowerVm(Vm vm, Host host) {
         return energyModeller.getPredictedEnergyForVM(
                 VMMToEMConversor.getVmEnergyModFromVM(vm),

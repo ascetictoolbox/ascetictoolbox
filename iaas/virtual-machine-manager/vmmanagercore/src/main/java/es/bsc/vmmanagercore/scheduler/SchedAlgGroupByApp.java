@@ -7,9 +7,7 @@ import es.bsc.vmmanagercore.model.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.Host;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Scheduling algorithm that groups VMs by the application which they belong to.
@@ -19,61 +17,9 @@ import java.util.Map;
 public class SchedAlgGroupByApp implements SchedAlgorithm {
 
     private List<VmDeployed> vmsDeployed;
-    private List<Host> hostsInfo;
 
     public SchedAlgGroupByApp(List<VmDeployed> vmsDeployed) {
         this.vmsDeployed = vmsDeployed;
-    }
-
-    private boolean hostHasEnoughResources(String hostname) {
-        for (Host host : hostsInfo) {
-            if (hostname.equals(host.getHostname())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Returns a hashmap that contains, for each host, the number of VMs that belong to the same
-     * application as the one that we need to deploy.
-     */
-    private Map<String, Integer> getNumberOfVmsThatBelongToTheAppForEachHost(String app) {
-        Map<String, Integer> vmsOfAppPerHost = new HashMap<>();
-        for (VmDeployed vmDeployed: vmsDeployed) {
-            // Increase the counter if it is a VM that belongs to the same application
-            if (vmDeployed.getApplicationId().equals(app)) {
-                if (vmsOfAppPerHost.get(vmDeployed.getHostName()) == null) {
-                    vmsOfAppPerHost.put(vmDeployed.getHostName(), 1);
-                }
-                else {
-                    vmsOfAppPerHost.put(vmDeployed.getHostName(), vmsOfAppPerHost.get(vmDeployed.getHostName()) + 1);
-                }
-            }
-        }
-        return vmsOfAppPerHost;
-    }
-
-    /**
-     * Get the host with more VMs of the same app. The hosts needs to have enough resources available.
-     */
-    private String getHostWithMoreVmsOfTheApp(Map<String, Integer> vmsOfAppPerHost) {
-        String host = null;
-        int maxNumberOfVMsOfApp = 0;
-        for (Map.Entry<String, Integer> entry : vmsOfAppPerHost.entrySet()) {
-            if (hostHasEnoughResources(entry.getKey()) && (entry.getValue() >= maxNumberOfVMsOfApp || host == null)) {
-                host = entry.getKey();
-                maxNumberOfVMsOfApp = entry.getValue();
-            }
-        }
-        return host;
-    }
-
-    @Override
-    public String chooseHost(List<Host> hostsInfo, Vm vm) {
-        this.hostsInfo = hostsInfo;
-        Map<String, Integer> vmsOfAppPerHost = getNumberOfVmsThatBelongToTheAppForEachHost(vm.getApplicationId());
-        return getHostWithMoreVmsOfTheApp(vmsOfAppPerHost);
     }
 
     private List<VmDeployed> getVmsDeployedInHost(String hostName) {
@@ -96,18 +42,37 @@ public class SchedAlgGroupByApp implements SchedAlgorithm {
         return result;
     }
 
-    private int getVmsInSameHostForDeploymentPlan(DeploymentPlan deploymentPlan) {
+    private int getVmsSameAppInSameHost(DeploymentPlan deploymentPlan) {
+        int result = 0;
+        for (int i = 0; i < deploymentPlan.getVmsAssignationsToHosts().size(); ++i) {
+            Vm vm1 = deploymentPlan.getVmsAssignationsToHosts().get(i).getVm();
+            Host host1 = deploymentPlan.getVmsAssignationsToHosts().get(i).getHost();
+            for (int j = i + 1; j < deploymentPlan.getVmsAssignationsToHosts().size(); ++j) {
+                Vm vm2 = deploymentPlan.getVmsAssignationsToHosts().get(j).getVm();
+                Host host2 = deploymentPlan.getVmsAssignationsToHosts().get(j).getHost();
+                boolean sameAppId = vm1.getApplicationId().equals(vm2.getApplicationId());
+                boolean sameHost = host1.getHostname().equals(host2.getHostname());
+                if (sameAppId && sameHost) {
+                    ++result;
+                }
+            }
+        }
+        return result;
+    }
+
+    private int getVmsSameAppInSameHostForDeploymentPlan(DeploymentPlan deploymentPlan) {
         int result = 0;
         for (VmAssignmentToHost vmAssignmentToHost: deploymentPlan.getVmsAssignationsToHosts()) {
             result += getNumberOfVmsThatBelongToAppInHost(vmAssignmentToHost.getVm().getApplicationId(),
                     vmAssignmentToHost.getHost().getHostname());
         }
-        return result;
+        return result + getVmsSameAppInSameHost(deploymentPlan);
     }
 
     @Override
     public boolean isBetterDeploymentPlan(DeploymentPlan deploymentPlan1, DeploymentPlan deploymentPlan2,
             List<Host> hosts) {
-        return getVmsInSameHostForDeploymentPlan(deploymentPlan1) >= getVmsInSameHostForDeploymentPlan(deploymentPlan2);
+        return getVmsSameAppInSameHostForDeploymentPlan(deploymentPlan1) >=
+                getVmsSameAppInSameHostForDeploymentPlan(deploymentPlan2);
     }
 }
