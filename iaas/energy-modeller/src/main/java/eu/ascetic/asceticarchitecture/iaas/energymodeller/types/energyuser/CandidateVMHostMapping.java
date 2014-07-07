@@ -15,6 +15,8 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser;
 
+import java.util.Objects;
+
 /**
  * This gives the energy usage for a potential mapping between a VM and
  * its underlying resource.
@@ -42,6 +44,28 @@ public class CandidateVMHostMapping extends EnergyUsageSource {
      */
     public Host getHost() {
         return host;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof CandidateVMHostMapping) {
+            CandidateVMHostMapping other = (CandidateVMHostMapping) obj;
+            if ((this.host.getHostName().equals(other.getHost().getHostName())) &&
+                (this.vm.getCpus() == other.getVm().getCpus()) &&
+                (this.vm.getRamMb() == other.getVm().getRamMb()) &&
+                (this.vm.getDiskGb()== other.getVm().getDiskGb())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 43 * hash + Objects.hashCode(this.vm);
+        hash = 43 * hash + Objects.hashCode(this.host);
+        return hash;
     }
     
 }

@@ -16,6 +16,7 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.TimePeriod;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.CandidateVMHostMapping;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
@@ -55,6 +56,9 @@ public class DefaultEnergyPredictor implements EnergyPredictorInterface {
         }
         return answer;
     }
+    
+    HashMap<CandidateVMHostMapping, Double> temp2AvgPowerUsed = new HashMap<>();
+    HashMap<CandidateVMHostMapping, Double> temp2TotalEnergyUsed = new HashMap<>();    
 
     @Override
     public EnergyUsagePrediction getVMPredictedEnergy(VM vm, Collection<VM> virtualMachines, Host host) {
@@ -62,8 +66,17 @@ public class DefaultEnergyPredictor implements EnergyPredictorInterface {
         //TODO add model code here
         TimePeriod duration = new TimePeriod(new GregorianCalendar(), 1, TimeUnit.HOURS);
         answer.setDuration(duration);
-        answer.setAvgPowerUsed(Math.random() * 20);
-        answer.setTotalEnergyUsed(Math.random() * 20);
+        if (tempAvgPowerUsed.containsKey(host)) {
+            answer.setAvgPowerUsed(temp2AvgPowerUsed.get(new CandidateVMHostMapping(vm, host)));
+            answer.setTotalEnergyUsed(temp2TotalEnergyUsed.get(new CandidateVMHostMapping(vm, host)));             
+        } else {
+            double tempPower = Math.random() * 20;
+            double tempEnergy = Math.random() * 20;
+            temp2AvgPowerUsed.put(new CandidateVMHostMapping(vm, host), tempPower);
+            temp2TotalEnergyUsed.put(new CandidateVMHostMapping(vm, host), tempEnergy);
+            answer.setAvgPowerUsed(tempPower);
+            answer.setTotalEnergyUsed(tempEnergy); 
+        }
         return answer;
     }
     
