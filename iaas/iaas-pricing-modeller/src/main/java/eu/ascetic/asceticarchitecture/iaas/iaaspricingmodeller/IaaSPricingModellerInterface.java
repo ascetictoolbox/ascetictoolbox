@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-//TO IMPLEMENT PER EACH HOST!!
+
 package eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller;
 
 /**

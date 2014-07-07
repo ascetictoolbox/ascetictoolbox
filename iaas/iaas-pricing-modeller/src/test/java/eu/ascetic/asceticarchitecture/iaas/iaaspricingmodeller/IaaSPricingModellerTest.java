@@ -57,6 +57,24 @@ public class IaaSPricingModellerTest
     }
 	
 	@Test
+    public void testConstructor() {
+        System.out.println("test constructor");
+        IaaSPricingModeller VMCost = new IaaSPricingModeller(0.05, 0.02, 1.2);
+        
+        double energyc=VMCost.getEnergyCost();
+        double expenergyc = 0.05;
+        assertEquals(expenergyc, energyc, 0.02);
+        
+        double asserc=VMCost.getAmortHostCost();
+        double expasserc = 0.02;
+        assertEquals(expasserc, asserc, 0.02);
+        
+        double PUEc=VMCost.getPUE();
+        double expPUEc = 1.2;
+        assertEquals(expPUEc, PUEc, 0.02);
+    }
+	
+	@Test
     public void testSetValues() {
         System.out.println("test set functions for all values");
         IaaSPricingModeller VMCost = new IaaSPricingModeller();

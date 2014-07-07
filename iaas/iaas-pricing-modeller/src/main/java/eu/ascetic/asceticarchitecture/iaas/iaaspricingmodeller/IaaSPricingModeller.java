@@ -28,16 +28,19 @@ package eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller;
  */
 
 
+
+
+//TO IMPLEMENT PER EACH HOST!!
 public class IaaSPricingModeller implements IaaSPricingModellerInterface{
 	 /**
      * @param energycost The current cost of the energy consumed in $/kwh
      */
-	double energycost;
+	double energyCost;
 	
 	/**
 	@param amorthostcost The amortised cost of a host $/hour
     */
-	double amorthostcost;
+	double amortHostCost;
 	
 	/**
 	@param PUE The power usage effectiveness of the infrastructure
@@ -46,21 +49,28 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
 	 
 	
 	public IaaSPricingModeller() {
-    	energycost = 0.07;
-    	amorthostcost=0.08;
+    	energyCost = 0.07;
+    	amortHostCost=0.08;
     	PUE=1.7;
     	
     }
-
+	
+	public IaaSPricingModeller(double energyCost, double amortHostCost, double PUE) {
+		super();
+    	this.energyCost=energyCost;
+    	this.amortHostCost=amortHostCost;
+    	this.PUE=PUE;
+    	
+    }
    
     @Override
     public double getEnergyCost(){
-    	return energycost;
+    	return energyCost;
     }
     
     @Override
 	public double getAmortHostCost(){
-    	return amorthostcost;
+    	return amortHostCost;
     }
     
     @Override
@@ -70,12 +80,12 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
 	
     @Override
     public void setEnergyCost(double energycost){
-    	this.energycost=energycost;
+    	this.energyCost=energycost;
     }
 	
     @Override
     public void setAmortHostCost(double amorthostcost){
-    	this.amorthostcost=amorthostcost;
+    	this.amortHostCost=amorthostcost;
     }
 	
     @Override
@@ -95,7 +105,7 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
     @Override
     public double getVMCostEstimation(double totalEnergyUsed, int hostId) {
         double cost=0.0;
-        cost=amorthostcost+(energycost*totalEnergyUsed*PUE);
+        cost=amortHostCost+(energyCost*totalEnergyUsed*PUE);
     	return cost; 
     }
     
@@ -112,7 +122,7 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
     public double getVMPriceEstimation(double totalEnergyUsed, int hostId) {
     	double cost=0.0;
     	double price = 0.0;
-        cost=amorthostcost+(energycost*totalEnergyUsed*PUE);
+        cost=amortHostCost+(energyCost*totalEnergyUsed*PUE);
         price=cost+cost*20/100;
      	return price; 
 }
