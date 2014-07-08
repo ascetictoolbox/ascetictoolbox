@@ -1265,7 +1265,9 @@ saas/programming-model/compss-rt/rt/src/main/java/integratedtoolkit/api/Integrat
 saas/programming-model/compss-rt/rt/src/main/java/integratedtoolkit/api/impl/IntegratedToolkitDebugImpl.java -text
 saas/programming-model/compss-rt/rt/src/main/java/integratedtoolkit/api/impl/IntegratedToolkitImpl.java -text
 saas/programming-model/compss-rt/rt/src/main/java/integratedtoolkit/ascetic/AppManager.java -text
+saas/programming-model/compss-rt/rt/src/main/java/integratedtoolkit/ascetic/ApplicationMonitor.java -text
 saas/programming-model/compss-rt/rt/src/main/java/integratedtoolkit/ascetic/Ascetic.java -text
+saas/programming-model/compss-rt/rt/src/main/java/integratedtoolkit/ascetic/Configuration.java -text
 saas/programming-model/compss-rt/rt/src/main/java/integratedtoolkit/ascetic/VM.java -text
 saas/programming-model/compss-rt/rt/src/main/java/integratedtoolkit/components/DataAccess.java -text
 saas/programming-model/compss-rt/rt/src/main/java/integratedtoolkit/components/DataInfoUpdate.java -text
