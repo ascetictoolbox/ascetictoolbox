@@ -9,13 +9,13 @@ package es.bsc.vmmanagercore.model;
 public class VmEstimate {
 
     private String id;
-    private double powerEstimation;
-    private double priceEstimation;
+    private double powerEstimate;
+    private double priceEstimate;
 
-    public VmEstimate(String id, double powerEstimation, double priceEstimation) {
+    public VmEstimate(String id, double powerEstimate, double priceEstimate) {
         this.id = id;
-        this.powerEstimation = powerEstimation;
-        this.priceEstimation = priceEstimation;
+        this.powerEstimate = powerEstimate;
+        this.priceEstimate = priceEstimate;
     }
 
     public String getId() {
@@ -26,20 +26,20 @@ public class VmEstimate {
         this.id = id;
     }
 
-    public double getPowerEstimation() {
-        return powerEstimation;
+    public double getPowerEstimate() {
+        return powerEstimate;
     }
 
-    public void setPowerEstimation(double powerEstimation) {
-        this.powerEstimation = powerEstimation;
+    public void setPowerEstimate(double powerEstimate) {
+        this.powerEstimate = powerEstimate;
     }
 
-    public double getPriceEstimation() {
-        return priceEstimation;
+    public double getPriceEstimate() {
+        return priceEstimate;
     }
 
-    public void setPriceEstimation(double priceEstimation) {
-        this.priceEstimation = priceEstimation;
+    public void setPriceEstimate(double priceEstimate) {
+        this.priceEstimate = priceEstimate;
     }
 
 }

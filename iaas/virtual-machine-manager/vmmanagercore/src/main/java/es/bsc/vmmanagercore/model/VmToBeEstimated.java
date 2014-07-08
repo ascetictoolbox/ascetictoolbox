@@ -55,7 +55,7 @@ public class VmToBeEstimated {
     }
 
     public Vm toVm() {
-        return new Vm(id, "", vcpus, ramMb, diskGb, "", "");
+        return new Vm(id, "", vcpus, ramMb, diskGb, null, "");
     }
 
 }
