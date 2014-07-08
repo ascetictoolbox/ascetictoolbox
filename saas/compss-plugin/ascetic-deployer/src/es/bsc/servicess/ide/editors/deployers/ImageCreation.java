@@ -72,8 +72,6 @@ public class ImageCreation {
 	private static final String IMAGE_GAT_LOCATION = "/GAT";
 	private static final String SHARED_FOLDER = null;
 	
-
-	
 	
 	private static void uploadOrchestrationPackages(WebResource resource,
 			String packName, String schPackage, String[] packs, String image_id, IFolder packageFolder,

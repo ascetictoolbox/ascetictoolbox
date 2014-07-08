@@ -8,6 +8,6 @@ paas/application-monitor/logs
 paas/application-monitor/target
 saas/compss-packager/.classpath
 saas/compss-packager/.project
-saas/compss-plugin/ascetic-deployer/.settings
+saas/compss-plugin/ascetic-deployer/.classpath
 saas/compss-plugin/ascetic-deployer/lib/ant-antlr.jar
 utils/energy-modeller-data-logger/target

@@ -7,7 +7,7 @@
   </parent>
   <groupId>eu.ascetic.saas</groupId>
   <artifactId>compss-plugin</artifactId>
-  <name>COMP Superscalar eclipse plug-in</name>
+  <name>COMP Superscalar ASCETIC eclipse plug-in</name>
   <description>Provides the IDE to implement application with the COMPSs programming model and deploy it in the ASCETIC infrastructure</description>
   <packaging>pom</packaging>
   <prerequisites>
@@ -31,6 +31,11 @@
 	  	<id>eclipse-platform</id>
 		<layout>p2</layout>
 		<url>${eclipse-site}</url>
+	</repository>
+	<repository>
+		<id>compss-ide-repo</id>
+	        <layout>p2</layout>
+		<url>http://compss.bsc.es/rc/ide</url>
 	</repository>
 	<repository>
 		<id>grid-repo</id>
@@ -133,6 +138,19 @@
 		</activation>
 		<properties>
 			<eclipse-site>http://download.eclipse.org/releases/juno</eclipse-site>
+			<platform-version>[3.8,3.9)</platform-version>
+		</properties>
+	</profile>
+	<profile>
+		<id>platform-kepler</id>
+		<activation>
+			<property>
+				<name>platform-version-name</name>
+				<value>kepler</value>
+			</property>
+		</activation>
+		<properties>
+			<eclipse-site>http://download.eclipse.org/releases/kepler</eclipse-site>
 			<platform-version>[3.8,3.9)</platform-version>
 		</properties>
 	</profile>

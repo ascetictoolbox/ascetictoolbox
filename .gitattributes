@@ -990,6 +990,8 @@ saas/application-uploader/.settings/org.sonar.ide.eclipse.core.prefs -text
 saas/application-uploader/pom.xml -text
 saas/application-uploader/src/main/java/eu/ascetic/saas/application_uploader/ApplicationUploader.java -text
 saas/application-uploader/src/main/java/eu/ascetic/saas/application_uploader/ApplicationUploaderException.java -text
+saas/ascetic-eclipse-site/category.xml -text
+saas/ascetic-eclipse-site/pom.xml -text
 saas/compss-packager/.classpath -text
 saas/compss-packager/.project -text
 saas/compss-packager/.settings/org.eclipse.jdt.core.prefs -text
