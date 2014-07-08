@@ -7,6 +7,8 @@ import eu.ascetic.utils.ovf.api.AbstractElement;
 public class VirtualDiskDesc extends
 		AbstractElement<XmlBeanVirtualDiskDescType> {
 
+	public static VirtualDiskDescFactory Factory = new VirtualDiskDescFactory();
+	
 	public VirtualDiskDesc(XmlBeanVirtualDiskDescType base) {
 		super(base);
 	}
@@ -14,9 +16,17 @@ public class VirtualDiskDesc extends
 	public String getDiskId() {
 		return delegate.getDiskId();
 	}
+	
+	public void setDiskId(String id) {
+		delegate.setDiskId(id);
+	}
 
 	public String getFileRef() {
 		return delegate.getFileRef();
+	}
+	
+	public void setFileRef(String ref) {
+		delegate.setFileRef(ref);
 	}
 
 	public String getCapacity() {

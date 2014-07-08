@@ -6,6 +6,9 @@ import eu.ascetic.utils.ovf.api.AbstractElement;
 import eu.ascetic.utils.ovf.api.utils.XmlSimpleTypeConverter;
 
 public class Network extends AbstractElement<XmlBeanNetworkSectionType.Network> {
+	
+	public static NetworkFactory Factory = new NetworkFactory();
+	
 	public Network(XmlBeanNetworkSectionType.Network base) {
 		super(base);
 	}

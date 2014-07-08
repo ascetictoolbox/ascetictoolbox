@@ -1,10 +1,9 @@
 package eu.ascetic.utils.ovf.api;
 
 public enum DiskFormatType {
-	VMDK(
-			"http://www.vmware.com/interfaces/specifications/vmdk.html#streamOptimized"), VHD(
-			"http://technet.microsoft.com/en-us/library/bb676673.aspx"), QCOW2(
-			"http://www.gnome.org/~markmc/qcow-image-format.html");
+	VMDK("http://www.vmware.com/interfaces/specifications/vmdk.html#streamOptimized"),
+	VHD("http://technet.microsoft.com/en-us/library/bb676673.aspx"),
+	QCOW2("http://www.gnome.org/~markmc/qcow-image-format.html");
 	// TODO: Add others here?
 
 	private String specificationUrl;

@@ -8,12 +8,18 @@ import eu.ascetic.utils.ovf.api.AbstractElement;
 
 public class File extends AbstractElement<XmlBeanFileType> {
 
+	public static FileFactory Factory = new FileFactory();
+	
 	public File(XmlBeanFileType base) {
 		super(base);
 	}
 
 	public String getId() {
 		return delegate.getId();
+	}
+	
+	public void setId(String id) {
+		delegate.setId(id);
 	}
 
 	public String getHref() {

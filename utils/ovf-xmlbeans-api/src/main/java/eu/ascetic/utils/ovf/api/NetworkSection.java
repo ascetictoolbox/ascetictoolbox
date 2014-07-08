@@ -9,6 +9,8 @@ import eu.ascetic.utils.ovf.api.utils.XmlSimpleTypeConverter;
 
 public class NetworkSection extends AbstractElement<XmlBeanNetworkSectionType> {
 
+	public static NetworkSectionFactory Factory = new NetworkSectionFactory();
+	
 	public NetworkSection(XmlBeanNetworkSectionType base) {
 		super(base);
 	}
@@ -21,9 +23,22 @@ public class NetworkSection extends AbstractElement<XmlBeanNetworkSectionType> {
 		}
 		return networkArray.toArray(new Network[networkArray.size()]);
 	}
-
+	
+	public void  setNetworkArray(Network[] networkArray) {
+		Vector<XmlBeanNetworkSectionType.Network> diskArray = new Vector<XmlBeanNetworkSectionType.Network>();
+		for (int i = 0; i < networkArray.length; i++) {
+			diskArray.add(networkArray[i].getXmlObject());
+		}
+		delegate.setNetworkArray((XmlBeanNetworkSectionType.Network[]) diskArray.toArray());
+	}
+	
 	public Network getNetworkAtIndex(int i) {
 		return new Network(delegate.getNetworkArray(i));
+	}
+	
+	public void addNetwork(Network network) {
+		XmlBeanNetworkSectionType.Network newNetwork = delegate.addNewNetwork();
+		newNetwork.set(network.getXmlObject());
 	}
 
 	public String getInfo() {

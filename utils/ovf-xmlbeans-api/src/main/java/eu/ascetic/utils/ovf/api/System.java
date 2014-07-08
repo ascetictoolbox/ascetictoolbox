@@ -6,6 +6,9 @@ import eu.ascetic.utils.ovf.api.AbstractElement;
 import eu.ascetic.utils.ovf.api.utils.XmlSimpleTypeConverter;
 
 public class System extends AbstractElement<XmlBeanVSSDType> {
+	
+	public static SystemFactory Factory = new SystemFactory();
+	
 	public System(XmlBeanVSSDType base) {
 		super(base);
 	}

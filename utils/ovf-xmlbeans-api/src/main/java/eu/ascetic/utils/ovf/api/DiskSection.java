@@ -10,9 +10,12 @@ import org.dmtf.schemas.ovf.envelope.x1.XmlBeanVirtualDiskDescType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 public class DiskSection extends AbstractElement<XmlBeanDiskSectionType> {
 
+	public static DiskSectionFactory Factory = new DiskSectionFactory();
+	
 	public DiskSection(XmlBeanDiskSectionType base) {
 		super(base);
 	}
@@ -27,18 +30,21 @@ public class DiskSection extends AbstractElement<XmlBeanDiskSectionType> {
 		return diskArray.toArray(new VirtualDiskDesc[diskArray.size()]);
 	}
 
+	public void setDiskArray(VirtualDiskDesc[] virtualDiskDescArray) {
+		Vector<XmlBeanVirtualDiskDescType> diskArray = new Vector<XmlBeanVirtualDiskDescType>();
+		for (int i = 0; i < virtualDiskDescArray.length; i++) {
+			diskArray.add(virtualDiskDescArray[i].getXmlObject());
+		}
+		delegate.setDiskArray((XmlBeanVirtualDiskDescType[]) diskArray.toArray());
+	}
+	
 	public VirtualDiskDesc getDiskAtIndex(int i) {
 		return new VirtualDiskDesc(delegate.getDiskArray(i));
 	}
-
-	// FIXME: This should not be hardcoded?
-	public VirtualDiskDesc getImageDisk() {
-		return new VirtualDiskDesc(delegate.getDiskArray(0));
-	}
-
-	// FIXME: This should not be hardcoded?
-	public VirtualDiskDesc getContextualizationDisk() {
-		return new VirtualDiskDesc(delegate.getDiskArray(1));
+	
+	public void addDisk(VirtualDiskDesc virtualDiskDesc) {
+		XmlBeanVirtualDiskDescType xmlBeanVirtualDiskDescType = delegate.addNewDisk();
+		xmlBeanVirtualDiskDescType.set(virtualDiskDesc.getXmlObject());
 	}
 
 	public String getInfo() {

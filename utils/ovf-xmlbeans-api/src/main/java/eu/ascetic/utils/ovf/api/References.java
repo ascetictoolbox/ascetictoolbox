@@ -9,6 +9,8 @@ import eu.ascetic.utils.ovf.api.AbstractElement;
 
 public class References extends AbstractElement<XmlBeanReferencesType> {
 
+	public static ReferencesFactory Factory = new ReferencesFactory();
+	
 	protected References(XmlBeanReferencesType base) {
 		super(base);
 	}
@@ -20,19 +22,23 @@ public class References extends AbstractElement<XmlBeanReferencesType> {
 		}
 		return vector.toArray(new File[vector.size()]);
 	}
+	
+	public void setFileArray(File[] fileArray) {
+		Vector<XmlBeanFileType> vector = new Vector<XmlBeanFileType>();
+		
+		for (int i = 0; i < fileArray.length; i++) {
+			vector.add(fileArray[i].getXmlObject());
+		}
+		
+		delegate.setFileArray((XmlBeanFileType[]) vector.toArray());
+	}
 
 	public File getFileAtIndex(int i) {
 		return new File(delegate.getFileArray(i));
 	}
-
-	// FIXME: We should support multiple images of any type
-
-	public File getImageFile() {
-		return new File(delegate.getFileArray(0));
+	
+	public void addFile(File file) {
+		XmlBeanFileType newfile = delegate.addNewFile();
+		newfile.set(file.getXmlObject());
 	}
-
-	public File getContextualizationFile() {
-		return new File(delegate.getFileArray(1));
-	}
-
 }

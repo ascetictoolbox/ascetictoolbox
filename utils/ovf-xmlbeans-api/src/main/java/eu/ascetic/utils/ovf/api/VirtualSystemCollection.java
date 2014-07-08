@@ -14,6 +14,8 @@ import eu.ascetic.utils.ovf.api.utils.XmlSimpleTypeConverter;
 public class VirtualSystemCollection extends
 		AbstractElement<XmlBeanVirtualSystemCollectionType> {
 
+	public static VirtualSystemCollectionFactory Factory = new VirtualSystemCollectionFactory();
+	
 	public VirtualSystemCollection(XmlBeanVirtualSystemCollectionType base) {
 		super(base);
 	}
@@ -61,8 +63,36 @@ public class VirtualSystemCollection extends
 		return null;
 	}
 
+	public void setProductSectionArray(ProductSection[] productSectionArray) {
+		Vector<XmlBeanSectionType> sectionVector = new Vector<XmlBeanSectionType>();
+		
+		XmlBeanSectionType[] sectionArray = (XmlBeanSectionType[]) delegate
+				.getSectionArray();
+		
+		//Add everything else that's not a ProductSection
+		if (sectionArray != null) {
+			for (XmlBeanSectionType xmlBeanSection : sectionArray) {
+				if (!(xmlBeanSection instanceof XmlBeanProductSectionType)) {
+					sectionVector.add((XmlBeanProductSectionType) xmlBeanSection);
+				}
+			}
+		}
+		
+		//Add the new elements
+		for (int i = 0; i < productSectionArray.length; i++) {
+			sectionVector.add(productSectionArray[i].getXmlObject());
+		}
+		
+		delegate.setSectionArray((XmlBeanSectionType[]) sectionVector.toArray());
+	}
+	
 	public ProductSection getProductSectionAtIndex(int i) {
 		return getProductSectionArray()[i];
+	}
+	
+	public void addProductSection(ProductSection productSection) {
+		XmlBeanSectionType xmlBeanSectionType = delegate.addNewSection();
+		xmlBeanSectionType.set(productSection.getXmlObject());
 	}
 
 	public VirtualSystem[] getVirtualSystemArray() {
@@ -80,9 +110,23 @@ public class VirtualSystemCollection extends
 		}
 		return null;
 	}
+	
+	public void setVirtualSystemArray(VirtualSystem[] virtualSystemArray) {
+		Vector<XmlBeanContentType> contentVector = new Vector<XmlBeanContentType>();
+		
+		for (int i = 0; i < virtualSystemArray.length; i++) {
+			contentVector.add(virtualSystemArray[i].getXmlObject());
+		}
+		
+		delegate.setContentArray((XmlBeanContentType[]) contentVector.toArray());
+	}
 
 	public VirtualSystem getVirtualSystemAtIndex(int i) {
 		return getVirtualSystemArray()[i];
 	}
-
+	
+	public void addVirtualSystem(VirtualSystem virtualSystem) {
+		XmlBeanContentType xmlBeanContentType = delegate.addNewContent();
+		xmlBeanContentType.set(virtualSystem.getXmlObject());
+	}
 }

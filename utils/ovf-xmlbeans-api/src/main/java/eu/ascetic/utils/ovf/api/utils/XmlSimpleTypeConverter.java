@@ -1,6 +1,7 @@
 package eu.ascetic.utils.ovf.api.utils;
 
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanMsgType;
+import org.dmtf.schemas.wbem.wscim.x1.common.CimBoolean;
 import org.dmtf.schemas.wbem.wscim.x1.common.CimString;
 import org.dmtf.schemas.wbem.wscim.x1.common.CimUnsignedLong;
 
@@ -29,5 +30,11 @@ public final class XmlSimpleTypeConverter {
 		XmlBeanMsgType msg = XmlBeanMsgType.Factory.newInstance();
 		msg.setStringValue(string);
 		return msg;
+	}
+	
+	public static CimBoolean toCimBoolean(Boolean bool) {
+		CimBoolean cimVBoolean = CimBoolean.Factory.newInstance();
+		cimVBoolean.setBooleanValue(bool);
+		return cimVBoolean;
 	}
 }

@@ -8,6 +8,8 @@ import eu.ascetic.utils.ovf.api.utils.XmlSimpleTypeConverter;
 public class OperatingSystem extends
 		AbstractElement<XmlBeanOperatingSystemSectionType> {
 
+	public static OperatingSystemFactory Factory = new OperatingSystemFactory();
+	
 	public OperatingSystem(XmlBeanOperatingSystemSectionType base) {
 		super(base);
 	}

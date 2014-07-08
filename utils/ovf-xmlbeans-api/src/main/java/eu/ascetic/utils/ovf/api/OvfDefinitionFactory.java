@@ -26,6 +26,10 @@ import eu.ascetic.utils.ovf.api.exceptions.InvalidDocumentException;
  */
 public class OvfDefinitionFactory {
 
+	public OvfDefinition newInstance() {
+		return new OvfDefinition(XmlBeanEnvelopeDocument.Factory.newInstance());
+	}
+	
 	public OvfDefinition newInstance(String applicationId,
 			String virtualMachineId) {
 		TemplateLoader loader = new TemplateLoader();

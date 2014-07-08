@@ -78,8 +78,8 @@ public class OvfDefinitionClient {
 					+ componentId);
 			
 			// FIXME: Are we always using the first instances of ProductSection here?
-			// FIXME: Add helper methods to ProductSection class to fetch the UpperBound with a hardcorded key
-			int upperBound = Integer.parseInt(virtualSystemArray[i].getProductSectionAtIndex(0).getPropertyByKey("upperBound").getValue());
+			// Fetch the UpperBound with a hard coded key
+			int upperBound = virtualSystemArray[i].getProductSectionAtIndex(0).getUpperBound();
 			LOGGER.debug("Allocation constraint upper bound is: " + upperBound);
 
 			// Add data to appropriate object(s) in data model.
@@ -128,7 +128,7 @@ public class OvfDefinitionClient {
 			// Get service end points for this virtual machine component	
 			int k = 1;
 			while (true) {				
-				// FIXME: Add helper methods to ProductSection class to fetch the endpoint with a hardcorded key
+				// FIXME: Add helper methods to ProductSection class to fetch the endpoint with a hard coded key
 				ProductProperty productProperty = virtualSystemArray[i].getProductSectionAtIndex(0).getPropertyByKey("endpoint" + k);
 				if (productProperty == null) {
 					break;
@@ -139,6 +139,7 @@ public class OvfDefinitionClient {
 					EndPoint endPoint = new EndPoint(endPointName, endPointUri);
 					virtualMachine.getEndPoints().put(endPointName, endPoint);
 				}
+				k++;
 			}
 		}
 
@@ -171,9 +172,9 @@ public class OvfDefinitionClient {
 			temp = iso.getUri().split(iso.getFileName());
 			String baseUri = temp[0];
 
+			// FIXME: Should we still be using a base name or just append all the ISO's per instance?
 			LOGGER.info("Adding ISO base name URI to OVF: " + baseUri + baseName);
-			// FIXME: Remove the reference to the contextulizationFile should be agnostic of location somehow?
-			ovfDefinition.getReferences().getContextualizationFile().setHref(baseUri + baseName);
+			ovfDefinition.getReferences().addFile(eu.ascetic.utils.ovf.api.File.Factory.newInstance("contextualizationBaseIsoImage", baseUri + baseName));
 		}
 		return ovfDefinition;
 	}
@@ -200,8 +201,13 @@ public class OvfDefinitionClient {
 				// FIXME: OVF definition only supports a single image, this should
 				// change?
 				LOGGER.info("Adding new HardDisk URI to OVF: " + hardDisk.getUri());
-				ovfDefinition.getReferences().getImageFile()
-						.setHref(hardDisk.getUri());
+				
+				eu.ascetic.utils.ovf.api.File[] fileArray = ovfDefinition.getReferences().getFileArray();
+				for (int i = 0; i < fileArray.length; i++) {
+					if ( fileArray[i].getId().equals(hardDisk.getImageId()) ) {
+						fileArray[i].setHref(hardDisk.getUri());
+					}
+				}
 			}
 		}
 

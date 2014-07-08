@@ -1,37 +1,3 @@
-/* 
- * Copyright (c) 2012, Fraunhofer-Gesellschaft
- * All rights reserved.
- * 
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- * 
- * (1) Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the disclaimer at the end.
- *     Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
- *     distribution.
- * 
- * (2) Neither the name of Fraunhofer nor the names of its
- *     contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission.
- * 
- * DISCLAIMER
- * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *  
- */
 package eu.ascetic.utils.ovf.api;
 
 import java.util.List;
@@ -45,6 +11,9 @@ import eu.ascetic.utils.ovf.api.utils.XmlSimpleTypeConverter;
 
 public class VirtualHardwareSection extends
 		AbstractElement<XmlBeanVirtualHardwareSectionType> {
+	
+	public static VirtualHardwareSectionFactory Factory = new VirtualHardwareSectionFactory();
+	
 	public VirtualHardwareSection(XmlBeanVirtualHardwareSectionType base) {
 		super(base);
 	}
@@ -52,9 +21,17 @@ public class VirtualHardwareSection extends
 	public String getInfo() {
 		return delegate.getInfo().getStringValue();
 	}
+	
+	public void setInfo(String info) {
+		delegate.getInfo().setStringValue(info);
+	}
 
 	public System getSystem() {
 		return new System(delegate.getSystem());
+	}
+	
+	public void getSystem(System system) {
+		delegate.setSystem(system.getXmlObject());
 	}
 
 	public Item[] getItemArray() {
@@ -64,9 +41,22 @@ public class VirtualHardwareSection extends
 		}
 		return vector.toArray(new Item[vector.size()]);
 	}
+	
+	public void setItemArray(Item[] itemArray) {
+		List<XmlBeanRASDType> newItemArray = new Vector<XmlBeanRASDType>();
+		for (int i = 0; i < itemArray.length; i++) {
+			newItemArray.add(itemArray[i].getXmlObject());
+		}
+		delegate.setItemArray((XmlBeanRASDType[]) newItemArray.toArray());
+	}
 
 	public Item getItemAtIndex(int i) {
 		return new Item(delegate.getItemArray(i));
+	}
+	
+	public void addItem(Item item) {
+		XmlBeanRASDType xmlBeanRASDType = delegate.addNewItem();
+		xmlBeanRASDType.set(item.getXmlObject());
 	}
 
 	public String getVirtualHardwareFamily() {

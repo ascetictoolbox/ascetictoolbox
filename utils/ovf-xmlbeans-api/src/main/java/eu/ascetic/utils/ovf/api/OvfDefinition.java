@@ -13,7 +13,6 @@ public class OvfDefinition extends AbstractElement<XmlBeanEnvelopeDocument> {
 	 */
 	// CHECKSTYLE:OFF
 	public static OvfDefinitionFactory Factory = new OvfDefinitionFactory();
-
 	// CHECKSTYLE:ON
 
 	public OvfDefinition(XmlBeanEnvelopeDocument base) {
@@ -23,12 +22,20 @@ public class OvfDefinition extends AbstractElement<XmlBeanEnvelopeDocument> {
 	public References getReferences() {
 		return new References(delegate.getEnvelope().getReferences());
 	}
+	
+	public void setReferences(References references) {
+		delegate.getEnvelope().setReferences(references.getXmlObject());
+	}
 
 	// FIXME: The type returned should be checked? (Unless the schema specifies
 	// the locality here?)
 	public DiskSection getDiskSection() {
 		return new DiskSection((XmlBeanDiskSectionType) delegate.getEnvelope()
 				.getSectionArray(0));
+	}
+	
+	public void setDiskSection(DiskSection diskSection) {
+		delegate.getEnvelope().setSectionArray(0, diskSection.getXmlObject());
 	}
 
 	// FIXME: The type returned should be checked? (Unless the schema specifies
@@ -37,10 +44,18 @@ public class OvfDefinition extends AbstractElement<XmlBeanEnvelopeDocument> {
 		return new NetworkSection((XmlBeanNetworkSectionType) delegate
 				.getEnvelope().getSectionArray(1));
 	}
+	
+	public void setNetworkSection(NetworkSection networkSection) {
+		delegate.getEnvelope().setSectionArray(1, networkSection.getXmlObject());
+	}
 
 	public VirtualSystemCollection getVirtualSystemCollection() {
 		return new VirtualSystemCollection(
 				(XmlBeanVirtualSystemCollectionType) delegate.getEnvelope()
 						.getContent());
+	}
+	
+	public void setVirtualSystemCollection(VirtualSystemCollection virtualSystemCollection) {
+		delegate.getEnvelope().setContent(virtualSystemCollection.getXmlObject());
 	}
 }

@@ -25,6 +25,7 @@ import org.apache.xmlbeans.XmlOptions;
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanEnvelopeDocument;
 
 import eu.ascetic.utils.ovf.api.OvfDefinition;
+import eu.ascetic.utils.ovf.api.ProductPropertyType;
 
 /**
  * @author Django Armstrong (ULeeds)
@@ -49,7 +50,7 @@ public class OvfDefinitionTest extends TestCase {
 		ovfDefinition.getVirtualSystemCollection().getProductSectionAtIndex(0)
 				.setVersion("Version 1.0");
 		ovfDefinition.getVirtualSystemCollection().getProductSectionAtIndex(0)
-				.addNewProperty("probe1", "string", "uri://some-end-point");
+				.addNewProperty("probe1", ProductPropertyType.STRING, "uri://some-end-point");
 		String probeUri = ovfDefinition.getVirtualSystemCollection()
 				.getProductSectionAtIndex(0).getPropertyByKey("probe1")
 				.getValue();
@@ -70,7 +71,7 @@ public class OvfDefinitionTest extends TestCase {
 				.getProductSectionAtIndex(0).setVersion("Version 1.0");
 		ovfDefinition.getVirtualSystemCollection().getVirtualSystemAtIndex(0)
 				.getProductSectionAtIndex(0)
-				.addNewProperty("probe1", "string", "uri://some-end-point");
+				.addNewProperty("probe1", ProductPropertyType.STRING, "uri://some-end-point");
 		probeUri = ovfDefinition.getVirtualSystemCollection()
 				.getVirtualSystemAtIndex(0).getProductSectionAtIndex(0)
 				.getPropertyByKey("probe1").getValue();
