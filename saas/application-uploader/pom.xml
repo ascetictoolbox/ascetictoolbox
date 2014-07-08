@@ -19,12 +19,12 @@
 		<groupId>eu.ascetic.paas</groupId>
 		<artifactId>application-manager-datamodel</artifactId>
 		<version>0.1-SNAPSHOT</version>
-		<exclusions>
+		<!-- exclusions>
 			<exclusion>
 				<groupId>org.hibernate.javax.persistence</groupId>
 				<artifactId>hibernate-jpa-2.0-api</artifactId>
 			</exclusion>
-		</exclusions>
+		</exclusions-->
 		
 	</dependency>
   </dependencies>
