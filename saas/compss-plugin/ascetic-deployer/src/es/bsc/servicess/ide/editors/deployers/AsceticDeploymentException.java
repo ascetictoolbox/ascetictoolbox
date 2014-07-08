@@ -20,7 +20,10 @@ public class AsceticDeploymentException extends Exception {
 
 	public AsceticDeploymentException(String str) {
 		super(str);
-		System.out.println("Exception" + super.getMessage());
+	}
+	
+	public AsceticDeploymentException(Throwable e) {
+		super(e);
 	}
 
 }

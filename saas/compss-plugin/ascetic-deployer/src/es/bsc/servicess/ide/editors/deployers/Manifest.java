@@ -16,20 +16,30 @@
 
 package es.bsc.servicess.ide.editors.deployers;
 
-import static es.bsc.servicess.ide.Constants.ORCH_TYPE;
-import static es.bsc.servicess.ide.Constants.WAR_DEP_TYPE;
+import static es.bsc.servicess.ide.Constants.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Map.Entry;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.configuration.ConfigurationException;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.xml.sax.SAXException;
 
 import es.bsc.servicess.ide.ConstraintDef;
@@ -43,10 +53,66 @@ import es.bsc.servicess.ide.model.Dependency;
 import es.bsc.servicess.ide.model.MethodCoreElement;
 import es.bsc.servicess.ide.model.ServiceCoreElement;
 import es.bsc.servicess.ide.model.ServiceElement;
+import eu.ascetic.utils.ovf.api.OvfDefinition;
+import eu.ascetic.utils.ovf.api.OvfDefinitionFactory;
+import eu.ascetic.utils.ovf.api.OvfDefinitionProperties;
+import eu.ascetic.utils.ovf.api.ProductSection;
+import eu.ascetic.utils.ovf.api.VirtualHardwareSection;
+import eu.ascetic.utils.ovf.api.VirtualSystem;
+import eu.ascetic.utils.ovf.api.VirtualSystemCollection;
 
 public class Manifest {
 	private static Logger log = Logger.getLogger(Manifest.class);
 	public static final String ASCETIC_PREFIX = "ascetic-pm-";
+	private IJavaProject project;
+	private OvfDefinition ovf;
+	public static final String VMIC_FILE = "VMIC_File";
+	
+	/**
+	 * Generate a new service manifest
+	 * @param op_prop 
+	 * @throws Exception 
+	 */
+	protected void generateNewPackages(ProjectMetadata pr_meta, PackageMetadata packMeta, 
+			HashMap<String, ServiceElement> allEls, AsceticProperties prop) throws Exception {
+		
+		
+		String[] oePacks = packMeta.getPackagesWithOrchestration();
+		if (oePacks == null || oePacks.length <= 0) {
+			throw new Exception("No orchestration packages defined");
+		}
+			
+		//TODO generate new ovf definition
+		ovf = null; 
+		for (String p : oePacks) {
+			log.debug("Creating Component for package " + p );
+			String componentID = Manifest.generateManifestName(p);
+			if (ovf == null){
+				OvfDefinition.Factory.newInstance(project.getProject().getName(), componentID);
+			}else
+				//TODO: Create the new component
+			setComponentDescription(componentID, pr_meta, packMeta, p, project, 
+					 allEls, false, prop);
+		}
+		String[] cePacks = packMeta.getPackagesWithCores();
+		if (cePacks != null && cePacks.length > 0) {
+			for (String p : cePacks) {
+				log.debug("Creating Component for package " + p );
+				String componentID = Manifest.generateManifestName(p);
+				
+				setComponentDescription(componentID, pr_meta, packMeta, p, project, 
+					allEls, false, prop);
+				
+			}
+		}else{
+			log.warn("No packages found generating only master");
+		}
+		
+		
+		toFile();
+	}
+	
+	
 	/**
 	 * Set component description in the service manifest
 	 * 
@@ -57,7 +123,7 @@ public class Manifest {
 	 * @param master flag to indicate if component is a front-end
 	 * @throws Exception 
 	 */
-	public void setComponentDescription(String component,
+	public void setComponentDescription(String componentID,
 			ProjectMetadata prMeta, PackageMetadata packMeta, String p, IJavaProject project,
 			HashMap<String, ServiceElement> constEls, boolean master,
 			AsceticProperties op_prop) throws Exception {
@@ -80,31 +146,39 @@ public class Manifest {
 		Map<String, Integer> minCoreInstancesPerMachine = BuildingDeploymentFormPage.
 				getConstraintsElements(els, constEls, minCoreInstances, maxResourcesPerMachine, 
 						maxConstraints);
+		VirtualSystem component = getComponent(componentID);
 		setConstraints(component, maxConstraints, prMeta);
 		
 		log.debug("Setting signatures in product");
-		/* TODO: Change to ascetic
-		 * ProductSection product = component.getOVFDefinition()
-				.getVirtualSystem().getProductSection();
+		ProductSection product = component.getProductSectionAtIndex(0);
 		if (master) {
 			signatures = "master-frontend";
 		}else
 			signatures = generateElementSignatures(constEls, els, prMeta, minCoreInstancesPerMachine);
-		product.setProduct(signatures);
-		*/
+		product.addNewProperty("PM_Elements", "string", signatures);
 		/* TODO: Default intra-components affinity
 		component.setAffinityConstraints("Low");
 		component.setAntiAffinityConstraints("Low");
 		*/
 		log.debug("Setting Allocation and elasticity rules");
-		/* TODO: Change to ascetic
 		setAllocation(component, els, minCoreInstancesPerMachine,
 				minCoreInstances, maxCoreInstances);
-		
+		/*
 		setElasticity(manifest, component.getComponentId(), els, minCoreInstancesPerMachine, 
 				minCoreInstances, maxCoreInstances, op_prop);
 		 */
 	}
+
+	private VirtualSystem getComponent(String component) throws Exception {
+		VirtualSystemCollection vsc =  ovf.getVirtualSystemCollection();
+		for (VirtualSystem vs : vsc.getVirtualSystemArray()){
+			if (vs.getId().equals(component)){
+				return vs;
+			}
+		}
+		throw new Exception("Component "+ component +" not found");
+	}
+
 
 	/** Generate element Signature
 	 * @param constEls Elements with constrains
@@ -180,17 +254,14 @@ public class Manifest {
 	 * @throws ConfigurationException 
 	 */
 	private void setConstraints(
-		String component,Map<String, String> maxConstraints, 
+		VirtualSystem component,Map<String, String> maxConstraints, 
 		ProjectMetadata prMeta) throws ConfigurationException {
-		/* TODO Change to Ascetic manifest
+		
 		Map<String, String> defResources = prMeta.getDefaultResourcesProperties();
 		Long ds = getDiskSize(maxConstraints, defResources);
 		log.debug("Setting Storage to " + ds);
-		component.getOVFDefinition().getDiskSection().getImageDisk()
-				.setCapacity(ds.toString());
-		
-		VirtualHardwareSection hardwareSection = component.getOVFDefinition()
-				.getVirtualSystem().getVirtualHardwareSection();
+		//TODO Add storage OS, architecture
+		VirtualHardwareSection hardwareSection = component.getVirtualHardwareSection();
 		Float ms = getMemSize(maxConstraints, defResources);
 		log.debug("Setting Memory to " + ms);
 		hardwareSection.setMemorySize(ms.intValue());
@@ -198,7 +269,7 @@ public class Manifest {
 		Integer cpuc = getCPUCount(maxConstraints, defResources);
 		log.debug("Setting CPU count to " + cpuc);
 		hardwareSection.setNumberOfVirtualCPUs(cpuc.intValue());
-		*/
+		
 	}
 
 	private static Integer getCPUCount(Map<String, String> maxConstraints,
@@ -265,7 +336,7 @@ public class Manifest {
 	 * @param maxCoreInstances Map with the maximum total core element instances
 	 * @throws Exception 
 	 */
-	private void setAllocation(String component, String[] els,
+	private void setAllocation(VirtualSystem component, String[] els,
 			Map<String, Integer> minCoreInstancesPerMachine,
 			Map<String, Integer> minCoreInstances,
 			Map<String, Integer> maxCoreInstances) throws Exception {
@@ -295,7 +366,7 @@ public class Manifest {
 			*/
 	}
 
-	/**
+	/* TODO Not currently supported in Ascetic  
 	 * Set the elasticity section for a component
 	 * 
 	 * @param manifest2 service manifest
@@ -304,12 +375,12 @@ public class Manifest {
 	 * @param minCoreInstancesPerMachine Map with the minimum core element instances per machine 
 	 * @param minCoreInstances Map with the minimum total core element instances
 	 * @param maxCoreInstances Map with the maximum total core element instances 
-	 */
-	private void setElasticity(String component,
+	 
+	 * private void setElasticity(String component,
 			String[] els, Map<String, Integer> minCoreInstancesPerMachine,
 			Map<String, Integer> minCoreInstances, Map<String, Integer> maxCoreInstances,
 			AsceticProperties op_prop) {
-		/* TODO Change to ascetic manifest  
+		
 		if (requiresScalability(els, minCoreInstances, maxCoreInstances)) {
 			int quota = 1;
 			for (String e : els) {
@@ -329,9 +400,9 @@ public class Manifest {
 			}
 			rule.setQuota(quota);
 		}
-		*/
+		
 
-	}
+	}*/
 
 	/**
 	 * Check if a component requires elasticity
@@ -354,47 +425,6 @@ public class Manifest {
 		return false;
 	}
 
-	/** Set the image URL in the manifest 
-	 * @param map Component imageURL map
-	 * @throws SAXException
-	 * @throws IOException
-	 * @throws ParserConfigurationException
-	 * @throws AsceticDeploymentException
-	 */
-	public  void setImages(Map<String, String> map)
-			throws SAXException, IOException, ParserConfigurationException,
-			AsceticDeploymentException {
-		for (Entry<String, String> es : map.entrySet()) {
-			/* TODO Change to ascetic manifest
-			VirtualMachineComponent component = manifest
-					.getVirtualMachineDescriptionSection()
-					.getVirtualMachineComponentById(OPTIMIS_PREFIX + es.getKey());
-			if (component != null)
-				component.getOVFDefinition().getReferences().getImageFile()
-						.setHref(es.getValue());
-			else
-				throw (new AsceticDeploymentException("Component "
-						+ OPTIMIS_PREFIX + es.getKey() + " not found in the manifest"));
-			*/
-		}
-	}
-
-	
-
-	private static String[] getCapacityValues(
-			HashMap<String, ServiceElement> allEls, ProjectMetadata prMeta) {
-		String[] vals = new String[2];
-		String[] els = allEls.keySet().toArray(new String[allEls.size()]);
-		Map<String, Integer> minCoreInstances = prMeta.getMinElasticity(els);	
-		Map<String, String> maxConstraints = new HashMap<String, String>();
-		Map<String, String> maxResourcesPerMachine = prMeta.getMaxResourcesProperties();
-		Map<String, Integer> minCoreInstancesPerMachine = BuildingDeploymentFormPage.
-				getConstraintsElements(els, allEls, minCoreInstances, maxResourcesPerMachine, 
-						maxConstraints);
-		vals[0] = maxConstraints.get(ConstraintDef.ENC_STORAGE);
-		vals[1] = maxConstraints.get(ConstraintDef.SHARED_STORAGE);
-		return vals;
-	}
 
 	
 
@@ -490,7 +520,6 @@ public class Manifest {
 
 	public void addAffinityRule(String[] generatedManifestNames, String trim) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	public void setAntiAffinityRule(int selectionIndex,
@@ -515,18 +544,64 @@ public class Manifest {
 	}
 
 	public void setServiceId(String serviceID) {
-		// TODO Auto-generated method stub
+		ovf.getVirtualSystemCollection().setId(serviceID);
 		
 	}
 
-	public static Manifest newInstance(String name) {
-		// TODO Auto-generated method stub
-		return null;
+	public static Manifest newInstance(IJavaProject project, String componentID) {
+		Manifest m = new Manifest();
+		m.project = project;
+		m.ovf = OvfDefinition.Factory.newInstance(project.getProject().getName(), componentID);
+		return m;
 	}
 
-	public static Manifest newInstance(StringBuffer manifestData) {
-		// TODO Auto-generated method stub
-		return null;
+	public static Manifest newInstance(IJavaProject project, StringBuffer manifestData) {
+		Manifest m = new Manifest();
+		m.project = project;
+		m.ovf = OvfDefinition.Factory.newInstance(manifestData.toString());
+		m.setServiceId(project.getProject().getName());
+		return m;
 	}
 
+	public String getString() {
+		return ovf.getXmlObject().toString();
+	}
+	
+	public void toFile() throws CoreException{
+		IFile sm = project.getProject().getFolder(OUTPUT_FOLDER).getFolder(PACKAGES_FOLDER)
+					.getFile(AsceticProperties.SERVICE_MANIFEST);
+		if (sm.exists()) {
+							sm.delete(true, null);
+						}
+						log.debug("writing the manifest in the file ");
+						sm.create(new ByteArrayInputStream(getString()
+								.getBytes()), true, null);
+	}
+
+
+	public OvfDefinition getOVFDefinition() {
+		return ovf;
+	}
+	
+	public void updateOVFDefinition(OvfDefinition ovf) {
+		this.ovf = ovf;
+	}
+
+	public boolean hasImages() {
+		if (ovf.getReferences().getFileArray().length>0){
+			return true;
+		}else
+			return false;
+	}
+
+	public void addFiles(String name, String href, String format){
+		//TODO add file
+	}
+	
+	public void addVMICFileInComponent(String componentID, String name) throws Exception{
+		VirtualSystem vs = getComponent(componentID);
+		vs.getProductSectionAtIndex(0).addNewProperty(VMIC_FILE , "string", name);
+		
+		
+	}
 }

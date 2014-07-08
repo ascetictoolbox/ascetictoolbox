@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.SWT;
@@ -47,10 +48,14 @@ import es.bsc.servicess.ide.editors.CommonFormPage;
 import es.bsc.servicess.ide.editors.ServiceEditorSection;
 import es.bsc.servicess.ide.editors.ServiceFormEditor;
 import es.bsc.servicess.ide.model.ServiceElement;
+import eu.ascetic.vmic.api.VmicApi;
+import eu.ascetic.vmic.api.core.ProgressException;
+import eu.ascetic.vmic.api.datamodel.GlobalConfiguration;
+import eu.ascetic.vmic.api.datamodel.ProgressData;
 
 public class ImagesSection extends ServiceEditorSection {
 
-	private File imageMetadataFile;
+	//private File imageMetadataFile;
 	private boolean redoingImages;
 	private Composite ics_location;
 	private Text icsText;
@@ -66,6 +71,7 @@ public class ImagesSection extends ServiceEditorSection {
 			new String[]{DEFAULT_IMAGE_CREATION_MODE,BROKER_IMAGE_CREATION_MODE};
 	public static final String IMAGE_CREATION_SEC_TITLE = "Image Creation";
 	public static final String IMAGE_CREATION_SEC_DESC = "Define the options for the vm image creation process";
+	private static final long CREATION_PULL_INTERVAL = 30000;
 	
 	
 	/** 
@@ -78,7 +84,7 @@ public class ImagesSection extends ServiceEditorSection {
 	public ImagesSection (FormToolkit toolkit, ServiceFormEditor editor, int format, 
 			File packageMetadataFile, AsceticDeployer deployer) {
 		super(toolkit, editor,IMAGE_CREATION_SEC_TITLE,IMAGE_CREATION_SEC_DESC , format);
-		this.imageMetadataFile = packageMetadataFile;
+		//this.imageMetadataFile = packageMetadataFile;
 		this.deployer = deployer;
 		this.redoingImages = false;
 	}
@@ -138,30 +144,37 @@ public class ImagesSection extends ServiceEditorSection {
 	 */
 	protected void createServiceImages() {
 		ProgressMonitorDialog dialog = new ProgressMonitorDialog(editor.getSite().getShell());
-		try {
-			dialog.run(false, false, new IRunnableWithProgress() {
+		final String location = icsText.getText().trim();
+		if (location != null && location.length() > 0) {
+			try {
+				dialog.run(false, false, new IRunnableWithProgress() {
 
-				@Override
-				public void run(IProgressMonitor monitor)
-						throws InvocationTargetException, InterruptedException {
-					try {
-						redoingImages=true;
-						executeImageCreation(monitor);
-						redoingImages=false;
-					} catch (Exception e) {
-						redoingImages=false;
-						throw (new InvocationTargetException(e));
+					@Override
+					public void run(IProgressMonitor monitor)
+							throws InvocationTargetException, InterruptedException {
+						try {
+							redoingImages=true;
+							executeImageCreation( location, monitor);
+							redoingImages=false;
+						} catch (Exception e) {
+							redoingImages=false;
+							throw (new InvocationTargetException(e));
+						}
 					}
-				}
-			});
-		} catch (InterruptedException e) {
-			log.error("Error creating images", e);
-			ErrorDialog.openError(editor.getSite().getShell(), "Error creating images",
+				});
+			} catch (InterruptedException e) {
+				log.error("Error creating images", e);
+				ErrorDialog.openError(editor.getSite().getShell(), "Error creating images",
 					e.getMessage(), new Status(Status.ERROR, Activator.PLUGIN_ID,"Exception creating Images", e));
-		} catch (InvocationTargetException e) {
-			log.error("Error creating images", e);
-			ErrorDialog.openError(editor.getSite().getShell(), "Error creating images",
+			} catch (InvocationTargetException e) {
+				log.error("Error creating images", e);
+				ErrorDialog.openError(editor.getSite().getShell(), "Error creating images",
 					e.getMessage(), new Status(Status.ERROR, Activator.PLUGIN_ID,"Exception creating Images", e));
+			}
+		}else{
+			log.error("Empty image creation service");
+			ErrorDialog.openError(editor.getSite().getShell(),"Empty Location" , "Image Creation Service loaction is empty",
+				 new Status(Status.ERROR, Activator.PLUGIN_ID, "Image Creation Service loaction is empty"));
 		}
 	}
 
@@ -169,116 +182,51 @@ public class ImagesSection extends ServiceEditorSection {
 	 * Executes the creation of the service images invoking the 
 	 * Image Creation service and installing the service packages
 	 * 
+	 * @param location 
 	 * @param monitor Object to monitor the image creation progress
 	 * @throws Exception 
 	 */
-	protected void executeImageCreation(IProgressMonitor monitor)
+	protected void executeImageCreation(String location, IProgressMonitor monitor)
 			throws Exception {
-		String location = icsText.getText().trim();
-		if (location != null && location.length() > 0) {
-			if (deployer.getManifest() == null) {
-				deployer.generateNewManifest();
-				deployer.writeManifestToFile();
-			}
-			
-			Client c = Client.create();
-			WebResource resource = c.resource(location);
-			if (resource != null) {
-				ProjectMetadata pr_meta = new ProjectMetadata(editor
-						.getMetadataFile().getRawLocation().toFile());
-				PackageMetadata packMeta = deployer.getPackageMetadata();
-				ImageMetadata imgMeta = getImageMetadata();
-				imgMeta.removeAllImages();
-				HashMap<String, ServiceElement> allEls = CommonFormPage.getElements(
-						pr_meta.getAllOrchestrationClasses(), BOTH_TYPE, 
-						editor.getProject(), pr_meta);
-				String[] allPacks = packMeta.getPackages();
-				String[] oePacks = packMeta.getPackagesWithOrchestration();
-				String[] cePacks = packMeta.getPackagesWithCores();
-				IFolder packageFolder = editor.getProject().getProject().
-						getFolder(OUTPUT_FOLDER).getFolder(PACKAGES_FOLDER);
-				if (deployer.getManifest() == null) {
-					deployer.generateNewManifest();
-				}
-				deployer.writeManifestToFile();
-				if (icsMode.getItem(icsMode.getSelectionIndex()).
-						equalsIgnoreCase(BROKER_IMAGE_CREATION_MODE)){
-					log.debug("Broker Mode");
-					String[] id_url;
-					//Y2 ICS
-					//String imageDescription = "OrchestrationElement";
-					//Y3 ICS
-					String imageDescription = ImageCreation.getFullImageDescription(pr_meta, allEls);
-					//"<ImageTemplate><operatingSystem>CentOS</operatingSystem><imageSize>9</imageSize></ImageTemplate>";
-					log.debug("Requesting image creation: " +imageDescription);
-					if (oePacks != null && oePacks.length > 0){ 
-						id_url = ImageCreation.createFullImage(resource, oePacks, allPacks, cePacks, 
-								packageFolder, pr_meta,	packMeta, imageDescription, monitor);
-					}else{
-						log.debug("No oe packages, Creating single one by default.");
-						id_url = ImageCreation.createFullImage(resource, new String[]{editor.getProject()
-								.getProject().getName()}, allPacks, cePacks, packageFolder, pr_meta,
-								packMeta, imageDescription, monitor);		
-						imgMeta.addImage(id_url[0], id_url[1], editor.getProject()
-							.getProject().getName());
-					}
-					if (allPacks != null && allPacks.length > 0) {
-						for (String p : allPacks) {
-							imgMeta.addImage(id_url[0], id_url[1], p);
-						}
-					}
-				}else{
-					log.debug("Default Mode");
-					//String[] oePacks = pr_meta.getPackagesWithCores();
-					if (oePacks != null && oePacks.length > 0) {
-						for (String p : oePacks) {
-							//Y2 ICS
-							//String imageDescription = "OrchestrationElement";
-							//Y3 ICS
-							String imageDescription = ImageCreation.getImageDescription(pr_meta, packMeta, p, 
-									allEls, true, editor.getProject());
-							log.debug("Requesting image creation: " +imageDescription);
-							String[] id_url;
-							id_url = ImageCreation.createFrontEndImage(resource, p, oePacks[0], allPacks, 
-									packageFolder, pr_meta, packMeta, imageDescription, monitor);
-							imgMeta.addImage(id_url[0], id_url[1], p);
-						}
-					}else{
-						//Y2 ICS
-						//String imageDescription = "OrchestrationElement";
-						//Y3 ICS
-						String projectName = editor.getProject().getProject().getName();
-						String imageDescription = ImageCreation.getImageDescription(pr_meta, packMeta, projectName
-								,allEls, true,editor.getProject() );
-						log.debug("Requesting image creation: " +imageDescription);
-						String[] id_url = ImageCreation.createFrontEndImage(resource, projectName, projectName,
-								allPacks, packageFolder, pr_meta, packMeta, imageDescription,monitor);
-						imgMeta.addImage(id_url[0], id_url[1], editor.getProject().getProject().getName());
-					}
-					//String[] cePacks = pr_meta.getPackagesWithCores();
-					if (cePacks != null && cePacks.length > 0) {
-						for (String p : cePacks) {
-							// create package image
-							//Y2 ICS
-							//String packImageDesc = "CoreElement";
-							//Y3 ICS
-							String packImageDesc = ImageCreation.getImageDescription(pr_meta, packMeta, p ,allEls, 
-									false, editor.getProject());
-							log.debug("Requesting image creation: " + packImageDesc);
-							String[] id_url = ImageCreation.createPackageImage(resource, p, packageFolder, pr_meta, 
-									packImageDesc, packMeta, monitor);
-							imgMeta.addImage(id_url[0], id_url[1], p);
-						}
-					}
-				}
-				imgMeta.toFile(imageMetadataFile);
-				deployer.getManifest().setImages(imgMeta.getImageURLPackagesMap());
-			}
+		Manifest manifest = deployer.getManifest();
+		if (manifest == null) {
+			if (MessageDialog.openQuestion(getShell(), AsceticDeployer.CREATE_PACKS_DEF_TITLE, 
+					editor.getProject().getProject().getName() + AsceticDeployer.CREATE_PACKS_DEF_QUESTION)){
+				 deployer.packSection.generate();
+			}else
+				return;
 		}
+		ProjectMetadata prMeta = new ProjectMetadata(editor
+				.getMetadataFile().getRawLocation().toFile());
+		PackageMetadata packMeta = deployer.getPackageMetadata();
+		HashMap<String, ServiceElement> allEls = CommonFormPage.getElements(
+				prMeta.getAllOrchestrationClasses(), BOTH_TYPE, 
+				editor.getProject(), prMeta);
+		
+		//Add VMIC configuration
+		GlobalConfiguration gc = new GlobalConfiguration();
+		VmicApi vmic = new VmicApi(gc);
+		uploadFiles(vmic, manifest, prMeta, packMeta, monitor);
+		vmic.generateImage(manifest.getOVFDefinition());
+		monitorProgress(vmic, monitor);	
 	}
-	
-	public ImageMetadata getImageMetadata() throws SAXException, IOException, ParserConfigurationException{
-		return new ImageMetadata(imageMetadataFile);
+
+	private void monitorProgress(VmicApi vmic, IProgressMonitor monitor) throws Exception {
+		monitor.beginTask("Creating Images", 100);
+		ProgressData pd = vmic.progressCallback(editor.getProject().getProject().getName());
+		while(!pd.isComplete()){	
+			monitor.worked(pd.getCurrentPercentageCompletion().intValue());
+			Thread.sleep(CREATION_PULL_INTERVAL);
+			pd = vmic.progressCallback(editor.getProject().getProject().getName());
+		}
+		monitor.done();
+	}
+
+	private void uploadFiles(VmicApi vmic, Manifest manifest,
+			ProjectMetadata prMeta, PackageMetadata packMeta,
+			IProgressMonitor monitor) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	public boolean isBlocking() {

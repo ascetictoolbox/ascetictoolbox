@@ -20,21 +20,24 @@ package es.bsc.servicess.ide.editors.deployers;
 
 import java.util.Map;
 
+import es.bsc.servicess.ide.Logger;
 import es.bsc.servicess.ide.views.DeploymentChecker;
+import eu.ascetic.saas.application_uploader.ApplicationUploader;
 
 public class AsceticDeploymentChecker implements DeploymentChecker {
-	private String AM_endpoint;
-	private ApplicationManagerClient AMClient;
-
-	public AsceticDeploymentChecker(String AM_endpoint) {
-		this.AM_endpoint = AM_endpoint;
-		this.AMClient = new ApplicationManagerClient(AM_endpoint);
+	private ApplicationUploader AMClient;
+	private String applicationID;
+	private static Logger log = Logger.getLogger(AsceticDeploymentChecker.class);
+	
+	public AsceticDeploymentChecker(ApplicationUploader appUploader, String applicationID) {
+		this.AMClient = appUploader;
+		
 	}
 
 	@Override
-	public String getStatus(String serviceID) {
+	public String getStatus(String deploymentID) {
 		try {
-			return AMClient.getStatus(serviceID);
+			return AMClient.getDeploymentStatus(applicationID, deploymentID);
 			//return "Deployed";
 		} catch (Exception e) {
 
@@ -45,14 +48,11 @@ public class AsceticDeploymentChecker implements DeploymentChecker {
 	}
 
 	@Override
-	public Map<String, Map<String, String>> getMachines(String serviceID) {
+	public Map<String, Map<String, String>> getMachines(String deploymentID) {
 		try {
-			
-			return AMClient.getIPAddresses(serviceID);
-			
+			return AMClient.getDeployedVMs(applicationID, deploymentID);
 		} catch (Exception e) {
-			e.printStackTrace();
-			System.err.println("Error getting machines from service manager");
+			log.error("Error getting machines from application manager", e);
 			return null;
 		}
 	
@@ -61,8 +61,11 @@ public class AsceticDeploymentChecker implements DeploymentChecker {
 
 	@Override
 	public void undeploy(String serviceID, boolean keepData) {
-		AMClient.undeployService(serviceID, keepData);
-		
+		try {
+			AMClient.undeploy(serviceID, applicationID);
+		}catch (Exception e) {
+			log.error("Error undeploying application", e);
+		}
 	}
 
 	@Override

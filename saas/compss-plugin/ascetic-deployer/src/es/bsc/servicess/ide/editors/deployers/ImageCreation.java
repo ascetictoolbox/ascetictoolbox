@@ -70,90 +70,18 @@ public class ImageCreation {
 	private static final String READY = "READY";
 	
 	private static final String IMAGE_GAT_LOCATION = "/GAT";
+	private static final String SHARED_FOLDER = null;
 	
-	public static String[] createFullImage(WebResource resource, String[] orchPacks,
-			String[] packs, String[] cePacks, IFolder packageFolder, ProjectMetadata pr_meta, 
-			PackageMetadata packMeta, String imageDescription, IProgressMonitor monitor) throws Exception {
-		//generateConfigurationFiles(name, packs, monitor);
-		ClientResponse response = resource.path("image")
-				.header("Content-Type", "text/plain")
-				.post(ClientResponse.class, imageDescription);
-		if (response.getStatus() == com.sun.jersey.api.client.ClientResponse.Status.OK.getStatusCode()) {
-			String image_id = response.getEntity(String.class).trim();
-			log.debug("Image_id: \"" + image_id+"\"");
-			if (image_id != null && image_id.length() > 0 && !image_id.contains("Error")) {
-				if (orchPacks!=null&& orchPacks.length>0){
-					for (String name:orchPacks){
-						installOrchestrationInImage(resource, name, orchPacks[0], packs, image_id, packageFolder, pr_meta, packMeta, monitor);
-					}
-				}else
-					throw (new AsceticDeploymentException("No orchestration elements found"
-							+ response.toString()));
-				for(String p:cePacks){
-					installCoreElementInImage(resource, p, image_id, packageFolder, pr_meta, packMeta, monitor);
-				}
-				monitor.subTask("Finalizing image");
-				String[] str = finalizeImage(resource, image_id);
-				monitor.done();
-				return str;
-			} else
-				throw (new AsceticDeploymentException("Error image ID is null"
-						+ response.toString()));
-		} else {
-			log.error("Response: " + response.toString());
-			throw (new AsceticDeploymentException("Error creating the image"
-					+ response.toString()));
-		}
-	}
 
-	/**
-	 * Create the image the front end image with the orchestration elements packages
-	 * @param resource Image Creation Service URL's web resource 
-	 * @param packName Name of the implemented service
-	 * @param packs Packages to deploy in the image
-	 * @param monitor Object to monitor the progress of the image creation 
-	 * @return Pair of imageID - imageURL
-	 * @throws Exception 
-	 */
-	public static String[] createFrontEndImage(WebResource resource,
-			String packName, String schPack, String[] packs, IFolder packageFolder, 
-			ProjectMetadata prMeta, PackageMetadata packMeta, String imageDescription, IProgressMonitor monitor)
-			throws Exception {
-		
-		//generateConfigurationFiles(servicename, packs, monitor);
-		ClientResponse response = resource.path("image")
-				.header("Content-Type", "text/plain")
-				.post(ClientResponse.class, imageDescription);
-		if (response.getStatus() == com.sun.jersey.api.client.ClientResponse.Status.OK.getStatusCode()) {
-			String image_id = response.getEntity(String.class).trim();
-			log.debug("Image_id: " + image_id);
-			if (image_id != null && image_id.length() > 0 &&!image_id.contains("Error")) {
-				
-				installOrchestrationInImage(resource, packName, schPack, packs, image_id, packageFolder, 
-						prMeta, packMeta, monitor);
-				
-				monitor.subTask("Finalizing image");
-				String[] str = finalizeImage(resource, image_id);
-				monitor.done();
-				return str;
-			} else
-				throw (new AsceticDeploymentException("Error image ID is null"
-						+ response.toString()));
-		} else {
-			log.error("Response: " + response.toString());
-			throw (new AsceticDeploymentException("Error creating the image"
-					+ response.toString()));
-		}
-	}
 	
-	private static void installOrchestrationInImage(WebResource resource,
+	
+	private static void uploadOrchestrationPackages(WebResource resource,
 			String packName, String schPackage, String[] packs, String image_id, IFolder packageFolder,
 			ProjectMetadata pr_meta, PackageMetadata packMeta, IProgressMonitor monitor ) 
 				throws Exception{
 
 		generateConfigurationFiles(packName, schPackage, packs, packageFolder, pr_meta, monitor);
 		monitor.beginTask("Creating image for " + packName, 11);
-		waitUntilReady(resource, image_id, monitor);
 		monitor.worked(1);
 
 		// Uploading file
@@ -161,24 +89,20 @@ public class ImageCreation {
 		IFile f = packageFolder.getFile("project.xml");
 		log.debug("Uploading " + f.getLocation().toOSString());
 		uploadFile(resource, f.getLocation().toFile(), image_id);
-		waitUntilReady(resource, image_id, monitor);
 		
 		monitor.worked(1);
 		f = packageFolder.getFile("resources.xml");
 		log.debug("Uploading " + f.getLocation().toOSString());
 		uploadFile(resource, f.getLocation().toFile(), image_id);
-		waitUntilReady(resource, image_id, monitor);
 		monitor.worked(1);
 		f = packageFolder.getFile("service_manifest.xml");
 		log.debug("Uploading " + f.getLocation().toOSString());
 		uploadFile(resource, f.getLocation().toFile(), image_id);
-		waitUntilReady(resource, image_id, monitor);
 		monitor.worked(1);
 		File file = new File(pr_meta.getRuntimeLocation()
 				+ "/../log/it-log4j");
 		if (f != null && f.exists()) {
 			uploadFile(resource, file, image_id);
-			waitUntilReady(resource, image_id, monitor);
 		}
 		
 		monitor.worked(1);
@@ -186,21 +110,18 @@ public class ImageCreation {
 				+ "/../xml/projects/project_schema.xsd");
 		if (f != null && f.exists()) {
 			uploadFile(resource, file, image_id);
-			waitUntilReady(resource, image_id, monitor);
 		}
 		monitor.worked(1);
 		file = new File(pr_meta.getRuntimeLocation()
 				+ "/../xml/resources/resource_schema.xsd");
 		if (f != null && f.exists()) {
 			uploadFile(resource, file, image_id);
-			waitUntilReady(resource, image_id, monitor);
 		}
 		monitor.worked(1);
 		file = new File(pr_meta.getRuntimeLocation()
 				+ "/../worker/worker.sh");
 		if (f != null && f.exists()) {
 			uploadFile(resource, file, image_id);
-			waitUntilReady(resource, image_id, monitor);
 		}
 		monitor.worked(1);
 		monitor.subTask("Setting file permissions in core elements installations");
@@ -216,8 +137,7 @@ public class ImageCreation {
 			PackagingUtils.addRuntimeConfigTojar(f, properties.getLocation()
 					.toFile(), packageFolder, PackagingUtils.WAR_CLASSES_PATH, monitor);
 			log.debug("Uploading " + f.getLocation().toOSString());
-			uploadWar(resource, f.getLocation().toFile(), image_id);
-			waitUntilReady(resource, image_id, monitor);
+			uploadFile(resource, f.getLocation().toFile(), image_id);
 			monitor.worked(1);
 		}
 		
@@ -225,7 +145,6 @@ public class ImageCreation {
 		f = packageFolder.getFile(packName + "_deps.zip");
 		if (f != null && f.exists()) {
 			uploadAndUnzip(resource, f.getLocation().toFile(), image_id);
-			waitUntilReady(resource, image_id, monitor);
 		}
 		String[] elements= packMeta.getElementsInPackage(packName);
 		if (elements== null|| elements.length<=0){
@@ -248,7 +167,6 @@ public class ImageCreation {
 		File f = new File(runtimeLocation+"/../../monitoring/Monitoring.war");
 		if (f.exists()){
 			uploadWar(resource, f, image_id);
-			waitUntilReady(resource, image_id, monitor);
 		}else
 			throw(new AsceticDeploymentException("Monitoring War not found in "+ f.getAbsolutePath()));
 		
@@ -277,7 +195,6 @@ public class ImageCreation {
 					uploadAndUnzip(resource, f.getRawLocation().toFile(), image_id);
 				}else
 					uploadAndUnzip(resource, new File(d.getLocation()), image_id);
-				waitUntilReady(resource, image_id, monitor);
 			}
 		}
 	}
@@ -306,7 +223,6 @@ public class ImageCreation {
 					uploadWar(resource, f.getRawLocation().toFile(), image_id);
 				}else
 					uploadWar(resource, new File(d.getLocation()), image_id);
-				waitUntilReady(resource, image_id, monitor);
 			}
 		}
 	}
@@ -330,7 +246,7 @@ public class ImageCreation {
 		properties.create(new ByteArrayInputStream(new String("").getBytes()),
 				true, monitor);
 		createProperties(properties.getLocation().toFile(), ownPack, schPack);
-		monitor.beginTask("Updating config file for the Optimis Cloud", 2);
+		monitor.beginTask("Updating config file for the Ascetic Cloud", 2);
 		addCloudProviderToProject(packs, outFolder, prMeta);
 		monitor.worked(1);
 		addCloudProviderToResources(packs, outFolder, prMeta);
@@ -355,14 +271,12 @@ public class ImageCreation {
 				new File(packageFolder.getProject().getLocation()
 						+ File.separator + File.separator
 						+ prMeta.getMainPackageFolder() + File.separator+ RESOURCES_FILENAME));
-		res.addCloudProvider("Optimis");
+		res.addCloudProvider("Ascetic");
 		HashMap<String, String> shares = new HashMap<String, String>();
 		res.addDisk("shared", SHARED_FOLDER);
 		shares.put("shared", SHARED_FOLDER);
-		res.addDisk("encrypted", SHARED_ENCRYPTED_FOLDER);
-		shares.put("encrypted", SHARED_ENCRYPTED_FOLDER);
 		for (String p : packs) {
-			res.addImageToCloudProvider("Optimis", Manifest.generateManifestName(p), shares);
+			res.addImageToCloudProvider("Ascetic", Manifest.generateManifestName(p), shares);
 		}
 		File file = packageFolder.getFile("resources.xml").getRawLocation().toFile();
 		if (file.exists()) {
@@ -388,9 +302,9 @@ public class ImageCreation {
 		ProjectFile res = new ProjectFile(new File(packageFolder.getProject().getLocation()
 				+ File.separator + File.separator
 				+ prMeta.getMainPackageFolder() + File.separator+ "project.xml"));
-		res.addCloudProvider("Optimis");
+		res.addCloudProvider("Ascetic");
 		for (String p : packs) {
-			res.addImageToProvider("Optimis", Manifest.generateManifestName(p), 
+			res.addImageToProvider("Ascetic", Manifest.generateManifestName(p), 
 					OPTIMIS_USER, SHARED_FOLDER, IMAGE_DEPLOYMENT_FOLDER);
 		}
 		File file = packageFolder.getFile("project.xml").getRawLocation().toFile();
@@ -430,39 +344,6 @@ public class ImageCreation {
 		config.save();
 	}
 
-	/** 
-	 * Performs the finalization the image creation process once the service 
-	 * packages has been installed
-	 * 
-	 * @param resource Image Creation Service URL's web resource
-	 * @param image_id Image identifier
-	 * @return ImageID-ImageURL pair
-	 * @throws AsceticDeploymentException
-	 */
-	private static String[] finalizeImage(WebResource resource, String image_id)
-			throws AsceticDeploymentException {
-		log.debug("Finalizing image");
-		ClientResponse response = resource.path("image").path(image_id)
-				.path("finalize").post(ClientResponse.class);
-		if (response.getStatus() == com.sun.jersey.api.client.ClientResponse.Status.OK.getStatusCode()) {
-			String url_id = response.getEntity(String.class).trim();
-			if (url_id != null) {
-				return new String[] { image_id, url_id };
-			} else {
-				log.error("response: " + response.toString()
-						+ "\nreason: " + response.getEntity(String.class));
-				resource.path("image").path(image_id).delete();
-				throw (new AsceticDeploymentException(
-						"Error interacting with ICS: " + response.toString()));
-			}
-		} else {
-			log.error("response: " + response.toString()
-					+ "\nreason: " + response.getEntity(String.class));
-			resource.path("image").path(image_id).delete();
-			throw (new AsceticDeploymentException(
-					"Error interacting with ICS: " + response.toString()));
-		}
-	}
 
 	/**
 	 * Upload a file to the created image.
@@ -618,53 +499,15 @@ public class ImageCreation {
 		}
 	}
 
-	/**
-	 * Create a package image
-	 *  
-	 * @param resource Image Creation Service URL's web resource
-	 * @param p Package Name
-	 * @param monitor Object to monitor the progress
-	 * @return ImageID-ImageURL pair
-	 * @throws Exception 
-	 */
-	public static String[] createPackageImage(WebResource resource, String p,
-			IFolder packageFolder, ProjectMetadata pr_meta, String imageDescription,
-			PackageMetadata packMeta, IProgressMonitor monitor) throws Exception {
-		ClientResponse response = resource.path("image")
-				.header("Content-Type", "text/plain")
-				.post(ClientResponse.class, imageDescription);
-		if (response.getStatus() == com.sun.jersey.api.client.ClientResponse.
-				Status.OK.getStatusCode()) {
-			String image_id = response.getEntity(String.class).trim();
-			log.debug("Image_id: " + image_id);
-			if (image_id != null && image_id.length() > 0 && !image_id.contains("Error")) {
-				installCoreElementInImage(resource, p, image_id, packageFolder, pr_meta, packMeta, monitor);
-				monitor.subTask("Finalizing image");
-				String[] str = finalizeImage(resource, image_id);
-				log.debug("Image for " + p + "URL:" + str[1]);
-				monitor.done();
-				return str;
-
-			} else {
-				throw (new AsceticDeploymentException("Error image ID is null"));
-			}
-		} else {
-			log.error("response: " + response.toString());
-			throw (new AsceticDeploymentException("Error creating image "
-					+ response.toString()));
-		}
-	}
 	
-	private static void installCoreElementInImage(WebResource resource, String pack,
+	
+	private static void uploadCoreElementPackages(WebResource resource, String pack,
 			String image_id, IFolder packageFolder, ProjectMetadata pr_meta, 
 			PackageMetadata packMeta, IProgressMonitor monitor) throws Exception{
 		monitor.beginTask("Installing package " + pack, 5);
-		waitUntilReady(resource, image_id, monitor);
-		monitor.worked(1);
 		IFile f = packageFolder.getFile(pack + ".jar");
 		monitor.subTask("Uploading and unziping core elements");
 		uploadAndUnzip(resource, f.getLocation().toFile(), image_id);
-		waitUntilReady(resource, image_id, monitor);
 		monitor.worked(1);
 		// Setting file permissions
 		monitor.subTask("Setting file permissions in core elements installations");
@@ -676,10 +519,13 @@ public class ImageCreation {
 		f = packageFolder.getFile(pack + "_deps.zip");
 		if (f != null && f.exists()) {
 			uploadAndUnzip(resource, f.getLocation().toFile(), image_id);
-			waitUntilReady(resource, image_id, monitor);
 		}
+		monitor.worked(1);
+		monitor.subTask("Uploading zip dependencies");
 		deployZipDeps(resource, pr_meta.getDependencies(packMeta
 				.getElementsInPackage(pack)), image_id, pack, packageFolder, monitor);
+		monitor.worked(1);
+		monitor.subTask("Uploading war dependencies");
 		deployWarDeps(resource, pr_meta.getDependencies(packMeta
 				.getElementsInPackage(pack)), image_id, pack, packageFolder, monitor);
 		monitor.worked(1);
@@ -712,54 +558,10 @@ public class ImageCreation {
 						"Error setting permissions for file: " + f
 								+ "\nReason: " + response.toString()));
 			}
-			waitUntilReady(resource, image_id, monitor);
 		}
 
 	}
 	
-	/**
-	 * Wait until image state is ready
-	 * @param resource Image Creation Service URL's web resource
-	 * @param image_id Image identifier
-	 * @param monitor Progress monitor
-	 * @throws InterruptedException
-	 * @throws AsceticDeploymentException
-	 */
-	private static void waitUntilReady(WebResource resource, String image_id,
-			IProgressMonitor monitor) throws InterruptedException,
-			AsceticDeploymentException {
-		ClientResponse response;
-		String status = null;
-		int retries = 0;
-		do {
-			status = null;
-			if (retries > 0) {
-				monitor.subTask(" Waiting for image ready (Status: " + status
-						+ " retry: " + retries + ")");
-				Thread.sleep(15000);
-			} else {
-				monitor.subTask("Waiting for image ready");
-			}
-			retries++;
-			response = resource.path("image").path(image_id).path("status")
-					.get(ClientResponse.class);
-			if (response.getStatus() != com.sun.jersey.api.client.ClientResponse.Status.OK.getStatusCode()) {
-				log.error("Error getting image status");
-				resource.path("image").path(image_id).delete();
-				throw (new AsceticDeploymentException(
-						"Error getting image status: " + response.toString()));
-			}
-			status = response.getEntity(String.class);
-			log.debug("Status for image " + image_id + " is " + status);
-		} while (status != null && status.contains(BUSY) && retries < 10);
-		if (status == null || !status.contains(READY)) {
-			log.error("Error unknown status");
-			resource.path("image").path(image_id).delete();
-			throw (new AsceticDeploymentException(
-					"Error incorrect image status: " + status));
-		} else
-			log.debug("Image ready...");
-	}
 
 	public static String getImageDescription(ProjectMetadata prMeta, PackageMetadata packMeta, String p, HashMap<String, ServiceElement> constEls, 
 			boolean master, IJavaProject project) throws Exception {
@@ -803,17 +605,6 @@ public class ImageCreation {
 		}
 		imageTemplate = imageTemplate.concat("</ImageTemplate>");
 		return imageTemplate;
-	}
-
-	public static String getFullImageDescription(ProjectMetadata prMeta, HashMap<String, ServiceElement> allEls) {
-		String[] els = allEls.keySet().toArray(new String[allEls.size()]);
-		Map<String, Integer> minCoreInstances = prMeta.getMinElasticity(els);	
-		Map<String, String> maxConstraints = new HashMap<String, String>();
-		Map<String, String> maxResourcesPerMachine = prMeta.getMaxResourcesProperties();
-		Map<String, Integer> minCoreInstancesPerMachine = BuildingDeploymentFormPage.
-				getConstraintsElements(els, allEls, minCoreInstances, maxResourcesPerMachine, 
-						maxConstraints);
-		return generateTemplate(maxConstraints);
 	}
 
 }

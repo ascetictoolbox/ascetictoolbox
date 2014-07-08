@@ -2,6 +2,7 @@ package es.bsc.servicess.ide.editors.deployers;
 
 import java.io.File;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -614,9 +615,6 @@ public class AffinitySection extends ServiceEditorSection implements ISectionSav
 		int number = AsceticDeployer.getNumberFromName(AFFINITY_RULE, af_sec.getText().trim());
 		if (number >= af_sec.getItems().length) {
 			af_sec.add(AFFINITY_RULE + (af_sec.getItems().length + 1));
-			if (deployer.getManifest() == null) {
-				deployer.generateNewManifest();
-			}
 			deployer.getManifest().addAffinityRule(
 					Manifest.generateManifestNames(af_scope.getSelectedPackages()),
 					af_level.getText().trim());
@@ -625,7 +623,7 @@ public class AffinitySection extends ServiceEditorSection implements ISectionSav
 					Manifest.generateManifestNames(af_scope.getSelectedPackages()), 
 					af_level.getText().trim());
 		}
-		deployer.writeManifestToFile();
+		deployer.getManifest().toFile();
 	}
 	
 	/**
@@ -635,11 +633,8 @@ public class AffinitySection extends ServiceEditorSection implements ISectionSav
 	public void saveComponentAffinityRule() throws Exception {
 		String component = Manifest.generateManifestName(
 				af_component.getItem(af_component.getSelectionIndex()));
-		if (deployer.getManifest() == null) {
-			deployer.generateNewManifest();
-		}
 		deployer.getManifest().setComponentAffinity(component, af_component_level.getText().trim());
-		deployer.writeManifestToFile();
+		deployer.getManifest().toFile();
 	}
 	
 	/**
@@ -650,9 +645,6 @@ public class AffinitySection extends ServiceEditorSection implements ISectionSav
 		int number = AsceticDeployer.getNumberFromName(ANTI_AFFINITY_RULE, anti_af_sec.getText().trim());
 		if (number >= anti_af_sec.getItems().length) {
 			anti_af_sec.add(ANTI_AFFINITY_RULE + (anti_af_sec.getItems().length + 1));
-			if (deployer.getManifest() == null) {
-				deployer.generateNewManifest();
-			}
 			deployer.getManifest().addAntiAffinityRule(
 					Manifest.generateManifestNames(anti_af_scope.getSelectedPackages()),
 					anti_af_level.getText().trim());
@@ -661,7 +653,7 @@ public class AffinitySection extends ServiceEditorSection implements ISectionSav
 					Manifest.generateManifestNames(anti_af_scope.getSelectedPackages()), 
 					anti_af_level.getText().trim());
 		}
-		deployer.writeManifestToFile();
+		deployer.getManifest().toFile();
 	}
 	
 	/**
@@ -671,11 +663,8 @@ public class AffinitySection extends ServiceEditorSection implements ISectionSav
 	public void saveComponentAntiAffinityRule() throws Exception {
 		String component = Manifest.generateManifestName(
 				anti_af_component.getItem(anti_af_component.getSelectionIndex()));
-		if (deployer.getManifest() == null) {
-			deployer.generateNewManifest();
-		}
 		deployer.getManifest().setComponentAntiAffinity(component, anti_af_component_level.getText().trim());
-		deployer.writeManifestToFile();
+		deployer.getManifest().toFile();
 	}
 	
 	

@@ -16,20 +16,17 @@
 
 package es.bsc.servicess.ide.editors.deployers;
 
+import static es.bsc.servicess.ide.Constants.METADATA_FOLDER;
+import static es.bsc.servicess.ide.Constants.OUTPUT_FOLDER;
+import static es.bsc.servicess.ide.Constants.PACKAGES_FOLDER;
+
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
-import javax.ws.rs.core.MultivaluedMap;
+
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.configuration.ConfigurationException;
@@ -38,36 +35,20 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -76,29 +57,21 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.ide.IDE;
 import org.xml.sax.SAXException;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
-
-import static es.bsc.servicess.ide.Constants.*;
 import es.bsc.servicess.ide.Activator;
-import es.bsc.servicess.ide.ImageMetadata;
 import es.bsc.servicess.ide.Logger;
 import es.bsc.servicess.ide.PackageMetadata;
+import es.bsc.servicess.ide.PackagingUtils;
 import es.bsc.servicess.ide.ProjectMetadata;
 import es.bsc.servicess.ide.editors.BuildingDeploymentFormPage;
 import es.bsc.servicess.ide.editors.CommonFormPage;
 import es.bsc.servicess.ide.editors.Deployer;
-import es.bsc.servicess.ide.editors.KeyValueTableComposite;
-import es.bsc.servicess.ide.editors.SaveResetButtonComposite;
-import es.bsc.servicess.ide.editors.ScopedListsComposite;
 import es.bsc.servicess.ide.editors.ServiceFormEditor;
 import es.bsc.servicess.ide.model.ServiceElement;
 import es.bsc.servicess.ide.views.DeployedApplicationSection;
 import es.bsc.servicess.ide.views.DeploymentChecker;
 import es.bsc.servicess.ide.views.ServiceDataComposite;
 import es.bsc.servicess.ide.views.ServiceManagerView;
+import eu.ascetic.saas.application_uploader.ApplicationUploader;
 
 
 /**
@@ -127,16 +100,21 @@ public class AsceticDeployer extends Deployer {
 	
 	private static final String PROPERTIES_FILENAME = "ascetic.properties";
 	private static final String METADATA_FILENAME = "optimis-metadata.xml";
+	public static final String CREATE_PACKS_DEF_TITLE = "Package Creation";
+	public static final String CREATE_PACKS_DEF_QUESTION = " project has not packages created. Do you want to create it automatically?";
+	private static final String CREATE_IMAGES_DEF_TITLE = "Image creation";;
+	private static final String CREATE_IMAGES_DEF_QUESTION = " project has not images created. Do you want to create it automatically?";
 	
 	private File propFile;
-	private File optimisMetaFile;
+	private File asceticMetaFile;
 	private Text cliPropText;
 	private Button cliPropButton;
 	
-	private PackagesSection packSection;
-	private ImagesSection imageSection;
-	private AffinitySection affinitySection;
-
+	protected PackagesSection packSection;
+	protected ImagesSection imageSection;
+	protected AffinitySection affinitySection;
+	
+	
 	public AsceticDeployer(){
 		super();
 		toBeUpdated = true;
@@ -146,14 +124,14 @@ public class AsceticDeployer extends Deployer {
 		super.bind(page);
 		propFile = editor.getProject().getProject().getFolder(METADATA_FOLDER)
 				.getFile(PROPERTIES_FILENAME).getRawLocation().toFile();
-		optimisMetaFile = editor.getProject().getProject().getFolder(METADATA_FOLDER)
+		asceticMetaFile = editor.getProject().getProject().getFolder(METADATA_FOLDER)
 				.getFile(METADATA_FILENAME).getRawLocation().toFile();
 		packSection = new PackagesSection(page.getToolkit(), page.getForm(), editor, 
-				Section.TWISTIE | Section.DESCRIPTION, optimisMetaFile);
+				Section.TWISTIE | Section.DESCRIPTION, asceticMetaFile, this);
 		imageSection = new ImagesSection(page.getToolkit(), editor, 
-				Section.TWISTIE | Section.DESCRIPTION, optimisMetaFile,this);
+				Section.TWISTIE | Section.DESCRIPTION, asceticMetaFile,this);
 		affinitySection = new AffinitySection(page.getToolkit(), editor, 
-				Section.TWISTIE | Section.DESCRIPTION, optimisMetaFile, this);
+				Section.TWISTIE | Section.DESCRIPTION, asceticMetaFile, this);
 	}
 	
 	public AsceticDeployer(ServiceFormEditor editor, IWorkbenchWindow window,
@@ -162,14 +140,14 @@ public class AsceticDeployer extends Deployer {
 		toBeUpdated = true;
 		propFile = editor.getProject().getProject().getFolder(METADATA_FOLDER)
 				.getFile(PROPERTIES_FILENAME).getRawLocation().toFile();
-		optimisMetaFile = editor.getProject().getProject().getFolder(METADATA_FOLDER)
+		asceticMetaFile = editor.getProject().getProject().getFolder(METADATA_FOLDER)
 				.getFile(METADATA_FILENAME).getRawLocation().toFile();
 		packSection = new PackagesSection(page.getToolkit(), page.getForm(), editor, 
-				Section.TWISTIE | Section.DESCRIPTION, optimisMetaFile);
+				Section.TWISTIE | Section.DESCRIPTION, asceticMetaFile, this);
 		imageSection = new ImagesSection(page.getToolkit(), editor, 
-				Section.TWISTIE | Section.DESCRIPTION, optimisMetaFile, this);
+				Section.TWISTIE | Section.DESCRIPTION, asceticMetaFile, this);
 		affinitySection = new AffinitySection(page.getToolkit(), editor, 
-				Section.TWISTIE | Section.DESCRIPTION, optimisMetaFile, this);
+				Section.TWISTIE | Section.DESCRIPTION, asceticMetaFile, this);
 		
 	}
 	
@@ -222,8 +200,6 @@ public class AsceticDeployer extends Deployer {
 					.getFolder(PACKAGES_FOLDER).getLocation()
 					.append(AsceticProperties.SERVICE_MANIFEST).toFile().exists())
 				readManifestFromFile();
-			else
-				generateNewManifest();
 			imageSection.setServiceLocation(op_prop.getICSLocation());
 			serverText.setText(op_prop.getDSLocation());
 	
@@ -376,81 +352,81 @@ public class AsceticDeployer extends Deployer {
 	public void executeDeployment(IProgressMonitor monitor)
 			throws Exception {
 		//TODO Change to ascetic
-		
+		PackagingUtils.initPackageFolder(super.getProject(), monitor);
+		ProjectMetadata prMetadata = new ProjectMetadata(super.getEditor()
+				.getMetadataFile().getRawLocation().toFile());
+		HashMap<String, ServiceElement> coreEls = CommonFormPage.getElements(
+				prMetadata.getAllOrchestrationClasses(), PackageMetadata.CORE_TYPE, 
+				super.getProject(), prMetadata);
+		HashMap<String, ServiceElement> orchEls = CommonFormPage.getElements(
+				prMetadata.getAllOrchestrationClasses(), PackageMetadata.ORCH_TYPE, 
+				super.getProject(), prMetadata);
 		String serviceID = editor.getProject().getProject().getName();
-		// TODO: Check if images created
 		// check if manifest already created
 		if (manifest == null) {
-			generateNewManifest();
+			//Manifest not created so packages not generated.Ask if do it automatically
+			if (MessageDialog.openQuestion(getShell(), CREATE_PACKS_DEF_TITLE, serviceID + CREATE_PACKS_DEF_QUESTION)){
+				 packSection.generate();
+			}else
+				return;
 		}
-		manifest.setServiceId(serviceID);
-
-		String location = serverText.getText().trim();
-		if (location != null && location.length() > 0) {
-			monitor.beginTask("Deploying application", 100);
-			Client c = Client.create();
-			WebResource resource = c.resource(location);
-			if (resource != null) {
-				/*TODO Make call to application manager to deploy the service and Check the progress
-				ClientResponse response = resource.path("deploy").post(
-						ClientResponse.class, part);
-				if ((response.getStatus() >= 200)
-						&& (response.getStatus() < 300)) {
-					// Check the progress
-					monitorProgress(resource, serviceID, monitor);
-					// response =
-					// resource.path(serviceID).path("status").get(ClientResponse.class);
-
-				} else {
-					log.debug("Response: " + response.toString()
-							+ "\nreason: " + response.getEntity(String.class));
-					throw (new AsceticDeploymentException(
-							"Error deploying service because of "
-									+ response.getEntity(String.class)));
-				}*/
-				// Add the view
-				ServiceManagerView smview = (ServiceManagerView) PlatformUI
-						.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-						.showView("es.bsc.servicess.ide.views.ServiceManagerView");
-				DeploymentChecker dc = new AsceticDeploymentChecker(op_prop.getSMLocation());
-				DeployedApplicationSection das = new ServiceDataComposite(serviceID, 
-						dc, DeploymentChecker.PENDING, smview, false, this.getShell());//always services
-				smview.addNewDeployement(serviceID, das);
-
-			} else {
-				throw (new AsceticDeploymentException(
-						"Error creating SD client"));
+		PackageMetadata packMetadata = packSection.getPackageMetadata();
+		//Check if packages contains all the elements defined
+		if (PackagingUtils.checkAllElementsInPackages(orchEls.keySet(), coreEls.keySet(), prMetadata, packMetadata)){
+		
+			if (!manifest.hasImages()){
+				if (MessageDialog.openQuestion(getShell(), CREATE_IMAGES_DEF_TITLE, serviceID + CREATE_IMAGES_DEF_QUESTION)){
+					imageSection.createServiceImages();
+				}else
+					return;
 			}
-			monitor.done();
-		} else {
-			throw (new AsceticDeploymentException("Error incorrect location"));
+			manifest.setServiceId(serviceID);
+			boolean executable = false;
+			if (!prMetadata.getMainClass().isEmpty()){
+				executable = true;
+			}
+			String location = serverText.getText().trim();
+			if (location != null && location.length() > 0) {
+				monitor.beginTask("Deploying application", 100);
+				ApplicationUploader appUploader = new ApplicationUploader(location);
+				String deploymentID = appUploader.createAndDeployAplication(manifest.getString());			
+				monitorProgress(appUploader, serviceID, deploymentID, monitor);
+				ServiceManagerView smview = (ServiceManagerView) PlatformUI
+					.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+					.showView("es.bsc.servicess.ide.views.ServiceManagerView");
+				DeploymentChecker dc = new AsceticDeploymentChecker(appUploader, serviceID);
+				DeployedApplicationSection das = new ServiceDataComposite(deploymentID, 
+						dc, DeploymentChecker.PENDING, smview, executable, this.getShell());
+				smview.addNewDeployement(deploymentID, das);
+				monitor.done();
+			} else {
+				throw (new AsceticDeploymentException("Error incorrect location"));
+			}
 		}
+		
 
 	}
 
 	/** 
 	 * Monitor the progress of the service deployment process
 	 * 
-	 * @param resource Deployment Service web resource URL
-	 * @param serviceID Service Identifier
+	 * @param appUploader ApplicationUploader object
+	 * @param applicationID Application Identifier
+	 * @param deploymentID Deployment Identifier
 	 * @param monitor Progress monitor
 	 * @throws InterruptedException
 	 * @throws AsceticDeploymentException
 	 */
-	private void monitorProgress(WebResource resource, String serviceID,
-			IProgressMonitor monitor) throws InterruptedException,
-			AsceticDeploymentException {
-		/*
-		 *  TODO make monitoring progress with Application Manager
+	private void monitorProgress(ApplicationUploader appUploader, String applicationID,
+			String deploymentID, IProgressMonitor monitor) throws AsceticDeploymentException {
+		
 		int retries = 0;
 		int progress = 0;
-		ClientResponse response;
+		
 		while (progress >= 0 && progress < 100 & retries < 30) {
-			Thread.sleep(10000);
-			response = resource.path(serviceID).path("status")
-					.get(ClientResponse.class);
-			if (response.getStatus() == com.sun.jersey.api.client.ClientResponse.Status.OK.getStatusCode()) {
-				String resp = response.getEntity(String.class);
+			try{
+				Thread.sleep(10000);
+				String resp = appUploader.getDeploymentStatus(applicationID, deploymentID);
 				if (resp.contains("ERROR")) {
 					throw (new AsceticDeploymentException(resp));
 				} else if (resp.contains("PROGRESS")) {
@@ -458,15 +434,7 @@ public class AsceticDeployer extends Deployer {
 					String prog = resp.substring(st, resp.indexOf("%", st));
 					try {
 						int new_progress = Integer.parseInt(prog);
-						if (new_progress <= 40) {
-							monitor.subTask("Evaluating TREC and Selecting Provider");
-						} else if (new_progress > 40 && new_progress <= 45) {
-							monitor.subTask("Contectualizing service VM");
-						} else if (new_progress > 45 && new_progress < 95) {
-							monitor.subTask("Uploading images");
-						} else if (new_progress >= 95 && new_progress < 100) {
-							monitor.subTask("Creating Agreement");
-						}
+						monitor.subTask(resp);
 						monitor.worked(new_progress - progress);
 						progress = new_progress;
 						log.debug("Progressing...(" + progress + ")");
@@ -482,14 +450,11 @@ public class AsceticDeployer extends Deployer {
 							+ resp));
 
 				}
-			} else {
-				throw (new AsceticDeploymentException(
-						"Error getting service deployment status: "
-								+ response.toString() + "\nreason: "
-								+ response.getEntity(String.class)));
+			}catch(Exception e){
+				throw (new AsceticDeploymentException(e));
 			}
+
 		}
-		*/
 	}
 
 	@Override
@@ -543,110 +508,22 @@ public class AsceticDeployer extends Deployer {
 	 */
 	protected void openServiceManifest() {
 		try {
-			writeManifestToFile();
+			manifest.toFile();
 			IFile sm = getProject().getProject()
 					.getFolder(OUTPUT_FOLDER)
 					.getFolder(PACKAGES_FOLDER)
 					.getFile(AsceticProperties.SERVICE_MANIFEST);
 			IDE.openEditor(this.getWorkbenchPage(), sm);
-		} catch (PartInitException e) {
+		} catch (Exception e) {
 			log.error("Exception opening manifest", e);
 			ErrorDialog.openError(getShell(), "Opening service manifest",
 					e.getMessage(), new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getMessage(), e));
-		}
+		} 
 	}
 
-	/**
-	 * Generate a new service manifest
-	 * @throws Exception 
-	 */
-	protected void generateNewManifest() throws Exception {
-		
-		/* TODO Generate ascetic manifest*/
-		ProjectMetadata pr_meta = new ProjectMetadata(super.getEditor()
-				.getMetadataFile().getRawLocation().toFile());
-		HashMap<String, ServiceElement> allEls = CommonFormPage.getElements(
-				pr_meta.getAllOrchestrationClasses(), BOTH_TYPE, super.getProject(), pr_meta);
-		//String frontend_id = ManifestCreation.generateManifestName(editor.getProject().getProject().getName());
-		InputStream in = this.getClass().getResourceAsStream(
-				"sm_default.properties");
-		Properties properties = new Properties();
-		properties.load(in);
-		in.close();
-		
-		Manifest oldManifest = manifest;
-		PackageMetadata packMeta = packSection.getPackageMetadata();
-		String[] oePacks = packMeta.getPackagesWithOrchestration();
-		if (oePacks == null || oePacks.length <= 0) {
-			oePacks = new String[]{editor.getProject().getProject().getName()};
-		}
-			
-			manifest = Manifest.newInstance(editor.getProject().getProject().getName());
-			for (String p : oePacks) {
-				log.debug("Creating Component for package " + p );
-				String componentID = Manifest.generateManifestName(p);
-				manifest.setComponentDescription(componentID, pr_meta, packMeta, p, super.getProject(), 
-					 allEls, false, this.op_prop);
-				
-			
-			}
-		String[] cePacks = packMeta.getPackagesWithCores();
-		if (cePacks != null && cePacks.length > 0) {
-			for (String p : cePacks) {
-				log.debug("Creating Component for package " + p );
-				String componentID = Manifest.generateManifestName(p);
-				
-				manifest.setComponentDescription(componentID, pr_meta, packMeta, p, super.getProject(), 
-					allEls, false, this.op_prop);
-				
-			}
-		}else{
-			log.warn("No packages found generating only master");
-		}
-		
-		manifest.setImages(getImagesMetadata().getImageURLPackagesMap());
-		
-		writeManifestToFile();
-	}
+	
 
-	/**
-	 * Write the service manifest to a file
-	 */
-	protected void writeManifestToFile() {
-		try {
-			final ProgressMonitorDialog dialog = new ProgressMonitorDialog(
-					getShell());
-			final IFile sm = getProject().getProject().getFolder(OUTPUT_FOLDER)
-					.getFolder(PACKAGES_FOLDER).getFile(AsceticProperties.SERVICE_MANIFEST);
-			dialog.run(true, true, new IRunnableWithProgress() {
-				public void run(IProgressMonitor monitor)
-						throws InvocationTargetException {
-					try {
-						if (sm.exists()) {
-							sm.delete(true, monitor);
-						}
-						if (manifest == null) {
-							generateNewManifest();
-						}
-						log.debug("writing the manifest in the file ");
-						sm.create(new ByteArrayInputStream(manifest.toString()
-								.getBytes()), true, monitor);
-					} catch (Exception e) {
-						log.debug("Exception writing manifest");
-						throw (new InvocationTargetException(e));
-					}
-				}
-			});
-		} catch (InvocationTargetException e) {
-			log.error("Exception writing manifest", e);
-			ErrorDialog.openError(getShell(), "Error writing manifest",
-					e.getMessage(),new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Invocation Exception", e) );
-		} catch (InterruptedException e) {
-			log.error("Exception writing manifest", e);
-			ErrorDialog.openError(getShell(), "Building interrumped",
-					e.getMessage(), new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Interruption Exception", e));
-		}
-	}
+
 
 	/**
 	 * Read the service manifest form a existing file
@@ -667,17 +544,12 @@ public class AsceticDeployer extends Deployer {
 			buf = new char[1024];
 		}
 		reader.close();
-		manifest = Manifest.newInstance(manifestData);
+		manifest = Manifest.newInstance(getProject(), manifestData);
 	}
 	
 	public PackageMetadata getPackageMetadata() 
 			throws SAXException, IOException, ParserConfigurationException{
 		return packSection.getPackageMetadata();
-	}
-	
-	public ImageMetadata getImagesMetadata() 
-			throws SAXException, IOException, ParserConfigurationException{
-		return imageSection.getImageMetadata();
 	}
 	
 	public Manifest getManifest(){

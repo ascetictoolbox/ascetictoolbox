@@ -1,6 +1,5 @@
 package es.bsc.servicess.ide.editors.deployers;
 
-import static es.bsc.servicess.ide.Titles.*;
 import static es.bsc.servicess.ide.Constants.*;
 
 import java.io.File;
@@ -14,20 +13,16 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ExpandEvent;
-import org.eclipse.swt.events.ExpandListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -40,13 +35,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.forms.events.ExpansionEvent;
-import org.eclipse.ui.forms.events.IExpansionListener;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
-import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.eclipse.ui.forms.widgets.Section;
 import org.xml.sax.SAXException;
 
 import es.bsc.servicess.ide.Activator;
@@ -74,6 +65,7 @@ public class PackagesSection extends ServiceEditorSection{
 	private List compElemList;
 	private ScrolledForm form;
 	private File packageMetadataFile;
+	private AsceticDeployer deployer;
 	private boolean redoingPackages;
 	
 	private static Logger log = Logger.getLogger(PackagesSection.class);
@@ -86,10 +78,11 @@ public class PackagesSection extends ServiceEditorSection{
 	 * @param editor Parent's editor
 	 */
 	public PackagesSection (FormToolkit toolkit, ScrolledForm form,
-			ServiceFormEditor editor, int format, File packageMetadataFile) {
+			ServiceFormEditor editor, int format, File packageMetadataFile, AsceticDeployer deployer) {
 		super(toolkit,editor,"Application Packages", "This section provides the interface " +
 				"to group Application Elements to build the Application Packages.", format);
 		this.packageMetadataFile = packageMetadataFile;
+		this.deployer = deployer;
 		this.form = form;
 	}
 	
@@ -567,9 +560,11 @@ public class PackagesSection extends ServiceEditorSection{
 			else
 				throw(new Exception("No elements for this type"));
 		} catch (Exception e) {
+			log.error("Error deleting element from package", e);
 			ErrorDialog.openError(editor.getSite().getShell(),
-					"Error deleting element from package", e.getMessage(), new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getMessage(),e));
-			e.printStackTrace();
+					"Error deleting element from package", e.getMessage(), 
+					new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getMessage(),e));
+			
 		}
 	}
 	
@@ -577,20 +572,46 @@ public class PackagesSection extends ServiceEditorSection{
 	 * Generate the service package
 	 */
 	protected void generate() {
-		if (automaticButton.getSelection()) {
+		try{
 			redoingPackages= true;
-			definePackagesAutomatically();
+			if (automaticButton.getSelection()) {
+				definePackagesAutomatically();
+			}
+			buildPackages();
+			updateManifest();
+			redoingPackages=false;
+		} catch (InvocationTargetException e) {
+			log.error("Exception during package creation process execution", e);
+			ErrorDialog.openError(getShell(),
+					"Error creating packages", "Exception during package creation process execution", 
+					new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getCause().getMessage(),e.getCause()));
+			
+		} catch (InterruptedException e) {
+			log.error("Package creation process interrumped", e);
+			ErrorDialog.openError(getShell(), "Package creation interrumped",
+					e.getMessage(),new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getMessage(),e));
+			e.printStackTrace();
+		} catch (Exception e) {
+			log.error("Error creating packages", e);
+			ErrorDialog.openError(getShell(),"Error defining packages", "Error during package definition",
+					new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getCause().getMessage(),e.getCause()));
+			
 		}
-		buildPackages();
-		redoingPackages=false;
-
 	}
 	
+	private void updateManifest() throws Exception {
+		ProjectMetadata prMeta = editor.getProjectMetadata();
+		PackageMetadata packMeta = new PackageMetadata(packageMetadataFile);
+		HashMap<String, ServiceElement> allEls = CommonFormPage.getElements(
+				prMeta.getAllOrchestrationClasses(), BOTH_TYPE, editor.getProject(), prMeta);
+		deployer.getManifest().generateNewPackages(prMeta, packMeta, allEls, deployer.getProperties());
+		deployer.getManifest().toFile();
+	}
+
 	/**
 	 * Define packages automatically
 	 */
-	private void definePackagesAutomatically() {
-		try {
+	private void definePackagesAutomatically() throws Exception{
 			ProjectMetadata pr_meta = editor.getProjectMetadata();
 			PackageMetadata packMeta = new PackageMetadata(packageMetadataFile);
 			packMeta.removeAllPackages();
@@ -616,10 +637,10 @@ public class PackagesSection extends ServiceEditorSection{
 						}	
 					}	
 				}else{
-					ErrorDialog.openError(editor.getSite().getShell(),
-							"Error creating packages","No orchestration packages created and there are method elements", 
-							new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Review service core elements constraints inconsitencies"));
-					log.warn(" No orchestration packages created");
+
+					throw (new CoreException(new Status(IStatus.ERROR, Activator.PLUGIN_ID, 
+							"No orchestration packages created and there are orchestration elements." +
+							"\nReview service core elements constraints inconsitencies")));
 				}
 			}else
 				log.debug(" No method elements to do");
@@ -643,11 +664,9 @@ public class PackagesSection extends ServiceEditorSection{
 						}	
 					}	
 				}else{
-					ErrorDialog.openError(editor.getSite()
-							.getShell(),
-							"Error creating packages","No method packages created and there are method elements", 
-							new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Review service core elements constraints inconsitencies"));
-					log.warn(" No method package created");
+					throw (new CoreException(new Status(IStatus.ERROR, Activator.PLUGIN_ID, 
+							"No method packages created and there are method elements." +
+									"\nReview service core elements constraints inconsitencies")));
 				}
 			}else
 				log.debug(" No method elements to do");
@@ -667,10 +686,9 @@ public class PackagesSection extends ServiceEditorSection{
 						}
 					}
 				}else{
-					ErrorDialog.openError(editor.getSite().getShell(),
-							"Error creating packages","No service packages created and there are service elements", 
-							new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Review service core elements constraints inconsitencies"));
-					log.warn(" No service package created");
+					throw new CoreException(new Status(IStatus.ERROR, Activator.PLUGIN_ID, 
+							"No service packages created and there are service elements.\n" +
+							"Review service core elements constraints inconsitencies"));
 				}
 			}else
 				log.debug(" No service elements");
@@ -678,55 +696,53 @@ public class PackagesSection extends ServiceEditorSection{
 			if ((packCreated)){
 				initManual(servicePackagesList.getItem(0));
 				expandManual();
-			}/*else{
-					ErrorDialog.openError(this.getServiceEditor().getSite()
-							.getShell(),
-							"Error creating packages","No packages created", 
-							new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Review core element constraints inconsitencies"));
-				}*/
-		} catch (Exception e) {
-			ErrorDialog.openError(editor.getSite()
-					.getShell(),
-					"Error creating packages","No packages created", 
-					new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getMessage()));
-			e.printStackTrace();
-		}
-
+			}
 	}
 
 	/**
 	 * Build the service packages
+	 * @throws Exception 
 	 */
-	private void buildPackages() {
+	private void buildPackages() throws Exception {
 		final ProgressMonitorDialog dialog = new ProgressMonitorDialog(
 				editor.getSite().getShell());
-		try {
+		dialog.run(true, true, new IRunnableWithProgress() {
+			public void run(IProgressMonitor monitor)throws InvocationTargetException {
+				try {
+					PackagingUtils.initPackageFolder(editor.getProject(), monitor);
+				} catch (Exception e) {
+					throw (new InvocationTargetException(e));
+				}
+			}
+		});
+		final ProjectMetadata prMetadata = new ProjectMetadata(editor
+				.getMetadataFile().getRawLocation().toFile());
+		HashMap<String, ServiceElement> coreEls = CommonFormPage.getElements(
+				prMetadata.getAllOrchestrationClasses(), PackageMetadata.CORE_TYPE, 
+				editor.getProject(), prMetadata);
+		HashMap<String, ServiceElement> orchEls = CommonFormPage.getElements(
+				prMetadata.getAllOrchestrationClasses(), PackageMetadata.ORCH_TYPE, 
+				editor.getProject(), prMetadata);
+		final PackageMetadata packMetadata = new PackageMetadata(packageMetadataFile);
+		if (PackagingUtils.checkAllElementsInPackages(orchEls.keySet(), coreEls.keySet(), prMetadata, packMetadata)){
+			String mainClass = "";
+			if (PackagingUtils.hasJars(editor.getProject().getProject().getName(), packMetadata, prMetadata)){
+				mainClass = PackagingUtils.selectMainClass(editor.getProject().getProject().getName(), 
+						packMetadata, prMetadata, getEditor(), getShell());
+			}else
+				mainClass = "";
+			prMetadata.setMainClass(mainClass);
 			dialog.run(true, true, new IRunnableWithProgress() {
-				/* (non-Javadoc)
-				 * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
-				 */
-				public void run(IProgressMonitor monitor)
-						throws InvocationTargetException {
-					 
+				public void run(IProgressMonitor monitor)throws InvocationTargetException {
 					try {
-						ImageCreation.generateConfigurationFiles("one", "one", new String[]{"packs"}, editor.getProject().getProject().getFolder(OUTPUT_FOLDER), editor.getProjectMetadata(), monitor);
-						PackagingUtils.buildPackages(editor.getProject(), editor.getProjectMetadata(),
-						new PackageMetadata(packageMetadataFile), monitor);
-						
+						PackagingUtils.buildPackages(editor.getProject(), prMetadata, packMetadata, monitor);
 					} catch (Exception e) {
 						throw (new InvocationTargetException(e));
 					}
 				}
-				
 			});
-		} catch (InvocationTargetException e) {
-			ErrorDialog.openError(dialog.getShell(),
-					"Error creating packages", "Exception during process execution", new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getCause().getMessage(),e.getCause()));
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			ErrorDialog.openError(dialog.getShell(), "Building interrumped",
-					e.getMessage(),new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getMessage(),e));
-			e.printStackTrace();
+		}else{
+			throw new Exception("There are missing elements in the current package distribution");
 		}
 	}
 	
@@ -801,6 +817,7 @@ public class PackagesSection extends ServiceEditorSection{
 		// TODO Auto-generated method stub
 		
 	}
+
 	
 	
 }
