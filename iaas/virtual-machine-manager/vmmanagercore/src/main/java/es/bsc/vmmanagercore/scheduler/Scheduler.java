@@ -1,13 +1,12 @@
 package es.bsc.vmmanagercore.scheduler;
 
+import es.bsc.vmmanagercore.energymodeller.EnergyModellerConnector;
 import es.bsc.vmmanagercore.logging.VMMLogger;
 import es.bsc.vmmanagercore.model.*;
 import es.bsc.vmmanagercore.monitoring.Host;
+import es.bsc.vmmanagercore.pricingmodeller.PricingModellerConnector;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -170,19 +169,50 @@ public class Scheduler {
         return serversLoad;
     }
 
-    /**
-     * Returns the best deployment plan from a list of deployment plans. The deployment plan chosen depends
-     * on the algorithm used (distribution, consolidation, energy-aware, etc.).
-     *
-     * @param deploymentPlans the deployment plans
-     * @param hosts the hosts of the infrastructure
-     * @return the best deployment plan according to the algorithm applied
-     */
-    public DeploymentPlan chooseBestDeploymentPlan(List<DeploymentPlan> deploymentPlans, List<Host> hosts) {
-        VMMLogger.logStartOfDeploymentPlansEvaluation(schedAlgorithmName);
+    private List<Vm> vmsToBeEstimatedToVms(List<VmToBeEstimated> vmsToBeEstimated) {
+        List<Vm> result = new ArrayList<>();
+        for (VmToBeEstimated vmToBeEstimated: vmsToBeEstimated) {
+            result.add(vmToBeEstimated.toVm());
+        }
+        return result;
+    }
 
+    private VmEstimate getVmEstimateFromVmAssignmentToHost(VmAssignmentToHost vmAssignmentToHost) {
+        Vm vm = vmAssignmentToHost.getVm();
+        Host host = vmAssignmentToHost.getHost();
+        Double powerEstimate = EnergyModellerConnector.getPredictedAvgPowerVm(vm, host, vmsDeployed);
+        Double energyEstimate = EnergyModellerConnector.getPredictedEnergyVm(vm, host, vmsDeployed);
+        Double priceEstimate = PricingModellerConnector.getVmCost(energyEstimate, host.getHostname());
+        return new VmEstimate(vm.getName(), powerEstimate, priceEstimate);
+    }
+
+    /**
+     * Returns price and energy estimates for a list of VMs.
+     *
+     * @param vmsToBeEstimated the VMs
+     * @param hosts the hosts of the infrastructure
+     * @return a list with price and energy estimates for each VM
+     */
+    public List<VmEstimate> getVmEstimates(List<VmToBeEstimated> vmsToBeEstimated, List<Host> hosts) {
+        DeploymentPlan bestDeploymentPlan = chooseBestDeploymentPlan(vmsToBeEstimatedToVms(vmsToBeEstimated), hosts);
+        List<VmEstimate> result = new ArrayList<>();
+        for (VmAssignmentToHost vmAssignmentToHost: bestDeploymentPlan.getVmsAssignationsToHosts()) {
+            result.add(getVmEstimateFromVmAssignmentToHost(vmAssignmentToHost));
+        }
+        return result;
+    }
+
+    /**
+     * Returns the best deployment plan from a list of possible deployment plans. The deployment
+     * plan chosen depends on the algorithm used (distribution, consolidation, energy-aware, etc.).
+     *
+     * @param possibleDeploymentPlans possible deployment plans
+     * @param hosts the hosts of the infrastructure
+     * @return the best deployment plan
+     */
+    private DeploymentPlan findBestDeploymentPlan(List<DeploymentPlan> possibleDeploymentPlans, List<Host> hosts) {
         DeploymentPlan bestDeploymentPlan = null;
-        for (DeploymentPlan deploymentPlan: deploymentPlans) {
+        for (DeploymentPlan deploymentPlan: possibleDeploymentPlans) {
             boolean firstDeploymentPlan = (bestDeploymentPlan == null);
             if (!firstDeploymentPlan) {
                 VMMLogger.logStartOfDeploymentPlanComparison(deploymentPlan.toString(), bestDeploymentPlan.toString());
@@ -197,10 +227,35 @@ public class Scheduler {
                 VMMLogger.logEndOfDeploymentPlanComparison();
             }
         }
+        return bestDeploymentPlan;
+    }
+
+    /**
+     * Returns the best deployment plan from a list of vms. The deployment plan chosen depends
+     * on the algorithm used (distribution, consolidation, energy-aware, etc.).
+     *
+     * @param vms the VMs that need to be deployed
+     * @param hosts the hosts of the infrastructure
+     * @return the best deployment plan according to the algorithm applied
+     */
+    public DeploymentPlan chooseBestDeploymentPlan(List<Vm> vms, List<Host> hosts) {
+        VMMLogger.logStartOfDeploymentPlansEvaluation(schedAlgorithmName);
+
+        // Get all the possible plans that do not use overbooking
+        List<DeploymentPlan> possibleDeploymentPlans =
+                new DeploymentPlanGenerator().getAllPossibleDeploymentPlans(vms, hosts);
+
+        // Find the best deployment plan
+        DeploymentPlan bestDeploymentPlan = findBestDeploymentPlan(possibleDeploymentPlans, hosts);
 
         if (bestDeploymentPlan != null) {
             VMMLogger.logChosenDeploymentPlan(bestDeploymentPlan.toString());
         }
+        else { // No plans could be chosen, so apply overbooking
+            bestDeploymentPlan = new DeploymentPlanGenerator().generateBestEffortDeploymentPlan(vms, hosts);
+            VMMLogger.logOverbookingNeeded();
+        }
+
         VMMLogger.logEndOfDeploymentPlansEvaluation(schedAlgorithmName);
 
         return bestDeploymentPlan;

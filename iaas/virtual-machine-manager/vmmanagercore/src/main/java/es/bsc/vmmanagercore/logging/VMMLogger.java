@@ -34,6 +34,10 @@ public class VMMLogger {
         logger.debug("[VMM] chosen deployment plan: " + deploymentPlan);
     }
 
+    public static void logOverbookingNeeded() {
+        logger.debug("[VMM] no plans could be applied without overbooking.");
+    }
+
     public static void logPredictedAvgPowerOfVmInHost(String vmName, String hostName, double avgPower) {
         logger.debug("[VMM] predicted avg power vm=" + vmName + ", host=" + hostName + " is " + avgPower + "W");
     }

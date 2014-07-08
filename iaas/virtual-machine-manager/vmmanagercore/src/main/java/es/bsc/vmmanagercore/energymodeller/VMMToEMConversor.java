@@ -1,4 +1,4 @@
-package es.bsc.vmmanagercore.integration;
+package es.bsc.vmmanagercore.energymodeller;
 
 import es.bsc.vmmanagercore.model.Vm;
 import es.bsc.vmmanagercore.monitoring.Host;

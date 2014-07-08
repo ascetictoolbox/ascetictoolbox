@@ -5,11 +5,10 @@ import es.bsc.vmmanagercore.cloudmiddleware.JCloudsMiddleware;
 import es.bsc.vmmanagercore.db.VmManagerDb;
 import es.bsc.vmmanagercore.db.VmManagerDbHsql;
 import es.bsc.vmmanagercore.model.*;
-import es.bsc.vmmanagercore.monitoring.HostGanglia;
 import es.bsc.vmmanagercore.monitoring.Host;
+import es.bsc.vmmanagercore.monitoring.HostGanglia;
 import es.bsc.vmmanagercore.monitoring.HostOpenStack;
 import es.bsc.vmmanagercore.monitoring.HostZabbix;
-import es.bsc.vmmanagercore.scheduler.DeploymentPlanGenerator;
 import es.bsc.vmmanagercore.scheduler.Scheduler;
 
 import java.util.ArrayList;
@@ -28,7 +27,7 @@ public class VmManager {
     private CloudMiddleware cloudMiddleware;
     private VmManagerDb db;
     private Scheduler scheduler;
-    private List<Host> hostsInfo;
+    private List<Host> hosts = new ArrayList<>();
 
     /**
      * Constructs a VmManager with the name of the database to be used.
@@ -43,11 +42,9 @@ public class VmManager {
             e.printStackTrace();
         }
 
-        // Select the middleware, the monitoring, and the scheduling policy
-        // according to what is specified in the configuration file
         VmManagerConfiguration conf = VmManagerConfiguration.getInstance();
         selectMiddleware(conf.middleware);
-        selectMonitoring(conf.monitoring, conf.hosts);
+        initializeHostsAccordingToMonitoring(conf.monitoring, conf.hosts);
         scheduler = new Scheduler(db.getCurrentSchedulingAlg(), getAllVms());
     }
 
@@ -116,14 +113,7 @@ public class VmManager {
         Map<Vm, String> ids = new HashMap<>();
 
         // Choose the best deployment plan
-        List<DeploymentPlan> possibleDeploymentPlans =
-                new DeploymentPlanGenerator().getAllPossibleDeploymentPlans(vms, hostsInfo);
-        DeploymentPlan deploymentPlan = scheduler.chooseBestDeploymentPlan(possibleDeploymentPlans, hostsInfo);
-
-        // If there are no possible deployment plans, get a best effort with overbooking
-        if (deploymentPlan == null) {
-            deploymentPlan = new DeploymentPlanGenerator().generateBestEffortDeploymentPlan(vms, hostsInfo);
-        }
+        DeploymentPlan deploymentPlan = scheduler.chooseBestDeploymentPlan(vms, hosts);
 
         // Loop through the VM assignments to hosts defined in the best deployment plan
         for (VmAssignmentToHost vmAssignmentToHost: deploymentPlan.getVmsAssignationsToHosts()) {
@@ -288,11 +278,11 @@ public class VmManager {
     /**
      * Returns price and energy estimates for a list of VMs.
      *
+     * @param vmsToBeEstimated the VMs
      * @return a list with price and energy estimates for each VM
      */
     public List<VmEstimate> getVmEstimates(List<VmToBeEstimated> vmsToBeEstimated) {
-        //TODO implement me!
-        return null;
+        return scheduler.getVmEstimates(vmsToBeEstimated, hosts);
     }
 
 
@@ -304,24 +294,24 @@ public class VmManager {
      * Instantiates the hosts according to the monitoring software selected.
      *
      * @param monitoring the monitoring software (Ganglia, Zabbix, etc.)
-     * @param hosts the hosts
+     * @param hostnames the names of the hosts in the infrastructure
      */
-    private void selectMonitoring(VmManagerConfiguration.Monitoring monitoring, String[] hosts) {
-        hostsInfo = new ArrayList<>();
+    private void initializeHostsAccordingToMonitoring(VmManagerConfiguration.Monitoring monitoring,
+            String[] hostnames) {
         switch (monitoring) {
             case GANGLIA:
-                for (String hostname: hosts) {
-                    hostsInfo.add(new HostGanglia(hostname));
+                for (String hostname: hostnames) {
+                    hosts.add(new HostGanglia(hostname));
                 }
                 break;
             case OPENSTACK:
-                for (String hostname: hosts) {
-                    hostsInfo.add(new HostOpenStack(hostname, (JCloudsMiddleware) cloudMiddleware));
+                for (String hostname: hostnames) {
+                    hosts.add(new HostOpenStack(hostname, (JCloudsMiddleware) cloudMiddleware));
                 }
                 break;
             case ZABBIX:
-                for (String hostname: hosts) {
-                    hostsInfo.add(new HostZabbix(hostname));
+                for (String hostname: hostnames) {
+                    hosts.add(new HostZabbix(hostname));
                 }
                 break;
             default:

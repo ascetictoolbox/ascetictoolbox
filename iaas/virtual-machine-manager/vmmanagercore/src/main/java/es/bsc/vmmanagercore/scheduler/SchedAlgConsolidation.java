@@ -4,8 +4,6 @@ import es.bsc.vmmanagercore.logging.VMMLogger;
 import es.bsc.vmmanagercore.model.DeploymentPlan;
 import es.bsc.vmmanagercore.model.ServerLoad;
 import es.bsc.vmmanagercore.monitoring.Host;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 
 import java.util.Collection;
 import java.util.List;
