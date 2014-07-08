@@ -33,7 +33,7 @@ public class AppsDBMapper {
 
         BasicDBList ret = DBManager.instance.find(EventsDBMapper.COLL_NAME, query);
 
-        Map<String,Set<String>> appsInfo = new HashMap<>();
+        Map<String,Set<String>> appsInfo = new HashMap<String,Set<String>>();
 
         Iterator<Object> iter = ret.iterator();
         while(iter.hasNext()) {
@@ -43,7 +43,7 @@ public class AppsDBMapper {
                 String nodeName = event.get(EventsDBMapper.NODEID).toString();
                 Set<String> appSet = appsInfo.get(appName);
                 if (appSet == null) {
-                    appSet = new TreeSet<>();
+                    appSet = new TreeSet<String>();
                     appsInfo.put(appName, appSet);
                 }
                 appSet.add(nodeName);

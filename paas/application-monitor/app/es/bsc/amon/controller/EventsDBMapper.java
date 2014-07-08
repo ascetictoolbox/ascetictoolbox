@@ -157,7 +157,7 @@ public class EventsDBMapper {
     }
 
     public BasicDBList aggregate(BasicDBObject dbo) {
-        List<DBObject> query = new ArrayList<>(1);
+        List<DBObject> query = new ArrayList<DBObject>(1);
         query.add(dbo);
         AggregationOutput aggOut = colEvents.aggregate(query);
         BasicDBList dbl = new BasicDBList();
@@ -169,7 +169,7 @@ public class EventsDBMapper {
     }
 
     public BasicDBList aggregate(BasicDBList query) {
-        List<DBObject> ql = new ArrayList<>(query.size());
+        List<DBObject> ql = new ArrayList<DBObject>(query.size());
         Iterator<Object> itq = query.iterator();
         while(itq.hasNext()) ql.add((DBObject)itq.next());
         AggregationOutput aggOut = colEvents.aggregate(ql);
