@@ -28,6 +28,18 @@
                 <url>http://compss.bsc.es/rc/ide</url>
         </repository>
   </repositories>
+  <pluginRepositories>
+        <pluginRepository>
+        	<id>tycho</id>
+		<url>${tycho-repo.url}</url>
+		<releases>
+			<enabled>true</enabled>
+		</releases>
+		<snapshots>
+		        <enabled>true</enabled>
+		</snapshots>
+         </pluginRepository>
+  </pluginRepositories>
   <build>
   	<plugins>
         <plugin>
