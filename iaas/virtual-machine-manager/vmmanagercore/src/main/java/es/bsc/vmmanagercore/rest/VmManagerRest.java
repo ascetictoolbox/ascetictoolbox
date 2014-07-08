@@ -146,8 +146,7 @@ public class VmManagerRest {
     public String getAllImages() {
         JsonArray jsonImagesArray = new JsonArray();
         for (ImageUploaded image: vmManager.getVmImages()) {
-            JsonObject imageJson =
-                    (JsonObject) parser.parse(gson.toJson(image, ImageUploaded.class));
+            JsonObject imageJson = (JsonObject) parser.parse(gson.toJson(image, ImageUploaded.class));
             jsonImagesArray.add(imageJson);
         }
         JsonObject result = new JsonObject();
@@ -161,8 +160,7 @@ public class VmManagerRest {
     @Produces(MediaType.APPLICATION_JSON)
     public String uploadImage(String imageInfo) {
         // Read the input JSON
-        ImageToUpload imageToUpload =
-            gson.fromJson(imageInfo, ImageToUpload.class);
+        ImageToUpload imageToUpload = gson.fromJson(imageInfo, ImageToUpload.class);
 
         // Throw a 400 exception if the format of the JSON is not correct
         if (imageToUpload.getName() == null || imageToUpload.getUrl() == null) {
@@ -317,7 +315,7 @@ public class VmManagerRest {
     // VM pricing and energy estimates
     //================================================================================
 
-    @GET
+    @POST
     @Path("/estimates")
     @Produces(MediaType.TEXT_PLAIN)
     public String getEstimates(String vms) {

@@ -44,25 +44,21 @@ public class JCloudsMiddlewareTest {
 	
 	//needed by JClouds
 	private static NovaApi novaApi;
-	private static Set<String> zones;
+	private static String zone;
 	
 	private static void saveIdsOfInstancesThatExistBeforeTheTest() {
-		for (String zone: zones) {
-			ServerApi serverApi = novaApi.getServerApiForZone(zone);
-			vmsIdsBeforeTests = new ArrayList<>();
-			for (Server server: serverApi.listInDetail().concat()) {
-				vmsIdsBeforeTests.add(server.getId());
-			}
+        ServerApi serverApi = novaApi.getServerApiForZone(zone);
+	    vmsIdsBeforeTests = new ArrayList<>();
+		for (Server server: serverApi.listInDetail().concat()) {
+			vmsIdsBeforeTests.add(server.getId());
 		}
 	}
 	
 	private static void saveIdsOfFlavorsThatExistBeforeTheTest() {
-		for (String zone: zones) {
-			FlavorApi flavorApi = novaApi.getFlavorApiForZone(zone);
-			flavorIdsBeforeTests = new ArrayList<>();
-			for (Flavor flavor: flavorApi.listInDetail().concat()) {
-				flavorIdsBeforeTests.add(flavor.getId());
-			}
+		FlavorApi flavorApi = novaApi.getFlavorApiForZone(zone);
+		flavorIdsBeforeTests = new ArrayList<>();
+		for (Flavor flavor: flavorApi.listInDetail().concat()) {
+			flavorIdsBeforeTests.add(flavor.getId());
 		}
 	}
 	
@@ -81,106 +77,92 @@ public class JCloudsMiddlewareTest {
 		}
 		jCloudsMiddleware = new JCloudsMiddleware(db);
 		novaApi = jCloudsMiddleware.getNovaApi();
-		zones = jCloudsMiddleware.getZones();
+		zone = jCloudsMiddleware.getZone();
 		
 		saveIdsOfInstancesThatExistBeforeTheTest();
 		saveIdsOfFlavorsThatExistBeforeTheTest();
 	}
 	
 	@AfterClass
-	public static void tearDownAfterClass() {
-		//make sure that the VMs deployed before beginning these tests are still there
-		List<String> vmsIdsAfterTests = new ArrayList<>();
-		for (String zone: zones) {
-			ServerApi serverApi = novaApi.getServerApiForZone(zone);
-			vmsIdsAfterTests = new ArrayList<>();
-			for (Server server: serverApi.listInDetail().concat()) {
-				vmsIdsAfterTests.add(server.getId());
-			}
-		}
-		assertTrue(vmsIdsAfterTests.containsAll(vmsIdsBeforeTests));
-		
-		//make sure that the flavors that existed before the tests are still there
-		List<String> flavorIdsAfterTests = new ArrayList<>();
-		for (String zone: zones) {
-			FlavorApi flavorApi = novaApi.getFlavorApiForZone(zone);
-			flavorIdsAfterTests = new ArrayList<>();
-			for (Flavor flavor: flavorApi.listInDetail().concat()) {
-				flavorIdsAfterTests.add(flavor.getId());
-			}
-		}
-		assertTrue(flavorIdsAfterTests.containsAll(flavorIdsBeforeTests));
+    public static void tearDownAfterClass() {
+        //make sure that the VMs deployed before beginning these tests are still there
+        List<String> vmsIdsAfterTests = new ArrayList<>();
+        ServerApi serverApi = novaApi.getServerApiForZone(zone);
+        for (Server server: serverApi.listInDetail().concat()) {
+            vmsIdsAfterTests.add(server.getId());
+        }
+        assertTrue(vmsIdsAfterTests.containsAll(vmsIdsBeforeTests));
+
+        //make sure that the flavors that existed before the tests are still there
+        List<String> flavorIdsAfterTests = new ArrayList<>();
+        FlavorApi flavorApi = novaApi.getFlavorApiForZone(zone);
+        for (Flavor flavor: flavorApi.listInDetail().concat()) {
+            flavorIdsAfterTests.add(flavor.getId());
+        }
+        assertTrue(flavorIdsAfterTests.containsAll(flavorIdsBeforeTests));
+	}
+
+    @Test
+    public void deployVmWithNonExistingFlavor() {
+        //deploy a VM
+        Vm vmDescription = new Vm("TestVM", testingImageId, 1, 1024, 2, null, "app1");
+        String instanceId = jCloudsMiddleware.deploy(vmDescription, null);
+
+        //check that the information of the VM is correct
+        Server server = null;
+        ServerApi serverApi = novaApi.getServerApiForZone(zone);
+        if (serverApi.get(instanceId) != null) {
+            server = serverApi.get(instanceId);
+        }
+        assertEquals(instanceId, server.getId());
+        assertEquals("TestVM", server.getName());
+        assertEquals(testingImageId, server.getImage().getId());
+
+        //check that the information of the flavor of the VM is correct
+        Flavor flavor = null;
+        FlavorApi flavorApi = novaApi.getFlavorApiForZone(zone);
+        if (flavorApi.get(server.getFlavor().getId()) != null) {
+            flavor = flavorApi.get(server.getFlavor().getId());
+        }
+        assertTrue(flavor.getVcpus() == 1 && flavor.getRam() == 1024 && flavor.getDisk() == 2);
+
+        //destroy the VM
+        jCloudsMiddleware.destroy(instanceId);
 	}
 	
 	@Test
-	public void deployVmWithNonExistingFlavor() {
-		//deploy a VM
-		Vm vmDescription = new Vm("TestVM", testingImageId, 1, 1024, 2, null, "app1");
-		String instanceId = jCloudsMiddleware.deploy(vmDescription, null);
-		
-		//check that the information of the VM is correct
-		Server server = null;
-		for (String zone: zones) {
-			ServerApi serverApi = novaApi.getServerApiForZone(zone);
-			if (serverApi.get(instanceId) != null) {
-				server = serverApi.get(instanceId);
-			}
-		}
-		assertEquals(instanceId, server.getId());
-		assertEquals("TestVM", server.getName());
-		assertEquals(testingImageId, server.getImage().getId());
-		
-		//check that the information of the flavor of the VM is correct
-		Flavor flavor = null;
-		for (String zone: zones) {
-			FlavorApi flavorApi = novaApi.getFlavorApiForZone(zone);
-			if (flavorApi.get(server.getFlavor().getId()) != null) {
-				flavor = flavorApi.get(server.getFlavor().getId());
-			}
-		}
-		assertTrue(flavor.getVcpus() == 1 && flavor.getRam() == 1024 && flavor.getDisk() == 2);
-		
-		//destroy the VM 
-		jCloudsMiddleware.destroy(instanceId);
-	}
-	
-	@Test
-	public void deployVmWithExistingFlavor() {
-		//This test can only be performed if there is at least one flavor registered in OpenStack
-		if (JCloudsMiddleware.DEFAULT_FLAVORS.length > 0) {
-			
-			//get the ID of one of the default flavors
-			String flavorId = JCloudsMiddleware.DEFAULT_FLAVORS[0];
-			
-			//get the flavor with that ID
-			Flavor flavor = null;
-			for (String zone: zones) {
-				FlavorApi flavorApi = novaApi.getFlavorApiForZone(zone);
-				flavor = flavorApi.get(flavorId);
-			}
-			
-			//deploy a VM with the specs described in the flavor
-			Vm vmDescription = new Vm("TestVM", testingImageId, 
-					flavor.getVcpus(), flavor.getRam(), flavor.getDisk(), null, "app1");
-			String instanceId = jCloudsMiddleware.deploy(vmDescription, null);
-			
-			//check that the information of the VM is correct
-			Server server = null;
-			for (String zone: zones) {
-				ServerApi serverApi = novaApi.getServerApiForZone(zone);
-				if (serverApi.get(instanceId) != null) {
-					server = serverApi.get(instanceId);
-				}
-			}
-			assertEquals(instanceId, server.getId());
-			assertEquals("TestVM", server.getName());
-			assertEquals(testingImageId, server.getImage().getId());
-			
-			//check that the information of the flavor of the VM is correct
-			assertEquals(flavorId, flavor.getId());
-			
-			//destroy the VM 
-			jCloudsMiddleware.destroy(instanceId);
+    public void deployVmWithExistingFlavor() {
+        //This test can only be performed if there is at least one flavor registered in OpenStack
+        if (JCloudsMiddleware.DEFAULT_FLAVORS.length > 0) {
+
+            //get the ID of one of the default flavors
+            String flavorId = JCloudsMiddleware.DEFAULT_FLAVORS[0];
+
+            //get the flavor with that ID
+
+            FlavorApi flavorApi = novaApi.getFlavorApiForZone(zone);
+            Flavor flavor = flavorApi.get(flavorId);
+
+            //deploy a VM with the specs described in the flavor
+            Vm vmDescription = new Vm("TestVM", testingImageId,
+                    flavor.getVcpus(), flavor.getRam(), flavor.getDisk(), null, "app1");
+            String instanceId = jCloudsMiddleware.deploy(vmDescription, null);
+
+            //check that the information of the VM is correct
+            Server server = null;
+            ServerApi serverApi = novaApi.getServerApiForZone(zone);
+            if (serverApi.get(instanceId) != null) {
+                server = serverApi.get(instanceId);
+            }
+            assertEquals(instanceId, server.getId());
+            assertEquals("TestVM", server.getName());
+            assertEquals(testingImageId, server.getImage().getId());
+
+            //check that the information of the flavor of the VM is correct
+            assertEquals(flavorId, flavor.getId());
+
+            //destroy the VM
+            jCloudsMiddleware.destroy(instanceId);
 			
 		}
 	}

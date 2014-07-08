@@ -48,7 +48,8 @@ public class JCloudsMiddleware implements CloudMiddleware {
 
     // Needed by JClouds
     private NovaApi novaApi;
-    private Set<String> zones;
+    private String zone; // TODO This could be important/problematic in the future.
+    // Right now I am assuming that the cluster only has one zone configured for deployments.
 
     private String[] hosts; //hosts in the cluster
     private OpenStackGlance glanceConnector = new OpenStackGlance(); // Connector for OS Glance
@@ -66,7 +67,7 @@ public class JCloudsMiddleware implements CloudMiddleware {
                 .endpoint("http://" + conf.openStackIP + ":" + conf.keyStonePort + "/v2.0")
                 .credentials(conf.keyStoneTenant + ":" + conf.keyStoneUser, conf.keyStonePassword)
                 .buildApi(NovaApi.class);
-        zones = novaApi.getConfiguredZones();
+        zone = novaApi.getConfiguredZones().toArray()[0].toString();
         hosts = conf.hosts;
         this.db = db;
     }
@@ -152,10 +153,6 @@ public class JCloudsMiddleware implements CloudMiddleware {
 
     @Override
     public String deploy(Vm vm, String dstNode) {
-        // TODO This could be important/problematic in the future.
-        // Right now I am assuming that the cluster only has one zone configured for deployments.
-        String zone = zones.toArray()[0].toString();
-
         // Specify deployment options
         CreateServerOptions options = new CreateServerOptions();
         includeDstNodeInDeploymentOption(dstNode, options);
@@ -175,99 +172,76 @@ public class JCloudsMiddleware implements CloudMiddleware {
 
     @Override
     public void destroy(String vmId) {
-        for (String zone: zones) {
-            ServerApi serverApi = novaApi.getServerApiForZone(zone);
-            Server server = serverApi.get(vmId);
-            if (server != null) { // If the VM is in the zone
-                serverApi.delete(vmId); // Delete the VM
-                while (server.getStatus().toString().equals(DELETING)) { } // Wait while deleting
-            }
+        ServerApi serverApi = novaApi.getServerApiForZone(zone);
+        Server server = serverApi.get(vmId);
+        if (server != null) { // If the VM is in the zone
+            serverApi.delete(vmId); // Delete the VM
+            while (server.getStatus().toString().equals(DELETING)) { } // Wait while deleting
         }
     }
 
     @Override
     public void migrate(String vmId, String destinationNode) {
-        for (String zone: zones) {
-            ServerApi serverApi = novaApi.getServerApiForZone(zone);
-            Server server = serverApi.get(vmId);
+        ServerApi serverApi = novaApi.getServerApiForZone(zone);
+        Server server = serverApi.get(vmId);
 
-            // If the server is in the zone
-            if (server != null) {
-                // Get the API with admin functions
-                Optional<? extends ServerAdminApi> serverAdminApi = novaApi.getServerAdminExtensionForZone(zone);
+        // If the server is in the zone
+        if (server != null) {
+            // Get the API with admin functions
+            Optional<? extends ServerAdminApi> serverAdminApi = novaApi.getServerAdminExtensionForZone(zone);
 
-                // Live-migrate the VM to the destination node
-                serverAdminApi.get().liveMigrate(vmId, destinationNode, false, false);
-            }
+            // Live-migrate the VM to the destination node
+            serverAdminApi.get().liveMigrate(vmId, destinationNode, false, false);
         }
     }
 
     @Override
     public boolean existsVm(String vmId) {
-        for (String zone: zones) {
-            if (novaApi.getServerApiForZone(zone).get(vmId) != null) {
-                return true;
-            }
-        }
-        return false;
+        return novaApi.getServerApiForZone(zone).get(vmId) != null;
     }
 
     @Override
     public void rebootHardVm(String vmId) {
-        for (String zone: zones) {
-            novaApi.getServerApiForZone(zone).reboot(vmId, RebootType.HARD);
-        }
+        novaApi.getServerApiForZone(zone).reboot(vmId, RebootType.HARD);
     }
     
     @Override
     public void rebootSoftVm(String vmId) {
-        for (String zone: zones) {
-            novaApi.getServerApiForZone(zone).reboot(vmId, RebootType.SOFT);
-        }
+        novaApi.getServerApiForZone(zone).reboot(vmId, RebootType.SOFT);
     }
     
     @Override
     public void startVm(String vmId) {
-        for (String zone: zones) {
-            novaApi.getServerApiForZone(zone).start(vmId);
-        }
+        novaApi.getServerApiForZone(zone).start(vmId);
     }
 
     @Override
     public void stopVm(String vmId) {
-        for (String zone: zones) {
-            novaApi.getServerApiForZone(zone).stop(vmId);
-        }
+        novaApi.getServerApiForZone(zone).stop(vmId);
     }
 
     @Override
     public void suspendVm(String vmId) {
-        for (String zone: zones) {
-            novaApi.getServerAdminExtensionForZone(zone).get().suspend(vmId);
-        }
+        novaApi.getServerAdminExtensionForZone(zone).get().suspend(vmId);
     }
 
     @Override
     public void resumeVm(String vmId) {
-        for (String zone: zones) {
-            novaApi.getServerAdminExtensionForZone(zone).get().resume(vmId);
-        }
+        novaApi.getServerAdminExtensionForZone(zone).get().resume(vmId);
     }
 
     @Override
     public List<String> getAllVMsId() {
         List<String> vmIds = new ArrayList<>();
-        for (String zone: zones) {
-            ServerApi serverApi = novaApi.getServerApiForZone(zone);
-            for (Server server: serverApi.listInDetail().concat()) {
-                ServerExtendedStatus vmStatus = server.getExtendedStatus().get();
+        ServerApi serverApi = novaApi.getServerApiForZone(zone);
+        for (Server server: serverApi.listInDetail().concat()) {
+            ServerExtendedStatus vmStatus = server.getExtendedStatus().get();
 
-                // Add the VM to the result if it is active and it is not being deleted
-                boolean vmIsActive = ACTIVE.equals(vmStatus.getVmState());
-                boolean vmIsBeingDeleted = DELETING.equals(vmStatus.getTaskState());
-                if (vmIsActive && !vmIsBeingDeleted) {
-                    vmIds.add(server.getId());
-                }
+            // Add the VM to the result if it is active and it is not being deleted
+            boolean vmIsActive = ACTIVE.equals(vmStatus.getVmState());
+            boolean vmIsBeingDeleted = DELETING.equals(vmStatus.getTaskState());
+            if (vmIsActive && !vmIsBeingDeleted) {
+                vmIds.add(server.getId());
             }
         }
         return vmIds;
@@ -285,28 +259,25 @@ public class JCloudsMiddleware implements CloudMiddleware {
     public VmDeployed getVMInfo(String vmId) {
         VmDeployed vmDescription = null;
 
-        for (String zone: zones) {
-            ServerApi serverApi = novaApi.getServerApiForZone(zone);
-            Server server = serverApi.get(vmId);
+        ServerApi serverApi = novaApi.getServerApiForZone(zone);
+        Server server = serverApi.get(vmId);
 
-            // If the VM is in the zone
-            if (server != null ) {
-                // Get the information of the VM if it is active and it is not being deleted
-                ServerExtendedStatus vmStatus = server.getExtendedStatus().get();
-                boolean vmIsActive = ACTIVE.equals(vmStatus.getVmState());
-                boolean vmIsBeingDeleted = DELETING.equals(vmStatus.getTaskState());
-                if (vmIsActive && !vmIsBeingDeleted) {
-                    FlavorApi flavorApi = novaApi.getFlavorApiForZone(zone);
-                    Flavor flavor = flavorApi.get(server.getFlavor().getId());
-                    String vmIp = getVmIp(server);
-                    vmDescription = new VmDeployed(server.getName(),
-                            server.getImage().getId(), flavor.getVcpus(), flavor.getRam(),
-                            flavor.getDisk(), null, db.getAppIdOfVm(vmId), vmId,
-                            vmIp, server.getStatus().toString(), server.getCreated(),
-                            server.getExtendedAttributes().get().getHostName());
-                }
+        // If the VM is in the zone
+        if (server != null ) {
+            // Get the information of the VM if it is active and it is not being deleted
+            ServerExtendedStatus vmStatus = server.getExtendedStatus().get();
+            boolean vmIsActive = ACTIVE.equals(vmStatus.getVmState());
+            boolean vmIsBeingDeleted = DELETING.equals(vmStatus.getTaskState());
+            if (vmIsActive && !vmIsBeingDeleted) {
+                FlavorApi flavorApi = novaApi.getFlavorApiForZone(zone);
+                Flavor flavor = flavorApi.get(server.getFlavor().getId());
+                String vmIp = getVmIp(server);
+                vmDescription = new VmDeployed(server.getName(),
+                        server.getImage().getId(), flavor.getVcpus(), flavor.getRam(),
+                        flavor.getDisk(), null, db.getAppIdOfVm(vmId), vmId,
+                        vmIp, server.getStatus().toString(), server.getCreated(),
+                        server.getExtendedAttributes().get().getHostName());
             }
-
         }
 
         return vmDescription;
@@ -315,11 +286,9 @@ public class JCloudsMiddleware implements CloudMiddleware {
     @Override
     public List<ImageUploaded> getVmImages() {
         List<ImageUploaded> vmImages = new ArrayList<>();
-        for (String zone: zones) {
-            ImageApi imageApi = novaApi.getImageApiForZone(zone);
-            for (Image image: imageApi.listInDetail().concat()) {
-                vmImages.add(new ImageUploaded(image.getId(), image.getName(), image.getStatus().toString()));
-            }
+        ImageApi imageApi = novaApi.getImageApiForZone(zone);
+        for (Image image: imageApi.listInDetail().concat()) {
+            vmImages.add(new ImageUploaded(image.getId(), image.getName(), image.getStatus().toString()));
         }
         return vmImages;
     }
@@ -327,11 +296,9 @@ public class JCloudsMiddleware implements CloudMiddleware {
     @Override
     public ImageUploaded getVmImage(String imageId) {
         ImageUploaded imageDescription = null;
-        for (String zone: zones) {
-            ImageApi imageApi = novaApi.getImageApiForZone(zone);
-            Image image = imageApi.get(imageId);
-            imageDescription = new ImageUploaded(image.getId(), image.getName(), image.getStatus().toString());
-        }
+        ImageApi imageApi = novaApi.getImageApiForZone(zone);
+        Image image = imageApi.get(imageId);
+        imageDescription = new ImageUploaded(image.getId(), image.getName(), image.getStatus().toString());
         return imageDescription;
     }
 
@@ -345,12 +312,11 @@ public class JCloudsMiddleware implements CloudMiddleware {
         glanceConnector.deleteImage(id);
     }
 
-
     /**
-     * @return configured zones of the infrastructure
+     * @return the zone
      */
-    public Set<String> getZones() {
-        return zones;
+    public String getZone() {
+        return zone;
     }
 
     /**
@@ -407,12 +373,7 @@ public class JCloudsMiddleware implements CloudMiddleware {
      * @return true if an image exists with the given Id, false otherwise
      */
     private boolean existsImageWithId(String id) {
-        for (String zone: zones) {
-            if (novaApi.getImageApiForZone(zone).get(id) != null) {
-                return true;
-            }
-        }
-        return false;
+        return novaApi.getImageApiForZone(zone).get(id) != null;
     }
 
 }
