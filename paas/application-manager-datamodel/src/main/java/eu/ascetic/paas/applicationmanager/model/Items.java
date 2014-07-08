@@ -25,6 +25,12 @@ public class Items {
 	
 	@XmlElement(name="application", namespace = APPLICATION_MANAGER_NAMESPACE)
     private List<Application> applications;
+	@XmlElement(name="deployment", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private List<Deployment> deployments;
+	@XmlElement(name="vm", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private List<VM> vms;
+	@XmlElement(name="agreement", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private List<Agreement> agreements;
 	
 	public int getOffset() {
 		return offset;
@@ -50,5 +56,38 @@ public class Items {
 	public void addApplication(Application application) {
 		if(applications == null) applications = new ArrayList<Application>();
 		applications.add(application);
+	}
+	
+	public List<Deployment> getDeployments() {
+		return deployments;
+	}
+	public void setDeployments(List<Deployment> deployments) {
+		this.deployments = deployments;
+	}
+	public void addDeployment(Deployment deployment) {
+		if(deployments == null) deployments = new ArrayList<Deployment>();
+		deployments.add(deployment);
+	}
+	
+	public List<VM> getVms() {
+		return vms;
+	}
+	public void setVms(List<VM> vms) {
+		this.vms = vms;
+	}
+	public void addVm(VM vm) {
+		if(vms == null) vms = new ArrayList<VM>();
+		vms.add(vm);
+	}
+	
+	public List<Agreement> getAgreements() {
+		return agreements;
+	}
+	public void setAgreements(List<Agreement> agreements) {
+		this.agreements = agreements;
+	}
+	public void addAgreement(Agreement agreement) {
+		if(agreements == null) agreements = new ArrayList<Agreement>();
+		agreements.add(agreement);
 	}
 }

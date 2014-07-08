@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Collection {
 	@XmlAttribute
 	private String href;
-	@XmlElement(namespace = APPLICATION_MANAGER_NAMESPACE)
+	@XmlElement(name ="items", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private Items items;
 	@XmlElement(name="link", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private ArrayList<Link> links;

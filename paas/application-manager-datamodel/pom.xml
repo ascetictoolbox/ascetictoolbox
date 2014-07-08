@@ -4,7 +4,7 @@
 
 	<parent>
 		<groupId>eu.ascetic</groupId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.0.2-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 		<artifactId>paas</artifactId>
 	</parent>

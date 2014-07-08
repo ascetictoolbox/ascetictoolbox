@@ -45,6 +45,9 @@ public class CollectionTest {
 							+ "<link rel=\"parent\" href=\"/\" type=\"application/xml\" />"
 							+ "<link rel=\"self\" href=\"/102\" type=\"application/xml\" />"
 						+ "</application>"
+						+ "<deployment>"
+							+ "<id>11</id>"
+						+ "</deployment>"
 					+ "</items>"
 					+ "<link href=\"/\" rel=\"self\" type=\"application/xml\"/>"
 				+ "</collection>";
@@ -56,5 +59,6 @@ public class CollectionTest {
 		assertEquals(2, collection.getItems().getApplications().size());
 		//assertEquals(2, collection.getItems().getProviders().get(0).getLinks().size());
 		assertEquals(102, collection.getItems().getApplications().get(1).getId());
+		assertEquals(1, collection.getItems().getDeployments().size());
 	}
 }

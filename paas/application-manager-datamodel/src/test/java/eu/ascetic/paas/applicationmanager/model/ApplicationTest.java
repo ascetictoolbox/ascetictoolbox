@@ -18,6 +18,7 @@ public class ApplicationTest {
 		Application application = new Application();
 		application.setHref("href");
 		application.setId(1);
+		application.setName("name");
 		List<Link> links = new ArrayList<Link>();
 		application.setLinks(links);
 		List<Deployment> deployments = new ArrayList<Deployment>();
@@ -27,6 +28,7 @@ public class ApplicationTest {
 		assertEquals(1, application.getId());
 		assertEquals("href", application.getHref());
 		assertEquals(deployments, application.getDeployments());
+		assertEquals("name", application.getName());
 	}
 	
 	@Test

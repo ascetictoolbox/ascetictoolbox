@@ -5,42 +5,32 @@ import static eu.ascetic.paas.applicationmanager.model.Dictionary.APPLICATION_MA
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Defines the deployment of an Application at PaaS level
+ * POJO Representing an agreement between PaaS and IaaS layer at Application Manager level
  * @author David Garcia Perez - Atos
  */
-//XML annotations:
+// XML annotations:
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "deployment", namespace = APPLICATION_MANAGER_NAMESPACE)
-public class Deployment {
+@XmlRootElement(name = "agreement", namespace = APPLICATION_MANAGER_NAMESPACE)
+public class Agreement {
 	@XmlAttribute
 	private String href;
 	@XmlElement(name = "id", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private int id;
-	@XmlElement(name = "status", namespace = APPLICATION_MANAGER_NAMESPACE)
-	private String status;
+	@XmlElement(name = "deployment-id", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private String deploymentId;
 	@XmlElement(name = "price", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private String price;
-	@XmlElementWrapper(name = "vms", namespace = APPLICATION_MANAGER_NAMESPACE)
-	@XmlElement(name = "vm", namespace = APPLICATION_MANAGER_NAMESPACE )
-	private List<VM> vms;
+	@XmlElement(name = "sla-agreement", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private String slaAgreement;
 	@XmlElement(name="link", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private List<Link> links;
-	
-	public String getStatus() {
-		return status;
-	}
-	public void setStatus(String status) {
-		this.status = status;
-	}
 	
 	public String getHref() {
 		return href;
@@ -48,12 +38,19 @@ public class Deployment {
 	public void setHref(String href) {
 		this.href = href;
 	}
-
+	
 	public int getId() {
 		return id;
 	}
 	public void setId(int id) {
 		this.id = id;
+	}
+	
+	public String getDeploymentId() {
+		return deploymentId;
+	}
+	public void setDeploymentId(String deploymentId) {
+		this.deploymentId = deploymentId;
 	}
 	
 	public String getPrice() {
@@ -63,7 +60,13 @@ public class Deployment {
 		this.price = price;
 	}
 	
-	@Transient
+	public String getSlaAgreement() {
+		return slaAgreement;
+	}
+	public void setSlaAgreement(String slaAgreement) {
+		this.slaAgreement = slaAgreement;
+	}
+	
 	public List<Link> getLinks() {
 		return links;
 	}
@@ -73,16 +76,5 @@ public class Deployment {
 	public void addLink(Link link) {
 		if(links==null) links = new ArrayList<Link>();
 		links.add(link);
-	}
-	
-	public List<VM> getVms() {
-		return vms;
-	}
-	public void setVms(List<VM> vms) {
-		this.vms = vms;
-	}
-	public void addVM(VM vm) {
-		if(vms == null) vms = new ArrayList<VM>();
-		vms.add(vm);
 	}
 }

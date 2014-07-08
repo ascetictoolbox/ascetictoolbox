@@ -9,9 +9,12 @@ import javax.xml.bind.Unmarshaller;
 
 import org.apache.log4j.Logger;
 
+import eu.ascetic.paas.applicationmanager.model.Agreement;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Collection;
+import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Root;
+import eu.ascetic.paas.applicationmanager.model.VM;
 
 /**
  * Converts XML representations and viceversa
@@ -95,5 +98,59 @@ public class ModelConverter {
 			logger.info("Error parsing XML of Collection: " + exception.getMessage());
 			return null;
 		}    
+	}
+
+	/**
+	 * Converts an xml Deployment represetnation to object
+	 * @param xml to be converted to object
+	 * @return the object representation of the deployment, <code>null</code> otherwise
+	 */
+	public static Deployment xmlDeploymentToObject(String xml) {
+		return toObject(Deployment.class, xml);
+	}
+
+	/**
+	 * Converts an object Deployment to its XML representation
+	 * @param deployment object to be converted to XML
+	 * @return the XML representation of the Deployment object
+	 */
+	public static String objectDeploymentToXML(Deployment deployment) {
+		return toXML(Deployment.class, deployment);
+	}
+
+	/**
+	 * Covnerts an xml VM to its object represetnation
+	 * @param xml to be converted to object
+	 * @return the object resulting of converting the previously XML or <code>null</code> if the XMl is invalid.
+	 */
+	public static VM xmlVMToObject(String xml) {
+		return toObject(VM.class, xml);
+	}
+
+	/**
+	 * Converts an object VM to its XML representation
+	 * @param vm object to be converted to XML
+	 * @return the XML representation of the VM object
+	 */
+	public static String objectVMToXML(VM vm) {
+		return toXML(VM.class, vm);
+	}
+
+	/**
+	 * Converts an xml representation of an Agreement to object
+	 * @param xml representation of the agreement
+	 * @return object represenation of the agreement
+	 */
+	public static Agreement xmlAgreementToObject(String xml) {
+		return toObject(Agreement.class, xml);
+	}
+
+	/**
+	 * Converts an object Agreement to xml representation
+	 * @param agreement object to be converted to xml
+	 * @return string xml representation of the agreement object.
+	 */
+	public static String objectAgreementToXML(Agreement agreement) {
+		return toXML(Agreement.class, agreement);
 	}
 }

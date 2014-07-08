@@ -18,6 +18,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -40,7 +41,8 @@ public class Application {
 	private int id;
 	@XmlElement(name = "name", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private String name;
-	@XmlElement(name = "deployments", namespace = APPLICATION_MANAGER_NAMESPACE)
+	@XmlElementWrapper(name = "deployments", namespace = APPLICATION_MANAGER_NAMESPACE)
+	@XmlElement(name = "deployment", namespace = APPLICATION_MANAGER_NAMESPACE )
 	private List<Deployment> deployments;
 	//TODO Add OVF description...
 	@XmlElement(name="link", namespace = APPLICATION_MANAGER_NAMESPACE)
