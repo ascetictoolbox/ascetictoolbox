@@ -1,0 +1,115 @@
+#!/bin/bash
+
+#/*------------------------------------------------------------------------*/
+#/*                                                                        */
+#/*                BSC - Barcelona Supercomputing Center                   */     
+#/*                           COMP Superscalar                             */      
+#/*                                                                        */ 
+#/*                            BUILD SCRIPT                                */      
+#/*                                                                        */
+#/*   More information at COMP Superscalar Website: www.bsc.es/compss      */
+#/*                                                                        */
+#/*   Support: carlos.diaz@bsc.es                                          */
+#/*                                                                        */
+#/*------------------------------------------------------------------------*/
+
+echo "*-------------------------------------------------------------------*"
+echo "*                                                                   *"
+echo "*               BSC - Barcelona Supercomputing Center               *"     
+echo "*                          COMP Superscalar                         *"      
+echo "*                                                                   *" 
+echo "*                           BUILD SCRIPT                            *"      
+echo "*                                                                   *"
+echo "*                                                                   *"
+echo "*  More information at COMP Superscalar Website: www.bsc.es/compss  *"
+echo "*                                                                   *"
+echo "*  Support: carlos.diaz@bsc.es                                      *"
+echo "*                                                                   *"        
+echo "*  Dependencies: csh (sudo apt-get install csh)                     *"
+echo "*                                                                   *"
+echo "*-------------------------------------------------------------------*"
+echo ""
+ 
+working_dir=`pwd`
+
+#Machine Arch Calculation
+
+machine_arch=$(uname -p | /usr/bin/cut -c 1);
+
+if [[ $machine_arch == i ]]; then
+{
+   arch="i386"
+   subfolder="client"
+}
+fi
+        
+if [[ $machine_arch == x ]]; then
+{
+     arch="amd64"
+     subfolder="server"
+}
+fi
+
+echo "ARCH: $arch"
+echo "SUBFLDR: $subfolder"
+
+export ARCH=$arch
+export SUBFLDR=$subfolder
+
+if [ -z $GS_HOME ]; then
+
+	if [ -z $IT_HOME ]; then
+		export GS_HOME=/opt/COMPSs/Runtime/bindings/c
+	else
+		export GS_HOME=$IT_HOME/bindings/c
+	fi
+fi
+export GSSTUBGEN=$GS_HOME/bin/gsstubgen
+
+if [ ! -d "./src" ]; then
+    echo " "
+    echo "No application source directory found! (./src)";
+    echo "This script must be executed at the root directory of your application.";
+    exit 1;	
+fi
+
+cd ./src
+make
+
+if [ $? -ne 0 ]; then 
+{
+    echo " "
+    echo "Building user application failed, please check errors above!";
+    exit 1;
+}
+fi
+
+cd $working_dir
+
+$GS_HOME/bin/gsbuild build all $@
+
+if [ $? -ne 0 ]; then 
+{
+    echo " "
+    echo "Building binding failed, please check errors above!";
+    exit 1;
+}
+fi
+
+rm -rf ./bin/master
+rm -rf ./bin/worker
+
+#mv master ./bin/master
+#mv worker ./bin/worker
+
+#rm -rf ./bin/master/gsbuild
+#rm -rf ./bin/worker/gsbuild
+
+echo ""
+echo "*-------------------------------------------------------------------*"
+echo "*                                                                   *"
+echo "*  Application successfully built!!!                                *"
+echo "*                                                                   *"
+echo "*  More information at COMP Superscalar website: www.bsc.es/compss  *"
+echo "*                                                                   *"        
+echo "*-------------------------------------------------------------------*"

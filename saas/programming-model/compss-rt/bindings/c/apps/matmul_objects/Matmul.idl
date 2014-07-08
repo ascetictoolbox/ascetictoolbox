@@ -1,0 +1,5 @@
+interface MAIN 
+{
+	void initMatrix(inout Matrix matrix, in int mSize, in int nSize, in double val);
+	void multiplyMatrices(inout Matrix C, inout Matrix A, inout Matrix B); 
+};

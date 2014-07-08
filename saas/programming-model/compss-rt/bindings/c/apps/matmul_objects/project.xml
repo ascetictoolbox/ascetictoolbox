@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project>
+	  <Worker Name="localhost">
+            <InstallDir>/home/cdiaz/workspaceJ/Framework/compss/compss-rt/scripts/system/</InstallDir>
+            <WorkingDir>/home/cdiaz/workspaceC/c/apps/matmul_objects/worker/files/</WorkingDir>
+            <AppDir>/home/cdiaz/workspaceC/c/apps/matmul_objects/worker/</AppDir>
+            <User>cdiaz</User>
+            <LimitOfTasks>4</LimitOfTasks>
+          </Worker>
+</Project>

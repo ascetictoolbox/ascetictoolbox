@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ResourceList>
+    <CloudProvider name="PROVIDERNAME">
+        <Server>https://carach5.ics.muni.cz:11443/</Server>
+        <Connector>integratedtoolkit.connectors.rocci.ROCCI</Connector>
+        <ImageList>
+            <Image name="egi_compss"/>
+        </ImageList>
+        <InstanceTypes>
+            <Resource Name="small">
+                <Capabilities>
+                    <Processor>
+                        <Architecture>x86_64</Architecture>
+                        <CPUCount>1</CPUCount>
+                    </Processor>
+                    <StorageElement>
+                        <Size>10.0</Size>
+                    </StorageElement>
+                    <Memory>
+                        <PhysicalSize>1.7</PhysicalSize>
+                    </Memory>
+                </Capabilities>
+            </Resource>
+            <Resource Name="medium">
+                <Capabilities>
+                    <Processor>
+                        <Architecture>x86_64</Architecture>
+                        <CPUCount>2</CPUCount>
+                    </Processor>
+                    <StorageElement>
+                        <Size>10.0</Size>
+                    </StorageElement>
+                    <Memory>
+                        <PhysicalSize>3.75</PhysicalSize>
+                    </Memory>
+                </Capabilities>
+            </Resource>
+            <Resource Name="large">
+                <Capabilities>
+                    <Processor>
+                        <Architecture>x86_64</Architecture>
+                        <CPUCount>2</CPUCount>
+                    </Processor>
+                    <StorageElement>
+                        <Size>10.0</Size>
+                    </StorageElement>
+                    <Memory>
+                        <PhysicalSize>7.5</PhysicalSize>
+                    </Memory>
+                </Capabilities>
+            </Resource>
+            <Resource Name="extra_large">
+                <Capabilities>
+                    <Processor>
+                        <Architecture>x86_64</Architecture>
+                        <CPUCount>4</CPUCount>
+                    </Processor>
+                    <StorageElement>
+                        <Size>10.0</Size>
+                    </StorageElement>
+                    <Memory>
+                        <PhysicalSize>15.0</PhysicalSize>
+                    </Memory>
+                </Capabilities>
+            </Resource>
+        </InstanceTypes>
+    </CloudProvider>
+</ResourceList>
+

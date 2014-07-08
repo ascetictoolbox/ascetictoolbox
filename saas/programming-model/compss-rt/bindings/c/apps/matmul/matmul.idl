@@ -1,0 +1,3 @@
+interface MATMUL {
+	void matmul(in File f1, in File f2, inout File f3);
+};

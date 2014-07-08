@@ -1,0 +1,4 @@
+interface INCREMENT 
+{
+	void increment(inout File filename);
+};

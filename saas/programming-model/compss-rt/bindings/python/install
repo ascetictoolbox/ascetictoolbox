@@ -1,0 +1,17 @@
+#!/bin/sh
+
+IT_HOME=$1
+PYCOMPSS_HOME=$IT_HOME/bindings/python
+sources_dir=`dirname $0`
+
+echo "Installing in $PYCOMPSS_HOME"
+python $sources_dir/setup.py install --install-lib=$PYCOMPSS_HOME
+exitCode=$?
+
+rm -rf $sources_dir/build
+
+if [ $exitCode -ne 0 ]; then
+	echo "Error in Python binding package";
+	exit 1;
+fi
+
