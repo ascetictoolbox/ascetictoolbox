@@ -20,7 +20,7 @@
     </properties>
 	<dependencies>
 		<dependency>
-			<groupId>eu.ascetic.saas</groupId>
+			<groupId>eu.ascetic.saas.programming-model</groupId>
 			<artifactId>compss-annotations</artifactId>
 			<version>${project.version}</version>
 		</dependency>
