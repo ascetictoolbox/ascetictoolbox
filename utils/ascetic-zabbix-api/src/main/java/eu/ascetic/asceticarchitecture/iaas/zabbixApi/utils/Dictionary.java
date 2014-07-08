@@ -30,5 +30,22 @@ public class Dictionary {
 	public static String ITEM_TRENDS = "trends";
 	public static String ITEM_LASTVALUE = "lastvalue";
 	public static String ITEM_LASTCLOCK = "lastclock";
+	
+	//HISTORY ITEM
+	public static String HISTORY_ITEM_ITEMID = "itemid";
+	public static String HISTORY_ITEM_HOSTID = "hostid";
+	public static String HISTORY_ITEM_HOSTS = "hosts";
+	public static String HISTORY_ITEM_CLOCK = "clock";
+	public static String HISTORY_ITEM_VALUE = "value";
+	public static String HISTORY_ITEM_NANOSECONDS = "ns";
+	
+	//HISTORY ITEM FORMATS
+	public static String HISTORY_ITEM_FORMAT_FLOAT = "0";
+	public static String HISTORY_ITEM_FORMAT_STRING = "1";
+	public static String HISTORY_ITEM_FORMAT_LOG = "2";
+	public static String HISTORY_ITEM_FORMAT_INTEGER = "3";
+	public static String HISTORY_ITEM_FORMAT_TEXT = "4";
+
+	
 
 }

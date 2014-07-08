@@ -2,6 +2,7 @@ package eu.ascetic.asceticarchitecture.iaas.zabbixApi.client;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.conf.Configuration;
+import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.HistoryItem;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Host;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Item;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.User;
@@ -268,13 +270,15 @@ public class ZabbixClient {
 		
 	
 	/**
-	 * Gets a specific item from one host.
+	 * Gets a specific item by name from one host.
+	 * 
+	 * If there are more than one item, with this name, the method return the first item of the list
 	 *
 	 * @param itemName the item name
 	 * @param hostName the host name
 	 * @return the item from host
 	 */
-	public Item getItemFromHost(String itemName, String hostName){
+	public Item getItemByNameFromHost(String itemName, String hostName){
 		Item item = null;
 		
 		//Get info from host
@@ -328,5 +332,220 @@ public class ZabbixClient {
 	    httpPost.addHeader("Content-Type", "application/json-rpc");
 	    return client.execute(httpPost);
 	}
+
+	
+	/**
+	 * Gets the history data from item.
+	 *
+	 * @param itemKey the item key
+	 * @param hostName the host name
+	 * @param itemFormat available format values:<BR>Dictionary.HISTORY_ITEM_FORMAT_FLOAT = float;<BR>
+													Dictionary.HISTORY_ITEM_FORMAT_STRING = String<BR>
+													Dictionary.HISTORY_ITEM_FORMAT_LOG = log<BR>
+													Dictionary.HISTORY_ITEM_FORMAT_INTEGER = integer<BR>
+													Dictionary.HISTORY_ITEM_FORMAT_TEXT = text<BR>
+ 	 * @param limit how many values are going to retrieve from Zabbix
+	 * @return the history data from item
+	 */
+	public List<HistoryItem> getHistoryDataFromItem(String itemKey, String hostName, String itemFormat, int limit){
+		ArrayList<HistoryItem> historyItems = null;
+		
+		if (limit > 0){
+			//getHost
+			Host host = getHostByName(hostName);
+			if (host != null){
+				//get itemId
+				Item item = getItemByKeyFromHost(itemKey, hostName);
+				if (item != null){
+					try {
+						String token = getAuth();
+						if (token != null){
+							//get historyData from host
+							String jsonRequest = 
+									"{\"jsonrpc\":\"" + Dictionary.JSON_RPC_VERSION + "\","
+								   + "\"method\":\"history.get\","
+								   + "\"params\":{\"output\":\"extend\","
+								   			   + "\"history\": \"" + itemFormat + "\","
+								   			   + "\"itemids\": \"" + item.getItemid() + "\","
+								   			   + "\"hostids\": \"" + host.getHostid() + "\", "
+								   			   + "\"sortfield\": \"clock\","
+								   			   + "\"sortorder\": \"DESC\","
+								   			   + "\"limit\": \"" + limit + "\"},"								   			
+								   + "\"auth\":\"" + token + "\","
+								   + "\"id\": 0}";
+
+							HttpResponse response = postAndGet(jsonRequest);
+							HttpEntity entity = response.getEntity();
+							ObjectMapper mapper = new ObjectMapper ();
+							HashMap untyped = mapper.readValue(EntityUtils.toString(entity), HashMap.class);
+							ArrayList result = (ArrayList) untyped.get("result");
+
+							System.out.println();
+							
+							if (result != null){
+								historyItems = new ArrayList<HistoryItem>();
+								for (int i=0; i<result.size(); i++){
+									HistoryItem historyItem = Json2ObjectMapper.getHistoryItem((HashMap<String, Object>) result.get(i));
+									historyItems.add(historyItem);
+								}
+							}
+							return historyItems;
+						}
+
+					} catch (Exception e) {
+						log.error(e.getMessage() + "\n"); 
+						System.out.println(e.getMessage() + "\n");
+					}					
+				}
+				else {
+					log.error("No item with key = " + itemKey + ", available in host " + hostName); 
+				}	
+			}
+			else {
+				log.error("No host " + hostName + " available in Zabbix system");
+			}				
+		}
+		else {
+			log.error("limit must be greater than 0. Current value = " + limit);
+		}
+		
+		return historyItems;
+	}
+	
+	
+	/**
+	 * Gets a specific item by key from one host.
+	 *
+	 * @param itemKey the item key
+	 * @param hostName the host name
+	 * @return the item from host
+	 */
+	public Item getItemByKeyFromHost(String itemKey, String hostName){
+		Item item = null;
+		
+		//Get info from host
+		Host host = getHostByName(hostName);
+
+		if (host != null){
+			try {
+				String token = getAuth();
+				if (token != null){
+					String jsonRequest = 
+							"{\"jsonrpc\":\"" + Dictionary.JSON_RPC_VERSION + "\","
+						   + "\"method\":\"item.get\","
+						   + "\"params\":{\"output\":\"extend\","
+						   			   + "\"hostids\":\"" + host.getHostid() + "\","
+						   			   + "\"search\":{\"key_\":\"" + itemKey + "\"},"
+						   			   + "\"sortfield\":\"name\"},"
+						   + "\"auth\":\"" + token + "\","
+						   + "\"id\": 0}";
+
+					HttpResponse response = postAndGet(jsonRequest);
+					HttpEntity entity = response.getEntity();
+					ObjectMapper mapper = new ObjectMapper ();
+					HashMap untyped = mapper.readValue(EntityUtils.toString(entity), HashMap.class);
+					ArrayList result = (ArrayList) untyped.get("result");
+
+					if (result != null){
+						item = Json2ObjectMapper.getItem((HashMap<String, String>) result.get(0));				
+					}
+					return item;
+				}
+
+			} catch (Exception e) {
+				log.error(e.getMessage() + "\n"); 
+			}
+
+		}
+		return item;
+	}
+	
+	/**
+	 * Gets the history data from item.
+	 *
+	 * @param itemKey the item key
+	 * @param hostName the host name
+	 * @param itemFormat available format values:<BR>Dictionary.HISTORY_ITEM_FORMAT_FLOAT = float;<BR>
+	 * 													Dictionary.HISTORY_ITEM_FORMAT_STRING = String<BR>
+	 * 													Dictionary.HISTORY_ITEM_FORMAT_LOG = log<BR>
+	 * 													Dictionary.HISTORY_ITEM_FORMAT_INTEGER = integer<BR>
+	 * 													Dictionary.HISTORY_ITEM_FORMAT_TEXT = text<BR>
+	 * @param startTime the start time in miliseconds
+	 * @param endTime the end time in miliseconds
+	 * @return the history data from item
+	 */
+	public List<HistoryItem> getHistoryDataFromItem(String itemKey, String hostName, String itemFormat, long startTime,
+			long endTime){
+		ArrayList<HistoryItem> historyItems = null;
+		
+		if (startTime >= endTime){
+			Date date = new Date();
+			long actualDate = date.getTime();
+			if (!(startTime > actualDate) && !(endTime > actualDate)){
+				//getHost
+				Host host = getHostByName(hostName);
+				if (host != null){
+					//get itemId
+					Item item = getItemByKeyFromHost(itemKey, hostName);
+					if (item != null){
+						try {
+							String token = getAuth();
+							if (token != null){
+								//get historyData from host
+								String jsonRequest = 
+										"{\"jsonrpc\":\"" + Dictionary.JSON_RPC_VERSION + "\","
+									   + "\"method\":\"history.get\","
+									   + "\"params\":{\"output\":\"extend\","
+									   			   + "\"history\": \"" + itemFormat + "\","
+									   			   + "\"itemids\": \"" + item.getItemid() + "\","
+									   			   + "\"hostids\": \"" + host.getHostid() + "\", "
+									   			   + "\"time_from\": \"" + startTime + "\", "
+									   			   + "\"time_till\": \"" + endTime + "\", "
+									   			   + "\"sortfield\": \"clock\","
+									   			   + "\"sortorder\": \"DESC\"},"								   			
+									   + "\"auth\":\"" + token + "\","
+									   + "\"id\": 0}";
+
+								HttpResponse response = postAndGet(jsonRequest);
+								HttpEntity entity = response.getEntity();
+								ObjectMapper mapper = new ObjectMapper ();
+								HashMap untyped = mapper.readValue(EntityUtils.toString(entity), HashMap.class);
+								ArrayList result = (ArrayList) untyped.get("result");
+
+								System.out.println();
+								
+								if (result != null){
+									historyItems = new ArrayList<HistoryItem>();
+									for (int i=0; i<result.size(); i++){
+										HistoryItem historyItem = Json2ObjectMapper.getHistoryItem((HashMap<String, Object>) result.get(i));
+										historyItems.add(historyItem);
+									}
+								}
+								return historyItems;
+							}
+
+						} catch (Exception e) {
+							log.error(e.getMessage() + "\n"); 
+							System.out.println(e.getMessage() + "\n");
+						}					
+					}
+					else {
+						log.error("No item with key = " + itemKey + ", available in host " + hostName); 
+					}	
+				}
+				else {
+					log.error("No host " + hostName + " available in Zabbix system");
+				}
+			}							
+		}
+		else {
+			log.error("endTime must be greater than startTime: startTime = " + startTime + ", endTime = " + endTime);
+		}
+		
+		return historyItems;
+		
+		
+	}
+	
 	
 }

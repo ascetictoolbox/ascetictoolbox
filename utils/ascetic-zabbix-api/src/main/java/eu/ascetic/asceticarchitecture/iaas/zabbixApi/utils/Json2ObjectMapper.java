@@ -1,7 +1,9 @@
 package eu.ascetic.asceticarchitecture.iaas.zabbixApi.utils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
+import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.HistoryItem;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Host;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Item;
 
@@ -43,5 +45,27 @@ public class Json2ObjectMapper {
 		item.setLastValue(hmJsonItem.get(Dictionary.ITEM_LASTVALUE));
 		item.setTrends(hmJsonItem.get(Dictionary.ITEM_TRENDS));
 		return item;
+	}
+	
+	
+	/**
+	 * Gets the history item.
+	 *
+	 * @param hmJsonHistoryItem the hm json history item
+	 * @return the history item
+	 */
+	public static HistoryItem getHistoryItem(HashMap<String,Object> hmJsonHistoryItem){
+		HistoryItem historyItem = new HistoryItem();
+		historyItem.setItemid((String) hmJsonHistoryItem.get(Dictionary.HISTORY_ITEM_ITEMID));
+		historyItem.setClock(Long.parseLong((String) hmJsonHistoryItem.get(Dictionary.HISTORY_ITEM_CLOCK)));
+		historyItem.setNanoseconds((String) hmJsonHistoryItem.get(Dictionary.HISTORY_ITEM_NANOSECONDS));
+		historyItem.setValue((String) hmJsonHistoryItem.get(Dictionary.HISTORY_ITEM_VALUE));
+		
+		ArrayList<HashMap<String, String>> hosts = (ArrayList<HashMap<String, String>>) hmJsonHistoryItem.get(Dictionary.HISTORY_ITEM_HOSTS);
+		String hostId = hosts.get(0).get(Dictionary.HISTORY_ITEM_HOSTID);
+		historyItem.setHostid(hostId);
+		
+		return historyItem;
+		
 	}
 }

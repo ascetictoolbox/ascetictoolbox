@@ -1,15 +1,16 @@
 README.TXT
 ----------
 
-A example class called ZabbixApiClientTest is available in order to execute some tests. This class execute two methods to retrieve information from Zabbix server:
-- getAllHosts: retrieve all hosts in Zabbix server
-- getItemsFromHost: retrieve items from a host called "Zabbix server"
-The execution output of this class is available in the same folder of this file, called "ZabbixApiClientTest class output.txt"
+A example class called ZabbixApiClientTest is available in order to execute some tests. The execution output of this class is available in the same folder of this file, called "ZabbixApiClientTest class output.txt"
 
 Methods available to get information from Zabbix:
 - getAllHosts()
 - getAllItems()
+- getHistoryDataFromItem(itemKey, hostName, itemFormat, limit)
+- getHistoryDataFromItem(itemKey, hostName, itemFormat, startTime, endTime)
 - getHostByName(hostName)
+- getItemByKeyFromHost(itemKey, hostName)
+- getItemByNameFromHost(itemName, hostName)
 - getItemsFromHost(hostName)
 - getItemFromHost(itemName, hostName)
 
