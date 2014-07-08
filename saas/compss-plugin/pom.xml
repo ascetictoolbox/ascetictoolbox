@@ -10,9 +10,9 @@
   <name>COMP Superscalar ASCETIC eclipse plug-in</name>
   <description>Provides the IDE to implement application with the COMPSs programming model and deploy it in the ASCETIC infrastructure</description>
   <packaging>pom</packaging>
-  <prerequisites>
+  <!--prerequisites>
         <maven>3.0</maven>
-  </prerequisites>
+  </prerequisites-->
   <properties>
   	<test.basedir>${basedir}</test.basedir>
 	<uitest.vmparams>-Dtest.workspace=${test.basedir} -Xmx1024m -XX:MaxPermSize=384m</uitest.vmparams>

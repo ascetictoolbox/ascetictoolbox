@@ -9,9 +9,9 @@
 	<version>0.0.1-SNAPSHOT</version>
   	<relativePath>../</relativePath>
   </parent>
-  <prerequisites>
+  <!--prerequisites>
     <maven>3.0</maven>
-  </prerequisites>
+  </prerequisites-->
   <properties>
 	<tycho-version>0.18.0</tycho-version>
 	<tycho-repo.url>https://oss.sonatype.org/content/groups/public/</tycho-repo.url>
