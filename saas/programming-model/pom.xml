@@ -79,7 +79,7 @@
 
 	<modules>
 		<module>compss-annotations</module>
-		<!--		<module>compss-rt/rt</module> -->
+		<module>compss-rt/rt</module> 
 		<module>compss-monitor</module>
 	</modules>
 </project>

@@ -30,9 +30,9 @@ public class AppManager {
     private static final HashMap<String, VM> detectedVMs;
 
     static {
-        applicationId = "applicationID";
-        deploymentId = "deploymentID";
-        endpoint = "http://192.168.1.1";
+        applicationId = Configuration.getApplicationId();
+        deploymentId = Configuration.getDeploymentId();
+        endpoint = Configuration.getApplicationMonitorEndpoint();
         RESOURCES_PATH = "/applications/" + applicationId + "/deployments/" + deploymentId;
         detectedVMs = new HashMap<String, VM>();
     }

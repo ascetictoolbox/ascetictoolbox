@@ -3,24 +3,24 @@
   	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>integratedtoolkit</groupId>
-		<artifactId>compss-framework</artifactId>
-		<version>1.2</version>
+		<groupId>eu.ascetic.saas</groupId>
+		<artifactId>programming-model</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>../..</relativePath>
 	</parent>
 
-	<groupId>integratedtoolkit</groupId>
+	<groupId>eu.ascetic.saas</groupId>
 	<artifactId>compss-rt</artifactId>
 	<packaging>jar</packaging>
-	<name>ASCETIC Runtime System</name>
-	<description>COMPSs Runtime</description>
+	<name>ASCETIC PM Runtime System</name>
+	<description>ASCETIC PM Runtime System</description>
 	<url>http://www.bsc.es</url>
 	<properties>          
          <cxf.version>2.6.5</cxf.version>          
     </properties>
 	<dependencies>
 		<dependency>
-			<groupId>integratedtoolkit</groupId>
+			<groupId>eu.ascetic.saas</groupId>
 			<artifactId>compss-annotations</artifactId>
 			<version>${project.version}</version>
 		</dependency>
@@ -355,7 +355,7 @@
 			<version>4.2.0</version>
 		</dependency>
 			      
-		<dependency>
+    		<dependency>
 			<groupId>wsdl4j</groupId>
 			<artifactId>wsdl4j</artifactId>
 			<version>1.6.2</version>
@@ -398,7 +398,11 @@
 		      <artifactId>commons-collections</artifactId>
 		      <version>3.2.1</version>
 		 </dependency>
-
+                 <dependency>
+                        <groupId>org.apache.httpcomponents</groupId>
+                        <artifactId>httpclient</artifactId>
+                        <version>4.3.4</version>
+                 </dependency>
 	</dependencies>
 
 	
@@ -499,67 +503,67 @@
 			        		    <!-- transformer implementation="org.apache.cxf.maven.PluginTransformer">
 			        		        <resource>META-INF/tools-plugin.xml</resource>
 			        		        
-			        		    </transformer-->
-			        		    <transformer implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
-			        		        <resource>META-INF/cxf/java2wsbeans.xml</resource>
+                                </transformer-->
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
+                                    <resource>META-INF/cxf/java2wsbeans.xml</resource>
 			        		        
-			        		    </transformer>
-			        		    <!-- transformer implementation="org.apache.cxf.maven.CXFAllTransformer"/-->
-			        		</transformers>
+                                </transformer>
+                                <!-- transformer implementation="org.apache.cxf.maven.CXFAllTransformer"/-->
+                            </transformers>
 			        			        		
-			      		</configuration>
-			    	</execution>
-			  	</executions>
-			  	<!-- dependencies>
-                	<dependency>
-                    	<groupId>org.apache.cxf</groupId>
-                    	<artifactId>cxf-buildtools</artifactId>
-                    	<version>${cxf.version}</version>
-                    	<type>jar</type>
-                    	<scope>compile</scope>
-                	</dependency>
-            	</dependencies-->
-     		 </plugin>
-		 	<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.6</version>
-				<executions>
-			  		<execution>
-			    		<id>copy-resources</id>
-			    		<phase>validate</phase>
-			    		<goals>
-			      			<goal>copy-resources</goal>
-			    		</goals>
-			    		<configuration>
-			      			<outputDirectory>${basedir}/target/lib/tracing</outputDirectory>
-			      			<resources>          
-								<resource>
-				  					<directory>src/main/resources/tracing</directory>
-				  					<filtering>true</filtering>
-								</resource>
-			      			</resources>              
-			    		</configuration>            
-			  		</execution>
-					<execution>
-            			<id>copy-final-jar</id>
-                		<phase>package</phase>
-                		<goals>
-                			<goal>copy-resources</goal>
-                		</goals>
-                		<configuration>
-                    		<outputDirectory>${basedir}</outputDirectory>
-                    		<resources>
-                    			<resource>
-                        			<directory>${project.build.directory}</directory>
-                            		<includes>
-                    					<include>${project.artifactId}.jar</include>
-                  					</includes>
-                        		</resource>
-                    		</resources>
-                		</configuration>
-                	</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+                        </configuration>
+                    </execution>
+                </executions>
+                <!-- dependencies>
+                        <dependency>
+                        <groupId>org.apache.cxf</groupId>
+                        <artifactId>cxf-buildtools</artifactId>
+                        <version>${cxf.version}</version>
+                        <type>jar</type>
+                        <scope>compile</scope>
+                        </dependency>
+                </dependencies-->
+            </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/lib/tracing</outputDirectory>
+                            <resources>          
+                                <resource>
+                                    <directory>src/main/resources/tracing</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>              
+                        </configuration>            
+                    </execution>
+                    <execution>
+                        <id>copy-final-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}</directory>
+                                    <includes>
+                                        <include>${project.artifactId}.jar</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

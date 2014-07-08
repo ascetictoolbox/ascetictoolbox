@@ -32,7 +32,7 @@ public class VM {
         }
     }
 
-    private final static HashMap<String, ResourceDescription> componentDescription = new HashMap<String, ResourceDescription>();
+    private final static HashMap<String, ResourceDescription> componentDescription = Configuration.getComponentDescriptions();
 
     private final String componentId;
     private final String providerId;
