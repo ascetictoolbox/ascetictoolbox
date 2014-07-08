@@ -82,6 +82,10 @@ public class EventsDBMapper {
         event.put(EventsDBMapper.TIMESTAMP, timestamp);
 
 		DBObject dbo = (DBObject) JSON.parse(event.toString());
+
+        if(dbo.get(ENDTIME) == null) {
+            dbo.put(ENDTIME,-1L);
+        }
 	    colEvents.save(dbo);
 
 	    // return stored id and timestamp
