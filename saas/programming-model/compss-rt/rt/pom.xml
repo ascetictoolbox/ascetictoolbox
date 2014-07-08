@@ -9,7 +9,7 @@
 		<relativePath>../..</relativePath>
 	</parent>
 
-	<groupId>eu.ascetic.saas</groupId>
+	<groupId>eu.ascetic.saas.programming-model</groupId>
 	<artifactId>compss-rt</artifactId>
 	<packaging>jar</packaging>
 	<name>ASCETIC PM Runtime System</name>
@@ -21,7 +21,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>eu.ascetic.saas.programming-model</groupId>
-			<artifactId>compss-annotations</artifactId>
+			<artifactId>annotations</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	    <dependency>
@@ -398,11 +398,11 @@
 		      <artifactId>commons-collections</artifactId>
 		      <version>3.2.1</version>
 		 </dependency>
-                 <dependency>
-                        <groupId>org.apache.httpcomponents</groupId>
-                        <artifactId>httpclient</artifactId>
-                        <version>4.3.4</version>
-                 </dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+		</dependency>
 	</dependencies>
 
 	
