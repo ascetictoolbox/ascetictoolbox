@@ -19,29 +19,14 @@ package es.bsc.servicess.ide.editors.deployers;
 import static es.bsc.servicess.ide.Constants.*;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-import java.util.Map.Entry;
-
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.commons.configuration.ConfigurationException;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.xml.sax.SAXException;
-
 import es.bsc.servicess.ide.ConstraintDef;
 import es.bsc.servicess.ide.IDEProperties;
 import es.bsc.servicess.ide.Logger;
@@ -53,9 +38,9 @@ import es.bsc.servicess.ide.model.Dependency;
 import es.bsc.servicess.ide.model.MethodCoreElement;
 import es.bsc.servicess.ide.model.ServiceCoreElement;
 import es.bsc.servicess.ide.model.ServiceElement;
+import eu.ascetic.utils.ovf.api.File;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
-import eu.ascetic.utils.ovf.api.OvfDefinitionFactory;
-import eu.ascetic.utils.ovf.api.OvfDefinitionProperties;
+import eu.ascetic.utils.ovf.api.ProductPropertyType;
 import eu.ascetic.utils.ovf.api.ProductSection;
 import eu.ascetic.utils.ovf.api.VirtualHardwareSection;
 import eu.ascetic.utils.ovf.api.VirtualSystem;
@@ -82,27 +67,29 @@ public class Manifest {
 			throw new Exception("No orchestration packages defined");
 		}
 			
-		//TODO generate new ovf definition
 		ovf = null; 
 		for (String p : oePacks) {
 			log.debug("Creating Component for package " + p );
 			String componentID = Manifest.generateManifestName(p);
 			if (ovf == null){
 				OvfDefinition.Factory.newInstance(project.getProject().getName(), componentID);
-			}else
-				//TODO: Create the new component
-			setComponentDescription(componentID, pr_meta, packMeta, p, project, 
+			}else{
+				VirtualSystem component = VirtualSystem.Factory.newInstance();
+				component.setId(componentID);
+				setComponentDescription(component, pr_meta, packMeta, p, project, 
 					 allEls, false, prop);
+				ovf.getVirtualSystemCollection().addVirtualSystem(component);
+			}
 		}
 		String[] cePacks = packMeta.getPackagesWithCores();
 		if (cePacks != null && cePacks.length > 0) {
 			for (String p : cePacks) {
 				log.debug("Creating Component for package " + p );
 				String componentID = Manifest.generateManifestName(p);
-				
-				setComponentDescription(componentID, pr_meta, packMeta, p, project, 
+				VirtualSystem component = VirtualSystem.Factory.newInstance();
+				component.setId(componentID);
+				setComponentDescription(component, pr_meta, packMeta, p, project, 
 					allEls, false, prop);
-				
 			}
 		}else{
 			log.warn("No packages found generating only master");
@@ -123,7 +110,7 @@ public class Manifest {
 	 * @param master flag to indicate if component is a front-end
 	 * @throws Exception 
 	 */
-	public void setComponentDescription(String componentID,
+	public void setComponentDescription(VirtualSystem component,
 			ProjectMetadata prMeta, PackageMetadata packMeta, String p, IJavaProject project,
 			HashMap<String, ServiceElement> constEls, boolean master,
 			AsceticProperties op_prop) throws Exception {
@@ -146,7 +133,6 @@ public class Manifest {
 		Map<String, Integer> minCoreInstancesPerMachine = BuildingDeploymentFormPage.
 				getConstraintsElements(els, constEls, minCoreInstances, maxResourcesPerMachine, 
 						maxConstraints);
-		VirtualSystem component = getComponent(componentID);
 		setConstraints(component, maxConstraints, prMeta);
 		
 		log.debug("Setting signatures in product");
@@ -155,7 +141,7 @@ public class Manifest {
 			signatures = "master-frontend";
 		}else
 			signatures = generateElementSignatures(constEls, els, prMeta, minCoreInstancesPerMachine);
-		product.addNewProperty("PM_Elements", "string", signatures);
+		product.addNewProperty("PM_Elements", ProductPropertyType.STRING, signatures);
 		/* TODO: Default intra-components affinity
 		component.setAffinityConstraints("Low");
 		component.setAntiAffinityConstraints("Low");
@@ -340,7 +326,6 @@ public class Manifest {
 			Map<String, Integer> minCoreInstancesPerMachine,
 			Map<String, Integer> minCoreInstances,
 			Map<String, Integer> maxCoreInstances) throws Exception {
-		/*TODO Change to Ascetic component
 		if (els!=null){
 			int[] min_values = new int[els.length];
 			int[] max_values = new int[els.length];
@@ -355,15 +340,13 @@ public class Manifest {
 			}
 			Arrays.sort(min_values);
 			Arrays.sort(max_values);
-			component.getAllocationConstraints().setLowerBound(
+			component.getProductSectionAtIndex(0).setLowerBound(
 				min_values[min_values.length - 1]);
-			component.getAllocationConstraints().setInitial(
-				min_values[min_values.length - 1]);
-			component.getAllocationConstraints().setUpperBound(
+			component.getProductSectionAtIndex(0).setUpperBound(
 				max_values[max_values.length - 1]);
 		}else
 			throw(new Exception("Array of elements is null"));
-			*/
+			
 	}
 
 	/* TODO Not currently supported in Ascetic  
@@ -595,12 +578,15 @@ public class Manifest {
 	}
 
 	public void addFiles(String name, String href, String format){
-		//TODO add file
+		File f = File.Factory.newInstance(name, href);
+		if (format!= null)
+			f.setCompression(format);
+		ovf.getReferences().addFile(f);
 	}
 	
 	public void addVMICFileInComponent(String componentID, String name) throws Exception{
 		VirtualSystem vs = getComponent(componentID);
-		vs.getProductSectionAtIndex(0).addNewProperty(VMIC_FILE , "string", name);
+		vs.getProductSectionAtIndex(0).addNewProperty(VMIC_FILE , ProductPropertyType.STRING, name);
 		
 		
 	}
