@@ -21,8 +21,8 @@
 	    <module>application-uploader</module>
 	    <module>application-packager</module>
 	    <module>application-descriptor-tool</module>
-	    <!--module>compss-plugin</module>
-	    <module>ascetic-eclipse-site</module-->
+	    <module>compss-plugin</module>
+	    <module>ascetic-eclipse-site</module>
 	</modules>
 	<url>http://www.ascetic.eu</url>
 	<version>0.0.1-SNAPSHOT</version>
