@@ -1,128 +1,405 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:vssd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData"
-    xmlns:rasd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData"
-    xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"
-    xmlns="http://schemas.dmtf.org/ovf/envelope/1"
-    xsi:schemaLocation="http://schemas.dmtf.org/ovf/envelope/1 ../dsp8023.xsd">
-    	
-	#set($fileIdImage = "${virtualMachineId}-img-file")
-	#set($fileIdContext = "${virtualMachineId}-context-file")
-	
+	xmlns:vssd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData"
+	xmlns:rasd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData"
+	xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" xmlns="http://schemas.dmtf.org/ovf/envelope/1"
+	xsi:schemaLocation="http://schemas.dmtf.org/ovf/envelope/1 ../dsp8023.xsd">
+
 	<!-- References to all external files -->
 	<ovf:References>
-	    <!-- VM Image -->
-	    <ovf:File ovf:href="${vmImageFile}"
-	              ovf:id="${fileIdImage}"/>
-	    <!-- Context Image(s) -->
-	    <ovf:File ovf:href="${contextualizationImageFile}"
-	              ovf:id="${fileIdContext}"/>
+		<!-- HAProxy VM Image -->
+		<ovf:File ovf:id="${vmHaproxyImageFileId}" ovf:href="${imageRepository}/${vmHaproxyImageFile}" />
+		<!-- HAProxy Context Base Image(s) -->
+		<ovf:File ovf:id="${contextHaproxyImageFileId}" ovf:href="${imageRepository}/${contextHaproxyImageFile}" />
+		<!-- Jboss VM Image -->
+		<ovf:File ovf:id="${vmJbossImageFileId}" ovf:href="${imageRepository}/${vmJbossImageFile}" />
+		<!-- Jboss Context Base Image(s) -->
+		<ovf:File ovf:id="${contextJbossImageFileId}" ovf:href="${imageRepository}/${contextJbossImageFile}" />
+		<!-- MySQL VM Image -->
+		<ovf:File ovf:id="${vmMysqlImageFileId}" ovf:href="${imageRepository}/${vmMysqlImageFile}" />
+		<!-- MySQL Context Base Image(s) -->
+		<ovf:File ovf:id="${contextMysqlImageFileId}" ovf:href="${imageRepository}/${contextMysqlImageFile}" />
+		<!-- JMeter VM Image -->
+		<ovf:File ovf:id="${vmJmeterImageFileId}" ovf:href="${imageRepository}/${vmJmeterImageFile}" />
+		<!-- JMeter Context Base Image(s) -->
+		<ovf:File ovf:id="${contextJmeterImageFileId}" ovf:href="${imageRepository}/${contextJmeterImageFile}" />		
 	</ovf:References>
-	
+
 	<!-- Describes meta-information about all virtual disks in the package. -->
 	<ovf:DiskSection>
-	    <ovf:Info>List of the virtual disks used in the package.</ovf:Info>
-	    <ovf:Disk ovf:capacity="${vmImageCapacity}" ovf:diskId="${virtualMachineId}-img-disk"
-	              ovf:fileRef="${fileIdImage}"
-	              ovf:format="${vmImageFormat}"/>
-	    <ovf:Disk ovf:capacity="${contextualizationImageCapacity}"
-	              ovf:diskId="${virtualMachineId}-context-disk"
-	              ovf:fileRef="${fileIdContext}"
-	              ovf:format="${contextualizationImageFormat}"/>
+		<ovf:Info>List of the virtual disks used in the 3 Tier Web App package.</ovf:Info>
+		<!-- HAProxy Disks -->
+		<ovf:Disk ovf:diskId="${vmHaproxyImageFileId}-disk"	
+			ovf:fileRef="${vmHaproxyImageFileId}" 
+			ovf:capacity="${vmHaproxyImageCapacity}" 
+			ovf:format="${vmImageFormat}" />
+		<ovf:Disk ovf:diskId="${contextHaproxyImageFileId}-disk" 
+			ovf:fileRef="${contextHaproxyImageFileId}" 
+			ovf:capacity="${contextHaproxyImageCapacity}" 
+			ovf:format="${contextImageFormat}" />
+		<!-- Jboss Disks -->
+		<ovf:Disk ovf:diskId="${vmJbossImageFileId}-disk"	
+			ovf:fileRef="${vmJbossImageFileId}" 
+			ovf:capacity="${vmJbossImageCapacity}" 
+			ovf:format="${vmImageFormat}" />
+		<ovf:Disk ovf:diskId="${contextJbossImageFileId}-disk" 
+			ovf:fileRef="${contextJbossImageFileId}" 
+			ovf:capacity="${contextJbossImageCapacity}" 
+			ovf:format="${contextImageFormat}" />
+		<!-- MySQL Disks -->
+		<ovf:Disk ovf:diskId="${vmMysqlImageFileId}-disk"	
+			ovf:fileRef="${vmMysqlImageFileId}" 
+			ovf:capacity="${vmMysqlImageCapacity}" 
+			ovf:format="${vmImageFormat}" />
+		<ovf:Disk ovf:diskId="${contextMysqlImageFileId}-disk" 
+			ovf:fileRef="${contextMysqlImageFileId}" 
+			ovf:capacity="${contextMysqlImageCapacity}" 
+			ovf:format="${contextImageFormat}" />
+		<!-- JMeter Disks -->
+		<ovf:Disk ovf:diskId="${vmJmeterImageFileId}-disk"	
+			ovf:fileRef="${vmJmeterImageFileId}" 
+			ovf:capacity="${vmJmeterImageCapacity}" 
+			ovf:format="${vmImageFormat}" />
+		<ovf:Disk ovf:diskId="${contextJmeterImageFileId}-disk" 
+			ovf:fileRef="${contextJmeterImageFileId}" 
+			ovf:capacity="${contextJmeterImageCapacity}" 
+			ovf:format="${contextImageFormat}" />			
 	</ovf:DiskSection>
-	
+
 	<!-- Describes all networks used in the package -->
 	<ovf:NetworkSection>
-	    <ovf:Info>Logical networks used in the package.</ovf:Info>
-	    <ovf:Network ovf:name="${virtualMachineId}-net">
-	        <ovf:Description>Network to connect to system-${virtualMachineId}.</ovf:Description>
-	    </ovf:Network>
+		<ovf:Info>Logical networks used in the package.</ovf:Info>
+		<ovf:Network ovf:name="${applicationId}-net">
+			<ovf:Description>Network that the Web App will be available on.</ovf:Description>
+		</ovf:Network>
 	</ovf:NetworkSection>
-	
+
 	<ovf:VirtualSystemCollection ovf:id="${applicationId}">
-	    <ovf:Name>Full name of ${applicationId}</ovf:Name>
-	    <ovf:Info>${applicationId} description.</ovf:Info>
+		<ovf:Name>Three Tier Web App</ovf:Name>
+		<ovf:Info>A basic three tier web application description.</ovf:Info>
 
 		<!-- Product specific attributes applicable to all VirtualSystems (VMs) -->
 		<ovf:ProductSection ovf:class="eu.ascetic.application">
 			<ovf:Info>Product customisation for the installed software.</ovf:Info>
-		    <ovf:Product></ovf:Product>
-		    <ovf:Version></ovf:Version>
+			<ovf:Product>${applicationName}</ovf:Product>
+			<ovf:Version>${applicationVersion}</ovf:Version>
 		</ovf:ProductSection>
-		
-		<!-- Virtual System Instances Template -->
-		<ovf:VirtualSystem ovf:id="${virtualMachineId}">
-			<ovf:Name>Full name of ${virtualMachineId}</ovf:Name>
-		    <ovf:Info>${virtualMachineId} description</ovf:Info>
-		    
-		    <!-- Product specific attributes applicable to a single Virtual System (VM) -->
-		    <ovf:ProductSection ovf:class="eu.ascetic.vm">
-		        <ovf:Info>Product customisation for the installed software</ovf:Info>
-		        <ovf:Product></ovf:Product>
-		        <ovf:Version></ovf:Version>
-		    </ovf:ProductSection>
-		    
-		    <!-- Operating System details -->
-		    <ovf:OperatingSystemSection ovf:id="${operatingSystemId}">
-		        <ovf:Info>Specifies the operating system installed</ovf:Info>
-		        <ovf:Description>${operatingSystemDescription}</ovf:Description>
-		    </ovf:OperatingSystemSection>
-		    
-		    <!-- Hardware specification of the Virtual System (VM) -->
-		    <ovf:VirtualHardwareSection>
-		        <ovf:Info>Virtual Hardware Requirements: ${memorySize}Mb, ${numberOfVirtualCPUs}CPU,
-		            2 disks, 1 nic
-		        </ovf:Info>
-		        <ovf:System>
-		            <vssd:ElementName>Virtual Hardware Family</vssd:ElementName>
-		            <vssd:InstanceID>0</vssd:InstanceID>
-		            <vssd:VirtualSystemType>${virtualHardwareFamily}</vssd:VirtualSystemType>
-		        </ovf:System>
-		        <ovf:Item>
-		            <rasd:Description>Number of virtual CPUs</rasd:Description>
-		            <rasd:ElementName>${numberOfVirtualCPUs} virtual CPU</rasd:ElementName>
-		            <rasd:InstanceID>1</rasd:InstanceID>
-		            <rasd:ResourceType>3</rasd:ResourceType>
-		            <rasd:VirtualQuantity>${numberOfVirtualCPUs}</rasd:VirtualQuantity>
-		        </ovf:Item>
-		        <ovf:Item>
-		            <rasd:AllocationUnits>MegaBytes</rasd:AllocationUnits>
-		            <rasd:Description>Memory Size</rasd:Description>
-		            <rasd:ElementName>${memorySize} MB of memory</rasd:ElementName>
-		            <rasd:InstanceID>2</rasd:InstanceID>
-		            <rasd:ResourceType>4</rasd:ResourceType>
-		            <rasd:VirtualQuantity>${memorySize}</rasd:VirtualQuantity>
-		        </ovf:Item>
-		        <ovf:Item>
-		            <rasd:AllocationUnits>MHz</rasd:AllocationUnits>
-		            <rasd:ElementName>MHz reservation</rasd:ElementName>
-		            <rasd:InstanceID>1</rasd:InstanceID>
-		            <rasd:Reservation>${cpuSpeed}</rasd:Reservation>
-		            <rasd:ResourceType>3</rasd:ResourceType>
-		        </ovf:Item>
-		        <ovf:Item>
-		            <rasd:AutomaticAllocation>true</rasd:AutomaticAllocation>
-		            <rasd:Connection>${virtualMachineId}-net</rasd:Connection>
-		            <rasd:ElementName>Ethernet adapter on ${virtualMachineId}-net network
-		            </rasd:ElementName>
-		            <rasd:InstanceID>3</rasd:InstanceID>
-		            <rasd:ResourceType>10</rasd:ResourceType>
-		        </ovf:Item>
-		        <ovf:Item>
-		            <rasd:ElementName>Harddisk 1</rasd:ElementName>
-		            <rasd:HostResource>ovf:/disk/${virtualMachineId}-img-disk</rasd:HostResource>
-		            <rasd:InstanceID>4</rasd:InstanceID>
-		            <rasd:Parent>4</rasd:Parent>
-		            <rasd:ResourceType>17</rasd:ResourceType>
-		        </ovf:Item>
-		        <ovf:Item>
-		            <rasd:ElementName>Harddisk 2</rasd:ElementName>
-		            <rasd:HostResource>ovf:/disk/${virtualMachineId}-context-disk</rasd:HostResource>
-		            <rasd:InstanceID>4</rasd:InstanceID>
-		            <rasd:Parent>4</rasd:Parent>
-		            <rasd:ResourceType>17</rasd:ResourceType>
-		        </ovf:Item>
-		    </ovf:VirtualHardwareSection>
+
+		<!-- HAProxy Virtual System Instances Template -->
+		<ovf:VirtualSystem ovf:id="${vmHaproxyId}">
+			<ovf:Name>${vsHaproxyName}</ovf:Name>
+			<ovf:Info>${vsHaproxyDescription}</ovf:Info>
+
+			<!-- Product specific attributes applicable to a single Virtual System (VM) -->
+			<ovf:ProductSection ovf:class="eu.ascetic.vm">
+				<ovf:Info>Product customisation for the installed software.</ovf:Info>
+				<ovf:Product>${vsHaproxyName}</ovf:Product>
+				<ovf:Version>${vsHaproxyVersion}</ovf:Version>
+			</ovf:ProductSection>
+
+			<!-- Operating System details -->
+			<ovf:OperatingSystemSection ovf:id="${operatingSystemId}">
+				<ovf:Info>Specifies the operating system installed</ovf:Info>
+				<ovf:Description>${operatingSystemDescription}</ovf:Description>
+				<ovf:Version>${operatingSystemVersion}</ovf:Version>
+			</ovf:OperatingSystemSection>
+
+			<!-- Hardware specification of the Virtual System (VM) -->
+			<ovf:VirtualHardwareSection>
+				<ovf:Info>Virtual Hardware Requirements</ovf:Info>
+				<ovf:System>
+					<vssd:ElementName>Virtual Hardware Family</vssd:ElementName>
+					<vssd:InstanceID>0</vssd:InstanceID>
+					<vssd:VirtualSystemType>${virtualHardwareFamily}
+					</vssd:VirtualSystemType>
+				</ovf:System>
+				<ovf:Item>
+					<rasd:Description>Number of virtual CPUs</rasd:Description>
+					<rasd:ElementName>${numberOfVirtualCPUsHaproxy} virtual CPU
+					</rasd:ElementName>
+					<rasd:InstanceID>1</rasd:InstanceID>
+					<rasd:ResourceType>3</rasd:ResourceType>
+					<rasd:VirtualQuantity>${numberOfVirtualCPUsHaproxy}</rasd:VirtualQuantity>
+				</ovf:Item>
+				<ovf:Item>
+					<rasd:AllocationUnits>MHz</rasd:AllocationUnits>
+					<rasd:ElementName>MHz Reservation</rasd:ElementName>
+					<rasd:InstanceID>1</rasd:InstanceID>
+					<rasd:Reservation>${cpuSpeedHaproxy}</rasd:Reservation>
+					<rasd:ResourceType>3</rasd:ResourceType>
+				</ovf:Item>
+				<ovf:Item>
+					<rasd:AllocationUnits>MegaBytes</rasd:AllocationUnits>
+					<rasd:Description>Memory Size</rasd:Description>
+					<rasd:ElementName>${memorySizeHaproxy} MB of memory</rasd:ElementName>
+					<rasd:InstanceID>2</rasd:InstanceID>
+					<rasd:ResourceType>4</rasd:ResourceType>
+					<rasd:VirtualQuantity>${memorySizeHaproxy}</rasd:VirtualQuantity>
+				</ovf:Item>
+				<ovf:Item>
+					<rasd:AutomaticAllocation>true</rasd:AutomaticAllocation>
+					<rasd:Connection>${applicationId}-net</rasd:Connection>
+					<rasd:ElementName>Ethernet adapter on ${applicationId}-net
+						network
+					</rasd:ElementName>
+					<rasd:InstanceID>3</rasd:InstanceID>
+					<rasd:ResourceType>10</rasd:ResourceType>
+				</ovf:Item>
+				<ovf:Item>
+					<rasd:ElementName>VM Disk Drive 1</rasd:ElementName>
+					<rasd:HostResource>ovf:/disk/${vmHaproxyImageFileId}-disk
+					</rasd:HostResource>
+					<rasd:InstanceID>4</rasd:InstanceID>
+					<rasd:Parent>4</rasd:Parent>
+					<rasd:ResourceType>17</rasd:ResourceType>
+				</ovf:Item>
+				<ovf:Item>
+					<rasd:ElementName>Context CD 1</rasd:ElementName>
+					<rasd:HostResource>ovf:/disk/${contextHaproxyImageFileId}-disk
+					</rasd:HostResource>
+					<rasd:InstanceID>4</rasd:InstanceID>
+					<rasd:Parent>4</rasd:Parent>
+					<rasd:ResourceType>15</rasd:ResourceType>
+				</ovf:Item>
+			</ovf:VirtualHardwareSection>
 		</ovf:VirtualSystem>
+		
+		<!-- JBoss Virtual System Instances Template -->
+		<ovf:VirtualSystem ovf:id="${vmJbossId}">
+			<ovf:Name>${vsJbossName}</ovf:Name>
+			<ovf:Info>${vsJbossDescription}</ovf:Info>
+
+			<!-- Product specific attributes applicable to a single Virtual System (VM) -->
+			<ovf:ProductSection ovf:class="eu.ascetic.vm">
+				<ovf:Info>Product customisation for the installed software.</ovf:Info>
+				<ovf:Product>${vsJbossName}</ovf:Product>
+				<ovf:Version>${vsJbossVersion}</ovf:Version>
+			</ovf:ProductSection>
+
+			<!-- Operating System details -->
+			<ovf:OperatingSystemSection ovf:id="${operatingSystemId}">
+				<ovf:Info>Specifies the operating system installed</ovf:Info>
+				<ovf:Description>${operatingSystemDescription}</ovf:Description>
+				<ovf:Version>${operatingSystemVersion}</ovf:Version>
+			</ovf:OperatingSystemSection>
+
+			<!-- Hardware specification of the Virtual System (VM) -->
+			<ovf:VirtualHardwareSection>
+				<ovf:Info>Virtual Hardware Requirements</ovf:Info>
+				<ovf:System>
+					<vssd:ElementName>Virtual Hardware Family</vssd:ElementName>
+					<vssd:InstanceID>0</vssd:InstanceID>
+					<vssd:VirtualSystemType>${virtualHardwareFamily}
+					</vssd:VirtualSystemType>
+				</ovf:System>
+				<ovf:Item>
+					<rasd:Description>Number of virtual CPUs</rasd:Description>
+					<rasd:ElementName>${numberOfVirtualCPUsJboss} virtual CPU
+					</rasd:ElementName>
+					<rasd:InstanceID>1</rasd:InstanceID>
+					<rasd:ResourceType>3</rasd:ResourceType>
+					<rasd:VirtualQuantity>${numberOfVirtualCPUsJboss}</rasd:VirtualQuantity>
+				</ovf:Item>
+				<ovf:Item>
+					<rasd:AllocationUnits>MHz</rasd:AllocationUnits>
+					<rasd:ElementName>MHz Reservation</rasd:ElementName>
+					<rasd:InstanceID>1</rasd:InstanceID>
+					<rasd:Reservation>${cpuSpeedJboss}</rasd:Reservation>
+					<rasd:ResourceType>3</rasd:ResourceType>
+				</ovf:Item>
+				<ovf:Item>
+					<rasd:AllocationUnits>MegaBytes</rasd:AllocationUnits>
+					<rasd:Description>Memory Size</rasd:Description>
+					<rasd:ElementName>${memorySizeJboss} MB of memory</rasd:ElementName>
+					<rasd:InstanceID>2</rasd:InstanceID>
+					<rasd:ResourceType>4</rasd:ResourceType>
+					<rasd:VirtualQuantity>${memorySizeJboss}</rasd:VirtualQuantity>
+				</ovf:Item>
+				<ovf:Item>
+					<rasd:AutomaticAllocation>true</rasd:AutomaticAllocation>
+					<rasd:Connection>${applicationId}-net</rasd:Connection>
+					<rasd:ElementName>Ethernet adapter on ${applicationId}-net
+						network
+					</rasd:ElementName>
+					<rasd:InstanceID>3</rasd:InstanceID>
+					<rasd:ResourceType>10</rasd:ResourceType>
+				</ovf:Item>
+				<ovf:Item>
+					<rasd:ElementName>VM Disk Drive 1</rasd:ElementName>
+					<rasd:HostResource>ovf:/disk/${vmJbossImageFileId}-disk
+					</rasd:HostResource>
+					<rasd:InstanceID>4</rasd:InstanceID>
+					<rasd:Parent>4</rasd:Parent>
+					<rasd:ResourceType>17</rasd:ResourceType>
+				</ovf:Item>
+				<ovf:Item>
+					<rasd:ElementName>Context CD 1</rasd:ElementName>
+					<rasd:HostResource>ovf:/disk/${contextJbossImageFileId}-disk
+					</rasd:HostResource>
+					<rasd:InstanceID>4</rasd:InstanceID>
+					<rasd:Parent>4</rasd:Parent>
+					<rasd:ResourceType>15</rasd:ResourceType>
+				</ovf:Item>
+			</ovf:VirtualHardwareSection>
+		</ovf:VirtualSystem>
+		
+		<!-- MySQL Virtual System Instances Template -->
+		<ovf:VirtualSystem ovf:id="${vmMysqlId}">
+			<ovf:Name>${vsMysqlName}</ovf:Name>
+			<ovf:Info>${vsMysqlDescription}</ovf:Info>
+
+			<!-- Product specific attributes applicable to a single Virtual System (VM) -->
+			<ovf:ProductSection ovf:class="eu.ascetic.vm">
+				<ovf:Info>Product customisation for the installed software.</ovf:Info>
+				<ovf:Product>${vsMysqlName}</ovf:Product>
+				<ovf:Version>${vsMysqlVersion}</ovf:Version>
+			</ovf:ProductSection>
+
+			<!-- Operating System details -->
+			<ovf:OperatingSystemSection ovf:id="${operatingSystemId}">
+				<ovf:Info>Specifies the operating system installed</ovf:Info>
+				<ovf:Description>${operatingSystemDescription}</ovf:Description>
+				<ovf:Version>${operatingSystemVersion}</ovf:Version>
+			</ovf:OperatingSystemSection>
+
+			<!-- Hardware specification of the Virtual System (VM) -->
+			<ovf:VirtualHardwareSection>
+				<ovf:Info>Virtual Hardware Requirements</ovf:Info>
+				<ovf:System>
+					<vssd:ElementName>Virtual Hardware Family</vssd:ElementName>
+					<vssd:InstanceID>0</vssd:InstanceID>
+					<vssd:VirtualSystemType>${virtualHardwareFamily}
+					</vssd:VirtualSystemType>
+				</ovf:System>
+				<ovf:Item>
+					<rasd:Description>Number of virtual CPUs</rasd:Description>
+					<rasd:ElementName>${numberOfVirtualCPUsMysql} virtual CPU
+					</rasd:ElementName>
+					<rasd:InstanceID>1</rasd:InstanceID>
+					<rasd:ResourceType>3</rasd:ResourceType>
+					<rasd:VirtualQuantity>${numberOfVirtualCPUsMysql}</rasd:VirtualQuantity>
+				</ovf:Item>
+				<ovf:Item>
+					<rasd:AllocationUnits>MHz</rasd:AllocationUnits>
+					<rasd:ElementName>MHz Reservation</rasd:ElementName>
+					<rasd:InstanceID>1</rasd:InstanceID>
+					<rasd:Reservation>${cpuSpeedMysql}</rasd:Reservation>
+					<rasd:ResourceType>3</rasd:ResourceType>
+				</ovf:Item>
+				<ovf:Item>
+					<rasd:AllocationUnits>MegaBytes</rasd:AllocationUnits>
+					<rasd:Description>Memory Size</rasd:Description>
+					<rasd:ElementName>${memorySizeMysql} MB of memory</rasd:ElementName>
+					<rasd:InstanceID>2</rasd:InstanceID>
+					<rasd:ResourceType>4</rasd:ResourceType>
+					<rasd:VirtualQuantity>${memorySizeMysql}</rasd:VirtualQuantity>
+				</ovf:Item>
+				<ovf:Item>
+					<rasd:AutomaticAllocation>true</rasd:AutomaticAllocation>
+					<rasd:Connection>${applicationId}-net</rasd:Connection>
+					<rasd:ElementName>Ethernet adapter on ${applicationId}-net
+						network
+					</rasd:ElementName>
+					<rasd:InstanceID>3</rasd:InstanceID>
+					<rasd:ResourceType>10</rasd:ResourceType>
+				</ovf:Item>
+				<ovf:Item>
+					<rasd:ElementName>VM Disk Drive 1</rasd:ElementName>
+					<rasd:HostResource>ovf:/disk/${vmMysqlImageFileId}-disk
+					</rasd:HostResource>
+					<rasd:InstanceID>4</rasd:InstanceID>
+					<rasd:Parent>4</rasd:Parent>
+					<rasd:ResourceType>17</rasd:ResourceType>
+				</ovf:Item>
+				<ovf:Item>
+					<rasd:ElementName>Context CD 1</rasd:ElementName>
+					<rasd:HostResource>ovf:/disk/${contextMysqlImageFileId}-disk
+					</rasd:HostResource>
+					<rasd:InstanceID>4</rasd:InstanceID>
+					<rasd:Parent>4</rasd:Parent>
+					<rasd:ResourceType>15</rasd:ResourceType>
+				</ovf:Item>
+			</ovf:VirtualHardwareSection>
+		</ovf:VirtualSystem>
+		
+		<!-- JMeter Virtual System Instances Template -->
+		<ovf:VirtualSystem ovf:id="${vmJmeterId}">
+			<ovf:Name>${vsJmeterName}</ovf:Name>
+			<ovf:Info>${vsJmeterDescription}</ovf:Info>
+
+			<!-- Product specific attributes applicable to a single Virtual System (VM) -->
+			<ovf:ProductSection ovf:class="eu.ascetic.vm">
+				<ovf:Info>Product customisation for the installed software.</ovf:Info>
+				<ovf:Product>${vsJmeterName}</ovf:Product>
+				<ovf:Version>${vsJmeterVersion}</ovf:Version>
+			</ovf:ProductSection>
+
+			<!-- Operating System details -->
+			<ovf:OperatingSystemSection ovf:id="${operatingSystemId}">
+				<ovf:Info>Specifies the operating system installed</ovf:Info>
+				<ovf:Description>${operatingSystemDescription}</ovf:Description>
+				<ovf:Version>${operatingSystemVersion}</ovf:Version>
+			</ovf:OperatingSystemSection>
+
+			<!-- Hardware specification of the Virtual System (VM) -->
+			<ovf:VirtualHardwareSection>
+				<ovf:Info>Virtual Hardware Requirements</ovf:Info>
+				<ovf:System>
+					<vssd:ElementName>Virtual Hardware Family</vssd:ElementName>
+					<vssd:InstanceID>0</vssd:InstanceID>
+					<vssd:VirtualSystemType>${virtualHardwareFamily}
+					</vssd:VirtualSystemType>
+				</ovf:System>
+				<ovf:Item>
+					<rasd:Description>Number of virtual CPUs</rasd:Description>
+					<rasd:ElementName>${numberOfVirtualCPUsJmeter} virtual CPU
+					</rasd:ElementName>
+					<rasd:InstanceID>1</rasd:InstanceID>
+					<rasd:ResourceType>3</rasd:ResourceType>
+					<rasd:VirtualQuantity>${numberOfVirtualCPUsJmeter}</rasd:VirtualQuantity>
+				</ovf:Item>
+				<ovf:Item>
+					<rasd:AllocationUnits>MHz</rasd:AllocationUnits>
+					<rasd:ElementName>MHz Reservation</rasd:ElementName>
+					<rasd:InstanceID>1</rasd:InstanceID>
+					<rasd:Reservation>${cpuSpeedJmeter}</rasd:Reservation>
+					<rasd:ResourceType>3</rasd:ResourceType>
+				</ovf:Item>
+				<ovf:Item>
+					<rasd:AllocationUnits>MegaBytes</rasd:AllocationUnits>
+					<rasd:Description>Memory Size</rasd:Description>
+					<rasd:ElementName>${memorySizeJmeter} MB of memory</rasd:ElementName>
+					<rasd:InstanceID>2</rasd:InstanceID>
+					<rasd:ResourceType>4</rasd:ResourceType>
+					<rasd:VirtualQuantity>${memorySizeJmeter}</rasd:VirtualQuantity>
+				</ovf:Item>
+				<ovf:Item>
+					<rasd:AutomaticAllocation>true</rasd:AutomaticAllocation>
+					<rasd:Connection>${applicationId}-net</rasd:Connection>
+					<rasd:ElementName>Ethernet adapter on ${applicationId}-net
+						network
+					</rasd:ElementName>
+					<rasd:InstanceID>3</rasd:InstanceID>
+					<rasd:ResourceType>10</rasd:ResourceType>
+				</ovf:Item>
+				<ovf:Item>
+					<rasd:ElementName>VM Disk Drive 1</rasd:ElementName>
+					<rasd:HostResource>ovf:/disk/${vmJmeterImageFileId}-disk
+					</rasd:HostResource>
+					<rasd:InstanceID>4</rasd:InstanceID>
+					<rasd:Parent>4</rasd:Parent>
+					<rasd:ResourceType>17</rasd:ResourceType>
+				</ovf:Item>
+				<ovf:Item>
+					<rasd:ElementName>Context CD 1</rasd:ElementName>
+					<rasd:HostResource>ovf:/disk/${contextJmeterImageFileId}-disk
+					</rasd:HostResource>
+					<rasd:InstanceID>4</rasd:InstanceID>
+					<rasd:Parent>4</rasd:Parent>
+					<rasd:ResourceType>15</rasd:ResourceType>
+				</ovf:Item>
+			</ovf:VirtualHardwareSection>
+		</ovf:VirtualSystem>		
+		
 	</ovf:VirtualSystemCollection>
 </Envelope>

@@ -30,11 +30,10 @@ public class OvfDefinitionFactory {
 		return new OvfDefinition(XmlBeanEnvelopeDocument.Factory.newInstance());
 	}
 	
-	public OvfDefinition newInstance(String applicationId,
-			String virtualMachineId) {
+	public OvfDefinition newInstance(String applicationId, String imageRepository) {
 		TemplateLoader loader = new TemplateLoader();
 		return new OvfDefinition(loader.loadOvfDefinitionTemplate(
-				applicationId, virtualMachineId));
+				applicationId, imageRepository));
 	}
 
 	public OvfDefinition newInstance(

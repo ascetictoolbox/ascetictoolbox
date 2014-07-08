@@ -35,20 +35,14 @@ public class OvfDefinitionTest extends TestCase {
 
 	public void testOvfDefinition() {
 		OvfDefinition ovfDefinition = OvfDefinition.Factory.newInstance(
-				"an-application-id", "a-vm-id");
+				"threeTierWebApp", "/image/repository");
 
 		// Global product details
 
 		// Stores the Application's ID
 		String applicationId = ovfDefinition.getVirtualSystemCollection()
 				.getId();
-		assertNotNull(applicationId);
-		ovfDefinition.getVirtualSystemCollection().getProductSectionAtIndex(0)
-				.setInfo("Some global infomation");
-		ovfDefinition.getVirtualSystemCollection().getProductSectionAtIndex(0)
-				.setProduct("Global Product Name");
-		ovfDefinition.getVirtualSystemCollection().getProductSectionAtIndex(0)
-				.setVersion("Version 1.0");
+		assertNotNull(applicationId);;
 		ovfDefinition.getVirtualSystemCollection().getProductSectionAtIndex(0)
 				.addNewProperty("probe1", ProductPropertyType.STRING, "uri://some-end-point");
 		String probeUri = ovfDefinition.getVirtualSystemCollection()
@@ -62,13 +56,6 @@ public class OvfDefinitionTest extends TestCase {
 		String virtualMachineId = ovfDefinition.getVirtualSystemCollection()
 				.getVirtualSystemAtIndex(0).getId();
 		assertNotNull(virtualMachineId);
-		ovfDefinition.getVirtualSystemCollection().getVirtualSystemAtIndex(0)
-				.getProductSectionAtIndex(0)
-				.setInfo("Some VM specific infomation");
-		ovfDefinition.getVirtualSystemCollection().getVirtualSystemAtIndex(0)
-				.getProductSectionAtIndex(0).setProduct("VM Specific Name");
-		ovfDefinition.getVirtualSystemCollection().getVirtualSystemAtIndex(0)
-				.getProductSectionAtIndex(0).setVersion("Version 1.0");
 		ovfDefinition.getVirtualSystemCollection().getVirtualSystemAtIndex(0)
 				.getProductSectionAtIndex(0)
 				.addNewProperty("probe1", ProductPropertyType.STRING, "uri://some-end-point");

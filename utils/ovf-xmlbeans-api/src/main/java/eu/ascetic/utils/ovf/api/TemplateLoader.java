@@ -16,8 +16,7 @@ public class TemplateLoader {
 	private static final String TEMPLATE = "/ovf.template.xml";
 
 	public static final String APPLICATION_ID_KEY = "applicationId";
-
-	public static final String VIRTUAL_MACHINE_ID_KEY = "virtualMachineId";
+	public static final String IMAGE_REPOSITORY_KEY = "imageRepository";
 
 	private Properties defaultProperties;
 
@@ -33,20 +32,18 @@ public class TemplateLoader {
 		loadDefaultProperties();
 	}
 
-	public XmlBeanEnvelopeDocument loadOvfDefinitionTemplate(String serviceId,
-			String virtualMachineId) {
+	public XmlBeanEnvelopeDocument loadOvfDefinitionTemplate(String applicationId, String imageRepository) {
 
-		return loadOvfDefinitionTemplate(serviceId, virtualMachineId,
-				defaultProperties);
+		return loadOvfDefinitionTemplate(applicationId, imageRepository, defaultProperties);
 	}
 
 	public XmlBeanEnvelopeDocument loadOvfDefinitionTemplate(
-			String applicationId, String virtualMachineId, Properties properties) {
+			String applicationId, String imageRepository, Properties properties) {
 		Template t = Velocity.getTemplate(TEMPLATE);
 		VelocityContext ctx = createVelocityContext(properties);
-		ctx.put(VIRTUAL_MACHINE_ID_KEY, virtualMachineId);
 		ctx.put(APPLICATION_ID_KEY, applicationId);
-
+		ctx.put(IMAGE_REPOSITORY_KEY, imageRepository);
+		
 		// Add all properties to the velocity context
 		putPropertiesToVelocityContext(properties, ctx);
 
