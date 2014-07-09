@@ -54,7 +54,7 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
             System.out.println(measurement);
         }
         System.out.println("----------------");
-        HostMeasurement measure = adaptor.getHostData(adaptor.getHostByName("asok10.cit.tu-berlin.de"));
+        HostMeasurement measure = adaptor.getHostData(adaptor.getHostByName("asok10"));
         System.out.println(measure);
     }
 
