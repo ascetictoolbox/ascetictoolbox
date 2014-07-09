@@ -73,7 +73,7 @@
               				<overWriteReleases>true</overWriteReleases>
               				<overWriteSnapshots>true</overWriteSnapshots>
 					<overWriteIfNewer>true</overWriteIfNewer>
-					<excludeScope>provided</excludeScope>
+					<excludeScope>system</excludeScope>
             			</configuration>
           		</execution>
         	</executions>
@@ -86,7 +86,9 @@
             			<fileset>
               				<directory>lib</directory>
               				<includes>
-                				<include>*.jar</include>
+						<include>*.jar</include>
+						<include>COMPSs-*-lib/</include>
+						<include>org.*-lib/</include>
               				</includes>
               				<followSymlinks>false</followSymlinks>
              			</fileset>
