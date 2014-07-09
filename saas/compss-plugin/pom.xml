@@ -16,7 +16,7 @@
   <properties>
   	<test.basedir>${basedir}</test.basedir>
 	<uitest.vmparams>-Dtest.workspace=${test.basedir} -Xmx1024m -XX:MaxPermSize=384m</uitest.vmparams>
-	<tycho-version>0.18.1</tycho-version>
+	<tycho-version>0.20.0</tycho-version>
 	<compss-version>1.2</compss-version>
 	<commons-configuration-version>1.5</commons-configuration-version>
 	<commons-io-version>1.4</commons-io-version>

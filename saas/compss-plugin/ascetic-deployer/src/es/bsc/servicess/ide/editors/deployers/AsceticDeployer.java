@@ -389,7 +389,7 @@ public class AsceticDeployer extends Deployer {
 			if (location != null && location.length() > 0) {
 				monitor.beginTask("Deploying application", 100);
 				ApplicationUploader appUploader = new ApplicationUploader(location);
-				String deploymentID = appUploader.createAndDeployAplication(manifest.getString());			
+				String deploymentID = Integer.toString(appUploader.createAndDeployAplication(manifest.getString()));			
 				monitorProgress(appUploader, serviceID, deploymentID, monitor);
 				ServiceManagerView smview = (ServiceManagerView) PlatformUI
 					.getWorkbench().getActiveWorkbenchWindow().getActivePage()

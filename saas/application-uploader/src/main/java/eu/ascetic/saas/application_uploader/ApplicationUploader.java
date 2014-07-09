@@ -12,6 +12,7 @@ import com.sun.jersey.api.client.WebResource;
 
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
+import eu.ascetic.paas.applicationmanager.model.VM;
 
 public class ApplicationUploader {
 	public static final String APPLICATIONS_PATH = "applications";
@@ -38,11 +39,11 @@ public class ApplicationUploader {
 	 * @return DeploymentID
 	 * @throws ApplicationUploaderException
 	 */
-	public String createAndDeployAplication(String ovf) throws ApplicationUploaderException{
+	public int createAndDeployAplication(String ovf) throws ApplicationUploaderException{
 		ClientResponse response = resource.path(APPLICATIONS_PATH).accept(MediaType.APPLICATION_XML_TYPE)
 				.header(HttpHeaders.CONTENT_TYPE,MediaType.APPLICATION_XML).post(ClientResponse.class, ovf);
 		if (response.getStatus() == ClientResponse.Status.CREATED.getStatusCode()) {
-			return response.getEntity(Application.class).getDeployments().get(0).getDeploymentPlanId();
+			return response.getEntity(Application.class).getDeployments().get(0).getId();
 		}else
 			throw new ApplicationUploaderException("Error creating application. Returned code is "+ response.getStatus());
 	}
@@ -98,8 +99,16 @@ public class ApplicationUploader {
 	private Map<String, Map<String, String>> getVMsFromDeployment(
 			Deployment deployment) {
 		HashMap<String, Map<String, String>> vms = new  HashMap<String, Map<String, String>>();
-		// TODO: get vms from deployment providers currently
-		
+		for (VM vm:deployment.getVms()){
+			String provider = vm.getProviderId();
+			Map<String, String> vm_provider = vms.get(provider);
+			if (vm_provider==null){
+				vm_provider = new HashMap<String, String>();
+				vms.put(provider, vm_provider);
+			}
+			vm_provider.put(vm.getIp(), vm.getOvfId());
+			
+		}
 		return vms;
 	}
 
@@ -151,12 +160,12 @@ public class ApplicationUploader {
 	 * @return Deployment Identifier
 	 * @throws ApplicationUploaderException
 	 */
-	public String submitApplicationDeployment(String applicationID, String ovf) throws ApplicationUploaderException{
+	public int submitApplicationDeployment(String applicationID, String ovf) throws ApplicationUploaderException{
 		ClientResponse response = resource.path(APPLICATIONS_PATH).path(applicationID)
 				.path(DEPLOYMENTS_PATH).header(HttpHeaders.CONTENT_TYPE,MediaType.APPLICATION_XML)
 				.accept(MediaType.APPLICATION_XML_TYPE).post(ClientResponse.class);
 		if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
-			return response.getEntity(Deployment.class).getDeploymentPlanId();
+			return response.getEntity(Deployment.class).getId();
 		}else
 			throw new ApplicationUploaderException("Error getting deployment status. Returned code is "+ response.getStatus());
 	}
@@ -171,10 +180,5 @@ public class ApplicationUploader {
 			throw new ApplicationUploaderException("Error deleting deployment. Returned code is "+ response.getStatus());
 		}
 	}
-	
-	
-	
-	
-	
 	
 }
