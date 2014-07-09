@@ -32,5 +32,5 @@ public interface HostDataSource {
     public List<HostMeasurement> getHostData();
     public List<HostMeasurement> getHostData(List<Host> hostList);
     public CurrentUsageRecord getCurrentEnergyUsage(Host host);
-    
+    public double getLowestHostPowerUsage(Host host);
 }

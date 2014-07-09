@@ -17,8 +17,10 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.dataso
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.client.ZabbixClient;
+import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.HistoryItem;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Host;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Item;
+import eu.ascetic.asceticarchitecture.iaas.zabbixApi.utils.Dictionary;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -245,5 +247,24 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         answer.setVoltage(-1);
         answer.setCurrent(-1);
         return answer;
+    }
+
+    /**
+     * This finds the lowest/resting power usage by a client.
+     * @param host The host to get the lowest power usage data for.
+     * @return 
+     */
+    @Override
+    public double getLowestHostPowerUsage(eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host) {
+        //This returns the last 100 items and finds the lowest energy value possible.
+        List<HistoryItem> energyData = client.getHistoryDataFromItem(POWER_KPI_NAME, host.getHostName(), Dictionary.HISTORY_ITEM_FORMAT_FLOAT, 100);
+        double lowestValue = Double.MAX_VALUE;
+        for (HistoryItem historyItem : energyData) {
+            double current = Double.parseDouble(historyItem.getValue());
+            if (current < lowestValue) {
+                lowestValue = current;
+            }
+        }
+        return lowestValue;
     }
 }
