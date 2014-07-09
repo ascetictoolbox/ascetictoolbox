@@ -1,3 +1,18 @@
+/**
+ *  Copyright 2014 University of Leeds
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package eu.ascetic.utils.ovf.api;
 
 import java.util.ArrayList;
@@ -12,26 +27,26 @@ import org.apache.xmlbeans.XmlOptions;
  * implementation must define the type of the underlying XMLBean object. This
  * type definition is used for the internal delegation object.
  * 
+ * @author Django Armstrong (ULeeds)
+ * 
  * @param <T>
- *            type of the underlying XMLBean object
+ *            Type of the underlying XMLBean object
  */
 public abstract class AbstractElement<T extends XmlObject> {
 
 	/**
-	 * internal delegate
+	 * Internal delegate used as data storage
 	 */
-	// CHECKSTYLE:OFF - base type declaration, exception to the general rule by
-	// purpose
+	// CHECKSTYLE:OFF
 	public T delegate;
-
 	// CHECKSTYLE:ON
 
 	/**
 	 * Default constructor.
 	 * 
 	 * @param base
-	 *            the base type is used as internal delegation and data store
-	 *            object
+	 *            The base type used for internal delegation and as a data
+	 *            storage object
 	 */
 	public AbstractElement(T base) {
 		delegate = base;
@@ -40,7 +55,7 @@ public abstract class AbstractElement<T extends XmlObject> {
 	/**
 	 * Returns the internal XML representation of the API object.
 	 * 
-	 * @return internal representation as a XMLBean
+	 * @return Internal representation as a XMLBean
 	 */
 	@SuppressWarnings("unchecked")
 	public T getXmlObject() {
@@ -50,7 +65,7 @@ public abstract class AbstractElement<T extends XmlObject> {
 	/**
 	 * Returns the internal XML representation of the API object as a String.
 	 * 
-	 * @return internal representation as a String.
+	 * @return Internal representation as a String.
 	 */
 	@Override
 	public String toString() {
@@ -61,10 +76,10 @@ public abstract class AbstractElement<T extends XmlObject> {
 	}
 
 	/**
-	 * returns validation errors found in the xml document. The validation is
-	 * done by the xmlbeans validate method.
+	 * Returns validation errors found in an XML document. The validation is
+	 * done by the XMLBeans validate method.
 	 * 
-	 * @return a list of errors
+	 * @return A list of errors
 	 */
 	public List<XmlError> getErrors() {
 		List<XmlError> validationErrors = new ArrayList<XmlError>();
@@ -75,9 +90,9 @@ public abstract class AbstractElement<T extends XmlObject> {
 	}
 
 	/**
-	 * returns true if the xml object is not valid.
+	 * Returns true if the XML object is not valid.
 	 * 
-	 * @return true | false
+	 * @return True if erroneous
 	 */
 	public boolean hasErrors() {
 		return !delegate.validate();

@@ -1,36 +1,17 @@
-/* 
- * Copyright (c) 2012, Fraunhofer-Gesellschaft
- * All rights reserved.
- * 
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- * 
- * (1) Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the disclaimer at the end.
- *     Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
- *     distribution.
- * 
- * (2) Neither the name of Fraunhofer nor the names of its
- *     contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission.
- * 
- * DISCLAIMER
- * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *  
+/**
+ *  Copyright 2014 University of Leeds
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package eu.ascetic.utils.ovf.api.utils;
 
@@ -42,11 +23,25 @@ import org.apache.xmlbeans.XmlOptions;
 import java.util.ArrayList;
 
 /**
- * This class validates an XmlObject and prints errors to System.out
+ * Class to validate an XmlObject and access any errors.
+ * 
+ * @author Django Armstrong (ULeeds)
+ * 
  */
 public final class XmlValidator {
+
+	/**
+	 * Reference to static log4j logger
+	 */
 	protected static final Logger LOGGER = Logger.getLogger(XmlValidator.class);
 
+	/**
+	 * Validates an XML document in object form.
+	 * 
+	 * @param doc
+	 *            The xmlbean object to be validated
+	 * @return True if valid
+	 */
 	public static boolean validate(XmlObject doc) {
 		if (!doc.validate()) {
 			LOGGER.debug(getErrors(doc));
@@ -55,15 +50,14 @@ public final class XmlValidator {
 	}
 
 	/**
-	 * retrieve the xmlbean objects errors in a String
+	 * Retrieve the XMLBean objects errors in String form
 	 * 
 	 * @param doc
-	 *            the xmlbean object to be validated
-	 * @return the error string
+	 *            The XMLBean object to be validated
+	 * @return The error string
 	 */
 	public static String getErrors(XmlObject doc) {
-		// FIXME: Check the raw types from this array
-		ArrayList<XmlError> validationErrors = new ArrayList();
+		ArrayList<XmlError> validationErrors = new ArrayList<XmlError>();
 		XmlOptions voptions = new XmlOptions();
 		voptions.setErrorListener(validationErrors);
 		boolean valid = doc.validate(voptions);

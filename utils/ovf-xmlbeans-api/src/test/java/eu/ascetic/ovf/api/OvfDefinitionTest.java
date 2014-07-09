@@ -42,11 +42,18 @@ public class OvfDefinitionTest extends TestCase {
 		// Stores the Application's ID
 		String applicationId = ovfDefinition.getVirtualSystemCollection()
 				.getId();
-		assertNotNull(applicationId);;
-		ovfDefinition.getVirtualSystemCollection().getProductSectionAtIndex(0).setDeploymentId("101");
-		String deploymentId = ovfDefinition.getVirtualSystemCollection().getProductSectionAtIndex(0).getDeploymentId();
+		assertNotNull(applicationId);
+		;
+		ovfDefinition.getVirtualSystemCollection().getProductSectionAtIndex(0)
+				.setDeploymentId("101");
+		String deploymentId = ovfDefinition.getVirtualSystemCollection()
+				.getProductSectionAtIndex(0).getDeploymentId();
 		assertNotNull(deploymentId);
-		ovfDefinition.getVirtualSystemCollection().getProductSectionAtIndex(0).setSecurityKey("\n        -----BEGIN PUBLIC KEY-----\n        " +
+
+		// @formatter:off
+		ovfDefinition.getVirtualSystemCollection().getProductSectionAtIndex(0)
+				.setSecurityKey("\n        " +
+				"-----BEGIN PUBLIC KEY-----\n        " +
 				"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCqGKukO1De7zhZj6+H0qtjTkVxwTCpvKe4eCZ0\n        " +
 				"FPqri0cb2JZfXJ/DgYSF6vUpwmJG8wVQZKjeGcjDOL5UlsuusFncCzWBQ7RKNUSesmQRMSGkVb1/\n        " +
 				"3j+skZ6UtW+5u09lHNsj6tQ51s1SPrCBkedbNf0Tp0GbMJDyR4e9T04ZZwIDAQAB\n        " +
@@ -64,16 +71,33 @@ public class OvfDefinitionTest extends TestCase {
 				"U9VQQSQzY1oZMVX8i1m5WUTLPz2yLJIBQVdXqhMCQBGoiuSoSjafUhV7i1cEGpb88h5NBYZzWXGZ\n        " +
 				"37sJ5QsW+sJyoNde3xH8vdXhzU7eT82D6X/scw9RZz+/6rCJ4p0=\n        " +
 				"-----END RSA PRIVATE KEY-----");
-		ovfDefinition.getVirtualSystemCollection().getProductSectionAtIndex(0)
-		.addNewProperty("asceticWorkloadVmId", ProductPropertyType.STRING, "jmeter");
-		ovfDefinition.getVirtualSystemCollection().getProductSectionAtIndex(0)
-		.addNewProperty("asceticWorkloadType", ProductPropertyType.STRING, "user-count");
-		ovfDefinition.getVirtualSystemCollection().getProductSectionAtIndex(0)
-		.addNewProperty("asceticWorkloadRange", ProductPropertyType.STRING, "10-200");
-		ovfDefinition.getVirtualSystemCollection().getProductSectionAtIndex(0)
-		.addNewProperty("asceticWorkloadIncrement", ProductPropertyType.STRING, "10");
-		ovfDefinition.getVirtualSystemCollection().getProductSectionAtIndex(0)
-		.addNewProperty("asceticWorkloadInterval", ProductPropertyType.STRING, "1min");		
+		// @formatter:on
+
+		ovfDefinition
+				.getVirtualSystemCollection()
+				.getProductSectionAtIndex(0)
+				.addNewProperty("asceticWorkloadVmId",
+						ProductPropertyType.STRING, "jmeter");
+		ovfDefinition
+				.getVirtualSystemCollection()
+				.getProductSectionAtIndex(0)
+				.addNewProperty("asceticWorkloadType",
+						ProductPropertyType.STRING, "user-count");
+		ovfDefinition
+				.getVirtualSystemCollection()
+				.getProductSectionAtIndex(0)
+				.addNewProperty("asceticWorkloadRange",
+						ProductPropertyType.STRING, "10-200");
+		ovfDefinition
+				.getVirtualSystemCollection()
+				.getProductSectionAtIndex(0)
+				.addNewProperty("asceticWorkloadIncrement",
+						ProductPropertyType.STRING, "10");
+		ovfDefinition
+				.getVirtualSystemCollection()
+				.getProductSectionAtIndex(0)
+				.addNewProperty("asceticWorkloadInterval",
+						ProductPropertyType.STRING, "1min");
 
 		// Virtual Machine product details
 
@@ -81,20 +105,30 @@ public class OvfDefinitionTest extends TestCase {
 		String virtualMachineId = ovfDefinition.getVirtualSystemCollection()
 				.getVirtualSystemAtIndex(1).getId();
 		assertNotNull(virtualMachineId);
-		ovfDefinition.getVirtualSystemCollection().getVirtualSystemAtIndex(1)
+		ovfDefinition
+				.getVirtualSystemCollection()
+				.getVirtualSystemAtIndex(1)
 				.getProductSectionAtIndex(0)
-				.addNewProperty("asceticProbeUri-1", ProductPropertyType.STRING, "uri://some-end-point/application-monitor");
+				.addNewProperty("asceticProbeUri-1",
+						ProductPropertyType.STRING,
+						"uri://some-end-point/application-monitor");
 		String probeUri = ovfDefinition.getVirtualSystemCollection()
 				.getVirtualSystemAtIndex(1).getProductSectionAtIndex(0)
 				.getPropertyByKey("asceticProbeUri-1").getValue();
 		assertNotNull(probeUri);
-		ovfDefinition.getVirtualSystemCollection().getVirtualSystemAtIndex(1)
-		.getProductSectionAtIndex(0)
-		.addNewProperty("asceticProbeType-1", ProductPropertyType.STRING, "cpu");
-		ovfDefinition.getVirtualSystemCollection().getVirtualSystemAtIndex(1)
-		.getProductSectionAtIndex(0)
-		.addNewProperty("asceticProbeInterval-1", ProductPropertyType.STRING, "1sec");
-		
+		ovfDefinition
+				.getVirtualSystemCollection()
+				.getVirtualSystemAtIndex(1)
+				.getProductSectionAtIndex(0)
+				.addNewProperty("asceticProbeType-1",
+						ProductPropertyType.STRING, "cpu");
+		ovfDefinition
+				.getVirtualSystemCollection()
+				.getVirtualSystemAtIndex(1)
+				.getProductSectionAtIndex(0)
+				.addNewProperty("asceticProbeInterval-1",
+						ProductPropertyType.STRING, "1sec");
+
 		System.out.println(ovfDefinition.toString());
 
 		writeToFile(ovfDefinition.getXmlObject(), "3tier-webapp.ovf");

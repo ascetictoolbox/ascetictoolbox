@@ -20,16 +20,24 @@ import org.apache.xmlbeans.XmlObject;
 import eu.ascetic.utils.ovf.api.utils.XmlValidator;
 
 /**
+ * Provides customised runtime exception for invalid XML documents.
+ * 
  * @author Django Armstrong (ULeeds)
  * 
  */
 public class InvalidDocumentException extends RuntimeException {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 7045796285018934681L;
 
+	/**
+	 * Constructor for creating custom runtime exception for invalid XML
+	 * documents.
+	 * 
+	 * @param message
+	 *            The exception message
+	 * @param document
+	 *            The offending document
+	 */
 	public InvalidDocumentException(String message, XmlObject document) {
 		super(message.concat(XmlValidator.getErrors(document)));
 	}
