@@ -17,7 +17,6 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.dataso
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Item;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;

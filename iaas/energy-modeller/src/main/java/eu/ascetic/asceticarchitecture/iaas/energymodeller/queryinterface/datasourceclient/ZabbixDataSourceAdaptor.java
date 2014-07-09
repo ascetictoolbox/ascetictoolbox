@@ -17,8 +17,8 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.dataso
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.client.ZabbixClient;
-import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Item;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Host;
+import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Item;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +32,7 @@ import java.util.List;
 public class ZabbixDataSourceAdaptor implements HostDataSource {
 
     private ZabbixClient client = new ZabbixClient();
-    private static String POWER_KPI_NAME = ""; //TODO Set KPI name correctly
+    private static final String POWER_KPI_NAME = ""; //TODO Set KPI name correctly
 
     /**
      * The main method.
@@ -92,7 +92,6 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
     /**
      * This provides a list of hosts for the energy modeller
      *
-     * @param client The client to get the host list from
      * @return A list of hosts for the energy modeller.
      */
     @Override
@@ -116,14 +115,13 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         String hostname = host.getHost();
         int hostId = Integer.parseInt(host.getHostid());
         eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host answer = new eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host(hostId, hostname);
-        answer.setAvailable((host.getAvailable()).equals("0") ? false : true);
+        answer.setAvailable("1".equals(host.getAvailable()));
         return answer;
     }
 
     /**
      * This lists for all host all the metric data on them.
      *
-     * @param client The client to get the metrics from
      * @return A list of host measurements
      */
     @Override
@@ -152,7 +150,6 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
      * This takes a list of hosts and provides all the metric data on them.
      *
      * @param hostList The list of hosts to get the data from
-     * @param client The client to get the metrics from
      * @return A list of host measurements
      */
     @Override

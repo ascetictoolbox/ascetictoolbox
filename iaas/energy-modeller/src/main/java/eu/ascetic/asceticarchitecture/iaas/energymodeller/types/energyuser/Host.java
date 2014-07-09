@@ -181,6 +181,14 @@ public class Host extends EnergyUsageSource implements Comparable<Host> {
     public void setCalibrationData(ArrayList<HostEnergyCalibrationData> calibrationData) {
         this.calibrationData = calibrationData;
     }
+    
+    /**
+     * This allows for an additional piece of calibration data to be set.
+     * @param calibrationData 
+     */
+    public void addCalibrationData(HostEnergyCalibrationData calibrationData) {
+        this.calibrationData.add(calibrationData);
+    }    
 
     /**
      * This returns the lowest energy consumption found from the calibration
