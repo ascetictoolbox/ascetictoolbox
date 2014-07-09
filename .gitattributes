@@ -1649,7 +1649,9 @@ utils/chef/cookbooks/ascetic-iaas/files/default/vmm-installer.sh -text
 utils/chef/cookbooks/ascetic-iaas/metadata.rb -text
 utils/chef/cookbooks/ascetic-iaas/recipes/default.rb -text
 utils/energy-modeller-data-logger/Dataset[!!-~]-[!!-~]Copy.txt -text
+utils/energy-modeller-data-logger/Dataset[!!-~]-[!!-~]Full[!!-~]Dataset[!!-~]1[!!-~]run[!!-~]for[!!-~]each[!!-~]machine.txt -text
 utils/energy-modeller-data-logger/Dataset.txt -text
+utils/energy-modeller-data-logger/FullDataset.xlsx -text
 utils/energy-modeller-data-logger/nbactions.xml -text
 utils/energy-modeller-data-logger/pom.xml -text
 utils/energy-modeller-data-logger/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodellerdatalogger/GenericLogger.java -text
