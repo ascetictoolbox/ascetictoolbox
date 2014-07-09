@@ -1631,17 +1631,6 @@ utils/ascetic-zabbix-api/src/main/java/eu/ascetic/asceticarchitecture/iaas/zabbi
 utils/ascetic-zabbix-api/src/main/java/eu/ascetic/asceticarchitecture/iaas/zabbixApi/rpc/client/ZabbixApiClientTest.java -text
 utils/ascetic-zabbix-api/src/main/java/eu/ascetic/asceticarchitecture/iaas/zabbixApi/utils/Dictionary.java -text
 utils/ascetic-zabbix-api/src/main/java/eu/ascetic/asceticarchitecture/iaas/zabbixApi/utils/Json2ObjectMapper.java -text
-utils/ascetic-zabbix-api/src/main/java/eu/ascetic/monitoring/api/client/HostManager.java -text
-utils/ascetic-zabbix-api/src/main/java/eu/ascetic/monitoring/api/client/ItemManager.java -text
-utils/ascetic-zabbix-api/src/main/java/eu/ascetic/monitoring/api/client/UserManager.java -text
-utils/ascetic-zabbix-api/src/main/java/eu/ascetic/monitoring/api/client/ZabbixClient.java -text
-utils/ascetic-zabbix-api/src/main/java/eu/ascetic/monitoring/api/conf/Configuration.java -text
-utils/ascetic-zabbix-api/src/main/java/eu/ascetic/monitoring/api/datamodel/Host.java -text
-utils/ascetic-zabbix-api/src/main/java/eu/ascetic/monitoring/api/datamodel/Item.java -text
-utils/ascetic-zabbix-api/src/main/java/eu/ascetic/monitoring/api/datamodel/User.java -text
-utils/ascetic-zabbix-api/src/main/java/eu/ascetic/monitoring/api/rpc/client/ZabbixApiClientTest.java -text
-utils/ascetic-zabbix-api/src/main/java/eu/ascetic/monitoring/api/utils/Dictionary.java -text
-utils/ascetic-zabbix-api/src/main/java/eu/ascetic/monitoring/api/utils/Json2ObjectMapper.java -text
 utils/ascetic-zabbix-api/src/main/resources/ascetic-zabbix-api.properties -text
 utils/ascetic-zabbix-api/src/test/java/eu/ascetic/monitoring/api/datamodel/HostTest.java -text
 utils/ascetic-zabbix-api/src/test/java/eu/ascetic/monitoring/api/datamodel/ItemTest.java -text
