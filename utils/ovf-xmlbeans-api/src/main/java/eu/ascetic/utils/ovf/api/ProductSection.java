@@ -111,7 +111,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
 	// Store and fetch deployment ID
 	public void setDeploymentId(String id) {
 		ProductProperty productProperty = getPropertyByKey(ASCETIC_VIRTUAL_SYSTEM_COLLECTION_DEPLOYMENT_ID_KEY);
-		if (productProperty.equals(null)) {
+		if (productProperty == null) {
 			addNewProperty(ASCETIC_VIRTUAL_SYSTEM_COLLECTION_DEPLOYMENT_ID_KEY, ProductPropertyType.STRING, id);
 		} else {
 			productProperty.setValue(id);
@@ -125,7 +125,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
 	// Store and fetch SSH key
 	public void setSecurityKey(String securityKey) {
 		ProductProperty productProperty = getPropertyByKey(ASCETIC_SECURITY_KEY);
-		if (productProperty.equals(null)) {
+		if (productProperty == null) {
 			addNewProperty(ASCETIC_SECURITY_KEY, ProductPropertyType.STRING, securityKey);
 		} else {
 			productProperty.setValue(securityKey);

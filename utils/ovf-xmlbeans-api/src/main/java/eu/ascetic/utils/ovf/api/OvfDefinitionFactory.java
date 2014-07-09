@@ -26,16 +26,34 @@ import eu.ascetic.utils.ovf.api.exceptions.InvalidDocumentException;
  */
 public class OvfDefinitionFactory {
 
+	/**
+	 * Generates an empty instance of an OVF. 
+	 * 
+	 * @return A new instance of OvfDefinitio
+	 */
 	public OvfDefinition newInstance() {
 		return new OvfDefinition(XmlBeanEnvelopeDocument.Factory.newInstance());
 	}
 	
+	/**
+	 * Generates a new instance of the 3Tier WebApp using a template.
+	 * 
+	 * @param applicationId The ID of the Application
+	 * @param imageRepository The directory of the image repository
+	 * @return A new instance of OvfDefinition
+	 */
 	public OvfDefinition newInstance(String applicationId, String imageRepository) {
 		TemplateLoader loader = new TemplateLoader();
 		return new OvfDefinition(loader.loadOvfDefinitionTemplate(
 				applicationId, imageRepository));
 	}
 
+	/**
+	 * Creates an instance of the API using an XMLBeanEnvelopeDocument as its starting point.
+	 * 
+	 * @param ovfDefinitionAsXmlBeans The XMLBeans representation of an OVF definition
+	 * @return A new instance of OvfDefinition
+	 */
 	public OvfDefinition newInstance(
 			XmlBeanEnvelopeDocument ovfDefinitionAsXmlBeans) {
 		if (!ovfDefinitionAsXmlBeans.validate()) {
@@ -46,6 +64,12 @@ public class OvfDefinitionFactory {
 		return new OvfDefinition(ovfDefinitionAsXmlBeans);
 	}
 
+	/**
+	 * Creates an instance of the API using an XMLBeanEnvelopeDocument as its starting point.
+	 * 
+	 * @param ovfDefinitionAsString The String representation of an OVF definition 
+	 * @return A new instance of OvfDefinition
+	 */
 	public OvfDefinition newInstance(String ovfDefinitionAsString) {
 		XmlBeanEnvelopeDocument newDoc;
 		try {

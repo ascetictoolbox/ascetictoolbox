@@ -10,67 +10,65 @@
 		<!-- HAProxy VM Image -->
 		<ovf:File ovf:id="${vmHaproxyImageFileId}" ovf:href="${imageRepository}/${vmHaproxyImageFile}" />
 		<!-- HAProxy Context Base Image(s) -->
-		<ovf:File ovf:id="${contextHaproxyImageFileId}" ovf:href="${imageRepository}/${contextHaproxyImageFile}" />
+		<ovf:File ovf:id="${contextHaproxyImageFileId}"
+			ovf:href="${imageRepository}/${contextHaproxyImageFile}" />
 		<!-- Jboss VM Image -->
 		<ovf:File ovf:id="${vmJbossImageFileId}" ovf:href="${imageRepository}/${vmJbossImageFile}" />
 		<!-- Jboss Context Base Image(s) -->
-		<ovf:File ovf:id="${contextJbossImageFileId}" ovf:href="${imageRepository}/${contextJbossImageFile}" />
+		<ovf:File ovf:id="${contextJbossImageFileId}"
+			ovf:href="${imageRepository}/${contextJbossImageFile}" />
 		<!-- MySQL VM Image -->
 		<ovf:File ovf:id="${vmMysqlImageFileId}" ovf:href="${imageRepository}/${vmMysqlImageFile}" />
 		<!-- MySQL Context Base Image(s) -->
-		<ovf:File ovf:id="${contextMysqlImageFileId}" ovf:href="${imageRepository}/${contextMysqlImageFile}" />
+		<ovf:File ovf:id="${contextMysqlImageFileId}"
+			ovf:href="${imageRepository}/${contextMysqlImageFile}" />
 		<!-- JMeter VM Image -->
 		<ovf:File ovf:id="${vmJmeterImageFileId}" ovf:href="${imageRepository}/${vmJmeterImageFile}" />
 		<!-- JMeter Context Base Image(s) -->
-		<ovf:File ovf:id="${contextJmeterImageFileId}" ovf:href="${imageRepository}/${contextJmeterImageFile}" />		
+		<ovf:File ovf:id="${contextJmeterImageFileId}"
+			ovf:href="${imageRepository}/${contextJmeterImageFile}" />
 	</ovf:References>
 
 	<!-- Describes meta-information about all virtual disks in the package. -->
 	<ovf:DiskSection>
-		<ovf:Info>List of the virtual disks used in the 3 Tier Web App package.</ovf:Info>
+		<ovf:Info>List of the virtual disks used in the 3 Tier Web App
+			package.</ovf:Info>
 		<!-- HAProxy Disks -->
-		<ovf:Disk ovf:diskId="${vmHaproxyImageFileId}-disk"	
-			ovf:fileRef="${vmHaproxyImageFileId}" 
-			ovf:capacity="${vmHaproxyImageCapacity}" 
+		<ovf:Disk ovf:diskId="${vmHaproxyImageFileId}-disk"
+			ovf:fileRef="${vmHaproxyImageFileId}" ovf:capacity="${vmHaproxyImageCapacity}"
 			ovf:format="${vmImageFormat}" />
-		<ovf:Disk ovf:diskId="${contextHaproxyImageFileId}-disk" 
-			ovf:fileRef="${contextHaproxyImageFileId}" 
-			ovf:capacity="${contextHaproxyImageCapacity}" 
+		<ovf:Disk ovf:diskId="${contextHaproxyImageFileId}-disk"
+			ovf:fileRef="${contextHaproxyImageFileId}" ovf:capacity="${contextHaproxyImageCapacity}"
 			ovf:format="${contextImageFormat}" />
 		<!-- Jboss Disks -->
-		<ovf:Disk ovf:diskId="${vmJbossImageFileId}-disk"	
-			ovf:fileRef="${vmJbossImageFileId}" 
-			ovf:capacity="${vmJbossImageCapacity}" 
+		<ovf:Disk ovf:diskId="${vmJbossImageFileId}-disk"
+			ovf:fileRef="${vmJbossImageFileId}" ovf:capacity="${vmJbossImageCapacity}"
 			ovf:format="${vmImageFormat}" />
-		<ovf:Disk ovf:diskId="${contextJbossImageFileId}-disk" 
-			ovf:fileRef="${contextJbossImageFileId}" 
-			ovf:capacity="${contextJbossImageCapacity}" 
+		<ovf:Disk ovf:diskId="${contextJbossImageFileId}-disk"
+			ovf:fileRef="${contextJbossImageFileId}" ovf:capacity="${contextJbossImageCapacity}"
 			ovf:format="${contextImageFormat}" />
 		<!-- MySQL Disks -->
-		<ovf:Disk ovf:diskId="${vmMysqlImageFileId}-disk"	
-			ovf:fileRef="${vmMysqlImageFileId}" 
-			ovf:capacity="${vmMysqlImageCapacity}" 
+		<ovf:Disk ovf:diskId="${vmMysqlImageFileId}-disk"
+			ovf:fileRef="${vmMysqlImageFileId}" ovf:capacity="${vmMysqlImageCapacity}"
 			ovf:format="${vmImageFormat}" />
-		<ovf:Disk ovf:diskId="${contextMysqlImageFileId}-disk" 
-			ovf:fileRef="${contextMysqlImageFileId}" 
-			ovf:capacity="${contextMysqlImageCapacity}" 
+		<ovf:Disk ovf:diskId="${contextMysqlImageFileId}-disk"
+			ovf:fileRef="${contextMysqlImageFileId}" ovf:capacity="${contextMysqlImageCapacity}"
 			ovf:format="${contextImageFormat}" />
 		<!-- JMeter Disks -->
-		<ovf:Disk ovf:diskId="${vmJmeterImageFileId}-disk"	
-			ovf:fileRef="${vmJmeterImageFileId}" 
-			ovf:capacity="${vmJmeterImageCapacity}" 
+		<ovf:Disk ovf:diskId="${vmJmeterImageFileId}-disk"
+			ovf:fileRef="${vmJmeterImageFileId}" ovf:capacity="${vmJmeterImageCapacity}"
 			ovf:format="${vmImageFormat}" />
-		<ovf:Disk ovf:diskId="${contextJmeterImageFileId}-disk" 
-			ovf:fileRef="${contextJmeterImageFileId}" 
-			ovf:capacity="${contextJmeterImageCapacity}" 
-			ovf:format="${contextImageFormat}" />			
+		<ovf:Disk ovf:diskId="${contextJmeterImageFileId}-disk"
+			ovf:fileRef="${contextJmeterImageFileId}" ovf:capacity="${contextJmeterImageCapacity}"
+			ovf:format="${contextImageFormat}" />
 	</ovf:DiskSection>
 
 	<!-- Describes all networks used in the package -->
 	<ovf:NetworkSection>
 		<ovf:Info>Logical networks used in the package.</ovf:Info>
 		<ovf:Network ovf:name="${applicationId}-net">
-			<ovf:Description>Network that the Web App will be available on.</ovf:Description>
+			<ovf:Description>Network that the Web App will be available on.
+			</ovf:Description>
 		</ovf:Network>
 	</ovf:NetworkSection>
 
@@ -80,9 +78,11 @@
 
 		<!-- Product specific attributes applicable to all VirtualSystems (VMs) -->
 		<ovf:ProductSection ovf:class="eu.ascetic.application">
-			<ovf:Info>Product customisation for the installed software.</ovf:Info>
+			<ovf:Info>Product customisation for the installed software.
+			</ovf:Info>
 			<ovf:Product>${applicationName}</ovf:Product>
 			<ovf:Version>${applicationVersion}</ovf:Version>
+			<!-- Product Properties that stores variables such as workload description, deployment ID etc. -->
 		</ovf:ProductSection>
 
 		<!-- HAProxy Virtual System Instances Template -->
@@ -90,9 +90,11 @@
 			<ovf:Name>${vsHaproxyName}</ovf:Name>
 			<ovf:Info>${vsHaproxyDescription}</ovf:Info>
 
-			<!-- Product specific attributes applicable to a single Virtual System (VM) -->
+			<!-- Product specific attributes applicable to a single Virtual System 
+				(VM) -->
 			<ovf:ProductSection ovf:class="eu.ascetic.vm">
-				<ovf:Info>Product customisation for the installed software.</ovf:Info>
+				<ovf:Info>Product customisation for the installed software.
+				</ovf:Info>
 				<ovf:Product>${vsHaproxyName}</ovf:Product>
 				<ovf:Version>${vsHaproxyVersion}</ovf:Version>
 			</ovf:ProductSection>
@@ -119,7 +121,8 @@
 					</rasd:ElementName>
 					<rasd:InstanceID>1</rasd:InstanceID>
 					<rasd:ResourceType>3</rasd:ResourceType>
-					<rasd:VirtualQuantity>${numberOfVirtualCPUsHaproxy}</rasd:VirtualQuantity>
+					<rasd:VirtualQuantity>${numberOfVirtualCPUsHaproxy}
+					</rasd:VirtualQuantity>
 				</ovf:Item>
 				<ovf:Item>
 					<rasd:AllocationUnits>MHz</rasd:AllocationUnits>
@@ -131,7 +134,8 @@
 				<ovf:Item>
 					<rasd:AllocationUnits>MegaBytes</rasd:AllocationUnits>
 					<rasd:Description>Memory Size</rasd:Description>
-					<rasd:ElementName>${memorySizeHaproxy} MB of memory</rasd:ElementName>
+					<rasd:ElementName>${memorySizeHaproxy} MB of memory
+					</rasd:ElementName>
 					<rasd:InstanceID>2</rasd:InstanceID>
 					<rasd:ResourceType>4</rasd:ResourceType>
 					<rasd:VirtualQuantity>${memorySizeHaproxy}</rasd:VirtualQuantity>
@@ -163,17 +167,20 @@
 				</ovf:Item>
 			</ovf:VirtualHardwareSection>
 		</ovf:VirtualSystem>
-		
+
 		<!-- JBoss Virtual System Instances Template -->
 		<ovf:VirtualSystem ovf:id="${vmJbossId}">
 			<ovf:Name>${vsJbossName}</ovf:Name>
 			<ovf:Info>${vsJbossDescription}</ovf:Info>
 
-			<!-- Product specific attributes applicable to a single Virtual System (VM) -->
+			<!-- Product specific attributes applicable to a single Virtual System 
+				(VM) -->
 			<ovf:ProductSection ovf:class="eu.ascetic.vm">
-				<ovf:Info>Product customisation for the installed software.</ovf:Info>
+				<ovf:Info>Product customisation for the installed software.
+				</ovf:Info>
 				<ovf:Product>${vsJbossName}</ovf:Product>
 				<ovf:Version>${vsJbossVersion}</ovf:Version>
+				<!-- Product Properties that stores variables such as probe end points -->
 			</ovf:ProductSection>
 
 			<!-- Operating System details -->
@@ -198,7 +205,8 @@
 					</rasd:ElementName>
 					<rasd:InstanceID>1</rasd:InstanceID>
 					<rasd:ResourceType>3</rasd:ResourceType>
-					<rasd:VirtualQuantity>${numberOfVirtualCPUsJboss}</rasd:VirtualQuantity>
+					<rasd:VirtualQuantity>${numberOfVirtualCPUsJboss}
+					</rasd:VirtualQuantity>
 				</ovf:Item>
 				<ovf:Item>
 					<rasd:AllocationUnits>MHz</rasd:AllocationUnits>
@@ -210,7 +218,8 @@
 				<ovf:Item>
 					<rasd:AllocationUnits>MegaBytes</rasd:AllocationUnits>
 					<rasd:Description>Memory Size</rasd:Description>
-					<rasd:ElementName>${memorySizeJboss} MB of memory</rasd:ElementName>
+					<rasd:ElementName>${memorySizeJboss} MB of memory
+					</rasd:ElementName>
 					<rasd:InstanceID>2</rasd:InstanceID>
 					<rasd:ResourceType>4</rasd:ResourceType>
 					<rasd:VirtualQuantity>${memorySizeJboss}</rasd:VirtualQuantity>
@@ -242,15 +251,17 @@
 				</ovf:Item>
 			</ovf:VirtualHardwareSection>
 		</ovf:VirtualSystem>
-		
+
 		<!-- MySQL Virtual System Instances Template -->
 		<ovf:VirtualSystem ovf:id="${vmMysqlId}">
 			<ovf:Name>${vsMysqlName}</ovf:Name>
 			<ovf:Info>${vsMysqlDescription}</ovf:Info>
 
-			<!-- Product specific attributes applicable to a single Virtual System (VM) -->
+			<!-- Product specific attributes applicable to a single Virtual System 
+				(VM) -->
 			<ovf:ProductSection ovf:class="eu.ascetic.vm">
-				<ovf:Info>Product customisation for the installed software.</ovf:Info>
+				<ovf:Info>Product customisation for the installed software.
+				</ovf:Info>
 				<ovf:Product>${vsMysqlName}</ovf:Product>
 				<ovf:Version>${vsMysqlVersion}</ovf:Version>
 			</ovf:ProductSection>
@@ -277,7 +288,8 @@
 					</rasd:ElementName>
 					<rasd:InstanceID>1</rasd:InstanceID>
 					<rasd:ResourceType>3</rasd:ResourceType>
-					<rasd:VirtualQuantity>${numberOfVirtualCPUsMysql}</rasd:VirtualQuantity>
+					<rasd:VirtualQuantity>${numberOfVirtualCPUsMysql}
+					</rasd:VirtualQuantity>
 				</ovf:Item>
 				<ovf:Item>
 					<rasd:AllocationUnits>MHz</rasd:AllocationUnits>
@@ -289,7 +301,8 @@
 				<ovf:Item>
 					<rasd:AllocationUnits>MegaBytes</rasd:AllocationUnits>
 					<rasd:Description>Memory Size</rasd:Description>
-					<rasd:ElementName>${memorySizeMysql} MB of memory</rasd:ElementName>
+					<rasd:ElementName>${memorySizeMysql} MB of memory
+					</rasd:ElementName>
 					<rasd:InstanceID>2</rasd:InstanceID>
 					<rasd:ResourceType>4</rasd:ResourceType>
 					<rasd:VirtualQuantity>${memorySizeMysql}</rasd:VirtualQuantity>
@@ -321,15 +334,17 @@
 				</ovf:Item>
 			</ovf:VirtualHardwareSection>
 		</ovf:VirtualSystem>
-		
+
 		<!-- JMeter Virtual System Instances Template -->
 		<ovf:VirtualSystem ovf:id="${vmJmeterId}">
 			<ovf:Name>${vsJmeterName}</ovf:Name>
 			<ovf:Info>${vsJmeterDescription}</ovf:Info>
 
-			<!-- Product specific attributes applicable to a single Virtual System (VM) -->
+			<!-- Product specific attributes applicable to a single Virtual System 
+				(VM) -->
 			<ovf:ProductSection ovf:class="eu.ascetic.vm">
-				<ovf:Info>Product customisation for the installed software.</ovf:Info>
+				<ovf:Info>Product customisation for the installed software.
+				</ovf:Info>
 				<ovf:Product>${vsJmeterName}</ovf:Product>
 				<ovf:Version>${vsJmeterVersion}</ovf:Version>
 			</ovf:ProductSection>
@@ -356,7 +371,8 @@
 					</rasd:ElementName>
 					<rasd:InstanceID>1</rasd:InstanceID>
 					<rasd:ResourceType>3</rasd:ResourceType>
-					<rasd:VirtualQuantity>${numberOfVirtualCPUsJmeter}</rasd:VirtualQuantity>
+					<rasd:VirtualQuantity>${numberOfVirtualCPUsJmeter}
+					</rasd:VirtualQuantity>
 				</ovf:Item>
 				<ovf:Item>
 					<rasd:AllocationUnits>MHz</rasd:AllocationUnits>
@@ -368,7 +384,8 @@
 				<ovf:Item>
 					<rasd:AllocationUnits>MegaBytes</rasd:AllocationUnits>
 					<rasd:Description>Memory Size</rasd:Description>
-					<rasd:ElementName>${memorySizeJmeter} MB of memory</rasd:ElementName>
+					<rasd:ElementName>${memorySizeJmeter} MB of memory
+					</rasd:ElementName>
 					<rasd:InstanceID>2</rasd:InstanceID>
 					<rasd:ResourceType>4</rasd:ResourceType>
 					<rasd:VirtualQuantity>${memorySizeJmeter}</rasd:VirtualQuantity>
@@ -399,7 +416,6 @@
 					<rasd:ResourceType>15</rasd:ResourceType>
 				</ovf:Item>
 			</ovf:VirtualHardwareSection>
-		</ovf:VirtualSystem>		
-		
+		</ovf:VirtualSystem>
 	</ovf:VirtualSystemCollection>
 </Envelope>
