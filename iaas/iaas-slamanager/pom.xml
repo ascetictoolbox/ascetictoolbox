@@ -15,8 +15,8 @@
 	<packaging>pom</packaging>
 	<name>iaas-slamanager</name>
 	<version>0.1-SNAPSHOT</version>
-    <description>ASCETiC IaaS SLA Manager </description>
-    <url>http://www.ascetic.eu</url>
+	<description>ASCETiC IaaS SLA Manager </description>
+	<url>http://www.ascetic.eu</url>
 	<!-- SLAM - modules -->
 	<modules>
 		<module>core</module>
@@ -50,20 +50,20 @@
 	</licenses>
 
 
-    <dependencies>
+	<dependencies>
 
-    	  <dependency>
+		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-client</artifactId>
 			<version>${jersey-version}</version>
 		</dependency>
-         <dependency>
+		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-server</artifactId>
 			<version>${jersey-version}</version>
 		</dependency>
 
-        <dependency>
+		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-core</artifactId>
 			<version>${jersey-version}</version>
@@ -75,21 +75,20 @@
 			<version>${jersey-version}</version>
 		</dependency>
 
-
-	<!--  required by jersey-multipart -->
- 		<dependency>
-  			<groupId>org.jvnet</groupId>
-  			<artifactId>mimepull</artifactId>
-  			<version>1.4</version>
+		<!-- required by jersey-multipart -->
+		<dependency>
+			<groupId>org.jvnet</groupId>
+			<artifactId>mimepull</artifactId>
+			<version>1.4</version>
 		</dependency>
 
-		 <dependency>
-          <groupId>com.sun.jersey</groupId>
-          <artifactId>jersey-grizzly2</artifactId>
-          <version>${jersey-version}</version>
-  		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-grizzly2</artifactId>
+			<version>${jersey-version}</version>
+		</dependency>
 
-   </dependencies>
+	</dependencies>
 
 
 	<build>
@@ -201,6 +200,19 @@
 	</dependencyManagement>
 
 	<repositories>
+
+		<repository>
+			<id>ascetic-repository</id>
+			<name>ASCETiC repository</name>
+			<url>http://ascetic-artifactory.cit.tu-berlin.de/artifactory/repo/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+
 		<repository>
 			<id>slasoi-hp-snapshots</id>
 			<name>SLA@SOI SOURCEFORGE repository for snapshots</name>
