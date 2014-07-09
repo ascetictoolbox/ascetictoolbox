@@ -14,15 +14,13 @@ public class VmmRestInputValidatorTest {
     @Test
     public void imageDoesNotExist() {
         String[] imagesIds = {"imageId1", "imageId2"};
-        assertFalse(VmmRestInputValidator.checkImageExists("imageId3",
-                new ArrayList<>(Arrays.asList(imagesIds))));
+        assertFalse(VmmRestInputValidator.checkImageExists("imageId3", new ArrayList<>(Arrays.asList(imagesIds))));
     }
 
     @Test
     public void imageExists() {
         String[] imagesIds = {"imageId1", "imageId2"};
-        assertTrue(VmmRestInputValidator.checkImageExists("imageId1",
-                new ArrayList<>(Arrays.asList(imagesIds))));
+        assertTrue(VmmRestInputValidator.checkImageExists("imageId1", new ArrayList<>(Arrays.asList(imagesIds))));
     }
 
 }

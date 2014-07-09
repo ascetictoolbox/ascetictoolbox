@@ -227,18 +227,16 @@ public class VmManagerRestTest {
     
     @Test
     public void getAllVmsOfAnApplication() {
-        // Deploy 2 VMs (one of them is part of "myApplication1", and the other is part of
+        // Deploy 2 VMs (one of them is part of "myApplication1", and the other is part of "myApplication2"
         List<String> idsVmsDeployed = deployTestVms();
 
         // Get the IDs of the VMs that are part of the application "myApplication1"
-        String vmsOfApplicationJson =
-                get(testDeploymentBaseUrl + "vmsapp/myApplication1").asString();
+        String vmsOfApplicationJson = get(testDeploymentBaseUrl + "vmsapp/myApplication1").asString();
         List<String> idsVmsOfApp = new ArrayList<>();
         JsonObject jsonObject = gson.fromJson(vmsOfApplicationJson, JsonObject.class);
         JsonArray jsonVmsArray = jsonObject.get("vms").getAsJsonArray();
         for (JsonElement vmJson: jsonVmsArray) {
-            VmDeployed vm = gson.fromJson(vmJson, VmDeployed.class);
-            idsVmsOfApp.add(vm.getId());
+            idsVmsOfApp.add(gson.fromJson(vmJson, VmDeployed.class).getId());
         }
 
         // Check that only one of the VMs is part of "myApplication1"
@@ -250,6 +248,48 @@ public class VmManagerRestTest {
 
         // Delete the 2 VMs deployed
         deleteVms(idsVmsDeployed);
+    }
+
+    @Test
+    public void deleteAllVmsOfAnApplication() {
+        // Deploy 2 VMs (one of them is part of "myApplication1", and the other is part of "myApplication2"
+        deployTestVms();
+
+        // Get the IDs of the 2 VMs deployed
+        String idVmApp1, idVmApp2;
+        idVmApp1 = idVmApp2 = "";
+        String vmsOfApplicationJson = get(testDeploymentBaseUrl + "vmsapp/myApplication1").asString();
+        JsonObject jsonObject = gson.fromJson(vmsOfApplicationJson, JsonObject.class);
+        JsonArray jsonVmsArray = jsonObject.get("vms").getAsJsonArray();
+        for (JsonElement vmJson: jsonVmsArray) {
+            idVmApp1 = gson.fromJson(vmJson, VmDeployed.class).getId();
+        }
+        vmsOfApplicationJson = get(testDeploymentBaseUrl + "vmsapp/myApplication2").asString();
+        jsonObject = gson.fromJson(vmsOfApplicationJson, JsonObject.class);
+        jsonVmsArray = jsonObject.get("vms").getAsJsonArray();
+        for (JsonElement vmJson: jsonVmsArray) {
+            idVmApp2 = gson.fromJson(vmJson, VmDeployed.class).getId();
+        }
+
+        // Delete VMs of "myApplication1"
+        delete(testDeploymentBaseUrl + "vmsapp/myApplication1");
+
+        // Get the list of existing VMs and make sure that it does not contain the ID of the VM of
+        // "myApplication1" and also, that it does contain the ID of the VM of "myApplication2"
+        String json = get(testDeploymentBaseUrl + "vms/").asString();
+        List<String> idsVms = new ArrayList<>();
+        jsonObject = gson.fromJson(json, JsonObject.class);
+        jsonVmsArray = jsonObject.get("vms").getAsJsonArray();
+        for (JsonElement vmJson: jsonVmsArray) {
+            idsVms.add(gson.fromJson(vmJson, VmDeployed.class).getId());
+        }
+        assertTrue(idsVms.contains(idVmApp2));
+        assertFalse(idsVms.contains(idVmApp1));
+
+        // Delete the other VM deployed
+        List<String> idsToDelete = new ArrayList<>();
+        idsToDelete.add(idVmApp2);
+        deleteVms(idsToDelete);
     }
     
     

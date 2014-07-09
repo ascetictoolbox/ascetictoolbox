@@ -91,6 +91,17 @@ public class VmManager {
     }
 
     /**
+     * Deletes all the VMs that belong to a specific application.
+     *
+     * @param appId the ID of the application
+     */
+    public void deleteVmsOfApp(String appId) {
+        for (VmDeployed vmDeployed: getVmsOfApp(appId)) {
+            deleteVm(vmDeployed.getId());
+        }
+    }
+
+    /**
      * Deletes a VM.
      *
      * @param vmId the ID of the VM

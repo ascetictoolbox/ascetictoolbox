@@ -127,12 +127,17 @@ public class VmManagerRest {
     public String getVmsOfApp(@PathParam("appId") String appId) {
         JsonArray vmsDeployedJsonArray = new JsonArray();
         for (VmDeployed vmDeployed: vmManager.getVmsOfApp(appId)) {
-            JsonElement vmJsonElement = gson.toJsonTree(vmDeployed, VmDeployed.class);
-            vmsDeployedJsonArray.add(vmJsonElement);
+            vmsDeployedJsonArray.add(gson.toJsonTree(vmDeployed, VmDeployed.class));
         }
         JsonObject result = new JsonObject();
         result.add("vms", vmsDeployedJsonArray);
         return result.toString();
+    }
+
+    @DELETE
+    @Path("/vmsapp/{appId}")
+    public void deleteVmsOfApp(@PathParam("appId") String appId) {
+        vmManager.deleteVmsOfApp(appId);
     }
 
 
