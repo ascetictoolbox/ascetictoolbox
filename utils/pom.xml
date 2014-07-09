@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>eu.ascetic</groupId>
-	<artifactId>utils</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>pom</packaging>
-	<name>ASCETiC Utils</name>
-	<description>The parent project for the ASCETiC reference architecture utilities.</description>
-	<modules>
-		<!-- Util Modules -->
-		<module>ovf-xmlbeans</module>
-		<module>ovf-xmlbeans-api</module>
-		<module>wattsup-java-sdk</module>
-		<module>wattsup</module>
-		<module>libvirt</module>
-		<module>kwapi-patch</module>
-		<module>openstack-patch</module>
-		<module>ascetic-dfs</module>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>eu.ascetic</groupId>
+    <artifactId>utils</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>ASCETiC Utils</name>
+    <description>The parent project for the ASCETiC reference architecture utilities.</description>
+    <modules>
+        <!-- Util Modules -->
+        <module>ovf-xmlbeans</module>
+        <module>ovf-xmlbeans-api</module>
+        <module>wattsup-java-sdk</module>
+        <module>wattsup</module>
+        <module>libvirt</module>
+        <module>kwapi-patch</module>
+        <module>openstack-patch</module>
+        <module>ascetic-dfs</module>
         <module>ascetic-zabbix-api</module>
-	</modules>
+        <module>energy-modeller-data-logger</module>
+    </modules>
 
-	<url>http://www.ascetic.eu</url>
-	<parent>
-		<groupId>eu</groupId>
-		<artifactId>ascetic</artifactId>
-		<relativePath>..</relativePath>
-		<version>0.0.1-SNAPSHOT</version>
-	</parent>
+    <url>http://www.ascetic.eu</url>
+    <parent>
+        <groupId>eu</groupId>
+        <artifactId>ascetic</artifactId>
+        <relativePath>..</relativePath>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 </project>
