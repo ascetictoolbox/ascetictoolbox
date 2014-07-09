@@ -53,6 +53,7 @@ import java.util.logging.Logger;
 public class EnergyModeller {
 
     private static final String DEFAULT_PREDICTOR_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor";
+    private static final String DEFAULT_DATA_SOURCE_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient";
     EnergyPredictorInterface predictor = new DefaultEnergyPredictor();
     HostDataSource datasource = new ZabbixDataSourceAdaptor();
     HashMap<String, Host> hostList = new HashMap<>();
@@ -98,14 +99,43 @@ public class EnergyModeller {
             if (predictor == null) {
                 predictor = new DefaultEnergyPredictor();
             }
-            Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The scheduling algorithm did not work");
+            Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The scheduling algorithm did not work", ex);
         } catch (IllegalAccessException ex) {
             if (predictor == null) {
                 predictor = new DefaultEnergyPredictor();
             }
-            Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The scheduling algorithm did not work");
+            Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The scheduling algorithm did not work", ex);
         }
     }
+    
+    /**
+     * This allows the energy modellers data source to be set
+     *
+     * @param dataSource The name of the data source to use for the energy modeller
+     */
+    public void setDataSource(String dataSource) {
+        try {
+            if (!dataSource.startsWith(DEFAULT_DATA_SOURCE_PACKAGE)) {
+                dataSource = DEFAULT_DATA_SOURCE_PACKAGE + "." + dataSource;
+            }
+            datasource = (HostDataSource) (Class.forName(dataSource).newInstance());
+        } catch (ClassNotFoundException ex) {
+            if (datasource == null) {
+                datasource = new ZabbixDataSourceAdaptor();
+            }
+            Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The data source specified was not found");
+        } catch (InstantiationException ex) {
+            if (datasource == null) {
+                datasource = new ZabbixDataSourceAdaptor();
+            }
+            Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The data source did not work", ex);
+        } catch (IllegalAccessException ex) {
+            if (datasource == null) {
+                datasource = new ZabbixDataSourceAdaptor();
+            }
+            Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The data source did not work", ex);
+        }
+    }    
 
     /**
      * This provides for a collection of VMs the amount of energy that has

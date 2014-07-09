@@ -15,6 +15,7 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser;
 
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Set;
 
@@ -33,30 +34,24 @@ public class Host extends EnergyUsageSource implements Comparable<Host> {
     private int id = -1;
     private String hostName = "";
     private boolean available = true;
+    private ArrayList<HostEnergyCalibrationData> calibrationData = new ArrayList<>();
+
     /**
      * E_i^0: is the "idle power consumption" in Watts (with zero number of VMs
-     * running) E_i^c: power consumption of a CPU cycle (or instruction) E_i^m:
-     * power consumption of a memory access E_i^d: power consumption of a disk
-     * access E_i^n: power consumption of a network access E_i^v: is the "idle
-     * power consumption" of a VM which includes the incremental cost to the
-     * hypervisor and the energy use of the OS.
+     * running) E_i^c: power consumption of a CPU cycle (or instruction)
+     *
+     * This value acts as the default idle power consumption for a host and is
+     * used when no calibration data is available.
+     *
      */
-    public double idlePowerConsumption = 0.0; //i.e. 27.1w for an idle laptop.
-    /**
-     * Is the granularity too fine below? i.e. per cycle is a little much i.e.
-     * hard to determine and the value will be really really small.
-     */
-    public double powerConsumptionCPUCycle = 0.0;
+    private double defaultIdlePowerConsumption = 0.0; //i.e. 27.1w for an idle laptop.
+
     /**
      * An idea of power consumption scale:
      * http://www.xbitlabs.com/articles/memory/display/ddr3_13.html
      * http://superuser.com/questions/40113/does-installing-larger-ram-means-consuming-more-energy
      * http://www.tomshardware.com/reviews/power-saving-guide,1611-4.html
      */
-    public double powerConsumptionMemoryAccess = 0.0;
-    public double powerConsumptionDiskAccess = 0.0;
-    public double powerConsumptionNetworkAccess = 0.0;
-
     /**
      * This creates a new instance of a host
      *
@@ -168,4 +163,65 @@ public class Host extends EnergyUsageSource implements Comparable<Host> {
     public int compareTo(Host o) {
         return this.getHostName().compareTo(o.getHostName());
     }
+
+    /**
+     * This returns a list of all the calibration data that is held on the host.
+     *
+     * @return the calibration data of the host.
+     */
+    public ArrayList<HostEnergyCalibrationData> getCalibrationData() {
+        return calibrationData;
+    }
+
+    /**
+     * This allows the calibration data of a host to be set.
+     *
+     * @param calibrationData the calibrationData to set
+     */
+    public void setCalibrationData(ArrayList<HostEnergyCalibrationData> calibrationData) {
+        this.calibrationData = calibrationData;
+    }
+
+    /**
+     * This returns the lowest energy consumption found from the calibration
+     * data.
+     *
+     * @return The idle power consumption of a host
+     */
+    public double getIdlePowerConsumption() {
+        if (calibrationData.isEmpty()) {
+            return defaultIdlePowerConsumption;
+        }
+        double answer = Double.MAX_VALUE;
+        for (HostEnergyCalibrationData hostEnergyCalibrationData : calibrationData) {
+            if (hostEnergyCalibrationData.getWattsUsed() < answer) {
+                answer = hostEnergyCalibrationData.getWattsUsed();
+            }            
+        }
+        return answer;
+    }
+
+    /**
+     * This returns the value for the default idle power consumption of a host.
+     * This value is recorded and used in cases where calibration has yet to
+     * occur.
+     *
+     * @return the defaultIdlePowerConsumption
+     */
+    public double getDefaultIdlePowerConsumption() {
+        return defaultIdlePowerConsumption;
+    }
+
+    /**
+     * This sets the value for the default idle power consumption of a host.
+     * This value is recorded and used in cases where calibration has yet to
+     * occur.
+     *
+     * @param defaultIdlePowerConsumption the default Idle Power Consumption to
+     * set
+     */
+    public void setDefaultIdlePowerConsumption(double defaultIdlePowerConsumption) {
+        this.defaultIdlePowerConsumption = defaultIdlePowerConsumption;
+    }
+
 }
