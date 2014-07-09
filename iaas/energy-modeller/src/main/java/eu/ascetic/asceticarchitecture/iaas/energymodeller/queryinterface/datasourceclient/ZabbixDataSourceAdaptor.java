@@ -34,7 +34,7 @@ import java.util.List;
 public class ZabbixDataSourceAdaptor implements HostDataSource {
 
     private ZabbixClient client = new ZabbixClient();
-    private static final String POWER_KPI_NAME = ""; //TODO Set KPI name correctly
+    private static final String POWER_KPI_NAME = "power";
 
     /**
      * The main method.
@@ -56,6 +56,10 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         System.out.println("----------------");
         HostMeasurement measure = adaptor.getHostData(adaptor.getHostByName("asok10"));
         System.out.println(measure);
+        System.out.println("----------------");
+        for (eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host : hosts) {
+            System.out.println("Host: " + host.getHostName() + " Watts In Use: " + adaptor.getLowestHostPowerUsage(host));
+        }
     }
 
     /**
@@ -251,8 +255,9 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
 
     /**
      * This finds the lowest/resting power usage by a client.
+     *
      * @param host The host to get the lowest power usage data for.
-     * @return 
+     * @return
      */
     @Override
     public double getLowestHostPowerUsage(eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host) {
