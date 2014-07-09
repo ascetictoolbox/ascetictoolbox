@@ -58,6 +58,8 @@ public abstract class Job {
     protected static final boolean debug = logger.isDebugEnabled();
     protected static final String workerDebug = Boolean.toString(Logger.getLogger(Loggers.WORKER).isDebugEnabled());
 
+    protected String eventId;
+
     public static void init(JobManager associatedJM) {
         nextJobId = FIRST_JOB_ID;
         Job.associatedJM = associatedJM;
@@ -95,9 +97,10 @@ public abstract class Job {
         return this.res;
     }
 
-    public Implementation getImplementation(){
+    public Implementation getImplementation() {
         return this.impl;
     }
+
     public abstract String toString();
 
     public void submit() throws Exception {
@@ -113,9 +116,17 @@ public abstract class Job {
     }
 
     public abstract Location getTransfersLocation();
-    
+
     public abstract String getHostName();
-    
+
     public abstract JobKind getKind();
+
+    public String getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
+    }
 
 }

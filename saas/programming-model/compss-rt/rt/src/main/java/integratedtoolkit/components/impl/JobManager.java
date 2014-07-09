@@ -26,6 +26,7 @@ import org.apache.log4j.Logger;
 
 import integratedtoolkit.ITConstants;
 import integratedtoolkit.api.ITExecution.*;
+import integratedtoolkit.ascetic.Ascetic;
 import integratedtoolkit.components.FileTransfer;
 import integratedtoolkit.components.JobCreation;
 import integratedtoolkit.components.TransferStatus;
@@ -355,6 +356,7 @@ public class JobManager implements JobCreation, TransferStatus {
 
     // Notification thread
     public void jobStatusNotification(Job job, JobEndStatus endStatus) {
+        Ascetic.stopEvent(job);
         int jobId = job.getJobId();
         if (debug) {
             logger.debug("Received a notification for job " + jobId
@@ -503,6 +505,7 @@ public class JobManager implements JobCreation, TransferStatus {
                 }
                 Job job = idToJob.get(jobId);
                 try {
+                    Ascetic.startEvent(job);
                     job.submit();
                     if (debug) {
                         logger.debug("Job " + jobId + " submitted");

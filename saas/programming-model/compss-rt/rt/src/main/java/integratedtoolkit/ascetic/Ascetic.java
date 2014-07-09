@@ -15,6 +15,8 @@
  */
 package integratedtoolkit.ascetic;
 
+import integratedtoolkit.types.Implementation;
+import integratedtoolkit.types.Job;
 import integratedtoolkit.types.ResourceDescription;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -39,10 +41,23 @@ public class Ascetic {
         return resources.get(IPv4).getConsumptions(coreId);
     }
 
-    public void updateConsumptions() {
+    public static void updateConsumptions() {
         for (VM vm : resources.values()) {
             vm.updateConsumptions();
         }
+    }
+    
+    public static void startEvent(Job job){
+        
+        Implementation impl=job.getImplementation();
+        String eventType="core"+impl.getCoreId()+"impl"+impl.getImplementationId();
+        String IPv4= job.getResource().getName();
+        VM vm = resources.get(IPv4);
+        String eventId =ApplicationMonitor.startEvent(vm, eventType);
+        job.setEventId(eventId);
+    }
+    public static void stopEvent(Job job){
+        ApplicationMonitor.stopEvent(job.getEventId());
     }
 
 }
