@@ -17,6 +17,7 @@
 
 package eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller;
 
+
 /**
  * This is the standard interface for any pricing module to be loaded into
  * the ASCETiC architecture.
@@ -58,11 +59,11 @@ public interface IaaSPricingModellerInterface{
 	
 	
 	/**
-     * Returns a cost (price) estimation based on the avg. power that a VM consumes during an hour.
+     * Returns a cost (price) estimation based on the total energy that a VM consumes during an hour.
      *
-     * @param avgPower avg. power that a VM consumes during an hour.
-     * @return the price estimation
+     * @param totalEnergyUsed total energy that a VM consumes during an hour.
+     * @return the cost (price) estimation
      */
-	public double getVMCostEstimation(double totalEnergyUsed, int hostId);
-	public double getVMPriceEstimation(double totalEnergyUsed, int hostId);
+	public double getVMCostEstimation(double totalEnergyUsed, String hostId);
+	public double getVMPriceEstimation(double totalEnergyUsed, String hostId);
 }

@@ -103,7 +103,7 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
      * @return the estimated cost of the VM running on this host
      */
     @Override
-    public double getVMCostEstimation(double totalEnergyUsed, int hostId) {
+    public double getVMCostEstimation(double totalEnergyUsed, String hostId) {
         double cost=0.0;
         cost=amortHostCost+(energyCost*totalEnergyUsed*PUE);
     	return cost; 
@@ -119,7 +119,7 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
      * @return the estimated price of the VM running on this host
      */
     @Override
-    public double getVMPriceEstimation(double totalEnergyUsed, int hostId) {
+    public double getVMPriceEstimation(double totalEnergyUsed, String hostId) {
     	double cost=0.0;
     	double price = 0.0;
         cost=amortHostCost+(energyCost*totalEnergyUsed*PUE);
