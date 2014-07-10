@@ -15,10 +15,21 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore;
 
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HistoricUsageRecord;
+import java.util.Collection;
+
 /**
- *
+ * This interface for connecting to the background database with the aim of returning 
+ * historical information and host calibration data.
  * @author Richard
  */
-public class DatabaseConnector {
+public interface DatabaseConnector {
+    
+    public Collection<Host> getHosts();
+    public Collection<Host> getHostCalibrationData(Collection<Host> hosts);
+    public Host getHostCalibrationData(Host host);
+    public HistoricUsageRecord getVMHistoryData(VmDeployed VM);
     
 }
