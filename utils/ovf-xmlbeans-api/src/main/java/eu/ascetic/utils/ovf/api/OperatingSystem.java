@@ -14,10 +14,12 @@ public class OperatingSystem extends
 		super(base);
 	}
 
+	// TODO: use enum
 	public int getId() {
 		return delegate.getId();
 	}
 
+	// TODO: use enum
 	public void setId(int operatingSystemId) {
 		delegate.setId(operatingSystemId);
 	}

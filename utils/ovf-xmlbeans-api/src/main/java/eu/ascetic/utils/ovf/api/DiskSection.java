@@ -38,7 +38,7 @@ import java.util.Vector;
 public class DiskSection extends AbstractElement<XmlBeanDiskSectionType> {
 
 	/**
-	 * A static reference to the Factory class for generating new instances of
+	 * A static reference to the {@link DiskSectionFactory} class for generating new instances of
 	 * this object.
 	 */
 	public static DiskSectionFactory Factory = new DiskSectionFactory();

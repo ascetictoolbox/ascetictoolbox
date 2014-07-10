@@ -81,7 +81,13 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
 		delegate.removeProperty(i);
 	}
 	
-	// Functions to store and fetch upper and lower bound of VMs per Virtual System
+	/*
+	 * Start of ASCETiC specific helper functions to store and fetch upper and lower
+	 * bound of VMs per Virtual System
+	 * 
+	 * FIXME: Move these to somewhere else so as to not pollute the API
+	 */
+	
 	public void setUpperBound(Integer upperBound) {
 		ProductProperty productProperty = getPropertyByKey(ASCETIC_VIRTUAL_SYSTEM_UPPER_BOUND_KEY);
 		if (productProperty.equals(null)) {

@@ -45,10 +45,12 @@ public class VirtualDiskDesc extends
 		delegate.setCapacityAllocationUnits(capacityAllocationUnits);
 	}
 
+	// FIXME: change to DiskFormatType enumeration 
 	public String getFormat() {
 		return delegate.getFormat();
 	}
 
+	// FIXME: change to DiskFormatType enumeration 
 	public void setFormat(String format) {
 		delegate.setFormat(format);
 	}

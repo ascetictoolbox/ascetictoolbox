@@ -18,11 +18,18 @@ package eu.ascetic.utils.ovf.api;
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanDiskSectionType;
 
 /**
+ * Provides factory methods for creating instances of {@link DiskSection}
+ * 
  * @author Django Armstrong (ULeeds)
- *
+ * 
  */
 public class DiskSectionFactory {
-	
+
+	/**
+	 * Creates a new empty instance of {@link DiskSection}
+	 * 
+	 * @return A new empty instances of {@link DiskSection}
+	 */
 	public DiskSection newInstance() {
 		return new DiskSection(XmlBeanDiskSectionType.Factory.newInstance());
 	}

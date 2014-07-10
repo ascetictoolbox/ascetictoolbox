@@ -16,13 +16,16 @@
 package eu.ascetic.utils.ovf.api;
 
 /**
- * Enumeration containing predefined constants of supported disk format types.
+ * Enumeration containing predefined constants of supported disk format types used in {@link VirtualDiskDesc}.
  * 
  * @author Django Armstrong (ULeeds)
  * 
  */
 public enum DiskFormatType {
 
+	/**
+	 * Enumeration containing all possible virtual machine image disk format types.
+	 */
 	// @formatter:off
 	VMDK("http://www.vmware.com/interfaces/specifications/vmdk.html#streamOptimized"),
 	VHD("http://technet.microsoft.com/en-us/library/bb676673.aspx"),
