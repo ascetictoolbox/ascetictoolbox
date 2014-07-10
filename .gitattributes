@@ -44,7 +44,7 @@ iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymod
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/usage/EnergyUsagePrediction.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/usage/EnergyUsageRecord.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/usage/HistoricUsageRecord.java -text
-iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/AppTest.java -text
+iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/ZabbixDataSourceAdaptorTest.java -text
 iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/TimePeriodTest.java -text
 iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/input/VMProjectedWorkloadElementTest.java -text
 iaas/iaas-pricing-modeller/pom.xml -text

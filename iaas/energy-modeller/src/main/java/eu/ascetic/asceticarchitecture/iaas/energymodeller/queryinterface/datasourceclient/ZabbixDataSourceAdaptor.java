@@ -63,27 +63,6 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
     }
 
     /**
-     * @deprecated This is the old method copied across
-     * @param client
-     */
-    public static void getHostInformation(ZabbixClient client) {
-        List<Item> itemsList = client.getItemsFromHost("asok10.cit.tu-berlin.de");
-        int index = 0;
-        for (Item i : itemsList) {
-            System.out.println("ITEM " + index + ":");
-            System.out.println("name: " + i.getName());
-            System.out.println("key: " + i.getKey());
-            System.out.println("hostid: " + i.getHostid());
-            System.out.println("delay: " + i.getDelay());
-            System.out.println("history: " + i.getHistory());
-            System.out.println("lastvalue: " + i.getLastValue());
-            System.out.println("lastclock: " + i.getLastClock());
-            index++;
-            System.out.println();
-        }
-    }
-
-    /**
      * This returns a host given its unique name.
      *
      * @param hostname The name of the host to get.
@@ -185,44 +164,6 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
 
         }
         return new ArrayList<>(hostMeasurements.values());
-    }
-
-    /**
-     * @deprecated This is the old method copied across
-     * @param client
-     */
-    public static void getAllHostInformation(ZabbixClient client) {
-        List<Item> itemsList = client.getAllItems();
-        int index = 0;
-        for (Item i : itemsList) {
-            System.out.println("ITEM " + index + ":");
-            System.out.println("name: " + i.getName());
-            System.out.println("key: " + i.getKey());
-            System.out.println("hostid: " + i.getHostid());
-            System.out.println("delay: " + i.getDelay());
-            System.out.println("history: " + i.getHistory());
-            System.out.println("lastvalue: " + i.getLastValue());
-            System.out.println("lastclock: " + i.getLastClock());
-            index++;
-            System.out.println();
-        }
-    }
-
-    /**
-     * @deprecated This is the old method copied across
-     * @param client
-     */
-    public static void getAllHosts(ZabbixClient client) {
-        List<Host> hostsList = client.getAllHosts();
-        int index = 0;
-        for (Host h : hostsList) {
-            System.out.println("HOST " + index + ":");
-            System.out.println("host: " + h.getHost());
-            System.out.println("host id: " + h.getHostid());
-            System.out.println("available: " + h.getAvailable());
-            index++;
-            System.out.println();
-        }
     }
 
     /**
