@@ -188,6 +188,14 @@ public class Host extends EnergyUsageSource implements Comparable<Host> {
      */
     public void addCalibrationData(HostEnergyCalibrationData calibrationData) {
         this.calibrationData.add(calibrationData);
+    }  
+    
+    /**
+     * This indicates if the energy modeller has calibration data for a given host.
+     * @return true if calibration data exists for this host.
+     */
+    public boolean isCalibrated() {
+        return !calibrationData.isEmpty();
     }    
 
     /**
@@ -231,5 +239,5 @@ public class Host extends EnergyUsageSource implements Comparable<Host> {
     public void setDefaultIdlePowerConsumption(double defaultIdlePowerConsumption) {
         this.defaultIdlePowerConsumption = defaultIdlePowerConsumption;
     }
-
+    
 }

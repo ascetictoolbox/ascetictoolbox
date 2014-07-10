@@ -15,6 +15,7 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller;
 
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration.Calibrator;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.DefaultEnergyPredictor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.EnergyPredictorInterface;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.TimePeriod;
@@ -56,12 +57,14 @@ public class EnergyModeller {
     private static final String DEFAULT_DATA_SOURCE_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient";
     EnergyPredictorInterface predictor = new DefaultEnergyPredictor();
     HostDataSource datasource = new ZabbixDataSourceAdaptor();
+    Calibrator calibrator = new Calibrator(datasource);
     HashMap<String, Host> hostList = new HashMap<>();
     HashSet<VmDeployed> vmDeployedList = new HashSet<>();
 
     public EnergyModeller() {
         try {
             populateHostList();
+            calibrateAllHostsWithoutData();
         } catch (Exception ex) {
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The host list was not populated");
         }
@@ -95,12 +98,7 @@ public class EnergyModeller {
                 predictor = new DefaultEnergyPredictor();
             }
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The scheduling algorithm specified was not found");
-        } catch (InstantiationException ex) {
-            if (predictor == null) {
-                predictor = new DefaultEnergyPredictor();
-            }
-            Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The scheduling algorithm did not work", ex);
-        } catch (IllegalAccessException ex) {
+        } catch (InstantiationException | IllegalAccessException ex) {
             if (predictor == null) {
                 predictor = new DefaultEnergyPredictor();
             }
@@ -124,12 +122,7 @@ public class EnergyModeller {
                 datasource = new ZabbixDataSourceAdaptor();
             }
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The data source specified was not found");
-        } catch (InstantiationException ex) {
-            if (datasource == null) {
-                datasource = new ZabbixDataSourceAdaptor();
-            }
-            Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The data source did not work", ex);
-        } catch (IllegalAccessException ex) {
+        } catch (InstantiationException | IllegalAccessException ex) {
             if (datasource == null) {
                 datasource = new ZabbixDataSourceAdaptor();
             }
@@ -387,4 +380,39 @@ public class EnergyModeller {
         //END OF DUMMY CODE
 //        return null;
     }
+    
+    /**
+     * This calibrates all hosts that are known to the energy modeller, that 
+     * currently are uncalibrated i.e. energy values for the host is unknown.
+     */
+    private void calibrateAllHostsWithoutData() {
+        for (Host host : hostList.values()) {
+            if (!host.isCalibrated()) {
+                calibrateModelForHost(host);
+            }
+        }
+    }
+    
+    /**
+     * This makes the energy model calibrate itself for several hosts. This 
+     * should only need to be done once per host, when it is first introduced to 
+     * the system.
+     * @param hosts The hosts to calibrate
+     */
+    public void calibrateModelForHost(Collection<Host> hosts) {
+        for (Host host : hosts) {
+            calibrateModelForHost(host);
+        }
+    }
+    
+    /**
+     * This makes the energy model calibrate itself for several hosts. This 
+     * should only need to be done once per host, when it is first introduced to 
+     * the system.
+     * @param host The host to calibrate
+     */
+    public void calibrateModelForHost(Host host) {
+        calibrator.calibrateHostEnergyData(host);
+    }
+    
 }
