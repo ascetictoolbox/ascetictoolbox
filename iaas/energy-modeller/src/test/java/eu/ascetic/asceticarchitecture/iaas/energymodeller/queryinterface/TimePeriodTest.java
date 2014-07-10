@@ -15,6 +15,7 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface;
 
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import org.junit.After;

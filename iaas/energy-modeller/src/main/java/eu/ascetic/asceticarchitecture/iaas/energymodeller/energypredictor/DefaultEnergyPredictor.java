@@ -15,7 +15,7 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor;
 
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.TimePeriod;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.CandidateVMHostMapping;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;

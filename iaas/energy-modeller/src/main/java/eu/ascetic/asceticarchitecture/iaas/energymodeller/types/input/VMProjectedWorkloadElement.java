@@ -15,7 +15,7 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.input;
 
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.TimePeriod;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import java.util.Calendar;
 
 /**

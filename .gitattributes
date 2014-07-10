@@ -12,7 +12,6 @@ iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymod
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/energypredictor/transformation/KPINormaliser.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/energypredictor/transformation/machinetovm/DefaultKPITranslator.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/energypredictor/transformation/machinetovm/KPITranslatorInterface.java -text
-iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/TimePeriod.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/HostDataSource.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/HostMeasurement.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/VMDataSource.java -text
@@ -29,6 +28,7 @@ iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymod
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/energy/sampleKwAPI.json -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/EnergyUsageSummary.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/MachineEnergyUsage.java -text
+iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/TimePeriod.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/energyuser/CandidateVMHostMapping.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/energyuser/EnergyUsageSource.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/energyuser/Host.java -text
