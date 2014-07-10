@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface;
+package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.queryinterface;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import java.util.Calendar;
