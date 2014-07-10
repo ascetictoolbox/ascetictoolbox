@@ -19,7 +19,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 
 /**
  * This class is contacts hosts and runs a benchmark test on them in order, to
- * get their upper bound of energy usage.
+ * generate a profile of energy usage on the given host.
  * @author Richard
  */
 public class DefaultLoadGenerator implements LoadGenerator {

@@ -76,8 +76,6 @@ public class TimePeriod implements Comparable {
      * This creates an object that represents a duration of time/a time period,
      * it is to be used as part of the ASCETiC energy modellers query system.
      *
-     * @param startTime The time that represents the start of the query's
-     * dataset
      * @param time The amount of time to create the duration for
      * @param sourceUnit The units of the time parameter
      */
