@@ -100,7 +100,7 @@ public class IaaSPricingModellerTest
         System.out.println("test VM cost estimation");
         IaaSPricingModeller VMCost = new IaaSPricingModeller();
         double totalEnergyUsed = 0.8;
-        int hostId = 1;
+        String hostId = "1";
         double VMCosts = VMCost.getVMCostEstimation(totalEnergyUsed, hostId);
         //cost=0.08+(0.07*0.8*1.7)=0.1752
         //price=0.1752+0.1752*20/100=0.21
@@ -114,7 +114,7 @@ public class IaaSPricingModellerTest
         System.out.println("test VM price estimation");
         IaaSPricingModeller VMCost = new IaaSPricingModeller();
         double totalEnergyUsed = 0.8;
-        int hostId = 1;
+        String hostId = "1";
         double VMPrice = VMCost.getVMPriceEstimation(totalEnergyUsed, hostId);
         //cost=0.08+(0.07*0.8*1.7)=0.1752
         //price=0.1752+0.1752*20/100=0.21
