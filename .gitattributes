@@ -159,6 +159,7 @@ iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/re
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/rest/VmmRestInputValidator.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/scheduler/DeploymentPlanGenerator.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/scheduler/SchedAlgConsolidation.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/scheduler/SchedAlgCostAware.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/scheduler/SchedAlgDistribution.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/scheduler/SchedAlgEnergyAware.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/scheduler/SchedAlgGroupByApp.java -text

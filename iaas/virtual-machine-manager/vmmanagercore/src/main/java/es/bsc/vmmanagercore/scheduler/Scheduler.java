@@ -32,6 +32,9 @@ public class Scheduler {
             case CONSOLIDATION:
                 schedAlgorithm = new SchedAlgConsolidation();
                 break;
+            case COST_AWARE:
+                schedAlgorithm = new SchedAlgCostAware(vmsDeployed);
+                break;
             case DISTRIBUTION:
                 schedAlgorithm = new SchedAlgDistribution();
                 break;

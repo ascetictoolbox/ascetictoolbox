@@ -44,6 +44,7 @@ public class VmManagerDbHsql implements VmManagerDb {
 
     private void initializeListOfAvailableSchedAlgorithms() {
         availableSchedAlg.add(SchedulingAlgorithm.CONSOLIDATION);
+        availableSchedAlg.add(SchedulingAlgorithm.COST_AWARE);
         availableSchedAlg.add(SchedulingAlgorithm.DISTRIBUTION);
         availableSchedAlg.add(SchedulingAlgorithm.ENERGY_AWARE);
         availableSchedAlg.add(SchedulingAlgorithm.GROUP_BY_APP);
@@ -220,6 +221,8 @@ public class VmManagerDbHsql implements VmManagerDb {
         switch (schedulingAlgorithms.get(0)) { // There can be only one, so get the elem with index 0
             case "consolidation":
                 return SchedulingAlgorithm.CONSOLIDATION;
+            case "costAware":
+                return SchedulingAlgorithm.COST_AWARE;
             case "distribution":
                 return SchedulingAlgorithm.DISTRIBUTION;
             case "energyAware":
@@ -245,6 +248,9 @@ public class VmManagerDbHsql implements VmManagerDb {
             switch (schedAlg) {
                 case "consolidation":
                     result.add(SchedulingAlgorithm.CONSOLIDATION);
+                    break;
+                case "costAware":
+                    result.add(SchedulingAlgorithm.COST_AWARE);
                     break;
                 case "distribution":
                     result.add(SchedulingAlgorithm.DISTRIBUTION);

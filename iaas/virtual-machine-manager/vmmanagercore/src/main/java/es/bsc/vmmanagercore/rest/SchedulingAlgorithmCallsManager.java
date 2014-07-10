@@ -68,6 +68,9 @@ public class SchedulingAlgorithmCallsManager {
         if (algorithm.equals(SchedulingAlgorithm.CONSOLIDATION.getName())) {
             schedulingAlg = SchedulingAlgorithm.CONSOLIDATION;
         }
+        else if (algorithm.equals(SchedulingAlgorithm.COST_AWARE.getName())) {
+            schedulingAlg = SchedulingAlgorithm.COST_AWARE;
+        }
         else if (algorithm.equals(SchedulingAlgorithm.DISTRIBUTION.getName())) {
             schedulingAlg = SchedulingAlgorithm.DISTRIBUTION;
         }

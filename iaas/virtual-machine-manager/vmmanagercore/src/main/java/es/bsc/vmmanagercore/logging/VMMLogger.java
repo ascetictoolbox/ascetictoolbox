@@ -43,7 +43,15 @@ public class VMMLogger {
     }
 
     public static void logPredictedAvgPowerForDeploymentPlan(int deploymentPlanNumber, double avgPower) {
-        logger.debug("[VMM] predicted avg power deployment plan" + deploymentPlanNumber + ": " + avgPower + "W");
+        logger.debug("[VMM] predicted avg power deployment plan " + deploymentPlanNumber + ": " + avgPower + "W");
+    }
+
+    public static void logPredictedCostOfVmInHost(String vmName, String hostName, double cost) {
+        logger.debug("[VMM] predicted cost of vm=" + vmName + ", host=" + hostName + " is " + cost + " euros");
+    }
+
+    public static void logPredictedCostForDeploymentPlan(int deploymentPlanNumber, double cost) {
+        logger.debug("[VMM] predicted cost for deployment plan " + deploymentPlanNumber + ": " + cost + " euros");
     }
 
     public static void logVmsSameAppInSameHost(int deploymentPlanNumber, int numberOfVmsSameAppSameHost) {
