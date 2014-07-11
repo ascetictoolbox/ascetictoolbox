@@ -18,11 +18,19 @@ package eu.ascetic.utils.ovf.api;
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanVirtualDiskDescType;
 
 /**
+ * Provides factory methods for creating instances of {@link Disk}.
+ * 
  * @author Django Armstrong (ULeeds)
  *
  */
-public class VirtualDiskDescFactory {
-	public VirtualDiskDesc newInstance() {
-		return new VirtualDiskDesc(XmlBeanVirtualDiskDescType.Factory.newInstance());
+public class DiskFactory {
+	
+	/**
+	 * Creates a new empty instance of {@link Disk} with null internal object references.
+	 * 
+	 * @return The new Disk instance
+	 */
+	public Disk newInstance() {
+		return new Disk(XmlBeanVirtualDiskDescType.Factory.newInstance());
 	}
 }

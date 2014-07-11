@@ -29,11 +29,11 @@ import eu.ascetic.utils.ovf.api.ResourceType;
  * Provides access to Virtual Hardware Elements (Item) contained within
  * {@link VirtualHardwareSection}. An Item represents virtual hardware
  * characteristics and can describe all memory and CPU requirements as well as
- * virtual hardware devices.
- * 
- * TODO: Add support for the ovf:bound attribute (min, max, normal). TODO: Add
- * support for the rasd:ResourceSubType element to support vendor specific
- * virtual hardware.
+ * virtual hardware devices.<br>
+ * <br>
+ * TODO: Add support for the ovf:bound attribute (min, max, normal).<br>
+ * TODO: Add support for the rasd:ResourceSubType element to support vendor
+ * specific virtual hardware.
  * 
  * @author Django Armstrong (ULeeds)
  * 
@@ -168,7 +168,10 @@ public class Item extends AbstractElement<XmlBeanRASDType> {
 	}
 
 	/**
-	 * @return
+	 * Gets the specified quantity of resources presented to the guest operating
+	 * system. For example, "256".
+	 * 
+	 * @return The virtual quantity of this resource type
 	 */
 	public BigInteger getVirtualQuantity() {
 		if (delegate.isSetVirtualQuantity()) {
@@ -178,7 +181,11 @@ public class Item extends AbstractElement<XmlBeanRASDType> {
 	}
 
 	/**
+	 * Sets the specified quantity of resources presented to the guest operating
+	 * system. For example, "256".
+	 * 
 	 * @param virtualQuantity
+	 *            The virtual quantity of this resource type to set
 	 */
 	public void setVirtualQuantity(BigInteger virtualQuantity) {
 		if (delegate.isSetVirtualQuantity()) {
@@ -189,7 +196,18 @@ public class Item extends AbstractElement<XmlBeanRASDType> {
 	}
 
 	/**
-	 * @return
+	 * Gets the specified units of allocation to use. Values for allocationUnits
+	 * must match the format for programmatic units defined in DSP0004.C1 with
+	 * the restriction that the base unit is "byte".<br>
+	 * (see {@link http://www.dmtf.org/standards/cim}).<br>
+	 * <br>
+	 * For example:<br>
+	 * <br>
+	 * 1 GByte = "byte * 2^30"<br>
+	 * 1 MByte = "byte * 2^20"<br>
+	 * 1 KByte = "byte * 2^10"
+	 * 
+	 * @return The allocation units
 	 */
 	public String getAllocationUnits() {
 		if (delegate.isSetAllocationUnits()) {
@@ -199,7 +217,19 @@ public class Item extends AbstractElement<XmlBeanRASDType> {
 	}
 
 	/**
+	 * Sets the specified units of allocation to use. Values for allocationUnits
+	 * must match the format for programmatic units defined in DSP0004.C1 with
+	 * the restriction that the base unit is "byte".<br>
+	 * (see {@link http://www.dmtf.org/standards/cim}).<br>
+	 * <br>
+	 * For example:<br>
+	 * <br>
+	 * 1 GByte = "byte * 2^30"<br>
+	 * 1 MByte = "byte * 2^20"<br>
+	 * 1 KByte = "byte * 2^10"
+	 * 
 	 * @param allocationUnits
+	 *            The allocation units to set
 	 */
 	public void setAllocationUnits(String allocationUnits) {
 		if (delegate.isSetAllocationUnits()) {
@@ -210,14 +240,23 @@ public class Item extends AbstractElement<XmlBeanRASDType> {
 	}
 
 	/**
-	 * @return
+	 * Gets automatic allocation policy for this resource type. For devices that
+	 * are connectable, such as floppies, CD-ROMs, and Ethernet adaptors, this
+	 * element specifies whether the device should be connected at power on.
+	 * 
+	 * @return The automatic allocation policy
 	 */
 	public Boolean getAutomaticAllocation() {
 		return delegate.getAutomaticAllocation().getBooleanValue();
 	}
 
 	/**
+	 * Sets automatic allocation policy for this resource type. For devices that
+	 * are connectable, such as floppies, CD-ROMs, and Ethernet adaptors, this
+	 * element specifies whether the device should be connected at power on.
+	 * 
 	 * @param automaticAllocation
+	 *            The automatic allocation policy to set
 	 */
 	public void setAutomaticAllocation(Boolean automaticAllocation) {
 		delegate.setAutomaticAllocation(XmlSimpleTypeConverter
@@ -225,7 +264,14 @@ public class Item extends AbstractElement<XmlBeanRASDType> {
 	}
 
 	/**
-	 * @return
+	 * Gets the connection array for this resource type. For an Ethernet
+	 * adapter, this specifies the abstract network connection name for the
+	 * virtual machine. All Ethernet adapters that specify the same abstract
+	 * network connection name within an OVF package shall be deployed on the
+	 * same network. The abstract network connection name is listed in the
+	 * {@link NetworkSection}.
+	 * 
+	 * @return The connection array for an Ethernet adapter
 	 */
 	public String[] getConnectionArray() {
 		Vector<String> vector = new Vector<String>();
@@ -236,7 +282,15 @@ public class Item extends AbstractElement<XmlBeanRASDType> {
 	}
 
 	/**
+	 * Sets the connection array for this resource type. For an Ethernet
+	 * adapter, this specifies the abstract network connection name for the
+	 * virtual machine. All Ethernet adapters that specify the same abstract
+	 * network connection name within an OVF package shall be deployed on the
+	 * same network. The abstract network connection name is listed in the
+	 * {@link NetworkSection}.
+	 * 
 	 * @param connectionArray
+	 *            The connection array for an Ethernet adapter to set
 	 */
 	public void setConnectionArray(String[] connectionArray) {
 		Vector<CimString> newConnectionArray = new Vector<CimString>();
@@ -249,15 +303,31 @@ public class Item extends AbstractElement<XmlBeanRASDType> {
 	}
 
 	/**
+	 * Gets a connection at a specific index from the connection array. For an
+	 * Ethernet adapter, this specifies the abstract network connection name for
+	 * the virtual machine. All Ethernet adapters that specify the same abstract
+	 * network connection name within an OVF package shall be deployed on the
+	 * same network. The abstract network connection name is listed in the
+	 * {@link NetworkSection}.
+	 * 
 	 * @param i
-	 * @return
+	 *            The index value
+	 * @return The connection for an Ethernet adapter at a specific index.
 	 */
 	public String getConnectionAtIndex(int i) {
 		return delegate.getConnectionArray(i).getStringValue();
 	}
 
 	/**
+	 * Adds a new connection at the end of the connection array. For an Ethernet
+	 * adapter, this specifies the abstract network connection name for the
+	 * virtual machine. All Ethernet adapters that specify the same abstract
+	 * network connection name within an OVF package shall be deployed on the
+	 * same network. The abstract network connection name is listed in the
+	 * {@link NetworkSection}.
+	 * 
 	 * @param connection
+	 *            The string value of the connection to add.
 	 */
 	public void addConnection(String connection) {
 		CimString cimString = delegate.addNewConnection();
@@ -265,7 +335,9 @@ public class Item extends AbstractElement<XmlBeanRASDType> {
 	}
 
 	/**
-	 * @return
+	 * Gets the InstanceID of the parent controller (if any).
+	 * 
+	 * @return The instance ID of the parent controller
 	 */
 	public String getParent() {
 		if (delegate.isSetParent()) {
@@ -275,7 +347,10 @@ public class Item extends AbstractElement<XmlBeanRASDType> {
 	}
 
 	/**
+	 * Sets the InstanceID of the parent controller (if any).
+	 * 
 	 * @param parent
+	 *            The instance ID of the parent controller to set
 	 */
 	public void setParent(String parent) {
 		if (delegate.isSetParent()) {
@@ -285,7 +360,22 @@ public class Item extends AbstractElement<XmlBeanRASDType> {
 	}
 
 	/**
-	 * @return
+	 * Gets the host resource array. A HostResource is used to refer to
+	 * resources included in the OVF descriptor as well as logical devices on
+	 * the deployment platform. Abstractly it specifies how a device shall
+	 * connect to a resource on the deployment platform. Values for HostResource
+	 * referring to resources included in the OVF descriptor are formatted as
+	 * URIs and are specified as follows:<br>
+	 * <br>
+	 * ovf:/file/&lt;id&gt; - A reference to a file in the OVF, as specified in
+	 * {@link References}. &lt;id> is the value of the id attribute of the
+	 * {@link File} being referenced.<br>
+	 * <br>
+	 * ovf:/disk/&lt;id&gt; - A reference to a virtual disk, as specified in the
+	 * {@link DiskSection}. &lt;id&gt; is the value of the diskId attribute of
+	 * the {@link Disk} element being referenced.
+	 * 
+	 * @return The host resource array
 	 */
 	public String[] getHostResourceArray() {
 		Vector<String> vector = new Vector<String>();
@@ -296,7 +386,23 @@ public class Item extends AbstractElement<XmlBeanRASDType> {
 	}
 
 	/**
+	 * Sets the host resource array. A HostResource is used to refer to
+	 * resources included in the OVF descriptor as well as logical devices on
+	 * the deployment platform. Abstractly it specifies how a device shall
+	 * connect to a resource on the deployment platform. Values for HostResource
+	 * referring to resources included in the OVF descriptor are formatted as
+	 * URIs and are specified as follows:<br>
+	 * <br>
+	 * ovf:/file/&lt;id&gt; - A reference to a file in the OVF, as specified in
+	 * {@link References}. &lt;id> is the value of the id attribute of the
+	 * {@link File} being referenced.<br>
+	 * <br>
+	 * ovf:/disk/&lt;id&gt; - A reference to a virtual disk, as specified in the
+	 * {@link DiskSection}. &lt;id&gt; is the value of the diskId attribute of
+	 * the {@link Disk} element being referenced.
+	 * 
 	 * @param hostResourceArray
+	 *            The host resource array to set
 	 */
 	public void setHostResourceArray(String[] hostResourceArray) {
 		Vector<CimString> newHostResourceArray = new Vector<CimString>();
@@ -310,8 +416,24 @@ public class Item extends AbstractElement<XmlBeanRASDType> {
 	}
 
 	/**
+	 * Gets a host resource from a specific index within the array. A
+	 * HostResource is used to refer to resources included in the OVF descriptor
+	 * as well as logical devices on the deployment platform. Abstractly it
+	 * specifies how a device shall connect to a resource on the deployment
+	 * platform. Values for HostResource referring to resources included in the
+	 * OVF descriptor are formatted as URIs and are specified as follows:<br>
+	 * <br>
+	 * ovf:/file/&lt;id&gt; - A reference to a file in the OVF, as specified in
+	 * {@link References}. &lt;id> is the value of the id attribute of the
+	 * {@link File} being referenced.<br>
+	 * <br>
+	 * ovf:/disk/&lt;id&gt; - A reference to a virtual disk, as specified in the
+	 * {@link DiskSection}. &lt;id&gt; is the value of the diskId attribute of
+	 * the {@link Disk} element being referenced.
+	 * 
 	 * @param i
-	 * @return
+	 *            The index value
+	 * @return The host resource
 	 */
 	public String getHostResourceArray(int i) {
 		if (delegate.getHostResourceArray().length > i) {
@@ -321,10 +443,41 @@ public class Item extends AbstractElement<XmlBeanRASDType> {
 	}
 
 	/**
+	 * Adds a host resource to the end of the array. A HostResource is used to
+	 * refer to resources included in the OVF descriptor as well as logical
+	 * devices on the deployment platform. Abstractly it specifies how a device
+	 * shall connect to a resource on the deployment platform. Values for
+	 * HostResource referring to resources included in the OVF descriptor are
+	 * formatted as URIs and are specified as follows:<br>
+	 * <br>
+	 * ovf:/file/&lt;id&gt; - A reference to a file in the OVF, as specified in
+	 * {@link References}. &lt;id> is the value of the id attribute of the
+	 * {@link File} being referenced.<br>
+	 * <br>
+	 * ovf:/disk/&lt;id&gt; - A reference to a virtual disk, as specified in the
+	 * {@link DiskSection}. &lt;id&gt; is the value of the diskId attribute of
+	 * the {@link Disk} element being referenced.
+	 * 
 	 * @param hostResource
+	 *            The string representation of the host resource to add
 	 */
 	public void addHostResource(String hostResource) {
 		CimString cimString = delegate.addNewHostResource();
 		cimString.setStringValue(hostResource);
+	}
+
+	/**
+	 * Returns the ID of the referenced file or disk from a host resource URI.
+	 * 
+	 * @param hostResource
+	 *            The host resource URI to find an ID for
+	 * @return The the ID of the references file or disk
+	 */
+	public String findHostRosourceId(String hostResource) {
+		if (hostResource.lastIndexOf('/') != -1) {
+			return hostResource.substring(+1);
+		} else {
+			return null;
+		}
 	}
 }

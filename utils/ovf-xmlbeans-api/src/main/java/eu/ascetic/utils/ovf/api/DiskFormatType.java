@@ -16,7 +16,7 @@
 package eu.ascetic.utils.ovf.api;
 
 /**
- * Enumeration containing predefined constants of supported disk format types used in {@link VirtualDiskDesc}.
+ * Enumeration containing predefined constants of supported disk format types used in {@link Disk}.
  * 
  * @author Django Armstrong (ULeeds)
  * 

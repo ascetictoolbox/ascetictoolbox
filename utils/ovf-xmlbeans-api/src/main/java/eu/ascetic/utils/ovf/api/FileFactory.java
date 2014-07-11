@@ -26,7 +26,7 @@ import org.dmtf.schemas.ovf.envelope.x1.XmlBeanFileType;
 public class FileFactory {
 
 	/**
-	 * Creates a new empty instance of {@link File}.
+	 * Creates a new empty instance of {@link File} with null internal object references.
 	 * 
 	 * @return The new File instance
 	 */

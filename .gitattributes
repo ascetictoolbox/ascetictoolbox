@@ -1699,6 +1699,7 @@ utils/ovf-xmlbeans-api/examples/DSP2021_1.0.0/examples/lamp-multi-vm.ovf -text
 utils/ovf-xmlbeans-api/examples/DSP2021_1.0.0/examples/lamp.ovf -text
 utils/ovf-xmlbeans-api/examples/DSP2021_1.0.0/examples/myservice.ovf -text
 utils/ovf-xmlbeans-api/examples/DSP2021_1.0.0/ovf-schemas-examples.xpr -text
+utils/ovf-xmlbeans-api/specification/DSP0004_3.0.0.pdf -text svneol=unset#application/pdf
 utils/ovf-xmlbeans-api/specification/DSP0243_1.1.1.pdf -text svneol=unset#application/pdf
 utils/ovf-xmlbeans/src/main/xsdconfig/ovf.xsdconfig -text
 utils/provider-registry-database/README.TXT -text

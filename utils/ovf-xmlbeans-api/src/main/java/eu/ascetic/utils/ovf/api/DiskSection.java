@@ -17,7 +17,7 @@ package eu.ascetic.utils.ovf.api;
 
 import eu.ascetic.utils.ovf.api.AbstractElement;
 import eu.ascetic.utils.ovf.api.DiskSection;
-import eu.ascetic.utils.ovf.api.VirtualDiskDesc;
+import eu.ascetic.utils.ovf.api.Disk;
 import eu.ascetic.utils.ovf.api.utils.XmlSimpleTypeConverter;
 
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanDiskSectionType;
@@ -54,27 +54,27 @@ public class DiskSection extends AbstractElement<XmlBeanDiskSectionType> {
 	}
 
 	/**
-	 * Gets an array of all the VirtualDiskDesc held in this object.
+	 * Gets an array of all the Disk held in this object.
 	 * 
-	 * @return An array of VirtualDiskDesc
+	 * @return An array of Disk
 	 */
-	public VirtualDiskDesc[] getDiskArray() {
+	public Disk[] getDiskArray() {
 
-		List<VirtualDiskDesc> diskArray = new ArrayList<VirtualDiskDesc>();
+		List<Disk> diskArray = new ArrayList<Disk>();
 		for (XmlBeanVirtualDiskDescType diskSectionType : delegate
 				.getDiskArray()) {
-			diskArray.add(new VirtualDiskDesc(diskSectionType));
+			diskArray.add(new Disk(diskSectionType));
 		}
-		return diskArray.toArray(new VirtualDiskDesc[diskArray.size()]);
+		return diskArray.toArray(new Disk[diskArray.size()]);
 	}
 
 	/**
-	 * Sets the VirtualDiskDesc array held in this object.
+	 * Sets the Disk array held in this object.
 	 * 
 	 * @param virtualDiskDescArray
-	 *            The array of VirtualDiskDesc to set.
+	 *            The array of Disk to set.
 	 */
-	public void setDiskArray(VirtualDiskDesc[] virtualDiskDescArray) {
+	public void setDiskArray(Disk[] virtualDiskDescArray) {
 		Vector<XmlBeanVirtualDiskDescType> diskArray = new Vector<XmlBeanVirtualDiskDescType>();
 		for (int i = 0; i < virtualDiskDescArray.length; i++) {
 			diskArray.add(virtualDiskDescArray[i].getXmlObject());
@@ -84,27 +84,27 @@ public class DiskSection extends AbstractElement<XmlBeanDiskSectionType> {
 	}
 
 	/**
-	 * Gets a VirtualDiskDesc at held within the VirtualDiskDesc array at index
+	 * Gets a Disk at held within the Disk array at index
 	 * i
 	 * 
 	 * @param i
 	 *            The index value
-	 * @return The VirtualDiskDesc at index i
+	 * @return The Disk at index i
 	 */
-	public VirtualDiskDesc getDiskAtIndex(int i) {
-		return new VirtualDiskDesc(delegate.getDiskArray(i));
+	public Disk getDiskAtIndex(int i) {
+		return new Disk(delegate.getDiskArray(i));
 	}
 
 	/**
-	 * Adds a VirtualDiskDesc to the end of the VirtualDiskDesc array
+	 * Adds a Disk to the end of the Disk array
 	 * 
-	 * @param virtualDiskDesc
-	 *            The VirtualDiskDesc to add to the end of the array.
+	 * @param disk
+	 *            The Disk to add to the end of the array.
 	 */
-	public void addDisk(VirtualDiskDesc virtualDiskDesc) {
+	public void addDisk(Disk disk) {
 		XmlBeanVirtualDiskDescType xmlBeanVirtualDiskDescType = delegate
 				.addNewDisk();
-		xmlBeanVirtualDiskDescType.set(virtualDiskDesc.getXmlObject());
+		xmlBeanVirtualDiskDescType.set(disk.getXmlObject());
 	}
 
 	/**

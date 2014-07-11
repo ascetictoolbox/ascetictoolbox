@@ -26,7 +26,7 @@ import org.dmtf.schemas.ovf.envelope.x1.XmlBeanDiskSectionType;
 public class DiskSectionFactory {
 
 	/**
-	 * Creates a new empty instance of {@link DiskSection}
+	 * Creates a new empty instance of {@link DiskSection} with null internal object references.
 	 * 
 	 * @return A new empty instances of {@link DiskSection}
 	 */

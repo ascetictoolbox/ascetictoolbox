@@ -88,7 +88,7 @@ public class OvfDefinitionClient {
 			LOGGER.debug("Created new VirtualMachine");
 			
 			// Parse the disk details i.e. URI		
-			VirtualDiskDesc[] virtualDiskDescArray = ovfDefinition.getDiskSection().getDiskArray();
+			Disk[] virtualDiskDescArray = ovfDefinition.getDiskSection().getDiskArray();
 			for (int j = 0; j < virtualDiskDescArray.length; j++) {
 				String diskId = virtualDiskDescArray[i].getDiskId();
 				LOGGER.debug("Found OVF disk with ID: " + diskId);
