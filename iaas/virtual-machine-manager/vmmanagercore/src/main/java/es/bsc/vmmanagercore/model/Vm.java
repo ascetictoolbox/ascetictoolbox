@@ -8,9 +8,9 @@ import java.io.File;
  * VM.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
- *
  */
 public class Vm {
+
     private String name;
     private String image; // It can be an ID or a URL
     private int cpus;

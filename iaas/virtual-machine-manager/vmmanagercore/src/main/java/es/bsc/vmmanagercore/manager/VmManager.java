@@ -9,6 +9,7 @@ import es.bsc.vmmanagercore.monitoring.Host;
 import es.bsc.vmmanagercore.monitoring.HostGanglia;
 import es.bsc.vmmanagercore.monitoring.HostOpenStack;
 import es.bsc.vmmanagercore.monitoring.HostZabbix;
+import es.bsc.vmmanagercore.scheduler.EstimatesGenerator;
 import es.bsc.vmmanagercore.scheduler.Scheduler;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public class VmManager {
     private CloudMiddleware cloudMiddleware;
     private VmManagerDb db;
     private Scheduler scheduler;
+    private EstimatesGenerator estimatesGenerator = new EstimatesGenerator();
     private List<Host> hosts = new ArrayList<>();
 
     /**
@@ -45,7 +47,8 @@ public class VmManager {
         VmManagerConfiguration conf = VmManagerConfiguration.getInstance();
         selectMiddleware(conf.middleware);
         initializeHostsAccordingToMonitoring(conf.monitoring, conf.hosts);
-        scheduler = new Scheduler(db.getCurrentSchedulingAlg(), getAllVms());
+        List<VmDeployed> vmsDeployed = getAllVms();
+        scheduler = new Scheduler(db.getCurrentSchedulingAlg(), vmsDeployed);
     }
 
 
@@ -293,7 +296,8 @@ public class VmManager {
      * @return a list with price and energy estimates for each VM
      */
     public List<VmEstimate> getVmEstimates(List<VmToBeEstimated> vmsToBeEstimated) {
-        return scheduler.getVmEstimates(vmsToBeEstimated, hosts);
+        return estimatesGenerator.getVmEstimates(
+                scheduler.chooseBestDeploymentPlan(vmsToBeEstimatedToVms(vmsToBeEstimated), hosts), getAllVms());
     }
 
 
@@ -345,4 +349,12 @@ public class VmManager {
         }
     }
 
+    // Note: this function would not be needed if VmToBeEstimated inherited from Vm
+    private List<Vm> vmsToBeEstimatedToVms(List<VmToBeEstimated> vmsToBeEstimated) {
+        List<Vm> result = new ArrayList<>();
+        for (VmToBeEstimated vmToBeEstimated: vmsToBeEstimated) {
+            result.add(vmToBeEstimated.toVm());
+        }
+        return result;
+    }
 }

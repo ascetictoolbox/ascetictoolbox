@@ -1,12 +1,13 @@
 package es.bsc.vmmanagercore.scheduler;
 
-import es.bsc.vmmanagercore.energymodeller.EnergyModellerConnector;
 import es.bsc.vmmanagercore.logging.VMMLogger;
 import es.bsc.vmmanagercore.model.*;
 import es.bsc.vmmanagercore.monitoring.Host;
-import es.bsc.vmmanagercore.pricingmodeller.PricingModellerConnector;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -170,39 +171,6 @@ public class Scheduler {
         }
 
         return serversLoad;
-    }
-
-    private List<Vm> vmsToBeEstimatedToVms(List<VmToBeEstimated> vmsToBeEstimated) {
-        List<Vm> result = new ArrayList<>();
-        for (VmToBeEstimated vmToBeEstimated: vmsToBeEstimated) {
-            result.add(vmToBeEstimated.toVm());
-        }
-        return result;
-    }
-
-    private VmEstimate getVmEstimateFromVmAssignmentToHost(VmAssignmentToHost vmAssignmentToHost) {
-        Vm vm = vmAssignmentToHost.getVm();
-        Host host = vmAssignmentToHost.getHost();
-        Double powerEstimate = EnergyModellerConnector.getPredictedAvgPowerVm(vm, host, vmsDeployed);
-        Double energyEstimate = EnergyModellerConnector.getPredictedEnergyVm(vm, host, vmsDeployed);
-        Double priceEstimate = PricingModellerConnector.getVmCost(energyEstimate, host.getHostname());
-        return new VmEstimate(vm.getName(), powerEstimate, priceEstimate);
-    }
-
-    /**
-     * Returns price and energy estimates for a list of VMs.
-     *
-     * @param vmsToBeEstimated the VMs
-     * @param hosts the hosts of the infrastructure
-     * @return a list with price and energy estimates for each VM
-     */
-    public List<VmEstimate> getVmEstimates(List<VmToBeEstimated> vmsToBeEstimated, List<Host> hosts) {
-        DeploymentPlan bestDeploymentPlan = chooseBestDeploymentPlan(vmsToBeEstimatedToVms(vmsToBeEstimated), hosts);
-        List<VmEstimate> result = new ArrayList<>();
-        for (VmAssignmentToHost vmAssignmentToHost: bestDeploymentPlan.getVmsAssignationsToHosts()) {
-            result.add(getVmEstimateFromVmAssignmentToHost(vmAssignmentToHost));
-        }
-        return result;
     }
 
     /**
