@@ -4,13 +4,11 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.log4j.Logger;
@@ -19,9 +17,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
-import eu.ascetic.paas.applicationmanager.model.Link;
-import eu.ascetic.paas.applicationmanager.model.Root;
-import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
 
 /**
  * ASCETiC Application Manager REST API to perform actions over an application
@@ -31,34 +26,10 @@ import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
 @Path("/")
 @Component
 @Scope("request")
-public class ApplicationRest {
+public class ApplicationRest extends AbstractRest {
 	private static Logger logger = Logger.getLogger(ApplicationRest.class);
 	@Autowired
 	protected ApplicationDAO applicationDAO;
-	
-	/**
-	 * Root element of the Application Manager REST API
-	 * @return a list of links to the different functions in the API
-	 */
-	@GET
-	@Path("/")
-	@Produces(MediaType.APPLICATION_XML)
-	public Response getRoot() {
-		logger.info("REQUEST to Path: /");
-		
-		Root root = new Root();
-		root.setHref("/");
-		root.setTimestamp("" + System.currentTimeMillis());
-		root.setVersion("0.1-SNAPSHOT");
-		
-		Link link = new Link();
-		link.setRel("applications");
-		link.setType(MediaType.APPLICATION_XML);
-		link.setHref("/applications");
-		root.addLink(link);
-		
-		return buildResponse(Status.OK, ModelConverter.objectRootToXML(root));
-	}
 	
 	/**
 	 * @return a list of applications stored in the database fitting the respective query params, by default this does not return the terminated applications
@@ -67,10 +38,11 @@ public class ApplicationRest {
 	@Path("/applications")
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getApplications() {
+		logger.info("GET request to path: /applications");
 		// TODO
 		// TODO it is necessary to implement a lot of query params here
 		// TODO 
-		return null;
+		return buildResponse(Status.OK, "Method not implemented yet");
 	}
 	
 	/**
@@ -83,9 +55,10 @@ public class ApplicationRest {
 	@Consumes(MediaType.APPLICATION_XML)
 	@Produces(MediaType.APPLICATION_XML)
 	public Response postApplication() {
+		logger.info("POST request to path: /applications");
 		// TODO
 		// TODO we need to import the XML Beans of the OVF developed by DJango
-		return null;
+		return buildResponse(Status.CREATED, "Method not implemented yet");
 	}
 	
 	/**
@@ -97,8 +70,9 @@ public class ApplicationRest {
 	@Path("/applications/{id}")
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getApplication(@PathParam("id") String id) {
+		logger.info("GET request to path: /applications/" + id);
 		//TODO
-		return null;
+		return buildResponse(Status.OK, "Method not implemented yet");
 	}
 	
 	/**
@@ -110,45 +84,25 @@ public class ApplicationRest {
 	@Path("/applications/{id}/ovf")
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getApplicationOvf(@PathParam("id") String id) {
+		logger.info("GET request to path: /applications/" + id + "/ovf");
 		// TODO
 		// TODO we need to think a bit about how we are going to store the OVF in the database, 
 		//      I have not made my mind about it yet
-		return null;
-	}
-	
-	
-	/**
-	 * Modifies the state of an application in the Application Manager
-	 * @param id of the application to be modified
-	 * @return the application information after the modification takes place
-	 */
-	@PUT
-	@Path("/applications/{id}")
-	@Consumes(MediaType.APPLICATION_XML)
-	@Produces(MediaType.APPLICATION_XML)
-	public Response putApplication(@PathParam("id") String id) {
-		// TODO
-		// Not yet clear what implement here... at least the changes of state for deploy of an application
-		return null;
+		return buildResponse(Status.OK, "Method not implemented yet");
 	}
 	
 	/**
-	 * Puts an application to terminated state and deletes any resource that this application has been used in the IaaS layer
+	 * DELETES and application and all its deployments from the database
 	 * @param id of the application to be terminated
 	 * @return ok if the termination process is possible
 	 */
 	@DELETE
 	@Path("/applications/{id}")
 	public Response deleteApplication(@PathParam("id") String id) {
+		logger.info("DELETE request to path: /applications/" + id);
 		// TODO
 		// TODO this does not really deletes the application from the database, simply it puts
 		//      the application in terminated state and deletes any resource associated to it
-		return null;
-	}
-	
-	private Response buildResponse(Response.Status status, String payload) {
-		ResponseBuilder builder = Response.status(status);
-		builder.entity(payload);
-		return builder.build();
+		return buildResponse(Status.ACCEPTED, "Method not implemented yet"); //TODO check that it is the right media type I should return... 
 	}
 }

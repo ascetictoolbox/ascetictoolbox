@@ -28,30 +28,7 @@ import eu.ascetic.paas.applicationmanager.model.Root;
  */
 public class ApplicationRestTest {
 
-	@Test
-	public void getRootTest() throws JAXBException {
-		ApplicationRest applicationRest = new ApplicationRest();
-		
-		Response response = applicationRest.getRoot();
-		String timestamp = "" + System.currentTimeMillis();
-		timestamp = timestamp.substring(0, timestamp.length() - 4);
-		
-		assertEquals(200, response.getStatus());
-		
-		String providersXML = (String) response.getEntity();
-		
-		JAXBContext jaxbContext = JAXBContext.newInstance(Root.class);
-		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-		Root root = (Root) jaxbUnmarshaller.unmarshal(new StringReader(providersXML));
-		
-		assertEquals("/", root.getHref());
-		assertEquals("0.1-SNAPSHOT", root.getVersion());
-		assertEquals(timestamp, root.getTimestamp().substring(0, root.getTimestamp().length() - 4));
-		assertEquals(1, root.getLinks().size());
-		assertEquals("applications", root.getLinks().get(0).getRel());
-		assertEquals(MediaType.APPLICATION_XML, root.getLinks().get(0).getType());
-		assertEquals("/applications", root.getLinks().get(0).getHref());
-	}
+
 	
 	@Test
 	public void getApplicationsTest() throws JAXBException {
