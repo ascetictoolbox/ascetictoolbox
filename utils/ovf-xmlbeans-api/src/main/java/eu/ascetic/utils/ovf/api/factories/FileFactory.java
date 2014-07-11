@@ -13,9 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package eu.ascetic.utils.ovf.api;
+package eu.ascetic.utils.ovf.api.factories;
 
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanFileType;
+
+import eu.ascetic.utils.ovf.api.File;
 
 /**
  * Provides factory methods for creating instances of {@link File}.
@@ -26,7 +28,8 @@ import org.dmtf.schemas.ovf.envelope.x1.XmlBeanFileType;
 public class FileFactory {
 
 	/**
-	 * Creates a new empty instance of {@link File} with null internal object references.
+	 * Creates a new empty instance of {@link File} with null internal object
+	 * references.
 	 * 
 	 * @return The new File instance
 	 */

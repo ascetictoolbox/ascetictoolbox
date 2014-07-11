@@ -37,9 +37,7 @@ public abstract class AbstractElement<T extends XmlObject> {
 	/**
 	 * Internal delegate used as data storage
 	 */
-	// CHECKSTYLE:OFF
 	public T delegate;
-	// CHECKSTYLE:ON
 
 	/**
 	 * Default constructor.

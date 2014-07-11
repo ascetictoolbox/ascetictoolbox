@@ -18,6 +18,8 @@ package eu.ascetic.utils.ovf.api;
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanVirtualDiskDescType;
 
 import eu.ascetic.utils.ovf.api.AbstractElement;
+import eu.ascetic.utils.ovf.api.enums.DiskFormatType;
+import eu.ascetic.utils.ovf.api.factories.DiskFactory;
 
 /**
  * The DiskSection describes meta-information about virtual disks in the OVF

@@ -22,8 +22,9 @@ import org.dmtf.schemas.ovf.envelope.x1.XmlBeanRASDType;
 import org.dmtf.schemas.wbem.wscim.x1.common.CimString;
 
 import eu.ascetic.utils.ovf.api.AbstractElement;
+import eu.ascetic.utils.ovf.api.enums.ResourceType;
+import eu.ascetic.utils.ovf.api.factories.ItemFactory;
 import eu.ascetic.utils.ovf.api.utils.XmlSimpleTypeConverter;
-import eu.ascetic.utils.ovf.api.ResourceType;
 
 /**
  * Provides access to Virtual Hardware Elements (Item) contained within

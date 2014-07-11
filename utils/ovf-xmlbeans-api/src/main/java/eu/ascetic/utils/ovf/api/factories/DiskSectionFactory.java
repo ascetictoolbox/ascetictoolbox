@@ -13,16 +13,27 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package eu.ascetic.utils.ovf.api;
+package eu.ascetic.utils.ovf.api.factories;
 
-import org.dmtf.schemas.ovf.envelope.x1.XmlBeanProductSectionType;
+import org.dmtf.schemas.ovf.envelope.x1.XmlBeanDiskSectionType;
+
+import eu.ascetic.utils.ovf.api.DiskSection;
 
 /**
+ * Provides factory methods for creating instances of {@link DiskSection}
+ * 
  * @author Django Armstrong (ULeeds)
- *
+ * 
  */
-public class ProductPropertyFactory {
-	public ProductProperty newInstance() {
-		return new ProductProperty(XmlBeanProductSectionType.Property.Factory.newInstance());
+public class DiskSectionFactory {
+
+	/**
+	 * Creates a new empty instance of {@link DiskSection} with null internal
+	 * object references.
+	 * 
+	 * @return The new DiskSection instance
+	 */
+	public DiskSection newInstance() {
+		return new DiskSection(XmlBeanDiskSectionType.Factory.newInstance());
 	}
 }

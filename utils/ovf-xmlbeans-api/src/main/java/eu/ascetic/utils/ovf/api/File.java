@@ -20,6 +20,7 @@ import java.math.BigInteger;
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanFileType;
 
 import eu.ascetic.utils.ovf.api.AbstractElement;
+import eu.ascetic.utils.ovf.api.factories.FileFactory;
 
 /**
  * Provides access to the File element of an OVF document. The file references
@@ -124,7 +125,8 @@ public class File extends AbstractElement<XmlBeanFileType> {
 	 * 
 	 * TODO: use enum here for compression param?
 	 * 
-	 * @param compression The compression format to set
+	 * @param compression
+	 *            The compression format to set
 	 */
 	public void setCompression(String compression) {
 		delegate.setCompression(compression);

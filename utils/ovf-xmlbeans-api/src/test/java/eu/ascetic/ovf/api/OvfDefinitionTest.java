@@ -25,7 +25,7 @@ import org.apache.xmlbeans.XmlOptions;
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanEnvelopeDocument;
 
 import eu.ascetic.utils.ovf.api.OvfDefinition;
-import eu.ascetic.utils.ovf.api.ProductPropertyType;
+import eu.ascetic.utils.ovf.api.enums.ProductPropertyType;
 
 /**
  * @author Django Armstrong (ULeeds)

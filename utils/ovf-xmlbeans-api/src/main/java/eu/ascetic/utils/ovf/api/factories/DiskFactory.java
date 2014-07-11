@@ -13,24 +13,27 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package eu.ascetic.utils.ovf.api;
+package eu.ascetic.utils.ovf.api.factories;
 
-import org.dmtf.schemas.ovf.envelope.x1.XmlBeanDiskSectionType;
+import org.dmtf.schemas.ovf.envelope.x1.XmlBeanVirtualDiskDescType;
+
+import eu.ascetic.utils.ovf.api.Disk;
 
 /**
- * Provides factory methods for creating instances of {@link DiskSection}
+ * Provides factory methods for creating instances of {@link Disk}.
  * 
  * @author Django Armstrong (ULeeds)
  * 
  */
-public class DiskSectionFactory {
+public class DiskFactory {
 
 	/**
-	 * Creates a new empty instance of {@link DiskSection} with null internal object references.
+	 * Creates a new empty instance of {@link Disk} with null internal object
+	 * references.
 	 * 
-	 * @return A new empty instances of {@link DiskSection}
+	 * @return The new Disk instance
 	 */
-	public DiskSection newInstance() {
-		return new DiskSection(XmlBeanDiskSectionType.Factory.newInstance());
+	public Disk newInstance() {
+		return new Disk(XmlBeanVirtualDiskDescType.Factory.newInstance());
 	}
 }

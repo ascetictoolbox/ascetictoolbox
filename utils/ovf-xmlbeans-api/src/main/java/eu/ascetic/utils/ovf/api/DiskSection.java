@@ -18,6 +18,7 @@ package eu.ascetic.utils.ovf.api;
 import eu.ascetic.utils.ovf.api.AbstractElement;
 import eu.ascetic.utils.ovf.api.DiskSection;
 import eu.ascetic.utils.ovf.api.Disk;
+import eu.ascetic.utils.ovf.api.factories.DiskSectionFactory;
 import eu.ascetic.utils.ovf.api.utils.XmlSimpleTypeConverter;
 
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanDiskSectionType;
@@ -38,8 +39,8 @@ import java.util.Vector;
 public class DiskSection extends AbstractElement<XmlBeanDiskSectionType> {
 
 	/**
-	 * A static reference to the {@link DiskSectionFactory} class for generating new instances of
-	 * this object.
+	 * A static reference to the {@link DiskSectionFactory} class for generating
+	 * new instances of this object.
 	 */
 	public static DiskSectionFactory Factory = new DiskSectionFactory();
 
@@ -84,8 +85,7 @@ public class DiskSection extends AbstractElement<XmlBeanDiskSectionType> {
 	}
 
 	/**
-	 * Gets a Disk at held within the Disk array at index
-	 * i
+	 * Gets a Disk at held within the Disk array at index i
 	 * 
 	 * @param i
 	 *            The index value

@@ -13,14 +13,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package eu.ascetic.utils.ovf.api;
+package eu.ascetic.utils.ovf.api.enums;
 
 import java.text.MessageFormat;
 
+import eu.ascetic.utils.ovf.api.Item;
+
 /**
  * Enumeration containing predefined constants of virtual resource types used in
- * {@link Item} from CIM_ResourceAllocationSettingData.mof (see 
- * {@link http://www.dmtf.org/standards/cim/cim_schema_v2191}).
+ * {@link Item} from CIM_ResourceAllocationSettingData.mof<br>
+ * <br>
+ * (see {@link http://www.dmtf.org/standards/cim/cim_schema_v2191}).
  * 
  * @author Django Armstrong (ULeeds)
  * 

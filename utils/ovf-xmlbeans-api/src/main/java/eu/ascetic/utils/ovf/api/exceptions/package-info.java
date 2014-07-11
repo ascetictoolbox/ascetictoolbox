@@ -13,16 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package eu.ascetic.utils.ovf.api;
-
-import org.dmtf.schemas.ovf.envelope.x1.XmlBeanVirtualHardwareSectionType;
 
 /**
+ * Customised exceptions for use within the OVF API.
+ * 
  * @author Django Armstrong (ULeeds)
  *
  */
-public class VirtualHardwareSectionFactory {
-	public VirtualHardwareSection newInstance() {
-		return new VirtualHardwareSection(XmlBeanVirtualHardwareSectionType.Factory.newInstance());
-	}
-}
+package eu.ascetic.utils.ovf.api.exceptions;

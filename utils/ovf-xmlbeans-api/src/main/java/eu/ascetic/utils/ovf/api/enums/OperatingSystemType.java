@@ -13,14 +13,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package eu.ascetic.utils.ovf.api;
+package eu.ascetic.utils.ovf.api.enums;
 
 import java.text.MessageFormat;
 
+import eu.ascetic.utils.ovf.api.OperatingSystem;
+
 /**
  * Enumeration containing predefined constants of virtual resource types used in
- * {@link OperatingSystem} from CIM_OperatingSystem.OsType (see 
- * {@link http://www.dmtf.org/standards/cim/cim_schema_v2191}).
+ * {@link OperatingSystem} from CIM_OperatingSystem.OsType<br>
+ * <br>
+ * (see {@link http://www.dmtf.org/standards/cim/cim_schema_v2191}).
  * 
  * @author Django Armstrong (ULeeds)
  * 
@@ -28,7 +31,8 @@ import java.text.MessageFormat;
 public enum OperatingSystemType {
 
 	/**
-	 * Enumeration containing all possible virtual machine image disk format types.
+	 * Enumeration containing all possible virtual machine image disk format
+	 * types.
 	 */
 	// @formatter:off
 	UNKNOWN(0), OTHER(1), MACOS(2), ATTUNIX(3), DGUX(4), DECNT(5), TRU64_UNIX(6), 
@@ -67,7 +71,7 @@ public enum OperatingSystemType {
 	/**
 	 * Returns the numerical representation of this OperatingSystemType.
 	 * 
-	 * @return the number
+	 * @return The number
 	 */
 	public int getNumber() {
 		return number;

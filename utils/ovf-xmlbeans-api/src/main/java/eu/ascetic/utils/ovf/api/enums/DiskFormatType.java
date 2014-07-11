@@ -13,10 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package eu.ascetic.utils.ovf.api;
+package eu.ascetic.utils.ovf.api.enums;
+
+import eu.ascetic.utils.ovf.api.Disk;
 
 /**
- * Enumeration containing predefined constants of supported disk format types used in {@link Disk}.
+ * Enumeration containing predefined constants of supported disk format types
+ * used in {@link Disk}.
  * 
  * @author Django Armstrong (ULeeds)
  * 
@@ -24,7 +27,8 @@ package eu.ascetic.utils.ovf.api;
 public enum DiskFormatType {
 
 	/**
-	 * Enumeration containing all possible virtual machine image disk format types.
+	 * Enumeration containing all possible virtual machine image disk format
+	 * types.
 	 */
 	// @formatter:off
 	VMDK("http://www.vmware.com/interfaces/specifications/vmdk.html#streamOptimized"),
