@@ -94,7 +94,7 @@ public class OvfDefinitionClient {
 				LOGGER.debug("Found OVF disk with ID: " + diskId);
 				String diskCapacity = virtualDiskDescArray[i].getCapacity();
 				LOGGER.debug("OVF disk capacity is: " + diskCapacity);
-				String diskFormatString = virtualDiskDescArray[i].getFormat();
+				String diskFormatString = virtualDiskDescArray[i].getFormat().getSpecificationUrl();
 				LOGGER.debug("OVF disk format string is: " + diskFormatString);
 				String diskFileRef = virtualDiskDescArray[i].getFileRef();
 
