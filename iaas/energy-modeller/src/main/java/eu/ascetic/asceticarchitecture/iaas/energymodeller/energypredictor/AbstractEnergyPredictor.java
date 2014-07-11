@@ -15,6 +15,13 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor;
 
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.transformation.vmenergyshare.DefaultEnergyShareRule;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.transformation.vmenergyshare.EnergyDivision;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.transformation.vmenergyshare.EnergyShareRule;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
+import java.util.Collection;
+
 /**
  * This implements the default and utility functions for an energy predictor. 
  * It is expected that any energy predictor loaded into the ASCETiC architecture, 
@@ -24,6 +31,39 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor;
  */
 public abstract class AbstractEnergyPredictor implements EnergyPredictorInterface {
 
+    private EnergyShareRule energyShareRule = new DefaultEnergyShareRule();
+    
+    /**
+     * This uses the current energy share rule for the energy predictor
+     * allowing for the translation between host energy usage and VMs energy usage.
+     * @param host The host to analyse
+     * @param vms The VMs that are on/to be on the host
+     * @return The fraction of energy or used per host.
+     */
+    public EnergyDivision getEnergyUsage(Host host, Collection<VM> vms){
+        return energyShareRule.getEnergyUsage(host, vms);
+    }
+
+    /**
+     * This returns the current energy share rule that is in use by the 
+     * energy predictor.
+     * @return the energyShareRule The rule that divides the energy usage of hosts
+     * into each VM.
+     */
+    public EnergyShareRule getEnergyShareRule() {
+        return energyShareRule;
+    }
+
+    /**
+     * This sets the current energy share rule that is in use by the 
+     * energy predictor.
+     * @param energyShareRule The rule that divides the energy usage of hosts
+     * into each VM.
+     */
+    public void setEnergyShareRule(EnergyShareRule energyShareRule) {
+        this.energyShareRule = energyShareRule;
+    }
+    
     /**
      * TODO Add utility functions here that may be used by the energy models 
      * that are created over the time of the project.
