@@ -3,6 +3,7 @@ package es.bsc.vmmanagercore.scheduler;
 import es.bsc.vmmanagercore.logging.VMMLogger;
 import es.bsc.vmmanagercore.model.*;
 import es.bsc.vmmanagercore.monitoring.Host;
+import es.bsc.vmmanagercore.scheduler.schedulingalgorithms.*;
 
 import java.util.Collection;
 import java.util.HashMap;

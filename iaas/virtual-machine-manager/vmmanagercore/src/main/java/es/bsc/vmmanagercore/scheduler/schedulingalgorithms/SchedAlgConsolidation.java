@@ -1,9 +1,10 @@
-package es.bsc.vmmanagercore.scheduler;
+package es.bsc.vmmanagercore.scheduler.schedulingalgorithms;
 
 import es.bsc.vmmanagercore.logging.VMMLogger;
 import es.bsc.vmmanagercore.model.DeploymentPlan;
 import es.bsc.vmmanagercore.model.ServerLoad;
 import es.bsc.vmmanagercore.monitoring.Host;
+import es.bsc.vmmanagercore.scheduler.Scheduler;
 
 import java.util.Collection;
 import java.util.List;

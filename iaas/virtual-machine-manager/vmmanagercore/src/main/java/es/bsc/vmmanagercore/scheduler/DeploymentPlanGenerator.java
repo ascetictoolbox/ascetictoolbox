@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Host filter. Selects hosts that meet a certain criteria about free CPUs, RAM, and disk.
+ * Deployment plan generator. Generates deployment plans that can be applied.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  *
@@ -40,10 +40,10 @@ public class DeploymentPlanGenerator {
      * @return the list of deployment plans that can be applied
      */
     public List<DeploymentPlan> getAllPossibleDeploymentPlans(List<Vm> vms, List<Host> hosts) {
-        List<DeploymentPlan> result = new ArrayList<>();
-        generateDeploymentPlans(getPossibleHostsForVms(vms, hosts), result, 0,
+        List<DeploymentPlan> deploymentPlans = new ArrayList<>();
+        generateDeploymentPlans(getPossibleHostsForVms(vms, hosts), deploymentPlans, 0,
                 new DeploymentPlan(new ArrayList<VmAssignmentToHost>()));
-        return filterDeploymentPlans(result);
+        return DeploymentPlanFilterer.filterDeploymentPlans(deploymentPlans);
     }
 
     // TODO: improve this. Try to get the best option with overbooking.
@@ -56,88 +56,6 @@ public class DeploymentPlanGenerator {
             hostIndex = (hostIndex + 1) % hosts.size();
         }
         return new DeploymentPlan(vmsAssignmentsToHosts);
-    }
-
-    /**
-     * From a list of hosts, returns the ones that have enough CPUs, RAM, and disk available.
-     *
-     * @param hosts the lists of hosts
-     * @param minCpus the minimum number of free CPUs
-     * @param minRamMb the minimum amount of free RAM (MB)
-     * @param minDiskGb the minimum amount of free disk (GB)
-     * @return hosts from the input that meet the CPU, RAM, and disk requirements
-     */
-    private static List<Host> filter(List<Host> hosts, int minCpus, int minRamMb, int minDiskGb) {
-        List<Host> filteredHosts = new ArrayList<>();
-        for (Host host: hosts) {
-            if (host.hasEnoughResources(minCpus, minRamMb, minDiskGb)) {
-                filteredHosts.add(host);
-            }
-        }
-        return filteredHosts;
-    }
-
-    /**
-     * Returns a list where each position contains a VM and the hosts that have enough resources available
-     * to deploy that VM.
-     *
-     * @param vms the VMs that need to be deployed
-     * @param hosts the available hosts
-     * @return the list where each position contains a VM and a list of hosts where it can be deployed
-     */
-    private List<PossibleHostsForVm> getPossibleHostsForVms(List<Vm> vms, List<Host> hosts) {
-        List<PossibleHostsForVm> result = new ArrayList<>();
-        for (Vm vm: vms) {
-            result.add(new PossibleHostsForVm(vm, filter(hosts, vm.getCpus(), vm.getRamMb(), vm.getDiskGb())));
-        }
-        return result;
-    }
-
-    /**
-     * Checks whether the hosts of the deployment plan have enough resources to host the VMs that they have
-     * been assigned.
-     *
-     * @param deploymentPlan the deployment plan
-     * @return true if the deployment plan can be applied, false otherwise
-     */
-    private boolean deploymentPlanCanBeApplied(DeploymentPlan deploymentPlan) {
-        // Build a map that contains for each host, the VMs that are going to be deployed in it
-        Map<Host, List<Vm>> vmsOfEachHost = new HashMap<>();
-        for (VmAssignmentToHost vmAssignmentToHost: deploymentPlan.getVmsAssignationsToHosts()) {
-            Host host = vmAssignmentToHost.getHost();
-            if (!vmsOfEachHost.containsKey(host)) {
-                vmsOfEachHost.put(host, new ArrayList<Vm>());
-            }
-            vmsOfEachHost.get(host).add(vmAssignmentToHost.getVm());
-        }
-
-        // For each of the host, check whether it has enough resources to host all the VMs that it
-        // has been assigned
-        for (Map.Entry<Host, List<Vm>> entry : vmsOfEachHost.entrySet()) {
-            if (!entry.getKey().hasEnoughResourcesToDeployVms(entry.getValue())) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * From a list of deployment plans, returns only the ones that can be applied.
-     * A deployment plan contains for each VM the host where it should be deployed.
-     * In this context, we consider that a deployment plan can be applied if its hosts
-     * contain enough resources to host the VMs that they have been assigned.
-     *
-     * @param deploymentPlans the deployment plans to filter
-     * @return the filtered list of deployment plans
-     */
-    private List<DeploymentPlan> filterDeploymentPlans(List<DeploymentPlan> deploymentPlans) {
-        List<DeploymentPlan> result = new ArrayList<>();
-        for (DeploymentPlan deploymentPlan: deploymentPlans) {
-            if (deploymentPlanCanBeApplied(deploymentPlan)) {
-                result.add(deploymentPlan);
-            }
-        }
-        return result;
     }
 
     /**
@@ -164,6 +82,41 @@ public class DeploymentPlanGenerator {
                 generateDeploymentPlans(possibleHostsForEachVm, result, currentVmIndex + 1, deploymentPlan);
             }
         }
+    }
+
+    /**
+     * Returns a list where each position contains a VM and the hosts that have enough resources available
+     * to deploy that VM.
+     *
+     * @param vms the VMs that need to be deployed
+     * @param hosts the available hosts
+     * @return the list where each position contains a VM and a list of hosts where it can be deployed
+     */
+    private List<PossibleHostsForVm> getPossibleHostsForVms(List<Vm> vms, List<Host> hosts) {
+        List<PossibleHostsForVm> result = new ArrayList<>();
+        for (Vm vm: vms) {
+            result.add(new PossibleHostsForVm(vm, filter(hosts, vm.getCpus(), vm.getRamMb(), vm.getDiskGb())));
+        }
+        return result;
+    }
+
+    /**
+     * From a list of hosts, returns the ones that have enough CPUs, RAM, and disk available.
+     *
+     * @param hosts the lists of hosts
+     * @param minCpus the minimum number of free CPUs
+     * @param minRamMb the minimum amount of free RAM (MB)
+     * @param minDiskGb the minimum amount of free disk (GB)
+     * @return hosts from the input that meet the CPU, RAM, and disk requirements
+     */
+    private List<Host> filter(List<Host> hosts, int minCpus, int minRamMb, int minDiskGb) {
+        List<Host> filteredHosts = new ArrayList<>();
+        for (Host host: hosts) {
+            if (host.hasEnoughResources(minCpus, minRamMb, minDiskGb)) {
+                filteredHosts.add(host);
+            }
+        }
+        return filteredHosts;
     }
 
 }

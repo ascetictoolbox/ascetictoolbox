@@ -1,4 +1,4 @@
-package es.bsc.vmmanagercore.scheduler;
+package es.bsc.vmmanagercore.scheduler.schedulingalgorithms;
 
 import es.bsc.vmmanagercore.model.DeploymentPlan;
 import es.bsc.vmmanagercore.monitoring.Host;

@@ -5,6 +5,7 @@ import es.bsc.vmmanagercore.model.Vm;
 import es.bsc.vmmanagercore.model.VmAssignmentToHost;
 import es.bsc.vmmanagercore.monitoring.Host;
 import es.bsc.vmmanagercore.monitoring.HostFake;
+import es.bsc.vmmanagercore.scheduler.schedulingalgorithms.SchedAlgConsolidation;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
