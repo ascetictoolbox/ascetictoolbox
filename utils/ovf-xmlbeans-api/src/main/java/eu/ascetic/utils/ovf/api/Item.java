@@ -27,10 +27,10 @@ import eu.ascetic.utils.ovf.api.factories.ItemFactory;
 import eu.ascetic.utils.ovf.api.utils.XmlSimpleTypeConverter;
 
 /**
- * Provides access to Virtual Hardware Elements (Item) contained within
- * {@link VirtualHardwareSection}. An Item represents virtual hardware
- * characteristics and can describe all memory and CPU requirements as well as
- * virtual hardware devices.<br>
+ * Provides access to the Item elements (Virtual Hardware) of an OVF document.
+ * An Item contained within {@link VirtualHardwareSection} represents virtual
+ * hardware characteristics and can describe all memory and CPU requirements as
+ * well as virtual hardware devices.<br>
  * <br>
  * TODO: Add support for the ovf:bound attribute (min, max, normal).<br>
  * TODO: Add support for the rasd:ResourceSubType element to support vendor
@@ -199,8 +199,9 @@ public class Item extends AbstractElement<XmlBeanRASDType> {
 	/**
 	 * Gets the specified units of allocation to use. Values for allocationUnits
 	 * must match the format for programmatic units defined in DSP0004.C1 with
-	 * the restriction that the base unit is "byte".<br>
-	 * (see {@link http://www.dmtf.org/standards/cim}).<br>
+	 * the restriction that the base unit is "byte". (See <a
+	 * href="http://www.dmtf.org/standards/cim"
+	 * >http://www.dmtf.org/standards/cim</a>).<br>
 	 * <br>
 	 * For example:<br>
 	 * <br>
@@ -220,8 +221,9 @@ public class Item extends AbstractElement<XmlBeanRASDType> {
 	/**
 	 * Sets the specified units of allocation to use. Values for allocationUnits
 	 * must match the format for programmatic units defined in DSP0004.C1 with
-	 * the restriction that the base unit is "byte".<br>
-	 * (see {@link http://www.dmtf.org/standards/cim}).<br>
+	 * the restriction that the base unit is "byte". (See <a
+	 * href="http://www.dmtf.org/standards/cim"
+	 * >http://www.dmtf.org/standards/cim</a>).<br>
 	 * <br>
 	 * For example:<br>
 	 * <br>

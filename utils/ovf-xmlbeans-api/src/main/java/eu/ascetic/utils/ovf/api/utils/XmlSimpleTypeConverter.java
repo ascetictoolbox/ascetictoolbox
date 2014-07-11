@@ -23,7 +23,7 @@ import org.dmtf.schemas.wbem.wscim.x1.common.CimUnsignedLong;
 import java.math.BigInteger;
 
 /**
- * Class to convert simple elements in the OVF like CimString from and to normal
+ * A class to convert simple elements in the OVF like CimString from and to normal
  * Java Strings.
  * 
  * @author Django Armstrong (ULeeds)

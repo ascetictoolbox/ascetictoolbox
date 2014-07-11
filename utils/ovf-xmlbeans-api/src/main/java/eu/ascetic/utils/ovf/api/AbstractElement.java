@@ -23,7 +23,7 @@ import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
 
 /**
- * Abstract base class of XML types used in the OVF XML Beans API. Each XML type
+ * Abstract base class for XML types used in the OVF API. Each XML type
  * implementation must define the type of the underlying XMLBean object. This
  * type definition is used for the internal delegation object.
  * 

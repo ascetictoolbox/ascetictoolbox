@@ -20,7 +20,7 @@ import org.apache.xmlbeans.XmlObject;
 import eu.ascetic.utils.ovf.api.utils.XmlValidator;
 
 /**
- * Provides customised runtime exception for invalid XML documents.
+ * Provides customised runtime exceptions for invalid XML documents.
  * 
  * @author Django Armstrong (ULeeds)
  * 

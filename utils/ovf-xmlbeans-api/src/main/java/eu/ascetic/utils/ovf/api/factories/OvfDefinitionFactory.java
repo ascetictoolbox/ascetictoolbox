@@ -68,10 +68,10 @@ public class OvfDefinitionFactory {
 	/**
 	 * Generates a new instance using a {@link Template} URI and {@link Properties} object.
 	 * 
-	 * @param applicationId
-	 *            The ID of the Application
-	 * @param imageRepository
-	 *            The directory of the image repository
+	 * @param templateUri
+	 *            The location of the Template 
+	 * @param properties
+	 *            The properties object
 	 * @return A new instance of OvfDefinition
 	 */
 	public OvfDefinition newInstance(String templateUri,

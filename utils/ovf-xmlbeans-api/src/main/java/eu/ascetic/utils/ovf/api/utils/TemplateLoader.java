@@ -28,8 +28,8 @@ import java.io.Writer;
 import java.util.Properties;
 
 /**
- * A class for loading OVF documents from velocity templates and populating them
- * with variables.
+ * A class for loading OVF documents from Velocity templates and for populating
+ * them with variables.
  * 
  * @author Django Armstrong (ULeeds)
  * 
@@ -97,15 +97,18 @@ public class TemplateLoader {
 	}
 
 	/**
-	 * Loads a Template populated with a provided Properties object returning it as an instance of
-	 * {@link XmlBeanEnvelopeDocument}.<br>
+	 * Loads a Template populated with a provided Properties object returning it
+	 * as an instance of {@link XmlBeanEnvelopeDocument}.<br>
 	 * <br>
 	 * 
-	 * @param templateUri The location of the template
-	 * @param properties The properties object to use.
+	 * @param templateUri
+	 *            The location of the template
+	 * @param properties
+	 *            The properties object to use.
 	 * @return The XmlBeanEnvelopeDocument
 	 */
-	public XmlBeanEnvelopeDocument loadOvfDefinitionTemplate(String templateUri, Properties properties) {
+	public XmlBeanEnvelopeDocument loadOvfDefinitionTemplate(
+			String templateUri, Properties properties) {
 		Template template = Velocity.getTemplate(templateUri);
 		VelocityContext ctx = createVelocityContext(properties);
 

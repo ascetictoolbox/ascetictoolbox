@@ -23,7 +23,7 @@ import org.apache.xmlbeans.XmlOptions;
 import java.util.ArrayList;
 
 /**
- * Class to validate an XmlObject and access any errors.
+ * A class to validate an XmlObject and access any errors.
  * 
  * @author Django Armstrong (ULeeds)
  * 

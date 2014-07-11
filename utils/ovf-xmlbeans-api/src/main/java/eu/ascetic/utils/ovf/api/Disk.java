@@ -22,10 +22,8 @@ import eu.ascetic.utils.ovf.api.enums.DiskFormatType;
 import eu.ascetic.utils.ovf.api.factories.DiskFactory;
 
 /**
- * The DiskSection describes meta-information about virtual disks in the OVF
- * document. Virtual disks and their metadata are described outside the virtual
- * hardware to facilitate sharing between virtual machines within an OVF
- * document.
+ * Provides access to the Disk elements of an OVF document. A Disk contained
+ * within the {@link DiskSection} represents virtual disk characteristics.
  * 
  * @author Django Armstrong (ULeeds)
  * 
@@ -100,7 +98,7 @@ public class Disk extends AbstractElement<XmlBeanVirtualDiskDescType> {
 	 * Gets the capacity of the disk. The default unit of allocation is bytes
 	 * and can be altered by setting CapacityAllocationUnits.
 	 * 
-	 * @return
+	 * @return The capacity
 	 */
 	public String getCapacity() {
 		return delegate.getCapacity();
@@ -111,6 +109,7 @@ public class Disk extends AbstractElement<XmlBeanVirtualDiskDescType> {
 	 * and can be altered by setting CapacityAllocationUnits.
 	 * 
 	 * @param capacity
+	 *            The capacity to set
 	 */
 	public void setCapacity(String capacity) {
 		delegate.setCapacity(capacity);
@@ -121,8 +120,9 @@ public class Disk extends AbstractElement<XmlBeanVirtualDiskDescType> {
 	 * attribute capacityAllocationUnits may be used to specify a particular
 	 * unit of allocation. Values for capacityAllocationUnits must match the
 	 * format for programmatic units defined in DSP0004.C1 with the restriction
-	 * that the base unit is "byte".<br>
-	 * (see {@link http://www.dmtf.org/standards/cim}).<br>
+	 * that the base unit is "byte". (See <a
+	 * href="http://www.dmtf.org/standards/cim">http://www.dmtf.org/standards
+	 * /cim</a>).<br>
 	 * <br>
 	 * For example:<br>
 	 * <br>
@@ -136,14 +136,14 @@ public class Disk extends AbstractElement<XmlBeanVirtualDiskDescType> {
 		return delegate.getCapacityAllocationUnits();
 	}
 
-	// @formatter:off
 	/**
 	 * Sets the optional capacity allocation units. The optional string
 	 * attribute capacityAllocationUnits may be used to specify a particular
 	 * unit of allocation. Values for capacityAllocationUnits must match the
 	 * format for programmatic units defined in DSP0004.C1 with the restriction
-	 * that the base unit is "byte".<br>
-	 * (see {@link http://www.dmtf.org/standards/cim}).<br>
+	 * that the base unit is "byte". (See <a
+	 * href="http://www.dmtf.org/standards/cim"
+	 * >http://www.dmtf.org/standards/cim</a>).<br>
 	 * <br>
 	 * For example:<br>
 	 * <br>
@@ -153,7 +153,6 @@ public class Disk extends AbstractElement<XmlBeanVirtualDiskDescType> {
 	 * 
 	 * @param capacityAllocationUnits
 	 */
-	// @formatter:on
 	public void setCapacityAllocationUnits(String capacityAllocationUnits) {
 		delegate.setCapacityAllocationUnits(capacityAllocationUnits);
 	}

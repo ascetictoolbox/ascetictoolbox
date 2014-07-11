@@ -23,7 +23,10 @@ import eu.ascetic.utils.ovf.api.OperatingSystem;
  * Enumeration containing predefined constants of virtual resource types used in
  * {@link OperatingSystem} from CIM_OperatingSystem.OsType<br>
  * <br>
- * (see {@link http://www.dmtf.org/standards/cim/cim_schema_v2191}).
+ * 
+ * (See <a
+ * href="@link http://www.dmtf.org/standards/cim/cim_schema_v2191">http:/
+ * /www.dmtf.org/standards/cim/cim_schema_v2191</a>)
  * 
  * @author Django Armstrong (ULeeds)
  * 

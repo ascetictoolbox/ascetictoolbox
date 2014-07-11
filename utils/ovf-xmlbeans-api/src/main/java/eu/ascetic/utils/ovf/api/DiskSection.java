@@ -29,9 +29,11 @@ import java.util.List;
 import java.util.Vector;
 
 /**
- * Provides access to elements within the DiskSection of an OVF document. A
+ * Provides access to elements within the DiskSection of an OVF document. The
  * DiskSection describes meta-information about virtual disks in the OVF
- * package.
+ * package. Virtual disks and their metadata are described outside the virtual
+ * hardware to facilitate sharing between virtual machines within an OVF
+ * document.
  * 
  * @author Django Armstrong (ULeeds)
  * 

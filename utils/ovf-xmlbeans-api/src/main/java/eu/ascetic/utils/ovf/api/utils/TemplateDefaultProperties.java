@@ -19,22 +19,22 @@ import java.io.IOException;
 import java.util.Properties;
 
 /**
- * A class to define attributes for a {@link TemplateLoader}'s properties object
- * that in turn defines OVF variables to be loaded into a template.
+ * A class to define attributes for a default {@link Properties} object used in
+ * {@link TemplateLoader}. The properties in turn define OVF variables to be
+ * loaded into a template.
  * 
  * @author Django Armstrong (ULeeds)
  * 
  */
 public class TemplateDefaultProperties extends Properties {
 
-
 	/**
 	 * Generated serial version UID
 	 */
 	private static final long serialVersionUID = -5920612312069101940L;
-	
+
 	/**
-	 * Location of the default properties file relative to the class path. 
+	 * Location of the default properties file relative to the class path.
 	 */
 	private static final String DEFAULT_PROPERTIES_FILE = "/ovf.properties";
 
