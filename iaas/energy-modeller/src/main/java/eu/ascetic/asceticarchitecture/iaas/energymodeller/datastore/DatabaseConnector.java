@@ -28,8 +28,10 @@ import java.util.Collection;
 public interface DatabaseConnector {
     
     public Collection<Host> getHosts();
+    public void setHosts(Collection<Host> hosts);
     public Collection<Host> getHostCalibrationData(Collection<Host> hosts);
     public Host getHostCalibrationData(Host host);
+    public void setHostCalibrationData(Host host);
     public HistoricUsageRecord getVMHistoryData(VmDeployed VM);
     
 }
