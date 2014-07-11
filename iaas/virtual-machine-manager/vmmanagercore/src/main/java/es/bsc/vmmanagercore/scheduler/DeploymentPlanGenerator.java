@@ -6,15 +6,12 @@ import es.bsc.vmmanagercore.model.VmAssignmentToHost;
 import es.bsc.vmmanagercore.monitoring.Host;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Deployment plan generator. Generates deployment plans that can be applied.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
- *
  */
 public class DeploymentPlanGenerator {
 
@@ -53,7 +50,7 @@ public class DeploymentPlanGenerator {
         int hostIndex = 0;
         for (Vm vm: vms) {
             vmsAssignmentsToHosts.add(new VmAssignmentToHost(vm, hosts.get(hostIndex)));
-            hostIndex = (hostIndex + 1) % hosts.size();
+            hostIndex = (hostIndex + 1)%hosts.size();
         }
         return new DeploymentPlan(vmsAssignmentsToHosts);
     }
@@ -110,13 +107,13 @@ public class DeploymentPlanGenerator {
      * @return hosts from the input that meet the CPU, RAM, and disk requirements
      */
     private List<Host> filter(List<Host> hosts, int minCpus, int minRamMb, int minDiskGb) {
-        List<Host> filteredHosts = new ArrayList<>();
+        List<Host> result = new ArrayList<>();
         for (Host host: hosts) {
             if (host.hasEnoughResources(minCpus, minRamMb, minDiskGb)) {
-                filteredHosts.add(host);
+                result.add(host);
             }
         }
-        return filteredHosts;
+        return result;
     }
 
 }

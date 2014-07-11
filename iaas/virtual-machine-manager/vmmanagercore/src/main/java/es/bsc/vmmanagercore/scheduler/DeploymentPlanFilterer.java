@@ -46,19 +46,38 @@ public class DeploymentPlanFilterer {
      * @return true if the deployment plan can be applied, false otherwise
      */
     private static boolean deploymentPlanCanBeApplied(DeploymentPlan deploymentPlan) {
-        // Build a map that contains for each host, the VMs that are going to be deployed in it
-        Map<Host, List<Vm>> vmsOfEachHost = new HashMap<>();
-        for (VmAssignmentToHost vmAssignmentToHost: deploymentPlan.getVmsAssignationsToHosts()) {
-            Host host = vmAssignmentToHost.getHost();
-            if (!vmsOfEachHost.containsKey(host)) {
-                vmsOfEachHost.put(host, new ArrayList<Vm>());
-            }
-            vmsOfEachHost.get(host).add(vmAssignmentToHost.getVm());
-        }
+        Map<Host, List<Vm> > vmsOfEachHost =
+                getMapOfHostsAndTheirVmsAssignations(deploymentPlan.getVmsAssignationsToHosts());
+        return allHostsHaveEnoughResourcesForTheirAssignations(vmsOfEachHost);
+    }
 
-        // For each of the host, check whether it has enough resources to host all the VMs that it
-        // has been assigned
-        for (Map.Entry<Host, List<Vm>> entry : vmsOfEachHost.entrySet()) {
+    /**
+     * Get a map of hosts and the VMs that they have been assigned. Each entry of the map contains a host (key),
+     * and a list of VMs (values).
+     *
+     * @param vmAssignments a list of VMs assignations to hosts
+     * @return the map
+     */
+    private static Map<Host, List<Vm>> getMapOfHostsAndTheirVmsAssignations(List<VmAssignmentToHost> vmAssignments) {
+        Map<Host, List<Vm> > result = new HashMap<>();
+        for (VmAssignmentToHost vmAssignmentToHost: vmAssignments) {
+            if (!result.containsKey(vmAssignmentToHost.getHost())) {
+                result.put(vmAssignmentToHost.getHost(), new ArrayList<Vm>());
+            }
+            result.get(vmAssignmentToHost.getHost()).add(vmAssignmentToHost.getVm());
+        }
+        return result;
+    }
+
+    /**
+     * Checks whether a list of hosts have enough resources to deploy all the VMs that they have been assigned.
+     *
+     * @param vmsInEachHost list of VMs that are going to be deployed in each host
+     * @return true if all hosts have enough resources to deploy all the VMs that they have been assigned.
+     * False otherwise
+     */
+    private static boolean allHostsHaveEnoughResourcesForTheirAssignations(Map<Host, List<Vm> > vmsInEachHost) {
+        for (Map.Entry<Host, List<Vm>> entry: vmsInEachHost.entrySet()) {
             if (!entry.getKey().hasEnoughResourcesToDeployVms(entry.getValue())) {
                 return false;
             }
