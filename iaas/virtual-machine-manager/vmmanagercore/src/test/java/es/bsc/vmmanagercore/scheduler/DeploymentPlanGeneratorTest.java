@@ -34,7 +34,7 @@ public class DeploymentPlanGeneratorTest {
         // deploy both in host2, deploy one in host1 and the other in host2, etc.
         // Out of those 6 possibilities there is one that is not possible: we cannot deploy vm1 and vm2 both in
         // host2.
-        List<DeploymentPlan> deploymentPlans = new DeploymentPlanGenerator().getAllPossibleDeploymentPlans(vms, hosts);
+        List<DeploymentPlan> deploymentPlans = new DeploymentPlanGenerator().getPossibleDeploymentPlans(vms, hosts);
         assertTrue(deploymentPlans.size() == 5);
         for (DeploymentPlan deploymentPlan: deploymentPlans) {
             boolean vm1AssignedToHost2 = false;

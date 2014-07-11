@@ -27,6 +27,9 @@ public class OpenStackGlance {
     private String keyStoneTenantId;
     private String token; // token needed for authentication
 
+    /**
+     * Class constructor.
+     */
     public OpenStackGlance() {
         VmManagerConfiguration conf = VmManagerConfiguration.getInstance();
         this.openStackIp = conf.openStackIP;

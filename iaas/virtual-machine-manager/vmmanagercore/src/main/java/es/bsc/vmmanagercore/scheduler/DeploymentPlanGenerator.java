@@ -36,23 +36,31 @@ public class DeploymentPlanGenerator {
      * @param hosts the list of hosts
      * @return the list of deployment plans that can be applied
      */
-    public List<DeploymentPlan> getAllPossibleDeploymentPlans(List<Vm> vms, List<Host> hosts) {
+    public List<DeploymentPlan> getPossibleDeploymentPlans(List<Vm> vms, List<Host> hosts) {
+        return DeploymentPlanFilterer.filterDeploymentPlans(getAllDeploymentPlans(vms, hosts));
+    }
+
+    /**
+     * Returns all the deployment plans for a list of VMs and a list of hosts.
+     * Note: the result of this method contains deployment plans that use overbooking.
+     *
+     * @param vms the list of VMs
+     * @param hosts the hosts of the infrastructure
+     * @return the list of deployment plans
+     */
+    public List<DeploymentPlan> getAllDeploymentPlans(List<Vm> vms, List<Host> hosts) {
         List<DeploymentPlan> deploymentPlans = new ArrayList<>();
         generateDeploymentPlans(getPossibleHostsForVms(vms, hosts), deploymentPlans, 0,
                 new DeploymentPlan(new ArrayList<VmAssignmentToHost>()));
-        return DeploymentPlanFilterer.filterDeploymentPlans(deploymentPlans);
+        return deploymentPlans;
     }
 
-    // TODO: improve this. Try to get the best option with overbooking.
-    // For the moment, assigns VMs using round-robbin
-    public DeploymentPlan generateBestEffortDeploymentPlan(List<Vm> vms, List<Host> hosts) {
-        List<VmAssignmentToHost> vmsAssignmentsToHosts = new ArrayList<>();
-        int hostIndex = 0;
-        for (Vm vm: vms) {
-            vmsAssignmentsToHosts.add(new VmAssignmentToHost(vm, hosts.get(hostIndex)));
-            hostIndex = (hostIndex + 1)%hosts.size();
-        }
-        return new DeploymentPlan(vmsAssignmentsToHosts);
+    //TODO rename this method and the previous one to make this clearer
+    public List<DeploymentPlan> getDeploymentPlansWithoutRestrictions(List<Vm> vms, List<Host> hosts) {
+        List<DeploymentPlan> deploymentPlans = new ArrayList<>();
+        generateDeploymentPlans(getHostsForVmsWithoutRestrictions(vms, hosts), deploymentPlans, 0,
+                new DeploymentPlan(new ArrayList<VmAssignmentToHost>()));
+        return deploymentPlans;
     }
 
     /**
@@ -93,6 +101,14 @@ public class DeploymentPlanGenerator {
         List<PossibleHostsForVm> result = new ArrayList<>();
         for (Vm vm: vms) {
             result.add(new PossibleHostsForVm(vm, filter(hosts, vm.getCpus(), vm.getRamMb(), vm.getDiskGb())));
+        }
+        return result;
+    }
+
+    private List<PossibleHostsForVm> getHostsForVmsWithoutRestrictions(List<Vm> vms, List<Host> hosts) {
+        List<PossibleHostsForVm> result = new ArrayList<>();
+        for (Vm vm: vms) {
+            result.add(new PossibleHostsForVm(vm, hosts));
         }
         return result;
     }

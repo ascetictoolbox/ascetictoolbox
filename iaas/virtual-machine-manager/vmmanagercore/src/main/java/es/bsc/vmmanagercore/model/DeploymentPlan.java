@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Deployment plan. A deployment plan is a list where each item contains a pair {vm, host}. The pair indicates on
+ * which host a specific VM should be deployed.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  */

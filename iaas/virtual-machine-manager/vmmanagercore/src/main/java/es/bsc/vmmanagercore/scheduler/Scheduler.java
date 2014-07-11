@@ -23,12 +23,23 @@ public class Scheduler {
     private List<VmDeployed> vmsDeployed;
     private String schedAlgorithmName;
 
+    /**
+     * Class constructor.
+     *
+     * @param schedAlg scheduling algorithm used
+     * @param vmsDeployed list of VMs deployed in the infrastructure
+     */
     public Scheduler(SchedulingAlgorithm schedAlg, List<VmDeployed> vmsDeployed) {
         this.vmsDeployed = vmsDeployed;
         setSchedAlgorithm(schedAlg);
         schedAlgorithmName = schedAlg.getName();
     }
 
+    /**
+     * Instantiates the scheduling algorithm class.
+     *
+     * @param schedAlg scheduling algorithm to be used
+     */
     private void setSchedAlgorithm(SchedulingAlgorithm schedAlg) {
         switch (schedAlg) {
             case CONSOLIDATION:
@@ -175,31 +186,80 @@ public class Scheduler {
     }
 
     /**
-     * Returns the best deployment plan from a list of possible deployment plans. The deployment
-     * plan chosen depends on the algorithm used (distribution, consolidation, energy-aware, etc.).
+     * Returns the total overload of a set of servers loads
      *
-     * @param possibleDeploymentPlans possible deployment plans
+     * @param serverLoads the servers loads
+     * @return the total overload
+     */
+    private double getServersOverload(Map<String, ServerLoad> serverLoads) {
+        double result = 0;
+        for (Map.Entry<String, ServerLoad> entry: serverLoads.entrySet()) {
+            result += entry.getValue().getTotalOverload();
+        }
+        return result;
+    }
+
+    /**
+     * Checks whether the hosts of a deployment plan are less overloaded than the servers of another deployment plan.
+     *
+     * @param deploymentPlan1 first deployment plan
+     * @param deploymentPlan2 second deployment plan
+     * @param hosts the hosts of the infrastructure
+     * @return true if the hosts of the first deployment plan are less overloaded than the hosts of the second
+     * deployment plan
+     */
+    private boolean serversAreLessOverloaded(DeploymentPlan deploymentPlan1, DeploymentPlan deploymentPlan2,
+                List<Host> hosts) {
+        Map<String, ServerLoad> serverLoadsPlan1 = getServersLoadsAfterDeploymentPlanExecuted(deploymentPlan1, hosts);
+        Map<String, ServerLoad> serverLoadsPlan2 = getServersLoadsAfterDeploymentPlanExecuted(deploymentPlan2, hosts);
+        return getServersOverload(serverLoadsPlan1) < getServersOverload(serverLoadsPlan2);
+    }
+
+    /**
+     * Receives a list of deployment plans where all of them use overbooking and selects the best one.
+     * Overbooking in our context means that there is at least a server that has been assigned VMs that
+     * demand more resources than the resources available at the server.
+     * We consider that the best deployment plan is the one where less VMs are assigned to hosts with overbooking.
+     *
+     * @param deploymentPlans possible deployment plans
      * @param hosts the hosts of the infrastructure
      * @return the best deployment plan
      */
-    private DeploymentPlan findBestDeploymentPlan(List<DeploymentPlan> possibleDeploymentPlans, List<Host> hosts) {
-        DeploymentPlan bestDeploymentPlan = null;
-        for (DeploymentPlan deploymentPlan: possibleDeploymentPlans) {
-            boolean firstDeploymentPlan = (bestDeploymentPlan == null);
+    private DeploymentPlan findBestEffortDeploymentPlan(List<DeploymentPlan> deploymentPlans, List<Host> hosts) {
+        DeploymentPlan bestPlan = null;
+        for (DeploymentPlan deploymentPlan: deploymentPlans) {
+            if (bestPlan == null || serversAreLessOverloaded(deploymentPlan, bestPlan, hosts)) {
+                bestPlan = deploymentPlan;
+            }
+        }
+        return bestPlan;
+    }
+
+    /**
+     * Returns the best deployment plan from a list of possible deployment plans. The deployment
+     * plan chosen depends on the algorithm used (distribution, consolidation, energy-aware, etc.).
+     *
+     * @param deploymentPlans possible deployment plans
+     * @param hosts the hosts of the infrastructure
+     * @return the best deployment plan
+     */
+    private DeploymentPlan findBestDeploymentPlan(List<DeploymentPlan> deploymentPlans, List<Host> hosts) {
+        DeploymentPlan bestPlan = null;
+        for (DeploymentPlan deploymentPlan: deploymentPlans) {
+            boolean firstDeploymentPlan = (bestPlan == null);
             if (!firstDeploymentPlan) {
-                VMMLogger.logStartOfDeploymentPlanComparison(deploymentPlan.toString(), bestDeploymentPlan.toString());
+                VMMLogger.logStartOfDeploymentPlanComparison(deploymentPlan.toString(), bestPlan.toString());
             }
 
-            if (firstDeploymentPlan ||
-                    schedAlgorithm.isBetterDeploymentPlan(deploymentPlan, bestDeploymentPlan, hosts)) {
-                bestDeploymentPlan = deploymentPlan;
+            if (firstDeploymentPlan || schedAlgorithm.isBetterDeploymentPlan(deploymentPlan, bestPlan, hosts)) {
+                bestPlan = deploymentPlan;
             }
 
             if (!firstDeploymentPlan) {
                 VMMLogger.logEndOfDeploymentPlanComparison();
             }
         }
-        return bestDeploymentPlan;
+        return bestPlan;
     }
 
     /**
@@ -215,7 +275,7 @@ public class Scheduler {
 
         // Get all the possible plans that do not use overbooking
         List<DeploymentPlan> possibleDeploymentPlans =
-                new DeploymentPlanGenerator().getAllPossibleDeploymentPlans(vms, hosts);
+                new DeploymentPlanGenerator().getPossibleDeploymentPlans(vms, hosts);
 
         // Find the best deployment plan
         DeploymentPlan bestDeploymentPlan = findBestDeploymentPlan(possibleDeploymentPlans, hosts);
@@ -224,7 +284,8 @@ public class Scheduler {
             VMMLogger.logChosenDeploymentPlan(bestDeploymentPlan.toString());
         }
         else { // No plans could be chosen, so apply overbooking
-            bestDeploymentPlan = new DeploymentPlanGenerator().generateBestEffortDeploymentPlan(vms, hosts);
+            bestDeploymentPlan = findBestEffortDeploymentPlan(
+                    new DeploymentPlanGenerator().getDeploymentPlansWithoutRestrictions(vms, hosts), hosts);
             VMMLogger.logOverbookingNeeded();
         }
 

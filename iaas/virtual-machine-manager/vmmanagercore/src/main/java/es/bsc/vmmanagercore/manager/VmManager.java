@@ -349,6 +349,12 @@ public class VmManager {
         }
     }
 
+    /**
+     * Transforms a list of VMs to be estimated to a list of VMs.
+     *
+     * @param vmsToBeEstimated the list of VMs to be estimated
+     * @return the list of VMs
+     */
     // Note: this function would not be needed if VmToBeEstimated inherited from Vm
     private List<Vm> vmsToBeEstimatedToVms(List<VmToBeEstimated> vmsToBeEstimated) {
         List<Vm> result = new ArrayList<>();
