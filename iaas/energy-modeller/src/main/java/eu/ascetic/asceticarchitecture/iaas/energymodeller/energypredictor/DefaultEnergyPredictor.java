@@ -15,69 +15,27 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor;
 
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.CandidateVMHostMapping;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
 import java.util.Collection;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 
 /**
- * This implements the default behaviour for an energy predictor. It is expected
- * that any energy predictor loaded into the ASCETiC architecture, will override
- * this class.
- *
+ * This implements the default energy predictor for the ASCETiC project. 
  * @author Richard
  */
-public class DefaultEnergyPredictor implements EnergyPredictorInterface {
-
-    HashMap<Host, Double> tempAvgPowerUsed = new HashMap<>();
-    HashMap<Host, Double> tempTotalEnergyUsed = new HashMap<>();
+public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
 
     @Override
     public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines) {
-        EnergyUsagePrediction answer = new EnergyUsagePrediction(host);
-        //TODO add model code here
-        TimePeriod duration = new TimePeriod(new GregorianCalendar(), 1, TimeUnit.HOURS);
-        answer.setDuration(duration);
-        if (tempAvgPowerUsed.containsKey(host)) {
-            answer.setAvgPowerUsed(tempAvgPowerUsed.get(host));
-            answer.setTotalEnergyUsed(tempTotalEnergyUsed.get(host));
-        } else {
-            double tempPower = Math.random() * 20;
-            double tempEnergy = Math.random() * 20;
-            tempAvgPowerUsed.put(host, tempPower);
-            tempTotalEnergyUsed.put(host, tempEnergy);
-            answer.setAvgPowerUsed(tempPower);
-            answer.setTotalEnergyUsed(tempEnergy);
-        }
-        return answer;
+        //TODO implement the model here.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
-
-    HashMap<CandidateVMHostMapping, Double> temp2AvgPowerUsed = new HashMap<>();
-    HashMap<CandidateVMHostMapping, Double> temp2TotalEnergyUsed = new HashMap<>();
 
     @Override
     public EnergyUsagePrediction getVMPredictedEnergy(VM vm, Collection<VM> virtualMachines, Host host) {
-        EnergyUsagePrediction answer = new EnergyUsagePrediction(vm);
-        //TODO add model code here
-        TimePeriod duration = new TimePeriod(new GregorianCalendar(), 1, TimeUnit.HOURS);
-        answer.setDuration(duration);
-        if (tempAvgPowerUsed.containsKey(host)) {
-            answer.setAvgPowerUsed(temp2AvgPowerUsed.get(new CandidateVMHostMapping(vm, host)));
-            answer.setTotalEnergyUsed(temp2TotalEnergyUsed.get(new CandidateVMHostMapping(vm, host)));
-        } else {
-            double tempPower = Math.random() * 20;
-            double tempEnergy = Math.random() * 20;
-            temp2AvgPowerUsed.put(new CandidateVMHostMapping(vm, host), tempPower);
-            temp2TotalEnergyUsed.put(new CandidateVMHostMapping(vm, host), tempEnergy);
-            answer.setAvgPowerUsed(tempPower);
-            answer.setTotalEnergyUsed(tempEnergy);
-        }
-        return answer;
+        //TODO implement the model here.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
-
+    
 }

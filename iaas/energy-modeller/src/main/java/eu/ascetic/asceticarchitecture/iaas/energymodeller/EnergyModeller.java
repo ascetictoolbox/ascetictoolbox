@@ -17,6 +17,7 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration.Calibrator;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.DefaultEnergyPredictor;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.DummyEnergyPredictor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.EnergyPredictorInterface;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDataSourceAdaptor;
@@ -55,7 +56,7 @@ public class EnergyModeller {
 
     private static final String DEFAULT_PREDICTOR_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor";
     private static final String DEFAULT_DATA_SOURCE_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient";
-    EnergyPredictorInterface predictor = new DefaultEnergyPredictor();
+    EnergyPredictorInterface predictor = new DummyEnergyPredictor();
     HostDataSource datasource = new ZabbixDataSourceAdaptor();
     Calibrator calibrator = new Calibrator(datasource);
     HashMap<String, Host> hostList = new HashMap<>();
