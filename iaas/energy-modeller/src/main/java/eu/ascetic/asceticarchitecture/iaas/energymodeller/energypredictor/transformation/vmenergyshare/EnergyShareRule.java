@@ -13,27 +13,25 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.transformation.machinetovm;
+package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.transformation.vmenergyshare;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
+import java.util.Collection;
 
 /**
- * Translates the energy used by a host physical machine into 
- * a VMs Energy usage. Thus translating from one KPI set to another. 
+ * This allocates energy used by a host machine into the VMs that run upon it.
  * @author Richard
  */
-public interface KPITranslatorInterface {
+public interface EnergyShareRule {
     
     /**
-     * TODO: Work in progress define interface!!!
-     * The translation will have to take into account the
-     * metrics of the host and translate them into a targetVMs energy
-     * usage.
-     * @param targetHost
-     * @param targetVM
-     * @return 
+     * Translates a hosts energy usage into the VMs energy usage. This method
+     * generates the fractions by which to allocate energy, to each VM.
+     * @param host The host to analyse
+     * @param vms The VMs that are on/to be on the host
+     * @return The fraction of energy used per host.
      */
-    public double getEnergyUsage(Host targetHost, VM targetVM);
+    public EnergyDivision getEnergyUsage(Host host, Collection<VM> vms);
     
 }
