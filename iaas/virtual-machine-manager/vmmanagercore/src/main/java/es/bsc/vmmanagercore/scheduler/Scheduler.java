@@ -150,6 +150,30 @@ public class Scheduler {
         return Math.sqrt(sumOfDifferences/serversLoad.size());
     }
 
+    public static double getTotalUnusedCpuPerc(Collection<ServerLoad> serverLoads) {
+        double result = 0;
+        for (ServerLoad serverLoad: serverLoads) {
+            result += serverLoad.getUnusedCpuPerc();
+        }
+        return result;
+    }
+
+    public static double getTotalUnusedMemPerc(Collection<ServerLoad> serverLoads) {
+        double result = 0;
+        for (ServerLoad serverLoad: serverLoads) {
+            result += serverLoad.getUnusedRamPerc();
+        }
+        return result;
+    }
+
+    public static double getTotalUnusedDiskPerc(Collection<ServerLoad> serverLoads) {
+        double result = 0;
+        for (ServerLoad serverLoad: serverLoads) {
+            result += serverLoad.getUnusedDiskPerc();
+        }
+        return result;
+    }
+
     /**
      * Returns the load for each host after a deployment plan is executed.
      *

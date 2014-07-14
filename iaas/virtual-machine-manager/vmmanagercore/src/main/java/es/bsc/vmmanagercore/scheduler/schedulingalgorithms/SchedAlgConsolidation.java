@@ -20,25 +20,35 @@ public class SchedAlgConsolidation implements SchedAlgorithm {
     public SchedAlgConsolidation() {}
 
     private void logServersLoadsInfo(Collection<ServerLoad> serversLoad1, Collection<ServerLoad> serversLoad2) {
-        VMMLogger.logServersLoadsAfterDeploymentPlan(1, Scheduler.calculateStDevCpuLoad(serversLoad1),
-                Scheduler.calculateStDevMemLoad(serversLoad1), Scheduler.calculateStDevDiskLoad(serversLoad1));
-        VMMLogger.logServersLoadsAfterDeploymentPlan(2, Scheduler.calculateStDevCpuLoad(serversLoad2),
-                Scheduler.calculateStDevMemLoad(serversLoad2), Scheduler.calculateStDevDiskLoad(serversLoad2));
+        VMMLogger.logUnusedServerLoadsAfterDeploymentPlan(1, Scheduler.getTotalUnusedCpuPerc(serversLoad1),
+                Scheduler.getTotalUnusedMemPerc(serversLoad1), Scheduler.getTotalUnusedDiskPerc(serversLoad1));
+        VMMLogger.logUnusedServerLoadsAfterDeploymentPlan(2, Scheduler.getTotalUnusedCpuPerc(serversLoad2),
+                Scheduler.getTotalUnusedMemPerc(serversLoad2), Scheduler.getTotalUnusedDiskPerc(serversLoad2));
+    }
+
+    private boolean hasLessUnusedCpu(Collection<ServerLoad> serversLoad1, Collection<ServerLoad> serversLoad2) {
+        return Scheduler.getTotalUnusedCpuPerc(serversLoad1) < Scheduler.getTotalUnusedCpuPerc(serversLoad2);
+    }
+
+    private boolean hasSameUnusedCpuAndLessUnusedMem (Collection<ServerLoad> serversLoad1,
+            Collection<ServerLoad> serversLoad2) {
+        return Scheduler.getTotalUnusedCpuPerc(serversLoad1) == Scheduler.getTotalUnusedCpuPerc(serversLoad2)
+                && Scheduler.getTotalUnusedMemPerc(serversLoad1) < Scheduler.getTotalUnusedMemPerc(serversLoad2);
+    }
+
+    private boolean hasSameUnusedCpuAndMemAndLessUnusedDisk (Collection<ServerLoad> serversLoad1,
+            Collection<ServerLoad> serversLoad2) {
+        return Scheduler.getTotalUnusedCpuPerc(serversLoad1) == Scheduler.getTotalUnusedCpuPerc(serversLoad2)
+                && Scheduler.getTotalUnusedMemPerc(serversLoad1) == Scheduler.getTotalUnusedMemPerc(serversLoad2)
+                && Scheduler.getTotalUnusedDiskPerc(serversLoad1) < Scheduler.getTotalUnusedDiskPerc(serversLoad2);
     }
 
     private boolean serverLoadsAreMoreConsolidated(Collection<ServerLoad> serversLoad1,
             Collection<ServerLoad> serversLoad2) {
         logServersLoadsInfo(serversLoad1, serversLoad2);
-        boolean moreStDevCpu =
-                Scheduler.calculateStDevCpuLoad(serversLoad1) > Scheduler.calculateStDevCpuLoad(serversLoad2);
-        boolean sameStDevCpuAndMoreStDevMem =
-                (Scheduler.calculateStDevCpuLoad(serversLoad1) == Scheduler.calculateStDevCpuLoad(serversLoad2))
-                && (Scheduler.calculateStDevMemLoad(serversLoad1) > Scheduler.calculateStDevMemLoad(serversLoad2));
-        boolean sameStDevCpuAndSameStDevMemAndMoreStDevDisk =
-                (Scheduler.calculateStDevCpuLoad(serversLoad1) == Scheduler.calculateStDevCpuLoad(serversLoad2))
-                && (Scheduler.calculateStDevMemLoad(serversLoad1) == Scheduler.calculateStDevMemLoad(serversLoad2))
-                && (Scheduler.calculateStDevDiskLoad(serversLoad1) > Scheduler.calculateStDevDiskLoad(serversLoad2));
-        return moreStDevCpu || sameStDevCpuAndMoreStDevMem || sameStDevCpuAndSameStDevMemAndMoreStDevDisk;
+        return hasLessUnusedCpu(serversLoad1, serversLoad2)
+                || hasSameUnusedCpuAndLessUnusedMem(serversLoad1, serversLoad2)
+                || hasSameUnusedCpuAndMemAndLessUnusedDisk(serversLoad1, serversLoad2);
     }
 
     @Override

@@ -26,27 +26,36 @@ public class SchedAlgDistribution implements SchedAlgorithm {
                 Scheduler.calculateStDevMemLoad(serversLoad2), Scheduler.calculateStDevDiskLoad(serversLoad2));
     }
 
+    private boolean hasLessStdDevCpu(Collection<ServerLoad> serversLoad1, Collection<ServerLoad> serversLoad2) {
+        return Scheduler.calculateStDevCpuLoad(serversLoad1) < Scheduler.calculateStDevCpuLoad(serversLoad2);
+    }
+
+    private boolean hasSameStDevCpuAndLessStdDevMem(Collection<ServerLoad> serversLoad1,
+            Collection<ServerLoad> serversLoad2) {
+        return (Scheduler.calculateStDevCpuLoad(serversLoad1) == Scheduler.calculateStDevCpuLoad(serversLoad2))
+                && (Scheduler.calculateStDevMemLoad(serversLoad1) < Scheduler.calculateStDevMemLoad(serversLoad2));
+    }
+
+    private boolean hasSameStdDevCpuAndSameStdDevMemAndLessStdDevDisk(Collection<ServerLoad> serversLoad1,
+            Collection<ServerLoad> serversLoad2) {
+        return (Scheduler.calculateStDevCpuLoad(serversLoad1) == Scheduler.calculateStDevCpuLoad(serversLoad2))
+                && (Scheduler.calculateStDevMemLoad(serversLoad1) == Scheduler.calculateStDevMemLoad(serversLoad2))
+                && (Scheduler.calculateStDevDiskLoad(serversLoad1) < Scheduler.calculateStDevDiskLoad(serversLoad2));
+    }
+
     /**
      * Compares two sets of server loads.
      *
      * @param serversLoad1 first set of server loads
      * @param serversLoad2 second set of server loads
      * @return True if serversLoad1 is more distributed than serversLoad2, false otherwise
-     *
      */
     private boolean serverLoadsAreMoreDistributed(Collection<ServerLoad> serversLoad1,
             Collection<ServerLoad> serversLoad2) {
         logServersLoadsInfo(serversLoad1, serversLoad2);
-        boolean lessStDevCpu =
-                Scheduler.calculateStDevCpuLoad(serversLoad1) < Scheduler.calculateStDevCpuLoad(serversLoad2);
-        boolean sameStDevCpuAndLessStDevMem =
-                (Scheduler.calculateStDevCpuLoad(serversLoad1) == Scheduler.calculateStDevCpuLoad(serversLoad2))
-                && (Scheduler.calculateStDevMemLoad(serversLoad1) < Scheduler.calculateStDevMemLoad(serversLoad2));
-        boolean sameStDevCpuAndSameStDevMemAndLessStDevDisk =
-                (Scheduler.calculateStDevCpuLoad(serversLoad1) == Scheduler.calculateStDevCpuLoad(serversLoad2))
-                && (Scheduler.calculateStDevMemLoad(serversLoad1) == Scheduler.calculateStDevMemLoad(serversLoad2))
-                && (Scheduler.calculateStDevDiskLoad(serversLoad1) < Scheduler.calculateStDevDiskLoad(serversLoad2));
-        return lessStDevCpu || sameStDevCpuAndLessStDevMem || sameStDevCpuAndSameStDevMemAndLessStDevDisk;
+        return hasLessStdDevCpu(serversLoad1, serversLoad2)
+                || hasSameStDevCpuAndLessStdDevMem(serversLoad1, serversLoad2)
+                || hasSameStdDevCpuAndSameStdDevMemAndLessStdDevDisk(serversLoad1, serversLoad2);
     }
 
     @Override

@@ -55,15 +55,15 @@ public class ServerLoad {
         this.diskLoad = diskLoad;
     }
 
-    public double unusedCpuPerc() {
+    public double getUnusedCpuPerc() {
         return cpuLoad > 1 ? 0 : (1 - cpuLoad);
     }
 
-    public double unusedRamPerc() {
+    public double getUnusedRamPerc() {
         return ramLoad > 1 ? 0 : (1 - ramLoad);
     }
 
-    public double unusedDiskPerc() {
+    public double getUnusedDiskPerc() {
         return diskLoad > 1 ? 0 : (1 - diskLoad);
     }
 

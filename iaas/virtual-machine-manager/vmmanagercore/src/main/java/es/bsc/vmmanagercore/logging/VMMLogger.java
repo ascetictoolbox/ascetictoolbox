@@ -64,4 +64,10 @@ public class VMMLogger {
         logger.debug("[VMM] Server loads for deployment plan" + deploymentPlanNumber + " stdDevCpu:" +
                 stdDevCpu + ", stdDevRam: " + stdDevRam + ", stdDevDisk: " + stdDevDisk);
     }
+
+    public static void logUnusedServerLoadsAfterDeploymentPlan(int deploymentPlanNumber, double unusedCpu,
+            double unusedRam, double unusedDisk) {
+        logger.debug("[VMM] Total unused loads for deployment plan " + deploymentPlanNumber + " unusedCpu:" +
+                unusedCpu + ", unusedRam: " + unusedRam + ", unusedDisk: " + unusedDisk);
+    }
 }
