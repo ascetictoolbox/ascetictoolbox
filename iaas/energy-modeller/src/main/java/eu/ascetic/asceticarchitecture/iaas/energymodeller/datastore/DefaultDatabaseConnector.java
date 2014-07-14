@@ -132,6 +132,9 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
     public Collection<Host> getHosts() {
         Collection<Host> answer = new HashSet<>();
         connection = getConnection(connection);
+        if (connection == null) {
+            return null;
+        }
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(
                     "SELECT host_id , host_name  FROM host");
@@ -171,6 +174,9 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
     @Override
     public Host getHostCalibrationData(Host host) {
         connection = getConnection(connection);
+        if (connection == null) {
+            return null;
+        }
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(
                     "SELECT calibration_id, host_id, cpu, memory, energy FROM host_calibration_data WHERE host_id = ?");
@@ -192,6 +198,9 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
     @Override
     public void setHosts(Collection<Host> hosts) {
         connection = getConnection(connection);
+        if (connection == null) {
+            return;
+        }
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(
                     "INSERT INTO host (host_id, host_name) VALUES (?,?) ON DUPLICATE KEY UPDATE host_name=VALUES(`host_name`);");
@@ -209,12 +218,15 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
     @Override
     public void setHostCalibrationData(Host host) {
         connection = getConnection(connection);
+        if (connection == null) {
+            return;
+        }
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(
                     "INSERT INTO host_calibration_data (host_id, cpu, memory, energy) VALUES (?, ?, ? , ?) "
                     + " ON DUPLICATE KEY UPDATE host_id=VALUES(`host_id`) cpu=VALUES(`cpu`) memory=VALUES(`memory`) energy=VALUES(`energy`);");
             preparedStatement.setInt(1, host.getId());
-            for(HostEnergyCalibrationData data : host.getCalibrationData()) {
+            for (HostEnergyCalibrationData data : host.getCalibrationData()) {
                 preparedStatement.setDouble(1, host.getId());
                 preparedStatement.setDouble(2, data.getCpuUsage());
                 preparedStatement.setDouble(3, data.getMemoryUsage());

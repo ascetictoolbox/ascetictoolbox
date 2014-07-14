@@ -15,6 +15,7 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore;
 
+import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.configuration.ConfigurationException;
@@ -33,12 +34,22 @@ public class Configuration {
 
     static {
         try {
-            org.apache.commons.configuration.PropertiesConfiguration config = new PropertiesConfiguration(configFile);
+            PropertiesConfiguration config;
+            if (new File(configFile).exists()) {
+                config = new PropertiesConfiguration(configFile); 
+            } else {
+                config = new PropertiesConfiguration();
+                config.setFile(new File(configFile));
+            }
+            config.setAutoSave(true); //This will save the configuration file back to disk. In case the defaults need setting.
             databaseURL = config.getString("iaas.energy.modeller.db.url", databaseURL);
+            config.setProperty("iaas.energy.modeller.db.url", databaseURL);
             databaseDriver = config.getString("iaas.energy.modeller.db.driver", databaseDriver);
+            config.setProperty("iaas.energy.modeller.db.driver", databaseDriver);
             databasePassword = config.getString("iaas.energy.modeller.db.password", databasePassword);
+            config.setProperty("iaas.energy.modeller.db.password", databasePassword);
             databaseUser = config.getString("iaas.energy.modeller.db.user", databaseUser);
-            config.save(); //This will save the configuration file back to disk. In case the defaults need setting.
+            config.setProperty("iaas.energy.modeller.db.user", databaseUser);
         } catch (ConfigurationException ex) {
             Logger.getLogger(Configuration.class.getName()).log(Level.INFO, "Error loading the configuration of the IaaS energy modeller", ex);
         }

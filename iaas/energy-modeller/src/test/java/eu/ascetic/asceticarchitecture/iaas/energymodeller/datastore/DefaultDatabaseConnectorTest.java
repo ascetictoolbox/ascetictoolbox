@@ -21,8 +21,6 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HistoricUs
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 import org.junit.Test;
 
 /**
@@ -49,6 +47,7 @@ public class DefaultDatabaseConnectorTest {
         System.out.println("getHosts");
         DefaultDatabaseConnector instance = new DefaultDatabaseConnector();
         Collection<Host> result = instance.getHosts();
+        assert( result != null);
         assert (!result.isEmpty());
     }
 
