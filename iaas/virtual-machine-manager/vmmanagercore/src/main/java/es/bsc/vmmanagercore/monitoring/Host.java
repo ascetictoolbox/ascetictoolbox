@@ -22,19 +22,12 @@ public abstract class Host {
     protected double assignedMemoryMb;
     protected double assignedDiskGb;
 
-    // These reserved attributes are used when it has been decided to deploy a VM on a host, but
-    // the deployment has not been done yet
-    protected double reservedCpus;
-    protected int reservedMemoryMb;
-    protected int reservedDiskGb;
-
     /**
      * Class constructor
      * @param hostname host name
      */
     public Host(String hostname) {
         this.hostname = hostname;
-        reservedCpus = reservedMemoryMb = reservedDiskGb = 0;
     }
 
     /**
@@ -126,58 +119,21 @@ public abstract class Host {
      * @return number of available CPUs of the host
      */
     public double getFreeCpus() {
-        return totalCpus - assignedCpus - reservedCpus;
+        return totalCpus - assignedCpus;
     }
 
     /**
      * @return available memory of the host (in MB)
      */
     public double getFreeMemoryMb() {
-        return totalMemoryMb - assignedMemoryMb - reservedMemoryMb;
+        return totalMemoryMb - assignedMemoryMb;
     }
 
     /**
      * @return available disk space of the host (in GB)
      */
     public double getFreeDiskGb() {
-        return totalDiskGb - assignedDiskGb - reservedDiskGb;
-    }
-
-    public void resetReserved() {
-        reservedCpus = reservedMemoryMb = reservedDiskGb = 0;
-    }
-
-    public double getReservedCpus() {
-        return reservedCpus;
-    }
-
-    public void setReservedCpus(int reservedCpus) {
-        if (reservedCpus < 0) {
-            throw new IllegalArgumentException("The number of reserved cpus cannot be negative");
-        }
-        this.reservedCpus = reservedCpus;
-    }
-
-    public int getReservedMemoryMb() {
-        return reservedMemoryMb;
-    }
-
-    public void setReservedMemoryMb(int reservedMemoryMb) {
-        if (reservedMemoryMb < 0) {
-            throw new IllegalArgumentException("The amount of reserved memory cannot be negative");
-        }
-        this.reservedMemoryMb = reservedMemoryMb;
-    }
-
-    public int getReservedDiskGb() {
-        return reservedDiskGb;
-    }
-
-    public void setReservedDiskGb(int reservedDiskGb) {
-        if (reservedDiskGb < 0) {
-            throw new IllegalArgumentException("The amount of reserved disk cannot be negative");
-        }
-        this.reservedDiskGb = reservedDiskGb;
+        return totalDiskGb - assignedDiskGb;
     }
 
     /**
@@ -187,9 +143,9 @@ public abstract class Host {
      * @return the future load
      */
     public ServerLoad getFutureLoadIfVMDeployed(Vm vm) {
-        double cpus = getAssignedCpus() + getReservedCpus() + vm.getCpus();
-        double ramMb = getAssignedMemoryMb() + getReservedMemoryMb() + vm.getRamMb();
-        double diskGb = getAssignedDiskGb() + getReservedDiskGb() + vm.getDiskGb();
+        double cpus = getAssignedCpus() + vm.getCpus();
+        double ramMb = getAssignedMemoryMb() + vm.getRamMb();
+        double diskGb = getAssignedDiskGb() + vm.getDiskGb();
         return new ServerLoad(cpus/getTotalCpus(), ramMb/getTotalMemoryMb(), diskGb/getTotalDiskGb());
     }
 
@@ -206,9 +162,7 @@ public abstract class Host {
     }
 
     public ServerLoad getServerLoad() {
-        return new ServerLoad((assignedCpus + reservedCpus)/totalCpus,
-                (assignedMemoryMb + reservedMemoryMb)/totalMemoryMb,
-                (assignedDiskGb + reservedDiskGb)/totalDiskGb);
+        return new ServerLoad(assignedCpus/totalCpus, assignedMemoryMb/totalMemoryMb, assignedDiskGb/totalDiskGb);
     }
 
 }

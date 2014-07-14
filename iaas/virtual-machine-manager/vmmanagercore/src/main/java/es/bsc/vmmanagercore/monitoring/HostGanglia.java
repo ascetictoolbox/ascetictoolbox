@@ -67,7 +67,7 @@ public class HostGanglia extends Host {
      */
     @Override
     public double getFreeCpus() {
-        return totalCpus - getAssignedCpus() - reservedCpus;
+        return totalCpus - getAssignedCpus();
     }
 
     /**
@@ -75,7 +75,7 @@ public class HostGanglia extends Host {
      */
     @Override
     public double getFreeMemoryMb() {
-        return totalMemoryMb - getAssignedMemoryMb() - reservedMemoryMb;
+        return totalMemoryMb - getAssignedMemoryMb();
     }
 
     /**
@@ -83,7 +83,7 @@ public class HostGanglia extends Host {
      */
     @Override
     public double getFreeDiskGb() {
-        return totalDiskGb - getAssignedDiskGb() - reservedDiskGb;
+        return totalDiskGb - getAssignedDiskGb();
     }
 
 }

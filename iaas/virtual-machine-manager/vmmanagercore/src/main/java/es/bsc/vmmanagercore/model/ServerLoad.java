@@ -55,6 +55,18 @@ public class ServerLoad {
         this.diskLoad = diskLoad;
     }
 
+    public double unusedCpuPerc() {
+        return cpuLoad > 1 ? 0 : (1 - cpuLoad);
+    }
+
+    public double unusedRamPerc() {
+        return ramLoad > 1 ? 0 : (1 - ramLoad);
+    }
+
+    public double unusedDiskPerc() {
+        return diskLoad > 1 ? 0 : (1 - diskLoad);
+    }
+
     @Override
     public String toString() {
         return ReflectionToStringBuilder.toString(this);

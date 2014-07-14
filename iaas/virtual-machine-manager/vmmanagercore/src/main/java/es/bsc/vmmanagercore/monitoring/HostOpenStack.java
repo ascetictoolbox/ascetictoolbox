@@ -68,8 +68,7 @@ public class HostOpenStack extends Host {
                 jcm.getNovaApi().getHostAdministrationExtensionForZone(jcm.getZone());
 
         //get the information about the host resources
-        FluentIterable<? extends HostResourceUsage> hostResourcesInfo =
-                hostAdminApi.get().listResourceUsage(hostname);
+        FluentIterable<? extends HostResourceUsage> hostResourcesInfo = hostAdminApi.get().listResourceUsage(hostname);
 
         //get the assigned memory
         assignedMemoryMb = hostResourcesInfo.get(1).getMemoryMb();
@@ -104,7 +103,7 @@ public class HostOpenStack extends Host {
      */
     @Override
     public double getFreeCpus() {
-        return totalCpus - getAssignedCpus() - reservedCpus;
+        return totalCpus - getAssignedCpus();
     }
 
     /**
@@ -112,7 +111,7 @@ public class HostOpenStack extends Host {
      */
     @Override
     public double getFreeMemoryMb() {
-        return totalMemoryMb - getAssignedMemoryMb() - reservedMemoryMb;
+        return totalMemoryMb - getAssignedMemoryMb();
     }
 
     /**
@@ -120,7 +119,7 @@ public class HostOpenStack extends Host {
      */
     @Override
     public double getFreeDiskGb() {
-        return totalDiskGb - getAssignedDiskGb() - reservedDiskGb;
+        return totalDiskGb - getAssignedDiskGb();
     }
 
 }
