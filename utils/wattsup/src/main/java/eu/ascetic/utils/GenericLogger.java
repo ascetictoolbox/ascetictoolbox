@@ -27,10 +27,13 @@ import java.util.logging.Logger;
  * interrupt it.
  *
  * @author Richard Kavanagh
+ * @param <Type> This type is expected to be specified in any implementation of
+ * this abstract class. A print header and print body method is expected to be 
+ * implemented thus completing the ability to write the specified object to disk.
  */
 public abstract class GenericLogger<Type> implements Runnable {
 
-    private LinkedBlockingDeque<Type> queue = new LinkedBlockingDeque<>();
+    private final LinkedBlockingDeque<Type> queue = new LinkedBlockingDeque<>();
     private boolean stop = false;
     ResultsStore saveFile = null;
 
