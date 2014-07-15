@@ -28,3 +28,23 @@ ALTER TABLE host_calibration_data
 ADD CONSTRAINT fk_host_id
 FOREIGN KEY (host_id)
 REFERENCES host(host_id);
+
+CREATE TABLE IF NOT EXISTS host_measurement
+  (
+     measurement_id INT NOT NULL,
+     host_id   INT NOT NULL,
+     clock     BIGINT UNSIGNED,
+     energy    DOUBLE,
+     power     DOUBLE
+  );
+
+ALTER TABLE host_measurement
+ADD CONSTRAINT pk_measurementID PRIMARY KEY (measurement_id);
+
+ALTER TABLE `host_measurement` 
+CHANGE COLUMN `measurement_id` `measurement_id` INT(11) NOT NULL AUTO_INCREMENT ;
+
+ALTER TABLE host_measurement
+ADD CONSTRAINT fk_measurement_host_id
+FOREIGN KEY (host_id)
+REFERENCES host(host_id);

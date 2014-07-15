@@ -238,4 +238,23 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
         }
     }
 
+    @Override
+    public void writeHostHistoricData(Host host, long time, double power, double energy) {
+        connection = getConnection(connection);
+        if (connection == null) {
+            return;
+        }
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    "INSERT INTO host_measurement (host_id, clock, energy, power) VALUES (?, ?, ? , ?);");
+            preparedStatement.setInt(1, host.getId());
+            preparedStatement.setLong(2, time);
+            preparedStatement.setDouble(3, energy);            
+            preparedStatement.setDouble(4, power);
+            preparedStatement.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
 }

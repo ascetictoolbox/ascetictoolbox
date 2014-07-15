@@ -147,7 +147,7 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         List<Item> itemsList = client.getAllItems();
         for (Item i : itemsList) {
             Integer hostID = Integer.parseInt(i.getHostid());
-            HostMeasurement host = hostMeasurements.get(hostID);
+            HostMeasurement hostMeasurement = hostMeasurements.get(hostID);
             /**
              * Note: Additional hosts could be discovered using the following
              * code: host = new HostMeasurement(new
@@ -157,9 +157,15 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
              * This is the case if the host id in the metric does not match any
              * of the named hosts.
              */
-            if (host != null) {
-                host.setClock(i.getLastClock());
-                host.addMetric(i);
+            if (hostMeasurement != null) {
+                if (i.getLastClock() > hostMeasurement.getClock()) {
+                    /**
+                     * Ensures the clock value is the latest value seen. It represents 
+                     * the most upto date piece of data for a given host.
+                     */
+                    hostMeasurement.setClock(i.getLastClock());
+                }
+                hostMeasurement.addMetric(i);
             }
 
         }

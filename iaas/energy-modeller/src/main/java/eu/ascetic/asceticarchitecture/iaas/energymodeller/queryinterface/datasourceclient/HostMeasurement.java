@@ -182,7 +182,23 @@ public class HostMeasurement {
         this.clock = clock;
     }
     
+    /**
+     * This provides rapid access to power values from a host measurement.
+     * @return The power consumed when the measurement was taken.
+     */
+    public double getPower() {
+        return Double.parseDouble(this.getMetric("power").getLastValue());
+    }
     
+    /**
+     * This provides rapid access to energy value from a host measurement.
+     * @return The energy consumed when the measurement was taken, going back
+     * to an unspecified period of time. To be used like a meter reading that
+     * you might give to an energy company.
+     */
+    public double getEnergy() {
+        return Double.parseDouble(this.getMetric("energy").getLastValue());
+    }
     
     
 }
