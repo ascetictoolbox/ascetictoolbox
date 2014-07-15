@@ -26,10 +26,10 @@ import org.apache.commons.configuration.PropertiesConfiguration;
  */
 public class Configuration {
 
-    public static String databaseURL = "https://10.4.0.15/zabbix/api_jsonrpc.php";
+    public static String databaseURL = "jdbc:mysql://iaas-vm-dev:3306/ascetic-em";
     public static String databaseDriver = "com.mysql.jdbc.Driver";
-    public static String databaseUser = "iaas-user";
-    public static String databasePassword = "iaas-database";
+    public static String databaseUser = "ascetic-em";
+    public static String databasePassword = "em";
     public static final String configFile = "energymodeller.properties";
 
     static {
