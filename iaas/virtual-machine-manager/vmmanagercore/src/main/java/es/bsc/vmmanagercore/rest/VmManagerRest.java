@@ -23,7 +23,7 @@ public class VmManagerRest {
     private SchedulingAlgorithmCallsManager schedAlgCallsManager = new SchedulingAlgorithmCallsManager(vmManager);
     private NodeCallsManager nodeCallsManager = new NodeCallsManager(vmManager);
     private LogCallsManager logCallsManager = new LogCallsManager();
-    private EstimateCallsManager estimateCallsManager = new EstimateCallsManager(vmManager);
+    private EstimatesCallsManager estimatesCallsManager = new EstimatesCallsManager(vmManager);
 
 
     //================================================================================
@@ -177,7 +177,7 @@ public class VmManagerRest {
     @Path("/estimates")
     @Produces(MediaType.TEXT_PLAIN)
     public String getEstimates(String vms) {
-        return estimateCallsManager.getEstimates(vms);
+        return estimatesCallsManager.getEstimates(vms);
     }
 
 }

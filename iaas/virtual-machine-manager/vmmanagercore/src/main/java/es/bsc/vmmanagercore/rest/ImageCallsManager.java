@@ -1,12 +1,10 @@
 package es.bsc.vmmanagercore.rest;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import es.bsc.vmmanagercore.manager.VmManager;
 import es.bsc.vmmanagercore.model.ImageToUpload;
-import es.bsc.vmmanagercore.model.ImageUploaded;
+import es.bsc.vmmanagercore.model.ListImagesUploaded;
 
 import javax.ws.rs.WebApplicationException;
 
@@ -14,12 +12,10 @@ import javax.ws.rs.WebApplicationException;
  * This class implements the REST calls that are related with VM images.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
- *
  */
 public class ImageCallsManager {
 
     private Gson gson = new Gson();
-    private static JsonParser parser = new JsonParser();
     private VmManager vmManager;
 
     public ImageCallsManager(VmManager vmManager) {
@@ -32,13 +28,7 @@ public class ImageCallsManager {
      * @return the JSON document
      */
     public String getAllImages() {
-        JsonArray jsonImagesArray = new JsonArray();
-        for (ImageUploaded image: vmManager.getVmImages()) {
-            jsonImagesArray.add(parser.parse(gson.toJson(image, ImageUploaded.class)));
-        }
-        JsonObject result = new JsonObject();
-        result.add("images", jsonImagesArray);
-        return result.toString();
+        return gson.toJson(new ListImagesUploaded(vmManager.getVmImages()));
     }
 
     /**

@@ -12,7 +12,6 @@ import javax.ws.rs.WebApplicationException;
  * This class implements the REST calls that are related with scheduling algorithms.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
- *
  */
 public class SchedulingAlgorithmCallsManager {
 

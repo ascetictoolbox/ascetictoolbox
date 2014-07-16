@@ -295,7 +295,7 @@ public class VmManager {
      * @param vmsToBeEstimated the VMs
      * @return a list with price and energy estimates for each VM
      */
-    public List<VmEstimate> getVmEstimates(List<VmToBeEstimated> vmsToBeEstimated) {
+    public ListVmEstimates getVmEstimates(List<VmToBeEstimated> vmsToBeEstimated) {
         return estimatesGenerator.getVmEstimates(
                 scheduler.chooseBestDeploymentPlan(vmsToBeEstimatedToVms(vmsToBeEstimated), hosts), getAllVms());
     }
