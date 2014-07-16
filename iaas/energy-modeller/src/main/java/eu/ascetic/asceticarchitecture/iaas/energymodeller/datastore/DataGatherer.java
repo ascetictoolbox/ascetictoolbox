@@ -50,6 +50,7 @@ public class DataGatherer implements Runnable {
      * @param connector The database connector used to do this. It is best to
      * give this component its own database connection as it will make heavy use
      * of it.
+     * @param calibrator The calibrator to call in the event a new host is detected.
      */
     public DataGatherer(HostDataSource datasource, DatabaseConnector connector, Calibrator calibrator) {
         this.datasource = datasource;
