@@ -42,7 +42,7 @@ body {
  position: static;
 }
 
-@media (min-width: 979px) {
+@media (min-width: 720px) {
   #sidebar.affix-top {
     position: static;
   	margin-top:30px;

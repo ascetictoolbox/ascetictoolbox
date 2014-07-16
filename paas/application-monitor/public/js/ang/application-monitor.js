@@ -1,6 +1,6 @@
 (function() {
 
-	var appm = angular.module('ApplicationMonitor',["Dashboard"]);
+	var appm = angular.module('ApplicationMonitor',["Dashboard","GlobalView","Dashboard"]);
 
 	appm.controller('PageController',  function() {
 		this.page = 'global.html';

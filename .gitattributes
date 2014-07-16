@@ -694,6 +694,7 @@ paas/application-monitor/app/api/Events.java -text
 paas/application-monitor/app/api/Metrics.java -text
 paas/application-monitor/app/api/Misc.java -text
 paas/application-monitor/app/api/Queries.java -text
+paas/application-monitor/app/api/Status.java -text
 paas/application-monitor/app/es/bsc/amon/DBManager.java -text
 paas/application-monitor/app/es/bsc/amon/Global.java -text
 paas/application-monitor/app/es/bsc/amon/controller/AppsDBMapper.java -text
@@ -894,17 +895,14 @@ paas/application-monitor/public/indexback.html -text
 paas/application-monitor/public/js/ang/application-monitor.js -text
 paas/application-monitor/public/js/ang/dashboard.js -text
 paas/application-monitor/public/js/ang/global-view.js -text
-paas/application-monitor/public/js/global.js -text
 paas/application-monitor/public/lib/blank.html -text
 paas/application-monitor/public/lib/buttons.html -text
 paas/application-monitor/public/lib/css/bootstrap.css -text
 paas/application-monitor/public/lib/css/bootstrap.min.css -text
-paas/application-monitor/public/lib/css/cubeGraph.css -text
 paas/application-monitor/public/lib/css/plugins/dataTables/dataTables.bootstrap.css -text
 paas/application-monitor/public/lib/css/plugins/morris/morris-0.4.3.min.css -text
 paas/application-monitor/public/lib/css/plugins/social-buttons/social-buttons.css -text
 paas/application-monitor/public/lib/css/plugins/timeline/timeline.css -text
-paas/application-monitor/public/lib/css/rickshaw.min.css -text
 paas/application-monitor/public/lib/css/sb-admin.css -text
 paas/application-monitor/public/lib/css/styles.css -text
 paas/application-monitor/public/lib/dashboard_was_index.html -text
@@ -952,11 +950,11 @@ paas/application-monitor/public/lib/index.html -text
 paas/application-monitor/public/lib/js/angular.min.js -text
 paas/application-monitor/public/lib/js/bootstrap.js -text
 paas/application-monitor/public/lib/js/bootstrap.min.js -text
-paas/application-monitor/public/lib/js/cubism.v1.min.js -text
 paas/application-monitor/public/lib/js/d3.v3.min.js -text
 paas/application-monitor/public/lib/js/demo/dashboard-demo.js -text
 paas/application-monitor/public/lib/js/demo/flot-demo.js -text
 paas/application-monitor/public/lib/js/demo/morris-demo.js -text
+paas/application-monitor/public/lib/js/highcharts-custom.js -text
 paas/application-monitor/public/lib/js/jquery-1.10.2.js -text
 paas/application-monitor/public/lib/js/jquery.2.0.2.min.js -text
 paas/application-monitor/public/lib/js/plugins/dataTables/dataTables.bootstrap.js -text
@@ -969,7 +967,6 @@ paas/application-monitor/public/lib/js/plugins/flot/jquery.flot.tooltip.min.js -
 paas/application-monitor/public/lib/js/plugins/metisMenu/jquery.metisMenu.js -text
 paas/application-monitor/public/lib/js/plugins/morris/morris.js -text
 paas/application-monitor/public/lib/js/plugins/morris/raphael-2.1.0.min.js -text
-paas/application-monitor/public/lib/js/rickshaw.min.js -text
 paas/application-monitor/public/lib/js/sb-admin.js -text
 paas/application-monitor/public/lib/js/ui-bootstrap-0.11.0.min.js -text
 paas/application-monitor/public/lib/js/ui-bootstrap-custom-0.10.0.js -text

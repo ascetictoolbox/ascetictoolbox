@@ -12,7 +12,7 @@ footer {
 	max-height: 25%;
 }
 
-@media screen and (min-width: 979px) {
+@media screen and (min-width: 720px) {
 	.bsc-apps-list {
 		position: fixed;
 		max-height: 100%;
