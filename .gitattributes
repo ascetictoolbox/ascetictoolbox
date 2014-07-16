@@ -954,7 +954,8 @@ paas/application-monitor/public/lib/js/d3.v3.min.js -text
 paas/application-monitor/public/lib/js/demo/dashboard-demo.js -text
 paas/application-monitor/public/lib/js/demo/flot-demo.js -text
 paas/application-monitor/public/lib/js/demo/morris-demo.js -text
-paas/application-monitor/public/lib/js/highcharts-custom.js -text
+paas/application-monitor/public/lib/js/highcharts-more.js -text
+paas/application-monitor/public/lib/js/highcharts.js -text
 paas/application-monitor/public/lib/js/jquery-1.10.2.js -text
 paas/application-monitor/public/lib/js/jquery.2.0.2.min.js -text
 paas/application-monitor/public/lib/js/plugins/dataTables/dataTables.bootstrap.js -text
@@ -968,6 +969,7 @@ paas/application-monitor/public/lib/js/plugins/metisMenu/jquery.metisMenu.js -te
 paas/application-monitor/public/lib/js/plugins/morris/morris.js -text
 paas/application-monitor/public/lib/js/plugins/morris/raphael-2.1.0.min.js -text
 paas/application-monitor/public/lib/js/sb-admin.js -text
+paas/application-monitor/public/lib/js/solid-gauge.src.js -text
 paas/application-monitor/public/lib/js/ui-bootstrap-0.11.0.min.js -text
 paas/application-monitor/public/lib/js/ui-bootstrap-custom-0.10.0.js -text
 paas/application-monitor/public/lib/js/ui-bootstrap-custom-tpls-0.10.0.js -text
