@@ -63,9 +63,9 @@ public class EnergyModeller {
     private EnergyPredictorInterface predictor = new DummyEnergyPredictor();
     private HostDataSource datasource = new ZabbixDataSourceAdaptor();
     private DatabaseConnector database = new DefaultDatabaseConnector();
-    private DataGatherer dataGatherer = new DataGatherer(datasource, new DefaultDatabaseConnector());
+    private Calibrator calibrator = new Calibrator(datasource);    
+    private DataGatherer dataGatherer = new DataGatherer(datasource, new DefaultDatabaseConnector(), calibrator);
     private Thread databaseGatherThread;
-    private Calibrator calibrator = new Calibrator(datasource);
     private HashSet<VmDeployed> vmDeployedList = new HashSet<>();
 
     public EnergyModeller() {

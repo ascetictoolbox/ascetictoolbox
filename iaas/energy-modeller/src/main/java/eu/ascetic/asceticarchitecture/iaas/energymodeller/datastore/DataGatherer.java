@@ -15,6 +15,7 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore;
 
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration.Calibrator;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostMeasurement;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
@@ -35,6 +36,7 @@ public class DataGatherer implements Runnable {
 
     private HostDataSource datasource;
     private DatabaseConnector connector;
+    private Calibrator calibrator;
     private boolean running = true;
     private int faultCount = 0;
     private HashMap<String, Host> knownHosts = new HashMap<>();
@@ -49,9 +51,10 @@ public class DataGatherer implements Runnable {
      * give this component its own database connection as it will make heavy use
      * of it.
      */
-    public DataGatherer(HostDataSource datasource, DatabaseConnector connector) {
+    public DataGatherer(HostDataSource datasource, DatabaseConnector connector, Calibrator calibrator) {
         this.datasource = datasource;
         this.connector = connector;
+        this.calibrator = calibrator;
         for (Host dbHost : connector.getHosts()) {
             knownHosts.put(dbHost.getHostName(), dbHost);
         }
@@ -92,12 +95,9 @@ public class DataGatherer implements Runnable {
             } else {
                 List<Host> newHosts = discoverNewHosts(hostList);
                 connector.setHosts(newHosts);
-                /**
-                 * TODO consider forcing calibration here or notifying that it needs
-                 * to be done.
-                 */
                 for (Host host : newHosts) {
                     knownHosts.put(host.getHostName(), host);
+                    calibrator.calibrateHostEnergyData(host);
                 }
             }
             for (Host host : hostList) {
@@ -144,9 +144,12 @@ public class DataGatherer implements Runnable {
     }
 
     /**
-     * This compares a list of hosts that has been found to the known list of hosts.
+     * This compares a list of hosts that has been found to the known list of
+     * hosts.
+     *
      * @param newList The new list of hosts.
-     * @return The list of hosts that were otherwise unknown to the data gatherer.
+     * @return The list of hosts that were otherwise unknown to the data
+     * gatherer.
      */
     private List<Host> discoverNewHosts(List<Host> newList) {
         List<Host> answer = new ArrayList<>();
