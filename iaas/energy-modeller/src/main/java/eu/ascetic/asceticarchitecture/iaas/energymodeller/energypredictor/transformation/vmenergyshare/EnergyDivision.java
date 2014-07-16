@@ -32,7 +32,7 @@ import java.util.HashMap;
 public class EnergyDivision {
     
     private Host host;
-    private HashMap<VM,Double> vmWeight;
+    private HashMap<VM,Double> vmWeight = new HashMap<>();
     private double sumOfWeights = 0; // A cached sum of all weights assigned.
 
     /**
