@@ -22,6 +22,9 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
 /**
+ * This gets the configuration data for the energy modellers database.
+ * If the settings file is absent a fresh copy will be created with default
+ * values.
  * @author Richard
  */
 public class Configuration {

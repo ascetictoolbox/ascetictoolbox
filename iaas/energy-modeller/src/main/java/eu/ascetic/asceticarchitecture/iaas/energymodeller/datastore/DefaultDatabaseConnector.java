@@ -305,7 +305,7 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
      * This returns the historic data for a given host, in a specified time period.
      * @param host The host machine to get the data for.
      * @param timePeriod The start and end period for which to query for. If
-     * null all records will be used.
+     * null all records will be returned.
      * @return The energy readings taken for a given host.
      */
     @Override

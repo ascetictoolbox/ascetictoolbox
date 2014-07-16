@@ -24,20 +24,81 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * This interface for connecting to the background database with the aim of returning 
- * historical information and host calibration data.
+ * This interface for connecting to the background database with the aim of
+ * returning historical information and host calibration data.
+ *
  * @author Richard
  */
 public interface DatabaseConnector {
-    
+
+    /**
+     * This list all the hosts the energy modeller has data for in its backing
+     * store.
+     *
+     * @return The list of hosts
+     */
     public Collection<Host> getHosts();
+
+    /**
+     * This adds set of host machines to the database. If the host already
+     * exists the values contained will be overwritten.
+     * @param hosts The set of hosts to write to the database.
+     */    
     public void setHosts(Collection<Host> hosts);
+    /**
+     * This gets the calibration data that indicates the performance properties
+     * of a given set of host machines.
+     * @param hosts The set of hosts to get the data for.
+     * @return The calibration data for the named hosts.
+     */
     public Collection<Host> getHostCalibrationData(Collection<Host> hosts);
+
+     /**
+     * This gets the calibration data that indicates the performance properties
+     * of a given host machine.
+     * @param host The host to get the data for.
+     * @return 
+     */   
     public Host getHostCalibrationData(Host host);
+
+    /**
+     * This writes to the database for a named host its calibration data
+     * @param host The host to set the calibration data for.
+     */
     public void setHostCalibrationData(Host host);
+
+    /**
+     * This returns the historic data for a VM
+     *
+     * @param VM The VM to get the historic data for
+     * @return The list of historical data for the named VM
+     */    
     public HistoricUsageRecord getVmHistoryData(VmDeployed VM);
+
+    /**
+     * This writes historic data for a given host to the database.
+     * @param host The host to write the data for
+     * @param time The time when the measurement was taken.
+     * @param power The power reading for the host.
+     * @param energy The current reading for the energy used. Note: this value is 
+     * to be treated like a meter reading for an energy firm. The point at which 0
+     * energy usage occurred is an arbritrary point in the past. Two historical values
+     * can therefore be used to indicate the energy used between the two points in time.
+     */    
     public void writeHostHistoricData(Host host, long time, double power, double energy);
+
+    /**
+     * This returns the historic data for a given host, in a specified time period.
+     * @param host The host machine to get the data for.
+     * @param timePeriod The start and end period for which to query for. If
+     * null all records will be returned.
+     * @return The energy readings taken for a given host.
+     */    
     public List<HostEnergyRecord> getHostHistoryData(Host host, TimePeriod timePeriod);
-    public void closeConnection();
     
+    /**
+     * This closes the database connection. It will be reopened if a query is called.
+     */
+    public void closeConnection();
+
 }
