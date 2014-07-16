@@ -9,6 +9,11 @@
 	<name>ASCETiC Reference Architecture</name>
 	<description>The parent project for the ASCETiC reference architecture.</description>
 
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<jenkins.project.name>ASCETiC Reference Architecture</jenkins.project.name>
+	</properties>
+
 	<repositories>
 		<!-- Override (disable) central repo -->
 		<repository>
@@ -101,9 +106,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
-
 </project>
