@@ -15,27 +15,35 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor;
 
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.training.DefaultEnergyModelTrainer;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.training.EnergyModelTrainerInterface;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energymodel.EnergyModel;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
 import java.util.Collection;
 
 /**
- * This implements the default energy predictor for the ASCETiC project. 
+ * This implements the default energy predictor for the ASCETiC project.
+ *
  * @author Richard
  */
 public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
 
+    private EnergyModelTrainerInterface trainer = new DefaultEnergyModelTrainer();
+
     @Override
     public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines) {
-        //TODO implement the model here.
+        //TODO Write get host predicted energy i.e. implement the model here.
+        EnergyModel model = trainer.retrieveModel(host);
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public EnergyUsagePrediction getVMPredictedEnergy(VM vm, Collection<VM> virtualMachines, Host host) {
-        //TODO implement the model here.
+        //TODO Write get VM predicted energy i.e. implement the model here.
+        EnergyModel model = trainer.retrieveModel(host);
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
+
 }
