@@ -3,7 +3,7 @@ package es.bsc.vmmanagercore.pricingmodeller;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.IaaSPricingModeller;
 
 /**
- * Connector for the pricing modeller.
+ * Connector for the pricing modeller developed by AUEB.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  */

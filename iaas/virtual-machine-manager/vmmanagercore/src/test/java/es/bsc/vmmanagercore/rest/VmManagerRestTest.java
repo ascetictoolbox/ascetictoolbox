@@ -212,6 +212,12 @@ public class VmManagerRestTest {
     }
 
     @Test
+    public void getAllVmsOfNonExistingAppReturnsEmptyArray() {
+        String vmsOfApplicationJson = get(testDeploymentBaseUrl + "vmsapp/nonExistingApp").asString();
+        assertEquals(0, gson.fromJson(vmsOfApplicationJson, ListVmsDeployed.class).getVms().size());
+    }
+
+    @Test
     public void deleteAllVmsOfAnApplication() {
         // Deploy 2 VMs (one of them is part of "myApplication1", and the other is part of "myApplication2"
         deployTestVms();
@@ -251,6 +257,14 @@ public class VmManagerRestTest {
         List<String> idsToDelete = new ArrayList<>();
         idsToDelete.add(idVmApp2);
         deleteVms(idsToDelete);
+    }
+
+    @Test
+    public void deleteAllVmsOfNonExistingAppDoesNotReturnError() {
+        expect()
+            .statusCode(204)
+        .when()
+            .delete(testDeploymentBaseUrl + "vmsapp/nonExistingApp");
     }
     
     

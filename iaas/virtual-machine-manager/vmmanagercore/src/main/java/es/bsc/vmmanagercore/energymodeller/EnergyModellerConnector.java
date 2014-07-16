@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Connector for the energy modeller developed by University of Leeds and AUEB.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  */
