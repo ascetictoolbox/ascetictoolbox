@@ -1,12 +1,13 @@
 package es.bsc.vmmanagercore.rest;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import es.bsc.vmmanagercore.manager.VmManager;
-import es.bsc.vmmanagercore.model.Vm;
-import es.bsc.vmmanagercore.model.VmDeployed;
+import es.bsc.vmmanagercore.model.ListVms;
+import es.bsc.vmmanagercore.model.ListVmsDeployed;
 
 import javax.ws.rs.WebApplicationException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,7 +19,6 @@ import java.util.List;
 public class VmCallsManager {
 
     private Gson gson = new Gson();
-    private static JsonParser parser = new JsonParser();
     private VmManager vmManager;
 
     public VmCallsManager(VmManager vmManager) {
@@ -31,32 +31,23 @@ public class VmCallsManager {
      * @return the JSON document
      */
     public String getAllVms() {
-        JsonArray jsonVmsArray = new JsonArray();
-        for (VmDeployed vmDeployed: vmManager.getAllVms()) {
-            jsonVmsArray.add(parser.parse(gson.toJson(vmDeployed, VmDeployed.class)));
-        }
-        JsonObject result = new JsonObject();
-        result.add("vms", jsonVmsArray);
-        return result.toString();
+        return gson.toJson(new ListVmsDeployed(vmManager.getAllVms()));
     }
 
     /**
      * Deploys a VM or set of VMs specified in a JSON document.
      *
-     * @param vmDescriptions the JSON document containing the VMs to be deployed
+     * @param vms the JSON document containing the VMs to be deployed
      * @return a JSON document that contains, for each VM deployed, its ID
      */
-    public String deployVMs(String vmDescriptions) {
-        // Get the JSON object that contains the VMs that need to be deployed
-        JsonObject vmsJson = gson.fromJson(vmDescriptions, JsonObject.class);
-
+    public String deployVMs(String vms) {
         // Check if the JSON that contains the VMs is specified correctly
-        if (!VmmRestInputValidator.checkVmDescriptions(vmsJson)) {
+        if (!VmmRestInputValidator.checkVmDescriptions(gson.fromJson(vms, JsonObject.class))) {
             throw new WebApplicationException(400);
         }
 
         // Deploy the VMs
-        List<String> idsVmsDeployed = vmManager.deployVms(getListOfVmsFromJsonInput(vmsJson));
+        List<String> idsVmsDeployed = vmManager.deployVms(gson.fromJson(vms, ListVms.class).getVms());
 
         // Return the JSON with the IDs of the VMs deployed
         return getJsonResponseFromListOfVmsIds(idsVmsDeployed).toString();
@@ -118,13 +109,7 @@ public class VmCallsManager {
      * @return the JSON document
      */
     public String getVmsOfApp(String appId) {
-        JsonArray vmsDeployedJsonArray = new JsonArray();
-        for (VmDeployed vmDeployed: vmManager.getVmsOfApp(appId)) {
-            vmsDeployedJsonArray.add(gson.toJsonTree(vmDeployed, VmDeployed.class));
-        }
-        JsonObject result = new JsonObject();
-        result.add("vms", vmsDeployedJsonArray);
-        return result.toString();
+        return gson.toJson(new ListVmsDeployed(vmManager.getVmsOfApp(appId)));
     }
 
     /**
@@ -134,20 +119,6 @@ public class VmCallsManager {
      */
     public void deleteVmsOfApp(String appId) {
         vmManager.deleteVmsOfApp(appId);
-    }
-
-    /**
-     * Returns a list of VMs from a JSON object.
-     *
-     * @param vmsJson the JSON object
-     * @return the list of VMs
-     */
-    private List<Vm> getListOfVmsFromJsonInput(JsonObject vmsJson) {
-        List<Vm> result = new ArrayList<>();
-        for (JsonElement vmJson: vmsJson.getAsJsonArray("vms")) {
-            result.add(gson.fromJson(vmJson, Vm.class));
-        }
-        return result;
     }
 
     /**

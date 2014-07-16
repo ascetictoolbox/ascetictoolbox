@@ -2,10 +2,7 @@ package es.bsc.vmmanagercore.rest;
 
 import com.google.gson.*;
 import es.bsc.vmmanagercore.manager.VmManagerConfiguration;
-import es.bsc.vmmanagercore.model.ImageToUpload;
-import es.bsc.vmmanagercore.model.ImageUploaded;
-import es.bsc.vmmanagercore.model.Vm;
-import es.bsc.vmmanagercore.model.VmDeployed;
+import es.bsc.vmmanagercore.model.*;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -51,12 +48,10 @@ public class VmManagerRestTest {
 
         // Save IDs of existing VMs before running the tests
         String json = get(testDeploymentBaseUrl + "vms/").asString();
-        JsonObject jsonObject = gson.fromJson(json, JsonObject.class);
-        JsonArray jsonVmsArray = jsonObject.get("vms").getAsJsonArray();
-        for (JsonElement vmJson: jsonVmsArray) {
-            VmDeployed vm = gson.fromJson(vmJson, VmDeployed.class);
-            idsVmsDeployedBeforeTests.add(vm.getId());
+        for (VmDeployed vmDeployed: gson.fromJson(json, ListVmsDeployed.class).getVms()) {
+            idsVmsDeployedBeforeTests.add(vmDeployed.getId());
         }
+
     }
 
     @AfterClass
