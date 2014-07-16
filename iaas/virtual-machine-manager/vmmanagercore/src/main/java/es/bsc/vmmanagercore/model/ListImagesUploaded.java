@@ -16,4 +16,8 @@ public class ListImagesUploaded {
         this.images = images;
     }
 
+    public List<ImageUploaded> getImages() {
+        return images;
+    }
+
 }

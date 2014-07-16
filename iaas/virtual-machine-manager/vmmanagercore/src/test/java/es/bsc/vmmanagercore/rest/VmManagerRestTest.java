@@ -30,41 +30,17 @@ public class VmManagerRestTest {
     private static Gson gson = new Gson();
     private static JsonParser parser = new JsonParser();
 
-    private static void initializeAttributesFromConfigFile() {
-        VmManagerConfiguration conf = VmManagerConfiguration.getInstance();
-        testImageUrl = conf.testingImageUrl;
-        testImageId = conf.testingImageId;
-        testImageName = conf.testingImageName;
-        testDeploymentBaseUrl = conf.testingDeploymentBaseUrl;
-    }
-
     @BeforeClass
     public static void setUpBeforeClass() {
         initializeAttributesFromConfigFile();
-
-        // Create 2 VM descriptions to use in the tests
-        vmDescription1 = new Vm("vm1", testImageId, 2, 1024, 1, null, "myApplication1");
-        vmDescription2 = new Vm("vm2", testImageId, 4, 2048, 2, null, "myApplication2");
-
-        // Save IDs of existing VMs before running the tests
-        String json = get(testDeploymentBaseUrl + "vms/").asString();
-        for (VmDeployed vmDeployed: gson.fromJson(json, ListVmsDeployed.class).getVms()) {
-            idsVmsDeployedBeforeTests.add(vmDeployed.getId());
-        }
-
+        createVmDescriptionsToUseInTests();
+        idsVmsDeployedBeforeTests = getIdsExistingVms();
     }
 
     @AfterClass
     public static void tearDownAfterClass() {
         // Make sure that all the VMs that existed before the tests are still there
-        String json = get(testDeploymentBaseUrl + "vms/").asString();
-        List<String> idsVmsDeployedAfterTests = new ArrayList<>();
-        JsonObject jsonObject = gson.fromJson(json, JsonObject.class);
-        JsonArray jsonVmsArray = jsonObject.get("vms").getAsJsonArray();
-        for (JsonElement vmJson: jsonVmsArray) {
-            VmDeployed vm = gson.fromJson(vmJson, VmDeployed.class);
-            idsVmsDeployedAfterTests.add(vm.getId());
-        }
+        List<String> idsVmsDeployedAfterTests = getIdsExistingVms();
         for (String idVmDeployedBeforeTests: idsVmsDeployedBeforeTests) {
             assertTrue(idsVmsDeployedAfterTests.contains(idVmDeployedBeforeTests));
         }
@@ -86,19 +62,11 @@ public class VmManagerRestTest {
             .body(getValidJsonWithTwoVmsToDeploy())
         .post(testDeploymentBaseUrl + "vms/");
 
-        // Check that the response for the get operation contains 2 IDs
-        String json = get(testDeploymentBaseUrl + "vms/").asString();
-        List<String> idsVmsDeployed = new ArrayList<>();
-        JsonObject jsonObject = gson.fromJson(json, JsonObject.class);
-        JsonArray jsonVmsArray = jsonObject.get("vms").getAsJsonArray();
-        for (JsonElement vmJson: jsonVmsArray) {
-            VmDeployed vmDeployed = gson.fromJson(vmJson, VmDeployed.class);
-            idsVmsDeployed.add(vmDeployed.getId());
-        }
-        assertEquals(2 + idsVmsDeployedBeforeTests.size(), idsVmsDeployed.size());
+        // Check that the response for the get operation contains 2 IDs + the ones that existed before the tests
+        assertEquals(2 + idsVmsDeployedBeforeTests.size(), getIdsExistingVms().size());
 
         // Destroy the VMs deployed in this test
-        deleteVms(idsVmsDeployed);
+        deleteVms(getIdsExistingVms());
     }
     
     @Test
@@ -228,10 +196,8 @@ public class VmManagerRestTest {
         // Get the IDs of the VMs that are part of the application "myApplication1"
         String vmsOfApplicationJson = get(testDeploymentBaseUrl + "vmsapp/myApplication1").asString();
         List<String> idsVmsOfApp = new ArrayList<>();
-        JsonObject jsonObject = gson.fromJson(vmsOfApplicationJson, JsonObject.class);
-        JsonArray jsonVmsArray = jsonObject.get("vms").getAsJsonArray();
-        for (JsonElement vmJson: jsonVmsArray) {
-            idsVmsOfApp.add(gson.fromJson(vmJson, VmDeployed.class).getId());
+        for (VmDeployed vmDeployed: gson.fromJson(vmsOfApplicationJson, ListVmsDeployed.class).getVms()) {
+            idsVmsOfApp.add(vmDeployed.getId());
         }
 
         // Check that only one of the VMs is part of "myApplication1"
@@ -299,14 +265,16 @@ public class VmManagerRestTest {
 
         // Check that the response for the get operation contains the image uploaded
         String imagesJson = get(testDeploymentBaseUrl + "images/").asString();
-        JsonObject jsonObject = gson.fromJson(imagesJson, JsonObject.class);
-        JsonArray jsonImagesArray = jsonObject.get("images").getAsJsonArray();
-        for (JsonElement imageJson: jsonImagesArray) {
-            ImageUploaded image = gson.fromJson(imageJson, ImageUploaded.class);
-            if (idUploadedImage.equals(image.getId())) {
-                assertEquals(testImageName, image.getName());
+
+        // Make sure that the image uploaded exists and that it was created with the right name
+        boolean imageFound = false;
+        for (ImageUploaded imageUploaded: gson.fromJson(imagesJson, ListImagesUploaded.class).getImages()) {
+            if (idUploadedImage.equals(imageUploaded.getId())) {
+                imageFound = true;
+                assertEquals(testImageName, imageUploaded.getName());
             }
         }
+        assertTrue(imageFound);
 
         // Delete the image created in this test
         delete(testDeploymentBaseUrl + "images/" + idUploadedImage);
@@ -340,8 +308,7 @@ public class VmManagerRestTest {
 
         // Get the image by ID and check that it was created correctly
         String imageJson = get(testDeploymentBaseUrl + "images/" + idUploadedImage).asString();
-        ImageUploaded image = gson.fromJson(imageJson, ImageUploaded.class);
-        assertEquals(testImageName, image.getName());
+        assertEquals(testImageName, gson.fromJson(imageJson, ImageUploaded.class).getName());
 
         // Delete the image created in this test
         delete(testDeploymentBaseUrl + "images/" + idUploadedImage);
@@ -427,6 +394,28 @@ public class VmManagerRestTest {
     //================================================================================
     // Private methods
     //================================================================================
+
+    private static void initializeAttributesFromConfigFile() {
+        VmManagerConfiguration conf = VmManagerConfiguration.getInstance();
+        testImageUrl = conf.testingImageUrl;
+        testImageId = conf.testingImageId;
+        testImageName = conf.testingImageName;
+        testDeploymentBaseUrl = conf.testingDeploymentBaseUrl;
+    }
+
+    private static void createVmDescriptionsToUseInTests() {
+        vmDescription1 = new Vm("vm1", testImageId, 2, 1024, 1, null, "myApplication1");
+        vmDescription2 = new Vm("vm2", testImageId, 4, 2048, 2, null, "myApplication2");
+    }
+
+    private static List<String> getIdsExistingVms() {
+        List<String> result = new ArrayList<>();
+        String json = get(testDeploymentBaseUrl + "vms/").asString();
+        for (VmDeployed vmDeployed: gson.fromJson(json, ListVmsDeployed.class).getVms()) {
+            result.add(vmDeployed.getId());
+        }
+        return result;
+    }
 
     private String getValidJsonWithTwoVmsToDeploy() {
         JsonObject vm1Json = (JsonObject) parser.parse(gson.toJson(vmDescription1, Vm.class));
@@ -522,5 +511,4 @@ public class VmManagerRestTest {
         // Return the ID of the image uploaded
         return gson.fromJson(jsonString, JsonObject.class).get("id").getAsString();
     }
-
 }
