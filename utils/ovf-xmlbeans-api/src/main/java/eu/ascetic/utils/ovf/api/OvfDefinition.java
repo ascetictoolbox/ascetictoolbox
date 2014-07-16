@@ -23,6 +23,8 @@ import org.dmtf.schemas.ovf.envelope.x1.XmlBeanVirtualSystemCollectionType;
 import eu.ascetic.utils.ovf.api.AbstractElement;
 import eu.ascetic.utils.ovf.api.factories.OvfDefinitionFactory;
 
+import some.random.packages;
+
 /**
  * @author Django Armstrong (ULeeds)
  * 
