@@ -88,18 +88,7 @@ public class DataGatherer implements Runnable {
          */
         while (running) {
             List<Host> hostList = datasource.getHostList();
-            //Perform a refresh to make sure the host has been written to backing store
-            if (hostList == null) {
-                knownHosts = toHashMap(hostList);
-                connector.setHosts(hostList);
-            } else {
-                List<Host> newHosts = discoverNewHosts(hostList);
-                connector.setHosts(newHosts);
-                for (Host host : newHosts) {
-                    knownHosts.put(host.getHostName(), host);
-                    calibrator.calibrateHostEnergyData(host);
-                }
-            }
+            refreshKnownHostList(hostList);
             for (Host host : hostList) {
                 HostMeasurement measurement = datasource.getHostData(host);
                 /**
@@ -141,6 +130,25 @@ public class DataGatherer implements Runnable {
             answer.put(host.getHostName(), host);
         }
         return answer;
+    }
+    
+    /**
+     * This sets and refreshes the knownHosts list in the data gatherer.
+     * @param hostList  The list of host gained from the data source.
+     */
+    private void refreshKnownHostList(List<Host> hostList) {
+                    //Perform a refresh to make sure the host has been written to backing store
+            if (knownHosts == null) {
+                knownHosts = toHashMap(hostList);
+                connector.setHosts(hostList);
+            } else {
+                List<Host> newHosts = discoverNewHosts(hostList);
+                connector.setHosts(newHosts);
+                for (Host host : newHosts) {
+                    knownHosts.put(host.getHostName(), host);
+                    calibrator.calibrateHostEnergyData(host);
+                }
+            }
     }
 
     /**
