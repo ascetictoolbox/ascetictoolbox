@@ -1,24 +1,7 @@
 <!--main-->
-
 <div class="row">
-	<!--left-->
-	<div class="col-md-3" id="leftCol">
-		<div class="panel panel-primary bsc-apps-list">
-			<div class="panel-heading">Registerd Apps</div>
-			<div class="panel-body container-fluid" ng-controller="AppsListController as alc">
-				<ul ng-repeat="(appName,nodes) in alc.appsTree">
-					<li>{{appName}}
-						<ul ng-repeat="node in nodes">
-							<li>{{node}}</li>
-						</ul>
-					</li>
-				</ul>
-			</div>
-		</div>
-	</div><!--/left-->
 
 	<!--right-->
-	<div class="col-md-9">
 		<div class="row" ng-controller="GraphicsPanelController as gpc">
 			<div class="col-md-12 ">
 				<button type="button" class="btn btn-default" ng-click="gpc.addNewPanel()">
@@ -41,14 +24,8 @@
 				</div>
 			</div>
 		</div>
-	</div><!--/right-->
 </div><!--/row-->
 </div><!--/container-->
 
-<!--script>
-	http://stackoverflow.com/questions/13103671/how-to-integrate-flot-with-angularjs
-
-			http://chinmaymk.github.io/angular-charts/#data
-
-					http://www.highcharts.com/demo/dynamic-update
--->
+        <!-- vamos a meter grafos de este tipo -->
+<!--http://jsfiddle.net/gh/get/jquery/1.9.1/highslide-software/highcharts.com/tree/master/samples/highcharts/demo/columnrange/ -->

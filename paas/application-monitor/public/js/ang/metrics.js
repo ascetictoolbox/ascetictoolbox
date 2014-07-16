@@ -1,5 +1,5 @@
 (function() {
-	var appip = angular.module("Dashboard",["ui.bootstrap"]);
+	var appip = angular.module("Metrics",["ui.bootstrap"]);
 
 	appip.time = 0;
 
@@ -85,36 +85,6 @@
 				return services;
 			}
 		};
-	}]);
-
-
-	appip.controller("AppsListController", ["$http",function($http) {
-		var self = this;
-		this.appsTree = {};
-
-
-		// todo: echar un ojo a esto: http://angular-ui.github.io/bootstrap/
-		// Typeahead
-
-		$http.get("/apps").success(function(data) {
-			self.appsTree = data;
-		});
-
-/*		var self = this;
-		this.time = appip.time;
-
-		var incTime = function() {
-			appip.time++;
-			self.time = appip.time;
-
-		}
-
-		var stopTime = $interval(incTime, 1000);
-
-		$scope.$on("$destroy", function() {
-			$interval.cancel(stopTime);
-		});
-*/
 	}]);
 
 	function getIgnoreCase(tree, field) {

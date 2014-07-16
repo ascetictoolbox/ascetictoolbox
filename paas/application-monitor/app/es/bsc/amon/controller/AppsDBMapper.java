@@ -28,8 +28,13 @@ public class AppsDBMapper {
     }
 
     public ObjectNode getAllApps(long start, long end) {
-        DBObject query = (DBObject) JSON.parse("{'$query' : { '$and' : [ { timestamp : { '$gte' : " + start
-                + " }}, { timestamp : {'$lte' : " + end + "}} ] } ,'$orderby' : {timestamp : -1}}");
+        DBObject query = (DBObject) JSON.parse("{'$query' :" +
+            "{ '$or' : ["+
+                "{ '$and' : [ { timestamp : { '$gte' : " + start + " }}, { timestamp : {'$lte' : " + end + "}} ] }," +
+                "{ '$and' : [ { endtime : { '$gte' : " + start + " }}, { endtime : {'$lte' : " + end + "}} ] }" +
+            "]}," +
+                "" +
+                "'$orderby' : {timestamp : -1}}");
 
         BasicDBList ret = DBManager.instance.find(EventsDBMapper.COLL_NAME, query);
 

@@ -1,4 +1,6 @@
-<div ng-controller="MetaController" class="col-md-12">
+<div ng-controller="MetaController" class="row">
+    <h2>System status</h2>
+
     <p>Running on {{meta.osName}} {{meta.osVersion}} ({{meta.cpus}} {{meta.arch}} CPU)</p>
 
     <div id="container-cpu" style="height:200px" class="col-md-4"></div>
@@ -194,4 +196,17 @@
             });
         });
     </script>
+</div>
+<div class="row" ng-controller="AppsListController as alc">
+    <h2>Active Applications</h2>
+    <p>Applications and nodes that have reported activity in the last 5 minutes</p>
+    <p ng-if="!alc.appsTree"><em>Empty</em></p>
+    <div class="col-md-3" ng-repeat="(appName,nodes) in alc.appsTree">
+        <div class="panel panel-info">
+            <div class="panel-heading">{{appName}}</div>
+            <div class="panel-body">
+                <p ng-repeat="node in nodes">{{node}}</p>
+            </div>
+        </div>
+    </div>
 </div>

@@ -19,21 +19,6 @@ footer {
 	}
 }
 
-.bsc-apps-list ul {
-	text-indent: 0px;
-	margin-left: 0px;
-	padding-left: 0px;
-	font-weight: bold;
-}
-.bsc-apps-list li {
-	list-style: none;
-}
-
-.bsc-apps-list ul ul {
-	margin-left: 15px;
-	font-weight: normal;
-}
-
 .bsc-graph-panel {
 	min-height: 300px;
 }

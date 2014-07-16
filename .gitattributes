@@ -893,8 +893,8 @@ paas/application-monitor/public/img/bsc.png -text
 paas/application-monitor/public/index.html -text
 paas/application-monitor/public/indexback.html -text
 paas/application-monitor/public/js/ang/application-monitor.js -text
-paas/application-monitor/public/js/ang/dashboard.js -text
 paas/application-monitor/public/js/ang/global-view.js -text
+paas/application-monitor/public/js/ang/metrics.js -text
 paas/application-monitor/public/lib/blank.html -text
 paas/application-monitor/public/lib/buttons.html -text
 paas/application-monitor/public/lib/css/bootstrap.css -text
