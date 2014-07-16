@@ -11,6 +11,9 @@ import java.io.FileReader;
  */
 public class LogCallsManager {
 
+    /**
+     * Class constructor.
+     */
     public LogCallsManager() { }
 
     /**

@@ -10,6 +10,8 @@ import java.util.Arrays;
 
 public class VmmRestInputValidatorTest {
 
+    private VmmRestInputValidator inputValidator = new VmmRestInputValidator();
+
     @Rule
     public ExpectedException exception = ExpectedException.none();
 
@@ -17,13 +19,13 @@ public class VmmRestInputValidatorTest {
     public void checkImageShouldRaiseExceptionIfItDoesNoExist() {
         String[] imagesIds = {"imageId1", "imageId2"};
         exception.expect(WebApplicationException.class);
-        VmmRestInputValidator.checkImageExists("imageId3", new ArrayList<>(Arrays.asList(imagesIds)));
+        inputValidator.checkImageExists("imageId3", new ArrayList<>(Arrays.asList(imagesIds)));
     }
 
     @Test
     public void checkImageShouldNotRaiseExceptionIfItExists() {
         String[] imagesIds = {"imageId1", "imageId2"};
-        VmmRestInputValidator.checkImageExists("imageId1", new ArrayList<>(Arrays.asList(imagesIds)));
+        inputValidator.checkImageExists("imageId1", new ArrayList<>(Arrays.asList(imagesIds)));
     }
 
 }

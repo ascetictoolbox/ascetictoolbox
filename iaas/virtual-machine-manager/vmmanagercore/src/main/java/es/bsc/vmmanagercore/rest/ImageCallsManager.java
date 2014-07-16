@@ -15,7 +15,13 @@ public class ImageCallsManager {
 
     private Gson gson = new Gson();
     private VmManager vmManager;
+    private VmmRestInputValidator inputValidator = new VmmRestInputValidator();
 
+    /**
+     * Class constructor.
+     *
+     * @param vmManager the VM manager
+     */
     public ImageCallsManager(VmManager vmManager) {
         this.vmManager = vmManager;
     }
@@ -36,7 +42,7 @@ public class ImageCallsManager {
      * @return the ID of the image
      */
     public String uploadImage(String imageInfo) {
-        VmmRestInputValidator.checkImageDescription(gson.fromJson(imageInfo, ImageToUpload.class));
+        inputValidator.checkImageDescription(gson.fromJson(imageInfo, ImageToUpload.class));
         String imageId = vmManager.createVmImage(gson.fromJson(imageInfo, ImageToUpload.class));
         return getJsonWithImageId(imageId);
     }
@@ -48,7 +54,7 @@ public class ImageCallsManager {
      * @return the JSON document
      */
     public String getImage(String imageId) {
-        VmmRestInputValidator.checkImageExists(imageId, vmManager.getVmImagesIds());
+        inputValidator.checkImageExists(imageId, vmManager.getVmImagesIds());
         return gson.toJson(vmManager.getVmImage(imageId));
     }
 
@@ -58,7 +64,7 @@ public class ImageCallsManager {
      * @param imageId the ID of the image
      */
     public void deleteImage(String imageId) {
-        VmmRestInputValidator.checkImageExists(imageId, vmManager.getVmImagesIds());
+        inputValidator.checkImageExists(imageId, vmManager.getVmImagesIds());
         vmManager.deleteVmImage(imageId);
     }
 

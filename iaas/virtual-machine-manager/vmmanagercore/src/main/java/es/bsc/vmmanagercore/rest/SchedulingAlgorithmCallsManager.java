@@ -18,6 +18,11 @@ public class SchedulingAlgorithmCallsManager {
     private Gson gson = new Gson();
     private VmManager vmManager;
 
+    /**
+     * Class constructor.
+     *
+     * @param vmManager the VM manager
+     */
     public SchedulingAlgorithmCallsManager(VmManager vmManager) {
         this.vmManager = vmManager;
     }

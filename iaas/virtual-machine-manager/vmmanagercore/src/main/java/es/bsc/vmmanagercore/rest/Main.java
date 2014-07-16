@@ -32,6 +32,12 @@ public class Main {
         return null;
     }
 
+    /**
+     * Main function.
+     *
+     * @param args arguments
+     * @throws IOException
+     */
     public static void main(String[] args) throws IOException {
         final HttpServer server = startServer();
         server.start();

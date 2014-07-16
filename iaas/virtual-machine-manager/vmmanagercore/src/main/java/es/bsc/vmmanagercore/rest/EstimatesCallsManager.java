@@ -14,6 +14,11 @@ public class EstimatesCallsManager {
     private Gson gson = new Gson();
     private VmManager vmManager;
 
+    /**
+     * Class constructor.
+     *
+     * @param vmManager the VM manager
+     */
     public EstimatesCallsManager(VmManager vmManager) {
         this.vmManager = vmManager;
     }

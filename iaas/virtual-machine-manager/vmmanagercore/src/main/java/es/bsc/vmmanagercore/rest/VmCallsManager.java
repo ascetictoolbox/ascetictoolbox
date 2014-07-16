@@ -7,7 +7,6 @@ import es.bsc.vmmanagercore.manager.VmManager;
 import es.bsc.vmmanagercore.model.ListVms;
 import es.bsc.vmmanagercore.model.ListVmsDeployed;
 
-import javax.ws.rs.WebApplicationException;
 import java.util.List;
 
 /**
@@ -20,7 +19,13 @@ public class VmCallsManager {
 
     private Gson gson = new Gson();
     private VmManager vmManager;
+    VmmRestInputValidator inputValidator = new VmmRestInputValidator();
 
+    /**
+     * Class constructor.
+     *
+     * @param vmManager the VM manager
+     */
     public VmCallsManager(VmManager vmManager) {
         this.vmManager = vmManager;
     }
@@ -41,15 +46,8 @@ public class VmCallsManager {
      * @return a JSON document that contains, for each VM deployed, its ID
      */
     public String deployVMs(String vms) {
-        // Check if the JSON that contains the VMs is specified correctly
-        if (!VmmRestInputValidator.checkVmDescriptions(gson.fromJson(vms, JsonObject.class))) {
-            throw new WebApplicationException(400);
-        }
-
-        // Deploy the VMs
+        inputValidator.checkVmDescriptions(gson.fromJson(vms, JsonObject.class));
         List<String> idsVmsDeployed = vmManager.deployVms(gson.fromJson(vms, ListVms.class).getVms());
-
-        // Return the JSON with the IDs of the VMs deployed
         return getJsonResponseFromListOfVmsIds(idsVmsDeployed).toString();
     }
 
@@ -60,9 +58,7 @@ public class VmCallsManager {
      * @return the JSON document
      */
     public String getVm(String vmId) {
-        if (vmManager.getVm(vmId) == null) { // If the VM does not exist, return 404 error
-            throw new WebApplicationException(404);
-        }
+        inputValidator.checkVmExists(vmManager.existsVm(vmId));
         return gson.toJson(vmManager.getVm(vmId));
     }
 
@@ -73,21 +69,10 @@ public class VmCallsManager {
      * @param actionJson the JSON document that contains the action to perfom
      */
     public void changeStateVm(String vmId, String actionJson) {
-        if (!vmManager.existsVm(vmId)) { // If the VM does not exists, return a 404 error
-            throw new WebApplicationException(404);
-        }
-
-        // Get the action to perform (resume, reboot, etc.)
-        JsonObject jsonObject = gson.fromJson(actionJson, JsonObject.class);
-        if (jsonObject.get("action") == null) {
-            throw new WebApplicationException(400);
-        }
-
-        // Perform the action or return a 400 error if the user did not specify a valid action
-        if (!VmmRestInputValidator.isValidAction(jsonObject.get("action").getAsString())) {
-            throw new WebApplicationException(400);
-        }
-        vmManager.performActionOnVm(vmId, jsonObject.get("action").getAsString());
+        inputValidator.checkVmExists(vmManager.existsVm(vmId));
+        JsonObject actionJsonObject = gson.fromJson(actionJson, JsonObject.class);
+        inputValidator.checkJsonActionFormat(actionJsonObject);
+        vmManager.performActionOnVm(vmId, actionJsonObject.get("action").getAsString());
     }
 
     /**
@@ -96,9 +81,7 @@ public class VmCallsManager {
      * @param vmId the VM ID
      */
     public void destroyVm(String vmId) {
-        if (!vmManager.existsVm(vmId)) { // If the VM does not exists, return a 404 error
-            throw new WebApplicationException(404);
-        }
+        inputValidator.checkVmExists(vmManager.existsVm(vmId));
         vmManager.deleteVm(vmId);
     }
 
