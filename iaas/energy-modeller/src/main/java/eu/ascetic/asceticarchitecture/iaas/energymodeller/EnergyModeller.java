@@ -16,6 +16,9 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration.Calibrator;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DataGatherer;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DatabaseConnector;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DefaultDatabaseConnector;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.DefaultEnergyPredictor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.DummyEnergyPredictor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.EnergyPredictorInterface;
@@ -28,11 +31,13 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDep
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HistoricUsageRecord;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostEnergyRecord;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -58,6 +63,8 @@ public class EnergyModeller {
     private static final String DEFAULT_DATA_SOURCE_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient";
     EnergyPredictorInterface predictor = new DummyEnergyPredictor();
     HostDataSource datasource = new ZabbixDataSourceAdaptor();
+    DatabaseConnector database = new DefaultDatabaseConnector();
+    DataGatherer dataGatherer = new DataGatherer(datasource, database);
     Calibrator calibrator = new Calibrator(datasource);
     HashMap<String, Host> hostList = new HashMap<>();
     HashSet<VmDeployed> vmDeployedList = new HashSet<>();
@@ -264,7 +271,8 @@ public class EnergyModeller {
      *
      */
     public HistoricUsageRecord getEnergyRecordForHost(Host host, TimePeriod timePeriod) {
-        HistoricUsageRecord answer = new HistoricUsageRecord(host); //TODO Replace with method call
+        List<HostEnergyRecord> data = database.getHostHistoryData(host, timePeriod);
+        HistoricUsageRecord answer = new HistoricUsageRecord(host, data);
         answer.setDuration(timePeriod);
         return answer;
     }

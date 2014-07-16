@@ -15,10 +15,13 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore;
 
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HistoricUsageRecord;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostEnergyRecord;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * This interface for connecting to the background database with the aim of returning 
@@ -34,5 +37,7 @@ public interface DatabaseConnector {
     public void setHostCalibrationData(Host host);
     public HistoricUsageRecord getVMHistoryData(VmDeployed VM);
     public void writeHostHistoricData(Host host, long time, double power, double energy);
+    public List<HostEnergyRecord> getHostHistoryData(Host host, TimePeriod timePeriod);
+    public void closeConnection();
     
 }

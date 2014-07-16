@@ -15,10 +15,12 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore;
 
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.HostEnergyCalibrationData;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HistoricUsageRecord;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostEnergyRecord;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -30,6 +32,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -101,10 +104,12 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
                 if (results.getMetaData().getColumnType(i) == Types.BOOLEAN) {
                     row.add(results.getBoolean(i));
                 } else if (results.getMetaData().getColumnType(i) == Types.BIGINT) {
-                    row.add(new Integer(results.getInt(i)));
+                    row.add(new Long(results.getLong(i)));
                 } else if (results.getMetaData().getColumnType(i) == Types.INTEGER) {
                     row.add(new Integer(results.getInt(i)));
                 } else if (results.getMetaData().getColumnType(i) == Types.DECIMAL) {
+                    row.add(new Double(results.getDouble(i)));
+                } else if (results.getMetaData().getColumnType(i) == Types.DOUBLE) {
                     row.add(new Double(results.getDouble(i)));
                 } else if (results.getMetaData().getColumnType(i) == Types.TINYINT) {
                     row.add(new Integer(results.getInt(i)));
@@ -139,8 +144,8 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
             PreparedStatement preparedStatement = connection.prepareStatement(
                     "SELECT host_id , host_name  FROM host");
             ResultSet resultSet = preparedStatement.executeQuery();
-            ArrayList<ArrayList> result = resultSetToArray(resultSet);
-            for (ArrayList hostData : result) {
+            ArrayList<ArrayList> results = resultSetToArray(resultSet);
+            for (ArrayList hostData : results) {
                 Host host = new Host((Integer) hostData.get(0), (String) hostData.get(1));
                 host = getHostCalibrationData(host);
                 answer.add(host);
@@ -155,7 +160,7 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
      * This returns the historic data for a VM
      *
      * @param VM The VM to get the historic data for
-     * @return
+     * @return The list of historical data for the named VM
      */
     @Override
     public HistoricUsageRecord getVMHistoryData(VmDeployed VM) {
@@ -249,12 +254,72 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
                     "INSERT INTO host_measurement (host_id, clock, energy, power) VALUES (?, ?, ? , ?);");
             preparedStatement.setInt(1, host.getId());
             preparedStatement.setLong(2, time);
-            preparedStatement.setDouble(3, energy);            
+            preparedStatement.setDouble(3, energy);
             preparedStatement.setDouble(4, power);
             preparedStatement.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    /**
+     * This returns the historic data for a given host, in a specified time period.
+     * @param host The host machine to get the data for.
+     * @param timePeriod The start and end period for which to query for. If
+     * null all records will be used.
+     * @return The energy readings taken for a given host.
+     */
+    @Override
+    public List<HostEnergyRecord> getHostHistoryData(Host host, TimePeriod timePeriod) {
+        connection = getConnection(connection);
+        if (connection == null) {
+            return null;
+        }
+        List<HostEnergyRecord> answer = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement;
+            if (timePeriod != null) {
+                long start = timePeriod.getStartTime().getTimeInMillis() / 1000;
+                long end = timePeriod.getEndTime().getTimeInMillis() / 1000;
+                preparedStatement = connection.prepareStatement(
+                        "SELECT host_id, clock, energy, power FROM host_measurement WHERE host_id = ? "
+                        + " AND clock >= ? AND clock <= ?;");
+                preparedStatement.setLong(2, start);
+                preparedStatement.setLong(3, end);
+            } else {
+                preparedStatement = connection.prepareStatement(
+                        "SELECT host_id, clock, energy, power FROM host_measurement WHERE host_id = ?;");
+            }
+            preparedStatement.setInt(1, host.getId());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            ArrayList<ArrayList> results = resultSetToArray(resultSet);
+            for (ArrayList hostMeasurement : results) {
+                answer.add(new HostEnergyRecord(
+                        host,
+                        (long) hostMeasurement.get(1), //clock is the 1st item
+                        (double) hostMeasurement.get(3), //power 3rd item
+                        (double) hostMeasurement.get(2))); //energy is 2nd item
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+        return answer;
+    }
+
+    /**
+     * This closes the database connection. It will be reopened if a query is called.
+     */
+    @Override
+    public void closeConnection() {
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+                connection = null;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, "The connection close operation failed.", ex);
+        } 
     }
 
 }

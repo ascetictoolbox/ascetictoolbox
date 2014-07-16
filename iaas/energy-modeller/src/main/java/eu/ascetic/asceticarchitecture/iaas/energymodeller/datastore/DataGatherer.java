@@ -48,6 +48,7 @@ public class DataGatherer implements Runnable {
      */
     public void stop() {
         running = false;
+        connector.closeConnection();
     }
 
     @Override

@@ -15,11 +15,13 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore;
 
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HistoricUsageRecord;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostEnergyRecord;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.GregorianCalendar;
 import java.util.List;
 import org.junit.Test;
 
@@ -108,6 +110,35 @@ public class DefaultDatabaseConnectorTest {
         DefaultDatabaseConnector instance = new DefaultDatabaseConnector();
         //TODO call and write test later
         //instance.setHostCalibrationData(host);
+    }
+
+    /**
+     * Test of writeHostHistoricData method, of class DefaultDatabaseConnector.
+     */
+    @Test
+    public void testWriteHostHistoricData() {
+        System.out.println("writeHostHistoricData");
+        Host host = CHOSEN_HOST;
+        long time = new GregorianCalendar().getTimeInMillis() / 1000;
+        double power = 300;
+        double energy = 1500;
+        DefaultDatabaseConnector instance = new DefaultDatabaseConnector();
+        instance.writeHostHistoricData(host, time, power, energy);
+    }
+
+    /**
+     * Test of getHostHistoryData method, of class DefaultDatabaseConnector.
+     */
+    @Test
+    public void testGetHostHistoryData() {
+        System.out.println("getHostHistoryData");
+        Host host = CHOSEN_HOST;
+        TimePeriod timePeriod = null;
+        DefaultDatabaseConnector instance = new DefaultDatabaseConnector();
+        Collection<HostEnergyRecord> result = instance.getHostHistoryData(host, timePeriod);
+        assert(!result.isEmpty());
+        System.out.println("Host Records Found: " + result.size());
+
     }
 
 }

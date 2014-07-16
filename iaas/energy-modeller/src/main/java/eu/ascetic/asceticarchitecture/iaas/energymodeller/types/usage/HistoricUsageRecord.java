@@ -17,8 +17,11 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.EnergyUsageSource;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  *
@@ -39,10 +42,38 @@ public class HistoricUsageRecord extends EnergyUsageRecord {
 
     public HistoricUsageRecord(EnergyUsageSource energyUser) {
         addEnergyUser(energyUser);
-    }    
+    }
     
-    public HistoricUsageRecord(HashSet<EnergyUsageSource> energyUser) {
+
+    /**
+     * This creates a historic usage record, for the energy user specified.
+     * This allows a summary record to be setup for a set of hosts or VMs. 
+     * @param energyUsers The energy users.
+     */
+    public HistoricUsageRecord(HashSet<EnergyUsageSource> energyUsers) {
+        addEnergyUser(energyUsers);
+    }    
+
+    /**
+     * This creates a historic usage record from a list of host energy records.
+     * The historic usage record therefore acts a summary.
+     * @param energyUser The energy user, namely a host.
+     * @param data The data about how much energy the host has used.
+     */
+    public HistoricUsageRecord(Host energyUser, List<HostEnergyRecord> data) {
         addEnergyUser(energyUser);
+        if (data.size() > 2) {
+            Collections.sort(data);
+            HostEnergyRecord first = data.get(0);
+            HostEnergyRecord last = data.get(data.size() - 1);
+            totalEnergyUsed = last.getEnergy() - first.getEnergy();
+        }
+        if (!data.isEmpty()) {
+            for (HostEnergyRecord hostEnergyRecord : data) {
+                avgPowerUsed = hostEnergyRecord.getPower();
+            }
+            avgPowerUsed = avgPowerUsed / data.size();
+        }
     }
 
     public HistoricUsageRecord(HashSet<EnergyUsageSource> energyUser, double avgPowerUsed, double avgCurrentUsed, double avgVoltageUsed, double totalEnergyUsed) {
@@ -52,7 +83,7 @@ public class HistoricUsageRecord extends EnergyUsageRecord {
         this.avgVoltageUsed = avgVoltageUsed;
         this.totalEnergyUsed = totalEnergyUsed;
     }
-    
+
     /**
      * @return the avgPowerUsed
      */
