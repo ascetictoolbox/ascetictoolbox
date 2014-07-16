@@ -35,7 +35,7 @@ public interface DatabaseConnector {
     public Collection<Host> getHostCalibrationData(Collection<Host> hosts);
     public Host getHostCalibrationData(Host host);
     public void setHostCalibrationData(Host host);
-    public HistoricUsageRecord getVMHistoryData(VmDeployed VM);
+    public HistoricUsageRecord getVmHistoryData(VmDeployed VM);
     public void writeHostHistoricData(Host host, long time, double power, double energy);
     public List<HostEnergyRecord> getHostHistoryData(Host host, TimePeriod timePeriod);
     public void closeConnection();

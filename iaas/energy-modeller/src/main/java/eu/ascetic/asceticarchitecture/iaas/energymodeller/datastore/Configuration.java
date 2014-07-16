@@ -30,16 +30,16 @@ public class Configuration {
     public static String databaseDriver = "com.mysql.jdbc.Driver";
     public static String databaseUser = "ascetic-em";
     public static String databasePassword = "em";
-    public static final String configFile = "energymodeller.properties";
+    public static final String CONFIG_FILE = "energymodeller.properties";
 
     static {
         try {
             PropertiesConfiguration config;
-            if (new File(configFile).exists()) {
-                config = new PropertiesConfiguration(configFile); 
+            if (new File(CONFIG_FILE).exists()) {
+                config = new PropertiesConfiguration(CONFIG_FILE); 
             } else {
                 config = new PropertiesConfiguration();
-                config.setFile(new File(configFile));
+                config.setFile(new File(CONFIG_FILE));
             }
             config.setAutoSave(true); //This will save the configuration file back to disk. In case the defaults need setting.
             databaseURL = config.getString("iaas.energy.modeller.db.url", databaseURL);
