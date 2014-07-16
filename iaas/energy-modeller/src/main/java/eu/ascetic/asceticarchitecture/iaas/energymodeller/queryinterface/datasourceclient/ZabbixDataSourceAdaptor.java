@@ -160,14 +160,14 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
             if (hostMeasurement != null) {
                 if (i.getLastClock() > hostMeasurement.getClock()) {
                     /**
-                     * Ensures the clock value is the latest value seen. It represents 
-                     * the most upto date piece of data for a given host.
+                     * Ensures the clock value is the latest value seen. It
+                     * represents the most upto date piece of data for a given
+                     * host.
                      */
                     hostMeasurement.setClock(i.getLastClock());
                 }
                 hostMeasurement.addMetric(i);
             }
-
         }
         return new ArrayList<>(hostMeasurements.values());
     }

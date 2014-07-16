@@ -91,6 +91,14 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
         return null;
     }
 
+    /**
+     * This converts a result set into an array list structure that has alll
+     * the objects precast and ready for use.
+     * @param results The result set to convert
+     * @return The ArrayList representing the object.
+     * @throws SQLException Thrown if there is errors in the meta data or if the
+     * type specified in the meta data is not found.
+     */
     private ArrayList<ArrayList> resultSetToArray(ResultSet results) throws SQLException {
         ArrayList<ArrayList> table = new ArrayList<>();
         ResultSetMetaData metaData = results.getMetaData();
@@ -129,9 +137,9 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
     }
 
     /**
-     * The list of hosts the energy modeller knows about
-     *
-     * @return
+     * This list all the hosts the energy modeller has data for in its backing 
+     * store.
+     * @return The list of hosts
      */
     @Override
     public Collection<Host> getHosts() {
@@ -168,6 +176,12 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * This gets the calibration data that indicates the performance properties
+     * of a given set of host machines.
+     * @param hosts The set of hosts to get the data for.
+     * @return The calibration data for the named hosts.
+     */
     @Override
     public Collection<Host> getHostCalibrationData(Collection<Host> hosts) {
         for (Host host : hosts) {
@@ -176,6 +190,12 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
         return hosts;
     }
 
+    /**
+     * This gets the calibration data that indicates the performance properties
+     * of a given host machine.
+     * @param host The host to get the data for.
+     * @return 
+     */
     @Override
     public Host getHostCalibrationData(Host host) {
         connection = getConnection(connection);
@@ -200,6 +220,11 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
         return host;
     }
 
+    /**
+     * This adds set of host machines to the database. If the host already
+     * exists the values contained will be overwritten.
+     * @param hosts The set of hosts to write to the database.
+     */
     @Override
     public void setHosts(Collection<Host> hosts) {
         connection = getConnection(connection);
@@ -220,6 +245,10 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
         }
     }
 
+    /**
+     * This writes to the database for a named host its calibration data
+     * @param host The host to set the calibration data for.
+     */
     @Override
     public void setHostCalibrationData(Host host) {
         connection = getConnection(connection);
@@ -243,6 +272,16 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
         }
     }
 
+    /**
+     * This writes historic data for a given host to the database.
+     * @param host The host to write the data for
+     * @param time The time when the measurement was taken.
+     * @param power The power reading for the host.
+     * @param energy The current reading for the energy used. Note: this value is 
+     * to be treated like a meter reading for an energy firm. The point at which 0
+     * energy usage occurred is an arbritrary point in the past. Two historical values
+     * can therefore be used to indicate the energy used between the two points in time.
+     */
     @Override
     public void writeHostHistoricData(Host host, long time, double power, double energy) {
         connection = getConnection(connection);

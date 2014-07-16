@@ -40,6 +40,10 @@ public class HistoricUsageRecord extends EnergyUsageRecord {
     private double totalEnergyUsed; //units kWh
     private TimePeriod duration; // The time period to which the results correspond.
 
+    /**
+     * This creates a historic usage record, for the energy user specified.
+     * @param energyUser  The energy user.
+     */
     public HistoricUsageRecord(EnergyUsageSource energyUser) {
         addEnergyUser(energyUser);
     }
@@ -76,6 +80,14 @@ public class HistoricUsageRecord extends EnergyUsageRecord {
         }
     }
 
+    /**
+     * This creates an historic usage record and allows every value to be specified during its construction.
+     * @param energyUser The source of the energy usage.
+     * @param avgPowerUsed The average power used.
+     * @param avgCurrentUsed The average current.
+     * @param avgVoltageUsed The average voltage used.
+     * @param totalEnergyUsed The total amount of energy used.
+     */
     public HistoricUsageRecord(HashSet<EnergyUsageSource> energyUser, double avgPowerUsed, double avgCurrentUsed, double avgVoltageUsed, double totalEnergyUsed) {
         addEnergyUser(energyUser);
         this.avgPowerUsed = avgPowerUsed;

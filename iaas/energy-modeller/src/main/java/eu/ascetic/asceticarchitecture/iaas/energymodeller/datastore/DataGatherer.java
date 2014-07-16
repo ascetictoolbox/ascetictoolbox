@@ -38,6 +38,13 @@ public class DataGatherer implements Runnable {
     private List<Host> knownHosts = null;
     private HashMap<Host, Long> lastTimeStampSeen = new HashMap<>();
 
+    /**
+     * This creates a data gather component for the energy modeller.
+     * @param datasource The data source that provides information about the host
+     * resources and the virtual machines running on them.
+     * @param connector The database connector used to do this. It is best to give
+     * this component its own database connection as it will make heavy use of it.
+     */
     public DataGatherer(HostDataSource datasource, DatabaseConnector connector) {
         this.datasource = datasource;
         this.connector = connector;

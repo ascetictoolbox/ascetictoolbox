@@ -20,7 +20,8 @@ import java.util.Collection;
 import java.util.HashSet;
 
 /**
- *
+ * This represents the sources by which energy may be used within the energy modellers
+ * framework. Namely a VM, (instantiated or not) and a host machine.
  * @author Richard
  */
 public abstract class EnergyUsageRecord {
@@ -28,16 +29,25 @@ public abstract class EnergyUsageRecord {
     private HashSet<EnergyUsageSource> energyUser = new HashSet<>();    
 
     /**
-     * @return the energyUser
+     * This gets the energy users for the energy usage record.
+     * @return the energy users that this record represents.
      */
     public HashSet<EnergyUsageSource> getEnergyUser() {
         return energyUser;
     }
     
+    /**
+     * This adds a energy user to this summary record.
+     * @param energyUser The energy user to add.
+     */
     protected void addEnergyUser(EnergyUsageSource energyUser) {
         this.energyUser.add(energyUser);
     }        
     
+    /**
+     * This adds a set of energy user to this summary record. 
+     * @param energyUsers The energy users to add.
+     */
     protected void addEnergyUser(Collection<EnergyUsageSource> energyUsers) {
         energyUser.addAll(energyUsers);
     }    
@@ -45,7 +55,7 @@ public abstract class EnergyUsageRecord {
     /**
      * Indicates if this record details energy usage for a given user.
      * @param energyUser The energy user.
-     * @return 
+     * @return If the energy user is represented in this record.
      */
     public boolean containsEnergyUser(EnergyUsageSource energyUser) {
         return this.energyUser.contains(energyUser);
