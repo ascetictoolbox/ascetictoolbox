@@ -31,6 +31,10 @@ public class HostEnergyCalibrationData {
     private double cpuUsage = 0.0; //as a pecentage of full load
     private double memoryUsage = 0.0; //in Megabytes
     private double wattsUsed = 0.0; //The power of the host (W), i.e. joules of energy used per second
+    
+    public HostEnergyCalibrationData(){
+    	
+    }
 
     /**
      * This creates a new record for storing the energy calibration data of a

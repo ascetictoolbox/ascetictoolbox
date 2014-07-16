@@ -39,7 +39,6 @@ iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymod
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/MachineEnergyUsage.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/TimePeriod.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/energymodel/EnergyModel.java -text
-iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/energymodel/HostUsage.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/energyuser/CandidateVMHostMapping.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/energyuser/EnergyUsageSource.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/energyuser/Host.java -text

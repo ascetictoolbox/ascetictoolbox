@@ -1,7 +1,7 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.training;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energymodel.HostUsage;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.HostEnergyCalibrationData;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energymodel.EnergyModel;
 
 import java.util.*;
@@ -11,22 +11,22 @@ public class DefaultEnergyModelTrainer implements EnergyModelTrainerInterface {
 	
 	public DefaultEnergyModelTrainer(){}
 	
-	HashMap<Host, ArrayList<HostUsage>> storeValues = new HashMap<Host, ArrayList<HostUsage>>();
+	HashMap<Host, ArrayList<HostEnergyCalibrationData>> storeValues = new HashMap<Host, ArrayList<HostEnergyCalibrationData>>();
 	 
 	
 	@Override
 	public int trainModel (Host host, double usageCPU, double usageRAM, double totalEnergyUsed){
-		HostUsage usageHost=new HostUsage(usageCPU, usageRAM, totalEnergyUsed);
+		HostEnergyCalibrationData usageHost=new HostEnergyCalibrationData(usageCPU, usageRAM, totalEnergyUsed);
 		int numberOfValues=0;
 		if (storeValues.containsKey(host)){
-			ArrayList<HostUsage> temp=new ArrayList<>();
+			ArrayList<HostEnergyCalibrationData> temp=new ArrayList<>();
 			temp=storeValues.get(host);
 			temp.add(usageHost);
 			storeValues.put(host, temp);
 			numberOfValues=temp.size();
 			}
 			else {
-				ArrayList<HostUsage> temp=new ArrayList<>();
+				ArrayList<HostEnergyCalibrationData> temp=new ArrayList<>();
 				temp.add(usageHost);
 				storeValues.put(host, temp);
 				numberOfValues=temp.size();
@@ -36,7 +36,7 @@ public class DefaultEnergyModelTrainer implements EnergyModelTrainerInterface {
 
 	}
 	
-	public void printValuesMap(HashMap<Host, ArrayList<HostUsage>> storeValues){
+	public void printValuesMap(HashMap<Host, ArrayList<HostEnergyCalibrationData>> storeValues){
 		 Set set = storeValues.entrySet();
 	      Iterator i = set.iterator();
 	      while(i.hasNext()) {
@@ -50,7 +50,7 @@ public class DefaultEnergyModelTrainer implements EnergyModelTrainerInterface {
 	public EnergyModel retrieveModel (Host host){
 		EnergyModel temp=new EnergyModel();
 		if (storeValues.containsKey(host)){
-			ArrayList<HostUsage> valuesOfHost=new ArrayList<>();
+			ArrayList<HostEnergyCalibrationData> valuesOfHost=new ArrayList<>();
 			valuesOfHost=storeValues.get(host);
 			//TotalEnergyUsed=intercept+coefficientCPU*usageCPU+coefficientRAM*usageRAM;
 			ArrayList<Double> UR=new ArrayList<>();
@@ -58,20 +58,20 @@ public class DefaultEnergyModelTrainer implements EnergyModelTrainerInterface {
 			ArrayList<Double> CPURAM=new ArrayList<>();
 			ArrayList<Double> RAMEnergy=new ArrayList<>();
 			ArrayList<Double> UC=new ArrayList<>();
-			HostUsage temp1=new HostUsage();
+			HostEnergyCalibrationData temp1=new HostEnergyCalibrationData();
 			double energy=0.0;
 			double CPU = 0.0;
 			double RAM = 0.0;
-			for (Iterator<HostUsage> it = valuesOfHost.iterator(); it.hasNext();) {
+			for (Iterator< HostEnergyCalibrationData> it = valuesOfHost.iterator(); it.hasNext();) {
 				temp1=it.next();
-				UR.add(temp1.getusageRAM()*temp1.getusageRAM());
-				CPUEnergy.add(temp1.getusageCPU()*temp1.getTotalEnergyUsed());
-				CPURAM.add(temp1.getusageCPU()*temp1.getusageRAM());
-				RAMEnergy.add(temp1.getusageRAM()*temp1.getTotalEnergyUsed());
-				UC.add(temp1.getusageCPU()*temp1.getusageCPU());
-				energy = temp1.getTotalEnergyUsed();
-				CPU=temp1.getusageCPU();
-				RAM=temp1.getusageRAM();
+				UR.add(temp1.getMemoryUsage()*temp1.getMemoryUsage());
+				CPUEnergy.add(temp1.getCpuUsage()*temp1.getWattsUsed());
+				CPURAM.add(temp1.getCpuUsage()*temp1.getMemoryUsage());
+				RAMEnergy.add(temp1.getMemoryUsage()*temp1.getWattsUsed());
+				UC.add(temp1.getCpuUsage()*temp1.getCpuUsage());
+				energy = temp1.getWattsUsed();
+				CPU=temp1.getCpuUsage();
+				RAM=temp1.getMemoryUsage();
 
 			}
 			double sumUR=calculateSums(UR);
