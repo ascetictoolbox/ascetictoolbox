@@ -24,12 +24,12 @@
 			<notifier>
 				<type>mail</type>
 				<configuration>
-					<recipients>scsdja@leeds.ac.uk michael.kammer@tu-berlin.de</recipients>
+					<recipients>scsdja@leeds.ac.uk</recipients>
 				</configuration>
 				<sendOnError>true</sendOnError>
 				<sendOnFailure>true</sendOnFailure>
-				<sendOnSuccess>true</sendOnSuccess>
-				<sendOnWarning>true</sendOnWarning>
+				<sendOnSuccess>false</sendOnSuccess>
+				<sendOnWarning>false</sendOnWarning>
 			</notifier>
 		</notifiers>
 	</ciManagement>
