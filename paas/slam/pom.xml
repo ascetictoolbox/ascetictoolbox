@@ -29,6 +29,23 @@
 		<module>provisioning-adjustment</module>
 	</modules>
 
+	<ciManagement>
+		<system>hudson</system>
+		<url>https://ascetic-jenkins.cit.tu-berlin.de/job/${jenkins.project.name}</url>
+		<notifiers>
+			<notifier>
+				<type>mail</type>
+				<configuration>
+					<recipients>davide.sommacampagna@hp.com pasquale.panuccio@hp.com christian.temporale@hp.com</recipients>
+				</configuration>
+				<sendOnError>true</sendOnError>
+				<sendOnFailure>true</sendOnFailure>
+				<sendOnSuccess>false</sendOnSuccess>
+				<sendOnWarning>false</sendOnWarning>
+			</notifier>
+		</notifiers>
+	</ciManagement>
+
 	<!--  GLOBAL - properties  -->
 	<properties>
 		<jdk.version>1.7</jdk.version>

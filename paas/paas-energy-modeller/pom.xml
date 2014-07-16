@@ -1,17 +1,35 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>eu.ascetic</groupId>
-    <artifactId>paas</artifactId>
-    <relativePath>..</relativePath>
-    <version>0.0.1-SNAPSHOT</version>
-  </parent>
-  <groupId>eu.ascetic.paas</groupId>
-  <artifactId>paas-energy-modeller</artifactId>
-  <name>ASCETiC PaaS Energy Modeller</name>
-  <packaging>jar</packaging>
-  <description>ASCETiC PaaS Energy Modeller </description>
-  <url>http://www.ascetic.eu</url>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>eu.ascetic</groupId>
+		<artifactId>paas</artifactId>
+		<relativePath>..</relativePath>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<groupId>eu.ascetic.paas</groupId>
+	<artifactId>paas-energy-modeller</artifactId>
+	<name>ASCETiC PaaS Energy Modeller</name>
+	<packaging>jar</packaging>
+	<description>ASCETiC PaaS Energy Modeller </description>
+	<url>http://www.ascetic.eu</url>
+
+	<ciManagement>
+		<system>hudson</system>
+		<url>https://ascetic-jenkins.cit.tu-berlin.de/job/${jenkins.project.name}</url>
+		<notifiers>
+			<notifier>
+				<type>mail</type>
+				<configuration>
+					<recipients>davide.sommacampagna@hp.com pasquale.panuccio@hp.com christian.temporale@hp.com</recipients>
+				</configuration>
+				<sendOnError>true</sendOnError>
+				<sendOnFailure>true</sendOnFailure>
+				<sendOnSuccess>false</sendOnSuccess>
+				<sendOnWarning>false</sendOnWarning>
+			</notifier>
+		</notifiers>
+	</ciManagement>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -25,7 +43,7 @@
 
 	<dependencies>
 
-	    <dependency>
+		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-server</artifactId>
 			<version>${paasem.jersey}</version>
@@ -40,13 +58,13 @@
 			<artifactId>mysql-connector-java</artifactId>
 		</dependency>
 		<dependency>
-		    <groupId>log4j</groupId>
-		    <artifactId>log4j</artifactId>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
 		</dependency>
 		<dependency>
-		  <groupId>com.fasterxml.jackson.core</groupId>
-		  <artifactId>jackson-core</artifactId>
-		  <version>${paasem.jackson}</version>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>${paasem.jackson}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.jmeter</groupId>
@@ -59,22 +77,22 @@
 			<version>${paasem.jmeter}</version>
 		</dependency>
 		<dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${paasem.spring}</version>
-        </dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${paasem.spring}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
 			<version>${paasem.spring}</version>
 		</dependency>
-	    <dependency>
-	    	<groupId>junit</groupId>
-	    	<artifactId>junit</artifactId>
-	    	<scope>test</scope>
-	    </dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
 
-  	</dependencies>
+	</dependencies>
 
 	<build>
 		<plugins>
@@ -88,5 +106,5 @@
 			</plugin>
 		</plugins>
 
-	 </build>
+	</build>
 </project>
