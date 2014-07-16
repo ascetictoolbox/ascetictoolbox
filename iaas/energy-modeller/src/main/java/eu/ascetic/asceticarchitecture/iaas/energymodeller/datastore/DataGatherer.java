@@ -18,6 +18,8 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostMeasurement;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -35,19 +37,36 @@ public class DataGatherer implements Runnable {
     private DatabaseConnector connector;
     private boolean running = true;
     private int faultCount = 0;
-    private List<Host> knownHosts = null;
+    private HashMap<String, Host> knownHosts = new HashMap<>();
     private HashMap<Host, Long> lastTimeStampSeen = new HashMap<>();
 
     /**
      * This creates a data gather component for the energy modeller.
-     * @param datasource The data source that provides information about the host
-     * resources and the virtual machines running on them.
-     * @param connector The database connector used to do this. It is best to give
-     * this component its own database connection as it will make heavy use of it.
+     *
+     * @param datasource The data source that provides information about the
+     * host resources and the virtual machines running on them.
+     * @param connector The database connector used to do this. It is best to
+     * give this component its own database connection as it will make heavy use
+     * of it.
      */
     public DataGatherer(HostDataSource datasource, DatabaseConnector connector) {
         this.datasource = datasource;
         this.connector = connector;
+        for (Host dbHost : connector.getHosts()) {
+            knownHosts.put(dbHost.getHostName(), dbHost);
+        }
+    }
+
+    /**
+     * This populates the list of hosts that is known to the energy modeller.
+     */
+    public void populateHostList() {
+        Collection<Host> hosts = datasource.getHostList();
+        for (Host host : hosts) {
+            if (!knownHosts.containsKey(host.getHostName())) {
+                knownHosts.put(host.getHostName(), host);
+            }
+        }
     }
 
     /**
@@ -67,15 +86,26 @@ public class DataGatherer implements Runnable {
         while (running) {
             List<Host> hostList = datasource.getHostList();
             //Perform a refresh to make sure the host has been written to backing store
-            if (knownHosts == null) {
-                knownHosts = hostList;
+            if (hostList == null) {
+                knownHosts = toHashMap(hostList);
                 connector.setHosts(hostList);
+            } else {
+                List<Host> newHosts = discoverNewHosts(hostList);
+                connector.setHosts(newHosts);
+                /**
+                 * TODO consider forcing calibration here or notifying that it needs
+                 * to be done.
+                 */
+                for (Host host : newHosts) {
+                    knownHosts.put(host.getHostName(), host);
+                }
             }
             for (Host host : hostList) {
                 HostMeasurement measurement = datasource.getHostData(host);
                 /**
-                 * Update only if a value has not been provided before or the timestamp value has changed.
-                 * This keeps the data written to backing store as clean as possible.
+                 * Update only if a value has not been provided before or the
+                 * timestamp value has changed. This keeps the data written to
+                 * backing store as clean as possible.
                  */
                 if (lastTimeStampSeen.get(host) == null || measurement.getClock() > lastTimeStampSeen.get(host)) {
                     lastTimeStampSeen.put(host, measurement.getClock());
@@ -97,4 +127,42 @@ public class DataGatherer implements Runnable {
             }
         }
     }
+
+    /**
+     * The hashmap gives a faster way to find a specific host. This converts
+     * from a raw list of hosts into the indexed structure.
+     *
+     * @param hostList The host list
+     * @return The hashed host list
+     */
+    private HashMap<String, Host> toHashMap(List<Host> hostList) {
+        HashMap<String, Host> answer = new HashMap<>();
+        for (Host host : hostList) {
+            answer.put(host.getHostName(), host);
+        }
+        return answer;
+    }
+
+    /**
+     * This compares a list of hosts that has been found to the known list of hosts.
+     * @param newList The new list of hosts.
+     * @return The list of hosts that were otherwise unknown to the data gatherer.
+     */
+    private List<Host> discoverNewHosts(List<Host> newList) {
+        List<Host> answer = new ArrayList<>();
+        for (Host host : newList) {
+            if (!knownHosts.containsKey(host.getHostName())) {
+                answer.add(host);
+            }
+        }
+        return answer;
+    }
+
+    /**
+     * @return the knownHosts
+     */
+    public HashMap<String, Host> getHostList() {
+        return knownHosts;
+    }
+
 }

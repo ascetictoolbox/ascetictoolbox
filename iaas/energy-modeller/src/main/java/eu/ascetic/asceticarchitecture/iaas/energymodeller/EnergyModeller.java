@@ -35,7 +35,6 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostEnergy
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
@@ -61,32 +60,21 @@ public class EnergyModeller {
 
     private static final String DEFAULT_PREDICTOR_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor";
     private static final String DEFAULT_DATA_SOURCE_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient";
-    EnergyPredictorInterface predictor = new DummyEnergyPredictor();
-    HostDataSource datasource = new ZabbixDataSourceAdaptor();
-    DatabaseConnector database = new DefaultDatabaseConnector();
-    DataGatherer dataGatherer = new DataGatherer(datasource, database);
-    Calibrator calibrator = new Calibrator(datasource);
-    HashMap<String, Host> hostList = new HashMap<>();
-    HashSet<VmDeployed> vmDeployedList = new HashSet<>();
+    private EnergyPredictorInterface predictor = new DummyEnergyPredictor();
+    private HostDataSource datasource = new ZabbixDataSourceAdaptor();
+    private DatabaseConnector database = new DefaultDatabaseConnector();
+    private DataGatherer dataGatherer = new DataGatherer(datasource, new DefaultDatabaseConnector());
+    private Thread databaseGatherThread;
+    private Calibrator calibrator = new Calibrator(datasource);
+    private HashSet<VmDeployed> vmDeployedList = new HashSet<>();
 
     public EnergyModeller() {
         try {
-            populateHostList();
             calibrateAllHostsWithoutData();
+            databaseGatherThread = new Thread(dataGatherer);
+            databaseGatherThread.start();
         } catch (Exception ex) {
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The host list was not populated");
-        }
-    }
-
-    /**
-     * This populates the list of hosts that is known to the energy modeller.
-     */
-    private void populateHostList() {
-        Collection<Host> hosts = datasource.getHostList();
-        for (Host host : hosts) {
-            if (!hostList.containsKey(host.getHostName())) {
-                hostList.put(host.getHostName(), host);
-            }
         }
     }
 
@@ -238,7 +226,8 @@ public class EnergyModeller {
      *
      */
     public CurrentUsageRecord getCurrentEnergyForVM(VmDeployed virtualMachine) {
-        CurrentUsageRecord answer = new CurrentUsageRecord(virtualMachine); //TODO Replace with method call
+        //TODO Write current energy for VM method
+        CurrentUsageRecord answer = new CurrentUsageRecord(virtualMachine); 
         return answer;
     }
 
@@ -253,7 +242,8 @@ public class EnergyModeller {
      * (useful??) kWh of energy used since instantiation
      */
     public HistoricUsageRecord getEnergyRecordForVM(VmDeployed virtualMachine, TimePeriod timePeriod) {
-        HistoricUsageRecord answer = new HistoricUsageRecord(virtualMachine); //TODO Replace with method call
+        //TODO Write get histroric energy records for VM
+        HistoricUsageRecord answer = new HistoricUsageRecord(virtualMachine);
         answer.setDuration(timePeriod);
         return answer;
     }
@@ -341,20 +331,15 @@ public class EnergyModeller {
      * @return
      */
     public Host getHost(String hostname) {
-        if (hostList.containsKey(hostname)) {
-            return hostList.get(hostname);
+        if (dataGatherer.getHostList().containsKey(hostname)) {
+            return dataGatherer.getHostList().get(hostname);
         } else {
-            populateHostList();
-            if (hostList.containsKey(hostname)) {
-                return hostList.get(hostname);
+            dataGatherer.populateHostList();
+            if (dataGatherer.getHostList().containsKey(hostname)) {
+                return dataGatherer.getHostList().get(hostname);
             }
         }
-        //TODO Remove this dummy code
-        Host answer = new Host(0, hostname);
-        hostList.put(hostname, answer);
-        return answer;
-        //END OF DUMMY CODE
-//        return null;
+        return null;
     }
 
     /**
@@ -395,9 +380,10 @@ public class EnergyModeller {
      * currently are uncalibrated i.e. energy values for the host is unknown.
      */
     private void calibrateAllHostsWithoutData() {
-        for (Host host : hostList.values()) {
+        for (Host host : dataGatherer.getHostList().values()) {
             if (!host.isCalibrated()) {
                 calibrateModelForHost(host);
+                database.setHostCalibrationData(host);
             }
         }
     }
@@ -422,6 +408,7 @@ public class EnergyModeller {
      */
     public void calibrateModelForHost(Host host) {
         calibrator.calibrateHostEnergyData(host);
+        database.setHostCalibrationData(host);
     }
     
 }
