@@ -3,8 +3,9 @@ package es.bsc.vmmanagercore.rest;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import org.codehaus.jackson.JsonNode;
+import es.bsc.vmmanagercore.model.ImageToUpload;
 
+import javax.ws.rs.WebApplicationException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -56,23 +57,20 @@ public class VmmRestInputValidator {
         return true;
     }
 
-    public static boolean checkImageExists(String imageId, List<String> imagesIds) {
-        return imagesIds.contains(imageId);
+    public static void checkImageExists(String imageId, List<String> imagesIds) {
+        if (!imagesIds.contains(imageId)) {
+            throw new WebApplicationException(404);
+        }
+    }
+
+    public static void checkImageDescription(ImageToUpload imageToUpload) {
+        if (imageToUpload.getName() == null || imageToUpload.getUrl() == null) {
+            throw new WebApplicationException(400);
+        }
     }
 
     public static boolean isValidAction(String action) {
         return validActions.contains(action);
-    }
-
-    public static boolean checkImageDescription(JsonNode imageDescription) {
-        String[] necessaryParams = {"name", "url"};
-        for (String necessaryParam: necessaryParams) {
-            // Check that the required parameters have been included
-            if (!imageDescription.has(necessaryParam)) {
-                return false;
-            }
-        }
-        return true;
     }
 
 }

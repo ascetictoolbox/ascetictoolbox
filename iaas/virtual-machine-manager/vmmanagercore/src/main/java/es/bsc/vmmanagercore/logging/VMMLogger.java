@@ -4,7 +4,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 /**
- *
+ * Logs system for the VMM.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  */

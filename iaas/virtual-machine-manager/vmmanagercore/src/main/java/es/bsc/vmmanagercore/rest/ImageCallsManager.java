@@ -6,8 +6,6 @@ import es.bsc.vmmanagercore.manager.VmManager;
 import es.bsc.vmmanagercore.model.ImageToUpload;
 import es.bsc.vmmanagercore.model.ListImagesUploaded;
 
-import javax.ws.rs.WebApplicationException;
-
 /**
  * This class implements the REST calls that are related with VM images.
  *
@@ -38,19 +36,9 @@ public class ImageCallsManager {
      * @return the ID of the image
      */
     public String uploadImage(String imageInfo) {
-        // Read the input JSON
-        ImageToUpload imageToUpload = gson.fromJson(imageInfo, ImageToUpload.class);
-
-        // Throw a 400 exception if the format of the JSON is not correct
-        if (imageToUpload.getName() == null || imageToUpload.getUrl() == null) {
-            throw new WebApplicationException(400);
-        }
-
-        // Create the image and return its ID
-        String id = vmManager.createVmImage(imageToUpload);
-        JsonObject idJson = new JsonObject();
-        idJson.addProperty("id", id);
-        return idJson.toString();
+        VmmRestInputValidator.checkImageDescription(gson.fromJson(imageInfo, ImageToUpload.class));
+        String imageId = vmManager.createVmImage(gson.fromJson(imageInfo, ImageToUpload.class));
+        return getJsonWithImageId(imageId);
     }
 
     /**
@@ -60,28 +48,30 @@ public class ImageCallsManager {
      * @return the JSON document
      */
     public String getImage(String imageId) {
-        // Throw error if the image does not exist
-        if (!VmmRestInputValidator.checkImageExists(imageId, vmManager.getVmImagesIds())) {
-            throw new WebApplicationException(404);
-        }
-
-        // Return JSON representation of the image
+        VmmRestInputValidator.checkImageExists(imageId, vmManager.getVmImagesIds());
         return gson.toJson(vmManager.getVmImage(imageId));
     }
 
     /**
-     * Deletes an image from the infrastructure
+     * Deletes an image from the infrastructure.
      *
      * @param imageId the ID of the image
      */
     public void deleteImage(String imageId) {
-        // Throw error if the image does not exist
-        if (!VmmRestInputValidator.checkImageExists(imageId, vmManager.getVmImagesIds())) {
-            throw new WebApplicationException(404);
-        }
-
-        // Delete the image
+        VmmRestInputValidator.checkImageExists(imageId, vmManager.getVmImagesIds());
         vmManager.deleteVmImage(imageId);
+    }
+
+    /**
+     * Returns a JSON document that contains the ID of an image.
+     *
+     * @param id the image ID
+     * @return the JSON document
+     */
+    private String getJsonWithImageId(String id) {
+        JsonObject idJson = new JsonObject();
+        idJson.addProperty("id", id);
+        return idJson.toString();
     }
 
 }
