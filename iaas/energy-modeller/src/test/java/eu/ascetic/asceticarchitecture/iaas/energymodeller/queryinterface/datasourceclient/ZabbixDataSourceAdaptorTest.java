@@ -16,7 +16,10 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.Configuration;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.hostvmfilter.NameBeginsFilter;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.hostvmfilter.ZabbixHostVMFilter;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.client.ZabbixClient;
 import java.util.ArrayList;
@@ -208,6 +211,39 @@ public class ZabbixDataSourceAdaptorTest {
         ZabbixDataSourceAdaptor instance = new ZabbixDataSourceAdaptor();
         double result = instance.getLowestHostPowerUsage(host);
         assert (result > 0.0);
+    }
+
+    /**
+     * Test of getVMList method, of class ZabbixDataSourceAdaptor.
+     */
+    @Test
+    public void testGetVMList() {
+        System.out.println("getVMList");
+        ZabbixDataSourceAdaptor instance = new ZabbixDataSourceAdaptor();
+        List<VmDeployed> result = instance.getVMList();
+        assert(!result.isEmpty());
+    }
+
+    /**
+     * Test of getHostFilter method, of class ZabbixDataSourceAdaptor.
+     */
+    @Test
+    public void testGetHostFilter() {
+        System.out.println("getHostFilter");
+        ZabbixDataSourceAdaptor instance = new ZabbixDataSourceAdaptor();
+        ZabbixHostVMFilter result = instance.getHostFilter();
+        assert(result != null);
+    }
+
+    /**
+     * Test of setHostFilter method, of class ZabbixDataSourceAdaptor.
+     */
+    @Test
+    public void testSetHostFilter() {
+        System.out.println("setHostFilter");
+        ZabbixHostVMFilter hostFilter = new NameBeginsFilter();
+        ZabbixDataSourceAdaptor instance = new ZabbixDataSourceAdaptor();
+        instance.setHostFilter(hostFilter);
     }
 
 }

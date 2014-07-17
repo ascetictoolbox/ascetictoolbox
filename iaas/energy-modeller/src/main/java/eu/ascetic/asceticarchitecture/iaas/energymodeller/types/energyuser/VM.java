@@ -27,8 +27,8 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser;
 public class VM extends EnergyUsageSource {
 
     private int cpus;
-    private int ramMb;
-    private int diskGb;
+    private long ramMb;
+    private long diskGb;
     /**
      *
      * E_i^v: is the "idle power consumption" of a VM which includes the 
@@ -89,7 +89,7 @@ public class VM extends EnergyUsageSource {
      * This gets the amount of ram this vm has been allocated.
      * @return The ram this vm has been allocated.
      */
-    public int getRamMb() {
+    public long getRamMb() {
         return ramMb;
     }
 
@@ -97,7 +97,7 @@ public class VM extends EnergyUsageSource {
      * This sets the amount of ram this vm has been allocated.
      * @param ramMb The ram this vm has been allocated.
      */
-    public void setRamMb(int ramMb) {
+    public void setRamMb(long ramMb) {
         if (ramMb <= 0) {
             throw new IllegalArgumentException("The amount of memory has to be greater than 0");
         }
@@ -108,7 +108,7 @@ public class VM extends EnergyUsageSource {
      * This gets the amount of disk space this vm has been allocated.
      * @return The disk space this vm has been allocated.
      */
-    public int getDiskGb() {
+    public long getDiskGb() {
         return diskGb;
     }
 
@@ -116,7 +116,7 @@ public class VM extends EnergyUsageSource {
      * This sets the amount of disk space this vm has been allocated.
      * @param diskGb The disk space this vm has been allocated.
      */
-    public void setDiskGb(int diskGb) {
+    public void setDiskGb(long diskGb) {
         if (diskGb <= 0) {
             throw new IllegalArgumentException("The amount of disk size has to be greater than 0");
         }

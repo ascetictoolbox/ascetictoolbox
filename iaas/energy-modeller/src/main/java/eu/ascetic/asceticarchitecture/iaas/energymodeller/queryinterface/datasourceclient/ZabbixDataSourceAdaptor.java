@@ -147,10 +147,10 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         VmDeployed answer = new VmDeployed(hostId, hostname);
         for (Item item : items) {
             if (item.getName().equals(MEMORY_KPI_NAME)) {
-                answer.setRamMb(Integer.valueOf(item.getLastValue()));
+                answer.setRamMb(Long.valueOf(item.getLastValue()));
             }
             if (item.getName().equals(DISK_KPI_NAME)) {
-                answer.setDiskGb(Integer.valueOf(item.getLastValue()));
+                answer.setDiskGb(Long.valueOf(item.getLastValue()));
             }
             if (item.getName().equals(BOOT_TIME_KPI_NAME)) {
                 Calendar cal = new GregorianCalendar();
