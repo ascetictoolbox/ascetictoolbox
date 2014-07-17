@@ -29,7 +29,7 @@ import java.util.Calendar;
  */
 public class VmDeployed extends VM {
 
-    private String id;
+    private int id;
     private String name;
     private String ipAddress;
     private Host allocatedTo;
@@ -37,18 +37,29 @@ public class VmDeployed extends VM {
     private Calendar created;
 
     /**
-     *
+     * 
+     * @param id
+     * @param name 
+     */
+    public VmDeployed(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+  
+    /**
+     * 
+     * @param id
      * @param name
      * @param cpus
      * @param ramMb
      * @param diskGb
-     * @param id
      * @param ipAddress
      * @param state
      * @param created
+     * @param allocatedTo
      */
-    public VmDeployed(String name, int cpus, int ramMb,
-            int diskGb, String id,
+    public VmDeployed(int id, String name, int cpus, int ramMb,
+            int diskGb,
             String ipAddress, String state, Calendar created, Host allocatedTo) {
         super(cpus, ramMb, diskGb);
         this.name = name;
@@ -63,14 +74,14 @@ public class VmDeployed extends VM {
      * This takes a previously uninstantiated VM and adds the additional
      * information to represent the newly created VM.
      *
-     * @param vm
      * @param id
+     * @param vm
      * @param ipAddress
      * @param state
      * @param created
      * @param allocatedTo
      */
-    public VmDeployed(VM vm, String id, String ipAddress, String state,
+    public VmDeployed(int id, VM vm, String ipAddress, String state,
             Calendar created, Host allocatedTo) {
         super(vm);
         this.id = id;
@@ -81,55 +92,97 @@ public class VmDeployed extends VM {
     }
 
     /**
-     *
-     * @return
+     * This gets the id associated with this VM.
+     * @return The vms id.
      */
-    public String getId() {
+    public int getId() {
         return id;
     }
 
+    /**
+     * This sets the id associated with this VM.
+     * @param id The vms id.
+     */
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    /**
+     * This gets the name this vm is known by.
+     * @return The VMs name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * This sets the name this vm is known by
+     * @param name The VMs name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     *
-     * @return
+     * This gets the ip address this vm is known by.
+     * @return The vms ip address
      */
     public String getIpAddress() {
         return ipAddress;
     }
 
     /**
-     *
-     * @return
+     * This sets the ip address this vm is known by.
+     * @param ipAddress The vms ip address
+     */
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
+
+    /**
+     * This gets the VMs state. The vms state.
+     * @return The vms state
      */
     public String getState() {
         return state;
     }
 
     /**
-     * The date the VM was instantiated.
+     * This sets the VMs state.
+     * @param state  The vms state
+     */
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    /**
+     * This gets the date the VM was instantiated.
      *
-     * @return
+     * @return The boot time of the VM.
      */
     public Calendar getCreated() {
         return created;
     }
 
     /**
-     * @return the allocatedTo
+     * This sets the date the VM was instantiated.
+     * @param created The boot time of the VM.
+     */
+    public void setCreated(Calendar created) {
+        this.created = created;
+    }
+    
+    /**
+     * This indicates which host this VM is allocated to.
+     * @return the allocatedTo The host this vm is allocated to
      */
     public Host getAllocatedTo() {
         return allocatedTo;
     }
 
     /**
-     * @param allocatedTo the allocatedTo to set
+     * This sets which host this VM is allocated to.
+     * @param allocatedTo The host this vm is allocated to
      */
     public void setAllocatedTo(Host allocatedTo) {
         this.allocatedTo = allocatedTo;

@@ -17,6 +17,7 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.dataso
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.hostvmfilter.NameBeginsFilter;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.hostvmfilter.ZabbixHostVMFilter;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.client.ZabbixClient;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.HistoryItem;
@@ -24,6 +25,8 @@ import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Host;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Item;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.utils.Dictionary;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -34,10 +37,14 @@ import java.util.List;
  * @author Richard
  */
 public class ZabbixDataSourceAdaptor implements HostDataSource {
-    
+
     private ZabbixClient client = new ZabbixClient();
-    private static final String POWER_KPI_NAME = "power";
     private ZabbixHostVMFilter hostFilter = new NameBeginsFilter();
+    private static final String POWER_KPI_NAME = "power";
+    private static final String MEMORY_KPI_NAME = "Total memory";
+    private static final String DISK_KPI_NAME = "Total disk space on $1";
+    private static final String BOOT_TIME_KPI_NAME = "Host boot time";
+    
 
     /**
      * The main method.
@@ -46,7 +53,7 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
      * @param args the arguments
      */
     public static void main(String[] args) {
-        
+
         ZabbixDataSourceAdaptor adaptor = new ZabbixDataSourceAdaptor();
         List<eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host> hosts = adaptor.getHostList();
         for (eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host : hosts) {
@@ -95,6 +102,23 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
     }
 
     /**
+     * This provides a list of VMs for the energy modeller
+     *
+     * @return A list of vms for the energy modeller.
+     */
+    @Override
+    public List<VmDeployed> getVMList() {
+        List<Host> hostsList = client.getAllHosts();
+        ArrayList<VmDeployed> vms = new ArrayList<>();
+        for (Host h : hostsList) {
+            if (!hostFilter.isHost(h)) {
+                vms.add(convertToVM(h, client.getItemsFromHost(h.getHost())));
+            }
+        }
+        return vms;
+    }
+
+    /**
      * This converts a monitoring infrastructure host into a Energy Modeller
      * host.
      *
@@ -106,6 +130,39 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         int hostId = Integer.parseInt(host.getHostid());
         eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host answer = new eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host(hostId, hostname);
         answer.setAvailable("1".equals(host.getAvailable()));
+        return answer;
+    }
+
+    /**
+     * This converts a monitoring infrastructure host into a Energy Modeller
+     * host.
+     *
+     * @param host The host to convert
+     * @param items The data for a given vm.
+     * @return The converted host.
+     */
+    private VmDeployed convertToVM(Host host, List<Item> items) {
+        String hostname = host.getHost();
+        int hostId = Integer.parseInt(host.getHostid());
+        VmDeployed answer = new VmDeployed(hostId, hostname);
+        for (Item item : items) {
+            if (item.getName().equals(MEMORY_KPI_NAME)) {
+                answer.setRamMb(Integer.valueOf(item.getLastValue()));
+            }
+            if (item.getName().equals(DISK_KPI_NAME)) {
+                answer.setDiskGb(Integer.valueOf(item.getLastValue()));
+            }
+            if (item.getName().equals(BOOT_TIME_KPI_NAME)) {
+                Calendar cal = new GregorianCalendar();
+                cal.setTimeInMillis(Long.valueOf(item.getLastValue()) * 1000);
+                answer.setCreated(cal);
+            }
+            //TODO set the information correctly below!
+            answer.setCpus(1); 
+            answer.setIpAddress("127.0.0.1");
+            answer.setState("Work in Progress");
+
+        }
         return answer;
     }
 
@@ -148,7 +205,7 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         for (eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host : hostList) {
             hostMeasurements.put(host.getId(), new HostMeasurement(host));
         }
-        
+
         List<Item> itemsList = client.getAllItems();
         for (Item i : itemsList) {
             Integer hostID = Integer.parseInt(i.getHostid());
@@ -194,7 +251,7 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
     public void setClient(ZabbixClient client) {
         this.client = client;
     }
-    
+
     @Override
     public CurrentUsageRecord getCurrentEnergyUsage(eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host) {
         CurrentUsageRecord answer = new CurrentUsageRecord(host);
@@ -223,5 +280,19 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
             }
         }
         return lowestValue;
+    }
+
+    /**
+     * @return the hostFilter
+     */
+    public ZabbixHostVMFilter getHostFilter() {
+        return hostFilter;
+    }
+
+    /**
+     * @param hostFilter the hostFilter to set
+     */
+    public void setHostFilter(ZabbixHostVMFilter hostFilter) {
+        this.hostFilter = hostFilter;
     }
 }

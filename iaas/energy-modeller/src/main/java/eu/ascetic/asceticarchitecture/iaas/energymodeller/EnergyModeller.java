@@ -368,7 +368,7 @@ public class EnergyModeller {
             }
         }
         //TODO Remove this dummy code
-        VmDeployed answer = new VmDeployed(name, 1, 1024, 50, name, "127.0.0.1", "working", new GregorianCalendar(), null);
+        VmDeployed answer = new VmDeployed(1, name, 1, 1024, 50, "127.0.0.1", "working", new GregorianCalendar(), null);
         vmDeployedList.add(answer);
         return answer;
         //END OF DUMMY CODE

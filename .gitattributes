@@ -1,5 +1,6 @@
 * text=auto !eol
 iaas/energy-modeller/LICENCE.TXT -text
+iaas/energy-modeller/filter.properties -text
 iaas/energy-modeller/pom.xml -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/EnergyModeller.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/calibration/Calibrator.java -text

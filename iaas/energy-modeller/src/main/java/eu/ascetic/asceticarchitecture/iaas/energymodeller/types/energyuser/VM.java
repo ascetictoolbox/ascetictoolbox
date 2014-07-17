@@ -15,8 +15,6 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser;
 
-import javax.json.JsonObject;
-
 /**
  * This class represents an energy user of the ASCETiC project and in particular
  * a VM that is to be deployed.
@@ -39,6 +37,13 @@ public class VM extends EnergyUsageSource {
     private double powerConsumptionVMOverhead = 0.0;    
 
     /**
+     * This creates a vm with its key data missing. The set methods should
+     * be called afterwards.
+     */
+    public VM() {
+    }
+    
+    /**
      * This creates a VM that represents a energy usage source.
      *
      * @param cpus The number of CPUs.
@@ -53,28 +58,16 @@ public class VM extends EnergyUsageSource {
 
     /**
      * A copy constructor, for a VM.
-     * @param vm T
+     * @param vm The vm to copy/clone.
      */
     public VM(VM vm) {
         this.cpus = vm.cpus;
         this.ramMb = vm.ramMb;
         this.diskGb = vm.diskGb;        
-    }
-    
-    
+    }   
 
     /**
-     * 
-     * @param json 
-     */
-    public VM(JsonObject json) {
-        this.cpus = json.getJsonNumber("cpus").intValue();
-        this.ramMb = json.getJsonNumber("ramMb").intValue();
-        this.diskGb = json.getJsonNumber("diskGb").intValue();
-    }
-
-    /**
-     * 
+     * This gets the count of how many virtual cpu cores this vm has.
      * @return 
      */
     public int getCpus() {
@@ -82,8 +75,8 @@ public class VM extends EnergyUsageSource {
     }
 
     /**
-     * 
-     * @param cpus 
+     * This sets the count of how many virtual cpu cores this vm has.
+     * @param cpus The virtual cpu cores this vm has
      */
     public void setCpus(int cpus) {
         if (cpus <= 0) {
@@ -93,16 +86,16 @@ public class VM extends EnergyUsageSource {
     }
 
     /**
-     * 
-     * @return 
+     * This gets the amount of ram this vm has been allocated.
+     * @return The ram this vm has been allocated.
      */
     public int getRamMb() {
         return ramMb;
     }
 
     /**
-     * 
-     * @param ramMb 
+     * This sets the amount of ram this vm has been allocated.
+     * @param ramMb The ram this vm has been allocated.
      */
     public void setRamMb(int ramMb) {
         if (ramMb <= 0) {
@@ -112,16 +105,16 @@ public class VM extends EnergyUsageSource {
     }
 
     /**
-     * 
-     * @return 
+     * This gets the amount of disk space this vm has been allocated.
+     * @return The disk space this vm has been allocated.
      */
     public int getDiskGb() {
         return diskGb;
     }
 
     /**
-     * 
-     * @param diskGb 
+     * This sets the amount of disk space this vm has been allocated.
+     * @param diskGb The disk space this vm has been allocated.
      */
     public void setDiskGb(int diskGb) {
         if (diskGb <= 0) {
@@ -131,6 +124,7 @@ public class VM extends EnergyUsageSource {
     }
 
     /**
+     * This gets the power consumption overhead associated with this VM.
      * @return the powerConsumptionVMOverhead
      */
     public double getPowerConsumptionVMOverhead() {
@@ -138,6 +132,7 @@ public class VM extends EnergyUsageSource {
     }    
 
     /**
+     *  This sets the power consumption overhead associated with this VM.
      * @param powerConsumptionVMOverhead the powerConsumptionVMOverhead to set
      */
     public void setPowerConsumptionVMOverhead(double powerConsumptionVMOverhead) {
