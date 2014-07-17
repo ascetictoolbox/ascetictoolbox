@@ -13,13 +13,16 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient;
+package eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.hostvmfilter;
+
+import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Host;
 
 /**
- * This is the interface for all data sources that the Energy modeller uses, that 
- * concerns VMs and their allocation to Hosts.
+ *
  * @author Richard
  */
-public interface VMDataSource {
+public interface ZabbixHostVMFilter {
+    
+    public boolean isHost(Host host);
     
 }

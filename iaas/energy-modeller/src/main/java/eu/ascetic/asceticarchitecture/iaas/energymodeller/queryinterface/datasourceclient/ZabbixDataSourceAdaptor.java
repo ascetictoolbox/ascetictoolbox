@@ -15,6 +15,8 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient;
 
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.hostvmfilter.NameBeginsFilter;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.hostvmfilter.ZabbixHostVMFilter;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.client.ZabbixClient;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.HistoryItem;
@@ -32,9 +34,10 @@ import java.util.List;
  * @author Richard
  */
 public class ZabbixDataSourceAdaptor implements HostDataSource {
-
+    
     private ZabbixClient client = new ZabbixClient();
     private static final String POWER_KPI_NAME = "power";
+    private ZabbixHostVMFilter hostFilter = new NameBeginsFilter();
 
     /**
      * The main method.
@@ -43,7 +46,7 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
      * @param args the arguments
      */
     public static void main(String[] args) {
-
+        
         ZabbixDataSourceAdaptor adaptor = new ZabbixDataSourceAdaptor();
         List<eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host> hosts = adaptor.getHostList();
         for (eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host : hosts) {
@@ -84,7 +87,9 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         List<Host> hostsList = client.getAllHosts();
         ArrayList<eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host> hosts = new ArrayList<>();
         for (Host h : hostsList) {
-            hosts.add(convert(h));
+            if (hostFilter.isHost(h)) {
+                hosts.add(convert(h));
+            }
         }
         return hosts;
     }
@@ -143,7 +148,7 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         for (eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host : hostList) {
             hostMeasurements.put(host.getId(), new HostMeasurement(host));
         }
-
+        
         List<Item> itemsList = client.getAllItems();
         for (Item i : itemsList) {
             Integer hostID = Integer.parseInt(i.getHostid());
@@ -189,7 +194,7 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
     public void setClient(ZabbixClient client) {
         this.client = client;
     }
-
+    
     @Override
     public CurrentUsageRecord getCurrentEnergyUsage(eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host) {
         CurrentUsageRecord answer = new CurrentUsageRecord(host);
