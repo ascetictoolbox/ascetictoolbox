@@ -1,0 +1,255 @@
+<div ng-controller="AppsListController as alc">
+    <div class="panel panel-default">
+        <!-- Añadir grafo tipo: http://bl.ocks.org/mbostock/1153292 -->
+        <div class="panel-heading">Active Applications</div>
+        <div class="panel-body">
+            <p>Applications and nodes that have reported activity in the last 5 minutes</p>
+
+            <div id="apps-node-map"></div>
+            <style>
+                .link {
+                    fill: none;
+                    stroke: #666;
+                    stroke-width: 2px;
+                    stroke-dasharray: 0, 2 1;
+                }
+
+                circle {
+                    stroke: #333;
+                    stroke-width: 1.5px;
+                }
+
+                .app {
+                    fill: orange;
+                }
+
+                .node {
+                    fill: #ccc;
+                }
+
+                text {
+                    font: 10px sans-serif;
+                    pointer-events: none;
+                }
+
+            </style>
+            <script>
+
+                $.get("/apps", function (receivedData) {
+                    function myGraph(el,data) {
+
+                    var links = [];
+                    for (var appKey in data) {
+                        for (var nodeKey in data[appKey]) {
+                            links.push({source: data[appKey], target: data[appKey][nodeKey]});
+                        }
+                    }
+                    var nodes = {};
+                    var isApp = {};
+
+                    // Compute the distinct nodes from the links.
+                    links.forEach(function (link) {
+                        link.source = nodes[link.source] || (nodes[link.source] = {name: link.source});
+                        link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
+                        isApp[link.source.name] = true;
+                    });
+
+                    var width = 640,// considerar $(el).innerWidth()
+                            height = 300,
+                            appRadius = 30,
+                            nodeRadius = 15;
+
+                    var force = d3.layout.force()
+                            .nodes(d3.values(nodes))
+                            .links(links)
+                            .size([width, height])
+                            .linkDistance(appRadius * 3)
+                            .charge(-300)
+                            .on("tick", tick)
+                            .start();
+
+                    var svg = d3.select("#apps-node-map").append("svg")
+                            .attr("width", "100%")
+                            .attr("height", height);
+
+                    var path = svg.append("g").selectAll("path")
+                            .data(force.links())
+                            .enter().append("path")
+                            .attr("class", function (d) {
+                                return "link " + d.type;
+                            })
+                            .attr("marker-end", function (d) {
+                                return "url(#" + d.type + ")";
+                            });
+
+                    var apps = svg.append("g").selectAll("circle")
+                            .data(force.nodes())
+                            .enter().append("circle")
+                            .attr("class", function(d) { return isApp[d.name] ? "app" : "node"; })
+                            .attr("r", function(d) { return isApp[d.name] ? appRadius : nodeRadius; })
+                            .call(force.drag);
+
+                    var text = svg.append("g").selectAll("text")
+                            .data(force.nodes())
+                            .enter().append("text")
+                            .attr("x", function(d) { return isApp[d.name] ? -appRadius+2 : nodeRadius + 2; })
+                            .attr("y", ".31em")
+                            .text(function (d) {
+                                return d.name;
+                            });
+
+                    // Use elliptical arc path segments to doubly-encode directionality.
+                    function tick() {
+                        path.attr("d", linkArc);
+                        apps.attr("transform", transform);
+                        text.attr("transform", transform);
+                    }
+
+                    function linkArc(d) {
+                        var dx = d.target.x - d.source.x,
+                                dy = d.target.y - d.source.y,
+                                dr = Math.sqrt(dx * dx + dy * dy);
+                        return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
+                    }
+
+                    function transform(d) {
+                        return "translate(" + d.x + "," + d.y + ")";
+                    }
+
+                        // Add and remove elements on the graph object
+                        this.addNode = function (id) {
+                            force.nodes().push({"id":id});
+                            update();
+                        }
+
+                        this.removeNode = function (id) {
+                            var i = 0;
+                            var n = findNode(id);
+                            while (i < force.links().length) {
+                                if ((force.links()[i]['source'] === n)||(force.links()[i]['target'] == n)) force.links().splice(i,1);
+                                else i++;
+                            }
+                            var index = findNodeIndex(id);
+                            if(index !== undefined) {
+                                force.nodes().splice(index, 1);
+                                update();
+                            }
+                        }
+
+                        this.addLink = function (sourceId, targetId) {
+                            var sourceNode = findNode(sourceId);
+                            var targetNode = findNode(targetId);
+
+                            if((sourceNode !== undefined) && (targetNode !== undefined)) {
+                                force.links().push({"source": sourceNode, "target": targetNode});
+                                update();
+                            }
+                        }
+
+                        var findNode = function (id) {
+                            for (var i=0; i < force.nodes().length; i++) {
+                                if (force.nodes()[i].id === id)
+                                    return force.nodes()[i]
+                            };
+                        }
+
+                        var findNodeIndex = function (id) {
+                            for (var i=0; i < force.nodes().length; i++) {
+                                if (force.nodes()[i].id === id)
+                                    return i
+                            };
+                        }
+
+                        // set up the D3 visualisation in the specified element
+
+                        var vis = svg;
+
+
+                        /*var force = d3.layout.force()
+                                .gravity(.05)
+                                .distance(100)
+                                .charge(-100)
+                                .size([w, h]);*/
+
+
+                        var update = function () {
+                            console.log(force);
+                            //force.stop();
+
+                            var link = vis.selectAll("line.link")
+                                    .data(force.links(), function(d) { return d.source.id + "-" + d.target.id; });
+
+                            link.enter().insert("line")
+                                    .attr("class", "link");
+
+                            link.exit().remove();
+
+                            var node = vis.selectAll("g.node")
+                                    .data(force.nodes(), function(d) { return d.id;});
+
+                            var nodeEnter = node.enter().append("g")
+                                    .attr("class", "node")
+                                    .call(force.drag);
+
+                            nodeEnter.append("image")
+                                    .attr("class", "circle")
+                                    .attr("xlink:href", "https://d3nwyuy0nl342s.cloudfront.net/images/icons/public.png")
+                                    .attr("x", "-8px")
+                                    .attr("y", "-8px")
+                                    .attr("width", "16px")
+                                    .attr("height", "16px");
+
+                            nodeEnter.append("text")
+                                    .attr("class", "nodetext")
+                                    .attr("dx", 12)
+                                    .attr("dy", ".35em")
+                                    .text(function(d) {return d.id});
+
+                            node.exit().remove();
+
+                            force.on("tick", function() {
+                                link.attr("x1", function(d) { return d.source.x; })
+                                        .attr("y1", function(d) { return d.source.y; })
+                                        .attr("x2", function(d) { return d.target.x; })
+                                        .attr("y2", function(d) { return d.target.y; });
+
+                                node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+                            });
+
+                            // Restart the force layout.
+                            force.start();
+                        }
+
+                        // Make it all go
+                        update();
+                    }
+
+                    graph = new myGraph("#apps-node-map", JSON.parse(receivedData));
+
+// You can do this from the console as much as you like...
+                    graph.addNode("Cause");
+                    graph.addNode("Effect");
+                    graph.addLink("Cause", "Effect");
+                    graph.addNode("A");
+                    graph.addNode("B");
+                    graph.addLink("A", "B");
+
+                    setInterval(function() {
+                        graph.addNode("TuPuta");
+                        graph.addLink("TuPuta","B");
+                    },5000)
+                });
+
+            </script>
+
+            <!--div class="col-md-3" ng-repeat="(appName,nodes) in alc.appsTree">
+                <div class="panel panel-info">
+                    <div class="panel-heading">{{appName}}</div>
+                    <div class="panel-body">
+                        <p ng-repeat="node in nodes">{{node}}</p>
+                    </div>
+                </div>
+            </div-->
+        </div>
+    </div>
+</div>
