@@ -167,11 +167,11 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
     /**
      * This returns the historic data for a VM
      *
-     * @param VM The VM to get the historic data for
+     * @param vm The VM to get the historic data for
      * @return The list of historical data for the named VM
      */
     @Override
-    public HistoricUsageRecord getVmHistoryData(VmDeployed VM) {
+    public HistoricUsageRecord getVmHistoryData(VmDeployed vm) {
         connection = getConnection(connection);
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

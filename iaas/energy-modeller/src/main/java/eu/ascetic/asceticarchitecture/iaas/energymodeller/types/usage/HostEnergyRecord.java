@@ -76,7 +76,7 @@ public class HostEnergyRecord implements Comparable<HostEnergyRecord> {
 
     @Override
     public int compareTo(HostEnergyRecord o) {
-        return new Long(this.time).compareTo(o.getTime());
+        return Long.valueOf(this.time).compareTo(o.getTime());
     }
 
 }
