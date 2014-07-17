@@ -35,14 +35,14 @@ public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
     @Override
     public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines) {
         //TODO Write get host predicted energy i.e. implement the model here.
-        EnergyModel model = trainer.retrieveModel(host);
+       EnergyModel model = trainer.retrieveModel(host);
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public EnergyUsagePrediction getVMPredictedEnergy(VM vm, Collection<VM> virtualMachines, Host host) {
         //TODO Write get VM predicted energy i.e. implement the model here.
-        EnergyModel model = trainer.retrieveModel(host);
+       EnergyModel model = trainer.retrieveModel(host);
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
