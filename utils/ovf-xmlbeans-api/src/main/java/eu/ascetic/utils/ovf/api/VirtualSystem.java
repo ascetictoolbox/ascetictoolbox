@@ -39,6 +39,12 @@ public class VirtualSystem extends AbstractElement<XmlBeanVirtualSystemType> {
 	 */
 	public static VirtualSystemFactory Factory = new VirtualSystemFactory();
 
+	/**
+	 * Default constructor.
+	 * 
+	 * @param base
+	 *            The XMLBeans base type used for data storage
+	 */
 	public VirtualSystem(XmlBeanVirtualSystemType base) {
 		super(base);
 	}

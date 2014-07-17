@@ -24,6 +24,11 @@ import eu.ascetic.utils.ovf.api.AbstractElement;
 import eu.ascetic.utils.ovf.api.factories.ReferencesFactory;
 
 /**
+ * Provides access to the References element of an OVF document. The References
+ * element stores references to files (see {@link File}) and allows a tool to
+ * easily determine the integrity of an OVF package without having to parse or
+ * interpret the entire structure of the descriptor.
+ * 
  * @author Django Armstrong (ULeeds)
  * 
  */
@@ -35,10 +40,21 @@ public class References extends AbstractElement<XmlBeanReferencesType> {
 	 */
 	public static ReferencesFactory Factory = new ReferencesFactory();
 
+	/**
+	 * Default constructor.
+	 * 
+	 * @param base
+	 *            The XMLBeans base type used for data storage
+	 */
 	public References(XmlBeanReferencesType base) {
 		super(base);
 	}
 
+	/**
+	 * Gets the {@link File} references array held in this object.
+	 * 
+	 * @return The file references array
+	 */
 	public File[] getFileArray() {
 		Vector<File> vector = new Vector<File>();
 		for (XmlBeanFileType type : delegate.getFileArray()) {
@@ -47,6 +63,12 @@ public class References extends AbstractElement<XmlBeanReferencesType> {
 		return vector.toArray(new File[vector.size()]);
 	}
 
+	/**
+	 * Sets the {@link File} references array held in this object.
+	 * 
+	 * @param fileArray
+	 *            The file references array to set
+	 */
 	public void setFileArray(File[] fileArray) {
 		Vector<XmlBeanFileType> vector = new Vector<XmlBeanFileType>();
 
@@ -57,10 +79,24 @@ public class References extends AbstractElement<XmlBeanReferencesType> {
 		delegate.setFileArray((XmlBeanFileType[]) vector.toArray());
 	}
 
+	/**
+	 * Gets the {@link File} reference at index i.
+	 * 
+	 * @param i
+	 *            The index of the file reference
+	 * @return The file reference
+	 */
 	public File getFileAtIndex(int i) {
 		return new File(delegate.getFileArray(i));
 	}
 
+	/**
+	 * Adds a new {@link File} references to the end of the array held in this
+	 * object.
+	 * 
+	 * @param file
+	 *            The file reference to add
+	 */
 	public void addFile(File file) {
 		XmlBeanFileType newfile = delegate.addNewFile();
 		newfile.set(file.getXmlObject());

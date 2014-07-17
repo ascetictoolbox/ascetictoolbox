@@ -24,7 +24,7 @@ import eu.ascetic.utils.ovf.api.factories.FileFactory;
 
 /**
  * Provides access to the File elements of an OVF document. The file references
- * defined by the {@link References} element allows a tool to easily determine
+ * contained by the {@link References} element allows a tool to easily determine
  * the integrity of an OVF package without having to parse or interpret the
  * entire structure of the descriptor.
  * 

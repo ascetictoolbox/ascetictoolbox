@@ -38,6 +38,12 @@ public class VirtualHardwareSection extends
 	 */
 	public static VirtualHardwareSectionFactory Factory = new VirtualHardwareSectionFactory();
 	
+	/**
+	 * Default constructor.
+	 * 
+	 * @param base
+	 *            The XMLBeans base type used for data storage
+	 */
 	public VirtualHardwareSection(XmlBeanVirtualHardwareSectionType base) {
 		super(base);
 	}

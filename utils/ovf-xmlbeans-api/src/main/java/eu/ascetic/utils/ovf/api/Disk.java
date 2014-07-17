@@ -47,7 +47,12 @@ public class Disk extends AbstractElement<XmlBeanVirtualDiskDescType> {
 	}
 
 	/**
-	 * Gets the unique identifier for this Disk.
+	 * Gets the unique identifier for this Disk referenced by the HostResource element of {@link Item} in the following methods:<br>
+	 * <br>
+	 * {@link Item#addHostResource(String)}<br>
+	 * {@link Item#setHostResourceArray(String[])}<br>
+	 * {@link Item#getHostResourceArray()}<br>
+	 * {@link Item#getHostResourceAtIndex(int)}<br>
 	 * 
 	 * @return The disk ID
 	 */
@@ -56,7 +61,12 @@ public class Disk extends AbstractElement<XmlBeanVirtualDiskDescType> {
 	}
 
 	/**
-	 * Sets the unique identifier for this Disk.
+	 * Sets the unique identifier for this Disk referenced by the HostResource element of {@link Item} in the following methods:<br>
+	 * <br>
+	 * {@link Item#addHostResource(String)}<br>
+	 * {@link Item#setHostResourceArray(String[])}<br>
+	 * {@link Item#getHostResourceArray()}<br>
+	 * {@link Item#getHostResourceAtIndex(int)}<br>
 	 * 
 	 * @param id
 	 *            The disk ID to set

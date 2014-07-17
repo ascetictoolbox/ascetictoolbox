@@ -438,7 +438,7 @@ public class Item extends AbstractElement<XmlBeanRASDType> {
 	 *            The index value
 	 * @return The host resource
 	 */
-	public String getHostResourceArray(int i) {
+	public String getHostResourceAtIndex(int i) {
 		if (delegate.getHostResourceArray().length > i) {
 			return delegate.getHostResourceArray(i).getStringValue();
 		}

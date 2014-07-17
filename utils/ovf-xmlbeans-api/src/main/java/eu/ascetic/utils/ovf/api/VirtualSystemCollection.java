@@ -40,6 +40,12 @@ public class VirtualSystemCollection extends
 	 */
 	public static VirtualSystemCollectionFactory Factory = new VirtualSystemCollectionFactory();
 
+	/**
+	 * Default constructor.
+	 * 
+	 * @param base
+	 *            The XMLBeans base type used for data storage
+	 */
 	public VirtualSystemCollection(XmlBeanVirtualSystemCollectionType base) {
 		super(base);
 	}

@@ -52,7 +52,7 @@ public class OvfDefinitionTest extends TestCase {
 
 		// @formatter:off
 		ovfDefinition.getVirtualSystemCollection().getProductSectionAtIndex(0)
-				.setSecurityKey("\n        " +
+				.setSecurityKeys("\n        " +
 				"-----BEGIN PUBLIC KEY-----\n        " +
 				"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCqGKukO1De7zhZj6+H0qtjTkVxwTCpvKe4eCZ0\n        " +
 				"FPqri0cb2JZfXJ/DgYSF6vUpwmJG8wVQZKjeGcjDOL5UlsuusFncCzWBQ7RKNUSesmQRMSGkVb1/\n        " +
