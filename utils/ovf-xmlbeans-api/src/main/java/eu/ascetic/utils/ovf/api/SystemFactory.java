@@ -13,28 +13,25 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package eu.ascetic.utils.ovf.api.factories;
+package eu.ascetic.utils.ovf.api;
 
-import org.dmtf.schemas.ovf.envelope.x1.XmlBeanOperatingSystemSectionType;
-
-import eu.ascetic.utils.ovf.api.OperatingSystem;
+import org.dmtf.schemas.ovf.envelope.x1.XmlBeanVSSDType;
 
 /**
- * Provides factory methods for creating instances of {@link OperatingSystem}.
+ * Provides factory methods for creating instances of {@link System}.
  * 
  * @author Django Armstrong (ULeeds)
  * 
  */
-public class OperatingSystemFactory {
+public class SystemFactory {
 
-	/**
-	 * Creates a new empty instance of {@link OperatingSystem} with null
-	 * internal object references.
-	 * 
-	 * @return The new OperatingSystem instance
-	 */
-	public OperatingSystem newInstance() {
-		return new OperatingSystem(
-				XmlBeanOperatingSystemSectionType.Factory.newInstance());
-	}
+    /**
+     * Creates a new empty instance of {@link System} with null internal object
+     * references.
+     * 
+     * @return The new System instance
+     */
+    public System newInstance() {
+        return new System(XmlBeanVSSDType.Factory.newInstance());
+    }
 }

@@ -13,28 +13,25 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package eu.ascetic.utils.ovf.api.factories;
+package eu.ascetic.utils.ovf.api;
 
-import org.dmtf.schemas.ovf.envelope.x1.XmlBeanNetworkSectionType;
-
-import eu.ascetic.utils.ovf.api.NetworkSection;
+import org.dmtf.schemas.ovf.envelope.x1.XmlBeanRASDType;
 
 /**
- * Provides factory methods for creating instances of {@link NetworkSection}.
+ * Provides factory methods for creating instances of {@link Item}.
  * 
  * @author Django Armstrong (ULeeds)
  * 
  */
-public class NetworkSectionFactory {
+public class ItemFactory {
 
-	/**
-	 * Creates a new empty instance of {@link NetworkSection} with null internal
-	 * object references.
-	 * 
-	 * @return The new NetworkSection instance
-	 */
-	public NetworkSection newInstance() {
-		return new NetworkSection(
-				XmlBeanNetworkSectionType.Factory.newInstance());
-	}
+    /**
+     * Creates a new empty instance of {@link Item} with null internal object
+     * references.
+     * 
+     * @return The new Item instance
+     */
+    public Item newInstance() {
+        return new Item(XmlBeanRASDType.Factory.newInstance());
+    }
 }

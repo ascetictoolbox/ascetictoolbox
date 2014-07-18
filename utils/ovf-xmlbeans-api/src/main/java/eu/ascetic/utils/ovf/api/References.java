@@ -21,7 +21,6 @@ import org.dmtf.schemas.ovf.envelope.x1.XmlBeanFileType;
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanReferencesType;
 
 import eu.ascetic.utils.ovf.api.AbstractElement;
-import eu.ascetic.utils.ovf.api.factories.ReferencesFactory;
 
 /**
  * Provides access to the References element of an OVF document. The References
@@ -34,71 +33,71 @@ import eu.ascetic.utils.ovf.api.factories.ReferencesFactory;
  */
 public class References extends AbstractElement<XmlBeanReferencesType> {
 
-	/**
-	 * A static reference to the {@link ReferencesFactory} class for generating
-	 * new instances of this object.
-	 */
-	public static ReferencesFactory Factory = new ReferencesFactory();
+    /**
+     * A static reference to the {@link ReferencesFactory} class for generating
+     * new instances of this object.
+     */
+    public static ReferencesFactory Factory = new ReferencesFactory();
 
-	/**
-	 * Default constructor.
-	 * 
-	 * @param base
-	 *            The XMLBeans base type used for data storage
-	 */
-	public References(XmlBeanReferencesType base) {
-		super(base);
-	}
+    /**
+     * Default constructor.
+     * 
+     * @param base
+     *            The XMLBeans base type used for data storage
+     */
+    public References(XmlBeanReferencesType base) {
+        super(base);
+    }
 
-	/**
-	 * Gets the {@link File} references array held in this object.
-	 * 
-	 * @return The file references array
-	 */
-	public File[] getFileArray() {
-		Vector<File> vector = new Vector<File>();
-		for (XmlBeanFileType type : delegate.getFileArray()) {
-			vector.add(new File(type));
-		}
-		return vector.toArray(new File[vector.size()]);
-	}
+    /**
+     * Gets the {@link File} references array held in this object.
+     * 
+     * @return The file references array
+     */
+    public File[] getFileArray() {
+        Vector<File> vector = new Vector<File>();
+        for (XmlBeanFileType type : delegate.getFileArray()) {
+            vector.add(new File(type));
+        }
+        return vector.toArray(new File[vector.size()]);
+    }
 
-	/**
-	 * Sets the {@link File} references array held in this object.
-	 * 
-	 * @param fileArray
-	 *            The file references array to set
-	 */
-	public void setFileArray(File[] fileArray) {
-		Vector<XmlBeanFileType> vector = new Vector<XmlBeanFileType>();
+    /**
+     * Sets the {@link File} references array held in this object.
+     * 
+     * @param fileArray
+     *            The file references array to set
+     */
+    public void setFileArray(File[] fileArray) {
+        Vector<XmlBeanFileType> vector = new Vector<XmlBeanFileType>();
 
-		for (int i = 0; i < fileArray.length; i++) {
-			vector.add(fileArray[i].getXmlObject());
-		}
+        for (int i = 0; i < fileArray.length; i++) {
+            vector.add(fileArray[i].getXmlObject());
+        }
 
-		delegate.setFileArray((XmlBeanFileType[]) vector.toArray());
-	}
+        delegate.setFileArray((XmlBeanFileType[]) vector.toArray());
+    }
 
-	/**
-	 * Gets the {@link File} reference at index i.
-	 * 
-	 * @param i
-	 *            The index of the file reference
-	 * @return The file reference
-	 */
-	public File getFileAtIndex(int i) {
-		return new File(delegate.getFileArray(i));
-	}
+    /**
+     * Gets the {@link File} reference at index i.
+     * 
+     * @param i
+     *            The index of the file reference
+     * @return The file reference
+     */
+    public File getFileAtIndex(int i) {
+        return new File(delegate.getFileArray(i));
+    }
 
-	/**
-	 * Adds a new {@link File} references to the end of the array held in this
-	 * object.
-	 * 
-	 * @param file
-	 *            The file reference to add
-	 */
-	public void addFile(File file) {
-		XmlBeanFileType newfile = delegate.addNewFile();
-		newfile.set(file.getXmlObject());
-	}
+    /**
+     * Adds a new {@link File} references to the end of the array held in this
+     * object.
+     * 
+     * @param file
+     *            The file reference to add
+     */
+    public void addFile(File file) {
+        XmlBeanFileType newfile = delegate.addNewFile();
+        newfile.set(file.getXmlObject());
+    }
 }

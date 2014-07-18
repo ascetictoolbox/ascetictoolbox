@@ -13,28 +13,27 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package eu.ascetic.utils.ovf.api.factories;
+package eu.ascetic.utils.ovf.api;
 
-import org.dmtf.schemas.ovf.envelope.x1.XmlBeanVirtualSystemType;
-
-import eu.ascetic.utils.ovf.api.VirtualSystem;
+import org.dmtf.schemas.ovf.envelope.x1.XmlBeanVirtualSystemCollectionType;
 
 /**
- * Provides factory methods for creating instances of {@link VirtualSystem}.
+ * Provides factory methods for creating instances of
+ * {@link VirtualSystemCollection}.
  * 
  * @author Django Armstrong (ULeeds)
  * 
  */
-public class VirtualSystemFactory {
+public class VirtualSystemCollectionFactory {
 
-	/**
-	 * Creates a new empty instance of {@link VirtualSystem} with null internal
-	 * object references.
-	 * 
-	 * @return The new VirtualSystem instance
-	 */
-	public VirtualSystem newInstance() {
-		return new VirtualSystem(XmlBeanVirtualSystemType.Factory.newInstance());
-	}
-
+    /**
+     * Creates a new empty instance of {@link VirtualSystemCollection} with null
+     * internal object references.
+     * 
+     * @return The new VirtualSystemCollection instance
+     */
+    public VirtualSystemCollection newInstance() {
+        return new VirtualSystemCollection(
+                XmlBeanVirtualSystemCollectionType.Factory.newInstance());
+    }
 }

@@ -13,27 +13,27 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package eu.ascetic.utils.ovf.api.factories;
+package eu.ascetic.utils.ovf.api;
 
-import org.dmtf.schemas.ovf.envelope.x1.XmlBeanRASDType;
-
-import eu.ascetic.utils.ovf.api.Item;
+import org.dmtf.schemas.ovf.envelope.x1.XmlBeanVirtualHardwareSectionType;
 
 /**
- * Provides factory methods for creating instances of {@link Item}.
+ * Provides factory methods for creating instances of
+ * {@link VirtualHardwareSection}.
  * 
  * @author Django Armstrong (ULeeds)
  * 
  */
-public class ItemFactory {
+public class VirtualHardwareSectionFactory {
 
-	/**
-	 * Creates a new empty instance of {@link Item} with null internal object
-	 * references.
-	 * 
-	 * @return The new Item instance
-	 */
-	public Item newInstance() {
-		return new Item(XmlBeanRASDType.Factory.newInstance());
-	}
+    /**
+     * Creates a new empty instance of {@link VirtualHardwareSection} with null
+     * internal object references.
+     * 
+     * @return The new VirtualHardwareSection instance
+     */
+    public VirtualHardwareSection newInstance() {
+        return new VirtualHardwareSection(
+                XmlBeanVirtualHardwareSectionType.Factory.newInstance());
+    }
 }

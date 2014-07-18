@@ -33,24 +33,24 @@ import eu.ascetic.utils.ovf.api.enums.ProductPropertyType;
  */
 public class OvfDefinitionTest extends TestCase {
 
-	public void testOvfDefinition() {
-		OvfDefinition ovfDefinition = OvfDefinition.Factory.newInstance(
-				"threeTierWebApp", "/DFS/ascetic/vm-images/3tierweb");
+    public void testOvfDefinition() {
+        OvfDefinition ovfDefinition = OvfDefinition.Factory.newInstance(
+                "threeTierWebApp", "/DFS/ascetic/vm-images/3tierweb");
 
-		// Global product details
+        // Global product details
 
-		// Stores the Application's ID
-		String applicationId = ovfDefinition.getVirtualSystemCollection()
-				.getId();
-		assertNotNull(applicationId);
-		;
-		ovfDefinition.getVirtualSystemCollection().getProductSectionAtIndex(0)
-				.setDeploymentId("101");
-		String deploymentId = ovfDefinition.getVirtualSystemCollection()
-				.getProductSectionAtIndex(0).getDeploymentId();
-		assertNotNull(deploymentId);
+        // Stores the Application's ID
+        String applicationId = ovfDefinition.getVirtualSystemCollection()
+                .getId();
+        assertNotNull(applicationId);
+        ;
+        ovfDefinition.getVirtualSystemCollection().getProductSectionAtIndex(0)
+                .setDeploymentId("101");
+        String deploymentId = ovfDefinition.getVirtualSystemCollection()
+                .getProductSectionAtIndex(0).getDeploymentId();
+        assertNotNull(deploymentId);
 
-		// @formatter:off
+        // @formatter:off
 		ovfDefinition.getVirtualSystemCollection().getProductSectionAtIndex(0)
 				.setSecurityKeys("\n        " +
 				"-----BEGIN PUBLIC KEY-----\n        " +
@@ -73,89 +73,89 @@ public class OvfDefinitionTest extends TestCase {
 				"-----END RSA PRIVATE KEY-----");
 		// @formatter:on
 
-		ovfDefinition
-				.getVirtualSystemCollection()
-				.getProductSectionAtIndex(0)
-				.addNewProperty("asceticWorkloadVmId",
-						ProductPropertyType.STRING, "jmeter");
-		ovfDefinition
-				.getVirtualSystemCollection()
-				.getProductSectionAtIndex(0)
-				.addNewProperty("asceticWorkloadType",
-						ProductPropertyType.STRING, "user-count");
-		ovfDefinition
-				.getVirtualSystemCollection()
-				.getProductSectionAtIndex(0)
-				.addNewProperty("asceticWorkloadRange",
-						ProductPropertyType.STRING, "10-200");
-		ovfDefinition
-				.getVirtualSystemCollection()
-				.getProductSectionAtIndex(0)
-				.addNewProperty("asceticWorkloadIncrement",
-						ProductPropertyType.STRING, "10");
-		ovfDefinition
-				.getVirtualSystemCollection()
-				.getProductSectionAtIndex(0)
-				.addNewProperty("asceticWorkloadInterval",
-						ProductPropertyType.STRING, "1min");
+        ovfDefinition
+                .getVirtualSystemCollection()
+                .getProductSectionAtIndex(0)
+                .addNewProperty("asceticWorkloadVmId",
+                        ProductPropertyType.STRING, "jmeter");
+        ovfDefinition
+                .getVirtualSystemCollection()
+                .getProductSectionAtIndex(0)
+                .addNewProperty("asceticWorkloadType",
+                        ProductPropertyType.STRING, "user-count");
+        ovfDefinition
+                .getVirtualSystemCollection()
+                .getProductSectionAtIndex(0)
+                .addNewProperty("asceticWorkloadRange",
+                        ProductPropertyType.STRING, "10-200");
+        ovfDefinition
+                .getVirtualSystemCollection()
+                .getProductSectionAtIndex(0)
+                .addNewProperty("asceticWorkloadIncrement",
+                        ProductPropertyType.STRING, "10");
+        ovfDefinition
+                .getVirtualSystemCollection()
+                .getProductSectionAtIndex(0)
+                .addNewProperty("asceticWorkloadInterval",
+                        ProductPropertyType.STRING, "1min");
 
-		// Virtual Machine product details
+        // Virtual Machine product details
 
-		// Stores the Virtual Machine's ID
-		String virtualMachineId = ovfDefinition.getVirtualSystemCollection()
-				.getVirtualSystemAtIndex(1).getId();
-		assertNotNull(virtualMachineId);
-		ovfDefinition
-				.getVirtualSystemCollection()
-				.getVirtualSystemAtIndex(1)
-				.getProductSectionAtIndex(0)
-				.addNewProperty("asceticProbeUri-1",
-						ProductPropertyType.STRING,
-						"uri://some-end-point/application-monitor");
-		String probeUri = ovfDefinition.getVirtualSystemCollection()
-				.getVirtualSystemAtIndex(1).getProductSectionAtIndex(0)
-				.getPropertyByKey("asceticProbeUri-1").getValue();
-		assertNotNull(probeUri);
-		ovfDefinition
-				.getVirtualSystemCollection()
-				.getVirtualSystemAtIndex(1)
-				.getProductSectionAtIndex(0)
-				.addNewProperty("asceticProbeType-1",
-						ProductPropertyType.STRING, "cpu");
-		ovfDefinition
-				.getVirtualSystemCollection()
-				.getVirtualSystemAtIndex(1)
-				.getProductSectionAtIndex(0)
-				.addNewProperty("asceticProbeInterval-1",
-						ProductPropertyType.STRING, "1sec");
+        // Stores the Virtual Machine's ID
+        String virtualMachineId = ovfDefinition.getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1).getId();
+        assertNotNull(virtualMachineId);
+        ovfDefinition
+                .getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1)
+                .getProductSectionAtIndex(0)
+                .addNewProperty("asceticProbeUri-1",
+                        ProductPropertyType.STRING,
+                        "uri://some-end-point/application-monitor");
+        String probeUri = ovfDefinition.getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1).getProductSectionAtIndex(0)
+                .getPropertyByKey("asceticProbeUri-1").getValue();
+        assertNotNull(probeUri);
+        ovfDefinition
+                .getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1)
+                .getProductSectionAtIndex(0)
+                .addNewProperty("asceticProbeType-1",
+                        ProductPropertyType.STRING, "cpu");
+        ovfDefinition
+                .getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1)
+                .getProductSectionAtIndex(0)
+                .addNewProperty("asceticProbeInterval-1",
+                        ProductPropertyType.STRING, "1sec");
 
-		System.out.println(ovfDefinition.toString());
+        System.out.println(ovfDefinition.toString());
 
-		writeToFile(ovfDefinition.getXmlObject(), "3tier-webapp.ovf");
-	}
+        writeToFile(ovfDefinition.getXmlObject(), "3tier-webapp.ovf");
+    }
 
-	protected void writeToFile(XmlBeanEnvelopeDocument ovfDefinition,
-			String fileName) {
-		try {
-			// If system property is not set (i.e. test case was started from
-			// IDE )
-			// we use the current directory to store the file
-			String targetDir = System.getProperty("ovfSampleDir", "target");
+    protected void writeToFile(XmlBeanEnvelopeDocument ovfDefinition,
+            String fileName) {
+        try {
+            // If system property is not set (i.e. test case was started from
+            // IDE )
+            // we use the current directory to store the file
+            String targetDir = System.getProperty("ovfSampleDir", "target");
 
-			File file = new File(targetDir + File.separator + File.separator
-					+ fileName + ".xml");
-			FileWriter fstream = new FileWriter(file);
-			BufferedWriter out = new BufferedWriter(fstream);
-			out.write(ovfDefinition.xmlText(new XmlOptions()
-					.setSavePrettyPrint()));
-			System.out.println(fileName + ".xml was written to "
-					+ file.getAbsolutePath());
-			// Close the output stream
-			out.close();
-		} catch (Exception e) {
-			// Catch exception if any
-			System.err.println("Error: " + e.getMessage());
-			fail(e.getMessage());
-		}
-	}
+            File file = new File(targetDir + File.separator + File.separator
+                    + fileName + ".xml");
+            FileWriter fstream = new FileWriter(file);
+            BufferedWriter out = new BufferedWriter(fstream);
+            out.write(ovfDefinition.xmlText(new XmlOptions()
+                    .setSavePrettyPrint()));
+            System.out.println(fileName + ".xml was written to "
+                    + file.getAbsolutePath());
+            // Close the output stream
+            out.close();
+        } catch (Exception e) {
+            // Catch exception if any
+            System.err.println("Error: " + e.getMessage());
+            fail(e.getMessage());
+        }
+    }
 }

@@ -13,27 +13,33 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package eu.ascetic.utils.ovf.api.factories;
+package eu.ascetic.utils.ovf.api.exceptions;
 
-import org.dmtf.schemas.ovf.envelope.x1.XmlBeanReferencesType;
+import org.apache.xmlbeans.XmlObject;
 
-import eu.ascetic.utils.ovf.api.References;
+import eu.ascetic.utils.ovf.api.utils.XmlValidator;
 
 /**
- * Provides factory methods for creating instances of {@link References}.
+ * Provides customised runtime exceptions for invalid XML documents.
  * 
  * @author Django Armstrong (ULeeds)
  * 
  */
-public class ReferencesFactory {
+public class OvfInvalidDocumentException extends RuntimeException {
+
+	private static final long serialVersionUID = 7045796285018934681L;
 
 	/**
-	 * Creates a new empty instance of {@link References} with null internal
-	 * object references.
+	 * Constructor for creating custom runtime exception for invalid XML
+	 * documents.
 	 * 
-	 * @return The new References instance
+	 * @param message
+	 *            The exception message
+	 * @param document
+	 *            The offending document
 	 */
-	public References newInstance() {
-		return new References(XmlBeanReferencesType.Factory.newInstance());
+	public OvfInvalidDocumentException(String message, XmlObject document) {
+		super(message.concat(XmlValidator.getErrors(document)));
 	}
+
 }

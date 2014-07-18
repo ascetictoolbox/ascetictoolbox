@@ -13,11 +13,26 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package eu.ascetic.utils.ovf.api;
+
+import org.dmtf.schemas.ovf.envelope.x1.XmlBeanNetworkSectionType;
 
 /**
- * Factory classes used to create object instances within the OVF API.
+ * Provides factory methods for creating instances of {@link NetworkSection}.
  * 
  * @author Django Armstrong (ULeeds)
- *
+ * 
  */
-package eu.ascetic.utils.ovf.api.factories;
+public class NetworkSectionFactory {
+
+    /**
+     * Creates a new empty instance of {@link NetworkSection} with null internal
+     * object references.
+     * 
+     * @return The new NetworkSection instance
+     */
+    public NetworkSection newInstance() {
+        return new NetworkSection(
+                XmlBeanNetworkSectionType.Factory.newInstance());
+    }
+}

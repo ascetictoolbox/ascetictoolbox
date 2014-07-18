@@ -24,7 +24,6 @@ import org.dmtf.schemas.ovf.envelope.x1.XmlBeanVirtualHardwareSectionType;
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanVirtualSystemType;
 
 import eu.ascetic.utils.ovf.api.AbstractElement;
-import eu.ascetic.utils.ovf.api.factories.VirtualSystemFactory;
 import eu.ascetic.utils.ovf.api.utils.XmlSimpleTypeConverter;
 
 /**
@@ -52,248 +51,248 @@ import eu.ascetic.utils.ovf.api.utils.XmlSimpleTypeConverter;
  */
 public class VirtualSystem extends AbstractElement<XmlBeanVirtualSystemType> {
 
-	/**
-	 * A static reference to the {@link VirtualSystemFactory} class for
-	 * generating new instances of this object.
-	 */
-	public static VirtualSystemFactory Factory = new VirtualSystemFactory();
+    /**
+     * A static reference to the {@link VirtualSystemFactory} class for
+     * generating new instances of this object.
+     */
+    public static VirtualSystemFactory Factory = new VirtualSystemFactory();
 
-	/**
-	 * Default constructor.
-	 * 
-	 * @param base
-	 *            The XMLBeans base type used for data storage
-	 */
-	public VirtualSystem(XmlBeanVirtualSystemType base) {
-		super(base);
-	}
+    /**
+     * Default constructor.
+     * 
+     * @param base
+     *            The XMLBeans base type used for data storage
+     */
+    public VirtualSystem(XmlBeanVirtualSystemType base) {
+        super(base);
+    }
 
-	/**
-	 * Gets the info element, a human readable description of the meaning of
-	 * this section.
-	 * 
-	 * @return The content of the info element
-	 */
-	public String getInfo() {
-		return delegate.getInfo().getStringValue();
-	}
+    /**
+     * Gets the info element, a human readable description of the meaning of
+     * this section.
+     * 
+     * @return The content of the info element
+     */
+    public String getInfo() {
+        return delegate.getInfo().getStringValue();
+    }
 
-	/**
-	 * Sets the info element, a human readable description of the meaning of
-	 * this section.
-	 * 
-	 * @param info
-	 *            The content to set within the info element
-	 */
-	public void setInfo(String info) {
-		delegate.setInfo(XmlSimpleTypeConverter.toMsgType(info));
-	}
+    /**
+     * Sets the info element, a human readable description of the meaning of
+     * this section.
+     * 
+     * @param info
+     *            The content to set within the info element
+     */
+    public void setInfo(String info) {
+        delegate.setInfo(XmlSimpleTypeConverter.toMsgType(info));
+    }
 
-	/**
-	 * Sets the unique ID of this VirtualSystem.
-	 * 
-	 * @return The ID
-	 */
-	public String getId() {
-		return delegate.getId();
-	}
+    /**
+     * Sets the unique ID of this VirtualSystem.
+     * 
+     * @return The ID
+     */
+    public String getId() {
+        return delegate.getId();
+    }
 
-	/**
-	 * Gets the unique ID of this VirtualSystem.
-	 * 
-	 * @param id
-	 *            The ID to set
-	 */
-	public void setId(String id) {
-		delegate.setId(id);
-	}
+    /**
+     * Gets the unique ID of this VirtualSystem.
+     * 
+     * @param id
+     *            The ID to set
+     */
+    public void setId(String id) {
+        delegate.setId(id);
+    }
 
-	/**
-	 * Gets the human readable name of this VirtualSystem.
-	 * 
-	 * @return The name to get
-	 */
-	public String getName() {
-		if (delegate.isSetName()) {
-			return delegate.getName().getStringValue();
-		}
-		return null;
-	}
+    /**
+     * Gets the human readable name of this VirtualSystem.
+     * 
+     * @return The name to get
+     */
+    public String getName() {
+        if (delegate.isSetName()) {
+            return delegate.getName().getStringValue();
+        }
+        return null;
+    }
 
-	/**
-	 * Sets the human readable name of this VirtualSystem.
-	 * 
-	 * @param name
-	 *            The name to set
-	 */
-	public void setName(String name) {
-		delegate.setName(XmlSimpleTypeConverter.toMsgType(name));
-	}
-	
-	/**
-	 * Gets the {@link ProductSection} array held in this object. They describes
-	 * product information along with a set of properties that can be
-	 * configured.
-	 * 
-	 * @return The ProductSection[]
-	 */
-	public ProductSection[] getProductSectionArray() {
-		Vector<ProductSection> vector = new Vector<ProductSection>();
-		XmlBeanSectionType[] sectionArray = (XmlBeanSectionType[]) delegate
-				.getSectionArray();
-		if (sectionArray != null) {
-			for (XmlBeanSectionType xmlBeanSections : sectionArray) {
-				if (xmlBeanSections instanceof XmlBeanProductSectionType) {
-					vector.add(new ProductSection(
-							(XmlBeanProductSectionType) xmlBeanSections));
-				}
-			}
-			return vector.toArray(new ProductSection[vector.size()]);
-		}
-		return null;
-	}
+    /**
+     * Sets the human readable name of this VirtualSystem.
+     * 
+     * @param name
+     *            The name to set
+     */
+    public void setName(String name) {
+        delegate.setName(XmlSimpleTypeConverter.toMsgType(name));
+    }
 
-	/**
-	 * Sets the {@link ProductSection} array held in this object. They describes
-	 * product information along with a set of properties that can be
-	 * configured.
-	 * 
-	 * @param productSectionArray
-	 *            The ProductSection[] to set
-	 */
-	public void setProductSectionArray(ProductSection[] productSectionArray) {
-		Vector<XmlBeanSectionType> sectionVector = new Vector<XmlBeanSectionType>();
+    /**
+     * Gets the {@link ProductSection} array held in this object. They describes
+     * product information along with a set of properties that can be
+     * configured.
+     * 
+     * @return The ProductSection[]
+     */
+    public ProductSection[] getProductSectionArray() {
+        Vector<ProductSection> vector = new Vector<ProductSection>();
+        XmlBeanSectionType[] sectionArray = (XmlBeanSectionType[]) delegate
+                .getSectionArray();
+        if (sectionArray != null) {
+            for (XmlBeanSectionType xmlBeanSections : sectionArray) {
+                if (xmlBeanSections instanceof XmlBeanProductSectionType) {
+                    vector.add(new ProductSection(
+                            (XmlBeanProductSectionType) xmlBeanSections));
+                }
+            }
+            return vector.toArray(new ProductSection[vector.size()]);
+        }
+        return null;
+    }
 
-		XmlBeanSectionType[] sectionArray = (XmlBeanSectionType[]) delegate
-				.getSectionArray();
-		// Add everything else that's not a ProductSection
-		if (sectionArray != null) {
-			for (XmlBeanSectionType xmlBeanSection : sectionArray) {
-				if (!(xmlBeanSection instanceof XmlBeanProductSectionType)) {
-					sectionVector
-							.add((XmlBeanProductSectionType) xmlBeanSection);
-				}
-			}
-		}
-		// Add the new elements
-		for (int i = 0; i < productSectionArray.length; i++) {
-			sectionVector.add(productSectionArray[i].getXmlObject());
-		}
-		delegate.setSectionArray((XmlBeanSectionType[]) sectionVector.toArray());
-	}
+    /**
+     * Sets the {@link ProductSection} array held in this object. They describes
+     * product information along with a set of properties that can be
+     * configured.
+     * 
+     * @param productSectionArray
+     *            The ProductSection[] to set
+     */
+    public void setProductSectionArray(ProductSection[] productSectionArray) {
+        Vector<XmlBeanSectionType> sectionVector = new Vector<XmlBeanSectionType>();
 
-	/**
-	 * Gets the {@link ProductSection} element at index i of the array. It
-	 * describes product information along with a set of properties that can be
-	 * configured.
-	 * 
-	 * @param i
-	 *            The index value
-	 * @return The ProductSection at index i
-	 */
-	public ProductSection getProductSectionAtIndex(int i) {
-		return getProductSectionArray()[i];
-	}
+        XmlBeanSectionType[] sectionArray = (XmlBeanSectionType[]) delegate
+                .getSectionArray();
+        // Add everything else that's not a ProductSection
+        if (sectionArray != null) {
+            for (XmlBeanSectionType xmlBeanSection : sectionArray) {
+                if (!(xmlBeanSection instanceof XmlBeanProductSectionType)) {
+                    sectionVector
+                            .add((XmlBeanProductSectionType) xmlBeanSection);
+                }
+            }
+        }
+        // Add the new elements
+        for (int i = 0; i < productSectionArray.length; i++) {
+            sectionVector.add(productSectionArray[i].getXmlObject());
+        }
+        delegate.setSectionArray((XmlBeanSectionType[]) sectionVector.toArray());
+    }
 
-	/**
-	 * Adds a new {@link ProductSection} element to the end of the
-	 * ProductSection array. It describes product information along with a set
-	 * of properties that can be configured.
-	 * 
-	 * @param productSection
-	 *            The ProductSection to add to the end of the array.
-	 */
-	public void addProductSection(ProductSection productSection) {
-		XmlBeanSectionType xmlBeanSectionType = delegate.addNewSection();
-		xmlBeanSectionType.set(productSection.getXmlObject());
-	}
+    /**
+     * Gets the {@link ProductSection} element at index i of the array. It
+     * describes product information along with a set of properties that can be
+     * configured.
+     * 
+     * @param i
+     *            The index value
+     * @return The ProductSection at index i
+     */
+    public ProductSection getProductSectionAtIndex(int i) {
+        return getProductSectionArray()[i];
+    }
 
-	/**
-	 * Gets the {@link OperatingSystem} element. It describes the operating
-	 * system used in the VirtualSystem.
-	 * 
-	 * @return The OperatingSystem
-	 */
-	public OperatingSystem getOperatingSystem() {
-		XmlBeanSectionType[] sectionArray = (XmlBeanSectionType[]) delegate
-				.getSectionArray();
-		if (sectionArray != null) {
-			for (XmlBeanSectionType xmlBeanSections : sectionArray) {
-				if (xmlBeanSections instanceof XmlBeanOperatingSystemSectionType) {
-					return new OperatingSystem(
-							(XmlBeanOperatingSystemSectionType) xmlBeanSections);
-				}
-			}
-		}
-		return null;
-	}
+    /**
+     * Adds a new {@link ProductSection} element to the end of the
+     * ProductSection array. It describes product information along with a set
+     * of properties that can be configured.
+     * 
+     * @param productSection
+     *            The ProductSection to add to the end of the array.
+     */
+    public void addProductSection(ProductSection productSection) {
+        XmlBeanSectionType xmlBeanSectionType = delegate.addNewSection();
+        xmlBeanSectionType.set(productSection.getXmlObject());
+    }
 
-	/**
-	 * Sets the {@link OperatingSystem} element. It describes the operating
-	 * system used in the VirtualSystem.
-	 * 
-	 * @param operatingSystem
-	 *            The OperatingSystem element to set
-	 */
-	public void setOperatingSystem(OperatingSystem operatingSystem) {
-		XmlBeanSectionType[] sectionArray = (XmlBeanSectionType[]) delegate
-				.getSectionArray();
-		if (sectionArray != null) {
-			for (XmlBeanSectionType xmlBeanSections : sectionArray) {
-				if (xmlBeanSections instanceof XmlBeanOperatingSystemSectionType) {
-					xmlBeanSections.set(operatingSystem.getXmlObject());
-					delegate.setSectionArray(sectionArray);
-					return;
-				}
-			}
-		}
+    /**
+     * Gets the {@link OperatingSystem} element. It describes the operating
+     * system used in the VirtualSystem.
+     * 
+     * @return The OperatingSystem
+     */
+    public OperatingSystem getOperatingSystem() {
+        XmlBeanSectionType[] sectionArray = (XmlBeanSectionType[]) delegate
+                .getSectionArray();
+        if (sectionArray != null) {
+            for (XmlBeanSectionType xmlBeanSections : sectionArray) {
+                if (xmlBeanSections instanceof XmlBeanOperatingSystemSectionType) {
+                    return new OperatingSystem(
+                            (XmlBeanOperatingSystemSectionType) xmlBeanSections);
+                }
+            }
+        }
+        return null;
+    }
 
-		XmlBeanSectionType xmlBeanSectionType = delegate.addNewSection();
-		xmlBeanSectionType.set(operatingSystem.getXmlObject());
-	}
+    /**
+     * Sets the {@link OperatingSystem} element. It describes the operating
+     * system used in the VirtualSystem.
+     * 
+     * @param operatingSystem
+     *            The OperatingSystem element to set
+     */
+    public void setOperatingSystem(OperatingSystem operatingSystem) {
+        XmlBeanSectionType[] sectionArray = (XmlBeanSectionType[]) delegate
+                .getSectionArray();
+        if (sectionArray != null) {
+            for (XmlBeanSectionType xmlBeanSections : sectionArray) {
+                if (xmlBeanSections instanceof XmlBeanOperatingSystemSectionType) {
+                    xmlBeanSections.set(operatingSystem.getXmlObject());
+                    delegate.setSectionArray(sectionArray);
+                    return;
+                }
+            }
+        }
 
-	/**
-	 * Gets the {@link VirtualHardwareSection} element. It describes the virtual
-	 * hardware required by the VirtualSystem.
-	 * 
-	 * @return The VirtualHardwareSection
-	 */
-	public VirtualHardwareSection getVirtualHardwareSection() {
-		XmlBeanSectionType[] sectionArray = (XmlBeanSectionType[]) delegate
-				.getSectionArray();
-		if (sectionArray != null) {
-			for (XmlBeanSectionType xmlBeanSections : sectionArray) {
-				if (xmlBeanSections instanceof XmlBeanVirtualHardwareSectionType) {
-					return new VirtualHardwareSection(
-							(XmlBeanVirtualHardwareSectionType) xmlBeanSections);
-				}
-			}
-		}
-		return null;
-	}
+        XmlBeanSectionType xmlBeanSectionType = delegate.addNewSection();
+        xmlBeanSectionType.set(operatingSystem.getXmlObject());
+    }
 
-	/**
-	 * Sets the {@link VirtualHardwareSection} element. It describes the virtual
-	 * hardware required by the VirtualSystem.
-	 * 
-	 * @param virtualHardwareSection
-	 *            The VirtualHardwareSection to set
-	 */
-	public void setVirtualHardwareSection(
-			VirtualHardwareSection virtualHardwareSection) {
-		XmlBeanSectionType[] sectionArray = (XmlBeanSectionType[]) delegate
-				.getSectionArray();
-		if (sectionArray != null) {
-			for (XmlBeanSectionType xmlBeanSections : sectionArray) {
-				if (xmlBeanSections instanceof XmlBeanVirtualHardwareSectionType) {
-					xmlBeanSections.set(virtualHardwareSection.getXmlObject());
-					delegate.setSectionArray(sectionArray);
-					return;
-				}
-			}
-		}
-		XmlBeanSectionType xmlBeanSectionType = delegate.addNewSection();
-		xmlBeanSectionType.set(virtualHardwareSection.getXmlObject());
-	}
+    /**
+     * Gets the {@link VirtualHardwareSection} element. It describes the virtual
+     * hardware required by the VirtualSystem.
+     * 
+     * @return The VirtualHardwareSection
+     */
+    public VirtualHardwareSection getVirtualHardwareSection() {
+        XmlBeanSectionType[] sectionArray = (XmlBeanSectionType[]) delegate
+                .getSectionArray();
+        if (sectionArray != null) {
+            for (XmlBeanSectionType xmlBeanSections : sectionArray) {
+                if (xmlBeanSections instanceof XmlBeanVirtualHardwareSectionType) {
+                    return new VirtualHardwareSection(
+                            (XmlBeanVirtualHardwareSectionType) xmlBeanSections);
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Sets the {@link VirtualHardwareSection} element. It describes the virtual
+     * hardware required by the VirtualSystem.
+     * 
+     * @param virtualHardwareSection
+     *            The VirtualHardwareSection to set
+     */
+    public void setVirtualHardwareSection(
+            VirtualHardwareSection virtualHardwareSection) {
+        XmlBeanSectionType[] sectionArray = (XmlBeanSectionType[]) delegate
+                .getSectionArray();
+        if (sectionArray != null) {
+            for (XmlBeanSectionType xmlBeanSections : sectionArray) {
+                if (xmlBeanSections instanceof XmlBeanVirtualHardwareSectionType) {
+                    xmlBeanSections.set(virtualHardwareSection.getXmlObject());
+                    delegate.setSectionArray(sectionArray);
+                    return;
+                }
+            }
+        }
+        XmlBeanSectionType xmlBeanSectionType = delegate.addNewSection();
+        xmlBeanSectionType.set(virtualHardwareSection.getXmlObject());
+    }
 
 }

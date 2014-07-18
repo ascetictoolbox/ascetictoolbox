@@ -18,7 +18,6 @@ package eu.ascetic.utils.ovf.api;
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanNetworkSectionType;
 
 import eu.ascetic.utils.ovf.api.AbstractElement;
-import eu.ascetic.utils.ovf.api.factories.NetworkFactory;
 import eu.ascetic.utils.ovf.api.utils.XmlSimpleTypeConverter;
 
 /**
@@ -33,76 +32,76 @@ import eu.ascetic.utils.ovf.api.utils.XmlSimpleTypeConverter;
  */
 public class Network extends AbstractElement<XmlBeanNetworkSectionType.Network> {
 
-	/**
-	 * A static reference to the {@link NetworkFactory} class for generating new
-	 * instances of this object.
-	 */
-	public static NetworkFactory Factory = new NetworkFactory();
+    /**
+     * A static reference to the {@link NetworkFactory} class for generating new
+     * instances of this object.
+     */
+    public static NetworkFactory Factory = new NetworkFactory();
 
-	/**
-	 * Default constructor.
-	 * 
-	 * @param base
-	 *            The XMLBeans base type used for data storage
-	 */
-	public Network(XmlBeanNetworkSectionType.Network base) {
-		super(base);
-	}
+    /**
+     * Default constructor.
+     * 
+     * @param base
+     *            The XMLBeans base type used for data storage
+     */
+    public Network(XmlBeanNetworkSectionType.Network base) {
+        super(base);
+    }
 
-	/**
-	 * Gets the description of the Network element. The Description is used to
-	 * provide additional metadata about the Network. This element enables a
-	 * consumer of the OVF package to provide descriptive information about a
-	 * network.
-	 * 
-	 * @return The description of the Network
-	 */
-	public String getDescription() {
-		return delegate.getDescription().getStringValue();
-	}
+    /**
+     * Gets the description of the Network element. The Description is used to
+     * provide additional metadata about the Network. This element enables a
+     * consumer of the OVF package to provide descriptive information about a
+     * network.
+     * 
+     * @return The description of the Network
+     */
+    public String getDescription() {
+        return delegate.getDescription().getStringValue();
+    }
 
-	/**
-	 * Sets the description of the Network element. The Description element is
-	 * used to provide additional metadata about the Network element. This
-	 * element enables a consumer of the OVF package to provide descriptive
-	 * information about a network.
-	 * 
-	 * @param description
-	 *            The description of the Network to set
-	 */
-	public void setDescription(String description) {
-		delegate.setDescription(XmlSimpleTypeConverter.toMsgType(description));
-	}
+    /**
+     * Sets the description of the Network element. The Description element is
+     * used to provide additional metadata about the Network element. This
+     * element enables a consumer of the OVF package to provide descriptive
+     * information about a network.
+     * 
+     * @param description
+     *            The description of the Network to set
+     */
+    public void setDescription(String description) {
+        delegate.setDescription(XmlSimpleTypeConverter.toMsgType(description));
+    }
 
-	/**
-	 * Gets the unique network name referenced by the Connection element of
-	 * {@link Item} in the following methods:<br>
-	 * <br>
-	 * {@link Item#addConnection(String)}<br>
-	 * {@link Item#setConnectionArray(String[])}<br>
-	 * {@link Item#getConnectionArray()}<br>
-	 * {@link Item#getConnectionAtIndex(int)}<br>
-	 * 
-	 * @return The name to the Network
-	 */
-	public String getName() {
-		return delegate.getName();
-	}
+    /**
+     * Gets the unique network name referenced by the Connection element of
+     * {@link Item} in the following methods:<br>
+     * <br>
+     * {@link Item#addConnection(String)}<br>
+     * {@link Item#setConnectionArray(String[])}<br>
+     * {@link Item#getConnectionArray()}<br>
+     * {@link Item#getConnectionAtIndex(int)}<br>
+     * 
+     * @return The name to the Network
+     */
+    public String getName() {
+        return delegate.getName();
+    }
 
-	/**
-	 * Sets the unique network name referenced by the Connection element of
-	 * {@link Item} in the following methods:<br>
-	 * <br>
-	 * {@link Item#addConnection(String)}<br>
-	 * {@link Item#setConnectionArray(String[])}<br>
-	 * {@link Item#getConnectionArray()}<br>
-	 * {@link Item#getConnectionAtIndex(int)}<br>
-	 * 
-	 * @param name
-	 *            The name to the Network to set
-	 */
-	public void setName(String name) {
-		delegate.setName(name);
-	}
+    /**
+     * Sets the unique network name referenced by the Connection element of
+     * {@link Item} in the following methods:<br>
+     * <br>
+     * {@link Item#addConnection(String)}<br>
+     * {@link Item#setConnectionArray(String[])}<br>
+     * {@link Item#getConnectionArray()}<br>
+     * {@link Item#getConnectionAtIndex(int)}<br>
+     * 
+     * @param name
+     *            The name to the Network to set
+     */
+    public void setName(String name) {
+        delegate.setName(name);
+    }
 
 }

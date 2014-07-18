@@ -21,7 +21,6 @@ import org.dmtf.schemas.ovf.envelope.x1.XmlBeanNetworkSectionType;
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanVirtualSystemCollectionType;
 
 import eu.ascetic.utils.ovf.api.AbstractElement;
-import eu.ascetic.utils.ovf.api.factories.OvfDefinitionFactory;
 
 /**
  * Provides an entry point into an OVF document and access to the Envelope
@@ -51,122 +50,122 @@ import eu.ascetic.utils.ovf.api.factories.OvfDefinitionFactory;
  */
 public class OvfDefinition extends AbstractElement<XmlBeanEnvelopeDocument> {
 
-	/**
-	 * A static reference to the {@link OvfDefinitionFactory} class for
-	 * generating new instances of this object.
-	 */
-	public static OvfDefinitionFactory Factory = new OvfDefinitionFactory();
+    /**
+     * A static reference to the {@link OvfDefinitionFactory} class for
+     * generating new instances of this object.
+     */
+    public static OvfDefinitionFactory Factory = new OvfDefinitionFactory();
 
-	/**
-	 * Default constructor.
-	 * 
-	 * @param base
-	 *            The XMLBeans base type used for data storage
-	 */
-	public OvfDefinition(XmlBeanEnvelopeDocument base) {
-		super(base);
-	}
+    /**
+     * Default constructor.
+     * 
+     * @param base
+     *            The XMLBeans base type used for data storage
+     */
+    public OvfDefinition(XmlBeanEnvelopeDocument base) {
+        super(base);
+    }
 
-	/**
-	 * Gets the {@link References} element of the OVF document. It describes a
-	 * list of file references to all external files that are part of the OVF
-	 * document, defined by the {@link References} element and its {@link File}
-	 * child elements. These are typically virtual disk files, ISO images, and
-	 * other resources.
-	 * 
-	 * @return The References
-	 */
-	public References getReferences() {
-		return new References(delegate.getEnvelope().getReferences());
-	}
+    /**
+     * Gets the {@link References} element of the OVF document. It describes a
+     * list of file references to all external files that are part of the OVF
+     * document, defined by the {@link References} element and its {@link File}
+     * child elements. These are typically virtual disk files, ISO images, and
+     * other resources.
+     * 
+     * @return The References
+     */
+    public References getReferences() {
+        return new References(delegate.getEnvelope().getReferences());
+    }
 
-	/**
-	 * Sets the {@link References} section of the OVF document. It describes a
-	 * list of file references to all external files that are part of the OVF
-	 * document, defined by the {@link References} element and its {@link File}
-	 * child elements. These are typically virtual disk files, ISO images, and
-	 * other resources.
-	 * 
-	 * @param references
-	 *            The References to set
-	 */
-	public void setReferences(References references) {
-		delegate.getEnvelope().setReferences(references.getXmlObject());
-	}
+    /**
+     * Sets the {@link References} section of the OVF document. It describes a
+     * list of file references to all external files that are part of the OVF
+     * document, defined by the {@link References} element and its {@link File}
+     * child elements. These are typically virtual disk files, ISO images, and
+     * other resources.
+     * 
+     * @param references
+     *            The References to set
+     */
+    public void setReferences(References references) {
+        delegate.getEnvelope().setReferences(references.getXmlObject());
+    }
 
-	/**
-	 * Gets the {@link DiskSection} section of the OVF document. It describes
-	 * meta-information about all virtual disks.
-	 * 
-	 * @return The DiskSection
-	 */
-	public DiskSection getDiskSection() {
-		// FIXME: The type returned should be checked? (Unless the schema
-		// specifies the locality here?)
-		return new DiskSection((XmlBeanDiskSectionType) delegate.getEnvelope()
-				.getSectionArray(0));
-	}
+    /**
+     * Gets the {@link DiskSection} section of the OVF document. It describes
+     * meta-information about all virtual disks.
+     * 
+     * @return The DiskSection
+     */
+    public DiskSection getDiskSection() {
+        // FIXME: The type returned should be checked? (Unless the schema
+        // specifies the locality here?)
+        return new DiskSection((XmlBeanDiskSectionType) delegate.getEnvelope()
+                .getSectionArray(0));
+    }
 
-	/**
-	 * Gets the {@link DiskSection} section of the OVF document. It describes
-	 * meta-information about all virtual disks.
-	 * 
-	 * @param diskSection
-	 *            The DiskSection to set.
-	 */
-	public void setDiskSection(DiskSection diskSection) {
-		delegate.getEnvelope().setSectionArray(0, diskSection.getXmlObject());
-	}
+    /**
+     * Gets the {@link DiskSection} section of the OVF document. It describes
+     * meta-information about all virtual disks.
+     * 
+     * @param diskSection
+     *            The DiskSection to set.
+     */
+    public void setDiskSection(DiskSection diskSection) {
+        delegate.getEnvelope().setSectionArray(0, diskSection.getXmlObject());
+    }
 
-	/**
-	 * Gets the {@link NetworkSection} section of the OVF document. It describes
-	 * logical networks used by virtual machines.
-	 * 
-	 * @return The NetworkSection
-	 */
-	public NetworkSection getNetworkSection() {
-		// FIXME: The type returned should be checked? (Unless the schema
-		// specifies the locality here?)
-		return new NetworkSection((XmlBeanNetworkSectionType) delegate
-				.getEnvelope().getSectionArray(1));
-	}
+    /**
+     * Gets the {@link NetworkSection} section of the OVF document. It describes
+     * logical networks used by virtual machines.
+     * 
+     * @return The NetworkSection
+     */
+    public NetworkSection getNetworkSection() {
+        // FIXME: The type returned should be checked? (Unless the schema
+        // specifies the locality here?)
+        return new NetworkSection((XmlBeanNetworkSectionType) delegate
+                .getEnvelope().getSectionArray(1));
+    }
 
-	/**
-	 * Sets the {@link NetworkSection} section of the OVF document. It describes
-	 * logical networks used by virtual machines.
-	 * 
-	 * @param networkSection
-	 *            The NetworkSection to set
-	 */
-	public void setNetworkSection(NetworkSection networkSection) {
-		delegate.getEnvelope()
-				.setSectionArray(1, networkSection.getXmlObject());
-	}
+    /**
+     * Sets the {@link NetworkSection} section of the OVF document. It describes
+     * logical networks used by virtual machines.
+     * 
+     * @param networkSection
+     *            The NetworkSection to set
+     */
+    public void setNetworkSection(NetworkSection networkSection) {
+        delegate.getEnvelope()
+                .setSectionArray(1, networkSection.getXmlObject());
+    }
 
-	/**
-	 * Gets the {@link VirtualSystemCollection} section of the OVF document.
-	 * Provides a description of the OVF document content as collection of
-	 * multiple virtual machines (a VirtualSystemCollection element).
-	 * 
-	 * @return The VirtualSystemCollection
-	 */
-	public VirtualSystemCollection getVirtualSystemCollection() {
-		return new VirtualSystemCollection(
-				(XmlBeanVirtualSystemCollectionType) delegate.getEnvelope()
-						.getContent());
-	}
+    /**
+     * Gets the {@link VirtualSystemCollection} section of the OVF document.
+     * Provides a description of the OVF document content as collection of
+     * multiple virtual machines (a VirtualSystemCollection element).
+     * 
+     * @return The VirtualSystemCollection
+     */
+    public VirtualSystemCollection getVirtualSystemCollection() {
+        return new VirtualSystemCollection(
+                (XmlBeanVirtualSystemCollectionType) delegate.getEnvelope()
+                        .getContent());
+    }
 
-	/**
-	 * Sets the {@link VirtualSystemCollection} section of the OVF
-	 * document. Provides a description of the OVF document content as collection
-	 * of multiple virtual machines (a VirtualSystemCollection element).
-	 * 
-	 * @param virtualSystemCollection
-	 *            The VirtualSystemCollection to set
-	 */
-	public void setVirtualSystemCollection(
-			VirtualSystemCollection virtualSystemCollection) {
-		delegate.getEnvelope().setContent(
-				virtualSystemCollection.getXmlObject());
-	}
+    /**
+     * Sets the {@link VirtualSystemCollection} section of the OVF document.
+     * Provides a description of the OVF document content as collection of
+     * multiple virtual machines (a VirtualSystemCollection element).
+     * 
+     * @param virtualSystemCollection
+     *            The VirtualSystemCollection to set
+     */
+    public void setVirtualSystemCollection(
+            VirtualSystemCollection virtualSystemCollection) {
+        delegate.getEnvelope().setContent(
+                virtualSystemCollection.getXmlObject());
+    }
 }

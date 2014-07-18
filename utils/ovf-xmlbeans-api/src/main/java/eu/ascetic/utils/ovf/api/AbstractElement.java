@@ -34,66 +34,66 @@ import org.apache.xmlbeans.XmlOptions;
  */
 public abstract class AbstractElement<T extends XmlObject> {
 
-	/**
-	 * Internal delegate used as data storage
-	 */
-	public T delegate;
+    /**
+     * Internal delegate used as data storage
+     */
+    public T delegate;
 
-	/**
-	 * Default constructor.
-	 * 
-	 * @param base
-	 *            The base type used for internal delegation and as a data
-	 *            storage object
-	 */
-	public AbstractElement(T base) {
-		delegate = base;
-	}
+    /**
+     * Default constructor.
+     * 
+     * @param base
+     *            The base type used for internal delegation and as a data
+     *            storage object
+     */
+    public AbstractElement(T base) {
+        delegate = base;
+    }
 
-	/**
-	 * Returns the internal XML representation of the API object.
-	 * 
-	 * @return Internal representation as a XMLBean
-	 */
-	@SuppressWarnings("unchecked")
-	public T getXmlObject() {
-		return (T) delegate.copy();
-	}
+    /**
+     * Returns the internal XML representation of the API object.
+     * 
+     * @return Internal representation as a XMLBean
+     */
+    @SuppressWarnings("unchecked")
+    public T getXmlObject() {
+        return (T) delegate.copy();
+    }
 
-	/**
-	 * Returns the internal XML representation of the API object as a String.
-	 * 
-	 * @return Internal representation as a String.
-	 */
-	@Override
-	public String toString() {
-		XmlOptions options = new XmlOptions();
-		options.setSavePrettyPrint();
-		options.setSaveOuter();
-		return delegate.xmlText(options);
-	}
+    /**
+     * Returns the internal XML representation of the API object as a String.
+     * 
+     * @return Internal representation as a String.
+     */
+    @Override
+    public String toString() {
+        XmlOptions options = new XmlOptions();
+        options.setSavePrettyPrint();
+        options.setSaveOuter();
+        return delegate.xmlText(options);
+    }
 
-	/**
-	 * Returns validation errors found in an XML document. The validation is
-	 * done by the XMLBeans validate method.
-	 * 
-	 * @return A list of errors
-	 */
-	public List<XmlError> getErrors() {
-		List<XmlError> validationErrors = new ArrayList<XmlError>();
-		XmlOptions voptions = new XmlOptions();
-		voptions.setErrorListener(validationErrors);
-		delegate.validate(voptions);
-		return validationErrors;
-	}
+    /**
+     * Returns validation errors found in an XML document. The validation is
+     * done by the XMLBeans validate method.
+     * 
+     * @return A list of errors
+     */
+    public List<XmlError> getErrors() {
+        List<XmlError> validationErrors = new ArrayList<XmlError>();
+        XmlOptions voptions = new XmlOptions();
+        voptions.setErrorListener(validationErrors);
+        delegate.validate(voptions);
+        return validationErrors;
+    }
 
-	/**
-	 * Returns true if the XML object is not valid.
-	 * 
-	 * @return True if erroneous
-	 */
-	public boolean hasErrors() {
-		return !delegate.validate();
-	}
+    /**
+     * Returns true if the XML object is not valid.
+     * 
+     * @return True if erroneous
+     */
+    public boolean hasErrors() {
+        return !delegate.validate();
+    }
 
 }

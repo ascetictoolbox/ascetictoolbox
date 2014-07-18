@@ -40,7 +40,7 @@ import es.bsc.servicess.ide.model.ServiceCoreElement;
 import es.bsc.servicess.ide.model.ServiceElement;
 import eu.ascetic.utils.ovf.api.File;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
-import eu.ascetic.utils.ovf.api.enums.ProductPropertyType;
+import eu.ascetic.utils.ovf.api.ProductPropertyType;
 import eu.ascetic.utils.ovf.api.ProductSection;
 import eu.ascetic.utils.ovf.api.VirtualHardwareSection;
 import eu.ascetic.utils.ovf.api.VirtualSystem;

@@ -23,6 +23,8 @@ import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.apache.xmlbeans.XmlException;
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanEnvelopeDocument;
 
+import eu.ascetic.utils.ovf.api.exceptions.OvfRuntimeException;
+
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Properties;
@@ -123,7 +125,7 @@ public class TemplateLoader {
 			xmlBeanEnvelopeDocument = XmlBeanEnvelopeDocument.Factory
 					.parse(writer.toString());
 		} catch (XmlException e) {
-			throw new RuntimeException(e);
+			throw new OvfRuntimeException(e);
 		}
 		return xmlBeanEnvelopeDocument;
 	}

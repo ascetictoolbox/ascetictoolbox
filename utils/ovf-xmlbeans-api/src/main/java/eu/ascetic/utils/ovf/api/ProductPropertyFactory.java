@@ -13,28 +13,26 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package eu.ascetic.utils.ovf.api.factories;
+package eu.ascetic.utils.ovf.api;
 
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanProductSectionType;
 
-import eu.ascetic.utils.ovf.api.ProductSection;
-
 /**
- * Provides factory methods for creating instances of {@link ProductSection}.
+ * Provides factory methods for creating instances of {@link ProductProperty}.
  * 
  * @author Django Armstrong (ULeeds)
  * 
  */
-public class ProductSectionFactory {
+public class ProductPropertyFactory {
 
-	/**
-	 * Creates a new empty instance of {@link ProductSection} with null internal
-	 * object references.
-	 * 
-	 * @return The new ProductSection instance
-	 */
-	public ProductSection newInstance() {
-		return new ProductSection(
-				XmlBeanProductSectionType.Factory.newInstance());
-	}
+    /**
+     * Creates a new empty instance of {@link ProductProperty} with null
+     * internal object references.
+     * 
+     * @return The new ProductProperty instance
+     */
+    public ProductProperty newInstance() {
+        return new ProductProperty(
+                XmlBeanProductSectionType.Property.Factory.newInstance());
+    }
 }

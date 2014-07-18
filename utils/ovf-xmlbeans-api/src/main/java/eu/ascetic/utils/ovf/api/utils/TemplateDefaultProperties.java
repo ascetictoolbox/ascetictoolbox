@@ -18,6 +18,8 @@ package eu.ascetic.utils.ovf.api.utils;
 import java.io.IOException;
 import java.util.Properties;
 
+import eu.ascetic.utils.ovf.api.exceptions.OvfRuntimeException;
+
 /**
  * A class to define attributes for a default {@link Properties} object used in
  * {@link TemplateLoader}. The properties in turn define OVF variables to be
@@ -47,7 +49,7 @@ public class TemplateDefaultProperties extends Properties {
 			this.load(this.getClass().getResourceAsStream(
 					DEFAULT_PROPERTIES_FILE));
 		} catch (IOException e) {
-			throw new RuntimeException("Loading default properties failed.", e);
+			throw new OvfRuntimeException("Loading default properties failed.", e);
 		}
 	}
 }

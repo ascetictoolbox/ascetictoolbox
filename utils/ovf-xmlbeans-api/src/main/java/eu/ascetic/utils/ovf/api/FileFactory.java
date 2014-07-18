@@ -13,11 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package eu.ascetic.utils.ovf.api.factories;
+package eu.ascetic.utils.ovf.api;
 
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanFileType;
-
-import eu.ascetic.utils.ovf.api.File;
 
 /**
  * Provides factory methods for creating instances of {@link File}.
@@ -27,29 +25,29 @@ import eu.ascetic.utils.ovf.api.File;
  */
 public class FileFactory {
 
-	/**
-	 * Creates a new empty instance of {@link File} with null internal object
-	 * references.
-	 * 
-	 * @return The new File instance
-	 */
-	public File newInstance() {
-		return new File(XmlBeanFileType.Factory.newInstance());
-	}
+    /**
+     * Creates a new empty instance of {@link File} with null internal object
+     * references.
+     * 
+     * @return The new File instance
+     */
+    public File newInstance() {
+        return new File(XmlBeanFileType.Factory.newInstance());
+    }
 
-	/**
-	 * Creates an instance of {@link File} with preset ID and URL.
-	 * 
-	 * @param id
-	 *            The unique ID of the File
-	 * @param href
-	 *            The URL of the File
-	 * @return The new File instance
-	 */
-	public File newInstance(String id, String href) {
-		File file = new File(XmlBeanFileType.Factory.newInstance());
-		file.setId(id);
-		file.setHref(href);
-		return file;
-	}
+    /**
+     * Creates an instance of {@link File} with preset ID and URL.
+     * 
+     * @param id
+     *            The unique ID of the File
+     * @param href
+     *            The URL of the File
+     * @return The new File instance
+     */
+    public File newInstance(String id, String href) {
+        File file = new File(XmlBeanFileType.Factory.newInstance());
+        file.setId(id);
+        file.setHref(href);
+        return file;
+    }
 }
