@@ -1,4 +1,4 @@
-package es.bsc.vmmanagercore.scheduler;
+package es.bsc.vmmanagercore.scheduler.schedulingalgorithms;
 
 import es.bsc.vmmanagercore.model.DeploymentPlan;
 import es.bsc.vmmanagercore.model.Vm;
@@ -6,7 +6,6 @@ import es.bsc.vmmanagercore.model.VmAssignmentToHost;
 import es.bsc.vmmanagercore.model.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.Host;
 import es.bsc.vmmanagercore.monitoring.HostFake;
-import es.bsc.vmmanagercore.scheduler.schedulingalgorithms.SchedAlgGroupByApp;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

@@ -84,4 +84,10 @@ public class ServerLoad {
         return diskLoad > 1 ? diskLoad - 1 : 0;
     }
 
+    // Note: important consideration. For now, I assume that if a server has load_cpu, load_ram, and load_disk
+    // < 5%, then it is idle ("does not have any VMs").
+    public boolean isIdle() {
+        return cpuLoad < 0.05 && ramLoad < 0.05 && diskLoad < 0.05;
+    }
+
 }

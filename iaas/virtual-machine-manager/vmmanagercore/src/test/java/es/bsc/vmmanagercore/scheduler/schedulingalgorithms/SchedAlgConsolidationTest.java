@@ -1,11 +1,10 @@
-package es.bsc.vmmanagercore.scheduler;
+package es.bsc.vmmanagercore.scheduler.schedulingalgorithms;
 
 import es.bsc.vmmanagercore.model.DeploymentPlan;
 import es.bsc.vmmanagercore.model.Vm;
 import es.bsc.vmmanagercore.model.VmAssignmentToHost;
 import es.bsc.vmmanagercore.monitoring.Host;
 import es.bsc.vmmanagercore.monitoring.HostFake;
-import es.bsc.vmmanagercore.scheduler.schedulingalgorithms.SchedAlgConsolidation;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -116,5 +115,33 @@ public class SchedAlgConsolidationTest {
         assertTrue(scheduler.isBetterDeploymentPlan(deploymentPlan2, deploymentPlan1, hosts));
         assertFalse(scheduler.isBetterDeploymentPlan(deploymentPlan1, deploymentPlan2, hosts));
     }
+
+    /*
+    @Test
+    public void isBetterPlanReturnsTrueWhenDoesNotNeedToWakeUpANewServer() {
+        // Create VMs and hosts
+        List<Vm> vms = new ArrayList<>();
+        vms.add(new Vm("vm1", "image", 1, 1024, 1, null, ""));
+        vms.add(new Vm("vm2", "image", 1, 1024, 1, null, ""));
+        List<Host> hosts = new ArrayList<>();
+        hosts.add(new HostFake("host1", 4, 4096, 4, 2, 2024, 2));
+        hosts.add(new HostFake("host1", 2, 2048, 2, 0, 0, 0));
+
+        // Create deployment plans
+        List<VmAssignmentToHost> assignmentsPlan1 = new ArrayList<>();
+        assignmentsPlan1.add(new VmAssignmentToHost(vms.get(0), hosts.get(0))); // vm1 -> host1
+        assignmentsPlan1.add(new VmAssignmentToHost(vms.get(1), hosts.get(0))); // vm2 -> host1
+        DeploymentPlan deploymentPlan1 = new DeploymentPlan(assignmentsPlan1);
+        List<VmAssignmentToHost> assignmentsPlan2 = new ArrayList<>();
+        assignmentsPlan2.add(new VmAssignmentToHost(vms.get(0), hosts.get(1))); // vm1 -> host2
+        assignmentsPlan2.add(new VmAssignmentToHost(vms.get(1), hosts.get(1))); // vm2 -> host2
+        DeploymentPlan deploymentPlan2 = new DeploymentPlan(assignmentsPlan2);
+
+        // deploymentPlan1 is better because it does not wake up a new server, when the existing ones have
+        // enough resources available
+        assertTrue(scheduler.isBetterDeploymentPlan(deploymentPlan1, deploymentPlan2, hosts));
+        assertFalse(scheduler.isBetterDeploymentPlan(deploymentPlan2, deploymentPlan1, hosts));
+    }
+    */
 
 }

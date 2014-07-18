@@ -207,11 +207,11 @@ iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/mo
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/rest/VmManagerRestTest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/rest/VmmRestInputValidatorTest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/DeploymentPlanGeneratorTest.java -text
-iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/SchedAlgConsolidationTest.java -text
-iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/SchedAlgDistributionTest.java -text
-iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/SchedAlgGroupByAppTest.java -text
-iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/SchedAlgRandomTest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/SchedulerTest.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/schedulingalgorithms/SchedAlgConsolidationTest.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/schedulingalgorithms/SchedAlgDistributionTest.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/schedulingalgorithms/SchedAlgGroupByAppTest.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/schedulingalgorithms/SchedAlgRandomTest.java -text
 paas/application-manager-datamodel/pom.xml -text
 paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/Agreement.java -text
 paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/Application.java -text
