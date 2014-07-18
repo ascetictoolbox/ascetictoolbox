@@ -21,8 +21,8 @@ import org.apache.velocity.Template;
 import org.apache.xmlbeans.XmlException;
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanEnvelopeDocument;
 
-import eu.ascetic.utils.ovf.api.exceptions.OvfInvalidDocumentException;
-import eu.ascetic.utils.ovf.api.exceptions.OvfRuntimeException;
+import eu.ascetic.utils.ovf.api.utils.OvfInvalidDocumentException;
+import eu.ascetic.utils.ovf.api.utils.OvfRuntimeException;
 import eu.ascetic.utils.ovf.api.utils.TemplateLoader;
 
 /**

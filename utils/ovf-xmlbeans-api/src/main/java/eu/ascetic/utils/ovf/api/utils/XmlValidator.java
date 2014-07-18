@@ -30,45 +30,45 @@ import java.util.ArrayList;
  */
 public final class XmlValidator {
 
-	/**
-	 * Reference to static log4j logger
-	 */
-	protected static final Logger LOGGER = Logger.getLogger(XmlValidator.class);
+    /**
+     * Reference to static log4j logger
+     */
+    protected static final Logger LOGGER = Logger.getLogger(XmlValidator.class);
 
-	/**
-	 * Validates an XML document in object form.
-	 * 
-	 * @param doc
-	 *            The xmlbean object to be validated
-	 * @return True if valid
-	 */
-	public static boolean validate(XmlObject doc) {
-		if (!doc.validate()) {
-			LOGGER.debug(getErrors(doc));
-		}
-		return doc.validate();
-	}
+    /**
+     * Validates an XML document in object form.
+     * 
+     * @param doc
+     *            The xmlbean object to be validated
+     * @return True if valid
+     */
+    public static boolean validate(XmlObject doc) {
+        if (!doc.validate()) {
+            LOGGER.debug(getErrors(doc));
+        }
+        return doc.validate();
+    }
 
-	/**
-	 * Retrieve the XMLBean objects errors in String form
-	 * 
-	 * @param doc
-	 *            The XMLBean object to be validated
-	 * @return The error string
-	 */
-	public static String getErrors(XmlObject doc) {
-		ArrayList<XmlError> validationErrors = new ArrayList<XmlError>();
-		XmlOptions voptions = new XmlOptions();
-		voptions.setErrorListener(validationErrors);
-		boolean valid = doc.validate(voptions);
-		String errors = "";
-		if (!valid) {
-			errors = errors.concat(" Not valid xml.");
-			for (XmlError error : validationErrors) {
-				errors = errors.concat(System.getProperty("line.separator"));
-				errors = errors.concat(error.toString());
-			}
-		}
-		return errors;
-	}
+    /**
+     * Retrieve the XMLBean objects errors in String form
+     * 
+     * @param doc
+     *            The XMLBean object to be validated
+     * @return The error string
+     */
+    public static String getErrors(XmlObject doc) {
+        ArrayList<XmlError> validationErrors = new ArrayList<XmlError>();
+        XmlOptions voptions = new XmlOptions();
+        voptions.setErrorListener(validationErrors);
+        boolean valid = doc.validate(voptions);
+        String errors = "";
+        if (!valid) {
+            errors = errors.concat(" Not valid xml.");
+            for (XmlError error : validationErrors) {
+                errors = errors.concat(System.getProperty("line.separator"));
+                errors = errors.concat(error.toString());
+            }
+        }
+        return errors;
+    }
 }

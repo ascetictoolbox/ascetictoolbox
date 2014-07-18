@@ -18,7 +18,6 @@ package eu.ascetic.utils.ovf.api.utils;
 import java.io.IOException;
 import java.util.Properties;
 
-import eu.ascetic.utils.ovf.api.exceptions.OvfRuntimeException;
 
 /**
  * A class to define attributes for a default {@link Properties} object used in
@@ -30,26 +29,27 @@ import eu.ascetic.utils.ovf.api.exceptions.OvfRuntimeException;
  */
 public class TemplateDefaultProperties extends Properties {
 
-	/**
-	 * Generated serial version UID
-	 */
-	private static final long serialVersionUID = -5920612312069101940L;
+    /**
+     * Generated serial version UID
+     */
+    private static final long serialVersionUID = -5920612312069101940L;
 
-	/**
-	 * Location of the default properties file relative to the class path.
-	 */
-	private static final String DEFAULT_PROPERTIES_FILE = "/ovf.properties";
+    /**
+     * Location of the default properties file relative to the class path.
+     */
+    private static final String DEFAULT_PROPERTIES_FILE = "/ovf.properties";
 
-	/**
-	 * Creates a properties object that contains all default values for an OVF
-	 * definition loaded from the DEFAULT_PROPERTIES_FILE file.
-	 */
-	public TemplateDefaultProperties() {
-		try {
-			this.load(this.getClass().getResourceAsStream(
-					DEFAULT_PROPERTIES_FILE));
-		} catch (IOException e) {
-			throw new OvfRuntimeException("Loading default properties failed.", e);
-		}
-	}
+    /**
+     * Creates a properties object that contains all default values for an OVF
+     * definition loaded from the DEFAULT_PROPERTIES_FILE file.
+     */
+    public TemplateDefaultProperties() {
+        try {
+            this.load(this.getClass().getResourceAsStream(
+                    DEFAULT_PROPERTIES_FILE));
+        } catch (IOException e) {
+            throw new OvfRuntimeException("Loading default properties failed.",
+                    e);
+        }
+    }
 }

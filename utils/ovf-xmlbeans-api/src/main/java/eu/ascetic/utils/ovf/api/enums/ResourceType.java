@@ -32,10 +32,10 @@ import eu.ascetic.utils.ovf.api.Item;
  */
 public enum ResourceType {
 
-	/**
-	 * Enumeration containing all possible virtual machine Resource Types.
-	 */
-	// @formatter:off
+    /**
+     * Enumeration containing all possible virtual machine Resource Types.
+     */
+    // @formatter:off
 	OTHER(1), COMPUTER_SYSTEM(2), PROCESSOR(3), MEMORY(4), IDE_CONTROLLER(5), 
 	PARALLEL_SCSI_HBA(6), FC_HBA(7), ISCSI_HBA(8), IB_HCA(9), ETHERNET_ADAPTER(10), 
 	OTHER_NETWORK_ADAPTER(11), IO_SLOT(12), IO_DEVICE(13),	FLOPPY_DRIVE(4), 
@@ -47,47 +47,47 @@ public enum ResourceType {
 	ETHERNET_CONNECTION(33);
 	// @formatter:on
 
-	/**
-	 * Stores the numerical value of this ResourceType.
-	 */
-	private final int number;
+    /**
+     * Stores the numerical value of this ResourceType.
+     */
+    private final int number;
 
-	/**
-	 * Default constructor.
-	 * 
-	 * @param number
-	 *            The numerical representation of the ResourceType
-	 */
-	private ResourceType(int number) {
-		this.number = number;
-	}
+    /**
+     * Default constructor.
+     * 
+     * @param number
+     *            The numerical representation of the ResourceType
+     */
+    private ResourceType(int number) {
+        this.number = number;
+    }
 
-	/**
-	 * Returns the numerical representation of this ResourceType.
-	 * 
-	 * @return the number
-	 */
-	public int getNumber() {
-		return number;
-	}
+    /**
+     * Returns the numerical representation of this ResourceType.
+     * 
+     * @return the number
+     */
+    public int getNumber() {
+        return number;
+    }
 
-	/**
-	 * Finds the ResourceType object for a given numerical value.
-	 * 
-	 * @param number
-	 *            The resource type number to find
-	 * @return The ResourceType object
-	 */
-	public static ResourceType findByNumber(Integer number) {
-		if (number != null) {
-			for (ResourceType rt : ResourceType.values()) {
-				if (rt.number == number) {
-					return rt;
-				}
-			}
-		}
-		String message = "There is no virtual resource type with number ''{0}'' specified.";
-		throw new IllegalArgumentException(
-				MessageFormat.format(message, number));
-	}
+    /**
+     * Finds the ResourceType object for a given numerical value.
+     * 
+     * @param number
+     *            The resource type number to find
+     * @return The ResourceType object
+     */
+    public static ResourceType findByNumber(Integer number) {
+        if (number != null) {
+            for (ResourceType rt : ResourceType.values()) {
+                if (rt.number == number) {
+                    return rt;
+                }
+            }
+        }
+        String message = "There is no virtual resource type with number ''{0}'' specified.";
+        throw new IllegalArgumentException(
+                MessageFormat.format(message, number));
+    }
 }

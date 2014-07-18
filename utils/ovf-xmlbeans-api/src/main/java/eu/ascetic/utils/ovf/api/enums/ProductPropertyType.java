@@ -26,57 +26,57 @@ import eu.ascetic.utils.ovf.api.ProductProperty;
  */
 public enum ProductPropertyType {
 
-	/**
-	 * Enumeration containing all possible product property primitive types.
-	 */
-	// @formatter:off
+    /**
+     * Enumeration containing all possible product property primitive types.
+     */
+    // @formatter:off
 	UINT8("uint8"), SINT8("sint8"), UINT16("uint16"), SINT16("sint16"), 
 	UINT32("uint32"), SINT32("sint32"), UINT64("uint64"), SINT64("sint64"), 
 	STRING("string"), BOOLEAN("boolean"), REAL32("real32"), REAL64("real64");
 	// @formatter:on
 
-	/**
-	 * Stores the String representation of this ProductPropertyType.
-	 */
-	private String type;
+    /**
+     * Stores the String representation of this ProductPropertyType.
+     */
+    private String type;
 
-	/**
-	 * Default constructor.
-	 * 
-	 * @param type
-	 *            The String representation of the ProductPropertyType
-	 */
-	private ProductPropertyType(String type) {
-		this.type = type;
-	}
+    /**
+     * Default constructor.
+     * 
+     * @param type
+     *            The String representation of the ProductPropertyType
+     */
+    private ProductPropertyType(String type) {
+        this.type = type;
+    }
 
-	/**
-	 * Returns the string representation of this ProductPropertyType.
-	 * 
-	 * @return the type
-	 */
-	public String getType() {
-		return type;
-	}
+    /**
+     * Returns the string representation of this ProductPropertyType.
+     * 
+     * @return the type
+     */
+    public String getType() {
+        return type;
+    }
 
-	/**
-	 * Finds the ProductPropertyType object for a given string representation.
-	 * 
-	 * @param type
-	 *            The Product Property type to find represented by this String
-	 * @return The ProductPropertyType object
-	 */
-	public static ProductPropertyType findByType(String type) {
-		if (type != null) {
-			for (ProductPropertyType productPropertyType : ProductPropertyType
-					.values()) {
-				if (productPropertyType.getType().equals(type)) {
-					return productPropertyType;
-				}
-			}
-		}
-		throw new IllegalArgumentException(
-				"There is no property type with getType '" + type
-						+ "' specified.");
-	}
+    /**
+     * Finds the ProductPropertyType object for a given string representation.
+     * 
+     * @param type
+     *            The Product Property type to find represented by this String
+     * @return The ProductPropertyType object
+     */
+    public static ProductPropertyType findByType(String type) {
+        if (type != null) {
+            for (ProductPropertyType productPropertyType : ProductPropertyType
+                    .values()) {
+                if (productPropertyType.getType().equals(type)) {
+                    return productPropertyType;
+                }
+            }
+        }
+        throw new IllegalArgumentException(
+                "There is no property type with getType '" + type
+                        + "' specified.");
+    }
 }

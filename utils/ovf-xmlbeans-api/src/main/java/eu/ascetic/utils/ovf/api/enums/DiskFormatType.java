@@ -26,58 +26,58 @@ import eu.ascetic.utils.ovf.api.Disk;
  */
 public enum DiskFormatType {
 
-	/**
-	 * Enumeration containing all possible virtual machine image disk format
-	 * types.
-	 */
-	// @formatter:off
+    /**
+     * Enumeration containing all possible virtual machine image disk format
+     * types.
+     */
+    // @formatter:off
 	VMDK("http://www.vmware.com/interfaces/specifications/vmdk.html#streamOptimized"),
 	VHD("http://technet.microsoft.com/en-us/library/bb676673.aspx"),
 	QCOW2("http://www.gnome.org/~markmc/qcow-image-format.html");
 	// TODO: Add others here?
 	// @formatter:on
 
-	/**
-	 * A URL to the disk format specification.
-	 */
-	private String specificationUrl;
+    /**
+     * A URL to the disk format specification.
+     */
+    private String specificationUrl;
 
-	/**
-	 * Default constructor.
-	 * 
-	 * @param formatSpecificationUrl
-	 *            The URL defining the disk format
-	 */
-	private DiskFormatType(String formatSpecificationUrl) {
-		this.specificationUrl = formatSpecificationUrl;
-	}
+    /**
+     * Default constructor.
+     * 
+     * @param formatSpecificationUrl
+     *            The URL defining the disk format
+     */
+    private DiskFormatType(String formatSpecificationUrl) {
+        this.specificationUrl = formatSpecificationUrl;
+    }
 
-	/**
-	 * Returns the URL to the disk format specification.
-	 * 
-	 * @return The URL to the disk format specification.
-	 */
-	public String getSpecificationUrl() {
-		return specificationUrl;
-	}
+    /**
+     * Returns the URL to the disk format specification.
+     * 
+     * @return The URL to the disk format specification.
+     */
+    public String getSpecificationUrl() {
+        return specificationUrl;
+    }
 
-	/**
-	 * Finds the enumeration object representation of the specification URL.
-	 * 
-	 * @param specificationUrl
-	 *            The URL
-	 * @return A DiskFormatType enumeration object for the specific URL
-	 */
-	public static DiskFormatType findBySpecificationUrl(String specificationUrl) {
-		if (specificationUrl != null) {
-			for (DiskFormatType df : DiskFormatType.values()) {
-				if (df.getSpecificationUrl().equals(specificationUrl)) {
-					return df;
-				}
-			}
-		}
-		throw new IllegalArgumentException(
-				"There is no disk getSpecificationUrl with getSpecificationUrl '"
-						+ specificationUrl + "' specified.");
-	}
+    /**
+     * Finds the enumeration object representation of the specification URL.
+     * 
+     * @param specificationUrl
+     *            The URL
+     * @return A DiskFormatType enumeration object for the specific URL
+     */
+    public static DiskFormatType findBySpecificationUrl(String specificationUrl) {
+        if (specificationUrl != null) {
+            for (DiskFormatType df : DiskFormatType.values()) {
+                if (df.getSpecificationUrl().equals(specificationUrl)) {
+                    return df;
+                }
+            }
+        }
+        throw new IllegalArgumentException(
+                "There is no disk getSpecificationUrl with getSpecificationUrl '"
+                        + specificationUrl + "' specified.");
+    }
 }

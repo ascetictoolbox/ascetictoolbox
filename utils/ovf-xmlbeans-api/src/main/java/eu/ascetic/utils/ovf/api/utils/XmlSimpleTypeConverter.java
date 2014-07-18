@@ -23,63 +23,63 @@ import org.dmtf.schemas.wbem.wscim.x1.common.CimUnsignedLong;
 import java.math.BigInteger;
 
 /**
- * A class to convert simple elements in the OVF like CimString from and to normal
- * Java Strings.
+ * A class to convert simple elements in the OVF like CimString from and to
+ * normal Java Strings.
  * 
  * @author Django Armstrong (ULeeds)
  * 
  */
 public final class XmlSimpleTypeConverter {
 
-	/**
-	 * Converts Java Strings to CimStrings.
-	 * 
-	 * @param string
-	 *            The String to convert
-	 * @return The CimStrings object representation of the Java String
-	 */
-	public static CimString toCimString(String string) {
-		CimString cimString = CimString.Factory.newInstance();
-		cimString.setStringValue(string);
-		return cimString;
-	}
+    /**
+     * Converts Java Strings to CimStrings.
+     * 
+     * @param string
+     *            The String to convert
+     * @return The CimStrings object representation of the Java String
+     */
+    public static CimString toCimString(String string) {
+        CimString cimString = CimString.Factory.newInstance();
+        cimString.setStringValue(string);
+        return cimString;
+    }
 
-	/**
-	 * Converts Java longs to CimUnsignedLong.
-	 * 
-	 * @param longValue
-	 *            The long to convert
-	 * @return The CimUnsignedLong object representation of the Java long
-	 */
-	public static CimUnsignedLong toCimUnsignedLong(long longValue) {
-		CimUnsignedLong cimValue = CimUnsignedLong.Factory.newInstance();
-		cimValue.setBigIntegerValue(BigInteger.valueOf(longValue));
-		return cimValue;
-	}
+    /**
+     * Converts Java longs to CimUnsignedLong.
+     * 
+     * @param longValue
+     *            The long to convert
+     * @return The CimUnsignedLong object representation of the Java long
+     */
+    public static CimUnsignedLong toCimUnsignedLong(long longValue) {
+        CimUnsignedLong cimValue = CimUnsignedLong.Factory.newInstance();
+        cimValue.setBigIntegerValue(BigInteger.valueOf(longValue));
+        return cimValue;
+    }
 
-	/**
-	 * Converts Java Strings to XmlBeanMsgType objects.
-	 * 
-	 * @param string
-	 *            The String to convert
-	 * @return The XmlBeanMsgType object representation of the Java string
-	 */
-	public static XmlBeanMsgType toMsgType(String string) {
-		XmlBeanMsgType msg = XmlBeanMsgType.Factory.newInstance();
-		msg.setStringValue(string);
-		return msg;
-	}
+    /**
+     * Converts Java Strings to XmlBeanMsgType objects.
+     * 
+     * @param string
+     *            The String to convert
+     * @return The XmlBeanMsgType object representation of the Java string
+     */
+    public static XmlBeanMsgType toMsgType(String string) {
+        XmlBeanMsgType msg = XmlBeanMsgType.Factory.newInstance();
+        msg.setStringValue(string);
+        return msg;
+    }
 
-	/**
-	 * Converts Java Booleans to CimBoolean.
-	 * 
-	 * @param bool
-	 *            The Boolean to convert
-	 * @return The CimBoolean object representation of the Java Boolean
-	 */
-	public static CimBoolean toCimBoolean(Boolean bool) {
-		CimBoolean cimVBoolean = CimBoolean.Factory.newInstance();
-		cimVBoolean.setBooleanValue(bool);
-		return cimVBoolean;
-	}
+    /**
+     * Converts Java Booleans to CimBoolean.
+     * 
+     * @param bool
+     *            The Boolean to convert
+     * @return The CimBoolean object representation of the Java Boolean
+     */
+    public static CimBoolean toCimBoolean(Boolean bool) {
+        CimBoolean cimVBoolean = CimBoolean.Factory.newInstance();
+        cimVBoolean.setBooleanValue(bool);
+        return cimVBoolean;
+    }
 }

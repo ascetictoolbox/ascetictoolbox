@@ -33,11 +33,11 @@ import eu.ascetic.utils.ovf.api.OperatingSystem;
  */
 public enum OperatingSystemType {
 
-	/**
-	 * Enumeration containing all possible virtual machine image disk format
-	 * types.
-	 */
-	// @formatter:off
+    /**
+     * Enumeration containing all possible virtual machine image disk format
+     * types.
+     */
+    // @formatter:off
 	UNKNOWN(0), OTHER(1), MACOS(2), ATTUNIX(3), DGUX(4), DECNT(5), TRU64_UNIX(6), 
 	OPENVMS(7), HPUX(8), AIX(9), MVS(10), OS400(11), OS_2(12), JAVAVM(13), MSDOS(14), 
 	WIN3X(15), WIN95(16), WIN98(17), WINNT(18), WINCE(19), NCR3000(20), NETWARE(21), 
@@ -56,48 +56,48 @@ public enum OperatingSystemType {
 	MICROSOFT_WINDOWS_SERVER_2008_64BIT(77);
 	// @formatter:on
 
-	/**
-	 * Stores the numerical value of this OperatingSystemType.
-	 */
-	private final int number;
+    /**
+     * Stores the numerical value of this OperatingSystemType.
+     */
+    private final int number;
 
-	/**
-	 * Default constructor.
-	 * 
-	 * @param number
-	 *            The numerical representation of the OperatingSystemType
-	 */
-	private OperatingSystemType(int number) {
-		this.number = number;
-	}
+    /**
+     * Default constructor.
+     * 
+     * @param number
+     *            The numerical representation of the OperatingSystemType
+     */
+    private OperatingSystemType(int number) {
+        this.number = number;
+    }
 
-	/**
-	 * Returns the numerical representation of this OperatingSystemType.
-	 * 
-	 * @return The number
-	 */
-	public int getNumber() {
-		return number;
-	}
+    /**
+     * Returns the numerical representation of this OperatingSystemType.
+     * 
+     * @return The number
+     */
+    public int getNumber() {
+        return number;
+    }
 
-	/**
-	 * Finds the OperatingSystemType object for a given numerical value.
-	 * 
-	 * @param number
-	 *            The Operating System type number to find
-	 * @return The OperatingSystemType object
-	 */
-	public static OperatingSystemType findByNumber(Integer number) {
-		if (number != null) {
-			for (OperatingSystemType os : OperatingSystemType.values()) {
-				if (os.number == number) {
-					return os;
-				}
-			}
-		}
-		String message = "There is no operating system with number ''{0}'' specified.";
-		throw new IllegalArgumentException(
-				MessageFormat.format(message, number));
-	}
+    /**
+     * Finds the OperatingSystemType object for a given numerical value.
+     * 
+     * @param number
+     *            The Operating System type number to find
+     * @return The OperatingSystemType object
+     */
+    public static OperatingSystemType findByNumber(Integer number) {
+        if (number != null) {
+            for (OperatingSystemType os : OperatingSystemType.values()) {
+                if (os.number == number) {
+                    return os;
+                }
+            }
+        }
+        String message = "There is no operating system with number ''{0}'' specified.";
+        throw new IllegalArgumentException(
+                MessageFormat.format(message, number));
+    }
 
 }
