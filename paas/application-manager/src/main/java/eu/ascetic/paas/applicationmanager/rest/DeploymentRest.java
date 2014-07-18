@@ -77,7 +77,7 @@ public class DeploymentRest extends AbstractRest {
 	/**
 	 * Returns the agreement information between PaaS and IaaS layer for that specific deployment
 	 * @param applicationId of the application in the database
-	 * @return deploymentId of the Deployment for the previously specify application
+	 * @param deploymentId of the Deployment for the previously specify application
 	 * @return the stored agreement in its actual state 
 	 */
 	@GET
@@ -93,7 +93,7 @@ public class DeploymentRest extends AbstractRest {
 	/**
 	 * Accepts or rejects and agreement between PaaS and IaaS
 	 * @param applicationId of the application in the database
-	 * @return deploymentId of the Deployment for the previously specify application
+	 * @param deploymentId of the Deployment for the previously specify application
 	 * @return the updated agreement information
 	 */
 	@PUT
@@ -110,11 +110,11 @@ public class DeploymentRest extends AbstractRest {
 	/**
 	 * Puts an deployment to terminated state and deletes any resource that this application has been used in the IaaS layer
 	 * @param applicationId of the application in the database
-	 * @return deploymentId of the Deployment for the previously specify application
+	 * @param deploymentId of the Deployment for the previously specify application
 	 * @return ok if the termination process is possible
 	 */
 	@DELETE
-	@Path("/applications/{id}")
+	@Path("/applications/{id}/deployments/{deployment_id}")
 	public Response deleteDeployment(@PathParam("application_id") String applicationId, @PathParam("deployment_id") String deploymentId) {
 		logger.info("DELETE request to path: /applications/" + applicationId + "/deployments/" + deploymentId);
 		// TODO
