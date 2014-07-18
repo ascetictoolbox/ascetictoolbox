@@ -116,7 +116,6 @@ public class SchedAlgConsolidationTest {
         assertFalse(scheduler.isBetterDeploymentPlan(deploymentPlan1, deploymentPlan2, hosts));
     }
 
-    /*
     @Test
     public void isBetterPlanReturnsTrueWhenDoesNotNeedToWakeUpANewServer() {
         // Create VMs and hosts
@@ -124,8 +123,8 @@ public class SchedAlgConsolidationTest {
         vms.add(new Vm("vm1", "image", 1, 1024, 1, null, ""));
         vms.add(new Vm("vm2", "image", 1, 1024, 1, null, ""));
         List<Host> hosts = new ArrayList<>();
-        hosts.add(new HostFake("host1", 4, 4096, 4, 2, 2024, 2));
-        hosts.add(new HostFake("host1", 2, 2048, 2, 0, 0, 0));
+        hosts.add(new HostFake("host1", 4, 4096, 4, 2, 2048, 2));
+        hosts.add(new HostFake("host2", 2, 2048, 2, 0, 0, 0));
 
         // Create deployment plans
         List<VmAssignmentToHost> assignmentsPlan1 = new ArrayList<>();
@@ -142,6 +141,5 @@ public class SchedAlgConsolidationTest {
         assertTrue(scheduler.isBetterDeploymentPlan(deploymentPlan1, deploymentPlan2, hosts));
         assertFalse(scheduler.isBetterDeploymentPlan(deploymentPlan2, deploymentPlan1, hosts));
     }
-    */
 
 }

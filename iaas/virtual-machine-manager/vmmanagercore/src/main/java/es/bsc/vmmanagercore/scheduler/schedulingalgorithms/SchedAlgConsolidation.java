@@ -56,7 +56,7 @@ public class SchedAlgConsolidation implements SchedAlgorithm {
     // Note: important consideration. For now, I assume that if a server has load_cpu, load_ram, and load_disk
     // < 5%, then it is idle ("does not have any VMs").
     private boolean usesLessHosts(Collection<ServerLoad> serversLoad1, Collection<ServerLoad> serversLoad2) {
-        return countIdleServers(serversLoad1) <= countIdleServers(serversLoad2);
+        return countIdleServers(serversLoad1) > countIdleServers(serversLoad2);
     }
 
     private boolean usesLessResources(Collection<ServerLoad> serversLoad1, Collection<ServerLoad> serversLoad2) {
@@ -68,7 +68,8 @@ public class SchedAlgConsolidation implements SchedAlgorithm {
     private boolean serverLoadsAreMoreConsolidated(Collection<ServerLoad> serversLoad1,
             Collection<ServerLoad> serversLoad2) {
         logServersLoadsInfo(serversLoad1, serversLoad2);
-        return usesLessHosts(serversLoad1, serversLoad2) && usesLessResources(serversLoad1, serversLoad2);
+        return (usesLessHosts(serversLoad1, serversLoad2))
+                || (!usesLessHosts(serversLoad2, serversLoad1) && usesLessResources(serversLoad1, serversLoad2));
     }
 
     @Override
