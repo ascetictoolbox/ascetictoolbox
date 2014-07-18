@@ -33,8 +33,10 @@ import eu.ascetic.utils.ovf.api.utils.XmlSimpleTypeConverter;
  * well as virtual hardware devices.<br>
  * <br>
  * TODO: Add support for the ovf:bound attribute (min, max, normal).<br>
- * TODO: Add support for the rasd:ResourceSubType element to support vendor
- * specific virtual hardware.
+ * TODO: Add support for enumeration in the rasd:ResourceSubType element to
+ * support vendor specific virtual hardware (Including ASCETiC).<br>
+ * TODO: Add full support for reservation<br>
+ * TODO: Add isSet*() methods for all elements.
  * 
  * @author Django Armstrong (ULeeds)
  * 
@@ -136,7 +138,7 @@ public class Item extends AbstractElement<XmlBeanRASDType> {
 
 	/**
 	 * Gets the resource type that specifies the kind of device that is being
-	 * described.
+	 * described. See {@link ResourceType} for possible device types.
 	 * 
 	 * @return The {@link ResourceType}
 	 */
@@ -147,7 +149,7 @@ public class Item extends AbstractElement<XmlBeanRASDType> {
 
 	/**
 	 * Gets the resource type that specifies the kind of device that is being
-	 * described.
+	 * described. See {@link ResourceType} for possible device types.
 	 * 
 	 * @param resourceType
 	 *            The {@link ResourceType} to set
@@ -482,5 +484,83 @@ public class Item extends AbstractElement<XmlBeanRASDType> {
 		} else {
 			return null;
 		}
+	}
+
+	/**
+	 * Gets the reserved specified quantity of resources presented to the guest
+	 * operating system. For example, "256".
+	 * 
+	 * @return The reserved quantity of this resource type
+	 */
+	public BigInteger getReservation() {
+		if (delegate.isSetReservation()) {
+			return delegate.getReservation().getBigIntegerValue();
+		}
+		return null;
+	}
+
+	/**
+	 * Sets the reserved specified quantity of resources presented to the guest
+	 * operating system. For example, "256".
+	 * 
+	 * @param reservation
+	 *            The reserved quantity of this resource type to set
+	 */
+	public void setReservation(BigInteger reservation) {
+		if (delegate.isSetReservation()) {
+			delegate.unsetReservation();
+		}
+		delegate.setReservation(XmlSimpleTypeConverter
+				.toCimUnsignedLong(reservation.longValue()));
+	}
+
+	/**
+	 * True if this Item has a Reservation element.
+	 * 
+	 * @return Indicates if Reservation is present
+	 */
+	public boolean isSetReservation() {
+		return delegate.isSetReservation();
+	}
+
+	/**
+	 * Gets the resource sub type that specifies the kind of device that is
+	 * being described. Useful for defining vendor specific devices or
+	 * extensions to an OVF document that define fine grained resource type
+	 * attributes.
+	 * 
+	 * @return The resource sub type
+	 */
+	public String getResourceSubType() {
+		if (delegate.isSetResourceSubType()) {
+			return delegate.getResourceSubType().getStringValue();
+		}
+		return null;
+	}
+
+	/**
+	 * Sets the resource sub type that specifies the kind of device that is
+	 * being described. Useful for defining vendor specific devices or
+	 * extensions to an OVF document that define fine grained resource type
+	 * attributes.
+	 * 
+	 * @param resourceSubType
+	 *            The reserved quantity of this resource type to set
+	 */
+	public void setResourceSubType(String resourceSubType) {
+		if (delegate.isSetResourceSubType()) {
+			delegate.unsetResourceSubType();
+		}
+		delegate.setResourceSubType(XmlSimpleTypeConverter
+				.toCimString(resourceSubType));
+	}
+
+	/**
+	 * True if this Item has a ResourceSubType element.
+	 * 
+	 * @return Indicates if ResourceSubType is present
+	 */
+	public boolean isSetResourceSubType() {
+		return delegate.isSetResourceSubType();
 	}
 }

@@ -17,6 +17,7 @@ package eu.ascetic.utils.ovf.api;
 
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanProductSectionType;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import eu.ascetic.utils.ovf.api.AbstractElement;
 import eu.ascetic.utils.ovf.api.enums.ProductPropertyType;
 import eu.ascetic.utils.ovf.api.factories.ProductPropertyFactory;
@@ -123,6 +124,9 @@ public class ProductProperty extends
 	 * 
 	 * @return The value as an Object
 	 */
+	@SuppressFBWarnings(
+			value = "MethodCyclomaticComplexity", 
+			justification = "Switch statment is easier to read")
 	public Object getValueAsJavaObject() {
 		ProductPropertyType productPropertyType = ProductPropertyType
 				.findByType(delegate.getType());

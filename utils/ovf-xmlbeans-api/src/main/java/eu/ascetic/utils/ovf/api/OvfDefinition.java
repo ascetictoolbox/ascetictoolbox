@@ -27,9 +27,21 @@ import eu.ascetic.utils.ovf.api.factories.OvfDefinitionFactory;
  * Provides an entry point into an OVF document and access to the Envelope
  * element. The Envelope element describes all metadata for the virtual machines
  * (including virtual hardware), as well as the structure of the OVF package
- * itself.<br>
+ * itself. A OVF document can contain the following sections (ordered
+ * preferable):<br>
  * <br>
- * TODO: Implement the DeploymentOptionSection.<br>
+ * {@link References} - Specifies a list of file references to all external
+ * files that are part of the OVF package.<br>
+ * {@link DiskSection} - Describes meta-information about all virtual disks in
+ * the package.<br>
+ * {@link NetworkSection} - Describes logical networks used in the package.<br>
+ * DeploymentOptionSection - TODO: Specifies a discrete set of intended resource
+ * requirements.<br>
+ * {@link VirtualSystem} - TODO: Specifies a single virtual machine
+ * configurations. <br>
+ * {@link VirtualSystemCollection} (0-n instances) - Specifies a container of
+ * multiple {@link VirtualSystem}s<br>
+ * <br>
  * TODO: Implement support for OVF documents that describe a single virtual
  * machine in a root {@link VirtualSystem} element without a
  * {@link VirtualSystemCollection} section as a wrapper.
@@ -146,7 +158,7 @@ public class OvfDefinition extends AbstractElement<XmlBeanEnvelopeDocument> {
 
 	/**
 	 * Sets the {@link VirtualSystemCollection} section of the OVF
-	 * document.Provides a description of the OVF document content as collection
+	 * document. Provides a description of the OVF document content as collection
 	 * of multiple virtual machines (a VirtualSystemCollection element).
 	 * 
 	 * @param virtualSystemCollection

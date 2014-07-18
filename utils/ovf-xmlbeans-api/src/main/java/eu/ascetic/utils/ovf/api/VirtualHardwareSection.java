@@ -15,6 +15,7 @@
  */
 package eu.ascetic.utils.ovf.api;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Vector;
 
@@ -24,20 +25,38 @@ import org.dmtf.schemas.ovf.envelope.x1.XmlBeanVirtualHardwareSectionType;
 import eu.ascetic.utils.ovf.api.AbstractElement;
 import eu.ascetic.utils.ovf.api.factories.VirtualHardwareSectionFactory;
 import eu.ascetic.utils.ovf.api.utils.XmlSimpleTypeConverter;
+import eu.ascetic.utils.ovf.api.enums.*;
 
 /**
+ * Provides access to the VirtualHardwareSection. Each {@link VirtualSystem}
+ * element may contain one or more VirtualHardwareSection elements and describes
+ * the virtual hardware required by the virtual system. The virtual hardware
+ * required by a virtual machine is specified in VirtualHardwareSection
+ * elements. This specification supports abstract or incomplete hardware
+ * descriptions in which only the major devices are described. The hypervisor is
+ * allowed to create additional virtual hardware controllers and devices, as
+ * long as the required devices listed in the descriptor are realized.<br>
+ * <br>
+ * A typical VirtualHardwareSection contains a {@link System} child element to
+ * describe the virtual hardware family (a.k.a virtual system type) and a
+ * sequence of {@link Item} elements to describe the virtual hardware
+ * characteristics.<br>
+ * <br>
+ * TODO: Refactor ASCETiC specific helper methods to another package/class so as
+ * to not pollute the API.<br>
+ * 
  * @author Django Armstrong (ULeeds)
- *
+ * 
  */
 public class VirtualHardwareSection extends
 		AbstractElement<XmlBeanVirtualHardwareSectionType> {
-	
+
 	/**
 	 * A static reference to the {@link VirtualHardwareSectionFactory} class for
 	 * generating new instances of this object.
 	 */
 	public static VirtualHardwareSectionFactory Factory = new VirtualHardwareSectionFactory();
-	
+
 	/**
 	 * Default constructor.
 	 * 
@@ -48,22 +67,58 @@ public class VirtualHardwareSection extends
 		super(base);
 	}
 
+	/**
+	 * Gets the info element, a human readable description of the meaning of
+	 * this section.
+	 * 
+	 * @return The content of the info element
+	 */
 	public String getInfo() {
 		return delegate.getInfo().getStringValue();
 	}
-	
+
+	/**
+	 * Sets the info element, a human readable description of the meaning of
+	 * this section.
+	 * 
+	 * @param info
+	 *            The content to set within the info element
+	 */
 	public void setInfo(String info) {
-		delegate.getInfo().setStringValue(info);
+		delegate.setInfo(XmlSimpleTypeConverter.toMsgType(info));
 	}
 
+	/**
+	 * Gets the {@link System} element used to describe the virtual system type
+	 * (a.k.a virtual hardware family). See
+	 * {@link VirtualHardwareSection#getVirtualHardwareFamily()} for a helper
+	 * method that simplifies getting the virtual system type.
+	 * 
+	 * @return The System element
+	 */
 	public System getSystem() {
 		return new System(delegate.getSystem());
 	}
-	
+
+	/**
+	 * Sets the {@link System} element used to describe the virtual system type
+	 * (a.k.a virtual hardware family). See
+	 * {@link VirtualHardwareSection#setVirtualHardwareFamily(String)} for a
+	 * helper method that simplifies setting the virtual system type.
+	 * 
+	 * @param system
+	 *            The System element to set
+	 */
 	public void getSystem(System system) {
 		delegate.setSystem(system.getXmlObject());
 	}
 
+	/**
+	 * Gets the {@link Item} array. Item elements describe virtual hardware
+	 * characteristics.
+	 * 
+	 * @return The Item array
+	 */
 	public Item[] getItemArray() {
 		List<Item> vector = new Vector<Item>();
 		for (XmlBeanRASDType type : delegate.getItemArray()) {
@@ -71,7 +126,14 @@ public class VirtualHardwareSection extends
 		}
 		return vector.toArray(new Item[vector.size()]);
 	}
-	
+
+	/**
+	 * Sets the {@link Item} array. Item elements describe virtual hardware
+	 * characteristics.
+	 * 
+	 * @param itemArray
+	 *            The Item array to set
+	 */
 	public void setItemArray(Item[] itemArray) {
 		List<XmlBeanRASDType> newItemArray = new Vector<XmlBeanRASDType>();
 		for (int i = 0; i < itemArray.length; i++) {
@@ -80,59 +142,171 @@ public class VirtualHardwareSection extends
 		delegate.setItemArray((XmlBeanRASDType[]) newItemArray.toArray());
 	}
 
+	/**
+	 * Gets the {@link Item} at index i from the Item array. Item elements
+	 * describe virtual hardware characteristics.
+	 * 
+	 * @param i
+	 *            The index of the item
+	 * @return The Item
+	 */
 	public Item getItemAtIndex(int i) {
 		return new Item(delegate.getItemArray(i));
 	}
-	
+
+	/**
+	 * Add an {@link Item} to the end of the Item array. Item elements describe
+	 * virtual hardware characteristics.
+	 * 
+	 * @param item
+	 *            The item to add
+	 */
 	public void addItem(Item item) {
 		XmlBeanRASDType xmlBeanRASDType = delegate.addNewItem();
 		xmlBeanRASDType.set(item.getXmlObject());
 	}
 
+	// Start of ASCETiC specific helper functions
+
+	/**
+	 * Gets the virtual hardware family from the {@link System} element.
+	 * 
+	 * @return The virtual hardware family (a.k.a virtual system type)
+	 */
 	public String getVirtualHardwareFamily() {
-		return delegate.getSystem().getVirtualSystemType().getStringValue();
+		return getSystem().getVirtualSystemType();
 	}
 
+	/**
+	 * Sets the virtual hardware family from the {@link System} element.
+	 * 
+	 * @param virtualHardwareFamily
+	 *            The virtual hardware family (a.k.a virtual system type) to set
+	 */
 	public void setVirtualHardwareFamily(String virtualHardwareFamily) {
-		delegate.getSystem().setVirtualSystemType(
-				XmlSimpleTypeConverter.toCimString(virtualHardwareFamily));
+		getSystem().setVirtualSystemType(virtualHardwareFamily);
 	}
 
+	/**
+	 * Gets the number of virtual CPUs. Returns zero if no {@link Item} no CPU
+	 * number element can be found.
+	 * 
+	 * @return The number of virtual CPUs
+	 */
 	public int getNumberOfVirtualCPUs() {
-		return delegate.getItemArray(0).getVirtualQuantity()
-				.getBigIntegerValue().intValue();
+		Item[] itemArray = getItemArray();
+		for (int i = 0; i < itemArray.length; i++) {
+			if (itemArray[i].getResourceType().equals(ResourceType.PROCESSOR)
+					&& itemArray[i].isSetResourceSubType() == false) {
+				return itemArray[i].getVirtualQuantity().intValue();
+			}
+		}
+		return 0;
 	}
 
-	public void setNumberOfVirtualCPUs(int numberOfVirtualCPUs) {
-		delegate.getItemArray(0).setVirtualQuantity(
-				XmlSimpleTypeConverter.toCimUnsignedLong(numberOfVirtualCPUs));
+	/**
+	 * Sets the number of virtual CPUs. Returns false if no {@link Item} no CPU
+	 * number element can be found.
+	 * 
+	 * @param numberOfVirtualCPUs
+	 *            The number of virtual CPUs to set
+	 * @return Indicates if setting was successful.
+	 */
+	public boolean setNumberOfVirtualCPUs(int numberOfVirtualCPUs) {
+		Item[] itemArray = getItemArray();
+		for (int i = 0; i < itemArray.length; i++) {
+			if (itemArray[i].getResourceType().equals(ResourceType.PROCESSOR)
+					&& itemArray[i].isSetResourceSubType() == false) {
+				itemArray[i].setVirtualQuantity(new BigInteger(new Integer(
+						numberOfVirtualCPUs).toString()));
+				return true;
+			}
+		}
+		return false;
 	}
 
+	/**
+	 * Gets the memory size (see {@link Item#getAllocationUnits()}). Returns
+	 * zero if no {@link Item} element for memory can be found.
+	 * 
+	 * @return The number of virtual CPUs
+	 */
 	public int getMemorySize() {
-		return delegate.getItemArray(1).getVirtualQuantity()
-				.getBigIntegerValue().intValue();
+		Item[] itemArray = getItemArray();
+		for (int i = 0; i < itemArray.length; i++) {
+			if (itemArray[i].getResourceType().equals(ResourceType.MEMORY)) {
+				return itemArray[i].getVirtualQuantity().intValue();
+			}
+		}
+		return 0;
 	}
 
-	public void setMemorySize(int memorySize) {
+	/**
+	 * Sets the memory size (see {@link Item#getAllocationUnits()}). Returns
+	 * false if no {@link Item} element for memory can be found.
+	 * 
+	 * @param memorySize
+	 *            The memory size to set
+	 * @return Indicates if setting was successful.
+	 */
+	public boolean setMemorySize(int memorySize) {
 		if (memorySize < 0) {
 			throw new IllegalArgumentException("Memory size must be > -1");
 		}
 
-		delegate.getItemArray(1).setVirtualQuantity(
-				XmlSimpleTypeConverter.toCimUnsignedLong(memorySize));
+		Item[] itemArray = getItemArray();
+		for (int i = 0; i < itemArray.length; i++) {
+			if (itemArray[i].getResourceType().equals(ResourceType.MEMORY)) {
+				itemArray[i].setVirtualQuantity(new BigInteger(new Integer(
+						memorySize).toString()));
+				return true;
+			}
+		}
+		return false;
 	}
 
-	public void setCPUSpeed(int cpuSpeed) {
+	/**
+	 * Gets the CPU speed (see {@link Item#getAllocationUnits()}). Returns zero
+	 * if no {@link Item} element for CPU speed can be found with a resource sub
+	 * type of "cpuspeed".
+	 * 
+	 * @return The CPU speed in MHz
+	 */
+	public int getCPUSpeed() {
+		Item[] itemArray = getItemArray();
+		for (int i = 0; i < itemArray.length; i++) {
+			if (itemArray[i].getResourceType().equals(ResourceType.PROCESSOR)
+					&& itemArray[i].getResourceSubType().equals("cpuspeed")) {
+				return itemArray[i].getReservation().intValue();
+			}
+		}
+		return 0;
+	}
+
+	/**
+	 * Sets the CPU speed (see {@link Item#getAllocationUnits()}). Returns false
+	 * if no {@link Item} element for CPU speed can be found with a resource sub
+	 * type of "cpuspeed".
+	 * 
+	 * @param cpuSpeed
+	 *            The CPU speed to set
+	 * @return Indicates if setting was successful
+	 */
+	public boolean setCPUSpeed(int cpuSpeed) {
 		if (!(cpuSpeed > -1)) {
 			throw new IllegalArgumentException("CPU speed must be > -1");
 		}
-		delegate.getItemArray(2).setReservation(
-				XmlSimpleTypeConverter.toCimUnsignedLong(cpuSpeed));
-	}
 
-	public int getCPUSpeed() {
-		return delegate.getItemArray(2).getReservation().getBigIntegerValue()
-				.intValue();
+		Item[] itemArray = getItemArray();
+		for (int i = 0; i < itemArray.length; i++) {
+			if (itemArray[i].getResourceType().equals(ResourceType.PROCESSOR)
+					&& itemArray[i].getResourceSubType().equals("cpuspeed")) {
+				itemArray[i].setReservation(new BigInteger(
+						new Integer(cpuSpeed).toString()));
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

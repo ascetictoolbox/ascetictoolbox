@@ -28,6 +28,25 @@ import eu.ascetic.utils.ovf.api.factories.VirtualSystemFactory;
 import eu.ascetic.utils.ovf.api.utils.XmlSimpleTypeConverter;
 
 /**
+ * Provides access to the VirtualSystem element of an OVF document. Virtual
+ * machine configurations in OVF are represented by a VirtualSystem or
+ * {@link VirtualSystemCollection} element. The VirtualSystem element describes
+ * a single virtual machine and is simply a container of section elements. A
+ * VirtualSystem can contain the following sections (ordered preferable):<br>
+ * <br>
+ * AnnotationSection - TODO: Specifies a free-form annotation on an entity.<br>
+ * {@link ProductSection} (0-n instances) - Specifies optional
+ * product-information for a package, such as product name and version, along
+ * with a set of properties that can be configured.<br>
+ * EulaSection - TODO: Specifies a license agreement for the software in the
+ * package.<br>
+ * {@link OperatingSystem} - Specifies the installed guest operating system of a
+ * virtual machine.<br>
+ * InstallSection - TODO: Specifies that the virtual machine needs to be
+ * initially booted to install and configure the software.<br>
+ * {@link VirtualHardwareSection} - Specifies the virtual hardware required by a
+ * virtual machine.<br>
+ * 
  * @author Django Armstrong (ULeeds)
  * 
  */
@@ -49,14 +68,51 @@ public class VirtualSystem extends AbstractElement<XmlBeanVirtualSystemType> {
 		super(base);
 	}
 
+	/**
+	 * Gets the info element, a human readable description of the meaning of
+	 * this section.
+	 * 
+	 * @return The content of the info element
+	 */
 	public String getInfo() {
 		return delegate.getInfo().getStringValue();
 	}
 
+	/**
+	 * Sets the info element, a human readable description of the meaning of
+	 * this section.
+	 * 
+	 * @param info
+	 *            The content to set within the info element
+	 */
 	public void setInfo(String info) {
 		delegate.setInfo(XmlSimpleTypeConverter.toMsgType(info));
 	}
 
+	/**
+	 * Sets the unique ID of this VirtualSystem.
+	 * 
+	 * @return The ID
+	 */
+	public String getId() {
+		return delegate.getId();
+	}
+
+	/**
+	 * Gets the unique ID of this VirtualSystem.
+	 * 
+	 * @param id
+	 *            The ID to set
+	 */
+	public void setId(String id) {
+		delegate.setId(id);
+	}
+
+	/**
+	 * Gets the human readable name of this VirtualSystem.
+	 * 
+	 * @return The name to get
+	 */
 	public String getName() {
 		if (delegate.isSetName()) {
 			return delegate.getName().getStringValue();
@@ -64,18 +120,23 @@ public class VirtualSystem extends AbstractElement<XmlBeanVirtualSystemType> {
 		return null;
 	}
 
+	/**
+	 * Sets the human readable name of this VirtualSystem.
+	 * 
+	 * @param name
+	 *            The name to set
+	 */
 	public void setName(String name) {
 		delegate.setName(XmlSimpleTypeConverter.toMsgType(name));
 	}
-
-	public String getId() {
-		return delegate.getId();
-	}
-
-	public void setId(String id) {
-		delegate.setId(id);
-	}
-
+	
+	/**
+	 * Gets the {@link ProductSection} array held in this object. They describes
+	 * product information along with a set of properties that can be
+	 * configured.
+	 * 
+	 * @return The ProductSection[]
+	 */
 	public ProductSection[] getProductSectionArray() {
 		Vector<ProductSection> vector = new Vector<ProductSection>();
 		XmlBeanSectionType[] sectionArray = (XmlBeanSectionType[]) delegate
@@ -92,6 +153,14 @@ public class VirtualSystem extends AbstractElement<XmlBeanVirtualSystemType> {
 		return null;
 	}
 
+	/**
+	 * Sets the {@link ProductSection} array held in this object. They describes
+	 * product information along with a set of properties that can be
+	 * configured.
+	 * 
+	 * @param productSectionArray
+	 *            The ProductSection[] to set
+	 */
 	public void setProductSectionArray(ProductSection[] productSectionArray) {
 		Vector<XmlBeanSectionType> sectionVector = new Vector<XmlBeanSectionType>();
 
@@ -113,15 +182,38 @@ public class VirtualSystem extends AbstractElement<XmlBeanVirtualSystemType> {
 		delegate.setSectionArray((XmlBeanSectionType[]) sectionVector.toArray());
 	}
 
+	/**
+	 * Gets the {@link ProductSection} element at index i of the array. It
+	 * describes product information along with a set of properties that can be
+	 * configured.
+	 * 
+	 * @param i
+	 *            The index value
+	 * @return The ProductSection at index i
+	 */
 	public ProductSection getProductSectionAtIndex(int i) {
 		return getProductSectionArray()[i];
 	}
 
+	/**
+	 * Adds a new {@link ProductSection} element to the end of the
+	 * ProductSection array. It describes product information along with a set
+	 * of properties that can be configured.
+	 * 
+	 * @param productSection
+	 *            The ProductSection to add to the end of the array.
+	 */
 	public void addProductSection(ProductSection productSection) {
 		XmlBeanSectionType xmlBeanSectionType = delegate.addNewSection();
 		xmlBeanSectionType.set(productSection.getXmlObject());
 	}
 
+	/**
+	 * Gets the {@link OperatingSystem} element. It describes the operating
+	 * system used in the VirtualSystem.
+	 * 
+	 * @return The OperatingSystem
+	 */
 	public OperatingSystem getOperatingSystem() {
 		XmlBeanSectionType[] sectionArray = (XmlBeanSectionType[]) delegate
 				.getSectionArray();
@@ -136,6 +228,13 @@ public class VirtualSystem extends AbstractElement<XmlBeanVirtualSystemType> {
 		return null;
 	}
 
+	/**
+	 * Sets the {@link OperatingSystem} element. It describes the operating
+	 * system used in the VirtualSystem.
+	 * 
+	 * @param operatingSystem
+	 *            The OperatingSystem element to set
+	 */
 	public void setOperatingSystem(OperatingSystem operatingSystem) {
 		XmlBeanSectionType[] sectionArray = (XmlBeanSectionType[]) delegate
 				.getSectionArray();
@@ -153,6 +252,12 @@ public class VirtualSystem extends AbstractElement<XmlBeanVirtualSystemType> {
 		xmlBeanSectionType.set(operatingSystem.getXmlObject());
 	}
 
+	/**
+	 * Gets the {@link VirtualHardwareSection} element. It describes the virtual
+	 * hardware required by the VirtualSystem.
+	 * 
+	 * @return The VirtualHardwareSection
+	 */
 	public VirtualHardwareSection getVirtualHardwareSection() {
 		XmlBeanSectionType[] sectionArray = (XmlBeanSectionType[]) delegate
 				.getSectionArray();
@@ -167,6 +272,13 @@ public class VirtualSystem extends AbstractElement<XmlBeanVirtualSystemType> {
 		return null;
 	}
 
+	/**
+	 * Sets the {@link VirtualHardwareSection} element. It describes the virtual
+	 * hardware required by the VirtualSystem.
+	 * 
+	 * @param virtualHardwareSection
+	 *            The VirtualHardwareSection to set
+	 */
 	public void setVirtualHardwareSection(
 			VirtualHardwareSection virtualHardwareSection) {
 		XmlBeanSectionType[] sectionArray = (XmlBeanSectionType[]) delegate

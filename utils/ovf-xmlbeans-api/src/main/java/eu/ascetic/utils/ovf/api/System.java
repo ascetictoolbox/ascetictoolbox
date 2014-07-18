@@ -23,13 +23,13 @@ import eu.ascetic.utils.ovf.api.utils.XmlSimpleTypeConverter;
 
 /**
  * Provides access to the optional System element. The System element specifies
- * a virtual system type identifier, which is an implementation defined string
- * that uniquely identifies the type of the virtual system. For example, a
- * virtual 684 system type identifier could be "vmx-4" for VMware’s
- * fourth-generation virtual hardware or "xen-3" for Xen's 685 third-generation
- * virtual hardware. The virtual system type identifiers specified in
- * vssd:VirtualSystemType elements are expected to be matched against the values
- * of property VirtualSystemTypesSupported of CIM class
+ * a virtual system type identifier (a.k.a virtual hardware family), which is an
+ * implementation defined string that uniquely identifies the type of the
+ * virtual system. For example, a virtual system type identifier could be
+ * "vmx-4" for VMware’s fourth-generation virtual hardware or "xen-3" for Xen's
+ * third-generation virtual hardware. The virtual system type identifiers
+ * specified in vssd:VirtualSystemType elements are expected to be matched
+ * against the values of property VirtualSystemTypesSupported of CIM class
  * CIM_VirtualSystemManagementCapabilities. (See <a
  * href="@link http://www.dmtf.org/standards/cim/cim_schema_v2191">http:/
  * /www.dmtf.org/standards/cim/cim_schema_v2191</a> and <a href=
