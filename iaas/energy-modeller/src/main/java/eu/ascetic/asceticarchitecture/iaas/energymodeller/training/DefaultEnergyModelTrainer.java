@@ -3,7 +3,6 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.training;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.HostEnergyCalibrationData;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energymodel.EnergyModel;
-
 import java.util.*;
 
 

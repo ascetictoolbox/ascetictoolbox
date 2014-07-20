@@ -7,6 +7,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.HostEnergyCalibrationData;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energymodel.EnergyModel;
 
+
 public interface EnergyModelTrainerInterface {
 	
 	public boolean trainModel (Host host, double usageCPU, double usageRAM, double totalEnergyUsed, int numberOfValues);

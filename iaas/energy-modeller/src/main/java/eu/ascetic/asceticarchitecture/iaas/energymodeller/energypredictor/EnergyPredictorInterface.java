@@ -18,6 +18,8 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
+
 import java.util.Collection;
 
 /**
@@ -43,5 +45,7 @@ public interface EnergyPredictorInterface {
      * @return The prediction of the energy to be used.
      */
     public EnergyUsagePrediction getVMPredictedEnergy(VM vm, Collection<VM> virtualMachines, Host host);
+    
+    public EnergyUsagePrediction predictTotalEnergy (Host host, double usageCPU, double usageRAM, TimePeriod timePeriod);
     
 }

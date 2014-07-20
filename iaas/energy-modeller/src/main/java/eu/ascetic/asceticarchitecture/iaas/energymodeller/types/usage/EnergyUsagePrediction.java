@@ -50,7 +50,11 @@ public class EnergyUsagePrediction extends EnergyUsageRecord {
         this.avgPowerUsed = avgPowerUsed;
         this.totalEnergyUsed = totalEnergyUsed;
     }
-
+    
+    public EnergyUsagePrediction(){
+    	
+    }
+    
     /**
      * @return the avgPowerUsed
      */

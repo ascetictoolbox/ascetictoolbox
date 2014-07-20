@@ -19,9 +19,19 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.training.DefaultEnergy
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.training.EnergyModelTrainerInterface;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energymodel.EnergyModel;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.HostEnergyCalibrationData;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
+
+
+
+
+
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.GregorianCalendar;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This implements the default energy predictor for the ASCETiC project.
@@ -43,8 +53,16 @@ public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
     @Override
     public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines) {
         //TODO Write get host predicted energy i.e. implement the model here.
-        EnergyModel model = trainer.retrieveModel(host);
-        throw new UnsupportedOperationException("Not supported yet.");
+    	ArrayList<HostEnergyCalibrationData> calibrationData = new ArrayList<>();
+    	calibrationData=host.getCalibrationData();
+    	int lastElement = calibrationData.size();
+    	HostEnergyCalibrationData data = calibrationData.get(lastElement);
+    	double usageCPU=data.getCpuUsage();
+    	double usageMemory = data.getMemoryUsage();
+    	EnergyUsagePrediction totalEnergy =  new EnergyUsagePrediction();
+    	TimePeriod duration = new TimePeriod(new GregorianCalendar(), 1, TimeUnit.HOURS);
+    	totalEnergy=predictTotalEnergy (host, usageCPU, usageMemory, duration);
+        return totalEnergy;
     }
 
     /**
@@ -59,8 +77,20 @@ public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
     @Override
     public EnergyUsagePrediction getVMPredictedEnergy(VM vm, Collection<VM> virtualMachines, Host host) {
         //TODO Write get VM predicted energy i.e. implement the model here.
-        EnergyModel model = trainer.retrieveModel(host);
+    	
+    	
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    @Override
+    public EnergyUsagePrediction predictTotalEnergy (Host host, double usageCPU, double usageRAM, TimePeriod timePeriod){
+    	EnergyUsagePrediction totalEnergy = new EnergyUsagePrediction(host);
+    	EnergyModel model = trainer.retrieveModel(host);
+    	double temp;
+    	temp = model.getIntercept()+model.getCoefCPU()*usageCPU+model.getCoefRAM()*usageRAM;
+    	totalEnergy.setTotalEnergyUsed(temp);
+    	totalEnergy.setDuration(timePeriod);
+    	return totalEnergy;
     }
 
 }
