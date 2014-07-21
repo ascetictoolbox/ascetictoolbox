@@ -220,7 +220,7 @@ public class ZabbixDataSourceAdaptorTest {
     public void testGetVMList() {
         System.out.println("getVMList");
         ZabbixDataSourceAdaptor instance = new ZabbixDataSourceAdaptor();
-        List<VmDeployed> result = instance.getVMList();
+        List<VmDeployed> result = instance.getVmList();
         assert(!result.isEmpty());
         for (VmDeployed vmDeployed : result) {
             System.out.println("Name: " + vmDeployed.getName());
