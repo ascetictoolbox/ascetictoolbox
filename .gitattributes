@@ -24,16 +24,6 @@ iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymod
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/HostMeasurement.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/VmMeasurement.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/ZabbixDataSourceAdaptor.java -text
-iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/energy/DefaultEnergyClient.java -text
-iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/energy/EnergyDataSource.java -text
-iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/energy/JSONParser.java -text
-iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/energy/JSONParserTest.java -text
-iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/energy/KwAPIClient.java -text
-iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/energy/WattsUpMeterClient.java -text
-iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/energy/ZabbixClient.java -text
-iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/energy/probeids.json -text
-iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/energy/sample.json -text
-iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/energy/sampleKwAPI.json -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/hostvmfilter/NameBeginsFilter.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/hostvmfilter/NameEndsFilter.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/hostvmfilter/ZabbixHostVMFilter.java -text
