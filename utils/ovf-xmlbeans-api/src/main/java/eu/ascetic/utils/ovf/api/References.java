@@ -75,7 +75,7 @@ public class References extends AbstractElement<XmlBeanReferencesType> {
             vector.add(fileArray[i].getXmlObject());
         }
 
-        delegate.setFileArray((XmlBeanFileType[]) vector.toArray());
+        delegate.setFileArray(vector.toArray(new XmlBeanFileType[vector.size()]));
     }
 
     /**

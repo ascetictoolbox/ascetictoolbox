@@ -16,6 +16,7 @@
 package eu.ascetic.utils.ovf.api;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.xmlbeans.XmlError;
@@ -69,7 +70,20 @@ public abstract class AbstractElement<T extends XmlObject> {
     public String toString() {
         XmlOptions options = new XmlOptions();
         options.setSavePrettyPrint();
-        options.setSaveOuter();
+        //options.setSaveOuter();
+        // Setup the prefixes
+        HashMap<String, String> suggestedPrefixes = new HashMap<String, String>();
+        suggestedPrefixes
+                .put("http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData",
+                        "vssd");
+        suggestedPrefixes
+                .put("http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData",
+                        "rasd");
+        suggestedPrefixes.put("http://schemas.dmtf.org/ovf/envelope/1",
+                "ovf");
+        options.setSaveSuggestedPrefixes(suggestedPrefixes);
+        // Make sure name spaces are aggressively resolved
+        options.setSaveAggressiveNamespaces();
         return delegate.xmlText(options);
     }
 

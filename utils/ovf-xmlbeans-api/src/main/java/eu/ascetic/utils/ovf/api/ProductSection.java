@@ -170,8 +170,9 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
         for (int i = 0; i < productPropertiesArray.length; i++) {
             newPropertyArray.add(productPropertiesArray[i].getXmlObject());
         }
-        delegate.setPropertyArray((XmlBeanProductSectionType.Property[]) newPropertyArray
-                .toArray());
+        delegate.setPropertyArray(newPropertyArray
+                .toArray(new XmlBeanProductSectionType.Property[newPropertyArray
+                        .size()]));
     }
 
     /**

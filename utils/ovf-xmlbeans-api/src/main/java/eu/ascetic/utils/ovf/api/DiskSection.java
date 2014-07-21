@@ -81,8 +81,8 @@ public class DiskSection extends AbstractElement<XmlBeanDiskSectionType> {
         for (int i = 0; i < virtualDiskDescArray.length; i++) {
             diskArray.add(virtualDiskDescArray[i].getXmlObject());
         }
-        delegate.setDiskArray((XmlBeanVirtualDiskDescType[]) diskArray
-                .toArray());
+        delegate.setDiskArray(diskArray
+                .toArray(new XmlBeanVirtualDiskDescType[diskArray.size()]));
     }
 
     /**

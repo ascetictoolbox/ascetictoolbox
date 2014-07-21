@@ -17,6 +17,8 @@ package eu.ascetic.utils.ovf.api;
 
 import java.util.Vector;
 
+import javax.xml.namespace.QName;
+
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanContentType;
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanProductSectionType;
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanSectionType;
@@ -169,27 +171,27 @@ public class VirtualSystemCollection extends
      *            The ProductSection[] to set
      */
     public void setProductSectionArray(ProductSection[] productSectionArray) {
-        Vector<XmlBeanSectionType> sectionVector = new Vector<XmlBeanSectionType>();
+        XmlBeanSectionType[] sectionArray = delegate.getSectionArray();
 
-        XmlBeanSectionType[] sectionArray = (XmlBeanSectionType[]) delegate
-                .getSectionArray();
-
-        // Add everything else that's not a ProductSection
+        // Remove the old ProductSections
         if (sectionArray != null) {
-            for (XmlBeanSectionType xmlBeanSection : sectionArray) {
-                if (!(xmlBeanSection instanceof XmlBeanProductSectionType)) {
-                    sectionVector
-                            .add((XmlBeanProductSectionType) xmlBeanSection);
+            for (int i = 0; i < sectionArray.length; i++) {
+                if (sectionArray[i] instanceof XmlBeanProductSectionType) {
+                    delegate.removeSection(i);
                 }
             }
         }
 
-        // Add the new elements
+        // Add in the new product sections
         for (int i = 0; i < productSectionArray.length; i++) {
-            sectionVector.add(productSectionArray[i].getXmlObject());
-        }
+            XmlBeanSectionType xmlBeanSectionType = delegate.addNewSection();
 
-        delegate.setSectionArray((XmlBeanSectionType[]) sectionVector.toArray());
+            xmlBeanSectionType.newCursor().setName(
+                    new QName("http://schemas.dmtf.org/ovf/envelope/1",
+                            "ProductSection"));
+            delegate.setSectionArray(delegate.getSectionArray().length - 1,
+                    productSectionArray[i].getXmlObject());
+        }
     }
 
     /**
@@ -215,7 +217,13 @@ public class VirtualSystemCollection extends
      */
     public void addProductSection(ProductSection productSection) {
         XmlBeanSectionType xmlBeanSectionType = delegate.addNewSection();
-        xmlBeanSectionType.set(productSection.getXmlObject());
+
+        xmlBeanSectionType.newCursor().setName(
+                new QName("http://schemas.dmtf.org/ovf/envelope/1",
+                        "ProductSection"));
+
+        delegate.setSectionArray(delegate.getSectionArray().length - 1,
+                productSection.getXmlObject());
     }
 
     /**
@@ -241,20 +249,24 @@ public class VirtualSystemCollection extends
     }
 
     /**
-     * Sets the {@link VirtualSystem} array held in this object. They describes
+     * Sets the {@link VirtualSystem} array held in this object. They describe
      * virtual machine configuration including virtual hardware requirements.
      * 
      * @param virtualSystemArray
      *            The VirtualSystem[] to set
      */
     public void setVirtualSystemArray(VirtualSystem[] virtualSystemArray) {
-        Vector<XmlBeanContentType> contentVector = new Vector<XmlBeanContentType>();
+        delegate.setContentArray(null);
 
         for (int i = 0; i < virtualSystemArray.length; i++) {
-            contentVector.add(virtualSystemArray[i].getXmlObject());
-        }
+            XmlBeanContentType xmlBeanContentType = delegate.addNewContent();
 
-        delegate.setContentArray((XmlBeanContentType[]) contentVector.toArray());
+            xmlBeanContentType.newCursor().setName(
+                    new QName("http://schemas.dmtf.org/ovf/envelope/1",
+                            "VirtualSystem"));
+            delegate.setContentArray(delegate.getContentArray().length - 1,
+                    virtualSystemArray[i].getXmlObject());
+        }
     }
 
     /**
@@ -279,6 +291,12 @@ public class VirtualSystemCollection extends
      */
     public void addVirtualSystem(VirtualSystem virtualSystem) {
         XmlBeanContentType xmlBeanContentType = delegate.addNewContent();
-        xmlBeanContentType.set(virtualSystem.getXmlObject());
+
+        xmlBeanContentType.newCursor().setName(
+                new QName("http://schemas.dmtf.org/ovf/envelope/1",
+                        "VirtualSystem"));
+
+        delegate.setContentArray(delegate.getContentArray().length - 1,
+                virtualSystem.getXmlObject());
     }
 }

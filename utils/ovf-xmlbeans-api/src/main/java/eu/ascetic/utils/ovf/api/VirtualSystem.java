@@ -17,6 +17,8 @@ package eu.ascetic.utils.ovf.api;
 
 import java.util.Vector;
 
+import javax.xml.namespace.QName;
+
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanOperatingSystemSectionType;
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanProductSectionType;
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanSectionType;
@@ -161,24 +163,27 @@ public class VirtualSystem extends AbstractElement<XmlBeanVirtualSystemType> {
      *            The ProductSection[] to set
      */
     public void setProductSectionArray(ProductSection[] productSectionArray) {
-        Vector<XmlBeanSectionType> sectionVector = new Vector<XmlBeanSectionType>();
+        XmlBeanSectionType[] sectionArray = delegate.getSectionArray();
 
-        XmlBeanSectionType[] sectionArray = (XmlBeanSectionType[]) delegate
-                .getSectionArray();
-        // Add everything else that's not a ProductSection
+        // Remove the old ProductSections
         if (sectionArray != null) {
-            for (XmlBeanSectionType xmlBeanSection : sectionArray) {
-                if (!(xmlBeanSection instanceof XmlBeanProductSectionType)) {
-                    sectionVector
-                            .add((XmlBeanProductSectionType) xmlBeanSection);
+            for (int i = 0; i < sectionArray.length; i++) {
+                if (sectionArray[i] instanceof XmlBeanProductSectionType) {
+                    delegate.removeSection(i);
                 }
             }
         }
-        // Add the new elements
+
+        // Add in the new product sections
         for (int i = 0; i < productSectionArray.length; i++) {
-            sectionVector.add(productSectionArray[i].getXmlObject());
+            XmlBeanSectionType xmlBeanSectionType = delegate.addNewSection();
+
+            xmlBeanSectionType.newCursor().setName(
+                    new QName("http://schemas.dmtf.org/ovf/envelope/1",
+                            "ProductSection"));
+            delegate.setSectionArray(delegate.getSectionArray().length - 1,
+                    productSectionArray[i].getXmlObject());
         }
-        delegate.setSectionArray((XmlBeanSectionType[]) sectionVector.toArray());
     }
 
     /**
@@ -204,7 +209,11 @@ public class VirtualSystem extends AbstractElement<XmlBeanVirtualSystemType> {
      */
     public void addProductSection(ProductSection productSection) {
         XmlBeanSectionType xmlBeanSectionType = delegate.addNewSection();
-        xmlBeanSectionType.set(productSection.getXmlObject());
+        xmlBeanSectionType.newCursor().setName(
+                new QName("http://schemas.dmtf.org/ovf/envelope/1",
+                        "ProductSection"));
+        delegate.setSectionArray(delegate.getSectionArray().length - 1,
+                productSection.getXmlObject());
     }
 
     /**
@@ -238,17 +247,24 @@ public class VirtualSystem extends AbstractElement<XmlBeanVirtualSystemType> {
         XmlBeanSectionType[] sectionArray = (XmlBeanSectionType[]) delegate
                 .getSectionArray();
         if (sectionArray != null) {
-            for (XmlBeanSectionType xmlBeanSections : sectionArray) {
-                if (xmlBeanSections instanceof XmlBeanOperatingSystemSectionType) {
-                    xmlBeanSections.set(operatingSystem.getXmlObject());
-                    delegate.setSectionArray(sectionArray);
+            for (int i = 0; i < sectionArray.length; i++) {
+                XmlBeanSectionType xmlBeanSectionType = sectionArray[i];
+                if (xmlBeanSectionType instanceof XmlBeanOperatingSystemSectionType) {
+                    xmlBeanSectionType.newCursor().setName(
+                            new QName("http://schemas.dmtf.org/ovf/envelope/1",
+                                    "OperatingSystem"));
+                    delegate.setSectionArray(i, operatingSystem.getXmlObject());
                     return;
                 }
             }
         }
 
         XmlBeanSectionType xmlBeanSectionType = delegate.addNewSection();
-        xmlBeanSectionType.set(operatingSystem.getXmlObject());
+        xmlBeanSectionType.newCursor().setName(
+                new QName("http://schemas.dmtf.org/ovf/envelope/1",
+                        "OperatingSystemSection"));
+        delegate.setSectionArray(delegate.getSectionArray().length - 1,
+                operatingSystem.getXmlObject());
     }
 
     /**
@@ -282,17 +298,27 @@ public class VirtualSystem extends AbstractElement<XmlBeanVirtualSystemType> {
             VirtualHardwareSection virtualHardwareSection) {
         XmlBeanSectionType[] sectionArray = (XmlBeanSectionType[]) delegate
                 .getSectionArray();
+
         if (sectionArray != null) {
-            for (XmlBeanSectionType xmlBeanSections : sectionArray) {
-                if (xmlBeanSections instanceof XmlBeanVirtualHardwareSectionType) {
-                    xmlBeanSections.set(virtualHardwareSection.getXmlObject());
-                    delegate.setSectionArray(sectionArray);
+            for (int i = 0; i < sectionArray.length; i++) {
+                XmlBeanSectionType xmlBeanSectionType = sectionArray[i];
+                if (xmlBeanSectionType instanceof XmlBeanVirtualHardwareSectionType) {
+                    xmlBeanSectionType.newCursor().setName(
+                            new QName("http://schemas.dmtf.org/ovf/envelope/1",
+                                    "VirtualHardwareSection"));
+                    delegate.setSectionArray(i,
+                            virtualHardwareSection.getXmlObject());
                     return;
                 }
             }
         }
+
         XmlBeanSectionType xmlBeanSectionType = delegate.addNewSection();
-        xmlBeanSectionType.set(virtualHardwareSection.getXmlObject());
+        xmlBeanSectionType.newCursor().setName(
+                new QName("http://schemas.dmtf.org/ovf/envelope/1",
+                        "VirtualHardwareSection"));
+        delegate.setSectionArray(delegate.getSectionArray().length - 1,
+                virtualHardwareSection.getXmlObject());
     }
 
 }

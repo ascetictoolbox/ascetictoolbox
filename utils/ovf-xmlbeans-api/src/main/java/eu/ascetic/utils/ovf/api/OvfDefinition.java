@@ -15,9 +15,13 @@
  */
 package eu.ascetic.utils.ovf.api;
 
+import javax.xml.namespace.QName;
+
+import org.dmtf.schemas.ovf.envelope.x1.XmlBeanContentType;
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanDiskSectionType;
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanEnvelopeDocument;
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanNetworkSectionType;
+import org.dmtf.schemas.ovf.envelope.x1.XmlBeanSectionType;
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanVirtualSystemCollectionType;
 
 import eu.ascetic.utils.ovf.api.AbstractElement;
@@ -116,7 +120,11 @@ public class OvfDefinition extends AbstractElement<XmlBeanEnvelopeDocument> {
      */
     public void setDiskSection(DiskSection diskSection) {
         if (delegate.getEnvelope().getSectionArray().length < 1) {
-            delegate.getEnvelope().addNewSection();
+            XmlBeanSectionType xmlBeanSectionType = delegate.getEnvelope()
+                    .addNewSection();
+            xmlBeanSectionType.newCursor().setName(
+                    new QName("http://schemas.dmtf.org/ovf/envelope/1",
+                            "DiskSection"));
         }
         delegate.getEnvelope().setSectionArray(0, diskSection.getXmlObject());
     }
@@ -143,7 +151,11 @@ public class OvfDefinition extends AbstractElement<XmlBeanEnvelopeDocument> {
      */
     public void setNetworkSection(NetworkSection networkSection) {
         if (delegate.getEnvelope().getSectionArray().length < 2) {
-            delegate.getEnvelope().addNewSection();
+            XmlBeanSectionType xmlBeanSectionType = delegate.getEnvelope()
+                    .addNewSection();
+            xmlBeanSectionType.newCursor().setName(
+                    new QName("http://schemas.dmtf.org/ovf/envelope/1",
+                            "NetworkSection"));
         }
         delegate.getEnvelope()
                 .setSectionArray(1, networkSection.getXmlObject());
@@ -172,7 +184,12 @@ public class OvfDefinition extends AbstractElement<XmlBeanEnvelopeDocument> {
      */
     public void setVirtualSystemCollection(
             VirtualSystemCollection virtualSystemCollection) {
-        delegate.getEnvelope().addNewContent();
+        XmlBeanContentType xmlBeanContentType = delegate.getEnvelope()
+                .addNewContent();
+        xmlBeanContentType.newCursor().setName(
+                new QName("http://schemas.dmtf.org/ovf/envelope/1",
+                        "VirtualSystemCollection"));
+
         delegate.getEnvelope().setContent(
                 virtualSystemCollection.getXmlObject());
     }

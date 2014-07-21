@@ -21,6 +21,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.math.BigInteger;
 import java.util.HashMap;
+import java.util.Vector;
 
 import org.apache.xmlbeans.XmlOptions;
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanEnvelopeDocument;
@@ -44,7 +45,7 @@ import eu.ascetic.utils.ovf.api.enums.ProductPropertyType;
 import eu.ascetic.utils.ovf.api.enums.ResourceType;
 
 /**
- * Workflow test cases.
+ * Workflow unit tests testing core functionality of the OVF API.
  * 
  * @author Django Armstrong (ULeeds)
  * 
@@ -72,27 +73,27 @@ public class OvfDefinitionTest extends TestCase {
         assertNotNull(deploymentId);
 
         // @formatter:off
-		ovfDefinition.getVirtualSystemCollection().getProductSectionAtIndex(0)
-				.setSecurityKeys("\n        " +
-				"-----BEGIN PUBLIC KEY-----\n        " +
-				"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCqGKukO1De7zhZj6+H0qtjTkVxwTCpvKe4eCZ0\n        " +
-				"FPqri0cb2JZfXJ/DgYSF6vUpwmJG8wVQZKjeGcjDOL5UlsuusFncCzWBQ7RKNUSesmQRMSGkVb1/\n        " +
-				"3j+skZ6UtW+5u09lHNsj6tQ51s1SPrCBkedbNf0Tp0GbMJDyR4e9T04ZZwIDAQAB\n        " +
-				"-----END PUBLIC KEY-----\n        " +
-				"-----BEGIN RSA PRIVATE KEY-----\n        " +
-				"MIICXAIBAAKBgQCqGKukO1De7zhZj6+H0qtjTkVxwTCpvKe4eCZ0FPqri0cb2JZfXJ/DgYSF6vUp\n        " +
-				"wmJG8wVQZKjeGcjDOL5UlsuusFncCzWBQ7RKNUSesmQRMSGkVb1/3j+skZ6UtW+5u09lHNsj6tQ5\n        " +
-				"1s1SPrCBkedbNf0Tp0GbMJDyR4e9T04ZZwIDAQABAoGAFijko56+qGyN8M0RVyaRAXz++xTqHBLh\n        " +
-				"3tx4VgMtrQ+WEgCjhoTwo23KMBAuJGSYnRmoBZM3lMfTKevIkAidPExvYCdm5dYq3XToLkkLv5L2\n        " +
-				"pIIVOFMDG+KESnAFV7l2c+cnzRMW0+b6f8mR1CJzZuxVLL6Q02fvLi55/mbSYxECQQDeAw6fiIQX\n        " +
-				"GukBI4eMZZt4nscy2o12KyYner3VpoeE+Np2q+Z3pvAMd/aNzQ/W9WaI+NRfcxUJrmfPwIGm63il\n        " +
-				"AkEAxCL5HQb2bQr4ByorcMWm/hEP2MZzROV73yF41hPsRC9m66KrheO9HPTJuo3/9s5p+sqGxOlF\n        " +
-				"L0NDt4SkosjgGwJAFklyR1uZ/wPJjj611cdBcztlPdqoxssQGnh85BzCj/u3WqBpE2vjvyyvyI5k\n        " +
-				"X6zk7S0ljKtt2jny2+00VsBerQJBAJGC1Mg5Oydo5NwD6BiROrPxGo2bpTbu/fhrT8ebHkTz2epl\n        " +
-				"U9VQQSQzY1oZMVX8i1m5WUTLPz2yLJIBQVdXqhMCQBGoiuSoSjafUhV7i1cEGpb88h5NBYZzWXGZ\n        " +
-				"37sJ5QsW+sJyoNde3xH8vdXhzU7eT82D6X/scw9RZz+/6rCJ4p0=\n        " +
-				"-----END RSA PRIVATE KEY-----");
-		// @formatter:on
+        ovfDefinition.getVirtualSystemCollection().getProductSectionAtIndex(0)
+                    .setSecurityKeys("\n        " +
+            "-----BEGIN PUBLIC KEY-----\n        " +
+            "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCqGKukO1De7zhZj6+H0qtjTkVxwTCpvKe4eCZ0\n        " +
+            "FPqri0cb2JZfXJ/DgYSF6vUpwmJG8wVQZKjeGcjDOL5UlsuusFncCzWBQ7RKNUSesmQRMSGkVb1/\n        " +
+            "3j+skZ6UtW+5u09lHNsj6tQ51s1SPrCBkedbNf0Tp0GbMJDyR4e9T04ZZwIDAQAB\n        " +
+            "-----END PUBLIC KEY-----\n        " +
+            "-----BEGIN RSA PRIVATE KEY-----\n        " +
+            "MIICXAIBAAKBgQCqGKukO1De7zhZj6+H0qtjTkVxwTCpvKe4eCZ0FPqri0cb2JZfXJ/DgYSF6vUp\n        " +
+            "wmJG8wVQZKjeGcjDOL5UlsuusFncCzWBQ7RKNUSesmQRMSGkVb1/3j+skZ6UtW+5u09lHNsj6tQ5\n        " +
+            "1s1SPrCBkedbNf0Tp0GbMJDyR4e9T04ZZwIDAQABAoGAFijko56+qGyN8M0RVyaRAXz++xTqHBLh\n        " +
+            "3tx4VgMtrQ+WEgCjhoTwo23KMBAuJGSYnRmoBZM3lMfTKevIkAidPExvYCdm5dYq3XToLkkLv5L2\n        " +
+            "pIIVOFMDG+KESnAFV7l2c+cnzRMW0+b6f8mR1CJzZuxVLL6Q02fvLi55/mbSYxECQQDeAw6fiIQX\n        " +
+            "GukBI4eMZZt4nscy2o12KyYner3VpoeE+Np2q+Z3pvAMd/aNzQ/W9WaI+NRfcxUJrmfPwIGm63il\n        " +
+            "AkEAxCL5HQb2bQr4ByorcMWm/hEP2MZzROV73yF41hPsRC9m66KrheO9HPTJuo3/9s5p+sqGxOlF\n        " +
+            "L0NDt4SkosjgGwJAFklyR1uZ/wPJjj611cdBcztlPdqoxssQGnh85BzCj/u3WqBpE2vjvyyvyI5k\n        " +
+            "X6zk7S0ljKtt2jny2+00VsBerQJBAJGC1Mg5Oydo5NwD6BiROrPxGo2bpTbu/fhrT8ebHkTz2epl\n        " +
+            "U9VQQSQzY1oZMVX8i1m5WUTLPz2yLJIBQVdXqhMCQBGoiuSoSjafUhV7i1cEGpb88h5NBYZzWXGZ\n        " +
+            "37sJ5QsW+sJyoNde3xH8vdXhzU7eT82D6X/scw9RZz+/6rCJ4p0=\n        " +
+            "-----END RSA PRIVATE KEY-----");
+        // @formatter:on
 
         ovfDefinition
                 .getVirtualSystemCollection()
@@ -150,23 +151,25 @@ public class OvfDefinitionTest extends TestCase {
                 .addNewProperty("asceticProbeInterval-1",
                         ProductPropertyType.STRING, "1sec");
 
-        // System.out.println(ovfDefinition.toString());
+        System.out.println(ovfDefinition.toString());
 
         writeToFile(ovfDefinition.getXmlObject(), "3tier-webapp.ovf");
     }
 
     /**
-     * Tests the creation of an OVF document using Factory methods
+     * Tests the creation of an OVF document using Factory methods.
      */
     public void testOvfDefinitionViaFactory() {
         OvfDefinition ovfDefinition = OvfDefinition.Factory.newInstance();
 
+        // File references
         References references = References.Factory.newInstance();
         File file = File.Factory.newInstance("file", "/some/location");
         file.setSize(new BigInteger("1000000000"));
         references.addFile(file);
         ovfDefinition.setReferences(references);
 
+        // Disk section
         DiskSection diskSection = DiskSection.Factory.newInstance();
         Disk disk = Disk.Factory.newInstance();
         disk.setDiskId("disk");
@@ -177,6 +180,7 @@ public class OvfDefinitionTest extends TestCase {
         diskSection.addDisk(disk);
         ovfDefinition.setDiskSection(diskSection);
 
+        // Network section
         NetworkSection networkSection = NetworkSection.Factory.newInstance();
         Network network = Network.Factory.newInstance();
         network.setName("network");
@@ -184,8 +188,10 @@ public class OvfDefinitionTest extends TestCase {
         networkSection.addNetwork(network);
         ovfDefinition.setNetworkSection(networkSection);
 
+        // Virtual System Collection
         VirtualSystemCollection virtualSystemCollection = VirtualSystemCollection.Factory
                 .newInstance();
+        // Product Section
         ProductSection productSection = ProductSection.Factory.newInstance();
         productSection.setProduct("product");
         productSection.setVersion("1.0");
@@ -193,6 +199,7 @@ public class OvfDefinitionTest extends TestCase {
                 "value");
         virtualSystemCollection.addProductSection(productSection);
 
+        // Virtual System
         VirtualSystem virtualSystem = VirtualSystem.Factory.newInstance();
         virtualSystem.setId("id");
         OperatingSystem operatingSystem = OperatingSystem.Factory.newInstance();
@@ -201,22 +208,29 @@ public class OvfDefinitionTest extends TestCase {
         operatingSystem.setVersion("R2");
         virtualSystem.setOperatingSystem(operatingSystem);
 
+        // Product Section
         ProductSection productSection2 = ProductSection.Factory.newInstance();
         productSection2.setProduct("product2");
         productSection2.setVersion("2.0");
         productSection2.setLowerBound(1);
         productSection2.setUpperBound(5);
-        virtualSystem.addProductSection(productSection2);
+        Vector<ProductSection> productSections = new Vector<ProductSection>();
+        productSections.add(productSection2);
+        virtualSystem.setProductSectionArray(productSections
+                .toArray(new ProductSection[productSections.size()]));
 
+        // Virtual Hardware Section
         VirtualHardwareSection virtualHardwareSection = VirtualHardwareSection.Factory
                 .newInstance();
         eu.ascetic.utils.ovf.api.System system = eu.ascetic.utils.ovf.api.System.Factory
                 .newInstance();
+        // System
         system.setElementName("Virtual System Type");
         system.setInstanceID("0");
         system.setVirtualSystemType("kvm");
         virtualHardwareSection.setSystem(system);
 
+        // CPU Number
         Item itemCpuNumber = Item.Factory.newInstance();
         itemCpuNumber.setDescription("Number of virtual CPUs");
         itemCpuNumber.setElementName("1 virtual CPU");
@@ -225,6 +239,7 @@ public class OvfDefinitionTest extends TestCase {
         itemCpuNumber.setVirtualQuantity(new BigInteger("1"));
         virtualHardwareSection.addItem(itemCpuNumber);
 
+        // CPU Speed
         Item itemCpuSpeed = Item.Factory.newInstance();
         itemCpuSpeed.setDescription("CPU Speed");
         itemCpuSpeed.setElementName("2000 MHz CPU speed reservation");
@@ -235,6 +250,7 @@ public class OvfDefinitionTest extends TestCase {
         itemCpuSpeed.setReservation(new BigInteger("2000"));
         virtualHardwareSection.addItem(itemCpuSpeed);
 
+        // Memory
         Item itemMemory = Item.Factory.newInstance();
         itemMemory.setDescription("Memory Size");
         itemMemory.setElementName("512 MB of memory");
@@ -244,6 +260,7 @@ public class OvfDefinitionTest extends TestCase {
         itemMemory.setVirtualQuantity(new BigInteger("512"));
         virtualHardwareSection.addItem(itemMemory);
 
+        // Network
         Item itemNetwork = Item.Factory.newInstance();
         itemNetwork.setDescription("Virtual Network");
         itemNetwork.addConnection("network");
@@ -253,6 +270,7 @@ public class OvfDefinitionTest extends TestCase {
         itemNetwork.setAutomaticAllocation(true);
         virtualHardwareSection.addItem(itemNetwork);
 
+        // Disk
         Item itemDisk = Item.Factory.newInstance();
         itemDisk.setDescription("VM Disk");
         itemDisk.setElementName("VM Disk Drive 1");
@@ -263,14 +281,27 @@ public class OvfDefinitionTest extends TestCase {
 
         virtualSystem.setVirtualHardwareSection(virtualHardwareSection);
 
-        virtualSystemCollection.addVirtualSystem(virtualSystem);
+        Vector<VirtualSystem> virtualSystems = new Vector<VirtualSystem>();
+        virtualSystems.add(virtualSystem);
+        virtualSystemCollection.setVirtualSystemArray(virtualSystems
+                .toArray(new VirtualSystem[virtualSystems.size()]));
+
         ovfDefinition.setVirtualSystemCollection(virtualSystemCollection);
 
-        // System.out.println(ovfDefinition.toString());
+        System.out.println(ovfDefinition.toString());
 
         writeToFile(ovfDefinition.getXmlObject(), "factory-test.ovf");
     }
 
+    /**
+     * Writes out an OVF Document to a file name consolidating name spaces and
+     * their prefixes.
+     * 
+     * @param ovfDefinition
+     *            The OVF Definition
+     * @param fileName
+     *            The file name to write out to
+     */
     protected void writeToFile(XmlBeanEnvelopeDocument ovfDefinition,
             String fileName) {
         try {
@@ -284,9 +315,11 @@ public class OvfDefinitionTest extends TestCase {
                     + fileName + ".xml");
             FileWriter fstream = new FileWriter(file);
             BufferedWriter out = new BufferedWriter(fstream);
+
+            // XML options to make the file more readable
             XmlOptions options = new XmlOptions();
             options.setSavePrettyPrint();
-
+            // Setup the prefixes
             HashMap<String, String> suggestedPrefixes = new HashMap<String, String>();
             suggestedPrefixes
                     .put("http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData",
@@ -296,9 +329,8 @@ public class OvfDefinitionTest extends TestCase {
                             "rasd");
             suggestedPrefixes.put("http://schemas.dmtf.org/ovf/envelope/1",
                     "ovf");
-
             options.setSaveSuggestedPrefixes(suggestedPrefixes);
-
+            // Make sure name spaces are aggressively resolved
             options.setSaveAggressiveNamespaces();
 
             out.write(ovfDefinition.xmlText(options));

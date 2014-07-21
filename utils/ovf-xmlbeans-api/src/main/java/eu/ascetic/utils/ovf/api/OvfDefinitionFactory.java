@@ -24,6 +24,7 @@ import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlException;
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanEnvelopeDocument;
 
+import eu.ascetic.ovf.api.OvfDefinitionTest;
 import eu.ascetic.utils.ovf.api.utils.OvfInvalidDocumentException;
 import eu.ascetic.utils.ovf.api.utils.OvfRuntimeException;
 import eu.ascetic.utils.ovf.api.utils.TemplateLoader;
@@ -41,16 +42,17 @@ public class OvfDefinitionFactory {
      * object references. All contained objects (e.g.
      * {@link VirtualSystemCollection}) must therefore be instantiated and setup
      * with the appropriate member setter methods before use. This includes
-     * instantiation and setup of child containers objects. You are advised to
-     * avoid using such a method to create a basic OVF skeleton and instead use
-     * one of the other newInstance(...) methods in this class.
+     * instantiation and setup of child containers objects. See
+     * {@link OvfDefinitionTest#testOvfDefinitionViaFactory()} for example
+     * usage.
      * 
      * @return A new instance of OvfDefinition
      */
     public OvfDefinition newInstance() {
-        XmlBeanEnvelopeDocument xmlBeanEnvelopeDocument = XmlBeanEnvelopeDocument.Factory.newInstance();
+        XmlBeanEnvelopeDocument xmlBeanEnvelopeDocument = XmlBeanEnvelopeDocument.Factory
+                .newInstance();
         xmlBeanEnvelopeDocument.addNewEnvelope();
-        
+
         XmlCursor cursor = xmlBeanEnvelopeDocument.newCursor();
         if (cursor.toFirstChild()) {
             cursor.setAttributeText(new QName(
@@ -58,13 +60,15 @@ public class OvfDefinitionFactory {
                     "schemaLocation"),
                     "http://schemas.dmtf.org/ovf/envelope/1 ../dsp8023.xsd");
         }
-        
+
         return new OvfDefinition(xmlBeanEnvelopeDocument);
     }
 
     /**
      * Generates a new instance of the Three Tier WebApp using the API's default
-     * template and properties
+     * template and properties. See
+     * {@link OvfDefinitionTest#testOvfDefinitionViaTemplate()} for example
+     * usage.
      * 
      * @param applicationId
      *            The ID of the Application

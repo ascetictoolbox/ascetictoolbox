@@ -138,7 +138,8 @@ public class VirtualHardwareSection extends
         for (int i = 0; i < itemArray.length; i++) {
             newItemArray.add(itemArray[i].getXmlObject());
         }
-        delegate.setItemArray((XmlBeanRASDType[]) newItemArray.toArray());
+        delegate.setItemArray(newItemArray
+                .toArray(new XmlBeanRASDType[newItemArray.size()]));
     }
 
     /**

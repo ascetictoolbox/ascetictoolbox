@@ -77,8 +77,9 @@ public class NetworkSection extends AbstractElement<XmlBeanNetworkSectionType> {
         for (int i = 0; i < networkArray.length; i++) {
             newNetworkArray.add(networkArray[i].getXmlObject());
         }
-        delegate.setNetworkArray((XmlBeanNetworkSectionType.Network[]) newNetworkArray
-                .toArray());
+        delegate.setNetworkArray(newNetworkArray
+                .toArray(new XmlBeanNetworkSectionType.Network[newNetworkArray
+                        .size()]));
     }
 
     /**
