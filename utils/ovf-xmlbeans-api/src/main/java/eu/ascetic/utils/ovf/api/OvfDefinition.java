@@ -90,6 +90,7 @@ public class OvfDefinition extends AbstractElement<XmlBeanEnvelopeDocument> {
      *            The References to set
      */
     public void setReferences(References references) {
+        delegate.getEnvelope().addNewReferences();
         delegate.getEnvelope().setReferences(references.getXmlObject());
     }
 
@@ -114,6 +115,9 @@ public class OvfDefinition extends AbstractElement<XmlBeanEnvelopeDocument> {
      *            The DiskSection to set.
      */
     public void setDiskSection(DiskSection diskSection) {
+        if (delegate.getEnvelope().getSectionArray().length < 1) {
+            delegate.getEnvelope().addNewSection();
+        }
         delegate.getEnvelope().setSectionArray(0, diskSection.getXmlObject());
     }
 
@@ -138,6 +142,9 @@ public class OvfDefinition extends AbstractElement<XmlBeanEnvelopeDocument> {
      *            The NetworkSection to set
      */
     public void setNetworkSection(NetworkSection networkSection) {
+        if (delegate.getEnvelope().getSectionArray().length < 2) {
+            delegate.getEnvelope().addNewSection();
+        }
         delegate.getEnvelope()
                 .setSectionArray(1, networkSection.getXmlObject());
     }
@@ -165,6 +172,7 @@ public class OvfDefinition extends AbstractElement<XmlBeanEnvelopeDocument> {
      */
     public void setVirtualSystemCollection(
             VirtualSystemCollection virtualSystemCollection) {
+        delegate.getEnvelope().addNewContent();
         delegate.getEnvelope().setContent(
                 virtualSystemCollection.getXmlObject());
     }

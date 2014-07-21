@@ -108,7 +108,7 @@ public class VirtualHardwareSection extends
      * @param system
      *            The System element to set
      */
-    public void getSystem(System system) {
+    public void setSystem(System system) {
         delegate.setSystem(system.getXmlObject());
     }
 

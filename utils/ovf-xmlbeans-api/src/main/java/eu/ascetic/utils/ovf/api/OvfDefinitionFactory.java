@@ -17,7 +17,10 @@ package eu.ascetic.utils.ovf.api;
 
 import java.util.Properties;
 
+import javax.xml.namespace.QName;
+
 import org.apache.velocity.Template;
+import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlException;
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanEnvelopeDocument;
 
@@ -45,7 +48,18 @@ public class OvfDefinitionFactory {
      * @return A new instance of OvfDefinition
      */
     public OvfDefinition newInstance() {
-        return new OvfDefinition(XmlBeanEnvelopeDocument.Factory.newInstance());
+        XmlBeanEnvelopeDocument xmlBeanEnvelopeDocument = XmlBeanEnvelopeDocument.Factory.newInstance();
+        xmlBeanEnvelopeDocument.addNewEnvelope();
+        
+        XmlCursor cursor = xmlBeanEnvelopeDocument.newCursor();
+        if (cursor.toFirstChild()) {
+            cursor.setAttributeText(new QName(
+                    "http://www.w3.org/2001/XMLSchema-instance",
+                    "schemaLocation"),
+                    "http://schemas.dmtf.org/ovf/envelope/1 ../dsp8023.xsd");
+        }
+        
+        return new OvfDefinition(xmlBeanEnvelopeDocument);
     }
 
     /**

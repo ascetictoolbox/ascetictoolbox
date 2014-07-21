@@ -255,7 +255,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      */
     public void setUpperBound(Integer upperBound) {
         ProductProperty productProperty = getPropertyByKey(ASCETIC_VIRTUAL_SYSTEM_UPPER_BOUND_KEY);
-        if (productProperty.equals(null)) {
+        if (productProperty == null) {
             addNewProperty(ASCETIC_VIRTUAL_SYSTEM_UPPER_BOUND_KEY,
                     ProductPropertyType.UINT32, upperBound.toString());
         } else {
@@ -283,7 +283,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      */
     public void setLowerBound(Integer lowerBound) {
         ProductProperty productProperty = getPropertyByKey(ASCETIC_VIRTUAL_SYSTEM_LOWER_BOUND_KEY);
-        if (productProperty.equals(null)) {
+        if (productProperty == null) {
             addNewProperty(ASCETIC_VIRTUAL_SYSTEM_LOWER_BOUND_KEY,
                     ProductPropertyType.UINT32, lowerBound.toString());
         } else {
