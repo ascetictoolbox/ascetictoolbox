@@ -19,7 +19,7 @@ public class DefaultEnergyModelTrainer implements EnergyModelTrainerInterface {
 	@Override
 	public boolean trainModel (Host host, double usageCPU, double usageRAM, double wattsUsed, int numberOfValues, TimePeriod duration ){
 		if (duration.getDuration()==60) {
-		HostEnergyCalibrationData usageHost=new HostEnergyCalibrationData(usageCPU, usageRAM, wattsUsed, duration);
+		HostEnergyCalibrationData usageHost=new HostEnergyCalibrationData(usageCPU, usageRAM, wattsUsed);
 		EnergyModel model = new EnergyModel();
 		ArrayList<HostEnergyCalibrationData> temp=new ArrayList<>();
 		int num=0;

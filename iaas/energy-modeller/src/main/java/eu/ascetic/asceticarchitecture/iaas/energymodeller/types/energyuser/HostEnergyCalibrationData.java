@@ -35,6 +35,13 @@ public class HostEnergyCalibrationData {
     /**
      * This creates a new record for storing the energy calibration data of a
      * host machine.
+     */
+    public HostEnergyCalibrationData() {
+    }
+    
+    /**
+     * This creates a new record for storing the energy calibration data of a
+     * host machine.
      *
      * @param cpuUsage The cpu usage a percentage values 0.0 to 1 are expected.
      * @param memoryUsage The memory usage in Mb
