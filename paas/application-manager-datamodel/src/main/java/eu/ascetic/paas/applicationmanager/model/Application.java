@@ -44,15 +44,8 @@ public class Application {
 	@XmlElementWrapper(name = "deployments", namespace = APPLICATION_MANAGER_NAMESPACE)
 	@XmlElement(name = "deployment", namespace = APPLICATION_MANAGER_NAMESPACE )
 	private List<Deployment> deployments;
-	//TODO Add OVF description...
 	@XmlElement(name="link", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private List<Link> links;
-	
-	//David R
-	@XmlElement(name = "status", namespace = APPLICATION_MANAGER_NAMESPACE)
-	private String status;
-	@XmlElement(name = "deploymentPlanId", namespace = APPLICATION_MANAGER_NAMESPACE)
-	private String deploymentPlanId;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -102,22 +95,5 @@ public class Application {
 	}
 	public void setHref(String href) {
 		this.href = href;
-	}
-	
-	//David R
-
-	public String getStatus() {
-		return status;
-	}
-	public void setStatus(String status) {
-		this.status = status;
-	}
-	
-	@Column(name = "deployment-plan-id", nullable = false)
-		public String getDeploymentPlanId() {
-		return deploymentPlanId;
-	}
-	public void setDeploymentPlanId(String deploymentPlanId) {
-		this.deploymentPlanId = deploymentPlanId;
 	}
 }
