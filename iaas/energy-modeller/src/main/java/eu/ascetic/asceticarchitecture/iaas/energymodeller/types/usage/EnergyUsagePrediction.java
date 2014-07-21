@@ -37,6 +37,10 @@ public class EnergyUsagePrediction extends EnergyUsageRecord {
     private double totalEnergyUsed; //units kWh
     private TimePeriod timePeriod; // The time period to which the results correspond.
 
+    public EnergyUsagePrediction(){
+    	
+    }    
+    
     public EnergyUsagePrediction(EnergyUsageSource energyUser) {
         addEnergyUser(energyUser);
     }
@@ -49,10 +53,6 @@ public class EnergyUsagePrediction extends EnergyUsageRecord {
         addEnergyUser(energyUser);
         this.avgPowerUsed = avgPowerUsed;
         this.totalEnergyUsed = totalEnergyUsed;
-    }
-    
-    public EnergyUsagePrediction(){
-    	
     }
     
     /**

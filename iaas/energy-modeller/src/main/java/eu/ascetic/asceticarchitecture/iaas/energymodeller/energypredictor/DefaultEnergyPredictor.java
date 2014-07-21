@@ -15,19 +15,17 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor;
 
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.transformation.vmenergyshare.DefaultEnergyShareRule;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.transformation.vmenergyshare.EnergyDivision;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.transformation.vmenergyshare.EnergyShareRule;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.training.DefaultEnergyModelTrainer;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.training.EnergyModelTrainerInterface;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energymodel.EnergyModel;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.HostEnergyCalibrationData;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
-
-
-
-
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.GregorianCalendar;
@@ -36,11 +34,12 @@ import java.util.concurrent.TimeUnit;
 /**
  * This implements the default energy predictor for the ASCETiC project.
  *
- * @author Richard
+ * @author Richard Kavanagh and Eleni Agiatzidou 
  */
 public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
 
     private EnergyModelTrainerInterface trainer = new DefaultEnergyModelTrainer();
+    private EnergyShareRule rule = new DefaultEnergyShareRule();
 
     /**
      * This provides a prediction of how much energy is to be used by a host
@@ -52,19 +51,66 @@ public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
      */
     @Override
     public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines) {
-        //TODO Write get host predicted energy i.e. implement the model here.
-    	ArrayList<HostEnergyCalibrationData> calibrationData = new ArrayList<>();
-    	calibrationData=host.getCalibrationData();
-    	int lastElement = calibrationData.size();
-    	HostEnergyCalibrationData data = calibrationData.get(lastElement);
-    	double usageCPU=data.getCpuUsage();
-    	double usageMemory = data.getMemoryUsage();
-    	EnergyUsagePrediction totalEnergy =  new EnergyUsagePrediction();
-    	TimePeriod duration = new TimePeriod(new GregorianCalendar(), 1, TimeUnit.HOURS);
-    	totalEnergy=predictTotalEnergy (host, usageCPU, usageMemory, duration);
+        ArrayList<HostEnergyCalibrationData> calibrationData = host.getCalibrationData();
+        int lastElement = calibrationData.size();
+        HostEnergyCalibrationData data = calibrationData.get(lastElement);
+        double usageCPU = data.getCpuUsage();
+        double usageMemory = data.getMemoryUsage();
+        EnergyUsagePrediction totalEnergy;
+        TimePeriod duration = new TimePeriod(new GregorianCalendar(), 1, TimeUnit.HOURS);
+        totalEnergy = predictTotalEnergy(host, usageCPU, usageMemory, duration);
         return totalEnergy;
     }
+    
+    /**
+     * This predicts the total amount of energy used by a host.
+     * @param host The host to get the energy prediction for
+     * @param usageCPU The amount of CPU load placed on the host
+     * @param usageRAM The amount of ram used
+     * @param timePeriod The time period the prediction is for
+     * @return The predicted energy usage.
+     */
+     private EnergyUsagePrediction predictTotalEnergy(Host host, double usageCPU, double usageRAM, TimePeriod timePeriod) {
+        EnergyUsagePrediction answer = new EnergyUsagePrediction(host);
+        EnergyModel model = trainer.retrieveModel(host);
+        double totalEnergyUsed;
+        totalEnergyUsed = model.getIntercept() + model.getCoefCPU() * usageCPU + model.getCoefRAM() * usageRAM;
+        answer.setTotalEnergyUsed(totalEnergyUsed);
+        answer.setAvgPowerUsed(totalEnergyUsed / timePeriod.getDuration());
+        answer.setDuration(timePeriod);
+        return answer;
+    }   
 
+    /**
+     * This provides a prediction of how much energy is to be used by a VM
+     *
+     * @param vm The vm to be deployed
+     * @param virtualMachines The virtual machines giving a workload on the host
+     * machine
+     * @param host The host that the VMs will be running on
+     * @param timePeriod The time period the query should run for.
+     * @return The prediction of the energy to be used.
+     */
+    @Override
+    public EnergyUsagePrediction getVMPredictedEnergy(VM vm, Collection<VM> virtualMachines, Host host, TimePeriod timePeriod) {
+        EnergyDivision division = rule.getEnergyUsage(host, virtualMachines);
+        double usageCPU = 0;
+        int usageRAM = 0;
+        //TODO Fix assumptions here
+        for (VM currentVM : virtualMachines) {
+            usageRAM = usageRAM + currentVM.getRamMb();
+            usageCPU = 100; //assumed 100 percent usage.
+        }
+        //Obtain the total for the VM
+        EnergyUsagePrediction answer = predictTotalEnergy(host, usageCPU, usageRAM, timePeriod);
+        //Find the fraction to be associated with the VM
+        double vmsEnergyFraction = division.getEnergyUsage(answer.getTotalEnergyUsed(), vm);
+        answer.setTotalEnergyUsed(vmsEnergyFraction);
+        double vmsPowerFraction = division.getEnergyUsage(answer.getAvgPowerUsed(), vm);
+        answer.setTotalEnergyUsed(vmsPowerFraction);        
+        return answer;
+    }
+    
     /**
      * This provides a prediction of how much energy is to be used by a VM
      *
@@ -76,21 +122,39 @@ public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
      */
     @Override
     public EnergyUsagePrediction getVMPredictedEnergy(VM vm, Collection<VM> virtualMachines, Host host) {
-        //TODO Write get VM predicted energy i.e. implement the model here.
-    	
-    	
-        throw new UnsupportedOperationException("Not supported yet.");
+        //Run the prediction for the next hour.
+        TimePeriod duration = new TimePeriod(new GregorianCalendar(), TimeUnit.HOURS.toSeconds(1));
+        return getVMPredictedEnergy(vm, virtualMachines, host, duration);
+    }    
+
+    /**
+     * This gets the current energy trainer in use.
+     * @return the trainer
+     */
+    public EnergyModelTrainerInterface getTrainer() {
+        return trainer;
     }
-    
-    @Override
-    public EnergyUsagePrediction predictTotalEnergy (Host host, double usageCPU, double usageRAM, TimePeriod timePeriod){
-    	EnergyUsagePrediction totalEnergy = new EnergyUsagePrediction(host);
-    	EnergyModel model = trainer.retrieveModel(host);
-    	double temp;
-    	temp = model.getIntercept()+model.getCoefCPU()*usageCPU+model.getCoefRAM()*usageRAM;
-    	totalEnergy.setTotalEnergyUsed(temp);
-    	totalEnergy.setDuration(timePeriod);
-    	return totalEnergy;
+
+    /**
+     * This sets the energy trainer to be used.
+     * @param trainer the trainer to set
+     */
+    public void setTrainer(EnergyModelTrainerInterface trainer) {
+        this.trainer = trainer;
+    }
+
+    /**
+     * @return the rule
+     */
+    public EnergyShareRule getRule() {
+        return rule;
+    }
+
+    /**
+     * @param rule the rule to set
+     */
+    public void setRule(EnergyShareRule rule) {
+        this.rule = rule;
     }
 
 }

@@ -20,7 +20,6 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Candi
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
-
 import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -79,8 +78,10 @@ public class DummyEnergyPredictor extends AbstractEnergyPredictor {
         }
         return answer;
     }    
+
     @Override
-    public EnergyUsagePrediction predictTotalEnergy (Host host, double usageCPU, double usageRAM, TimePeriod timePeriod){
-    	throw new UnsupportedOperationException("Not supported yet.");
+    public EnergyUsagePrediction getVMPredictedEnergy(VM vm, Collection<VM> virtualMachines, Host host, TimePeriod timePeriod) {
+        return getVMPredictedEnergy(vm, virtualMachines, host);
     }
+
 }
