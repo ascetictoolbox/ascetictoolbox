@@ -160,9 +160,9 @@ public class Item extends AbstractElement<XmlBeanRASDType> {
         }
 
         // @formatter:off
-		org.dmtf.schemas.wbem.wscim.x1.cimSchema.x2.cimResourceAllocationSettingData.
-			XmlBeanResourceTypeDocument.ResourceType newResourceType;
-		// @formatter:on
+        org.dmtf.schemas.wbem.wscim.x1.cimSchema.x2.cimResourceAllocationSettingData.
+            XmlBeanResourceTypeDocument.ResourceType newResourceType;
+        // @formatter:on
 
         newResourceType = delegate.addNewResourceType();
         newResourceType.setIntValue(resourceType.getNumber());
