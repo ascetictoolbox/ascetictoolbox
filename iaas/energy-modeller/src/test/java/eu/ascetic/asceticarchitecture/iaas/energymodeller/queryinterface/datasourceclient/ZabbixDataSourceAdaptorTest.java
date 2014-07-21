@@ -222,6 +222,15 @@ public class ZabbixDataSourceAdaptorTest {
         ZabbixDataSourceAdaptor instance = new ZabbixDataSourceAdaptor();
         List<VmDeployed> result = instance.getVMList();
         assert(!result.isEmpty());
+        for (VmDeployed vmDeployed : result) {
+            System.out.println("Name: " + vmDeployed.getName());
+            System.out.println("Id: " + vmDeployed.getId());
+            System.out.println("Created: " + vmDeployed.getCreated());
+            System.out.println("CPU Count: " + vmDeployed.getCpus());
+            System.out.println("Disks GB: " + vmDeployed.getDiskGb());
+            System.out.println("Memory Mb: " + vmDeployed.getRamMb());
+            System.out.println("State: " + vmDeployed.getState());
+        }
     }
 
     /**

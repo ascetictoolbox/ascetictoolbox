@@ -146,15 +146,16 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         int hostId = Integer.parseInt(host.getHostid());
         VmDeployed answer = new VmDeployed(hostId, hostname);
         for (Item item : items) {
-            if (item.getName().equals(MEMORY_KPI_NAME)) {
-                answer.setRamMb(Long.valueOf(item.getLastValue()));
+            if (item.getName().equals(MEMORY_KPI_NAME)) { //Convert to Mb
+                answer.setRamMb((int) (Long.valueOf(item.getLastValue())/ (1024 * 1024)));
             }
-            if (item.getName().equals(DISK_KPI_NAME)) {
-                answer.setDiskGb(Long.valueOf(item.getLastValue()));
+            if (item.getName().equals(DISK_KPI_NAME)) { //covert to Gb
+                answer.setDiskGb(Long.valueOf(item.getLastValue()) / (1024 * 1024 * 1024));
             }
             if (item.getName().equals(BOOT_TIME_KPI_NAME)) {
                 Calendar cal = new GregorianCalendar();
-                cal.setTimeInMillis(Long.valueOf(item.getLastValue()) * 1000);
+                //This converts from milliseconds into the correct time value
+                cal.setTimeInMillis(Long.valueOf(item.getLastValue()) * 1000); 
                 answer.setCreated(cal);
             }
             //TODO set the information correctly below!
