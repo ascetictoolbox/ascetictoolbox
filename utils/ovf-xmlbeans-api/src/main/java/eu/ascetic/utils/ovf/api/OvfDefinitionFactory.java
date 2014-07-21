@@ -24,7 +24,6 @@ import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlException;
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanEnvelopeDocument;
 
-import eu.ascetic.ovf.api.OvfDefinitionTest;
 import eu.ascetic.utils.ovf.api.utils.OvfInvalidDocumentException;
 import eu.ascetic.utils.ovf.api.utils.OvfRuntimeException;
 import eu.ascetic.utils.ovf.api.utils.TemplateLoader;
@@ -43,8 +42,7 @@ public class OvfDefinitionFactory {
      * {@link VirtualSystemCollection}) must therefore be instantiated and setup
      * with the appropriate member setter methods before use. This includes
      * instantiation and setup of child containers objects. See
-     * {@link OvfDefinitionTest#testOvfDefinitionViaFactory()} for example
-     * usage.
+     * OvfDefinitionTest.testOvfDefinitionViaFactory() for example usage.
      * 
      * @return A new instance of OvfDefinition
      */
@@ -67,8 +65,7 @@ public class OvfDefinitionFactory {
     /**
      * Generates a new instance of the Three Tier WebApp using the API's default
      * template and properties. See
-     * {@link OvfDefinitionTest#testOvfDefinitionViaTemplate()} for example
-     * usage.
+     * OvfDefinitionTest.testOvfDefinitionViaTemplate() for example usage.
      * 
      * @param applicationId
      *            The ID of the Application
