@@ -4,7 +4,9 @@
 	version="1.0">
 
 	<persistence-unit name="applicationManagerDB" transaction-type="RESOURCE_LOCAL">
-		<class> eu.ascetic.paas.applicationmanager.model.Application</class>
+		<class>eu.ascetic.paas.applicationmanager.model.Application</class>
+		<class>eu.ascetic.paas.applicationmanager.model.Deployment</class>
+		<class>eu.ascetic.paas.applicationmanager.model.VM</class>
 		<properties>
 			<property name="hibernate.archive.autodetection" value="class, hbm" />
 			<property name="hibernate.show_sql" value="true" />

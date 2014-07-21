@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
@@ -14,17 +15,21 @@ import org.springframework.test.context.junit4.AbstractTransactionalJUnit4Spring
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
+import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.model.Application;
+import eu.ascetic.paas.applicationmanager.model.Deployment;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/application-manager-db-JPA-test-context.xml")
 public class ApplicationDAOJpaTest extends AbstractTransactionalJUnit4SpringContextTests {
 	@Autowired
 	protected ApplicationDAO applicationDAO;
+	@Autowired
+	protected DeploymentDAO deploymentDAO;
 	
 	@Test
 	public void notNull() {
-		if(applicationDAO == null) fail();
+		if(applicationDAO == null || deploymentDAO == null) fail();
 	}
 	
 	@Test
@@ -108,6 +113,43 @@ public class ApplicationDAOJpaTest extends AbstractTransactionalJUnit4SpringCont
 		
 		applicationFromDatabase = applicationDAO.getById(id);
 		assertEquals("name2", applicationFromDatabase.getName());
+	}
+	
+	@Test
+	public void cascade() {
+		int size = applicationDAO.getAll().size();
+		
+		Application application = new Application();
+		application.setName("name");
+
+		Deployment deployment1 = new Deployment();
+		deployment1.setStatus("RUNNING");
+		deployment1.setPrice("expensive");
+		
+		Deployment deployment2 = new Deployment();
+		deployment2.setStatus("RUNNING");
+		deployment2.setPrice("expensive");
+		
+		application.addDeployment(deployment1);
+		application.addDeployment(deployment2);
+
+		boolean saved = applicationDAO.save(application);
+		assertTrue(saved);
+		
+		Application applicationFromDatabase = applicationDAO.getAll().get(size);
+		int id = applicationFromDatabase.getId();
+		applicationFromDatabase = applicationDAO.getById(id);
+		assertEquals("name", applicationFromDatabase.getName());
+		
+		assertEquals(2, application.getDeployments().size());
+		assertEquals("RUNNING", application.getDeployments().get(1).getStatus());
+		
+		boolean deleted = applicationDAO.delete(applicationFromDatabase);
+		assertTrue(deleted);
+
+		
+		List<Deployment> deployments = deploymentDAO.getAll();
+		assertEquals(0, deployments.size());
 	}
 }
 

@@ -5,6 +5,18 @@ import static eu.ascetic.paas.applicationmanager.model.Dictionary.APPLICATION_MA
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -20,6 +32,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 //XML annotations:
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "deployment", namespace = APPLICATION_MANAGER_NAMESPACE)
+//JPA annotations:
+@Entity
+@Table(name="deployments")
+@NamedQueries( { 
+	@NamedQuery(name="Deployment.findAll", query="SELECT p FROM Deployment p")
+} )
 public class Deployment {
 	@XmlAttribute
 	private String href;
@@ -35,20 +53,9 @@ public class Deployment {
 	@XmlElement(name="link", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private List<Link> links;
 	
-	public String getStatus() {
-		return status;
-	}
-	public void setStatus(String status) {
-		this.status = status;
-	}
-	
-	public String getHref() {
-		return href;
-	}
-	public void setHref(String href) {
-		this.href = href;
-	}
-
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name = "deployment_id", unique = true, nullable = false)
 	public int getId() {
 		return id;
 	}
@@ -56,6 +63,23 @@ public class Deployment {
 		this.id = id;
 	}
 	
+	@Column(name = "status", nullable = false)
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	
+	@Transient
+	public String getHref() {
+		return href;
+	}
+	public void setHref(String href) {
+		this.href = href;
+	}
+
+	@Column(name = "price", nullable = true)
 	public String getPrice() {
 		return price;
 	}
@@ -75,6 +99,8 @@ public class Deployment {
 		links.add(link);
 	}
 	
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinColumn(name = "deployment_id", referencedColumnName="deployment_id", nullable = true)
 	public List<VM> getVms() {
 		return vms;
 	}

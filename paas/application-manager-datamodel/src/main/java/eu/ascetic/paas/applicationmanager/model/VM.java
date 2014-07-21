@@ -5,6 +5,15 @@ import static eu.ascetic.paas.applicationmanager.model.Dictionary.APPLICATION_MA
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -18,6 +27,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 // XML annotations:
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "vm", namespace = APPLICATION_MANAGER_NAMESPACE)
+@Entity
+@Table(name="vms")
+@NamedQueries( { 
+	@NamedQuery(name="VM.findAll", query="SELECT p FROM VM p")
+} )
 public class VM {
 	@XmlAttribute
 	private String href;
@@ -38,6 +52,9 @@ public class VM {
 	@XmlElement(name="link", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private List<Link> links;
 	
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name = "vm_id", unique = true, nullable = false)
 	public int getId() {
 		return id;
 	}
@@ -45,6 +62,7 @@ public class VM {
 		this.id = id;
 	}
 	
+	@Transient
 	public String getHref() {
 		return href;
 	}
@@ -52,6 +70,7 @@ public class VM {
 		this.href = href;
 	}
 	
+	@Column(name = "ovf_id", nullable = true)
 	public String getOvfId() {
 		return ovfId;
 	}
@@ -59,6 +78,7 @@ public class VM {
 		this.ovfId = ovfId;
 	}
 	
+	@Column(name = "provider_vm_id", nullable = true)
 	public String getProviderVmId() {
 		return providerVmId;
 	}
@@ -66,6 +86,7 @@ public class VM {
 		this.providerVmId = providerVmId;
 	}
 	
+	@Column(name = "provider_id", nullable = true)
 	public String getProviderId() {
 		return providerId;
 	}
@@ -73,6 +94,7 @@ public class VM {
 		this.providerId = providerId;
 	}
 	
+	@Column(name = "sla_agreement", nullable = true)
 	public String getSlaAgreement() {
 		return slaAgreement;
 	}
@@ -80,6 +102,7 @@ public class VM {
 		this.slaAgreement = slaAgreement;
 	}
 	
+	@Column(name = "ip_address", nullable = true)
 	public String getIp() {
 		return ip;
 	}
@@ -87,6 +110,7 @@ public class VM {
 		this.ip = ip;
 	}
 	
+	@Transient
 	public List<Link> getLinks() {
 		return links;
 	}
@@ -98,6 +122,7 @@ public class VM {
 		links.add(link);
 	}
 	
+	@Column(name = "status", nullable = true)
 	public String getStatus() {
 		return status;
 	}

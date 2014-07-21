@@ -112,7 +112,7 @@
 		<dependency>
 			<groupId>eu.ascetic.paas</groupId>
 			<artifactId>application-manager-datamodel</artifactId>
-			<version>0.1-SNAPSHOT</version>
+			<version>0.3-SNAPSHOT</version>
 		</dependency>
 
 		<!-- General -->
@@ -266,6 +266,8 @@
 			<version>${spring-version}</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<!-- Hibernate -->
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -302,6 +304,7 @@
 			<artifactId>ovf-xmlbeans</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>eu.ascetic.utils</groupId>
 			<artifactId>ovf-xmlbeans-api</artifactId>
