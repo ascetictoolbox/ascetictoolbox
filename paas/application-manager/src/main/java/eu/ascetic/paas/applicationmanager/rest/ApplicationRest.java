@@ -76,22 +76,6 @@ public class ApplicationRest extends AbstractRest {
 	}
 	
 	/**
-	 * Returns the original submitted OVF that created this application
-	 * @param id of the application in the database
-	 * @return the stored ovf 
-	 */
-	@GET
-	@Path("/applications/{id}/ovf")
-	@Produces(MediaType.APPLICATION_XML)
-	public Response getApplicationOvf(@PathParam("id") String id) {
-		logger.info("GET request to path: /applications/" + id + "/ovf");
-		// TODO
-		// TODO we need to think a bit about how we are going to store the OVF in the database, 
-		//      I have not made my mind about it yet
-		return buildResponse(Status.OK, "Method not implemented yet");
-	}
-	
-	/**
 	 * DELETES and application and all its deployments from the database
 	 * @param id of the application to be terminated
 	 * @return ok if the termination process is possible

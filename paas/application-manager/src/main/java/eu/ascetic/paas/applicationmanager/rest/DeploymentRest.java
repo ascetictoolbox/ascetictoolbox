@@ -91,6 +91,23 @@ public class DeploymentRest extends AbstractRest {
 	}
 	
 	/**
+	 * Returns the original submitted OVF that created this deployment for this application
+	 * @param applicationId of the application in the database
+	 * @param deploymentId of the Deployment for the previously specify application
+	 * @return the stored ovf 
+	 */
+	@GET
+	@Path("/applications/{application_id}/deployments/{deployment_id}/ovf")
+	@Produces(MediaType.APPLICATION_XML)
+	public Response getApplicationOvf(@PathParam("application_id") String applicationId, @PathParam("deployment_id") String deploymentId) {
+		logger.info("GET request to path: /applications/" + applicationId + "/deployments/" + deploymentId + "/ovf");
+		// TODO
+		// TODO we need to think a bit about how we are going to store the OVF in the database, 
+		//      I have not made my mind about it yet
+		return buildResponse(Status.OK, "Method not implemented yet");
+	}
+	
+	/**
 	 * Accepts or rejects and agreement between PaaS and IaaS
 	 * @param applicationId of the application in the database
 	 * @param deploymentId of the Deployment for the previously specify application
