@@ -29,10 +29,13 @@ public interface HostDataSource {
     
     public Host getHostByName(String hostname);
     public List<Host> getHostList();
-    public List<VmDeployed> getVMList();
+    public List<VmDeployed> getVmList();
     public HostMeasurement getHostData(Host host);    
     public List<HostMeasurement> getHostData();
     public List<HostMeasurement> getHostData(List<Host> hostList);
+    public VmMeasurement getVmData(VmDeployed vm); 
+    public List<VmMeasurement> getVmData();
+    public List<VmMeasurement> getVmData(List<VmDeployed> vmList);    
     public CurrentUsageRecord getCurrentEnergyUsage(Host host);
     public double getLowestHostPowerUsage(Host host);
 }

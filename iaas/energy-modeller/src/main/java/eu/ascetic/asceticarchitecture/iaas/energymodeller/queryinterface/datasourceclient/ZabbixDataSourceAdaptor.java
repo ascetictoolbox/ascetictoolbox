@@ -107,7 +107,7 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
      * @return A list of vms for the energy modeller.
      */
     @Override
-    public List<VmDeployed> getVMList() {
+    public List<VmDeployed> getVmList() {
         List<Host> hostsList = client.getAllHosts();
         ArrayList<VmDeployed> vms = new ArrayList<>();
         for (Host h : hostsList) {
@@ -234,6 +234,74 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         }
         return new ArrayList<>(hostMeasurements.values());
     }
+    
+    /**
+     * This lists for all vms all the metric data on them.
+     *
+     * @return A list of vm measurements
+     */
+    @Override
+    public List<VmMeasurement> getVmData() {
+        return getVmData(getVmList());
+    }    
+    
+    /**
+     * This provides for the named vm all the information that is available.
+     *
+     * @param vm The vm to get the measurement data for.
+     * @return The vm measurement data
+     */
+    @Override
+    public VmMeasurement getVmData(VmDeployed vm) {
+        ArrayList<VmDeployed> vmList = new ArrayList<>();
+        vmList.add(vm);
+        List<VmMeasurement> measurement = getVmData(vmList);
+        if (!measurement.isEmpty()) {
+            return measurement.get(0);
+        }
+        return null;
+    }
+
+    /**
+     * This takes a list of vms and provides all the metric data on them.
+     *
+     * @param vmList The list of vms to get the data from
+     * @return A list of vm measurements
+     */
+    @Override
+    public List<VmMeasurement> getVmData(List<VmDeployed> vmList) {
+        HashMap<Integer, VmMeasurement> vmMeasurements = new HashMap<>();
+        for (VmDeployed vm : vmList) {
+            vmMeasurements.put(vm.getId(), new VmMeasurement(vm));
+        }
+
+        List<Item> itemsList = client.getAllItems();
+        for (Item i : itemsList) {
+            Integer hostID = Integer.parseInt(i.getHostid());
+            VmMeasurement vmMeasurement = vmMeasurements.get(hostID);
+            /**
+             * Note: Additional hosts could be discovered using the following
+             * code: host = new HostMeasurement(new
+             * eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host(hostID,
+             * "UNKNOWN")); hostMeasurements.put(hostID, host);
+             *
+             * This is the case if the host id in the metric does not match any
+             * of the named hosts.
+             */
+            if (vmMeasurement != null) {
+                if (i.getLastClock() > vmMeasurement.getClock()) {
+                    /**
+                     * Ensures the clock value is the latest value seen. It
+                     * represents the most upto date piece of data for a given
+                     * host.
+                     */
+                    vmMeasurement.setClock(i.getLastClock());
+                }
+                vmMeasurement.addMetric(i);
+            }
+        }
+        return new ArrayList<>(vmMeasurements.values());
+    }    
 
     /**
      * This returns the Zabbix client that is used to get at the data.
@@ -262,7 +330,7 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         answer.setCurrent(-1);
         return answer;
     }
-
+    
     /**
      * This finds the lowest/resting power usage by a client.
      *
