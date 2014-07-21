@@ -54,8 +54,5 @@ public interface EnergyPredictorInterface {
      * @return The prediction of the energy to be used.
      */   
     public EnergyUsagePrediction getVMPredictedEnergy(VM vm, Collection<VM> virtualMachines, Host host, TimePeriod timePeriod);
-
-	EnergyUsagePrediction predictTotalEnergy(Host host, double usageCPU,
-			double usageRAM, TimePeriod duration);    
     
 }

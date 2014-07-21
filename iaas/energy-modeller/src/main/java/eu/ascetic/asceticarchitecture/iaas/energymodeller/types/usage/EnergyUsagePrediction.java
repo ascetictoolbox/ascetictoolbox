@@ -27,8 +27,7 @@ import java.util.HashSet;
  * The main values store are:
  *
  * Avg Watts that is expected to use over time by the VM 
- * Predicted energy used (kWh) during life of VM
- * Duration of the measured period
+ * Predicted energy used (kWh) during life of VM or during the duration of a specified period
  *
  * @author Richard
  */

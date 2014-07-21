@@ -83,12 +83,5 @@ public class DummyEnergyPredictor extends AbstractEnergyPredictor {
     public EnergyUsagePrediction getVMPredictedEnergy(VM vm, Collection<VM> virtualMachines, Host host, TimePeriod timePeriod) {
         return getVMPredictedEnergy(vm, virtualMachines, host);
     }
-
-	@Override
-	public EnergyUsagePrediction predictTotalEnergy(Host host, double usageCPU,
-			double usageRAM, TimePeriod duration) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+    
 }
