@@ -16,23 +16,15 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
-import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Item;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Set;
 
 /**
  * This represents a single snapshot of the data from a data source.
  *
  * @author Richard
  */
-public class HostMeasurement {
+public class HostMeasurement extends Measurement {
 
     private Host host;
-    private long clock;
-    private HashMap<String, Item> metrics = new HashMap<>();
-    public static final String POWER_KPI_NAME = KpiList.POWER_KPI_NAME;
-    public static final String ENERGY_KPI_NAME =  KpiList.ENERGY_KPI_NAME;
 
     /**
      * This creates a host measurement.
@@ -51,61 +43,7 @@ public class HostMeasurement {
      */
     public HostMeasurement(Host host, long clock) {
         this.host = host;
-        this.clock = clock;
-    }
-
-    /**
-     * This looks at the metrics gained, for this given gathering of measurement
-     * values and compares the earliest and latest timestamps to determine how
-     * long it took to get all the data values.
-     *
-     * @return
-     */
-    public long getMaximumClockDifference() {
-        long lowest = Integer.MAX_VALUE;
-        long highest = Integer.MIN_VALUE;
-        for (Item entry : metrics.values()) {
-            long current = entry.getLastClock();
-            if (current < lowest) {
-                lowest = current;
-            }
-            if (current > highest) {
-                highest = current;
-            }
-        }
-        return highest - lowest;
-    }
-
-    /**
-     * This returns the maximum delay that any metric encountered.
-     *
-     * @return
-     */
-    public long getMaxDelay() {
-        long delay = Integer.MIN_VALUE;
-        for (Item entry : metrics.values()) {
-            long current = Long.parseLong(entry.getDelay());
-            if (current > delay) {
-                delay = current;
-            }
-        }
-        return delay;
-    }
-
-    /**
-     * This returns the minimum delay that any metric encountered.
-     *
-     * @return
-     */
-    public long getMinDelay() {
-        long delay = Integer.MAX_VALUE;
-        for (Item entry : metrics.values()) {
-            long current = Long.parseLong(entry.getDelay());
-            if (current < delay) {
-                delay = current;
-            }
-        }
-        return delay;
+        setClock(clock);
     }
 
     /**
@@ -122,77 +60,9 @@ public class HostMeasurement {
         this.host = host;
     }
 
-    /**
-     * This lists a set of names for the metrics that are available in a host
-     * measurement
-     *
-     * @return
-     */
-    public Set<String> getMetricNameList() {
-        return metrics.keySet();
-    }
-
-    /**
-     * This lists the metrics that are available in a host measurement
-     *
-     * @return the metrics
-     */
-    public HashMap<String, Item> getMetrics() {
-        return metrics;
-    }
-
-    /**
-     * This returns the set of items for the host measurement.
-     *
-     * @return
-     */
-    public Collection<Item> getItems() {
-        return metrics.values();
-    }
-
-    /**
-     * @param metrics the metrics to set
-     */
-    public void setMetrics(HashMap<String, Item> metrics) {
-        this.metrics = metrics;
-    }
-
-    /**
-     * This adds a metric and value to a host measurement
-     *
-     * @param item
-     */
-    public void addMetric(Item item) {
-        metrics.put(item.getKey(), item);
-    }
-
-    /**
-     * This gets the item that represents a given metric
-     *
-     * @param key
-     * @return
-     */
-    public Item getMetric(String key) {
-        return metrics.get(key);
-    }
-
     @Override
     public String toString() {
-        return host.toString() + " Time: " + clock + " Metric Count: " + metrics.size() + " Clock Diff: " + getMaximumClockDifference();
-    }
-
-    /**
-     * @return the clock
-     */
-    public long getClock() {
-        return clock;
-    }
-
-    /**
-     * @param clock the clock to set
-     */
-    public void setClock(long clock) {
-        this.clock = clock;
+        return host.toString() + " Time: " + getClock() + " Metric Count: " + getMetricCount() + " Clock Diff: " + getMaximumClockDifference();
     }
 
     /**
