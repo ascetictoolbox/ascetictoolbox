@@ -31,9 +31,12 @@ public class HostMeasurement {
     private Host host;
     private long clock;
     private HashMap<String, Item> metrics = new HashMap<>();
+    public static final String POWER_KPI_NAME = KpiList.POWER_KPI_NAME;
+    public static final String ENERGY_KPI_NAME =  KpiList.ENERGY_KPI_NAME;
 
     /**
      * This creates a host measurement.
+     *
      * @param host The host the measurement is for
      */
     public HostMeasurement(Host host) {
@@ -42,6 +45,7 @@ public class HostMeasurement {
 
     /**
      * This creates a host measurement.
+     *
      * @param host The host the measurement is for
      * @param clock The time when the measurement was taken
      */
@@ -52,9 +56,10 @@ public class HostMeasurement {
 
     /**
      * This looks at the metrics gained, for this given gathering of measurement
-     * values and compares the earliest and latest timestamps to determine how 
+     * values and compares the earliest and latest timestamps to determine how
      * long it took to get all the data values.
-     * @return 
+     *
+     * @return
      */
     public long getMaximumClockDifference() {
         long lowest = Integer.MAX_VALUE;
@@ -73,7 +78,8 @@ public class HostMeasurement {
 
     /**
      * This returns the maximum delay that any metric encountered.
-     * @return 
+     *
+     * @return
      */
     public long getMaxDelay() {
         long delay = Integer.MIN_VALUE;
@@ -84,11 +90,12 @@ public class HostMeasurement {
             }
         }
         return delay;
-    }      
-    
+    }
+
     /**
      * This returns the minimum delay that any metric encountered.
-     * @return 
+     *
+     * @return
      */
     public long getMinDelay() {
         long delay = Integer.MAX_VALUE;
@@ -99,7 +106,7 @@ public class HostMeasurement {
             }
         }
         return delay;
-    }    
+    }
 
     /**
      * @return the host
@@ -114,10 +121,12 @@ public class HostMeasurement {
     public void setHost(Host host) {
         this.host = host;
     }
-    
+
     /**
-     * This lists a set of names for the metrics that are available in a host measurement
-     * @return 
+     * This lists a set of names for the metrics that are available in a host
+     * measurement
+     *
+     * @return
      */
     public Set<String> getMetricNameList() {
         return metrics.keySet();
@@ -125,15 +134,17 @@ public class HostMeasurement {
 
     /**
      * This lists the metrics that are available in a host measurement
+     *
      * @return the metrics
      */
     public HashMap<String, Item> getMetrics() {
         return metrics;
     }
-    
+
     /**
      * This returns the set of items for the host measurement.
-     * @return 
+     *
+     * @return
      */
     public Collection<Item> getItems() {
         return metrics.values();
@@ -148,7 +159,8 @@ public class HostMeasurement {
 
     /**
      * This adds a metric and value to a host measurement
-     * @param item 
+     *
+     * @param item
      */
     public void addMetric(Item item) {
         metrics.put(item.getKey(), item);
@@ -156,8 +168,9 @@ public class HostMeasurement {
 
     /**
      * This gets the item that represents a given metric
+     *
      * @param key
-     * @return 
+     * @return
      */
     public Item getMetric(String key) {
         return metrics.get(key);
@@ -165,7 +178,7 @@ public class HostMeasurement {
 
     @Override
     public String toString() {
-        return host.toString() + " Time: " + clock +  " Metric Count: " + metrics.size() + " Clock Diff: " + getMaximumClockDifference();
+        return host.toString() + " Time: " + clock + " Metric Count: " + metrics.size() + " Clock Diff: " + getMaximumClockDifference();
     }
 
     /**
@@ -181,24 +194,25 @@ public class HostMeasurement {
     public void setClock(long clock) {
         this.clock = clock;
     }
-    
+
     /**
      * This provides rapid access to power values from a host measurement.
+     *
      * @return The power consumed when the measurement was taken.
      */
     public double getPower() {
-        return Double.parseDouble(this.getMetric("power").getLastValue());
+        return Double.parseDouble(this.getMetric(POWER_KPI_NAME).getLastValue());
     }
-    
+
     /**
      * This provides rapid access to energy value from a host measurement.
-     * @return The energy consumed when the measurement was taken, going back
-     * to an unspecified period of time. To be used like a meter reading that
-     * you might give to an energy company.
+     *
+     * @return The energy consumed when the measurement was taken, going back to
+     * an unspecified period of time. To be used like a meter reading that you
+     * might give to an energy company.
      */
     public double getEnergy() {
-        return Double.parseDouble(this.getMetric("energy").getLastValue());
+        return Double.parseDouble(this.getMetric(ENERGY_KPI_NAME).getLastValue());
     }
-    
-    
+
 }

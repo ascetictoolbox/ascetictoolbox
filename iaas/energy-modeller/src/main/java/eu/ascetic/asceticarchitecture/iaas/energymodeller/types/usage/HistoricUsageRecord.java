@@ -19,9 +19,12 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.EnergyUsageSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -42,25 +45,27 @@ public class HistoricUsageRecord extends EnergyUsageRecord {
 
     /**
      * This creates a historic usage record, for the energy user specified.
-     * @param energyUser  The energy user.
+     *
+     * @param energyUser The energy user.
      */
     public HistoricUsageRecord(EnergyUsageSource energyUser) {
         addEnergyUser(energyUser);
     }
-    
 
     /**
-     * This creates a historic usage record, for the energy user specified.
-     * This allows a summary record to be setup for a set of hosts or VMs. 
+     * This creates a historic usage record, for the energy user specified. This
+     * allows a summary record to be setup for a set of hosts or VMs.
+     *
      * @param energyUsers The energy users.
      */
     public HistoricUsageRecord(HashSet<EnergyUsageSource> energyUsers) {
         addEnergyUser(energyUsers);
-    }    
+    }
 
     /**
      * This creates a historic usage record from a list of host energy records.
      * The historic usage record therefore acts a summary.
+     *
      * @param energyUser The energy user, namely a host.
      * @param data The data about how much energy the host has used.
      */
@@ -71,17 +76,22 @@ public class HistoricUsageRecord extends EnergyUsageRecord {
             HostEnergyRecord first = data.get(0);
             HostEnergyRecord last = data.get(data.size() - 1);
             totalEnergyUsed = last.getEnergy() - first.getEnergy();
+            GregorianCalendar start = new GregorianCalendar();
+            start.setTimeInMillis(first.getTime() * 1000);
+            GregorianCalendar end = new GregorianCalendar();
+            start.setTimeInMillis(last.getTime() * 1000);
+            duration = new TimePeriod(start, end);
+            avgPowerUsed = totalEnergyUsed / (last.getTime() - first.getTime());
         }
-        if (!data.isEmpty()) {
-            for (HostEnergyRecord hostEnergyRecord : data) {
-                avgPowerUsed = hostEnergyRecord.getPower();
-            }
-            avgPowerUsed = avgPowerUsed / data.size();
+        if (data.size() == 1) {
+            avgPowerUsed = data.get(0).getPower();
         }
     }
 
     /**
-     * This creates an historic usage record and allows every value to be specified during its construction.
+     * This creates an historic usage record and allows every value to be
+     * specified during its construction.
+     *
      * @param energyUser The source of the energy usage.
      * @param avgPowerUsed The average power used.
      * @param avgCurrentUsed The average current.

@@ -31,6 +31,11 @@ public class VmMeasurement {
     private VmDeployed vm;
     private long clock;
     private HashMap<String, Item> metrics = new HashMap<>();
+    private static final String INTERUPT_KPI_NAME = KpiList.INTERUPT_KPI_NAME;	
+    private static final String IO_WAIT_KPI_NAME = KpiList.IO_WAIT_KPI_NAME;
+    private static final String NICE_KPI_NAME = KpiList.NICE_KPI_NAME;	
+    private static final String SOFT_IRQ_KPI_NAME = KpiList.SOFT_IRQ_KPI_NAME;	
+    private static final String STEAL_KPI_NAME = KpiList.STEAL_KPI_NAME;	
 
     /**
      * This creates a vm measurement.
@@ -174,6 +179,19 @@ public class VmMeasurement {
      */
     public void setClock(long clock) {
         this.clock = clock;
-    }    
+    }
+    
+    /**
+     * This provides rapid access to cpu load values from a vm measurement.
+     * @return The cpu load when the measurement was taken.
+     */
+    public double getCPULoad() {
+         double interrupt = Double.parseDouble(this.getMetric(INTERUPT_KPI_NAME).getLastValue());	
+         double iowait = Double.parseDouble(this.getMetric(IO_WAIT_KPI_NAME).getLastValue());
+         double nice = Double.parseDouble(this.getMetric(NICE_KPI_NAME).getLastValue());
+         double softirq = Double.parseDouble(this.getMetric(SOFT_IRQ_KPI_NAME).getLastValue());	
+         double steal = Double.parseDouble(this.getMetric(STEAL_KPI_NAME).getLastValue());
+        return interrupt + iowait + nice + softirq + steal;
+    }
     
 }
