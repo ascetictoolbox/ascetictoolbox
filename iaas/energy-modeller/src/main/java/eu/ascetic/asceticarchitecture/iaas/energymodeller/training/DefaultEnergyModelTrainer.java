@@ -1,8 +1,10 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.training;
 
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.HostEnergyCalibrationData;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energymodel.EnergyModel;
+
 import java.util.*;
 
 
@@ -10,11 +12,14 @@ public class DefaultEnergyModelTrainer implements EnergyModelTrainerInterface {
 	
 	public DefaultEnergyModelTrainer(){}
 	
+	//It takes values only for 1 min.
+	
 	public HashMap<Host, ArrayList<HostEnergyCalibrationData>> storeValues = new HashMap<Host, ArrayList<HostEnergyCalibrationData>>();
 	
 	@Override
-	public boolean trainModel (Host host, double usageCPU, double usageRAM, double totalEnergyUsed, int numberOfValues){
-		HostEnergyCalibrationData usageHost=new HostEnergyCalibrationData(usageCPU, usageRAM, totalEnergyUsed);
+	public boolean trainModel (Host host, double usageCPU, double usageRAM, double wattsUsed, int numberOfValues, TimePeriod duration ){
+		if (duration.getDuration()==60) {
+		HostEnergyCalibrationData usageHost=new HostEnergyCalibrationData(usageCPU, usageRAM, wattsUsed, duration);
 		EnergyModel model = new EnergyModel();
 		ArrayList<HostEnergyCalibrationData> temp=new ArrayList<>();
 		int num=0;
@@ -33,7 +38,10 @@ public class DefaultEnergyModelTrainer implements EnergyModelTrainerInterface {
 		if (num==numberOfValues){
 			return true;
 		}
-		else return false; 
+		else return false; }
+		else {
+			return false;
+		}
 
 	}
 	
@@ -53,10 +61,10 @@ public class DefaultEnergyModelTrainer implements EnergyModelTrainerInterface {
 			EnergyModel temp=new EnergyModel();
 			ArrayList<HostEnergyCalibrationData> valuesOfHost=new ArrayList<>();
 			valuesOfHost=storeValues.get(host);
-			int num=valuesOfHost.size();
+			
 
 			
-			//TotalEnergyUsed=intercept+coefficientCPU*usageCPU+coefficientRAM*usageRAM;
+			//WattsUsed=intercept+coefficientCPU*usageCPU+coefficientRAM*usageRAM;
 			ArrayList<Double> UR=new ArrayList<>();
 			ArrayList<Double> CPUEnergy=new ArrayList<>();
 			ArrayList<Double> CPURAM=new ArrayList<>();
@@ -105,4 +113,6 @@ public class DefaultEnergyModelTrainer implements EnergyModelTrainerInterface {
 		}
 		return sum;
 	}
+
+
 }

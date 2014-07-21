@@ -1,11 +1,13 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.training;
 
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.HostEnergyCalibrationData;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energymodel.EnergyModel;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.training.DefaultEnergyModelTrainer;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -57,8 +59,9 @@ public class DefaultEnergyModelTrainerTest
     		usageRAM=randomGenerator.nextDouble();
     		usageCPU=randomGenerator.nextDouble();
     		totalEnergyUsed=randomGenerator.nextDouble();
-    		trained=trainer.trainModel (host, usageCPU, usageRAM, totalEnergyUsed, 10);
-    		trainer.trainModel (host2, usageCPU, usageRAM, totalEnergyUsed, 10);
+    		TimePeriod duration = new TimePeriod(new GregorianCalendar(), 1, TimeUnit.MINUTES);
+    		trained=trainer.trainModel (host, usageCPU, usageRAM, totalEnergyUsed, 10, duration);
+    		trainer.trainModel (host2, usageCPU, usageRAM, totalEnergyUsed, 10, duration);
     		
     	}
     	if (trained){

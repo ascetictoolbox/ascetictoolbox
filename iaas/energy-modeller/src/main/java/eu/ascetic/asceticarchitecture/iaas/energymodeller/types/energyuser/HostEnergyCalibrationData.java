@@ -15,23 +15,30 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser;
 
+import java.util.GregorianCalendar;
+import java.util.concurrent.TimeUnit;
+
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
+
 /**
  * The aim of this class is to store information regarding the energy usage of a
  * host at different levels of resource usage.
  *
  *
- * It is to be recorded as a 3-tuple record indicating the CPU usage, the memory
- * usage and the associate energy used for a given host.
+ * It is to be recorded as a 4-tuple record indicating the CPU usage, the memory
+ * usage, the associate energy used for a given host and duration of the measuring period.
  *
  * @see HostUsage These classes are identical. One may need to supersede the other!
  * @author Richard
  */
+
+//Duration of the measurement has been also added.
 public class HostEnergyCalibrationData {
 
     private double cpuUsage = 0.0; //as a pecentage of full load
     private double memoryUsage = 0.0; //in Megabytes
     private double wattsUsed = 0.0; //The power of the host (W), i.e. joules of energy used per second
-    
+    private TimePeriod duration = new TimePeriod(new GregorianCalendar(), 1, TimeUnit.MINUTES);
     public HostEnergyCalibrationData(){
     	
     }
@@ -44,10 +51,19 @@ public class HostEnergyCalibrationData {
      * @param memoryUsage The memory usage in Mb
      * @param wattsUsed The measured power consumption of the host (W i.e. j/s)
      */
+    
     public HostEnergyCalibrationData(double cpuUsage, double memoryUsage, double wattsUsed) {
         this.cpuUsage = cpuUsage;
         this.memoryUsage = memoryUsage;
         this.wattsUsed = wattsUsed;
+        this.duration = new TimePeriod(new GregorianCalendar(), 1, TimeUnit.MINUTES);
+    }
+    
+    public HostEnergyCalibrationData(double cpuUsage, double memoryUsage, double wattsUsed, TimePeriod duration) {
+        this.cpuUsage = cpuUsage;
+        this.memoryUsage = memoryUsage;
+        this.wattsUsed = wattsUsed;
+        this.duration=duration;
     }
 
     /**
@@ -102,4 +118,12 @@ public class HostEnergyCalibrationData {
         this.wattsUsed = wattsUsed;
     }
 
+    public void setDurationOfUsage(TimePeriod duration){
+    	this.duration=duration;
+    }
+    
+    public TimePeriod getDurationOfUsage(){
+    	return this.duration;
+    }
+    
 }
