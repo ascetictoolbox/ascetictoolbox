@@ -30,10 +30,10 @@ public enum ProductPropertyType {
      * Enumeration containing all possible product property primitive types.
      */
     // @formatter:off
-	UINT8("uint8"), SINT8("sint8"), UINT16("uint16"), SINT16("sint16"), 
-	UINT32("uint32"), SINT32("sint32"), UINT64("uint64"), SINT64("sint64"), 
-	STRING("string"), BOOLEAN("boolean"), REAL32("real32"), REAL64("real64");
-	// @formatter:on
+    UINT8("uint8"), SINT8("sint8"), UINT16("uint16"), SINT16("sint16"), 
+    UINT32("uint32"), SINT32("sint32"), UINT64("uint64"), SINT64("sint64"), 
+    STRING("string"), BOOLEAN("boolean"), REAL32("real32"), REAL64("real64");
+    // @formatter:on
 
     /**
      * Stores the String representation of this ProductPropertyType.
