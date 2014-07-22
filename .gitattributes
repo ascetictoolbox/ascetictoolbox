@@ -29,8 +29,6 @@ iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymod
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/hostvmfilter/ZabbixHostVMFilter.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/training/DefaultEnergyModelTrainer.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/training/EnergyModelTrainerInterface.java -text
-iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/EnergyUsageSummary.java -text
-iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/MachineEnergyUsage.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/TimePeriod.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/energymodel/EnergyModel.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/energyuser/CandidateVMHostMapping.java -text
