@@ -70,7 +70,7 @@ public abstract class AbstractElement<T extends XmlObject> {
     public String toString() {
         XmlOptions options = new XmlOptions();
         options.setSavePrettyPrint();
-        //options.setSaveOuter();
+        options.setSaveOuter();
         // Setup the prefixes
         HashMap<String, String> suggestedPrefixes = new HashMap<String, String>();
         suggestedPrefixes
