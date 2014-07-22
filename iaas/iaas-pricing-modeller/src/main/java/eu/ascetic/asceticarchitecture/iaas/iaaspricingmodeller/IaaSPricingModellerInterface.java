@@ -27,17 +27,17 @@ package eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller;
 public interface IaaSPricingModellerInterface{
 	
 	 /**
-     * This functions returns the value of the cost of energy
+     * This function returns the value of the cost of energy
      */
 	public double getEnergyCost();
 	
 	 /**
-     * This functions returns the value of the amortised cost of the host
+     * This function returns the value of the amortised cost of the host
      */
 	public double getAmortHostCost();
 	
 	 /**
-     * This functions returns the value of the PUE
+     * This function returns the value of the PUE
      */
 	public double getPUE();
 	

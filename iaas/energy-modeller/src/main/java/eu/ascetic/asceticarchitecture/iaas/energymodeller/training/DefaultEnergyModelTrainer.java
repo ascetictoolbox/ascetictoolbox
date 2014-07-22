@@ -1,4 +1,27 @@
+/**
+ *  Copyright 2014 Athens University of Economics and Business
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.training;
+
+/**
+ * This is implements the basic trainer for the energy model for the ASCETiC project. 
+ * 
+ * @author E. Agiatzidou
+ */
+
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
@@ -12,13 +35,23 @@ public class DefaultEnergyModelTrainer implements EnergyModelTrainerInterface {
 	
 	public DefaultEnergyModelTrainer(){}
 	
-	//It takes values only for 1 min.
-	
+		
 	public HashMap<Host, ArrayList<HostEnergyCalibrationData>> storeValues = new HashMap<Host, ArrayList<HostEnergyCalibrationData>>();
 	
+	/**
+     * This function stores the appropriate values that are needed for training the model. 
+     * Several times should be called for a specific number of values to be gathered. 
+     *
+     * @param usageCPU The CPU usage of the host
+     * @param usageRAM The RAM usage of the host
+     * @param wattsUsed The watts consumed under these levels of usage
+     * @param numberOfValues The number of values that the trainer expects from the user before it is ready for extracting
+     * the coefficients of the model.
+     * @param duration The duration of the measurement
+     * @return True if the appropriate amount of values has been gathered, False if not. 
+     */
 	@Override
 	public boolean trainModel (Host host, double usageCPU, double usageRAM, double wattsUsed, int numberOfValues, TimePeriod duration ){
-		if (duration.getDuration()==60) {
 		HostEnergyCalibrationData usageHost=new HostEnergyCalibrationData(usageCPU, usageRAM, wattsUsed);
 		EnergyModel model = new EnergyModel();
 		ArrayList<HostEnergyCalibrationData> temp=new ArrayList<>();
@@ -35,16 +68,21 @@ public class DefaultEnergyModelTrainer implements EnergyModelTrainerInterface {
 				storeValues.put(host, temp);
 			}
 		
-		if (num==numberOfValues){
+		if (num>=numberOfValues){
 			return true;
 		}
-		else return false; }
-		else {
-			return false;
-		}
+		else return false; 
 
 	}
 	
+	/**
+     * This function prints the HashMap that stores the values needed for the model training for a specific host.
+     *
+     * @param storeValues The HashMap storing the values
+     * @param host The host (key) for which the values are going to be printed
+     * 
+     * @return void 
+     */
 	
 	public void printValuesMap(HashMap<Host, ArrayList<HostEnergyCalibrationData>> storeValues, Host host){
 
@@ -57,12 +95,18 @@ public class DefaultEnergyModelTrainer implements EnergyModelTrainerInterface {
 	      System.out.println();
 	}
 	
+	
+	/**
+     * This function should use the values stored to create the coefficients of the model. 
+     * 
+     * @param host The host (key) for which the values are going to be printed.
+     * 
+     * @return The coefficients and the intercept of the model.
+     */
 	public EnergyModel retrieveModel (Host host){
 			EnergyModel temp=new EnergyModel();
 			ArrayList<HostEnergyCalibrationData> valuesOfHost=new ArrayList<>();
 			valuesOfHost=storeValues.get(host);
-			
-
 			
 			//WattsUsed=intercept+coefficientCPU*usageCPU+coefficientRAM*usageRAM;
 			ArrayList<Double> UR=new ArrayList<>();
@@ -71,7 +115,7 @@ public class DefaultEnergyModelTrainer implements EnergyModelTrainerInterface {
 			ArrayList<Double> RAMEnergy=new ArrayList<>();
 			ArrayList<Double> UC=new ArrayList<>();
 			
-			HostEnergyCalibrationData temp1=new HostEnergyCalibrationData();
+			HostEnergyCalibrationData temp1=new HostEnergyCalibrationData(0, 0, 0);
 			double energy=0.0;
 			double CPU = 0.0;
 			double RAM = 0.0;
@@ -103,9 +147,17 @@ public class DefaultEnergyModelTrainer implements EnergyModelTrainerInterface {
 		
 			
 		return temp;
-		//this function should use the values stored to create the coefficients of the model. It returns the coefficients to the caller.
+		
 	}
 	
+	
+	/**
+     * This function calculates the sums of the values in an Array List. 
+     * 
+     * @param valuesList The ArrayList to calculate the values of. 
+     * 
+     * @return The sum of the values. 
+     */
 	private double calculateSums(ArrayList<Double> valuesList){
 		double sum =0.0;
 		for (Iterator<Double> it = valuesList.iterator(); it.hasNext();){

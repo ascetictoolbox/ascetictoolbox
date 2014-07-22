@@ -67,13 +67,12 @@ public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
     }
     
     /**
-     * This predicts the total amount of energy used by a host.
+     * This predicts the total amount of energy used by a host. 
      * @param host The host to get the energy prediction for
-     * @param usageCPU The amount of CPU load placed on the host
-     * @param usageRAM The amount of ram used
-     * @param timePeriod The time period the prediction is for
+     * @param virtualMachines A collection of VMs 
      * @return The predicted energy usage.
      */
+
     private EnergyUsagePrediction predictTotalEnergy(Host host, double usageCPU, double usageRAM, TimePeriod duration) {
         EnergyUsagePrediction answer = new EnergyUsagePrediction(host);
         EnergyModel model = trainer.retrieveModel(host);
@@ -104,6 +103,7 @@ public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
      * @param timePeriod The time period the query should run for.
      * @return The prediction of the energy to be used.
      */
+
     @Override
     public EnergyUsagePrediction getVMPredictedEnergy(VM vm, Collection<VM> virtualMachines, Host host, TimePeriod timePeriod) {
         EnergyDivision division = rule.getEnergyUsage(host, virtualMachines);
@@ -124,6 +124,7 @@ public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
         return answer;
     }
 
+
     /**
      * This provides a prediction of how much energy is to be used by a VM
      *
@@ -139,6 +140,7 @@ public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
         TimePeriod duration = new TimePeriod(new GregorianCalendar(), TimeUnit.HOURS.toSeconds(1));
         return getVMPredictedEnergy(vm, virtualMachines, host, duration);
     }
+
 
     /**
      * This gets the current energy trainer in use.
