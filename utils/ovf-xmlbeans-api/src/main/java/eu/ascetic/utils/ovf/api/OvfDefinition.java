@@ -105,10 +105,15 @@ public class OvfDefinition extends AbstractElement<XmlBeanEnvelopeDocument> {
      * @return The DiskSection
      */
     public DiskSection getDiskSection() {
-        // FIXME: The type returned should be checked? (Unless the schema
-        // specifies the locality here?)
-        return new DiskSection((XmlBeanDiskSectionType) delegate.getEnvelope()
-                .getSectionArray(0));
+        try {
+            // FIXME: The type returned should be checked? (Unless the schema
+            // specifies the locality here?)
+            XmlBeanDiskSectionType xmlBeanDiskSectionType = (XmlBeanDiskSectionType) delegate
+                    .getEnvelope().getSectionArray(0);
+            return new DiskSection(xmlBeanDiskSectionType);
+        } catch (IndexOutOfBoundsException e) {
+            return null;
+        }
     }
 
     /**
@@ -136,10 +141,15 @@ public class OvfDefinition extends AbstractElement<XmlBeanEnvelopeDocument> {
      * @return The NetworkSection
      */
     public NetworkSection getNetworkSection() {
-        // FIXME: The type returned should be checked? (Unless the schema
-        // specifies the locality here?)
-        return new NetworkSection((XmlBeanNetworkSectionType) delegate
-                .getEnvelope().getSectionArray(1));
+        try {
+            // FIXME: The type returned should be checked? (Unless the schema
+            // specifies the locality here?)
+            XmlBeanNetworkSectionType xmlBeanNetworkSectionType = (XmlBeanNetworkSectionType) delegate
+                    .getEnvelope().getSectionArray(1);
+            return new NetworkSection((xmlBeanNetworkSectionType));
+        } catch (IndexOutOfBoundsException e) {
+            return null;
+        }
     }
 
     /**
