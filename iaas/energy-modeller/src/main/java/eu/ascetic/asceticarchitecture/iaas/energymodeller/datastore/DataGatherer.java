@@ -22,7 +22,6 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasou
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostVmLoadFraction;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.VmUsageRecord;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -249,14 +248,32 @@ public class DataGatherer implements Runnable {
     public HashMap<String, Host> getHostList() {
         return knownHosts;
     }
+    
+    /**
+     * This gets the named host from the known host list.
+     * @param hostname The name of the host
+     * @return The host that has the name specified.
+     */
+    public Host getHost(String hostname){
+        return knownHosts.get(hostname);
+    }    
 
     /**
      * This provides the list of known Vms
      *
      * @return The list of known Vms
      */
-    public HashMap<String, VmDeployed> getVMList() {
+    public HashMap<String, VmDeployed> getVmList() {
         return knownVms;
+    }
+    
+    /**
+     * This gets the named VM from the known VM list.
+     * @param name The name of the VM
+     * @return The VM that has the name specified.
+     */
+    public VmDeployed getVm(String name){
+        return knownVms.get(name);
     }
     
     /**
@@ -271,6 +288,10 @@ public class DataGatherer implements Runnable {
              if (vm.getAllocatedTo().equals(host)) {
                  answer.add(vm);
              }
+         }
+         //TODO remove this temporary fix code here!
+         if (host.getHostName().equals("asok12")) {
+            answer.add(knownVms.get("CloudSuite - Data Analytics"));
          }
          return answer;
     }    
