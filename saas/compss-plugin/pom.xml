@@ -48,6 +48,7 @@
 		<repository>
 			<id>eclipse-platform</id>
 			<layout>p2</layout>
+			<!--url>http://ascetic-artifactory.cit.tu-berlin.de/artifactory/eclipse-platform-indigo/</url-->
 			<url>${eclipse-site}</url>
 		</repository>
 		<repository>
@@ -55,13 +56,13 @@
 			<layout>p2</layout>
 			<url>http://compss.bsc.es/rc/ide</url>
 		</repository>
-		<repository>
+		<!--repository>
 			<id>grid-repo</id>
 			<name>BSC Grid computing and Clusters group</name>
 			<url>http://compss.bsc.es/artifactory/grid-devel-repo</url>
-		</repository>
+		</repository-->
 	</repositories>
-	<pluginRepositories>
+	<!--pluginRepositories>
 		<pluginRepository>
 			<id>tycho</id>
 			<url>${tycho-repo.url}</url>
@@ -72,7 +73,7 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</pluginRepository>
-	</pluginRepositories>
+	</pluginRepositories-->
 	<build>
 		<plugins>
 			<plugin>
@@ -156,7 +157,7 @@
 			</activation>
 			<properties>
 				<eclipse-site>http://download.eclipse.org/releases/juno</eclipse-site>
-				<platform-version>[3.8,3.9)</platform-version>
+				<platform-version>[4.2,4.3)</platform-version>
 			</properties>
 		</profile>
 		<profile>
@@ -169,7 +170,7 @@
 			</activation>
 			<properties>
 				<eclipse-site>http://download.eclipse.org/releases/kepler</eclipse-site>
-				<platform-version>[3.8,3.9)</platform-version>
+				<platform-version>[4.3,4.4)</platform-version>
 			</properties>
 		</profile>
 	</profiles>
