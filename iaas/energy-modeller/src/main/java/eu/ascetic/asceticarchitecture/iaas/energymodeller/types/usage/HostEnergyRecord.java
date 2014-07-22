@@ -22,9 +22,6 @@ import java.util.Objects;
  * This is the object representation of a record held in the database regarding
  * a hosts energy usage.
  *
- * TODO consider if this is needed? Should the query just take the data and have
- * it prepared from the database without getting raw data?
- *
  * @author Richard
  */
 public class HostEnergyRecord implements Comparable<HostEnergyRecord> {
@@ -34,6 +31,13 @@ public class HostEnergyRecord implements Comparable<HostEnergyRecord> {
     private final double power;
     private final double energy;
 
+    /**
+     * This creates a new host energy record.
+     * @param host The host the record is for
+     * @param time The time when the measurement was taken.
+     * @param power The power that was being consumed at the time the measurement was taken.
+     * @param energy The energy used from an arbritrary single point in the past.
+     */
     public HostEnergyRecord(Host host, long time, double power, double energy) {
         this.host = host;
         this.time = time;
@@ -41,18 +45,34 @@ public class HostEnergyRecord implements Comparable<HostEnergyRecord> {
         this.energy = energy;
     }
 
+    /**
+     * This returns the host that this record is for.
+     * @return The host that used the energy.
+     */
     public Host getHost() {
         return host;
     }
 
+    /**
+     * The value for the energy used at the time the record represents.
+     * @return The energy used from an arbritrary point of time in the past.
+     */
     public double getEnergy() {
         return energy;
     }
 
+    /**
+     * The power recorded at the time of the host energy record.
+     * @return The power measured to be in use at the specified time.
+     */
     public double getPower() {
         return power;
     }
 
+    /**
+     * This returns the time that the energy record represents.
+     * @return The time that the energy record represents
+     */
     public long getTime() {
         return time;
     }
@@ -60,7 +80,7 @@ public class HostEnergyRecord implements Comparable<HostEnergyRecord> {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof HostEnergyRecord) {
-            HostEnergyRecord compareTo = (HostEnergyRecord) obj; 
+            HostEnergyRecord compareTo = (HostEnergyRecord) obj;
             return ((time == compareTo.getTime()) && host.equals(compareTo.getHost()));
         }
         return false;
@@ -74,9 +94,15 @@ public class HostEnergyRecord implements Comparable<HostEnergyRecord> {
         return hash;
     }
 
+    /**
+     * This comparison orders energy records by time.
+     *
+     * @param energyRecord the energy record to compare to.
+     * @return -1 if the before, 0 if at the same time 1 if in the future.
+     */
     @Override
-    public int compareTo(HostEnergyRecord o) {
-        return Long.valueOf(this.time).compareTo(o.getTime());
+    public int compareTo(HostEnergyRecord energyRecord) {
+        return Long.valueOf(this.time).compareTo(energyRecord.getTime());
     }
 
 }
