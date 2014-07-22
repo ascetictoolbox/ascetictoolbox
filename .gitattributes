@@ -1003,6 +1003,7 @@ paas/application-monitor/public/lib/js/solid-gauge.src.js -text
 paas/application-monitor/public/lib/js/ui-bootstrap-0.11.0.min.js -text
 paas/application-monitor/public/lib/js/ui-bootstrap-custom-0.10.0.js -text
 paas/application-monitor/public/lib/js/ui-bootstrap-custom-tpls-0.10.0.js -text
+paas/application-monitor/public/lib/js/underscore-min.js -text
 paas/application-monitor/public/lib/login.html -text
 paas/application-monitor/public/lib/morris.html -text
 paas/application-monitor/public/lib/notifications.html -text
