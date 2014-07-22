@@ -35,7 +35,7 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="application_id" type="int">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
             <column name="status" type="varchar(255)">
                 <constraints nullable="false"/>
@@ -69,7 +69,7 @@
 
   <changeSet id="creation-vms-table" author="davidgp">
         <createTable tableName="vms">
-            <column name="vms_id" type="int">
+            <column name="vm_id" type="int">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="deployment_id" type="int">
@@ -84,7 +84,7 @@
             <column name="provider_id" type="varchar(255)">
                 <constraints nullable="true"/>
             </column>
-            <column name="sla_aggreement" type="varchar(255)">
+            <column name="sla_agreement" type="varchar(255)">
                 <constraints nullable="true"/>
             </column>
             <column name="ip_address" type="varchar(255)">
@@ -102,7 +102,7 @@
   <changeSet author="davidgp" id="autoincriment-vms">
     <addAutoIncrement 
           columnDataType="int"
-            columnName="vms_id"
+            columnName="vm_id"
             incrementBy="1"
             startWith="1"
             tableName="vms"/>
