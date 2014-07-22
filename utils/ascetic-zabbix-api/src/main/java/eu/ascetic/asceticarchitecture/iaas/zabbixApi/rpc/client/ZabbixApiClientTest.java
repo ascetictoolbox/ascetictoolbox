@@ -7,6 +7,7 @@ import java.util.List;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.client.ZabbixClient;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.HistoryItem;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Host;
+import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.HostGroup;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Item;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.utils.Dictionary;
 
@@ -38,18 +39,22 @@ public class ZabbixApiClientTest {
 	 */
 	public static void main(String[] args) {
 			ZabbixClient client = new ZabbixClient();
-			insertSeparator("getAllHosts");
-			testGetAllHosts(client);
-			insertSeparator("getItemsFromHost");
-			testItemsFromHost(client);
-			insertSeparator("itemsCountFromHosts");
-			testItemsCountFromHosts(client);	
-			insertSeparator("getItemByNameFromHost");
-			testGetItemByNameFromHost(client);
-			insertSeparator("getHistoryDataByLimit");
-			testGetHistoryDataByLimit(client);
-			insertSeparator("getItemByKeyFromHost");
-			testGetItemByKeyFromHost(client);
+//			insertSeparator("getAllHosts");
+//			testGetAllHosts(client);
+//			insertSeparator("getItemsFromHost");
+//			testItemsFromHost(client);
+//			insertSeparator("itemsCountFromHosts");
+//			testItemsCountFromHosts(client);	
+//			insertSeparator("getItemByNameFromHost");
+//			testGetItemByNameFromHost(client);
+//			insertSeparator("getHistoryDataByLimit");
+//			testGetHistoryDataByLimit(client);
+//			insertSeparator("getItemByKeyFromHost");
+//			testGetItemByKeyFromHost(client);
+			insertSeparator("getHostGroupByName");
+			testGetHostGroupByName(client);
+			insertSeparator("createVM");
+			testCreateVM(client);
 	}
 
 
@@ -177,6 +182,17 @@ public class ZabbixApiClientTest {
 	
 	
 	/**
+	 * Prints the host group.
+	 *
+	 * @param hg the hg
+	 */
+	private static void printHostGroup(HostGroup hg){
+		System.out.println("name: " + hg.getName());
+		System.out.println("groupid: " + hg.getGroupId());
+	}
+	
+	
+	/**
 	 * Gets the txt format.
 	 *
 	 * @param historyItemFormat the history item format
@@ -246,5 +262,41 @@ public class ZabbixApiClientTest {
 		}
 	}
 
+	/**
+	 * Test get host group by name.
+	 *
+	 * @param client the client
+	 */
+	public static void testGetHostGroupByName(ZabbixClient client){	
+		String hostGroupName = "Virtual Machines";
+		HostGroup hg = client.getHostGroupByName(hostGroupName);
+		if (hg != null){
+			System.out.println("HostGroup " + hostGroupName + ":");
+			printHostGroup(hg);
+		}
+		else {
+			System.out.println("No hostGroup " + hostGroupName + " available Zabbix environment");
+		}
+	}
+	
+	
+	public static void testCreateVM(ZabbixClient client){
+		String newHostName = "RedSea1";
+		String ipAddress = "1.1.1.2";
+		boolean error = false;
+		String newId = null;
+		try {
+			newId = client.createVM(newHostName, ipAddress);
+		}
+		catch(Exception e){
+			error = true;
+			System.out.println("Error creating new VM in Zabbix (hostname = " + newHostName + ", ipAddress = " + ipAddress + "). "
+					+ "Details: " + e.getMessage());
+		}
+		
+		if (!error){
+			System.out.println("VM " + newHostName + " with IP " + ipAddress + " created successfully. New ID = " + newId);
+		}
+	}
 
 }

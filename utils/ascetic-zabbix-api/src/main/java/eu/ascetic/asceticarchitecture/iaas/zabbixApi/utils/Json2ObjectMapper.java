@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.HistoryItem;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Host;
+import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.HostGroup;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Item;
 
 /**
@@ -65,7 +66,21 @@ public class Json2ObjectMapper {
 		String hostId = hosts.get(0).get(Dictionary.HISTORY_ITEM_HOSTID);
 		historyItem.setHostid(hostId);
 		
-		return historyItem;
-		
+		return historyItem;		
 	}
+	
+	
+	/**
+	 * Gets the host group.
+	 *
+	 * @param hmJsonHostGroup the hm json host group
+	 * @return the host group
+	 */
+	public static HostGroup getHostGroup(HashMap<String,String> hmJsonHostGroup){
+		HostGroup hostGroup = new HostGroup();
+		hostGroup.setGroupId(hmJsonHostGroup.get(Dictionary.HOSTGROUP_GROUPID));
+		hostGroup.setName(hmJsonHostGroup.get(Dictionary.HOSTGROUP_NAME));
+		return hostGroup;
+	}
+
 }

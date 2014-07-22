@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -19,6 +20,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.conf.Configuration;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.HistoryItem;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Host;
+import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.HostGroup;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Item;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.User;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.utils.Dictionary;
@@ -543,9 +545,125 @@ public class ZabbixClient {
 		}
 		
 		return historyItems;
-		
-		
 	}
 	
+	/**
+	 * Creates a new VM in Zabbix.
+	 *
+	 * @param hostName the host name
+	 * @param ipAddress the ip address
+	 * @return the string
+	 */
+	public String createVM(String hostName, String ipAddress){
+		String newHostId = null;
+
+//		if (getHostByName(hostName) != null){
+		String vmsHostGroupName = "Virtual machines";
+		HostGroup vmsHostGroup = getHostGroupByName(vmsHostGroupName);
+		if (vmsHostGroup !=null){
+			try {
+				String token = getAuth();
+				if (token != null){
+					//get historyData from host
+					String jsonRequest = 	
+							"{\"jsonrpc\":\"" + Dictionary.JSON_RPC_VERSION + "\","
+								    + "\"method\": \"host.create\","
+								    + "\"params\": {"
+								        + "\"host\": \"" + hostName + "\","
+								        + "\"interfaces\": ["
+								            + "{"
+								            + "\"type\": 1,"
+								            + "\"main\": 1,"
+								            + "\"useip\": 1,"
+								            + "\"ip\": \"" + ipAddress +"\","
+								            + "\"dns\": \"\","
+								            + "\"port\": \"10050\""
+								           + "}"
+								        + "],"
+								        + "\"groups\": ["
+								            + "{\"groupid\": \"" + vmsHostGroup.getGroupId() + "\"}"
+								        + "]"
+								    + "},"
+								    + "\"auth\":\"" + token + "\","
+								    + "\"id\": 1"
+								    + "}";
+					
+					HttpResponse response = postAndGet(jsonRequest);
+					HttpEntity entity = response.getEntity();
+					ObjectMapper mapper = new ObjectMapper ();
+					HashMap untyped = mapper.readValue(EntityUtils.toString(entity), HashMap.class);
+					LinkedHashMap<String, Object> result = (LinkedHashMap<String, Object>) untyped.get("result");
+
+					if (result != null){
+						ArrayList<String> list  = (ArrayList<String>) result.get("hostids");
+						newHostId = list.get(0);					
+						log.info("New VM created in Zabbix. HostID = " + newHostId);
+						return newHostId;
+					}	
+				}
+
+			} catch (Exception e) {
+				log.error(e.getMessage() + "\n"); 
+				System.out.println(e.getMessage() + "\n");
+			}							
+		}
+		else {
+			log.error("The hostGroupName is null or empty");
+		}
+			
+//		}
+//		else {
+//			log.error("The host " + hostName + " already exists in the ASCETiC Zabbix environment. Please choose another hostname" );
+//		}
+
+
+
+		return newHostId;
+	}
+	
+	
+	public HostGroup getHostGroupByName(String hostGroupName){
+		HostGroup hostGroup = null;
+		if (hostGroupName!=null && !hostGroupName.isEmpty()){
+			
+			try {
+				String token = getAuth();
+				if (token != null){
+					//get historyData from host
+					String jsonRequest = 							
+						"{\"jsonrpc\":\"" + Dictionary.JSON_RPC_VERSION + "\"," 
+						    + "\"method\": \"hostgroup.get\","
+						    + "\"params\": {"
+						    	+ "\"output\": \"extend\","
+						        + "\"filter\": {"
+						            + "\"name\": [\"" + hostGroupName + "\"]"
+						        + "}"
+						    + "}," 
+						    + "\"auth\":\"" + token + "\","
+						    + "\"id\": 0}";
+
+					HttpResponse response = postAndGet(jsonRequest);
+					HttpEntity entity = response.getEntity();
+					ObjectMapper mapper = new ObjectMapper ();
+					HashMap untyped = mapper.readValue(EntityUtils.toString(entity), HashMap.class);
+					ArrayList result = (ArrayList) untyped.get("result");
+
+					if (result != null){
+						hostGroup = Json2ObjectMapper.getHostGroup((HashMap<String, String>) result.get(0));					
+						log.info("HostGroup " + hostGroupName + " finded in Zabbix");
+						return hostGroup;
+					}	
+				}
+
+			} catch (Exception e) {
+				log.error(e.getMessage() + "\n"); 
+				System.out.println(e.getMessage() + "\n");
+			}							
+		}
+		else {
+			log.error("The hostGroupName is null or empty");
+		}
+		return hostGroup;
+	}
 	
 }

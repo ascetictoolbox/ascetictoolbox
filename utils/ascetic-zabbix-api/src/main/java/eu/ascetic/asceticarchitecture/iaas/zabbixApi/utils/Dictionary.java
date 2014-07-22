@@ -45,6 +45,10 @@ public class Dictionary {
 	public static String HISTORY_ITEM_FORMAT_LOG = "2";
 	public static String HISTORY_ITEM_FORMAT_INTEGER = "3";
 	public static String HISTORY_ITEM_FORMAT_TEXT = "4";
+	
+	//HOST GROUP
+	public static String HOSTGROUP_GROUPID = "groupid";
+	public static String HOSTGROUP_NAME = "name";
 
 	
 
