@@ -51,7 +51,7 @@ public class SkeletonSLAMBean implements BundleContextAware {
         try {
             // the slam configuration file should be located under SLASOI_HOME directory. (see details in integration
             // approach)
-            SLAMConfiguration sklConfig = gslamServices.loadConfigurationFrom("sklslam.instance1.cfg");
+            SLAMConfiguration sklConfig = gslamServices.loadConfigurationFrom("ascetic.paas.instance1.cfg");
 
             slamContext =
                     gslamServices.createContext(osgiContext, sklConfig.name, sklConfig.epr, sklConfig.group,
