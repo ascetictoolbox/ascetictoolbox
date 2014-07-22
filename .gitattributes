@@ -1560,6 +1560,16 @@ saas/saas-modelling/papyrus-kpi-profile/model.profile.uml -text
 use-cases/atc/newsasset/kpi-modelling/NewsAsset-model.di -text
 use-cases/atc/newsasset/kpi-modelling/NewsAsset-model.notation -text
 use-cases/atc/newsasset/kpi-modelling/NewsAsset-model.uml -text
+utils/application-manager-database/README.TXT -text
+utils/application-manager-database/db/changelog/db.changelog-1.0.xml -text
+utils/application-manager-database/db/changelog/db.changelog-master.xml -text
+utils/application-manager-database/liquibase/LICENSE.txt -text
+utils/application-manager-database/liquibase/lib/README.txt -text
+utils/application-manager-database/liquibase/lib/mysql-connector-java-5.1.25-bin.jar -text
+utils/application-manager-database/liquibase/lib/snakeyaml-1.12.jar -text
+utils/application-manager-database/liquibase/liquibase -text
+utils/application-manager-database/liquibase/liquibase.bat -text
+utils/application-manager-database/liquibase/liquibase.jar -text
 utils/ascetic-dfs/make.sh -text
 utils/ascetic-dfs/pom.xml -text
 utils/ascetic-zabbix-api/.classpath -text
