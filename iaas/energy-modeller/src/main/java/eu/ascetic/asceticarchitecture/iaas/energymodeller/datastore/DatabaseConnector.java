@@ -18,8 +18,8 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HistoricUsageRecord;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostEnergyRecord;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostVmLoadFraction;
 import java.util.Collection;
 import java.util.List;
 
@@ -38,7 +38,22 @@ public interface DatabaseConnector {
      * @return The list of hosts
      */
     public Collection<Host> getHosts();
+    
+    /**
+     * This list all the vms the energy modeller has data for in its backing
+     * store.
+     *
+     * @return The list of hosts
+     */
+    public Collection<VmDeployed> getVms();    
 
+    /**
+     * This adds set of host machines to the database. If the vm already
+     * exists the values contained will be overwritten.
+     * @param vms The set of vms to write to the database.
+     */    
+    public void setVms(Collection<VmDeployed> vms);    
+    
     /**
      * This adds set of host machines to the database. If the host already
      * exists the values contained will be overwritten.
@@ -68,14 +83,6 @@ public interface DatabaseConnector {
     public void setHostCalibrationData(Host host);
 
     /**
-     * This returns the historic data for a VM
-     *
-     * @param VM The VM to get the historic data for
-     * @return The list of historical data for the named VM
-     */    
-    public HistoricUsageRecord getVmHistoryData(VmDeployed VM);
-
-    /**
      * This writes historic data for a given host to the database.
      * @param host The host to write the data for
      * @param time The time when the measurement was taken.
@@ -95,6 +102,23 @@ public interface DatabaseConnector {
      * @return The energy readings taken for a given host.
      */    
     public List<HostEnergyRecord> getHostHistoryData(Host host, TimePeriod timePeriod);
+    
+    /**
+     * 
+     * @param host The host to set the vm load information for
+     * @param time The time when the measurements were taken.
+     * @param load The summary of the VM load data on the host.
+     */
+    public void writeHostVMHistoricData(Host host, long time, HostVmLoadFraction load);
+    
+    /**
+     * 
+     * @param host The host to get the vm load information for
+     * @param timePeriod The start and end period for which to query for. If
+     * null all records will be returned.
+     * @return The load readings taken for a given host.
+     */
+    public Collection<HostVmLoadFraction> getHostVmHistoryLoadData(Host host, TimePeriod timePeriod);
     
     /**
      * This closes the database connection. It will be reopened if a query is called.

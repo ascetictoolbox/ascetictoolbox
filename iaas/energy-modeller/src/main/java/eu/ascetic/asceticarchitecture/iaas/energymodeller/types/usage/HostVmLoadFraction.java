@@ -43,10 +43,18 @@ public class HostVmLoadFraction {
 
     /**
      * The host that this record represents.
-     * @return 
+     * @return The host this load fraction data is about
      */
     public Host getHost() {
         return host;
+    }
+    
+    /**
+     * This returns the set of VMs that this fraction of host load describes.
+     * @return The vms that have been deployed on this vm.
+     */
+    public Collection<VmDeployed> getVMs() {
+        return fraction.keySet();
     }
 
     /**
@@ -55,6 +63,15 @@ public class HostVmLoadFraction {
      */
     public long getTime() {
         return time;
+    }
+    
+    /**
+     * This adds fraction information for a specified VM
+     * @param vm The vm to specify the usage fraction for
+     * @param fraction The fraction to allocate to a given vm.
+     */
+    public void addFraction(VmDeployed vm, double fraction) {
+        this.fraction.put(vm, fraction);
     }
 
     /**

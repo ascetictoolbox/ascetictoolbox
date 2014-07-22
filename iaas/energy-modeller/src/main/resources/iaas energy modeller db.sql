@@ -48,3 +48,34 @@ ALTER TABLE host_measurement
 ADD CONSTRAINT fk_measurement_host_id
 FOREIGN KEY (host_id)
 REFERENCES host(host_id);
+
+CREATE TABLE IF NOT EXISTS vm
+  (
+     vm_id   INT NOT NULL,
+     vm_name VARCHAR(50)
+  );
+
+ALTER TABLE vm
+ADD CONSTRAINT pk_vmID PRIMARY KEY (vm_id);
+
+CREATE TABLE IF NOT EXISTS vm_measurement
+  (
+     measurement_id INT NOT NULL,
+     host_id INT NOT NULL,
+     vm_id   INT NOT NULL,
+     clock     BIGINT UNSIGNED,
+     cpu_load    DOUBLE
+  );
+
+ALTER TABLE vm_measurement
+ADD CONSTRAINT pk_vm_measurementID PRIMARY KEY (measurement_id);
+
+ALTER TABLE vm_measurement
+ADD CONSTRAINT fk_vm_measurement_host_id
+FOREIGN KEY (host_id)
+REFERENCES host(host_id);
+
+ALTER TABLE vm_measurement
+ADD CONSTRAINT fk_vm_measurement_vm_id
+FOREIGN KEY (vm_id)
+REFERENCES vm(vm_id);
