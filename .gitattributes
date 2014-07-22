@@ -264,11 +264,14 @@ paas/application-manager/src/main/webapp/META-INF/MANIFEST.MF -text
 paas/application-manager/src/main/webapp/WEB-INF/web.xml -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/jpa/ApplicationDAOJpaTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/jpa/DeploymentDAOJpaTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/jpa/MysqJPATestIT.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/jpa/VMDAOJpaTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/ApplicationRestTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/RootRestTest.java -text
+paas/application-manager/src/test/resources/META-INF/persistence.mysql.test.xml -text
 paas/application-manager/src/test/resources/META-INF/persistence.test.xml -text
 paas/application-manager/src/test/resources/application-manager-db-JPA-test-context.xml -text
+paas/application-manager/src/test/resources/mysql-jpa-test-configuration.xml -text
 paas/application-monitor.removeme/README -text
 paas/application-monitor.removeme/app/api/Apps.java -text
 paas/application-monitor.removeme/app/api/Events.java -text
