@@ -16,7 +16,7 @@ cd $home/vmmanager
 
 echo
 echo "Downloading from Jenkins..."
-curl -k 'https://ascetic-jenkins.cit.tu-berlin.de/job/ASCETiC%20Reference%20Architecture/ws/trunk/iaas/vm-manager/vmmanagercore/target/uber-vmmanagercore-0.0.1-SNAPSHOT.jar' > uber-vmmanagercore-0.0.1-SNAPSHOT.jar || exit 1
+curl -k 'https://ascetic-jenkins.cit.tu-berlin.de/job/ASCETiC%20Reference%20Architecture/ws/trunk/iaas/virtual-machine-manager/vmmanagercore/target/uber-vmmanagercore-0.0.1-SNAPSHOT.jar' > uber-vmmanagercore-0.0.1-SNAPSHOT.jar || exit 1
 
 cat > start.sh << EOF
 #! /bin/sh
