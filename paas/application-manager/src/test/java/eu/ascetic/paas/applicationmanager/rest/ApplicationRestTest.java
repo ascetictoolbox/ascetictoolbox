@@ -16,7 +16,6 @@ import javax.xml.bind.Unmarshaller;
 
 import org.junit.Test;
 
-import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Collection;
@@ -29,15 +28,17 @@ public class ApplicationRestTest {
 
 
 	
-	//@Test
+	@Test
 	public void getApplicationsTest() throws JAXBException {
 		ApplicationDAO applicationDAO = mock(ApplicationDAO.class);
 		
 		Application application1 = new Application();
 		application1.setId(1);
+		application1.setName("name 1");
 
 		Application application2 = new Application();
 		application2.setId(2);
+		application2.setName("name 2");
 		
 		List<Application> applications = new ArrayList<Application>();
 		applications.add(application1);

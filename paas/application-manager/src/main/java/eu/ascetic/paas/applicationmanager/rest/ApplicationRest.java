@@ -39,9 +39,10 @@ public class ApplicationRest extends AbstractRest {
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getApplications() {
 		logger.info("GET request to path: /applications");
-		// TODO
 		// TODO it is necessary to implement a lot of query params here
-		// TODO 
+
+		
+		
 		return buildResponse(Status.OK, "Method not implemented yet");
 	}
 	
