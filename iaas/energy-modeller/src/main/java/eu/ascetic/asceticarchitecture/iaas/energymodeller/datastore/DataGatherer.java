@@ -18,7 +18,11 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration.Calibrator;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostMeasurement;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.VmMeasurement;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostVmLoadFraction;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.VmUsageRecord;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -40,7 +44,9 @@ public class DataGatherer implements Runnable {
     private boolean running = true;
     private int faultCount = 0;
     private HashMap<String, Host> knownHosts = new HashMap<>();
+    private HashMap<String, VmDeployed> knownVms = new HashMap<>();
     private HashMap<Host, Long> lastTimeStampSeen = new HashMap<>();
+    private HashMap<VmDeployed, Long> lastTimeStampSeenVm = new HashMap<>();
 
     /**
      * This creates a data gather component for the energy modeller.
@@ -50,7 +56,8 @@ public class DataGatherer implements Runnable {
      * @param connector The database connector used to do this. It is best to
      * give this component its own database connection as it will make heavy use
      * of it.
-     * @param calibrator The calibrator to call in the event a new host is detected.
+     * @param calibrator The calibrator to call in the event a new host is
+     * detected.
      */
     public DataGatherer(HostDataSource datasource, DatabaseConnector connector, Calibrator calibrator) {
         this.datasource = datasource;
@@ -62,13 +69,20 @@ public class DataGatherer implements Runnable {
     }
 
     /**
-     * This populates the list of hosts that is known to the energy modeller.
+     * This populates the list of hosts and their VMs that are known to the
+     * energy modeller.
      */
     public void populateHostList() {
         Collection<Host> hosts = datasource.getHostList();
+        Collection<VmDeployed> vms = datasource.getVmList();
         for (Host host : hosts) {
             if (!knownHosts.containsKey(host.getHostName())) {
                 knownHosts.put(host.getHostName(), host);
+            }
+        }
+        for (VmDeployed vm : vms) {
+            if (!knownVms.containsKey(vm.getName())) {
+                knownVms.put(vm.getName(), vm);
             }
         }
     }
@@ -90,6 +104,7 @@ public class DataGatherer implements Runnable {
         while (running) {
             List<Host> hostList = datasource.getHostList();
             refreshKnownHostList(hostList);
+            refreshKnownVMList(datasource.getVmList());
             for (Host host : hostList) {
                 HostMeasurement measurement = datasource.getHostData(host);
                 /**
@@ -101,7 +116,12 @@ public class DataGatherer implements Runnable {
                     lastTimeStampSeen.put(host, measurement.getClock());
                     connector.writeHostHistoricData(host, measurement.getClock(), measurement.getPower(), measurement.getEnergy());
                 }
-            }
+                ArrayList<VmDeployed> vms = getVMsOnHost(host);
+                HostVmLoadFraction fraction = new HostVmLoadFraction(host, measurement.getClock());
+                List<VmMeasurement> vmMeasurements = datasource.getVmData(vms);
+                fraction.setFraction(vmMeasurements);
+                connector.writeHostVMHistoricData(host, measurement.getClock(), fraction);
+            }           
             try {
                 try {
                     Thread.sleep(1000);
@@ -117,7 +137,7 @@ public class DataGatherer implements Runnable {
             }
         }
     }
-
+   
     /**
      * The hashmap gives a faster way to find a specific host. This converts
      * from a raw list of hosts into the indexed structure.
@@ -132,24 +152,25 @@ public class DataGatherer implements Runnable {
         }
         return answer;
     }
-    
+
     /**
      * This sets and refreshes the knownHosts list in the data gatherer.
-     * @param hostList  The list of host gained from the data source.
+     *
+     * @param hostList The list of host gained from the data source.
      */
     private void refreshKnownHostList(List<Host> hostList) {
-                    //Perform a refresh to make sure the host has been written to backing store
-            if (knownHosts == null) {
-                knownHosts = toHashMap(hostList);
-                connector.setHosts(hostList);
-            } else {
-                List<Host> newHosts = discoverNewHosts(hostList);
-                connector.setHosts(newHosts);
-                for (Host host : newHosts) {
-                    knownHosts.put(host.getHostName(), host);
-                    calibrator.calibrateHostEnergyData(host);
-                }
+        //Perform a refresh to make sure the host has been written to backing store
+        if (knownHosts == null) {
+            knownHosts = toHashMap(hostList);
+            connector.setHosts(hostList);
+        } else {
+            List<Host> newHosts = discoverNewHosts(hostList);
+            connector.setHosts(newHosts);
+            for (Host host : newHosts) {
+                knownHosts.put(host.getHostName(), host);
+                calibrator.calibrateHostEnergyData(host);
             }
+        }
     }
 
     /**
@@ -171,10 +192,87 @@ public class DataGatherer implements Runnable {
     }
 
     /**
-     * @return the knownHosts
+     * The hashmap gives a faster way to find a specific vm. This converts from
+     * a raw list of vms into the indexed structure.
+     *
+     * @param vmList The vm list
+     * @return The hashed vm list
+     */
+    private HashMap<String, VmDeployed> toHashMapVm(List<VmDeployed> vmList) {
+        HashMap<String, VmDeployed> answer = new HashMap<>();
+        for (VmDeployed vm : vmList) {
+            answer.put(vm.getName(), vm);
+        }
+        return answer;
+    }
+
+    /**
+     * This sets and refreshes the knownVMs list in the data gatherer.
+     *
+     * @param vmList The list of VMs gained from the data source.
+     */
+    private void refreshKnownVMList(List<VmDeployed> vmList) {
+        //Perform a refresh to make sure the host has been written to backing store
+        if (knownVms == null) {
+            knownVms = toHashMapVm(vmList);
+            connector.setVms(vmList);
+        } else {
+            List<VmDeployed> newVms = discoverNewVMs(vmList);
+            connector.setVms(newVms);
+            for (VmDeployed vm : newVms) {
+                knownVms.put(vm.getName(), vm);
+            }
+        }
+    }
+
+    /**
+     * This compares a list of vms that has been found to the known list of vms.
+     *
+     * @param newList The new list of vms.
+     * @return The list of vms that were otherwise unknown to the data gatherer.
+     */
+    private List<VmDeployed> discoverNewVMs(List<VmDeployed> newList) {
+        List<VmDeployed> answer = new ArrayList<>();
+        for (VmDeployed vm : newList) {
+            if (!knownVms.containsKey(vm.getName())) {
+                answer.add(vm);
+            }
+        }
+        return answer;
+    }
+
+    /**
+     * This provides the list of known hosts
+     *
+     * @return The list of known hosts
      */
     public HashMap<String, Host> getHostList() {
         return knownHosts;
     }
+
+    /**
+     * This provides the list of known Vms
+     *
+     * @return The list of known Vms
+     */
+    public HashMap<String, VmDeployed> getVMList() {
+        return knownVms;
+    }
+    
+    /**
+     * This gets a list of the VMs that are currently on a host machine.
+     * @param host The host machine to get the VM list for
+     * @return The list of VMs on the specified host
+     */
+     public ArrayList<VmDeployed> getVMsOnHost(Host host) {
+         //TODO ensure the data that makes this work is gathered. i.e. VM to host Mapping data!
+         ArrayList<VmDeployed> answer = new ArrayList<>();
+         for (VmDeployed vm : knownVms.values()) {
+             if (vm.getAllocatedTo().equals(host)) {
+                 answer.add(vm);
+             }
+         }
+         return answer;
+    }    
 
 }
