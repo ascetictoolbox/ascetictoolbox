@@ -1,15 +1,9 @@
 #
-# Cookbook Name:: ascetic-iaas
+# Cookbook Name:: ascetic-paas
 # Recipe:: default
 #
 # Copyright 2014, Michael Kammer
 #
-apt_repo "zabbix" do
-  key_id "79EA5ED4"
-  key_package "zabbix-release"
-  url "http://repo.zabbix.com/zabbix/2.2/ubuntu"
-  distribution "precise"
-end
 
 #apt_repo "gluster" do
 #  key_id "21C74DF2"
@@ -34,47 +28,40 @@ package "ntp" do
   action :install
 end
 
-package "zabbix-server-mysql" do
+package "subversion" do
   action :install
 end
 
-package "zabbix-frontend-php" do
-  action :install
-end
-
-cookbook_file "/home/ubuntu/slam-installer.sh" do
-  source "slam-installer.sh"
+cookbook_file "/home/ubuntu/am-installer.sh" do
+  source "am-installer.sh"
   mode 0755
   owner "ubuntu"
   group "ubuntu"
 end
 
-cookbook_file "/home/ubuntu/vmm-installer.sh" do
-  source "vmm-installer.sh"
+cookbook_file "/home/ubuntu/pr-installer.sh" do
+  source "pr-installer.sh"
   mode 0755
   owner "ubuntu"
   group "ubuntu"
 end
 
-script "install_slam" do
+script "install_amanager" do
   interpreter "bash"
   user "ubuntu"
   group "ubuntu"
   cwd "/home/ubuntu"
-  not_if "test -d /home/ubuntu/slam"
   code <<-EOH
-sh slam-installer.sh
+sh am-installer.sh
   EOH
 end
 
-script "install_vmmanager" do
+script "install_pregistry" do
   interpreter "bash"
   user "ubuntu"
   group "ubuntu"
   cwd "/home/ubuntu"
-  not_if "test -d /home/ubuntu/vmmanager"
   code <<-EOH
-sh vmm-installer.sh
+sh pr-installer.sh
   EOH
 end
-

@@ -2,7 +2,7 @@
 
 user=$(id -un)
 home=$(getent passwd | grep $user | awk -F: '{print $6}')
-mysql_admin=root
+mysql_config=/etc/mysql/debian.cnf
 config_scripts_dir=$home/slam
 echo "Going to setup SLAM into $config_scripts_dir"
 
@@ -25,13 +25,14 @@ chmod +x $config_scripts_dir/config-package.sh
 chmod +x $config_scripts_dir/install/*.sh
 
 repl=$(echo $config_scripts_dir | sed 's/\//\\\//g')
+mysql_config_x=$(echo $mysql_config | sed 's/\//\\\//g')
 for file in config-package.sh install/*.sh; do
  sed 's/\/opt\/ascetic\//'"$repl"'\//g' "$file" > "$file.new"
- sed 's/mysql -p/mysql -u '"$mysql_admin"' -p/' "$file.new" > "$file"
+ sed 's/mysql -p/mysql --defaults-extra-file='"$mysql_config_x"' /' "$file.new" > "$file"
  rm $file.new
 done
 #sh ./config-package.sh
 
 # Start it
-cd $config_scripts_dir/slam/sla-at-soi/
-screen -dmS slamanager startup.sh
+cd $config_scripts_dir/sla-at-soi/
+screen -dmS slamanager ./startup.sh

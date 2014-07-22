@@ -1721,6 +1721,14 @@ utils/chef/cookbooks/ascetic-iaas/files/default/slam-installer.sh -text
 utils/chef/cookbooks/ascetic-iaas/files/default/vmm-installer.sh -text
 utils/chef/cookbooks/ascetic-iaas/metadata.rb -text
 utils/chef/cookbooks/ascetic-iaas/recipes/default.rb -text
+utils/chef/cookbooks/ascetic-paas/CHANGELOG.md -text
+utils/chef/cookbooks/ascetic-paas/README.md -text
+utils/chef/cookbooks/ascetic-paas/definitions/apt-repo.rb -text
+utils/chef/cookbooks/ascetic-paas/definitions/ppa.rb -text
+utils/chef/cookbooks/ascetic-paas/files/default/am-installer.sh -text
+utils/chef/cookbooks/ascetic-paas/files/default/pr-installer.sh -text
+utils/chef/cookbooks/ascetic-paas/metadata.rb -text
+utils/chef/cookbooks/ascetic-paas/recipes/default.rb -text
 utils/energy-modeller-data-logger/Dataset[!!-~]-[!!-~]Copy.txt -text
 utils/energy-modeller-data-logger/Dataset[!!-~]-[!!-~]Full[!!-~]Dataset[!!-~]1[!!-~]run[!!-~]for[!!-~]each[!!-~]machine.txt -text
 utils/energy-modeller-data-logger/Dataset.txt -text
