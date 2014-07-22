@@ -62,16 +62,14 @@ public class DataGatherer implements Runnable {
         this.datasource = datasource;
         this.connector = connector;
         this.calibrator = calibrator;
-        for (Host dbHost : connector.getHosts()) {
-            knownHosts.put(dbHost.getHostName(), dbHost);
-        }
+        populateHostList();
     }
 
     /**
      * This populates the list of hosts and their VMs that are known to the
      * energy modeller.
      */
-    public void populateHostList() {
+    public final void populateHostList() {
         Collection<Host> hosts = datasource.getHostList();
         Collection<VmDeployed> vms = datasource.getVmList();
         for (Host host : hosts) {
@@ -285,13 +283,13 @@ public class DataGatherer implements Runnable {
          //TODO ensure the data that makes this work is gathered. i.e. VM to host Mapping data!
          ArrayList<VmDeployed> answer = new ArrayList<>();
          for (VmDeployed vm : knownVms.values()) {
-             if (vm.getAllocatedTo().equals(host)) {
+             if (host.equals(vm.getAllocatedTo())) {
                  answer.add(vm);
              }
          }
          //TODO remove this temporary fix code here!
          if (host.getHostName().equals("asok12")) {
-            answer.add(knownVms.get("CloudSuite - Data Analytics"));
+            answer.add(knownVms.get("cloudsuite---data-analytics"));
          }
          return answer;
     }    

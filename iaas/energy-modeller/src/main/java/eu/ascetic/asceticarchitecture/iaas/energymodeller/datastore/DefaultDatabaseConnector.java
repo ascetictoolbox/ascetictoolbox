@@ -280,7 +280,7 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
         }
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(
-                    "INSERT INTO vm (vm_id, vm_name) VALUES (?,?) ON DUPLICATE KEY UPDATE host_name=VALUES(`host_name`);");
+                    "INSERT INTO vm (vm_id, vm_name) VALUES (?,?) ON DUPLICATE KEY UPDATE vm_name=VALUES(`vm_name`);");
             for (VmDeployed vm : vms) {
                 preparedStatement.setInt(1, vm.getId());
                 preparedStatement.setString(2, vm.getName());
@@ -432,13 +432,13 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
                 long start = timePeriod.getStartTime().getTimeInMillis() / 1000;
                 long end = timePeriod.getEndTime().getTimeInMillis() / 1000;
                 preparedStatement = connection.prepareStatement(
-                        "SELECT host_id, vm_id, vm_name, clock, cpu_load FROM vm_measurement, vm WHERE vm_measurement.vm_id = vm.vm_id and vm_measurement.host_id = ? "
+                        "SELECT host_id, vm_measurement.vm_id, vm_name, clock, cpu_load FROM vm_measurement, vm WHERE vm_measurement.vm_id = vm.vm_id and vm_measurement.host_id = ? "
                         + " AND clock >= ? AND clock <= ?;");
                 preparedStatement.setLong(2, start);
                 preparedStatement.setLong(3, end);
             } else {
                 preparedStatement = connection.prepareStatement(
-                        "SELECT host_id, vm_id, vm_name, clock, cpu_load FROM vm_measurement, vm WHERE vm_measurement.vm_id = vm.vm_id and vm_measurement.host_id = ?;");
+                        "SELECT host_id, vm_measurement.vm_id, vm_name, clock, cpu_load FROM vm_measurement, vm WHERE vm_measurement.vm_id = vm.vm_id and vm_measurement.host_id = ?;");
             }
             preparedStatement.setInt(1, host.getId());
             ResultSet resultSet = preparedStatement.executeQuery();

@@ -17,31 +17,28 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration.Calibrator;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDataSourceAdaptor;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
+import java.util.ArrayList;
+import java.util.HashMap;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
  * @author Richard
  */
 public class DataGathererTest {
-    
+
     public DataGathererTest() {
     }
+    
+    private final Host CHOSEN_HOST = new Host(10084, "asok10");
+    private final Host CHOSEN_HOST2 =  new Host(10106, "asok12");
+    private final String VM_NAME = "cloudsuite---data-analytics"; //CloudSuite - Data Analytics
+    
 
-//    /**
-//     * Test of stop method, of class DataGatherer.
-//     */
-//    @Test
-//    public void testStop() {
-//        System.out.println("stop");
-//        DataGatherer instance = null;
-//        instance.stop();
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
     /**
      * Test of run method, of class DataGatherer.
      */
@@ -60,5 +57,106 @@ public class DataGathererTest {
             fail("Something interuppted the thread while waiting for some data to be gathered");
         }
     }
-    
+
+    /**
+     * Test of populateHostList method, of class DataGatherer.
+     */
+    @Test
+    public void testPopulateHostList() {
+        System.out.println("populateHostList");
+        ZabbixDataSourceAdaptor adaptor = new ZabbixDataSourceAdaptor();
+        DefaultDatabaseConnector connector = new DefaultDatabaseConnector();
+        Calibrator calibrator = new Calibrator(adaptor);
+        DataGatherer instance = new DataGatherer(adaptor, connector, calibrator);
+        instance.populateHostList();
+    }
+
+    /**
+     * Test of stop method, of class DataGatherer.
+     */
+    @Test
+    public void testStop() {
+        System.out.println("stop");
+        ZabbixDataSourceAdaptor adaptor = new ZabbixDataSourceAdaptor();
+        DefaultDatabaseConnector connector = new DefaultDatabaseConnector();
+        Calibrator calibrator = new Calibrator(adaptor);
+        DataGatherer instance = new DataGatherer(adaptor, connector, calibrator);
+        instance.stop();
+    }
+
+    /**
+     * Test of getHostList method, of class DataGatherer.
+     */
+    @Test
+    public void testGetHostList() {
+        System.out.println("getHostList");
+        ZabbixDataSourceAdaptor adaptor = new ZabbixDataSourceAdaptor();
+        DefaultDatabaseConnector connector = new DefaultDatabaseConnector();
+        Calibrator calibrator = new Calibrator(adaptor);
+        DataGatherer instance = new DataGatherer(adaptor, connector, calibrator);
+        HashMap<String, Host> result = instance.getHostList();
+        assert (!result.isEmpty());
+    }
+
+    /**
+     * Test of getHost method, of class DataGatherer.
+     */
+    @Test
+    public void testGetHost() {
+        System.out.println("getHost");
+        String hostname = "asok10";
+        ZabbixDataSourceAdaptor adaptor = new ZabbixDataSourceAdaptor();
+        DefaultDatabaseConnector connector = new DefaultDatabaseConnector();
+        Calibrator calibrator = new Calibrator(adaptor);
+        DataGatherer instance = new DataGatherer(adaptor, connector, calibrator);
+        Host expResult = CHOSEN_HOST;
+        Host result = instance.getHost(hostname);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getVmList method, of class DataGatherer.
+     */
+    @Test
+    public void testGetVmList() {
+        System.out.println("getVmList");
+        ZabbixDataSourceAdaptor adaptor = new ZabbixDataSourceAdaptor();
+        DefaultDatabaseConnector connector = new DefaultDatabaseConnector();
+        Calibrator calibrator = new Calibrator(adaptor);
+        DataGatherer instance = new DataGatherer(adaptor, connector, calibrator);
+        HashMap<String, VmDeployed> result = instance.getVmList();
+        assert(!result.isEmpty());
+    }
+
+    /**
+     * Test of getVm method, of class DataGatherer.
+     */
+    @Test
+    public void testGetVm() {
+        System.out.println("getVm");
+        String name = VM_NAME;
+        ZabbixDataSourceAdaptor adaptor = new ZabbixDataSourceAdaptor();
+        DefaultDatabaseConnector connector = new DefaultDatabaseConnector();
+        Calibrator calibrator = new Calibrator(adaptor);
+        DataGatherer instance = new DataGatherer(adaptor, connector, calibrator);
+        VmDeployed result = instance.getVm(name);
+        assert(result != null);
+        assertEquals(VM_NAME, result.getName());
+    }
+
+    /**
+     * Test of getVMsOnHost method, of class DataGatherer.
+     */
+    @Test
+    public void testGetVMsOnHost() {
+        System.out.println("getVMsOnHost");
+        Host host = CHOSEN_HOST2;
+        ZabbixDataSourceAdaptor adaptor = new ZabbixDataSourceAdaptor();
+        DefaultDatabaseConnector connector = new DefaultDatabaseConnector();
+        Calibrator calibrator = new Calibrator(adaptor);
+        DataGatherer instance = new DataGatherer(adaptor, connector, calibrator);
+        ArrayList<VmDeployed> result = instance.getVMsOnHost(host);
+        assertEquals(VM_NAME, result.get(0).getName());
+    }
+
 }
