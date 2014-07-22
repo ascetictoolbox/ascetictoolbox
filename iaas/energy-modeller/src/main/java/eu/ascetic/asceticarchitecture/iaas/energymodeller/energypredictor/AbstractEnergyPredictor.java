@@ -15,9 +15,9 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor;
 
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.transformation.vmenergyshare.DefaultEnergyShareRule;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.transformation.vmenergyshare.EnergyDivision;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.transformation.vmenergyshare.EnergyShareRule;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.DefaultEnergyShareRule;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.EnergyDivision;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.EnergyShareRule;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import java.util.Collection;
