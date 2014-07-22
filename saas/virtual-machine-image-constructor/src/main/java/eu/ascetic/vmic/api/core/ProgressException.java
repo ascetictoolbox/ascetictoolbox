@@ -23,39 +23,39 @@ package eu.ascetic.vmic.api.core;
  */
 public class ProgressException extends Exception {
 
-	/**
-	 * Generated serial version UID
-	 */
-	private static final long serialVersionUID = -4629434061302885027L;
+    /**
+     * Generated serial version UID
+     */
+    private static final long serialVersionUID = -4629434061302885027L;
 
-	/**
-	 * Constructs a new exception with null as its detail message.
-	 */
-	public ProgressException() {
-		super();
-	}
+    /**
+     * Constructs a new exception with null as its detail message.
+     */
+    public ProgressException() {
+        super();
+    }
 
-	/**
-	 * Constructs a new exception with the specified detail message
-	 * 
-	 * @param message
-	 *            the detail message.
-	 */
-	public ProgressException(String message) {
-		super(message);
-	}
+    /**
+     * Constructs a new exception with the specified detail message
+     * 
+     * @param message
+     *            the detail message.
+     */
+    public ProgressException(String message) {
+        super(message);
+    }
 
-	/**
-	 * Constructs a new exception with the specified detail message and cause.
-	 * 
-	 * @param message
-	 *            the detail message.
-	 * @param cause
-	 *            the cause.
-	 * 
-	 */
-	public ProgressException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    /**
+     * Constructs a new exception with the specified detail message and cause.
+     * 
+     * @param message
+     *            the detail message.
+     * @param cause
+     *            the cause.
+     * 
+     */
+    public ProgressException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
 }

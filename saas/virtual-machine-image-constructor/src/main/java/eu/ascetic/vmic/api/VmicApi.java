@@ -32,70 +32,85 @@ import eu.ascetic.vmic.api.datamodel.GlobalState;
  * Implementation of the core API providing access to VMIC functionality
  * 
  * @author Django Armstrong (ULeeds)
- *
+ * 
  */
 public class VmicApi implements Api {
 
-	protected static final Logger LOGGER = Logger
-			.getLogger(VmicApi.class);
-	
-	private GlobalState globalState;
-	private Map<String, Thread> threads;
-	
-	/**
-	 * Constructor for setting up the VMIC with configuration data
-	 * 
-	 * @param globalConfiguration The config data to use
-	 */
-	public VmicApi(GlobalConfiguration globalConfiguration) {
-		globalState = new GlobalState(globalConfiguration);
-		threads = new HashMap<String, Thread>();
-	}
+    protected static final Logger LOGGER = Logger.getLogger(VmicApi.class);
 
-	/* (non-Javadoc)
-	 * @see eu.ascetic.vmic.api.Api#generateImage(eu.ascetic.utils.ovf.api.OvfDefinition)
-	 */
-	@Override
-	public void generateImage(OvfDefinition ovfDefinition) {
-		Runnable virtualMachineImageConstructor = new VirtualMachineImageConstructor(
-				this, ovfDefinition);
-		Thread thread = new Thread(virtualMachineImageConstructor);
-		
-		threads.put(ovfDefinition.getVirtualSystemCollection().getId(), thread);
-		thread.start();	
-	}
+    private GlobalState globalState;
+    private Map<String, Thread> threads;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see eu.ascetic.vmc.api.Api#contextualizeServiceCallback(java.lang.String)
-	 */
-	public ProgressData progressCallback(String serviceId)
-			throws ProgressException {
-		// If there is no configuration then no contextualization threads are
-		// running...
-		if (this.globalState == null) {
-			throw new ProgressException(
-					"No previous call to contextualizeService()");
-		} else {
+    /**
+     * Constructor for setting up the VMIC with configuration data
+     * 
+     * @param globalConfiguration
+     *            The config data to use
+     */
+    public VmicApi(GlobalConfiguration globalConfiguration) {
+        globalState = new GlobalState(globalConfiguration);
+        threads = new HashMap<String, Thread>();
+    }
 
-			ProgressData progressData = globalState.getProgressData(serviceId);
-			if (progressData == null) {
-				throw new ProgressException("Service does not exist with id: "
-						+ serviceId);
-			} else {
-				return progressData;
-			}
-		}
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.ascetic.vmic.api.Api#uploadFile(java.lang.String, java.io.File)
-	 */
-	@Override
-	public String uploadFile(String ovfDefinitionId, File file) {
-		// FIXME: Change this method once the interface technology has been selected for this component to enable remote invocation
-		return null;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * eu.ascetic.vmic.api.Api#generateImage(eu.ascetic.utils.ovf.api.OvfDefinition
+     * )
+     */
+    @Override
+    public void generateImage(OvfDefinition ovfDefinition) {
+        Runnable virtualMachineImageConstructor = new VirtualMachineImageConstructor(
+                this, ovfDefinition);
+        Thread thread = new Thread(virtualMachineImageConstructor);
 
+        threads.put(ovfDefinition.getVirtualSystemCollection().getId(), thread);
+        thread.start();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see eu.ascetic.vmic.api#progressCallback(java.lang.String)
+     */
+    public ProgressData progressCallback(String ovfDefinitionId)
+            throws ProgressException {
+        // If there is no configuration then no VMIC threads are
+        // running...
+        if (this.globalState == null) {
+            throw new ProgressException("No previous call to generateImage()");
+        } else {
+
+            ProgressData progressData = globalState
+                    .getProgressData(ovfDefinitionId);
+            if (progressData == null) {
+                throw new ProgressException("Service does not exist with id: "
+                        + ovfDefinitionId);
+            } else {
+                return progressData;
+            }
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see eu.ascetic.vmic.api.Api#uploadFile(java.lang.String, java.io.File)
+     */
+    @Override
+    public String uploadFile(String ovfDefinitionId, File file) {
+        // FIXME: Change this method once the interface technology has been
+        // selected for this component to enable remote invocation
+        return null;
+    }
+
+    /**
+     * Getter for fetching the global state object.
+     * 
+     * @return the globalState object
+     */
+    public synchronized GlobalState getGlobalState() {
+        return globalState;
+    }
 }

@@ -19,12 +19,11 @@ import org.apache.log4j.Logger;
 
 /**
  * @author Django Armstrong (ULeeds)
- *
+ * 
  */
 public class GlobalConfiguration {
 
-	protected static final Logger LOGGER = Logger
-			.getLogger(GlobalConfiguration.class);
-	
-	
+    protected static final Logger LOGGER = Logger
+            .getLogger(GlobalConfiguration.class);
+
 }
