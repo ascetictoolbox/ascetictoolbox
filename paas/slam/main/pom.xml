@@ -21,7 +21,7 @@
     <properties>
 		<org.slasoi.slam.license.loc>${basedir}</org.slasoi.slam.license.loc>
 		<org.slasoi.slam.export.version>${project.artifact.version}</org.slasoi.slam.export.version>
-		<slam.required.bundles>slam-pac,slam-poc</slam.required.bundles>
+		<slam.required.bundles>slam-enforcement,slam-negotiation</slam.required.bundles>
 	</properties>
 
 	<dependencies>
