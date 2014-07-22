@@ -1,5 +1,7 @@
 package eu.ascetic.paas.applicationmanager.rest;
 
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -17,6 +19,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
+import eu.ascetic.paas.applicationmanager.model.Application;
+import eu.ascetic.paas.applicationmanager.rest.util.XMLBuilder;
 
 /**
  * ASCETiC Application Manager REST API to perform actions over an application
@@ -40,10 +44,14 @@ public class ApplicationRest extends AbstractRest {
 	public Response getApplications() {
 		logger.info("GET request to path: /applications");
 		// TODO it is necessary to implement a lot of query params here
-
 		
+		// We get the applications from the DB
+		List<Application> applications = applicationDAO.getAll();
 		
-		return buildResponse(Status.OK, "Method not implemented yet");
+		// We create the XMl response
+		String xml = XMLBuilder.getCollectionApplicationsXML(applications);
+		
+		return buildResponse(Status.OK, xml);
 	}
 	
 	/**

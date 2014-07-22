@@ -74,8 +74,8 @@ public class ApplicationRestTest {
 		assertEquals("/applications/1", collection.getItems().getApplications().get(0).getLinks().get(1).getHref());
 		assertEquals("self", collection.getItems().getApplications().get(0).getLinks().get(1).getRel());
 		assertEquals(MediaType.APPLICATION_XML, collection.getItems().getApplications().get(0).getLinks().get(1).getType());
-		assertEquals("/applications/1/ovf", collection.getItems().getApplications().get(0).getLinks().get(2).getHref());
-		assertEquals("OVF", collection.getItems().getApplications().get(0).getLinks().get(2).getRel());
+		assertEquals("/applications/1/deployments", collection.getItems().getApplications().get(0).getLinks().get(2).getHref());
+		assertEquals("deployments", collection.getItems().getApplications().get(0).getLinks().get(2).getRel());
 		assertEquals(MediaType.APPLICATION_XML, collection.getItems().getApplications().get(0).getLinks().get(2).getType());
 		//Application 2
 		assertEquals(2, collection.getItems().getApplications().get(1).getId());
@@ -87,15 +87,15 @@ public class ApplicationRestTest {
 		assertEquals("/applications/2", collection.getItems().getApplications().get(1).getLinks().get(1).getHref());
 		assertEquals("self", collection.getItems().getApplications().get(1).getLinks().get(1).getRel());
 		assertEquals(MediaType.APPLICATION_XML, collection.getItems().getApplications().get(1).getLinks().get(1).getType());
-		assertEquals("/applications/2/ovf", collection.getItems().getApplications().get(1).getLinks().get(2).getHref());
-		assertEquals("OVF", collection.getItems().getApplications().get(1).getLinks().get(2).getRel());
+		assertEquals("/applications/2/deployments", collection.getItems().getApplications().get(1).getLinks().get(2).getHref());
+		assertEquals("deployments", collection.getItems().getApplications().get(1).getLinks().get(2).getRel());
 		assertEquals(MediaType.APPLICATION_XML, collection.getItems().getApplications().get(1).getLinks().get(2).getType());
 		// Collection Links
-		assertEquals("/applications", collection.getLinks().get(0).getHref());
-		assertEquals("self", collection.getLinks().get(0).getRel());
+		assertEquals("/", collection.getLinks().get(0).getHref());
+		assertEquals("parent", collection.getLinks().get(0).getRel());
 		assertEquals(MediaType.APPLICATION_XML, collection.getLinks().get(0).getType());
-		assertEquals("/", collection.getLinks().get(1).getHref());
-		assertEquals("parent", collection.getLinks().get(1).getRel());
+		assertEquals("/applications", collection.getLinks().get(1).getHref());
+		assertEquals("self", collection.getLinks().get(1).getRel());
 		assertEquals(MediaType.APPLICATION_XML, collection.getLinks().get(1).getType());
 	}
 }

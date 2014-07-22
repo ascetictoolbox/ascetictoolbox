@@ -5,7 +5,9 @@ import java.util.List;
 import javax.ws.rs.core.MediaType;
 
 import eu.ascetic.paas.applicationmanager.model.Application;
+import eu.ascetic.paas.applicationmanager.model.Collection;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
+import eu.ascetic.paas.applicationmanager.model.Items;
 import eu.ascetic.paas.applicationmanager.model.Link;
 import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
@@ -153,5 +155,44 @@ public class XMLBuilder {
 	public static String getVMXML(VM vm, int applicationId, int deploymentId) {
 		vm = addVMXMLInfo(vm, applicationId, deploymentId);
 		return ModelConverter.objectVMToXML(vm);
+	}
+
+	/**
+	 * Returns the collection XML representation of a collection of applications
+	 * @param applications list of applications to be returned as collection
+	 * @return String with the XML representation
+	 */
+	public static String getCollectionApplicationsXML(List<Application> applications) {
+		Collection collection = new Collection();
+		collection.setHref("/applications");
+		
+		Link linkParent = new Link();
+		linkParent.setHref("/");
+		linkParent.setRel("parent");
+		linkParent.setType(MediaType.APPLICATION_XML);
+		collection.addLink(linkParent);
+		
+		Link linkSelf = new Link();
+		linkSelf.setHref(collection.getHref());
+		linkSelf.setRel("self");
+		linkSelf.setType(MediaType.APPLICATION_XML);
+		collection.addLink(linkSelf);
+		
+		Items items = new Items();
+		items.setOffset(0);
+		collection.setItems(items);
+		
+		if(applications != null) {
+			items.setTotal(applications.size());
+			
+			for(Application application : applications) {
+				application = addApplicationXMLInfo(application);
+				items.addApplication(application);
+			}
+		} else {
+			items.setTotal(0);
+		}
+		
+		return ModelConverter.objectCollectionToXML(collection);
 	}
 }

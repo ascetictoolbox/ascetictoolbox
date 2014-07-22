@@ -3,6 +3,8 @@ package eu.ascetic.paas.applicationmanager.rest.util;
 import static org.junit.Assert.assertEquals;
 
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBContext;
@@ -12,6 +14,7 @@ import javax.xml.bind.Unmarshaller;
 import org.junit.Test;
 
 import eu.ascetic.paas.applicationmanager.model.Application;
+import eu.ascetic.paas.applicationmanager.model.Collection;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.VM;
 
@@ -237,5 +240,54 @@ public class XMLBuilderTest {
 		assertEquals(MediaType.APPLICATION_XML, vm.getLinks().get(0).getType());
 		assertEquals("/applications/22/deployments/33/vms/44", vm.getLinks().get(1).getHref());
 		assertEquals("self",vm.getLinks().get(1).getRel());
+	}
+	
+	@Test
+	public void getCollectionApplicationsXMLTest() throws JAXBException  {
+		Application application1 = new Application();
+		application1.setId(1);
+		application1.setName("name 1");
+
+		Application application2 = new Application();
+		application2.setId(2);
+		application2.setName("name 2");
+		
+		List<Application> applications = new ArrayList<Application>();
+		applications.add(application1);
+		applications.add(application2);
+		
+		String xml = XMLBuilder.getCollectionApplicationsXML(applications);
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(Collection.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		Collection collection = (Collection) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals("/applications", collection.getHref());
+		assertEquals(0, collection.getItems().getOffset());
+		assertEquals(2, collection.getItems().getTotal());
+		assertEquals("/applications/1", collection.getItems().getApplications().get(0).getHref());
+		assertEquals(3, collection.getItems().getApplications().get(0).getLinks().size());
+		assertEquals("/applications/2", collection.getItems().getApplications().get(1).getHref());
+		assertEquals(3, collection.getItems().getApplications().get(1).getLinks().size());
+		assertEquals(2, collection.getLinks().size());
+		assertEquals("/", collection.getLinks().get(0).getHref());
+		assertEquals("parent", collection.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, collection.getLinks().get(0).getType());
+		assertEquals("/applications", collection.getLinks().get(1).getHref());
+		assertEquals("self",collection.getLinks().get(1).getRel());
+	}
+	
+	@Test
+	public void getCollectionNullCollectionOfApplicationsXMLTest() throws JAXBException {	
+		String xml = XMLBuilder.getCollectionApplicationsXML(null);
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(Collection.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		Collection collection = (Collection) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals("/applications", collection.getHref());
+		assertEquals(0, collection.getItems().getOffset());
+		assertEquals(0, collection.getItems().getTotal());
+		assertEquals(null, collection.getItems().getApplications());
 	}
 }
