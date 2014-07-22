@@ -80,8 +80,11 @@ public class ApplicationRest extends AbstractRest {
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getApplication(@PathParam("id") String id) {
 		logger.info("GET request to path: /applications/" + id);
-		//TODO
-		return buildResponse(Status.OK, "Method not implemented yet");
+		
+		Application application = applicationDAO.getById(Integer.parseInt(id));
+		String xml = XMLBuilder.getApplicationXML(application);
+		
+		return buildResponse(Status.OK, xml);
 	}
 	
 	/**

@@ -26,8 +26,6 @@ import eu.ascetic.paas.applicationmanager.model.Collection;
  */
 public class ApplicationRestTest {
 
-
-	
 	@Test
 	public void getApplicationsTest() throws JAXBException {
 		ApplicationDAO applicationDAO = mock(ApplicationDAO.class);
@@ -97,5 +95,42 @@ public class ApplicationRestTest {
 		assertEquals("/applications", collection.getLinks().get(1).getHref());
 		assertEquals("self", collection.getLinks().get(1).getRel());
 		assertEquals(MediaType.APPLICATION_XML, collection.getLinks().get(1).getType());
+	}
+	
+	@Test
+	public void getApplicationTest() throws JAXBException {
+		ApplicationDAO applicationDAO = mock(ApplicationDAO.class);
+		
+		Application application = new Application();
+		application.setId(1);
+		application.setName("name");
+		
+		when(applicationDAO.getById(1)).thenReturn(application);
+		
+		ApplicationRest applicationRest = new ApplicationRest();
+		applicationRest.applicationDAO = applicationDAO;
+		
+		Response response = applicationRest.getApplication("1");
+		
+		assertEquals(200, response.getStatus());
+		
+		String xml = (String) response.getEntity();
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(Application.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		Application applicationResponse = (Application) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals(1, applicationResponse.getId());
+		assertEquals("/applications/1", applicationResponse.getHref());
+		assertEquals(3, applicationResponse.getLinks().size());
+		assertEquals("/applications", applicationResponse.getLinks().get(0).getHref());
+		assertEquals("parent", applicationResponse.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, applicationResponse.getLinks().get(0).getType());
+		assertEquals("/applications/1", applicationResponse.getLinks().get(1).getHref());
+		assertEquals("self",applicationResponse.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, applicationResponse.getLinks().get(1).getType());
+		assertEquals("/applications/1/deployments", applicationResponse.getLinks().get(2).getHref());
+		assertEquals("deployments",applicationResponse.getLinks().get(2).getRel());
+		assertEquals(MediaType.APPLICATION_XML, applicationResponse.getLinks().get(2).getType());
 	}
 }
