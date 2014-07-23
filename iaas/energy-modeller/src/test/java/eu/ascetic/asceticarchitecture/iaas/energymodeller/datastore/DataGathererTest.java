@@ -16,11 +16,15 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration.Calibrator;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.VmMeasurement;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostVmLoadFraction;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import org.junit.Test;
@@ -33,11 +37,10 @@ public class DataGathererTest {
 
     public DataGathererTest() {
     }
-    
+
     private final Host CHOSEN_HOST = new Host(10084, "asok10");
-    private final Host CHOSEN_HOST2 =  new Host(10106, "asok12");
+    private final Host CHOSEN_HOST2 = new Host(10106, "asok12");
     private final String VM_NAME = "cloudsuite---data-analytics"; //CloudSuite - Data Analytics
-    
 
     /**
      * Test of run method, of class DataGatherer.
@@ -125,7 +128,7 @@ public class DataGathererTest {
         Calibrator calibrator = new Calibrator(adaptor);
         DataGatherer instance = new DataGatherer(adaptor, connector, calibrator);
         HashMap<String, VmDeployed> result = instance.getVmList();
-        assert(!result.isEmpty());
+        assert (!result.isEmpty());
     }
 
     /**
@@ -140,7 +143,7 @@ public class DataGathererTest {
         Calibrator calibrator = new Calibrator(adaptor);
         DataGatherer instance = new DataGatherer(adaptor, connector, calibrator);
         VmDeployed result = instance.getVm(name);
-        assert(result != null);
+        assert (result != null);
         assertEquals(VM_NAME, result.getName());
     }
 
@@ -157,6 +160,22 @@ public class DataGathererTest {
         DataGatherer instance = new DataGatherer(adaptor, connector, calibrator);
         ArrayList<VmDeployed> result = instance.getVMsOnHost(host);
         assertEquals(VM_NAME, result.get(0).getName());
+    }
+
+    @Test
+    public void customTest() {
+        System.out.println("Custom Test - Code Patch - Line 116- 121");
+        Host host = CHOSEN_HOST2;
+        ZabbixDataSourceAdaptor datasource = new ZabbixDataSourceAdaptor();
+        DefaultDatabaseConnector connector = new DefaultDatabaseConnector();
+        Calibrator calibrator = new Calibrator(datasource);
+        DataGatherer instance = new DataGatherer(datasource, connector, calibrator);
+        ArrayList<VmDeployed> vms = instance.getVMsOnHost(host);
+        if (!vms.isEmpty()) {
+            HostVmLoadFraction fraction = new HostVmLoadFraction(host, (new GregorianCalendar().getTimeInMillis()) / 1000);
+            List<VmMeasurement> vmMeasurements = datasource.getVmData(vms);
+            fraction.setFraction(vmMeasurements);
+        }
     }
 
 }

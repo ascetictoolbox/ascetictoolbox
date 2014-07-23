@@ -39,6 +39,8 @@ public abstract class Measurement {
     private static final String NICE_KPI_NAME = KpiList.NICE_KPI_NAME;
     private static final String SOFT_IRQ_KPI_NAME = KpiList.SOFT_IRQ_KPI_NAME;
     private static final String STEAL_KPI_NAME = KpiList.STEAL_KPI_NAME;
+    private static final String SYSTEM_KPI_NAME = KpiList.SYSTEM_KPI_NAME;
+    private static final String USER_KPI_NAME = KpiList.USER_KPI_NAME;
 
     /**
      * This looks at the metrics gained, for this given gathering of measurement
@@ -182,6 +184,14 @@ public abstract class Measurement {
         double nice = 0.0;
         double softirq = 0.0;
         double steal = 0.0;
+        double system = 0.0;
+        double user = 0.0;
+        if (metrics.containsKey(SYSTEM_KPI_NAME)) {
+            system = Double.parseDouble(this.getMetric(SYSTEM_KPI_NAME).getLastValue());
+        }
+        if (metrics.containsKey(USER_KPI_NAME)) {
+            user = Double.parseDouble(this.getMetric(USER_KPI_NAME).getLastValue());
+        }
         if (metrics.containsKey(INTERUPT_KPI_NAME)) {
             interrupt = Double.parseDouble(this.getMetric(INTERUPT_KPI_NAME).getLastValue());
         }
@@ -197,7 +207,7 @@ public abstract class Measurement {
         if (metrics.containsKey(STEAL_KPI_NAME)) {
             steal = Double.parseDouble(this.getMetric(STEAL_KPI_NAME).getLastValue());
         }
-        return interrupt + iowait + nice + softirq + steal;
+        return system + user + interrupt + iowait + nice + softirq + steal;
     }
 
     /**
