@@ -5,10 +5,7 @@ import es.bsc.vmmanagercore.cloudmiddleware.JCloudsMiddleware;
 import es.bsc.vmmanagercore.db.VmManagerDb;
 import es.bsc.vmmanagercore.db.VmManagerDbHsql;
 import es.bsc.vmmanagercore.model.*;
-import es.bsc.vmmanagercore.monitoring.Host;
-import es.bsc.vmmanagercore.monitoring.HostGanglia;
-import es.bsc.vmmanagercore.monitoring.HostOpenStack;
-import es.bsc.vmmanagercore.monitoring.HostZabbix;
+import es.bsc.vmmanagercore.monitoring.*;
 import es.bsc.vmmanagercore.scheduler.EstimatesGenerator;
 import es.bsc.vmmanagercore.scheduler.Scheduler;
 
@@ -112,6 +109,11 @@ public class VmManager {
         cloudMiddleware.destroy(vmId);
         db.deleteVm(vmId);
         db.closeConnection();
+
+        // // If the monitoring system is Zabbix, then we need to delete the VM from Zabbix
+        if (VmManagerConfiguration.getInstance().monitoring.equals(VmManagerConfiguration.Monitoring.ZABBIX)) {
+            ZabbixConnector.getZabbixClient().deleteVM(vmId);
+        }
     }
 
     /**
@@ -144,9 +146,9 @@ public class VmManager {
 
             // If the monitoring system is Zabbix, then we need to call the Zabbix wrapper to initialize
             // the Zabbix agents
-            /*if (VmManagerConfiguration.getInstance().monitoring.equals(VmManagerConfiguration.Monitoring.ZABBIX)) {
-                new ZabbixClient().createVM(vmId, cloudMiddleware.getVMInfo(vmId).getIpAddress());
-            }*/
+            if (VmManagerConfiguration.getInstance().monitoring.equals(VmManagerConfiguration.Monitoring.ZABBIX)) {
+                ZabbixConnector.getZabbixClient().createVM(vmId, cloudMiddleware.getVMInfo(vmId).getIpAddress());
+            }
         }
 
         // Close the DB connection
