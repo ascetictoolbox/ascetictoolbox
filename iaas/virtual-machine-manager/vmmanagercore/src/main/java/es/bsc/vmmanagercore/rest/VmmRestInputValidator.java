@@ -24,7 +24,7 @@ public class VmmRestInputValidator {
             throw new WebApplicationException(400);
         }
 
-        String[] requiredParams = {"name", "image", "cpus", "ramMb", "diskGb", "applicationId"};
+        String[] requiredParams = {"name", "image", "cpus", "ramMb", "diskGb"};
         JsonArray vmsJsonArray = vmsJson.getAsJsonArray("vms");
         for (JsonElement vmJsonElement: vmsJsonArray) {
             JsonObject vmJson = vmJsonElement.getAsJsonObject();
