@@ -19,9 +19,12 @@ import org.apache.log4j.Logger;
 
 import eu.ascetic.utils.ovf.api.OvfDefinition;
 import eu.ascetic.vmic.api.VmicApi;
-import eu.ascetic.vmic.api.datamodel.ProgressData;
+import eu.ascetic.vmic.api.datamodel.AbstractProgressData;
+import eu.ascetic.vmic.api.datamodel.ProgressDataImage;
 
 /**
+ * Core logic of the Virtual Machine Image Constructor (VMIC).
+ * 
  * @author Django Armstrong (ULeeds)
  * 
  */
@@ -67,7 +70,7 @@ public class VirtualMachineImageConstructor implements Runnable {
     @Override
     public void run() {
         // Initialise progress...
-        vmicApi.getGlobalState().addProgress(ovfDefinitionId);
+        vmicApi.getGlobalState().addImageProgress(ovfDefinitionId);
         LOGGER.debug("Added new new progress object, initial progress is: "
                 + vmicApi.getGlobalState().getProgressData(ovfDefinitionId)
                         .getCurrentPercentageCompletion());
@@ -79,16 +82,18 @@ public class VirtualMachineImageConstructor implements Runnable {
 
         // 2) Select mode of image generation
         if (mode == 1) {
-            // TODO: Offline mode
+            // Offline mode
+            generateImageOffline();
         } else {
-            // TODO: Online mode
+            // Online mode
+            generateImageOnline();
         }
 
         // Image generation complete...
         vmicApi.getGlobalState().setProgressPhase(ovfDefinitionId,
-                ProgressData.FINALISE_PHASE_ID);
+                ProgressDataImage.FINALISE_PHASE_ID);
         vmicApi.getGlobalState().setProgressPercentage(ovfDefinitionId,
-                ProgressData.COMPLETED_PERCENTAGE);
+                AbstractProgressData.COMPLETED_PERCENTAGE);
         LOGGER.info(vmicApi.getGlobalState().getProgressLogString(
                 ovfDefinitionId));
 
@@ -103,18 +108,51 @@ public class VirtualMachineImageConstructor implements Runnable {
      */
     private void retriveImageGenerationData() {
         vmicApi.getGlobalState().setProgressPhase(ovfDefinitionId,
-                ProgressData.RETRIEVE_DATA_PHASE_ID);
+                ProgressDataImage.RETRIEVE_DATA_PHASE_ID);
 
         // TODO: Parse OVF here and see what mode to operate in
-        mode = 1;
+        OvfDefinitionParser ovfDefinitionParser = new OvfDefinitionParser(ovfDefinition);
+        mode = ovfDefinitionParser.parse();
 
         // Sleep a little for progress data to update..
         try {
             vmicApi.getGlobalState().setProgressPercentage(ovfDefinitionId,
-                    ProgressData.COMPLETED_PERCENTAGE);
+                    AbstractProgressData.COMPLETED_PERCENTAGE);
             Thread.sleep(THREAD_SLEEP_TIME_LONG);
         } catch (InterruptedException e) {
             LOGGER.error(e.getMessage(), e);
         }
     }
+
+    /**
+     * Method to generate images that mounts the image while it is offline.
+     */
+    private void generateImageOffline() {
+        
+        // TODO: Mount the image(s) using remote a system call
+
+        // TODO: Add the file(s) to the image(s) using remote a system call
+
+        // TODO: Unmount the image(s) using a remote system call
+    }
+
+    /**
+     * Method to generate images using chef while the image is online and
+     * booted.
+     */
+    private void generateImageOnline() {
+
+        // TODO: Boot up the image from a snapshot (using libvirt?)
+
+        // TODO: Bootstrap the image to chef via a remote system call to knife.
+
+        // TODO: Upload the chef recipes to the chef workspace (using rsync?) 
+        
+        // TODO: Push out the chef recipe(s) via a remote system call to knife.
+
+        // TODO: Shutdown the VM (using libvirt?)
+
+        // TODO: Remove the node from the chef server
+    }
+
 }

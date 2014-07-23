@@ -31,12 +31,13 @@ import eu.ascetic.utils.ovf.api.OvfDefinition;
 public class GlobalState {
 
     private GlobalConfiguration globalConfiguration;
-    private Map<String, ProgressData> progressDataHashMap;
+    private Map<String, AbstractProgressData> progressDataHashMap;
     private boolean running = false;
 
     /**
-     * Default constructor that creates a {@link ProgressData} {@link Map} for
-     * storing the state of all applications for which we are generating images.
+     * Default constructor that creates a {@link ProgressDataImage} {@link Map}
+     * for storing the state of all applications for which we are generating
+     * images.
      * 
      * @param globalConfiguration
      *            The global configuration object storing environmental
@@ -44,7 +45,7 @@ public class GlobalState {
      */
     public GlobalState(GlobalConfiguration globalConfiguration) {
         this.globalConfiguration = globalConfiguration;
-        progressDataHashMap = new HashMap<String, ProgressData>();
+        progressDataHashMap = new HashMap<String, AbstractProgressData>();
     }
 
     /**
@@ -55,14 +56,25 @@ public class GlobalState {
     }
 
     /**
-     * Adds a new instance of a {@link ProgressData} object to the
+     * Adds a new instance of a {@link ProgressDataImage} object to the
      * {@link GlobalState} of the VMIC
      * 
      * @param ovfDefinitionId
-     *            The OVF ID to create a {@link ProgressData} object for.
+     *            The OVF ID to create a {@link ProgressDataImage} object for.
      */
-    public void addProgress(String ovfDefinitionId) {
-        progressDataHashMap.put(ovfDefinitionId, new ProgressData());
+    public void addImageProgress(String ovfDefinitionId) {
+        progressDataHashMap.put(ovfDefinitionId, new ProgressDataImage());
+    }
+
+    /**
+     * Adds a new instance of a {@link ProgressDataImage} object to the
+     * {@link GlobalState} of the VMIC
+     * 
+     * @param ovfDefinitionId
+     *            The OVF ID to create a {@link ProgressDataFile} object for.
+     */
+    public void addFileProgress(String ovfDefinitionId) {
+        progressDataHashMap.put(ovfDefinitionId, new ProgressDataFile());
     }
 
     /**
@@ -71,12 +83,13 @@ public class GlobalState {
      * @param ovfDefinitionId
      *            The OVF ID to set the progress phase for.
      * @param currentPhaseId
-     *            The current phase ID to set (see {@link ProgressData})
+     *            The current phase ID to set (see {@link AbstractProgressData})
      */
     public void setProgressPhase(String ovfDefinitionId, int currentPhaseId) {
-        ProgressData progressData = progressDataHashMap.get(ovfDefinitionId);
-        progressData.setCurrentPhaseId(currentPhaseId);
-        progressDataHashMap.put(ovfDefinitionId, progressData);
+        AbstractProgressData abstractProgressData = progressDataHashMap
+                .get(ovfDefinitionId);
+        abstractProgressData.setCurrentPhaseId(currentPhaseId);
+        progressDataHashMap.put(ovfDefinitionId, abstractProgressData);
     }
 
     /**
@@ -87,38 +100,51 @@ public class GlobalState {
      *            The OVF ID to set the progress phase for.
      * @param currentPercentageCompletion
      *            The current completion % of a phase to set (see
-     *            {@link ProgressData}).
+     *            {@link AbstractProgressData}).
      */
     public void setProgressPercentage(String ovfDefinitionId,
             Double currentPercentageCompletion) {
-        ProgressData progressData = progressDataHashMap.get(ovfDefinitionId);
-        progressData
+        AbstractProgressData abstractProgressData = progressDataHashMap
+                .get(ovfDefinitionId);
+        abstractProgressData
                 .setCurrentPercentageCompletion(currentPercentageCompletion);
-        progressDataHashMap.put(ovfDefinitionId, progressData);
+        progressDataHashMap.put(ovfDefinitionId, abstractProgressData);
     }
 
     /**
-     * Get the ProgressData object for a given OVF ID.
+     * Get the ProgressDataImage object for a given OVF ID.
      * 
      * @param ovfDefinitionId
-     *            The OVF ID of the ProgressData object to get.
-     * @return The ProgressData object to return.
+     *            The OVF ID of the ProgressDataImage object to get.
+     * @return The ProgressDataImage object to return.
      */
-    public ProgressData getProgressData(String ovfDefinitionId) {
+    public AbstractProgressData getProgressData(String ovfDefinitionId) {
         return progressDataHashMap.get(ovfDefinitionId);
     }
 
     /**
-     * Set the ovfDefinition to be returned through the API via a application
-     * associated ProgressData object.
+     * Set the ovfDefinition to be returned through the API via an applications
+     * associated {@link ProgressDataImage} object.
      * 
      * @param ovfDefinition
-     *            The ovfDefinition to return.
+     *            The OvfDefinition to return.
      */
     public void setOvfDefinition(OvfDefinition ovfDefinition) {
-        progressDataHashMap.get(
-                ovfDefinition.getVirtualSystemCollection().getId())
+        ((ProgressDataImage) progressDataHashMap.get(ovfDefinition
+                .getVirtualSystemCollection().getId()))
                 .setOvfDefinition(ovfDefinition);
+    }
+
+    /**
+     * Set the remote path of a File uploaded to be returned through the API via
+     * an applications associated {@link ProgressDataFile} object.
+     * 
+     * @param remotePath
+     *            The remote path to return
+     */
+    public void setRemotePath(String ovfDefinitionId, String remotePath) {
+        ((ProgressDataFile) progressDataHashMap.get(ovfDefinitionId))
+                .setRemotePath(remotePath);
     }
 
     /**

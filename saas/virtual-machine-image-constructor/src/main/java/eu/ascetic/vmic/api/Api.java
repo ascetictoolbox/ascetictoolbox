@@ -18,7 +18,9 @@ package eu.ascetic.vmic.api;
 import java.io.File;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
 import eu.ascetic.vmic.api.core.ProgressException;
-import eu.ascetic.vmic.api.datamodel.ProgressData;
+import eu.ascetic.vmic.api.datamodel.AbstractProgressData;
+import eu.ascetic.vmic.api.datamodel.ProgressDataFile;
+import eu.ascetic.vmic.api.datamodel.ProgressDataImage;
 
 /**
  * Interface to VMIC capabilities
@@ -29,25 +31,12 @@ import eu.ascetic.vmic.api.datamodel.ProgressData;
 public interface Api {
 
     /**
-     * Generates a suitable image from an OVF definition
+     * Generates suitable image(s) from an OVF definition
      * 
      * @param ovfDefinition
+     *            The OVF definition to generate image(s) from
      */
-    void generateImage(OvfDefinition ovfDefinition);
-
-    /**
-     * Given a ovfDefinitionId this function returns the progress status and
-     * percentage completion of a previous call to generateImage() as a
-     * ProgressData object.
-     * 
-     * @param ovfDefinitionId
-     *            The OVF ID to get progress details on
-     * @return progressData An object containing details of progress
-     * @throws ProgressException
-     *             Thrown if an error occurred during the generation of an image
-     */
-    public ProgressData progressCallback(String ovfDefinitionId)
-            throws ProgressException;
+    public void generateImage(OvfDefinition ovfDefinition);
 
     /**
      * Functionality to enable uploading of images to the SaaS local repository
@@ -56,8 +45,22 @@ public interface Api {
      *            The OVF ID this file is associated with
      * @param file
      *            The file to upload
-     * @returns A URI reference to the uploaded file for use in the OVF
-     *          Definition
      */
-    public String uploadFile(String ovfDefinitionId, File file);
+    public void uploadFile(String ovfDefinitionId, File file);
+
+    /**
+     * Given a ovfDefinitionId this function returns the progress status and
+     * percentage completion of a previous call to generateImage() or
+     * uploadFile() operation as a {@link AbstractProgressData} object that
+     * should be cast to either {@link ProgressDataFile} (which also provides access to the files {@link ProgressDataFile#remotePath}) or
+     * {@link ProgressDataImage} (that provides access to the altered {@link ProgressDataImage#ovfDefinition}) depending on the operation.
+     * 
+     * @param ovfDefinitionId
+     *            The OVF ID to get progress details on
+     * @return An object containing details of progress
+     * @throws ProgressException
+     *             Thrown if an error occurred during the generation of an image
+     */
+    public AbstractProgressData progressCallback(String ovfDefinitionId)
+            throws ProgressException;
 }

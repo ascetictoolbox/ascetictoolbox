@@ -43,9 +43,11 @@ public class SystemCall {
     private String workingDirectory;
 
     protected static final Logger LOGGER = Logger.getLogger(SystemCall.class);
-
+    
     /**
      * Initialises an instance of the SystemCall object.
+     *  
+     * @param workingDirectory The directory to work within
      */
     public SystemCall(String workingDirectory) {
         this.workingDirectory = workingDirectory;

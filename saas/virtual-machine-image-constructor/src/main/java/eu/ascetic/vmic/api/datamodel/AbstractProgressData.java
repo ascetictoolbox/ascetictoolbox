@@ -15,81 +15,31 @@
  */
 package eu.ascetic.vmic.api.datamodel;
 
+import java.util.HashMap;
 import java.util.Map;
 
-import eu.ascetic.utils.ovf.api.OvfDefinition;
-
 /**
- * A class to store the progress data of a application. Contains statics for ID.
+ * Abstract class for defining progress data.
  * 
  * @author Django Armstrong (ULeeds)
- * @version 0.0.1
+ * 
  */
-public class ProgressData {
-
-    // Index of VMIC PHASES.
-    /**
-     * 0
-     */
-    public static final int INITIALIZE_PHASE_ID = 0;
-    /**
-     * 1
-     */
-    public static final int RETRIEVE_DATA_PHASE_ID = 1;
-    /**
-     * 2
-     */
-    public static final int CONVERT_IMAGE_PHASE_ID = 2;
-    /**
-     * 4
-     */
-    public static final int FINALISE_PHASE_ID = 4;
-
-    // Textual representation of PHASES of VMIC in order.
-    /**
-     * "Starting Image Generation Process"
-     */
-    private static final String INITIALISE_PHASE_TEXT = "Starting Image Generation Process";
-    /**
-     * "Retrieving Image Generation Data"
-     */
-    private static final String RETRIEVE_DATA_PHASE_TEXT = "Retrieving Image Generation Data";
-    /**
-     * "Generating Image(s)"
-     */
-    private static final String GENERATE_IMAGES_PHASE_TEXT = "Generating Image(s)";
-    /**
-     * "Image Generation Complete!"
-     */
-    private static final String FINALISE_PHASE_TEXT = "Image Generation Complete!";
-
-    /**
-     * Phase text in order of execution.
-     */
-    private static final String[] PHASES = { INITIALISE_PHASE_TEXT,
-            RETRIEVE_DATA_PHASE_TEXT, GENERATE_IMAGES_PHASE_TEXT,
-            FINALISE_PHASE_TEXT };
-
-    /**
-     * The current phase being executed.
-     */
-    private int currentPhaseId;
+public abstract class AbstractProgressData {
 
     public static final double COMPLETED_PERCENTAGE = 100.0;
 
     /**
+     * The current phase being executed.
+     */
+    protected int currentPhaseId;
+
+    /**
      * The current percentage completion
      */
-    private Double currentPercentageCompletion;
+    protected Double currentPercentageCompletion;
 
     /**
-     * Used to store an altered version of the ovfDefinition for passing image
-     * URI's back through the API.
-     */
-    private OvfDefinition ovfDefinition = null;
-
-    /**
-     * Defines when the VMIC has completed constructing an image.
+     * Defines when the VMIC has completed.
      */
     private boolean complete = false;
 
@@ -104,18 +54,31 @@ public class ProgressData {
     private Exception exception = null;
 
     /**
-     * Stores the history of progress
+     * Stores the history of progress.
      */
-    private Map<Integer, Double> history;
+    protected Map<Integer, Double> history;
 
     /**
-     * Constructor with default progress values.
+     * Stores the phases.
      */
-    public ProgressData() {
-        currentPercentageCompletion = 0.0;
+    private String[] phases = null;
+
+    /**
+     * Constructor that sets up the phases of an operation.
+     * 
+     */
+    public AbstractProgressData(String[] phases) {
+        super();
+        this.phases = phases;
+        currentPhaseId = 0;
+        currentPercentageCompletion = COMPLETED_PERCENTAGE;
+        this.history = new HashMap<Integer, Double>(1);
+        history.put(currentPhaseId, currentPercentageCompletion);
     }
 
     /**
+     * Gets the current progress as text.
+     * 
      * @return the current progress in textual form.
      */
     public String getProgressString() {
@@ -124,20 +87,26 @@ public class ProgressData {
     }
 
     /**
+     * Gets the current phase name.
+     * 
      * @return the current phase name as a string.
      */
     public String getCurrentPhaseName() {
-        return PHASES[currentPhaseId];
+        return phases[currentPhaseId];
     }
 
     /**
-     * @return the current phase name as a string.
+     * Gets a phase name.
+     * 
+     * @return the a phase name as a string.
      */
     public String getPhaseName(int phaseId) {
-        return PHASES[phaseId];
+        return phases[phaseId];
     }
 
     /**
+     * Gets the current phase ID.
+     * 
      * @return the currentPhaseId.
      */
     public int getCurrentPhaseId() {
@@ -145,6 +114,8 @@ public class ProgressData {
     }
 
     /**
+     * Sets the current phase ID.
+     * 
      * @param currentPhaseId
      *            the currentPhaseId to set.
      */
@@ -155,6 +126,8 @@ public class ProgressData {
     }
 
     /**
+     * Gets the current percentage completion of an operation.
+     * 
      * @return the currentPercentageCompletion
      */
     public Double getCurrentPercentageCompletion() {
@@ -162,6 +135,8 @@ public class ProgressData {
     }
 
     /**
+     * Sets the current percentage completion of an operation.
+     * 
      * @param currentPercentageCompletion
      *            the currentPercentageCompletion to set
      */
@@ -171,24 +146,7 @@ public class ProgressData {
     }
 
     /**
-     * The ovfDefinition altered by the VMIC during the generation process.
-     * 
-     * @return the ovfDefinition.
-     */
-    public OvfDefinition getOvfDefinition() {
-        return ovfDefinition;
-    }
-
-    /**
-     * @param ovfDefinition
-     *            the ovfDefinition to set.
-     */
-    public void setOvfDefinition(OvfDefinition ovfDefinition) {
-        this.ovfDefinition = ovfDefinition;
-    }
-
-    /**
-     * Defines if the VMC has completed contextualization.
+     * Defines if the VMIC has completed an operation.
      * 
      * @return the complete
      */
@@ -197,6 +155,8 @@ public class ProgressData {
     }
 
     /**
+     * Sets completion state.
+     * 
      * @param complete
      *            the complete to set
      */
@@ -205,6 +165,8 @@ public class ProgressData {
     }
 
     /**
+     * Tests if an error occurred.
+     * 
      * @return the error
      */
     public boolean isError() {
@@ -212,6 +174,8 @@ public class ProgressData {
     }
 
     /**
+     * Sets error state.
+     * 
      * @param error
      *            the error to set
      */
@@ -220,6 +184,8 @@ public class ProgressData {
     }
 
     /**
+     * Gets the {@link Exception} that caused the error.
+     * 
      * @return the exception
      */
     public Exception getException() {
@@ -227,6 +193,8 @@ public class ProgressData {
     }
 
     /**
+     * Sets the {@link Exception} that caused the error.
+     * 
      * @param exception
      *            the exception to set
      */
@@ -235,8 +203,8 @@ public class ProgressData {
     }
 
     /**
-     * HashMap<PhaseId, PhasePercentageCompletion>, use getPhaseName() to get
-     * text name of the phase.
+     * Gets a Map&ltPhaseId, PhasePercentageCompletion&gt history of progress,
+     * use getPhaseName() to get text name of the phase.
      * 
      * @return the history of progress
      */
@@ -245,7 +213,7 @@ public class ProgressData {
     }
 
     /**
-     * The total progress of the VMC.
+     * The total progress of this VMIC operation.
      * 
      * @return the totalProgress
      */
@@ -253,16 +221,17 @@ public class ProgressData {
         if (currentPhaseId == 0) {
             return 0.0;
         } else {
-            return COMPLETED_PERCENTAGE / (PHASES.length / (currentPhaseId));
+            return COMPLETED_PERCENTAGE / (phases.length / (currentPhaseId));
         }
     }
 
     /**
-     * The number of PHASES in the VMC.
+     * The number of phases in this VMIC operation.
      * 
      * @return the totalProgress
      */
     public int getNumberOfPhases() {
-        return PHASES.length;
+        return phases.length;
     }
+
 }

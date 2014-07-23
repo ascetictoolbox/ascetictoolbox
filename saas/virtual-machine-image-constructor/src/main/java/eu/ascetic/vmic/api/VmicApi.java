@@ -22,9 +22,10 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import eu.ascetic.utils.ovf.api.OvfDefinition;
+import eu.ascetic.vmic.api.core.FileUploader;
 import eu.ascetic.vmic.api.core.ProgressException;
-import eu.ascetic.vmic.api.datamodel.ProgressData;
 import eu.ascetic.vmic.api.core.VirtualMachineImageConstructor;
+import eu.ascetic.vmic.api.datamodel.AbstractProgressData;
 import eu.ascetic.vmic.api.datamodel.GlobalConfiguration;
 import eu.ascetic.vmic.api.datamodel.GlobalState;
 
@@ -72,37 +73,41 @@ public class VmicApi implements Api {
     /*
      * (non-Javadoc)
      * 
+     * @see eu.ascetic.vmic.api.Api#uploadFile(java.lang.String, java.io.File)
+     */
+    @Override
+    public void uploadFile(String ovfDefinitionId, File file) {
+        Runnable fileUploader = new FileUploader(this, ovfDefinitionId);
+
+        Thread thread = new Thread(fileUploader);
+
+        threads.put(ovfDefinitionId + "." + file.getAbsolutePath(), thread);
+        thread.start();
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
      * @see eu.ascetic.vmic.api#progressCallback(java.lang.String)
      */
-    public ProgressData progressCallback(String ovfDefinitionId)
+    public AbstractProgressData progressCallback(String ovfDefinitionId)
             throws ProgressException {
         // If there is no configuration then no VMIC threads are
         // running...
         if (this.globalState == null) {
-            throw new ProgressException("No previous call to generateImage()");
+            throw new ProgressException("No previous call to VMIC");
         } else {
 
-            ProgressData progressData = globalState
+            AbstractProgressData progressData = globalState
                     .getProgressData(ovfDefinitionId);
             if (progressData == null) {
-                throw new ProgressException("Service does not exist with id: "
-                        + ovfDefinitionId);
+                throw new ProgressException(
+                        "Application does not exist with id: "
+                                + ovfDefinitionId);
             } else {
                 return progressData;
             }
         }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see eu.ascetic.vmic.api.Api#uploadFile(java.lang.String, java.io.File)
-     */
-    @Override
-    public String uploadFile(String ovfDefinitionId, File file) {
-        // FIXME: Change this method once the interface technology has been
-        // selected for this component to enable remote invocation
-        return null;
     }
 
     /**

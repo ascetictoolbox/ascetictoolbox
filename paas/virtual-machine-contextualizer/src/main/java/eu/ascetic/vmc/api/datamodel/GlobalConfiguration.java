@@ -23,7 +23,7 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 
 /**
- * Class to stores the configuration details of the VMC
+ * Class to store the configuration details of the VMC
  * 	
  * TODO: Check for OS and dependency requirements
  * 

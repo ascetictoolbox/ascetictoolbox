@@ -15,9 +15,16 @@
  */
 package eu.ascetic.vmic.api.datamodel;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
+
 import org.apache.log4j.Logger;
 
 /**
+ * Class to store the configuration details of the VMIC
+ * 
  * @author Django Armstrong (ULeeds)
  * 
  */
@@ -26,4 +33,146 @@ public class GlobalConfiguration {
     protected static final Logger LOGGER = Logger
             .getLogger(GlobalConfiguration.class);
 
+    private static final String HOST_ADDRESS_PROPERTY_KEY = "hostAddress";
+    private static final String REPOSITORY_PROPERTY_KEY = "repositoryPath";
+    private static final String RSYNC_PROPERTY_KEY = "rsyncPath";
+
+    private boolean defaultValues;
+    private String configPropertiesFileUri;
+
+    private String hostAddress;
+    private String repositoryPath;
+    private String rsyncPath;
+
+    /**
+     * Constructor for setting configuration variables.
+     * 
+     * @param configPropertiesFileUri
+     *            The file path to the configuration file (including file name)
+     * @throws Exception
+     *             If config file is not present or unreadable
+     */
+    public GlobalConfiguration(String configPropertiesFileUri) throws Exception {
+
+        this.configPropertiesFileUri = configPropertiesFileUri;
+        LOGGER.info("Using configPropertiesFileUri: '"
+                + configPropertiesFileUri + "'");
+        defaultValues = false;
+
+        config();
+    }
+
+    /**
+     * Constructor used for testing purposes, using default configuration
+     * values. Can alternatively be used to set configuration programmatically
+     * via setters.
+     */
+    public GlobalConfiguration() {
+
+        LOGGER.info("Using default config values for testing purposes...");
+        defaultValues = true;
+
+        try {
+            config();
+        } catch (Exception e) {
+            // Do nothing as config file is not loaded here...
+        }
+    }
+
+    /**
+     * Gets the variables from the config properties file.
+     * 
+     * @throws Exception
+     *             Thrown if config file is not present or unreadable
+     */
+    private void config() throws Exception {
+
+        // Read properties file.
+        Properties properties = new Properties();
+
+        if (defaultValues) {
+            // Create a temporary directory for testing
+            String systemTempDir = System.getProperty("java.io.tmpdir");
+            String vmicTemp = systemTempDir + File.separator
+                    + "VirtualMachineImageConstructor";
+
+            // Set the hostAddress IP for testing
+            properties.setProperty(HOST_ADDRESS_PROPERTY_KEY, "localhost");
+            
+            // Set repositoryPath URI for testing
+            properties.setProperty(REPOSITORY_PROPERTY_KEY, vmicTemp
+                    + File.separator + "repository");
+            new File(properties.getProperty(REPOSITORY_PROPERTY_KEY)).mkdirs();
+
+            // Set rsyncPath URI for testing to local rsync binary
+            properties.setProperty(RSYNC_PROPERTY_KEY,
+                    "C:\\Users\\django\\cygwin\\bin\\rsync.exe");
+            new File(properties.getProperty(REPOSITORY_PROPERTY_KEY)).mkdirs();
+
+        } else {
+            try {
+                properties.load(new FileInputStream(
+                        this.configPropertiesFileUri));
+            } catch (IOException e) {
+                LOGGER.error(
+                        "The configuration properties file does not exist at location: "
+                                + this.configPropertiesFileUri, e);
+                throw new Exception(
+                        "The configuration properties file does not exist!", e);
+            }
+        }
+        
+        this.hostAddress = properties.getProperty(HOST_ADDRESS_PROPERTY_KEY);
+        LOGGER.info("Using hostAddress: '" + hostAddress + "'");
+
+        this.repositoryPath = properties.getProperty(REPOSITORY_PROPERTY_KEY);
+        LOGGER.info("Using repositoryPath dir: '" + repositoryPath + "'");
+
+        this.repositoryPath = properties.getProperty(RSYNC_PROPERTY_KEY);
+        LOGGER.info("Using rsyncPath: '" + rsyncPath + "'");
+    }
+    
+    /**
+     * @return the defaultValues
+     */
+    public boolean isDefaultValues() {
+        return defaultValues;
+    }
+
+    /**
+     * Sets the repository path.
+     * 
+     * @return the repositoryPath
+     */
+    public String getRepositoryPath() {
+        return repositoryPath;
+    }
+
+    /**
+     * Gets the repository path.
+     * 
+     * @param repositoryPath
+     *            the repositoryPath to set
+     */
+    public void setRepositoryPath(String repository) {
+        this.repositoryPath = repository;
+    }
+
+    /**
+     * Gets the path to the rsync binary.
+     * 
+     * @return the rsyncPath
+     */
+    public String getRsyncPath() {
+        return rsyncPath;
+    }
+
+    /**
+     * Sets the path to the rsync binary.
+     * 
+     * @param rsyncPath the rsyncPath to set
+     */
+    public void setRsyncPath(String rsyncPath) {
+        this.rsyncPath = rsyncPath;
+    }
 }
