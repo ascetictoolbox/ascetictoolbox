@@ -20,6 +20,15 @@ package "mysql-server" do
   action :install
 end
 
+package "mongodb-server" do
+  action :install
+end
+
+package "tomcat7" do
+  action :install
+  # TODO: Set port to 80 in config, enable authbind
+end
+
 package "ntpdate" do
   action :install
 end
@@ -46,11 +55,26 @@ cookbook_file "/home/ubuntu/pr-installer.sh" do
   group "ubuntu"
 end
 
+cookbook_file "/home/ubuntu/slam-installer.sh" do
+  source "slam-installer.sh"
+  mode 0755
+  owner "ubuntu"
+  group "ubuntu"
+end
+
+cookbook_file "/home/ubuntu/amonitor-installer.sh" do
+  source "amonitor-installer.sh"
+  mode 0755
+  owner "ubuntu"
+  group "ubuntu"
+end
+
 script "install_amanager" do
   interpreter "bash"
   user "ubuntu"
   group "ubuntu"
   cwd "/home/ubuntu"
+  not_if "test -d /var/lib/tomcat7/webapps/application-manager"
   code <<-EOH
 sh am-installer.sh
   EOH
@@ -65,3 +89,26 @@ script "install_pregistry" do
 sh pr-installer.sh
   EOH
 end
+
+script "install_slam" do
+  interpreter "bash"
+  user "ubuntu"
+  group "ubuntu"
+  cwd "/home/ubuntu"
+  not_if "test -d /home/ubuntu/slam"
+  code <<-EOH
+sh slam-installer.sh
+  EOH
+end
+
+script "install_amonitor" do
+  interpreter "bash"
+  user "ubuntu"
+  group "ubuntu"
+  cwd "/home/ubuntu"
+  not_if "test -d /home/ubuntu/amonitor"
+  code <<-EOH
+sh amonitor-installer.sh
+  EOH
+end
+

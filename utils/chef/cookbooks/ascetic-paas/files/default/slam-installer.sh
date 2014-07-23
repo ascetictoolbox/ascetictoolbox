@@ -18,8 +18,8 @@ mkdir -p $config_scripts_dir
 cd $config_scripts_dir
 
 wget -O - http://sourceforge.net/projects/contra-slaatsoi/files/pax-runner/pax-runner-1.7.1.tar.gz | tar -xz
-wget -O - http://sourceforge.net/projects/contra-slaatsoi/files/sla-at-soi-platform/sla-at-soi-ascetic.tar.gz | tar -xz
-wget -O - http://sourceforge.net/projects/contra-slaatsoi/files/ascetic-infrastructure-slam/ascetic-infrastructure-slam.tar.gz | tar -xz
+wget -O - http://sourceforge.net/projects/contra-slaatsoi/files/sla-at-soi-platform/sla-at-soi-ascetic-p-slam.tar.gz | tar -xz
+wget -O - wget http://sourceforge.net/projects/contra-slaatsoi/files/ascetic-platform-slam/ascetic-platform-slam.tar.gz | tar -xz
 
 chmod +x $config_scripts_dir/config-package.sh
 chmod +x $config_scripts_dir/install/*.sh
@@ -27,7 +27,7 @@ chmod +x $config_scripts_dir/install/*.sh
 repl=$(echo $config_scripts_dir | sed 's/\//\\\//g')
 mysql_config_x=$(echo $mysql_config | sed 's/\//\\\//g')
 for file in config-package.sh install/*.sh; do
- sed 's/\/opt\/ascetic\//'"$repl"'\//g' "$file" > "$file.new"
+ sed 's/\/opt\/ascetic-p-slam\//'"$repl"'\//g' "$file" > "$file.new"
  sed 's/mysql -p/sudo mysql --defaults-extra-file='"$mysql_config_x"' /' "$file.new" > "$file"
  rm $file.new
 done

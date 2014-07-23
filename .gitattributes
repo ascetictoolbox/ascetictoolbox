@@ -1627,6 +1627,11 @@ utils/ascetic-zabbix-api/target/test-classes/eu/ascetic/monitoring/api/datamodel
 utils/ascetic-zabbix-api/target/test-classes/eu/ascetic/monitoring/api/datamodel/ItemTest.class -text
 utils/ascetic-zabbix-api/target/test-classes/eu/ascetic/monitoring/api/datamodel/UserTest.class -text
 utils/chef/cookbooks/README.md -text
+utils/chef/cookbooks/ascetic-ca/CHANGELOG.md -text
+utils/chef/cookbooks/ascetic-ca/README.md -text
+utils/chef/cookbooks/ascetic-ca/files/default/Ascetic.crt -text
+utils/chef/cookbooks/ascetic-ca/metadata.rb -text
+utils/chef/cookbooks/ascetic-ca/recipes/default.rb -text
 utils/chef/cookbooks/ascetic-iaas/CHANGELOG.md -text
 utils/chef/cookbooks/ascetic-iaas/README.md -text
 utils/chef/cookbooks/ascetic-iaas/definitions/apt-repo.rb -text
@@ -1640,7 +1645,9 @@ utils/chef/cookbooks/ascetic-paas/README.md -text
 utils/chef/cookbooks/ascetic-paas/definitions/apt-repo.rb -text
 utils/chef/cookbooks/ascetic-paas/definitions/ppa.rb -text
 utils/chef/cookbooks/ascetic-paas/files/default/am-installer.sh -text
+utils/chef/cookbooks/ascetic-paas/files/default/amonitor-installer.sh -text
 utils/chef/cookbooks/ascetic-paas/files/default/pr-installer.sh -text
+utils/chef/cookbooks/ascetic-paas/files/default/slam-installer.sh -text
 utils/chef/cookbooks/ascetic-paas/metadata.rb -text
 utils/chef/cookbooks/ascetic-paas/recipes/default.rb -text
 utils/energy-modeller-data-logger/Dataset[!!-~]-[!!-~]Copy.txt -text

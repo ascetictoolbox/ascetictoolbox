@@ -54,23 +54,31 @@ sudo chown $user /etc/ascetic/paas/application-manager/
 curl -k https://ascetic-dev.cit.tu-berlin.de/svn/trunk/paas/application-manager/src/main/resources/application-manager.properties |
  sed 's/^vm-manager.url=http:\/\/.*:/vm-manager.url=http:\/\/iaas-vm-dev:/g' |
  tee /etc/ascetic/paas/application-manager/application-manager.properties >/dev/null
+if ! grep -q 'vm-manager.url=' /etc/ascetic/paas/application-manager/application-manager.properties; then
+ echo 'vm-manager.url=http://iaas-vm-dev:34372/vmmanager' >> /etc/ascetic/paas/application-manager/application-manager.properties
+fi
 
 curl -k https://ascetic-dev.cit.tu-berlin.de/svn/trunk/paas/application-manager/src/main/resources/applicationContext.xml |
  sed 's/p:username="[^"]*"/p:username="app-manager"/g' | sed 's/p:password="[^"]*"/p:password="ascetic-secret"/g' |
- sed 's/p:url="[^"]*"/p:url="jdbc:mysql:\/\/localhost:3000\/application_manager"/g' |
+ sed 's/p:url="[^"]*"/p:url="jdbc:mysql:\/\/localhost:3306\/application_manager"/g' |
+ sed 's/aplicationManagerDB/applicationManagerDB/g' |
  tee /etc/ascetic/paas/application-manager/applicationContext.xml >/dev/null
 
 curl -k https://ascetic-dev.cit.tu-berlin.de/svn/trunk/paas/application-manager/src/main/resources/META-INF/persistence.mysql.xml |
- sed 's/name="hibernate.connection.url" value="[^"]"/name="hibernate.connection.url" value="jdbc:mysql:\/\/localhost:3000\/provider_registry"/g' |
- sed 's/name="hibernate.connection.username" value="[^"]*"/name="hibernate.connection.username" value="provider-reg"/g' |
+ sed 's/name="hibernate.connection.url" value="[^"]*"/name="hibernate.connection.url" value="jdbc:mysql:\/\/localhost:3306\/application_manager"/g' |
+ sed 's/name="hibernate.connection.username" value="[^"]*"/name="hibernate.connection.username" value="app-manager"/g' |
  sed 's/name="hibernate.connection.password" value="[^"]*"/name="hibernate.connection.password" value="ascetic-secret"/g' |
+ sed 's/aplicationManagerDB/applicationManagerDB/g' |
  tee /etc/ascetic/paas/application-manager/persistence.mysql.xml >/dev/null
 
 # TODO: Be more restrictive (chgrp tomcat, chmod o-rwx)
 chmod 755 /etc/ascetic/paas/application-manager/
 chmod 644 /etc/ascetic/paas/application-manager/*
 
-curl -k 'https://ascetic-jenkins.cit.tu-berlin.de/job/ASCETiC%20Reference%20Architecture/ws/trunk/paas/application-manager/target/application-manager-0.1-SNAPSHOT.war' | sudo tee /var/lib/tomcat7/webapps/application-manager.war > /dev/null || exit 1
+tmp=$(mktemp)
+curl -k 'https://ascetic-jenkins.cit.tu-berlin.de/job/ASCETiC%20Reference%20Architecture/ws/trunk/paas/application-manager/target/application-manager-0.1-SNAPSHOT.war' > "$tmp"
+chmod 644 "$tmp"
+sudo mv "$tmp" /var/lib/tomcat7/webapps/application-manager.war || rm "$tmp"
 
 exit 0
 
