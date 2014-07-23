@@ -370,8 +370,8 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
         try {
             PreparedStatement preparedStatement;
             if (timePeriod != null) {
-                long start = timePeriod.getStartTime().getTimeInMillis() / 1000;
-                long end = timePeriod.getEndTime().getTimeInMillis() / 1000;
+                long start = timePeriod.getStartTimeInSeconds();
+                long end = timePeriod.getEndTimeInSeconds();
                 preparedStatement = connection.prepareStatement(
                         "SELECT host_id, clock, energy, power FROM host_measurement WHERE host_id = ? "
                         + " AND clock >= ? AND clock <= ?;");
@@ -429,8 +429,8 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
         try {
             PreparedStatement preparedStatement;
             if (timePeriod != null) {
-                long start = timePeriod.getStartTime().getTimeInMillis() / 1000;
-                long end = timePeriod.getEndTime().getTimeInMillis() / 1000;
+                long start = timePeriod.getStartTimeInSeconds();
+                long end = timePeriod.getEndTimeInSeconds();
                 preparedStatement = connection.prepareStatement(
                         "SELECT host_id, vm_measurement.vm_id, vm_name, clock, cpu_load FROM vm_measurement, vm WHERE vm_measurement.vm_id = vm.vm_id and vm_measurement.host_id = ? "
                         + " AND clock >= ? AND clock <= ?;");
@@ -450,11 +450,11 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
                 currentClock = (long) measurement.get(3); //clock is the 3rd item)
                 if (currentClock != lastClock || current == null) {
                     current = new HostVmLoadFraction(host, currentClock);
-                    VmDeployed vm = new VmDeployed((int) measurement.get(1), (String) measurement.get(2)); 
+                    VmDeployed vm = new VmDeployed((int) measurement.get(1), (String) measurement.get(2));
                     current.addFraction(vm, (double) measurement.get(4)); //load is the fourth item
                     answer.add(current);
                 } else {
-                    VmDeployed vm = new VmDeployed((int) measurement.get(1), (String) measurement.get(2)); 
+                    VmDeployed vm = new VmDeployed((int) measurement.get(1), (String) measurement.get(2));
                     current.addFraction(vm, (double) measurement.get(3)); //load is the third item
                 }
                 lastClock = currentClock;

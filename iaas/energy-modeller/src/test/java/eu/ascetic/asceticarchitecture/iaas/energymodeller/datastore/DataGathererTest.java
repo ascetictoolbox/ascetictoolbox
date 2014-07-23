@@ -175,6 +175,13 @@ public class DataGathererTest {
             HostVmLoadFraction fraction = new HostVmLoadFraction(host, (new GregorianCalendar().getTimeInMillis()) / 1000);
             List<VmMeasurement> vmMeasurements = datasource.getVmData(vms);
             fraction.setFraction(vmMeasurements);
+            for (VmMeasurement vmMeasurement : vmMeasurements) {
+                System.out.println("VM: " + vmMeasurement.getVm().getName());
+                System.out.println("Fraction: " + fraction.getFraction(vmMeasurement.getVm()));
+            }
+        } else
+        {
+            fail("The VM was not found");
         }
     }
 

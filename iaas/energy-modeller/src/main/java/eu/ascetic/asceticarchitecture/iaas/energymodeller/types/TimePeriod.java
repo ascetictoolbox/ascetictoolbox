@@ -133,20 +133,39 @@ public class TimePeriod implements Comparable {
     /**
      * The start time for the duration the query represents.
      *
-     * @return the startTime
+     * @return the start time, for this time period.
      */
     public Calendar getStartTime() {
         return startTime;
     }
+    
+    /**
+     * The start time for the duration the query represents.
+     *
+     * @return the start time, for this time period in seconds.
+     */
+    public long getStartTimeInSeconds() {
+        return TimeUnit.MILLISECONDS.toSeconds(startTime.getTimeInMillis());
+    }    
 
     /**
      * The end time for the duration the query represents.
      *
-     * @return the endTime
+     * @return the end time, for this time period.
      */
     public Calendar getEndTime() {
         return endTime;
     }
+    
+    /**
+     * The start time for the duration the query represents.
+     *
+     * @return the end time, for this time period.
+     */
+    public long getEndTimeInSeconds() {
+        return TimeUnit.MILLISECONDS.toSeconds(endTime.getTimeInMillis());
+    }    
+    
 
     @Override
     public boolean equals(Object obj) {
