@@ -22,10 +22,12 @@ import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.HistoryItem;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Host;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.HostGroup;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Item;
+import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Template;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.User;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.utils.Dictionary;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.utils.Json2ObjectMapper;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class ZabbixClient.
  * 
@@ -166,7 +168,7 @@ public class ZabbixClient {
 				HashMap untyped = mapper.readValue(EntityUtils.toString(entity), HashMap.class);
 				ArrayList result = (ArrayList) untyped.get("result");
 
-				if (result != null){
+				if (result != null && !result.isEmpty()){
 					host = Json2ObjectMapper.getHost((HashMap<String, String>) result.get(0));					
 					log.info("Host " + hostName + " finded in Zabbix");
 					return host;
@@ -552,77 +554,112 @@ public class ZabbixClient {
 	 *
 	 * @param hostName the host name
 	 * @param ipAddress the ip address
-	 * @return the string
+	 * @return the id of the new VM created in Zabbix
 	 */
 	public String createVM(String hostName, String ipAddress){
 		String newHostId = null;
 
-//		if (getHostByName(hostName) != null){
-		String vmsHostGroupName = "Virtual machines";
-		HostGroup vmsHostGroup = getHostGroupByName(vmsHostGroupName);
-		if (vmsHostGroup !=null){
-			try {
-				String token = getAuth();
-				if (token != null){
-					//get historyData from host
-					String jsonRequest = 	
-							"{\"jsonrpc\":\"" + Dictionary.JSON_RPC_VERSION + "\","
-								    + "\"method\": \"host.create\","
-								    + "\"params\": {"
-								        + "\"host\": \"" + hostName + "\","
-								        + "\"interfaces\": ["
-								            + "{"
-								            + "\"type\": 1,"
-								            + "\"main\": 1,"
-								            + "\"useip\": 1,"
-								            + "\"ip\": \"" + ipAddress +"\","
-								            + "\"dns\": \"\","
-								            + "\"port\": \"10050\""
-								           + "}"
-								        + "],"
-								        + "\"groups\": ["
-								            + "{\"groupid\": \"" + vmsHostGroup.getGroupId() + "\"}"
-								        + "]"
-								    + "},"
-								    + "\"auth\":\"" + token + "\","
-								    + "\"id\": 1"
-								    + "}";
-					
-					HttpResponse response = postAndGet(jsonRequest);
-					HttpEntity entity = response.getEntity();
-					ObjectMapper mapper = new ObjectMapper ();
-					HashMap untyped = mapper.readValue(EntityUtils.toString(entity), HashMap.class);
-					LinkedHashMap<String, Object> result = (LinkedHashMap<String, Object>) untyped.get("result");
-
-					if (result != null){
-						ArrayList<String> list  = (ArrayList<String>) result.get("hostids");
-						newHostId = list.get(0);					
-						log.info("New VM created in Zabbix. HostID = " + newHostId);
-						return newHostId;
-					}	
+		if (getHostByName(hostName) == null){
+			//hostGroup
+			HostGroup vmsHostGroup = getHostGroupByName(Configuration.virtualMachinesGroupName);
+			if (vmsHostGroup !=null){
+				//templates
+				Template linuxTemplate = getTemplateByName(Configuration.osLinuxTemplateName);
+				if (linuxTemplate != null){
+					//With all data validated, we create the new VM
+					newHostId = createVM(hostName,ipAddress,vmsHostGroup,linuxTemplate);
 				}
+				else {
+					log.error("The template " + Configuration.osLinuxTemplateName + " is not available in Zabbix");
+					return null;
+				}						
+			}
+			else {
+				log.error("The hostGroupName is null or empty");
+				return null;
+			}
 
-			} catch (Exception e) {
-				log.error(e.getMessage() + "\n"); 
-				System.out.println(e.getMessage() + "\n");
-			}							
 		}
 		else {
-			log.error("The hostGroupName is null or empty");
+			log.error("The host " + hostName + " already exists in the ASCETiC Zabbix environment. Please choose another hostname" );
+			return null;
 		}
-			
-//		}
-//		else {
-//			log.error("The host " + hostName + " already exists in the ASCETiC Zabbix environment. Please choose another hostname" );
-//		}
-
-
-
+		
 		return newHostId;
 	}
 	
 	
-	public HostGroup getHostGroupByName(String hostGroupName){
+	/**
+	 * Creates the vm.
+	 *
+	 * @param hostName the host name
+	 * @param ipAddress the ip address
+	 * @param vmsHostGroup the vms host group
+	 * @param vmTemplate the vm template
+	 * @return the id of the new VM created
+	 */
+	private String createVM(String hostName, String ipAddress, HostGroup vmsHostGroup, Template vmTemplate) {
+		String newHostId = null;
+		try {
+
+			String token = getAuth();
+			if (token != null){
+				//get historyData from host
+				String jsonRequest = 	
+						"{\"jsonrpc\":\"" + Dictionary.JSON_RPC_VERSION + "\","
+								+ "\"method\": \"host.create\","
+								+ "\"params\": {"
+								+ "\"host\": \"" + hostName + "\","
+								+ "\"interfaces\": ["
+								+ "{"
+								+ "\"type\": 1,"
+								+ "\"main\": 1,"
+								+ "\"useip\": 1,"
+								+ "\"ip\": \"" + ipAddress +"\","
+								+ "\"dns\": \"\","
+								+ "\"port\": \"10050\""
+								+ "}"
+								+ "],"
+								+ "\"groups\": ["
+								+ "{\"groupid\": \"" + vmsHostGroup.getGroupId() + "\"}"
+								+ "],"
+								+ "\"templates\": ["
+								+ "{\"templateid\": \"" + vmTemplate.getTemplateId() + "\"}"
+								+ "]"
+								+ "},"
+								+ "\"auth\":\"" + token + "\","
+								+ "\"id\": 1"
+								+ "}";
+
+				HttpResponse response = postAndGet(jsonRequest);
+				HttpEntity entity = response.getEntity();
+				ObjectMapper mapper = new ObjectMapper ();
+				HashMap untyped = mapper.readValue(EntityUtils.toString(entity), HashMap.class);
+				LinkedHashMap<String, Object> result = (LinkedHashMap<String, Object>) untyped.get("result");
+
+				if (result != null){
+					ArrayList<String> list  = (ArrayList<String>) result.get("hostids");
+					newHostId = list.get(0);					
+					log.info("New VM created in Zabbix. HostID = " + newHostId);
+					return newHostId;
+				}	
+			}
+
+		} catch (Exception e) {
+			log.error(e.getMessage() + "\n"); 
+			System.out.println(e.getMessage() + "\n");
+			return null;
+		}
+		return newHostId;
+	}
+
+	/**
+	 * Gets the host group by name.
+	 *
+	 * @param hostGroupName the host group name
+	 * @return the host group by name
+	 */
+	private HostGroup getHostGroupByName(String hostGroupName){
 		HostGroup hostGroup = null;
 		if (hostGroupName!=null && !hostGroupName.isEmpty()){
 			
@@ -666,4 +703,102 @@ public class ZabbixClient {
 		return hostGroup;
 	}
 	
+	
+	/**
+	 * Gets the template by name.
+	 *
+	 * @param templateName the template name
+	 * @return the template by name
+	 */
+	public Template getTemplateByName(String templateName){
+		Template template = null;
+		if (templateName!=null && !templateName.isEmpty()){
+			
+			try {
+				String token = getAuth();
+				if (token != null){
+					String jsonRequest = 	
+							"{\"jsonrpc\":\"" + Dictionary.JSON_RPC_VERSION + "\"," 
+							+ "\"method\":\"template.get\"," 
+							+ "\"params\":{\"output\":\"extend\","
+									+ "\"filter\":{\"name\": [\"" + templateName + "\"]}"
+								+ "},"
+							+ "\"auth\":\"" + token + "\","
+							+ "\"id\": 0}";							
+						
+					HttpResponse response = postAndGet(jsonRequest);
+					HttpEntity entity = response.getEntity();
+					ObjectMapper mapper = new ObjectMapper ();
+					HashMap untyped = mapper.readValue(EntityUtils.toString(entity), HashMap.class);
+					ArrayList result = (ArrayList) untyped.get("result");
+
+					if (result != null){
+						template = Json2ObjectMapper.getTemplate((HashMap<String, String>) result.get(0));					
+						log.info("Template " + templateName + " finded in Zabbix");
+						return template;
+					}	
+				}
+
+			} catch (Exception e) {
+				log.error(e.getMessage() + "\n"); 
+				System.out.println(e.getMessage() + "\n");
+			}							
+		}
+		else {
+			log.error("The templateName is null or empty");
+		}
+		return template;
+	}
+	
+	
+	
+	/**
+	 * Delete vm.
+	 *
+	 * @param hostName the host name
+	 * @return the ID of the VM deleted
+	 */
+	public String deleteVM(String hostName){
+		String hostDeletedId = null;
+		Host hostToDelete = getHostByName(hostName);
+		if ( hostToDelete != null){
+			//With all data validated, we create the new VM
+			try {
+				String token = getAuth();
+				if (token != null){
+					String jsonRequest = 							
+							"{\"jsonrpc\":\"" + Dictionary.JSON_RPC_VERSION + "\","
+									+ "\"method\":\"host.delete\","
+									+ "\"params\":[\"" + hostToDelete.getHostid() + "\"],"
+									+ "\"auth\":\"" + token + "\","
+									+ "\"id\": 1"
+									+ "}";
+							
+					HttpResponse response = postAndGet(jsonRequest);
+					HttpEntity entity = response.getEntity();
+					ObjectMapper mapper = new ObjectMapper ();
+					HashMap untyped = mapper.readValue(EntityUtils.toString(entity), HashMap.class);
+					LinkedHashMap<String, Object> result = (LinkedHashMap<String, Object>) untyped.get("result");
+
+					if (result != null){
+						ArrayList<String> list  = (ArrayList<String>) result.get("hostids");
+						hostDeletedId = list.get(0);					
+						log.info("VM deleted in Zabbix. HostID = " + hostDeletedId);
+						return hostDeletedId;
+					}	
+				}
+
+			} catch (Exception e) {
+				log.error(e.getMessage() + "\n"); 
+				System.out.println(e.getMessage() + "\n");
+				return null;
+			}
+		}
+		else {
+			log.error("The VM " + hostName + " not exists in the ASCETiC Zabbix environment. Please check the name" );
+			return null;
+		}
+		
+		return hostDeletedId;
+	}
 }

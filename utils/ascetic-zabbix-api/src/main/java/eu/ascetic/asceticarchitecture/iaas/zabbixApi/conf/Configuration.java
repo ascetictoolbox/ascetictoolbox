@@ -21,6 +21,8 @@ public class Configuration {
 	public static String zabbixPassword = "73046447cce977b10167";
 //	public static String zabbixUrl = "http://172.24.76.124/zabbix/api_jsonrpc.php";
 	public static String zabbixUrl = "https://10.4.0.15/zabbix/api_jsonrpc.php";
+	public static String virtualMachinesGroupName = "Virtual Machines";
+	public static String osLinuxTemplateName = "Template OS Linux";
 	
 	private static final String zabbixConfigurationFile = "ascetic-zabbix-api.properties";
 	
@@ -34,13 +36,12 @@ public class Configuration {
         	}
         	
         	org.apache.commons.configuration.Configuration config = new PropertiesConfiguration(propertiesFile);
-        	String user=config.getString("zabbix.user");
-        	String psw = config.getString("zabbix.password");
-        	String url=config.getString("zabbix.server.url");
         	zabbixUrl = config.getString("zabbix.server.url");
         	zabbixPassword = config.getString("zabbix.password");
         	zabbixUser = config.getString("zabbix.user");
-        }
+        	virtualMachinesGroupName = config.getString("zabbix.group.vm");
+        	osLinuxTemplateName = config.getString("zabbix.template.linux");
+        	}
         catch (Exception e) {
             logger.info("Error loading the configuration of the Zabbix server");
             logger.info("Exception " + e);

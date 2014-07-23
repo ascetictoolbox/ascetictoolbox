@@ -49,7 +49,10 @@ public class Dictionary {
 	//HOST GROUP
 	public static String HOSTGROUP_GROUPID = "groupid";
 	public static String HOSTGROUP_NAME = "name";
-
 	
+	//TEMPLATE
+	public static String TEMPLATE_TEMPLATEID = "templateid";	
+	public static String TEMPLATE_HOST = "host";
+	public static String TEMPLATE_NAME = "host";
 
 }

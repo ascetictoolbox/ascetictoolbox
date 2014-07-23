@@ -7,6 +7,7 @@ import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.HistoryItem;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Host;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.HostGroup;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Item;
+import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Template;
 
 /**
  * The Class Json2ObjectMapper.
@@ -81,6 +82,20 @@ public class Json2ObjectMapper {
 		hostGroup.setGroupId(hmJsonHostGroup.get(Dictionary.HOSTGROUP_GROUPID));
 		hostGroup.setName(hmJsonHostGroup.get(Dictionary.HOSTGROUP_NAME));
 		return hostGroup;
+	}
+
+	/**
+	 * Gets the template.
+	 *
+	 * @param hmJsonTemplate the hm json template
+	 * @return the template
+	 */
+	public static Template getTemplate(HashMap<String, String> hmJsonTemplate) {
+		Template template = new Template();
+		template.setTemplateId(hmJsonTemplate.get(Dictionary.TEMPLATE_TEMPLATEID));
+		template.setHost(hmJsonTemplate.get(Dictionary.TEMPLATE_HOST));
+		template.setName(hmJsonTemplate.get(Dictionary.TEMPLATE_NAME));
+		return template;
 	}
 
 }

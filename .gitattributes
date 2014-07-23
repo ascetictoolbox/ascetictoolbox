@@ -1613,6 +1613,7 @@ utils/ascetic-zabbix-api/src/main/java/eu/ascetic/asceticarchitecture/iaas/zabbi
 utils/ascetic-zabbix-api/src/main/java/eu/ascetic/asceticarchitecture/iaas/zabbixApi/datamodel/Host.java -text
 utils/ascetic-zabbix-api/src/main/java/eu/ascetic/asceticarchitecture/iaas/zabbixApi/datamodel/HostGroup.java -text
 utils/ascetic-zabbix-api/src/main/java/eu/ascetic/asceticarchitecture/iaas/zabbixApi/datamodel/Item.java -text
+utils/ascetic-zabbix-api/src/main/java/eu/ascetic/asceticarchitecture/iaas/zabbixApi/datamodel/Template.java -text
 utils/ascetic-zabbix-api/src/main/java/eu/ascetic/asceticarchitecture/iaas/zabbixApi/datamodel/User.java -text
 utils/ascetic-zabbix-api/src/main/java/eu/ascetic/asceticarchitecture/iaas/zabbixApi/rpc/client/ZabbixApiClientTest.java -text
 utils/ascetic-zabbix-api/src/main/java/eu/ascetic/asceticarchitecture/iaas/zabbixApi/utils/Dictionary.java -text

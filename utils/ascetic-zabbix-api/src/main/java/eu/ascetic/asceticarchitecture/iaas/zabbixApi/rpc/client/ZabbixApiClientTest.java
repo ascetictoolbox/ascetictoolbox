@@ -5,10 +5,12 @@ package eu.ascetic.asceticarchitecture.iaas.zabbixApi.rpc.client;
 import java.util.List;
 
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.client.ZabbixClient;
+import eu.ascetic.asceticarchitecture.iaas.zabbixApi.conf.Configuration;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.HistoryItem;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Host;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.HostGroup;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Item;
+import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Template;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.utils.Dictionary;
 
 
@@ -51,10 +53,12 @@ public class ZabbixApiClientTest {
 //			testGetHistoryDataByLimit(client);
 //			insertSeparator("getItemByKeyFromHost");
 //			testGetItemByKeyFromHost(client);
-			insertSeparator("getHostGroupByName");
-			testGetHostGroupByName(client);
+			insertSeparator("getTemplateByName");
+			testGetTemplateByName(client);
 			insertSeparator("createVM");
 			testCreateVM(client);
+//			insertSeparator("deleteVM");
+//			testDeleteVM(client);
 	}
 
 
@@ -191,6 +195,17 @@ public class ZabbixApiClientTest {
 		System.out.println("groupid: " + hg.getGroupId());
 	}
 	
+	/**
+	 * Prints the template.
+	 *
+	 * @param t the t
+	 */
+	private static void printTemplate(Template t){
+		System.out.println("templateid: " + t.getTemplateId());
+		System.out.println("name: " + t.getName());
+		System.out.println("host: " + t.getHost());
+	}
+	
 	
 	/**
 	 * Gets the txt format.
@@ -267,22 +282,23 @@ public class ZabbixApiClientTest {
 	 *
 	 * @param client the client
 	 */
-	public static void testGetHostGroupByName(ZabbixClient client){	
-		String hostGroupName = "Virtual Machines";
-		HostGroup hg = client.getHostGroupByName(hostGroupName);
-		if (hg != null){
-			System.out.println("HostGroup " + hostGroupName + ":");
-			printHostGroup(hg);
+	public static void testGetTemplateByName(ZabbixClient client){	
+//		String hostGroupName = "Virtual Machines";
+		String templateName = Configuration.osLinuxTemplateName;
+		Template t = client.getTemplateByName(templateName);
+		if (t != null){
+			System.out.println("Template " + templateName + ":");
+			printTemplate(t);
 		}
 		else {
-			System.out.println("No hostGroup " + hostGroupName + " available Zabbix environment");
+			System.out.println("No template " + templateName + " available Zabbix environment");
 		}
 	}
 	
 	
 	public static void testCreateVM(ZabbixClient client){
-		String newHostName = "RedSea1";
-		String ipAddress = "1.1.1.2";
+		String newHostName = "dummyVM_asceticJavaWrapper";
+		String ipAddress = "1.1.1.1";
 		boolean error = false;
 		String newId = null;
 		try {
@@ -294,8 +310,33 @@ public class ZabbixApiClientTest {
 					+ "Details: " + e.getMessage());
 		}
 		
-		if (!error){
+		if (!error && newId != null){
 			System.out.println("VM " + newHostName + " with IP " + ipAddress + " created successfully. New ID = " + newId);
+		}
+		else {
+			System.out.println("VM " + newHostName + " with IP " + ipAddress + " was not created in Zabbix. Please check log files");
+		}
+	}
+	
+	
+	public static void testDeleteVM(ZabbixClient client){
+		String hostName = "dummyVM_asceticJavaWrapper";
+		boolean error = false;
+		String deletedHostId = null;
+		try {
+			deletedHostId = client.deleteVM(hostName);
+		}
+		catch(Exception e){
+			error = true;
+			System.out.println("Error deleting VM in Zabbix (hostname = " + hostName + "). "
+					+ "Details: " + e.getMessage());
+		}
+		
+		if (!error && deletedHostId != null){
+			System.out.println("VM " + hostName + " with ID " + deletedHostId + " deleted successfully");
+		}
+		else {
+			System.out.println("VM " + hostName + " was not deleted in Zabbix. Please check log files");
 		}
 	}
 
