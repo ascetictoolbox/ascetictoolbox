@@ -234,6 +234,7 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/VM
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/jpa/ApplicationDAOJpa.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/jpa/DeploymentDAOJpa.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/jpa/VMDAOJpa.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/ovf/OVFUtils.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/AbstractRest.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/ApplicationRest.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/DeploymentRest.java -text
@@ -269,9 +270,11 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/jp
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/jpa/DeploymentDAOJpaTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/jpa/MysqJPATestIT.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/jpa/VMDAOJpaTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/ovf/OVFUtilsTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/ApplicationRestTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/RootRestTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/util/XMLBuilderTest.java -text
+paas/application-manager/src/test/resources/3tier-webapp.ovf.xml -text
 paas/application-manager/src/test/resources/META-INF/persistence.mysql.test.xml -text
 paas/application-manager/src/test/resources/META-INF/persistence.test.xml -text
 paas/application-manager/src/test/resources/application-manager-db-JPA-test-context.xml -text
