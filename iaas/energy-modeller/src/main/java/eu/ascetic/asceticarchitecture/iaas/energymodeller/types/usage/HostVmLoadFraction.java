@@ -93,8 +93,9 @@ public class HostVmLoadFraction {
     }
 
     /**
-     * This takes a collection of vm load measurement data (load data) and determines the
-     * fraction of the overall load which a VM is responsible for.
+     * This takes a collection of vm load measurement data (load data) and
+     * determines the fraction of the overall load which a VM is responsible
+     * for.
      *
      * @param load The load that was induced upon the host, by the set of Vms
      */

@@ -98,8 +98,8 @@ public class VM extends EnergyUsageSource {
      * @param ramMb The ram this vm has been allocated.
      */
     public void setRamMb(int ramMb) {
-        if (ramMb <= 0) {
-            throw new IllegalArgumentException("The amount of memory has to be greater than 0");
+        if (ramMb < 0) {
+            throw new IllegalArgumentException("The amount of memory must not be less than zero.");
         }
         this.ramMb = ramMb;
     }
@@ -117,8 +117,8 @@ public class VM extends EnergyUsageSource {
      * @param diskGb The disk space this vm has been allocated.
      */
     public void setDiskGb(long diskGb) {
-        if (diskGb <= 0) {
-            throw new IllegalArgumentException("The amount of disk size has to be greater than 0");
+        if (diskGb < 0) {
+            throw new IllegalArgumentException("The amount of disk size must not be less than zero.");
         }
         this.diskGb = diskGb;
     }
@@ -136,7 +136,7 @@ public class VM extends EnergyUsageSource {
      * @param powerConsumptionVMOverhead the powerConsumptionVMOverhead to set
      */
     public void setPowerConsumptionVMOverhead(double powerConsumptionVMOverhead) {
-        if (powerConsumptionVMOverhead <= 0.0) {
+        if (powerConsumptionVMOverhead < 0.0) {
             throw new IllegalArgumentException("The overhead due to hosting a VM must not be less than zero.");
         }
         this.powerConsumptionVMOverhead = powerConsumptionVMOverhead;

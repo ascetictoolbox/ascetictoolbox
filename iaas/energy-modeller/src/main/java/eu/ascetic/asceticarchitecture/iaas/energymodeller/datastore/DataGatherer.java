@@ -114,11 +114,13 @@ public class DataGatherer implements Runnable {
                     connector.writeHostHistoricData(host, measurement.getClock(), measurement.getPower(), measurement.getEnergy());
                 }
                 ArrayList<VmDeployed> vms = getVMsOnHost(host);
-                HostVmLoadFraction fraction = new HostVmLoadFraction(host, measurement.getClock());
-                List<VmMeasurement> vmMeasurements = datasource.getVmData(vms);
-                fraction.setFraction(vmMeasurements);
-                connector.writeHostVMHistoricData(host, measurement.getClock(), fraction);
-            }           
+                if (!vms.isEmpty()) {
+                    HostVmLoadFraction fraction = new HostVmLoadFraction(host, measurement.getClock());
+                    List<VmMeasurement> vmMeasurements = datasource.getVmData(vms);
+                    fraction.setFraction(vmMeasurements);
+                    connector.writeHostVMHistoricData(host, measurement.getClock(), fraction);
+                }
+            }
             try {
                 try {
                     Thread.sleep(1000);
@@ -134,7 +136,7 @@ public class DataGatherer implements Runnable {
             }
         }
     }
-   
+
     /**
      * The hashmap gives a faster way to find a specific host. This converts
      * from a raw list of hosts into the indexed structure.
@@ -246,15 +248,16 @@ public class DataGatherer implements Runnable {
     public HashMap<String, Host> getHostList() {
         return knownHosts;
     }
-    
+
     /**
      * This gets the named host from the known host list.
+     *
      * @param hostname The name of the host
      * @return The host that has the name specified.
      */
-    public Host getHost(String hostname){
+    public Host getHost(String hostname) {
         return knownHosts.get(hostname);
-    }    
+    }
 
     /**
      * This provides the list of known Vms
@@ -264,34 +267,38 @@ public class DataGatherer implements Runnable {
     public HashMap<String, VmDeployed> getVmList() {
         return knownVms;
     }
-    
+
     /**
      * This gets the named VM from the known VM list.
+     *
      * @param name The name of the VM
      * @return The VM that has the name specified.
      */
-    public VmDeployed getVm(String name){
+    public VmDeployed getVm(String name) {
         return knownVms.get(name);
     }
-    
+
     /**
      * This gets a list of the VMs that are currently on a host machine.
+     *
      * @param host The host machine to get the VM list for
      * @return The list of VMs on the specified host
      */
-     public ArrayList<VmDeployed> getVMsOnHost(Host host) {
-         //TODO ensure the data that makes this work is gathered. i.e. VM to host Mapping data!
-         ArrayList<VmDeployed> answer = new ArrayList<>();
-         for (VmDeployed vm : knownVms.values()) {
-             if (host.equals(vm.getAllocatedTo())) {
-                 answer.add(vm);
-             }
-         }
-         //TODO remove this temporary fix code here!
-         if (host.getHostName().equals("asok12")) {
+    public ArrayList<VmDeployed> getVMsOnHost(Host host) {
+        //TODO ensure the data that makes this work is gathered. i.e. VM to host Mapping data!
+        ArrayList<VmDeployed> answer = new ArrayList<>();
+        for (VmDeployed vm : knownVms.values()) {
+            if (host.equals(vm.getAllocatedTo())) {
+                answer.add(vm);
+            }
+        }
+        //TODO remove this temporary fix code here!
+        if (host.getHostName().equals("asok12")) {
+            VmDeployed theVM = knownVms.get("cloudsuite---data-analytics");
+            theVM.setAllocatedTo(host);
             answer.add(knownVms.get("cloudsuite---data-analytics"));
-         }
-         return answer;
-    }    
+        }
+        return answer;
+    }
 
 }

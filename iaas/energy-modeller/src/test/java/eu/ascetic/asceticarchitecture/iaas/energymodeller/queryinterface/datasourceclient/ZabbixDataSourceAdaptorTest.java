@@ -43,6 +43,7 @@ public class ZabbixDataSourceAdaptorTest {
 
     private final List<Host> hostList = new ArrayList<>();
     private final Host CHOSEN_HOST = new Host(10084, "asok10");
+    private final String VM_NAME = "cloudsuite---data-analytics"; //CloudSuite - Data Analytics
 
     public ZabbixDataSourceAdaptorTest() {
         try {
@@ -221,7 +222,7 @@ public class ZabbixDataSourceAdaptorTest {
         System.out.println("getVMList");
         ZabbixDataSourceAdaptor instance = new ZabbixDataSourceAdaptor();
         List<VmDeployed> result = instance.getVmList();
-        assert(!result.isEmpty());
+        assert (!result.isEmpty());
         for (VmDeployed vmDeployed : result) {
             System.out.println("Name: " + vmDeployed.getName());
             System.out.println("Id: " + vmDeployed.getId());
@@ -241,7 +242,7 @@ public class ZabbixDataSourceAdaptorTest {
         System.out.println("getHostFilter");
         ZabbixDataSourceAdaptor instance = new ZabbixDataSourceAdaptor();
         ZabbixHostVMFilter result = instance.getHostFilter();
-        assert(result != null);
+        assert (result != null);
     }
 
     /**
@@ -253,6 +254,77 @@ public class ZabbixDataSourceAdaptorTest {
         ZabbixHostVMFilter hostFilter = new NameBeginsFilter();
         ZabbixDataSourceAdaptor instance = new ZabbixDataSourceAdaptor();
         instance.setHostFilter(hostFilter);
+    }
+
+    /**
+     * Test of getVmList method, of class ZabbixDataSourceAdaptor.
+     */
+    @Test
+    public void testGetVmList() {
+        System.out.println("getVmList");
+        ZabbixDataSourceAdaptor instance = new ZabbixDataSourceAdaptor();
+        List<VmDeployed> result = instance.getVmList();
+        assert (result != null);
+        assert (!result.isEmpty());
+    }
+
+    /**
+     * Test of getVmData method, of class ZabbixDataSourceAdaptor.
+     */
+    @Test
+    public void testGetVmData_0args() {
+        System.out.println("getVmData");
+        ZabbixDataSourceAdaptor instance = new ZabbixDataSourceAdaptor();
+        List<VmMeasurement> result = instance.getVmData();
+        assert (result != null);
+        assert (!result.isEmpty());
+    }
+
+    /**
+     * Test of getVmData method, of class ZabbixDataSourceAdaptor.
+     */
+    @Test
+    public void testGetVmData_VmDeployed() {
+        System.out.println("getVmData");
+        VmDeployed vm;
+        ZabbixDataSourceAdaptor instance = new ZabbixDataSourceAdaptor();
+        vm = instance.getVmByName(VM_NAME);
+        VmMeasurement result = instance.getVmData(vm);
+        assert (result != null);
+        assert (!result.getItems().isEmpty());
+    }
+
+    /**
+     * Test of getVmData method, of class ZabbixDataSourceAdaptor.
+     */
+    @Test
+    public void testGetVmData_List() {
+        System.out.println("getVmData");
+        List<VmDeployed> vmList = new ArrayList<>();
+        ZabbixDataSourceAdaptor instance = new ZabbixDataSourceAdaptor();
+        vmList.add(instance.getVmByName(VM_NAME));
+        List<VmMeasurement> result = instance.getVmData(vmList);
+        assert (result != null);
+
+    }
+
+    /**
+     * Test of getVmByName method, of class ZabbixDataSourceAdaptor.
+     */
+    @Test
+    public void testGetVmByName() {
+        System.out.println("getVmByName");
+        String name = VM_NAME;
+        ZabbixDataSourceAdaptor instance = new ZabbixDataSourceAdaptor();
+        VmDeployed result = instance.getVmByName(name);
+        assert (result != null);
+        System.out.println("Name: " + result.getName());
+        System.out.println("Id: " + result.getId());
+        System.out.println("Created: " + result.getCreated());
+        System.out.println("CPU Count: " + result.getCpus());
+        System.out.println("Disks GB: " + result.getDiskGb());
+        System.out.println("Memory Mb: " + result.getRamMb());
+        System.out.println("State: " + result.getState());
     }
 
 }

@@ -70,6 +70,9 @@ CREATE TABLE IF NOT EXISTS vm_measurement
 ALTER TABLE vm_measurement
 ADD CONSTRAINT pk_vm_measurementID PRIMARY KEY (measurement_id);
 
+ALTER TABLE `vm_measurement` 
+CHANGE COLUMN `measurement_id` `measurement_id` INT(11) NOT NULL AUTO_INCREMENT ;
+
 ALTER TABLE vm_measurement
 ADD CONSTRAINT fk_vm_measurement_host_id
 FOREIGN KEY (host_id)

@@ -28,6 +28,7 @@ import java.util.List;
 public interface HostDataSource {
     
     public Host getHostByName(String hostname);
+    public VmDeployed getVmByName(String name);
     public List<Host> getHostList();
     public List<VmDeployed> getVmList();
     public HostMeasurement getHostData(Host host);    

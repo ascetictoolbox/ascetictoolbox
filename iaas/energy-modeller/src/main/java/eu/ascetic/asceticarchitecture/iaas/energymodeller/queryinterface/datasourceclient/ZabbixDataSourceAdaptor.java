@@ -83,6 +83,18 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         Host host = client.getHostByName(hostname);
         return convert(host);
     }
+    
+    /**
+     * This returns a host given its unique name.
+     *
+     * @param name The name of the host to get.
+     * @return The object representation of a host in the energy modeller.
+     */
+    @Override
+    public VmDeployed getVmByName(String name) {
+        Host host = client.getHostByName(name);
+        return convertToVm(host, client.getItemsFromHost(name));
+    }
 
     /**
      * This provides a list of hosts for the energy modeller
@@ -112,7 +124,7 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         ArrayList<VmDeployed> vms = new ArrayList<>();
         for (Host h : hostsList) {
             if (!hostFilter.isHost(h)) {
-                vms.add(convertToVM(h, client.getItemsFromHost(h.getHost())));
+                vms.add(convertToVm(h, client.getItemsFromHost(h.getHost())));
             }
         }
         return vms;
@@ -141,7 +153,7 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
      * @param items The data for a given vm.
      * @return The converted host.
      */
-    private VmDeployed convertToVM(Host host, List<Item> items) {
+    private VmDeployed convertToVm(Host host, List<Item> items) {
         String hostname = host.getHost();
         int hostId = Integer.parseInt(host.getHostid());
         VmDeployed answer = new VmDeployed(hostId, hostname);

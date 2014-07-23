@@ -23,6 +23,7 @@ import java.util.Set;
 /**
  * This is the base class for all measurements, either for a vm instance or a
  * host physical machine.
+ *
  * @author Richard
  */
 public abstract class Measurement {
@@ -111,9 +112,10 @@ public abstract class Measurement {
     public HashMap<String, Item> getMetrics() {
         return metrics;
     }
-    
+
     /**
      * This gets the count of how many values for different metrics are stored.
+     *
      * @return The count of how many values for different metrics are stored.
      */
     public int getMetricCount() {
@@ -175,11 +177,26 @@ public abstract class Measurement {
      * @return The cpu load when the measurement was taken.
      */
     public double getCpuLoad() {
-        double interrupt = Double.parseDouble(this.getMetric(INTERUPT_KPI_NAME).getLastValue());
-        double iowait = Double.parseDouble(this.getMetric(IO_WAIT_KPI_NAME).getLastValue());
-        double nice = Double.parseDouble(this.getMetric(NICE_KPI_NAME).getLastValue());
-        double softirq = Double.parseDouble(this.getMetric(SOFT_IRQ_KPI_NAME).getLastValue());
-        double steal = Double.parseDouble(this.getMetric(STEAL_KPI_NAME).getLastValue());
+        double interrupt = 0.0;
+        double iowait = 0.0;
+        double nice = 0.0;
+        double softirq = 0.0;
+        double steal = 0.0;
+        if (metrics.containsKey(INTERUPT_KPI_NAME)) {
+            interrupt = Double.parseDouble(this.getMetric(INTERUPT_KPI_NAME).getLastValue());
+        }
+        if (metrics.containsKey(IO_WAIT_KPI_NAME)) {
+            iowait = Double.parseDouble(this.getMetric(IO_WAIT_KPI_NAME).getLastValue());
+        }
+        if (metrics.containsKey(NICE_KPI_NAME)) {
+            nice = Double.parseDouble(this.getMetric(NICE_KPI_NAME).getLastValue());
+        }
+        if (metrics.containsKey(SOFT_IRQ_KPI_NAME)) {
+            softirq = Double.parseDouble(this.getMetric(SOFT_IRQ_KPI_NAME).getLastValue());
+        }
+        if (metrics.containsKey(STEAL_KPI_NAME)) {
+            steal = Double.parseDouble(this.getMetric(STEAL_KPI_NAME).getLastValue());
+        }
         return interrupt + iowait + nice + softirq + steal;
     }
 
@@ -190,6 +207,6 @@ public abstract class Measurement {
      */
     public double getCpuIdle() {
         return Double.parseDouble(this.getMetric(IDLE_KPI_NAME).getLastValue());
-    }    
-    
+    }
+
 }
