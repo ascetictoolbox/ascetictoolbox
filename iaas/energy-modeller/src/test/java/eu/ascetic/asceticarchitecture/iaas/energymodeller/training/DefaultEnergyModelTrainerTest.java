@@ -6,8 +6,11 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.HostE
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energymodel.EnergyModel;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.training.DefaultEnergyModelTrainer;
 
+
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.text.ParseException;
+import java.text.DecimalFormat;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -55,18 +58,21 @@ public class DefaultEnergyModelTrainerTest
     	double usageRAM=0.0;
     	double totalEnergyUsed=0.0;
     	Random randomGenerator = new Random();
-    	for (int i=1; i<=10; i++){
-    		usageRAM=randomGenerator.nextDouble();
-    		usageCPU=randomGenerator.nextDouble();
-    		totalEnergyUsed=randomGenerator.nextDouble();
-    		TimePeriod duration = new TimePeriod(new GregorianCalendar(), 1, TimeUnit.MINUTES);
-    		trained=trainer.trainModel (host, usageCPU, usageRAM, totalEnergyUsed, 10, duration);
-    		trainer.trainModel (host2, usageCPU, usageRAM, totalEnergyUsed, 10, duration);
+    	
+    	for (int i=1; i<=5; i++){
+    		usageRAM= (randomGenerator.nextInt(1000)/1000d);
+    		usageCPU=(randomGenerator.nextInt(1000)/1000d);
+    		totalEnergyUsed=(randomGenerator.nextInt(1000)/1000d);
+    		
+    		trained=trainer.trainModel (host, usageCPU, usageRAM, totalEnergyUsed, 5);
+    		//trainer.trainModel (host2, usageCPU, usageRAM, totalEnergyUsed, 10, duration);
     		
     	}
     	if (trained){
-    	model2=trainer.retrieveModel(host2);
-		System.out.println("model: "+ model2.getCoefCPU());
+    	model1=trainer.retrieveModel(host);
+		System.out.println("model CPU coefficient: "+ model1.getCoefCPU());
+		System.out.println("model RAM coefficient: "+ model1.getCoefRAM());
+		System.out.println("model intercept : "+ model1.getIntercept());
     	}
     }
 }

@@ -38,7 +38,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
 
-    //TODO for the average power!!! 
     //TO FIX TIME!!
     private EnergyModelTrainerInterface trainer = new DefaultEnergyModelTrainer();
     private EnergyShareRule rule = new DefaultEnergyShareRule();
@@ -53,13 +52,8 @@ public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
      */
     @Override
     public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines) {
-        //Last measurement should contain the usage and the time period for which we need a prediction!!!     
-        //take the last measurement
-        ArrayList<HostEnergyCalibrationData> calibrationData = host.getCalibrationData();
-        int lastElement = calibrationData.size();
-        HostEnergyCalibrationData data = calibrationData.get(lastElement);
-        double usageCPU = data.getCpuUsage();
-        double usageMemory = data.getMemoryUsage();
+        double usageCPU=100;
+        double usageMemory=100;
         EnergyUsagePrediction wattsUsed;
         TimePeriod duration = new TimePeriod(new GregorianCalendar(), 1, TimeUnit.HOURS);
         wattsUsed = predictTotalEnergy(host, usageCPU, usageMemory, duration);
@@ -80,18 +74,10 @@ public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
 
         double temp;
         temp = model.getIntercept() + model.getCoefCPU() * usageCPU + model.getCoefRAM() * usageRAM;
-        if (duration.getDuration() == 60) {
             answer.setAvgPowerUsed(temp);
             answer.setTotalEnergyUsed(temp * duration.getDuration());
             answer.setDuration(duration);
             return answer;
-        } else {
-            long time = TimePeriod.convertToMinutes(duration);
-            answer.setAvgPowerUsed(temp);
-            answer.setTotalEnergyUsed(temp * duration.getDuration());
-            answer.setDuration(duration);
-            return answer;
-        }
     }
 
     /**

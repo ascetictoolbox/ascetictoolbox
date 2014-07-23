@@ -47,11 +47,11 @@ public class DefaultEnergyModelTrainer implements EnergyModelTrainerInterface {
      * @param wattsUsed The watts consumed under these levels of usage
      * @param numberOfValues The number of values that the trainer expects from the user before it is ready for extracting
      * the coefficients of the model.
-     * @param duration The duration of the measurement
      * @return True if the appropriate amount of values has been gathered, False if not. 
      */
+	
 	@Override
-	public boolean trainModel (Host host, double usageCPU, double usageRAM, double wattsUsed, int numberOfValues, TimePeriod duration ){
+	public boolean trainModel (Host host, double usageCPU, double usageRAM, double wattsUsed, int numberOfValues){
 		HostEnergyCalibrationData usageHost=new HostEnergyCalibrationData(usageCPU, usageRAM, wattsUsed);
 		EnergyModel model = new EnergyModel();
 		ArrayList<HostEnergyCalibrationData> temp=new ArrayList<>();
@@ -69,6 +69,7 @@ public class DefaultEnergyModelTrainer implements EnergyModelTrainerInterface {
 			}
 		
 		if (num>=numberOfValues){
+			printValuesMap(storeValues, host);
 			return true;
 		}
 		else return false; 
@@ -88,10 +89,14 @@ public class DefaultEnergyModelTrainer implements EnergyModelTrainerInterface {
 
 			ArrayList<HostEnergyCalibrationData> data = storeValues.get(host);
 	         System.out.print(host.getHostName() + ": ");
+	         HostEnergyCalibrationData next = new HostEnergyCalibrationData();
 	         for (Iterator< HostEnergyCalibrationData> it = data.iterator(); it.hasNext();) {
-	        System.out.println(it.next().getCpuUsage());
+	        	next=it.next();
+		       System.out.println("CPU"+ next.getCpuUsage());
+		       System.out.println(" RAM" +next.getMemoryUsage());
+		       System.out.println(" watts"+next.getWattsUsed());
 	         }
-	     // }
+	    
 	      System.out.println();
 	}
 	

@@ -35,7 +35,7 @@ public interface EnergyModelTrainerInterface {
      * This function stores the values that are needed for the training of the model and returns true when the appropriate
      * number of values has been gathered. 
      */
-	public boolean trainModel (Host host, double usageCPU, double usageRAM, double wattsUsed, int numberOfValues, TimePeriod duration);
+	public boolean trainModel (Host host, double usageCPU, double usageRAM, double wattsUsed, int numberOfValues);
 	
 	
 	/**
