@@ -16,6 +16,7 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser;
 
 import java.util.Calendar;
+import java.util.Objects;
 
 /**
  * This class represents an energy user of the ASCETiC project and in particular
@@ -37,17 +38,17 @@ public class VmDeployed extends VM {
     private Calendar created;
 
     /**
-     * 
+     *
      * @param id
-     * @param name 
+     * @param name
      */
     public VmDeployed(int id, String name) {
         this.id = id;
         this.name = name;
     }
-  
+
     /**
-     * 
+     *
      * @param id
      * @param name
      * @param cpus
@@ -93,6 +94,7 @@ public class VmDeployed extends VM {
 
     /**
      * This gets the id associated with this VM.
+     *
      * @return The vms id.
      */
     public int getId() {
@@ -101,6 +103,7 @@ public class VmDeployed extends VM {
 
     /**
      * This sets the id associated with this VM.
+     *
      * @param id The vms id.
      */
     public void setId(int id) {
@@ -109,6 +112,7 @@ public class VmDeployed extends VM {
 
     /**
      * This gets the name this vm is known by.
+     *
      * @return The VMs name
      */
     public String getName() {
@@ -117,6 +121,7 @@ public class VmDeployed extends VM {
 
     /**
      * This sets the name this vm is known by
+     *
      * @param name The VMs name
      */
     public void setName(String name) {
@@ -125,6 +130,7 @@ public class VmDeployed extends VM {
 
     /**
      * This gets the ip address this vm is known by.
+     *
      * @return The vms ip address
      */
     public String getIpAddress() {
@@ -133,6 +139,7 @@ public class VmDeployed extends VM {
 
     /**
      * This sets the ip address this vm is known by.
+     *
      * @param ipAddress The vms ip address
      */
     public void setIpAddress(String ipAddress) {
@@ -141,6 +148,7 @@ public class VmDeployed extends VM {
 
     /**
      * This gets the VMs state. The vms state.
+     *
      * @return The vms state
      */
     public String getState() {
@@ -149,7 +157,8 @@ public class VmDeployed extends VM {
 
     /**
      * This sets the VMs state.
-     * @param state  The vms state
+     *
+     * @param state The vms state
      */
     public void setState(String state) {
         this.state = state;
@@ -166,14 +175,16 @@ public class VmDeployed extends VM {
 
     /**
      * This sets the date the VM was instantiated.
+     *
      * @param created The boot time of the VM.
      */
     public void setCreated(Calendar created) {
         this.created = created;
     }
-    
+
     /**
      * This indicates which host this VM is allocated to.
+     *
      * @return the allocatedTo The host this vm is allocated to
      */
     public Host getAllocatedTo() {
@@ -182,9 +193,29 @@ public class VmDeployed extends VM {
 
     /**
      * This sets which host this VM is allocated to.
+     *
      * @param allocatedTo The host this vm is allocated to
      */
     public void setAllocatedTo(Host allocatedTo) {
         this.allocatedTo = allocatedTo;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof VmDeployed) {
+            VmDeployed vm = (VmDeployed) obj;
+            return super.equals(obj) && name.equals(vm.getName()) && id == vm.getId();
+        }
+        return false;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 97 * hash + this.id;
+        hash = 97 * hash + Objects.hashCode(this.name);
+        return hash;
+    }
+
 }

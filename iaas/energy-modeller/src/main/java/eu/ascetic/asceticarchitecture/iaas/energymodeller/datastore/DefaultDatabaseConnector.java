@@ -306,7 +306,7 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(
                     "INSERT INTO host_calibration_data (host_id, cpu, memory, energy) VALUES (?, ?, ? , ?) "
-                    + " ON DUPLICATE KEY UPDATE host_id=VALUES(`host_id`) cpu=VALUES(`cpu`) memory=VALUES(`memory`) energy=VALUES(`energy`);");
+                    + " ON DUPLICATE KEY UPDATE host_id=VALUES(`host_id`), cpu=VALUES(`cpu`), memory=VALUES(`memory`), energy=VALUES(`energy`);");
             preparedStatement.setInt(1, host.getId());
             for (HostEnergyCalibrationData data : host.getCalibrationData()) {
                 preparedStatement.setDouble(1, host.getId());
