@@ -21,7 +21,6 @@ import java.util.Map;
  * VM Manager.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
- *
  */
 public class VmManager {
 
@@ -142,6 +141,12 @@ public class VmManager {
 
             // Save the ID of the VM deployed
             ids.put(vmToDeploy, vmId);
+
+            // If the monitoring system is Zabbix, then we need to call the Zabbix wrapper to initialize
+            // the Zabbix agents
+            /*if (VmManagerConfiguration.getInstance().monitoring.equals(VmManagerConfiguration.Monitoring.ZABBIX)) {
+                new ZabbixClient().createVM(vmId, cloudMiddleware.getVMInfo(vmId).getIpAddress());
+            }*/
         }
 
         // Close the DB connection

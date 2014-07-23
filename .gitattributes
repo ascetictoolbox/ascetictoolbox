@@ -159,6 +159,7 @@ iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/mo
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/monitoring/HostGanglia.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/monitoring/HostOpenStack.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/monitoring/HostZabbix.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/monitoring/ZabbixConnector.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/pricingmodeller/PricingModellerConnector.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/rest/CorsSupportFilter.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/rest/EstimatesCallsManager.java -text

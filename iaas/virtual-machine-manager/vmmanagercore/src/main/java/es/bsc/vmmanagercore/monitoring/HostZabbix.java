@@ -23,7 +23,7 @@ public class HostZabbix extends Host {
     private static final String TOTAL_DISK_BYTES_KEY = "vfs.fs.size[/var/lib/nova/instances,total]";
     private static final String USED_DISK_BYTES_KEY = "vfs.fs.size[/var/lib/nova/instances,used]";
 
-    private final static ZabbixClient zabbixClient = new ZabbixClient();
+    private final static ZabbixClient zabbixClient = ZabbixConnector.getZabbixClient();
     private List<Item> items = new ArrayList<>(); // Metrics available in the host
 
     private Item getItemByKey(String key) {
