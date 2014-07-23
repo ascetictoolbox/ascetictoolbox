@@ -65,6 +65,45 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
     }
     
     /**
+     * This for a set of VMs provides the amount of memory allocated in Mb.
+     * @param virtualMachines The VMs to get the memory used.
+     * @return The amount of memory allocated to VMs in Mb.
+     */
+    public static int getAlloacatedMemory(Collection<VM> virtualMachines) {
+        int answer = 0;
+        for (VM vm : virtualMachines) {
+            answer = answer + vm.getRamMb();
+        }
+        return answer;
+    }
+    
+   /**
+     * This for a set of VMs provides the amount of memory allocated in Mb.
+     * @param virtualMachines The VMs to get the memory used.
+     * @return The amount of memory allocated to VMs in Mb.
+     */
+    public static int getAlloacatedCpus(Collection<VM> virtualMachines) {
+        int answer = 0;
+        for (VM vm : virtualMachines) {
+            answer = answer + vm.getCpus();
+        }
+        return answer;
+    }
+    
+   /**
+     * This for a set of VMs provides the amount of memory allocated in Mb.
+     * @param virtualMachines The VMs to get the memory used.
+     * @return The amount of memory allocated to VMs in Mb.
+     */
+    public static double getAlloacatedDiskSpace(Collection<VM> virtualMachines) {
+        double answer = 0;
+        for (VM vm : virtualMachines) {
+            answer = answer + vm.getDiskGb();
+        }
+        return answer;
+    }      
+    
+    /**
      * TODO Add utility functions here that may be used by the energy models 
      * that are created over the time of the project.
      */
