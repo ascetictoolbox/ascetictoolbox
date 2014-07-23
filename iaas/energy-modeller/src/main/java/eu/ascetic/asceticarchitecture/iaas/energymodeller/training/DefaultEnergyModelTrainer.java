@@ -33,10 +33,14 @@ import java.util.*;
 
 public class DefaultEnergyModelTrainer implements EnergyModelTrainerInterface {
 	
-	public DefaultEnergyModelTrainer(){}
 	
-		
-	public HashMap<Host, ArrayList<HostEnergyCalibrationData>> storeValues = new HashMap<Host, ArrayList<HostEnergyCalibrationData>>();
+	
+	public DefaultEnergyModelTrainer(){	}
+	
+	
+
+	
+	public static HashMap<Host, ArrayList<HostEnergyCalibrationData>> storeValues = new HashMap<Host, ArrayList<HostEnergyCalibrationData>>();
 	
 	/**
      * This function stores the appropriate values that are needed for training the model. 
@@ -69,7 +73,7 @@ public class DefaultEnergyModelTrainer implements EnergyModelTrainerInterface {
 			}
 		
 		if (num>=numberOfValues){
-			printValuesMap(storeValues, host);
+			//printValuesMap(storeValues, host);
 			return true;
 		}
 		else return false; 

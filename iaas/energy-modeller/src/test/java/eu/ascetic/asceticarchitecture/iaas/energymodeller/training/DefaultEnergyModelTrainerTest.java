@@ -45,6 +45,7 @@ public class DefaultEnergyModelTrainerTest
     @After
 	    public void tearDown() {
 	    }
+   
     
     @Test   
     public void testTrainModel() {
@@ -75,4 +76,35 @@ public class DefaultEnergyModelTrainerTest
 		System.out.println("model intercept : "+ model1.getIntercept());
     	}
     }
+    
+    @Test   
+    public void testTrainModelForPredictor() {
+    	DefaultEnergyModelTrainer trainer = new DefaultEnergyModelTrainer();
+    	EnergyModel model1=new EnergyModel();
+    	EnergyModel model2=new EnergyModel();
+    	Host host= new Host(1, "testHost");
+    	Host host2= new Host(2, "testHost2");
+    	boolean trained=false;
+    	double usageCPU=0.0;
+    	double usageRAM=0.0;
+    	double totalEnergyUsed=0.0;
+    	Random randomGenerator = new Random();
+    	
+    	for (int i=1; i<=5; i++){
+    		usageRAM= (randomGenerator.nextInt(1000)/1000d);
+    		usageCPU=(randomGenerator.nextInt(1000)/1000d);
+    		totalEnergyUsed=(randomGenerator.nextInt(1000)/1000d);
+    		
+    		trained=trainer.trainModel (host, usageCPU, usageRAM, totalEnergyUsed, 5);
+    		//trainer.trainModel (host2, usageCPU, usageRAM, totalEnergyUsed, 10, duration);
+    		
+    	}
+    	System.out.println("training done");
+    	
+    	
+
+    }
+    
+
+    
 }

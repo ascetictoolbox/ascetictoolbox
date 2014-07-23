@@ -68,10 +68,9 @@ public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
      * @param timePeriod The time period the prediction is for
      * @return The predicted energy usage.
      */
-    private EnergyUsagePrediction predictTotalEnergy(Host host, double usageCPU, double usageRAM, TimePeriod duration) {
+    public EnergyUsagePrediction predictTotalEnergy(Host host, double usageCPU, double usageRAM, TimePeriod duration) {
         EnergyUsagePrediction answer = new EnergyUsagePrediction(host);
         EnergyModel model = trainer.retrieveModel(host);
-
         double temp;
         temp = model.getIntercept() + model.getCoefCPU() * usageCPU + model.getCoefRAM() * usageRAM;
             answer.setAvgPowerUsed(temp);
@@ -140,7 +139,7 @@ public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
      *
      * @param trainer the trainer to set
      */
-    public void setTrainer(EnergyModelTrainerInterface trainer) {
+    public void setTrainer(DefaultEnergyModelTrainer trainer) {
         this.trainer = trainer;
     }
 

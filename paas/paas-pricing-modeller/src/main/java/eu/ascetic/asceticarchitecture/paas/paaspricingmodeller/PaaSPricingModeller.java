@@ -1,5 +1,13 @@
 package eu.ascetic.asceticarchitecture.paas.paaspricingmodeller;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+
+
+import eu.ascetic.asceticarchitecture.paas.type.PaaSPrice;;
+
+
 /**
  * This is the main interface of the pricing modeller of PaaS layer. 
  * Functionality:
@@ -14,6 +22,7 @@ package eu.ascetic.asceticarchitecture.paas.paaspricingmodeller;
 
 //TO BE ADDED: CONNECTION WITH DATABASE FOR RETRIEVING INFORMATION
 public class PaaSPricingModeller implements PaaSPricingModellerInterface{
+	public static Collection<PaaSPrice> prices = new ArrayList<>();
 	
 
     public PaaSPricingModeller() {
@@ -23,6 +32,8 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
     public double getAppPriceEstimation(double totalEnergyUsed, int deploymentId, int appId, int iaasId, double iaasPrice) {
         double price=0.0;
         price=iaasPrice + iaasPrice*20/100;
+        PaaSPrice paasPrice = new PaaSPrice(totalEnergyUsed, deploymentId, appId, iaasId, iaasPrice);
+        prices.add(paasPrice);
     	return price; 
     }
 
@@ -30,15 +41,18 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
     public double getAppPriceEstimation(int deploymentId, int appId, int iaasId, double iaasPrice) {
     	 double price=0.0;
          price=iaasPrice + iaasPrice*20/100;
-      
+         PaaSPrice paasPrice = new PaaSPrice(deploymentId, appId, iaasId, iaasPrice);
+         prices.add(paasPrice);
      	return price; 
     }
 
-  /*  public double getAppPriceEstimation(double totalEnergyUsed, int deploymentId, int appId, int iaasId) {
+   /*public double getAppPriceEstimation(double totalEnergyUsed, int deploymentId, int appId, int iaasId) {
     	double price=0.0;
+    	for (Iterator< prices> it = data.iterator(); it.hasNext();) {
+        	next=it.next();
         price=iaasPrice + iaasPrice*20/100;
      	return price; 
-    }*/
-    
+    }
+    */
 
 }
