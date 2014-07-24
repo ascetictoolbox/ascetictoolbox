@@ -77,29 +77,37 @@ public class VmicApi implements Api {
      */
     @Override
     public void uploadFile(String ovfDefinitionId, File file) {
-        Runnable fileUploader = new FileUploader(this, ovfDefinitionId);
+        Runnable fileUploader = new FileUploader(this, ovfDefinitionId, file);
 
         Thread thread = new Thread(fileUploader);
 
-        threads.put(ovfDefinitionId + "." + file.getAbsolutePath(), thread);
+        threads.put(ovfDefinitionId + ":" + file.getName(), thread);
         thread.start();
     }
-    
+
     /*
      * (non-Javadoc)
      * 
      * @see eu.ascetic.vmic.api#progressCallback(java.lang.String)
      */
-    public AbstractProgressData progressCallback(String ovfDefinitionId)
-            throws ProgressException {
+    public AbstractProgressData progressCallback(String ovfDefinitionId,
+            File file) throws ProgressException {
         // If there is no configuration then no VMIC threads are
         // running...
         if (this.globalState == null) {
             throw new ProgressException("No previous call to VMIC");
         } else {
+            AbstractProgressData progressData = null;
 
-            AbstractProgressData progressData = globalState
-                    .getProgressData(ovfDefinitionId);
+            if (file == null) {
+                // Use ovfDefinitionId as AbstractProgressData ID
+                progressData = globalState.getProgressData(ovfDefinitionId);
+            } else {
+                // Use "ovfDefinitionId:fileName" as AbstractProgressData ID
+                progressData = globalState.getProgressData(ovfDefinitionId
+                        + ":" + file.getName());
+            }
+
             if (progressData == null) {
                 throw new ProgressException(
                         "Application does not exist with id: "

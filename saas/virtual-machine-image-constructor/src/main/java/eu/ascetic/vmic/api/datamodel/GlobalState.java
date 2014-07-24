@@ -70,56 +70,56 @@ public class GlobalState {
      * Adds a new instance of a {@link ProgressDataImage} object to the
      * {@link GlobalState} of the VMIC
      * 
-     * @param ovfDefinitionId
-     *            The OVF ID to create a {@link ProgressDataFile} object for.
+     * @param id
+     *            The id of the {@link ProgressDataFile} object.
      */
-    public void addFileProgress(String ovfDefinitionId) {
-        progressDataHashMap.put(ovfDefinitionId, new ProgressDataFile());
+    public void addFileProgress(String id) {
+        progressDataHashMap.put(id, new ProgressDataFile());
     }
 
     /**
      * Sets the current progress phase for a given application.
      * 
-     * @param ovfDefinitionId
-     *            The OVF ID to set the progress phase for.
+     * @param id
+     *            The id of the {@link AbstractProgressData} object.
      * @param currentPhaseId
      *            The current phase ID to set (see {@link AbstractProgressData})
      */
-    public void setProgressPhase(String ovfDefinitionId, int currentPhaseId) {
+    public void setProgressPhase(String id, int currentPhaseId) {
         AbstractProgressData abstractProgressData = progressDataHashMap
-                .get(ovfDefinitionId);
+                .get(id);
         abstractProgressData.setCurrentPhaseId(currentPhaseId);
-        progressDataHashMap.put(ovfDefinitionId, abstractProgressData);
+        progressDataHashMap.put(id, abstractProgressData);
     }
 
     /**
      * Sets the current progress percentage for the phase of a given
      * application.
      * 
-     * @param ovfDefinitionId
-     *            The OVF ID to set the progress phase for.
+     * @param id
+     *            The id of the {@link AbstractProgressData} object.
      * @param currentPercentageCompletion
      *            The current completion % of a phase to set (see
      *            {@link AbstractProgressData}).
      */
-    public void setProgressPercentage(String ovfDefinitionId,
+    public void setProgressPercentage(String id,
             Double currentPercentageCompletion) {
         AbstractProgressData abstractProgressData = progressDataHashMap
-                .get(ovfDefinitionId);
+                .get(id);
         abstractProgressData
                 .setCurrentPercentageCompletion(currentPercentageCompletion);
-        progressDataHashMap.put(ovfDefinitionId, abstractProgressData);
+        progressDataHashMap.put(id, abstractProgressData);
     }
 
     /**
-     * Get the ProgressDataImage object for a given OVF ID.
+     * Get the AbstractProgressData object with a given ID.
      * 
-     * @param ovfDefinitionId
-     *            The OVF ID of the ProgressDataImage object to get.
-     * @return The ProgressDataImage object to return.
+     * @param id
+     *            The id of the {@link AbstractProgressData} object.
+     * @return The AbstractProgressData object to return.
      */
-    public AbstractProgressData getProgressData(String ovfDefinitionId) {
-        return progressDataHashMap.get(ovfDefinitionId);
+    public AbstractProgressData getProgressData(String id) {
+        return progressDataHashMap.get(id);
     }
 
     /**
@@ -142,32 +142,32 @@ public class GlobalState {
      * @param remotePath
      *            The remote path to return
      */
-    public void setRemotePath(String ovfDefinitionId, String remotePath) {
-        ((ProgressDataFile) progressDataHashMap.get(ovfDefinitionId))
+    public void setRemotePath(String id, String remotePath) {
+        ((ProgressDataFile) progressDataHashMap.get(id))
                 .setRemotePath(remotePath);
     }
 
     /**
-     * Specify that a application has finished.
+     * Specify that an operation on an application has finished.
      * 
-     * @param ovfDefinitionId
-     *            The OVF ID to set as complete.
+     * @param id
+     *            The id of the {@link AbstractProgressData} object to set as complete.
      */
-    public void setComplete(String ovfDefinitionId) {
-        progressDataHashMap.get(ovfDefinitionId).setComplete(true);
+    public void setComplete(String id) {
+        progressDataHashMap.get(id).setComplete(true);
     }
 
     /**
-     * Returns a string representing the progress of a OVF definition for
+     * Returns a string representing the progress of a application operation for
      * logging purposes.
      * 
-     * @param ovfDefinitionId
-     *            The OVF ID to get a progress string for.
+     * @param id
+     *            The id of the {@link AbstractProgressData} object to get a progress string for.
      * @return The string representation of the progress.
      */
-    public String getProgressLogString(String ovfDefinitionId) {
-        return progressDataHashMap.get(ovfDefinitionId).getProgressString()
-                + " [ovfDefinitionId: " + ovfDefinitionId + "]";
+    public String getProgressLogString(String id) {
+        return progressDataHashMap.get(id).getProgressString()
+                + " [AbstractProgressData ID: " + id + "]";
     }
 
     /**

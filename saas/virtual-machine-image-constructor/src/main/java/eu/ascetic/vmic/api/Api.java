@@ -51,16 +51,22 @@ public interface Api {
     /**
      * Given a ovfDefinitionId this function returns the progress status and
      * percentage completion of a previous call to generateImage() or
-     * uploadFile() operation as a {@link AbstractProgressData} object that
-     * should be cast to either {@link ProgressDataFile} (which also provides access to the files {@link ProgressDataFile#remotePath}) or
-     * {@link ProgressDataImage} (that provides access to the altered {@link ProgressDataImage#ovfDefinition}) depending on the operation.
+     * uploadFile() (if the optional file argument is passed) as a
+     * {@link AbstractProgressData} object that should be cast to either
+     * {@link ProgressDataFile} (which also provides access to the files
+     * {@link ProgressDataFile#remotePath}) or {@link ProgressDataImage} (that
+     * provides access to the altered {@link ProgressDataImage#ovfDefinition})
+     * depending on the operation.
      * 
      * @param ovfDefinitionId
      *            The OVF ID to get progress details on
+     * @param file
+     *            The OVF associated file to get progress details on (optional
+     *            can be null)
      * @return An object containing details of progress
      * @throws ProgressException
      *             Thrown if an error occurred during the generation of an image
      */
-    public AbstractProgressData progressCallback(String ovfDefinitionId)
-            throws ProgressException;
+    public AbstractProgressData progressCallback(String ovfDefinitionId,
+            File file) throws ProgressException;
 }

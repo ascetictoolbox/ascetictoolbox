@@ -36,6 +36,9 @@ public class GlobalConfiguration {
     private static final String HOST_ADDRESS_PROPERTY_KEY = "hostAddress";
     private static final String REPOSITORY_PROPERTY_KEY = "repositoryPath";
     private static final String RSYNC_PROPERTY_KEY = "rsyncPath";
+    private static final String SSH_PROPERTY_KEY = "sshPath";
+    private static final String SSH_KEY_PROPERTY_KEY = "sshKeyPath";
+    private static final String SSH_USER_PROPERTY_KEY = "sshUser";
 
     private boolean defaultValues;
     private String configPropertiesFileUri;
@@ -43,6 +46,10 @@ public class GlobalConfiguration {
     private String hostAddress;
     private String repositoryPath;
     private String rsyncPath;
+
+    private String sshPath;
+    private String sshKeyPath;
+    private String sshUser;
 
     /**
      * Constructor for setting configuration variables.
@@ -91,6 +98,9 @@ public class GlobalConfiguration {
         Properties properties = new Properties();
 
         if (defaultValues) {
+            // FIXME: this should detect if we are running on Jenkins and change
+            // the default properties accordingly.
+
             // Create a temporary directory for testing
             String systemTempDir = System.getProperty("java.io.tmpdir");
             String vmicTemp = systemTempDir + File.separator
@@ -98,7 +108,7 @@ public class GlobalConfiguration {
 
             // Set the hostAddress IP for testing
             properties.setProperty(HOST_ADDRESS_PROPERTY_KEY, "localhost");
-            
+
             // Set repositoryPath URI for testing
             properties.setProperty(REPOSITORY_PROPERTY_KEY, vmicTemp
                     + File.separator + "repository");
@@ -108,6 +118,17 @@ public class GlobalConfiguration {
             properties.setProperty(RSYNC_PROPERTY_KEY,
                     "C:\\Users\\django\\cygwin\\bin\\rsync.exe");
             new File(properties.getProperty(REPOSITORY_PROPERTY_KEY)).mkdirs();
+
+            // Set sshPath URI for testing to local ssh binary
+            properties.setProperty(SSH_PROPERTY_KEY,
+                    "C:\\Users\\django\\cygwin\\bin\\ssh.exe");
+
+            // Set the sskKeyPath URI for testing connectivity to remote SaaS VM
+            properties.setProperty(SSH_KEY_PROPERTY_KEY,
+                    "C:\\Users\\django\\cygwin\\home\\django\\.ssh\\id_rsa");
+
+            // Set the sshUser name for testing
+            properties.setProperty(SSH_USER_PROPERTY_KEY, "root");
 
         } else {
             try {
@@ -121,7 +142,7 @@ public class GlobalConfiguration {
                         "The configuration properties file does not exist!", e);
             }
         }
-        
+
         this.hostAddress = properties.getProperty(HOST_ADDRESS_PROPERTY_KEY);
         LOGGER.info("Using hostAddress: '" + hostAddress + "'");
 
@@ -131,7 +152,7 @@ public class GlobalConfiguration {
         this.repositoryPath = properties.getProperty(RSYNC_PROPERTY_KEY);
         LOGGER.info("Using rsyncPath: '" + rsyncPath + "'");
     }
-    
+
     /**
      * @return the defaultValues
      */
@@ -151,7 +172,8 @@ public class GlobalConfiguration {
     /**
      * Sets the host address that will be used by the VMIC.
      * 
-     * @param hostAddress the hostAddress to set
+     * @param hostAddress
+     *            the hostAddress to set
      */
     public void setHostAddress(String hostAddress) {
         this.hostAddress = hostAddress;
@@ -188,9 +210,64 @@ public class GlobalConfiguration {
     /**
      * Sets the path to the rsync binary.
      * 
-     * @param rsyncPath the rsyncPath to set
+     * @param rsyncPath
+     *            the rsyncPath to set
      */
     public void setRsyncPath(String rsyncPath) {
         this.rsyncPath = rsyncPath;
+    }
+
+    /**
+     * Gets the path to the SSH binary.
+     * 
+     * @return the sshPath
+     */
+    public String getSshPath() {
+        return sshPath;
+    }
+
+    /**
+     * Sets the path to the SSH binary.
+     * 
+     * @param sshPath the sshPath to set
+     */
+    public void setSshPath(String sshPath) {
+        this.sshPath = sshPath;
+    }
+
+    /**
+     * Gets the SSH key path.
+     * 
+     * @return the sshKeyPath
+     */
+    public String getSshKeyPath() {
+        return sshKeyPath;
+    }
+
+    /**
+     * Sets the SSH key path.
+     * 
+     * @param sshKeyPath the sshKeyPath to set
+     */
+    public void setSshKeyPath(String sshKeyPath) {
+        this.sshKeyPath = sshKeyPath;
+    }
+
+    /**
+     * Gets the SSH user name.
+     * 
+     * @return the sshUser
+     */
+    public String getSshUser() {
+        return sshUser;
+    }
+
+    /**
+     * Sets the SSH user name.
+     * 
+     * @param sshUser the sshUser to set
+     */
+    public void setSshUser(String sshUser) {
+        this.sshUser = sshUser;
     }
 }
