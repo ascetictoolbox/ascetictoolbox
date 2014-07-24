@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
+
 /**
  * Defines the deployment of an Application at PaaS level
  * @author David Garcia Perez - Atos
@@ -47,6 +48,8 @@ public class Deployment {
 	private String status;
 	@XmlElement(name = "price", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private String price;
+	@XmlElement(name = "ovf", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private String ovf;
 	@XmlElementWrapper(name = "vms", namespace = APPLICATION_MANAGER_NAMESPACE)
 	@XmlElement(name = "vm", namespace = APPLICATION_MANAGER_NAMESPACE )
 	private List<VM> vms;
@@ -97,6 +100,14 @@ public class Deployment {
 	public void addLink(Link link) {
 		if(links==null) links = new ArrayList<Link>();
 		links.add(link);
+	}
+
+	@Column(name = "ovf", length=900000)
+	public String getOvf() {
+		return ovf;
+	}
+	public void setOvf(String ovf) {
+		this.ovf = ovf;
 	}
 	
 	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

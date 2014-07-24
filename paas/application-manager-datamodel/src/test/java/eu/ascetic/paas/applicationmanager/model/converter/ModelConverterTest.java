@@ -428,6 +428,7 @@ public class ModelConverterTest {
 		deployment.setHref("/applications/101/deployments/2");
 		deployment.setId(2);
 		deployment.setPrice("222");
+		deployment.setOvf("<ovf>assdasdf</ovf>");
 		deployment.setStatus("RUNNING");
 		Link link = new Link();
 		link.setRel("self");
