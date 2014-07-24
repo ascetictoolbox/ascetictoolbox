@@ -4,6 +4,10 @@
 #
 # Copyright 2014, Michael Kammer
 #
+package "screen" do
+  action :install
+end
+
 apt_repo "zabbix" do
   key_id "79EA5ED4"
   key_package "zabbix-release"

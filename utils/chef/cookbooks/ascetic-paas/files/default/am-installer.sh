@@ -61,14 +61,12 @@ fi
 curl -k https://ascetic-dev.cit.tu-berlin.de/svn/trunk/paas/application-manager/src/main/resources/applicationContext.xml |
  sed 's/p:username="[^"]*"/p:username="app-manager"/g' | sed 's/p:password="[^"]*"/p:password="ascetic-secret"/g' |
  sed 's/p:url="[^"]*"/p:url="jdbc:mysql:\/\/localhost:3306\/application_manager"/g' |
- sed 's/aplicationManagerDB/applicationManagerDB/g' |
  tee /etc/ascetic/paas/application-manager/applicationContext.xml >/dev/null
 
 curl -k https://ascetic-dev.cit.tu-berlin.de/svn/trunk/paas/application-manager/src/main/resources/META-INF/persistence.mysql.xml |
  sed 's/name="hibernate.connection.url" value="[^"]*"/name="hibernate.connection.url" value="jdbc:mysql:\/\/localhost:3306\/application_manager"/g' |
  sed 's/name="hibernate.connection.username" value="[^"]*"/name="hibernate.connection.username" value="app-manager"/g' |
  sed 's/name="hibernate.connection.password" value="[^"]*"/name="hibernate.connection.password" value="ascetic-secret"/g' |
- sed 's/aplicationManagerDB/applicationManagerDB/g' |
  tee /etc/ascetic/paas/application-manager/persistence.mysql.xml >/dev/null
 
 # TODO: Be more restrictive (chgrp tomcat, chmod o-rwx)

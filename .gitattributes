@@ -1655,6 +1655,7 @@ utils/chef/cookbooks/ascetic-paas/definitions/apt-repo.rb -text
 utils/chef/cookbooks/ascetic-paas/definitions/ppa.rb -text
 utils/chef/cookbooks/ascetic-paas/files/default/am-installer.sh -text
 utils/chef/cookbooks/ascetic-paas/files/default/amonitor-installer.sh -text
+utils/chef/cookbooks/ascetic-paas/files/default/ascetic-sudoers -text
 utils/chef/cookbooks/ascetic-paas/files/default/pr-installer.sh -text
 utils/chef/cookbooks/ascetic-paas/files/default/slam-installer.sh -text
 utils/chef/cookbooks/ascetic-paas/metadata.rb -text

@@ -1,0 +1,1 @@
+slam	ALL = (ALL) NOPASSWD: /usr/bin/mysql

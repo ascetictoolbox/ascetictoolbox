@@ -12,6 +12,10 @@
 #  distribution "wheezy"
 #end
 
+package "screen" do
+  action :install
+end
+
 package "openjdk-7-jre" do
   action :install
 end
@@ -41,6 +45,43 @@ package "subversion" do
   action :install
 end
 
+package "sudo" do
+  action :install
+end
+
+cookbook_file "/etc/sudoers.d/10-ascetic-paas" do
+  source "ascetic-sudoers"
+  mode 0640
+  owner "root"
+  group "root"
+end
+
+user "slam" do
+  supports :manage_home => true
+  comment "PaaS SLA Manager"
+  home "/home/slam"
+  shell "/bin/bash"
+  gid "nogroup"
+end
+
+cookbook_file "/home/slam/slam-installer.sh" do
+  source "slam-installer.sh"
+  mode 0755
+  owner "slam"
+  group "nogroup"
+end
+
+script "install_slam" do
+  interpreter "bash"
+  user "slam"
+  group "nogroup"
+  cwd "/home/slam"
+  not_if "test -d /home/slam/slam"
+  code <<-EOH
+sh slam-installer.sh
+  EOH
+end
+
 cookbook_file "/home/ubuntu/am-installer.sh" do
   source "am-installer.sh"
   mode 0755
@@ -55,12 +96,6 @@ cookbook_file "/home/ubuntu/pr-installer.sh" do
   group "ubuntu"
 end
 
-cookbook_file "/home/ubuntu/slam-installer.sh" do
-  source "slam-installer.sh"
-  mode 0755
-  owner "ubuntu"
-  group "ubuntu"
-end
 
 cookbook_file "/home/ubuntu/amonitor-installer.sh" do
   source "amonitor-installer.sh"
@@ -87,17 +122,6 @@ script "install_pregistry" do
   cwd "/home/ubuntu"
   code <<-EOH
 sh pr-installer.sh
-  EOH
-end
-
-script "install_slam" do
-  interpreter "bash"
-  user "ubuntu"
-  group "ubuntu"
-  cwd "/home/ubuntu"
-  not_if "test -d /home/ubuntu/slam"
-  code <<-EOH
-sh slam-installer.sh
   EOH
 end
 
