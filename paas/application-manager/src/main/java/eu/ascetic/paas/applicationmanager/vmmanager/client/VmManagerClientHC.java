@@ -1,6 +1,9 @@
 package eu.ascetic.paas.applicationmanager.vmmanager.client;
 
 import java.io.IOException;
+import java.util.List;
+
+import javax.xml.bind.JAXBException;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
@@ -16,9 +19,12 @@ import org.apache.log4j.Logger;
 
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
+import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ImageToUpload;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ImageUploaded;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ListImagesUploaded;
+import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ListVms;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ListVmsDeployed;
+import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.Vm;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.VmDeployed;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.converter.ModelConverter;
 
@@ -168,14 +174,6 @@ public class VmManagerClientHC implements VmManagerClient {
 	 * @param userId the user id
 	 */
 	private void setHeaders(HttpMethod method, String groupId, String userId) {
-		if(userId != null)
-			if(!userId.equals(""))
-				method.addRequestHeader(Dictionary.X_ZABBIX_ASSERTED_ID, userId);
-		
-		if(groupId != null)
-			if(!groupId.equals(""))
-				method.addRequestHeader(Dictionary.X_ZABBIX_GROUPS_ID, groupId);
-		//TODO revisar
 		method.addRequestHeader("User-Agent", Dictionary.USER_AGENT);
 		method.addRequestHeader("Accept", Dictionary.ACCEPT);	
 	}
@@ -405,5 +403,77 @@ public class VmManagerClientHC implements VmManagerClient {
 		if(exception) return null;
 		
 		return log;
+	}
+	
+
+
+	/* (non-Javadoc)
+	 * @see eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient#deployVMs(java.util.List)
+	 */
+	@Override
+	public List<String> deployVMs(List<Vm> vms) {
+		List<String> listIDs = null;
+		Boolean exception = false;
+		String experimentUrl = url + "/vms/";
+		logger.debug("URL build: " + experimentUrl);
+		
+		try {
+			ListVms listVms = new ListVms(vms);
+			String payload = ModelConverter.objectListVmsToJSON(listVms);
+			
+			String response = postMethod(experimentUrl, payload, /*user*/null, /*groupId*/null, exception);
+			logger.debug("PAYLOAD: " + response);
+			
+			try {
+				listIDs = ModelConverter.jsonListStringToObject(response);
+			} catch(Exception e) {
+				logger.warn("Error trying incoming list of new IDs to object. Exception: " + e.getMessage());
+				exception = true;
+			}
+		} catch(Exception e) {
+			logger.warn("Error trying to parse list of VMs: " + url + "/vms" + " Exception: " + e.getMessage());
+			exception = true;
+		}
+		
+		if(exception) return null;
+		return listIDs;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient#uploadImage(eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ImageToUpload)
+	 */
+	@Override
+	public String uploadImage(ImageToUpload imageInfo) {
+		String newImageID = null;
+		Boolean exception = false;
+		String experimentUrl = url + "/images/";
+		logger.debug("URL build: " + experimentUrl);
+		
+		try {
+			String payload = ModelConverter.objectImageToUploadToJSON(imageInfo);
+			
+			String response = postMethod(experimentUrl, payload, /*user*/null, /*groupId*/null, exception);
+			logger.debug("PAYLOAD: " + response);
+			
+			try {
+				newImageID = ModelConverter.jsonStringIdToObject(response);
+			} catch(Exception e) {
+				logger.warn("Error trying incoming list of new IDs to object. Exception: " + e.getMessage());
+				exception = true;
+			}
+		} catch(Exception e) {
+			logger.warn("Error trying to parse new image uploaded ID: " + url + "/images" + " Exception: " + e.getMessage());
+			exception = true;
+		}
+		
+		if(exception) return null;
+		
+		return newImageID;
+	}
+
+	@Override
+	public void deleteVmsOfApp(String appId) {
+		// TODO Auto-generated method stub
+		
 	}
 }

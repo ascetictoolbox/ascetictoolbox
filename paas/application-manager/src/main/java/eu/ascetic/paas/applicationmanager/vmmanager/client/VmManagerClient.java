@@ -1,9 +1,12 @@
 package eu.ascetic.paas.applicationmanager.vmmanager.client;
 
+import java.util.List;
+
+import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ImageToUpload;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ImageUploaded;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ListImagesUploaded;
-import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ListVmEstimates;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ListVmsDeployed;
+import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.Vm;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.VmDeployed;
 
 
@@ -72,14 +75,51 @@ public interface VmManagerClient {
 	 */
 	public String getLogs();
 	
-	/***
-	 * pending methods:
-	 * 		- post: deployVMs(ListVMs)
-	 * 		- put: deployVMs(ListVms) solo una
+	
+	/**
+	 * Deploy v ms.
+	 *
+	 * @param vms the vms
+	 * @return the list
+	 */
+	public List<String> deployVMs(List<Vm> vms);
+	
+	 
+	
+	/*
+	 * 		- put: deployVMs(ListVms) solo una 
+	@PUT
+    @Path("/vms/{id}")
+    @Consumes("application/json")
+    public void changeStateVm(@PathParam("id") String vmId, String actionJson) {
+        vmCallsManager.changeStateVm(vmId, actionJson);
+    }	
 	 * 		- delete: destroyVM
-	 * 		- deleteVmsOfApp
-	 * 		- ¿add image?
-	 * 		- deleteImage
+	@DELETE
+    @Path("/vms/{id}")
+    public void destroyVm(@PathParam("id") String vmId) {
+        vmCallsManager.destroyVm(vmId);
+    }
+    
+	 **/
+	public void deleteVmsOfApp(String appId);
+	/*@DELETE
+    @Path("/vmsapp/{appId}")
+    public void deleteVmsOfApp(@PathParam("appId") String appId) {
+        vmCallsManager.deleteVmsOfApp(appId);
+    }
+	 */
+ 
+	public String uploadImage(ImageToUpload imageInfo);
+
+	
+	
+	/* 		- deleteImage
+	 *  @DELETE
+    @Path("/vmsapp/{appId}")
+    public void deleteVmsOfApp(@PathParam("appId") String appId) {
+        vmCallsManager.deleteVmsOfApp(appId);
+    }
 	 */
 	
 	

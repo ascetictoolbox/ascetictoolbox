@@ -1,10 +1,15 @@
 package eu.ascetic.paas.applicationmanager.vmmanager.datamodel.converter;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
+import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ImageToUpload;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ImageUploaded;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ListImagesUploaded;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ListVmEstimates;
@@ -31,20 +36,20 @@ public class ModelConverter {
 	 * @param t the t
 	 * @return the string
 	 */
-	private static <T> String toJSON(T t) {
-	    try { //TODO 
-	    	
-	    	Gson gson = new GsonBuilder().create();
-	    	return gson.toJson(t);
-	    	
-//	    	 return gson.toJson(vmManager.getVm(vmId));
-//	    	 return gson.toJson(new ListVmsDeployed(vmManager.getAllVms()));
-	    	
-		} catch(Exception exception) {
-			logger.info("Error converting object to JSON: " + exception.getMessage());
-			return null;
-		}      
-	}
+//	private static <T> String toJSON(T t) {
+//	    try { //TODO 
+//	    	
+//	    	Gson gson = new GsonBuilder().create();
+//	    	return gson.toJson(t);
+//	    	
+////	    	 return gson.toJson(vmManager.getVm(vmId));
+////	    	 return gson.toJson(new ListVmsDeployed(vmManager.getAllVms()));
+//	    	
+//		} catch(Exception exception) {
+//			logger.info("Error converting object to JSON: " + exception.getMessage());
+//			return null;
+//		}      
+//	}
 	
 	/**
 	 * To object.
@@ -86,6 +91,17 @@ public class ModelConverter {
 	 */
 	public static ListVmEstimates jsonListVmEstimatesToObject(String json) {
 		return toObject(ListVmEstimates.class, json);
+	}
+	
+	public static List<String> jsonListStringToObject(String json){
+		Gson gson = new GsonBuilder().create();
+		Object obj = gson.fromJson(json, new TypeToken<List<String>>(){}.getType());
+		return (List<String>) obj;
+	}
+	
+	public static String jsonStringIdToObject(String json){
+		Gson gson = new GsonBuilder().create();
+		return gson.fromJson(json, JsonObject.class).get("id").getAsString();
 	}
 	
 	/**
@@ -141,13 +157,22 @@ public class ModelConverter {
 	
 	
 	/**
-	 * Object image uploaded to xml.
+	 * Object image uploaded to json.
 	 *
 	 * @param imageUploaded the image uploaded
 	 * @return the string
 	 */
 	public static String objectImageUploadedToJSON(ImageUploaded imageUploaded) {
-		return toJSON(imageUploaded);
+//		return toJSON(imageUploaded);
+		Gson gson = new GsonBuilder().create();
+		return gson.toJson(imageUploaded);
+	}
+	
+	
+	public static String objectImageToUploadToJSON(ImageToUpload imageToUpload) {
+//		return toJSON(imageUploaded);
+		Gson gson = new GsonBuilder().create();
+		return gson.toJson(imageToUpload);
 	}
 	
 	/**
@@ -157,7 +182,9 @@ public class ModelConverter {
 	 * @return the string
 	 */
 	public static String objectListImagesUploadedToJSON(ListImagesUploaded listImagesUploaded) {
-		return toJSON(listImagesUploaded);
+//		return toJSON(listImagesUploaded);
+		Gson gson = new GsonBuilder().create();
+		return gson.toJson(listImagesUploaded);
 	}
 	
 	/**
@@ -167,7 +194,9 @@ public class ModelConverter {
 	 * @return the string
 	 */
 	public static String objectListVmEstimatesToJSON(ListVmEstimates listVmsEstimates) {
-		return toJSON(listVmsEstimates);
+//		return toJSON(listVmsEstimates);
+		Gson gson = new GsonBuilder().create();
+		return gson.toJson(listVmsEstimates);
 	}
 	
 	/**
@@ -177,7 +206,9 @@ public class ModelConverter {
 	 * @return the string
 	 */
 	public static String objectListVmsDeployedToJSON(ListVmsDeployed listVmsDeployed) {
-		return toJSON(listVmsDeployed);
+//		return toJSON(listVmsDeployed);
+		Gson gson = new GsonBuilder().create();
+		return gson.toJson(listVmsDeployed);
 	}
 	
 	/**
@@ -187,7 +218,9 @@ public class ModelConverter {
 	 * @return the string
 	 */
 	public static String objectListVmsToBeEstimatedToJSON(ListVmsToBeEstimated listVmsToBeEstimated) {
-		return toJSON(listVmsToBeEstimated);
+//		return toJSON(listVmsToBeEstimated);
+		Gson gson = new GsonBuilder().create();
+		return gson.toJson(listVmsToBeEstimated);
 	}
 	
 	/**
@@ -197,7 +230,9 @@ public class ModelConverter {
 	 * @return the string
 	 */
 	public static String objectListVmsToJSON(ListVms listVms) {
-		return toJSON(listVms);
+//		return toJSON(listVms);
+		Gson gson = new GsonBuilder().create();
+		return gson.toJson(listVms);
 	}
 	
 	/**
@@ -207,7 +242,9 @@ public class ModelConverter {
 	 * @return the string
 	 */
 	public static String objectVmDeployedToJSON(VmDeployed vmDeployed) {
-		return toJSON(vmDeployed);
+//		return toJSON(vmDeployed);
+		Gson gson = new GsonBuilder().create();
+		return gson.toJson(vmDeployed);
 	}
 	
 }
