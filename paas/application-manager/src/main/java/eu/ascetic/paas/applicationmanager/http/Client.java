@@ -7,6 +7,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
@@ -64,7 +65,7 @@ public class Client {
 			int statusCode = client.executeMethod(method);
 
 			if (statusCode != HttpStatus.SC_OK) { //TODO test for this case... 
-				logger.warn("Get host information of testbeds: " + url + " failed: " + method.getStatusLine());
+				logger.warn("Execution of GET method to: " + url + " failed: " + method.getStatusLine());
 			} else {
 				// Read the response body.
 				byte[] responseBody = method.getResponseBody();
@@ -133,7 +134,7 @@ public class Client {
 			logger.debug("Status Code: " + statusCode );
 
 			if (statusCode >= 200 && statusCode > 300) { //TODO test for this case... 
-				logger.warn("Get host information of testbeds: " + url + " failed: " + method.getStatusLine());
+				logger.warn("Execution of POST method to: " + url + " failed: " + method.getStatusLine());
 			} else {
 				// Read the response body.
 				byte[] responseBody = method.getResponseBody();
@@ -189,7 +190,57 @@ public class Client {
 			int statusCode = client.executeMethod(method);
 
 			if (statusCode != HttpStatus.SC_OK) { //TODO test for this case... 
-				logger.warn("Get host information of testbeds: " + url + " failed: " + method.getStatusLine());
+				logger.warn("Execution of PUT method to: " + url + " failed: " + method.getStatusLine());
+			} else {
+				// Read the response body.
+				byte[] responseBody = method.getResponseBody();
+				response = new String(responseBody);
+			}	
+
+		} catch(HttpException e) {
+			logger.warn("Fatal protocol violation: " + e.getMessage());
+			e.printStackTrace();
+			exception = true;
+		} catch(IOException e) {
+			logger.warn("Fatal transport error: " + e.getMessage());
+			e.printStackTrace();
+			exception = true;
+		} finally {
+			// Release the connection.
+			method.releaseConnection();
+		}
+
+		return response;
+	}
+	
+	/**
+	 * DELETE REST Method
+	 * @param url to do the PUT method
+	 * @param payload payload to change the properties of the entity
+	 * @param accept type of respose expected
+	 * @param exeception if something goes wrong in the connection, the object is set to null
+	 * @return the updated entity
+	 */
+	public static String deleteMethod(String url, String payload, String accept, Boolean exception) {
+		// Create an instance of HttpClient.
+		HttpClient client = getHttpClient();
+
+		logger.debug("Connecting to: " + url);
+		// Create a method instance.
+		DeleteMethod method = new DeleteMethod();
+		setHeaders(method, accept);
+		
+		// Provide custom retry handler is necessary
+		method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
+
+		String response = "";
+
+		try {
+			// Execute the method.
+			int statusCode = client.executeMethod(method);
+
+			if (statusCode != HttpStatus.SC_OK) { //TODO test for this case... 
+				logger.warn("Execution of DELETE method to: " + url + " failed: " + method.getStatusLine());
 			} else {
 				// Read the response body.
 				byte[] responseBody = method.getResponseBody();
