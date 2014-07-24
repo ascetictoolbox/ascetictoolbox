@@ -96,9 +96,9 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
 	
     /**
      * This function returns a cost estimation based on the 
-     * total power that a VM consumes during an hour. The VM runs on top of a 
+     * total energy that a VM consumes during an hour. The VM runs on top of a 
      * specific host.
-     * @param totalEnergyUsed total estimated power that a VM consumes during an hour
+     * @param totalEnergyUsed total estimated energy that a VM consumes during an hour
      * @param hostId the id of the host that the VM is running on
      * @return the estimated cost of the VM running on this host
      */
@@ -112,9 +112,9 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
     
     /**
      * This function returns a price estimation based on the 
-     * total power that a VM consumes during an hour. The VM runs on top of a 
+     * total energy that a VM consumes during an hour. The VM runs on top of a 
      * specific host.
-     * @param totalEnergyUsed total estimated power that a VM consumes during an hour
+     * @param totalEnergyUsed total estimated energy that a VM consumes during an hour
      * @param hostId the id of the host that the VM is running on
      * @return the estimated price of the VM running on this host
      */
