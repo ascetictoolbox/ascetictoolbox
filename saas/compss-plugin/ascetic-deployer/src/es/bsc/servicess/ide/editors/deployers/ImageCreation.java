@@ -57,114 +57,126 @@ import es.bsc.servicess.ide.editors.BuildingDeploymentFormPage;
 import es.bsc.servicess.ide.editors.CommonFormPage;
 import es.bsc.servicess.ide.model.Dependency;
 import es.bsc.servicess.ide.model.ServiceElement;
+import eu.ascetic.vmic.api.VmicApi;
+import eu.ascetic.vmic.api.core.ProgressException;
+import eu.ascetic.vmic.api.datamodel.ProgressDataFile;
 
 public class ImageCreation {
 
 	private static Logger log = Logger.getLogger(ImageCreation.class);
-	private final static String IMAGE_DEPLOYMENT_FOLDER = "/optimis_service/";
+	private final static String IMAGE_DEPLOYMENT_FOLDER = "/ascetic_service/";
 
 	private final static String CONTEXT_FOLDER = "/mnt/context";
-	private static final String OPTIMIS_USER = "root";
-	
-	private static final String BUSY = "BUSY";
-	private static final String READY = "READY";
+	private static final String ASCETIC_USER = "root";
 	
 	private static final String IMAGE_GAT_LOCATION = "/GAT";
-	private static final String SHARED_FOLDER = null;
+	//private static final String SHARED_FOLDER = null;
 	
 	
-	private static void uploadOrchestrationPackages(WebResource resource,
-			String packName, String schPackage, String[] packs, String image_id, IFolder packageFolder,
-			ProjectMetadata pr_meta, PackageMetadata packMeta, IProgressMonitor monitor ) 
+	public static void uploadOrchestrationPackages(VmicApi vmic,
+			String packName, String schPackage, String[] packs, IFolder packageFolder,
+			ProjectMetadata pr_meta, PackageMetadata packMeta, Manifest manifest, IProgressMonitor monitor ) 
 				throws Exception{
-
-		generateConfigurationFiles(packName, schPackage, packs, packageFolder, pr_meta, monitor);
-		monitor.beginTask("Creating image for " + packName, 11);
-		monitor.worked(1);
-
+		InstallationScript is = new InstallationScript(IMAGE_DEPLOYMENT_FOLDER);
+		generatePropertiesFile(packName, schPackage, packs, packageFolder, monitor);
+		monitor.beginTask("Uploading files for " + packName, 12);
+		
 		// Uploading file
 		monitor.subTask("Uploading runtime configuration files orchestration elements");
 		IFile f = packageFolder.getFile("project.xml");
 		log.debug("Uploading " + f.getLocation().toOSString());
-		uploadFile(resource, f.getLocation().toFile(), image_id);
-		
+		uploadAndCopy(vmic, f.getLocation().toFile(), manifest, is, monitor);
 		monitor.worked(1);
+		
 		f = packageFolder.getFile("resources.xml");
 		log.debug("Uploading " + f.getLocation().toOSString());
-		uploadFile(resource, f.getLocation().toFile(), image_id);
+		uploadAndCopy(vmic, f.getLocation().toFile(), manifest, is, monitor);
 		monitor.worked(1);
-		f = packageFolder.getFile("service_manifest.xml");
+		
+		/*f = packageFolder.getFile("service_manifest.xml");
 		log.debug("Uploading " + f.getLocation().toOSString());
 		uploadFile(resource, f.getLocation().toFile(), image_id);
-		monitor.worked(1);
+		monitor.worked(1);*/
+		
 		File file = new File(pr_meta.getRuntimeLocation()
 				+ "/../log/it-log4j");
 		if (f != null && f.exists()) {
-			uploadFile(resource, file, image_id);
+			uploadAndCopy(vmic, file, manifest, is, monitor);
 		}
-		
 		monitor.worked(1);
+		
 		file = new File(pr_meta.getRuntimeLocation()
 				+ "/../xml/projects/project_schema.xsd");
 		if (f != null && f.exists()) {
-			uploadFile(resource, file, image_id);
+			uploadAndCopy(vmic, file, manifest, is, monitor);
 		}
 		monitor.worked(1);
+		
 		file = new File(pr_meta.getRuntimeLocation()
 				+ "/../xml/resources/resource_schema.xsd");
 		if (f != null && f.exists()) {
-			uploadFile(resource, file, image_id);
+			uploadAndCopy(vmic, file, manifest, is, monitor);
 		}
 		monitor.worked(1);
+		
 		file = new File(pr_meta.getRuntimeLocation()
 				+ "/../worker/worker.sh");
 		if (f != null && f.exists()) {
-			uploadFile(resource, file, image_id);
+			uploadAndCopy(vmic, file, manifest, is, monitor);
 		}
 		monitor.worked(1);
+		
 		monitor.subTask("Setting file permissions in core elements installations");
-		settingExecutablePermissions(resource,
-				new String[] { IMAGE_DEPLOYMENT_FOLDER + "*.sh" },
-				image_id, monitor);
+		settingExecutablePermissions(new String[] { IMAGE_DEPLOYMENT_FOLDER + "*.sh" },is);
 		monitor.worked(1);
+		
 		monitor.subTask("Uploading war file with orchestration elements");
 		f = packageFolder.getFile(packName + ".war");
 		if (f!=null && f.exists()){
-			IFile properties = packageFolder.getFile("it.properties");
+			IFile properties = packageFolder.getFile(packName+"-it.properties");
 			f = packageFolder.getFile(packName + ".war");
 			PackagingUtils.addRuntimeConfigTojar(f, properties.getLocation()
 					.toFile(), packageFolder, PackagingUtils.WAR_CLASSES_PATH, monitor);
 			log.debug("Uploading " + f.getLocation().toOSString());
-			uploadFile(resource, f.getLocation().toFile(), image_id);
-			monitor.worked(1);
+			uploadWar(vmic, f.getLocation().toFile(), manifest, is, monitor);
 		}
+		monitor.worked(1);
 		
 		monitor.subTask("Uploading dependencies");
 		f = packageFolder.getFile(packName + "_deps.zip");
 		if (f != null && f.exists()) {
-			uploadAndUnzip(resource, f.getLocation().toFile(), image_id);
+			uploadAndUnzip(vmic, f.getLocation().toFile(), manifest, is, monitor);
 		}
 		String[] elements= packMeta.getElementsInPackage(packName);
 		if (elements== null|| elements.length<=0){
-			//
+			// TODO he borrado algo??
 		}
-		deployZipDeps(resource, pr_meta.getDependencies(packMeta
-				.getElementsInPackage(packName)), image_id, packName, 
-				packageFolder, monitor);
-		deployWarDeps(resource, pr_meta.getDependencies(packMeta
-				.getElementsInPackage(packName)), image_id, packName, 
-				packageFolder, monitor);
-		deployMonitoring(resource, pr_meta.getRuntimeLocation(), image_id, monitor);
 		monitor.worked(1);
+		
+		deployZipDeps(vmic, pr_meta.getDependencies(packMeta
+				.getElementsInPackage(packName)), packName, 
+				packageFolder, manifest, is, monitor);
+		monitor.worked(1);
+		
+		deployWarDeps(vmic, pr_meta.getDependencies(packMeta
+				.getElementsInPackage(packName)), packName, 
+				packageFolder, manifest, is, monitor);
+		monitor.worked(1);
+		
+		deployMonitoring(vmic, pr_meta.getRuntimeLocation(), manifest, is, monitor);
+		monitor.worked(1);
+		
+		manifest.addVMICExecutionInComponent(Manifest.generateManifestName(packName), is.getCommand());
+		monitor.done();
 	}
 
-	private static void deployMonitoring(WebResource resource,
-			String runtimeLocation, String image_id, IProgressMonitor monitor) throws 
-			FileNotFoundException, AsceticDeploymentException, InterruptedException {
+	private static void deployMonitoring(VmicApi vmic, String runtimeLocation, 
+			Manifest manifest, InstallationScript is, IProgressMonitor monitor) 
+				throws 	Exception {
 		
 		File f = new File(runtimeLocation+"/../../monitoring/Monitoring.war");
 		if (f.exists()){
-			uploadWar(resource, f, image_id);
+			uploadWar(vmic, f, manifest, is, monitor);
 		}else
 			throw(new AsceticDeploymentException("Monitoring War not found in "+ f.getAbsolutePath()));
 		
@@ -179,20 +191,21 @@ public class ImageCreation {
 	 * @param monitor Object to monitor the progress of the image creation
 	 * @throws Exception 
 	 */
-	private static void deployZipDeps(WebResource resource, List<Dependency> deps,
-			String image_id, String packageName, IFolder packageFolder, IProgressMonitor monitor)
-			throws Exception {
+	private static void deployZipDeps(VmicApi vmic, List<Dependency> deps,
+			String packageName, IFolder packageFolder, Manifest manifest, 
+			InstallationScript is, IProgressMonitor monitor) throws Exception {
 		for (Dependency d : deps) {
 			if (d.getType().equalsIgnoreCase(ZIP_DEP_TYPE)) {
 				if(d.isImported()){
-					IFile properties = packageFolder.getFile("it.properties");
+					IFile properties = packageFolder.getFile(packageName +"-it.properties");
 					IFile f = packageFolder.getFolder(EXTERNAL_PACKS_FOLDER).getFolder(packageName).
 							getFile(PackagingUtils.getPackageNameWithExtension(d.getLocation()));
 					PackagingUtils.addRuntimeConfigTojar(f, properties.getLocation()
 							.toFile(), packageFolder, PackagingUtils.ZIP_CLASSES_PATH, monitor);
-					uploadAndUnzip(resource, f.getRawLocation().toFile(), image_id);
-				}else
-					uploadAndUnzip(resource, new File(d.getLocation()), image_id);
+					uploadAndUnzip(vmic, f.getRawLocation().toFile(), manifest, is, monitor);
+				}else{
+					uploadAndUnzip(vmic, new File(d.getLocation()), manifest, is, monitor);
+				}
 			}
 		}
 	}
@@ -206,21 +219,21 @@ public class ImageCreation {
 	 * @param monitor Object to monitor the progress of the image creation
 	 * @throws Exception 
 	 */
-	private static void deployWarDeps(WebResource resource, List<Dependency> deps,
-			String image_id, String packageName, IFolder packageFolder, IProgressMonitor monitor)
-			throws Exception {
+	private static void deployWarDeps(VmicApi vmic, List<Dependency> deps,
+			String packageName, IFolder packageFolder, Manifest manifest, 
+			InstallationScript is, IProgressMonitor monitor) throws Exception {
 		for (Dependency d : deps) {
 			log.debug("Analizing dependency "+ d.getLocation()+ " (Type: " +d.getType()+")");
 			if (d.getType().equalsIgnoreCase(WAR_DEP_TYPE)) {
 				if(d.isImported()){
-					IFile properties = packageFolder.getFile("it.properties");
+					IFile properties = packageFolder.getFile(packageName +"-it.properties");
 					IFile f = packageFolder.getFolder(EXTERNAL_PACKS_FOLDER).getFolder(packageName).
 							getFile(PackagingUtils.getPackageNameWithExtension(d.getLocation()));
 					PackagingUtils.addRuntimeConfigTojar(f, properties.getLocation()
 							.toFile(), packageFolder, PackagingUtils.WAR_CLASSES_PATH, monitor);
-					uploadWar(resource, f.getRawLocation().toFile(), image_id);
+					uploadWar(vmic, f.getRawLocation().toFile(), manifest, is, monitor);
 				}else
-					uploadWar(resource, new File(d.getLocation()), image_id);
+					uploadWar(vmic, new File(d.getLocation()), manifest, is, monitor);
 			}
 		}
 	}
@@ -233,23 +246,37 @@ public class ImageCreation {
 	 * @param monitor Object to monitor the progress of the image creation
 	 * @throws Exception 
 	 */
-	public static void generateConfigurationFiles(String ownPack,
-			String schPack, final String[] packs, IFolder outFolder, ProjectMetadata prMeta,
-			IProgressMonitor monitor) throws Exception {
-		
-		IFile properties = outFolder.getFile("it.properties");
-		if (properties != null && properties.exists()) {
-			properties.delete(true, monitor);
-		}
-		properties.create(new ByteArrayInputStream(new String("").getBytes()),
-				true, monitor);
-		createProperties(properties.getLocation().toFile(), ownPack, schPack);
+	public static void generateConfigurationFiles(final String[] packs, IFolder outFolder, 
+			ProjectMetadata prMeta,	IProgressMonitor monitor) throws Exception {
 		monitor.beginTask("Updating config file for the Ascetic Cloud", 2);
 		addCloudProviderToProject(packs, outFolder, prMeta);
 		monitor.worked(1);
 		addCloudProviderToResources(packs, outFolder, prMeta);
 		monitor.done();
 		outFolder.refreshLocal(1, monitor);
+
+	}
+	
+	/**
+	 * Generate the service configuration files which include the creation of 
+	 * the resources and project files as well as the runtime properties file
+	 * 
+	 * @param servicename Name of the implemented service
+	 * @param packs Array of service packages names 
+	 * @param monitor Object to monitor the progress of the image creation
+	 * @throws Exception 
+	 */
+	public static void generatePropertiesFile(String ownPack,
+			String schPack, final String[] packs, IFolder outFolder,
+			IProgressMonitor monitor) throws Exception {
+		
+		IFile properties = outFolder.getFile(ownPack + "-it.properties");
+		if (properties != null && properties.exists()) {
+			properties.delete(true, monitor);
+		}
+		properties.create(new ByteArrayInputStream(new String("").getBytes()),
+				true, monitor);
+		createProperties(properties.getLocation().toFile(), ownPack, schPack);
 
 	}
 	
@@ -270,12 +297,13 @@ public class ImageCreation {
 						+ File.separator + File.separator
 						+ prMeta.getMainPackageFolder() + File.separator+ RESOURCES_FILENAME));
 		res.addCloudProvider("Ascetic");
-		HashMap<String, String> shares = new HashMap<String, String>();
+		//TODO ADD Other Cloud Provider definition
+		/*HashMap<String, String> shares = new HashMap<String, String>();
 		res.addDisk("shared", SHARED_FOLDER);
 		shares.put("shared", SHARED_FOLDER);
 		for (String p : packs) {
 			res.addImageToCloudProvider("Ascetic", Manifest.generateManifestName(p), shares);
-		}
+		}*/
 		File file = packageFolder.getFile("resources.xml").getRawLocation().toFile();
 		if (file.exists()) {
 			file.delete();
@@ -303,7 +331,7 @@ public class ImageCreation {
 		res.addCloudProvider("Ascetic");
 		for (String p : packs) {
 			res.addImageToProvider("Ascetic", Manifest.generateManifestName(p), 
-					OPTIMIS_USER, SHARED_FOLDER, IMAGE_DEPLOYMENT_FOLDER);
+					ASCETIC_USER, null, IMAGE_DEPLOYMENT_FOLDER);
 		}
 		File file = packageFolder.getFile("project.xml").getRawLocation().toFile();
 		if (file.exists()) {
@@ -352,46 +380,13 @@ public class ImageCreation {
 	 * @throws FileNotFoundException
 	 * @throws AsceticDeploymentException
 	 */
-	private static void uploadFile(WebResource resource, File file, String image_id)
-			throws FileNotFoundException, AsceticDeploymentException {
-		FileInputStream fileStream = new FileInputStream(file);
-		FormDataMultiPart part = new FormDataMultiPart();
-		part.field("name", file.getName());
-		part.field("file", fileStream, MediaType.TEXT_PLAIN_TYPE);
-		log.debug(" Sending " + file.getName());
-		boolean uploadOK=false;
-		int retries = 0;
-		ClientResponse response= null;
-		while(!uploadOK && retries <5){
-			try{
-				response = resource.path("image").path(image_id)
-				.path("file")
-				.header("Content-Type", MediaType.MULTIPART_FORM_DATA)
-				.post(ClientResponse.class, part);
-				uploadOK=true;
-			}catch (Exception e){
-				log.error("Error: "+ e.getMessage());
-				retries++;
-				try {
-					Thread.sleep(3000);
-				} catch (InterruptedException e1) {
-					//ignoring
-				}
-				fileStream = new FileInputStream(file);
-				part = new FormDataMultiPart();
-				part.field("name", file.getName());
-				part.field("file", fileStream, MediaType.TEXT_PLAIN_TYPE);
-			}
-		}
-		if (!uploadOK || response==null){
-			log.error("Error uploading file");
-			throw (new AsceticDeploymentException("Error uploading file "+file.getName()));
-		}else if ((response.getStatus() < 200) && (response.getStatus() >= 300)) {
-			log.error("response: " + response.toString()
-					+ "\nreason: " + response.getEntity(String.class));
-			throw (new AsceticDeploymentException(
-					"Error interacting with ICS: " + response.toString()));
-		}
+	private static void uploadAndCopy(VmicApi vmic, File file,Manifest manifest, 
+			InstallationScript is, IProgressMonitor monitor) throws Exception { 
+		if (file.exists()){
+			String fileName = uploadFile(vmic, manifest, file, "war", monitor);
+			is.addCopy("${"+fileName+"}", IMAGE_DEPLOYMENT_FOLDER);
+		}else
+			throw  new AsceticDeploymentException("File "+ file.getName()+ " does not exist.");
 
 	}
 
@@ -402,48 +397,42 @@ public class ImageCreation {
 	 * @param image_id Image Identifier
 	 * @throws FileNotFoundException
 	 * @throws AsceticDeploymentException
+	 * @throws InterruptedException 
 	 */
-	private static void uploadAndUnzip(WebResource resource, File file, String image_id)
-			throws FileNotFoundException, AsceticDeploymentException {
-		FileInputStream fileStream = new FileInputStream(file);
-		FormDataMultiPart part = new FormDataMultiPart();
-		part.field("name", file.getName());
-		part.field("file", fileStream, MediaType.TEXT_PLAIN_TYPE);
-		log.debug(" Sending " + file.getName());
-		boolean uploadOK=false;
-		int retries = 0;
-		ClientResponse response= null;
-		while(!uploadOK && retries <5){
-			try{
-				response = resource.path("image").path(image_id)
-				.path("zip")
-				.header("Content-Type", MediaType.MULTIPART_FORM_DATA)
-				.post(ClientResponse.class, part);
-				uploadOK=true;
-			}catch (Exception e){
-				log.error("Error: "+ e.getMessage());
-				retries++;
-				try {
-					Thread.sleep(3000);
-				} catch (InterruptedException e1) {
-					//ignoring
-				}
-				fileStream = new FileInputStream(file);
-				part = new FormDataMultiPart();
-				part.field("name", file.getName());
-				part.field("file", fileStream, MediaType.TEXT_PLAIN_TYPE);
-			}
-		}
-		if (!uploadOK || response==null){
-			log.error("Error uploading file");
-			throw (new AsceticDeploymentException("Error uploading file "+file.getName()));
-		}else if ((response.getStatus() < 200) && (response.getStatus() >= 300)) {
-			log.error("response: " + response.toString()
-					+ "\nreason: " + response.getEntity(String.class));
-			throw (new AsceticDeploymentException(
-					"Error interacting with ICS: " + response.toString()));
-		}
+	private static void uploadAndUnzip(VmicApi vmic, File file, Manifest manifest, 
+			InstallationScript is, IProgressMonitor monitor) throws Exception {
+		if (file.exists()){
+			String fileName = uploadFile(vmic, manifest, file, "zip", monitor);
+			is.addUnZip("${"+fileName+"}", IMAGE_DEPLOYMENT_FOLDER);
+		}else
+			throw  new AsceticDeploymentException("File "+ file.getName()+ " does not exist.");
 
+	}
+
+	private static String uploadFile(VmicApi vmic, Manifest manifest, File file, String format,
+			IProgressMonitor monitor) throws Exception {
+		String manifestFileName = manifest.getVMICFileName(file.getName());
+		if (!manifest.fileExists(manifestFileName)){
+			vmic.uploadFile(manifest.getServiceId(), file);
+			String path = null;
+			do{
+				Thread.sleep(10000);
+					ProgressDataFile pdf = (ProgressDataFile) vmic.progressCallback(manifest.getServiceId(), File.createTempFile("pgfile", "vmic"));
+					if (pdf.isError()){
+						log.error("Error uploading file "+ file.getName() , pdf.getException());
+						throw new AsceticDeploymentException("Error uploading file "+ file.getName());
+					}else if (pdf.isComplete()){
+						path = pdf.getRemotePath();
+						manifest.addFiles(manifestFileName, path, format);
+					}else{
+						monitor.worked(pdf.getCurrentPercentageCompletion().intValue());
+					}		
+			}while (path == null);
+		}else{
+			log.debug("File already uploaded");
+		}
+		return manifestFileName;
+		
 	}
 
 	/** 
@@ -455,154 +444,70 @@ public class ImageCreation {
 	 * @throws FileNotFoundException
 	 * @throws AsceticDeploymentException
 	 */
-	private static void uploadWar(WebResource resource, File file, String image_id)
-			throws FileNotFoundException, AsceticDeploymentException {
-		FileInputStream fileStream = new FileInputStream(file);
-		FormDataMultiPart part = new FormDataMultiPart();
-		part.field("name", file.getName());
-		part.field("file", fileStream, MediaType.TEXT_PLAIN_TYPE);
-		log.debug(" Sending " + file.getName());
-		boolean uploadOK=false;
-		int retries = 0;
-		ClientResponse response= null;
-		while(!uploadOK && retries <5){
-			try{
-				response = resource.path("image").path(image_id).path("war")
-						.header("Content-Type", MediaType.MULTIPART_FORM_DATA)
-						.post(ClientResponse.class, part);
-				uploadOK=true;
-			}catch (Exception e){
-				log.error("Error: "+ e.getMessage());
-				retries++;
-				
-				try {
-					Thread.sleep(3000);
-				} catch (InterruptedException e1) {
-					//ignoring
-				}
-				fileStream = new FileInputStream(file);
-				part = new FormDataMultiPart();
-				part.field("name", file.getName());
-				part.field("file", fileStream, MediaType.TEXT_PLAIN_TYPE);
-			}
-		}
-		if (!uploadOK || response==null){
-			log.error("Error uploading file");
-			throw (new AsceticDeploymentException("Error uploading file "+file.getName()));
-		}else if ((response.getStatus() < 200) && (response.getStatus() >= 300)) {
-			log.error("response: " + response.toString()
-					+ "\nreason: " + response.getEntity(String.class));
-			throw (new AsceticDeploymentException(
-					"Error interacting with ICS: " + response.toString()));
-		}
+	private static void uploadWar(VmicApi vmic, File file, Manifest manifest, 
+			InstallationScript is, IProgressMonitor monitor)
+			throws Exception {
+		if (file.exists()){
+			String fileName = uploadFile(vmic, manifest, file, "war", monitor);
+			is.addCopy("${"+fileName+"}", "${IMAGE_WEBAPP_FOLDER}");
+		}else
+			throw  new AsceticDeploymentException("File "+ file.getName()+ " does not exist.");
+		
 	}
 
 	
 	
-	private static void uploadCoreElementPackages(WebResource resource, String pack,
-			String image_id, IFolder packageFolder, ProjectMetadata pr_meta, 
-			PackageMetadata packMeta, IProgressMonitor monitor) throws Exception{
-		monitor.beginTask("Installing package " + pack, 5);
+	public static void uploadCoreElementPackages(VmicApi vmic, String pack, 
+			IFolder packageFolder, ProjectMetadata prMeta, 
+			PackageMetadata packMeta, Manifest manifest, IProgressMonitor monitor) throws Exception{
+		InstallationScript is = new InstallationScript(IMAGE_DEPLOYMENT_FOLDER);
+		monitor.beginTask("Uploading packages for " + pack, 5);
+		
 		IFile f = packageFolder.getFile(pack + ".jar");
 		monitor.subTask("Uploading and unziping core elements");
-		uploadAndUnzip(resource, f.getLocation().toFile(), image_id);
+		uploadAndUnzip(vmic, f.getLocation().toFile(), manifest, is, monitor);
 		monitor.worked(1);
+		
 		// Setting file permissions
 		monitor.subTask("Setting file permissions in core elements installations");
-		settingExecutablePermissions(resource,
-				new String[] { IMAGE_DEPLOYMENT_FOLDER + "*.sh" },
-				image_id, monitor);
+		settingExecutablePermissions(new String[] { IMAGE_DEPLOYMENT_FOLDER + "*.sh" },is);
 		monitor.worked(1);
+		
 		monitor.subTask("Uploading dependencies");
 		f = packageFolder.getFile(pack + "_deps.zip");
 		if (f != null && f.exists()) {
-			uploadAndUnzip(resource, f.getLocation().toFile(), image_id);
+			uploadAndUnzip(vmic, f.getLocation().toFile(), manifest, is, monitor);
 		}
 		monitor.worked(1);
+		
 		monitor.subTask("Uploading zip dependencies");
-		deployZipDeps(resource, pr_meta.getDependencies(packMeta
-				.getElementsInPackage(pack)), image_id, pack, packageFolder, monitor);
+		deployZipDeps(vmic, prMeta.getDependencies(packMeta
+				.getElementsInPackage(pack)), pack, packageFolder, manifest, is, monitor);
 		monitor.worked(1);
+		
 		monitor.subTask("Uploading war dependencies");
-		deployWarDeps(resource, pr_meta.getDependencies(packMeta
-				.getElementsInPackage(pack)), image_id, pack, packageFolder, monitor);
+		deployWarDeps(vmic, prMeta.getDependencies(packMeta
+				.getElementsInPackage(pack)), pack, packageFolder, manifest, is, monitor);
 		monitor.worked(1);
+		
+		manifest.addVMICExecutionInComponent(Manifest.generateManifestName(pack), is.getCommand());
+		monitor.done();
 	}
 	
 	/** 
 	 * Set the permissions of a file in a image
 	 * 
-	 * @param resource Image Creation Service URL's web resource
 	 * @param files Array of file names
 	 * @param image_id Image identifier
 	 * @param monitor Object to report the progress of the process
 	 * @throws AsceticDeploymentException
 	 * @throws InterruptedException
 	 */
-	private static void settingExecutablePermissions(WebResource resource,
-			String[] files, String image_id, IProgressMonitor monitor)
-			throws AsceticDeploymentException, InterruptedException {
-		ClientResponse response;
+	private static void settingExecutablePermissions(	String[] files, InstallationScript is) {
 		for (String f : files) {
-			FormDataMultiPart part = new FormDataMultiPart();
-			part.field("file", f);
-			part.field("permission", "755");
-			response = resource.path("image").path(image_id).path("permission")
-					.header("Content-Type", MediaType.MULTIPART_FORM_DATA)
-					.put(ClientResponse.class, part);
-			if ((response.getStatus() < 200) && (response.getStatus() >= 300)) {
-				resource.path("image").path(image_id).delete();
-				throw (new AsceticDeploymentException(
-						"Error setting permissions for file: " + f
-								+ "\nReason: " + response.toString()));
-			}
+			is.addExecutablePermission(f);
 		}
 
 	}
 	
-
-	public static String getImageDescription(ProjectMetadata prMeta, PackageMetadata packMeta, String p, HashMap<String, ServiceElement> constEls, 
-			boolean master, IJavaProject project) throws Exception {
-		String[] els;
-		if (master) {
-			Map<String, ServiceElement> map = CommonFormPage.getElements(
-					prMeta.getAllOrchestrationClasses(),ORCH_TYPE,project, prMeta);
-			els = map.keySet().toArray(new String[map.size()]);
-		} else {
-			els = packMeta.getElementsInPackage(p);
-		}
-		Map<String, Integer> minCoreInstances = prMeta.getMinElasticity(els);
-		Map<String, String> maxConstraints = new HashMap<String, String>();
-		Map<String, String> maxResourcesPerMachine = prMeta.getMaxResourcesProperties();
-		Map<String, Integer> minCoreInstancesPerMachine = BuildingDeploymentFormPage.
-				getConstraintsElements(els, constEls, minCoreInstances, maxResourcesPerMachine, 
-						maxConstraints);
-		return generateTemplate(maxConstraints);	
-	}
-
-	private static String generateTemplate(Map<String, String> maxConstraints) {
-		String imageTemplate = new String("<ImageTemplate>");
-		String OS = maxConstraints.get(ConstraintDef.OS.getName());
-		
-		if (OS!=null&& !OS.contains(",")){
-			imageTemplate = imageTemplate.concat("<operatingSystem>"+OS+"</operatingSystem>");
-		}else
-			imageTemplate = imageTemplate.concat("<operatingSystem>Linux</operatingSystem>");
-		String arch = maxConstraints.get(ConstraintDef.PROC_ARCH.getName());
-		if (arch !=null&& !arch.contains(",")){
-			imageTemplate = imageTemplate.concat("<architecture>"+arch+"</architecture>");
-		}
-		String imageSize = maxConstraints.get(ConstraintDef.STORAGE_SIZE.getName());
-		if (imageSize != null){
-			int f = (int)Float.parseFloat(imageSize)/1;
-			//f= f/1024;
-			imageTemplate = imageTemplate.concat("<imageSize>"+f+"</imageSize>");
-		}else{
-			int f = (int)IDEProperties.DEFAULT_DISK/1024;
-			imageTemplate = imageTemplate.concat("<imageSize>"+f+"</imageSize>");
-		}
-		imageTemplate = imageTemplate.concat("</ImageTemplate>");
-		return imageTemplate;
-	}
-
 }

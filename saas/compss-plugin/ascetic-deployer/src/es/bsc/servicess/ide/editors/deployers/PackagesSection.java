@@ -594,7 +594,7 @@ public class PackagesSection extends ServiceEditorSection{
 		} catch (Exception e) {
 			log.error("Error creating packages", e);
 			ErrorDialog.openError(getShell(),"Error defining packages", "Error during package definition",
-					new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getCause().getMessage(),e.getCause()));
+					new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getMessage(),e));
 			
 		}
 	}
@@ -604,8 +604,12 @@ public class PackagesSection extends ServiceEditorSection{
 		PackageMetadata packMeta = new PackageMetadata(packageMetadataFile);
 		HashMap<String, ServiceElement> allEls = CommonFormPage.getElements(
 				prMeta.getAllOrchestrationClasses(), BOTH_TYPE, editor.getProject(), prMeta);
-		deployer.getManifest().generateNewPackages(prMeta, packMeta, allEls, deployer.getProperties());
-		deployer.getManifest().toFile();
+		if (deployer.getManifest() == null){
+			deployer.setManifest(packMeta, allEls);
+		}else{
+			deployer.getManifest().regeneratePackages(prMeta, packMeta, allEls, deployer.getProperties());
+			deployer.getManifest().toFile();
+		}
 	}
 
 	/**

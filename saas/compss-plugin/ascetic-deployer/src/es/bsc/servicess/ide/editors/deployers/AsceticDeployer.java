@@ -576,6 +576,12 @@ public class AsceticDeployer extends Deployer {
 		return packSection.isBlocking()||imageSection.isBlocking();
 	}
 	
+	protected  void setManifest(PackageMetadata packMeta,
+			HashMap<String, ServiceElement> allEls) throws Exception {
+		this.manifest = Manifest.newInstance(getProject(), editor.getProjectMetadata(), packMeta, allEls, op_prop);
+		this.manifest.toFile();
+	}
+	
 	
 
 }

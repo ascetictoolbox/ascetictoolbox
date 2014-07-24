@@ -33,4 +33,5 @@ Bundle-ClassPath: .,
  lib/ovf-xmlbeans-0.0.1-SNAPSHOT.jar,
  lib/ovf-xmlbeans-api-0.0.1-SNAPSHOT.jar,
  lib/virtual-machine-image-constructor-0.0.1-SNAPSHOT.jar,
- lib/xmlbeans-2.6.0.jar
+ lib/xmlbeans-2.6.0.jar,
+ lib/velocity-1.7.jar

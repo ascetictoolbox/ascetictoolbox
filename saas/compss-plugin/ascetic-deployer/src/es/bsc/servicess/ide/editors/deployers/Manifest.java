@@ -19,11 +19,18 @@ package es.bsc.servicess.ide.editors.deployers;
 import static es.bsc.servicess.ide.Constants.*;
 
 import java.io.ByteArrayInputStream;
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.configuration.ConfigurationException;
+import org.apache.xmlbeans.XmlOptions;
+import org.dmtf.schemas.ovf.envelope.x1.XmlBeanProductSectionDocument;
+import org.dmtf.schemas.ovf.envelope.x1.XmlBeanVirtualHardwareSectionDocument;
+import org.dmtf.schemas.ovf.envelope.x1.XmlBeanVirtualSystemCollectionDocument;
+import org.dmtf.schemas.ovf.envelope.x1.XmlBeanVirtualSystemCollectionType;
+import org.dmtf.schemas.ovf.envelope.x1.XmlBeanVirtualSystemDocument;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
@@ -40,8 +47,15 @@ import es.bsc.servicess.ide.model.ServiceCoreElement;
 import es.bsc.servicess.ide.model.ServiceElement;
 import eu.ascetic.utils.ovf.api.File;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
+import eu.ascetic.utils.ovf.api.enums.OperatingSystemType;
 import eu.ascetic.utils.ovf.api.enums.ProductPropertyType;
+import eu.ascetic.utils.ovf.api.enums.ResourceType;
+import eu.ascetic.utils.ovf.api.Disk;
+import eu.ascetic.utils.ovf.api.DiskSection;
+import eu.ascetic.utils.ovf.api.Item;
+import eu.ascetic.utils.ovf.api.OperatingSystem;
 import eu.ascetic.utils.ovf.api.ProductSection;
+import eu.ascetic.utils.ovf.api.References;
 import eu.ascetic.utils.ovf.api.VirtualHardwareSection;
 import eu.ascetic.utils.ovf.api.VirtualSystem;
 import eu.ascetic.utils.ovf.api.VirtualSystemCollection;
@@ -49,53 +63,45 @@ import eu.ascetic.utils.ovf.api.VirtualSystemCollection;
 public class Manifest {
 	private static Logger log = Logger.getLogger(Manifest.class);
 	public static final String ASCETIC_PREFIX = "ascetic-pm-";
+	public static final String VMIC_SIZE_CONSTRAINT ="asceticVMICImagesize";
+	public static final String VMIC_OS_CONSTRAINT = "asceticVMICImageOS";
+	public static final String VMIC_ARC_CONSTRAINT ="asceticVMICImaceArchitecture";
+	public static final String VMIC_FILE_PREFIX = "asceticVMICFile";
+	public static final String VMIC_EXEC_CONSTRAINT = "asceticVMICExecution";
+	public static final String PM_ELEMENTS_CONSTRAINT = "asceticPMElements";
+	
+	private static final String DISK_SUFFIX = "-disk";
+	private static final String IMAGE_SUFFIX = "-img";
 	private IJavaProject project;
 	private OvfDefinition ovf;
-	public static final String VMIC_FILE = "VMIC_File";
+	
 	
 	/**
 	 * Generate a new service manifest
 	 * @param op_prop 
 	 * @throws Exception 
 	 */
-	protected void generateNewPackages(ProjectMetadata pr_meta, PackageMetadata packMeta, 
+	public void regeneratePackages(ProjectMetadata prMeta, PackageMetadata packMeta, 
 			HashMap<String, ServiceElement> allEls, AsceticProperties prop) throws Exception {
-		
-		
 		String[] oePacks = packMeta.getPackagesWithOrchestration();
+		String[] cePacks = packMeta.getPackagesWithCores();
 		if (oePacks == null || oePacks.length <= 0) {
 			throw new Exception("No orchestration packages defined");
 		}
-			
-		ovf = null; 
-		for (String p : oePacks) {
-			log.debug("Creating Component for package " + p );
-			String componentID = Manifest.generateManifestName(p);
-			if (ovf == null){
-				OvfDefinition.Factory.newInstance(project.getProject().getName(), componentID);
-			}else{
-				VirtualSystem component = VirtualSystem.Factory.newInstance();
-				component.setId(componentID);
-				setComponentDescription(component, pr_meta, packMeta, p, project, 
-					 allEls, false, prop);
-				ovf.getVirtualSystemCollection().addVirtualSystem(component);
-			}
+		if (cePacks == null || cePacks.length <= 0) {
+			throw new Exception("No core packages defined");
 		}
-		String[] cePacks = packMeta.getPackagesWithCores();
+		createNewEmptyOVF(); 
+		for (String p : oePacks) {
+			addNewComponent(p, prMeta, packMeta, project, allEls, false, prop);
+		}
 		if (cePacks != null && cePacks.length > 0) {
 			for (String p : cePacks) {
-				log.debug("Creating Component for package " + p );
-				String componentID = Manifest.generateManifestName(p);
-				VirtualSystem component = VirtualSystem.Factory.newInstance();
-				component.setId(componentID);
-				setComponentDescription(component, pr_meta, packMeta, p, project, 
-					allEls, false, prop);
+				addNewComponent(p, prMeta, packMeta, project, allEls, false, prop);
 			}
 		}else{
 			log.warn("No packages found generating only master");
-		}
-		
-		
+		}	
 		toFile();
 	}
 	
@@ -114,8 +120,6 @@ public class Manifest {
 			ProjectMetadata prMeta, PackageMetadata packMeta, String p, IJavaProject project,
 			HashMap<String, ServiceElement> constEls, boolean master,
 			AsceticProperties op_prop) throws Exception {
-		//TODO Change to new ascetic manifest
-		String signatures;
 		String[] els;
 		if (master) {
 			Map<String, ServiceElement> map = CommonFormPage.getElements(
@@ -124,7 +128,6 @@ public class Manifest {
 		} else {
 			els = packMeta.getElementsInPackage(p);
 		}
-	
 		log.debug("Setting constraints");
 		Map<String, Integer> minCoreInstances = prMeta.getMinElasticity(els);
 		Map<String, Integer> maxCoreInstances = prMeta.getMaxElasticity(els);	
@@ -134,31 +137,47 @@ public class Manifest {
 				getConstraintsElements(els, constEls, minCoreInstances, maxResourcesPerMachine, 
 						maxConstraints);
 		setConstraints(component, maxConstraints, prMeta);
-		
 		log.debug("Setting signatures in product");
-		ProductSection product = component.getProductSectionAtIndex(0);
-		if (master) {
-			signatures = "master-frontend";
-		}else
-			signatures = generateElementSignatures(constEls, els, prMeta, minCoreInstancesPerMachine);
-		product.addNewProperty("PM_Elements", ProductPropertyType.STRING, signatures);
-		/* TODO: Default intra-components affinity
+		setInstalledElements(component, master, constEls, els, prMeta, minCoreInstancesPerMachine);
+		/* TODO: Component affinity not supported by ASCETIC year 1
 		component.setAffinityConstraints("Low");
 		component.setAntiAffinityConstraints("Low");
 		*/
 		log.debug("Setting Allocation and elasticity rules");
 		setAllocation(component, els, minCoreInstancesPerMachine,
 				minCoreInstances, maxCoreInstances);
-		/*
+		/* TODO: Component elasticity not supported by ASCETIC year 1
 		setElasticity(manifest, component.getComponentId(), els, minCoreInstancesPerMachine, 
 				minCoreInstances, maxCoreInstances, op_prop);
 		 */
 	}
 
+	private void setInstalledElements(VirtualSystem component, boolean master,
+			HashMap<String, ServiceElement> constEls, String[] els,
+			ProjectMetadata prMeta,
+			Map<String, Integer> minCoreInstancesPerMachine) {
+		ProductSection ps;
+		if (component.getProductSectionArray() == null || component.getProductSectionArray().length<1){
+			setAsceticProductSection(component);
+		}
+		ps = component.getProductSectionAtIndex(0);
+		String signatures;
+		if (master) {
+			signatures = "master-frontend";
+		}else
+			signatures = generateElementSignatures(constEls, els, prMeta, minCoreInstancesPerMachine);
+		ps.addNewProperty(PM_ELEMENTS_CONSTRAINT, ProductPropertyType.STRING, signatures);
+		
+	}
+
+
 	private VirtualSystem getComponent(String component) throws Exception {
 		VirtualSystemCollection vsc =  ovf.getVirtualSystemCollection();
+		if (vsc == null)
+			throw new Exception("There are no components in the ovf. ");
 		for (VirtualSystem vs : vsc.getVirtualSystemArray()){
-			if (vs.getId().equals(component)){
+			log.debug("Evaluating virtual system: " +vs.toString());
+			if (vs.getName().equals(component)){
 				return vs;
 			}
 		}
@@ -242,21 +261,133 @@ public class Manifest {
 	private void setConstraints(
 		VirtualSystem component,Map<String, String> maxConstraints, 
 		ProjectMetadata prMeta) throws ConfigurationException {
-		
+		ProductSection ps;
+		if (component.getProductSectionArray() == null || component.getProductSectionArray().length<1){
+			setAsceticProductSection(component);
+		}
+		ps = component.getProductSectionAtIndex(0);
 		Map<String, String> defResources = prMeta.getDefaultResourcesProperties();
 		Long ds = getDiskSize(maxConstraints, defResources);
-		log.debug("Setting Storage to " + ds);
-		//TODO Add storage OS, architecture
+		
+		if (ds>0){
+			Disk d = getComponentDisk(component.getId());
+			d.setCapacityAllocationUnits("byte * 2^20");
+	        d.setCapacity(ds.toString());
+			log.debug("Setting Storage to " + ds);
+			ps.addNewProperty(VMIC_SIZE_CONSTRAINT, ProductPropertyType.REAL32, Long.toString(ds));
+		}
+		String os = getOperatingSystem(maxConstraints, defResources);
+		if (os!=null){
+			addOperatingSystem(component, os);
+			log.debug("Setting OS to " + os);
+			ps.addNewProperty(VMIC_OS_CONSTRAINT, ProductPropertyType.STRING, os);
+		}
+		String arch = getArchitecture(maxConstraints, defResources);
+		if (arch !=null){
+			log.debug("Setting processorArch to " + os);
+			ps.addNewProperty(VMIC_ARC_CONSTRAINT, ProductPropertyType.STRING, arch);
+		}
 		VirtualHardwareSection hardwareSection = component.getVirtualHardwareSection();
+		if (hardwareSection ==null){
+			setHardwareSection(component);
+			hardwareSection = component.getVirtualHardwareSection();		
+		}
+		
 		Float ms = getMemSize(maxConstraints, defResources);
 		log.debug("Setting Memory to " + ms);
-		hardwareSection.setMemorySize(ms.intValue());
+		if (!hardwareSection.setMemorySize(ms.intValue())){
+			addMemoryItem(hardwareSection, ms.intValue());
+		}
 		
 		Integer cpuc = getCPUCount(maxConstraints, defResources);
 		log.debug("Setting CPU count to " + cpuc);
-		hardwareSection.setNumberOfVirtualCPUs(cpuc.intValue());
+		if (!hardwareSection.setNumberOfVirtualCPUs(cpuc.intValue())){
+			addCPUCountItem(hardwareSection, cpuc.intValue());;
+		}
+		
+		Integer cpus = getCPUSpeed(maxConstraints, defResources);
+		log.debug("Setting CPU speed to" + cpus);
+		if (!hardwareSection.setCPUSpeed(cpus.intValue())){
+			addCPUSpeedItem(hardwareSection, cpus.intValue());
+		}
+	}
+
+
+	private void addCPUSpeedItem(VirtualHardwareSection hardwareSection,
+			int intValue) {
+		 Item itemCpuSpeed = Item.Factory.newInstance();
+	     itemCpuSpeed.setDescription("CPU Speed");
+	     itemCpuSpeed.setElementName( intValue +" MHz CPU speed reservation");
+	     itemCpuSpeed.setInstanceId("1");
+	     itemCpuSpeed.setResourceType(ResourceType.PROCESSOR);
+	     itemCpuSpeed.setResourceSubType("cpuspeed");
+	     itemCpuSpeed.setAllocationUnits("hertz * 2^20");
+	     itemCpuSpeed.setReservation(new BigInteger(Integer.toString(intValue)));
+	     hardwareSection.addItem(itemCpuSpeed);
 		
 	}
+
+
+	private void addCPUCountItem(VirtualHardwareSection hardwareSection,
+			int intValue) {
+		Item itemCpuNumber = Item.Factory.newInstance();
+        itemCpuNumber.setDescription("Number of virtual CPUs");
+        itemCpuNumber.setElementName(intValue + " virtual CPUs");
+        itemCpuNumber.setInstanceId("1");
+        itemCpuNumber.setResourceType(ResourceType.PROCESSOR);
+        itemCpuNumber.setVirtualQuantity(new BigInteger(Integer.toString(intValue)));
+        hardwareSection.addItem(itemCpuNumber);
+		
+	}
+
+
+	private void addMemoryItem(VirtualHardwareSection hardwareSection,
+			int intValue) {
+		Item itemMemory = Item.Factory.newInstance();
+        itemMemory.setDescription("Memory Size");
+        itemMemory.setElementName(intValue +" MB of memory");
+        itemMemory.setInstanceId("2");
+        itemMemory.setResourceType(ResourceType.MEMORY);
+        itemMemory.setAllocationUnits("byte * 2^20");
+        itemMemory.setVirtualQuantity(new BigInteger(Integer.toString(intValue)));
+        hardwareSection.addItem(itemMemory);
+	}
+
+
+	private Disk getComponentDisk(String id) {
+		DiskSection ds =  ovf.getDiskSection();
+		if (ds != null){
+			Disk[] dArray = ds.getDiskArray();
+			if (dArray!=null){
+				for (Disk d : dArray){
+					if (d.getDiskId().equals(id+DISK_SUFFIX)){
+						return d;
+					}
+				}
+			}
+			addComponentDisk(ds, id);
+			
+		}else{
+			ds = DiskSection.Factory.newInstance();
+			ds.setInfo("Disk section for application " + project.getProject().getName());
+			addComponentDisk(ds, id);
+			ovf.setDiskSection(ds);
+		}
+		return getComponentDisk(id);
+	}
+
+
+	private void addOperatingSystem(VirtualSystem component, String os) {
+		OperatingSystem opSys= component.getOperatingSystem();
+		if (opSys == null){
+			opSys = OperatingSystem.Factory.newInstance();
+		}
+		opSys.setId(OperatingSystemType.valueOf(os));
+		opSys.setInfo("Operating System for component "+ component.getId());
+		component.setOperatingSystem(opSys);
+		
+	}
+
 
 	private static Integer getCPUCount(Map<String, String> maxConstraints,
 			Map<String, String> defResources) {
@@ -271,6 +402,23 @@ public class Manifest {
 					cpuc = new Integer(def);
 			}else
 				cpuc = new Integer(IDEProperties.DEFAULT_NUM_CORES);
+		}
+		return cpuc;
+	}
+	
+	private static Integer getCPUSpeed(Map<String, String> maxConstraints,
+			Map<String, String> defResources) {
+		String cpuCount = maxConstraints.get(ConstraintDef.PROC_SPEED
+				.getName());
+		Integer cpuc;
+		if (cpuCount != null) {
+			cpuc = new Integer(cpuCount);
+		} else {
+			String def = defResources.get(ConstraintDef.PROC_SPEED);
+			if (def!=null){
+					cpuc = new Integer(def);
+			}else
+				cpuc = new Integer(IDEProperties.DEFAULT_PROC_SPEED);
 		}
 		return cpuc;
 	}
@@ -311,6 +459,24 @@ public class Manifest {
 		}
 		return ds;
 	}
+	
+	private static String getOperatingSystem(Map<String, String> maxConstraints,
+			Map<String, String> defResources) {
+		String os = maxConstraints.get(ConstraintDef.OS.getName());
+		if (os == null) {
+			os = defResources.get(ConstraintDef.OS);
+		}
+		return os;
+	}
+	
+	private static String getArchitecture(Map<String, String> maxConstraints,
+			Map<String, String> defResources) {
+		String arch = maxConstraints.get(ConstraintDef.PROC_ARCH.getName());
+		if (arch == null) {
+			arch = defResources.get(ConstraintDef.PROC_ARCH);
+		}
+		return arch;
+	}
 
 	/**
 	 * Set the allocation parameters for a component in the service manifest
@@ -340,9 +506,14 @@ public class Manifest {
 			}
 			Arrays.sort(min_values);
 			Arrays.sort(max_values);
-			component.getProductSectionAtIndex(0).setLowerBound(
+			ProductSection ps;
+			if (component.getProductSectionArray() == null || component.getProductSectionArray().length<1){
+				setAsceticProductSection(component);
+			}
+			ps = component.getProductSectionAtIndex(0);
+			ps.setLowerBound(
 				min_values[min_values.length - 1]);
-			component.getProductSectionAtIndex(0).setUpperBound(
+			ps.setUpperBound(
 				max_values[max_values.length - 1]);
 		}else
 			throw(new Exception("Array of elements is null"));
@@ -407,9 +578,6 @@ public class Manifest {
 		}
 		return false;
 	}
-
-
-	
 
 	private static boolean checkPackageHasConstraint(String name,
 			String[] elementsInPackage, HashMap<String, ServiceElement> allEls) {
@@ -527,14 +695,19 @@ public class Manifest {
 	}
 
 	public void setServiceId(String serviceID) {
-		ovf.getVirtualSystemCollection().setId(serviceID);
+		VirtualSystemCollection vsc = ovf.getVirtualSystemCollection();
+		if (vsc == null){
+			setVirtualSystemCollection();
+			vsc = ovf.getVirtualSystemCollection();
+		}
+		vsc.setId(serviceID);
 		
 	}
 
-	public static Manifest newInstance(IJavaProject project, String componentID) {
+	public static Manifest newInstance(IJavaProject project) {
 		Manifest m = new Manifest();
 		m.project = project;
-		m.ovf = OvfDefinition.Factory.newInstance(project.getProject().getName(), componentID);
+		m.createNewEmptyOVF();
 		return m;
 	}
 
@@ -542,6 +715,15 @@ public class Manifest {
 		Manifest m = new Manifest();
 		m.project = project;
 		m.ovf = OvfDefinition.Factory.newInstance(manifestData.toString());
+		m.setServiceId(project.getProject().getName());
+		return m;
+	}
+	
+	public static Manifest newInstance(IJavaProject project, ProjectMetadata pr_meta, PackageMetadata packMeta, 
+			HashMap<String, ServiceElement> allEls, AsceticProperties prop) throws Exception{
+		Manifest m = new Manifest();
+		m.project = project;
+		m.regeneratePackages(pr_meta, packMeta, allEls, prop);
 		m.setServiceId(project.getProject().getName());
 		return m;
 	}
@@ -561,7 +743,10 @@ public class Manifest {
 								.getBytes()), true, null);
 	}
 
-
+	public String toString() {
+		return ovf.toString();
+	}
+	
 	public OvfDefinition getOVFDefinition() {
 		return ovf;
 	}
@@ -570,24 +755,143 @@ public class Manifest {
 		this.ovf = ovf;
 	}
 
-	public boolean hasImages() {
-		if (ovf.getReferences().getFileArray().length>0){
-			return true;
-		}else
-			return false;
+	public boolean hasImages() throws Exception {
+		VirtualSystemCollection vsc = ovf.getVirtualSystemCollection();
+		if (vsc !=null){
+			VirtualSystem[] vsArray = vsc.getVirtualSystemArray();
+			if (vsArray !=null && vsArray.length>0){
+				for (VirtualSystem vs : vsArray){
+					if (!fileExists(vs.getId()+IMAGE_SUFFIX)){
+						return false;
+					}
+				}
+				return true;
+			}else{
+				throw(new Exception("There are no components defined"));
+			}
+		}else{
+			throw(new Exception("There are no components defined"));
+		}
+		
 	}
+
+
+	public boolean fileExists(String id) {
+		References refs = ovf.getReferences();
+		if (refs == null){
+			return false;
+		}
+		File[] fileArray = refs.getFileArray();
+		if (fileArray == null|| fileArray.length<= 0){
+			return false;
+		}
+		for (File f : fileArray){
+			if (f.getId().equals(id))
+				return true;
+		}
+		return false;
+	}
+
 
 	public void addFiles(String name, String href, String format){
 		File f = File.Factory.newInstance(name, href);
 		if (format!= null)
 			f.setCompression(format);
-		ovf.getReferences().addFile(f);
+		References refs = ovf.getReferences();
+		if (refs == null){
+			ovf.getXmlObject().getEnvelope().addNewReferences();
+		}
+		refs.addFile(f);
+	}
+	
+	public void addVMICExecutionInComponent(String componentID, String commands) throws Exception{
+		VirtualSystem component = getComponent(componentID);
+		ProductSection ps;
+		if (component.getProductSectionArray() == null || component.getProductSectionArray().length<1){
+			setAsceticProductSection(component);
+		}
+		ps = component.getProductSectionAtIndex(0);
+		ps.addNewProperty(VMIC_EXEC_CONSTRAINT , ProductPropertyType.STRING, commands);
+		
 	}
 	
 	public void addVMICFileInComponent(String componentID, String name) throws Exception{
-		VirtualSystem vs = getComponent(componentID);
-		vs.getProductSectionAtIndex(0).addNewProperty(VMIC_FILE , ProductPropertyType.STRING, name);
-		
+		VirtualSystem component = getComponent(componentID);
+		ProductSection ps;
+		if (component.getProductSectionArray() == null || component.getProductSectionArray().length<1){
+			setAsceticProductSection(component);
+		}
+		ps = component.getProductSectionAtIndex(0);
+		ps.addNewProperty(VMIC_FILE_PREFIX , ProductPropertyType.STRING, name);
 		
 	}
+	
+	private void createNewEmptyOVF(){
+		ovf = OvfDefinition.Factory.newInstance();
+		log.debug("Created ovf:"+ ovf.toString());
+		setVirtualSystemCollection();
+		setServiceId(project.getProject().getName());
+	}
+	
+	private void addComponent(VirtualSystem component){
+		VirtualSystemCollection vsc = ovf.getVirtualSystemCollection();
+		if (vsc == null){
+			setVirtualSystemCollection();
+			vsc = ovf.getVirtualSystemCollection();
+		}
+		vsc.addVirtualSystem(component);
+	}
+	
+	private void addNewComponent(String p, ProjectMetadata prMeta, PackageMetadata packMeta, IJavaProject project,
+			HashMap<String, ServiceElement> allEls, boolean master,
+			AsceticProperties ascProp) throws Exception{
+		log.debug("Creating Component for package " + p );
+		String componentID = Manifest.generateManifestName(p);
+		VirtualSystem component = VirtualSystem.Factory.newInstance();
+		component.setId(componentID);
+		component.setName(componentID);
+		component.setInfo("Description of component "+ componentID);
+		setComponentDescription(component, prMeta, packMeta, p, project, 
+			allEls, false, ascProp);
+		addComponent(component);
+	}
+
+	private static void addComponentDisk(DiskSection ds, String id) {
+		Disk d = Disk.Factory.newInstance();
+		d.setDiskId(id+ DISK_SUFFIX);
+		d.setFileRef(id +IMAGE_SUFFIX);
+		ds.addDisk(d);
+	}
+
+	public String getServiceId() {
+		ovf.getVirtualSystemCollection().getId();
+		return null;
+	}
+	
+	private void setAsceticProductSection(VirtualSystem component){
+		log.debug("Creating new Product Section for component " + component.getId());
+		ProductSection ps = ProductSection.Factory.newInstance();
+		ps.setInfo("Ascetic Extensions for component " + component.getId());
+		component.addProductSection(ps);
+	}
+	
+	private void setVirtualSystemCollection(){
+		log.debug("Creating new Virtual System Collection for "+ project.getProject().getName() + " application.");
+		VirtualSystemCollection v = VirtualSystemCollection.Factory.newInstance();
+		v.setInfo("Virtual Systems for "+ project.getProject().getName() + " application");
+		ovf.setVirtualSystemCollection(v);
+	}
+	
+	private void setHardwareSection(VirtualSystem component){
+		log.debug("Creating new Virtual Hardware Section for component " + component.getId());
+		VirtualHardwareSection hardwareSection = VirtualHardwareSection.Factory.newInstance();
+		hardwareSection.setInfo("Hardware Description for component " + component.getId());
+		component.setVirtualHardwareSection(hardwareSection);
+	}
+	
+	public String getVMICFileName(String fileName){
+		return VMIC_FILE_PREFIX+"-"+getServiceId()+"-"+fileName;
+	}
+	
+	
 }

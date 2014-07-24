@@ -34,6 +34,8 @@ public class AsceticProperties {
 	private static final String QUOTA_FACTOR = "quota.factor";
 	private static final String TOLERANCE_FACTOR = "tolerance.factor";
 	private static final String LS_CLI_PROP_LOCATION = "ls.client.properties";
+	private static final String ICS_REPO_PATH = "ics.repository.path";
+	private static final String ICS_RSYNC_PATH = "ics.rsync.path";
 
 	private PropertiesConfiguration config;
 
@@ -96,6 +98,16 @@ public class AsceticProperties {
 	
 	public void setLSClientProperties(String location) {
 		config.setProperty(LS_CLI_PROP_LOCATION, location);
+		
+	}
+
+	public void setRepoPathLocation(String repoPath) {
+		config.setProperty(ICS_REPO_PATH, repoPath);
+		
+	}
+	
+	public void setRsyncPathLocation(String rsyncPath) {
+		config.setProperty(ICS_RSYNC_PATH, rsyncPath);
 		
 	}
 }

@@ -1099,6 +1099,7 @@ saas/compss-plugin/ascetic-deployer/src/es/bsc/servicess/ide/editors/deployers/A
 saas/compss-plugin/ascetic-deployer/src/es/bsc/servicess/ide/editors/deployers/AsceticProperties.java -text
 saas/compss-plugin/ascetic-deployer/src/es/bsc/servicess/ide/editors/deployers/ImageCreation.java -text
 saas/compss-plugin/ascetic-deployer/src/es/bsc/servicess/ide/editors/deployers/ImagesSection.java -text
+saas/compss-plugin/ascetic-deployer/src/es/bsc/servicess/ide/editors/deployers/InstallationScript.java -text
 saas/compss-plugin/ascetic-deployer/src/es/bsc/servicess/ide/editors/deployers/Manifest.java -text
 saas/compss-plugin/ascetic-deployer/src/es/bsc/servicess/ide/editors/deployers/PackagesSection.java -text
 saas/compss-plugin/ascetic-deployer/src/es/bsc/servicess/ide/editors/deployers/SectionSaveResetButtonComposite.java -text
