@@ -14,11 +14,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
 import eu.ascetic.paas.applicationmanager.rest.util.XMLBuilder;
@@ -33,9 +31,7 @@ import eu.ascetic.paas.applicationmanager.rest.util.XMLBuilder;
 @Scope("request")
 public class ApplicationRest extends AbstractRest {
 	private static Logger logger = Logger.getLogger(ApplicationRest.class);
-	@Autowired
-	protected ApplicationDAO applicationDAO;
-	
+
 	/**
 	 * @return a list of applications stored in the database fitting the respective query params, by default this does not return the terminated applications
 	 */
@@ -76,8 +72,19 @@ public class ApplicationRest extends AbstractRest {
 		}
 		
 		// Now we check if the application exits in the database
+		Application application = applicationDAO.getByName(name);
 		
-		return buildResponse(Status.CREATED, "Method not implemented yet");
+		if(application == null) {
+			application = new Application();
+			application.setName(name);
+			
+			applicationDAO.save(application);
+			
+			// So we know the id the DB has given to it
+			application = applicationDAO.getByName(name);
+		}
+		
+		return buildResponse(Status.CREATED, XMLBuilder.getApplicationXML(application));
 	}
 	
 	/**
