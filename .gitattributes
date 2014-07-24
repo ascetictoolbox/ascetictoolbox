@@ -227,6 +227,7 @@ paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmana
 paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmanager/model/converter/ModelConverterTest.java -text
 paas/application-manager-datamodel/src/test/resources/log4j.properties -text
 paas/application-manager/pom.xml -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/Dictionary.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/conf/Configuration.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/ApplicationDAO.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/DAO.java -text
@@ -235,6 +236,7 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/VM
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/jpa/ApplicationDAOJpa.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/jpa/DeploymentDAOJpa.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/jpa/VMDAOJpa.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/http/Client.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/ovf/OVFUtils.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/AbstractRest.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/ApplicationRest.java -text
