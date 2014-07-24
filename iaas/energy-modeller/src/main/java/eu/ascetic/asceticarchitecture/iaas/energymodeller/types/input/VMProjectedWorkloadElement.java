@@ -44,6 +44,11 @@ public class VMProjectedWorkloadElement implements Comparable<Object> {
     public double diskUsage;
     public double memoryUsage;
     
+    /**
+     * This provides the start time of this workload element.
+     * @return The start time of this workload element, null if the workload is
+     * open ended with no expected start or completion time.
+     */
     public Calendar getStartTime() {
         if (duration == null) {
             return null;
@@ -51,6 +56,11 @@ public class VMProjectedWorkloadElement implements Comparable<Object> {
         return duration.getStartTime();
     }
 
+    /**
+     * This provides the end time of this workload element.
+     * @return The end time of this workload element, null if the workload is
+     * open ended with no expected completion time.
+     */
     public Calendar getEndTime() {
         if (duration == null) {
             return null;
@@ -70,7 +80,7 @@ public class VMProjectedWorkloadElement implements Comparable<Object> {
     
     /**
      * This returns the duration of the projected workload element
-     * @return 
+     * @return The duration this projected workload element describes.
      */
     public TimePeriod getDuration() {
         return duration;
@@ -78,7 +88,7 @@ public class VMProjectedWorkloadElement implements Comparable<Object> {
     
     /**
      * This sets the duration of the projected workload element
-     * @param duration 
+     * @param duration The duration this projected workload element should describe.
      */
     public void setDuration(TimePeriod duration) {
         this.duration = duration;

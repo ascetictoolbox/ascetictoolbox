@@ -333,6 +333,11 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         this.client = client;
     }
 
+    /**
+     * This provides the current energy usage for a named host.
+     * @param host  The host to get the current energy data for.
+     * @return The current energy usage data of the named host.
+     */
     @Override
     public CurrentUsageRecord getCurrentEnergyUsage(eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host) {
         CurrentUsageRecord answer = new CurrentUsageRecord(host);
