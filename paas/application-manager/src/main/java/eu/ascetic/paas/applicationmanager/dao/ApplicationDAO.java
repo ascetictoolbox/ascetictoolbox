@@ -49,4 +49,11 @@ public interface ApplicationDAO extends DAO<Application> {
 	 * @return <code>true</code> if the Application was deleted correctly
 	 */
 	public boolean delete(Application application);
+	
+	/**
+	 * Returns an application from the database using its name as query paremeter
+	 * @param name of the application
+	 * @return The Application object or <code>null</code> if there is no application by that name in the Database
+	 */
+	public Application getByName(String name);
 }

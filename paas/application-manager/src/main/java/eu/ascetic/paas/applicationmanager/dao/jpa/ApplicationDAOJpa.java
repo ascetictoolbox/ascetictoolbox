@@ -73,6 +73,22 @@ public class ApplicationDAOJpa implements ApplicationDAO {
 			return false;
 		} 
 	}
+
+	@Override
+	public Application getByName(String name) {
+		
+		Query query = entityManager.createQuery("SELECT a FROM Application a WHERE a.name = :appName");
+		query.setParameter("appName", name);
+		query.setMaxResults(1);
+		@SuppressWarnings("unchecked")
+		List<Application> applications = query.getResultList();
+		
+		if(applications.size() > 0) {
+			return applications.get(0);
+		} else {
+			return null;
+		}
+	}
 }
 
 

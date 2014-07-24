@@ -93,7 +93,7 @@ public class ApplicationDAOJpaTest extends AbstractTransactionalJUnit4SpringCont
 	}
 	
 	@Test
-	public void update() {
+	public void updateTest() {
 		int size = applicationDAO.getAll().size();
 		
 		Application application = new Application();
@@ -116,7 +116,26 @@ public class ApplicationDAOJpaTest extends AbstractTransactionalJUnit4SpringCont
 	}
 	
 	@Test
-	public void cascade() {
+	public void getByNameTest() {
+		Application application1 = new Application();
+		application1.setName("name1");
+		Application application2 = new Application();
+		application2.setName("name2");
+		
+		boolean saved = applicationDAO.save(application1);
+		assertTrue(saved);
+		saved = applicationDAO.save(application2);
+		assertTrue(saved);
+		
+		Application applicationFromDatabase = applicationDAO.getByName("name1");
+		assertEquals("name1", applicationFromDatabase.getName());
+		
+		applicationFromDatabase = applicationDAO.getByName("xxx");
+		assertEquals(null, applicationFromDatabase);
+	}
+	
+	@Test
+	public void cascadeTest() {
 		int size = applicationDAO.getAll().size();
 		
 		Application application = new Application();
