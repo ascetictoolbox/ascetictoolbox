@@ -110,8 +110,10 @@ public class VirtualMachineImageConstructor implements Runnable {
         vmicApi.getGlobalState().setProgressPhase(ovfDefinitionId,
                 ProgressDataImage.RETRIEVE_DATA_PHASE_ID);
 
-        // TODO: Parse OVF here and see what mode to operate in
-        OvfDefinitionParser ovfDefinitionParser = new OvfDefinitionParser(ovfDefinition);
+        // TODO: Parse OVF here and see what mode to operate in. Also see what
+        // & how to operate over files.
+        OvfDefinitionParser ovfDefinitionParser = new OvfDefinitionParser(
+                ovfDefinition);
         mode = ovfDefinitionParser.parse();
 
         // Sleep a little for progress data to update..
@@ -128,7 +130,7 @@ public class VirtualMachineImageConstructor implements Runnable {
      * Method to generate images that mounts the image while it is offline.
      */
     private void generateImageOffline() {
-        
+
         // TODO: Mount the image(s) using remote a system call
 
         // TODO: Add the file(s) to the image(s) using remote a system call
@@ -146,8 +148,8 @@ public class VirtualMachineImageConstructor implements Runnable {
 
         // TODO: Bootstrap the image to chef via a remote system call to knife.
 
-        // TODO: Upload the chef recipes to the chef workspace (using rsync?) 
-        
+        // TODO: Upload the chef recipes to the chef workspace (using rsync?)
+
         // TODO: Push out the chef recipe(s) via a remote system call to knife.
 
         // TODO: Shutdown the VM (using libvirt?)

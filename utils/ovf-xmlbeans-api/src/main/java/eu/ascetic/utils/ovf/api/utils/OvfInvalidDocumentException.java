@@ -16,7 +16,7 @@
 package eu.ascetic.utils.ovf.api.utils;
 
 import org.apache.xmlbeans.XmlObject;
-
+import org.apache.xmlbeans.XmlOptions;
 
 /**
  * Provides customised runtime exceptions for invalid XML documents.
@@ -30,7 +30,8 @@ public class OvfInvalidDocumentException extends RuntimeException {
 
     /**
      * Constructor for creating custom runtime exception for invalid XML
-     * documents.
+     * documents. Line numbers are only supported if the document was parsed
+     * using the {@link XmlOptions#setLoadLineNumbers()}.
      * 
      * @param message
      *            The exception message

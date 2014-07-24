@@ -50,7 +50,9 @@ public final class XmlValidator {
     }
 
     /**
-     * Retrieve the XMLBean objects errors in String form
+     * Retrieve the XMLBean objects errors in String form. Line numbers are only
+     * supported if the document was parsed using the
+     * {@link XmlOptions#setLoadLineNumbers()}.
      * 
      * @param doc
      *            The XMLBean object to be validated
@@ -67,6 +69,8 @@ public final class XmlValidator {
             for (XmlError error : validationErrors) {
                 errors = errors.concat(System.getProperty("line.separator"));
                 errors = errors.concat(error.toString());
+                errors = errors.concat(" Line: ");
+                errors = errors.concat(new Integer(error.getLine()).toString());
             }
         }
         return errors;

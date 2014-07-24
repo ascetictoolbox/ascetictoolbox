@@ -154,6 +154,9 @@ public class OvfDefinitionTest extends TestCase {
         System.out.println(ovfDefinition.toString());
 
         writeToFile(ovfDefinition.getXmlObject(), "3tier-webapp.ovf");
+        
+        OvfDefinition ovfDefinition2 = OvfDefinition.Factory.newInstance(ovfDefinition.toString());
+        assertFalse(ovfDefinition2.hasErrors());
     }
 
     /**
@@ -171,6 +174,7 @@ public class OvfDefinitionTest extends TestCase {
 
         // Disk section
         DiskSection diskSection = DiskSection.Factory.newInstance();
+        diskSection.setInfo("List of the virtual disks used.");
         Disk disk = Disk.Factory.newInstance();
         disk.setDiskId("disk");
         disk.setFileRef("file");
@@ -182,6 +186,7 @@ public class OvfDefinitionTest extends TestCase {
 
         // Network section
         NetworkSection networkSection = NetworkSection.Factory.newInstance();
+        networkSection.setInfo("List of the virtual networks used.");
         Network network = Network.Factory.newInstance();
         network.setName("network");
         network.setDescription("A virtual machine network");
@@ -191,8 +196,11 @@ public class OvfDefinitionTest extends TestCase {
         // Virtual System Collection
         VirtualSystemCollection virtualSystemCollection = VirtualSystemCollection.Factory
                 .newInstance();
+        virtualSystemCollection.setId("factory-test");
+        virtualSystemCollection.setInfo("Factory test description.");
         // Product Section
         ProductSection productSection = ProductSection.Factory.newInstance();
+        productSection.setInfo("Product configuration for then entire VirtualSystemCollection.");
         productSection.setProduct("product");
         productSection.setVersion("1.0");
         productSection.addNewProperty("key", ProductPropertyType.STRING,
@@ -202,7 +210,9 @@ public class OvfDefinitionTest extends TestCase {
         // Virtual System
         VirtualSystem virtualSystem = VirtualSystem.Factory.newInstance();
         virtualSystem.setId("id");
+        virtualSystem.setInfo("Factory Test Virtual System.");
         OperatingSystem operatingSystem = OperatingSystem.Factory.newInstance();
+        operatingSystem.setInfo("Description of Operating System.");
         operatingSystem
                 .setId(OperatingSystemType.MICROSOFT_WINDOWS_SERVER_2008);
         operatingSystem.setVersion("R2");
@@ -210,6 +220,7 @@ public class OvfDefinitionTest extends TestCase {
 
         // Product Section
         ProductSection productSection2 = ProductSection.Factory.newInstance();
+        productSection2.setInfo("Product configuration for the VirtualSystem.");
         productSection2.setProduct("product2");
         productSection2.setVersion("2.0");
         productSection2.setLowerBound(1);
@@ -222,6 +233,7 @@ public class OvfDefinitionTest extends TestCase {
         // Virtual Hardware Section
         VirtualHardwareSection virtualHardwareSection = VirtualHardwareSection.Factory
                 .newInstance();
+        virtualHardwareSection.setInfo("Description of virtual hardware requirements.");
         eu.ascetic.utils.ovf.api.System system = eu.ascetic.utils.ovf.api.System.Factory
                 .newInstance();
         // System
@@ -291,6 +303,9 @@ public class OvfDefinitionTest extends TestCase {
         System.out.println(ovfDefinition.toString());
 
         writeToFile(ovfDefinition.getXmlObject(), "factory-test.ovf");
+        
+        OvfDefinition ovfDefinition2 = OvfDefinition.Factory.newInstance(ovfDefinition.toString());
+        assertFalse(ovfDefinition2.hasErrors());
     }
 
     /**

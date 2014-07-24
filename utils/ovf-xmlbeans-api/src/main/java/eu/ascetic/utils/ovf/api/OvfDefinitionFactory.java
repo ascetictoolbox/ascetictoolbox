@@ -22,6 +22,7 @@ import javax.xml.namespace.QName;
 import org.apache.velocity.Template;
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlException;
+import org.apache.xmlbeans.XmlOptions;
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanEnvelopeDocument;
 
 import eu.ascetic.utils.ovf.api.utils.OvfInvalidDocumentException;
@@ -94,6 +95,8 @@ public class OvfDefinitionFactory {
         TemplateLoader loader = new TemplateLoader();
         return new OvfDefinition(loader.loadOvfDefinitionTemplate(templateUri,
                 properties));
+        
+        // TODO: Validate the instantiated template?
     }
 
     /**
@@ -125,8 +128,10 @@ public class OvfDefinitionFactory {
     public OvfDefinition newInstance(String ovfDefinitionAsString) {
         XmlBeanEnvelopeDocument newDoc;
         try {
+            XmlOptions voptions = new XmlOptions();
+            voptions.setLoadLineNumbers(XmlOptions.LOAD_LINE_NUMBERS);
             newDoc = XmlBeanEnvelopeDocument.Factory
-                    .parse(ovfDefinitionAsString);
+                    .parse(ovfDefinitionAsString, voptions);
         } catch (XmlException e) {
             throw new OvfRuntimeException(
                     "Problem parsing ovfDefinition from String.", e);

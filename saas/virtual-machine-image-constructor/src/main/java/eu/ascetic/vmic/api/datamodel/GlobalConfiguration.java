@@ -140,6 +140,24 @@ public class GlobalConfiguration {
     }
 
     /**
+     * Gets the host address that will be used by the VMIC.
+     * 
+     * @return the hostAddress
+     */
+    public String getHostAddress() {
+        return hostAddress;
+    }
+
+    /**
+     * Sets the host address that will be used by the VMIC.
+     * 
+     * @param hostAddress the hostAddress to set
+     */
+    public void setHostAddress(String hostAddress) {
+        this.hostAddress = hostAddress;
+    }
+
+    /**
      * Sets the repository path.
      * 
      * @return the repositoryPath
