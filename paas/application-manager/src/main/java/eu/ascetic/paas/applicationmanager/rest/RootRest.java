@@ -31,7 +31,6 @@ public class RootRest extends AbstractRest {
 	 * @return a list of links to the different functions in the API
 	 */
 	@GET
-	@Path("/")
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getRoot() {
 		logger.info("REQUEST to Path: /");

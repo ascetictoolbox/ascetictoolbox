@@ -20,7 +20,7 @@ public class DeploymentDAOJpa implements DeploymentDAO {
 	private static Logger logger = Logger.getLogger(DeploymentDAOJpa.class);
 	private EntityManager entityManager;
 
-	@PersistenceContext (unitName = "applicationManagerDB")
+	@PersistenceContext (unitName = "aplicationManagerDB")
 	public void setEntityManager(EntityManager entityManager) {
 		this.entityManager = entityManager;
 	}
