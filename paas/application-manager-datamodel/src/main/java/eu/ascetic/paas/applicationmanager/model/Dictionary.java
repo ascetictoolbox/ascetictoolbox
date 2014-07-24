@@ -20,14 +20,8 @@ public class Dictionary {
 	/** The Constant CONTENT_TYPE_JSON. */
 	public static final String CONTENT_TYPE_JSON = "application/json";
 	
-	/** The Constant X_ZABBIX_ASSERTED_ID. */
-	public static final String X_ZABBIX_ASSERTED_ID = "X-Zabbix-Asserted-Id";
-	
-	/** The Constant X_ZABBIX_GROUPS_ID. */
-	public static final String X_ZABBIX_GROUPS_ID = "X-Zabbix-Groups-Id";
-	
 	/** The Constant USER_AGENT. */
-	public static final String USER_AGENT = "ECO2Clouds-Scheduler/0.1";
+	public static final String USER_AGENT = "ASCETiC-ApplicationManager/0.0.1";
 	
 	/** The Constant ACCEPT. */
 	public static final String ACCEPT = "*/*";
