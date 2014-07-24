@@ -196,7 +196,7 @@ public class VirtualHardwareSection extends
     public int getNumberOfVirtualCPUs() {
         Item[] itemArray = getItemArray();
         for (int i = 0; i < itemArray.length; i++) {
-            if (itemArray[i].getResourceType().equals(ResourceType.PROCESSOR)
+            if (ResourceType.PROCESSOR.equals(itemArray[i].getResourceType())
                     && itemArray[i].isSetResourceSubType() == false) {
                 return itemArray[i].getVirtualQuantity().intValue();
             }
@@ -215,7 +215,7 @@ public class VirtualHardwareSection extends
     public boolean setNumberOfVirtualCPUs(int numberOfVirtualCPUs) {
         Item[] itemArray = getItemArray();
         for (int i = 0; i < itemArray.length; i++) {
-            if (itemArray[i].getResourceType().equals(ResourceType.PROCESSOR)
+            if (ResourceType.PROCESSOR.equals(itemArray[i].getResourceType())
                     && itemArray[i].isSetResourceSubType() == false) {
                 itemArray[i].setVirtualQuantity(new BigInteger(new Integer(
                         numberOfVirtualCPUs).toString()));
@@ -234,7 +234,7 @@ public class VirtualHardwareSection extends
     public int getMemorySize() {
         Item[] itemArray = getItemArray();
         for (int i = 0; i < itemArray.length; i++) {
-            if (itemArray[i].getResourceType().equals(ResourceType.MEMORY)) {
+            if (ResourceType.MEMORY.equals(itemArray[i].getResourceType())) {
                 return itemArray[i].getVirtualQuantity().intValue();
             }
         }
@@ -256,7 +256,7 @@ public class VirtualHardwareSection extends
 
         Item[] itemArray = getItemArray();
         for (int i = 0; i < itemArray.length; i++) {
-            if (itemArray[i].getResourceType().equals(ResourceType.MEMORY)) {
+            if (ResourceType.MEMORY.equals(itemArray[i].getResourceType())) {
                 itemArray[i].setVirtualQuantity(new BigInteger(new Integer(
                         memorySize).toString()));
                 return true;
@@ -275,7 +275,7 @@ public class VirtualHardwareSection extends
     public int getCPUSpeed() {
         Item[] itemArray = getItemArray();
         for (int i = 0; i < itemArray.length; i++) {
-            if (itemArray[i].getResourceType().equals(ResourceType.PROCESSOR)
+            if (ResourceType.PROCESSOR.equals(itemArray[i].getResourceType())
                     && itemArray[i].getResourceSubType().equals("cpuspeed")) {
                 return itemArray[i].getReservation().intValue();
             }
@@ -299,7 +299,7 @@ public class VirtualHardwareSection extends
 
         Item[] itemArray = getItemArray();
         for (int i = 0; i < itemArray.length; i++) {
-            if (itemArray[i].getResourceType().equals(ResourceType.PROCESSOR)
+            if (ResourceType.PROCESSOR.equals(itemArray[i].getResourceType())
                     && itemArray[i].getResourceSubType().equals("cpuspeed")) {
                 itemArray[i].setReservation(new BigInteger(
                         new Integer(cpuSpeed).toString()));
