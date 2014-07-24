@@ -39,18 +39,34 @@ public class EnergyUsagePrediction extends EnergyUsageRecord {
     private double totalEnergyUsed; //units kWh
     private TimePeriod timePeriod; // The time period to which the results correspond.
 
-    public EnergyUsagePrediction(){
-    	
+    /**
+     * This creates a blank energy prediction record.
+     */
+    public EnergyUsagePrediction(){	
     }    
     
+    /**
+     * This creates a energy prediction record for a given energy user.
+     * @param energyUser The energy user, either a VM, a host or a VM -> host mapping 
+     */
     public EnergyUsagePrediction(EnergyUsageSource energyUser) {
         addEnergyUser(energyUser);
     }
 
+    /**
+     * This creates a energy prediction record for a set of energy users.
+     * @param energyUser The energy users, either a VM, a host or a VM -> host mapping 
+     */
     public EnergyUsagePrediction(HashSet<EnergyUsageSource> energyUser) {
         addEnergyUser(energyUser);
     }
 
+    /**
+     * This creates a energy prediction record for a set of energy users.
+     * @param energyUser The energy user, either a VM, a host or a VM -> host mapping 
+     * @param avgPowerUsed The average power used
+     * @param totalEnergyUsed The total energy used
+     */
     public EnergyUsagePrediction(HashSet<EnergyUsageSource> energyUser, double avgPowerUsed, double totalEnergyUsed) {
         addEnergyUser(energyUser);
         this.avgPowerUsed = avgPowerUsed;
@@ -58,56 +74,64 @@ public class EnergyUsagePrediction extends EnergyUsageRecord {
     }
     
     /**
-     * @return the avgPowerUsed
+     * This provides the average power used.
+     * @return The average power used.
      */
     public double getAvgPowerUsed() {
         return avgPowerUsed;
     }
 
     /**
-     * @param avgPowerUsed the avgPowerUsed to set
+     * This sets the average power used.
+     * @param avgPowerUsed  The average power used.
      */
     public void setAvgPowerUsed(double avgPowerUsed) {
         this.avgPowerUsed = avgPowerUsed;
     }
 
     /**
-     * @return the totalEnergyUsed
+     * This provides the total energy used.
+     * @return the total energy used.
      */
     public double getTotalEnergyUsed() {
         return totalEnergyUsed;
     }
 
     /**
-     * @param totalEnergyUsed the totalEnergyUsed to set
+     * This sets the total energy used.
+     * @param totalEnergyUsed the new value for the total energy used.
      */
     public void setTotalEnergyUsed(double totalEnergyUsed) {
         this.totalEnergyUsed = totalEnergyUsed;
     }
 
     /**
-     * @return the predictionStartTime
+     * This provides the predicted start time for this energy prediction.
+     * @return the time this prediction takes effect.
      */
     public Calendar getPredictionStartTime() {
         return timePeriod.getStartTime();
     }
 
     /**
-     * @return the predictionEndTime
+     * This provides the predicted end time for this energy prediction.
+     * @return the time this prediction finishes.
      */
     public Calendar getPredictionEndTime() {
         return timePeriod.getEndTime();
     }
 
     /**
-     * @return the duration
+     * This provides the duration of time this prediction represents.
+     * @return The duration of time this prediction represents.
      */
     public TimePeriod getDuration() {
         return timePeriod;
     }
 
     /**
-     * @param timePeriod the duration to set
+     * This sets the duration of time this prediction represents.
+     * @param timePeriod The duration of time this prediction represents.
      */
     public void setDuration(TimePeriod timePeriod) {
         this.timePeriod = timePeriod;

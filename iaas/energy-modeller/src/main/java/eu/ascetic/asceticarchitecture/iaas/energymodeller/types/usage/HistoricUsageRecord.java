@@ -106,84 +106,96 @@ public class HistoricUsageRecord extends EnergyUsageRecord {
     }
 
     /**
-     * @return the avgPowerUsed
+     * This provides the average power used.
+     * @return The average power used.
      */
     public double getAvgPowerUsed() {
         return avgPowerUsed;
     }
 
     /**
-     * @param avgPowerUsed the avgPowerUsed to set
+     * This sets the average power used.
+     * @param avgPowerUsed  The average power used.
      */
     public void setAvgPowerUsed(double avgPowerUsed) {
         this.avgPowerUsed = avgPowerUsed;
     }
 
     /**
-     * @return the avgCurrentUsed
+     * This provides the average current used.
+     * @return The average current used.
      */
     public double getAvgCurrentUsed() {
         return avgCurrentUsed;
     }
 
     /**
-     * @param avgCurrentUsed the avgCurrentUsed to set
+     * This sets the average current used.
+     * @param avgCurrentUsed  The average current used.
      */
     public void setAvgCurrentUsed(double avgCurrentUsed) {
         this.avgCurrentUsed = avgCurrentUsed;
     }
 
     /**
-     * @return the avgVoltageUsed
+     * This provides the average voltage used.
+     * @return The average voltage used.
      */
     public double getAvgVoltageUsed() {
         return avgVoltageUsed;
     }
 
     /**
-     * @param avgVoltageUsed the avgVoltageUsed to set
+     * This sets the average voltage used.
+     * @param avgVoltageUsed  The average voltage used.
      */
     public void setAvgVoltageUsed(double avgVoltageUsed) {
         this.avgVoltageUsed = avgVoltageUsed;
     }
 
     /**
-     * @return the totalEnergyUsed
+     * This provides the total energy used.
+     * @return the total energy used.
      */
     public double getTotalEnergyUsed() {
         return totalEnergyUsed;
     }
 
     /**
-     * @param totalEnergyUsed the totalEnergyUsed to set
+      * This sets the total energy used.
+     * @param totalEnergyUsed the new value for the total energy used.
      */
     public void setTotalEnergyUsed(double totalEnergyUsed) {
         this.totalEnergyUsed = totalEnergyUsed;
     }
 
     /**
-     * @return the recordStartTime
+     * This provides the start time for this energy record.
+     * @return the time of the first data item this record represents.
      */
     public Calendar getRecordStartTime() {
         return getDuration().getStartTime();
     }
 
     /**
-     * @return the recordEndTime
+     * This provides the end time for this energy record.
+     * @return the time of the last data item this record represents.
      */
     public Calendar getRecordEndTime() {
         return getDuration().getEndTime();
     }
 
     /**
-     * @return the duration
+     * This returns the duration of time this historic record represents.
+     * @return The duration of time this record represents.
      */
     public TimePeriod getDuration() {
         return duration;
     }
 
     /**
-     * @param duration the duration to set
+     * This sets the duration of time this historic record represents.
+     * @param duration The duration of time this record represents.
      */
     public void setDuration(TimePeriod duration) {
         this.duration = duration;
