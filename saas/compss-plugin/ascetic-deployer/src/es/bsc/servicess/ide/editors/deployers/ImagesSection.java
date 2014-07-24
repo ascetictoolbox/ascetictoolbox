@@ -3,14 +3,10 @@ package es.bsc.servicess.ide.editors.deployers;
 import static es.bsc.servicess.ide.Constants.*;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.commons.configuration.ConfigurationException;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -28,19 +24,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.eclipse.ui.forms.widgets.Section;
-import org.xml.sax.SAXException;
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
-
 import es.bsc.servicess.ide.Activator;
-import es.bsc.servicess.ide.ImageMetadata;
 import es.bsc.servicess.ide.Logger;
 import es.bsc.servicess.ide.PackageMetadata;
 import es.bsc.servicess.ide.ProjectMetadata;
@@ -49,9 +35,8 @@ import es.bsc.servicess.ide.editors.ServiceEditorSection;
 import es.bsc.servicess.ide.editors.ServiceFormEditor;
 import es.bsc.servicess.ide.model.ServiceElement;
 import eu.ascetic.vmic.api.VmicApi;
-import eu.ascetic.vmic.api.core.ProgressException;
 import eu.ascetic.vmic.api.datamodel.GlobalConfiguration;
-import eu.ascetic.vmic.api.datamodel.ProgressData;
+import eu.ascetic.vmic.api.datamodel.AbstractProgressData;
 
 public class ImagesSection extends ServiceEditorSection {
 
@@ -213,7 +198,7 @@ public class ImagesSection extends ServiceEditorSection {
 
 	private void monitorProgress(VmicApi vmic, IProgressMonitor monitor) throws Exception {
 		monitor.beginTask("Creating Images", 100);
-		ProgressData pd = vmic.progressCallback(editor.getProject().getProject().getName());
+		AbstractProgressData pd = vmic.progressCallback(editor.getProject().getProject().getName());
 		while(!pd.isComplete()){	
 			monitor.worked(pd.getCurrentPercentageCompletion().intValue());
 			Thread.sleep(CREATION_PULL_INTERVAL);
