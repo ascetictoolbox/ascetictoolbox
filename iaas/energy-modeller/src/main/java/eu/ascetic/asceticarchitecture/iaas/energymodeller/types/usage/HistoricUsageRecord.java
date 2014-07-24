@@ -70,6 +70,7 @@ public class HistoricUsageRecord extends EnergyUsageRecord {
     public HistoricUsageRecord(Host energyUser, List<HostEnergyRecord> data) {
         addEnergyUser(energyUser);
         if (data.size() > 2) {
+            //TODO consider what happens here if the energy counter loops around!
             Collections.sort(data);
             HostEnergyRecord first = data.get(0);
             HostEnergyRecord last = data.get(data.size() - 1);

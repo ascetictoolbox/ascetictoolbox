@@ -36,7 +36,7 @@ import java.util.logging.Logger;
  * @author Richard
  */
 public class DataGatherer implements Runnable {
-
+    
     private HostDataSource datasource;
     private DatabaseConnector connector;
     private Calibrator calibrator;
@@ -80,6 +80,11 @@ public class DataGatherer implements Runnable {
         for (VmDeployed vm : vms) {
             if (!knownVms.containsKey(vm.getName())) {
                 knownVms.put(vm.getName(), vm);
+                //TODO remove this temporary fix code here!
+                if (vm.getName().equals("cloudsuite---data-analytics")) {
+                    vm.setAllocatedTo(getHost("asok12"));
+                }
+                //end fo this temporary code fix
             }
         }
     }
@@ -91,12 +96,12 @@ public class DataGatherer implements Runnable {
         running = false;
         connector.closeConnection();
     }
-
+    
     @Override
     public void run() {
         /**
-         * Polls the data source and write values to the database. 
-         * TODO consider buffering the db writes.
+         * Polls the data source and write values to the database. TODO consider
+         * buffering the db writes.
          */
         while (running) {
             List<Host> hostList = datasource.getHostList();
@@ -300,5 +305,5 @@ public class DataGatherer implements Runnable {
         }
         return answer;
     }
-
+    
 }

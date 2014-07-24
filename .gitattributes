@@ -48,6 +48,7 @@ iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymod
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/usage/HostVmLoadFraction.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/usage/VmUsageRecord.java -text
 iaas/energy-modeller/src/main/resources/iaas[!!-~]energy[!!-~]modeller[!!-~]db.sql -text
+iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/EnergyModellerTest.java -text
 iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/calibration/CalibratorTest.java -text
 iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/datastore/DataGathererTest.java -text
 iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/datastore/DefaultDatabaseConnectorTest.java -text
