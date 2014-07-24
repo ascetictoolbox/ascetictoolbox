@@ -16,10 +16,9 @@ import javax.xml.bind.Unmarshaller;
 
 import org.junit.Test;
 
-import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
-import eu.ascetic.paas.applicationmanager.model.Application;
+import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Collection;
-
+import eu.ascetic.paas.applicationmanager.model.Root;
 /**
  * Set of unit tests that verify the correct work of the Application Manager Rest Interface
  * @author David Garcia Perez - Atos
