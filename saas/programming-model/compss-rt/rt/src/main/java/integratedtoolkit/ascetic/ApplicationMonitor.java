@@ -15,9 +15,10 @@
  */
 package integratedtoolkit.ascetic;
 
+import integratedtoolkit.types.ResourceDescription;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import java.util.UUID;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
@@ -25,12 +26,17 @@ import org.apache.commons.httpclient.methods.StringRequestEntity;
 public class ApplicationMonitor {
 
     private static final String endpoint = Configuration.getApplicationMonitorEndpoint();
-    private static final String appId = Configuration.getApplicationId()+"_"+Configuration.getDeploymentId();
-    
+    private static final String appId = Configuration.getApplicationId() + "_" + Configuration.getDeploymentId();
+
     public static String startEvent(VM vm, String eventType) {
         HttpClient client = new HttpClient();
         BufferedReader br = null;
-        PostMethod method = new PostMethod(endpoint + "/event");
+        PostMethod method;
+        if (endpoint.endsWith("/")) {
+            method = new PostMethod(endpoint + "event");
+        } else {
+            method = new PostMethod(endpoint + "/event");
+        }
         try {
             method.setRequestEntity(new StringRequestEntity("{\"appId\":\"" + appId + "\", \"nodeId\":\"" + vm.getIPv4() + "\", \"instanceId\":\"" + vm.getProviderId() + "\", \"data\":{}}", "application/json", "UTF-8"));
             client.executeMethod(method);
@@ -41,6 +47,7 @@ public class ApplicationMonitor {
             int index = readLine.indexOf("\"");
             return readLine.substring(0, index);
         } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             method.releaseConnection();
             if (br != null) {
@@ -54,7 +61,13 @@ public class ApplicationMonitor {
     }
 
     public static void stopEvent(String eventId) {
-        PostMethod method = new PostMethod(endpoint + "/event/" + eventId) {
+        String event;
+        if (endpoint.endsWith("/")) {
+            event = endpoint + "event/" + eventId;
+        } else {
+            event = endpoint + "/event/" + eventId;
+        }
+        PostMethod method = new PostMethod(event) {
             @Override
             public String getName() {
                 return "PATCH";
@@ -68,6 +81,29 @@ public class ApplicationMonitor {
         } finally {
             method.releaseConnection();
         }
+    }
+
+    public static void main(String[] args) throws Exception {        
+        System.out.println("Endpoint = " + endpoint);
+        System.out.println("ApplicationID: " + appId);
+        Configuration.getComponentDescriptions().put("componentA", new ResourceDescription());
+        VM vm = new VM("10.0.0.5", UUID.randomUUID().toString(), "componentA");
+
+        String eventId0 = startEvent(vm, "core" + 0 + "impl" + 0);
+        String eventId1 = startEvent(vm, "core" + 0 + "impl" + 1);
+        Thread.sleep(5000);
+        stopEvent(eventId0);
+        stopEvent(eventId1);
+        Thread.sleep(5000);
+
+        eventId0 = startEvent(vm, "core" + 0 + "impl" + 0);
+        Thread.sleep(300);
+        eventId1 = startEvent(vm, "core" + 0 + "impl" + 0);
+        Thread.sleep(4700);
+        stopEvent(eventId0);
+        Thread.sleep(300);
+        stopEvent(eventId1);
+
     }
 
 }

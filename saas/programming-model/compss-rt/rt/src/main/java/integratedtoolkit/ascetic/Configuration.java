@@ -30,7 +30,8 @@ public class Configuration {
         applicationId = "applicationID";
         deploymentId = "deploymentID";
         applicationManagerEndpoint = "http://192.168.1.1:8080";
-        applicationMonitorEndpoint = "http://localhost:9000";
+        applicationMonitorEndpoint = "http://10.4.0.16:9000/";
+        //applicationMonitorEndpoint = "http://localhost:9000";
         componentDescription = new HashMap<String, ResourceDescription>();
     }
 
