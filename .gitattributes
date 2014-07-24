@@ -17,6 +17,7 @@ iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymod
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/energypredictor/vmenergyshare/DefaultEnergyShareRule.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/energypredictor/vmenergyshare/EnergyDivision.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/energypredictor/vmenergyshare/EnergyShareRule.java -text
+iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/energypredictor/vmenergyshare/LoadBasedDivision.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/energypredictor/vmenergyshare/VMCPUCountEnergyShareRule.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/HostDataSource.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/HostMeasurement.java -text

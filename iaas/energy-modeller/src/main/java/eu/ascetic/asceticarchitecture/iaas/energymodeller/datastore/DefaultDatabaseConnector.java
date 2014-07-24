@@ -455,7 +455,7 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
                     answer.add(current);
                 } else {
                     VmDeployed vm = new VmDeployed((int) measurement.get(1), (String) measurement.get(2));
-                    current.addFraction(vm, (double) measurement.get(3)); //load is the third item
+                    current.addFraction(vm, (double) measurement.get(4)); //load is the fourth item
                 }
                 lastClock = currentClock;
             }

@@ -29,7 +29,7 @@ ADD CONSTRAINT fk_host_id
 FOREIGN KEY (host_id)
 REFERENCES host(host_id);
 
-ALTER TABLE `iaas_energy_modeller`.`host_calibration_data` 
+ALTER TABLE `host_calibration_data` 
 ADD UNIQUE INDEX `UNIQUE_SET` (`host_id`,  `cpu`, `memory`);
 
 CREATE TABLE IF NOT EXISTS host_measurement

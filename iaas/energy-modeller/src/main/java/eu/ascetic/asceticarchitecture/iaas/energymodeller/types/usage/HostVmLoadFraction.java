@@ -28,7 +28,7 @@ import java.util.List;
  *
  * @author Richard
  */
-public class HostVmLoadFraction {
+public class HostVmLoadFraction implements Comparable<HostVmLoadFraction> {
 
     private final Host host;
     private final long time;
@@ -160,6 +160,17 @@ public class HostVmLoadFraction {
      */
     public double getFraction(VmDeployed vm) {
         return fraction.get(vm);
+    }
+
+    /**
+     * This comparison orders load fraction records by time.
+     *
+     * @param loadFraction the load fraction record to compare to.
+     * @return -1 if the before, 0 if at the same time 1 if in the future.
+     */
+    @Override
+    public int compareTo(HostVmLoadFraction loadFraction) {
+        return Long.valueOf(this.time).compareTo(loadFraction.getTime());
     }
 
 }
