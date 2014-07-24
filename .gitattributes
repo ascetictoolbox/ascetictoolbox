@@ -280,6 +280,7 @@ paas/application-manager/src/test/resources/META-INF/persistence.mysql.test.xml 
 paas/application-manager/src/test/resources/META-INF/persistence.test.xml -text
 paas/application-manager/src/test/resources/application-manager-db-JPA-test-context.xml -text
 paas/application-manager/src/test/resources/mysql-jpa-test-configuration.xml -text
+paas/application-manager/velocity.log -text
 paas/application-monitor.removeme/README -text
 paas/application-monitor.removeme/app/api/Apps.java -text
 paas/application-monitor.removeme/app/api/Events.java -text
