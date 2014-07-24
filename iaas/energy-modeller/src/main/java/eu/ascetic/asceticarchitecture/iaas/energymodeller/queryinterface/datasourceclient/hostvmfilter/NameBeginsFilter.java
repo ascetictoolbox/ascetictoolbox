@@ -34,6 +34,11 @@ public class NameBeginsFilter implements ZabbixHostVMFilter {
     private String begins = "asok";
     private boolean isHost = true;
 
+    /**
+     * This creates a name filter that checks to see if the start of a host name
+     * matches particular criteria or not. if it does then it will indicate accordingly
+     * that the Zabbix host is a Energy modeller host or not.
+     */
     public NameBeginsFilter() {
         try {
             PropertiesConfiguration config;

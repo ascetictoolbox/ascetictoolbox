@@ -30,6 +30,10 @@ public class Calibrator {
     private LoadGenerator generator = new DefaultLoadGenerator();
     private final HostDataSource datasource;
 
+    /**
+     * This creates a new calibrator.
+     * @param dataSource The data source that is used to monitor the calibration test.
+     */
     public Calibrator(HostDataSource dataSource) {
         this.datasource = dataSource;
     }

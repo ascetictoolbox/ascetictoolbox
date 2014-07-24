@@ -24,6 +24,11 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
  */
 public interface LoadGenerator {
 
+    /**
+     * This for a given host commands the load generator to perform its benchmarking.
+     * @param host The host to generate energy calibration data for.
+     * @return The host with the newly attached calibration data.
+     */
     public Host generateCalibrationData(Host host);
     
 }
