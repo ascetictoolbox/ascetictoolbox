@@ -18,7 +18,6 @@ package integratedtoolkit.util;
 //import integratedtoolkit.types.resources.Resource;
 import integratedtoolkit.types.ScheduleState;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.LinkedList;
 import integratedtoolkit.types.Task;
@@ -71,34 +70,9 @@ public class TaskSets {
      */
     private int regularCount;
 
-    // Tasks running
-    private HashMap<String, List<Task>> nodeToRunningTasks;
-    //Task Stats
-    /**
-     * First task to be executed for that method
-     */
-    private Task[] firstMethodExecution;
-    /**
-     * Average execution time per core
-     */
-    private Long[] coreAverageExecutionTime;
-    /**
-     * Max execution time per core
-     */
-    private Long[] coreMaxExecutionTime;
-    /**
-     * Min execution time per core
-     */
-    private Long[] coreMinExecutionTime;
-    /**
-     * Executed Tasks per CoreManager
-     */
-    private int[] coreExecutedCount;
-
     /**
      * Constructs a new QueueManager
      *
-     * @param TS TaskScheduler associated to the manager
      */
     public TaskSets() {
         if (noResourceTasks == null) {
@@ -148,38 +122,6 @@ public class TaskSets {
                 regularTasks[i].clear();
             }
         }
-
-        if (nodeToRunningTasks == null) {
-            nodeToRunningTasks = new HashMap<String, List<Task>>();
-        } else {
-            nodeToRunningTasks.clear();
-        }
-
-        if (coreAverageExecutionTime == null) {
-            coreAverageExecutionTime = new Long[CoreManager.coreCount];
-
-            for (int i = 0; i < CoreManager.coreCount; i++) {
-                coreAverageExecutionTime[i] = null;
-            }
-        }
-
-        if (coreMinExecutionTime == null) {
-            coreMinExecutionTime = new Long[CoreManager.coreCount];
-
-            for (int i = 0; i < CoreManager.coreCount; i++) {
-                coreMinExecutionTime[i] = Long.MAX_VALUE;
-            }
-        }
-
-        if (coreMaxExecutionTime == null) {
-            coreMaxExecutionTime = new Long[CoreManager.coreCount];
-
-            for (int i = 0; i < CoreManager.coreCount; i++) {
-                coreMaxExecutionTime[i] = 0l;
-            }
-        }
-        coreExecutedCount = new int[CoreManager.coreCount];
-        firstMethodExecution = new Task[CoreManager.coreCount];
     }
 
     /**
@@ -398,92 +340,6 @@ public class TaskSets {
     }
 
     /**
-     * ** Resource management
-     */
-    /**
-     * Adds a resource to be managed
-     *
-     * @param resourceName name of the resource
-     */
-    public void addNode(String resourceName) {
-        List<Task> tasks = new LinkedList<Task>();
-        nodeToRunningTasks.put(resourceName, tasks);
-    }
-
-    /**
-     * Removes a resource to be managed
-     *
-     * @param resourceName name of the resource
-     */
-    public void removeNode(String resourceName) {
-        nodeToRunningTasks.remove(resourceName);
-    }
-
-    /**
-     * ** Timing
-     */
-    /**
-     * The execution of a tasks starts at the specified resource
-     *
-     * @param t task which is running
-     * @param resourceName resource where the task is being executed
-     */
-    public void startsExecution(Task t, String resourceName) {
-        List<Task> tasks = nodeToRunningTasks.get(resourceName);
-        tasks.add(t);
-
-        t.setInitialTimeStamp(System.currentTimeMillis());
-        if (firstMethodExecution[t.getTaskParams().getId()] == null) {
-            firstMethodExecution[t.getTaskParams().getId()] = t;
-        }
-    }
-
-    /**
-     * The execution of a tasks ends at the specified resource
-     *
-     * @param task the tasks that has been run
-     * @param resourceName resource where the task was being executed
-     * @param success true if the task finished correctly
-     */
-    public void endsExecution(Task task, String resourceName, boolean success) {
-        nodeToRunningTasks.get(resourceName).remove(task);
-        int core = task.getTaskParams().getId();
-        if (success) {
-            long initialTime = task.getInitialTimeStamp();
-            long duration = System.currentTimeMillis() - initialTime;
-            Long mean = coreAverageExecutionTime[core];
-            if (mean == null) {
-                mean = 0l;
-            }
-            if (coreMaxExecutionTime[core] < duration) {
-                coreMaxExecutionTime[core] = duration;
-            }
-            if (coreMinExecutionTime[core] > duration) {
-                coreMinExecutionTime[core] = duration;
-            }
-            coreAverageExecutionTime[core] = ((mean * coreExecutedCount[core]) + duration) / (coreExecutedCount[core] + 1);
-            coreExecutedCount[core]++;
-        } else {
-            if (firstMethodExecution[core] == task) {
-
-                long firstTime = Long.MAX_VALUE;
-                Task firstTask = null;
-                for (List<Task> tasks : nodeToRunningTasks.values()) {
-                    for (Task running : tasks) {
-                        if (running.getTaskParams().getId() == core) {
-                            if (firstTime > running.getInitialTimeStamp()) {
-                                firstTask = running;
-                            }
-                        }
-                    }
-                }
-                firstMethodExecution[core] = firstTask;
-            }
-        }
-
-    }
-
-    /**
      * ** Schedule state
      */
     /**
@@ -501,47 +357,6 @@ public class TaskSets {
             ss.toRescheduleCounts[i] = tasksToReschedule[i].size();
             ss.ordinaryCount = priorityCount + regularCount;
             ss.ordinaryCounts[i] = priorityTasks[i].size() + regularTasks[i].size();
-            //Core Info
-            if (coreAverageExecutionTime[i] != null) {
-                ss.coreMeanTime[i] = coreAverageExecutionTime[i];
-                ss.coreMaxTime[i] = this.coreMaxExecutionTime[i];
-                ss.coreMinTime[i] = this.coreMinExecutionTime[i];
-            } else {
-                if (firstMethodExecution[i] != null) {
-                    //if any has started --> take the already spent time as the mean.
-                    Long initTimeStamp = firstMethodExecution[i].getInitialTimeStamp();
-                    if (initTimeStamp != null) {
-                        //if the first task hasn't failed
-                        long elapsedTime = System.currentTimeMillis() - initTimeStamp;
-                        ss.coreMeanTime[i] = elapsedTime;
-                        ss.coreMaxTime[i] = elapsedTime;
-                        ss.coreMinTime[i] = elapsedTime;
-                    } else {
-                        ss.coreMeanTime[i] = 100l;
-                        ss.coreMaxTime[i] = 100l;
-                        ss.coreMinTime[i] = 100l;
-                    }
-                } else {
-                    ss.coreMeanTime[i] = 100l;
-                    ss.coreMaxTime[i] = 100l;
-                    ss.coreMinTime[i] = 100l;
-                }
-            }
-        }
-        //ResourceInfo
-        for (java.util.Map.Entry<String, List<Task>> entry : nodeToRunningTasks.entrySet()) {
-            String resource = entry.getKey();
-            List<Task> running = entry.getValue();
-            int[] tasks = new int[running.size()];
-            long[] elapsed = new long[running.size()];
-            int i = 0;
-            long now = System.currentTimeMillis();
-            for (Task t : running) {
-                tasks[i] = t.getTaskParams().getId();
-                elapsed[i] = now - t.getInitialTimeStamp();
-                i++;
-            }
-            ss.updateHostInfo(resource, tasks, elapsed, null);
         }
     }
 
@@ -557,7 +372,7 @@ public class TaskSets {
      * @return description of the current schedule state
      */
     public String describeCurrentState() {
-        String pending = "\tPending:";
+        String pending = "";
         for (int i = 0; i < CoreManager.coreCount; i++) {
             for (Task t : tasksToReschedule[i]) {
                 pending += " " + t.getId() + "r";
@@ -572,60 +387,15 @@ public class TaskSets {
                 pending += " " + t.getId();
             }
         }
-        String info = "\tOn execution:\n";
-        for (java.util.Map.Entry<String, List<Task>> entry : nodeToRunningTasks.entrySet()) {
-            String hostName = entry.getKey();
-            info += "\t\t" + hostName + ":";
-            List<Task> tasks = entry.getValue();
-            if (tasks != null) {
-                for (Task t : tasks) {
-                    info += " " + t.getId();
-                }
-            }
-            info += "\n";
-        }
-        return info + "\n" + pending;
+        return pending;
     }
-
     /**
      * Obtains the data that must be shown on the monitor
      *
      * @return String with core Execution information in an XML format
      */
     public String getMonitoringInfo() {
-
-        StringBuilder sb = new StringBuilder("\t<CoresInfo>\n");
-        for (java.util.Map.Entry<String, Integer> entry : CoreManager.signatureToId.entrySet()) {
-            int core = entry.getValue();
-            String signature = entry.getKey();
-            sb.append("\t\t<Core id=\"").append(core).append("\" signature=\"" + signature + "\">\n");
-            if (coreAverageExecutionTime[core] != null) {
-                sb.append("\t\t\t<MeanExecutionTime>").append((coreAverageExecutionTime[core] / 1000) + 1).append("</MeanExecutionTime>\n");
-                sb.append("\t\t\t<MinExecutionTime>").append((coreAverageExecutionTime[core] / 1000) + 1).append("</MinExecutionTime>\n");
-                sb.append("\t\t\t<MaxExecutionTime>").append((coreAverageExecutionTime[core] / 1000) + 1).append("</MaxExecutionTime>\n");
-            } else {
-                sb.append("\t\t\t<MeanExecutionTime>0</MeanExecutionTime>\n");
-                sb.append("\t\t\t<MinExecutionTime>0</MinExecutionTime>\n");
-                sb.append("\t\t\t<MaxExecutionTime>0</MaxExecutionTime>\n");
-            }
-            sb.append("\t\t\t<ExecutedCount>").append(coreExecutedCount[core]).append("</ExecutedCount>\n");
-            sb.append("\t\t</Core>\n");
-        }
-        sb.append("\t</CoresInfo>\n");
-
-        sb.append("\t<ResourceInfo>\n");
-        for (java.util.Map.Entry<String, List<Task>> entry : nodeToRunningTasks.entrySet()) {
-            sb.append("\t\t<Resource id=\"").append(entry.getKey()).append("\">\n");
-            sb.append(ResourceManager.getResourceMonitoringData("\t\t\t", entry.getKey()));
-            List<Task> tasks = entry.getValue();
-            sb.append("\t\t\t<Tasks>");
-            for (Task t : tasks) {
-                sb.append(t.getId()).append(" ");
-            }
-            sb.append("</Tasks>\n");
-            sb.append("\t\t</Resource>\n");
-        }
-        sb.append("\t</ResourceInfo>\n");
+        StringBuilder sb = new StringBuilder("");
         return sb.toString();
     }
 
@@ -637,56 +407,26 @@ public class TaskSets {
             tmp[i] = new LinkedList<Task>();
         }
         noResourceTasks = tmp;
-        
+
         tmp = new LinkedList[CoreManager.coreCount];
         System.arraycopy(tasksToReschedule, 0, tmp, 0, tasksToReschedule.length);
         for (int i = tasksToReschedule.length; i < CoreManager.coreCount; i++) {
             tmp[i] = new LinkedList<Task>();
         }
         tasksToReschedule = tmp;
-        
+
         tmp = new LinkedList[CoreManager.coreCount];
         System.arraycopy(priorityTasks, 0, tmp, 0, priorityTasks.length);
         for (int i = priorityTasks.length; i < CoreManager.coreCount; i++) {
             tmp[i] = new LinkedList<Task>();
         }
         priorityTasks = tmp;
-        
+
         tmp = new LinkedList[CoreManager.coreCount];
         System.arraycopy(regularTasks, 0, tmp, 0, regularTasks.length);
         for (int i = regularTasks.length; i < CoreManager.coreCount; i++) {
             tmp[i] = new LinkedList<Task>();
         }
         regularTasks = tmp;
-
-        //METHOD INFORMATION
-        Task[] firstMethodExecutionTmp = new Task[CoreManager.coreCount];
-        System.arraycopy(firstMethodExecution, 0, firstMethodExecutionTmp, 0, firstMethodExecution.length);
-        firstMethodExecution = firstMethodExecutionTmp;
-
-        Long[] coreAverageExecutionTimeTmp = new Long[CoreManager.coreCount];
-        System.arraycopy(coreAverageExecutionTime, 0, coreAverageExecutionTimeTmp, 0, coreAverageExecutionTime.length);
-        for (int i = coreAverageExecutionTime.length; i < CoreManager.coreCount; i++) {
-            coreAverageExecutionTimeTmp[i] = 0l;
-        }
-        coreAverageExecutionTime = coreAverageExecutionTimeTmp;
-
-        Long[] coreMaxExecutionTimeTmp = new Long[CoreManager.coreCount];
-        System.arraycopy(coreMaxExecutionTime, 0, coreMaxExecutionTimeTmp, 0, coreMaxExecutionTime.length);
-        for (int i = coreMaxExecutionTime.length; i < CoreManager.coreCount; i++) {
-            coreMaxExecutionTimeTmp[i] = 0l;
-        }
-        coreMaxExecutionTime = coreMaxExecutionTimeTmp;
-
-        Long[] coreMinExecutionTimeTmp = new Long[CoreManager.coreCount];
-        System.arraycopy(coreMinExecutionTime, 0, coreMinExecutionTimeTmp, 0, coreMinExecutionTime.length);
-        for (int i = coreMinExecutionTime.length; i < CoreManager.coreCount; i++) {
-            coreMinExecutionTimeTmp[i] = 0l;
-        }
-        coreMinExecutionTime = coreMinExecutionTimeTmp;
-
-        int[] coreExecutedCountTmp = new int[CoreManager.coreCount];
-        System.arraycopy(coreExecutedCount, 0, coreExecutedCountTmp, 0, coreExecutedCount.length);
-        coreExecutedCount = coreExecutedCountTmp;
     }
 }

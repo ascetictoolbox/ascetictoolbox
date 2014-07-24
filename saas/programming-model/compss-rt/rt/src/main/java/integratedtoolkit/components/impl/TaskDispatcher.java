@@ -242,7 +242,7 @@ public class TaskDispatcher implements Runnable, Schedule, JobStatus {
                 resourceName = nte.getResourceName();
                 coreId = task.getTaskParams().getId();
                 taskCountToEnd[coreId]--;
-                TS.taskEnd(task, resourceName);
+                TS.taskEnd(task, resourceName, implId);
                 ResourceManager.freeResource(resourceName, CoreManager.getCoreImplementations(coreId)[implId]);
                 rdr = ResourceManager.checkPendingModifications(resourceName);
                 if (rdr != null && rdr.isTerminate()) {
@@ -266,7 +266,7 @@ public class TaskDispatcher implements Runnable, Schedule, JobStatus {
                 resourceName = rqr.getResource();
                 logger.debug("Reschedule: Task " + taskId + " failed to run in " + resourceName);
                 //register task execution end 
-                TS.taskEnd(task, resourceName);
+                TS.taskEnd(task, resourceName, implId);
                 ResourceManager.freeResource(resourceName, CoreManager.getCoreImplementations(coreId)[implId]);
                 rdr = ResourceManager.checkPendingModifications(resourceName);
                 if (rdr != null && rdr.isTerminate()) {
@@ -338,7 +338,7 @@ public class TaskDispatcher implements Runnable, Schedule, JobStatus {
                 RemoveCloudNodeRequest rcnRequest = (RemoveCloudNodeRequest) request;
                 rdr = rcnRequest.getRequest();
                 ResourceManager.notifyShutdown(rdr);
-                break;                
+                break;
             case REMOVE_OBSOLETES:
                 RemoveObsoletesRequest ror = (RemoveObsoletesRequest) request;
                 obsoletes = ror.getObsoletes();
@@ -412,7 +412,7 @@ public class TaskDispatcher implements Runnable, Schedule, JobStatus {
                 return;
             }
         }
-        ResourceManager.confirmCloudRequest(rcr, provider, schedulerName, limitOfTasks);
+        ResourceManager.addCloudResource(schedulerName, rcr.getGranted(), limitOfTasks);
         TS.resourcesCreated(schedulerName, rcr.getGranted(), limitOfTasks);
 
     }
@@ -693,7 +693,7 @@ public class TaskDispatcher implements Runnable, Schedule, JobStatus {
     }
 
     class Ender extends Thread {
-        
+
         public void run() {
             if (ResourceManager.useCloud()) {
                 // Stop all Cloud VM

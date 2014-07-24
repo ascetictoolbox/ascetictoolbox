@@ -17,6 +17,7 @@ package integratedtoolkit.components.scheduler;
 
 import integratedtoolkit.components.impl.FileTransferManager;
 import integratedtoolkit.components.impl.JobManager;
+import integratedtoolkit.components.impl.TaskScheduler;
 import integratedtoolkit.types.Implementation;
 import integratedtoolkit.types.Resource;
 import integratedtoolkit.types.Task;
@@ -31,13 +32,13 @@ public abstract class SchedulerPolicies {
     public JobManager JM;
     public FileTransferManager FTM;
 
-    public abstract PriorityQueue<Object_Value<Task>> sortTasksForResource(Resource hostName, List<Task> tasksToReschedule);
+    public abstract PriorityQueue<Object_Value<Task>> sortTasksForResource(Resource hostName, List<Task> tasksToReschedule, TaskScheduler.ExecutionProfile[][] profiles);
 
-    public abstract PriorityQueue<Object_Value<Resource>> sortResourcesForTask(Task t, Set<Resource> resources);
+    public abstract PriorityQueue<Object_Value<Resource>> sortResourcesForTask(Task t, Set<Resource> resources, TaskScheduler.ExecutionProfile[][] profiles);
 
-    public abstract OwnerTask[] stealTasks(String destResource, HashMap<String, LinkedList<Task>> pendingTasks, int numberOfTasks);
+    public abstract OwnerTask[] stealTasks(String destResource, HashMap<String, LinkedList<Task>> pendingTasks, int numberOfTasks, TaskScheduler.ExecutionProfile[][] profiles);
 
-    public abstract LinkedList<Implementation> sortImplementationsForResource(LinkedList<Implementation> get, Resource chosenResource);
+    public abstract LinkedList<Implementation> sortImplementationsForResource(LinkedList<Implementation> get, Resource chosenResource, TaskScheduler.ExecutionProfile[][] profiles);
 
     public class OwnerTask {
 

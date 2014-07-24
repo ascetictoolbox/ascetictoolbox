@@ -17,7 +17,6 @@ package integratedtoolkit.components.scheduler.impl;
 
 import integratedtoolkit.components.impl.TaskScheduler;
 import integratedtoolkit.components.scheduler.SchedulerPolicies;
-import integratedtoolkit.types.Resource;
 import integratedtoolkit.types.Implementation;
 import integratedtoolkit.types.Resource;
 import integratedtoolkit.types.ScheduleDecisions;
@@ -43,12 +42,14 @@ public class DefaultTaskScheduler extends TaskScheduler {
     private final TaskSets taskSets;
 
     public DefaultTaskScheduler() {
+        super();
         taskSets = new TaskSets();
         schedulerPolicies = new DefaultSchedulerPolicies();
         logger.info("Initialization finished");
     }
 
     public void resizeDataStructures() {
+        super.resizeDataStructures();
         taskSets.resizeDataStructures();
     }
 
@@ -72,7 +73,8 @@ public class DefaultTaskScheduler extends TaskScheduler {
      */
     @Override
     public void resourcesCreated(String schedulerName, ResourceDescription granted, Integer limitOfTasks) {
-        taskSets.addNode(schedulerName);
+        super.resourcesCreated(schedulerName, granted, limitOfTasks);
+
         if (taskSets.getNoResourceCount() > 0) {
             int[] simTasks = ResourceManager.getResource(schedulerName).getSimultaneousTasks();
             for (int coreId = 0; coreId < CoreManager.coreCount; coreId++) {
@@ -90,7 +92,7 @@ public class DefaultTaskScheduler extends TaskScheduler {
     }
 
     public void removeNode(String hostName) {
-        taskSets.removeNode(hostName);
+        super.removeNode(hostName);
     }
 
     /**
@@ -118,7 +120,7 @@ public class DefaultTaskScheduler extends TaskScheduler {
                             + "Resource(" + chosenResource + ")");
                 }
             } else {
-                LinkedList<Implementation> run = schedulerPolicies.sortImplementationsForResource(runnable, chosenResource);
+                LinkedList<Implementation> run = schedulerPolicies.sortImplementationsForResource(runnable, chosenResource, profile);
                 if (debug) {
                     logger.debug("Match: Task(" + currentTask.getId() + ", "
                             + currentTask.getTaskParams().getName() + ") "
@@ -126,7 +128,6 @@ public class DefaultTaskScheduler extends TaskScheduler {
                 }
 
                 // Request the creation of a job for the task
-                taskSets.startsExecution(currentTask, chosenResourceName);
                 sendJob(currentTask, chosenResource, run.getFirst());
             }
         } else {
@@ -144,7 +145,7 @@ public class DefaultTaskScheduler extends TaskScheduler {
                 Implementation[] impls = CoreManager.getCoreImplementations(coreId);
                 HashMap<Resource, LinkedList<Implementation>> resourceToImpls = ResourceManager.findAvailableResources(impls, validResources);
                 if (!resourceToImpls.keySet().isEmpty()) {
-                    PriorityQueue<SchedulerPolicies.Object_Value<Resource>> orderedResources = schedulerPolicies.sortResourcesForTask(currentTask, resourceToImpls.keySet());
+                    PriorityQueue<SchedulerPolicies.Object_Value<Resource>> orderedResources = schedulerPolicies.sortResourcesForTask(currentTask, resourceToImpls.keySet(), profile);
                     chosenResource = (Resource) orderedResources.peek().o;
                     if (debug) {
                         logger.debug("Match: Task(" + currentTask.getId() + ", "
@@ -152,8 +153,7 @@ public class DefaultTaskScheduler extends TaskScheduler {
                                 + "Resource(" + chosenResource + ")");
                     }
                     // Request the creation of a job for the task
-                    taskSets.startsExecution(currentTask, chosenResource.getName());
-                    LinkedList<Implementation> orderedImpls = schedulerPolicies.sortImplementationsForResource(resourceToImpls.get(chosenResource), chosenResource);
+                    LinkedList<Implementation> orderedImpls = schedulerPolicies.sortImplementationsForResource(resourceToImpls.get(chosenResource), chosenResource, profile);
                     sendJob(currentTask, chosenResource, orderedImpls.getFirst());
                 } else {
                     if (currentTask.getTaskParams().hasPriority()) {
@@ -181,7 +181,7 @@ public class DefaultTaskScheduler extends TaskScheduler {
             resourceToImpls.remove(ResourceManager.getResource(failedResource));
 
             if (!resourceToImpls.keySet().isEmpty()) {
-                PriorityQueue<SchedulerPolicies.Object_Value<Resource>> orderedResources = schedulerPolicies.sortResourcesForTask(task, resourceToImpls.keySet());
+                PriorityQueue<SchedulerPolicies.Object_Value<Resource>> orderedResources = schedulerPolicies.sortResourcesForTask(task, resourceToImpls.keySet(), profile);
                 Resource chosenResource = orderedResources.peek().o;
                 if (debug) {
                     logger.debug("Match: Task(" + task.getId() + ", "
@@ -189,8 +189,7 @@ public class DefaultTaskScheduler extends TaskScheduler {
                             + "Resource(" + chosenResource + ")");
                 }
                 // Request the creation of a job for the task
-                taskSets.startsExecution(task, chosenResource.getName());
-                LinkedList<Implementation> orderedImpls = schedulerPolicies.sortImplementationsForResource(resourceToImpls.get(chosenResource), chosenResource);
+                LinkedList<Implementation> orderedImpls = schedulerPolicies.sortImplementationsForResource(resourceToImpls.get(chosenResource), chosenResource, profile);
                 sendJobRescheduled(task, chosenResource, orderedImpls.getFirst());
             } else {
                 taskSets.newTaskToReschedule(task);
@@ -210,25 +209,6 @@ public class DefaultTaskScheduler extends TaskScheduler {
         }
     }
 
-    public void taskEnd(Task task, String hostName) {
-        // Obtain freed resource
-        switch (task.getStatus()) {
-            case FINISHED:
-                taskSets.endsExecution(task, hostName, true);
-                break;
-            case TO_RESCHEDULE:
-                taskSets.endsExecution(task, hostName, false);
-                break;
-            case FAILED:
-                taskSets.endsExecution(task, hostName, false);
-                break;
-            default: //This Task should not be here
-                logger.fatal("INVALID KIND OF TASK ENDED: " + task.getStatus());
-                System.exit(1);
-                break;
-        }
-    }
-
     public boolean scheduleToResource(String hostName) {
         boolean assigned = false;
         LinkedList<Integer> executableCores = new LinkedList<Integer>();
@@ -239,7 +219,7 @@ public class DefaultTaskScheduler extends TaskScheduler {
             fittingImplementations[coreId]
                     = schedulerPolicies.sortImplementationsForResource(
                             ResourceManager.canRunNow(resource, CoreManager.getCoreImplementations(coreId)),
-                            resource);
+                            resource, profile);
         }
 
         // First check if there is some task to reschedule
@@ -307,7 +287,7 @@ public class DefaultTaskScheduler extends TaskScheduler {
             if (tasks[coreId] == null || tasks[coreId].size() == 0) {
                 unloadedCores.add(coreId);
             } else {
-                sortedTasks[coreId] = schedulerPolicies.sortTasksForResource(resource, tasks[coreId]);
+                sortedTasks[coreId] = schedulerPolicies.sortTasksForResource(resource, tasks[coreId], profile);
                 if (sortedTasks[coreId].isEmpty()) {
                     unloadedCores.add(coreId);
                 }
@@ -343,7 +323,6 @@ public class DefaultTaskScheduler extends TaskScheduler {
                 }
             }
 
-            taskSets.startsExecution(t, resource.getName());
             sendJob(t, resource, fittingImplementations[coreId].get(0));
             assigned = true;
             if (sortedTasks[coreId].isEmpty()) {
@@ -372,7 +351,9 @@ public class DefaultTaskScheduler extends TaskScheduler {
      *
      ********************************************
      */
+    @Override
     public void getSchedulingState(ScheduleState ss) {
+        super.getSchedulingState(ss);
         try {
             taskSets.describeState(ss);
         } catch (Exception e) {
@@ -381,13 +362,16 @@ public class DefaultTaskScheduler extends TaskScheduler {
         }
     }
 
+    @Override
     public void setSchedulingState(ScheduleDecisions newState) {
-        // Nothing to change since no resource stats are stored
+        super.setSchedulingState(newState);
     }
 
     public String getMonitoringState() {
         StringBuilder sb = new StringBuilder();
+        sb.append(super.getMonitoringState());
         sb.append(taskSets.getMonitoringInfo());
         return sb.toString();
     }
 }
+

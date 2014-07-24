@@ -15,7 +15,10 @@
  */
 package integratedtoolkit.components.impl;
 
+import integratedtoolkit.ascetic.Ascetic;
 import integratedtoolkit.log.Loggers;
+import integratedtoolkit.types.ResourceCreationRequest;
+import integratedtoolkit.types.ResourceDescription;
 import integratedtoolkit.types.ScheduleDecisions;
 import integratedtoolkit.types.ScheduleState;
 import integratedtoolkit.types.Task;
@@ -62,18 +65,34 @@ public class SchedulingOptimizer extends Thread {
         running = true;
         ScheduleState oldSchedule;
         ScheduleDecisions newSchedule;
-
+        boolean detectedNewResources;
         while (running) {
             try {
                 do {
+                    detectedNewResources = false;
                     redo = false;
                     oldSchedule = TD.getCurrentSchedule();
                     monitor.debug(oldSchedule.toString());
                     newSchedule = new ScheduleDecisions();
+                    //New Resource Detection
+
+                    LinkedList<ResourceDescription> newResources = Ascetic.getNewResources();
+                    for (ResourceDescription rd : newResources) {
+                        ResourceCreationRequest rcr = new ResourceCreationRequest(null, null, "");
+                        rcr.setGranted(rd);
+                        TD.addCloudNode(rd.getName(), rcr, "", rd.getProcessorCoreCount(), false);
+                        detectedNewResources = true;
+                    }
+                    //Check Resource Consumptions Updates
+                    Ascetic.updateConsumptions();
+                    if (detectedNewResources) {
+                        continue;
+                    }
+                    // Check Resource Elasticity
                     if (oldSchedule.useCloud) {
                         applyPolicies(oldSchedule, newSchedule);
                     }
-                    monitor.debug(newSchedule.toString());
+                    //Balance workload
                     loadBalance(oldSchedule, newSchedule);
                 } while (redo);
                 TD.setNewSchedule(newSchedule);

@@ -483,18 +483,21 @@ public class ResourceManager {
         return vmCount;
     }
 
-    public static void confirmCloudRequest(ResourceCreationRequest rcr, String provider, String vmName, Integer limitOfTasks) {
+    public static void confirmCloudRequest(ResourceCreationRequest rcr, String provider, String vmName) {
         //Remove creation counters
         CloudManager.respondedRequest(rcr);
         //Confirm Resource Creation
         CloudManager.confirmedRequest(vmName, provider, rcr);
-        //Add resource to the pool
+
+    }
+
+    public static void addCloudResource(String vmName, ResourceDescription res, Integer limitOfTasks) {
         Resource r;
-        if ((r = pool.upgradeResource(vmName, rcr.getGranted(), limitOfTasks)) == null) {
-            r = pool.addCritical(vmName, limitOfTasks, rcr.getGranted());
+        if ((r = pool.upgradeResource(vmName, res, limitOfTasks)) == null) {
+            r = pool.addCritical(vmName, limitOfTasks, res);
 
             SharedDiskManager.addMachine(vmName);
-            for (java.util.Map.Entry<String, String> e : rcr.getGranted().getImage().getSharedDisks().entrySet()) {
+            for (java.util.Map.Entry<String, String> e : res.getImage().getSharedDisks().entrySet()) {
                 SharedDiskManager.addSharedToMachine(e.getKey(), e.getValue(), vmName);
             }
         }
