@@ -20,7 +20,7 @@ public class ApplicationDAOJpa implements ApplicationDAO {
 	private static Logger logger = Logger.getLogger(ApplicationDAOJpa.class);
 	private EntityManager entityManager;
 
-	@PersistenceContext (unitName = "aplicationManagerDB")
+	@PersistenceContext (unitName = "applicationManagerDB")
 	public void setEntityManager(EntityManager entityManager) {
 		this.entityManager = entityManager;
 	}

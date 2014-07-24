@@ -132,4 +132,24 @@ public class ApplicationRestTest {
 		assertEquals("deployments",applicationResponse.getLinks().get(2).getRel());
 		assertEquals(MediaType.APPLICATION_XML, applicationResponse.getLinks().get(2).getType());
 	}
+	
+	@Test
+	public void postAnApplicationNotInDB() {
+		ApplicationDAO applicationDAO = mock(ApplicationDAO.class);
+		
+		when(applicationDAO.getByName("Three Tier Web App")).thenReturn(null);
+		
+		
+	}
+	
+	@Test
+	public void postInvalidOVFTest() {
+		ApplicationRest applicationRest = new ApplicationRest();
+		
+		Response response = applicationRest.postApplication("XXX");
+		assertEquals(400, response.getStatus());
+		
+		String message = (String) response.getEntity();
+		assertEquals("Invalid OVF", message);
+	}
 }

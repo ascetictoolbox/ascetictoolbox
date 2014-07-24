@@ -3,7 +3,7 @@
         xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
         version="1.0">
 
-        <persistence-unit name="aplicationManagerDB" transaction-type="RESOURCE_LOCAL">
+        <persistence-unit name="applicationManagerDB" transaction-type="RESOURCE_LOCAL">
         <class>eu.ascetic.paas.applicationmanager.model.Application</class>
         <class>eu.ascetic.paas.applicationmanager.model.Deployment</class>
 		<class>eu.ascetic.paas.applicationmanager.model.VM</class>

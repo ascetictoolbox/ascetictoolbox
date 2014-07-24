@@ -33,7 +33,7 @@
 	
 	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="persistenceUnitManager" ref="pum" />
-        <property name="persistenceUnitName" value="aplicationManagerDB"/>
+        <property name="persistenceUnitName" value="applicationManagerDB"/>
         		<property name="jpaVendorAdapter" ref="jpaAdapter" />
 		<property name="loadTimeWeaver">
 			<bean
