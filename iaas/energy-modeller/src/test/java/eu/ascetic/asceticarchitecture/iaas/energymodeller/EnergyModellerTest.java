@@ -37,10 +37,10 @@ public class EnergyModellerTest {
     public EnergyModellerTest() {
     }
 
-    private final String VM_NAME = "cloudsuite---data-analytics"; //CloudSuite - Data Analytics
-    private final String HOST_NAME = "asok10";
-    private final String HOST_NAME_WITH_VM = "asok12";
-    EnergyModeller instance = new EnergyModeller();
+    private static final String VM_NAME = "cloudsuite---data-analytics"; //CloudSuite - Data Analytics
+    private static final String HOST_NAME = "asok10";
+    private static final String HOST_NAME_WITH_VM = "asok12";
+    private final EnergyModeller instance = new EnergyModeller();
 
     /**
      * Test of setEnergyPredictor method, of class EnergyModeller.
@@ -254,6 +254,7 @@ public class EnergyModellerTest {
         host = instance.getHost(HOST_NAME_WITH_VM);
         vMsOnHost = new HashSet<>();
         vMsOnHost.add(instance.getVM(VM_NAME));
+        vMsOnHost.add(vmImage);
         EnergyUsagePrediction result = instance.getPredictedEnergyForVM(vmImage, vMsOnHost, host);
         assert (result != null);
         assert (result.getEnergyUser().contains(vmImage));

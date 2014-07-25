@@ -23,10 +23,8 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.training.EnergyModelTr
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energymodel.EnergyModel;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.HostEnergyCalibrationData;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
@@ -52,8 +50,8 @@ public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
      */
     @Override
     public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines) {
-        double usageCPU=100;
-        double usageMemory=100;
+        double usageCPU = 100;
+        double usageMemory = 100;
         EnergyUsagePrediction wattsUsed;
         TimePeriod duration = new TimePeriod(new GregorianCalendar(), 1, TimeUnit.HOURS);
         wattsUsed = predictTotalEnergy(host, usageCPU, usageMemory, duration);
@@ -62,21 +60,31 @@ public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
 
     /**
      * This predicts the total amount of energy used by a host.
+     *
      * @param host The host to get the energy prediction for
      * @param usageCPU The amount of CPU load placed on the host
      * @param usageRAM The amount of ram used
      * @param timePeriod The time period the prediction is for
      * @return The predicted energy usage.
      */
-    public EnergyUsagePrediction predictTotalEnergy(Host host, double usageCPU, double usageRAM, TimePeriod duration) {
+    public EnergyUsagePrediction predictTotalEnergy(Host host, double usageCPU, double usageRAM, TimePeriod timePeriod) {
         EnergyUsagePrediction answer = new EnergyUsagePrediction(host);
+        //Test for training then load the store with the correct values.
+        /**
+         * TODO Fix the code so it is much cleaner.
+         * Directly load the trainer with data because we can do. 
+         * (but given OO principles really really shouldn't
+         */
+        if (!DefaultEnergyModelTrainer.storeValues.containsKey(host)) {
+                DefaultEnergyModelTrainer.storeValues.put(host, host.getCalibrationData());
+        }
         EnergyModel model = trainer.retrieveModel(host);
         double temp;
         temp = model.getIntercept() + model.getCoefCPU() * usageCPU + model.getCoefRAM() * usageRAM;
-            answer.setAvgPowerUsed(temp);
-            answer.setTotalEnergyUsed(temp * duration.getDuration());
-            answer.setDuration(duration);
-            return answer;
+        answer.setAvgPowerUsed(temp);
+        answer.setTotalEnergyUsed(temp * timePeriod.getDuration());
+        answer.setDuration(timePeriod);
+        return answer;
     }
 
     /**
@@ -100,7 +108,9 @@ public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
             usageCPU = 100; //assumed 100 percent usage.
         }
         //Obtain the total for the VM
-        EnergyUsagePrediction answer = predictTotalEnergy(host, usageCPU, usageRAM, timePeriod);
+        EnergyUsagePrediction hostAnswer = predictTotalEnergy(host, usageCPU, usageRAM, timePeriod);
+        EnergyUsagePrediction answer = new EnergyUsagePrediction(vm);
+        answer.setDuration(hostAnswer.getDuration());
         //Find the fraction to be associated with the VM
         double vmsEnergyFraction = division.getEnergyUsage(answer.getTotalEnergyUsed(), vm);
         answer.setTotalEnergyUsed(vmsEnergyFraction);
