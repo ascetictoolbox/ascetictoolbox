@@ -26,7 +26,6 @@ import org.apache.commons.httpclient.methods.StringRequestEntity;
 public class ApplicationMonitor {
 
     private static final String endpoint = Configuration.getApplicationMonitorEndpoint();
-    private static final String appId = Configuration.getApplicationId() + "_" + Configuration.getDeploymentId();
 
     public static String startEvent(VM vm, String eventType) {
         HttpClient client = new HttpClient();
@@ -38,7 +37,7 @@ public class ApplicationMonitor {
             method = new PostMethod(endpoint + "/event");
         }
         try {
-            method.setRequestEntity(new StringRequestEntity("{\"appId\":\"" + appId + "\", \"nodeId\":\"" + vm.getIPv4() + "\", \"instanceId\":\"" + vm.getProviderId() + "\", \"data\":{}}", "application/json", "UTF-8"));
+            method.setRequestEntity(new StringRequestEntity("{\"appId\":\"" + Configuration.getApplicationId() + "\", \"nodeId\":\"" + vm.getProviderId() + "\", \"instanceId\":\"" + Configuration.getDeploymentId() + "\", \"data\":{ \"ip\":\""+vm.getIPv4()+"\"}}", "application/json", "UTF-8"));
             client.executeMethod(method);
             br = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream()));
             String readLine;
@@ -83,9 +82,7 @@ public class ApplicationMonitor {
         }
     }
 
-    public static void main(String[] args) throws Exception {        
-        System.out.println("Endpoint = " + endpoint);
-        System.out.println("ApplicationID: " + appId);
+    public static void main(String[] args) throws Exception { 
         Configuration.getComponentDescriptions().put("componentA", new ResourceDescription());
         VM vm = new VM("10.0.0.5", UUID.randomUUID().toString(), "componentA");
 
