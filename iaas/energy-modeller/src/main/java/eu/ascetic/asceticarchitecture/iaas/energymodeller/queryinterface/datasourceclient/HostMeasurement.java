@@ -39,7 +39,8 @@ public class HostMeasurement extends Measurement {
      * This creates a host measurement.
      *
      * @param host The host the measurement is for
-     * @param clock The time when the measurement was taken
+     * @param clock The time when the measurement was taken, this is in unix time. 
+     * i.e. Calendar.
      */
     public HostMeasurement(Host host, long clock) {
         this.host = host;
@@ -47,14 +48,16 @@ public class HostMeasurement extends Measurement {
     }
 
     /**
-     * @return the host
+     * The gets the host that the measurement is for.
+     * @return The host that the measurement is for.
      */
     public Host getHost() {
         return host;
     }
 
     /**
-     * @param host the host to set
+     * The sets the host that the measurement is for.
+     * @param host The host that the measurement is for.
      */
     public void setHost(Host host) {
         this.host = host;

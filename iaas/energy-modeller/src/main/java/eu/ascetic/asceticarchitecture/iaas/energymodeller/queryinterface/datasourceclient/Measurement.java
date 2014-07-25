@@ -47,7 +47,8 @@ public abstract class Measurement {
      * values and compares the earliest and latest timestamps to determine how
      * long it took to get all the data values.
      *
-     * @return
+     * @return The difference between the oldest piece of data recorded and the
+     * newest.
      */
     public long getMaximumClockDifference() {
         long lowest = Integer.MAX_VALUE;
@@ -67,7 +68,8 @@ public abstract class Measurement {
     /**
      * This returns the maximum delay that any metric encountered.
      *
-     * @return
+     * @return The highest delay encountered by any metric, in this set of
+     * measurement data.
      */
     public long getMaxDelay() {
         long delay = Integer.MIN_VALUE;
@@ -83,7 +85,8 @@ public abstract class Measurement {
     /**
      * This returns the minimum delay that any metric encountered.
      *
-     * @return
+     * @return The lowest delay encountered by any metric, in this set of
+     * measurement data.
      */
     public long getMinDelay() {
         long delay = Integer.MAX_VALUE;
@@ -97,19 +100,20 @@ public abstract class Measurement {
     }
 
     /**
-     * This lists a set of names for the metrics that are available in a host
+     * This lists a set of names for the metrics that are available in this
      * measurement
      *
-     * @return
+     * @return The list of all metrics names that were measured.
      */
     public Set<String> getMetricNameList() {
         return metrics.keySet();
     }
 
     /**
-     * This lists the metrics that are available in a host measurement
+     * This lists the metrics that are available in this measurement
      *
-     * @return the metrics
+     * @return the list of all metrics and the key value that is used to quickly
+     * identify a metric.
      */
     public HashMap<String, Item> getMetrics() {
         return metrics;
@@ -125,15 +129,17 @@ public abstract class Measurement {
     }
 
     /**
-     * This returns the set of items for the host measurement.
+     * This returns the set of items/metric values for the measurement.
      *
-     * @return
+     * @return The metric values for this measurement.
      */
     public Collection<Item> getItems() {
         return metrics.values();
     }
 
     /**
+     * This sets the set of metrics and their keys for the measurement.
+     *
      * @param metrics the metrics to set
      */
     public void setMetrics(HashMap<String, Item> metrics) {
@@ -141,9 +147,9 @@ public abstract class Measurement {
     }
 
     /**
-     * This adds a metric and value to a host measurement
+     * This adds a metric and value to a measurement
      *
-     * @param item
+     * @param item a metric to add to this measurement dataset
      */
     public void addMetric(Item item) {
         metrics.put(item.getKey(), item);
@@ -152,22 +158,26 @@ public abstract class Measurement {
     /**
      * This gets the item that represents a given metric
      *
-     * @param key
-     * @return
+     * @param key The key that is used to identify a given measurement
+     * @return The metric and its value that is identified by the key.
      */
     public Item getMetric(String key) {
         return metrics.get(key);
     }
 
     /**
-     * @return the clock
+     * This provides the time of the measurement in Unix time.
+     *
+     * @return The time the measurement was taken
      */
     public long getClock() {
         return clock;
     }
 
     /**
-     * @param clock the clock to set
+     * This sets the time of the measurement in Unix time.
+     *
+     * @param clock The time the measurement was taken
      */
     public void setClock(long clock) {
         this.clock = clock;

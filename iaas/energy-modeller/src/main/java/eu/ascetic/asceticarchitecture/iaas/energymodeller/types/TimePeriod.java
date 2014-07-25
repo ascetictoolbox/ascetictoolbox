@@ -16,6 +16,7 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.types;
 
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -30,6 +31,22 @@ public class TimePeriod implements Comparable {
     private final Calendar startTime;
     private final Calendar endTime;
 
+    /**
+     * This creates an object that represents a duration of time/a time period,
+     * it is to be used as part of the ASCETiC energy modellers query system.
+     *
+     * @param startTime The time that represents the start of the query's
+     * dataset, as represented in Unix time.
+     * @param endTime The time that represents the end of the query's dataset, 
+     * as represented in Unix time.
+     */
+    public TimePeriod(long startTime, long endTime) {
+        this.startTime = new GregorianCalendar();
+        this.startTime.setTimeInMillis(TimeUnit.SECONDS.toMillis(startTime));
+        this.endTime = new GregorianCalendar();
+        this.endTime.setTimeInMillis(TimeUnit.SECONDS.toMillis(endTime));
+    }    
+    
     /**
      * This creates an object that represents a duration of time/a time period,
      * it is to be used as part of the ASCETiC energy modellers query system.

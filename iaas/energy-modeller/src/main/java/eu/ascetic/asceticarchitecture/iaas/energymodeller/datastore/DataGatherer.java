@@ -84,7 +84,7 @@ public class DataGatherer implements Runnable {
                 if (vm.getName().equals("cloudsuite---data-analytics")) {
                     vm.setAllocatedTo(getHost("asok12"));
                 }
-                //end fo this temporary code fix
+                //end of this temporary code fix
             }
         }
     }
