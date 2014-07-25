@@ -42,6 +42,7 @@ import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -271,7 +272,7 @@ public class EnergyModeller {
         shareRule.setLoadFraction(loadFractionData);
         double totalEnergy = shareRule.getEnergyUsage(vm);
         answer.setTotalEnergyUsed(totalEnergy);
-        answer.setAvgPowerUsed(totalEnergy / shareRule.getDuration());
+        answer.setAvgPowerUsed(totalEnergy / TimeUnit.SECONDS.toHours(shareRule.getDuration()));
         answer.setDuration(new TimePeriod(shareRule.getStart(), shareRule.getEnd()));
         return answer;
     }

@@ -40,7 +40,8 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
 
     private ZabbixClient client = new ZabbixClient();
     private ZabbixHostVMFilter hostFilter = new NameBeginsFilter();
-    private static final String POWER_KPI_NAME = "power";
+    private static final String POWER_KPI_NAME = KpiList.POWER_KPI_NAME;
+    private static final String ENERGY_KPI_NAME = KpiList.ENERGY_KPI_NAME;
     private static final String MEMORY_KPI_NAME = "Total memory";
     private static final String DISK_KPI_NAME = "Total disk space on $1";
     private static final String BOOT_TIME_KPI_NAME = "Host boot time";
@@ -301,11 +302,10 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
              * of the named hosts.
              */
             if (vmMeasurement != null) {
-                if (i.getLastClock() > vmMeasurement.getClock()) {
+                if (i.getKey().equals(ENERGY_KPI_NAME)) {
                     /**
-                     * Ensures the clock value is the latest value seen. It
-                     * represents the most upto date piece of data for a given
-                     * host.
+                     * Ensures the clock value closely follows the energy,
+                     * measurement.
                      */
                     vmMeasurement.setClock(i.getLastClock());
                 }

@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -76,11 +77,11 @@ public class HistoricUsageRecord extends EnergyUsageRecord {
             HostEnergyRecord last = data.get(data.size() - 1);
             totalEnergyUsed = last.getEnergy() - first.getEnergy();
             GregorianCalendar start = new GregorianCalendar();
-            start.setTimeInMillis(first.getTime() * 1000);
+            start.setTimeInMillis(TimeUnit.SECONDS.toMillis(first.getTime()));
             GregorianCalendar end = new GregorianCalendar();
-            start.setTimeInMillis(last.getTime() * 1000);
+            end.setTimeInMillis(TimeUnit.SECONDS.toMillis(last.getTime()));
             duration = new TimePeriod(start, end);
-            avgPowerUsed = totalEnergyUsed / duration.getDuration();
+            avgPowerUsed = totalEnergyUsed / TimeUnit.SECONDS.toHours(duration.getDuration());
         }
         if (data.size() == 1) {
             avgPowerUsed = data.get(0).getPower();

@@ -87,7 +87,6 @@ public class EnergyModellerTest {
             assert (usageRecord.getAvgPowerUsed() > 0);
             assert (usageRecord.getAvgPowerUsed() < 500);
             assert (usageRecord.getTotalEnergyUsed() > 0);
-            assert (usageRecord.getTotalEnergyUsed() > usageRecord.getAvgPowerUsed());
         }
     }
 
@@ -128,13 +127,12 @@ public class EnergyModellerTest {
             System.out.println("Usage for: " + host.getHostName());
             System.out.println("Average Power: " + usageRecord.getAvgPowerUsed());
             System.out.println("Total Energy used: " + usageRecord.getTotalEnergyUsed());
-            System.out.println("Time in Seconds (Duration): " + usageRecord.getDuration().getDuration());            
+            System.out.println("Time in Seconds (Duration): " + usageRecord.getDuration().getDuration());
             assert (usageRecord.getEnergyUser().contains(host));
             assert (usageRecord.getEnergyUser().size() == 1);
             assert (usageRecord.getAvgPowerUsed() > 0);
             assert (usageRecord.getAvgPowerUsed() < 500);
             assert (usageRecord.getTotalEnergyUsed() > 0);
-            assert (usageRecord.getTotalEnergyUsed() > usageRecord.getAvgPowerUsed());
         }
     }
 
@@ -196,14 +194,13 @@ public class EnergyModellerTest {
         System.out.println("Usage for: " + vm.getName());
         System.out.println("Average Power: " + result.getAvgPowerUsed());
         System.out.println("Total Energy used: " + result.getTotalEnergyUsed());
-        System.out.println("Time in Seconds (Duration): " + result.getDuration().getDuration());        
+        System.out.println("Time in Seconds (Duration): " + result.getDuration().getDuration());
         assert (result != null);
         assert (result.getEnergyUser().contains(vm));
         assert (result.getEnergyUser().size() == 1);
         assert (result.getAvgPowerUsed() > 0);
         assert (result.getAvgPowerUsed() < 500);
         assert (result.getTotalEnergyUsed() > 0);
-        assert (result.getTotalEnergyUsed() > result.getAvgPowerUsed());
     }
 
     /**
@@ -218,14 +215,13 @@ public class EnergyModellerTest {
         System.out.println("Usage for: " + host.getHostName());
         System.out.println("Average Power: " + result.getAvgPowerUsed());
         System.out.println("Total Energy used: " + result.getTotalEnergyUsed());
-        System.out.println("Time in Seconds (Duration): " + result.getDuration().getDuration());        
+        System.out.println("Time in Seconds (Duration): " + result.getDuration().getDuration());
         assert (result != null);
         assert (result.getEnergyUser().contains(host));
         assert (result.getEnergyUser().size() == 1);
         assert (result.getAvgPowerUsed() > 0);
         assert (result.getAvgPowerUsed() < 500);
         assert (result.getTotalEnergyUsed() > 0);
-        assert (result.getTotalEnergyUsed() > result.getAvgPowerUsed());
     }
 
     /**
@@ -269,7 +265,6 @@ public class EnergyModellerTest {
         assert (result.getAvgPowerUsed() > 0);
         assert (result.getAvgPowerUsed() < 500);
         assert (result.getTotalEnergyUsed() > 0);
-        assert (result.getTotalEnergyUsed() > result.getAvgPowerUsed());
     }
 
     /**
@@ -290,8 +285,7 @@ public class EnergyModellerTest {
         assert (result.getEnergyUser().size() == 1);
         assert (result.getAvgPowerUsed() > 0);
         assert (result.getAvgPowerUsed() < 500);
-        assert (result.getTotalEnergyUsed() > 0);
-        assert (result.getTotalEnergyUsed() > result.getAvgPowerUsed());       
+        assert (result.getTotalEnergyUsed() > 0);   
     }
 
     /**
