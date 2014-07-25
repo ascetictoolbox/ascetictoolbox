@@ -252,15 +252,17 @@ public class OvfDefinitionTest extends TestCase {
         virtualHardwareSection.addItem(itemCpuNumber);
 
         // CPU Speed
-        Item itemCpuSpeed = Item.Factory.newInstance();
-        itemCpuSpeed.setDescription("CPU Speed");
-        itemCpuSpeed.setElementName("2000 MHz CPU speed reservation");
-        itemCpuSpeed.setInstanceId("1");
-        itemCpuSpeed.setResourceType(ResourceType.PROCESSOR);
-        itemCpuSpeed.setResourceSubType("cpuspeed");
-        itemCpuSpeed.setAllocationUnits("hertz * 2^20");
-        itemCpuSpeed.setReservation(new BigInteger("2000"));
-        virtualHardwareSection.addItem(itemCpuSpeed);
+        if(!virtualHardwareSection.setCPUSpeed(2000)){
+        	Item itemCpuSpeed = Item.Factory.newInstance();
+        	itemCpuSpeed.setDescription("CPU Speed");
+        	itemCpuSpeed.setElementName("2000 MHz CPU speed reservation");
+        	itemCpuSpeed.setInstanceId("1");
+        	itemCpuSpeed.setResourceType(ResourceType.PROCESSOR);
+        	itemCpuSpeed.setResourceSubType("cpuspeed");
+        	itemCpuSpeed.setAllocationUnits("hertz * 2^20");
+        	itemCpuSpeed.setReservation(new BigInteger("2000"));
+        	virtualHardwareSection.addItem(itemCpuSpeed);
+        }
 
         // Memory
         Item itemMemory = Item.Factory.newInstance();
@@ -268,7 +270,7 @@ public class OvfDefinitionTest extends TestCase {
         itemMemory.setElementName("512 MB of memory");
         itemMemory.setInstanceId("2");
         itemMemory.setResourceType(ResourceType.MEMORY);
-        itemCpuSpeed.setAllocationUnits("byte * 2^20");
+        itemMemory.setAllocationUnits("byte * 2^20");
         itemMemory.setVirtualQuantity(new BigInteger("512"));
         virtualHardwareSection.addItem(itemMemory);
 
