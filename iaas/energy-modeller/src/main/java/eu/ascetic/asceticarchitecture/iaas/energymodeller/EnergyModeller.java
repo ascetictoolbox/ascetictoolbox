@@ -22,10 +22,9 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DefaultDatab
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.DefaultEnergyPredictor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.DummyEnergyPredictor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.EnergyPredictorInterface;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.DefaultEnergyShareRule;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.EnergyDivision;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.EnergyShareRule;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.LoadBasedDivision;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.LoadFractionShareRule;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
@@ -39,7 +38,6 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostEnergy
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostVmLoadFraction;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -232,14 +230,18 @@ public class EnergyModeller {
      *
      */
     public CurrentUsageRecord getCurrentEnergyForVM(VmDeployed vm) {
-        //TODO check the validity of this code! and its energy distribution!
-        EnergyShareRule shareRule = new DefaultEnergyShareRule();
+        LoadFractionShareRule rule = new LoadFractionShareRule();
         Host host = vm.getAllocatedTo();
         ArrayList<VmDeployed> otherVms = dataGatherer.getVMsOnHost(host);
-        ArrayList<VM> vms = new ArrayList<>();
-        vms.addAll(otherVms);
+        ArrayList<VmDeployed> vmsDeployedOnHost = new ArrayList<>();
+        ArrayList<VM> vmsOnHost = new ArrayList<>();
+        vmsDeployedOnHost.addAll(otherVms);
+        vmsDeployedOnHost.add(vm);
+        vmsOnHost.addAll(otherVms);
+        vmsOnHost.add(vm);        
+        rule.setVmMeasurements(datasource.getVmData(vmsDeployedOnHost));
         CurrentUsageRecord hostAnswer = datasource.getCurrentEnergyUsage(host);
-        EnergyDivision divider = shareRule.getEnergyUsage(host, vms);
+        EnergyDivision divider = rule.getEnergyUsage(host,vmsOnHost);
         CurrentUsageRecord answer = new CurrentUsageRecord(vm);
         answer.setTime(hostAnswer.getTime());
         answer.setPower(divider.getEnergyUsage(hostAnswer.getPower(), vm));
@@ -257,7 +259,6 @@ public class EnergyModeller {
      * (useful??) kWh of energy used since instantiation
      */
     public HistoricUsageRecord getEnergyRecordForVM(VmDeployed vm, TimePeriod timePeriod) {
-        //TODO Write get historic energy records for VM
         HistoricUsageRecord answer = new HistoricUsageRecord(vm);
         Host host = vm.getAllocatedTo();
         ArrayList<VmDeployed> otherVms = dataGatherer.getVMsOnHost(host);
@@ -276,7 +277,7 @@ public class EnergyModeller {
         answer.setDuration(new TimePeriod(shareRule.getStart(), shareRule.getEnd()));
         return answer;
     }
-    
+
     /**
      * This returns the energy usage for a named physical machine.
      *
@@ -387,7 +388,8 @@ public class EnergyModeller {
      * This given a name of a VM provides the object representation of it
      *
      * @param name The name of the VM
-     * @return
+     * @return The VM with the specified name, null if not known to the energy
+     * modeller.
      */
     public VmDeployed getVM(String name) {
         if (dataGatherer.getVmList().containsKey(name)) {
@@ -397,11 +399,7 @@ public class EnergyModeller {
             if (dataGatherer.getVmList().containsKey(name)) {
                 return dataGatherer.getVm(name);
             }
-            //TODO Remove this dummy code
-            VmDeployed answer = new VmDeployed(1, name, 1, 1024, 50, "127.0.0.1", "working", new GregorianCalendar(), null);
-            return answer;
-            //END OF DUMMY CODE
-//        return null;
+            return null;
         }
     }
 
