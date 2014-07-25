@@ -4,21 +4,16 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EMSettings;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.EnergyModellerHandler;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.EnergyModellerSimple;
 
-public class EnergyModellerHandlerTest {
+public class EnergyModellerHandler {
 
-	private static EMSettings testsettings;
-	private static EnergyModellerHandler serviceEM;
+	private static EnergyModellerSimple serviceEM;
 	
 	@BeforeClass
 	public static void setup() {
-		testsettings = new EMSettings();
-		serviceEM = new EnergyModellerHandler();
-		serviceEM.setEmsettings(testsettings);
+		serviceEM = new EnergyModellerSimple("testconfig.properties");
 	}
-	
 	
 	@Test
 	public void testEnergyModellerApplicationConsumption() {
@@ -52,13 +47,15 @@ public class EnergyModellerHandlerTest {
 	
 	@Test
 	public void trainApplication() {
-		boolean training = serviceEM.trainApplication("providerid", "applicationid", "deploymentid","event");
+		boolean training = serviceEM.trainApplication("providerid", "applicationid", "deploymentid",null);
 		Assert.assertTrue(training);
 	}
 	
 	@Test
-	public void testTasks() {
-		serviceEM.startTasks();
-		serviceEM.stopTasks();
+	public void trainEvent() {
+		boolean training = serviceEM.trainApplication("providerid", "applicationid", "deploymentid","event");
+		Assert.assertTrue(training);
 	}
+	
+
 }

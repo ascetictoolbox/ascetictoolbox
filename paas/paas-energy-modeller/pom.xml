@@ -38,16 +38,13 @@
 		<paasem.mysql>5.1.31</paasem.mysql>
 		<paasem.jackson>2.4.0</paasem.jackson>
 		<paasem.spring>3.2.9.RELEASE</paasem.spring>
-		<paasem.jmeter>2.10</paasem.jmeter>
+		<paasem.jmeter>2.11</paasem.jmeter>
+		<paasem.jersey>2.5.1</paasem.jersey>
 	</properties>
 
 	<dependencies>
 
-		<dependency>
-			<groupId>com.sun.jersey</groupId>
-			<artifactId>jersey-server</artifactId>
-			<version>${paasem.jersey}</version>
-		</dependency>
+		
 		<dependency>
 			<groupId>org.jscience</groupId>
 			<artifactId>jscience</artifactId>
@@ -61,14 +58,31 @@
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-core</artifactId>
-			<version>${paasem.jackson}</version>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 	    <groupId>org.glassfish.jersey.core</groupId> -->
+<!-- 		    <artifactId>jersey-client</artifactId> -->
+<!-- 		    <version>2.10.1</version> -->
+<!-- 		</dependency> -->
+
+<!-- 		<dependency> -->
+<!-- 		    <groupId>org.glassfish.jersey.connectors</groupId> -->
+<!-- 		    <artifactId>jersey-apache-connector</artifactId> -->
+<!-- 		    <version>2.10.1</version> -->
+<!-- 		</dependency> -->
+	<dependency>
+		<groupId>com.sun.jersey</groupId>
+		<artifactId>jersey-client</artifactId>
+		<version>1.18.1</version>
+	</dependency>
+
 		<dependency>
 			<groupId>org.apache.jmeter</groupId>
 			<artifactId>ApacheJMeter_core</artifactId>
+			<version>${paasem.jmeter}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.jmeter</groupId>
+			<artifactId>ApacheJMeter_http</artifactId>
 			<version>${paasem.jmeter}</version>
 		</dependency>
 		<dependency>
@@ -91,6 +105,12 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.2.4</version>
+		</dependency>
+
 
 	</dependencies>
 

@@ -12,9 +12,7 @@
     <bean id="emModelDAO" class="eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.EnergyModellerMonitoringDAOImpl">
         <property name="dataSource" ref="dataSource" />
     </bean>
-    <bean id="emTrainingDAO" class="eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.EnergyModellerTrainingDAOImpl">
-        <property name="dataSource" ref="dataSource" />
-    </bean> 
+
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
  
         <property name="driverClassName" value="com.mysql.jdbc.Driver" />

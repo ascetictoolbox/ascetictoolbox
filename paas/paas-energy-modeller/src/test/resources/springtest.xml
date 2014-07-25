@@ -16,8 +16,9 @@
     <bean id="emModelDAO" class="eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.EnergyModellerMonitoringDAOImpl">
         <property name="dataSource" ref="dataSource" />
     </bean>
-    <bean id="emTrainingDAO" class="eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.EnergyModellerTrainingDAOImpl">
-        <property name="dataSource" ref="dataSource" />
+    
+    <bean id="dataSourceIaaSDAO" class="eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.IaaSDataDAOImpl">
+        <property name="dataSource" ref="dataSourceIaaS" />
     </bean>
      
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
@@ -26,17 +27,24 @@
         <property name="username" value="root" />
         <property name="password" value="root" />
     </bean>
-    
-   <bean id="instance" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+
+    <bean id="dataSourceIaaS" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-        <property name="url" value="jdbc:mysql://localhost:3306/" />
+        <property name="url" value="jdbc:mysql://localhost:3306/iaas" />
         <property name="username" value="root" />
         <property name="password" value="root" />
     </bean>
     
+<!--    <bean id="instance" class="org.springframework.jdbc.datasource.DriverManagerDataSource"> -->
+<!--         <property name="driverClassName" value="com.mysql.jdbc.Driver" /> -->
+<!--         <property name="url" value="jdbc:mysql://localhost:3306/" /> -->
+<!--         <property name="username" value="root" /> -->
+<!--         <property name="password" value="root" /> -->
+<!--     </bean> -->
+    
 
-	<jdbc:initialize-database data-source="instance">
-		<jdbc:script location="eu/ascetic/asceticarchitecture/paas/component/common/script/createdb.sql" />
-	</jdbc:initialize-database>
+<!-- 	<jdbc:initialize-database data-source="instance"> -->
+<!-- 		<jdbc:script location="eu/ascetic/asceticarchitecture/paas/component/common/script/createdb.sql" /> -->
+<!-- 	</jdbc:initialize-database> -->
 
 </beans>

@@ -16,9 +16,11 @@ public class EnergyModellerMonitoringMapper implements RowMapper<EnergyModellerM
 		data.setMonitoringid(result.getString("monitoringid"));
 		data.setApplicationid(result.getString("applicationid"));
 		data.setDeploymentid(result.getString("deploymentid"));
+		data.setType(result.getString("type"));
 		data.setStatus(result.getBoolean("status"));
 		data.setStarted(result.getTimestamp("started"));
 		data.setEnded(result.getTimestamp("ended"));
+		data.setEvents(result.getString("events"));
 		return data;
 	}
 

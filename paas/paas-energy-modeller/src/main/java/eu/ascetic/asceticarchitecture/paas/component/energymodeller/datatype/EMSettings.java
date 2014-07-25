@@ -4,35 +4,48 @@ import java.util.Properties;
 
 public class EMSettings {
 
-	private String iaasdb="localhost";
-	private String iaasportport="3306";
+	private String iaasdriver="com.mysql.jdbc.Driver";
+	private String iaasurl="jdbc:mysql://localhost/paasemdb";
 	private String iaasdbuser="user";
 	private String iaasdbpassword="user";
-	private String iaasdatabase="iaasdb";
 	
-	private String paasdb="localhost";
-	private String paasportport="3306";
+	private String paasdriver="com.mysql.jdbc.Driver";
+	private String paasurl="jdbc:mysql://localhost/iaasemdb";
 	private String paasdbuser="user";
 	private String paasdbpassword="user";
-	private String paasdatabase="paasdb";
+	
+	
 	private String dataloadinterval="10000";
 	private String eventsloadinterval="10000";
+	private String serverPath="C:/Users/sommacam/Desktop/apache-jmeter-2.11";
+	private String serverurl="10.15.5.110";
+	private String propertyFile="C:/Users/sommacam/Desktop/apache-jmeter-2.11/bin/jmeter.properties";
+	private String jmxFilePath="c:/test";
 	
+	private String appmonitor="http://localhost:9000/query";
 
 	public EMSettings() {
 		
 	}
-	
+
 	
 	public EMSettings(Properties props) {
 		
-		this.setPaasdb(props.getProperty("paasdb"));
-		this.setPaasportport(props.getProperty("paasportport"));
+		this.setIaasdriver(props.getProperty("iaasdriver"));
+		this.setIaasurl(props.getProperty("iaasurl"));
+		this.setIaasdbpassword(props.getProperty("iaasdbuser"));
+		this.setIaasdbuser(props.getProperty("iaasdbpassword"));
+		this.setPaasdriver(props.getProperty("paasdriver"));
+		this.setPaasurl(props.getProperty("paasurl"));
 		this.setPaasdbpassword(props.getProperty("paasdbuser"));
 		this.setPaasdbuser(props.getProperty("paasdbpassword"));
-		this.setPaasportport(props.getProperty("paasdatabase"));
 		this.setDataloadinterval((props.getProperty("dataloadinterval")));
-		this.setEventsloadinterval((props.getProperty("eventloadinterval")));
+		this.setEventsloadinterval((props.getProperty("eventsloadinterval")));
+		this.setServerPath(props.getProperty("serverpath"));
+		this.setServerurl(props.getProperty("serverurl"));
+		this.setPropertyFile((props.getProperty("propertyfile")));
+		this.setJmxFilePath((props.getProperty("jmxfilepath")));
+		this.setAppmonitor((props.getProperty("appmonitor")));
 				
 	}
 	public String getDataloadinterval() {
@@ -54,21 +67,7 @@ public class EMSettings {
 		this.eventsloadinterval = eventsloadinterval;
 	}
 
-	public String getIaasdb() {
-		return iaasdb;
-	}
 
-	public void setIaasdb(String iaasdb) {
-		this.iaasdb = iaasdb;
-	}
-
-	public String getIaasportport() {
-		return iaasportport;
-	}
-
-	public void setIaasportport(String iaasportport) {
-		this.iaasportport = iaasportport;
-	}
 
 	public String getIaasdbuser() {
 		return iaasdbuser;
@@ -86,29 +85,7 @@ public class EMSettings {
 		this.iaasdbpassword = iaasdbpassword;
 	}
 
-	public String getIaasdatabase() {
-		return iaasdatabase;
-	}
 
-	public void setIaasdatabase(String iaasdatabase) {
-		this.iaasdatabase = iaasdatabase;
-	}
-
-	public String getPaasdb() {
-		return paasdb;
-	}
-
-	public void setPaasdb(String paasdb) {
-		this.paasdb = paasdb;
-	}
-
-	public String getPaasportport() {
-		return paasportport;
-	}
-
-	public void setPaasportport(String paasportport) {
-		this.paasportport = paasportport;
-	}
 
 	public String getPaasdbuser() {
 		return paasdbuser;
@@ -126,13 +103,97 @@ public class EMSettings {
 		this.paasdbpassword = paasdbpassword;
 	}
 
-	public String getPaasdatabase() {
-		return paasdatabase;
+
+	public String getIaasdriver() {
+		return iaasdriver;
 	}
 
-	public void setPaasdatabase(String paasdatabase) {
-		this.paasdatabase = paasdatabase;
+
+	public void setIaasdriver(String iaasdriver) {
+		this.iaasdriver = iaasdriver;
 	}
+
+
+	public String getIaasurl() {
+		return iaasurl;
+	}
+
+
+	public void setIaasurl(String iaasurl) {
+		this.iaasurl = iaasurl;
+	}
+
+
+	public String getPaasdriver() {
+		return paasdriver;
+	}
+
+
+	public void setPaasdriver(String paasdriver) {
+		this.paasdriver = paasdriver;
+	}
+
+
+	public String getPaasurl() {
+		return paasurl;
+	}
+
+
+	public void setPaasurl(String paasurl) {
+		this.paasurl = paasurl;
+	}
+
+
+	public String getServerPath() {
+		return serverPath;
+	}
+
+
+	public void setServerPath(String serverPath) {
+		this.serverPath = serverPath;
+	}
+
+
+	public String getServerurl() {
+		return serverurl;
+	}
+
+
+	public void setServerurl(String serverurl) {
+		this.serverurl = serverurl;
+	}
+
+
+	public String getPropertyFile() {
+		return propertyFile;
+	}
+
+
+	public void setPropertyFile(String propertyFile) {
+		this.propertyFile = propertyFile;
+	}
+
+
+	public String getJmxFilePath() {
+		return jmxFilePath;
+	}
+
+
+	public void setJmxFilePath(String jmxFilePath) {
+		this.jmxFilePath = jmxFilePath;
+	}
+
+
+	public String getAppmonitor() {
+		return appmonitor;
+	}
+
+
+	public void setAppmonitor(String appmonitor) {
+		this.appmonitor = appmonitor;
+	}
+
+	
 	
 	
 }

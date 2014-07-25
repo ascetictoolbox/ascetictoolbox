@@ -6,12 +6,12 @@ package eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces;
  *
  */
 
-public interface PaaSEnergyModellerExternal {
+public interface PaaSEnergyModeller {
 	
 	/**
 	 * @return true if component has been initialized correctly, false if not
 	 */
-	public boolean initialize();
+	//public void initialize();
 	
 	/**
 	 * @param providerid

@@ -1,6 +1,5 @@
 package eu.ascetic.asceticarchitecture.paas.component.loadinjector.interfaces;
 
-import eu.ascetic.asceticarchitecture.paas.component.loadinjector.datatype.HttpMethodType;
 
 public interface LoadInjectorInterface {
 	
@@ -10,11 +9,10 @@ public interface LoadInjectorInterface {
 
 	public void configureLoadInjector(String serverPath,String serverurl, String propertyFile,String jmxFilePath);
 	
-	public boolean runTestFromFile(String filename);
+	public boolean runTestFromFile(String filename, long timeout);
 	
 	public boolean runTestFromJunitClass(String classname);
-	
-	// TODO this data will be directly retrieveb by PaaS LI
-	public boolean runHttpRequestTest(String ip, String port, String path,HttpMethodType method);
+
+	public boolean runHttpRequestTest(String ip, String port, String path);
 	
 }

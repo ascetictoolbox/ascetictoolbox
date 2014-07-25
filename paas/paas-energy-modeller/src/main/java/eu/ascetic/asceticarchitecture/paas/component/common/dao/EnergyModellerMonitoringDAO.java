@@ -12,12 +12,20 @@ public interface EnergyModellerMonitoringDAO {
 		
 		public void setDataSource(DataSource dataSource);	
 	    
-		public void save(EnergyModellerMonitoring data);
+		public void createTraining(String applicationid,String deploymentid, String events);
 	    
-	    public void terminateModel(String applicationid,String deploymentid);
+	    public void createMonitoring(String applicationid,String deploymentid, String events);
+		
+	    public void terminateTraining(String applicationid,String deploymentid);
+	    
+	    public void terminateMonitoring(String applicationid,String deploymentid);
 	    
 	    public List<EnergyModellerMonitoring> getByDeploymentId(String applicationid,String deploymentid);
+	    	    
+	    public List<EnergyModellerMonitoring> getTrainingActive();
 	    
-	    public List<EnergyModellerMonitoring> getByStatus();
+	    public List<EnergyModellerMonitoring> getMonitoringActive();
+	    
+	    
 		   
 }

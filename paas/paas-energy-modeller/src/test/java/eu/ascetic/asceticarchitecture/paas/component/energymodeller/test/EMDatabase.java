@@ -10,12 +10,12 @@ import org.junit.Test;
 import eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.DataConsumptionDAOImpl;
 import eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.DataEventDAOImpl;
 import eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.EnergyModellerMonitoringDAOImpl;
-import eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.EnergyModellerTrainingDAOImpl;
+import eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.IaaSDataDAOImpl;
 import eu.ascetic.asceticarchitecture.paas.component.common.database.PaaSEMDatabaseManager;
 import eu.ascetic.asceticarchitecture.paas.component.common.model.DataConsumption;
 import eu.ascetic.asceticarchitecture.paas.component.common.model.DataEvent;
 import eu.ascetic.asceticarchitecture.paas.component.common.model.EnergyModellerMonitoring;
-import eu.ascetic.asceticarchitecture.paas.component.common.model.EnergyModellerTraining;
+import eu.ascetic.asceticarchitecture.paas.component.common.model.IaaSVMConsumption;
 
 public class EMDatabase {
 	private static PaaSEMDatabaseManager dbmanager;
@@ -82,43 +82,36 @@ public class EMDatabase {
 	@Test
 	public void testMonitoringData() {
 		EnergyModellerMonitoringDAOImpl energymonitoringDao = dbmanager.getMonitoringData();
-		EnergyModellerMonitoring emmonitoring = new EnergyModellerMonitoring();
-		emmonitoring.setApplicationid("test1");
-		emmonitoring.setDeploymentid("deployment1");
-		emmonitoring.setStatus(true);
-		Timestamp ts = Timestamp.valueOf("2014-09-27 03:23:34.234");
-		emmonitoring.setStarted(ts);
-		energymonitoringDao.save(emmonitoring);
+		
+		energymonitoringDao.createMonitoring("test1", "deployment1", "");
+		energymonitoringDao.createTraining("test1", "deployment1", "");
 		List<EnergyModellerMonitoring> result = energymonitoringDao.getByDeploymentId("test1", "deployment1");
-		Assert.assertEquals(result.size(),1);
-		energymonitoringDao.terminateModel("test1", "deployment1");
+		Assert.assertEquals(2,result.size());
+		result = energymonitoringDao.getMonitoringActive();
+		Assert.assertEquals(1,result.size());
+		result = energymonitoringDao.getTrainingActive();
+		Assert.assertEquals(1,result.size());
+		energymonitoringDao.terminateMonitoring("test1", "deployment1");
+		energymonitoringDao.terminateTraining("test1", "deployment1");
 		result = energymonitoringDao.getByDeploymentId("test1", "deployment1");
-		Assert.assertEquals(result.size(),1);
+		Assert.assertEquals(2,result.size());
+		result = energymonitoringDao.getMonitoringActive();
+		Assert.assertEquals(0,result.size());
+		result = energymonitoringDao.getTrainingActive();
+		Assert.assertEquals(0,result.size());
+
 		
 	}
 	
 	@Test
-	public void testTrainingData() {
-		EnergyModellerTrainingDAOImpl energytraining= dbmanager.getTrainingData();
-		EnergyModellerTraining emtraining = new EnergyModellerTraining();
-		emtraining.setApplicationid("test1");
-		emtraining.setDeploymentid("deployment1");
-		emtraining.setEvents("*");
-		Timestamp ts = Timestamp.valueOf("2014-09-27 03:23:34.234");
-		emtraining.setStarted(ts);
-		emtraining.setStatus(true);
-		energytraining.save(emtraining);
-		
-		List<EnergyModellerTraining> result = energytraining.getByDeploymentId("test1","deployment1");
-		Assert.assertEquals(result.size(),1);
-		result = energytraining.getByStatus();
-		Assert.assertEquals(result.size(),1);
-		
-		energytraining.terminateTraining("test1", "deployment1");
-		result = energytraining.getByStatus();
-		Assert.assertEquals(result.size(),0);
+	public void testIaaSData() {
+		IaaSDataDAOImpl iaasdao = dbmanager.getIaasdatadao();
+		Assert.assertEquals("0",iaasdao.getHostIdForVM("1"));
+		Assert.assertEquals("100",iaasdao.getHostTotalCpu("0"));
+		List<IaaSVMConsumption> list = iaasdao.getEnergyForVM("0", "1");
+		Assert.assertEquals(2,list.size());
 	}
 	
-	
+
 	
 }

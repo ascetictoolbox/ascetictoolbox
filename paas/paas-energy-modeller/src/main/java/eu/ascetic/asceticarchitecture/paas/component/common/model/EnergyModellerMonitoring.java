@@ -7,8 +7,10 @@ public class EnergyModellerMonitoring {
 	private String monitoringid;
 	private String applicationid;
 	private String deploymentid;
+	private String type;
 	private Timestamp started;
 	private Timestamp ended;
+	private String events;
 	private boolean status;
 	// TODO will store data for future reference as: energy estimation ecc..
 	public String getMonitoringid() {
@@ -47,7 +49,18 @@ public class EnergyModellerMonitoring {
 	public void setStatus(boolean status) {
 		this.status = status;
 	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
 	
-	
+	public String getEvents() {
+		return events;
+	}
+	public void setEvents(String events) {
+		this.events = events;
+	}
 	
 }

@@ -5,11 +5,13 @@ import java.util.List;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.DataConsumptionDAOImpl;
 import eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.DataEventDAOImpl;
 import eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.EnergyModellerMonitoringDAOImpl;
-import eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.EnergyModellerTrainingDAOImpl;
+import eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.IaaSDataDAOImpl;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EMSettings;
 
 public class PaaSEMDatabaseManager {
 
@@ -18,18 +20,32 @@ public class PaaSEMDatabaseManager {
 	private DataConsumptionDAOImpl dataconsumptiondao;
 	private DataEventDAOImpl dataeeventdao;
 	private EnergyModellerMonitoringDAOImpl monitoringdata;
-	private EnergyModellerTrainingDAOImpl trainingadata;
+	private IaaSDataDAOImpl iaasdatadao;
 	
-	public boolean setup(){
-		ApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");	
-		dataconsumptiondao = (DataConsumptionDAOImpl)context.getBean("dataConsumptionDAO");
-		dataeeventdao = (DataEventDAOImpl)context.getBean("dataEventDAO");
-		monitoringdata = (EnergyModellerMonitoringDAOImpl)context.getBean("emModelDAO");
-		trainingadata = (EnergyModellerTrainingDAOImpl)context.getBean("emTrainingDAO");
+
+	public boolean setup(EMSettings emSettings){
+		dataconsumptiondao = new DataConsumptionDAOImpl();
+		dataeeventdao = new DataEventDAOImpl();
+		monitoringdata = new EnergyModellerMonitoringDAOImpl();
+		iaasdatadao = new IaaSDataDAOImpl();
+		DriverManagerDataSource dataSource = new DriverManagerDataSource();
+   		dataSource.setDriverClassName(emSettings.getPaasdriver());
+   		dataSource.setUrl(emSettings.getPaasurl());
+		dataSource.setUsername(emSettings.getPaasdbuser());
+		dataSource.setPassword(emSettings.getPaasdbpassword());
+		DriverManagerDataSource iaasdataSource = new DriverManagerDataSource();
+		iaasdataSource.setDriverClassName(emSettings.getIaasdriver());
+		iaasdataSource.setUrl(emSettings.getIaasurl());
+		iaasdataSource.setUsername(emSettings.getIaasdbuser());
+		iaasdataSource.setPassword(emSettings.getIaasdbpassword());
+		dataconsumptiondao.setDataSource(dataSource);
+		dataeeventdao.setDataSource(dataSource);
+		monitoringdata.setDataSource(dataSource);
+		iaasdatadao.setDataSource(iaasdataSource);
 		dataconsumptiondao.initialize();
 		dataeeventdao.initialize();
 		monitoringdata.initialize();
-		trainingadata.initialize();
+		iaasdatadao.initialize();
 		return true;
 	}
 	
@@ -38,11 +54,12 @@ public class PaaSEMDatabaseManager {
 		dataconsumptiondao = (DataConsumptionDAOImpl)context.getBean("dataConsumptionDAO");
 		dataeeventdao = (DataEventDAOImpl)context.getBean("dataEventDAO");
 		monitoringdata = (EnergyModellerMonitoringDAOImpl)context.getBean("emModelDAO");
-		trainingadata = (EnergyModellerTrainingDAOImpl)context.getBean("emTrainingDAO");
+		iaasdatadao = (IaaSDataDAOImpl) context.getBean("dataSourceIaaSDAO");
+		
 		dataconsumptiondao.initialize();
 		dataeeventdao.initialize();
 		monitoringdata.initialize();
-		trainingadata.initialize();
+		iaasdatadao.initialize();
 		return true;
 	}
 	
@@ -58,8 +75,8 @@ public class PaaSEMDatabaseManager {
 		return monitoringdata;
 	}
 	
-	public EnergyModellerTrainingDAOImpl getTrainingData(){
-		return trainingadata;
+	public IaaSDataDAOImpl getIaasdatadao() {
+		return iaasdatadao;
 	}
 	
 	public void getMeasurementQuery(String applicationid,String deployment, List<String> vms, Timestamp start, Timestamp end){
