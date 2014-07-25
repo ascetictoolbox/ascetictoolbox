@@ -1032,6 +1032,10 @@ paas/paas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/paa
 paas/paas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/paaspricingmodeller/PaaSPricingModellerInterface.java -text
 paas/paas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/type/PaaSPrice.java -text
 paas/paas-pricing-modeller/src/test/java/eu/ascetic/asceticarchitecture/paas/paaspricingmodeller/PaaSPricingModellerTest.java -text
+paas/paas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/paas/paaspricingmodeller/PaaSPricingModeller.class -text
+paas/paas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/paas/paaspricingmodeller/PaaSPricingModellerInterface.class -text
+paas/paas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/paas/type/PaaSPrice.class -text
+paas/paas-pricing-modeller/target/test-classes/eu/ascetic/asceticarchitecture/paas/paaspricingmodeller/PaaSPricingModellerTest.class -text
 paas/provider-registry/pom.xml -text
 paas/provider-registry/src/main/java/eu/ascetic/providerregistry/Dictionary.java -text
 paas/provider-registry/src/main/java/eu/ascetic/providerregistry/model/Collection.java -text

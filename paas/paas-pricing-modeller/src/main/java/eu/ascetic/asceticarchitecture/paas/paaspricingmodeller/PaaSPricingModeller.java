@@ -39,7 +39,7 @@ import eu.ascetic.asceticarchitecture.paas.type.PaaSPrice;;
 
 public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 	public static Collection<PaaSPrice> prices = new ArrayList<>();
-	private double price =  0.24; //Default value in case we do not have enough information. It should be removed.
+	private final double price =  0.24; //Default value in case we do not have enough information. It should be removed.
 
     public PaaSPricingModeller() {
     }
@@ -56,10 +56,10 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
      */
     @Override
     public double getAppPriceEstimation(double totalEnergyUsed, int deploymentId, int appId, int iaasId, double iaasPrice) {
-        price=iaasPrice + iaasPrice*20/100;
+    	double tempPrice=iaasPrice + iaasPrice*20/100;
         PaaSPrice paasPrice = new PaaSPrice(totalEnergyUsed, deploymentId, appId, iaasId, iaasPrice);
         prices.add(paasPrice);
-    	return price; 
+    	return  tempPrice; 
     }
 
     
@@ -72,10 +72,10 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
      * @return the estimated price of the application running on this IaaS provider
      */
     public double getAppPriceEstimation(int deploymentId, int appId, int iaasId, double iaasPrice) {
-         price=iaasPrice + iaasPrice*20/100;
+    	double tempPrice=iaasPrice + iaasPrice*20/100;
          PaaSPrice paasPrice = new PaaSPrice(deploymentId, appId, iaasId, iaasPrice);
          prices.add(paasPrice);
-     	return price; 
+     	return  tempPrice; 
     }
 
     
@@ -92,11 +92,13 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
      */
    public double getAppPriceEstimation(double totalEnergyUsed, int deploymentId, int appId, int iaasId) {
     	double iaasPrice=findIaaSPrice(totalEnergyUsed, deploymentId, appId, iaasId);
-    	double price=0.0;
+    
     	if (iaasPrice!=0.0){
-    	        price=iaasPrice + iaasPrice*20/100;
-    	        return price; 
+    		double tempPrice=iaasPrice + iaasPrice*20/100;
+    		System.out.println("the price is:"+ tempPrice);
+    	        return tempPrice; 
     	}
+    	System.out.println("the price is:"+ price);
     	return price;
     }
     
