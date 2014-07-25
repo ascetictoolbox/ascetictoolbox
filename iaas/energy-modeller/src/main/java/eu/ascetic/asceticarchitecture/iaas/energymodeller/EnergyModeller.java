@@ -272,7 +272,7 @@ public class EnergyModeller {
         shareRule.setLoadFraction(loadFractionData);
         double totalEnergy = shareRule.getEnergyUsage(vm);
         answer.setTotalEnergyUsed(totalEnergy);
-        answer.setAvgPowerUsed(totalEnergy / TimeUnit.SECONDS.toHours(shareRule.getDuration()));
+        answer.setAvgPowerUsed(totalEnergy / ((double) TimeUnit.SECONDS.toHours(shareRule.getDuration())));
         answer.setDuration(new TimePeriod(shareRule.getStart(), shareRule.getEnd()));
         return answer;
     }

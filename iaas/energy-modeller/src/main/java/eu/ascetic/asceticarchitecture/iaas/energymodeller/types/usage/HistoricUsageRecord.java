@@ -81,7 +81,7 @@ public class HistoricUsageRecord extends EnergyUsageRecord {
             GregorianCalendar end = new GregorianCalendar();
             end.setTimeInMillis(TimeUnit.SECONDS.toMillis(last.getTime()));
             duration = new TimePeriod(start, end);
-            avgPowerUsed = totalEnergyUsed / TimeUnit.SECONDS.toHours(duration.getDuration());
+            avgPowerUsed = totalEnergyUsed / ((double) TimeUnit.SECONDS.toHours(duration.getDuration()));
         }
         if (data.size() == 1) {
             avgPowerUsed = data.get(0).getPower();
