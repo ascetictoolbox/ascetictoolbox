@@ -81,13 +81,6 @@
             <scope>provided</scope>
         </dependency>
 
-	 	<!--<dependency>
-			<groupId>eu.ascetic.paas.slam.slam-slamanager</groupId>
-			<artifactId>slam-core</artifactId>
-			<version>${__slam-version}</version>
-			<scope>provided</scope>
-	 	</dependency>  -->
-
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
@@ -119,7 +112,6 @@
 
 	</dependencies>
 
-	<!-- -->
 	<profiles>
 		<profile>
 			<id>activator</id>
