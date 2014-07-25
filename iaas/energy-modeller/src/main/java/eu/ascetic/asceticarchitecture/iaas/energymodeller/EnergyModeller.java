@@ -22,6 +22,10 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DefaultDatab
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.DefaultEnergyPredictor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.DummyEnergyPredictor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.EnergyPredictorInterface;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.DefaultEnergyShareRule;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.EnergyDivision;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.EnergyShareRule;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.LoadBasedDivision;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
@@ -32,6 +36,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsa
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HistoricUsageRecord;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostEnergyRecord;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostVmLoadFraction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.GregorianCalendar;
@@ -63,10 +68,9 @@ public class EnergyModeller {
     private EnergyPredictorInterface predictor = new DummyEnergyPredictor();
     private HostDataSource datasource = new ZabbixDataSourceAdaptor();
     private DatabaseConnector database = new DefaultDatabaseConnector();
-    private Calibrator calibrator = new Calibrator(datasource);    
+    private Calibrator calibrator = new Calibrator(datasource);
     private DataGatherer dataGatherer = new DataGatherer(datasource, new DefaultDatabaseConnector(), calibrator);
     private Thread databaseGatherThread;
-    private HashSet<VmDeployed> vmDeployedList = new HashSet<>();
 
     public EnergyModeller() {
         try {
@@ -101,11 +105,12 @@ public class EnergyModeller {
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The scheduling algorithm did not work", ex);
         }
     }
-    
+
     /**
      * This allows the energy modellers data source to be set
      *
-     * @param dataSource The name of the data source to use for the energy modeller
+     * @param dataSource The name of the data source to use for the energy
+     * modeller
      */
     public void setDataSource(String dataSource) {
         try {
@@ -124,7 +129,7 @@ public class EnergyModeller {
             }
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The data source did not work", ex);
         }
-    }    
+    }
 
     /**
      * This provides for a collection of VMs the amount of energy that has
@@ -219,35 +224,58 @@ public class EnergyModeller {
     /**
      * This returns the energy usage for a named virtual machine.
      *
-     * @param virtualMachine A reference to the VM
+     * @param vm A reference to the VM
      * @return
      *
      * Current Values: Watts, current and voltage
      *
      */
-    public CurrentUsageRecord getCurrentEnergyForVM(VmDeployed virtualMachine) {
-        //TODO Write current energy for VM method
-        CurrentUsageRecord answer = new CurrentUsageRecord(virtualMachine); 
+    public CurrentUsageRecord getCurrentEnergyForVM(VmDeployed vm) {
+        //TODO check the validity of this code! and its energy distribution!
+        EnergyShareRule shareRule = new DefaultEnergyShareRule();
+        Host host = vm.getAllocatedTo();
+        ArrayList<VmDeployed> otherVms = dataGatherer.getVMsOnHost(host);
+        ArrayList<VM> vms = new ArrayList<>();
+        vms.addAll(otherVms);
+        CurrentUsageRecord hostAnswer = datasource.getCurrentEnergyUsage(host);
+        EnergyDivision divider = shareRule.getEnergyUsage(host, vms);
+        CurrentUsageRecord answer = new CurrentUsageRecord(vm);
+        answer.setTime(hostAnswer.getTime());
+        answer.setPower(divider.getEnergyUsage(hostAnswer.getPower(), vm));
         return answer;
     }
 
     /**
      * This returns the energy usage for a named virtual machine.
      *
-     * @param virtualMachine A reference to the VM
+     * @param vm A reference to the VM
      * @param timePeriod The time period for which the query applies.
      * @return
      *
      * Historic Values: Avg Watts over time Avg Current (useful??) Avg Voltage
      * (useful??) kWh of energy used since instantiation
      */
-    public HistoricUsageRecord getEnergyRecordForVM(VmDeployed virtualMachine, TimePeriod timePeriod) {
-        //TODO Write get histroric energy records for VM
-        HistoricUsageRecord answer = new HistoricUsageRecord(virtualMachine);
-        answer.setDuration(timePeriod);
+    public HistoricUsageRecord getEnergyRecordForVM(VmDeployed vm, TimePeriod timePeriod) {
+        //TODO Write get historic energy records for VM
+        HistoricUsageRecord answer = new HistoricUsageRecord(vm);
+        Host host = vm.getAllocatedTo();
+        ArrayList<VmDeployed> otherVms = dataGatherer.getVMsOnHost(host);
+        ArrayList<VM> vms = new ArrayList<>();
+        vms.addAll(otherVms);
+        List<HostEnergyRecord> hostsData = database.getHostHistoryData(host, timePeriod);
+        List<HostVmLoadFraction> loadFractionData = (List<HostVmLoadFraction>) database.getHostVmHistoryLoadData(host, timePeriod);
+        //Fraction off energy used based upon this.
+        LoadBasedDivision shareRule = new LoadBasedDivision(host);
+        shareRule.addVM(vms);
+        shareRule.setEnergyUsage(hostsData);
+        shareRule.setLoadFraction(loadFractionData);
+        double totalEnergy = shareRule.getEnergyUsage(vm);
+        answer.setTotalEnergyUsed(totalEnergy);
+        answer.setAvgPowerUsed(totalEnergy / shareRule.getDuration());
+        answer.setDuration(new TimePeriod(shareRule.getStart(), shareRule.getEnd()));
         return answer;
     }
-
+    
     /**
      * This returns the energy usage for a named physical machine.
      *
@@ -263,7 +291,6 @@ public class EnergyModeller {
     public HistoricUsageRecord getEnergyRecordForHost(Host host, TimePeriod timePeriod) {
         List<HostEnergyRecord> data = database.getHostHistoryData(host, timePeriod);
         HistoricUsageRecord answer = new HistoricUsageRecord(host, data);
-        answer.setDuration(timePeriod);
         return answer;
     }
 
@@ -332,7 +359,7 @@ public class EnergyModeller {
      */
     public Host getHost(String hostname) {
         if (dataGatherer.getHostList().containsKey(hostname)) {
-            return dataGatherer.getHostList().get(hostname);
+            return dataGatherer.getHost(hostname);
         } else {
             dataGatherer.populateHostList();
             if (dataGatherer.getHostList().containsKey(hostname)) {
@@ -362,36 +389,42 @@ public class EnergyModeller {
      * @return
      */
     public VmDeployed getVM(String name) {
-        for (VmDeployed vm : vmDeployedList) {
-            if (vm.getName().equals(name)) {
-                return vm;
+        if (dataGatherer.getVmList().containsKey(name)) {
+            return dataGatherer.getVmList().get(name);
+        } else {
+            dataGatherer.populateHostList();
+            if (dataGatherer.getVmList().containsKey(name)) {
+                return dataGatherer.getVm(name);
             }
-        }
-        //TODO Remove this dummy code
-        VmDeployed answer = new VmDeployed(1, name, 1, 1024, 50, "127.0.0.1", "working", new GregorianCalendar(), null);
-        vmDeployedList.add(answer);
-        return answer;
-        //END OF DUMMY CODE
+            //TODO Remove this dummy code
+            VmDeployed answer = new VmDeployed(1, name, 1, 1024, 50, "127.0.0.1", "working", new GregorianCalendar(), null);
+            return answer;
+            //END OF DUMMY CODE
 //        return null;
+        }
     }
-    
+
     /**
-     * This calibrates all hosts that are known to the energy modeller, that 
+     * This calibrates all hosts that are known to the energy modeller, that
      * currently are uncalibrated i.e. energy values for the host is unknown.
      */
     private void calibrateAllHostsWithoutData() {
         for (Host host : dataGatherer.getHostList().values()) {
+            if (!host.isCalibrated()) {
+                host = database.getHostCalibrationData(host);
+            }
             if (!host.isCalibrated()) {
                 calibrateModelForHost(host);
                 database.setHostCalibrationData(host);
             }
         }
     }
-    
+
     /**
-     * This makes the energy model calibrate itself for several hosts. This 
-     * should only need to be done once per host, when it is first introduced to 
+     * This makes the energy model calibrate itself for several hosts. This
+     * should only need to be done once per host, when it is first introduced to
      * the system.
+     *
      * @param hosts The hosts to calibrate
      */
     public void calibrateModelForHost(Collection<Host> hosts) {
@@ -399,16 +432,17 @@ public class EnergyModeller {
             calibrateModelForHost(host);
         }
     }
-    
+
     /**
-     * This makes the energy model calibrate itself for several hosts. This 
-     * should only need to be done once per host, when it is first introduced to 
+     * This makes the energy model calibrate itself for several hosts. This
+     * should only need to be done once per host, when it is first introduced to
      * the system.
+     *
      * @param host The host to calibrate
      */
     public void calibrateModelForHost(Host host) {
         calibrator.calibrateHostEnergyData(host);
         database.setHostCalibrationData(host);
     }
-    
+
 }

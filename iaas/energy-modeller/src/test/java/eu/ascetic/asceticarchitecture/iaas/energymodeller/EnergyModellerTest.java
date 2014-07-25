@@ -78,15 +78,16 @@ public class EnergyModellerTest {
         assert (result != null);
         assert (result.size() == 1);
         for (HistoricUsageRecord usageRecord : result) {
+            System.out.println("Usage for: " + vm.getName());
+            System.out.println("Average Power: " + usageRecord.getAvgPowerUsed());
+            System.out.println("Total Energy used: " + usageRecord.getTotalEnergyUsed());
+            System.out.println("Time in Seconds (Duration): " + usageRecord.getDuration().getDuration());
             assert (usageRecord.getEnergyUser().contains(vm));
             assert (usageRecord.getEnergyUser().size() == 1);
             assert (usageRecord.getAvgPowerUsed() > 0);
             assert (usageRecord.getAvgPowerUsed() < 500);
             assert (usageRecord.getTotalEnergyUsed() > 0);
             assert (usageRecord.getTotalEnergyUsed() > usageRecord.getAvgPowerUsed());
-            System.out.println("Usage for: " + vm.getName());
-            System.out.println("Average Power: " + usageRecord.getAvgPowerUsed());
-            System.out.println("Total Energy used: " + usageRecord.getTotalEnergyUsed());
         }
     }
 
@@ -124,15 +125,16 @@ public class EnergyModellerTest {
         assert (result != null);
         assert (result.size() == 1);
         for (HistoricUsageRecord usageRecord : result) {
+            System.out.println("Usage for: " + host.getHostName());
+            System.out.println("Average Power: " + usageRecord.getAvgPowerUsed());
+            System.out.println("Total Energy used: " + usageRecord.getTotalEnergyUsed());
+            System.out.println("Time in Seconds (Duration): " + usageRecord.getDuration().getDuration());            
             assert (usageRecord.getEnergyUser().contains(host));
             assert (usageRecord.getEnergyUser().size() == 1);
             assert (usageRecord.getAvgPowerUsed() > 0);
             assert (usageRecord.getAvgPowerUsed() < 500);
             assert (usageRecord.getTotalEnergyUsed() > 0);
             assert (usageRecord.getTotalEnergyUsed() > usageRecord.getAvgPowerUsed());
-            System.out.println("Usage for: " + host.getHostName());
-            System.out.println("Average Power: " + usageRecord.getAvgPowerUsed());
-            System.out.println("Total Energy used: " + usageRecord.getTotalEnergyUsed());
         }
     }
 
@@ -191,6 +193,10 @@ public class EnergyModellerTest {
         TimePeriod timePeriod = null;
         VmDeployed vm = instance.getVM(VM_NAME);
         HistoricUsageRecord result = instance.getEnergyRecordForVM(vm, timePeriod);
+        System.out.println("Usage for: " + vm.getName());
+        System.out.println("Average Power: " + result.getAvgPowerUsed());
+        System.out.println("Total Energy used: " + result.getTotalEnergyUsed());
+        System.out.println("Time in Seconds (Duration): " + result.getDuration().getDuration());        
         assert (result != null);
         assert (result.getEnergyUser().contains(vm));
         assert (result.getEnergyUser().size() == 1);
@@ -198,9 +204,6 @@ public class EnergyModellerTest {
         assert (result.getAvgPowerUsed() < 500);
         assert (result.getTotalEnergyUsed() > 0);
         assert (result.getTotalEnergyUsed() > result.getAvgPowerUsed());
-        System.out.println("Usage for: " + vm.getName());
-        System.out.println("Average Power: " + result.getAvgPowerUsed());
-        System.out.println("Total Energy used: " + result.getTotalEnergyUsed());
     }
 
     /**
@@ -212,6 +215,10 @@ public class EnergyModellerTest {
         TimePeriod timePeriod = null;
         Host host = instance.getHost(HOST_NAME);
         HistoricUsageRecord result = instance.getEnergyRecordForHost(host, timePeriod);
+        System.out.println("Usage for: " + host.getHostName());
+        System.out.println("Average Power: " + result.getAvgPowerUsed());
+        System.out.println("Total Energy used: " + result.getTotalEnergyUsed());
+        System.out.println("Time in Seconds (Duration): " + result.getDuration().getDuration());        
         assert (result != null);
         assert (result.getEnergyUser().contains(host));
         assert (result.getEnergyUser().size() == 1);
@@ -219,9 +226,6 @@ public class EnergyModellerTest {
         assert (result.getAvgPowerUsed() < 500);
         assert (result.getTotalEnergyUsed() > 0);
         assert (result.getTotalEnergyUsed() > result.getAvgPowerUsed());
-        System.out.println("Usage for: " + host.getHostName());
-        System.out.println("Average Power: " + result.getAvgPowerUsed());
-        System.out.println("Total Energy used: " + result.getTotalEnergyUsed());
     }
 
     /**
@@ -256,16 +260,16 @@ public class EnergyModellerTest {
         vMsOnHost.add(instance.getVM(VM_NAME));
         EnergyUsagePrediction result = instance.getPredictedEnergyForVM(vmImage, vMsOnHost, host);
         assert (result != null);
-        assert (result.getEnergyUser().contains(host));
+        assert (result.getEnergyUser().contains(vmImage));
         assert (result.getEnergyUser().size() == 1);
-        assert (result.getAvgPowerUsed() > 0);
-        assert (result.getAvgPowerUsed() < 500);
-        assert (result.getTotalEnergyUsed() > 0);
-        assert (result.getTotalEnergyUsed() > result.getAvgPowerUsed());
         System.out.println("Predicted Usage On Host: " + host.getHostName());
         System.out.println("Predicted Usage For VM: " + vmImage);
         System.out.println("Average Power: " + result.getAvgPowerUsed());
         System.out.println("Total Energy used: " + result.getTotalEnergyUsed());
+        assert (result.getAvgPowerUsed() > 0);
+        assert (result.getAvgPowerUsed() < 500);
+        assert (result.getTotalEnergyUsed() > 0);
+        assert (result.getTotalEnergyUsed() > result.getAvgPowerUsed());
     }
 
     /**
@@ -280,14 +284,14 @@ public class EnergyModellerTest {
         EnergyUsagePrediction result = instance.getHostPredictedEnergy(host, virtualMachines);
         assert (result != null);
         assert (result.getEnergyUser().contains(host));
+        System.out.println("Predicted Usage On Host: " + host.getHostName());
+        System.out.println("Average Power: " + result.getAvgPowerUsed());
+        System.out.println("Total Energy used: " + result.getTotalEnergyUsed());
         assert (result.getEnergyUser().size() == 1);
         assert (result.getAvgPowerUsed() > 0);
         assert (result.getAvgPowerUsed() < 500);
         assert (result.getTotalEnergyUsed() > 0);
-        assert (result.getTotalEnergyUsed() > result.getAvgPowerUsed());
-        System.out.println("Predicted Usage On Host: " + host.getHostName());
-        System.out.println("Average Power: " + result.getAvgPowerUsed());
-        System.out.println("Total Energy used: " + result.getTotalEnergyUsed());
+        assert (result.getTotalEnergyUsed() > result.getAvgPowerUsed());       
     }
 
     /**

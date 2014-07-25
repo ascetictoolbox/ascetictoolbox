@@ -204,7 +204,7 @@ public class VmDeployed extends VM {
     public boolean equals(Object obj) {
         if (obj instanceof VmDeployed) {
             VmDeployed vm = (VmDeployed) obj;
-            return super.equals(obj) && name.equals(vm.getName()) && id == vm.getId();
+            return name.equals(vm.getName()) && id == vm.getId();
         }
         return false;
 
