@@ -29,7 +29,11 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- *
+ * This creates a load based division mechanism for dividing host energy among VMs.
+ * It is intended to be used with historic load data.
+ * 
+ * Energy is fractioned out taking into account the amount of load has been
+ * placed on each machine. This is done by ratio.
  * @author Richard
  */
 public class LoadBasedDivision {
@@ -39,6 +43,10 @@ public class LoadBasedDivision {
     private List<HostEnergyRecord> energyUsage;
     private List<HostVmLoadFraction> loadFraction;
 
+    /**
+     * This creates a load based division mechanism for the specified host.
+     * @param host The host to divide energy for, among its VMs.
+     */
     public LoadBasedDivision(Host host) {
         this.host = host;
     }
@@ -156,10 +164,18 @@ public class LoadBasedDivision {
         return vmEnergy;
     }
 
+    /**
+     * This lists VMs on the host machine.
+     * @return  This VMs on the host machine.
+     */
     public Collection<VM> getVMList() {
         return vms;
     }
 
+    /**
+     * The amount of VMs on the host machine.
+     * @return This count of how many VMs are on the host machine.
+     */
     public int getVMCount() {
         return vms.size();
     }

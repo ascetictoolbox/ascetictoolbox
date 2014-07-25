@@ -46,6 +46,10 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
 
     private Connection connection;
 
+    /**
+     * This creates a new database connector for use. It establishes a database
+     * connection immediately ready for use.
+     */
     public DefaultDatabaseConnector() {
         try {
             connection = getConnection();

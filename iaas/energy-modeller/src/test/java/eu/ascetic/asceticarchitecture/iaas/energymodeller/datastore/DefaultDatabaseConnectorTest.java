@@ -54,19 +54,6 @@ public class DefaultDatabaseConnectorTest {
     }
 
     /**
-     * Test of getVMHistoryData method, of class DefaultDatabaseConnector.
-     */
-    @Test
-    public void testGetVMHistoryData() {
-        System.out.println("getVMHistoryData");
-        VmDeployed VM = null;
-        DefaultDatabaseConnector instance = new DefaultDatabaseConnector();
-        
-        //TODO call and write test later
-        //HistoricUsageRecord result = instance.getVMHistoryData(VM);
-    }
-
-    /**
      * Test of getHostCalibrationData method, of class DefaultDatabaseConnector.
      */
     @Test
@@ -108,8 +95,8 @@ public class DefaultDatabaseConnectorTest {
         System.out.println("setHostCalibrationData");
         Host host = CHOSEN_HOST;
         DefaultDatabaseConnector instance = new DefaultDatabaseConnector();
-        //TODO call and write test later
-        //instance.setHostCalibrationData(host);
+        instance.setHostCalibrationData(host);
+        assert(!host.getCalibrationData().isEmpty());
     }
 
     /**
