@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 public class Configuration {
 	private static Logger logger = Logger.getLogger(Configuration.class);
 	public static String vmManagerServiceUrl = "http://10.4.0.15:34372/vmmanager";
+	public static String checkDeploymentsStatus = "1 * * * * ?";
 	private static final String applicationManagerConfigurationFile = "/etc/ascetic/paas/application-manager/application-manager.properties";
 	
 	static {
@@ -23,6 +24,7 @@ public class Configuration {
         	
         	org.apache.commons.configuration.Configuration config = new PropertiesConfiguration(propertiesFile);
         	vmManagerServiceUrl = config.getString("vm-manager.url");
+        	checkDeploymentsStatus = config.getString("check.deployments.status");
         }
         catch (Exception e) {
             logger.info("Error loading Application Manager configuration file");

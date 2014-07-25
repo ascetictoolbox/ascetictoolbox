@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import eu.ascetic.paas.applicationmanager.model.Application;
+import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
 import eu.ascetic.paas.applicationmanager.rest.util.XMLBuilder;
 
@@ -74,15 +75,26 @@ public class ApplicationRest extends AbstractRest {
 		// Now we check if the application exits in the database
 		Application application = applicationDAO.getByName(name);
 		
+		boolean alreadyInDB = true;
+	
 		if(application == null) {
 			application = new Application();
 			application.setName(name);
-			
+			alreadyInDB = false;
+		} 
+
+		// We add a new deployment to the application
+		Deployment deployment = createDeploymentToApplication(payload);
+		application.addDeployment(deployment);
+
+		if(alreadyInDB) {
+			applicationDAO.update(application);
+		} else {
 			applicationDAO.save(application);
-			
-			// So we know the id the DB has given to it
-			application = applicationDAO.getByName(name);
 		}
+
+		// So we know the id the DB has given to it
+		application = applicationDAO.getByName(name);
 		
 		return buildResponse(Status.CREATED, XMLBuilder.getApplicationXML(application));
 	}
