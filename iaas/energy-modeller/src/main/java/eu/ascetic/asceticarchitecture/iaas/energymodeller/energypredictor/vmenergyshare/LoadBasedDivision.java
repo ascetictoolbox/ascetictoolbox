@@ -34,7 +34,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class LoadBasedDivision {
 
-    private Host host;    
+    private Host host;
     private final HashSet<VM> vms = new HashSet<>();
     private List<HostEnergyRecord> energyUsage;
     private List<HostVmLoadFraction> loadFraction;
@@ -42,9 +42,10 @@ public class LoadBasedDivision {
     public LoadBasedDivision(Host host) {
         this.host = host;
     }
-    
+
     /**
      * This returns the host who's energy is to be fractioned out.
+     *
      * @return the host The host in which the VMs reside/are planned to reside.
      */
     public Host getHost() {
@@ -53,12 +54,13 @@ public class LoadBasedDivision {
 
     /**
      * This sets the host who's energy is to be fractioned out.
+     *
      * @param host The host who's energy is to be divided among the VMs
      */
     public void setHost(Host host) {
         this.host = host;
-    }    
-    
+    }
+
     /**
      * This adds a VM to the energy division record.
      *
@@ -129,44 +131,29 @@ public class LoadBasedDivision {
 
     /**
      * This returns the energy usage for a named VM
+     *
      * @param vm The VM to get energy usage for.
      * @return The energy used by this VM.
      */
     public double getEnergyUsage(VM vm) {
         VmDeployed deployed = (VmDeployed) vm;
-
+        int recordCount = (energyUsage.size() <= loadFraction.size() ? energyUsage.size() : loadFraction.size());
+        
         /**
-         * Calculate the idle power used for the vm been idle. This is
-         * fractioned out evenly among VMs
+         * Calculate the energy used by a VM taking into account the work it has performed.
          */
-        double idlePower = getHost().getIdlePowerConsumption();
-        double vmIdlePower = idlePower / vms.size();
-
-        /**
-         * Calculate from this the energy used by a VM due to keeping the host
-         * switched on. This is fractioned out evenly among VMs
-         */
-        HostEnergyRecord first = energyUsage.get(0);
-        HostEnergyRecord last = energyUsage.get(energyUsage.size() - 1);
-        long duration = last.getTime() - first.getTime();
-        double vmIdleEnergy = vmIdlePower * duration;
-        double idleEnergy = idlePower * duration;
-        /**
-         * Calculate the energy used by a VM due to it been actively doing work.
-         */
-        double vmActiveEnergyFraction = 0;
+        double vmEnergy = 0;
         //Access two records at once hence ensure size() -2
-        for (int i = 0; i <= energyUsage.size() - 2; i++) {
+        for (int i = 0; i <= recordCount - 2; i++) {
             HostEnergyRecord energy1 = energyUsage.get(i);
             HostEnergyRecord energy2 = energyUsage.get(i + 1);
             HostVmLoadFraction load1 = loadFraction.get(i);
             HostVmLoadFraction load2 = loadFraction.get(i + 1);
             double deltaEnergy = energy2.getEnergy() - energy1.getEnergy();
-            double avgLoad = load1.getFraction(deployed) + load2.getFraction(deployed);
-            vmActiveEnergyFraction = vmActiveEnergyFraction + (deltaEnergy * avgLoad);
+            double avgLoad = (load1.getFraction(deployed) + load2.getFraction(deployed)) / 2;
+            vmEnergy = vmEnergy + (deltaEnergy * avgLoad);
         }
-        vmActiveEnergyFraction = vmActiveEnergyFraction - idleEnergy;
-        return vmIdleEnergy + vmActiveEnergyFraction;
+        return vmEnergy;
     }
 
     public Collection<VM> getVMList() {
