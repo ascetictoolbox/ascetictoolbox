@@ -276,7 +276,7 @@ public class VirtualHardwareSection extends
         Item[] itemArray = getItemArray();
         for (int i = 0; i < itemArray.length; i++) {
             if (ResourceType.PROCESSOR.equals(itemArray[i].getResourceType())
-                    && itemArray[i].getResourceSubType().equals("cpuspeed")) {
+                    && "cpuspeed".equals(itemArray[i].getResourceSubType())) {
                 return itemArray[i].getReservation().intValue();
             }
         }

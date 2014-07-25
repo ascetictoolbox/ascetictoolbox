@@ -16,7 +16,7 @@
 package eu.ascetic.vmic.api.core;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
@@ -81,7 +81,7 @@ public class FileUploader implements Runnable {
         String hostAddress = vmicApi.getGlobalState().getConfiguration()
                 .getHostAddress();
         // Get path to rsync binary
-        String rsyncPath = vmicApi.getGlobalState().getConfiguration()
+        final String rsyncPath = vmicApi.getGlobalState().getConfiguration()
                 .getRsyncPath();
         // Get path to SSH binary
         String sshPath = vmicApi.getGlobalState().getConfiguration()
@@ -93,47 +93,91 @@ public class FileUploader implements Runnable {
         String sshUser = vmicApi.getGlobalState().getConfiguration()
                 .getSshUser();
         // Get file URI
-        String fileUri = file.getAbsolutePath();
+        String fileName = file.getName();
         // Get file's parent directory
         String filePath = file.getParent();
 
-        ArrayList<String> arguments = new ArrayList<String>();
+        Vector<String> arguments = new Vector<String>();
 
         // The rsync command to perform
-        arguments.add("-avzP");
+        arguments.add("-avzPh");
+        // Add command to create the remote path if it doesn't exist
+        arguments.add("--rsync-path");
+        arguments.add("\"mkdir -p " + remotePath + " && rsync\"");
         // Enable SSH
         arguments.add("-e");
         // SSH binary and key path
-        arguments.add(sshPath + " -i " + sshKeyPath);
+        arguments.add("\"" + sshPath + " -i " + sshKeyPath + "\"");
         // Files to add
-        arguments.add(fileUri);
+        arguments.add(fileName);
         // Remote location to put the files
         arguments.add(sshUser + "@" + hostAddress + ":" + remotePath);
 
         // Construct and invoke system call to rsync
-        SystemCall systemCall = new SystemCall(filePath);
+        SystemCall systemCall = new SystemCall(filePath, rsyncPath, arguments);
+        Thread thread = new Thread(systemCall);
 
         try {
-            // Execute the system call
-            systemCall.runCommand(rsyncPath, arguments);
+            // Execute the system call in a thread
+            thread.start();
 
             vmicApi.getGlobalState().setProgressPhase(progressDataId,
                     ProgressDataFile.UPLOADING_FILE_PHASE_ID);
 
-            while (systemCall.getReturnValue() == -1) {
+            while (systemCall.getReturnValue() == -1 && !systemCall.isError()) {
                 try {
-                    Double currentPercentageCompletion = 0.0;
-
-                    // TODO: Parse the system call output and set file upload
+                    // Parse the system call output and set file upload
                     // progress accordingly
-                    systemCall.getOutput();
+                    Vector<String> output = (Vector<String>) systemCall
+                            .getOutput();
 
-                    vmicApi.getGlobalState().setProgressPercentage(
-                            progressDataId, currentPercentageCompletion);
+                    if (output.size() == 0) {
+                        Thread.sleep(THREAD_SLEEP_TIME);
+                        continue;
+                    }
+
+                    String transfered = null;
+                    String percentage = null;
+                    String speed = null;
+                    String eta = null;
+
+                    // Work backwards until we find '%'
+                    for (int i = output.size() - 1; i >= 0; i--) {
+                        String line = output.get(i);
+                        line = line.trim();
+                        if (line.indexOf('%') != -1) {
+                            String[] lineSplit = line.split(" +");
+
+                            try {
+                                transfered = lineSplit[0];
+                                percentage = lineSplit[1];
+                                percentage = percentage.substring(0,
+                                        percentage.length() - 1);
+                                speed = lineSplit[2];
+                                eta = lineSplit[3];
+                            } catch (IndexOutOfBoundsException e) {
+                                throw new SystemCallException(
+                                        "Failed to parse rsync output!", e);
+                            }
+                            break;
+                        }
+                    }
+
+                    // Set the progress
+                    if (percentage != null) {
+                        vmicApi.getGlobalState().setProgressPercentage(
+                                progressDataId, Double.parseDouble(percentage));
+                        vmicApi.getGlobalState().setFileProgressDetails(
+                                progressDataId, transfered, speed, eta);
+                    }
                     Thread.sleep(THREAD_SLEEP_TIME);
                 } catch (InterruptedException e) {
                     LOGGER.error(e.getMessage(), e);
                 }
+            }
+
+            if (systemCall.isError()) {
+                throw systemCall.getSystemCallException();
             }
 
         } catch (SystemCallException e) {
@@ -165,7 +209,7 @@ public class FileUploader implements Runnable {
             return;
         }
 
-        // Image generation complete...
+        // Image upload complete...
         vmicApi.getGlobalState().setProgressPhase(progressDataId,
                 ProgressDataFile.FINALISE_PHASE_ID);
         vmicApi.getGlobalState().setProgressPercentage(progressDataId,

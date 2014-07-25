@@ -64,6 +64,22 @@ public class ProgressDataFile extends AbstractProgressData {
     private String remotePath = null;
 
     /**
+     * The string representation of the current amount of file data transfered.
+     */
+    private String transfered = null;
+
+    /**
+     * The string representation of the current speed of the file transfer.
+     */
+    private String speed = null;
+
+    /**
+     * The string representation of the expected estimated time of arrival for
+     * the file transfer to be complete.
+     */
+    private String eta = null;
+
+    /**
      * Constructor with default progress values.
      */
     public ProgressDataFile() {
@@ -87,5 +103,64 @@ public class ProgressDataFile extends AbstractProgressData {
      */
     public void setRemotePath(String remotePath) {
         this.remotePath = remotePath;
+    }
+
+    /**
+     * Gets the string representation of the amount of file data that has
+     * currently be uploaded.
+     * 
+     * @return the transfered data
+     */
+    public String getTransfered() {
+        return transfered;
+    }
+
+    /**
+     * Sets the string representation of the amount of file data that has
+     * currently be uploaded.
+     * 
+     * @param transfered
+     *            the string representation of the transfered data to set
+     */
+    public void setTransfered(String transfered) {
+        this.transfered = transfered;
+    }
+
+    /**
+     * Gets the string representation of the speed of the upload.
+     * 
+     * @return the speed
+     */
+    public String getSpeed() {
+        return speed;
+    }
+
+    /**
+     * Sets the string representation of the speed of the upload.
+     * 
+     * @param speed
+     *            the speed to set
+     */
+    public void setSpeed(String speed) {
+        this.speed = speed;
+    }
+
+    /**
+     * Gets the string representation of estimated time of arrival of the file.
+     * 
+     * @return the ETA of the file
+     */
+    public String getEta() {
+        return eta;
+    }
+
+    /**
+     * Sets the string representation of estimated time of arrival of the file.
+     * 
+     * @param eta
+     *            the ETA of the file to set
+     */
+    public void setEta(String eta) {
+        this.eta = eta;
     }
 }

@@ -20,39 +20,94 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
 /**
  * Wrapper class for invoking OS level system calls for the purpose of calling
- * external scripts and programs.
+ * external scripts and programs. Can be called as a thread via run
  * 
  * @author Django Armstrong (ULeeds)
  * @version 0.0.3
  */
-public class SystemCall {
+public class SystemCall implements Runnable {
 
     private static final int OUTPUT_ARRAY_INITIAL_CAPACITY = 50;
     private static final int THREAD_SLEEP_TIME = 250;
     public static final int RETURN_VALUE_ON_ERROR = -2;
     private String commandName;
+    private List<String> arguments;
     private List<String> output;
     private int returnValue;
     private String workingDirectory;
+    private boolean error = false;
+    private SystemCallException systemCallException = null;
 
     protected static final Logger LOGGER = Logger.getLogger(SystemCall.class);
-    
+    private Process process;
+
     /**
-     * Initialises an instance of the SystemCall object.
-     *  
-     * @param workingDirectory The directory to work within
+     * Initialises an instance of the SystemCall object (Non-threaded).
+     * 
+     * @param workingDirectory
+     *            The directory to work within
      */
     public SystemCall(String workingDirectory) {
         this.workingDirectory = workingDirectory;
-        output = new ArrayList<String>(OUTPUT_ARRAY_INITIAL_CAPACITY);
+        output = new Vector<String>(OUTPUT_ARRAY_INITIAL_CAPACITY);
         returnValue = -1;
+        
+        // Clean up spawned process on shutdown
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                process.destroy();
+            }
+           });
+    }
+
+    /**
+     * Initialises an instance of the SystemCall object in threaded mode.
+     * 
+     * @param workingDirectory
+     *            The directory to work within
+     * @param commandName
+     *            The command to run in a thread
+     * @param arguments
+     *            The arguments of the command to run
+     */
+    public SystemCall(String workingDirectory, String commandName,
+            List<String> arguments) {
+        this.workingDirectory = workingDirectory;
+        output = new Vector<String>(OUTPUT_ARRAY_INITIAL_CAPACITY);
+        returnValue = -1;
+        this.commandName = commandName;
+        this.arguments = arguments;
+        
+        // Clean up spawned process on shutdown
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                process.destroy();
+            }
+           });
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Runnable#run()
+     */
+    @Override
+    public void run() {
+        try {
+            runCommand(commandName, arguments);
+        } catch (SystemCallException e) {
+            error = true;
+            systemCallException = e;
+        }
     }
 
     /**
@@ -70,7 +125,10 @@ public class SystemCall {
     public void runCommand(String commandName, List<String> arguments)
             throws SystemCallException {
 
-        ArrayList<String> command = new ArrayList<String>();
+        this.commandName = commandName;
+        this.arguments = arguments;
+
+        Vector<String> command = new Vector<String>();
         String commandString = commandName;
 
         command.add(commandName);
@@ -101,9 +159,9 @@ public class SystemCall {
         pb.directory(dir);
         pb.redirectErrorStream(true);
 
-        Process p = null;
+        process = null;
         try {
-            p = pb.start();
+            process = pb.start();
         } catch (IOException e) {
             LOGGER.error("Error!", e);
             try {
@@ -116,7 +174,7 @@ public class SystemCall {
         }
 
         String line = null;
-        InputStream stdout = p.getInputStream();
+        InputStream stdout = process.getInputStream();
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(stdout));
 
@@ -132,18 +190,19 @@ public class SystemCall {
         }
 
         try {
-            p.waitFor();
+            process.waitFor();
         } catch (InterruptedException e) {
             LOGGER.error("Error!", e);
             returnValue = RETURN_VALUE_ON_ERROR;
             throw new SystemCallException(
                     "Interrupted while waiting for process to terminate!", e);
         }
-
-        returnValue = p.exitValue();
+        returnValue = process.exitValue();
     }
 
     /**
+     * Gets the command name.
+     * 
      * @return the commandName
      */
     public String getCommandName() {
@@ -151,6 +210,8 @@ public class SystemCall {
     }
 
     /**
+     * Gets the command's output.
+     * 
      * @return the output
      */
     public List<String> getOutput() {
@@ -158,9 +219,29 @@ public class SystemCall {
     }
 
     /**
+     * Gets the command return value.
+     * 
      * @return the returnValue
      */
     public int getReturnValue() {
         return returnValue;
+    }
+
+    /**
+     * Gets the error state of the command.
+     * 
+     * @return the error
+     */
+    public boolean isError() {
+        return error;
+    }
+
+    /**
+     * Gets the exception that caused the error state.
+     * 
+     * @return the systemCallException
+     */
+    public SystemCallException getSystemCallException() {
+        return systemCallException;
     }
 }

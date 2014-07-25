@@ -99,19 +99,20 @@ public class GlobalConfiguration {
 
         if (defaultValues) {
             // FIXME: this should detect if we are running on Jenkins and change
-            // the default properties accordingly.
+            // these default properties accordingly.
 
             // Create a temporary directory for testing
-            String systemTempDir = System.getProperty("java.io.tmpdir");
-            String vmicTemp = systemTempDir + File.separator
+            // String systemTempDir = System.getProperty("java.io.tmpdir");
+            String systemTempDir = "/tmp";
+            String vmicTemp = systemTempDir + "/"
                     + "VirtualMachineImageConstructor";
 
             // Set the hostAddress IP for testing
-            properties.setProperty(HOST_ADDRESS_PROPERTY_KEY, "localhost");
+            properties.setProperty(HOST_ADDRESS_PROPERTY_KEY, "cslin128");
 
             // Set repositoryPath URI for testing
-            properties.setProperty(REPOSITORY_PROPERTY_KEY, vmicTemp
-                    + File.separator + "repository");
+            properties.setProperty(REPOSITORY_PROPERTY_KEY, vmicTemp + "/"
+                    + "repository");
             new File(properties.getProperty(REPOSITORY_PROPERTY_KEY)).mkdirs();
 
             // Set rsyncPath URI for testing to local rsync binary
@@ -128,7 +129,7 @@ public class GlobalConfiguration {
                     "C:\\Users\\django\\cygwin\\home\\django\\.ssh\\id_rsa");
 
             // Set the sshUser name for testing
-            properties.setProperty(SSH_USER_PROPERTY_KEY, "root");
+            properties.setProperty(SSH_USER_PROPERTY_KEY, "scsdja");
 
         } else {
             try {
@@ -149,8 +150,17 @@ public class GlobalConfiguration {
         this.repositoryPath = properties.getProperty(REPOSITORY_PROPERTY_KEY);
         LOGGER.info("Using repositoryPath dir: '" + repositoryPath + "'");
 
-        this.repositoryPath = properties.getProperty(RSYNC_PROPERTY_KEY);
+        this.rsyncPath = properties.getProperty(RSYNC_PROPERTY_KEY);
         LOGGER.info("Using rsyncPath: '" + rsyncPath + "'");
+        
+        this.sshPath = properties.getProperty(SSH_PROPERTY_KEY);
+        LOGGER.info("Using sshPath: '" + sshPath + "'");
+        
+        this.sshKeyPath = properties.getProperty(SSH_KEY_PROPERTY_KEY);
+        LOGGER.info("Using sshKeyPath: '" + sshKeyPath + "'");
+        
+        this.sshUser = properties.getProperty(SSH_USER_PROPERTY_KEY);
+        LOGGER.info("Using sshUser: '" + sshUser + "'");
     }
 
     /**
@@ -229,7 +239,8 @@ public class GlobalConfiguration {
     /**
      * Sets the path to the SSH binary.
      * 
-     * @param sshPath the sshPath to set
+     * @param sshPath
+     *            the sshPath to set
      */
     public void setSshPath(String sshPath) {
         this.sshPath = sshPath;
@@ -247,7 +258,8 @@ public class GlobalConfiguration {
     /**
      * Sets the SSH key path.
      * 
-     * @param sshKeyPath the sshKeyPath to set
+     * @param sshKeyPath
+     *            the sshKeyPath to set
      */
     public void setSshKeyPath(String sshKeyPath) {
         this.sshKeyPath = sshKeyPath;
@@ -265,7 +277,8 @@ public class GlobalConfiguration {
     /**
      * Sets the SSH user name.
      * 
-     * @param sshUser the sshUser to set
+     * @param sshUser
+     *            the sshUser to set
      */
     public void setSshUser(String sshUser) {
         this.sshUser = sshUser;

@@ -18,6 +18,8 @@ package eu.ascetic.vmc.api.core;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Vector;
+
 import org.apache.log4j.Logger;
 
 import eu.ascetic.utils.ovf.api.OvfDefinition;
@@ -205,7 +207,7 @@ public class VirtualMachineContextualizer implements Runnable {
 
 						while (true) {
 
-							ArrayList<String> output = (ArrayList<String>) imageConversion
+							Vector<String> output = (Vector<String>) imageConversion
 									.getSystemCall().getOutput();
 							if (output.isEmpty()
 									|| ! output.get(0).contains(")")) {

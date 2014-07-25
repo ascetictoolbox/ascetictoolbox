@@ -123,6 +123,23 @@ public class GlobalState {
     }
 
     /**
+     * Sets additional progress details for an uploading file via
+     * an applications associated {@link ProgressDataFile} object.
+     * 
+     * @param remotePath
+     *            The remote path to return
+     */
+    public void setFileProgressDetails(String id, String transfered, String speed, String eta) {
+        ((ProgressDataFile) progressDataHashMap.get(id))
+                .setTransfered(transfered);
+        ((ProgressDataFile) progressDataHashMap.get(id))
+        .setSpeed(speed);
+        ((ProgressDataFile) progressDataHashMap.get(id))
+        .setEta(eta);
+    }
+    
+    
+    /**
      * Set the ovfDefinition to be returned through the API via an applications
      * associated {@link ProgressDataImage} object.
      * 

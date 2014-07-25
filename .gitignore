@@ -11,5 +11,6 @@ saas/compss-packager/.project
 saas/compss-plugin/ascetic-deployer/.classpath
 saas/compss-plugin/ascetic-deployer/lib/ant-antlr.jar
 saas/programming-model/compss-rt/rt/target
+saas/virtual-machine-image-constructor/logs
 utils/energy-modeller-data-logger/target
 utils/ovf-xmlbeans-api/velocity.log.1
