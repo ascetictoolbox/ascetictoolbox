@@ -281,6 +281,7 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/ovf/OV
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/ApplicationRestTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/RootRestTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/util/XMLBuilderTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/scheduler/DeploymentStatusTaskTest.java -text
 paas/application-manager/src/test/resources/3tier-webapp.ovf.xml -text
 paas/application-manager/src/test/resources/META-INF/persistence.mysql.test.xml -text
 paas/application-manager/src/test/resources/META-INF/persistence.test.xml -text
