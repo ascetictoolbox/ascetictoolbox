@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans 
-	xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:osgi="http://www.springframework.org/schema/osgi"
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/osgi
-		http://www.springframework.org/schema/osgi/spring-osgi.xsd" >
+		http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
 	<!-- SERVICES DECLARATION -->
 	<osgi:service id="slamPOCosgi" ref="slamPOCServices">
@@ -15,9 +13,9 @@
 			<value>org.slasoi.gslam.core.builder.PlanningOptimizationBuilder</value>
 		</osgi:interfaces>
 		<osgi:service-properties>
-	            <entry key="type"   value="poc"     />
-	            <entry key="proxy"  value="slam-poc" />
-	    </osgi:service-properties>
+			<entry key="type" value="poc" />
+			<entry key="proxy" value="slam-poc" />
+		</osgi:service-properties>
 	</osgi:service>
 
 	<!-- REQUIRED SERVICES DECLARATION -->

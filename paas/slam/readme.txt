@@ -28,7 +28,7 @@ Each module contains following generic files:
 		            
 
 
-SUMMARY OF FEATURES 
+SUMMARY OF FEATURES  
 ====================
 
 ** slam slam-main
