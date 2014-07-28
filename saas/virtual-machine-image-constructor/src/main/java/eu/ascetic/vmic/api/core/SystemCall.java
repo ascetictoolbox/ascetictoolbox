@@ -37,13 +37,13 @@ public class SystemCall implements Runnable {
     private static final int OUTPUT_ARRAY_INITIAL_CAPACITY = 50;
     private static final int THREAD_SLEEP_TIME = 250;
     public static final int RETURN_VALUE_ON_ERROR = -2;
-    private String commandName;
-    private List<String> arguments;
+    protected String commandName;
+    protected List<String> arguments;
     private List<String> output;
-    private int returnValue;
+    protected int returnValue;
     private String workingDirectory;
-    private boolean error = false;
-    private SystemCallException systemCallException = null;
+    protected boolean error = false;
+    protected SystemCallException systemCallException = null;
 
     protected static final Logger LOGGER = Logger.getLogger(SystemCall.class);
     private Process process;
@@ -153,7 +153,7 @@ public class SystemCall implements Runnable {
      * @throws SystemCallException
      *             Provides a mechanism to propagate all exception to VMC core.
      */
-    private void execute(List<String> command) throws SystemCallException {
+    protected void execute(List<String> command) throws SystemCallException {
         ProcessBuilder pb = new ProcessBuilder(command);
         File dir = new File(workingDirectory);
         pb.directory(dir);

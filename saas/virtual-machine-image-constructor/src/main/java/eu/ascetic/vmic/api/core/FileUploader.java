@@ -106,8 +106,8 @@ public class FileUploader implements Runnable {
         arguments.add("\"mkdir -p " + remotePath + " && rsync\"");
         // Enable SSH
         arguments.add("-e");
-        // SSH binary and key path
-        arguments.add("\"" + sshPath + " -i " + sshKeyPath + "\"");
+        // SSH binary and key path (use blowfish for faster uploading"
+        arguments.add("\"" + sshPath + " -c blowfish" + " -i " + sshKeyPath + "\"");
         // Files to add
         arguments.add(fileName);
         // Remote location to put the files
