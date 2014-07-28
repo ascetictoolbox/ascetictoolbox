@@ -221,7 +221,7 @@ public class Client {
 	 * @param exeception if something goes wrong in the connection, the object is set to null
 	 * @return the updated entity
 	 */
-	public static String deleteMethod(String url, String payload, String accept, Boolean exception) {
+	public static void deleteMethod(String url, String accept, Boolean exception) {
 		// Create an instance of HttpClient.
 		HttpClient client = getHttpClient();
 
@@ -233,19 +233,13 @@ public class Client {
 		// Provide custom retry handler is necessary
 		method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
 
-		String response = "";
-
 		try {
 			// Execute the method.
 			int statusCode = client.executeMethod(method);
 
-			if (statusCode != HttpStatus.SC_OK) { //TODO test for this case... 
+			if (statusCode != HttpStatus.SC_NO_CONTENT) { //TODO test for this case... 
 				logger.warn("Execution of DELETE method to: " + url + " failed: " + method.getStatusLine());
-			} else {
-				// Read the response body.
-				byte[] responseBody = method.getResponseBody();
-				response = new String(responseBody);
-			}	
+			} 
 
 		} catch(HttpException e) {
 			logger.warn("Fatal protocol violation: " + e.getMessage());
@@ -260,6 +254,5 @@ public class Client {
 			method.releaseConnection();
 		}
 
-		return response;
 	}
 }

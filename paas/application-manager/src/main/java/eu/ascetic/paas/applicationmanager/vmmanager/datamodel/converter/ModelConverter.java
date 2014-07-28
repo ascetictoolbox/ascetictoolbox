@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
@@ -16,6 +17,7 @@ import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ListVmEstimates;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ListVms;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ListVmsDeployed;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ListVmsToBeEstimated;
+import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.SchedulingAlgorithm;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.VmDeployed;
 
 /**
@@ -103,6 +105,7 @@ public class ModelConverter {
 		Gson gson = new GsonBuilder().create();
 		return gson.fromJson(json, JsonObject.class).get("id").getAsString();
 	}
+	
 	
 	/**
 	 * Json list vms to object.
@@ -245,6 +248,19 @@ public class ModelConverter {
 //		return toJSON(vmDeployed);
 		Gson gson = new GsonBuilder().create();
 		return gson.toJson(vmDeployed);
+	}
+	
+	
+	/**
+	 * Gets the json object action.
+	 *
+	 * @param action the action
+	 * @return the json object action
+	 */
+	public static String getJsonObjectAction(String action){
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("action", action);
+        return jsonObject.toString();
 	}
 	
 }

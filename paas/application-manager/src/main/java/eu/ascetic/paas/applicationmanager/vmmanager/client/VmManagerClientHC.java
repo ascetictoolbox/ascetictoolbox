@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import eu.ascetic.paas.applicationmanager.Dictionary;
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.http.Client;
-import eu.ascetic.paas.applicationmanager.Dictionary;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ImageToUpload;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ImageUploaded;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ListImagesUploaded;
@@ -191,34 +191,6 @@ public class VmManagerClientHC implements VmManagerClient {
 		return vmsOfApp;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient#getLogs()
-	 */
-	@Override
-	public String getLogs() {
-		Boolean exception = false;
-		String testbedsUrl = url + "/logs";
-		
-		logger.debug("CONNECTING TO: " + url);
-		
-		String response = Client.getMethod(testbedsUrl, Dictionary.CONTENT_TYPE_JSON, exception);
-		logger.debug("PAYLOAD: " + response);
-		
-		String log = null;
-		
-		try {
-			log = response;
-		} catch(Exception e) {
-			logger.warn("Error trying to return logs: " + testbedsUrl + " Exception: " + e.getMessage());
-			exception = true;
-		}
-		
-		if(exception) return null;
-		
-		return log;
-	}
-	
-
 
 	/* (non-Javadoc)
 	 * @see eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient#deployVMs(java.util.List)
@@ -284,9 +256,62 @@ public class VmManagerClientHC implements VmManagerClient {
 		return newImageID;
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient#deleteVmsOfApp(java.lang.String)
+	 */
 	@Override
-	public void deleteVmsOfApp(String appId) {
-		// TODO Auto-generated method stub
+	public boolean deleteVmsOfApp(String appId) {
 		
+		Boolean exception = false;
+		String experimentUrl = url + "/vmsapp/" + appId;
+		logger.debug("URL build: " + experimentUrl);
+		
+		try {
+			Client.deleteMethod(experimentUrl, Dictionary.CONTENT_TYPE_JSON, exception);			
+		} catch(Exception e) {
+			logger.warn("Error trying to delete VMs of App: " + url  + "/vmsapp/" + appId + " Exception: " + e.getMessage());
+			exception = true;
+		}
+		
+		return !exception;		
 	}
+
+	/* (non-Javadoc)
+	 * @see eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient#destroyVM(java.lang.String)
+	 */
+	@Override
+	public boolean destroyVM(String vmId) {
+
+		Boolean exception = false;
+		String experimentUrl = url + "/vms/" + vmId;
+		logger.debug("URL build: " + experimentUrl);
+		
+		try {
+			Client.deleteMethod(experimentUrl, Dictionary.CONTENT_TYPE_JSON, exception);			
+		} catch(Exception e) {
+			logger.warn("Error trying to delete the VM with ID = " + vmId + ": " + url + "/vms" + vmId + " Exception: " + e.getMessage());
+			exception = true;
+		}
+		
+		return !exception;  		
+	}
+
+	@Override
+	public boolean changeStateVm(String vmId, String action) {
+		
+		Boolean exception = false;
+		String experimentUrl = url + "/vms/" + vmId;
+		logger.debug("URL build: " + experimentUrl);
+		
+		try {
+			String payload = ModelConverter.getJsonObjectAction(action);			
+			String response = Client.putMethod(experimentUrl, payload, Dictionary.CONTENT_TYPE_JSON, Dictionary.CONTENT_TYPE_JSON, exception);
+			logger.debug("PAYLOAD: " + response);			
+		} catch(Exception e) {
+			logger.warn("Error trying to changeStateVm: " + url + "/vms/" + vmId + " Exception: " + e.getMessage());
+			exception = true;
+		}		
+		return !exception;
+	}
+
 }

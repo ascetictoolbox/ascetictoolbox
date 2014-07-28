@@ -6,6 +6,7 @@ import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ImageToUpload;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ImageUploaded;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ListImagesUploaded;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ListVmsDeployed;
+import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.SchedulingAlgorithm;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.Vm;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.VmDeployed;
 
@@ -69,14 +70,6 @@ public interface VmManagerClient {
 	public ListVmsDeployed getVmsOfApp(String appId);
 	
 	/**
-	 * Gets the logs.
-	 *
-	 * @return the logs
-	 */
-	public String getLogs();
-	
-	
-	/**
 	 * Deploy v ms.
 	 *
 	 * @param vms the vms
@@ -84,43 +77,37 @@ public interface VmManagerClient {
 	 */
 	public List<String> deployVMs(List<Vm> vms);
 	
-	 
-	
-	/*
-	 * 		- put: deployVMs(ListVms) solo una 
-	@PUT
-    @Path("/vms/{id}")
-    @Consumes("application/json")
-    public void changeStateVm(@PathParam("id") String vmId, String actionJson) {
-        vmCallsManager.changeStateVm(vmId, actionJson);
-    }	
-	 * 		- delete: destroyVM
-	@DELETE
-    @Path("/vms/{id}")
-    public void destroyVm(@PathParam("id") String vmId) {
-        vmCallsManager.destroyVm(vmId);
-    }
-    
-	 **/
-	public void deleteVmsOfApp(String appId);
-	/*@DELETE
-    @Path("/vmsapp/{appId}")
-    public void deleteVmsOfApp(@PathParam("appId") String appId) {
-        vmCallsManager.deleteVmsOfApp(appId);
-    }
+	/**
+	 * Change state vm.
+	 *
+	 * @param vmId the vm id
+	 * @param action the action
+	 * @return true, if successful
 	 */
+	public boolean changeStateVm(String vmId, String action);
+	
+	/**
+	 * Destroy vm.
+	 *
+	 * @param vmId the vm id
+	 * @return true, if successful
+	 */
+	public boolean destroyVM(String vmId);
+	
+	/**
+	 * Delete vms of app.
+	 *
+	 * @param appId the app id
+	 * @return true, if successful
+	 */
+	public boolean deleteVmsOfApp(String appId);
  
+	/**
+	 * Upload image.
+	 *
+	 * @param imageInfo the image info
+	 * @return the new VM created ID
+	 */
 	public String uploadImage(ImageToUpload imageInfo);
 
-	
-	
-	/* 		- deleteImage
-	 *  @DELETE
-    @Path("/vmsapp/{appId}")
-    public void deleteVmsOfApp(@PathParam("appId") String appId) {
-        vmCallsManager.deleteVmsOfApp(appId);
-    }
-	 */
-	
-	
 }
