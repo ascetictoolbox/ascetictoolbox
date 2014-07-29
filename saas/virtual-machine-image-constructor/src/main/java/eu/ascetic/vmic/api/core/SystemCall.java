@@ -59,6 +59,8 @@ public class SystemCall implements Runnable {
         output = new Vector<String>(OUTPUT_ARRAY_INITIAL_CAPACITY);
         returnValue = -1;
         
+        LOGGER.debug("workingDirectory is : " + workingDirectory);
+        
         // Clean up spawned process on shutdown
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
@@ -85,6 +87,8 @@ public class SystemCall implements Runnable {
         returnValue = -1;
         this.commandName = commandName;
         this.arguments = arguments;
+        
+        LOGGER.debug("workingDirectory is : " + workingDirectory);
         
         // Clean up spawned process on shutdown
         Runtime.getRuntime().addShutdownHook(new Thread() {
