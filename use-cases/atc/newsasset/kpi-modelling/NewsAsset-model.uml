@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xmi:XMI xmi:version="20110701" xmlns:xmi="http://www.omg.org/spec/XMI/20110701" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ASCETICProfile="http:///schemas/ASCETICProfile/_boswIOswEeOsSf0lAkOcAA/31" xmlns:ASCETICProfile_1="http:///schemas/ASCETICProfile/_5B8IUPfkEeOzV5IJKRYHOg/80" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/4.0.0/UML" xsi:schemaLocation="http:///schemas/ASCETICProfile/_boswIOswEeOsSf0lAkOcAA/31 ../Ascetic%20Papyrus%20KPI%20Profile/model.profile.uml#_boswIeswEeOsSf0lAkOcAA http:///schemas/ASCETICProfile/_5B8IUPfkEeOzV5IJKRYHOg/80 ../Ascetic%20Papyrus%20KPI%20Profile/model.profile.uml#_5CAZwPfkEeOzV5IJKRYHOg">
+<xmi:XMI xmi:version="20110701" xmlns:xmi="http://www.omg.org/spec/XMI/20110701" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ASCETICProfile="http:///schemas/ASCETICProfile/_boswIOswEeOsSf0lAkOcAA/31" xmlns:KPIProfile="http:///schemas/KPIProfile/_PGUnQBNJEeSSeOXAWAn9pQ/87" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/4.0.0/UML" xsi:schemaLocation="http:///schemas/ASCETICProfile/_boswIOswEeOsSf0lAkOcAA/31 file:/C:/Users/jcd/workspace-backup20140707/Ascetic%20Papyrus%20KPI%20Profile/model.profile.uml#_boswIeswEeOsSf0lAkOcAA http:///schemas/KPIProfile/_PGUnQBNJEeSSeOXAWAn9pQ/87 ../Ascetic%20Papyrus%20KPI%20Profile/model.profile.uml#_PGUnQRNJEeSSeOXAWAn9pQ">
   <uml:Model xmi:id="_BHwJIN-MEeOanJwEUOB9pQ" name="NewsAsset-model">
     <ownedComment xmi:type="uml:Comment" xmi:id="__D9AwOAMEeOanJwEUOB9pQ" annotatedElement="_f7CgEN-gEeOanJwEUOB9pQ">
       <body>Question:&#xD;
@@ -245,7 +245,7 @@ through the NewsAsset server&#xD;
     </packagedElement>
     <profileApplication xmi:type="uml:ProfileApplication" xmi:id="_jZa40OHMEeOE-fH0MbPO6w">
       <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_jZ4L0OHMEeOE-fH0MbPO6w" source="http://www.eclipse.org/uml2/2.0.0/UML">
-        <references xmi:type="ecore:EPackage" href="../Ascetic%20Papyrus%20KPI%20Profile/model.profile.uml#_5CAZwPfkEeOzV5IJKRYHOg"/>
+        <references xmi:type="ecore:EPackage" href="../Ascetic%20Papyrus%20KPI%20Profile/model.profile.uml#_PGUnQRNJEeSSeOXAWAn9pQ"/>
       </eAnnotations>
       <appliedProfile xmi:type="uml:Profile" href="../Ascetic%20Papyrus%20KPI%20Profile/model.profile.uml#_h2AQQMO6EeO6370zt3rC0Q"/>
     </profileApplication>
@@ -274,54 +274,61 @@ through the NewsAsset server&#xD;
   <ASCETICProfile:MeasuredUseCase xmi:id="_yi5QcOsvEeOsSf0lAkOcAA" base_UseCase="_nZak4N-aEeOanJwEUOB9pQ">
     <KPIs xmi:type="ASCETICProfile:KPI" xmi:id="_z1-B4OsvEeOsSf0lAkOcAA"/>
   </ASCETICProfile:MeasuredUseCase>
-  <ASCETICProfile_1:forMeasurement xmi:id="_3L49QP3lEeOjOP_PVdMAFg" base_Class="_TGO8wPhKEeOjOP_PVdMAFg">
-    <KPIs xmi:type="ASCETICProfile_1:KPIDefInput" xmi:id="_kbxsMP3wEeOjOP_PVdMAFg" KPIRepositoryURL="">
-      <QualityQuestionIDRefs>ATC-EE-Q2</QualityQuestionIDRefs>
-      <MeasurementDef xmi:type="ASCETICProfile_1:KPIMeasureDefInput" xmi:id="_T2v-MP3xEeOjOP_PVdMAFg" fullname="VM (NA_TestVM_1) -> Methods (gr.atc.newsasset.Core.StoreDocument(*)°" ElementMeasureScope="SelfChildrenAndCalled" ElementContainerScope="Process"/>
-      <WorkloadDef xmi:type="ASCETICProfile_1:KPIWorkloadDefInput" xmi:id="_1cEkcP3wEeOjOP_PVdMAFg" ShortName="textOnly" Description="save news items with only text content"/>
-      <WorkloadDef xmi:type="ASCETICProfile_1:KPIWorkloadDefInput" xmi:id="_7sI0UP3wEeOjOP_PVdMAFg" ShortName="imageOnly" Description="save news items with an image content only"/>
-      <WorkloadDef xmi:type="ASCETICProfile_1:KPIWorkloadDefInput" xmi:id="_AiXjcP3xEeOjOP_PVdMAFg" ShortName="audioOnly" Description="save news items with only audio content"/>
-      <WorkloadDef xmi:type="ASCETICProfile_1:KPIWorkloadDefInput" xmi:id="_D4PTEP3xEeOjOP_PVdMAFg" ShortName="videoOnly" Description="save news items with only video content"/>
-      <WorkloadDef xmi:type="ASCETICProfile_1:KPIWorkloadDefInput" xmi:id="_IY73EP3xEeOjOP_PVdMAFg" ShortName="mixedInput-1" Description="save news items with text, image and audio content"/>
-      <WorkloadDef xmi:type="ASCETICProfile_1:KPIWorkloadDefInput" xmi:id="_MTkgoP3xEeOjOP_PVdMAFg" ShortName="mixedInput2" Description="save news items with mixed content text and video"/>
-      <WorkloadDef xmi:type="ASCETICProfile_1:KPIWorkloadDefInput" xmi:id="_S2tdgP3xEeOjOP_PVdMAFg" ShortName="largeNewsItems" Description="save news items with large content (1GB or more)"/>
-    </KPIs>
-  </ASCETICProfile_1:forMeasurement>
-  <ASCETICProfile_1:preparedForMeasurement xmi:id="_RoIgoP3oEeOjOP_PVdMAFg" base_Model="_BHwJIN-MEeOanJwEUOB9pQ">
-    <MonitoringGoals xmi:type="ASCETICProfile_1:MonitoringGoal" xmi:id="_YcwPEP3oEeOjOP_PVdMAFg" GoalID="1" Description=" Determine Energy Consumption Behaviour Effectiveness of NewsAsset (Energy Consumption Behaviour Effectiveness is the degree to which the energy consumption behavior of a software system in operation meets requirements.)">
-      <QualityQuestions xmi:type="ASCETICProfile_1:QualityQuestion" xmi:id="_jHRRAP3oEeOjOP_PVdMAFg" QuestionID="ATC-ECBE-Q1" QuestionText="How much energy (Watt/h) is consumed by VMs with various characteristics (CPU frequency, memory size, disk size) hosting the NewsAsset server under various representative workloads (including idle mode)? "/>
-      <QualityQuestions xmi:type="ASCETICProfile_1:QualityQuestion" xmi:id="_1nkjcP3oEeOjOP_PVdMAFg" QuestionID="ATC-ECBE-Q2" QuestionText="How much energy (Watt/h) is consumed by VMs with various characteristics (CPU frequency, memory size, disk size) hosting a load balancer under various representative workloads (including idle mode)? "/>
-      <QualityQuestions xmi:type="ASCETICProfile_1:QualityQuestion" xmi:id="_6RTHoP3oEeOjOP_PVdMAFg" QuestionID="How much energy (Watt/h) is consumed by VMs with various characteristics (CPU frequency, memory size, disk size) hosting the NewsAsset RDBMS under various representative workloads (including idle mode)? " QuestionText="ATC-ECBE-Q3"/>
-      <QualityQuestions xmi:type="ASCETICProfile_1:QualityQuestion" xmi:id="__dccYP3oEeOjOP_PVdMAFg" QuestionID="ATC-ECBE-Q4" QuestionText="How much energy (Watt/h) is consumed by VMs (or other virtual storage - eg Block Storage) with various characteristics (CPU frequency, memory size, disk size) hosting the NewsAsset file storage under various representative workloads (including idle mode)? "/>
-      <QualityQuestions xmi:type="ASCETICProfile_1:QualityQuestion" xmi:id="_D7OPQP3pEeOjOP_PVdMAFg" QuestionID="ATC-ECBE-Q5" QuestionText="How much energy (Watt/h) is consumed by VMs with various characteristics (CPU frequency, memory size, disk size) hosting the News item Receiving software component (or software agent) under various representative workloads (including idle mode)? "/>
-      <QualityQuestions xmi:type="ASCETICProfile_1:QualityQuestion" xmi:id="_ILDFsP3pEeOjOP_PVdMAFg" QuestionID="ATC-ECBE-Q6" QuestionText="How much energy (Watt/h) is consumed by VMs with various characteristics (CPU frequency, memory size, disk size) hosting the News item Sending software component (or software agent) under various representative workloads (including idle mode)? "/>
-      <QualityQuestions xmi:type="ASCETICProfile_1:QualityQuestion" xmi:id="_OBhJ0P3pEeOjOP_PVdMAFg" QuestionID="ATC-ECBE-Q7" QuestionText="How much energy is consumed by NewsAsset operations such as back-up or data synchronization, which can sensibly be scheduled at time when energy has a reduced cost? (Prior to answering the question, a list of NewsAsset operations whose scheduling can be adapted must first be identified and second, representative workloads for each operation must also be determined)"/>
-      <QualityQuestions xmi:type="ASCETICProfile_1:QualityQuestion" xmi:id="_UbjOAP3pEeOjOP_PVdMAFg" QuestionID="ATC-ECBE-Q8" QuestionText="How much energy (Watt/h) is consumed (on server side) by NewsAsset operations which could avoid client-server round trips (with no adverse effect on end-user) such as client-side caching of search results? (Prior to answering the question, a list of NewsAsset operations where client-server round trip are performed must be identified and second, a subset of these operations where round-trip could be avoided without adverse effect on end-users must first be identified and third, representative workload for each operation must also be determined)"/>
+  <KPIProfile:preparedForMeasurement xmi:id="_XB-2QBNJEeSSeOXAWAn9pQ" base_Model="_BHwJIN-MEeOanJwEUOB9pQ">
+    <MonitoringGoals xmi:type="KPIProfile:MonitoringGoal" xmi:id="_KoPc8BNKEeSSeOXAWAn9pQ" GoalID="ECBE" Description="Determine Energy Consumption Behaviour Effectiveness of NewsAsset (Energy Consumption Behaviour Effectiveness is the degree to which the energy consumption behavior of a software system in operation meets requirements.)">
+      <QualityQuestions xmi:type="KPIProfile:QualityQuestion" xmi:id="_RwzbEBNKEeSSeOXAWAn9pQ" QuestionID="ATC-ECBE-Q1" QuestionText="How much energy (Watt/h) is consumed by VMs with various characteristics (CPU frequency, memory size, disk size) hosting the NewsAsset server under various representative workloads (including idle mode)? "/>
     </MonitoringGoals>
-    <MonitoringGoals xmi:type="ASCETICProfile_1:MonitoringGoal" xmi:id="_cehbYP3oEeOjOP_PVdMAFg" GoalID="2" Description="Determine Energy Efficiency of NewsAsset features and components (Energy Efficiency is the degree to which energy expanded by a software system in operation is in relation to the software tasks executed and the results achieved.)">
-      <QualityQuestions xmi:type="ASCETICProfile_1:QualityQuestion" xmi:id="_bXivwP3pEeOjOP_PVdMAFg" QuestionID="ATC-EE-Q1" QuestionText="How much energy (Watt/h) is consumed on the server-side by the feature &quot;Search for News Items&quot; under various representative workloads (different number of news items stored, different complexity in search criteria) when VMs have various characteristics (CPU frequency, memory size, disk size)? "/>
-      <QualityQuestions xmi:type="ASCETICProfile_1:QualityQuestion" xmi:id="_fwz2EP3pEeOjOP_PVdMAFg" QuestionID="ATC-EE-Q2" QuestionText="How much energy (Watt/h) is consumed on the server-side by the feature &quot;Save for a News Item&quot; under various representative workloads (different type of news items: text, image, audio, video, each of various size) and different number of news items stored) when VMs have various characteristics (CPU frequency, memory size, disk size)? "/>
-      <QualityQuestions xmi:type="ASCETICProfile_1:QualityQuestion" xmi:id="_kNA7oP3pEeOjOP_PVdMAFg" QuestionID="ATC-EE-Q3" QuestionText="How much energy (Watt/h) is consumed by the software component &quot;NewsAsset server&quot; under various representative workloads when VMs have various characteristics (CPU frequency, memory size, disk size)?"/>
-      <QualityQuestions xmi:type="ASCETICProfile_1:QualityQuestion" xmi:id="_oyeD0P3pEeOjOP_PVdMAFg" QuestionID="ATC-EE-Q4" QuestionText="How does the energy consumption relate to response time (both on server side) for the feature &quot;Search for News Items&quot; under various representative workloads (different number of news items stored, different complexity in search criteria) when VMs have various characteristics (CPU frequency, memory size, disk size)?&#xD;&#xA;"/>
+    <MonitoringGoals xmi:type="KPIProfile:MonitoringGoal" xmi:id="_akdpEBNKEeSSeOXAWAn9pQ" GoalID="EE" Description="Determine Energy Efficiency of NewsAsset features and components (Energy Efficiency is the degree to which energy expanded by a software system in operation is in relation to the software tasks executed and the results achieved.)">
+      <QualityQuestions xmi:type="KPIProfile:QualityQuestion" xmi:id="_fPoXsBNKEeSSeOXAWAn9pQ" QuestionID="ATC-EE-Q1" QuestionText="How much energy (Watt/h) is consumed on the server-side by the feature &quot;Search for News Items&quot; under various representative workloads (different number of news items stored, different complexity in search criteria) when VMs have various characteristics (CPU frequency, memory size, disk size)? "/>
+      <QualityQuestions xmi:type="KPIProfile:QualityQuestion" xmi:id="_ir97sBNKEeSSeOXAWAn9pQ" QuestionID="ATC-EE-Q2" QuestionText="How much energy (Watt/h) is consumed on the server-side by the feature &quot;Save for a News Item&quot; under various representative workloads (different type of news items: text, image, audio, video, each of various size) and different number of news items stored) when VMs have various characteristics (CPU frequency, memory size, disk size)? "/>
+      <QualityQuestions xmi:type="KPIProfile:QualityQuestion" xmi:id="_l0PUMBNKEeSSeOXAWAn9pQ" QuestionID="ATC-EE-Q3" QuestionText="How much energy (Watt/h) is consumed by the software component &quot;NewsAsset server&quot; under various representative workloads when VMs have various characteristics (CPU frequency, memory size, disk size)?"/>
+      <QualityQuestions xmi:type="KPIProfile:QualityQuestion" xmi:id="_pxiQMBNKEeSSeOXAWAn9pQ" QuestionID="ATC-EE-Q4" QuestionText="How does the energy consumption relate to response time (both on server side) for the feature &quot;Search for News Items&quot; under various representative workloads (different number of news items stored, different complexity in search criteria) when VMs have various characteristics (CPU frequency, memory size, disk size)?"/>
     </MonitoringGoals>
-  </ASCETICProfile_1:preparedForMeasurement>
-  <ASCETICProfile_1:forMeasurement xmi:id="_NCMBgP3uEeOjOP_PVdMAFg" base_UseCase="_gTmYwN-aEeOanJwEUOB9pQ">
-    <KPIs xmi:type="ASCETICProfile_1:KPIDefInput" xmi:id="_rly7gP3zEeOjOP_PVdMAFg" KPIRepositoryURL="">
-      <QualityQuestionIDRefs>ATC-EE-Q1</QualityQuestionIDRefs>
-      <MeasurementDef xmi:type="ASCETICProfile_1:KPIMeasureDefInput" xmi:id="_uDaNcP3zEeOjOP_PVdMAFg" preferredMeasurementFrequencyInMillisecond="1000" fullname="VM(NA_serverVM*)->Methods(gr.atc.newsasset.Core.retriveDocuments(*))&#xD;&#xA;VM(NA_dbVM*)->Processes(*)" ElementMeasureScope="SelfChildrenAndCalled" ElementContainerScope="All"/>
-      <WorkloadDef xmi:type="ASCETICProfile_1:KPIWorkloadDefInput" xmi:id="_OcIoQP30EeOjOP_PVdMAFg" ShortName="simpleQuery-smallDB" Description="News Item search requests with simple search criteria on a small DB (a few hundredths of news items)"/>
-      <WorkloadDef xmi:type="ASCETICProfile_1:KPIWorkloadDefInput" xmi:id="_VVwLcP30EeOjOP_PVdMAFg" ShortName="complexQuery-smallDB" Description="News Item search requests with complex search criteria (long pieces of text and/or complex fliters) on a small DB (a few hundredths of news items)"/>
-      <WorkloadDef xmi:type="ASCETICProfile_1:KPIWorkloadDefInput" xmi:id="_WKv5wP30EeOjOP_PVdMAFg" ShortName="simpleQuery-largeDB" Description="News Item search requests with simple search criteria (2 or 3 keywords) on a small DB (many news items - 1 Million or more)"/>
-      <WorkloadDef xmi:type="ASCETICProfile_1:KPIWorkloadDefInput" xmi:id="_bdb7YP30EeOjOP_PVdMAFg" ShortName="complexQuery-largeDB" Description="News Item search requests with complex search criteria (long pieces of text and/or complex fliters) on a small DB (many news items - 1 Million or more)"/>
-    </KPIs>
-  </ASCETICProfile_1:forMeasurement>
-  <ASCETICProfile_1:forMeasurement xmi:id="_wF4GYP3xEeOjOP_PVdMAFg" base_Class="_ywz0gOBWEeOrqJsLB4VSYw" base_Component="_ywz0gOBWEeOrqJsLB4VSYw">
-    <KPIs xmi:type="ASCETICProfile_1:KPIDefInput" xmi:id="_GVI94P3yEeOjOP_PVdMAFg" KPIRepositoryURL="">
+    <GlobalKPIDef xmi:type="KPIProfile:GlobalKPIDefInput" xmi:id="_fDzXoBNJEeSSeOXAWAn9pQ">
+      <GlobalMeasurementDef xmi:type="KPIProfile:GlobalMeasureDefInput" xmi:id="_gvqcgBNJEeSSeOXAWAn9pQ" ProbeRepositoryURL="http://svn.forge.cetic.be/ascetic/tags/probes/v1" preferredMeasurementFrequencyInMillisecond="1000"/>
+      <GlobalWorkloadDef xmi:type="KPIProfile:GlobalWorkloadDefInput" xmi:id="_g861YBNJEeSSeOXAWAn9pQ"/>
+      <GlobalVisualizationDef xmi:type="KPIProfile:GlobalVisualizationDefInput" xmi:id="_hMFSwBNJEeSSeOXAWAn9pQ" VisualizationRepositoryURL="http://svn.forge.cetic.be/ascetic/tags/visual/v1"/>
+    </GlobalKPIDef>
+  </KPIProfile:preparedForMeasurement>
+  <KPIProfile:forMeasurement xmi:id="_Vi-S0BQTEeSbRqcniHIcDA" base_Class="_ywz0gOBWEeOrqJsLB4VSYw" base_Component="_ywz0gOBWEeOrqJsLB4VSYw">
+    <KPIs xmi:type="KPIProfile:KPIDefInput" xmi:id="_X-FqYBQTEeSbRqcniHIcDA" KPIRepositoryURL="">
       <QualityQuestionIDRefs>ATC-EE-Q3</QualityQuestionIDRefs>
-      <MeasurementDef xmi:type="ASCETICProfile_1:KPIMeasureDefInput" xmi:id="_IaSFcP3yEeOjOP_PVdMAFg" preferredMeasurementFrequencyInMillisecond="1000" fullname="VM(NA_TestVM_1)->Process(NewsAssetserver)" ElementMeasureScope="SelfAndChildren" ElementContainerScope="All"/>
-      <WorkloadDef xmi:type="ASCETICProfile_1:KPIWorkloadDefInput" xmi:id="_k1jzQP3yEeOjOP_PVdMAFg" ShortName="idleNewsAsset" Description="serve no request for 10 minutes"/>
-      <WorkloadDef xmi:type="ASCETICProfile_1:KPIWorkloadDefInput" xmi:id="_6ZPXIP3yEeOjOP_PVdMAFg" ShortName="AvgLoad" Description="load for an average number of requests (for 1h of work) with an representative mix of search and save news items in a DB with 1 million news items or more"/>
-      <WorkloadDef xmi:type="ASCETICProfile_1:KPIWorkloadDefInput" xmi:id="_-Xt-4P3yEeOjOP_PVdMAFg" ShortName="heavyLoad" Description="load for a large number of requests (for 1h of work) with an representative mix of search and save news items in a DB with 1 million news items or more"/>
+      <MeasurementDef xmi:type="KPIProfile:KPIMeasureDefInput" xmi:id="_rEEcwBQTEeSbRqcniHIcDA" preferredMeasurementFrequencyInMillisecond="1000" fullname="Process(NewsAssetServer) (to be validated)"/>
+      <WorkloadDef xmi:type="KPIProfile:KPIWorkloadDefInput" xmi:id="_nEgjABQrEeSbRqcniHIcDA" ShortName="IdleServer" Description="Server Idle for 5 minutes"/>
+      <WorkloadDef xmi:type="KPIProfile:KPIWorkloadDefInput" xmi:id="_BM8EcBQsEeSbRqcniHIcDA" ShortName="LightWorkload" Description="1 request sent to server per 20 seconds with a work load of representative request from a small News Agency"/>
+      <WorkloadDef xmi:type="KPIProfile:KPIWorkloadDefInput" xmi:id="_H6oEcBQsEeSbRqcniHIcDA" ShortName="MediumWorkload" Description="1 request sent to server per 5 seconds with a work load of representative request from a medium News Agency"/>
+      <WorkloadDef xmi:type="KPIProfile:KPIWorkloadDefInput" xmi:id="_ThbvgBQsEeSbRqcniHIcDA" ShortName="HighWorkload" Description="1 request sent to server per second with a work load of representative request from a large News Agency"/>
+      <WorkloadDef xmi:type="KPIProfile:KPIWorkloadDefInput" xmi:id="_i3vyMBQsEeSbRqcniHIcDA" ShortName="VeryHighWorkload" Description="10 request sent to server per seconds with a work load of representative request from several small or medium News Agencies sharing the same NewsAsset Server in Multitenant mode"/>
+      <WorkloadDef xmi:type="KPIProfile:KPIWorkloadDefInput" xmi:id="_tvnToBQsEeSbRqcniHIcDA" ShortName="ExtremelyHighWorkload" Description="100 request sent to server per second with a work load of representative request from many News Agencies in multitenant mode"/>
     </KPIs>
-  </ASCETICProfile_1:forMeasurement>
+  </KPIProfile:forMeasurement>
+  <KPIProfile:forMeasurement xmi:id="_6-z40BQsEeSbRqcniHIcDA" base_Class="_TGO8wPhKEeOjOP_PVdMAFg">
+    <KPIs xmi:type="KPIProfile:KPIDefInput" xmi:id="_Tfd_oBQ3EeSbRqcniHIcDA" KPIRepositoryURL="">
+      <QualityQuestionIDRefs>ATC-EE-Q2</QualityQuestionIDRefs>
+      <MeasurementDef xmi:type="KPIProfile:KPIMeasureDefInput" xmi:id="_WfvSsBQ3EeSbRqcniHIcDA" preferredMeasurementFrequencyInMillisecond="1000" fullname="Method(NA_Server_VM_*->ASSET2008.ApplicationServer.RemoteObjects.SqlExecuteCommand(PARAMETERS FOR SEARCH TO BE DETERMINED)), Method(NA_Server_VM_*->ASSET2008.ApplicationServer.Core.StoreDocument(PARAMETERS FOR SEARCH TO BE DETERMINED))" ElementMeasureScope="SelfChildrenAndCalled" ElementContainerScope="All"/>
+      <WorkloadDef xmi:type="KPIProfile:KPIWorkloadDefInput" xmi:id="_5TyrABQ4EeSbRqcniHIcDA" ShortName="TextOnly" Description="Create a News items containing text only"/>
+      <WorkloadDef xmi:type="KPIProfile:KPIWorkloadDefInput" xmi:id="__-_XsBQ4EeSbRqcniHIcDA" ShortName="ImageOnly" Description="Create a News items containing image only"/>
+      <WorkloadDef xmi:type="KPIProfile:KPIWorkloadDefInput" xmi:id="_C7QUgBQ5EeSbRqcniHIcDA" ShortName="AudioOnly" Description="Create a News items containing audio only"/>
+      <WorkloadDef xmi:type="KPIProfile:KPIWorkloadDefInput" xmi:id="_Fb4eMBQ5EeSbRqcniHIcDA" ShortName="VideoOnly" Description="Create a News items containing video only"/>
+      <WorkloadDef xmi:type="KPIProfile:KPIWorkloadDefInput" xmi:id="_L2nF8BQ5EeSbRqcniHIcDA" ShortName="MixTextImages" Description="Create a News items containing text and images"/>
+      <WorkloadDef xmi:type="KPIProfile:KPIWorkloadDefInput" xmi:id="_SbcE4BQ5EeSbRqcniHIcDA" ShortName="MixTextVideo" Description="Create a News items containing text video"/>
+      <WorkloadDef xmi:type="KPIProfile:KPIWorkloadDefInput" xmi:id="_WtSUkBQ5EeSbRqcniHIcDA" ShortName="MixTextVideoImage" Description="Create a News items containing text video and still images"/>
+    </KPIs>
+    <TechnologiesSpecification>WindowsServer2013</TechnologiesSpecification>
+    <TechnologiesSpecification>CSharp</TechnologiesSpecification>
+  </KPIProfile:forMeasurement>
+  <KPIProfile:forMeasurement xmi:id="_4UTIcBQuEeSbRqcniHIcDA" base_UseCase="_gTmYwN-aEeOanJwEUOB9pQ">
+    <KPIs xmi:type="KPIProfile:KPIDefInput" xmi:id="_6KGMcBQuEeSbRqcniHIcDA" KPIRepositoryURL="">
+      <QualityQuestionIDRefs>ATC-EE-Q1</QualityQuestionIDRefs>
+      <MeasurementDef xmi:type="KPIProfile:KPIMeasureDefInput" xmi:id="_8IOGABQuEeSbRqcniHIcDA" preferredMeasurementFrequencyInMillisecond="1000" fullname="Process(NA_Database_VM_*->*), Method(NA_Server_VM_*->ASSET2008.ApplicationServer.RemoteObjects.SqlExecuteCommand(PARAMETERS FOR SEARCH TO BE DETERMINED))" ElementMeasureScope="SelfChildrenAndCalled" ElementContainerScope="All"/>
+      <WorkloadDef xmi:type="KPIProfile:KPIWorkloadDefInput" xmi:id="_QwcRwBQwEeSbRqcniHIcDA" ShortName="SimpleQuerySmallDB" Description="simple query of 2 to 5 keywords search criteria without filtering on a small database with a few hundredth of news items"/>
+      <WorkloadDef xmi:type="KPIProfile:KPIWorkloadDefInput" xmi:id="_csXRMBQwEeSbRqcniHIcDA" ShortName="ComplexQuerySmallDB" Description="complex query of many keywords search criteria with filtering on a small database with a few hundredth of news items"/>
+      <WorkloadDef xmi:type="KPIProfile:KPIWorkloadDefInput" xmi:id="_kFGZUBQwEeSbRqcniHIcDA" ShortName="SimpleQueryLargeDB" Description="simple query of 2 to 5 keywords search criteria without filtering on a large database with 100K of news items"/>
+      <WorkloadDef xmi:type="KPIProfile:KPIWorkloadDefInput" xmi:id="_sZVgYBQwEeSbRqcniHIcDA" ShortName="ComplexQueryLargeDB" Description="complex query of many keywords search criteria with filtering on a small database with 100K of news items"/>
+      <WorkloadDef xmi:type="KPIProfile:KPIWorkloadDefInput" xmi:id="_7OuAQBQwEeSbRqcniHIcDA" ShortName="SimpleQueryExtremeDB" Description="simple query of 2 to 5 keywords search criteria without filtering on a small database with an extremely large DB of 1million news items or more (setup for multitenancy)"/>
+      <WorkloadDef xmi:type="KPIProfile:KPIWorkloadDefInput" xmi:id="_ARldMBQxEeSbRqcniHIcDA" ShortName="ComplexQueryExtremeDB" Description="complex query of many keywords search criteria with filtering on a small database with an extremely large DB of 1million news items or more (setup for multitenancy)"/>
+    </KPIs>
+    <TechnologiesSpecification>WindowsServer2013</TechnologiesSpecification>
+    <TechnologiesSpecification>CSharp</TechnologiesSpecification>
+  </KPIProfile:forMeasurement>
 </xmi:XMI>
