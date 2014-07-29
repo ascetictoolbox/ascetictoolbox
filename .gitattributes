@@ -1640,6 +1640,16 @@ saas/programming-model/compss-rt/xml/resources/src/test/resources/resources.xml 
 saas/programming-model/compss-rt/xml/templates/bsc.xml -text
 saas/programming-model/compss-rt/xml/templates/cesnet.xml -text
 saas/programming-model/pom.xml -text
+saas/saas-modelling/kpispecsgen/.classpath -text
+saas/saas-modelling/kpispecsgen/.project -text
+saas/saas-modelling/kpispecsgen/META-INF/MANIFEST.MF -text
+saas/saas-modelling/kpispecsgen/build.acceleo -text
+saas/saas-modelling/kpispecsgen/build.properties -text
+saas/saas-modelling/kpispecsgen/src/kpispecsgen81/Activator.java -text
+saas/saas-modelling/kpispecsgen/src/kpispecsgen81/main/Generate.java -text
+saas/saas-modelling/kpispecsgen/src/kpispecsgen81/main/generate.mtl -text
+saas/saas-modelling/kpispecsgen/tasks/generate.xml -text
+saas/saas-modelling/kpispecsgen/tasks/generateTarget.xml -text
 saas/saas-modelling/papyrus-kpi-profile/.project -text
 saas/saas-modelling/papyrus-kpi-profile/model.profile.di -text
 saas/saas-modelling/papyrus-kpi-profile/model.profile.notation -text
