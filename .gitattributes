@@ -1640,6 +1640,7 @@ saas/programming-model/compss-rt/xml/resources/src/test/resources/resources.xml 
 saas/programming-model/compss-rt/xml/templates/bsc.xml -text
 saas/programming-model/compss-rt/xml/templates/cesnet.xml -text
 saas/programming-model/pom.xml -text
+saas/saas-modelling/papyrus-kpi-profile/.project -text
 saas/saas-modelling/papyrus-kpi-profile/model.profile.di -text
 saas/saas-modelling/papyrus-kpi-profile/model.profile.notation -text
 saas/saas-modelling/papyrus-kpi-profile/model.profile.uml -text
