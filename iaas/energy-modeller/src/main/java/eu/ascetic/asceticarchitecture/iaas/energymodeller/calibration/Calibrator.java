@@ -17,7 +17,7 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.HostEnergyCalibrationData;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostEnergyCalibrationData;
 
 /**
  * This takes an existing host and calibrates the energy model, for it so that
