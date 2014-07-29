@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -161,6 +163,17 @@ public class SystemCall implements Runnable {
         ProcessBuilder pb = new ProcessBuilder(command);
         File dir = new File(workingDirectory);
         pb.directory(dir);
+        
+        LOGGER.debug("System call working directory set to: " + pb.directory().getAbsolutePath());
+        
+        LOGGER.debug("Environment variables of system call are:");
+        HashMap<String, String> map = (HashMap<String, String>) pb.environment();
+        Iterator<String> it = map.keySet().iterator();
+        while (it.hasNext()) {
+            String key = it.next().toString();  
+            String value = map.get(key).toString();  
+            LOGGER.debug(key + " " + value);
+        }
         pb.redirectErrorStream(true);
 
         process = null;
