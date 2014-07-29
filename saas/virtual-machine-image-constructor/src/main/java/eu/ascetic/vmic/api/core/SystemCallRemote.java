@@ -15,6 +15,11 @@
  */
 package eu.ascetic.vmic.api.core;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -86,47 +91,60 @@ public class SystemCallRemote extends SystemCall {
      *             Provides a mechanism to propagate all exception to VMC core.
      */
     @Override
-    public void runCommand(String commandName, List<String> arguments)
+    public void runCommand(String sshCommandName, List<String> sshArguments)
             throws SystemCallException {
 
         // Construct the argument for the SSH command + escaping
-        String sshArgument = null;
-        for (Iterator<String> iterator = arguments.iterator(); iterator
+        String sshArgumentsAsString = null;
+        for (Iterator<String> iterator = sshArguments.iterator(); iterator
                 .hasNext();) {
-            sshArgument = sshArgument + " " + iterator.next();
+            if (sshArgumentsAsString == null) {
+                sshArgumentsAsString = iterator.next();
+            } else {
+                sshArgumentsAsString = sshArgumentsAsString + " "
+                        + iterator.next();
+            }
+
         }
 
-        // Run the command...
-        LOGGER.info("Constructing remote system call command: " + commandName
-                + " " + sshArgument);
+        String sshCommand = sshCommandName + " " + sshArgumentsAsString;
 
-        sshArgument.replace("'", "\\'");
-        sshArgument.replace("\"", "\\\"");
-        sshArgument.replace("$", "\\$");
+        LOGGER.info("Constructing remote system call command: " + sshCommand);
 
-        Vector<String> newArguments = new Vector<String>(1);
-        newArguments.add("\"" + sshArgument + "\"");
+        sshCommand = sshCommand.replace("'", "\\'");
+        sshCommand = sshCommand.replace("\"", "\\\"");
+        sshCommand = sshCommand.replace("$", "\\$");
+        sshCommand = "\"" + sshCommand + "\"";
 
         // Construct the SSH command
-        commandName = sshPath + " -i " + sshKeyPath + " " + sshUser + "@"
-                + hostAddress;
+        commandName = sshPath;
+        
+        // Add SSH arguments as a string to member variable
+        arguments = new Vector<String>(1);
+        arguments.add("-o");
+        arguments.add("UserKnownHostsFile=/dev/null");
+        arguments.add("-o");
+        arguments.add("StrictHostKeyChecking=no");
+        arguments.add("-c");
+        arguments.add("blowfish");
+        arguments.add("-i");
+        arguments.add(sshKeyPath);
+        arguments.add(sshUser + "@" + hostAddress);
+        arguments.add(sshCommand);
 
-        // Original SystemCall logic here
-        this.commandName = commandName;
-        this.arguments = newArguments;
+        Vector<String> systemCallCommand = new Vector<String>();
+        systemCallCommand.add(commandName);
 
-        Vector<String> command = new Vector<String>();
         String commandString = commandName;
-        command.add(commandName);
-
+        
         for (int i = 0; i < arguments.size(); i++) {
-            command.add(newArguments.get(i));
+            systemCallCommand.add(arguments.get(i));
             commandString = commandString + " " + arguments.get(i);
         }
-
+        
         // Run the command...
         LOGGER.info("Runnning system call command: " + commandString);
-        execute(command);
+        execute(systemCallCommand);
         LOGGER.debug("Return value is: " + returnValue);
     }
 
@@ -136,10 +154,16 @@ public class SystemCallRemote extends SystemCall {
      * @param scriptAsString
      *            String representation of the script to convert
      * @return The converted script.
+     * @throws IOException
      */
-    public String scriptToSingleLineCommand(String scriptAsString) {
-        // TODO
-        scriptAsString.replace("\n", ";");
-        return null;
+    public static String scriptToSingleLineCommand(File scriptFile)
+            throws IOException {
+        byte[] encoded = Files.readAllBytes(Paths.get(scriptFile
+                .getAbsolutePath()));
+        String scriptAsString = new String(encoded, Charset.defaultCharset());
+        scriptAsString = scriptAsString.replaceAll("(?m)^#.*(?:\r?\n)?", "");
+        scriptAsString = scriptAsString.replaceAll("(?m)^\\s+", "");
+        String convertedScript = scriptAsString.replace("\n", ";");
+        return convertedScript;
     }
 }

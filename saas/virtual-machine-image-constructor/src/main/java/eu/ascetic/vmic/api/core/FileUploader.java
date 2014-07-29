@@ -92,10 +92,8 @@ public class FileUploader implements Runnable {
         // Get path to SSH key
         String sshUser = vmicApi.getGlobalState().getConfiguration()
                 .getSshUser();
-        // Get file URI
-        String fileName = file.getName();
         // Get file's parent directory
-        String filePath = file.getParent();
+        String fileAbsolutePath = file.getAbsolutePath();
 
         Vector<String> arguments = new Vector<String>();
 
@@ -107,14 +105,26 @@ public class FileUploader implements Runnable {
         // Enable SSH
         arguments.add("-e");
         // SSH binary and key path (use blowfish for faster uploading"
-        arguments.add("\"" + sshPath + " -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -c blowfish" + " -i " + sshKeyPath + "\"");
+        arguments
+                .add("\""
+                        + sshPath
+                        + " -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -c blowfish"
+                        + " -i " + sshKeyPath + "\"");
         // Files to add
-        arguments.add(fileName);
+        if (fileAbsolutePath.contains("cygwin")){
+            fileAbsolutePath = fileAbsolutePath.replace("\\", "/");
+            String newFileAbsolutePath = "/cygdrive/" + fileAbsolutePath.substring(0, fileAbsolutePath.indexOf(':')) + "/" + fileAbsolutePath.substring(fileAbsolutePath.indexOf(':') + 2, fileAbsolutePath.length());
+            arguments.add(newFileAbsolutePath);
+            LOGGER.debug("Cygwin rsync binary detected, altering file path to: " + newFileAbsolutePath);
+        } else {
+            arguments.add(fileAbsolutePath);
+            LOGGER.debug("Using absolute path to file to be uploaded" + fileAbsolutePath);
+        }
         // Remote location to put the files
         arguments.add(sshUser + "@" + hostAddress + ":" + remotePath);
 
         // Construct and invoke system call to rsync
-        SystemCall systemCall = new SystemCall(filePath, rsyncPath, arguments);
+        SystemCall systemCall = new SystemCall(file.getParent(), rsyncPath, arguments);
         Thread thread = new Thread(systemCall);
 
         try {
