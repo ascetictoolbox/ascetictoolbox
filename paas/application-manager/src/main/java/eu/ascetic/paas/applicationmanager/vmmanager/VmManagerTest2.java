@@ -39,7 +39,6 @@ public class VmManagerTest2 {
 //		testGetImage(client);
 //		insertSeparator("testChangeStateVm");
 //		testChangeStateVm(client);
-		List<SchedulingAlgorithm> sa = client.getSchedulingAlgorithms();
 		System.out.println();
 
 		
