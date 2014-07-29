@@ -81,6 +81,7 @@ iaas/energy-modeller/target/generated-sources/jaxws-wsimport/eu/ascetic/ascetica
 iaas/energy-modeller/target/generated-sources/jaxws-wsimport/eu/ascetic/asceticarchitecture/iaas/energymodeller/calibration/client/InduceLoadResponse.java -text
 iaas/energy-modeller/target/generated-sources/jaxws-wsimport/eu/ascetic/asceticarchitecture/iaas/energymodeller/calibration/client/ObjectFactory.java -text
 iaas/energy-modeller/target/generated-sources/jaxws-wsimport/eu/ascetic/asceticarchitecture/iaas/energymodeller/calibration/client/package-info.java -text
+iaas/energy-modeller/target/jaxws/stale/CalibrationLoadGenerator.stale/.0d1463fcc66227bffdda04e314718c1124146be0 -text
 iaas/iaas-pricing-modeller/pom.xml -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/IaaSPricingModeller.java -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/IaaSPricingModellerInterface.java -text
