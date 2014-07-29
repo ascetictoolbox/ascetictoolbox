@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.TimerTask;
 
@@ -17,16 +18,21 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.DataConsumptionDAOImpl;
+import eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.DataEventDAOImpl;
 import eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.IaaSDataDAOImpl;
+import eu.ascetic.asceticarchitecture.paas.component.common.model.DataConsumption;
+import eu.ascetic.asceticarchitecture.paas.component.common.model.DataEvent;
 import eu.ascetic.asceticarchitecture.paas.component.common.model.IaaSVMConsumption;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.DataCollectorTaskInterface;
 
 public class DataCollector extends TimerTask implements DataCollectorTaskInterface {
 
 	private IaaSDataDAOImpl iaasdatadriver;
+	private DataConsumptionDAOImpl dataconumption;
+	private DataEventDAOImpl dataevent;
 
-
-	private String AMPath = "http://localhost:9000/event";
+	private String AMPath = "http://localhost:9000/query";
 	private URL url;
 	private static final Logger logger = Logger.getLogger(DataCollector.class);
 	
@@ -35,10 +41,9 @@ public class DataCollector extends TimerTask implements DataCollectorTaskInterfa
 		try {
 			 url = new URL(AMPath);
 		} catch (MalformedURLException e) {
-			
 			 logger.error("Problem with AM url");
 		}
-	    logger.info("##Configured data task");
+	    logger.debug("##Configured data task");
 	    
 	}
 	
@@ -46,28 +51,33 @@ public class DataCollector extends TimerTask implements DataCollectorTaskInterfa
 	public void handleConsumptionData(String applicationid, String deploymentid) {
 		logger.info("Connection to IaaS DB for data retrieval");
 		// TODO get vm for deployment???? also replicate for each wm
-		String vmid="";
-		long vmcpu_total=10;
-		
+		String vmid="10111";
+		long vmcpu_total=1;
 		if (iaasdatadriver==null){
 			logger.info("Connection to IaaS DB unavailable");
 			return;
 		}
-		
 		String hostid = iaasdatadriver.getHostIdForVM(vmid);
 		String CPU_HOST = iaasdatadriver.getHostTotalCpu(hostid);
+		if (CPU_HOST.equals("0"))CPU_HOST="1.0";
 		double ratio = vmcpu_total/Double.parseDouble(CPU_HOST);
-		
 		List<IaaSVMConsumption> data = iaasdatadriver.getEnergyForVM(hostid, vmid);
 		logger.info("vm id "+vmid + " has cpu "+vmcpu_total);
 		logger.info("vm is on host "+hostid + " with cpu "+CPU_HOST);
-		long load;
+		double load;
 		double utilization;
+		
 		for (IaaSVMConsumption element : data){
-			utilization = Long.parseLong(element.getCpu())/vmcpu_total;
-			logger.info("Connection to IaaS DB ");
-			load = (long) ( Long.parseLong(element.getEnergy())*utilization*ratio);
-			logger.info("Got load "+load + " from ratio" +ratio + " and utilization "+utilization);
+			utilization = Double.parseDouble(element.getCpu())/vmcpu_total;
+			logger.debug("Connection to IaaS DB ");
+			load = (double) ( Double.parseDouble(element.getEnergy())*utilization*ratio);
+			logger.debug("Got load "+load + " from ratio " +ratio + " and utilization "+utilization+" energy "+Double.parseDouble(element.getEnergy()));
+			DataConsumption datacons = new DataConsumption();
+			datacons.setApplicationid(applicationid);
+			datacons.setDeploymentid(deploymentid);
+			datacons.setVmenergy(load);
+			datacons.setVmid(vmid);
+			dataconumption.save(datacons);
 		}
 		
 	}
@@ -75,14 +85,13 @@ public class DataCollector extends TimerTask implements DataCollectorTaskInterfa
 	@Override
 	public void handleEventData(String applicationid, String deploymentid,String eventid) {
 		logger.info("getting data task");
-		String requestEntity = "{\"$match\":{\"appId\":\""+applicationid+"\"}}";
+		// TODO temporarly using a test id
 		
+		String requestEntity = "{\"$match\":{\"appId\":\""+applicationid+"\"}}";
 		HttpURLConnection connection;
 		try {
-			
 			logger.debug("App monitor connection on "+url.getHost() + url.getPort() + url.getPath() + url.getProtocol());
 			connection = (HttpURLConnection) url.openConnection();
-			
 			connection.setDoOutput(true);
 			connection.setDoInput(true);
 			connection.setRequestMethod("POST");
@@ -90,26 +99,24 @@ public class DataCollector extends TimerTask implements DataCollectorTaskInterfa
 			OutputStream response = connection.getOutputStream();
 			response.write(requestEntity.getBytes());
 			response.flush();
-
 			logger.debug("Connected !");
-		
 			if (connection.getResponseCode() != HttpURLConnection.HTTP_CREATED) {
 				logger.info("App monitor connection error");
+				logger.info("code "+connection.getResponseCode());
 			}
-	 
 			BufferedReader reader = new BufferedReader(new InputStreamReader((connection.getInputStream())));
 			String jsonres="";
 			String line;
 			while ((line = reader.readLine()) != null) {
 				jsonres=jsonres+line;
 	        }
-			
-			System.out.println("Received "+jsonres);
+			// TODO get last value to filter only most recent data
+			logger.debug("received "+jsonres);
 			logger.debug("getting result");
 			connection.disconnect();
-		
 		    JsonArray entries = (JsonArray) new JsonParser().parse(jsonres);
-		    
+		    Timestamp ts;
+		    long time;
 		    for (JsonElement el : entries){
 		    	JsonObject jo = (JsonObject) el;
 		    	logger.debug("id" + jo.getAsJsonObject("_id"));
@@ -118,9 +125,19 @@ public class DataCollector extends TimerTask implements DataCollectorTaskInterfa
 		    	logger.debug("data" + jo.getAsJsonObject("data"));
 		    	logger.debug("timestamp" + jo.getAsJsonPrimitive("timestamp"));
 		    	logger.debug("endtime" + jo.getAsJsonPrimitive("endtime"));
+		    	DataEvent data = new DataEvent();
+		    	data.setApplicationid(applicationid);
+		    	data.setEventid(eventid);
+		    	data.setVmid(jo.getAsJsonPrimitive("nodeId").getAsString());
+		    	time=jo.getAsJsonPrimitive("timestamp").getAsLong();
+		    	ts = new Timestamp(time);
+		    	data.setBegintime(ts);
+		    	time=jo.getAsJsonPrimitive("endtime").getAsLong();
+		    	ts = new Timestamp(time);
+		    	data.setEndtime(ts);
+		    	dataevent.save(data);
 		    }
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			 logger.error("#problem occurred");
 			e.printStackTrace();
 		}
@@ -131,7 +148,7 @@ public class DataCollector extends TimerTask implements DataCollectorTaskInterfa
 	public void run() {
 		
 	}
-
+	
 	public String getAMPath() {
 		return AMPath;
 	}
@@ -143,5 +160,14 @@ public class DataCollector extends TimerTask implements DataCollectorTaskInterfa
 		this.iaasdatadriver = iaasdatadriver;
 	}
 
+	public void setDataconumption(DataConsumptionDAOImpl dataconumption) {
+		this.dataconumption = dataconumption;
+	}
+
+	public void setDataevent(DataEventDAOImpl dataevent) {
+		this.dataevent = dataevent;
+	}
+
+	
 	
 }

@@ -17,19 +17,21 @@ public class EnergyModellerHandler {
 	
 	@Test
 	public void testEnergyModellerApplicationConsumption() {
-		String energy = serviceEM.energyApplicationConsumption("providerid", "applicationid", "deploymentid");
+		double energy = serviceEM.energyApplicationConsumption("providerid", "applicationid", "deploymentid");
+		
 		Assert.assertNotNull(energy);
 	}
 	
 	@Test
 	public void testEnergyModellerEnergyEstimation() {
-		String energy = serviceEM.energyEstimation("providerid", "applicationid", "deploymentid",null);
+		double energy = serviceEM.energyEstimation("providerid", "applicationid", "deploymentid",null);
 		Assert.assertNotNull(energy);
 	}
 
 	@Test
 	public void testEnergyModellerEnergyEstimationEvent() {
-		String energy = serviceEM.energyEstimation("providerid", "applicationid", "deploymentid","event");
+		String appid = "applicationID_deploymentID";
+		double energy = serviceEM.energyEstimation("providerid", appid, "null","null");
 		Assert.assertNotNull(energy);
 	}
 	

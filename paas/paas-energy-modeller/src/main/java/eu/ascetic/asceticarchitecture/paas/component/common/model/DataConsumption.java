@@ -10,13 +10,17 @@ public class DataConsumption {
 	private String deploymentid;
 	private String vmid;
 	private String eventid;
-	private Timestamp starttime;
-	private Timestamp endtime;
+	private Timestamp time;
 	private double cpu;
 	private double memory;
 	private double disk;
 	private double network;
-	
+	private double hostcpu;
+	private double vmtotalcpu;
+	private double hosttotalcpu;
+	private double vmenergy;
+	private double hostenergy;
+		
 	public String getApplicationid() {
 		return applicationid;
 	}
@@ -41,17 +45,12 @@ public class DataConsumption {
 	public void setEventid(String eventid) {
 		this.eventid = eventid;
 	}
-	public Timestamp getStarttime() {
-		return starttime;
+
+	public Timestamp getTime() {
+		return time;
 	}
-	public void setStarttime(Timestamp starttime) {
-		this.starttime = starttime;
-	}
-	public Timestamp getEndtime() {
-		return endtime;
-	}
-	public void setEndtime(Timestamp endtime) {
-		this.endtime = endtime;
+	public void setTime(Timestamp time) {
+		this.time = time;
 	}
 	public double getCpu() {
 		return cpu;
@@ -76,6 +75,36 @@ public class DataConsumption {
 	}
 	public void setNetwork(double network) {
 		this.network = network;
+	}
+	public double getHostcpu() {
+		return hostcpu;
+	}
+	public void setHostcpu(double hostcpu) {
+		this.hostcpu = hostcpu;
+	}
+	public double getVmtotalcpu() {
+		return vmtotalcpu;
+	}
+	public void setVmtotalcpu(double vmtotalcpu) {
+		this.vmtotalcpu = vmtotalcpu;
+	}
+	public double getHosttotalcpu() {
+		return hosttotalcpu;
+	}
+	public void setHosttotalcpu(double hosttotalcpu) {
+		this.hosttotalcpu = hosttotalcpu;
+	}
+	public double getVmenergy() {
+		return vmenergy;
+	}
+	public void setVmenergy(double vmenergy) {
+		this.vmenergy = vmenergy;
+	}
+	public double getHostenergy() {
+		return hostenergy;
+	}
+	public void setHostenergy(double hostenergy) {
+		this.hostenergy = hostenergy;
 	}
 	
 	

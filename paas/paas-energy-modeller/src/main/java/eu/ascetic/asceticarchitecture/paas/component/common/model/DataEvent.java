@@ -11,15 +11,17 @@ public class DataEvent {
 	private String deploymentid;
 	private String vmid;
 	private String eventid;
+	private String data;
+	private Timestamp begintime;
+	private Timestamp endtime;
+	private double energy;
+	
 	public String getEventid() {
 		return eventid;
 	}
 	public void setEventid(String eventid) {
 		this.eventid = eventid;
 	}
-	private Timestamp time;
-	private double energy;
-	
 	public String getApplicationid() {
 		return applicationid;
 	}
@@ -38,25 +40,31 @@ public class DataEvent {
 	public void setVmid(String vmid) {
 		this.vmid = vmid;
 	}
-	public Timestamp getTime() {
-		return time;
-	}
-	public void setTime(Timestamp time) {
-		this.time = time;
-	}
 	public double getEnergy() {
 		return energy;
 	}
 	public void setEnergy(double energy) {
 		this.energy = energy;
+	}
+	public String getData() {
+		return data;
+	}
+	public void setData(String data) {
+		this.data = data;
+	}
+	public Timestamp getBegintime() {
+		return begintime;
+	}
+	public void setBegintime(Timestamp begintime) {
+		this.begintime = begintime;
+	}
+	public Timestamp getEndtime() {
+		return endtime;
+	}
+	public void setEndtime(Timestamp endtime) {
+		this.endtime = endtime;
 	} 
 	
-	
-	
-	
-	
-	
-
 }
 
 

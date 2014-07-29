@@ -35,39 +35,29 @@ public class LoadInjectorService implements LoadInjectorInterface {
 		
 		logwrite("Running test from file ");
         try {
-
             ClientJMeterEngine client = new ClientJMeterEngine(serverurl);	
 	        JMeterUtils.loadJMeterProperties(serverPath+propertyFile);
 	        JMeterUtils.setJMeterHome(serverPath);	        
 	        logwrite("Settings loaded ");       
 	        JMeterUtils.initLogging();
 	        JMeterUtils.initLocale();
-	        
 	        logwrite("Init ok ");
-	        
 			SaveService.loadProperties();
 			logwrite("Loading test ");
 	        FileInputStream in = new FileInputStream(jmxFilePath+"/"+filename);
-
 	        HashTree testPlanTree = SaveService.loadTree(in);
-	       
 	        in.close();
-	      
 	        client.configure(testPlanTree);
 	        client.runTest();
-	        
 	        logwrite("Scrit exectution started, waiting its termination");
-	        
 	        try {
 	            Thread.sleep(timeout);
 	        } catch(InterruptedException ex) {
 	            Thread.currentThread().interrupt();
 	        }
-
 	        logwrite("Script exectution time elapsed");
 	        client.stopTest(true);
 	        logwrite("Script terminated");
-	        
 	        
         } catch (Exception e) {
 			logwrite("Something went wrong while loading the test plan file ");

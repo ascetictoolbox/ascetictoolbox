@@ -1,5 +1,6 @@
 package eu.ascetic.asceticarchitecture.paas.component.common.dao;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -22,6 +23,12 @@ public interface DataConsumptionDAO {
 	    public List<DataConsumption> getByVMId(String vmid);
 	    
 	    public List<DataConsumption> getByEventId(String eventid);
+	    
+	    public Timestamp getLastConsumptionForVM(String applicationid, String vmid);
+
+		public double getTotalEnergyForDeployment(String applicationid,String deploymentid);
+
+		public double getTotalEnergyForVM(String applicationid, String deploymentid,String vmid);
 	
 	    
 }

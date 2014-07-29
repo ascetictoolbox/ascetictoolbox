@@ -2,8 +2,8 @@ package eu.ascetic.asceticarchitecture.paas.component.energymodeller.service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DecimalFormat;
 import java.util.Properties;
-import java.util.Timer;
 
 import org.apache.log4j.Logger;
 
@@ -11,6 +11,8 @@ import eu.ascetic.asceticarchitecture.paas.component.common.database.PaaSEMDatab
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EMSettings;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.PaaSEnergyModeller;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.task.DataCollector;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.task.EnergyDataAggregatorService;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.task.EventDataAggregatorService;
 import eu.ascetic.asceticarchitecture.paas.component.loadinjector.interfaces.LoadInjectorInterface;
 import eu.ascetic.asceticarchitecture.paas.component.loadinjector.service.LoadInjectorService;
 
@@ -28,9 +30,9 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 	private LoadInjectorInterface loadInjector;	
 	private EMSettings emsettings;
 	private PaaSEMDatabaseManager dbmanager;
-	private Timer datatimer;
-	private DataCollector taskevents;
-	private Timer eventimer;
+	private DataCollector datacollector;
+	private EnergyDataAggregatorService energyService;
+	private EventDataAggregatorService eventService;
 	
 	/**
 	 * Constructor, load from the configuration file the settings
@@ -38,9 +40,10 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 	
 	public EnergyModellerSimple(String propertyFile) {
 		this.propertyFile=propertyFile;
+		LOGGER.info("EM Initialization ongoing");
 		initializeProperty();
 		initializeLoadInjector();
-		startTasks();
+		initializeDataConnectors();
 		LOGGER.info("EM Initialization complete");
 	}
 	
@@ -57,39 +60,72 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 		LOGGER.info("Application " + applicationid + " on deployment " + deploymentid + " removed from monitoring");
 		dbmanager.getMonitoringData().terminateMonitoring(applicationid, deploymentid);
 		// get iaas data
-		taskevents.handleConsumptionData(applicationid,deploymentid);
+		datacollector.handleConsumptionData(applicationid,deploymentid);
 		return true;
 	}
 
 	@Override
-	public String energyApplicationConsumption(String providerid,String applicationid, String deploymentid) {
+	public double energyApplicationConsumption(String providerid,String applicationid, String deploymentid) {
 		// compute value from collected data
-		// get from db if data has been collected in past or training occurred
-		taskevents.handleConsumptionData(applicationid,deploymentid);
-		return "120";
+		// check from db if data has been collected in past or training occurred
+		datacollector.handleConsumptionData(applicationid,deploymentid);
+		double energy = energyService.getTotal(applicationid, deploymentid, "");
+		LOGGER.info("Application consumed " + String.format( "%.2f", energy ));
+		return energy;
 	}
 
 	@Override
-	public String energyEstimation(String providerid, String applicationid,	String deploymentid, String eventid) {
+	public double energyEstimation(String providerid, String applicationid,	String deploymentid,  String eventid) {
 		if (eventid==null){
 			LOGGER.info("Energy estimation for " + applicationid );
-			taskevents.handleConsumptionData(applicationid,deploymentid);
+			datacollector.handleConsumptionData(applicationid,deploymentid);
+			double energy = energyService.getTotal(applicationid, deploymentid, "");
+			DecimalFormat df = new DecimalFormat("#.00"); 
+			
+			LOGGER.info("Application consumed " +String.format( "%.2f", energy ));
+			return energy;
+			 
 		} else {
 			LOGGER.info("Energy estimation for " + applicationid + " and event " + eventid);
-			taskevents.handleEventData(applicationid,deploymentid,eventid);
-			taskevents.handleConsumptionData(applicationid,deploymentid);
+			datacollector.handleEventData(applicationid,deploymentid,eventid);
+			datacollector.handleConsumptionData(applicationid,deploymentid);
+			double total_event = eventService.getTotal(applicationid, deploymentid, eventid);
+			double total_energy = energyService.getTotal(applicationid, deploymentid, eventid);
+			LOGGER.info("Event total "+total_event+" consumed " + String.format( "%.2f", total_energy ));
+			if (total_event == 0) return 0;
+			return total_energy/total_event;
 		}
 		
-		return "120";
 	}
+
+	@Override
+	public double energyEstimationForVM(String providerid, String applicationid, String vmid, String eventid) {
+		if (eventid==null){
+			LOGGER.info("Energy estimation for " + applicationid );
+			//todo get the deployment for vm
+			//datacollector.handleConsumptionData(applicationid,deploymentid);
+			double energy =  energyService.getTotal(applicationid, null, vmid, "");
+			LOGGER.info("Application consumed " +energy);
+			return energy;
+		} else {
+			LOGGER.info("Energy estimation for " + applicationid + " and event " + eventid);
+			//datacollector.handleEventData(applicationid,deploymentid,eventid);
+			//datacollectdouble total_event = eventService.getTotal(applicationid, deploymentid, eventid);
+			double total_energy = energyService.getTotal(applicationid, null , vmid, eventid);
+			double total_event = eventService.getTotal(applicationid, null , vmid, eventid);
+			LOGGER.info("Event total "+total_event+" consumed " +total_energy);
+			if (total_event == 0) return 0;
+			return total_energy/total_event;
+
+		}
+		
+	}	
 
 	@Override
 	public boolean trainApplication(String providerid, String applicationid, String deploymentid, String eventid) {
 		LOGGER.info("Starting to train application " + applicationid + " for this deployment " + deploymentid);
-		
 		LOGGER.info("Registering training");
 		dbmanager.getMonitoringData().createTraining(applicationid, deploymentid, eventid);
-		
 		if (eventid==null){
 			LOGGER.info("Application training");
 			loadInjector.deployTrainingForApplication(applicationid, deploymentid);
@@ -97,10 +133,8 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 			LOGGER.info("Event training");
 			loadInjector.deployTrainingForApplicationEvent(applicationid, deploymentid, eventid);
 		}
-		
 		LOGGER.info("Training terminated");
 		dbmanager.getMonitoringData().terminateTraining(applicationid, deploymentid);
-		
 		return true;
 	}
 
@@ -123,7 +157,7 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 	 */
 	
 	private void initializeProperty(){
-		LOGGER.info("Initializing component");
+		LOGGER.debug("Configuring settings and EM PaaS Database");
 		InputStream inputStream = getClass().getClassLoader().getResourceAsStream(propertyFile);
 		if (inputStream == null) {
 			LOGGER.warn("Properties not loaded, using default values");
@@ -132,11 +166,10 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 		try {
 			props.load(inputStream);
 			emsettings = new EMSettings(props);
-			LOGGER.info("Properties loaded");
+			LOGGER.debug("Properties loaded");
 			dbmanager = new PaaSEMDatabaseManager();
 			dbmanager.setup(emsettings);
-			LOGGER.info("Database Configured");
-			
+			LOGGER.debug("Configured");
 		} catch (IOException e) {
 			LOGGER.error("Properties not loaded due to a failure");
 			e.printStackTrace();
@@ -144,29 +177,26 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 	}
 	
 	private void initializeLoadInjector(){
+		LOGGER.debug("Configuring load injector");
 		loadInjector = new LoadInjectorService();
 		loadInjector.configureLoadInjector(emsettings.getServerPath(), emsettings.getServerurl(), emsettings.getPropertyFile(), emsettings.getJmxFilePath());
-		LOGGER.info("Configured load injector");
+		LOGGER.debug("Configured");
 	}
 	
-	private void startTasks(){
-		LOGGER.info("Creating the tasks that collect data ");
-		taskevents = new DataCollector();
-		taskevents.setAMPath(emsettings.getAppmonitor());
-		taskevents.setup();
-		taskevents.setIaasdatadriver(dbmanager.getIaasdatadao());
-		LOGGER.info("Starting the tasks that collect data ");
-		eventimer = new Timer();
-		eventimer.scheduleAtFixedRate(taskevents, 1000, Long.parseLong(emsettings.getEventsloadinterval()));
-		LOGGER.info("Task started ");
+	private void initializeDataConnectors(){
+		LOGGER.debug("Setting connection to data sources for events and energy ");
+		datacollector = new DataCollector();
+		datacollector.setAMPath(emsettings.getAppmonitor());
+		datacollector.setup();
+		datacollector.setIaasdatadriver(dbmanager.getIaasdatadao());
+		datacollector.setDataconumption(dbmanager.getDataConsumptionDAOImpl());
+		datacollector.setDataevent(dbmanager.getDataEventDAOImpl());
+		energyService = new EnergyDataAggregatorService();
+		energyService.setDataDAO(dbmanager.getDataConsumptionDAOImpl());
+		eventService = new EventDataAggregatorService();
+		eventService.setDaoEvent(dbmanager.getDataEventDAOImpl());
+		LOGGER.debug("Configured ");
 	}
-	
-//	private void stopTasks(){
-//		LOGGER.info("Closing the tasks that collect data ");
-//		datatimer.cancel();
-//		eventimer.cancel();
-//		LOGGER.info("Closed the tasks that collect data ");
-//	}
-	
+
 	
 }

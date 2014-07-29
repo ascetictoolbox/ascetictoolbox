@@ -23,57 +23,47 @@ public class EnergyModellerMonitoringDAOImpl implements EnergyModellerMonitoring
 	private static String SQL_CREATE="CREATE TABLE IF NOT EXISTS EMONITORING (monitoringid int NOT NULL AUTO_INCREMENT, applicationid varchar(20),deploymentid varchar(20),"
 			+ "type varchar(20), started timestamp DEFAULT '2014-01-01 00:00:00', ended timestamp DEFAULT  '2014-01-01 00:00:00', status boolean, events varchar(50), PRIMARY KEY (monitoringid))";
 	private static String SQL_INSERT="insert into EMONITORING (applicationid,deploymentid,type, started, status , events ) values (?, ?, ?, ?, ?, ?) ";
-	//private static String SQL_Q_UPDATE="UPDATE EMONITORING SET status = ?,ended = ? WHERE applicationid = ? and deploymentid = ?";
 	private static String SQL_Q_UPDATE_TIME="UPDATE EMONITORING SET status = ?, ended = ? WHERE applicationid = ? and deploymentid = ? and type = ?";
 	private static String SQL_Q_DEPID="select * from EMONITORING where applicationid = ? and deploymentid = ?";
 	private static String SQL_Q_DEPID_monitoring="select * from EMONITORING where status=true and type='MONITORING'";
 	private static String SQL_Q_DEPID_training="select * from EMONITORING where status=true and type='TRAINING'";
-	//private static String SQL_Q_ALL="select * from EMONITORING where status = true";
+	private static String SQL_CLEAN="DELETE FROM EMONITORING";
 	
 	@Override
 	public void initialize() {
 		jdbcTemplate.execute(SQL_CREATE);
-	    LOGGER.info("Created table EMONITORING");
+		jdbcTemplate.execute(SQL_CLEAN);
+	    LOGGER.debug("Created table EMONITORING");
 	}
-	
-//	@Override
-//	public void save(EnergyModellerMonitoring data) {
-//		LOGGER.info("Inserting into table EMONITORING");
-//		 Object[] params = new Object[] { data.getApplicationid() , data.getDeploymentid() , data.getEnded() , data.getStarted() , data.isStatus() };
-//		 int[] types = new int[] { Types.VARCHAR,Types.VARCHAR,Types.VARCHAR,Types.TIMESTAMP, Types.BOOLEAN };
-//		 jdbcTemplate.update(SQL_INSERT, params, types);
-//		 LOGGER.info("Inserted");
-//		
-//	}
 
 	@Override
 	public void setDataSource(DataSource dataSource){
-		LOGGER.info("datasource for EMONITORING ready");
+		LOGGER.debug("datasource for EMONITORING ready");
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 	
 	@Override
 	public void createTraining(String applicationid, String deploymentid, String events) {
-		LOGGER.info("Inserting into table EMONITORING");
+		LOGGER.debug("Inserting into table EMONITORING");
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Calendar cal = Calendar.getInstance();
 		Timestamp ts = Timestamp.valueOf(dateFormat.format(cal.getTime()));
 		Object[] params = new Object[] { applicationid , deploymentid , "TRAINING" , ts , Boolean.TRUE , events };
 		int[] types = new int[] { Types.VARCHAR,Types.VARCHAR,Types.VARCHAR,Types.TIMESTAMP, Types.BOOLEAN, Types.VARCHAR };
 		jdbcTemplate.update(SQL_INSERT, params, types);
-		LOGGER.info("Inserted new training");	
+		LOGGER.debug("Inserted new training");	
 	}
 	
 	@Override
 	public void createMonitoring(String applicationid, String deploymentid, String events) {
-		LOGGER.info("Inserting into table EMONITORING");
+		LOGGER.debug("Inserting into table EMONITORING");
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Calendar cal = Calendar.getInstance();
 		Timestamp ts = Timestamp.valueOf(dateFormat.format(cal.getTime()));
 		Object[] params = new Object[] { applicationid , deploymentid , "MONITORING" , ts , Boolean.TRUE , events };
 		int[] types = new int[] { Types.VARCHAR,Types.VARCHAR,Types.VARCHAR,Types.TIMESTAMP, Types.BOOLEAN ,Types.VARCHAR};
 		jdbcTemplate.update(SQL_INSERT, params, types);
-		LOGGER.info("Inserted new monitoring");	
+		LOGGER.debug("Inserted new monitoring");	
 		
 	}
 	
@@ -113,27 +103,10 @@ public class EnergyModellerMonitoringDAOImpl implements EnergyModellerMonitoring
 
 	@Override
 	public List<EnergyModellerMonitoring> getMonitoringActive() {
-		LOGGER.info("getting list of active training");
+		LOGGER.debug("getting list of active training");
 		List<EnergyModellerMonitoring> active = jdbcTemplate.query(SQL_Q_DEPID_monitoring,new EnergyModellerMonitoringMapper());
-		LOGGER.info("got "+active.size());
+		LOGGER.debug("got "+active.size());
 		return active;
 	}
-
-
-
-//	@Override
-//	public List<EnergyModellerMonitoring> getByStatus() {
-//		LOGGER.info("getting active monitoring");
-//		return jdbcTemplate.query(SQL_Q_ALL, new EnergyModellerMonitoringMapper());
-//	}
-
-
-
-
-
-
-
-
-
 
 }

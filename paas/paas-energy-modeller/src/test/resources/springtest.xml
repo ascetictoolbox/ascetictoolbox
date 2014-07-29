@@ -23,28 +23,28 @@
      
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-        <property name="url" value="jdbc:mysql://localhost:3306/testpaasemdb" />
+        <property name="url" value="jdbc:mysql://localhost:3306/ascetic_paas_em" />
         <property name="username" value="root" />
         <property name="password" value="root" />
     </bean>
 
     <bean id="dataSourceIaaS" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-        <property name="url" value="jdbc:mysql://localhost:3306/iaas" />
+        <property name="url" value="jdbc:mysql://localhost:3306/ascetic-em" />
         <property name="username" value="root" />
         <property name="password" value="root" />
     </bean>
     
-<!--    <bean id="instance" class="org.springframework.jdbc.datasource.DriverManagerDataSource"> -->
-<!--         <property name="driverClassName" value="com.mysql.jdbc.Driver" /> -->
-<!--         <property name="url" value="jdbc:mysql://localhost:3306/" /> -->
-<!--         <property name="username" value="root" /> -->
-<!--         <property name="password" value="root" /> -->
-<!--     </bean> -->
+   <bean id="instance" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://localhost:3306/" />
+        <property name="username" value="root" />
+        <property name="password" value="root" />
+    </bean>
     
 
 <!-- 	<jdbc:initialize-database data-source="instance"> -->
-<!-- 		<jdbc:script location="eu/ascetic/asceticarchitecture/paas/component/common/script/createdb.sql" /> -->
+<!-- 		<jdbc:script location="classpath:createdb.sql" /> -->
 <!-- 	</jdbc:initialize-database> -->
 
 </beans>

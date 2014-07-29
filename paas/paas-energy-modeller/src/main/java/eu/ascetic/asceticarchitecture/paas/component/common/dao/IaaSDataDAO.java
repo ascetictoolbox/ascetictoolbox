@@ -1,5 +1,6 @@
 package eu.ascetic.asceticarchitecture.paas.component.common.dao;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -17,5 +18,7 @@ public interface IaaSDataDAO {
 	public String getHostTotalCpu(String hostid);
 	
 	public List<IaaSVMConsumption> getEnergyForVM(String hostid,String vmid);
+	
+	public List<IaaSVMConsumption> getEnergyForVMFromTime(String hostid,String vmid,Timestamp time);
 	
 }

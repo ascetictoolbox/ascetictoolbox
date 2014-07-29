@@ -1,5 +1,6 @@
 package eu.ascetic.asceticarchitecture.paas.component.common.dao.impl;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -22,7 +23,10 @@ public class IaaSDataDAOImpl implements IaaSDataDAO {
 			+ "								from vm_measurement as vmm, host_measurement as hmm "
 			+ "								where vmm.host_id = ? and vmm.vm_id = ? "
 						+ "						and hmm.host_id=vmm.host_id and vmm.clock = hmm.clock";
-	
+	private static String QUERY_GETENERGYFORVMWTIME="select vmm.vm_id as vm_id,hmm.energy as energy ,vmm.clock as clock ,vmm.cpu_load as cpu, hmm.host_id as host_id "
+			+ "								from vm_measurement as vmm, host_measurement as hmm "
+			+ "								where vmm.host_id = ? and vmm.vm_id = ? "
+						+ "						and hmm.host_id=vmm.host_id and vmm.clock = hmm.clock and hmm.clock > ?";
 	
 	@Override
 	public void initialize() {
@@ -31,7 +35,7 @@ public class IaaSDataDAOImpl implements IaaSDataDAO {
 
 	@Override
 	public void setDataSource(DataSource dataSource) {
-		LOGGER.info("datasource for IaaS VM Data ready");
+		LOGGER.debug("datasource for IaaS VM Data ready");
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 		
 	}
@@ -53,6 +57,13 @@ public class IaaSDataDAOImpl implements IaaSDataDAO {
 	public List<IaaSVMConsumption> getEnergyForVM(String hostid, String vmid) {
 		LOGGER.info("getting vm consumption for "+hostid);
 		List<IaaSVMConsumption> data = jdbcTemplate.query(QUERY_GETENERGYFORVM,new Object[] { hostid,vmid },new IaaSVMConsumptionMapper());
+		return data;
+	}
+
+	@Override
+	public List<IaaSVMConsumption> getEnergyForVMFromTime(String hostid, String vmid, Timestamp time) {
+		LOGGER.info("getting vm consumption for "+hostid + " after "+time);
+		List<IaaSVMConsumption> data = jdbcTemplate.query(QUERY_GETENERGYFORVMWTIME,new Object[] { hostid,vmid,time.getTime() },new IaaSVMConsumptionMapper());
 		return data;
 	}
 

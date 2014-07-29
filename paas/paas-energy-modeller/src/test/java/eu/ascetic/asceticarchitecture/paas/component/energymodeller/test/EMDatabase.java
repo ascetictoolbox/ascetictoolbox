@@ -36,16 +36,19 @@ public class EMDatabase {
 		data.setEventid("event1");
 		data.setDeploymentid("deployment1");
 		data.setVmid("vm1");
-		Timestamp ts = Timestamp.valueOf("2014-09-27 03:23:34.234");
-		data.setStarttime(ts);
-		ts = Timestamp.valueOf("2014-09-27 03:23:36.234");
-		data.setEndtime(ts);
+		Timestamp ts = Timestamp.valueOf("2014-09-27 03:23:34");
+		data.setTime(ts);
 		data.setCpu(50.5);
 		data.setMemory(1024);
 		data.setNetwork(100);
 		data.setDisk(50);
+		data.setHosttotalcpu(50);
+		data.setVmtotalcpu(100);
+		data.setVmenergy(15);
+		data.setHostenergy(150);
 		dataConsumptionDAO.save(data);
-		
+		Timestamp tsres = dataConsumptionDAO.getLastConsumptionForVM("test1", "vm1");
+		Assert.assertEquals(ts,tsres);
 		
 		List<DataConsumption> result;
 		result = dataConsumptionDAO.getByApplicationId("test1");
@@ -57,6 +60,7 @@ public class EMDatabase {
 		result = dataConsumptionDAO.getByVMId("vm1");
 		Assert.assertEquals(result.size(),1);
 		Assert.assertEquals(result.get(0).getVmid(),"vm1");
+		
 	}
 	
 	@Test
@@ -65,9 +69,14 @@ public class EMDatabase {
 		DataEvent data = new DataEvent();
 		data.setApplicationid("test1");
 		data.setDeploymentid("deployment1");
+		data.setEventid("event1");
+		data.setEnergy(50);
 		data.setEnergy(100.5);
-		Timestamp ts = Timestamp.valueOf("2014-09-27 03:23:34.234");
-		data.setTime(ts);
+		Timestamp tsbeg = Timestamp.valueOf("2014-09-27 03:23:34");
+		data.setBegintime(tsbeg);
+		Timestamp ts = Timestamp.valueOf("2014-09-27 03:25:34");
+		data.setEndtime(ts);
+		data.setData("generic data");
 		data.setVmid("vm1");
 		dataEventDAO.save(data);
 		List<DataEvent> result = dataEventDAO.getByApplicationId("test1");
@@ -76,6 +85,8 @@ public class EMDatabase {
 		Assert.assertEquals(result.size(),1);
 		result = dataEventDAO.getByVMId("vm1");
 		Assert.assertEquals(result.size(),1);
+		Timestamp tsev = dataEventDAO.getLastEventForVM("test1", "vm1", "event1");
+		Assert.assertEquals(tsev,tsbeg);
 		
 	}
 	
@@ -106,10 +117,10 @@ public class EMDatabase {
 	@Test
 	public void testIaaSData() {
 		IaaSDataDAOImpl iaasdao = dbmanager.getIaasdatadao();
-		Assert.assertEquals("0",iaasdao.getHostIdForVM("1"));
-		Assert.assertEquals("100",iaasdao.getHostTotalCpu("0"));
-		List<IaaSVMConsumption> list = iaasdao.getEnergyForVM("0", "1");
-		Assert.assertEquals(2,list.size());
+		Assert.assertEquals("10106",iaasdao.getHostIdForVM("10111"));
+		Assert.assertEquals("0",iaasdao.getHostTotalCpu("10106"));
+		List<IaaSVMConsumption> list = iaasdao.getEnergyForVM("10106", "10111");
+		Assert.assertEquals(299,list.size());
 	}
 	
 

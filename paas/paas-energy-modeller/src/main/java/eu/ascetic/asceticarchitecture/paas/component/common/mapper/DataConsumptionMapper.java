@@ -21,8 +21,14 @@ public class DataConsumptionMapper implements RowMapper<DataConsumption>{
 		data.setMemory(result.getDouble("memory"));
 		data.setDisk(result.getDouble("disk"));
 		data.setNetwork(result.getDouble("network"));
-		data.setStarttime(result.getTimestamp("starttime"));
-		data.setEndtime(result.getTimestamp("endtime"));
+		data.setTime(result.getTimestamp("time"));
+		data.setHostcpu(result.getDouble("hostcpu"));
+		data.setVmtotalcpu(result.getDouble("vmtotalcpu"));
+		data.setHosttotalcpu(result.getDouble("hosttotalcpu"));
+		data.setVmenergy(result.getDouble("vmenergy"));
+		data.setHostenergy(result.getDouble("hostenergy"));
+
+		
 		return data;
 	}
 

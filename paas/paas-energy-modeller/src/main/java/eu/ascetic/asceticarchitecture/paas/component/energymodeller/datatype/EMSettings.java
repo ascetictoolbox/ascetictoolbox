@@ -14,9 +14,6 @@ public class EMSettings {
 	private String paasdbuser="user";
 	private String paasdbpassword="user";
 	
-	
-	private String dataloadinterval="10000";
-	private String eventsloadinterval="10000";
 	private String serverPath="C:/Users/sommacam/Desktop/apache-jmeter-2.11";
 	private String serverurl="10.15.5.110";
 	private String propertyFile="C:/Users/sommacam/Desktop/apache-jmeter-2.11/bin/jmeter.properties";
@@ -39,8 +36,6 @@ public class EMSettings {
 		this.setPaasurl(props.getProperty("paasurl"));
 		this.setPaasdbpassword(props.getProperty("paasdbuser"));
 		this.setPaasdbuser(props.getProperty("paasdbpassword"));
-		this.setDataloadinterval((props.getProperty("dataloadinterval")));
-		this.setEventsloadinterval((props.getProperty("eventsloadinterval")));
 		this.setServerPath(props.getProperty("serverpath"));
 		this.setServerurl(props.getProperty("serverurl"));
 		this.setPropertyFile((props.getProperty("propertyfile")));
@@ -48,26 +43,6 @@ public class EMSettings {
 		this.setAppmonitor((props.getProperty("appmonitor")));
 				
 	}
-	public String getDataloadinterval() {
-		return dataloadinterval;
-	}
-
-
-	public void setDataloadinterval(String dataloadinterval) {
-		this.dataloadinterval = dataloadinterval;
-	}
-
-
-	public String getEventsloadinterval() {
-		return eventsloadinterval;
-	}
-
-
-	public void setEventsloadinterval(String eventsloadinterval) {
-		this.eventsloadinterval = eventsloadinterval;
-	}
-
-
 
 	public String getIaasdbuser() {
 		return iaasdbuser;
