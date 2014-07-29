@@ -20,6 +20,8 @@
     <module>virtual-machine-manager</module>
 	<module>iaas-slamanager</module>
     <module>iaas-pricing-modeller</module>
+    <module>energy-modeller-load-calibration-tool</module>
+    <module>Test</module>
   </modules>
 	<version>0.0.1-SNAPSHOT</version>
 
