@@ -36,7 +36,7 @@ import java.util.logging.Logger;
  * @author Richard
  */
 public class DataGatherer implements Runnable {
-    
+
     private HostDataSource datasource;
     private DatabaseConnector connector;
     private Calibrator calibrator;
@@ -71,7 +71,9 @@ public class DataGatherer implements Runnable {
      */
     public final void populateHostList() {
         Collection<Host> hosts = datasource.getHostList();
+        connector.setHosts(hosts);
         Collection<VmDeployed> vms = datasource.getVmList();
+        connector.setVms(vms);
         for (Host host : hosts) {
             if (!knownHosts.containsKey(host.getHostName())) {
                 knownHosts.put(host.getHostName(), host);
@@ -96,7 +98,7 @@ public class DataGatherer implements Runnable {
         running = false;
         connector.closeConnection();
     }
-    
+
     @Override
     public void run() {
         /**
@@ -305,5 +307,5 @@ public class DataGatherer implements Runnable {
         }
         return answer;
     }
-    
+
 }
