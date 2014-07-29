@@ -19,6 +19,7 @@
         <module>ascetic-dfs</module>
         <module>ascetic-zabbix-api</module>
         <module>energy-modeller-data-logger</module>
+		<module>io-utils</module>
     </modules>
 
     <url>http://www.ascetic.eu</url>
