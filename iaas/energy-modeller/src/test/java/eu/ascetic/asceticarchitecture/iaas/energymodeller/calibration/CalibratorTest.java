@@ -66,6 +66,7 @@ public class CalibratorTest {
         assert(result.getIdlePowerConsumption() > 0.0);
         System.out.println("Idle Power: " + result.getIdlePowerConsumption());
         assert(result.isCalibrated());
+        System.out.println("Calibration Data Count: " + result.getCalibrationData().size());
     }
 
     /**

@@ -36,26 +36,26 @@ public interface HostDataSource {
      */
     public Host getHostByName(String hostname);
 
-     /**
+    /**
      * This returns a host given its unique name.
      *
      * @param name The name of the host to get.
      * @return The object representation of a host in the energy modeller.
-     */   
+     */
     public VmDeployed getVmByName(String name);
 
     /**
      * This provides a list of hosts for the energy modeller
      *
      * @return A list of hosts for the energy modeller.
-     */    
+     */
     public List<Host> getHostList();
 
     /**
      * This provides a list of VMs for the energy modeller
      *
      * @return A list of vms for the energy modeller.
-     */    
+     */
     public List<VmDeployed> getVmList();
 
     /**
@@ -70,7 +70,7 @@ public interface HostDataSource {
      * This lists for all host all the metric data on them.
      *
      * @return A list of host measurements
-     */ 
+     */
     public List<HostMeasurement> getHostData();
 
     /**
@@ -78,22 +78,22 @@ public interface HostDataSource {
      *
      * @param hostList The list of hosts to get the data from
      * @return A list of host measurements
-     */    
+     */
     public List<HostMeasurement> getHostData(List<Host> hostList);
 
-     /**
+    /**
      * This provides for the named vm all the information that is available.
      *
      * @param vm The vm to get the measurement data for.
      * @return The vm measurement data
-     */   
+     */
     public VmMeasurement getVmData(VmDeployed vm);
 
     /**
      * This lists for all vms all the metric data on them.
      *
      * @return A list of vm measurements
-     */    
+     */
     public List<VmMeasurement> getVmData();
 
     /**
@@ -101,14 +101,15 @@ public interface HostDataSource {
      *
      * @param vmList The list of vms to get the data from
      * @return A list of vm measurements
-     */    
+     */
     public List<VmMeasurement> getVmData(List<VmDeployed> vmList);
 
     /**
      * This provides the current energy usage for a named host.
-     * @param host  The host to get the current energy data for.
+     *
+     * @param host The host to get the current energy data for.
      * @return The current energy usage data of the named host.
-     */    
+     */
     public CurrentUsageRecord getCurrentEnergyUsage(Host host);
 
     /**
@@ -116,6 +117,14 @@ public interface HostDataSource {
      *
      * @param host The host to get the lowest power usage data for.
      * @return
-     */    
+     */
     public double getLowestHostPowerUsage(Host host);
+
+    /**
+     * This finds the highest power usage by a host.
+     *
+     * @param host The host to get the highest power usage data for.
+     * @return
+     */
+    public double getHostPowerUsage(eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host);
 }

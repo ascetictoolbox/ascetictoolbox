@@ -41,6 +41,8 @@ public abstract class Measurement {
     private static final String STEAL_KPI_NAME = KpiList.STEAL_KPI_NAME;
     private static final String SYSTEM_KPI_NAME = KpiList.SYSTEM_KPI_NAME;
     private static final String USER_KPI_NAME = KpiList.USER_KPI_NAME;
+    private static final String MEMORY_AVAILABLE_KPI_NAME = KpiList.MEMORY_AVAILABLE_KPI_NAME;     
+    private static final String MEMORY_TOTAL_KPI_NAME = KpiList.MEMORY_TOTAL_KPI_NAME;
 
     /**
      * This looks at the metrics gained, for this given gathering of measurement
@@ -227,6 +229,33 @@ public abstract class Measurement {
      */
     public double getCpuIdle() {
         return Double.parseDouble(this.getMetric(IDLE_KPI_NAME).getLastValue());
+    }
+
+    /**
+     * This provides rapid access to memory values for a measurement.
+     *
+     * @return The total memory available when the measurement was taken.
+     */
+    public double getMemoryAvailable() {
+        return Double.parseDouble(this.getMetric(MEMORY_AVAILABLE_KPI_NAME).getLastValue());
+    } 
+    
+    /**
+     * This provides rapid access to memory values for a measurement.
+     *
+     * @return The total memory used when the measurement was taken.
+     */
+    public double getMemoryUsed() {
+        return getMemoryTotal() - getMemoryAvailable();
+    }        
+    
+    /**
+     * This provides rapid access to memory values for a measurement.
+     *
+     * @return The total memory available when the measurement was taken.
+     */
+    public double getMemoryTotal() {
+        return Double.parseDouble(this.getMetric(MEMORY_TOTAL_KPI_NAME).getLastValue());
     }
 
 }

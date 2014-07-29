@@ -30,11 +30,11 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostVmLoadFraction;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HistoricUsageRecord;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostEnergyRecord;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostVmLoadFraction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -67,14 +67,19 @@ public class EnergyModeller {
     private HostDataSource datasource = new ZabbixDataSourceAdaptor();
     private DatabaseConnector database = new DefaultDatabaseConnector();
     private Calibrator calibrator = new Calibrator(datasource);
+    private Thread calibratorThread;
     private DataGatherer dataGatherer = new DataGatherer(datasource, new DefaultDatabaseConnector(), calibrator);
-    private Thread databaseGatherThread;
+    private Thread dataGatherThread;
 
     public EnergyModeller() {
         try {
+            calibratorThread = new Thread(calibrator);
+            calibratorThread.setDaemon(true);
+            calibratorThread.start();
             calibrateAllHostsWithoutData();
-            databaseGatherThread = new Thread(dataGatherer);
-            databaseGatherThread.start();
+            dataGatherThread = new Thread(dataGatherer);
+            dataGatherThread.setDaemon(true);
+            dataGatherThread.start();
         } catch (Exception ex) {
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The host list was not populated");
         }
@@ -237,10 +242,10 @@ public class EnergyModeller {
         vmsDeployedOnHost.addAll(otherVms);
         vmsDeployedOnHost.add(vm);
         vmsOnHost.addAll(otherVms);
-        vmsOnHost.add(vm);        
+        vmsOnHost.add(vm);
         rule.setVmMeasurements(datasource.getVmData(vmsDeployedOnHost));
         CurrentUsageRecord hostAnswer = datasource.getCurrentEnergyUsage(host);
-        EnergyDivision divider = rule.getEnergyUsage(host,vmsOnHost);
+        EnergyDivision divider = rule.getEnergyUsage(host, vmsOnHost);
         CurrentUsageRecord answer = new CurrentUsageRecord(vm);
         answer.setTime(hostAnswer.getTime());
         answer.setPower(divider.getEnergyUsage(hostAnswer.getPower(), vm));

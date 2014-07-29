@@ -15,9 +15,15 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration;
 
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DataGatherer;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostMeasurement;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostEnergyCalibrationData;
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This takes an existing host and calibrates the energy model, for it so that
@@ -25,14 +31,17 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage
  *
  * @author Richard
  */
-public class Calibrator {
+public class Calibrator implements Runnable {
 
-    private LoadGenerator generator = new DefaultLoadGenerator();
+    private LoadGenerator generator = new DummyLoadGenerator(); //new DefaultLoadGenerator();
     private final HostDataSource datasource;
+    private boolean running = true;
 
     /**
      * This creates a new calibrator.
-     * @param dataSource The data source that is used to monitor the calibration test.
+     *
+     * @param dataSource The data source that is used to monitor the calibration
+     * test.
      */
     public Calibrator(HostDataSource dataSource) {
         this.datasource = dataSource;
@@ -46,7 +55,40 @@ public class Calibrator {
      */
     public Host calibrateHostEnergyData(Host host) {
         host = readLowestboundForHost(host);
-        host = generator.generateCalibrationData(host);
+        //generator.generateCalibrationData(host);
+        host = readEnergyDataForHost(host);
+        return host;
+    }
+
+    /**
+     * This method aims to read the energy data for a host and convert it into
+     * the calibration data required for the energy modeller.
+     *
+     * @param host The host to get the calibration data for
+     * @return The updated host
+     */
+    private Host readEnergyDataForHost(Host host) {
+        ArrayList<HostEnergyCalibrationData> calibrationData = host.getCalibrationData();
+        ArrayList<HostMeasurement> data = new ArrayList<>();
+        long lastClock = 0;
+
+        /**
+         * collect data for 2 mins because of wait interval + loop counter.
+         */
+        for (int i = 0; i < TimeUnit.MINUTES.toSeconds(1); i++) { 
+            HostMeasurement dataEntry = datasource.getHostData(host);
+            long currentClock = dataEntry.getClock();
+            if (currentClock > lastClock) {
+                data.add(dataEntry);
+            }
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(DataGatherer.class.getName()).log(Level.SEVERE, "The data gatherer was interupted.", ex);
+            }
+        }
+        calibrationData.addAll(HostEnergyCalibrationData.getCalibrationData(data));
+        host.setCalibrationData(calibrationData);
         return host;
     }
 
@@ -80,6 +122,24 @@ public class Calibrator {
      */
     public void setGenerator(DefaultLoadGenerator generator) {
         this.generator = generator;
+    }
+    
+    /**
+     * This stops the calibrator from running.
+     */
+    public void stop() {
+        running = false;
+    }
+
+    @Override
+    public void run() {
+        /**
+         * Note the aim of starting a thread is so that the main, thread doesn't 
+         * have to wait for calibration to occur. It can carry on going once
+         * calibration has started.
+         */
+        while(running) {  
+        }
     }
 
 }

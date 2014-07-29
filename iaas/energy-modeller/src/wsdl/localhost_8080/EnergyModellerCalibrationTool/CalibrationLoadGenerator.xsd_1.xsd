@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is Metro/2.3 (tags/2.3-7528; 2013-04-29T19:34:10+0000) JAXWS-RI/2.2.8 JAXWS/2.2 svn-revision#unknown. --><xs:schema xmlns:tns="http://energymodellerloadinducer.ascetic.eu/" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://energymodellerloadinducer.ascetic.eu/">
+
+<xs:element name="currentlyWorking" type="tns:currentlyWorking"/>
+
+<xs:element name="currentlyWorkingResponse" type="tns:currentlyWorkingResponse"/>
+
+<xs:element name="finished" type="tns:finished"/>
+
+<xs:element name="finishedResponse" type="tns:finishedResponse"/>
+
+<xs:element name="induceLoad" type="tns:induceLoad"/>
+
+<xs:element name="induceLoadResponse" type="tns:induceLoadResponse"/>
+
+<xs:complexType name="induceLoad">
+<xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="induceLoadResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:boolean"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="finished">
+<xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="finishedResponse">
+<xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="currentlyWorking">
+<xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="currentlyWorkingResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:boolean"/>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>

@@ -27,7 +27,8 @@ import java.util.List;
  * It is to be recorded as a 3-tuple record indicating the CPU usage, the memory
  * usage and the associate energy used for a given host.
  *
- * @see HostUsage These classes are identical. One may need to supersede the other!
+ * @see HostUsage These classes are identical. One may need to supersede the
+ * other!
  * @author Richard
  */
 public class HostEnergyCalibrationData {
@@ -36,19 +37,33 @@ public class HostEnergyCalibrationData {
     private double memoryUsage = 0.0; //in Megabytes
     private double wattsUsed = 0.0; //The power of the host (W), i.e. joules of energy used per second
 
-    
+    /**
+     * This takes a list of host measurements and converts them into calibration
+     * data.
+     *
+     * @param data The host measurements to use to generate the calibration
+     * data.
+     * @return A list of calibration data points.
+     */
     public static List<HostEnergyCalibrationData> getCalibrationData(List<HostMeasurement> data) {
         List<HostEnergyCalibrationData> answer = new ArrayList<>();
+        for (HostMeasurement hostMeasurement : data) {
+            double energy = hostMeasurement.getEnergy();
+            double cpu = hostMeasurement.getCpuLoad();
+            double memory = hostMeasurement.getMemoryUsed();
+            HostEnergyCalibrationData newItem = new HostEnergyCalibrationData(cpu, memory, energy);
+            answer.add(newItem);
+        }
         return answer;
     }
-    
+
     /**
      * This creates a new record for storing the energy calibration data of a
      * host machine.
      */
     public HostEnergyCalibrationData() {
     }
-    
+
     /**
      * This creates a new record for storing the energy calibration data of a
      * host machine.
@@ -74,6 +89,7 @@ public class HostEnergyCalibrationData {
 
     /**
      * This sets a value for the CPU usage, for this calibration record.
+     *
      * @param cpuUsage The CPU usage as a percentage with values between 0.0 to
      * 1.
      */
@@ -85,6 +101,7 @@ public class HostEnergyCalibrationData {
 
     /**
      * This returns the memory usage
+     *
      * @return the memoryUsage The memory usage in Mb
      */
     public double getMemoryUsage() {
@@ -93,6 +110,7 @@ public class HostEnergyCalibrationData {
 
     /**
      * This sets the memory usage of this calibration record.
+     *
      * @param memoryUsage the memoryUsage The memory usage in Mb
      */
     public void setMemoryUsage(double memoryUsage) {
@@ -100,8 +118,11 @@ public class HostEnergyCalibrationData {
     }
 
     /**
-     * The returns the measured power consumption of this calibration record (W i.e. j/s)
-     * @return the wattsUsed The measured power consumption of the host (W i.e. j/s)
+     * The returns the measured power consumption of this calibration record (W
+     * i.e. j/s)
+     *
+     * @return the wattsUsed The measured power consumption of the host (W i.e.
+     * j/s)
      */
     public double getWattsUsed() {
         return wattsUsed;
@@ -109,6 +130,7 @@ public class HostEnergyCalibrationData {
 
     /**
      * This sets a value for the power usage, for this calibration record.
+     *
      * @param wattsUsed The measured power consumption of the host (W i.e. j/s)
      */
     public void setWattsUsed(double wattsUsed) {

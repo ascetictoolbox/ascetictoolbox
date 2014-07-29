@@ -34,5 +34,21 @@ public abstract class KpiList {
     public static final String STEAL_KPI_NAME = "system.cpu.util[,steal]";
     public static final String SYSTEM_KPI_NAME = "system.cpu.util[,system]";
     public static final String USER_KPI_NAME = "system.cpu.util[,user]";    
+    //memory metrics
+    public static final String MEMORY_AVAILABLE_KPI_NAME = "vm.memory.size[available]";     
+    public static final String MEMORY_TOTAL_KPI_NAME = "vm.memory.size[total]";
+    
+    public static final String SWAP_SPACE_FREE_KPI_NAME = "system.swap.size[,free]";     
+    public static final String SWAP_SPACE_FREE_PERC_KPI_NAME = "system.swap.size[,pfree]";     
+    public static final String SWAP_SPACE_TOTAL_KPI_NAME = "system.swap.size[,total]";     
+    //disk metrics
+    public static final String DISK_FREE_KPI_NAME = "vfs.fs.size[/,free]"; 
+    public static final String DISK_FREE_PERC_KPI_NAME = "vfs.fs.size[/,pfree]"; 
+    public static final String DISK_USED_KPI_NAME = "vfs.fs.size[/,used]"; 
+    public static final String DISK_TOTAL_KPI_NAME = "vfs.fs.size[/,total]"; 
+    
+
+
+
 
 }
