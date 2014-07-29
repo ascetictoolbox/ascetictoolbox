@@ -61,7 +61,7 @@ public class SystemCall implements Runnable {
         output = new Vector<String>(OUTPUT_ARRAY_INITIAL_CAPACITY);
         returnValue = -1;
         
-        LOGGER.debug("workingDirectory is : " + workingDirectory);
+        LOGGER.debug("Working directory passed to constructor is: " + workingDirectory);
         
         // Clean up spawned process on shutdown
         Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -90,7 +90,7 @@ public class SystemCall implements Runnable {
         this.commandName = commandName;
         this.arguments = arguments;
         
-        LOGGER.debug("workingDirectory is : " + workingDirectory);
+        LOGGER.debug("Working directory passed to constructor is: " + workingDirectory);
         
         // Clean up spawned process on shutdown
         Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -174,6 +174,7 @@ public class SystemCall implements Runnable {
             String value = map.get(key).toString();  
             LOGGER.debug(key + " " + value);
         }
+        
         pb.redirectErrorStream(true);
 
         process = null;

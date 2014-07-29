@@ -107,7 +107,7 @@ public class FileUploader implements Runnable {
         // Enable SSH
         arguments.add("-e");
         // SSH binary and key path (use blowfish for faster uploading"
-        arguments.add("\"" + sshPath + " -c blowfish" + " -i " + sshKeyPath + "\"");
+        arguments.add("\"" + sshPath + " -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -c blowfish" + " -i " + sshKeyPath + "\"");
         // Files to add
         arguments.add(fileName);
         // Remote location to put the files
