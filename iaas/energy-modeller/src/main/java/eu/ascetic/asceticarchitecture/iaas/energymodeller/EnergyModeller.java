@@ -34,7 +34,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsa
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HistoricUsageRecord;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostEnergyRecord;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostVmLoadFraction;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostVmLoadFraction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;

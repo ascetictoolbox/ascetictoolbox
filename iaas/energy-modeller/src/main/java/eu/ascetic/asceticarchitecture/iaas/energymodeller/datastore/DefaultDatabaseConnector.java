@@ -17,10 +17,10 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.HostEnergyCalibrationData;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostEnergyCalibrationData;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostEnergyRecord;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostVmLoadFraction;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostVmLoadFraction;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;

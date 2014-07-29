@@ -15,6 +15,7 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser;
 
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostEnergyCalibrationData;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Set;

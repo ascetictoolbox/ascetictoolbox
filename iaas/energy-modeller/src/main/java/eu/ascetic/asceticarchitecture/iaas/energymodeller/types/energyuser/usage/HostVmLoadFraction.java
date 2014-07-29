@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage;
+package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.VmMeasurement;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;

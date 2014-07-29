@@ -13,7 +13,11 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser;
+package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage;
+
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostMeasurement;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The aim of this class is to store information regarding the energy usage of a
@@ -32,6 +36,12 @@ public class HostEnergyCalibrationData {
     private double memoryUsage = 0.0; //in Megabytes
     private double wattsUsed = 0.0; //The power of the host (W), i.e. joules of energy used per second
 
+    
+    public static List<HostEnergyCalibrationData> getCalibrationData(List<HostMeasurement> data) {
+        List<HostEnergyCalibrationData> answer = new ArrayList<>();
+        return answer;
+    }
+    
     /**
      * This creates a new record for storing the energy calibration data of a
      * host machine.

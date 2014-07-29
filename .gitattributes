@@ -36,9 +36,11 @@ iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymod
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/energyuser/CandidateVMHostMapping.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/energyuser/EnergyUsageSource.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/energyuser/Host.java -text
-iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/energyuser/HostEnergyCalibrationData.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/energyuser/VM.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/energyuser/VmDeployed.java -text
+iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/energyuser/usage/HostEnergyCalibrationData.java -text
+iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/energyuser/usage/HostVmLoadFraction.java -text
+iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/energyuser/usage/VmUsageRecord.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/input/VMProjectedWorkload.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/input/VMProjectedWorkloadElement.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/input/VMWorkload.java -text
@@ -47,8 +49,6 @@ iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymod
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/usage/EnergyUsageRecord.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/usage/HistoricUsageRecord.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/usage/HostEnergyRecord.java -text
-iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/usage/HostVmLoadFraction.java -text
-iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/usage/VmUsageRecord.java -text
 iaas/energy-modeller/src/main/resources/iaas[!!-~]energy[!!-~]modeller[!!-~]db.sql -text
 iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/EnergyModellerTest.java -text
 iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/calibration/CalibratorTest.java -text
