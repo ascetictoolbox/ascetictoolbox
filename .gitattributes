@@ -1762,16 +1762,6 @@ utils/io-utils/src/main/java/eu/ascetic/ioutils/execution/stream/RedirectGobbler
 utils/io-utils/src/main/java/eu/ascetic/ioutils/execution/stream/ScreenGobbler.java -text
 utils/io-utils/src/main/java/eu/ascetic/ioutils/execution/stream/StreamGobbler.java -text
 utils/io-utils/src/test/java/eu/ascetic/ioutils/AppTest.java -text
-utils/io-utils/target/classes/.netbeans_automatic_build -text
-utils/io-utils/target/io-utils-0.0.1-SNAPSHOT.jar -text
-utils/io-utils/target/maven-archiver/pom.properties -text
-utils/io-utils/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst -text
-utils/io-utils/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst -text
-utils/io-utils/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst -text
-utils/io-utils/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst -text
-utils/io-utils/target/surefire-reports/TEST-eu.ascetic.ioutils.AppTest.xml -text
-utils/io-utils/target/surefire-reports/eu.ascetic.ioutils.AppTest.txt -text
-utils/io-utils/target/test-classes/.netbeans_automatic_build -text
 utils/kwapi-patch/make.sh -text
 utils/kwapi-patch/patches/001-gembird_driver.patch -text
 utils/kwapi-patch/pom.xml -text
