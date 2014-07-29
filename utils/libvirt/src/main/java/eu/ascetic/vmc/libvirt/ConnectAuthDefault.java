@@ -13,8 +13,11 @@ import java.io.InputStreamReader;
 public final class ConnectAuthDefault extends ConnectAuth {
 
     public ConnectAuthDefault() {
-        credType = new CredentialType[] { CredentialType.VIR_CRED_AUTHNAME, CredentialType.VIR_CRED_ECHOPROMPT,
-                CredentialType.VIR_CRED_REALM, CredentialType.VIR_CRED_PASSPHRASE, CredentialType.VIR_CRED_NOECHOPROMPT };
+        credType = new CredentialType[] { CredentialType.VIR_CRED_AUTHNAME,
+                CredentialType.VIR_CRED_ECHOPROMPT,
+                CredentialType.VIR_CRED_REALM,
+                CredentialType.VIR_CRED_PASSPHRASE,
+                CredentialType.VIR_CRED_NOECHOPROMPT };
     }
 
     @Override
@@ -24,19 +27,30 @@ public final class ConnectAuthDefault extends ConnectAuth {
             for (Credential c : cred) {
                 String response = "";
                 switch (c.type) {
-                    case VIR_CRED_USERNAME:
-                    case VIR_CRED_AUTHNAME:
-                    case VIR_CRED_ECHOPROMPT:
-                    case VIR_CRED_REALM:
-                        System.out.println(c.prompt);
-                        response = in.readLine();
-                        break;
-                    case VIR_CRED_PASSPHRASE:
-                    case VIR_CRED_NOECHOPROMPT:
-                        System.out.println(c.prompt);
-                        System.out.println("WARNING: THE ENTERED PASSWORD WILL NOT BE MASKED!");
-                        response = in.readLine();
-                        break;
+                case VIR_CRED_USERNAME:
+                case VIR_CRED_AUTHNAME:
+                case VIR_CRED_ECHOPROMPT:
+                case VIR_CRED_REALM:
+                    System.out.println(c.prompt);
+                    response = in.readLine();
+                    break;
+                case VIR_CRED_PASSPHRASE:
+                case VIR_CRED_NOECHOPROMPT:
+                    System.out.println(c.prompt);
+                    System.out
+                            .println("WARNING: THE ENTERED PASSWORD WILL NOT BE MASKED!");
+                    response = in.readLine();
+                    break;
+                case VIR_CRED_CNONCE:
+                    break;
+                case VIR_CRED_EXTERNAL:
+                    break;
+                case VIR_CRED_LANGUAGE:
+                    break;
+                case VIR_CRED_NONE:
+                    break;
+                default:
+                    break;
                 }
                 if (response.equals("") && !c.defresult.equals("")) {
                     c.result = c.defresult;

@@ -37,9 +37,6 @@ public abstract class GenericLogger<Type> implements Runnable {
     private boolean stop = false;
     ResultsStore saveFile = null;
 
-    private GenericLogger() {
-    }
-
     /**
      * This creates a generic reporting mechanism that records items out to
      * disk, asynchronously with the main thread that has requested the report.

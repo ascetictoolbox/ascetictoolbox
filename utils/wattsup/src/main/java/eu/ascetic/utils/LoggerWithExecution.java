@@ -17,10 +17,12 @@ package eu.ascetic.utils;
 
 import eu.ascetic.utils.execution.Closeable;
 import eu.ascetic.utils.execution.ManagedProcessSequenceExecutor;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import wattsup.jsdk.core.data.WattsUpConfig;
 import wattsup.jsdk.core.data.WattsUpPacket;
 import wattsup.jsdk.core.event.WattsUpDataAvailableEvent;
@@ -42,10 +44,11 @@ public class LoggerWithExecution implements Closeable {
     private WattsUp meter;
     private final File file = new File("Dataset.csv");
     private WattsUpLogger logger;
+    @SuppressWarnings("unused")
     private ManagedProcessSequenceExecutor executor = new ManagedProcessSequenceExecutor(this);
 
     public static void main(String[] args) throws IOException {
-        LoggerWithExecution mainApp = new LoggerWithExecution(args);
+        new LoggerWithExecution(args);
     }
 
     public LoggerWithExecution(String[] args) throws IOException {

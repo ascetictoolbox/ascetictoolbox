@@ -29,16 +29,9 @@ public class ManagedProcessNotifier {
     private HashSet<ManagedProcessListener> listening = new HashSet<>();
 
     /**
-     * The no-args constructor made private to stop its use.
-     */
-    private ManagedProcessNotifier() {
-    }
-
-    /**
      * The default constructor for the managed process notifier.
      * @param process
      */
-    @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     public ManagedProcessNotifier(ManagedProcess process) {
         this.process = process;
     }

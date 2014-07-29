@@ -457,7 +457,7 @@ public class Connect {
                 }
             };
 
-        return domainEventRegister(domain, cb.eventID, virCB);
+        return domainEventRegister(domain, DomainEvent.IOErrorCallback.eventID, virCB);
     }
 
     /**
@@ -492,7 +492,7 @@ public class Connect {
                 }
             };
 
-        return domainEventRegister(domain, cb.eventID, virCB);
+        return domainEventRegister(domain, DomainEvent.IOErrorCallback.eventID, virCB);
     }
 
     int domainEventRegister(Domain domain, final DomainEvent.LifecycleCallback cb) throws LibvirtException {
@@ -527,7 +527,7 @@ public class Connect {
                 }
             };
 
-        return domainEventRegister(domain, cb.eventID, virCB);
+        return domainEventRegister(domain, DomainEvent.IOErrorCallback.eventID, virCB);
     }
 
     /**
@@ -562,7 +562,7 @@ public class Connect {
                 }
             };
 
-        return domainEventRegister(domain, cb.eventID, virCB);
+        return domainEventRegister(domain, DomainEvent.IOErrorCallback.eventID, virCB);
     }
 
     int domainEventRegister(Domain domain, final DomainEvent.PMSuspendCallback cb) throws LibvirtException {
@@ -580,7 +580,7 @@ public class Connect {
                 }
             };
 
-        return domainEventRegister(domain, cb.eventID, virCB);
+        return domainEventRegister(domain, DomainEvent.IOErrorCallback.eventID, virCB);
     }
 
     /**
