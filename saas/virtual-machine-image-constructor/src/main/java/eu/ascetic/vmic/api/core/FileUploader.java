@@ -111,20 +111,29 @@ public class FileUploader implements Runnable {
                         + " -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -c blowfish"
                         + " -i " + sshKeyPath + "");
         // Files to add
-        if (fileAbsolutePath.contains("cygwin")){
+        if (fileAbsolutePath.contains("cygwin")) {
             fileAbsolutePath = fileAbsolutePath.replace("\\", "/");
-            String newFileAbsolutePath = "/cygdrive/" + fileAbsolutePath.substring(0, fileAbsolutePath.indexOf(':')) + "/" + fileAbsolutePath.substring(fileAbsolutePath.indexOf(':') + 2, fileAbsolutePath.length());
+            String newFileAbsolutePath = "/cygdrive/"
+                    + fileAbsolutePath.substring(0,
+                            fileAbsolutePath.indexOf(':'))
+                    + "/"
+                    + fileAbsolutePath.substring(
+                            fileAbsolutePath.indexOf(':') + 2,
+                            fileAbsolutePath.length());
             arguments.add(newFileAbsolutePath);
-            LOGGER.debug("Cygwin rsync binary detected, altering file path to: " + newFileAbsolutePath);
+            LOGGER.debug("Cygwin rsync binary detected, altering file path to: "
+                    + newFileAbsolutePath);
         } else {
             arguments.add(fileAbsolutePath);
-            LOGGER.debug("Using absolute path to file to be uploaded" + fileAbsolutePath);
+            LOGGER.debug("Using absolute path to file to be uploaded"
+                    + fileAbsolutePath);
         }
         // Remote location to put the files
         arguments.add(sshUser + "@" + hostAddress + ":" + remotePath);
 
         // Construct and invoke system call to rsync
-        SystemCall systemCall = new SystemCall(file.getParent(), rsyncPath, arguments);
+        SystemCall systemCall = new SystemCall(file.getParent(), rsyncPath,
+                arguments);
         Thread thread = new Thread(systemCall);
 
         try {

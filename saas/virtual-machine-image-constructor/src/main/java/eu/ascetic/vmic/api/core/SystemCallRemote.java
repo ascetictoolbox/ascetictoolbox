@@ -91,6 +91,8 @@ public class SystemCallRemote extends SystemCall {
      *             Provides a mechanism to propagate all exception to VMC core.
      */
     @Override
+    // FIXME: remove sshCommandName and alter prototype to have single
+    // List<String> sshCommands?
     public void runCommand(String sshCommandName, List<String> sshArguments)
             throws SystemCallException {
 
@@ -114,11 +116,10 @@ public class SystemCallRemote extends SystemCall {
         sshCommand = sshCommand.replace("'", "\\'");
         sshCommand = sshCommand.replace("\"", "\\\"");
         sshCommand = sshCommand.replace("$", "\\$");
-        sshCommand = "\"" + sshCommand + "\"";
 
         // Construct the SSH command
         commandName = sshPath;
-        
+
         // Add SSH arguments as a string to member variable
         arguments = new Vector<String>(1);
         arguments.add("-o");
@@ -136,12 +137,12 @@ public class SystemCallRemote extends SystemCall {
         systemCallCommand.add(commandName);
 
         String commandString = commandName;
-        
+
         for (int i = 0; i < arguments.size(); i++) {
             systemCallCommand.add(arguments.get(i));
-            commandString = commandString + " " + arguments.get(i);
+            commandString = commandString + " \"" + arguments.get(i) + "\"";
         }
-        
+
         // Run the command...
         LOGGER.info("Runnning system call command: " + commandString);
         execute(systemCallCommand);
@@ -151,10 +152,11 @@ public class SystemCallRemote extends SystemCall {
     /**
      * Helper method to convert a script to a single line command.
      * 
-     * @param scriptAsString
+     * @param scriptFile
      *            String representation of the script to convert
      * @return The converted script.
      * @throws IOException
+     *             if an I/O error occurs reading from the scriptFile
      */
     public static String scriptToSingleLineCommand(File scriptFile)
             throws IOException {
