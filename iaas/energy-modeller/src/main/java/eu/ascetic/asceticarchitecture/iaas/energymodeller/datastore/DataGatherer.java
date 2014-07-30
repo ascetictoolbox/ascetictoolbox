@@ -81,14 +81,34 @@ public class DataGatherer implements Runnable {
         }
         for (VmDeployed vm : vms) {
             if (!knownVms.containsKey(vm.getName())) {
+                vm.setAllocatedTo(getVMsHost(vm));
                 knownVms.put(vm.getName(), vm);
-                //TODO remove this temporary fix code here!
-                if (vm.getName().equals("cloudsuite---data-analytics")) {
-                    vm.setAllocatedTo(getHost("asok12"));
-                }
-                //end of this temporary code fix
             }
         }
+    }
+
+    /**
+     * This given a host determines its Host. It is used for the initial
+     * assignment of this value.
+     *
+     * @param vm The deployed vm
+     * @return The host that it belongs to.
+     */
+    private Host getVMsHost(VmDeployed vm) {
+        if (vm.getAllocatedTo() != null) {
+            return vm.getAllocatedTo();
+        }
+        //TODO remove this temporary fix code here!
+        if (vm.getName().equals("cloudsuite---data-analytics")) {
+            return getHost("asok12");
+        }
+        //end of this temporary code fix
+        String name = vm.getName();
+        int parseTokenPos = name.indexOf("_");
+        if (parseTokenPos == -1 && vm.getAllocatedTo() == null) {
+            return null;
+        }
+        return getHost(name.substring(parseTokenPos + 1, name.length()));
     }
 
     /**
@@ -226,6 +246,7 @@ public class DataGatherer implements Runnable {
             List<VmDeployed> newVms = discoverNewVMs(vmList);
             connector.setVms(newVms);
             for (VmDeployed vm : newVms) {
+                vm.setAllocatedTo(getVMsHost(vm));
                 knownVms.put(vm.getName(), vm);
             }
         }
@@ -292,18 +313,11 @@ public class DataGatherer implements Runnable {
      * @return The list of VMs on the specified host
      */
     public ArrayList<VmDeployed> getVMsOnHost(Host host) {
-        //TODO ensure the data that makes this work is gathered. i.e. VM to host Mapping data!
         ArrayList<VmDeployed> answer = new ArrayList<>();
         for (VmDeployed vm : knownVms.values()) {
             if (host.equals(vm.getAllocatedTo())) {
                 answer.add(vm);
             }
-        }
-        //TODO remove this temporary fix code here!
-        if (host.getHostName().equals("asok12")) {
-            VmDeployed theVM = knownVms.get("cloudsuite---data-analytics");
-            theVM.setAllocatedTo(host);
-            answer.add(knownVms.get("cloudsuite---data-analytics"));
         }
         return answer;
     }

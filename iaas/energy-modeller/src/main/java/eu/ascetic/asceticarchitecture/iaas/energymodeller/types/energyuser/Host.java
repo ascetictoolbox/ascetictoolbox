@@ -118,25 +118,6 @@ public class Host extends EnergyUsageSource implements Comparable<Host> {
         this.available = available;
     }
 
-    /**
-     * This returns the list of vms on this machine.
-     *
-     * @return The set of VMs that are currently on this machine.
-     */
-    public Set<VM> getVMsOnHost() {
-        //TODO: implement the get VMs on host mechanism.
-        throw new UnsupportedOperationException("I've not implemented this yet");
-    }
-
-    /**
-     * TODO: look at the implementation of this class further.
-     *
-     * Should this look more like??:
-     *
-     * <Host, Resting_energy_usage, max_energy_usage_cpu_intensive_app,
-     * max_energy_usage_io_intensive_app,
-     * max_energy_usage_network_intensive_app>
-     */
     @Override
     public String toString() {
         return "HostID: " + id + " Host Name: " + hostName + " Available :" + available;

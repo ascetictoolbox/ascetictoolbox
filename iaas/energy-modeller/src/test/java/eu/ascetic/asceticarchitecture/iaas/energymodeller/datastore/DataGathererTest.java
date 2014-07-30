@@ -55,7 +55,7 @@ public class DataGathererTest {
         Thread thread = new Thread(instance);
         thread.start();
         try {
-            Thread.sleep(60000 * 5); //gather 5 minutes worth of data.
+            Thread.sleep(20000); //gather 20 seconds worth of data.
         } catch (InterruptedException ex) {
             fail("Something interuppted the thread while waiting for some data to be gathered");
         }
