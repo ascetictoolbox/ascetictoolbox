@@ -101,15 +101,15 @@ public class FileUploader implements Runnable {
         arguments.add("-avzPh");
         // Add command to create the remote path if it doesn't exist
         arguments.add("--rsync-path");
-        arguments.add("\"mkdir -p " + remotePath + " && rsync\"");
+        arguments.add("mkdir -p " + remotePath + " && rsync");
         // Enable SSH
         arguments.add("-e");
         // SSH binary and key path (use blowfish for faster uploading"
         arguments
-                .add("\""
+                .add(""
                         + sshPath
                         + " -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -c blowfish"
-                        + " -i " + sshKeyPath + "\"");
+                        + " -i " + sshKeyPath + "");
         // Files to add
         if (fileAbsolutePath.contains("cygwin")){
             fileAbsolutePath = fileAbsolutePath.replace("\\", "/");
