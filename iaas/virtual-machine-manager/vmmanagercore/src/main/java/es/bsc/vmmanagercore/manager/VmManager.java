@@ -145,9 +145,10 @@ public class VmManager {
             ids.put(vmToDeploy, vmId);
 
             // If the monitoring system is Zabbix, then we need to call the Zabbix wrapper to initialize
-            // the Zabbix agents
+            // the Zabbix agents. To register the VM we agreed to use the name <vmId>_<hostWhereTheVmIsDeployed>
             if (VmManagerConfiguration.getInstance().monitoring.equals(VmManagerConfiguration.Monitoring.ZABBIX)) {
-                ZabbixConnector.getZabbixClient().createVM(vmId, cloudMiddleware.getVMInfo(vmId).getIpAddress());
+                ZabbixConnector.getZabbixClient().createVM(vmId + "_" + cloudMiddleware.getVMInfo(vmId).getHostName(),
+                        cloudMiddleware.getVMInfo(vmId).getIpAddress());
             }
         }
 
