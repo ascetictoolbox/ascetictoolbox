@@ -30,28 +30,33 @@
         </ovf:Info>
         <!-- HAProxy Disks -->
         <ovf:Disk ovf:diskId="${vmHaproxyImageFileId}-disk"
-            ovf:fileRef="${vmHaproxyImageFileId}" ovf:capacity="${vmHaproxyImageCapacity}"
-            ovf:format="${vmImageFormat}" />
+            ovf:fileRef="${vmHaproxyImageFileId}" ns:capacityAllocationUnits="byte * 2^30"
+            ovf:capacity="${vmHaproxyImageCapacity}" ovf:format="${vmImageFormat}" />
         <ovf:Disk ovf:diskId="${contextHaproxyImageFileId}-disk"
-            ovf:fileRef="${contextHaproxyImageFileId}" ovf:capacity="${contextHaproxyImageCapacity}"
+            ovf:fileRef="${contextHaproxyImageFileId}"
+            ns:capacityAllocationUnits="byte * 2^20" ovf:capacity="${contextHaproxyImageCapacity}"
             ovf:format="${contextImageFormat}" />
         <!-- Jboss Disks -->
         <ovf:Disk ovf:diskId="${vmJbossImageFileId}-disk" ovf:fileRef="${vmJbossImageFileId}"
-            ovf:capacity="${vmJbossImageCapacity}" ovf:format="${vmImageFormat}" />
+            ns:capacityAllocationUnits="byte * 2^30" ovf:capacity="${vmJbossImageCapacity}"
+            ovf:format="${vmImageFormat}" />
         <ovf:Disk ovf:diskId="${contextJbossImageFileId}-disk"
-            ovf:fileRef="${contextJbossImageFileId}" ovf:capacity="${contextJbossImageCapacity}"
-            ovf:format="${contextImageFormat}" />
+            ovf:fileRef="${contextJbossImageFileId}" ns:capacityAllocationUnits="byte * 2^20"
+            ovf:capacity="${contextJbossImageCapacity}" ovf:format="${contextImageFormat}" />
         <!-- MySQL Disks -->
         <ovf:Disk ovf:diskId="${vmMysqlImageFileId}-disk" ovf:fileRef="${vmMysqlImageFileId}"
-            ovf:capacity="${vmMysqlImageCapacity}" ovf:format="${vmImageFormat}" />
+            ns:capacityAllocationUnits="byte * 2^30" ovf:capacity="${vmMysqlImageCapacity}"
+            ovf:format="${vmImageFormat}" />
         <ovf:Disk ovf:diskId="${contextMysqlImageFileId}-disk"
-            ovf:fileRef="${contextMysqlImageFileId}" ovf:capacity="${contextMysqlImageCapacity}"
-            ovf:format="${contextImageFormat}" />
+            ovf:fileRef="${contextMysqlImageFileId}" ns:capacityAllocationUnits="byte * 2^20"
+            ovf:capacity="${contextMysqlImageCapacity}" ovf:format="${contextImageFormat}" />
         <!-- JMeter Disks -->
         <ovf:Disk ovf:diskId="${vmJmeterImageFileId}-disk" ovf:fileRef="${vmJmeterImageFileId}"
-            ovf:capacity="${vmJmeterImageCapacity}" ovf:format="${vmImageFormat}" />
+            ns:capacityAllocationUnits="byte * 2^30" ovf:capacity="${vmJmeterImageCapacity}"
+            ovf:format="${vmImageFormat}" />
         <ovf:Disk ovf:diskId="${contextJmeterImageFileId}-disk"
-            ovf:fileRef="${contextJmeterImageFileId}" ovf:capacity="${contextJmeterImageCapacity}"
+            ovf:fileRef="${contextJmeterImageFileId}"
+            ns:capacityAllocationUnits="byte * 2^20" ovf:capacity="${contextJmeterImageCapacity}"
             ovf:format="${contextImageFormat}" />
     </ovf:DiskSection>
     <!-- Describes all networks used in the package -->
@@ -355,7 +360,7 @@
         </ovf:VirtualSystem>
         <!-- JMeter Virtual System Instances Template -->
         <ovf:VirtualSystem ovf:id="${vmJmeterId}">
-            <ovf:Info>${vsJmeterDescription}</ovf:Info>        
+            <ovf:Info>${vsJmeterDescription}</ovf:Info>
             <ovf:Name>${vsJmeterName}</ovf:Name>
             <!-- Product specific attributes applicable to a single Virtual System 
                 (VM) -->

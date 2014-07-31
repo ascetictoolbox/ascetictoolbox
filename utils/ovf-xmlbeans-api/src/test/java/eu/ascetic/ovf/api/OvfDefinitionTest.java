@@ -57,7 +57,7 @@ public class OvfDefinitionTest extends TestCase {
      */
     public void testOvfDefinitionViaTemplate() {
         OvfDefinition ovfDefinition = OvfDefinition.Factory.newInstance(
-                "threeTierWebApp", "/DFS/ascetic/vm-images/3tierweb");
+                "threeTierWebApp", "/DFS/ascetic/vm-images/threeTierWebApp");
 
         // Global product details
 
