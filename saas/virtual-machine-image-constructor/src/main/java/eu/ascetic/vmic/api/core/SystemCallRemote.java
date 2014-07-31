@@ -86,7 +86,7 @@ public class SystemCallRemote extends SystemCall {
      * @param commandName
      *            The program name to execute.
      * @param arguments
-     *            The argument list to pass to the program.
+     *            The argument list to pass to the program. Can be null.
      * @throws SystemCallException
      *             Provides a mechanism to propagate all exception to VMC core.
      */
@@ -96,20 +96,25 @@ public class SystemCallRemote extends SystemCall {
     public void runCommand(String sshCommandName, List<String> sshArguments)
             throws SystemCallException {
 
+        String sshCommand;
         // Construct the argument for the SSH command + escaping
-        String sshArgumentsAsString = null;
-        for (Iterator<String> iterator = sshArguments.iterator(); iterator
-                .hasNext();) {
-            if (sshArgumentsAsString == null) {
-                sshArgumentsAsString = iterator.next();
-            } else {
-                sshArgumentsAsString = sshArgumentsAsString + " "
-                        + iterator.next();
-            }
+        if (sshArguments != null) {
+            String sshArgumentsAsString = null;
+            for (Iterator<String> iterator = sshArguments.iterator(); iterator
+                    .hasNext();) {
+                if (sshArgumentsAsString == null) {
+                    sshArgumentsAsString = iterator.next();
+                } else {
+                    sshArgumentsAsString = sshArgumentsAsString + " "
+                            + iterator.next();
+                }
 
+            }
+            sshCommand = sshCommandName + " " + sshArgumentsAsString;
+        } else {
+            sshCommand = sshCommandName;
         }
 
-        String sshCommand = sshCommandName + " " + sshArgumentsAsString;
 
         LOGGER.info("Constructing remote system call command: " + sshCommand);
 

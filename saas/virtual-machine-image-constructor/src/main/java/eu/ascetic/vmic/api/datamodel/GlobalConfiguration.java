@@ -107,8 +107,9 @@ public class GlobalConfiguration {
             String vmicTemp = systemTempDir + "/"
                     + "VirtualMachineImageConstructor";
 
-            // Set the hostAddress IP for testing
-            properties.setProperty(HOST_ADDRESS_PROPERTY_KEY, "cslin128");
+            // Set the hostAddress IP for testing currently the private IP for
+            // the ip of the host "saas-vm-dev" on the TUB testbed
+            properties.setProperty(HOST_ADDRESS_PROPERTY_KEY, "10.4.0.19");
 
             // Set repositoryPath URI for testing
             properties.setProperty(REPOSITORY_PROPERTY_KEY, vmicTemp + "/"
@@ -126,10 +127,10 @@ public class GlobalConfiguration {
 
             // Set the sskKeyPath URI for testing connectivity to remote SaaS VM
             properties.setProperty(SSH_KEY_PROPERTY_KEY,
-                    "C:\\Users\\django\\cygwin\\home\\django\\.ssh\\id_rsa");
+                    "C:\\Users\\django\\cygwin\\home\\django\\.ssh\\tub_vm_id_rsa");
 
             // Set the sshUser name for testing
-            properties.setProperty(SSH_USER_PROPERTY_KEY, "scsdja");
+            properties.setProperty(SSH_USER_PROPERTY_KEY, "ubuntu");
 
         } else {
             try {
@@ -152,13 +153,13 @@ public class GlobalConfiguration {
 
         this.rsyncPath = properties.getProperty(RSYNC_PROPERTY_KEY);
         LOGGER.info("Using rsyncPath: '" + rsyncPath + "'");
-        
+
         this.sshPath = properties.getProperty(SSH_PROPERTY_KEY);
         LOGGER.info("Using sshPath: '" + sshPath + "'");
-        
+
         this.sshKeyPath = properties.getProperty(SSH_KEY_PROPERTY_KEY);
         LOGGER.info("Using sshKeyPath: '" + sshKeyPath + "'");
-        
+
         this.sshUser = properties.getProperty(SSH_USER_PROPERTY_KEY);
         LOGGER.info("Using sshUser: '" + sshUser + "'");
     }

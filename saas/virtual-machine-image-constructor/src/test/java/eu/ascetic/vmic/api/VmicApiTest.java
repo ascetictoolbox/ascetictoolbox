@@ -67,8 +67,9 @@ public class VmicApiTest extends TestCase {
             VmicApi vmicApi = new VmicApi(globalConfiguration);
 
             // Use a test file
+            // FIXME: needs to be available to Jenkins
             File file = new File(
-                    "C:\\Users\\django\\cygwin\\home\\django\\test.file");
+                    "C:\\Users\\django\\cygwin\\home\\django\\100mb.file");
 
             vmicApi.uploadFile("ovfDefinitionId", file);
 

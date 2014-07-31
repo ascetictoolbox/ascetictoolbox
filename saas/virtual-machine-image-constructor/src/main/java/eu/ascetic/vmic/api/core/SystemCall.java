@@ -118,7 +118,7 @@ public class SystemCall implements Runnable {
      * @param commandName
      *            The program name to execute.
      * @param arguments
-     *            The argument list to pass to the program.
+     *            The argument list to pass to the program. Can be null.
      * @throws SystemCallException
      *             Provides a mechanism to propagate all exception to VMC core.
      */
@@ -133,9 +133,11 @@ public class SystemCall implements Runnable {
 
         command.add(commandName);
 
-        for (int i = 0; i < arguments.size(); i++) {
-            command.add(arguments.get(i));
-            commandString = commandString + " \"" + arguments.get(i) + "\"";
+        if ( arguments != null ) {
+            for (int i = 0; i < arguments.size(); i++) {
+                command.add(arguments.get(i));
+                commandString = commandString + " \"" + arguments.get(i) + "\"";
+            }
         }
 
         // Run the command...
