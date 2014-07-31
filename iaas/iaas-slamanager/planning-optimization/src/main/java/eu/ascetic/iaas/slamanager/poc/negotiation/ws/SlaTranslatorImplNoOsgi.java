@@ -14,31 +14,27 @@ public class SlaTranslatorImplNoOsgi implements SlaTranslator {
 		return (SLATemplate) parser.parseTemplate(xmlSlat);
 	}
 
-	
 	@Override
 	public String renderSlaTemplate(SLATemplate slat) throws Exception {
 		return renderer.renderSLATemplate(slat);
 	}
 
-	
 	@Override
 	public SLA parseSla(String xmlSla) throws Exception {
 		return (SLA) parser.parseTemplate(xmlSla);
 	}
 
-	
 	@Override
 	public String renderSla(SLA sla) throws Exception {
 		return renderer.renderSLATemplate(sla);
 	}
 
-
 	public SlaTranslatorImplNoOsgi() {
 		parser = new SLASOITemplateParser();
 		renderer = new SLASOITemplateRenderer();
 	}
-	
+
 	private static SLATemplateParser parser;
 	private static SLATemplateRenderer renderer;
-	
+
 }

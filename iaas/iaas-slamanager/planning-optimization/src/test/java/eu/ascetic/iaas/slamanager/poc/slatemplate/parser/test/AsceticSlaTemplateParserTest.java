@@ -12,7 +12,7 @@ import eu.ascetic.iaas.slamanager.poc.slatemplate.AsceticSlaTemplate;
 import eu.ascetic.iaas.slamanager.poc.slatemplate.parser.AsceticSlaTemplateParser;
 
 public class AsceticSlaTemplateParserTest {
-	
+
 	private static SLATemplate slatProposal;
 
 	@Before

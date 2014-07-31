@@ -39,13 +39,11 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-//import org.drools.builder.ResourceType;
 import org.slasoi.gslam.core.control.Policy;
 import org.slasoi.gslam.pac.Agent;
 import org.slasoi.gslam.pac.Event;
 import org.slasoi.gslam.pac.EventType;
 import org.slasoi.gslam.pac.ProvisioningAndAdjustment;
-import org.slasoi.gslam.pac.SharedKnowledgePlane;
 
 /**
  * DOMAIN SPECIFIC PAC.
@@ -89,8 +87,8 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 	private void createAgents() {
 		// At the moment, only one agent is created
 		manager = new Agent(configurationFilesPath + properties.getProperty(AGENT_CONFIGURATION_FILE));
-//		SharedKnowledgePlane.getInstance(this.pacID).getStatefulSession().insert(manager);
-//		SharedKnowledgePlane.getInstance(this.pacID).getStatefulSession().fireAllRules();
+		// SharedKnowledgePlane.getInstance(this.pacID).getStatefulSession().insert(manager);
+		// SharedKnowledgePlane.getInstance(this.pacID).getStatefulSession().fireAllRules();
 		addManagedElements(manager);
 		new Thread(manager).start();
 	}
@@ -126,11 +124,12 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 
 		logger.debug("Properties file loaded...");
 
-//		SharedKnowledgePlane.getInstance(this.pacID).initKnowledgeBase(properties.getProperty(LOG_MODE_DROOLS));
+		// SharedKnowledgePlane.getInstance(this.pacID).initKnowledgeBase(properties.getProperty(LOG_MODE_DROOLS));
 		String rules_path = configurationFilesPath + properties.getProperty(INITIAL_RULES_FILE);
 		rules_path = rules_path.replace("/", System.getProperty("file.separator"));
 		File f = new File(rules_path);
-//		SharedKnowledgePlane.getInstance(this.pacID).addRulesFile(f, ResourceType.DRL);
+		// SharedKnowledgePlane.getInstance(this.pacID).addRulesFile(f,
+		// ResourceType.DRL);
 		createAgents();
 	}
 

@@ -16,7 +16,6 @@ import org.slasoi.gslam.syntaxconverter.SLASOITemplateRenderer;
 import org.slasoi.gslam.syntaxconverter.SLATemplateRenderer;
 import org.slasoi.slamodel.sla.SLA;
 import org.slasoi.slamodel.sla.SLATemplate;
-
 import org.w3c.dom.CDATASection;
 
 public class NegotiationWsClientRaw implements NegotiationClient {
@@ -26,13 +25,11 @@ public class NegotiationWsClientRaw implements NegotiationClient {
 	}
 
 	@Override
-	public SLATemplate[] negotiate(String endpoint, SLATemplate slaTemplate,
-			String negotiationId) {
+	public SLATemplate[] negotiate(String endpoint, SLATemplate slaTemplate, String negotiationId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	
+
 	@Override
 	public String initiateNegotiation(String endpoint, SLATemplate slaTemplate) {
 		SOAPMessage req = null;
@@ -44,19 +41,14 @@ public class NegotiationWsClientRaw implements NegotiationClient {
 		SOAPMessage resp = sendSoapRequest(endpoint, req);
 		return resp.getContentDescription();
 	}
-	
-	
 
 	@Override
-	public SLA createAgreement(String endpoint, SLATemplate slaTemplate,
-			String negotiationId) {
+	public SLA createAgreement(String endpoint, SLATemplate slaTemplate, String negotiationId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
 
-	public static SOAPMessage createInitiateNegotiationReq(SLATemplate slat)
-			throws java.lang.Exception {
+	public static SOAPMessage createInitiateNegotiationReq(SLATemplate slat) throws java.lang.Exception {
 
 		MessageFactory messageFactory = MessageFactory.newInstance();
 		SOAPMessage soapMessage = messageFactory.createMessage();
@@ -67,8 +59,7 @@ public class NegotiationWsClientRaw implements NegotiationClient {
 
 		SOAPBody soapBody = envelope.getBody();
 
-		SOAPElement initiateElem = soapBody.addChildElement(
-				"initiateNegotiation", "web");
+		SOAPElement initiateElem = soapBody.addChildElement("initiateNegotiation", "web");
 		SOAPElement slatElem = initiateElem.addChildElement("slaTemplate");
 
 		SLATemplateRenderer renderer = new SLASOITemplateRenderer();
@@ -82,18 +73,15 @@ public class NegotiationWsClientRaw implements NegotiationClient {
 
 		return soapMessage;
 	}
-	
 
 	public SOAPMessage sendSoapRequest(String url, SOAPMessage message) {
 
 		SOAPMessage soapResponse = null;
 
 		try {
-			SOAPConnectionFactory soapConnectionFactory = SOAPConnectionFactory
-					.newInstance();
+			SOAPConnectionFactory soapConnectionFactory = SOAPConnectionFactory.newInstance();
 
-			SOAPConnection soapConnection = soapConnectionFactory
-					.createConnection();
+			SOAPConnection soapConnection = soapConnectionFactory.createConnection();
 
 			soapResponse = soapConnection.call(message, url);
 
@@ -113,6 +101,5 @@ public class NegotiationWsClientRaw implements NegotiationClient {
 			put(WEB_NS, "http://webservice.syntaxconverter.gslam.slasoi.org");
 		}
 	};
-
 
 }

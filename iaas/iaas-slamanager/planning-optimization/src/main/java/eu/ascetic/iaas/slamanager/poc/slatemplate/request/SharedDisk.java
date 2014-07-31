@@ -16,7 +16,6 @@
 
 package eu.ascetic.iaas.slamanager.poc.slatemplate.request;
 
-
 public class SharedDisk extends AsceticResourceRequest {
 
 	public SharedDisk(String id) {

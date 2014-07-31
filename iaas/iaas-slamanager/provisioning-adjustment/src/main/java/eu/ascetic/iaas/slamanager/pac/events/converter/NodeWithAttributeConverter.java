@@ -14,9 +14,7 @@
  * limitations under the License.                                          
  */
 
-
 package eu.ascetic.iaas.slamanager.pac.events.converter;
-
 
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
@@ -26,7 +24,6 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
 import eu.ascetic.iaas.slamanager.pac.events.Value;
 
-
 public class NodeWithAttributeConverter implements Converter {
 
 	@SuppressWarnings("unchecked")
@@ -34,22 +31,18 @@ public class NodeWithAttributeConverter implements Converter {
 		return clazz.equals(Value.class);
 	}
 
-	
 	@Override
-	public void marshal(final Object valore, final HierarchicalStreamWriter writer,
-			final MarshallingContext context) {
+	public void marshal(final Object valore, final HierarchicalStreamWriter writer, final MarshallingContext context) {
 		final NodeWithAttribute elem = (NodeWithAttribute) valore;
-		writer.addAttribute(elem.getAttributeName(), elem.getAttributeValue()); 
+		writer.addAttribute(elem.getAttributeName(), elem.getAttributeValue());
 		writer.setValue(elem.getTextValue());
 	}
 
-
 	@Override
-	public Object unmarshal(HierarchicalStreamReader reader,
-			UnmarshallingContext context) {
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
 
-        return  null;		
-		
+		return null;
+
 	}
-	
+
 }

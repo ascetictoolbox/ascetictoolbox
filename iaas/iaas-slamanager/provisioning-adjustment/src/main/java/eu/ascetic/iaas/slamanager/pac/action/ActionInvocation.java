@@ -79,14 +79,14 @@ public class ActionInvocation {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//ProvisioningAdjustmentImpl.getPacToPm().init();
+		// ProvisioningAdjustmentImpl.getPacToPm().init();
 	}
 
 	public void invokeActionFromSLA(SLA sla, String agreementTerm, String guaranteedId) {
 		logger.debug("Invoking action based on agreementTerm: " + agreementTerm + " and guaranteedId: " + guaranteedId);
 		Class actionClass = null;
 		this.sla = sla;
-		appUUID=sla.getPropertyValue(new STND("AppUUID"));
+		appUUID = sla.getPropertyValue(new STND("AppUUID"));
 		for (AgreementTerm at : sla.getAgreementTerms()) {
 			if (at.getId().getValue().equalsIgnoreCase(agreementTerm)) {
 				for (Guaranteed g : at.getGuarantees()) {

@@ -32,22 +32,21 @@
 
 package eu.ascetic.iaas.slamanager.poc;
 
-
 import org.slasoi.gslam.core.builder.PlanningOptimizationBuilder;
 import org.slasoi.gslam.core.poc.PlanningOptimization;
 import org.springframework.beans.factory.annotation.Autowired;
 
-
 public class PlanningOptimizationServices implements PlanningOptimizationBuilder {
-    /**
-     * This method exposes a PlanningOptimizationServices, so SkeletonSLAMBean (located in skl-main bundle) is able to
-     * create in runtime a PlanningOptimization component and push it into the SLAManagerContext
-     */
-	
+	/**
+	 * This method exposes a PlanningOptimizationServices, so SkeletonSLAMBean
+	 * (located in skl-main bundle) is able to create in runtime a
+	 * PlanningOptimization component and push it into the SLAManagerContext
+	 */
+
 	@Autowired
 	private PlanningOptimizationImpl planningOptimizationImpl;
-	
-    public PlanningOptimization create() {
-        return planningOptimizationImpl;
-    }
+
+	public PlanningOptimization create() {
+		return planningOptimizationImpl;
+	}
 }

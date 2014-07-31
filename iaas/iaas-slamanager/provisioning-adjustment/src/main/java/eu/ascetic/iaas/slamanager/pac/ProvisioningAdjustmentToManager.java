@@ -29,9 +29,9 @@ public abstract class ProvisioningAdjustmentToManager {
 		cc.getProperties().put(ClientConfig.PROPERTY_FOLLOW_REDIRECTS, true);
 		client = Client.create(cc);
 	}
-	
+
 	public abstract String manageADD(String appID, String virtualSystem, int number);
-	
+
 	public abstract String manageDELETE(String appID, String virtualSystem, String vmId);
 
 }

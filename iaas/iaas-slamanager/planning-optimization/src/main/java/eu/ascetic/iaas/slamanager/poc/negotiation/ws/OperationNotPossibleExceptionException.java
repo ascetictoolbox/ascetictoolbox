@@ -1,4 +1,3 @@
-
 /**
  * OperationNotPossibleExceptionException.java
  *
@@ -8,34 +7,31 @@
 
 package eu.ascetic.iaas.slamanager.poc.negotiation.ws;
 
-public class OperationNotPossibleExceptionException extends java.lang.Exception{
-    
-    private eu.ascetic.iaas.slamanager.poc.negotiation.ws.BZNegotiationStub.OperationNotPossibleExceptionE faultMessage;
+public class OperationNotPossibleExceptionException extends java.lang.Exception {
 
-    
-        public OperationNotPossibleExceptionException() {
-            super("OperationNotPossibleExceptionException");
-        }
+	private eu.ascetic.iaas.slamanager.poc.negotiation.ws.BZNegotiationStub.OperationNotPossibleExceptionE faultMessage;
 
-        public OperationNotPossibleExceptionException(java.lang.String s) {
-           super(s);
-        }
+	public OperationNotPossibleExceptionException() {
+		super("OperationNotPossibleExceptionException");
+	}
 
-        public OperationNotPossibleExceptionException(java.lang.String s, java.lang.Throwable ex) {
-          super(s, ex);
-        }
+	public OperationNotPossibleExceptionException(java.lang.String s) {
+		super(s);
+	}
 
-        public OperationNotPossibleExceptionException(java.lang.Throwable cause) {
-            super(cause);
-        }
-    
+	public OperationNotPossibleExceptionException(java.lang.String s, java.lang.Throwable ex) {
+		super(s, ex);
+	}
 
-    public void setFaultMessage(eu.ascetic.iaas.slamanager.poc.negotiation.ws.BZNegotiationStub.OperationNotPossibleExceptionE msg){
-       faultMessage = msg;
-    }
-    
-    public eu.ascetic.iaas.slamanager.poc.negotiation.ws.BZNegotiationStub.OperationNotPossibleExceptionE getFaultMessage(){
-       return faultMessage;
-    }
+	public OperationNotPossibleExceptionException(java.lang.Throwable cause) {
+		super(cause);
+	}
+
+	public void setFaultMessage(eu.ascetic.iaas.slamanager.poc.negotiation.ws.BZNegotiationStub.OperationNotPossibleExceptionE msg) {
+		faultMessage = msg;
+	}
+
+	public eu.ascetic.iaas.slamanager.poc.negotiation.ws.BZNegotiationStub.OperationNotPossibleExceptionE getFaultMessage() {
+		return faultMessage;
+	}
 }
-    

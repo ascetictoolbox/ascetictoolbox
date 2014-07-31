@@ -1,4 +1,3 @@
-
 /**
  * InvalidNegotiationIDExceptionException.java
  *
@@ -8,34 +7,31 @@
 
 package eu.ascetic.iaas.slamanager.poc.negotiation.ws;
 
-public class InvalidNegotiationIDExceptionException extends java.lang.Exception{
-    
-    private eu.ascetic.iaas.slamanager.poc.negotiation.ws.BZNegotiationStub.InvalidNegotiationIDExceptionE faultMessage;
+public class InvalidNegotiationIDExceptionException extends java.lang.Exception {
 
-    
-        public InvalidNegotiationIDExceptionException() {
-            super("InvalidNegotiationIDExceptionException");
-        }
+	private eu.ascetic.iaas.slamanager.poc.negotiation.ws.BZNegotiationStub.InvalidNegotiationIDExceptionE faultMessage;
 
-        public InvalidNegotiationIDExceptionException(java.lang.String s) {
-           super(s);
-        }
+	public InvalidNegotiationIDExceptionException() {
+		super("InvalidNegotiationIDExceptionException");
+	}
 
-        public InvalidNegotiationIDExceptionException(java.lang.String s, java.lang.Throwable ex) {
-          super(s, ex);
-        }
+	public InvalidNegotiationIDExceptionException(java.lang.String s) {
+		super(s);
+	}
 
-        public InvalidNegotiationIDExceptionException(java.lang.Throwable cause) {
-            super(cause);
-        }
-    
+	public InvalidNegotiationIDExceptionException(java.lang.String s, java.lang.Throwable ex) {
+		super(s, ex);
+	}
 
-    public void setFaultMessage(eu.ascetic.iaas.slamanager.poc.negotiation.ws.BZNegotiationStub.InvalidNegotiationIDExceptionE msg){
-       faultMessage = msg;
-    }
-    
-    public eu.ascetic.iaas.slamanager.poc.negotiation.ws.BZNegotiationStub.InvalidNegotiationIDExceptionE getFaultMessage(){
-       return faultMessage;
-    }
+	public InvalidNegotiationIDExceptionException(java.lang.Throwable cause) {
+		super(cause);
+	}
+
+	public void setFaultMessage(eu.ascetic.iaas.slamanager.poc.negotiation.ws.BZNegotiationStub.InvalidNegotiationIDExceptionE msg) {
+		faultMessage = msg;
+	}
+
+	public eu.ascetic.iaas.slamanager.poc.negotiation.ws.BZNegotiationStub.InvalidNegotiationIDExceptionE getFaultMessage() {
+		return faultMessage;
+	}
 }
-    

@@ -14,7 +14,6 @@
  * limitations under the License.                                          
  */
 
-
 package eu.ascetic.iaas.slamanager.pac.events.converter;
 
 import java.text.ParseException;
@@ -32,38 +31,31 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
 public class DateTimeConverter implements Converter {
 
-	
-    private SimpleDateFormat formatter = new SimpleDateFormat(
-    		"yyyy-MM-dd'T'HH:mm:ss");
+	private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
-	
-    public boolean canConvert(Class clazz) {
-    	return Calendar.class.isAssignableFrom(clazz);
+	public boolean canConvert(Class clazz) {
+		return Calendar.class.isAssignableFrom(clazz);
 
-    }
+	}
 
-    @Override
-    public void marshal(Object value, HierarchicalStreamWriter writer,
-                    MarshallingContext context) {
-    	  Calendar calendar = (Calendar) value;
-          Date date = calendar.getTime();
-          writer.setValue(formatter.format(date));
+	@Override
+	public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
+		Calendar calendar = (Calendar) value;
+		Date date = calendar.getTime();
+		writer.setValue(formatter.format(date));
 
-    }
+	}
 
-    @Override
-    public Object unmarshal(HierarchicalStreamReader reader,
-                    UnmarshallingContext context) {
-    	  GregorianCalendar calendar = new GregorianCalendar();
-          try {
-              calendar.setTime(formatter.parse(reader.getValue()));
-          } catch (ParseException e) {
-              throw new ConversionException(e.getMessage(), e);
-          }
-          return calendar;
+	@Override
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+		GregorianCalendar calendar = new GregorianCalendar();
+		try {
+			calendar.setTime(formatter.parse(reader.getValue()));
+		} catch (ParseException e) {
+			throw new ConversionException(e.getMessage(), e);
+		}
+		return calendar;
 
-    }
-
-
+	}
 
 }

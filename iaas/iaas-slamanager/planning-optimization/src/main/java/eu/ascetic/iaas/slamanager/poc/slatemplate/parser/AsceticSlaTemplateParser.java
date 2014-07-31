@@ -74,17 +74,15 @@ public class AsceticSlaTemplateParser {
 	HashMap<String, String> mapSlaOvfId = new HashMap<String, String>();
 
 	private OVFRetriever ovfRetriever;
-	
+
 	private OvfResourceParser ovfParser;
 
 	private String ovfFile = null;
 
-	
-
 	public AsceticSlaTemplateParser() {
 		ovfRetriever = new OVFRetriever();
 	}
-	
+
 	private void parseSlaTemplate(SLATemplate slaTemplate) {
 		eu.ascetic.iaas.slamanager.poc.slatemplate.AsceticSlaTemplate.Builder builder = new Builder();
 		builder.setSlaTemplate(slaTemplate);

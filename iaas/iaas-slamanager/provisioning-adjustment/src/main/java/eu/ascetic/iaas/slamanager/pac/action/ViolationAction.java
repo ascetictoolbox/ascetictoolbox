@@ -19,30 +19,30 @@ package eu.ascetic.iaas.slamanager.pac.action;
 import org.apache.log4j.Logger;
 import org.slasoi.slamodel.sla.Invocation;
 
-import eu.ascetic.iaas.slamanager.pac.ProvisioningAdjustmentImpl;
-
-public class ViolationAction extends Invocation{
+public class ViolationAction extends Invocation {
 
 	/**
 	 * 
 	 */
 	private static Logger logger = Logger.getLogger(ViolationAction.class.getName());
-	
+
 	private static final long serialVersionUID = 1L;
-	
-	public ViolationAction(){
+
+	public ViolationAction() {
 	}
 
-	public String provaMetodo(String msg){
-		return msg+" Modificato";
+	public String provaMetodo(String msg) {
+		return msg + " Modificato";
 	}
-		
-	public void manageADD(String appID, String virtualSystem, int number){
+
+	public void manageADD(String appID, String virtualSystem, int number) {
 		logger.debug("Call manage to PM");
-		logger.debug("AppId:"+appID+" , virtualSystem:"+virtualSystem+" , action:"+"ADD"+" , number:"+number);
-		//String result=ProvisioningAdjustmentImpl.getPacToPm().manageADD(appID, virtualSystem,number);
+		logger.debug("AppId:" + appID + " , virtualSystem:" + virtualSystem + " , action:" + "ADD" + " , number:" + number);
+		// String
+		// result=ProvisioningAdjustmentImpl.getPacToPm().manageADD(appID,
+		// virtualSystem,number);
 		logger.debug("============  Action Invoked!!! ============");
-		//logger.debug("Result:"+result);
-	}	
+		// logger.debug("Result:"+result);
+	}
 
 }

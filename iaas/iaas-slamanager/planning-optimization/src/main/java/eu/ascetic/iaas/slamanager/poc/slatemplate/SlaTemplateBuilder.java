@@ -7,8 +7,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import org.slasoi.businessManager.common.model.pricing.Price;
-import org.slasoi.businessManager.common.model.pricing.UnitResource;
 import org.slasoi.slamodel.core.CompoundDomainExpr;
 import org.slasoi.slamodel.core.EventExpr;
 import org.slasoi.slamodel.core.FunctionalExpr;
@@ -21,11 +19,11 @@ import org.slasoi.slamodel.primitives.STND;
 import org.slasoi.slamodel.primitives.TIME;
 import org.slasoi.slamodel.sla.AgreementTerm;
 import org.slasoi.slamodel.sla.Guaranteed;
+import org.slasoi.slamodel.sla.Guaranteed.Action;
+import org.slasoi.slamodel.sla.Guaranteed.State;
 import org.slasoi.slamodel.sla.InterfaceDeclr;
 import org.slasoi.slamodel.sla.SLATemplate;
 import org.slasoi.slamodel.sla.VariableDeclr;
-import org.slasoi.slamodel.sla.Guaranteed.Action;
-import org.slasoi.slamodel.sla.Guaranteed.State;
 import org.slasoi.slamodel.sla.business.ComponentProductOfferingPrice;
 import org.slasoi.slamodel.sla.business.ProductOfferingPrice;
 import org.slasoi.slamodel.vocab.core;
@@ -43,7 +41,7 @@ import eu.ascetic.iaas.slamanager.poc.utils.AgreementUtil;
 import eu.ascetic.iaas.slamanager.poc.utils.AsceticUnits;
 
 public class SlaTemplateBuilder {
-	
+
 	private AsceticSlaTemplate asceticSlaTemplate = null;
 
 	private SLATemplate newSlaTemplate = null;
@@ -51,7 +49,7 @@ public class SlaTemplateBuilder {
 	private SLATemplate oldSlaTemplate = null;
 
 	private ArrayList<AgreementTerm> aTerms = null;
-	
+
 	public static final String $STND_business = "http://www.slaatsoi.org/business#";
 	public static final String $STND_units = "http://www.slaatsoi.org/coremodel/units#";
 	public static final String $STND_coremodel = "http://www.slaatsoi.org/coremodel#";
@@ -104,8 +102,8 @@ public class SlaTemplateBuilder {
 		ComponentProductOfferingPrice cpo = null;
 		double totalPrice = 0, resourcesPrice = 0, guaranteePrice = 0, reservationPrice = 0;
 		totalPrice = vs.getPrice();
-		cpo = new ComponentProductOfferingPrice(new ID(id), new STND($STND_business + priceType), new CONST(new Double(totalPrice).toString(), new STND($STND_units + currency)),
-				new CONST("1", new STND($STND_units + "vm")));
+		cpo = new ComponentProductOfferingPrice(new ID(id), new STND($STND_business + priceType), new CONST(new Double(totalPrice).toString(), new STND($STND_units + currency)), new CONST("1",
+				new STND($STND_units + "vm")));
 		cpops.add(cpo);
 		ComponentProductOfferingPrice[] cpopsArray = new ComponentProductOfferingPrice[cpops.size()];
 		int i = 0;
@@ -113,8 +111,8 @@ public class SlaTemplateBuilder {
 			cpopsArray[i] = c;
 			i++;
 		}
-		po = new ProductOfferingPrice(new ID("Product_Offering_Price_Of_" + vs.getOvfId()), "", new TIME(dateToCalendar(from)), new TIME(dateToCalendar(until)), new STND($STND_business
-				+ billFreq), cpopsArray);
+		po = new ProductOfferingPrice(new ID("Product_Offering_Price_Of_" + vs.getOvfId()), "", new TIME(dateToCalendar(from)), new TIME(dateToCalendar(until)), new STND($STND_business + billFreq),
+				cpopsArray);
 		ID ida = new ID(vs.getOvfId());
 		Expr[] param = { ida };
 		EventExpr ee = new EventExpr(new STND($STND_coremodel + "invocation"), param);

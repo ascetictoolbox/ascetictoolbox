@@ -22,8 +22,8 @@ public class VMManagerEstimatesRequestObject {
 	public JSONObject getRequestJson() {
 		return requestJson;
 	}
-	
-	public AsceticSlaTemplate getAsceticSlaTemplate(){
+
+	public AsceticSlaTemplate getAsceticSlaTemplate() {
 		return asceticslaTemplate;
 	}
 

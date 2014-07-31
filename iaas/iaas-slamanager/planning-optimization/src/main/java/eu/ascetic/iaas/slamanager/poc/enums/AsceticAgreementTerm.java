@@ -16,5 +16,5 @@
 package eu.ascetic.iaas.slamanager.poc.enums;
 
 public enum AsceticAgreementTerm {
-	vm_cores, cpu_speed, memory, vs_location, storage_location, reserve, co_location_rack, not_co_location_host, vm_cpu_load, availability, reliability, minimum_loa,power_usage_per_vm,disk
+	vm_cores, cpu_speed, memory, vs_location, storage_location, reserve, co_location_rack, not_co_location_host, vm_cpu_load, availability, reliability, minimum_loa, power_usage_per_vm, disk
 };

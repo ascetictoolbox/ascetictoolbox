@@ -6,36 +6,27 @@ package eu.ascetic.iaas.slamanager.poc.exceptions;
  * 
  * @author Kuan Lu
  */
-public class MoreThanOneInterfaceDefinedException extends Exception
-{
+public class MoreThanOneInterfaceDefinedException extends Exception {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public MoreThanOneInterfaceDefinedException()
-    {
-        // TODO Auto-generated constructor stub
-    }
+	public MoreThanOneInterfaceDefinedException() {
+		// TODO Auto-generated constructor stub
+	}
 
-    public MoreThanOneInterfaceDefinedException(
-                                                 String message )
-    {
-        super( message );
-        // TODO Auto-generated constructor stub
-    }
+	public MoreThanOneInterfaceDefinedException(String message) {
+		super(message);
+		// TODO Auto-generated constructor stub
+	}
 
-    public MoreThanOneInterfaceDefinedException(
-                                                 Throwable cause )
-    {
-        super( cause );
-        // TODO Auto-generated constructor stub
-    }
+	public MoreThanOneInterfaceDefinedException(Throwable cause) {
+		super(cause);
+		// TODO Auto-generated constructor stub
+	}
 
-    public MoreThanOneInterfaceDefinedException(
-                                                 String message,
-                                                 Throwable cause )
-    {
-        super( message, cause );
-        // TODO Auto-generated constructor stub
-    }
+	public MoreThanOneInterfaceDefinedException(String message, Throwable cause) {
+		super(message, cause);
+		// TODO Auto-generated constructor stub
+	}
 
 }

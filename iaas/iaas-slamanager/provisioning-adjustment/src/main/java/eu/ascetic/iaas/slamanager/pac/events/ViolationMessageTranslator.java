@@ -22,61 +22,57 @@ import org.slasoi.gslam.pac.events.Message;
 
 import com.thoughtworks.xstream.XStream;
 
-import eu.ascetic.iaas.slamanager.pac.events.converter.NodeWithAttributeConverter;
 import eu.ascetic.iaas.slamanager.pac.events.converter.ValueConverter;
-
 
 public class ViolationMessageTranslator extends EventTranslator {
 
 	private static final Logger logger = Logger.getLogger(ViolationMessageTranslator.class.getName());
 
-    public ViolationMessageTranslator() {
-    }
+	public ViolationMessageTranslator() {
+	}
 
-    
-    public Message fromXML(String messageStr) {
-        logger.debug("ViolationAgentMessage from XML");
-        logger.debug(messageStr);
+	public Message fromXML(String messageStr) {
+		logger.debug("ViolationAgentMessage from XML");
+		logger.debug(messageStr);
 
-        XStream xstream = new XStream();
-        
-        //xstream.processAnnotations(ViolationMessage.class);
-        xstream.registerConverter(new eu.ascetic.iaas.slamanager.pac.events.converter.DateTimeConverter());
-        
-        xstream.registerConverter(new ValueConverter());
-        
-        xstream.alias(ViolationMessage.class.getSimpleName(), ViolationMessage.class);
-        xstream.useAttributeFor(ViolationMessage.class, "sid");
-        xstream.useAttributeFor(ViolationMessage.class, "ceeId");
-        xstream.useAttributeFor(ViolationMessage.class, "vsName");
-        xstream.useAttributeFor(ViolationMessage.class, "vmName");
+		XStream xstream = new XStream();
 
-        return  (Message) xstream.fromXML(messageStr);
-    }
+		// xstream.processAnnotations(ViolationMessage.class);
+		xstream.registerConverter(new eu.ascetic.iaas.slamanager.pac.events.converter.DateTimeConverter());
 
-    
-    public String toXML(Message message) {
-        logger.debug("ViolationAgentMessage to XML");
-        logger.debug(message);
+		xstream.registerConverter(new ValueConverter());
 
-        XStream xstream = new XStream();
-        //xstream.processAnnotations(ViolationMessage.class);
-        
-        xstream.registerConverter(new eu.ascetic.iaas.slamanager.pac.events.converter.DateTimeConverter());
-        
-        xstream.registerConverter(new ValueConverter());
+		xstream.alias(ViolationMessage.class.getSimpleName(), ViolationMessage.class);
+		xstream.useAttributeFor(ViolationMessage.class, "sid");
+		xstream.useAttributeFor(ViolationMessage.class, "ceeId");
+		xstream.useAttributeFor(ViolationMessage.class, "vsName");
+		xstream.useAttributeFor(ViolationMessage.class, "vmName");
 
-        xstream.useAttributeFor(ViolationMessage.class, "sid");
-        xstream.useAttributeFor(ViolationMessage.class, "ceeId");
-        xstream.useAttributeFor(ViolationMessage.class, "vsName");
-        xstream.useAttributeFor(ViolationMessage.class, "vmName");
+		return (Message) xstream.fromXML(messageStr);
+	}
 
-        xstream.alias(ViolationMessage.class.getSimpleName(), ViolationMessage.class);
+	public String toXML(Message message) {
+		logger.debug("ViolationAgentMessage to XML");
+		logger.debug(message);
 
-        String messageStr = xstream.toXML(message);
-        logger.debug(messageStr);
+		XStream xstream = new XStream();
+		// xstream.processAnnotations(ViolationMessage.class);
 
-        return messageStr;
-    }
+		xstream.registerConverter(new eu.ascetic.iaas.slamanager.pac.events.converter.DateTimeConverter());
+
+		xstream.registerConverter(new ValueConverter());
+
+		xstream.useAttributeFor(ViolationMessage.class, "sid");
+		xstream.useAttributeFor(ViolationMessage.class, "ceeId");
+		xstream.useAttributeFor(ViolationMessage.class, "vsName");
+		xstream.useAttributeFor(ViolationMessage.class, "vmName");
+
+		xstream.alias(ViolationMessage.class.getSimpleName(), ViolationMessage.class);
+
+		String messageStr = xstream.toXML(message);
+		logger.debug(messageStr);
+
+		return messageStr;
+	}
 
 }

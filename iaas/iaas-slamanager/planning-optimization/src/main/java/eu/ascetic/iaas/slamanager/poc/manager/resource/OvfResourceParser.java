@@ -32,10 +32,9 @@ public class OvfResourceParser {
 	private OvfDefinition ovfDefinition;
 
 	public OvfResourceParser(String ovfFile) {
-		XmlBeanEnvelopeDocument xmlBeanEnvelopeDocument=null;
+		XmlBeanEnvelopeDocument xmlBeanEnvelopeDocument = null;
 		try {
-			xmlBeanEnvelopeDocument = XmlBeanEnvelopeDocument.Factory
-					.parse(ovfFile);
+			xmlBeanEnvelopeDocument = XmlBeanEnvelopeDocument.Factory.parse(ovfFile);
 		} catch (XmlException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -48,26 +47,26 @@ public class OvfResourceParser {
 	}
 
 	public Disk[] getSharedDisks() {
-		DiskSection discSection=ovfDefinition.getDiskSection();
+		DiskSection discSection = ovfDefinition.getDiskSection();
 		return discSection.getDiskArray();
 	}
 
 	public HashMap<String, Double> getVirtualSystemNeed(VirtualSystem vs) {
 		VirtualHardwareSection hardware = vs.getVirtualHardwareSection();
-			HashMap<String, Double> vsNeed = new HashMap<String, Double>();
-			// init map
-			try {
-				vsNeed.put("cpu_speed", (double)hardware.getCPUSpeed());
-			} catch (NullPointerException e) {
-			}
-			try {
-				vsNeed.put("memory", (double)hardware.getMemorySize());
-			} catch (NullPointerException e) {
-			}
-			try {
-				vsNeed.put("vm_cores", (double)hardware.getNumberOfVirtualCPUs());
-			} catch (NullPointerException e) {
-			}
-			return vsNeed;
+		HashMap<String, Double> vsNeed = new HashMap<String, Double>();
+		// init map
+		try {
+			vsNeed.put("cpu_speed", (double) hardware.getCPUSpeed());
+		} catch (NullPointerException e) {
+		}
+		try {
+			vsNeed.put("memory", (double) hardware.getMemorySize());
+		} catch (NullPointerException e) {
+		}
+		try {
+			vsNeed.put("vm_cores", (double) hardware.getNumberOfVirtualCPUs());
+		} catch (NullPointerException e) {
+		}
+		return vsNeed;
 	}
 }

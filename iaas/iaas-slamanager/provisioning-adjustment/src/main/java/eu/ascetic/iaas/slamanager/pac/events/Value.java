@@ -14,18 +14,16 @@
  * limitations under the License.                                          
  */
 
-
 package eu.ascetic.iaas.slamanager.pac.events;
 
 import eu.ascetic.iaas.slamanager.pac.events.converter.NodeWithAttribute;
 
-
-public class Value implements NodeWithAttribute{
+public class Value implements NodeWithAttribute {
 
 	private String id;
 
 	private String text;
-	
+
 	public Value(String id, String text) {
 		this.id = id;
 		this.text = text;
@@ -45,5 +43,5 @@ public class Value implements NodeWithAttribute{
 	public String getTextValue() {
 		return text;
 	}
-	
+
 }

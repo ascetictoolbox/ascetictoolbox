@@ -24,12 +24,12 @@ import eu.ascetic.iaas.slamanager.poc.slatemplate.request.guarantee.Guarantee;
 import eu.ascetic.iaas.slamanager.poc.slatemplate.request.guarantee.ResourceGuarantee;
 
 public class VirtualSystem extends AsceticResourceRequest {
-	
+
 	private double price;
 
 	public VirtualSystem(String id) {
 		super(id);
-		price=0;
+		price = 0;
 	}
 
 	public ArrayList<ResourceGuarantee> getResourcesOfTerm(AsceticAgreementTerm t) {
@@ -67,5 +67,5 @@ public class VirtualSystem extends AsceticResourceRequest {
 	public void setPrice(double price) {
 		this.price = price;
 	}
-	
+
 }

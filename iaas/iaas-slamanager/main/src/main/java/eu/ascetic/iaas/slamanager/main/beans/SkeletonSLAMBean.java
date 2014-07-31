@@ -51,173 +51,149 @@ import org.springframework.osgi.extensions.annotation.ServiceReference;
 import eu.ascetic.iaas.slamanager.main.beans.client.NegotiationHelper;
 
 public class SkeletonSLAMBean implements BundleContextAware {
-	
-    public SkeletonSLAMBean()
-    {
-    }
-		
-	
-    public void start() {
-        try {
-        	LOGGER.info("Loading configuration");
-            
-        	INSTANCES++;
-        	SLAMConfiguration sklConfig = gslamServices.loadConfigurationFrom("ascetic.instance1.cfg");
 
-        	LOGGER.debug("Config: name=" + sklConfig.name);
-        	LOGGER.debug("Config: epr=" + sklConfig.epr);
-        	LOGGER.debug("Config: group=" + sklConfig.group);
-        	LOGGER.debug("Config: wsPrefix=" + sklConfig.wsPrefix);
-        	
-            slamContext = gslamServices.createContext(osgiContext, sklConfig.name + "-" + INSTANCES, sklConfig.epr, sklConfig.group, sklConfig.wsPrefix);
-            slamContext.setProperties( sklConfig.properties );
-         
-            // Inject the POC into the slamContext
-            slamContext.setPlanningOptimization(nnPOC);
-            
-            injectIntoContext(nnPOC, slamContext);
+	public SkeletonSLAMBean() {
+	}
 
-            // Inject the PAC into the slamContext
-            slamContext.setProvisioningAdjustment(nnPAC);
-            injectIntoContext(nnPAC, slamContext);
+	public void start() {
+		try {
+			LOGGER.info("Loading configuration");
 
-            LOGGER.info("\n\n \t*** :: start :: gslamServices    >> \n" + gslamServices);
-            LOGGER.info("\n\n \t*** :: start :: SkeletonSLAMBean >> \n" + slamContext);
-        }
-        catch (Exception e) {
-            LOGGER.debug(e);
-            e.printStackTrace();
-        }
-    }
+			INSTANCES++;
+			SLAMConfiguration sklConfig = gslamServices.loadConfigurationFrom("ascetic.instance1.cfg");
 
-    public void stop() {
-    }
+			LOGGER.debug("Config: name=" + sklConfig.name);
+			LOGGER.debug("Config: epr=" + sklConfig.epr);
+			LOGGER.debug("Config: group=" + sklConfig.group);
+			LOGGER.debug("Config: wsPrefix=" + sklConfig.wsPrefix);
 
-    public void setBundleContext( BundleContext osgiContext )
-    {
-        assert (osgiContext != null) : "The OSGi context of ascetic SLA manager != null.";
-        this.osgiContext = osgiContext;
+			slamContext = gslamServices.createContext(osgiContext, sklConfig.name + "-" + INSTANCES, sklConfig.epr, sklConfig.group, sklConfig.wsPrefix);
+			slamContext.setProperties(sklConfig.properties);
 
-        AsceticSlamTracer tracer = new AsceticSlamTracer();
-        osgiContext.registerService( tracer.getClass().getName(), tracer, null );
-    }
+			// Inject the POC into the slamContext
+			slamContext.setPlanningOptimization(nnPOC);
 
-    /**
-     * Injects the domain specific components into SLA manager context. e.g.,
-     * IPOC and IPAC.
-     */
-    protected void injectIntoContext( Object obj, SLAManagerContext context )
-    {
-        assert (context != null && obj != null) : "The context of ascetic SLA manager != null and the object that is injecting into SLAM context !=null.";
-        if ( obj instanceof SLAMContextAware )
-        {
-            ((SLAMContextAware) obj).setSLAManagerContext(context);
-        }
-    }
+			injectIntoContext(nnPOC, slamContext);
 
-    
-    /**
-     * Sets the generic SLA manager services.
-     */
-    @ServiceReference
-    public void setGslamServices( GenericSLAManagerServices gslamServices )
-    {
-        assert (gslamServices != null) : "Generic SLAM services != null.";
-        LOGGER.info( "generic-slam injected successfully into ascetic-slam" );
-        this.gslamServices = gslamServices;
-    }
+			// Inject the PAC into the slamContext
+			slamContext.setProvisioningAdjustment(nnPAC);
+			injectIntoContext(nnPAC, slamContext);
 
-    @ServiceReference
-    public void setGslamUtils( GenericSLAManagerUtils utils )
-    {
-        LOGGER.info( "generic-slam-utils injected successfully into ascetic-slam" );
-        this.gslamUtils = utils;
-    }
-    
-    
-    /**
-     * Sets IPOC.
-     */
-    @ServiceReference(filter = "(proxy=iaas-poc)")
-    public void setPOC( PlanningOptimizationBuilder pocBuilder )
-    {
-        LOGGER.info( "is-POC injected successfully into ascetic-slam" );
-        assert (pocBuilder != null) : "PlanningOptimizationBuilder instance != null.";
-        this.nnPOC = pocBuilder.create();
-    }
+			LOGGER.info("\n\n \t*** :: start :: gslamServices    >> \n" + gslamServices);
+			LOGGER.info("\n\n \t*** :: start :: SkeletonSLAMBean >> \n" + slamContext);
+		} catch (Exception e) {
+			LOGGER.debug(e);
+			e.printStackTrace();
+		}
+	}
 
-    /**
-     * Sets IPAC.
-     */
-    @ServiceReference(filter = "(proxy=iaas-pac)")
-    public void setPAC( ProvisioningAdjustmentBuilder pacBuilder )
-    {
-        LOGGER.info( "ascetic-PAC injected successfully into ascetic-slam" );
-        assert (pacBuilder != null) : "ProvisioningAdjustmentBuilder instance != null.";
-        this.nnPAC = pacBuilder.create();
-    }
+	public void stop() {
+	}
 
-    protected SLAManagerContext         slamContext;
-    protected GenericSLAManagerServices gslamServices;
-    protected GenericSLAManagerUtils    gslamUtils;
+	public void setBundleContext(BundleContext osgiContext) {
+		assert (osgiContext != null) : "The OSGi context of ascetic SLA manager != null.";
+		this.osgiContext = osgiContext;
 
-    protected PlanningOptimization nnPOC;
-    protected ProvisioningAdjustment nnPAC;
+		AsceticSlamTracer tracer = new AsceticSlamTracer();
+		osgiContext.registerService(tracer.getClass().getName(), tracer, null);
+	}
 
-    protected BundleContext osgiContext;
+	/**
+	 * Injects the domain specific components into SLA manager context. e.g.,
+	 * IPOC and IPAC.
+	 */
+	protected void injectIntoContext(Object obj, SLAManagerContext context) {
+		assert (context != null && obj != null) : "The context of ascetic SLA manager != null and the object that is injecting into SLAM context !=null.";
+		if (obj instanceof SLAMContextAware) {
+			((SLAMContextAware) obj).setSLAManagerContext(context);
+		}
+	}
 
-    private static int INSTANCES = 0;
-    private static final Logger LOGGER = Logger.getLogger(SkeletonSLAMBean.class);
-    public class AsceticSlamTracer
-    {
-        /**
-         * method to be invoked from osgi-console via 'echo' command
-         */
-        public void context()
-        {
-            System.out.println( slamContext );
-        }
+	/**
+	 * Sets the generic SLA manager services.
+	 */
+	@ServiceReference
+	public void setGslamServices(GenericSLAManagerServices gslamServices) {
+		assert (gslamServices != null) : "Generic SLAM services != null.";
+		LOGGER.info("generic-slam injected successfully into ascetic-slam");
+		this.gslamServices = gslamServices;
+	}
 
+	@ServiceReference
+	public void setGslamUtils(GenericSLAManagerUtils utils) {
+		LOGGER.info("generic-slam-utils injected successfully into ascetic-slam");
+		this.gslamUtils = utils;
+	}
 
-        /**
-         * method to be invoked from osgi-console via 'echo' command
-         */
-        public void slamID()
-        {
-            try
-            {
-                System.out.println( "\t\t SLAM-ID = " + slamContext.getSLAManagerID() );
-            }
-            catch ( Exception e )
-            {
-            }
-        }
+	/**
+	 * Sets IPOC.
+	 */
+	@ServiceReference(filter = "(proxy=iaas-poc)")
+	public void setPOC(PlanningOptimizationBuilder pocBuilder) {
+		LOGGER.info("is-POC injected successfully into ascetic-slam");
+		assert (pocBuilder != null) : "PlanningOptimizationBuilder instance != null.";
+		this.nnPOC = pocBuilder.create();
+	}
 
-        /**
-         * method to be invoked from osgi-console via 'invoke' command
-         */
-        public void values( Hashtable<String, String> params )
-        {
-            assert (params != null) : "SLAM-params != null.";
-            System.out.println( "\t\t SLAM-params = " + params );
-        }
+	/**
+	 * Sets IPAC.
+	 */
+	@ServiceReference(filter = "(proxy=iaas-pac)")
+	public void setPAC(ProvisioningAdjustmentBuilder pacBuilder) {
+		LOGGER.info("ascetic-PAC injected successfully into ascetic-slam");
+		assert (pacBuilder != null) : "ProvisioningAdjustmentBuilder instance != null.";
+		this.nnPAC = pacBuilder.create();
+	}
 
-        /**
-         * method to test Negotiation
-         */
-        public void test()
-        {
-            try
-            {
-                NegotiationHelper helper = new NegotiationHelper();
-                helper.run( slamContext );
-            }
-            catch ( Exception e )
-            {
-                e.printStackTrace();
-            }
-        }
-        
-       
-    }
+	protected SLAManagerContext slamContext;
+	protected GenericSLAManagerServices gslamServices;
+	protected GenericSLAManagerUtils gslamUtils;
+
+	protected PlanningOptimization nnPOC;
+	protected ProvisioningAdjustment nnPAC;
+
+	protected BundleContext osgiContext;
+
+	private static int INSTANCES = 0;
+	private static final Logger LOGGER = Logger.getLogger(SkeletonSLAMBean.class);
+
+	public class AsceticSlamTracer {
+		/**
+		 * method to be invoked from osgi-console via 'echo' command
+		 */
+		public void context() {
+			System.out.println(slamContext);
+		}
+
+		/**
+		 * method to be invoked from osgi-console via 'echo' command
+		 */
+		public void slamID() {
+			try {
+				System.out.println("\t\t SLAM-ID = " + slamContext.getSLAManagerID());
+			} catch (Exception e) {
+			}
+		}
+
+		/**
+		 * method to be invoked from osgi-console via 'invoke' command
+		 */
+		public void values(Hashtable<String, String> params) {
+			assert (params != null) : "SLAM-params != null.";
+			System.out.println("\t\t SLAM-params = " + params);
+		}
+
+		/**
+		 * method to test Negotiation
+		 */
+		public void test() {
+			try {
+				NegotiationHelper helper = new NegotiationHelper();
+				helper.run(slamContext);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
 }

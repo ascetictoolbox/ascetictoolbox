@@ -32,19 +32,17 @@
 
 package eu.ascetic.iaas.slamanager.pac;
 
-
 import org.slasoi.gslam.core.builder.ProvisioningAdjustmentBuilder;
 import org.slasoi.gslam.core.pac.ProvisioningAdjustment;
 
-
 public class ProvisioningAdjustmentServices implements ProvisioningAdjustmentBuilder {
-    public ProvisioningAdjustment create() {
-        return new ProvisioningAdjustmentImpl(filename);
-    }
-    public void setConfigurationFile( String file )
-    {
-        filename = file;
-    }
-    
-    protected String filename;
+	public ProvisioningAdjustment create() {
+		return new ProvisioningAdjustmentImpl(filename);
+	}
+
+	public void setConfigurationFile(String file) {
+		filename = file;
+	}
+
+	protected String filename;
 }

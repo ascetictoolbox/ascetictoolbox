@@ -2,8 +2,6 @@ package eu.ascetic.iaas.slamanager.poc.slatemplate;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.slasoi.slamodel.sla.SLATemplate;
 
@@ -14,7 +12,7 @@ import eu.ascetic.iaas.slamanager.poc.slatemplate.request.SharedDisk;
 import eu.ascetic.iaas.slamanager.poc.slatemplate.request.VirtualSystem;
 
 public class AsceticSlaTemplate {
-	
+
 	private String uuid = null;
 
 	private String ovfFile = null;
@@ -164,17 +162,22 @@ public class AsceticSlaTemplate {
 	public void removeAllOvfResourceRequests() {
 		for (AsceticRequest cr : asceticRequests) {
 			if (cr instanceof VirtualSystem) {
-				/*CopyOnWriteArraySet<org.ow2.Ascetic.provider.poc.slatemplate.request.guarantee.Guarantee> cpaGuarantees=new CopyOnWriteArraySet<org.ow2.Ascetic.provider.poc.slatemplate.request.guarantee.Guarantee>(cr.getGuarantees());
-				Iterator<org.ow2.Ascetic.provider.poc.slatemplate.request.guarantee.Guarantee> it=cpaGuarantees.iterator();
-				while(it.hasNext()){
-					org.ow2.Ascetic.provider.poc.slatemplate.request.guarantee.Guarantee g=it.next();
-					if(g instanceof OvfResourceGuarantee){
-						cr.removeGuarantee(g);
-					}
-				}*/
+				/*
+				 * CopyOnWriteArraySet<org.ow2.Ascetic.provider.poc.slatemplate.
+				 * request.guarantee.Guarantee> cpaGuarantees=new
+				 * CopyOnWriteArraySet
+				 * <org.ow2.Ascetic.provider.poc.slatemplate.request
+				 * .guarantee.Guarantee>(cr.getGuarantees());
+				 * Iterator<org.ow2.Ascetic
+				 * .provider.poc.slatemplate.request.guarantee.Guarantee>
+				 * it=cpaGuarantees.iterator(); while(it.hasNext()){
+				 * org.ow2.Ascetic
+				 * .provider.poc.slatemplate.request.guarantee.Guarantee
+				 * g=it.next(); if(g instanceof OvfResourceGuarantee){
+				 * cr.removeGuarantee(g); } }
+				 */
 			}
 		}
 	}
-
 
 }

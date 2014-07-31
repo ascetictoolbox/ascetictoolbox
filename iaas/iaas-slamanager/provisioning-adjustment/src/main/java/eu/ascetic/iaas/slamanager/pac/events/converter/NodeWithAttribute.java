@@ -14,18 +14,13 @@
  * limitations under the License.                                          
  */
 
-
 package eu.ascetic.iaas.slamanager.pac.events.converter;
 
 public interface NodeWithAttribute {
 
 	public String getTextValue();
-	
+
 	public String getAttributeName();
-	
+
 	public String getAttributeValue();
 }
-
-
-
-
