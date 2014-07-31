@@ -54,7 +54,7 @@ public class HttpUtils {
      */
     public static HttpRequestBase buildHttpRequest(String methodType,
             URI uri, Map<String, String> header, String entity) {
-        HttpRequestBase request = null;
+        HttpRequestBase request;
 
         //instantiate the request according to its type (GET, POST...)
         switch (methodType) {
@@ -68,7 +68,7 @@ public class HttpUtils {
                 request = new HttpDelete(uri);
                 break;
             default:
-                // Do nothing. request will be null and an exception will be thrown outside the switch.
+                request = null;
                 break;
         }
 

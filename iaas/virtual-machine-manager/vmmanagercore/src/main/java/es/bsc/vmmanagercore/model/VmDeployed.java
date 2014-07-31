@@ -23,7 +23,7 @@ public class VmDeployed extends Vm {
         this.id = id;
         this.ipAddress = ipAddress;
         this.state = state;
-        this.created = created;
+        this.created = new Date(created.getTime());
         this.hostName = hostName;
     }
 
@@ -40,7 +40,7 @@ public class VmDeployed extends Vm {
     }
 
     public Date getCreated() {
-        return created;
+        return new Date(created.getTime());
     }
 
     public String getHostName() {
