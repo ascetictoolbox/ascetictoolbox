@@ -21,6 +21,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasou
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostEnergyCalibrationData;
 import java.util.ArrayList;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,6 +37,7 @@ public class Calibrator implements Runnable {
     private LoadGenerator generator = new DummyLoadGenerator(); //new DefaultLoadGenerator();
     private final HostDataSource datasource;
     private boolean running = true;
+    private final LinkedBlockingDeque<Host> queue = new LinkedBlockingDeque<>();
 
     /**
      * This creates a new calibrator.
@@ -46,6 +48,24 @@ public class Calibrator implements Runnable {
     public Calibrator(HostDataSource dataSource) {
         this.datasource = dataSource;
     }
+    
+    /**
+     * This finds the upper and lower bounds of a host.
+     *
+     * @param host The host to train
+     */    
+    public void calibrateHostEnergyData(Host host) {
+        queue.add(host);
+    }
+    
+    /**
+     * This checks to see if a host is in the training queue or not.
+     * @param host The host to check to see if it is queued or not.
+     * @return If the host is in the queue for training.
+     */
+    public boolean isQueued(Host host){
+        return queue.contains(host);
+    }
 
     /**
      * This finds the upper and lower bounds of a host.
@@ -53,9 +73,9 @@ public class Calibrator implements Runnable {
      * @param host The host to train
      * @return The newly trained/updated host
      */
-    public Host calibrateHostEnergyData(Host host) {
+    private Host performCalibration(Host host) {
         host = readLowestboundForHost(host);
-        //generator.generateCalibrationData(host);
+        generator.generateCalibrationData(host);
         host = readEnergyDataForHost(host);
         return host;
     }
@@ -67,6 +87,7 @@ public class Calibrator implements Runnable {
      * @param host The host to get the calibration data for
      * @return The updated host
      */
+    @SuppressWarnings("SleepWhileInLoop")
     private Host readEnergyDataForHost(Host host) {
         ArrayList<HostEnergyCalibrationData> calibrationData = host.getCalibrationData();
         ArrayList<HostMeasurement> data = new ArrayList<>();
@@ -75,7 +96,7 @@ public class Calibrator implements Runnable {
         /**
          * collect data for 2 mins because of wait interval + loop counter.
          */
-        for (int i = 0; i < TimeUnit.MINUTES.toSeconds(1); i++) { 
+        for (int i = 0; i < TimeUnit.MINUTES.toSeconds(1); i++) {
             HostMeasurement dataEntry = datasource.getHostData(host);
             long currentClock = dataEntry.getClock();
             if (currentClock > lastClock) {
@@ -123,7 +144,7 @@ public class Calibrator implements Runnable {
     public void setGenerator(DefaultLoadGenerator generator) {
         this.generator = generator;
     }
-    
+
     /**
      * This stops the calibrator from running.
      */
@@ -134,11 +155,20 @@ public class Calibrator implements Runnable {
     @Override
     public void run() {
         /**
-         * Note the aim of starting a thread is so that the main, thread doesn't 
+         * Note the aim of starting a thread is so that the main, thread doesn't
          * have to wait for calibration to occur. It can carry on going once
          * calibration has started.
          */
-        while(running);
+        while (running) {
+            try {
+                Host currentItem = queue.poll(30, TimeUnit.SECONDS);
+                if (currentItem != null) {
+                    performCalibration(currentItem);
+                }
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Calibrator.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
 }

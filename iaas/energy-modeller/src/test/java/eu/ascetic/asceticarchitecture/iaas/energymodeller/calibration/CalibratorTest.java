@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -61,12 +62,20 @@ public class CalibratorTest {
         ZabbixDataSourceAdaptor adaptor = new ZabbixDataSourceAdaptor();
         Calibrator instance = new Calibrator(adaptor);
         Host expResult = CHOSEN_HOST;
-        Host result = instance.calibrateHostEnergyData(host);
-        assertEquals(expResult, result);
-        assert(result.getIdlePowerConsumption() > 0.0);
-        System.out.println("Idle Power: " + result.getIdlePowerConsumption());
-        assert(result.isCalibrated());
-        System.out.println("Calibration Data Count: " + result.getCalibrationData().size());
+        instance.calibrateHostEnergyData(host);
+        while(!host.isCalibrated()){
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(CalibratorTest.class.getName()).log(Level.SEVERE, "The test was interupted.", ex);
+                Assert.fail();
+            }
+        }
+        assertEquals(expResult, host);
+        assert(host.getIdlePowerConsumption() > 0.0);
+        System.out.println("Idle Power: " + host.getIdlePowerConsumption());
+        assert(host.isCalibrated());
+        System.out.println("Calibration Data Count: " + host.getCalibrationData().size());
     }
 
     /**

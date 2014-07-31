@@ -72,6 +72,15 @@ public class DataGatherer implements Runnable {
     public final void populateHostList() {
         Collection<Host> hosts = datasource.getHostList();
         connector.setHosts(hosts);
+        //Ensure calibration data is recovered from the db.
+        for (Host host : hosts) {
+            if (!host.isCalibrated()) {
+                host.setCalibrationData(connector.getHostCalibrationData(host).getCalibrationData());
+            }
+            if (!host.isCalibrated()) {
+                calibrator.calibrateHostEnergyData(host);
+            }
+        }
         Collection<VmDeployed> vms = datasource.getVmList();
         connector.setVms(vms);
         for (Host host : hosts) {
@@ -104,8 +113,8 @@ public class DataGatherer implements Runnable {
         }
         //end of this temporary code fix
         /**
-         * This block of code takes the agreed assumption that the host
-         * name ends with  "_<hostname>" and that "_" exist nowhere else in the name.
+         * This block of code takes the agreed assumption that the host name
+         * ends with "_<hostname>" and that "_" exist nowhere else in the name.
          */
         String name = vm.getName();
         int parseTokenPos = name.indexOf("_");
