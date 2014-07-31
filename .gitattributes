@@ -1798,6 +1798,7 @@ utils/chef/cookbooks/ascetic-paas/metadata.rb -text
 utils/chef/cookbooks/ascetic-paas/recipes/default.rb -text
 utils/chef/cookbooks/ascetic-saas/CHANGELOG.md -text
 utils/chef/cookbooks/ascetic-saas/README.md -text
+utils/chef/cookbooks/ascetic-saas/files/default/ascetic-sudoers -text
 utils/chef/cookbooks/ascetic-saas/metadata.rb -text
 utils/chef/cookbooks/ascetic-saas/recipes/default.rb -text
 utils/chef/cookbooks/chef-client/CHANGELOG.md -text

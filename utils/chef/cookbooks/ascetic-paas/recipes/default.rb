@@ -5,6 +5,18 @@
 # Copyright 2014, Michael Kammer
 #
 
+apt_repo "mongodb" do
+  key_id "7F0CEB10"
+  key_url "http://docs.mongodb.org/10gen-gpg-key.asc"
+  url "http://downloads-distro.mongodb.org/repo/ubuntu-upstart"
+  distribution "dist"
+  components ["10gen"]
+end
+
+package "mongodb-org" do
+  action :install
+end
+
 #apt_repo "gluster" do
 #  key_id "21C74DF2"
 #  key_package "gluster"
@@ -21,10 +33,6 @@ package "openjdk-7-jre" do
 end
 
 package "mysql-server" do
-  action :install
-end
-
-package "mongodb-server" do
   action :install
 end
 
