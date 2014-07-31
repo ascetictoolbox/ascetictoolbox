@@ -74,6 +74,7 @@ public class EnergyModeller {
     /**
      * This creates a new energy modeller.
      */
+    @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     public EnergyModeller() {
         try {
             calibratorThread = new Thread(calibrator);
@@ -329,6 +330,13 @@ public class EnergyModeller {
      * used (kWh) during life of VM
      */
     public EnergyUsagePrediction getPredictedEnergyForVM(VM vmImage, Collection<VM> vMsOnHost, Host host) {
+        /**
+         * Adding a sanity check that ensures the vmImage (deployed or otherwise, represents load
+         * on the VM.
+         */
+        if (!vMsOnHost.contains(vmImage)) {
+            vMsOnHost.add(vmImage);
+        }
         return predictor.getVMPredictedEnergy(vmImage, vMsOnHost, host);
     }
 
@@ -382,10 +390,10 @@ public class EnergyModeller {
      * This creates a VM object in cases where the VM has yet to be
      * instantiated.
      *
-     * @param cpuCount
-     * @param ramMb
-     * @param diskGb
-     * @return
+     * @param cpuCount The cpu count
+     * @param ramMb The amount of memory in Mb
+     * @param diskGb The amount of disk space in Gb
+     * @return A new VM with the parameters specified above.
      */
     public static VM getVM(int cpuCount, int ramMb, int diskGb) {
         return new VM(cpuCount, ramMb, diskGb);
