@@ -1,3 +1,4 @@
+<?xml version="1.0" ?>
 <!--
  * Copyright 2014 Hewlett-Packard Development Company, L.P.                
  *                                                                          
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and     
  * limitations under the License.                                          
  */-->
- 
 <slasoi:SLATemplate xmlns:slasoi="http://www.slaatsoi.eu/slamodel" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.slaatsoi.eu/slamodel file:///C:/SLA@SOI/slasoi.xsd">
         <!--
 	   This example references an OVF file (Ubu1SharedDisk.ovf) including

@@ -26,7 +26,7 @@
 		<dependency>
 			<groupId>org.slasoi.models</groupId>
 			<artifactId>slamodel</artifactId>
-			<version>0.3-SNAPSHOT</version>
+			<version>0.4-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -195,6 +195,8 @@
 									*;resolution:=optional
 								</Import-Package>
 								<Require-Bundle>${slam.required.bundles}</Require-Bundle>
+							  <Require-Bundle>drools4osgi,gslam-pac</Require-Bundle>
+							  <Eclipse-RegisterBuddy>drools4osgi</Eclipse-RegisterBuddy>
 							</instructions>
 						</configuration>
 					</plugin>

@@ -10,7 +10,7 @@
 	<!-- BEANS DEFINITION -->
 
 	<!--init-method="init"-->
-	<bean id="iaasPACServices" name="iaasPAC" class="eu.ascetic.architecture.iaas.slamanager.pac.ProvisioningAdjustmentServices"  destroy-method="stop">
+	<bean id="iaasPACServices" name="iaasPAC" class="eu.ascetic.iaas.slamanager.pac.ProvisioningAdjustmentServices"  destroy-method="stop">
 	<property name="configurationFile" value="ascetic-iaas-slamanager/provisioning-adjustment/provisioning_adjustment.properties"/>
 <!--		<property name="configurationFile" value="provisioning_adjustment.properties"/>-->
 	</bean>

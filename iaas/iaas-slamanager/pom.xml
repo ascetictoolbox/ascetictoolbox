@@ -221,7 +221,7 @@
 		<repository>
 			<id>ascetic-repository</id>
 			<name>ASCETiC repository</name>
-			<url>http://ascetic-artifactory.cit.tu-berlin.de/artifactory/repo/</url>
+			<url>https://ascetic-artifactory.cit.tu-berlin.de/artifactory/repo/</url>
 			<releases>
 				<enabled>false</enabled>
 			</releases>

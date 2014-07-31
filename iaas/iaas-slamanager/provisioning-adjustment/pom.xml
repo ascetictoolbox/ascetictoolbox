@@ -29,6 +29,7 @@
 			<version>4.4</version>
 			<scope>test</scope>
 		</dependency>
+	
 	   <dependency>
 	     <groupId>org.slasoi.generic-slamanager.provisioning-adjustment</groupId>
 	     <artifactId>gslam-provisioning-adjustment</artifactId>
@@ -174,8 +175,9 @@
 								antlr.*
 						  </Export-Package>
 						  <Import-Package>
-						  		org.osgi.framework;resolution:=optional,
-								*;resolution:=optional
+						  		org.osgi.framework,
+						  		org.slasoi.gslam.pac.events;resolution:=optional,
+								*;resolution:=optional,
 						  </Import-Package>
 					    </instructions>
 					  </configuration>
