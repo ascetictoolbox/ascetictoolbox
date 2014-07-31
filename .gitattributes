@@ -143,7 +143,6 @@ iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamana
 iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/utils/AgreementUtil.java -text
 iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/utils/AsceticUnits.java -text
 iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/utils/Constant.java -text
-iaas/iaas-slamanager/planning-optimization/src/main/resources/ascetic-ovf-example.ovf -text
 iaas/iaas-slamanager/planning-optimization/src/main/resources/wsdl/ProviderNegotiation.wsdl -text
 iaas/iaas-slamanager/planning-optimization/src/test/java/eu/ascetic/iaas/slamanager/poc/manager/resource/test/OvfParserTest.java -text
 iaas/iaas-slamanager/planning-optimization/src/test/java/eu/ascetic/iaas/slamanager/poc/negotiation/ws/test/ProviderNegotiationWsTest.java -text
