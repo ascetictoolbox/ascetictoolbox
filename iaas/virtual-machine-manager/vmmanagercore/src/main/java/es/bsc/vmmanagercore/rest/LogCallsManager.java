@@ -2,6 +2,7 @@ package es.bsc.vmmanagercore.rest;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
 
 /**
  * This class implements the REST calls that are related with the logs system.
@@ -19,11 +20,9 @@ public class LogCallsManager {
     /**
      * Returns the log file. This log file contains information about the decisions made by the scheduling algorithms.
      *
-     * @return the log file
+     * @return the log file or an empty string if the logs could not be read
      */
     public String getLogs() {
-        // Read the logs file and return its content.
-        // If for some reason the logs cannot be read, return an empty string
         String logs;
         try {
             BufferedReader br = new BufferedReader(new FileReader("log/vmmanager.log"));
@@ -35,7 +34,7 @@ public class LogCallsManager {
                 line = br.readLine();
             }
             logs = sb.toString();
-        } catch (Exception e) {
+        } catch (IOException e) {
             return "";
         }
         return logs;

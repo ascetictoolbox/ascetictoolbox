@@ -19,9 +19,11 @@ import org.jclouds.openstack.nova.v2_0.features.ImageApi;
 import org.jclouds.openstack.nova.v2_0.features.ServerApi;
 import org.jclouds.openstack.nova.v2_0.options.CreateServerOptions;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -91,10 +93,11 @@ public class JCloudsMiddleware implements CloudMiddleware {
      */
     private void includeInitScriptInDeploymentOptions(Vm vmDescription, CreateServerOptions options) {
         String initScript = vmDescription.getInitScript();
-        if (initScript != null) {
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(initScript);
+        if (initScript != null && !"".equals(initScript)) {
             try {
+                InputStream inputStream = new FileInputStream(initScript);
                 options.userData(IOUtils.toByteArray(inputStream));
+                inputStream.close();
             } catch (IOException e) {
                 // Do not include anything in the VM deployment options
             }

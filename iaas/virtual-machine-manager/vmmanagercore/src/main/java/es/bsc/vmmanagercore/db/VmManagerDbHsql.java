@@ -231,6 +231,8 @@ public class VmManagerDbHsql implements VmManagerDb {
                 return SchedulingAlgorithm.GROUP_BY_APP;
             case "random":
                 return SchedulingAlgorithm.RANDOM;
+            default:
+                break;
         }
         return null;
     }
@@ -263,6 +265,8 @@ public class VmManagerDbHsql implements VmManagerDb {
                     break;
                 case "random":
                     result.add(SchedulingAlgorithm.RANDOM);
+                    break;
+                default:
                     break;
             }
         }

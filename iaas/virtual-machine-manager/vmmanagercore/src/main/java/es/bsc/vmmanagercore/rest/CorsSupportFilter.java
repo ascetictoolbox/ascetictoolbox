@@ -23,10 +23,8 @@ public class CorsSupportFilter implements ContainerResponseFilter {
         resp.header("Access-Control-Allow-Origin", "*")
             .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
 
-        String reqHead = req.getHeaderValue("Access-Control-Request-Headers");
-
-        if (null != reqHead && !reqHead.equals(null)){
-            resp.header("Access-Control-Allow-Headers", reqHead);
+        if (null != req.getHeaderValue("Access-Control-Request-Headers")) {
+            resp.header("Access-Control-Allow-Headers", req.getHeaderValue("Access-Control-Request-Headers"));
         }
 
         contResp.setResponse(resp.build());

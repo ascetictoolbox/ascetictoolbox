@@ -445,7 +445,7 @@ public class VmManagerRestTest {
     private String getInvalidJsonWithVmsToDeploy() {
         // Create an invalid VM JSON (it does not have all the required parameters)
         JsonObject invalidVm = new JsonObject();
-        invalidVm.addProperty("name", "vm1");
+        invalidVm.addProperty("name", "invalidVm");
         invalidVm.addProperty("image", testImageId);
         JsonArray jsonVmsArray = new JsonArray();
         jsonVmsArray.add(invalidVm);
