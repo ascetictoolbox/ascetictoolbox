@@ -1721,6 +1721,9 @@ utils/application-manager-database/liquibase/liquibase.bat -text
 utils/application-manager-database/liquibase/liquibase.jar -text
 utils/ascetic-dfs/make.sh -text
 utils/ascetic-dfs/pom.xml -text
+utils/ascetic-load-generator-app/nbactions.xml -text
+utils/ascetic-load-generator-app/pom.xml -text
+utils/ascetic-load-generator-app/src/main/java/eu/ascetic/ascetic/load/generator/app/Main.java -text
 utils/ascetic-zabbix-api/.classpath -text
 utils/ascetic-zabbix-api/.project -text
 utils/ascetic-zabbix-api/.settings/org.eclipse.jdt.core.prefs -text
