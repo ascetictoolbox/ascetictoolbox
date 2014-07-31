@@ -67,6 +67,8 @@ public class HttpUtils {
             case "DELETE":
                 request = new HttpDelete(uri);
                 break;
+            default:
+                throw new IllegalArgumentException("Method not supported.");
         }
 
         //set the headers of the request
