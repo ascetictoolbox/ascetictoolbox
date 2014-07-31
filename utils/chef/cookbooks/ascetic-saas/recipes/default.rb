@@ -4,11 +4,17 @@
 #
 # Copyright 2014, Django Armstrong
 #
+package "sudo" do
+  action :install
+end
+
+# VMIC dependency
 package "qemu-utils" do
   action :install
 end
 
-package "sudo" do
+# VMIC dependency
+package "nbd-client" do
   action :install
 end
 
