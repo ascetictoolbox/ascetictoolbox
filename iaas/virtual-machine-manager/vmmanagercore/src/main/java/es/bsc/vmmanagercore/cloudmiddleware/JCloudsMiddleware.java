@@ -332,7 +332,7 @@ public class JCloudsMiddleware implements CloudMiddleware {
      * @return array containing the host names of the servers of the cluster
      */
     public String[] getHosts() {
-        return (String[])hosts.clone();
+        return hosts.clone();
     }
 
     /**

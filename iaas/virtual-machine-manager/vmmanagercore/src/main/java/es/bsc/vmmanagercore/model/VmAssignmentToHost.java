@@ -69,4 +69,9 @@ public class VmAssignmentToHost {
         return PricingModellerConnector.getVmCost(getEnergyEstimate(vmsDeployed), host.getHostname());
     }
 
+    @Override
+    public String toString() {
+        return getVm().getName() + "-->" + getHost().getHostname();
+    }
+
 }

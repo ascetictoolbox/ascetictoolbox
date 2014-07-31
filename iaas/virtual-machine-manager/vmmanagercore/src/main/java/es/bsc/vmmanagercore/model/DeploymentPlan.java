@@ -26,11 +26,11 @@ public class DeploymentPlan {
 
     @Override
     public String toString() {
-        String result = "";
+        StringBuilder stringBuilder = new StringBuilder();
         for (VmAssignmentToHost vmAssignmentToHost: vmsAssignationsToHosts) {
-            result += vmAssignmentToHost.getVm().getName() + "-->" + vmAssignmentToHost.getHost().getHostname() + ", ";
+            stringBuilder.append(vmAssignmentToHost.toString());
         }
-        return result;
+        return stringBuilder.toString();
     }
 
 }
