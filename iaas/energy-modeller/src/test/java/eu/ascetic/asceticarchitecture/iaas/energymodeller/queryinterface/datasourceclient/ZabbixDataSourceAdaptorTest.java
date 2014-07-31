@@ -149,6 +149,15 @@ public class ZabbixDataSourceAdaptorTest {
         HostMeasurement result = instance.getHostData(host);
         assert (result != null);
         assert (!result.getItems().isEmpty());
+        System.out.println("Clock: " + result.getClock());
+        System.out.println("Energy: " + result.getEnergy());
+        System.out.println("Power: " + result.getPower());
+        System.out.println("Memory Total: " + result.getMemoryTotal());
+        System.out.println("Memory Used: " + result.getMemoryUsed());
+        System.out.println("Memory Available: " + result.getMemoryAvailable());
+        System.out.println("CPU Load: " + result.getCpuLoad());
+        System.out.println("CPU Idle: " + result.getCpuIdle());
+        
     }
 
     /**

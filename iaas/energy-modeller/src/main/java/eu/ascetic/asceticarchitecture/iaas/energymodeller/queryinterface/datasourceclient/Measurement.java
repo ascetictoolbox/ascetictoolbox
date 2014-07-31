@@ -188,7 +188,7 @@ public abstract class Measurement {
     /**
      * This provides rapid access to cpu load values from a vm measurement.
      *
-     * @return The cpu load when the measurement was taken.
+     * @return The cpu load when the measurement was taken. Values in range 0...1
      */
     public double getCpuLoad() {
         double interrupt = 0.0;
@@ -219,31 +219,32 @@ public abstract class Measurement {
         if (metrics.containsKey(STEAL_KPI_NAME)) {
             steal = Double.parseDouble(this.getMetric(STEAL_KPI_NAME).getLastValue());
         }
-        return system + user + interrupt + iowait + nice + softirq + steal;
+        return (system + user + interrupt + iowait + nice + softirq + steal) / 100;
     }
 
     /**
      * This provides rapid access to cpu load values from a vm measurement.
      *
-     * @return The cpu load when the measurement was taken.
+     * @return The cpu load when the measurement was taken. Values in range 0...1
      */
     public double getCpuIdle() {
-        return Double.parseDouble(this.getMetric(IDLE_KPI_NAME).getLastValue());
+        return Double.parseDouble(this.getMetric(IDLE_KPI_NAME).getLastValue()) / 100;
     }
 
     /**
      * This provides rapid access to memory values for a measurement.
      *
-     * @return The total memory available when the measurement was taken.
+     * @return The total memory available when the measurement was taken. Values given in Mb
      */
     public double getMemoryAvailable() {
-        return Double.parseDouble(this.getMetric(MEMORY_AVAILABLE_KPI_NAME).getLastValue());
+        //Original value given in bytes. 1024 * 1024 = 1048576
+        return Double.parseDouble(this.getMetric(MEMORY_AVAILABLE_KPI_NAME).getLastValue()) / 1048576;
     } 
     
     /**
      * This provides rapid access to memory values for a measurement.
      *
-     * @return The total memory used when the measurement was taken.
+     * @return The total memory used when the measurement was taken. Values given in Mb
      */
     public double getMemoryUsed() {
         return getMemoryTotal() - getMemoryAvailable();
@@ -252,10 +253,11 @@ public abstract class Measurement {
     /**
      * This provides rapid access to memory values for a measurement.
      *
-     * @return The total memory available when the measurement was taken.
+     * @return The total memory available when the measurement was taken. Values given in Mb
      */
     public double getMemoryTotal() {
-        return Double.parseDouble(this.getMetric(MEMORY_TOTAL_KPI_NAME).getLastValue());
+        //Original value given in bytes. 1024 * 1024 = 1048576
+        return Double.parseDouble(this.getMetric(MEMORY_TOTAL_KPI_NAME).getLastValue()) / 1048576;
     }
 
 }

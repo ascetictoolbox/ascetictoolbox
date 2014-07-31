@@ -70,7 +70,10 @@ public class EnergyModeller {
     private Thread calibratorThread;
     private DataGatherer dataGatherer = new DataGatherer(datasource, new DefaultDatabaseConnector(), calibrator);
     private Thread dataGatherThread;
-
+    
+    /**
+     * This creates a new energy modeller.
+     */
     public EnergyModeller() {
         try {
             calibratorThread = new Thread(calibrator);
