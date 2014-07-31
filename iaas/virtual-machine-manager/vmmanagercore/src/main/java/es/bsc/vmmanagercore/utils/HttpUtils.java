@@ -68,7 +68,12 @@ public class HttpUtils {
                 request = new HttpDelete(uri);
                 break;
             default:
-                throw new IllegalArgumentException("Method not supported.");
+                // Do nothing. request will be null and an exception will be thrown outside the switch.
+                break;
+        }
+
+        if (request == null) {
+            throw new IllegalArgumentException("Method not supported.");
         }
 
         //set the headers of the request
