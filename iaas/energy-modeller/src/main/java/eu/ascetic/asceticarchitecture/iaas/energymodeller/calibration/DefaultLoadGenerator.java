@@ -33,8 +33,8 @@ public class DefaultLoadGenerator implements LoadGenerator {
     private boolean running = true;
 
     /**
-     * This takes a host and contacts it, generates a heavy load and updates the
-     * host data.
+     * This takes a host and contacts it, generates a heavy load. The aim is then
+     * to use this load to perform training on.
      *
      * @param host The host to train/update
      */
@@ -46,16 +46,9 @@ public class DefaultLoadGenerator implements LoadGenerator {
             CalibrationLoadGenerator_Service service = new CalibrationLoadGenerator_Service(url);
             CalibrationLoadGenerator port = service.getCalibrationLoadGeneratorPort();
             port.induceLoad();
-            //Pause until process is done
-            while (port.currentlyWorking() || running == false) {
-                try {
-                    Thread.sleep(10000); //Wait 10 seconds, each time
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(DefaultLoadGenerator.class.getName()).log(Level.SEVERE, "The load generator was interupted.", ex);
-                }
-            }
         } catch (Exception ex) {
             Logger.getLogger(DefaultLoadGenerator.class.getName()).log(Level.SEVERE, "The load generator had an error.", ex);
+            running = false;
         }
 
     }
