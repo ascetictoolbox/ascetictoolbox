@@ -1,0 +1,29 @@
+{
+  "name": "mysqld",
+  "description": "Installs/Configures mysqld",
+  "long_description": "# mysqld Cookbook\n\nManage your mysqld servers with this cookbook.\nUnlike the official [opscode mysql cookbook](https://github.com/opscode-cookbooks/mysql), it doesn't mess with the default mysql configuration. If you do not specify anything explicitly, the defaults of your distribution will be used.\n(At least if I do not mess up - Check the [default attributes](https://github.com/chr4/chef-mysqld/blob/master/attributes/defaults.rb), if unsure (and file a pull request if you need to correct anything))\n\nFeatures\n\n* Defaults to OS settings unless explicitly specified otherwise\n* Supports **all** my.cnf settings\n\nCurrently tested on Ubuntu, should work on RHEL and Debian as well. [Contributions](https://github.com/chr4/chef-mysqld#contributing) to support other systems are very welcome!\n\n## Requirements\n\nYou need to add the following line to your metadata.rb\n\n    depends 'mysqld'\n\n\n## Attributes\n\n### Configuration\n\nEverything in your my.cnf can be maintained using attributes.\nConsider using the provides LWRPs (see below)\n\nIf you do not specify anything, the defaults of your os will be used.\n\nThis recipe supports **every** setting in the my.cnf.\nAll your settings will be merged with the systems default, and then written to the my.cnf config file. The packages to install, the path to my.cnf as well as the name of the service are set automatically, and can be overwritten using the following attributes:\n\n\n```ruby\nnode['mysqld']['my.cnf_path']\nnode['mysqld']['service_name']\nnode['mysqld']['packages']\n```\n\nThe configuration is stored in the ```node['mysqld']['my.cnf']``` hash, and can be adapted like so\n\n\n```ruby\n# node['mysqld']['my.conf'][<category>][<key>] = <value>\nnode['mysqld']['my.cnf']['mysqld']['bind-address'] = '0.0.0.0'\n```\n\nThis will expand to the following in your config file (leaving all other settings untouched)\n\n```\n[mysqld]\n  bind-address = 0.0.0.0\n```\n\nTo remove a default option, you can pass `false` or `nil` as the value\n\n```ruby\n# Remove deprecated innodb option\ndefault['mysqld']['my.cnf']['mysqld']['innodb_additional_mem_pool_size'] = false\n```\n\nAs the configuration file is constructed from the config hash, every my.cnf configuration option is supported.\n\n\n## Recipes\n\n### default\n\nInstalls mysql server, and configures it according to the attributes. If no attributes are given, it sticks with the systems default\n\n\n# Contributing\n\nContributions are very welcome!\n\n1. Fork the repository on Github\n2. Create a named feature branch (like `add_component_x`)\n3. Write you change\n4. Write tests for your change (if applicable)\n5. Run the tests, ensuring they all pass\n6. Submit a Pull Request using Github\n\n\n# License and Authors\n\nAuthors: Chris Aumann <me@chr4.org>\n\nLicense: GPLv3\n",
+  "maintainer": "Chris Aumann",
+  "maintainer_email": "chris.aumann@rndsec.net",
+  "license": "GNU Public License 3.0",
+  "platforms": {
+  },
+  "dependencies": {
+  },
+  "recommendations": {
+  },
+  "suggestions": {
+  },
+  "conflicting": {
+  },
+  "providing": {
+  },
+  "replacing": {
+  },
+  "attributes": {
+  },
+  "groupings": {
+  },
+  "recipes": {
+  },
+  "version": "0.3.0"
+}
