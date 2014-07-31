@@ -1,0 +1,11 @@
+Install the energy-modeller-load-calibration-tool-0.0.1-SNAPSHOT.war into a tomcat container
+
+In catalina.properties set the following values ($tomcat_base\conf\catalina.properties):
+
+ascetic.log.executions=true
+ascetic.working.directory=C://Users//Richard//AppData//Roaming//NetBeans//7.4//apache-tomcat-7.0.22.0_base//temp//
+
+Specifiying a directory that tomcat has read/write/execute privlidges to.
+
+Fill in the configuration file specifiying the correct working directories for the application. 
+Place this file in the working directory.
