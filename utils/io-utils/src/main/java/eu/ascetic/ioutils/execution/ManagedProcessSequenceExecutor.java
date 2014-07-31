@@ -55,7 +55,6 @@ public class ManagedProcessSequenceExecutor implements ManagedProcessListener {
             loggerThread.setDaemon(true);
             loggerThread.start();
         }
-        new Thread(actioner).start();
         Logger.getLogger(ManagedProcessSequenceExecutor.class.getName()).log(Level.INFO, "FILE LOCATION: {0}", new File(workingDir));
         if (!new File(workingDir + TO_EXECUTE_SETTINGS_FILE).exists()) {
             appsToExecute.add("Time From Start");
@@ -90,6 +89,7 @@ public class ManagedProcessSequenceExecutor implements ManagedProcessListener {
             data.setOutToScreen(Boolean.parseBoolean(current.get(5)));
             commandSet.add(data);
         }
+        new Thread(actioner).start();
     }
 
     private void execute(ManagedProcessCommandData data) {
