@@ -32,20 +32,32 @@ import java.util.logging.Logger;
  */
 public class ManagedProcessSequenceExecutor implements ManagedProcessListener {
 
-    private static final String TO_EXECUTE_SETTINGS_FILE = "Apps.csv";
+    private final String TO_EXECUTE_SETTINGS_FILE = "Apps.csv";
+    private String workingDir;
     private final GregorianCalendar startTime = new GregorianCalendar();
-    ResultsStore appsToExecute = new ResultsStore(TO_EXECUTE_SETTINGS_FILE);
+    ResultsStore appsToExecute;
     ArrayList<ManagedProcessCommandData> commandSet = new ArrayList<>();
+    private ManagedProcessLogger logger = null;
     private Actioner actioner = new Actioner();
     private int counter = 0;
-    private final CompletedListener completedListener;
+    private final CompletedListener sender;
+    private boolean logging = true;
 
-    
-    public ManagedProcessSequenceExecutor(CompletedListener completedListener) {
-        this.completedListener = completedListener;
+    @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
+    public ManagedProcessSequenceExecutor(CompletedListener closeable) {
+        workingDir = System.getProperty("ascetic.working.directory", "");
+        appsToExecute = new ResultsStore(workingDir + TO_EXECUTE_SETTINGS_FILE);
+        logging = Boolean.getBoolean(System.getProperty("ascetic.log.executions", "true"));
+        this.sender = closeable;
+        if (logging) {
+            logger = new ManagedProcessLogger(new File(workingDir + "AppLog.csv"), false);
+            Thread loggerThread = new Thread(logger);
+            loggerThread.setDaemon(true);
+            loggerThread.start();
+        }
         new Thread(actioner).start();
-
-        if (!new File(TO_EXECUTE_SETTINGS_FILE).exists()) {
+        Logger.getLogger(ManagedProcessSequenceExecutor.class.getName()).log(Level.INFO, "FILE LOCATION: {0}", new File(workingDir));
+        if (!new File(workingDir + TO_EXECUTE_SETTINGS_FILE).exists()) {
             appsToExecute.add("Time From Start");
             appsToExecute.append("Command");
             appsToExecute.append("stdOut");
@@ -53,8 +65,12 @@ public class ManagedProcessSequenceExecutor implements ManagedProcessListener {
             appsToExecute.append("Working Directory");
             appsToExecute.append("Output To Screen");
             appsToExecute.save();
-            completedListener.finished();
+            if (logging) {
+                logger.stop();
+            }
+            sender.finished();
         } else {
+            Logger.getLogger(Actioner.class.getName()).log(Level.INFO, "FILE LOCATION: {0}", new File(workingDir + TO_EXECUTE_SETTINGS_FILE).getAbsolutePath());
             appsToExecute.load();
         }
         //ignore the header of the file
@@ -66,7 +82,7 @@ public class ManagedProcessSequenceExecutor implements ManagedProcessListener {
             GregorianCalendar actionStart = (GregorianCalendar) startTime.clone();
             actionStart.add(Calendar.SECOND, data.getStartTime());
             data.setActualStart(actionStart);
-            
+
             data.setCommand(current.get(1));
             data.setStdOut(current.get(2));
             data.setStdError(current.get(3));
@@ -76,35 +92,32 @@ public class ManagedProcessSequenceExecutor implements ManagedProcessListener {
         }
     }
 
-    /**
-     * This executes a managed process command dataset.
-     * @param data The dataset that is to be used to launch the command.
-     */
     private void execute(ManagedProcessCommandData data) {
         execute(data.getCommand(), data.getStdOut(), data.getStdError(), data.getWorkingDirectory(), data.isOutToScreen());
     }
 
-    /**
-     * This executes a managed process command. 
-     * @param command The command to launch
-     * @param stdOut The name of the file to place standard out.
-     * @param stdError The name of the file to place standard error.
-     * @param workingDirectory The working directory for the program to execute
-     * @param toScreen If the output should also be directed to screen or not.
-     */
     private void execute(String command, String stdOut, String stdError, File workingDirectory, boolean toScreen) {
         counter = counter + 1;
         ManagedProcess process;
         process = new ManagedProcess(command, stdOut, stdError, workingDirectory, toScreen);
         process.listen(this);
+        if (logging) {
+            logger.printToFile(process);//prints the starting version of a process
+        }
     }
 
     @Override
     public void receiveProcessFinishedEvent(ManagedProcess process) {
+        if (logging) {
+            logger.printToFile(process); //prints the finished version of a process
+        }
         counter--;
         Logger.getLogger(Actioner.class.getName()).log(Level.INFO, "An action has just finished! Actions still running: {0}", counter);
-        if(counter == 0 && actioner == null) {
-            completedListener.finished();
+        if (counter == 0 && actioner == null) {
+            if (logging) {
+                logger.stop();
+            }
+            sender.finished();
             Logger.getLogger(Actioner.class.getName()).log(Level.INFO, "Process Exector: Exiting Thread");
         }
     }
@@ -121,7 +134,10 @@ public class ManagedProcessSequenceExecutor implements ManagedProcessListener {
          * This makes the actioner go through the action queue for actions to
          * perform.
          */
+        @Override
+        @SuppressWarnings("SleepWhileInLoop")
         public void run() {
+            Logger.getLogger(Actioner.class.getName()).log(Level.INFO, "FILE LOCATION: {0}", new File(workingDir + TO_EXECUTE_SETTINGS_FILE).getAbsolutePath());
             Logger.getLogger(Actioner.class.getName()).log(Level.INFO, "Actioner:Starting Thread");
             while (!stop) {
                 try {
@@ -149,13 +165,22 @@ public class ManagedProcessSequenceExecutor implements ManagedProcessListener {
 
                         } catch (InterruptedException ex) {
                             Logger.getLogger(Actioner.class.getName()).log(Level.WARNING, "Actioner: InterruptedException", ex);
+                            if (sender != null) {
+                                sender.finished();
+                            }
                         }
                     }
                 } catch (Exception ex) {
                     Logger.getLogger(Actioner.class.getName()).log(Level.SEVERE, "Actioner: Exception", ex);
+                    if (sender != null) {
+                        sender.finished();
+                    }
                 }
             }
             Logger.getLogger(Actioner.class.getName()).log(Level.INFO, "Actioner: Exiting Thread");
+            if (sender != null) {
+                sender.finished();
+            }
             actioner = null;
         }
     }

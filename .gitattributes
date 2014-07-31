@@ -1813,6 +1813,7 @@ utils/io-utils/src/main/java/eu/ascetic/ioutils/execution/CompletedListener.java
 utils/io-utils/src/main/java/eu/ascetic/ioutils/execution/ManagedProcess.java -text
 utils/io-utils/src/main/java/eu/ascetic/ioutils/execution/ManagedProcessCommandData.java -text
 utils/io-utils/src/main/java/eu/ascetic/ioutils/execution/ManagedProcessListener.java -text
+utils/io-utils/src/main/java/eu/ascetic/ioutils/execution/ManagedProcessLogger.java -text
 utils/io-utils/src/main/java/eu/ascetic/ioutils/execution/ManagedProcessNotifier.java -text
 utils/io-utils/src/main/java/eu/ascetic/ioutils/execution/ManagedProcessSequenceExecutor.java -text
 utils/io-utils/src/main/java/eu/ascetic/ioutils/execution/NotifierThread.java -text
