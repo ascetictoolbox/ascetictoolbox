@@ -129,6 +129,12 @@ public class DataGathererTest {
         DataGatherer instance = new DataGatherer(adaptor, connector, calibrator);
         HashMap<String, VmDeployed> result = instance.getVmList();
         assert (!result.isEmpty());
+        for (VmDeployed vm : result.values()) {
+            System.out.println("VM: " + vm.getName());
+            //assert (vm.getAllocatedTo() != null);
+            if (vm.getAllocatedTo() != null)
+            System.out.println("VM Host: " + vm.getAllocatedTo().getHostName());
+        }
     }
 
     /**
@@ -160,6 +166,11 @@ public class DataGathererTest {
         DataGatherer instance = new DataGatherer(adaptor, connector, calibrator);
         ArrayList<VmDeployed> result = instance.getVMsOnHost(host);
         assertEquals(VM_NAME, result.get(0).getName());
+        for (VmDeployed vm : result) {
+            System.out.println("VM: " + vm.getName());
+            assert (vm.getAllocatedTo() != null);
+            System.out.println("VM Host: " + vm.getAllocatedTo().getHostName());
+        }
     }
 
     @Test
@@ -179,8 +190,7 @@ public class DataGathererTest {
                 System.out.println("VM: " + vmMeasurement.getVm().getName());
                 System.out.println("Fraction: " + fraction.getFraction(vmMeasurement.getVm()));
             }
-        } else
-        {
+        } else {
             fail("The VM was not found");
         }
     }

@@ -138,8 +138,7 @@ public class Calibrator implements Runnable {
          * have to wait for calibration to occur. It can carry on going once
          * calibration has started.
          */
-        while(running) {  
-        }
+        while(running);
     }
 
 }

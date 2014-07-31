@@ -103,6 +103,10 @@ public class DataGatherer implements Runnable {
             return getHost("asok12");
         }
         //end of this temporary code fix
+        /**
+         * This block of code takes the agreed assumption that the host
+         * name ends with  "_<hostname>" and that "_" exist nowhere else in the name.
+         */
         String name = vm.getName();
         int parseTokenPos = name.indexOf("_");
         if (parseTokenPos == -1 && vm.getAllocatedTo() == null) {

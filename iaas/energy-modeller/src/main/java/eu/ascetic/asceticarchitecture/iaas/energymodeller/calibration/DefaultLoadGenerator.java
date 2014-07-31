@@ -47,7 +47,7 @@ public class DefaultLoadGenerator implements LoadGenerator {
             CalibrationLoadGenerator port = service.getCalibrationLoadGeneratorPort();
             port.induceLoad();
             //Pause until process is done
-            while (!port.currentlyWorking()) {
+            while (port.currentlyWorking() || running == false) {
                 try {
                     Thread.sleep(10000); //Wait 10 seconds, each time
                 } catch (InterruptedException ex) {
@@ -73,8 +73,7 @@ public class DefaultLoadGenerator implements LoadGenerator {
          * Note the aim of starting a thread is so that the calibrator can take
          * measurements while the load generator is doing its work.
          */
-        while (running) {
-        }
+        while (running);
     }
 
 }
