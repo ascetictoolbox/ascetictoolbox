@@ -60,16 +60,16 @@ import es.bsc.servicess.ide.model.ServiceElement;
 import eu.ascetic.vmic.api.VmicApi;
 import eu.ascetic.vmic.api.core.ProgressException;
 import eu.ascetic.vmic.api.datamodel.ProgressDataFile;
+import eu.ascetic.vmic.api.datamodel.ProgressDataImage;
 
 public class ImageCreation {
 
 	private static Logger log = Logger.getLogger(ImageCreation.class);
 	private final static String IMAGE_DEPLOYMENT_FOLDER = "/ascetic_service/";
-
 	private final static String CONTEXT_FOLDER = "/mnt/context";
 	private static final String ASCETIC_USER = "root";
-	
 	private static final String IMAGE_GAT_LOCATION = "/GAT";
+	private static final long CREATION_PULL_INTERVAL = 30000;
 	//private static final String SHARED_FOLDER = null;
 	
 	
@@ -99,28 +99,43 @@ public class ImageCreation {
 		monitor.worked(1);*/
 		
 		File file = new File(pr_meta.getRuntimeLocation()
-				+ "/../log/it-log4j");
+				+ COMPSS_LOG_PATH+ COMPSS_LOG4J_DEFAULT_NAME);
 		if (f != null && f.exists()) {
 			uploadAndCopy(vmic, file, manifest, is, monitor);
 		}
 		monitor.worked(1);
 		
 		file = new File(pr_meta.getRuntimeLocation()
-				+ "/../xml/projects/project_schema.xsd");
+				+ COMPSS_XMLS_PATH+COMPSS_PROJECTS_PATH+COMPSS_PROJECT_SCHEMA_NAME);
 		if (f != null && f.exists()) {
 			uploadAndCopy(vmic, file, manifest, is, monitor);
 		}
 		monitor.worked(1);
 		
 		file = new File(pr_meta.getRuntimeLocation()
-				+ "/../xml/resources/resource_schema.xsd");
+				+ COMPSS_XMLS_PATH+COMPSS_RESOURCES_PATH+COMPSS_RESOURCE_SCHEMA_NAME);
 		if (f != null && f.exists()) {
 			uploadAndCopy(vmic, file, manifest, is, monitor);
 		}
 		monitor.worked(1);
 		
 		file = new File(pr_meta.getRuntimeLocation()
-				+ "/../worker/worker.sh");
+				+ COMPSS_SCRIPTS_PATH + COMPSS_SYSTEM_PATH+ "worker.sh");
+		if (f != null && f.exists()) {
+			uploadAndCopy(vmic, file, manifest, is, monitor);
+		}
+		file = new File(pr_meta.getRuntimeLocation()
+				+ COMPSS_SCRIPTS_PATH+COMPSS_SYSTEM_PATH+ "worker_java.sh");
+		if (f != null && f.exists()) {
+			uploadAndCopy(vmic, file, manifest, is, monitor);
+		}
+		file = new File(pr_meta.getRuntimeLocation()
+				+ COMPSS_SCRIPTS_PATH+COMPSS_SYSTEM_PATH+ "clean.sh");
+		if (f != null && f.exists()) {
+			uploadAndCopy(vmic, file, manifest, is, monitor);
+		}
+		file = new File(pr_meta.getRuntimeLocation()
+				+ COMPSS_SCRIPTS_PATH+ COMPSS_SYSTEM_PATH+ "trace.sh");
 		if (f != null && f.exists()) {
 			uploadAndCopy(vmic, file, manifest, is, monitor);
 		}
@@ -173,8 +188,7 @@ public class ImageCreation {
 	private static void deployMonitoring(VmicApi vmic, String runtimeLocation, 
 			Manifest manifest, InstallationScript is, IProgressMonitor monitor) 
 				throws 	Exception {
-		
-		File f = new File(runtimeLocation+"/../../monitoring/Monitoring.war");
+		File f = new File(runtimeLocation+"/Monitor/"+COMPSS_WAR_NAME);
 		if (f.exists()){
 			uploadWar(vmic, f, manifest, is, monitor);
 		}else
@@ -386,7 +400,7 @@ public class ImageCreation {
 			String fileName = uploadFile(vmic, manifest, file, "war", monitor);
 			is.addCopy("${"+fileName+"}", IMAGE_DEPLOYMENT_FOLDER);
 		}else
-			throw  new AsceticDeploymentException("File "+ file.getName()+ " does not exist.");
+			throw  new AsceticDeploymentException("File "+ file.getAbsolutePath()+ " does not exist.");
 
 	}
 
@@ -405,32 +419,34 @@ public class ImageCreation {
 			String fileName = uploadFile(vmic, manifest, file, "zip", monitor);
 			is.addUnZip("${"+fileName+"}", IMAGE_DEPLOYMENT_FOLDER);
 		}else
-			throw  new AsceticDeploymentException("File "+ file.getName()+ " does not exist.");
+			throw  new AsceticDeploymentException("File "+ file.getAbsolutePath()+ " does not exist.");
 
 	}
 
 	private static String uploadFile(VmicApi vmic, Manifest manifest, File file, String format,
 			IProgressMonitor monitor) throws Exception {
 		String manifestFileName = manifest.getVMICFileName(file.getName());
-		if (!manifest.fileExists(manifestFileName)){
+		//manifest.addFiles(manifestFileName, "/repo/path/"+file.getName(), format);
+		//if (!manifest.fileExists(manifestFileName)){
+			log.debug("Uploading file "+ file.getName() + " from app "+ manifest.getServiceId());
 			vmic.uploadFile(manifest.getServiceId(), file);
 			String path = null;
 			do{
 				Thread.sleep(10000);
-					ProgressDataFile pdf = (ProgressDataFile) vmic.progressCallback(manifest.getServiceId(), File.createTempFile("pgfile", "vmic"));
+				ProgressDataFile pdf = (ProgressDataFile) vmic.progressCallback(manifest.getServiceId(), file);
 					if (pdf.isError()){
 						log.error("Error uploading file "+ file.getName() , pdf.getException());
 						throw new AsceticDeploymentException("Error uploading file "+ file.getName());
 					}else if (pdf.isComplete()){
 						path = pdf.getRemotePath();
-						manifest.addFiles(manifestFileName, path, format);
+						manifest.addFile(manifestFileName, path, format);
 					}else{
 						monitor.worked(pdf.getCurrentPercentageCompletion().intValue());
 					}		
 			}while (path == null);
-		}else{
+		/*}else{
 			log.debug("File already uploaded");
-		}
+		}*/
 		return manifestFileName;
 		
 	}
@@ -451,7 +467,7 @@ public class ImageCreation {
 			String fileName = uploadFile(vmic, manifest, file, "war", monitor);
 			is.addCopy("${"+fileName+"}", "${IMAGE_WEBAPP_FOLDER}");
 		}else
-			throw  new AsceticDeploymentException("File "+ file.getName()+ " does not exist.");
+			throw  new AsceticDeploymentException("File "+ file.getAbsolutePath()+ " does not exist.");
 		
 	}
 
@@ -508,6 +524,30 @@ public class ImageCreation {
 			is.addExecutablePermission(f);
 		}
 
+	}
+	
+	public static void generateImages(VmicApi vmic, Manifest manifest, 
+			IProgressMonitor monitor) throws Exception {
+		monitor.beginTask("Creating Images", 100);
+		//TODO: Remove when execution with VMIC is done
+		manifest.generateFakeImages();
+		/*vmic.generateImage(manifest.getOVFDefinition());
+		boolean complete = false;
+		do{
+			Thread.sleep(CREATION_PULL_INTERVAL);
+			ProgressDataImage pd = (ProgressDataImage) vmic.progressCallback(
+					manifest.getServiceId(), null);
+			if (pd.isError()){
+				log.error("Error generating images", pd.getException());
+				throw new AsceticDeploymentException("Error generating images");
+			}else if (pd.isComplete()){
+				complete = true;
+				manifest.updateOVFDefinition(pd.getOvfDefinition());
+			}else{
+				monitor.worked(pd.getCurrentPercentageCompletion().intValue());
+			}
+		}while(!complete);*/
+		monitor.done();
 	}
 	
 }

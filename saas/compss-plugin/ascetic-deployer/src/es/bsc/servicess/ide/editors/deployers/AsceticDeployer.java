@@ -200,7 +200,8 @@ public class AsceticDeployer extends Deployer {
 					.getFolder(PACKAGES_FOLDER).getLocation()
 					.append(AsceticProperties.SERVICE_MANIFEST).toFile().exists())
 				readManifestFromFile();
-			imageSection.setServiceLocation(op_prop.getICSLocation());
+			packSection.init();
+			imageSection.init(op_prop);
 			serverText.setText(op_prop.getDSLocation());
 	
 		} catch (Exception e) {
@@ -329,17 +330,17 @@ public class AsceticDeployer extends Deployer {
 				}
 			});
 		} catch (InterruptedException e) {
-			String message = e.getMessage();
-			log.error("Error message: " + message, e);
+			String message = "Deployment interrumped";
+			log.error("Error message: " , e.getCause());
 			ErrorDialog.openError(super.getShell(), "Error",
 					"Deploying the service: "+ message, new Status(IStatus.ERROR,Activator.PLUGIN_ID,
 							message, e));
 		} catch (InvocationTargetException e) {
-			String message = e.getMessage();
-			log.error("Error message: " + message,e);
-			ErrorDialog.openError(super.getShell(), "Error",
-					"Deploying the service: "+ message, new Status(IStatus.ERROR,Activator.PLUGIN_ID,
-							message, e));
+			String message = e.getCause().getMessage();
+			log.error("Error message: " + message,e.getCause());
+			ErrorDialog.openError(super.getShell(), "Error deploying the application",
+					message, new Status(IStatus.ERROR,Activator.PLUGIN_ID,
+							message, e.getCause()));
 		}
 	}
 

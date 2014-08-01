@@ -821,6 +821,15 @@ public class PackagesSection extends ServiceEditorSection{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public void init() throws Exception{
+		PackageMetadata packMeta = new PackageMetadata(packageMetadataFile);
+		String[] packs = packMeta.getPackages();
+		if (packs!= null && packs.length>0){
+			initManual(packMeta, packs, null);
+			expandManual();
+		}
+	}
 
 	
 	

@@ -17,6 +17,7 @@
 package es.bsc.servicess.ide.editors.deployers;
 
 import java.io.File;
+import java.util.Properties;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -36,6 +37,13 @@ public class AsceticProperties {
 	private static final String LS_CLI_PROP_LOCATION = "ls.client.properties";
 	private static final String ICS_REPO_PATH = "ics.repository.path";
 	private static final String ICS_RSYNC_PATH = "ics.rsync.path";
+	private static final String ICS_RSH_PATH = "ics.rsh.path";
+
+
+	private static final String ICS_RSH_USER_KEY_PATH = "ics.rsh.user.key.path";
+
+
+	private static final String ICS_RSH_USERNAME = "ics.rsh.user.name.path";
 
 	private PropertiesConfiguration config;
 
@@ -101,13 +109,53 @@ public class AsceticProperties {
 		
 	}
 
-	public void setRepoPathLocation(String repoPath) {
+	public void setRepoPath(String repoPath) {
 		config.setProperty(ICS_REPO_PATH, repoPath);
 		
 	}
 	
-	public void setRsyncPathLocation(String rsyncPath) {
+	public String getRepoPath() {
+		return config.getString(ICS_REPO_PATH, "");
+		
+	}
+	
+	public void setRsyncPath(String rsyncPath) {
 		config.setProperty(ICS_RSYNC_PATH, rsyncPath);
+		
+	}
+	
+	public String getRsyncPath() {
+		return config.getString(ICS_RSYNC_PATH, "/usr/bin/rsync");
+		
+	}
+	
+	public void setRshPath(String rsyncPath) {
+		config.setProperty(ICS_RSH_PATH, rsyncPath);
+		
+	}
+	
+	public String getRshPath() {
+		return config.getString(ICS_RSH_PATH, "/usr/bin/ssh");
+		
+	}
+	
+	public void setRshUserKeyPath(String rsyncPath) {
+		config.setProperty(ICS_RSH_USER_KEY_PATH, rsyncPath);
+		
+	}
+	
+	public String getRshUserKeyPath() {
+		return config.getString(ICS_RSH_USER_KEY_PATH, System.getProperty("user.home")+"/.ssh/id_dsa");
+		
+	}
+	
+	public void setRshUsername(String rsyncPath) {
+		config.setProperty(ICS_RSH_USERNAME, rsyncPath);
+		
+	}
+	
+	public String getRshUsername() {
+		return config.getString(ICS_RSH_USERNAME, System.getProperty("user.name"));
 		
 	}
 }

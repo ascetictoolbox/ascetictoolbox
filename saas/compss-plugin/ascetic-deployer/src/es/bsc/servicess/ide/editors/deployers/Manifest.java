@@ -261,42 +261,46 @@ public class Manifest {
 	private void setConstraints(
 		VirtualSystem component,Map<String, String> maxConstraints, 
 		ProjectMetadata prMeta) throws ConfigurationException {
+		
+		//Create product section
 		ProductSection ps;
 		if (component.getProductSectionArray() == null || component.getProductSectionArray().length<1){
 			setAsceticProductSection(component);
 		}
 		ps = component.getProductSectionAtIndex(0);
-		Map<String, String> defResources = prMeta.getDefaultResourcesProperties();
-		Long ds = getDiskSize(maxConstraints, defResources);
 		
-		if (ds>0){
-			Disk d = getComponentDisk(component.getId());
-			d.setCapacityAllocationUnits("byte * 2^20");
-	        d.setCapacity(ds.toString());
-			log.debug("Setting Storage to " + ds);
-			ps.addNewProperty(VMIC_SIZE_CONSTRAINT, ProductPropertyType.REAL32, Long.toString(ds));
+		//Create hardware section
+		VirtualHardwareSection hardwareSection = component.getVirtualHardwareSection();
+		if (hardwareSection ==null){
+			setHardwareSection(component);
+			hardwareSection = component.getVirtualHardwareSection();		
 		}
+		Map<String, String> defResources = prMeta.getDefaultResourcesProperties();
+		
+		//Set Disk
+		Long ds = getDiskSize(maxConstraints, defResources);
+		if (ds>0){
+			setDiskDescription(ps, hardwareSection, component.getId(), ds);
+		}
+		
+		//Set Ethernet Adaptor
+		if (getEthernetAdaptor(hardwareSection) == null){
+			addEthernetAdaptor(hardwareSection);
+		}
+		
+		//Setting OS
 		String os = getOperatingSystem(maxConstraints, defResources);
 		if (os!=null){
 			addOperatingSystem(component, os);
 			log.debug("Setting OS to " + os);
 			ps.addNewProperty(VMIC_OS_CONSTRAINT, ProductPropertyType.STRING, os);
 		}
+		
+		//Setting Processor
 		String arch = getArchitecture(maxConstraints, defResources);
 		if (arch !=null){
 			log.debug("Setting processorArch to " + os);
 			ps.addNewProperty(VMIC_ARC_CONSTRAINT, ProductPropertyType.STRING, arch);
-		}
-		VirtualHardwareSection hardwareSection = component.getVirtualHardwareSection();
-		if (hardwareSection ==null){
-			setHardwareSection(component);
-			hardwareSection = component.getVirtualHardwareSection();		
-		}
-		
-		Float ms = getMemSize(maxConstraints, defResources);
-		log.debug("Setting Memory to " + ms);
-		if (!hardwareSection.setMemorySize(ms.intValue())){
-			addMemoryItem(hardwareSection, ms.intValue());
 		}
 		
 		Integer cpuc = getCPUCount(maxConstraints, defResources);
@@ -310,6 +314,73 @@ public class Manifest {
 		if (!hardwareSection.setCPUSpeed(cpus.intValue())){
 			addCPUSpeedItem(hardwareSection, cpus.intValue());
 		}
+		
+		//Setting Memory
+		Float ms = getMemSize(maxConstraints, defResources);
+		log.debug("Setting Memory to " + ms);
+		if (!hardwareSection.setMemorySize(ms.intValue())){
+			addMemoryItem(hardwareSection, ms.intValue());
+		}
+		
+		
+	}
+
+
+	private void setDiskDescription(ProductSection ps,
+			VirtualHardwareSection hardwareSection, String id, Long ds) {
+		Disk d = getComponentDisk(id);
+		log.debug("Setting Storage to " + ds);
+		d.setCapacityAllocationUnits("byte * 2^20");
+        d.setCapacity(ds.toString());
+		ps.addNewProperty(VMIC_SIZE_CONSTRAINT, ProductPropertyType.REAL32, Long.toString(ds));
+		if (getDiskDrive(hardwareSection, d) == null){
+			addDiskDrive(hardwareSection, d);
+		}
+		
+	}
+	
+	private Item getEthernetAdaptor(VirtualHardwareSection hardwareSection){
+		Item[] itemArray = hardwareSection.getItemArray();
+        for (int i = 0; i < itemArray.length; i++) {
+            if (ResourceType.ETHERNET_ADAPTER.equals(itemArray[i].getResourceType())) {
+                return itemArray[i];
+            }
+        }
+        return null;
+	}
+	
+	private void addEthernetAdaptor(VirtualHardwareSection hardwareSection){
+		Item itemNetwork = Item.Factory.newInstance();
+        itemNetwork.setDescription("Virtual Network");
+        itemNetwork.addConnection("network");
+        itemNetwork.setElementName("Ethernet adapter on network");
+        itemNetwork.setInstanceId("3");
+        itemNetwork.setResourceType(ResourceType.ETHERNET_ADAPTER);
+        itemNetwork.setAutomaticAllocation(true);
+        hardwareSection.addItem(itemNetwork);
+	}
+	
+	
+	private Item getDiskDrive(VirtualHardwareSection hardwareSection, Disk d){
+		String diskName = "ovf:/disk/"+d.getDiskId();
+		Item[] itemArray = hardwareSection.getItemArray();
+        for (int i = 0; i < itemArray.length; i++) {
+            if (ResourceType.DISK_DRIVE.equals(itemArray[i].getResourceType())
+                    && diskName.equals(itemArray[i].getHostResourceAtIndex(0))) {
+                return itemArray[i];
+            }
+        }
+        return null;
+	}
+	
+	private void addDiskDrive(VirtualHardwareSection hardwareSection, Disk d){
+		 Item itemDisk = Item.Factory.newInstance();
+	     itemDisk.setDescription("VM Disk for "+ d.getDiskId());
+	     itemDisk.setElementName("VM Disk Drive "+ d.getDiskId());
+	     itemDisk.setInstanceId("4");
+	     itemDisk.setResourceType(ResourceType.DISK_DRIVE);
+	     itemDisk.addHostResource("ovf:/disk/"+d.getDiskId());
+	     hardwareSection.addItem(itemDisk);
 	}
 
 
@@ -793,7 +864,7 @@ public class Manifest {
 	}
 
 
-	public void addFiles(String name, String href, String format){
+	public void addFile(String name, String href, String format){
 		File f = File.Factory.newInstance(name, href);
 		if (format!= null)
 			f.setCompression(format);
@@ -830,9 +901,11 @@ public class Manifest {
 		ovf = OvfDefinition.Factory.newInstance();
 		log.debug("Created ovf:"+ ovf.toString());
 		setVirtualSystemCollection();
+		ovf.setReferences(References.Factory.newInstance());
 		setServiceId(project.getProject().getName());
 	}
-	
+
+
 	private void addComponent(VirtualSystem component){
 		VirtualSystemCollection vsc = ovf.getVirtualSystemCollection();
 		if (vsc == null){
@@ -864,8 +937,8 @@ public class Manifest {
 	}
 
 	public String getServiceId() {
-		ovf.getVirtualSystemCollection().getId();
-		return null;
+		return ovf.getVirtualSystemCollection().getId();
+		
 	}
 	
 	private void setAsceticProductSection(VirtualSystem component){
@@ -891,6 +964,24 @@ public class Manifest {
 	
 	public String getVMICFileName(String fileName){
 		return VMIC_FILE_PREFIX+"-"+getServiceId()+"-"+fileName;
+	}
+
+
+	public void cleanFiles() {
+		References refs = ovf.getReferences();
+		if (refs == null){
+			ovf.getXmlObject().getEnvelope().addNewReferences();
+		}else
+			ovf.setReferences(refs.Factory.newInstance());
+	}
+
+	// TODO Remove when generate images work
+	public void generateFakeImages() {
+		for (VirtualSystem vs : ovf.getVirtualSystemCollection().getVirtualSystemArray()){
+			
+			addFile(vs.getId()+IMAGE_SUFFIX, "/fake/image/"+vs.getId()+".qcow2","qcow2");
+		}
+		
 	}
 	
 	
