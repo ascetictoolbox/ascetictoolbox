@@ -21,7 +21,7 @@ public class VmManagerRest {
     private VmCallsManager vmCallsManager = new VmCallsManager(vmManager);
     private ImageCallsManager imageCallsManager = new ImageCallsManager(vmManager);
     private SchedulingAlgorithmCallsManager schedAlgCallsManager = new SchedulingAlgorithmCallsManager(vmManager);
-    private NodeCallsManager nodeCallsManager = new NodeCallsManager();
+    private NodeCallsManager nodeCallsManager = new NodeCallsManager(vmManager);
     private LogCallsManager logCallsManager = new LogCallsManager();
     private EstimatesCallsManager estimatesCallsManager = new EstimatesCallsManager(vmManager);
 

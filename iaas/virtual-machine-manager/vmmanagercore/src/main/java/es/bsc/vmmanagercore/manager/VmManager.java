@@ -294,6 +294,35 @@ public class VmManager {
 
 
     //================================================================================
+    // Hosts
+    //================================================================================
+
+    /**
+     * Returns the hosts of the infrastructure.
+     *
+     * @return the list of hosts
+     */
+    public List<Host> getHosts() {
+        return hosts;
+    }
+
+    /**
+     * Returns a host by hostname.
+     *
+     * @param hostname the hostname
+     * @return the host
+     */
+    public Host getHost(String hostname) {
+        for (Host host: hosts) {
+            if (hostname.equals(host.getHostname())) {
+                return host;
+            }
+        }
+        return null;
+    }
+
+
+    //================================================================================
     // VM price and energy estimates
     //================================================================================
 
@@ -304,8 +333,8 @@ public class VmManager {
      * @return a list with price and energy estimates for each VM
      */
     public ListVmEstimates getVmEstimates(List<VmToBeEstimated> vmsToBeEstimated) {
-        return estimatesGenerator.getVmEstimates(
-                scheduler.chooseBestDeploymentPlan(vmsToBeEstimatedToVms(vmsToBeEstimated), hosts), getAllVms());
+        return estimatesGenerator.getVmEstimates(scheduler.chooseBestDeploymentPlan(
+                vmsToBeEstimatedToVms(vmsToBeEstimated), hosts), getAllVms());
     }
 
 

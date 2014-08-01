@@ -28,15 +28,21 @@ public class HostGanglia extends Host {
                 }
             }
         }
-        
-        //initialize the total resources of the host
+
         initTotalResources();
+        initAssignedResources();
     }
 
     private void initTotalResources() {
         totalCpus = gangliaHost.getCpuNum();
         totalMemoryMb = Math.round(gangliaHost.getMemTotal()/1024);
         totalDiskGb = gangliaHost.getDiskTotal();
+    }
+
+    private void initAssignedResources() {
+        assignedCpus = getAssignedCpus();
+        assignedMemoryMb = getAssignedMemoryMb();
+        assignedDiskGb = getAssignedDiskGb();
     }
 
     @Override

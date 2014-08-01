@@ -20,6 +20,7 @@ public class HostOpenStack extends Host {
         super(name);
         this.jcm = jcm;
         initTotalResources();
+        initAssignedResources();
     }
 
     private void initTotalResources() {
@@ -37,7 +38,12 @@ public class HostOpenStack extends Host {
         totalCpus = totalRes.getCpu();
         totalMemoryMb = totalRes.getMemoryMb();
         totalDiskGb = totalRes.getDiskGb();
+    }
 
+    private void initAssignedResources() {
+        assignedCpus = getAssignedCpus();
+        assignedMemoryMb = getAssignedMemoryMb();
+        assignedDiskGb = getAssignedDiskGb();
     }
 
     @Override

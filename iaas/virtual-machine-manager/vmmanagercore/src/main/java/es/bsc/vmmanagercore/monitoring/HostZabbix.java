@@ -41,10 +41,17 @@ public class HostZabbix extends Host {
         totalDiskGb = (Long.parseLong(getItemByKey(TOTAL_DISK_BYTES_KEY).getLastValue()))/(1024.0*1024*1024);
     }
 
+    private void initAssignedResources() {
+        assignedCpus = getAssignedCpus();
+        assignedMemoryMb = getAssignedMemoryMb();
+        assignedDiskGb = getAssignedDiskGb();
+    }
+
     public HostZabbix(String hostname) {
         super(hostname);
         items = zabbixClient.getItemsFromHost(hostname);
         initTotalResources();
+        initAssignedResources();
     }
 
     @Override
