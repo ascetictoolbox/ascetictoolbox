@@ -29,6 +29,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The aim of this class is initially to take data from the Zabbix Client and to
@@ -160,15 +161,17 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         VmDeployed answer = new VmDeployed(hostId, hostname);
         for (Item item : items) {
             if (item.getName().equals(MEMORY_KPI_NAME)) { //Convert to Mb
-                answer.setRamMb((int) (Long.valueOf(item.getLastValue())/ (1024 * 1024)));
+                //Original value given in bytes. 1024 * 1024 = 1048576
+                answer.setRamMb((int) (Double.valueOf(item.getLastValue())/ 1048576));
             }
             if (item.getName().equals(DISK_KPI_NAME)) { //covert to Gb
-                answer.setDiskGb(Long.valueOf(item.getLastValue()) / (1024 * 1024 * 1024));
+                //Original value given in bytes. 1024 * 1024 * 1024 = 1073741824
+                answer.setDiskGb((Double.valueOf(item.getLastValue()) / 1073741824));
             }
             if (item.getName().equals(BOOT_TIME_KPI_NAME)) {
                 Calendar cal = new GregorianCalendar();
                 //This converts from milliseconds into the correct time value
-                cal.setTimeInMillis(Long.valueOf(item.getLastValue()) * 1000); 
+                cal.setTimeInMillis(TimeUnit.SECONDS.toMillis(Long.valueOf(item.getLastValue()))); 
                 answer.setCreated(cal);
             }
             //TODO set the information correctly below!

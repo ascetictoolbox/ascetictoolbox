@@ -50,8 +50,11 @@ public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
      */
     @Override
     public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines) {
-        double usageCPU = 100;
-        double usageMemory = 100;
+        double usageCPU = 1;
+        double usageMemory = 0;
+        for (VM vm : virtualMachines) {
+            usageMemory = usageMemory + vm.getRamMb();
+        }
         EnergyUsagePrediction wattsUsed;
         TimePeriod duration = new TimePeriod(new GregorianCalendar(), 1, TimeUnit.HOURS);
         wattsUsed = predictTotalEnergy(host, usageCPU, usageMemory, duration);
@@ -71,18 +74,18 @@ public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
         EnergyUsagePrediction answer = new EnergyUsagePrediction(host);
         //Test for training then load the store with the correct values.
         /**
-         * TODO Fix the code so it is much cleaner.
-         * Directly load the trainer with data because we can do. 
-         * (but given OO principles really really shouldn't
+         * TODO Fix the code so it is much cleaner. Directly load the trainer
+         * with data because we can do. (but given OO principles really really
+         * shouldn't
          */
         if (!DefaultEnergyModelTrainer.storeValues.containsKey(host)) {
-                DefaultEnergyModelTrainer.storeValues.put(host, host.getCalibrationData());
+            DefaultEnergyModelTrainer.storeValues.put(host, host.getCalibrationData());
         }
         EnergyModel model = trainer.retrieveModel(host);
-        double temp;
-        temp = model.getIntercept() + model.getCoefCPU() * usageCPU + model.getCoefRAM() * usageRAM;
-        answer.setAvgPowerUsed(temp);
-        answer.setTotalEnergyUsed(temp * timePeriod.getDuration());
+        double powerUsed;
+        powerUsed = model.getIntercept() + model.getCoefCPU() * usageCPU + model.getCoefRAM() * usageRAM;
+        answer.setAvgPowerUsed(powerUsed);
+        answer.setTotalEnergyUsed(powerUsed * ((double) TimeUnit.SECONDS.toHours(timePeriod.getDuration())));
         answer.setDuration(timePeriod);
         return answer;
     }
@@ -105,17 +108,19 @@ public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
         //TODO Fix assumptions here
         for (VM currentVM : virtualMachines) {
             usageRAM = usageRAM + currentVM.getRamMb();
-            usageCPU = 100; //assumed 100 percent usage.
+            usageCPU = 1; //assumed 100 percent usage.
         }
-        //Obtain the total for the VM
+        //Obtain the total for the host
         EnergyUsagePrediction hostAnswer = predictTotalEnergy(host, usageCPU, usageRAM, timePeriod);
+        hostAnswer.setAvgPowerUsed(hostAnswer.getTotalEnergyUsed()
+                / ((double) TimeUnit.SECONDS.toHours(timePeriod.getDuration())));
         EnergyUsagePrediction answer = new EnergyUsagePrediction(vm);
         answer.setDuration(hostAnswer.getDuration());
         //Find the fraction to be associated with the VM
-        double vmsEnergyFraction = division.getEnergyUsage(answer.getTotalEnergyUsed(), vm);
+        double vmsEnergyFraction = division.getEnergyUsage(hostAnswer.getTotalEnergyUsed(), vm);
         answer.setTotalEnergyUsed(vmsEnergyFraction);
-        double vmsPowerFraction = division.getEnergyUsage(answer.getAvgPowerUsed(), vm);
-        answer.setTotalEnergyUsed(vmsPowerFraction);
+        double vmsPowerFraction = division.getEnergyUsage(hostAnswer.getAvgPowerUsed(), vm);
+        answer.setAvgPowerUsed(vmsPowerFraction);
         return answer;
     }
 

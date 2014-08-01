@@ -37,15 +37,14 @@ import java.util.logging.Logger;
  */
 public class DataGatherer implements Runnable {
 
-    private HostDataSource datasource;
-    private DatabaseConnector connector;
-    private Calibrator calibrator;
+    private final HostDataSource datasource;
+    private final DatabaseConnector connector;
+    private final Calibrator calibrator;
     private boolean running = true;
     private int faultCount = 0;
     private HashMap<String, Host> knownHosts = new HashMap<>();
     private HashMap<String, VmDeployed> knownVms = new HashMap<>();
-    private HashMap<Host, Long> lastTimeStampSeen = new HashMap<>();
-    private HashMap<VmDeployed, Long> lastTimeStampSeenVm = new HashMap<>();
+    private final HashMap<Host, Long> lastTimeStampSeen = new HashMap<>();
 
     /**
      * This creates a data gather component for the energy modeller.
@@ -133,6 +132,7 @@ public class DataGatherer implements Runnable {
     }
 
     @Override
+    @SuppressWarnings("SleepWhileInLoop")
     public void run() {
         /**
          * Polls the data source and write values to the database. TODO consider

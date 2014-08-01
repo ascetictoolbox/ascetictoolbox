@@ -118,10 +118,13 @@ public class ZabbixDataSourceAdaptorTest {
         List<Host> expResult = new ArrayList<>();
         expResult.addAll(hostList);
         List<Host> result = instance.getHostList();
+        assertEquals(result.size(), 4);
         for (Host host : expResult) {
             assert (result.contains(host));
+            System.out.println("Host name: " + host.getHostName());
+            System.out.println("Host id: " + host.getId());
         }
-        assert (expResult.size() == result.size());
+        assertEquals(expResult.size(), result.size());
     }
 
     /**
@@ -157,7 +160,7 @@ public class ZabbixDataSourceAdaptorTest {
         System.out.println("Memory Available: " + result.getMemoryAvailable());
         System.out.println("CPU Load: " + result.getCpuLoad());
         System.out.println("CPU Idle: " + result.getCpuIdle());
-        
+
     }
 
     /**
@@ -167,7 +170,6 @@ public class ZabbixDataSourceAdaptorTest {
     public void testGetHostData_List() {
         System.out.println("getHostData");
         ZabbixDataSourceAdaptor instance = new ZabbixDataSourceAdaptor();
-        List<HostMeasurement> expResult = null;
         List<HostMeasurement> result = instance.getHostData(hostList);
         assert (result != null);
         for (HostMeasurement hostMeasurement : result) {
@@ -209,6 +211,9 @@ public class ZabbixDataSourceAdaptorTest {
         CurrentUsageRecord result = instance.getCurrentEnergyUsage(host);
         assert (result != null);
         assert (result.getPower() > 0.0);
+        System.out.println("Host Name: " + host.getHostName());
+        System.out.println("Host Id: " + host.getId());
+        System.out.println("Host Current Power Usage: " + result.getPower());
     }
 
     /**
@@ -221,6 +226,9 @@ public class ZabbixDataSourceAdaptorTest {
         ZabbixDataSourceAdaptor instance = new ZabbixDataSourceAdaptor();
         double result = instance.getLowestHostPowerUsage(host);
         assert (result > 0.0);
+        System.out.println("Host Name: " + host.getHostName());
+        System.out.println("Host Id: " + host.getId());
+        System.out.println("Lowest Power: " + result);
     }
 
     /**
@@ -275,6 +283,14 @@ public class ZabbixDataSourceAdaptorTest {
         List<VmDeployed> result = instance.getVmList();
         assert (result != null);
         assert (!result.isEmpty());
+        for (VmDeployed vmDeployed : result) {
+            assert(vmDeployed.getName() != null);
+            assert(vmDeployed.getId() > 0);
+            System.out.println("VM name: " + vmDeployed.getName());
+            System.out.println("VM id: " + vmDeployed.getId());
+            System.out.println("VM Ram: " + vmDeployed.getRamMb());
+            System.out.println("VM Disk: " + vmDeployed.getDiskGb());
+        }
     }
 
     /**

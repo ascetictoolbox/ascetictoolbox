@@ -124,7 +124,7 @@ public class VM extends EnergyUsageSource {
      *
      * @param diskGb The disk space this vm has been allocated.
      */
-    public void setDiskGb(long diskGb) {
+    public void setDiskGb(double diskGb) {
         if (diskGb < 0) {
             throw new IllegalArgumentException("The amount of disk size must not be less than zero.");
         }
