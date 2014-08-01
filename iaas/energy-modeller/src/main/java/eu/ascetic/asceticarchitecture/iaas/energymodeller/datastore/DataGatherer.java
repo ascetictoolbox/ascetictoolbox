@@ -68,7 +68,7 @@ public class DataGatherer implements Runnable {
      * This populates the list of hosts and their VMs that are known to the
      * energy modeller.
      */
-    public final void populateHostList() {
+    private void populateHostList() {
         Collection<Host> hosts = datasource.getHostList();
         connector.setHosts(hosts);
         //Ensure calibration data is recovered from the db.

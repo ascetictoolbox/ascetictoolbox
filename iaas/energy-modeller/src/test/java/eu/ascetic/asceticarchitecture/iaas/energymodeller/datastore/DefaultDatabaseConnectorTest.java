@@ -17,7 +17,6 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostEnergyRecord;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -95,8 +94,9 @@ public class DefaultDatabaseConnectorTest {
         System.out.println("setHostCalibrationData");
         Host host = CHOSEN_HOST;
         DefaultDatabaseConnector instance = new DefaultDatabaseConnector();
-        instance.setHostCalibrationData(host);
-        assert(!host.getCalibrationData().isEmpty());
+        //This will run the method but otherwise do very little. A better test case would be good.
+        instance.setHostCalibrationData(host); 
+        assert(host.getCalibrationData().isEmpty());
     }
 
     /**

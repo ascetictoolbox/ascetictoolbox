@@ -70,7 +70,7 @@ public class EnergyModeller {
     private Thread calibratorThread;
     private DataGatherer dataGatherer = new DataGatherer(datasource, new DefaultDatabaseConnector(), calibrator);
     private Thread dataGatherThread;
-    
+
     /**
      * This creates a new energy modeller.
      */
@@ -331,8 +331,8 @@ public class EnergyModeller {
      */
     public EnergyUsagePrediction getPredictedEnergyForVM(VM vmImage, Collection<VM> vMsOnHost, Host host) {
         /**
-         * Adding a sanity check that ensures the vmImage (deployed or otherwise, represents load
-         * on the VM.
+         * Adding a sanity check that ensures the vmImage (deployed or
+         * otherwise, represents load on the VM.
          */
         if (!vMsOnHost.contains(vmImage)) {
             vMsOnHost.add(vmImage);
@@ -377,11 +377,6 @@ public class EnergyModeller {
     public Host getHost(String hostname) {
         if (dataGatherer.getHostList().containsKey(hostname)) {
             return dataGatherer.getHost(hostname);
-        } else {
-            dataGatherer.populateHostList();
-            if (dataGatherer.getHostList().containsKey(hostname)) {
-                return dataGatherer.getHostList().get(hostname);
-            }
         }
         return null;
     }
@@ -409,13 +404,8 @@ public class EnergyModeller {
     public VmDeployed getVM(String name) {
         if (dataGatherer.getVmList().containsKey(name)) {
             return dataGatherer.getVmList().get(name);
-        } else {
-            dataGatherer.populateHostList();
-            if (dataGatherer.getVmList().containsKey(name)) {
-                return dataGatherer.getVm(name);
-            }
-            return null;
         }
+        return null;
     }
 
     /**
