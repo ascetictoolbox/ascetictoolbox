@@ -10,6 +10,7 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
+import eu.ascetic.paas.applicationmanager.model.Agreement;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.VM;
@@ -40,7 +41,7 @@ public class ApplicationUploader {
 	 * @throws ApplicationUploaderException
 	 */
 	public int createAndDeployAplication(String ovf) throws ApplicationUploaderException{
-		ClientResponse response = resource.path(APPLICATIONS_PATH).accept(MediaType.APPLICATION_XML_TYPE)
+		ClientResponse response = resource.path(APPLICATIONS_PATH)
 				.header(HttpHeaders.CONTENT_TYPE,MediaType.APPLICATION_XML).post(ClientResponse.class, ovf);
 		if (response.getStatus() == ClientResponse.Status.CREATED.getStatusCode()) {
 			return response.getEntity(Application.class).getDeployments().get(0).getId();
@@ -55,10 +56,14 @@ public class ApplicationUploader {
 	 * @throws ApplicationUploaderException
 	 */
 	public String getDeploymentStatus(String applicationID, String deploymentID) throws ApplicationUploaderException{
+		return getDeployment(applicationID,deploymentID).getStatus();
+	}
+	
+	private Deployment getDeployment(String applicationID, String deploymentID) throws ApplicationUploaderException{
 		ClientResponse response = resource.path(APPLICATIONS_PATH).path(applicationID)
 				.path(DEPLOYMENTS_PATH).path(deploymentID).accept(MediaType.APPLICATION_XML_TYPE).get(ClientResponse.class);
 		if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
-			return response.getEntity(Deployment.class).getStatus();
+			return response.getEntity(Deployment.class);
 		}else
 			throw new ApplicationUploaderException("Error getting deployment status. Returned code is "+ response.getStatus());
 	}
@@ -73,7 +78,7 @@ public class ApplicationUploader {
 		ClientResponse response = resource.path(APPLICATIONS_PATH).path(applicationID)
 				.path(DEPLOYMENTS_PATH).path(deploymentID).path(AGREEMENT_PATH).accept(MediaType.APPLICATION_XML_TYPE).get(ClientResponse.class);
 		if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
-			return response.getEntity(Deployment.class).getStatus();
+			return response.getEntity(Agreement.class).getSlaAgreement();
 		}else
 			throw new ApplicationUploaderException("Error getting deployment agreement. Returned code is "+ response.getStatus());
 	}
@@ -88,12 +93,7 @@ public class ApplicationUploader {
 	 * @throws ApplicationUploaderException
 	 */
 	public Map<String,Map<String,String>> getDeployedVMs(String applicationID, String deploymentID) throws ApplicationUploaderException{
-		ClientResponse response = resource.path(APPLICATIONS_PATH).path(applicationID)
-				.path(DEPLOYMENTS_PATH).path(deploymentID).path(AGREEMENT_PATH).accept(MediaType.APPLICATION_XML_TYPE).get(ClientResponse.class);
-		if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
-			return getVMsFromDeployment(response.getEntity(Deployment.class));
-		}else
-			throw new ApplicationUploaderException("Error getting deployment agreement. Returned code is "+ response.getStatus());
+			return getVMsFromDeployment(getDeployment(applicationID,deploymentID));
 	}
 	
 	private Map<String, Map<String, String>> getVMsFromDeployment(
@@ -149,7 +149,7 @@ public class ApplicationUploader {
 	public void undeploy(String applicationID, String deploymentID) throws ApplicationUploaderException{
 		ClientResponse response = resource.path(APPLICATIONS_PATH).path(applicationID)
 				.path(DEPLOYMENTS_PATH).path(deploymentID).delete(ClientResponse.class);
-		if (response.getStatus() != ClientResponse.Status.NO_CONTENT.getStatusCode()) {
+		if (response.getStatus() != ClientResponse.Status.ACCEPTED.getStatusCode()) {
 			throw new ApplicationUploaderException("Error deleting deployment. Returned code is "+ response.getStatus());
 		}
 	}
@@ -164,7 +164,7 @@ public class ApplicationUploader {
 		ClientResponse response = resource.path(APPLICATIONS_PATH).path(applicationID)
 				.path(DEPLOYMENTS_PATH).header(HttpHeaders.CONTENT_TYPE,MediaType.APPLICATION_XML)
 				.accept(MediaType.APPLICATION_XML_TYPE).post(ClientResponse.class);
-		if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
+		if (response.getStatus() == ClientResponse.Status.CREATED.getStatusCode()) {
 			return response.getEntity(Deployment.class).getId();
 		}else
 			throw new ApplicationUploaderException("Error getting deployment status. Returned code is "+ response.getStatus());
@@ -176,7 +176,7 @@ public class ApplicationUploader {
 	 */
 	public void destroyApplication(String applicationID) throws ApplicationUploaderException{
 		ClientResponse response = resource.path(APPLICATIONS_PATH).path(applicationID).delete(ClientResponse.class);
-		if (response.getStatus() != ClientResponse.Status.NO_CONTENT.getStatusCode()) {
+		if (response.getStatus() != ClientResponse.Status.ACCEPTED.getStatusCode()) {
 			throw new ApplicationUploaderException("Error deleting deployment. Returned code is "+ response.getStatus());
 		}
 	}
