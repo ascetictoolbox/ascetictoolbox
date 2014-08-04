@@ -3,9 +3,11 @@ package es.bsc.vmmanagercore.cloudmiddleware;
 import es.bsc.vmmanagercore.manager.VmManagerConfiguration;
 import es.bsc.vmmanagercore.model.ImageToUpload;
 import es.bsc.vmmanagercore.utils.HttpUtils;
+import org.apache.commons.validator.UrlValidator;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,13 +56,20 @@ public class OpenStackGlance {
         headers.put("User-Agent", "python-glanceclient");
         headers.put("x-image-meta-is_public", "True");
         //headers.put("x-glance-api-copy-from", imageToUpload.getUrl());
-        headers.put("x-image-meta-location", imageToUpload.getUrl());
+        if (new UrlValidator().isValid(imageToUpload.getUrl())) {
+            headers.put("x-image-meta-location", imageToUpload.getUrl());
+        }
         headers.put("Content-Type", "application/octet-stream");
         headers.put("x-image-meta-disk_format", "qcow2");
         headers.put("x-image-meta-name", imageToUpload.getName());
 
+        File file = null;
+        if (!new UrlValidator().isValid(imageToUpload.getUrl())) {
+            file = new File(imageToUpload.getUrl());
+        }
+
         String responseContent = HttpUtils.executeHttpRequest("POST",
-                HttpUtils.buildURI("http", openStackIp, glancePort, "/v1/images"), headers, "");
+                HttpUtils.buildURI("http", openStackIp, glancePort, "/v1/images"), headers, "", file);
 
         //return the image ID
         JsonNode imageIdJson;
@@ -84,7 +93,7 @@ public class OpenStackGlance {
 
         //execute the HTTP request
         HttpUtils.executeHttpRequest("DELETE",
-                HttpUtils.buildURI("http", openStackIp, glancePort, "/v2/images/" + imageId), headers, "");
+                HttpUtils.buildURI("http", openStackIp, glancePort, "/v2/images/" + imageId), headers, "", null);
     }
 
     /**
@@ -103,7 +112,7 @@ public class OpenStackGlance {
 
         //execute the HTTP request
         String responseContent = HttpUtils.executeHttpRequest("GET",
-                HttpUtils.buildURI("http", openStackIp, glancePort, "/v2/images/" + imageId), headers, "");
+                HttpUtils.buildURI("http", openStackIp, glancePort, "/v2/images/" + imageId), headers, "", null);
 
         //get the image status
         String imageStatus = "";
@@ -133,7 +142,7 @@ public class OpenStackGlance {
 
         //execute the HTTP request
         String responseContent = HttpUtils.executeHttpRequest("POST",
-                HttpUtils.buildURI("http", openStackIp, keyStonePort, "/v2.0/tokens"), headers, params);
+                HttpUtils.buildURI("http", openStackIp, keyStonePort, "/v2.0/tokens"), headers, params, null);
 
         //get the token
         JsonNode tokenJson;

@@ -9,8 +9,11 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.HttpClients;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -53,7 +56,7 @@ public class HttpUtils {
      * @return The HTTP Request built.
      */
     public static HttpRequestBase buildHttpRequest(String methodType,
-            URI uri, Map<String, String> header, String entity) {
+            URI uri, Map<String, String> header, String entity, File file) {
         HttpRequestBase request;
 
         //instantiate the request according to its type (GET, POST...)
@@ -83,11 +86,24 @@ public class HttpUtils {
 
         //if the type of the request is POST, set the entity of the request
         if (methodType.equals("POST") && !entity.equals("")) {
-            try {
-                ((HttpPost) request).setEntity(new StringEntity(entity));
-            } catch (UnsupportedEncodingException e) {
+            //try {
+                //((HttpPost) request).setEntity(new StringEntity(entity));
+                if (file != null) {
+                    MultipartEntity multiPartEntity = new MultipartEntity();
+                    FileBody fileBody = new FileBody(file, "application/octect-stream");
+                    multiPartEntity.addPart("attachment", fileBody);
+                    ((HttpPost) request).setEntity(multiPartEntity);
+                }
+                else {
+                    try {
+                        ((HttpPost) request).setEntity(new StringEntity(entity));
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                }
+            /*} catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
-            }
+            }*/
         }
 
         return request;
@@ -122,7 +138,8 @@ public class HttpUtils {
      * @param entity Entity of the request.
      * @return @return The response of the HTTP request
      */
-    public static String executeHttpRequest(String methodType, URI uri, Map<String, String> header, String entity) {
-        return getHttpResponse(buildHttpRequest(methodType, uri, header, entity));
+    public static String executeHttpRequest(String methodType, URI uri, Map<String, String> header, String entity,
+            File file) {
+        return getHttpResponse(buildHttpRequest(methodType, uri, header, entity, file));
     }
 }
