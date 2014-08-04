@@ -41,7 +41,6 @@ public class OpenStackGlance {
         token = getToken();
     }
 
-
     /**
      * Uploads an image to OpenStack. The image is downloaded from a given URL.
      *
@@ -49,32 +48,33 @@ public class OpenStackGlance {
      * @return the ID of the image just created. This ID is the same as the ID assigned in OpenStack.
      */
     public String createImageFromUrl(ImageToUpload imageToUpload) {
-        //check that the URL received is valid
-        if (!new UrlValidator().isValid(imageToUpload.getUrl())) {
-            throw new IllegalArgumentException("The URL received to create the image is not valid");
-        }
-
         //build the headers of the HTTP request
         Map<String, String> headers = new HashMap<>();
         headers.put("X-Auth-Token", token);
         headers.put("x-image-meta-container_format", "bare");
         headers.put("User-Agent", "python-glanceclient");
         headers.put("x-image-meta-is_public", "True");
-        headers.put("x-glance-api-copy-from", imageToUpload.getUrl());
+        if (new UrlValidator().isValid(imageToUpload.getUrl())) {
+            headers.put("x-glance-api-copy-from", imageToUpload.getUrl());
+        }
         headers.put("Content-Type", "application/octet-stream");
         headers.put("x-image-meta-disk_format", "qcow2");
         headers.put("x-image-meta-name", imageToUpload.getName());
 
         //execute the HTTP request
+        String body = "";
+        if (!new UrlValidator().isValid(imageToUpload.getUrl())) {
+            body = imageToUpload.getUrl();
+        }
         String responseContent = HttpUtils.executeHttpRequest("POST",
-                HttpUtils.buildURI("http", openStackIp, glancePort, "/v1/images"), headers, "");
+                HttpUtils.buildURI("http", openStackIp, glancePort, "/v1/images"), headers, body);
 
         //return the image ID
         JsonNode imageIdJson = null;
         try {
             imageIdJson = new ObjectMapper().readTree(responseContent).get("image").get("id");
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException("There was a problem while uploading an image.");
         }
         return imageIdJson.asText();
     }
@@ -147,7 +147,7 @@ public class OpenStackGlance {
         try {
             tokenJson = new ObjectMapper().readTree(responseContent).get("access").get("token").get("id");
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException("Could not login to the Glance service.");
         }
        return tokenJson.asText();
     }
