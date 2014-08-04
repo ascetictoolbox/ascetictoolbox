@@ -479,7 +479,7 @@ public class Item extends AbstractElement<XmlBeanRASDType> {
      */
     public String findHostRosourceId(String hostResource) {
         if (hostResource.lastIndexOf('/') != -1) {
-            return hostResource.substring(hostResource.lastIndexOf('/') + 1);
+            return hostResource.substring(hostResource.lastIndexOf('/') + 1).replace("\n", "").trim();
         } else {
             return null;
         }
