@@ -87,7 +87,7 @@ public class JCloudsMiddleware implements CloudMiddleware {
     //TODO this is a temporary hack. The security groups should not be hard-coded.
     private void includeSecurityGroupInDeploymentOption(CreateServerOptions options) {
         if (conf.monitoring.equals(VmManagerConfiguration.Monitoring.ZABBIX)) {
-            options.securityGroupNames("vmm_allow_all"); //sec.group name in the TUB testbed
+            options.securityGroupNames("vmm_allow_all", "default"); //sec.group name in the TUB testbed
         }
     }
 
