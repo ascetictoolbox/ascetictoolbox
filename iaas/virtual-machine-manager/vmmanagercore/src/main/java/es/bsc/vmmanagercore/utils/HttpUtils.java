@@ -85,25 +85,20 @@ public class HttpUtils {
         }
 
         //if the type of the request is POST, set the entity of the request
-        if (methodType.equals("POST") && !entity.equals("")) {
-            //try {
-                //((HttpPost) request).setEntity(new StringEntity(entity));
-                if (file != null) {
-                    MultipartEntity multiPartEntity = new MultipartEntity();
-                    FileBody fileBody = new FileBody(file, "application/octect-stream");
-                    multiPartEntity.addPart("attachment", fileBody);
-                    ((HttpPost) request).setEntity(multiPartEntity);
+        if (methodType.equals("POST")) {
+            if (file != null) {
+                MultipartEntity multiPartEntity = new MultipartEntity();
+                FileBody fileBody = new FileBody(file, "application/octect-stream");
+                multiPartEntity.addPart("attachment", fileBody);
+                ((HttpPost) request).setEntity(multiPartEntity);
+            }
+            else if (!entity.equals("")) {
+                try {
+                    ((HttpPost) request).setEntity(new StringEntity(entity));
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
                 }
-                else {
-                    try {
-                        ((HttpPost) request).setEntity(new StringEntity(entity));
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
-                }
-            /*} catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }*/
+            }
         }
 
         return request;
