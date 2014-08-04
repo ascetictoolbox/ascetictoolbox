@@ -8,17 +8,22 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.HttpClients;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
+import java.nio.file.*;
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -54,10 +59,11 @@ public class HttpUtils {
      * @param uri URI of the request.
      * @param header Headers of the request.
      * @param entity Entity of the request.
+     * @param filePath Path of a file.
      * @return The HTTP Request built.
      */
-    public static HttpRequestBase buildHttpRequest(String methodType,
-            URI uri, Map<String, String> header, String entity, File file) {
+    public static HttpRequestBase buildHttpRequest(String methodType, URI uri, Map<String,
+            String> header, String entity, String filePath) {
         HttpRequestBase request;
 
         //instantiate the request according to its type (GET, POST...)
@@ -87,11 +93,15 @@ public class HttpUtils {
 
         //if the type of the request is POST, set the entity of the request
         if (methodType.equals("POST")) {
-            if (file != null) {
-                MultipartEntity multiPartEntity = new MultipartEntity();
-                FileBody fileBody = new FileBody(file, "application/octet-stream");
-                multiPartEntity.addPart("attachment", fileBody);
-                ((HttpPost) request).setEntity(multiPartEntity);
+            if (filePath != null) {
+                Path path = FileSystems.getDefault().getPath(filePath);
+                byte[] fileData = new byte[0];
+                try {
+                    fileData = Files.readAllBytes(path);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ((HttpPost) request).setEntity(new ByteArrayEntity(fileData));
             }
             else if (!entity.equals("")) {
                 try {
@@ -135,7 +145,7 @@ public class HttpUtils {
      * @return @return The response of the HTTP request
      */
     public static String executeHttpRequest(String methodType, URI uri, Map<String, String> header, String entity,
-            File file) {
-        return getHttpResponse(buildHttpRequest(methodType, uri, header, entity, file));
+            String filePath) {
+        return getHttpResponse(buildHttpRequest(methodType, uri, header, entity, filePath));
     }
 }

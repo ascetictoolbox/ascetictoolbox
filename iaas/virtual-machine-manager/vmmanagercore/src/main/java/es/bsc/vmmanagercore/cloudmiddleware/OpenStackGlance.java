@@ -7,7 +7,6 @@ import org.apache.commons.validator.UrlValidator;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,13 +62,13 @@ public class OpenStackGlance {
         headers.put("x-image-meta-disk_format", "qcow2");
         headers.put("x-image-meta-name", imageToUpload.getName());
 
-        File file = null;
+        String filePath = null;
         if (!new UrlValidator().isValid(imageToUpload.getUrl())) {
-            file = new File(imageToUpload.getUrl());
+            filePath = imageToUpload.getUrl();
         }
 
         String responseContent = HttpUtils.executeHttpRequest("POST",
-                HttpUtils.buildURI("http", openStackIp, glancePort, "/v1/images"), headers, "", file);
+                HttpUtils.buildURI("http", openStackIp, glancePort, "/v1/images"), headers, "", filePath);
 
         //return the image ID
         JsonNode imageIdJson;
