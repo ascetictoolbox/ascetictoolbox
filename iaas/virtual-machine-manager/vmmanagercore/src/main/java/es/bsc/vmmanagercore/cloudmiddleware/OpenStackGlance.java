@@ -54,20 +54,16 @@ public class OpenStackGlance {
         headers.put("x-image-meta-container_format", "bare");
         headers.put("User-Agent", "python-glanceclient");
         headers.put("x-image-meta-is_public", "True");
-        if (new UrlValidator().isValid(imageToUpload.getUrl())) {
+        /*if (new UrlValidator().isValid(imageToUpload.getUrl())) {
             headers.put("x-glance-api-copy-from", imageToUpload.getUrl());
-        }
+        }*/
+        headers.put("x-image-meta-location", imageToUpload.getUrl());
         headers.put("Content-Type", "application/octet-stream");
         headers.put("x-image-meta-disk_format", "qcow2");
         headers.put("x-image-meta-name", imageToUpload.getName());
 
-        //execute the HTTP request
-        String body = "";
-        if (!new UrlValidator().isValid(imageToUpload.getUrl())) {
-            body = imageToUpload.getUrl();
-        }
         String responseContent = HttpUtils.executeHttpRequest("POST",
-                HttpUtils.buildURI("http", openStackIp, glancePort, "/v1/images"), headers, body);
+                HttpUtils.buildURI("http", openStackIp, glancePort, "/v1/images"), headers, "");
 
         //return the image ID
         JsonNode imageIdJson = null;
