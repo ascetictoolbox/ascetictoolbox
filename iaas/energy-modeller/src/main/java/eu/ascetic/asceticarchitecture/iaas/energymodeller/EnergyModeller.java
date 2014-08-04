@@ -3,9 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * the License at f http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
@@ -22,6 +20,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DefaultDatab
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.DefaultEnergyPredictor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.EnergyPredictorInterface;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.EnergyDivision;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.HistoricLoadBasedDivision;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.LoadBasedDivision;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.LoadFractionShareRule;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
@@ -63,6 +62,7 @@ public class EnergyModeller {
 
     private static final String DEFAULT_PREDICTOR_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor";
     private static final String DEFAULT_DATA_SOURCE_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient";
+    private static final String DEFAULT_ENERGY_DIVISION_RULE_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare";
     private EnergyPredictorInterface predictor = new DefaultEnergyPredictor();
     private HostDataSource datasource = new ZabbixDataSourceAdaptor();
     private DatabaseConnector database = new DefaultDatabaseConnector();
@@ -70,6 +70,7 @@ public class EnergyModeller {
     private Thread calibratorThread;
     private DataGatherer dataGatherer = new DataGatherer(datasource, new DefaultDatabaseConnector(), calibrator);
     private Thread dataGatherThread;
+    private Class historicEnergyDivionMethod = LoadBasedDivision.class;
 
     /**
      * This creates a new energy modeller.
@@ -135,6 +136,27 @@ public class EnergyModeller {
                 datasource = new ZabbixDataSourceAdaptor();
             }
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The data source did not work", ex);
+        }
+    }
+
+    /**
+     * This allows the energy modellers energy division rule be set for historic
+     * data.
+     *
+     * @param divisionRule The name of the divisionRule to use for the energy
+     * modeller
+     */
+    public void setHistoricEnergyDivisionRule(String divisionRule) {
+        try {
+            if (!divisionRule.startsWith(DEFAULT_ENERGY_DIVISION_RULE_PACKAGE)) {
+                divisionRule = DEFAULT_ENERGY_DIVISION_RULE_PACKAGE + "." + divisionRule;
+            }
+            historicEnergyDivionMethod = (Class.forName(divisionRule));
+        } catch (ClassNotFoundException ex) {
+            if (historicEnergyDivionMethod == null) {
+                historicEnergyDivionMethod = LoadBasedDivision.class;
+            }
+            Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The energy division rule specified was not found", ex);
         }
     }
 
@@ -274,8 +296,17 @@ public class EnergyModeller {
         vms.addAll(otherVms);
         List<HostEnergyRecord> hostsData = database.getHostHistoryData(host, timePeriod);
         List<HostVmLoadFraction> loadFractionData = (List<HostVmLoadFraction>) database.getHostVmHistoryLoadData(host, timePeriod);
-        //Fraction off energy used based upon this.
-        LoadBasedDivision shareRule = new LoadBasedDivision(host);
+        HistoricLoadBasedDivision shareRule;
+        try {
+            shareRule = (HistoricLoadBasedDivision) historicEnergyDivionMethod.newInstance();
+            shareRule.setHost(host);
+        } catch (InstantiationException | IllegalAccessException ex) {
+            shareRule = new LoadBasedDivision(host);
+            Logger.getLogger(EnergyModeller.class.getName()).log(Level.SEVERE,
+                    "A new instance of the energy division mechanism specified "
+                    + "failed to be created, falling back to defaults.", ex);
+        }
+        //Fraction off energy used based upon this share rule.
         shareRule.addVM(vms);
         shareRule.setEnergyUsage(hostsData);
         shareRule.setLoadFraction(loadFractionData);
