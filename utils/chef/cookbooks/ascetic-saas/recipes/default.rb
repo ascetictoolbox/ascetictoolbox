@@ -30,6 +30,11 @@ package "nbd-client" do
   action :install
 end
 
+# VMIC dependency
+package "unzip" do
+  action :install
+end
+
 cookbook_file "/etc/sudoers.d/10-ascetic-saas" do
   source "ascetic-sudoers"
   mode 0640
