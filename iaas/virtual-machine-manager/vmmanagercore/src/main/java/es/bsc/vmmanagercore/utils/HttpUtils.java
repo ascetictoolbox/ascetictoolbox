@@ -11,6 +11,7 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.HttpClients;
 
 import java.io.File;
@@ -88,7 +89,7 @@ public class HttpUtils {
         if (methodType.equals("POST")) {
             if (file != null) {
                 MultipartEntity multiPartEntity = new MultipartEntity();
-                FileBody fileBody = new FileBody(file, "application/octect-stream");
+                FileBody fileBody = new FileBody(file, "application/octet-stream");
                 multiPartEntity.addPart("attachment", fileBody);
                 ((HttpPost) request).setEntity(multiPartEntity);
             }
