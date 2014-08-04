@@ -8,6 +8,18 @@ package "sudo" do
   action :install
 end
 
+# Chef server, TODO: Start server while booting up
+script "install_chef_server" do
+  interpreter "bash"
+  user "root"
+  cwd "/tmp"
+  not_if "dpkg -s chef-server"
+  code <<-EOH
+  wget https://opscode-omnibus-packages.s3.amazonaws.com/ubuntu/12.04/x86_64/chef-server_11.0.12-1.ubuntu.12.04_amd64.deb -O chef-server.deb && dpkg -i chef-server.deb && chef-server-ctl reconfigure
+  rm chef-server.deb
+EOH
+end
+
 # VMIC dependency
 package "qemu-utils" do
   action :install
