@@ -121,6 +121,9 @@ public class SystemCallRemote extends SystemCall {
         sshCommand = sshCommand.replace("'", "\\'");
         sshCommand = sshCommand.replace("\"", "\\\"");
         sshCommand = sshCommand.replace("$", "\\$");
+        sshCommand = sshCommand.replace("[", "\\[");
+        sshCommand = sshCommand.replace("]", "\\]");
+        sshCommand = sshCommand.replace("`", "\\`");
 
         // Construct the SSH command
         commandName = sshPath;

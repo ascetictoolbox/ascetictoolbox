@@ -79,10 +79,14 @@ public class VirtualMachineImageConstructor implements Runnable {
         // 2) Select mode of image generation
         if (ovfDefinitionParser.getMode() == 1) {
             // Offline mode
-            generateImageOffline(ovfDefinitionParser);
+            if (generateImageOffline(ovfDefinitionParser) == false) {
+                return;
+            }
         } else if (ovfDefinitionParser.getMode() == 2) {
             // Online mode
-            generateImageOnline(ovfDefinitionParser);
+            if (generateImageOnline(ovfDefinitionParser) == false) {
+                return;
+            }
         } else {
             // Could not detect mode, so propagate error
             vmicApi.getGlobalState().getProgressData(ovfDefinitionId)
@@ -117,6 +121,7 @@ public class VirtualMachineImageConstructor implements Runnable {
     private OvfDefinitionParser retriveImageGenerationData() {
         vmicApi.getGlobalState().setProgressPhase(ovfDefinitionId,
                 ProgressDataImage.RETRIEVE_DATA_PHASE_ID);
+        LOGGER.info("Retriving image generation data from OVF...");
 
         // TODO: Parse OVF here and see what mode to operate in. Also see what
         // & how to operate over files.
@@ -133,22 +138,31 @@ public class VirtualMachineImageConstructor implements Runnable {
             LOGGER.error(e.getMessage(), e);
         }
 
+        LOGGER.info("Retriving of image generation data complete");
         return ovfDefinitionParser;
     }
 
     /**
      * Method to generate images that mounts the image while it is offline.
+     * 
+     * @param ovfDefinitionParser
+     *            The instance of {@link OvfDefinitionParser} to use in the
+     *            image generation process
+     * @return False on error to true if image generation successful
      */
-    private void generateImageOffline(OvfDefinitionParser ovfDefinitionParser) {
+    private boolean generateImageOffline(OvfDefinitionParser ovfDefinitionParser) {
+        LOGGER.info("Starting offline image generation...");
 
         // Iterate over every virtual system image
         for (int i = 0; i < ovfDefinitionParser.getImageNumber(); i++) {
 
-            String baseImagePath = ovfDefinitionParser.getBaseImagePath();
+            String baseImagePath = ovfDefinitionParser.getBaseImagePath(i);
             String newImageMountPointPath = ovfDefinitionParser
                     .getImageMountPointPath(i);
             String newImagePath = ovfDefinitionParser.getImagePath(i);
             String script = ovfDefinitionParser.getScript(i);
+
+            LOGGER.info("Starting image generation for: " + newImagePath);
 
             try {
                 // 1) Copy the correct base image to the VMIC repository
@@ -167,8 +181,12 @@ public class VirtualMachineImageConstructor implements Runnable {
                         .setError(true);
                 vmicApi.getGlobalState().getProgressData(ovfDefinitionId)
                         .setException(e);
+                return false;
             }
         }
+
+        LOGGER.info("Completed offline image generation...");
+        return true;
     }
 
     /**
@@ -176,8 +194,11 @@ public class VirtualMachineImageConstructor implements Runnable {
      * booted.
      *
      * @param ovfDefinitionParser
+     *            The instance of {@link OvfDefinitionParser} to use in the
+     *            image generation process
+     * @return False on error to true if image generation successful
      */
-    private void generateImageOnline(OvfDefinitionParser ovfDefinitionParser) {
+    private boolean generateImageOnline(OvfDefinitionParser ovfDefinitionParser) {
 
         // TODO: Boot up the image from a snapshot (using libvirt?)
 
@@ -190,40 +211,7 @@ public class VirtualMachineImageConstructor implements Runnable {
         // TODO: Shutdown the VM (using libvirt?)
 
         // TODO: Remove the node from the chef server
-    }
-
-    /**
-     * Method to find the next available nbd device's path.
-     * 
-     * @return The path of next available nbd device
-     * @throws ProgressException
-     *             Thrown on failure to find an available nbd device
-     */
-    private String findNextNbdDevice() throws ProgressException {
-        SystemCallRemote systemCallRemote = new SystemCallRemote(vmicApi
-                .getGlobalState().getConfiguration().getRepositoryPath(),
-                vmicApi.getGlobalState().getConfiguration());
-
-        String commandName = "for x in /sys/class/block/nbd*;";
-        ArrayList<String> arguments = new ArrayList<String>();
-        arguments.add("do S=`cat $x/size`;");
-        arguments.add("if [ \"$S\" == \"0\" ];");
-        arguments.add("then;");
-        arguments.add("echo \"/dev/`basename $x`\";");
-        arguments.add("break;");
-        arguments.add("fi;");
-        arguments.add("done");
-        try {
-            systemCallRemote.runCommand(commandName, arguments);
-        } catch (SystemCallException e) {
-            throw new ProgressException("Finding next nbd device failed", e);
-        }
-
-        String nbdDevicePath = systemCallRemote.getOutput().get(0);
-
-        LOGGER.debug("Next available nbd device is at: " + nbdDevicePath);
-
-        return nbdDevicePath;
+        return false;
     }
 
     /**
@@ -238,20 +226,69 @@ public class VirtualMachineImageConstructor implements Runnable {
      */
     private void copyImage(String baseImagePath, String newImagePath)
             throws ProgressException {
+        LOGGER.info("Copying image from " + baseImagePath + " to "
+                + newImagePath);
         SystemCallRemote systemCallRemote = new SystemCallRemote(vmicApi
                 .getGlobalState().getConfiguration().getRepositoryPath(),
                 vmicApi.getGlobalState().getConfiguration());
 
-        String commandName = "cp";
+        // Make the directory in case it doesn't exist
+        String commandName = "mkdir -p "
+                + newImagePath.substring(0, newImagePath.lastIndexOf('/'))
+                + ";";
         ArrayList<String> arguments = new ArrayList<String>();
-        // Add cp arguments
-        arguments.add(baseImagePath);
-        arguments.add(newImagePath);
+        // Add the copy command
+        arguments.add("cp -v " + baseImagePath + " " + newImagePath);
         try {
             systemCallRemote.runCommand(commandName, arguments);
         } catch (SystemCallException e) {
             throw new ProgressException("Copying base image failed", e);
         }
+
+        if (systemCallRemote.getReturnValue() != 0) {
+            throw new ProgressException("Copying base image failed");
+        } else {
+            LOGGER.info("Copying complete");
+        }
+    }
+
+    /**
+     * Method to find the next available nbd device's path.
+     * 
+     * @return The path of next available nbd device
+     * @throws ProgressException
+     *             Thrown on failure to find an available nbd device
+     */
+    private String findNextNbdDevice() throws ProgressException {
+        LOGGER.info("Finding next available NBD device...");
+
+        SystemCallRemote systemCallRemote = new SystemCallRemote(vmicApi
+                .getGlobalState().getConfiguration().getRepositoryPath(),
+                vmicApi.getGlobalState().getConfiguration());
+
+        String commandName = "for x in /sys/class/block/nbd*;";
+        ArrayList<String> arguments = new ArrayList<String>();
+        arguments.add("do S=`cat $x/size`;");
+        arguments.add("if [ \"$S\" == \"0\" ];");
+        arguments.add("then echo \"/dev/`basename $x`\";");
+        arguments.add("break;");
+        arguments.add("fi;");
+        arguments.add("done");
+        try {
+            systemCallRemote.runCommand(commandName, arguments);
+        } catch (SystemCallException e) {
+            throw new ProgressException("Finding next nbd device failed", e);
+        }
+
+        if (systemCallRemote.getReturnValue() != 0) {
+            throw new ProgressException("Finding next nbd device failed");
+        }
+
+        String nbdDevicePath = systemCallRemote.getOutput().get(0);
+
+        LOGGER.info("Next available nbd device is at: " + nbdDevicePath);
+
+        return nbdDevicePath;
     }
 
     /**
@@ -268,6 +305,8 @@ public class VirtualMachineImageConstructor implements Runnable {
      */
     private void mountImage(String imagePath, String mountPointPath,
             String nbdDevicePath) throws ProgressException {
+        LOGGER.info("Mounting image " + imagePath + " to " + mountPointPath);
+
         SystemCallRemote systemCallRemote = new SystemCallRemote(vmicApi
                 .getGlobalState().getConfiguration().getRepositoryPath(),
                 vmicApi.getGlobalState().getConfiguration());
@@ -288,14 +327,21 @@ public class VirtualMachineImageConstructor implements Runnable {
         } catch (SystemCallException e) {
             throw new ProgressException("Mounting the image failed", e);
         }
+
+        LOGGER.info("Mounting complete");
     }
 
     /**
-     * @param newImageName
-     * @param files
+     * Adds previously uploaded files to the image.
+     * 
+     * @param script
+     *            The script to execute that adds the files to the image
      * @throws ProgressException
+     *             Thrown on failure to execute a script that adds files to the
+     *             image
      */
     private void addfiles(String script) throws ProgressException {
+        LOGGER.info("Adding files through execution of script...");
         SystemCallRemote systemCallRemote = new SystemCallRemote(vmicApi
                 .getGlobalState().getConfiguration().getRepositoryPath(),
                 vmicApi.getGlobalState().getConfiguration());
@@ -307,6 +353,7 @@ public class VirtualMachineImageConstructor implements Runnable {
         } catch (SystemCallException e) {
             throw new ProgressException("Calling the image script failed", e);
         }
+        LOGGER.info("Files added");
     }
 
     /**
@@ -321,6 +368,7 @@ public class VirtualMachineImageConstructor implements Runnable {
      */
     private void unmountImage(String mountPointPath, String nbdDevicePath)
             throws ProgressException {
+        LOGGER.info("Unmounting image " + mountPointPath);
         SystemCallRemote systemCallRemote = new SystemCallRemote(vmicApi
                 .getGlobalState().getConfiguration().getRepositoryPath(),
                 vmicApi.getGlobalState().getConfiguration());
@@ -335,5 +383,6 @@ public class VirtualMachineImageConstructor implements Runnable {
         } catch (SystemCallException e) {
             throw new ProgressException("Unmounting the image failed", e);
         }
+        LOGGER.info("Unmounting complete");
     }
 }

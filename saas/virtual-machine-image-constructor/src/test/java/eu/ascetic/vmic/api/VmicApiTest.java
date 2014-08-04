@@ -16,14 +16,21 @@
 package eu.ascetic.vmic.api;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import junit.framework.TestCase;
 
 import org.apache.log4j.Logger;
 
+import eu.ascetic.utils.ovf.api.OvfDefinition;
 import eu.ascetic.vmic.api.core.ProgressException;
 import eu.ascetic.vmic.api.datamodel.GlobalConfiguration;
 import eu.ascetic.vmic.api.datamodel.ProgressDataFile;
+import eu.ascetic.vmic.api.datamodel.ProgressDataImage;
 
 /**
  * @author Django Armstrong (ULeeds)
@@ -56,7 +63,7 @@ public class VmicApiTest extends TestCase {
     /**
      * Tests the workflow of file uploading.
      */
-    public void testFileUploadWorkflow() {
+    public void testUploadFileWorkflow() {
         LOGGER.info("### TEST: " + getCurrentMethodName() + " STARTED ###");
 
         try {
@@ -130,14 +137,105 @@ public class VmicApiTest extends TestCase {
                 Thread.sleep(250);
 
                 // Test to see if upload has finished...
-                // FIXME: Should we be getting the serviceId from a property
-                // here, confirm with consortium?
                 if (vmicApi.progressCallback("ovfDefinitionId", file)
                         .isComplete()) {
                     LOGGER.warn("TEST: Detected upload has completed!");
                     break;
                 }
             }
+        } catch (Exception e) {
+            LOGGER.error("TEST: Test Failed! Cause: " + e.getCause(), e);
+        }
+
+        LOGGER.warn("### TEST: " + getCurrentMethodName() + " COMPLETE ###");
+    }
+
+    /**
+     * Tests the workflow of image generation.
+     */
+    public void testgenerateImageWorkflow() {
+        LOGGER.info("### TEST: " + getCurrentMethodName() + " STARTED ###");
+
+        try {
+            ProgressDataImage progressDataImage = null;
+
+            // Initialise the VMIC's configuration
+            GlobalConfiguration globalConfiguration = new GlobalConfiguration();
+            VmicApi vmicApi = new VmicApi(globalConfiguration);
+
+            // Read the testing OVF
+            URL url = getClass().getClassLoader().getResource("gpf-ovf.xml");
+            String ovfDefinitionAsString = null;
+            try {
+                ovfDefinitionAsString = new String(Files.readAllBytes(Paths.get(url
+                        .toURI())));
+                LOGGER.info(ovfDefinitionAsString);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+
+            OvfDefinition ovfDefinition = OvfDefinition.Factory
+                    .newInstance(ovfDefinitionAsString);
+
+            String ovfDefinitionId = ovfDefinition.getVirtualSystemCollection()
+                    .getId();
+
+            vmicApi.generateImage(ovfDefinition);
+
+            // Wait until the file upload has been registered with the VMIC
+            // before polling the progress data...
+            while (true) {
+                try {
+                    LOGGER.info("TEST: Trying to fetch progress data...");
+                    vmicApi.progressCallback(ovfDefinitionId, null);
+                    LOGGER.info("TEST: No ProgressException...");
+                    break;
+                } catch (ProgressException e) {
+                    LOGGER.warn("TEST: Caught ProgressException due to: "
+                            + e.getMessage());
+                    Thread.sleep(250);
+                }
+            }
+
+            // Poll the progress data until completion...
+            while (true) {
+
+                // We have progress data, do something with it...
+                progressDataImage = (ProgressDataImage) vmicApi
+                        .progressCallback(ovfDefinitionId, null);
+
+                // We have an error so stop everything!
+                if (progressDataImage.isError()) {
+                    // Say what the error is...
+                    LOGGER.error(progressDataImage.getException().getMessage(),
+                            progressDataImage.getException());
+                    // For test case to report failure correctly
+                    assertFalse(progressDataImage.isError());
+                    return;
+                } else {
+                    LOGGER.info("TEST: progressDataImageObject total progress is: "
+                            + progressDataImage.getTotalProgress());
+                    LOGGER.info("TEST: progressDataImageObject history of Phase with ID: "
+                            + progressDataImage.getPhaseName(progressDataImage
+                                    .getCurrentPhaseId())
+                            + ", % is: "
+                            + progressDataImage.getHistory().get(
+                                    progressDataImage.getCurrentPhaseId()));
+                }
+
+                // 250ms delay between polling...
+                Thread.sleep(250);
+                
+                // Test to see if upload has finished...
+                if (vmicApi.progressCallback(ovfDefinitionId, null)
+                        .isComplete()) {
+                    LOGGER.warn("TEST: Detected image generation as completed!");
+                    break;
+                }
+            }
+
         } catch (Exception e) {
             LOGGER.error("TEST: Test Failed! Cause: " + e.getCause(), e);
         }

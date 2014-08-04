@@ -30,6 +30,8 @@ import eu.ascetic.vmic.api.core.SystemCallRemote;
 import eu.ascetic.vmic.api.datamodel.GlobalConfiguration;
 
 /**
+ * Class to test {@link SystemCallRemote}
+ * 
  * @author Django Armstrong (ULeeds)
  *
  */

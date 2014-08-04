@@ -37,9 +37,9 @@ public class ProgressDataImage extends AbstractProgressData {
     /**
      * 2
      */
-    public static final int CONVERT_IMAGE_PHASE_ID = 2;
+    public static final int GENERATE_IMAGES_PHASE_ID = 2;
     /**
-     * 4
+     * 3
      */
     public static final int FINALISE_PHASE_ID = 3;
 
