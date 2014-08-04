@@ -54,6 +54,7 @@ public class JCloudsMiddleware implements CloudMiddleware {
     private String[] hosts; //hosts in the cluster
     private OpenStackGlance glanceConnector = new OpenStackGlance(); // Connector for OS Glance
     private VmManagerDb db; // DB that contains the relationship VM-application, the scheduling algorithms, etc.
+    private VmManagerConfiguration conf = VmManagerConfiguration.getInstance();
 
     /**
      * Class constructor. It performs the connection to the infrastructure and initializes
@@ -62,7 +63,6 @@ public class JCloudsMiddleware implements CloudMiddleware {
      * @param db Database used by the VM Manager
      */
     public JCloudsMiddleware(VmManagerDb db) {
-        VmManagerConfiguration conf = VmManagerConfiguration.getInstance();
         novaApi = ContextBuilder.newBuilder(new NovaApiMetadata())
                 .endpoint("http://" + conf.openStackIP + ":" + conf.keyStonePort + "/v2.0")
                 .credentials(conf.keyStoneTenant + ":" + conf.keyStoneUser, conf.keyStonePassword)
@@ -81,6 +81,13 @@ public class JCloudsMiddleware implements CloudMiddleware {
     private void includeDstNodeInDeploymentOption(String dstNode, CreateServerOptions options) {
         if (dstNode != null) {
             options.availabilityZone("nova:" + dstNode);
+        }
+    }
+
+    //TODO this is a temporary hack. The security groups should not be hard-coded.
+    private void includeSecurityGroupInDeploymentOption(CreateServerOptions options) {
+        if (conf.monitoring.equals(VmManagerConfiguration.Monitoring.ZABBIX)) {
+            options.securityGroupNames("vmm_allow_all"); //sec.group name in the TUB testbed
         }
     }
 
@@ -158,6 +165,7 @@ public class JCloudsMiddleware implements CloudMiddleware {
         CreateServerOptions options = new CreateServerOptions();
         includeDstNodeInDeploymentOption(dstNode, options);
         includeInitScriptInDeploymentOptions(vm, options);
+        includeSecurityGroupInDeploymentOption(options);
 
         // Deploy the VM
         ServerApi serverApi = novaApi.getServerApiForZone(zone);
@@ -296,11 +304,9 @@ public class JCloudsMiddleware implements CloudMiddleware {
 
     @Override
     public ImageUploaded getVmImage(String imageId) {
-        ImageUploaded imageDescription = null;
         ImageApi imageApi = novaApi.getImageApiForZone(zone);
         Image image = imageApi.get(imageId);
-        imageDescription = new ImageUploaded(image.getId(), image.getName(), image.getStatus().toString());
-        return imageDescription;
+        return new ImageUploaded(image.getId(), image.getName(), image.getStatus().toString());
     }
 
     @Override

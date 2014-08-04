@@ -3,7 +3,6 @@ package es.bsc.vmmanagercore.cloudmiddleware;
 import es.bsc.vmmanagercore.manager.VmManagerConfiguration;
 import es.bsc.vmmanagercore.model.ImageToUpload;
 import es.bsc.vmmanagercore.utils.HttpUtils;
-import org.apache.commons.validator.UrlValidator;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -54,9 +53,7 @@ public class OpenStackGlance {
         headers.put("x-image-meta-container_format", "bare");
         headers.put("User-Agent", "python-glanceclient");
         headers.put("x-image-meta-is_public", "True");
-        /*if (new UrlValidator().isValid(imageToUpload.getUrl())) {
-            headers.put("x-glance-api-copy-from", imageToUpload.getUrl());
-        }*/
+        //headers.put("x-glance-api-copy-from", imageToUpload.getUrl());
         headers.put("x-image-meta-location", imageToUpload.getUrl());
         headers.put("Content-Type", "application/octet-stream");
         headers.put("x-image-meta-disk_format", "qcow2");
@@ -66,7 +63,7 @@ public class OpenStackGlance {
                 HttpUtils.buildURI("http", openStackIp, glancePort, "/v1/images"), headers, "");
 
         //return the image ID
-        JsonNode imageIdJson = null;
+        JsonNode imageIdJson;
         try {
             imageIdJson = new ObjectMapper().readTree(responseContent).get("image").get("id");
         } catch (Exception e) {
@@ -139,7 +136,7 @@ public class OpenStackGlance {
                 HttpUtils.buildURI("http", openStackIp, keyStonePort, "/v2.0/tokens"), headers, params);
 
         //get the token
-        JsonNode tokenJson = null;
+        JsonNode tokenJson;
         try {
             tokenJson = new ObjectMapper().readTree(responseContent).get("access").get("token").get("id");
         } catch (Exception e) {
