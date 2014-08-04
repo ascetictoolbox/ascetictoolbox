@@ -1,138 +1,182 @@
-<Envelope xsi:schemaLocation="http://schemas.dmtf.org/ovf/envelope/1 ../dsp8023.xsd" xmlns="http://schemas.dmtf.org/ovf/envelope/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cim="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData">
-  <References>
-    <File ns:id="asceticVMICFile-HMMERpfam-project.xml" ns:href="/DFS/ascetic/vm-images/HMMERpfam/project.xml" ns:compression="none" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <File ns:id="asceticVMICFile-HMMERpfam-resources.xml" ns:href="/DFS/ascetic/vm-images/HMMERpfam/resources.xml" ns:compression="none" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <File ns:id="asceticVMICFile-HMMERpfam-it-log4j" ns:href="/DFS/ascetic/vm-imagesHMMERpfam/it-log4j" ns:compression="none" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <File ns:id="asceticVMICFile-HMMERpfam-project_schema.xsd" ns:href="/DFS/ascetic/vm-images/HMMERpfam/project_schema.xsd" ns:compression="none" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <File ns:id="asceticVMICFile-HMMERpfam-resource_schema.xsd" ns:href="/DFS/ascetic/vm-images/HMMERpfam/resource_schema.xsd" ns:compression="none" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <File ns:id="asceticVMICFile-HMMERpfam-worker.sh" ns:href="/DFS/ascetic/vm-images/HMMERpfam/worker.sh" ns:compression="none" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <File ns:id="asceticVMICFile-HMMERpfam-worker_java.sh" ns:href="/DFS/ascetic/vm-images/HMMERpfam/worker_java.sh" ns:compression="none" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <File ns:id="asceticVMICFile-HMMERpfam-clean.sh" ns:href="/DFS/ascetic/vm-images/HMMERpfam/clean.sh" ns:compression="none" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <File ns:id="asceticVMICFile-HMMERpfam-trace.sh" ns:href="/DFS/ascetic/vm-images/HMMERpfam/trace.sh" ns:compression="none" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <File ns:id="asceticVMICFile-HMMERpfam-compss-monitor.war" ns:href="/DFS/ascetic/vm-images/HMMERpfam/compss-monitor.war" ns:compression="war" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <File ns:id="asceticVMICFile-HMMERpfam-autoMethod.jar" ns:href="/DFS/ascetic/vm-images/HMMERpfam/autoMethod.jar" ns:compression="zip" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <File ns:id="asceticVMICFile-HMMERpfam-autoMethod_deps.zip" ns:href="/DFS/ascetic/vm-images/HMMERpfam/autoMethod_deps.zip" ns:compression="zip" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1"/>
-  </References>
-  <DiskSection>
-    <Info>Disk section for application HMMERpfam</Info>
-    <Disk ns:diskId="ascetic-pm-HMMERpfam-disk" ns:fileRef="ascetic-pm-HMMERpfam-img" ns:capacityAllocationUnits="byte * 2^20" ns:capacity="10240" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <Disk ns:diskId="ascetic-pm-autoMethod-disk" ns:fileRef="ascetic-pm-autoMethod-img" ns:capacityAllocationUnits="byte * 2^20" ns:capacity="1536" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1"/>
-  </DiskSection>
-  <VirtualSystemCollection ns:id="HMMERpfam" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1">
-    <Info>Virtual Systems for HMMERpfam application</Info>
-    <ProductSection>
-      <Info>Ascetic Application Wide Extensions</Info>
-      <Property ns:key="asceticVmicMode" ns:type="uint32" ns:value="1"/>
-    </ProductSection>
-    <VirtualSystem ns:id="ascetic-pm-HMMERpfam">
-      <Info>Description of component ascetic-pm-HMMERpfam</Info>
-      <Name>ascetic-pm-HMMERpfam</Name>
-      <ProductSection>
-        <Info>Ascetic Extensions for component ascetic-pm-HMMERpfam</Info>
-        <Property ns:key="asceticVmicImagesize" ns:type="real32" ns:value="10240"/>
-        <Property ns:key="asceticPmElements" ns:type="string" ns:value=""/>
-        <Property ns:key="asceticLowerBound" ns:type="uint32" ns:value="1"/>
-        <Property ns:key="asceticUpperBound" ns:type="uint32" ns:value="1"/>
-        <Property ns:key="asceticVmicScript" ns:type="string" ns:value="#!/bin/sh
-mkdir /ascetic_service/;cp ${asceticVMICFile-HMMERpfam-project.xml} /ascetic_service/;cp ${asceticVMICFile-HMMERpfam-resources.xml} /ascetic_service/;cp ${asceticVMICFile-HMMERpfam-it-log4j} /ascetic_service/;cp ${asceticVMICFile-HMMERpfam-project_schema.xsd} /ascetic_service/;cp ${asceticVMICFile-HMMERpfam-resource_schema.xsd} /ascetic_service/;cp ${asceticVMICFile-HMMERpfam-worker.sh} /ascetic_service/;cp ${asceticVMICFile-HMMERpfam-worker_java.sh} /ascetic_service/;cp ${asceticVMICFile-HMMERpfam-clean.sh} /ascetic_service/;cp ${asceticVMICFile-HMMERpfam-trace.sh} /ascetic_service/;chmod +x /ascetic_service/*.sh;cp ${asceticVMICFile-HMMERpfam-compss-monitor.war} ${IMAGE_WEBAPP_FOLDER};"/>
-      </ProductSection>
-      <VirtualHardwareSection>
-        <Info>Hardware Description for component ascetic-pm-HMMERpfam</Info>
-        <Item>
-          <cim:Description>VM Disk for ascetic-pm-HMMERpfam-disk</cim:Description>
-          <cim:ElementName>VM Disk Drive ascetic-pm-HMMERpfam-disk</cim:ElementName>
-          <cim:HostResource>ovf:/disk/ascetic-pm-HMMERpfam-disk</cim:HostResource>
-          <cim:InstanceID>4</cim:InstanceID>
-          <cim:ResourceType>17</cim:ResourceType>
-        </Item>
-        <Item>
-          <cim:AutomaticAllocation>true</cim:AutomaticAllocation>
-          <cim:Connection>network</cim:Connection>
-          <cim:Description>Virtual Network</cim:Description>
-          <cim:ElementName>Ethernet adapter on network</cim:ElementName>
-          <cim:InstanceID>3</cim:InstanceID>
-          <cim:ResourceType>10</cim:ResourceType>
-        </Item>
-        <Item>
-          <cim:Description>Number of virtual CPUs</cim:Description>
-          <cim:ElementName>1 virtual CPUs</cim:ElementName>
-          <cim:InstanceID>1</cim:InstanceID>
-          <cim:ResourceType>3</cim:ResourceType>
-          <cim:VirtualQuantity>1</cim:VirtualQuantity>
-        </Item>
-        <Item>
-          <cim:AllocationUnits>hertz * 2^20</cim:AllocationUnits>
-          <cim:Description>CPU Speed</cim:Description>
-          <cim:ElementName>1500 MHz CPU speed reservation</cim:ElementName>
-          <cim:InstanceID>1</cim:InstanceID>
-          <cim:Reservation>1500</cim:Reservation>
-          <cim:ResourceSubType>cpuspeed</cim:ResourceSubType>
-          <cim:ResourceType>3</cim:ResourceType>
-        </Item>
-        <Item>
-          <cim:AllocationUnits>byte * 2^20</cim:AllocationUnits>
-          <cim:Description>Memory Size</cim:Description>
-          <cim:ElementName>1024 MB of memory</cim:ElementName>
-          <cim:InstanceID>2</cim:InstanceID>
-          <cim:ResourceType>4</cim:ResourceType>
-          <cim:VirtualQuantity>1024</cim:VirtualQuantity>
-        </Item>
-      </VirtualHardwareSection>
-    </VirtualSystem>
-    <VirtualSystem ns:id="ascetic-pm-autoMethod">
-      <Info>Description of component ascetic-pm-autoMethod</Info>
-      <Name>ascetic-pm-autoMethod</Name>
-      <ProductSection>
-        <Info>Ascetic Extensions for component ascetic-pm-autoMethod</Info>
-        <Property ns:key="asceticVmicImagesize" ns:type="real32" ns:value="1536"/>
-        <Property ns:key="asceticPmElements" ns:type="string" ns:value="[|hmmpfam(OBJECT_T,OBJECT_T,FILE_T,FILE_T)es.bsc.hmmerpfam.coreelements.HMMPfamImpl;scoreRatingSameDB(OBJECT_T,OBJECT_T)es.bsc.hmmerpfam.coreelements.HMMPfamImpl;scoreRatingSameSeq(OBJECT_T,OBJECT_T,INT_T)es.bsc.hmmerpfam.coreelements.HMMPfamImpl|1]"/>
-        <Property ns:key="asceticLowerBound" ns:type="uint32" ns:value="1"/>
-        <Property ns:key="asceticUpperBound" ns:type="uint32" ns:value="1"/>
-        <Property ns:key="asceticVmicScript" ns:type="string" ns:value="#!/bin/sh
-mkdir /ascetic_service/;unzip ${asceticVMICFile-HMMERpfam-autoMethod.jar} -d /ascetic_service/;chmod +x /ascetic_service/*.sh;unzip ${asceticVMICFile-HMMERpfam-autoMethod_deps.zip} -d /ascetic_service/;"/>
-      </ProductSection>
-      <VirtualHardwareSection>
-        <Info>Hardware Description for component ascetic-pm-autoMethod</Info>
-        <Item>
-          <cim:Description>VM Disk for ascetic-pm-autoMethod-disk</cim:Description>
-          <cim:ElementName>VM Disk Drive ascetic-pm-autoMethod-disk</cim:ElementName>
-          <cim:HostResource>ovf:/disk/ascetic-pm-autoMethod-disk</cim:HostResource>
-          <cim:InstanceID>4</cim:InstanceID>
-          <cim:ResourceType>17</cim:ResourceType>
-        </Item>
-        <Item>
-          <cim:AutomaticAllocation>true</cim:AutomaticAllocation>
-          <cim:Connection>network</cim:Connection>
-          <cim:Description>Virtual Network</cim:Description>
-          <cim:ElementName>Ethernet adapter on network</cim:ElementName>
-          <cim:InstanceID>3</cim:InstanceID>
-          <cim:ResourceType>10</cim:ResourceType>
-        </Item>
-        <Item>
-          <cim:Description>Number of virtual CPUs</cim:Description>
-          <cim:ElementName>1 virtual CPUs</cim:ElementName>
-          <cim:InstanceID>1</cim:InstanceID>
-          <cim:ResourceType>3</cim:ResourceType>
-          <cim:VirtualQuantity>1</cim:VirtualQuantity>
-        </Item>
-        <Item>
-          <cim:AllocationUnits>hertz * 2^20</cim:AllocationUnits>
-          <cim:Description>CPU Speed</cim:Description>
-          <cim:ElementName>1500 MHz CPU speed reservation</cim:ElementName>
-          <cim:InstanceID>1</cim:InstanceID>
-          <cim:Reservation>1500</cim:Reservation>
-          <cim:ResourceSubType>cpuspeed</cim:ResourceSubType>
-          <cim:ResourceType>3</cim:ResourceType>
-        </Item>
-        <Item>
-          <cim:AllocationUnits>byte * 2^20</cim:AllocationUnits>
-          <cim:Description>Memory Size</cim:Description>
-          <cim:ElementName>1024 MB of memory</cim:ElementName>
-          <cim:InstanceID>2</cim:InstanceID>
-          <cim:ResourceType>4</cim:ResourceType>
-          <cim:VirtualQuantity>1024</cim:VirtualQuantity>
-        </Item>
-      </VirtualHardwareSection>
-    </VirtualSystem>
-  </VirtualSystemCollection>
+<Envelope xsi:schemaLocation="http://schemas.dmtf.org/ovf/envelope/1 ../dsp8023.xsd"
+    xmlns="http://schemas.dmtf.org/ovf/envelope/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:cim="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData">
+    <References>
+        <File ns:id="asceticVMICFile-HMMERpfam-project.xml" ns:href="/DFS/ascetic/vm-images/HMMERpfam/project.xml"
+            ns:compression="none" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1" />
+        <File ns:id="asceticVMICFile-HMMERpfam-resources.xml" ns:href="/DFS/ascetic/vm-images/HMMERpfam/resources.xml"
+            ns:compression="none" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1" />
+        <File ns:id="asceticVMICFile-HMMERpfam-it-log4j" ns:href="/DFS/ascetic/vm-images/HMMERpfam/it-log4j"
+            ns:compression="none" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1" />
+        <File ns:id="asceticVMICFile-HMMERpfam-project_schema.xsd" ns:href="/DFS/ascetic/vm-images/HMMERpfam/project_schema.xsd"
+            ns:compression="none" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1" />
+        <File ns:id="asceticVMICFile-HMMERpfam-resource_schema.xsd"
+            ns:href="/DFS/ascetic/vm-images/HMMERpfam/resource_schema.xsd"
+            ns:compression="none" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1" />
+        <File ns:id="asceticVMICFile-HMMERpfam-worker.sh" ns:href="/DFS/ascetic/vm-images/HMMERpfam/worker.sh"
+            ns:compression="none" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1" />
+        <File ns:id="asceticVMICFile-HMMERpfam-worker_java.sh" ns:href="/DFS/ascetic/vm-images/HMMERpfam/worker_java.sh"
+            ns:compression="none" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1" />
+        <File ns:id="asceticVMICFile-HMMERpfam-clean.sh" ns:href="/DFS/ascetic/vm-images/HMMERpfam/clean.sh"
+            ns:compression="none" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1" />
+        <File ns:id="asceticVMICFile-HMMERpfam-trace.sh" ns:href="/DFS/ascetic/vm-images/HMMERpfam/trace.sh"
+            ns:compression="none" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1" />
+        <File ns:id="asceticVMICFile-HMMERpfam-compss-monitor.war" ns:href="/DFS/ascetic/vm-images/HMMERpfam/compss-monitor.war"
+            ns:compression="war" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1" />
+        <File ns:id="asceticVMICFile-HMMERpfam-autoMethod.jar" ns:href="/DFS/ascetic/vm-images/HMMERpfam/autoMethod.jar"
+            ns:compression="zip" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1" />
+        <File ns:id="asceticVMICFile-HMMERpfam-autoMethod_deps.zip"
+            ns:href="/DFS/ascetic/vm-images/HMMERpfam/autoMethod_deps.zip"
+            ns:compression="zip" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1" />
+    </References>
+    <DiskSection>
+        <Info>Disk section for application HMMERpfam</Info>
+        <Disk ns:diskId="ascetic-pm-HMMERpfam-disk" ns:fileRef="ascetic-pm-HMMERpfam-img"
+            ns:capacityAllocationUnits="byte * 2^20" ns:capacity="10240"
+            xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1" />
+        <Disk ns:diskId="ascetic-pm-autoMethod-disk" ns:fileRef="ascetic-pm-autoMethod-img"
+            ns:capacityAllocationUnits="byte * 2^20" ns:capacity="1536"
+            xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1" />
+    </DiskSection>
+    <VirtualSystemCollection ns:id="HMMERpfam"
+        xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1">
+        <Info>Virtual Systems for HMMERpfam application</Info>
+        <ProductSection>
+            <Info>Ascetic Application Wide Extensions</Info>
+            <Property ns:key="asceticVmicMode" ns:type="uint32"
+                ns:value="1" />
+        </ProductSection>
+        <VirtualSystem ns:id="ascetic-pm-HMMERpfam">
+            <Info>Description of component ascetic-pm-HMMERpfam</Info>
+            <Name>ascetic-pm-HMMERpfam</Name>
+            <ProductSection>
+                <Info>Ascetic Extensions for component ascetic-pm-HMMERpfam
+                </Info>
+                <Property ns:key="asceticVmicImagesize" ns:type="real32"
+                    ns:value="10240" />
+                <Property ns:key="asceticPmElements" ns:type="string"
+                    ns:value="" />
+                <Property ns:key="asceticLowerBound" ns:type="uint32"
+                    ns:value="1" />
+                <Property ns:key="asceticUpperBound" ns:type="uint32"
+                    ns:value="1" />
+                <Property ns:key="asceticVmicScript" ns:type="string"
+                    ns:value="sudo mkdir ${MOUNT_POINT}/ascetic_service/;sudo cp ${asceticVMICFile-HMMERpfam-project.xml} ${MOUNT_POINT}/ascetic_service/;sudo cp ${asceticVMICFile-HMMERpfam-resources.xml} ${MOUNT_POINT}/ascetic_service/;sudo cp ${asceticVMICFile-HMMERpfam-it-log4j} ${MOUNT_POINT}/ascetic_service/;sudo cp ${asceticVMICFile-HMMERpfam-project_schema.xsd} ${MOUNT_POINT}/ascetic_service/;sudo cp ${asceticVMICFile-HMMERpfam-resource_schema.xsd} ${MOUNT_POINT}/ascetic_service/;sudo cp ${asceticVMICFile-HMMERpfam-worker.sh} ${MOUNT_POINT}/ascetic_service/;sudo cp ${asceticVMICFile-HMMERpfam-worker_java.sh} ${MOUNT_POINT}/ascetic_service/;sudo cp ${asceticVMICFile-HMMERpfam-clean.sh} ${MOUNT_POINT}/ascetic_service/;sudo cp ${asceticVMICFile-HMMERpfam-trace.sh} ${MOUNT_POINT}/ascetic_service/;sudo chmod +x ${MOUNT_POINT}/ascetic_service/*.sh;sudo mkdir -p ${MOUNT_POINT}/${IMAGE_WEBAPP_FOLDER};sudo cp ${asceticVMICFile-HMMERpfam-compss-monitor.war} ${MOUNT_POINT}/${IMAGE_WEBAPP_FOLDER}" />
+            </ProductSection>
+            <VirtualHardwareSection>
+                <Info>Hardware Description for component ascetic-pm-HMMERpfam
+                </Info>
+                <Item>
+                    <cim:Description>VM Disk for ascetic-pm-HMMERpfam-disk
+                    </cim:Description>
+                    <cim:ElementName>VM Disk Drive ascetic-pm-HMMERpfam-disk
+                    </cim:ElementName>
+                    <cim:HostResource>ovf:/disk/ascetic-pm-HMMERpfam-disk
+                    </cim:HostResource>
+                    <cim:InstanceID>4</cim:InstanceID>
+                    <cim:ResourceType>17</cim:ResourceType>
+                </Item>
+                <Item>
+                    <cim:AutomaticAllocation>true</cim:AutomaticAllocation>
+                    <cim:Connection>network</cim:Connection>
+                    <cim:Description>Virtual Network</cim:Description>
+                    <cim:ElementName>Ethernet adapter on network
+                    </cim:ElementName>
+                    <cim:InstanceID>3</cim:InstanceID>
+                    <cim:ResourceType>10</cim:ResourceType>
+                </Item>
+                <Item>
+                    <cim:Description>Number of virtual CPUs</cim:Description>
+                    <cim:ElementName>1 virtual CPUs</cim:ElementName>
+                    <cim:InstanceID>1</cim:InstanceID>
+                    <cim:ResourceType>3</cim:ResourceType>
+                    <cim:VirtualQuantity>1</cim:VirtualQuantity>
+                </Item>
+                <Item>
+                    <cim:AllocationUnits>hertz * 2^20</cim:AllocationUnits>
+                    <cim:Description>CPU Speed</cim:Description>
+                    <cim:ElementName>1500 MHz CPU speed reservation
+                    </cim:ElementName>
+                    <cim:InstanceID>1</cim:InstanceID>
+                    <cim:Reservation>1500</cim:Reservation>
+                    <cim:ResourceSubType>cpuspeed</cim:ResourceSubType>
+                    <cim:ResourceType>3</cim:ResourceType>
+                </Item>
+                <Item>
+                    <cim:AllocationUnits>byte * 2^20</cim:AllocationUnits>
+                    <cim:Description>Memory Size</cim:Description>
+                    <cim:ElementName>1024 MB of memory</cim:ElementName>
+                    <cim:InstanceID>2</cim:InstanceID>
+                    <cim:ResourceType>4</cim:ResourceType>
+                    <cim:VirtualQuantity>1024</cim:VirtualQuantity>
+                </Item>
+            </VirtualHardwareSection>
+        </VirtualSystem>
+        <VirtualSystem ns:id="ascetic-pm-autoMethod">
+            <Info>Description of component ascetic-pm-autoMethod</Info>
+            <Name>ascetic-pm-autoMethod</Name>
+            <ProductSection>
+                <Info>Ascetic Extensions for component ascetic-pm-autoMethod
+                </Info>
+                <Property ns:key="asceticVmicImagesize" ns:type="real32"
+                    ns:value="1536" />
+                <Property ns:key="asceticPmElements" ns:type="string"
+                    ns:value="[|hmmpfam(OBJECT_T,OBJECT_T,FILE_T,FILE_T)es.bsc.hmmerpfam.coreelements.HMMPfamImpl;scoreRatingSameDB(OBJECT_T,OBJECT_T)es.bsc.hmmerpfam.coreelements.HMMPfamImpl;scoreRatingSameSeq(OBJECT_T,OBJECT_T,INT_T)es.bsc.hmmerpfam.coreelements.HMMPfamImpl|1]" />
+                <Property ns:key="asceticLowerBound" ns:type="uint32"
+                    ns:value="1" />
+                <Property ns:key="asceticUpperBound" ns:type="uint32"
+                    ns:value="1" />
+                <Property ns:key="asceticVmicScript" ns:type="string"
+                    ns:value="sudo mkdir ${MOUNT_POINT}/ascetic_service/;sudo unzip ${asceticVMICFile-HMMERpfam-autoMethod.jar} -d ${MOUNT_POINT}/ascetic_service/;sudo chmod +x ${MOUNT_POINT}/ascetic_service/*.sh;sudo unzip ${asceticVMICFile-HMMERpfam-autoMethod_deps.zip} -d ${MOUNT_POINT}/ascetic_service/" />
+            </ProductSection>
+            <VirtualHardwareSection>
+                <Info>Hardware Description for component ascetic-pm-autoMethod
+                </Info>
+                <Item>
+                    <cim:Description>VM Disk for ascetic-pm-autoMethod-disk
+                    </cim:Description>
+                    <cim:ElementName>VM Disk Drive ascetic-pm-autoMethod-disk
+                    </cim:ElementName>
+                    <cim:HostResource>ovf:/disk/ascetic-pm-autoMethod-disk
+                    </cim:HostResource>
+                    <cim:InstanceID>4</cim:InstanceID>
+                    <cim:ResourceType>17</cim:ResourceType>
+                </Item>
+                <Item>
+                    <cim:AutomaticAllocation>true</cim:AutomaticAllocation>
+                    <cim:Connection>network</cim:Connection>
+                    <cim:Description>Virtual Network</cim:Description>
+                    <cim:ElementName>Ethernet adapter on network
+                    </cim:ElementName>
+                    <cim:InstanceID>3</cim:InstanceID>
+                    <cim:ResourceType>10</cim:ResourceType>
+                </Item>
+                <Item>
+                    <cim:Description>Number of virtual CPUs</cim:Description>
+                    <cim:ElementName>1 virtual CPUs</cim:ElementName>
+                    <cim:InstanceID>1</cim:InstanceID>
+                    <cim:ResourceType>3</cim:ResourceType>
+                    <cim:VirtualQuantity>1</cim:VirtualQuantity>
+                </Item>
+                <Item>
+                    <cim:AllocationUnits>hertz * 2^20</cim:AllocationUnits>
+                    <cim:Description>CPU Speed</cim:Description>
+                    <cim:ElementName>1500 MHz CPU speed reservation
+                    </cim:ElementName>
+                    <cim:InstanceID>1</cim:InstanceID>
+                    <cim:Reservation>1500</cim:Reservation>
+                    <cim:ResourceSubType>cpuspeed</cim:ResourceSubType>
+                    <cim:ResourceType>3</cim:ResourceType>
+                </Item>
+                <Item>
+                    <cim:AllocationUnits>byte * 2^20</cim:AllocationUnits>
+                    <cim:Description>Memory Size</cim:Description>
+                    <cim:ElementName>1024 MB of memory</cim:ElementName>
+                    <cim:InstanceID>2</cim:InstanceID>
+                    <cim:ResourceType>4</cim:ResourceType>
+                    <cim:VirtualQuantity>1024</cim:VirtualQuantity>
+                </Item>
+            </VirtualHardwareSection>
+        </VirtualSystem>
+    </VirtualSystemCollection>
 </Envelope>

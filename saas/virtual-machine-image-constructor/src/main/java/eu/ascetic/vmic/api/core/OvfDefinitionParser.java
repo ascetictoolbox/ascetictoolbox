@@ -93,7 +93,7 @@ public class OvfDefinitionParser {
 
             Item[] items = virtualSystem.getVirtualHardwareSection()
                     .getItemArray();
-            LOGGER.info("Looking for disk ID in " + items.length + " of Items");
+            LOGGER.info("Looking for disk ID in " + items.length + " Items");
 
             // Find the disk ID for this Virtual System
             String diskId = "";
@@ -106,6 +106,7 @@ public class OvfDefinitionParser {
                     diskId = items[j].findHostRosourceId(items[j]
                             .getHostResourceAtIndex(0));
                     LOGGER.debug("Found diskId: " + diskId);
+                    break;
                 }
             }
 
@@ -136,17 +137,18 @@ public class OvfDefinitionParser {
 
             // Add the script replacing variables to local storage
             imageScripts.add(replaceVariablesInScript(script,
-                    ovfDefinition.getReferences()));
+                    ovfDefinition.getReferences(), getImageMountPointPath(i)));
             LOGGER.debug("Added script for image: " + imageName);
         }
     }
 
     /**
      * @param scriptIn
+     * @param index
      * @param references
+     * @return
      */
-    public static String replaceVariablesInScript(String scriptIn,
-            References references) {
+    public static String replaceVariablesInScript(String scriptIn, References references, String mountPoint) {
 
         LOGGER.debug("Script before variable replacement is: ");
         LOGGER.debug(scriptIn);
@@ -162,7 +164,10 @@ public class OvfDefinitionParser {
         // FIXME: This should be fetched mapped to a specific OS defined in the
         // OVF
         scriptOut = scriptOut.replace("${IMAGE_WEBAPP_FOLDER}",
-                "/var/lib/tomcat7/webapps");
+                "var/lib/tomcat7/webapps");
+        
+        // Set the mount point
+        scriptOut = scriptOut.replace("${MOUNT_POINT}", mountPoint); 
 
         LOGGER.debug("Script after variable replacement is: ");
         LOGGER.debug(scriptOut);
@@ -229,7 +234,7 @@ public class OvfDefinitionParser {
      * @return The script for the image
      */
     public String getScript(int i) {
-        return null;
+        return imageScripts.get(i);
     }
 
     /**

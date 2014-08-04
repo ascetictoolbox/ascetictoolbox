@@ -164,11 +164,12 @@ public class VirtualMachineImageConstructor implements Runnable {
 
             LOGGER.info("Starting image generation for: " + newImagePath);
 
+            String nbdDevicePath = null;
             try {
                 // 1) Copy the correct base image to the VMIC repository
                 copyImage(baseImagePath, newImagePath);
                 // 2) Check nbd module is loaded
-                String nbdDevicePath = findNextNbdDevice();
+                nbdDevicePath = findNextNbdDevice();
                 // 3) Mount the image
                 mountImage(newImagePath, newImageMountPointPath, nbdDevicePath);
                 // 4) Add the file to the image(s) using remote a system
@@ -177,6 +178,18 @@ public class VirtualMachineImageConstructor implements Runnable {
                 // 5) Unmount the image
                 unmountImage(newImageMountPointPath, nbdDevicePath);
             } catch (ProgressException e) {
+
+                // Try to clean up the mount point if something failed:
+                try {
+                    if (nbdDevicePath != null) {
+                        LOGGER.info("Cleaning up mount point");
+                        unmountImage(newImageMountPointPath, nbdDevicePath);
+                    }
+                } catch (ProgressException e1) {
+                    // Do nothing
+                }
+
+                // Propogate the error
                 vmicApi.getGlobalState().getProgressData(ovfDefinitionId)
                         .setError(true);
                 vmicApi.getGlobalState().getProgressData(ovfDefinitionId)
@@ -237,8 +250,9 @@ public class VirtualMachineImageConstructor implements Runnable {
                 + newImagePath.substring(0, newImagePath.lastIndexOf('/'))
                 + ";";
         ArrayList<String> arguments = new ArrayList<String>();
-        // Add the copy command
-        arguments.add("cp -v " + baseImagePath + " " + newImagePath);
+        // Add the rsync command
+        arguments.add("rsync -avzPh " + baseImagePath + " " + newImagePath);
+
         try {
             systemCallRemote.runCommand(commandName, arguments);
         } catch (SystemCallException e) {
@@ -284,7 +298,7 @@ public class VirtualMachineImageConstructor implements Runnable {
             throw new ProgressException("Finding next nbd device failed");
         }
 
-        String nbdDevicePath = systemCallRemote.getOutput().get(0);
+        String nbdDevicePath = systemCallRemote.getOutput().get(1);
 
         LOGGER.info("Next available nbd device is at: " + nbdDevicePath);
 
@@ -328,7 +342,11 @@ public class VirtualMachineImageConstructor implements Runnable {
             throw new ProgressException("Mounting the image failed", e);
         }
 
-        LOGGER.info("Mounting complete");
+        if (systemCallRemote.getReturnValue() != 0) {
+            throw new ProgressException("Mounting the image failed");
+        } else {
+            LOGGER.info("Mounting complete");
+        }
     }
 
     /**
@@ -353,7 +371,12 @@ public class VirtualMachineImageConstructor implements Runnable {
         } catch (SystemCallException e) {
             throw new ProgressException("Calling the image script failed", e);
         }
-        LOGGER.info("Files added");
+
+        if (systemCallRemote.getReturnValue() != 0) {
+            throw new ProgressException("Calling the image script failed");
+        } else {
+            LOGGER.info("Files added");
+        }
     }
 
     /**
@@ -383,6 +406,11 @@ public class VirtualMachineImageConstructor implements Runnable {
         } catch (SystemCallException e) {
             throw new ProgressException("Unmounting the image failed", e);
         }
-        LOGGER.info("Unmounting complete");
+
+        if (systemCallRemote.getReturnValue() != 0) {
+            throw new ProgressException("Unmounting the image failed");
+        } else {
+            LOGGER.info("Unmounting complete");
+        }
     }
 }

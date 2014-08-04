@@ -167,8 +167,8 @@ public class VmicApiTest extends TestCase {
             URL url = getClass().getClassLoader().getResource("gpf-ovf.xml");
             String ovfDefinitionAsString = null;
             try {
-                ovfDefinitionAsString = new String(Files.readAllBytes(Paths.get(url
-                        .toURI())));
+                ovfDefinitionAsString = new String(Files.readAllBytes(Paths
+                        .get(url.toURI())));
                 LOGGER.info(ovfDefinitionAsString);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -227,7 +227,7 @@ public class VmicApiTest extends TestCase {
 
                 // 250ms delay between polling...
                 Thread.sleep(250);
-                
+
                 // Test to see if upload has finished...
                 if (vmicApi.progressCallback(ovfDefinitionId, null)
                         .isComplete()) {

@@ -61,7 +61,7 @@ public class OvfDefinitionParserTest {
 
         OvfDefinitionParser.replaceVariablesInScript(ovfDefinition
                 .getVirtualSystemCollection().getVirtualSystemAtIndex(0).getProductSectionAtIndex(0)
-                .getPropertyByKey("asceticVMICExecution").getValue(),
-                ovfDefinition.getReferences());
+                .getPropertyByKey("asceticVmicScript").getValue(),
+                ovfDefinition.getReferences(), "/some/mount/point");
     }
 }
