@@ -120,6 +120,7 @@ public class DataGatherer implements Runnable {
         if (parseTokenPos == -1 && vm.getAllocatedTo() == null) {
             return null;
         }
+        //TODO consider adding a file based map system here.
         return getHost(name.substring(parseTokenPos + 1, name.length()));
     }
 

@@ -20,11 +20,15 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasou
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostMeasurement;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostEnergyCalibrationData;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
+
 
 /**
  * This takes an existing host and calibrates the energy model, for it so that
@@ -38,6 +42,9 @@ public class Calibrator implements Runnable {
     private final HostDataSource datasource;
     private boolean running = true;
     private final LinkedBlockingDeque<Host> queue = new LinkedBlockingDeque<>();
+    private static int calibratorWaitSec = 120; //Default 2 second poll interval during training
+    private static int calibratorMaxDurationSec = 240; //for 2 minutes.
+    private static final String CONFIG_FILE = "energymodeller_calibrator.properties";
 
     /**
      * This creates a new calibrator.
@@ -47,23 +54,41 @@ public class Calibrator implements Runnable {
      */
     public Calibrator(HostDataSource dataSource) {
         this.datasource = dataSource;
+        try {
+            PropertiesConfiguration config;
+            if (new File(CONFIG_FILE).exists()) {
+                config = new PropertiesConfiguration(CONFIG_FILE);
+            } else {
+                config = new PropertiesConfiguration();
+                config.setFile(new File(CONFIG_FILE));
+            }
+            config.setAutoSave(true); //This will save the configuration file back to disk. In case the defaults need setting.
+            calibratorWaitSec = config.getInt("iaas.energy.modeller.calibrator.wait", calibratorWaitSec);
+            config.setProperty("iaas.energy.modeller.calibrator.wait", calibratorWaitSec);
+            calibratorMaxDurationSec = config.getInt("iaas.energy.modeller.calibrator.duration", calibratorMaxDurationSec);
+            config.setProperty("iaas.energy.modeller.calibrator.duration", calibratorMaxDurationSec);
+
+        } catch (ConfigurationException ex) {
+            Logger.getLogger(Calibrator.class.getName()).log(Level.INFO, "Error loading the configuration of the IaaS energy modeller", ex);
+        }
     }
-    
+
     /**
      * This finds the upper and lower bounds of a host.
      *
      * @param host The host to train
-     */    
+     */
     public void calibrateHostEnergyData(Host host) {
         queue.add(host);
     }
-    
+
     /**
      * This checks to see if a host is in the training queue or not.
+     *
      * @param host The host to check to see if it is queued or not.
      * @return If the host is in the queue for training.
      */
-    public boolean isQueued(Host host){
+    public boolean isQueued(Host host) {
         return queue.contains(host);
     }
 
@@ -93,17 +118,14 @@ public class Calibrator implements Runnable {
         ArrayList<HostMeasurement> data = new ArrayList<>();
         long lastClock = 0;
 
-        /**
-         * collect data for 2 mins because of wait interval + loop counter.
-         */
-        for (int i = 0; i < TimeUnit.MINUTES.toSeconds(1); i++) {
+        for (int i = 0; i < calibratorMaxDurationSec; i = i + calibratorWaitSec) {
             HostMeasurement dataEntry = datasource.getHostData(host);
             long currentClock = dataEntry.getClock();
             if (currentClock > lastClock) {
                 data.add(dataEntry);
             }
             try {
-                Thread.sleep(2000);
+                Thread.sleep(TimeUnit.SECONDS.toMillis(calibratorWaitSec));
             } catch (InterruptedException ex) {
                 Logger.getLogger(DataGatherer.class.getName()).log(Level.SEVERE, "The data gatherer was interupted.", ex);
             }
