@@ -12,6 +12,7 @@ import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -19,6 +20,7 @@ import java.net.URISyntaxException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 
 /**
@@ -89,11 +91,19 @@ public class HttpUtils {
         //if the type of the request is POST, set the entity of the request
         if (methodType.equals("POST")) {
             if (filePath != null) {
-                Path path = FileSystems.getDefault().getPath(filePath);
+                /*Path path = FileSystems.getDefault().getPath(filePath);
                 byte[] fileData = new byte[0];
                 try {
                     fileData = Files.readAllBytes(path);
                 } catch (IOException e) {
+                    e.printStackTrace();
+                }*/
+                File file = new File(filePath);
+                URI uriFile = file.toURI();
+                byte[] fileData = new byte[0];
+                try {
+                    fileData = Files.readAllBytes(Paths.get(uriFile));
+                } catch(IOException e) {
                     e.printStackTrace();
                 }
                 ((HttpPost) request).setEntity(new ByteArrayEntity(fileData));
