@@ -51,7 +51,8 @@ public class HostEnergyCalibrationData {
             double energy = hostMeasurement.getEnergy();
             double cpu = hostMeasurement.getCpuLoad();
             double memory = hostMeasurement.getMemoryUsed();
-            HostEnergyCalibrationData newItem = new HostEnergyCalibrationData(cpu, memory, energy);
+            double totalMemory = hostMeasurement.getMemoryTotal();
+            HostEnergyCalibrationData newItem = new HostEnergyCalibrationData(cpu, memory / totalMemory, energy);
             answer.add(newItem);
         }
         return answer;

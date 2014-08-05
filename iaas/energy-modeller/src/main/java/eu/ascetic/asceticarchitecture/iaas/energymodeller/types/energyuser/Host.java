@@ -18,7 +18,6 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostEnergyCalibrationData;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * This class stores the basic data for physical machine. This represents a host
@@ -35,6 +34,9 @@ public class Host extends EnergyUsageSource implements Comparable<Host> {
     private int id = -1;
     private String hostName = "";
     private boolean available = true;
+    private int ramMb;
+    private double diskGb;    
+    
     private ArrayList<HostEnergyCalibrationData> calibrationData = new ArrayList<>();
 
     /**
@@ -163,22 +165,25 @@ public class Host extends EnergyUsageSource implements Comparable<Host> {
     public void setCalibrationData(ArrayList<HostEnergyCalibrationData> calibrationData) {
         this.calibrationData = calibrationData;
     }
-    
+
     /**
      * This allows for an additional piece of calibration data to be set.
-     * @param calibrationData 
+     *
+     * @param calibrationData
      */
     public void addCalibrationData(HostEnergyCalibrationData calibrationData) {
         this.calibrationData.add(calibrationData);
-    }  
-    
+    }
+
     /**
-     * This indicates if the energy modeller has calibration data for a given host.
+     * This indicates if the energy modeller has calibration data for a given
+     * host.
+     *
      * @return true if calibration data exists for this host.
      */
     public boolean isCalibrated() {
         return !calibrationData.isEmpty();
-    }    
+    }
 
     /**
      * This returns the lowest energy consumption found from the calibration
@@ -194,7 +199,7 @@ public class Host extends EnergyUsageSource implements Comparable<Host> {
         for (HostEnergyCalibrationData hostEnergyCalibrationData : calibrationData) {
             if (hostEnergyCalibrationData.getWattsUsed() < answer) {
                 answer = hostEnergyCalibrationData.getWattsUsed();
-            }            
+            }
         }
         return answer;
     }
@@ -222,4 +227,46 @@ public class Host extends EnergyUsageSource implements Comparable<Host> {
         this.defaultIdlePowerConsumption = defaultIdlePowerConsumption;
     }
     
+    /**
+     * This gets the maximum amount of ram this host has.
+     *
+     * @return The ram this host has physically available.
+     */
+    public int getRamMb() {
+        return ramMb;
+    }
+
+    /**
+     * This sets the maximum amount of ram this host has.
+     *
+     * @param ramMb The ram this host has physically available.
+     */
+    public void setRamMb(int ramMb) {
+        if (ramMb < 0) {
+            throw new IllegalArgumentException("The amount of memory must not be less than zero.");
+        }
+        this.ramMb = ramMb;
+    }
+    
+    /**
+     * This gets the amount of disk space this host has available.
+     *
+     * @return The disk space this host has available.
+     */
+    public double getDiskGb() {
+        return diskGb;
+    }
+
+    /**
+     * This sets the amount of disk space this host has available.
+     *
+     * @param diskGb The disk space this host has available.
+     */
+    public void setDiskGb(double diskGb) {
+        if (diskGb < 0) {
+            throw new IllegalArgumentException("The amount of disk size must not be less than zero.");
+        }
+        this.diskGb = diskGb;
+    }    
+
 }

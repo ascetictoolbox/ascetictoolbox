@@ -124,6 +124,12 @@ public class ZabbixDataSourceAdaptorTest {
             System.out.println("Host name: " + host.getHostName());
             System.out.println("Host id: " + host.getId());
         }
+        for (Host host : result) {
+            assert (host.getRamMb() > 0);
+            assert (host.getDiskGb() > 0);
+            System.out.println("Host ram: " + host.getRamMb());
+            System.out.println("Host disk: " + host.getDiskGb());
+        }        
         assertEquals(expResult.size(), result.size());
     }
 
@@ -330,6 +336,9 @@ public class ZabbixDataSourceAdaptorTest {
         vmList.add(instance.getVmByName(VM_NAME));
         List<VmMeasurement> result = instance.getVmData(vmList);
         assert (result != null);
+        for (VmMeasurement vmMeasurement : result) {
+            System.out.println("Name: " + vmMeasurement.getVm().getName());
+        }
 
     }
 

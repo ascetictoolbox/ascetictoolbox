@@ -57,7 +57,7 @@ public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
         }
         EnergyUsagePrediction wattsUsed;
         TimePeriod duration = new TimePeriod(new GregorianCalendar(), 1, TimeUnit.HOURS);
-        wattsUsed = predictTotalEnergy(host, usageCPU, usageMemory, duration);
+        wattsUsed = predictTotalEnergy(host, usageCPU, usageMemory / host.getRamMb(), duration);
         return wattsUsed;
     }
 
@@ -103,15 +103,14 @@ public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
     @Override
     public EnergyUsagePrediction getVMPredictedEnergy(VM vm, Collection<VM> virtualMachines, Host host, TimePeriod timePeriod) {
         EnergyDivision division = rule.getEnergyUsage(host, virtualMachines);
-        double usageCPU = 0;
-        int usageRAM = 0;
+        double usageCPU = 1; //assumed 100 percent usage.
+        double usageRAM = 0;
         //TODO Fix assumptions here
         for (VM currentVM : virtualMachines) {
             usageRAM = usageRAM + currentVM.getRamMb();
-            usageCPU = 1; //assumed 100 percent usage.
         }
         //Obtain the total for the host
-        EnergyUsagePrediction hostAnswer = predictTotalEnergy(host, usageCPU, usageRAM, timePeriod);
+        EnergyUsagePrediction hostAnswer = predictTotalEnergy(host, usageCPU, usageRAM / host.getRamMb(), timePeriod);
         hostAnswer.setAvgPowerUsed(hostAnswer.getTotalEnergyUsed()
                 / ((double) TimeUnit.SECONDS.toHours(timePeriod.getDuration())));
         EnergyUsagePrediction answer = new EnergyUsagePrediction(vm);

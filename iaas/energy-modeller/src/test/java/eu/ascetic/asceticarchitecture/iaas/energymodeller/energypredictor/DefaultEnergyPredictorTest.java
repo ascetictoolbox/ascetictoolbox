@@ -22,8 +22,8 @@ public class DefaultEnergyPredictorTest {
 
     public DefaultEnergyModelTrainer trainer = new DefaultEnergyModelTrainer();
     public Host host = new Host(10084, "asok10");
-    public VM vm1 = new VM(2, 4048, 128);
-    public VM vm2 = new VM(4, 1024, 256);
+    public VM vm1 = new VM(2, 15048, 128);
+    public VM vm2 = new VM(4, 1524, 256);
     public Collection<VM> vms = new ArrayList<>();
 
     @BeforeClass
@@ -54,13 +54,13 @@ public class DefaultEnergyPredictorTest {
         addVMs(vm1);
         addVMs(vm2);
 
-        System.out.println("store values size is: " + DefaultEnergyModelTrainer.storeValues.size());
-
         DefaultEnergyPredictor predictor = new DefaultEnergyPredictor();
-        setCalibrationData(host);
+        setCalibrationData(host);      
+        host.setRamMb(32244);
         prediction = predictor.getHostPredictedEnergy(host, vms);
         System.out.println("Host: " + host.getHostName());
         System.out.println("VM Count: " + vms.size());
+        System.out.println("store values size is: " + DefaultEnergyModelTrainer.storeValues.size());          
         System.out.println("watts: " + prediction.getAvgPowerUsed() + " energy: " + prediction.getTotalEnergyUsed());
 
     }
@@ -96,6 +96,7 @@ public class DefaultEnergyPredictorTest {
 
         DefaultEnergyPredictor predictor = new DefaultEnergyPredictor();
         setCalibrationData(host);
+        host.setRamMb(32244);
         System.out.println("VM for Energy Prediction: " + vm1.toString());
         System.out.println("Amount of VMs Inducing Load: "+ vms.size());
         System.out.println("Host To Query: " + host.getHostName());

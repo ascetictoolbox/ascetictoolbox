@@ -43,10 +43,9 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
     private ZabbixHostVMFilter hostFilter = new NameBeginsFilter();
     private static final String POWER_KPI_NAME = KpiList.POWER_KPI_NAME;
     private static final String ENERGY_KPI_NAME = KpiList.ENERGY_KPI_NAME;
-    private static final String MEMORY_KPI_NAME = "Total memory";
-    private static final String DISK_KPI_NAME = "Total disk space on $1";
-    private static final String BOOT_TIME_KPI_NAME = "Host boot time";
-    
+    private static final String MEMORY_KPI_NAME = KpiList.MEMORY_TOTAL_KPI_NAME;
+    private static final String DISK_KPI_NAME = KpiList.DISK_TOTAL_KPI_NAME;
+    private static final String BOOT_TIME_KPI_NAME = KpiList.BOOT_TIME_KPI_NAME;
 
     /**
      * The main method.
@@ -85,7 +84,7 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         Host host = client.getHostByName(hostname);
         return convert(host);
     }
-    
+
     /**
      * This returns a host given its unique name.
      *
@@ -144,6 +143,16 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         int hostId = Integer.parseInt(host.getHostid());
         eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host answer = new eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host(hostId, hostname);
         answer.setAvailable("1".equals(host.getAvailable()));
+        Item memory = client.getItemByKeyFromHost(MEMORY_KPI_NAME, hostname);
+        Item disk = client.getItemByKeyFromHost(DISK_KPI_NAME, hostname);
+        if (memory != null) {
+            //Original value given in bytes. 1024 * 1024 = 1048576
+            answer.setRamMb((int) (Double.valueOf(memory.getLastValue()) / 1048576));
+        }
+        if (disk != null) {
+                //Original value given in bytes. 1024 * 1024 * 1024 = 1073741824
+                answer.setDiskGb((Double.valueOf(disk.getLastValue()) / 1073741824));
+        }
         return answer;
     }
 
@@ -162,7 +171,7 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         for (Item item : items) {
             if (item.getName().equals(MEMORY_KPI_NAME)) { //Convert to Mb
                 //Original value given in bytes. 1024 * 1024 = 1048576
-                answer.setRamMb((int) (Double.valueOf(item.getLastValue())/ 1048576));
+                answer.setRamMb((int) (Double.valueOf(item.getLastValue()) / 1048576));
             }
             if (item.getName().equals(DISK_KPI_NAME)) { //covert to Gb
                 //Original value given in bytes. 1024 * 1024 * 1024 = 1073741824
@@ -171,11 +180,11 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
             if (item.getName().equals(BOOT_TIME_KPI_NAME)) {
                 Calendar cal = new GregorianCalendar();
                 //This converts from milliseconds into the correct time value
-                cal.setTimeInMillis(TimeUnit.SECONDS.toMillis(Long.valueOf(item.getLastValue()))); 
+                cal.setTimeInMillis(TimeUnit.SECONDS.toMillis(Long.valueOf(item.getLastValue())));
                 answer.setCreated(cal);
             }
             //TODO set the information correctly below!
-            answer.setCpus(1); 
+            answer.setCpus(1);
             answer.setIpAddress("127.0.0.1");
             answer.setState("Work in Progress");
 
@@ -250,7 +259,7 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         }
         return new ArrayList<>(hostMeasurements.values());
     }
-    
+
     /**
      * This lists for all vms all the metric data on them.
      *
@@ -259,8 +268,8 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
     @Override
     public List<VmMeasurement> getVmData() {
         return getVmData(getVmList());
-    }    
-    
+    }
+
     /**
      * This provides for the named vm all the information that is available.
      *
@@ -316,7 +325,7 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
             }
         }
         return new ArrayList<>(vmMeasurements.values());
-    }    
+    }
 
     /**
      * This returns the Zabbix client that is used to get at the data.
@@ -338,7 +347,8 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
 
     /**
      * This provides the current energy usage for a named host.
-     * @param host  The host to get the current energy data for.
+     *
+     * @param host The host to get the current energy data for.
      * @return The current energy usage data of the named host.
      */
     @Override
@@ -350,7 +360,7 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         answer.setCurrent(-1);
         return answer;
     }
-    
+
     /**
      * This finds the lowest/resting power usage by a host.
      *
@@ -370,13 +380,13 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         }
         return lowestValue;
     }
-   
+
     /**
      * This finds the highest power usage by a host.
      *
      * @param host The host to get the highest power usage data for.
      * @return
-     */    
+     */
     public double getHighestHostPowerUsage(eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host) {
         //This returns the last 200 items and finds the highest energy value possible.
         List<HistoryItem> energyData = client.getHistoryDataFromItem(POWER_KPI_NAME, host.getHostName(), Dictionary.HISTORY_ITEM_FORMAT_FLOAT, 200);
@@ -388,9 +398,9 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
             }
         }
         return highestValue;
-    }    
+    }
 
-     /**
+    /**
      * This finds the highest power usage by a host.
      *
      * @param host The host to get the highest power usage data for.
@@ -408,8 +418,8 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
             }
         }
         return highestValue;
-    }      
-    
+    }
+
     /**
      * @return the hostFilter
      */
