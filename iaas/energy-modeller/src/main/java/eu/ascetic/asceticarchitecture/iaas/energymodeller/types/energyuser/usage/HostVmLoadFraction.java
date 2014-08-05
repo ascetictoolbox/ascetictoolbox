@@ -135,6 +135,17 @@ public class HostVmLoadFraction implements Comparable<HostVmLoadFraction> {
         for (VmMeasurement loadMeasure : load) {
             totalLoad = totalLoad + loadMeasure.getCpuLoad();
         }
+        /**
+         * This is an error handling state. If no data is been presented 
+         * from Zabbix.
+         */
+        if (totalLoad == 0) {
+            double count = load.size();
+            for (VmMeasurement loadMeasure : load) {
+                answer.put(loadMeasure.getVm(), (1 / count));
+            }
+            return answer;
+        }
         for (VmMeasurement loadMeasure : load) {
             answer.put(loadMeasure.getVm(), (loadMeasure.getCpuLoad() / totalLoad));
         }
