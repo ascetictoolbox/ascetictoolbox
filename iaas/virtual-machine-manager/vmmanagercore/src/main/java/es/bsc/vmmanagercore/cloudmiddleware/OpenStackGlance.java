@@ -7,6 +7,8 @@ import org.apache.commons.validator.UrlValidator;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,6 +64,7 @@ public class OpenStackGlance {
         headers.put("x-image-meta-disk_format", "qcow2");
         headers.put("x-image-meta-name", imageToUpload.getName());
 
+        /*
         String filePath = null;
         if (!new UrlValidator().isValid(imageToUpload.getUrl())) {
             filePath = imageToUpload.getUrl();
@@ -69,15 +72,33 @@ public class OpenStackGlance {
 
         String responseContent = HttpUtils.executeHttpRequest("POST",
                 HttpUtils.buildURI("http", openStackIp, glancePort, "/v1/images"), headers, "", filePath);
+        */
 
-        //return the image ID
-        JsonNode imageIdJson;
-        try {
-            imageIdJson = new ObjectMapper().readTree(responseContent).get("image").get("id");
-        } catch (Exception e) {
-            throw new RuntimeException("There was a problem while uploading an image.");
+        String responseContent;
+        if (new UrlValidator().isValid(imageToUpload.getUrl())) {
+            responseContent = HttpUtils.executeHttpRequest("POST",
+                    HttpUtils.buildURI("http", openStackIp, glancePort, "/v1/images"), headers, "", null);
+
+            //return the image ID
+            JsonNode imageIdJson;
+            try {
+                imageIdJson = new ObjectMapper().readTree(responseContent).get("image").get("id");
+            } catch (Exception e) {
+                throw new RuntimeException("There was a problem while uploading an image.");
+            }
+            return imageIdJson.asText();
         }
-        return imageIdJson.asText();
+        else {
+            String glanceCommandOutput = executeCommand("glance --os-username vm.manager --os-password vmmanager14 " +
+                    "--os-tenant-id f559470b483c48f18479bd039400b007 " +
+                    "--os-auth-url http://130.149.248.39:35357/v2.0 " +
+                    "image-create --name=" + imageToUpload.getName() + " " +
+                    "--disk-format=qcow2 --container-format=bare --is-public=True " +
+                    "--file " + imageToUpload.getUrl());
+            String outputIdLine = glanceCommandOutput.split(System.getProperty("line.separator"))[9];
+            String id = outputIdLine.split("\\|")[2]; // Get the line where that specifies the ID
+            return id.substring(1, id.length() - 1); // Remove first and last characters (spaces)
+        }
     }
 
     /**
@@ -151,6 +172,23 @@ public class OpenStackGlance {
             throw new RuntimeException("Could not login to the Glance service.");
         }
        return tokenJson.asText();
+    }
+
+    private String executeCommand(String command) {
+        StringBuffer output = new StringBuffer();
+        Process p;
+        try {
+            p = Runtime.getRuntime().exec(command);
+            p.waitFor();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                output.append(line + "\n");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return output.toString();
     }
 
 }
