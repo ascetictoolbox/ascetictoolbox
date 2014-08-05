@@ -35,8 +35,8 @@ public class Host extends EnergyUsageSource implements Comparable<Host> {
     private String hostName = "";
     private boolean available = true;
     private int ramMb;
-    private double diskGb;    
-    
+    private double diskGb;
+
     private ArrayList<HostEnergyCalibrationData> calibrationData = new ArrayList<>();
 
     /**
@@ -48,6 +48,7 @@ public class Host extends EnergyUsageSource implements Comparable<Host> {
      *
      */
     private double defaultIdlePowerConsumption = 0.0; //i.e. 27.1w for an idle laptop.
+    private int defaultIdleRamUsage = 0;
 
     /**
      * An idea of power consumption scale:
@@ -203,6 +204,25 @@ public class Host extends EnergyUsageSource implements Comparable<Host> {
         }
         return answer;
     }
+    
+    /**
+     * This returns the lowest amount of ram usage found from the calibration
+     * data.
+     *
+     * @return The idle ram usage of a host
+     */
+    public double getIdleRamUsage() {
+        if (calibrationData.isEmpty()) {
+            return defaultIdleRamUsage;
+        }
+        double answer = Double.MAX_VALUE;
+        for (HostEnergyCalibrationData hostEnergyCalibrationData : calibrationData) {
+            if (hostEnergyCalibrationData.getMemoryUsage() < answer) {
+                answer = hostEnergyCalibrationData.getMemoryUsage();
+            }
+        }
+        return answer;
+    }    
 
     /**
      * This returns the value for the default idle power consumption of a host.
@@ -226,7 +246,27 @@ public class Host extends EnergyUsageSource implements Comparable<Host> {
     public void setDefaultIdlePowerConsumption(double defaultIdlePowerConsumption) {
         this.defaultIdlePowerConsumption = defaultIdlePowerConsumption;
     }
-    
+
+    /**
+     * This provides the amount of memory that is used without a VM been placed
+     * on the host machine.
+     *
+     * @return the idleRamUsage The amount of ram used when the host is idle.
+     */
+    public int getDefaultIdleRamUsage() {
+        return defaultIdleRamUsage;
+    }
+
+    /**
+     * This sets the amount of memory that is used without a VM been placed on
+     * the host machine.
+     *
+     * @param defaultIdleRamUsage The amount of ram used when the host is idle.
+     */
+    public void setDefaultIdleRamUsage(int defaultIdleRamUsage) {
+        this.defaultIdleRamUsage = defaultIdleRamUsage;
+    }
+
     /**
      * This gets the maximum amount of ram this host has.
      *
@@ -247,7 +287,7 @@ public class Host extends EnergyUsageSource implements Comparable<Host> {
         }
         this.ramMb = ramMb;
     }
-    
+
     /**
      * This gets the amount of disk space this host has available.
      *
@@ -267,6 +307,6 @@ public class Host extends EnergyUsageSource implements Comparable<Host> {
             throw new IllegalArgumentException("The amount of disk size must not be less than zero.");
         }
         this.diskGb = diskGb;
-    }    
+    }
 
 }

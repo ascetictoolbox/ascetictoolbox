@@ -250,22 +250,29 @@ public class EnergyModellerTest {
         VM vmImage;
         Collection<VM> vMsOnHost;
         Host host;
-        vmImage = new VM(1, 512, 20);
-        host = instance.getHost(HOST_NAME_WITH_VM);
-        vMsOnHost = new HashSet<>();
-        vMsOnHost.add(instance.getVM(VM_NAME));
-        vMsOnHost.add(vmImage);
-        EnergyUsagePrediction result = instance.getPredictedEnergyForVM(vmImage, vMsOnHost, host);
-        assert (result != null);
-        assert (result.getEnergyUser().contains(vmImage));
-        assert (result.getEnergyUser().size() == 1);
-        System.out.println("Predicted Usage On Host: " + host.getHostName());
-        System.out.println("Predicted Usage For VM: " + vmImage);
-        System.out.println("Average Power: " + result.getAvgPowerUsed());
-        System.out.println("Total Energy used: " + result.getTotalEnergyUsed());
-        assert (result.getAvgPowerUsed() > 0);
-        assert (result.getAvgPowerUsed() < 500);
-        assert (result.getTotalEnergyUsed() > 0);
+        vmImage = new VM(1, 1024, 1);
+        ArrayList<String> hostNames = new ArrayList<>();
+        hostNames.add("asok09");
+        hostNames.add("asok10");
+        hostNames.add("asok11");
+        hostNames.add("asok12");
+        for (String hostName : hostNames) {
+            host = instance.getHost(hostName);
+            vMsOnHost = new HashSet<>();
+            vMsOnHost.add(vmImage);
+            EnergyUsagePrediction result = instance.getPredictedEnergyForVM(vmImage, vMsOnHost, host);
+            assert (result != null);
+            assert (result.getEnergyUser().contains(vmImage));
+            assert (result.getEnergyUser().size() == 1);
+            System.out.println("Predicted Usage On Host: " + host.getHostName());
+            System.out.println("Predicted Usage For VM: " + vmImage);
+            System.out.println("Average Power: " + result.getAvgPowerUsed());
+            System.out.println("Total Energy used: " + result.getTotalEnergyUsed());
+            assert (result.getAvgPowerUsed() > 0);
+            assert (result.getAvgPowerUsed() < 500);
+            assert (result.getTotalEnergyUsed() > 0);
+        }
+
     }
 
     /**
@@ -286,7 +293,7 @@ public class EnergyModellerTest {
         assert (result.getEnergyUser().size() == 1);
         assert (result.getAvgPowerUsed() > 0);
         assert (result.getAvgPowerUsed() < 500);
-        assert (result.getTotalEnergyUsed() > 0);   
+        assert (result.getTotalEnergyUsed() > 0);
     }
 
     /**
