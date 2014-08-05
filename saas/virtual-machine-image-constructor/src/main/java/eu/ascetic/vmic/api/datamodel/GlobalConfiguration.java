@@ -101,11 +101,8 @@ public class GlobalConfiguration {
             // FIXME: this should detect if we are running on Jenkins and change
             // these default properties accordingly.
 
-            // Create a temporary directory for testing
-            // String systemTempDir = System.getProperty("java.io.tmpdir");
-            String systemTempDir = "/tmp";
-            String vmicTemp = systemTempDir + "/"
-                    + "VirtualMachineImageConstructor";
+            // Create a directory for testing
+            String vmicTemp = "/DFS/ascetic/vm-images/vmic";
 
             // Set the hostAddress IP for testing currently the private IP for
             // the ip of the host "saas-vm-dev" on the TUB testbed

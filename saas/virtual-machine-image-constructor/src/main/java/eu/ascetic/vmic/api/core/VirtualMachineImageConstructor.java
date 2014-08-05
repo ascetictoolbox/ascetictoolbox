@@ -16,6 +16,7 @@
 package eu.ascetic.vmic.api.core;
 
 import java.util.ArrayList;
+import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
@@ -35,7 +36,7 @@ public class VirtualMachineImageConstructor implements Runnable {
     protected static final Logger LOGGER = Logger
             .getLogger(VirtualMachineImageConstructor.class);
 
-    private static final int THREAD_SLEEP_TIME_LONG = 250;
+    private static final int THREAD_SLEEP_TIME = 250;
 
     private VmicApi vmicApi;
     private OvfDefinition ovfDefinition;
@@ -133,7 +134,7 @@ public class VirtualMachineImageConstructor implements Runnable {
         try {
             vmicApi.getGlobalState().setProgressPercentage(ovfDefinitionId,
                     AbstractProgressData.COMPLETED_PERCENTAGE);
-            Thread.sleep(THREAD_SLEEP_TIME_LONG);
+            Thread.sleep(THREAD_SLEEP_TIME);
         } catch (InterruptedException e) {
             LOGGER.error(e.getMessage(), e);
         }
@@ -153,6 +154,10 @@ public class VirtualMachineImageConstructor implements Runnable {
     private boolean generateImageOffline(OvfDefinitionParser ovfDefinitionParser) {
         LOGGER.info("Starting offline image generation...");
 
+        vmicApi.getGlobalState().setProgressPhase(ovfDefinitionId,
+                ProgressDataImage.GENERATE_IMAGES_PHASE_ID);
+        vmicApi.getGlobalState().setProgressPercentage(ovfDefinitionId, 0.0);
+
         // Iterate over every virtual system image
         for (int i = 0; i < ovfDefinitionParser.getImageNumber(); i++) {
 
@@ -167,16 +172,52 @@ public class VirtualMachineImageConstructor implements Runnable {
             String nbdDevicePath = null;
             try {
                 // 1) Copy the correct base image to the VMIC repository
-                copyImage(baseImagePath, newImagePath);
+                copyImage(baseImagePath, newImagePath, i,
+                        ovfDefinitionParser.getImageNumber());
+                vmicApi.getGlobalState()
+                        .setProgressPercentage(
+                                ovfDefinitionId,
+                                ((100.0 / ovfDefinitionParser.getImageNumber()) / 5)
+                                        * 1
+                                        + (100.0 / ovfDefinitionParser
+                                                .getImageNumber()) * i);
                 // 2) Check nbd module is loaded
                 nbdDevicePath = findNextNbdDevice();
+                vmicApi.getGlobalState()
+                        .setProgressPercentage(
+                                ovfDefinitionId,
+                                ((100.0 / ovfDefinitionParser.getImageNumber()) / 5)
+                                        * 2
+                                        + (100.0 / ovfDefinitionParser
+                                                .getImageNumber()) * i);
                 // 3) Mount the image
                 mountImage(newImagePath, newImageMountPointPath, nbdDevicePath);
+                vmicApi.getGlobalState()
+                        .setProgressPercentage(
+                                ovfDefinitionId,
+                                ((100.0 / ovfDefinitionParser.getImageNumber()) / 5)
+                                        * 3
+                                        + (100.0 / ovfDefinitionParser
+                                                .getImageNumber()) * i);
                 // 4) Add the file to the image(s) using remote a system
                 // call
                 addfiles(script);
+                vmicApi.getGlobalState()
+                        .setProgressPercentage(
+                                ovfDefinitionId,
+                                ((100.0 / ovfDefinitionParser.getImageNumber()) / 5)
+                                        * 4
+                                        + (100.0 / ovfDefinitionParser
+                                                .getImageNumber()) * i);
                 // 5) Unmount the image
                 unmountImage(newImageMountPointPath, nbdDevicePath);
+                vmicApi.getGlobalState()
+                        .setProgressPercentage(
+                                ovfDefinitionId,
+                                ((100.0 / ovfDefinitionParser.getImageNumber()) / 5)
+                                        * 5
+                                        + (100.0 / ovfDefinitionParser
+                                                .getImageNumber()) * i);
             } catch (ProgressException e) {
 
                 // Try to clean up the mount point if something failed:
@@ -236,14 +277,15 @@ public class VirtualMachineImageConstructor implements Runnable {
      *            Path to the copy of the base image
      * @throws ProgressException
      *             Thrown on failure to copy the image
+     * @param imageNumber
+     *            Used to calculate completion percentage
+     * @param totalImages
+     *            Used to calculate completion percentage
      */
-    private void copyImage(String baseImagePath, String newImagePath)
-            throws ProgressException {
+    private void copyImage(String baseImagePath, String newImagePath,
+            int imageNumber, int totalImages) throws ProgressException {
         LOGGER.info("Copying image from " + baseImagePath + " to "
                 + newImagePath);
-        SystemCallRemote systemCallRemote = new SystemCallRemote(vmicApi
-                .getGlobalState().getConfiguration().getRepositoryPath(),
-                vmicApi.getGlobalState().getConfiguration());
 
         // Make the directory in case it doesn't exist
         String commandName = "mkdir -p "
@@ -253,16 +295,90 @@ public class VirtualMachineImageConstructor implements Runnable {
         // Add the rsync command
         arguments.add("rsync -avzPh " + baseImagePath + " " + newImagePath);
 
-        try {
-            systemCallRemote.runCommand(commandName, arguments);
-        } catch (SystemCallException e) {
-            throw new ProgressException("Copying base image failed", e);
-        }
+        // Construct and invoke system call to rsync
+        SystemCallRemote systemCallRemote = new SystemCallRemote(vmicApi
+                .getGlobalState().getConfiguration().getRepositoryPath(),
+                commandName, arguments, vmicApi.getGlobalState()
+                        .getConfiguration());
+        Thread thread = new Thread(systemCallRemote);
 
-        if (systemCallRemote.getReturnValue() != 0) {
-            throw new ProgressException("Copying base image failed");
-        } else {
-            LOGGER.info("Copying complete");
+        try {
+            // Execute the system call in a thread
+            thread.start();
+
+            while (systemCallRemote.getReturnValue() == -1
+                    && !systemCallRemote.isError()) {
+                try {
+                    // Parse the system call output and set file upload
+                    // progress accordingly
+                    Vector<String> output = (Vector<String>) systemCallRemote
+                            .getOutput();
+
+                    if (output.size() == 0) {
+                        Thread.sleep(THREAD_SLEEP_TIME);
+                        continue;
+                    }
+
+                    String percentage = null;
+
+                    // Work backwards until we find '%'
+                    for (int i = output.size() - 1; i >= 0; i--) {
+                        String line = output.get(i);
+                        line = line.trim();
+                        if (line.indexOf('%') != -1) {
+                            String[] lineSplit = line.split(" +");
+
+                            try {
+                                percentage = lineSplit[1];
+                                percentage = percentage.substring(0,
+                                        percentage.length() - 1);
+                            } catch (IndexOutOfBoundsException e) {
+                                throw new SystemCallException(
+                                        "Failed to parse rsync output!", e);
+                            }
+                            break;
+                        }
+                    }
+
+                    // Set the progress
+                    if (percentage != null) {
+                        vmicApi.getGlobalState()
+                                .setProgressPercentage(
+                                        ovfDefinitionId,
+                                        ((((100.0 / totalImages) / 5) * 1)
+                                                * (Double
+                                                        .parseDouble(percentage) / 100))
+                                                + (100.0 / totalImages)
+                                                * imageNumber);
+                    }
+                    Thread.sleep(THREAD_SLEEP_TIME);
+                } catch (InterruptedException e) {
+                    LOGGER.error(e.getMessage(), e);
+                }
+            }
+
+            if (systemCallRemote.isError()) {
+                throw systemCallRemote.getSystemCallException();
+            }
+
+            if (systemCallRemote.getReturnValue() != 0) {
+                throw new ProgressException("Copying base image failed");
+            } else {
+                LOGGER.info("Copying complete");
+            }
+
+        } catch (SystemCallException e) {
+            if (vmicApi.getGlobalState().getConfiguration().isDefaultValues()) {
+                LOGGER.warn(
+                        "Failed to run command, is this invocation in a unit test?",
+                        e);
+            } else {
+                LOGGER.error("File upload failed!", e);
+                vmicApi.getGlobalState().getProgressData(ovfDefinitionId)
+                        .setError(true);
+                vmicApi.getGlobalState().getProgressData(ovfDefinitionId)
+                        .setException(e);
+            }
         }
     }
 

@@ -143,6 +143,7 @@ public abstract class AbstractProgressData {
     public void setCurrentPercentageCompletion(
             Double currentPercentageCompletion) {
         this.currentPercentageCompletion = currentPercentageCompletion;
+        this.history.put(currentPhaseId, currentPercentageCompletion);
     }
 
     /**
@@ -221,7 +222,8 @@ public abstract class AbstractProgressData {
         if (currentPhaseId == 0) {
             return 0.0;
         } else {
-            return COMPLETED_PERCENTAGE / (phases.length / (currentPhaseId));
+            return ((COMPLETED_PERCENTAGE / (phases.length / (currentPhaseId))) + (COMPLETED_PERCENTAGE / phases.length)
+                    * (currentPercentageCompletion / COMPLETED_PERCENTAGE));
         }
     }
 

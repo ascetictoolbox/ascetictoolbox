@@ -153,7 +153,7 @@ public class VmicApiTest extends TestCase {
     /**
      * Tests the workflow of image generation.
      */
-    public void testgenerateImageWorkflow() {
+    public void testGenerateImageWorkflow() {
         LOGGER.info("### TEST: " + getCurrentMethodName() + " STARTED ###");
 
         try {
