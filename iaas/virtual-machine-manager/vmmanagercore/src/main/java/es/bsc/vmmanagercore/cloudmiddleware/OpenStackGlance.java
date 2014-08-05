@@ -49,6 +49,7 @@ public class OpenStackGlance {
      * @param imageToUpload the image to upload
      * @return the ID of the image just created. This ID is the same as the ID assigned in OpenStack.
      */
+    //TODO I need to refactor this function.
     public String createImageFromUrl(ImageToUpload imageToUpload) {
         //build the headers of the HTTP request
         Map<String, String> headers = new HashMap<>();
@@ -56,23 +57,12 @@ public class OpenStackGlance {
         headers.put("x-image-meta-container_format", "bare");
         headers.put("User-Agent", "python-glanceclient");
         headers.put("x-image-meta-is_public", "True");
-        //headers.put("x-glance-api-copy-from", imageToUpload.getUrl());
         if (new UrlValidator().isValid(imageToUpload.getUrl())) {
             headers.put("x-image-meta-location", imageToUpload.getUrl());
         }
         headers.put("Content-Type", "application/octet-stream");
         headers.put("x-image-meta-disk_format", "qcow2");
         headers.put("x-image-meta-name", imageToUpload.getName());
-
-        /*
-        String filePath = null;
-        if (!new UrlValidator().isValid(imageToUpload.getUrl())) {
-            filePath = imageToUpload.getUrl();
-        }
-
-        String responseContent = HttpUtils.executeHttpRequest("POST",
-                HttpUtils.buildURI("http", openStackIp, glancePort, "/v1/images"), headers, "", filePath);
-        */
 
         String responseContent;
         if (new UrlValidator().isValid(imageToUpload.getUrl())) {
