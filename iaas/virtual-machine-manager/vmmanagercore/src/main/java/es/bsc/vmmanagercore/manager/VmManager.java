@@ -10,7 +10,9 @@ import es.bsc.vmmanagercore.scheduler.EstimatesGenerator;
 import es.bsc.vmmanagercore.scheduler.Scheduler;
 
 import java.io.*;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -143,11 +145,12 @@ public class VmManager {
             // If the monitoring system is Zabbix, we need to make sure that the script that sets up the Zabbix
             // agents is executed. Also, if an ISO is received, we need to make sure that we execute a script
             // that mounts it
+            String vmScriptName = null;
             if (usingZabbix()) {
                 if (isoReceived(vmToDeploy)) {
                     try {
                         // Copy the Zabbix agents script
-                        String vmScriptName = "vm_" + vmToDeploy.getName() +
+                        vmScriptName = "vm_" + vmToDeploy.getName() +
                                 "_" + dateFormat.format(Calendar.getInstance().getTime()) + ".sh";
                         Files.copy(Paths.get("/DFS/ascetic/vm-scripts/zabbix_agents.sh"),
                                 Paths.get("/DFS/ascetic/vm-scripts/" + vmScriptName), REPLACE_EXISTING);
@@ -182,9 +185,21 @@ public class VmManager {
 
             // If the monitoring system is Zabbix, then we need to call the Zabbix wrapper to initialize
             // the Zabbix agents. To register the VM we agreed to use the name <vmId>_<hostWhereTheVmIsDeployed>
+            // We also need to delete the script for the VM if it was created before
             if (usingZabbix()) {
                 ZabbixConnector.getZabbixClient().createVM(vmId + "_" + cloudMiddleware.getVMInfo(vmId).getHostName(),
                         cloudMiddleware.getVMInfo(vmId).getIpAddress());
+
+                // Delete the script created
+                if (vmScriptName != null) {
+                    Path path = FileSystems.getDefault().getPath("/DFS/ascetic/vm-scripts/" + vmScriptName);
+                    try {
+                        Path file = Files.createFile(path);
+                        Files.delete(file);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
 
