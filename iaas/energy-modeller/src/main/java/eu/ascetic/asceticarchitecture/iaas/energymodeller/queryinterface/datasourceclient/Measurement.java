@@ -15,9 +15,19 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient;
 
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.IDLE_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.INTERUPT_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.IO_WAIT_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.MEMORY_AVAILABLE_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.NICE_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.SOFT_IRQ_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.STEAL_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.SYSTEM_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.USER_KPI_NAME;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Item;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -30,19 +40,6 @@ public abstract class Measurement {
 
     private long clock;
     private HashMap<String, Item> metrics = new HashMap<>();
-    protected static final String POWER_KPI_NAME = KpiList.POWER_KPI_NAME;
-    protected static final String ENERGY_KPI_NAME = KpiList.ENERGY_KPI_NAME;
-
-    private static final String IDLE_KPI_NAME = KpiList.IDLE_KPI_NAME;
-    private static final String INTERUPT_KPI_NAME = KpiList.INTERUPT_KPI_NAME;
-    private static final String IO_WAIT_KPI_NAME = KpiList.IO_WAIT_KPI_NAME;
-    private static final String NICE_KPI_NAME = KpiList.NICE_KPI_NAME;
-    private static final String SOFT_IRQ_KPI_NAME = KpiList.SOFT_IRQ_KPI_NAME;
-    private static final String STEAL_KPI_NAME = KpiList.STEAL_KPI_NAME;
-    private static final String SYSTEM_KPI_NAME = KpiList.SYSTEM_KPI_NAME;
-    private static final String USER_KPI_NAME = KpiList.USER_KPI_NAME;
-    private static final String MEMORY_AVAILABLE_KPI_NAME = KpiList.MEMORY_AVAILABLE_KPI_NAME;     
-    private static final String MEMORY_TOTAL_KPI_NAME = KpiList.MEMORY_TOTAL_KPI_NAME;
 
     /**
      * This looks at the metrics gained, for this given gathering of measurement
@@ -188,7 +185,8 @@ public abstract class Measurement {
     /**
      * This provides rapid access to cpu load values from a vm measurement.
      *
-     * @return The cpu load when the measurement was taken. Values in range 0...1
+     * @return The cpu load when the measurement was taken. Values in range
+     * 0...1
      */
     public double getCpuLoad() {
         double interrupt = 0.0;
@@ -225,7 +223,8 @@ public abstract class Measurement {
     /**
      * This provides rapid access to cpu load values from a vm measurement.
      *
-     * @return The cpu load when the measurement was taken. Values in range 0...1
+     * @return The cpu load when the measurement was taken. Values in range
+     * 0...1
      */
     public double getCpuIdle() {
         return Double.parseDouble(this.getMetric(IDLE_KPI_NAME).getLastValue()) / 100;
@@ -234,30 +233,63 @@ public abstract class Measurement {
     /**
      * This provides rapid access to memory values for a measurement.
      *
-     * @return The total memory available when the measurement was taken. Values given in Mb
+     * @return The total memory available when the measurement was taken. Values
+     * given in Mb
      */
     public double getMemoryAvailable() {
         //Original value given in bytes. 1024 * 1024 = 1048576
         return Double.parseDouble(this.getMetric(MEMORY_AVAILABLE_KPI_NAME).getLastValue()) / 1048576;
-    } 
-    
+    }
+
     /**
      * This provides rapid access to memory values for a measurement.
      *
-     * @return The total memory used when the measurement was taken. Values given in Mb
+     * @return The total memory used when the measurement was taken. Values
+     * given in Mb
      */
     public double getMemoryUsed() {
         return getMemoryTotal() - getMemoryAvailable();
-    }        
-    
+    }
+
     /**
      * This provides rapid access to memory values for a measurement.
      *
-     * @return The total memory available when the measurement was taken. Values given in Mb
+     * @return The total memory available when the measurement was taken. Values
+     * given in Mb
      */
     public double getMemoryTotal() {
         //Original value given in bytes. 1024 * 1024 = 1048576
-        return Double.parseDouble(this.getMetric(MEMORY_TOTAL_KPI_NAME).getLastValue()) / 1048576;
+        return Double.parseDouble(this.getMetric(KpiList.MEMORY_TOTAL_KPI_NAME).getLastValue()) / 1048576;
+    }
+
+    /**
+     * This provides information on the network activity of the host at the 
+     * time of measurement.
+     * @return The amount of data transfered in, units are in bits/second.
+     */
+    public double getNetworkIn() {
+        double answer = 0.0;
+        for (Map.Entry<String, Item> metric : metrics.entrySet()) {
+            if (metric.getKey().startsWith(KpiList.NETWORK_IN_STARTS_WITH_KPI_NAME)) {
+                answer = answer + Double.parseDouble(metric.getValue().getLastValue());
+            }
+        }
+        return answer;
+    }
+
+    /**
+     * This provides information on the network activity of the host at the 
+     * time of measurement.
+     * @return The amount of data transfered out, units are in bits/second.
+     */
+    public double getNetworkOut() {
+        double answer = 0.0;
+        for (Map.Entry<String, Item> metric : metrics.entrySet()) {
+            if (metric.getKey().startsWith(KpiList.NETWORK_OUT_STARTS_WITH_KPI_NAME)) {
+                answer = answer + Double.parseDouble(metric.getValue().getLastValue());
+            }
+        }
+        return answer;
     }
 
 }

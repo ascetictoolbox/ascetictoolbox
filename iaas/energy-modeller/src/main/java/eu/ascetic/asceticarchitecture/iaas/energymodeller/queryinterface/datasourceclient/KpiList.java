@@ -37,7 +37,7 @@ public abstract class KpiList {
     //memory metrics
     public static final String MEMORY_AVAILABLE_KPI_NAME = "vm.memory.size[available]";     
     public static final String MEMORY_TOTAL_KPI_NAME = "vm.memory.size[total]";
-    
+    //swap space
     public static final String SWAP_SPACE_FREE_KPI_NAME = "system.swap.size[,free]";     
     public static final String SWAP_SPACE_FREE_PERC_KPI_NAME = "system.swap.size[,pfree]";     
     public static final String SWAP_SPACE_TOTAL_KPI_NAME = "system.swap.size[,total]";     
@@ -46,8 +46,12 @@ public abstract class KpiList {
     public static final String DISK_FREE_PERC_KPI_NAME = "vfs.fs.size[/,pfree]"; 
     public static final String DISK_USED_KPI_NAME = "vfs.fs.size[/,used]"; 
     public static final String DISK_TOTAL_KPI_NAME = "vfs.fs.size[/,total]";
+    //Network
+    public static final String NETWORK_OUT_STARTS_WITH_KPI_NAME = "net.if.in[";    
+    public static final String NETWORK_IN_STARTS_WITH_KPI_NAME = "net.if.out[";    
     //boot time
     public static final String BOOT_TIME_KPI_NAME = "system.boottime";
+    
     
 
 

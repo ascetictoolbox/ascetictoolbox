@@ -15,6 +15,8 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient;
 
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.ENERGY_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.POWER_KPI_NAME;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 
 /**

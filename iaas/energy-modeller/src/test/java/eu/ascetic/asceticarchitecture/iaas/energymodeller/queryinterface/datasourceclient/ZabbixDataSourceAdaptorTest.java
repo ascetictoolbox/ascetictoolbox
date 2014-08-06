@@ -129,7 +129,7 @@ public class ZabbixDataSourceAdaptorTest {
             assert (host.getDiskGb() > 0);
             System.out.println("Host ram: " + host.getRamMb());
             System.out.println("Host disk: " + host.getDiskGb());
-        }        
+        }
         assertEquals(expResult.size(), result.size());
     }
 
@@ -166,6 +166,8 @@ public class ZabbixDataSourceAdaptorTest {
         System.out.println("Memory Available: " + result.getMemoryAvailable());
         System.out.println("CPU Load: " + result.getCpuLoad());
         System.out.println("CPU Idle: " + result.getCpuIdle());
+        System.out.println("Network In: " + result.getNetworkIn());
+        System.out.println("Network Out: " + result.getNetworkOut());
 
     }
 
@@ -290,8 +292,8 @@ public class ZabbixDataSourceAdaptorTest {
         assert (result != null);
         assert (!result.isEmpty());
         for (VmDeployed vmDeployed : result) {
-            assert(vmDeployed.getName() != null);
-            assert(vmDeployed.getId() > 0);
+            assert (vmDeployed.getName() != null);
+            assert (vmDeployed.getId() > 0);
             System.out.println("VM name: " + vmDeployed.getName());
             System.out.println("VM id: " + vmDeployed.getId());
             System.out.println("VM Ram: " + vmDeployed.getRamMb());
