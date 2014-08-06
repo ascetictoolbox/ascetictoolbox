@@ -8,6 +8,37 @@ package "screen" do
   action :install
 end
 
+package "python-pip" do
+  action :install
+end
+
+package "gcc" do
+  action :install
+end
+
+package "python-dev" do
+  action :install
+end
+
+package "libxml2-dev" do
+  action :install
+end
+
+package "libxslt1-dev" do
+  action :install
+end
+
+script "run_pip" do
+  interpreter "bash"
+  user "root"
+  group "root"
+  cwd "/"
+  not_if "test -d /usr/local/lib/python2.7/dist-packages/glanceclient"
+  code <<-EOH
+pip install python-glanceclient
+  EOH
+end
+
 apt_repo "zabbix" do
   key_id "79EA5ED4"
   key_package "zabbix-release"
