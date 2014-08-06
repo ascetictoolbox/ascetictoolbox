@@ -1,7 +1,6 @@
 package es.bsc.vmmanagercore.energymodeller;
 
 import es.bsc.vmmanagercore.model.Vm;
-import es.bsc.vmmanagercore.monitoring.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 
 import java.util.ArrayList;

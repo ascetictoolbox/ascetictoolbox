@@ -49,34 +49,14 @@ public class OpenStackGlance {
      * @param imageToUpload the image to upload
      * @return the ID of the image just created. This ID is the same as the ID assigned in OpenStack.
      */
-    //TODO I need to refactor this function.
+    //TODO I need to refactor this function and get rid of the hard-coded values
     public String createImageFromUrl(ImageToUpload imageToUpload) {
-        //build the headers of the HTTP request
-        Map<String, String> headers = new HashMap<>();
-        headers.put("X-Auth-Token", token);
-        headers.put("x-image-meta-container_format", "bare");
-        headers.put("User-Agent", "python-glanceclient");
-        headers.put("x-image-meta-is_public", "True");
-        if (new UrlValidator().isValid(imageToUpload.getUrl())) {
-            headers.put("x-image-meta-location", imageToUpload.getUrl());
-        }
-        headers.put("Content-Type", "application/octet-stream");
-        headers.put("x-image-meta-disk_format", "qcow2");
-        headers.put("x-image-meta-name", imageToUpload.getName());
-
         String responseContent;
         if (new UrlValidator().isValid(imageToUpload.getUrl())) {
             responseContent = HttpUtils.executeHttpRequest("POST",
-                    HttpUtils.buildURI("http", openStackIp, glancePort, "/v1/images"), headers, "");
-
-            //return the image ID
-            JsonNode imageIdJson;
-            try {
-                imageIdJson = new ObjectMapper().readTree(responseContent).get("image").get("id");
-            } catch (Exception e) {
-                throw new RuntimeException("There was a problem while uploading an image.");
-            }
-            return imageIdJson.asText();
+                    HttpUtils.buildURI("http", openStackIp, glancePort, "/v1/images"),
+                    getHeadersForCreateImageRequest(imageToUpload), "");
+            return getIdFromCreateImageImageResponse(responseContent);
         }
         else {
             String glanceCommandOutput = commandExecutor.executeCommand(
@@ -90,6 +70,43 @@ public class OpenStackGlance {
             String id = outputIdLine.split("\\|")[2]; // Get the line where that specifies the ID
             return id.substring(1, id.length() - 1); // Remove first and last characters (spaces)
         }
+    }
+
+    /**
+     * Returns the headers for the call used to created an image
+     *
+     * @param imageToUpload the image to be uploaded
+     * @return the headers
+     */
+    private Map<String, String> getHeadersForCreateImageRequest(ImageToUpload imageToUpload) {
+        Map<String, String> result = new HashMap<>();
+        result.put("X-Auth-Token", token);
+        result.put("x-image-meta-container_format", "bare");
+        result.put("User-Agent", "python-glanceclient");
+        result.put("x-image-meta-is_public", "True");
+        if (new UrlValidator().isValid(imageToUpload.getUrl())) {
+            result.put("x-image-meta-location", imageToUpload.getUrl());
+        }
+        result.put("Content-Type", "application/octet-stream");
+        result.put("x-image-meta-disk_format", "qcow2");
+        result.put("x-image-meta-name", imageToUpload.getName());
+        return result;
+    }
+
+    /**
+     * Extracts the ID of the image from the response of the call used to create an image.
+     *
+     * @param response the response of the call
+     * @return the ID of the image
+     */
+    private String getIdFromCreateImageImageResponse(String response) {
+        JsonNode imageIdJson;
+        try {
+            imageIdJson = new ObjectMapper().readTree(response).get("image").get("id");
+        } catch (Exception e) {
+            throw new RuntimeException("There was a problem while uploading an image.");
+        }
+        return imageIdJson.asText();
     }
 
     /**

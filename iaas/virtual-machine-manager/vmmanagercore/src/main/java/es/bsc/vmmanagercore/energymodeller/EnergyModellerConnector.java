@@ -4,7 +4,6 @@ import es.bsc.vmmanagercore.model.Vm;
 import es.bsc.vmmanagercore.model.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
 
 import java.util.ArrayList;
