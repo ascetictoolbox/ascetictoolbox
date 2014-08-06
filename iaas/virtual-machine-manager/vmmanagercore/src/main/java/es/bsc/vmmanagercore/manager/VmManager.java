@@ -159,7 +159,7 @@ public class VmManager {
                         File scriptFile = new File("/DFS/ascetic/vm-scripts/" + vmScriptName);
                         FileWriter fileWritter = new FileWriter(scriptFile.getName(), true);
                         BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
-                        bufferWritter.write("\n mount -o loop,ro " + scriptFile.getAbsolutePath() + "/media/cdrom");
+                        bufferWritter.write("\n mount -o loop,ro " + vmToDeploy.getInitScript() + "/media/cdrom");
                         bufferWritter.close();
 
                         // Assign the new script to the VM
