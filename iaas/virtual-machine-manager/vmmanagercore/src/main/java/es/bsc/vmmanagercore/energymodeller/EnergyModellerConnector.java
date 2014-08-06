@@ -4,6 +4,7 @@ import es.bsc.vmmanagercore.model.Vm;
 import es.bsc.vmmanagercore.model.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
 
 import java.util.ArrayList;
@@ -35,10 +36,41 @@ public class EnergyModellerConnector {
     }
 
     private static EnergyUsagePrediction getEnergyUsagePrediction(Vm vm, Host host, List<VmDeployed> vmsDeployed) {
-        return energyModeller.getPredictedEnergyForVM(
+
+        VM vmem = VMMToEMConversor.getVmEnergyModFromVM(vm);
+        System.out.println("VM input - cpus: " + vmem.getCpus() + "ram: " + vmem.getRamMb() + "disk: "  +
+                vmem.getDiskGb());
+
+        List<VM> vmsem = VMMToEMConversor.getVmsEnergyModFromVms(getVmsDeployedInHost(host.getHostname(), vmsDeployed));
+        System.out.println("LIST OF VMS input");
+        for (VM vmem_: vmsem) {
+            System.out.println("VM input - cpus: " + vmem_.getCpus() + "ram: " + vmem_.getRamMb() + "disk: "  +
+                    vmem_.getDiskGb());
+        }
+
+        eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host hostem =
+                VMMToEMConversor.getHostEnergyModFromHost(host);
+        System.out.println("HOST input - id:" + hostem.getId() + "hostname: " + hostem.getHostName());
+
+
+        /*return energyModeller.getPredictedEnergyForVM(
                 VMMToEMConversor.getVmEnergyModFromVM(vm),
                 VMMToEMConversor.getVmsEnergyModFromVms(getVmsDeployedInHost(host.getHostname(), vmsDeployed)),
                 VMMToEMConversor.getHostEnergyModFromHost(host));
+        */
+        EnergyUsagePrediction result = energyModeller.getPredictedEnergyForVM(
+                VMMToEMConversor.getVmEnergyModFromVM(vm),
+                VMMToEMConversor.getVmsEnergyModFromVms(getVmsDeployedInHost(host.getHostname(), vmsDeployed)),
+                VMMToEMConversor.getHostEnergyModFromHost(host));
+
+        System.out.println(
+                "Avg power " + result.getAvgPowerUsed()
+                + "total energy used " + result.getTotalEnergyUsed()
+                + "duration " + result.getDuration()
+                + "start time " + result.getPredictionStartTime()
+                + "end time " + result.getPredictionEndTime());
+
+        return result;
     }
 
     public static double getPredictedAvgPowerVm(Vm vm, Host host, List<VmDeployed> vmsDeployed) {
