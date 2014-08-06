@@ -149,12 +149,7 @@ public class Calibrator implements Runnable {
          * This is separated from the reset of the calibration procedure as it
          * can be called again without having to induce load on the host.
          */
-        //TODO Implement better code here, fixing assumptions
-        double cpu = 0.0; //An assumption that the lowest power usage measured has 0.0 cpu load
-        double memory = 0.0; //The same but much poorer assumption
-        double watts = datasource.getLowestHostPowerUsage(host);
-        HostEnergyCalibrationData data = new HostEnergyCalibrationData(cpu, memory, watts);
-        host.addCalibrationData(data);
+        host.setDefaultIdlePowerConsumption(datasource.getLowestHostPowerUsage(host));
         return host;
     }
 
