@@ -9,6 +9,7 @@ import es.bsc.vmmanagercore.monitoring.*;
 import es.bsc.vmmanagercore.scheduler.EstimatesGenerator;
 import es.bsc.vmmanagercore.scheduler.Scheduler;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -134,6 +135,13 @@ public class VmManager {
         for (VmAssignmentToHost vmAssignmentToHost: deploymentPlan.getVmsAssignationsToHosts()) {
             Vm vmToDeploy = vmAssignmentToHost.getVm();
             Host hostForDeployment = vmAssignmentToHost.getHost();
+
+            // TODO this is a quick fix for the Ascetic project
+            // If the monitoring system is Zabbix, we need to make sure that the script that sets up the Zabbix
+            // agents is executed
+            if (VmManagerConfiguration.getInstance().monitoring.equals(VmManagerConfiguration.Monitoring.ZABBIX)) {
+                vmToDeploy.setInitScript("/DFS/ascetic/vm-scripts/zabbix_agents.sh");
+            }
 
             // Deploy the VM
             String vmId = cloudMiddleware.deploy(vmToDeploy, hostForDeployment.getHostname());
