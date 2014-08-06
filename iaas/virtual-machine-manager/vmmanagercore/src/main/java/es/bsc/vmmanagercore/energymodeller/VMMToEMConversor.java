@@ -28,9 +28,4 @@ public class VMMToEMConversor {
         return result;
     }
 
-    public static eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host getHostEnergyModFromHost(
-            Host host) {
-
-        return new eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host(1, host.getHostname());
-    }
 }
