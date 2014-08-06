@@ -9,10 +9,16 @@ import es.bsc.vmmanagercore.monitoring.*;
 import es.bsc.vmmanagercore.scheduler.EstimatesGenerator;
 import es.bsc.vmmanagercore.scheduler.Scheduler;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import static java.nio.file.StandardCopyOption.*;
 
 /**
  * VM Manager.
@@ -26,6 +32,7 @@ public class VmManager {
     private Scheduler scheduler;
     private EstimatesGenerator estimatesGenerator = new EstimatesGenerator();
     private List<Host> hosts = new ArrayList<>();
+    SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
     /**
      * Constructs a VmManager with the name of the database to be used.
@@ -111,7 +118,7 @@ public class VmManager {
         db.closeConnection();
 
         // // If the monitoring system is Zabbix, then we need to delete the VM from Zabbix
-        if (VmManagerConfiguration.getInstance().monitoring.equals(VmManagerConfiguration.Monitoring.ZABBIX)) {
+        if (usingZabbix()) {
             ZabbixConnector.getZabbixClient().deleteVM(vmId);
         }
     }
@@ -137,9 +144,33 @@ public class VmManager {
 
             // TODO this is a quick fix for the Ascetic project
             // If the monitoring system is Zabbix, we need to make sure that the script that sets up the Zabbix
-            // agents is executed
-            if (VmManagerConfiguration.getInstance().monitoring.equals(VmManagerConfiguration.Monitoring.ZABBIX)) {
-                vmToDeploy.setInitScript("/DFS/ascetic/vm-scripts/zabbix_agents.sh");
+            // agents is executed. Also, if an ISO is received, we need to make sure that we execute a script
+            // that mounts it
+            if (usingZabbix()) {
+                if (isoReceived(vmToDeploy)) {
+                    try {
+                        // Copy the Zabbix agents script
+                        String vmScriptName = "vm_" + vmToDeploy.getName() +
+                        "_" + dateFormat.format(Calendar.getInstance().getTime()) + ".sh";
+                        Files.copy(Paths.get("/DFS/ascetic/vm-scripts/zabbix_agents.sh"),
+                                Paths.get("/DFS/ascetic/vm-scripts/" + vmScriptName), REPLACE_EXISTING);
+
+                        // Append the instruction to mount the ISO
+                        File scriptFile = new File("/DFS/ascetic/vm-scripts/" + vmScriptName);
+                        FileWriter fileWritter = new FileWriter(scriptFile.getName(), true);
+                        BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
+                        bufferWritter.write("\n mount -o loop,ro " + scriptFile.getAbsolutePath() + "/media/cdrom");
+                        bufferWritter.close();
+
+                        // Assign the new script to the VM
+                        vmToDeploy.setInitScript("/DFS/ascetic/vm-scripts/" + vmScriptName);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else {
+                    vmToDeploy.setInitScript("/DFS/ascetic/vm-scripts/zabbix_agents.sh");
+                }
             }
 
             // Deploy the VM
@@ -153,7 +184,7 @@ public class VmManager {
 
             // If the monitoring system is Zabbix, then we need to call the Zabbix wrapper to initialize
             // the Zabbix agents. To register the VM we agreed to use the name <vmId>_<hostWhereTheVmIsDeployed>
-            if (VmManagerConfiguration.getInstance().monitoring.equals(VmManagerConfiguration.Monitoring.ZABBIX)) {
+            if (usingZabbix()) {
                 ZabbixConnector.getZabbixClient().createVM(vmId + "_" + cloudMiddleware.getVMInfo(vmId).getHostName(),
                         cloudMiddleware.getVMInfo(vmId).getIpAddress());
             }
@@ -407,4 +438,14 @@ public class VmManager {
         }
         return result;
     }
+
+    private boolean usingZabbix() {
+        return VmManagerConfiguration.getInstance().monitoring.equals(VmManagerConfiguration.Monitoring.ZABBIX);
+    }
+
+    private boolean isoReceived(Vm vm) {
+        return vm.getInitScript() != null && !vm.getInitScript().equals("")
+                && vm.getInitScript().endsWith(".iso");
+    }
+
 }
