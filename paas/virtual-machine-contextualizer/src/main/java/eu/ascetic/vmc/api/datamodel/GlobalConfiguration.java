@@ -93,7 +93,7 @@ public class GlobalConfiguration {
 		if (defaultValues) {
 			//TODO: Changes these paths to OS specific temp folders
 			String systemTempDir = System.getProperty("java.io.tmpdir");
-			String vmcTemp = systemTempDir + File.separator + "VmContextualizer";
+			String vmcTemp = systemTempDir + "vmc";
 			properties.setProperty("installDirectory", vmcTemp + File.separator + "runtime");
 			new File(properties.getProperty("installDirectory")).mkdirs();
 			properties.setProperty(REPOSITORY_PROPERTY, vmcTemp + File.separator + REPOSITORY_PROPERTY);

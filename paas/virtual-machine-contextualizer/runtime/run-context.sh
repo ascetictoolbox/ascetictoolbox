@@ -13,4 +13,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-java -jar VmContextualizer.jar 1 `pwd`
+java -jar virtual-machine-contextualizer.jar 1 `pwd`

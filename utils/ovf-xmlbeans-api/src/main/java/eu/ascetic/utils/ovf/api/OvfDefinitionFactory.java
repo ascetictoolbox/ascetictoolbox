@@ -118,7 +118,7 @@ public class OvfDefinitionFactory {
     }
 
     /**
-     * Creates an instance of the API using an XMLBeanEnvelopeDocument as its
+     * Creates an instance of the API using a string as its
      * starting point.
      * 
      * @param ovfDefinitionAsString

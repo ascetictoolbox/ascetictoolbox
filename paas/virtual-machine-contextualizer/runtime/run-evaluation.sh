@@ -13,27 +13,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-##### TODO: Update this for Year2 #####
+##### TODO: Update this #####
 
 #echo "Prepare Image Evaluation:"
-#java -jar VmContextualizer-Full.jar 2 ./ 1 1GB | tail -n 1
-#java -jar VmContextualizer-Full.jar 2 ./ 1 2GB | tail -n 1
-#java -jar VmContextualizer-Full.jar 2 ./ 1 3GB | tail -n 1
-#java -jar VmContextualizer-Full.jar 2 ./ 1 4GB | tail -n 1
-#java -jar VmContextualizer-Full.jar 2 ./ 1 5GB | tail -n 1
+#java -jar virtual-machine-contextualizer.jar 2 ./ 1 1GB | tail -n 1
+#java -jar virtual-machine-contextualizer.jar 2 ./ 1 2GB | tail -n 1
+#java -jar virtual-machine-contextualizer.jar 2 ./ 1 3GB | tail -n 1
+#java -jar virtual-machine-contextualizer.jar 2 ./ 1 4GB | tail -n 1
+#java -jar virtual-machine-contextualizer.jar 2 ./ 1 5GB | tail -n 1
 
 #echo "Contextualization Evaluation:"
-#java -jar VmContextualizer-Full.jar 2 ./ 2 1 | tail -n 1
-#java -jar VmContextualizer-Full.jar 2 ./ 2 10 | tail -n 1
-#java -jar VmContextualizer-Full.jar 2 ./ 2 20 | tail -n 1
-#java -jar VmContextualizer-Full.jar 2 ./ 2 30 | tail -n 1
-#java -jar VmContextualizer-Full.jar 2 ./ 2 40 | tail -n 1
-#java -jar VmContextualizer-Full.jar 2 ./ 2 50 | tail -n 1
-#java -jar VmContextualizer-Full.jar 2 ./ 2 60 | tail -n 1
-#java -jar VmContextualizer-Full.jar 2 ./ 2 70 | tail -n 1
-#java -jar VmContextualizer-Full.jar 2 ./ 2 80 | tail -n 1
-#java -jar VmContextualizer-Full.jar 2 ./ 2 90 | tail -n 1
-#java -jar VmContextualizer-Full.jar 2 ./ 2 100 | tail -n 1
+#java -jar virtual-machine-contextualizer.jar 2 ./ 2 1 | tail -n 1
+#java -jar virtual-machine-contextualizer.jar 2 ./ 2 10 | tail -n 1
+#java -jar virtual-machine-contextualizer.jar 2 ./ 2 20 | tail -n 1
+#java -jar virtual-machine-contextualizer.jar 2 ./ 2 30 | tail -n 1
+#java -jar virtual-machine-contextualizer.jar 2 ./ 2 40 | tail -n 1
+#java -jar virtual-machine-contextualizer.jar 2 ./ 2 50 | tail -n 1
+#java -jar virtual-machine-contextualizer.jar 2 ./ 2 60 | tail -n 1
+#java -jar virtual-machine-contextualizer.jar 2 ./ 2 70 | tail -n 1
+#java -jar virtual-machine-contextualizer.jar 2 ./ 2 80 | tail -n 1
+#java -jar virtual-machine-contextualizer.jar 2 ./ 2 90 | tail -n 1
+#java -jar virtual-machine-contextualizer.jar 2 ./ 2 100 | tail -n 1
 
 #rm repository/iso/*.iso
 #rm repository/image/*.img

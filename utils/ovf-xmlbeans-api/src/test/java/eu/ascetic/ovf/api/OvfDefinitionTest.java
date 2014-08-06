@@ -131,24 +131,24 @@ public class OvfDefinitionTest extends TestCase {
                 .getVirtualSystemCollection()
                 .getVirtualSystemAtIndex(1)
                 .getProductSectionAtIndex(0)
-                .addNewProperty("asceticProbeUri-1",
+                .addNewProperty("asceticProbeUri-2",
                         ProductPropertyType.STRING,
                         "uri://some-end-point/application-monitor");
         String probeUri = ovfDefinition.getVirtualSystemCollection()
                 .getVirtualSystemAtIndex(1).getProductSectionAtIndex(0)
-                .getPropertyByKey("asceticProbeUri-1").getValue();
+                .getPropertyByKey("asceticProbeUri-2").getValue();
         assertNotNull(probeUri);
         ovfDefinition
                 .getVirtualSystemCollection()
                 .getVirtualSystemAtIndex(1)
                 .getProductSectionAtIndex(0)
-                .addNewProperty("asceticProbeType-1",
+                .addNewProperty("asceticProbeType-2",
                         ProductPropertyType.STRING, "cpu");
         ovfDefinition
                 .getVirtualSystemCollection()
                 .getVirtualSystemAtIndex(1)
                 .getProductSectionAtIndex(0)
-                .addNewProperty("asceticProbeInterval-1",
+                .addNewProperty("asceticProbeInterval-2",
                         ProductPropertyType.STRING, "1sec");
 
         System.out.println(ovfDefinition.toString());

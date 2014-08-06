@@ -32,7 +32,9 @@ public class GlobalConfiguration {
 
     protected static final Logger LOGGER = Logger
             .getLogger(GlobalConfiguration.class);
-
+    
+    private static final String REPOSITORY_PROPERTY = "repository";
+    
     private static final String HOST_ADDRESS_PROPERTY_KEY = "hostAddress";
     private static final String REPOSITORY_PROPERTY_KEY = "repositoryPath";
     private static final String RSYNC_PROPERTY_KEY = "rsyncPath";
@@ -109,8 +111,7 @@ public class GlobalConfiguration {
             properties.setProperty(HOST_ADDRESS_PROPERTY_KEY, "10.4.0.19");
 
             // Set repositoryPath URI for testing
-            properties.setProperty(REPOSITORY_PROPERTY_KEY, vmicTemp + "/"
-                    + "repository");
+            properties.setProperty(REPOSITORY_PROPERTY_KEY, vmicTemp);
             new File(properties.getProperty(REPOSITORY_PROPERTY_KEY)).mkdirs();
 
             // Set rsyncPath URI for testing to local rsync binary
@@ -145,7 +146,7 @@ public class GlobalConfiguration {
         this.hostAddress = properties.getProperty(HOST_ADDRESS_PROPERTY_KEY);
         LOGGER.info("Using hostAddress: '" + hostAddress + "'");
 
-        this.repositoryPath = properties.getProperty(REPOSITORY_PROPERTY_KEY);
+        this.repositoryPath = properties.getProperty(REPOSITORY_PROPERTY_KEY) + "/" + REPOSITORY_PROPERTY;
         LOGGER.info("Using repositoryPath dir: '" + repositoryPath + "'");
 
         this.rsyncPath = properties.getProperty(RSYNC_PROPERTY_KEY);

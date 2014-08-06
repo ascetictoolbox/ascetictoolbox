@@ -1,63 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ovf:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:vssd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData"
     xmlns:rasd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData"
-    xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" xmlns="http://schemas.dmtf.org/ovf/envelope/1"
-    xsi:schemaLocation="http://schemas.dmtf.org/ovf/envelope/1 ../dsp8023.xsd">
+    xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" xsi:schemaLocation="http://schemas.dmtf.org/ovf/envelope/1 ../dsp8023.xsd">
     <!-- References to all external files -->
     <ovf:References>
         <!-- HAProxy VM Image -->
         <ovf:File ovf:id="${vmHaproxyImageFileId}" ovf:href="${imageRepository}/${vmHaproxyImageFile}" />
-        <!-- HAProxy Context Base Image(s) -->
-        <ovf:File ovf:id="${contextHaproxyImageFileId}"
-            ovf:href="${imageRepository}/${contextHaproxyImageFile}" />
         <!-- Jboss VM Image -->
         <ovf:File ovf:id="${vmJbossImageFileId}" ovf:href="${imageRepository}/${vmJbossImageFile}" />
-        <!-- Jboss Context Base Image(s) -->
-        <ovf:File ovf:id="${contextJbossImageFileId}" ovf:href="${imageRepository}/${contextJbossImageFile}" />
         <!-- MySQL VM Image -->
         <ovf:File ovf:id="${vmMysqlImageFileId}" ovf:href="${imageRepository}/${vmMysqlImageFile}" />
-        <!-- MySQL Context Base Image(s) -->
-        <ovf:File ovf:id="${contextMysqlImageFileId}" ovf:href="${imageRepository}/${contextMysqlImageFile}" />
         <!-- JMeter VM Image -->
         <ovf:File ovf:id="${vmJmeterImageFileId}" ovf:href="${imageRepository}/${vmJmeterImageFile}" />
-        <!-- JMeter Context Base Image(s) -->
-        <ovf:File ovf:id="${contextJmeterImageFileId}" ovf:href="${imageRepository}/${contextJmeterImageFile}" />
     </ovf:References>
     <!-- Describes meta-information about all virtual disks in the package. -->
     <ovf:DiskSection>
         <ovf:Info>List of the virtual disks used in the 3 Tier Web App package.
         </ovf:Info>
-        <!-- HAProxy Disks -->
+        <!-- HAProxy Disk -->
         <ovf:Disk ovf:diskId="${vmHaproxyImageFileId}-disk"
-            ovf:fileRef="${vmHaproxyImageFileId}" ns:capacityAllocationUnits="byte * 2^30"
+            ovf:fileRef="${vmHaproxyImageFileId}" ovf:capacityAllocationUnits="byte * 2^30"
             ovf:capacity="${vmHaproxyImageCapacity}" ovf:format="${vmImageFormat}" />
-        <ovf:Disk ovf:diskId="${contextHaproxyImageFileId}-disk"
-            ovf:fileRef="${contextHaproxyImageFileId}"
-            ns:capacityAllocationUnits="byte * 2^20" ovf:capacity="${contextHaproxyImageCapacity}"
-            ovf:format="${contextImageFormat}" />
-        <!-- Jboss Disks -->
+        <!-- Jboss Disk -->
         <ovf:Disk ovf:diskId="${vmJbossImageFileId}-disk" ovf:fileRef="${vmJbossImageFileId}"
-            ns:capacityAllocationUnits="byte * 2^30" ovf:capacity="${vmJbossImageCapacity}"
+            ovf:capacityAllocationUnits="byte * 2^30" ovf:capacity="${vmJbossImageCapacity}"
             ovf:format="${vmImageFormat}" />
-        <ovf:Disk ovf:diskId="${contextJbossImageFileId}-disk"
-            ovf:fileRef="${contextJbossImageFileId}" ns:capacityAllocationUnits="byte * 2^20"
-            ovf:capacity="${contextJbossImageCapacity}" ovf:format="${contextImageFormat}" />
-        <!-- MySQL Disks -->
+        <!-- MySQL Disk -->
         <ovf:Disk ovf:diskId="${vmMysqlImageFileId}-disk" ovf:fileRef="${vmMysqlImageFileId}"
-            ns:capacityAllocationUnits="byte * 2^30" ovf:capacity="${vmMysqlImageCapacity}"
+            ovf:capacityAllocationUnits="byte * 2^30" ovf:capacity="${vmMysqlImageCapacity}"
             ovf:format="${vmImageFormat}" />
-        <ovf:Disk ovf:diskId="${contextMysqlImageFileId}-disk"
-            ovf:fileRef="${contextMysqlImageFileId}" ns:capacityAllocationUnits="byte * 2^20"
-            ovf:capacity="${contextMysqlImageCapacity}" ovf:format="${contextImageFormat}" />
-        <!-- JMeter Disks -->
+        <!-- JMeter Disk -->
         <ovf:Disk ovf:diskId="${vmJmeterImageFileId}-disk" ovf:fileRef="${vmJmeterImageFileId}"
-            ns:capacityAllocationUnits="byte * 2^30" ovf:capacity="${vmJmeterImageCapacity}"
+            ovf:capacityAllocationUnits="byte * 2^30" ovf:capacity="${vmJmeterImageCapacity}"
             ovf:format="${vmImageFormat}" />
-        <ovf:Disk ovf:diskId="${contextJmeterImageFileId}-disk"
-            ovf:fileRef="${contextJmeterImageFileId}"
-            ns:capacityAllocationUnits="byte * 2^20" ovf:capacity="${contextJmeterImageCapacity}"
-            ovf:format="${contextImageFormat}" />
     </ovf:DiskSection>
     <!-- Describes all networks used in the package -->
     <ovf:NetworkSection>
@@ -91,6 +67,11 @@
                 </ovf:Info>
                 <ovf:Product>${vsHaproxyName}</ovf:Product>
                 <ovf:Version>${vsHaproxyVersion}</ovf:Version>
+                <!-- Product Properties that stores variables such as probe end points -->
+                <ovf:Property ovf:key="asceticLowerBound" ovf:type="uint32"
+                    ovf:value="${lowerBoundHaproxy}" />
+                <ovf:Property ovf:key="asceticUpperBound" ovf:type="uint32"
+                    ovf:value="${upperBoundHaproxy}" />
             </ovf:ProductSection>
             <!-- Operating System details -->
             <ovf:OperatingSystemSection ovf:id="${operatingSystemId}"
@@ -163,14 +144,6 @@
                     <rasd:InstanceID>4</rasd:InstanceID>
                     <rasd:ResourceType>17</rasd:ResourceType>
                 </ovf:Item>
-                <ovf:Item>
-                    <rasd:Description>VM CDROM</rasd:Description>
-                    <rasd:ElementName>Context CD 1</rasd:ElementName>
-                    <rasd:HostResource>ovf:/disk/${contextHaproxyImageFileId}-disk
-                    </rasd:HostResource>
-                    <rasd:InstanceID>4</rasd:InstanceID>
-                    <rasd:ResourceType>15</rasd:ResourceType>
-                </ovf:Item>
             </ovf:VirtualHardwareSection>
         </ovf:VirtualSystem>
         <!-- JBoss Virtual System Instances Template -->
@@ -185,6 +158,16 @@
                 <ovf:Product>${vsJbossName}</ovf:Product>
                 <ovf:Version>${vsJbossVersion}</ovf:Version>
                 <!-- Product Properties that stores variables such as probe end points -->
+                <ovf:Property ovf:key="asceticLowerBound" ovf:type="uint32"
+                    ovf:value="${lowerBoundJboss}" />
+                <ovf:Property ovf:key="asceticUpperBound" ovf:type="uint32"
+                    ovf:value="${upperBoundJboss}" />
+                <ovf:Property ovf:key="asceticProbeUri-1" ovf:type="string"
+                    ovf:value="uri://some-end-point/application-monitor" />
+                <ovf:Property ovf:key="asceticProbeType-1"
+                    ovf:type="string" ovf:value="mem" />
+                <ovf:Property ovf:key="asceticProbeInterval-1"
+                    ovf:type="string" ovf:value="1sec" />
             </ovf:ProductSection>
             <!-- Operating System details -->
             <ovf:OperatingSystemSection ovf:id="${operatingSystemId}"
@@ -256,14 +239,6 @@
                     <rasd:InstanceID>4</rasd:InstanceID>
                     <rasd:ResourceType>17</rasd:ResourceType>
                 </ovf:Item>
-                <ovf:Item>
-                    <rasd:Description>VM CDROM</rasd:Description>
-                    <rasd:ElementName>Context CD 1</rasd:ElementName>
-                    <rasd:HostResource>ovf:/disk/${contextJbossImageFileId}-disk
-                    </rasd:HostResource>
-                    <rasd:InstanceID>4</rasd:InstanceID>
-                    <rasd:ResourceType>15</rasd:ResourceType>
-                </ovf:Item>
             </ovf:VirtualHardwareSection>
         </ovf:VirtualSystem>
         <!-- MySQL Virtual System Instances Template -->
@@ -277,6 +252,11 @@
                 </ovf:Info>
                 <ovf:Product>${vsMysqlName}</ovf:Product>
                 <ovf:Version>${vsMysqlVersion}</ovf:Version>
+                <!-- Product Properties that stores variables such as probe end points -->
+                <ovf:Property ovf:key="asceticLowerBound" ovf:type="uint32"
+                    ovf:value="${lowerBoundMysql}" />
+                <ovf:Property ovf:key="asceticUpperBound" ovf:type="uint32"
+                    ovf:value="${upperBoundMysql}" />
             </ovf:ProductSection>
             <!-- Operating System details -->
             <ovf:OperatingSystemSection ovf:id="${operatingSystemId}"
@@ -348,14 +328,6 @@
                     <rasd:InstanceID>4</rasd:InstanceID>
                     <rasd:ResourceType>17</rasd:ResourceType>
                 </ovf:Item>
-                <ovf:Item>
-                    <rasd:Description>VM CDROM</rasd:Description>
-                    <rasd:ElementName>Context CD 1</rasd:ElementName>
-                    <rasd:HostResource>ovf:/disk/${contextMysqlImageFileId}-disk
-                    </rasd:HostResource>
-                    <rasd:InstanceID>4</rasd:InstanceID>
-                    <rasd:ResourceType>15</rasd:ResourceType>
-                </ovf:Item>
             </ovf:VirtualHardwareSection>
         </ovf:VirtualSystem>
         <!-- JMeter Virtual System Instances Template -->
@@ -369,6 +341,11 @@
                 </ovf:Info>
                 <ovf:Product>${vsJmeterName}</ovf:Product>
                 <ovf:Version>${vsJmeterVersion}</ovf:Version>
+                <!-- Product Properties that stores variables such as probe end points -->
+                <ovf:Property ovf:key="asceticLowerBound" ovf:type="uint32"
+                    ovf:value="${lowerBoundJmeter}" />
+                <ovf:Property ovf:key="asceticUpperBound" ovf:type="uint32"
+                    ovf:value="${upperBoundJmeter}" />
             </ovf:ProductSection>
             <!-- Operating System details -->
             <ovf:OperatingSystemSection ovf:id="${operatingSystemId}"
@@ -441,15 +418,7 @@
                     <rasd:InstanceID>4</rasd:InstanceID>
                     <rasd:ResourceType>17</rasd:ResourceType>
                 </ovf:Item>
-                <ovf:Item>
-                    <rasd:Description>VM CDROM</rasd:Description>
-                    <rasd:ElementName>Context CD 1</rasd:ElementName>
-                    <rasd:HostResource>ovf:/disk/${contextJmeterImageFileId}-disk
-                    </rasd:HostResource>
-                    <rasd:InstanceID>4</rasd:InstanceID>
-                    <rasd:ResourceType>15</rasd:ResourceType>
-                </ovf:Item>
             </ovf:VirtualHardwareSection>
         </ovf:VirtualSystem>
     </ovf:VirtualSystemCollection>
-</Envelope>
+</ovf:Envelope>

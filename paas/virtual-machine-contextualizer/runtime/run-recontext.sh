@@ -13,4 +13,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-java -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=666 -jar VmContextualizer.jar 3 `pwd` `pwd` $1 $2 
+java -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=666 -jar virtual-machine-contextualizer.jar 3 `pwd` `pwd` $1 $2 

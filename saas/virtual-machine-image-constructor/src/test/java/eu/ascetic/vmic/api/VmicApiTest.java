@@ -15,7 +15,9 @@
  */
 package eu.ascetic.vmic.api;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -236,6 +238,24 @@ public class VmicApiTest extends TestCase {
                 }
             }
 
+            //Test the manifest that was altered
+            OvfDefinition ovfDefinition2 = ((ProgressDataImage) (vmicApi.progressCallback(
+                    ovfDefinitionId, null))).getOvfDefinition();
+                    
+            assertFalse(ovfDefinition2.hasErrors());
+            
+            String targetDir = System.getProperty("ovfSampleDir", "target");
+
+            java.io.File file = new java.io.File(targetDir
+                    + java.io.File.separator + java.io.File.separator
+                    + "3tier-webapp.ovf.vmic.xml");
+            FileWriter fstream = new FileWriter(file);
+            BufferedWriter out = new BufferedWriter(fstream);
+
+            out.write(ovfDefinition2.toString());
+            // Close the output stream
+            out.close();
+            
         } catch (Exception e) {
             LOGGER.error("TEST: Test Failed! Cause: " + e.getCause(), e);
         }

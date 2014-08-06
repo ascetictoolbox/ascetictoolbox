@@ -342,14 +342,11 @@ public class VirtualMachineImageConstructor implements Runnable {
 
                     // Set the progress
                     if (percentage != null) {
-                        vmicApi.getGlobalState()
-                                .setProgressPercentage(
-                                        ovfDefinitionId,
-                                        ((((100.0 / totalImages) / 5) * 1)
-                                                * (Double
-                                                        .parseDouble(percentage) / 100))
-                                                + (100.0 / totalImages)
-                                                * imageNumber);
+                        vmicApi.getGlobalState().setProgressPercentage(
+                                ovfDefinitionId,
+                                ((((100.0 / totalImages) / 5) * 1) * (Double
+                                        .parseDouble(percentage) / 100))
+                                        + (100.0 / totalImages) * imageNumber);
                     }
                     Thread.sleep(THREAD_SLEEP_TIME);
                 } catch (InterruptedException e) {
@@ -447,6 +444,11 @@ public class VirtualMachineImageConstructor implements Runnable {
         // Add qemu-nbd command
         arguments.add("sudo qemu-nbd --connect=" + nbdDevicePath + " "
                 + imagePath + ";");
+        // Check the qemu-nbd command has
+        arguments
+                .add("while true;do S=`cat /sys/class/block/"
+                        + nbdDevicePath
+                        + "/size`;if [ \"$S\" != \"0\" ];then break;else sleep 1;fi;done;");
         // Add mount command
         // FIXME: Should detect which partition to mount and what file system is
         // in use

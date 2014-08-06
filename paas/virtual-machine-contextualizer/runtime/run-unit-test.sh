@@ -16,16 +16,16 @@
 #WARNING These OVF Definitions are out of date...
 
 #Test conversion of linux cqow2 image
-#java -jar VmContextualizer.jar 1 /opt/ascetic/vmc/runtime /opt/ascetic/vmc/runtime/some-ovf.xml vmdk
+#java -jar virtual-machine-contextualizer.jar 1 /opt/ascetic/vmc/runtime /opt/ascetic/vmc/runtime/some-ovf.xml vmdk
 
 #Test conversion of windows cqow2 image
-#java -jar VmContextualizer.jar 1 /opt/ascetic/vmc/runtime /opt/ascetic/vmc/runtime/some-ovf.xml vmdk
+#java -jar virtual-machine-contextualizer.jar 1 /opt/ascetic/vmc/runtime /opt/ascetic/vmc/runtime/some-ovf.xml vmdk
 
 #Test the programming model ovf
-#java -jar VmContextualizer.jar 1 /opt/ascetic/vmc/runtime /opt/ascetic/vmc/runtime/some-ovf.xml 
+#java -jar virtual-machine-contextualizer.jar 1 /opt/ascetic/vmc/runtime /opt/ascetic/vmc/runtime/some-ovf.xml 
 
 #Test with defaults
-java -jar VmContextualizer.jar 1 `pwd`
+java -jar virtual-machine-contextualizer.jar 1 `pwd`
 
 #Test image manipulation scripts
 echo ""

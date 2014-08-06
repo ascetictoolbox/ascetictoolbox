@@ -335,10 +335,9 @@ public class VirtualMachineContextualizer implements Runnable {
 				// TODO: Confirm what string format the VM instance IDs will be
 				// using...
 
-				String isoFileName = service.getServiceId() + "_"
-						+ virtualMachine.getComponentId() + "_" + i + ".iso";
+				String isoFileName =  virtualMachine.getComponentId() + ".iso" + "_" + i;
 				String isoPath = vmcApi.getGlobalState().getConfiguration()
-						.getRepository()
+						.getRepository() + File.separator + service.getServiceId()
 						+ File.separator + isoFileName;
 
 				Iso iso = new Iso(Integer.toString(i), isoFileName, isoPath,
@@ -370,7 +369,6 @@ public class VirtualMachineContextualizer implements Runnable {
 		}
 
 		// Add the ISO URI's to the OVF Definition
-		// FIXME: Should we be getting the serviceId from a property here, confirm with consortium? 
 		LOGGER.info("Adding ISOs to OVF Definition with id: "
 				+ ovfDefinition.getVirtualSystemCollection().getId());
 		OvfDefinitionClient ovfDefinitionClient = new OvfDefinitionClient(

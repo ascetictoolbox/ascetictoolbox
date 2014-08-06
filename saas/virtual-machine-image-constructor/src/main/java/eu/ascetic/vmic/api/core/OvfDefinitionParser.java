@@ -142,11 +142,14 @@ public class OvfDefinitionParser {
         }
     }
 
+
     /**
-     * @param scriptIn
-     * @param index
-     * @param references
-     * @return
+     * Method to replace variables within an PM Plugin script passed to the VMIC via OVF.
+     * 
+     * @param scriptIn The script to replace variables in
+     * @param references The references to use in the variable replacement
+     * @param mountPoint The mount point of the image that the script will operate within
+     * @return The script with variables replaced.
      */
     public static String replaceVariablesInScript(String scriptIn, References references, String mountPoint) {
 
