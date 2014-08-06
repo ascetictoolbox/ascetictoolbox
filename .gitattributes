@@ -251,6 +251,7 @@ iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/sc
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/scheduler/schedulingalgorithms/SchedAlgGroupByApp.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/scheduler/schedulingalgorithms/SchedAlgRandom.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/scheduler/schedulingalgorithms/SchedAlgorithm.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/utils/CommandExecutor.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/utils/HttpUtils.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/resources/configBSC.properties -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/resources/configTUB.properties -text

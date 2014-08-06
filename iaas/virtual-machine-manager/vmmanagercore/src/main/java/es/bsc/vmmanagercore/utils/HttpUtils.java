@@ -8,7 +8,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 
@@ -16,9 +15,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Map;
 
 /**
@@ -54,11 +50,10 @@ public class HttpUtils {
      * @param uri URI of the request.
      * @param header Headers of the request.
      * @param entity Entity of the request.
-     * @param filePath Path of a file.
      * @return The HTTP Request built.
      */
     public static HttpRequestBase buildHttpRequest(String methodType, URI uri, Map<String,
-            String> header, String entity, String filePath) {
+            String> header, String entity) {
         HttpRequestBase request;
 
         //instantiate the request according to its type (GET, POST...)
@@ -87,21 +82,11 @@ public class HttpUtils {
         }
 
         //if the type of the request is POST, set the entity of the request
-        if (methodType.equals("POST")) {
-            if (filePath != null) {
-                Path path = FileSystems.getDefault().getPath(filePath);
-                try {
-                    ((HttpPost) request).setEntity(new ByteArrayEntity(Files.readAllBytes(path)));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            else if (!entity.equals("")) {
-                try {
-                    ((HttpPost) request).setEntity(new StringEntity(entity));
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
+        if (request instanceof HttpPost && !entity.equals("")) {
+            try {
+                ((HttpPost) request).setEntity(new StringEntity(entity));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
             }
         }
 
@@ -137,8 +122,7 @@ public class HttpUtils {
      * @param entity Entity of the request.
      * @return @return The response of the HTTP request
      */
-    public static String executeHttpRequest(String methodType, URI uri, Map<String, String> header, String entity,
-            String filePath) {
-        return getHttpResponse(buildHttpRequest(methodType, uri, header, entity, filePath));
+    public static String executeHttpRequest(String methodType, URI uri, Map<String, String> header, String entity) {
+        return getHttpResponse(buildHttpRequest(methodType, uri, header, entity));
     }
 }

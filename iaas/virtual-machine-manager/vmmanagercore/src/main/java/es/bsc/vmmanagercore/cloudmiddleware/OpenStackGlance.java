@@ -2,13 +2,12 @@ package es.bsc.vmmanagercore.cloudmiddleware;
 
 import es.bsc.vmmanagercore.manager.VmManagerConfiguration;
 import es.bsc.vmmanagercore.model.ImageToUpload;
+import es.bsc.vmmanagercore.utils.CommandExecutor;
 import es.bsc.vmmanagercore.utils.HttpUtils;
 import org.apache.commons.validator.UrlValidator;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,6 +27,7 @@ public class OpenStackGlance {
     private String keyStonePassword;
     private String keyStoneTenantId;
     private String token; // token needed for authentication
+    private CommandExecutor commandExecutor = new CommandExecutor();
 
     /**
      * Class constructor.
@@ -67,7 +67,7 @@ public class OpenStackGlance {
         String responseContent;
         if (new UrlValidator().isValid(imageToUpload.getUrl())) {
             responseContent = HttpUtils.executeHttpRequest("POST",
-                    HttpUtils.buildURI("http", openStackIp, glancePort, "/v1/images"), headers, "", null);
+                    HttpUtils.buildURI("http", openStackIp, glancePort, "/v1/images"), headers, "");
 
             //return the image ID
             JsonNode imageIdJson;
@@ -79,7 +79,8 @@ public class OpenStackGlance {
             return imageIdJson.asText();
         }
         else {
-            String glanceCommandOutput = executeCommand("glance --os-username vm.manager --os-password vmmanager14 " +
+            String glanceCommandOutput = commandExecutor.executeCommand(
+                    "glance --os-username vm.manager --os-password vmmanager14 " +
                     "--os-tenant-id f559470b483c48f18479bd039400b007 " +
                     "--os-auth-url http://130.149.248.39:35357/v2.0 " +
                     "image-create --name=" + imageToUpload.getName() + " " +
@@ -97,13 +98,20 @@ public class OpenStackGlance {
      * @param imageId the ID of the image to be deleted.
      */
     public void deleteImage(String imageId) {
-        //build the headers of the HTTP request
-        Map<String, String> headers = new HashMap<>();
-        headers.put("X-Auth-Token", token);
-
-        //execute the HTTP request
         HttpUtils.executeHttpRequest("DELETE",
-                HttpUtils.buildURI("http", openStackIp, glancePort, "/v2/images/" + imageId), headers, "", null);
+                HttpUtils.buildURI("http", openStackIp, glancePort, "/v2/images/" + imageId),
+                getHeadersForDeleteImageRequest(), "");
+    }
+
+    /**
+     * Returns the headers for the call used to delete an image.
+     *
+     * @return the headers.
+     */
+    private Map<String, String> getHeadersForDeleteImageRequest() {
+        Map<String, String> result = new HashMap<>();
+        result.put("X-Auth-Token", token);
+        return result;
     }
 
     /**
@@ -114,20 +122,35 @@ public class OpenStackGlance {
      * @return true if the image is active, false otherwise.
      */
     public boolean imageIsActive(String imageId) {
-        //build the headers of the HTTP request
-        Map<String, String> headers = new HashMap<>();
-        headers.put("X-Auth-Token", token);
-        headers.put("User-Agent", "python-glanceclient");
-        headers.put("Content-Type", "application/octet-stream");
-
-        //execute the HTTP request
         String responseContent = HttpUtils.executeHttpRequest("GET",
-                HttpUtils.buildURI("http", openStackIp, glancePort, "/v2/images/" + imageId), headers, "", null);
+                HttpUtils.buildURI("http", openStackIp, glancePort, "/v2/images/" + imageId),
+                getHeadersForImageIsActiveRequest(), "");
+        return imageIsActiveFromResponse(responseContent);
+    }
 
-        //get the image status
+    /**
+     * Returns the headers for the call used to check whether an image is active.
+     *
+     * @return the headers.
+     */
+    private Map<String, String> getHeadersForImageIsActiveRequest() {
+        Map<String, String> result = new HashMap<>();
+        result.put("X-Auth-Token", token);
+        result.put("User-Agent", "python-glanceclient");
+        result.put("Content-Type", "application/octet-stream");
+        return result;
+    }
+
+    /**
+     * Checks whether an image is active from the response of the call used to check whether an image is active.
+     *
+     * @param response the response of the call
+     * @return True if the image is active, false otherwise.
+     */
+    private boolean imageIsActiveFromResponse(String response) {
         String imageStatus = "";
         try {
-            imageStatus = new ObjectMapper().readTree(responseContent).get("status").asText();
+            imageStatus = new ObjectMapper().readTree(response).get("status").asText();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -137,48 +160,51 @@ public class OpenStackGlance {
     /**
      * Gets a token needed to perform requests to the OpenStack API.
      *
-     * @return Token needed for authentication.
+     * @return Token needed for authentication
      */
     private String getToken() {
-        //build the headers of the HTTP request
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Content-type", "application/json");
+        String responseContent = HttpUtils.executeHttpRequest("POST", HttpUtils.buildURI("http", openStackIp,
+                keyStonePort, "/v2.0/tokens"), getHeadersForGetTokenRequest(), getParamsForGetTokenRequest());
+        return getTokenFromGetTokenResponse(responseContent);
+    }
 
-        //build the parameters of the HTTP request
-        String params = "{\"auth\":{\"passwordCredentials\":"
+    /**
+     * Returns the headers for the call used to get a token.
+     *
+     * @return the headers
+     */
+    private Map<String, String> getHeadersForGetTokenRequest() {
+        Map<String, String> result = new HashMap<>();
+        result.put("Content-type", "application/json");
+        return result;
+    }
+
+    /**
+     * Returns the parameters for the call used to get a token.
+     *
+     * @return the headers
+     */
+    private String getParamsForGetTokenRequest() {
+        return "{\"auth\":{\"passwordCredentials\":"
                 + "{\"username\":" + "\"" + keyStoneUser + "\""
                 + ", \"password\":" + "\"" + keyStonePassword + "\"}"
                 + ", \"tenantId\":" + "\"" + keyStoneTenantId + "\"}}";
+    }
 
-        //execute the HTTP request
-        String responseContent = HttpUtils.executeHttpRequest("POST",
-                HttpUtils.buildURI("http", openStackIp, keyStonePort, "/v2.0/tokens"), headers, params, null);
-
-        //get the token
+    /**
+     * Extracts the token from the response of the call used to get the token.
+     *
+     * @param response the response of the call
+     * @return the token
+     */
+    private String getTokenFromGetTokenResponse(String response) {
         JsonNode tokenJson;
         try {
-            tokenJson = new ObjectMapper().readTree(responseContent).get("access").get("token").get("id");
+            tokenJson = new ObjectMapper().readTree(response).get("access").get("token").get("id");
         } catch (Exception e) {
             throw new RuntimeException("Could not login to the Glance service.");
         }
-       return tokenJson.asText();
-    }
-
-    private String executeCommand(String command) {
-        StringBuffer output = new StringBuffer();
-        Process p;
-        try {
-            p = Runtime.getRuntime().exec(command);
-            p.waitFor();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                output.append(line + "\n");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return output.toString();
+        return tokenJson.asText();
     }
 
 }
