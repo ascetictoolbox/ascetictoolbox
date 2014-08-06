@@ -153,14 +153,9 @@ public class VmManager {
                                 Paths.get("/DFS/ascetic/vm-scripts/" + vmScriptName), REPLACE_EXISTING);
 
                         // Append the instruction to mount the ISO
-                        /*File scriptFile = new File("/DFS/ascetic/vm-scripts/" + vmScriptName);
-                        FileWriter fileWritter = new FileWriter(scriptFile.getName(), true);
-                        BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
-                        bufferWritter.write("\n mount -o loop,ro " + vmToDeploy.getInitScript() + "/media/cdrom");
-                        bufferWritter.close();*/
                         try (PrintWriter out = new PrintWriter(new BufferedWriter(
                                 new FileWriter("/DFS/ascetic/vm-scripts/" + vmScriptName, true)))) {
-                            out.println("mount -o loop,ro " + vmToDeploy.getInitScript() + "/media/cdrom");
+                            out.println("mount -o loop,ro " + vmToDeploy.getInitScript() + " /media/cdrom");
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
