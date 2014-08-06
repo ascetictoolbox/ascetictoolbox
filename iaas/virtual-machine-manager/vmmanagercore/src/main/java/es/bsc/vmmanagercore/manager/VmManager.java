@@ -9,10 +9,7 @@ import es.bsc.vmmanagercore.monitoring.*;
 import es.bsc.vmmanagercore.scheduler.EstimatesGenerator;
 import es.bsc.vmmanagercore.scheduler.Scheduler;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -151,16 +148,22 @@ public class VmManager {
                     try {
                         // Copy the Zabbix agents script
                         String vmScriptName = "vm_" + vmToDeploy.getName() +
-                        "_" + dateFormat.format(Calendar.getInstance().getTime()) + ".sh";
+                                "_" + dateFormat.format(Calendar.getInstance().getTime()) + ".sh";
                         Files.copy(Paths.get("/DFS/ascetic/vm-scripts/zabbix_agents.sh"),
                                 Paths.get("/DFS/ascetic/vm-scripts/" + vmScriptName), REPLACE_EXISTING);
 
                         // Append the instruction to mount the ISO
-                        File scriptFile = new File("/DFS/ascetic/vm-scripts/" + vmScriptName);
+                        /*File scriptFile = new File("/DFS/ascetic/vm-scripts/" + vmScriptName);
                         FileWriter fileWritter = new FileWriter(scriptFile.getName(), true);
                         BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
                         bufferWritter.write("\n mount -o loop,ro " + vmToDeploy.getInitScript() + "/media/cdrom");
-                        bufferWritter.close();
+                        bufferWritter.close();*/
+                        try (PrintWriter out = new PrintWriter(new BufferedWriter(
+                                new FileWriter("/DFS/ascetic/vm-scripts/" + vmScriptName, true)))) {
+                            out.println("mount -o loop,ro " + vmToDeploy.getInitScript() + "/media/cdrom");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
 
                         // Assign the new script to the VM
                         vmToDeploy.setInitScript("/DFS/ascetic/vm-scripts/" + vmScriptName);
