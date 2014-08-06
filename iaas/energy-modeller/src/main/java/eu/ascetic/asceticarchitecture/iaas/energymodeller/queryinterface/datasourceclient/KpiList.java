@@ -47,8 +47,8 @@ public abstract class KpiList {
     public static final String DISK_USED_KPI_NAME = "vfs.fs.size[/,used]"; 
     public static final String DISK_TOTAL_KPI_NAME = "vfs.fs.size[/,total]";
     //Network
-    public static final String NETWORK_OUT_STARTS_WITH_KPI_NAME = "net.if.in[";    
-    public static final String NETWORK_IN_STARTS_WITH_KPI_NAME = "net.if.out[";    
+    public static final String NETWORK_OUT_STARTS_WITH_KPI_NAME = "net.if.in[eth";    
+    public static final String NETWORK_IN_STARTS_WITH_KPI_NAME = "net.if.out[eth";    
     //boot time
     public static final String BOOT_TIME_KPI_NAME = "system.boottime";
     
