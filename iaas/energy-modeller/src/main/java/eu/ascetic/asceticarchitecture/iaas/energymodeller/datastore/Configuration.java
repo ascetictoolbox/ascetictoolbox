@@ -22,24 +22,37 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
 /**
- * This gets the configuration data for the energy modellers database.
- * If the settings file is absent a fresh copy will be created with default
- * values.
+ * This gets the configuration data for the energy modellers database. If the
+ * settings file is absent a fresh copy will be created with default values.
+ *
  * @author Richard
  */
+@SuppressWarnings("StaticNonFinalUsedInInitialization")
 public class Configuration {
 
+    /**
+     * The url to contact the database.
+     */
     public static String databaseURL = "jdbc:mysql://10.4.0.15:3306/ascetic-em"; //"jdbc:mysql://iaas-vm-dev:3306/ascetic-em";
+    /**
+     * The driver to be used to contact the database.
+     */
     public static String databaseDriver = "com.mysql.jdbc.Driver";
+    /**
+     * The user details to contact the database.
+     */
     public static String databaseUser = "ascetic-em";
+    /**
+     * The user's password to contact the database.
+     */
     public static String databasePassword = "em";
-    public static final String CONFIG_FILE = "energymodeller.properties";
+    private static final String CONFIG_FILE = "energymodeller.properties";
 
     static {
         try {
             PropertiesConfiguration config;
             if (new File(CONFIG_FILE).exists()) {
-                config = new PropertiesConfiguration(CONFIG_FILE); 
+                config = new PropertiesConfiguration(CONFIG_FILE);
             } else {
                 config = new PropertiesConfiguration();
                 config.setFile(new File(CONFIG_FILE));

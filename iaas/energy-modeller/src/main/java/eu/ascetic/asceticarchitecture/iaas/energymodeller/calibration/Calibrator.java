@@ -29,7 +29,6 @@ import java.util.logging.Logger;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
-
 /**
  * This takes an existing host and calibrates the energy model, for it so that
  * predictions can be made regarding its energy usage.
@@ -38,13 +37,15 @@ import org.apache.commons.configuration.PropertiesConfiguration;
  */
 public class Calibrator implements Runnable {
 
-    private LoadGenerator generator = new DummyLoadGenerator(); //new DefaultLoadGenerator();
+    private LoadGenerator generator;
     private final HostDataSource datasource;
     private boolean running = true;
     private final LinkedBlockingDeque<Host> queue = new LinkedBlockingDeque<>();
     private static int calibratorWaitSec = 120; //Default 2 second poll interval during training
     private static int calibratorMaxDurationSec = 240; //for 2 minutes.
+    private static String defaultLoadGenerator = "DummyLoadGenerator";
     private static final String CONFIG_FILE = "energymodeller_calibrator.properties";
+    private static final String DEFAULT_LOAD_GEN_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration";
 
     /**
      * This creates a new calibrator.
@@ -67,6 +68,9 @@ public class Calibrator implements Runnable {
             config.setProperty("iaas.energy.modeller.calibrator.wait", calibratorWaitSec);
             calibratorMaxDurationSec = config.getInt("iaas.energy.modeller.calibrator.duration", calibratorMaxDurationSec);
             config.setProperty("iaas.energy.modeller.calibrator.duration", calibratorMaxDurationSec);
+            defaultLoadGenerator = config.getString("iaas.energy.modeller.calibrator.load.generator", defaultLoadGenerator);
+            config.setProperty("iaas.energy.modeller.calibrator.load.generator", defaultLoadGenerator);
+            setGenerator(defaultLoadGenerator);
 
         } catch (ConfigurationException ex) {
             Logger.getLogger(Calibrator.class.getName()).log(Level.INFO, "Error loading the configuration of the IaaS energy modeller", ex);
@@ -158,8 +162,32 @@ public class Calibrator implements Runnable {
      *
      * @param generator the generator to set
      */
-    public void setGenerator(DefaultLoadGenerator generator) {
+    public void setGenerator(LoadGenerator generator) {
         this.generator = generator;
+    }
+
+    /**
+     * This sets the load generator used by the calibration module.
+     *
+     * @param generator the generator to set
+     */
+    public final void setGenerator(String generator) {
+        try {
+            if (!generator.startsWith(DEFAULT_LOAD_GEN_PACKAGE)) {
+                generator = DEFAULT_LOAD_GEN_PACKAGE + "." + generator;
+            }
+            this.generator = (LoadGenerator) (Class.forName(generator).newInstance());
+        } catch (ClassNotFoundException ex) {
+            if (generator == null) {
+                this.generator = new DefaultLoadGenerator();
+            }
+            Logger.getLogger(Calibrator.class.getName()).log(Level.WARNING, "The load generator specified was not found");
+        } catch (InstantiationException | IllegalAccessException ex) {
+            if (generator == null) {
+                this.generator = new DefaultLoadGenerator();
+            }
+            Logger.getLogger(Calibrator.class.getName()).log(Level.WARNING, "The load generator did not work", ex);
+        }
     }
 
     /**

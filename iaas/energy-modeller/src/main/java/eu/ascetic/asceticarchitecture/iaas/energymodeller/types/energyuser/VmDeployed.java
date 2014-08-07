@@ -38,9 +38,12 @@ public class VmDeployed extends VM {
     private Calendar created;
 
     /**
+     * This creates a new VM Deployed
      *
-     * @param id
-     * @param name
+     * @param id The id of the VM as known by the source of information by the
+     * energy modeller.
+     * @param name The name of the VM as known by the source of information by
+     * the energy modeller.
      */
     public VmDeployed(int id, String name) {
         this.id = id;
@@ -48,39 +51,16 @@ public class VmDeployed extends VM {
     }
 
     /**
-     *
-     * @param id
-     * @param name
-     * @param cpus
-     * @param ramMb
-     * @param diskGb
-     * @param ipAddress
-     * @param state
-     * @param created
-     * @param allocatedTo
-     */
-    public VmDeployed(int id, String name, int cpus, int ramMb,
-            int diskGb,
-            String ipAddress, String state, Calendar created, Host allocatedTo) {
-        super(cpus, ramMb, diskGb);
-        this.name = name;
-        this.id = id;
-        this.ipAddress = ipAddress;
-        this.state = state;
-        this.created = created;
-        this.allocatedTo = allocatedTo;
-    }
-
-    /**
      * This takes a previously uninstantiated VM and adds the additional
      * information to represent the newly created VM.
      *
-     * @param id
-     * @param vm
-     * @param ipAddress
-     * @param state
-     * @param created
-     * @param allocatedTo
+     * @param id The id of the VM as known by the source of information by the
+     * energy modeller.
+     * @param vm The previously uninstantiated VM.
+     * @param ipAddress The ip address where the VM is located.
+     * @param state The state of the VM
+     * @param created The creation date of the VM
+     * @param allocatedTo The host resource that the VM is allocated to.
      */
     public VmDeployed(int id, VM vm, String ipAddress, String state,
             Calendar created, Host allocatedTo) {
