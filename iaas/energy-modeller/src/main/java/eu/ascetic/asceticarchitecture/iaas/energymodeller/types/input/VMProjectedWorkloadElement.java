@@ -21,12 +21,13 @@ import java.util.Calendar;
 /**
  * This class represents an estimated workload for a virtual machine that is due
  * to be executed.
+ *
  * @deprecated Not needed in the 1st year. 100% Load only should be considered.
  *
  * @author Richard
  */
 public class VMProjectedWorkloadElement implements Comparable<Object> {
-    
+
     /**
      * Either null for ongoing long term jobs providing averages or a projected
      * period of time for the deployment should be specified.
@@ -43,9 +44,14 @@ public class VMProjectedWorkloadElement implements Comparable<Object> {
     private double networkUsage;
     private double diskUsage;
     private double memoryUsage;
-    
+
+    private static int BEFORE = -1;
+    private static int EQUAL = 0;
+    private static int AFTER = 1;
+
     /**
      * This provides the start time of this workload element.
+     *
      * @return The start time of this workload element, null if the workload is
      * open ended with no expected start or completion time.
      */
@@ -58,6 +64,7 @@ public class VMProjectedWorkloadElement implements Comparable<Object> {
 
     /**
      * This provides the end time of this workload element.
+     *
      * @return The end time of this workload element, null if the workload is
      * open ended with no expected completion time.
      */
@@ -77,28 +84,28 @@ public class VMProjectedWorkloadElement implements Comparable<Object> {
     public boolean isLongTermDeployment() {
         return duration == null;
     }
-    
+
     /**
      * This returns the duration of the projected workload element
+     *
      * @return The duration this projected workload element describes.
      */
     public TimePeriod getDuration() {
         return duration;
-    }    
-    
+    }
+
     /**
      * This sets the duration of the projected workload element
-     * @param duration The duration this projected workload element should describe.
+     *
+     * @param duration The duration this projected workload element should
+     * describe.
      */
     public void setDuration(TimePeriod duration) {
         this.duration = duration;
-    }  
+    }
 
     @Override
     public int compareTo(Object o) {
-        int BEFORE = -1;
-        int EQUAL = 0;
-        int AFTER = 1;
         if (o instanceof VMProjectedWorkloadElement) {
             VMProjectedWorkloadElement comparable = (VMProjectedWorkloadElement) o;
             if (this.isLongTermDeployment()) {

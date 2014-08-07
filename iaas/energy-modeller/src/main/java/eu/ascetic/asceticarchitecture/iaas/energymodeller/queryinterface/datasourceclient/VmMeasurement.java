@@ -24,10 +24,11 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDep
  */
 public class VmMeasurement extends Measurement {
 
-    private VmDeployed vm;	
+    private VmDeployed vm;
 
     /**
      * This creates a vm measurement.
+     *
      * @param vm The vm the measurement is for
      */
     public VmMeasurement(VmDeployed vm) {
@@ -36,6 +37,7 @@ public class VmMeasurement extends Measurement {
 
     /**
      * This creates a vm measurement.
+     *
      * @param vm The vm the measurement is for
      * @param clock The time when the measurement was taken
      */
@@ -45,16 +47,16 @@ public class VmMeasurement extends Measurement {
     }
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public VmDeployed getVm() {
         return vm;
     }
 
     /**
-     * 
-     * @param vm 
+     *
+     * @param vm
      */
     public void setVm(VmDeployed vm) {
         this.vm = vm;
@@ -62,7 +64,7 @@ public class VmMeasurement extends Measurement {
 
     @Override
     public String toString() {
-        return vm.toString() + " Time: " + getClock() +  " Metric Count: " + getMetricCount() + " Clock Diff: " + getMaximumClockDifference();
+        return vm.toString() + " Time: " + getClock() + " Metric Count: " + getMetricCount() + " Clock Diff: " + getMaximumClockDifference();
     }
-   
+
 }

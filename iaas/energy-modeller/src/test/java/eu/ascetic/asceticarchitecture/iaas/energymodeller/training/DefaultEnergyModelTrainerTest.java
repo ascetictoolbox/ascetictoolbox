@@ -1,14 +1,10 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.training;
 
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energymodel.EnergyModel;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.training.DefaultEnergyModelTrainer;
-
-import java.util.*;
-
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
+import java.util.Random;
 import org.junit.After;
 import org.junit.AfterClass;
-
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -38,14 +34,12 @@ public class DefaultEnergyModelTrainerTest {
     @Test
     public void testTrainModel() {
         DefaultEnergyModelTrainer trainer = new DefaultEnergyModelTrainer();
-        EnergyModel model1 = new EnergyModel();
-        EnergyModel model2 = new EnergyModel();
+        EnergyModel model1;
         Host host = new Host(1, "testHost");
-        Host host2 = new Host(2, "testHost2");
         boolean trained = false;
-        double usageCPU = 0.0;
-        double usageRAM = 0.0;
-        double totalEnergyUsed = 0.0;
+        double usageCPU;
+        double usageRAM;
+        double totalEnergyUsed;
         Random randomGenerator = new Random();
 
         for (int i = 1; i <= 5; i++) {
@@ -55,8 +49,6 @@ public class DefaultEnergyModelTrainerTest {
 
             trained = trainer.trainModel(host, usageCPU, usageRAM,
                     totalEnergyUsed, 5);
-            // trainer.trainModel (host2, usageCPU, usageRAM, totalEnergyUsed,
-            // 10, duration);
 
         }
         if (trained) {
@@ -70,25 +62,19 @@ public class DefaultEnergyModelTrainerTest {
     @Test
     public void testTrainModelForPredictor() {
         DefaultEnergyModelTrainer trainer = new DefaultEnergyModelTrainer();
-        EnergyModel model1 = new EnergyModel();
-        EnergyModel model2 = new EnergyModel();
         Host host = new Host(1, "testHost");
-        Host host2 = new Host(2, "testHost2");
-        boolean trained = false;
-        double usageCPU = 0.0;
-        double usageRAM = 0.0;
-        double totalEnergyUsed = 0.0;
+        double usageCpu;
+        double usageRam;
+        double totalEnergyUsed;
         Random randomGenerator = new Random();
 
         for (int i = 1; i <= 5; i++) {
-            usageRAM = (randomGenerator.nextInt(1000) / 1000d);
-            usageCPU = (randomGenerator.nextInt(1000) / 1000d);
+            usageRam = (randomGenerator.nextInt(1000) / 1000d);
+            usageCpu = (randomGenerator.nextInt(1000) / 1000d);
             totalEnergyUsed = (randomGenerator.nextInt(1000) / 1000d);
 
-            trained = trainer.trainModel(host, usageCPU, usageRAM,
+            trainer.trainModel(host, usageCpu, usageRam,
                     totalEnergyUsed, 5);
-            // trainer.trainModel (host2, usageCPU, usageRAM, totalEnergyUsed,
-            // 10, duration);
 
         }
         System.out.println("training done");

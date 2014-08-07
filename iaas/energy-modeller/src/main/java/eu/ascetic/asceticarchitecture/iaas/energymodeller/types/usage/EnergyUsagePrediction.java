@@ -26,13 +26,11 @@ import java.util.HashSet;
  *
  * The main values store are:
  *
- * Avg Watts that is expected to use over time by the VM 
- * Predicted energy used (kWh) during life of VM or during the duration of a specified period
+ * Avg Watts that is expected to use over time by the VM Predicted energy used
+ * (kWh) during life of VM or during the duration of a specified period
  *
  * @author Richard
  */
-
-
 public class EnergyUsagePrediction extends EnergyUsageRecord {
 
     private double avgPowerUsed; // units Watts
@@ -42,12 +40,14 @@ public class EnergyUsagePrediction extends EnergyUsageRecord {
     /**
      * This creates a blank energy prediction record.
      */
-    public EnergyUsagePrediction(){	
-    }    
-    
+    public EnergyUsagePrediction() {
+    }
+
     /**
      * This creates a energy prediction record for a given energy user.
-     * @param energyUser The energy user, either a VM, a host or a VM -> host mapping 
+     *
+     * @param energyUser The energy user, either a VM, a host or a VM -> host
+     * mapping
      */
     public EnergyUsagePrediction(EnergyUsageSource energyUser) {
         addEnergyUser(energyUser);
@@ -55,7 +55,9 @@ public class EnergyUsagePrediction extends EnergyUsageRecord {
 
     /**
      * This creates a energy prediction record for a set of energy users.
-     * @param energyUser The energy users, either a VM, a host or a VM -> host mapping 
+     *
+     * @param energyUser The energy users, either a VM, a host or a VM -> host
+     * mapping
      */
     public EnergyUsagePrediction(HashSet<EnergyUsageSource> energyUser) {
         addEnergyUser(energyUser);
@@ -63,7 +65,9 @@ public class EnergyUsagePrediction extends EnergyUsageRecord {
 
     /**
      * This creates a energy prediction record for a set of energy users.
-     * @param energyUser The energy user, either a VM, a host or a VM -> host mapping 
+     *
+     * @param energyUser The energy user, either a VM, a host or a VM -> host
+     * mapping
      * @param avgPowerUsed The average power used
      * @param totalEnergyUsed The total energy used
      */
@@ -72,9 +76,10 @@ public class EnergyUsagePrediction extends EnergyUsageRecord {
         this.avgPowerUsed = avgPowerUsed;
         this.totalEnergyUsed = totalEnergyUsed;
     }
-    
+
     /**
      * This provides the average power used.
+     *
      * @return The average power used.
      */
     public double getAvgPowerUsed() {
@@ -83,7 +88,8 @@ public class EnergyUsagePrediction extends EnergyUsageRecord {
 
     /**
      * This sets the average power used.
-     * @param avgPowerUsed  The average power used.
+     *
+     * @param avgPowerUsed The average power used.
      */
     public void setAvgPowerUsed(double avgPowerUsed) {
         this.avgPowerUsed = avgPowerUsed;
@@ -91,6 +97,7 @@ public class EnergyUsagePrediction extends EnergyUsageRecord {
 
     /**
      * This provides the total energy used.
+     *
      * @return the total energy used.
      */
     public double getTotalEnergyUsed() {
@@ -99,6 +106,7 @@ public class EnergyUsagePrediction extends EnergyUsageRecord {
 
     /**
      * This sets the total energy used.
+     *
      * @param totalEnergyUsed the new value for the total energy used.
      */
     public void setTotalEnergyUsed(double totalEnergyUsed) {
@@ -107,6 +115,7 @@ public class EnergyUsagePrediction extends EnergyUsageRecord {
 
     /**
      * This provides the predicted start time for this energy prediction.
+     *
      * @return the time this prediction takes effect.
      */
     public Calendar getPredictionStartTime() {
@@ -115,6 +124,7 @@ public class EnergyUsagePrediction extends EnergyUsageRecord {
 
     /**
      * This provides the predicted end time for this energy prediction.
+     *
      * @return the time this prediction finishes.
      */
     public Calendar getPredictionEndTime() {
@@ -123,6 +133,7 @@ public class EnergyUsagePrediction extends EnergyUsageRecord {
 
     /**
      * This provides the duration of time this prediction represents.
+     *
      * @return The duration of time this prediction represents.
      */
     public TimePeriod getDuration() {
@@ -131,10 +142,11 @@ public class EnergyUsagePrediction extends EnergyUsageRecord {
 
     /**
      * This sets the duration of time this prediction represents.
+     *
      * @param timePeriod The duration of time this prediction represents.
      */
     public void setDuration(TimePeriod timePeriod) {
         this.timePeriod = timePeriod;
     }
-    
+
 }

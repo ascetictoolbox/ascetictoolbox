@@ -1,17 +1,17 @@
 /**
- *  Copyright 2014 University of Leeds
+ * Copyright 2014 University of Leeds
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.input;
 
@@ -19,7 +19,8 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import java.util.*;
 
 /**
- * This represents a projected workload on a VM.  
+ * This represents a projected workload on a VM.
+ *
  * @deprecated Not needed in the 1st year. 100% Load only should be considered.
  * @author Richard Kavanagh
  */
@@ -30,6 +31,7 @@ public class VMProjectedWorkload {
 
     /**
      * This creates an instance of a projected workload for a given VM
+     *
      * @param vm The VM to create the projected workload for
      */
     public VMProjectedWorkload(VM vm) {
@@ -38,50 +40,55 @@ public class VMProjectedWorkload {
 
     /**
      * This returns the VM associated with this workload.
-     * @return 
+     *
+     * @return
      */
     public VM getVm() {
         return vm;
     }
-    
+
     /**
      * This adds a workload element to the overall workload
+     *
      * @param element a part of the workload.
-     * @return 
+     * @return
      */
     public boolean add(VMProjectedWorkloadElement element) {
         return workload.add(element);
     }
-    
+
     /**
      * This adds a collection of workload elements to the overall workload
+     *
      * @param collection
-     * @return 
+     * @return
      */
     public boolean addAll(Collection<VMProjectedWorkloadElement> collection) {
         return workload.addAll(collection);
     }
-    
+
     /**
      * This removes a workload element to the overall workload
+     *
      * @param element
-     * @return 
+     * @return
      */
     public boolean remove(VMProjectedWorkloadElement element) {
         return workload.remove(element);
-    } 
-    
+    }
+
     /**
      * This removes a collection of workload elements from the overall workload
+     *
      * @param collection
-     * @return 
+     * @return
      */
     public boolean removeAll(Collection<VMProjectedWorkloadElement> collection) {
         return workload.removeAll(collection);
-    }    
+    }
 
     /**
-     * This returns a projected workload that indicates the workload after a 
+     * This returns a projected workload that indicates the workload after a
      * specified time.
      *
      * @param afterTime The time after which workload elements will make up the
@@ -97,7 +104,7 @@ public class VMProjectedWorkload {
         }
         return result;
     }
-    
+
     /**
      * This returns the start time for the projected workload.
      *
@@ -109,8 +116,8 @@ public class VMProjectedWorkload {
         } else {
             return workload.first().getStartTime();
         }
-    }       
-    
+    }
+
     /**
      * This returns the end time for the projected workload.
      *
@@ -122,6 +129,6 @@ public class VMProjectedWorkload {
         } else {
             return workload.last().getEndTime();
         }
-    } 
-    
+    }
+
 }

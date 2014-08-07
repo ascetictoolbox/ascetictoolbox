@@ -40,7 +40,7 @@ public class DefaultEnergyModelTrainer implements EnergyModelTrainerInterface {
      * the model. Several times should be called for a specific number of values
      * to be gathered.
      *
-     * @param host
+     * @param host The host resource that the model is to be trained for
      * @param usageCPU The CPU usage of the host
      * @param usageRAM The RAM usage of the host
      * @param wattsUsed The watts consumed under these levels of usage
@@ -60,18 +60,10 @@ public class DefaultEnergyModelTrainer implements EnergyModelTrainerInterface {
             storeValues.put(host, temp);
             num = temp.size();
         } else {
-
             temp.add(usageHost);
             storeValues.put(host, temp);
         }
-
-        if (num >= numberOfValues) {
-            //printValuesMap(storeValues, host);
-            return true;
-        } else {
-            return false;
-        }
-
+        return (num >= numberOfValues);
     }
 
     /**
@@ -112,40 +104,40 @@ public class DefaultEnergyModelTrainer implements EnergyModelTrainerInterface {
         valuesOfHost = storeValues.get(host);
 
         //WattsUsed=intercept+coefficientCPU*usageCPU+coefficientRAM*usageRAM;
-        ArrayList<Double> UR = new ArrayList<>();
-        ArrayList<Double> CPUEnergy = new ArrayList<>();
-        ArrayList<Double> CPURAM = new ArrayList<>();
-        ArrayList<Double> RAMEnergy = new ArrayList<>();
-        ArrayList<Double> UC = new ArrayList<>();
+        ArrayList<Double> ur = new ArrayList<>();
+        ArrayList<Double> cpuEnergy = new ArrayList<>();
+        ArrayList<Double> cpuRam = new ArrayList<>();
+        ArrayList<Double> ramEnergy = new ArrayList<>();
+        ArrayList<Double> uc = new ArrayList<>();
 
-        HostEnergyCalibrationData temp1;
+        HostEnergyCalibrationData currentItem;
         double energy = 0.0;
-        double CPU = 0.0;
-        double RAM = 0.0;
+        double cpu = 0.0;
+        double ram = 0.0;
         for (Iterator< HostEnergyCalibrationData> it = valuesOfHost.iterator(); it.hasNext();) {
-            temp1 = it.next();
+            currentItem = it.next();
             //System.out.print(temp1.getCpuUsage());
-            UR.add(temp1.getMemoryUsage() * temp1.getMemoryUsage());
-            CPUEnergy.add(temp1.getCpuUsage() * temp1.getWattsUsed());
-            CPURAM.add(temp1.getCpuUsage() * temp1.getMemoryUsage());
-            RAMEnergy.add(temp1.getMemoryUsage() * temp1.getWattsUsed());
-            UC.add(temp1.getCpuUsage() * temp1.getCpuUsage());
-            energy = temp1.getWattsUsed();
-            CPU = temp1.getCpuUsage();
-            RAM = temp1.getMemoryUsage();
+            ur.add(currentItem.getMemoryUsage() * currentItem.getMemoryUsage());
+            cpuEnergy.add(currentItem.getCpuUsage() * currentItem.getWattsUsed());
+            cpuRam.add(currentItem.getCpuUsage() * currentItem.getMemoryUsage());
+            ramEnergy.add(currentItem.getMemoryUsage() * currentItem.getWattsUsed());
+            uc.add(currentItem.getCpuUsage() * currentItem.getCpuUsage());
+            energy = currentItem.getWattsUsed();
+            cpu = currentItem.getCpuUsage();
+            ram = currentItem.getMemoryUsage();
 
         }
-        double sumUR = calculateSums(UR);
-        double sumCPUEnergy = calculateSums(CPUEnergy);
-        double sumCPURAM = calculateSums(CPURAM);
-        double sumRAMEnergy = calculateSums(RAMEnergy);
-        double sumUC = calculateSums(UC);
+        double sumUr = calculateSums(ur);
+        double sumCpuEnergy = calculateSums(cpuEnergy);
+        double sumCpuRam = calculateSums(cpuRam);
+        double sumRamEnergy = calculateSums(ramEnergy);
+        double sumUc = calculateSums(uc);
 
-        double coefficientCPU = (sumUR * sumCPUEnergy - sumCPURAM * sumRAMEnergy) / (sumUR * sumUC - (sumCPURAM * sumCPURAM));
-        double coefficientRAM = (sumUC * sumRAMEnergy - sumCPURAM * sumCPUEnergy) / (sumUR * sumUC - (sumCPURAM * sumCPURAM));
-        double intercept = energy - coefficientCPU * CPU - coefficientRAM * RAM;
-        temp.setCoefCPU(coefficientCPU);
-        temp.setCoefRAM(coefficientRAM);
+        double coefficientCpu = (sumUr * sumCpuEnergy - sumCpuRam * sumRamEnergy) / (sumUr * sumUc - (sumCpuRam * sumCpuRam));
+        double coefficientRam = (sumUc * sumRamEnergy - sumCpuRam * sumCpuEnergy) / (sumUr * sumUc - (sumCpuRam * sumCpuRam));
+        double intercept = energy - coefficientCpu * cpu - coefficientRam * ram;
+        temp.setCoefCPU(coefficientCpu);
+        temp.setCoefRAM(coefficientRam);
         temp.setIntercept(intercept);
 
         return temp;
