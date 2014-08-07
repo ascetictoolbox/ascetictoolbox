@@ -77,7 +77,6 @@ public class EnergyModeller {
     /**
      * This creates a new energy modeller.
      */
-    @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     public EnergyModeller() {
         try {
             calibratorThread = new Thread(calibrator);

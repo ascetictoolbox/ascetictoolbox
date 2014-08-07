@@ -16,11 +16,15 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.input;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
+
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+
 import org.junit.After;
 import org.junit.AfterClass;
+
 import static org.junit.Assert.*;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -57,6 +61,7 @@ public class VMProjectedWorkloadElementTest {
     /**
      * Test of getStartTime method, of class VMProjectedWorkloadElement.
      */
+    @SuppressWarnings("deprecation")
     @Test
     public void testGetStartTime() {
         System.out.println("getStartTime");
@@ -70,6 +75,7 @@ public class VMProjectedWorkloadElementTest {
     /**
      * Test of getEndTime method, of class VMProjectedWorkloadElement.
      */
+    @SuppressWarnings("deprecation")
     @Test
     public void testGetEndTime() {
         System.out.println("getEndTime");
@@ -83,6 +89,7 @@ public class VMProjectedWorkloadElementTest {
     /**
      * Test of isLongTermDeployment method, of class VMProjectedWorkloadElement.
      */
+    @SuppressWarnings("deprecation")
     @Test
     public void testIsLongTermDeployment() {
         System.out.println("isLongTermDeployment");
@@ -99,6 +106,7 @@ public class VMProjectedWorkloadElementTest {
     /**
      * Test of compareTo method, of class VMProjectedWorkloadElement.
      */
+    @SuppressWarnings("deprecation")
     @Test
     public void testCompareTo() {
         System.out.println("compareTo");
@@ -116,6 +124,7 @@ public class VMProjectedWorkloadElementTest {
     /**
      * Test of getDuration method, of class VMProjectedWorkloadElement.
      */
+    @SuppressWarnings("deprecation")
     @Test
     public void testGetDuration() {
         System.out.println("getDuration");
@@ -129,6 +138,7 @@ public class VMProjectedWorkloadElementTest {
     /**
      * Test of setDuration method, of class VMProjectedWorkloadElement.
      */
+    @SuppressWarnings("deprecation")
     @Test
     public void testSetDuration() {
         System.out.println("setDuration");

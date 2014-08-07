@@ -21,6 +21,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDep
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostEnergyCalibrationData;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostVmLoadFraction;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostEnergyRecord;
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;

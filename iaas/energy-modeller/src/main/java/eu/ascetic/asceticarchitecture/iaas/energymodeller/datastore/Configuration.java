@@ -27,7 +27,6 @@ import org.apache.commons.configuration.PropertiesConfiguration;
  *
  * @author Richard
  */
-@SuppressWarnings("StaticNonFinalUsedInInitialization")
 public class Configuration {
 
     /**

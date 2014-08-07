@@ -133,7 +133,6 @@ public class DataGatherer implements Runnable {
     }
 
     @Override
-    @SuppressWarnings("SleepWhileInLoop")
     public void run() {
         /**
          * Polls the data source and write values to the database. TODO consider

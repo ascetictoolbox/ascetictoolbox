@@ -39,7 +39,6 @@ public class DefaultLoadGenerator implements LoadGenerator {
      * @param host The host to train/update
      */
     @Override
-    @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
     public void generateCalibrationData(Host host) {
         //Generate Load
         try { //http://localhost:8080/EnergyModellerCalibrationTool/CalibrationLoadGenerator?WSDL
@@ -62,7 +61,6 @@ public class DefaultLoadGenerator implements LoadGenerator {
     }
 
     @Override
-    @SuppressWarnings("empty-statement")
     public void run() {
         /**
          * Note the aim of starting a thread is so that the calibrator can take

@@ -22,15 +22,19 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.client.ZabbixClient;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.junit.After;
 import org.junit.AfterClass;
+
 import static org.junit.Assert.assertEquals;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -88,6 +92,7 @@ public class ZabbixDataSourceAdaptorTest {
     /**
      * Test of main method, of class ZabbixDataSourceAdaptor.
      */
+    @SuppressWarnings("deprecation")
     @Test
     public void testMain() {
         System.out.println("main");
