@@ -32,8 +32,8 @@ import java.util.logging.Logger;
  */
 public class ManagedProcessSequenceExecutor implements ManagedProcessListener {
 
-    private final String TO_EXECUTE_SETTINGS_FILE = "Apps.csv";
-    private String workingDir;
+    private static final String TO_EXECUTE_SETTINGS_FILE = "Apps.csv";
+    private final String workingDir;
     private final GregorianCalendar startTime = new GregorianCalendar();
     ResultsStore appsToExecute;
     ArrayList<ManagedProcessCommandData> commandSet = new ArrayList<>();

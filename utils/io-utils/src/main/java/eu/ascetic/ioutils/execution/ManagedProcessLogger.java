@@ -27,7 +27,7 @@ import java.util.Date;
  */
 public class ManagedProcessLogger extends GenericLogger<ManagedProcess> {
 
-    private static final SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");    
+    private static final SimpleDateFormat FORMAT = new SimpleDateFormat("HH:mm:ss");    
 
     public ManagedProcessLogger(File file, boolean overwrite) {
         super(file, overwrite);
@@ -46,7 +46,7 @@ public class ManagedProcessLogger extends GenericLogger<ManagedProcess> {
 
     @Override
     public void writebody(ManagedProcess item, ResultsStore store) {
-        store.add(format.format(new Date()));
+        store.add(FORMAT.format(new Date()));
         store.append(item.getCommand());
         store.append(item.hasFinished());
         store.append(item.getWorkingDirectory().getAbsolutePath());

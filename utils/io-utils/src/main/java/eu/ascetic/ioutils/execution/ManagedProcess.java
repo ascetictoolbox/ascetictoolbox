@@ -213,7 +213,7 @@ public class ManagedProcess {
     private void initCommand(ArrayList<String> commands) {
         try {
             this.command = commands.toString();
-            String[] cmds = (String[]) commands.toArray(new String[0]);
+            String[] cmds = commands.toArray(new String[0]);
             if (environment != null) {
                 String[] environmentVars = new String[1];
                 environment.toArray(environmentVars);
@@ -254,8 +254,6 @@ public class ManagedProcess {
                 fosError = new FileOutputStream(stdError);
             }
             RedirectGobbler errorGobbler = new RedirectGobbler(process.getErrorStream(), fosError, toScreen);
-//            ScreenGobbler errorGobbler = new ScreenGobbler(process.getErrorStream());
-//            DiscardGobbler errorGobbler = new DiscardGobbler(process.getErrorStream());
 
             // any output?
             FileOutputStream fosOutput = null;
@@ -263,8 +261,6 @@ public class ManagedProcess {
                 fosOutput = new FileOutputStream(stdOut);
             }
             RedirectGobbler outputGobbler = new RedirectGobbler(process.getInputStream(), fosOutput, toScreen);
-//            ScreenGobbler outputGobbler = new ScreenGobbler(process.getInputStream());
-//            DiscardGobbler outputGobbler = new DiscardGobbler(process.getInputStream());
 
             // kick them off
             new Thread(errorGobbler).start();
@@ -361,7 +357,6 @@ public class ManagedProcess {
             return true;
         } catch (IllegalThreadStateException ite) {
             //do nothing the process is still running proceed to finally
-        } finally {
         }
         return false;
     }

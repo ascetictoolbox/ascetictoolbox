@@ -27,13 +27,13 @@ import java.util.logging.Logger;
  * interrupt it.
  *
  * @author Richard Kavanagh
- * @param <Type> This type is expected to be specified in any implementation of
+ * @param <T> This type is expected to be specified in any implementation of
  * this abstract class. A print header and print body method is expected to be 
  * implemented thus completing the ability to write the specified object to disk.
  */
-public abstract class GenericLogger<Type> implements Runnable {
+public abstract class GenericLogger<T> implements Runnable {
 
-    private final LinkedBlockingDeque<Type> queue = new LinkedBlockingDeque<>();
+    private final LinkedBlockingDeque<T> queue = new LinkedBlockingDeque<>();
     private boolean stop = false;
     ResultsStore saveFile = null;
 
@@ -61,7 +61,7 @@ public abstract class GenericLogger<Type> implements Runnable {
      *
      * @param item The item to print to file.
      */
-    public void printToFile(Type item) {
+    public void printToFile(T item) {
         queue.add(item);
     }
 
@@ -74,7 +74,7 @@ public abstract class GenericLogger<Type> implements Runnable {
         Logger.getLogger(GenericLogger.class.getName()).log(Level.FINER, "The logger for the file {0} started.", saveFile.getResultsFile().getName());
         while (!stop || !queue.isEmpty()) {
             try {
-                Type currentItem = queue.poll(30, TimeUnit.SECONDS);
+                T currentItem = queue.poll(30, TimeUnit.SECONDS);
                 if (currentItem != null) {
                     Logger.getLogger(GenericLogger.class.getName()).log(Level.FINER, "The logger for the file {0} wrote to disk.", saveFile.getResultsFile().getName());
                     saveToDisk(saveFile, currentItem);
@@ -93,7 +93,7 @@ public abstract class GenericLogger<Type> implements Runnable {
      * @param file The file to save the item to
      * @param item The item to write to file
      */
-    public void saveToDisk(File file, Type item) {
+    public void saveToDisk(File file, T item) {
         ResultsStore toDisk = new ResultsStore(file);
         saveToDisk(toDisk, item);
     }
@@ -105,7 +105,7 @@ public abstract class GenericLogger<Type> implements Runnable {
      * @param store The results store to save data to
      * @param item The item to write to file
      */
-    public void saveToDisk(ResultsStore store, Type item) {
+    public void saveToDisk(ResultsStore store, T item) {
         try {
             if (!store.getResultsFile().exists()) {
                 /**
@@ -146,7 +146,7 @@ public abstract class GenericLogger<Type> implements Runnable {
      * @param item
      * @param store
      */
-    public abstract void writebody(Type item, ResultsStore store);
+    public abstract void writebody(T item, ResultsStore store);
 
     /**
      * This permanently stops the reporter. It will however report all queued
