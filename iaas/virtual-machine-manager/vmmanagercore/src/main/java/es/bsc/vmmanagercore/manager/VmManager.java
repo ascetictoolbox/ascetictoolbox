@@ -194,10 +194,9 @@ public class VmManager {
                 if (vmScriptName != null) {
                     Path path = FileSystems.getDefault().getPath("/DFS/ascetic/vm-scripts/" + vmScriptName);
                     try {
-                        Path file = Files.createFile(path);
-                        Files.delete(file);
+                        Files.deleteIfExists(path);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException("Could not delete the script file.");
                     }
                 }
             }
