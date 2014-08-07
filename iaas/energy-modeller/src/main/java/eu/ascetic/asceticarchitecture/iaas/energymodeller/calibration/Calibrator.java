@@ -182,12 +182,12 @@ public class Calibrator implements Runnable {
             }
             this.generator = (LoadGenerator) (Class.forName(generator).newInstance());
         } catch (ClassNotFoundException ex) {
-            if (generator == null) {
+            if (this.generator == null) {
                 this.generator = new DefaultLoadGenerator();
             }
             Logger.getLogger(Calibrator.class.getName()).log(Level.WARNING, "The load generator specified was not found");
         } catch (InstantiationException | IllegalAccessException ex) {
-            if (generator == null) {
+            if (this.generator == null) {
                 this.generator = new DefaultLoadGenerator();
             }
             Logger.getLogger(Calibrator.class.getName()).log(Level.WARNING, "The load generator did not work", ex);
