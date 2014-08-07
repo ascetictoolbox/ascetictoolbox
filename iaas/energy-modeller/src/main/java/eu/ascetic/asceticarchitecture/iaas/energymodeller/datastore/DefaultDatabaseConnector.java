@@ -104,15 +104,15 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
      * @throws SQLException Thrown if there is errors in the meta data or if the
      * type specified in the meta data is not found.
      */
-    private ArrayList<ArrayList> resultSetToArray(ResultSet results) throws SQLException {
-        ArrayList<ArrayList> table = new ArrayList<>();
+    private ArrayList<ArrayList<Object>> resultSetToArray(ResultSet results) throws SQLException {
+        ArrayList<ArrayList<Object>> table = new ArrayList<>();
         ResultSetMetaData metaData = results.getMetaData();
 
         int numberOfColumns = metaData.getColumnCount();
 
         // Loop through the result set
         while (results.next()) {
-            ArrayList row = new ArrayList();
+            ArrayList<Object> row = new ArrayList<>();
             for (int i = 1; i <= numberOfColumns; i++) {
                 if (results.getMetaData().getColumnType(i) == Types.BOOLEAN) {
                     row.add(results.getBoolean(i));
@@ -158,8 +158,8 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
             PreparedStatement preparedStatement = connection.prepareStatement(
                     "SELECT host_id , host_name  FROM host");
             ResultSet resultSet = preparedStatement.executeQuery();
-            ArrayList<ArrayList> results = resultSetToArray(resultSet);
-            for (ArrayList hostData : results) {
+            ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
+            for (ArrayList<Object> hostData : results) {
                 Host host = new Host((Integer) hostData.get(0), (String) hostData.get(1));
                 host = getHostCalibrationData(host);
                 answer.add(host);
@@ -187,8 +187,8 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
             PreparedStatement preparedStatement = connection.prepareStatement(
                     "SELECT vm_id , vm_name  FROM vm");
             ResultSet resultSet = preparedStatement.executeQuery();
-            ArrayList<ArrayList> results = resultSetToArray(resultSet);
-            for (ArrayList hostData : results) {
+            ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
+            for (ArrayList<Object> hostData : results) {
                 VmDeployed vm = new VmDeployed((Integer) hostData.get(0), (String) hostData.get(1));
                 answer.add(vm);
             }
@@ -231,8 +231,8 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
                     "SELECT calibration_id, host_id, cpu, memory, energy FROM host_calibration_data WHERE host_id = ?");
             preparedStatement.setInt(1, host.getId());
             ResultSet resultSet = preparedStatement.executeQuery();
-            ArrayList<ArrayList> result = resultSetToArray(resultSet);
-            for (ArrayList calibrationData : result) {
+            ArrayList<ArrayList<Object>> result = resultSetToArray(resultSet);
+            for (ArrayList<Object> calibrationData : result) {
                 host.addCalibrationData(new HostEnergyCalibrationData(
                         (Double) calibrationData.get(2),
                         (Double) calibrationData.get(3),
@@ -387,8 +387,8 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
             }
             preparedStatement.setInt(1, host.getId());
             ResultSet resultSet = preparedStatement.executeQuery();
-            ArrayList<ArrayList> results = resultSetToArray(resultSet);
-            for (ArrayList hostMeasurement : results) {
+            ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
+            for (ArrayList<Object> hostMeasurement : results) {
                 answer.add(new HostEnergyRecord(
                         host,
                         (long) hostMeasurement.get(1), //clock is the 1st item
@@ -446,11 +446,11 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
             }
             preparedStatement.setInt(1, host.getId());
             ResultSet resultSet = preparedStatement.executeQuery();
-            ArrayList<ArrayList> results = resultSetToArray(resultSet);
+            ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
             long lastClock = Long.MIN_VALUE;
             long currentClock;
             HostVmLoadFraction current = null;
-            for (ArrayList measurement : results) {
+            for (ArrayList<Object> measurement : results) {
                 currentClock = (long) measurement.get(3); //clock is the 3rd item)
                 if (currentClock != lastClock || current == null) {
                     current = new HostVmLoadFraction(host, currentClock);

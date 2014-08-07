@@ -72,7 +72,7 @@ public class EnergyModeller {
     private Thread calibratorThread;
     private DataGatherer dataGatherer = new DataGatherer(datasource, new DefaultDatabaseConnector(), calibrator);
     private Thread dataGatherThread;
-    private Class historicEnergyDivionMethod = LoadBasedDivision.class;
+    private Class<?> historicEnergyDivionMethod = LoadBasedDivision.class;
 
     /**
      * This creates a new energy modeller.

@@ -19,7 +19,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import org.junit.After;
 import org.junit.AfterClass;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -168,24 +169,24 @@ public class TimePeriodTest {
     public void testCompareTo() {
         System.out.println("compareTo");
         //equals
-        Object o = new TimePeriod(time1, time2);
+        TimePeriod time = new TimePeriod(time1, time2);
         TimePeriod instance = new TimePeriod(time1, time2);
         int expResult = 0;
-        int result = instance.compareTo(o);
+        int result = instance.compareTo(time);
         assertEquals(expResult, result);
         //before
         GregorianCalendar cal = new GregorianCalendar();
         cal.setTimeInMillis(time2.getTimeInMillis() - (1000 * (timeAgoSeconds / 2)));
-        o = new TimePeriod(cal, time2);
+        time = new TimePeriod(cal, time2);
         expResult = -1;
-        result = instance.compareTo(o);
+        result = instance.compareTo(time);
         assertEquals(expResult, result);        
         //after
         cal = new GregorianCalendar();
         cal.setTimeInMillis(time2.getTimeInMillis() - (1000 * timeAgoSeconds * 2));
-        o = new TimePeriod(cal, time2);
+        time = new TimePeriod(cal, time2);
         expResult = 1;
-        result = instance.compareTo(o);
+        result = instance.compareTo(time);
         assertEquals(expResult, result);  
     }
 }

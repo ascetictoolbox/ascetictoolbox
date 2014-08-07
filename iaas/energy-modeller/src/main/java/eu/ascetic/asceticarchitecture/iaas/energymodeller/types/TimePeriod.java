@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Richard
  */
-public class TimePeriod implements Comparable {
+public class TimePeriod implements Comparable<TimePeriod> {
 
     private final Calendar startTime;
     private final Calendar endTime;
@@ -204,18 +204,13 @@ public class TimePeriod implements Comparable {
     }
 
     @Override
-    public int compareTo(Object o) {
-        if (o instanceof TimePeriod) {
-            TimePeriod comp = (TimePeriod) o;
-            int start = startTime.compareTo(comp.startTime);
+    public int compareTo(TimePeriod other) {
+            int start = startTime.compareTo(other.startTime);
             if (start != 0) {
                 return start;
             }
-            int end = endTime.compareTo(comp.endTime);
+            int end = endTime.compareTo(other.endTime);
             return end;
-        } else {
-            throw new ClassCastException();
-        }
     }
 
     @Override
