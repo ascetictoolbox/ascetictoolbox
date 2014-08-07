@@ -23,6 +23,8 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.training;
  */
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energymodel.EnergyModel;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostEnergyCalibrationData;
+import java.util.ArrayList;
 
 public interface EnergyModelTrainerInterface {
 
@@ -30,7 +32,7 @@ public interface EnergyModelTrainerInterface {
      * This function stores the values that are needed for the training of the
      * model and returns true when the appropriate number of values has been
      * gathered.
-     * @param host
+     * @param host The host to add the training data for
      * @param usageCPU
      * @param usageRAM
      * @param wattsUsed
@@ -39,6 +41,14 @@ public interface EnergyModelTrainerInterface {
      */
     public boolean trainModel(Host host, double usageCPU, double usageRAM, double wattsUsed, int numberOfValues);
 
+    /**
+     * This function stores the values that are needed for the training of the
+     * model.
+     * @param host The host to add the training data for
+     * @param data 
+     */
+    public void trainModel(Host host, ArrayList<HostEnergyCalibrationData> data);
+    
     /**
      * This function calculates the coefficients of the models and returns them
      * to the caller.

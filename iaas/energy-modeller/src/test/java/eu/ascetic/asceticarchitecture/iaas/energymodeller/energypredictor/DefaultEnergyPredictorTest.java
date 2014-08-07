@@ -55,18 +55,18 @@ public class DefaultEnergyPredictorTest {
         addVMs(vm2);
 
         DefaultEnergyPredictor predictor = new DefaultEnergyPredictor();
-        setCalibrationData(host);      
+        setCalibrationData(host);
         host.setRamMb(32244);
         prediction = predictor.getHostPredictedEnergy(host, vms);
         System.out.println("Host: " + host.getHostName());
         System.out.println("VM Count: " + vms.size());
-        System.out.println("store values size is: " + DefaultEnergyModelTrainer.storeValues.size());          
+        System.out.println("store values size is: " + DefaultEnergyModelTrainer.storeValues.size());
         System.out.println("watts: " + prediction.getAvgPowerUsed() + " energy: " + prediction.getTotalEnergyUsed());
 
     }
-    
+
     private void setCalibrationData(Host host) {
-                DefaultDatabaseConnector db = new DefaultDatabaseConnector();
+        DefaultDatabaseConnector db = new DefaultDatabaseConnector();
         host = db.getHostCalibrationData(host);
 
         if (host.getCalibrationData().isEmpty()) {
@@ -98,7 +98,7 @@ public class DefaultEnergyPredictorTest {
         setCalibrationData(host);
         host.setRamMb(32244);
         System.out.println("VM for Energy Prediction: " + vm1.toString());
-        System.out.println("Amount of VMs Inducing Load: "+ vms.size());
+        System.out.println("Amount of VMs Inducing Load: " + vms.size());
         System.out.println("Host To Query: " + host.getHostName());
         prediction = predictor.getVMPredictedEnergy(vm1, vms, host);
         System.out.println("watts: " + prediction.getAvgPowerUsed() + " energy: " + prediction.getTotalEnergyUsed());

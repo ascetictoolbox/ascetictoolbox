@@ -74,13 +74,9 @@ public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
     public EnergyUsagePrediction predictTotalEnergy(Host host, double usageCPU, double usageRAM, TimePeriod timePeriod) {
         EnergyUsagePrediction answer = new EnergyUsagePrediction(host);
         //Test for training then load the store with the correct values.
-        /**
-         * TODO Fix the code so it is much cleaner. Directly load the trainer
-         * with data because we can do. (but given OO principles really really
-         * shouldn't
-         */
+
         if (!DefaultEnergyModelTrainer.storeValues.containsKey(host)) {
-            DefaultEnergyModelTrainer.storeValues.put(host, host.getCalibrationData());
+            trainer.trainModel(host, host.getCalibrationData());
         }
         EnergyModel model = trainer.retrieveModel(host);
         double powerUsed;

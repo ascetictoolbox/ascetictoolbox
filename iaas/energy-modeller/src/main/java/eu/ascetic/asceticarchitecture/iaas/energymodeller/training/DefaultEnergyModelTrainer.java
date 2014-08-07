@@ -36,8 +36,8 @@ public class DefaultEnergyModelTrainer implements EnergyModelTrainerInterface {
     public static HashMap<Host, ArrayList<HostEnergyCalibrationData>> storeValues = new HashMap<>();
 
     /**
-     * This function stores the appropriate values that are needed for training
-     * the model. Several times should be called for a specific number of values
+     * This method stores the appropriate values that are needed for training
+     * the model. It should be called several times for a specific number of values
      * to be gathered.
      *
      * @param host The host resource that the model is to be trained for
@@ -64,6 +64,21 @@ public class DefaultEnergyModelTrainer implements EnergyModelTrainerInterface {
             storeValues.put(host, temp);
         }
         return (num >= numberOfValues);
+    }
+    
+    /**
+     * This method stores the appropriate values that are needed for training
+     * the model. It loads all the data in at once, if called a second time it
+     * will append to the data already held.
+     * @param host The host resource that the model is to be trained for
+     * @param data The set of data that is to be added to the training data.
+     */
+    @Override
+    public void trainModel(Host host, ArrayList<HostEnergyCalibrationData> data) {
+        if (storeValues.containsKey(host)) {
+            storeValues.get(host).addAll(data);
+        } else
+            storeValues.put(host, data);
     }
 
     /**
@@ -100,8 +115,7 @@ public class DefaultEnergyModelTrainer implements EnergyModelTrainerInterface {
     @Override
     public EnergyModel retrieveModel(Host host) {
         EnergyModel temp = new EnergyModel();
-        ArrayList<HostEnergyCalibrationData> valuesOfHost;
-        valuesOfHost = storeValues.get(host);
+        ArrayList<HostEnergyCalibrationData> valuesOfHost = storeValues.get(host);
 
         ArrayList<Double> ur = new ArrayList<>();
         ArrayList<Double> cpuEnergy = new ArrayList<>();
