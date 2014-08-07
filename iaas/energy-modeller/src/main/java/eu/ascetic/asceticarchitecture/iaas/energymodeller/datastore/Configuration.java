@@ -32,7 +32,7 @@ public class Configuration {
     /**
      * The url to contact the database.
      */
-    public static String databaseURL = "jdbc:mysql://10.4.0.15:3306/ascetic-em"; //"jdbc:mysql://iaas-vm-dev:3306/ascetic-em";
+    public static String databaseURL = "jdbc:mysql://10.4.0.15:3306/ascetic-em";
     /**
      * The driver to be used to contact the database.
      */

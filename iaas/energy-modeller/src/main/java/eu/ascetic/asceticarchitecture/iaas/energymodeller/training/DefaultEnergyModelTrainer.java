@@ -103,7 +103,6 @@ public class DefaultEnergyModelTrainer implements EnergyModelTrainerInterface {
         ArrayList<HostEnergyCalibrationData> valuesOfHost;
         valuesOfHost = storeValues.get(host);
 
-        //WattsUsed=intercept+coefficientCPU*usageCPU+coefficientRAM*usageRAM;
         ArrayList<Double> ur = new ArrayList<>();
         ArrayList<Double> cpuEnergy = new ArrayList<>();
         ArrayList<Double> cpuRam = new ArrayList<>();
@@ -114,9 +113,9 @@ public class DefaultEnergyModelTrainer implements EnergyModelTrainerInterface {
         double energy = 0.0;
         double cpu = 0.0;
         double ram = 0.0;
-        for (Iterator< HostEnergyCalibrationData> it = valuesOfHost.iterator(); it.hasNext();) {
+        for (Iterator<HostEnergyCalibrationData> it = valuesOfHost.iterator(); it.hasNext();) {
             currentItem = it.next();
-            //System.out.print(temp1.getCpuUsage());
+
             ur.add(currentItem.getMemoryUsage() * currentItem.getMemoryUsage());
             cpuEnergy.add(currentItem.getCpuUsage() * currentItem.getWattsUsed());
             cpuRam.add(currentItem.getCpuUsage() * currentItem.getMemoryUsage());
