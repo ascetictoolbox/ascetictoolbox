@@ -104,7 +104,7 @@ public class Calibrator implements Runnable {
      */
     private Host performCalibration(Host host) {
         host = readLowestboundForHost(host);
-        generator.generateCalibrationData(host);
+        generator.setHost(host);
         host = readEnergyDataForHost(host);
         return host;
     }

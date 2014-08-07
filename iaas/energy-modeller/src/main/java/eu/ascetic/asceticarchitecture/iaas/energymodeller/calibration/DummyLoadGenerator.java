@@ -25,16 +25,22 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
  * @author Richard
  */
 public class DummyLoadGenerator implements LoadGenerator {
-    
+
+    private Host host;
     private boolean running = true;
 
     /**
-     * This creates a dummy load generator. It is intended to sit in place
-     * of the actual load generator. It generates no load itself.
+     * This creates a dummy load generator. It is intended to sit in place of
+     * the actual load generator. It generates no load itself.
      */
     public DummyLoadGenerator() {
     }
-    
+
+    @Override
+    public void setHost(Host host) {
+        this.host = host;
+    }
+
     @Override
     public void generateCalibrationData(Host host) {
         /**
@@ -55,8 +61,7 @@ public class DummyLoadGenerator implements LoadGenerator {
          * Note the aim of starting a thread is so that the calibrator can take
          * measurements while the load generator is doing its work.
          */
-        while (running) {
-        }
+        generateCalibrationData(host);
     }
 
 }

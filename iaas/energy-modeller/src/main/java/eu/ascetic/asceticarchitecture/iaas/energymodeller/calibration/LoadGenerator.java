@@ -25,6 +25,13 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 public interface LoadGenerator extends Runnable {
 
     /**
+     * This sets the host for the load generator to execute against.
+     * @param host The host to generate the load against, asynchronously once the
+     * run method is called.
+     */
+    public void setHost(Host host);
+    
+    /**
      * This for a given host commands the load generator to perform its benchmarking.
      * @param host The host to generate energy calibration data for.
      */

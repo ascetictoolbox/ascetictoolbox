@@ -18,6 +18,7 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration.client.CalibrationLoadGenerator;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration.client.CalibrationLoadGenerator_Service;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,6 +32,12 @@ import java.util.logging.Logger;
 public class DefaultLoadGenerator implements LoadGenerator {
 
     private boolean running = true;
+    private Host host = null;
+
+    @Override
+    public synchronized void setHost(Host host) {
+        this.host = host;
+    }
 
     /**
      * This takes a host and contacts it, generates a heavy load. The aim is
@@ -39,14 +46,14 @@ public class DefaultLoadGenerator implements LoadGenerator {
      * @param host The host to train/update
      */
     @Override
-    public void generateCalibrationData(Host host) {
+    public synchronized void generateCalibrationData(Host host) {
         //Generate Load
         try { //http://localhost:8080/EnergyModellerCalibrationTool/CalibrationLoadGenerator?WSDL
             URL url = new URL("http://" + host.getHostName() + ":8080/EnergyModellerCalibrationTool/CalibrationLoadGenerator?WSDL");
             CalibrationLoadGenerator_Service service = new CalibrationLoadGenerator_Service(url);
             CalibrationLoadGenerator port = service.getCalibrationLoadGeneratorPort();
             port.induceLoad();
-        } catch (Exception ex) {
+        } catch (MalformedURLException ex) {
             Logger.getLogger(DefaultLoadGenerator.class.getName()).log(Level.SEVERE, "The load generator had an error.", ex);
             running = false;
         }
@@ -66,7 +73,16 @@ public class DefaultLoadGenerator implements LoadGenerator {
          * Note the aim of starting a thread is so that the calibrator can take
          * measurements while the load generator is doing its work.
          */
-        while (running);
+        while (running) {
+            if (host != null) {
+                generateCalibrationData(host);
+                host = null;
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(DefaultLoadGenerator.class.getName()).log(Level.SEVERE, "The load generator was interupted.", ex);
+            }
+        }
     }
-
 }
