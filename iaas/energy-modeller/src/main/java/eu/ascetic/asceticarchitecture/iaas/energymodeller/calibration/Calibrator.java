@@ -15,7 +15,6 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration;
 
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DataGatherer;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostMeasurement;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
@@ -130,7 +129,7 @@ public class Calibrator implements Runnable {
             try {
                 Thread.sleep(TimeUnit.SECONDS.toMillis(calibratorWaitSec));
             } catch (InterruptedException ex) {
-                Logger.getLogger(DataGatherer.class.getName()).log(Level.SEVERE, "The data gatherer was interupted.", ex);
+                Logger.getLogger(Calibrator.class.getName()).log(Level.SEVERE, "The data gatherer was interupted.", ex);
             }
         }
         calibrationData.addAll(HostEnergyCalibrationData.getCalibrationData(data));
