@@ -158,6 +158,8 @@ public class VmManager {
                         // Append the instruction to mount the ISO
                         try (PrintWriter out = new PrintWriter(new BufferedWriter(
                                 new FileWriter("/DFS/ascetic/vm-scripts/" + vmScriptName, true)))) {
+                            out.println("mount /DFS");
+                            out.println("mkdir -p /media/cdrom");
                             out.println("mount -o loop,ro " + vmToDeploy.getInitScript() + " /media/cdrom");
                         } catch (Exception e) {
                             e.printStackTrace();
