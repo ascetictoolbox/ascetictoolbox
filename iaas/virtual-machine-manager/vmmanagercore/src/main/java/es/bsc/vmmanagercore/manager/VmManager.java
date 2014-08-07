@@ -170,7 +170,15 @@ public class VmManager {
                     }
                 }
                 else {
-                    vmToDeploy.setInitScript("/DFS/ascetic/vm-scripts/zabbix_agents.sh");
+                    Path zabbixAgentsScriptPath =
+                            FileSystems.getDefault().getPath("/DFS/ascetic/vm-scripts/zabbix_agents.sh");
+                    if (Files.exists(zabbixAgentsScriptPath)) {
+                        vmToDeploy.setInitScript("/DFS/ascetic/vm-scripts/zabbix_agents.sh");
+                    }
+                    else { // This is for when I perform tests locally and don't have access to the script (and
+                        // do not need it)
+                        vmToDeploy.setInitScript(null);
+                    }
                 }
             }
 

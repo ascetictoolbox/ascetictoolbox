@@ -93,14 +93,14 @@ public class Vm {
 
     public void setInitScript(String initScript) {
         // If a path for an init script was specified
-        if (initScript != null) {
+        if (initScript != null && !initScript.equals("")) {
             // Check that the path is valid and the file can be read
             File f = new File(initScript);
             if (!f.isFile() || !f.canRead()) {
                 throw new IllegalArgumentException("The path for the init script is not valid");
             }
+            this.initScript = initScript;
         }
-        this.initScript = initScript;
     }
 
     public String getApplicationId() {
