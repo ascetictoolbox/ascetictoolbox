@@ -32,7 +32,7 @@ public class Logger
          MeasurementLogger logger = new MeasurementLogger(new File("Dataset.txt"), false);
          new Thread(logger).start();
          ZabbixDataSourceAdaptor adaptor = new ZabbixDataSourceAdaptor();
-         Host host = adaptor.getHostByName("asok10");
+         Host host = adaptor.getHostByName("asok12");
          for(int i = 0; i < 10; i++) {
             logger.printToFile(adaptor.getHostData(host));
              try {

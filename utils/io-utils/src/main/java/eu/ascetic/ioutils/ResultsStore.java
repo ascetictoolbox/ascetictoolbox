@@ -177,7 +177,6 @@ public class ResultsStore {
 
     /**
      * Sorts all rows within the result store
-     * @param row The row to store
      */
     public void sortRows() {
         for (ArrayList<String> row : results) {

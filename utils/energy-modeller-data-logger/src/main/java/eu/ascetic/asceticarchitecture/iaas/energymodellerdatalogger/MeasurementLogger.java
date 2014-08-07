@@ -16,6 +16,8 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodellerdatalogger;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostMeasurement;
+import eu.ascetic.ioutils.GenericLogger;
+import eu.ascetic.ioutils.ResultsStore;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.logging.Level;

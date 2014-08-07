@@ -35,7 +35,7 @@ public abstract class GenericLogger<T> implements Runnable {
 
     private final LinkedBlockingDeque<T> queue = new LinkedBlockingDeque<>();
     private boolean stop = false;
-    ResultsStore saveFile = null;
+    protected ResultsStore saveFile = null;
 
     private GenericLogger() {
     }
@@ -88,7 +88,7 @@ public abstract class GenericLogger<T> implements Runnable {
 
     /**
      * This writes an item out to disk for the purpose of auditing what is going
-     * on. It by default overwrites the previous file
+     * on. It by default overwrites the previous file.
      *
      * @param file The file to save the item to
      * @param item The item to write to file
@@ -143,8 +143,8 @@ public abstract class GenericLogger<T> implements Runnable {
      * body and the store.append for each subsequent item. i.e.
      * store.add(item.getValue()); store.append(item.getValue2());
      *
-     * @param item
-     * @param store
+     * @param item The item to write out to disk.
+     * @param store The file writing mechanism to write out to disk with.
      */
     public abstract void writebody(T item, ResultsStore store);
 

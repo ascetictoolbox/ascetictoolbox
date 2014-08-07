@@ -1919,11 +1919,8 @@ utils/energy-modeller-data-logger/Dataset.txt -text
 utils/energy-modeller-data-logger/FullDataset.xlsx -text
 utils/energy-modeller-data-logger/nbactions.xml -text
 utils/energy-modeller-data-logger/pom.xml -text
-utils/energy-modeller-data-logger/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodellerdatalogger/GenericLogger.java -text
 utils/energy-modeller-data-logger/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodellerdatalogger/Logger.java -text
 utils/energy-modeller-data-logger/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodellerdatalogger/MeasurementLogger.java -text
-utils/energy-modeller-data-logger/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodellerdatalogger/ResultsIO.java -text
-utils/energy-modeller-data-logger/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodellerdatalogger/ResultsStore.java -text
 utils/energy-modeller-data-logger/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodellerdatalogger/AppTest.java -text
 utils/io-utils/pom.xml -text
 utils/io-utils/src/main/java/eu/ascetic/ioutils/GenericLogger.java -text
