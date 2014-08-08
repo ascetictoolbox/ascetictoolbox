@@ -15,7 +15,8 @@ import java.util.List;
  */
 public class DeploymentPlanGenerator {
 
-    private class PossibleHostsForVm {
+    private static class PossibleHostsForVm {
+
         public final Vm vm;
         public final List<Host> hosts;
 
@@ -23,6 +24,7 @@ public class DeploymentPlanGenerator {
             this.vm = vm;
             this.hosts = hosts;
         }
+
     }
 
     /**

@@ -1,5 +1,7 @@
 package es.bsc.vmmanagercore.utils;
 
+import org.apache.commons.io.IOUtils;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
@@ -21,10 +23,11 @@ public class CommandExecutor {
     public static String executeCommand(String command) {
         StringBuilder result = new StringBuilder();
         Process p;
+        BufferedReader reader = null;
         try {
             p = Runtime.getRuntime().exec(command);
             p.waitFor();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line;
             while ((line = reader.readLine()) != null) {
                 result.append(line);
@@ -32,6 +35,8 @@ public class CommandExecutor {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            IOUtils.closeQuietly(reader);
         }
         return result.toString();
     }
