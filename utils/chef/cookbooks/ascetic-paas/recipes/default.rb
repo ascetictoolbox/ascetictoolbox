@@ -57,6 +57,11 @@ package "sudo" do
   action :install
 end
 
+# VMC dependency:
+package "genisoimage" do
+  action :install
+end
+
 cookbook_file "/etc/sudoers.d/10-ascetic-paas" do
   source "ascetic-sudoers"
   mode 0640
