@@ -15,6 +15,7 @@ iaas/energy-modeller/pom.xml -text
 iaas/energy-modeller/src/jax-ws-catalog.xml -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/EnergyModeller.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/calibration/Calibrator.java -text
+iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/calibration/CalibratorDataLogger.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/calibration/DefaultLoadGenerator.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/calibration/DummyLoadGenerator.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/calibration/LoadGenerator.java -text

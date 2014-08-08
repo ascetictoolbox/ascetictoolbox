@@ -27,7 +27,6 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 public class DummyLoadGenerator implements LoadGenerator {
 
     private Host host;
-    private boolean running = true;
 
     /**
      * This creates a dummy load generator. It is intended to sit in place of
@@ -46,13 +45,6 @@ public class DummyLoadGenerator implements LoadGenerator {
         /**
          * No code here this isn't intended to do anything.
          */
-    }
-
-    /**
-     * This stops the load generator from running.
-     */
-    public void stop() {
-        running = false;
     }
 
     @Override

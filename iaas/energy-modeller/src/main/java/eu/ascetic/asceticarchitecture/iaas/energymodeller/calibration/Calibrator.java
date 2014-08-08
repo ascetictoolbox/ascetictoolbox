@@ -16,11 +16,9 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostMeasurement;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostEnergyCalibrationData;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -36,7 +34,6 @@ import org.apache.commons.configuration.PropertiesConfiguration;
  */
 public class Calibrator implements Runnable {
 
-    private LoadGenerator generator;
     private final HostDataSource datasource;
     private boolean running = true;
     private final LinkedBlockingDeque<Host> queue = new LinkedBlockingDeque<>();
@@ -45,6 +42,7 @@ public class Calibrator implements Runnable {
     private static String defaultLoadGenerator = "DummyLoadGenerator";
     private static final String CONFIG_FILE = "energymodeller_calibrator.properties";
     private static final String DEFAULT_LOAD_GEN_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration";
+    private Class<?> loadGenerator = DummyLoadGenerator.class;
 
     /**
      * This creates a new calibrator.
@@ -102,38 +100,25 @@ public class Calibrator implements Runnable {
      * @return The newly trained/updated host
      */
     private Host performCalibration(Host host) {
-        host = readLowestboundForHost(host);
-        generator.setHost(host);
-        host = readEnergyDataForHost(host);
-        return host;
-    }
-
-    /**
-     * This method aims to read the energy data for a host and convert it into
-     * the calibration data required for the energy modeller.
-     *
-     * @param host The host to get the calibration data for
-     * @return The updated host
-     */
-    private Host readEnergyDataForHost(Host host) {
-        ArrayList<HostEnergyCalibrationData> calibrationData = host.getCalibrationData();
-        ArrayList<HostMeasurement> data = new ArrayList<>();
-        long lastClock = 0;
-
-        for (int i = 0; i < calibratorMaxDurationSec; i = i + calibratorWaitSec) {
-            HostMeasurement dataEntry = datasource.getHostData(host);
-            long currentClock = dataEntry.getClock();
-            if (currentClock > lastClock) {
-                data.add(dataEntry);
-            }
-            try {
-                Thread.sleep(TimeUnit.SECONDS.toMillis(calibratorWaitSec));
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Calibrator.class.getName()).log(Level.SEVERE, "The data gatherer was interupted.", ex);
-            }
+        LoadGenerator generator;
+        try {
+            generator = (LoadGenerator) loadGenerator.newInstance();
+        } catch (InstantiationException | IllegalAccessException ex) {
+            Logger.getLogger(Calibrator.class.getName()).log(Level.WARNING, "The load generator specified could not be instantiated", ex);
+            generator = new DummyLoadGenerator();
         }
-        calibrationData.addAll(HostEnergyCalibrationData.getCalibrationData(data));
-        host.setCalibrationData(calibrationData);
+        //Set the load generator going
+        generator.setHost(host);
+        Thread loadGeneratorThread = new Thread(generator);
+        loadGeneratorThread.setDaemon(true);
+        loadGeneratorThread.start();
+        //Gather basic data
+        host = readLowestboundForHost(host);
+        //Perform the full logging
+        CalibratorDataLogger logger = new CalibratorDataLogger(host, datasource, calibratorWaitSec, calibratorMaxDurationSec);
+        Thread dataLoggerThread = new Thread(logger);
+        dataLoggerThread.setDaemon(true);
+        dataLoggerThread.start();
         return host;
     }
 
@@ -163,33 +148,22 @@ public class Calibrator implements Runnable {
     /**
      * This sets the load generator used by the calibration module.
      *
-     * @param generator the generator to set
-     */
-    public void setGenerator(LoadGenerator generator) {
-        this.generator = generator;
-    }
-
-    /**
-     * This sets the load generator used by the calibration module.
+     * @param loadGenerator the generator to set
      *
-     * @param generator the generator to set
+     * If the name of the class is not identified then the dummy load generator
+     * will be loaded as a default.
      */
-    public final void setGenerator(String generator) {
+    public final void setGenerator(String loadGenerator) {
         try {
-            if (!generator.startsWith(DEFAULT_LOAD_GEN_PACKAGE)) {
-                generator = DEFAULT_LOAD_GEN_PACKAGE + "." + generator;
+            if (!loadGenerator.startsWith(DEFAULT_LOAD_GEN_PACKAGE)) {
+                loadGenerator = DEFAULT_LOAD_GEN_PACKAGE + "." + loadGenerator;
             }
-            this.generator = (LoadGenerator) (Class.forName(generator).newInstance());
+            this.loadGenerator = (Class.forName(loadGenerator));
         } catch (ClassNotFoundException ex) {
-            if (this.generator == null) {
-                this.generator = new DefaultLoadGenerator();
+            if (this.loadGenerator == null) {
+                this.loadGenerator = DummyLoadGenerator.class;
             }
-            Logger.getLogger(Calibrator.class.getName()).log(Level.WARNING, "The load generator specified was not found");
-        } catch (InstantiationException | IllegalAccessException ex) {
-            if (this.generator == null) {
-                this.generator = new DefaultLoadGenerator();
-            }
-            Logger.getLogger(Calibrator.class.getName()).log(Level.WARNING, "The load generator did not work", ex);
+            Logger.getLogger(Calibrator.class.getName()).log(Level.WARNING, "The load generator specified was not found", ex);
         }
     }
 

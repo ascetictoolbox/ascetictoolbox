@@ -78,16 +78,5 @@ public class CalibratorTest {
         System.out.println("Calibration Data Count: " + host.getCalibrationData().size());
     }
 
-    /**
-     * Test of setGenerator method, of class Calibrator.
-     */
-    @Test
-    public void testSetGenerator() {
-        System.out.println("setGenerator");
-        DefaultLoadGenerator generator = null;
-        ZabbixDataSourceAdaptor adaptor = new ZabbixDataSourceAdaptor();
-        Calibrator instance = new Calibrator(adaptor);
-        instance.setGenerator(generator);
-    }
     
 }

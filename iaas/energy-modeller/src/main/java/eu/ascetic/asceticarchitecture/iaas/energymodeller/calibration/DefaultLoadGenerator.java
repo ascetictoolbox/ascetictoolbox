@@ -31,7 +31,6 @@ import java.util.logging.Logger;
  */
 public class DefaultLoadGenerator implements LoadGenerator {
 
-    private boolean running = true;
     private Host host = null;
 
     @Override
@@ -55,16 +54,8 @@ public class DefaultLoadGenerator implements LoadGenerator {
             port.induceLoad();
         } catch (MalformedURLException ex) {
             Logger.getLogger(DefaultLoadGenerator.class.getName()).log(Level.SEVERE, "The load generator had an error.", ex);
-            running = false;
         }
 
-    }
-
-    /**
-     * This stops the load generator from running.
-     */
-    public void stop() {
-        running = false;
     }
 
     @Override
@@ -73,16 +64,9 @@ public class DefaultLoadGenerator implements LoadGenerator {
          * Note the aim of starting a thread is so that the calibrator can take
          * measurements while the load generator is doing its work.
          */
-        while (running) {
-            if (host != null) {
-                generateCalibrationData(host);
-                host = null;
-            }
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(DefaultLoadGenerator.class.getName()).log(Level.SEVERE, "The load generator was interupted.", ex);
-            }
+        if (host != null) {
+            generateCalibrationData(host);
+            host = null;
         }
     }
 }
