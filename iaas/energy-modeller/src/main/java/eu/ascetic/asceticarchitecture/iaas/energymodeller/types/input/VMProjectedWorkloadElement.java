@@ -33,17 +33,19 @@ public class VMProjectedWorkloadElement implements Comparable<Object> {
      * period of time for the deployment should be specified.
      */
     public TimePeriod duration;
+    
     /*
      * TODO:
      * The exact type and values ranges for these numbers need considering
      * further. i.e. CPU should it be % of overall use?
      * memory usage is most important, does using more matter? No
      * does making many writes yes, and what about page faults?
+     *  private double cpuUsage;
+     *  private double networkUsage;
+     *  private double diskUsage;
+     *  private double memoryUsage;
      */
-    private double cpuUsage;
-    private double networkUsage;
-    private double diskUsage;
-    private double memoryUsage;
+   
 
     private static int BEFORE = -1;
     private static int EQUAL = 0;

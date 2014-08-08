@@ -15,13 +15,16 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore;
 
+import static org.junit.Assert.assertNotNull;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostEnergyRecord;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.List;
+
 import org.junit.Test;
 
 /**
@@ -73,6 +76,7 @@ public class DefaultDatabaseConnectorTest {
         Host host = CHOSEN_HOST;
         DefaultDatabaseConnector instance = new DefaultDatabaseConnector();
         Host result = instance.getHostCalibrationData(host);
+        assertNotNull(result);
     }
 
     /**
