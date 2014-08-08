@@ -1,0 +1,32 @@
+This app is designed to generate load on a given server. This can be either CPU or memory based:
+
+CPU Intensive
+-----------------------------------------------------------------
+To call the CPU based test call:
+
+java -jar ascetic-load-generator-app-0.0.1-SNAPSHOT.jar 5 5 30
+
+This takes 3 arguments, but can also take two, one or none:
+
+Arg List: 
+1) How many characters to write to standard out
+2) how many characters to write to standard error
+3) How many seconds to hold the CPU at full load for
+
+Arguments 1 + 2 are aimed at been used for standard out redirection. i.e. to file. This then allows file transfer tests to
+be completed, if needed. The third paramter specifies a a timed CPU load.
+
+
+Memory Intensive
+-----------------------------------------------------------------
+To call the memory based test run:
+
+java -cp ./ascetic-load-generator-app-0.0.1-SNAPSHOT.jar eu.ascetic.ascetic.load.generator.app.MemoryLoadGenerator 200
+
+This can take two one or no arguments:
+
+Arg List: 
+1) size in MB to consume, the default is 800Mb
+2) The delay between adding a new item into memory, the default is 50ms. 
+This allows the process to take time and thus, be useful for taking meaurements. 
+To get to 800Mb it takes aproximately 500 interations of the loop.
