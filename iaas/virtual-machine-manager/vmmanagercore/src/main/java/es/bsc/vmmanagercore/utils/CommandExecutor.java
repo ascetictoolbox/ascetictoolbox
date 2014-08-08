@@ -18,7 +18,7 @@ public class CommandExecutor {
      * @param command the command
      * @return the result of executing the command
      */
-    public String executeCommand(String command) {
+    public static String executeCommand(String command) {
         StringBuilder result = new StringBuilder();
         Process p;
         try {

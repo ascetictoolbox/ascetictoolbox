@@ -202,13 +202,13 @@ iaas/virtual-machine-manager/vmmanagercore/pom.xml -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/cloudmiddleware/CloudMiddleware.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/cloudmiddleware/JCloudsMiddleware.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/cloudmiddleware/OpenStackGlance.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/configuration/VmManagerConfiguration.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/db/VmManagerDb.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/db/VmManagerDbHsql.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/energymodeller/EnergyModellerConnector.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/energymodeller/VMMToEMConversor.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/logging/VMMLogger.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/manager/VmManager.java -text
-iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/manager/VmManagerConfiguration.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/DeploymentPlan.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/ImageToUpload.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/ImageUploaded.java -text

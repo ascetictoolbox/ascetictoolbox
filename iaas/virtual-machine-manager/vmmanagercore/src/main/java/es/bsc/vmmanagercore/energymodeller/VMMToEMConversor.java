@@ -1,6 +1,7 @@
 package es.bsc.vmmanagercore.energymodeller;
 
 import es.bsc.vmmanagercore.model.Vm;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 
 import java.util.ArrayList;
@@ -14,15 +15,10 @@ import java.util.List;
  */
 public class VMMToEMConversor {
 
-    public static eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM getVmEnergyModFromVM(Vm vm) {
-        return new eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM(
-                vm.getCpus(), vm.getRamMb(), vm.getDiskGb());
-    }
-
     public static List<VM> getVmsEnergyModFromVms(List<Vm> vms) {
         List<eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM> result = new ArrayList<>();
         for (Vm vm: vms) {
-            result.add(getVmEnergyModFromVM(vm));
+            result.add(EnergyModeller.getVM(vm.getCpus(), vm.getRamMb(), vm.getDiskGb()));
         }
         return result;
     }

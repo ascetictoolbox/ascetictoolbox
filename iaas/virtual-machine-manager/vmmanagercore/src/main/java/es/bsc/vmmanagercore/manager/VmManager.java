@@ -2,6 +2,7 @@ package es.bsc.vmmanagercore.manager;
 
 import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddleware;
 import es.bsc.vmmanagercore.cloudmiddleware.JCloudsMiddleware;
+import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
 import es.bsc.vmmanagercore.db.VmManagerDb;
 import es.bsc.vmmanagercore.db.VmManagerDbHsql;
 import es.bsc.vmmanagercore.model.*;
@@ -9,7 +10,10 @@ import es.bsc.vmmanagercore.monitoring.*;
 import es.bsc.vmmanagercore.scheduler.EstimatesGenerator;
 import es.bsc.vmmanagercore.scheduler.Scheduler;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -17,7 +21,7 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static java.nio.file.StandardCopyOption.*;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 /**
  * VM Manager.
@@ -361,7 +365,7 @@ public class VmManager {
      * @return the list of hosts
      */
     public List<Host> getHosts() {
-        return hosts;
+        return Collections.unmodifiableList(hosts);
     }
 
     /**

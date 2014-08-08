@@ -1,6 +1,6 @@
 package es.bsc.vmmanagercore.cloudmiddleware;
 
-import es.bsc.vmmanagercore.manager.VmManagerConfiguration;
+import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
 import es.bsc.vmmanagercore.model.ImageToUpload;
 import es.bsc.vmmanagercore.utils.CommandExecutor;
 import es.bsc.vmmanagercore.utils.HttpUtils;
@@ -27,7 +27,6 @@ public class OpenStackGlance {
     private String keyStonePassword;
     private String keyStoneTenantId;
     private String token; // token needed for authentication
-    private CommandExecutor commandExecutor = new CommandExecutor();
 
     /**
      * Class constructor.
@@ -59,7 +58,7 @@ public class OpenStackGlance {
             return getIdFromCreateImageImageResponse(responseContent);
         }
         else {
-            String glanceCommandOutput = commandExecutor.executeCommand(
+            String glanceCommandOutput = CommandExecutor.executeCommand(
                     "glance --os-username vm.manager --os-password vmmanager14 " +
                     "--os-tenant-id f559470b483c48f18479bd039400b007 " +
                     "--os-auth-url http://130.149.248.39:35357/v2.0 " +

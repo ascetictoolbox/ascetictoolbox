@@ -1,8 +1,8 @@
 package es.bsc.vmmanagercore.cloudmiddleware;
 
 import com.google.common.base.Optional;
+import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
 import es.bsc.vmmanagercore.db.VmManagerDb;
-import es.bsc.vmmanagercore.manager.VmManagerConfiguration;
 import es.bsc.vmmanagercore.model.ImageToUpload;
 import es.bsc.vmmanagercore.model.ImageUploaded;
 import es.bsc.vmmanagercore.model.Vm;
@@ -256,6 +256,12 @@ public class JCloudsMiddleware implements CloudMiddleware {
         return vmIds;
     }
 
+    /**
+     * Returns the IP of a VM.
+     *
+     * @param server the VM
+     * @return the IP of the VM
+     */
     // TODO Redo this. The name of the network should be obtained automatically. This might only work in TUB and BSC.
     private String getVmIp(Server server) {
         if (server.getAddresses().get("vmnet").toArray().length != 0) { // VM network

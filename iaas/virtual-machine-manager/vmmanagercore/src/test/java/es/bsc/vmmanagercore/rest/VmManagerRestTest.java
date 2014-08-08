@@ -1,7 +1,7 @@
 package es.bsc.vmmanagercore.rest;
 
 import com.google.gson.*;
-import es.bsc.vmmanagercore.manager.VmManagerConfiguration;
+import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
 import es.bsc.vmmanagercore.model.*;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

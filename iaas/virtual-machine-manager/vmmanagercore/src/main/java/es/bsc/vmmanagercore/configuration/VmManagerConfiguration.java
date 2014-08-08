@@ -1,4 +1,6 @@
-package es.bsc.vmmanagercore.manager;
+package es.bsc.vmmanagercore.configuration;
+
+import es.bsc.vmmanagercore.manager.VmManager;
 
 import java.io.IOException;
 import java.util.Properties;
