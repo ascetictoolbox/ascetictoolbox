@@ -90,7 +90,7 @@ public class IsoImageCreation {
                 + this.addRecontextFiles);
 
         // Create the iso output directory
-        new File(iso.getUri()).mkdirs();
+        new File(iso.getUri().substring(0, iso.getUri().lastIndexOf(File.separator))).mkdirs();
     }
 
     /**
@@ -124,7 +124,7 @@ public class IsoImageCreation {
         this.addRecontextFiles = configuration.getAddRecontextFiles();
 
         // Create the iso output directory
-        new File(iso.getUri()).mkdirs();
+        new File(iso.getUri().substring(0, iso.getUri().lastIndexOf(File.separator))).mkdirs();
     }
 
     /**
