@@ -28,85 +28,87 @@ import eu.ascetic.vmc.api.dataaggregator.OvfDefinitionClient;
  */
 public class Service {
 
-	private String serviceId;
-	private OvfDefinitionClient ovfDefinitionClient;
-	private ContextData contextData;
-	private SecurityClient securityClient;
+    private String serviceId;
+    private OvfDefinitionClient ovfDefinitionClient;
+    private ContextData contextData;
+    private SecurityClient securityClient;
 
-	/**
-	 * Default Constructor
-	 * 
-	 * @param ovfDefinition
-	 *            The OVF to associate with a given service.
-	 */
-	public Service(OvfDefinition ovfDefinition) {
-		if (ovfDefinition != null) {
-			
-			// FIXME: Should we be getting the serviceId from a property here, confirm with consortium? 
-			serviceId = ovfDefinition.getVirtualSystemCollection().getId();
-			ovfDefinitionClient = new OvfDefinitionClient(ovfDefinition);
-		}
-	}
+    /**
+     * Default Constructor
+     * 
+     * @param ovfDefinition
+     *            The OVF to associate with a given service.
+     */
+    public Service(OvfDefinition ovfDefinition) {
+        if (ovfDefinition != null) {
 
-	/**
-	 * Parses the OVF Definition for contextualization data
-	 */
-	public void parseOvfDefinition() {
-		contextData = ovfDefinitionClient.parse();
-	}
+            // FIXME: Should we be getting the serviceId from a property here,
+            // confirm with consortium?
+            serviceId = ovfDefinition.getVirtualSystemCollection().getId();
+            ovfDefinitionClient = new OvfDefinitionClient(ovfDefinition);
+        }
+    }
 
-	/**
-	 * Generates contextualization data from other ASCETiC components
-	 */
-	public void generateContextData() {
-		securityClient = new SecurityClient();
-		contextData = securityClient.generateKeys(contextData);
-	}
+    /**
+     * Parses the OVF Definition for contextualization data
+     */
+    public void parseOvfDefinition() {
+        contextData = ovfDefinitionClient.parse();
+    }
 
-	/**
-	 * Getter for ContextData objects
-	 * 
-	 * @return the contextData
-	 */
-	public ContextData getContextData() {
-		return contextData;
-	}
+    /**
+     * Generates contextualization data from other ASCETiC components
+     */
+    public void generateContextData() {
+        securityClient = new SecurityClient();
+        contextData = securityClient.generateKeys(contextData);
+    }
 
-	/**
-	 * Setter for ContextData objects
-	 * 
-	 * @param contextData
-	 *            the contextData to set
-	 */
-	public void setContextData(ContextData contextData) {
-		this.contextData = contextData;
-	}
+    /**
+     * Getter for ContextData objects
+     * 
+     * @return the contextData
+     */
+    public ContextData getContextData() {
+        return contextData;
+    }
 
-	/**
-	 * Getter for Service ID
-	 * 
-	 * @return the serviceId
-	 */
-	public String getServiceId() {
-		return serviceId;
-	}
+    /**
+     * Setter for ContextData objects
+     * 
+     * @param contextData
+     *            the contextData to set
+     */
+    public void setContextData(ContextData contextData) {
+        this.contextData = contextData;
+    }
 
-	/**
-	 * FIXME: Not currently used
-	 * 
-	 * @return the securityClient
-	 */
-	public SecurityClient getSecurityClient() {
-		return securityClient;
-	}
+    /**
+     * Getter for Service ID
+     * 
+     * @return the serviceId
+     */
+    public String getServiceId() {
+        return serviceId;
+    }
 
-	/**
-	 * FIXME: Not currently used
-	 * 
-	 * @param securityClient the securityClient to set
-	 */
-	public void setSecurityClient(SecurityClient securityClient) {
-		this.securityClient = securityClient;
-	}
+    /**
+     * FIXME: Not currently used
+     * 
+     * @return the securityClient
+     */
+    public SecurityClient getSecurityClient() {
+        return securityClient;
+    }
+
+    /**
+     * FIXME: Not currently used
+     * 
+     * @param securityClient
+     *            the securityClient to set
+     */
+    public void setSecurityClient(SecurityClient securityClient) {
+        this.securityClient = securityClient;
+    }
 
 }

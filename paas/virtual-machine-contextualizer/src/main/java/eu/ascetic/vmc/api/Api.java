@@ -27,28 +27,28 @@ import eu.ascetic.vmc.api.datamodel.ProgressData;
  */
 public interface Api {
 
-	/**
-	 * Given an object of OvfDefinition containing the details of the service
-	 * to be contextualized, this function performs a number of operations
-	 * asynchronously.
-	 * 
-	 * @param ovfDefinition
-	 *            OvfDefinition to contextualize.
-	 */
-	void contextualizeService(OvfDefinition ovfDefinition);
+    /**
+     * Given an object of OvfDefinition containing the details of the service to
+     * be contextualized, this function performs a number of operations
+     * asynchronously.
+     * 
+     * @param ovfDefinition
+     *            OvfDefinition to contextualize.
+     */
+    void contextualizeService(OvfDefinition ovfDefinition);
 
-	/**
-	 * Given a ServiceId this function returns the progress status and
-	 * percentage completion of a previous call to contextualizeService() as a
-	 * ProgressData object.
-	 * 
-	 * @param serviceId
-	 *            Service ID to check progress of.
-	 * @return ProgressData object with status of contextualization (see
-	 *         {@link ProgressData})
-	 * @throws ProgressException
-	 *             Exception on failure to get progress string.
-	 */
-	ProgressData contextualizeServiceCallback(String serviceId)
-			throws ProgressException;
+    /**
+     * Given a ServiceId this function returns the progress status and
+     * percentage completion of a previous call to contextualizeService() as a
+     * ProgressData object.
+     * 
+     * @param serviceId
+     *            Service ID to check progress of.
+     * @return ProgressData object with status of contextualization (see
+     *         {@link ProgressData})
+     * @throws ProgressException
+     *             Exception on failure to get progress string.
+     */
+    ProgressData contextualizeServiceCallback(String serviceId)
+            throws ProgressException;
 }

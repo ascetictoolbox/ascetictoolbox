@@ -24,24 +24,24 @@ package eu.ascetic.vmc.api.core;
  */
 public interface DomainContextualizerMBean {
 
-	/**
-	 * Domain started event handler
-	 */
-	void vmDomainStarted();
+    /**
+     * Domain started event handler
+     */
+    void vmDomainStarted();
 
-	/**
-	 * Domain stopped event handler
-	 */
-	void vmDomainStopped();
+    /**
+     * Domain stopped event handler
+     */
+    void vmDomainStopped();
 
-	/**
-	 * Domain migration started event handler
-	 */
-	void vmDomainMigrationStarted();
+    /**
+     * Domain migration started event handler
+     */
+    void vmDomainMigrationStarted();
 
-	/**
-	 * Domain migration completed event handler
-	 */
-	void vmDomainMigrationCompleted();
+    /**
+     * Domain migration completed event handler
+     */
+    void vmDomainMigrationCompleted();
 
 }

@@ -23,69 +23,69 @@ package eu.ascetic.vmc.api.datamodel.contextdatatypes;
  */
 public class SoftwareDependency {
 
-	private String artifactId;
-	private String groupId;
-	private String version;
+    private String artifactId;
+    private String groupId;
+    private String version;
 
-	/**
-	 * Constructor for creating a SoftwareDependency object.
-	 * 
-	 * @param artifactId
-	 *            The ID of the software dependency.
-	 * @param groupId
-	 *            The group ID of the software dependency.
-	 * @param version
-	 *            The version of the software dependency.
-	 */
-	public SoftwareDependency(String artifactId, String groupId, String version) {
-		this.artifactId = artifactId;
-		this.groupId = groupId;
-		this.version = version;
-	}
+    /**
+     * Constructor for creating a SoftwareDependency object.
+     * 
+     * @param artifactId
+     *            The ID of the software dependency.
+     * @param groupId
+     *            The group ID of the software dependency.
+     * @param version
+     *            The version of the software dependency.
+     */
+    public SoftwareDependency(String artifactId, String groupId, String version) {
+        this.artifactId = artifactId;
+        this.groupId = groupId;
+        this.version = version;
+    }
 
-	/**
-	 * @return the artifactId
-	 */
-	public String getArtifactId() {
-		return artifactId;
-	}
+    /**
+     * @return the artifactId
+     */
+    public String getArtifactId() {
+        return artifactId;
+    }
 
-	/**
-	 * @param artifactId
-	 *            the artifactId to set
-	 */
-	public void setArtifactId(String artifactId) {
-		this.artifactId = artifactId;
-	}
+    /**
+     * @param artifactId
+     *            the artifactId to set
+     */
+    public void setArtifactId(String artifactId) {
+        this.artifactId = artifactId;
+    }
 
-	/**
-	 * @return the groupId
-	 */
-	public String getGroupId() {
-		return groupId;
-	}
+    /**
+     * @return the groupId
+     */
+    public String getGroupId() {
+        return groupId;
+    }
 
-	/**
-	 * @param groupId
-	 *            the groupId to set
-	 */
-	public void setGroupId(String groupId) {
-		this.groupId = groupId;
-	}
+    /**
+     * @param groupId
+     *            the groupId to set
+     */
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
 
-	/**
-	 * @return the version
-	 */
-	public String getVersion() {
-		return version;
-	}
+    /**
+     * @return the version
+     */
+    public String getVersion() {
+        return version;
+    }
 
-	/**
-	 * @param version
-	 *            the version to set
-	 */
-	public void setVersion(String version) {
-		this.version = version;
-	}
+    /**
+     * @param version
+     *            the version to set
+     */
+    public void setVersion(String version) {
+        this.version = version;
+    }
 
 }

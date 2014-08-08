@@ -28,48 +28,47 @@ import eu.ascetic.vmc.api.datamodel.contextdatatypes.SecurityKey;
  */
 public class ContextData {
 
-	private Map<String, SecurityKey> securityKeys;
-	private Map<String, VirtualMachine> virtualMachines;
+    private Map<String, SecurityKey> securityKeys;
+    private Map<String, VirtualMachine> virtualMachines;
 
-	/**
-	 * Default constructor that creates a {@link HashMap} for the storage of
-	 * contextualization data on a per {@link VirtualMachine} basis and at the
-	 * entire service level across all VMs
-	 */
-	public ContextData() {
-		securityKeys = new HashMap<String, SecurityKey>();
-		virtualMachines = new HashMap<String, VirtualMachine>();
-	}
+    /**
+     * Default constructor that creates a {@link HashMap} for the storage of
+     * contextualization data on a per {@link VirtualMachine} basis and at the
+     * entire service level across all VMs
+     */
+    public ContextData() {
+        securityKeys = new HashMap<String, SecurityKey>();
+        virtualMachines = new HashMap<String, VirtualMachine>();
+    }
 
-	/**
-	 * @return the securityKeys
-	 */
-	public Map<String, SecurityKey> getSecurityKeys() {
-		return securityKeys;
-	}
+    /**
+     * @return the securityKeys
+     */
+    public Map<String, SecurityKey> getSecurityKeys() {
+        return securityKeys;
+    }
 
-	/**
-	 * @param securityKeys
-	 *            the securityKeys to set
-	 */
-	public void setSecurityKeys(Map<String, SecurityKey> securityKeys) {
-		this.securityKeys = securityKeys;
-	}
+    /**
+     * @param securityKeys
+     *            the securityKeys to set
+     */
+    public void setSecurityKeys(Map<String, SecurityKey> securityKeys) {
+        this.securityKeys = securityKeys;
+    }
 
-	/**
-	 * @return the virtualMachines
-	 */
-	public Map<String, VirtualMachine> getVirtualMachines() {
-		return virtualMachines;
-	}
+    /**
+     * @return the virtualMachines
+     */
+    public Map<String, VirtualMachine> getVirtualMachines() {
+        return virtualMachines;
+    }
 
-	/**
-	 * @param virtualMachines
-	 *            the virtualMachines to set
-	 */
-	public void setVirtualMachines(
-			Map<String, VirtualMachine> virtualMachines) {
-		this.virtualMachines = virtualMachines;
-	}
+    /**
+     * @param virtualMachines
+     *            the virtualMachines to set
+     */
+    public void setVirtualMachines(Map<String, VirtualMachine> virtualMachines) {
+        this.virtualMachines = virtualMachines;
+    }
 
 }

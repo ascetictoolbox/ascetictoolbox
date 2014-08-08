@@ -26,41 +26,41 @@ import eu.ascetic.vmc.libvirt.LibvirtException;
  */
 public interface LibvirtControlBridgeMBean {
 
-	/**
-	 * Attach an iso to a domain
-	 * 
-	 * @param domainName
-	 *            The name of the Domain
-	 * @param interfaceName
-	 *            The interface name to attach
-	 * @throws LibvirtException
-	 *             Thrown if connecting or attach fails
-	 */
-	void attachIso(String domainName, String isoPath, String interfaceName)
-			throws LibvirtException;
+    /**
+     * Attach an iso to a domain
+     * 
+     * @param domainName
+     *            The name of the Domain
+     * @param interfaceName
+     *            The interface name to attach
+     * @throws LibvirtException
+     *             Thrown if connecting or attach fails
+     */
+    void attachIso(String domainName, String isoPath, String interfaceName)
+            throws LibvirtException;
 
-	/**
-	 * Detach an iso from a domain
-	 * 
-	 * @param domainName
-	 *            The name of the Domain
-	 * @param interfaceName
-	 *            The interface name to detach
-	 * @throws LibvirtException
-	 *             Thrown if connecting or detaching fails
-	 */
-	void detachIso(String domainName, String interfaceName)
-			throws LibvirtException;
+    /**
+     * Detach an iso from a domain
+     * 
+     * @param domainName
+     *            The name of the Domain
+     * @param interfaceName
+     *            The interface name to detach
+     * @throws LibvirtException
+     *             Thrown if connecting or detaching fails
+     */
+    void detachIso(String domainName, String interfaceName)
+            throws LibvirtException;
 
-	/**
-	 * Get the existing iso file path of a device mounted at an interface
-	 * 
-	 * @param domainName
-	 *            Domain to query
-	 * @param interfaceName
-	 *            The name of the interface of interest
-	 */
-	String getExistingIsoPath(String domainName, String interfaceName)
-			throws LibvirtException;
+    /**
+     * Get the existing iso file path of a device mounted at an interface
+     * 
+     * @param domainName
+     *            Domain to query
+     * @param interfaceName
+     *            The name of the interface of interest
+     */
+    String getExistingIsoPath(String domainName, String interfaceName)
+            throws LibvirtException;
 
 }

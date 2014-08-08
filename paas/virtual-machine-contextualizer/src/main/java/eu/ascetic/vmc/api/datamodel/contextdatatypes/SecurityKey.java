@@ -25,53 +25,57 @@ import java.util.Arrays;
  */
 public class SecurityKey {
 
-	private String name;
-	private byte[] keyData;
-	
-	/**
-	 * Creates a new instance of a security key.
-	 * 
-	 * @param name The key name
-	 * @param initialKeyData The data representing the key
-	 */
-	public SecurityKey(String name, byte[] initialKeyData) {
-		this.name = name;
-		if (initialKeyData == null) {
-			this.keyData = new byte[0];
-		} else {
-			this.keyData = Arrays.copyOf(initialKeyData, initialKeyData.length);
-		}		
-	}
+    private String name;
+    private byte[] keyData;
 
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     * Creates a new instance of a security key.
+     * 
+     * @param name
+     *            The key name
+     * @param initialKeyData
+     *            The data representing the key
+     */
+    public SecurityKey(String name, byte[] initialKeyData) {
+        this.name = name;
+        if (initialKeyData == null) {
+            this.keyData = new byte[0];
+        } else {
+            this.keyData = Arrays.copyOf(initialKeyData, initialKeyData.length);
+        }
+    }
 
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * @return the keyData
-	 */
-	public byte[] getKeyData() {
-		return keyData;
-	}
+    /**
+     * @param name
+     *            the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	/**
-	 * @param keyData the keyData to set
-	 */
-	public void setKeyData(byte[] newKeyData) {
-		if (newKeyData == null) {
-			this.keyData = new byte[0];
-		} else {
-			this.keyData = Arrays.copyOf(newKeyData, newKeyData.length);
-		}	
-	}
+    /**
+     * @return the keyData
+     */
+    public byte[] getKeyData() {
+        return keyData;
+    }
+
+    /**
+     * @param keyData
+     *            the keyData to set
+     */
+    public void setKeyData(byte[] newKeyData) {
+        if (newKeyData == null) {
+            this.keyData = new byte[0];
+        } else {
+            this.keyData = Arrays.copyOf(newKeyData, newKeyData.length);
+        }
+    }
 }

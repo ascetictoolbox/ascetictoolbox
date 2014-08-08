@@ -23,61 +23,65 @@ package eu.ascetic.vmc.api.datamodel.image;
  */
 public class Iso extends Image {
 
-	private String mountPoint;
-	private boolean created;
+    private String mountPoint;
+    private boolean created;
 
-	/**
-	 * Constructor for creating a ISO object
-	 * 
-	 * @param imageId
-	 *            The ID of the ISO image (see
-	 *            {@link Image#Image(String, String, String, String)} for details).
-	 * @param fileName
-	 *            The filename of the ISO image as a URI including full system
-	 *            path (see {@link Image#Image(String, String, String, String)} for
-	 *            details).
-	 * @param uri
-	 *            The URI of the ISO image as a full system
-	 *            path (see {@link Image#Image(String, String, String, String)} for
-	 *            details).
-	 * @param format
-	 *            The format of the ISO image (e.g. iso9660) (see
-	 *            {@link Image#Image(String, String, String, String)} for details).
-	 * @param mountPoint
-	 *            The mount point of the ISO image within a VM.
-	 */
-	public Iso(String imageId, String fileName, String uri, String format, String mountPoint) {
-		super(imageId, fileName, uri, format);
-		this.mountPoint = mountPoint;
-	}
-	
-	/**
-	 * @return the mountPoint
-	 */
-	public String getMountPoint() {
-		return mountPoint;
-	}
+    /**
+     * Constructor for creating a ISO object
+     * 
+     * @param imageId
+     *            The ID of the ISO image (see
+     *            {@link Image#Image(String, String, String, String)} for
+     *            details).
+     * @param fileName
+     *            The filename of the ISO image as a URI including full system
+     *            path (see {@link Image#Image(String, String, String, String)}
+     *            for details).
+     * @param uri
+     *            The URI of the ISO image as a full system path (see
+     *            {@link Image#Image(String, String, String, String)} for
+     *            details).
+     * @param format
+     *            The format of the ISO image (e.g. iso9660) (see
+     *            {@link Image#Image(String, String, String, String)} for
+     *            details).
+     * @param mountPoint
+     *            The mount point of the ISO image within a VM.
+     */
+    public Iso(String imageId, String fileName, String uri, String format,
+            String mountPoint) {
+        super(imageId, fileName, uri, format);
+        this.mountPoint = mountPoint;
+    }
 
-	/**
-	 * @param mountPoint
-	 *            the mountPoint to set
-	 */
-	public void setMountPoint(String mountPoint) {
-		this.mountPoint = mountPoint;
-	}
+    /**
+     * @return the mountPoint
+     */
+    public String getMountPoint() {
+        return mountPoint;
+    }
 
-	/**
-	 * @return the created
-	 */
-	public boolean isCreated() {
-		return created;
-	}
+    /**
+     * @param mountPoint
+     *            the mountPoint to set
+     */
+    public void setMountPoint(String mountPoint) {
+        this.mountPoint = mountPoint;
+    }
 
-	/**
-	 * @param created the created to set
-	 */
-	public void setCreated(boolean created) {
-		this.created = created;
-	}
+    /**
+     * @return the created
+     */
+    public boolean isCreated() {
+        return created;
+    }
+
+    /**
+     * @param created
+     *            the created to set
+     */
+    public void setCreated(boolean created) {
+        this.created = created;
+    }
 
 }

@@ -161,7 +161,8 @@ public class OvfDefinitionClient {
             contextData.getVirtualMachines().put(componentId, virtualMachine);
             LOGGER.debug("Added VM to contextData with ID: " + componentId);
 
-            // TODO: Get security keys either collection or virtual system specific
+            // TODO: Get security keys either collection or virtual system
+            // specific
             LOGGER.warn("Parsing security keys not currently implemented");
 
             // Get service end points for this virtual machine component
@@ -177,7 +178,8 @@ public class OvfDefinitionClient {
                 } else {
                     // TODO: move this to the OVF API?
                     String name = "asceticProbe-" + k;
-                    LOGGER.debug("Found end point: " + name + " for " + componentId);
+                    LOGGER.debug("Found end point: " + name + " for "
+                            + componentId);
                     String uri = productProperty.getValue();
 
                     productProperty = virtualSystemArray[i]

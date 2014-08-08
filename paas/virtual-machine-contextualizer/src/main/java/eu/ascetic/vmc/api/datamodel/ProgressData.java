@@ -287,7 +287,6 @@ public class ProgressData {
     public int getNumberOfPhases() {
         return PHASES.length;
     }
-    
 
     /**
      * Gets the ovfDefinition altered by the VMC during the contextualization

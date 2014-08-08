@@ -23,102 +23,102 @@ package eu.ascetic.vmc.api.datamodel.image;
  */
 public class HardDisk extends Image {
 
-	private String diskCapacity;
-	private String diskFormatString;
-	// TODO: use fileNameId when there is support for multiple disk in the
-	// OVF API
-	private String fileNameId;
-	private boolean converted;
+    private String diskCapacity;
+    private String diskFormatString;
+    // TODO: use fileNameId when there is support for multiple disk in the
+    // OVF API
+    private String fileNameId;
+    private boolean converted;
 
-	/**
-	 * Constructor for creating a HardDisk object
-	 * 
-	 * @param imageId
-	 *            The id of the hard disk image taken from the OVF as diskId
-	 *            (see {@link Image#Image(String, String, String, String)} for
-	 *            details).
-	 * @param fileName
-	 *            The filename of the ISO image as a URI including full system
-	 *            path (see {@link Image#Image(String, String, String, String)}
-	 *            for details).
-	 * @param format
-	 *            The format of the disk image (see
-	 *            {@link Image#Image(String, String, String, String)} for
-	 *            details).
-	 * @param diskCapacity
-	 *            The capacity of the disk image.
-	 * @param diskFormatString
-	 *            The format string taken from the OVF.
-	 */
-	public HardDisk(String imageId, String fileName, String uri, String format,
-			String diskCapacity, String diskFormatString/* , String fileNameId */) {
-		super(imageId, fileName, uri, format);
+    /**
+     * Constructor for creating a HardDisk object
+     * 
+     * @param imageId
+     *            The id of the hard disk image taken from the OVF as diskId
+     *            (see {@link Image#Image(String, String, String, String)} for
+     *            details).
+     * @param fileName
+     *            The filename of the ISO image as a URI including full system
+     *            path (see {@link Image#Image(String, String, String, String)}
+     *            for details).
+     * @param format
+     *            The format of the disk image (see
+     *            {@link Image#Image(String, String, String, String)} for
+     *            details).
+     * @param diskCapacity
+     *            The capacity of the disk image.
+     * @param diskFormatString
+     *            The format string taken from the OVF.
+     */
+    public HardDisk(String imageId, String fileName, String uri, String format,
+            String diskCapacity, String diskFormatString/* , String fileNameId */) {
+        super(imageId, fileName, uri, format);
 
-		this.diskCapacity = diskCapacity;
-		this.diskFormatString = diskFormatString;
-		// TODO: use fileNameId when there is support for multiple disk in the
-		// OVF API "this.fileNameId = fileNameId;"
-		this.converted = false;
-	}
+        this.diskCapacity = diskCapacity;
+        this.diskFormatString = diskFormatString;
+        // TODO: use fileNameId when there is support for multiple disk in the
+        // OVF API "this.fileNameId = fileNameId;"
+        this.converted = false;
+    }
 
-	/**
-	 * @return the diskCapacity
-	 */
-	public String getDiskCapacity() {
-		return diskCapacity;
-	}
+    /**
+     * @return the diskCapacity
+     */
+    public String getDiskCapacity() {
+        return diskCapacity;
+    }
 
-	/**
-	 * @param diskCapacity
-	 *            the diskCapacity to set
-	 */
-	public void setDiskCapacity(String diskCapacity) {
-		this.diskCapacity = diskCapacity;
-	}
+    /**
+     * @param diskCapacity
+     *            the diskCapacity to set
+     */
+    public void setDiskCapacity(String diskCapacity) {
+        this.diskCapacity = diskCapacity;
+    }
 
-	/**
-	 * @return the diskFormatString
-	 */
-	public String getDiskFormatString() {
-		return diskFormatString;
-	}
+    /**
+     * @return the diskFormatString
+     */
+    public String getDiskFormatString() {
+        return diskFormatString;
+    }
 
-	/**
-	 * @param diskFormatString
-	 *            the diskFormatString to set
-	 */
-	public void setDiskFormatString(String diskFormatString) {
-		this.diskFormatString = diskFormatString;
-	}
+    /**
+     * @param diskFormatString
+     *            the diskFormatString to set
+     */
+    public void setDiskFormatString(String diskFormatString) {
+        this.diskFormatString = diskFormatString;
+    }
 
-	/**
-	 * @return the fileNameId
-	 */
-	public String getFileNameId() {
-		return fileNameId;
-	}
+    /**
+     * @return the fileNameId
+     */
+    public String getFileNameId() {
+        return fileNameId;
+    }
 
-	/**
-	 * @param fileNameId
-	 *            the fileNameId to set
-	 */
-	public void setFileNameId(String fileNameId) {
-		this.fileNameId = fileNameId;
-	}
+    /**
+     * @param fileNameId
+     *            the fileNameId to set
+     */
+    public void setFileNameId(String fileNameId) {
+        this.fileNameId = fileNameId;
+    }
 
-	/**
-	 * @return the converted
-	 */
-	public boolean isConverted() {
-		return converted;
-	}
+    /**
+     * @return the converted
+     */
+    public boolean isConverted() {
+        return converted;
+    }
 
-	/**
-	 * @param converted
-	 *            the converted to set
-	 */
-	public void setConverted(boolean converted) {
-		this.converted = converted;
-	}
+    /**
+     * @param converted
+     *            the converted to set
+     */
+    public void setConverted(boolean converted) {
+        this.converted = converted;
+    }
 
 }

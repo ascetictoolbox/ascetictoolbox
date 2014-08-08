@@ -23,14 +23,15 @@ package eu.ascetic.vmc.api.imageconverter;
  */
 public class FormatDetection {
 
-	/**
-	 * Method to detect the format of a VM
-	 * 
-	 * @param pathToImage Path to the image
-	 * @return The detected image format
-	 */
-	public String detect(String pathToImage) {
-		// TODO
-		return null;
-	}
+    /**
+     * Method to detect the format of a VM
+     * 
+     * @param pathToImage
+     *            Path to the image
+     * @return The detected image format
+     */
+    public String detect(String pathToImage) {
+        // TODO
+        return null;
+    }
 }

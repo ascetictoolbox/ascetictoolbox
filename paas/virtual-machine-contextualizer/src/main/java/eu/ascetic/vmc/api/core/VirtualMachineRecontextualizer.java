@@ -43,285 +43,289 @@ import eu.ascetic.vmc.libvirt.LibvirtException;
  * @version 0.0.1
  */
 public class VirtualMachineRecontextualizer implements Runnable,
-		DomainStartedListener {
+        DomainStartedListener {
 
-	private static final String JMX_FAILED = "JMX failed: ";
+    private static final String JMX_FAILED = "JMX failed: ";
 
-	private static final int CONNECTION_COUNT = 10;
+    private static final int CONNECTION_COUNT = 10;
 
-	private static final int CONNECTION_INTERVAL = 3;
+    private static final int CONNECTION_INTERVAL = 3;
 
-	protected static final Logger LOGGER = Logger
-			.getLogger(VirtualMachineRecontextualizer.class);
+    protected static final Logger LOGGER = Logger
+            .getLogger(VirtualMachineRecontextualizer.class);
 
-	private VmcApi vmcApi;
+    private VmcApi vmcApi;
 
-	/**
-	 * Libvirt connection, domain and list of registered callbacks
-	 */
-	private Connect connection;
+    /**
+     * Libvirt connection, domain and list of registered callbacks
+     */
+    private Connect connection;
 
-	private LibvirtEventBridge eventBridge;
+    private LibvirtEventBridge eventBridge;
 
-	/**
-	 * Map where domain names for recontextualization is stored
-	 */
-	private Map<String, Boolean> recontextDomains;
+    /**
+     * Map where domain names for recontextualization is stored
+     */
+    private Map<String, Boolean> recontextDomains;
 
-	private LibvirtControlBridge controlBridge;
+    private LibvirtControlBridge controlBridge;
 
-	// Create libvirt default event loop once
-	static {
-		try {
-			Connect.initEventLoop();
-		} catch (LibvirtException e) {
-			LOGGER.error("Failed to initiate event loop", e);
-		} catch (Error e) {
-			// This probably means either we're doing a unit test or libvirt
-			// can't be found
-			LOGGER.error("Failed to to initiate event loop", e);
-		}
-	}
+    // Create libvirt default event loop once
+    static {
+        try {
+            Connect.initEventLoop();
+        } catch (LibvirtException e) {
+            LOGGER.error("Failed to initiate event loop", e);
+        } catch (Error e) {
+            // This probably means either we're doing a unit test or libvirt
+            // can't be found
+            LOGGER.error("Failed to to initiate event loop", e);
+        }
+    }
 
-	/**
-	 * Constructor that provides access to VMC state and config.
-	 * 
-	 * @throws IOException
-	 *             If a connection to libvirt cannot be successfully established
-	 * 
-	 * @param vmcApi
-	 *            A reference to the VMC's API object
-	 * @param hypervisorUri
-	 *            The URL to the hypervisor (e.q.: qemu:///system)
-	 * @throws IOException
-	 *             If a connection to Libvirt cannot be established
-	 * 
-	 */
-	public VirtualMachineRecontextualizer(VmcApi vmcApi, String hypervisorUri)
-			throws IOException {
-		this.vmcApi = vmcApi;
-		this.recontextDomains = new HashMap<String, Boolean>();
+    /**
+     * Constructor that provides access to VMC state and config.
+     * 
+     * @throws IOException
+     *             If a connection to libvirt cannot be successfully established
+     * 
+     * @param vmcApi
+     *            A reference to the VMC's API object
+     * @param hypervisorUri
+     *            The URL to the hypervisor (e.q.: qemu:///system)
+     * @throws IOException
+     *             If a connection to Libvirt cannot be established
+     * 
+     */
+    public VirtualMachineRecontextualizer(VmcApi vmcApi, String hypervisorUri)
+            throws IOException {
+        this.vmcApi = vmcApi;
+        this.recontextDomains = new HashMap<String, Boolean>();
 
-		try {
-			connection = new Connect(hypervisorUri);
-			connection.setKeepAlive(CONNECTION_INTERVAL, CONNECTION_COUNT);
-		} catch (LibvirtException e) {
-			LOGGER.info("Failed to connect Recontextualizer to Libvirt", e);
-			throw new IOException(e);
-		} catch (Error e) {
-			LOGGER.info("Failed to connect Recontextualizer to Libvirt", e);
-		}
+        try {
+            connection = new Connect(hypervisorUri);
+            connection.setKeepAlive(CONNECTION_INTERVAL, CONNECTION_COUNT);
+        } catch (LibvirtException e) {
+            LOGGER.info("Failed to connect Recontextualizer to Libvirt", e);
+            throw new IOException(e);
+        } catch (Error e) {
+            LOGGER.info("Failed to connect Recontextualizer to Libvirt", e);
+        }
 
-		// Will throw LibvirtException if it fails
-		try {
-			this.eventBridge = new LibvirtEventBridge(connection);
-			this.eventBridge.addDomainStartedListener(this);
-		} catch (LibvirtException e) {
-			LOGGER.info("Failed to initiate LibvirtEventBridge", e);
-			throw new IOException(e);
-		}
+        // Will throw LibvirtException if it fails
+        try {
+            this.eventBridge = new LibvirtEventBridge(connection);
+            this.eventBridge.addDomainStartedListener(this);
+        } catch (LibvirtException e) {
+            LOGGER.info("Failed to initiate LibvirtEventBridge", e);
+            throw new IOException(e);
+        }
 
-		this.controlBridge = new LibvirtControlBridge(connection);
+        this.controlBridge = new LibvirtControlBridge(connection);
 
-		LOGGER.info("Exposing LibvirtControlBridge as an MBean");
-		this.registerMBean(this.controlBridge,
-				"eu.ascetic.vmc.api.Core:type=LibvirtControlBridgeMBean");
+        LOGGER.info("Exposing LibvirtControlBridge as an MBean");
+        this.registerMBean(this.controlBridge,
+                "eu.ascetic.vmc.api.Core:type=LibvirtControlBridgeMBean");
 
-		LOGGER.info("Finished initialising Recontextualizer...");
-	}
+        LOGGER.info("Finished initialising Recontextualizer...");
+    }
 
-	/**
-	 * Enables recontextualization for a specific domain. If the domain does not
-	 * yet exist, it will be added once the domain is started
-	 * 
-	 * @param domainName
-	 *            The domain name of the VM that should be recontextualized (as
-	 *            seen by the hypervisor)
-	 * @throws IOException
-	 *             If a connection to the domain cannot be established
-	 */
-	public synchronized void startRecontextualization(String domainName)
-			throws IOException {
+    /**
+     * Enables recontextualization for a specific domain. If the domain does not
+     * yet exist, it will be added once the domain is started
+     * 
+     * @param domainName
+     *            The domain name of the VM that should be recontextualized (as
+     *            seen by the hypervisor)
+     * @throws IOException
+     *             If a connection to the domain cannot be established
+     */
+    public synchronized void startRecontextualization(String domainName)
+            throws IOException {
 
-		// Attempt to connect, and put a failed in the recontextDomain map if
-		// necessary
-		try {
-			this.activateRecontextualization(domainName);
-		} catch (IOException e) {
-			LOGGER.debug("Failed to activate right away, put domainName in queue: "
-					+ domainName);
-			this.recontextDomains.put(domainName, Boolean.FALSE);
-		}
+        // Attempt to connect, and put a failed in the recontextDomain map if
+        // necessary
+        try {
+            this.activateRecontextualization(domainName);
+        } catch (IOException e) {
+            LOGGER.debug("Failed to activate right away, put domainName in queue: "
+                    + domainName);
+            this.recontextDomains.put(domainName, Boolean.FALSE);
+        }
 
-	}
+    }
 
-	/**
-	 * Tries to activate recontextualization for a specific domain.
-	 * 
-	 * @param domainName
-	 *            The domain to activate for
-	 * @throws IOException
-	 *             If activation fails
-	 */
-	private void activateRecontextualization(String domainName)
-			throws IOException {
+    /**
+     * Tries to activate recontextualization for a specific domain.
+     * 
+     * @param domainName
+     *            The domain to activate for
+     * @throws IOException
+     *             If activation fails
+     */
+    private void activateRecontextualization(String domainName)
+            throws IOException {
 
-		try {
-			Domain vmDomain = connection.domainLookupByName(domainName);
-			LOGGER.info("Connected to Domain:" + vmDomain.getName() + " id "
-					+ vmDomain.getID() + " running " + vmDomain.getOSType());
-			DomainContextualizer dContext = new DomainContextualizer(
-					domainName, vmcApi, controlBridge);
-			eventBridge.addListener(dContext);
-			this.registerMBean(dContext,
-					"eu.ascetic.vmc.api.Core:type=DomainContextualizerMBean");
+        try {
+            Domain vmDomain = connection.domainLookupByName(domainName);
+            LOGGER.info("Connected to Domain:" + vmDomain.getName() + " id "
+                    + vmDomain.getID() + " running " + vmDomain.getOSType());
+            DomainContextualizer dContext = new DomainContextualizer(
+                    domainName, vmcApi, controlBridge);
+            eventBridge.addListener(dContext);
+            this.registerMBean(dContext,
+                    "eu.ascetic.vmc.api.Core:type=DomainContextualizerMBean");
 
-			// Put a successful result into the map
-			this.recontextDomains.put(domainName, Boolean.TRUE);
-		} catch (Exception e) {
-			LOGGER.info("Failed to connect to domain: " + domainName);
-			throw new IOException(e);
-		}
-	}
+            // Put a successful result into the map
+            this.recontextDomains.put(domainName, Boolean.TRUE);
+        } catch (Exception e) {
+            LOGGER.info("Failed to connect to domain: " + domainName);
+            throw new IOException(e);
+        }
+    }
 
-	/* (non-Javadoc)
-	 * @see eu.ascetic.vmc.api.core.DomainStartedListener#vmDomainCreated(java.lang.String)
-	 */
-	public synchronized void vmDomainCreated(String domainName) {
-		if (recontextDomains.containsKey(domainName)) {
-			LOGGER.info("Found recontextDomain: " + domainName);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * eu.ascetic.vmc.api.core.DomainStartedListener#vmDomainCreated(java.lang
+     * .String)
+     */
+    public synchronized void vmDomainCreated(String domainName) {
+        if (recontextDomains.containsKey(domainName)) {
+            LOGGER.info("Found recontextDomain: " + domainName);
 
-			if (recontextDomains.get(domainName)) {
-				LOGGER.info("Newly started domain already activated, ignoring.");
-				return;
-			}
+            if (recontextDomains.get(domainName)) {
+                LOGGER.info("Newly started domain already activated, ignoring.");
+                return;
+            }
 
-			// Attempt to connect. This will update the status in the Map if
-			// successful
-			try {
-				this.activateRecontextualization(domainName);
-			} catch (IOException e) {
-				LOGGER.info(
-						"(Non-fatal): failed to activate recontext for domain: "
-								+ domainName, e);
-			}
-		} else {
-			LOGGER.info("Detected new domain, but domainName not in recontext-list: "
-					+ domainName);
-		}
-	}
+            // Attempt to connect. This will update the status in the Map if
+            // successful
+            try {
+                this.activateRecontextualization(domainName);
+            } catch (IOException e) {
+                LOGGER.info(
+                        "(Non-fatal): failed to activate recontext for domain: "
+                                + domainName, e);
+            }
+        } else {
+            LOGGER.info("Detected new domain, but domainName not in recontext-list: "
+                    + domainName);
+        }
+    }
 
-	/**
-	 * Register object with MBean server
-	 * 
-	 * @param object
-	 *            Object to register
-	 * @param nameString
-	 *            Object name
-	 */
-	private void registerMBean(Object object, String nameString) {
-		try {
-			MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-			ObjectName name = new ObjectName(nameString);
-			mbs.registerMBean(object, name);
-		} catch (MalformedObjectNameException e) {
-			LOGGER.info(JMX_FAILED, e);
-		} catch (InstanceAlreadyExistsException e) {
-			LOGGER.info(JMX_FAILED, e);
-		} catch (MBeanRegistrationException e) {
-			LOGGER.info(JMX_FAILED, e);
-		} catch (NotCompliantMBeanException e) {
-			LOGGER.info(JMX_FAILED, e);
-		}
-	}
+    /**
+     * Register object with MBean server
+     * 
+     * @param object
+     *            Object to register
+     * @param nameString
+     *            Object name
+     */
+    private void registerMBean(Object object, String nameString) {
+        try {
+            MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+            ObjectName name = new ObjectName(nameString);
+            mbs.registerMBean(object, name);
+        } catch (MalformedObjectNameException e) {
+            LOGGER.info(JMX_FAILED, e);
+        } catch (InstanceAlreadyExistsException e) {
+            LOGGER.info(JMX_FAILED, e);
+        } catch (MBeanRegistrationException e) {
+            LOGGER.info(JMX_FAILED, e);
+        } catch (NotCompliantMBeanException e) {
+            LOGGER.info(JMX_FAILED, e);
+        }
+    }
 
-	/**
-	 * Deactivates recontextualization for a specific domain
-	 * 
-	 * @param domainName
-	 *            The domain name of the VM that no longer should be
-	 *            recontextualized (as seen by the hypervisor)
-	 * @return True if the listener was found and removed, false if the listener
-	 *         could not be found
-	 */
-	public synchronized boolean stopRecontextualization(String domainName)
-			throws IOException {
-		boolean activated = recontextDomains.get(domainName);
-		this.recontextDomains.remove(domainName);
+    /**
+     * Deactivates recontextualization for a specific domain
+     * 
+     * @param domainName
+     *            The domain name of the VM that no longer should be
+     *            recontextualized (as seen by the hypervisor)
+     * @return True if the listener was found and removed, false if the listener
+     *         could not be found
+     */
+    public synchronized boolean stopRecontextualization(String domainName)
+            throws IOException {
+        boolean activated = recontextDomains.get(domainName);
+        this.recontextDomains.remove(domainName);
 
-		// Remove bridge if previously activated
-		if (activated) {
-			return eventBridge.removeListener(domainName);
-		} else {
-			return true;
-		}
-	}
+        // Remove bridge if previously activated
+        if (activated) {
+            return eventBridge.removeListener(domainName);
+        } else {
+            return true;
+        }
+    }
 
-	/**
-	 * Starts the recontextualization process in a thread (useful for async API
-	 * access)
-	 */
-	public void run() {
-		// TODO Improve what pertinent information is held on what the
-		// Recontextualizer is doing in GlobalState
-		vmcApi.getGlobalState().setRecontextRunning(true);
-		while (true) {
-			if (Thread.interrupted()) {
-				LOGGER.info("I has interupt, bye bye!");
-				break;
-			}
-			try {
-				// Steps the Event loop
-				if (connection.isAlive()) {
-					connection.processEvent();
-				}
+    /**
+     * Starts the recontextualization process in a thread (useful for async API
+     * access)
+     */
+    public void run() {
+        // TODO Improve what pertinent information is held on what the
+        // Recontextualizer is doing in GlobalState
+        vmcApi.getGlobalState().setRecontextRunning(true);
+        while (true) {
+            if (Thread.interrupted()) {
+                LOGGER.info("I has interupt, bye bye!");
+                break;
+            }
+            try {
+                // Steps the Event loop
+                if (connection.isAlive()) {
+                    connection.processEvent();
+                }
 
-			} catch (LibvirtException e) {
-				LOGGER.warn("Exception from libvirt: ", e);
-				break;
-			}
-		}
+            } catch (LibvirtException e) {
+                LOGGER.warn("Exception from libvirt: ", e);
+                break;
+            }
+        }
 
-		// Close the connection to libvirt when done
-		close();
-	}
+        // Close the connection to libvirt when done
+        close();
+    }
 
-	/**
-	 * Unregister for events and close the connection to libvirt when done
-	 */
-	public synchronized void close() {
-		if (connection != null) {
-			// Unregister all events by closing the bridge
-			eventBridge.close();
+    /**
+     * Unregister for events and close the connection to libvirt when done
+     */
+    public synchronized void close() {
+        if (connection != null) {
+            // Unregister all events by closing the bridge
+            eventBridge.close();
 
-			// Close connection
-			try {
-				connection.close();
-				connection = null;
-			} catch (LibvirtException e) {
-				LOGGER.warn("Failed to close LibVirt connection", e);
-			}
-		}
-	}
+            // Close connection
+            try {
+                connection.close();
+                connection = null;
+            } catch (LibvirtException e) {
+                LOGGER.warn("Failed to close LibVirt connection", e);
+            }
+        }
+    }
 
-	/*
-	 * Make sure connection is really closed before GC-ing this object
-	 * 
-	 * @see java.lang.Object#finalize()
-	 */
-	@Override
-	public void finalize() throws Throwable {
-		try {
-			if (connection != null) {
-				LOGGER.warn("LibVirt connection still open during finalize, please add a call to close()");
-				try {
-					close();
-				} catch (RuntimeException e) {
-					LOGGER.warn("Failed to close LibVirt connection", e);
-				}
-			}
-		} finally {
-			super.finalize();
-		}
-	}
+    /*
+     * Make sure connection is really closed before GC-ing this object
+     * 
+     * @see java.lang.Object#finalize()
+     */
+    @Override
+    public void finalize() throws Throwable {
+        try {
+            if (connection != null) {
+                LOGGER.warn("LibVirt connection still open during finalize, please add a call to close()");
+                try {
+                    close();
+                } catch (RuntimeException e) {
+                    LOGGER.warn("Failed to close LibVirt connection", e);
+                }
+            }
+        } finally {
+            super.finalize();
+        }
+    }
 }

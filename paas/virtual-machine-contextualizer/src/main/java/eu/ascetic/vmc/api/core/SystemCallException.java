@@ -23,39 +23,39 @@ package eu.ascetic.vmc.api.core;
  */
 public class SystemCallException extends Exception {
 
-	/**
-	 *  Generated serial version UID
-	 */
-	private static final long serialVersionUID = -4985438448235773464L;
+    /**
+     * Generated serial version UID
+     */
+    private static final long serialVersionUID = -4985438448235773464L;
 
-	/**
-	 * Constructs a new exception with null as its detail message.
-	 */
-	public SystemCallException() {
-		super();
-	}
+    /**
+     * Constructs a new exception with null as its detail message.
+     */
+    public SystemCallException() {
+        super();
+    }
 
-	/**
-	 * Constructs a new exception with the specified detail message
-	 * 
-	 * @param message
-	 *            the detail message.
-	 */
-	public SystemCallException(String message) {
-		super(message);
-	}
+    /**
+     * Constructs a new exception with the specified detail message
+     * 
+     * @param message
+     *            the detail message.
+     */
+    public SystemCallException(String message) {
+        super(message);
+    }
 
-	/**
-	 * Constructs a new exception with the specified detail message and cause.
-	 * 
-	 * @param message
-	 *            the detail message.
-	 * @param cause
-	 *            the cause.
-	 * 
-	 */
-	public SystemCallException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    /**
+     * Constructs a new exception with the specified detail message and cause.
+     * 
+     * @param message
+     *            the detail message.
+     * @param cause
+     *            the cause.
+     * 
+     */
+    public SystemCallException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
 }

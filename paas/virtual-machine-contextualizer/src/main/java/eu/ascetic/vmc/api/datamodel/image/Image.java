@@ -23,86 +23,87 @@ package eu.ascetic.vmc.api.datamodel.image;
  */
 public class Image {
 
-	private String imageId;
-	private String fileName;
-	private String uri;
-	private String format;
+    private String imageId;
+    private String fileName;
+    private String uri;
+    private String format;
 
-	/**
-	 * Default constructor inherited by {@link Iso}, {@link HardDisk}
-	 * 
-	 * @param imageId
-	 *            The ID of the image.
-	 * @param fileName
-	 *            The filename of the image.
-	 * @param uri
-	 *            The URI of the image.
-	 * @param format
-	 *            The format of the image.
-	 */
-	public Image(String imageId, String fileName, String uri, String format) {
-		this.imageId = imageId;
-		this.fileName = fileName;
-		this.uri = uri;
-		this.format = format;
-	}
+    /**
+     * Default constructor inherited by {@link Iso}, {@link HardDisk}
+     * 
+     * @param imageId
+     *            The ID of the image.
+     * @param fileName
+     *            The filename of the image.
+     * @param uri
+     *            The URI of the image.
+     * @param format
+     *            The format of the image.
+     */
+    public Image(String imageId, String fileName, String uri, String format) {
+        this.imageId = imageId;
+        this.fileName = fileName;
+        this.uri = uri;
+        this.format = format;
+    }
 
-	/**
-	 * @return the id
-	 */
-	public String getImageId() {
-		return imageId;
-	}
+    /**
+     * @return the id
+     */
+    public String getImageId() {
+        return imageId;
+    }
 
-	/**
-	 * @param imageId
-	 *            the imageId to set
-	 */
-	public void setImageId(String imageId) {
-		this.imageId = imageId;
-	}
+    /**
+     * @param imageId
+     *            the imageId to set
+     */
+    public void setImageId(String imageId) {
+        this.imageId = imageId;
+    }
 
-	/**
-	 * @return the fileName (URI format)
-	 */
-	public String getFileName() {
-		return fileName;
-	}
+    /**
+     * @return the fileName (URI format)
+     */
+    public String getFileName() {
+        return fileName;
+    }
 
-	/**
-	 * @param fileName
-	 *            the fileName to set (URI format)
-	 */
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
+    /**
+     * @param fileName
+     *            the fileName to set (URI format)
+     */
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
 
-	/**
-	 * @return the uri
-	 */
-	public String getUri() {
-		return uri;
-	}
+    /**
+     * @return the uri
+     */
+    public String getUri() {
+        return uri;
+    }
 
-	/**
-	 * @param uri the uri to set
-	 */
-	public void setUri(String uri) {
-		this.uri = uri;
-	}
+    /**
+     * @param uri
+     *            the uri to set
+     */
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
 
-	/**
-	 * @return the format
-	 */
-	public String getFormat() {
-		return format;
-	}
+    /**
+     * @return the format
+     */
+    public String getFormat() {
+        return format;
+    }
 
-	/**
-	 * @param format
-	 *            the format to set
-	 */
-	public void setFormat(String format) {
-		this.format = format;
-	}
+    /**
+     * @param format
+     *            the format to set
+     */
+    public void setFormat(String format) {
+        this.format = format;
+    }
 }

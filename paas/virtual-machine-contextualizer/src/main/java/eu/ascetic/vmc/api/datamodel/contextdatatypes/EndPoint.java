@@ -23,52 +23,53 @@ package eu.ascetic.vmc.api.datamodel.contextdatatypes;
  */
 public class EndPoint {
 
-	private String name;
-	private String uri;
-	private String type;
-	private String interval;
+    private String name;
+    private String uri;
+    private String type;
+    private String interval;
 
-	/**
-	 * Default constructor.
-	 * 
-	 * @param uri
-	 *            The URI that the endpoint points to.
-	 */
-	public EndPoint(String name, String uri, String type, String interval) {
-		this.name = name;
-		this.uri = uri;
-		this.type = type;
-		this.interval = interval;
-	}
+    /**
+     * Default constructor.
+     * 
+     * @param uri
+     *            The URI that the endpoint points to.
+     */
+    public EndPoint(String name, String uri, String type, String interval) {
+        this.name = name;
+        this.uri = uri;
+        this.type = type;
+        this.interval = interval;
+    }
 
-	/**
-	 * @return the uri
-	 */
-	public String getUri() {
-		return uri;
-	}
+    /**
+     * @return the uri
+     */
+    public String getUri() {
+        return uri;
+    }
 
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+    /**
+     * @param name
+     *            the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	/**
-	 * @param uri
-	 *            the uri to set
-	 */
-	public void setUri(String uri) {
-		this.uri = uri;
-	}
+    /**
+     * @param uri
+     *            the uri to set
+     */
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
 
     /**
      * @return the type
@@ -78,7 +79,8 @@ public class EndPoint {
     }
 
     /**
-     * @param type the type to set
+     * @param type
+     *            the type to set
      */
     public void setType(String type) {
         this.type = type;
@@ -92,7 +94,8 @@ public class EndPoint {
     }
 
     /**
-     * @param interval the interval to set
+     * @param interval
+     *            the interval to set
      */
     public void setInterval(String interval) {
         this.interval = interval;
