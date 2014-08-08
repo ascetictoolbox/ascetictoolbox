@@ -25,6 +25,8 @@ public class EndPoint {
 
 	private String name;
 	private String uri;
+	private String type;
+	private String interval;
 
 	/**
 	 * Default constructor.
@@ -32,9 +34,11 @@ public class EndPoint {
 	 * @param uri
 	 *            The URI that the endpoint points to.
 	 */
-	public EndPoint(String name, String uri) {
+	public EndPoint(String name, String uri, String type, String interval) {
 		this.name = name;
 		this.uri = uri;
+		this.type = type;
+		this.interval = interval;
 	}
 
 	/**
@@ -65,5 +69,33 @@ public class EndPoint {
 	public void setUri(String uri) {
 		this.uri = uri;
 	}
+
+    /**
+     * @return the type
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * @param type the type to set
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    /**
+     * @return the interval
+     */
+    public String getInterval() {
+        return interval;
+    }
+
+    /**
+     * @param interval the interval to set
+     */
+    public void setInterval(String interval) {
+        this.interval = interval;
+    }
 
 }

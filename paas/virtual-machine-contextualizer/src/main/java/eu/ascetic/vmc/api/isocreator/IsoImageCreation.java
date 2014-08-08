@@ -191,6 +191,8 @@ public class IsoImageCreation {
 			for (EndPoint endPoint : virtualMachine.getEndPoints().values()) {
 				String name = endPoint.getName();
 				String uri = endPoint.getUri();
+				String type = endPoint.getType();
+				String interval = endPoint.getInterval();
 
 				// Create the end point with the given name
 				File endPointFile = new File(endPointDirectory + File.separator
@@ -206,7 +208,10 @@ public class IsoImageCreation {
 				}
 
 				Properties props = new Properties();
-				props.setProperty(name, uri);
+				props.setProperty("name", name);
+				props.setProperty("uri", uri);
+				props.setProperty("type", type);
+				props.setProperty("interval", interval);
 				try {
 					FileOutputStream fileOutputStream = new FileOutputStream(
 							endPointFile);
@@ -305,7 +310,7 @@ public class IsoImageCreation {
 			bootStrapFile.createNewFile();
 			LOGGER.debug(CREATED_FILE + bootStrapFile.getPath());
 
-			// TODO: This should be stored somewhere else and not hardcoded
+			// TODO: This should be stored somewhere else and not hard coded
 			// Mount location is currently hard coded in the init.d scripts of
 			// the base VM /mnt/context/
 			String bootStrapScript = "#!/bin/bash\n"

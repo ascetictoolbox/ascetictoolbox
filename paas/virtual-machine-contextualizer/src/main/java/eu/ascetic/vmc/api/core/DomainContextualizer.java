@@ -221,7 +221,7 @@ public class DomainContextualizer implements DomainContextualizerMBean {
 		// data.
 		// TODO Test and check that the address return is not "localhost"
 		String localIpAddress = InetAddress.getLocalHost().getHostAddress();
-		EndPoint endPoint = new EndPoint("recontext.test", localIpAddress);
+		EndPoint endPoint = new EndPoint("recontext.test", localIpAddress, "ip", "0");
 		HashMap<String, EndPoint> endPoints = new HashMap<String, EndPoint>();
 		endPoints.put("1", endPoint);
 
