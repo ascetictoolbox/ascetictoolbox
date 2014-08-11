@@ -2,8 +2,8 @@ Install the energy-modeller-load-calibration-tool-0.0.1-SNAPSHOT.war into a tomc
 
 In catalina.properties set the values seen below, catalina.properties can be found in $tomcat_base\conf\catalina.properties:
 
-ascetic.log.executions=true
-ascetic.working.directory=C://Users//Richard//AppData//Roaming//NetBeans//7.4//apache-tomcat-7.0.22.0_base//temp//
+ascetic.log.executions=false
+ascetic.working.directory=//var//lib//tomcat7//ascetic-tmp//
 
 Specifiying a directory that tomcat has read/write/execute privlidges to.
 
