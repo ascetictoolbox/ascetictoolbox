@@ -16,6 +16,7 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.Configuration;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DefaultDatabaseConnector;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import java.util.logging.Level;
@@ -31,7 +32,7 @@ import org.junit.Test;
  * @author Richard
  */
 public class CalibratorTest {
-    
+
     public CalibratorTest() {
         try {
             /**
@@ -47,36 +48,49 @@ public class CalibratorTest {
             config.save();
         } catch (ConfigurationException ex) {
             Logger.getLogger(Configuration.class.getName()).log(Level.INFO, "Error loading the configuration of the IaaS energy modeller", ex);
-        }        
+        }
     }
-    
-    private final Host CHOSEN_HOST = new Host(10084, "asok10");
 
+    private final Host CHOSEN_HOST = new Host(10105, "asok09");
+    private final Host CHOSEN_HOST2 = new Host(10084, "asok10");
+    private final Host CHOSEN_HOST3 = new Host(10107, "asok11");
+    private final Host CHOSEN_HOST4 = new Host(10106, "asok12");
+    
     /**
      * Test of calibrateHostEnergyData method, of class Calibrator.
      */
     @Test
     public void testCalibrateHostEnergyData() {
         System.out.println("calibrateHostEnergyData");
-        Host host = new Host(10084, "asok10");
+        Host host = new Host(10105, "asok09");
         ZabbixDataSourceAdaptor adaptor = new ZabbixDataSourceAdaptor();
         Calibrator instance = new Calibrator(adaptor);
+        Thread calibratorThread;
+        calibratorThread = new Thread(instance);
+        calibratorThread.setDaemon(true);
+        calibratorThread.start();
+        DefaultDatabaseConnector database = new DefaultDatabaseConnector();
+        
         Host expResult = CHOSEN_HOST;
+        host = database.getHostCalibrationData(host);
+        int orginalCalibrationData = host.getCalibrationData().size();
         instance.calibrateHostEnergyData(host);
-        while(!host.isCalibrated()){
+        int count = 0;
+        while (orginalCalibrationData == host.getCalibrationData().size() && count < 300) { //while not calibrated or timeout arrives.
             try {
                 Thread.sleep(2000);
+                count = count + 1;
             } catch (InterruptedException ex) {
                 Logger.getLogger(CalibratorTest.class.getName()).log(Level.SEVERE, "The test was interupted.", ex);
                 Assert.fail();
             }
         }
+        database.setHostCalibrationData(host);
         assertEquals(expResult, host);
-        assert(host.getIdlePowerConsumption() > 0.0);
+        assert (host.getIdlePowerConsumption() > 0.0);
         System.out.println("Idle Power: " + host.getIdlePowerConsumption());
-        assert(host.isCalibrated());
+        assert (host.isCalibrated());
         System.out.println("Calibration Data Count: " + host.getCalibrationData().size());
     }
 
-    
 }

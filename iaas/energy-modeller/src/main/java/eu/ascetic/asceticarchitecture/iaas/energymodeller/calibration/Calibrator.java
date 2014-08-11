@@ -37,9 +37,9 @@ public class Calibrator implements Runnable {
     private final HostDataSource datasource;
     private boolean running = true;
     private final LinkedBlockingDeque<Host> queue = new LinkedBlockingDeque<>();
-    private static int calibratorWaitSec = 120; //Default 2 second poll interval during training
+    private static int calibratorWaitSec = 2; //Default 2 second poll interval during training
     private static int calibratorMaxDurationSec = 240; //for 2 minutes.
-    private static String defaultLoadGenerator = "DummyLoadGenerator";
+    private static String defaultLoadGenerator = "DefaultLoadGenerator";
     private static final String CONFIG_FILE = "energymodeller_calibrator.properties";
     private static final String DEFAULT_LOAD_GEN_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration";
     private Class<?> loadGenerator = DummyLoadGenerator.class;
@@ -137,11 +137,8 @@ public class Calibrator implements Runnable {
          * can be called again without having to induce load on the host.
          */
         //TODO Implement better code here, fixing assumptions
-        double cpu = 0.0; //An assumption that the lowest power usage measured has 0.0 cpu load
-        double memory = 0.0; //The same but much poorer assumption
         double watts = datasource.getLowestHostPowerUsage(host);
-        HostEnergyCalibrationData data = new HostEnergyCalibrationData(cpu, memory, watts);
-        host.addCalibrationData(data);
+        host.setDefaultIdlePowerConsumption(watts);
         return host;
     }
 

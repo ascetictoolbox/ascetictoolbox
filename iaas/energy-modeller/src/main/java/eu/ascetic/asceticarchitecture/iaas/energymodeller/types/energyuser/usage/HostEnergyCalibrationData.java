@@ -48,11 +48,11 @@ public class HostEnergyCalibrationData {
     public static List<HostEnergyCalibrationData> getCalibrationData(List<HostMeasurement> data) {
         List<HostEnergyCalibrationData> answer = new ArrayList<>();
         for (HostMeasurement hostMeasurement : data) {
-            double energy = hostMeasurement.getEnergy();
+            double power = hostMeasurement.getPower();
             double cpu = hostMeasurement.getCpuLoad();
             double memory = hostMeasurement.getMemoryUsed();
             double totalMemory = hostMeasurement.getMemoryTotal();
-            HostEnergyCalibrationData newItem = new HostEnergyCalibrationData(cpu, memory / totalMemory, energy);
+            HostEnergyCalibrationData newItem = new HostEnergyCalibrationData(cpu, memory / totalMemory, power);
             answer.add(newItem);
         }
         return answer;

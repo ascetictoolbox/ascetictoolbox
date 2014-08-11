@@ -48,7 +48,7 @@ public class DefaultLoadGenerator implements LoadGenerator {
     public synchronized void generateCalibrationData(Host host) {
         //Generate Load
         try { //http://localhost:8080/EnergyModellerCalibrationTool/CalibrationLoadGenerator?WSDL
-            URL url = new URL("http://" + host.getHostName() + ":8080/EnergyModellerCalibrationTool/CalibrationLoadGenerator?WSDL");
+            URL url = new URL("http://" + host.getHostName() + ".cit.tu-berlin.de:8080/energy-modeller-load-calibration-tool-0.0.1-SNAPSHOT/CalibrationLoadGenerator?WSDL");
             CalibrationLoadGenerator_Service service = new CalibrationLoadGenerator_Service(url);
             CalibrationLoadGenerator port = service.getCalibrationLoadGeneratorPort();
             port.induceLoad();
@@ -57,6 +57,25 @@ public class DefaultLoadGenerator implements LoadGenerator {
         }
 
     }
+    
+    /**
+     * This checks to see if a host is busy or not.
+     * @param host The host to see if it is busy with load generation.
+     * @return If the test is running or not.
+     */
+    public synchronized boolean isRunning(Host host) {
+        //Generate Load
+        try { //http://localhost:8080/EnergyModellerCalibrationTool/CalibrationLoadGenerator?WSDL
+            URL url = new URL("http://" + host.getHostName() + ".cit.tu-berlin.de:8080/energy-modeller-load-calibration-tool-0.0.1-SNAPSHOT/CalibrationLoadGenerator?WSDL");
+            CalibrationLoadGenerator_Service service = new CalibrationLoadGenerator_Service(url);
+            CalibrationLoadGenerator port = service.getCalibrationLoadGeneratorPort();
+            return port.currentlyWorking();
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(DefaultLoadGenerator.class.getName()).log(Level.SEVERE, "The load generator had an error.", ex);
+        }
+        return false;
+
+    }    
 
     @Override
     public void run() {

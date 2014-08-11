@@ -54,8 +54,11 @@ public class CalibratorDataLogger implements Runnable {
         ArrayList<HostEnergyCalibrationData> calibrationData = host.getCalibrationData();
         ArrayList<HostMeasurement> data = new ArrayList<>();
         long lastClock = 0;
+        
+        long stopTime = System.currentTimeMillis();
+        stopTime = stopTime + TimeUnit.SECONDS.toMillis(calibratorMaxDurationSec);
 
-        for (int i = 0; i < calibratorMaxDurationSec; i = i + calibratorWaitSec) {
+        while (System.currentTimeMillis() < stopTime) {
             HostMeasurement dataEntry = datasource.getHostData(host);
             long currentClock = dataEntry.getClock();
             if (currentClock > lastClock) {
