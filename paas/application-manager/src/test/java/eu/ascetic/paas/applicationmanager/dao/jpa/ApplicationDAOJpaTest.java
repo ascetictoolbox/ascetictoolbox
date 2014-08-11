@@ -133,7 +133,8 @@ public class ApplicationDAOJpaTest extends AbstractTransactionalJUnit4SpringCont
 		applicationFromDatabase = applicationDAO.getByName("xxx");
 		assertEquals(null, applicationFromDatabase);
 	}
-	
+
+	/*	
 	@Test
 	public void cascadeTest() {
 		int size = applicationDAO.getAll().size();
@@ -170,5 +171,6 @@ public class ApplicationDAOJpaTest extends AbstractTransactionalJUnit4SpringCont
 		List<Deployment> deployments = deploymentDAO.getAll();
 		assertEquals(0, deployments.size());
 	}
+	*/
 }
 
