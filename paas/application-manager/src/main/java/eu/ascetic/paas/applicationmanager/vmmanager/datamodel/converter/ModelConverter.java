@@ -1,5 +1,6 @@
 package eu.ascetic.paas.applicationmanager.vmmanager.datamodel.converter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -7,7 +8,9 @@ import org.apache.log4j.Logger;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ImageToUpload;
@@ -96,9 +99,40 @@ public class ModelConverter {
 	}
 	
 	public static List<String> jsonListStringToObject(String json){
-		Gson gson = new GsonBuilder().create();
-		Object obj = gson.fromJson(json, new TypeToken<List<String>>(){}.getType());
-		return (List<String>) obj;
+//		Gson gson = new GsonBuilder().create();
+//		Object obj = gson.fromJson(json, new TypeToken<List<String>>(){}.getType());
+//		return (List<String>) obj;
+		
+//		Gson gson = new GsonBuilder().create();
+//		JsonObject jsonObj = gson.fromJson(json, JsonObject.class);
+		
+		JsonElement jelement = new JsonParser().parse(json);
+		JsonObject jsonObject = jelement.getAsJsonObject();
+		JsonArray jsonIdsArray = jsonObject.get("ids").getAsJsonArray();
+		List<String> idsList = new ArrayList<String>();//new String[jsonAuthorsArray.size()];
+		JsonObject  jobject = null;
+		String newId = null;
+		for (int i = 0; i < jsonIdsArray.size(); i++) {
+			jobject = jsonIdsArray.get(i).getAsJsonObject();
+			newId = jobject.get("id").toString();
+			//remove " at the begin and end position
+			if (newId.startsWith("\"") && newId.endsWith("\"")){
+				newId = newId.substring(1, newId.length()-1);
+			}
+			idsList.add(newId);
+	    }
+		
+		return idsList;
+//	    
+//	    .getAsJsonObject()
+//		
+//	    JsonObject  jobject = jelement.getAsJsonObject();
+//	    jobject = jobject.getAsJsonObject("ids");
+//	    JsonArray jarray = jobject.getAsJsonArray("translations");
+//	    jobject = jarray.get(0).getAsJsonObject();
+//	    String result = jobject.get("translatedText").toString();
+//	    return result;
+        
 	}
 	
 	public static String jsonStringIdToObject(String json){

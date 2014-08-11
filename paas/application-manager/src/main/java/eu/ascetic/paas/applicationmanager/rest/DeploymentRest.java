@@ -1,5 +1,7 @@
 package eu.ascetic.paas.applicationmanager.rest;
 
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -15,6 +17,14 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
+import eu.ascetic.paas.applicationmanager.model.Application;
+import eu.ascetic.paas.applicationmanager.model.Deployment;
+import eu.ascetic.paas.applicationmanager.model.Dictionary;
+import eu.ascetic.paas.applicationmanager.model.VM;
+import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
+import eu.ascetic.paas.applicationmanager.rest.util.XMLBuilder;
+import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientHC;
 
 /**
  * ASCETiC Application Manager REST API to perform actions over an deployment of an Application
@@ -135,6 +145,38 @@ public class DeploymentRest extends AbstractRest {
 		// TODO
 		// TODO this does not really deletes the deployment from the database, simply it puts
 		//      the application in terminated state and deletes any resource associated to it
-		return buildResponse(Status.ACCEPTED, "Method not implemented yet");
+		
+		int intDeploymentId = 0;
+		try{
+			intDeploymentId = Integer.parseInt(deploymentId);
+		}
+		catch (NumberFormatException e){
+			return buildResponse(Status.BAD_REQUEST, "The deployment id must be a number");
+		}
+		
+		Deployment deployment = deploymentDAO.getById(intDeploymentId);
+		
+		if (deployment == null){
+			return buildResponse(Status.BAD_REQUEST, "Deployment id = " +  deploymentId + " not found in database");
+		}
+		//Get the vms
+		List<VM> deploymentVms = deployment.getVms();
+		
+		//Delete the vms from VM manager
+		VmManagerClientHC vmManagerClient = new VmManagerClientHC();
+		boolean deleted = true;
+		for (VM vm : deploymentVms){
+			if (!vmManagerClient.deleteVM(vm.getProviderVmId())){
+				return buildResponse(Status.BAD_REQUEST, "VM with provider vm id = " +  vm.getProviderVmId() + " cannot be deleted in VM manager");
+			}
+		}
+		
+		//set the deployment status to terminated
+		deployment.setStatus(Dictionary.APPLICATION_STATUS_TERMINATED);
+		
+		//update deployment in database
+		deploymentDAO.update(deployment);
+		
+		return buildResponse(Status.OK, "Deployment terminated successfully");
 	}
 }

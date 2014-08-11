@@ -227,7 +227,7 @@ public class Client {
 
 		logger.debug("Connecting to: " + url);
 		// Create a method instance.
-		DeleteMethod method = new DeleteMethod();
+		DeleteMethod method = new DeleteMethod(url);
 		setHeaders(method, accept);
 		
 		// Provide custom retry handler is necessary

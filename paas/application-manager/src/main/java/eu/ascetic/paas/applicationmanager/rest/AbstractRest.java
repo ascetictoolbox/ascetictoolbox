@@ -33,7 +33,10 @@ public abstract class AbstractRest {
 	 */
 	protected Deployment createDeploymentToApplication(String ovf) {
 		Deployment deployment = new Deployment();
-		deployment.setStatus(Dictionary.APPLICATION_STATUS_SUBMITTED);
+		//The commented code is the final code, but for initial version, when a OVF arrives to the system, directly pass to 
+		//CONTEXTUALIZED method in order to be deployed next time that automatic task execute
+		//deployment.setStatus(Dictionary.APPLICATION_STATUS_SUBMITTED);
+		deployment.setStatus(Dictionary.APPLICATION_STATUS_CONTEXTUALIZED);
 		deployment.setOvf(ovf);
 		
 		return deployment;

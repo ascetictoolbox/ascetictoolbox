@@ -87,12 +87,12 @@ public interface VmManagerClient {
 	public boolean changeStateVm(String vmId, String action);
 	
 	/**
-	 * Destroy vm.
+	 * Delete vm.
 	 *
 	 * @param vmId the vm id
 	 * @return true, if successful
 	 */
-	public boolean destroyVM(String vmId);
+	public boolean deleteVM(String vmId);
 	
 	/**
 	 * Delete vms of app.

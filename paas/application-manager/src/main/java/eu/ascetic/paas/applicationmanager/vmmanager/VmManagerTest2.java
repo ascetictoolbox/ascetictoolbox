@@ -18,33 +18,44 @@ public class VmManagerTest2 {
 	private static String testingImageUrl="http://cdn.download.cirros-cloud.net/0.3.1/cirros-0.3.1-x86_64-disk.img";
 	private static String testingImageName="testingTestImageFromAppManager";
 	private static String testingDeploymentBaseUrl="http://0.0.0.0:34372/vmmanager/";
-	private static String testingVmDeployedId = "657368e2-e66d-48dc-8e06-aa3943123207";
-	private static String testingVmNewStatus = "stop"; //Posible actions are "rebootHard", "rebootSoft", "start", "stop", "suspend", and "resume"
+	private static String testingVmDeployedId = "26607a9a-3a42-4c8b-8fac-2d4fc18d3855";
+	private static String testingVmNewStatus = "start"; //Posible actions are "rebootHard", "rebootSoft", "start", "stop", "suspend", and "resume"
+	private static String testingAppId = "appManager";
 	
 	public static void main(String[] args) {
-		VmManagerClientHC client = new VmManagerClientHC("http://10.4.0.15:34372/vmmanager");
+//		VmManagerClientHC client = new VmManagerClientHC("http://10.4.0.15:34372/vmmanager");
+		VmManagerClientHC client = new VmManagerClientHC();
 
 //		insertSeparator("testGetAllImages");
 //		testGetAllImages(client);
 //		testUploadImage(client);
 //		insertSeparator("testGetVm");
 //		testGetVm(client);
-//		insertSeparator("testRemoveVm");
-//		testRemoveVm(client);
+//		insertSeparator("testDeleteVm");
+//		testDeleteVm(client);
+//		insertSeparator("testDeleteVmsOfApp");
+//		testDeleteVmsOfApp(client);
 //		insertSeparator("testGetAllVms");
-//		testGetAllVms(client);
-//		insertSeparator("testAddNewVm");
-//		testAddNewVm(client);
+		testGetAllVms(client);
+//		insertSeparator("testDeployNewVm");
+//		testDeployNewVm(client);
+//		insertSeparator("testDeployNewVms");
+//		testDeployNewVms(client);
 //		insertSeparator("testGetImage");
 //		testGetImage(client);
 //		insertSeparator("testChangeStateVm");
 //		testChangeStateVm(client);
-		System.out.println();
+//		insertSeparator("testGetVmsOfApp");
+//		testGetVmsOfApp(client);
+//		System.out.println();
 
 		
 	}
 	
 	
+	
+
+
 	public static void insertSeparator(String message){
 		System.out.println("********************************************************");
 		System.out.println("********************************************************");
@@ -134,7 +145,7 @@ public class VmManagerTest2 {
 			}
 		}
 		else {
-			System.out.println("No images available in OpenStack environment");
+			System.out.println("No VMs available in OpenStack environment");
 		}
 
 	}
@@ -149,10 +160,10 @@ public class VmManagerTest2 {
 	}
 	
 	
-	public static void testRemoveVm(VmManagerClientHC client){
+	public static void testDeleteVm(VmManagerClientHC client){
 		//delete vm
-		String vmId = "";
-		boolean deleted = client.destroyVM(vmId);
+		String vmId = testingVmDeployedId;
+		boolean deleted = client.deleteVM(vmId);
 		if (deleted) {
 			System.out.println("VM with id = " + vmId + " deleted successfully");
 		}
@@ -161,8 +172,20 @@ public class VmManagerTest2 {
 		}
 	}
 	
-	public static void testAddNewVm(VmManagerClientHC client){
-		Vm vm = new Vm("testVmAppManager4", "0c6a0be4-38e5-4a99-bfc0-9cc32ab83e10", 1, 1024, 1, null , "");
+	public static void testDeleteVmsOfApp(VmManagerClientHC client){
+		boolean deleted = client.deleteVmsOfApp(testingAppId);
+		if (deleted) {
+			System.out.println("VmsOfApp with id = " + testingAppId + " deleted successfully");
+		}
+		else {
+			System.out.println("VmsOfApp with id = " + testingAppId + " cannot be deleted");
+		}
+	}
+	
+	
+	
+	public static void testDeployNewVm(VmManagerClientHC client){
+		Vm vm = new Vm("testVmAppManager", "0c6a0be4-38e5-4a99-bfc0-9cc32ab83e10", 1, 1024, 1, null , testingAppId);
 		List<Vm> listVm = new ArrayList<Vm>();
 		listVm.add(vm);
 		List<String> deployedVmsId = client.deployVMs(listVm);
@@ -183,12 +206,55 @@ public class VmManagerTest2 {
 		
 		boolean changed = client.changeStateVm(testingVmDeployedId, testingVmNewStatus);
 		if (changed){
-			System.out.println("Status of the vm with id = " + testingVmDeployedId + " switched to " + testingVmNewStatus);
+			System.out.println("State of the vm with id = " + testingVmDeployedId + " switched to " + testingVmNewStatus);
 		}
 		else {
-			System.out.println("Error. Status of the vm with id = " + testingVmDeployedId + " cannot be switched to " + testingVmNewStatus);
+			System.out.println("Error. State of the vm with id = " + testingVmDeployedId + " cannot be switched to " + testingVmNewStatus);
 		}
 		
+	}
+	
+	
+	public static void testGetVmsOfApp(VmManagerClientHC client) {
+		ListVmsDeployed listVmsDeployed = client.getVmsOfApp(testingAppId);
+		
+
+		if (listVmsDeployed != null && !listVmsDeployed.getVms().isEmpty()){
+			int index = 0;
+			for (VmDeployed vm : listVmsDeployed.getVms()){
+				System.out.println("VM " + index);
+				printVm(vm);
+				System.out.println();
+				index++;
+			}
+		}
+		else {
+			System.out.println("No VMs available in OpenStack environment for appId = " + testingAppId);
+		}
+	}
+	
+	
+	public static void testDeployNewVms(VmManagerClientHC client){
+		Vm vm = new Vm("testVmAppManager_00", "0c6a0be4-38e5-4a99-bfc0-9cc32ab83e10", 1, 1024, 1, null , testingAppId);
+		Vm vm1 = new Vm("testVmAppManager_01", "0c6a0be4-38e5-4a99-bfc0-9cc32ab83e10", 1, 1024, 1, null , testingAppId);
+		Vm vm2 = new Vm("testVmAppManager_02", "0c6a0be4-38e5-4a99-bfc0-9cc32ab83e10", 1, 1024, 1, null , testingAppId);
+		Vm vm3 = new Vm("testVmAppManager_04", "0c6a0be4-38e5-4a99-bfc0-9cc32ab83e10", 1, 1024, 1, null , testingAppId);
+		List<Vm> listVm = new ArrayList<Vm>();
+		listVm.add(vm);
+		listVm.add(vm1);
+		listVm.add(vm2);
+		listVm.add(vm3);
+		List<String> deployedVmsId = client.deployVMs(listVm);
+		if (deployedVmsId != null && !deployedVmsId.isEmpty()){
+			String strNewIds = "";
+			for (String newId : deployedVmsId){
+				strNewIds += newId + ", ";
+			}
+			System.out.println("Vms deployed successfully. New ids = " + strNewIds);
+		}
+		else {
+			System.out.println("Error. Vms cannot be deployed");
+		}		
 	}
 
 }

@@ -170,7 +170,7 @@ public class VmManagerClientHC implements VmManagerClient {
 	@Override
 	public ListVmsDeployed getVmsOfApp(String appId) {
 		Boolean exception = false;
-		String testbedsUrl = url + "/vmsapp" + appId;
+		String testbedsUrl = url + "/vmsapp/" + appId;
 		
 		logger.debug("CONNECTING TO: " + url);
 		
@@ -199,7 +199,7 @@ public class VmManagerClientHC implements VmManagerClient {
 	public List<String> deployVMs(List<Vm> vms) {
 		List<String> listIDs = null;
 		Boolean exception = false;
-		String experimentUrl = url + "/vms/";
+		String experimentUrl = url + "/vms";
 		logger.debug("URL build: " + experimentUrl);
 		
 		try {
@@ -231,7 +231,7 @@ public class VmManagerClientHC implements VmManagerClient {
 	public String uploadImage(ImageToUpload imageInfo) {
 		String newImageID = null;
 		Boolean exception = false;
-		String experimentUrl = url + "/images/";
+		String experimentUrl = url + "/images";
 		logger.debug("URL build: " + experimentUrl);
 		
 		try {
@@ -280,7 +280,7 @@ public class VmManagerClientHC implements VmManagerClient {
 	 * @see eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient#destroyVM(java.lang.String)
 	 */
 	@Override
-	public boolean destroyVM(String vmId) {
+	public boolean deleteVM(String vmId) {
 
 		Boolean exception = false;
 		String experimentUrl = url + "/vms/" + vmId;
@@ -289,7 +289,7 @@ public class VmManagerClientHC implements VmManagerClient {
 		try {
 			Client.deleteMethod(experimentUrl, Dictionary.CONTENT_TYPE_JSON, exception);			
 		} catch(Exception e) {
-			logger.warn("Error trying to delete the VM with ID = " + vmId + ": " + url + "/vms" + vmId + " Exception: " + e.getMessage());
+			logger.warn("Error trying to delete the VM with ID = " + vmId + ": " + url + "/vms/" + vmId + " Exception: " + e.getMessage());
 			exception = true;
 		}
 		

@@ -95,10 +95,10 @@ public class Vm {
         // If a path for an init script was specified
         if (initScript != null) {
             // Check that the path is valid and the file can be read
-            File f = new File(initScript);
-            if (!f.isFile() || !f.canRead()) {
-                throw new IllegalArgumentException("The path for the init script is not valid");
-            }
+//            File f = new File(initScript);
+//            if (!f.isFile() || !f.canRead()) {
+//                throw new IllegalArgumentException("The path for the init script is not valid");
+//            }
         }
         this.initScript = initScript;
     }

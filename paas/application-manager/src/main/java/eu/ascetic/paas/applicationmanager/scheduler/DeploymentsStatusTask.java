@@ -9,6 +9,11 @@ import org.springframework.scheduling.annotation.Scheduled;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
+import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
+import eu.ascetic.paas.applicationmanager.vmmanager.VmManagerUtils;
+import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientHC;
+import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.Vm;
+import eu.ascetic.utils.ovf.api.utils.OvfRuntimeException;
 
 /**
  * This periodical taks will go through the deployments table, and look the ones that need some update
@@ -31,10 +36,10 @@ public class DeploymentsStatusTask {
 		for(Deployment deployment : deployments) {
 			logger.info("Checking deployment id: " + deployment.getId() + " Status: " + deployment.getStatus());
 			if(deployment.getStatus().equals(Dictionary.APPLICATION_STATUS_SUBMITTED)) {
-				logger.info(" Moving deployment id: " + deployment.getId()  + " to NEGOTIATION state");
+//				logger.info(" Moving deployment id: " + deployment.getId()  + " to NEGOTIATION state");
 				deploymentSubmittedActions(deployment);
 			} else if(deployment.getStatus().equals(Dictionary.APPLICATION_STATUS_NEGOTIATION)) {
-				logger.info(" Checking status of NEGOTIATION proccess for deployment: " + deployment.getId());
+//				logger.info(" Checking status of NEGOTIATION proccess for deployment: " + deployment.getId());
 				deploymentNegotiationActions(deployment);
 			} else if(deployment.getStatus().equals(Dictionary.APPLICATION_STATUS_NEGOTIATIED)) {
 				// TODO this check needs to be deleted when we enable the user to be able to 
@@ -44,7 +49,7 @@ public class DeploymentsStatusTask {
 				
 				deploymentAcceptAgreementActions(deployment);
 			} else if(deployment.getStatus().equals(Dictionary.APPLICATION_STATUS_CONTEXTUALIZATION)) {
-				logger.info(" The deployment " + deployment.getId() + " is ready to be contextualized, starting the contextualization process");
+//				logger.info(" The deployment " + deployment.getId() + " is ready to be contextualized, starting the contextualization process");
 				
 				deploymentStartContextualizationActions(deployment);
 			} else if(deployment.getStatus().equals(Dictionary.APPLICATION_STATUS_CONTEXTUALIZED)) {
@@ -140,10 +145,37 @@ public class DeploymentsStatusTask {
 		//      The actions in that case it is to start DELETING all VMs from the VMManager
 		//      change the status of the Deployement to TERMINATED after that
 		
-		 // Since we are not doing this right now, we move the application to the next step
-		deployment.setStatus(Dictionary.APPLICATION_STATUS_DEPLOYED);
+		
+		try {
+			VmManagerClientHC vmManagerClient = new VmManagerClientHC();
+			List<Vm> vmsToDeploy = OVFUtils.getVmsFromOvf(deployment, vmManagerClient);	
+			List<String> vmsDeployedIds = vmManagerClient.deployVMs(vmsToDeploy);
 			
-		// We save the changes to the DB
-		deploymentDAO.update(deployment);
+			if (vmsDeployedIds != null && !vmsDeployedIds.isEmpty()){
+				if (vmsDeployedIds.size() == vmsToDeploy.size()){
+					//all VMs deployed successfully, update deployment with new info from VMs
+					boolean updated = VmManagerUtils.updateVms(vmManagerClient, deployment, vmsDeployedIds);
+					if (updated){
+						
+						// Since we are not doing this right now, we move the application to the next step
+						deployment.setStatus(Dictionary.APPLICATION_STATUS_DEPLOYED);
+							
+						// We save the changes to the DB
+						deploymentDAO.update(deployment);
+					}
+				}
+				else {
+					logger.info("All VMs cannot be created. VMs deployed: " + vmsDeployedIds.size());
+				}
+			}
+			
+			
+		} catch(OvfRuntimeException ex) {
+			logger.info("Error parsing OVF file: " + ex.getMessage());
+			ex.printStackTrace();
+		} catch (Exception ex){
+			logger.info("Error triying to deploy new VMs: " + ex.getMessage());
+			ex.printStackTrace();
+		}
 	}
 }
