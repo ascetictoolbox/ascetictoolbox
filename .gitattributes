@@ -318,6 +318,7 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/u
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/scheduler/DeploymentsStatusTask.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/vmmanager/VmManagerTest.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/vmmanager/VmManagerTest2.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/vmmanager/VmManagerUtils.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/vmmanager/client/VmManagerClient.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/vmmanager/client/VmManagerClientHC.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/vmmanager/datamodel/DeploymentPlan.java -text
