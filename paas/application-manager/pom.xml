@@ -311,5 +311,12 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
+		<!--  VM Contextualizer -->
+		<dependency>
+			<groupId>eu.ascetic.paas</groupId>
+			<artifactId>virtual-machine-contextualizer</artifactId>
+			<version>3.3.0-SNAPSHOT</version>
+		</dependency>
+		
 	</dependencies>
 </project>
