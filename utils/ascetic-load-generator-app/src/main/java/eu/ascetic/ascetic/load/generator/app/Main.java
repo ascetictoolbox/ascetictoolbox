@@ -15,6 +15,7 @@
  */
 package eu.ascetic.ascetic.load.generator.app;
 
+import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,8 +39,6 @@ public class Main {
      * shall generate the test files as needed.
      */
     public static void main(String[] args) {
-
-        WorkerThread processorUsingThread = new WorkerThread();
 
         if (args.length == 0) {
             System.out.println("This is standard out");
@@ -65,51 +64,73 @@ public class Main {
             System.err.println(result);
         }
         if (args.length >= 3) {
+            HashSet<WorkerThread> threadPool = new HashSet<>();
+            int threadCount = 1;
             //arg given in seconds
             int computeTime = Integer.valueOf(args[2]);
+            if (args.length >= 4) {
+                threadCount = getThreadCount(args[3]);
+            }
             try {
-                Thread myThread = new Thread(processorUsingThread);
-                myThread.setDaemon(true);
-                myThread.start();
+                for (int i = 0; i < threadCount; i++) {
+                    WorkerThread worker = new WorkerThread();
+                    Thread myThread = new Thread(worker);
+                    myThread.setDaemon(true);
+                    myThread.start();
+                    threadPool.add(worker);
+                }
                 Thread.sleep(computeTime * 1000);
-                processorUsingThread.stop();
+                for (WorkerThread worker : threadPool) {
+                    worker.stop();
+                }
             } catch (InterruptedException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, "The test app exited early", ex);
             }
         }
-
     }
 
     /**
-     * This thread aims to keep the CPU on a busy wait. It ensures the load
-     * profile is more realistic for the purpose of the experimentation. i.e.
-     * Ganglia should be able to detect the CPU load on the machines because of
-     * the running of an application.
+     *
+     * @param arg
+     * @return
      */
-    private static class WorkerThread implements Runnable {
+    private static int getThreadCount(String arg) {
+        if ("X".equals(arg)) {
+            return Runtime.getRuntime().availableProcessors();
+        }
+        return Integer.valueOf(arg);
+    }
 
-        boolean running = true;
+/**
+ * This thread aims to keep the CPU on a busy wait. It ensures the load profile
+ * is more realistic for the purpose of the experimentation. i.e. Ganglia should
+ * be able to detect the CPU load on the machines because of the running of an
+ * application.
+ */
+private static class WorkerThread implements Runnable {
 
-        @Override
-        public void run() {
-            String test = "test";
-            long number = 5;
-            while (running) {
-                if (test.length() > 10000) {
-                    test = "test";
-                    number = 5;
-                } else {
-                    test = test + test;
-                    number = number + number * number;
-                }
+    private boolean running = true;
+
+    @Override
+    public void run() {
+        String test = "test";
+        long number = 5;
+        while (running) {
+            if (test.length() > 10000) {
+                test = "test";
+                number = 5;
+            } else {
+                test = test + test;
+                number = number + number * number;
             }
         }
-
-        /**
-         * This stops the thread from running and consuming cpu time.
-         */
-        public void stop() {
-            running = false;
-        }
     }
+
+    /**
+     * This stops the thread from running and consuming cpu time.
+     */
+    public void stop() {
+        running = false;
+    }
+}
 }

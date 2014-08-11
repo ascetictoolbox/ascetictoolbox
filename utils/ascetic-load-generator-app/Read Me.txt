@@ -12,9 +12,12 @@ Arg List:
 1) How many characters to write to standard out
 2) how many characters to write to standard error
 3) How many seconds to hold the CPU at full load for
+4) How many threads should be started
 
 Arguments 1 + 2 are aimed at been used for standard out redirection. i.e. to file. This then allows file transfer tests to
-be completed, if needed. The third paramter specifies a a timed CPU load.
+be completed, if needed. 
+The third parameter specifies a a timed CPU load.
+The fourth can be used to specifiy how many threads should be started. Use X to indicate as many as their are CPU cores.
 
 
 Memory Intensive
