@@ -190,7 +190,8 @@ public class ApplicationRestTest {
 		assertEquals("Three Tier Web App", applicationResponse.getName());
 		assertEquals(1, applicationResponse.getDeployments().size());
 		assertEquals(threeTierWebAppOvfString, applicationResponse.getDeployments().get(0).getOvf());
-		assertEquals(Dictionary.APPLICATION_STATUS_SUBMITTED, applicationResponse.getDeployments().get(0).getStatus());
+//		assertEquals(Dictionary.APPLICATION_STATUS_SUBMITTED, applicationResponse.getDeployments().get(0).getStatus());
+		assertEquals(Dictionary.APPLICATION_STATUS_CONTEXTUALIZED, applicationResponse.getDeployments().get(0).getStatus());
 		
 		// We verify the number of calls to the DAO
 		verify(applicationDAO, times(2)).getByName("Three Tier Web App");
@@ -257,7 +258,8 @@ public class ApplicationRestTest {
 		Deployment deployment = applicationRest.createDeploymentToApplication(ovf);
 
 		assertEquals("ovf", deployment.getOvf());
-		assertEquals(Dictionary.APPLICATION_STATUS_SUBMITTED, deployment.getStatus());
+//		assertEquals(Dictionary.APPLICATION_STATUS_SUBMITTED, deployment.getStatus());
+		assertEquals(Dictionary.APPLICATION_STATUS_CONTEXTUALIZED, deployment.getStatus());
 	}
 	
 	/**
