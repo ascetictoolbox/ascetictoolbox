@@ -30,3 +30,7 @@ Arg List:
 2) The delay between adding a new item into memory, the default is 50ms. 
 This allows the process to take time and thus, be useful for taking meaurements. 
 To get to 800Mb it takes aproximately 500 interations of the loop.
+
+Note in cases where more memory is used parameters to Java such as -Xmx1024M should be used. i.e.
+
+java -cp ./ascetic-load-generator-app-0.0.1-SNAPSHOT.jar -Xmx1024M eu.ascetic.ascetic.load.generator.app.MemoryLoadGenerator 800
