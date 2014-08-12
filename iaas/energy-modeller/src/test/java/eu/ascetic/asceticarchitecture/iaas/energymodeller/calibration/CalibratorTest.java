@@ -16,7 +16,6 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.Configuration;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DatabaseConnector;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DefaultDatabaseConnector;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
