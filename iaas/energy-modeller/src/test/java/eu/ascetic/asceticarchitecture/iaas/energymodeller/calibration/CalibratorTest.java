@@ -86,6 +86,13 @@ public class CalibratorTest {
                 Assert.fail();
             }
         }
+        //Wait 30 seconds so the database can be written to, the wait criteria above isn't great.
+        try {
+                Thread.sleep(30000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(CalibratorTest.class.getName()).log(Level.SEVERE, "The test was interupted.", ex);
+                Assert.fail();
+            }
         assertEquals(expResult, host);
         assert (host.getIdlePowerConsumption() > 0.0);
         System.out.println("Idle Power: " + host.getIdlePowerConsumption());

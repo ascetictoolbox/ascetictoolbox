@@ -35,12 +35,13 @@ public class CalibratorDataLogger implements Runnable {
     private final HostDataSource datasource;
     private final int calibratorWaitSec;
     private final int calibratorMaxDurationSec;
-    private DatabaseConnector database;
+    private final DatabaseConnector database;
 
     public CalibratorDataLogger(Host host, HostDataSource datasource, DatabaseConnector database,
             int calibratorWaitSec, int calibratorMaxDurationSec) {
         this.host = host;
         this.datasource = datasource;
+        this.database = database;
         this.calibratorWaitSec = calibratorWaitSec;
         this.calibratorMaxDurationSec = calibratorMaxDurationSec;
     }
@@ -73,7 +74,7 @@ public class CalibratorDataLogger implements Runnable {
             }
         }
         calibrationData.addAll(HostEnergyCalibrationData.getCalibrationData(data));
-        host.setCalibrationData(calibrationData);
+         host.setCalibrationData(calibrationData);
         if (database != null) {
             database.setHostCalibrationData(host);
         }
