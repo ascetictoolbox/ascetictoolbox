@@ -469,7 +469,8 @@ public class VmManager {
 
     private boolean isoReceived(Vm vm) {
         return vm.getInitScript() != null && !vm.getInitScript().equals("")
-                && vm.getInitScript().endsWith(".iso");
+                && vm.getInitScript().contains(".iso_");
+//                && vm.getInitScript().endsWith(".iso");
     }
 
 }
