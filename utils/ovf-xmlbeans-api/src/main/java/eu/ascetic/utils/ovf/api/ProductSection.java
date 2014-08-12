@@ -69,6 +69,36 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * {@link VirtualSystemCollection} or locally in {@link VirtualSystem}.
      */
     private static final String ASCETIC_SECURITY_KEY = "asceticSecurityKey";
+    /**
+     * The static KEY used to get and set the number of end points in the global scope of
+     * {@link VirtualSystemCollection} or locally in {@link VirtualSystem}.
+     */
+    private static final String ASCETIC_ENDPOINT_NUMBER = "asceticEndPointNumber";
+    /**
+     * The static base KEY used to get and set an end point ID either in the global scope of
+     * {@link VirtualSystemCollection} or locally in {@link VirtualSystem}.
+     */
+    private static final String ASCETIC_ENDPOINT_ID_KEY = "asceticEndPointId_";
+    /**
+     * The static base KEY used to get and set an end point URI either in the global scope of
+     * {@link VirtualSystemCollection} or locally in {@link VirtualSystem}.
+     */
+    private static final String ASCETIC_ENDPOINT_URI_KEY = "asceticEndPointUri_";
+    /**
+     * The static base KEY used to get and set an end point type (e.g. "probe") either in the global scope of
+     * {@link VirtualSystemCollection} or locally in {@link VirtualSystem}.
+     */
+    private static final String ASCETIC_ENDPOINT_TYPE_KEY = "asceticEndPointType_";
+    /**
+     * The static base KEY used to get and set an end point subtype (e.g. "mem") either in the global scope of
+     * {@link VirtualSystemCollection} or locally in {@link VirtualSystem}.
+     */
+    private static final String ASCETIC_ENDPOINT_SUBTYPE_KEY = "asceticEndPointSubtype_";
+    /**
+     * The static base KEY used to get and set an end point reporting interval either in the global scope of
+     * {@link VirtualSystemCollection} or locally in {@link VirtualSystem}.
+     */
+    private static final String ASCETIC_ENDPOINT_INTERVAL_KEY = "asceticEndPointInterval_";
 
     /**
      * Default constructor.
@@ -204,6 +234,22 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     }
 
     /**
+     * TODO
+     * 
+     * @param key
+     * @return
+     */
+    public int getPropertyIndexByKey(String key) {
+        ProductProperty[] productProperties =  getPropertyArray();
+        for (int i = 0; i < productProperties.length; i++) {
+            if (key.equals(productProperties[i].getKey())){
+                return i;
+            } 
+        }
+        return -1;
+    }
+    
+    /**
      * Adds a new {@link ProductProperty} to the end of the array held by this
      * object.
      * 
@@ -234,6 +280,21 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
         delegate.removeProperty(i);
     }
 
+    /**
+     * TODO
+     * 
+     * @param key
+     */
+    public void removePropertyByKey(String key){
+        ProductProperty[] productProperties =  getPropertyArray();
+        for (int i = 0; i < productProperties.length; i++) {
+            if (key.equals(productProperties[i].getKey())){
+                delegate.removeProperty(i);
+                break;
+            } 
+        }
+    }
+    
     // Start of ASCETiC specific helper functions
 
     /**
@@ -319,7 +380,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     }
 
     /**
-     * Gets the security Keys for a {@link VirtualSystemCollection} or
+     * Gets the security Keys (public/private pair) for a {@link VirtualSystemCollection} or
      * {@link VirtualSystem}.
      * 
      * @return The security keys
@@ -329,7 +390,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     }
 
     /**
-     * Sets the security Keys for a {@link VirtualSystemCollection} or
+     * Sets the security Keys (public/private pair) for a {@link VirtualSystemCollection} or
      * {@link VirtualSystem}.
      * 
      * @param securityKeys
@@ -342,6 +403,165 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
                     securityKeys);
         } else {
             productProperty.setValue(securityKeys);
+        }
+    }
+    
+    /**
+     * TODO
+     * 
+     * @param id
+     * @param uri
+     * @param type
+     * @param subtype
+     * @param interval
+     * @return
+     */
+    public int addEndPointProperties(String id, String uri, String type, String subtype, String interval) {
+        
+        // Find the next end point ID
+        int i = 0;
+        while (true) {
+            ProductProperty productProperty = getPropertyByKey(
+                    ASCETIC_ENDPOINT_ID_KEY + i);
+            if (productProperty == null) {
+                break;
+            }
+            i++;
+        }
+        
+        addNewProperty(ASCETIC_ENDPOINT_ID_KEY + i, ProductPropertyType.STRING, id);
+        addNewProperty(ASCETIC_ENDPOINT_URI_KEY + i, ProductPropertyType.STRING, uri);
+        addNewProperty(ASCETIC_ENDPOINT_TYPE_KEY + i, ProductPropertyType.STRING, type);
+        addNewProperty(ASCETIC_ENDPOINT_SUBTYPE_KEY + i, ProductPropertyType.STRING, subtype);
+        addNewProperty(ASCETIC_ENDPOINT_INTERVAL_KEY + i, ProductPropertyType.STRING, interval);
+        
+        // Increment the number of end points stored
+        ProductProperty productProperty = getPropertyByKey(ASCETIC_ENDPOINT_NUMBER);
+        if (productProperty == null) {
+            addNewProperty(ASCETIC_ENDPOINT_NUMBER, ProductPropertyType.UINT32, "0");
+        } else {
+            Integer newEndPointNumber = ((Integer) productProperty.getValueAsJavaObject()) + 1;
+            productProperty.setValue(newEndPointNumber.toString());
+        }
+        
+        // Return the end point ID
+        return i;
+    }
+    
+    /**
+     * TODO: NOT TO BE CONFUSED WITH PROPERTY INDEX VALUES
+     * 
+     * @param id
+     * @return
+     */
+    public int getEndPointIndexById(String id) {
+        
+        for (int i = 0; i < getEndPointNumber(); i++) {
+            ProductProperty productProperty = getPropertyByKey(ASCETIC_ENDPOINT_ID_KEY + i);
+            
+            if (productProperty != null && id.equals(productProperty.getValue())) {
+                return i;
+            }
+        }
+        return 0;
+    }
+    
+    /**
+     * TODO
+     * 
+     * @param index
+     * @param id
+     * @param uri
+     * @param type
+     * @param subtype
+     * @param interval
+     */
+    public void setEndPointProperties(String index, String id, String uri, String type, String subtype, String interval) {
+        getPropertyByKey(ASCETIC_ENDPOINT_ID_KEY + index).setValue(id);
+        getPropertyByKey(ASCETIC_ENDPOINT_URI_KEY + index).setValue(uri);
+        getPropertyByKey(ASCETIC_ENDPOINT_TYPE_KEY + index).setValue(type);
+        getPropertyByKey(ASCETIC_ENDPOINT_SUBTYPE_KEY + index).setValue(subtype);
+        getPropertyByKey(ASCETIC_ENDPOINT_INTERVAL_KEY + index).setValue(interval);
+    }
+    
+    /**
+     * TODO
+     * 
+     * @param index
+     * @param id
+     */
+    public void setEndPointName(String index, String id) {
+        getPropertyByKey(ASCETIC_ENDPOINT_ID_KEY + index).setValue(id);
+    }
+    
+    /**
+     * TODO
+     * 
+     * @param index
+     * @param uri
+     */
+    public void setEndPointUri(String index, String uri) {
+        getPropertyByKey(ASCETIC_ENDPOINT_URI_KEY + index).setValue(uri);
+    }
+    
+    /**
+     * TODO
+     * 
+     * @param index
+     * @param type
+     */
+    public void setEndPointType(String index, String type) {
+        getPropertyByKey(ASCETIC_ENDPOINT_TYPE_KEY + index).setValue(type);
+    }
+    
+    /**
+     * TODO
+     * 
+     * @param index
+     * @param subtype
+     */
+    public void setEndPointSubtype(String index, String subtype) {
+        getPropertyByKey(ASCETIC_ENDPOINT_SUBTYPE_KEY + index).setValue(subtype);
+    }
+    
+    /**
+     * TODO
+     * 
+     * @param index
+     * @param interval
+     */
+    public void setEndPointInterval(String index, String interval) {
+        getPropertyByKey(ASCETIC_ENDPOINT_INTERVAL_KEY + index).setValue(interval);
+    }
+    
+    /**
+     * TODO
+     * 
+     * @param index
+     */
+    public void removeEndPointProperties(String index) {
+        removePropertyByKey(ASCETIC_ENDPOINT_ID_KEY + index);
+        removePropertyByKey(ASCETIC_ENDPOINT_URI_KEY + index);
+        removePropertyByKey(ASCETIC_ENDPOINT_TYPE_KEY + index);
+        removePropertyByKey(ASCETIC_ENDPOINT_SUBTYPE_KEY + index);
+        removePropertyByKey(ASCETIC_ENDPOINT_INTERVAL_KEY + index);
+        
+        ProductProperty productProperty = getPropertyByKey(ASCETIC_ENDPOINT_NUMBER);
+        Integer newEndPointNumber = ((Integer) productProperty.getValueAsJavaObject()) - 1;
+        productProperty.setValue(newEndPointNumber.toString());
+    }
+    
+    /**
+     * TODO
+     * 
+     * @return
+     */
+    public int getEndPointNumber() {
+        ProductProperty productProperty = getPropertyByKey(ASCETIC_ENDPOINT_NUMBER);
+        if (productProperty == null) {
+            return 0;
+        } else {
+            return ((Integer) productProperty.getValueAsJavaObject());
         }
     }
 
