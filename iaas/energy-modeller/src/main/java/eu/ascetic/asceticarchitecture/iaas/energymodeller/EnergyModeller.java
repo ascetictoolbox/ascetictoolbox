@@ -68,7 +68,7 @@ public class EnergyModeller {
     private EnergyPredictorInterface predictor = new DefaultEnergyPredictor();
     private HostDataSource datasource = new ZabbixDataSourceAdaptor();
     private DatabaseConnector database = new DefaultDatabaseConnector();
-    private Calibrator calibrator = new Calibrator(datasource);
+    private Calibrator calibrator = new Calibrator(datasource, database);
     private Thread calibratorThread;
     private DataGatherer dataGatherer = new DataGatherer(datasource, new DefaultDatabaseConnector(), calibrator);
     private Thread dataGatherThread;
@@ -451,7 +451,6 @@ public class EnergyModeller {
             }
             if (!host.isCalibrated()) {
                 calibrateModelForHost(host);
-                database.setHostCalibrationData(host);
             }
         }
     }
@@ -478,7 +477,6 @@ public class EnergyModeller {
      */
     public void calibrateModelForHost(Host host) {
         calibrator.calibrateHostEnergyData(host);
-        database.setHostCalibrationData(host);
     }
 
 }

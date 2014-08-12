@@ -15,9 +15,9 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration;
 
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DatabaseConnector;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostEnergyCalibrationData;
 import java.io.File;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
@@ -35,6 +35,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 public class Calibrator implements Runnable {
 
     private final HostDataSource datasource;
+    private final DatabaseConnector database;
     private boolean running = true;
     private final LinkedBlockingDeque<Host> queue = new LinkedBlockingDeque<>();
     private static int calibratorWaitSec = 2; //Default 2 second poll interval during training
@@ -48,10 +49,12 @@ public class Calibrator implements Runnable {
      * This creates a new calibrator.
      *
      * @param dataSource The data source that is used to monitor the calibration
+     * @param database The database to write the final results to once gathered.
      * test.
      */
-    public Calibrator(HostDataSource dataSource) {
+    public Calibrator(HostDataSource dataSource, DatabaseConnector database) {
         this.datasource = dataSource;
+        this.database = database;
         try {
             PropertiesConfiguration config;
             if (new File(CONFIG_FILE).exists()) {
@@ -115,7 +118,7 @@ public class Calibrator implements Runnable {
         //Gather basic data
         host = readLowestboundForHost(host);
         //Perform the full logging
-        CalibratorDataLogger logger = new CalibratorDataLogger(host, datasource, calibratorWaitSec, calibratorMaxDurationSec);
+        CalibratorDataLogger logger = new CalibratorDataLogger(host, datasource, database, calibratorWaitSec, calibratorMaxDurationSec);
         Thread dataLoggerThread = new Thread(logger);
         dataLoggerThread.setDaemon(true);
         dataLoggerThread.start();

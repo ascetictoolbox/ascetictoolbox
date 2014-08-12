@@ -16,6 +16,7 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.Configuration;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DatabaseConnector;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DefaultDatabaseConnector;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
@@ -64,12 +65,13 @@ public class CalibratorTest {
         System.out.println("calibrateHostEnergyData");
         Host host = new Host(10105, "asok09");
         ZabbixDataSourceAdaptor adaptor = new ZabbixDataSourceAdaptor();
-        Calibrator instance = new Calibrator(adaptor);
+        DefaultDatabaseConnector database = new DefaultDatabaseConnector();
+        Calibrator instance = new Calibrator(adaptor, database);
         Thread calibratorThread;
         calibratorThread = new Thread(instance);
         calibratorThread.setDaemon(true);
         calibratorThread.start();
-        DefaultDatabaseConnector database = new DefaultDatabaseConnector();
+        
         
         Host expResult = CHOSEN_HOST;
         host = database.getHostCalibrationData(host);
@@ -85,7 +87,6 @@ public class CalibratorTest {
                 Assert.fail();
             }
         }
-        database.setHostCalibrationData(host);
         assertEquals(expResult, host);
         assert (host.getIdlePowerConsumption() > 0.0);
         System.out.println("Idle Power: " + host.getIdlePowerConsumption());

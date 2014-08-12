@@ -59,7 +59,7 @@ public class DataGathererTest {
         if (gatherer == null) {
             ZabbixDataSourceAdaptor adaptor = new ZabbixDataSourceAdaptor();
             DefaultDatabaseConnector connector = new DefaultDatabaseConnector();
-            Calibrator calibrator = new Calibrator(adaptor);
+            Calibrator calibrator = new Calibrator(adaptor, connector);
             DataGatherer instance = new DataGatherer(adaptor, connector, calibrator);
             gatherer = instance;
             Thread dataGatherThread = new Thread(instance);

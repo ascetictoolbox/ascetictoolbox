@@ -15,6 +15,7 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration;
 
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DatabaseConnector;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostMeasurement;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
@@ -34,8 +35,9 @@ public class CalibratorDataLogger implements Runnable {
     private final HostDataSource datasource;
     private final int calibratorWaitSec;
     private final int calibratorMaxDurationSec;
+    private DatabaseConnector database;
 
-    public CalibratorDataLogger(Host host, HostDataSource datasource, 
+    public CalibratorDataLogger(Host host, HostDataSource datasource, DatabaseConnector database,
             int calibratorWaitSec, int calibratorMaxDurationSec) {
         this.host = host;
         this.datasource = datasource;
@@ -72,6 +74,9 @@ public class CalibratorDataLogger implements Runnable {
         }
         calibrationData.addAll(HostEnergyCalibrationData.getCalibrationData(data));
         host.setCalibrationData(calibrationData);
+        if (database != null) {
+            database.setHostCalibrationData(host);
+        }
         return host;
     }
 
