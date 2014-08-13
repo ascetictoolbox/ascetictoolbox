@@ -80,16 +80,6 @@ iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymod
 iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/input/VMProjectedWorkloadElementTest.java -text
 iaas/energy-modeller/src/wsdl/localhost_8080/EnergyModellerCalibrationTool/CalibrationLoadGenerator.wsdl -text
 iaas/energy-modeller/src/wsdl/localhost_8080/EnergyModellerCalibrationTool/CalibrationLoadGenerator.xsd_1.xsd -text
-iaas/energy-modeller/target/generated-sources/jaxws-wsimport/eu/ascetic/asceticarchitecture/iaas/energymodeller/calibration/client/CalibrationLoadGenerator.java -text
-iaas/energy-modeller/target/generated-sources/jaxws-wsimport/eu/ascetic/asceticarchitecture/iaas/energymodeller/calibration/client/CalibrationLoadGenerator_Service.java -text
-iaas/energy-modeller/target/generated-sources/jaxws-wsimport/eu/ascetic/asceticarchitecture/iaas/energymodeller/calibration/client/CurrentlyWorking.java -text
-iaas/energy-modeller/target/generated-sources/jaxws-wsimport/eu/ascetic/asceticarchitecture/iaas/energymodeller/calibration/client/CurrentlyWorkingResponse.java -text
-iaas/energy-modeller/target/generated-sources/jaxws-wsimport/eu/ascetic/asceticarchitecture/iaas/energymodeller/calibration/client/Finished.java -text
-iaas/energy-modeller/target/generated-sources/jaxws-wsimport/eu/ascetic/asceticarchitecture/iaas/energymodeller/calibration/client/FinishedResponse.java -text
-iaas/energy-modeller/target/generated-sources/jaxws-wsimport/eu/ascetic/asceticarchitecture/iaas/energymodeller/calibration/client/InduceLoad.java -text
-iaas/energy-modeller/target/generated-sources/jaxws-wsimport/eu/ascetic/asceticarchitecture/iaas/energymodeller/calibration/client/InduceLoadResponse.java -text
-iaas/energy-modeller/target/generated-sources/jaxws-wsimport/eu/ascetic/asceticarchitecture/iaas/energymodeller/calibration/client/ObjectFactory.java -text
-iaas/energy-modeller/target/generated-sources/jaxws-wsimport/eu/ascetic/asceticarchitecture/iaas/energymodeller/calibration/client/package-info.java -text
 iaas/iaas-pricing-modeller/pom.xml -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/IaaSPricingModeller.java -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/IaaSPricingModellerInterface.java -text

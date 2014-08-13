@@ -1,5 +1,3 @@
-iaas/energy-modeller/target/classes
-iaas/energy-modeller/target/test-classes
 paas/application-monitor/etc/db/data/applicationmonitor.0
 paas/application-monitor/etc/db/data/applicationmonitor.ns
 paas/application-monitor/etc/db/data/journal

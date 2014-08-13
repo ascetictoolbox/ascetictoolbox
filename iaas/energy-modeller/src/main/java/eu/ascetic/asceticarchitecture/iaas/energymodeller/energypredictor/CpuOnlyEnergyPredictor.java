@@ -37,7 +37,9 @@ import org.apache.commons.math3.stat.regression.SimpleRegression;
 /**
  * This implements the cpu only energy predictor for the ASCETiC project.
  *
- * @author Richard Kavanagh and derived soley from work of Eleni Agiatzidou
+ * @author Richard Kavanagh
+ * This is similar to @see DefaultEnergyPredictor by Eleni Agiatzidou
+ * 
  */
 public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
 
