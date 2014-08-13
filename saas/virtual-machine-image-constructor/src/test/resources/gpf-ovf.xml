@@ -44,7 +44,7 @@
         <ProductSection>
             <Info>Ascetic Application Wide Extensions</Info>
             <Property ns:key="asceticVmicMode" ns:type="uint32"
-                ns:value="1" />
+                ns:value="offline" />
         </ProductSection>
         <VirtualSystem ns:id="ascetic-pm-HMMERpfam">
             <Info>Description of component ascetic-pm-HMMERpfam</Info>

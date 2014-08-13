@@ -90,7 +90,8 @@ public class IsoImageCreation {
                 + this.addRecontextFiles);
 
         // Create the iso output directory
-        new File(iso.getUri().substring(0, iso.getUri().lastIndexOf(File.separator))).mkdirs();
+        new File(iso.getUri().substring(0,
+                iso.getUri().lastIndexOf(File.separator))).mkdirs();
     }
 
     /**
@@ -124,7 +125,8 @@ public class IsoImageCreation {
         this.addRecontextFiles = configuration.getAddRecontextFiles();
 
         // Create the iso output directory
-        new File(iso.getUri().substring(0, iso.getUri().lastIndexOf(File.separator))).mkdirs();
+        new File(iso.getUri().substring(0,
+                iso.getUri().lastIndexOf(File.separator))).mkdirs();
     }
 
     /**
@@ -195,14 +197,15 @@ public class IsoImageCreation {
 
         if (virtualMachine.getEndPoints().size() != 0) {
             for (EndPoint endPoint : virtualMachine.getEndPoints().values()) {
-                String name = endPoint.getName();
+                String id = endPoint.getId();
                 String uri = endPoint.getUri();
                 String type = endPoint.getType();
+                String subtype = endPoint.getSubtype();
                 String interval = endPoint.getInterval();
 
                 // Create the end point with the given name
                 File endPointFile = new File(endPointDirectory + File.separator
-                        + name + ".properties");
+                        + id + ".properties");
                 try {
                     LOGGER.debug(ATTEMPTING_TO_CREATE_FILE
                             + endPointFile.getPath());
@@ -210,14 +213,16 @@ public class IsoImageCreation {
                     LOGGER.debug(CREATED_FILE + endPointFile.getPath());
                 } catch (IOException e) {
                     LOGGER.error("Failed to create endpoint file with name: "
-                            + name + ".properties", e);
+                            + id + ".properties", e);
                 }
 
                 Properties props = new Properties();
-                props.setProperty("name", name);
+                props.setProperty("id", id);
                 props.setProperty("uri", uri);
                 props.setProperty("type", type);
+                props.setProperty("subtype", subtype);
                 props.setProperty("interval", interval);
+
                 try {
                     FileOutputStream fileOutputStream = new FileOutputStream(
                             endPointFile);

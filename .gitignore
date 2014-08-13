@@ -1,3 +1,5 @@
+iaas/energy-modeller/energymodeller.properties
+iaas/energy-modeller/energymodeller_calibrator.properties
 paas/application-monitor/etc/db/data/applicationmonitor.0
 paas/application-monitor/etc/db/data/applicationmonitor.ns
 paas/application-monitor/etc/db/data/journal
@@ -7,6 +9,7 @@ paas/application-monitor/etc/db/data/mongod.lock
 paas/application-monitor/logs
 paas/application-monitor/target
 paas/virtual-machine-contextualizer/logs/vmc.log.1
+paas/virtual-machine-contextualizer/velocity.log.1
 saas/compss-packager/.classpath
 saas/compss-packager/.project
 saas/compss-plugin/ascetic-deployer/.classpath

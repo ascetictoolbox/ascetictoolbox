@@ -44,7 +44,7 @@ public class OvfDefinitionParser {
     private OvfDefinition ovfDefinition;
     private String ovfDefinitionId;
     private String applicationRepositoryPath;
-    private int mode;
+    private String mode;
 
     private List<String> imageNames;
     private List<String> imageScripts;
@@ -69,9 +69,9 @@ public class OvfDefinitionParser {
                 + applicationRepositoryPath);
 
         // Parse the mode of operation
-        this.mode = Integer.parseInt(ovfDefinition.getVirtualSystemCollection()
+        this.mode = ovfDefinition.getVirtualSystemCollection()
                 .getProductSectionAtIndex(0)
-                .getPropertyByKey("asceticVmicMode").getValue());
+                .getVmicMode();
         LOGGER.info("VMIC Mode is: " + mode);
 
         imageNames = new ArrayList<String>();
@@ -133,7 +133,7 @@ public class OvfDefinitionParser {
             ProductSection productSection = virtualSystem
                     .getProductSectionAtIndex(0);
             String script = productSection
-                    .getPropertyByKey("asceticVmicScript").getValue();
+                    .getVmicScript();
 
             // Add the script replacing variables to local storage
             imageScripts.add(replaceVariablesInScript(script,
@@ -189,9 +189,9 @@ public class OvfDefinitionParser {
     /**
      * Gets the mode of operation that the VMIC will run in.
      * 
-     * @return The mode: Offline = 1, Online = 2
+     * @return The mode: Offline or Online
      */
-    public int getMode() {
+    public String getMode() {
         return mode;
     }
 

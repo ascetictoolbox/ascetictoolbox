@@ -88,6 +88,8 @@ public class OvfDefinitionClient {
                     .getUpperBound();
             LOGGER.debug("Allocation constraint upper bound is: " + upperBound);
 
+            //TODO: Get virtual system collection wide probe and software. 
+            
             // Add data to appropriate object(s) in data model.
             VirtualMachine virtualMachine = new VirtualMachine(componentId,
                     upperBound);
@@ -98,7 +100,7 @@ public class OvfDefinitionClient {
             ArrayList<String> virtualMachineDiskIds = new ArrayList<String>();
             for (int k = 0; k < item.length; k++) {
                 if (ResourceType.DISK_DRIVE.equals(item[k].getResourceType())) {
-                    // FIXME: Only one host resource supported, i.e. now disk
+                    // FIXME: Only one host resource supported, i.e. no disk
                     // diffs
                     String virtualSystemDiskId = item[k]
                             .findHostRosourceId((item[k].getHostResourceArray()[0]));
@@ -166,35 +168,23 @@ public class OvfDefinitionClient {
             LOGGER.warn("Parsing security keys not currently implemented");
 
             // Get service end points for this virtual machine component
-            int k = 1;
-            while (true) {
-                // FIXME: Add helper methods to ProductSection class to fetch
-                // the endpoint with a hard coded key
-                ProductProperty productProperty = virtualSystemArray[i]
-                        .getProductSectionAtIndex(0).getPropertyByKey(
-                                "asceticProbeUri-" + k);
-                if (productProperty == null) {
-                    break;
-                } else {
-                    // TODO: move this to the OVF API?
-                    String name = "asceticProbe-" + k;
-                    LOGGER.debug("Found end point: " + name + " for "
-                            + componentId);
-                    String uri = productProperty.getValue();
-
-                    productProperty = virtualSystemArray[i]
-                            .getProductSectionAtIndex(0).getPropertyByKey(
-                                    "asceticProbeType-" + k);
-                    String type = productProperty.getValue();
-                    productProperty = virtualSystemArray[i]
-                            .getProductSectionAtIndex(0).getPropertyByKey(
-                                    "asceticProbeInterval-" + k);
-                    String interval = productProperty.getValue();
-
-                    EndPoint endPoint = new EndPoint(name, uri, type, interval);
-                    virtualMachine.getEndPoints().put(name, endPoint);
-                }
-                k++;
+            int endpointNumber = virtualSystemArray[i]
+                    .getProductSectionAtIndex(0).getEndPointNumber();
+            for (int j = 0; j < endpointNumber; j++) {
+                String id = virtualSystemArray[i]
+                        .getProductSectionAtIndex(0).getEndPointId(i);
+                String uri = virtualSystemArray[i]
+                        .getProductSectionAtIndex(0).getEndPointUri(i);
+                String type = virtualSystemArray[i]
+                        .getProductSectionAtIndex(0).getEndPointType(i);
+                String subtype = virtualSystemArray[i]
+                        .getProductSectionAtIndex(0).getEndPointSubtype(i);
+                String interval = virtualSystemArray[i]
+                        .getProductSectionAtIndex(0).getEndPointInterval(i);
+                LOGGER.debug("Adding end point: " + id + " for "
+                        + componentId);
+                EndPoint endPoint = new EndPoint(id, uri, type, subtype, interval);
+                virtualMachine.getEndPoints().put(id, endPoint);
             }
 
             // TODO: Get software dependencies

@@ -78,12 +78,12 @@ public class VirtualMachineImageConstructor implements Runnable {
         OvfDefinitionParser ovfDefinitionParser = retriveImageGenerationData();
 
         // 2) Select mode of image generation
-        if (ovfDefinitionParser.getMode() == 1) {
+        if ("offline".equals(ovfDefinitionParser.getMode())) {
             // Offline mode
             if (generateImageOffline(ovfDefinitionParser) == false) {
                 return;
             }
-        } else if (ovfDefinitionParser.getMode() == 2) {
+        } else if ("online".equals(ovfDefinitionParser.getMode())) {
             // Online mode
             if (generateImageOnline(ovfDefinitionParser) == false) {
                 return;

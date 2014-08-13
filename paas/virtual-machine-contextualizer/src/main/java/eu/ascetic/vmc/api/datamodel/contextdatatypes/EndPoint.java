@@ -23,9 +23,10 @@ package eu.ascetic.vmc.api.datamodel.contextdatatypes;
  */
 public class EndPoint {
 
-    private String name;
+    private String id;
     private String uri;
     private String type;
+    private String subtype;
     private String interval;
 
     /**
@@ -34,10 +35,11 @@ public class EndPoint {
      * @param uri
      *            The URI that the endpoint points to.
      */
-    public EndPoint(String name, String uri, String type, String interval) {
-        this.name = name;
+    public EndPoint(String id, String uri, String type, String subtype, String interval) {
+        this.id = id;
         this.uri = uri;
         this.type = type;
+        this.setSubtype(subtype);
         this.interval = interval;
     }
 
@@ -49,18 +51,18 @@ public class EndPoint {
     }
 
     /**
-     * @return the name
+     * @return the id
      */
-    public String getName() {
-        return name;
+    public String getId() {
+        return id;
     }
 
     /**
-     * @param name
-     *            the name to set
+     * @param id
+     *            the id to set
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setId(String id) {
+        this.id = id;
     }
 
     /**
@@ -84,6 +86,20 @@ public class EndPoint {
      */
     public void setType(String type) {
         this.type = type;
+    }
+
+    /**
+     * @return the subtype
+     */
+    public String getSubtype() {
+        return subtype;
+    }
+
+    /**
+     * @param subtype the subtype to set
+     */
+    public void setSubtype(String subtype) {
+        this.subtype = subtype;
     }
 
     /**

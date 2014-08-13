@@ -162,12 +162,29 @@
                     ovf:value="${lowerBoundJboss}" />
                 <ovf:Property ovf:key="asceticUpperBound" ovf:type="uint32"
                     ovf:value="${upperBoundJboss}" />
-                <ovf:Property ovf:key="asceticProbeUri-1" ovf:type="string"
-                    ovf:value="uri://some-end-point/application-monitor" />
-                <ovf:Property ovf:key="asceticProbeType-1"
+                <ovf:Property ovf:key="asceticEndPointNumber"
+                    ovf:type="uint32" ovf:value="1" />
+                <ovf:Property ovf:key="asceticEndPointId_0"
+                    ovf:type="string" ovf:value="mem-probe" />
+                <ovf:Property ovf:key="asceticEndPointUri_0"
+                    ovf:type="string" ovf:value="uri://some-end-point/application-monitor" />
+                <ovf:Property ovf:key="asceticEndPointType_0"
+                    ovf:type="string" ovf:value="probe" />
+                <ovf:Property ovf:key="asceticEndPointSubtype_0"
                     ovf:type="string" ovf:value="mem" />
-                <ovf:Property ovf:key="asceticProbeInterval-1"
+                <ovf:Property ovf:key="asceticEndPointInterval_0"
                     ovf:type="string" ovf:value="1sec" />
+                <ovf:Property ovf:key="asceticSoftwareDependencyNumber"
+                    ovf:type="uint32" ovf:value="1" />
+                <ovf:Property ovf:key="asceticSoftwareDependencyId_0"
+                    ovf:type="string" ovf:value="mem-probe" />
+                <ovf:Property ovf:key="asceticSoftwareDependencyUri_0"
+                    ovf:type="string"
+                    ovf:value="uri://some-end-point/probe-repository/memory-probe.zip" />
+                <ovf:Property ovf:key="asceticSoftwareDependencyType_0"
+                    ovf:type="string" ovf:value="zip" />
+                <ovf:Property ovf:key="asceticSoftwareDependencyInstallScript_0"
+                    ovf:type="string" ovf:value="some;script;commands" />
             </ovf:ProductSection>
             <!-- Operating System details -->
             <ovf:OperatingSystemSection ovf:id="${operatingSystemId}"

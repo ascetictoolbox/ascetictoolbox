@@ -72,6 +72,7 @@ public class OvfDefinitionTest extends TestCase {
                 .getProductSectionAtIndex(0).getDeploymentId();
         assertNotNull(deploymentId);
 
+        // TODO: add this to the template
         // @formatter:off
         ovfDefinition.getVirtualSystemCollection().getProductSectionAtIndex(0)
                     .setSecurityKeys("\n        " +
@@ -95,6 +96,7 @@ public class OvfDefinitionTest extends TestCase {
             "-----END RSA PRIVATE KEY-----");
         // @formatter:on
 
+        //TODO: add these to the template
         ovfDefinition
                 .getVirtualSystemCollection()
                 .getProductSectionAtIndex(0)
@@ -127,35 +129,116 @@ public class OvfDefinitionTest extends TestCase {
         String virtualMachineId = ovfDefinition.getVirtualSystemCollection()
                 .getVirtualSystemAtIndex(1).getId();
         assertNotNull(virtualMachineId);
-        ovfDefinition
+
+        int endpointIndexFromAdd = ovfDefinition
                 .getVirtualSystemCollection()
                 .getVirtualSystemAtIndex(1)
                 .getProductSectionAtIndex(0)
-                .addNewProperty("asceticProbeUri-2",
-                        ProductPropertyType.STRING,
-                        "uri://some-end-point/application-monitor");
-        String probeUri = ovfDefinition.getVirtualSystemCollection()
+                .addEndPointProperties("cpu-probe",
+                        "uri://some-end-point/application-monitor", "probe",
+                        "cpu", "1sec");
+
+        int endpointIndex = ovfDefinition.getVirtualSystemCollection()
                 .getVirtualSystemAtIndex(1).getProductSectionAtIndex(0)
-                .getPropertyByKey("asceticProbeUri-2").getValue();
-        assertNotNull(probeUri);
+                .getEndPointIndexById("cpu-probe");
+
+        assertEquals(endpointIndexFromAdd, endpointIndex);
+
+        assertNotNull(ovfDefinition.getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1).getProductSectionAtIndex(0)
+                .getEndPointId(endpointIndex));
+
+        assertNotNull(ovfDefinition.getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1).getProductSectionAtIndex(0)
+                .getEndPointUri(endpointIndex));
+
+        assertNotNull(ovfDefinition.getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1).getProductSectionAtIndex(0)
+                .getEndPointType(endpointIndex));
+
+        assertNotNull(ovfDefinition.getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1).getProductSectionAtIndex(0)
+                .getEndPointSubtype(endpointIndex));
+
+        assertNotNull(ovfDefinition.getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1).getProductSectionAtIndex(0)
+                .getEndPointInterval(endpointIndex));
+
+        assertEquals(ovfDefinition.getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1).getProductSectionAtIndex(0)
+                .getEndPointNumber(), 2);
+
+        ovfDefinition.getVirtualSystemCollection().getVirtualSystemAtIndex(1)
+                .getProductSectionAtIndex(0)
+                .removeEndPointProperties(endpointIndex);
+
         ovfDefinition
                 .getVirtualSystemCollection()
                 .getVirtualSystemAtIndex(1)
                 .getProductSectionAtIndex(0)
-                .addNewProperty("asceticProbeType-2",
-                        ProductPropertyType.STRING, "cpu");
+                .addEndPointProperties("cpu-probe",
+                        "uri://some-end-point/application-monitor", "probe",
+                        "cpu", "1sec");
+
+        int softwareDependencyIndexFromAdd = ovfDefinition
+                .getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1)
+                .getProductSectionAtIndex(0)
+                .addSoftwareDependencyProperties(
+                        "cpu-probe",
+                        "uri://some-end-point/probe-repository/cpu-probe.zip",
+                        "zip", "some;script;commands");
+
+        int softwareDependencyIndex = ovfDefinition
+                .getVirtualSystemCollection().getVirtualSystemAtIndex(1)
+                .getProductSectionAtIndex(0)
+                .getSoftwareDependencyIndexById("cpu-probe");
+
+        assertEquals(softwareDependencyIndexFromAdd, softwareDependencyIndex);
+
+        assertNotNull(ovfDefinition.getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1).getProductSectionAtIndex(0)
+                .getSoftwareDependencyId(softwareDependencyIndex));
+
+        assertNotNull(ovfDefinition.getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1).getProductSectionAtIndex(0)
+                .getSoftwareDependencyUri(softwareDependencyIndex));
+
+        assertNotNull(ovfDefinition.getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1).getProductSectionAtIndex(0)
+                .getSoftwareDependencyType(softwareDependencyIndex));
+
+        assertNotNull(ovfDefinition.getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1).getProductSectionAtIndex(0)
+                .getSoftwareDependencyScript(softwareDependencyIndex));
+
+        assertNotNull(ovfDefinition.getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1).getProductSectionAtIndex(0)
+                .getEndPointInterval(softwareDependencyIndex));
+
+        assertEquals(ovfDefinition.getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1).getProductSectionAtIndex(0)
+                .getSoftwareDependencyNumber(), 2);
+
+        ovfDefinition.getVirtualSystemCollection().getVirtualSystemAtIndex(1)
+                .getProductSectionAtIndex(0)
+                .removeSoftwareDependencyProperties(softwareDependencyIndex);
+
         ovfDefinition
                 .getVirtualSystemCollection()
                 .getVirtualSystemAtIndex(1)
                 .getProductSectionAtIndex(0)
-                .addNewProperty("asceticProbeInterval-2",
-                        ProductPropertyType.STRING, "1sec");
+                .addSoftwareDependencyProperties(
+                        "cpu-probe",
+                        "uri://some-end-point/probe-repository/cpu-probe.zip",
+                        "zip", "some;script;commands");
 
         System.out.println(ovfDefinition.toString());
 
         writeToFile(ovfDefinition.getXmlObject(), "3tier-webapp.ovf");
-        
-        OvfDefinition ovfDefinition2 = OvfDefinition.Factory.newInstance(ovfDefinition.toString());
+
+        OvfDefinition ovfDefinition2 = OvfDefinition.Factory
+                .newInstance(ovfDefinition.toString());
         assertFalse(ovfDefinition2.hasErrors());
     }
 
@@ -200,7 +283,8 @@ public class OvfDefinitionTest extends TestCase {
         virtualSystemCollection.setInfo("Factory test description.");
         // Product Section
         ProductSection productSection = ProductSection.Factory.newInstance();
-        productSection.setInfo("Product configuration for then entire VirtualSystemCollection.");
+        productSection
+                .setInfo("Product configuration for then entire VirtualSystemCollection.");
         productSection.setProduct("product");
         productSection.setVersion("1.0");
         productSection.addNewProperty("key", ProductPropertyType.STRING,
@@ -233,7 +317,8 @@ public class OvfDefinitionTest extends TestCase {
         // Virtual Hardware Section
         VirtualHardwareSection virtualHardwareSection = VirtualHardwareSection.Factory
                 .newInstance();
-        virtualHardwareSection.setInfo("Description of virtual hardware requirements.");
+        virtualHardwareSection
+                .setInfo("Description of virtual hardware requirements.");
         eu.ascetic.utils.ovf.api.System system = eu.ascetic.utils.ovf.api.System.Factory
                 .newInstance();
         // System
@@ -252,16 +337,16 @@ public class OvfDefinitionTest extends TestCase {
         virtualHardwareSection.addItem(itemCpuNumber);
 
         // CPU Speed
-        if(!virtualHardwareSection.setCPUSpeed(2000)){
-        	Item itemCpuSpeed = Item.Factory.newInstance();
-        	itemCpuSpeed.setDescription("CPU Speed");
-        	itemCpuSpeed.setElementName("2000 MHz CPU speed reservation");
-        	itemCpuSpeed.setInstanceId("1");
-        	itemCpuSpeed.setResourceType(ResourceType.PROCESSOR);
-        	itemCpuSpeed.setResourceSubType("cpuspeed");
-        	itemCpuSpeed.setAllocationUnits("hertz * 2^20");
-        	itemCpuSpeed.setReservation(new BigInteger("2000"));
-        	virtualHardwareSection.addItem(itemCpuSpeed);
+        if (!virtualHardwareSection.setCPUSpeed(2000)) {
+            Item itemCpuSpeed = Item.Factory.newInstance();
+            itemCpuSpeed.setDescription("CPU Speed");
+            itemCpuSpeed.setElementName("2000 MHz CPU speed reservation");
+            itemCpuSpeed.setInstanceId("1");
+            itemCpuSpeed.setResourceType(ResourceType.PROCESSOR);
+            itemCpuSpeed.setResourceSubType("cpuspeed");
+            itemCpuSpeed.setAllocationUnits("hertz * 2^20");
+            itemCpuSpeed.setReservation(new BigInteger("2000"));
+            virtualHardwareSection.addItem(itemCpuSpeed);
         }
 
         // Memory
@@ -305,8 +390,9 @@ public class OvfDefinitionTest extends TestCase {
         System.out.println(ovfDefinition.toString());
 
         writeToFile(ovfDefinition.getXmlObject(), "factory-test.ovf");
-        
-        OvfDefinition ovfDefinition2 = OvfDefinition.Factory.newInstance(ovfDefinition.toString());
+
+        OvfDefinition ovfDefinition2 = OvfDefinition.Factory
+                .newInstance(ovfDefinition.toString());
         assertFalse(ovfDefinition2.hasErrors());
     }
 

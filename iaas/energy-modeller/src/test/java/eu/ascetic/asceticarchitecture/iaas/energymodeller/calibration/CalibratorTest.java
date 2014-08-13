@@ -41,21 +41,29 @@ public class CalibratorTest {
              * the event of clean and build or running from a fresh
              * installation.
              */
-            org.apache.commons.configuration.PropertiesConfiguration config = new PropertiesConfiguration("ascetic-zabbix-api.properties");
-            config.getString("zabbix.server.url", "http://10.4.0.15/zabbix/api_jsonrpc.php");
+            org.apache.commons.configuration.PropertiesConfiguration config = new PropertiesConfiguration(
+                    "ascetic-zabbix-api.properties");
+            config.getString("zabbix.server.url",
+                    "http://10.4.0.15/zabbix/api_jsonrpc.php");
             config.getString("zabbix.user", "admin");
             config.getString("zabbix.password", "73046447cce977b10167");
             config.save();
         } catch (ConfigurationException ex) {
-            Logger.getLogger(Configuration.class.getName()).log(Level.INFO, "Error loading the configuration of the IaaS energy modeller", ex);
+            Logger.getLogger(Configuration.class.getName())
+                    .log(Level.INFO,
+                            "Error loading the configuration of the IaaS energy modeller",
+                            ex);
         }
     }
 
+    /**
+     * Other hosts for testing:<br>
+     * 10084, "asok10"<br>
+     * 10107, "asok11"<br>
+     * 10106, "asok12"<br>
+     */
     private final Host CHOSEN_HOST = new Host(10105, "asok09");
-    private final Host CHOSEN_HOST2 = new Host(10084, "asok10");
-    private final Host CHOSEN_HOST3 = new Host(10107, "asok11");
-    private final Host CHOSEN_HOST4 = new Host(10106, "asok12");
-    
+
     /**
      * Test of calibrateHostEnergyData method, of class Calibrator.
      */
@@ -70,34 +78,38 @@ public class CalibratorTest {
         calibratorThread = new Thread(instance);
         calibratorThread.setDaemon(true);
         calibratorThread.start();
-        
-        
+
         Host expResult = CHOSEN_HOST;
         host = database.getHostCalibrationData(host);
         int orginalCalibrationData = host.getCalibrationData().size();
         instance.calibrateHostEnergyData(host);
         int count = 0;
-        while (orginalCalibrationData == host.getCalibrationData().size() && count < 300) { //while not calibrated or timeout arrives.
+        while (orginalCalibrationData == host.getCalibrationData().size()
+                && count < 300) { // while not calibrated or timeout arrives.
             try {
                 Thread.sleep(2000);
                 count = count + 1;
             } catch (InterruptedException ex) {
-                Logger.getLogger(CalibratorTest.class.getName()).log(Level.SEVERE, "The test was interupted.", ex);
+                Logger.getLogger(CalibratorTest.class.getName()).log(
+                        Level.SEVERE, "The test was interupted.", ex);
                 Assert.fail();
             }
         }
-        //Wait 30 seconds so the database can be written to, the wait criteria above isn't great.
+        // Wait 30 seconds so the database can be written to, the wait criteria
+        // above isn't great.
         try {
-                Thread.sleep(30000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(CalibratorTest.class.getName()).log(Level.SEVERE, "The test was interupted.", ex);
-                Assert.fail();
-            }
+            Thread.sleep(30000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(CalibratorTest.class.getName()).log(Level.SEVERE,
+                    "The test was interupted.", ex);
+            Assert.fail();
+        }
         assertEquals(expResult, host);
         assert (host.getIdlePowerConsumption() > 0.0);
         System.out.println("Idle Power: " + host.getIdlePowerConsumption());
         assert (host.isCalibrated());
-        System.out.println("Calibration Data Count: " + host.getCalibrationData().size());
+        System.out.println("Calibration Data Count: "
+                + host.getCalibrationData().size());
     }
 
 }
