@@ -22,19 +22,16 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.client.ZabbixClient;
-
+import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Item;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.junit.After;
 import org.junit.AfterClass;
-
 import static org.junit.Assert.assertEquals;
-
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -330,6 +327,10 @@ public class ZabbixDataSourceAdaptorTest {
         VmMeasurement result = instance.getVmData(vm);
         assert (result != null);
         assert (!result.getItems().isEmpty());
+        System.out.println("VM Metric List");
+        for (Item item : result.getItems()) {
+            System.out.println(item.getKey());
+        }
     }
 
     /**

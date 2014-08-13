@@ -15,6 +15,12 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient;
 
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.BOOT_TIME_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_COUNT_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.DISK_TOTAL_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.ENERGY_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.MEMORY_TOTAL_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.POWER_KPI_NAME;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.hostvmfilter.NameBeginsFilter;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.hostvmfilter.ZabbixHostVMFilter;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
@@ -41,11 +47,6 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
 
     private ZabbixClient client = new ZabbixClient();
     private ZabbixHostVMFilter hostFilter = new NameBeginsFilter();
-    private static final String POWER_KPI_NAME = KpiList.POWER_KPI_NAME;
-    private static final String ENERGY_KPI_NAME = KpiList.ENERGY_KPI_NAME;
-    private static final String MEMORY_KPI_NAME = KpiList.MEMORY_TOTAL_KPI_NAME;
-    private static final String DISK_KPI_NAME = KpiList.DISK_TOTAL_KPI_NAME;
-    private static final String BOOT_TIME_KPI_NAME = KpiList.BOOT_TIME_KPI_NAME;
 
     /**
      * The main method.
@@ -143,15 +144,15 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         int hostId = Integer.parseInt(host.getHostid());
         eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host answer = new eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host(hostId, hostname);
         answer.setAvailable("1".equals(host.getAvailable()));
-        Item memory = client.getItemByKeyFromHost(MEMORY_KPI_NAME, hostname);
-        Item disk = client.getItemByKeyFromHost(DISK_KPI_NAME, hostname);
+        Item memory = client.getItemByKeyFromHost(MEMORY_TOTAL_KPI_NAME, hostname);
+        Item disk = client.getItemByKeyFromHost(DISK_TOTAL_KPI_NAME, hostname);
         if (memory != null) {
             //Original value given in bytes. 1024 * 1024 = 1048576
             answer.setRamMb((int) (Double.valueOf(memory.getLastValue()) / 1048576));
         }
         if (disk != null) {
-                //Original value given in bytes. 1024 * 1024 * 1024 = 1073741824
-                answer.setDiskGb((Double.valueOf(disk.getLastValue()) / 1073741824));
+            //Original value given in bytes. 1024 * 1024 * 1024 = 1073741824
+            answer.setDiskGb((Double.valueOf(disk.getLastValue()) / 1073741824));
         }
         return answer;
     }
@@ -169,25 +170,31 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         int hostId = Integer.parseInt(host.getHostid());
         VmDeployed answer = new VmDeployed(hostId, hostname);
         for (Item item : items) {
-            if (item.getName().equals(MEMORY_KPI_NAME)) { //Convert to Mb
+            if (item.getKey().equals(MEMORY_TOTAL_KPI_NAME)) { //Convert to Mb
                 //Original value given in bytes. 1024 * 1024 = 1048576
                 answer.setRamMb((int) (Double.valueOf(item.getLastValue()) / 1048576));
             }
-            if (item.getName().equals(DISK_KPI_NAME)) { //covert to Gb
+            if (item.getKey().equals(DISK_TOTAL_KPI_NAME)) { //covert to Gb
                 //Original value given in bytes. 1024 * 1024 * 1024 = 1073741824
                 answer.setDiskGb((Double.valueOf(item.getLastValue()) / 1073741824));
             }
-            if (item.getName().equals(BOOT_TIME_KPI_NAME)) {
+            if (item.getKey().equals(BOOT_TIME_KPI_NAME)) {
                 Calendar cal = new GregorianCalendar();
                 //This converts from milliseconds into the correct time value
                 cal.setTimeInMillis(TimeUnit.SECONDS.toMillis(Long.valueOf(item.getLastValue())));
                 answer.setCreated(cal);
             }
+            if (item.getKey().equals(CPU_COUNT_KPI_NAME)) {
+                answer.setCpus(Integer.valueOf(item.getLastValue()));
+            }
             //TODO set the information correctly below!
-            answer.setCpus(1);
             answer.setIpAddress("127.0.0.1");
             answer.setState("Work in Progress");
 
+        }
+        //A fall back incase the information is not available!
+        if (answer.getCpus() == 0) {
+            answer.setCpus(Integer.valueOf(1));
         }
         return answer;
     }

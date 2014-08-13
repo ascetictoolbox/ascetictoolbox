@@ -26,6 +26,7 @@ public abstract class KpiList {
     public static final String POWER_KPI_NAME = "power";
     public static final String ENERGY_KPI_NAME = "energy";
     //CPU based metrics
+    public static final String CPU_COUNT_KPI_NAME = "system.cpu.num";
     public static final String IDLE_KPI_NAME = "system.cpu.util[,idle]";
     public static final String INTERUPT_KPI_NAME = "system.cpu.util[,interrupt]";
     public static final String IO_WAIT_KPI_NAME = "system.cpu.util[,iowait]";
