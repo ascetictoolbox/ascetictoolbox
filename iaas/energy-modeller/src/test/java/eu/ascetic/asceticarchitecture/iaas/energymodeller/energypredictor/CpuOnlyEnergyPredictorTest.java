@@ -16,26 +16,27 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DefaultDatabaseConnector;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.training.DefaultEnergyModelTrainer;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Random;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class DefaultEnergyPredictorTest {
+/**
+ *
+ * @author Richard
+ */
+public class CpuOnlyEnergyPredictorTest {
 
-    public DefaultEnergyPredictorTest() {
+    public CpuOnlyEnergyPredictorTest() {
 
     }
 
-    public DefaultEnergyModelTrainer trainer = new DefaultEnergyModelTrainer();
     public Host host = new Host(10105, "asok09");
     public VM vm1 = new VM(2, 1548, 128);
     public VM vm2 = new VM(4, 1524, 256);
@@ -69,35 +70,20 @@ public class DefaultEnergyPredictorTest {
         addVMs(vm1);
         addVMs(vm2);
 
-        DefaultEnergyPredictor predictor = new DefaultEnergyPredictor();
+        CpuOnlyEnergyPredictor predictor = new CpuOnlyEnergyPredictor();
         setCalibrationData(host);
         host.setRamMb(32244);
         prediction = predictor.getHostPredictedEnergy(host, vms);
         System.out.println("Host: " + host.getHostName());
         System.out.println("VM Count: " + vms.size());
-        System.out.println("store values size is: " + DefaultEnergyModelTrainer.storeValues.size());
+        System.out.println("store values size is: " + host.getCalibrationData().size());
         System.out.println("watts: " + prediction.getAvgPowerUsed() + " energy: " + prediction.getTotalEnergyUsed());
 
     }
 
-    private void setCalibrationData(Host host) {
+    private Host setCalibrationData(Host host) {
         DefaultDatabaseConnector db = new DefaultDatabaseConnector();
-        host = db.getHostCalibrationData(host);
-
-        if (host.getCalibrationData().isEmpty()) {
-            System.out.println("WARNING: DB Data not setup correctly!");
-            double usageCPU;
-            double usageRAM;
-            double totalEnergyUsed;
-            Random randomGenerator = new Random();
-
-            for (int i = 1; i <= 5; i++) {
-                usageRAM = (randomGenerator.nextInt(1000) / 1000d);
-                usageCPU = (randomGenerator.nextInt(1000) / 1000d);
-                totalEnergyUsed = (randomGenerator.nextInt(1000) / 1000d);
-                trainer.trainModel(host, usageCPU, usageRAM, totalEnergyUsed, 5);
-            }
-        }
+        return db.getHostCalibrationData(host);
     }
 
     @Test
@@ -107,9 +93,9 @@ public class DefaultEnergyPredictorTest {
         addVMs(vm1);
         addVMs(vm2);
 
-        System.out.println("store values size is: " + DefaultEnergyModelTrainer.storeValues.size());
+        System.out.println("store values size is: " + host.getCalibrationData().size());
 
-        DefaultEnergyPredictor predictor = new DefaultEnergyPredictor();
+        CpuOnlyEnergyPredictor predictor = new CpuOnlyEnergyPredictor();
         setCalibrationData(host);
         host.setRamMb(32244);
         System.out.println("VM for Energy Prediction: " + vm1.toString());
@@ -120,3 +106,4 @@ public class DefaultEnergyPredictorTest {
 
     }
 }
+

@@ -217,8 +217,8 @@ public class Host extends EnergyUsageSource implements Comparable<Host> {
         }
         double answer = Double.MAX_VALUE;
         for (HostEnergyCalibrationData hostEnergyCalibrationData : calibrationData) {
-            if (hostEnergyCalibrationData.getMemoryUsage() < answer) {
-                answer = hostEnergyCalibrationData.getMemoryUsage();
+            if ((hostEnergyCalibrationData.getMemoryUsage() * getRamMb()) < answer) {
+                answer = hostEnergyCalibrationData.getMemoryUsage() * getRamMb();
             }
         }
         return answer;
