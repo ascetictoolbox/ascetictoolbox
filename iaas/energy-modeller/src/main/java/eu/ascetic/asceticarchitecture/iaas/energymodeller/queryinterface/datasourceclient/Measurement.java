@@ -27,7 +27,6 @@ import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.MEMORY_TOTAL_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.NETWORK_IN_STARTS_WITH_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.NETWORK_OUT_STARTS_WITH_KPI_NAME;
-import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Item;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +41,7 @@ import java.util.Set;
 public abstract class Measurement {
 
     private long clock;
-    private HashMap<String, Item> metrics = new HashMap<>();
+    private HashMap<String, MetricValue> metrics = new HashMap<>();
 
     /**
      * This looks at the metrics gained, for this given gathering of measurement
@@ -55,8 +54,8 @@ public abstract class Measurement {
     public long getMaximumClockDifference() {
         long lowest = Integer.MAX_VALUE;
         long highest = Integer.MIN_VALUE;
-        for (Item entry : metrics.values()) {
-            long current = entry.getLastClock();
+        for (MetricValue entry : metrics.values()) {
+            long current = entry.getClock();
             if (current < lowest) {
                 lowest = current;
             }
@@ -75,7 +74,7 @@ public abstract class Measurement {
      */
     public long getMaxDelay() {
         long delay = Integer.MIN_VALUE;
-        for (Item entry : metrics.values()) {
+        for (MetricValue entry : metrics.values()) {
             long current = Long.parseLong(entry.getDelay());
             if (current > delay) {
                 delay = current;
@@ -92,7 +91,7 @@ public abstract class Measurement {
      */
     public long getMinDelay() {
         long delay = Integer.MAX_VALUE;
-        for (Item entry : metrics.values()) {
+        for (MetricValue entry : metrics.values()) {
             long current = Long.parseLong(entry.getDelay());
             if (current < delay) {
                 delay = current;
@@ -110,16 +109,16 @@ public abstract class Measurement {
     public Set<String> getMetricNameList() {
         return metrics.keySet();
     }
-
+    
     /**
      * This lists the metrics that are available in this measurement
      *
      * @return the list of all metrics and the key value that is used to quickly
      * identify a metric.
      */
-    public HashMap<String, Item> getMetrics() {
+    public HashMap<String, MetricValue> getMetrics() {
         return metrics;
-    }
+    }    
 
     /**
      * This gets the count of how many values for different metrics are stored.
@@ -135,7 +134,7 @@ public abstract class Measurement {
      *
      * @return The metric values for this measurement.
      */
-    public Collection<Item> getItems() {
+    public Collection<MetricValue> getItems() {
         return metrics.values();
     }
 
@@ -144,7 +143,7 @@ public abstract class Measurement {
      *
      * @param metrics the metrics to set
      */
-    public void setMetrics(HashMap<String, Item> metrics) {
+    public void setMetrics(HashMap<String, MetricValue> metrics) {
         this.metrics = metrics;
     }
 
@@ -153,7 +152,7 @@ public abstract class Measurement {
      *
      * @param item a metric to add to this measurement dataset
      */
-    public void addMetric(Item item) {
+    public void addMetric(MetricValue item) {
         metrics.put(item.getKey(), item);
     }
 
@@ -163,7 +162,7 @@ public abstract class Measurement {
      * @param key The key that is used to identify a given measurement
      * @return The metric and its value that is identified by the key.
      */
-    public Item getMetric(String key) {
+    public MetricValue getMetric(String key) {
         return metrics.get(key);
     }
 
@@ -200,25 +199,25 @@ public abstract class Measurement {
         double system = 0.0;
         double user = 0.0;
         if (metrics.containsKey(CPU_SYSTEM_KPI_NAME)) {
-            system = Double.parseDouble(this.getMetric(CPU_SYSTEM_KPI_NAME).getLastValue());
+            system = this.getMetric(CPU_SYSTEM_KPI_NAME).getValue();
         }
         if (metrics.containsKey(CPU_USER_KPI_NAME)) {
-            user = Double.parseDouble(this.getMetric(CPU_USER_KPI_NAME).getLastValue());
+            user = this.getMetric(CPU_USER_KPI_NAME).getValue();
         }
         if (metrics.containsKey(CPU_INTERUPT_KPI_NAME)) {
-            interrupt = Double.parseDouble(this.getMetric(CPU_INTERUPT_KPI_NAME).getLastValue());
+            interrupt = this.getMetric(CPU_INTERUPT_KPI_NAME).getValue();
         }
         if (metrics.containsKey(CPU_IO_WAIT_KPI_NAME)) {
-            iowait = Double.parseDouble(this.getMetric(CPU_IO_WAIT_KPI_NAME).getLastValue());
+            iowait = this.getMetric(CPU_IO_WAIT_KPI_NAME).getValue();
         }
         if (metrics.containsKey(CPU_NICE_KPI_NAME)) {
-            nice = Double.parseDouble(this.getMetric(CPU_NICE_KPI_NAME).getLastValue());
+            nice = this.getMetric(CPU_NICE_KPI_NAME).getValue();
         }
         if (metrics.containsKey(CPU_SOFT_IRQ_KPI_NAME)) {
-            softirq = Double.parseDouble(this.getMetric(CPU_SOFT_IRQ_KPI_NAME).getLastValue());
+            softirq = this.getMetric(CPU_SOFT_IRQ_KPI_NAME).getValue();
         }
         if (metrics.containsKey(CPU_STEAL_KPI_NAME)) {
-            steal = Double.parseDouble(this.getMetric(CPU_STEAL_KPI_NAME).getLastValue());
+            steal = this.getMetric(CPU_STEAL_KPI_NAME).getValue();
         }
         return (system + user + interrupt + iowait + nice + softirq + steal) / 100;
     }
@@ -230,7 +229,7 @@ public abstract class Measurement {
      * 0...1
      */
     public double getCpuIdle() {
-        return Double.parseDouble(this.getMetric(CPU_IDLE_KPI_NAME).getLastValue()) / 100;
+        return this.getMetric(CPU_IDLE_KPI_NAME).getValue()/ 100;
     }    
      
     /**
@@ -241,7 +240,7 @@ public abstract class Measurement {
      */
     public double getMemoryAvailable() {
         //Original value given in bytes. 1024 * 1024 = 1048576
-        return Double.parseDouble(this.getMetric(MEMORY_AVAILABLE_KPI_NAME).getLastValue()) / 1048576;
+        return this.getMetric(MEMORY_AVAILABLE_KPI_NAME).getValue()/ 1048576;
     }
 
     /**
@@ -262,7 +261,7 @@ public abstract class Measurement {
      */
     public double getMemoryTotal() {
         //Original value given in bytes. 1024 * 1024 = 1048576
-        return Double.parseDouble(this.getMetric(MEMORY_TOTAL_KPI_NAME).getLastValue()) / 1048576;
+        return this.getMetric(MEMORY_TOTAL_KPI_NAME).getValue() / 1048576;
     }
 
     /**
@@ -272,9 +271,9 @@ public abstract class Measurement {
      */
     public double getNetworkIn() {
         double answer = 0.0;
-        for (Map.Entry<String, Item> metric : metrics.entrySet()) {
+        for (Map.Entry<String, MetricValue> metric : metrics.entrySet()) {
             if (metric.getKey().startsWith(NETWORK_IN_STARTS_WITH_KPI_NAME)) {
-                answer = answer + Double.parseDouble(metric.getValue().getLastValue());
+                answer = answer + metric.getValue().getValue();
             }
         }
         return answer;
@@ -287,9 +286,9 @@ public abstract class Measurement {
      */
     public double getNetworkOut() {
         double answer = 0.0;
-        for (Map.Entry<String, Item> metric : metrics.entrySet()) {
+        for (Map.Entry<String, MetricValue> metric : metrics.entrySet()) {
             if (metric.getKey().startsWith(NETWORK_OUT_STARTS_WITH_KPI_NAME)) {
-                answer = answer + Double.parseDouble(metric.getValue().getLastValue());
+                answer = answer + metric.getValue().getValue();
             }
         }
         return answer;

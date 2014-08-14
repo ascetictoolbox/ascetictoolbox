@@ -247,8 +247,8 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         }
 
         List<Item> itemsList = client.getAllItems();
-        for (Item i : itemsList) {
-            Integer hostID = Integer.parseInt(i.getHostid());
+        for (Item item : itemsList) {
+            Integer hostID = Integer.parseInt(item.getHostid());
             HostMeasurement hostMeasurement = hostMeasurements.get(hostID);
             /**
              * Note: Additional hosts could be discovered using the following
@@ -260,15 +260,15 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
              * of the named hosts.
              */
             if (hostMeasurement != null) {
-                if (i.getLastClock() > hostMeasurement.getClock()) {
+                if (item.getLastClock() > hostMeasurement.getClock()) {
                     /**
                      * Ensures the clock value is the latest value seen. It
                      * represents the most upto date piece of data for a given
                      * host.
                      */
-                    hostMeasurement.setClock(i.getLastClock());
+                    hostMeasurement.setClock(item.getLastClock());
                 }
-                hostMeasurement.addMetric(i);
+                hostMeasurement.addMetric(convert(item));
             }
         }
         return new ArrayList<>(hostMeasurements.values());
@@ -315,8 +315,8 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         }
 
         List<Item> itemsList = client.getAllItems();
-        for (Item i : itemsList) {
-            Integer hostID = Integer.parseInt(i.getHostid());
+        for (Item item : itemsList) {
+            Integer hostID = Integer.parseInt(item.getHostid());
             VmMeasurement vmMeasurement = vmMeasurements.get(hostID);
             /**
              * Note: Additional hosts could be discovered using the following
@@ -328,14 +328,14 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
              * of the named hosts.
              */
             if (vmMeasurement != null) {
-                if (i.getKey().equals(ENERGY_KPI_NAME)) {
+                if (item.getKey().equals(ENERGY_KPI_NAME)) {
                     /**
                      * Ensures the clock value closely follows the energy,
                      * measurement.
                      */
-                    vmMeasurement.setClock(i.getLastClock());
+                    vmMeasurement.setClock(item.getLastClock());
                 }
-                vmMeasurement.addMetric(i);
+                vmMeasurement.addMetric(convert(item));
             }
         }
         return new ArrayList<>(vmMeasurements.values());
@@ -369,7 +369,7 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
     public CurrentUsageRecord getCurrentEnergyUsage(eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host) {
         CurrentUsageRecord answer = new CurrentUsageRecord(host);
         HostMeasurement measurement = getHostData(host);
-        answer.setPower(Double.parseDouble(measurement.getMetric(POWER_KPI_NAME).getLastValue()));
+        answer.setPower(measurement.getMetric(POWER_KPI_NAME).getValue());
         answer.setVoltage(-1);
         answer.setCurrent(-1);
         return answer;
@@ -468,5 +468,16 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
      */
     public void setHostFilter(ZabbixHostVMFilter hostFilter) {
         this.hostFilter = hostFilter;
+    }
+    
+    /**
+     * This converts a Zabbix Item into the universal Metric Value, that is used
+     * by the Energy modeller.
+     * @param item
+     * @return 
+     */
+    private MetricValue convert(Item item) {
+        MetricValue answer = new MetricValue(item.getName(), item.getKey(), item.getLastValue(), item.getLastClock());
+        return answer;
     }
 }

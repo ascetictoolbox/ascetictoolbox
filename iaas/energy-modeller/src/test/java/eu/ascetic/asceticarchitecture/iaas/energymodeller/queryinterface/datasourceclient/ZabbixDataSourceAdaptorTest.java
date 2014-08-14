@@ -22,7 +22,6 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.client.ZabbixClient;
-import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Item;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -145,7 +144,7 @@ public class ZabbixDataSourceAdaptorTest {
         List<HostMeasurement> result = instance.getHostData();
         assert (result != null);
         for (HostMeasurement hostMeasurement : result) {
-            assert (!hostMeasurement.getItems().isEmpty());
+            assert (hostMeasurement.getMetricCount() != 0);
         }
     }
 
@@ -159,7 +158,7 @@ public class ZabbixDataSourceAdaptorTest {
         ZabbixDataSourceAdaptor instance = new ZabbixDataSourceAdaptor();
         HostMeasurement result = instance.getHostData(host);
         assert (result != null);
-        assert (!result.getItems().isEmpty());
+        assert (result.getMetricCount() != 0);
         System.out.println("Clock: " + result.getClock());
         System.out.println("Energy: " + result.getEnergy());
         System.out.println("Power: " + result.getPower());
@@ -183,7 +182,7 @@ public class ZabbixDataSourceAdaptorTest {
         List<HostMeasurement> result = instance.getHostData(hostList);
         assert (result != null);
         for (HostMeasurement hostMeasurement : result) {
-            assert (!hostMeasurement.getItems().isEmpty());
+            assert (hostMeasurement.getMetricCount() != 0);
         }
     }
 
@@ -326,10 +325,10 @@ public class ZabbixDataSourceAdaptorTest {
         vm = instance.getVmByName(VM_NAME);
         VmMeasurement result = instance.getVmData(vm);
         assert (result != null);
-        assert (!result.getItems().isEmpty());
+        assert (result.getMetricCount() != 0);
         System.out.println("VM Metric List");
-        for (Item item : result.getItems()) {
-            System.out.println(item.getKey());
+        for (String name : result.getMetricNameList()) {
+            System.out.println(name);
         }
     }
 

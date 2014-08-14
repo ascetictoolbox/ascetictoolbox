@@ -76,7 +76,7 @@ public class HostMeasurement extends Measurement {
      * @return The power consumed when the measurement was taken.
      */
     public double getPower() {
-        return Double.parseDouble(this.getMetric(POWER_KPI_NAME).getLastValue());
+        return this.getMetric(POWER_KPI_NAME).getValue();
     }
 
     /**
@@ -87,7 +87,7 @@ public class HostMeasurement extends Measurement {
      * might give to an energy company.
      */
     public double getEnergy() {
-        return Double.parseDouble(this.getMetric(ENERGY_KPI_NAME).getLastValue());
+        return this.getMetric(ENERGY_KPI_NAME).getValue();
     }
 
 }
