@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import eu.ascetic.paas.applicationmanager.contextualizer.VmcClient;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
@@ -13,7 +14,10 @@ import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
 import eu.ascetic.paas.applicationmanager.vmmanager.VmManagerUtils;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientHC;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.Vm;
+import eu.ascetic.utils.ovf.api.OvfDefinition;
 import eu.ascetic.utils.ovf.api.utils.OvfRuntimeException;
+import eu.ascetic.vmc.api.core.ProgressException;
+import eu.ascetic.vmc.api.datamodel.ProgressData;
 
 /**
  * This periodical taks will go through the deployments table, and look the ones that need some update
@@ -124,11 +128,97 @@ public class DeploymentsStatusTask {
 		//      and after that create a method that checks if the Deployment is in contextualizing
 		//      and ask the VM Contextualization if the process has finish... 
 	
-		 // Since we are not doing this right now, we move the application to the next step
-		deployment.setStatus(Dictionary.APPLICATION_STATUS_CONTEXTUALIZED);
-			
-		// We save the changes to the DB
-		deploymentDAO.update(deployment);
+		OvfDefinition ovf = OVFUtils.getOvfDefinition(deployment.getOvf());
+		if (ovf != null){
+			try {
+				
+				VmcClient vmcClient = new VmcClient(ovf);
+				
+				if (vmcClient.getVmcClient() != null){
+					//only continue with process if vm contextualizer connection has been successful
+					
+					ProgressData progressData = null;
+					
+					//Set the deployment in contextualizing status in DB
+					deployment.setStatus(Dictionary.APPLICATION_STATUS_CONTEXTUALIZING);
+					deploymentDAO.update(deployment);
+					
+					// Wait until the service has been registered with the VMC before
+		            // polling the progress data...
+		            while (true) {
+		                try {
+		                    logger.info("TEST: Trying to fetch progress data...");
+
+		                    vmcClient.getVmcClient().contextualizeServiceCallback(ovf.getVirtualSystemCollection().getId());
+		                    logger.info("TEST: No ProgressException...");
+		                    break;
+		                } catch (ProgressException e) {
+		                	logger.warn("TEST: Caught ProgressException due to: "
+		                            + e.getMessage());
+		                    Thread.sleep(250);
+		                }
+		            }
+		            
+		            // Poll the progress data until the completion...
+		            while (true) {
+
+		                // We have progress data, do something with it...
+		                progressData = vmcClient.getVmcClient().contextualizeServiceCallback(ovf.getVirtualSystemCollection().getId());
+
+		                // We have an error so stop everything!
+		                if (progressData.isError()) {
+		                    // Say what the error is...
+		                    logger.error(progressData.getException().getMessage(),
+		                            progressData.getException());
+		                   
+		                    return;
+		                } else {
+		                    logger.info("TEST: contextualizeServiceCallbackObject total progress is: "
+		                            + progressData.getTotalProgress());
+		                    logger.info("TEST: contextualizeServiceCallbackObject phase history of Phase with ID: "
+		                            + progressData.getPhaseName(progressData
+		                                    .getCurrentPhaseId())
+		                            + ", % is: "
+		                            + progressData.getHistory().get(
+		                                    progressData.getCurrentPhaseId()));
+		                }
+
+		                // 250ms delay between polling...
+		                Thread.sleep(250);
+
+		                // Test to see if contextualization has finished...
+		                if (vmcClient.getVmcClient().contextualizeServiceCallback(
+		                        ovf.getVirtualSystemCollection().getId())
+		                        .isComplete()) {
+		                    logger.warn("TEST: Detected contextualization has completed!");
+		                    break;
+		                }
+		            }
+		            
+		            //retrieve new ovf from VM contextualizer
+		            OvfDefinition ovfContextualized = vmcClient.getVmcClient()
+		                    .contextualizeServiceCallback(
+		                            ovf.getVirtualSystemCollection().getId())
+		                    .getOvfDefinition();
+		            
+		            //update the deployment 
+		            deployment.setOvf(ovfContextualized.toString());
+
+		            // Since we are not doing this right now, we move the application to the next step
+		            deployment.setStatus(Dictionary.APPLICATION_STATUS_CONTEXTUALIZED);
+
+		            // We save the changes to the DB
+		            deploymentDAO.update(deployment);
+				}
+				
+	            
+			}
+			catch (Exception e){
+				logger.error("Exception ocurred. Cause: " + e.getMessage());
+			}			
+		}
+				
+		
 	}
 	
 	/**
