@@ -26,6 +26,7 @@ import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Template;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.User;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.utils.Dictionary;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.utils.Json2ObjectMapper;
+import java.util.concurrent.TimeUnit;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -464,90 +465,88 @@ public class ZabbixClient {
 		return item;
 	}
 	
-	/**
-	 * Gets the history data from item.
-	 *
-	 * @param itemKey the item key
-	 * @param hostName the host name
-	 * @param itemFormat available format values:<BR>Dictionary.HISTORY_ITEM_FORMAT_FLOAT = float;<BR>
-	 * 													Dictionary.HISTORY_ITEM_FORMAT_STRING = String<BR>
-	 * 													Dictionary.HISTORY_ITEM_FORMAT_LOG = log<BR>
-	 * 													Dictionary.HISTORY_ITEM_FORMAT_INTEGER = integer<BR>
-	 * 													Dictionary.HISTORY_ITEM_FORMAT_TEXT = text<BR>
-	 * @param startTime the start time in miliseconds
-	 * @param endTime the end time in miliseconds
-	 * @return the history data from item
-	 */
-	public List<HistoryItem> getHistoryDataFromItem(String itemKey, String hostName, String itemFormat, long startTime,
-			long endTime){
-		ArrayList<HistoryItem> historyItems = null;
-		
-		if (startTime >= endTime){
-			Date date = new Date();
-			long actualDate = date.getTime();
-			if (!(startTime > actualDate) && !(endTime > actualDate)){
-				//getHost
-				Host host = getHostByName(hostName);
-				if (host != null){
-					//get itemId
-					Item item = getItemByKeyFromHost(itemKey, hostName);
-					if (item != null){
-						try {
-							String token = getAuth();
-							if (token != null){
-								//get historyData from host
-								String jsonRequest = 
-										"{\"jsonrpc\":\"" + Dictionary.JSON_RPC_VERSION + "\","
-									   + "\"method\":\"history.get\","
-									   + "\"params\":{\"output\":\"extend\","
-									   			   + "\"history\": \"" + itemFormat + "\","
-									   			   + "\"itemids\": \"" + item.getItemid() + "\","
-									   			   + "\"hostids\": \"" + host.getHostid() + "\", "
-									   			   + "\"time_from\": \"" + startTime + "\", "
-									   			   + "\"time_till\": \"" + endTime + "\", "
-									   			   + "\"sortfield\": \"clock\","
-									   			   + "\"sortorder\": \"DESC\"},"								   			
-									   + "\"auth\":\"" + token + "\","
-									   + "\"id\": 0}";
+  /**
+     * Gets the history data from item.
+     *
+     * @param itemKey the item key
+     * @param hostName the host name
+     * @param itemFormat available format
+     * values:<BR>Dictionary.HISTORY_ITEM_FORMAT_FLOAT = float;<BR>
+     * Dictionary.HISTORY_ITEM_FORMAT_STRING = String<BR>
+     * Dictionary.HISTORY_ITEM_FORMAT_LOG = log<BR>
+     * Dictionary.HISTORY_ITEM_FORMAT_INTEGER = integer<BR>
+     * Dictionary.HISTORY_ITEM_FORMAT_TEXT = text<BR>
+     * @param startTime the start time in milliseconds
+     * @param endTime the end time in milliseconds
+     * @return the history data from item
+     */
+    public List<HistoryItem> getHistoryDataFromItem(String itemKey, String hostName, String itemFormat, long startTime,
+            long endTime) {
+        ArrayList<HistoryItem> historyItems = null;
 
-								HttpResponse response = postAndGet(jsonRequest);
-								HttpEntity entity = response.getEntity();
-								ObjectMapper mapper = new ObjectMapper ();
-								HashMap untyped = mapper.readValue(EntityUtils.toString(entity), HashMap.class);
-								ArrayList result = (ArrayList) untyped.get("result");
+        if (startTime <= endTime) {
+            Date date = new Date();
+            long actualDate = date.getTime();
+            if (!(startTime > actualDate) && !(endTime > actualDate)) {
+                //getHost
+                Host host = getHostByName(hostName);
+                if (host != null) {
+                    //get itemId
+                    Item item = getItemByKeyFromHost(itemKey, hostName);
+                    if (item != null) {
+                        try {
+                            String token = getAuth();
+                            if (token != null) {
+                                //get historyData from host
+                                String jsonRequest
+                                        = "{\"jsonrpc\":\"" + Dictionary.JSON_RPC_VERSION + "\","
+                                        + "\"method\":\"history.get\","
+                                        + "\"params\":{\"output\":\"extend\","
+                                        + "\"history\": \"" + itemFormat + "\","
+                                        + "\"itemids\": \"" + item.getItemid() + "\","
+                                        + "\"hostids\": \"" + host.getHostid() + "\", "
+                                        + "\"time_from\": \"" + TimeUnit.MILLISECONDS.toSeconds(startTime) + "\", "
+                                        + "\"time_till\": \"" + TimeUnit.MILLISECONDS.toSeconds(endTime) + "\", "
+                                        + "\"sortfield\": \"clock\","
+                                        + "\"sortorder\": \"DESC\"},"
+                                        + "\"auth\":\"" + token + "\","
+                                        + "\"id\": 0}";
 
-								System.out.println();
-								
-								if (result != null){
-									historyItems = new ArrayList<HistoryItem>();
-									for (int i=0; i<result.size(); i++){
-										HistoryItem historyItem = Json2ObjectMapper.getHistoryItem((HashMap<String, Object>) result.get(i));
-										historyItems.add(historyItem);
-									}
-								}
-								return historyItems;
-							}
+                                HttpResponse response = postAndGet(jsonRequest);
+                                HttpEntity entity = response.getEntity();
+                                ObjectMapper mapper = new ObjectMapper();
+                                HashMap untyped = mapper.readValue(EntityUtils.toString(entity), HashMap.class);
+                                ArrayList result = (ArrayList) untyped.get("result");
 
-						} catch (Exception e) {
-							log.error(e.getMessage() + "\n"); 
-							System.out.println(e.getMessage() + "\n");
-						}					
-					}
-					else {
-						log.error("No item with key = " + itemKey + ", available in host " + hostName); 
-					}	
-				}
-				else {
-					log.error("No host " + hostName + " available in Zabbix system");
-				}
-			}							
-		}
-		else {
-			log.error("endTime must be greater than startTime: startTime = " + startTime + ", endTime = " + endTime);
-		}
-		
-		return historyItems;
-	}
+                                System.out.println();
+
+                                if (result != null) {
+                                    historyItems = new ArrayList<HistoryItem>();
+                                    for (int i = 0; i < result.size(); i++) {
+                                        HistoryItem historyItem = Json2ObjectMapper.getHistoryItem((HashMap<String, Object>) result.get(i));
+                                        historyItems.add(historyItem);
+                                    }
+                                }
+                                return historyItems;
+                            }
+
+                        } catch (Exception e) {
+                            log.error(e.getMessage() + "\n");
+                            System.out.println(e.getMessage() + "\n");
+                        }
+                    } else {
+                        log.error("No item with key = " + itemKey + ", available in host " + hostName);
+                    }
+                } else {
+                    log.error("No host " + hostName + " available in Zabbix system");
+                }
+            }
+        } else {
+            log.error("endTime must be greater than startTime: startTime = " + startTime + ", endTime = " + endTime);
+        }
+
+        return historyItems;
+    }
 	
 	/**
 	 * Creates a new VM in Zabbix.
