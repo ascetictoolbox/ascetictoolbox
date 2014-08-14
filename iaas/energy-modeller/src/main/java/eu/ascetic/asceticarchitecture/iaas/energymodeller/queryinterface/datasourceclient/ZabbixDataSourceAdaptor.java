@@ -17,6 +17,13 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.dataso
 
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.BOOT_TIME_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_COUNT_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_INTERUPT_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_IO_WAIT_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_NICE_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_SOFT_IRQ_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_STEAL_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_SYSTEM_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_USER_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.DISK_TOTAL_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.ENERGY_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.MEMORY_TOTAL_KPI_NAME;
@@ -406,6 +413,47 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
             }
         }
         return highestValue;
+    }
+
+    /**
+     * This finds the cpu utilisation of a host, over the last n minutes.
+     * @param host The host to get the cpu utilisation data for.
+     * @param lastNMinutes The amount of minutes to get the data for
+     * @return The average utilisation of the host.
+     */
+    @Override
+    public double getCpuUtilisation(eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host, int lastNMinutes) {
+        long currentTime = new GregorianCalendar().getTimeInMillis();
+        long timeInPast = currentTime - TimeUnit.MINUTES.toMillis(lastNMinutes);
+        List<HistoryItem> interruptData = client.getHistoryDataFromItem(CPU_INTERUPT_KPI_NAME, host.getHostName(), Dictionary.HISTORY_ITEM_FORMAT_FLOAT, timeInPast, currentTime);
+        List<HistoryItem> iowaitData = client.getHistoryDataFromItem(CPU_IO_WAIT_KPI_NAME, host.getHostName(), Dictionary.HISTORY_ITEM_FORMAT_FLOAT, timeInPast, currentTime);
+        List<HistoryItem> niceData = client.getHistoryDataFromItem(CPU_NICE_KPI_NAME, host.getHostName(), Dictionary.HISTORY_ITEM_FORMAT_FLOAT, timeInPast, currentTime);
+        List<HistoryItem> softirqData = client.getHistoryDataFromItem(CPU_SOFT_IRQ_KPI_NAME, host.getHostName(), Dictionary.HISTORY_ITEM_FORMAT_FLOAT, timeInPast, currentTime);
+        List<HistoryItem> stealData = client.getHistoryDataFromItem(CPU_STEAL_KPI_NAME, host.getHostName(), Dictionary.HISTORY_ITEM_FORMAT_FLOAT, timeInPast, currentTime);
+        List<HistoryItem> systemData = client.getHistoryDataFromItem(CPU_SYSTEM_KPI_NAME, host.getHostName(), Dictionary.HISTORY_ITEM_FORMAT_FLOAT, timeInPast, currentTime);
+        List<HistoryItem> userData = client.getHistoryDataFromItem(CPU_USER_KPI_NAME, host.getHostName(), Dictionary.HISTORY_ITEM_FORMAT_FLOAT, timeInPast, currentTime);
+        double interrupt = sumArray(interruptData) / ((double) interruptData.size());
+        double iowait = sumArray(iowaitData) / ((double) iowaitData.size());
+        double nice = sumArray(niceData) / ((double) niceData.size());
+        double softirq = sumArray(softirqData) / ((double) softirqData.size());
+        double steal = sumArray(stealData) / ((double) stealData.size());
+        double system = sumArray(systemData) / ((double) systemData.size());
+        double user = sumArray(userData) / ((double) userData.size());
+        return (system + user + interrupt + iowait + nice + softirq + steal) / 100;
+    }
+
+    /**
+     * This function sums a list of numbers for historic data.
+     *
+     * @param list The ArrayList to calculate the values of.
+     * @return The sum of the values.
+     */
+    private double sumArray(List<HistoryItem> list) {
+        double answer = 0.0;
+        for (HistoryItem current : list) {
+            answer = answer + Double.valueOf(current.getValue());
+        }
+        return answer;
     }
 
     /**

@@ -27,14 +27,17 @@ public abstract class KpiList {
     public static final String ENERGY_KPI_NAME = "energy";
     //CPU based metrics
     public static final String CPU_COUNT_KPI_NAME = "system.cpu.num";
-    public static final String IDLE_KPI_NAME = "system.cpu.util[,idle]";
-    public static final String INTERUPT_KPI_NAME = "system.cpu.util[,interrupt]";
-    public static final String IO_WAIT_KPI_NAME = "system.cpu.util[,iowait]";
-    public static final String NICE_KPI_NAME = "system.cpu.util[,nice]";
-    public static final String SOFT_IRQ_KPI_NAME = "system.cpu.util[,softirq]";
-    public static final String STEAL_KPI_NAME = "system.cpu.util[,steal]";
-    public static final String SYSTEM_KPI_NAME = "system.cpu.util[,system]";
-    public static final String USER_KPI_NAME = "system.cpu.util[,user]";    
+    public static final String CPU_IDLE_KPI_NAME=  "system.cpu.util[,idle]";
+    public static final String CPU_INTERUPT_KPI_NAME = "system.cpu.util[,interrupt]";
+    public static final String CPU_IO_WAIT_KPI_NAME = "system.cpu.util[,iowait]";
+    public static final String CPU_NICE_KPI_NAME = "system.cpu.util[,nice]";
+    public static final String CPU_SOFT_IRQ_KPI_NAME = "system.cpu.util[,softirq]";
+    public static final String CPU_STEAL_KPI_NAME = "system.cpu.util[,steal]";
+    public static final String CPU_SYSTEM_KPI_NAME = "system.cpu.util[,system]";
+    public static final String CPU_USER_KPI_NAME = "system.cpu.util[,user]";
+    public static final String CPU_LOAD_LAST_1_MIN_KPI_NAME = "system.cpu.load[percpu,avg1]";
+    public static final String CPU_LOAD_LAST_5_MIN_KPI_NAME = "system.cpu.load[percpu,avg5]";
+    public static final String CPU_LOAD_LAST_15_MIN_KPI_NAME = "system.cpu.load[percpu,avg15]";    
     //memory metrics
     public static final String MEMORY_AVAILABLE_KPI_NAME = "vm.memory.size[available]";     
     public static final String MEMORY_TOTAL_KPI_NAME = "vm.memory.size[total]";

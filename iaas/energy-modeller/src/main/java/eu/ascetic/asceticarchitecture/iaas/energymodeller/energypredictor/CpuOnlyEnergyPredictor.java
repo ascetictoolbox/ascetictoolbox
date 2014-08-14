@@ -16,6 +16,8 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.EnergyDivision;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energymodel.EnergyModel;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
@@ -43,6 +45,7 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
 
     private static final String CONFIG_FILE = "energymodeller_cpu_predictor.properties";
     private double usageCPU = 0.6; //assumed 60 percent usage, by default
+    private HostDataSource source = null;
 
     public CpuOnlyEnergyPredictor() {
         try {
@@ -56,6 +59,9 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
             config.setAutoSave(true); //This will save the configuration file back to disk. In case the defaults need setting.
             usageCPU = config.getDouble("iaas.energy.modeller.cpu.energy.predcitor.default_load", usageCPU);
             config.setProperty("iaas.energy.modeller.cpu.energy.predcitor.default_load", usageCPU);
+            if (usageCPU == -1) {
+                source = new ZabbixDataSourceAdaptor();
+            }
         } catch (ConfigurationException ex) {
             Logger.getLogger(CpuOnlyEnergyPredictor.class.getName()).log(Level.SEVERE,
                     "Taking the default load from the settings file did not work", ex);
@@ -74,7 +80,11 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
     public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines) {
         EnergyUsagePrediction wattsUsed;
         TimePeriod duration = new TimePeriod(new GregorianCalendar(), 1, TimeUnit.HOURS);
-        wattsUsed = predictTotalEnergy(host, usageCPU, duration);
+        if (usageCPU == -1) {
+            wattsUsed = predictTotalEnergy(host, source.getCpuUtilisation(host, 15), duration);
+        } else {
+            wattsUsed = predictTotalEnergy(host, usageCPU, duration);
+        }
         return wattsUsed;
     }
 
@@ -91,7 +101,12 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
     @Override
     public EnergyUsagePrediction getVMPredictedEnergy(VM vm, Collection<VM> virtualMachines, Host host, TimePeriod timePeriod) {
         EnergyDivision division = getEnergyUsage(host, virtualMachines);
-        EnergyUsagePrediction hostAnswer = predictTotalEnergy(host, usageCPU, timePeriod);
+        EnergyUsagePrediction hostAnswer;
+        if (usageCPU == -1) {
+            hostAnswer = predictTotalEnergy(host, source.getCpuUtilisation(host, 15), timePeriod);
+        } else {
+            hostAnswer = predictTotalEnergy(host, usageCPU, timePeriod);
+        }
         hostAnswer.setAvgPowerUsed(hostAnswer.getTotalEnergyUsed()
                 / ((double) TimeUnit.SECONDS.toHours(timePeriod.getDuration())));
         EnergyUsagePrediction answer = new EnergyUsagePrediction(vm);

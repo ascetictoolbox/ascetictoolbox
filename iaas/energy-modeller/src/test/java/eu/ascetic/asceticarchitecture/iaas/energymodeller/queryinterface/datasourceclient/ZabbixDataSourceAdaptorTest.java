@@ -369,4 +369,33 @@ public class ZabbixDataSourceAdaptorTest {
         System.out.println("State: " + result.getState());
     }
 
+    /**
+     * Test of getHighestHostPowerUsage method, of class ZabbixDataSourceAdaptor.
+     */
+    @Test
+    public void testGetHighestHostPowerUsage() {
+        System.out.println("getHighestHostPowerUsage");
+        Host host = CHOSEN_HOST;
+        ZabbixDataSourceAdaptor instance = new ZabbixDataSourceAdaptor();
+        double result = instance.getHighestHostPowerUsage(host);
+        assert(result > 0.0);
+        System.out.println("Highest Host Power Usage: " + result);
+    }
+
+    /**
+     * Test of getCpuUtilisation method, of class ZabbixDataSourceAdaptor.
+     */
+    @Test
+    public void testGetCpuUtilisation() {
+        System.out.println("getCpuUtilisation");
+        Host host = CHOSEN_HOST;
+        int lastNMinutes = 2;
+        ZabbixDataSourceAdaptor instance = new ZabbixDataSourceAdaptor();
+        double result = instance.getCpuUtilisation(host, lastNMinutes);
+        assert(result >= 0);
+        assert(result <= 1.0);
+        System.out.println("CPU Utilisation Last " + lastNMinutes + " minutes: " + result);
+        
+    }
+
 }

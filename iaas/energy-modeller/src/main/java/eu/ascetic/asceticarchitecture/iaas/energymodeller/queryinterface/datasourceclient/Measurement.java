@@ -15,18 +15,18 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient;
 
-import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.IDLE_KPI_NAME;
-import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.INTERUPT_KPI_NAME;
-import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.IO_WAIT_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_IDLE_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_INTERUPT_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_IO_WAIT_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_NICE_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_SOFT_IRQ_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_STEAL_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_SYSTEM_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_USER_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.MEMORY_AVAILABLE_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.MEMORY_TOTAL_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.NETWORK_IN_STARTS_WITH_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.NETWORK_OUT_STARTS_WITH_KPI_NAME;
-import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.NICE_KPI_NAME;
-import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.SOFT_IRQ_KPI_NAME;
-import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.STEAL_KPI_NAME;
-import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.SYSTEM_KPI_NAME;
-import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.USER_KPI_NAME;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Item;
 import java.util.Collection;
 import java.util.HashMap;
@@ -199,26 +199,26 @@ public abstract class Measurement {
         double steal = 0.0;
         double system = 0.0;
         double user = 0.0;
-        if (metrics.containsKey(SYSTEM_KPI_NAME)) {
-            system = Double.parseDouble(this.getMetric(SYSTEM_KPI_NAME).getLastValue());
+        if (metrics.containsKey(CPU_SYSTEM_KPI_NAME)) {
+            system = Double.parseDouble(this.getMetric(CPU_SYSTEM_KPI_NAME).getLastValue());
         }
-        if (metrics.containsKey(USER_KPI_NAME)) {
-            user = Double.parseDouble(this.getMetric(USER_KPI_NAME).getLastValue());
+        if (metrics.containsKey(CPU_USER_KPI_NAME)) {
+            user = Double.parseDouble(this.getMetric(CPU_USER_KPI_NAME).getLastValue());
         }
-        if (metrics.containsKey(INTERUPT_KPI_NAME)) {
-            interrupt = Double.parseDouble(this.getMetric(INTERUPT_KPI_NAME).getLastValue());
+        if (metrics.containsKey(CPU_INTERUPT_KPI_NAME)) {
+            interrupt = Double.parseDouble(this.getMetric(CPU_INTERUPT_KPI_NAME).getLastValue());
         }
-        if (metrics.containsKey(IO_WAIT_KPI_NAME)) {
-            iowait = Double.parseDouble(this.getMetric(IO_WAIT_KPI_NAME).getLastValue());
+        if (metrics.containsKey(CPU_IO_WAIT_KPI_NAME)) {
+            iowait = Double.parseDouble(this.getMetric(CPU_IO_WAIT_KPI_NAME).getLastValue());
         }
-        if (metrics.containsKey(NICE_KPI_NAME)) {
-            nice = Double.parseDouble(this.getMetric(NICE_KPI_NAME).getLastValue());
+        if (metrics.containsKey(CPU_NICE_KPI_NAME)) {
+            nice = Double.parseDouble(this.getMetric(CPU_NICE_KPI_NAME).getLastValue());
         }
-        if (metrics.containsKey(SOFT_IRQ_KPI_NAME)) {
-            softirq = Double.parseDouble(this.getMetric(SOFT_IRQ_KPI_NAME).getLastValue());
+        if (metrics.containsKey(CPU_SOFT_IRQ_KPI_NAME)) {
+            softirq = Double.parseDouble(this.getMetric(CPU_SOFT_IRQ_KPI_NAME).getLastValue());
         }
-        if (metrics.containsKey(STEAL_KPI_NAME)) {
-            steal = Double.parseDouble(this.getMetric(STEAL_KPI_NAME).getLastValue());
+        if (metrics.containsKey(CPU_STEAL_KPI_NAME)) {
+            steal = Double.parseDouble(this.getMetric(CPU_STEAL_KPI_NAME).getLastValue());
         }
         return (system + user + interrupt + iowait + nice + softirq + steal) / 100;
     }
@@ -230,8 +230,8 @@ public abstract class Measurement {
      * 0...1
      */
     public double getCpuIdle() {
-        return Double.parseDouble(this.getMetric(IDLE_KPI_NAME).getLastValue()) / 100;
-    }
+        return Double.parseDouble(this.getMetric(CPU_IDLE_KPI_NAME).getLastValue()) / 100;
+    }    
      
     /**
      * This provides rapid access to memory values for a measurement.
