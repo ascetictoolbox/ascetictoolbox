@@ -116,7 +116,7 @@ public interface HostDataSource {
      * This finds the lowest/resting power usage by a client.
      *
      * @param host The host to get the lowest power usage data for.
-     * @return
+     * @return The lowest i.e. resting power usage of a host
      */
     public double getLowestHostPowerUsage(Host host);
 
@@ -124,7 +124,7 @@ public interface HostDataSource {
      * This finds the highest power usage by a host.
      *
      * @param host The host to get the highest power usage data for.
-     * @return
+     * @return The highest power usage of a host
      */
-    public double getHostPowerUsage(eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host);
+    public double getHighestHostPowerUsage(eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host);
 }
