@@ -6,7 +6,7 @@ Requirements:
 To install manually the database in an local mysql db, follow the next steps:
 
 	$ pwd
-	/root/utils/provider-registry-database
+	/root/utils/application-manager-database
 	$ export LIQUIBASE_HOME=/root/utils/application-manager-database/liquibase
 	$ liquibase/liquibase --driver=com.mysql.jdbc.Driver --changeLogFile=db/changelog/db.changelog-master.xml --url="jdbc:mysql://<URL_MYSQL_SERVER>/<NAME_OF_PREVIOUSLY_CREATED_DATABASE>" --username=<USERNAME> --password=<PASSWORD> migrate
 
