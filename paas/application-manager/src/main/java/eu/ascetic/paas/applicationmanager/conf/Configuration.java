@@ -1,7 +1,7 @@
 package eu.ascetic.paas.applicationmanager.conf;
 
 import java.io.File;
-
+import java.io.FileNotFoundException;
 
 import org.apache.commons.configuration.PropertiesConfiguration;
 //import org.apache.commons.configuration.PropertiesConfiguration;
@@ -12,6 +12,8 @@ public class Configuration {
 	public static String vmManagerServiceUrl = "http://10.4.0.15:34372/vmmanager";
 	public static String checkDeploymentsStatus = "1 * * * * ?";
 	private static final String applicationManagerConfigurationFile = "/etc/ascetic/paas/application-manager/application-manager.properties";
+//	public static String vmcontextualizerConfigurationFileDirectory = "/etc/ascetic/paas/application-manager";
+	public static String vmcontextualizerConfigurationFileDirectory = "C://tests";
 	
 	static {
         try {
@@ -31,4 +33,5 @@ public class Configuration {
             logger.info("Exception " + e);
         }  
     }
+
 }
