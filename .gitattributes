@@ -295,6 +295,7 @@ paas/application-manager-datamodel/src/test/resources/log4j.properties -text
 paas/application-manager/pom.xml -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/Dictionary.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/conf/Configuration.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/contextualizer/VmcClient.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/ApplicationDAO.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/DAO.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/DeploymentDAO.java -text
