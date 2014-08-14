@@ -15,9 +15,7 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor;
 
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.DefaultEnergyShareRule;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.EnergyDivision;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.EnergyShareRule;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.training.DefaultEnergyModelTrainer;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.training.EnergyModelTrainerInterface;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
@@ -25,9 +23,14 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energymodel.Ener
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
+import java.io.File;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 
 /**
  * This implements the default energy predictor for the ASCETiC project.
@@ -38,7 +41,27 @@ public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
 
     //TO FIX TIME!!
     private EnergyModelTrainerInterface trainer = new DefaultEnergyModelTrainer();
-    private EnergyShareRule rule = new DefaultEnergyShareRule();
+    private static final String CONFIG_FILE = "energymodeller_cpu_predictor.properties";
+    private double usageCPU = 1;
+
+    public DefaultEnergyPredictor() {
+        try {
+            PropertiesConfiguration config;
+            if (new File(CONFIG_FILE).exists()) {
+                config = new PropertiesConfiguration(CONFIG_FILE);
+            } else {
+                config = new PropertiesConfiguration();
+                config.setFile(new File(CONFIG_FILE));
+            }
+            //This will save the configuration file back to disk. In case the defaults need setting.
+            config.setAutoSave(true); 
+            usageCPU = config.getDouble("iaas.energy.modeller.cpu.energy.predcitor.default_load", usageCPU);
+            config.setProperty("iaas.energy.modeller.cpu.energy.predcitor.default_load", usageCPU);
+        } catch (ConfigurationException ex) {
+            Logger.getLogger(DefaultEnergyPredictor.class.getName()).log(Level.SEVERE,
+                    "Taking the default load from the settings file did not work", ex);
+        }
+    }
 
     /**
      * This provides a prediction of how much energy is to be used by a host
@@ -50,7 +73,6 @@ public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
      */
     @Override
     public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines) {
-        double usageCPU = 1;
         double usageMemory = 0;
         for (VM vm : virtualMachines) {
             usageMemory = usageMemory + vm.getRamMb();
@@ -99,15 +121,15 @@ public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
      */
     @Override
     public EnergyUsagePrediction getVMPredictedEnergy(VM vm, Collection<VM> virtualMachines, Host host, TimePeriod timePeriod) {
-        EnergyDivision division = rule.getEnergyUsage(host, virtualMachines);
-        double usageCPU = 1; //assumed 100 percent usage.
+        EnergyDivision division = getEnergyUsage(host, virtualMachines);
         double usageRAM = 0;
-        //TODO Fix assumptions here
-        for (VM currentVM : virtualMachines) {
+        //Obtain the total RAM usage for the host
+        for (VM currentVM : virtualMachines) { //VMs
             usageRAM = usageRAM + currentVM.getRamMb();
         }
+        //Plus Idle memory usage
         usageRAM = usageRAM + host.getIdleRamUsage();
-        //Obtain the total for the host
+        //Obtain the total energy usage for the host
         EnergyUsagePrediction hostAnswer = predictTotalEnergy(host, usageCPU, usageRAM / host.getRamMb(), timePeriod);
         hostAnswer.setAvgPowerUsed(hostAnswer.getTotalEnergyUsed()
                 / ((double) TimeUnit.SECONDS.toHours(timePeriod.getDuration())));
@@ -154,19 +176,5 @@ public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
     public void setTrainer(DefaultEnergyModelTrainer trainer) {
         this.trainer = trainer;
     }
-
-    /**
-     * @return the rule
-     */
-    public EnergyShareRule getRule() {
-        return rule;
-    }
-
-    /**
-     * @param rule the rule to set
-     */
-    public void setRule(EnergyShareRule rule) {
-        this.rule = rule;
-    }
-
+    
 }
