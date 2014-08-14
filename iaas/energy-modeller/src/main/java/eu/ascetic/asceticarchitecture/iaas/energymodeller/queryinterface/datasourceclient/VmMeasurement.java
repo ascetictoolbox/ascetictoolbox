@@ -47,16 +47,16 @@ public class VmMeasurement extends Measurement {
     }
 
     /**
-     *
-     * @return
+     * This gets the VM that this measurement is for
+     * @return The deployed Vm that this measurement is for
      */
     public VmDeployed getVm() {
         return vm;
     }
 
     /**
-     *
-     * @param vm
+     * This sets the VM that this measurement is for
+     * @param vm The deployed Vm that this measurement is for
      */
     public void setVm(VmDeployed vm) {
         this.vm = vm;

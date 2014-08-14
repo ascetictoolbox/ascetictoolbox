@@ -166,7 +166,7 @@ public class ZabbixDataSourceAdaptorTest {
         System.out.println("Memory Total: " + result.getMemoryTotal());
         System.out.println("Memory Used: " + result.getMemoryUsed());
         System.out.println("Memory Available: " + result.getMemoryAvailable());
-        System.out.println("CPU Load: " + result.getCpuLoad());
+        System.out.println("CPU Load: " + result.getCpuUtilisation());
         System.out.println("CPU Idle: " + result.getCpuIdle());
         System.out.println("Network In: " + result.getNetworkIn());
         System.out.println("Network Out: " + result.getNetworkOut());

@@ -19,6 +19,9 @@ import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.INTERUPT_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.IO_WAIT_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.MEMORY_AVAILABLE_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.MEMORY_TOTAL_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.NETWORK_IN_STARTS_WITH_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.NETWORK_OUT_STARTS_WITH_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.NICE_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.SOFT_IRQ_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.STEAL_KPI_NAME;
@@ -183,12 +186,12 @@ public abstract class Measurement {
     }
 
     /**
-     * This provides rapid access to cpu load values from a vm measurement.
+     * This provides rapid access to cpu utilisation values from a measurement.
      *
-     * @return The cpu load when the measurement was taken. Values in range
+     * @return The cpu utilisation when the measurement was taken. Values in range
      * 0...1
      */
-    public double getCpuLoad() {
+    public double getCpuUtilisation() {
         double interrupt = 0.0;
         double iowait = 0.0;
         double nice = 0.0;
@@ -221,15 +224,15 @@ public abstract class Measurement {
     }
 
     /**
-     * This provides rapid access to cpu load values from a vm measurement.
+     * This provides rapid access to cpu utilisation values from a measurement.
      *
-     * @return The cpu load when the measurement was taken. Values in range
+     * @return The cpu utilisation when the measurement was taken. Values in range
      * 0...1
      */
     public double getCpuIdle() {
         return Double.parseDouble(this.getMetric(IDLE_KPI_NAME).getLastValue()) / 100;
     }
-
+     
     /**
      * This provides rapid access to memory values for a measurement.
      *
@@ -259,7 +262,7 @@ public abstract class Measurement {
      */
     public double getMemoryTotal() {
         //Original value given in bytes. 1024 * 1024 = 1048576
-        return Double.parseDouble(this.getMetric(KpiList.MEMORY_TOTAL_KPI_NAME).getLastValue()) / 1048576;
+        return Double.parseDouble(this.getMetric(MEMORY_TOTAL_KPI_NAME).getLastValue()) / 1048576;
     }
 
     /**
@@ -270,7 +273,7 @@ public abstract class Measurement {
     public double getNetworkIn() {
         double answer = 0.0;
         for (Map.Entry<String, Item> metric : metrics.entrySet()) {
-            if (metric.getKey().startsWith(KpiList.NETWORK_IN_STARTS_WITH_KPI_NAME)) {
+            if (metric.getKey().startsWith(NETWORK_IN_STARTS_WITH_KPI_NAME)) {
                 answer = answer + Double.parseDouble(metric.getValue().getLastValue());
             }
         }
@@ -285,7 +288,7 @@ public abstract class Measurement {
     public double getNetworkOut() {
         double answer = 0.0;
         for (Map.Entry<String, Item> metric : metrics.entrySet()) {
-            if (metric.getKey().startsWith(KpiList.NETWORK_OUT_STARTS_WITH_KPI_NAME)) {
+            if (metric.getKey().startsWith(NETWORK_OUT_STARTS_WITH_KPI_NAME)) {
                 answer = answer + Double.parseDouble(metric.getValue().getLastValue());
             }
         }

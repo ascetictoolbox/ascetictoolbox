@@ -133,7 +133,7 @@ public class HostVmLoadFraction implements Comparable<HostVmLoadFraction> {
         HashMap<VmDeployed, Double> answer = new HashMap<>();
         double totalLoad = 0.0;
         for (VmMeasurement loadMeasure : load) {
-            totalLoad = totalLoad + loadMeasure.getCpuLoad();
+            totalLoad = totalLoad + loadMeasure.getCpuUtilisation();
         }
         /**
          * This is an error handling state. If no data is been presented 
@@ -147,7 +147,7 @@ public class HostVmLoadFraction implements Comparable<HostVmLoadFraction> {
             return answer;
         }
         for (VmMeasurement loadMeasure : load) {
-            answer.put(loadMeasure.getVm(), (loadMeasure.getCpuLoad() / totalLoad));
+            answer.put(loadMeasure.getVm(), (loadMeasure.getCpuUtilisation() / totalLoad));
         }
         return answer;
     }

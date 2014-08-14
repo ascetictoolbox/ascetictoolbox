@@ -49,7 +49,7 @@ public class HostEnergyCalibrationData {
         List<HostEnergyCalibrationData> answer = new ArrayList<>();
         for (HostMeasurement hostMeasurement : data) {
             double power = hostMeasurement.getPower();
-            double cpu = hostMeasurement.getCpuLoad();
+            double cpu = hostMeasurement.getCpuUtilisation();
             double memory = hostMeasurement.getMemoryUsed();
             double totalMemory = hostMeasurement.getMemoryTotal();
             HostEnergyCalibrationData newItem = new HostEnergyCalibrationData(cpu, memory / totalMemory, power);
