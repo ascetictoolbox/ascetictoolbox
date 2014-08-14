@@ -336,6 +336,7 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/vmmana
 paas/application-manager/src/main/resources/META-INF/persistence.mysql.xml -text
 paas/application-manager/src/main/resources/application-manager.properties -text
 paas/application-manager/src/main/resources/applicationContext.xml -text
+paas/application-manager/src/main/resources/config.properties -text
 paas/application-manager/src/main/resources/log4j.properties -text
 paas/application-manager/src/main/webapp/META-INF/MANIFEST.MF -text
 paas/application-manager/src/main/webapp/WEB-INF/web.xml -text
