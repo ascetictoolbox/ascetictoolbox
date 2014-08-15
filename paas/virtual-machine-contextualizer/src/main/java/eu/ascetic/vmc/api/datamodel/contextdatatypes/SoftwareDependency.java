@@ -23,9 +23,10 @@ package eu.ascetic.vmc.api.datamodel.contextdatatypes;
  */
 public class SoftwareDependency {
 
-    private String artifactId;
-    private String groupId;
-    private String version;
+    private String id;
+    private String type;
+    private String packageUri;
+    private String installScriptUri;
 
     /**
      * Constructor for creating a SoftwareDependency object.
@@ -37,55 +38,67 @@ public class SoftwareDependency {
      * @param version
      *            The version of the software dependency.
      */
-    public SoftwareDependency(String artifactId, String groupId, String version) {
-        this.artifactId = artifactId;
-        this.groupId = groupId;
-        this.version = version;
+    public SoftwareDependency(String id, String type, String packageUri, String installScriptUri) {
+        this.id = id;
+        this.type = type;
+        this.packageUri = packageUri;
+        this.installScriptUri = installScriptUri;
     }
 
     /**
-     * @return the artifactId
+     * @return the id
      */
-    public String getArtifactId() {
-        return artifactId;
+    public String getId() {
+        return id;
     }
 
     /**
-     * @param artifactId
-     *            the artifactId to set
+     * @param id the id to set
      */
-    public void setArtifactId(String artifactId) {
-        this.artifactId = artifactId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     /**
-     * @return the groupId
+     * @return the type
      */
-    public String getGroupId() {
-        return groupId;
+    public String getType() {
+        return type;
     }
 
     /**
-     * @param groupId
-     *            the groupId to set
+     * @param type the type to set
      */
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
+    public void setType(String type) {
+        this.type = type;
     }
 
     /**
-     * @return the version
+     * @return the packageUri
      */
-    public String getVersion() {
-        return version;
+    public String getPackageUri() {
+        return packageUri;
     }
 
     /**
-     * @param version
-     *            the version to set
+     * @param packageUri the packageUri to set
      */
-    public void setVersion(String version) {
-        this.version = version;
+    public void setPackageUri(String packageUri) {
+        this.packageUri = packageUri;
+    }
+
+    /**
+     * @return the installScriptUri
+     */
+    public String getInstallScriptUri() {
+        return installScriptUri;
+    }
+
+    /**
+     * @param installScriptUri the installScriptUri to set
+     */
+    public void setInstallScriptUri(String installScriptUri) {
+        this.installScriptUri = installScriptUri;
     }
 
 }

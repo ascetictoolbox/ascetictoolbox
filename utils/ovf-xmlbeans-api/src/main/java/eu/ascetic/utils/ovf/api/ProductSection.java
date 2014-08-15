@@ -23,6 +23,7 @@ import org.dmtf.schemas.wbem.wscim.x1.common.CimString;
 import eu.ascetic.utils.ovf.api.AbstractElement;
 import eu.ascetic.utils.ovf.api.enums.ProductPropertyType;
 import eu.ascetic.utils.ovf.api.utils.XmlSimpleTypeConverter;
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * Provides access to elements in the ProductSection element. This section
@@ -66,11 +67,17 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     private static final String ASCETIC_VIRTUAL_SYSTEM_COLLECTION_DEPLOYMENT_ID_KEY = "asceticDeploymentId";
 
     /**
-     * The static KEY used to get and set a PKC combination of a private key and
-     * a public key either in the global scope of
-     * {@link VirtualSystemCollection} or locally in {@link VirtualSystem}.
+     * The static KEY used to get and set an SSH public key in the global scope
+     * of {@link VirtualSystemCollection}.<br>
+     * TODO: Add support for {@link VirtualSystem}
      */
-    private static final String ASCETIC_SECURITY_KEY = "asceticSecurityKey";
+    private static final String ASCETIC_PUBLIC_SSH_KEY = "asceticSshPublicKey";
+    /**
+     * The static KEY used to get and set an SSH private key in the global scope
+     * of {@link VirtualSystemCollection}.<br>
+     * TODO: Add support for {@link VirtualSystem}
+     */
+    private static final String ASCETIC_PRIVATE_SSH_KEY = "asceticSshPrivateKey";
 
     /**
      * The static KEY used to get and set the number of end points in the global
@@ -142,13 +149,13 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * scope of {@link VirtualSystemCollection} or locally in
      * {@link VirtualSystem}.
      */
-    private static final String ASCETIC_SOFTWARE_DEPENDENCY_URI_KEY = "asceticSoftwareDependencyUri_";
+    private static final String ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_URI_KEY = "asceticSoftwareDependencyPackageUri_";
     /**
      * The static KEY used to get and set a software package installation script
      * in the global scope of {@link VirtualSystemCollection} or locally in
      * {@link VirtualSystem}.
      */
-    private static final String ASCETIC_SOFTWARE_DEPENDENCY_INSTALL_SCRIPT_KEY = "asceticSoftwareDependencyInstallScript_";
+    private static final String ASCETIC_SOFTWARE_DEPENDENCY_INSTALL_SCRIPT_URI_KEY = "asceticSoftwareDependencyInstallScriptUri_";
 
     /**
      * Default constructor.
@@ -433,29 +440,70 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     }
 
     /**
-     * Gets the security Keys (public/private pair) for a
-     * {@link VirtualSystemCollection} or {@link VirtualSystem}.
+     * Gets the public SSH key for a {@link VirtualSystemCollection}. This is
+     * decoded from the base64 representation stored in the OVF definition.<br>
+     * <br>
+     * TODO: Support {@link VirtualSystem}.
      * 
-     * @return The security keys
+     * @return The private SSH key
      */
-    public String getSecurityKeys() {
-        return getPropertyByKey(ASCETIC_SECURITY_KEY).getValue();
+    public String getPublicSshKey() {
+        return new String(Base64.decodeBase64(getPropertyByKey(
+                ASCETIC_PUBLIC_SSH_KEY).getValue().getBytes()));
     }
 
     /**
-     * Sets the security Keys (public/private pair) for a
-     * {@link VirtualSystemCollection} or {@link VirtualSystem}.
+     * Sets the public SSH key for a {@link VirtualSystemCollection}. This is
+     * stored encoded to base64 in the OVF definition.<br>
+     * <br>
+     * TODO: Support {@link VirtualSystem}.
      * 
-     * @param securityKeys
-     *            The security keys
+     * @param publicKey
+     *            The public SSH key to set
      */
-    public void setSecurityKeys(String securityKeys) {
-        ProductProperty productProperty = getPropertyByKey(ASCETIC_SECURITY_KEY);
+    public void setPublicSshKey(String publicKey) {
+        String encodedBytes = new String(Base64.encodeBase64(publicKey
+                .getBytes()));
+        ProductProperty productProperty = getPropertyByKey(ASCETIC_PUBLIC_SSH_KEY);
         if (productProperty == null) {
-            addNewProperty(ASCETIC_SECURITY_KEY, ProductPropertyType.STRING,
-                    securityKeys);
+            addNewProperty(ASCETIC_PUBLIC_SSH_KEY, ProductPropertyType.STRING,
+                    encodedBytes);
         } else {
-            productProperty.setValue(securityKeys);
+            productProperty.setValue(encodedBytes);
+        }
+    }
+
+    /**
+     * Gets the private SSH key for a {@link VirtualSystemCollection}. This is
+     * decoded from the base64 representation stored in the OVF definition.<br>
+     * <br>
+     * TODO: Support {@link VirtualSystem}.
+     * 
+     * @return The private SSH key
+     */
+    public String getPrivateSshKey() {
+        return new String(Base64.decodeBase64(getPropertyByKey(
+                ASCETIC_PRIVATE_SSH_KEY).getValue().getBytes()));
+    }
+
+    /**
+     * Sets the private SSH key for a {@link VirtualSystemCollection}.<br>
+     * <br>
+     * TODO: Support {@link VirtualSystem}.
+     * 
+     * @param privateKey
+     *            The private SSH key to set
+     */
+    public void setPrivateSshKey(String privateKey) {
+        String encodedBytes = new String(Base64.encodeBase64(privateKey
+                .getBytes()));
+
+        ProductProperty productProperty = getPropertyByKey(ASCETIC_PRIVATE_SSH_KEY);
+        if (productProperty == null) {
+            addNewProperty(ASCETIC_PRIVATE_SSH_KEY, ProductPropertyType.STRING,
+                    encodedBytes);
+        } else {
+            productProperty.setValue(encodedBytes);
         }
     }
 
@@ -802,18 +850,19 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * 
      * @param id
      *            The ID of the software dependency (e.g. "memory-probe")
-     * @param uri
-     *            The URI to the software dependency (e.g.
-     *            ("uri://some-end-point/probe-repository/memory-probe.zip")
      * @param type
      *            The type of the software dependency (e.g. "zip")
-     * @param script
-     *            The installation script of the software dependency
+     * @param packageUri
+     *            The URI to the software dependency package (e.g.
+     *            ("/some-end-point/probe-repository/memory-probe.zip")
+     * @param instalScriptUri
+     *            The URI to the installation script of the software dependency
+     *            (e.g "/some-end-point/probe-repository/memory-probe.sh")
      * @return The index of the new software dependency (not to be confused with
      *         the index of a {@link ProductProperty})
      */
-    public int addSoftwareDependencyProperties(String id, String uri,
-            String type, String script) {
+    public int addSoftwareDependencyProperties(String id, String type,
+            String packageUri, String instalScriptUri) {
 
         // Find the next software property index
         int i = 0;
@@ -828,12 +877,12 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
 
         addNewProperty(ASCETIC_SOFTWARE_DEPENDENCY_ID_KEY + i,
                 ProductPropertyType.STRING, id);
-        addNewProperty(ASCETIC_SOFTWARE_DEPENDENCY_URI_KEY + i,
-                ProductPropertyType.STRING, uri);
         addNewProperty(ASCETIC_SOFTWARE_DEPENDENCY_TYPE_KEY + i,
                 ProductPropertyType.STRING, type);
-        addNewProperty(ASCETIC_SOFTWARE_DEPENDENCY_INSTALL_SCRIPT_KEY + i,
-                ProductPropertyType.STRING, script);
+        addNewProperty(ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_URI_KEY + i,
+                ProductPropertyType.STRING, packageUri);
+        addNewProperty(ASCETIC_SOFTWARE_DEPENDENCY_INSTALL_SCRIPT_URI_KEY + i,
+                ProductPropertyType.STRING, instalScriptUri);
 
         // Increment the number of software dependencies stored
         ProductProperty productProperty = getPropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_NUMBER);
@@ -883,20 +932,21 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
      * @param id
      *            The ID of the software dependency (e.g. "memory-probe")
-     * @param uri
-     *            The URI to the software dependency (e.g.
-     *            ("uri://some-end-point/probe-repository/memory-probe.zip")
      * @param type
      *            The type of the software dependency (e.g. "zip")
+     * @param uri
+     *            The URI to the software dependency (e.g.
+     *            ("/some-end-point/probe-repository/memory-probe.zip")
      * @param script
-     *            The installation script of the software dependency
+     *            The installation script of the software dependency (e.g.
+     *            ("/some-end-point/probe-repository/memory-probe.sh")
      */
     public void setSoftwareDependencyProperties(int index, String id,
-            String uri, String type, String script) {
+            String type, String packageUri, String installScriptUri) {
         setSoftwareDependencyId(index, id);
-        setSoftwareDependencyUri(index, uri);
         setSoftwareDependencyType(index, type);
-        setSoftwareDependencyScript(index, script);
+        setSoftwareDependencyPackageUri(index, packageUri);
+        setSoftwareDependencyInstallScriptUri(index, installScriptUri);
     }
 
     /**
@@ -929,37 +979,6 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     }
 
     /**
-     * Gets the URI of an software dependency at a specific index.
-     * 
-     * @param index
-     *            The index of the software dependency (not to be confused with
-     *            the index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
-     * @Return The URI to the software dependency (e.g.
-     *         ("uri://some-end-point/probe-repository/memory-probe.zip")
-     */
-    public String getSoftwareDependencyUri(int index) {
-        return getPropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_URI_KEY + index)
-                .getValue();
-    }
-
-    /**
-     * Sets the URI of an software dependency at a specific index.
-     * 
-     * @param index
-     *            The index of the software dependency (not to be confused with
-     *            the index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
-     * @param uri
-     *            The URI to the software dependency (e.g.
-     *            ("uri://some-end-point/probe-repository/memory-probe.zip")
-     */
-    public void setSoftwareDependencyUri(int index, String uri) {
-        getPropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_URI_KEY + index).setValue(
-                uri);
-    }
-
-    /**
      * Gets the type of a software dependency at a specific index.
      * 
      * @param index
@@ -989,35 +1008,70 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     }
 
     /**
-     * Gets the installation script of a software dependency at a specific
-     * index.
+     * Gets the URI of an software dependency package at a specific index.
      * 
      * @param index
      *            The index of the software dependency (not to be confused with
      *            the index of a {@link ProductProperty}, see
      *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
-     * @return The installation script of the software dependency
+     * @Return The URI to the software dependency package (e.g.
+     *         ("/some-end-point/probe-repository/memory-probe.zip")
      */
-    public String getSoftwareDependencyScript(int index) {
+    public String getSoftwareDependencyPackageUri(int index) {
         return getPropertyByKey(
-                ASCETIC_SOFTWARE_DEPENDENCY_INSTALL_SCRIPT_KEY + index)
+                ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_URI_KEY + index).getValue();
+    }
+
+    /**
+     * Sets the URI of an software dependency package at a specific index.
+     * 
+     * @param index
+     *            The index of the software dependency (not to be confused with
+     *            the index of a {@link ProductProperty}, see
+     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
+     * @param packageUri
+     *            The URI to the software dependency package (e.g.
+     *            ("/some-end-point/probe-repository/memory-probe.zip")
+     */
+    public void setSoftwareDependencyPackageUri(int index, String packageUri) {
+        getPropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_URI_KEY + index)
+                .setValue(packageUri);
+    }
+
+    /**
+     * Gets the URI of the installation script of a software dependency at a
+     * specific index.
+     * 
+     * @param index
+     *            The index of the software dependency (not to be confused with
+     *            the index of a {@link ProductProperty}, see
+     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
+     * @return The URI to the installation script of the software dependency
+     *         (e.g. ("/some-end-point/probe-repository/memory-probe.sh")
+     */
+    public String getSoftwareDependencyInstallScriptUri(int index) {
+        return getPropertyByKey(
+                ASCETIC_SOFTWARE_DEPENDENCY_INSTALL_SCRIPT_URI_KEY + index)
                 .getValue();
     }
 
     /**
-     * Sets the installation script of a software dependency at a specific
-     * index.
+     * Sets the URI of the installation script of a software dependency at a
+     * specific index.
      * 
      * @param index
      *            The index of the software dependency (not to be confused with
      *            the index of a {@link ProductProperty}, see
      *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
-     * @param script
-     *            The installation script of the software dependency
+     * @param installScriptUri
+     *            The URI to the installation script of the software dependency
+     *            (e.g. ("/some-end-point/probe-repository/memory-probe.sh")
      */
-    public void setSoftwareDependencyScript(int index, String script) {
-        getPropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_INSTALL_SCRIPT_KEY + index)
-                .setValue(script);
+    public void setSoftwareDependencyInstallScriptUri(int index,
+            String installScriptUri) {
+        getPropertyByKey(
+                ASCETIC_SOFTWARE_DEPENDENCY_INSTALL_SCRIPT_URI_KEY + index)
+                .setValue(installScriptUri);
     }
 
     /**
@@ -1030,9 +1084,9 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      */
     public void removeSoftwareDependencyProperties(int index) {
         removePropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_ID_KEY + index);
-        removePropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_URI_KEY + index);
+        removePropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_URI_KEY + index);
         removePropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_TYPE_KEY + index);
-        removePropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_INSTALL_SCRIPT_KEY
+        removePropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_INSTALL_SCRIPT_URI_KEY
                 + index);
 
         // FIXME: We should decrement by 1 the index of all subsequent property

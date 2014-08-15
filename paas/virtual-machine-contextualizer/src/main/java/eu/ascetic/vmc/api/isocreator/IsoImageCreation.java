@@ -19,6 +19,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -137,52 +140,52 @@ public class IsoImageCreation {
                 + "securitykeys");
         securityKeysDirectory.mkdirs();
 
-        if (virtualMachine.isHasKey()) {
-            if (contextData.getSecurityKeys().size() != 0) {
-                for (SecurityKey securityKey : contextData.getSecurityKeys()
-                        .values()) {
-                    String name = securityKey.getName();
-                    byte[] keyData = securityKey.getKeyData();
+        if (!contextData.getSecurityKeys().isEmpty()) {
+            for (SecurityKey securityKey : contextData.getSecurityKeys()
+                    .values()) {
+                String name = securityKey.getName();
+                byte[] keyData = securityKey.getKeyData();
 
-                    File securityKeyFile = null;
-                    // TODO: change to switch... meh
-                    if (name.equals("SSH")) {
-                        securityKeyFile = new File(securityKeysDirectory
-                                + File.separator + "SSH.key");
-                    } else {
-                        LOGGER.warn("Unknown key name type!");
-                    }
-
-                    try {
-                        LOGGER.debug(ATTEMPTING_TO_CREATE_FILE
-                                + securityKeyFile.getPath());
-                        securityKeyFile.createNewFile();
-                        LOGGER.debug(CREATED_FILE + securityKeyFile.getPath());
-                    } catch (IOException e) {
-                        LOGGER.error(
-                                "Failed to create security key file with name: "
-                                        + name + ".key", e);
-                    }
-
-                    // Write out security key...
-                    LOGGER.warn("Writing out security key with path: "
-                            + securityKeyFile.getPath());
-                    try {
-                        FileOutputStream fos = new FileOutputStream(
-                                securityKeyFile);
-                        fos.write(keyData);
-                        fos.close();
-                        LOGGER.debug("Writing security key complete!");
-
-                    } catch (FileNotFoundException e) {
-                        LOGGER.error(FILE_NOT_FOUND_EXCEPTION + e);
-                    } catch (IOException e) {
-                        LOGGER.error(IO_EXCEPTION + e);
-                    }
+                File securityKeyFile = null;
+                // TODO: change to switch... meh
+                if (name.equals("ssh-public")) {
+                    securityKeyFile = new File(securityKeysDirectory
+                            + File.separator + "ssh-public.key");
+                } else if (name.equals("ssh-private")) {
+                    securityKeyFile = new File(securityKeysDirectory
+                            + File.separator + "ssh-private.key");
+                } else {
+                    LOGGER.warn("Unknown key name type!");
                 }
-            } else {
-                LOGGER.warn("No security keys to write!");
+
+                try {
+                    LOGGER.debug(ATTEMPTING_TO_CREATE_FILE
+                            + securityKeyFile.getPath());
+                    securityKeyFile.createNewFile();
+                    LOGGER.debug(CREATED_FILE + securityKeyFile.getPath());
+                } catch (IOException e) {
+                    LOGGER.error(
+                            "Failed to create security key file with name: "
+                                    + name + ".key", e);
+                }
+
+                // Write out security key...
+                LOGGER.warn("Writing out security key with path: "
+                        + securityKeyFile.getPath());
+                try {
+                    FileOutputStream fos = new FileOutputStream(securityKeyFile);
+                    fos.write(keyData);
+                    fos.close();
+                    LOGGER.debug("Writing security key complete!");
+
+                } catch (FileNotFoundException e) {
+                    LOGGER.error(FILE_NOT_FOUND_EXCEPTION + e);
+                } catch (IOException e) {
+                    LOGGER.error(IO_EXCEPTION + e);
+                }
             }
+        } else {
+            LOGGER.warn("No security keys to write!");
         }
     }
 
@@ -227,7 +230,7 @@ public class IsoImageCreation {
                     FileOutputStream fileOutputStream = new FileOutputStream(
                             endPointFile);
                     props.store(fileOutputStream,
-                            "VMC properties file for service endpoints:");
+                            "VMC properties file for end points:");
                     fileOutputStream.close();
                     LOGGER.debug("Writing endpoint complete!");
 
@@ -248,20 +251,28 @@ public class IsoImageCreation {
      * dependencies
      */
     private void storeSoftwareDependencies() {
+
+        // TODO: Create a script to invoke the software dependency installation
+        // scripts and store it in \scripts\softwaredeps.sh
+
         File softwareDependenciesDirectory = new File(isoDataDirectory
                 + File.separator + "softwaredeps");
         softwareDependenciesDirectory.mkdirs();
 
-        if (virtualMachine.getSoftwareDependencies().size() != 0) {
+        if (!virtualMachine.getSoftwareDependencies().isEmpty()) {
             for (SoftwareDependency softwareDependency : virtualMachine
                     .getSoftwareDependencies().values()) {
-                String name = softwareDependency.getArtifactId() + "_"
-                        + softwareDependency.getGroupId() + "_"
-                        + softwareDependency.getVersion() + ".dep";
+                String id = softwareDependency.getId();
+                String type = softwareDependency.getType();
+                String packageUri = softwareDependency.getPackageUri();
+                String installScriptUri = softwareDependency
+                        .getInstallScriptUri();
 
                 // Create the software dependency files here...
                 File softwareDependencyFile = new File(
-                        softwareDependenciesDirectory + File.separator + name);
+                        softwareDependenciesDirectory + File.separator + id
+                                + ".properties");
+
                 try {
                     LOGGER.debug(ATTEMPTING_TO_CREATE_FILE
                             + softwareDependencyFile.getPath());
@@ -270,12 +281,84 @@ public class IsoImageCreation {
                             + softwareDependencyFile.getPath());
                 } catch (IOException e) {
                     LOGGER.error(
-                            "Failed to create softwareDependency config file with name: "
-                                    + name, e);
+                            "Failed to create software dependency property file with name: "
+                                    + id + ".properties", e);
                 }
 
-                // TODO Write out some configuration data to the new file.
-                LOGGER.warn("Writing out software dependency configuration data not implemented yet, no support in OVF Definition!");
+                Properties props = new Properties();
+                props.setProperty("id", id);
+                props.setProperty("type", type);
+
+                // Write out properties
+                try {
+                    FileOutputStream fileOutputStream = new FileOutputStream(
+                            softwareDependencyFile);
+                    props.store(fileOutputStream,
+                            "VMC properties file for software dependencies:");
+                    fileOutputStream.close();
+                    LOGGER.debug("Writing software dependencie property file complete!");
+                } catch (FileNotFoundException e) {
+                    LOGGER.error(FILE_NOT_FOUND_EXCEPTION + e);
+                } catch (IOException e) {
+                    LOGGER.error(IO_EXCEPTION + e);
+                }
+
+                // Create the directory to store the software dependency files
+                File softwareDependencyDirectory = new File(
+                        softwareDependenciesDirectory + File.separator + id);
+                softwareDependencyDirectory.mkdirs();
+                LOGGER.debug("Creating directory for software dependency: "
+                        + softwareDependencyDirectory.getPath());
+
+                // Store the software dependency package from the URI
+                try {
+                    LOGGER.debug("Copying software dependency package from uri: "
+                            + packageUri);
+
+                    Path packageUriPath = Paths.get(packageUri);
+
+                    File softwareDependencyPackage = new File(
+                            softwareDependencyDirectory + File.separator
+                                    + packageUriPath.getFileName());
+
+                    FileOutputStream fileOutputStream = new FileOutputStream(
+                            softwareDependencyPackage);
+
+                    Files.copy(packageUriPath, fileOutputStream);
+
+                    LOGGER.debug("Copied software dependency package to: "
+                            + softwareDependencyPackage.getPath());
+                } catch (IOException e) {
+                    LOGGER.error(
+                            "Failed to create software dependency with id: "
+                                    + id, e);
+                }
+
+                // Store the script that installs and configures the software
+                // dependency from the URI
+                try {
+                    LOGGER.debug("Copying software dependency install script from uri: "
+                            + installScriptUri);
+
+                    Path installScriptUriPath = Paths.get(installScriptUri);
+
+                    File softwareDependencyPackage = new File(
+                            softwareDependencyDirectory + File.separator
+                                    + installScriptUriPath.getFileName());
+
+                    FileOutputStream fileOutputStream = new FileOutputStream(
+                            softwareDependencyPackage);
+
+                    Files.copy(installScriptUriPath, fileOutputStream);
+
+                    LOGGER.debug("Copied software dependency install script to: "
+                            + softwareDependencyPackage.getPath());
+                } catch (IOException e) {
+                    LOGGER.error(
+                            "Failed to create software dependency with id: "
+                                    + id, e);
+                }
+
             }
         } else {
             LOGGER.warn("No software dependency configuration files to write!");
@@ -326,18 +409,18 @@ public class IsoImageCreation {
             // the base VM /mnt/context/
             String bootStrapScript = "#!/bin/bash\n"
                     + "if [ -f /mnt/context/scripts/bootstrap.sh ]; then\n"
+                    + "  mkdir -p /root/.ssh/\n"
                     + "  #Get the public SSH key:\n"
-                    + "  PUBLICKEY=`cat /mnt/context/securitykeys/SSH.key | grep ssh-rsa`\n"
-                    + "  echo ${PUBLICKEY/user@hostname/root@`hostname`} > /root/.ssh/authorized_keys\n"
+                    + "  cat /mnt/context/securitykeys/ssh-public.key >> /root/.ssh/authorized_keys\n"
                     + "  chmod 700 /root/.ssh\n"
                     + "  chmod 600 /root/.ssh/authorized_keys\n"
                     + "  #Get the private SSH key:\n"
-                    + "  cat /mnt/context/securitykeys/SSH.key | head -27 > /root/.ssh/id_rsa\n"
+                    + "  cat /mnt/context/securitykeys/ssh-private.key > /root/.ssh/id_rsa\n"
                     + "  chmod 700 /root/.ssh/id_rsa\n"
-                    + "  #Run agent script if present\n"
-                    + "  if [ -f /mnt/context/scripts/agents.sh ]; then\n"
-                    + "    sh /mnt/context/scripts/agents.sh\n" + "  fi\n"
-                    + "fi\n";
+                    + "  #Run software dependency install script if present\n"
+                    + "  if [ -f /mnt/context/scripts/softwaredeps.sh ]; then\n"
+                    + "    sh /mnt/context/scripts/softwaredeps.sh\n"
+                    + "  fi\n" + "fi\n";
 
             // Write out the boostrap file
             FileOutputStream fos = new FileOutputStream(bootStrapFile.getPath());
@@ -358,7 +441,6 @@ public class IsoImageCreation {
      *            True if we are to add recontextualization scripts
      */
     private void refactorFiles(boolean addRecontextScripts) {
-        LOGGER.debug("addRecontextFiles : " + addRecontextFiles);
         // FIXME: Change this to an ISO structure version number
         if (addRecontextFiles) {
             LOGGER.debug("Performing ISO recontextualization changes...");

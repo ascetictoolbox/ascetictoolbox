@@ -25,6 +25,8 @@ import org.apache.log4j.Logger;
 import eu.ascetic.vmc.api.datamodel.ContextData;
 import eu.ascetic.vmc.api.datamodel.VirtualMachine;
 import eu.ascetic.vmc.api.datamodel.contextdatatypes.EndPoint;
+import eu.ascetic.vmc.api.datamodel.contextdatatypes.SecurityKey;
+import eu.ascetic.vmc.api.datamodel.contextdatatypes.SoftwareDependency;
 import eu.ascetic.vmc.api.datamodel.image.HardDisk;
 import eu.ascetic.vmc.api.datamodel.image.Iso;
 import eu.ascetic.utils.ovf.api.*;
@@ -64,6 +66,27 @@ public class OvfDefinitionClient {
     public ContextData parse() {
         ContextData contextData = new ContextData();
 
+        // TODO: Get virtual system collection wide end points and software
+        // dependencies.
+
+        // Get security keys for all virtual systems
+        LOGGER.warn("Attempting to parse SSH keys from OVF Definition...");
+        String sshPublicKey = ovfDefinition.getVirtualSystemCollection()
+                .getProductSectionAtIndex(0).getPublicSshKey();
+        String sshPrivateKey = ovfDefinition.getVirtualSystemCollection()
+                .getProductSectionAtIndex(0).getPrivateSshKey();
+        if (sshPublicKey != null && sshPrivateKey != null) {
+            LOGGER.debug("SSH keys found in VirtualSystemCollection");
+            SecurityKey publicKey = new SecurityKey("ssh-public",
+                    sshPublicKey.getBytes());
+            contextData.getSecurityKeys().put("ssh-public", publicKey);
+            SecurityKey privateKey = new SecurityKey("ssh-private",
+                    sshPrivateKey.getBytes());
+            contextData.getSecurityKeys().put("ssh-private", privateKey);
+        } else {
+            LOGGER.debug("Public/Private SSH key pair not found in VirtualSystemCollection");
+        }
+
         // Parse VM description here...
         LOGGER.debug("Parsing VM Description from OVF Definition...");
         int virtualSystems = ovfDefinition.getVirtualSystemCollection()
@@ -88,8 +111,6 @@ public class OvfDefinitionClient {
                     .getUpperBound();
             LOGGER.debug("Allocation constraint upper bound is: " + upperBound);
 
-            //TODO: Get virtual system collection wide probe and software. 
-            
             // Add data to appropriate object(s) in data model.
             VirtualMachine virtualMachine = new VirtualMachine(componentId,
                     upperBound);
@@ -163,33 +184,49 @@ public class OvfDefinitionClient {
             contextData.getVirtualMachines().put(componentId, virtualMachine);
             LOGGER.debug("Added VM to contextData with ID: " + componentId);
 
-            // TODO: Get security keys either collection or virtual system
-            // specific
-            LOGGER.warn("Parsing security keys not currently implemented");
-
-            // Get service end points for this virtual machine component
+            // Get end points for this virtual machine component
+            LOGGER.debug("Parsing end points...");
             int endpointNumber = virtualSystemArray[i]
                     .getProductSectionAtIndex(0).getEndPointNumber();
             for (int j = 0; j < endpointNumber; j++) {
-                String id = virtualSystemArray[i]
-                        .getProductSectionAtIndex(0).getEndPointId(i);
-                String uri = virtualSystemArray[i]
-                        .getProductSectionAtIndex(0).getEndPointUri(i);
-                String type = virtualSystemArray[i]
-                        .getProductSectionAtIndex(0).getEndPointType(i);
+                String id = virtualSystemArray[i].getProductSectionAtIndex(0)
+                        .getEndPointId(j);
+                String uri = virtualSystemArray[i].getProductSectionAtIndex(0)
+                        .getEndPointUri(j);
+                String type = virtualSystemArray[i].getProductSectionAtIndex(0)
+                        .getEndPointType(j);
                 String subtype = virtualSystemArray[i]
-                        .getProductSectionAtIndex(0).getEndPointSubtype(i);
+                        .getProductSectionAtIndex(0).getEndPointSubtype(j);
                 String interval = virtualSystemArray[i]
-                        .getProductSectionAtIndex(0).getEndPointInterval(i);
-                LOGGER.debug("Adding end point: " + id + " for "
-                        + componentId);
-                EndPoint endPoint = new EndPoint(id, uri, type, subtype, interval);
+                        .getProductSectionAtIndex(0).getEndPointInterval(j);
+                LOGGER.debug("Adding end point: " + id + " for " + componentId);
+                EndPoint endPoint = new EndPoint(id, uri, type, subtype,
+                        interval);
                 virtualMachine.getEndPoints().put(id, endPoint);
             }
 
-            // TODO: Get software dependencies
-            LOGGER.warn("Parsing software dependencies not currently implemented");
-
+            // Get software dependencies
+            LOGGER.debug("Parsing software dependencies...");
+            int softwareDependencyNumber = virtualSystemArray[i]
+                    .getProductSectionAtIndex(0).getSoftwareDependencyNumber();
+            for (int j = 0; j < softwareDependencyNumber; j++) {
+                String id = virtualSystemArray[i].getProductSectionAtIndex(0)
+                        .getSoftwareDependencyId(j);
+                String type = virtualSystemArray[i].getProductSectionAtIndex(0)
+                        .getSoftwareDependencyType(j);
+                String packageUri = virtualSystemArray[i]
+                        .getProductSectionAtIndex(0)
+                        .getSoftwareDependencyPackageUri(j);
+                String installScriptUri = virtualSystemArray[i]
+                        .getProductSectionAtIndex(0)
+                        .getSoftwareDependencyInstallScriptUri(j);
+                LOGGER.debug("Adding software dependency: " + id + " for "
+                        + componentId);
+                SoftwareDependency softwareDependency = new SoftwareDependency(
+                        id, type, packageUri, installScriptUri);
+                virtualMachine.getSoftwareDependencies().put(id,
+                        softwareDependency);
+            }
         }
 
         return contextData;
@@ -287,9 +324,6 @@ public class OvfDefinitionClient {
                     .getHardDisks();
 
             for (HardDisk hardDisk : hardDisks.values()) {
-                // FIXME: OVF definition only supports a single image, this
-                // should
-                // change?
                 LOGGER.info("Adding new HardDisk URI to OVF: "
                         + hardDisk.getUri());
 
@@ -300,7 +334,6 @@ public class OvfDefinitionClient {
                         fileArray[i].setHref(hardDisk.getUri());
                     }
                 }
-
                 // TODO: Alter the Disk element format
             }
 

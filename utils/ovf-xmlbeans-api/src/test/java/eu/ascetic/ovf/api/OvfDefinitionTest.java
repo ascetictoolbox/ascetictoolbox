@@ -73,30 +73,32 @@ public class OvfDefinitionTest extends TestCase {
         assertNotNull(deploymentId);
 
         // TODO: add this to the template
-        // @formatter:off
+        String publicKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQD/TKK8H1TmlbdAVFVRJ3CZo6Lu8ZRzJy/jtTpQ83Yfjh8rFifOU1t39e9QZnbVrZ9ez5NA63WJh/Fwf2qEiaVBez80FaNR3xVVPl5xbZx1D+sfPJaoL4Y6JJ90Zey+ZO7Feb4bHpfGFm72e72mNg8nS0dbUJrJsMCdmF7CFsKlSQ== ascetic-public-key";
         ovfDefinition.getVirtualSystemCollection().getProductSectionAtIndex(0)
-                    .setSecurityKeys("\n        " +
-            "-----BEGIN PUBLIC KEY-----\n        " +
-            "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCqGKukO1De7zhZj6+H0qtjTkVxwTCpvKe4eCZ0\n        " +
-            "FPqri0cb2JZfXJ/DgYSF6vUpwmJG8wVQZKjeGcjDOL5UlsuusFncCzWBQ7RKNUSesmQRMSGkVb1/\n        " +
-            "3j+skZ6UtW+5u09lHNsj6tQ51s1SPrCBkedbNf0Tp0GbMJDyR4e9T04ZZwIDAQAB\n        " +
-            "-----END PUBLIC KEY-----\n        " +
-            "-----BEGIN RSA PRIVATE KEY-----\n        " +
-            "MIICXAIBAAKBgQCqGKukO1De7zhZj6+H0qtjTkVxwTCpvKe4eCZ0FPqri0cb2JZfXJ/DgYSF6vUp\n        " +
-            "wmJG8wVQZKjeGcjDOL5UlsuusFncCzWBQ7RKNUSesmQRMSGkVb1/3j+skZ6UtW+5u09lHNsj6tQ5\n        " +
-            "1s1SPrCBkedbNf0Tp0GbMJDyR4e9T04ZZwIDAQABAoGAFijko56+qGyN8M0RVyaRAXz++xTqHBLh\n        " +
-            "3tx4VgMtrQ+WEgCjhoTwo23KMBAuJGSYnRmoBZM3lMfTKevIkAidPExvYCdm5dYq3XToLkkLv5L2\n        " +
-            "pIIVOFMDG+KESnAFV7l2c+cnzRMW0+b6f8mR1CJzZuxVLL6Q02fvLi55/mbSYxECQQDeAw6fiIQX\n        " +
-            "GukBI4eMZZt4nscy2o12KyYner3VpoeE+Np2q+Z3pvAMd/aNzQ/W9WaI+NRfcxUJrmfPwIGm63il\n        " +
-            "AkEAxCL5HQb2bQr4ByorcMWm/hEP2MZzROV73yF41hPsRC9m66KrheO9HPTJuo3/9s5p+sqGxOlF\n        " +
-            "L0NDt4SkosjgGwJAFklyR1uZ/wPJjj611cdBcztlPdqoxssQGnh85BzCj/u3WqBpE2vjvyyvyI5k\n        " +
-            "X6zk7S0ljKtt2jny2+00VsBerQJBAJGC1Mg5Oydo5NwD6BiROrPxGo2bpTbu/fhrT8ebHkTz2epl\n        " +
-            "U9VQQSQzY1oZMVX8i1m5WUTLPz2yLJIBQVdXqhMCQBGoiuSoSjafUhV7i1cEGpb88h5NBYZzWXGZ\n        " +
-            "37sJ5QsW+sJyoNde3xH8vdXhzU7eT82D6X/scw9RZz+/6rCJ4p0=\n        " +
-            "-----END RSA PRIVATE KEY-----");
-        // @formatter:on
+                .setPublicSshKey(publicKey);
+        assertEquals(publicKey, ovfDefinition.getVirtualSystemCollection()
+                .getProductSectionAtIndex(0).getPublicSshKey());
+        String privateKey = "-----BEGIN RSA PRIVATE KEY-----\n"
+                + "MIICXgIBAAKBgQD/TKK8H1TmlbdAVFVRJ3CZo6Lu8ZRzJy/jtTpQ83Yfjh8rFifO\n"
+                + "U1t39e9QZnbVrZ9ez5NA63WJh/Fwf2qEiaVBez80FaNR3xVVPl5xbZx1D+sfPJao\n"
+                + "L4Y6JJ90Zey+ZO7Feb4bHpfGFm72e72mNg8nS0dbUJrJsMCdmF7CFsKlSQIDAQAB\n"
+                + "AoGBAJq4sS9dtbCBL6v28DXctysFtusk0ZjwON/Bp3QD+KSrF0yfgsRSVG7hR4Xs\n"
+                + "czyQmrN1DYMcsAEHuFU7gyyL1vAgiDPKU5PXpK4cZq5rW1luDip0m6kU/KRiufg8\n"
+                + "a9zEecq0mzKCcR5zHSkWTfSzASzrqdDRr0KjlyG9ZnOBLDzhAkEA/8hbLh/dDvpA\n"
+                + "pOoUs9AYs6Wvdbb4N8ONqrTOsDDv0UvCDbrJ9JDBuIF5+73jV4Siqero0bV37zSG\n"
+                + "LWtSfmE4dQJBAP+ELKPdwX4uTWcPGVuX3TIbluvlSLUq/aQrrPO5qM3jFhkmqBpD\n"
+                + "pmddxwncPYhhFlfqwmwgSwWCaix+TbUg/wUCQFUjJWZm6LexiI7b82Qeofo57fsq\n"
+                + "mdhF2QO3Bw0SXOC3bLIROGOVQ0XcovOuMtvQpCwWqsQSuQb/3qGDlYPHbHkCQQCT\n"
+                + "cPi1Ygv6PMurUXoncT1RYbw3yOmoqPMNnapCRXrTu1sQDk9oQGswMFvfI7haDvPu\n"
+                + "rWedLxE7T6Lmo8dBYpXlAkEA+zuoj0DxKs9j32hV7XlnEUMJEy989KQzs56Q0CnP\n"
+                + "aXS3ggScjG9Ww/gHmqHAsptac4hyhPyWNdNZB5XoqtYT+Q==\n        "
+                + "-----END RSA PRIVATE KEY-----";
+        ovfDefinition.getVirtualSystemCollection().getProductSectionAtIndex(0)
+                .setPrivateSshKey(privateKey);
+        assertEquals(privateKey, ovfDefinition.getVirtualSystemCollection()
+                .getProductSectionAtIndex(0).getPrivateSshKey());
 
-        //TODO: add these to the template
+        // TODO: add these to the template
         ovfDefinition
                 .getVirtualSystemCollection()
                 .getProductSectionAtIndex(0)
@@ -184,10 +186,9 @@ public class OvfDefinitionTest extends TestCase {
                 .getVirtualSystemCollection()
                 .getVirtualSystemAtIndex(1)
                 .getProductSectionAtIndex(0)
-                .addSoftwareDependencyProperties(
-                        "cpu-probe",
-                        "uri://some-end-point/probe-repository/cpu-probe.zip",
-                        "zip", "some;script;commands");
+                .addSoftwareDependencyProperties("cpu-probe", "zip",
+                        "/some-end-point/probe-repository/cpu-probe.zip",
+                        "/some-end-point/probe-repository/cpu-probe.sh");
 
         int softwareDependencyIndex = ovfDefinition
                 .getVirtualSystemCollection().getVirtualSystemAtIndex(1)
@@ -202,15 +203,15 @@ public class OvfDefinitionTest extends TestCase {
 
         assertNotNull(ovfDefinition.getVirtualSystemCollection()
                 .getVirtualSystemAtIndex(1).getProductSectionAtIndex(0)
-                .getSoftwareDependencyUri(softwareDependencyIndex));
-
-        assertNotNull(ovfDefinition.getVirtualSystemCollection()
-                .getVirtualSystemAtIndex(1).getProductSectionAtIndex(0)
                 .getSoftwareDependencyType(softwareDependencyIndex));
 
         assertNotNull(ovfDefinition.getVirtualSystemCollection()
                 .getVirtualSystemAtIndex(1).getProductSectionAtIndex(0)
-                .getSoftwareDependencyScript(softwareDependencyIndex));
+                .getSoftwareDependencyPackageUri(softwareDependencyIndex));
+        
+        assertNotNull(ovfDefinition.getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1).getProductSectionAtIndex(0)
+                .getSoftwareDependencyInstallScriptUri(softwareDependencyIndex));
 
         assertNotNull(ovfDefinition.getVirtualSystemCollection()
                 .getVirtualSystemAtIndex(1).getProductSectionAtIndex(0)
@@ -228,10 +229,9 @@ public class OvfDefinitionTest extends TestCase {
                 .getVirtualSystemCollection()
                 .getVirtualSystemAtIndex(1)
                 .getProductSectionAtIndex(0)
-                .addSoftwareDependencyProperties(
-                        "cpu-probe",
-                        "uri://some-end-point/probe-repository/cpu-probe.zip",
-                        "zip", "some;script;commands");
+                .addSoftwareDependencyProperties("cpu-probe", "zip",
+                        "/some-end-point/probe-repository/cpu-probe.zip",
+                        "/some-end-point/probe-repository/cpu-probe.sh");
 
         System.out.println(ovfDefinition.toString());
 

@@ -1181,7 +1181,6 @@ paas/slam/planning-optimization/src/test/resources/slats/selection/SlatProposal.
 paas/slam/planning-optimization/src/test/resources/slats/selection/SlatProposalFull.xml -text
 paas/slam/planning-optimization/src/test/resources/slats/selection/SlatProposalSimple.xml -text
 paas/slam/profile4osgi/eu/ascetic/paas/slam/slam/0.1.SNAPSHOT/slam-0.1.SNAPSHOT.composite -text
-paas/virtual-machine-contextualizer/runtime/agents/vpn.tar.gz -text
 paas/virtual-machine-contextualizer/runtime/config.properties.example -text
 paas/virtual-machine-contextualizer/runtime/templates/patchs/qemu-0.15.1-scsi.patch -text
 paas/virtual-machine-contextualizer/runtime/templates/scripts/linux/context_application -text
