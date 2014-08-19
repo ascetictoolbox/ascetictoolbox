@@ -44,8 +44,8 @@ public class Deployment {
 	private String href;
 	@XmlElement(name = "id", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private int id;
-	@XmlElement(name = "appId", namespace = APPLICATION_MANAGER_NAMESPACE)
-	private int appId;
+//	@XmlElement(name = "appId", namespace = APPLICATION_MANAGER_NAMESPACE)
+//	private int appId;
 	@XmlElement(name = "status", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private String status;
 	@XmlElement(name = "price", namespace = APPLICATION_MANAGER_NAMESPACE)
@@ -68,13 +68,13 @@ public class Deployment {
 		this.id = id;
 	}
 	
-	@Column(name = "application_id", nullable = false)
-	public int getApplicationId() {
-		return appId;
-	}
-	public void setApplicationId(int appId) {
-		this.appId = appId;
-	}
+//	@Column(name = "application_id", nullable = true)
+//	public int getApplicationId() {
+//		return appId;
+//	}
+//	public void setApplicationId(int appId) {
+//		this.appId = appId;
+//	}
 	
 	@Column(name = "status", nullable = false)
 	public String getStatus() {
