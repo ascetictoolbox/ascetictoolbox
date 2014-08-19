@@ -37,6 +37,14 @@ public class CalibratorDataLogger implements Runnable {
     private final int calibratorMaxDurationSec;
     private final DatabaseConnector database;
 
+    /**
+     * This creates a data logger for calibration information.
+     * @param host The host to get the calibration data for
+     * @param datasource The data source to use to gather the required data
+     * @param database The database used to store the information gathered
+     * @param calibratorWaitSec The duration between readings in seconds
+     * @param calibratorMaxDurationSec The duration the calibration phase occurs for
+     */
     public CalibratorDataLogger(Host host, HostDataSource datasource, DatabaseConnector database,
             int calibratorWaitSec, int calibratorMaxDurationSec) {
         this.host = host;

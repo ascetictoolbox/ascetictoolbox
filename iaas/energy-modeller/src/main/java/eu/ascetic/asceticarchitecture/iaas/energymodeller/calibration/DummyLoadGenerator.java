@@ -56,4 +56,13 @@ public class DummyLoadGenerator implements LoadGenerator {
         generateCalibrationData(host);
     }
 
+    @Override
+    public String getDomain() {
+        return "";
+    }
+
+    @Override
+    public void setDomain(String domain) {
+    }
+
 }

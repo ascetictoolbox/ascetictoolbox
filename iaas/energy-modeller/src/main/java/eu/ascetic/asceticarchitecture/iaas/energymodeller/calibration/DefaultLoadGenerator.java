@@ -32,11 +32,35 @@ import java.util.logging.Logger;
 public class DefaultLoadGenerator implements LoadGenerator {
 
     private Host host = null;
+    private String domain = ".cit.tu-berlin.de:8080/energy-modeller-load-calibration-tool-0.0.1-SNAPSHOT/";
 
     @Override
     public synchronized void setHost(Host host) {
         this.host = host;
     }
+    
+
+    /**
+     * This gets the domain information for the load generator. It includes the 
+     * port number and name of the web service. an example is:
+     * .cit.tu-berlin.de:8080/energy-modeller-load-calibration-tool-0.0.1-SNAPSHOT/
+     * @return the domain of the web service
+     */
+    @Override
+    public String getDomain() {
+        return domain;
+    }
+
+    /**
+     * This gets the domain information for the load generator. It includes the 
+     * port number and name of the web service. an example is:
+     * .cit.tu-berlin.de:8080/energy-modeller-load-calibration-tool-0.0.1-SNAPSHOT/
+     * @param domain the domain to set
+     */
+    @Override
+    public void setDomain(String domain) {
+        this.domain = domain;
+    }    
 
     /**
      * This takes a host and contacts it, generates a heavy load. The aim is
@@ -48,7 +72,7 @@ public class DefaultLoadGenerator implements LoadGenerator {
     public synchronized void generateCalibrationData(Host host) {
         //Generate Load
         try { //http://localhost:8080/EnergyModellerCalibrationTool/CalibrationLoadGenerator?WSDL
-            URL url = new URL("http://" + host.getHostName() + ".cit.tu-berlin.de:8080/energy-modeller-load-calibration-tool-0.0.1-SNAPSHOT/CalibrationLoadGenerator?WSDL");
+            URL url = new URL("http://" + host.getHostName() + domain + "CalibrationLoadGenerator?WSDL");
             CalibrationLoadGenerator_Service service = new CalibrationLoadGenerator_Service(url);
             CalibrationLoadGenerator port = service.getCalibrationLoadGeneratorPort();
             port.induceLoad();

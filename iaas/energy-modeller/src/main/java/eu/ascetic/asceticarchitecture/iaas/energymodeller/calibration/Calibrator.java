@@ -44,6 +44,7 @@ public class Calibrator implements Runnable {
     private static final String CONFIG_FILE = "energymodeller_calibrator.properties";
     private static final String DEFAULT_LOAD_GEN_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration";
     private Class<?> loadGenerator = DummyLoadGenerator.class;
+    private String loadGeneratorDomain = ".cit.tu-berlin.de:8080/energy-modeller-load-calibration-tool-0.0.1-SNAPSHOT/";
 
     /**
      * This creates a new calibrator.
@@ -71,6 +72,8 @@ public class Calibrator implements Runnable {
             defaultLoadGenerator = config.getString("iaas.energy.modeller.calibrator.load.generator", defaultLoadGenerator);
             config.setProperty("iaas.energy.modeller.calibrator.load.generator", defaultLoadGenerator);
             setGenerator(defaultLoadGenerator);
+            loadGeneratorDomain = config.getString("iaas.energy.modeller.calibrator.load.generator.domain", loadGeneratorDomain);
+            config.setProperty("iaas.energy.modeller.calibrator.load.generator.domain", loadGeneratorDomain);
 
         } catch (ConfigurationException ex) {
             Logger.getLogger(Calibrator.class.getName()).log(Level.INFO, "Error loading the configuration of the IaaS energy modeller", ex);
@@ -112,6 +115,7 @@ public class Calibrator implements Runnable {
         }
         //Set the load generator going
         generator.setHost(host);
+        generator.setDomain(loadGeneratorDomain);
         Thread loadGeneratorThread = new Thread(generator);
         loadGeneratorThread.setDaemon(true);
         loadGeneratorThread.start();

@@ -32,6 +32,20 @@ public interface LoadGenerator extends Runnable {
     public void setHost(Host host);
     
     /**
+     * This is a means to get other information such as port numbers, names of 
+     * web services etc that compliments information such as the host name.
+     * @return This returns the domain information.
+     */
+    public String getDomain();
+    
+    /**
+     * This is a means to set other information such as port numbers, names of 
+     * web services etc that compliments information such as the host name.
+     * @param domain The domain information to set
+     */
+    public void setDomain(String domain);
+    
+    /**
      * This for a given host commands the load generator to perform its benchmarking.
      * @param host The host to generate energy calibration data for.
      */
