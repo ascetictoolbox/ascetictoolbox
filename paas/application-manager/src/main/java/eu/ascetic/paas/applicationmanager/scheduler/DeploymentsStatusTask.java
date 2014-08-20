@@ -244,10 +244,7 @@ public class DeploymentsStatusTask {
 					//all VMs deployed successfully, update deployment with new info from VMs
 					boolean updated = VmManagerUtils.updateVms(vmManagerClient, deployment, vmsDeployedIds);
 					if (updated){
-						
-						// Since we are not doing this right now, we move the application to the next step
-						deployment.setStatus(Dictionary.APPLICATION_STATUS_DEPLOYED);
-							
+						deployment.setStatus(Dictionary.APPLICATION_STATUS_DEPLOYED);							
 						// We save the changes to the DB
 						deploymentDAO.update(deployment);
 					}
@@ -255,9 +252,7 @@ public class DeploymentsStatusTask {
 				else {
 					logger.info("All VMs cannot be created. VMs deployed: " + vmsDeployedIds.size());
 				}
-			}
-			
-			
+			}	
 		} catch(OvfRuntimeException ex) {
 			logger.info("Error parsing OVF file: " + ex.getMessage());
 			ex.printStackTrace();

@@ -27,7 +27,7 @@ public class VmManagerUtils {
 		int index = 0;
 		VmDeployed vmDeployed = null;
 		try {
-			while (index < listNewVmIds.size()){
+			while (index < listNewVmIds.size()){ //TODO Change this to a bucle for... with generics...
 				VM vm = new VM();
 				//update the vm id
 				vm.setProviderVmId(listNewVmIds.get(index));

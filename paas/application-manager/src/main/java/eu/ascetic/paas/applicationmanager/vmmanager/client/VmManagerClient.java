@@ -6,7 +6,6 @@ import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ImageToUpload;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ImageUploaded;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ListImagesUploaded;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ListVmsDeployed;
-import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.SchedulingAlgorithm;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.Vm;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.VmDeployed;
 
