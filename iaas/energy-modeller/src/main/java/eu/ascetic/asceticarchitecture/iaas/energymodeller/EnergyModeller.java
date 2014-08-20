@@ -27,6 +27,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmener
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.LoadBasedDivision;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.LoadFractionShareRule;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.WattsUpMeterDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
@@ -127,7 +128,15 @@ public class EnergyModeller {
             if (!dataSource.startsWith(DEFAULT_DATA_SOURCE_PACKAGE)) {
                 dataSource = DEFAULT_DATA_SOURCE_PACKAGE + "." + dataSource;
             }
-            datasource = (HostDataSource) (Class.forName(dataSource).newInstance());
+            /**
+             * This is a special case that requires it to be loaded under the 
+             * singleton design pattern.
+             */
+            if ("WattsUpMeterDataSourceAdaptor".equals(dataSource)) {
+                datasource = WattsUpMeterDataSourceAdaptor.getInstance();
+            } else {
+                datasource = (HostDataSource) (Class.forName(dataSource).newInstance());
+            }
         } catch (ClassNotFoundException ex) {
             if (datasource == null) {
                 datasource = new ZabbixDataSourceAdaptor();

@@ -17,6 +17,7 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.EnergyDivision;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.WattsUpMeterDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energymodel.EnergyModel;
@@ -44,6 +45,7 @@ import org.apache.commons.math3.stat.regression.SimpleRegression;
 public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
 
     private static final String CONFIG_FILE = "energymodeller_cpu_predictor.properties";
+    private static final String DEFAULT_DATA_SOURCE_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient";
     private double usageCPU = 0.6; //assumed 60 percent usage, by default
     private HostDataSource source = null;
 
@@ -57,14 +59,48 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
                 config.setFile(new File(CONFIG_FILE));
             }
             config.setAutoSave(true); //This will save the configuration file back to disk. In case the defaults need setting.
-            usageCPU = config.getDouble("iaas.energy.modeller.cpu.energy.predcitor.default_load", usageCPU);
-            config.setProperty("iaas.energy.modeller.cpu.energy.predcitor.default_load", usageCPU);
+            usageCPU = config.getDouble("iaas.energy.modeller.cpu.energy.predictor.default_load", usageCPU);
+            config.setProperty("iaas.energy.modeller.cpu.energy.predictor.default_load", usageCPU);
             if (usageCPU == -1) {
-                source = new ZabbixDataSourceAdaptor();
+                String dataSrcStr = config.getString("iaas.energy.modeller.cpu.energy.predictor.datasource", "ZabbixDataSourceAdaptor");
+                config.setProperty("iaas.energy.modeller.cpu.energy.predictor.datasource", dataSrcStr);
+                setDataSource(dataSrcStr);
             }
         } catch (ConfigurationException ex) {
             Logger.getLogger(CpuOnlyEnergyPredictor.class.getName()).log(Level.SEVERE,
                     "Taking the default load from the settings file did not work", ex);
+        }
+    }
+
+    /**
+     * This allows the cpu only energy predictors data source to be set
+     *
+     * @param dataSource The name of the data source to use for this energy predictor
+     */
+    private void setDataSource(String dataSource) {
+        try {
+            if (!dataSource.startsWith(DEFAULT_DATA_SOURCE_PACKAGE)) {
+                dataSource = DEFAULT_DATA_SOURCE_PACKAGE + "." + dataSource;
+            }
+            /**
+             * This is a special case that requires it to be loaded under the
+             * singleton design pattern.
+             */
+            if ("WattsUpMeterDataSourceAdaptor".equals(dataSource)) {
+                source = WattsUpMeterDataSourceAdaptor.getInstance();
+            } else {
+                source = (HostDataSource) (Class.forName(dataSource).newInstance());
+            }
+        } catch (ClassNotFoundException ex) {
+            if (source == null) {
+                source = new ZabbixDataSourceAdaptor();
+            }
+            Logger.getLogger(CpuOnlyEnergyPredictor.class.getName()).log(Level.WARNING, "The data source specified was not found");
+        } catch (InstantiationException | IllegalAccessException ex) {
+            if (source == null) {
+                source = new ZabbixDataSourceAdaptor();
+            }
+            Logger.getLogger(CpuOnlyEnergyPredictor.class.getName()).log(Level.WARNING, "The data source did not work", ex);
         }
     }
 
