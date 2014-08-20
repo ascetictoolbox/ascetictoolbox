@@ -86,7 +86,8 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
              * This is a special case that requires it to be loaded under the
              * singleton design pattern.
              */
-            if ("WattsUpMeterDataSourceAdaptor".equals(dataSource)) {
+            String wattsUpMeter = DEFAULT_DATA_SOURCE_PACKAGE + ".WattsUpMeterDataSourceAdaptor";
+            if (wattsUpMeter.equals(dataSource)) {
                 source = WattsUpMeterDataSourceAdaptor.getInstance();
             } else {
                 source = (HostDataSource) (Class.forName(dataSource).newInstance());
