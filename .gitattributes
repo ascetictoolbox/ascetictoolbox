@@ -312,8 +312,6 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/D
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/RootRest.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/util/XMLBuilder.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/scheduler/DeploymentsStatusTask.java -text
-paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/vmmanager/VmManagerTest.java -text
-paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/vmmanager/VmManagerTest2.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/vmmanager/VmManagerUtils.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/vmmanager/client/VmManagerClient.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/vmmanager/client/VmManagerClientHC.java -text
@@ -350,6 +348,8 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/A
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/RootRestTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/util/XMLBuilderTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/scheduler/DeploymentStatusTaskTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/vmmanager/VmManagerTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/vmmanager/VmManagerTest2.java -text
 paas/application-manager/src/test/resources/3tier-webapp.ovf.xml -text
 paas/application-manager/src/test/resources/META-INF/persistence.mysql.test.xml -text
 paas/application-manager/src/test/resources/META-INF/persistence.test.xml -text
