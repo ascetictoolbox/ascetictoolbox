@@ -72,7 +72,13 @@ public class DefaultLoadGenerator implements LoadGenerator {
     public synchronized void generateCalibrationData(Host host) {
         //Generate Load
         try { //http://localhost:8080/EnergyModellerCalibrationTool/CalibrationLoadGenerator?WSDL
-            URL url = new URL("http://" + host.getHostName() + domain + "CalibrationLoadGenerator?WSDL");
+            /**
+             * (Character.isDigit(domain.charAt(0)) ? ":" : "" )
+             * This adds : to the start of something like 8080 as : is a character
+             * that needs escaping and his hence problematic. This is seen
+             * in cases such as running on the localhost.
+             */
+            URL url = new URL("http://" + host.getHostName() + (Character.isDigit(domain.charAt(0)) ? ":" : "" ) + domain + "CalibrationLoadGenerator?WSDL");
             CalibrationLoadGenerator_Service service = new CalibrationLoadGenerator_Service(url);
             CalibrationLoadGenerator port = service.getCalibrationLoadGeneratorPort();
             port.induceLoad();

@@ -19,6 +19,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration.Calibrator
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DataGatherer;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DatabaseConnector;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DefaultDatabaseConnector;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.CpuOnlyEnergyPredictor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.DefaultEnergyPredictor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.EnergyPredictorInterface;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.EnergyDivision;
@@ -65,7 +66,7 @@ public class EnergyModeller {
     private static final String DEFAULT_PREDICTOR_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor";
     private static final String DEFAULT_DATA_SOURCE_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient";
     private static final String DEFAULT_ENERGY_DIVISION_RULE_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare";
-    private EnergyPredictorInterface predictor = new DefaultEnergyPredictor();
+    private EnergyPredictorInterface predictor = new CpuOnlyEnergyPredictor();
     private HostDataSource datasource = new ZabbixDataSourceAdaptor();
     private DatabaseConnector database = new DefaultDatabaseConnector();
     private Calibrator calibrator = new Calibrator(datasource, database);
