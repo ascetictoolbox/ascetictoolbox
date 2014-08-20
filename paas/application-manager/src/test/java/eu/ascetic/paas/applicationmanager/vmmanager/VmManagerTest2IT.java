@@ -12,7 +12,7 @@ import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.SchedulingAlgorith
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.Vm;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.VmDeployed;
 
-public class VmManagerTest2 {
+public class VmManagerTest2IT {
 	
 	private static String testingImageId="0c6a0be4-38e5-4a99-bfc0-9cc32ab83e10";
 	private static String testingImageUrl="http://cdn.download.cirros-cloud.net/0.3.1/cirros-0.3.1-x86_64-disk.img";
