@@ -7,6 +7,11 @@ import eu.ascetic.utils.ovf.api.OvfDefinition;
 import eu.ascetic.vmc.api.VmcApi;
 import eu.ascetic.vmc.api.datamodel.GlobalConfiguration;
 
+/**
+ * Class that connects to the VM Contextualizer API
+ * @author David Rojo - Atos
+ *
+ */
 public class VmcClient {
 	
 	private VmcApi vmcApi;
@@ -27,7 +32,4 @@ public class VmcClient {
 	public VmcApi getVmcClient(){
 		return vmcApi;
 	}
-
-	
-	
 }
