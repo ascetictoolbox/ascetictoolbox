@@ -55,7 +55,7 @@
 	<bean id="dataSource" 
     	      class="org.springframework.jdbc.datasource.DriverManagerDataSource"
 			  p:driverClassName="com.mysql.jdbc.Driver" 
-			  p:url="jdbc:mysql://localhost:3306/application_manager"
+			  p:url="jdbc:mysql://localhost:3000/application_manager"
 		      p:username="app-manager" p:password="ascetic-secret" />
 	
 	<bean id="transactionManager" 
@@ -73,4 +73,10 @@
 	<context:property-placeholder properties-ref="applicationProps" />
 	<bean id="deploymentsStatusTask" class="eu.ascetic.paas.applicationmanager.scheduler.DeploymentsStatusTask"></bean>
 		  
+		  
+	<!-- Scheduled Spring tasks -->
+	<task:annotation-driven />
+    <util:properties id="applicationProps" location="classpath:application-manager.properties" />
+    <context:property-placeholder properties-ref="applicationProps" />
+    <bean id="checkDeploymentStatusTask" class="eu.ascetic.paas.applicationmanager.scheduler.DeploymentsStatusTask" />
 </beans> 

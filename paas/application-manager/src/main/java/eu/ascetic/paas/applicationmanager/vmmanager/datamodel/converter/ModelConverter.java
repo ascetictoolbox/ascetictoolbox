@@ -11,7 +11,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
 
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ImageToUpload;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ImageUploaded;
@@ -20,7 +19,6 @@ import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ListVmEstimates;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ListVms;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ListVmsDeployed;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ListVmsToBeEstimated;
-import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.SchedulingAlgorithm;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.VmDeployed;
 
 /**

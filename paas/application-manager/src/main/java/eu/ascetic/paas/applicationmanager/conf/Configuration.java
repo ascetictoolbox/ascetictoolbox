@@ -1,7 +1,6 @@
 package eu.ascetic.paas.applicationmanager.conf;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 
 import org.apache.commons.configuration.PropertiesConfiguration;
 //import org.apache.commons.configuration.PropertiesConfiguration;

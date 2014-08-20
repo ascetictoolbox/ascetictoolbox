@@ -1,12 +1,5 @@
 package eu.ascetic.paas.applicationmanager.dao.jpa;
 
-
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 

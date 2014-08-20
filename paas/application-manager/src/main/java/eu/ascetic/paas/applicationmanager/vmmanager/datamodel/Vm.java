@@ -2,7 +2,6 @@ package eu.ascetic.paas.applicationmanager.vmmanager.datamodel;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
-import java.io.File;
 
 /**
  * VM.

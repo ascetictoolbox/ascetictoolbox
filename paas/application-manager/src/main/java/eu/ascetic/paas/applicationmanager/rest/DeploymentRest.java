@@ -18,12 +18,9 @@ import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.model.VM;
-import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
-import eu.ascetic.paas.applicationmanager.rest.util.XMLBuilder;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientHC;
 
 /**
@@ -164,7 +161,7 @@ public class DeploymentRest extends AbstractRest {
 		
 		//Delete the vms from VM manager
 		VmManagerClientHC vmManagerClient = new VmManagerClientHC();
-		boolean deleted = true;
+		//boolean deleted = true;
 		for (VM vm : deploymentVms){
 			if (!vmManagerClient.deleteVM(vm.getProviderVmId())){
 				return buildResponse(Status.BAD_REQUEST, "VM with provider vm id = " +  vm.getProviderVmId() + " cannot be deleted in VM manager");

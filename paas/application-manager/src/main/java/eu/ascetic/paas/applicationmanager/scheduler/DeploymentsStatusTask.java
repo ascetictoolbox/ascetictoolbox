@@ -217,8 +217,6 @@ public class DeploymentsStatusTask {
 				logger.error("Exception ocurred. Cause: " + e.getMessage());
 			}			
 		}
-				
-		
 	}
 	
 	/**

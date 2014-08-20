@@ -13,7 +13,6 @@ import eu.ascetic.utils.ovf.api.Disk;
 import eu.ascetic.utils.ovf.api.File;
 import eu.ascetic.utils.ovf.api.Item;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
-import eu.ascetic.utils.ovf.api.ProductSection;
 import eu.ascetic.utils.ovf.api.VirtualHardwareSection;
 import eu.ascetic.utils.ovf.api.VirtualSystem;
 import eu.ascetic.utils.ovf.api.VirtualSystemCollection;

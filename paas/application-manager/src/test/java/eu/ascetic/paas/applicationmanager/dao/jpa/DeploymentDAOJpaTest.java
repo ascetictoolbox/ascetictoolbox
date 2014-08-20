@@ -30,7 +30,7 @@ public class DeploymentDAOJpaTest extends AbstractTransactionalJUnit4SpringConte
 	public void notNull() {
 		if(deploymentDAO == null || vmDAO == null) fail();
 	}
-	/*
+	
 	@Test
 	public void saveGetAll() {
 		int size = deploymentDAO.getAll().size();
@@ -165,6 +165,6 @@ public class DeploymentDAOJpaTest extends AbstractTransactionalJUnit4SpringConte
 		
 		vms = vmDAO.getAll();
 		assertEquals(0, vms.size());
-	}*/
+	}
 }
 

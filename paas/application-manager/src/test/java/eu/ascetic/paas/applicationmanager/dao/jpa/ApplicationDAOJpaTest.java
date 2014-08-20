@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
@@ -134,7 +133,7 @@ public class ApplicationDAOJpaTest extends AbstractTransactionalJUnit4SpringCont
 		assertEquals(null, applicationFromDatabase);
 	}
 
-	/*	
+		
 	@Test
 	public void cascadeTest() {
 		int size = applicationDAO.getAll().size();
@@ -156,6 +155,8 @@ public class ApplicationDAOJpaTest extends AbstractTransactionalJUnit4SpringCont
 		boolean saved = applicationDAO.save(application);
 		assertTrue(saved);
 		
+
+		
 		Application applicationFromDatabase = applicationDAO.getAll().get(size);
 		int id = applicationFromDatabase.getId();
 		applicationFromDatabase = applicationDAO.getById(id);
@@ -171,6 +172,6 @@ public class ApplicationDAOJpaTest extends AbstractTransactionalJUnit4SpringCont
 		List<Deployment> deployments = deploymentDAO.getAll();
 		assertEquals(0, deployments.size());
 	}
-	*/
+	
 }
 

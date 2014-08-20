@@ -1,9 +1,5 @@
 package eu.ascetic.paas.applicationmanager.vmmanager.datamodel;
 
-
-
-import java.util.List;
-
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.monitoring.Host;
 
 /**
