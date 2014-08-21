@@ -48,6 +48,7 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
     private static final String DEFAULT_DATA_SOURCE_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient";
     private double usageCPU = 0.6; //assumed 60 percent usage, by default
     private HostDataSource source = null;
+    private int cpuUtilObservationTime = 15;
 
     public CpuOnlyEnergyPredictor() {
         try {
@@ -64,6 +65,8 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
             if (usageCPU == -1) {
                 String dataSrcStr = config.getString("iaas.energy.modeller.cpu.energy.predictor.datasource", "ZabbixDataSourceAdaptor");
                 config.setProperty("iaas.energy.modeller.cpu.energy.predictor.datasource", dataSrcStr);
+                cpuUtilObservationTime = config.getInt("iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time", cpuUtilObservationTime);
+                config.setProperty("iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time", cpuUtilObservationTime);                
                 setDataSource(dataSrcStr);
             }
         } catch (ConfigurationException ex) {
@@ -118,7 +121,7 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
         EnergyUsagePrediction wattsUsed;
         TimePeriod duration = new TimePeriod(new GregorianCalendar(), 1, TimeUnit.HOURS);
         if (usageCPU == -1) {
-            wattsUsed = predictTotalEnergy(host, source.getCpuUtilisation(host, 15), duration);
+            wattsUsed = predictTotalEnergy(host, source.getCpuUtilisation(host, cpuUtilObservationTime), duration);
         } else {
             wattsUsed = predictTotalEnergy(host, usageCPU, duration);
         }

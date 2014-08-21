@@ -34,7 +34,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
  */
 public class Calibrator implements Runnable {
 
-    private final HostDataSource datasource;
+    private HostDataSource datasource;
     private final DatabaseConnector database;
     private boolean running = true;
     private final LinkedBlockingDeque<Host> queue = new LinkedBlockingDeque<>();
@@ -169,6 +169,15 @@ public class Calibrator implements Runnable {
             }
             Logger.getLogger(Calibrator.class.getName()).log(Level.WARNING, "The load generator specified was not found", ex);
         }
+    }
+
+    /**
+     * This allows the data source for calibration data to be set.
+     *
+     * @param datasource The data source to set
+     */
+    public void setDatasource(HostDataSource datasource) {
+        this.datasource = datasource;
     }
 
     /**

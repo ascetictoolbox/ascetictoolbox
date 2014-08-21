@@ -68,11 +68,11 @@ public class EnergyModeller {
     private static final String DEFAULT_DATA_SOURCE_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient";
     private static final String DEFAULT_ENERGY_DIVISION_RULE_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare";
     private EnergyPredictorInterface predictor = new CpuOnlyEnergyPredictor();
-    private HostDataSource datasource = new ZabbixDataSourceAdaptor();
-    private DatabaseConnector database = new DefaultDatabaseConnector();
-    private Calibrator calibrator = new Calibrator(datasource, database);
+    private HostDataSource datasource;
+    private final DatabaseConnector database;
+    private Calibrator calibrator;
     private Thread calibratorThread;
-    private DataGatherer dataGatherer = new DataGatherer(datasource, new DefaultDatabaseConnector(), calibrator);
+    private DataGatherer dataGatherer;
     private Thread dataGatherThread;
     private Class<?> historicEnergyDivionMethod = LoadBasedDivision.class;
 
@@ -80,6 +80,29 @@ public class EnergyModeller {
      * This creates a new energy modeller.
      */
     public EnergyModeller() {
+        datasource =  new ZabbixDataSourceAdaptor();
+        database = new DefaultDatabaseConnector();
+        startup();
+    }
+
+    /**
+     * This creates a new energy modeller.
+     *
+     * @param datasource The data source to use for the energy modeller
+     * @param database The database to use for the energy modeller.
+     */
+    public EnergyModeller(HostDataSource datasource, DatabaseConnector database) {
+        this.datasource = datasource;
+        this.database = database;
+        startup();
+    }    
+    
+    /**
+     * This is common code for both constructors
+     */
+    private void startup() {
+        calibrator = new Calibrator(datasource, database);
+        dataGatherer = new DataGatherer(datasource, new DefaultDatabaseConnector(), calibrator);
         try {
             calibratorThread = new Thread(calibrator);
             calibratorThread.setDaemon(true);
@@ -129,7 +152,7 @@ public class EnergyModeller {
                 dataSource = DEFAULT_DATA_SOURCE_PACKAGE + "." + dataSource;
             }
             /**
-             * This is a special case that requires it to be loaded under the 
+             * This is a special case that requires it to be loaded under the
              * singleton design pattern.
              */
             String wattsUpMeter = DEFAULT_DATA_SOURCE_PACKAGE + ".WattsUpMeterDataSourceAdaptor";
@@ -138,14 +161,17 @@ public class EnergyModeller {
             } else {
                 datasource = (HostDataSource) (Class.forName(dataSource).newInstance());
             }
+            calibrator.setDatasource(datasource);
         } catch (ClassNotFoundException ex) {
             if (datasource == null) {
                 datasource = new ZabbixDataSourceAdaptor();
+                calibrator.setDatasource(datasource);
             }
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The data source specified was not found");
         } catch (InstantiationException | IllegalAccessException ex) {
             if (datasource == null) {
                 datasource = new ZabbixDataSourceAdaptor();
+                calibrator.setDatasource(datasource);
             }
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The data source did not work", ex);
         }
