@@ -114,6 +114,33 @@
 			<artifactId>application-manager-datamodel</artifactId>
 			<version>0.7-SNAPSHOT</version>
 		</dependency>
+		
+			<!-- OVF LIBRARIES -->
+		<dependency>
+			<groupId>eu.ascetic.utils</groupId>
+			<artifactId>ovf-xmlbeans</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>eu.ascetic.utils</groupId>
+			<artifactId>ovf-xmlbeans-api</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+			<!--  VM Contextualizer -->
+		<dependency>
+			<groupId>eu.ascetic.paas</groupId>
+			<artifactId>virtual-machine-contextualizer</artifactId>
+			<version>3.3.0-SNAPSHOT</version>
+		</dependency>
+		
+			<!-- PaaS Energy Modeller -->
+		<dependency>
+			<groupId>eu.ascetic.paas</groupId>
+			<artifactId>paas-energy-modeller</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 
 		<!-- General -->
 		<dependency>
@@ -296,26 +323,6 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-		</dependency>
-		
-		<!-- OVF LIBRARIES -->
-		<dependency>
-			<groupId>eu.ascetic.utils</groupId>
-			<artifactId>ovf-xmlbeans</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>eu.ascetic.utils</groupId>
-			<artifactId>ovf-xmlbeans-api</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-
-		<!--  VM Contextualizer -->
-		<dependency>
-			<groupId>eu.ascetic.paas</groupId>
-			<artifactId>virtual-machine-contextualizer</artifactId>
-			<version>3.3.0-SNAPSHOT</version>
 		</dependency>
 		
 	</dependencies>
