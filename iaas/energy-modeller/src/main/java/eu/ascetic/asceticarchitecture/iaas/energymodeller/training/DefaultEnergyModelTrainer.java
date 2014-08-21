@@ -37,8 +37,8 @@ public class DefaultEnergyModelTrainer implements EnergyModelTrainerInterface {
 
     /**
      * This method stores the appropriate values that are needed for training
-     * the model. It should be called several times for a specific number of values
-     * to be gathered.
+     * the model. It should be called several times for a specific number of
+     * values to be gathered.
      *
      * @param host The host resource that the model is to be trained for
      * @param usageCPU The CPU usage of the host
@@ -65,11 +65,12 @@ public class DefaultEnergyModelTrainer implements EnergyModelTrainerInterface {
         }
         return (num >= numberOfValues);
     }
-    
+
     /**
      * This method stores the appropriate values that are needed for training
      * the model. It loads all the data in at once, if called a second time it
      * will append to the data already held.
+     *
      * @param host The host resource that the model is to be trained for
      * @param data The set of data that is to be added to the training data.
      */
@@ -77,8 +78,9 @@ public class DefaultEnergyModelTrainer implements EnergyModelTrainerInterface {
     public void trainModel(Host host, ArrayList<HostEnergyCalibrationData> data) {
         if (storeValues.containsKey(host)) {
             storeValues.get(host).addAll(data);
-        } else
+        } else {
             storeValues.put(host, data);
+        }
     }
 
     /**

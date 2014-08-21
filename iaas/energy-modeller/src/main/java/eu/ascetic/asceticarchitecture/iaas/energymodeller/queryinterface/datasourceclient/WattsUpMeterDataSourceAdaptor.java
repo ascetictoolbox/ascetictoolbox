@@ -118,7 +118,6 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
                     long clock = TimeUnit.MILLISECONDS.toSeconds(calander.getTimeInMillis());
                     HostMeasurement measurement = new HostMeasurement(host, clock);
                     WattsUpPacket[] values = event.getValue();
-                    //System.out.printf("[%s] %s\n", format.format(new Date()), Arrays.toString(values));
                     String watts = values[0].get("watts").getValue();
                     String volts = values[0].get("volts").getValue();
                     String amps = values[0].get("amps").getValue();
@@ -130,11 +129,6 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
                     measurement.addMetric(new MetricValue(KpiList.ENERGY_KPI_NAME, KpiList.ENERGY_KPI_NAME, wattskwh, clock));
                     measurement.addMetric(new MetricValue(VOLTAGE_KPI_NAME, VOLTAGE_KPI_NAME, volts, clock));
                     measurement.addMetric(new MetricValue(CURRENT_KPI_NAME, CURRENT_KPI_NAME, amps, clock));
-//                    for (Field field : values[0].getFields()) {
-//                        if (!field.getName().equals("watts") && !field.getName().equals("amps") && !field.getName().equals("volts")) {
-//                            measurement.addMetric(new MetricValue(field.getName(), field.getName(), field.getValue(), values[0].getTime()));
-//                        }
-//                    }
                     try {
                         CpuPerc cpu = sigar.getCpuPerc();
                         cpuMeasure.add(new CPUtilisation(clock, cpu));
@@ -190,7 +184,7 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
             meter.setLoggingModeSerial(1);
             System.out.println("WattsUp Meter Connected " + meter.isConnected());
         } catch (IOException ex) {
-
+            Logger.getLogger(WattsUpMeterDataSourceAdaptor.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
