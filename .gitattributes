@@ -1916,6 +1916,7 @@ utils/chef/cookbooks/uninstall-demo/README.md -text
 utils/chef/cookbooks/uninstall-demo/metadata.rb -text
 utils/chef/cookbooks/uninstall-demo/recipes/default.rb -text
 utils/energy-modeller-benchtest/.sigar_shellrc -text
+utils/energy-modeller-benchtest/Apps.csv -text
 utils/energy-modeller-benchtest/Example[!!-~]dataset/About.txt -text
 utils/energy-modeller-benchtest/Example[!!-~]dataset/Example[!!-~]of[!!-~]Estimated[!!-~]vs[!!-~]Actual.xlsx -text
 utils/energy-modeller-benchtest/Example[!!-~]dataset/calibration[!!-~]data.csv -text
@@ -1926,10 +1927,7 @@ utils/energy-modeller-benchtest/Example[!!-~]dataset/original/Dataset_current.tx
 utils/energy-modeller-benchtest/Example[!!-~]dataset/original/Dataset_estimate.txt -text
 utils/energy-modeller-benchtest/Example[!!-~]dataset/original/Dataset_history.txt -text
 utils/energy-modeller-benchtest/LICENCE.TXT -text
-utils/energy-modeller-benchtest/energymodeller.properties -text
-utils/energy-modeller-benchtest/energymodeller_calibrator.properties -text
-utils/energy-modeller-benchtest/energymodeller_cpu_predictor.properties -text
-utils/energy-modeller-benchtest/filter.properties -text
+utils/energy-modeller-benchtest/ascetic-load-generator-app.jar -text
 utils/energy-modeller-benchtest/libsigar-amd64-freebsd-6.so -text
 utils/energy-modeller-benchtest/libsigar-amd64-linux.so -text
 utils/energy-modeller-benchtest/libsigar-amd64-solaris.so -text
@@ -1964,6 +1962,7 @@ utils/energy-modeller-benchtest/src/main/java/eu/ascetic/energy/modeller/benchte
 utils/energy-modeller-benchtest/src/main/java/eu/ascetic/energy/modeller/benchtest/CurrentEnergyUsageLogger.java -text
 utils/energy-modeller-benchtest/src/main/java/eu/ascetic/energy/modeller/benchtest/EstimatedEnergyUsageLogger.java -text
 utils/energy-modeller-benchtest/src/main/java/eu/ascetic/energy/modeller/benchtest/HistoricEnergyUsageLogger.java -text
+utils/energy-modeller-benchtest/src/main/java/eu/ascetic/energy/modeller/benchtest/WorkloadLogger.java -text
 utils/energy-modeller-benchtest/src/test/java/eu/ascetic/energy/modeller/benchtest/AppTest.java -text
 utils/energy-modeller-data-logger/Dataset[!!-~]-[!!-~]Copy.txt -text
 utils/energy-modeller-data-logger/Dataset[!!-~]-[!!-~]Full[!!-~]Dataset[!!-~]1[!!-~]run[!!-~]for[!!-~]each[!!-~]machine.txt -text

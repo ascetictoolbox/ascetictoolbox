@@ -19,5 +19,9 @@ saas/compss-plugin/ascetic-deployer/lib/ant-antlr.jar
 saas/programming-model/compss-rt/rt/.pom.xml.kate-swp
 saas/programming-model/compss-rt/rt/target
 saas/virtual-machine-image-constructor/logs
+utils/energy-modeller-benchtest/energymodeller.properties
+utils/energy-modeller-benchtest/energymodeller_calibrator.properties
+utils/energy-modeller-benchtest/energymodeller_cpu_predictor.properties
+utils/energy-modeller-benchtest/filter.properties
 utils/energy-modeller-data-logger/target
 utils/ovf-xmlbeans-api/velocity.log.1
