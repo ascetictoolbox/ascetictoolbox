@@ -346,6 +346,7 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/jp
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/jpa/VMDAOJpaTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/ovf/OVFUtilsTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/ApplicationRestTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/DeploymentRestTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/RootRestTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/util/XMLBuilderTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/scheduler/DeploymentStatusTaskTest.java -text

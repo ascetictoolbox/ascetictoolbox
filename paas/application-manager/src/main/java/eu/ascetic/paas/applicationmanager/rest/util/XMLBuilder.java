@@ -195,4 +195,42 @@ public class XMLBuilder {
 		
 		return ModelConverter.objectCollectionToXML(collection);
 	}
+	
+	/**
+	 * Adds all the XML information for creating a collection of Deployments
+	 * @param deployments List containing all the deployments for an application
+	 * @param applicationId from which the deployments belong
+	 * @return the XML representation of tha list of deployments
+	 */
+	public static String getCollectionOfDeploymentsXML(List<Deployment> deployments, String applicationId) {
+		Collection collection = new Collection();
+		collection.setHref("/applications/" + applicationId + "/deployments");
+		
+		Link linkParent = new Link();
+		linkParent.setHref("/applications/" + applicationId);
+		linkParent.setRel("parent");
+		linkParent.setType(MediaType.APPLICATION_XML);
+		collection.addLink(linkParent);
+		
+		Link linkSelf = new Link();
+		linkSelf.setHref(collection.getHref());
+		linkSelf.setRel("self");
+		linkSelf.setType(MediaType.APPLICATION_XML);
+		collection.addLink(linkSelf);
+		
+		Items items = new Items();
+		items.setOffset(0);
+		collection.setItems(items);
+		
+		if(deployments != null) {
+			items.setTotal(deployments.size());
+			
+			for(Deployment deployment : deployments) {
+				deployment = addDeploymentXMLInfo(deployment, Integer.parseInt(applicationId));
+				items.addDeployment(deployment);
+			}
+		}
+		
+		return ModelConverter.objectCollectionToXML(collection);
+	}
 }

@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.model.VM;
+import eu.ascetic.paas.applicationmanager.rest.util.XMLBuilder;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientHC;
 
 /**
@@ -42,10 +43,14 @@ public class DeploymentRest extends AbstractRest {
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getDeployments(@PathParam("application_id") String applicationId) {
 		logger.info("GET request to paht: /applications/" + applicationId + "/deployments");
-		// TODO
-		// TODO it is necessary to implement a lot of query params here
-		// TODO 
-		return buildResponse(Status.OK, "Method not implemented yet");
+		
+		// We get the deployments for an application from the DB
+		List<Deployment> deployments = applicationDAO.getById(Integer.parseInt(applicationId)).getDeployments();
+		
+		// We create the XMl response
+		String xml = XMLBuilder.getCollectionOfDeploymentsXML(deployments, applicationId);
+		
+		return buildResponse(Status.OK, xml);
 	}
 	
 	/**
@@ -139,9 +144,7 @@ public class DeploymentRest extends AbstractRest {
 	@Path("{deployment_id}")
 	public Response deleteDeployment(@PathParam("application_id") String applicationId, @PathParam("deployment_id") String deploymentId) {
 		logger.info("DELETE request to path: /applications/" + applicationId + "/deployments/" + deploymentId);
-		// TODO
-		// TODO this does not really deletes the deployment from the database, simply it puts
-		//      the application in terminated state and deletes any resource associated to it
+
 		
 		int intDeploymentId = 0;
 		try{
