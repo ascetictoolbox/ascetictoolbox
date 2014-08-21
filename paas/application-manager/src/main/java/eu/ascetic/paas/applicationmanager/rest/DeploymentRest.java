@@ -80,8 +80,12 @@ public class DeploymentRest extends AbstractRest {
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getDeployment(@PathParam("application_id") String applicationId, @PathParam("deployment_id") String deploymentId) {
 		logger.info("GET request to path: /applications/" + applicationId + "/deployments/" + deploymentId);
-		//TODO
-		return buildResponse(Status.OK, "Method not implemented yet");
+		
+		Deployment deployment = deploymentDAO.getById(Integer.parseInt(deploymentId));
+		
+		String xml = XMLBuilder.getDeploymentXML(deployment, Integer.parseInt(applicationId));
+		
+		return buildResponse(Status.OK, xml);
 	}
 	
 	/**

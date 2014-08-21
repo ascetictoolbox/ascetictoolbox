@@ -14,6 +14,7 @@ import javax.xml.bind.Unmarshaller;
 import org.junit.Test;
 
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
+import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Collection;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
@@ -103,5 +104,46 @@ public class DeploymentRestTest {
 		assertEquals("ovf2", deployment2.getOvf());
 		assertEquals("price2", deployment2.getPrice());
 		assertEquals("Status2", deployment2.getStatus());
+	}
+	
+	@Test
+	public void getDeploymentTest() throws Exception {
+		Deployment deployment = new Deployment();
+		deployment.setId(1);
+		deployment.setOvf("ovf1");
+		deployment.setPrice("price1");
+		deployment.setStatus("Status1");
+		
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		when(deploymentDAO.getById(1)).thenReturn(deployment);
+		
+		DeploymentRest deploymentRest = new DeploymentRest();
+		deploymentRest.deploymentDAO = deploymentDAO;
+		
+		Response response = deploymentRest.getDeployment("2", "1");
+		
+		assertEquals(200, response.getStatus());
+		
+		String xml = (String) response.getEntity();
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(Deployment.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		deployment = (Deployment) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals("/applications/2/deployments/1", deployment.getLinks().get(1).getHref());
+		assertEquals("self", deployment.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment.getLinks().get(1).getType());
+		assertEquals("/applications/2/deployments", deployment.getLinks().get(0).getHref());
+		assertEquals("parent", deployment.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment.getLinks().get(0).getType());
+		assertEquals("/applications/2/deployments/1/ovf", deployment.getLinks().get(2).getHref());
+		assertEquals("ovf", deployment.getLinks().get(2).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment.getLinks().get(2).getType());
+		assertEquals("/applications/2/deployments/1/vms", deployment.getLinks().get(3).getHref());
+		assertEquals("vms", deployment.getLinks().get(3).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment.getLinks().get(3).getType());
+		assertEquals("ovf1", deployment.getOvf());
+		assertEquals("price1", deployment.getPrice());
+		assertEquals("Status1", deployment.getStatus());
 	}
 }
