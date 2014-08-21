@@ -22,8 +22,8 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasou
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.WattsUpMeterDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
-import eu.ascetic.ioutils.execution.ManagedProcessSequenceExecutor;
 import eu.ascetic.ioutils.execution.CompletedListener;
+import eu.ascetic.ioutils.execution.ManagedProcessSequenceExecutor;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -84,6 +84,10 @@ public class Benchtest {
         database = null;
     } 
     
+    /**
+     * The aim of this class is to consume the workload generators completion 
+     * signal and to ignore it.
+     */
     private static class DummyCompletedListener implements CompletedListener {
 
         @Override
