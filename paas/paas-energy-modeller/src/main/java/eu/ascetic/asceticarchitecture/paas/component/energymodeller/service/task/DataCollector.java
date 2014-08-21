@@ -50,20 +50,25 @@ public class DataCollector extends TimerTask implements DataCollectorTaskInterfa
 	@Override
 	public void handleConsumptionData(String applicationid, String deploymentid) {
 		logger.info("Connection to IaaS DB for data retrieval");
-		// TODO get vm for deployment???? also replicate for each wm
+		// TODO get vm for deployment???? also replicate for each vm
 		String vmid="10111";
 		long vmcpu_total=1;
 		if (iaasdatadriver==null){
 			logger.info("Connection to IaaS DB unavailable");
 			return;
 		}
+		logger.debug("Retrieving Host for the given VM");
 		String hostid = iaasdatadriver.getHostIdForVM(vmid);
+		logger.debug("Retrieving total cpu for the given VM");
 		String CPU_HOST = iaasdatadriver.getHostTotalCpu(hostid);
 		if (CPU_HOST.equals("0"))CPU_HOST="1.0";
+		logger.debug("Calculating nominal ratio between VM and its Phys. Host");
 		double ratio = vmcpu_total/Double.parseDouble(CPU_HOST);
+		logger.info("Retrieving data information from IaaS Layer");
+		// TODO only if data has not been already loaded
 		List<IaaSVMConsumption> data = iaasdatadriver.getEnergyForVM(hostid, vmid);
-		logger.info("vm id "+vmid + " has cpu "+vmcpu_total);
-		logger.info("vm is on host "+hostid + " with cpu "+CPU_HOST);
+		logger.debug("This VM "+vmid + " has CPU "+vmcpu_total);
+		logger.debug("This VM is on host "+hostid + " with CPU "+CPU_HOST);
 		double load;
 		double utilization;
 		

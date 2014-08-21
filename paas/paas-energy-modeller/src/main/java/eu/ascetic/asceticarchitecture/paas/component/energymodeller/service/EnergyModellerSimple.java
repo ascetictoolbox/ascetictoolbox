@@ -1,5 +1,7 @@
 package eu.ascetic.asceticarchitecture.paas.component.energymodeller.service;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
@@ -47,27 +49,11 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 		LOGGER.info("EM Initialization complete");
 	}
 	
-	@Override
-	public boolean startModellingApplicationEnergy(String providerid,String applicationid, String deploymentid) {
-		LOGGER.info("Registering application " + applicationid + " and deployment " + deploymentid + " for monitoring");
-		dbmanager.getMonitoringData().createMonitoring(applicationid, deploymentid, "");
-		return true;
-	}
 
-	@Override
-	public boolean stopModellingApplicationEnergy(String providerid,String applicationid, String deploymentid) {
-		// update db
-		LOGGER.info("Application " + applicationid + " on deployment " + deploymentid + " removed from monitoring");
-		dbmanager.getMonitoringData().terminateMonitoring(applicationid, deploymentid);
-		// get iaas data
-		datacollector.handleConsumptionData(applicationid,deploymentid);
-		return true;
-	}
 
 	@Override
 	public double energyApplicationConsumption(String providerid,String applicationid, String deploymentid) {
-		// compute value from collected data
-		// check from db if data has been collected in past or training occurred
+		//TODO check from db if data has been collected in past or training occurred
 		datacollector.handleConsumptionData(applicationid,deploymentid);
 		double energy = energyService.getTotal(applicationid, deploymentid, "");
 		LOGGER.info("Application consumed " + String.format( "%.2f", energy ));
@@ -76,12 +62,11 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 
 	@Override
 	public double energyEstimation(String providerid, String applicationid,	String deploymentid,  String eventid) {
+		//TODO integrate prediction model
 		if (eventid==null){
 			LOGGER.info("Energy estimation for " + applicationid );
 			datacollector.handleConsumptionData(applicationid,deploymentid);
 			double energy = energyService.getTotal(applicationid, deploymentid, "");
-			DecimalFormat df = new DecimalFormat("#.00"); 
-			
 			LOGGER.info("Application consumed " +String.format( "%.2f", energy ));
 			return energy;
 			 
@@ -100,9 +85,10 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 
 	@Override
 	public double energyEstimationForVM(String providerid, String applicationid, String vmid, String eventid) {
+		//TODO integrate prediction model
 		if (eventid==null){
 			LOGGER.info("Energy estimation for " + applicationid );
-			//todo get the deployment for vm
+			//TODO get the deployment for vm or it is unique the VMid?
 			//datacollector.handleConsumptionData(applicationid,deploymentid);
 			double energy =  energyService.getTotal(applicationid, null, vmid, "");
 			LOGGER.info("Application consumed " +energy);
@@ -138,6 +124,22 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 		return true;
 	}
 
+	
+	@Override
+	public boolean startModellingApplicationEnergy(String providerid,String applicationid, String deploymentid) {
+		LOGGER.info("Registering application " + applicationid + " with deployment " + deploymentid + " for monitoring");
+		dbmanager.getMonitoringData().createMonitoring(applicationid, deploymentid, "");
+		return true;
+	}
+
+	@Override
+	public boolean stopModellingApplicationEnergy(String providerid,String applicationid, String deploymentid) {
+		// update db
+		LOGGER.info("Application " + applicationid + " with deployment " + deploymentid + " removed from monitoring");
+		dbmanager.getMonitoringData().terminateMonitoring(applicationid, deploymentid);
+		return true;
+	}
+
 	/**
 	 * @return the emsettings of the Energy Modeller. It allows to get the current settings loaded from file
 	 */
@@ -158,12 +160,13 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 	
 	private void initializeProperty(){
 		LOGGER.debug("Configuring settings and EM PaaS Database");
-		InputStream inputStream = getClass().getClassLoader().getResourceAsStream(propertyFile);
-		if (inputStream == null) {
-			LOGGER.warn("Properties not loaded, using default values");
-		}
-		Properties props = new Properties();
+		InputStream inputStream;
 		try {
+			inputStream = new FileInputStream(propertyFile);
+		
+		
+			Properties props = new Properties();
+
 			props.load(inputStream);
 			emsettings = new EMSettings(props);
 			LOGGER.debug("Properties loaded");
@@ -172,6 +175,7 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 			LOGGER.debug("Configured");
 		} catch (IOException e) {
 			LOGGER.error("Properties not loaded due to a failure");
+			LOGGER.error("Properties not loaded, file not found!");
 			e.printStackTrace();
 		}
 	}
