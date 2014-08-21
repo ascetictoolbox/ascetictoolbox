@@ -74,7 +74,7 @@ public class DefaultTaskScheduler extends TaskScheduler {
     @Override
     public void resourcesCreated(String schedulerName, ResourceDescription granted, Integer limitOfTasks) {
         super.resourcesCreated(schedulerName, granted, limitOfTasks);
-
+        
         if (taskSets.getNoResourceCount() > 0) {
             int[] simTasks = ResourceManager.getResource(schedulerName).getSimultaneousTasks();
             for (int coreId = 0; coreId < CoreManager.coreCount; coreId++) {

@@ -45,7 +45,10 @@ public class VM {
         this.IPv4 = IPv4;
         this.providerId = providerID;
         this.componentId = componentId;
-        description = new ResourceDescription(componentDescription.get(componentId));
+        System.out.println("ComponentID:"+componentId);
+        ResourceDescription rd= componentDescription.get(componentId);
+        System.out.println("Description: "+rd);
+        description = new ResourceDescription(rd);
         description.setName(IPv4);
         consumption = new int[CoreManager.coreCount][];
         for (int coreId = 0; coreId < CoreManager.coreCount; coreId++) {

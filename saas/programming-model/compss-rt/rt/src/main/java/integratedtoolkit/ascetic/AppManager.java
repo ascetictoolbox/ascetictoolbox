@@ -17,7 +17,10 @@ package integratedtoolkit.ascetic;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class AppManager {
 
@@ -29,25 +32,29 @@ public class AppManager {
     private static final String RESOURCES_PATH;
     private static final HashMap<String, VM> detectedVMs;
 
+    private static int TEST_ID = 1;
+    private static int TEST_LIMIT = 3;
+    private static LinkedList<String> receivedVMs = new LinkedList();
+
     static {
         applicationId = Configuration.getApplicationId();
         deploymentId = Configuration.getDeploymentId();
         endpoint = Configuration.getApplicationMonitorEndpoint();
         RESOURCES_PATH = "/applications/" + applicationId + "/deployments/" + deploymentId;
         detectedVMs = new HashMap<String, VM>();
+        (new Tester()).start();
     }
 
     public static Collection<VM> getResources() {
-        for (int i = 0; i < 3; i++) {
-            String IPv4 = "127.0.0." + i;
-            String component = "component1";
-            String id = UUID.randomUUID().toString();
+        for (String rvm : receivedVMs) {
+            String IPv4 = rvm;
             VM vm = detectedVMs.get(IPv4);
             if (vm == null) {
+                String component = "component1";
+                String id = UUID.randomUUID().toString();
                 vm = new VM(IPv4, id, component);
                 detectedVMs.put(IPv4, vm);
             }
-
         }
         return detectedVMs.values();
     }
@@ -56,4 +63,17 @@ public class AppManager {
         return new java.util.Random().nextInt(100);
     }
 
+    static class Tester extends Thread {
+
+        public void run() {
+            while (TEST_ID <= TEST_LIMIT) {
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException ex) {
+                }
+                receivedVMs.add("127.0.0." + TEST_ID);
+                TEST_ID++;
+            }
+        }
+    }
 }

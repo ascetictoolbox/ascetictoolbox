@@ -15,6 +15,7 @@
  */
 package integratedtoolkit.ascetic;
 
+import integratedtoolkit.types.CloudImageDescription;
 import integratedtoolkit.types.ResourceDescription;
 import java.util.HashMap;
 
@@ -33,6 +34,7 @@ public class Configuration {
         applicationMonitorEndpoint = "http://10.4.0.16:9000/";
         //applicationMonitorEndpoint = "http://localhost:9000";
         componentDescription = new HashMap<String, ResourceDescription>();
+        parseComponents();
     }
 
     public static String getApplicationId() {
@@ -54,4 +56,43 @@ public class Configuration {
     static HashMap<String, ResourceDescription> getComponentDescriptions() {
         return componentDescription;
     }
+
+    private static ResourceDescription createComponentDescription(String name, String description) {
+        ResourceDescription rd = new ResourceDescription();
+        rd.setName(name);
+
+        rd.setProcessorArchitecture("x386");
+        rd.setProcessorCPUCount(1);
+        rd.setProcessorCoreCount(2);
+        rd.setSlots(2);
+
+        rd.setMemoryPhysicalSize(8);
+        rd.setMemoryVirtualSize(16);
+
+        rd.setStorageElemSize(500);
+
+        rd.setOperatingSystemType(name);
+
+        rd.setValue(0);
+        rd.setType(name);
+
+        CloudImageDescription cid = new CloudImageDescription();
+        cid.setName("component1");
+        cid.setiDir("/opt/COMPSs/Runtime/scripts/system");
+        cid.setwDir("/tmp");
+        cid.setUser("flordan");
+        cid.setCPUCount(2);
+
+        rd.setImage(cid);
+
+        return rd;
+    }
+
+    private static void parseComponents() {
+        String name = "component1";
+        String description = "";
+        ResourceDescription rd = createComponentDescription(name, description);
+        componentDescription.put("component1", rd);
+    }
+
 }

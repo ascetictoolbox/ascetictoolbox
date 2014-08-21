@@ -224,6 +224,13 @@ public class TaskDispatcher implements Runnable, Schedule, JobStatus {
             case SCHEDULE_TASKS:
                 ScheduleTasksRequest stRequest = (ScheduleTasksRequest) request;
                 List<Task> toSchedule = stRequest.getToSchedule();
+                if (debug) {
+                    StringBuilder sb = new StringBuilder("Schedule tasks: ");
+                    for (Task t : toSchedule) {
+                        sb.append(t.getTaskParams().getName()).append("(").append(t.getId()).append(") ");
+                    }
+                    logger.debug(sb);
+                }
                 LinkedList<String> obsoletes = stRequest.getObsoletes();
                 if (obsoletes != null) {
                     FTM.obsoleteVersions(obsoletes);
@@ -392,7 +399,6 @@ public class TaskDispatcher implements Runnable, Schedule, JobStatus {
     }
 
     private void addCloudNode(String schedulerName, String provider, ResourceCreationRequest rcr, boolean check, Integer limitOfTasks) {
-
         if (check) {
             List<Integer> coreIds = CoreManager.findExecutableCores(rcr.getGranted());
             boolean moreJobs = false;
@@ -414,7 +420,6 @@ public class TaskDispatcher implements Runnable, Schedule, JobStatus {
         }
         ResourceManager.addCloudResource(schedulerName, rcr.getGranted(), limitOfTasks);
         TS.resourcesCreated(schedulerName, rcr.getGranted(), limitOfTasks);
-
     }
 
     private void applyResourceChanges(ScheduleDecisions newState) {
@@ -494,13 +499,6 @@ public class TaskDispatcher implements Runnable, Schedule, JobStatus {
      */
     // TP (TA)
     public void scheduleTasks(List<Task> toSchedule, boolean waiting, int[] waitingCount, LinkedList<String> obsoletes) {
-        if (debug) {
-            StringBuilder sb = new StringBuilder("Schedule tasks: ");
-            for (Task t : toSchedule) {
-                sb.append(t.getTaskParams().getName()).append("(").append(t.getId()).append(") ");
-            }
-            logger.debug(sb);
-        }
         addRequest(new ScheduleTasksRequest(toSchedule, waiting, waitingCount, obsoletes));
     }
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ResourceList>
-
+<!--
 	<Resource Name="localhost">
                     <Capabilities>
                         <Host>
@@ -38,7 +38,7 @@
                 </Capabilities>
                 <Requirements/>
         </Resource>
-
+	-->
 	<Service wsdl="http://bscgrid05.bsc.es:20390/hmmerobj/hmmerobj?wsdl">
                 <Name>HmmerObjects</Name>
                 <Namespace>http://hmmerobj.worker</Namespace>

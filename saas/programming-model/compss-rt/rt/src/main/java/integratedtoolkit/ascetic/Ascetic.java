@@ -15,9 +15,12 @@
  */
 package integratedtoolkit.ascetic;
 
+import integratedtoolkit.types.CloudImageDescription;
 import integratedtoolkit.types.Implementation;
 import integratedtoolkit.types.Job;
+import integratedtoolkit.types.ProjectWorker;
 import integratedtoolkit.types.ResourceDescription;
+import integratedtoolkit.util.ProjectManager;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -26,13 +29,16 @@ public class Ascetic {
     private static final HashMap<String, VM> resources = new HashMap<String, VM>();
 
     public static LinkedList<ResourceDescription> getNewResources() {
+        System.out.println("Obtaining new Resources");
         LinkedList<ResourceDescription> newResources = new LinkedList<ResourceDescription>();
         for (VM vm : AppManager.getResources()) {
             if (resources.get(vm.getIPv4()) == null) {
                 newResources.add(vm.getDescription());
                 resources.put(vm.getIPv4(), vm);
+                CloudImageDescription cid= vm.getDescription().getImage();
+                ProjectWorker pw =  new ProjectWorker(vm.getIPv4(), "ASCETIC", cid.getUser(), cid.getiDir(), cid.getwDir());
+                ProjectManager.addProjectWorker(pw);
             }
-
         }
         return newResources;
     }
@@ -46,18 +52,18 @@ public class Ascetic {
             vm.updateConsumptions();
         }
     }
-    
-    public static void startEvent(Job job){
-        
-        Implementation impl=job.getImplementation();
-        String eventType="core"+impl.getCoreId()+"impl"+impl.getImplementationId();
-        String IPv4= job.getResource().getName();
+
+    public static void startEvent(Job job) {
+        Implementation impl = job.getImplementation();
+        String eventType = "core" + impl.getCoreId() + "impl" + impl.getImplementationId();
+        String IPv4 = job.getResource().getName();
         VM vm = resources.get(IPv4);
-        String eventId =ApplicationMonitor.startEvent(vm, eventType);
-        job.setEventId(eventId);
+        //String eventId = ApplicationMonitor.startEvent(vm, eventType);
+        //job.setEventId(eventId);
     }
-    public static void stopEvent(Job job){
-        ApplicationMonitor.stopEvent(job.getEventId());
+
+    public static void stopEvent(Job job) {
+        //ApplicationMonitor.stopEvent(job.getEventId());
     }
 
 }

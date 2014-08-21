@@ -16,6 +16,7 @@ saas/compss-packager/.classpath
 saas/compss-packager/.project
 saas/compss-plugin/ascetic-deployer/.classpath
 saas/compss-plugin/ascetic-deployer/lib/ant-antlr.jar
+saas/programming-model/compss-rt/rt/.pom.xml.kate-swp
 saas/programming-model/compss-rt/rt/target
 saas/virtual-machine-image-constructor/logs
 utils/energy-modeller-data-logger/target

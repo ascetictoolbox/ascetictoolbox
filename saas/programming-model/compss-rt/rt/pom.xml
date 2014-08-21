@@ -18,6 +18,17 @@
 	<properties>          
          <cxf.version>2.6.5</cxf.version>          
     </properties>
+    
+    	<repositories>
+
+		<repository>
+			<id>grid-repo</id>
+			<name>BSC Grid computing and Clusters group</name>
+			<url>http://compss.bsc.es/artifactory/grid-devel-repo</url>
+		</repository>
+
+	</repositories>
+    
 	<dependencies>
 		<dependency>
 			<groupId>eu.ascetic.saas.programming-model</groupId>
