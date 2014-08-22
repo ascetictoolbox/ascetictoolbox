@@ -16,6 +16,7 @@
 package eu.ascetic.ascetic.load.generator.app;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,15 +27,15 @@ import java.util.logging.Logger;
  */
 public class MemoryLoadGenerator {
 
-    private static final ArrayList<byte[]> data = new ArrayList<>();
-    private static final Runtime runtime = Runtime.getRuntime();
+    private static final ArrayList<byte[]> DATA = new ArrayList<>();
+    private static final Runtime RUNTIME = Runtime.getRuntime();
 
     /**
      * This gets the current runtime allocated memory.
      * @return The amount of memory in use in megabytes
      */
     private static long getMemory() {
-        return runtime.totalMemory() / (1024 * 1024);
+        return RUNTIME.totalMemory() / (1024 * 1024);
     }
 
     /**
@@ -56,8 +57,10 @@ public class MemoryLoadGenerator {
         
         System.out.println("Inital Size : " + getMemory());
         //Add to an array list 1Mb of memory allocation
+        byte[] b = new byte[1048576];
+        new Random().nextBytes(b);
         while (getMemory() < maxSize) {
-            data.add(new byte[1048576]); //1 MB
+            DATA.add(b.clone()); //1 MB
             try {
                 Thread.sleep(sleepInterval);
             } catch (InterruptedException ex) {
