@@ -28,7 +28,7 @@ import java.text.SimpleDateFormat;
  */
 public class CurrentEnergyUsageLogger extends GenericLogger<CurrentUsageRecord> {
 
-    private static final SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+    private static final SimpleDateFormat FORMAT = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
 
     /**
      * This creates a current energy usage logger.
@@ -49,7 +49,7 @@ public class CurrentEnergyUsageLogger extends GenericLogger<CurrentUsageRecord> 
 
     @Override
     public void writebody(CurrentUsageRecord item, ResultsStore store) {
-        store.add(format.format(item.getTime().getTime()));
+        store.add(FORMAT.format(item.getTime().getTime()));
         store.append(item.getPower());
         store.append(item.getCurrent());
         store.append(item.getVoltage());

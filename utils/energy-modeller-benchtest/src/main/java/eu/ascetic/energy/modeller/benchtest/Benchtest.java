@@ -44,30 +44,40 @@ public class Benchtest {
     private static HostDataSource datasource = WattsUpMeterDataSourceAdaptor.getInstance();
     private static DatabaseConnector database = new DefaultDatabaseConnector();
     private static EnergyModeller modeller = new EnergyModeller(datasource, database);
-    private static final Host host = modeller.getHost("localhost");
-    private static final ArrayList<VM> vms = new ArrayList<>();
+    private static final Host HOST = modeller.getHost("localhost");
+    private static final ArrayList<VM> VMS = new ArrayList<>();
 
+    /**
+     * This runs the main benchmarking tool. It runs for 5 minutes, logging data
+     * regarding the experiment.
+     * @param args The first argument is the running time of the experiment.
+     * @throws SigarException Thrown if the CPU monitoring fails.
+     */
     public static void main(String[] args) throws SigarException {
+        int duration = 5;
+        if (args.length > 0) {
+            duration = Integer.valueOf(args[0]);
+        }
         DummyCompletedListener completedListener = new DummyCompletedListener();
         ManagedProcessSequenceExecutor executor = new ManagedProcessSequenceExecutor(completedListener);
-        CurrentEnergyUsageLogger logger = new CurrentEnergyUsageLogger(new File("Dataset_current.csv"), false);
-        new Thread(logger).start();
-        EstimatedEnergyUsageLogger logger_est = new EstimatedEnergyUsageLogger(new File("Dataset_estimate.csv"), false);
-        new Thread(logger_est).start();
-        HistoricEnergyUsageLogger logger_hist = new HistoricEnergyUsageLogger(new File("Dataset_history.csv"), false);
-        new Thread(logger_hist).start();
-        WorkloadLogger logger_workload = new WorkloadLogger(new File("Dataset_workload.csv"), false);
-        new Thread(logger_workload).start();
+        CurrentEnergyUsageLogger loggerCurrent = new CurrentEnergyUsageLogger(new File("Dataset_current.csv"), false);
+        new Thread(loggerCurrent).start();
+        EstimatedEnergyUsageLogger loggerEstimate = new EstimatedEnergyUsageLogger(new File("Dataset_estimate.csv"), false);
+        new Thread(loggerEstimate).start();
+        HistoricEnergyUsageLogger loggerHistory = new HistoricEnergyUsageLogger(new File("Dataset_history.csv"), false);
+        new Thread(loggerHistory).start();
+        WorkloadLogger loggerWorkload = new WorkloadLogger(new File("Dataset_workload.csv"), false);
+        new Thread(loggerWorkload).start();
 
         long endTime = new GregorianCalendar().getTimeInMillis();
-        endTime = endTime + TimeUnit.MINUTES.toMillis(5);
+        endTime = endTime + TimeUnit.MINUTES.toMillis(duration);
         Sigar sigar = new Sigar();
 
         while (new GregorianCalendar().getTimeInMillis() < endTime) {
-            logger_workload.printToFile(sigar.getCpuPerc());
-            logger.printToFile(modeller.getCurrentEnergyForHost(host));
-            logger_est.printToFile(modeller.getHostPredictedEnergy(host, vms));
-            logger_hist.printToFile(modeller.getEnergyRecordForHost(host, null));
+            loggerWorkload.printToFile(sigar.getCpuPerc());
+            loggerCurrent.printToFile(modeller.getCurrentEnergyForHost(HOST));
+            loggerEstimate.printToFile(modeller.getHostPredictedEnergy(HOST, VMS));
+            loggerHistory.printToFile(modeller.getEnergyRecordForHost(HOST, null));
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException ex) {
@@ -75,13 +85,11 @@ public class Benchtest {
             }
         }
         //This stops the benchmarking/testing suite from running.
-        logger_workload.stop();
-        logger.stop();
-        logger_est.stop();
-        logger_hist.stop();
-        modeller = null;
-        datasource = null;
-        database = null;
+        loggerWorkload.stop();
+        loggerCurrent.stop();
+        loggerEstimate.stop();
+        loggerHistory.stop();
+        modeller.stop();
     } 
     
     /**

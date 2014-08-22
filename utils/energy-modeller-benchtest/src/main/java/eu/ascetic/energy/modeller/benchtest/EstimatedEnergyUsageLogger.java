@@ -28,7 +28,7 @@ import java.text.SimpleDateFormat;
  */
 public class EstimatedEnergyUsageLogger extends GenericLogger<EnergyUsagePrediction> {
 
-    private static final SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+    private static final SimpleDateFormat FORMAT = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
 
     /**
      * This creates a estimated energy usage logger.
@@ -50,8 +50,8 @@ public class EstimatedEnergyUsageLogger extends GenericLogger<EnergyUsagePredict
 
     @Override
     public void writebody(EnergyUsagePrediction item, ResultsStore store) {
-        store.add(format.format(item.getDuration().getStartTime().getTime()));
-        store.append(format.format(item.getDuration().getEndTime().getTime()));
+        store.add(FORMAT.format(item.getDuration().getStartTime().getTime()));
+        store.append(FORMAT.format(item.getDuration().getEndTime().getTime()));
         store.append(item.getDuration().getDuration());
         store.append(item.getAvgPowerUsed());
         store.append(item.getTotalEnergyUsed());

@@ -28,7 +28,7 @@ import org.hyperic.sigar.CpuPerc;
  */
 public class WorkloadLogger extends GenericLogger<CpuPerc> {
 
-    private static final SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+    private static final SimpleDateFormat FORMAT = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
 
     /**
      * This creates a cpu utilisation usage logger.
@@ -56,7 +56,7 @@ public class WorkloadLogger extends GenericLogger<CpuPerc> {
 
     @Override
     public void writebody(CpuPerc item, ResultsStore store) {
-        store.add(format.format(new Date()));
+        store.add(FORMAT.format(new Date()));
         store.append(item.getIdle());
         store.append(item.getIrq());
         store.append(item.getNice());
