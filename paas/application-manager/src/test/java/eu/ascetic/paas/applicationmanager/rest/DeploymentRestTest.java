@@ -234,6 +234,27 @@ public class DeploymentRestTest {
 		assertEquals("Aggregated energy consumption for this aplication deployment", energyMeasurement.getDescription());
 	}
 	
+	@Test
+	@SuppressWarnings(value = { "static-access" }) 
+	public void getEnergyEstimationForEventTest() throws JAXBException {
+		EnergyModellerSimple energyModeller = mock(EnergyModellerSimple.class);
+		DeploymentRest deploymentRest = new DeploymentRest();
+		
+		deploymentRest.energyModeller = energyModeller;
+		
+		when(energyModeller.energyEstimation(null, "111", "333", "eventX")).thenReturn(22.0);
+		
+		Response response = deploymentRest.getEnergyEstimationForEvent("111", "333", "eventX");
+		
+		String xml = (String) response.getEntity();
+		JAXBContext jaxbContext = JAXBContext.newInstance(EnergyMeasurement.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		EnergyMeasurement energyMeasurement = (EnergyMeasurement) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals(22.0, energyMeasurement.getValue(), 0.000001);
+		assertEquals("Aggregated energy estimation for this aplication deployment and specific event", energyMeasurement.getDescription());
+	}
+	
 	/**
 	 * It just reads a file form the disk... 
 	 * @param path

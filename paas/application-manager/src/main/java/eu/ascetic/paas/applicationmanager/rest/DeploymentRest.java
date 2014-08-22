@@ -223,4 +223,23 @@ public class DeploymentRest extends AbstractRest {
 		return buildResponse(Status.OK, xml);
 	}
 	
+	@GET
+	@Path("{deployment_id}/events/{event_id}/energy-estimation")
+	@Produces(MediaType.APPLICATION_XML)
+	public Response getEnergyEstimationForEvent(@PathParam("application_id") String applicationId, @PathParam("deployment_id") String deploymentId, @PathParam("event_id") String eventId) {
+		logger.info("GET request to path: /applications/" + applicationId + "/deployments/" + deploymentId + "/events/" + eventId + "/energy-estimation");
+		// Make sure we have the right configuration
+		energyModeller = getEnergyModeller();
+		
+		logger.debug("Connecting to Energy Modeller");
+		double energyConsumed = energyModeller.energyEstimation(null, applicationId, deploymentId, eventId);
+		
+		EnergyMeasurement energyMeasurement = new EnergyMeasurement();
+		energyMeasurement.setValue(energyConsumed);
+		
+		// We create the XMl response
+		String xml = XMLBuilder.getEnergyEstimationForDeploymentXMLInfo(energyMeasurement, applicationId, deploymentId, eventId);
+				
+		return buildResponse(Status.OK, xml);
+	}
 }

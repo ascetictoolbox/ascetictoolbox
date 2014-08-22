@@ -438,4 +438,46 @@ public class XMLBuilderTest {
 		assertEquals("self", collection.getLinks().get(1).getRel());
 		assertEquals(MediaType.APPLICATION_XML, collection.getLinks().get(1).getType());
 	}
+	
+	@Test
+	public void addEnergyEstimationForDeploymentXMLInfoTest() {
+		EnergyMeasurement energyMeasurement = new EnergyMeasurement();
+		energyMeasurement.setValue(22.0);
+		
+		energyMeasurement = XMLBuilder.addEnergyEstimationForDeploymentXMLInfo(energyMeasurement, "111", "333","eventX");
+		
+		assertEquals("/applications/111/deployments/333/events/eventX/energy-estimation", energyMeasurement.getHref());
+		assertEquals(22.0, energyMeasurement.getValue(), 0.00001);
+		assertEquals("Aggregated energy estimation for this aplication deployment and specific event", energyMeasurement.getDescription());
+		assertEquals(2, energyMeasurement.getLinks().size());
+		assertEquals("/applications/111/deployments/333/events/eventX", energyMeasurement.getLinks().get(0).getHref());
+		assertEquals("parent", energyMeasurement.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(0).getType());
+		assertEquals("/applications/111/deployments/333/events/eventX/energy-estimation", energyMeasurement.getLinks().get(1).getHref());
+		assertEquals("self",energyMeasurement.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(1).getType());
+	}
+	
+	@Test
+	public void getEnergyEstimationForDeploymentXMLInfoTest() throws Exception {
+		EnergyMeasurement energyMeasurement = new EnergyMeasurement();
+		energyMeasurement.setValue(22.0);
+		
+		String xml = XMLBuilder.getEnergyEstimationForDeploymentXMLInfo(energyMeasurement, "111", "333", "eventX");
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(EnergyMeasurement.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		energyMeasurement = (EnergyMeasurement) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals("/applications/111/deployments/333/events/eventX/energy-estimation", energyMeasurement.getHref());
+		assertEquals(22.0, energyMeasurement.getValue(), 0.00001);
+		assertEquals("Aggregated energy estimation for this aplication deployment and specific event", energyMeasurement.getDescription());
+		assertEquals(2, energyMeasurement.getLinks().size());
+		assertEquals("/applications/111/deployments/333/events/eventX", energyMeasurement.getLinks().get(0).getHref());
+		assertEquals("parent", energyMeasurement.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(0).getType());
+		assertEquals("/applications/111/deployments/333/events/eventX/energy-estimation", energyMeasurement.getLinks().get(1).getHref());
+		assertEquals("self",energyMeasurement.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(1).getType());
+	}
 }
