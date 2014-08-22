@@ -7,6 +7,7 @@ import javax.ws.rs.core.MediaType;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Collection;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
+import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
 import eu.ascetic.paas.applicationmanager.model.Items;
 import eu.ascetic.paas.applicationmanager.model.Link;
 import eu.ascetic.paas.applicationmanager.model.VM;
@@ -238,5 +239,39 @@ public class XMLBuilder {
 		}
 		
 		return ModelConverter.objectCollectionToXML(collection);
+	}
+
+	/**
+	 * Adds the necessary fields to build the XML of an Energy Measurement aggregated for all the VMs of an Application
+	 * @param energyMeasurement the object to be updated
+	 * @param applicationId application id from which the calculation is made
+	 * @param deploymentId from which the calculation is made
+	 * @return the updated object with all its XML fields
+	 */
+	public static EnergyMeasurement addEnergyMeasurementForDeploymentXMLInfo(
+			EnergyMeasurement energyMeasurement, String applicationId, String deploymentId) {
+		
+		energyMeasurement.setDescription("Aggregated energy consumption for this aplication deployment");
+		energyMeasurement.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/energy-measurement");
+		
+		Link linkParent = new Link();
+		linkParent.setHref("/applications/" + applicationId + "/deployments/" + deploymentId);
+		linkParent.setRel("parent");
+		linkParent.setType(MediaType.APPLICATION_XML);
+		energyMeasurement.addLink(linkParent);
+		
+		Link linkSelf = new Link();
+		linkSelf.setHref(energyMeasurement.getHref());
+		linkSelf.setRel("self");
+		linkSelf.setType(MediaType.APPLICATION_XML);
+		energyMeasurement.addLink(linkSelf);
+		
+		return energyMeasurement;
+	}
+	
+	public static String getEnergyMeasurementForDeploymentXMLInfo(EnergyMeasurement energyMeasurement, String applicationId, String deploymentId) {
+		energyMeasurement = XMLBuilder.addEnergyMeasurementForDeploymentXMLInfo(energyMeasurement, applicationId, deploymentId);
+		
+		return ModelConverter.objectEnergyMeasurementToXML(energyMeasurement);
 	}
 }

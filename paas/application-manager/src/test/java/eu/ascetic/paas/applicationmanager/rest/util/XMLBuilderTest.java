@@ -16,6 +16,7 @@ import org.junit.Test;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Collection;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
+import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
 import eu.ascetic.paas.applicationmanager.model.VM;
 
 public class XMLBuilderTest {
@@ -40,6 +41,48 @@ public class XMLBuilderTest {
 		assertEquals("/applications/1/deployments", application.getLinks().get(2).getHref());
 		assertEquals("deployments",application.getLinks().get(2).getRel());
 		assertEquals(MediaType.APPLICATION_XML, application.getLinks().get(2).getType());
+	}
+	
+	@Test
+	public void addEnergyMeasuremenForDeploymentXMLInfoTest() {
+		EnergyMeasurement energyMeasurement = new EnergyMeasurement();
+		energyMeasurement.setValue(22.0);
+		
+		energyMeasurement = XMLBuilder.addEnergyMeasurementForDeploymentXMLInfo(energyMeasurement, "111", "333");
+		
+		assertEquals("/applications/111/deployments/333/energy-measurement", energyMeasurement.getHref());
+		assertEquals(22.0, energyMeasurement.getValue(), 0.00001);
+		assertEquals("Aggregated energy consumption for this aplication deployment", energyMeasurement.getDescription());
+		assertEquals(2, energyMeasurement.getLinks().size());
+		assertEquals("/applications/111/deployments/333", energyMeasurement.getLinks().get(0).getHref());
+		assertEquals("parent", energyMeasurement.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(0).getType());
+		assertEquals("/applications/111/deployments/333/energy-measurement", energyMeasurement.getLinks().get(1).getHref());
+		assertEquals("self",energyMeasurement.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(1).getType());
+	}
+	
+	@Test
+	public void getEnergyMeasuremenForDeploymentXMLInfoTest() throws Exception {
+		EnergyMeasurement energyMeasurement = new EnergyMeasurement();
+		energyMeasurement.setValue(22.0);
+		
+		String xml = XMLBuilder.getEnergyMeasurementForDeploymentXMLInfo(energyMeasurement, "111", "333");
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(EnergyMeasurement.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		energyMeasurement = (EnergyMeasurement) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals("/applications/111/deployments/333/energy-measurement", energyMeasurement.getHref());
+		assertEquals(22.0, energyMeasurement.getValue(), 0.00001);
+		assertEquals("Aggregated energy consumption for this aplication deployment", energyMeasurement.getDescription());
+		assertEquals(2, energyMeasurement.getLinks().size());
+		assertEquals("/applications/111/deployments/333", energyMeasurement.getLinks().get(0).getHref());
+		assertEquals("parent", energyMeasurement.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(0).getType());
+		assertEquals("/applications/111/deployments/333/energy-measurement", energyMeasurement.getLinks().get(1).getHref());
+		assertEquals("self",energyMeasurement.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(1).getType());
 	}
 	
 	@Test

@@ -18,8 +18,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import eu.ascetic.paas.applicationmanager.model.Application;
-import eu.ascetic.paas.applicationmanager.model.Deployment;
-import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
 import eu.ascetic.paas.applicationmanager.rest.util.XMLBuilder;
 
 /**

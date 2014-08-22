@@ -25,12 +25,14 @@ import javax.xml.bind.Unmarshaller;
 import org.junit.Before;
 import org.junit.Test;
 
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.EnergyModellerSimple;
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Collection;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
+import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
 
 /**
  * Collection of Unit test that verify the correct work of the REST service for Deployment entities
@@ -54,6 +56,7 @@ public class DeploymentRestTest {
 
 	@Test
 	public void getDeployments() throws Exception {
+		DeploymentRest deploymentRest = new DeploymentRest();
 	
 		Application application = new Application();
 		application.setId(1);
@@ -75,11 +78,9 @@ public class DeploymentRestTest {
 		application.addDeployment(deployment2);
 		
 		ApplicationDAO applicationDAO = mock(ApplicationDAO.class);
+		deploymentRest.applicationDAO = applicationDAO;
 		
 		when(applicationDAO.getById(1)).thenReturn(application);
-		
-		DeploymentRest deploymentRest = new DeploymentRest();
-		deploymentRest.applicationDAO = applicationDAO;
 		
 		Response response = deploymentRest.getDeployments("1");
 		
@@ -209,6 +210,28 @@ public class DeploymentRestTest {
 		// We verify the number of calls to the DAO
 		verify(applicationDAO, times(2)).getByName("Three Tier Web App");
 		verify(applicationDAO, times(1)).update(any(Application.class));
+	} 
+	
+	@Test
+	@SuppressWarnings(value = { "static-access" }) 
+	public void getEnergyConsumptionTest() throws JAXBException {
+		EnergyModellerSimple energyModeller = mock(EnergyModellerSimple.class);
+		DeploymentRest deploymentRest = new DeploymentRest();
+		
+		deploymentRest.energyModeller = energyModeller;
+		
+		when(energyModeller.energyApplicationConsumption(null, "111", "333")).thenReturn(22.0);
+
+		Response response = deploymentRest.getEnergyConsumption("111", "333");
+		assertEquals(200, response.getStatus());
+		
+		String xml = (String) response.getEntity();
+		JAXBContext jaxbContext = JAXBContext.newInstance(EnergyMeasurement.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		EnergyMeasurement energyMeasurement = (EnergyMeasurement) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals(22.0, energyMeasurement.getValue(), 0.000001);
+		assertEquals("Aggregated energy consumption for this aplication deployment", energyMeasurement.getDescription());
 	}
 	
 	/**

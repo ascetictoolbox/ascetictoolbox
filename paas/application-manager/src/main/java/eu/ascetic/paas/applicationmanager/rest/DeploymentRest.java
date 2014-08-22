@@ -18,8 +18,11 @@ import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.PaaSEnergyModeller;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.EnergyModellerSimple;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
+import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
 import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.applicationmanager.rest.util.XMLBuilder;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientHC;
@@ -34,6 +37,21 @@ import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientHC;
 @Scope("request")
 public class DeploymentRest extends AbstractRest {
 	private static Logger logger = Logger.getLogger(DeploymentRest.class);
+	protected static PaaSEnergyModeller energyModeller; 
+	
+	/**
+	 * Constructs the EnergyModeller with an specific configuration if necessary
+	 * @return the new EnergyModeller or a previous created object
+	 */
+	protected static PaaSEnergyModeller getEnergyModeller() {
+		if(energyModeller == null) {
+			logger.debug("Initializing Energy Modeller...");
+			return new EnergyModellerSimple("/etc/ascetic/paas/em/config.properties");
+		}
+		else {
+			return energyModeller;
+		}
+	}
 	
 	/**
 	 * @param applicationId the id of the application for which we want to know the deployments
@@ -184,4 +202,25 @@ public class DeploymentRest extends AbstractRest {
 		
 		return buildResponse(Status.OK, "Deployment terminated successfully");
 	}
+	
+	@GET
+	@Path("{deployment_id}/energy-consumption")
+	@Produces(MediaType.APPLICATION_XML)
+	public Response getEnergyConsumption(@PathParam("application_id") String applicationId, @PathParam("deployment_id") String deploymentId) {
+		logger.info("GET request to path: /applications/" + applicationId + "/deployments/" + deploymentId + "/energy-measurement");
+		// Make sure we have the right configuration
+		energyModeller = getEnergyModeller();
+		
+		logger.debug("Connecting to Energy Modeller");
+		double energyConsumed = energyModeller.energyApplicationConsumption(null, applicationId, deploymentId);
+		
+		EnergyMeasurement energyMeasurement = new EnergyMeasurement();
+		energyMeasurement.setValue(energyConsumed);
+		
+		// We create the XMl response
+		String xml = XMLBuilder.getEnergyMeasurementForDeploymentXMLInfo(energyMeasurement, applicationId, deploymentId);
+				
+		return buildResponse(Status.OK, xml);
+	}
+	
 }
