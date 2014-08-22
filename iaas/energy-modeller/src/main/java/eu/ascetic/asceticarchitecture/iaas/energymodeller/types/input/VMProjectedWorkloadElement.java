@@ -40,10 +40,11 @@ public class VMProjectedWorkloadElement implements Comparable<Object> {
      * further. i.e. CPU should it be % of overall use?
      * memory usage is most important, does using more matter? No
      * does making many writes yes, and what about page faults?
-     *  private double cpuUsage;
-     *  private double networkUsage;
-     *  private double diskUsage;
-     *  private double memoryUsage;
+     * i.e.
+     *  cpuUsage;
+     *  networkUsage;
+     *  diskUsage;
+     *  memoryUsage;
      */
    
 
