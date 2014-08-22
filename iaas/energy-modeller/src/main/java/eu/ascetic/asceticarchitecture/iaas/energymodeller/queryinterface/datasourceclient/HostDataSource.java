@@ -131,9 +131,9 @@ public interface HostDataSource {
     /**
      * This finds the cpu utilisation of a host, over the last n minutes.
      * @param host The host to get the cpu utilisation data for.
-     * @param lastNMinutes The amount of minutes to get the data for
+     * @param durationSeconds The amount of seconds to get the data for
      * @return The average utilisation of the host.
      */
-    public double getCpuUtilisation(eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host, int lastNMinutes);
+    public double getCpuUtilisation(eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host, int durationSeconds);
     
 }

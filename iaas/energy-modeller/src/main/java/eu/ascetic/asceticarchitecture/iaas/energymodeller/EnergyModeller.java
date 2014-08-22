@@ -515,5 +515,15 @@ public class EnergyModeller {
     public void calibrateModelForHost(Host host) {
         calibrator.calibrateHostEnergyData(host);
     }
+    
+    /**
+     * This permanently stops the energy modeller from running, closing threads
+     * and ensuring it no longer consumes resources.
+     */
+    public void stop() {
+        calibrator.stop();
+        dataGatherer.stop();
+        database.closeConnection();
+    }
 
 }

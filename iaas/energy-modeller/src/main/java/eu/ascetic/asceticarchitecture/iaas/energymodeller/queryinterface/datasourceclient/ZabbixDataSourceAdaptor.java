@@ -418,13 +418,13 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
     /**
      * This finds the cpu utilisation of a host, over the last n minutes.
      * @param host The host to get the cpu utilisation data for.
-     * @param lastNMinutes The amount of minutes to get the data for
+     * @param lastNSeconds The amount of minutes to get the data for
      * @return The average utilisation of the host.
      */
     @Override
-    public double getCpuUtilisation(eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host, int lastNMinutes) {
+    public double getCpuUtilisation(eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host, int lastNSeconds) {
         long currentTime = new GregorianCalendar().getTimeInMillis();
-        long timeInPast = currentTime - TimeUnit.MINUTES.toMillis(lastNMinutes);
+        long timeInPast = currentTime - TimeUnit.SECONDS.toMillis(lastNSeconds);
         List<HistoryItem> interruptData = client.getHistoryDataFromItem(CPU_INTERUPT_KPI_NAME, host.getHostName(), Dictionary.HISTORY_ITEM_FORMAT_FLOAT, timeInPast, currentTime);
         List<HistoryItem> iowaitData = client.getHistoryDataFromItem(CPU_IO_WAIT_KPI_NAME, host.getHostName(), Dictionary.HISTORY_ITEM_FORMAT_FLOAT, timeInPast, currentTime);
         List<HistoryItem> niceData = client.getHistoryDataFromItem(CPU_NICE_KPI_NAME, host.getHostName(), Dictionary.HISTORY_ITEM_FORMAT_FLOAT, timeInPast, currentTime);

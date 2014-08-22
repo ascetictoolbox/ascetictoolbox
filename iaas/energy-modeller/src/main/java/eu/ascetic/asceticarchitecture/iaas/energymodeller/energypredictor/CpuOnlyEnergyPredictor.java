@@ -38,8 +38,8 @@ import org.apache.commons.math3.stat.regression.SimpleRegression;
 /**
  * This implements the cpu only energy predictor for the ASCETiC project.
  *
- * @author Richard Kavanagh This is similar to @see DefaultEnergyPredictor by
- * Eleni Agiatzidou
+ * @author Richard Kavanagh 
+ * This is similar to @see DefaultEnergyPredictor by Eleni Agiatzidou
  *
  */
 public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
@@ -48,7 +48,9 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
     private static final String DEFAULT_DATA_SOURCE_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient";
     private double usageCPU = 0.6; //assumed 60 percent usage, by default
     private HostDataSource source = null;
-    private int cpuUtilObservationTime = 15;
+    private int cpuUtilObservationTimeMin = 0;
+    private int cpuUtilObservationTimeSec = 15;
+    private int cpuUtilObservationTimeSecTotal = 0;
 
     public CpuOnlyEnergyPredictor() {
         try {
@@ -65,9 +67,13 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
             if (usageCPU == -1) {
                 String dataSrcStr = config.getString("iaas.energy.modeller.cpu.energy.predictor.datasource", "ZabbixDataSourceAdaptor");
                 config.setProperty("iaas.energy.modeller.cpu.energy.predictor.datasource", dataSrcStr);
-                cpuUtilObservationTime = config.getInt("iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time", cpuUtilObservationTime);
-                config.setProperty("iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time", cpuUtilObservationTime);                
                 setDataSource(dataSrcStr);
+                cpuUtilObservationTimeMin = config.getInt("iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.min", cpuUtilObservationTimeMin);
+                config.setProperty("iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.min", cpuUtilObservationTimeMin);
+                cpuUtilObservationTimeSec = config.getInt("iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.sec", cpuUtilObservationTimeSec);
+                config.setProperty("iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.sec", cpuUtilObservationTimeSec);
+                cpuUtilObservationTimeSecTotal = cpuUtilObservationTimeSec + (int) TimeUnit.MINUTES.toSeconds(cpuUtilObservationTimeMin);
+
             }
         } catch (ConfigurationException ex) {
             Logger.getLogger(CpuOnlyEnergyPredictor.class.getName()).log(Level.SEVERE,
@@ -78,7 +84,8 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
     /**
      * This allows the cpu only energy predictors data source to be set
      *
-     * @param dataSource The name of the data source to use for this energy predictor
+     * @param dataSource The name of the data source to use for this energy
+     * predictor
      */
     private void setDataSource(String dataSource) {
         try {
@@ -99,7 +106,7 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
             if (source == null) {
                 source = new ZabbixDataSourceAdaptor();
             }
-            Logger.getLogger(CpuOnlyEnergyPredictor.class.getName()).log(Level.WARNING, "The data source specified was not found");
+            Logger.getLogger(CpuOnlyEnergyPredictor.class.getName()).log(Level.WARNING, "The data source specified was not found", ex);
         } catch (InstantiationException | IllegalAccessException ex) {
             if (source == null) {
                 source = new ZabbixDataSourceAdaptor();
@@ -121,7 +128,7 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
         EnergyUsagePrediction wattsUsed;
         TimePeriod duration = new TimePeriod(new GregorianCalendar(), 1, TimeUnit.HOURS);
         if (usageCPU == -1) {
-            wattsUsed = predictTotalEnergy(host, source.getCpuUtilisation(host, cpuUtilObservationTime), duration);
+            wattsUsed = predictTotalEnergy(host, source.getCpuUtilisation(host, cpuUtilObservationTimeSecTotal), duration);
         } else {
             wattsUsed = predictTotalEnergy(host, usageCPU, duration);
         }
@@ -143,7 +150,7 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
         EnergyDivision division = getEnergyUsage(host, virtualMachines);
         EnergyUsagePrediction hostAnswer;
         if (usageCPU == -1) {
-            hostAnswer = predictTotalEnergy(host, source.getCpuUtilisation(host, 15), timePeriod);
+            hostAnswer = predictTotalEnergy(host, source.getCpuUtilisation(host, cpuUtilObservationTimeSecTotal), timePeriod);
         } else {
             hostAnswer = predictTotalEnergy(host, usageCPU, timePeriod);
         }

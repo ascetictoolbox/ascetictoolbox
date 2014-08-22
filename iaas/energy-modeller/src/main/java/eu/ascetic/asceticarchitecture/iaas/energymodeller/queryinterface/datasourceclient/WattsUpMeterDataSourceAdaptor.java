@@ -292,12 +292,12 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
     }
 
     @Override
-    public synchronized double getCpuUtilisation(Host host, int lastNMinutes) {
+    public synchronized double getCpuUtilisation(Host host, int lastNSeconds) {
         double count = 0.0;
         double sumOfUtil = 0.0;
         GregorianCalendar cal = new GregorianCalendar();
         long now = TimeUnit.MILLISECONDS.toSeconds(cal.getTimeInMillis());
-        long nowMinustime = now - TimeUnit.MINUTES.toSeconds(lastNMinutes);
+        long nowMinustime = now - lastNSeconds;
         CopyOnWriteArrayList<CPUtilisation> list = new CopyOnWriteArrayList<>();
         list.addAll(cpuMeasure);
         for (Iterator<CPUtilisation> it = list.iterator(); it.hasNext();) {
