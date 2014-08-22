@@ -13,6 +13,7 @@ import eu.ascetic.paas.applicationmanager.model.Agreement;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Collection;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
+import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
 import eu.ascetic.paas.applicationmanager.model.Root;
 import eu.ascetic.paas.applicationmanager.model.VM;
 
@@ -152,5 +153,23 @@ public class ModelConverter {
 	 */
 	public static String objectAgreementToXML(Agreement agreement) {
 		return toXML(Agreement.class, agreement);
+	}
+	
+	/**
+	 * Converts a EnergyMeasurement object to its String XML representation
+	 * @param energyMeasurement object to be converted
+	 * @return XML representation
+	 */
+	public static String objectEnergyMeasurementToXML(EnergyMeasurement energyMeasurement) {	
+		return toXML(EnergyMeasurement.class, energyMeasurement);
+	}
+	
+	/**
+	 * Converts an XML to a EnergyMeasurement object
+	 * @param xml Representation of an Collection of Applications
+	 * @return the EnergyMeasurement object or null if the xml is mal-formatted
+	 */
+	public static EnergyMeasurement xmlEnergyMeasurementToObject(String xml) {
+		return toObject(EnergyMeasurement.class, xml);
 	}
 }

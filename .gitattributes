@@ -279,6 +279,7 @@ paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmana
 paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/Collection.java -text
 paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/Deployment.java -text
 paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/Dictionary.java -text
+paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/EnergyMeasurement.java -text
 paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/Items.java -text
 paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/Link.java -text
 paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/Root.java -text
@@ -288,6 +289,7 @@ paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmana
 paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmanager/model/ApplicationTest.java -text
 paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmanager/model/CollectionTest.java -text
 paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmanager/model/DeploymentTest.java -text
+paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmanager/model/EnergyMeasurementTest.java -text
 paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmanager/model/ItemTest.java -text
 paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmanager/model/LinkTest.java -text
 paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmanager/model/RootTest.java -text

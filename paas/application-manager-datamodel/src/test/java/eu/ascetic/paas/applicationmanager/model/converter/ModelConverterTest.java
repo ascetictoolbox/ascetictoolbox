@@ -18,6 +18,7 @@ import eu.ascetic.paas.applicationmanager.model.Agreement;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Collection;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
+import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
 import eu.ascetic.paas.applicationmanager.model.Items;
 import eu.ascetic.paas.applicationmanager.model.Link;
 import eu.ascetic.paas.applicationmanager.model.Root;
@@ -472,6 +473,74 @@ public class ModelConverterTest {
 		assertEquals("self", element.getAttributeValue("rel"));
 		assertEquals("application/xml", element.getAttributeValue("type"));
 		assertEquals("/applications/101/deployments/2", element.getAttributeValue("href"));
+	}
+	
+	@Test
+	public void xmlEnergyMeasurementToObjectTest() {
+		String xml = "<energy-measurement xmlns=\"http://application_manager.ascetic.eu/doc/schemas/xml\" href=\"href\">" +
+						"<value>22.0</value>" +
+						"<description>description</description>" +
+						"<link rel=\"self\" href=\"/applications/101/deployments/2/vms/111/events/111/energy-measurement\" type=\"application/xml\"/>" +
+					  "</energy-measurement>";
+		
+		EnergyMeasurement energyMeasurement = ModelConverter.xmlEnergyMeasurementToObject(xml);
+		assertEquals("href", energyMeasurement.getHref());
+		assertEquals(22.0d, energyMeasurement.getValue(), 0.0001);
+		assertEquals("description", energyMeasurement.getDescription());
+		assertEquals(1, energyMeasurement.getLinks().size());
+		assertEquals("self", energyMeasurement.getLinks().get(0).getRel());
+		assertEquals("/applications/101/deployments/2/vms/111/events/111/energy-measurement", energyMeasurement.getLinks().get(0).getHref());
+		assertEquals("application/xml", energyMeasurement.getLinks().get(0).getType());
+	}
+	
+	@Test
+	public void objectEnergyMeasurementToXMLTest() throws Exception {
+		EnergyMeasurement energyMeasurement = new EnergyMeasurement(); 
+		energyMeasurement.setHref("href");
+		energyMeasurement.setValue(22d);
+		energyMeasurement.setDescription("description");
+		Link link = new Link();
+		link.setRel("self");
+		link.setType("application/xml");
+		link.setHref("/applications/101/deployments/2/vms/111/events/111/energy-measurement");
+		energyMeasurement.addLink(link);
+		
+		String xml = ModelConverter.objectEnergyMeasurementToXML(energyMeasurement);
+		
+		//We now verify the XML has the right format... a bit a pain in the a**...
+		SAXBuilder builder = new SAXBuilder();
+		builder.setValidation(false);
+		builder.setIgnoringElementContentWhitespace(true);
+		Document xmldoc = builder.build(new StringReader(xml));
+		XPath xpath = XPath.newInstance("//bnf:energy-measurement");
+		xpath.addNamespace("bnf", APPLICATION_MANAGER_NAMESPACE);
+		List listxpath = xpath.selectNodes(xmldoc);
+		assertEquals(1, listxpath.size());
+		Element element = (Element) listxpath.get(0);
+		assertEquals("href", element.getAttributeValue("href"));
+
+		XPath xpathName = XPath.newInstance("//bnf:value");
+		xpathName.addNamespace("bnf", APPLICATION_MANAGER_NAMESPACE);
+		List listxpathName = xpathName.selectNodes(xmldoc);
+		assertEquals(1, listxpathName.size());
+		element = (Element) listxpathName.get(0);
+		assertEquals("22.0", element.getValue());
+
+		xpathName = XPath.newInstance("//bnf:description");
+		xpathName.addNamespace("bnf", APPLICATION_MANAGER_NAMESPACE);
+		listxpathName = xpathName.selectNodes(xmldoc);
+		assertEquals(1, listxpathName.size());
+		element = (Element) listxpathName.get(0);
+		assertEquals("description", element.getValue());
+
+		xpathName = XPath.newInstance("//bnf:link");
+		xpathName.addNamespace("bnf", APPLICATION_MANAGER_NAMESPACE);
+		listxpathName = xpathName.selectNodes(xmldoc);
+		assertEquals(1, listxpathName.size());
+		element = (Element) listxpathName.get(0);
+		assertEquals("self", element.getAttributeValue("rel"));
+		assertEquals("application/xml", element.getAttributeValue("type"));
+		assertEquals("/applications/101/deployments/2/vms/111/events/111/energy-measurement", element.getAttributeValue("href"));
 	}
 	
 	@Test
