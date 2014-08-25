@@ -75,8 +75,8 @@
 		  
 		  
 	<!-- Scheduled Spring tasks -->
-	<task:annotation-driven />
+	<!-- <task:annotation-driven />
     <util:properties id="applicationProps" location="classpath:application-manager.properties" />
     <context:property-placeholder properties-ref="applicationProps" />
-    <bean id="checkDeploymentStatusTask" class="eu.ascetic.paas.applicationmanager.scheduler.DeploymentsStatusTask" />
+    <bean id="checkDeploymentStatusTask" class="eu.ascetic.paas.applicationmanager.scheduler.DeploymentsStatusTask" /> -->
 </beans> 
