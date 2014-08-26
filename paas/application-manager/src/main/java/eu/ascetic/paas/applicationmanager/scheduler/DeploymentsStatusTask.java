@@ -233,6 +233,9 @@ public class DeploymentsStatusTask {
 		//      The actions in that case it is to start DELETING all VMs from the VMManager
 		//      change the status of the Deployement to TERMINATED after that
 		
+		deployment.setStatus(Dictionary.APPLICATION_STATUS_DEPLOYING);
+		deploymentDAO.update(deployment);
+		
 		
 		try {
 			VmManagerClientHC vmManagerClient = new VmManagerClientHC();
