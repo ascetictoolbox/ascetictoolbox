@@ -88,6 +88,8 @@ iaas/iaas-pricing-modeller/pom.xml -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/IaaSPricingModeller.java -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/IaaSPricingModellerInterface.java -text
 iaas/iaas-pricing-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/IaaSPricingModellerTest.java -text
+iaas/iaas-slamanager/core/src/main/java/eu/ascetic/iaas/slamanager/core/DataType.java -text
+iaas/iaas-slamanager/core/src/main/java/eu/ascetic/iaas/slamanager/core/SkeletonService.java -text
 iaas/iaas-slamanager/main/src/main/java/eu/ascetic/iaas/slamanager/main/beans/SkeletonSLAMBean.java -text
 iaas/iaas-slamanager/main/src/main/java/eu/ascetic/iaas/slamanager/main/beans/client/NegotiationHelper.java -text
 iaas/iaas-slamanager/main/src/main/java/eu/ascetic/iaas/slamanager/main/beans/client/Params.java -text

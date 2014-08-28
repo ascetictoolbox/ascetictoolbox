@@ -2,6 +2,10 @@ iaas/energy-modeller/energymodeller.properties
 iaas/energy-modeller/energymodeller_calibrator.properties
 iaas/energy-modeller/energymodeller_cpu_predictor.properties
 iaas/energy-modeller/src/main/.sigar_shellrc
+iaas/iaas-slamanager/core/.classpath
+iaas/iaas-slamanager/core/.project
+iaas/iaas-slamanager/core/.settings
+iaas/iaas-slamanager/core/target
 paas/application-monitor/etc/db/data/applicationmonitor.0
 paas/application-monitor/etc/db/data/applicationmonitor.ns
 paas/application-monitor/etc/db/data/journal
