@@ -417,6 +417,7 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
 
     /**
      * This finds the cpu utilisation of a host, over the last n minutes.
+     *
      * @param host The host to get the cpu utilisation data for.
      * @param lastNSeconds The amount of minutes to get the data for
      * @return The average utilisation of the host.
@@ -432,13 +433,13 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         List<HistoryItem> stealData = client.getHistoryDataFromItem(CPU_STEAL_KPI_NAME, host.getHostName(), Dictionary.HISTORY_ITEM_FORMAT_FLOAT, timeInPast, currentTime);
         List<HistoryItem> systemData = client.getHistoryDataFromItem(CPU_SYSTEM_KPI_NAME, host.getHostName(), Dictionary.HISTORY_ITEM_FORMAT_FLOAT, timeInPast, currentTime);
         List<HistoryItem> userData = client.getHistoryDataFromItem(CPU_USER_KPI_NAME, host.getHostName(), Dictionary.HISTORY_ITEM_FORMAT_FLOAT, timeInPast, currentTime);
-        double interrupt = sumArray(interruptData) / ((double) interruptData.size());
-        double iowait = sumArray(iowaitData) / ((double) iowaitData.size());
-        double nice = sumArray(niceData) / ((double) niceData.size());
-        double softirq = sumArray(softirqData) / ((double) softirqData.size());
-        double steal = sumArray(stealData) / ((double) stealData.size());
-        double system = sumArray(systemData) / ((double) systemData.size());
-        double user = sumArray(userData) / ((double) userData.size());
+        double interrupt = removeNaN(sumArray(interruptData) / ((double) interruptData.size()));
+        double iowait = removeNaN(sumArray(iowaitData) / ((double) iowaitData.size()));
+        double nice = removeNaN(sumArray(niceData) / ((double) niceData.size()));
+        double softirq = removeNaN(sumArray(softirqData) / ((double) softirqData.size()));
+        double steal = removeNaN(sumArray(stealData) / ((double) stealData.size()));
+        double system = removeNaN(sumArray(systemData) / ((double) systemData.size()));
+        double user = removeNaN(sumArray(userData) / ((double) userData.size()));
         return (system + user + interrupt + iowait + nice + softirq + steal) / 100;
     }
 
@@ -457,6 +458,19 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
     }
 
     /**
+     * In the case that no data is provided a NaN value will be given, this needs
+     * to be stopped. It occurs when the getCpuUtilisation method is given too
+     * small a time window for gathering CPU utilisation data.
+     */
+    private double removeNaN(double number) {
+        if (Double.isNaN(number)) {
+            return 0.0;
+        } else {
+            return number;
+        }
+    }
+
+    /**
      * @return the hostFilter
      */
     public ZabbixHostVMFilter getHostFilter() {
@@ -469,12 +483,13 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
     public void setHostFilter(ZabbixHostVMFilter hostFilter) {
         this.hostFilter = hostFilter;
     }
-    
+
     /**
      * This converts a Zabbix Item into the universal Metric Value, that is used
      * by the Energy modeller.
+     *
      * @param item
-     * @return 
+     * @return
      */
     private MetricValue convert(Item item) {
         MetricValue answer = new MetricValue(item.getName(), item.getKey(), item.getLastValue(), item.getLastClock());

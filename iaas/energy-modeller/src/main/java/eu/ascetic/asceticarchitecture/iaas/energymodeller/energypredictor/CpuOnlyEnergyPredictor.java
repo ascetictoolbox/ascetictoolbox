@@ -48,8 +48,8 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
     private static final String DEFAULT_DATA_SOURCE_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient";
     private double usageCPU = 0.6; //assumed 60 percent usage, by default
     private HostDataSource source = null;
-    private int cpuUtilObservationTimeMin = 0;
-    private int cpuUtilObservationTimeSec = 15;
+    private int cpuUtilObservationTimeMin = 15;
+    private int cpuUtilObservationTimeSec = 0;
     private int cpuUtilObservationTimeSecTotal = 0;
 
     public CpuOnlyEnergyPredictor() {
