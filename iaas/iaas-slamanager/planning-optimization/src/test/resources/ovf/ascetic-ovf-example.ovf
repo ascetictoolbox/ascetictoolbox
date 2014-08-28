@@ -15,8 +15,8 @@
 		This example is encoded as a delta-disk hierarchy. -->
 	<DiskSection>
 		<Info>Describes the set of virtual disks</Info>
-		<Disk ovf:diskId="dsl-1a" ovf:fileRef="Suse" ovf:capacity="50"
-			ovf:populatedSize="50"
+		<Disk ovf:diskId="dsl-1a" ovf:fileRef="Suse" ovf:capacity="51200"
+			ovf:populatedSize="51200"
 			ovf:format="http://www.vmware.com/specifications/vmdk.html#streamOptimized" />
 
 	</DiskSection>

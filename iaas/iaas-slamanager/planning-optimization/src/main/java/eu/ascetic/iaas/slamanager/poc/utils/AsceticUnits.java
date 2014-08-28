@@ -33,7 +33,7 @@ public class AsceticUnits {
 
 	public static final MemoryUnits DEFAULT_MEMORY_UNIT = MemoryUnits.MB;
 	
-	public static final DiskUnits DEFAULT_DISK_UNIT = DiskUnits.GB;
+	public static final DiskUnits DEFAULT_DISK_UNIT = DiskUnits.MB;
 
 	public static final CoreUnit DEFAULT_CORE_UNIT = CoreUnit.integer;
 
