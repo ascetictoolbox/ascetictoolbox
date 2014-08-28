@@ -6,6 +6,10 @@ iaas/iaas-slamanager/core/.classpath
 iaas/iaas-slamanager/core/.project
 iaas/iaas-slamanager/core/.settings
 iaas/iaas-slamanager/core/target
+iaas/iaas-slamanager/main/.classpath
+iaas/iaas-slamanager/main/.project
+iaas/iaas-slamanager/main/.settings
+iaas/iaas-slamanager/main/target
 paas/application-monitor/etc/db/data/applicationmonitor.0
 paas/application-monitor/etc/db/data/applicationmonitor.ns
 paas/application-monitor/etc/db/data/journal
