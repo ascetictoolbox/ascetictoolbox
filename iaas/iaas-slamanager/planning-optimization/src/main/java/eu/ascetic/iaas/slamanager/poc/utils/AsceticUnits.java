@@ -21,6 +21,7 @@ import org.slasoi.slamodel.vocab.units;
 import org.slasoi.slamodel.vocab.xsd;
 
 import eu.ascetic.iaas.slamanager.poc.enums.CoreUnit;
+import eu.ascetic.iaas.slamanager.poc.enums.DiskUnits;
 import eu.ascetic.iaas.slamanager.poc.enums.FrequencyUnits;
 import eu.ascetic.iaas.slamanager.poc.enums.MemoryUnits;
 import eu.ascetic.iaas.slamanager.poc.enums.PowerUnits;
@@ -31,6 +32,8 @@ public class AsceticUnits {
 	public static final FrequencyUnits DEFAULT_FREQUENCY_UNIT = FrequencyUnits.MHz;
 
 	public static final MemoryUnits DEFAULT_MEMORY_UNIT = MemoryUnits.MB;
+	
+	public static final DiskUnits DEFAULT_DISK_UNIT = DiskUnits.GB;
 
 	public static final CoreUnit DEFAULT_CORE_UNIT = CoreUnit.integer;
 
@@ -44,6 +47,8 @@ public class AsceticUnits {
 			normValue = normalizeFrequencyUnit((FrequencyUnits) unit, value);
 		else if (unit instanceof MemoryUnits)
 			normValue = normalizeMemoryUnit((MemoryUnits) unit, value);
+		else if (unit instanceof DiskUnits)
+			normValue = normalizeDiskUnit((DiskUnits) unit, value);
 		else if (unit instanceof CoreUnit)
 			normValue = value;
 		if (normValue != -1)
@@ -59,9 +64,17 @@ public class AsceticUnits {
 	private static double normalizeMemoryUnit(MemoryUnits memoryUnit, double memoryValue) throws NotSupportedUnitException {
 		return memoryValue * factorOfMagnitudeMemory(memoryUnit, DEFAULT_MEMORY_UNIT);
 	}
+	
+	private static double normalizeDiskUnit(DiskUnits diskUnit, double diskValue) throws NotSupportedUnitException {
+		return diskValue * factorOfMagnitudeDisk(diskUnit, DEFAULT_DISK_UNIT);
+	}
 
 	private static double factorOfMagnitudeFrquency(FrequencyUnits source, FrequencyUnits dest) {
 		return Math.pow(FACTOR_OF_MAGNITUDE_FREQUENCY, source.ordinal() - dest.ordinal());
+	}
+	
+	private static double factorOfMagnitudeDisk(DiskUnits source, DiskUnits dest) {
+		return Math.pow(FACTOR_OF_MAGNITUDE_MEMORY, source.ordinal() - dest.ordinal());
 	}
 
 	private static double factorOfMagnitudeMemory(MemoryUnits source, MemoryUnits dest) {
@@ -105,7 +118,7 @@ public class AsceticUnits {
 			return MemoryUnits.GB;
 		else if (unit.equals("xsd:integer"))
 			return CoreUnit.integer;
-		else if (unit.equals("K"))
+		else if (unit.equals("W"))
 			return PowerUnits.W;
 		else
 			throw new NotSupportedUnitException("Unit not recognized. Allowable units are: KHz, MHz, GHz, KB, MB, GB, integer,W");
@@ -135,6 +148,8 @@ public class AsceticUnits {
 		else if (unit.equals("xsd:boolean"))
 			return xsd._boolean;
 		else if (unit.equals("W"))
+			return units.W;
+		else if (unit.equals("xsd:watt"))
 			return units.W;
 		else
 			throw new NotSupportedUnitException("Unit not recognized. Allowable units are: KHz, MHz, GHz, KB, MB, GB, integer,string,W");

@@ -27,8 +27,8 @@
 	<bean name="negotiationManager"
 		class="eu.ascetic.iaas.slamanager.poc.manager.negotiation.NegotiationManagerImpl" />
 
-	<bean name="asceticSlaTemplateParser"
-		class="eu.ascetic.iaas.slamanager.poc.slatemplate.parser.AsceticSlaTemplateParser" />
+	<!-- bean name="asceticSlaTemplateParser"
+		class="eu.ascetic.iaas.slamanager.poc.slatemplate.parser.AsceticSlaTemplateParser" /-->
 		
 </beans>
 

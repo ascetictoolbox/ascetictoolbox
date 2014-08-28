@@ -52,6 +52,8 @@ public class AgreementUtil {
 			return AsceticAgreementTerm.vm_cores;
 		if (metric.equals("memory"))
 			return AsceticAgreementTerm.memory;
+		if (metric.equals("disk"))
+			return AsceticAgreementTerm.disk;
 		if (metric.equals("reserve"))
 			return AsceticAgreementTerm.reserve;
 		if (metric.equals("co_location_rack"))
@@ -88,6 +90,9 @@ public class AgreementUtil {
 			break;
 		case memory:
 			metric = "memory";
+			break;
+		case disk:
+			metric = "disk";
 			break;
 		case reserve:
 			metric = "reserve";
@@ -136,6 +141,9 @@ public class AgreementUtil {
 			break;
 		case memory:
 			resource = resources.memory;
+			break;
+		case disk:
+			resource=resources.disk;
 			break;
 		case reserve:
 			resource = resources.reserve;
@@ -190,6 +198,7 @@ public class AgreementUtil {
 		resourceTerms.add("vm_cores");
 		resourceTerms.add("cpu_speed");
 		resourceTerms.add("memory");
+		resourceTerms.add("disk");
 	}
 
 	public static void setGenericTerms() {

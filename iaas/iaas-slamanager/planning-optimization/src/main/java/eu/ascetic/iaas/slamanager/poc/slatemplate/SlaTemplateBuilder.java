@@ -95,8 +95,10 @@ public class SlaTemplateBuilder {
 		ProductOfferingPrice po = null;
 		String id = "Price_OF_" + vs.getOvfId();
 		String billFreq = null;
-		Date from = null;
-		Date until = null;
+		Date from = Calendar.getInstance().getTime();
+		Calendar cal=Calendar.getInstance();
+		cal.add(Calendar.YEAR, 1);
+		Date until = cal.getTime();
 		String priceType = null;
 		String currency = null;
 		ComponentProductOfferingPrice cpo = null;

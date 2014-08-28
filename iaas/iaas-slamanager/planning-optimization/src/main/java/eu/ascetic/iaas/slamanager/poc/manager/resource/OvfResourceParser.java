@@ -16,13 +16,14 @@
 
 package eu.ascetic.iaas.slamanager.poc.manager.resource;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 
-import org.apache.xmlbeans.XmlException;
-import org.dmtf.schemas.ovf.envelope.x1.XmlBeanEnvelopeDocument;
+import org.apache.commons.io.FileUtils;
 
 import eu.ascetic.utils.ovf.api.Disk;
-import eu.ascetic.utils.ovf.api.DiskSection;
+import eu.ascetic.utils.ovf.api.Item;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
 import eu.ascetic.utils.ovf.api.VirtualHardwareSection;
 import eu.ascetic.utils.ovf.api.VirtualSystem;
@@ -31,42 +32,72 @@ public class OvfResourceParser {
 
 	private OvfDefinition ovfDefinition;
 
-	public OvfResourceParser(String ovfFile) {
-		XmlBeanEnvelopeDocument xmlBeanEnvelopeDocument = null;
+	public OvfResourceParser(String ovfFilePath) {
 		try {
-			xmlBeanEnvelopeDocument = XmlBeanEnvelopeDocument.Factory.parse(ovfFile);
-		} catch (XmlException e) {
+			String ovfString = FileUtils.readFileToString(new File(ovfFilePath));
+			ovfDefinition = OvfDefinition.Factory.newInstance(ovfString);
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		ovfDefinition = OvfDefinition.Factory.newInstance(xmlBeanEnvelopeDocument);
 	}
 
 	public VirtualSystem[] getVirtualSystems() {
 		return ovfDefinition.getVirtualSystemCollection().getVirtualSystemArray();
 	}
 
-	public Disk[] getSharedDisks() {
-		DiskSection discSection = ovfDefinition.getDiskSection();
-		return discSection.getDiskArray();
+	public Disk[] getDisks() {
+		return ovfDefinition.getDiskSection().getDiskArray();
+	}
+
+	public long getDiskCapacity(String diskId) {
+		long capacity = -1;
+		for (Disk d : getDisks()) {
+			if (d.getDiskId().equals(diskId)) {
+				capacity = new Long(d.getCapacity()).longValue();
+				break;
+			}
+		}
+		return capacity;
 	}
 
 	public HashMap<String, Double> getVirtualSystemNeed(VirtualSystem vs) {
-		VirtualHardwareSection hardware = vs.getVirtualHardwareSection();
-		HashMap<String, Double> vsNeed = new HashMap<String, Double>();
-		// init map
-		try {
-			vsNeed.put("cpu_speed", (double) hardware.getCPUSpeed());
-		} catch (NullPointerException e) {
+		VirtualHardwareSection vhs = vs.getVirtualHardwareSection();
+		if (vhs != null) {
+			HashMap<String, Double> vsNeed = new HashMap<String, Double>();
+			// init map
+			// TO DO set cpu speed
+			vsNeed.put("cpu_speed", (double) -1);
+			vsNeed.put("memory", (double) -1);
+			vsNeed.put("vm_cores", (double) -1);
+			vsNeed.put("disk", (double) -1);
+			for( Item item : vhs.getItemArray()){
+				switch(item.getResourceType()){
+				case PROCESSOR:
+					if(item.getResourceSubType()!=null && item.getResourceSubType().equals("cpuspeed")){
+						vsNeed.put("cpu_speed", new Double(item.getReservation().doubleValue()));
+					}
+					else{
+						vsNeed.put("vm_cores", new Double(item.getVirtualQuantity().doubleValue()));
+					}
+					break;
+				case MEMORY:
+					vsNeed.put("memory", new Double(item.getVirtualQuantity().doubleValue()));
+					break;
+				case DISK_DRIVE:
+					for(String s : item.getHostResourceArray()){
+						if(s.startsWith("ovf:/disk/")){
+							String diskId=s.substring(10);
+							vsNeed.put("disk",new Double(getDiskCapacity(diskId)));	
+							break;
+						}
+					}
+					break;
+				}
+			}
+			return vsNeed;
+		} else {
+			return null;
 		}
-		try {
-			vsNeed.put("memory", (double) hardware.getMemorySize());
-		} catch (NullPointerException e) {
-		}
-		try {
-			vsNeed.put("vm_cores", (double) hardware.getNumberOfVirtualCPUs());
-		} catch (NullPointerException e) {
-		}
-		return vsNeed;
 	}
 }

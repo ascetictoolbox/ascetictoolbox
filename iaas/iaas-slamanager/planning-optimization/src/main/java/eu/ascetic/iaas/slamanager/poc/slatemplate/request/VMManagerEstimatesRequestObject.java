@@ -58,7 +58,7 @@ public class VMManagerEstimatesRequestObject {
 		public void addVM(VirtualSystem vs) {
 			JSONObject vm = new JSONObject();
 			try {
-				vm.put("id", vs.getId());
+				vm.put("id", vs.getOvfId());
 				for (ResourceGuarantee rg : vs.getResourceGuarantees()) {
 					if (rg.getAgreementTerm().equals(AsceticAgreementTerm.cpu_speed))
 						vm.put("cpuFreq", rg.getDefault());

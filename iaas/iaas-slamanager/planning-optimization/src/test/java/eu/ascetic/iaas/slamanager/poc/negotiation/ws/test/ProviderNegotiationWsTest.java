@@ -10,6 +10,7 @@ import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.slasoi.gslam.syntaxconverter.SLASOITemplateParser;
 import org.slasoi.gslam.syntaxconverter.SLASOITemplateRenderer;
 import org.slasoi.slamodel.sla.SLATemplate;
@@ -40,7 +41,7 @@ public class ProviderNegotiationWsTest {
 		nc.setSlaTranslator(slaTranslator);
 	}
 
-	// @Test
+	//@Test
 	public void testInitiateNegotiationWs() throws Exception {
 
 		String slatXml = FileUtils.readFileToString(new File("src/test/resources/slats/ASCETiC-SlaTemplateIaaSRequest.xml"));

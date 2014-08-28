@@ -18,6 +18,7 @@ package eu.ascetic.iaas.slamanager.poc.slatemplate.parser;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,11 +44,11 @@ import org.slasoi.slamodel.sla.SLATemplate;
 import org.slasoi.slamodel.sla.VariableDeclr;
 import org.slasoi.slamodel.vocab.core;
 
+import eu.ascetic.iaas.slamanager.poc.manager.resource.OvfResourceParser;
 import eu.ascetic.iaas.slamanager.poc.enums.AsceticAgreementTerm;
 import eu.ascetic.iaas.slamanager.poc.enums.OperatorType;
 import eu.ascetic.iaas.slamanager.poc.exceptions.NotSupportedUnitException;
 import eu.ascetic.iaas.slamanager.poc.manager.resource.OVFRetriever;
-import eu.ascetic.iaas.slamanager.poc.manager.resource.OvfResourceParser;
 import eu.ascetic.iaas.slamanager.poc.slatemplate.AsceticSlaTemplate;
 import eu.ascetic.iaas.slamanager.poc.slatemplate.AsceticSlaTemplate.Builder;
 import eu.ascetic.iaas.slamanager.poc.slatemplate.request.AsceticGenericRequest;
@@ -181,6 +182,7 @@ public class AsceticSlaTemplateParser {
 				ovfReqCore.setMin(vsNeed.get("vm_cores"));
 				ovfReqCore.setMax(vsNeed.get("vm_cores"));
 				ovfReqCore.setDefault(vsNeed.get("vm_cores"));
+				ovfReqCore.setDomain(vs.getId());
 				AsceticRequest.addGuarantee(ovfReqCore);
 			}
 			if (vsNeed.get("cpu_speed") != null) {
@@ -188,6 +190,7 @@ public class AsceticSlaTemplateParser {
 				ovfReqCpuSpeed.setMin(vsNeed.get("cpu_speed"));
 				ovfReqCpuSpeed.setMax(vsNeed.get("cpu_speed"));
 				ovfReqCpuSpeed.setDefault(vsNeed.get("cpu_speed"));
+				ovfReqCpuSpeed.setDomain(vs.getId());
 				AsceticRequest.addGuarantee(ovfReqCpuSpeed);
 			}
 			if (vsNeed.get("memory") != null) {
@@ -195,7 +198,16 @@ public class AsceticSlaTemplateParser {
 				ovfReqMem.setMin(vsNeed.get("memory"));
 				ovfReqMem.setMax(vsNeed.get("memory"));
 				ovfReqMem.setDefault(vsNeed.get("memory"));
+				ovfReqMem.setDomain(vs.getId());
 				AsceticRequest.addGuarantee(ovfReqMem);
+			}
+			if (vsNeed.get("disk") != null) {
+				OvfResourceGuarantee ovfReqDisk = new OvfResourceGuarantee(vs.getId() + "-disk", AsceticAgreementTerm.disk);
+				ovfReqDisk.setMin(vsNeed.get("disk"));
+				ovfReqDisk.setMax(vsNeed.get("disk"));
+				ovfReqDisk.setDefault(vsNeed.get("disk"));
+				ovfReqDisk.setDomain(vs.getId());
+				AsceticRequest.addGuarantee(ovfReqDisk);
 			}
 		}
 		return AsceticRequest;
@@ -344,7 +356,7 @@ public class AsceticSlaTemplateParser {
 					if (propKey[l].equals("OVF_URL")) {
 						String ovfURL = iD.getPropertyValue(propKey[l]);
 						ovfRetriever.retrieveOvf(ovfURL);
-						ovfFile = extractOvfFile(ovfRetriever.getFilename());
+						ovfFile = ovfRetriever.getFilename();
 						break;
 					}
 				}
@@ -354,7 +366,7 @@ public class AsceticSlaTemplateParser {
 	}
 
 	private AsceticSlaTemplate getAsceticSlat() {
-		logger.info(AsceticSlaTemplate.toString());
+		logger.debug(AsceticSlaTemplate.toString());
 		return AsceticSlaTemplate;
 	}
 

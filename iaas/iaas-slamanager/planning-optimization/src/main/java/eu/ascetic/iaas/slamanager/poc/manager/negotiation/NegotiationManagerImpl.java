@@ -11,6 +11,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.slasoi.slamodel.sla.SLATemplate;
 import org.slasoi.slamodel.vocab.units;
+import org.slasoi.slamodel.vocab.xsd;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.sun.jersey.api.client.ClientResponse;
@@ -29,7 +30,6 @@ import eu.ascetic.iaas.slamanager.poc.slatemplate.request.guarantee.GenericGuara
 
 public class NegotiationManagerImpl implements NegotiationManager {
 
-	@Autowired
 	AsceticSlaTemplateParser asceticSlaTemplateParser;
 
 	private static final Logger logger = Logger.getLogger(NegotiationManagerImpl.class.getName());
@@ -53,6 +53,7 @@ public class NegotiationManagerImpl implements NegotiationManager {
 
 	public void init() {
 		vmResourceManager = VMResourceManager.getInstance();
+		asceticSlaTemplateParser=new AsceticSlaTemplateParser();
 		config(configFile);
 		String url = null;
 		if (getProperty("trustStore") != null) {
@@ -100,7 +101,7 @@ public class NegotiationManagerImpl implements NegotiationManager {
 						for (GenericGuarantee gg : virtSys.getGenericGuarantees()) {
 							if (gg.getAgreementTerm().equals(AsceticAgreementTerm.power_usage_per_vm)) {
 								List<Value> values = new ArrayList<Value>();
-								Value v = gg.new Value(units.$W, vmPower, OperatorType.EQUALS);
+								Value v = gg.new Value(xsd.watt.toString(), vmPower, OperatorType.EQUALS);
 								values.add(v);
 								gg.setValues(values);
 								break;
@@ -158,7 +159,7 @@ public class NegotiationManagerImpl implements NegotiationManager {
 						for (GenericGuarantee gg : virtSys.getGenericGuarantees()) {
 							if (gg.getAgreementTerm().equals(AsceticAgreementTerm.power_usage_per_vm)) {
 								List<Value> values = new ArrayList<Value>();
-								Value v = gg.new Value(units.$W, vmPower, OperatorType.EQUALS);
+								Value v = gg.new Value(xsd.watt.toString(), vmPower, OperatorType.EQUALS);
 								values.add(v);
 								gg.setValues(values);
 								break;
@@ -170,13 +171,11 @@ public class NegotiationManagerImpl implements NegotiationManager {
 			} else {
 				jsonResp = new JSONObject(res);
 				String errMsg = jsonResp.optString("error");
-				throw new NotSupportedVEPOperationException(errMsg);
+				logger.debug(errMsg);
 			}
 		} catch (JSONException e) {
 			logger.debug(e.getMessage());
-		} catch (NotSupportedVEPOperationException e) {
-			logger.debug(e.getMessage());
-		}
+		} 
 		SlaTemplateBuilder slaTemplateBuilder = new SlaTemplateBuilder();
 		slaTemplateBuilder.setAsceticSlatemplate(asceticSlaTemplate);
 

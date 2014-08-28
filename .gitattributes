@@ -98,6 +98,7 @@ iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamana
 iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/PlanningOptimizationServices.java -text
 iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/enums/AsceticAgreementTerm.java -text
 iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/enums/CoreUnit.java -text
+iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/enums/DiskUnits.java -text
 iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/enums/FrequencyUnits.java -text
 iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/enums/MemoryUnits.java -text
 iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/enums/OperatorType.java -text
