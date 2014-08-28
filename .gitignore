@@ -10,6 +10,7 @@ iaas/iaas-slamanager/main/.classpath
 iaas/iaas-slamanager/main/.project
 iaas/iaas-slamanager/main/.settings
 iaas/iaas-slamanager/main/target
+iaas/iaas-slamanager/osgi-config
 iaas/iaas-slamanager/planning-optimization/.classpath
 iaas/iaas-slamanager/planning-optimization/.project
 iaas/iaas-slamanager/planning-optimization/.settings
