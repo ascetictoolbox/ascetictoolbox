@@ -14,6 +14,10 @@ iaas/iaas-slamanager/planning-optimization/.classpath
 iaas/iaas-slamanager/planning-optimization/.project
 iaas/iaas-slamanager/planning-optimization/.settings
 iaas/iaas-slamanager/planning-optimization/target
+iaas/iaas-slamanager/provisioning-adjustment/.classpath
+iaas/iaas-slamanager/provisioning-adjustment/.project
+iaas/iaas-slamanager/provisioning-adjustment/.settings
+iaas/iaas-slamanager/provisioning-adjustment/target
 paas/application-monitor/etc/db/data/applicationmonitor.0
 paas/application-monitor/etc/db/data/applicationmonitor.ns
 paas/application-monitor/etc/db/data/journal
