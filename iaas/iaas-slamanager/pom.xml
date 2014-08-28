@@ -23,6 +23,7 @@
 		<module>main</module>
 		<module>planning-optimization</module>
 		<module>provisioning-adjustment</module>
+		<!-- module>ovf-parser</module-->
 	</modules>
 
 	<ciManagement>
