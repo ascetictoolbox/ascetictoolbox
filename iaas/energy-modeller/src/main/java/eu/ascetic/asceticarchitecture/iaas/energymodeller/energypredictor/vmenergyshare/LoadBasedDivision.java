@@ -22,11 +22,12 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostEnergyRecord;
 
 /**
- * This creates a load based division mechanism for dividing host energy among VMs.
- * It is intended to be used with historic load data.
- * 
+ * This creates a load based division mechanism for dividing host energy among
+ * VMs. It is intended to be used with historic load data.
+ *
  * Energy is fractioned out taking into account the amount of load has been
  * placed on each machine. This is done by ratio.
+ *
  * @author Richard
  */
 public class LoadBasedDivision extends AbstractHistoricLoadBasedDivision {
@@ -34,12 +35,13 @@ public class LoadBasedDivision extends AbstractHistoricLoadBasedDivision {
     /**
      * This creates a load based division mechanism for the specified host, that
      * is yet to be specified.
-     */   
+     */
     public LoadBasedDivision() {
     }
 
     /**
      * This creates a load based division mechanism for the specified host.
+     *
      * @param host The host to divide energy for, among its VMs.
      */
     public LoadBasedDivision(Host host) {
@@ -56,9 +58,10 @@ public class LoadBasedDivision extends AbstractHistoricLoadBasedDivision {
     public double getEnergyUsage(VM vm) {
         VmDeployed deployed = (VmDeployed) vm;
         int recordCount = (energyUsage.size() <= loadFraction.size() ? energyUsage.size() : loadFraction.size());
-        
+
         /**
-         * Calculate the energy used by a VM taking into account the work it has performed.
+         * Calculate the energy used by a VM taking into account the work it has
+         * performed.
          */
         double vmEnergy = 0;
         //Access two records at once hence ensure size() -2
@@ -67,9 +70,15 @@ public class LoadBasedDivision extends AbstractHistoricLoadBasedDivision {
             HostEnergyRecord energy2 = energyUsage.get(i + 1);
             HostVmLoadFraction load1 = loadFraction.get(i);
             HostVmLoadFraction load2 = loadFraction.get(i + 1);
-            double deltaEnergy = energy2.getEnergy() - energy1.getEnergy();
-            double avgLoadFraction = (load1.getFraction(deployed) + load2.getFraction(deployed)) / 2;
-            vmEnergy = vmEnergy + (deltaEnergy * avgLoadFraction);
+            /**
+             * The sanity check below tests to see if the energy value clock counter
+             * has been reset or not. If it has then that round of energy data is ignored.
+             */
+            if (energy1.getEnergy() < energy2.getEnergy()) {
+                double deltaEnergy = energy2.getEnergy() - energy1.getEnergy();
+                double avgLoadFraction = (load1.getFraction(deployed) + load2.getFraction(deployed)) / 2;
+                vmEnergy = vmEnergy + (deltaEnergy * avgLoadFraction);
+            }
         }
         return vmEnergy;
     }

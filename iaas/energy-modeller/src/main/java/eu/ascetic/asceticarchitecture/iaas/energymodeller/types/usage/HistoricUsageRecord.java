@@ -71,9 +71,9 @@ public class HistoricUsageRecord extends EnergyUsageRecord {
     public HistoricUsageRecord(Host energyUser, List<HostEnergyRecord> data) {
         addEnergyUser(energyUser);
         if (data.size() > 2) {
-            //TODO consider what happens here if the energy counter loops around!
             Collections.sort(data);
-            HostEnergyRecord first = data.get(0);
+            int startIndex = getLastTrustableIndex(data);
+            HostEnergyRecord first = data.get(startIndex);
             HostEnergyRecord last = data.get(data.size() - 1);
             totalEnergyUsed = last.getEnergy() - first.getEnergy();
             GregorianCalendar start = new GregorianCalendar();
@@ -86,6 +86,28 @@ public class HistoricUsageRecord extends EnergyUsageRecord {
         if (data.size() == 1) {
             avgPowerUsed = data.get(0).getPower();
         }
+    }
+
+    /**
+     * This searches through the data and looks for the last point at which the
+     * log's energy value was reset.
+     *
+     * @param data The host energy record data
+     * @return The index position where the reset was detected.
+     */
+    private int getLastTrustableIndex(List<HostEnergyRecord> data) {
+        double successor = data.get(data.size() -1).getEnergy();
+        /**
+         * This loop sweeps backwards through the collection.
+         * A number must have its successor be either equal or greater than the
+         * current number.
+         */
+        for (int i = data.size() - 2; i >= 0; i--) {
+            if (successor < data.get(i).getEnergy()) {
+                return i + 2;
+            }
+        }
+        return 0;
     }
 
     /**
@@ -108,6 +130,7 @@ public class HistoricUsageRecord extends EnergyUsageRecord {
 
     /**
      * This provides the average power used.
+     *
      * @return The average power used.
      */
     public double getAvgPowerUsed() {
@@ -116,7 +139,8 @@ public class HistoricUsageRecord extends EnergyUsageRecord {
 
     /**
      * This sets the average power used.
-     * @param avgPowerUsed  The average power used.
+     *
+     * @param avgPowerUsed The average power used.
      */
     public void setAvgPowerUsed(double avgPowerUsed) {
         this.avgPowerUsed = avgPowerUsed;
@@ -124,6 +148,7 @@ public class HistoricUsageRecord extends EnergyUsageRecord {
 
     /**
      * This provides the average current used.
+     *
      * @return The average current used.
      */
     public double getAvgCurrentUsed() {
@@ -132,7 +157,8 @@ public class HistoricUsageRecord extends EnergyUsageRecord {
 
     /**
      * This sets the average current used.
-     * @param avgCurrentUsed  The average current used.
+     *
+     * @param avgCurrentUsed The average current used.
      */
     public void setAvgCurrentUsed(double avgCurrentUsed) {
         this.avgCurrentUsed = avgCurrentUsed;
@@ -140,6 +166,7 @@ public class HistoricUsageRecord extends EnergyUsageRecord {
 
     /**
      * This provides the average voltage used.
+     *
      * @return The average voltage used.
      */
     public double getAvgVoltageUsed() {
@@ -148,7 +175,8 @@ public class HistoricUsageRecord extends EnergyUsageRecord {
 
     /**
      * This sets the average voltage used.
-     * @param avgVoltageUsed  The average voltage used.
+     *
+     * @param avgVoltageUsed The average voltage used.
      */
     public void setAvgVoltageUsed(double avgVoltageUsed) {
         this.avgVoltageUsed = avgVoltageUsed;
@@ -156,6 +184,7 @@ public class HistoricUsageRecord extends EnergyUsageRecord {
 
     /**
      * This provides the total energy used.
+     *
      * @return the total energy used.
      */
     public double getTotalEnergyUsed() {
@@ -163,7 +192,8 @@ public class HistoricUsageRecord extends EnergyUsageRecord {
     }
 
     /**
-      * This sets the total energy used.
+     * This sets the total energy used.
+     *
      * @param totalEnergyUsed the new value for the total energy used.
      */
     public void setTotalEnergyUsed(double totalEnergyUsed) {
@@ -172,6 +202,7 @@ public class HistoricUsageRecord extends EnergyUsageRecord {
 
     /**
      * This provides the start time for this energy record.
+     *
      * @return the time of the first data item this record represents.
      */
     public Calendar getRecordStartTime() {
@@ -180,6 +211,7 @@ public class HistoricUsageRecord extends EnergyUsageRecord {
 
     /**
      * This provides the end time for this energy record.
+     *
      * @return the time of the last data item this record represents.
      */
     public Calendar getRecordEndTime() {
@@ -188,6 +220,7 @@ public class HistoricUsageRecord extends EnergyUsageRecord {
 
     /**
      * This returns the duration of time this historic record represents.
+     *
      * @return The duration of time this record represents.
      */
     public TimePeriod getDuration() {
@@ -196,6 +229,7 @@ public class HistoricUsageRecord extends EnergyUsageRecord {
 
     /**
      * This sets the duration of time this historic record represents.
+     *
      * @param duration The duration of time this record represents.
      */
     public void setDuration(TimePeriod duration) {

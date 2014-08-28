@@ -84,11 +84,18 @@ public class LoadBasedDivisionWithIdleEnergy extends AbstractHistoricLoadBasedDi
             double idleVMEnergy = vmIdlePower * ((double) TimeUnit.SECONDS.toHours(timePeriod));
 
             double deltaEnergy = energy2.getEnergy() - energy1.getEnergy();
-            double activeEnergyUsed = deltaEnergy - idleEnergy;
+            /**
+             * The sanity check below tests to see if the energy value clock
+             * counter has been reset or not. If it has then that round of
+             * energy data is ignored.
+             */
+            if (deltaEnergy > 0) {
+                double activeEnergyUsed = deltaEnergy - idleEnergy;
 
-            double avgLoadFraction = (load1.getFraction(deployed) + load2.getFraction(deployed)) / 2;
-            //Add previous to previous energy idle energy + fraction of active energy associated with VM.
-            vmEnergy = vmEnergy + idleVMEnergy + (activeEnergyUsed * avgLoadFraction);
+                double avgLoadFraction = (load1.getFraction(deployed) + load2.getFraction(deployed)) / 2;
+                //Add previous to previous energy idle energy + fraction of active energy associated with VM.
+                vmEnergy = vmEnergy + idleVMEnergy + (activeEnergyUsed * avgLoadFraction);
+            }
         }
         return vmEnergy;
     }
