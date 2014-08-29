@@ -136,8 +136,8 @@ public class HostVmLoadFraction implements Comparable<HostVmLoadFraction> {
             totalLoad = totalLoad + loadMeasure.getCpuUtilisation();
         }
         /**
-         * This is an error handling state. If no data is been presented 
-         * from Zabbix.
+         * This is an error handling state. If no data is been presented from
+         * Zabbix.
          */
         if (totalLoad == 0) {
             double count = load.size();
@@ -167,10 +167,16 @@ public class HostVmLoadFraction implements Comparable<HostVmLoadFraction> {
      * responsible for.
      *
      * @param vm The vm to get the load information for
-     * @return The fraction between 0..1 of how much load was induced.
+     * @return The fraction between 0..1 of how much load was induced and 0 if 
+     * the VM was not found.
      */
     public double getFraction(VmDeployed vm) {
-        return fraction.get(vm);
+        Double answer = fraction.get(vm);
+        if (answer == null) {
+            return 0;
+        } else {
+            return answer.doubleValue();
+        }
     }
 
     /**
