@@ -151,7 +151,7 @@ public class VmManager {
             // that mounts it
             String vmScriptName = null;
             if (usingZabbix()) {
-                if (isoReceived(vmToDeploy)) {
+                if (isoReceivedInInitScript(vmToDeploy)) {
                     try {
                         // Copy the Zabbix agents script
                         vmScriptName = "vm_" + vmToDeploy.getName() +
@@ -467,10 +467,9 @@ public class VmManager {
         return VmManagerConfiguration.getInstance().monitoring.equals(VmManagerConfiguration.Monitoring.ZABBIX);
     }
 
-    private boolean isoReceived(Vm vm) {
+    private boolean isoReceivedInInitScript(Vm vm) {
         return vm.getInitScript() != null && !vm.getInitScript().equals("")
-                && vm.getInitScript().contains(".iso_");
-//                && vm.getInitScript().endsWith(".iso");
+                && (vm.getInitScript().contains(".iso_") || vm.getInitScript().endsWith(".iso"));
     }
 
 }
