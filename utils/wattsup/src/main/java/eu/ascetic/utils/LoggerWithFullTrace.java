@@ -21,6 +21,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.hyperic.sigar.Sigar;
+import org.hyperic.sigar.SigarException;
 import wattsup.jsdk.core.data.WattsUpConfig;
 import wattsup.jsdk.core.data.WattsUpPacket;
 import wattsup.jsdk.core.event.WattsUpDataAvailableEvent;
@@ -37,23 +39,40 @@ import wattsup.jsdk.core.meter.WattsUp;
  * This logs WattsUp meter data to disk in a continuous fashion.
  *
  */
-public class LoggerWithExecution implements Closeable {
+public class LoggerWithFullTrace implements Closeable {
 
-    private WattsUp meter;
+    private final WattsUp meter;
     private final File file = new File("Dataset.csv");
     private WattsUpLogger logger;
+    private WorkloadLogger loggerWorkload;
+    private MemoryWorkloadLogger loggerMemoryWorkload;
+    private Sigar sigar;
     @SuppressWarnings("unused")
-    private ManagedProcessSequenceExecutor executor = new ManagedProcessSequenceExecutor(this);
+    private final ManagedProcessSequenceExecutor executor = new ManagedProcessSequenceExecutor(this);
 
     public static void main(String[] args) throws IOException {
-        new LoggerWithExecution(args);
+        new LoggerWithFullTrace(args);
     }
 
-    public LoggerWithExecution(String[] args) throws IOException {
+    public LoggerWithFullTrace(String[] args) throws IOException {
+        //Setup the Energy logger
         logger = new WattsUpLogger(file, false);
         Thread loggerThread = new Thread(logger);
         loggerThread.setDaemon(true);
         loggerThread.start();
+        //Setup the CPU workload logger
+        loggerWorkload = new WorkloadLogger(new File("Dataset_workload.csv"), false);
+        Thread workloadLoggerThread = new Thread(loggerWorkload);
+        workloadLoggerThread.setDaemon(true);
+        new Thread(workloadLoggerThread).start();
+        //Setup the memory workload logger
+        loggerMemoryWorkload = new MemoryWorkloadLogger(new File("Dataset_memory_workload.csv"), false);
+        Thread workloadMemoryLoggerThread = new Thread(loggerMemoryWorkload);
+        workloadMemoryLoggerThread.setDaemon(true);
+        new Thread(workloadMemoryLoggerThread).start();
+        //setup sigar
+        sigar = new Sigar();        
+        //setup Wattsup
         String port = "COM9";
         if (args.length > 0) {
             port = args[0];
@@ -67,6 +86,12 @@ public class LoggerWithExecution implements Closeable {
             public void processDataAvailable(final WattsUpDataAvailableEvent event) {
                 WattsUpPacket[] values = event.getValue();
                 logger.printToFile(values);
+                try {
+                    loggerWorkload.printToFile(sigar.getCpuPerc());
+                    loggerMemoryWorkload.printToFile(sigar.getMem());
+                } catch (SigarException ex) {
+                    Logger.getLogger(LoggerWithFullTrace.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
 
@@ -108,22 +133,22 @@ public class LoggerWithExecution implements Closeable {
             } else {
                 try {
                     /**
-                     * This delays shutting everything down for 20 seconds, 
-                     * the aim is to get the tail end of the relevant data.
-                     * Ensuring everything doesn't switch off straight after the
-                     * last application called ends.
+                     * This delays shutting everything down for 20 seconds, the
+                     * aim is to get the tail end of the relevant data. Ensuring
+                     * everything doesn't switch off straight after the last
+                     * application called ends.
                      */
                     Thread.sleep(20000);
 
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(LoggerWithExecution.class.getName()).log(Level.WARNING, "Actioner: InterruptedException", ex);
+                    Logger.getLogger(LoggerWithFullTrace.class.getName()).log(Level.WARNING, "Actioner: InterruptedException", ex);
                 }
                 meter.stop();
                 meter.disconnect();
             }
             logger.stop();
         } catch (IOException ex) {
-            Logger.getLogger(LoggerWithExecution.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LoggerWithFullTrace.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

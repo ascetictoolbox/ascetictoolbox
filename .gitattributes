@@ -2060,11 +2060,14 @@ utils/wattsup/example[!!-~]dataset/test.out -text
 utils/wattsup/src/main/java/eu/ascetic/utils/GenericLogger.java -text
 utils/wattsup/src/main/java/eu/ascetic/utils/Logger.java -text
 utils/wattsup/src/main/java/eu/ascetic/utils/LoggerWithExecution.java -text
+utils/wattsup/src/main/java/eu/ascetic/utils/LoggerWithFullTrace.java -text
+utils/wattsup/src/main/java/eu/ascetic/utils/MemoryWorkloadLogger.java -text
 utils/wattsup/src/main/java/eu/ascetic/utils/ResultsIO.java -text
 utils/wattsup/src/main/java/eu/ascetic/utils/ResultsStore.java -text
 utils/wattsup/src/main/java/eu/ascetic/utils/Settings.java -text
 utils/wattsup/src/main/java/eu/ascetic/utils/WattsUpLanConfigurationTool.java -text
 utils/wattsup/src/main/java/eu/ascetic/utils/WattsUpLogger.java -text
+utils/wattsup/src/main/java/eu/ascetic/utils/WorkloadLogger.java -text
 utils/wattsup/src/main/java/eu/ascetic/utils/execution/Closeable.java -text
 utils/wattsup/src/main/java/eu/ascetic/utils/execution/ManagedProcess.java -text
 utils/wattsup/src/main/java/eu/ascetic/utils/execution/ManagedProcessCommandData.java -text
