@@ -129,7 +129,7 @@ public class AsceticSlaTemplateParser {
 
 	private void parseAgreementTerm(AgreementTerm aTerm, VariableDeclr[] varList, InterfaceDeclr[] ids) {
 		HashMap<String, Expr> variables = new HashMap<String, Expr>();
-		AsceticRequest AsceticRequest = null;
+		AsceticRequest asceticRequest = null;
 		String interfDeclId = null;
 		for (VariableDeclr vd : varList) {
 			String key = vd.getVar().getValue();
@@ -142,23 +142,24 @@ public class AsceticSlaTemplateParser {
 					ID intDeclId = (ID) p[0];
 					interfDeclId = intDeclId.getValue();
 					if (interfDeclId != null) { // is AsceticResourceRequest
-						AsceticRequest = getAsceticResourceRequest(aTerm.getId().getValue(), interfDeclId, ids);
+						asceticRequest = getAsceticResourceRequest(aTerm.getId().getValue(), interfDeclId, ids);
 					}
 				}
 			}
 		}
-		if (AsceticRequest != null) { // is AsceticResourceRequest
-			AsceticRequest.setVariables(variables);
+		if (asceticRequest != null) { // is AsceticResourceRequest
+			asceticRequest.setVariables(variables);
 			for (Guaranteed g : aTerm.getGuarantees()) {
-				AsceticRequest.addGuarantee(parseGuarantee(g, variables));
+				asceticRequest.addGuarantee(parseGuarantee(g, variables));
 			}
-			if (AsceticRequest instanceof VirtualSystem) { // add ovf file
+			if (asceticRequest instanceof VirtualSystem) { // add ovf file
 															// guarantee for
 															// Virtual System
+				
 				eu.ascetic.utils.ovf.api.VirtualSystem[] a = ovfParser.getVirtualSystems();
 				for (eu.ascetic.utils.ovf.api.VirtualSystem vs : a) {
-					if (vs.getId().equals(AsceticRequest.getOvfId())) {
-						AsceticRequest = parseOvfVSGuarantee(AsceticRequest, vs);
+					if (vs.getId().equals(asceticRequest.getOvfId())) {
+						asceticRequest = parseOvfVSGuarantee(asceticRequest, vs);
 						break;
 					}
 				}
@@ -168,10 +169,10 @@ public class AsceticSlaTemplateParser {
 																				// price
 																				// agreement
 																				// term
-				AsceticRequest = new AsceticGenericRequest(aTerm.getId().getValue());
+				asceticRequest = new AsceticGenericRequest(aTerm.getId().getValue());
 		}
-		if (AsceticRequest != null)
-			resources.add(AsceticRequest);
+		if (asceticRequest != null)
+			resources.add(asceticRequest);
 	}
 
 	private AsceticRequest parseOvfVSGuarantee(AsceticRequest AsceticRequest, eu.ascetic.utils.ovf.api.VirtualSystem vs) {

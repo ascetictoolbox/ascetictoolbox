@@ -156,6 +156,7 @@ iaas/iaas-slamanager/planning-optimization/src/test/java/eu/ascetic/iaas/slamana
 iaas/iaas-slamanager/planning-optimization/src/test/resources/ovf/ascetic-ovf-example.ovf -text
 iaas/iaas-slamanager/planning-optimization/src/test/resources/ovf/lamp-multi-vm.ovf -text
 iaas/iaas-slamanager/planning-optimization/src/test/resources/slats/ASCETiC-SlaTemplateIaaSRequest.xml -text
+iaas/iaas-slamanager/planning-optimization/src/test/resources/slats/ASCETiC-SlaTemplateIaaSRequest2.xml -text
 iaas/iaas-slamanager/planning-optimization/src/test/resources/slats/sla.xml -text
 iaas/iaas-slamanager/planning-optimization/src/test/resources/soap/initiateNegotiation.xml -text
 iaas/iaas-slamanager/planning-optimization/src/test/resources/soap/initiateNegotiationSoapRequest.xml -text

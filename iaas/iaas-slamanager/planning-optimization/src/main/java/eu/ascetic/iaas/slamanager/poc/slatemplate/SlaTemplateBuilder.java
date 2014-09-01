@@ -26,7 +26,9 @@ import org.slasoi.slamodel.sla.SLATemplate;
 import org.slasoi.slamodel.sla.VariableDeclr;
 import org.slasoi.slamodel.sla.business.ComponentProductOfferingPrice;
 import org.slasoi.slamodel.sla.business.ProductOfferingPrice;
+import org.slasoi.slamodel.vocab.business;
 import org.slasoi.slamodel.vocab.core;
+import org.slasoi.slamodel.vocab.units;
 
 import eu.ascetic.iaas.slamanager.poc.exceptions.NotSupportedUnitException;
 import eu.ascetic.iaas.slamanager.poc.slatemplate.request.AsceticGenericRequest;
@@ -94,13 +96,13 @@ public class SlaTemplateBuilder {
 		ArrayList<ComponentProductOfferingPrice> cpops = new ArrayList<ComponentProductOfferingPrice>();
 		ProductOfferingPrice po = null;
 		String id = "Price_OF_" + vs.getOvfId();
-		String billFreq = null;
+		String billFreq = business.$per_month; // billing monthly
 		Date from = Calendar.getInstance().getTime();
 		Calendar cal=Calendar.getInstance();
 		cal.add(Calendar.YEAR, 1);
 		Date until = cal.getTime();
-		String priceType = null;
-		String currency = null;
+		String priceType = business.$per_hour; // price type specification per hour
+		String currency = units.$EUR; // currency default EUR
 		ComponentProductOfferingPrice cpo = null;
 		double totalPrice = 0, resourcesPrice = 0, guaranteePrice = 0, reservationPrice = 0;
 		totalPrice = vs.getPrice();
@@ -160,11 +162,23 @@ public class SlaTemplateBuilder {
 	}
 
 	private Guaranteed[] buildGuarantees(Collection<Guarantee> guarantees) {
-		Guaranteed[] guaranteesArray = new Guaranteed[guarantees.size()];
-		int i = 0;
+		ArrayList<Guaranteed> collGuarantees=new ArrayList<Guaranteed>();
 		for (Guarantee g : guarantees) {
-			Guaranteed guar = buildGuarantee(g);
-			guaranteesArray[i] = guar;
+			if(g instanceof ResourceGuarantee){
+				if(((ResourceGuarantee)g).getDefault()!=-1){
+					Guaranteed guar = buildGuarantee(g);
+					collGuarantees.add(guar);
+				}
+			}
+			else{
+				Guaranteed guar = buildGuarantee(g);
+				collGuarantees.add(guar);
+			}
+		}
+		Guaranteed[] guaranteesArray = new Guaranteed[collGuarantees.size()];
+		int i=0;
+		for( Guaranteed g : collGuarantees){
+			guaranteesArray[i]=g;
 			i++;
 		}
 		return guaranteesArray;

@@ -9,6 +9,7 @@ import org.slasoi.gslam.syntaxconverter.SLASOITemplateParser;
 import org.slasoi.slamodel.sla.SLATemplate;
 
 import eu.ascetic.iaas.slamanager.poc.slatemplate.AsceticSlaTemplate;
+import eu.ascetic.iaas.slamanager.poc.slatemplate.SlaTemplateBuilder;
 import eu.ascetic.iaas.slamanager.poc.slatemplate.parser.AsceticSlaTemplateParser;
 
 public class AsceticSlaTemplateParserTest {
@@ -27,6 +28,16 @@ public class AsceticSlaTemplateParserTest {
 	public void testParseSlaProposal() {
 		AsceticSlaTemplate cst = AsceticSlaTemplateParser.getAsceticSlat(slatProposal);
 		System.out.println("PROPOSAL: " + cst);
+		
+		SlaTemplateBuilder slaTemplateBuilder = new SlaTemplateBuilder();
+		slaTemplateBuilder.setAsceticSlatemplate(cst);
+
+		SLATemplate slaT= slaTemplateBuilder.build();
+		
+		System.out.println("SLA Template built:");
+		System.out.println(slaT.toString());
 	}
+	
+	
 
 }

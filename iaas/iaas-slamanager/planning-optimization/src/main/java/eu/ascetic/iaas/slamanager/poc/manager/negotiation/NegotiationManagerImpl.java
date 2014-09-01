@@ -65,8 +65,8 @@ public class NegotiationManagerImpl implements NegotiationManager {
 			vmResourceManager.configManager(false, null, null);
 			vmResourceManager.setBasePath(url);
 		}
-		System.out.println("vep address " + url);
-		System.out.println("vep connection configured");
+		System.out.println("VM Manager address " + url);
+		System.out.println("VM Manager connection configured");
 	}
 
 	@Override
@@ -123,8 +123,11 @@ public class NegotiationManagerImpl implements NegotiationManager {
 		}
 		SlaTemplateBuilder slaTemplateBuilder = new SlaTemplateBuilder();
 		slaTemplateBuilder.setAsceticSlatemplate(asceticSlaTemplate);
-
-		return slaTemplateBuilder.build();
+		SLATemplate slaReturn = slaTemplateBuilder.build();
+		
+		logger.debug("SLA to return:");
+		logger.debug(slaReturn);
+		return slaReturn;
 	}
 
 	@Override
@@ -171,15 +174,20 @@ public class NegotiationManagerImpl implements NegotiationManager {
 			} else {
 				jsonResp = new JSONObject(res);
 				String errMsg = jsonResp.optString("error");
-				logger.debug(errMsg);
+				throw new NotSupportedVEPOperationException(errMsg);
 			}
 		} catch (JSONException e) {
 			logger.debug(e.getMessage());
-		} 
+		} catch (NotSupportedVEPOperationException e) {
+			logger.debug(e.getMessage());
+		}
 		SlaTemplateBuilder slaTemplateBuilder = new SlaTemplateBuilder();
 		slaTemplateBuilder.setAsceticSlatemplate(asceticSlaTemplate);
-
-		return slaTemplateBuilder.build();
+		SLATemplate slaReturn = slaTemplateBuilder.build();
+		
+		logger.debug("SLA to return:");
+		logger.debug(slaReturn);
+		return slaReturn;
 	}
 
 	private void config(String filename) {

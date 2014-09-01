@@ -1,13 +1,8 @@
-<slam:SLA xmlns:slam="http://www.slaatsoi.eu/slamodel">
+<slam:SLATemplate xmlns:slam="http://www.slaatsoi.eu/slamodel">
 	<slam:Text />
 	<slam:Properties />
-	<slam:UUID>f1cfc81d-78a7-4938-86f6-0023566b817f</slam:UUID>
+	<slam:UUID>ASCETiC-SLaTemplate-Example-01</slam:UUID>
 	<slam:ModelVersion>sla_at_soi_sla_model_v1.0</slam:ModelVersion>
-	<slam:EffectiveFrom>2014-08-28T09:38:46.003+02:00</slam:EffectiveFrom>
-	<slam:EffectiveUntil>2016-08-28T09:38:46.003+02:00
-	</slam:EffectiveUntil>
-	<slam:TemplateId>ASCETiC-SLaTemplate-Example-01</slam:TemplateId>
-	<slam:AgreedAt>2014-08-28T09:38:46.003+02:00</slam:AgreedAt>
 	<slam:Party>
 		<slam:Text />
 		<slam:Properties>
@@ -88,7 +83,7 @@
 			<slam:Text />
 			<slam:Properties />
 			<slam:State>
-				<slam:ID>ubu1-cpu_speed</slam:ID>
+				<slam:ID>ubu1-disk</slam:ID>
 				<slam:Priority xsi:nil="true"
 					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
 				<slam:Constraint>
@@ -97,7 +92,7 @@
 							<slam:FuncExpr>
 								<slam:Text />
 								<slam:Properties />
-								<slam:Operator>http://www.slaatsoi.org/resources#cpu_speed
+								<slam:Operator>http://www.slaatsoi.org/resources#disk
 								</slam:Operator>
 								<slam:Parameter>
 									<slam:ID>ubu1</slam:ID>
@@ -110,45 +105,8 @@
 								</slam:ComparisonOp>
 								<slam:Value>
 									<slam:CONST>
-										<slam:Value>-1.0</slam:Value>
-										<slam:Datatype>http://www.slaatsoi.org/coremodel/units#MHz
-										</slam:Datatype>
-									</slam:CONST>
-								</slam:Value>
-							</slam:SimpleDomainExpr>
-						</slam:Domain>
-					</slam:TypeConstraintExpr>
-				</slam:Constraint>
-			</slam:State>
-		</slam:Guaranteed>
-		<slam:Guaranteed>
-			<slam:Text />
-			<slam:Properties />
-			<slam:State>
-				<slam:ID>ubu1-vm_cores</slam:ID>
-				<slam:Priority xsi:nil="true"
-					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
-				<slam:Constraint>
-					<slam:TypeConstraintExpr>
-						<slam:Value>
-							<slam:FuncExpr>
-								<slam:Text />
-								<slam:Properties />
-								<slam:Operator>http://www.slaatsoi.org/resources#vm_cores
-								</slam:Operator>
-								<slam:Parameter>
-									<slam:ID>ubu1</slam:ID>
-								</slam:Parameter>
-							</slam:FuncExpr>
-						</slam:Value>
-						<slam:Domain>
-							<slam:SimpleDomainExpr>
-								<slam:ComparisonOp>http://www.slaatsoi.org/coremodel#equals
-								</slam:ComparisonOp>
-								<slam:Value>
-									<slam:CONST>
-										<slam:Value>1.0</slam:Value>
-										<slam:Datatype>http://www.w3.org/2001/XMLSchema#integer
+										<slam:Value>51200.0</slam:Value>
+										<slam:Datatype>http://www.slaatsoi.org/coremodel/units#MB
 										</slam:Datatype>
 									</slam:CONST>
 								</slam:Value>
@@ -186,6 +144,43 @@
 									<slam:CONST>
 										<slam:Value>256.0</slam:Value>
 										<slam:Datatype>http://www.slaatsoi.org/coremodel/units#MB
+										</slam:Datatype>
+									</slam:CONST>
+								</slam:Value>
+							</slam:SimpleDomainExpr>
+						</slam:Domain>
+					</slam:TypeConstraintExpr>
+				</slam:Constraint>
+			</slam:State>
+		</slam:Guaranteed>
+		<slam:Guaranteed>
+			<slam:Text />
+			<slam:Properties />
+			<slam:State>
+				<slam:ID>ubu1-vm_cores</slam:ID>
+				<slam:Priority xsi:nil="true"
+					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+				<slam:Constraint>
+					<slam:TypeConstraintExpr>
+						<slam:Value>
+							<slam:FuncExpr>
+								<slam:Text />
+								<slam:Properties />
+								<slam:Operator>http://www.slaatsoi.org/resources#vm_cores
+								</slam:Operator>
+								<slam:Parameter>
+									<slam:ID>ubu1</slam:ID>
+								</slam:Parameter>
+							</slam:FuncExpr>
+						</slam:Value>
+						<slam:Domain>
+							<slam:SimpleDomainExpr>
+								<slam:ComparisonOp>http://www.slaatsoi.org/coremodel#equals
+								</slam:ComparisonOp>
+								<slam:Value>
+									<slam:CONST>
+										<slam:Value>1.0</slam:Value>
+										<slam:Datatype>http://www.w3.org/2001/XMLSchema#integer
 										</slam:Datatype>
 									</slam:CONST>
 								</slam:Value>
@@ -232,265 +227,6 @@
 				</slam:Constraint>
 			</slam:State>
 		</slam:Guaranteed>
-		<slam:Guaranteed>
-			<slam:Text />
-			<slam:Properties />
-			<slam:State>
-				<slam:ID>ubu1-disk</slam:ID>
-				<slam:Priority xsi:nil="true"
-					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
-				<slam:Constraint>
-					<slam:TypeConstraintExpr>
-						<slam:Value>
-							<slam:FuncExpr>
-								<slam:Text />
-								<slam:Properties />
-								<slam:Operator>http://www.slaatsoi.org/resources#disk
-								</slam:Operator>
-								<slam:Parameter>
-									<slam:ID>ubu1</slam:ID>
-								</slam:Parameter>
-							</slam:FuncExpr>
-						</slam:Value>
-						<slam:Domain>
-							<slam:SimpleDomainExpr>
-								<slam:ComparisonOp>http://www.slaatsoi.org/coremodel#equals
-								</slam:ComparisonOp>
-								<slam:Value>
-									<slam:CONST>
-										<slam:Value>50.0</slam:Value>
-										<slam:Datatype>http://www.slaatsoi.org/coremodel/units#GB
-										</slam:Datatype>
-									</slam:CONST>
-								</slam:Value>
-							</slam:SimpleDomainExpr>
-						</slam:Domain>
-					</slam:TypeConstraintExpr>
-				</slam:Constraint>
-			</slam:State>
-		</slam:Guaranteed>
-		<slam:Guaranteed>
-			<slam:Text />
-			<slam:Properties />
-			<slam:State>
-				<slam:ID>ubu1-disk</slam:ID>
-				<slam:Priority xsi:nil="true"
-					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
-				<slam:Constraint>
-					<slam:TypeConstraintExpr>
-						<slam:Value>
-							<slam:FuncExpr>
-								<slam:Text />
-								<slam:Properties />
-								<slam:Operator>http://www.slaatsoi.org/resources#disk
-								</slam:Operator>
-								<slam:Parameter>
-									<slam:ID>ubu1</slam:ID>
-								</slam:Parameter>
-							</slam:FuncExpr>
-						</slam:Value>
-						<slam:Domain>
-							<slam:SimpleDomainExpr>
-								<slam:ComparisonOp>http://www.slaatsoi.org/coremodel#equals
-								</slam:ComparisonOp>
-								<slam:Value>
-									<slam:CONST>
-										<slam:Value>51200.0</slam:Value>
-										<slam:Datatype>http://www.slaatsoi.org/coremodel/units#GB
-										</slam:Datatype>
-									</slam:CONST>
-								</slam:Value>
-							</slam:SimpleDomainExpr>
-						</slam:Domain>
-					</slam:TypeConstraintExpr>
-				</slam:Constraint>
-			</slam:State>
-		</slam:Guaranteed>
-		<slam:Guaranteed>
-			<slam:Text />
-			<slam:Properties />
-			<slam:State>
-				<slam:ID>ubu1-vm_cores</slam:ID>
-				<slam:Priority xsi:nil="true"
-					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
-				<slam:Constraint>
-					<slam:TypeConstraintExpr>
-						<slam:Value>
-							<slam:FuncExpr>
-								<slam:Text />
-								<slam:Properties />
-								<slam:Operator>http://www.slaatsoi.org/resources#vm_cores
-								</slam:Operator>
-								<slam:Parameter>
-									<slam:ID>ubu1</slam:ID>
-								</slam:Parameter>
-							</slam:FuncExpr>
-						</slam:Value>
-						<slam:Domain>
-							<slam:SimpleDomainExpr>
-								<slam:ComparisonOp>http://www.slaatsoi.org/coremodel#equals
-								</slam:ComparisonOp>
-								<slam:Value>
-									<slam:CONST>
-										<slam:Value>1.0</slam:Value>
-										<slam:Datatype>http://www.w3.org/2001/XMLSchema#integer
-										</slam:Datatype>
-									</slam:CONST>
-								</slam:Value>
-							</slam:SimpleDomainExpr>
-						</slam:Domain>
-					</slam:TypeConstraintExpr>
-				</slam:Constraint>
-			</slam:State>
-		</slam:Guaranteed>
-		<slam:Guaranteed>
-			<slam:Text />
-			<slam:Properties />
-			<slam:State>
-				<slam:ID>CPU_CORES_for_ubu1</slam:ID>
-				<slam:Priority xsi:nil="true"
-					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
-				<slam:Constraint>
-					<slam:TypeConstraintExpr>
-						<slam:Value>
-							<slam:FuncExpr>
-								<slam:Text />
-								<slam:Properties />
-								<slam:Operator>http://www.slaatsoi.org/resources#vm_cores
-								</slam:Operator>
-								<slam:Parameter>
-									<slam:ID>VM_of_type_ubu1</slam:ID>
-								</slam:Parameter>
-							</slam:FuncExpr>
-						</slam:Value>
-						<slam:Domain>
-							<slam:SimpleDomainExpr>
-								<slam:ComparisonOp>http://www.slaatsoi.org/coremodel#equals
-								</slam:ComparisonOp>
-								<slam:Value>
-									<slam:CONST>
-										<slam:Value>1.0</slam:Value>
-										<slam:Datatype>http://www.w3.org/2001/XMLSchema#integer
-										</slam:Datatype>
-									</slam:CONST>
-								</slam:Value>
-							</slam:SimpleDomainExpr>
-						</slam:Domain>
-					</slam:TypeConstraintExpr>
-				</slam:Constraint>
-			</slam:State>
-		</slam:Guaranteed>
-		<slam:Guaranteed>
-			<slam:Text />
-			<slam:Properties />
-			<slam:State>
-				<slam:ID>MEMORY_for_ubu1</slam:ID>
-				<slam:Priority xsi:nil="true"
-					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
-				<slam:Constraint>
-					<slam:TypeConstraintExpr>
-						<slam:Value>
-							<slam:FuncExpr>
-								<slam:Text />
-								<slam:Properties />
-								<slam:Operator>http://www.slaatsoi.org/resources#memory
-								</slam:Operator>
-								<slam:Parameter>
-									<slam:ID>VM_of_type_ubu1</slam:ID>
-								</slam:Parameter>
-							</slam:FuncExpr>
-						</slam:Value>
-						<slam:Domain>
-							<slam:SimpleDomainExpr>
-								<slam:ComparisonOp>http://www.slaatsoi.org/coremodel#equals
-								</slam:ComparisonOp>
-								<slam:Value>
-									<slam:CONST>
-										<slam:Value>512.0</slam:Value>
-										<slam:Datatype>http://www.slaatsoi.org/coremodel/units#MB
-										</slam:Datatype>
-									</slam:CONST>
-								</slam:Value>
-							</slam:SimpleDomainExpr>
-						</slam:Domain>
-					</slam:TypeConstraintExpr>
-				</slam:Constraint>
-			</slam:State>
-		</slam:Guaranteed>
-		<slam:Guaranteed>
-			<slam:Text />
-			<slam:Properties />
-			<slam:State>
-				<slam:ID>ubu1-memory</slam:ID>
-				<slam:Priority xsi:nil="true"
-					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
-				<slam:Constraint>
-					<slam:TypeConstraintExpr>
-						<slam:Value>
-							<slam:FuncExpr>
-								<slam:Text />
-								<slam:Properties />
-								<slam:Operator>http://www.slaatsoi.org/resources#memory
-								</slam:Operator>
-								<slam:Parameter>
-									<slam:ID>ubu1</slam:ID>
-								</slam:Parameter>
-							</slam:FuncExpr>
-						</slam:Value>
-						<slam:Domain>
-							<slam:SimpleDomainExpr>
-								<slam:ComparisonOp>http://www.slaatsoi.org/coremodel#equals
-								</slam:ComparisonOp>
-								<slam:Value>
-									<slam:CONST>
-										<slam:Value>256.0</slam:Value>
-										<slam:Datatype>http://www.slaatsoi.org/coremodel/units#MB
-										</slam:Datatype>
-									</slam:CONST>
-								</slam:Value>
-							</slam:SimpleDomainExpr>
-						</slam:Domain>
-					</slam:TypeConstraintExpr>
-				</slam:Constraint>
-			</slam:State>
-		</slam:Guaranteed>
-		<slam:Guaranteed>
-			<slam:Text />
-			<slam:Properties />
-			<slam:State>
-				<slam:ID>ubu1-cpu_speed</slam:ID>
-				<slam:Priority xsi:nil="true"
-					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
-				<slam:Constraint>
-					<slam:TypeConstraintExpr>
-						<slam:Value>
-							<slam:FuncExpr>
-								<slam:Text />
-								<slam:Properties />
-								<slam:Operator>http://www.slaatsoi.org/resources#cpu_speed
-								</slam:Operator>
-								<slam:Parameter>
-									<slam:ID>ubu1</slam:ID>
-								</slam:Parameter>
-							</slam:FuncExpr>
-						</slam:Value>
-						<slam:Domain>
-							<slam:SimpleDomainExpr>
-								<slam:ComparisonOp>http://www.slaatsoi.org/coremodel#equals
-								</slam:ComparisonOp>
-								<slam:Value>
-									<slam:CONST>
-										<slam:Value>-1.0</slam:Value>
-										<slam:Datatype>http://www.slaatsoi.org/coremodel/units#MHz
-										</slam:Datatype>
-									</slam:CONST>
-								</slam:Value>
-							</slam:SimpleDomainExpr>
-						</slam:Domain>
-					</slam:TypeConstraintExpr>
-				</slam:Constraint>
-			</slam:State>
-		</slam:Guaranteed>
 	</slam:AgreementTerm>
 	<slam:AgreementTerm>
 		<slam:Text />
@@ -525,8 +261,8 @@
 						<slam:Description />
 						<slam:BillingFrequency>http://www.slaatsoi.org/business#null
 						</slam:BillingFrequency>
-						<slam:ValidFrom>2014-08-28T09:38:39.618+02:00</slam:ValidFrom>
-						<slam:ValidUntil>2015-08-28T09:38:39.618+02:00</slam:ValidUntil>
+						<slam:ValidFrom>2014-09-01T11:28:04.290+02:00</slam:ValidFrom>
+						<slam:ValidUntil>2015-09-01T11:28:04.290+02:00</slam:ValidUntil>
 						<slam:ComponentProdOfferingPrice>
 							<slam:ID>Price_OF_ubu1</slam:ID>
 							<slam:PriceType>http://www.slaatsoi.org/business#null
@@ -547,4 +283,4 @@
 			</slam:Action>
 		</slam:Guaranteed>
 	</slam:AgreementTerm>
-</slam:SLA>
+</slam:SLATemplate>

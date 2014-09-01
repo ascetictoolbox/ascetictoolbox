@@ -7,6 +7,7 @@ import org.codehaus.jettison.json.JSONObject;
 import eu.ascetic.iaas.slamanager.poc.enums.AsceticAgreementTerm;
 import eu.ascetic.iaas.slamanager.poc.slatemplate.AsceticSlaTemplate;
 import eu.ascetic.iaas.slamanager.poc.slatemplate.request.guarantee.ResourceGuarantee;
+import eu.ascetic.iaas.slamanager.poc.utils.AsceticUnits;
 
 public class VMManagerEstimatesRequestObject {
 
@@ -60,14 +61,16 @@ public class VMManagerEstimatesRequestObject {
 			try {
 				vm.put("id", vs.getOvfId());
 				for (ResourceGuarantee rg : vs.getResourceGuarantees()) {
-					if (rg.getAgreementTerm().equals(AsceticAgreementTerm.cpu_speed))
-						vm.put("cpuFreq", rg.getDefault());
-					if (rg.getAgreementTerm().equals(AsceticAgreementTerm.memory))
-						vm.put("ramMb", rg.getDefault());
-					if (rg.getAgreementTerm().equals(AsceticAgreementTerm.vm_cores))
-						vm.put("vcpus", rg.getDefault());
-					if (rg.getAgreementTerm().equals(AsceticAgreementTerm.disk))
-						vm.put("diskGb", rg.getDefault());
+					if (rg.getDefault() != -1) {
+						if (rg.getAgreementTerm().equals(AsceticAgreementTerm.cpu_speed))
+							vm.put("cpuFreq", rg.getDefault());
+						if (rg.getAgreementTerm().equals(AsceticAgreementTerm.memory))
+							vm.put("ramMb", rg.getDefault());
+						if (rg.getAgreementTerm().equals(AsceticAgreementTerm.vm_cores))
+							vm.put("vcpus", rg.getDefault());
+						if (rg.getAgreementTerm().equals(AsceticAgreementTerm.disk))
+							vm.put("diskGb", rg.getDefault()/1024); // convert to GB
+					}
 				}
 				_requestJson.accumulate("vms", vm);
 			} catch (JSONException e) {
