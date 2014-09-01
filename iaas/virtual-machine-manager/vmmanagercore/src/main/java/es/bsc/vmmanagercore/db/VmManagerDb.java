@@ -73,13 +73,6 @@ public interface VmManagerDb {
     public SchedulingAlgorithm getCurrentSchedulingAlg();
 
     /**
-     * Returns all the available scheduling algorithms.
-     *
-     * @return the scheduling algorithms
-     */
-    public List<SchedulingAlgorithm> getAvailableSchedulingAlg();
-
-    /**
      * Changes the current scheduling algorithm.
      *
      * @param alg the scheduling algorithm to be used

@@ -333,7 +333,9 @@ public class VmManager {
      * @return the list of scheduling algorithms
      */
     public List<SchedulingAlgorithm> getAvailableSchedulingAlgorithms() {
-        return db.getAvailableSchedulingAlg();
+        List<SchedulingAlgorithm> result = new ArrayList<>();
+        result.addAll(Arrays.asList(SchedulingAlgorithm.values()));
+        return result;
     }
 
     /**

@@ -4,7 +4,6 @@ import es.bsc.vmmanagercore.model.SchedulingAlgorithm;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -18,7 +17,6 @@ public class VmManagerDbHsql implements VmManagerDb {
     /* NOTE: For now, we are using DBHSQL. In the future, it may be needed to use a different DB. */
 
     private Connection conn;
-    private List<SchedulingAlgorithm> availableSchedAlg = new ArrayList<>();
 
     // Error messages
     private static final String ERROR_SETUP_DB = "There was an error while trying to set up the DB.";
@@ -28,27 +26,15 @@ public class VmManagerDbHsql implements VmManagerDb {
     private static final String ERROR_DELETE_VM = "There was an error while trying to delete a VM from the DB.";
     private static final String ERROR_DELETE_ALL_VMS = "There was an error while deleting the VMs from the DB.";
     private static final String ERROR_GET_VMS_OF_APP = "There was an error while getting the VMs IDs from the DB.";
-    private static final String ERROR_INSERT_SCHED_ALGS = "There was an error saving the sched. algorithms on the DB.";
     private static final String ERROR_SET_SCHED_ALG = "There was an error while setting the scheduling algorithm";
 
     public VmManagerDbHsql(String dbFileNamePrefix) throws Exception {
-        initializeListOfAvailableSchedAlgorithms();
-
         // Load the HSQL Database Engine JDBC driver
         Class.forName("org.hsqldb.jdbcDriver");
 
         // Connect to the database. This will load the DB files and start the DB if it is not already running
         conn = DriverManager.getConnection("jdbc:hsqldb:file:db/" + dbFileNamePrefix, "sa", "");
         setupDb();
-    }
-
-    private void initializeListOfAvailableSchedAlgorithms() {
-        availableSchedAlg.add(SchedulingAlgorithm.CONSOLIDATION);
-        availableSchedAlg.add(SchedulingAlgorithm.COST_AWARE);
-        availableSchedAlg.add(SchedulingAlgorithm.DISTRIBUTION);
-        availableSchedAlg.add(SchedulingAlgorithm.ENERGY_AWARE);
-        availableSchedAlg.add(SchedulingAlgorithm.GROUP_BY_APP);
-        availableSchedAlg.add(SchedulingAlgorithm.RANDOM);
     }
     
     // Use for SQL command SELECT
@@ -94,37 +80,20 @@ public class VmManagerDbHsql implements VmManagerDb {
         return result;
     }
     
-    private synchronized void insertAvailableSchedAlg() {
-        try {
-            for (SchedulingAlgorithm schedAlg: availableSchedAlg) {
-                update("INSERT INTO scheduling_alg (algorithm, selected) VALUES "
-                        + " ('" + schedAlg.getName() + "', 0)");
-            }
-        } catch (SQLException e) {
-            System.out.println(ERROR_INSERT_SCHED_ALGS);
-        }
-        try {
-            update("UPDATE scheduling_alg SET selected = 1 WHERE algorithm = 'distribution'");
-        } catch (SQLException e) {
-            System.out.println(ERROR_INSERT_SCHED_ALGS);
-        }
-    }
-    
     private synchronized void setupDb() {
         try {
             update("CREATE TABLE IF NOT EXISTS virtual_machines "
                     + "(id VARCHAR(255), appId VARCHAR(255), PRIMARY KEY (id)) ");
-            update("CREATE TABLE IF NOT EXISTS scheduling_alg "
-                    + "(id VARCHAR(255), algorithm VARCHAR(255), selected INTEGER)");
+            update("CREATE TABLE IF NOT EXISTS current_scheduling_alg " +
+                    "(algorithm VARCHAR(255), PRIMARY KEY (algorithm))");
         } catch (SQLException e) {
             System.out.println(ERROR_SETUP_DB);
         }
 
-        // Insert algorithms just when the DB is created
-        // TODO The if is executed more than once. This needs to be fixed.
-        if (getAvailableSchedulingAlg().size() == 0) {
-            insertAvailableSchedAlg();
-        }
+        // If there is not a current scheduling algorithm selected, select Distribution
+        /*if (getCurrentSchedulingAlg() == null) {
+            setCurrentSchedulingAlg(SchedulingAlgorithm.DISTRIBUTION);
+        }*/
     }
     
     @Override
@@ -140,7 +109,7 @@ public class VmManagerDbHsql implements VmManagerDb {
     public void cleanDb() {
         try {
             update("DROP TABLE virtual_machines");
-            update("DROP TABLE scheduling_alg");
+            update("DROP TABLE current_scheduling_alg");
         } catch (SQLException e) {
             System.out.println(ERROR_CLEAN_DB);
         }
@@ -214,77 +183,37 @@ public class VmManagerDbHsql implements VmManagerDb {
     public SchedulingAlgorithm getCurrentSchedulingAlg() {
         List<String> schedulingAlgorithms;
         try {
-            schedulingAlgorithms = query("SELECT algorithm FROM scheduling_alg WHERE selected = 1");
+            schedulingAlgorithms = query("SELECT algorithm FROM current_scheduling_alg");
         } catch (SQLException e) {
             return null;
         }
-        switch (schedulingAlgorithms.get(0)) { // There can be only one, so get the elem with index 0
-            case "consolidation":
-                return SchedulingAlgorithm.CONSOLIDATION;
-            case "costAware":
-                return SchedulingAlgorithm.COST_AWARE;
-            case "distribution":
-                return SchedulingAlgorithm.DISTRIBUTION;
-            case "energyAware":
-                return SchedulingAlgorithm.ENERGY_AWARE;
-            case "groupByApp":
-                return SchedulingAlgorithm.GROUP_BY_APP;
-            case "random":
-                return SchedulingAlgorithm.RANDOM;
-            default:
-                break;
-        }
-        return null;
-    }
-    
-    @Override
-    public List<SchedulingAlgorithm> getAvailableSchedulingAlg() {
-        List<String> schedulingAlgorithms;
-        try {
-            schedulingAlgorithms = query("SELECT algorithm FROM scheduling_alg");
-        } catch (SQLException e) {
-            return null;
-        }
-        List<SchedulingAlgorithm> result = new ArrayList<>();
-        for (String schedAlg: schedulingAlgorithms) {
-            switch (schedAlg) {
+        if (schedulingAlgorithms.size() != 0) {
+            switch (schedulingAlgorithms.get(0)) { // There can be only one, so get the elem with index 0
                 case "consolidation":
-                    result.add(SchedulingAlgorithm.CONSOLIDATION);
-                    break;
+                    return SchedulingAlgorithm.CONSOLIDATION;
                 case "costAware":
-                    result.add(SchedulingAlgorithm.COST_AWARE);
-                    break;
+                    return SchedulingAlgorithm.COST_AWARE;
                 case "distribution":
-                    result.add(SchedulingAlgorithm.DISTRIBUTION);
-                    break;
+                    return SchedulingAlgorithm.DISTRIBUTION;
                 case "energyAware":
-                    result.add(SchedulingAlgorithm.ENERGY_AWARE);
-                    break;
+                    return SchedulingAlgorithm.ENERGY_AWARE;
                 case "groupByApp":
-                    result.add(SchedulingAlgorithm.GROUP_BY_APP);
-                    break;
+                    return SchedulingAlgorithm.GROUP_BY_APP;
                 case "random":
-                    result.add(SchedulingAlgorithm.RANDOM);
-                    break;
+                    return SchedulingAlgorithm.RANDOM;
                 default:
                     break;
             }
         }
-
-        // Return the list without duplicates.
-        // TODO there should not be duplicates. I need to fix the setupDb function.
-        HashSet<SchedulingAlgorithm> hashSet = new HashSet<>();
-        hashSet.addAll(result);
-        result.clear();
-        result.addAll(hashSet);
-        return result;
+        // If a scheduling alg. has not been selected, return Distribution by default
+        return SchedulingAlgorithm.DISTRIBUTION;
     }
     
     @Override
     public void setCurrentSchedulingAlg(SchedulingAlgorithm alg) {
         try {
-            update("UPDATE scheduling_alg SET selected = 0");
-            update("UPDATE scheduling_alg SET selected = 1 WHERE algorithm = '" + alg.getName() + "'");
+            update("DELETE FROM current_scheduling_alg");
+            update("INSERT IGNORE INTO current_scheduling_alg (algorithm) VALUES ('" + alg.getName() + "')");
         } catch (SQLException e) {
             System.out.println(ERROR_SET_SCHED_ALG);
         }
