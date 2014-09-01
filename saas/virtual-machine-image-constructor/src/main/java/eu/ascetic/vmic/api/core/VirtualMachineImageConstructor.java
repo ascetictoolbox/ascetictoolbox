@@ -296,10 +296,9 @@ public class VirtualMachineImageConstructor implements Runnable {
         arguments.add("rsync -avzPh " + baseImagePath + " " + newImagePath);
 
         // Construct and invoke system call to rsync
-        SystemCallRemote systemCallRemote = new SystemCallRemote(vmicApi
-                .getGlobalState().getConfiguration().getRepositoryPath(),
-                commandName, arguments, vmicApi.getGlobalState()
-                        .getConfiguration());
+        SystemCallRemote systemCallRemote = new SystemCallRemote(
+                System.getProperty("user.home"), commandName, arguments,
+                vmicApi.getGlobalState().getConfiguration());
         Thread thread = new Thread(systemCallRemote);
 
         try {
@@ -389,9 +388,9 @@ public class VirtualMachineImageConstructor implements Runnable {
     private String findNextNbdDevice() throws ProgressException {
         LOGGER.info("Finding next available NBD device...");
 
-        SystemCallRemote systemCallRemote = new SystemCallRemote(vmicApi
-                .getGlobalState().getConfiguration().getRepositoryPath(),
-                vmicApi.getGlobalState().getConfiguration());
+        SystemCallRemote systemCallRemote = new SystemCallRemote(
+                System.getProperty("user.home"), vmicApi.getGlobalState()
+                        .getConfiguration());
 
         String commandName = "for x in /sys/class/block/nbd*;";
         ArrayList<String> arguments = new ArrayList<String>();
@@ -434,9 +433,9 @@ public class VirtualMachineImageConstructor implements Runnable {
             String nbdDevicePath) throws ProgressException {
         LOGGER.info("Mounting image " + imagePath + " to " + mountPointPath);
 
-        SystemCallRemote systemCallRemote = new SystemCallRemote(vmicApi
-                .getGlobalState().getConfiguration().getRepositoryPath(),
-                vmicApi.getGlobalState().getConfiguration());
+        SystemCallRemote systemCallRemote = new SystemCallRemote(
+                System.getProperty("user.home"), vmicApi.getGlobalState()
+                        .getConfiguration());
 
         // Make mount point
         String commandName = "mkdir -p " + mountPointPath + ";";
@@ -478,9 +477,9 @@ public class VirtualMachineImageConstructor implements Runnable {
      */
     private void addfiles(String script) throws ProgressException {
         LOGGER.info("Adding files through execution of script...");
-        SystemCallRemote systemCallRemote = new SystemCallRemote(vmicApi
-                .getGlobalState().getConfiguration().getRepositoryPath(),
-                vmicApi.getGlobalState().getConfiguration());
+        SystemCallRemote systemCallRemote = new SystemCallRemote(
+                System.getProperty("user.home"), vmicApi.getGlobalState()
+                        .getConfiguration());
 
         String commandName = script;
 
@@ -510,9 +509,9 @@ public class VirtualMachineImageConstructor implements Runnable {
     private void unmountImage(String mountPointPath, String nbdDevicePath)
             throws ProgressException {
         LOGGER.info("Unmounting image " + mountPointPath);
-        SystemCallRemote systemCallRemote = new SystemCallRemote(vmicApi
-                .getGlobalState().getConfiguration().getRepositoryPath(),
-                vmicApi.getGlobalState().getConfiguration());
+        SystemCallRemote systemCallRemote = new SystemCallRemote(
+                System.getProperty("user.home"), vmicApi.getGlobalState()
+                        .getConfiguration());
 
         // Unmount the images file system
         String commandName = "sudo umount " + mountPointPath + ";";
