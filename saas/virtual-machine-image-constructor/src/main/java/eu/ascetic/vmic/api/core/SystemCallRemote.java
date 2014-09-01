@@ -124,14 +124,14 @@ public class SystemCallRemote extends SystemCall {
         }
 
         sshCommand = sshCommand.replace("'", "\\'");
-        sshCommand = sshCommand.replace("\"", "\\\"");
+        //sshCommand = sshCommand.replace("\"", "\\\"");
         sshCommand = sshCommand.replace("[", "\\[");
         sshCommand = sshCommand.replace("]", "\\]");
 
         // If using cygwin then we can skip the following escaping as the
         // windows shell ignores these chars anyway
         if (!sshPath.contains("cygwin")) {
-            sshCommand = sshCommand.replace("$", "\\$");
+            //sshCommand = sshCommand.replace("$", "\\$");
         }
 
         // Construct the SSH command
