@@ -105,6 +105,32 @@
 			</plugin>
 		</plugins>
 	</build>
+	
+	<repositories>
+                <repository>
+                <id>slasoi-hp-snapshots</id>
+                <name>SLA@SOI SOURCEFORGE repository for snapshots</name>
+                <url>http://sourceforge.net/projects/contra-slaatsoi/files/m2-repo-snapshot/</url>
+                <releases>
+                        <enabled>false</enabled>
+                </releases>
+                <snapshots>
+                        <enabled>true</enabled>
+                </snapshots>
+        </repository>
+
+        <repository>
+                <id>slasoi-hp-releases</id>
+                <name>SLA@SOI SOURCEFORGE repository for releases</name>
+                <url>http://sourceforge.net/projects/contra-slaatsoi/files/m2-repo/</url>
+                <releases>
+                        <enabled>true</enabled>
+                </releases>
+                <snapshots>
+                        <enabled>false</enabled>
+                </snapshots>
+        </repository>
+	</repositories>	
 
 	<dependencies>
 
@@ -140,6 +166,84 @@
 			<groupId>eu.ascetic.paas</groupId>
 			<artifactId>paas-energy-modeller</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
+		    <!-- PaaS SLAM -->
+		
+		<dependency>
+ 			<groupId>org.slasoi.generic-slamanager.syntaxconverter</groupId>
+ 			<artifactId>gslam-syntaxconverter</artifactId>
+ 			<version>0.1-SNAPSHOT</version>
+ 			<exclusions>
+        		<exclusion>  
+          			<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+        		</exclusion>
+        		<exclusion>  
+          			<groupId>junit</groupId>
+					<artifactId>junit</artifactId>
+        		</exclusion>
+        	    <exclusion>  
+          			<groupId>org.springframework</groupId>
+					<artifactId>org.springframework.aop</artifactId>
+        		</exclusion>
+        		<exclusion>  
+          			<groupId>org.springframework</groupId>
+					<artifactId>org.springframework.beans</artifactId>
+        		</exclusion>
+        		<exclusion>  
+          			<groupId>org.springframework</groupId>
+					<artifactId>org.springframework.core</artifactId>
+        		</exclusion>
+        		<exclusion>  
+          			<groupId>org.springframework.osgi</groupId>
+					<artifactId>spring-osgi-core</artifactId>
+        		</exclusion>
+        		<exclusion>  
+          			<groupId>org.springframework.osgi</groupId>
+					<artifactId>spring-osgi-io</artifactId>
+        		</exclusion>
+        		 <exclusion>  
+          			<groupId>org.springframework</groupId>
+					<artifactId>org.springframework.context</artifactId>
+        		</exclusion>
+        		<exclusion>  
+          			<groupId>org.aopalliance</groupId>
+					<artifactId>com.springsource.org.aopalliance</artifactId>
+        		</exclusion>
+        		<exclusion>  
+          			<groupId>org.springframework</groupId>
+					<artifactId>spring-context</artifactId>
+        		</exclusion>
+        		<exclusion>  
+          			<groupId>org.springframework.osgi</groupId>
+					<artifactId>spring-osgi-annotation</artifactId>
+        		</exclusion>
+        		<exclusion>  
+          			<groupId>org.springframework</groupId>
+					<artifactId>spring</artifactId>
+        		</exclusion>
+      		</exclusions> 
+		</dependency> 
+		
+		<dependency>
+			<groupId>org.slasoi.models</groupId>
+ 			<artifactId>slamodel</artifactId>
+ 			<version>0.4-SNAPSHOT</version>
+ 			<exclusions>
+        		<exclusion>  
+          			<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+        		</exclusion>
+        		<exclusion>  
+          			<groupId>junit</groupId>
+					<artifactId>junit</artifactId>
+        		</exclusion>
+        	    <exclusion>  
+          			<groupId>org.hamcrest</groupId>
+					<artifactId>hamcrest-core</artifactId>
+        		</exclusion>
+      		</exclusions> 
 		</dependency>
 
 		<!-- General -->
