@@ -117,18 +117,11 @@ public class SystemCallRemote extends SystemCall {
 
         LOGGER.info("Constructing remote system call command: " + sshCommand);
 
-        // Check to see if backtick subsitution is being used
-        if (sshCommand.contains("`")) {
-            throw new SystemCallException(
-                    "Legacy support for command substitution via backticks in bash scripts are not supported by ProcessBuilder, consider replacing with $(...)");
-        }
-
-        sshCommand = sshCommand.replace("'", "\\'");
-        sshCommand = sshCommand.replace("[", "\\[");
-        sshCommand = sshCommand.replace("]", "\\]");
-
         // If using cygwin then do the following escaping
         if (sshPath.contains("cygwin")) {
+            sshCommand = sshCommand.replace("'", "\\'");
+            sshCommand = sshCommand.replace("[", "\\[");
+            sshCommand = sshCommand.replace("]", "\\]");
             sshCommand = sshCommand.replace("\"", "\\\"");
         }
 
