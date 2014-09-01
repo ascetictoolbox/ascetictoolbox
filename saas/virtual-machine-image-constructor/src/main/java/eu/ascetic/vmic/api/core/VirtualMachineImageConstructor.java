@@ -394,9 +394,9 @@ public class VirtualMachineImageConstructor implements Runnable {
 
         String commandName = "for x in /sys/class/block/nbd*;";
         ArrayList<String> arguments = new ArrayList<String>();
-        arguments.add("do S=`cat $x/size`;");
+        arguments.add("do S=$(cat $x/size);");
         arguments.add("if [ \"$S\" == \"0\" ];");
-        arguments.add("then echo \"/dev/`basename $x`\";");
+        arguments.add("then echo \"/dev/$(basename $x)\";");
         arguments.add("break;");
         arguments.add("fi;");
         arguments.add("done");
@@ -445,9 +445,9 @@ public class VirtualMachineImageConstructor implements Runnable {
                 + imagePath + ";");
         // Check the qemu-nbd command has
         arguments
-                .add("while true;do S=`cat /sys/class/block/"
+                .add("while true;do S=$(cat /sys/class/block/"
                         + nbdDevicePath
-                        + "/size`;if [ \"$S\" != \"0\" ];then break;else sleep 1;fi;done;");
+                        + "/size);if [ \"$S\" != \"0\" ];then break;else sleep 1;fi;done;");
         // Add mount command
         // FIXME: Should detect which partition to mount and what file system is
         // in use
