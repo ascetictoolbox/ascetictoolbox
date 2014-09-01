@@ -131,6 +131,8 @@ public class SystemCallRemote extends SystemCall {
         // windows shell ignores these chars anyway
         if (!sshPath.contains("cygwin")) {
             sshCommand = sshCommand.replace("$", "\\$");
+            sshCommand = sshCommand.replace("(", "\\(");
+            sshCommand = sshCommand.replace(")", "\\)");
         }
 
         // Construct the SSH command

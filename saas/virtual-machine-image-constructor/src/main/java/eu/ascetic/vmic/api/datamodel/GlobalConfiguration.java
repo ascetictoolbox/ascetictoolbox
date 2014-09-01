@@ -15,7 +15,6 @@
  */
 package eu.ascetic.vmic.api.datamodel;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
@@ -112,12 +111,10 @@ public class GlobalConfiguration {
 
             // Set repositoryPath URI for testing
             properties.setProperty(REPOSITORY_PROPERTY_KEY, vmicTemp);
-            new File(properties.getProperty(REPOSITORY_PROPERTY_KEY)).mkdirs();
 
             // Set rsyncPath URI for testing to local rsync binary
             properties.setProperty(RSYNC_PROPERTY_KEY,
                     "C:\\Users\\django\\cygwin\\bin\\rsync.exe");
-            new File(properties.getProperty(REPOSITORY_PROPERTY_KEY)).mkdirs();
 
             // Set sshPath URI for testing to local ssh binary
             properties.setProperty(SSH_PROPERTY_KEY,
