@@ -22,6 +22,7 @@ public class HostZabbix extends Host {
     private static final String AVAILABLE_MEMORY_BYTES_KEY = "vm.memory.size[used]";
     private static final String TOTAL_DISK_BYTES_KEY = "vfs.fs.size[/var/lib/nova/instances,total]";
     private static final String USED_DISK_BYTES_KEY = "vfs.fs.size[/var/lib/nova/instances,used]";
+    private static final String POWER_KEY = "power";
 
     private final static ZabbixClient zabbixClient = ZabbixConnector.getZabbixClient();
     private List<Item> items = new ArrayList<>(); // Metrics available in the host
@@ -52,6 +53,7 @@ public class HostZabbix extends Host {
         items = zabbixClient.getItemsFromHost(hostname);
         initTotalResources();
         initAssignedResources();
+        currentPower = Float.parseFloat(getItemByKey(POWER_KEY).getLastValue());
     }
 
     @Override

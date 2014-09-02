@@ -21,6 +21,7 @@ public abstract class Host {
     protected double assignedCpus;
     protected double assignedMemoryMb;
     protected double assignedDiskGb;
+    protected double currentPower;
 
     /**
      * Class constructor
