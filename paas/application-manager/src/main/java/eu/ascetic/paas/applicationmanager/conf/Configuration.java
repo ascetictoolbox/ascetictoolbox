@@ -13,6 +13,7 @@ public class Configuration {
 	private static final String applicationManagerConfigurationFile = "/etc/ascetic/paas/application-manager/application-manager.properties";
 //	public static String vmcontextualizerConfigurationFileDirectory = "/etc/ascetic/paas/application-manager";
 	public static String vmcontextualizerConfigurationFileDirectory = "C://tests";
+	public static String slamURL = "http://10.0.4.16:/services/asceticNegotiation?wsdl";
 	
 	static {
         try {
@@ -26,6 +27,7 @@ public class Configuration {
         	org.apache.commons.configuration.Configuration config = new PropertiesConfiguration(propertiesFile);
         	vmManagerServiceUrl = config.getString("vm-manager.url");
         	checkDeploymentsStatus = config.getString("check.deployments.status");
+        	slamURL = config.getString("slam.url");
         }
         catch (Exception e) {
             logger.info("Error loading Application Manager configuration file");
