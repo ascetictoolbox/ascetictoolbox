@@ -212,9 +212,11 @@ public class VmManagerDbHsql implements VmManagerDb {
     @Override
     public void setCurrentSchedulingAlg(SchedulingAlgorithm alg) {
         try {
+            update("DELETE FROM current_scheduling_alg");
             update("INSERT INTO current_scheduling_alg (algorithm) VALUES ('" + alg.getName() + "')");
         } catch (SQLException e) {
-            // The INSERT may violate the PRIMARY_KEY restriction, but it does not affect us
+            // I think the INSERT may violate the PRIMARY_KEY restriction because the time it takes the DB to
+            // execute the instructions, but it does not affect us
         }
     }
 }
