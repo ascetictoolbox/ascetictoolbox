@@ -1,8 +1,13 @@
-<slam:SLATemplate xmlns:slam="http://www.slaatsoi.eu/slamodel">
+<slam:SLA xmlns:slam="http://www.slaatsoi.eu/slamodel">
 	<slam:Text />
 	<slam:Properties />
-	<slam:UUID>ASCETiC-SLaTemplate-Example-01</slam:UUID>
+	<slam:UUID>550968c0-060a-48df-8f0d-5afeaddc8ff7</slam:UUID>
 	<slam:ModelVersion>sla_at_soi_sla_model_v1.0</slam:ModelVersion>
+	<slam:EffectiveFrom>2014-09-03T12:56:36.436+02:00</slam:EffectiveFrom>
+	<slam:EffectiveUntil>2016-09-03T12:56:36.436+02:00
+	</slam:EffectiveUntil>
+	<slam:TemplateId>ASCETiC-SLaTemplate-Example-01</slam:TemplateId>
+	<slam:AgreedAt>2014-09-03T12:56:36.435+02:00</slam:AgreedAt>
 	<slam:Party>
 		<slam:Text />
 		<slam:Properties>
@@ -83,7 +88,7 @@
 			<slam:Text />
 			<slam:Properties />
 			<slam:State>
-				<slam:ID>ubu1-disk</slam:ID>
+				<slam:ID>ubu1-vm_cores</slam:ID>
 				<slam:Priority xsi:nil="true"
 					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
 				<slam:Constraint>
@@ -92,7 +97,7 @@
 							<slam:FuncExpr>
 								<slam:Text />
 								<slam:Properties />
-								<slam:Operator>http://www.slaatsoi.org/resources#disk
+								<slam:Operator>http://www.slaatsoi.org/resources#vm_cores
 								</slam:Operator>
 								<slam:Parameter>
 									<slam:ID>ubu1</slam:ID>
@@ -105,8 +110,8 @@
 								</slam:ComparisonOp>
 								<slam:Value>
 									<slam:CONST>
-										<slam:Value>51200.0</slam:Value>
-										<slam:Datatype>http://www.slaatsoi.org/coremodel/units#MB
+										<slam:Value>1.0</slam:Value>
+										<slam:Datatype>http://www.w3.org/2001/XMLSchema#integer
 										</slam:Datatype>
 									</slam:CONST>
 								</slam:Value>
@@ -157,7 +162,7 @@
 			<slam:Text />
 			<slam:Properties />
 			<slam:State>
-				<slam:ID>ubu1-vm_cores</slam:ID>
+				<slam:ID>ubu1-disk_size</slam:ID>
 				<slam:Priority xsi:nil="true"
 					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
 				<slam:Constraint>
@@ -166,7 +171,7 @@
 							<slam:FuncExpr>
 								<slam:Text />
 								<slam:Properties />
-								<slam:Operator>http://www.slaatsoi.org/resources#vm_cores
+								<slam:Operator>http://www.slaatsoi.org/resources#disk_size
 								</slam:Operator>
 								<slam:Parameter>
 									<slam:ID>ubu1</slam:ID>
@@ -179,8 +184,8 @@
 								</slam:ComparisonOp>
 								<slam:Value>
 									<slam:CONST>
-										<slam:Value>1.0</slam:Value>
-										<slam:Datatype>http://www.w3.org/2001/XMLSchema#integer
+										<slam:Value>51200.0</slam:Value>
+										<slam:Datatype>http://www.slaatsoi.org/coremodel/units#MB
 										</slam:Datatype>
 									</slam:CONST>
 								</slam:Value>
@@ -216,7 +221,7 @@
 								</slam:ComparisonOp>
 								<slam:Value>
 									<slam:CONST>
-										<slam:Value>-4.581101548949661</slam:Value>
+										<slam:Value>179.42106047031825</slam:Value>
 										<slam:Datatype>http://www.slaatsoi.org/coremodel/units#W
 										</slam:Datatype>
 									</slam:CONST>
@@ -259,17 +264,17 @@
 						<slam:ID>Product_Offering_Price_Of_ubu1</slam:ID>
 						<slam:Name />
 						<slam:Description />
-						<slam:BillingFrequency>http://www.slaatsoi.org/business#null
+						<slam:BillingFrequency>http://www.slaatsoi.org/business#http://www.slaatsoi.org/business#per_month
 						</slam:BillingFrequency>
-						<slam:ValidFrom>2014-09-01T11:28:04.290+02:00</slam:ValidFrom>
-						<slam:ValidUntil>2015-09-01T11:28:04.290+02:00</slam:ValidUntil>
+						<slam:ValidFrom>2014-09-03T12:56:34.260+02:00</slam:ValidFrom>
+						<slam:ValidUntil>2015-09-03T12:56:34.260+02:00</slam:ValidUntil>
 						<slam:ComponentProdOfferingPrice>
 							<slam:ID>Price_OF_ubu1</slam:ID>
-							<slam:PriceType>http://www.slaatsoi.org/business#null
+							<slam:PriceType>http://www.slaatsoi.org/business#http://www.slaatsoi.org/business#per_hour
 							</slam:PriceType>
 							<slam:Price>
-								<slam:Value>-0.4651510843250097</slam:Value>
-								<slam:Datatype>http://www.slaatsoi.org/coremodel/units#null
+								<slam:Value>21.43110619596787</slam:Value>
+								<slam:Datatype>http://www.slaatsoi.org/coremodel/units#http://www.slaatsoi.org/coremodel/units#EUR
 								</slam:Datatype>
 							</slam:Price>
 							<slam:Quantity>
@@ -283,4 +288,4 @@
 			</slam:Action>
 		</slam:Guaranteed>
 	</slam:AgreementTerm>
-</slam:SLATemplate>
+</slam:SLA>
