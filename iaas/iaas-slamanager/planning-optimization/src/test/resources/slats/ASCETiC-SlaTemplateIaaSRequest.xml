@@ -183,7 +183,7 @@
 							<slasoi:FuncExpr>
 								<slasoi:Text />
 								<slasoi:Properties />
-								<slasoi:Operator>http://www.slaatsoi.org/resources#disk
+								<slasoi:Operator>http://www.slaatsoi.org/resources#disk_size
 								</slasoi:Operator>
 								<slasoi:Parameter>
 									<slasoi:ID>VM_of_type_ubu1</slasoi:ID>

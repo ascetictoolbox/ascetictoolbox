@@ -70,7 +70,7 @@ public class OvfResourceParser {
 			vsNeed.put("cpu_speed", (double) -1);
 			vsNeed.put("memory", (double) -1);
 			vsNeed.put("vm_cores", (double) -1);
-			vsNeed.put("disk", (double) -1);
+			vsNeed.put("disk_size", (double) -1);
 			for( Item item : vhs.getItemArray()){
 				switch(item.getResourceType()){
 				case PROCESSOR:
@@ -88,7 +88,7 @@ public class OvfResourceParser {
 					for(String s : item.getHostResourceArray()){
 						if(s.startsWith("ovf:/disk/")){
 							String diskId=s.substring(10);
-							vsNeed.put("disk",new Double(getDiskCapacity(diskId)));	
+							vsNeed.put("disk_size",new Double(getDiskCapacity(diskId)));	
 							break;
 						}
 					}

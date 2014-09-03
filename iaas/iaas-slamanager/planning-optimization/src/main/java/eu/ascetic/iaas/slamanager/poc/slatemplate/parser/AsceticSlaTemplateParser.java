@@ -150,12 +150,15 @@ public class AsceticSlaTemplateParser {
 		if (asceticRequest != null) { // is AsceticResourceRequest
 			asceticRequest.setVariables(variables);
 			for (Guaranteed g : aTerm.getGuarantees()) {
-				asceticRequest.addGuarantee(parseGuarantee(g, variables));
+				Guarantee guarantee = parseGuarantee(g, variables);
+				if (guarantee != null) {
+					asceticRequest.addGuarantee(guarantee);
+				}
 			}
 			if (asceticRequest instanceof VirtualSystem) { // add ovf file
 															// guarantee for
 															// Virtual System
-				
+
 				eu.ascetic.utils.ovf.api.VirtualSystem[] a = ovfParser.getVirtualSystems();
 				for (eu.ascetic.utils.ovf.api.VirtualSystem vs : a) {
 					if (vs.getId().equals(asceticRequest.getOvfId())) {
@@ -202,11 +205,11 @@ public class AsceticSlaTemplateParser {
 				ovfReqMem.setDomain(vs.getId());
 				AsceticRequest.addGuarantee(ovfReqMem);
 			}
-			if (vsNeed.get("disk") != null) {
-				OvfResourceGuarantee ovfReqDisk = new OvfResourceGuarantee(vs.getId() + "-disk", AsceticAgreementTerm.disk);
-				ovfReqDisk.setMin(vsNeed.get("disk"));
-				ovfReqDisk.setMax(vsNeed.get("disk"));
-				ovfReqDisk.setDefault(vsNeed.get("disk"));
+			if (vsNeed.get("disk_size") != null) {
+				OvfResourceGuarantee ovfReqDisk = new OvfResourceGuarantee(vs.getId() + "-disk_size", AsceticAgreementTerm.disk_size);
+				ovfReqDisk.setMin(vsNeed.get("disk_size"));
+				ovfReqDisk.setMax(vsNeed.get("disk_size"));
+				ovfReqDisk.setDefault(vsNeed.get("disk_size"));
 				ovfReqDisk.setDomain(vs.getId());
 				AsceticRequest.addGuarantee(ovfReqDisk);
 			}
@@ -229,12 +232,15 @@ public class AsceticSlaTemplateParser {
 		String agreementTermName = AgreementUtil.getStringTerm(gs);
 		String guaranteeId = gs.getId().getValue();
 		ValueExpr[] varAppExpr = ((FunctionalExpr) tce.getValue()).getParameters();
-		if (varAppExpr != null && varAppExpr.length != 0) {
+		if (varAppExpr != null && varAppExpr.length != 0 && !AgreementUtil.isResourceTerm(agreementTermName)) { // resource terms are gathered only from OVF
 			ID idVarApp = (ID) varAppExpr[0];
 			String guaranteeDomain = idVarApp.getValue();
-			if (AgreementUtil.isResourceTerm(agreementTermName)) // add resource
-																	// request
-				guarantee = new ResourceGuarantee(guaranteeId, AgreementUtil.metricToAgreement(agreementTermName));
+			/*
+			 * if (AgreementUtil.isResourceTerm(agreementTermName)) // add
+			 * resource // request guarantee = new
+			 * ResourceGuarantee(guaranteeId,
+			 * AgreementUtil.metricToAgreement(agreementTermName));
+			 */
 			if (AgreementUtil.isGenericTerms(agreementTermName)) // add generic
 																	// request
 				guarantee = new GenericGuarantee(guaranteeId, AgreementUtil.metricToAgreement(agreementTermName));

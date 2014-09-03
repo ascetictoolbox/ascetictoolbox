@@ -36,7 +36,7 @@ public class ResourceGuarantee extends Guarantee {
 			unit = AsceticUnits.DEFAULT_MEMORY_UNIT;
 		else if (t.equals(AsceticAgreementTerm.vm_cores))
 			unit = AsceticUnits.DEFAULT_CORE_UNIT;
-		else if (t.equals(AsceticAgreementTerm.disk))
+		else if (t.equals(AsceticAgreementTerm.disk_size))
 			unit = AsceticUnits.DEFAULT_DISK_UNIT;
 		setMin(-1);
 		setMax(-1);

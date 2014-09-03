@@ -68,7 +68,7 @@ public class VMManagerEstimatesRequestObject {
 							vm.put("ramMb", rg.getDefault());
 						if (rg.getAgreementTerm().equals(AsceticAgreementTerm.vm_cores))
 							vm.put("vcpus", rg.getDefault());
-						if (rg.getAgreementTerm().equals(AsceticAgreementTerm.disk))
+						if (rg.getAgreementTerm().equals(AsceticAgreementTerm.disk_size))
 							vm.put("diskGb", rg.getDefault()/1024); // convert to GB
 					}
 				}
