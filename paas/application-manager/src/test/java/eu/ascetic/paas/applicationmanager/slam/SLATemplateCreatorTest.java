@@ -87,20 +87,20 @@ public class SLATemplateCreatorTest {
 	@Test
 	public void verifyGenerateSLATemplate() throws Exception {
 		OvfDefinition ovfDefinition = OVFUtils.getOvfDefinition(threeTierWebAppOvfString);
-		
+
 		SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "REST-URL");
-		
+
 		assertEquals("ASCETiC-SLaTemplate-Example-01", slaTemplate.getUuid().getValue());
 		//assertEquals("1", slaTemplate.getModelVersion());
-		
-		System.out.println(slaTemplate);
-		
-      SLASOITemplateRenderer slasoiTemplateRenderer = new SLASOITemplateRenderer();
-		SLATemplateDocument slaTemplateRendered =
-      SLATemplateDocument.Factory.parse(slasoiTemplateRenderer.renderSLATemplate(slaTemplate));
 
-      System.out.println("SLA rendered as XML:");
-      System.out.println(slaTemplateRendered.toString());
+		System.out.println(slaTemplate);
+
+//		SLASOITemplateRenderer slasoiTemplateRenderer = new SLASOITemplateRenderer();
+//		SLATemplateDocument slaTemplateRendered =
+//				SLATemplateDocument.Factory.parse(slasoiTemplateRenderer.renderSLATemplate(slaTemplate));
+//
+//		System.out.println("SLA rendered as XML:");
+//		System.out.println(slaTemplateRendered.toString());
 	}
 	
 	

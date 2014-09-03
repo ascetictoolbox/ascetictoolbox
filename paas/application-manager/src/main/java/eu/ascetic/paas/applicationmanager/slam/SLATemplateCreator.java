@@ -26,7 +26,13 @@ import org.slasoi.slamodel.vocab.ext.Expression;
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
 import eu.ascetic.utils.ovf.api.VirtualSystem;
+import eu.slaatsoi.slamodel.InterfaceDeclrType;
+import eu.slaatsoi.slamodel.InterfaceResourceTypeType;
 import eu.slaatsoi.slamodel.impl.ConstraintExprDocumentImpl;
+import eu.slaatsoi.slamodel.impl.InterfaceDeclrDocumentImpl;
+import eu.slaatsoi.slamodel.impl.InterfaceDeclrTypeImpl;
+import eu.slaatsoi.slamodel.impl.InterfaceResourceTypeTypeImpl;
+import eu.slaatsoi.slamodel.impl.SLATemplateDocumentImpl;
 
 public class SLATemplateCreator {
 	
@@ -57,6 +63,7 @@ public class SLATemplateCreator {
 	 * @param ovf
 	 */
 	protected static void addAgreementTerms(SLATemplate slaTemplate, OvfDefinition ovf) {
+		
 		// We check the number of VirtualSystems in the ovf document
 		VirtualSystem[] virtualSystemArray = ovf.getVirtualSystemCollection().getVirtualSystemArray();
 		
@@ -133,15 +140,26 @@ public class SLATemplateCreator {
 			// Provider ID
 			ID idProvider = new ID("AsceticProvider");
 
+//		    interface_resource_type{
+//	            name = OVFAppliance
+//	        }
+
+			
+			
+			
 			// TODO
 			//		// It is necessary to create an interface
-			//		InterfaceResourceTypeType interfaceResourceType = new InterfaceResourceTypeTypeImpl(null);
-			//		interfaceResourceType.setName("OVFAppliance");
+//					InterfaceResourceTypeType interfaceResourceType = new InterfaceResourceTypeTypeImpl(null);
+//					interfaceResourceType.setName("OVFAppliance");
 			Interface.Specification ispec = new Interface.Specification("OVFAppliance");
 			//		iface.set
 			//		
 			//		// By the example looks like we only have one unique InterfaceDclr.
+//			InterfaceDeclrType interfaceDeclaration2 = new InterfaceDeclrTypeImpl(null);
+//			interfaceDeclaration2.getInterface();
 			InterfaceDeclr interfaceDeclaration = new InterfaceDeclr(id, idProvider, ispec);
+
+
 
 			// We set the properties
 			interfaceDeclaration.setPropertyValue(new STND("OVF_URL"), ovfURL);

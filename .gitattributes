@@ -341,6 +341,7 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/vmmana
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/vmmanager/datamodel/converter/ModelConverter.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/vmmanager/datamodel/monitoring/Host.java -text
 paas/application-manager/src/main/resources/META-INF/persistence.mysql.xml -text
+paas/application-manager/src/main/resources/ProviderNegotiation.wsdl -text
 paas/application-manager/src/main/resources/application-manager.properties -text
 paas/application-manager/src/main/resources/applicationContext.xml -text
 paas/application-manager/src/main/resources/config.properties -text
