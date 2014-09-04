@@ -122,7 +122,7 @@ public class VmManager {
 
         // // If the monitoring system is Zabbix, then we need to delete the VM from Zabbix
         if (usingZabbix()) {
-            ZabbixConnector.getZabbixClient().deleteVM(vmId);
+            ZabbixConnector.getZabbixClient().deleteVM(vmId + "_" + getVm(vmId).getHostName());
         }
     }
 
@@ -413,7 +413,7 @@ public class VmManager {
      * @param hostnames the names of the hosts in the infrastructure
      */
     private void initializeHostsAccordingToMonitoring(VmManagerConfiguration.Monitoring monitoring,
-            String[] hostnames) {
+                                                      String[] hostnames) {
         switch (monitoring) {
             case GANGLIA:
                 for (String hostname: hostnames) {
