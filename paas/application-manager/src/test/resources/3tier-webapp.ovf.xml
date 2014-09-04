@@ -1,47 +1,35 @@
-<Envelope xsi:schemaLocation="http://schemas.dmtf.org/ovf/envelope/1 ../dsp8023.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:vssd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData" xmlns:rasd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" xmlns="http://schemas.dmtf.org/ovf/envelope/1">
+<ovf:Envelope xsi:schemaLocation="http://schemas.dmtf.org/ovf/envelope/1 ../dsp8023.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:vssd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData" xmlns:rasd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1">
   <!--References to all external files-->
   <ovf:References>
     <!--HAProxy VM Image-->
-    <ovf:File ovf:id="haproxy-img" ovf:href="/DFS/ascetic/vm-images/3tierweb/haproxy.img" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <!--HAProxy Context Base Image(s)-->
-    <ovf:File ovf:id="haproxy-iso" ovf:href="/DFS/ascetic/vm-images/3tierweb/haproxy.iso" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1"/>
+    <ovf:File ovf:id="haproxy-img" ovf:href="/DFS/ascetic/vm-images/threeTierWebApp/haproxy.img"/>
     <!--Jboss VM Image-->
-    <ovf:File ovf:id="jboss-img" ovf:href="/DFS/ascetic/vm-images/3tierweb/jboss.img" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <!--Jboss Context Base Image(s)-->
-    <ovf:File ovf:id="jboss-iso" ovf:href="/DFS/ascetic/vm-images/3tierweb/jboss.iso" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1"/>
+    <ovf:File ovf:id="jboss-img" ovf:href="/DFS/ascetic/vm-images/threeTierWebApp/jboss.img"/>
     <!--MySQL VM Image-->
-    <ovf:File ovf:id="mysql-img" ovf:href="/DFS/ascetic/vm-images/3tierweb/mysql.img" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <!--MySQL Context Base Image(s)-->
-    <ovf:File ovf:id="mysql-iso" ovf:href="/DFS/ascetic/vm-images/3tierweb/mysql.img" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1"/>
+    <ovf:File ovf:id="mysql-img" ovf:href="/DFS/ascetic/vm-images/threeTierWebApp/mysql.img"/>
     <!--JMeter VM Image-->
-    <ovf:File ovf:id="jmeter-img" ovf:href="/DFS/ascetic/vm-images/3tierweb/jmeter.img" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <!--JMeter Context Base Image(s)-->
-    <ovf:File ovf:id="jmeter-iso" ovf:href="/DFS/ascetic/vm-images/3tierweb/jmeter.iso" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1"/>
+    <ovf:File ovf:id="jmeter-img" ovf:href="/DFS/ascetic/vm-images/threeTierWebApp/jmeter.img"/>
   </ovf:References>
   <!--Describes meta-information about all virtual disks in the package.-->
   <ovf:DiskSection>
     <ovf:Info>List of the virtual disks used in the 3 Tier Web App package.</ovf:Info>
-    <!--HAProxy Disks-->
-    <ovf:Disk ovf:diskId="haproxy-img-disk" ovf:fileRef="haproxy-img" ovf:capacity="1" ovf:format="http://www.gnome.org/~markmc/qcow-image-format.html" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <ovf:Disk ovf:diskId="haproxy-iso-disk" ovf:fileRef="haproxy-iso" ovf:capacity="1" ovf:format="http://www.gnome.org/~markmc/qcow-image-format.html" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <!--Jboss Disks-->
-    <ovf:Disk ovf:diskId="jboss-img-disk" ovf:fileRef="jboss-img" ovf:capacity="1" ovf:format="http://www.gnome.org/~markmc/qcow-image-format.html" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <ovf:Disk ovf:diskId="jboss-iso-disk" ovf:fileRef="jboss-iso" ovf:capacity="1" ovf:format="http://www.gnome.org/~markmc/qcow-image-format.html" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <!--MySQL Disks-->
-    <ovf:Disk ovf:diskId="mysql-img-disk" ovf:fileRef="mysql-img" ovf:capacity="1" ovf:format="http://www.gnome.org/~markmc/qcow-image-format.html" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <ovf:Disk ovf:diskId="mysql-iso-disk" ovf:fileRef="mysql-iso" ovf:capacity="1" ovf:format="http://www.gnome.org/~markmc/qcow-image-format.html" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <!--JMeter Disks-->
-    <ovf:Disk ovf:diskId="jmeter-img-disk" ovf:fileRef="jmeter-img" ovf:capacity="1" ovf:format="http://www.gnome.org/~markmc/qcow-image-format.html" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <ovf:Disk ovf:diskId="jmeter-iso-disk" ovf:fileRef="jmeter-iso" ovf:capacity="1" ovf:format="http://www.gnome.org/~markmc/qcow-image-format.html" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1"/>
+    <!--HAProxy Disk-->
+    <ovf:Disk ovf:diskId="haproxy-img-disk" ovf:fileRef="haproxy-img" ovf:capacityAllocationUnits="byte * 2^30" ovf:capacity="20" ovf:format="http://www.gnome.org/~markmc/qcow-image-format.html"/>
+    <!--Jboss Disk-->
+    <ovf:Disk ovf:diskId="jboss-img-disk" ovf:fileRef="jboss-img" ovf:capacityAllocationUnits="byte * 2^30" ovf:capacity="20" ovf:format="http://www.gnome.org/~markmc/qcow-image-format.html"/>
+    <!--MySQL Disk-->
+    <ovf:Disk ovf:diskId="mysql-img-disk" ovf:fileRef="mysql-img" ovf:capacityAllocationUnits="byte * 2^30" ovf:capacity="20" ovf:format="http://www.gnome.org/~markmc/qcow-image-format.html"/>
+    <!--JMeter Disk-->
+    <ovf:Disk ovf:diskId="jmeter-img-disk" ovf:fileRef="jmeter-img" ovf:capacityAllocationUnits="byte * 2^30" ovf:capacity="20" ovf:format="http://www.gnome.org/~markmc/qcow-image-format.html"/>
   </ovf:DiskSection>
   <!--Describes all networks used in the package-->
   <ovf:NetworkSection>
     <ovf:Info>Logical networks used in the package.</ovf:Info>
-    <ovf:Network ovf:name="threeTierWebApp-net" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1">
+    <ovf:Network ovf:name="threeTierWebApp-net">
       <ovf:Description>Network that the Web App will be available on.</ovf:Description>
     </ovf:Network>
   </ovf:NetworkSection>
-  <ovf:VirtualSystemCollection ovf:id="threeTierWebApp" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1">
+  <ovf:VirtualSystemCollection ovf:id="threeTierWebApp">
     <ovf:Info>A basic three tier web application description.</ovf:Info>
     <ovf:Name>Three Tier Web App</ovf:Name>
     <!--Product specific attributes applicable to all VirtualSystems (VMs)-->
@@ -51,31 +39,14 @@
       <ovf:Version>1.0</ovf:Version>
       <!--Product Properties that stores variables such as workload description, 
                 deployment ID etc.-->
-      <Property ns:key="asceticDeploymentId" ns:type="string" ns:value="101"/>
-      <Property ns:key="asceticSecurityKey" ns:type="string" ns:value="
-        -----BEGIN PUBLIC KEY-----
-        MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCqGKukO1De7zhZj6+H0qtjTkVxwTCpvKe4eCZ0
-        FPqri0cb2JZfXJ/DgYSF6vUpwmJG8wVQZKjeGcjDOL5UlsuusFncCzWBQ7RKNUSesmQRMSGkVb1/
-        3j+skZ6UtW+5u09lHNsj6tQ51s1SPrCBkedbNf0Tp0GbMJDyR4e9T04ZZwIDAQAB
-        -----END PUBLIC KEY-----
-        -----BEGIN RSA PRIVATE KEY-----
-        MIICXAIBAAKBgQCqGKukO1De7zhZj6+H0qtjTkVxwTCpvKe4eCZ0FPqri0cb2JZfXJ/DgYSF6vUp
-        wmJG8wVQZKjeGcjDOL5UlsuusFncCzWBQ7RKNUSesmQRMSGkVb1/3j+skZ6UtW+5u09lHNsj6tQ5
-        1s1SPrCBkedbNf0Tp0GbMJDyR4e9T04ZZwIDAQABAoGAFijko56+qGyN8M0RVyaRAXz++xTqHBLh
-        3tx4VgMtrQ+WEgCjhoTwo23KMBAuJGSYnRmoBZM3lMfTKevIkAidPExvYCdm5dYq3XToLkkLv5L2
-        pIIVOFMDG+KESnAFV7l2c+cnzRMW0+b6f8mR1CJzZuxVLL6Q02fvLi55/mbSYxECQQDeAw6fiIQX
-        GukBI4eMZZt4nscy2o12KyYner3VpoeE+Np2q+Z3pvAMd/aNzQ/W9WaI+NRfcxUJrmfPwIGm63il
-        AkEAxCL5HQb2bQr4ByorcMWm/hEP2MZzROV73yF41hPsRC9m66KrheO9HPTJuo3/9s5p+sqGxOlF
-        L0NDt4SkosjgGwJAFklyR1uZ/wPJjj611cdBcztlPdqoxssQGnh85BzCj/u3WqBpE2vjvyyvyI5k
-        X6zk7S0ljKtt2jny2+00VsBerQJBAJGC1Mg5Oydo5NwD6BiROrPxGo2bpTbu/fhrT8ebHkTz2epl
-        U9VQQSQzY1oZMVX8i1m5WUTLPz2yLJIBQVdXqhMCQBGoiuSoSjafUhV7i1cEGpb88h5NBYZzWXGZ
-        37sJ5QsW+sJyoNde3xH8vdXhzU7eT82D6X/scw9RZz+/6rCJ4p0=
-        -----END RSA PRIVATE KEY-----"/>
-      <Property ns:key="asceticWorkloadVmId" ns:type="string" ns:value="jmeter"/>
-      <Property ns:key="asceticWorkloadType" ns:type="string" ns:value="user-count"/>
-      <Property ns:key="asceticWorkloadRange" ns:type="string" ns:value="10-200"/>
-      <Property ns:key="asceticWorkloadIncrement" ns:type="string" ns:value="10"/>
-      <Property ns:key="asceticWorkloadInterval" ns:type="string" ns:value="1min"/>
+      <ovf:Property ovf:key="asceticSshPublicKey" ovf:type="string" ovf:value="c3NoLXJzYSBBQUFBQjNOemFDMXljMkVBQUFBREFRQUJBQUFBZ1FEL1RLSzhIMVRtbGJkQVZGVlJKM0NabzZMdThaUnpKeS9qdFRwUTgzWWZqaDhyRmlmT1UxdDM5ZTlRWm5iVnJaOWV6NU5BNjNXSmgvRndmMnFFaWFWQmV6ODBGYU5SM3hWVlBsNXhiWngxRCtzZlBKYW9MNFk2Sko5MFpleStaTzdGZWI0YkhwZkdGbTcyZTcybU5nOG5TMGRiVUpySnNNQ2RtRjdDRnNLbFNRPT0gYXNjZXRpYy1wdWJsaWMta2V5"/>
+      <ovf:Property ovf:key="asceticSshPrivateKey" ovf:type="string" ovf:value="LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlDWGdJQkFBS0JnUUQvVEtLOEgxVG1sYmRBVkZWUkozQ1pvNkx1OFpSekp5L2p0VHBRODNZZmpoOHJGaWZPClUxdDM5ZTlRWm5iVnJaOWV6NU5BNjNXSmgvRndmMnFFaWFWQmV6ODBGYU5SM3hWVlBsNXhiWngxRCtzZlBKYW8KTDRZNkpKOTBaZXkrWk83RmViNGJIcGZHRm03MmU3Mm1OZzhuUzBkYlVKckpzTUNkbUY3Q0ZzS2xTUUlEQVFBQgpBb0dCQUpxNHNTOWR0YkNCTDZ2MjhEWGN0eXNGdHVzazBaandPTi9CcDNRRCtLU3JGMHlmZ3NSU1ZHN2hSNFhzCmN6eVFtck4xRFlNY3NBRUh1RlU3Z3l5TDF2QWdpRFBLVTVQWHBLNGNacTVyVzFsdURpcDBtNmtVL0tSaXVmZzgKYTl6RWVjcTBtektDY1I1ekhTa1dUZlN6QVN6cnFkRFJyMEtqbHlHOVpuT0JMRHpoQWtFQS84aGJMaC9kRHZwQQpwT29VczlBWXM2V3ZkYmI0TjhPTnFyVE9zRER2MFV2Q0Ricko5SkRCdUlGNSs3M2pWNFNpcWVybzBiVjM3elNHCkxXdFNmbUU0ZFFKQkFQK0VMS1Bkd1g0dVRXY1BHVnVYM1RJYmx1dmxTTFVxL2FRcnJQTzVxTTNqRmhrbXFCcEQKcG1kZHh3bmNQWWhoRmxmcXdtd2dTd1dDYWl4K1RiVWcvd1VDUUZVakpXWm02TGV4aUk3YjgyUWVvZm81N2ZzcQptZGhGMlFPM0J3MFNYT0MzYkxJUk9HT1ZRMFhjb3ZPdU10dlFwQ3dXcXNRU3VRYi8zcUdEbFlQSGJIa0NRUUNUCmNQaTFZZ3Y2UE11clVYb25jVDFSWWJ3M3lPbW9xUE1ObmFwQ1JYclR1MXNRRGs5b1FHc3dNRnZmSTdoYUR2UHUKcldlZEx4RTdUNkxtbzhkQllwWGxBa0VBK3p1b2owRHhLczlqMzJoVjdYbG5FVU1KRXk5ODlLUXpzNTZRMENuUAphWFMzZ2dTY2pHOVd3L2dIbXFIQXNwdGFjNGh5aFB5V05kTlpCNVhvcXRZVCtRPT0KICAgICAgICAtLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQ=="/>
+      <ovf:Property ovf:key="asceticDeploymentId" ovf:type="string" ovf:value="101"/>
+      <ovf:Property ovf:key="asceticWorkloadVmId" ovf:type="string" ovf:value="jmeter"/>
+      <ovf:Property ovf:key="asceticWorkloadType" ovf:type="string" ovf:value="user-count"/>
+      <ovf:Property ovf:key="asceticWorkloadRange" ovf:type="string" ovf:value="10-200"/>
+      <ovf:Property ovf:key="asceticWorkloadIncrement" ovf:type="string" ovf:value="10"/>
+      <ovf:Property ovf:key="asceticWorkloadInterval" ovf:type="string" ovf:value="1min"/>
     </ovf:ProductSection>
     <!--HAProxy Virtual System Instances Template-->
     <ovf:VirtualSystem ovf:id="haproxy">
@@ -87,6 +58,9 @@
         <ovf:Info>Product customisation for the installed software.</ovf:Info>
         <ovf:Product>HAProxy</ovf:Product>
         <ovf:Version>1.0</ovf:Version>
+        <!--Product Properties that stores variables such as probe end points-->
+        <ovf:Property ovf:key="asceticLowerBound" ovf:type="uint32" ovf:value="1"/>
+        <ovf:Property ovf:key="asceticUpperBound" ovf:type="uint32" ovf:value="1"/>
       </ovf:ProductSection>
       <!--Operating System details-->
       <ovf:OperatingSystemSection ovf:id="32" ovf:version=">6.5">
@@ -142,13 +116,6 @@
           <rasd:InstanceID>4</rasd:InstanceID>
           <rasd:ResourceType>17</rasd:ResourceType>
         </ovf:Item>
-        <ovf:Item>
-          <rasd:Description>VM CDROM</rasd:Description>
-          <rasd:ElementName>Context CD 1</rasd:ElementName>
-          <rasd:HostResource>ovf:/disk/haproxy-iso-disk</rasd:HostResource>
-          <rasd:InstanceID>4</rasd:InstanceID>
-          <rasd:ResourceType>15</rasd:ResourceType>
-        </ovf:Item>
       </ovf:VirtualHardwareSection>
     </ovf:VirtualSystem>
     <!--JBoss Virtual System Instances Template-->
@@ -162,9 +129,28 @@
         <ovf:Product>Jboss</ovf:Product>
         <ovf:Version>1.0</ovf:Version>
         <!--Product Properties that stores variables such as probe end points-->
-        <Property ns:key="asceticProbeUri-1" ns:type="string" ns:value="uri://some-end-point/application-monitor"/>
-        <Property ns:key="asceticProbeType-1" ns:type="string" ns:value="cpu"/>
-        <Property ns:key="asceticProbeInterval-1" ns:type="string" ns:value="1sec"/>
+        <ovf:Property ovf:key="asceticLowerBound" ovf:type="uint32" ovf:value="1"/>
+        <ovf:Property ovf:key="asceticUpperBound" ovf:type="uint32" ovf:value="1"/>
+        <ovf:Property ovf:key="asceticEndPointNumber" ovf:type="uint32" ovf:value="2"/>
+        <ovf:Property ovf:key="asceticEndPointId_0" ovf:type="string" ovf:value="mem-probe"/>
+        <ovf:Property ovf:key="asceticEndPointUri_0" ovf:type="string" ovf:value="uri://some-end-point/application-monitor"/>
+        <ovf:Property ovf:key="asceticEndPointType_0" ovf:type="string" ovf:value="probe"/>
+        <ovf:Property ovf:key="asceticEndPointSubtype_0" ovf:type="string" ovf:value="mem"/>
+        <ovf:Property ovf:key="asceticEndPointInterval_0" ovf:type="string" ovf:value="1sec"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyNumber" ovf:type="uint32" ovf:value="2"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyId_0" ovf:type="string" ovf:value="mem-probe"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyPackageUri_0" ovf:type="string" ovf:value="/some-end-point/probe-repository/memory-probe.zip"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyInstallScriptUri_0" ovf:type="string" ovf:value="/some-end-point/probe-repository/memory-probe.sh"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyType_0" ovf:type="string" ovf:value="zip"/>
+        <ovf:Property ovf:key="asceticEndPointId_1" ovf:type="string" ovf:value="cpu-probe"/>
+        <ovf:Property ovf:key="asceticEndPointUri_1" ovf:type="string" ovf:value="uri://some-end-point/application-monitor"/>
+        <ovf:Property ovf:key="asceticEndPointType_1" ovf:type="string" ovf:value="probe"/>
+        <ovf:Property ovf:key="asceticEndPointSubtype_1" ovf:type="string" ovf:value="cpu"/>
+        <ovf:Property ovf:key="asceticEndPointInterval_1" ovf:type="string" ovf:value="1sec"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyId_1" ovf:type="string" ovf:value="cpu-probe"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyType_1" ovf:type="string" ovf:value="zip"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyPackageUri_1" ovf:type="string" ovf:value="/some-end-point/probe-repository/cpu-probe.zip"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyInstallScriptUri_1" ovf:type="string" ovf:value="/some-end-point/probe-repository/cpu-probe.sh"/>
       </ovf:ProductSection>
       <!--Operating System details-->
       <ovf:OperatingSystemSection ovf:id="32" ovf:Version="6.5">
@@ -197,10 +183,10 @@
         </ovf:Item>
         <ovf:Item>
           <rasd:Description>Memory Size</rasd:Description>
-          <rasd:ElementName>512 MB of memory</rasd:ElementName>
+          <rasd:ElementName>2048 MB of memory</rasd:ElementName>
           <rasd:InstanceID>2</rasd:InstanceID>
           <rasd:ResourceType>4</rasd:ResourceType>
-          <rasd:VirtualQuantity>512</rasd:VirtualQuantity>
+          <rasd:VirtualQuantity>2048</rasd:VirtualQuantity>
           <rasd:VirtualQuantityUnits>byte * 2^20</rasd:VirtualQuantityUnits>
         </ovf:Item>
         <ovf:Item>
@@ -219,13 +205,6 @@
           <rasd:InstanceID>4</rasd:InstanceID>
           <rasd:ResourceType>17</rasd:ResourceType>
         </ovf:Item>
-        <ovf:Item>
-          <rasd:Description>VM CDROM</rasd:Description>
-          <rasd:ElementName>Context CD 1</rasd:ElementName>
-          <rasd:HostResource>ovf:/disk/jboss-iso-disk</rasd:HostResource>
-          <rasd:InstanceID>4</rasd:InstanceID>
-          <rasd:ResourceType>15</rasd:ResourceType>
-        </ovf:Item>
       </ovf:VirtualHardwareSection>
     </ovf:VirtualSystem>
     <!--MySQL Virtual System Instances Template-->
@@ -238,6 +217,9 @@
         <ovf:Info>Product customisation for the installed software.</ovf:Info>
         <ovf:Product>MySQL</ovf:Product>
         <ovf:Version>1.0</ovf:Version>
+        <!--Product Properties that stores variables such as probe end points-->
+        <ovf:Property ovf:key="asceticLowerBound" ovf:type="uint32" ovf:value="1"/>
+        <ovf:Property ovf:key="asceticUpperBound" ovf:type="uint32" ovf:value="1"/>
       </ovf:ProductSection>
       <!--Operating System details-->
       <ovf:OperatingSystemSection ovf:id="32" ovf:Version="6.5">
@@ -292,13 +274,6 @@
           <rasd:InstanceID>4</rasd:InstanceID>
           <rasd:ResourceType>17</rasd:ResourceType>
         </ovf:Item>
-        <ovf:Item>
-          <rasd:Description>VM CDROM</rasd:Description>
-          <rasd:ElementName>Context CD 1</rasd:ElementName>
-          <rasd:HostResource>ovf:/disk/mysql-iso-disk</rasd:HostResource>
-          <rasd:InstanceID>4</rasd:InstanceID>
-          <rasd:ResourceType>15</rasd:ResourceType>
-        </ovf:Item>
       </ovf:VirtualHardwareSection>
     </ovf:VirtualSystem>
     <!--JMeter Virtual System Instances Template-->
@@ -311,6 +286,9 @@
         <ovf:Info>Product customisation for the installed software.</ovf:Info>
         <ovf:Product>JMeter</ovf:Product>
         <ovf:Version>1.0</ovf:Version>
+        <!--Product Properties that stores variables such as probe end points-->
+        <ovf:Property ovf:key="asceticLowerBound" ovf:type="uint32" ovf:value="1"/>
+        <ovf:Property ovf:key="asceticUpperBound" ovf:type="uint32" ovf:value="1"/>
       </ovf:ProductSection>
       <!--Operating System details-->
       <ovf:OperatingSystemSection ovf:id="32" ovf:Version="6.5">
@@ -366,14 +344,7 @@
           <rasd:InstanceID>4</rasd:InstanceID>
           <rasd:ResourceType>17</rasd:ResourceType>
         </ovf:Item>
-        <ovf:Item>
-          <rasd:Description>VM CDROM</rasd:Description>
-          <rasd:ElementName>Context CD 1</rasd:ElementName>
-          <rasd:HostResource>ovf:/disk/jmeter-iso-disk</rasd:HostResource>
-          <rasd:InstanceID>4</rasd:InstanceID>
-          <rasd:ResourceType>15</rasd:ResourceType>
-        </ovf:Item>
       </ovf:VirtualHardwareSection>
     </ovf:VirtualSystem>
   </ovf:VirtualSystemCollection>
-</Envelope>
+</ovf:Envelope>
