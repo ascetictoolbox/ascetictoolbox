@@ -25,12 +25,13 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- *
+ * This looks at the fraction of load placed on each VM and determines the 
+ * share of energy that is should have based upon this.
  * @author Richard
  */
 public class LoadFractionShareRule implements EnergyShareRule {
 
-    HashMap<VmDeployed, Double> fractions;
+    HashMap<VmDeployed, Double> fractions = new HashMap<>();
 
     @Override
     public EnergyDivision getEnergyUsage(Host host, Collection<VM> vms) {

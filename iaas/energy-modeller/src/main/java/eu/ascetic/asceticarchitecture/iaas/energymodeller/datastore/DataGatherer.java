@@ -139,29 +139,29 @@ public class DataGatherer implements Runnable {
          * buffering the db writes.
          */
         while (running) {
-            List<Host> hostList = datasource.getHostList();
-            refreshKnownHostList(hostList);
-            refreshKnownVMList(datasource.getVmList());
-            for (Host host : hostList) {
-                HostMeasurement measurement = datasource.getHostData(host);
-                /**
-                 * Update only if a value has not been provided before or the
-                 * timestamp value has changed. This keeps the data written to
-                 * backing store as clean as possible.
-                 */
-                if (lastTimeStampSeen.get(host) == null || measurement.getClock() > lastTimeStampSeen.get(host)) {
-                    lastTimeStampSeen.put(host, measurement.getClock());
-                    connector.writeHostHistoricData(host, measurement.getClock(), measurement.getPower(), measurement.getEnergy());
-                }
-                ArrayList<VmDeployed> vms = getVMsOnHost(host);
-                if (!vms.isEmpty()) {
-                    HostVmLoadFraction fraction = new HostVmLoadFraction(host, measurement.getClock());
-                    List<VmMeasurement> vmMeasurements = datasource.getVmData(vms);
-                    fraction.setFraction(vmMeasurements);
-                    connector.writeHostVMHistoricData(host, measurement.getClock(), fraction);
-                }
-            }
             try {
+                List<Host> hostList = datasource.getHostList();
+                refreshKnownHostList(hostList);
+                refreshKnownVMList(datasource.getVmList());
+                for (Host host : hostList) {
+                    HostMeasurement measurement = datasource.getHostData(host);
+                    /**
+                     * Update only if a value has not been provided before or
+                     * the timestamp value has changed. This keeps the data
+                     * written to backing store as clean as possible.
+                     */
+                    if (lastTimeStampSeen.get(host) == null || measurement.getClock() > lastTimeStampSeen.get(host)) {
+                        lastTimeStampSeen.put(host, measurement.getClock());
+                        connector.writeHostHistoricData(host, measurement.getClock(), measurement.getPower(), measurement.getEnergy());
+                    }
+                    ArrayList<VmDeployed> vms = getVMsOnHost(host);
+                    if (!vms.isEmpty()) {
+                        HostVmLoadFraction fraction = new HostVmLoadFraction(host, measurement.getClock());
+                        List<VmMeasurement> vmMeasurements = datasource.getVmData(vms);
+                        fraction.setFraction(vmMeasurements);
+                        connector.writeHostVMHistoricData(host, measurement.getClock(), fraction);
+                    }
+                }
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException ex) {
