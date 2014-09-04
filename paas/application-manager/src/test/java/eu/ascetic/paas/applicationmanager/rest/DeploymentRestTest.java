@@ -80,7 +80,7 @@ public class DeploymentRestTest {
 		ApplicationDAO applicationDAO = mock(ApplicationDAO.class);
 		deploymentRest.applicationDAO = applicationDAO;
 		
-		when(applicationDAO.getById(1)).thenReturn(application);
+		when(applicationDAO.getByName("1")).thenReturn(application);
 		
 		Response response = deploymentRest.getDeployments("1");
 		

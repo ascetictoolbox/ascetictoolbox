@@ -71,12 +71,12 @@ public class ApplicationRest extends AbstractRest {
 	 * @return the stored application information 
 	 */
 	@GET
-	@Path("{id}")
+	@Path("{application_name}")
 	@Produces(MediaType.APPLICATION_XML)
-	public Response getApplication(@PathParam("id") String id) {
-		logger.info("GET request to path: /applications/" + id);
+	public Response getApplication(@PathParam("application_name") String applicationName) {
+		logger.info("GET request to path: /applications/" + applicationName);
 		
-		Application application = applicationDAO.getById(Integer.parseInt(id));
+		Application application = applicationDAO.getByName(applicationName);
 		String xml = XMLBuilder.getApplicationXML(application);
 		
 		return buildResponse(Status.OK, xml);
@@ -88,9 +88,9 @@ public class ApplicationRest extends AbstractRest {
 	 * @return ok if the termination process is possible
 	 */
 	@DELETE
-	@Path("{id}")
-	public Response deleteApplication(@PathParam("id") String id) {
-		logger.info("DELETE request to path: /applications/" + id);
+	@Path("{application_name}")
+	public Response deleteApplication(@PathParam("application_name") String applicationName) {
+		logger.info("DELETE request to path: /applications/" + applicationName);
 		// TODO
 		// TODO this does not really deletes the application from the database, simply it puts
 		//      the application in terminated state and deletes any resource associated to it

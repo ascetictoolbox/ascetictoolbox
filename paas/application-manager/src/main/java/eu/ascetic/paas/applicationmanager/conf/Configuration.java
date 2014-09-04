@@ -13,7 +13,7 @@ public class Configuration {
 	private static final String applicationManagerConfigurationFile = "/etc/ascetic/paas/application-manager/application-manager.properties";
 //	public static String vmcontextualizerConfigurationFileDirectory = "/etc/ascetic/paas/application-manager";
 	public static String vmcontextualizerConfigurationFileDirectory = "C://tests";
-	public static String slamURL = "http://10.0.4.16:/services/asceticNegotiation?wsdl";
+	public static String slamURL = "http://10.4.0.16:8080/services/asceticNegotiation?wsdl";
 	
 	static {
         try {

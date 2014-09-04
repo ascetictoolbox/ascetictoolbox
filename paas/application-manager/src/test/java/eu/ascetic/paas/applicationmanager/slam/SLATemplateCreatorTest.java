@@ -95,12 +95,12 @@ public class SLATemplateCreatorTest {
 
 		System.out.println(slaTemplate);
 
-//		SLASOITemplateRenderer slasoiTemplateRenderer = new SLASOITemplateRenderer();
-//		SLATemplateDocument slaTemplateRendered =
-//				SLATemplateDocument.Factory.parse(slasoiTemplateRenderer.renderSLATemplate(slaTemplate));
-//
-//		System.out.println("SLA rendered as XML:");
-//		System.out.println(slaTemplateRendered.toString());
+		SLASOITemplateRenderer slasoiTemplateRenderer = new SLASOITemplateRenderer();
+		SLATemplateDocument slaTemplateRendered =
+				SLATemplateDocument.Factory.parse(slasoiTemplateRenderer.renderSLATemplate(slaTemplate));
+
+		System.out.println("SLA rendered as XML:");
+		System.out.println(slaTemplateRendered.toString());
 	}
 	
 	

@@ -14,6 +14,7 @@ import org.slasoi.slamodel.primitives.STND;
 import org.slasoi.slamodel.primitives.UUID;
 import org.slasoi.slamodel.primitives.ValueExpr;
 import org.slasoi.slamodel.service.Interface;
+import org.slasoi.slamodel.service.ResourceType;
 import org.slasoi.slamodel.sla.AgreementTerm;
 import org.slasoi.slamodel.sla.Endpoint;
 import org.slasoi.slamodel.sla.Guaranteed;
@@ -139,6 +140,14 @@ public class SLATemplateCreator {
 			ID id = new ID(virtualSystemArray[i].getId());
 			// Provider ID
 			ID idProvider = new ID("AsceticProvider");
+			
+			
+
+            ResourceType resType=new ResourceType("OVFAppliance");
+//            Endpoint endpoint=new Endpoint(new ID("haproxy-VM-Type"), new UUID("VM-Manager ID"), sla.HTTP);
+//            Endpoint[] endpoints={endpoint};
+//            InterfaceDeclr intDecl=new InterfaceDeclr(new ID("haproxy"), new ID("AsceticProvider"), endpoints, resType);
+
 
 //		    interface_resource_type{
 //	            name = OVFAppliance
@@ -151,13 +160,13 @@ public class SLATemplateCreator {
 			//		// It is necessary to create an interface
 //					InterfaceResourceTypeType interfaceResourceType = new InterfaceResourceTypeTypeImpl(null);
 //					interfaceResourceType.setName("OVFAppliance");
-			Interface.Specification ispec = new Interface.Specification("OVFAppliance");
+	//		Interface.Specification ispec = new Interface.Specification("OVFAppliance");
 			//		iface.set
 			//		
 			//		// By the example looks like we only have one unique InterfaceDclr.
 //			InterfaceDeclrType interfaceDeclaration2 = new InterfaceDeclrTypeImpl(null);
 //			interfaceDeclaration2.getInterface();
-			InterfaceDeclr interfaceDeclaration = new InterfaceDeclr(id, idProvider, ispec);
+			InterfaceDeclr interfaceDeclaration = new InterfaceDeclr(id, idProvider, resType);
 
 
 

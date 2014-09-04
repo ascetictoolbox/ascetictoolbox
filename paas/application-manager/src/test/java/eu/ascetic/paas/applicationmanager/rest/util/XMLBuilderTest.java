@@ -128,32 +128,32 @@ public class XMLBuilderTest {
 		
 		Deployment deployment = application.getDeployments().get(0);
 		assertEquals(1, deployment.getId());
-		assertEquals("/applications/22/deployments/1", deployment.getHref());
+		assertEquals("/applications/name/deployments/1", deployment.getHref());
 		assertEquals(5, deployment.getLinks().size());
-		assertEquals("/applications/22/deployments", deployment.getLinks().get(0).getHref());
+		assertEquals("/applications/name/deployments", deployment.getLinks().get(0).getHref());
 		assertEquals("parent", deployment.getLinks().get(0).getRel());
 		assertEquals(MediaType.APPLICATION_XML, deployment.getLinks().get(0).getType());
-		assertEquals("/applications/22/deployments/1", deployment.getLinks().get(1).getHref());
+		assertEquals("/applications/name/deployments/1", deployment.getLinks().get(1).getHref());
 		assertEquals("self",deployment.getLinks().get(1).getRel());
 		assertEquals(MediaType.APPLICATION_XML, deployment.getLinks().get(1).getType());
-		assertEquals("/applications/22/deployments/1/ovf", deployment.getLinks().get(2).getHref());
+		assertEquals("/applications/name/deployments/1/ovf", deployment.getLinks().get(2).getHref());
 		assertEquals("ovf",deployment.getLinks().get(2).getRel());
 		assertEquals(MediaType.APPLICATION_XML, deployment.getLinks().get(2).getType());
-		assertEquals("/applications/22/deployments/1/vms", deployment.getLinks().get(3).getHref());
+		assertEquals("/applications/name/deployments/1/vms", deployment.getLinks().get(3).getHref());
 		assertEquals("vms",deployment.getLinks().get(3).getRel());
 		assertEquals(MediaType.APPLICATION_XML, deployment.getLinks().get(3).getType());
-		assertEquals("/applications/22/deployments/1/energy-consumption", deployment.getLinks().get(4).getHref());
+		assertEquals("/applications/name/deployments/1/energy-consumption", deployment.getLinks().get(4).getHref());
 		assertEquals("energy-consumption",deployment.getLinks().get(4).getRel());
 		assertEquals(MediaType.APPLICATION_XML, deployment.getLinks().get(4).getType());
 		
 		VM vm = deployment.getVms().get(0);
 		assertEquals(44, vm.getId());
-		assertEquals("/applications/22/deployments/1/vms/44", vm.getHref());
+		assertEquals("/applications/name/deployments/1/vms/44", vm.getHref());
 		assertEquals(2, vm.getLinks().size());
-		assertEquals("/applications/22/deployments/1/vms", vm.getLinks().get(0).getHref());
+		assertEquals("/applications/name/deployments/1/vms", vm.getLinks().get(0).getHref());
 		assertEquals("parent", vm.getLinks().get(0).getRel());
 		assertEquals(MediaType.APPLICATION_XML, vm.getLinks().get(0).getType());
-		assertEquals("/applications/22/deployments/1/vms/44", vm.getLinks().get(1).getHref());
+		assertEquals("/applications/name/deployments/1/vms/44", vm.getLinks().get(1).getHref());
 		assertEquals("self",vm.getLinks().get(1).getRel());
 	}
 	
@@ -189,7 +189,7 @@ public class XMLBuilderTest {
 		deployment.setStatus("RUNNIG");
 		deployment.setPrice("expensive");
 		
-		deployment = XMLBuilder.addDeploymentXMLInfo(deployment, 22);
+		deployment = XMLBuilder.addDeploymentXMLInfo(deployment, "22");
 		
 		assertEquals(1, deployment.getId());
 		assertEquals("/applications/22/deployments/1", deployment.getHref());
@@ -218,7 +218,7 @@ public class XMLBuilderTest {
 		deploymentBeforeXML.setStatus("RUNNIG");
 		deploymentBeforeXML.setPrice("expensive");
 		
-		String xml = XMLBuilder.getDeploymentXML(deploymentBeforeXML, 22);
+		String xml = XMLBuilder.getDeploymentXML(deploymentBeforeXML, "22");
 		
 		JAXBContext jaxbContext = JAXBContext.newInstance(Deployment.class);
 		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
@@ -255,7 +255,7 @@ public class XMLBuilderTest {
 		vm.setSlaAgreement("sla-agreement");
 		vm.setStatus("RUNNING");
 		
-		vm = XMLBuilder.addVMXMLInfo(vm, 22, 33);
+		vm = XMLBuilder.addVMXMLInfo(vm, "22", 33);
 		
 		assertEquals(44, vm.getId());
 		assertEquals("/applications/22/deployments/33/vms/44", vm.getHref());
@@ -278,7 +278,7 @@ public class XMLBuilderTest {
 		vmBeforeXML.setSlaAgreement("sla-agreement");
 		vmBeforeXML.setStatus("RUNNING");
 		
-		String xml = XMLBuilder.getVMXML(vmBeforeXML, 22, 33);
+		String xml = XMLBuilder.getVMXML(vmBeforeXML, "22", 33);
 		
 		JAXBContext jaxbContext = JAXBContext.newInstance(VM.class);
 		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();

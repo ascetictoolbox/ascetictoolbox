@@ -50,7 +50,7 @@ public class XMLBuilder {
 		List<Deployment> deployments = application.getDeployments();
 		if(deployments != null) {
 			for(Deployment deployment : deployments) {
-				deployment = addDeploymentXMLInfo(deployment, application.getId());
+				deployment = addDeploymentXMLInfo(deployment, application.getName());
 			}
 		}
 		
@@ -73,7 +73,7 @@ public class XMLBuilder {
 	 * @param applicationId Application ID of the associated Deployment Object
 	 * @return the deployment object with the extra fields
 	 */
-	protected static Deployment addDeploymentXMLInfo(Deployment deployment, int applicationId) {
+	protected static Deployment addDeploymentXMLInfo(Deployment deployment, String applicationId) {
 		deployment.setHref("/applications/" + applicationId + "/deployments/" + deployment.getId());
 		
 		Link linkParent = new Link();
@@ -122,7 +122,7 @@ public class XMLBuilder {
 	 * @param applicationId Application ID of the associated Deployment Object
 	 * @return the deployment XML representation
 	 */
-	public static String getDeploymentXML(Deployment deployment, int applicationId) {
+	public static String getDeploymentXML(Deployment deployment, String applicationId) {
 		deployment = addDeploymentXMLInfo(deployment, applicationId);
 		return ModelConverter.objectDeploymentToXML(deployment);
 	}
@@ -134,7 +134,7 @@ public class XMLBuilder {
 	 * @param deploymentId Deployment Id to which the VM belongs
 	 * @return the object with the necessary fields
 	 */
-	protected static VM addVMXMLInfo(VM vm, int applicationId, int deploymentId) {
+	protected static VM addVMXMLInfo(VM vm, String applicationId, int deploymentId) {
 		vm.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/vms/" + vm.getId());
 		
 		Link linkParent = new Link();
@@ -159,7 +159,7 @@ public class XMLBuilder {
 	 * @param deploymentId Deployment Id to which the VM belongs
 	 * @return vm XML representation
 	 */
-	public static String getVMXML(VM vm, int applicationId, int deploymentId) {
+	public static String getVMXML(VM vm, String applicationId, int deploymentId) {
 		vm = addVMXMLInfo(vm, applicationId, deploymentId);
 		return ModelConverter.objectVMToXML(vm);
 	}
@@ -233,7 +233,7 @@ public class XMLBuilder {
 			items.setTotal(deployments.size());
 			
 			for(Deployment deployment : deployments) {
-				deployment = addDeploymentXMLInfo(deployment, Integer.parseInt(applicationId));
+				deployment = addDeploymentXMLInfo(deployment, applicationId);
 				items.addDeployment(deployment);
 			}
 		}
