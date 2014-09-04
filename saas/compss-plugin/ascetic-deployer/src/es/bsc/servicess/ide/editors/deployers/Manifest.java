@@ -68,6 +68,7 @@ public class Manifest {
 	public static final String VMIC_ARC_CONSTRAINT ="asceticVMICImaceArchitecture";
 	public static final String VMIC_FILE_PREFIX = "asceticVMICFile";
 	public static final String VMIC_EXEC_CONSTRAINT = "asceticVMICExecution";
+	public static final String VMIC_MODE_CONSTRAINT = "asceticVmicMode";
 	public static final String PM_ELEMENTS_CONSTRAINT = "asceticPMElements";
 	
 	private static final String DISK_SUFFIX = "-disk";
@@ -870,7 +871,9 @@ public class Manifest {
 			f.setCompression(format);
 		References refs = ovf.getReferences();
 		if (refs == null){
+			log.debug("References are null. Adding new");
 			ovf.getXmlObject().getEnvelope().addNewReferences();
+			refs = ovf.getReferences();
 		}
 		refs.addFile(f);
 	}
@@ -882,7 +885,7 @@ public class Manifest {
 			setAsceticProductSection(component);
 		}
 		ps = component.getProductSectionAtIndex(0);
-		ps.addNewProperty(VMIC_EXEC_CONSTRAINT , ProductPropertyType.STRING, commands);
+		ps.setVmicScript(commands);
 		
 	}
 	
@@ -948,6 +951,13 @@ public class Manifest {
 		component.addProductSection(ps);
 	}
 	
+	private void setAsceticGlobalProductSection(VirtualSystemCollection vsc){
+		log.debug("Creating new Application Product Section");
+		ProductSection ps = ProductSection.Factory.newInstance();
+		ps.setInfo("Ascetic Application Wide Extensions");
+		vsc.addProductSection(ps);
+	}
+	
 	private void setVirtualSystemCollection(){
 		log.debug("Creating new Virtual System Collection for "+ project.getProject().getName() + " application.");
 		VirtualSystemCollection v = VirtualSystemCollection.Factory.newInstance();
@@ -970,18 +980,35 @@ public class Manifest {
 	public void cleanFiles() {
 		References refs = ovf.getReferences();
 		if (refs == null){
+			log.debug("Adding empty references");
 			ovf.getXmlObject().getEnvelope().addNewReferences();
-		}else
-			ovf.setReferences(refs.Factory.newInstance());
+		}else{
+			refs.setFileArray(new File[0]);
+		}
 	}
 
-	// TODO Remove when generate images work
+	/* TODO Remove when generate images work
 	public void generateFakeImages() {
 		for (VirtualSystem vs : ovf.getVirtualSystemCollection().getVirtualSystemArray()){
 			
 			addFile(vs.getId()+IMAGE_SUFFIX, "/fake/image/"+vs.getId()+".qcow2","qcow2");
 		}
 		
+	}
+	*/
+
+	public void setVMICMode(String mode) {
+		VirtualSystemCollection vsc = ovf.getVirtualSystemCollection();
+		if (vsc == null){
+			setVirtualSystemCollection();
+			vsc = ovf.getVirtualSystemCollection();
+		}
+		ProductSection ps;
+		if (vsc.getProductSectionArray() == null || vsc.getProductSectionArray().length<1){
+			setAsceticGlobalProductSection(vsc);
+		}
+		ps = vsc.getProductSectionAtIndex(0);
+		ps.setVmicMode(mode);
 	}
 	
 	

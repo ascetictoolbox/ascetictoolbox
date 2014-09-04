@@ -348,6 +348,7 @@ public class ImagesSection extends ServiceEditorSection {
 		gc.setSshKeyPath(rshKeyPath);
 		VmicApi vmic = new VmicApi(gc);
 		log.debug("ovf before uploading: "+ manifest.toString());
+		manifest.setVMICMode("offline");
 		uploadFiles(vmic, manifest, prMeta, packMeta, monitor);
 		log.debug("ovf before generation: "+ manifest.toString());
 		ImageCreation.generateImages(vmic, manifest, monitor);
@@ -360,6 +361,7 @@ public class ImagesSection extends ServiceEditorSection {
 			ProjectMetadata prMeta, PackageMetadata packMeta,
 			IProgressMonitor monitor) throws Exception {
 		manifest.cleanFiles();
+		log.debug("Files cleaned: "+ manifest.getString());
 		String[] allPacks = packMeta.getPackages();
 		String[] oePacks = packMeta.getPackagesWithOrchestration();
 		String[] cePacks = packMeta.getPackagesWithCores();
@@ -376,12 +378,14 @@ public class ImagesSection extends ServiceEditorSection {
 			ImageCreation.uploadOrchestrationPackages(vmic, projectName, projectName,
 					allPacks, packageFolder, prMeta, packMeta, manifest, monitor);
 		}
+		log.debug("Orchestration Files uploaded: "+ manifest.getString());
 		if (cePacks != null && cePacks.length > 0) {
             for (String p : cePacks) {
                     ImageCreation.uploadCoreElementPackages(vmic, p, packageFolder, prMeta,
                            packMeta, manifest, monitor);
             }
 		}
+		log.debug("Cores Files uploaded: "+ manifest.getString());
     }
 
 

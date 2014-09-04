@@ -66,6 +66,8 @@ public class ImageCreation {
 
 	private static Logger log = Logger.getLogger(ImageCreation.class);
 	private final static String IMAGE_DEPLOYMENT_FOLDER = "/ascetic_service/";
+	private final static String MOUNT_POINT_VAR = "${MOUNT_POINT}";
+	private final static String WEBAPP_FOLDER_VAR = "${IMAGE_WEBAPP_FOLDER}";
 	private final static String CONTEXT_FOLDER = "/mnt/context";
 	private static final String ASCETIC_USER = "root";
 	private static final String IMAGE_GAT_LOCATION = "/GAT";
@@ -77,7 +79,7 @@ public class ImageCreation {
 			String packName, String schPackage, String[] packs, IFolder packageFolder,
 			ProjectMetadata pr_meta, PackageMetadata packMeta, Manifest manifest, IProgressMonitor monitor ) 
 				throws Exception{
-		InstallationScript is = new InstallationScript(IMAGE_DEPLOYMENT_FOLDER);
+		InstallationScript is = new InstallationScript(MOUNT_POINT_VAR+IMAGE_DEPLOYMENT_FOLDER);
 		generatePropertiesFile(packName, schPackage, packs, packageFolder, monitor);
 		monitor.beginTask("Uploading files for " + packName, 12);
 		
@@ -142,7 +144,7 @@ public class ImageCreation {
 		monitor.worked(1);
 		
 		monitor.subTask("Setting file permissions in core elements installations");
-		settingExecutablePermissions(new String[] { IMAGE_DEPLOYMENT_FOLDER + "*.sh" },is);
+		settingExecutablePermissions(new String[] { MOUNT_POINT_VAR+IMAGE_DEPLOYMENT_FOLDER + "*.sh" },is);
 		monitor.worked(1);
 		
 		monitor.subTask("Uploading war file with orchestration elements");
@@ -398,7 +400,7 @@ public class ImageCreation {
 			InstallationScript is, IProgressMonitor monitor) throws Exception { 
 		if (file.exists()){
 			String fileName = uploadFile(vmic, manifest, file, "war", monitor);
-			is.addCopy("${"+fileName+"}", IMAGE_DEPLOYMENT_FOLDER);
+			is.addCopy("${"+fileName+"}", MOUNT_POINT_VAR + IMAGE_DEPLOYMENT_FOLDER);
 		}else
 			throw  new AsceticDeploymentException("File "+ file.getAbsolutePath()+ " does not exist.");
 
@@ -417,7 +419,7 @@ public class ImageCreation {
 			InstallationScript is, IProgressMonitor monitor) throws Exception {
 		if (file.exists()){
 			String fileName = uploadFile(vmic, manifest, file, "zip", monitor);
-			is.addUnZip("${"+fileName+"}", IMAGE_DEPLOYMENT_FOLDER);
+			is.addUnZip("${"+fileName+"}", MOUNT_POINT_VAR + IMAGE_DEPLOYMENT_FOLDER);
 		}else
 			throw  new AsceticDeploymentException("File "+ file.getAbsolutePath()+ " does not exist.");
 
@@ -439,7 +441,7 @@ public class ImageCreation {
 						throw new AsceticDeploymentException("Error uploading file "+ file.getName());
 					}else if (pdf.isComplete()){
 						path = pdf.getRemotePath();
-						manifest.addFile(manifestFileName, path, format);
+						manifest.addFile(manifestFileName, path+File.separator+file.getName(), format);
 					}else{
 						monitor.worked(pdf.getCurrentPercentageCompletion().intValue());
 					}		
@@ -464,8 +466,9 @@ public class ImageCreation {
 			InstallationScript is, IProgressMonitor monitor)
 			throws Exception {
 		if (file.exists()){
-			String fileName = uploadFile(vmic, manifest, file, "war", monitor);
-			is.addCopy("${"+fileName+"}", "${IMAGE_WEBAPP_FOLDER}");
+			/* TODO: Add again when tomcat was installed
+			 * String fileName = uploadFile(vmic, manifest, file, "war", monitor);
+			is.addCopy("${"+fileName+"}", MOUNT_POINT_VAR+"/"+WEBAPP_FOLDER_VAR);*/
 		}else
 			throw  new AsceticDeploymentException("File "+ file.getAbsolutePath()+ " does not exist.");
 		
@@ -476,7 +479,7 @@ public class ImageCreation {
 	public static void uploadCoreElementPackages(VmicApi vmic, String pack, 
 			IFolder packageFolder, ProjectMetadata prMeta, 
 			PackageMetadata packMeta, Manifest manifest, IProgressMonitor monitor) throws Exception{
-		InstallationScript is = new InstallationScript(IMAGE_DEPLOYMENT_FOLDER);
+		InstallationScript is = new InstallationScript(MOUNT_POINT_VAR + IMAGE_DEPLOYMENT_FOLDER);
 		monitor.beginTask("Uploading packages for " + pack, 5);
 		
 		IFile f = packageFolder.getFile(pack + ".jar");
@@ -486,7 +489,7 @@ public class ImageCreation {
 		
 		// Setting file permissions
 		monitor.subTask("Setting file permissions in core elements installations");
-		settingExecutablePermissions(new String[] { IMAGE_DEPLOYMENT_FOLDER + "*.sh" },is);
+		settingExecutablePermissions(new String[] { MOUNT_POINT_VAR + IMAGE_DEPLOYMENT_FOLDER + "*.sh" },is);
 		monitor.worked(1);
 		
 		monitor.subTask("Uploading dependencies");
@@ -530,8 +533,8 @@ public class ImageCreation {
 			IProgressMonitor monitor) throws Exception {
 		monitor.beginTask("Creating Images", 100);
 		//TODO: Remove when execution with VMIC is done
-		manifest.generateFakeImages();
-		/*vmic.generateImage(manifest.getOVFDefinition());
+		//manifest.generateFakeImages();
+		vmic.generateImage(manifest.getOVFDefinition());
 		boolean complete = false;
 		do{
 			Thread.sleep(CREATION_PULL_INTERVAL);
@@ -542,11 +545,12 @@ public class ImageCreation {
 				throw new AsceticDeploymentException("Error generating images");
 			}else if (pd.isComplete()){
 				complete = true;
+				log.debug("Returned OVF: " + pd.getOvfDefinition().toString());
 				manifest.updateOVFDefinition(pd.getOvfDefinition());
 			}else{
 				monitor.worked(pd.getCurrentPercentageCompletion().intValue());
 			}
-		}while(!complete);*/
+		}while(!complete);
 		monitor.done();
 	}
 	
