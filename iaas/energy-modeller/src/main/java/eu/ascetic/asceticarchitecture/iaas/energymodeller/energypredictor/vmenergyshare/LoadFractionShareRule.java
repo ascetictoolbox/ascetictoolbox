@@ -31,8 +31,8 @@ import java.util.List;
  */
 public class LoadFractionShareRule implements EnergyShareRule {
 
-    HashMap<VmDeployed, Double> fractions = new HashMap<>();
-
+    private HashMap<VmDeployed, Double> fractions = new HashMap<>();
+    
     @Override
     public EnergyDivision getEnergyUsage(Host host, Collection<VM> vms) {
         EnergyDivision answer = new EnergyDivision(host);
@@ -50,8 +50,6 @@ public class LoadFractionShareRule implements EnergyShareRule {
      */
     public void setVmMeasurements(List<VmMeasurement> vmMeasurements) {
         fractions = HostVmLoadFraction.getFraction(vmMeasurements);
-    }
-    
-    
+    }   
 
 }

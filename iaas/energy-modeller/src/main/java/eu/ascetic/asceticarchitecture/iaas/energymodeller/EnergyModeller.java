@@ -75,6 +75,7 @@ public class EnergyModeller {
     private DataGatherer dataGatherer;
     private Thread dataGatherThread;
     private Class<?> historicEnergyDivionMethod = LoadBasedDivision.class;
+    private boolean considerIdleEnergyCurrentVm = false;
 
     /**
      * This creates a new energy modeller.
@@ -197,6 +198,15 @@ public class EnergyModeller {
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The energy division rule specified was not found", ex);
         }
     }
+    
+    /**
+     * This indicates if the current energy usage for a VM should consider
+     * idle energy of the host or not.
+     * @param considerIdleEnergy If idle energy should be considered or not
+     */
+    public void setConsiderIdleEnergyCurrentVm(boolean considerIdleEnergy) {
+        this.considerIdleEnergyCurrentVm = considerIdleEnergy;
+    }
 
     /**
      * This provides for a collection of VMs the amount of energy that has
@@ -310,6 +320,7 @@ public class EnergyModeller {
         rule.setVmMeasurements(datasource.getVmData(vmsDeployedOnHost));
         CurrentUsageRecord hostAnswer = datasource.getCurrentEnergyUsage(host);
         EnergyDivision divider = rule.getEnergyUsage(host, vmsOnHost);
+        divider.setConsiderIdleEnergy(considerIdleEnergyCurrentVm);
         CurrentUsageRecord answer = new CurrentUsageRecord(vm);
         answer.setTime(hostAnswer.getTime());
         answer.setPower(divider.getEnergyUsage(hostAnswer.getPower(), vm));
@@ -440,8 +451,8 @@ public class EnergyModeller {
      * This takes a host name and provides the object representation of this
      * host.
      *
-     * @param hostname
-     * @return
+     * @param hostname  The host name to get the host object for
+     * @return The host for the specified host name.
      */
     public Host getHost(String hostname) {
         if (dataGatherer.getHostList().containsKey(hostname)) {
