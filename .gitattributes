@@ -1709,6 +1709,7 @@ saas/programming-model/compss-rt/xml/resources/src/test/resources/resources.xml 
 saas/programming-model/compss-rt/xml/templates/bsc.xml -text
 saas/programming-model/compss-rt/xml/templates/cesnet.xml -text
 saas/programming-model/pom.xml -text
+saas/saas-modelling/eclipse-dependencies.p2f -text
 saas/saas-modelling/kpispecsgen/.classpath -text
 saas/saas-modelling/kpispecsgen/.project -text
 saas/saas-modelling/kpispecsgen/META-INF/MANIFEST.MF -text
