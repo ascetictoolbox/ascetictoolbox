@@ -180,10 +180,10 @@ public class DeploymentRestTest {
 		
 		Application application = new Application();
 		application.setId(1);
-		application.setName("Three Tier Web App");
+		application.setName("threeTierWebApp");
 		
 		// We put in order the different calls to the DB
-		when(applicationDAO.getByName("Three Tier Web App")).thenReturn(application, application);
+		when(applicationDAO.getByName("threeTierWebApp")).thenReturn(application, application);
 		when(applicationDAO.update(any(Application.class))).thenReturn(true);
 		
 		DeploymentRest deploymentRest = new DeploymentRest();
@@ -200,15 +200,15 @@ public class DeploymentRestTest {
 		
 		// We verify the application was stored correctly
 		assertEquals(1, applicationResponse.getId());
-		assertEquals("/applications/1", applicationResponse.getHref());
-		assertEquals("Three Tier Web App", applicationResponse.getName());
+		assertEquals("/applications/threeTierWebApp", applicationResponse.getHref());
+		assertEquals("threeTierWebApp", applicationResponse.getName());
 		assertEquals(1, applicationResponse.getDeployments().size());
 		assertEquals(threeTierWebAppOvfString, applicationResponse.getDeployments().get(0).getOvf());
 //		assertEquals(Dictionary.APPLICATION_STATUS_SUBMITTED, applicationResponse.getDeployments().get(0).getStatus());
 		assertEquals(Dictionary.APPLICATION_STATUS_CONTEXTUALIZED, applicationResponse.getDeployments().get(0).getStatus());
 		
 		// We verify the number of calls to the DAO
-		verify(applicationDAO, times(2)).getByName("Three Tier Web App");
+		verify(applicationDAO, times(2)).getByName("threeTierWebApp");
 		verify(applicationDAO, times(1)).update(any(Application.class));
 	} 
 	

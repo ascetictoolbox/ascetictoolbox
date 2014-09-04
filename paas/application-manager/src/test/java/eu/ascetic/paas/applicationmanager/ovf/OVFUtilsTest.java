@@ -36,7 +36,7 @@ public class OVFUtilsTest {
 	public void getApplicationNameTest() throws IOException {
 		System.out.println(threeTierWebAppOvfString);
 		String name = OVFUtils.getApplicationName(threeTierWebAppOvfString);
-		assertEquals("Three Tier Web App", name);
+		assertEquals("threeTierWebApp", name);
 		
 		name = OVFUtils.getApplicationName("sdadad");
 		assertEquals(null, name);

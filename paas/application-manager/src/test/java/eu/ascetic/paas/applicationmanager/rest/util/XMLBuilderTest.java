@@ -30,15 +30,15 @@ public class XMLBuilderTest {
 		application = XMLBuilder.addApplicationXMLInfo(application);
 		
 		assertEquals(1, application.getId());
-		assertEquals("/applications/1", application.getHref());
+		assertEquals("/applications/name", application.getHref());
 		assertEquals(3, application.getLinks().size());
 		assertEquals("/applications", application.getLinks().get(0).getHref());
 		assertEquals("parent", application.getLinks().get(0).getRel());
 		assertEquals(MediaType.APPLICATION_XML, application.getLinks().get(0).getType());
-		assertEquals("/applications/1", application.getLinks().get(1).getHref());
+		assertEquals("/applications/name", application.getLinks().get(1).getHref());
 		assertEquals("self",application.getLinks().get(1).getRel());
 		assertEquals(MediaType.APPLICATION_XML, application.getLinks().get(1).getType());
-		assertEquals("/applications/1/deployments", application.getLinks().get(2).getHref());
+		assertEquals("/applications/name/deployments", application.getLinks().get(2).getHref());
 		assertEquals("deployments",application.getLinks().get(2).getRel());
 		assertEquals(MediaType.APPLICATION_XML, application.getLinks().get(2).getType());
 	}
@@ -114,15 +114,15 @@ public class XMLBuilderTest {
 		Application application = (Application) jaxbUnmarshaller.unmarshal(new StringReader(xml));
 		
 		assertEquals(22, application.getId());
-		assertEquals("/applications/22", application.getHref());
+		assertEquals("/applications/name", application.getHref());
 		assertEquals(3, application.getLinks().size());
 		assertEquals("/applications", application.getLinks().get(0).getHref());
 		assertEquals("parent", application.getLinks().get(0).getRel());
 		assertEquals(MediaType.APPLICATION_XML, application.getLinks().get(0).getType());
-		assertEquals("/applications/22", application.getLinks().get(1).getHref());
+		assertEquals("/applications/name", application.getLinks().get(1).getHref());
 		assertEquals("self",application.getLinks().get(1).getRel());
 		assertEquals(MediaType.APPLICATION_XML, application.getLinks().get(1).getType());
-		assertEquals("/applications/22/deployments", application.getLinks().get(2).getHref());
+		assertEquals("/applications/name/deployments", application.getLinks().get(2).getHref());
 		assertEquals("deployments",application.getLinks().get(2).getRel());
 		assertEquals(MediaType.APPLICATION_XML, application.getLinks().get(2).getType());
 		
@@ -169,15 +169,15 @@ public class XMLBuilderTest {
 		Application application = (Application) jaxbUnmarshaller.unmarshal(new StringReader(xml));
 		
 		assertEquals(1, application.getId());
-		assertEquals("/applications/1", application.getHref());
+		assertEquals("/applications/name", application.getHref());
 		assertEquals(3, application.getLinks().size());
 		assertEquals("/applications", application.getLinks().get(0).getHref());
 		assertEquals("parent", application.getLinks().get(0).getRel());
 		assertEquals(MediaType.APPLICATION_XML, application.getLinks().get(0).getType());
-		assertEquals("/applications/1", application.getLinks().get(1).getHref());
+		assertEquals("/applications/name", application.getLinks().get(1).getHref());
 		assertEquals("self",application.getLinks().get(1).getRel());
 		assertEquals(MediaType.APPLICATION_XML, application.getLinks().get(1).getType());
-		assertEquals("/applications/1/deployments", application.getLinks().get(2).getHref());
+		assertEquals("/applications/name/deployments", application.getLinks().get(2).getHref());
 		assertEquals("deployments",application.getLinks().get(2).getRel());
 		assertEquals(MediaType.APPLICATION_XML, application.getLinks().get(2).getType());
 	}
@@ -298,11 +298,11 @@ public class XMLBuilderTest {
 	public void getCollectionApplicationsXMLTest() throws JAXBException  {
 		Application application1 = new Application();
 		application1.setId(1);
-		application1.setName("name 1");
+		application1.setName("name-1");
 
 		Application application2 = new Application();
 		application2.setId(2);
-		application2.setName("name 2");
+		application2.setName("name-2");
 		
 		List<Application> applications = new ArrayList<Application>();
 		applications.add(application1);
@@ -317,9 +317,9 @@ public class XMLBuilderTest {
 		assertEquals("/applications", collection.getHref());
 		assertEquals(0, collection.getItems().getOffset());
 		assertEquals(2, collection.getItems().getTotal());
-		assertEquals("/applications/1", collection.getItems().getApplications().get(0).getHref());
+		assertEquals("/applications/name-1", collection.getItems().getApplications().get(0).getHref());
 		assertEquals(3, collection.getItems().getApplications().get(0).getLinks().size());
-		assertEquals("/applications/2", collection.getItems().getApplications().get(1).getHref());
+		assertEquals("/applications/name-2", collection.getItems().getApplications().get(1).getHref());
 		assertEquals(3, collection.getItems().getApplications().get(1).getLinks().size());
 		assertEquals(2, collection.getLinks().size());
 		assertEquals("/", collection.getLinks().get(0).getHref());

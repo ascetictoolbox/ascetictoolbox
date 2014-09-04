@@ -57,11 +57,11 @@ public class ApplicationRestTest {
 		
 		Application application1 = new Application();
 		application1.setId(1);
-		application1.setName("name 1");
+		application1.setName("name-1");
 
 		Application application2 = new Application();
 		application2.setId(2);
-		application2.setName("name 2");
+		application2.setName("name-2");
 		
 		List<Application> applications = new ArrayList<Application>();
 		applications.add(application1);
@@ -89,28 +89,28 @@ public class ApplicationRestTest {
 		assertEquals(2, collection.getItems().getApplications().size());
 		//Application 1
 		assertEquals(1, collection.getItems().getApplications().get(0).getId());
-		assertEquals("/applications/1", collection.getItems().getApplications().get(0).getHref());
+		assertEquals("/applications/name-1", collection.getItems().getApplications().get(0).getHref());
 		assertEquals(3, collection.getItems().getApplications().get(0).getLinks().size());
 		assertEquals("/applications", collection.getItems().getApplications().get(0).getLinks().get(0).getHref());
 		assertEquals("parent", collection.getItems().getApplications().get(0).getLinks().get(0).getRel());
 		assertEquals(MediaType.APPLICATION_XML, collection.getItems().getApplications().get(0).getLinks().get(0).getType());
-		assertEquals("/applications/1", collection.getItems().getApplications().get(0).getLinks().get(1).getHref());
+		assertEquals("/applications/name-1", collection.getItems().getApplications().get(0).getLinks().get(1).getHref());
 		assertEquals("self", collection.getItems().getApplications().get(0).getLinks().get(1).getRel());
 		assertEquals(MediaType.APPLICATION_XML, collection.getItems().getApplications().get(0).getLinks().get(1).getType());
-		assertEquals("/applications/1/deployments", collection.getItems().getApplications().get(0).getLinks().get(2).getHref());
+		assertEquals("/applications/name-1/deployments", collection.getItems().getApplications().get(0).getLinks().get(2).getHref());
 		assertEquals("deployments", collection.getItems().getApplications().get(0).getLinks().get(2).getRel());
 		assertEquals(MediaType.APPLICATION_XML, collection.getItems().getApplications().get(0).getLinks().get(2).getType());
 		//Application 2
 		assertEquals(2, collection.getItems().getApplications().get(1).getId());
-		assertEquals("/applications/2", collection.getItems().getApplications().get(1).getHref());
+		assertEquals("/applications/name-2", collection.getItems().getApplications().get(1).getHref());
 		assertEquals(3, collection.getItems().getApplications().get(0).getLinks().size());
 		assertEquals("/applications", collection.getItems().getApplications().get(1).getLinks().get(0).getHref());
 		assertEquals("parent", collection.getItems().getApplications().get(1).getLinks().get(0).getRel());
 		assertEquals(MediaType.APPLICATION_XML, collection.getItems().getApplications().get(1).getLinks().get(0).getType());
-		assertEquals("/applications/2", collection.getItems().getApplications().get(1).getLinks().get(1).getHref());
+		assertEquals("/applications/name-2", collection.getItems().getApplications().get(1).getLinks().get(1).getHref());
 		assertEquals("self", collection.getItems().getApplications().get(1).getLinks().get(1).getRel());
 		assertEquals(MediaType.APPLICATION_XML, collection.getItems().getApplications().get(1).getLinks().get(1).getType());
-		assertEquals("/applications/2/deployments", collection.getItems().getApplications().get(1).getLinks().get(2).getHref());
+		assertEquals("/applications/name-2/deployments", collection.getItems().getApplications().get(1).getLinks().get(2).getHref());
 		assertEquals("deployments", collection.getItems().getApplications().get(1).getLinks().get(2).getRel());
 		assertEquals(MediaType.APPLICATION_XML, collection.getItems().getApplications().get(1).getLinks().get(2).getType());
 		// Collection Links
@@ -146,15 +146,15 @@ public class ApplicationRestTest {
 		Application applicationResponse = (Application) jaxbUnmarshaller.unmarshal(new StringReader(xml));
 		
 		assertEquals(1, applicationResponse.getId());
-		assertEquals("/applications/1", applicationResponse.getHref());
+		assertEquals("/applications/name", applicationResponse.getHref());
 		assertEquals(3, applicationResponse.getLinks().size());
 		assertEquals("/applications", applicationResponse.getLinks().get(0).getHref());
 		assertEquals("parent", applicationResponse.getLinks().get(0).getRel());
 		assertEquals(MediaType.APPLICATION_XML, applicationResponse.getLinks().get(0).getType());
-		assertEquals("/applications/1", applicationResponse.getLinks().get(1).getHref());
+		assertEquals("/applications/name", applicationResponse.getLinks().get(1).getHref());
 		assertEquals("self",applicationResponse.getLinks().get(1).getRel());
 		assertEquals(MediaType.APPLICATION_XML, applicationResponse.getLinks().get(1).getType());
-		assertEquals("/applications/1/deployments", applicationResponse.getLinks().get(2).getHref());
+		assertEquals("/applications/name/deployments", applicationResponse.getLinks().get(2).getHref());
 		assertEquals("deployments",applicationResponse.getLinks().get(2).getRel());
 		assertEquals(MediaType.APPLICATION_XML, applicationResponse.getLinks().get(2).getType());
 	}
@@ -166,10 +166,10 @@ public class ApplicationRestTest {
 		
 		Application application = new Application();
 		application.setId(1);
-		application.setName("Three Tier Web App");
+		application.setName("threeTierWebApp");
 		
 		// We put in order the different calls to the DB
-		when(applicationDAO.getByName("Three Tier Web App")).thenReturn(application, application);
+		when(applicationDAO.getByName("threeTierWebApp")).thenReturn(application, application);
 		when(applicationDAO.update(any(Application.class))).thenReturn(true);
 		
 		ApplicationRest applicationRest = new ApplicationRest();
@@ -186,15 +186,15 @@ public class ApplicationRestTest {
 		
 		// We verify the application was stored correctly
 		assertEquals(1, applicationResponse.getId());
-		assertEquals("/applications/1", applicationResponse.getHref());
-		assertEquals("Three Tier Web App", applicationResponse.getName());
+		assertEquals("/applications/threeTierWebApp", applicationResponse.getHref());
+		assertEquals("threeTierWebApp", applicationResponse.getName());
 		assertEquals(1, applicationResponse.getDeployments().size());
 		assertEquals(threeTierWebAppOvfString, applicationResponse.getDeployments().get(0).getOvf());
 //		assertEquals(Dictionary.APPLICATION_STATUS_SUBMITTED, applicationResponse.getDeployments().get(0).getStatus());
 		assertEquals(Dictionary.APPLICATION_STATUS_CONTEXTUALIZED, applicationResponse.getDeployments().get(0).getStatus());
 		
 		// We verify the number of calls to the DAO
-		verify(applicationDAO, times(2)).getByName("Three Tier Web App");
+		verify(applicationDAO, times(2)).getByName("threeTierWebApp");
 		verify(applicationDAO, times(1)).update(any(Application.class));
 	}
 	
@@ -204,7 +204,7 @@ public class ApplicationRestTest {
 		
 		Application application = new Application();
 		application.setId(1);
-		application.setName("Three Tier Web App");
+		application.setName("threeTierWebApp");
 		
 		Deployment deployment = new Deployment();
 		deployment.setId(1);
@@ -212,7 +212,7 @@ public class ApplicationRestTest {
 		application.addDeployment(deployment);
 		
 		// We put in order the different calls to the DB
-		when(applicationDAO.getByName("Three Tier Web App")).thenReturn(null, application);
+		when(applicationDAO.getByName("threeTierWebApp")).thenReturn(null, application);
 		when(applicationDAO.save(any(Application.class))).thenReturn(true);
 		
 		ApplicationRest applicationRest = new ApplicationRest();
@@ -229,11 +229,11 @@ public class ApplicationRestTest {
 		
 		// We verify the application was stored correctly
 		assertEquals(1, applicationResponse.getId());
-		assertEquals("/applications/1", applicationResponse.getHref());
-		assertEquals("Three Tier Web App", applicationResponse.getName());
+		assertEquals("/applications/threeTierWebApp", applicationResponse.getHref());
+		assertEquals("threeTierWebApp", applicationResponse.getName());
 		
 		// We verify the number of calls to the DAO
-		verify(applicationDAO, times(2)).getByName("Three Tier Web App");
+		verify(applicationDAO, times(2)).getByName("threeTierWebApp");
 		verify(applicationDAO, times(1)).save(any(Application.class));
 	}
 	

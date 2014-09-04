@@ -26,7 +26,7 @@ public class XMLBuilder {
 	 * @return the updated object
 	 */
 	protected static Application addApplicationXMLInfo(Application application) {
-		application.setHref("/applications/" + application.getId());
+		application.setHref("/applications/" + application.getName());
 		
 		Link linkParent = new Link();
 		linkParent.setHref("/applications");

@@ -34,7 +34,7 @@ public class OVFUtils {
 		
 		try {
 			OvfDefinition ovfDocument = OvfDefinition.Factory.newInstance(ovf);
-			return ovfDocument.getVirtualSystemCollection().getName();
+			return ovfDocument.getVirtualSystemCollection().getId();
 		} catch(OvfRuntimeException ex) {
 			logger.info("Error parsing OVF file: " + ex.getMessage());
 			ex.printStackTrace();
