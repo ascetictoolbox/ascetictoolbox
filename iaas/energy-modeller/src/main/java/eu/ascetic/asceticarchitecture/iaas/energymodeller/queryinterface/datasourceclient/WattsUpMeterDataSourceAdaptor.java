@@ -61,7 +61,7 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
     private HostMeasurement lowest = null;
     private HostMeasurement highest = null;
     private HostMeasurement current = null;
-    private final LinkedList<CPUtilisation> cpuMeasure = new LinkedList<>();
+    private final LinkedList<CPUUtilisation> cpuMeasure = new LinkedList<>();
 
     /**
      * SingletonHolder is loaded on the first execution of
@@ -73,6 +73,11 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
         private static final WattsUpMeterDataSourceAdaptor INSTANCE = new WattsUpMeterDataSourceAdaptor();
     }
 
+    /**
+     * This creates a new instance of the WattsUp Meter data source adaptor. 
+     * This adaptor is intended for using the energy modeller on a local machine.
+     * @return A singleton instance of a WattsUp? meter data source adaptor.
+     */
     public static WattsUpMeterDataSourceAdaptor getInstance() {
         return SingletonHolder.INSTANCE;
     }
@@ -146,7 +151,7 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
                 measurement.addMetric(new MetricValue(CURRENT_KPI_NAME, CURRENT_KPI_NAME, amps, clock));
                 try {
                     CpuPerc cpu = sigar.getCpuPerc();
-                    cpuMeasure.add(new CPUtilisation(clock, cpu));
+                    cpuMeasure.add(new CPUUtilisation(clock, cpu));
                     Mem mem = sigar.getMem();
                     measurement.addMetric(new MetricValue(KpiList.CPU_IDLE_KPI_NAME, KpiList.CPU_IDLE_KPI_NAME, cpu.getIdle() * 100 + "", clock));
                     measurement.addMetric(new MetricValue(KpiList.CPU_INTERUPT_KPI_NAME, KpiList.CPU_INTERUPT_KPI_NAME, cpu.getIrq() * 100 + "", clock));
@@ -305,10 +310,10 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
         GregorianCalendar cal = new GregorianCalendar();
         long now = TimeUnit.MILLISECONDS.toSeconds(cal.getTimeInMillis());
         long nowMinustime = now - lastNSeconds;
-        CopyOnWriteArrayList<CPUtilisation> list = new CopyOnWriteArrayList<>();
+        CopyOnWriteArrayList<CPUUtilisation> list = new CopyOnWriteArrayList<>();
         list.addAll(cpuMeasure);
-        for (Iterator<CPUtilisation> it = list.iterator(); it.hasNext();) {
-            CPUtilisation util = it.next();
+        for (Iterator<CPUUtilisation> it = list.iterator(); it.hasNext();) {
+            CPUUtilisation util = it.next();
             if (util.isOlderThan(nowMinustime)) {
                 list.remove(util);
                 cpuMeasure.remove(util);
@@ -320,32 +325,62 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
         return sumOfUtil / count;
     }
 
-    private class CPUtilisation {
+    /**
+     * This is a CPU utilisation record for the WattsUp Meter data source adaptor.
+     */
+    private class CPUUtilisation {
 
         private final long clock;
         private final CpuPerc cpu;
 
-        public CPUtilisation(long clock, CpuPerc cpu) {
+        /**
+         * This creates a new CPU Utilisation record
+         * @param clock the time when the CPU Utilisation was taken
+         * @param cpu The CPU utilisation record.
+         */
+        public CPUUtilisation(long clock, CpuPerc cpu) {
             this.clock = clock;
             this.cpu = cpu;
         }
 
+        /**
+         * The time when this record was taken
+         * @return The UTC time for this record.
+         */
         public long getClock() {
             return clock;
         }
 
+        /**
+         * This returns the Sigar object representing CPU load information.
+         * @return The sigar CPU object
+         */
         public CpuPerc getCpu() {
             return cpu;
         }
 
+        /**
+         * This returns the percentage of time the CPU was idle.
+         * @return 0..1 for how idle the CPU was at a specified time frame.
+         */
         public double getCpuIdle() {
             return cpu.getIdle();
         }
 
+        /**
+         * This returns the percentage of time the CPU was busy.
+         * @return 0..1 for how busy the CPU was at a specified time frame.
+         */
         public double getCpuBusy() {
             return 1 - cpu.getIdle();
         }
 
+        /**
+         * This indicates if this CPU utilisation object is older than a 
+         * specified time.
+         * @param time The UTC time to compare to
+         * @return If the current item is older than the date specified.
+         */
         public boolean isOlderThan(long time) {
             return clock < time;
         }

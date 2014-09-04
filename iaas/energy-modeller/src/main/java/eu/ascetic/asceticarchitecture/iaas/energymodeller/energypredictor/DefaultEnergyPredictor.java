@@ -44,6 +44,10 @@ public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
     private static final String CONFIG_FILE = "energymodeller_cpu_predictor.properties";
     private double usageCPU = 1;
 
+    /**
+     * This creates a new Default energy predictor, that compares CPU and
+     * RAM utilisation.
+     */
     public DefaultEnergyPredictor() {
         try {
             PropertiesConfiguration config;

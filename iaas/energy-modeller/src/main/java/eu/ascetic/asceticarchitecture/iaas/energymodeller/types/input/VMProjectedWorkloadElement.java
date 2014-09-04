@@ -41,10 +41,10 @@ public class VMProjectedWorkloadElement implements Comparable<Object> {
      * memory usage is most important, does using more matter? No
      * does making many writes yes, and what about page faults?
      * i.e.
-     *  cpuUsage;
-     *  networkUsage;
-     *  diskUsage;
-     *  memoryUsage;
+     *  cpuUsage
+     *  networkUsage
+     *  diskUsage
+     *  memoryUsage
      */
    
 
