@@ -113,8 +113,15 @@ public class VirtualMachineContextualizer implements Runnable {
         // Five primary stages of contextualization...
 
         // 1) Retrieve Data
-        retriveContextualizationData();
-        LOGGER.info(vmcApi.getGlobalState().getProgressLogString(serviceId));
+        try {
+            retriveContextualizationData();
+            LOGGER.info(vmcApi.getGlobalState().getProgressLogString(serviceId));
+        } catch (Exception e) {
+            LOGGER.error("Failed to retrieve context data from OVF!", e);
+            vmcApi.getGlobalState().getProgressData(serviceId).setError(true);
+            vmcApi.getGlobalState().getProgressData(serviceId).setException(e);
+            return;
+        }
 
         // 2) Convert VM Images
         try {

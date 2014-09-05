@@ -448,8 +448,12 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * @return The private SSH key
      */
     public String getPublicSshKey() {
-        return new String(Base64.decodeBase64(getPropertyByKey(
-                ASCETIC_PUBLIC_SSH_KEY).getValue().getBytes()));
+        ProductProperty property = getPropertyByKey(ASCETIC_PUBLIC_SSH_KEY);
+        if (property != null) {
+            return new String(Base64.decodeBase64(property.getValue().getBytes()));
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -482,8 +486,12 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * @return The private SSH key
      */
     public String getPrivateSshKey() {
-        return new String(Base64.decodeBase64(getPropertyByKey(
-                ASCETIC_PRIVATE_SSH_KEY).getValue().getBytes()));
+        ProductProperty property = getPropertyByKey(ASCETIC_PRIVATE_SSH_KEY);
+        if (property != null) {
+            return new String(Base64.decodeBase64(property.getValue().getBytes()));
+        } else {
+            return null;
+        }
     }
 
     /**
