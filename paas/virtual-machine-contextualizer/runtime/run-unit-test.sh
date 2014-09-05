@@ -25,7 +25,7 @@
 #java -jar virtual-machine-contextualizer.jar 1 /opt/ascetic/vmc/runtime /opt/ascetic/vmc/runtime/some-ovf.xml 
 
 #Test with defaults
-java -jar virtual-machine-contextualizer.jar 1 `pwd`
+java -DovfSampleDir=/home/vmc/test-ovf-out -jar virtual-machine-contextualizer.jar 1 `pwd`
 
 #Test image manipulation scripts
 echo ""
@@ -49,10 +49,10 @@ echo "### TEST: eu.ascetic.vc.ImageScripts.bash:50) COMPLETE ###"
 echo ""
 echo "OK (3 tests)"
 
-echo ""
-echo "Greping for ISO Image in repository:"
-echo ""
-ls repository | grep jboss
-echo ""
-echo "Test passed image is found!"
-rm repository/3_jboss_1.iso
+#echo ""
+#echo "Greping for ISO Image in repository:"
+#echo ""
+#ls repository | grep jboss
+#echo ""
+#echo "Test passed image is found!"
+#rm repository/3_jboss_1.iso

@@ -1,5 +1,4 @@
 #Use full paths only
 installDirectory=/opt/ascetic/vmc/runtime
 repository=/opt/ascetic/vmc/runtime/repository
-ovfSampleDir=/opt/ascetic/vmc/test-ovf-out
 addRecontextFiles=false
