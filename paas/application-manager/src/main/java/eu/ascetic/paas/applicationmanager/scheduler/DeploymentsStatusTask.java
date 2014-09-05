@@ -40,10 +40,10 @@ public class DeploymentsStatusTask {
 		for(Deployment deployment : deployments) {
 			logger.info("Checking deployment id: " + deployment.getId() + " Status: " + deployment.getStatus());
 			if(deployment.getStatus().equals(Dictionary.APPLICATION_STATUS_SUBMITTED)) {
-//				logger.info(" Moving deployment id: " + deployment.getId()  + " to NEGOTIATION state");
+				logger.info(" Moving deployment id: " + deployment.getId()  + " to NEGOTIATION state");
 				deploymentSubmittedActions(deployment);
 			} else if(deployment.getStatus().equals(Dictionary.APPLICATION_STATUS_NEGOTIATION)) {
-//				logger.info(" Checking status of NEGOTIATION proccess for deployment: " + deployment.getId());
+				logger.info(" Checking status of NEGOTIATION proccess for deployment: " + deployment.getId());
 				deploymentNegotiationActions(deployment);
 			} else if(deployment.getStatus().equals(Dictionary.APPLICATION_STATUS_NEGOTIATIED)) {
 				// TODO this check needs to be deleted when we enable the user to be able to 
@@ -53,7 +53,7 @@ public class DeploymentsStatusTask {
 				
 				deploymentAcceptAgreementActions(deployment);
 			} else if(deployment.getStatus().equals(Dictionary.APPLICATION_STATUS_CONTEXTUALIZATION)) {
-//				logger.info(" The deployment " + deployment.getId() + " is ready to be contextualized, starting the contextualization process");
+				logger.info(" The deployment " + deployment.getId() + " is ready to be contextualized, starting the contextualization process");
 				
 				deploymentStartContextualizationActions(deployment);
 			} else if(deployment.getStatus().equals(Dictionary.APPLICATION_STATUS_CONTEXTUALIZED)) {
@@ -127,14 +127,18 @@ public class DeploymentsStatusTask {
 		//      Since this process takes time, it should move the application state to CONTEXTUALIZING
 		//      and after that create a method that checks if the Deployment is in contextualizing
 		//      and ask the VM Contextualization if the process has finish... 
+		
+		logger.info(" Starting to contextualize deployment: " + deployment.getId());
 	
 		OvfDefinition ovf = OVFUtils.getOvfDefinition(deployment.getOvf());
 		if (ovf != null){
 			try {
 				
+				logger.debug(" Creating the VM Client");
 				VmcClient vmcClient = new VmcClient(ovf);
 				
 				if (vmcClient.getVmcClient() != null){
+					logger.debug(" VM Contextualizer successfully created");
 					//only continue with process if vm contextualizer connection has been successful
 					
 					ProgressData progressData = null;
@@ -164,6 +168,7 @@ public class DeploymentsStatusTask {
 
 		                // We have progress data, do something with it...
 		                progressData = vmcClient.getVmcClient().contextualizeServiceCallback(ovf.getVirtualSystemCollection().getId());
+		                logger.debug(" Trying to get the progress of the contextualization. Progress: " + progressData.getCurrentPercentageCompletion() + " %");
 
 		                // We have an error so stop everything!
 		                if (progressData.isError()) {
@@ -194,6 +199,8 @@ public class DeploymentsStatusTask {
 		                    break;
 		                }
 		            }
+		            
+		            logger.debug("Updating the OVF from the Contextualization...");
 		            
 		            //retrieve new ovf from VM contextualizer
 		            OvfDefinition ovfContextualized = vmcClient.getVmcClient()
