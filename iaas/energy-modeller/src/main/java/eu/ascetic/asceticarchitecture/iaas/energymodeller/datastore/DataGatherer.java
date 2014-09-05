@@ -153,13 +153,13 @@ public class DataGatherer implements Runnable {
                     if (lastTimeStampSeen.get(host) == null || measurement.getClock() > lastTimeStampSeen.get(host)) {
                         lastTimeStampSeen.put(host, measurement.getClock());
                         connector.writeHostHistoricData(host, measurement.getClock(), measurement.getPower(), measurement.getEnergy());
-                    }
-                    ArrayList<VmDeployed> vms = getVMsOnHost(host);
-                    if (!vms.isEmpty()) {
-                        HostVmLoadFraction fraction = new HostVmLoadFraction(host, measurement.getClock());
-                        List<VmMeasurement> vmMeasurements = datasource.getVmData(vms);
-                        fraction.setFraction(vmMeasurements);
-                        connector.writeHostVMHistoricData(host, measurement.getClock(), fraction);
+                        ArrayList<VmDeployed> vms = getVMsOnHost(host);
+                        if (!vms.isEmpty()) {
+                            HostVmLoadFraction fraction = new HostVmLoadFraction(host, measurement.getClock());
+                            List<VmMeasurement> vmMeasurements = datasource.getVmData(vms);
+                            fraction.setFraction(vmMeasurements);
+                            connector.writeHostVMHistoricData(host, measurement.getClock(), fraction);
+                        }
                     }
                 }
                 try {
