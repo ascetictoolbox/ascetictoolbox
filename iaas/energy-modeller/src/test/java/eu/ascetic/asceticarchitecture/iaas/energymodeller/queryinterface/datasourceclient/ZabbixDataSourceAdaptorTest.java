@@ -24,6 +24,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsa
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.client.ZabbixClient;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.configuration.ConfigurationException;
@@ -388,12 +389,12 @@ public class ZabbixDataSourceAdaptorTest {
     public void testGetCpuUtilisation() {
         System.out.println("getCpuUtilisation");
         Host host = CHOSEN_HOST;
-        int lastNMinutes = 2;
+        int duration = (int) TimeUnit.MINUTES.toSeconds(2); //time unit in seconds so run for 2 minutes.
         ZabbixDataSourceAdaptor instance = new ZabbixDataSourceAdaptor();
-        double result = instance.getCpuUtilisation(host, lastNMinutes);
+        double result = instance.getCpuUtilisation(host, duration);
         assert(result >= 0);
         assert(result <= 1.0);
-        System.out.println("CPU Utilisation Last " + lastNMinutes + " minutes: " + result);
+        System.out.println("CPU Utilisation Last " + duration + " minutes: " + result);
         
     }
 
