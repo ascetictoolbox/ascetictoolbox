@@ -190,7 +190,7 @@ public class VmcApiTest extends TestCase {
 
             java.io.File file = new java.io.File(targetDir
                     + java.io.File.separator + java.io.File.separator
-                    + "3tier-webapp.ovf.vmc.xml");
+                    + "altered.vmc.ovf.xml");
             FileWriter fstream = new FileWriter(file);
             BufferedWriter out = new BufferedWriter(fstream);
 
