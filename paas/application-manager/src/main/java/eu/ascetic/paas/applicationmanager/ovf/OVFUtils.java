@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import eu.ascetic.paas.applicationmanager.Dictionary;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientHC;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ImageToUpload;
@@ -18,15 +19,20 @@ import eu.ascetic.utils.ovf.api.VirtualSystem;
 import eu.ascetic.utils.ovf.api.VirtualSystemCollection;
 import eu.ascetic.utils.ovf.api.utils.OvfRuntimeException;
 
+// TODO: Auto-generated Javadoc
 /**
- * Class that handles all the parsing of the OVF incoming from the different modules in the Application Manager
+ * Class that handles all the parsing of the OVF incoming from the different modules in the Application Manager.
+ *
  * @author David Garcia Perez - Atos
  */
 public class OVFUtils {
+	
+	/** The logger. */
 	private static Logger logger = Logger.getLogger(OVFUtils.class);
 			
 	/**
-	 * Extracts the field ovf:Name from VirtualSystemCollection to differenciate between applications
+	 * Extracts the field ovf:Name from VirtualSystemCollection to differenciate between applications.
+	 *
 	 * @param ovf String representing the OVF definition of an Application
 	 * @return the application name
 	 */
@@ -44,7 +50,7 @@ public class OVFUtils {
 	
 	
 	/**
-	 * Gets the ovf definition object
+	 * Gets the ovf definition object.
 	 *
 	 * @param ovf the ovf
 	 * @return the ovf definition
@@ -184,7 +190,9 @@ public class OVFUtils {
 			for (int i = 0; i<diskList.length; i++){
 				disk = diskList[i];
 				if (disk.getDiskId().equalsIgnoreCase(diskId)){
-					return Integer.parseInt(disk.getCapacity());
+					String units = disk.getCapacityAllocationUnits();
+					int capacity = Integer.parseInt(disk.getCapacity());
+					return getDiskCapacityInGb(capacity, units);
 				}
 			}
 		}
@@ -192,6 +200,33 @@ public class OVFUtils {
 			logger.debug("No disk section available in OVF!!");
 		}
 		return diskSize;
+	}
+	
+	
+	/**
+	 * Gets the disk capacity in gb with the info retrieved from OVF.
+	 *
+	 * @param capacity the capacity
+	 * @param units the units
+	 * @return the disk capacity in gb
+	 */
+	private static int getDiskCapacityInGb(int capacity, String units){
+		int diskCapacity = 0;
+		if (capacity > 0) {
+			if (units.equalsIgnoreCase(Dictionary.DISK_SIZE_UNIT_GBYTE)){
+				//capacity specified in GBytes
+				diskCapacity = capacity;
+			}
+			else if (units.equalsIgnoreCase(Dictionary.DISK_SIZE_UNIT_MBYTE)){
+				//capacity specified in MBytes				
+				diskCapacity = capacity / 1024;			
+			}
+			else if (units.equalsIgnoreCase(Dictionary.DISK_SIZE_UNIT_KBYTE)){
+				//capacity specified in KBytes
+				diskCapacity = capacity / 1048576;				
+			}
+		}
+		return diskCapacity;
 	}
 	
 	
@@ -277,6 +312,13 @@ public class OVFUtils {
 	}
 	
 	
+	/**
+	 * Gets the iso path from vm.
+	 *
+	 * @param virtHwSection the virt hw section
+	 * @param ovfDocument the ovf document
+	 * @return the iso path from vm
+	 */
 	private static String getIsoPathFromVm(VirtualHardwareSection virtHwSection, OvfDefinition ovfDocument){
 		String isoPath = null;
 		String fileId = getFileIdFromDiskId(getIsoId(virtHwSection), ovfDocument);
