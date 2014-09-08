@@ -17,8 +17,8 @@ public class DeploymentPlan {
         this.vmsAssignationsToHosts = vmsAssignationsToHosts;
     }
 
-    public void addVmAssignmentToPlan(VmAssignmentToHost vmAssigmentToHost) {
-        vmsAssignationsToHosts.add(vmAssigmentToHost);
+    public void addVmAssignmentToPlan(VmAssignmentToHost vmAssignmentToHost) {
+        vmsAssignationsToHosts.add(vmAssignmentToHost);
     }
 
     public List<VmAssignmentToHost> getVmsAssignationsToHosts() {
