@@ -162,7 +162,7 @@ public class OVFUtils {
 		Item item = null;
 		for (int i=0; i<virtHwSection.getItemArray().length; i++){
 			item = virtHwSection.getItemAtIndex(i);
-			if (item.getDescription().equalsIgnoreCase("VM Disk")){
+			if (item.getResourceType().getNumber() == 17){
 				String list[] = item.getHostResourceArray();
 				String hostResource = "";
 				if (list!=null && list.length >0){

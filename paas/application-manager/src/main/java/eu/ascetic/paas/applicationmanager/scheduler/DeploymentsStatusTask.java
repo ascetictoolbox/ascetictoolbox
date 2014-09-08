@@ -147,6 +147,9 @@ public class DeploymentsStatusTask {
 					deployment.setStatus(Dictionary.APPLICATION_STATUS_CONTEXTUALIZING);
 					deploymentDAO.update(deployment);
 					
+					// Creating the service
+					vmcClient.getVmcClient().contextualizeService(ovf);
+					
 					// Wait until the service has been registered with the VMC before
 		            // polling the progress data...
 		            while (true) {
