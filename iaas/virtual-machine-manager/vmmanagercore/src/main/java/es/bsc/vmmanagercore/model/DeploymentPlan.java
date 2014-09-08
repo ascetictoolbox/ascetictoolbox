@@ -30,6 +30,7 @@ public class DeploymentPlan {
         StringBuilder stringBuilder = new StringBuilder();
         for (VmAssignmentToHost vmAssignmentToHost: vmsAssignationsToHosts) {
             stringBuilder.append(vmAssignmentToHost.toString());
+            stringBuilder.append(" ");
         }
         return stringBuilder.toString();
     }
