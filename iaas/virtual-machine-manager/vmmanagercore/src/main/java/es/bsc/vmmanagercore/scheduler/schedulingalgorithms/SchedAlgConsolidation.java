@@ -59,6 +59,10 @@ public class SchedAlgConsolidation implements SchedAlgorithm {
         return countIdleServers(serversLoad1) > countIdleServers(serversLoad2);
     }
 
+    private boolean usesMoreHosts(Collection<ServerLoad> serversLoad1, Collection<ServerLoad> serversLoad2) {
+        return countIdleServers(serversLoad1) < countIdleServers(serversLoad2);
+    }
+
     private boolean usesLessResources(Collection<ServerLoad> serversLoad1, Collection<ServerLoad> serversLoad2) {
         return hasLessUnusedCpu(serversLoad1, serversLoad2)
                 || hasSameUnusedCpuAndLessUnusedMem(serversLoad1, serversLoad2)
@@ -69,7 +73,7 @@ public class SchedAlgConsolidation implements SchedAlgorithm {
             Collection<ServerLoad> serversLoad2) {
         logServersLoadsInfo(serversLoad1, serversLoad2);
         return (usesLessHosts(serversLoad1, serversLoad2))
-                || (!usesLessHosts(serversLoad2, serversLoad1) && usesLessResources(serversLoad1, serversLoad2));
+                || (!usesMoreHosts(serversLoad1, serversLoad2) && usesLessResources(serversLoad1, serversLoad2));
     }
 
     @Override

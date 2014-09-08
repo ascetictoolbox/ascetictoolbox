@@ -43,6 +43,26 @@ public class SchedAlgDistribution implements SchedAlgorithm {
                 && (Scheduler.calculateStDevDiskLoad(serversLoad1) < Scheduler.calculateStDevDiskLoad(serversLoad2));
     }
 
+    private int countIdleServers(Collection<ServerLoad> serversLoad) {
+        int result = 0;
+        for (ServerLoad serverLoad: serversLoad) {
+            if (serverLoad.isIdle()) {
+                ++result;
+            }
+        }
+        return result;
+    }
+
+    // Note: important consideration. For now, I assume that if a server has load_cpu, load_ram, and load_disk
+    // < 5%, then it is idle ("does not have any VMs").
+    private boolean usesLessHosts(Collection<ServerLoad> serversLoad1, Collection<ServerLoad> serversLoad2) {
+        return countIdleServers(serversLoad1) > countIdleServers(serversLoad2);
+    }
+
+    private boolean usesMoreHosts(Collection<ServerLoad> serversLoad1, Collection<ServerLoad> serversLoad2) {
+        return countIdleServers(serversLoad1) < countIdleServers(serversLoad2);
+    }
+
     /**
      * Compares two sets of server loads.
      *
@@ -53,9 +73,11 @@ public class SchedAlgDistribution implements SchedAlgorithm {
     private boolean serverLoadsAreMoreDistributed(Collection<ServerLoad> serversLoad1,
             Collection<ServerLoad> serversLoad2) {
         logServersLoadsInfo(serversLoad1, serversLoad2);
-        return hasLessStdDevCpu(serversLoad1, serversLoad2)
+        return usesMoreHosts(serversLoad1, serversLoad2) ||
+                (!usesLessHosts(serversLoad1, serversLoad2) &&
+                (hasLessStdDevCpu(serversLoad1, serversLoad2)
                 || hasSameStDevCpuAndLessStdDevMem(serversLoad1, serversLoad2)
-                || hasSameStdDevCpuAndSameStdDevMemAndLessStdDevDisk(serversLoad1, serversLoad2);
+                || hasSameStdDevCpuAndSameStdDevMemAndLessStdDevDisk(serversLoad1, serversLoad2)));
     }
 
     @Override

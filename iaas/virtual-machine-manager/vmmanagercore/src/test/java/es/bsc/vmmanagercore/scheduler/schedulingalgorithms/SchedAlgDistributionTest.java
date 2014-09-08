@@ -27,6 +27,37 @@ public class SchedAlgDistributionTest {
     @BeforeClass
     public static void setUp() { }
 
+
+    @Test
+    public void aPlanThatUsesMoreServersIsBetter() {
+        // Create VMs and hosts
+        List<Vm> vms = new ArrayList<>();
+        vms.add(new Vm("vm1", "image", 2, 2048, 2, null, ""));
+        vms.add(new Vm("vm2", "image", 1, 1024, 1, null, ""));
+        vms.add(new Vm("vm3", "image", 1, 1024, 1, null, ""));
+        List<Host> hosts = new ArrayList<>();
+        hosts.add(new HostFake("host1", 4, 4096, 4, 1, 1024, 1));
+        hosts.add(new HostFake("host2", 4, 4096, 4, 1, 1024, 1));
+        hosts.add(new HostFake("host3", 4, 4096, 4, 1, 1024, 1));
+
+        // Create deployment plans
+        List<VmAssignmentToHost> assignmentsPlan1 = new ArrayList<>();
+        assignmentsPlan1.add(new VmAssignmentToHost(vms.get(0), hosts.get(0))); // vm1 -> host1
+        assignmentsPlan1.add(new VmAssignmentToHost(vms.get(1), hosts.get(1))); // vm2 -> host2
+        assignmentsPlan1.add(new VmAssignmentToHost(vms.get(2), hosts.get(1))); // vm3 -> host2
+        DeploymentPlan deploymentPlan1 = new DeploymentPlan(assignmentsPlan1);
+        List<VmAssignmentToHost> assignmentsPlan2 = new ArrayList<>();
+        assignmentsPlan2.add(new VmAssignmentToHost(vms.get(0), hosts.get(0))); // vm1 -> host1
+        assignmentsPlan2.add(new VmAssignmentToHost(vms.get(1), hosts.get(1))); // vm2 -> host2
+        assignmentsPlan2.add(new VmAssignmentToHost(vms.get(2), hosts.get(2))); // vm3 -> host3
+        DeploymentPlan deploymentPlan2 = new DeploymentPlan(assignmentsPlan2);
+
+        // DeploymentPlan1 uses 2 servers and DeploymentPlan2 uses 3 servers.
+        // Therefore, DeploymentPlan2 is more distributed
+        assertTrue(scheduler.isBetterDeploymentPlan(deploymentPlan2, deploymentPlan1, hosts));
+        assertFalse(scheduler.isBetterDeploymentPlan(deploymentPlan1, deploymentPlan2, hosts));
+    }
+
     @Test
     public void isBetterPlanReturnsTrueWhenLessStdDevCpuLoad() {
         // Create VMs and hosts
