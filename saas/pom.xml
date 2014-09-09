@@ -15,9 +15,10 @@
 
 	<modules>
 	    <!-- SaaS Modules -->
-		<!-- <module>my-module-name</module> -->
+	    <module>my-module-name</module>
+	    <module>programming-model/compss</module>
+	    
 	    <module>virtual-machine-image-constructor</module>
-	    <module>programming-model</module>
 	    <module>application-uploader</module>
 	    <module>application-packager</module>
 	    <module>application-descriptor-tool</module>
