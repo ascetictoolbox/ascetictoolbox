@@ -175,6 +175,29 @@ public class DeploymentRestTest {
 	}
 	
 	@Test
+	public void getDeploymentOvfTest() throws Exception {
+		Deployment deployment = new Deployment();
+		deployment.setId(1);
+		deployment.setOvf("ovf1");
+		deployment.setPrice("price1");
+		deployment.setStatus("Status1");
+		
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		when(deploymentDAO.getById(1)).thenReturn(deployment);
+		
+		DeploymentRest deploymentRest = new DeploymentRest();
+		deploymentRest.deploymentDAO = deploymentDAO;
+		
+		Response response = deploymentRest.getDeploymentOvf("2", "1");
+		
+		assertEquals(200, response.getStatus());
+		
+		String xml = (String) response.getEntity();
+		
+		assertEquals("ovf1", xml);
+	}
+	
+	@Test
 	public void postANewDeploymentInDB() throws JAXBException {
 		ApplicationDAO applicationDAO = mock(ApplicationDAO.class);
 		

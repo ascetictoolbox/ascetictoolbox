@@ -132,12 +132,14 @@ public class DeploymentRest extends AbstractRest {
 	@GET
 	@Path("{deployment_id}/ovf")
 	@Produces(MediaType.APPLICATION_XML)
-	public Response getApplicationOvf(@PathParam("application_name") String applicationName, @PathParam("deployment_id") String deploymentId) {
+	public Response getDeploymentOvf(@PathParam("application_name") String applicationName, @PathParam("deployment_id") String deploymentId) {
 		logger.info("GET request to path: /applications/" + applicationName + "/deployments/" + deploymentId + "/ovf");
-		// TODO
-		// TODO we need to think a bit about how we are going to store the OVF in the database, 
-		//      I have not made my mind about it yet
-		return buildResponse(Status.OK, "Method not implemented yet");
+		
+		Deployment deployment = deploymentDAO.getById(Integer.parseInt(deploymentId));
+		
+		String xml = deployment.getOvf();
+		
+		return buildResponse(Status.OK, xml);
 	}
 	
 	/**

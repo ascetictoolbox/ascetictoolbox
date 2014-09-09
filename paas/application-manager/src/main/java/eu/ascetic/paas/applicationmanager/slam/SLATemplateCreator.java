@@ -3,17 +3,14 @@ package eu.ascetic.paas.applicationmanager.slam;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.slasoi.slamodel.core.ConstraintExpr;
 import org.slasoi.slamodel.core.FunctionalExpr;
 import org.slasoi.slamodel.core.SimpleDomainExpr;
 import org.slasoi.slamodel.core.TypeConstraintExpr;
 import org.slasoi.slamodel.primitives.CONST;
-import org.slasoi.slamodel.primitives.Expr;
 import org.slasoi.slamodel.primitives.ID;
 import org.slasoi.slamodel.primitives.STND;
 import org.slasoi.slamodel.primitives.UUID;
 import org.slasoi.slamodel.primitives.ValueExpr;
-import org.slasoi.slamodel.service.Interface;
 import org.slasoi.slamodel.service.ResourceType;
 import org.slasoi.slamodel.sla.AgreementTerm;
 import org.slasoi.slamodel.sla.Endpoint;
@@ -22,19 +19,16 @@ import org.slasoi.slamodel.sla.InterfaceDeclr;
 import org.slasoi.slamodel.sla.Party;
 import org.slasoi.slamodel.sla.SLATemplate;
 import org.slasoi.slamodel.sla.VariableDeclr;
-import org.slasoi.slamodel.vocab.ext.Expression;
 
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
 import eu.ascetic.utils.ovf.api.VirtualSystem;
-import eu.slaatsoi.slamodel.InterfaceDeclrType;
-import eu.slaatsoi.slamodel.InterfaceResourceTypeType;
-import eu.slaatsoi.slamodel.impl.ConstraintExprDocumentImpl;
-import eu.slaatsoi.slamodel.impl.InterfaceDeclrDocumentImpl;
-import eu.slaatsoi.slamodel.impl.InterfaceDeclrTypeImpl;
-import eu.slaatsoi.slamodel.impl.InterfaceResourceTypeTypeImpl;
-import eu.slaatsoi.slamodel.impl.SLATemplateDocumentImpl;
 
+/**
+ * It creates an SLA Template form an OVF document
+ * @author David Garcia Perez - Atos
+ *
+ */
 public class SLATemplateCreator {
 	
 	/**
