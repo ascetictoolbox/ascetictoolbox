@@ -50,6 +50,11 @@
 			<version>2.5.6</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.antlr</groupId>
+			<artifactId>antlr-runtime</artifactId>
+			<version>3.2</version>
+		</dependency>
   	</dependencies>
   	<pluginRepositories>
 		<pluginRepository>
@@ -136,10 +141,14 @@
 					<!--  DO EDIT ACCORDING THE DEPENDENCIES USED BY THIS POM -->
 					<configuration>
 					    <instructions>
-						  <Bundle-Name>slam-enforcement</Bundle-Name>
-						  <Bundle-SymbolicName>slam-enforcement</Bundle-SymbolicName>
+						  <Bundle-Name>slam-pac</Bundle-Name>
+						  <Bundle-SymbolicName>slam-pac</Bundle-SymbolicName>
 					      <Export-Package>
 								eu.ascetic.paas.slam.pac;version="${__slam-version}"
+									org.antlr.runtime.*,
+									org.antlr.stringtemplate,
+									org.antlr.stringtemplate.language,
+									antlr.* 
 						  </Export-Package>
 						  <Import-Package>
 						  		org.osgi.framework;resolution:=optional,

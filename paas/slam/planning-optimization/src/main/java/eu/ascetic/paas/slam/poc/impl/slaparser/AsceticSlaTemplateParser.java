@@ -121,7 +121,7 @@ public class AsceticSlaTemplateParser {
 			return;
         for (ComponentProductOfferingPrice cpop : pop.getComponentProductOfferingPrices()) {
 //        	if (cpop.getId().getValue().startsWith("Price_OF")) {
-        	if (cpop.getPriceType().getValue().endsWith("#one_time_charge")) {
+        	if (cpop.getPriceType().getValue().endsWith("#per_hour")) {
         		String price = cpop.getPrice().getValue();
                 AsceticAgreementTerm priceTerm = new MeasurableAgreementTerm("price", "EUR", price, "=");
                 cvs.addAgreementTerm(priceTerm);
@@ -131,7 +131,6 @@ public class AsceticSlaTemplateParser {
 
 	
 	private void parseSlaTemplate(SLATemplate slaTemplate) {
-
 		InterfaceDeclr[] interfaceDeclrs = slaTemplate.getInterfaceDeclrs();
 		HashMap<String, String> ovfVirtualSystems = new HashMap<String, String>();
 		@SuppressWarnings("deprecation")

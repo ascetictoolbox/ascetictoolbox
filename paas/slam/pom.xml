@@ -55,6 +55,7 @@
 		<osgi-version>1.2.0</osgi-version>
 		<slasoi-version>0.1-SNAPSHOT</slasoi-version>
 		<__slam-version>0.1-SNAPSHOT</__slam-version>
+		<jersey-version>1.8</jersey-version>
 	</properties>
 
 	<!--  GLOBAL - licenses  -->
@@ -68,6 +69,43 @@
                   is shown here for illustration purposes only.</comments>
 		</license>
 	</licenses>
+		<dependencies>
+			 <dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>${jersey-version}</version>
+		</dependency>
+				 <dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-server</artifactId>
+			<version>${jersey-version}</version>
+		</dependency>
+
+				<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-core</artifactId>
+			<version>${jersey-version}</version>
+		</dependency>
+		
+	 		 <dependency>
+ 			<groupId>com.sun.jersey.contribs</groupId>
+			<artifactId>jersey-multipart</artifactId>
+			<version>${jersey-version}</version>
+		</dependency>
+		
+		<dependency>
+				<groupId>org.jvnet</groupId>
+				<artifactId>mimepull</artifactId>
+				<version>1.4</version> 
+		</dependency> 
+	
+		 <dependency>
+					<groupId>com.sun.jersey</groupId> 
+					<artifactId>jersey-grizzly2</artifactId> 
+					<version>${jersey-version}</version> 
+			</dependency>
+
+	 </dependencies>
 
 	<build>
 		<extensions>

@@ -21,7 +21,7 @@
     <properties>
 		<org.slasoi.slam.license.loc>${basedir}</org.slasoi.slam.license.loc>
 		<org.slasoi.slam.export.version>${project.artifact.version}</org.slasoi.slam.export.version>
-		<org.slasoi.slam.core.export>eu.ascetic.paas.slam-manager.core.*</org.slasoi.slam.core.export>
+		<org.slasoi.slam.core.export>eu.ascetic.paas.slam.slam-manager.core.*</org.slasoi.slam.core.export>
 		<org.slasoi.slam.core.export.version>${slasoi-version}</org.slasoi.slam.core.export.version>
 	</properties>
 

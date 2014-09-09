@@ -81,7 +81,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import eu.ascetic.paas.slam.poc.exceptions.SubNegotiationException;
 import eu.ascetic.paas.slam.poc.impl.paasapi.PaaSApiManager;
 import eu.ascetic.paas.slam.poc.impl.provider.manager.ProviderManager;
+import eu.ascetic.paas.slam.poc.impl.provider.manager.ProviderManagerImpl;
 import eu.ascetic.paas.slam.poc.impl.provider.selection.OfferSelector;
+import eu.ascetic.paas.slam.poc.impl.provider.selection.OfferSelectorImpl;
 import eu.ascetic.paas.slam.poc.impl.slaparser.SlaTemplateEntitiesParser;
 import eu.ascetic.paas.slam.poc.negotiation.SLAT2SLAImpl;
 import eu.ascetic.paas.slam.poc.provision.PlanHandlerImpl;
@@ -253,12 +255,15 @@ public class PlanningOptimizationImpl implements PlanningOptimization, SLAMConte
 			assert (negotiationID != null && !negotiationID.equals("") && slaTemplate != null) : "negotiate method requires an negotiationID != null or not empty and an slaTemplate != null.";
 
 			/*** 1. call provider registry the get the provider list ***/
-			String[] providerEndpoints = providerManager.getProvidersList(slaTemplate);
-
+			//String[] providerEndpoints = providerManager.getProvidersList(slaTemplate);
+			System.out.println("Endpoint IaaS cablato...");
+			String[] providerEndpoints = {"http://10.4.0.15:8080/services/asceticNegotiation?wsdl"};
+			
 			List<SLATemplate[]> providerSlats = new ArrayList<SLATemplate[]>();
 
 			/*** 2. foreach provider in the list, make a negotiation round and save the SLA ***/
 			for (String providerEndpoint : providerEndpoints) {
+			System.out.println("Interrogo endpoint "+providerEndpoint);
 				try {
 					SLATemplate[] slats = providerManager.negotiate(providerEndpoint, slaTemplate);
 					providerSlats.add(slats);
@@ -426,11 +431,10 @@ public class PlanningOptimizationImpl implements PlanningOptimization, SLAMConte
 	protected IPlanStatus dsIPlanStatus;
 	protected IReplan dsIReplan;
 	
-	@Autowired
-	private ProviderManager providerManager;
+
+	private ProviderManager providerManager = new ProviderManagerImpl();
 	
-	@Autowired
-	private OfferSelector offerSelector;
+	private OfferSelector offerSelector = new OfferSelectorImpl();
 
 	protected SLAManagerContext context;
 	
