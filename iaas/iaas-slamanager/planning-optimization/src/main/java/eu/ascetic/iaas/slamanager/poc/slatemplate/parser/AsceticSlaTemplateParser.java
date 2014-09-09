@@ -99,7 +99,7 @@ public class AsceticSlaTemplateParser {
 		AsceticSlaTemplate = builder.build();
 	}
 
-	private AsceticResourceRequest getAsceticResourceRequest(String aTermId, String interfDeclId, InterfaceDeclr[] ids) {
+	private AsceticResourceRequest getAsceticResourceRequest(String aTermId, String interfDeclId, String varId, InterfaceDeclr[] ids) {
 		String ovfId = null;
 		AsceticResourceRequest AsceticRequest = null;
 		for (InterfaceDeclr id : ids) {
@@ -110,7 +110,7 @@ public class AsceticSlaTemplateParser {
 																		// Virtual
 																		// System
 						ovfId = e[0].getPropertyValue(new STND("OVF_VirtualSystem_ID"));
-						AsceticRequest = new VirtualSystem(aTermId);
+						AsceticRequest = new VirtualSystem(aTermId, varId);
 						AsceticRequest.setOvfId(ovfId);
 						break;
 					}
@@ -118,7 +118,7 @@ public class AsceticSlaTemplateParser {
 																										// Shared
 																										// Disk
 					ovfId = id.getInterface().getPropertyValue(new STND("Shared_Disk_ID"));
-					AsceticRequest = new SharedDisk(aTermId);
+					AsceticRequest = new SharedDisk(aTermId, varId);
 					AsceticRequest.setOvfId(ovfId);
 					break;
 				}
@@ -142,7 +142,7 @@ public class AsceticSlaTemplateParser {
 					ID intDeclId = (ID) p[0];
 					interfDeclId = intDeclId.getValue();
 					if (interfDeclId != null) { // is AsceticResourceRequest
-						asceticRequest = getAsceticResourceRequest(aTerm.getId().getValue(), interfDeclId, ids);
+						asceticRequest = getAsceticResourceRequest(aTerm.getId().getValue(), interfDeclId, key, ids);
 					}
 				}
 			}
@@ -186,7 +186,7 @@ public class AsceticSlaTemplateParser {
 				ovfReqCore.setMin(vsNeed.get("vm_cores"));
 				ovfReqCore.setMax(vsNeed.get("vm_cores"));
 				ovfReqCore.setDefault(vsNeed.get("vm_cores"));
-				ovfReqCore.setDomain(vs.getId());
+				ovfReqCore.setDomain(((AsceticResourceRequest)AsceticRequest).getVariableId());
 				AsceticRequest.addGuarantee(ovfReqCore);
 			}
 			if (vsNeed.get("cpu_speed") != null) {
@@ -194,7 +194,7 @@ public class AsceticSlaTemplateParser {
 				ovfReqCpuSpeed.setMin(vsNeed.get("cpu_speed"));
 				ovfReqCpuSpeed.setMax(vsNeed.get("cpu_speed"));
 				ovfReqCpuSpeed.setDefault(vsNeed.get("cpu_speed"));
-				ovfReqCpuSpeed.setDomain(vs.getId());
+				ovfReqCpuSpeed.setDomain(((AsceticResourceRequest)AsceticRequest).getVariableId());
 				AsceticRequest.addGuarantee(ovfReqCpuSpeed);
 			}
 			if (vsNeed.get("memory") != null) {
@@ -202,7 +202,7 @@ public class AsceticSlaTemplateParser {
 				ovfReqMem.setMin(vsNeed.get("memory"));
 				ovfReqMem.setMax(vsNeed.get("memory"));
 				ovfReqMem.setDefault(vsNeed.get("memory"));
-				ovfReqMem.setDomain(vs.getId());
+				ovfReqMem.setDomain(((AsceticResourceRequest)AsceticRequest).getVariableId());
 				AsceticRequest.addGuarantee(ovfReqMem);
 			}
 			if (vsNeed.get("disk_size") != null) {
@@ -210,7 +210,7 @@ public class AsceticSlaTemplateParser {
 				ovfReqDisk.setMin(vsNeed.get("disk_size"));
 				ovfReqDisk.setMax(vsNeed.get("disk_size"));
 				ovfReqDisk.setDefault(vsNeed.get("disk_size"));
-				ovfReqDisk.setDomain(vs.getId());
+				ovfReqDisk.setDomain(((AsceticResourceRequest)AsceticRequest).getVariableId());
 				AsceticRequest.addGuarantee(ovfReqDisk);
 			}
 		}

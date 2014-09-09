@@ -27,8 +27,8 @@ public class VirtualSystem extends AsceticResourceRequest {
 
 	private double price;
 
-	public VirtualSystem(String id) {
-		super(id);
+	public VirtualSystem(String id, String varId) {
+		super(id, varId);
 		price = 0;
 	}
 

@@ -22,9 +22,12 @@ import eu.ascetic.iaas.slamanager.poc.slatemplate.request.guarantee.GenericGuara
 import eu.ascetic.iaas.slamanager.poc.slatemplate.request.guarantee.Guarantee;
 
 public abstract class AsceticResourceRequest extends AsceticRequest {
+	
+	protected String variableId;
 
-	public AsceticResourceRequest(String id) {
+	public AsceticResourceRequest(String id, String varId) {
 		super(id);
+		variableId=varId;
 	}
 
 	public ArrayList<GenericGuarantee> getGenericGuarantees() {
@@ -35,6 +38,14 @@ public abstract class AsceticResourceRequest extends AsceticRequest {
 			}
 		}
 		return genericGuarantees;
+	}
+
+	public String getVariableId() {
+		return variableId;
+	}
+
+	public void setVariableId(String variableId) {
+		this.variableId = variableId;
 	}
 
 	@Override
