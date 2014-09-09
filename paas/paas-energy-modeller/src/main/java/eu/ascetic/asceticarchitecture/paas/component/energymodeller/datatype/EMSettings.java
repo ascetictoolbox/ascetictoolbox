@@ -30,12 +30,12 @@ public class EMSettings {
 		
 		this.setIaasdriver(props.getProperty("iaasdriver"));
 		this.setIaasurl(props.getProperty("iaasurl"));
-		this.setIaasdbpassword(props.getProperty("iaasdbuser"));
-		this.setIaasdbuser(props.getProperty("iaasdbpassword"));
+		this.setIaasdbpassword(props.getProperty("iaasdbpassword"));
+		this.setIaasdbuser(props.getProperty("iaasdbuser"));
 		this.setPaasdriver(props.getProperty("paasdriver"));
 		this.setPaasurl(props.getProperty("paasurl"));
-		this.setPaasdbpassword(props.getProperty("paasdbuser"));
-		this.setPaasdbuser(props.getProperty("paasdbpassword"));
+		this.setPaasdbpassword(props.getProperty("paasdbpassword"));
+		this.setPaasdbuser(props.getProperty("paasdbuser"));
 		this.setServerPath(props.getProperty("serverpath"));
 		this.setServerurl(props.getProperty("serverurl"));
 		this.setPropertyFile((props.getProperty("propertyfile")));
