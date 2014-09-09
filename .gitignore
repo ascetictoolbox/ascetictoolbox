@@ -33,8 +33,8 @@ saas/compss-packager/.classpath
 saas/compss-packager/.project
 saas/compss-plugin/ascetic-deployer/.classpath
 saas/compss-plugin/ascetic-deployer/lib/ant-antlr.jar
-saas/programming-model/compss-rt/rt/.pom.xml.kate-swp
-saas/programming-model/compss-rt/rt/target
+saas/programming-model/compss/compss-rt/rt/.pom.xml.kate-swp
+saas/programming-model/compss/compss-rt/rt/target
 saas/virtual-machine-image-constructor/logs
 utils/energy-modeller-benchtest/energymodeller.properties
 utils/energy-modeller-benchtest/energymodeller_calibrator.properties
