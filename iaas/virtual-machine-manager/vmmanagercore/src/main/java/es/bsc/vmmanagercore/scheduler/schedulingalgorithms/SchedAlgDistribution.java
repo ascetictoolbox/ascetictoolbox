@@ -20,10 +20,12 @@ public class SchedAlgDistribution implements SchedAlgorithm {
     public SchedAlgDistribution() {}
 
     private void logServersLoadsInfo(Collection<ServerLoad> serversLoad1, Collection<ServerLoad> serversLoad2) {
-        VMMLogger.logServersLoadsAfterDeploymentPlan(1, Scheduler.calculateStDevCpuLoad(serversLoad1),
-                Scheduler.calculateStDevMemLoad(serversLoad1), Scheduler.calculateStDevDiskLoad(serversLoad1));
-        VMMLogger.logServersLoadsAfterDeploymentPlan(2, Scheduler.calculateStDevCpuLoad(serversLoad2),
-                Scheduler.calculateStDevMemLoad(serversLoad2), Scheduler.calculateStDevDiskLoad(serversLoad2));
+        VMMLogger.logServersLoadsAfterDeploymentPlan(1, countIdleServers(serversLoad1),
+                Scheduler.calculateStDevCpuLoad(serversLoad1), Scheduler.calculateStDevMemLoad(serversLoad1),
+                Scheduler.calculateStDevDiskLoad(serversLoad1));
+        VMMLogger.logServersLoadsAfterDeploymentPlan(2, countIdleServers(serversLoad2),
+                Scheduler.calculateStDevCpuLoad(serversLoad2), Scheduler.calculateStDevMemLoad(serversLoad2),
+                Scheduler.calculateStDevDiskLoad(serversLoad2));
     }
 
     private boolean hasLessStdDevCpu(Collection<ServerLoad> serversLoad1, Collection<ServerLoad> serversLoad2) {

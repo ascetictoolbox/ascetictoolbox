@@ -20,10 +20,12 @@ public class SchedAlgConsolidation implements SchedAlgorithm {
     public SchedAlgConsolidation() {}
 
     private void logServersLoadsInfo(Collection<ServerLoad> serversLoad1, Collection<ServerLoad> serversLoad2) {
-        VMMLogger.logUnusedServerLoadsAfterDeploymentPlan(1, Scheduler.getTotalUnusedCpuPerc(serversLoad1),
-                Scheduler.getTotalUnusedMemPerc(serversLoad1), Scheduler.getTotalUnusedDiskPerc(serversLoad1));
-        VMMLogger.logUnusedServerLoadsAfterDeploymentPlan(2, Scheduler.getTotalUnusedCpuPerc(serversLoad2),
-                Scheduler.getTotalUnusedMemPerc(serversLoad2), Scheduler.getTotalUnusedDiskPerc(serversLoad2));
+        VMMLogger.logUnusedServerLoadsAfterDeploymentPlan(1, countIdleServers(serversLoad1),
+                Scheduler.getTotalUnusedCpuPerc(serversLoad1), Scheduler.getTotalUnusedMemPerc(serversLoad1),
+                Scheduler.getTotalUnusedDiskPerc(serversLoad1));
+        VMMLogger.logUnusedServerLoadsAfterDeploymentPlan(2, countIdleServers(serversLoad2),
+                Scheduler.getTotalUnusedCpuPerc(serversLoad2), Scheduler.getTotalUnusedMemPerc(serversLoad2),
+                Scheduler.getTotalUnusedDiskPerc(serversLoad2));
     }
 
     private boolean hasLessUnusedCpu(Collection<ServerLoad> serversLoad1, Collection<ServerLoad> serversLoad2) {

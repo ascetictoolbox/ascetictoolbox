@@ -59,15 +59,17 @@ public class VMMLogger {
                 deploymentPlanNumber + ": " + numberOfVmsSameAppSameHost);
     }
 
-    public static void logServersLoadsAfterDeploymentPlan(int deploymentPlanNumber, double stdDevCpu,
+    public static void logServersLoadsAfterDeploymentPlan(int deploymentPlanNumber, int idleServers, double stdDevCpu,
             double stdDevRam, double stdDevDisk) {
-        logger.debug("[VMM] Server loads for deployment plan" + deploymentPlanNumber + " stdDevCpu:" +
-                stdDevCpu + ", stdDevRam: " + stdDevRam + ", stdDevDisk: " + stdDevDisk);
+        logger.debug("[VMM] Server loads for deployment plan " + deploymentPlanNumber + " idle servers:" + idleServers
+                + ", stdDevCpu:" + stdDevCpu + ", stdDevRam: " + stdDevRam + ", stdDevDisk: " + stdDevDisk);
     }
 
-    public static void logUnusedServerLoadsAfterDeploymentPlan(int deploymentPlanNumber, double unusedCpu,
-            double unusedRam, double unusedDisk) {
-        logger.debug("[VMM] Total unused loads for deployment plan " + deploymentPlanNumber + " unusedCpu:" +
-                unusedCpu + ", unusedRam: " + unusedRam + ", unusedDisk: " + unusedDisk);
+    public static void logUnusedServerLoadsAfterDeploymentPlan(int deploymentPlanNumber, int idleServers,
+            double unusedCpu, double unusedRam, double unusedDisk) {
+        logger.debug("[VMM] Total unused loads for deployment plan " + deploymentPlanNumber + " idle servers:"
+                + idleServers + ", unusedCpu:" + unusedCpu + ", unusedRam: " + unusedRam + ", unusedDisk: "
+                + unusedDisk);
     }
+
 }
