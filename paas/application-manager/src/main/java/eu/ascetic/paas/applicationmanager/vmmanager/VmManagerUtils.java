@@ -35,6 +35,7 @@ public class VmManagerUtils {
 				vmDeployed = vmClient.getVM(listNewVmIds.get(index));
 				vm.setIp(vmDeployed.getIpAddress());
 				vm.setStatus(vmDeployed.getState());
+				vm.setOvfId(vmDeployed.getOvfId());
 				//add the current VM to the deployment
 				deployment.addVM(vm);					
 				index++;

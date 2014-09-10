@@ -15,6 +15,7 @@ import eu.ascetic.paas.applicationmanager.vmmanager.VmManagerUtils;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientHC;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.Vm;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
+import eu.ascetic.utils.ovf.api.VirtualSystemCollection;
 import eu.ascetic.utils.ovf.api.utils.OvfRuntimeException;
 import eu.ascetic.vmc.api.core.ProgressException;
 import eu.ascetic.vmc.api.datamodel.ProgressData;
@@ -131,6 +132,7 @@ public class DeploymentsStatusTask {
 		logger.info(" Starting to contextualize deployment: " + deployment.getId());
 	
 		OvfDefinition ovf = OVFUtils.getOvfDefinition(deployment.getOvf());
+		
 		if (ovf != null){
 			try {
 				
@@ -145,6 +147,9 @@ public class DeploymentsStatusTask {
 					
 					//Set the deployment in contextualizing status in DB
 					deployment.setStatus(Dictionary.APPLICATION_STATUS_CONTEXTUALIZING);
+					VirtualSystemCollection vsc = ovf.getVirtualSystemCollection();
+					vsc.getProductSectionAtIndex(0).setDeploymentId("" + deployment.getId());
+					deployment.setOvf(ovf.toString());
 					deploymentDAO.update(deployment);
 					
 					// Creating the service
@@ -234,14 +239,7 @@ public class DeploymentsStatusTask {
 	 * @param deployment
 	 */
 	protected void deploymentDeployApplicationActions(Deployment deployment) {
-		// TODO Here it is necessary to take the OVF, convert the VM notations to 
-		//      something the VMManager understands, and then start creating VMs
-		//      after that we move the application to DEPLOYED state
-		//
-		//      To move an application to Terminated stated, the user needs to send 
-		//      a REST DELETE to that specific deployment (that it is not implemented)
-		//      The actions in that case it is to start DELETING all VMs from the VMManager
-		//      change the status of the Deployement to TERMINATED after that
+		// TODO We need to change the workflow for the images... it can not be this way... 
 		
 		deployment.setStatus(Dictionary.APPLICATION_STATUS_DEPLOYING);
 		deploymentDAO.update(deployment);
@@ -258,20 +256,33 @@ public class DeploymentsStatusTask {
 					boolean updated = VmManagerUtils.updateVms(vmManagerClient, deployment, vmsDeployedIds);
 					if (updated){
 						deployment.setStatus(Dictionary.APPLICATION_STATUS_DEPLOYED);							
-						// We save the changes to the DB
-						deploymentDAO.update(deployment);
+						
+					} else {
+						deployment.setStatus(Dictionary.APPLICATION_STATUS_ERROR);	
 					}
+					
+					// We save the changes to the DB
+					deploymentDAO.update(deployment);
 				}
 				else {
 					logger.info("All VMs cannot be created. VMs deployed: " + vmsDeployedIds.size());
+					deployment.setStatus(Dictionary.APPLICATION_STATUS_ERROR);
+					// We save the changes to the DB
+					deploymentDAO.update(deployment);
 				}
 			}	
 		} catch(OvfRuntimeException ex) {
 			logger.info("Error parsing OVF file: " + ex.getMessage());
 			ex.printStackTrace();
+			deployment.setStatus(Dictionary.APPLICATION_STATUS_ERROR);
+			// We save the changes to the DB
+			deploymentDAO.update(deployment);
 		} catch (Exception ex){
 			logger.info("Error triying to deploy new VMs: " + ex.getMessage());
 			ex.printStackTrace();
+			deployment.setStatus(Dictionary.APPLICATION_STATUS_ERROR);
+			// We save the changes to the DB
+			deploymentDAO.update(deployment);
 		}
 	}
 }

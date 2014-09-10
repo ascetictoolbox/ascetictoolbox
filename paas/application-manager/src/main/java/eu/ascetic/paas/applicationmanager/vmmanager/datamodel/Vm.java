@@ -10,6 +10,7 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
  */
 public class Vm {
 
+	private String ovfId;
     private String name;
     private String image; // It can be an ID or a URL
     private int cpus;
@@ -111,4 +112,11 @@ public class Vm {
         return ReflectionToStringBuilder.toString(this);
     }
 
+	public String getOvfId() {
+		return ovfId;
+	}
+
+	public void setOvfId(String ovfId) {
+		this.ovfId = ovfId;
+	}
 }

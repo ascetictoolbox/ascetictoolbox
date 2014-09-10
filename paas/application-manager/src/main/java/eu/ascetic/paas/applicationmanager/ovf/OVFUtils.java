@@ -87,6 +87,7 @@ public class OVFUtils {
 				//Retrieve data from every VM
 				virtSystem = vsc.getVirtualSystemAtIndex(index);
 				int asceticUpperBound = virtSystem.getProductSectionAtIndex(0).getUpperBound();
+				
 				String vmName = virtSystem.getName();
 				int cpus = virtSystem.getVirtualHardwareSection().getNumberOfVirtualCPUs();
 				int ramMb = virtSystem.getVirtualHardwareSection().getMemorySize();
@@ -104,6 +105,7 @@ public class OVFUtils {
 						//ISO names in /DFS/... ends with _1
 						String suffix = "_1";
 						Vm virtMachine = new Vm(vmName + suffix, imgId, cpus, ramMb, diskSize, isoPath + suffix , appId);
+						virtMachine.setOvfId(virtSystem.getId());
 						vmList.add(virtMachine);	
 					}
 					else if (asceticUpperBound <= 0){
