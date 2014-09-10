@@ -84,7 +84,7 @@ public class EnergyModeller {
         datasource =  new ZabbixDataSourceAdaptor();
         database = new DefaultDatabaseConnector();
         startup();
-    }
+    }  
 
     /**
      * This creates a new energy modeller.
@@ -103,17 +103,17 @@ public class EnergyModeller {
      */
     private void startup() {
         calibrator = new Calibrator(datasource, database);
-        dataGatherer = new DataGatherer(datasource, new DefaultDatabaseConnector(), calibrator);
+            dataGatherer = new DataGatherer(datasource, new DefaultDatabaseConnector(), calibrator);
         try {
             calibratorThread = new Thread(calibrator);
             calibratorThread.setDaemon(true);
             calibratorThread.start();
             calibrateAllHostsWithoutData();
-            dataGatherThread = new Thread(dataGatherer);
-            dataGatherThread.setDaemon(true);
-            dataGatherThread.start();
+                dataGatherThread = new Thread(dataGatherer);
+                dataGatherThread.setDaemon(true);
+                dataGatherThread.start();
         } catch (Exception ex) {
-            Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The host list was not populated");
+            Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The energry modeller failed to start correctly", ex);
         }
     }
 

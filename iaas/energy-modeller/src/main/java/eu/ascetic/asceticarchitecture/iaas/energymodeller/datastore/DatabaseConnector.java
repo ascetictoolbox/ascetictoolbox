@@ -18,8 +18,8 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostEnergyRecord;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostVmLoadFraction;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostEnergyRecord;
 import java.util.Collection;
 import java.util.List;
 
@@ -110,7 +110,7 @@ public interface DatabaseConnector {
      * @param load The summary of the VM load data on the host.
      */
     public void writeHostVMHistoricData(Host host, long time, HostVmLoadFraction load);
-    
+   
     /**
      * 
      * @param host The host to get the vm load information for

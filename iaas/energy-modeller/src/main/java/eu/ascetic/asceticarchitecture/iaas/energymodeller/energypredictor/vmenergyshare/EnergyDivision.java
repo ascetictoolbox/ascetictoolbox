@@ -32,7 +32,7 @@ import java.util.HashMap;
 public class EnergyDivision {
 
     private Host host;
-    private HashMap<VM, Double> vmWeight = new HashMap<>();
+    private final HashMap<VM, Double> vmWeight = new HashMap<>();
     private double sumOfWeights = 0; // A cached sum of all weights assigned.
     private boolean considerIdleEnergy = false;
 
@@ -121,7 +121,8 @@ public class EnergyDivision {
             }
             double answer = (vmsWeight / sumOfWeights) * activeEnergy;
             /**
-             * Fraction off the energy associated with the host been idle evenly.
+             * Fraction off the energy associated with the host been idle
+             * evenly.
              */
             answer = answer + host.getIdlePowerConsumption() / vmWeight.size();
             return answer;

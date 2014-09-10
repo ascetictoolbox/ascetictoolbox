@@ -52,4 +52,22 @@ public class LoadFractionShareRule implements EnergyShareRule {
         fractions = HostVmLoadFraction.getFraction(vmMeasurements);
     }   
 
+    /**
+     * This returns the data that indicates which VMs should take which fraction
+     * of the overall energy.
+     * @return the fractioning of the host energy data.
+     */
+    public HashMap<VmDeployed, Double> getFractions() {
+        return fractions;
+    }
+
+    /**
+     * This allows the data that indicates which VMs should take which fraction
+     * of the overall energy to be directly set.
+     * @param fractions the fractioning of the host energy data to set.
+     */
+    public void setFractions(HashMap<VmDeployed, Double> fractions) {
+        this.fractions = fractions;
+    }
+
 }

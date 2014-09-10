@@ -38,7 +38,7 @@ public class HostVmLoadFraction implements Comparable<HostVmLoadFraction> {
      * This creates a new host vm load fraction record.
      *
      * @param host The host the record is for
-     * @param time The time that this record is for
+     * @param time The time that this record is for, in UTC time.
      */
     public HostVmLoadFraction(Host host, long time) {
         this.host = host;
@@ -64,7 +64,7 @@ public class HostVmLoadFraction implements Comparable<HostVmLoadFraction> {
     }
 
     /**
-     * The time that this record represents.
+     * The time that this record represents, in UTC time.
      *
      * @return
      */
