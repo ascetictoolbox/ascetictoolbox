@@ -150,10 +150,10 @@ public class DataCollector implements Runnable {
                                 List<CurrentUsageRecord> vmAnswer = hostAnswer.get(vm.getName());
                                 if (vmAnswer == null) {
                                     vmAnswer = new ArrayList<>();
+                                    hostAnswer.put(vm.getName(), vmAnswer);
                                 }
                                 CurrentUsageRecord vmsUsage = new CurrentUsageRecord(vm, division.getEnergyUsage(vmData.getKey().getPower(), vm), -1, -1);
                                 vmAnswer.add(vmsUsage);
-                                hostAnswer.put(vm.getName(), vmAnswer);
                             }
                         }
                     }
@@ -170,7 +170,6 @@ public class DataCollector implements Runnable {
                 faultCount = faultCount + 1;
                 if (faultCount > 25) {
                     stop(); //Exit if faults keep occuring in a sequence.
-                    System.exit(-1);
                 }
             }
         }
