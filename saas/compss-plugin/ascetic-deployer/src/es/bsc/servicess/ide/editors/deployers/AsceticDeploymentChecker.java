@@ -79,6 +79,7 @@ public class AsceticDeploymentChecker implements DeploymentChecker {
 		this.jars = jars;
 		this.deployer = deployer;
 		this.masterPackage = masterPackage;
+		this.status = DeploymentChecker.PENDING;
 	}
 
 	@Override
