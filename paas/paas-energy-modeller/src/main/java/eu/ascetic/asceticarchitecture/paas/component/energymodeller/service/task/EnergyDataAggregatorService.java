@@ -42,6 +42,19 @@ public class EnergyDataAggregatorService implements DataAggregatorTaskInterface 
 		this.dataDAO = dataDAO;
 	}
 
+	@Override
+	public double getAverage(String app, String depl, String vmid, String event) {
+		double result = dataDAO.getTotalEnergyForVM(app, depl, vmid);
+		Timestamp min = dataDAO.getFirsttConsumptionForVM(app, vmid);
+		Timestamp max= dataDAO.getLastConsumptionForVM(app, vmid);
+		long diff = max.getTime()-min.getTime();
+		diff = diff / 3600000;
+		
+		logger.info("Total is "+result + " over "+diff);
+		logger.info("Per hour is "+result /diff);
+		return result;
+	}
+
 
 
 }

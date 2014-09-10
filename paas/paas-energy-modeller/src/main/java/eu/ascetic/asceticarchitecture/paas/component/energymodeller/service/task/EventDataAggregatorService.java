@@ -46,6 +46,8 @@ public class EventDataAggregatorService implements DataAggregatorTaskInterface {
 		// TODO Auto-generated method stub
 		return 1;
 	}
+	
+
 
 //	private void buildTable(Timestamp min, Timestamp max){
 //		// TODO for future implementation
@@ -60,6 +62,12 @@ public class EventDataAggregatorService implements DataAggregatorTaskInterface {
 	
 	public void setDaoEvent(DataEventDAOImpl daoEvent) {
 		this.daoEvent = daoEvent;
+	}
+
+	@Override
+	public double getAverage(String app, String depl, String vmid, String event) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

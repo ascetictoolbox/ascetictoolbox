@@ -1,5 +1,7 @@
 package eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces;
 
+import java.util.List;
+
 
 /**
  * @author davide sommacampagna
@@ -36,6 +38,14 @@ public interface PaaSEnergyModeller {
 	 * @return the value for aggregated energy consumption of the provided application,provider and deployment. aggregate for all vms in the deployment
 	 */
 	public double energyApplicationConsumption( String providerid, String applicationid,String deploymentid);	
+
+	/**
+	 * @param providerid
+	 * @param applicationid
+	 * @param vmids
+	 * @return the value for total energy consumption of the provided application,requries the list of vmids to compute all informations
+	 */
+	public double energyApplicationConsumption( String providerid, String applicationid,List<String> vmids, String eventid);	
 	
 	/**
 	 * @param providerid
@@ -46,6 +56,16 @@ public interface PaaSEnergyModeller {
 	 */
 	public double energyEstimation( String providerid, String applicationid,String deploymentid, String eventid);
 
+	/**
+	 * @param providerid
+	 * @param applicationid
+	 * @param deploymentid
+	 * @param eventid
+	 * @return the value for average energy estimation of the provided application,running on the vm list provided. eventid can be specified 
+	 */
+	public double energyEstimation( String providerid, String applicationid,List<String> vmids, String eventid);	
+	
+	
 	/**
 	 * @param providerid
 	 * @param applicationid

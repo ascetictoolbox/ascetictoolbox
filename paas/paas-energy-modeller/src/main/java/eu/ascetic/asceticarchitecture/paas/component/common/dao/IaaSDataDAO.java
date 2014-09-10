@@ -6,6 +6,7 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import eu.ascetic.asceticarchitecture.paas.component.common.model.IaaSVMConsumption;
+import eu.ascetic.asceticarchitecture.paas.component.common.model.VMConsumptionPerHour;
 
 public interface IaaSDataDAO {
 
@@ -20,5 +21,7 @@ public interface IaaSDataDAO {
 	public List<IaaSVMConsumption> getEnergyForVM(String hostid,String vmid);
 	
 	public List<IaaSVMConsumption> getEnergyForVMFromTime(String hostid,String vmid,Timestamp time);
+	
+	public List<VMConsumptionPerHour> getEnergyForVMHourly(String hostid,String vmid,Timestamp time);
 	
 }

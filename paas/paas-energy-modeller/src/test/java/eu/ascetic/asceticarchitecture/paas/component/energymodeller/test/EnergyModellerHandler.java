@@ -4,60 +4,30 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.ascetic.asceticarchitecture.paas.component.common.model.EnergyInterpolator;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.builder.EnergyModellerFactory;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.PaaSEnergyModeller;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.EnergyModellerSimple;
 
 public class EnergyModellerHandler {
 
-	private static EnergyModellerSimple serviceEM;
+	private static PaaSEnergyModeller serviceEM;
 	
 	@BeforeClass
 	public static void setup() {
-		serviceEM = new EnergyModellerSimple("testconfig.properties");
+		serviceEM = EnergyModellerFactory.getEnergyModeller("c:/test/testconfig.properties");
+		//serviceEM = new EnergyModellerSimple("c:/test/testconfig.properties");
 	}
 	
 	@Test
 	public void testEnergyModellerApplicationConsumption() {
-		double energy = serviceEM.energyApplicationConsumption("providerid", "applicationid", "deploymentid");
+		
+		double energy = serviceEM.energyEstimationForVM("test", "app1", "10256", null);
 		
 		Assert.assertNotNull(energy);
 	}
 	
-	@Test
-	public void testEnergyModellerEnergyEstimation() {
-		double energy = serviceEM.energyEstimation("providerid", "applicationid", "deploymentid",null);
-		Assert.assertNotNull(energy);
-	}
-
-	@Test
-	public void testEnergyModellerEnergyEstimationEvent() {
-		String appid = "applicationID_deploymentID";
-		double energy = serviceEM.energyEstimation("providerid", appid, "null","null");
-		Assert.assertNotNull(energy);
-	}
 	
-	@Test
-	public void testEnergyModellerStartModelling() {
-		boolean started = serviceEM.startModellingApplicationEnergy("providerid", "applicationid", "deploymentid");
-		Assert.assertTrue(started);
-	}
-	
-	@Test
-	public void testEnergyModellerEndModelling() {
-		boolean ended = serviceEM.stopModellingApplicationEnergy("providerid", "applicationid", "deploymentid");
-		Assert.assertTrue(ended);
-	}
-	
-	@Test
-	public void trainApplication() {
-		boolean training = serviceEM.trainApplication("providerid", "applicationid", "deploymentid",null);
-		Assert.assertTrue(training);
-	}
-	
-	@Test
-	public void trainEvent() {
-		boolean training = serviceEM.trainApplication("providerid", "applicationid", "deploymentid","event");
-		Assert.assertTrue(training);
-	}
 	
 
 }

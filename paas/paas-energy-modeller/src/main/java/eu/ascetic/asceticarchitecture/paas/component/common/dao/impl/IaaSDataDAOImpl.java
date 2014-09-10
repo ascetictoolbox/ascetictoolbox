@@ -10,7 +10,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import eu.ascetic.asceticarchitecture.paas.component.common.dao.IaaSDataDAO;
 import eu.ascetic.asceticarchitecture.paas.component.common.mapper.IaaSVMConsumptionMapper;
+import eu.ascetic.asceticarchitecture.paas.component.common.mapper.VMHourlyConsumptionMapper;
 import eu.ascetic.asceticarchitecture.paas.component.common.model.IaaSVMConsumption;
+import eu.ascetic.asceticarchitecture.paas.component.common.model.VMConsumptionPerHour;
 
 public class IaaSDataDAOImpl implements IaaSDataDAO {
 
@@ -27,6 +29,10 @@ public class IaaSDataDAOImpl implements IaaSDataDAO {
 			+ "								from vm_measurement as vmm, host_measurement as hmm "
 			+ "								where vmm.host_id = ? and vmm.vm_id = ? "
 						+ "						and hmm.host_id=vmm.host_id and vmm.clock = hmm.clock and hmm.clock > ?";
+	
+	private static String QUERY_AGG_HOUR = "select YEAR(FROM_UNIXTIME(vmm.clock)) as yeart, MONTH(FROM_UNIXTIME(vmm.clock)) as mon, DAYOFMONTH(FROM_UNIXTIME(vmm.clock)) as dayt, HOUR(FROM_UNIXTIME(vmm.clock)) as hh, avg(energy)as energy ,avg(power)as power, avg(cpu_load) as loadvm from vm_measurement as vmm JOIN host_measurement as hmm on hmm.host_id=vmm.host_id and vmm.clock = hmm.clock where hmm.host_id = ? and vmm.vm_id = ? group by yeart,mon,dayt,hh";
+	
+	
 	
 	@Override
 	public void initialize() {
@@ -64,6 +70,14 @@ public class IaaSDataDAOImpl implements IaaSDataDAO {
 	public List<IaaSVMConsumption> getEnergyForVMFromTime(String hostid, String vmid, Timestamp time) {
 		LOGGER.info("getting vm consumption for "+hostid + " after "+time);
 		List<IaaSVMConsumption> data = jdbcTemplate.query(QUERY_GETENERGYFORVMWTIME,new Object[] { hostid,vmid,time.getTime() },new IaaSVMConsumptionMapper());
+		return data;
+	}
+
+	@Override
+	public List<VMConsumptionPerHour> getEnergyForVMHourly(String hostid,
+			String vmid, Timestamp time) {
+		LOGGER.info("getting vm consumption for "+hostid + " after "+time);
+		List<VMConsumptionPerHour> data = jdbcTemplate.query(QUERY_AGG_HOUR,new Object[] { hostid,vmid },new VMHourlyConsumptionMapper());
 		return data;
 	}
 

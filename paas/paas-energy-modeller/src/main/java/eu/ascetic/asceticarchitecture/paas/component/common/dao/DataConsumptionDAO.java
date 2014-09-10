@@ -25,6 +25,12 @@ public interface DataConsumptionDAO {
 	    public List<DataConsumption> getByEventId(String eventid);
 	    
 	    public Timestamp getLastConsumptionForVM(String applicationid, String vmid);
+	    
+	    public double[] getConsumptionDataVM(String applicationid, String vmid);
+	    
+	    public double[] getTimeDataVM(String applicationid, String vmid);
+	    
+	    public Timestamp getFirsttConsumptionForVM(String applicationid, String vmid);
 
 		public double getTotalEnergyForDeployment(String applicationid,String deploymentid);
 

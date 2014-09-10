@@ -2,6 +2,7 @@ package eu.ascetic.asceticarchitecture.paas.component.common.model;
 
 public class IaaSVMConsumption {
 
+
 	private String vmid;
 	
 	private String hostid;
