@@ -68,7 +68,6 @@ public class SchedAlgGroupByAppTest {
         assignmentsPlan2.add(new VmAssignmentToHost(vms.get(2), hosts.get(1))); // vm3 -> host2
         DeploymentPlan deploymentPlan2 = new DeploymentPlan(assignmentsPlan2);
 
-
         assertTrue(scheduler.isBetterDeploymentPlan(deploymentPlan1, deploymentPlan2, hosts));
         assertFalse(scheduler.isBetterDeploymentPlan(deploymentPlan2, deploymentPlan1, hosts));
     }
