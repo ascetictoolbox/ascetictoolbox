@@ -1,6 +1,7 @@
 package eu.ascetic.saas.application_uploader;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -44,7 +45,11 @@ public class ApplicationUploader {
 		ClientResponse response = resource.path(APPLICATIONS_PATH)
 				.header(HttpHeaders.CONTENT_TYPE,MediaType.APPLICATION_XML).post(ClientResponse.class, ovf);
 		if (response.getStatus() == ClientResponse.Status.CREATED.getStatusCode()) {
-			return response.getEntity(Application.class).getDeployments().get(0).getId();
+			List<Deployment> deployments = response.getEntity(Application.class).getDeployments();
+			if (deployments.size()-1>=0){
+				return deployments.get(deployments.size()-1).getId();
+			}else
+				throw new ApplicationUploaderException("No deployents found");
 		}else
 			throw new ApplicationUploaderException("Error creating application. Returned code is "+ response.getStatus());
 	}
