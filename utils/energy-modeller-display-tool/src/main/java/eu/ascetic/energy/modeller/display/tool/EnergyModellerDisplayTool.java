@@ -151,7 +151,9 @@ public class EnergyModellerDisplayTool extends JFrame {
      * @throws IOException If the power meter is not connected.
      */
     public static void main(final String[] args) throws IOException {
-        modeller = new EnergyModeller();
+        if (args.length == 0) {
+            modeller = new EnergyModeller();
+        }
         new EnergyModellerDisplayTool();
 
     }

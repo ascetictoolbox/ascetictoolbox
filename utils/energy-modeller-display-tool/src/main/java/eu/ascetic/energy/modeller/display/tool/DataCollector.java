@@ -53,6 +53,7 @@ public class DataCollector implements Runnable {
     private int faultCount = 0;
     private HashMap<String, Host> knownHosts = new HashMap<>(); //TODO add a listner structure here
     private final ArrayList<DataAvailableListener> listners = new ArrayList<>();
+    private final HashMap<String, List<CurrentUsageRecord>> hostAnswer = new HashMap<>();
 
     public DataCollector(HostDataSource datasource, DatabaseConnector connector) {
         this.datasource = datasource;
@@ -102,8 +103,6 @@ public class DataCollector implements Runnable {
         return knownHosts.get(hostname);
     }
 
-    HashMap<String, List<CurrentUsageRecord>> hostAnswer = new HashMap<>();
-
     @Override
     public void run() {
         /**
@@ -115,6 +114,8 @@ public class DataCollector implements Runnable {
         for (Host host : hostList) {
             hostAnswer.put(host.getHostName(), new ArrayList<CurrentUsageRecord>());
         }
+
+        LoadFractionShareRule rule = new LoadFractionShareRule();
 
         while (running) {
             try {
@@ -129,16 +130,12 @@ public class DataCollector implements Runnable {
                     List<HostEnergyRecord> uncleanedHost = connector.getHostHistoryData(host, period);
                     hostAnswer.put(host.getHostName(), convert(uncleanedHost));
 
-                    LinkedHashMap<HostEnergyRecord, HostVmLoadFraction> hostToVmDataMap = null;
+                    LinkedHashMap<HostEnergyRecord, HostVmLoadFraction> hostToVmDataMap;
                     if (vmMeasurements != null && !vmMeasurements.isEmpty()) {
                         hostToVmDataMap = getData(vmMeasurements, uncleanedHost);
                         hostTraceData.addAll(convert(hostToVmDataMap.keySet()));
                         vmMeasurements.clear();
                         vmMeasurements.addAll(hostToVmDataMap.values());
-                    }
-
-                    if (vmMeasurements != null && hostToVmDataMap != null) {
-                        LoadFractionShareRule rule = new LoadFractionShareRule();
                         for (Map.Entry<HostEnergyRecord, HostVmLoadFraction> vmData : hostToVmDataMap.entrySet()) {
                             ArrayList<VM> vmsArr = new ArrayList<>();
                             vmsArr.addAll(vmData.getValue().getVMs());
@@ -146,6 +143,7 @@ public class DataCollector implements Runnable {
                             loadFractionData.add(vmData.getValue());
                             rule.setFractions(loadFractionData.get(0).getFraction());
                             EnergyDivision division = rule.getEnergyUsage(vmData.getKey().getHost(), vmsArr);
+                            division.setConsiderIdleEnergy(false); //TODO parameterise this!!
 
                             for (VmDeployed vm : vmData.getValue().getVMs()) {
                                 if (vm.getAllocatedTo() == null) {
@@ -182,23 +180,14 @@ public class DataCollector implements Runnable {
         }
     }
 
-    public CurrentUsageRecord getCurrentEnergyForVM(Host host, VmDeployed vm, ArrayList<VmDeployed> otherVms, CurrentUsageRecord hostAnswer) {
-        LoadFractionShareRule rule = new LoadFractionShareRule();
-        ArrayList<VmDeployed> vmsDeployedOnHost = new ArrayList<>();
-        ArrayList<VM> vmsOnHost = new ArrayList<>();
-        vmsDeployedOnHost.addAll(otherVms);
-        vmsDeployedOnHost.add(vm);
-        vmsOnHost.addAll(otherVms);
-        vmsOnHost.add(vm);
-        rule.setVmMeasurements(datasource.getVmData(vmsDeployedOnHost));
-        EnergyDivision divider = rule.getEnergyUsage(host, vmsOnHost);
-        divider.setConsiderIdleEnergy(false);
-        CurrentUsageRecord answer = new CurrentUsageRecord(vm);
-        answer.setTime(hostAnswer.getTime());
-        answer.setPower(divider.getEnergyUsage(hostAnswer.getPower(), vm));
-        return answer;
-    }
-
+    /**
+     * This compares the vm resource utilisation dataset and the host energy
+     * data and ensures that they have a 1:1 mapping
+     *
+     * @param vmData The Vms usage dataset
+     * @param hostData The host's energy usage dataset
+     * @return The mappings between each dataset elements
+     */
     public LinkedHashMap<HostEnergyRecord, HostVmLoadFraction> getData(Collection<HostVmLoadFraction> vmData, List<HostEnergyRecord> hostData) {
         LinkedHashMap<HostEnergyRecord, HostVmLoadFraction> answer = new LinkedHashMap<>();
         //Make a copy and compare times remove them each time.
@@ -225,6 +214,12 @@ public class DataCollector implements Runnable {
         return answer;
     }
 
+    /**
+     * This converts a host energy record into a current usage record dataset
+     *
+     * @param data The data to convert
+     * @return The current usage record dataset
+     */
     public ArrayList<CurrentUsageRecord> convert(Collection<HostEnergyRecord> data) {
         ArrayList<CurrentUsageRecord> answer = new ArrayList<>();
         for (HostEnergyRecord current : data) {
@@ -286,21 +281,6 @@ public class DataCollector implements Runnable {
             if (!knownHosts.containsKey(host.getHostName())) {
                 answer.add(host);
             }
-        }
-        return answer;
-    }
-
-    /**
-     * The hashmap gives a faster way to find a specific vm. This converts from
-     * a raw list of vms into the indexed structure.
-     *
-     * @param vmList The vm list
-     * @return The hashed vm list
-     */
-    private HashMap<String, VmDeployed> toHashMapVm(List<VmDeployed> vmList) {
-        HashMap<String, VmDeployed> answer = new HashMap<>();
-        for (VmDeployed vm : vmList) {
-            answer.put(vm.getName(), vm);
         }
         return answer;
     }
