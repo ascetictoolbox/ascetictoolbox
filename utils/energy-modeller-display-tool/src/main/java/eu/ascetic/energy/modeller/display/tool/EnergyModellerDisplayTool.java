@@ -20,8 +20,6 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DefaultDatab
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,12 +27,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import org.jfree.layout.CenterLayout;
 
 /**
  * This displays energy usage of VMs and their hosts
@@ -127,24 +123,8 @@ public class EnergyModellerDisplayTool extends JFrame {
         }
         setPreferredSize(new Dimension(1024, 768));
 
-        JPanel buttonPane = new JPanel();
-
-        JButton discoverButton = new JButton("Discover VMs");
-
-        discoverButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                collector.setDiscoverVms(true);
-                data.clear();
-            }
-        });
-
-        buttonPane.add(discoverButton);
-        this.tabbedPane.add(buttonPane, "Refresh VMs Shown");
-
         this.pack();
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-//        this.setLocationRelativeTo(null);
 
         setVisible(true);
     }

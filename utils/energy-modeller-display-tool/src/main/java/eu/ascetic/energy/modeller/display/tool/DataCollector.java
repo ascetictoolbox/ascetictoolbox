@@ -52,9 +52,7 @@ public class DataCollector implements Runnable {
     private boolean running = true;
     private int faultCount = 0;
     private HashMap<String, Host> knownHosts = new HashMap<>(); //TODO add a listner structure here
-    private HashMap<String, VmDeployed> knownVms = new HashMap<>();
     private final ArrayList<DataAvailableListener> listners = new ArrayList<>();
-    private boolean discoverVms = false;
 
     public DataCollector(HostDataSource datasource, DatabaseConnector connector) {
         this.datasource = datasource;
@@ -104,26 +102,6 @@ public class DataCollector implements Runnable {
         return knownHosts.get(hostname);
     }
 
-    /**
-     * This gets a list of the VMs that are currently on a host machine.
-     *
-     * @param host The host machine to get the VM list for
-     * @return The list of VMs on the specified host
-     */
-    public ArrayList<VmDeployed> getVMsOnHost(Host host) {
-        ArrayList<VmDeployed> answer = new ArrayList<>();
-        for (VmDeployed vm : knownVms.values()) {
-            if (host.equals(vm.getAllocatedTo())) {
-                answer.add(vm);
-            }
-        }
-        return answer;
-    }
-
-    public void setDiscoverVms(boolean discoverVms) {
-        this.discoverVms = discoverVms;
-    }
-
     HashMap<String, List<CurrentUsageRecord>> hostAnswer = new HashMap<>();
 
     @Override
@@ -140,46 +118,26 @@ public class DataCollector implements Runnable {
 
         while (running) {
             try {
-                if (discoverVms) {
-                    refreshKnownVMList(datasource.getVmList());
-                    discoverVms = false;
-                }
                 for (Host host : hostList) {
                     GregorianCalendar cal = new GregorianCalendar();
                     long durationSec = TimeUnit.SECONDS.toMillis(60 * 10);
                     cal.setTimeInMillis(cal.getTimeInMillis() - durationSec);
                     TimePeriod period = new TimePeriod(cal, durationSec);
                     List<CurrentUsageRecord> hostTraceData = hostAnswer.get(host.getHostName());
-                    ArrayList<VmDeployed> vms = getVMsOnHost(host);
-                    Collection<HostVmLoadFraction> vmMeasurements = null;
-                    if (!vms.isEmpty()) {
-                        vmMeasurements = connector.getHostVmHistoryLoadData(host, period);
-                    }
-//                    hostTraceData.add(datasource.getCurrentEnergyUsage(host));
+                    Collection<HostVmLoadFraction> vmMeasurements = connector.getHostVmHistoryLoadData(host, period);
                     hostTraceData.clear();
                     List<HostEnergyRecord> uncleanedHost = connector.getHostHistoryData(host, period);
+                    hostAnswer.put(host.getHostName(), convert(uncleanedHost));
+
                     LinkedHashMap<HostEnergyRecord, HostVmLoadFraction> hostToVmDataMap = null;
-                    if (!vms.isEmpty() && vmMeasurements != null) {
+                    if (vmMeasurements != null && !vmMeasurements.isEmpty()) {
                         hostToVmDataMap = getData(vmMeasurements, uncleanedHost);
                         hostTraceData.addAll(convert(hostToVmDataMap.keySet()));
                         vmMeasurements.clear();
                         vmMeasurements.addAll(hostToVmDataMap.values());
-                    } else {
-                        hostTraceData.addAll(convert(uncleanedHost));
                     }
 
-                    hostAnswer.put(host.getHostName(), hostTraceData);
-
-                    if (!vms.isEmpty() && vmMeasurements != null && hostToVmDataMap != null) {
-//                        if (vmMeasurements.size() != hostTraceData.size()) {
-//                            System.out.println("Size mismatch");
-//                            System.out.println("VM Size:" + vmMeasurements.size());
-//                            System.out.println("Host Size:" + hostTraceData.size());
-//                            System.out.println("Host:" + host.getHostName());
-//                            //System.exit(0);
-//                        } else {
-//                            System.out.println("Things are running ok");
-//                        }
+                    if (vmMeasurements != null && hostToVmDataMap != null) {
                         LoadFractionShareRule rule = new LoadFractionShareRule();
                         for (Map.Entry<HostEnergyRecord, HostVmLoadFraction> vmData : hostToVmDataMap.entrySet()) {
                             ArrayList<VM> vmsArr = new ArrayList<>();
@@ -189,7 +147,10 @@ public class DataCollector implements Runnable {
                             rule.setFractions(loadFractionData.get(0).getFraction());
                             EnergyDivision division = rule.getEnergyUsage(vmData.getKey().getHost(), vmsArr);
 
-                            for (VmDeployed vm : vmData.getValue().getVMs()) { //vmData.getValue().getVMs() or vms??
+                            for (VmDeployed vm : vmData.getValue().getVMs()) {
+                                if (vm.getAllocatedTo() == null) {
+                                    vm.setAllocatedTo(getVMsHost(vm));
+                                }
                                 List<CurrentUsageRecord> vmAnswer = hostAnswer.get(vm.getName());
                                 if (vmAnswer == null) {
                                     vmAnswer = new ArrayList<>();
@@ -215,6 +176,7 @@ public class DataCollector implements Runnable {
                 faultCount = faultCount + 1;
                 if (faultCount > 25) {
                     stop(); //Exit if faults keep occuring in a sequence.
+                    System.exit(-1);
                 }
             }
         }
@@ -339,42 +301,6 @@ public class DataCollector implements Runnable {
         HashMap<String, VmDeployed> answer = new HashMap<>();
         for (VmDeployed vm : vmList) {
             answer.put(vm.getName(), vm);
-        }
-        return answer;
-    }
-
-    /**
-     * This sets and refreshes the knownVMs list in the data gatherer.
-     *
-     * @param vmList The list of VMs gained from the data source.
-     */
-    private void refreshKnownVMList(List<VmDeployed> vmList) {
-        //Perform a refresh to make sure the host has been written to backing store
-        if (knownVms == null) {
-            knownVms = toHashMapVm(vmList);
-            connector.setVms(vmList);
-        } else {
-            List<VmDeployed> newVms = discoverNewVMs(vmList);
-            connector.setVms(newVms);
-            for (VmDeployed vm : newVms) {
-                vm.setAllocatedTo(getVMsHost(vm));
-                knownVms.put(vm.getName(), vm);
-            }
-        }
-    }
-
-    /**
-     * This compares a list of vms that has been found to the known list of vms.
-     *
-     * @param newList The new list of vms.
-     * @return The list of vms that were otherwise unknown to the data gatherer.
-     */
-    private List<VmDeployed> discoverNewVMs(List<VmDeployed> newList) {
-        List<VmDeployed> answer = new ArrayList<>();
-        for (VmDeployed vm : newList) {
-            if (!knownVms.containsKey(vm.getName())) {
-                answer.add(vm);
-            }
         }
         return answer;
     }

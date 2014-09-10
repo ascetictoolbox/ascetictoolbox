@@ -112,60 +112,14 @@ public class CurrentLineChart extends LineChartPanelSupport<HashMap<String, List
                         ((TimeSeries) this.getSeries().get(i)).addOrUpdate(new Second(current.getTime().getTime()), current.getPower());
                     }
                 }
-//                DoubleTimePair newVal = getLastValue(this.getSeries().get(i).getKey().toString(), getData());
-//                if (newVal != null) {
-//                    ((TimeSeries) this.getSeries().get(i)).addOrUpdate(new Second(newVal.getDate()), newVal.getPower());
-//                }
             }
-
-//            ((TimeSeries) this.getSeries().get(0)).addOrUpdate(new Second(getData().get(getData().size() - 1).getTime().getTime()), getData().get(getData().size() - 1).getPower());
-//            ((TimeSeries) this.getSeries().get(2)).addOrUpdate(new Second(getData().get(getData().size() - 1).getTime().getTime()), getData().get(getData().size() - 1).getPower());
-//            ((TimeSeries) this.getSeries().get(3)).addOrUpdate(new Second(getData().get(getData().size() - 1).getTime().getTime()), getData().get(getData().size() - 1).getPower());
         }
     }
 
-//
-//    private DoubleTimePair getLastValue(String host, List<CurrentUsageRecord> data) {
-//        for (int i = data.size() - 1; i >= 0; i--) {
-//            CurrentUsageRecord current = data.get(i);
-//            if (((Host) current.getEnergyUser().toArray()[0]).getHostName().equals(host)) {
-//                return new DoubleTimePair(current.getTime().getTime(), current.getPower());
-//            }
-//        }
-//        return null;
-//    }
-//    private DoubleTimePair getLastValue(String host, HashMap<String, List<CurrentUsageRecord>> data) {
-//        List<CurrentUsageRecord> list = data.get(host);
-//        if (list.isEmpty()) {
-//            return null;
-//        }
-//        CurrentUsageRecord current = list.get(list.size() - 1);
-//        return new DoubleTimePair(current.getTime().getTime(), current.getPower());
-//    }
-//   
-//    private class DoubleTimePair {
-//
-//        private Date date;
-//        private double power;
-//
-//        public DoubleTimePair(Date date, double power) {
-//            this.date = date;
-//            this.power = power;
-//        }
-//
-//        public double getPower() {
-//            return power;
-//        }
-//
-//        public Date getDate() {
-//            return date;
-//        }
-//
-//    }
     @Override
     public String toString() {
         if (host == null) {
-            return this.getClass().getSimpleName();
+            return "All Host Data";
         }
         return host;
     }
