@@ -20,7 +20,6 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmener
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.LoadFractionShareRule;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.EnergyUsageSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
@@ -31,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -153,9 +151,7 @@ public class DataCollector implements Runnable {
                                 if (vmAnswer == null) {
                                     vmAnswer = new ArrayList<>();
                                 }
-                                HashSet<EnergyUsageSource> source = new HashSet<>();
-                                source.add(vm);
-                                CurrentUsageRecord vmsUsage = new CurrentUsageRecord(source, division.getEnergyUsage(vmData.getKey().getPower(), vm), -1, -1);
+                                CurrentUsageRecord vmsUsage = new CurrentUsageRecord(vm, division.getEnergyUsage(vmData.getKey().getPower(), vm), -1, -1);
                                 vmAnswer.add(vmsUsage);
                                 hostAnswer.put(vm.getName(), vmAnswer);
                             }
