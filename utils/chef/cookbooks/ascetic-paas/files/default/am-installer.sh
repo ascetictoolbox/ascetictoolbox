@@ -74,7 +74,7 @@ chmod 755 /etc/ascetic/paas/application-manager/
 chmod 644 /etc/ascetic/paas/application-manager/*
 
 tmp=$(mktemp)
-curl -k 'https://ascetic-jenkins.cit.tu-berlin.de/job/ASCETiC%20Reference%20Architecture/ws/trunk/paas/application-manager/target/application-manager-0.1-SNAPSHOT.war' > "$tmp"
+curl -k 'https://ascetic-jenkins.cit.tu-berlin.de/job/ASCETiC%20Reference%20Architecture/ws/trunk/paas/application-manager/target/application-manager-0.2-SNAPSHOT.war' > "$tmp"
 chmod 644 "$tmp"
 sudo mv "$tmp" /var/lib/tomcat7/webapps/application-manager.war || rm "$tmp"
 

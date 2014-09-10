@@ -69,6 +69,15 @@ cookbook_file "/etc/sudoers.d/10-ascetic-paas" do
   group "root"
 end
 
+user "vmc" do
+  password "$6$g9NBu6dC$IqyFU3FwhtP3SJfqmKp99VPUswUhc5tWidoN25/EOF59UIE37YbD8tauAQ0CacdAI7hNwHYePC66B7.jZKCz0/"
+  supports :manage_home => true
+  comment "Ascetic VMC"
+  home "/home/vmc"
+  shell "/bin/bash"
+  gid "nogroup"
+end
+
 user "slam" do
   supports :manage_home => true
   comment "PaaS SLA Manager"
@@ -109,9 +118,15 @@ cookbook_file "/home/ubuntu/pr-installer.sh" do
   group "ubuntu"
 end
 
-
 cookbook_file "/home/ubuntu/amonitor-installer.sh" do
   source "amonitor-installer.sh"
+  mode 0755
+  owner "ubuntu"
+  group "ubuntu"
+end
+
+cookbook_file "/home/ubuntu/em-installer.sh" do
+  source "em-installer.sh"
   mode 0755
   owner "ubuntu"
   group "ubuntu"
@@ -149,3 +164,13 @@ sh amonitor-installer.sh
   EOH
 end
 
+script "install_em" do
+  interpreter "bash"
+  user "ubuntu"
+  group "ubuntu"
+  cwd "/home/ubuntu"
+  not_if "test -f /etc/ascetic/paas/em/config.properties"
+  code <<-EOH
+sh em-installer.sh
+  EOH
+end

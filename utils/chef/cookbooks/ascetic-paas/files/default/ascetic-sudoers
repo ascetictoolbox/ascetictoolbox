@@ -1,1 +1,2 @@
+vmc	ALL = (ALL) NOPASSWD: /usr/bin/qemu-nbd
 slam	ALL = (ALL) NOPASSWD: /usr/bin/mysql
