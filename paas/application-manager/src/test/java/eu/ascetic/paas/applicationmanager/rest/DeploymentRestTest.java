@@ -1,7 +1,10 @@
 package eu.ascetic.paas.applicationmanager.rest;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -15,6 +18,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -24,6 +28,8 @@ import javax.xml.bind.Unmarshaller;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
 
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.EnergyModellerSimple;
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
@@ -33,6 +39,7 @@ import eu.ascetic.paas.applicationmanager.model.Collection;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
+import eu.ascetic.paas.applicationmanager.model.VM;
 
 /**
  * Collection of Unit test that verify the correct work of the REST service for Deployment entities
@@ -236,16 +243,52 @@ public class DeploymentRestTest {
 	} 
 	
 	@Test
-	@SuppressWarnings(value = { "static-access" }) 
+	@SuppressWarnings(value = { "static-access", "unchecked" }) 
 	public void getEnergyConsumptionTest() throws JAXBException {
+		Deployment deployment = new Deployment();
+		deployment.setId(1);
+		
+		VM vm1 = new VM();
+		vm1.setProviderVmId("X1");
+		deployment.addVM(vm1);
+		
+		VM vm2 = new VM();
+		vm2.setProviderVmId("X2");
+		deployment.addVM(vm2);
+		
 		EnergyModellerSimple energyModeller = mock(EnergyModellerSimple.class);
 		DeploymentRest deploymentRest = new DeploymentRest();
 		
 		deploymentRest.energyModeller = energyModeller;
 		
-		when(energyModeller.energyApplicationConsumption(null, "111", "333")).thenReturn(22.0);
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		deploymentRest.deploymentDAO = deploymentDAO;
+		when(deploymentDAO.getById(1)).thenReturn(deployment);
+		
+		when(energyModeller.energyApplicationConsumption(isNull(String.class), eq("111"), argThat(new BaseMatcher<List<String>>() {
+ 
+																				@Override
+																				public boolean matches(Object arg0) {
+																					
+																					List<String> ids = (List<String>) arg0;
+																					
+																					boolean isTheList = true;
+																					
+																					if(!(ids.size() == 2)) isTheList = false; 
+																					
+																					if(!(ids.get(0).equals("X1"))) isTheList = false;
+																					
+																					if(!(ids.get(1).equals("X2"))) isTheList = false;
 
-		Response response = deploymentRest.getEnergyConsumption("111", "333");
+																					return isTheList;
+																				}
+ 
+																				@Override
+																				public void describeTo(Description arg0) {}
+        																	
+																			}), isNull(String.class))).thenReturn(22.0);
+
+		Response response = deploymentRest.getEnergyConsumption("111", "1");
 		assertEquals(200, response.getStatus());
 		
 		String xml = (String) response.getEntity();
@@ -278,6 +321,27 @@ public class DeploymentRestTest {
 		assertEquals("Aggregated energy estimation for this aplication deployment and specific event", energyMeasurement.getDescription());
 	}
 	
+	@Test
+	public void getVmsProviderIdsTest() {
+		Deployment deployment = new Deployment();
+		
+		VM vm1 = new VM();
+		vm1.setProviderVmId("X1");
+		deployment.addVM(vm1);
+		
+		VM vm2 = new VM();
+		vm2.setProviderVmId("X2");
+		deployment.addVM(vm2);
+		
+		DeploymentRest rest = new DeploymentRest();
+		
+		List<String> ids = rest.getVmsProviderIds(deployment);
+		
+		assertEquals(2, ids.size());
+		assertEquals("X1", ids.get(0));
+		assertEquals("X2", ids.get(1));
+	}
+	
 	/**
 	 * It just reads a file form the disk... 
 	 * @param path
@@ -290,3 +354,4 @@ public class DeploymentRestTest {
 		return new String(encoded, encoding);
 	}
 }
+

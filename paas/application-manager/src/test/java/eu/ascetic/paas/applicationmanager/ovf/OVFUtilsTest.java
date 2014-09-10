@@ -67,6 +67,7 @@ public class OVFUtilsTest {
 //					ovfDocument));
 //			
 //			System.out.println("IMAGES: " + imgToUpload.getName());
+//			System.out.println("OVF-ID: " + virtSystem.getId());
 //		}
 //	}
 //	

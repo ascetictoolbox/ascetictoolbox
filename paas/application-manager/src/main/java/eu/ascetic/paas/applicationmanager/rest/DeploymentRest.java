@@ -1,5 +1,6 @@
 package eu.ascetic.paas.applicationmanager.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -213,8 +214,11 @@ public class DeploymentRest extends AbstractRest {
 		// Make sure we have the right configuration
 		energyModeller = getEnergyModeller();
 		
+		Deployment deployment = deploymentDAO.getById(Integer.parseInt(deploymentId));
+		List<String> ids = getVmsProviderIds(deployment);
+		
 		logger.debug("Connecting to Energy Modeller");
-		double energyConsumed = energyModeller.energyApplicationConsumption(null, applicationName, deploymentId);
+		double energyConsumed = energyModeller.energyApplicationConsumption(null, applicationName, ids, null);
 		
 		EnergyMeasurement energyMeasurement = new EnergyMeasurement();
 		energyMeasurement.setValue(energyConsumed);
@@ -223,6 +227,16 @@ public class DeploymentRest extends AbstractRest {
 		String xml = XMLBuilder.getEnergyMeasurementForDeploymentXMLInfo(energyMeasurement, applicationName, deploymentId);
 				
 		return buildResponse(Status.OK, xml);
+	}
+	
+	protected List<String> getVmsProviderIds(Deployment deployment) {
+		List<String> ids = new ArrayList<String>();
+		
+		for(VM vm : deployment.getVms()) {
+			ids.add(vm.getProviderVmId());
+		}
+		
+		return ids;
 	}
 	
 	@GET

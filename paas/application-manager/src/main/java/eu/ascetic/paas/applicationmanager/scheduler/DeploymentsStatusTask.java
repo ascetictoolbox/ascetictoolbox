@@ -253,7 +253,7 @@ public class DeploymentsStatusTask {
 			if (vmsDeployedIds != null && !vmsDeployedIds.isEmpty()){
 				if (vmsDeployedIds.size() == vmsToDeploy.size()){
 					//all VMs deployed successfully, update deployment with new info from VMs
-					boolean updated = VmManagerUtils.updateVms(vmManagerClient, deployment, vmsDeployedIds);
+					boolean updated = VmManagerUtils.updateVms(vmManagerClient, deployment, vmsDeployedIds, vmsToDeploy);
 					if (updated){
 						deployment.setStatus(Dictionary.APPLICATION_STATUS_DEPLOYED);							
 						

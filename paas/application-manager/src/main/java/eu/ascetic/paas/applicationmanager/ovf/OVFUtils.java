@@ -86,6 +86,8 @@ public class OVFUtils {
 			while (index < vsc.getVirtualSystemArray().length){
 				//Retrieve data from every VM
 				virtSystem = vsc.getVirtualSystemAtIndex(index);
+				String ovfID = virtSystem.getId();
+				
 				int asceticUpperBound = virtSystem.getProductSectionAtIndex(0).getUpperBound();
 				
 				String vmName = virtSystem.getName();
@@ -105,7 +107,8 @@ public class OVFUtils {
 						//ISO names in /DFS/... ends with _1
 						String suffix = "_1";
 						Vm virtMachine = new Vm(vmName + suffix, imgId, cpus, ramMb, diskSize, isoPath + suffix , appId);
-						virtMachine.setOvfId(virtSystem.getId());
+						virtMachine.setOvfId(ovfID);
+						logger.debug("ADDING NEW VM TO THE LIST: ovf-id: " + virtMachine.getOvfId() + " name: " + virtMachine.getName());
 						vmList.add(virtMachine);	
 					}
 					else if (asceticUpperBound <= 0){

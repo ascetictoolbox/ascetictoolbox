@@ -18,6 +18,8 @@ public class Vm {
     private int diskGb;
     private String initScript;
     private String applicationId;
+    
+    public Vm() {}
 
     /**
      * Class constructor.

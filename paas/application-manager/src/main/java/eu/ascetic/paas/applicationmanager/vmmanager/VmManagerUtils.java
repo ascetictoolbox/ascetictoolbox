@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientHC;
+import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.Vm;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.VmDeployed;
 
 public class VmManagerUtils {
@@ -22,7 +23,7 @@ public class VmManagerUtils {
 	 * @param listNewVmIds the list new vm ids
 	 * @return true, if successful
 	 */
-	public static boolean updateVms(VmManagerClientHC vmClient, Deployment deployment, List<String> listNewVmIds){
+	public static boolean updateVms(VmManagerClientHC vmClient, Deployment deployment, List<String> listNewVmIds, List<Vm> vmsToDeploy){
 		boolean updated = true;
 		int index = 0;
 		VmDeployed vmDeployed = null;
@@ -35,7 +36,9 @@ public class VmManagerUtils {
 				vmDeployed = vmClient.getVM(listNewVmIds.get(index));
 				vm.setIp(vmDeployed.getIpAddress());
 				vm.setStatus(vmDeployed.getState());
-				vm.setOvfId(vmDeployed.getOvfId());
+				String ovfId = getOvfID(vmDeployed.getName(), vmsToDeploy);
+				vm.setOvfId(ovfId);
+				logger.debug("Adding the following VM to the deployment: OVF-ID: " + vm.getOvfId() + " IP: " + vm.getIp() );
 				//add the current VM to the deployment
 				deployment.addVM(vm);					
 				index++;
@@ -46,5 +49,16 @@ public class VmManagerUtils {
 			updated = false;
 		}
 		return updated;
+	}
+	
+	protected static String getOvfID(String name, List<Vm> vmsToDeploy) {
+		
+		for(Vm vm : vmsToDeploy) {
+			if(vm.getName().equals(name)) {
+				return vm.getOvfId();
+			}
+		}
+		
+		return null;
 	}
 }
