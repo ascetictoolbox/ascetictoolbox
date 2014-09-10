@@ -26,7 +26,7 @@ import java.util.HashSet;
  */
 public abstract class EnergyUsageRecord {
 
-    private HashSet<EnergyUsageSource> energyUser = new HashSet<>();    
+    private final HashSet<EnergyUsageSource> energyUser = new HashSet<>();    
 
     /**
      * This gets the energy users for the energy usage record.
