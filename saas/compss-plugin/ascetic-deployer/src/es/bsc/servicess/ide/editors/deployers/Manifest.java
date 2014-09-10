@@ -47,6 +47,7 @@ import es.bsc.servicess.ide.model.ServiceCoreElement;
 import es.bsc.servicess.ide.model.ServiceElement;
 import eu.ascetic.utils.ovf.api.File;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
+import eu.ascetic.utils.ovf.api.enums.DiskFormatType;
 import eu.ascetic.utils.ovf.api.enums.OperatingSystemType;
 import eu.ascetic.utils.ovf.api.enums.ProductPropertyType;
 import eu.ascetic.utils.ovf.api.enums.ResourceType;
@@ -54,6 +55,7 @@ import eu.ascetic.utils.ovf.api.Disk;
 import eu.ascetic.utils.ovf.api.DiskSection;
 import eu.ascetic.utils.ovf.api.Item;
 import eu.ascetic.utils.ovf.api.OperatingSystem;
+import eu.ascetic.utils.ovf.api.ProductProperty;
 import eu.ascetic.utils.ovf.api.ProductSection;
 import eu.ascetic.utils.ovf.api.References;
 import eu.ascetic.utils.ovf.api.VirtualHardwareSection;
@@ -73,6 +75,7 @@ public class Manifest {
 	
 	private static final String DISK_SUFFIX = "-disk";
 	private static final String IMAGE_SUFFIX = "-img";
+	private static final String ASCETIC_APPMAN_PROP = "asceticAppManagerURL";
 	private IJavaProject project;
 	private OvfDefinition ovf;
 	
@@ -280,7 +283,11 @@ public class Manifest {
 		
 		//Set Disk
 		Long ds = getDiskSize(maxConstraints, defResources);
-		if (ds>0){
+		
+		if (ds>0){ 
+			if (ds<6000){
+				ds = new Long(6000);
+			}
 			setDiskDescription(ps, hardwareSection, component.getId(), ds);
 		}
 		
@@ -936,6 +943,7 @@ public class Manifest {
 		Disk d = Disk.Factory.newInstance();
 		d.setDiskId(id+ DISK_SUFFIX);
 		d.setFileRef(id +IMAGE_SUFFIX);
+		d.setFormat(DiskFormatType.QCOW2);
 		ds.addDisk(d);
 	}
 
@@ -998,6 +1006,31 @@ public class Manifest {
 	*/
 
 	public void setVMICMode(String mode) {
+		ProductSection ps = getOrCreateGlobalProductSection();
+		ps.setVmicMode(mode);
+	}
+
+
+	public void setApplicationSecurity(String privateKey, String publicKey) {
+		ProductSection ps = getOrCreateGlobalProductSection();
+		ps.setPrivateSshKey(privateKey);
+		ps.setPublicSshKey(publicKey);
+	}
+	
+	public void removeApplicationSecurity(){
+		ProductSection ps = getOrCreateGlobalProductSection();
+		if (ps.getPropertyByKey("asceticSecurityKey")!=null){
+			ps.removePropertyByKey("asceticSecurityKey");
+		}
+		if (ps.getPropertyByKey("asceticSshPrivateKey")!=null){
+			ps.removePropertyByKey("asceticSshPrivateKey");
+		}
+		if (ps.getPropertyByKey("asceticSshPublicKey")!=null){
+			ps.removePropertyByKey("asceticSshPublicKey");
+		}
+	}
+	
+	private ProductSection getOrCreateGlobalProductSection(){
 		VirtualSystemCollection vsc = ovf.getVirtualSystemCollection();
 		if (vsc == null){
 			setVirtualSystemCollection();
@@ -1007,8 +1040,17 @@ public class Manifest {
 		if (vsc.getProductSectionArray() == null || vsc.getProductSectionArray().length<1){
 			setAsceticGlobalProductSection(vsc);
 		}
-		ps = vsc.getProductSectionAtIndex(0);
-		ps.setVmicMode(mode);
+		return vsc.getProductSectionAtIndex(0);
+		
+	}
+	
+	public void setApplicationMangerEPR(String appManURI){
+		ProductSection ps = getOrCreateGlobalProductSection();
+		ProductProperty pp = ps.getPropertyByKey(ASCETIC_APPMAN_PROP);
+		if (pp != null){
+			pp.setValue(appManURI);
+		}else
+			ps.addNewProperty(ASCETIC_APPMAN_PROP, ProductPropertyType.STRING, appManURI);
 	}
 	
 	

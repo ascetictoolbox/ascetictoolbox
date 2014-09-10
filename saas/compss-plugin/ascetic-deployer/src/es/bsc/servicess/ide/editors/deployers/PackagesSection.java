@@ -736,6 +736,7 @@ public class PackagesSection extends ServiceEditorSection{
 			}else
 				mainClass = "";
 			prMetadata.setMainClass(mainClass);
+			prMetadata.toFile(editor.getMetadataFile().getRawLocation().toFile());
 			dialog.run(true, true, new IRunnableWithProgress() {
 				public void run(IProgressMonitor monitor)throws InvocationTargetException {
 					try {

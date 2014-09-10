@@ -45,6 +45,10 @@ public class AsceticProperties {
 
 	private static final String ICS_RSH_USERNAME = "ics.rsh.user.name.path";
 
+
+	private static final String APP_SSH_PUBKEY = "app.ssh.public.key.path";
+	private static final String APP_SSH_PRIVKEY = "app.ssh.private.key.path";
+
 	private PropertiesConfiguration config;
 
 	public AsceticProperties(String pathToConfigFile)
@@ -109,53 +113,70 @@ public class AsceticProperties {
 		
 	}
 
-	public void setRepoPath(String repoPath) {
+	public void setVMICRepoPath(String repoPath) {
 		config.setProperty(ICS_REPO_PATH, repoPath);
 		
 	}
 	
-	public String getRepoPath() {
+	public String getVMICRepoPath(){
 		return config.getString(ICS_REPO_PATH, "");
 		
 	}
 	
-	public void setRsyncPath(String rsyncPath) {
+	public void setVMICRsyncPath(String rsyncPath) {
 		config.setProperty(ICS_RSYNC_PATH, rsyncPath);
 		
 	}
 	
-	public String getRsyncPath() {
+	public String getVMICRsyncPath() {
 		return config.getString(ICS_RSYNC_PATH, "/usr/bin/rsync");
 		
 	}
 	
-	public void setRshPath(String rsyncPath) {
+	public void setVMICRshPath(String rsyncPath) {
 		config.setProperty(ICS_RSH_PATH, rsyncPath);
 		
 	}
 	
-	public String getRshPath() {
+	public String getVMICRshPath() {
 		return config.getString(ICS_RSH_PATH, "/usr/bin/ssh");
 		
 	}
 	
-	public void setRshUserKeyPath(String rsyncPath) {
+	public void setVMICRshUserKeyPath(String rsyncPath) {
 		config.setProperty(ICS_RSH_USER_KEY_PATH, rsyncPath);
 		
 	}
 	
-	public String getRshUserKeyPath() {
+	public String getVMICRshUserKeyPath() {
 		return config.getString(ICS_RSH_USER_KEY_PATH, System.getProperty("user.home")+"/.ssh/id_dsa");
 		
 	}
 	
-	public void setRshUsername(String rsyncPath) {
+	public void setVMICRshUsername(String rsyncPath) {
 		config.setProperty(ICS_RSH_USERNAME, rsyncPath);
 		
 	}
 	
-	public String getRshUsername() {
+	public String getVMICRshUsername() {
 		return config.getString(ICS_RSH_USERNAME, System.getProperty("user.name"));
+		
+	}
+
+	public String getApplicationSSHPublicKeyPath() {
+		return config.getString(APP_SSH_PUBKEY, "");
+	}
+	
+	public String getApplicationSSHPrivateKeyPath() {
+		return config.getString(APP_SSH_PRIVKEY, "");
+	}
+
+	public void setApplicationSSHPublicKeyPath(String path) {
+		config.setProperty(APP_SSH_PUBKEY, path);
+	}
+	
+	public void setApplicationSSHPrivateKeyPath(String path) {
+		config.setProperty(APP_SSH_PRIVKEY, path);
 		
 	}
 }

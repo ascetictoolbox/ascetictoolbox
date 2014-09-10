@@ -65,11 +65,11 @@ import eu.ascetic.vmic.api.datamodel.ProgressDataImage;
 public class ImageCreation {
 
 	private static Logger log = Logger.getLogger(ImageCreation.class);
-	private final static String IMAGE_DEPLOYMENT_FOLDER = "/ascetic_service/";
+	public final static String IMAGE_DEPLOYMENT_FOLDER = "/ascetic_service/";
 	private final static String MOUNT_POINT_VAR = "${MOUNT_POINT}";
 	private final static String WEBAPP_FOLDER_VAR = "${IMAGE_WEBAPP_FOLDER}";
 	private final static String CONTEXT_FOLDER = "/mnt/context";
-	private static final String ASCETIC_USER = "root";
+	public static final String ASCETIC_USER = "root";
 	private static final String IMAGE_GAT_LOCATION = "/GAT";
 	private static final long CREATION_PULL_INTERVAL = 30000;
 	//private static final String SHARED_FOLDER = null;

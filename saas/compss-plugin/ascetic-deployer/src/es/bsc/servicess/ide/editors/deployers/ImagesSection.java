@@ -56,7 +56,7 @@ public class ImagesSection extends ServiceEditorSection {
 	private Text usernameText;
 	private Text rshPathText;
 	
-	private static Logger log = Logger.getLogger(PackagesSection.class);
+	private static Logger log = Logger.getLogger(ImagesSection.class);
 	
 	/*private static final String DEFAULT_IMAGE_CREATION_MODE = "Default Mode";
 	private static final String BROKER_IMAGE_CREATION_MODE = "Broker Optimization Mode";
@@ -127,7 +127,7 @@ public class ImagesSection extends ServiceEditorSection {
 		userKeyPathText.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent arg0) {
-				deployer.getProperties().setRshUserKeyPath(userKeyPathText.getText().trim());
+				deployer.getProperties().setVMICRshUserKeyPath(userKeyPathText.getText().trim());
 				try {
 					deployer.getProperties().save();
 				} catch (ConfigurationException e) {
@@ -151,7 +151,7 @@ public class ImagesSection extends ServiceEditorSection {
 		usernameText.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent arg0) {
-				deployer.getProperties().setRshUsername(usernameText.getText().trim());
+				deployer.getProperties().setVMICRshUsername(usernameText.getText().trim());
 				try {
 					deployer.getProperties().save();
 				} catch (ConfigurationException e) {
@@ -176,7 +176,7 @@ public class ImagesSection extends ServiceEditorSection {
 		rshPathText.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent arg0) {
-				deployer.getProperties().setRshPath(rshPathText.getText().trim());
+				deployer.getProperties().setVMICRshPath(rshPathText.getText().trim());
 				try {
 					deployer.getProperties().save();
 				} catch (ConfigurationException e) {
@@ -202,7 +202,7 @@ public class ImagesSection extends ServiceEditorSection {
 		rsyncPathText.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent arg0) {
-				deployer.getProperties().setRsyncPath(rsyncPathText.getText().trim());
+				deployer.getProperties().setVMICRsyncPath(rsyncPathText.getText().trim());
 				try {
 					deployer.getProperties().save();
 				} catch (ConfigurationException e) {
@@ -227,7 +227,7 @@ public class ImagesSection extends ServiceEditorSection {
 		repoPathText.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent arg0) {
-				deployer.getProperties().setRepoPath(repoPathText.getText().trim());
+				deployer.getProperties().setVMICRepoPath(repoPathText.getText().trim());
 				try {
 					deployer.getProperties().save();
 				} catch (ConfigurationException e) {
@@ -411,13 +411,13 @@ public class ImagesSection extends ServiceEditorSection {
 		
 	}
 	
-	public void init(AsceticProperties prop) {
-		icsText.setText(prop.getICSLocation());
-		rsyncPathText.setText(prop.getRsyncPath());
-		repoPathText.setText(prop.getRepoPath());
-		rshPathText.setText(prop.getRshPath());
-		usernameText.setText(prop.getRshUsername());
-		userKeyPathText.setText(prop.getRshUserKeyPath());
+	public void init() {
+		icsText.setText(deployer.getProperties().getICSLocation());
+		rsyncPathText.setText(deployer.getProperties().getVMICRsyncPath());
+		repoPathText.setText(deployer.getProperties().getVMICRepoPath());
+		rshPathText.setText(deployer.getProperties().getVMICRshPath());
+		usernameText.setText(deployer.getProperties().getVMICRshUsername());
+		userKeyPathText.setText(deployer.getProperties().getVMICRshUserKeyPath());
 	}
 
 }

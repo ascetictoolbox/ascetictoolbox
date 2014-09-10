@@ -71,6 +71,7 @@ import es.bsc.servicess.ide.views.DeployedApplicationSection;
 import es.bsc.servicess.ide.views.DeploymentChecker;
 import es.bsc.servicess.ide.views.ServiceDataComposite;
 import es.bsc.servicess.ide.views.ServiceManagerView;
+import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.saas.application_uploader.ApplicationUploader;
 
 
@@ -91,10 +92,9 @@ public class AsceticDeployer extends Deployer {
 	private Manifest manifest;
 	//*/
 		
-	private Section DS_section;
+	/*private Section DS_section;
 	private Text serverText;
-	private Composite options;
-		
+	private Composite options;*/	
 	private static Logger log = Logger.getLogger(AsceticDeployer.class);
 
 	
@@ -105,6 +105,10 @@ public class AsceticDeployer extends Deployer {
 	private static final String CREATE_IMAGES_DEF_TITLE = "Image creation";;
 	private static final String CREATE_IMAGES_DEF_QUESTION = " project has not images created. Do you want to create it automatically?";
 	
+	public static final String BUNDLE_NAME = "ascetic.deployer.plugin";
+	public static final String JSCH_JAR_NAME = "jsch-0.1.42.jar";
+	
+	
 	private File propFile;
 	private File asceticMetaFile;
 	private Text cliPropText;
@@ -112,7 +116,9 @@ public class AsceticDeployer extends Deployer {
 	
 	protected PackagesSection packSection;
 	protected ImagesSection imageSection;
-	protected AffinitySection affinitySection;
+	protected DeploymentSection deploymentSection;
+	
+	//protected AffinitySection affinitySection;
 	
 	
 	public AsceticDeployer(){
@@ -130,8 +136,12 @@ public class AsceticDeployer extends Deployer {
 				Section.TWISTIE | Section.DESCRIPTION, asceticMetaFile, this);
 		imageSection = new ImagesSection(page.getToolkit(), editor, 
 				Section.TWISTIE | Section.DESCRIPTION, asceticMetaFile,this);
+		/*
 		affinitySection = new AffinitySection(page.getToolkit(), editor, 
 				Section.TWISTIE | Section.DESCRIPTION, asceticMetaFile, this);
+		*/
+		deploymentSection = new DeploymentSection(page.getToolkit(), editor, 
+				Section.TWISTIE | Section.DESCRIPTION, this);
 	}
 	
 	public AsceticDeployer(ServiceFormEditor editor, IWorkbenchWindow window,
@@ -146,9 +156,12 @@ public class AsceticDeployer extends Deployer {
 				Section.TWISTIE | Section.DESCRIPTION, asceticMetaFile, this);
 		imageSection = new ImagesSection(page.getToolkit(), editor, 
 				Section.TWISTIE | Section.DESCRIPTION, asceticMetaFile, this);
+		/*
 		affinitySection = new AffinitySection(page.getToolkit(), editor, 
 				Section.TWISTIE | Section.DESCRIPTION, asceticMetaFile, this);
-		
+		*/
+		deploymentSection = new DeploymentSection(page.getToolkit(), editor, 
+				Section.TWISTIE | Section.DESCRIPTION, this);
 	}
 	
 	/* (non-Javadoc)
@@ -166,8 +179,9 @@ public class AsceticDeployer extends Deployer {
 		composite.setLayout(new GridLayout(1, false));
 		packSection.createComposite(composite);
 		imageSection.createComposite(composite);
-		affinitySection.createComposite(composite);
-		createDeploymentSection(composite);
+		deploymentSection.createComposite(composite);
+		//affinitySection.createComposite(composite);
+		//createDeploymentSection(composite);
 
 		link = toolkit.createHyperlink(composite, "View Service Manifest",
 				SWT.NONE);
@@ -201,8 +215,9 @@ public class AsceticDeployer extends Deployer {
 					.append(AsceticProperties.SERVICE_MANIFEST).toFile().exists())
 				readManifestFromFile();
 			packSection.init();
-			imageSection.init(op_prop);
-			serverText.setText(op_prop.getDSLocation());
+			imageSection.init();
+			deploymentSection.init();
+			//serverText.setText(op_prop.getDSLocation());
 	
 		} catch (Exception e) {
 			log.error("Error loading service manifest file", e);
@@ -234,7 +249,7 @@ public class AsceticDeployer extends Deployer {
 	 * 
 	 * @param composite Parents composite
 	 */
-	private void createDeploymentSection(Composite composite) {
+	/*private void createDeploymentSection(Composite composite) {
 		DS_section = page.getToolkit().createSection(composite,
 				Section.TWISTIE | Section.DESCRIPTION | SWT.BORDER);
 		DS_section.setText("Deployment Service");
@@ -278,7 +293,7 @@ public class AsceticDeployer extends Deployer {
 		DS_section.setClient(options);
 		DS_section.setExpanded(true);
 		DS_section.setExpanded(false);
-	}
+	}*/
 
 
 	/** 
@@ -352,8 +367,7 @@ public class AsceticDeployer extends Deployer {
 	 */
 	public void executeDeployment(IProgressMonitor monitor)
 			throws Exception {
-		//TODO Change to ascetic
-		PackagingUtils.initPackageFolder(super.getProject(), monitor);
+		
 		ProjectMetadata prMetadata = new ProjectMetadata(super.getEditor()
 				.getMetadataFile().getRawLocation().toFile());
 		HashMap<String, ServiceElement> coreEls = CommonFormPage.getElements(
@@ -383,20 +397,23 @@ public class AsceticDeployer extends Deployer {
 			}
 			manifest.setServiceId(serviceID);
 			boolean executable = false;
-			if (!prMetadata.getMainClass().isEmpty()){
+			String mainClass = prMetadata.getMainClass();
+			if (mainClass!= null && !mainClass.isEmpty()){
 				executable = true;
 			}
-			String location = serverText.getText().trim();
+			String location = deploymentSection.getServerLocation();
 			if (location != null && location.length() > 0) {
 				monitor.beginTask("Deploying application", 100);
 				ApplicationUploader appUploader = new ApplicationUploader(location);
+				deploymentSection.setApplicationSecurityInManifest(manifest);
+				manifest.setApplicationMangerEPR(location);
 				String deploymentID = Integer.toString(appUploader.createAndDeployAplication(manifest.getString()));			
 				monitorProgress(appUploader, serviceID, deploymentID, monitor);
 				ServiceManagerView smview = (ServiceManagerView) PlatformUI
 					.getWorkbench().getActiveWorkbenchWindow().getActivePage()
 					.showView("es.bsc.servicess.ide.views.ServiceManagerView");
-				DeploymentChecker dc = new AsceticDeploymentChecker(appUploader, serviceID);
-				DeployedApplicationSection das = new ServiceDataComposite(deploymentID, 
+				DeploymentChecker dc = new AsceticDeploymentChecker(appUploader, serviceID, mainClass, null, serviceID,this);
+				DeployedApplicationSection das = new ServiceDataComposite(serviceID, 
 						dc, DeploymentChecker.PENDING, smview, executable, this.getShell());
 				smview.addNewDeployement(deploymentID, das);
 				monitor.done();
@@ -425,32 +442,41 @@ public class AsceticDeployer extends Deployer {
 		int progress = 0;
 		
 		while (progress >= 0 && progress < 100 & retries < 30) {
+			int new_progress = 0;
 			try{
 				Thread.sleep(10000);
 				String resp = appUploader.getDeploymentStatus(applicationID, deploymentID);
-				if (resp.contains("ERROR")) {
+				if (resp.contains(Dictionary.APPLICATION_STATUS_ERROR)) {
 					throw (new AsceticDeploymentException(resp));
-				} else if (resp.contains("PROGRESS")) {
-					int st = resp.indexOf(":", resp.indexOf("MESSAGE")) + 2;
-					String prog = resp.substring(st, resp.indexOf("%", st));
-					try {
-						int new_progress = Integer.parseInt(prog);
-						monitor.subTask(resp);
-						monitor.worked(new_progress - progress);
-						progress = new_progress;
-						log.debug("Progressing...(" + progress + ")");
-					} catch (Exception e) {
-						log.error("Error getting progress from "
-								+ prog + " Response is: " + resp);
-						throw (new AsceticDeploymentException(
-								"Error getting progress from " + prog
-										+ ". Response is: " + resp));
-					}
+				} else if (resp.contains(Dictionary.APPLICATION_STATUS_TERMINATED)) {
+					throw (new AsceticDeploymentException("Deployment was canceled"));
+				} else if (resp.contains(Dictionary.APPLICATION_STATUS_SUBMITTED)) {
+					new_progress = 5;
+				} else if (resp.contains(Dictionary.APPLICATION_STATUS_NEGOTIATION)) {
+					new_progress = 10;
+					//TODO: In some place we have to ask for accepting or rejecting the agreement
+				} else if (resp.contains(Dictionary.APPLICATION_STATUS_NEGOTIATIED)) {
+					new_progress = 15;
+					//TODO: In some place we have to ask for accepting or rejecting the agreement
+				} else if (resp.contains(Dictionary.APPLICATION_STATUS_CONTEXTUALIZING)) {
+					new_progress = 20;
+				} else if (resp.contains(Dictionary.APPLICATION_STATUS_CONTEXTUALIZATION)) {
+					new_progress = 20;
+				} else if (resp.contains(Dictionary.APPLICATION_STATUS_CONTEXTUALIZED)) {
+					new_progress = 30;	
+				} else if (resp.contains(Dictionary.APPLICATION_STATUS_DEPLOYING)) {
+					new_progress = 35;
+					//TODO: check vm creation, still not implemented	
+				} else if (resp.contains(Dictionary.APPLICATION_STATUS_DEPLOYED)) {
+					new_progress = 100;
 				} else {
 					throw (new AsceticDeploymentException("Unknown response: "
 							+ resp));
-
 				}
+				monitor.subTask(resp);
+				monitor.worked(new_progress - progress);
+				progress = new_progress;
+				log.debug("Progressing...(" + progress + ")");
 			}catch(Exception e){
 				throw (new AsceticDeploymentException(e));
 			}
