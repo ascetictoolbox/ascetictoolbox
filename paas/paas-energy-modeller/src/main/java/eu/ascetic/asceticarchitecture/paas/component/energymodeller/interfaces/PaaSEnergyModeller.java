@@ -1,5 +1,6 @@
 package eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 
@@ -31,13 +32,6 @@ public interface PaaSEnergyModeller {
 	 */
 	public boolean stopModellingApplicationEnergy(String providerid, String applicationid,String deploymentid);
 	
-	/**
-	 * @param providerid
-	 * @param applicationid
-	 * @param deploymentid
-	 * @return the value for aggregated energy consumption of the provided application,provider and deployment. aggregate for all vms in the deployment
-	 */
-	public double energyApplicationConsumption( String providerid, String applicationid,String deploymentid);	
 
 	/**
 	 * @param providerid
@@ -50,11 +44,19 @@ public interface PaaSEnergyModeller {
 	/**
 	 * @param providerid
 	 * @param applicationid
-	 * @param deploymentid
-	 * @param eventid
-	 * @return the value for the hourly energy estimation of the provided application,provider and deployment. eventid can be specified 
+	 * @param vmids
+	 * @return the value for total energy consumption of the provided application,requries the list of vmids to compute all informations
 	 */
-	public double energyEstimation( String providerid, String applicationid,String deploymentid, String eventid);
+	public double energyApplicationConsumptionTimeInterval( String providerid, String applicationid,List<String> vmids, String eventid, Timestamp start, Timestamp end);	
+	
+	/**
+	 * @param providerid
+	 * @param applicationid
+	 * @param vmids
+	 * @return the value for total energy consumption of the provided application,requries the list of vmids to compute all informations
+	 */
+	public double[] energyApplicationConsumptionData( String providerid, String applicationid,List<String> vmids, String eventid, Timestamp start, Timestamp end);	
+
 
 	/**
 	 * @param providerid
@@ -65,6 +67,20 @@ public interface PaaSEnergyModeller {
 	 */
 	public double energyEstimation( String providerid, String applicationid,List<String> vmids, String eventid);	
 	
+	/**
+	 * TBD
+	 */
+	public double energyConsumptionAtWorkload( String providerid, String applicationid,List<String> vmids, String eventid, double workload);
+	
+	/**
+	 * TBD
+	 */
+	public double energyConsumptionAtTime( String providerid, String applicationid,List<String> vmids, String eventid, Timestamp time);
+	
+	/**
+	 * TBD
+	 */
+	public double energyEstimationForTime( String providerid, String applicationid,List<String> vmids, String eventid, Timestamp time);
 	
 	/**
 	 * @param providerid
@@ -84,6 +100,20 @@ public interface PaaSEnergyModeller {
 	 */
 	public boolean trainApplication( String providerid, String applicationid,String deploymentid, String eventid) ;
 
+	/**
+	 * @param providerid
+	 * @param applicationid
+	 * @param deploymentid
+	 * @return the value for aggregated energy consumption of the provided application,provider and deployment. aggregate for all vms in the deployment
+	 */
+	public double energyApplicationConsumption( String providerid, String applicationid,String deploymentid);	
 
-	
+	/**
+	 * @param providerid
+	 * @param applicationid
+	 * @param deploymentid
+	 * @param eventid
+	 * @return the value for the hourly energy estimation of the provided application,provider and deployment. eventid can be specified 
+	 */
+	public double energyEstimation( String providerid, String applicationid,String deploymentid, String eventid);
 }

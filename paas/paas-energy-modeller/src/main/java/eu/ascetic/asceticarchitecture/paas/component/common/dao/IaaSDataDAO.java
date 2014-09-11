@@ -16,6 +16,8 @@ public interface IaaSDataDAO {
 	
 	public String getHostIdForVM(String VMid);
 	
+	public String getVMIdForOSID(String VMid);
+	
 	public String getHostTotalCpu(String hostid);
 	
 	public List<IaaSVMConsumption> getEnergyForVM(String hostid,String vmid);

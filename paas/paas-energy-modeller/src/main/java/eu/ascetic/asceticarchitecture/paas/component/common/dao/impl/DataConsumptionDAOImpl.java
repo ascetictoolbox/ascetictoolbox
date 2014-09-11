@@ -24,8 +24,10 @@ public class DataConsumptionDAOImpl implements DataConsumptionDAO {
 	private static String SQL_Q_APPID="select * from DATACONSUMPTION where applicationid = ?";
 	private static String SQL_Q_DEPID="select * from DATACONSUMPTION where deploymentid = ?";
 	private static String SQL_Q_VMID="select * from DATACONSUMPTION where vmid = ?";
-	private static String SQL_Q_ALLTIME="select UNIX_TIMESTAMP(time) from DATACONSUMPTION where applicationid = ? and vmid = ?";
-	private static String SQL_Q_ENERGY="select vmenergy from DATACONSUMPTION where applicationid = ? and vmid = ?";
+	private static String SQL_Q_ALLTIME="select UNIX_TIMESTAMP(time) from DATACONSUMPTION where applicationid = ? and vmid = ? order by time asc";
+	private static String SQL_Q_ENERGYBYTIME="select vmenergy from DATACONSUMPTION where applicationid = ? and vmid = ?  order by time asc";
+	private static String SQL_Q_ENERGY="select vmenergy from DATACONSUMPTION where applicationid = ? and vmid = ?  order by cpu asc";
+	private static String SQL_Q_CPU="select cpu from DATACONSUMPTION where applicationid = ? and vmid = ? order by cpu asc";
 	private static String SQL_Q_LASTVM="select max(time) from DATACONSUMPTION where applicationid = ? and vmid = ?";
 	private static String SQL_Q_FIRSTVM="select min(time) from DATACONSUMPTION where applicationid = ? and vmid = ?";
 	private static String SQL_Q_EMID="select * from DATACONSUMPTION where eventid = ?";
@@ -113,10 +115,19 @@ public class DataConsumptionDAOImpl implements DataConsumptionDAO {
 		}
 		return results;
 	}
-
+	@Override
+	public double[] getConsumptionByTimeVM(String applicationid, String vmid) {
+		List<Object> res = jdbcTemplate.queryForList(SQL_Q_ENERGYBYTIME,new Object[]{applicationid,vmid}, Object.class);
+		LOGGER.info("Total vm energy samples "+res.size());
+		double[] results = new double[res.size()];
+		for ( int i=0;i<res.size();i++){
+			results[i]=Double.parseDouble(res.get(i).toString());
+		}
+		return results;
+	}
 	@Override
 	public double[] getTimeDataVM(String applicationid, String vmid) {
-		List<Object> res = jdbcTemplate.queryForList(SQL_Q_ENERGY,new Object[]{applicationid,vmid}, Object.class);
+		List<Object> res = jdbcTemplate.queryForList(SQL_Q_ALLTIME,new Object[]{applicationid,vmid}, Object.class);
 		LOGGER.info("Total vm time samples "+res.size());
 		double[] results = new double[res.size()];
 		for ( int i=0;i<res.size();i++){
@@ -124,5 +135,20 @@ public class DataConsumptionDAOImpl implements DataConsumptionDAO {
 		}
 		return results;
 	}
+	
+	@Override
+	public double[] getCpuDataVM(String applicationid, String vmid) {
+		List<Object> res = jdbcTemplate.queryForList(SQL_Q_CPU,new Object[]{applicationid,vmid}, Object.class);
+		LOGGER.info("Total vm time samples "+res.size());
+		double[] results = new double[res.size()];
+		for ( int i=0;i<res.size();i++){
+			results[i]=Double.parseDouble(res.get(i).toString());
+		}
+		return results;
+	}
+
+
+
+
 
 }

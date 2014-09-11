@@ -2,11 +2,11 @@ package eu.ascetic.asceticarchitecture.paas.component.energymodeller.service;
 
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Timestamp;
 import java.text.DateFormat;
-import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -17,6 +17,8 @@ import org.apache.log4j.Logger;
 
 import eu.ascetic.asceticarchitecture.paas.component.common.database.PaaSEMDatabaseManager;
 import eu.ascetic.asceticarchitecture.paas.component.common.model.EnergyInterpolator;
+import eu.ascetic.asceticarchitecture.paas.component.common.model.TimeEnergyInterpolator;
+import eu.ascetic.asceticarchitecture.paas.component.common.model.WorkLoadEnergyInterpolator;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EMSettings;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.PaaSEnergyModeller;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.task.DataCollector;
@@ -42,84 +44,84 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 	private DataCollector datacollector;
 	private EnergyDataAggregatorService energyService;
 	private EventDataAggregatorService eventService;
-	
-	/**
-	 * Constructor, load from the configuration file the settings
-	 */
-	
-	public EnergyModellerSimple(String propertyFile) {
-		this.propertyFile=propertyFile;
-		LOGGER.info("EM Initialization ongoing");
-		initializeProperty();
-		initializeLoadInjector();
-		initializeDataConnectors();
-		LOGGER.info("EM Initialization complete");
-	}
-	
-
-
-	@Override
-	public double energyApplicationConsumption(String providerid,String applicationid, String deploymentid) {
-		//TODO check from db if data has been collected in past or training occurred
-		datacollector.handleConsumptionData(applicationid,deploymentid);
-		double energy = energyService.getTotal(applicationid, deploymentid, "");
-		LOGGER.info("Application consumed " + String.format( "%.2f", energy ));
-		return energy;
-	}
-
 
 
 	@Override
 	public double energyApplicationConsumption(String providerid,String applicationid, List<String> vmids, String eventid) {
 		double total_energy=0;
+		// Ensure vm data is loaded in to PaaS Database
+		this.loadEnergyData(applicationid, vmids);
 		if (eventid==null){
-			datacollector.handleConsumptionData(applicationid, vmids, "nodeployment");			
+			// For each vm estimate the energy
 			for (String vm : vmids) {
-				double energy = energyService.getTotal(applicationid, "nodeployment", vm, "");
-				LOGGER.info("VM "+ vm + " consumed " + String.format( "%.2f", energy ));
+				double energy = energyEstimationForVM(providerid, applicationid, vm, null);
+				LOGGER.info("This VM "+ vm + " consumed " + String.format( "%.2f", energy ));
 				total_energy = total_energy +energy;
 			}			
 			LOGGER.info("Application consumed " + String.format( "%.2f", total_energy ));
 		} else {
-			datacollector.handleConsumptionData(applicationid, vmids, "nodeployment");
-			datacollector.handleEventData(applicationid, "nodeployment", vmids, eventid);
+			// ensure also event data is loaded
+			this.loadEventData(applicationid, vmids,eventid);
 			for (String vm : vmids) {
-				double energy = energyService.getTotal(applicationid, "nodeployment", vm, "");
+				// estimates each vm and events
+				//double energy = energyService.getTotal(applicationid, "nodeployment", vm, "");
 				double energyevent = energyService.getTotal(applicationid, "nodeployment", vm, eventid);
-				LOGGER.info("VM "+ vm + " consumed " + String.format( "%.2f", energy ));
+				//LOGGER.info("VM "+ vm + " consumed " + String.format( "%.2f", energy ));
 				LOGGER.info("VM "+ vm + " event consumed " + String.format( "%.2f", energyevent ));
-				total_energy = total_energy +energy;
+				total_energy = total_energy +energyevent;
 			}
+			
+			
 		}
 		return total_energy;
 	}
 	
 	@Override
 	public double energyEstimationForVM(String providerid, String applicationid, String vmid, String eventid) {
-		//TODO integrate prediction model
+		List<String> vmids = new Vector();
+		vmids.add(vmid);
+		this.loadEnergyData(applicationid, vmids);
 		if (eventid==null){
 			LOGGER.info("Energy estimation for " + applicationid );
 			List<String> vm	= new Vector<String>();		
 			vm.add(vmid);
-			datacollector.handleConsumptionData(applicationid, vm, "deployment1");
+			//datacollector.handleConsumptionData(applicationid, vm, "deployment1");
 			double energy =  energyService.getAverage(applicationid, "deployment1", vmid, "");
+
+			
 			LOGGER.info("VM consumed " +energy);
+//			WorkLoadEnergyInterpolator wei = new WorkLoadEnergyInterpolator();
+//			wei.providedata(dbmanager.getDataConsumptionDAOImpl());
+//			wei.buildmodel(applicationid, vmid);
+//			LOGGER.info("VM will consume at 20% " +wei.estimate(0.20));
+//			
+//			
 //			EnergyInterpolator ei = new EnergyInterpolator();
 //			ei.providedata(dbmanager.getDataConsumptionDAOImpl());
 //			LOGGER.info("Building estimator");
 //			ei.buildmodel(applicationid, vmid);
+//			
 //			LOGGER.info("Using estimator " );
-//			 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//			   //get current date time with Date()
-//			  Date date = new Date();
-//			  LOGGER.info("Time now is " +  dateFormat.format(date));
-//			LOGGER.info("VM will consume " +ei.estimate(date.getTime())+energy);
+//			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//
+//			  Date date;
+//			try {
+//				date = dateFormat.parse("2014-09-02 20:12:00");
+//				LOGGER.info("Time  is " +  dateFormat.format(date));
+//				LOGGER.info("Time  is " +  date.getTime());
+//				LOGGER.info("VM consumed " +ei.estimate(date.getTime()/1000));
+//
+//			} catch (ParseException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+
 			
 			return energy;
 		} else {
 			LOGGER.info("Energy estimation for " + applicationid + " and event " + eventid);
 			//datacollector.handleEventData(applicationid,deploymentid,eventid);
-			//datacollectdouble total_event = eventService.getTotal(applicationid, deploymentid, eventid);
+			//double total_event = eventService.getTotal(applicationid, "deployment1", eventid);
 			double total_energy = energyService.getTotal(applicationid, null , vmid, eventid);
 			double total_event = eventService.getTotal(applicationid, null , vmid, eventid);
 			LOGGER.info("Event total "+total_event+" consumed " +total_energy);
@@ -134,6 +136,7 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 
 	@Override
 	public double energyEstimation(String providerid, String applicationid,	List<String> vmids, String eventid) {
+		this.loadEnergyData(applicationid, vmids);
 		if (eventid==null){
 			double energy = energyApplicationConsumption(providerid,applicationid,vmids,null);
 			LOGGER.info("Application consumed " +String.format( "%.2f", energy ));
@@ -141,8 +144,7 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 			 
 		} else {
 			LOGGER.info("Energy estimation for " + applicationid + " and event " + eventid);
-			datacollector.handleEventData(applicationid,"nodeployment", vmids,eventid);
-			datacollector.handleConsumptionData(applicationid,vmids,"nodeployment");
+			this.loadEventData(applicationid,vmids,eventid);
 			double total_event = eventService.getTotal(applicationid, "nodeployment", eventid);
 			double total_energy = energyService.getTotal(applicationid, "nodeployment", eventid);
 			LOGGER.info("Event total "+total_event+" consumed " + String.format( "%.2f", total_energy ));
@@ -151,30 +153,82 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 		}
 	}	
 	
+	/**
+	 * 
+	 * 
+	 *  Estimation method for future usage
+	 * 
+	 * 
+	 */
+
 	@Override
-	public double energyEstimation(String providerid, String applicationid,	String deploymentid,  String eventid) {
-		//TODO integrate prediction model
-		if (eventid==null){
-			LOGGER.info("Energy estimation for " + applicationid );
-			datacollector.handleConsumptionData(applicationid,deploymentid);
-			double energy = energyService.getTotal(applicationid, deploymentid, "");
-			LOGGER.info("Application consumed " +String.format( "%.2f", energy ));
-			return energy;
-			 
-		} else {
-			LOGGER.info("Energy estimation for " + applicationid + " and event " + eventid);
-			datacollector.handleEventData(applicationid,deploymentid,eventid);
-			datacollector.handleConsumptionData(applicationid,deploymentid);
-			double total_event = eventService.getTotal(applicationid, deploymentid, eventid);
-			double total_energy = energyService.getTotal(applicationid, deploymentid, eventid);
-			LOGGER.info("Event total "+total_event+" consumed " + String.format( "%.2f", total_energy ));
-			if (total_event == 0) return 0;
-			return total_energy/total_event;
+	public double energyConsumptionAtWorkload(String providerid,String applicationid, List<String> vmids, String eventid,double workload) {
+		this.loadEnergyData(applicationid, vmids);
+		double total=0;
+		for (String vm : vmids) {
+			WorkLoadEnergyInterpolator wei = new WorkLoadEnergyInterpolator();
+			wei.providedata(dbmanager.getDataConsumptionDAOImpl());
+			wei.buildmodel(applicationid, vm);
+			total = total+wei.estimate(workload);
+			LOGGER.info("VM will consume at workload " +wei.estimate(workload));
+			
 		}
 		
+		LOGGER.info("VM will consume at workload " +total);
+		
+		return total;
 	}
 
+	@Override
+	public double energyConsumptionAtTime(String providerid,String applicationid, List<String> vmids, String eventid,Timestamp time) {
+		this.loadEnergyData(applicationid, vmids);
+		double total=0;
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date date;
+		for (String vm : vmids) {
+			EnergyInterpolator ei = new EnergyInterpolator();
+			ei.providedata(dbmanager.getDataConsumptionDAOImpl());
+			LOGGER.info("Building estimator for "+vm);
+			ei.buildmodel(applicationid, vm);
+			
+			LOGGER.info("Using estimator " );
+			
+
+			LOGGER.info("Time  is " +  dateFormat.format(time));
+			LOGGER.info("VM consumed " +ei.estimate(time.getTime()/1000));
+
+		}
+
+		return total;
+	}	
 	
+	@Override
+	public double energyEstimationForTime(String providerid,String applicationid, List<String> vmids, String eventid,Timestamp time) {
+		this.loadEnergyData(applicationid, vmids);
+		double total=0;
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date date;
+		for (String vm : vmids) {
+			
+			
+			TimeEnergyInterpolator te = new TimeEnergyInterpolator();
+			te.providedata(dbmanager.getDataConsumptionDAOImpl());
+			LOGGER.info("Building estimator for "+vm);
+			te.buildmodel(applicationid, vm);
+			
+			LOGGER.info("Using estimator " );
+			
+			LOGGER.info("Time  is " +  dateFormat.format(time));
+			double cons = te.estimate(time.getTime()/1000);
+			total =  total + cons;
+			LOGGER.info("VM consumed " +cons);
+
+		}
+
+		return total;
+	}
+
+
 
 	@Override
 	public boolean trainApplication(String providerid, String applicationid, String deploymentid, String eventid) {
@@ -209,6 +263,69 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 		return true;
 	}
 
+	
+	@Override
+	public double energyApplicationConsumptionTimeInterval(String providerid,String applicationid, List<String> vmids, String eventid,Timestamp start, Timestamp end) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public double[] energyApplicationConsumptionData(String providerid,	String applicationid, List<String> vmids, String eventid,Timestamp start, Timestamp end) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+	
+	@Deprecated
+	@Override
+	public double energyApplicationConsumption(String providerid,String applicationid, String deploymentid) {
+		//TODO check from db if data has been collected in past or training occurred
+		datacollector.handleConsumptionData(applicationid,deploymentid);
+		double energy = energyService.getTotal(applicationid, deploymentid, "");
+		LOGGER.info("Application consumed " + String.format( "%.2f", energy ));
+		return energy;
+	}
+	
+	@Deprecated
+	@Override
+	public double energyEstimation(String providerid, String applicationid,	String deploymentid,  String eventid) {
+		//TODO integrate prediction model
+		this.loadEnergyData(applicationid,deploymentid);
+		if (eventid==null){
+			LOGGER.info("Energy estimation for " + applicationid );
+			datacollector.handleConsumptionData(applicationid,deploymentid);
+			double energy = energyService.getTotal(applicationid, deploymentid, "");
+			LOGGER.info("Application consumed " +String.format( "%.2f", energy ));
+			return energy;
+			 
+		} else {
+			LOGGER.info("Energy estimation for " + applicationid + " and event " + eventid);
+			datacollector.handleEventData(applicationid,deploymentid,eventid);
+			datacollector.handleConsumptionData(applicationid,deploymentid);
+			double total_event = eventService.getTotal(applicationid, deploymentid, eventid);
+			double total_energy = energyService.getTotal(applicationid, deploymentid, eventid);
+			LOGGER.info("Event total "+total_event+" consumed " + String.format( "%.2f", total_energy ));
+			if (total_event == 0) return 0;
+			return total_energy/total_event;
+		}
+		
+	}
+	
+	/**
+	 * Constructor, load from the configuration file the settings
+	 */
+	
+	public EnergyModellerSimple(String propertyFile) {
+		this.propertyFile=propertyFile;
+		LOGGER.info("EM Initialization ongoing");
+		initializeProperty();
+		initializeLoadInjector();
+		initializeDataConnectors();
+		LOGGER.info("EM Initialization complete");
+	}
+	
 	/**
 	 * @return the emsettings of the Energy Modeller. It allows to get the current settings loaded from file
 	 */
@@ -268,6 +385,29 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 		eventService.setDaoEvent(dbmanager.getDataEventDAOImpl());
 		LOGGER.debug("Configured ");
 	}
+	
+	private void loadEventDataTime(String appid,String deploymentid, List<String> vms, String eventid,Timestamp start, Timestamp end){
+		datacollector.handleEventDataInterval(appid, deploymentid, vms, eventid, start, end);
+	}
+	
+	private void loadEventData(String appid,List<String> vms,String eventid){
+		datacollector.handleEventData(appid, "deployment1", vms, eventid);
+	}
+	
+	private void loadEventDataTime(String appid,List<String> vms,Timestamp start, Timestamp end){
+		datacollector.handleConsumptionDataInterval(appid, vms, "deployment1", start, end);
+	}
+	
+	private void loadEnergyData(String appid, List<String> vm){
+		datacollector.handleConsumptionData(appid, vm, "deployment1");
+	}
+
+	@Deprecated
+	private void loadEnergyData(String appid, String deployment){
+		datacollector.handleConsumptionData(appid,  deployment);
+	}
+
+
 
 
 

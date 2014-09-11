@@ -28,7 +28,11 @@ public interface DataConsumptionDAO {
 	    
 	    public double[] getConsumptionDataVM(String applicationid, String vmid);
 	    
+	    public double[] getConsumptionByTimeVM(String applicationid, String vmid);
+	    
 	    public double[] getTimeDataVM(String applicationid, String vmid);
+	    
+	    public double[] getCpuDataVM(String applicationid, String vmid);
 	    
 	    public Timestamp getFirsttConsumptionForVM(String applicationid, String vmid);
 

@@ -34,7 +34,7 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.D
 public class DataCollector extends TimerTask implements DataCollectorTaskInterface {
 
 	private IaaSDataDAOImpl iaasdatadriver;
-	private DataConsumptionDAOImpl dataconumption;
+	private DataConsumptionDAOImpl dataconsumption;
 	private DataEventDAOImpl dataevent;
 
 	private String AMPath = "http://localhost:9000/query";
@@ -45,17 +45,56 @@ public class DataCollector extends TimerTask implements DataCollectorTaskInterfa
 	private static double H_CPU = 4;
 	private static final Logger logger = Logger.getLogger(DataCollector.class);
 	
-	@Override
-	public void setup() {
-		try {
-			 url = new URL(AMPath);
-		} catch (MalformedURLException e) {
-			 logger.error("Problem with AM url");
-		}
-	    logger.debug("##Configured data task");
-	    
-	}
+
 	
+
+	
+	@Override
+	public void handleEventDataInterval(String applicationid,String deploymentid, List<String> vm, String eventid, Timestamp start, Timestamp end) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleConsumptionDataInterval(String applicationid, List<String> vm, String deploymentid, Timestamp start, Timestamp end) {
+		for (String vmid : vm){
+			if (iaasdatadriver==null){
+				logger.info("Connection to IaaS DB unavailable");
+				return;
+			}
+			Timestamp ts = dataconsumption.getLastConsumptionForVM(applicationid, vmid);
+			if (ts!=null){
+				logger.info ("Data available untill "+ts.toString());
+				if (end.after(ts)){
+					logger.info ("Data available for this request, not loading new data ");
+				} else {
+					logger.info ("Importing up to the end timestamp ");
+					
+				}
+			}else{
+				logger.info ("Data not available for this request, Importing up to the end timestamp ");
+				
+			}
+		}
+		
+
+		
+	}
+
+	@Override
+	public void handleConsumptionData(String applicationid, List<String> vm, String deploymentid) {
+		for (String vmid : vm){
+			loadVMData(applicationid, deploymentid,vmid,null,null);
+		}
+		
+	}
+	@Override
+	public void handleConsumptionData(String applicationid, String vm,	String deploymentid) {
+		loadVMData(applicationid, deploymentid,vm,null,null);
+		
+	}
+
+	@Deprecated
 	@Override
 	public void handleConsumptionData(String applicationid, String deploymentid) {
 		logger.info("Connection to IaaS DB for data retrieval");
@@ -68,7 +107,7 @@ public class DataCollector extends TimerTask implements DataCollectorTaskInterfa
 			logger.info("Connection to IaaS DB unavailable");
 			return;
 		}
-		Timestamp ts = dataconumption.getLastConsumptionForVM(applicationid, vmid);
+		Timestamp ts = dataconsumption.getLastConsumptionForVM(applicationid, vmid);
 		if (ts!=null){
 			logger.info ("Data already loaded "+ts.toString());
 		}else{
@@ -98,12 +137,94 @@ public class DataCollector extends TimerTask implements DataCollectorTaskInterfa
 				datacons.setDeploymentid(deploymentid);
 				datacons.setVmenergy(load);
 				datacons.setVmid(vmid);
-				dataconumption.save(datacons);
+				dataconsumption.save(datacons);
 			}
 		}
 		
 		
 		
+	}
+
+
+	
+	private void loadVMData(String applicationid, String deploymentid,String vmid,Timestamp start, Timestamp end){
+		logger.info("Connection to IaaS DB for data retrieval");
+		// TODO get vm for deployment???? also replicate for each vm
+		
+		long vmcpu_total=1;
+		if (iaasdatadriver==null){
+			logger.info("Connection to IaaS DB unavailable");
+			return;
+		}
+		Timestamp ts = dataconsumption.getLastConsumptionForVM(applicationid, vmid);
+		if (ts!=null){
+			logger.info ("Data already loaded "+ts.toString());
+		}else{
+			logger.info ("Missing IaaS energy data");
+			logger.debug("Retrieving Host for the given VM");
+			String vmiaasid = iaasdatadriver.getVMIdForOSID(vmid);
+			String hostid = iaasdatadriver.getHostIdForVM(vmiaasid);
+			logger.info("Retrieving data information from IaaS Layer");
+//			List<IaaSVMConsumption> data = iaasdatadriver.getEnergyForVM(hostid, vmid);
+//			logger.debug("This VM "+vmid + " has CPU "+vmcpu_total);
+//			logger.debug("This VM is on host "+hostid + " with CPU "+H_CPU_CORE);
+//			double load;
+//			
+//			for (IaaSVMConsumption element : data){
+//				load = Double.parseDouble(element.getCpu())/100*Double.parseDouble(element.getEnergy());
+//				
+//				logger.debug("Got load "+load + " from process load " +element.getCpu() + " and energy "+element.getEnergy());
+//				DataConsumption datacons = new DataConsumption();
+//				datacons.setApplicationid(applicationid);
+//				datacons.setDeploymentid(deploymentid);
+//				datacons.setTime(new Timestamp(Long.parseLong(element.getClock())));
+//				datacons.setVmenergy(load);
+//				datacons.setHostenergy(Double.parseDouble(element.getEnergy()));
+//				datacons.setCpu(Double.parseDouble(element.getCpu()));
+//				datacons.setVmid(vmid);
+//				dataconumption.save(datacons);
+//			}
+			double energyvm,powervm;
+			List<VMConsumptionPerHour> data = iaasdatadriver.getEnergyForVMHourly(hostid, vmiaasid, null);
+			logger.info("Importing data");
+			for (VMConsumptionPerHour element : data){
+				energyvm = Double.parseDouble(element.getLoad())*Double.parseDouble(element.getEnergy());
+				powervm = Double.parseDouble(element.getLoad())*Double.parseDouble(element.getPower());
+				logger.info("Got energy  "+energyvm + " and power "+powervm);
+				DataConsumption datacons = new DataConsumption();
+				datacons.setApplicationid(applicationid);
+				datacons.setDeploymentid(deploymentid);
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+			    Date parsedDate;
+				try {
+					DecimalFormat mFormat= new DecimalFormat("00");
+					
+					parsedDate = dateFormat.parse(element.getYear().toString()+"-"+ mFormat.format(Double.valueOf(element.getMonth().toString()))+"-"+mFormat.format(Double.valueOf(element.getDay().toString()))+ " "+mFormat.format(Double.valueOf(element.getHour().toString()))+":00:00");
+					Timestamp timestamp = new java.sql.Timestamp(parsedDate.getTime());
+					datacons.setTime(timestamp);
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			    
+				datacons.setVmenergy(energyvm);
+				datacons.setHostenergy(Double.parseDouble(element.getEnergy()));
+				datacons.setCpu(Double.parseDouble(element.getLoad()));
+				datacons.setVmid(vmid);
+				dataconsumption.save(datacons);
+		}
+		}
+	}
+	
+	@Override
+	public void setup() {
+		try {
+			 url = new URL(AMPath);
+		} catch (MalformedURLException e) {
+			 logger.error("Problem with AM url");
+		}
+	    logger.debug("##Configured data task");
+	    
 	}
 
 	@Override
@@ -169,11 +290,16 @@ public class DataCollector extends TimerTask implements DataCollectorTaskInterfa
 		}
 		
 	}
+
 	
+
+
 	@Override
-	public void run() {
+	public void handleEventData(String applicationid, String deploymentid,List<String> vm, String eventid) {
+
 		
 	}
+	
 	
 	public String getAMPath() {
 		return AMPath;
@@ -187,96 +313,19 @@ public class DataCollector extends TimerTask implements DataCollectorTaskInterfa
 	}
 
 	public void setDataconumption(DataConsumptionDAOImpl dataconumption) {
-		this.dataconumption = dataconumption;
+		this.dataconsumption = dataconumption;
 	}
 
 	public void setDataevent(DataEventDAOImpl dataevent) {
 		this.dataevent = dataevent;
 	}
-
-	@Override
-	public void handleEventData(String applicationid, String deploymentid,
-			List<String> vm, String eventid) {
-
-		
-	}
-
-	@Override
-	public void handleConsumptionData(String applicationid, List<String> vm,
-			String deploymentid) {
-		for (String vmid : vm){
-			loadVMData(applicationid, deploymentid,vmid);
-		}
-		
-	}
 	
-	private void loadVMData(String applicationid, String deploymentid,String vmid){
-		logger.info("Connection to IaaS DB for data retrieval");
-		// TODO get vm for deployment???? also replicate for each vm
+	
+	@Override
+	public void run() {
 		
-		long vmcpu_total=1;
-		if (iaasdatadriver==null){
-			logger.info("Connection to IaaS DB unavailable");
-			return;
-		}
-		Timestamp ts = dataconumption.getLastConsumptionForVM(applicationid, vmid);
-		if (ts!=null){
-			logger.info ("Data already loaded "+ts.toString());
-		}else{
-			logger.info ("Missing IaaS energy data");
-			logger.debug("Retrieving Host for the given VM");
-			String hostid = iaasdatadriver.getHostIdForVM(vmid);
-			logger.info("Retrieving data information from IaaS Layer");
-//			List<IaaSVMConsumption> data = iaasdatadriver.getEnergyForVM(hostid, vmid);
-//			logger.debug("This VM "+vmid + " has CPU "+vmcpu_total);
-//			logger.debug("This VM is on host "+hostid + " with CPU "+H_CPU_CORE);
-//			double load;
-//			
-//			for (IaaSVMConsumption element : data){
-//				load = Double.parseDouble(element.getCpu())/100*Double.parseDouble(element.getEnergy());
-//				
-//				logger.debug("Got load "+load + " from process load " +element.getCpu() + " and energy "+element.getEnergy());
-//				DataConsumption datacons = new DataConsumption();
-//				datacons.setApplicationid(applicationid);
-//				datacons.setDeploymentid(deploymentid);
-//				datacons.setTime(new Timestamp(Long.parseLong(element.getClock())));
-//				datacons.setVmenergy(load);
-//				datacons.setHostenergy(Double.parseDouble(element.getEnergy()));
-//				datacons.setCpu(Double.parseDouble(element.getCpu()));
-//				datacons.setVmid(vmid);
-//				dataconumption.save(datacons);
-//			}
-			double energyvm,powervm;
-			List<VMConsumptionPerHour> data = iaasdatadriver.getEnergyForVMHourly(hostid, vmid, null);
-			logger.info("Importing data");
-			for (VMConsumptionPerHour element : data){
-				energyvm = Double.parseDouble(element.getLoad())*Double.parseDouble(element.getEnergy());
-				powervm = Double.parseDouble(element.getLoad())*Double.parseDouble(element.getPower());
-				logger.debug("Got energy  "+energyvm + " and power "+powervm);
-				DataConsumption datacons = new DataConsumption();
-				datacons.setApplicationid(applicationid);
-				datacons.setDeploymentid(deploymentid);
-				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-			    Date parsedDate;
-				try {
-					DecimalFormat mFormat= new DecimalFormat("00");
-					
-					parsedDate = dateFormat.parse(element.getYear().toString()+"-"+ mFormat.format(Double.valueOf(element.getMonth().toString()))+"-"+mFormat.format(Double.valueOf(element.getDay().toString()))+ " "+mFormat.format(Double.valueOf(element.getHour().toString()))+":00:00");
-					Timestamp timestamp = new java.sql.Timestamp(parsedDate.getTime());
-					datacons.setTime(timestamp);
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			    
-				datacons.setVmenergy(energyvm);
-				datacons.setHostenergy(Double.parseDouble(element.getEnergy()));
-				datacons.setCpu(Double.parseDouble(element.getLoad()));
-				datacons.setVmid(vmid);
-				dataconumption.save(datacons);
-		}
-		}
-	}
+	}	
+
 
 	
 	
