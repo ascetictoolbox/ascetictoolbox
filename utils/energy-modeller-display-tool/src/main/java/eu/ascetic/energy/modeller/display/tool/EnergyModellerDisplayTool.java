@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import javax.swing.JFrame;
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
 import javax.swing.JPanel;
@@ -56,7 +57,7 @@ public class EnergyModellerDisplayTool extends JFrame {
     /**
      *
      */
-    private final HashMap<String, List<CurrentUsageRecord>> data = new HashMap<>();
+    private final ConcurrentHashMap<String, List<CurrentUsageRecord>> data = new ConcurrentHashMap<>();
 
     /**
      *

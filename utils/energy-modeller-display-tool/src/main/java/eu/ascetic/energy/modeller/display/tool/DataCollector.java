@@ -103,10 +103,6 @@ public class DataCollector implements Runnable {
 
     @Override
     public void run() {
-        /**
-         * Polls the data source and write values to the database. TODO consider
-         * buffering the db writes.
-         */
         List<Host> hostList = datasource.getHostList();
         refreshKnownHostList(hostList);
         for (Host host : hostList) {
@@ -160,7 +156,7 @@ public class DataCollector implements Runnable {
                 }
                 listners.get(0).processDataAvailable(hostAnswer);
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(10000);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(DataCollector.class.getName()).log(Level.SEVERE, "The data collector was interupted.", ex);
                 }

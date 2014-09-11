@@ -17,17 +17,16 @@
 package eu.ascetic.energy.modeller.display.tool;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
-import eu.ascetic.graphs.ChartPanelSupport;
 import eu.ascetic.graphs.LineChartPanelSupport;
 import eu.ascetic.graphs.data.TranslatingXYDataset;
 import java.awt.BasicStroke;
-import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import org.jfree.data.time.Second;
 import org.jfree.data.time.TimeSeries;
 
 //import java.util.Date;
-public class CurrentLineChart extends LineChartPanelSupport<HashMap<String, List<CurrentUsageRecord>>> {
+public class CurrentLineChart extends LineChartPanelSupport<ConcurrentHashMap<String, List<CurrentUsageRecord>>> {
 
     /**
      * Serial code version <code>serialVersionUID</code> for serialization.
@@ -38,17 +37,18 @@ public class CurrentLineChart extends LineChartPanelSupport<HashMap<String, List
     /**
      * @param data The data to be plotted.
      */
-    public CurrentLineChart(HashMap<String, List<CurrentUsageRecord>> data) {
-        super("Energy Consumed on the Testbed", "Energy Consumption (W)", data, ChartPanelSupport.DEFAULT_DELAY);
+    public CurrentLineChart(ConcurrentHashMap<String, List<CurrentUsageRecord>> data) {
+        super("Energy Consumed on the Testbed", "Energy Consumption (W)", data, 4);
         setRangeAxisRange(250, 500);
+        this.setDefaultLineStroke(new BasicStroke(50));
     }
 
     /**
      * @param data The data to be plotted.
      * @param host The hosts name
      */
-    public CurrentLineChart(HashMap<String, List<CurrentUsageRecord>> data, String host) {
-        super("Energy Consumed on the Testbed", "Energy Consumption (W)", data, ChartPanelSupport.DEFAULT_DELAY);
+    public CurrentLineChart(ConcurrentHashMap<String, List<CurrentUsageRecord>> data, String host) {
+        super("Energy Consumed on the Testbed", "Energy Consumption (W)", data, 4);
         this.host = host;
         if (host == null) {
             setRangeAxisRange(250, 500);
@@ -57,20 +57,21 @@ public class CurrentLineChart extends LineChartPanelSupport<HashMap<String, List
         }
         this.setName(host);
         this.setTitle(host);
+        this.setDefaultLineStroke(new BasicStroke(50));
     }
 
     /**
      * @param data The data to be plotted.
      * @param maxEnergy The maximum amount of energy to be plotted.
      */
-    public CurrentLineChart(HashMap<String, List<CurrentUsageRecord>> data, int maxEnergy) {
-        super("Energy Consumed on the Testbed", "Energy Consumption (W)", data, ChartPanelSupport.DEFAULT_DELAY);
+    public CurrentLineChart(ConcurrentHashMap<String, List<CurrentUsageRecord>> data, int maxEnergy) {
+        super("Energy Consumed on the Testbed", "Energy Consumption (W)", data, 4);
         setRangeAxisRange(0, maxEnergy);
+        this.setDefaultLineStroke(new BasicStroke(50));
     }
 
     @Override
     protected void createSeries() {
-        this.setDefaultLineStroke(new BasicStroke(15));
         if (this.getSeries().size() < 1) {
             this.getTimeSeries().addSeries(new TimeSeries("asok09"));
             this.getTimeSeries().addSeries(new TimeSeries("asok10"));
