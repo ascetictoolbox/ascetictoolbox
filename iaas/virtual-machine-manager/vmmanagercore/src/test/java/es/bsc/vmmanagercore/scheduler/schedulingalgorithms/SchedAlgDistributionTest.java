@@ -11,8 +11,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -52,10 +51,13 @@ public class SchedAlgDistributionTest {
         assignmentsPlan2.add(new VmAssignmentToHost(vms.get(2), hosts.get(2))); // vm3 -> host3
         DeploymentPlan deploymentPlan2 = new DeploymentPlan(assignmentsPlan2);
 
+        List<DeploymentPlan> deploymentPlans = new ArrayList<>();
+        deploymentPlans.add(deploymentPlan1);
+        deploymentPlans.add(deploymentPlan2);
+
         // DeploymentPlan1 uses 2 servers and DeploymentPlan2 uses 3 servers.
         // Therefore, DeploymentPlan2 is more distributed
-        assertTrue(scheduler.isBetterDeploymentPlan(deploymentPlan2, deploymentPlan1, hosts));
-        assertFalse(scheduler.isBetterDeploymentPlan(deploymentPlan1, deploymentPlan2, hosts));
+        assertEquals(deploymentPlan2, scheduler.chooseBestDeploymentPlan(deploymentPlans, hosts));
     }
 
     @Test
@@ -78,11 +80,14 @@ public class SchedAlgDistributionTest {
         assignmentsPlan2.add(new VmAssignmentToHost(vms.get(1), hosts.get(0))); // vm2 -> host1
         DeploymentPlan deploymentPlan2 = new DeploymentPlan(assignmentsPlan2);
 
+        List<DeploymentPlan> deploymentPlans = new ArrayList<>();
+        deploymentPlans.add(deploymentPlan1);
+        deploymentPlans.add(deploymentPlan2);
+
         // deploymentPlan1: cpu loads = 0.375 and 0.5
         // deploymentPlan2: cpu loads = 0.75 and 0.25
         // deploymentPlan1 is better (more distributed)
-        assertTrue(scheduler.isBetterDeploymentPlan(deploymentPlan1, deploymentPlan2, hosts));
-        assertFalse(scheduler.isBetterDeploymentPlan(deploymentPlan2, deploymentPlan1, hosts));
+        assertEquals(deploymentPlan1, scheduler.chooseBestDeploymentPlan(deploymentPlans, hosts));
     }
 
     @Test
@@ -105,11 +110,14 @@ public class SchedAlgDistributionTest {
         assignmentsPlan2.add(new VmAssignmentToHost(vms.get(1), hosts.get(0))); // vm2 -> host1
         DeploymentPlan deploymentPlan2 = new DeploymentPlan(assignmentsPlan2);
 
+        List<DeploymentPlan> deploymentPlans = new ArrayList<>();
+        deploymentPlans.add(deploymentPlan1);
+        deploymentPlans.add(deploymentPlan2);
+
         // deploymentPlan1: mem loads = 1 and 0.5
         // deploymentPlan2: mem loads = 0.75 and 0.75
         // deploymentPlan2 is better (more distributed)
-        assertTrue(scheduler.isBetterDeploymentPlan(deploymentPlan2, deploymentPlan1, hosts));
-        assertFalse(scheduler.isBetterDeploymentPlan(deploymentPlan1, deploymentPlan2, hosts));
+        assertEquals(deploymentPlan2, scheduler.chooseBestDeploymentPlan(deploymentPlans, hosts));
     }
 
     @Test
@@ -132,11 +140,14 @@ public class SchedAlgDistributionTest {
         assignmentsPlan2.add(new VmAssignmentToHost(vms.get(1), hosts.get(0))); // vm2 -> host1
         DeploymentPlan deploymentPlan2 = new DeploymentPlan(assignmentsPlan2);
 
+        List<DeploymentPlan> deploymentPlans = new ArrayList<>();
+        deploymentPlans.add(deploymentPlan1);
+        deploymentPlans.add(deploymentPlan2);
+
         // deploymentPlan1: disk loads = 1 and 0.5
         // deploymentPlan2: disk loads = 0.75 and 0.75
         // deploymentPlan2 is better (more distributed)
-        assertTrue(scheduler.isBetterDeploymentPlan(deploymentPlan2, deploymentPlan1, hosts));
-        assertFalse(scheduler.isBetterDeploymentPlan(deploymentPlan1, deploymentPlan2, hosts));
+        assertEquals(deploymentPlan2, scheduler.chooseBestDeploymentPlan(deploymentPlans, hosts));
     }
 
 }

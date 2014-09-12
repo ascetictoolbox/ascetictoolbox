@@ -13,13 +13,12 @@ import java.util.List;
 public interface SchedAlgorithm {
 
     /**
-     * Checks whether a deployment plan is considered better than other deployment plan
+     * Given a list of deployment plans, chooses the best according to the scheduling algorithm.
      *
-     * @param deploymentPlan1 first deployment plan
-     * @param deploymentPlan2 second deployment plan
-     * @param hosts the hosts in the infrastructure
-     * @return true if deploymentPlan1 is better than deploymentPlan2, false otherwise
+     * @param deploymentPlans the list of deployment plans
+     * @param hosts the list of hosts
+     * @return the best deployment plan
      */
-    public boolean isBetterDeploymentPlan(DeploymentPlan deploymentPlan1, DeploymentPlan deploymentPlan2,
-                                          List<Host> hosts);
+    public DeploymentPlan chooseBestDeploymentPlan(List<DeploymentPlan> deploymentPlans, List<Host> hosts);
+
 }

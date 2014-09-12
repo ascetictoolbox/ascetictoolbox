@@ -39,15 +39,24 @@ public class SchedAlgEnergyAware implements SchedAlgorithm {
     }
 
     @Override
-    public boolean isBetterDeploymentPlan(DeploymentPlan deploymentPlan1, DeploymentPlan deploymentPlan2,
-            List<Host> hosts) {
-        double predictedAvgPowerPlan1 = getPredictedAvgPowerDeploymentPlan(deploymentPlan1);
-        double predictedAvgPowerPlan2 = getPredictedAvgPowerDeploymentPlan(deploymentPlan2);
-
-        VMMLogger.logPredictedAvgPowerForDeploymentPlan(1, predictedAvgPowerPlan1);
-        VMMLogger.logPredictedAvgPowerForDeploymentPlan(2, predictedAvgPowerPlan2);
-
-        return predictedAvgPowerPlan1 <= predictedAvgPowerPlan2;
+    public DeploymentPlan chooseBestDeploymentPlan(List<DeploymentPlan> deploymentPlans, List<Host> hosts) {
+        DeploymentPlan bestDeploymentPlan = null;
+        double avgPowerBestDeploymentPlan = Double.MAX_VALUE;
+        for (DeploymentPlan deploymentPlan: deploymentPlans) {
+            double predictedAvgPower = getPredictedAvgPowerDeploymentPlan(deploymentPlan);
+            VMMLogger.logPredictedAvgPowerForDeploymentPlan(deploymentPlan, predictedAvgPower);
+            if (predictedAvgPower < avgPowerBestDeploymentPlan) {
+                bestDeploymentPlan = deploymentPlan;
+                avgPowerBestDeploymentPlan = predictedAvgPower;
+            }
+            // If the score is the same, choose randomly
+            else if (predictedAvgPower == avgPowerBestDeploymentPlan) {
+                if (Math.random() > 0.5) {
+                    bestDeploymentPlan = deploymentPlan;
+                }
+            }
+        }
+        return bestDeploymentPlan;
     }
 
 }

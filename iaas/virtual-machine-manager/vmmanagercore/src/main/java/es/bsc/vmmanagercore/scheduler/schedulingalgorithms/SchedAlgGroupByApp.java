@@ -42,7 +42,9 @@ public class SchedAlgGroupByApp implements SchedAlgorithm {
             if (!appsInHosts.containsKey(vmDeployed.getHostName())) {
                 appsInHosts.put(vmDeployed.getHostName(), new ArrayList<String>());
             }
-            appsInHosts.get(vmDeployed.getHostName()).add(vmDeployed.getApplicationId());
+            if (vmDeployed.belongsToAnApp()) {
+                appsInHosts.get(vmDeployed.getHostName()).add(vmDeployed.getApplicationId());
+            }
         }
 
         // Classify VMs in deployment plan
@@ -50,8 +52,10 @@ public class SchedAlgGroupByApp implements SchedAlgorithm {
             if (!appsInHosts.containsKey(vmAssignmentToHost.getHost().getHostname())) {
                 appsInHosts.put(vmAssignmentToHost.getHost().getHostname(), new ArrayList<String>());
             }
-            appsInHosts.get(vmAssignmentToHost.getHost().getHostname()).add(
-                    vmAssignmentToHost.getVm().getApplicationId());
+            if (vmAssignmentToHost.getVm().belongsToAnApp()) {
+                appsInHosts.get(vmAssignmentToHost.getHost().getHostname()).add(
+                        vmAssignmentToHost.getVm().getApplicationId());
+            }
         }
 
         // Count total number of "friends"
@@ -72,12 +76,24 @@ public class SchedAlgGroupByApp implements SchedAlgorithm {
     }
 
     @Override
-    public boolean isBetterDeploymentPlan(DeploymentPlan deploymentPlan1, DeploymentPlan deploymentPlan2,
-            List<Host> hosts) {
-        int vmsSameAppInSameHostPlan1 = countVmsFriendsForDeploymentPlan(deploymentPlan1);
-        int vmsSameAppInSameHostPlan2 = countVmsFriendsForDeploymentPlan(deploymentPlan2);
-        VMMLogger.logVmsSameAppInSameHost(1, vmsSameAppInSameHostPlan1);
-        VMMLogger.logVmsSameAppInSameHost(2, vmsSameAppInSameHostPlan2);
-        return vmsSameAppInSameHostPlan1 >= vmsSameAppInSameHostPlan2;
+    public DeploymentPlan chooseBestDeploymentPlan(List<DeploymentPlan> deploymentPlans, List<Host> hosts) {
+        DeploymentPlan bestDeploymentPlan = null;
+        int vmsFriendsForBestDeploymentPlan = -1;
+        for (DeploymentPlan deploymentPlan: deploymentPlans) {
+            int vmsFriendsForDeploymentPlan = countVmsFriendsForDeploymentPlan(deploymentPlan);
+            VMMLogger.logVmsSameAppInSameHost(deploymentPlan, vmsFriendsForDeploymentPlan);
+            if (vmsFriendsForDeploymentPlan > vmsFriendsForBestDeploymentPlan) {
+                bestDeploymentPlan = deploymentPlan;
+                vmsFriendsForBestDeploymentPlan = vmsFriendsForDeploymentPlan;
+            }
+            // If the score is the same, choose randomly
+            else if (vmsFriendsForDeploymentPlan == vmsFriendsForBestDeploymentPlan) {
+                if (Math.random() > 0.5) {
+                    bestDeploymentPlan = deploymentPlan;
+                }
+            }
+        }
+        return bestDeploymentPlan;
     }
+
 }

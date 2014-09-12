@@ -107,6 +107,10 @@ public class Vm {
         return applicationId;
     }
 
+    public boolean belongsToAnApp() {
+        return applicationId != null && !applicationId.equals("") && !applicationId.equals(" ");
+    }
+
     @Override
     public String toString() {
         return ReflectionToStringBuilder.toString(this);

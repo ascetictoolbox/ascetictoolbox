@@ -13,8 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -68,8 +67,11 @@ public class SchedAlgGroupByAppTest {
         assignmentsPlan2.add(new VmAssignmentToHost(vms.get(2), hosts.get(1))); // vm3 -> host2
         DeploymentPlan deploymentPlan2 = new DeploymentPlan(assignmentsPlan2);
 
-        assertTrue(scheduler.isBetterDeploymentPlan(deploymentPlan1, deploymentPlan2, hosts));
-        assertFalse(scheduler.isBetterDeploymentPlan(deploymentPlan2, deploymentPlan1, hosts));
+        List<DeploymentPlan> deploymentPlans = new ArrayList<>();
+        deploymentPlans.add(deploymentPlan1);
+        deploymentPlans.add(deploymentPlan2);
+
+        assertEquals(deploymentPlan1, scheduler.chooseBestDeploymentPlan(deploymentPlans, hosts));
     }
 
 }

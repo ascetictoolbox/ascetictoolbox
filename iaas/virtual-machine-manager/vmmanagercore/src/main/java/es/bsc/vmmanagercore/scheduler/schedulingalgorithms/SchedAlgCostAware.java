@@ -42,16 +42,24 @@ public class SchedAlgCostAware implements SchedAlgorithm {
     }
 
     @Override
-    public boolean isBetterDeploymentPlan(DeploymentPlan deploymentPlan1, DeploymentPlan deploymentPlan2,
-            List<Host> hosts) {
-        double predictedCostDeploymentPlan1 = getPredictedCostDeploymentPlan(deploymentPlan1);
-        double predictedCostDeploymentPlan2 = getPredictedCostDeploymentPlan(deploymentPlan2);
-
-        VMMLogger.logPredictedCostForDeploymentPlan(1, predictedCostDeploymentPlan1);
-        VMMLogger.logPredictedCostForDeploymentPlan(2, predictedCostDeploymentPlan2);
-
-        return predictedCostDeploymentPlan1 <= predictedCostDeploymentPlan2;
+    public DeploymentPlan chooseBestDeploymentPlan(List<DeploymentPlan> deploymentPlans, List<Host> hosts) {
+        DeploymentPlan bestDeploymentPlan = null;
+        double costBestDeploymentPlan = Double.MAX_VALUE;
+        for (DeploymentPlan deploymentPlan: deploymentPlans) {
+            double deploymentPlanCost = getPredictedCostDeploymentPlan(deploymentPlan);
+            VMMLogger.logPredictedCostForDeploymentPlan(deploymentPlan, deploymentPlanCost);
+            if (deploymentPlanCost < costBestDeploymentPlan) {
+                bestDeploymentPlan = deploymentPlan;
+                costBestDeploymentPlan = deploymentPlanCost;
+            }
+            // If the score is the same, choose randomly
+            else if (deploymentPlanCost == costBestDeploymentPlan) {
+                if (Math.random() > 0.5) {
+                    bestDeploymentPlan = deploymentPlan;
+                }
+            }
+        }
+        return bestDeploymentPlan;
     }
-
 
 }

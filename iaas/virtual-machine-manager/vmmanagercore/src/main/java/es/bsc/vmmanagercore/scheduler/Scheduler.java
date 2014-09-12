@@ -260,33 +260,6 @@ public class Scheduler {
     }
 
     /**
-     * Returns the best deployment plan from a list of possible deployment plans. The deployment
-     * plan chosen depends on the algorithm used (distribution, consolidation, energy-aware, etc.).
-     *
-     * @param deploymentPlans possible deployment plans
-     * @param hosts the hosts of the infrastructure
-     * @return the best deployment plan
-     */
-    private DeploymentPlan findBestDeploymentPlan(List<DeploymentPlan> deploymentPlans, List<Host> hosts) {
-        DeploymentPlan bestPlan = null;
-        for (DeploymentPlan deploymentPlan: deploymentPlans) {
-            boolean firstDeploymentPlan = (bestPlan == null);
-            if (!firstDeploymentPlan) {
-                VMMLogger.logStartOfDeploymentPlanComparison(deploymentPlan.toString(), bestPlan.toString());
-            }
-
-            if (firstDeploymentPlan || schedAlgorithm.isBetterDeploymentPlan(deploymentPlan, bestPlan, hosts)) {
-                bestPlan = deploymentPlan;
-            }
-
-            if (!firstDeploymentPlan) {
-                VMMLogger.logEndOfDeploymentPlanComparison();
-            }
-        }
-        return bestPlan;
-    }
-
-    /**
      * Returns the best deployment plan from a list of vms. The deployment plan chosen depends
      * on the algorithm used (distribution, consolidation, energy-aware, etc.).
      *
@@ -302,7 +275,7 @@ public class Scheduler {
                 new DeploymentPlanGenerator().getPossibleDeploymentPlans(vms, hosts);
 
         // Find the best deployment plan
-        DeploymentPlan bestDeploymentPlan = findBestDeploymentPlan(possibleDeploymentPlans, hosts);
+        DeploymentPlan bestDeploymentPlan = schedAlgorithm.chooseBestDeploymentPlan(possibleDeploymentPlans, hosts);
 
         if (bestDeploymentPlan != null) {
             VMMLogger.logChosenDeploymentPlan(bestDeploymentPlan.toString());

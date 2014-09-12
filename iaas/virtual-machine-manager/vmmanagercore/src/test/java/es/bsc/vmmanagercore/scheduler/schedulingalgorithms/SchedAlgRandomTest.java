@@ -40,9 +40,14 @@ public class SchedAlgRandomTest {
         assignmentsPlan2.add(new VmAssignmentToHost(vms.get(1), hosts.get(0))); // vm2 -> host1
         DeploymentPlan deploymentPlan2 = new DeploymentPlan(assignmentsPlan2);
 
+        List<DeploymentPlan> deploymentPlans = new ArrayList<>();
+        deploymentPlans.add(deploymentPlan1);
+        deploymentPlans.add(deploymentPlan2);
+
         // The result is random, so the only thing that we can check is that the function does not throw
         // an exception
-        scheduler.isBetterDeploymentPlan(deploymentPlan2, deploymentPlan1, hosts);
+        //scheduler.isBetterDeploymentPlan(deploymentPlan2, deploymentPlan1, hosts);
+        scheduler.chooseBestDeploymentPlan(deploymentPlans, hosts);
     }
 
 }

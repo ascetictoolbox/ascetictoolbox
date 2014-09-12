@@ -19,15 +19,6 @@ public class SchedAlgConsolidation implements SchedAlgorithm {
 
     public SchedAlgConsolidation() {}
 
-    private void logServersLoadsInfo(Collection<ServerLoad> serversLoad1, Collection<ServerLoad> serversLoad2) {
-        VMMLogger.logUnusedServerLoadsAfterDeploymentPlan(1, countIdleServers(serversLoad1),
-                Scheduler.getTotalUnusedCpuPerc(serversLoad1), Scheduler.getTotalUnusedMemPerc(serversLoad1),
-                Scheduler.getTotalUnusedDiskPerc(serversLoad1));
-        VMMLogger.logUnusedServerLoadsAfterDeploymentPlan(2, countIdleServers(serversLoad2),
-                Scheduler.getTotalUnusedCpuPerc(serversLoad2), Scheduler.getTotalUnusedMemPerc(serversLoad2),
-                Scheduler.getTotalUnusedDiskPerc(serversLoad2));
-    }
-
     private boolean hasLessUnusedCpu(Collection<ServerLoad> serversLoad1, Collection<ServerLoad> serversLoad2) {
         return Scheduler.getTotalUnusedCpuPerc(serversLoad1) < Scheduler.getTotalUnusedCpuPerc(serversLoad2);
     }
@@ -73,17 +64,31 @@ public class SchedAlgConsolidation implements SchedAlgorithm {
 
     private boolean serverLoadsAreMoreConsolidated(Collection<ServerLoad> serversLoad1,
             Collection<ServerLoad> serversLoad2) {
-        logServersLoadsInfo(serversLoad1, serversLoad2);
         return (usesLessHosts(serversLoad1, serversLoad2))
                 || (!usesMoreHosts(serversLoad1, serversLoad2) && usesLessResources(serversLoad1, serversLoad2));
     }
 
-    @Override
-    public boolean isBetterDeploymentPlan(DeploymentPlan deploymentPlan1, DeploymentPlan deploymentPlan2,
+    private boolean isBetterDeploymentPlan(DeploymentPlan deploymentPlan1, DeploymentPlan deploymentPlan2,
             List<Host> hosts) {
         return serverLoadsAreMoreConsolidated(
                 Scheduler.getServersLoadsAfterDeploymentPlanExecuted(deploymentPlan1, hosts).values(),
                 Scheduler.getServersLoadsAfterDeploymentPlanExecuted(deploymentPlan2, hosts).values());
+    }
+
+    @Override
+    public DeploymentPlan chooseBestDeploymentPlan(List<DeploymentPlan> deploymentPlans, List<Host> hosts) {
+        DeploymentPlan bestDeploymentPlan = null;
+        for (DeploymentPlan deploymentPlan: deploymentPlans) {
+            Collection<ServerLoad> serversLoad =
+                    Scheduler.getServersLoadsAfterDeploymentPlanExecuted(deploymentPlan, hosts).values();
+            VMMLogger.logUnusedServerLoadsAfterDeploymentPlan(deploymentPlan, countIdleServers(serversLoad),
+                    Scheduler.getTotalUnusedCpuPerc(serversLoad), Scheduler.getTotalUnusedMemPerc(serversLoad),
+                    Scheduler.getTotalUnusedDiskPerc(serversLoad));
+            if (bestDeploymentPlan == null || isBetterDeploymentPlan(deploymentPlan, bestDeploymentPlan, hosts)) {
+                bestDeploymentPlan = deploymentPlan;
+            }
+        }
+        return bestDeploymentPlan;
     }
 
 }

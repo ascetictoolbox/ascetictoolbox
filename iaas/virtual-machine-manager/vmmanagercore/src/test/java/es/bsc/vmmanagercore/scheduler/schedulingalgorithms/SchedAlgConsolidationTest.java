@@ -11,8 +11,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -49,11 +48,14 @@ public class SchedAlgConsolidationTest {
         assignmentsPlan2.add(new VmAssignmentToHost(vms.get(1), hosts.get(0))); // vm2 -> host1
         DeploymentPlan deploymentPlan2 = new DeploymentPlan(assignmentsPlan2);
 
+        List<DeploymentPlan> deploymentPlans = new ArrayList<>();
+        deploymentPlans.add(deploymentPlan1);
+        deploymentPlans.add(deploymentPlan2);
+
         // deploymentPlan1: cpu loads = 0.375 and 0.5 (total unused = 1.125)
         // deploymentPlan2: cpu loads = 0.75 and 0.25 (total unused = 1)
         // deploymentPlan2 is better (more consolidated)
-        assertTrue(scheduler.isBetterDeploymentPlan(deploymentPlan2, deploymentPlan1, hosts));
-        assertFalse(scheduler.isBetterDeploymentPlan(deploymentPlan1, deploymentPlan2, hosts));
+        assertEquals(deploymentPlan2, scheduler.chooseBestDeploymentPlan(deploymentPlans, hosts));
     }
 
     @Test
@@ -79,11 +81,14 @@ public class SchedAlgConsolidationTest {
         assignmentsPlan2.add(new VmAssignmentToHost(vms.get(2), hosts.get(0))); // vm3 -> host1
         DeploymentPlan deploymentPlan2 = new DeploymentPlan(assignmentsPlan2);
 
+        List<DeploymentPlan> deploymentPlans = new ArrayList<>();
+        deploymentPlans.add(deploymentPlan1);
+        deploymentPlans.add(deploymentPlan2);
+
         // deploymentPlan1: mem loads = 0.75 and 0.5 (total unused = 0.75)
         // deploymentPlan2: mem loads = 0.5 and 1 (total unused = 0.5)
         // deploymentPlan2 is better (more consolidated)
-        assertTrue(scheduler.isBetterDeploymentPlan(deploymentPlan2, deploymentPlan1, hosts));
-        assertFalse(scheduler.isBetterDeploymentPlan(deploymentPlan1, deploymentPlan2, hosts));
+        assertEquals(deploymentPlan2, scheduler.chooseBestDeploymentPlan(deploymentPlans, hosts));
     }
 
     @Test
@@ -109,11 +114,14 @@ public class SchedAlgConsolidationTest {
         assignmentsPlan2.add(new VmAssignmentToHost(vms.get(2), hosts.get(0))); // vm3 -> host1
         DeploymentPlan deploymentPlan2 = new DeploymentPlan(assignmentsPlan2);
 
+        List<DeploymentPlan> deploymentPlans = new ArrayList<>();
+        deploymentPlans.add(deploymentPlan1);
+        deploymentPlans.add(deploymentPlan2);
+
         // deploymentPlan1: disk loads = 0.75 and 0.5 (total unused = 0.75)
         // deploymentPlan2: disk loads = 0.5 and 1 (total unused = 0.5)
         // deploymentPlan2 is better (more consolidated)
-        assertTrue(scheduler.isBetterDeploymentPlan(deploymentPlan2, deploymentPlan1, hosts));
-        assertFalse(scheduler.isBetterDeploymentPlan(deploymentPlan1, deploymentPlan2, hosts));
+        assertEquals(deploymentPlan2, scheduler.chooseBestDeploymentPlan(deploymentPlans, hosts));
     }
 
     @Test
@@ -136,10 +144,13 @@ public class SchedAlgConsolidationTest {
         assignmentsPlan2.add(new VmAssignmentToHost(vms.get(1), hosts.get(1))); // vm2 -> host2
         DeploymentPlan deploymentPlan2 = new DeploymentPlan(assignmentsPlan2);
 
+        List<DeploymentPlan> deploymentPlans = new ArrayList<>();
+        deploymentPlans.add(deploymentPlan1);
+        deploymentPlans.add(deploymentPlan2);
+
         // deploymentPlan1 is better because it does not wake up a new server, when the existing ones have
         // enough resources available
-        assertTrue(scheduler.isBetterDeploymentPlan(deploymentPlan1, deploymentPlan2, hosts));
-        assertFalse(scheduler.isBetterDeploymentPlan(deploymentPlan2, deploymentPlan1, hosts));
+        assertEquals(deploymentPlan1, scheduler.chooseBestDeploymentPlan(deploymentPlans, hosts));
     }
 
 }
