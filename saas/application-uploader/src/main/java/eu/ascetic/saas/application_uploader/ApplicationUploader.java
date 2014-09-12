@@ -14,6 +14,7 @@ import com.sun.jersey.api.client.WebResource;
 import eu.ascetic.paas.applicationmanager.model.Agreement;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
+import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
 import eu.ascetic.paas.applicationmanager.model.VM;
 
 public class ApplicationUploader {
@@ -23,6 +24,9 @@ public class ApplicationUploader {
 	public static final String ACCEPT_QP = "accept";
 	public static final String YES_VALUE = "yes";
 	public static final String NO_VALUE = "no";
+	private static final String ENERGY_CONSUM = "energy-consumption";
+	private static final String ENERGY_ESTIM = "energy-estimation";
+	private static final String EVENTS = "events";
 	
 	Client client;
 	WebResource resource;
@@ -64,13 +68,24 @@ public class ApplicationUploader {
 		return getDeployment(applicationID,deploymentID).getStatus();
 	}
 	
-	private Deployment getDeployment(String applicationID, String deploymentID) throws ApplicationUploaderException{
+	public Double getDeploymentEnergyConsumption(String applicationID, String deploymentID) throws ApplicationUploaderException{
 		ClientResponse response = resource.path(APPLICATIONS_PATH).path(applicationID)
-				.path(DEPLOYMENTS_PATH).path(deploymentID).accept(MediaType.APPLICATION_XML_TYPE).get(ClientResponse.class);
+				.path(DEPLOYMENTS_PATH).path(deploymentID).path(ENERGY_CONSUM).accept(MediaType.APPLICATION_XML_TYPE).get(ClientResponse.class);
 		if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
-			return response.getEntity(Deployment.class);
+			EnergyMeasurement measurement = response.getEntity(EnergyMeasurement.class);
+			return measurement.getValue();
 		}else
-			throw new ApplicationUploaderException("Error getting deployment status. Returned code is "+ response.getStatus());
+			throw new ApplicationUploaderException("Error getting deployment energy measurement. Returned code is "+ response.getStatus());
+	}
+	
+	public Double getEventEnergyEstimation(String applicationID, String deploymentID, String eventID) throws ApplicationUploaderException{
+		ClientResponse response = resource.path(APPLICATIONS_PATH).path(applicationID)
+				.path(DEPLOYMENTS_PATH).path(deploymentID).path(EVENTS).path(eventID).path(ENERGY_ESTIM).accept(MediaType.APPLICATION_XML_TYPE).get(ClientResponse.class);
+		if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
+			EnergyMeasurement measurement = response.getEntity(EnergyMeasurement.class);
+			return measurement.getValue();
+		}else
+			throw new ApplicationUploaderException("Error getting deployment energy measurement. Returned code is "+ response.getStatus());
 	}
 	
 	/** Get deployment agreement
@@ -106,6 +121,8 @@ public class ApplicationUploader {
 		HashMap<String, Map<String, String>> vms = new  HashMap<String, Map<String, String>>();
 		for (VM vm:deployment.getVms()){
 			String provider = vm.getProviderId();
+			if (provider == null)
+				provider = "ASCETIC Cloud";
 			Map<String, String> vm_provider = vms.get(provider);
 			if (vm_provider==null){
 				vm_provider = new HashMap<String, String>();
@@ -186,4 +203,12 @@ public class ApplicationUploader {
 		}
 	}
 	
+	private Deployment getDeployment(String applicationID, String deploymentID) throws ApplicationUploaderException{
+		ClientResponse response = resource.path(APPLICATIONS_PATH).path(applicationID)
+				.path(DEPLOYMENTS_PATH).path(deploymentID).accept(MediaType.APPLICATION_XML_TYPE).get(ClientResponse.class);
+		if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
+			return response.getEntity(Deployment.class);
+		}else
+			throw new ApplicationUploaderException("Error getting deployment status. Returned code is "+ response.getStatus());
+	}
 }
