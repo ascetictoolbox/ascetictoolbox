@@ -249,10 +249,10 @@ public class XMLBuilder {
 	 * @return the updated object with all its XML fields
 	 */
 	public static EnergyMeasurement addEnergyMeasurementForDeploymentXMLInfo(
-			EnergyMeasurement energyMeasurement, String applicationId, String deploymentId) {
+			EnergyMeasurement energyMeasurement, String applicationId, String deploymentId, String href) {
 		
 		energyMeasurement.setDescription("Aggregated energy consumption for this aplication deployment");
-		energyMeasurement.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/energy-measurement");
+		energyMeasurement.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/" + href);
 		
 		Link linkParent = new Link();
 		linkParent.setHref("/applications/" + applicationId + "/deployments/" + deploymentId);
@@ -270,7 +270,7 @@ public class XMLBuilder {
 	}
 	
 	public static String getEnergyMeasurementForDeploymentXMLInfo(EnergyMeasurement energyMeasurement, String applicationId, String deploymentId) {
-		energyMeasurement = XMLBuilder.addEnergyMeasurementForDeploymentXMLInfo(energyMeasurement, applicationId, deploymentId);
+		energyMeasurement = XMLBuilder.addEnergyMeasurementForDeploymentXMLInfo(energyMeasurement, applicationId, deploymentId, "energy-consumption");
 		
 		return ModelConverter.objectEnergyMeasurementToXML(energyMeasurement);
 	}

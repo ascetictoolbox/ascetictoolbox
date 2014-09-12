@@ -11,9 +11,11 @@ import java.nio.file.Paths;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.slasoi.gslam.syntaxconverter.webservice.InitiateNegotiationDocument;
+import org.slasoi.gslam.core.negotiation.ISyntaxConverter.SyntaxConverterType;
+import org.slasoi.gslam.syntaxconverter.SyntaxConverterDelegator;
 import org.slasoi.slamodel.sla.SLATemplate;
 
+import eu.ascetic.applicationmanager.slam.stub.BZNegotiationStub.InitiateNegotiation;
 import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
 
@@ -43,16 +45,12 @@ public class SLAMClientTest {
 		OvfDefinition ovfDefinition = OVFUtils.getOvfDefinition(threeTierWebAppOvfString);
 		SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "REST-URL");
 		
-		//We create the initiate document request
-		SLAMClient client = new SLAMClient();
+		InitiateNegotiation inParam = new InitiateNegotiation();
+		SyntaxConverterDelegator delegator = new SyntaxConverterDelegator(SyntaxConverterType.SLASOISyntaxConverter);
+		inParam.setSlaTemplate(delegator.renderSLATemplate(slaTemplate));
+
 		
-		InitiateNegotiationDocument document = client.getInitiateNegotiationDocument(slaTemplate);
-		
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		
-		document.save(baos);
-		
-		System.out.println(baos.toString(StandardCharsets.UTF_8.toString()));
+		System.out.println(inParam.getSlaTemplate());
 	}
 	
 	/**

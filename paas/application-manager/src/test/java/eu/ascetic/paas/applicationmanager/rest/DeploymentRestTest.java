@@ -301,16 +301,52 @@ public class DeploymentRestTest {
 	}
 	
 	@Test
-	@SuppressWarnings(value = { "static-access" }) 
+	@SuppressWarnings(value = { "static-access", "unchecked" }) 
 	public void getEnergyEstimationForEventTest() throws JAXBException {
+		Deployment deployment = new Deployment();
+		deployment.setId(1);
+		
+		VM vm1 = new VM();
+		vm1.setProviderVmId("X1");
+		deployment.addVM(vm1);
+		
+		VM vm2 = new VM();
+		vm2.setProviderVmId("X2");
+		deployment.addVM(vm2);
+		
 		EnergyModellerSimple energyModeller = mock(EnergyModellerSimple.class);
 		DeploymentRest deploymentRest = new DeploymentRest();
 		
 		deploymentRest.energyModeller = energyModeller;
 		
-		when(energyModeller.energyEstimation(null, "111", "333", "eventX")).thenReturn(22.0);
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		deploymentRest.deploymentDAO = deploymentDAO;
+		when(deploymentDAO.getById(1)).thenReturn(deployment);
+				
+		when(energyModeller.energyEstimation(isNull(String.class), eq("111"), argThat(new BaseMatcher<List<String>>() {
+			 
+			@Override
+			public boolean matches(Object arg0) {
+				
+				List<String> ids = (List<String>) arg0;
+				
+				boolean isTheList = true;
+				
+				if(!(ids.size() == 2)) isTheList = false; 
+				
+				if(!(ids.get(0).equals("X1"))) isTheList = false;
+				
+				if(!(ids.get(1).equals("X2"))) isTheList = false;
+
+				return isTheList;
+			}
+
+			@Override
+			public void describeTo(Description arg0) {}
 		
-		Response response = deploymentRest.getEnergyEstimationForEvent("111", "333", "eventX");
+		}), eq("eventX"))).thenReturn(22.0);
+		
+		Response response = deploymentRest.getEnergyEstimationForEvent("111", "1", "eventX");
 		
 		String xml = (String) response.getEntity();
 		JAXBContext jaxbContext = JAXBContext.newInstance(EnergyMeasurement.class);

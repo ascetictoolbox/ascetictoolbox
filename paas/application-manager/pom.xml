@@ -139,22 +139,27 @@
 				</configuration>
 			</plugin>
 			<plugin>
-                <groupId>org.apache.axis2</groupId>
-                <artifactId>axis2-wsdl2code-maven-plugin</artifactId>
-                <version>1.5.1</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>wsdl2code</goal>
-                        </goals>
-                        <configuration>
-                            <packageName>eu.ascetic.paas.applicationmanager.slam.client</packageName>
-                            <wsdlFile>${myDirectory}/paas/application-manager/src/main/resources/ProviderNegotiation.wsdl</wsdlFile>
-                            <databindingName>xmlbeans</databindingName>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+				<groupId>org.apache.axis2</groupId>
+				<artifactId>axis2-wsdl2code-maven-plugin</artifactId>
+				<!-- version>1.6.2</version -->
+				<version>1.5.6</version>
+				<configuration>
+					<packageName>eu.ascetic.applicationmanager.slam.stub</packageName>
+					<outputDirectory>src/main/java</outputDirectory>
+					<databindingName>adb</databindingName>
+					<flattenFiles>true</flattenFiles>
+					<!-- generateServerSide>true</generateServerSide -->
+					<wsdlFile>${myDirectory}/paas/application-manager/src/main/resources/ProviderNegotiation.wsdl</wsdlFile>
+					<serverSide>false</serverSide>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>wsdl2code</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>	
 		</plugins>
 	</build>
 	

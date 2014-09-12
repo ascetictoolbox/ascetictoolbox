@@ -247,8 +247,11 @@ public class DeploymentRest extends AbstractRest {
 		// Make sure we have the right configuration
 		energyModeller = getEnergyModeller();
 		
+		Deployment deployment = deploymentDAO.getById(Integer.parseInt(deploymentId));
+		List<String> ids = getVmsProviderIds(deployment);
+		
 		logger.debug("Connecting to Energy Modeller");
-		double energyConsumed = energyModeller.energyEstimation(null, applicationName, deploymentId, eventId);
+		double energyConsumed = energyModeller.energyEstimation(null, applicationName, ids, eventId);
 		
 		EnergyMeasurement energyMeasurement = new EnergyMeasurement();
 		energyMeasurement.setValue(energyConsumed);

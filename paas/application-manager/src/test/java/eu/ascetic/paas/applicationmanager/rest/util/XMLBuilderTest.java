@@ -48,16 +48,16 @@ public class XMLBuilderTest {
 		EnergyMeasurement energyMeasurement = new EnergyMeasurement();
 		energyMeasurement.setValue(22.0);
 		
-		energyMeasurement = XMLBuilder.addEnergyMeasurementForDeploymentXMLInfo(energyMeasurement, "111", "333");
+		energyMeasurement = XMLBuilder.addEnergyMeasurementForDeploymentXMLInfo(energyMeasurement, "111", "333", "energy-consumption");
 		
-		assertEquals("/applications/111/deployments/333/energy-measurement", energyMeasurement.getHref());
+		assertEquals("/applications/111/deployments/333/energy-consumption", energyMeasurement.getHref());
 		assertEquals(22.0, energyMeasurement.getValue(), 0.00001);
 		assertEquals("Aggregated energy consumption for this aplication deployment", energyMeasurement.getDescription());
 		assertEquals(2, energyMeasurement.getLinks().size());
 		assertEquals("/applications/111/deployments/333", energyMeasurement.getLinks().get(0).getHref());
 		assertEquals("parent", energyMeasurement.getLinks().get(0).getRel());
 		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(0).getType());
-		assertEquals("/applications/111/deployments/333/energy-measurement", energyMeasurement.getLinks().get(1).getHref());
+		assertEquals("/applications/111/deployments/333/energy-consumption", energyMeasurement.getLinks().get(1).getHref());
 		assertEquals("self",energyMeasurement.getLinks().get(1).getRel());
 		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(1).getType());
 	}
@@ -73,14 +73,14 @@ public class XMLBuilderTest {
 		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 		energyMeasurement = (EnergyMeasurement) jaxbUnmarshaller.unmarshal(new StringReader(xml));
 		
-		assertEquals("/applications/111/deployments/333/energy-measurement", energyMeasurement.getHref());
+		assertEquals("/applications/111/deployments/333/energy-consumption", energyMeasurement.getHref());
 		assertEquals(22.0, energyMeasurement.getValue(), 0.00001);
 		assertEquals("Aggregated energy consumption for this aplication deployment", energyMeasurement.getDescription());
 		assertEquals(2, energyMeasurement.getLinks().size());
 		assertEquals("/applications/111/deployments/333", energyMeasurement.getLinks().get(0).getHref());
 		assertEquals("parent", energyMeasurement.getLinks().get(0).getRel());
 		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(0).getType());
-		assertEquals("/applications/111/deployments/333/energy-measurement", energyMeasurement.getLinks().get(1).getHref());
+		assertEquals("/applications/111/deployments/333/energy-consumption", energyMeasurement.getLinks().get(1).getHref());
 		assertEquals("self",energyMeasurement.getLinks().get(1).getRel());
 		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(1).getType());
 	}
