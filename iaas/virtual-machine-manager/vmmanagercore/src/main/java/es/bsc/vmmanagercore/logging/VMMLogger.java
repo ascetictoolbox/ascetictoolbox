@@ -33,17 +33,9 @@ public class VMMLogger {
         logger.debug("[VMM] random score for deployment plan [ " + deploymentPlan.toString() + "]: " + randomScore);
     }
 
-    public static void logPredictedAvgPowerOfVmInHost(String vmName, String hostName, double avgPower) {
-        logger.debug("[VMM] predicted avg power vm=" + vmName + ", host=" + hostName + " is " + avgPower + "W");
-    }
-
     public static void logPredictedAvgPowerForDeploymentPlan(DeploymentPlan deploymentPlan, double avgPower) {
         logger.debug("[VMM] predicted avg power deployment plan [ " + deploymentPlan.toString()
                 + "]: " + avgPower + "W");
-    }
-
-    public static void logPredictedCostOfVmInHost(String vmName, String hostName, double cost) {
-        logger.debug("[VMM] predicted cost of vm=" + vmName + ", host=" + hostName + " is " + cost + " euros");
     }
 
     public static void logPredictedCostForDeploymentPlan(DeploymentPlan deploymentPlan, double cost) {

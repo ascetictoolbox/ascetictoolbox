@@ -32,8 +32,6 @@ public class SchedAlgEnergyAware implements SchedAlgorithm {
             double predictedAvgPower = EnergyModellerConnector.getPredictedAvgPowerVm(vmAssignmentToHost.getVm(),
                     vmAssignmentToHost.getHost(), vmsDeployed);
             result += predictedAvgPower;
-            VMMLogger.logPredictedAvgPowerOfVmInHost(vmAssignmentToHost.getVm().getName(),
-                    vmAssignmentToHost.getHost().getHostname(), predictedAvgPower);
         }
         return result;
     }

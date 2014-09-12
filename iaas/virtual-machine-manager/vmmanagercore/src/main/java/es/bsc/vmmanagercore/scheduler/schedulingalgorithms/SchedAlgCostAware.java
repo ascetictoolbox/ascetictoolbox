@@ -35,8 +35,6 @@ public class SchedAlgCostAware implements SchedAlgorithm {
             double costEstimate = PricingModellerConnector.getVmCost(energyEstimate,
                     vmAssignmentToHost.getHost().getHostname());
             result += costEstimate;
-            VMMLogger.logPredictedCostOfVmInHost(vmAssignmentToHost.getVm().getName(),
-                    vmAssignmentToHost.getHost().getHostname(), costEstimate);
         }
         return result;
     }
