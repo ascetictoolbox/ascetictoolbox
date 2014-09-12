@@ -24,8 +24,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.swing.JFrame;
@@ -43,8 +45,8 @@ public class EnergyModellerDisplayTool extends JFrame {
      */
     private static final long serialVersionUID = 1733713840007288665L;
     private static EnergyModeller modeller;
-
-    DataCollector collector = new DataCollector(new ZabbixDataSourceAdaptor(), new DefaultDatabaseConnector());
+    private static EnergyModellerDisplayTool displayTool;
+    private DataCollector collector = new DataCollector(new ZabbixDataSourceAdaptor(), new DefaultDatabaseConnector(), true);
     /**
      *
      */
@@ -155,7 +157,15 @@ public class EnergyModellerDisplayTool extends JFrame {
         if (args.length == 0) {
             modeller = new EnergyModeller();
         }
-        new EnergyModellerDisplayTool();
+        displayTool = new EnergyModellerDisplayTool();
+        HashSet<String> argsSet = new HashSet<>();
+        argsSet.addAll(Arrays.asList(args));
+        if (argsSet.contains("Ignore-Idle-Energy")) {
+            displayTool.collector.setConsiderIdleEnergy(false);
+        }
+        if (argsSet.contains("With-Own-Energy-Modeller")) {
+            modeller = new EnergyModeller();
+        }        
 
     }
 }

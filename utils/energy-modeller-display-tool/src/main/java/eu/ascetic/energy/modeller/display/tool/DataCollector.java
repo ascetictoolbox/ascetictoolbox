@@ -52,12 +52,40 @@ public class DataCollector implements Runnable {
     private HashMap<String, Host> knownHosts = new HashMap<>(); //TODO add a listner structure here
     private final ArrayList<DataAvailableListener> listners = new ArrayList<>();
     private final HashMap<String, List<CurrentUsageRecord>> hostAnswer = new HashMap<>();
+    private boolean considerIdleEnergy = false;
+  
 
+    /**
+     * This creates a new data collector for the energy modeller display tool.
+     *
+     * @param datasource The data source to use.
+     * @param connector Database connector to use.
+     * @param considerIdleEnergy If idle energy of a host should be considered
+     * or not, or just workload.
+     */
+    public DataCollector(HostDataSource datasource, DatabaseConnector connector, boolean considerIdleEnergy) {
+        this.datasource = datasource;
+        this.connector = connector;
+        this.considerIdleEnergy = considerIdleEnergy;
+    }
+
+    /**
+     * This creates a new data collector for the energy modeller display tool.
+     *
+     * @param datasource The data source to use.
+     * @param connector Database connector to use.
+     */
     public DataCollector(HostDataSource datasource, DatabaseConnector connector) {
         this.datasource = datasource;
         this.connector = connector;
     }
 
+    /**
+     * This registers a new listener for updates to the dataset that this data
+     * collector is gathering.
+     *
+     * @param listner The listener to use
+     */
     public void registerListener(DataAvailableListener listner) {
         listners.add(listner);
     }
@@ -137,7 +165,7 @@ public class DataCollector implements Runnable {
                             loadFractionData.add(vmData.getValue());
                             rule.setFractions(loadFractionData.get(0).getFraction());
                             EnergyDivision division = rule.getEnergyUsage(vmData.getKey().getHost(), vmsArr);
-                            division.setConsiderIdleEnergy(false); //TODO parameterise this!!
+                            division.setConsiderIdleEnergy(considerIdleEnergy);
 
                             for (VmDeployed vm : vmData.getValue().getVMs()) {
                                 if (vm.getAllocatedTo() == null) {
@@ -282,6 +310,20 @@ public class DataCollector implements Runnable {
     public void stop() {
         running = false;
         connector.closeConnection();
+    }
+
+    /**
+     * @return the considerIdleEnergy
+     */
+    public synchronized boolean isConsiderIdleEnergy() {
+        return considerIdleEnergy;
+    }
+
+    /**
+     * @param considerIdleEnergy the considerIdleEnergy to set
+     */
+    public synchronized void setConsiderIdleEnergy(boolean considerIdleEnergy) {
+        this.considerIdleEnergy = considerIdleEnergy;
     }
 
 }
