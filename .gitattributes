@@ -121,16 +121,11 @@ iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamana
 iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/negotiation/ws/BZNegotiationStub.java -text
 iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/negotiation/ws/InvalidNegotiationIDExceptionException.java -text
 iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/negotiation/ws/NegotiationClient.java -text
-iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/negotiation/ws/NegotiationWsClient.java -text
-iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/negotiation/ws/NegotiationWsClientRaw.java -text
 iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/negotiation/ws/OperationInProgressExceptionException.java -text
 iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/negotiation/ws/OperationNotPossibleExceptionException.java -text
 iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/negotiation/ws/ProvisioningExceptionException.java -text
 iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/negotiation/ws/SLACreationExceptionException.java -text
 iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/negotiation/ws/SLANotFoundExceptionException.java -text
-iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/negotiation/ws/SlaTranslator.java -text
-iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/negotiation/ws/SlaTranslatorImpl.java -text
-iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/negotiation/ws/SlaTranslatorImplNoOsgi.java -text
 iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/slatemplate/AsceticSlaTemplate.java -text
 iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/slatemplate/SLAT2SLAImpl.java -text
 iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/slatemplate/SlaTemplateBuilder.java -text
@@ -156,6 +151,7 @@ iaas/iaas-slamanager/planning-optimization/src/test/java/eu/ascetic/iaas/slamana
 iaas/iaas-slamanager/planning-optimization/src/test/java/eu/ascetic/iaas/slamanager/poc/slatemplate/parser/test/AsceticSlaTemplateParserTest.java -text
 iaas/iaas-slamanager/planning-optimization/src/test/resources/ovf/ascetic-ovf-example.ovf -text
 iaas/iaas-slamanager/planning-optimization/src/test/resources/ovf/ascetic-pm-HMMERpfam.ovf -text
+iaas/iaas-slamanager/planning-optimization/src/test/resources/slats/ASCETiC-SlaTemplateIaaSOffer.xml -text
 iaas/iaas-slamanager/planning-optimization/src/test/resources/slats/ASCETiC-SlaTemplateIaaSRequest.xml -text
 iaas/iaas-slamanager/planning-optimization/src/test/resources/slats/ASCETiC-SlaTemplateIaaSRequest2.xml -text
 iaas/iaas-slamanager/planning-optimization/src/test/resources/slats/sla.xml -text

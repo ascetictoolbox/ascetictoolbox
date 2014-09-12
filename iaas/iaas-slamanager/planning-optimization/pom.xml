@@ -191,6 +191,14 @@
 			<artifactId>stax-api</artifactId>
 			<version>1.0.1</version>
 		</dependency>
+		
+		<!-- dependency>
+	<groupId>org.apache.ws.commons.axiom</groupId>
+	<artifactId>axiom-api</artifactId>
+	<version>1.2.14</version>
+	<scope>test</scope>
+</dependency-->
+		
 	</dependencies>
 
 	<!-- -->

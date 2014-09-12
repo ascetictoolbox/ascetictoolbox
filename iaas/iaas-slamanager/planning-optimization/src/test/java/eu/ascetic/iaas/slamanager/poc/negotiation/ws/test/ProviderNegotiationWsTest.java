@@ -3,8 +3,6 @@ package eu.ascetic.iaas.slamanager.poc.negotiation.ws.test;
 import java.io.File;
 import java.io.IOException;
 
-import junit.framework.Assert;
-
 import org.apache.commons.io.FileUtils;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.After;
@@ -12,16 +10,13 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slasoi.gslam.syntaxconverter.SLASOITemplateParser;
-import org.slasoi.gslam.syntaxconverter.SLASOITemplateRenderer;
 import org.slasoi.slamodel.sla.SLATemplate;
 
-import eu.ascetic.iaas.slamanager.poc.negotiation.ws.NegotiationWsClient;
-import eu.ascetic.iaas.slamanager.poc.negotiation.ws.SlaTranslator;
-import eu.ascetic.iaas.slamanager.poc.negotiation.ws.SlaTranslatorImplNoOsgi;
+import eu.ascetic.iaas.slamanager.poc.negotiation.ws.NegotiationClient;
 
 public class ProviderNegotiationWsTest {
 
-	private static NegotiationWsClient nc;
+	private static final String serverAddress = "localhost";
 	private static final int serverPort = 8080;
 	private static final String requestUrl = "/services/asceticNegotiation?wsdl";
 	private String negId = null;
@@ -36,9 +31,6 @@ public class ProviderNegotiationWsTest {
 
 	@Before
 	public void setUp() throws Exception {
-		nc = new NegotiationWsClient();
-		SlaTranslator slaTranslator = new SlaTranslatorImplNoOsgi();
-		nc.setSlaTranslator(slaTranslator);
 	}
 
 	//@Test
@@ -49,23 +41,31 @@ public class ProviderNegotiationWsTest {
 		SLASOITemplateParser slasoiTemplateParser = new SLASOITemplateParser();
 		SLATemplate slat = slasoiTemplateParser.parseTemplate(slatXml);
 		System.out.println("Sending initiateNegotiation SOAP request...");
-		negId = nc.initiateNegotiation("http://localhost:" + serverPort + requestUrl, slat);
+		String endpoint = "http://" + serverAddress + ":" + serverPort + requestUrl;
+
+		NegotiationClient nc = new NegotiationClient(endpoint);
+		negId = nc.initiateNegotiation(slat);
+
 		System.out.println("Negotiation ID: " + negId);
 	}
 
-	// @Test
+	//@Test
 	public void testNegotiationWs() throws Exception {
 
-		String slatXml = FileUtils.readFileToString(new File("src/test/resources/slats/contrail-basic-slat.xml"));
+		String slatXml = FileUtils.readFileToString(new File("src/test/resources/slats/ASCETiC-SlaTemplateIaaSRequest.xml"));
 
-		SLASOITemplateParser parser = new SLASOITemplateParser();
-		SLATemplate slat = parser.parseTemplate(slatXml);
-		System.out.println("Sending negotiate SOAP request...");
-		SLATemplate[] slats = nc.negotiate("http://localhost:" + serverPort + requestUrl, slat, negId);
+		SLASOITemplateParser slasoiTemplateParser = new SLASOITemplateParser();
+		SLATemplate slat = slasoiTemplateParser.parseTemplate(slatXml);
+		System.out.println("Sending initiateNegotiation SOAP request...");
+		String endpoint = "http://" + serverAddress + ":" + serverPort + requestUrl;
 
-		SLASOITemplateRenderer rend = new SLASOITemplateRenderer();
-		String xmlRetSlat = rend.renderSLATemplate(slats[0]);
-		Assert.assertNotNull(xmlRetSlat);
+		NegotiationClient nc = new NegotiationClient(endpoint);
+		SLATemplate[] slaTemplates = nc.negotiate(negId, slat);
+
+		for (SLATemplate sla : slaTemplates) {
+			System.out.println("SLa returned:");
+			System.out.println(sla);
+		}
 	}
 
 	@After

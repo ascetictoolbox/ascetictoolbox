@@ -1,3 +1,4 @@
+
 /**
  * OperationInProgressExceptionException.java
  *
@@ -7,31 +8,34 @@
 
 package eu.ascetic.iaas.slamanager.poc.negotiation.ws;
 
-public class OperationInProgressExceptionException extends java.lang.Exception {
+public class OperationInProgressExceptionException extends java.lang.Exception{
+    
+    private eu.ascetic.iaas.slamanager.poc.negotiation.ws.BZNegotiationStub.OperationInProgressExceptionE faultMessage;
 
-	private eu.ascetic.iaas.slamanager.poc.negotiation.ws.BZNegotiationStub.OperationInProgressExceptionE faultMessage;
+    
+        public OperationInProgressExceptionException() {
+            super("OperationInProgressExceptionException");
+        }
 
-	public OperationInProgressExceptionException() {
-		super("OperationInProgressExceptionException");
-	}
+        public OperationInProgressExceptionException(java.lang.String s) {
+           super(s);
+        }
 
-	public OperationInProgressExceptionException(java.lang.String s) {
-		super(s);
-	}
+        public OperationInProgressExceptionException(java.lang.String s, java.lang.Throwable ex) {
+          super(s, ex);
+        }
 
-	public OperationInProgressExceptionException(java.lang.String s, java.lang.Throwable ex) {
-		super(s, ex);
-	}
+        public OperationInProgressExceptionException(java.lang.Throwable cause) {
+            super(cause);
+        }
+    
 
-	public OperationInProgressExceptionException(java.lang.Throwable cause) {
-		super(cause);
-	}
-
-	public void setFaultMessage(eu.ascetic.iaas.slamanager.poc.negotiation.ws.BZNegotiationStub.OperationInProgressExceptionE msg) {
-		faultMessage = msg;
-	}
-
-	public eu.ascetic.iaas.slamanager.poc.negotiation.ws.BZNegotiationStub.OperationInProgressExceptionE getFaultMessage() {
-		return faultMessage;
-	}
+    public void setFaultMessage(eu.ascetic.iaas.slamanager.poc.negotiation.ws.BZNegotiationStub.OperationInProgressExceptionE msg){
+       faultMessage = msg;
+    }
+    
+    public eu.ascetic.iaas.slamanager.poc.negotiation.ws.BZNegotiationStub.OperationInProgressExceptionE getFaultMessage(){
+       return faultMessage;
+    }
 }
+    

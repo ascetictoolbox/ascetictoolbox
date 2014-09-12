@@ -1,3 +1,4 @@
+
 /**
  * SLACreationExceptionException.java
  *
@@ -7,31 +8,34 @@
 
 package eu.ascetic.iaas.slamanager.poc.negotiation.ws;
 
-public class SLACreationExceptionException extends java.lang.Exception {
+public class SLACreationExceptionException extends java.lang.Exception{
+    
+    private eu.ascetic.iaas.slamanager.poc.negotiation.ws.BZNegotiationStub.SLACreationExceptionE faultMessage;
 
-	private eu.ascetic.iaas.slamanager.poc.negotiation.ws.BZNegotiationStub.SLACreationExceptionE faultMessage;
+    
+        public SLACreationExceptionException() {
+            super("SLACreationExceptionException");
+        }
 
-	public SLACreationExceptionException() {
-		super("SLACreationExceptionException");
-	}
+        public SLACreationExceptionException(java.lang.String s) {
+           super(s);
+        }
 
-	public SLACreationExceptionException(java.lang.String s) {
-		super(s);
-	}
+        public SLACreationExceptionException(java.lang.String s, java.lang.Throwable ex) {
+          super(s, ex);
+        }
 
-	public SLACreationExceptionException(java.lang.String s, java.lang.Throwable ex) {
-		super(s, ex);
-	}
+        public SLACreationExceptionException(java.lang.Throwable cause) {
+            super(cause);
+        }
+    
 
-	public SLACreationExceptionException(java.lang.Throwable cause) {
-		super(cause);
-	}
-
-	public void setFaultMessage(eu.ascetic.iaas.slamanager.poc.negotiation.ws.BZNegotiationStub.SLACreationExceptionE msg) {
-		faultMessage = msg;
-	}
-
-	public eu.ascetic.iaas.slamanager.poc.negotiation.ws.BZNegotiationStub.SLACreationExceptionE getFaultMessage() {
-		return faultMessage;
-	}
+    public void setFaultMessage(eu.ascetic.iaas.slamanager.poc.negotiation.ws.BZNegotiationStub.SLACreationExceptionE msg){
+       faultMessage = msg;
+    }
+    
+    public eu.ascetic.iaas.slamanager.poc.negotiation.ws.BZNegotiationStub.SLACreationExceptionE getFaultMessage(){
+       return faultMessage;
+    }
 }
+    
