@@ -1213,6 +1213,8 @@ saas/application-uploader/pom.xml -text
 saas/application-uploader/src/main/java/eu/ascetic/saas/application_uploader/ApplicationUploader.java -text
 saas/application-uploader/src/main/java/eu/ascetic/saas/application_uploader/ApplicationUploaderException.java -text
 saas/application-uploader/src/test/java/eu/ascetic/saas/application_uploader/tests/ApplicationUploaderTest.java -text
+saas/application-uploader/src/test/resources/3tier-webapp.ovf.xml -text
+saas/application-uploader/src/test/resources/service_manifest.xml -text
 saas/ascetic-eclipse-site/category.xml -text
 saas/ascetic-eclipse-site/pom.xml -text
 saas/compss-packager/.classpath -text

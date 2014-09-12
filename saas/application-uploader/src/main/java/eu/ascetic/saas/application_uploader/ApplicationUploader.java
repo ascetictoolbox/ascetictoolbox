@@ -68,6 +68,10 @@ public class ApplicationUploader {
 		return getDeployment(applicationID,deploymentID).getStatus();
 	}
 	
+	public List<VM> getDeploymentVMDescriptions(String applicationID, String deploymentID) throws ApplicationUploaderException{
+		return getDeployment(applicationID,deploymentID).getVms();
+	}
+	
 	public Double getDeploymentEnergyConsumption(String applicationID, String deploymentID) throws ApplicationUploaderException{
 		ClientResponse response = resource.path(APPLICATIONS_PATH).path(applicationID)
 				.path(DEPLOYMENTS_PATH).path(deploymentID).path(ENERGY_CONSUM).accept(MediaType.APPLICATION_XML_TYPE).get(ClientResponse.class);
@@ -133,6 +137,7 @@ public class ApplicationUploader {
 		}
 		return vms;
 	}
+	
 
 	/** Accept deployment agreement
 	 * @param applicationID Application Identifier

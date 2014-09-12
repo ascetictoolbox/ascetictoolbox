@@ -6,11 +6,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.junit.Test;
 
+import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.saas.application_uploader.ApplicationUploader;
 import eu.ascetic.saas.application_uploader.ApplicationUploaderException;
 
@@ -82,6 +84,18 @@ public class ApplicationUploaderTest {
 			for (Entry<String,String>e:provs.getValue().entrySet()){
 				System.out.println("Prov: "+ provs.getKey()+ " ip: "+e.getKey()+" vm: "+e.getValue());
 			}
+		}
+	}
+	
+	@Test
+	public void getVMDescriptions() throws ApplicationUploaderException {
+		ApplicationUploader uploader = new ApplicationUploader("http://10.4.0.16/application-manager");
+		String applicationID = "HMMERpfam";
+		String deploymentID = "35";
+		List<VM> vms = uploader.getDeploymentVMDescriptions(applicationID, deploymentID);
+		for (VM vm:vms){
+			System.out.println("Prov: "+ vm.getProviderId()+ " ip: " + vm.getIp() 
+					+ " vm-id: " + vm.getId() + " vm-provider-id: " + vm.getProviderVmId()+" ovf-id: "+vm.getOvfId());
 		}
 	}
 	
