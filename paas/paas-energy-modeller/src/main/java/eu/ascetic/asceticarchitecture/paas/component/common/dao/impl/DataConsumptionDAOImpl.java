@@ -31,8 +31,8 @@ public class DataConsumptionDAOImpl implements DataConsumptionDAO {
 	private static String SQL_Q_LASTVM="select max(time) from DATACONSUMPTION where applicationid = ? and vmid = ?";
 	private static String SQL_Q_FIRSTVM="select min(time) from DATACONSUMPTION where applicationid = ? and vmid = ?";
 	private static String SQL_Q_EMID="select * from DATACONSUMPTION where eventid = ?";
-	private static String SQL_SUM_DEPLOY="select IFNULL(sum(vmenergy),0) from DATACONSUMPTION where applicationid = ? and deploymentid = ?";
-	private static String SQL_SUM_VM="select IFNULL(sum(vmenergy),0) from DATACONSUMPTION where applicationid = ? and deploymentid = ? and vmid = ?";
+	private static String SQL_SUM_DEPLOY="select IFNULL(avg(vmenergy),0) from DATACONSUMPTION where applicationid = ? and deploymentid = ?";
+	private static String SQL_SUM_VM="select IFNULL(avg(vmenergy),0) from DATACONSUMPTION where applicationid = ? and deploymentid = ? and vmid = ?";
 	private static String SQL_CLEAN="DELETE FROM DATACONSUMPTION";
 	
 	@Override

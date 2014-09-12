@@ -90,31 +90,40 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 
 			
 			LOGGER.info("VM consumed " +energy);
-//			WorkLoadEnergyInterpolator wei = new WorkLoadEnergyInterpolator();
-//			wei.providedata(dbmanager.getDataConsumptionDAOImpl());
-//			wei.buildmodel(applicationid, vmid);
-//			LOGGER.info("VM will consume at 20% " +wei.estimate(0.20));
-//			
-//			
-//			EnergyInterpolator ei = new EnergyInterpolator();
-//			ei.providedata(dbmanager.getDataConsumptionDAOImpl());
-//			LOGGER.info("Building estimator");
-//			ei.buildmodel(applicationid, vmid);
-//			
-//			LOGGER.info("Using estimator " );
-//			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//
-//			  Date date;
-//			try {
-//				date = dateFormat.parse("2014-09-02 20:12:00");
-//				LOGGER.info("Time  is " +  dateFormat.format(date));
-//				LOGGER.info("Time  is " +  date.getTime());
-//				LOGGER.info("VM consumed " +ei.estimate(date.getTime()/1000));
-//
-//			} catch (ParseException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
+			WorkLoadEnergyInterpolator wei = new WorkLoadEnergyInterpolator();
+			wei.providedata(dbmanager.getDataConsumptionDAOImpl());
+			wei.buildmodel(applicationid, vmid);
+			LOGGER.info("VM will consume at 10% " +wei.estimate(0.10));
+			LOGGER.info("VM will consume at 20% " +wei.estimate(0.20));
+			LOGGER.info("VM will consume at 30% " +wei.estimate(0.30));
+			LOGGER.info("VM will consume at 40% " +wei.estimate(0.40));
+			LOGGER.info("VM will consume at 50% " +wei.estimate(0.50));
+			LOGGER.info("VM will consume at 60% " +wei.estimate(0.60));
+			LOGGER.info("VM will consume at 70% " +wei.estimate(0.70));
+			LOGGER.info("VM will consume at 80% " +wei.estimate(0.80));
+			LOGGER.info("VM will consume at 90% " +wei.estimate(0.90));
+			LOGGER.info("VM will consume at 100% " +wei.estimate(1.0));
+			
+			
+			EnergyInterpolator ei = new EnergyInterpolator();
+			ei.providedata(dbmanager.getDataConsumptionDAOImpl());
+			LOGGER.info("Building estimator");
+			ei.buildmodel(applicationid, vmid);
+			
+			LOGGER.info("Using estimator " );
+			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+			  Date date;
+			try {
+				date = dateFormat.parse("2014-09-02 20:12:00");
+				//LOGGER.info("Time  is " +  dateFormat.format(date));
+				//LOGGER.info("Time  is " +  date.getTime());
+				//LOGGER.info("VM consumed " +ei.estimate(date.getTime()/1000));
+
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 			
 			return energy;

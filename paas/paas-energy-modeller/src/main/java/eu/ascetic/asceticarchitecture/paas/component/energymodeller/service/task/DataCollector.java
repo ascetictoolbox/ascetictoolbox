@@ -188,8 +188,8 @@ public class DataCollector extends TimerTask implements DataCollectorTaskInterfa
 			List<VMConsumptionPerHour> data = iaasdatadriver.getEnergyForVMHourly(hostid, vmiaasid, null);
 			logger.info("Importing data");
 			for (VMConsumptionPerHour element : data){
-				energyvm = Double.parseDouble(element.getLoad())*Double.parseDouble(element.getEnergy());
-				powervm = Double.parseDouble(element.getLoad())*Double.parseDouble(element.getPower());
+				energyvm = Double.parseDouble(element.getLoad())*(Double.parseDouble(element.getEnergy())/100);
+				powervm = Double.parseDouble(element.getLoad())*(Double.parseDouble(element.getPower())/100);
 				logger.info("Got energy  "+energyvm + " and power "+powervm);
 				DataConsumption datacons = new DataConsumption();
 				datacons.setApplicationid(applicationid);
@@ -208,7 +208,7 @@ public class DataCollector extends TimerTask implements DataCollectorTaskInterfa
 				}
 			    
 				datacons.setVmenergy(energyvm);
-				datacons.setHostenergy(Double.parseDouble(element.getEnergy()));
+				datacons.setHostenergy(Double.parseDouble(element.getEnergy())/100);
 				datacons.setCpu(Double.parseDouble(element.getLoad()));
 				datacons.setVmid(vmid);
 				dataconsumption.save(datacons);

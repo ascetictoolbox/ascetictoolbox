@@ -28,7 +28,7 @@ public class EnergyModellerHandler {
 	@Test
 	public void testEnergyModellerApplicationConsumption() {
 		
-		double energy = serviceEM.energyEstimationForVM("test", "app1", "1216a0b6-88b3-4eba-a9ac-e6ce8bc79533_asok09", null);
+		double energy = serviceEM.energyEstimationForVM("test", "app1", "fad45a9a-46bc-4876-a641-e90ac9578cc0", null);
 		
 		Assert.assertNotNull(energy);
 	}
@@ -50,7 +50,8 @@ public class EnergyModellerHandler {
 			
 			
 			List<String> vm	= new Vector<String>();
-			vm.add("1216a0b6-88b3-4eba-a9ac-e6ce8bc79533_asok09");
+			vm.add("fad45a9a-46bc-4876-a641-e90ac9578cc0");
+			
 			// on date
 			System.out.println("Estimation  is "+serviceEM.energyEstimationForTime("test", "app1", vm, null,ts));
 			// +1 h

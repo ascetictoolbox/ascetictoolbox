@@ -21,7 +21,7 @@ public class IaaSDataDAOImpl implements IaaSDataDAO {
 	// queries
 	private static String QUERY_GETHOSTCPU="select cpu from host_calibration_data where host_id = ?";
 	private static String QUERY_GETHOSTFORVM="select host_id from vm_measurement where vm_id = ? group by host_id";
-	private static String QUERY_GETIDFORVMNAME="select vm_id from vm where vm.vm_name = ? group by vm_id";
+	private static String QUERY_GETIDFORVMNAME="select vm_id from vm where vm.vm_name like ? group by vm_id";
 	private static String QUERY_GETENERGYFORVM="select vmm.vm_id as vm_id,hmm.energy as energy ,vmm.clock as clock ,vmm.cpu_load as cpu, hmm.host_id as host_id "
 			+ "								from vm_measurement as vmm, host_measurement as hmm "
 			+ "								where vmm.host_id = ? and vmm.vm_id = ? "
@@ -83,8 +83,8 @@ public class IaaSDataDAOImpl implements IaaSDataDAO {
 
 	@Override
 	public String getVMIdForOSID(String VMid) {
-		LOGGER.info("getting host for vm "+VMid);
-		return jdbcTemplate.queryForObject(	QUERY_GETIDFORVMNAME, new Object[] { VMid }, String.class);
+		LOGGER.info("getting host for vm "+VMid+"%");
+		return jdbcTemplate.queryForObject(	QUERY_GETIDFORVMNAME, new Object[] { VMid+"%" }, String.class);
 	}
 
 }
