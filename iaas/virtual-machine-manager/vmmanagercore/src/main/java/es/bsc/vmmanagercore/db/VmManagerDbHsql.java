@@ -1,3 +1,21 @@
+/**
+ Copyright (C) 2013-2014  Barcelona Supercomputing Center
+
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License as published by the Free Software Foundation; either
+ version 2.1 of the License, or (at your option) any later version.
+
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this library; if not, write to the Free Software
+ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
 package es.bsc.vmmanagercore.db;
 
 import es.bsc.vmmanagercore.model.SchedulingAlgorithm;
@@ -26,7 +44,6 @@ public class VmManagerDbHsql implements VmManagerDb {
     private static final String ERROR_DELETE_VM = "There was an error while trying to delete a VM from the DB.";
     private static final String ERROR_DELETE_ALL_VMS = "There was an error while deleting the VMs from the DB.";
     private static final String ERROR_GET_VMS_OF_APP = "There was an error while getting the VMs IDs from the DB.";
-    private static final String ERROR_SET_SCHED_ALG = "There was an error while setting the scheduling algorithm";
 
     public VmManagerDbHsql(String dbFileNamePrefix) throws Exception {
         // Load the HSQL Database Engine JDBC driver

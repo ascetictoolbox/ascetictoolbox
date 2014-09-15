@@ -193,6 +193,7 @@ iaas/virtual-machine-manager/GangliaMonitoring/src/main/java/es/bsc/monitoring/g
 iaas/virtual-machine-manager/GangliaMonitoring/src/main/java/es/bsc/monitoring/ganglia/parsing/ParseGanglia.java -text
 iaas/virtual-machine-manager/GangliaMonitoring/src/main/resources/ganglia_connection.properties -text
 iaas/virtual-machine-manager/GangliaMonitoring/src/test/java/es/bsc/monitoring/GangliaTest.java -text
+iaas/virtual-machine-manager/LICENSE.md -text
 iaas/virtual-machine-manager/README -text
 iaas/virtual-machine-manager/pom.xml -text
 iaas/virtual-machine-manager/vmmanagercore/pom.xml -text
