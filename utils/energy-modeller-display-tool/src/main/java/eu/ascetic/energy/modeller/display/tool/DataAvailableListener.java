@@ -15,9 +15,8 @@
  */
 package eu.ascetic.energy.modeller.display.tool;
 
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
 import java.util.HashMap;
-import java.util.List;
+import org.jfree.data.time.TimeSeries;
 
 /**
  *
@@ -25,6 +24,6 @@ import java.util.List;
  */
 public abstract class DataAvailableListener {
 
-    public abstract void processDataAvailable(final HashMap<String, List<CurrentUsageRecord>> data);
+    public abstract void processDataAvailable(final HashMap<String, TimeSeries> dataset);
     
 }

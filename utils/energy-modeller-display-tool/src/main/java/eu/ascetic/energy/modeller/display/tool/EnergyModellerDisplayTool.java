@@ -18,7 +18,7 @@ package eu.ascetic.energy.modeller.display.tool;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DefaultDatabaseConnector;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDataSourceAdaptor;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import java.awt.Dimension;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -34,6 +34,7 @@ import javax.swing.JFrame;
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import org.jfree.data.time.TimeSeries;
 
 /**
  * This displays energy usage of VMs and their hosts
@@ -46,7 +47,8 @@ public class EnergyModellerDisplayTool extends JFrame {
     private static final long serialVersionUID = 1733713840007288665L;
     private static EnergyModeller modeller;
     private static EnergyModellerDisplayTool displayTool;
-    private DataCollector collector = new DataCollector(new ZabbixDataSourceAdaptor(), new DefaultDatabaseConnector(), true);
+    ZabbixDataSourceAdaptor dataSource = new ZabbixDataSourceAdaptor();
+    private DataCollector collector = new DataCollector(dataSource, new DefaultDatabaseConnector(), true);
     /**
      *
      */
@@ -59,7 +61,7 @@ public class EnergyModellerDisplayTool extends JFrame {
     /**
      *
      */
-    private final ConcurrentHashMap<String, List<CurrentUsageRecord>> data = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, TimeSeries> data = new ConcurrentHashMap<>();
 
     /**
      *
@@ -80,8 +82,8 @@ public class EnergyModellerDisplayTool extends JFrame {
 
         collector.registerListener(new DataAvailableListener() {
             @Override
-            public void processDataAvailable(final HashMap<String, List<CurrentUsageRecord>> event) {
-                data.putAll(event);
+            public void processDataAvailable(final HashMap<String, TimeSeries> dataset) {
+                data.putAll(dataset);
             }
         });
 
@@ -101,21 +103,23 @@ public class EnergyModellerDisplayTool extends JFrame {
                 }
             });
         }
-        CurrentLineChart graph;
-        graph = new CurrentLineChart(data);
+        TimeSeriesLineChart graph;
+        List<Host> hosts = dataSource.getHostList();
+        Collections.sort(hosts);
+        ArrayList<String> hostsStr = new ArrayList<>();
+        for (Host host : hosts) {
+            hostsStr.add(host.getHostName());
+        }
+        graph = new TimeSeriesLineChart(data, hostsStr);
+        for (Host host : hosts) {
+            graph.addHost(host.getHostName());
+        }
         this.addPanel(graph);
 
-        graph = new CurrentLineChart(data, "asok09");
-        this.addPanel(graph);
-
-        graph = new CurrentLineChart(data, "asok10");
-        this.addPanel(graph);
-
-        graph = new CurrentLineChart(data, "asok11");
-        this.addPanel(graph);
-
-        graph = new CurrentLineChart(data, "asok12");
-        this.addPanel(graph);
+        for (Host host : hosts) {
+            graph = new TimeSeriesLineChart(data, host.getHostName());
+            this.addPanel(graph);
+        }
 
         this.tabbedPane.setTabPlacement(JTabbedPane.LEFT);
         getContentPane().add(this.tabbedPane);

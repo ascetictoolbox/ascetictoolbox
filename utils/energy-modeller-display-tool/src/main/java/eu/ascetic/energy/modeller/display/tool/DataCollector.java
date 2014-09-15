@@ -24,10 +24,10 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostVmLoadFraction;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostEnergyRecord;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -37,6 +37,9 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jfree.data.time.Second;
+import org.jfree.data.time.TimeSeries;
+import org.jfree.data.time.TimeSeriesDataItem;
 
 /**
  * This data collector displays energy data for the IaaS Energy Modeller.
@@ -49,11 +52,11 @@ public class DataCollector implements Runnable {
     private final DatabaseConnector connector;
     private boolean running = true;
     private int faultCount = 0;
-    private HashMap<String, Host> knownHosts = new HashMap<>(); //TODO add a listner structure here
+    private HashMap<String, Host> knownHosts = new HashMap<>();
     private final ArrayList<DataAvailableListener> listners = new ArrayList<>();
-    private final HashMap<String, List<CurrentUsageRecord>> hostAnswer = new HashMap<>();
+    private final HashMap<String, TimeSeries> allTimeSeries = new HashMap<>();
     private boolean considerIdleEnergy = false;
-  
+    private int counter = 0;
 
     /**
      * This creates a new data collector for the energy modeller display tool.
@@ -134,7 +137,7 @@ public class DataCollector implements Runnable {
         List<Host> hostList = datasource.getHostList();
         refreshKnownHostList(hostList);
         for (Host host : hostList) {
-            hostAnswer.put(host.getHostName(), new ArrayList<CurrentUsageRecord>());
+            allTimeSeries.put(host.getHostName(), new TimeSeries(host.getHostName()));
         }
 
         LoadFractionShareRule rule = new LoadFractionShareRule();
@@ -143,19 +146,25 @@ public class DataCollector implements Runnable {
             try {
                 for (Host host : hostList) {
                     GregorianCalendar cal = new GregorianCalendar();
-                    long durationSec = TimeUnit.SECONDS.toMillis(60 * 10);
+                    long durationSec;
+                    if (counter < 20) {
+                        durationSec = TimeUnit.SECONDS.toMillis(60 * 10);
+                    } else {
+                        durationSec = TimeUnit.SECONDS.toMillis(60);
+                    }
                     cal.setTimeInMillis(cal.getTimeInMillis() - durationSec);
                     TimePeriod period = new TimePeriod(cal, durationSec);
-                    List<CurrentUsageRecord> hostTraceData = hostAnswer.get(host.getHostName());
+                    TimeSeries hostSeries = allTimeSeries.get(host.getHostName());
+                    if (hostSeries == null) {
+                        hostSeries = new TimeSeries(host.getHostName());
+                        allTimeSeries.put(host.getHostName(), hostSeries);
+                    }
                     Collection<HostVmLoadFraction> vmMeasurements = connector.getHostVmHistoryLoadData(host, period);
-                    hostTraceData.clear();
                     List<HostEnergyRecord> uncleanedHost = connector.getHostHistoryData(host, period);
-                    hostAnswer.put(host.getHostName(), convert(uncleanedHost));
-
+                    appendToSeries(uncleanedHost, hostSeries);
                     LinkedHashMap<HostEnergyRecord, HostVmLoadFraction> hostToVmDataMap;
                     if (vmMeasurements != null && !vmMeasurements.isEmpty()) {
                         hostToVmDataMap = getData(vmMeasurements, uncleanedHost);
-                        hostTraceData.addAll(convert(hostToVmDataMap.keySet()));
                         vmMeasurements.clear();
                         vmMeasurements.addAll(hostToVmDataMap.values());
                         for (Map.Entry<HostEnergyRecord, HostVmLoadFraction> vmData : hostToVmDataMap.entrySet()) {
@@ -171,20 +180,22 @@ public class DataCollector implements Runnable {
                                 if (vm.getAllocatedTo() == null) {
                                     vm.setAllocatedTo(getVMsHost(vm));
                                 }
-                                List<CurrentUsageRecord> vmAnswer = hostAnswer.get(vm.getName());
+                                TimeSeries vmAnswer = allTimeSeries.get(vm.getName());
                                 if (vmAnswer == null) {
-                                    vmAnswer = new ArrayList<>();
-                                    hostAnswer.put(vm.getName(), vmAnswer);
+                                    vmAnswer = new TimeSeries(vm.getName());
+                                    allTimeSeries.put(vm.getName(), vmAnswer);
                                 }
-                                CurrentUsageRecord vmsUsage = new CurrentUsageRecord(vm, division.getEnergyUsage(vmData.getKey().getPower(), vm), -1, -1);
-                                vmAnswer.add(vmsUsage);
+                                Date measurementTime = new Date();
+                                measurementTime.setTime(TimeUnit.SECONDS.toMillis(vmData.getKey().getTime()));
+                                vmAnswer.addOrUpdate(new TimeSeriesDataItem(
+                                        new Second(measurementTime), division.getEnergyUsage(vmData.getKey().getPower(), vm)));
                             }
                         }
                     }
                 }
-                listners.get(0).processDataAvailable(hostAnswer);
+                listners.get(0).processDataAvailable(allTimeSeries);
                 try {
-                    Thread.sleep(10000);
+                    Thread.sleep(2000);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(DataCollector.class.getName()).log(Level.SEVERE, "The data collector was interupted.", ex);
                 }
@@ -234,27 +245,25 @@ public class DataCollector implements Runnable {
     }
 
     /**
-     * This converts a host energy record into a current usage record dataset
+     * This appendToSeriess a host energy record into a current usage record
+     * dataset
      *
-     * @param data The data to convert
-     * @return The current usage record dataset
+     * @param data The data to appendToSeries
+     * @param toAppend The time series to append to
      */
-    public ArrayList<CurrentUsageRecord> convert(Collection<HostEnergyRecord> data) {
-        ArrayList<CurrentUsageRecord> answer = new ArrayList<>();
+    public void appendToSeries(Collection<HostEnergyRecord> data, TimeSeries toAppend) {
         for (HostEnergyRecord current : data) {
-            CurrentUsageRecord converted = new CurrentUsageRecord(current.getHost());
-            converted.setPower(current.getPower());
-            GregorianCalendar cal = new GregorianCalendar();
-            cal.setTimeInMillis(TimeUnit.SECONDS.toMillis(current.getTime()));
-            converted.setTime(cal);
-            answer.add(converted);
+            Date measurementTime = new Date();
+            measurementTime.setTime(TimeUnit.SECONDS.toMillis(current.getTime()));
+            TimeSeriesDataItem converted = new TimeSeriesDataItem(new Second(measurementTime),
+                    current.getPower());
+            toAppend.addOrUpdate(converted);
         }
-        return answer;
     }
 
     /**
-     * The hashmap gives a faster way to find a specific host. This converts
-     * from a raw list of hosts into the indexed structure.
+     * The hashmap gives a faster way to find a specific host. This
+     * appendToSeriess from a raw list of hosts into the indexed structure.
      *
      * @param hostList The host list
      * @return The hashed host list

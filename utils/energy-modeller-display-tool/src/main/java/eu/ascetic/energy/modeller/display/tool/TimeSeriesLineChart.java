@@ -16,39 +16,40 @@
  */
 package eu.ascetic.energy.modeller.display.tool;
 
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
 import eu.ascetic.graphs.LineChartPanelSupport;
 import eu.ascetic.graphs.data.TranslatingXYDataset;
 import java.awt.BasicStroke;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.concurrent.ConcurrentHashMap;
-import org.jfree.data.time.Second;
 import org.jfree.data.time.TimeSeries;
 
-//import java.util.Date;
-public class CurrentLineChart extends LineChartPanelSupport<ConcurrentHashMap<String, List<CurrentUsageRecord>>> {
+public class TimeSeriesLineChart extends LineChartPanelSupport<ConcurrentHashMap<String, TimeSeries>> {
 
     /**
      * Serial code version <code>serialVersionUID</code> for serialization.
      */
     private static final long serialVersionUID = -705459046389814891L;
     private String host = null;
+    private final HashSet<String> hosts = new HashSet<>();
 
     /**
      * @param data The data to be plotted.
+     * @param hosts The list of host names
      */
-    public CurrentLineChart(ConcurrentHashMap<String, List<CurrentUsageRecord>> data) {
-        super("Energy Consumed on the Testbed", "Energy Consumption (W)", data, 4);
+    public TimeSeriesLineChart(ConcurrentHashMap<String, TimeSeries> data, Collection<String> hosts) {
+        super("Energy Consumed on the Testbed", "Energy Consumption (W)", data, 2);
         setRangeAxisRange(250, 500);
         this.setDefaultLineStroke(new BasicStroke(50));
+        this.hosts.addAll(hosts);
     }
 
     /**
      * @param data The data to be plotted.
      * @param host The hosts name
      */
-    public CurrentLineChart(ConcurrentHashMap<String, List<CurrentUsageRecord>> data, String host) {
-        super("Energy Consumed on the Testbed", "Energy Consumption (W)", data, 4);
+    public TimeSeriesLineChart(ConcurrentHashMap<String, TimeSeries> data, String host) {
+        super("Energy Consumed on the Testbed", "Energy Consumption (W)", data, 2);
         this.host = host;
         if (host == null) {
             setRangeAxisRange(250, 500);
@@ -64,8 +65,8 @@ public class CurrentLineChart extends LineChartPanelSupport<ConcurrentHashMap<St
      * @param data The data to be plotted.
      * @param maxEnergy The maximum amount of energy to be plotted.
      */
-    public CurrentLineChart(ConcurrentHashMap<String, List<CurrentUsageRecord>> data, int maxEnergy) {
-        super("Energy Consumed on the Testbed", "Energy Consumption (W)", data, 4);
+    public TimeSeriesLineChart(ConcurrentHashMap<String, TimeSeries> data, int maxEnergy) {
+        super("Energy Consumed on the Testbed", "Energy Consumption (W)", data, 2);
         setRangeAxisRange(0, maxEnergy);
         this.setDefaultLineStroke(new BasicStroke(50));
     }
@@ -73,20 +74,21 @@ public class CurrentLineChart extends LineChartPanelSupport<ConcurrentHashMap<St
     @Override
     protected void createSeries() {
         if (this.getSeries().size() < 1) {
-            this.getTimeSeries().addSeries(new TimeSeries("asok09"));
-            this.getTimeSeries().addSeries(new TimeSeries("asok10"));
-            this.getTimeSeries().addSeries(new TimeSeries("asok11"));
-            this.getTimeSeries().addSeries(new TimeSeries("asok12"));
+//            this.getTimeSeries().addSeries(new TimeSeries("asok09"));
+//            this.getTimeSeries().addSeries(new TimeSeries("asok10"));
+//            this.getTimeSeries().addSeries(new TimeSeries("asok11"));
+//            this.getTimeSeries().addSeries(new TimeSeries("asok12"));
             this.setDataset(new TranslatingXYDataset(this.getTimeSeries()));
         }
     }
 
     /**
-     * This adds a series to the graph.
+     * This adds a host to the graph.
      *
      * @param name The name of the time series to add
      */
-    public void addSeries(String name) {
+    public void addHost(String name) {
+        hosts.add(name);
         this.getTimeSeries().addSeries(new TimeSeries(name));
     }
 
@@ -96,21 +98,19 @@ public class CurrentLineChart extends LineChartPanelSupport<ConcurrentHashMap<St
             this.getTimeSeries().removeAllSeries();
             for (String name : getData().keySet()) {
                 if (name.contains(host)) {
-                    this.getTimeSeries().addSeries(new TimeSeries(name));
+                    this.getTimeSeries().addSeries(getData().get(name));
                 }
             }
-        }
-
-        if (this.getSeries().size() < 1) {
-            return;
-        }
-
-        if (getData() != null && !getData().isEmpty()) {
-            for (int i = 0; i < this.getSeries().size(); i++) {
-                List<CurrentUsageRecord> records = getData().get(this.getSeries().get(i).getKey().toString());
-                if (records != null) {
-                    for (CurrentUsageRecord current : records) {
-                        ((TimeSeries) this.getSeries().get(i)).addOrUpdate(new Second(current.getTime().getTime()), current.getPower());
+        } else {
+            this.getTimeSeries().removeAllSeries();
+            if (hosts == null) {
+                this.getTimeSeries().addSeries(new TimeSeries("Please Wait, Initialising"));
+            } else {
+                for (String name : hosts) {
+                    if (getData().get(name) == null) {
+                        this.getTimeSeries().addSeries(new TimeSeries("Please Wait, Initialising"));
+                    } else {
+                        this.getTimeSeries().addSeries(getData().get(name));
                     }
                 }
             }

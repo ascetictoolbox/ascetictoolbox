@@ -10,7 +10,7 @@
   <groupId>eu.ascetic</groupId>
   <artifactId>energy-modeller-display-tool</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>energy-modeller-display-tool</name>
+  <name>Energy Modeller Display Tool</name>
   <url>http://maven.apache.org</url>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
