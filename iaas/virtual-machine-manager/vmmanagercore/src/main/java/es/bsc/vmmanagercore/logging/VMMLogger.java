@@ -40,7 +40,7 @@ public class VMMLogger {
     }
 
     public static void logChosenDeploymentPlan(String deploymentPlan) {
-        logger.debug("[VMM] chosen deployment plan: " + deploymentPlan);
+        logger.debug("[VMM] chosen deployment plan: [ " + deploymentPlan + "]");
     }
 
     public static void logOverbookingNeeded() {
