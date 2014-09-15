@@ -65,7 +65,7 @@ public class SchedAlgRandomTest {
         // The result is random, so the only thing that we can check is that the function does not throw
         // an exception
         //scheduler.isBetterDeploymentPlan(deploymentPlan2, deploymentPlan1, hosts);
-        scheduler.chooseBestDeploymentPlan(deploymentPlans, hosts);
+        scheduler.chooseBestDeploymentPlan(deploymentPlans, hosts, "testId");
     }
 
 }

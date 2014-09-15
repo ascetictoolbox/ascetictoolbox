@@ -35,12 +35,13 @@ public class SchedAlgRandom implements SchedAlgorithm {
     public SchedAlgRandom() { }
 
     @Override
-    public DeploymentPlan chooseBestDeploymentPlan(List<DeploymentPlan> deploymentPlans, List<Host> hosts) {
+    public DeploymentPlan chooseBestDeploymentPlan(List<DeploymentPlan> deploymentPlans, List<Host> hosts,
+            String deploymentId) {
         DeploymentPlan bestDeploymentPlan = null;
         double bestDeploymentPlanScore = -1;
         for (DeploymentPlan deploymentPlan: deploymentPlans) {
             double deploymentPlanScore = Math.random();
-            VMMLogger.logDeploymentPlanRandomScore(deploymentPlan, deploymentPlanScore);
+            VMMLogger.logDeploymentPlanRandomScore(deploymentPlan, deploymentPlanScore, deploymentId);
             if (deploymentPlanScore > bestDeploymentPlanScore) {
                 bestDeploymentPlan = deploymentPlan;
                 bestDeploymentPlanScore = deploymentPlanScore;

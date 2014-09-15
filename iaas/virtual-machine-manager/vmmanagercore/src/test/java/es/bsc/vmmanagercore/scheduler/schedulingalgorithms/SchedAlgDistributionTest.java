@@ -75,7 +75,7 @@ public class SchedAlgDistributionTest {
 
         // DeploymentPlan1 uses 2 servers and DeploymentPlan2 uses 3 servers.
         // Therefore, DeploymentPlan2 is more distributed
-        assertEquals(deploymentPlan2, scheduler.chooseBestDeploymentPlan(deploymentPlans, hosts));
+        assertEquals(deploymentPlan2, scheduler.chooseBestDeploymentPlan(deploymentPlans, hosts, "testId"));
     }
 
     @Test
@@ -105,7 +105,7 @@ public class SchedAlgDistributionTest {
         // deploymentPlan1: cpu loads = 0.375 and 0.5
         // deploymentPlan2: cpu loads = 0.75 and 0.25
         // deploymentPlan1 is better (more distributed)
-        assertEquals(deploymentPlan1, scheduler.chooseBestDeploymentPlan(deploymentPlans, hosts));
+        assertEquals(deploymentPlan1, scheduler.chooseBestDeploymentPlan(deploymentPlans, hosts, "testId"));
     }
 
     @Test
@@ -135,7 +135,7 @@ public class SchedAlgDistributionTest {
         // deploymentPlan1: mem loads = 1 and 0.5
         // deploymentPlan2: mem loads = 0.75 and 0.75
         // deploymentPlan2 is better (more distributed)
-        assertEquals(deploymentPlan2, scheduler.chooseBestDeploymentPlan(deploymentPlans, hosts));
+        assertEquals(deploymentPlan2, scheduler.chooseBestDeploymentPlan(deploymentPlans, hosts, "testId"));
     }
 
     @Test
@@ -165,7 +165,7 @@ public class SchedAlgDistributionTest {
         // deploymentPlan1: disk loads = 1 and 0.5
         // deploymentPlan2: disk loads = 0.75 and 0.75
         // deploymentPlan2 is better (more distributed)
-        assertEquals(deploymentPlan2, scheduler.chooseBestDeploymentPlan(deploymentPlans, hosts));
+        assertEquals(deploymentPlan2, scheduler.chooseBestDeploymentPlan(deploymentPlans, hosts, "testId"));
     }
 
 }

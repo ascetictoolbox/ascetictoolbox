@@ -94,12 +94,13 @@ public class SchedAlgGroupByApp implements SchedAlgorithm {
     }
 
     @Override
-    public DeploymentPlan chooseBestDeploymentPlan(List<DeploymentPlan> deploymentPlans, List<Host> hosts) {
+    public DeploymentPlan chooseBestDeploymentPlan(List<DeploymentPlan> deploymentPlans, List<Host> hosts,
+            String deploymentId) {
         DeploymentPlan bestDeploymentPlan = null;
         int vmsFriendsForBestDeploymentPlan = -1;
         for (DeploymentPlan deploymentPlan: deploymentPlans) {
             int vmsFriendsForDeploymentPlan = countVmsFriendsForDeploymentPlan(deploymentPlan);
-            VMMLogger.logVmsSameAppInSameHost(deploymentPlan, vmsFriendsForDeploymentPlan);
+            VMMLogger.logVmsSameAppInSameHost(deploymentPlan, vmsFriendsForDeploymentPlan, deploymentId);
             if (vmsFriendsForDeploymentPlan > vmsFriendsForBestDeploymentPlan) {
                 bestDeploymentPlan = deploymentPlan;
                 vmsFriendsForBestDeploymentPlan = vmsFriendsForDeploymentPlan;

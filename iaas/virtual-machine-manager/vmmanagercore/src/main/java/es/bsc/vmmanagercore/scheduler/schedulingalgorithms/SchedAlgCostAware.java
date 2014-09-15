@@ -58,12 +58,13 @@ public class SchedAlgCostAware implements SchedAlgorithm {
     }
 
     @Override
-    public DeploymentPlan chooseBestDeploymentPlan(List<DeploymentPlan> deploymentPlans, List<Host> hosts) {
+    public DeploymentPlan chooseBestDeploymentPlan(List<DeploymentPlan> deploymentPlans, List<Host> hosts,
+            String deploymentId) {
         DeploymentPlan bestDeploymentPlan = null;
         double costBestDeploymentPlan = Double.MAX_VALUE;
         for (DeploymentPlan deploymentPlan: deploymentPlans) {
             double deploymentPlanCost = getPredictedCostDeploymentPlan(deploymentPlan);
-            VMMLogger.logPredictedCostForDeploymentPlan(deploymentPlan, deploymentPlanCost);
+            VMMLogger.logPredictedCostForDeploymentPlan(deploymentPlan, deploymentPlanCost, deploymentId);
             if (deploymentPlanCost < costBestDeploymentPlan) {
                 bestDeploymentPlan = deploymentPlan;
                 costBestDeploymentPlan = deploymentPlanCost;

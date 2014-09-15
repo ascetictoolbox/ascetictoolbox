@@ -31,53 +31,60 @@ public class VMMLogger {
 
     private static Logger logger = LogManager.getLogger(VMMLogger.class);
 
-    public static void logStartOfDeploymentPlansEvaluation(String schedAlgorithmName) {
-        logger.debug("[VMM] ***EVALUATION OF DEPLOYMENT PLANS STARTS: " + schedAlgorithmName + " ***");
+    public static void logStartOfDeploymentPlansEvaluation(String schedAlgorithmName, String deploymentId) {
+        logger.debug("[VMM] ***EVALUATION OF DEPLOYMENT PLANS STARTS: " + schedAlgorithmName + " ***"
+                + " --id:" + deploymentId);
     }
 
-    public static void logEndOfDeploymentPlansEvaluation(String schedAlgorithmName) {
-        logger.debug("[VMM] ***EVALUATION OF DEPLOYMENT PLANS ENDS: " + schedAlgorithmName + " ***");
+    public static void logEndOfDeploymentPlansEvaluation(String schedAlgorithmName, String deploymentId) {
+        logger.debug("[VMM] ***EVALUATION OF DEPLOYMENT PLANS ENDS: " + schedAlgorithmName + " ***"
+                + " --id:" + deploymentId);
     }
 
-    public static void logChosenDeploymentPlan(String deploymentPlan) {
-        logger.debug("[VMM] chosen deployment plan: [ " + deploymentPlan + "]");
+    public static void logChosenDeploymentPlan(String deploymentPlan, String deploymentId) {
+        logger.debug("[VMM] chosen deployment plan: [ " + deploymentPlan + "] --id:" + deploymentId);
     }
 
-    public static void logOverbookingNeeded() {
-        logger.debug("[VMM] no plans could be applied without overbooking.");
+    public static void logOverbookingNeeded(String deploymentId) {
+        logger.debug("[VMM] no plans could be applied without overbooking. --id:" + deploymentId);
     }
 
-    public static void logDeploymentPlanRandomScore(DeploymentPlan deploymentPlan, double randomScore) {
-        logger.debug("[VMM] random score for deployment plan [ " + deploymentPlan.toString() + "]: " + randomScore);
+    public static void logDeploymentPlanRandomScore(DeploymentPlan deploymentPlan, double randomScore,
+            String deploymentId) {
+        logger.debug("[VMM] random score for deployment plan [ " + deploymentPlan.toString() + "]: " + randomScore
+                + " --id:" + deploymentId);
     }
 
-    public static void logPredictedAvgPowerForDeploymentPlan(DeploymentPlan deploymentPlan, double avgPower) {
+    public static void logPredictedAvgPowerForDeploymentPlan(DeploymentPlan deploymentPlan, double avgPower,
+            String deploymentId) {
         logger.debug("[VMM] predicted avg power deployment plan [ " + deploymentPlan.toString()
-                + "]: " + avgPower + "W");
+                + "]: " + avgPower + "W --id:" + deploymentId);
     }
 
-    public static void logPredictedCostForDeploymentPlan(DeploymentPlan deploymentPlan, double cost) {
+    public static void logPredictedCostForDeploymentPlan(DeploymentPlan deploymentPlan, double cost,
+            String deploymentId) {
         logger.debug("[VMM] predicted cost for deployment plan [ " + deploymentPlan.toString()
-                + "]: " + cost + " euros");
+                + "]: " + cost + " euros --id:" + deploymentId);
     }
 
-    public static void logVmsSameAppInSameHost(DeploymentPlan deploymentPlan, int numberOfVmsSameAppSameHost) {
+    public static void logVmsSameAppInSameHost(DeploymentPlan deploymentPlan, int numberOfVmsSameAppSameHost,
+            String deploymentId) {
         logger.debug("[VMM] number of VMs of same application in the same host for deployment plan [ " +
-                deploymentPlan.toString() + "]: " + numberOfVmsSameAppSameHost);
+                deploymentPlan.toString() + "]: " + numberOfVmsSameAppSameHost + " --id:" + deploymentId);
     }
 
     public static void logServersLoadsAfterDeploymentPlan(DeploymentPlan deploymentPlan, int idleServers,
-            double stdDevCpu, double stdDevRam, double stdDevDisk) {
+            double stdDevCpu, double stdDevRam, double stdDevDisk, String deploymentId) {
         logger.debug("[VMM] Server loads for deployment plan [ " + deploymentPlan.toString() + "]:\n idle servers:"
                 + idleServers + ", stdDevCpu:" + stdDevCpu + ", stdDevRam: " + stdDevRam + ", stdDevDisk: "
-                + stdDevDisk);
+                + stdDevDisk + " --id:" + deploymentId);
     }
 
     public static void logUnusedServerLoadsAfterDeploymentPlan(DeploymentPlan deploymentPlan, int idleServers,
-            double unusedCpu, double unusedRam, double unusedDisk) {
+            double unusedCpu, double unusedRam, double unusedDisk, String deploymentId) {
         logger.debug("[VMM] Total unused loads for deployment plan [ " + deploymentPlan.toString()
                 + "]:\n idle servers:" + idleServers + ", unusedCpu:" + unusedCpu + ", unusedRam: "
-                + unusedRam + ", unusedDisk: " + unusedDisk);
+                + unusedRam + ", unusedDisk: " + unusedDisk + " --id:" + deploymentId);
     }
 
 }

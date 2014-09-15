@@ -55,12 +55,13 @@ public class SchedAlgEnergyAware implements SchedAlgorithm {
     }
 
     @Override
-    public DeploymentPlan chooseBestDeploymentPlan(List<DeploymentPlan> deploymentPlans, List<Host> hosts) {
+    public DeploymentPlan chooseBestDeploymentPlan(List<DeploymentPlan> deploymentPlans, List<Host> hosts,
+            String deploymentId) {
         DeploymentPlan bestDeploymentPlan = null;
         double avgPowerBestDeploymentPlan = Double.MAX_VALUE;
         for (DeploymentPlan deploymentPlan: deploymentPlans) {
             double predictedAvgPower = getPredictedAvgPowerDeploymentPlan(deploymentPlan);
-            VMMLogger.logPredictedAvgPowerForDeploymentPlan(deploymentPlan, predictedAvgPower);
+            VMMLogger.logPredictedAvgPowerForDeploymentPlan(deploymentPlan, predictedAvgPower, deploymentId);
             if (predictedAvgPower < avgPowerBestDeploymentPlan) {
                 bestDeploymentPlan = deploymentPlan;
                 avgPowerBestDeploymentPlan = predictedAvgPower;

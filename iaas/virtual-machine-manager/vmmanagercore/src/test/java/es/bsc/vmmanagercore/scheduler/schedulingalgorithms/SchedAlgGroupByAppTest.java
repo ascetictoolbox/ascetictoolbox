@@ -89,7 +89,7 @@ public class SchedAlgGroupByAppTest {
         deploymentPlans.add(deploymentPlan1);
         deploymentPlans.add(deploymentPlan2);
 
-        assertEquals(deploymentPlan1, scheduler.chooseBestDeploymentPlan(deploymentPlans, hosts));
+        assertEquals(deploymentPlan1, scheduler.chooseBestDeploymentPlan(deploymentPlans, hosts, "testId"));
     }
 
 }

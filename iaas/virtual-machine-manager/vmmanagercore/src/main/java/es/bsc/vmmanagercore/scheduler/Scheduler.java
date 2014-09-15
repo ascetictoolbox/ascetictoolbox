@@ -23,10 +23,9 @@ import es.bsc.vmmanagercore.model.*;
 import es.bsc.vmmanagercore.monitoring.Host;
 import es.bsc.vmmanagercore.scheduler.schedulingalgorithms.*;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 
 /**
@@ -40,6 +39,7 @@ public class Scheduler {
     private SchedAlgorithm schedAlgorithm;
     private List<VmDeployed> vmsDeployed;
     private String schedAlgorithmName;
+    private static final DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss.SSS"); // Useful for logs
 
     /**
      * Class constructor.
@@ -278,6 +278,15 @@ public class Scheduler {
     }
 
     /**
+     * Returns a unique ID for the deployment. This ID is used to identify the log messages that belong to a
+     * particular deployment.
+     *
+     */
+    private String getDeploymentIdForLogMessages() {
+        return dateFormat.format(new Date());
+    }
+
+    /**
      * Returns the best deployment plan from a list of vms. The deployment plan chosen depends
      * on the algorithm used (distribution, consolidation, energy-aware, etc.).
      *
@@ -286,25 +295,27 @@ public class Scheduler {
      * @return the best deployment plan according to the algorithm applied
      */
     public DeploymentPlan chooseBestDeploymentPlan(List<Vm> vms, List<Host> hosts) {
-        VMMLogger.logStartOfDeploymentPlansEvaluation(schedAlgorithmName);
+        String deploymentId = getDeploymentIdForLogMessages();
+        VMMLogger.logStartOfDeploymentPlansEvaluation(schedAlgorithmName, deploymentId);
 
         // Get all the possible plans that do not use overbooking
         List<DeploymentPlan> possibleDeploymentPlans =
                 new DeploymentPlanGenerator().getPossibleDeploymentPlans(vms, hosts);
 
         // Find the best deployment plan
-        DeploymentPlan bestDeploymentPlan = schedAlgorithm.chooseBestDeploymentPlan(possibleDeploymentPlans, hosts);
+        DeploymentPlan bestDeploymentPlan = schedAlgorithm.chooseBestDeploymentPlan(
+                possibleDeploymentPlans, hosts, deploymentId);
 
         if (bestDeploymentPlan != null) {
-            VMMLogger.logChosenDeploymentPlan(bestDeploymentPlan.toString());
+            VMMLogger.logChosenDeploymentPlan(bestDeploymentPlan.toString(), deploymentId);
         }
         else { // No plans could be chosen, so apply overbooking
             bestDeploymentPlan = findBestEffortDeploymentPlan(
                     new DeploymentPlanGenerator().getDeploymentPlansWithoutRestrictions(vms, hosts), hosts);
-            VMMLogger.logOverbookingNeeded();
+            VMMLogger.logOverbookingNeeded(deploymentId);
         }
 
-        VMMLogger.logEndOfDeploymentPlansEvaluation(schedAlgorithmName);
+        VMMLogger.logEndOfDeploymentPlansEvaluation(schedAlgorithmName, deploymentId);
 
         return bestDeploymentPlan;
     }
