@@ -4,6 +4,10 @@
 #
 # Copyright 2014, Michael Kammer
 #
+package "subversion" do
+  action :install
+end
+
 package "screen" do
   action :install
 end
@@ -110,6 +114,17 @@ script "install_vmmanager" do
   not_if "test -d /home/ubuntu/vmmanager"
   code <<-EOH
 sh vmm-installer.sh
+  EOH
+end
+
+script "install_vmmanger_frontend" do
+  interpreter "bash"
+  user "root"
+  group "root"
+  cwd "/var/www"
+  not_if "test -d /var/www/vmmanager-frontend"
+  code <<-EOH
+svn export "https://ascetic-dev.cit.tu-berlin.de/svn/trunk/iaas/virtual-machine-manager/vmmanager-frontend/"
   EOH
 end
 
