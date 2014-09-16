@@ -2,15 +2,23 @@ package eu.ascetic.paas.applicationmanager.scheduler;
 
 import java.util.List;
 
+import org.apache.axis2.AxisFault;
 import org.apache.log4j.Logger;
+import org.slasoi.gslam.core.negotiation.INegotiation;
+import org.slasoi.slamodel.sla.SLA;
+import org.slasoi.slamodel.sla.SLATemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import eu.ascetic.applicationmanager.slam.stub.InvalidNegotiationIDExceptionException;
+import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.contextualizer.VmcClient;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
+import eu.ascetic.paas.applicationmanager.slam.SLAMClient;
+import eu.ascetic.paas.applicationmanager.slam.SLATemplateCreator;
 import eu.ascetic.paas.applicationmanager.vmmanager.VmManagerUtils;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientHC;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.Vm;
@@ -89,13 +97,55 @@ public class DeploymentsStatusTask {
 	 * @param deployment
 	 */
 	protected void deploymentNegotiationActions(Deployment deployment) {
-		// TODO In this case, when negotiation is enabled, we need to ask the SLAM 
-		//      if the negotiation process has ended or not... since this call is 
-		//      never called in the actual call, I just leave it empty, when you
-		//      start implemeting negotiation, the previous case SUBMITTED, should contact
-		//      the SLAM and move the deployment status to this NEGOTIATION stated instead
-		//      of NEGOTIATED
+		deployment.setStatus(Dictionary.APPLICATION_STATUS_NEGOTIATION);
+		// We save the changes to the DB
+		deploymentDAO.update(deployment);
 		
+		// First we create the SLA template from the OVF
+		OvfDefinition ovfDefinition = OVFUtils.getOvfDefinition(deployment.getOvf());
+		SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "http://10.4.0.16/application-manager" + deployment.getHref() + "/ovf");
+		logger.debug("Initial SLA Template document: " + slaTemplate);
+		
+		try {
+			// Then we initiate the Negotiation
+			SLAMClient client = new SLAMClient(Configuration.slamURL);
+			
+			String initiatieNegotiationID = client.initiateNegotiation(slaTemplate);
+			logger.info("Negotiation ID: " + initiatieNegotiationID);
+			
+			// After the negotiation it is initiated, we get and negotiation ID, we use it to start the actual negotiation process
+			SLATemplate[] slaTemplates = client.negotiate(initiatieNegotiationID, slaTemplate);
+			logger.info("Agreement selected: " + slaTemplates[0]);
+
+			// Then we get a list of possible SLAs
+			// Since we only have a provider the first year, we actually accept the first contract (this could be changed)
+			SLA slaAgreement = client.createAgreement(initiatieNegotiationID, slaTemplates[0]);
+			logger.info("Agreement reached... "  + slaAgreement);
+		}
+		catch(AxisFault exception) {
+			logger.warn("ERROR connecting to PaaS SLAM");
+			exception.printStackTrace();
+		}
+		catch(INegotiation.OperationNotPossibleException exception) {
+			logger.warn("ERROR starting the initialization of the Negotiation with the PaaS SLAM");
+			exception.printStackTrace();
+		}
+		catch(INegotiation.OperationInProgressException exception) {
+			logger.warn("ERROR trying to negotiate an SLA Negotiation");
+			exception.printStackTrace();
+		}
+		catch(INegotiation.InvalidNegotiationIDException exception) {
+			logger.warn("ERROR trying to negotiate an SLA Negotiation");
+			exception.printStackTrace();
+		}
+		catch(INegotiation.SLACreationException exception) {
+			logger.warn("ERROR creating the SLA Agreement");
+			exception.printStackTrace();
+		}
+		
+		deployment.setStatus(Dictionary.APPLICATION_STATUS_NEGOTIATIED);
+		// We save the changes to the DB
+		deploymentDAO.update(deployment);
 	}
 	
 	/**
