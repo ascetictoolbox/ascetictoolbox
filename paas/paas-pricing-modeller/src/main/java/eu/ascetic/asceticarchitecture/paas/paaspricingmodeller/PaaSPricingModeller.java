@@ -33,7 +33,7 @@ import eu.ascetic.asceticarchitecture.paas.type.PaaSPrice;;
  * The price estimation can be also given without the provision of energy estimation.
  * 
  * The price estimation can be also given without the provision of an PaaS price. 
- *
+ * @author E. Agiatzidou
  */
 
 

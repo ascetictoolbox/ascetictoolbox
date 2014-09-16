@@ -85,10 +85,14 @@ iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymod
 iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/input/VMProjectedWorkloadElementTest.java -text
 iaas/energy-modeller/src/wsdl/localhost_8080/EnergyModellerCalibrationTool/CalibrationLoadGenerator.wsdl -text
 iaas/energy-modeller/src/wsdl/localhost_8080/EnergyModellerCalibrationTool/CalibrationLoadGenerator.xsd_1.xsd -text
+iaas/iaas-pricing-modeller/LICENSE.txt -text
 iaas/iaas-pricing-modeller/pom.xml -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/IaaSPricingModeller.java -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/IaaSPricingModellerInterface.java -text
 iaas/iaas-pricing-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/IaaSPricingModellerTest.java -text
+iaas/iaas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/IaaSPricingModeller.class -text
+iaas/iaas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/IaaSPricingModellerInterface.class -text
+iaas/iaas-pricing-modeller/target/test-classes/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/IaaSPricingModellerTest.class -text
 iaas/iaas-slamanager/core/src/main/java/eu/ascetic/iaas/slamanager/core/DataType.java -text
 iaas/iaas-slamanager/core/src/main/java/eu/ascetic/iaas/slamanager/core/SkeletonService.java -text
 iaas/iaas-slamanager/main/src/main/java/eu/ascetic/iaas/slamanager/main/beans/SkeletonSLAMBean.java -text
@@ -1141,6 +1145,7 @@ paas/application-monitor/test/ApplicationTest.java -text
 paas/application-monitor/test/IntegrationTest.java -text
 paas/application-monitor/test/MappingTest.java -text
 paas/application-monitor/test/TreeTest.java -text
+paas/paas-pricing-modeller/LICENSE.TXT -text
 paas/paas-pricing-modeller/pom.xml -text
 paas/paas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/paaspricingmodeller/PaaSPricingModeller.java -text
 paas/paas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/paaspricingmodeller/PaaSPricingModellerInterface.java -text

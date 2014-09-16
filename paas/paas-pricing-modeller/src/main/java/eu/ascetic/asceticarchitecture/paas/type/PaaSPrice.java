@@ -19,7 +19,7 @@ package eu.ascetic.asceticarchitecture.paas.type;
 /**
  * This class creates objects that keep information about the deployment ID, the application ID, 
  * the IaaS ID, the IaaS Price and the total energy that has been used. 
- *
+ * @author E. Agiatzidou
  */
 
 public class PaaSPrice{
