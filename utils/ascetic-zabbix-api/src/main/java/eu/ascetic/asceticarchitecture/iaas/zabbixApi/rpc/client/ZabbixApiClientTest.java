@@ -16,12 +16,32 @@ import eu.ascetic.asceticarchitecture.iaas.zabbixApi.utils.Dictionary;
 
 
 /**
- * The Class ZabbixApiClient.
+ * 
+ * Copyright 2014 ATOS SPAIN S.A. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the License);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * @author: David Rojo Antona. Atos Research and Innovation, Atos SPAIN SA
+ * @email david.rojoa@atos.net 
+ * 
+ * Java representation of history item retrieved from Zabbix
+ * 
  */
 public class ZabbixApiClientTest {
 
 	/** The host name. */
-	private static String hostName = "asok09";
+//	private static String hostName = "cloudsuite---data-analytics";
+	private static String hostName ="asok09";
 	
 	/** The item name. */
 	private static String itemName = "Version of zabbix_agent(d) running";
@@ -30,7 +50,9 @@ public class ZabbixApiClientTest {
 	private static int limit = 10;
 	
 	/** The item key. */
-	private static String itemKey = "vfs.fs.size[/boot,used]";	
+	private static String itemKey = "vfs.fs.size[/boot,used]";
+////	private static String itemKey = "vfs.fs.size[/,used]";
+//	private static String itemKey = "java.wrapper.sent.test";
 	
 	/** The history item format. */
 	private static String historyItemFormat = Dictionary.HISTORY_ITEM_FORMAT_INTEGER;
@@ -49,16 +71,19 @@ public class ZabbixApiClientTest {
 //			testItemsCountFromHosts(client);	
 //			insertSeparator("getItemByNameFromHost");
 //			testGetItemByNameFromHost(client);
-//			insertSeparator("getHistoryDataByLimit");
-//			testGetHistoryDataByLimit(client);
+			insertSeparator("getHistoryDataByLimit");
+			testGetHistoryDataByLimit(client);
 //			insertSeparator("getItemByKeyFromHost");
 //			testGetItemByKeyFromHost(client);
-			insertSeparator("getTemplateByName");
-			testGetTemplateByName(client);
-			insertSeparator("createVM");
-			testCreateVM(client);
+//			insertSeparator("getTemplateByName");
+//			testGetTemplateByName(client);
+//			insertSeparator("createVM");
+//			testCreateVM(client);
 //			insertSeparator("deleteVM");
 //			testDeleteVM(client);
+//			insertSeparator("sendData");
+//			testSendData(client);
+			
 	}
 
 
@@ -297,7 +322,7 @@ public class ZabbixApiClientTest {
 	
 	
 	public static void testCreateVM(ZabbixClient client){
-		String newHostName = "dummyVM_asceticJavaWrapper";
+		String newHostName = "dummyVM_asceticJavaWrapper_test";
 		String ipAddress = "1.1.1.1";
 		boolean error = false;
 		String newId = null;
@@ -320,7 +345,7 @@ public class ZabbixApiClientTest {
 	
 	
 	public static void testDeleteVM(ZabbixClient client){
-		String hostName = "dummyVM_asceticJavaWrapper";
+		String hostName = "dummyVM_asceticJavaWrapper_test";
 		boolean error = false;
 		String deletedHostId = null;
 		try {
@@ -338,6 +363,11 @@ public class ZabbixApiClientTest {
 		else {
 			System.out.println("VM " + hostName + " was not deleted in Zabbix. Please check log files");
 		}
+	}
+	
+	
+	public static void testSendData(ZabbixClient client){
+		boolean sent = client.pushData(hostName, itemKey, "1234");	
 	}
 
 }

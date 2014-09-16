@@ -1593,6 +1593,7 @@ utils/ascetic-zabbix-api/.classpath -text
 utils/ascetic-zabbix-api/.project -text
 utils/ascetic-zabbix-api/.settings/org.eclipse.jdt.core.prefs -text
 utils/ascetic-zabbix-api/.settings/org.eclipse.m2e.core.prefs -text
+utils/ascetic-zabbix-api/LICENSE.TXT -text
 utils/ascetic-zabbix-api/doc/allclasses-frame.html -text
 utils/ascetic-zabbix-api/doc/allclasses-noframe.html -text
 utils/ascetic-zabbix-api/doc/constant-values.html -text

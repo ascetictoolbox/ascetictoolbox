@@ -28,11 +28,28 @@ import eu.ascetic.asceticarchitecture.iaas.zabbixApi.utils.Dictionary;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.utils.Json2ObjectMapper;
 import java.util.concurrent.TimeUnit;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class ZabbixClient.
+ * /**
  * 
- * @author David Rojo Antona - ATOS
+ * Copyright 2014 ATOS SPAIN S.A. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the License);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * @author: David Rojo Antona. Atos Research and Innovation, Atos SPAIN SA
+ * @email david.rojoa@atos.net 
+ * 
+ * Java representation of Zabbix client
+ * 
  */
 public class ZabbixClient {
 
@@ -799,5 +816,53 @@ public class ZabbixClient {
 		}
 		
 		return hostDeletedId;
+	}
+	
+	
+	
+	/**
+	 * Push data.
+	 *
+	 * @param hostName the host name
+	 * @param itemKey the item key
+	 * @param value the value
+	 * @return the string
+	 */
+	public boolean pushData(String hostName, String itemKey, String value){
+		boolean sent = false;
+
+		
+		if (getHostByName(hostName) != null){
+			try {
+				String jsonRequest = 							
+						"{\"request\":\"sender data\",\"data\":[{" + 
+								"\"host\":\"" + hostName + "\"," +
+						        "\"key\":\"" + itemKey + "\"," +
+						        "\"value\":\"" + value + "\"}]}";
+				
+				HttpResponse response = postAndGet(jsonRequest);
+				HttpEntity entity = response.getEntity();
+				ObjectMapper mapper = new ObjectMapper ();
+				HashMap untyped = mapper.readValue(EntityUtils.toString(entity), HashMap.class);
+	//			LinkedHashMap<String, Object> result = (LinkedHashMap<String, Object>) untyped.get("result");
+				String result = (String) untyped.get("info");
+	
+				if (result != null){		
+					log.info("Data sent to zabbix. Result:  " + result);
+					System.out.println("Data sent to zabbix. Result:  " + result);
+					return true;
+				}	
+			} catch (Exception e) {
+				log.error(e.getMessage() + "\n"); 
+				System.out.println(e.getMessage() + "\n");
+				return false;
+			}
+		}
+		else {
+			log.error("The host " + hostName + " doesn't exists in the ASCETiC Zabbix environment. Please choose another hostname" );
+			return false;
+		}
+		
+		return sent;
 	}
 }
