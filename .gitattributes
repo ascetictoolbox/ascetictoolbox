@@ -1,6 +1,7 @@
 * text=auto !eol
 iaas/energy-modeller-load-calibration-tool/Apps.csv -text
 iaas/energy-modeller-load-calibration-tool/Deployment[!!-~]Instructions.txt -text
+iaas/energy-modeller-load-calibration-tool/LICENCE.TXT -text
 iaas/energy-modeller-load-calibration-tool/nb-configuration.xml -text
 iaas/energy-modeller-load-calibration-tool/pom.xml -text
 iaas/energy-modeller-load-calibration-tool/src/main/java/eu/ascetic/energymodellerloadinducer/CalibrationLoadGenerator.java -text
@@ -10,7 +11,6 @@ iaas/energy-modeller-load-calibration-tool/src/main/webapp/WEB-INF/sun-jaxws.xml
 iaas/energy-modeller-load-calibration-tool/src/main/webapp/WEB-INF/web.xml -text
 iaas/energy-modeller-load-calibration-tool/src/main/webapp/index.jsp -text
 iaas/energy-modeller/LICENCE.TXT -text
-iaas/energy-modeller/LICENSE.txt -text
 iaas/energy-modeller/filter.properties -text
 iaas/energy-modeller/nb-configuration.xml -text
 iaas/energy-modeller/pom.xml -text
