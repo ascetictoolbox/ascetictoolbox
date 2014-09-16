@@ -1238,6 +1238,7 @@ paas/virtual-machine-contextualizer/runtime/templates/scripts/linux/context_appl
 paas/virtual-machine-contextualizer/runtime/templates/scripts/linux/context_network -text
 paas/virtual-machine-contextualizer/runtime/virtual-machine-contextualizer.jar -text
 saas/application-descriptor-tool/pom.xml -text
+saas/application-packager/LICENSE.TXT -text
 saas/application-packager/pom.xml -text
 saas/application-uploader/.classpath -text
 saas/application-uploader/.project -text
