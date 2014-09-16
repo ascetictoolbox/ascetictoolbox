@@ -24,12 +24,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
  * The aim of this class is to provide the base methods for any implementation
  * of a Load based division mechanism that examines historical records.
+ *
  * @author Richard
  */
 public abstract class AbstractHistoricLoadBasedDivision implements HistoricLoadBasedDivision {
@@ -42,12 +45,13 @@ public abstract class AbstractHistoricLoadBasedDivision implements HistoricLoadB
     /**
      * This creates a load based division mechanism for the specified host, that
      * is yet to be specified.
-     */    
+     */
     public AbstractHistoricLoadBasedDivision() {
     }
-    
+
     /**
      * This creates a load based division mechanism for the specified host.
+     *
      * @param host The host to divide energy for, among its VMs.
      */
     public AbstractHistoricLoadBasedDivision(Host host) {
@@ -159,7 +163,8 @@ public abstract class AbstractHistoricLoadBasedDivision implements HistoricLoadB
 
     /**
      * This lists VMs on the host machine.
-     * @return  This VMs on the host machine.
+     *
+     * @return This VMs on the host machine.
      */
     @Override
     public Collection<VM> getVMList() {
@@ -168,6 +173,7 @@ public abstract class AbstractHistoricLoadBasedDivision implements HistoricLoadB
 
     /**
      * The amount of VMs on the host machine.
+     *
      * @return This count of how many VMs are on the host machine.
      */
     @Override
@@ -205,6 +211,55 @@ public abstract class AbstractHistoricLoadBasedDivision implements HistoricLoadB
          */
         this.loadFraction = loadFraction;
         Collections.sort(loadFraction);
-    }    
-    
+    }
+
+    /**
+     * This compares the vm resource utilisation dataset and the host energy
+     * data and ensures that they have a 1:1 mapping 
+     */
+    public void cleanData() {
+
+        if (energyUsage.size() <= loadFraction.size()) {
+            LinkedHashMap<HostEnergyRecord, HostVmLoadFraction> cleanedData = cleanData(loadFraction, energyUsage);
+            energyUsage.clear();
+            energyUsage.addAll(cleanedData.keySet());
+            loadFraction.clear();
+            loadFraction.addAll(cleanedData.values());
+        }
+    }
+
+    /**
+     * This compares the vm resource utilisation dataset and the host energy
+     * data and ensures that they have a 1:1 mapping
+     *
+     * @param vmData The Vms usage dataset
+     * @param hostData The host's energy usage dataset
+     * @return The mappings between each dataset elements
+     */
+    public LinkedHashMap<HostEnergyRecord, HostVmLoadFraction> cleanData(Collection<HostVmLoadFraction> vmData, List<HostEnergyRecord> hostData) {
+        LinkedHashMap<HostEnergyRecord, HostVmLoadFraction> answer = new LinkedHashMap<>();
+        //Make a copy and compare times remove them each time.
+        LinkedList<HostVmLoadFraction> vmDataCopy = new LinkedList<>();
+        vmDataCopy.addAll(vmData);
+        LinkedList<HostEnergyRecord> hostDataCopy = new LinkedList<>();
+        hostDataCopy.addAll(hostData);
+        HostVmLoadFraction vmHead = vmDataCopy.pop();
+        HostEnergyRecord hostHead = hostDataCopy.pop();
+        while (!vmDataCopy.isEmpty() && !hostDataCopy.isEmpty()) {
+            if (vmHead.getTime() == hostHead.getTime()) {
+                answer.put(hostHead, vmHead);
+                vmHead = vmDataCopy.pop();
+                hostHead = hostDataCopy.pop();
+            } else {
+                //replace the youngest, given this is a sorted list.
+                if (vmHead.getTime() < hostHead.getTime()) {
+                    vmHead = vmDataCopy.pop();
+                } else {
+                    hostHead = hostDataCopy.pop();
+                }
+            }
+        }
+        return answer;
+    }
+
 }

@@ -57,6 +57,7 @@ public class LoadBasedDivision extends AbstractHistoricLoadBasedDivision {
     @Override
     public double getEnergyUsage(VM vm) {
         VmDeployed deployed = (VmDeployed) vm;
+        cleanData();
         int recordCount = (energyUsage.size() <= loadFraction.size() ? energyUsage.size() : loadFraction.size());
 
         /**
@@ -71,8 +72,9 @@ public class LoadBasedDivision extends AbstractHistoricLoadBasedDivision {
             HostVmLoadFraction load1 = loadFraction.get(i);
             HostVmLoadFraction load2 = loadFraction.get(i + 1);
             /**
-             * The sanity check below tests to see if the energy value clock counter
-             * has been reset or not. If it has then that round of energy data is ignored.
+             * The sanity check below tests to see if the energy value clock
+             * counter has been reset or not. If it has then that round of
+             * energy data is ignored.
              */
             if (energy1.getEnergy() < energy2.getEnergy()) {
                 double deltaEnergy = energy2.getEnergy() - energy1.getEnergy();
