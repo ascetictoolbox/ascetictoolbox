@@ -1,5 +1,5 @@
 /*
- *  Copyright 2002-2012 Barcelona Supercomputing Center (www.bsc.es)
+ *  Copyright 2002-2014 Barcelona Supercomputing Center (www.bsc.es)
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -82,7 +82,7 @@ public class ApplicationMonitor {
         }
     }
 
-    public static void main(String[] args) throws Exception { 
+    /*public static void main(String[] args) throws Exception { 
         Configuration.getComponentDescriptions().put("componentA", new ResourceDescription());
         VM vm = new VM("10.0.0.5", UUID.randomUUID().toString(), "componentA");
 
@@ -101,6 +101,6 @@ public class ApplicationMonitor {
         Thread.sleep(300);
         stopEvent(eventId1);
 
-    }
+    }*/
 
 }

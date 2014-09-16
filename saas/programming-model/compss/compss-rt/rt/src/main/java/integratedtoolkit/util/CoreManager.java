@@ -1,5 +1,5 @@
 /*
- *  Copyright 2002-2012 Barcelona Supercomputing Center (www.bsc.es)
+ *  Copyright 2002-2014 Barcelona Supercomputing Center (www.bsc.es)
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -42,6 +42,7 @@ public class CoreManager {
     private static final Logger logger = Logger.getLogger(Loggers.TS_COMP);
     private static ITConstants.Lang lang = ITConstants.Lang.JAVA;
     public static final Map<String, Integer> signatureToId = new HashMap<String, Integer>();
+    private static final Map<String, Implementation> signatureToImpl = new HashMap<String, Implementation>();
     public static int coreCount = 0;
     private static int nextId = 0;
     private static Implementation[][] implementations;
@@ -199,7 +200,7 @@ public class CoreManager {
                     }
                 }
                 for (int i = 0; i < implementationCount; i++) {
-                    loadMethodConstraints(method_id, implementationCount, declaringClasses, implConstraints);
+                    loadMethodConstraints(method_id, implementationCount, methodSignature, declaringClasses, implConstraints);
                 }
 
             } else { // Service
@@ -211,10 +212,11 @@ public class CoreManager {
                     CoreManager.coreCount++;
                     newMethods.add(method_id);
                 }
-                loadServiceConstraints(method_id, serviceAnnot);
+                loadServiceConstraints(method_id, signature, serviceAnnot);
             }
 
         }
+        System.out.println(signatureToImpl);
         return newMethods;
     }
 
@@ -225,12 +227,12 @@ public class CoreManager {
      * @param coreId identifier for that core
      * @param service Servive annotation describing the core
      */
-    private static void loadServiceConstraints(int coreId, integratedtoolkit.types.annotations.Service service) {
+    private static void loadServiceConstraints(int coreId, String signature, integratedtoolkit.types.annotations.Service service) {
         annot[coreId] = new Constraints[1];
         resources[coreId] = new ResourceDescription[1];
         implementations[coreId] = new Implementation[1];
-        implementations[coreId][0] = new Service(coreId, service.namespace(), service.name(), service.port(), service.operation()) {
-        };
+        implementations[coreId][0] = new Service(coreId, service.namespace(), service.name(), service.port(), service.operation());
+        signatureToImpl.put(signature, implementations[coreId][0]);
     }
 
     /**
@@ -240,7 +242,7 @@ public class CoreManager {
      * @param coreId identifier for that core
      * @param service Method annotation describing the core
      */
-    private static void loadMethodConstraints(int coreId, int implementationCount, String[] declaringClasses, Constraints[] cts) {
+    private static void loadMethodConstraints(int coreId, int implementationCount, String signature, String[] declaringClasses, Constraints[] cts) {
         annot[coreId] = new Constraints[implementationCount];
         resources[coreId] = new ResourceDescription[implementationCount];
         implementations[coreId] = new Implementation[implementationCount];
@@ -279,6 +281,7 @@ public class CoreManager {
                 resources[coreId][i] = rm;
             }
             implementations[coreId][i] = new Method(declaringClasses[i], coreId, i, cts[i], rm);
+            signatureToImpl.put(signature + declaringClasses[i], implementations[coreId][i]);
         }
     }
 
@@ -446,6 +449,10 @@ public class CoreManager {
         System.arraycopy(oldAnnot, 0, annot, 0, oldAnnot.length);
         System.arraycopy(oldResources, 0, resources, 0, oldResources.length);
         System.arraycopy(oldImplementations, 0, implementations, 0, oldImplementations.length);
+    }
+
+    public static Implementation getImplementation(String signature) {
+        return signatureToImpl.get(signature);
     }
 
     //CUSTOM EXCEPTIONS

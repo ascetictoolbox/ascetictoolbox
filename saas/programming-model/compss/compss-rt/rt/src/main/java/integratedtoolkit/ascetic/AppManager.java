@@ -1,5 +1,5 @@
 /*
- *  Copyright 2002-2012 Barcelona Supercomputing Center (www.bsc.es)
+ *  Copyright 2002-2014 Barcelona Supercomputing Center (www.bsc.es)
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,46 +15,38 @@
  */
 package integratedtoolkit.ascetic;
 
+import eu.ascetic.saas.application_uploader.ApplicationUploader;
+import eu.ascetic.saas.application_uploader.ApplicationUploaderException;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class AppManager {
 
     private static final String applicationId;
     private static final String deploymentId;
 
-    private static final String endpoint;
-
-    private static final String RESOURCES_PATH;
     private static final HashMap<String, VM> detectedVMs;
-
-    private static int TEST_ID = 1;
-    private static int TEST_LIMIT = 3;
-    private static LinkedList<String> receivedVMs = new LinkedList();
+    public static final ApplicationUploader uploader;
 
     static {
         applicationId = Configuration.getApplicationId();
         deploymentId = Configuration.getDeploymentId();
-        endpoint = Configuration.getApplicationMonitorEndpoint();
-        RESOURCES_PATH = "/applications/" + applicationId + "/deployments/" + deploymentId;
+        System.out.println("new ApplicationUploader(" + Configuration.getApplicationManagerEndpoint() + ");");
+        uploader = new ApplicationUploader(Configuration.getApplicationManagerEndpoint());
         detectedVMs = new HashMap<String, VM>();
-        (new Tester()).start();
     }
 
-    public static Collection<VM> getResources() {
-        for (String rvm : receivedVMs) {
-            String IPv4 = rvm;
+    public static Collection<VM> getResources() throws ApplicationUploaderException {
+        System.out.println("OBTIANING RESOURCES APPMAN");
+        System.out.println("uploader.getDeploymentVMDescriptions(" + applicationId + ", " + deploymentId + ");");
+        for (eu.ascetic.paas.applicationmanager.model.VM rvm : uploader.getDeploymentVMDescriptions(applicationId, deploymentId)) {
+            String IPv4 = rvm.getIp();
             VM vm = detectedVMs.get(IPv4);
             if (vm == null) {
-                String component = "component1";
-                String id = UUID.randomUUID().toString();
-                vm = new VM(IPv4, id, component);
+                vm = new VM(rvm);
                 detectedVMs.put(IPv4, vm);
-            }
+                System.out.println("Detectada la màquina IP:" + rvm.getIp() + " amb ID " + rvm.getProviderVmId() + " de component " + rvm.getOvfId());
+            }            
         }
         return detectedVMs.values();
     }
@@ -63,17 +55,4 @@ public class AppManager {
         return new java.util.Random().nextInt(100);
     }
 
-    static class Tester extends Thread {
-
-        public void run() {
-            while (TEST_ID <= TEST_LIMIT) {
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException ex) {
-                }
-                receivedVMs.add("127.0.0." + TEST_ID);
-                TEST_ID++;
-            }
-        }
-    }
 }

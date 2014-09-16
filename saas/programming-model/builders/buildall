@@ -1,0 +1,22 @@
+#!/bin/bash -e
+
+echo " "
+echo "# Building COMPSs packages..."
+echo " "
+cd specs 
+
+echo " "
+echo " * Building Debian packages..."
+echo " "
+cd deb
+./builddeb
+cd ..
+echo " "
+
+#echo " "
+#echo " * Building Red-Hat packages..."
+#echo " "
+#cd rpm
+#./buildrpm
+#cd ..
+#echo " "

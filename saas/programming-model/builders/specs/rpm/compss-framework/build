@@ -1,0 +1,68 @@
+#!/bin/bash -e
+
+mode=$1
+COMPSS_VERSION=1.2
+
+mkdir -p tmp/BUILD tmp/RPMS tmp/SOURCES/ tmp/SPECS/ tmp/SRPMS tmp/BUILDROOT
+echo " "
+echo "Packing COMPSs sources..."
+mkdir -p tmp/compss-framework-$COMPSS_VERSION/opt/COMPSs/Runtime/rt/connectors
+
+mkdir -p tmp/compss-framework-$COMPSS_VERSION/opt/COMPSs/Runtime/xml/projects
+mkdir -p tmp/compss-framework-$COMPSS_VERSION/opt/COMPSs/Runtime/xml/resources
+mkdir -p tmp/compss-framework-$COMPSS_VERSION/opt/COMPSs/Runtime/xml/monitor
+
+mkdir -p tmp/compss-framework-$COMPSS_VERSION/opt/COMPSs/JAVA_GAT/lib
+mkdir -p tmp/compss-framework-$COMPSS_VERSION/opt/COMPSs/Monitor
+
+mkdir -p tmp/compss-framework-$COMPSS_VERSION/etc/profile.d
+
+cp -rf ../../../../doc/ tmp/compss-framework-$COMPSS_VERSION/opt/COMPSs/
+cp -rf ../../../../files/JAVA_GAT/lib/adaptors tmp/compss-framework-$COMPSS_VERSION/opt/COMPSs/JAVA_GAT/lib/
+
+cp -rf ../../../../compss tmp/compss-framework-$COMPSS_VERSION/opt/COMPSs/Runtime/rt/
+
+cp -rf ../../../../LICENSE tmp/compss-framework-$COMPSS_VERSION/opt/COMPSs/Runtime/
+cp -rf ../../../../compss/compss-rt/log tmp/compss-framework-$COMPSS_VERSION/opt/COMPSs/Runtime/
+cp -rf ../../../../compss/compss-rt/scripts tmp/compss-framework-$COMPSS_VERSION/opt/COMPSs/Runtime/
+
+cp -rf ../../../../compss/compss-rt/xml/projects/project_schema.xsd tmp/compss-framework-$COMPSS_VERSION/opt/COMPSs/Runtime/xml/projects/
+cp -rf ../../../../compss/compss-rt/xml/projects/project.xml tmp/compss-framework-$COMPSS_VERSION/opt/COMPSs/Runtime/xml/projects/
+cp -rf ../../../../compss/compss-rt/xml/projects/examples tmp/compss-framework-$COMPSS_VERSION/opt/COMPSs/Runtime/xml/projects/
+
+cp -rf ../../../../compss/compss-rt/xml/resources/resource_schema.xsd tmp/compss-framework-$COMPSS_VERSION/opt/COMPSs/Runtime/xml/resources/
+cp -rf ../../../../compss/compss-rt/xml/resources/resources.xml tmp/compss-framework-$COMPSS_VERSION/opt/COMPSs/Runtime/xml/resources/
+cp -rf ../../../../compss/compss-rt/xml/resources/examples tmp/compss-framework-$COMPSS_VERSION/opt/COMPSs/Runtime/xml/resources/
+
+cp -rf ../../../../compss/compss-rt/xml/monitor tmp/compss-framework-$COMPSS_VERSION/opt/COMPSs/Runtime/xml/
+cp -rf ../../../../compss/compss-rt/xml/templates tmp/compss-framework-$COMPSS_VERSION/opt/COMPSs/Runtime/xml/
+
+echo "export PATH=\$PATH:/opt/COMPSs/Runtime/scripts/user" > tmp/compss-framework-$COMPSS_VERSION/etc/profile.d/compss.sh
+echo -e "for i in /opt/COMPSs/Runtime/rt/connectors/*.jar ; do\n\texport CLASSPATH=\$CLASSPATH:\$i\ndone" >> tmp/compss-framework-$COMPSS_VERSION/etc/profile.d/compss.sh
+
+cd tmp/
+tar czf SOURCES/compss-framework-$COMPSS_VERSION.tar.gz compss-framework-$COMPSS_VERSION/;
+if [ $? -ne 0 ]; then
+	echo "Error compressing package";
+	exit 1;
+fi	
+rm -rf compss-framework-$COMPSS_VERSION/
+
+echo " "
+echo "Copying sources to RPM build path..."
+cp ../compss-framework_$mode.spec SPECS/
+
+echo " "
+echo "Generating RPM package..."
+rpmbuild --define "_topdir $PWD" -bb --clean SPECS/compss-framework_$mode.spec
+if [ $? -ne 0 ]; then
+	echo "Error creating rpm";
+	exit 1;
+fi
+echo " "
+echo "Moving built RPM package to final location..."
+mkdir -p ../../../../packages/rpm/compss-framework
+mv RPMS/$mode/compss-framework-* ../../../../packages/rpm/compss-framework
+echo " "
+cd ..
+rm -r tmp/

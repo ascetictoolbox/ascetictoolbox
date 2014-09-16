@@ -1,5 +1,5 @@
 /*
- *  Copyright 2002-2012 Barcelona Supercomputing Center (www.bsc.es)
+ *  Copyright 2002-2014 Barcelona Supercomputing Center (www.bsc.es)
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -31,14 +31,19 @@ public class Ascetic {
     public static LinkedList<ResourceDescription> getNewResources() {
         System.out.println("Obtaining new Resources");
         LinkedList<ResourceDescription> newResources = new LinkedList<ResourceDescription>();
-        for (VM vm : AppManager.getResources()) {
-            if (resources.get(vm.getIPv4()) == null) {
-                newResources.add(vm.getDescription());
-                resources.put(vm.getIPv4(), vm);
-                CloudImageDescription cid= vm.getDescription().getImage();
-                ProjectWorker pw =  new ProjectWorker(vm.getIPv4(), "ASCETIC", cid.getUser(), cid.getiDir(), cid.getwDir());
-                ProjectManager.addProjectWorker(pw);
+        try {
+            for (VM vm : AppManager.getResources()) {
+                if (resources.get(vm.getIPv4()) == null) {
+                    newResources.add(vm.getDescription());
+                    resources.put(vm.getIPv4(), vm);
+                    CloudImageDescription cid = vm.getDescription().getImage();
+                    ProjectWorker pw = new ProjectWorker(vm.getIPv4(), "ASCETIC", cid.getUser(), cid.getiDir(), cid.getwDir());
+                    ProjectManager.addProjectWorker(pw);
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+
         }
         return newResources;
     }
@@ -64,6 +69,10 @@ public class Ascetic {
 
     public static void stopEvent(Job job) {
         //ApplicationMonitor.stopEvent(job.getEventId());
+    }
+
+    public static LinkedList<Implementation> getComponentImplementations(String name) {
+        return Configuration.getComponentImplementations(name);
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2002-2012 Barcelona Supercomputing Center (www.bsc.es)
+ *  Copyright 2002-2014 Barcelona Supercomputing Center (www.bsc.es)
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -32,22 +32,17 @@ public class VM {
         }
     }
 
-    private final static HashMap<String, ResourceDescription> componentDescription = Configuration.getComponentDescriptions();
+    private final eu.ascetic.paas.applicationmanager.model.VM vm;
 
-    private final String componentId;
-    private final String providerId;
-    private final String IPv4;
     private final ResourceDescription description;
 
     private int[][] consumption;
 
-    public VM(String IPv4, String providerID, String componentId) {
-        this.IPv4 = IPv4;
-        this.providerId = providerID;
-        this.componentId = componentId;
-        System.out.println("ComponentID:"+componentId);
-        ResourceDescription rd= componentDescription.get(componentId);
-        System.out.println("Description: "+rd);
+    public VM(eu.ascetic.paas.applicationmanager.model.VM vm) {
+        String IPv4 = vm.getIp();
+        this.vm = vm;
+        ResourceDescription rd = Configuration.getComponentDescriptions(vm.getOvfId());
+        System.out.println("Description :" + rd);
         description = new ResourceDescription(rd);
         description.setName(IPv4);
         consumption = new int[CoreManager.coreCount][];
@@ -58,15 +53,15 @@ public class VM {
     }
 
     public String getIPv4() {
-        return IPv4;
+        return vm.getIp();
     }
 
     public String getProviderId() {
-        return providerId;
+        return vm.getProviderVmId();
     }
 
     public String getComponentId() {
-        return componentId;
+        return vm.getOvfId();
     }
 
     public ResourceDescription getDescription() {
@@ -81,11 +76,11 @@ public class VM {
         if (System.currentTimeMillis() - lastUpdate > UPDATE_FREQ) {
             for (int coreId = 0; coreId < CoreManager.coreCount; coreId++) {
                 for (int implId = 0; implId < implCount[coreId]; implId++) {
-                    consumption[coreId][implId] = AppManager.getConsumption(IPv4, coreId + "_" + implId);
+                    consumption[coreId][implId] = AppManager.getConsumption(vm.getIp(), coreId + "_" + implId);
                 }
 
             }
-            lastUpdate=System.currentTimeMillis();
+            lastUpdate = System.currentTimeMillis();
         }
     }
 

@@ -35,12 +35,23 @@
 			<artifactId>annotations</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-	    <dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
-			<scope>test</scope>
-	    </dependency>
+                
+                <dependency>
+                        <groupId>eu.ascetic.saas</groupId>
+                        <artifactId>application-uploader</artifactId>
+                        <version>0.0.1-SNAPSHOT</version>
+                </dependency>
+                <dependency>
+                        <groupId>eu.ascetic.utils</groupId>
+                        <artifactId>ovf-xmlbeans-api</artifactId>
+                        <version>0.0.1-SNAPSHOT</version>
+                </dependency>
+                <dependency>
+                            <groupId>junit</groupId>
+                            <artifactId>junit</artifactId>
+                            <version>${junit.version}</version>
+                            <scope>test</scope>
+                </dependency>
 
 	    <!-- Runtime dependencies -->
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2002-2012 Barcelona Supercomputing Center (www.bsc.es)
+ *  Copyright 2002-2014 Barcelona Supercomputing Center (www.bsc.es)
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import integratedtoolkit.types.ResourceDescription;
 import integratedtoolkit.ITConstants;
 
 import integratedtoolkit.api.impl.IntegratedToolkitImpl;
+import integratedtoolkit.ascetic.Ascetic;
 import javax.xml.XMLConstants;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -501,7 +502,19 @@ public class ResourceManager {
                 SharedDiskManager.addSharedToMachine(e.getKey(), e.getValue(), vmName);
             }
         }
-        linkMachineToCores(r);
+
+        int[] maxSims = new int[CoreManager.coreCount];
+        System.out.println("RES:"+res);
+        System.out.println("IMAGE:"+res.getImage());
+        System.out.println("NAME:"+res.getImage().getName());
+        for (Implementation impl : Ascetic.getComponentImplementations(res.getImage().getName())) {
+            if (r.canRun(impl)) {
+                maxSims[impl.getCoreId()] = Math.max(maxSims[impl.getCoreId()], r.simultaneousCapacity(impl));
+            }
+        }
+
+        pool.setResourceCoreLinks(r, maxSims);
+
         pool.defineCriticalSet();
         logger.info("Resource configuration after adding the resource\n" + getCurrentState("\t"));
     }

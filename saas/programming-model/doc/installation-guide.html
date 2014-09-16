@@ -1,0 +1,407 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="LibreOffice 3.3  (Unix)">
+	<META NAME="CREATED" CONTENT="20111213;11253700">
+	<META NAME="CHANGED" CONTENT="20131031;17190900">
+	<STYLE TYPE="text/css">
+	<!--
+		@page { margin-left: 1.27cm; margin-right: 1.37cm; margin-top: 1.19cm; margin-bottom: 1.09cm }
+		P { margin-bottom: 0.21cm; direction: ltr }
+		P.western { font-family: "Liberation Serif"; font-size: 12pt; so-language: es-ES }
+		H1 { margin-bottom: 0.2cm; direction: ltr }
+		H1.western { font-family: "Liberation Sans", sans-serif; font-size: 16pt; so-language: es-ES }
+		H1.cjk { font-family: "DejaVu Sans"; font-size: 16pt }
+		H1.ctl { font-family: "FreeSans"; font-size: 16pt }
+		P.list-western { margin-bottom: 0cm; font-family: "Liberation Serif"; font-size: 12pt; so-language: es-ES }
+		P.list-cjk { margin-bottom: 0cm }
+		P.list-ctl { margin-bottom: 0cm; font-family: "FreeSans", sans-serif }
+		A:link { so-language: zxx }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" DIR="LTR">
+<DIV ID="Section1" DIR="LTR">
+	<H1 LANG="es-ES" CLASS="western" ALIGN=CENTER>COMPSs framework
+	installation guide</H1>
+	<P LANG="es-ES" CLASS="western" ALIGN=CENTER><BR><BR>
+	</P>
+	
+	<P LANG="es-ES" CLASS="western" STYLE="margin-bottom: 0cm; widows: 2; orphans: 2">
+	<FONT COLOR="#222222"><FONT FACE="arial, sans-serif"><FONT SIZE=4><B>1.
+	Debian-based distributions</B></FONT></FONT></FONT></P>
+	<P LANG="es-ES" CLASS="western" STYLE="margin-bottom: 0cm; font-weight: normal; widows: 2; orphans: 2">
+	<FONT COLOR="#222222"><FONT FACE="Liberation Serif, serif"><FONT SIZE=3><b>*</b> <u>Note</u>:</FONT></FONT></FONT><BR>
+	<FONT COLOR="#222222"><FONT FACE="Liberation Serif, serif"><FONT SIZE=3>- The following commands require root privileges and Internet connection.</FONT></FONT></FONT><BR>
+	<FONT COLOR="#222222"><FONT FACE="Liberation Serif, serif"><FONT SIZE=3>- Once the packages are installed, please log out and back in again to complete the installation.</FONT></FONT></FONT>
+	<P LANG="es-ES" CLASS="western" STYLE="margin-bottom: 0cm; widows: 2; orphans: 2">
+	<FONT COLOR="#222222"><FONT FACE="Liberation Serif, serif"><FONT SIZE=3><B>1.1
+	Add COMPSs package repository</B></FONT></FONT></FONT></P>
+	<P LANG="es-ES" CLASS="western" STYLE="margin-left: 1.25cm; margin-bottom: 0cm; widows: 2; orphans: 2">
+	<P LANG="es-ES" CLASS="western" STYLE="margin-left: 1.25cm; margin-bottom: 0cm; font-weight: normal; widows: 2; orphans: 2">
+	<FONT COLOR="#222222"><FONT FACE="Liberation Serif, serif"><FONT SIZE=3>1.1.1
+	Edit repository list</FONT></FONT></FONT></P>
+	<UL>
+		<UL>
+			<UL>
+				<LI><P LANG="es-ES" CLASS="list-western" STYLE="margin-bottom: 0.5cm; font-weight: normal; widows: 2; orphans: 2">
+				<FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2><u>x86-64</u>: echo "deb [arch=amd64] http://compss.bsc.es/rc/repo/debs stable main" >> /etc/apt/sources.list</FONT></FONT></FONT></P>
+			</UL>
+		</UL>
+	</UL>
+	<UL>
+		<UL>
+			<UL>
+				<LI><P LANG="es-ES" CLASS="list-western" STYLE="margin-bottom: 0.5cm; font-weight: normal; widows: 2; orphans: 2">
+				<FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2><u>No arch</u>: echo "deb [arch=all] http://compss.bsc.es/rc/repo/debs stable main" >> /etc/apt/sources.list</FONT></FONT></FONT></P>
+			</UL>
+		</UL>
+	</UL>
+	<P LANG="es-ES" CLASS="western" STYLE="margin-left: 1.25cm; margin-bottom: 0cm; font-weight: normal; widows: 2; orphans: 2">
+	<FONT COLOR="#222222"><FONT FACE="Liberation Serif, serif"><FONT SIZE=3>1.1.2
+	Refresh package list</FONT></FONT></FONT></P>
+	<UL>
+		<UL>
+			<UL>
+				<LI><P LANG="es-ES" CLASS="list-western" STYLE="margin-bottom: 0.5cm; font-style: normal">
+				<FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2>
+				apt-get update</FONT></FONT></FONT></P>
+			</UL>
+		</UL>
+	</UL>
+	<FONT COLOR="#222222"><FONT FACE="Liberation Serif, serif"><FONT SIZE=3><B>1.2
+	Install COMPSs packages</B></FONT></FONT></FONT></P>
+	<P LANG="es-ES" CLASS="western" STYLE="margin-left: 1.25cm; margin-bottom: 0cm; widows: 2; orphans: 2">
+	<P LANG="es-ES" CLASS="western" STYLE="margin-left: 1.25cm; margin-bottom: 0cm; font-weight: normal; widows: 2; orphans: 2">
+	<FONT COLOR="#222222"><FONT FACE="Liberation Serif, serif"><FONT SIZE=3>1.2.1
+	Java applications: COMPSs framework</FONT></FONT></FONT></P>
+	<UL>
+		<UL>
+			<UL>
+				<LI><P LANG="es-ES" CLASS="list-western" STYLE="margin-bottom: 0.5cm; font-weight: normal; widows: 2; orphans: 2">
+				<FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2>apt-get install compss-framework</FONT></FONT></FONT></P>
+			</UL>
+		</UL>
+	</UL>
+	<P LANG="es-ES" CLASS="western" STYLE="margin-left: 1.25cm; margin-bottom: 0cm; font-weight: normal; widows: 2; orphans: 2">
+	<FONT COLOR="#222222"><FONT FACE="Liberation Serif, serif"><FONT SIZE=3>1.2.2
+	Python applications: COMPSs Python binding</FONT></FONT></FONT></P>
+	<UL>
+		<UL>
+			<UL>
+				<LI><P LANG="es-ES" CLASS="list-western" STYLE="margin-bottom: 0.5cm; font-style: normal">
+				<FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2>
+				apt-get install compss-python-binding</FONT></FONT></FONT></P>
+			</UL>
+		</UL>
+	</UL>
+	<P LANG="es-ES" CLASS="western" STYLE="margin-left: 1.25cm; margin-bottom: 0cm; font-weight: normal; widows: 2; orphans: 2">
+	<FONT COLOR="#222222"><FONT FACE="Liberation Serif, serif"><FONT SIZE=3>1.2.3
+	C/C++ applications: COMPSs C/C++ binding</FONT></FONT></FONT></P>
+	<UL>
+		<UL>
+			<UL>
+				<LI><P LANG="es-ES" CLASS="list-western" STYLE="margin-bottom: 0.5cm; font-style: normal">
+				<FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2>
+				apt-get install compss-c-binding</FONT></FONT></FONT></P>
+			</UL>
+		</UL>
+	</UL>
+	<P LANG="es-ES" CLASS="western" STYLE="margin-left: 1.25cm; margin-bottom: 0cm; font-weight: normal; widows: 2; orphans: 2">
+	<FONT COLOR="#222222"><FONT FACE="Liberation Serif, serif"><FONT SIZE=3>1.2.4
+	Tracing system (optional): COMPSs extrae</FONT></FONT></FONT></P>
+	<UL>
+		<UL>
+			<UL>
+				<LI><P LANG="es-ES" CLASS="list-western" STYLE="margin-bottom: 0.5cm; font-style: normal">
+				<FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2>
+				apt-get install compss-extrae</FONT></FONT></FONT></P>
+			</UL>
+		</UL>
+	</UL>
+
+	
+	<P LANG="es-ES" CLASS="list-western" STYLE="margin-bottom: 0.5cm"><BR><BR>
+	</P>
+	<P LANG="es-ES" CLASS="western" STYLE="margin-bottom: 0cm; widows: 2; orphans: 2">
+	<FONT COLOR="#222222"><FONT FACE="arial, sans-serif"><FONT SIZE=4><B>2.
+	RedHat-based distributions</B></FONT></FONT></FONT></P>
+	<P LANG="es-ES" CLASS="western" STYLE="margin-bottom: 0cm; font-weight: normal; widows: 2; orphans: 2">
+<FONT COLOR="#222222"><FONT FACE="Liberation Serif, serif"><FONT SIZE=3><b>*</b> <u>Note</u>:</FONT></FONT></FONT><BR>
+	<FONT COLOR="#222222"><FONT FACE="Liberation Serif, serif"><FONT SIZE=3>- The following commands require root privileges and Internet connection.</FONT></FONT></FONT><BR>
+	<FONT COLOR="#222222"><FONT FACE="Liberation Serif, serif"><FONT SIZE=3>- Once the packages are installed, please log out and back in again to complete the installation.</FONT></FONT></FONT>	<P LANG="es-ES" CLASS="western" STYLE="margin-bottom: 0cm; widows: 2; orphans: 2">
+	<FONT COLOR="#222222"><FONT FACE="Liberation Serif, serif"><FONT SIZE=3><B>2.1
+	Add COMPSs package repository</B></FONT></FONT></FONT></P>
+	<P LANG="es-ES" CLASS="western" STYLE="margin-left: 1.25cm; margin-bottom: 0cm; widows: 2; orphans: 2">
+	<P LANG="es-ES" CLASS="western" STYLE="margin-left: 1.25cm; margin-bottom: 0cm; font-weight: normal; widows: 2; orphans: 2">
+	<FONT COLOR="#222222"><FONT FACE="Liberation Serif, serif"><FONT SIZE=3>2.1.1
+	Edit repository list</FONT></FONT></FONT></P>
+	<UL>
+		<UL>
+			<UL>
+				<LI><P LANG="es-ES" CLASS="list-western" STYLE="margin-bottom: 0.5cm; font-weight: normal; widows: 2; orphans: 2">
+				<FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2><u>x86-64</u></FONT></FONT></FONT></P>
+			</UL>
+		</UL>
+	</UL>
+	<UL>
+		<UL>
+			<UL>
+				<P LANG="es-ES" STYLE="margin-bottom: 0.5cm; font-weight: normal; widows: 2; orphans: 2">
+				<FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2><i><b>(Suse)</b></i> zypper addrepo -f http://compss.bsc.es/rc/repo/rpms/stable/x86_64 compss</FONT></FONT></FONT></P>
+			</UL>
+		</UL>
+	</UL>
+	<UL>
+		<UL>
+			<UL>
+				<P LANG="es-ES" STYLE="margin-bottom: 0.5cm; font-weight: normal; widows: 2; orphans: 2">
+				<FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2><i><b>(RHL, Centos)</b></i> wget http://compss.bsc.es/rc/repo/rpms/stable/compss-x86_64.repo -O /etc/yum.repos.d/compss-x86_64.repo</FONT></FONT></FONT></P>
+			</UL>
+		</UL>
+	</UL>
+
+	<UL>
+		<UL>
+			<UL>
+				<LI><P LANG="es-ES" CLASS="list-western" STYLE="margin-bottom: 0.5cm; font-weight: normal; widows: 2; orphans: 2">
+				<FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2><u>No arch</u></FONT></FONT></FONT></P>
+			</UL>
+		</UL>
+	</UL>
+	<UL>
+		<UL>
+			<UL>
+				<P LANG="es-ES" STYLE="margin-bottom: 0.5cm; font-weight: normal; widows: 2; orphans: 2">
+				<FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2><i><b>(Suse)</b></i> zypper addrepo -f http://compss.bsc.es/rc/repo/rpms/stable/noarch compss</FONT></FONT></FONT></P>
+			</UL>
+		</UL>
+	</UL>
+	<UL>
+		<UL>
+			<UL>
+				<P LANG="es-ES" STYLE="margin-bottom: 0.5cm; font-weight: normal; widows: 2; orphans: 2">
+				<FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2><i><b>(RHL, Centos)</b></i> wget http://compss.bsc.es/rc/repo/rpms/stable/compss-noarch.repo -O /etc/yum.repos.d/compss-noarch.repo</FONT></FONT></FONT></P>
+			</UL>
+		</UL>
+	</UL>
+	<P LANG="es-ES" CLASS="western" STYLE="margin-left: 1.25cm; margin-bottom: 0cm; font-weight: normal; widows: 2; orphans: 2">
+	<FONT COLOR="#222222"><FONT FACE="Liberation Serif, serif"><FONT SIZE=3>2.1.2
+	Refresh package list</FONT></FONT></FONT></P>
+	<UL>
+		<UL>
+			<UL>
+				<LI><P LANG="es-ES" CLASS="list-western" STYLE="margin-bottom: 0.5cm; font-style: normal">
+				<FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2>
+				<i><b>(Suse)</b></i> zypper refresh</FONT></FONT></FONT></P>
+			</UL>
+		</UL>
+	</UL>
+	<UL>
+		<UL>
+			<UL>
+				<P LANG="es-ES" STYLE="margin-bottom: 0.5cm; font-weight: normal; widows: 2; orphans: 2">
+				<FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2><i><b>(RHL, Centos)</b></i> <i>Nothing to do</i></FONT></FONT></FONT></P>
+			</UL>
+		</UL>
+	</UL>	
+	<FONT COLOR="#222222"><FONT FACE="Liberation Serif, serif"><FONT SIZE=3><B>2.2
+	Install COMPSs packages</B></FONT></FONT></FONT></P>
+	<P LANG="es-ES" CLASS="western" STYLE="margin-left: 1.25cm; margin-bottom: 0cm; widows: 2; orphans: 2">
+	<P LANG="es-ES" CLASS="western" STYLE="margin-left: 1.25cm; margin-bottom: 0cm; font-weight: normal; widows: 2; orphans: 2">
+	<FONT COLOR="#222222"><FONT FACE="Liberation Serif, serif"><FONT SIZE=3>2.2.1
+	Java applications: COMPSs framework</FONT></FONT></FONT></P>
+	<UL>
+		<UL>
+			<UL>
+				<LI><P LANG="es-ES" CLASS="list-western" STYLE="margin-bottom: 0.5cm; font-weight: normal; widows: 2; orphans: 2">
+				<FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2><i><b>(Suse)</b></i> zypper install compss-framework</FONT></FONT></FONT></P>
+			</UL>
+		</UL>
+	</UL>
+	<UL>
+		<UL>
+			<UL>
+				<P LANG="es-ES" CLASS="list-western" STYLE="margin-bottom: 0.5cm; font-weight: normal; widows: 2; orphans: 2">
+				<FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2><i><b>(RHL, Centos)</b></i> yum install compss-framework</FONT></FONT></FONT></P>
+			</UL>
+		</UL>
+	</UL>
+	<P LANG="es-ES" CLASS="western" STYLE="margin-left: 1.25cm; margin-bottom: 0cm; font-weight: normal; widows: 2; orphans: 2">
+	<FONT COLOR="#222222"><FONT FACE="Liberation Serif, serif"><FONT SIZE=3>2.2.2
+	Python applications: COMPSs Python binding</FONT></FONT></FONT></P>
+	<UL>
+		<UL>
+			<UL>
+				<LI><P LANG="es-ES" CLASS="list-western" STYLE="margin-bottom: 0.5cm; font-weight: normal; widows: 2; orphans: 2">
+				<FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2><i><b>(Suse)</b></i> zypper install compss-python-binding</FONT></FONT></FONT></P>
+			</UL>
+		</UL>
+	</UL>
+	<UL>
+		<UL>
+			<UL>
+				<P LANG="es-ES" CLASS="list-western" STYLE="margin-bottom: 0.5cm; font-weight: normal; widows: 2; orphans: 2">
+				<FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2><i><b>(RHL, Centos)</b></i> yum install compss-python-binding</FONT></FONT></FONT></P>
+			</UL>
+		</UL>
+	</UL>
+	<P LANG="es-ES" CLASS="western" STYLE="margin-left: 1.25cm; margin-bottom: 0cm; font-weight: normal; widows: 2; orphans: 2">
+	<FONT COLOR="#222222"><FONT FACE="Liberation Serif, serif"><FONT SIZE=3>2.2.3
+	C/C++ applications: COMPSs C/C++ binding</FONT></FONT></FONT></P>
+	<UL>
+		<UL>
+			<UL>
+				<LI><P LANG="es-ES" CLASS="list-western" STYLE="margin-bottom: 0.5cm; font-weight: normal; widows: 2; orphans: 2">
+				<FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2><i><b>(Suse)</b></i> zypper install compss-c-binding</FONT></FONT></FONT></P>
+			</UL>
+		</UL>
+	</UL>
+	<UL>
+		<UL>
+			<UL>
+				<P LANG="es-ES" CLASS="list-western" STYLE="margin-bottom: 0.5cm; font-weight: normal; widows: 2; orphans: 2">
+				<FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2><i><b>(RHL, Centos)</b></i> yum install compss-c-binding</FONT></FONT></FONT></P>
+			</UL>
+		</UL>
+	</UL>
+	<P LANG="es-ES" CLASS="western" STYLE="margin-left: 1.25cm; margin-bottom: 0cm; font-weight: normal; widows: 2; orphans: 2">
+	<FONT COLOR="#222222"><FONT FACE="Liberation Serif, serif"><FONT SIZE=3>2.2.4
+	Tracing system (optional): COMPSs extrae</FONT></FONT></FONT></P>
+	<UL>
+		<UL>
+			<UL>
+				<LI><P LANG="es-ES" CLASS="list-western" STYLE="margin-bottom: 0.5cm; font-weight: normal; widows: 2; orphans: 2">
+				<FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2><i><b>(Suse)</b></i> zypper install compss-extrae</FONT></FONT></FONT></P>
+			</UL>
+		</UL>
+	</UL>
+	<UL>
+		<UL>
+			<UL>
+				<P LANG="es-ES" CLASS="list-western" STYLE="margin-bottom: 0.5cm; font-weight: normal; widows: 2; orphans: 2">
+				<FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2><i><b>(RHL, Centos)</b></i> yum install compss-extrae</FONT></FONT></FONT></P>
+			</UL>
+		</UL>
+	</UL>
+	
+	<P LANG="es-ES" CLASS="list-western" STYLE="margin-bottom: 0.5cm"><BR><BR>
+	</P>
+	<P LANG="es-ES" CLASS="western" STYLE="margin-bottom: 0cm; widows: 2; orphans: 2">
+	<FONT COLOR="#222222"><FONT FACE="arial, sans-serif"><FONT SIZE=4><B>3.
+	Additional setup</B></FONT></FONT></FONT></P>
+	<P LANG="es-ES" CLASS="western" STYLE="margin-bottom: 0cm; widows: 2; orphans: 2">
+	<FONT COLOR="#222222"><FONT FACE="Liberation Serif, serif"><FONT SIZE=3><B>3.1
+	Configure SSH keys</B></FONT></FONT></FONT></P>
+	<P LANG="es-ES" CLASS="western" STYLE="margin-bottom: 0cm; widows: 2; orphans: 2">
+	<FONT COLOR="#222222"><FONT FACE="Liberation Serif, serif"><FONT SIZE=3>
+	By default, COMPSs uses SSH libraries for communication between nodes.
+	Consequently, after COMPSs is installed on a set of machines, the SSH keys must be configured on those machines so that COMPSs can establish passwordless connections between them.
+	This requires to install the OpenSSH package (if not present already) and follow these steps:
+	</FONT></FONT></FONT>
+	<P LANG="es-ES" CLASS="western" STYLE="margin-left: 1.25cm; margin-bottom: 0cm; font-weight: normal; widows: 2; orphans: 2">
+	<FONT COLOR="#222222"><FONT FACE="Liberation Serif, serif"><FONT SIZE=3>3.1.1
+	Generate an SSH key pair</FONT></FONT></FONT></P>
+	<UL>
+		<UL>
+			<UL>
+				<LI><P LANG="es-ES" CLASS="list-western" STYLE="margin-bottom: 0.5cm; font-weight: normal; widows: 2; orphans: 2">
+				<FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2>ssh-keygen -t dsa</FONT></FONT></FONT></P>
+			</UL>
+		</UL>
+	</UL>
+	<P LANG="es-ES" CLASS="western" STYLE="margin-left: 1.25cm; margin-bottom: 0cm; font-weight: normal; widows: 2; orphans: 2">
+	<FONT COLOR="#222222"><FONT FACE="Liberation Serif, serif"><FONT SIZE=3>3.1.2
+	Distribute the public key (~/.ssh/id_dsa.pub) to all the machines and configure it as authorized</FONT></FONT></FONT></P>
+	<UL>
+		<UL>
+			<UL>
+				<LI><P LANG="es-ES" CLASS="list-western" STYLE="margin-bottom: 0.5cm; font-weight: normal; widows: 2; orphans: 2">
+				<FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2><i>(On every machine) </i>cat id_dsa.pub >> ~/.ssh/authorized_keys</FONT></FONT></FONT></P>
+			</UL>
+		</UL>
+	</UL>
+	<P LANG="es-ES" CLASS="western" STYLE="margin-left: 1.25cm; margin-bottom: 0cm; font-weight: normal; widows: 2; orphans: 2">
+	<FONT COLOR="#222222"><FONT FACE="Liberation Serif, serif"><FONT SIZE=3>3.1.3
+	Check that passwordless SSH connections are working</FONT></FONT></FONT></P>
+	<UL>
+		<UL>
+			<UL>
+				<LI><P LANG="es-ES" CLASS="list-western" STYLE="margin-bottom: 0.5cm; font-weight: normal; widows: 2; orphans: 2">
+				<FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2><i>(Between any pair of machines)</i> ssh machineX</FONT></FONT></FONT></P>
+			</UL>
+		</UL>
+	</UL>
+	<P LANG="es-ES" CLASS="western" STYLE="margin-bottom: 0cm; widows: 2; orphans: 2">
+	<P LANG="es-ES" CLASS="western" STYLE="margin-bottom: 0cm; widows: 2; orphans: 2">
+	<FONT COLOR="#222222"><FONT FACE="Liberation Serif, serif"><FONT SIZE=3><B>3.2
+	Deploy the COMPSs task monitor</B></FONT></FONT></FONT></P>
+	<P LANG="es-ES" CLASS="western" STYLE="margin-left: 1.25cm; margin-bottom: 0cm; font-weight: normal; widows: 2; orphans: 2">
+	<FONT COLOR="#222222"><FONT FACE="Liberation Serif, serif"><FONT SIZE=3>3.2.1
+	Deploy the <B>WAR</B> package to applications container:</FONT></FONT></FONT></P>
+	<UL>
+		<UL>
+		<LI><P LANG="es-ES" CLASS="list-western" STYLE="margin-bottom: 0.5cm; font-weight: normal; widows: 2; orphans: 2">
+		<FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2>Copy
+		<I><B>/opt/COMPSs/Monitor/compss-monitor.war</B></I> to your web
+		applications container (<I><B>webapps/</B></I>): </FONT></FONT></FONT>
+		</P>
+		<LI><P LANG="es-ES" CLASS="list-western" STYLE="margin-bottom: 0.5cm">
+		<FONT FACE="Liberation Serif, serif"><FONT SIZE=3><B>Example (c<FONT COLOR="#222222">ase
+		of Debian Tomcat 6 installation</FONT>):</B></FONT></FONT></P>
+		<UL>
+			<LI><P LANG="es-ES" CLASS="western" STYLE="margin-top: 0.15cm; margin-bottom: 0.15cm; font-weight: normal; widows: 2; orphans: 2">
+			<FONT FACE="Liberation Mono, monospace"><FONT SIZE=2><FONT COLOR="#222222">Copy
+			</FONT><FONT COLOR="#222222"><I><B>/opt/COMPSs/Monitor/compss-monitor.war</B></I></FONT><FONT COLOR="#222222">
+			to </FONT><FONT COLOR="#222222"><I><B>/var/lib/tomcat6/webapps/</B></I></FONT></FONT></FONT></P>
+			<LI><P LANG="es-ES" CLASS="western" STYLE="margin-top: 0.15cm; margin-bottom: 0.15cm; widows: 2; orphans: 2">
+			<FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">Add</SPAN></SPAN></FONT></FONT></FONT><FONT COLOR="#222222">
+			</FONT><FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2><I><B>export
+			IT_MONITOR=$HOME </B></I></FONT></FONT></FONT><FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">line
+			</SPAN></SPAN></FONT></FONT></FONT><FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2><I><SPAN STYLE="font-weight: normal">to</SPAN></I></FONT></FONT></FONT><FONT COLOR="#222222">
+			</FONT><FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2><I><B>/usr/share/tomcat6/bin/catalina.sh
+			</B></I></FONT></FONT></FONT><FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">file.</SPAN></SPAN></FONT></FONT></FONT></P>
+		</UL>
+		<LI><P LANG="es-ES" CLASS="list-western" STYLE="margin-bottom: 0.5cm">
+		<FONT FACE="Liberation Serif, serif"><FONT SIZE=3><B>Example (c<FONT COLOR="#222222">ase
+		of CentOS Tomcat 6 installation</FONT>):</B></FONT></FONT></P>
+		<UL>
+			<LI><P LANG="es-ES" CLASS="western" STYLE="margin-top: 0.15cm; margin-bottom: 0.15cm; font-weight: normal; widows: 2; orphans: 2">
+			<FONT FACE="Liberation Mono, monospace"><FONT SIZE=2><FONT COLOR="#222222">Copy
+			</FONT><FONT COLOR="#222222"><I><B>/opt/COMPSs/Monitor/compss-monitor.war</B></I></FONT><FONT COLOR="#222222">
+			to </FONT><FONT COLOR="#222222"><I><B>/var/lib/tomcat6/webapps/</B></I></FONT></FONT></FONT></P>
+			<LI><P LANG="es-ES" CLASS="western" STYLE="margin-top: 0.15cm; margin-bottom: 0.15cm; font-weight: normal; widows: 2; orphans: 2">
+			<FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2><SPAN STYLE="font-style: normal">Add
+			</SPAN><I><B>export IT_MONITOR=$HOME </B></I><SPAN STYLE="font-style: normal">line
+			</SPAN><I>to beginning of </I><I><B>/usr/sbin/tomcat6 </B></I><SPAN STYLE="font-style: normal">file.</SPAN></FONT></FONT></FONT></P>
+		</UL>
+		</UL>
+	</UL>
+	<P LANG="es-ES" CLASS="western" STYLE="margin-left: 1.25cm; margin-bottom: 0cm; font-weight: normal; widows: 2; orphans: 2">
+	<FONT FACE="Liberation Serif, serif"><FONT SIZE=3><FONT COLOR="#222222">3.2.2
+	</FONT><FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2>Export
+	</FONT></FONT></FONT><FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2><I><B>IT_MONITOR</B></I></FONT></FONT></FONT><FONT COLOR="#222222">
+	</FONT><FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2>environment
+	variable</FONT></FONT></FONT><FONT COLOR="#222222">:</FONT></FONT></FONT></P>
+	<UL>
+		<UL>
+		<LI><P LANG="es-ES" CLASS="list-western" STYLE="margin-bottom: 0.5cm; font-weight: normal; widows: 2; orphans: 2">
+		<FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2>Export
+		the environment variable for the applications container: </FONT></FONT></FONT>
+		</P>
+		<UL>
+			<LI><P LANG="es-ES" CLASS="list-western" STYLE="margin-bottom: 0.5cm; font-weight: normal; widows: 2; orphans: 2">
+			<FONT COLOR="#222222"><FONT FACE="Liberation Mono, monospace"><FONT SIZE=2><I><B>export
+			IT_MONITOR=$HOME </B></I><SPAN STYLE="font-style: normal">(this
+			path should point to the $HOME of the user which calls the
+			application).</SPAN></FONT></FONT></FONT></P>
+		</UL>
+		</UL>
+	</UL>
+	<P LANG="es-ES" CLASS="list-western" STYLE="margin-bottom: 0.5cm"><BR><BR>
+	
+</DIV>
+</BODY>
+</HTML>

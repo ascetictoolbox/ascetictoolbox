@@ -1,5 +1,5 @@
 /*
- *  Copyright 2002-2012 Barcelona Supercomputing Center (www.bsc.es)
+ *  Copyright 2002-2014 Barcelona Supercomputing Center (www.bsc.es)
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -50,6 +50,7 @@ import integratedtoolkit.types.data.DataInstanceId;
 import integratedtoolkit.types.data.Location;
 import integratedtoolkit.util.RuntimeConfigManager;
 import integratedtoolkit.util.Serializer;
+import java.io.BufferedInputStream;
 
 public class IntegratedToolkitImpl implements IntegratedToolkit, ITExecution, LoaderAPI {
 
@@ -246,8 +247,21 @@ public class IntegratedToolkitImpl implements IntegratedToolkit, ITExecution, Lo
             InetAddress localHost = InetAddress.getLocalHost();
             appHost = localHost.getCanonicalHostName();
         } catch (UnknownHostException e) {
-            logger.fatal("Error: " + UNKNOWN_HOST_ERR, e);
-            System.exit(1);
+            try {
+                Process proc = Runtime.getRuntime().exec("/bin/hostname");
+                proc.waitFor();
+                BufferedInputStream in = new BufferedInputStream(proc.getInputStream());
+                byte[] b = new byte[256];
+                in.read(b);
+                String result = new String(b);
+                appHost = result.split("\n")[0];
+            } catch (IOException io) {
+                logger.fatal("Error: " + UNKNOWN_HOST_ERR, io);
+                System.exit(1);
+            } catch (InterruptedException ie) {
+                logger.fatal("Error: " + UNKNOWN_HOST_ERR, ie);
+                System.exit(1);
+            }
         }
         appWorkingDir = System.getProperty("user.dir") + "/";
 

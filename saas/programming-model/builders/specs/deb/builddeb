@@ -1,0 +1,10 @@
+#!/bin/bash -e
+
+echo " "
+echo " - Building compss-framework..."
+echo " "
+cd compss-framework
+./build all
+cd ..
+echo " "
+

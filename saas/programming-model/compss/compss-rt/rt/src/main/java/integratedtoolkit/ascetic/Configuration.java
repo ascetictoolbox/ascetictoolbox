@@ -1,5 +1,5 @@
 /*
- *  Copyright 2002-2012 Barcelona Supercomputing Center (www.bsc.es)
+ *  Copyright 2002-2014 Barcelona Supercomputing Center (www.bsc.es)
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,9 +15,19 @@
  */
 package integratedtoolkit.ascetic;
 
+import eu.ascetic.utils.ovf.api.OvfDefinition;
+import eu.ascetic.utils.ovf.api.ProductProperty;
+import eu.ascetic.utils.ovf.api.VirtualSystem;
+import integratedtoolkit.ITConstants;
 import integratedtoolkit.types.CloudImageDescription;
+import integratedtoolkit.types.Implementation;
 import integratedtoolkit.types.ResourceDescription;
+import integratedtoolkit.util.CoreManager;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class Configuration {
 
@@ -26,15 +36,29 @@ public class Configuration {
     private final static String applicationManagerEndpoint;
     private final static String applicationMonitorEndpoint;
     private final static HashMap<String, ResourceDescription> componentDescription;
+    private final static HashMap<String, LinkedList<Implementation>> componentImplementations;
 
     static {
-        applicationId = "applicationID";
-        deploymentId = "deploymentID";
-        applicationManagerEndpoint = "http://192.168.1.1:8080";
-        applicationMonitorEndpoint = "http://10.4.0.16:9000/";
-        //applicationMonitorEndpoint = "http://localhost:9000";
+        //String contextLocation = System.getProperty(ITConstants.IT_CONTEXT);
+        String contextLocation = "/root/";
+        System.out.println("Application context:" + contextLocation);
+        String ovfContent = "";
+        try {
+            ovfContent = readManifest(contextLocation + "ovf.xml");
+        } catch (IOException ex) {
+            System.err.println("Could not load service description");
+        }
+        OvfDefinition ovf = OvfDefinition.Factory.newInstance(ovfContent);
+        applicationId = ovf.getVirtualSystemCollection().getId();
+        deploymentId = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getDeploymentId();
+        ProductProperty pp = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getPropertyByKey("asceticAppManagerURL");
+        applicationManagerEndpoint = pp.getValue();
+        pp = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getPropertyByKey("asceticAppMonitorURL");
+        applicationMonitorEndpoint = pp.getValue();
+        //applicationMonitorEndpoint = "http://10.4.0.16:9000/";
         componentDescription = new HashMap<String, ResourceDescription>();
-        parseComponents();
+        componentImplementations = new HashMap<String, LinkedList<Implementation>>();
+        parseComponents(ovf);
     }
 
     public static String getApplicationId() {
@@ -53,46 +77,79 @@ public class Configuration {
         return applicationManagerEndpoint;
     }
 
-    static HashMap<String, ResourceDescription> getComponentDescriptions() {
-        return componentDescription;
+    public static LinkedList<Implementation> getComponentImplementations(String component) {
+        return componentImplementations.get(component);
     }
 
-    private static ResourceDescription createComponentDescription(String name, String description) {
+    private static void parseComponents(OvfDefinition ovf) {
+        for (VirtualSystem vs : ovf.getVirtualSystemCollection().getVirtualSystemArray()) {
+            String componentName = vs.getId();
+            ResourceDescription rd = createComponentDescription(componentName, vs);
+            componentDescription.put(componentName, rd);
+            LinkedList<Implementation> impls = new LinkedList<Implementation>();
+            String implList = vs.getProductSectionArray()[0].getPropertyByKey("asceticPMElements").getValue();
+            if (implList.length() > 0) {
+                //implList = implList.substring(2, implList.length() - 5);
+                for (String signature : implList.split(";")) {
+                    //System.out.println(signature);
+                    Implementation impl = CoreManager.getImplementation(signature);
+                    System.out.println("Afegint implementació " + impl);
+                    impls.add(impl);
+                }
+            }
+            componentImplementations.put(componentName, impls);
+        }
+    }
+
+    private static ResourceDescription createComponentDescription(String name, VirtualSystem vs) {
+        System.out.println("Reading Component: " + name);
         ResourceDescription rd = new ResourceDescription();
         rd.setName(name);
-
-        rd.setProcessorArchitecture("x386");
+        int coreCount = vs.getVirtualHardwareSection().getNumberOfVirtualCPUs();
+        if (coreCount == 0) {
+            coreCount = 1;
+        }
+        int cpuspeed = vs.getVirtualHardwareSection().getCPUSpeed();
         rd.setProcessorCPUCount(1);
-        rd.setProcessorCoreCount(2);
-        rd.setSlots(2);
+        rd.setProcessorCoreCount(coreCount);
+        rd.setSlots(coreCount);
+        rd.setProcessorSpeed((float) cpuspeed / 1000f);
 
-        rd.setMemoryPhysicalSize(8);
-        rd.setMemoryVirtualSize(16);
-
-        rd.setStorageElemSize(500);
-
-        rd.setOperatingSystemType(name);
+        int memory = vs.getVirtualHardwareSection().getMemorySize();
+        if (memory > 0) {
+            rd.setMemoryPhysicalSize((float) memory / 1024f);
+        }
 
         rd.setValue(0);
         rd.setType(name);
 
         CloudImageDescription cid = new CloudImageDescription();
-        cid.setName("component1");
-        cid.setiDir("/opt/COMPSs/Runtime/scripts/system");
+        cid.setName(name);
+        cid.setiDir("/ascetic_service/scripts/system");
         cid.setwDir("/tmp");
-        cid.setUser("flordan");
-        cid.setCPUCount(2);
+        cid.setUser("root");
+        cid.setCPUCount(coreCount);
 
         rd.setImage(cid);
 
         return rd;
     }
 
-    private static void parseComponents() {
-        String name = "component1";
-        String description = "";
-        ResourceDescription rd = createComponentDescription(name, description);
-        componentDescription.put("component1", rd);
+    private static String readManifest(String manifestLocation) throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(manifestLocation));
+        String line = null;
+        StringBuilder stringBuilder = new StringBuilder();
+        String ls = System.getProperty("line.separator");
+
+        while ((line = reader.readLine()) != null) {
+            stringBuilder.append(line);
+            stringBuilder.append(ls);
+        }
+
+        return stringBuilder.toString();
     }
 
+    public static ResourceDescription getComponentDescriptions(String component) {
+        return componentDescription.get(component);
+    }
 }

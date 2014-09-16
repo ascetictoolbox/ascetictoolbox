@@ -1,5 +1,5 @@
 /*
- *  Copyright 2002-2012 Barcelona Supercomputing Center (www.bsc.es)
+ *  Copyright 2002-2014 Barcelona Supercomputing Center (www.bsc.es)
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import integratedtoolkit.components.Schedule;
 import integratedtoolkit.connectors.utils.CreationThread;
 import integratedtoolkit.connectors.utils.DeletionThread;
 import integratedtoolkit.log.Loggers;
+import integratedtoolkit.types.Implementation;
 import integratedtoolkit.types.Resource;
 import integratedtoolkit.types.ResourceCreationRequest;
 import integratedtoolkit.types.ScheduleDecisions;
