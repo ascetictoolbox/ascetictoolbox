@@ -323,6 +323,7 @@ paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmana
 paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmanager/model/VMTest.java -text
 paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmanager/model/converter/ModelConverterTest.java -text
 paas/application-manager-datamodel/src/test/resources/log4j.properties -text
+paas/application-manager/LICENSE.TXT -text
 paas/application-manager/pom.xml -text
 paas/application-manager/src/main/java/eu/ascetic/applicationmanager/slam/stub/BZNegotiationCallbackHandler.java -text
 paas/application-manager/src/main/java/eu/ascetic/applicationmanager/slam/stub/BZNegotiationStub.java -text
