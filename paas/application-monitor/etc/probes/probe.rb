@@ -128,6 +128,10 @@ headers = {
 	"Content-Type" => "application/json"
 }
 
+event = {};
+event["appId"] = AppId;
+event["nodeId"] = NodeId;
+
 
 loop do
 	begin
@@ -147,13 +151,14 @@ loop do
 			$stderr.puts "Warning! 'iostat' returned an error: #{e.message}"
 		end
 
-		puts JSON.pretty_generate(data) if options.verbose
+		event["data"] = data;
+		puts JSON.pretty_generate(event) if options.verbose
 
 		begin
-			request = Net::HTTP::Post.new(URL.path+"/event/"+AppId+"/"+NodeId);
+			request = Net::HTTP::Post.new(URL.path+"/event");
 
 			request["Content-Type"] = "application/json"
-			request.body = JSON.generate(data) #The data sent must be an array
+			request.body = JSON.generate(event) #The data sent must be an array
 			response = http.request(request)
 			puts response.body
 		rescue URI::InvalidURIError => e
