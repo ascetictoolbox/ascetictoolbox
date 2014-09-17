@@ -1,3 +1,19 @@
+/*
+ *  Copyright 2013-2014 Barcelona Supercomputing Center (www.bsc.es)
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package eu.ascetic.saas.application_uploader.tests;
 
 import static org.junit.Assert.*;
@@ -20,7 +36,7 @@ public class ApplicationUploaderTest {
 
 	@Test
 	public void uploadApptest() throws ApplicationUploaderException {
-		/*ApplicationUploader uploader = new ApplicationUploader("http://10.4.0.16/application-manager");
+		ApplicationUploader uploader = new ApplicationUploader("http://10.4.0.16/application-manager");
 		InputStream is = ApplicationUploader.class.getResourceAsStream("/service_manifest.xml");
 		BufferedReader br = null; 
 		StringBuilder sb = new StringBuilder();
@@ -71,7 +87,7 @@ public class ApplicationUploaderTest {
 		uploader.undeploy(applicationID, Integer.toString(id));
 		System.out.println("undeploying");
 		id = uploader.submitApplicationDeployment(applicationID, sb.toString());
-		uploader.destroyApplication(applicationID);*/
+		uploader.destroyApplication(applicationID);
 	}
 	
 	@Test
@@ -110,12 +126,12 @@ public class ApplicationUploaderTest {
 	
 	@Test
 	public void getEventEnergyConsumption() throws ApplicationUploaderException {
-		/*ApplicationUploader uploader = new ApplicationUploader("http://10.4.0.16/application-manager");
+		ApplicationUploader uploader = new ApplicationUploader("http://10.4.0.16/application-manager");
 		String applicationID = "HMMERpfam";
 		String deploymentID = "35";
 		String eventID = "event";
 		Double meas = uploader.getDeploymentEnergyConsumption(applicationID, deploymentID);
-		System.out.println("Energy measurement for app " + applicationID + " deployment "+ deploymentID+ " is "+ meas.toString());*/		
+		System.out.println("Energy measurement for app " + applicationID + " deployment "+ deploymentID+ " is "+ meas.toString());		
 	}
 
 }
