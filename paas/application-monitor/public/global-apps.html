@@ -111,7 +111,7 @@
                                 .call(force.drag);
 
                         node.append("circle")
-                                .attr("class", function(d) { console.log("adding " + d.name) ; return d.type=="app" ? "circle app" : "circle host";})
+                                .attr("class", function(d) { return d.type=="app" ? "circle app" : "circle host";})
                                 .attr("r", function(d) {return d.type=="app" ? appRadius : hostRadius;});
 
                         node.append("text").attr("class", "nodetext")
