@@ -1042,6 +1042,7 @@ paas/application-monitor/project/activator-sbt-eclipse-shim.sbt -text
 paas/application-monitor/project/activator-sbt-idea-shim.sbt -text
 paas/application-monitor/project/build.properties -text
 paas/application-monitor/project/plugins.sbt -text
+paas/application-monitor/public/bower.json -text
 paas/application-monitor/public/bower_components/angular-bootstrap/ui-bootstrap-tpls.js -text
 paas/application-monitor/public/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js -text
 paas/application-monitor/public/bower_components/angular-bootstrap/ui-bootstrap.js -text

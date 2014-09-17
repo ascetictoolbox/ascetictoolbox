@@ -6,8 +6,8 @@
 	<title>ASCETiC Application Monitor</title>
 	<meta name="generator" content="Bootply" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<link href="lib/css/bootstrap.min.css" rel="stylesheet">
-	<link href="lib/css/styles.css" rel="stylesheet">
+    <link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+    <link href="bower_components/bootstrap/dist/css/bootstrap-theme.css" rel="stylesheet">
 	<link href="css/bsc.css" rel="stylesheet">
 </head>
 <body ng-app="ApplicationMonitor" ng-controller="PageController as pageCtrl">
@@ -35,7 +35,7 @@
 	</div>
 </nav>
 
-<div class="container" style="margin-top: 5px" ng-include="pageCtrl.page"></div>
+<div class="container" style="margin-top: 60px" ng-include="pageCtrl.page"></div>
 
 <footer>
 	<img src="img/bsc.png"/>
@@ -48,33 +48,13 @@
 <script src="bower_components/jquery/dist/jquery.js"></script>
 <script src="bower_components/d3/d3.js"></script>
 <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
-<script src="bower_components/"></script>
-<script src="bower_components/"></script>
-<script src="bower_components/"></script>
-<script src="bower_components/"></script>
-<script src="bower_components/"></script>
-<script src="bower_components/"></script>
-<script src="bower_components/"></script>
-<script src="bower_components/"></script>
-<script src="bower_components/"></script>
-<script src="bower_components/"></script>
-<script src="bower_components/"></script>
-<script src="bower_components/"></script>
-<script src="bower_components/"></script>
-
-<script src="lib/js/jquery.2.0.2.min.js"></script>
-<script src="lib/js/d3.v3.min.js"></script>
-<script src="lib/js/bootstrap.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.js"></script>
-<script src="lib/js/ui-bootstrap-custom-0.10.0.js"></script>
-<script src="lib/js/ui-bootstrap-custom-tpls-0.10.0.js"></script>
-<script src="lib/js/underscore-min.js"></script>
-<!-- (libs) HIGHCHARTS -->
-<script src="lib/js/highcharts.js"></script>
-<script src="lib/js/highcharts-more.js"></script>
-<script src="lib/js/solid-gauge.src.js"></script>
-<!-- esto es solo para guardar como imagen script src="http://code.highcharts.com/modules/exporting.js"></script-->
-
+<script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
+<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+<script src="bower_components/underscore/underscore.js"></script>
+<script src="bower_components/highcharts/highcharts.js"></script>
+<script src="bower_components/highcharts/highcharts-more.js"></script>
+<script src="bower_components/highcharts/modules/solid-gauge.js"></script>
 
 <!-- AngularJS scripts -->
 <script src="js/ang/metrics.js"></script>
