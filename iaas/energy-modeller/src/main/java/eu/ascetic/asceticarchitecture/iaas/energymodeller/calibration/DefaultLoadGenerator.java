@@ -96,7 +96,7 @@ public class DefaultLoadGenerator implements LoadGenerator {
     public synchronized boolean isRunning(Host host) {
         //Generate Load
         try { //http://localhost:8080/EnergyModellerCalibrationTool/CalibrationLoadGenerator?WSDL
-            URL url = new URL("http://" + host.getHostName() + ".cit.tu-berlin.de:8080/energy-modeller-load-calibration-tool-0.0.1-SNAPSHOT/CalibrationLoadGenerator?WSDL");
+            URL url = new URL("http://" + host.getHostName() + (Character.isDigit(domain.charAt(0)) ? ":" : "" ) + domain + "CalibrationLoadGenerator?WSDL");
             CalibrationLoadGenerator_Service service = new CalibrationLoadGenerator_Service(url);
             CalibrationLoadGenerator port = service.getCalibrationLoadGeneratorPort();
             return port.currentlyWorking();
