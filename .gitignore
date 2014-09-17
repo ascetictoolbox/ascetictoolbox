@@ -29,8 +29,6 @@ paas/application-monitor/logs
 paas/application-monitor/target
 paas/virtual-machine-contextualizer/logs/vmc.log.1
 paas/virtual-machine-contextualizer/velocity.log.1
-saas/compss-packager/.classpath
-saas/compss-packager/.project
 saas/compss-plugin/ascetic-deployer/.classpath
 saas/compss-plugin/ascetic-deployer/lib/ant-antlr.jar
 saas/programming-model/compss/compss-rt/rt/.pom.xml.kate-swp
