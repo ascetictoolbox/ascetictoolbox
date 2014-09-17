@@ -42,7 +42,6 @@ public class VM {
         String IPv4 = vm.getIp();
         this.vm = vm;
         ResourceDescription rd = Configuration.getComponentDescriptions(vm.getOvfId());
-        System.out.println("Description :" + rd);
         description = new ResourceDescription(rd);
         description.setName(IPv4);
         consumption = new int[CoreManager.coreCount][];

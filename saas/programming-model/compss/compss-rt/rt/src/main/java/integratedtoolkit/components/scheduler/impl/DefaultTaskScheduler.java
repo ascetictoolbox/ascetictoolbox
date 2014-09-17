@@ -74,7 +74,7 @@ public class DefaultTaskScheduler extends TaskScheduler {
     @Override
     public void resourcesCreated(String schedulerName, ResourceDescription granted, Integer limitOfTasks) {
         super.resourcesCreated(schedulerName, granted, limitOfTasks);
-        
+
         if (taskSets.getNoResourceCount() > 0) {
             int[] simTasks = ResourceManager.getResource(schedulerName).getSimultaneousTasks();
             for (int coreId = 0; coreId < CoreManager.coreCount; coreId++) {
@@ -110,7 +110,7 @@ public class DefaultTaskScheduler extends TaskScheduler {
             TreeSet<String> hosts = FTM.getHosts(currentTask.getEnforcingData());
             String chosenResourceName = hosts.first();
             chosenResource = ResourceManager.getResource(chosenResourceName);
-            Implementation[] impls = CoreManager.getCoreImplementations(coreId);
+            LinkedList<Implementation> impls = chosenResource.getCompatibleImplementations(coreId);
             LinkedList<Implementation> runnable = ResourceManager.canRunNow(chosenResource, impls);
             if (runnable.isEmpty()) {
                 taskSets.newRegularTask(currentTask);
@@ -142,8 +142,7 @@ public class DefaultTaskScheduler extends TaskScheduler {
                 }
             } else {
                 // Try to assign task to available resources
-                Implementation[] impls = CoreManager.getCoreImplementations(coreId);
-                HashMap<Resource, LinkedList<Implementation>> resourceToImpls = ResourceManager.findAvailableResources(impls, validResources);
+                HashMap<Resource, LinkedList<Implementation>> resourceToImpls = ResourceManager.findAvailableResources(coreId, validResources);
                 if (!resourceToImpls.keySet().isEmpty()) {
                     PriorityQueue<SchedulerPolicies.Object_Value<Resource>> orderedResources = schedulerPolicies.sortResourcesForTask(currentTask, resourceToImpls.keySet(), profile);
                     chosenResource = (Resource) orderedResources.peek().o;
@@ -174,10 +173,9 @@ public class DefaultTaskScheduler extends TaskScheduler {
         //Rescheduling the failed Task
         // Find available resources that match user constraints for this task
         int coreId = task.getTaskParams().getId();
-        Implementation[] impls = CoreManager.getCoreImplementations(coreId);
         List<Resource> validResources = ResourceManager.findCompatibleResources(coreId);
         if (!validResources.isEmpty()) {
-            HashMap<Resource, LinkedList<Implementation>> resourceToImpls = ResourceManager.findAvailableResources(impls, validResources);
+            HashMap<Resource, LinkedList<Implementation>> resourceToImpls = ResourceManager.findAvailableResources(coreId, validResources);
             resourceToImpls.remove(ResourceManager.getResource(failedResource));
 
             if (!resourceToImpls.keySet().isEmpty()) {
@@ -218,7 +216,7 @@ public class DefaultTaskScheduler extends TaskScheduler {
         for (Integer coreId : ResourceManager.getExecutableCores(hostName)) {
             fittingImplementations[coreId]
                     = schedulerPolicies.sortImplementationsForResource(
-                            ResourceManager.canRunNow(resource, CoreManager.getCoreImplementations(coreId)),
+                            ResourceManager.canRunNow(resource, resource.getCompatibleImplementations(coreId)),
                             resource, profile);
         }
 
@@ -374,4 +372,3 @@ public class DefaultTaskScheduler extends TaskScheduler {
         return sb.toString();
     }
 }
-

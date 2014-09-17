@@ -24,6 +24,7 @@ import integratedtoolkit.types.Implementation;
 import integratedtoolkit.types.ResourceDescription;
 import integratedtoolkit.util.CoreManager;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
@@ -39,12 +40,13 @@ public class Configuration {
     private final static HashMap<String, LinkedList<Implementation>> componentImplementations;
 
     static {
-        //String contextLocation = System.getProperty(ITConstants.IT_CONTEXT);
-        String contextLocation = "/root/";
+        String contextLocation = System.getProperty(ITConstants.IT_CONTEXT);
+        //String contextLocation = "/root/";
         System.out.println("Application context:" + contextLocation);
         String ovfContent = "";
+        System.out.println("reading Manifest from " + contextLocation + File.separator + "/ovf.xml");
         try {
-            ovfContent = readManifest(contextLocation + "ovf.xml");
+            ovfContent = readManifest(contextLocation + File.separator + "ovf.xml");
         } catch (IOException ex) {
             System.err.println("Could not load service description");
         }
@@ -91,9 +93,7 @@ public class Configuration {
             if (implList.length() > 0) {
                 //implList = implList.substring(2, implList.length() - 5);
                 for (String signature : implList.split(";")) {
-                    //System.out.println(signature);
                     Implementation impl = CoreManager.getImplementation(signature);
-                    System.out.println("Afegint implementació " + impl);
                     impls.add(impl);
                 }
             }
@@ -102,7 +102,6 @@ public class Configuration {
     }
 
     private static ResourceDescription createComponentDescription(String name, VirtualSystem vs) {
-        System.out.println("Reading Component: " + name);
         ResourceDescription rd = new ResourceDescription();
         rd.setName(name);
         int coreCount = vs.getVirtualHardwareSection().getNumberOfVirtualCPUs();
@@ -122,6 +121,7 @@ public class Configuration {
 
         rd.setValue(0);
         rd.setType(name);
+        rd.setStorageElemSize(10);
 
         CloudImageDescription cid = new CloudImageDescription();
         cid.setName(name);

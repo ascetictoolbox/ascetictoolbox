@@ -216,7 +216,6 @@ public class CoreManager {
             }
 
         }
-        System.out.println(signatureToImpl);
         return newMethods;
     }
 

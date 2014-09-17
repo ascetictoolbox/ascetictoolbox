@@ -504,17 +504,19 @@ public class ResourceManager {
         }
 
         int[] maxSims = new int[CoreManager.coreCount];
-        System.out.println("RES:"+res);
-        System.out.println("IMAGE:"+res.getImage());
-        System.out.println("NAME:"+res.getImage().getName());
+
+        LinkedList<Implementation>[] impls = new LinkedList[CoreManager.coreCount];
+        for (int ce = 0; ce < CoreManager.coreCount; ce++) {
+            impls[ce] = new LinkedList<Implementation>();
+        }
         for (Implementation impl : Ascetic.getComponentImplementations(res.getImage().getName())) {
             if (r.canRun(impl)) {
+                impls[impl.getCoreId()].add(impl);
                 maxSims[impl.getCoreId()] = Math.max(maxSims[impl.getCoreId()], r.simultaneousCapacity(impl));
             }
         }
-
         pool.setResourceCoreLinks(r, maxSims);
-
+        r.setImplementations(impls);
         pool.defineCriticalSet();
         logger.info("Resource configuration after adding the resource\n" + getCurrentState("\t"));
     }
@@ -557,11 +559,11 @@ public class ResourceManager {
         return pool.findCompatibleResources(coreId);
     }
 
-    public static HashMap<Resource, LinkedList<Implementation>> findAvailableResources(Implementation[] implementations, List<Resource> resources) {
+    public static HashMap<Resource, LinkedList<Implementation>> findAvailableResources(int coreId, List<Resource> resources) {
         HashMap<Resource, LinkedList<Implementation>> available = new HashMap<Resource, LinkedList<Implementation>>();
         for (Resource r : resources) {
             LinkedList<Implementation> impls = new LinkedList<Implementation>();
-            for (Implementation implementation : implementations) {
+            for (Implementation implementation : r.getCompatibleImplementations(coreId)) {
                 if (r.canRunNow(implementation.getResource())) {
                     impls.add(implementation);
                 }

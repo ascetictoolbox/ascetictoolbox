@@ -15,17 +15,13 @@
  */
 package integratedtoolkit.util;
 
-import integratedtoolkit.types.Implementation;
-import integratedtoolkit.types.TaskParams;
 import integratedtoolkit.types.Resource;
 import integratedtoolkit.types.ResourceDescription;
-import integratedtoolkit.types.ResourceDestructionRequest;
 import integratedtoolkit.types.ServiceInstance;
 import integratedtoolkit.types.WorkerNode;
 import java.util.List;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.TreeSet;
@@ -47,7 +43,6 @@ public class ResourcePool {
     private TreeSet<Resource> criticalOrder;
 
     //public static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(integratedtoolkit.log.Loggers.RESOURCES);
-
     public ResourcePool(int coreCount) {
         physicalSet = new HashMap<String, Resource>();
         criticalSet = new HashMap<String, Resource>();
@@ -212,6 +207,7 @@ public class ResourcePool {
                 runnable[res.getExecutableCores().get(i)] = true;
             }
         }
+        HashMap<String, Resource> toDelete = new HashMap<String, Resource>();
         for (Resource resource : criticalOrder) {
             resourceName = resource.getName();
             boolean needed = false;
@@ -223,10 +219,16 @@ public class ResourcePool {
                     runnable[resource.getExecutableCores().get(i)] = true;
                 }
             } else {
-                criticalSet.remove(resourceName);
-                criticalOrder.remove(resource);
-                nonCriticalSet.put(resourceName, resource);
+                toDelete.put(resourceName, resource);
             }
+        }
+
+        for (java.util.Map.Entry<String, Resource> entry : toDelete.entrySet()) {
+            resourceName = entry.getKey();
+            Resource resource = entry.getValue();
+            criticalSet.remove(resourceName);
+            criticalOrder.remove(resource);
+            nonCriticalSet.put(resourceName, resource);
         }
     }
 

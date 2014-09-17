@@ -31,21 +31,17 @@ public class AppManager {
     static {
         applicationId = Configuration.getApplicationId();
         deploymentId = Configuration.getDeploymentId();
-        System.out.println("new ApplicationUploader(" + Configuration.getApplicationManagerEndpoint() + ");");
         uploader = new ApplicationUploader(Configuration.getApplicationManagerEndpoint());
         detectedVMs = new HashMap<String, VM>();
     }
 
     public static Collection<VM> getResources() throws ApplicationUploaderException {
-        System.out.println("OBTIANING RESOURCES APPMAN");
-        System.out.println("uploader.getDeploymentVMDescriptions(" + applicationId + ", " + deploymentId + ");");
         for (eu.ascetic.paas.applicationmanager.model.VM rvm : uploader.getDeploymentVMDescriptions(applicationId, deploymentId)) {
             String IPv4 = rvm.getIp();
             VM vm = detectedVMs.get(IPv4);
             if (vm == null) {
                 vm = new VM(rvm);
                 detectedVMs.put(IPv4, vm);
-                System.out.println("Detectada la màquina IP:" + rvm.getIp() + " amb ID " + rvm.getProviderVmId() + " de component " + rvm.getOvfId());
             }            
         }
         return detectedVMs.values();

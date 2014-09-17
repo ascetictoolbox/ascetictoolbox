@@ -29,7 +29,6 @@ public class Ascetic {
     private static final HashMap<String, VM> resources = new HashMap<String, VM>();
 
     public static LinkedList<ResourceDescription> getNewResources() {
-        System.out.println("Obtaining new Resources");
         LinkedList<ResourceDescription> newResources = new LinkedList<ResourceDescription>();
         try {
             for (VM vm : AppManager.getResources()) {

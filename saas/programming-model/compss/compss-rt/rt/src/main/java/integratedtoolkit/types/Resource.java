@@ -22,6 +22,8 @@ public abstract class Resource implements Comparable<Resource> {
     int[] coreSimultaneousTasks;
     // Number of tasks that can be run simultaneously per core id (maxTaskCount not considered)
     int[] idealSimultaneousTasks;
+    //Executable implementations for each core element
+    LinkedList<Implementation>[] impls;
 
     public Resource() {
         this.coreSimultaneousTasks = new int[CoreManager.coreCount];
@@ -162,5 +164,13 @@ public abstract class Resource implements Comparable<Resource> {
         }
         sb.append("]\n");
         return sb.toString();
+    }
+
+    public void setImplementations(LinkedList<Implementation>[] impls) {
+        this.impls = impls;
+    }
+
+    public LinkedList<Implementation> getCompatibleImplementations(int coreId) {
+        return this.impls[coreId];
     }
 }
