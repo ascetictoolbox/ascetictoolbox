@@ -100,7 +100,7 @@ public class DeploymentStatusTaskTest {
 		task.deploymentDAO = deploymentDAO;
 		task.deploymentSubmittedActions(deployment);
 		
-		assertEquals(Dictionary.APPLICATION_STATUS_NEGOTIATIED, deployment.getStatus());
+		assertEquals(Dictionary.APPLICATION_STATUS_NEGOTIATION, deployment.getStatus());
 		// We check that the DAO was called
 		verify(deploymentDAO, times(1)).update(deployment);
 	}

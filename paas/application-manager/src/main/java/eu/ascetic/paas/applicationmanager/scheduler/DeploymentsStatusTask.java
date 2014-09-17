@@ -104,7 +104,7 @@ public class DeploymentsStatusTask {
 		//      clear picture about how this could be done
 		
 		// Since we are not doing this step right now, we just move the application to the next state
-		deployment.setStatus(Dictionary.APPLICATION_STATUS_NEGOTIATIED);
+		deployment.setStatus(Dictionary.APPLICATION_STATUS_NEGOTIATION);
 		
 		// We save the changes to the DB
 		deploymentDAO.update(deployment);
@@ -115,7 +115,7 @@ public class DeploymentsStatusTask {
 	 * @param deployment
 	 */
 	protected void deploymentNegotiationActions(Deployment deployment) {
-		deployment.setStatus(Dictionary.APPLICATION_STATUS_NEGOTIATION);
+		deployment.setStatus(Dictionary.APPLICATION_STATUS_NEGOTIATING);
 		// We save the changes to the DB
 		deploymentDAO.update(deployment);
 		

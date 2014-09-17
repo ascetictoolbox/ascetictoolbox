@@ -57,7 +57,7 @@ public abstract class AbstractRest {
 		//The commented code is the final code, but for initial version, when a OVF arrives to the system, directly pass to 
 		//CONTEXTUALIZED method in order to be deployed next time that automatic task execute
 		//deployment.setStatus(Dictionary.APPLICATION_STATUS_SUBMITTED);
-		deployment.setStatus(Dictionary.APPLICATION_STATUS_NEGOTIATIED);
+		deployment.setStatus(Dictionary.APPLICATION_STATUS_SUBMITTED);
 		deployment.setOvf(ovf);
 		
 		return deployment;
