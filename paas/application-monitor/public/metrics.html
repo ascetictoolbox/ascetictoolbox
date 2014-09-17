@@ -3,42 +3,52 @@
 
 	<!--right-->
 		<div class="row" ng-controller="GraphicsPanelController">
-            <!--script type="text/ng-template" id="newPanelForm.html">
+            <script type="text/ng-template" id="newPanelForm.html">
                 <div class="modal-header">
                     <h3 class="modal-title">New graph...</h3>
                 </div>
                 <div class="modal-body">
-                    <ul>
-                        <li>some</li>
-                        <li>things</li>
-                        <li>here</li>
-                    </ul>
-                    <p>{{something}}</p>
+                    <div class="form-group">
+                        <label>Application ID:</label>
+                        <input type="text" ng-model="form.appId" class="form-control"/> <!-- appId debe estar en el $scope -->
+                    </div>
+                    <div class="form-group">
+                        <label>Node ID:</label>
+                        <input type="text" ng-model="form.nodeId" class="form-control"/> <!-- appId debe estar en el $scope -->
+                    </div>
+                    <div class="form-group">
+                        <label>Instance ID:</label>
+                        <input type="text" ng-model="form.instanceId" class="form-control"/> <!-- appId debe estar en el $scope -->
+                    </div>
+                    <div class="form-group">
+                        <label>Metric Path:</label>
+                        <input type="text" ng-model="form.metric" class="form-control"/> <!-- appId debe estar en el $scope -->
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary">OK</button>
-                    <button class="btn btn-warning">Cancel</button>
+                    <button class="btn btn-primary" ng-click="ok()">OK</button>
+                    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
                 </div>
-            </script-->
+            </script>
 
 			<div class="col-md-12 ">
-				<button type="button" class="btn btn-default" ng-click="gpc.addNewPanel()">
+				<button type="button" class="btn btn-default" ng-click="addNewPanel()">
 					<i class="glyphicon glyphicon-plus-sign"></i> Add new graph...
 				</button>
 			</div>
-			<div class="col-md-6" ng-repeat="(id,info) in gpc.panels">
+			<div class="col-md-6" ng-repeat="(id,info) in panels">
 				<div class="panel panel-info bsc-graph-panel">
 					<div class="panel-heading">
 						{{info.title}}
 						<div class="btn-group pull-right">
-							<a href="#" ng-click="gpc.removePanel(id)"><i class="glyphicon glyphicon-remove"></i></a>
+							<a href="#" ng-click="removePanel(id)"><i class="glyphicon glyphicon-remove"></i></a>
 						</div>
 						<div class="clearfix"></div>
 					</div>
-					<div class="panel-body" ng-controller="TypeAheadCtrl">
+					<!--div class="panel-body" ng-controller="TypeAheadCtrl">
 						<input type="text" ng-model="asyncSelected" placeholder="Metrics loaded via $http" typeahead="metrics for metrics in getMetrics($viewValue)" typeahead-loading="loadingMetrics" class="form-control">
 						<i ng-show="loadingMetrics" class="glyphicon glyphicon-refresh"></i>
-					</div>
+					</div-->
 				</div>
 			</div>
 		</div>

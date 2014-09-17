@@ -3,25 +3,50 @@
 
 	appip.time = 0;
 
-	appip.controller("GraphicsPanelController", ["$modal","$scope", function($modal,$scope) {
-		this.panels = {"0":{"title":"Test Panel"}};
-		this.idCounter = 1;
+	appip.controller("GraphicsPanelController", ["$modal","$scope", function($modal, $scope) {
+        $scope.panels = {"0":{"title":"Test Panel"}};
+        $scope.idCounter = 1;
 
-		this.addNewPanel = function() {
-            $modal.open({
+        $scope.addNewPanel = function() {
+            console.log("Ke pasa tron");
+
+            var modalInstance = $modal.open({
                 templateUrl: 'newPanelForm.html',
+                controller : "NewPanelFrame",
                 resolve : {
-                    something : "something here"
+                    valor : function() {return "Un valor aqui";}
                 }
             });
 
-			this.panels[this.idCounter] = {"title":"hola tron " + this.idCounter};
-			this.idCounter++;
+            modalInstance.result.then(function(form) {
+                console.log("vete a la mierda");
+                console.log(form);
+            }, function() {
+                console.log("cabronazo");
+            });
+
+            $scope.panels[this.idCounter] = {"title":"hola tron " + this.idCounter};
+            $scope.idCounter++;
 		};
 
-		this.removePanel = function(panelId) {
-			delete this.panels[panelId];
-		};
 	}]);
+
+    appip.controller("NewPanelFrame", ["$scope","$modalInstance","valor", function($scope,$modalInstance,valor) {
+        $scope.form = {
+            appId : "",
+            nodeId : "",
+            instanceId : "",
+            metric : ""
+        }
+        $scope.valor = valor;
+
+        $scope.ok = function() {
+            $modalInstance.close($scope.form);
+        }
+
+        $scope.cancel = function() {
+            $modalInstance.dismiss('cancel');
+        }
+    }]);
 
 })();
