@@ -152,7 +152,7 @@
                 //TODO:eliminar nodos.
                 //TODO: por que esta mierda se degrada?
                 var updateGraph = function() {
-                    $.get("/apps", function (data) {
+                    $.get("/apps?start=-300000", function (data) {
                         var changes = true;
 
                         data = JSON.parse(data);
