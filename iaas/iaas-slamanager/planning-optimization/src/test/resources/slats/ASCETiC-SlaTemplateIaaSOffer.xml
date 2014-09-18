@@ -24,7 +24,7 @@
 		<slasoi:Entry>
 			<slasoi:Key>ProvidersList</slasoi:Key>
 			<slasoi:Value>CloudProvider05 =
-				http://localhost:8080/services/asceticNegotiation?wsdl
+				http://10.4.0.15:8080/services/asceticNegotiation?wsdl
 			</slasoi:Value>
 		</slasoi:Entry>
 		</slasoi:Properties>
@@ -35,7 +35,7 @@
 		<slasoi:Properties>
 			<slasoi:Entry>
 				<slasoi:Key>http://www.slaatsoi.org/slamodel#gslam_epr</slasoi:Key>
-				<slasoi:Value>http://localhost:8080/services/asceticNegotiation?wsdl</slasoi:Value>
+				<slasoi:Value>http://10.4.0.15:8080/services/asceticNegotiation?wsdl</slasoi:Value>
 			</slasoi:Entry>
 		</slasoi:Properties>
 		<slasoi:ID>AsceticProvider</slasoi:ID>
@@ -46,7 +46,7 @@
 		<slasoi:Properties>
 			<slasoi:Entry>
 				<slasoi:Key>http://www.slaatsoi.org/slamodel#gslam_epr</slasoi:Key>
-				<slasoi:Value>http://localhost:8080/services/asceticNegotiation?wsdl</slasoi:Value>
+				<slasoi:Value>http://10.4.0.15:8080/services/asceticNegotiation?wsdl</slasoi:Value>
 			</slasoi:Entry>
 		</slasoi:Properties>
 		<!-- This is the SLA@SOI user ID -->

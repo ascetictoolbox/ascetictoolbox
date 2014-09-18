@@ -118,6 +118,11 @@ iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamana
 iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/exceptions/RequestVEPException.java -text
 iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/manager/negotiation/NegotiationManager.java -text
 iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/manager/negotiation/NegotiationManagerImpl.java -text
+iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/manager/negotiation/client/NegotiationClient.java -text
+iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/manager/negotiation/client/NegotiationWsClient.java -text
+iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/manager/negotiation/translator/SlaTranslator.java -text
+iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/manager/negotiation/translator/SlaTranslatorImpl.java -text
+iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/manager/negotiation/translator/SlaTranslatorImplNoOsgi.java -text
 iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/manager/resource/OVFRetriever.java -text
 iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/manager/resource/OvfResourceParser.java -text
 iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/manager/resource/ResourceManager.java -text
@@ -125,7 +130,6 @@ iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamana
 iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/negotiation/ws/BZNegotiationCallbackHandler.java -text
 iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/negotiation/ws/BZNegotiationStub.java -text
 iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/negotiation/ws/InvalidNegotiationIDExceptionException.java -text
-iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/negotiation/ws/NegotiationClient.java -text
 iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/negotiation/ws/OperationInProgressExceptionException.java -text
 iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/negotiation/ws/OperationNotPossibleExceptionException.java -text
 iaas/iaas-slamanager/planning-optimization/src/main/java/eu/ascetic/iaas/slamanager/poc/negotiation/ws/ProvisioningExceptionException.java -text
