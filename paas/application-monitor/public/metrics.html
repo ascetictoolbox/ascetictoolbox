@@ -45,7 +45,9 @@
 						</div>
 						<div class="clearfix"></div>
 					</div>
-					<div class="panel-body" ng-include="'time-series.html'">
+                    <div ng-controller="TimeSeriesController">
+                        <hc-series></hc-series>
+                    </div>
 
 					</div>
 				</div>

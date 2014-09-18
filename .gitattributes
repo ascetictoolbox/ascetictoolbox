@@ -1091,7 +1091,6 @@ paas/application-monitor/public/js/ang/metrics.js -text
 paas/application-monitor/public/metrics.html -text
 paas/application-monitor/public/notas.txt -text
 paas/application-monitor/public/test.html -text
-paas/application-monitor/public/time-series.html -text
 paas/application-monitor/test/ApplicationTest.java -text
 paas/application-monitor/test/IntegrationTest.java -text
 paas/application-monitor/test/MappingTest.java -text
