@@ -1163,8 +1163,10 @@ paas/slam/planning-optimization/src/main/java/eu/ascetic/paas/slam/poc/impl/slap
 paas/slam/planning-optimization/src/main/java/eu/ascetic/paas/slam/poc/impl/slaparser/MeasurableAgreementTerm.java -text
 paas/slam/planning-optimization/src/main/java/eu/ascetic/paas/slam/poc/impl/slaparser/SlaTemplateEntitiesParser.java -text
 paas/slam/planning-optimization/src/main/resources/wsdl/ProviderNegotiation.wsdl -text
+paas/slam/planning-optimization/src/test/java/eu/ascetic/paas/slam/test/ProviderNegotiationWsTest.java -text
 paas/slam/planning-optimization/src/test/java/eu/ascetic/paas/slam/test/SelectionTest.java -text
 paas/slam/planning-optimization/src/test/resources/slats/SlatOfferIntegrationTest.xml -text
+paas/slam/planning-optimization/src/test/resources/slats/ascetic-basic-slat.xml -text
 paas/slam/planning-optimization/src/test/resources/slats/selection/ASCETiC-SlaTemplateIaaSOffer.xml -text
 paas/slam/planning-optimization/src/test/resources/slats/selection/ASCETiC-SlaTemplateIaaSOffer2.xml -text
 paas/slam/planning-optimization/src/test/resources/slats/selection/ASCETiC-SlaTemplateIaaSOffer3.xml -text
