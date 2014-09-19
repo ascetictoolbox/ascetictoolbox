@@ -1218,7 +1218,9 @@ saas/application-packager/icons/sample.gif -text
 saas/application-packager/plugin.xml -text
 saas/application-packager/pom.xml -text
 saas/application-packager/src/application_packager/Activator.java -text
+saas/application-packager/src/application_packager/Activator.java.keep -text
 saas/application-packager/src/eu/ascetic/saas/application/actions/SampleAction.java -text
+saas/application-packager/src/eu/ascetic/saas/application/actions/SampleAction.java.keep -text
 saas/application-packager/target/classes/META-INF/MANIFEST.MF -text
 saas/application-packager/target/classes/META-INF/maven/application-packager/application-packager/pom.properties -text
 saas/application-packager/target/classes/META-INF/maven/application-packager/application-packager/pom.xml -text
