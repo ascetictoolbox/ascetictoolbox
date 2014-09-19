@@ -1193,6 +1193,7 @@ paas/virtual-machine-contextualizer/runtime/templates/patchs/qemu-0.15.1-scsi.pa
 paas/virtual-machine-contextualizer/runtime/templates/scripts/linux/context_application -text
 paas/virtual-machine-contextualizer/runtime/templates/scripts/linux/context_network -text
 paas/virtual-machine-contextualizer/runtime/virtual-machine-contextualizer.jar -text
+saas/SaaSMonitorController/LICENSE.TXT -text
 saas/SaaSMonitorController/WebContent/META-INF/MANIFEST.MF -text svneol=unset#text/plain
 saas/SaaSMonitorController/WebContent/WEB-INF/lib/asm-3.1.jar -text
 saas/SaaSMonitorController/WebContent/WEB-INF/lib/jersey-client-1.18.jar -text
