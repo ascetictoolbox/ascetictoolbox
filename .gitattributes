@@ -1969,6 +1969,7 @@ saas/saas-modelling/kpispecsgen/src/kpispecsgen81/main/generate.mtl -text
 saas/saas-modelling/kpispecsgen/tasks/generate.xml -text
 saas/saas-modelling/kpispecsgen/tasks/generateTarget.xml -text
 saas/saas-modelling/papyrus-kpi-profile/.project -text
+saas/saas-modelling/papyrus-kpi-profile/LICENSE.TXT -text
 saas/saas-modelling/papyrus-kpi-profile/model.profile.di -text
 saas/saas-modelling/papyrus-kpi-profile/model.profile.notation -text
 saas/saas-modelling/papyrus-kpi-profile/model.profile.uml -text
