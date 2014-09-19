@@ -59,6 +59,9 @@ public class SLATemplateCreator {
 		UUID uuid = new UUID("ASCETiC-SLaTemplate-Example-01");
 		slaTemplate.setUuid(uuid);
 		
+		// We add the properties section
+		addProperties(slaTemplate);
+		
 		// We add the parties section
 		addProviderEndPointToTemplate(slaTemplate);
 		addUserEndPointToTemplate(slaTemplate);
@@ -68,6 +71,22 @@ public class SLATemplateCreator {
 		addAgreementTerms(slaTemplate, ovf);
 		
 		return slaTemplate;
+	}
+	
+	/**
+	 * Adds the different IaaS SLAM information to the SLA Template
+	 * @param slaTemplate
+	 */
+	protected static void addProperties(SLATemplate slaTemplate) {
+		// TODO this needs to be done connecting to the Provider Registry in the future.
+		
+		STND stndProperties = new STND("ProvidersList");
+		
+		String value = "{\"ProvidersList\": [ \n " +
+							"{\"provider-uuid\":\"1\", \"p-slam-url\":\"http://10.4.0.15:8080/services/asceticNegotiation?wsdl\"}\n" +
+						"]}";
+		
+		slaTemplate.setPropertyValue(stndProperties, value);
 	}
 	
 	/**
@@ -221,7 +240,7 @@ public class SLATemplateCreator {
 	 */
 	protected static void addUserEndPointToTemplate(SLATemplate slaTemplate) {
 		// TODO revisit this value in the future...
-		ID id = new ID("ASCETiCUser");
+		ID id = new ID("333");
 		STND stnd = new STND("http://www.slaatsoi.org/slamodel#customer");
 		
 		addParties(slaTemplate,stnd,id); 

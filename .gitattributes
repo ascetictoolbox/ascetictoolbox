@@ -355,8 +355,13 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/D
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/RootRest.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/util/XMLBuilder.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/scheduler/DeploymentsStatusTask.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/NegotiationClient.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/NegotiationWsClient.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/SLAMClient.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/SLATemplateCreator.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/translator/SlaTranslator.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/translator/SlaTranslatorImpl.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/translator/SlaTranslatorImplNoOsgi.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/vmmanager/VmManagerUtils.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/vmmanager/client/VmManagerClient.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/vmmanager/client/VmManagerClientHC.java -text
@@ -395,6 +400,7 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/D
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/RootRestTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/util/XMLBuilderTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/scheduler/DeploymentStatusTaskTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/NegotiationWsClientIT.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/PlayingTestIT.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/SLAMClientTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/SLATemplateCreatorTest.java -text
@@ -406,6 +412,7 @@ paas/application-manager/src/test/resources/META-INF/persistence.mysql.test.xml 
 paas/application-manager/src/test/resources/META-INF/persistence.test.xml -text
 paas/application-manager/src/test/resources/a.xml -text
 paas/application-manager/src/test/resources/application-manager-db-JPA-test-context.xml -text
+paas/application-manager/src/test/resources/ascetic-basic-slat.xml -text
 paas/application-manager/src/test/resources/b.xml -text
 paas/application-manager/src/test/resources/mysql-jpa-test-configuration.xml -text
 paas/application-manager/src/test/resources/saas.ovf -text

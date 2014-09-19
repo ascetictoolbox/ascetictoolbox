@@ -7,7 +7,7 @@
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 		<artifactId>paas</artifactId>
-	</parent>
+	</parent> 
 
 
 	<groupId>eu.ascetic.paas</groupId>
@@ -304,10 +304,47 @@
 		</dependency>
 		
 		<dependency>
+			<groupId>xmlunit</groupId>
+			<artifactId>xmlunit</artifactId>
+			<version>1.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>stax</groupId>
+			<artifactId>stax-api</artifactId>
+			<version>1.0.1</version>
+		</dependency>
+		
+		<dependency>
         	<groupId>org.apache.axis2</groupId>
           	<artifactId>axis2</artifactId>
-          	<version>1.5.1</version>
+          	<version>1.5.6</version>
     	</dependency>
+    	
+    	<dependency>
+			<groupId>org.apache.ws.commons.axiom</groupId>
+			<artifactId>axiom-api</artifactId>
+			<version>1.2.9</version>
+		</dependency>
+    	
+    	<dependency>
+			<groupId>org.apache.ws.commons.axiom</groupId>
+			<artifactId>axiom-c14n</artifactId>
+			<version>1.2.9</version>
+		</dependency>
+    	
+    	<dependency>
+			<groupId>org.apache.ws.commons.axiom</groupId>
+			<artifactId>axiom-dom</artifactId>
+			<version>1.2.9</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.ws.commons.axiom</groupId>
+			<artifactId>axiom-impl</artifactId>
+			<version>1.2.9</version>
+		</dependency>
+			
     	
     	<!-- Pricing Modeller -->
     	<dependency>

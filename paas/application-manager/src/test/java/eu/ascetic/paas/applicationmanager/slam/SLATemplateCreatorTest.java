@@ -13,6 +13,7 @@ import java.nio.file.Paths;
 import org.junit.Before;
 import org.junit.Test;
 import org.slasoi.gslam.syntaxconverter.SLASOITemplateRenderer;
+import org.slasoi.slamodel.primitives.STND;
 import org.slasoi.slamodel.sla.SLATemplate;
 
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
@@ -58,6 +59,20 @@ public class SLATemplateCreatorTest {
 	}
 	
 	@Test
+	public void addPropertiesTest() {
+		SLATemplate slaTemplate = new SLATemplate();
+		String value = "{\"ProvidersList\": [ \n " +
+				"{\"provider-uuid\":\"1\", \"p-slam-url\":\"http://10.4.0.15:8080/services/asceticNegotiation?wsdl\"}\n" +
+			"]}";
+		
+		SLATemplateCreator.addProperties(slaTemplate);
+		
+		STND[] propertiesKeys = slaTemplate.getPropertyKeys();
+		assertEquals(1, propertiesKeys.length);
+		assertEquals(value, slaTemplate.getPropertyValue(propertiesKeys[0]));
+	}
+	
+	@Test
 	public void verifyPartyIsConfiguredCorrectly() throws Exception {
 		SLATemplate slaTemplate = new SLATemplate();
 		
@@ -80,8 +95,8 @@ public class SLATemplateCreatorTest {
 		SLATemplate slaTemplate = new SLATemplate();
 		
 		SLATemplateCreator.addUserEndPointToTemplate(slaTemplate);
-		
-		assertEquals("ASCETiCUser", slaTemplate.getParties()[0].getId().getValue());
+		//"ASCETiCUser"
+		assertEquals("333", slaTemplate.getParties()[0].getId().getValue());
 		assertEquals("http://www.slaatsoi.org/slamodel#gslam_epr", slaTemplate.getParties()[0].getPropertyKeys()[0].getValue());
 		assertEquals(Configuration.slamURL, slaTemplate.getParties()[0].getPropertyValue(slaTemplate.getParties()[0].getPropertyKeys()[0]));
 		
@@ -109,7 +124,7 @@ public class SLATemplateCreatorTest {
 	public void verifyGenerateSLATemplate() throws Exception {
 		OvfDefinition ovfDefinition = OVFUtils.getOvfDefinition(threeTierWebAppOvfString);
 
-		SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "REST-URL");
+		SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "http://10.4.0.16/application-manager/applications/threeTierWebApp/deployments/31/ovf");
 
 		assertEquals("ASCETiC-SLaTemplate-Example-01", slaTemplate.getUuid().getValue());
 		//assertEquals("1", slaTemplate.getModelVersion());
@@ -118,7 +133,7 @@ public class SLATemplateCreatorTest {
 
 		SLASOITemplateRenderer slasoiTemplateRenderer = new SLASOITemplateRenderer();
 		SLATemplateDocument slaTemplateRendered =
-				SLATemplateDocument.Factory.parse(slasoiTemplateRenderer.renderSLATemplate(slaTemplate));
+		SLATemplateDocument.Factory.parse(slasoiTemplateRenderer.renderSLATemplate(slaTemplate));
 
 		System.out.println("SLA rendered as XML:");
 		System.out.println(slaTemplateRendered.toString());
