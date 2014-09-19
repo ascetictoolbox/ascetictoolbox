@@ -34,6 +34,7 @@ public class Configuration {
 //	public static String vmcontextualizerConfigurationFileDirectory = "/etc/ascetic/paas/application-manager";
 	public static String vmcontextualizerConfigurationFileDirectory = "/home/vmc";
 	public static String slamURL = "http://10.4.0.16:8080/services/asceticNegotiation?wsdl";
+	public static String enableSLAM = "no";
 	
 	static {
         try {
@@ -48,6 +49,7 @@ public class Configuration {
         	vmManagerServiceUrl = config.getString("vm-manager.url");
         	checkDeploymentsStatus = config.getString("check.deployments.status");
         	slamURL = config.getString("slam.url");
+        	enableSLAM = config.getString("enable.slam");
         }
         catch (Exception e) {
             logger.info("Error loading Application Manager configuration file");

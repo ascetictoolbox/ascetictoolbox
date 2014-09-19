@@ -349,6 +349,7 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/jp
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/jpa/VMDAOJpa.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/http/Client.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/ovf/OVFUtils.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/pm/PriceModellerClient.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/AbstractRest.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/ApplicationRest.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/DeploymentRest.java -text

@@ -17,6 +17,7 @@ import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
+import eu.ascetic.paas.applicationmanager.pm.PriceModellerClient;
 import eu.ascetic.paas.applicationmanager.slam.SLAMClient;
 import eu.ascetic.paas.applicationmanager.slam.SLATemplateCreator;
 import eu.ascetic.paas.applicationmanager.vmmanager.VmManagerUtils;
@@ -177,6 +178,9 @@ public class DeploymentsStatusTask {
 		//      but this process needs to be manual and started by the user by an update
 		//      of DEPLOYMENT STATE (PUT in REST interface), when negotitation process is
 		//      enabled in the Application Manager
+		
+		// We calculate the new price, since we are not updating the SLATemplate Price I'm doing this here:
+		PriceModellerClient.calculatePrice(1, deployment.getId(), 100.0);
 		
 		// Since we are not doing this right now, we move the application to the next step
 		deployment.setStatus(Dictionary.APPLICATION_STATUS_CONTEXTUALIZATION);
