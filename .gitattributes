@@ -1186,6 +1186,16 @@ paas/virtual-machine-contextualizer/runtime/templates/patchs/qemu-0.15.1-scsi.pa
 paas/virtual-machine-contextualizer/runtime/templates/scripts/linux/context_application -text
 paas/virtual-machine-contextualizer/runtime/templates/scripts/linux/context_network -text
 paas/virtual-machine-contextualizer/runtime/virtual-machine-contextualizer.jar -text
+saas/SaaSMonitorController/WebContent/META-INF/MANIFEST.MF -text svneol=unset#text/plain
+saas/SaaSMonitorController/WebContent/WEB-INF/lib/asm-3.1.jar -text
+saas/SaaSMonitorController/WebContent/WEB-INF/lib/jersey-client-1.18.jar -text
+saas/SaaSMonitorController/WebContent/WEB-INF/lib/jersey-core-1.18.jar -text
+saas/SaaSMonitorController/WebContent/WEB-INF/lib/jersey-server-1.18.jar -text
+saas/SaaSMonitorController/WebContent/WEB-INF/lib/jersey-servlet-1.18.jar -text
+saas/SaaSMonitorController/WebContent/WEB-INF/lib/jsr311-api-1.1.1.jar -text
+saas/SaaSMonitorController/WebContent/WEB-INF/web.xml -text svneol=unset#text/plain
+saas/SaaSMonitorController/src/eu/ascetic/saas/monitorcontroller/UserInfo.java -text svneol=unset#text/plain
+saas/SaaSMonitorController/src/eu/ascetic/saas/monitorcontroller/WinPowerShell.java -text svneol=unset#text/plain
 saas/application-descriptor-tool/pom.xml -text
 saas/application-packager/.classpath -text
 saas/application-packager/.project -text
