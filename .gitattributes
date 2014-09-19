@@ -1974,6 +1974,7 @@ saas/saas-modelling/papyrus-kpi-profile/model.profile.notation -text
 saas/saas-modelling/papyrus-kpi-profile/model.profile.uml -text
 saas/virtual-machine-image-constructor/LICENCE.TXT -text
 use-cases/atc/newsasset/kpi-modelling/.project -text
+use-cases/atc/newsasset/kpi-modelling/LICENSE.TXT -text
 use-cases/atc/newsasset/kpi-modelling/NewsAsset-model.di -text
 use-cases/atc/newsasset/kpi-modelling/NewsAsset-model.notation -text
 use-cases/atc/newsasset/kpi-modelling/NewsAsset-model.uml -text
