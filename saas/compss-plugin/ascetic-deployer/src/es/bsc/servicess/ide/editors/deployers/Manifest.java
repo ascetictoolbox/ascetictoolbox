@@ -1,5 +1,5 @@
 /*
- *  Copyright 2011-2013 Barcelona Supercomputing Center (www.bsc.es)
+ *  Copyright 2013-2014 Barcelona Supercomputing Center (www.bsc.es)
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -72,13 +72,15 @@ public class Manifest {
 	public static final String VMIC_EXEC_CONSTRAINT = "asceticVMICExecution";
 	public static final String VMIC_MODE_CONSTRAINT = "asceticVmicMode";
 	public static final String PM_ELEMENTS_CONSTRAINT = "asceticPMElements";
+	public static final String PM_INSTALL_DIR_CONSTRAINT ="asceticPMInstallDir";
+	public static final String PM_USER_CONSTRAINT = "asceticPMUser";
 	
 	private static final String DISK_SUFFIX = "-disk";
 	private static final String IMAGE_SUFFIX = "-img";
 	private static final String ASCETIC_APPMAN_PROP = "asceticAppManagerURL";
+	private static final String ASCETIC_APPMON_PROP = "asceticAppMonitorURL";
 	private IJavaProject project;
 	private OvfDefinition ovf;
-	
 	
 	/**
 	 * Generate a new service manifest
@@ -142,7 +144,7 @@ public class Manifest {
 						maxConstraints);
 		setConstraints(component, maxConstraints, prMeta);
 		log.debug("Setting signatures in product");
-		setInstalledElements(component, master, constEls, els, prMeta, minCoreInstancesPerMachine);
+		setPMProperties(component, master, els);
 		/* TODO: Component affinity not supported by ASCETIC year 1
 		component.setAffinityConstraints("Low");
 		component.setAntiAffinityConstraints("Low");
@@ -156,10 +158,7 @@ public class Manifest {
 		 */
 	}
 
-	private void setInstalledElements(VirtualSystem component, boolean master,
-			HashMap<String, ServiceElement> constEls, String[] els,
-			ProjectMetadata prMeta,
-			Map<String, Integer> minCoreInstancesPerMachine) {
+	private void setPMProperties(VirtualSystem component, boolean master, String[] els) {
 		ProductSection ps;
 		if (component.getProductSectionArray() == null || component.getProductSectionArray().length<1){
 			setAsceticProductSection(component);
@@ -169,8 +168,10 @@ public class Manifest {
 		if (master) {
 			signatures = "master-frontend";
 		}else
-			signatures = generateElementSignatures(constEls, els, prMeta, minCoreInstancesPerMachine);
+			signatures = generateElementSignatures(els);
 		ps.addNewProperty(PM_ELEMENTS_CONSTRAINT, ProductPropertyType.STRING, signatures);
+		ps.addNewProperty(PM_INSTALL_DIR_CONSTRAINT, ProductPropertyType.STRING, ImageCreation.IMAGE_DEPLOYMENT_FOLDER);
+		ps.addNewProperty(PM_USER_CONSTRAINT, ProductPropertyType.STRING, ImageCreation.ASCETIC_USER);
 		
 	}
 
@@ -196,61 +197,16 @@ public class Manifest {
 	 * @param pr_meta 
 	 * @return Combined signature for all the elements 
 	 */
-	private static String generateElementSignatures(
-			HashMap<String, ServiceElement> constEls, String[] els, 
-			ProjectMetadata prMeta, Map<String, Integer> minCoreInstancesPerMachine) {
-		//TODO: Modify for service methods
+	private static String generateElementSignatures(String[] els) {
 		String signatures = new String();
-		String method_sigs = new String();
-		boolean firstService = true;
-		boolean firstMethod = true;
+		boolean firstElement = true;
 		for (String s : els) {
-			ServiceElement  el = constEls.get(s);
-			if (el != null){
-				if (el instanceof ServiceCoreElement){
-					String sig = generateServiceElementSignature(s,(ServiceCoreElement)el,prMeta);
-					if (firstService) {				
-						signatures = signatures.concat(sig);
-						firstService = false;
-					} else
-						signatures = signatures.concat("," + s);
-				}else if (el instanceof MethodCoreElement){
-					if (firstMethod) {
-						method_sigs = method_sigs.concat(s);
-						firstMethod = false;
-					}else
-						method_sigs = method_sigs.concat(";"+s);
-				}
+			if (firstElement){
+				signatures = signatures.concat(s);
 			}else
-				log.warn("Element "+s+" not found in the elements descriptions");
-		}
-		if (!firstMethod){
-			
-			if (firstService)
-				signatures = signatures.concat(generateMethodElementsSignatures(method_sigs, minCoreInstancesPerMachine));
-			else
-				signatures = signatures.concat(","+generateMethodElementsSignatures(method_sigs, minCoreInstancesPerMachine));
+				signatures = signatures.concat(";"+s);
 		}
 		return signatures;
-	}
-
-	private static String generateMethodElementsSignatures(String method_sigs, Map<String, Integer> minCoreInstancesPerMachine) {
-		Integer[] min_values = minCoreInstancesPerMachine.values().toArray(new Integer[minCoreInstancesPerMachine.size()]);
-		Arrays.sort(min_values);	
-		return new String("[|"+method_sigs+"|"+min_values[min_values.length - 1]+"]");
-	}
-
-	private static String generateServiceElementSignature(String s,
-			ServiceCoreElement el, ProjectMetadata prMeta) {
-		int minElasticity = prMeta.getMinElasticity(s);
-		String path = new String();
-		List<Dependency> deps = prMeta.getDependencies(new String[]{s});
-		for (Dependency d:deps){
-			if(d.getType().equals(WAR_DEP_TYPE)){
-				path = d.getOtherInfo();
-			}
-		}
-		return new String("["+path+"|"+s+"|"+minElasticity+"]");
 	}
 
 	/** Set Core Element constraint in the service manifest component
@@ -707,7 +663,8 @@ public class Manifest {
 		}
 		return packs;
 	}
-
+	/**** TODO Not implemented for Y1******/
+	
 	public int getNumberAffinityRules() {
 		// TODO Auto-generated method stub
 		return 0;
@@ -772,6 +729,8 @@ public class Manifest {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	/***********/
 
 	public void setServiceId(String serviceID) {
 		VirtualSystemCollection vsc = ovf.getVirtualSystemCollection();
@@ -995,16 +954,6 @@ public class Manifest {
 		}
 	}
 
-	/* TODO Remove when generate images work
-	public void generateFakeImages() {
-		for (VirtualSystem vs : ovf.getVirtualSystemCollection().getVirtualSystemArray()){
-			
-			addFile(vs.getId()+IMAGE_SUFFIX, "/fake/image/"+vs.getId()+".qcow2","qcow2");
-		}
-		
-	}
-	*/
-
 	public void setVMICMode(String mode) {
 		ProductSection ps = getOrCreateGlobalProductSection();
 		ps.setVmicMode(mode);
@@ -1051,6 +1000,17 @@ public class Manifest {
 			pp.setValue(appManURI);
 		}else
 			ps.addNewProperty(ASCETIC_APPMAN_PROP, ProductPropertyType.STRING, appManURI);
+	}
+
+
+	public void setApplicationMonitorEPR(String monLoc) {
+		ProductSection ps = getOrCreateGlobalProductSection();
+		ProductProperty pp = ps.getPropertyByKey(ASCETIC_APPMON_PROP);
+		if (pp != null){
+			pp.setValue(monLoc);
+		}else
+			ps.addNewProperty(ASCETIC_APPMON_PROP, ProductPropertyType.STRING, monLoc);
+		
 	}
 	
 	

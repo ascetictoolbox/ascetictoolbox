@@ -1,3 +1,19 @@
+/*
+ *  Copyright 2013-2014 Barcelona Supercomputing Center (www.bsc.es)
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package es.bsc.servicess.ide.editors.deployers;
 
 import java.io.File;
@@ -25,14 +41,15 @@ import es.bsc.servicess.ide.editors.ServiceFormEditor;
 public class DeploymentSection extends ServiceEditorSection{
 	
 	private Text serverText;
-	private Composite options;
+	private Group options;
 	private AsceticDeployer deployer;
 	private Text sshPublicKeyPathText;
 	private Text sshPrivateKeyPathText;
+	private Text monitorText;
 	
 	private static Logger log = Logger.getLogger(DeploymentSection.class);
 	
-	public static final String DEPLOYMENT_SEC_TITLE = "Application Manager";
+	public static final String DEPLOYMENT_SEC_TITLE = "Deployment Configuration";
 	public static final String DEPLOYMENT_SEC_DESC = "Define the location for the Application Manager and other deployment parameters";
 	public DeploymentSection(FormToolkit toolkit, ServiceFormEditor editor, 
 			int format, AsceticDeployer deployer) {
@@ -66,13 +83,13 @@ public class DeploymentSection extends ServiceEditorSection{
 		rd.grabExcessHorizontalSpace = true;
 		comp.setLayout(new GridLayout(1, false));
 		comp.setLayoutData(rd);
-		options = toolkit.createComposite(comp, SWT.BORDER);
+		options = new Group(comp, SWT.BORDER);
 		rd = new GridData(GridData.FILL_HORIZONTAL
 				| GridData.VERTICAL_ALIGN_BEGINNING);
 		rd.grabExcessHorizontalSpace = true;
 		options.setLayout(new GridLayout(2, false));
 		options.setLayoutData(rd);
-		
+		options.setText("Cloud Platform Specification");
 		toolkit.createLabel(options, "Application Manager", SWT.NONE);
 		serverText = toolkit.createText(options, "",
 				SWT.SINGLE | SWT.BORDER);
@@ -90,7 +107,30 @@ public class DeploymentSection extends ServiceEditorSection{
 				} catch (ConfigurationException e) {
 					log.error("Exception saving properties", e);
 					ErrorDialog.openError(getShell(),
-							"Saving optimis properties", e.getMessage(), 
+							"Saving ascetic properties", e.getMessage(), 
+							new Status(Status.ERROR, Activator.PLUGIN_ID,"Exception saving properties", e));
+				}
+			}
+	
+		});
+		toolkit.createLabel(options, "Application Monitor", SWT.NONE);
+		monitorText = toolkit.createText(options, "",
+				SWT.SINGLE | SWT.BORDER);
+		rd = new GridData();
+		rd.grabExcessHorizontalSpace = true;
+		rd.minimumWidth = 400;
+		monitorText.setLayoutData(rd);
+		monitorText.addModifyListener(new ModifyListener() {
+	
+			@Override
+			public void modifyText(ModifyEvent arg0) {
+				deployer.getProperties().setMonitorLocation(monitorText.getText().trim());
+				try {
+					deployer.getProperties().save();
+				} catch (ConfigurationException e) {
+					log.error("Exception saving properties", e);
+					ErrorDialog.openError(getShell(),
+							"Saving ascetic properties", e.getMessage(), 
 							new Status(Status.ERROR, Activator.PLUGIN_ID,"Exception saving properties", e));
 				}
 			}
@@ -120,7 +160,7 @@ public class DeploymentSection extends ServiceEditorSection{
 				} catch (ConfigurationException e) {
 					log.error("Exception saving properties", e);
 					ErrorDialog.openError(getShell(),
-							"Saving optimis properties", e.getMessage(), 
+							"Saving ascetic properties", e.getMessage(), 
 							new Status(Status.ERROR, Activator.PLUGIN_ID,"Exception saving properties", e));
 				}
 			}
@@ -143,7 +183,7 @@ public class DeploymentSection extends ServiceEditorSection{
 				} catch (ConfigurationException e) {
 					log.error("Exception saving properties", e);
 					ErrorDialog.openError(getShell(),
-							"Saving optimis properties", e.getMessage(), 
+							"Saving ascetic properties", e.getMessage(), 
 							new Status(Status.ERROR, Activator.PLUGIN_ID,"Exception saving properties", e));
 				}
 			}
@@ -154,6 +194,7 @@ public class DeploymentSection extends ServiceEditorSection{
 	
 	public void init() {
 		serverText.setText(deployer.getProperties().getDSLocation());
+		monitorText.setText(deployer.getProperties().getMonitorLocation());
 		sshPublicKeyPathText.setText(deployer.getProperties().getApplicationSSHPublicKeyPath());
 		sshPrivateKeyPathText.setText(deployer.getProperties().getApplicationSSHPrivateKeyPath());
 		
@@ -166,6 +207,10 @@ public class DeploymentSection extends ServiceEditorSection{
 
 	public String getServerLocation() {
 		return serverText.getText().trim();
+	}
+	
+	public String getMonitorLocation() {
+		return monitorText.getText().trim();
 	}
 
 	public void setApplicationSecurityInManifest(Manifest manifest) throws Exception {

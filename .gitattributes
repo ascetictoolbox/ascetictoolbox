@@ -1239,6 +1239,7 @@ saas/application-uploader/src/test/resources/3tier-webapp.ovf.xml -text
 saas/application-uploader/src/test/resources/service_manifest.xml -text
 saas/ascetic-eclipse-site/category.xml -text
 saas/ascetic-eclipse-site/pom.xml -text
+saas/compss-plugin/LICENSE.TXT -text
 saas/compss-plugin/ascetic-deployer-feature/.project -text
 saas/compss-plugin/ascetic-deployer-feature/.settings/org.eclipse.m2e.core.prefs -text
 saas/compss-plugin/ascetic-deployer-feature/build.properties -text

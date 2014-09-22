@@ -1,5 +1,5 @@
 /*
- *  Copyright 2011-2013 Barcelona Supercomputing Center (www.bsc.es)
+ *  Copyright 2013-2014 Barcelona Supercomputing Center (www.bsc.es)
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -81,11 +81,33 @@ public class ImageCreation {
 				throws Exception{
 		InstallationScript is = new InstallationScript(MOUNT_POINT_VAR+IMAGE_DEPLOYMENT_FOLDER);
 		generatePropertiesFile(packName, schPackage, packs, packageFolder, monitor);
+		
+		monitor.subTask("Uploading war file with orchestration elements");
+		IFile f = packageFolder.getFile(packName + ".war");
+		if (f!=null && f.exists()){
+			IFile properties = packageFolder.getFile(packName+"-it.properties");
+			f = packageFolder.getFile(packName + ".war");
+			PackagingUtils.addRuntimeConfigTojar(f, properties.getLocation()
+					.toFile(), packageFolder, PackagingUtils.WAR_CLASSES_PATH, monitor);
+			log.debug("Uploading " + f.getLocation().toOSString());
+			uploadWar(vmic, f.getLocation().toFile(), manifest, is, monitor);
+		}
+		f = packageFolder.getFile(packName + ".jar");
+		if (f!=null && f.exists()){
+			IFile properties = packageFolder.getFile(packName+"-it.properties");
+			f = packageFolder.getFile(packName + ".jar");
+			PackagingUtils.addRuntimeConfigTojar(f, properties.getLocation()
+					.toFile(), packageFolder, PackagingUtils.JAR_CLASSES_PATH, monitor);
+			log.debug("Uploading " + f.getLocation().toOSString());
+			uploadAndCopy(vmic, f.getLocation().toFile(), manifest, is, monitor);
+		}
+		monitor.worked(1);
+		
 		monitor.beginTask("Uploading files for " + packName, 12);
 		
 		// Uploading file
 		monitor.subTask("Uploading runtime configuration files orchestration elements");
-		IFile f = packageFolder.getFile("project.xml");
+		f = packageFolder.getFile("project.xml");
 		log.debug("Uploading " + f.getLocation().toOSString());
 		uploadAndCopy(vmic, f.getLocation().toFile(), manifest, is, monitor);
 		monitor.worked(1);
@@ -101,46 +123,46 @@ public class ImageCreation {
 		monitor.worked(1);*/
 		
 		File file = new File(pr_meta.getRuntimeLocation()
-				+ COMPSS_LOG_PATH+ COMPSS_LOG4J_DEFAULT_NAME);
+				+ COMPSS_RT_LOG_PATH+ COMPSS_LOG4J_DEFAULT_NAME);
 		if (f != null && f.exists()) {
 			uploadAndCopy(vmic, file, manifest, is, monitor);
 		}
 		monitor.worked(1);
 		
 		file = new File(pr_meta.getRuntimeLocation()
-				+ COMPSS_XMLS_PATH+COMPSS_PROJECTS_PATH+COMPSS_PROJECT_SCHEMA_NAME);
+				+ COMPSS_RT_XMLS_PATH+COMPSS_PROJECTS_PATH+COMPSS_PROJECT_SCHEMA_NAME);
 		if (f != null && f.exists()) {
 			uploadAndCopy(vmic, file, manifest, is, monitor);
 		}
 		monitor.worked(1);
 		
 		file = new File(pr_meta.getRuntimeLocation()
-				+ COMPSS_XMLS_PATH+COMPSS_RESOURCES_PATH+COMPSS_RESOURCE_SCHEMA_NAME);
+				+ COMPSS_RT_XMLS_PATH+COMPSS_RESOURCES_PATH+COMPSS_RESOURCE_SCHEMA_NAME);
 		if (f != null && f.exists()) {
 			uploadAndCopy(vmic, file, manifest, is, monitor);
 		}
 		monitor.worked(1);
-		
+		/*
 		file = new File(pr_meta.getRuntimeLocation()
-				+ COMPSS_SCRIPTS_PATH + COMPSS_SYSTEM_PATH+ "worker.sh");
+				+ COMPSS_RT_SCRIPTS_PATH + COMPSS_SYSTEM_PATH+ "worker.sh");
 		if (f != null && f.exists()) {
 			uploadAndCopy(vmic, file, manifest, is, monitor);
 		}
 		file = new File(pr_meta.getRuntimeLocation()
-				+ COMPSS_SCRIPTS_PATH+COMPSS_SYSTEM_PATH+ "worker_java.sh");
+				+ COMPSS_RT_SCRIPTS_PATH+COMPSS_SYSTEM_PATH+ "worker_java.sh");
 		if (f != null && f.exists()) {
 			uploadAndCopy(vmic, file, manifest, is, monitor);
 		}
 		file = new File(pr_meta.getRuntimeLocation()
-				+ COMPSS_SCRIPTS_PATH+COMPSS_SYSTEM_PATH+ "clean.sh");
+				+ COMPSS_RT_SCRIPTS_PATH+COMPSS_SYSTEM_PATH+ "clean.sh");
 		if (f != null && f.exists()) {
 			uploadAndCopy(vmic, file, manifest, is, monitor);
 		}
 		file = new File(pr_meta.getRuntimeLocation()
-				+ COMPSS_SCRIPTS_PATH+ COMPSS_SYSTEM_PATH+ "trace.sh");
+				+ COMPSS_RT_SCRIPTS_PATH+ COMPSS_SYSTEM_PATH+ "trace.sh");
 		if (f != null && f.exists()) {
 			uploadAndCopy(vmic, file, manifest, is, monitor);
-		}
+		}*/
 		monitor.worked(1);
 		
 		monitor.subTask("Setting file permissions in core elements installations");
@@ -157,6 +179,15 @@ public class ImageCreation {
 			log.debug("Uploading " + f.getLocation().toOSString());
 			uploadWar(vmic, f.getLocation().toFile(), manifest, is, monitor);
 		}
+		f = packageFolder.getFile(packName + ".jar");
+		if (f!=null && f.exists()){
+			IFile properties = packageFolder.getFile(packName+"-it.properties");
+			f = packageFolder.getFile(packName + ".jar");
+			PackagingUtils.addRuntimeConfigTojar(f, properties.getLocation()
+					.toFile(), packageFolder, PackagingUtils.JAR_CLASSES_PATH, monitor);
+			log.debug("Uploading " + f.getLocation().toOSString());
+			uploadAndCopy(vmic, f.getLocation().toFile(), manifest, is, monitor);
+		}
 		monitor.worked(1);
 		
 		monitor.subTask("Uploading dependencies");
@@ -169,14 +200,13 @@ public class ImageCreation {
 			// TODO he borrado algo??
 		}
 		monitor.worked(1);
-		
-		deployZipDeps(vmic, pr_meta.getDependencies(packMeta
-				.getElementsInPackage(packName)), packName, 
+		List<Dependency> packDeps = pr_meta.getAllDependencies(packMeta
+				.getElementsInPackage(packName));
+		deployZipDeps(vmic, packDeps, packName, 
 				packageFolder, manifest, is, monitor);
 		monitor.worked(1);
 		
-		deployWarDeps(vmic, pr_meta.getDependencies(packMeta
-				.getElementsInPackage(packName)), packName, 
+		deployWarDeps(vmic, packDeps, packName, 
 				packageFolder, manifest, is, monitor);
 		monitor.worked(1);
 		
@@ -377,10 +407,8 @@ public class ImageCreation {
 		config.setResourcesSchema(IMAGE_DEPLOYMENT_FOLDER
 				+ "/resource_schema.xsd");
 		config.setContext(CONTEXT_FOLDER);
-		config.setManifestLocation(IMAGE_DEPLOYMENT_FOLDER + "/service_manifest.xml");
-		config.setGATAdaptor(IMAGE_GAT_LOCATION + "/lib/adaptors");
-		config.setOptimisPeriod(15000);
-		config.setCertificatesContext(IMAGE_DEPLOYMENT_FOLDER);
+		config.setManifestLocation(CONTEXT_FOLDER + "/ovf.xml");
+		config.setGATAdaptor(IMAGE_DEPLOYMENT_FOLDER +"/adaptors");
 		config.setComponent(Manifest.generateManifestName(packageName));
 		config.setSchedulerComponent(Manifest.generateManifestName(schedulerPackage));
 		config.save();
@@ -477,8 +505,8 @@ public class ImageCreation {
 	
 	
 	public static void uploadCoreElementPackages(VmicApi vmic, String pack, 
-			IFolder packageFolder, ProjectMetadata prMeta, 
-			PackageMetadata packMeta, Manifest manifest, IProgressMonitor monitor) throws Exception{
+			IFolder packageFolder, ProjectMetadata prMeta, PackageMetadata packMeta, 
+			Manifest manifest, IJavaProject project, IProgressMonitor monitor) throws Exception{
 		InstallationScript is = new InstallationScript(MOUNT_POINT_VAR + IMAGE_DEPLOYMENT_FOLDER);
 		monitor.beginTask("Uploading packages for " + pack, 5);
 		
@@ -498,15 +526,17 @@ public class ImageCreation {
 			uploadAndUnzip(vmic, f.getLocation().toFile(), manifest, is, monitor);
 		}
 		monitor.worked(1);
-		
+		HashMap<String, ServiceElement> coreElements = CommonFormPage.getElements(
+				prMeta.getAllOrchestrationClasses(), PackageMetadata.CORE_TYPE, 
+				project, prMeta);
+		List<Dependency> packDeps = PackagingUtils.getCoreElementDependencies(
+				packMeta.getElementsInPackage(pack), coreElements, prMeta);
 		monitor.subTask("Uploading zip dependencies");
-		deployZipDeps(vmic, prMeta.getDependencies(packMeta
-				.getElementsInPackage(pack)), pack, packageFolder, manifest, is, monitor);
+		deployZipDeps(vmic, packDeps, pack, packageFolder, manifest, is, monitor);
 		monitor.worked(1);
 		
 		monitor.subTask("Uploading war dependencies");
-		deployWarDeps(vmic, prMeta.getDependencies(packMeta
-				.getElementsInPackage(pack)), pack, packageFolder, manifest, is, monitor);
+		deployWarDeps(vmic, packDeps, pack, packageFolder, manifest, is, monitor);
 		monitor.worked(1);
 		
 		manifest.addVMICExecutionInComponent(Manifest.generateManifestName(pack), is.getCommand());
@@ -532,8 +562,6 @@ public class ImageCreation {
 	public static void generateImages(VmicApi vmic, Manifest manifest, 
 			IProgressMonitor monitor) throws Exception {
 		monitor.beginTask("Creating Images", 100);
-		//TODO: Remove when execution with VMIC is done
-		//manifest.generateFakeImages();
 		vmic.generateImage(manifest.getOVFDefinition());
 		boolean complete = false;
 		do{

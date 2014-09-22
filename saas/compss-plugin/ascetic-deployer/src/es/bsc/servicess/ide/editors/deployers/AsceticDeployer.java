@@ -1,5 +1,5 @@
 /*
- *  Copyright 2011-2012 Barcelona Supercomputing Center (www.bsc.es)
+ *  Copyright 2013-2014 Barcelona Supercomputing Center (www.bsc.es)
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -407,6 +407,12 @@ public class AsceticDeployer extends Deployer {
 				ApplicationUploader appUploader = new ApplicationUploader(location);
 				deploymentSection.setApplicationSecurityInManifest(manifest);
 				manifest.setApplicationMangerEPR(location);
+				String monLoc = deploymentSection.getMonitorLocation();
+				if (monLoc == null || monLoc.isEmpty()) {
+					throw (new AsceticDeploymentException("Error incorrect application monitor location"));
+				}
+				manifest.setApplicationMonitorEPR(monLoc);
+				//String deploymentID = "35";
 				String deploymentID = Integer.toString(appUploader.createAndDeployAplication(manifest.getString()));			
 				monitorProgress(appUploader, serviceID, deploymentID, monitor);
 				ServiceManagerView smview = (ServiceManagerView) PlatformUI
@@ -418,7 +424,7 @@ public class AsceticDeployer extends Deployer {
 				smview.addNewDeployement(deploymentID, das);
 				monitor.done();
 			} else {
-				throw (new AsceticDeploymentException("Error incorrect location"));
+				throw (new AsceticDeploymentException("Error incorrect application manager location"));
 			}
 		}
 		

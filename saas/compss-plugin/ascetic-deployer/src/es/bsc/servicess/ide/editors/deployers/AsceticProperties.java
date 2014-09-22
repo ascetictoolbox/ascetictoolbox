@@ -1,5 +1,5 @@
 /*
- *  Copyright 2011-2012 Barcelona Supercomputing Center (www.bsc.es)
+ *  Copyright 2013-2014 Barcelona Supercomputing Center (www.bsc.es)
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ public class AsceticProperties {
 
 	private static final String APP_SSH_PUBKEY = "app.ssh.public.key.path";
 	private static final String APP_SSH_PRIVKEY = "app.ssh.private.key.path";
-
+	private static final String APP_MON_LOC = "app.mon.location";
 	private PropertiesConfiguration config;
 
 	public AsceticProperties(String pathToConfigFile)
@@ -177,6 +177,15 @@ public class AsceticProperties {
 	
 	public void setApplicationSSHPrivateKeyPath(String path) {
 		config.setProperty(APP_SSH_PRIVKEY, path);
+		
+	}
+
+	public String getMonitorLocation() {
+		return config.getString(APP_MON_LOC, "");
+	}
+
+	public void setMonitorLocation(String location) {
+		config.setProperty(APP_MON_LOC, location);
 		
 	}
 }
