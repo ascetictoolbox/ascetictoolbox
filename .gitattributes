@@ -1231,6 +1231,7 @@ saas/application-uploader/.settings/org.eclipse.core.resources.prefs -text
 saas/application-uploader/.settings/org.eclipse.jdt.core.prefs -text
 saas/application-uploader/.settings/org.eclipse.m2e.core.prefs -text
 saas/application-uploader/.settings/org.sonar.ide.eclipse.core.prefs -text
+saas/application-uploader/LICENSE.TXT -text
 saas/application-uploader/pom.xml -text
 saas/application-uploader/src/main/java/eu/ascetic/saas/application_uploader/ApplicationUploader.java -text
 saas/application-uploader/src/main/java/eu/ascetic/saas/application_uploader/ApplicationUploaderException.java -text
