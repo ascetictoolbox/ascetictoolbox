@@ -6,7 +6,7 @@
 		<groupId>eu.ascetic.saas</groupId>
 		<artifactId>programming-model</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../..</relativePath>
+		<relativePath>../../..</relativePath>
 	</parent>
 
 	<groupId>eu.ascetic.saas.programming-model</groupId>
