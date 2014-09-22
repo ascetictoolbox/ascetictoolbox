@@ -1268,7 +1268,6 @@ saas/compss-plugin/ascetic-deployer/src/es/bsc/servicess/ide/editors/deployers/s
 saas/compss-plugin/pom.xml -text
 saas/programming-model/LICENSE -text
 saas/programming-model/builders/buildall -text
-saas/programming-model/builders/packages/deb/compss-framework/compss-framework-1.2-all.deb -text
 saas/programming-model/builders/specs/deb/builddeb -text
 saas/programming-model/builders/specs/deb/compss-framework/all/control -text
 saas/programming-model/builders/specs/deb/compss-framework/build -text
