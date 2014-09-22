@@ -7,6 +7,7 @@
 		<groupId>eu.ascetic</groupId>
 		<artifactId>saas</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../..</relativePath>
 	</parent>
 
 	<groupId>eu.ascetic.saas</groupId>
