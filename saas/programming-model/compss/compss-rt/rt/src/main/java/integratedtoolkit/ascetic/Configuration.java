@@ -40,8 +40,8 @@ public class Configuration {
     private final static HashMap<String, LinkedList<Implementation>> componentImplementations;
 
     static {
-        String contextLocation = System.getProperty(ITConstants.IT_CONTEXT);
-        //String contextLocation = "/root/";
+        //String contextLocation = System.getProperty(ITConstants.IT_CONTEXT);
+        String contextLocation = "/root/";
         System.out.println("Application context:" + contextLocation);
         String ovfContent = "";
         System.out.println("reading Manifest from " + contextLocation + File.separator + "/ovf.xml");

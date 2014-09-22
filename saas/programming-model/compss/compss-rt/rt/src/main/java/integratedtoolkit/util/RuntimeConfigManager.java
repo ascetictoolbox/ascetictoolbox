@@ -55,12 +55,12 @@ public class RuntimeConfigManager {
     public RuntimeConfigManager(URL pathToConfigFile) throws ConfigurationException {
         config = new PropertiesConfiguration(pathToConfigFile);
     }
-    
+
     public RuntimeConfigManager(InputStream stream) throws ConfigurationException {
         config = new PropertiesConfiguration();
         config.load(stream);
     }
-    
+
     public RuntimeConfigManager(File file) throws ConfigurationException {
         config = new PropertiesConfiguration(file);
     }
@@ -213,6 +213,13 @@ public class RuntimeConfigManager {
         config.setProperty(ITConstants.GAT_DEBUG, debug);
     }
 
+    public String getMonitorLocation() {
+        return config.getString(ITConstants.IT_MONITOR_LOCATION);
+    }
+
+    public void setMonitorLocation(String location) {
+        config.setProperty(ITConstants.IT_MONITOR_LOCATION, location);
+    }
     /*public static void main(String[] args) {
      try {
      RuntimeConfigManager config = new RuntimeConfigManager("/home/jorgee/it.properties");
@@ -247,6 +254,7 @@ public class RuntimeConfigManager {
      }
      }
      */
+
     public boolean isToFile() {
         return config.getBoolean(ITConstants.IT_TO_FILE, false);
     }

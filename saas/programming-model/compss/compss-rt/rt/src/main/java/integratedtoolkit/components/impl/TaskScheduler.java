@@ -19,6 +19,7 @@ import integratedtoolkit.components.scheduler.SchedulerPolicies;
 import org.apache.log4j.Logger;
 
 import integratedtoolkit.ITConstants;
+import integratedtoolkit.ascetic.Ascetic;
 import integratedtoolkit.log.Loggers;
 import integratedtoolkit.types.Implementation;
 import integratedtoolkit.types.Resource;
@@ -369,7 +370,6 @@ public abstract class TaskScheduler {
             sb.append("\t\t\t<MeanExecutionTime>").append(stats[2]).append("</MeanExecutionTime>\n");
             sb.append("\t\t\t<MinExecutionTime>").append(stats[1]).append("</MinExecutionTime>\n");
             sb.append("\t\t\t<MaxExecutionTime>").append(stats[3]).append("</MaxExecutionTime>\n");
-
             sb.append("\t\t\t<ExecutedCount>").append(stats[3]).append("</ExecutedCount>\n");
             sb.append("\t\t</Core>\n");
         }
@@ -377,7 +377,8 @@ public abstract class TaskScheduler {
 
         sb.append("\t<ResourceInfo>\n");
         for (java.util.Map.Entry<String, List<Task>> entry : nodeToRunningTasks.entrySet()) {
-            sb.append("\t\t<Resource id=\"").append(entry.getKey()).append("\">\n");
+            String resourceName = entry.getKey();
+            sb.append("\t\t<Resource id=\"").append(resourceName).append("\">\n");
             sb.append(ResourceManager.getResourceMonitoringData("\t\t\t", entry.getKey()));
             List<Task> tasks = entry.getValue();
             sb.append("\t\t\t<Tasks>");
@@ -385,6 +386,17 @@ public abstract class TaskScheduler {
                 sb.append(t.getId()).append(" ");
             }
             sb.append("</Tasks>\n");
+
+            sb.append("\t\t\t<EnergyEstimation cores=\"").append(CoreManager.coreCount).append("\">\n");
+            for (int coreId = 0; coreId < CoreManager.coreCount; coreId++) {
+                sb.append("\t\t\t\t<Core id=\"").append(coreId).append("\" implementations=\"").append(CoreManager.getCoreImplementations(coreId).length).append("\">\n");
+                int[] consumptions = Ascetic.getConsumptions(resourceName, coreId);
+                for (int implId = 0; implId < CoreManager.getCoreImplementations(coreId).length; implId++) {
+                    sb.append("\t\t\t\t\t<Implementation id=\"").append(implId).append("\">").append(consumptions[implId]).append("</Implementation>\n");
+                }
+                sb.append("\t\t\t\t</Core>\n");
+            }
+            sb.append("\t\t\t</EnergyEstimation>\n");
             sb.append("\t\t</Resource>\n");
         }
         sb.append("\t</ResourceInfo>\n");

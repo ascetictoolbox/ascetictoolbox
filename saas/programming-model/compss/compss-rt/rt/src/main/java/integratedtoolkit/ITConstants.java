@@ -39,6 +39,7 @@ public interface ITConstants {
 	public static final String IT_PRESCHED			= "it.presched";
 	public static final String IT_GRAPH 			= "it.graph";
 	public static final String IT_MONITOR			= "it.monitor";
+        public static final String IT_MONITOR_LOCATION             = "it.monitor.location";
 	
 	public static final String IT_LANG              	= "it.lang";
 	public static final String IT_WORKER_CP         	= "it.worker.cp";
@@ -79,6 +80,7 @@ public interface ITConstants {
 	public static final String LIMIT_OF_TASKS 		= "LimitOfTasks";
 	public static final String LIMIT_OF_JOBS 		= "LimitOfJobs";
 	public static final String MAX_CLUSTER_SIZE     	= "MaxClusterSize";
+        
 	
 	// Language
 	public static enum Lang {

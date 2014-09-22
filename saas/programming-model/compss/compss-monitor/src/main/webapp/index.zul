@@ -26,6 +26,9 @@
 					<column width="90px" label="Usage" />
 				</columns>
 			</grid>
+			
+			<grid id="energyGrid" width="100%" height="30%">
+			</grid>
 
 			<grid id="coresGrid" width="100%" height="300px">
 				<auxhead>
@@ -50,6 +53,7 @@
 		}else{
 			monitorLocation = System.getenv("IT_MONITOR")+"/monitor.dot";
 		}
+		monitorLocation = "/tmp/monitor.dot";
 		
 		String[] cmd = {
 				"/bin/sh",
@@ -57,7 +61,13 @@
 				"dot -Tpng "+ monitorLocation +" > "+System.getProperty("catalina.base")+"/webapps/compss-monitor/images/graph.png"};
 				
 		Process p = Runtime.getRuntime().exec(cmd);
+		
+		
 		MonitoringParser.parse();
+		
+
+		
+		
 		workersGrid.setModel(new ListModelList(MonitoringParser.getWorkersDataArray()));
 		workersGrid.setRowRenderer(new RowRenderer() {
 
@@ -152,6 +162,9 @@
 										
 		Process p = Runtime.getRuntime().exec(cmd);
 		MonitoringParser.parse();
+		
+	
+		
 		workersGrid.setModel(new ListModelList(MonitoringParser.getWorkersDataArray()));
 		workersGrid.setRowRenderer(new RowRenderer() {
 
@@ -253,6 +266,11 @@
 					
 		Process p = Runtime.getRuntime().exec(cmd);
 		MonitoringParser.parse();
+		System.out.println("executant onTimer");
+		
+		GenerateGrid.computeEnergyColumns(energyGrid, MonitoringParser.getEnergyArray());
+		
+		
 		workersGrid.setModel(new ListModelList(MonitoringParser.getWorkersDataArray()));
 		workersGrid.setRowRenderer(new RowRenderer() {
 

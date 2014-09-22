@@ -15,6 +15,7 @@
  */
 package integratedtoolkit.components.impl;
 
+import integratedtoolkit.ITConstants;
 import java.io.IOException;
 import java.util.Map;
 
@@ -102,16 +103,16 @@ public class RuntimeMonitor implements Runnable {
                 printGraphState();
                 getXMLTaskState();
                 /*for (java.util.Map.Entry<Thread, StackTraceElement[]> entry : Thread.getAllStackTraces().entrySet()) {
-                    Thread t = entry.getKey();
-                    StackTraceElement[] stackTrace = entry.getValue();
-                    StringBuilder sb = new StringBuilder(t.getName() + "\n");
-                    String prefix = "└";
-                    for (int i = stackTrace.length; i > 0; i--) {
-                        sb.append(prefix).append(stackTrace[i - 1]).append("\n");
-                        prefix = " " + prefix;
-                    }
-                    System.out.println(sb.toString());
-                }*/
+                 Thread t = entry.getKey();
+                 StackTraceElement[] stackTrace = entry.getValue();
+                 StringBuilder sb = new StringBuilder(t.getName() + "\n");
+                 String prefix = "└";
+                 for (int i = stackTrace.length; i > 0; i--) {
+                 sb.append(prefix).append(stackTrace[i - 1]).append("\n");
+                 prefix = " " + prefix;
+                 }
+                 System.out.println(sb.toString());
+                 }*/
                 Thread.sleep(sleepTime);
             } catch (Exception e) {
             }
@@ -123,7 +124,7 @@ public class RuntimeMonitor implements Runnable {
      * prints in a file the current state of the dependency graph on a file
      */
     private void printGraphState() throws IOException {
-        java.io.BufferedWriter fw = new java.io.BufferedWriter(new java.io.FileWriter(System.getProperty("user.home") + "/monitor.dot"));
+        java.io.BufferedWriter fw = new java.io.BufferedWriter(new java.io.FileWriter(System.getProperty(ITConstants.IT_MONITOR_LOCATION) + "/monitor.dot"));
         fw.write("digraph {");
         fw.newLine();
         fw.write("ranksep=0.20;");
@@ -141,7 +142,7 @@ public class RuntimeMonitor implements Runnable {
      * prints in a file the current state of the dependency graph on a file
      */
     private void getXMLTaskState() throws IOException {
-        java.io.BufferedWriter fw = new java.io.BufferedWriter(new java.io.FileWriter(System.getProperty("user.home") + "/monitor.xml"));
+        java.io.BufferedWriter fw = new java.io.BufferedWriter(new java.io.FileWriter(System.getProperty(ITConstants.IT_MONITOR_LOCATION) + "/monitor.xml"));
         StringBuilder sb = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                 + "<?xml-stylesheet type=\"text/xsl\" href=\"" + installDir + "/xml/monitor/monitor.xsl\"?>\n"
                 + "<COMPSsState>\n");

@@ -162,6 +162,7 @@ public class IntegratedToolkitImpl implements IntegratedToolkit, ITExecution, Lo
                 System.setProperty(ITConstants.IT_GRAPH, Boolean.toString(manager.isGraph()));
                 System.setProperty(ITConstants.IT_TRACING, Boolean.toString(manager.isTracing()));
                 System.setProperty(ITConstants.IT_PRESCHED, Boolean.toString(manager.isPresched()));
+                System.setProperty(ITConstants.IT_MONITOR_LOCATION, manager.getMonitorLocation());
                 if (manager.getContext() != null) {
                     System.setProperty(ITConstants.IT_CONTEXT, manager.getContext());
                 }

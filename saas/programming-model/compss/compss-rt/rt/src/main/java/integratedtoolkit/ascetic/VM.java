@@ -75,7 +75,8 @@ public class VM {
         if (System.currentTimeMillis() - lastUpdate > UPDATE_FREQ) {
             for (int coreId = 0; coreId < CoreManager.coreCount; coreId++) {
                 for (int implId = 0; implId < implCount[coreId]; implId++) {
-                    consumption[coreId][implId] = AppManager.getConsumption(vm.getIp(), coreId + "_" + implId);
+                    String eventType = "core" + coreId + "impl" + implId;
+                    consumption[coreId][implId] = AppManager.getConsumption(vm.getIp(), eventType);
                 }
 
             }

@@ -15,10 +15,8 @@
  */
 package integratedtoolkit.ascetic;
 
-import integratedtoolkit.types.ResourceDescription;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.UUID;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;

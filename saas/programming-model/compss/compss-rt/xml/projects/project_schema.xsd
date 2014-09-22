@@ -34,7 +34,7 @@
 		<xsd:element name="LimitOfVMs" type="xsd:int" minOccurs="0"  maxOccurs="1"/>
 		<xsd:element name="Property" type="PropertyType" minOccurs="0"  maxOccurs="unbounded"/>
 		<xsd:element name="ImageList" type="imageListType" minOccurs="1"  maxOccurs="1"/>
-		<xsd:element name="InstanceTypes" type="instancesListTypes" minOccurs="1"  maxOccurs="1"/>
+		<xsd:element name="InstanceTypes" type="instancesListTypes" minOccurs="0"  maxOccurs="1"/>
 	</xsd:sequence>
 	<xsd:attribute name="name" type="xsd:string" use="required"/>
 </xsd:complexType>
