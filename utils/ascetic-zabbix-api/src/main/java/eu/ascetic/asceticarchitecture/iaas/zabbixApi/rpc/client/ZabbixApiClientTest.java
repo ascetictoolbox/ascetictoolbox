@@ -63,18 +63,18 @@ public class ZabbixApiClientTest {
 	 */
 	public static void main(String[] args) {
 			ZabbixClient client = new ZabbixClient();
-//			insertSeparator("getAllHosts");
-//			testGetAllHosts(client);
-//			insertSeparator("getItemsFromHost");
-//			testItemsFromHost(client);
-//			insertSeparator("itemsCountFromHosts");
-//			testItemsCountFromHosts(client);	
-//			insertSeparator("getItemByNameFromHost");
-//			testGetItemByNameFromHost(client);
+			insertSeparator("getAllHosts");
+			testGetAllHosts(client);
+			insertSeparator("getItemsFromHost");
+			testItemsFromHost(client);
+			insertSeparator("itemsCountFromHosts");
+			testItemsCountFromHosts(client);	
+			insertSeparator("getItemByNameFromHost");
+			testGetItemByNameFromHost(client);
 			insertSeparator("getHistoryDataByLimit");
 			testGetHistoryDataByLimit(client);
-//			insertSeparator("getItemByKeyFromHost");
-//			testGetItemByKeyFromHost(client);
+			insertSeparator("getItemByKeyFromHost");
+			testGetItemByKeyFromHost(client);
 //			insertSeparator("getTemplateByName");
 //			testGetTemplateByName(client);
 //			insertSeparator("createVM");
