@@ -216,6 +216,11 @@ public class CoreManager {
             }
 
         }
+        StringBuilder sb= new StringBuilder("CoreElementInterface signatures:\n");
+        for (java.util.Map.Entry<String, Implementation> entry:signatureToImpl.entrySet()){
+            sb.append("\t signature: ").append(entry.getKey()).append("--> ").append(entry.getValue());
+        }
+        System.out.println(signatureToImpl);
         return newMethods;
     }
 

@@ -15,6 +15,7 @@
  */
 package integratedtoolkit.ascetic;
 
+import eu.ascetic.utils.ovf.api.Disk;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
 import eu.ascetic.utils.ovf.api.ProductProperty;
 import eu.ascetic.utils.ovf.api.VirtualSystem;
@@ -40,8 +41,8 @@ public class Configuration {
     private final static HashMap<String, LinkedList<Implementation>> componentImplementations;
 
     static {
-        //String contextLocation = System.getProperty(ITConstants.IT_CONTEXT);
-        String contextLocation = "/root/";
+        String contextLocation = System.getProperty(ITConstants.IT_CONTEXT);
+        //String contextLocation = "/root/";
         System.out.println("Application context:" + contextLocation);
         String ovfContent = "";
         System.out.println("reading Manifest from " + contextLocation + File.separator + "/ovf.xml");
@@ -84,24 +85,30 @@ public class Configuration {
     }
 
     private static void parseComponents(OvfDefinition ovf) {
+        HashMap<String, Integer> diskSize = new HashMap<String, Integer>();
+        for (Disk d : ovf.getDiskSection().getDiskArray()) {
+            diskSize.put(d.getDiskId(), Integer.parseInt(d.getCapacity()) / 1024);
+        }
         for (VirtualSystem vs : ovf.getVirtualSystemCollection().getVirtualSystemArray()) {
             String componentName = vs.getId();
-            ResourceDescription rd = createComponentDescription(componentName, vs);
+            Integer storageElemSize = diskSize.get(componentName + "-disk");
+            ResourceDescription rd = createComponentDescription(componentName, vs, storageElemSize);
             componentDescription.put(componentName, rd);
             LinkedList<Implementation> impls = new LinkedList<Implementation>();
             String implList = vs.getProductSectionArray()[0].getPropertyByKey("asceticPMElements").getValue();
             if (implList.length() > 0) {
-                //implList = implList.substring(2, implList.length() - 5);
                 for (String signature : implList.split(";")) {
                     Implementation impl = CoreManager.getImplementation(signature);
-                    impls.add(impl);
+                    if (impl != null) {
+                        impls.add(impl);
+                    }
                 }
             }
             componentImplementations.put(componentName, impls);
         }
     }
 
-    private static ResourceDescription createComponentDescription(String name, VirtualSystem vs) {
+    private static ResourceDescription createComponentDescription(String name, VirtualSystem vs, int storage) {
         ResourceDescription rd = new ResourceDescription();
         rd.setName(name);
         int coreCount = vs.getVirtualHardwareSection().getNumberOfVirtualCPUs();
@@ -121,7 +128,7 @@ public class Configuration {
 
         rd.setValue(0);
         rd.setType(name);
-        rd.setStorageElemSize(10);
+        rd.setStorageElemSize(storage);
 
         CloudImageDescription cid = new CloudImageDescription();
         cid.setName(name);
