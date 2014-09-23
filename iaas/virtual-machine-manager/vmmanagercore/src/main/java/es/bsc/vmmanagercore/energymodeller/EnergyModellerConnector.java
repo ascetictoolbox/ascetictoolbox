@@ -94,11 +94,13 @@ public class EnergyModellerConnector {
                             vmToDeployFound = true;
                         }
                         else {
+                            // Add to the list of VMs for the Energy Modeller
                             vmsInHost.add(EnergyModeller.getVM(assignedVm.getCpus(), assignedVm.getRamMb(),
                                     assignedVm.getDiskGb()));
                         }
                     }
                     else {
+                        // Add to the list of VMs for the Energy Modeller
                         vmsInHost.add(EnergyModeller.getVM(assignedVm.getCpus(), assignedVm.getRamMb(),
                                 assignedVm.getDiskGb()));
                     }
