@@ -20,7 +20,6 @@
                 $scope.panels[$scope.idCounter] = form;
                 $scope.idCounter++;
             }, function() {
-                console.log("cabronazo");
             });
 
 
@@ -47,7 +46,6 @@
     }]);
 
     appip.controller("TimeSeriesController", ["$scope", "$interval", function($scope, $interval) {
-        console.log("3--> " + $scope.panel);
 
     }]);
 
@@ -56,14 +54,17 @@
             restrict : 'E',
             replace : true,
             scope: true,
-            controller :function ($scope, $element, $attrs) {
-                console.log($scope.id);
-                console.log($scope.info);
+            controller :function ($scope, $element, $attrs, $interval) {
+                $interval(function() {
+                    var x = (new Date()).getTime(), // current time
+                        y = Math.random();
+                    var series = $scope.chart.series[0];
+                    series.addPoint([x, y], true, true);
+                },1000); // todo: kill timer when panel is closed or page is changed
             },
-            link : function($scope, $element, attrs) {
+            link : function($scope, $element, $attrs, $interval) {
                 $element.append('<div id="panel'+$scope.id+'">not working {{id}}</div>');
 
-                    console.log("--> " + $scope.id);
                 var mierdaca = $scope.id;
                 var chartInfo = {
                     chart: {
@@ -85,19 +86,25 @@
                         enabled: false
                     },
                     plotOptions: {
+
                         series: {
-                            animation: false
+                            animation: false,
+                            marker : {
+                                enabled: false
+                            }
+
                         }
                     },
 
                     series: [{
+                        type: 'area',
                         data: (function () {
                             // generate an array of random data
                             var data = [],
                                 time = (new Date()).getTime(),
                                 i;
 
-                            for (i = -19; i <= 0; i += 1) {
+                            for (i = -100; i <= 0; i += 1) {
                                 data.push({
                                     x: time + i * 1000,
                                     y: Math.random()
@@ -107,8 +114,8 @@
                         }())
                     }]
                 };
-                console.log(chartInfo);
-                var chart = new Highcharts.Chart(chartInfo);
+                $scope.chart = new Highcharts.Chart(chartInfo);
+
                 /*scope.$watch("items", function (newValue) {
                     chart.series[0].setData(newValue, true);
                 }, true);*/
