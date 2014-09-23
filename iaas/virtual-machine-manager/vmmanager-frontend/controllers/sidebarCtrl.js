@@ -16,8 +16,11 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-angular.module('vmmanager.controllers').controller('SidebarCtrl', ['$location', function($location) {
+angular
+    .module('vmmanager.controllers')
+    .controller('SidebarCtrl', [ '$location', SidebarCtrl ]);
 
+function SidebarCtrl($location) {
     this.section = $location.url().substr(1);
 
     this.sectionIsActive = function(section) {
@@ -27,5 +30,4 @@ angular.module('vmmanager.controllers').controller('SidebarCtrl', ['$location', 
     this.setSection = function(section) {
         this.section = section;
     };
-
-}]);
+}

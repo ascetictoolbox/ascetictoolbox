@@ -21,11 +21,15 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     <table class="table table-striped">
         <thead>
             <tr>
-                <th ng-repeat="vmAttribute in vmmanager.vmAttributes">{{vmAttribute}}</th>
+                <th ng-repeat="vmAttribute in vmmanager.vmAttributes">
+                    <a style="color: black" ng-click="changeColumnSort($index, !vmmanager.columnSort.reverse)">
+                        {{vmAttribute}}
+                    </a>
+                </th>
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="vm in vmmanager.vms">
+            <tr ng-repeat="vm in vmmanager.vms | orderBy:vmmanager.columnSort.criteria:vmmanager.columnSort.reverse">
                 <td>{{vm.name}}</td>
                 <td>{{vm.id}}</td>
                 <td>{{vm.image}}</td>
@@ -35,7 +39,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
                 <td>{{vm.state}}</td>
                 <td>{{vm.ipAddress}}</td>
                 <td>{{vm.hostName}}</td>
-                <td>{{vm.created}}</td>
+                <td>{{vm.created | date:'medium'}}</td>
                 <td>{{vm.applicationId}}</td>
                 <td>
                     <div class="btn-group">
@@ -44,7 +48,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
                         </button>
                         <ul class="dropdown-menu" role="menu">
                             <li ng-repeat="vmAction in vmmanager.vmActions">
-                                <a href='#virtual_machines' ng-click='performAction(vm.id, vmAction)'>{{vmAction}}</a>
+                                <a href='#virtual_machines' ng-click="vmmanager.performAction(vm.id, vmAction)">
+                                    {{vmAction}}
+                                </a>
                             </li>
                         </ul>
                     </div>
@@ -57,7 +63,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
         <button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#myModal">
             Launch VM
         </button>
-        <button type="button" class="btn btn-default pull-right" ng-click='refresh()'>Refresh</button>
+        <button type="button" class="btn btn-default pull-right" ng-click="vmmanager.refresh()">Refresh</button>
     </div>
 
     <!-- Modal Launch VM -->
@@ -104,7 +110,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary"
-                            ng-click='newVm(vmName, vmImage, vmCpus, ramMb, diskGb, appId)'>
+                            ng-click="vmmanager.newVm(vmName, vmImage, vmCpus, ramMb, diskGb, appId)">
                         Launch VM
                     </button>
                 </div>

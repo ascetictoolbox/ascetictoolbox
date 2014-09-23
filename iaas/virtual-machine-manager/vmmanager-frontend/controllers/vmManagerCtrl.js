@@ -16,36 +16,46 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-angular.module('vmmanager.controllers').controller('VmManagerController', [ '$http', '$scope', function($http, $scope) {
-    
+angular
+    .module('vmmanager.controllers')
+    .controller('VmManagerController', [ 'VmService', vmManagerCtrl ]);
+
+function vmManagerCtrl(VmService) {
     var vmmanager = this;
 
-    // Gets the information about the VMs deployed in the system
-    $scope.loadVms = function() {
-        $http({method: 'GET', url: base_url + "vms"}).
-            success(function(data) {
-                vmmanager.vms = data.vms;
-            })
+    vmmanager.loadVms = function() {
+        VmService
+            .getVms()
+            .then(function(response) {
+                vmmanager.vms = response["data"]["vms"];
+                convertVmsStringDates();
+            });
     };
 
-    $scope.deleteVm = function(vmId) {
-        $http({method: 'DELETE', url: base_url + "vms/" + vmId}).
-            success(function() {
-                $scope.loadVms(); // Reload the data
-            })
+    vmmanager.deleteVm = function(vmId) {
+        VmService
+            .deleteVm(vmId)
+            .then(function() {
+                vmmanager.loadVms();
+            });
     };
 
-    $scope.performActionVm = function(vmId, apiAction) {
-        $http({method: 'PUT', url: base_url + "vms/" + vmId, data: {"action": apiAction}}).
-            success(function() {
-                $scope.loadVms(); // Reload the data
-            })
+    vmmanager.performActionVm = function(vmId, apiAction) {
+        VmService
+            .performActionOnVm(vmId, apiAction)
+            .then(function() {
+                vmmanager.loadVms();
+            });
     };
 
-    // Perfoms an action on a VM (destroy, reboot, etc.)
-    $scope.performAction = function(vmId, action) {
+    vmmanager.changeColumnSort = function(criteriaIndex, reverse) {
+        vmmanager.columnSort = { criteria: vmmanager.sortingCriteria[criteriaIndex], reverse: reverse };
+    };
+
+    // Performs an action on a VM (destroy, reboot, etc.)
+    vmmanager.performAction = function(vmId, action) {
         if (action == "Destroy") { // DELETE REST call
-                $scope.deleteVm(vmId);
+            vmmanager.deleteVm(vmId);
         }
         else { // PUT REST calls
             var apiAction = "";
@@ -67,39 +77,42 @@ angular.module('vmmanager.controllers').controller('VmManagerController', [ '$ht
             else if (action == "Resume") {
                 apiAction = "resume";
             }
-            $scope.performActionVm(vmId, apiAction);
+            vmmanager.performActionVm(vmId, apiAction);
         }
     };
 
-    $scope.refresh = function() {
-        $scope.loadVms();
+    vmmanager.refresh = function() {
+        vmmanager.loadVms();
     };
 
-    $scope.newVm = function(name, imageId, cpus, ramMb, diskGb, appId) {
-        var dataNewVm = {vms: [{
-            name: name,
-            image: imageId,
-            cpus: cpus,
-            ramMb: ramMb,
-            diskGb: diskGb,
-            applicationId: appId }]};
-
-        $http({method: 'POST', url: base_url + "vms/", data: dataNewVm}).
-            success(function() {
-                $scope.refresh();
+    vmmanager.newVm = function(name, imageId, cpus, ramMb, diskGb, appId) {
+        VmService
+            .deployVm(name, imageId, cpus, ramMb, diskGb, appId)
+            .then(function() {
+                vmmanager.refresh();
                 $('#myModal').modal('hide'); // TODO: This should be done using a directive
-            })
+            });
     };
+
+    // Transforms the dates from string to Date so they can be sorted
+    function convertVmsStringDates() {
+        vmmanager.vms.forEach(function(vm) {
+            vm.created = new Date(vm.created);
+        });
+    }
 
     vmmanager.vmAttributes = ["Name", "ID", "Image", "CPUs", "RAM(MB)",
         "Disk(GB)", "State", "IP", "Host", "Created", "App ID", "Actions"];
     vmmanager.vmActions = ["Destroy", "Hard reboot", "Soft reboot",
         "Start", "Stop", "Suspend", "Resume"];
 
-    // Initialize the existing VMs to empty, because this array will be 
-    // checked before performing the REST request
-    vmmanager.vms = []; 
-        
-    $scope.loadVms();
+    // Table sorting
+    vmmanager.sortingCriteria = ["name", "id", "image", "cpus", "ramMb", "diskGb", "state", "ipAddress", "hostName",
+        "created", "applicationId"];
+    vmmanager.columnSort = { criteria:vmmanager.sortingCriteria[9], reverse:true };
 
-}]);
+    // Initialize the existing VMs to empty, because this array will be checked before performing the REST request
+    vmmanager.vms = [];
+
+    vmmanager.loadVms();
+}

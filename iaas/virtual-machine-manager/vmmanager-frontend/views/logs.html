@@ -22,7 +22,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     <div ng-repeat="logHeader in logsCtrl.logHeaders track by $index">
         <b>{{logHeader | uppercase}}</b>
         <br>
-        <div ng-repeat='log in getDeploymentLogs(logHeader) track by $index'>
+        <div ng-repeat='log in logsCtrl.getDeploymentLogs(logHeader) track by $index'>
             <div>{{log | formatLogMessage}}</div>
         </div>
         <br>

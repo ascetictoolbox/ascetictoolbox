@@ -21,16 +21,21 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     <table class="table table-striped">
         <thead>
             <tr>
-                <th ng-repeat="imageAttribute in imageCtrl.imageAttributes">{{imageAttribute}}</th>
+                <th ng-repeat="imageAttribute in imageCtrl.imageAttributes">
+                    <a style="color: black" ng-click="imageCtrl.changeColumnSort($index, !imageCtrl.columnSort.reverse)">
+                        {{imageAttribute}}
+                    </a>
+                </th>
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="image in imageCtrl.images">
+            <tr ng-repeat="image in imageCtrl.images |
+                    orderBy:imageCtrl.columnSort.criteria:imageCtrl.columnSort.reverse">
                 <td>{{image.name}}</td>
                 <td>{{image.id}}</td>
                 <td>{{image.status}}</td>
                 <td>
-                    <button type="button" class="btn btn-default" ng-click='deleteImage(image.id)'>
+                    <button type="button" class="btn btn-default" ng-click="imageCtrl.deleteImage(image.id)">
                         Delete
                     </button>
                 </td>
@@ -42,7 +47,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
         <button type="button" class="btn btn-default pull-right" data-toggle="modal"
                 data-target="#imageModal">Upload Image
         </button>
-        <button type="button" class="btn btn-default pull-right" ng-click='refresh()'>Refresh</button>
+        <button type="button" class="btn btn-default pull-right" ng-click="imageCtrl.refresh()">Refresh</button>
     </div>
 
     <!-- Modal Upload Image -->
@@ -70,8 +75,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary"
-                            ng-click='uploadImage(imageName, imageUrl)'>Upload Image</button>
+                    <button type="button" class="btn btn-primary" ng-click="imageCtrl.uploadImage(imageName, imageUrl)">
+                        Upload Image
+                    </button>
                 </div>
             </div>
         </div>

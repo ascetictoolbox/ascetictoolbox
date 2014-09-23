@@ -16,11 +16,14 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-angular.module('vmmanager.controllers').controller('LogsCtrl', [ '$http', '$scope', function($http, $scope) {
+angular
+    .module('vmmanager.controllers')
+    .controller('LogsCtrl', [ 'LogService', LogsCtrl ]);
 
+function LogsCtrl(LogService) {
     var logsCtrl = this;
 
-    $scope.getDeploymentLogs = function(logHeader) {
+    logsCtrl.getDeploymentLogs = function(logHeader) {
         var result = [];
         var getLine = false;
         var logId = null;
@@ -33,7 +36,7 @@ angular.module('vmmanager.controllers').controller('LogsCtrl', [ '$http', '$scop
                 result.push(logLine);
             }
             if (isStartOfEvaluation(logLine) && getDate(logLine) === getDate(logHeader) &&
-                    getTime(logLine) === getTime(logHeader)) {
+                getTime(logLine) === getTime(logHeader)) {
                 logId = getLogMessageId(logLine);
                 getLine = true;
             }
@@ -42,9 +45,10 @@ angular.module('vmmanager.controllers').controller('LogsCtrl', [ '$http', '$scop
     };
 
     function loadLogs() {
-        $http({method: 'GET', url: base_url + "logs"}).
-            success(function(data) {
-                logsCtrl.logs = data.toString().split('\n');
+        LogService
+            .getLogs()
+            .then(function(response) {
+                logsCtrl.logs = response["data"].toString().split('\n');
                 getLogHeaders();
             })
     }
@@ -86,5 +90,4 @@ angular.module('vmmanager.controllers').controller('LogsCtrl', [ '$http', '$scop
     logsCtrl.logHeaders = [];
 
     loadLogs();
-
-}]);
+}

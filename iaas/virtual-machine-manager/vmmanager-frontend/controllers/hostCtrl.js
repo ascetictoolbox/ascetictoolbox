@@ -16,21 +16,26 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-angular.module('vmmanager.controllers').controller('HostCtrl', [ '$http', '$scope', function($http, $scope) {
 
+angular
+    .module('vmmanager.controllers')
+    .controller('HostCtrl', [ 'HostService', HostCtrl ]);
+
+function HostCtrl(HostService) {
     var hostCtrl = this;
 
-    $scope.loadHosts = function() {
-        $http({method: 'GET', url: base_url + "nodes"})
-            .success(function(data) {
-                hostCtrl.hosts = data["nodes"];
-                $scope.calculateTotalPowerConsumption();
-                $scope.drawPowerChart();
-                $scope.drawServersUsageChart();
+    hostCtrl.loadHosts = function() {
+        HostService
+            .getHosts()
+            .then(function(response) {
+                hostCtrl.hosts = response["data"]["nodes"];
+                hostCtrl.calculateTotalPowerConsumption();
+                hostCtrl.drawPowerChart();
+                hostCtrl.drawServersUsageChart();
             });
     };
 
-    $scope.calculateTotalPowerConsumption = function() {
+    hostCtrl.calculateTotalPowerConsumption = function() {
         var totalPowerConsumption = 0;
         hostCtrl.hosts.forEach(function(host) {
             totalPowerConsumption += host["currentPower"];
@@ -38,13 +43,17 @@ angular.module('vmmanager.controllers').controller('HostCtrl', [ '$http', '$scop
         hostCtrl.totalPowerConsumption = totalPowerConsumption;
     };
 
-    $scope.refresh = function() {
-        $scope.loadHosts();
-        $scope.calculateTotalPowerConsumption();
+    hostCtrl.changeColumnSort = function(criteriaIndex, reverse) {
+        hostCtrl.columnSort = { criteria: hostCtrl.sortingCriteria[criteriaIndex], reverse: reverse };
+    };
+
+    hostCtrl.refresh = function() {
+        hostCtrl.loadHosts();
+        hostCtrl.calculateTotalPowerConsumption();
     };
 
     // This function draws a pie chart using the Highcharts library
-    $scope.drawPowerChart = function() {
+    hostCtrl.drawPowerChart = function() {
         var powerData = [];
         hostCtrl.hosts.forEach(function(host) {
             powerData.push([host["hostname"], host["currentPower"]]);
@@ -85,7 +94,7 @@ angular.module('vmmanager.controllers').controller('HostCtrl', [ '$http', '$scop
     };
 
     // This function draws a 3d scatterplot using the Highcharts library
-    $scope.drawServersUsageChart = function() {
+    hostCtrl.drawServersUsageChart = function() {
         var usageData = [];
         hostCtrl.hosts.forEach(function(host) {
             usageData.push([Math.min(100, 100*(host["assignedCpus"]/host["totalCpus"])),
@@ -197,8 +206,12 @@ angular.module('vmmanager.controllers').controller('HostCtrl', [ '$http', '$scop
     hostCtrl.hosts = [];
     hostCtrl.totalPowerConsumption = 0;
 
-    $scope.loadHosts();
+    // Table sorting
+    hostCtrl.sortingCriteria = ["hostname", "totalCpus", "assignedCpus/totalCpus", "totalMemoryMb",
+        "assignedMemoryMb/totalMemoryMb", "totalDiskGb", "assignedDiskGb/totalDiskGb", "currentPower"];
+    hostCtrl.columnSort = { criteria:hostCtrl.sortingCriteria[0], reverse:false };
+
+    hostCtrl.loadHosts();
 
     $( "#power-chart" ).empty();
-
-}]);
+}

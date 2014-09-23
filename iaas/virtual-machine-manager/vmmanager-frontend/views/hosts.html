@@ -20,25 +20,29 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 <div class="table-responsive" ng-controller="HostCtrl as hostCtrl">
     <table class="table table-striped">
         <thead>
-        <tr>
-            <th ng-repeat="hostAttribute in hostCtrl.hostAttributes">{{hostAttribute}}</th>
-        </tr>
+            <tr>
+                <th ng-repeat="hostAttribute in hostCtrl.hostAttributes">
+                    <a style="color: black" ng-click="hostCtrl.changeColumnSort($index, !hostCtrl.columnSort.reverse)">
+                        {{hostAttribute}}
+                    </a>
+                </th>
+            </tr>
         </thead>
         <tbody>
-        <tr ng-repeat="host in hostCtrl.hosts">
-            <td>{{host["hostname"]}}</td>
-            <td>{{host["totalCpus"]}}</td>
-            <td>{{100*(host["assignedCpus"]/host["totalCpus"]) | number:2}}%</td>
-            <td>{{host["totalMemoryMb"]}}</td>
-            <td>{{100*(host["assignedMemoryMb"]/host["totalMemoryMb"]) | number:2}}%</td>
-            <td>{{host["totalDiskGb"] | number:2}}</td>
-            <td>{{100*(host["assignedDiskGb"]/host["totalDiskGb"]) | number:2}}%</td>
-            <td>{{host["currentPower"] | number:2}}</td>
-        </tr>
+            <tr ng-repeat="host in hostCtrl.hosts | orderBy:hostCtrl.columnSort.criteria:hostCtrl.columnSort.reverse">
+                <td>{{host["hostname"]}}</td>
+                <td>{{host["totalCpus"]}}</td>
+                <td>{{100*(host["assignedCpus"]/host["totalCpus"]) | number:2}}%</td>
+                <td>{{host["totalMemoryMb"]}}</td>
+                <td>{{100*(host["assignedMemoryMb"]/host["totalMemoryMb"]) | number:2}}%</td>
+                <td>{{host["totalDiskGb"] | number:2}}</td>
+                <td>{{100*(host["assignedDiskGb"]/host["totalDiskGb"]) | number:2}}%</td>
+                <td>{{host["currentPower"] | number:2}}</td>
+            </tr>
         </tbody>
     </table>
 
     <div class="btn-toolbar" role="toolbar">
-        <button type="button" class="btn btn-default pull-right" ng-click='refresh()'>Refresh</button>
+        <button type="button" class="btn btn-default pull-right" ng-click="hostCtrl.refresh()">Refresh</button>
     </div>
 </div>

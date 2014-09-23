@@ -16,45 +16,52 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-angular.module('vmmanager.controllers').controller('ImageCtrl', [ '$http', '$scope', function($http, $scope) {
-    
+angular
+    .module('vmmanager.controllers')
+    .controller('ImageCtrl', [ 'ImageService', ImageCtrl ]);
+
+function ImageCtrl(ImageService) {
     var imageCtrl = this;
-        
-    // Gets the information about the images in the system
-    $scope.loadImages = function() {
-        $http({method: 'GET', url: base_url + "images"}).
-            success(function(data) {
-                imageCtrl.images = data.images;
-            })
+
+    imageCtrl.loadImages = function() {
+        ImageService
+            .getImages()
+            .then(function(response) {
+                imageCtrl.images = response["data"]["images"];
+            });
     };
 
-    $scope.deleteImage = function(imageId) {
-        $http({method: 'DELETE', url: base_url + "images/" + imageId}).
-            success(function() {
-                $scope.loadImages(); // Reload the data
-            })
+    imageCtrl.deleteImage = function(imageId) {
+        ImageService
+            .deleteImage(imageId)
+            .then(function() {
+                imageCtrl.loadImages();
+            });
     };
 
-    $scope.uploadImage = function(imageName, imageUrl) {
-        var dataNewImage = {
-                name: imageName,
-                url: imageUrl
-            };
-
-        $http({method: 'POST', url: base_url + "images/", data: dataNewImage}).
-            success(function() {
-                $scope.refresh();
+    imageCtrl.uploadImage = function(imageName, imageUrl) {
+        ImageService
+            .uploadImage(imageName, imageUrl)
+            .then(function() {
+                imageCtrl.refresh();
                 $('#imageModal').modal('hide'); // TODO: This should be done using a directive
-            })
-        };
+            });
+    };
 
-    $scope.refresh = function() {
-        $scope.loadImages();
+    imageCtrl.changeColumnSort = function(criteriaIndex, reverse) {
+        imageCtrl.columnSort = { criteria: imageCtrl.sortingCriteria[criteriaIndex], reverse: reverse };
+    };
+
+    imageCtrl.refresh = function() {
+        imageCtrl.loadImages();
     };
 
     imageCtrl.imageAttributes = ["Name", "ID", "State", "Actions"];
     imageCtrl.images = [];
 
-    $scope.loadImages();
+    // Table sorting
+    imageCtrl.sortingCriteria = ["name", "id", "status"];
+    imageCtrl.columnSort = { criteria:imageCtrl.sortingCriteria[0], reverse:false };
 
-}]);
+    imageCtrl.loadImages();
+}

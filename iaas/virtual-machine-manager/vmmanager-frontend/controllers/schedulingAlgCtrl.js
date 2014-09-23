@@ -16,34 +16,40 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-angular.module('vmmanager.controllers').controller('SchedulingAlgCtrl', [ '$http', '$scope', function($http, $scope) {
-    
+angular
+    .module('vmmanager.controllers')
+    .controller('SchedulingAlgCtrl', [ 'SchedulingAlgService', SchedulingAlgCtrl ]);
+
+function SchedulingAlgCtrl(SchedulingAlgService) {
     var schedulingAlgCtrl = this;
-
-    $scope.loadSchedulingAlg = function() {
-        $http({method: 'GET', url: base_url + "scheduling_algorithms"}).
-            success(function(data) {
-                schedulingAlgCtrl.algorithms = data["scheduling_algorithms"];
-            });
-    };
-
-    $scope.getCurrentSchedulingAlg = function() {
-        $http({method: 'GET', url: base_url + "scheduling_algorithms/current"}).
-            success(function(data) {
-                schedulingAlgCtrl.currentAlgorithm = data.name
-            })
-    };
-
-    $scope.changeSchedulingAlg = function(newSchedulingAlg) {
-        $http({method: 'PUT', url: base_url + "scheduling_algorithms/current", data: {"algorithm": newSchedulingAlg}}).
-            success(function() {
-                $scope.getCurrentSchedulingAlg();
-            })
-    };
 
     schedulingAlgCtrl.algorithms = [];
     schedulingAlgCtrl.currentAlgorithm = "";
-    $scope.loadSchedulingAlg();
-    $scope.getCurrentSchedulingAlg();
 
-}]);
+    schedulingAlgCtrl.loadSchedulingAlg = function() {
+        SchedulingAlgService
+            .getSchedulingAlgorithms()
+            .then(function(response) {
+                schedulingAlgCtrl.algorithms = response["data"]["scheduling_algorithms"];
+            });
+    };
+
+    schedulingAlgCtrl.getCurrentSchedulingAlg = function() {
+        SchedulingAlgService
+            .getCurrentSchedulingAlg()
+            .then(function(response) {
+                schedulingAlgCtrl.currentAlgorithm = response["data"]["name"];
+            });
+    };
+
+    schedulingAlgCtrl.changeSchedulingAlg = function(newSchedulingAlg) {
+        SchedulingAlgService
+            .changeCurrentSchedulingAlg(newSchedulingAlg)
+            .then(function() {
+                schedulingAlgCtrl.getCurrentSchedulingAlg();
+            });
+    };
+
+    schedulingAlgCtrl.loadSchedulingAlg();
+    schedulingAlgCtrl.getCurrentSchedulingAlg();
+}

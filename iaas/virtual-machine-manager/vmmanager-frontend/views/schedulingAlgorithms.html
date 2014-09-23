@@ -24,7 +24,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     </button>
     <ul class="dropdown-menu" role="menu">
         <li ng-repeat="algorithm in schedulingAlgCtrl.algorithms">
-            <a href="#scheduling_algorithms" ng-click='changeSchedulingAlg(algorithm.name)'>
+            <a href="#scheduling_algorithms" ng-click='schedulingAlgCtrl.changeSchedulingAlg(algorithm.name)'>
                 {{algorithm.name}}</a>
         </li>
     </ul>
