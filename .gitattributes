@@ -215,6 +215,12 @@ iaas/virtual-machine-manager/vmmanager-frontend/controllers/schedulingAlgCtrl.js
 iaas/virtual-machine-manager/vmmanager-frontend/controllers/sidebarCtrl.js -text
 iaas/virtual-machine-manager/vmmanager-frontend/controllers/vmManagerCtrl.js -text
 iaas/virtual-machine-manager/vmmanager-frontend/index.html -text
+iaas/virtual-machine-manager/vmmanager-frontend/services/hostService.js -text
+iaas/virtual-machine-manager/vmmanager-frontend/services/imageService.js -text
+iaas/virtual-machine-manager/vmmanager-frontend/services/logService.js -text
+iaas/virtual-machine-manager/vmmanager-frontend/services/schedulingAlgService.js -text
+iaas/virtual-machine-manager/vmmanager-frontend/services/services.js -text
+iaas/virtual-machine-manager/vmmanager-frontend/services/vmService.js -text
 iaas/virtual-machine-manager/vmmanager-frontend/views/common/head.html -text
 iaas/virtual-machine-manager/vmmanager-frontend/views/common/navbar.html -text
 iaas/virtual-machine-manager/vmmanager-frontend/views/common/sidebar.html -text

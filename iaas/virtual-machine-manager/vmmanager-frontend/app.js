@@ -16,11 +16,12 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-'use strict';
+angular
+    .module('vmmanager', ['vmmanager.controllers', 'vmmanager.services', 'ngRoute', 'ngAnimate'])
+    .config(configRoutes)
+    .filter('formatLogMessage', formatLogMessage);
 
-var vmmanager = angular.module('vmmanager', ['vmmanager.controllers', 'ngRoute', 'ngAnimate']);
-
-vmmanager.config(function($routeProvider) {
+function configRoutes($routeProvider) {
     $routeProvider
         .when('/', {
             templateUrl : 'views/dashboard.html'
@@ -29,7 +30,7 @@ vmmanager.config(function($routeProvider) {
             templateUrl: 'views/virtualMachines.html'
         })
         .when('/images', {
-           templateUrl: 'views/images.html'
+            templateUrl: 'views/images.html'
         })
         .when('/scheduling_algorithms', {
             templateUrl: 'views/schedulingAlgorithms.html'
@@ -40,11 +41,11 @@ vmmanager.config(function($routeProvider) {
         .when('/logs', {
             templateUrl: 'views/logs.html'
         });
-});
+}
 
 // TODO: This should be in the logs controller
-vmmanager.filter('formatLogMessage', function() {
+function formatLogMessage() {
     return function(logMessage) {
         return logMessage.split("--id:")[0]; // Hide the ID associated with the deployment
     }
-});
+}
