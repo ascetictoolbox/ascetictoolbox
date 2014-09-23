@@ -18,10 +18,13 @@
 
 package es.bsc.vmmanagercore.energymodeller;
 
+import es.bsc.vmmanagercore.model.DeploymentPlan;
 import es.bsc.vmmanagercore.model.Vm;
+import es.bsc.vmmanagercore.model.VmAssignmentToHost;
 import es.bsc.vmmanagercore.model.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
 
 import java.util.ArrayList;
@@ -42,10 +45,12 @@ public class EnergyModellerConnector {
      * @param vm the VM
      * @param host the host
      * @param vmsDeployed the VMs already deployed in the host
+     * @param deploymentPlan where it is defined that the vm has been assigned to the host
      * @return the predicted avg. power in Watts
      */
-    public static double getPredictedAvgPowerVm(Vm vm, Host host, List<VmDeployed> vmsDeployed) {
-        return getEnergyUsagePrediction(vm, host, vmsDeployed).getAvgPowerUsed();
+    public static double getPredictedAvgPowerVm(Vm vm, Host host, List<VmDeployed> vmsDeployed,
+            DeploymentPlan deploymentPlan) {
+        return getEnergyUsagePrediction(vm, host, vmsDeployed, deploymentPlan).getAvgPowerUsed();
     }
 
     /**
@@ -56,8 +61,9 @@ public class EnergyModellerConnector {
      * @param vmsDeployed the VMs already deployed in the host
      * @return the predicted energy in Joules
      */
-    public static double getPredictedEnergyVm(Vm vm, Host host, List<VmDeployed> vmsDeployed) {
-        return getEnergyUsagePrediction(vm, host, vmsDeployed).getTotalEnergyUsed();
+    public static double getPredictedEnergyVm(Vm vm, Host host, List<VmDeployed> vmsDeployed,
+            DeploymentPlan deploymentPlan) {
+        return getEnergyUsagePrediction(vm, host, vmsDeployed, deploymentPlan).getTotalEnergyUsed();
     }
 
     /**
@@ -68,10 +74,40 @@ public class EnergyModellerConnector {
      * @param vmsDeployed the VMs already deployed in the host
      * @return the energy usage prediction
      */
-    private static EnergyUsagePrediction getEnergyUsagePrediction(Vm vm, Host host, List<VmDeployed> vmsDeployed) {
+    private static EnergyUsagePrediction getEnergyUsagePrediction(Vm vm, Host host, List<VmDeployed> vmsDeployed,
+            DeploymentPlan deploymentPlan) {
+        // We need to send to the Energy Modeller the list of VMs that are already deployed in the host plus the
+        // list of VMs that would be deployed if the deploymentPlan was executed
+        List<VM> vmsInHost = VMMToEMConversor.getVmsEnergyModFromVms(
+                getVmsDeployedInHost(host.getHostname(), vmsDeployed)); // VMs already deployed
+
+        // Add the VMs that would be deployed if the deployment plan was executed
+        boolean vmToDeployFound = false; // Useful to not include the VM that is going to be deployed
+        if (deploymentPlan != null) { //It is null in the estimates calls
+            for (VmAssignmentToHost vmAssignmentToHost : deploymentPlan.getVmsAssignationsToHosts()) {
+                if (host.getHostname().equals(vmAssignmentToHost.getHost().getHostname())) {
+                    Vm assignedVm = vmAssignmentToHost.getVm();
+                    if (assignedVm.getCpus() == vm.getCpus() && assignedVm.getRamMb() == vm.getRamMb()
+                            && assignedVm.getDiskGb() == vm.getDiskGb()) {
+                        // VM that we want to deploy or one with the same characteristics.
+                        if (!vmToDeployFound) { // Do not count the first time
+                            vmToDeployFound = true;
+                        }
+                        else {
+                            vmsInHost.add(EnergyModeller.getVM(assignedVm.getCpus(), assignedVm.getRamMb(),
+                                    assignedVm.getDiskGb()));
+                        }
+                    }
+                    else {
+                        vmsInHost.add(EnergyModeller.getVM(assignedVm.getCpus(), assignedVm.getRamMb(),
+                                assignedVm.getDiskGb()));
+                    }
+                }
+            }
+        }
+
         return energyModeller.getPredictedEnergyForVM(
-                EnergyModeller.getVM(vm.getCpus(), vm.getRamMb(), vm.getDiskGb()),
-                VMMToEMConversor.getVmsEnergyModFromVms(getVmsDeployedInHost(host.getHostname(), vmsDeployed)),
+                EnergyModeller.getVM(vm.getCpus(), vm.getRamMb(), vm.getDiskGb()), vmsInHost,
                 energyModeller.getHost(host.getHostname()));
     }
 

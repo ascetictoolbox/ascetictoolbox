@@ -64,7 +64,7 @@ public class VmAssignmentToHost {
      * @return the predicted avg power
      */
     private double getPowerEstimate(List<VmDeployed> vmsDeployed) {
-        return EnergyModellerConnector.getPredictedAvgPowerVm(vm, host, vmsDeployed);
+        return EnergyModellerConnector.getPredictedAvgPowerVm(vm, host, vmsDeployed, null);
     }
 
     /**
@@ -74,7 +74,7 @@ public class VmAssignmentToHost {
      * @return the predicted energy
      */
     private double getEnergyEstimate(List<VmDeployed> vmsDeployed) {
-        return EnergyModellerConnector.getPredictedEnergyVm(vm, host, vmsDeployed);
+        return EnergyModellerConnector.getPredictedEnergyVm(vm, host, vmsDeployed, null);
     }
 
     /**
