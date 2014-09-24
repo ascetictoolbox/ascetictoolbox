@@ -26,6 +26,7 @@ import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Template;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.User;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.utils.Dictionary;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.utils.Json2ObjectMapper;
+import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -58,13 +59,13 @@ public class ZabbixClient {
 	
 	/** The user. */
 	private User user;
-	
 
+	
 	/**
 	 * Instantiates a new zabbix client. Get user data from properties file
 	 */
 	public ZabbixClient(){
-		user = new User(Configuration.zabbixUser,Configuration.zabbixPassword);		
+		user = new User(Configuration.zabbixUser,Configuration.zabbixPassword);
 	}
 	
 	/**
@@ -83,7 +84,20 @@ public class ZabbixClient {
 	 * @return the auth
 	 */
 	private String getAuth(){
-		String auth = null;
+		String auth = user.getAuth();
+                if (auth != null) {
+                    GregorianCalendar now = new GregorianCalendar();
+                    long expiaryTime = TimeUnit.MILLISECONDS.toSeconds(user.getAuthExpiryDate().getTimeInMillis());
+                    long currentTime = TimeUnit.MILLISECONDS.toSeconds(now.getTimeInMillis());
+                    expiaryTime = expiaryTime - TimeUnit.MINUTES.toSeconds(15); //add a safety margin
+                    if (currentTime < expiaryTime) { //return the cached version!!
+                        return auth;
+                    } else {
+                        auth = null; //delete the cache and try again
+                        user.setAuth(null);
+                        user.setAuthExpiryDate(null);
+                    }
+        }
 
 		String jsonRequest = 
 				"{\"jsonrpc\":\"" + Dictionary.JSON_RPC_VERSION + "\","
@@ -114,6 +128,11 @@ public class ZabbixClient {
 					+ Configuration.zabbixUrl + ". Exception: " 
 					+ e.getMessage() + "\n");
 		}
+                GregorianCalendar expiryDate = new GregorianCalendar();
+                long expiaryTime = TimeUnit.SECONDS.toMillis(990); //default expiary time
+                expiryDate.setTimeInMillis(expiryDate.getTimeInMillis() + expiaryTime);
+                user.setAuthExpiryDate(expiryDate);
+                user.setAuth(auth);
 		return auth;
 	}
 

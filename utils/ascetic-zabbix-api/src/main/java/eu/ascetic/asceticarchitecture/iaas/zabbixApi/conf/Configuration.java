@@ -41,6 +41,7 @@ public class Configuration {
 	public static String zabbixUrl = "https://10.4.0.15/zabbix/api_jsonrpc.php";
 	public static String virtualMachinesGroupName = "Virtual Machines";
 	public static String osLinuxTemplateName = "Template OS Linux";
+	public static Integer zabbixAutoLogoutTime = 990;
 	
 	private static final String zabbixConfigurationFile = "ascetic-zabbix-api.properties";
 	
@@ -57,6 +58,7 @@ public class Configuration {
         	zabbixUrl = config.getString("zabbix.server.url");
         	zabbixPassword = config.getString("zabbix.password");
         	zabbixUser = config.getString("zabbix.user");
+        	zabbixAutoLogoutTime = config.getInt("zabbix.user.auto.logout.time");
         	virtualMachinesGroupName = config.getString("zabbix.group.vm");
         	osLinuxTemplateName = config.getString("zabbix.template.linux");
         	}

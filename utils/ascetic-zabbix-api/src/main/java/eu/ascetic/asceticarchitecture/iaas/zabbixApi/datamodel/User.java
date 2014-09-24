@@ -1,5 +1,8 @@
 package eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel;
 
+
+import java.util.Calendar;
+
 /**
  * 
  * Copyright 2014 ATOS SPAIN S.A. 
@@ -36,8 +39,9 @@ public class User {
 	
 	/** The auth. */
 	private String auth;
+        
+	private Calendar authExpiryDate = null;
 	
-
 	/**
 	 * Instantiates a new user.
 	 *
@@ -120,7 +124,21 @@ public class User {
 	public void setAuth(String auth) {
 		this.auth = auth;
 	}
-	
-	
 
+    /**
+     * This returns the auth expiry date.
+     * @return the authExpiryDate
+     */
+    public Calendar getAuthExpiryDate() {
+        return authExpiryDate;
+    }
+
+    /**
+     * This sets the auth expiry date.
+     * @param authExpiryDate the auth Expiry date to set
+     */
+    public void setAuthExpiryDate(Calendar authExpiryDate) {
+        this.authExpiryDate = authExpiryDate;
+    }
+    
 }
