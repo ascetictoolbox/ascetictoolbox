@@ -3,9 +3,11 @@ package eu.ascetic.asceticarchitecture.iaas.zabbixApi.client;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -13,6 +15,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -26,8 +29,6 @@ import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Template;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.User;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.utils.Dictionary;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.utils.Json2ObjectMapper;
-import java.util.GregorianCalendar;
-import java.util.concurrent.TimeUnit;
 
 /**
  * /**
@@ -60,6 +61,8 @@ public class ZabbixClient {
 	/** The user. */
 	private User user;
 
+	/** The http client used to contact Zabbix */
+	private final HttpClient client = HttpClientBuilder.create().build();
 	
 	/**
 	 * Instantiates a new zabbix client. Get user data from properties file
@@ -367,7 +370,6 @@ public class ZabbixClient {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	private HttpResponse postAndGet(String request) throws IOException {
-	    HttpClient client = new DefaultHttpClient();
 	    HttpPost httpPost = new HttpPost(Configuration.zabbixUrl);
 	    httpPost.setEntity(new StringEntity(request));
 	    httpPost.addHeader("Content-Type", "application/json-rpc");
@@ -847,40 +849,40 @@ public class ZabbixClient {
 	 * @param value the value
 	 * @return the string
 	 */
-	public boolean pushData(String hostName, String itemKey, String value){
+	private boolean pushData(String hostName, String itemKey, String value){
 		boolean sent = false;
-
-		
-		if (getHostByName(hostName) != null){
-			try {
-				String jsonRequest = 							
-						"{\"request\":\"sender data\",\"data\":[{" + 
-								"\"host\":\"" + hostName + "\"," +
-						        "\"key\":\"" + itemKey + "\"," +
-						        "\"value\":\"" + value + "\"}]}";
-				
-				HttpResponse response = postAndGet(jsonRequest);
-				HttpEntity entity = response.getEntity();
-				ObjectMapper mapper = new ObjectMapper ();
-				HashMap untyped = mapper.readValue(EntityUtils.toString(entity), HashMap.class);
-	//			LinkedHashMap<String, Object> result = (LinkedHashMap<String, Object>) untyped.get("result");
-				String result = (String) untyped.get("info");
-	
-				if (result != null){		
-					log.info("Data sent to zabbix. Result:  " + result);
-					System.out.println("Data sent to zabbix. Result:  " + result);
-					return true;
-				}	
-			} catch (Exception e) {
-				log.error(e.getMessage() + "\n"); 
-				System.out.println(e.getMessage() + "\n");
-				return false;
-			}
-		}
-		else {
-			log.error("The host " + hostName + " doesn't exists in the ASCETiC Zabbix environment. Please choose another hostname" );
-			return false;
-		}
+//
+//		
+//		if (getHostByName(hostName) != null){
+//			try {
+//				String jsonRequest = 							
+//						"{\"request\":\"sender data\",\"data\":[{" + 
+//								"\"host\":\"" + hostName + "\"," +
+//						        "\"key\":\"" + itemKey + "\"," +
+//						        "\"value\":\"" + value + "\"}]}";
+//				
+//				HttpResponse response = postAndGet(jsonRequest);
+//				HttpEntity entity = response.getEntity();
+//				ObjectMapper mapper = new ObjectMapper ();
+//				HashMap untyped = mapper.readValue(EntityUtils.toString(entity), HashMap.class);
+//	//			LinkedHashMap<String, Object> result = (LinkedHashMap<String, Object>) untyped.get("result");
+//				String result = (String) untyped.get("info");
+//	
+//				if (result != null){		
+//					log.info("Data sent to zabbix. Result:  " + result);
+//					System.out.println("Data sent to zabbix. Result:  " + result);
+//					return true;
+//				}	
+//			} catch (Exception e) {
+//				log.error(e.getMessage() + "\n"); 
+//				System.out.println(e.getMessage() + "\n");
+//				return false;
+//			}
+//		}
+//		else {
+//			log.error("The host " + hostName + " doesn't exists in the ASCETiC Zabbix environment. Please choose another hostname" );
+//			return false;
+//		}
 		
 		return sent;
 	}
