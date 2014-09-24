@@ -163,7 +163,8 @@ public class DataGatherer implements Runnable {
                     }
                 }
                 try {
-                    Thread.sleep(1000);
+                    //Note: The Zabbix API takes a few seconds to call, so don't call it faster than 3-4 seconds
+                    Thread.sleep(10000);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(DataGatherer.class.getName()).log(Level.SEVERE, "The data gatherer was interupted.", ex);
                 }

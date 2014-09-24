@@ -151,15 +151,16 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         int hostId = Integer.parseInt(host.getHostid());
         eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host answer = new eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host(hostId, hostname);
         answer.setAvailable("1".equals(host.getAvailable()));
-        Item memory = client.getItemByKeyFromHost(MEMORY_TOTAL_KPI_NAME, hostname);
-        Item disk = client.getItemByKeyFromHost(DISK_TOTAL_KPI_NAME, hostname);
-        if (memory != null) {
-            //Original value given in bytes. 1024 * 1024 = 1048576
-            answer.setRamMb((int) (Double.valueOf(memory.getLastValue()) / 1048576));
-        }
-        if (disk != null) {
-            //Original value given in bytes. 1024 * 1024 * 1024 = 1073741824
-            answer.setDiskGb((Double.valueOf(disk.getLastValue()) / 1073741824));
+        List<Item> items = client.getItemsFromHost(host.getHost());
+        for (Item item : items) {
+            if (item.getKey().equals(MEMORY_TOTAL_KPI_NAME)) { //Convert to Mb
+                //Original value given in bytes. 1024 * 1024 = 1048576
+                answer.setRamMb((int) (Double.valueOf(item.getLastValue()) / 1048576));
+            }
+            if (item.getKey().equals(DISK_TOTAL_KPI_NAME)) { //Convert to Mb            
+                //Original value given in bytes. 1024 * 1024 * 1024 = 1073741824
+                answer.setDiskGb((Double.valueOf(item.getLastValue()) / 1073741824));
+            }
         }
         return answer;
     }
@@ -241,12 +242,20 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
      */
     @Override
     public List<HostMeasurement> getHostData(List<eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host> hostList) {
+        if (hostList.isEmpty()) {
+            return new ArrayList<>();
+        }
         HashMap<Integer, HostMeasurement> hostMeasurements = new HashMap<>();
         for (eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host : hostList) {
             hostMeasurements.put(host.getId(), new HostMeasurement(host));
         }
 
-        List<Item> itemsList = client.getAllItems();
+        List<Item> itemsList;
+        if (hostList.size() == 1) {
+            itemsList = client.getItemsFromHost(hostList.get(0).getHostName());
+        } else {
+            itemsList = client.getAllItems();
+        }
         for (Item item : itemsList) {
             Integer hostID = Integer.parseInt(item.getHostid());
             HostMeasurement hostMeasurement = hostMeasurements.get(hostID);
@@ -309,12 +318,19 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
      */
     @Override
     public List<VmMeasurement> getVmData(List<VmDeployed> vmList) {
+        if (vmList.isEmpty()) {
+            return new ArrayList<>();
+        }
         HashMap<Integer, VmMeasurement> vmMeasurements = new HashMap<>();
         for (VmDeployed vm : vmList) {
             vmMeasurements.put(vm.getId(), new VmMeasurement(vm));
         }
-
-        List<Item> itemsList = client.getAllItems();
+        List<Item> itemsList;
+        if (vmList.size() == 1) {
+            itemsList = client.getItemsFromHost(vmList.get(0).getName());
+        } else {
+            itemsList = client.getAllItems();
+        }
         for (Item item : itemsList) {
             Integer hostID = Integer.parseInt(item.getHostid());
             VmMeasurement vmMeasurement = vmMeasurements.get(hostID);
