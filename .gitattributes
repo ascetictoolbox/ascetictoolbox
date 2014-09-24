@@ -1964,7 +1964,6 @@ utils/energy-modeller-benchtest/src/main/java/eu/ascetic/energy/modeller/benchte
 utils/energy-modeller-benchtest/src/main/java/eu/ascetic/energy/modeller/benchtest/EstimatedEnergyUsageLogger.java -text
 utils/energy-modeller-benchtest/src/main/java/eu/ascetic/energy/modeller/benchtest/HistoricEnergyUsageLogger.java -text
 utils/energy-modeller-benchtest/src/main/java/eu/ascetic/energy/modeller/benchtest/WorkloadLogger.java -text
-utils/energy-modeller-benchtest/src/test/java/eu/ascetic/energy/modeller/benchtest/AppTest.java -text
 utils/energy-modeller-data-logger/Dataset[!!-~]-[!!-~]Copy.txt -text
 utils/energy-modeller-data-logger/Dataset[!!-~]-[!!-~]Full[!!-~]Dataset[!!-~]1[!!-~]run[!!-~]for[!!-~]each[!!-~]machine.txt -text
 utils/energy-modeller-data-logger/Dataset.txt -text
@@ -1973,7 +1972,6 @@ utils/energy-modeller-data-logger/nbactions.xml -text
 utils/energy-modeller-data-logger/pom.xml -text
 utils/energy-modeller-data-logger/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodellerdatalogger/Logger.java -text
 utils/energy-modeller-data-logger/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodellerdatalogger/MeasurementLogger.java -text
-utils/energy-modeller-data-logger/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodellerdatalogger/AppTest.java -text
 utils/energy-modeller-display-tool/ascetic-zabbix-api.properties -text
 utils/energy-modeller-display-tool/energymodeller.properties -text
 utils/energy-modeller-display-tool/energymodeller_calibrator.properties -text
@@ -1984,7 +1982,7 @@ utils/energy-modeller-display-tool/pom.xml -text
 utils/energy-modeller-display-tool/src/main/java/eu/ascetic/energy/modeller/display/tool/DataAvailableListener.java -text
 utils/energy-modeller-display-tool/src/main/java/eu/ascetic/energy/modeller/display/tool/DataCollector.java -text
 utils/energy-modeller-display-tool/src/main/java/eu/ascetic/energy/modeller/display/tool/EnergyModellerDisplayTool.java -text
-utils/energy-modeller-display-tool/src/test/java/eu/ascetic/energy/modeller/display/tool/AppTest.java -text
+utils/io-utils/LICENCE.TXT -text
 utils/io-utils/pom.xml -text
 utils/io-utils/src/main/java/eu/ascetic/ioutils/GenericLogger.java -text
 utils/io-utils/src/main/java/eu/ascetic/ioutils/ResultsIO.java -text
@@ -2003,7 +2001,6 @@ utils/io-utils/src/main/java/eu/ascetic/ioutils/execution/stream/FileGobbler.jav
 utils/io-utils/src/main/java/eu/ascetic/ioutils/execution/stream/RedirectGobbler.java -text
 utils/io-utils/src/main/java/eu/ascetic/ioutils/execution/stream/ScreenGobbler.java -text
 utils/io-utils/src/main/java/eu/ascetic/ioutils/execution/stream/StreamGobbler.java -text
-utils/io-utils/src/test/java/eu/ascetic/ioutils/AppTest.java -text
 utils/kwapi-patch/make.sh -text
 utils/kwapi-patch/patches/001-gembird_driver.patch -text
 utils/kwapi-patch/pom.xml -text
