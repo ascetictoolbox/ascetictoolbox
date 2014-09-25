@@ -97,7 +97,9 @@ public class VmCallsManager {
         else { // It is a migration. They are treated a bit differently than the other actions.
             JsonArray optionsArray = (JsonArray) actionJsonObject.get("options");
             JsonObject destinationHostNameObject = (JsonObject)optionsArray.get(0);
-            vmManager.migrateVm(vmId, destinationHostNameObject.get("destinationHostName").getAsString());
+            String hostName = destinationHostNameObject.get("destinationHostName").getAsString();
+            inputValidator.checkHostExists(vmManager.getHost(hostName) != null);
+            vmManager.migrateVm(vmId, hostName);
         }
     }
 

@@ -112,4 +112,10 @@ public class VmmRestInputValidator {
         }
     }
 
+    public void checkHostExists(boolean hostExists) {
+        if (!hostExists) {
+            throw new WebApplicationException(400);
+        }
+    }
+
 }
