@@ -74,7 +74,7 @@ public class MeasurementLogger extends GenericLogger<HostMeasurement> {
     public void writebody(HostMeasurement item, ResultsStore store) {
         store.add(item.getClock());
         for (String name : metricNames) {
-            store.append(item.getMetric(name).getValue());
+            store.append(item.getMetric(name).getValueAsString());
         }
     }
 }
