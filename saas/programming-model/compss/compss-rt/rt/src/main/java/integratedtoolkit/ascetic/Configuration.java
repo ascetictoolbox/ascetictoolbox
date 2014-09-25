@@ -132,11 +132,23 @@ public class Configuration {
 
         CloudImageDescription cid = new CloudImageDescription();
         cid.setName(name);
-        cid.setiDir("/ascetic_service/scripts/system");
-        cid.setwDir("/tmp");
-        cid.setUser("root");
-        cid.setCPUCount(coreCount);
-
+        ProductProperty p = vs.getProductSectionAtIndex(0).getPropertyByKey("asceticPMInstallDir");
+        if (p != null) {
+            cid.setiDir(p.getValue());
+        }
+        p = vs.getProductSectionAtIndex(0).getPropertyByKey("asceticPMWorkingDir");
+        if (p != null) {
+            cid.setwDir(p.getValue());
+        }
+        p = vs.getProductSectionAtIndex(0).getPropertyByKey("asceticPMInstallDir");
+        if (p != null) {
+            cid.setUser(p.getValue());
+        }
+        p = vs.getProductSectionAtIndex(0).getPropertyByKey("asceticPMUser");
+        if (p != null) {
+            cid.setaDir(p.getValue());
+        }
+        cid.setlPath(null);
         rd.setImage(cid);
 
         return rd;

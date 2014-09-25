@@ -24,25 +24,23 @@ public class CloudImageDescription {
     private String name;
     private String iDir;
     private String wDir;
+    private String aDir;
+    private String lPath;
     private String user;
     private LinkedList<String[]> packages;
     private LinkedList<String> softwareApps;
-    private Float diskSize;
-    private Integer CPUCount;
-    private Float memorySize;
     private String arch;
 
     private HashMap<String, String> sharedDisks;
 
     public CloudImageDescription() {
-        name = "Image1";
-        iDir = "/opt";
+        name = "";
+        iDir = "";
         wDir = "/home/user";
+        aDir = "";
+        lPath = "";
         user = "user";
-        diskSize = 200f;
-        CPUCount = 3;
-        memorySize = 15f;
-        arch = "ARM";
+        arch = "";
         packages = new LinkedList<String[]>();
         softwareApps = new LinkedList<String>();
         sharedDisks = new HashMap<String, String>();
@@ -50,7 +48,6 @@ public class CloudImageDescription {
 
     public CloudImageDescription(Node resourcesNode, Node projectNode) {
         name = projectNode.getAttributes().getNamedItem("name").getTextContent();
-        diskSize = null;
         packages = new LinkedList();
         sharedDisks = new HashMap<String, String>();
         for (int i = 0; i < projectNode.getChildNodes().getLength(); i++) {
@@ -59,6 +56,10 @@ public class CloudImageDescription {
                 iDir = child.getTextContent();
             } else if (child.getNodeName().compareTo("WorkingDir") == 0) {
                 wDir = child.getTextContent();
+            } else if (child.getNodeName().compareTo("AppDir") == 0) {
+                aDir = child.getTextContent();
+            } else if (child.getNodeName().compareTo("lPath") == 0) {
+                lPath = child.getTextContent();
             } else if (child.getNodeName().compareTo("User") == 0) {
                 user = child.getTextContent();
             } else if (child.getNodeName().compareTo("Package") == 0) {
@@ -73,14 +74,6 @@ public class CloudImageDescription {
 
                 }
                 packages.add(p);
-            } else if (child.getNodeName().compareTo("DiskSize") == 0) {
-                diskSize = Float.parseFloat(child.getTextContent());
-
-            } else if (child.getNodeName().compareTo("CPUs") == 0) {
-                CPUCount = Integer.parseInt(child.getTextContent());
-
-            } else if (child.getNodeName().compareTo("Memory") == 0) {
-                memorySize = Float.parseFloat(child.getTextContent());
             }
         }
 
@@ -126,20 +119,16 @@ public class CloudImageDescription {
         return wDir;
     }
 
+    public String getaDir() {
+        return aDir;
+    }
+
+    public String getlPath() {
+        return lPath;
+    }
+
     public String getUser() {
         return user;
-    }
-
-    public Float getDiskSize() {
-        return diskSize;
-    }
-
-    public Integer getCPUCount() {
-        return CPUCount;
-    }
-
-    public Float getMemorySize() {
-        return memorySize;
     }
 
     public String getArch() {
@@ -162,20 +151,16 @@ public class CloudImageDescription {
         this.wDir = wDir;
     }
 
+    public void setaDir(String aDir) {
+        this.aDir = aDir;
+    }
+
+    public void setlPath(String lPath) {
+        this.lPath = lPath;
+    }
+
     public void setUser(String user) {
         this.user = user;
-    }
-
-    public void setDiskSize(float GB) {
-        this.diskSize = GB;
-    }
-
-    public void setCPUCount(int CPUs) {
-        this.CPUCount = CPUs;
-    }
-
-    public void setMemorySize(float GB) {
-        this.memorySize = GB;
     }
 
     public void addSharedDisks(HashMap<String, String> sharedDisks) {

@@ -36,7 +36,7 @@ public class Ascetic {
                     newResources.add(vm.getDescription());
                     resources.put(vm.getIPv4(), vm);
                     CloudImageDescription cid = vm.getDescription().getImage();
-                    ProjectWorker pw = new ProjectWorker(vm.getIPv4(), "ASCETIC", cid.getUser(), cid.getiDir(), cid.getwDir());
+                    ProjectWorker pw = new ProjectWorker(vm.getIPv4(), "ASCETIC", cid.getUser(), Integer.MAX_VALUE, cid.getiDir(), cid.getwDir(), cid.getaDir(), cid.getlPath());
                     ProjectManager.addProjectWorker(pw);
                 }
             }
@@ -62,12 +62,12 @@ public class Ascetic {
         String eventType = "core" + impl.getCoreId() + "impl" + impl.getImplementationId();
         String IPv4 = job.getResource().getName();
         VM vm = resources.get(IPv4);
-        //String eventId = ApplicationMonitor.startEvent(vm, eventType);
-        //job.setEventId(eventId);
+        String eventId = ApplicationMonitor.startEvent(vm, eventType);
+        job.setEventId(eventId);
     }
 
     public static void stopEvent(Job job) {
-        //ApplicationMonitor.stopEvent(job.getEventId());
+        ApplicationMonitor.stopEvent(job.getEventId());
     }
 
     public static LinkedList<Implementation> getComponentImplementations(String name) {
