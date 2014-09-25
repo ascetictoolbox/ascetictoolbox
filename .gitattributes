@@ -50,6 +50,7 @@ iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymod
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/ZabbixDataSourceAdaptor.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/hostvmfilter/NameBeginsFilter.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/hostvmfilter/NameEndsFilter.java -text
+iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/hostvmfilter/NamedList.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/hostvmfilter/ZabbixHostVMFilter.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/training/DefaultEnergyModelTrainer.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/training/EnergyModelTrainerInterface.java -text
