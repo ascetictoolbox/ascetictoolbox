@@ -60,10 +60,10 @@ public class ZabbixClient {
 	
 	/** The user. */
 	private User user;
-
+        
 	/** The http client used to contact Zabbix */
 	private final HttpClient client = HttpClientBuilder.create().build();
-	
+
 	/**
 	 * Instantiates a new zabbix client. Get user data from properties file
 	 */
@@ -90,10 +90,10 @@ public class ZabbixClient {
 		String auth = user.getAuth();
                 if (auth != null) {
                     GregorianCalendar now = new GregorianCalendar();
-                    long expiaryTime = TimeUnit.MILLISECONDS.toSeconds(user.getAuthExpiryDate().getTimeInMillis());
+                    long expiryTime = TimeUnit.MILLISECONDS.toSeconds(user.getAuthExpiryDate().getTimeInMillis());
                     long currentTime = TimeUnit.MILLISECONDS.toSeconds(now.getTimeInMillis());
-                    expiaryTime = expiaryTime - TimeUnit.MINUTES.toSeconds(15); //add a safety margin
-                    if (currentTime < expiaryTime) { //return the cached version!!
+                    expiryTime = expiryTime - TimeUnit.MINUTES.toSeconds(15); //add a safety margin
+                    if (currentTime < expiryTime) { //return the cached version!!
                         return auth;
                     } else {
                         auth = null; //delete the cache and try again
@@ -180,46 +180,46 @@ public class ZabbixClient {
 		return hosts;
 	}
 	
-	/**
-	 * Gets a specific host by name.
-	 *
-	 * @param hostName the host name
-	 * @return the host 
-	 */
-	public Host getHostByName(String hostName){
-		Host host = null;
+    /**
+     * Gets a specific host by name.
+     *
+     * @param hostName the host name
+     * @return the host
+     */
+    public Host getHostByName(String hostName) {
+        Host host = null;
 		
-		try {
-			String token = getAuth();
+        try {
+            String token = getAuth();
 			
-			if (token != null){
-			
+            if (token != null) {
+
 				String jsonRequest = 
 						"{\"jsonrpc\":\""+ Dictionary.JSON_RPC_VERSION + "\","
-						+ "\"params\":{\"output\":\"extend\","
-									+ "\"filter\":{\"host\": [\"" + hostName + "\"]}"
-									+ "},"
-						+ "\"method\":\"host.get\",\"auth\":\"" + token + "\","
-						+ "\"id\": 0}";
-				
-				HttpResponse response = postAndGet(jsonRequest);
-				HttpEntity entity = response.getEntity();
-				ObjectMapper mapper = new ObjectMapper ();
-				HashMap untyped = mapper.readValue(EntityUtils.toString(entity), HashMap.class);
-				ArrayList result = (ArrayList) untyped.get("result");
+                        + "\"params\":{\"output\":\"extend\","
+                        + "\"filter\":{\"host\": [\"" + hostName + "\"]}"
+                        + "},"
+                        + "\"method\":\"host.get\",\"auth\":\"" + token + "\","
+                        + "\"id\": 0}";
 
-				if (result != null && !result.isEmpty()){
-					host = Json2ObjectMapper.getHost((HashMap<String, String>) result.get(0));					
-					log.info("Host " + hostName + " finded in Zabbix");
-					return host;
-				}			
-			}
+                HttpResponse response = postAndGet(jsonRequest);
+                HttpEntity entity = response.getEntity();
+                ObjectMapper mapper = new ObjectMapper();
+                HashMap untyped = mapper.readValue(EntityUtils.toString(entity), HashMap.class);
+                ArrayList result = (ArrayList) untyped.get("result");
 
-		} catch (Exception e) {
-			log.error(e.getMessage() + "\n"); 
-		}
-		return host;
-	}
+                if (result != null && !result.isEmpty()) {
+                    host = Json2ObjectMapper.getHost((HashMap<String, String>) result.get(0));
+                    log.info("Host " + hostName + " finded in Zabbix");
+                    return host;
+                }
+            }
+
+        } catch (Exception e) {
+            log.error(e.getMessage() + "\n");
+        }
+        return host;
+    }
 	
 	/**
 	 * Gets all items.
@@ -361,7 +361,7 @@ public class ZabbixClient {
 		}
 		return item;
 	}
-
+        
 	/**
 	 * Post and get.
 	 *
