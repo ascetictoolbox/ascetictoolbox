@@ -54,9 +54,9 @@ public interface CloudMiddleware {
      * Migrates a Virtual Machine from its current node to another.
      *
      * @param vmId identifier of the VM to be migrated
-     * @param destinationNode Node to migrate the VM
+     * @param destinationNodeHostName hostname of the node where the VM will be migrated
      */
-    void migrate(String vmId, String destinationNode);
+    void migrate(String vmId, String destinationNodeHostName);
     
     /**
      * Gets the identifiers of the VMs that a user is running. If the user is

@@ -208,7 +208,7 @@ public class JCloudsMiddleware implements CloudMiddleware {
     }
 
     @Override
-    public void migrate(String vmId, String destinationNode) {
+    public void migrate(String vmId, String destinationNodeHostName) {
         ServerApi serverApi = novaApi.getServerApiForZone(zone);
         Server server = serverApi.get(vmId);
 
@@ -218,7 +218,7 @@ public class JCloudsMiddleware implements CloudMiddleware {
             Optional<? extends ServerAdminApi> serverAdminApi = novaApi.getServerAdminExtensionForZone(zone);
 
             // Live-migrate the VM to the destination node
-            serverAdminApi.get().liveMigrate(vmId, destinationNode, false, false);
+            serverAdminApi.get().liveMigrate(vmId, destinationNodeHostName, false, false);
         }
     }
 

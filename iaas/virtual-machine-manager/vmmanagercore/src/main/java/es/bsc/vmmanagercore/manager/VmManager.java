@@ -275,6 +275,10 @@ public class VmManager {
         }
     }
 
+    public void migrateVm(String vmId, String destinationHostName) {
+        cloudMiddleware.migrate(vmId, destinationHostName);
+    }
+
     /**
      * Checks whether a VM exists.
      *

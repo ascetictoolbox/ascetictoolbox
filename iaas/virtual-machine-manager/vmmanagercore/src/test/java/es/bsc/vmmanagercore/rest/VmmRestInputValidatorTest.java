@@ -34,7 +34,7 @@ public class VmmRestInputValidatorTest {
     public ExpectedException exception = ExpectedException.none();
 
     @Test
-    public void checkImageShouldRaiseExceptionIfItDoesNoExist() {
+    public void checkImageShouldRaiseExceptionIfItDoesNotExist() {
         String[] imagesIds = {"imageId1", "imageId2"};
         exception.expect(WebApplicationException.class);
         inputValidator.checkImageExists("imageId3", new ArrayList<>(Arrays.asList(imagesIds)));

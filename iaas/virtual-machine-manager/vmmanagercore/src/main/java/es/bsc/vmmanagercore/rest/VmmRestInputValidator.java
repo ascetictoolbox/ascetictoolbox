@@ -35,7 +35,8 @@ import java.util.List;
  */
 public class VmmRestInputValidator {
 
-    private List<String> validActions = Arrays.asList("rebootHard", "rebootSoft", "start", "stop", "suspend", "resume");
+    private List<String> validActions = Arrays.asList("migrate", "rebootHard", "rebootSoft", "start",
+            "stop", "suspend", "resume");
 
     public void checkVmDescriptions(JsonObject vmsJson) {
         if (vmsJson.get("vms") == null) {
@@ -96,6 +97,18 @@ public class VmmRestInputValidator {
         }
         if (!validActions.contains(jsonObject.get("action").getAsString())) {
             throw new WebApplicationException(400);
+        }
+        // The JSON format for a migration action is a bit different.
+        // It needs an "options" array that has to contain the field "destinationHostName".
+        if (jsonObject.get("action").getAsString().equals("migrate")) {
+            if (jsonObject.get("options") == null) {
+                throw new WebApplicationException(400);
+            }
+            JsonArray optionsArray = (JsonArray) jsonObject.get("options");
+            JsonObject destinationHostNameObject = (JsonObject)optionsArray.get(0);
+            if (destinationHostNameObject.get("destinationHostName") == null) {
+                throw new WebApplicationException(400);
+            }
         }
     }
 

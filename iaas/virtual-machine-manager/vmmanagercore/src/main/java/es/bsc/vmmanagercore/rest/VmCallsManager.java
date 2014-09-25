@@ -84,13 +84,21 @@ public class VmCallsManager {
      * Performs an action (reboot, suspend, etc.) on a VM.
      *
      * @param vmId the VM ID
-     * @param actionJson the JSON document that contains the action to perfom
+     * @param actionJson the JSON document that contains the action to perform
      */
     public void changeStateVm(String vmId, String actionJson) {
         inputValidator.checkVmExists(vmManager.existsVm(vmId));
         JsonObject actionJsonObject = gson.fromJson(actionJson, JsonObject.class);
         inputValidator.checkJsonActionFormat(actionJsonObject);
-        vmManager.performActionOnVm(vmId, actionJsonObject.get("action").getAsString());
+        String action = actionJsonObject.get("action").getAsString();
+        if (!action.equals("migrate")) {
+            vmManager.performActionOnVm(vmId, actionJsonObject.get("action").getAsString());
+        }
+        else { // It is a migration. They are treated a bit differently than the other actions.
+            JsonArray optionsArray = (JsonArray) actionJsonObject.get("options");
+            JsonObject destinationHostNameObject = (JsonObject)optionsArray.get(0);
+            vmManager.migrateVm(vmId, destinationHostNameObject.get("destinationHostName").getAsString());
+        }
     }
 
     /**
