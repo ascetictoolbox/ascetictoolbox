@@ -49,11 +49,10 @@
 	<xsd:sequence>
 		<xsd:element name="InstallDir" type="xsd:string" minOccurs="0"/>
 		<xsd:element name="WorkingDir" type="xsd:string" minOccurs="0"/>
+		<xsd:element name="aDir" type="xsd:string" minOccurs="0"/>
+		<xsd:element name="lPath" type="xsd:string" minOccurs="0"/>
 		<xsd:element name="User" type="xsd:string" minOccurs="0"/>
 		<xsd:element name="Package" type="packageType" minOccurs="0"  maxOccurs="unbounded"/>
-		<xsd:element name="CPUs" type="xsd:int" minOccurs="0"  maxOccurs="1"/>
-		<xsd:element name="Memory" type="xsd:float" minOccurs="0"  maxOccurs="1"/>
-		<xsd:element name="DiskSize" type="xsd:float" minOccurs="0"  maxOccurs="1"/>
 	</xsd:sequence>
 	<xsd:attribute name="name" type="xsd:string" use="required"/>
 </xsd:complexType>
