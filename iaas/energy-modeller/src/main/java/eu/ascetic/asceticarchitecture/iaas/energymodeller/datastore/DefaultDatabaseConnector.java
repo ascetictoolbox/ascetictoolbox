@@ -455,10 +455,12 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
                 if (currentClock != lastClock || current == null) {
                     current = new HostVmLoadFraction(host, currentClock);
                     VmDeployed vm = new VmDeployed((int) measurement.get(1), (String) measurement.get(2));
+                    vm.setAllocatedTo(host);
                     current.addFraction(vm, (double) measurement.get(4)); //load is the fourth item
                     answer.add(current);
                 } else {
                     VmDeployed vm = new VmDeployed((int) measurement.get(1), (String) measurement.get(2));
+                    vm.setAllocatedTo(host);
                     current.addFraction(vm, (double) measurement.get(4)); //load is the fourth item
                 }
                 lastClock = currentClock;

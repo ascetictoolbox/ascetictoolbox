@@ -55,5 +55,7 @@ public abstract class KpiList {
     public static final String NETWORK_IN_STARTS_WITH_KPI_NAME = "net.if.out[eth";    
     //boot time
     public static final String BOOT_TIME_KPI_NAME = "system.boottime";
+    //physical host mapping
+    public static final String VM_PHYSICAL_HOST_NAME = "physical_host";
 
 }

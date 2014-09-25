@@ -28,6 +28,7 @@ import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.ENERGY_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.MEMORY_TOTAL_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.POWER_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.VM_PHYSICAL_HOST_NAME;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.hostvmfilter.NameBeginsFilter;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.hostvmfilter.ZabbixHostVMFilter;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
@@ -102,7 +103,7 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
     @Override
     public VmDeployed getVmByName(String name) {
         Host host = client.getHostByName(name);
-        return convertToVm(host, client.getItemsFromHost(name));
+        return convertToVm(host, client.getItemsFromHost(name), null);
     }
 
     /**
@@ -131,9 +132,9 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
     public List<VmDeployed> getVmList() {
         List<Host> hostsList = client.getAllHosts();
         ArrayList<VmDeployed> vms = new ArrayList<>();
-        for (Host h : hostsList) {
-            if (!hostFilter.isHost(h)) {
-                vms.add(convertToVm(h, client.getItemsFromHost(h.getHost())));
+        for (Host host : hostsList) {
+            if (!hostFilter.isHost(host)) {
+                vms.add(convertToVm(host, client.getItemsFromHost(host.getHost()), hostsList));
             }
         }
         return vms;
@@ -173,7 +174,7 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
      * @param items The data for a given vm.
      * @return The converted host.
      */
-    private VmDeployed convertToVm(Host host, List<Item> items) {
+    private VmDeployed convertToVm(Host host, List<Item> items, List<Host> allHosts) {
         String hostname = host.getHost();
         int hostId = Integer.parseInt(host.getHostid());
         VmDeployed answer = new VmDeployed(hostId, hostname);
@@ -192,6 +193,9 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
                 cal.setTimeInMillis(TimeUnit.SECONDS.toMillis(Long.valueOf(item.getLastValue())));
                 answer.setCreated(cal);
             }
+            if (item.getKey().equals(VM_PHYSICAL_HOST_NAME)) {
+                answer.setAllocatedTo(getHostByName(item.getLastValue(), allHosts));
+            }
             if (item.getKey().equals(CPU_COUNT_KPI_NAME)) {
                 answer.setCpus(Integer.valueOf(item.getLastValue()));
             }
@@ -205,6 +209,26 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
             answer.setCpus(Integer.valueOf(1));
         }
         return answer;
+    }
+
+    /**
+     * This returns the host of the named VM. A host list is provide to accelerate this search.
+     * @param hostName The host name as found through Zabbix.
+     * @param allHosts The list of all pre-discovered hosts. If null it will query for the host.
+     * @return The Host object for the physical host.
+     */
+    private eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host getHostByName(String hostName, List<Host> allHosts) {
+        if (allHosts == null) {
+            Host rawAllocatedTo = client.getHostByName(hostName);
+            return convert(rawAllocatedTo);
+        } else {
+            for (Host rawAllocatedTo : allHosts) {
+                if (rawAllocatedTo.getHost().equals(hostName)) {
+                    return convert(rawAllocatedTo);
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -474,9 +498,9 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
     }
 
     /**
-     * In the case that no data is provided a NaN value will be given, this needs
-     * to be stopped. It occurs when the getCpuUtilisation method is given too
-     * small a time window for gathering CPU utilisation data.
+     * In the case that no data is provided a NaN value will be given, this
+     * needs to be stopped. It occurs when the getCpuUtilisation method is given
+     * too small a time window for gathering CPU utilisation data.
      */
     private double removeNaN(double number) {
         if (Double.isNaN(number)) {
