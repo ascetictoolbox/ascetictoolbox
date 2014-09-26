@@ -19,8 +19,8 @@
 package es.bsc.vmmanagercore.scheduler;
 
 import es.bsc.vmmanagercore.model.scheduling.DeploymentPlan;
-import es.bsc.vmmanagercore.model.vms.Vm;
 import es.bsc.vmmanagercore.model.scheduling.VmAssignmentToHost;
+import es.bsc.vmmanagercore.model.vms.Vm;
 import es.bsc.vmmanagercore.monitoring.Host;
 import es.bsc.vmmanagercore.monitoring.HostFake;
 import org.junit.Test;

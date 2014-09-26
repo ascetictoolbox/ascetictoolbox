@@ -21,7 +21,6 @@
         <groupId>eu.ascetic.iaas</groupId>
         <artifactId>virtual-machine-manager</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
 
 	<build>

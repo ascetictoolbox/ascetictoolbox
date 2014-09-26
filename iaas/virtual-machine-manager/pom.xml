@@ -33,5 +33,6 @@
 	<modules>
 		<module>GangliaMonitoring</module>
 		<module>vmmanagercore</module>
+        <module>opta-vm-placement</module>
 	</modules>
 </project>

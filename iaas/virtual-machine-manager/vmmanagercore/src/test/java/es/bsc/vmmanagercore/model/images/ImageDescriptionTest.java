@@ -18,7 +18,6 @@
 
 package es.bsc.vmmanagercore.model.images;
 
-import es.bsc.vmmanagercore.model.images.ImageUploaded;
 import org.junit.Before;
 import org.junit.Test;
 

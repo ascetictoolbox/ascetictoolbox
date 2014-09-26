@@ -18,7 +18,6 @@
 
 package es.bsc.vmmanagercore.model.hosts;
 
-import es.bsc.vmmanagercore.model.hosts.ServerLoad;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

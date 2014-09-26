@@ -19,8 +19,8 @@
 package es.bsc.vmmanagercore.scheduler.schedulingalgorithms;
 
 import es.bsc.vmmanagercore.model.scheduling.DeploymentPlan;
-import es.bsc.vmmanagercore.model.vms.Vm;
 import es.bsc.vmmanagercore.model.scheduling.VmAssignmentToHost;
+import es.bsc.vmmanagercore.model.vms.Vm;
 import es.bsc.vmmanagercore.monitoring.Host;
 import es.bsc.vmmanagercore.monitoring.HostFake;
 import org.junit.BeforeClass;
@@ -29,7 +29,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  *

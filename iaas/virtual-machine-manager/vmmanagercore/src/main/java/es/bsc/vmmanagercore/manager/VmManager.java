@@ -27,14 +27,13 @@ import es.bsc.vmmanagercore.model.estimations.ListVmEstimates;
 import es.bsc.vmmanagercore.model.estimations.VmToBeEstimated;
 import es.bsc.vmmanagercore.model.images.ImageToUpload;
 import es.bsc.vmmanagercore.model.images.ImageUploaded;
-import es.bsc.vmmanagercore.model.scheduling.DeploymentPlan;
-import es.bsc.vmmanagercore.model.scheduling.SchedulingAlgorithm;
-import es.bsc.vmmanagercore.model.scheduling.VmAssignmentToHost;
+import es.bsc.vmmanagercore.model.scheduling.*;
 import es.bsc.vmmanagercore.model.vms.Vm;
 import es.bsc.vmmanagercore.model.vms.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.*;
 import es.bsc.vmmanagercore.scheduler.EstimatesGenerator;
 import es.bsc.vmmanagercore.scheduler.Scheduler;
+import es.bsc.vmplacement.lib.OptaVmPlacement;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -62,6 +61,7 @@ public class VmManager {
     private EstimatesGenerator estimatesGenerator = new EstimatesGenerator();
     private List<Host> hosts = new ArrayList<>();
     SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+    private OptaVmPlacement optaVmPlacement = new OptaVmPlacement(); // Library used for the VM Placement
 
     /**
      * Constructs a VmManager with the name of the database to be used.
@@ -385,6 +385,37 @@ public class VmManager {
      */
     public void setSchedulingAlgorithm(SchedulingAlgorithm schedulingAlg) {
         db.setCurrentSchedulingAlg(schedulingAlg);
+    }
+
+
+    //================================================================================
+    // VM Placement
+    //================================================================================
+
+    /**
+     * Returns a list of the construction heuristics supported by the VM Manager.
+     *
+     * @return the list of construction heuristics
+     */
+    public List<ConstructionHeuristic> getConstructionHeuristics() {
+        List<ConstructionHeuristic> result = new ArrayList<>();
+        for (es.bsc.vmplacement.domain.ConstructionHeuristic heuristic: optaVmPlacement.getConstructionHeuristics()) {
+            result.add(new ConstructionHeuristic(heuristic.name()));
+        }
+        return result;
+    }
+
+    /**
+     * Returns a list of the local search algorithms supported by the VM Manager.
+     *
+     * @return the list of local search algorithms
+     */
+    public List<LocalSearchAlgorithm> getLocalSearchAlgorithms() {
+        List<LocalSearchAlgorithm> result = new ArrayList<>();
+        for (es.bsc.vmplacement.domain.LocalSearchAlgorithm algorithm: optaVmPlacement.getLocalSearchAlgorithms()) {
+            result.add(new LocalSearchAlgorithm(algorithm.getName(), algorithm.getOptions()));
+        }
+        return result;
     }
 
 

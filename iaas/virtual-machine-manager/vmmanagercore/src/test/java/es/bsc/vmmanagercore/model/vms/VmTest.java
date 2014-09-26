@@ -18,7 +18,6 @@
 
 package es.bsc.vmmanagercore.model.vms;
 
-import es.bsc.vmmanagercore.model.vms.Vm;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

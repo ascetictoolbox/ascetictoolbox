@@ -42,6 +42,7 @@ public class VmManagerRest {
     private NodeCallsManager nodeCallsManager = new NodeCallsManager(vmManager);
     private LogCallsManager logCallsManager = new LogCallsManager();
     private EstimatesCallsManager estimatesCallsManager = new EstimatesCallsManager(vmManager);
+    private VmPlacementCallsManager vmPlacementCallsManager = new VmPlacementCallsManager(vmManager);
 
 
     //================================================================================
@@ -153,6 +154,25 @@ public class VmManagerRest {
     @Consumes("application/json")
     public void setSchedulingAlgorithm(String schedAlgToSet) {
         schedAlgCallsManager.setSchedulingAlgorithm(schedAlgToSet);
+    }
+
+
+    //================================================================================
+    // VM placement Methods
+    //================================================================================
+
+    @GET
+    @Path("/vm_placement/construction_heuristics")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getConstructionHeuristics() {
+        return vmPlacementCallsManager.getConstructionHeuristics();
+    }
+
+    @GET
+    @Path("/vm_placement/local_search_algorithms")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getLocalSearchAlgorithms() {
+        return vmPlacementCallsManager.getLocalSearchAlgorithms();
     }
 
 
