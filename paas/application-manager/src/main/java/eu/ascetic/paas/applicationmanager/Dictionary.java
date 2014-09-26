@@ -16,13 +16,16 @@ package eu.ascetic.paas.applicationmanager;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * 
- * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
- * @email david.garciaperez@atos.net 
+ * @author David Garcia Perez. David Rojo, Atos Research and Innovation, Atos SPAIN SA
+ * @email david.garciaperez@atos.net david.rojoa@atos.net
  */
 
 public class Dictionary {
 	public static final String CONTENT_TYPE_JSON = "application/json";
 	public static final String USER_AGENT = "ASCETiC-Application-Manager/0.1";
+	
+	// SLA
+	public static final String SLA_XMLNS = "http://www.slaatsoi.eu/slamodel";
 	
 	public static String DISK_SIZE_UNIT_GBYTE =  "byte * 2^30";
 	public static String DISK_SIZE_UNIT_MBYTE =  "byte * 2^20";

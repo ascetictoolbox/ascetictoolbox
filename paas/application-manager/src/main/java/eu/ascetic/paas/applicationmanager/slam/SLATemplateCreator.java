@@ -116,36 +116,48 @@ public class SLATemplateCreator {
 							new ValueExpr[]{new ID("OVF-Item-" + virtualSystem.getId())})					
 					);
 			
+			// Energy requirements
+			FunctionalExpr functionalExprePowerUsage = new FunctionalExpr(
+					new STND("http://www.slaatsoi.org/resources#power_usage_per_vm"), 
+					new ValueExpr[]{new ID("VM_of_type_" + virtualSystem.getId())});
+			SimpleDomainExpr simpleDomainExprePowerUsage = new SimpleDomainExpr(
+														new CONST("10", new STND("http://www.w3.org/2001/XMLSchema#watt")), 
+														new STND("http://www.slaatsoi.org/coremodel#less_than_or_equals"));
+			
+			TypeConstraintExpr typeConstraintExprVMCores = new TypeConstraintExpr(functionalExprePowerUsage, simpleDomainExprePowerUsage);
+			
+			Guaranteed.State powerUsageState = new Guaranteed.State(new ID("Power_Usage_for_"  + virtualSystem.getId()), typeConstraintExprVMCores);
+			
 			// Number of VM Cores
-			FunctionalExpr functionalExpreVMCores = new FunctionalExpr(
-					new STND("http://www.slaatsoi.org/resources#vm_cores"), 
-					new ValueExpr[]{new ID("VM_of_type_" + virtualSystem.getId())});
-			SimpleDomainExpr simpleDomainExpreVMCores = new SimpleDomainExpr(
-														new CONST("" + virtualSystem.getVirtualHardwareSection().getNumberOfVirtualCPUs(), 
-																  new STND("http://www.slaatsoi.org/coremodel/units#integer")), 
-														new STND("http://www.slaatsoi.org/coremodel#equals"));
+//			FunctionalExpr functionalExpreVMCores = new FunctionalExpr(
+//					new STND("http://www.slaatsoi.org/resources#vm_cores"), 
+//					new ValueExpr[]{new ID("VM_of_type_" + virtualSystem.getId())});
+//			SimpleDomainExpr simpleDomainExpreVMCores = new SimpleDomainExpr(
+//														new CONST("" + virtualSystem.getVirtualHardwareSection().getNumberOfVirtualCPUs(), 
+//																  new STND("http://www.slaatsoi.org/coremodel/units#integer")), 
+//														new STND("http://www.slaatsoi.org/coremodel#equals"));
+//			
+//			TypeConstraintExpr typeConstraintExprVMCores = new TypeConstraintExpr(functionalExpreVMCores, simpleDomainExpreVMCores);
+//			
+//			Guaranteed.State cpuCoresState = new Guaranteed.State(new ID("CPU_CORES_for_"  + virtualSystem.getId()), typeConstraintExprVMCores);
+//			
+//			// TODO Careful with the memory units... assuming everything is MB
+//			// Number of VM Memory
+//			FunctionalExpr functionalExpreVMMemory = new FunctionalExpr(
+//					new STND("http://www.slaatsoi.org/resources#memory"), 
+//					new ValueExpr[]{new ID("VM_of_type_" + virtualSystem.getId())});
+//			SimpleDomainExpr simpleDomainExpreVMMemory = new SimpleDomainExpr(
+//														new CONST("" + virtualSystem.getVirtualHardwareSection().getMemorySize(), 
+//																  new STND("http://www.slaatsoi.org/coremodel/units#MB")), 
+//														new STND("http://www.slaatsoi.org/coremodel#equals"));
+//			
+//			TypeConstraintExpr typeConstraintExprVMMemory = new TypeConstraintExpr(functionalExpreVMMemory, simpleDomainExpreVMMemory);
+//			
+//			Guaranteed.State memoryState = new Guaranteed.State(new ID("MEMORY_for_"  + virtualSystem.getId()), typeConstraintExprVMMemory);
 			
-			TypeConstraintExpr typeConstraintExprVMCores = new TypeConstraintExpr(functionalExpreVMCores, simpleDomainExpreVMCores);
-			
-			Guaranteed.State cpuCoresState = new Guaranteed.State(new ID("CPU_CORES_for_"  + virtualSystem.getId()), typeConstraintExprVMCores);
-			
-			// TODO Careful with the memory units... assuming everything is MB
-			// Number of VM Memory
-			FunctionalExpr functionalExpreVMMemory = new FunctionalExpr(
-					new STND("http://www.slaatsoi.org/resources#memory"), 
-					new ValueExpr[]{new ID("VM_of_type_" + virtualSystem.getId())});
-			SimpleDomainExpr simpleDomainExpreVMMemory = new SimpleDomainExpr(
-														new CONST("" + virtualSystem.getVirtualHardwareSection().getMemorySize(), 
-																  new STND("http://www.slaatsoi.org/coremodel/units#MB")), 
-														new STND("http://www.slaatsoi.org/coremodel#equals"));
-			
-			TypeConstraintExpr typeConstraintExprVMMemory = new TypeConstraintExpr(functionalExpreVMMemory, simpleDomainExpreVMMemory);
-			
-			Guaranteed.State memoryState = new Guaranteed.State(new ID("MEMORY_for_"  + virtualSystem.getId()), typeConstraintExprVMMemory);
-			
-			Guaranteed[] guarantees = new Guaranteed[2];
-			guarantees[0] = cpuCoresState;
-			guarantees[1] = memoryState;
+			Guaranteed[] guarantees = new Guaranteed[1];
+			guarantees[0] = powerUsageState;
+			//guarantees[1] = memoryState;
 			
 			VariableDeclr[] vars = new VariableDeclr[1];
 			vars[0] = variableDeclr;
@@ -168,7 +180,7 @@ public class SLATemplateCreator {
 		for(int i = 0; i < virtualSystemArray.length; i++) {
 		
 			// Creating an ID using the OVF ID for the Virtual System Collection
-			ID id = new ID(virtualSystemArray[i].getId());
+			ID id = new ID("OVF-Item-" + virtualSystemArray[i].getId());
 			// Provider ID
 			ID idProvider = new ID("AsceticProvider");
 			

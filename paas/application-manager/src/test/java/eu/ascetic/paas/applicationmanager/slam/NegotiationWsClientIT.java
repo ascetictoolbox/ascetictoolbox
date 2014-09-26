@@ -75,9 +75,10 @@ public class NegotiationWsClientIT {
 		
 		
 		String slat = testNegotiationWs(negId);
-//		SLA sla = testCreateAgreementWs(negId, slat);
-//		assertNotNull(sla);
-//		System.out.println("TEST FINISHED!");
+		
+		SLA sla = testCreateAgreementWs(negId, slat);
+		assertNotNull(sla);
+		System.out.println("TEST FINISHED!");
 	}
 
 	private String testInitiateNegotiationWs() throws Exception {
@@ -115,17 +116,17 @@ public class NegotiationWsClientIT {
 		assertNotNull(xmlRetSlat);
 		return xmlRetSlat;
 	}
-//
-//	private SLA testCreateAgreementWs(String negId, String slatXml) throws Exception {
-//		SLASOITemplateParser parser = new SLASOITemplateParser();
-//		SLATemplate slat = parser.parseTemplate(slatXml);
-//		System.out.println("Sending create agreement SOAP request...");
-//		SLA sla = negotiationClient.createAgreement("http://10.4.0.15:" + serverPort + requestUrl, slat, negId);
-//		System.out.println("SLA:");
-//		System.out.println(sla);
-//		assertNotNull(sla);
-//		return sla;
-//	}
+
+	private SLA testCreateAgreementWs(String negId, String slatXml) throws Exception {
+		SLASOITemplateParser parser = new SLASOITemplateParser();
+		SLATemplate slat = parser.parseTemplate(slatXml);
+		System.out.println("Sending create agreement SOAP request...");
+		SLA sla = negotiationClient.createAgreement(endpoint, slat, negId);
+		System.out.println("SLA:");
+		System.out.println(sla);
+		assertNotNull(sla);
+		return sla;
+	}
 
 	/**
 	 * It just reads a file form the disk... 
