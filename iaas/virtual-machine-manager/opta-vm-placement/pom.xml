@@ -53,19 +53,6 @@
         </dependency>
     </dependencies>
 
-    <repositories>
-        <!--<repository>
-            <id>ascetic-release</id>
-            <url>http://ascetic-artifactory.cit.tu-berlin.de/artifactory/libs-release-local</url>
-            <snapshots><enabled>true</enabled></snapshots>
-        </repository>-->
-        <repository>
-            <id>ascetic-snapshot</id>
-            <url>http://ascetic-artifactory.cit.tu-berlin.de/artifactory/libs-snapshot-local</url>
-            <snapshots><enabled>true</enabled></snapshots>
-        </repository>
-    </repositories>
-
     <build>
         <plugins>
             <plugin>
