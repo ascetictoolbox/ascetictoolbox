@@ -251,7 +251,7 @@ public class FileTransferManager implements FileTransfer, DataInfoUpdate {
                 }
                 targetName = targetFile.getRenaming();
             }
-            
+
             if (!(faId instanceof WAccessId)) {
                 Copy c = new Copy(groupId,
                         dip,
@@ -960,12 +960,12 @@ public class FileTransferManager implements FileTransfer, DataInfoUpdate {
 
                         copyInProgress = inProgress.get(targetURI);
                         if (copyInProgress != null) {
-                        	path = c.getTargetLocation().getPath();
+                            path = c.getTargetLocation().getPath();
                             if (!path.endsWith("/")) {
                                 path += "/";
                             }
                             c.getDependencyParameter().setDataRemotePath(path + c.getTargetName());
-                        	
+
                             // The same operation is already in progress - no need to repeat it
                             c.setEndState(OpEndState.OP_IN_PROGRESS);
 
@@ -1006,6 +1006,15 @@ public class FileTransferManager implements FileTransfer, DataInfoUpdate {
                 }
                 logicalFile.replicate(targetURI);
             } catch (Exception e) {
+                try {
+                    StringBuilder sb = new StringBuilder("Failed copying " + logicalFile.getName() + " to " + targetURI + " from: \n");
+                    for (URI u : logicalFile.getURIs()) {
+                        sb.append("\t" + u.toString() + "\n");
+                    }
+                    logger.error(sb.toString());
+                } catch (Exception e2) {
+
+                }
                 c.setEndState(OpEndState.OP_FAILED);
                 c.setException(e);
                 return;
