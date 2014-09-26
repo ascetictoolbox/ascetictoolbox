@@ -39,7 +39,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class SchedAlgDistributionTest {
 
-    private static SchedAlgDistribution scheduler = new SchedAlgDistribution();
+    private final static SchedAlgDistribution scheduler = new SchedAlgDistribution();
 
     @BeforeClass
     public static void setUp() { }

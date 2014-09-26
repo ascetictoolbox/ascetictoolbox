@@ -16,9 +16,8 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.vmmanagercore.middleware;
+package es.bsc.vmmanagercore.cloudmiddleware;
 
-import es.bsc.vmmanagercore.cloudmiddleware.OpenStackGlance;
 import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
 import es.bsc.vmmanagercore.model.images.ImageToUpload;
 import org.junit.BeforeClass;

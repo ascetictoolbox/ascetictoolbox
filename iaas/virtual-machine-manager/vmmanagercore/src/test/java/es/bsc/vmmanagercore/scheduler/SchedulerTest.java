@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -86,12 +85,12 @@ public class SchedulerTest {
         // Make sure that the server loads after deployment are correct
         Map<String, ServerLoad> serversLoad =
                 Scheduler.getServersLoadsAfterDeploymentPlanExecuted(deploymentPlan, hosts);
-        assertTrue(serversLoad.get("host1").getCpuLoad() == 0.5);
-        assertTrue(serversLoad.get("host1").getRamLoad() == 0.375);
-        assertTrue(serversLoad.get("host1").getDiskLoad() == 0.5);
-        assertTrue(serversLoad.get("host2").getCpuLoad() == 0.5);
-        assertTrue(serversLoad.get("host2").getRamLoad() == 0.5);
-        assertTrue(serversLoad.get("host2").getDiskLoad() == 1);
+        assertEquals(0.5, serversLoad.get("host1").getCpuLoad(), 0.01);
+        assertEquals(0.375, serversLoad.get("host1").getRamLoad(), 0.01);
+        assertEquals(0.5, serversLoad.get("host1").getDiskLoad(), 0.01);
+        assertEquals(0.5, serversLoad.get("host2").getCpuLoad(), 0.01);
+        assertEquals(0.5, serversLoad.get("host2").getRamLoad(), 0.01);
+        assertEquals(1, serversLoad.get("host2").getDiskLoad(), 0.01);
     }
 
 }

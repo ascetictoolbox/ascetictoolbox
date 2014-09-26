@@ -18,8 +18,10 @@
 
 package es.bsc.vmmanagercore.db;
 
-import org.junit.*;
-import org.junit.rules.ExpectedException;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.util.List;
 
@@ -34,9 +36,6 @@ import static org.junit.Assert.*;
 public class VmManagerDbHsqlTest {
 	
 	private static VmManagerDbHsql db;
-	
-	@Rule
-	public ExpectedException exception = ExpectedException.none();
 	
 	@BeforeClass
 	public static void setUpBeforeClass() {

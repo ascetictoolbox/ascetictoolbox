@@ -16,13 +16,11 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.vmmanagercore.middleware;
+package es.bsc.vmmanagercore.cloudmiddleware;
 
-import es.bsc.vmmanagercore.cloudmiddleware.JCloudsMiddleware;
 import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
 import es.bsc.vmmanagercore.db.VmManagerDbHsql;
 import es.bsc.vmmanagercore.model.vms.Vm;
-import org.jclouds.openstack.nova.v2_0.NovaApi;
 import org.jclouds.openstack.nova.v2_0.domain.Flavor;
 import org.jclouds.openstack.nova.v2_0.domain.Server;
 import org.jclouds.openstack.nova.v2_0.features.FlavorApi;
@@ -37,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
-
 
 /**
  * Tests for JCloudsMiddleware.
@@ -60,11 +57,10 @@ public class JCloudsMiddlewareTest {
 	private static List<String> flavorIdsBeforeTests;
 	
 	//needed by JClouds
-	private static NovaApi novaApi;
-	private static String zone;
+    private static ServerApi serverApi;
+    private static FlavorApi flavorApi;
 	
 	private static void saveIdsOfInstancesThatExistBeforeTheTest() {
-        ServerApi serverApi = novaApi.getServerApiForZone(zone);
 	    vmsIdsBeforeTests = new ArrayList<>();
 		for (Server server: serverApi.listInDetail().concat()) {
 			vmsIdsBeforeTests.add(server.getId());
@@ -72,7 +68,6 @@ public class JCloudsMiddlewareTest {
 	}
 	
 	private static void saveIdsOfFlavorsThatExistBeforeTheTest() {
-		FlavorApi flavorApi = novaApi.getFlavorApiForZone(zone);
 		flavorIdsBeforeTests = new ArrayList<>();
 		for (Flavor flavor: flavorApi.listInDetail().concat()) {
 			flavorIdsBeforeTests.add(flavor.getId());
@@ -93,8 +88,8 @@ public class JCloudsMiddlewareTest {
 			e.printStackTrace();
 		}
 		jCloudsMiddleware = new JCloudsMiddleware(db);
-		novaApi = jCloudsMiddleware.getNovaApi();
-		zone = jCloudsMiddleware.getZone();
+        serverApi = jCloudsMiddleware.getNovaApi().getServerApiForZone(jCloudsMiddleware.getZone());
+        flavorApi = jCloudsMiddleware.getNovaApi().getFlavorApiForZone(jCloudsMiddleware.getZone());
 		
 		saveIdsOfInstancesThatExistBeforeTheTest();
 		saveIdsOfFlavorsThatExistBeforeTheTest();
@@ -104,7 +99,6 @@ public class JCloudsMiddlewareTest {
     public static void tearDownAfterClass() {
         //make sure that the VMs deployed before beginning these tests are still there
         List<String> vmsIdsAfterTests = new ArrayList<>();
-        ServerApi serverApi = novaApi.getServerApiForZone(zone);
         for (Server server: serverApi.listInDetail().concat()) {
             vmsIdsAfterTests.add(server.getId());
         }
@@ -112,7 +106,6 @@ public class JCloudsMiddlewareTest {
 
         //make sure that the flavors that existed before the tests are still there
         List<String> flavorIdsAfterTests = new ArrayList<>();
-        FlavorApi flavorApi = novaApi.getFlavorApiForZone(zone);
         for (Flavor flavor: flavorApi.listInDetail().concat()) {
             flavorIdsAfterTests.add(flavor.getId());
         }
@@ -126,21 +119,13 @@ public class JCloudsMiddlewareTest {
         String instanceId = jCloudsMiddleware.deploy(vmDescription, null);
 
         //check that the information of the VM is correct
-        Server server = null;
-        ServerApi serverApi = novaApi.getServerApiForZone(zone);
-        if (serverApi.get(instanceId) != null) {
-            server = serverApi.get(instanceId);
-        }
+        Server server = serverApi.get(instanceId);
         assertEquals(instanceId, server.getId());
         assertEquals("TestVM", server.getName());
         assertEquals(testingImageId, server.getImage().getId());
 
         //check that the information of the flavor of the VM is correct
-        Flavor flavor = null;
-        FlavorApi flavorApi = novaApi.getFlavorApiForZone(zone);
-        if (flavorApi.get(server.getFlavor().getId()) != null) {
-            flavor = flavorApi.get(server.getFlavor().getId());
-        }
+        Flavor flavor = flavorApi.get(server.getFlavor().getId());
         assertTrue(flavor.getVcpus() == 1 && flavor.getRam() == 1024 && flavor.getDisk() == 2);
 
         //destroy the VM
@@ -151,13 +136,10 @@ public class JCloudsMiddlewareTest {
     public void deployVmWithExistingFlavor() {
         //This test can only be performed if there is at least one flavor registered in OpenStack
         if (JCloudsMiddleware.DEFAULT_FLAVORS.length > 0) {
-
             //get the ID of one of the default flavors
             String flavorId = JCloudsMiddleware.DEFAULT_FLAVORS[0];
 
             //get the flavor with that ID
-
-            FlavorApi flavorApi = novaApi.getFlavorApiForZone(zone);
             Flavor flavor = flavorApi.get(flavorId);
 
             //deploy a VM with the specs described in the flavor
@@ -166,11 +148,7 @@ public class JCloudsMiddlewareTest {
             String instanceId = jCloudsMiddleware.deploy(vmDescription, null);
 
             //check that the information of the VM is correct
-            Server server = null;
-            ServerApi serverApi = novaApi.getServerApiForZone(zone);
-            if (serverApi.get(instanceId) != null) {
-                server = serverApi.get(instanceId);
-            }
+            Server server = serverApi.get(instanceId);
             assertEquals(instanceId, server.getId());
             assertEquals("TestVM", server.getName());
             assertEquals(testingImageId, server.getImage().getId());
@@ -180,7 +158,6 @@ public class JCloudsMiddlewareTest {
 
             //destroy the VM
             jCloudsMiddleware.destroy(instanceId);
-			
 		}
 	}
 	
@@ -227,8 +204,7 @@ public class JCloudsMiddlewareTest {
 	@Test
 	public void getVMInfo() {
 		//deploy a VM
-		Vm vmDescription1 = new Vm("TestVM1", testingImageId, 1, 1024, 2, null, "app1");
-		String instanceId = jCloudsMiddleware.deploy(vmDescription1, null);
+		String instanceId = jCloudsMiddleware.deploy(new Vm("TestVM1", testingImageId, 1, 1024, 2, null, "app1"), null);
 		
 		//check that the information of the VM is correct
 		Vm resultVmDescription = jCloudsMiddleware.getVMInfo(instanceId);

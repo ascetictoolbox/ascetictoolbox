@@ -201,7 +201,9 @@ public class HostFakeTest {
     public void getFutureLoadIfVMDeployedInHost() {
         HostFake hostInfo = new HostFake("hostName", 4, 4096, 4, 2, 2048, 2);
         ServerLoad futureLoad = hostInfo.getFutureLoadIfVMDeployed(new Vm("vm1", "image", 1, 1024, 1, null, ""));
-        assert(futureLoad.getCpuLoad() == 0.75 && futureLoad.getRamLoad() == 0.75 && futureLoad.getDiskLoad() == 0.75);
+        assertEquals(0.75, futureLoad.getCpuLoad(), 0.1);
+        assertEquals(0.75, futureLoad.getRamLoad(), 0.1);
+        assertEquals(0.75, futureLoad.getDiskLoad(), 0.1);
     }
 
     @Test

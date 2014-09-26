@@ -29,7 +29,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class ServerLoadTest {
 
-    private static double DELTA_DOUBLE_COMP = 0.05;
+    private final static double DELTA_DOUBLE_COMP = 0.05;
 
     @Test
     public void getTotalOverloadReturnsZeroWhenThereIsNoOverload() {
