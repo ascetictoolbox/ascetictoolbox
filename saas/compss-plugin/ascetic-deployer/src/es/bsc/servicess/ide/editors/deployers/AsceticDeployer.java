@@ -412,14 +412,14 @@ public class AsceticDeployer extends Deployer {
 					throw (new AsceticDeploymentException("Error incorrect application monitor location"));
 				}
 				manifest.setApplicationMonitorEPR(monLoc);
-				//String deploymentID = "35";
+				//String deploymentID = "47";
 				String deploymentID = Integer.toString(appUploader.createAndDeployAplication(manifest.getString()));			
 				monitorProgress(appUploader, serviceID, deploymentID, monitor);
 				ServiceManagerView smview = (ServiceManagerView) PlatformUI
 					.getWorkbench().getActiveWorkbenchWindow().getActivePage()
 					.showView("es.bsc.servicess.ide.views.ServiceManagerView");
 				DeploymentChecker dc = new AsceticDeploymentChecker(appUploader, serviceID, mainClass, null, serviceID,this);
-				DeployedApplicationSection das = new ServiceDataComposite(serviceID, 
+				DeployedApplicationSection das = new ServiceDataComposite(deploymentID, 
 						dc, DeploymentChecker.PENDING, smview, executable, this.getShell());
 				smview.addNewDeployement(deploymentID, das);
 				monitor.done();

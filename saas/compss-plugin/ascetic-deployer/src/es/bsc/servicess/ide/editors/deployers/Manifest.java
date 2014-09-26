@@ -34,11 +34,15 @@ import org.dmtf.schemas.ovf.envelope.x1.XmlBeanVirtualSystemDocument;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
+
+import es.bsc.servicess.ide.Constants;
 import es.bsc.servicess.ide.ConstraintDef;
 import es.bsc.servicess.ide.IDEProperties;
 import es.bsc.servicess.ide.Logger;
 import es.bsc.servicess.ide.PackageMetadata;
 import es.bsc.servicess.ide.ProjectMetadata;
+import es.bsc.servicess.ide.ProjectMetadataUtils;
+import es.bsc.servicess.ide.Titles;
 import es.bsc.servicess.ide.editors.BuildingDeploymentFormPage;
 import es.bsc.servicess.ide.editors.CommonFormPage;
 import es.bsc.servicess.ide.model.Dependency;
@@ -73,6 +77,8 @@ public class Manifest {
 	public static final String VMIC_MODE_CONSTRAINT = "asceticVmicMode";
 	public static final String PM_ELEMENTS_CONSTRAINT = "asceticPMElements";
 	public static final String PM_INSTALL_DIR_CONSTRAINT ="asceticPMInstallDir";
+	public static final String PM_APP_DIR_CONSTRAINT ="asceticPMAppDir";
+	public static final String PM_WORKING_DIR_CONSTRAINT ="asceticPMWorkingDir";
 	public static final String PM_USER_CONSTRAINT = "asceticPMUser";
 	
 	private static final String DISK_SUFFIX = "-disk";
@@ -135,8 +141,8 @@ public class Manifest {
 			els = packMeta.getElementsInPackage(p);
 		}
 		log.debug("Setting constraints");
-		Map<String, Integer> minCoreInstances = prMeta.getMinElasticity(els);
-		Map<String, Integer> maxCoreInstances = prMeta.getMaxElasticity(els);	
+		Map<String, Integer> minCoreInstances = ProjectMetadataUtils.getMinElasticity(prMeta, constEls, els);
+		Map<String, Integer> maxCoreInstances = ProjectMetadataUtils.getMaxElasticity(prMeta, constEls, els);	
 		Map<String, String> maxConstraints = new HashMap<String, String>();
 		Map<String, String> maxResourcesPerMachine = prMeta.getMaxResourcesProperties();
 		Map<String, Integer> minCoreInstancesPerMachine = BuildingDeploymentFormPage.
@@ -144,7 +150,18 @@ public class Manifest {
 						maxConstraints);
 		setConstraints(component, maxConstraints, prMeta);
 		log.debug("Setting signatures in product");
-		setPMProperties(component, master, els);
+		boolean addElements = true;
+		
+		if (master)
+			addElements = false;
+		else{
+			String type = packMeta.getPackageType(p);
+			log.debug("Package "+ p +" has type "+ type);
+			if (type.equals(Constants.ORCH_PACK_TYPE))
+				addElements = false;
+		}
+				
+		setPMProperties(component, addElements, els);
 		/* TODO: Component affinity not supported by ASCETIC year 1
 		component.setAffinityConstraints("Low");
 		component.setAntiAffinityConstraints("Low");
@@ -158,19 +175,25 @@ public class Manifest {
 		 */
 	}
 
-	private void setPMProperties(VirtualSystem component, boolean master, String[] els) {
+	private void setPMProperties(VirtualSystem component, boolean addElements, String[] els) {
 		ProductSection ps;
 		if (component.getProductSectionArray() == null || component.getProductSectionArray().length<1){
 			setAsceticProductSection(component);
 		}
 		ps = component.getProductSectionAtIndex(0);
 		String signatures;
-		if (master) {
-			signatures = "master-frontend";
-		}else
+		log.debug("Add elements flags is" + addElements);
+		if (!addElements) {
+			log.debug("Skipping element signatures generation");
+			signatures = "";
+		}else{
 			signatures = generateElementSignatures(els);
+			log.debug("Seting element signatures: "+ signatures);
+		}
 		ps.addNewProperty(PM_ELEMENTS_CONSTRAINT, ProductPropertyType.STRING, signatures);
-		ps.addNewProperty(PM_INSTALL_DIR_CONSTRAINT, ProductPropertyType.STRING, ImageCreation.IMAGE_DEPLOYMENT_FOLDER);
+		ps.addNewProperty(PM_INSTALL_DIR_CONSTRAINT, ProductPropertyType.STRING, ImageCreation.IMAGE_DEPLOYMENT_FOLDER+COMPSS_SCRIPTS_PATH+COMPSS_SYSTEM_PATH);
+		ps.addNewProperty(PM_APP_DIR_CONSTRAINT, ProductPropertyType.STRING, ImageCreation.IMAGE_DEPLOYMENT_FOLDER);
+		ps.addNewProperty(PM_WORKING_DIR_CONSTRAINT, ProductPropertyType.STRING, "/tmp");
 		ps.addNewProperty(PM_USER_CONSTRAINT, ProductPropertyType.STRING, ImageCreation.ASCETIC_USER);
 		
 	}
@@ -203,6 +226,7 @@ public class Manifest {
 		for (String s : els) {
 			if (firstElement){
 				signatures = signatures.concat(s);
+				firstElement = false;
 			}else
 				signatures = signatures.concat(";"+s);
 		}
@@ -894,7 +918,7 @@ public class Manifest {
 		component.setName(componentID);
 		component.setInfo("Description of component "+ componentID);
 		setComponentDescription(component, prMeta, packMeta, p, project, 
-			allEls, false, ascProp);
+			allEls, master, ascProp);
 		addComponent(component);
 	}
 

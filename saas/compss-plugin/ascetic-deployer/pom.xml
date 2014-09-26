@@ -39,6 +39,11 @@
 		<version>1.6</version>
 	</dependency>
 	<dependency>
+		<groupId>com.jcraft</groupId>
+		<artifactId>jsch</artifactId>
+		<version>0.1.42</version>
+	</dependency>
+	<dependency>
 		<groupId>eu.ascetic.saas</groupId>
 		<artifactId>application-uploader</artifactId>
 		<version>0.0.1-SNAPSHOT</version>

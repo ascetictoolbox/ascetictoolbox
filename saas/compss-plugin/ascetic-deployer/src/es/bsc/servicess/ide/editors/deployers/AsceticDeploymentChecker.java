@@ -95,6 +95,7 @@ public class AsceticDeploymentChecker implements DeploymentChecker {
 			}
 		}else if (status.equals(DeploymentChecker.PENDING)){
 			try {
+				log.debug("Getting status for " + applicationID + " deployment " + deploymentID);
 				String st = AMClient.getDeploymentStatus(applicationID,
 						deploymentID);
 				if (st.equals(Dictionary.APPLICATION_STATUS_ERROR)) {
@@ -130,7 +131,7 @@ public class AsceticDeploymentChecker implements DeploymentChecker {
 	@Override
 	public void undeploy(String serviceID, boolean keepData) {
 		try {
-			AMClient.undeploy(serviceID, applicationID);
+			AMClient.undeploy(applicationID, serviceID);
 		}catch (Exception e) {
 			log.error("Error undeploying application", e);
 		}
@@ -158,7 +159,13 @@ public class AsceticDeploymentChecker implements DeploymentChecker {
 			status = DeploymentChecker.RUNNING;
 		} catch (CoreException e) {
 			status = DeploymentChecker.RUN_FAILED;
-			String message = e.getCause().getMessage();
+			log.error("Error starting execution", e);
+			String message = "";
+			if (e.getCause()!=null){
+				message = e.getCause().getMessage();
+			}else{
+				message = e.getMessage();
+			}
 			ErrorDialog.openError(deployer.getShell(), "Error",
 					"Starting the application: "+ message, e.getStatus());
 		}
@@ -206,7 +213,7 @@ public class AsceticDeploymentChecker implements DeploymentChecker {
 					break;
 				}
 			}
-			String arguments = generateArguments(username, hostname, ceLocation, 
+			String arguments = generateArguments(JSCHExecutionUtils.START, username, hostname, ceLocation, 
 					new HashMap<String, String>(), new HashMap<String, String>(), 
 					dialog.getMainClass(), dialog.getArguments());
 					//TODO add data staging "deployer.getDataStageIn(), deployer.getDataStageOut(), dialog.getMainClass(), dialog.getArguments());
@@ -275,18 +282,24 @@ public class AsceticDeploymentChecker implements DeploymentChecker {
 	private String getMasterNode() throws CoreException {
 		if (currentVMs!=null && !currentVMs.isEmpty()){ 
 			for (Map<String, String> prov: currentVMs.values()){
-				String masterIP = prov.get(Manifest.generateManifestName(masterPackage));
-				if (masterIP !=null)
-					return masterIP;
+				String ovfId = Manifest.generateManifestName(masterPackage);
+				log.debug("Looking for vm " + ovfId);
+				for (Entry<String,String> e: prov.entrySet()){
+					if(e.getValue().equals(ovfId)){
+						return e.getKey();
+					}
+				}
 			}
 			throw(new CoreException(new Status(IStatus.ERROR,Activator.PLUGIN_ID, "Master VM not found.")));
 		}else
 			throw(new CoreException(new Status(IStatus.ERROR,Activator.PLUGIN_ID,"Current deployment doesn't have VMs")));
 	}
 
-	private String generateArguments(String username, String hostname,
-			String ceLocation, HashMap<String, String> stageIns, HashMap<String, String> stageOuts, String mainClass, String arguments) {
-		String args = new String(username + " " + hostname);
+	private String generateArguments(int type, String username, String hostname, 
+			String ceLocation, HashMap<String, String> stageIns, 
+			HashMap<String, String> stageOuts, String mainClass, String arguments) {
+		String privateKey = deployer.getProperties().getApplicationSSHPrivateKeyPath();
+		String args = new String(type + " "+username + " " + hostname+ " "+ privateKey+ " "+ executionID);
 		if (stageIns == null ||stageIns.isEmpty())
 			args = args.concat(" " + 0);
 		else
@@ -306,6 +319,7 @@ public class AsceticDeploymentChecker implements DeploymentChecker {
 			}
 		}
 		args = args.concat(" " + ceLocation + " " + mainClass + " " + arguments);
+		log.debug("Arguments are: " +args);
 		return args;
 	}
 
@@ -326,6 +340,14 @@ public class AsceticDeploymentChecker implements DeploymentChecker {
 	
 	public void stopJarExecution()throws CoreException{
 		//String projectName = deployer.getProject().getProject().getName();
+		String hostname = getMasterNode();
+		String privateKey = deployer.getProperties().getApplicationSSHPrivateKeyPath();
+		try{
+			JSCHExecutionUtils.stop(hostname, ImageCreation.ASCETIC_USER, privateKey, 
+				executionID, ImageCreation.IMAGE_DEPLOYMENT_FOLDER);
+		}catch (Exception e){
+			throw (new CoreException(new Status(IStatus.ERROR,Activator.PLUGIN_ID,e.getMessage(),e)));
+		}
 		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
 		for (ILaunch launch : manager.getLaunches()) {
 			log.debug("Evaluating launch"

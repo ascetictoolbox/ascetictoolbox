@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -65,6 +66,7 @@ import es.bsc.servicess.ide.dialogs.PackageDialog;
 import es.bsc.servicess.ide.editors.CommonFormPage;
 import es.bsc.servicess.ide.editors.ServiceEditorSection;
 import es.bsc.servicess.ide.editors.ServiceFormEditor;
+import es.bsc.servicess.ide.model.MethodCoreElement;
 import es.bsc.servicess.ide.model.ServiceElement;
 
 public class PackagesSection extends ServiceEditorSection{
@@ -317,7 +319,13 @@ public class PackagesSection extends ServiceEditorSection{
 			ProjectMetadata pr_meta = new ProjectMetadata(
 					editor.getMetadataFile()
 					.getRawLocation().toFile());
-			PackageMetadata packMeta = new PackageMetadata(packageMetadataFile);
+			PackageMetadata packMeta;
+			if (packageMetadataFile.exists())
+				packMeta = new PackageMetadata(packageMetadataFile);
+			else{
+				packMeta = new PackageMetadata();
+				packMeta.toFile(packageMetadataFile);
+			}
 			String[] packs = packMeta.getPackages();
 			if (packs != null && packs.length > 0) {
 				initManual(packMeta, packs, selectedpack);
@@ -447,7 +455,7 @@ public class PackagesSection extends ServiceEditorSection{
 	private String[] getMissingElements(HashMap<String, ServiceElement> constElements, String[] elementsInPackage) {
 		if (constElements != null && !constElements.isEmpty()) {
 			Set<String> str = new HashSet<String>();
-			str.addAll(constElements.keySet());
+			str.addAll(getAllImplementationsAndElements(constElements));
 			for (String s : elementsInPackage) {
 				str.remove(s);
 			}
@@ -458,6 +466,19 @@ public class PackagesSection extends ServiceEditorSection{
 		}
 	}
 	
+	private Collection<String> getAllImplementationsAndElements(
+			HashMap<String, ServiceElement> constElements) {
+		Set<String> els = new HashSet<String>();
+		for (Entry<String, ServiceElement> e:constElements.entrySet()){
+			els.add(e.getValue().getLabel());
+			if (e.getValue() instanceof MethodCoreElement) {
+				MethodCoreElement el = (MethodCoreElement)e.getValue();
+				els.addAll(el.getImplementationLabels());
+			}
+		}
+		return els;
+	}
+
 	/**
 	 * Create a package
 	 */
@@ -633,7 +654,12 @@ public class PackagesSection extends ServiceEditorSection{
 	 */
 	private void definePackagesAutomatically() throws Exception{
 			ProjectMetadata pr_meta = editor.getProjectMetadata();
-			PackageMetadata packMeta = new PackageMetadata(packageMetadataFile);
+			PackageMetadata packMeta;
+			if (packageMetadataFile.exists()){
+				packMeta = new PackageMetadata(packageMetadataFile);
+			}else{
+				packMeta = new PackageMetadata();
+			}
 			packMeta.removeAllPackages();
 			servicePackagesList.removeAll();
 			boolean packCreated = false;

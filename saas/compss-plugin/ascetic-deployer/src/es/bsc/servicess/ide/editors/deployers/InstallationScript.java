@@ -26,7 +26,7 @@ public class InstallationScript {
 	}
 
 	public void addExecutablePermission(String file) {
-		script = script.concat("sudo chmod +x "+ file + ";");
+		script = script.concat("sudo chmod -R +x "+ file + ";");
 	}
 
 	public void addUnZip(String file, String imageDeploymentFolder) {

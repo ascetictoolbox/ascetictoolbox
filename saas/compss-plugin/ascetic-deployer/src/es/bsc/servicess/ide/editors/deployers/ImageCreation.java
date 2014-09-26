@@ -70,8 +70,9 @@ public class ImageCreation {
 	private final static String WEBAPP_FOLDER_VAR = "${IMAGE_WEBAPP_FOLDER}";
 	private final static String CONTEXT_FOLDER = "/mnt/context";
 	public static final String ASCETIC_USER = "root";
-	private static final String IMAGE_GAT_LOCATION = "/GAT";
+	//private static final String IMAGE_GAT_LOCATION = "/GAT";
 	private static final long CREATION_PULL_INTERVAL = 30000;
+	private static final String TMP_FOLDER= "/tmp";
 	//private static final String SHARED_FOLDER = null;
 	
 	
@@ -342,9 +343,9 @@ public class ImageCreation {
 				new File(packageFolder.getProject().getLocation()
 						+ File.separator + File.separator
 						+ prMeta.getMainPackageFolder() + File.separator+ RESOURCES_FILENAME));
-		res.addCloudProvider("Ascetic");
 		//TODO ADD Other Cloud Provider definition
-		/*HashMap<String, String> shares = new HashMap<String, String>();
+		/*res.addCloudProvider("Ascetic");
+		HashMap<String, String> shares = new HashMap<String, String>();
 		res.addDisk("shared", SHARED_FOLDER);
 		shares.put("shared", SHARED_FOLDER);
 		for (String p : packs) {
@@ -374,11 +375,11 @@ public class ImageCreation {
 		ProjectFile res = new ProjectFile(new File(packageFolder.getProject().getLocation()
 				+ File.separator + File.separator
 				+ prMeta.getMainPackageFolder() + File.separator+ "project.xml"));
-		res.addCloudProvider("Ascetic");
+		/*res.addCloudProvider("Ascetic");
 		for (String p : packs) {
 			res.addImageToProvider("Ascetic", Manifest.generateManifestName(p), 
 					ASCETIC_USER, null, IMAGE_DEPLOYMENT_FOLDER);
-		}
+		}*/
 		File file = packageFolder.getFile("project.xml").getRawLocation().toFile();
 		if (file.exists()) {
 			file.delete();
@@ -411,6 +412,8 @@ public class ImageCreation {
 		config.setGATAdaptor(IMAGE_DEPLOYMENT_FOLDER +"/adaptors");
 		config.setComponent(Manifest.generateManifestName(packageName));
 		config.setSchedulerComponent(Manifest.generateManifestName(schedulerPackage));
+		config.setMonitorLocation(TMP_FOLDER);
+		config.setWorkerCP(IMAGE_DEPLOYMENT_FOLDER);
 		config.save();
 	}
 
@@ -494,9 +497,8 @@ public class ImageCreation {
 			InstallationScript is, IProgressMonitor monitor)
 			throws Exception {
 		if (file.exists()){
-			/* TODO: Add again when tomcat was installed
-			 * String fileName = uploadFile(vmic, manifest, file, "war", monitor);
-			is.addCopy("${"+fileName+"}", MOUNT_POINT_VAR+"/"+WEBAPP_FOLDER_VAR);*/
+			String fileName = uploadFile(vmic, manifest, file, "war", monitor);
+			is.addCopy("${"+fileName+"}", MOUNT_POINT_VAR+"/"+WEBAPP_FOLDER_VAR);
 		}else
 			throw  new AsceticDeploymentException("File "+ file.getAbsolutePath()+ " does not exist.");
 		
@@ -514,12 +516,7 @@ public class ImageCreation {
 		monitor.subTask("Uploading and unziping core elements");
 		uploadAndUnzip(vmic, f.getLocation().toFile(), manifest, is, monitor);
 		monitor.worked(1);
-		
-		// Setting file permissions
-		monitor.subTask("Setting file permissions in core elements installations");
-		settingExecutablePermissions(new String[] { MOUNT_POINT_VAR + IMAGE_DEPLOYMENT_FOLDER + "*.sh" },is);
-		monitor.worked(1);
-		
+				
 		monitor.subTask("Uploading dependencies");
 		f = packageFolder.getFile(pack + "_deps.zip");
 		if (f != null && f.exists()) {
@@ -537,6 +534,11 @@ public class ImageCreation {
 		
 		monitor.subTask("Uploading war dependencies");
 		deployWarDeps(vmic, packDeps, pack, packageFolder, manifest, is, monitor);
+		monitor.worked(1);
+		
+		// Setting file permissions
+		monitor.subTask("Setting file permissions in core elements installations");
+		settingExecutablePermissions(new String[] { MOUNT_POINT_VAR + IMAGE_DEPLOYMENT_FOLDER + "*" },is);
 		monitor.worked(1);
 		
 		manifest.addVMICExecutionInComponent(Manifest.generateManifestName(pack), is.getCommand());
