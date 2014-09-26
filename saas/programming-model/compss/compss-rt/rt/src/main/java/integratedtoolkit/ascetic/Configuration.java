@@ -140,11 +140,11 @@ public class Configuration {
         if (p != null) {
             cid.setwDir(p.getValue());
         }
-        p = vs.getProductSectionAtIndex(0).getPropertyByKey("asceticPMInstallDir");
+        p = vs.getProductSectionAtIndex(0).getPropertyByKey("asceticPMUser");
         if (p != null) {
             cid.setUser(p.getValue());
         }
-        p = vs.getProductSectionAtIndex(0).getPropertyByKey("asceticPMUser");
+        p = vs.getProductSectionAtIndex(0).getPropertyByKey("asceticPMAppDir");
         if (p != null) {
             cid.setaDir(p.getValue());
         }
