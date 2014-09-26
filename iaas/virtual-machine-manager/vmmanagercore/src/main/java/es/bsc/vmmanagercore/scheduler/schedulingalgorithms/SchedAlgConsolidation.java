@@ -19,8 +19,8 @@
 package es.bsc.vmmanagercore.scheduler.schedulingalgorithms;
 
 import es.bsc.vmmanagercore.logging.VMMLogger;
-import es.bsc.vmmanagercore.model.DeploymentPlan;
-import es.bsc.vmmanagercore.model.ServerLoad;
+import es.bsc.vmmanagercore.model.scheduling.DeploymentPlan;
+import es.bsc.vmmanagercore.model.hosts.ServerLoad;
 import es.bsc.vmmanagercore.monitoring.Host;
 import es.bsc.vmmanagercore.scheduler.Scheduler;
 

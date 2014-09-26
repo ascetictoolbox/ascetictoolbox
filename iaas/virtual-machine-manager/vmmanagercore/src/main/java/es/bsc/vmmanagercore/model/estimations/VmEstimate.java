@@ -16,7 +16,7 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.vmmanagercore.model;
+package es.bsc.vmmanagercore.model.estimations;
 
 /**
  *
@@ -24,13 +24,17 @@ package es.bsc.vmmanagercore.model;
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  *
  */
-public class VmToBeEstimated {
+public class VmEstimate {
 
     private String id;
-    private int vcpus;
-    private int cpuFreq;
-    private int ramMb;
-    private int diskGb;
+    private double powerEstimate;
+    private double priceEstimate;
+
+    public VmEstimate(String id, double powerEstimate, double priceEstimate) {
+        this.id = id;
+        this.powerEstimate = powerEstimate;
+        this.priceEstimate = priceEstimate;
+    }
 
     public String getId() {
         return id;
@@ -40,40 +44,20 @@ public class VmToBeEstimated {
         this.id = id;
     }
 
-    public int getVcpus() {
-        return vcpus;
+    public double getPowerEstimate() {
+        return powerEstimate;
     }
 
-    public void setVcpus(int vcpus) {
-        this.vcpus = vcpus;
+    public void setPowerEstimate(double powerEstimate) {
+        this.powerEstimate = powerEstimate;
     }
 
-    public int getCpuFreq() {
-        return cpuFreq;
+    public double getPriceEstimate() {
+        return priceEstimate;
     }
 
-    public void setCpuFreq(int cpuFreq) {
-        this.cpuFreq = cpuFreq;
-    }
-
-    public int getRamMb() {
-        return ramMb;
-    }
-
-    public void setRamMb(int ramMb) {
-        this.ramMb = ramMb;
-    }
-
-    public int getDiskGb() {
-        return diskGb;
-    }
-
-    public void setDiskGb(int diskGb) {
-        this.diskGb = diskGb;
-    }
-
-    public Vm toVm() {
-        return new Vm(id, "", vcpus, ramMb, diskGb, null, "");
+    public void setPriceEstimate(double priceEstimate) {
+        this.priceEstimate = priceEstimate;
     }
 
 }

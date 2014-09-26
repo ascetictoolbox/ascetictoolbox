@@ -20,7 +20,7 @@ package es.bsc.vmmanagercore.rest;
 
 import com.google.gson.Gson;
 import es.bsc.vmmanagercore.manager.VmManager;
-import es.bsc.vmmanagercore.model.ListVmsToBeEstimated;
+import es.bsc.vmmanagercore.model.vms.ListVmsToBeEstimated;
 
 /**
  * This class implements the REST calls that are related with the pricing and energy estimates.

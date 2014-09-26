@@ -18,8 +18,8 @@
 
 package es.bsc.vmmanagercore.monitoring;
 
-import es.bsc.vmmanagercore.model.ServerLoad;
-import es.bsc.vmmanagercore.model.Vm;
+import es.bsc.vmmanagercore.model.hosts.ServerLoad;
+import es.bsc.vmmanagercore.model.vms.Vm;
 
 import java.util.List;
 

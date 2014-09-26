@@ -16,48 +16,53 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.vmmanagercore.model;
+package es.bsc.vmmanagercore.model.vms;
+
+import java.util.Date;
 
 /**
- *
+ * VM that has been deployed in the cloud middleware.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  *
  */
-public class VmEstimate {
+public class VmDeployed extends Vm {
 
     private String id;
-    private double powerEstimate;
-    private double priceEstimate;
+    private String ipAddress;
+    private String state;
+    private Date created;
+    private String hostName;
 
-    public VmEstimate(String id, double powerEstimate, double priceEstimate) {
+    public VmDeployed(String name, String image, int cpus, int ramMb,
+            int diskGb, String initScript, String applicationId, String id,
+            String ipAddress, String state, Date created, String hostName) {
+        super(name, image, cpus, ramMb, diskGb, initScript, applicationId);
         this.id = id;
-        this.powerEstimate = powerEstimate;
-        this.priceEstimate = priceEstimate;
+        this.ipAddress = ipAddress;
+        this.state = state;
+        this.created = new Date(created.getTime());
+        this.hostName = hostName;
     }
 
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getIpAddress() {
+        return ipAddress;
     }
 
-    public double getPowerEstimate() {
-        return powerEstimate;
+    public String getState() {
+        return state;
     }
 
-    public void setPowerEstimate(double powerEstimate) {
-        this.powerEstimate = powerEstimate;
+    public Date getCreated() {
+        return new Date(created.getTime());
     }
 
-    public double getPriceEstimate() {
-        return priceEstimate;
-    }
-
-    public void setPriceEstimate(double priceEstimate) {
-        this.priceEstimate = priceEstimate;
+    public String getHostName() {
+        return hostName;
     }
 
 }

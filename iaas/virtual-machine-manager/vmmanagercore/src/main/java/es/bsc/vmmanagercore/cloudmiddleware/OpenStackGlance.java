@@ -19,7 +19,7 @@
 package es.bsc.vmmanagercore.cloudmiddleware;
 
 import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
-import es.bsc.vmmanagercore.model.ImageToUpload;
+import es.bsc.vmmanagercore.model.images.ImageToUpload;
 import es.bsc.vmmanagercore.utils.CommandExecutor;
 import es.bsc.vmmanagercore.utils.HttpUtils;
 import org.apache.commons.validator.UrlValidator;

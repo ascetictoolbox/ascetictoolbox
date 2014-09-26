@@ -16,53 +16,48 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.vmmanagercore.model;
-
-import java.util.Date;
+package es.bsc.vmmanagercore.model.images;
 
 /**
- * VM that has been deployed in the cloud middleware.
+ * Image that has been uploaded to the cloud middleware.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  *
  */
-public class VmDeployed extends Vm {
+public class ImageUploaded {
 
     private String id;
-    private String ipAddress;
-    private String state;
-    private Date created;
-    private String hostName;
+    private String name;
+    private String status;
 
-    public VmDeployed(String name, String image, int cpus, int ramMb,
-            int diskGb, String initScript, String applicationId, String id,
-            String ipAddress, String state, Date created, String hostName) {
-        super(name, image, cpus, ramMb, diskGb, initScript, applicationId);
+    public ImageUploaded(String id, String name, String status) {
         this.id = id;
-        this.ipAddress = ipAddress;
-        this.state = state;
-        this.created = new Date(created.getTime());
-        this.hostName = hostName;
+        this.name = name;
+        this.status = status;
     }
 
     public String getId() {
         return id;
     }
 
-    public String getIpAddress() {
-        return ipAddress;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getState() {
-        return state;
+    public String getName() {
+        return name;
     }
 
-    public Date getCreated() {
-        return new Date(created.getTime());
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getHostName() {
-        return hostName;
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
 }

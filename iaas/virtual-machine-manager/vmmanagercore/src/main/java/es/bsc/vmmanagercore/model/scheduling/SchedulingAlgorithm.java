@@ -16,26 +16,27 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.vmmanagercore.model;
-
-import java.util.List;
+package es.bsc.vmmanagercore.model.scheduling;
 
 /**
- * List of VMs deployed.
+ * The scheduling algorithms that can be applied in the VM Manager.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
+ *
  */
-// Note: At least for now, this class is only useful to make easier the conversion from JSON using Gson.
-public class ListVmsDeployed {
+public enum SchedulingAlgorithm {
 
-    private List<VmDeployed> vms;
+    CONSOLIDATION("consolidation"), COST_AWARE("costAware"), DISTRIBUTION("distribution"),
+    ENERGY_AWARE("energyAware"), GROUP_BY_APP("groupByApp"), RANDOM("random");
 
-    public ListVmsDeployed(List<VmDeployed> vms) {
-        this.vms = vms;
+    private String name;
+
+    private SchedulingAlgorithm(String name) {
+        this.name = name;
     }
 
-    public List<VmDeployed> getVms() {
-        return vms;
+    public String getName() {
+        return name;
     }
 
 }

@@ -16,9 +16,12 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.vmmanagercore.model;
+package es.bsc.vmmanagercore.model.scheduling;
 
 import es.bsc.vmmanagercore.energymodeller.EnergyModellerConnector;
+import es.bsc.vmmanagercore.model.estimations.VmEstimate;
+import es.bsc.vmmanagercore.model.vms.Vm;
+import es.bsc.vmmanagercore.model.vms.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.Host;
 import es.bsc.vmmanagercore.pricingmodeller.PricingModellerConnector;
 

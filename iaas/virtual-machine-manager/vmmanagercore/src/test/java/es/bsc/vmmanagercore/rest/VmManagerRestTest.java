@@ -20,7 +20,12 @@ package es.bsc.vmmanagercore.rest;
 
 import com.google.gson.*;
 import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
-import es.bsc.vmmanagercore.model.*;
+import es.bsc.vmmanagercore.model.images.ImageToUpload;
+import es.bsc.vmmanagercore.model.images.ImageUploaded;
+import es.bsc.vmmanagercore.model.images.ListImagesUploaded;
+import es.bsc.vmmanagercore.model.vms.ListVmsDeployed;
+import es.bsc.vmmanagercore.model.vms.Vm;
+import es.bsc.vmmanagercore.model.vms.VmDeployed;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

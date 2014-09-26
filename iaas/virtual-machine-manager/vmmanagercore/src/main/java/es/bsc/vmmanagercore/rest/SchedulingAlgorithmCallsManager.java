@@ -22,7 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import es.bsc.vmmanagercore.manager.VmManager;
-import es.bsc.vmmanagercore.model.SchedulingAlgorithm;
+import es.bsc.vmmanagercore.model.scheduling.SchedulingAlgorithm;
 
 import javax.ws.rs.WebApplicationException;
 

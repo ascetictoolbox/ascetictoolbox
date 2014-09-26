@@ -16,8 +16,9 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.vmmanagercore.model;
+package es.bsc.vmmanagercore.model.hosts;
 
+import es.bsc.vmmanagercore.model.hosts.ServerLoad;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

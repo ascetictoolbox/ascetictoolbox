@@ -16,8 +16,9 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.vmmanagercore.model;
+package es.bsc.vmmanagercore.model.vms;
 
+import es.bsc.vmmanagercore.model.vms.Vm;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

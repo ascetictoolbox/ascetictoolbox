@@ -16,25 +16,23 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.vmmanagercore.model;
+package es.bsc.vmmanagercore.model.estimations;
+
+import es.bsc.vmmanagercore.model.vms.Vm;
 
 /**
- * Image that has been uploaded to the cloud middleware.
+ *
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  *
  */
-public class ImageUploaded {
+public class VmToBeEstimated {
 
     private String id;
-    private String name;
-    private String status;
-
-    public ImageUploaded(String id, String name, String status) {
-        this.id = id;
-        this.name = name;
-        this.status = status;
-    }
+    private int vcpus;
+    private int cpuFreq;
+    private int ramMb;
+    private int diskGb;
 
     public String getId() {
         return id;
@@ -44,20 +42,40 @@ public class ImageUploaded {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public int getVcpus() {
+        return vcpus;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setVcpus(int vcpus) {
+        this.vcpus = vcpus;
     }
 
-    public String getStatus() {
-        return status;
+    public int getCpuFreq() {
+        return cpuFreq;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setCpuFreq(int cpuFreq) {
+        this.cpuFreq = cpuFreq;
+    }
+
+    public int getRamMb() {
+        return ramMb;
+    }
+
+    public void setRamMb(int ramMb) {
+        this.ramMb = ramMb;
+    }
+
+    public int getDiskGb() {
+        return diskGb;
+    }
+
+    public void setDiskGb(int diskGb) {
+        this.diskGb = diskGb;
+    }
+
+    public Vm toVm() {
+        return new Vm(id, "", vcpus, ramMb, diskGb, null, "");
     }
 
 }

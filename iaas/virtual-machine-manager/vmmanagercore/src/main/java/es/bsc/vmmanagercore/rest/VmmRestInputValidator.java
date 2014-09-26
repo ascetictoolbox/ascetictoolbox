@@ -21,7 +21,7 @@ package es.bsc.vmmanagercore.rest;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import es.bsc.vmmanagercore.model.ImageToUpload;
+import es.bsc.vmmanagercore.model.images.ImageToUpload;
 
 import javax.ws.rs.WebApplicationException;
 import java.util.Arrays;

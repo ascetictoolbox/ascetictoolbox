@@ -20,9 +20,9 @@ package es.bsc.vmmanagercore.scheduler.schedulingalgorithms;
 
 import es.bsc.vmmanagercore.energymodeller.EnergyModellerConnector;
 import es.bsc.vmmanagercore.logging.VMMLogger;
-import es.bsc.vmmanagercore.model.DeploymentPlan;
-import es.bsc.vmmanagercore.model.VmAssignmentToHost;
-import es.bsc.vmmanagercore.model.VmDeployed;
+import es.bsc.vmmanagercore.model.scheduling.DeploymentPlan;
+import es.bsc.vmmanagercore.model.scheduling.VmAssignmentToHost;
+import es.bsc.vmmanagercore.model.vms.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.Host;
 import es.bsc.vmmanagercore.pricingmodeller.PricingModellerConnector;
 

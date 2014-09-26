@@ -16,25 +16,25 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.vmmanagercore.model;
+package es.bsc.vmmanagercore.model.vms;
 
 import java.util.List;
 
 /**
- * List of VMs to be estimated.
+ * List of VMs deployed.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  */
 // Note: At least for now, this class is only useful to make easier the conversion from JSON using Gson.
-public class ListVmsToBeEstimated {
+public class ListVmsDeployed {
 
-    private List<VmToBeEstimated> vms;
+    private List<VmDeployed> vms;
 
-    public void setVms(List<VmToBeEstimated> vms) {
+    public ListVmsDeployed(List<VmDeployed> vms) {
         this.vms = vms;
     }
 
-    public List<VmToBeEstimated> getVms() {
+    public List<VmDeployed> getVms() {
         return vms;
     }
 
