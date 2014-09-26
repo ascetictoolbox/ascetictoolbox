@@ -1927,6 +1927,7 @@ utils/energy-modeller-display-tool/energymodeller_cpu_predictor.properties -text
 utils/energy-modeller-display-tool/filter.properties -text
 utils/energy-modeller-display-tool/nbactions.xml -text
 utils/energy-modeller-display-tool/pom.xml -text
+utils/energy-modeller-display-tool/src/main/java/eu/ascetic/energy/modeller/display/tool/Configuration.java -text
 utils/energy-modeller-display-tool/src/main/java/eu/ascetic/energy/modeller/display/tool/DataAvailableListener.java -text
 utils/energy-modeller-display-tool/src/main/java/eu/ascetic/energy/modeller/display/tool/DataCollector.java -text
 utils/energy-modeller-display-tool/src/main/java/eu/ascetic/energy/modeller/display/tool/EnergyModellerDisplayTool.java -text

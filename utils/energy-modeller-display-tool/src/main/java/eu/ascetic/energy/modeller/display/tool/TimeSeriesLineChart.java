@@ -39,7 +39,7 @@ public class TimeSeriesLineChart extends LineChartPanelSupport<ConcurrentHashMap
      */
     public TimeSeriesLineChart(ConcurrentHashMap<String, TimeSeries> data, Collection<String> hosts) {
         super("Energy Consumed on the Testbed", "Energy Consumption (W)", data, 2);
-        setRangeAxisRange(250, 500);
+        setRangeAxisRange(Configuration.lowerMain, Configuration.upperMain);
         this.setDefaultLineStroke(new BasicStroke(50));
         this.hosts.addAll(hosts);
     }
@@ -52,9 +52,9 @@ public class TimeSeriesLineChart extends LineChartPanelSupport<ConcurrentHashMap
         super("Energy Consumed on the Testbed", "Energy Consumption (W)", data, 2);
         this.host = host;
         if (host == null) {
-            setRangeAxisRange(250, 500);
+            setRangeAxisRange(Configuration.lowerMain, Configuration.upperMain);
         } else {
-            setRangeAxisRange(0, 500);
+            setRangeAxisRange(Configuration.lowerVMGraph, Configuration.upperVMGraph);
         }
         this.setName(host);
         this.setTitle(host);

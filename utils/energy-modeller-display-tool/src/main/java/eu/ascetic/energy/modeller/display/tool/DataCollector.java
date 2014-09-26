@@ -56,7 +56,7 @@ public class DataCollector implements Runnable {
     private final ArrayList<DataAvailableListener> listners = new ArrayList<>();
     private final HashMap<String, TimeSeries> allTimeSeries = new HashMap<>();
     private boolean considerIdleEnergy = false;
-    private int counter = 0;
+    private final int counter = 0;
 
     /**
      * This creates a new data collector for the energy modeller display tool.
@@ -180,10 +180,23 @@ public class DataCollector implements Runnable {
                                 if (vm.getAllocatedTo() == null) {
                                     vm.setAllocatedTo(getVMsHost(vm));
                                 }
-                                TimeSeries vmAnswer = allTimeSeries.get(vm.getName());
+                                /**
+                                 * In cases where the VM->host mapping is not
+                                 * discovered by the VMs name being appended
+                                 * with "_hostname" then the "_hostname" needs
+                                 * appending to the key or the VM will not show
+                                 * up on the graph.
+                                 *
+                                 * Adding "_hostname" to the key is no problem
+                                 * even if "_hostname" is already on the end of
+                                 * the vms name. Note: the Timeseries name (i.e.
+                                 * what is shown on the graph is not altered by
+                                 * this appending of the "_hostname".
+                                 */
+                                TimeSeries vmAnswer = allTimeSeries.get(vm.getName() + "_" + host.getHostName());
                                 if (vmAnswer == null) {
                                     vmAnswer = new TimeSeries(vm.getName());
-                                    allTimeSeries.put(vm.getName(), vmAnswer);
+                                    allTimeSeries.put(vm.getName() + "_" + host.getHostName(), vmAnswer);
                                 }
                                 Date measurementTime = new Date();
                                 measurementTime.setTime(TimeUnit.SECONDS.toMillis(vmData.getKey().getTime()));
