@@ -229,7 +229,7 @@ public class DataCollector extends TimerTask implements DataCollectorTaskInterfa
 
 	@Override
 	public void handleEventData(String applicationid, String deploymentid,String eventid) {
-		logger.info("getting data task");
+		logger.info("select * from DATAEVENT where applicationid = ? getting data task");
 		// TODO temporarly using a test id
 		
 		
@@ -296,7 +296,7 @@ public class DataCollector extends TimerTask implements DataCollectorTaskInterfa
 
 	@Override
 	public void handleEventData(String applicationid, String deploymentid,List<String> vm, String eventid) {
-
+		handleEventData( applicationid,  deploymentid, eventid);
 		
 	}
 	

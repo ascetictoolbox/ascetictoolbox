@@ -1,10 +1,13 @@
 package eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.task;
 
 import java.sql.Timestamp;
+import java.util.List;
+import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
 import eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.DataEventDAOImpl;
+import eu.ascetic.asceticarchitecture.paas.component.common.model.DataEvent;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.DataAggregatorTaskInterface;
 
 public class EventDataAggregatorService implements DataAggregatorTaskInterface {
@@ -45,6 +48,14 @@ public class EventDataAggregatorService implements DataAggregatorTaskInterface {
 	public double getTotalAtTime(String app, String depl, String event, Timestamp time) {
 		// TODO Auto-generated method stub
 		return 1;
+	}
+	
+	
+	public List<DataEvent> getEvents(String app, String depl, String vmid, String event) {
+
+		List<DataEvent> events = daoEvent.getByApplicationId(app);
+		logger.info("##################### Total is "+events.size());
+		return events;
 	}
 	
 

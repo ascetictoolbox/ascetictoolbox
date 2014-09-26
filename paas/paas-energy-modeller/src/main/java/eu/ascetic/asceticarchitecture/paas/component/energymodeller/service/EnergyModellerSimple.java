@@ -16,6 +16,7 @@ import java.util.Vector;
 import org.apache.log4j.Logger;
 
 import eu.ascetic.asceticarchitecture.paas.component.common.database.PaaSEMDatabaseManager;
+import eu.ascetic.asceticarchitecture.paas.component.common.model.DataEvent;
 import eu.ascetic.asceticarchitecture.paas.component.common.model.EnergyInterpolator;
 import eu.ascetic.asceticarchitecture.paas.component.common.model.TimeEnergyInterpolator;
 import eu.ascetic.asceticarchitecture.paas.component.common.model.WorkLoadEnergyInterpolator;
@@ -63,12 +64,45 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 			// ensure also event data is loaded
 			this.loadEventData(applicationid, vmids,eventid);
 			for (String vm : vmids) {
-				// estimates each vm and events
+				LOGGER.info("############################Loading events data "); 
 				//double energy = energyService.getTotal(applicationid, "nodeployment", vm, "");
-				double energyevent = energyService.getTotal(applicationid, "nodeployment", vm, eventid);
+				//double energyevent = energyService.getTotal(applicationid, "nodeployment", vm, eventid);
+				
+				// build estimator of consumption based on time
+				this.loadEventData(applicationid, vmids, eventid);
+				
+				TimeEnergyInterpolator timeestimator = new TimeEnergyInterpolator();
+				timeestimator.providedata(dbmanager.getDataConsumptionDAOImpl());
+				timeestimator.buildmodel(applicationid, vm);
+				
+				double generalAvg = 0;
+				List<DataEvent> events = eventService.getEvents(applicationid, applicationid, vm, eventid);
+				for (DataEvent de: events){
+					
+					LOGGER.info(" got event "+ de.getBegintime() + " untill" +de.getEndtime() + " on "+de.getDeploymentid()+ " vm "+de.getVmid());
+					
+					double begin = timeestimator.estimate( de.getBegintime().getTime()/1000);
+					double end = timeestimator.estimate( de.getEndtime().getTime()/1000);
+					double avg = (end + begin) /2;
+					
+					LOGGER.info("This event : "+ begin + " and " +end + " avg "+avg);
+					
+					generalAvg = generalAvg + avg;
+					
+				}
+				if (events.size()==0)return -1;
+				LOGGER.info("Total avg : "+ generalAvg + " over "+events.size());
+				LOGGER.info("Consumption is : "+ generalAvg /events.size());
+				return (generalAvg /events.size());
+				// estimator has been build
+				
+				
+				
+				
+				
 				//LOGGER.info("VM "+ vm + " consumed " + String.format( "%.2f", energy ));
-				LOGGER.info("VM "+ vm + " event consumed " + String.format( "%.2f", energyevent ));
-				total_energy = total_energy +energyevent;
+				//LOGGER.info("VM "+ vm + " event consumed " + String.format( "%.2f", energyevent ));
+				//total_energy = total_energy +energyevent;
 			}
 			
 			
@@ -89,22 +123,22 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 			double energy =  energyService.getAverage(applicationid, "deployment1", vmid, "");
 
 			
-			LOGGER.info("VM consumed " +energy);
-			WorkLoadEnergyInterpolator wei = new WorkLoadEnergyInterpolator();
-			wei.providedata(dbmanager.getDataConsumptionDAOImpl());
-			wei.buildmodel(applicationid, vmid);
-			LOGGER.info("VM will consume at 10% " +wei.estimate(0.10));
-			LOGGER.info("VM will consume at 20% " +wei.estimate(0.20));
-			LOGGER.info("VM will consume at 30% " +wei.estimate(0.30));
-			LOGGER.info("VM will consume at 40% " +wei.estimate(0.40));
-			LOGGER.info("VM will consume at 50% " +wei.estimate(0.50));
-			LOGGER.info("VM will consume at 60% " +wei.estimate(0.60));
-			LOGGER.info("VM will consume at 70% " +wei.estimate(0.70));
-			LOGGER.info("VM will consume at 80% " +wei.estimate(0.80));
-			LOGGER.info("VM will consume at 90% " +wei.estimate(0.90));
-			LOGGER.info("VM will consume at 100% " +wei.estimate(1.0));
 			
-			
+//			LOGGER.info("VM consumed " +energy);
+//			WorkLoadEnergyInterpolator wei = new WorkLoadEnergyInterpolator();
+//			wei.providedata(dbmanager.getDataConsumptionDAOImpl());
+//			wei.buildmodel(applicationid, vmid);
+//			LOGGER.info("VM will consume at 10% " +wei.estimate(0.10));
+//			LOGGER.info("VM will consume at 20% " +wei.estimate(0.20));
+//			LOGGER.info("VM will consume at 30% " +wei.estimate(0.30));
+//			LOGGER.info("VM will consume at 40% " +wei.estimate(0.40));
+//			LOGGER.info("VM will consume at 50% " +wei.estimate(0.50));
+//			LOGGER.info("VM will consume at 60% " +wei.estimate(0.60));
+//			LOGGER.info("VM will consume at 70% " +wei.estimate(0.70));
+//			LOGGER.info("VM will consume at 80% " +wei.estimate(0.80));
+//			LOGGER.info("VM will consume at 90% " +wei.estimate(0.90));
+//			LOGGER.info("VM will consume at 100% " +wei.estimate(1.0));
+	
 			EnergyInterpolator ei = new EnergyInterpolator();
 			ei.providedata(dbmanager.getDataConsumptionDAOImpl());
 			LOGGER.info("Building estimator");
@@ -119,6 +153,10 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 				//LOGGER.info("Time  is " +  dateFormat.format(date));
 				//LOGGER.info("Time  is " +  date.getTime());
 				//LOGGER.info("VM consumed " +ei.estimate(date.getTime()/1000));
+				TimeEnergyInterpolator tei = new TimeEnergyInterpolator();
+				tei.providedata(dbmanager.getDataConsumptionDAOImpl());
+				tei.buildmodel(applicationid, vmid);
+				energy = tei.estimate(date.getTime()/1000);
 
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block

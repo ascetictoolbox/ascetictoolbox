@@ -28,9 +28,20 @@ public class EnergyModellerHandler {
 	@Test
 	public void testEnergyModellerApplicationConsumption() {
 		
-		double energy = serviceEM.energyEstimationForVM("test", "app1", "fad45a9a-46bc-4876-a641-e90ac9578cc0", null);
+		double energy = serviceEM.energyEstimationForVM("test", "app1", "4351a79d-75ee-42fd-b9e6-b963a10b1787", null);
 		
 		Assert.assertNotNull(energy);
+	}
+	
+	@Test
+	public void testEventConsumption(){
+		
+		//"HMMERpfam", "45"
+		List<String> vms = new Vector<String>();
+		vms.add("4351a79d-75ee-42fd-b9e6-b963a10b1787");
+		
+		double est = serviceEM.energyApplicationConsumption(null, "HMMERpfam", vms, "allevents");
+		System.out.println("Energy estim for event "+est);
 	}
 	
 	@Test
@@ -40,9 +51,8 @@ public class EnergyModellerHandler {
 		Date date;
 		
 		try {
-			date = dateFormat.parse("2014-09-02 20:12:00");
-			System.out.println("Time  is " +  dateFormat.format(date));
-			System.out.println("Time  is " +  date.getTime());
+			date = dateFormat.parse("2014-09-11 00:00:00");
+
 			
 			long time = date.getTime();
 			
@@ -53,29 +63,32 @@ public class EnergyModellerHandler {
 			vm.add("fad45a9a-46bc-4876-a641-e90ac9578cc0");
 			
 			// on date
+			
+			
+			
 			System.out.println("Estimation  is "+serviceEM.energyEstimationForTime("test", "app1", vm, null,ts));
 			// +1 h
-			ts = new Timestamp(date.getTime()+3600);
-			System.out.println("Time  is " +  ts);
-			System.out.println("Estimation  is "+serviceEM.energyEstimationForTime("test", "app1", vm, null,ts));
-			// +6h
-			ts = new Timestamp(date.getTime()+21600);
-			System.out.println("Time  is " +  ts);
-			System.out.println("Estimation  is "+serviceEM.energyEstimationForTime("test", "app1", vm, null,ts));
-			// +12h
-			ts = new Timestamp(date.getTime()+43200);
-			System.out.println("Time  is " +  ts);
-			System.out.println("Estimation  is "+serviceEM.energyEstimationForTime("test", "app1", vm, null,ts));
-			//+24h
-			ts = new Timestamp(date.getTime()+86400);
-			System.out.println("Time  is " +  ts);
-			System.out.println("Estimation  is "+serviceEM.energyEstimationForTime("test", "app1", vm, null,ts));
 			
+			long base = 3600000;
+			
+			for (int k=0;k<24;k++){
+				ts = new Timestamp(date.getTime()+base);
+				
+				double est = serviceEM.energyEstimationForTime("test", "app1", vm, null,ts);
+				
+				System.out.println(ts.toString()+";"+est+";");
+				
+				base = base + 3600000;
+			}
+			
+
 			
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+		
 		
 		
 

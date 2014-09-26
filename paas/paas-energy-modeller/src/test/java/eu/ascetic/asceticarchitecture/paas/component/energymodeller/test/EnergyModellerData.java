@@ -57,7 +57,7 @@ public class EnergyModellerData {
 	
 	@Test
 	public void trainEvent() {
-		boolean training = serviceEM.trainApplication("providerid", "applicationid", "deploymentid","event");
+		boolean training = serviceEM.trainApplication("providerid", "HMMERpfam", "45","event");
 		Assert.assertTrue(training);
 	}
 	
