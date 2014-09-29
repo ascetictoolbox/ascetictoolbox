@@ -1,3 +1,6 @@
+/**
+ * Copyright 2014 Hewlett-Packard Development Company, L.P.                                         
+ */
 package eu.ascetic.iaas.slamanager.main.beans.client;
 
 import java.io.ByteArrayOutputStream;

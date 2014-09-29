@@ -1,3 +1,6 @@
+/**
+ * Copyright 2014 Hewlett-Packard Development Company, L.P.                                         
+ */
 package eu.ascetic.iaas.slamanager.poc.slatemplate.request;
 
 import org.codehaus.jettison.json.JSONArray;

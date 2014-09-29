@@ -1,3 +1,7 @@
+/**
+ * Copyright 2014 Hewlett-Packard Development Company, L.P.                                         
+ */
+
 package eu.ascetic.paas.slam.test;
 
 import java.io.File;

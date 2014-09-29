@@ -1,3 +1,6 @@
+/**
+ * Copyright 2014 Hewlett-Packard Development Company, L.P.                                         
+ */
 package eu.ascetic.iaas.slamanager.poc.manager.negotiation.translator;
 
 import org.slasoi.gslam.core.negotiation.ISyntaxConverter.SyntaxConverterType;

@@ -1,3 +1,6 @@
+/**
+ * Copyright 2014 Hewlett-Packard Development Company, L.P.                                         
+ */
 package eu.ascetic.iaas.slamanager.poc.manager.negotiation.client;
 
 import org.slasoi.slamodel.sla.SLA;

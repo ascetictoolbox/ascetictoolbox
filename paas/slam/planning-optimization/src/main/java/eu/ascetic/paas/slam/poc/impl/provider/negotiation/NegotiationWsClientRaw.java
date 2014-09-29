@@ -1,3 +1,7 @@
+/**
+ * Copyright 2014 Hewlett-Packard Development Company, L.P.                                         
+ */
+
 package eu.ascetic.paas.slam.poc.impl.provider.negotiation;
 
 import java.util.HashMap;
