@@ -1,3 +1,6 @@
+/**
+* Copyright 2014 Hewlett-Packard Development Company, L.P.                                         
+ */
 package eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.task;
 
 import java.sql.Timestamp;

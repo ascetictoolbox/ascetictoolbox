@@ -1,3 +1,6 @@
+/**
+* Copyright 2014 Hewlett-Packard Development Company, L.P.                                         
+ */
 package eu.ascetic.asceticarchitecture.paas.component.common.model;
 
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
