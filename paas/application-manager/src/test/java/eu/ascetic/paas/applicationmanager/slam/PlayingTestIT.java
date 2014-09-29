@@ -8,10 +8,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
-import org.slasoi.gslam.syntaxconverter.SLASOIRenderer;
 import org.slasoi.gslam.syntaxconverter.SLASOITemplateParser;
 import org.slasoi.slamodel.sla.SLATemplate;
 

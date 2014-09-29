@@ -293,6 +293,44 @@ public class XMLBuilder {
 		return ModelConverter.objectEnergyMeasurementToXML(energyMeasurement);
 	}
 	
+	public static String getEnergyEstimationForAnEventInAVMXMLInfo(
+			EnergyMeasurement energyMeasurement, String applicationId, String deploymentId, String vmId, String eventId) {
+		
+		energyMeasurement = XMLBuilder.addEnergyEstimationForAnEventInAVMXMLInfo(energyMeasurement, applicationId, deploymentId, vmId, eventId);
+		
+		return ModelConverter.objectEnergyMeasurementToXML(energyMeasurement);
+	}
+	
+	/**
+	 * Adds the necessary fields to build the XML of an Energy Estimation aggregated for all the VMs of an Application
+	 * @param energyMeasurement the object to be updated
+	 * @param applicationId application id from which the calculation is made
+	 * @param deploymentId from which the calculation is made
+	 * @param vmId Id of the vm where we want to measure the VM
+	 * @param eventId Type of event for which we want the energy measurement
+	 * @return the updated object with all its XML fields
+	 */
+	public static EnergyMeasurement addEnergyEstimationForAnEventInAVMXMLInfo(
+			EnergyMeasurement energyMeasurement, String applicationId, String deploymentId, String vmId, String eventId) {
+		
+		energyMeasurement.setDescription("Aggregated energy estimation for an event in a vm in a specific VM");
+		energyMeasurement.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/vms/" + vmId + "/events/" + eventId + "/energy-estimation");
+		
+		Link linkParent = new Link();
+		linkParent.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/vms/" + vmId + "/events/" + eventId);
+		linkParent.setRel("parent");
+		linkParent.setType(MediaType.APPLICATION_XML);
+		energyMeasurement.addLink(linkParent);
+		
+		Link linkSelf = new Link();
+		linkSelf.setHref(energyMeasurement.getHref());
+		linkSelf.setRel("self");
+		linkSelf.setType(MediaType.APPLICATION_XML);
+		energyMeasurement.addLink(linkSelf);
+		
+		return energyMeasurement;
+	}
+	
 	/**
 	 * Adds the necessary fields to build the XML of an Energy Estimation aggregated for all the VMs of an Application
 	 * @param energyMeasurement the object to be updated

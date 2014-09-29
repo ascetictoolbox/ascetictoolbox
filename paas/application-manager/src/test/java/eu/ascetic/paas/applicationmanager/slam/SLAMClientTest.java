@@ -1,6 +1,5 @@
 package eu.ascetic.paas.applicationmanager.slam;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -10,7 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import org.junit.Before;
-import org.junit.Test;
 import org.slasoi.gslam.core.negotiation.ISyntaxConverter.SyntaxConverterType;
 import org.slasoi.gslam.syntaxconverter.SyntaxConverterDelegator;
 import org.slasoi.slamodel.sla.SLATemplate;

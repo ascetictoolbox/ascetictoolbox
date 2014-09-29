@@ -501,4 +501,44 @@ public class XMLBuilderTest {
 		assertEquals("self",energyMeasurement.getLinks().get(1).getRel());
 		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(1).getType());
 	}
+	
+	@Test
+	public void getEnergyEstimationForAnVMForAnEventXMLInfoTest() throws Exception {
+		EnergyMeasurement energyMeasurement = new EnergyMeasurement();
+		energyMeasurement.setValue(22.0);
+		
+		String xml = XMLBuilder.getEnergyEstimationForAnEventInAVMXMLInfo(energyMeasurement, "111", "333", "444", "eventX");
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(EnergyMeasurement.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		energyMeasurement = (EnergyMeasurement) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals("/applications/111/deployments/333/vms/444/events/eventX/energy-estimation", energyMeasurement.getHref());
+		assertEquals(22.0, energyMeasurement.getValue(), 0.00001);
+		assertEquals("Aggregated energy estimation for an event in a vm in a specific VM", energyMeasurement.getDescription());
+		assertEquals(2, energyMeasurement.getLinks().size());
+		assertEquals("/applications/111/deployments/333/vms/444/events/eventX", energyMeasurement.getLinks().get(0).getHref());
+		assertEquals("parent", energyMeasurement.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(0).getType());
+		assertEquals("/applications/111/deployments/333/vms/444/events/eventX/energy-estimation", energyMeasurement.getLinks().get(1).getHref());
+		assertEquals("self",energyMeasurement.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(1).getType());
+	}
+	
+	@Test
+	public void addEnergyEstimationForAnVMForAnEventXMLInfoTest() throws Exception {
+		EnergyMeasurement energyMeasurement = new EnergyMeasurement();
+		energyMeasurement.setValue(22.0);
+		
+		energyMeasurement = XMLBuilder.addEnergyEstimationForAnEventInAVMXMLInfo(energyMeasurement, "111", "333", "444", "eventX");
+		
+		assertEquals(2, energyMeasurement.getLinks().size());
+		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(0).getType());
+		assertEquals("parent", energyMeasurement.getLinks().get(0).getRel());
+		assertEquals("/applications/111/deployments/333/vms/444/events/eventX", energyMeasurement.getLinks().get(0).getHref());
+		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(1).getType());
+		assertEquals("self", energyMeasurement.getLinks().get(1).getRel());
+		assertEquals("/applications/111/deployments/333/vms/444/events/eventX/energy-estimation", energyMeasurement.getLinks().get(1).getHref());
+
+	}
 }
