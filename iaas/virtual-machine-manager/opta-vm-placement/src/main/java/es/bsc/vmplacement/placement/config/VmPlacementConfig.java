@@ -1,7 +1,7 @@
-package es.bsc.vmplacement.vmplacement.config;
+package es.bsc.vmplacement.placement.config;
 
 import es.bsc.vmplacement.domain.ConstructionHeuristic;
-import es.bsc.vmplacement.vmplacement.config.localSearch.LocalSearch;
+import es.bsc.vmplacement.placement.config.localSearch.LocalSearch;
 
 /**
  * This class defines the configuration for the solver of the VM Placement problem.

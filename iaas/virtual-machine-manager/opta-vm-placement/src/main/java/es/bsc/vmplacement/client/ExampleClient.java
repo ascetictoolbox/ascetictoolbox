@@ -22,9 +22,9 @@ import es.bsc.vmplacement.domain.ConstructionHeuristic;
 import es.bsc.vmplacement.domain.Host;
 import es.bsc.vmplacement.domain.Vm;
 import es.bsc.vmplacement.lib.OptaVmPlacement;
-import es.bsc.vmplacement.vmplacement.config.Policy;
-import es.bsc.vmplacement.vmplacement.config.VmPlacementConfig;
-import es.bsc.vmplacement.vmplacement.config.localSearch.LateAcceptance;
+import es.bsc.vmplacement.placement.config.Policy;
+import es.bsc.vmplacement.placement.config.VmPlacementConfig;
+import es.bsc.vmplacement.placement.config.localSearch.LateAcceptance;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -19,8 +19,8 @@
 package es.bsc.vmplacement.lib;
 
 import es.bsc.vmplacement.domain.*;
-import es.bsc.vmplacement.vmplacement.VmPlacementProblem;
-import es.bsc.vmplacement.vmplacement.config.VmPlacementConfig;
+import es.bsc.vmplacement.placement.VmPlacementProblem;
+import es.bsc.vmplacement.placement.config.VmPlacementConfig;
 
 import java.util.ArrayList;
 import java.util.Arrays;

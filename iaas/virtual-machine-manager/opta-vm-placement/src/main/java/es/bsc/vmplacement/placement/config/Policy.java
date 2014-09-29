@@ -1,4 +1,4 @@
-package es.bsc.vmplacement.vmplacement.config;
+package es.bsc.vmplacement.placement.config;
 
 /**
  * @author David Ortiz (david.ortiz@bsc.es)

@@ -1,9 +1,9 @@
-package es.bsc.vmplacement.vmplacement;
+package es.bsc.vmplacement.placement;
 
 import es.bsc.vmplacement.domain.ClusterState;
 import es.bsc.vmplacement.domain.Host;
 import es.bsc.vmplacement.domain.Vm;
-import es.bsc.vmplacement.vmplacement.config.VmPlacementConfig;
+import es.bsc.vmplacement.placement.config.VmPlacementConfig;
 import org.optaplanner.core.api.solver.Solver;
 
 import java.util.List;
