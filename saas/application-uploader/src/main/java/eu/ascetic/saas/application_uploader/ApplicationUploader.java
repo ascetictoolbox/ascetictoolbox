@@ -43,6 +43,7 @@ public class ApplicationUploader {
 	private static final String ENERGY_CONSUM = "energy-consumption";
 	private static final String ENERGY_ESTIM = "energy-estimation";
 	private static final String EVENTS = "events";
+	private static final String VMS = "vms";
 	
 	Client client;
 	WebResource resource;
@@ -101,6 +102,18 @@ public class ApplicationUploader {
 	public Double getEventEnergyEstimation(String applicationID, String deploymentID, String eventID) throws ApplicationUploaderException{
 		ClientResponse response = resource.path(APPLICATIONS_PATH).path(applicationID)
 				.path(DEPLOYMENTS_PATH).path(deploymentID).path(EVENTS).path(eventID).path(ENERGY_ESTIM).accept(MediaType.APPLICATION_XML_TYPE).get(ClientResponse.class);
+		if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
+			EnergyMeasurement measurement = response.getEntity(EnergyMeasurement.class);
+			return measurement.getValue();
+		}else
+			throw new ApplicationUploaderException("Error getting deployment energy measurement. Returned code is "+ response.getStatus());
+	}
+	
+	public Double getEventEnergyEstimationInVM(String applicationID, String deploymentID, String eventID, String vmID) throws ApplicationUploaderException{
+		ClientResponse response = resource.path(APPLICATIONS_PATH).path(applicationID)
+				.path(DEPLOYMENTS_PATH).path(deploymentID).path(VMS).path(vmID)
+				.path(EVENTS).path(eventID).path(ENERGY_ESTIM)
+				.accept(MediaType.APPLICATION_XML_TYPE).get(ClientResponse.class);
 		if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
 			EnergyMeasurement measurement = response.getEntity(EnergyMeasurement.class);
 			return measurement.getValue();
@@ -192,7 +205,7 @@ public class ApplicationUploader {
 	public void undeploy(String applicationID, String deploymentID) throws ApplicationUploaderException{
 		ClientResponse response = resource.path(APPLICATIONS_PATH).path(applicationID)
 				.path(DEPLOYMENTS_PATH).path(deploymentID).delete(ClientResponse.class);
-		if (response.getStatus() != ClientResponse.Status.ACCEPTED.getStatusCode()) {
+		if (response.getStatus() != ClientResponse.Status.OK.getStatusCode()) {
 			throw new ApplicationUploaderException("Error deleting deployment. Returned code is "+ response.getStatus());
 		}
 	}
