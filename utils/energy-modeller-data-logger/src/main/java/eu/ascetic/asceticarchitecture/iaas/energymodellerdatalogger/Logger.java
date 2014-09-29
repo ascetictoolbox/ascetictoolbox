@@ -59,6 +59,10 @@ public class Logger {
         logger.stop();
     }
 
+    /**
+     * This looks for input from the console so that the application can be
+     * told when to quit.
+     */
     private static class QuitWatcher implements Runnable {
 
         @Override
