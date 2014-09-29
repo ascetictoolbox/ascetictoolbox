@@ -15,7 +15,27 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eu.ascetic.providerregistry.model.Provider;
 import eu.ascetic.providerregistry.service.ProviderDAO;
-
+/**
+ * 
+ * Copyright 2014 ATOS SPAIN S.A. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the License);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * @author David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
+ * @email david.garciaperez@atos.net 
+ * 
+ * Unit test to verify all the methods and functions of the ProviderDAOJpa.class
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/provider-registry-db-JPA-test-context.xml")
 public class ProviderDAOJpaTest extends AbstractTransactionalJUnit4SpringContextTests {

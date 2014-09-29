@@ -902,6 +902,7 @@ paas/paas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/paas/pa
 paas/paas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/paas/paaspricingmodeller/PaaSPricingModellerInterface.class -text
 paas/paas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/paas/type/PaaSPrice.class -text
 paas/paas-pricing-modeller/target/test-classes/eu/ascetic/asceticarchitecture/paas/paaspricingmodeller/PaaSPricingModellerTest.class -text
+paas/provider-registry/LICENSE.TXT -text
 paas/provider-registry/pom.xml -text
 paas/provider-registry/src/main/java/eu/ascetic/providerregistry/Dictionary.java -text
 paas/provider-registry/src/main/java/eu/ascetic/providerregistry/model/Collection.java -text
