@@ -34,7 +34,7 @@ import eu.ascetic.saas.application_uploader.ApplicationUploaderException;
 
 public class ApplicationUploaderTest {
 
-	@Test
+	/*@Test
 	public void uploadApptest() throws ApplicationUploaderException {
 		ApplicationUploader uploader = new ApplicationUploader("http://10.4.0.16/application-manager");
 		InputStream is = ApplicationUploader.class.getResourceAsStream("/service_manifest.xml");
@@ -88,7 +88,7 @@ public class ApplicationUploaderTest {
 		System.out.println("undeploying");
 		id = uploader.submitApplicationDeployment(applicationID, sb.toString());
 		uploader.destroyApplication(applicationID);
-	}
+	}*/
 	
 	@Test
 	public void getVMS() throws ApplicationUploaderException {
@@ -124,14 +124,25 @@ public class ApplicationUploaderTest {
 		System.out.println("Energy measurement for app " + applicationID + " deployment "+ deploymentID+ " is "+ meas.toString());		
 	}
 	
-	@Test
+	/*@Test
 	public void getEventEnergyConsumption() throws ApplicationUploaderException {
 		ApplicationUploader uploader = new ApplicationUploader("http://10.4.0.16/application-manager");
 		String applicationID = "HMMERpfam";
 		String deploymentID = "35";
-		String eventID = "event";
-		Double meas = uploader.getDeploymentEnergyConsumption(applicationID, deploymentID);
-		System.out.println("Energy measurement for app " + applicationID + " deployment "+ deploymentID+ " is "+ meas.toString());		
+		String eventID = "CoreEvent";
+		Double meas = uploader.getEventEnergyEstimation(applicationID, deploymentID, eventID);
+		System.out.println("Energy measurement for app " + applicationID + " deployment "+ deploymentID+ " event " + eventID +" is "+ meas.toString());		
+	}*/
+	
+	@Test
+	public void getEventEnergyConsumptionInVM() throws ApplicationUploaderException {
+		ApplicationUploader uploader = new ApplicationUploader("http://10.4.0.16/application-manager");
+		String applicationID = "JEPlus";
+		String deploymentID = "53";
+		String eventID = "CoreEvent";
+		String vmID = "81";
+		Double meas = uploader.getEventEnergyEstimationInVM(applicationID, deploymentID, eventID, vmID);
+		System.out.println("Energy measurement for app " + applicationID + " deployment "+ deploymentID+ " vm "+ vmID + " event " + eventID +" is "+ meas.toString());		
 	}
 
 }
