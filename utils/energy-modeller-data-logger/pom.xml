@@ -8,7 +8,7 @@
 		<artifactId>utils</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<groupId>eu.ascetic.iaas</groupId>
+	<groupId>eu.ascetic.utils</groupId>
 	<artifactId>energy-modeller-data-logger</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<name>Energy Modeller Data Logger</name>
@@ -47,9 +47,9 @@
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>eu.ascetic.api.zabbix</groupId>
-			<artifactId>ascetic-zabbix-api</artifactId>
-			<version>0.1</version>
+			<groupId>eu.ascetic.iaas</groupId>
+			<artifactId>zabbix-api</artifactId>
+			<version>0.1-SNAPSHOT</version>
 		</dependency>
 	 <dependency>
 	  <groupId>eu.ascetic.utils</groupId>

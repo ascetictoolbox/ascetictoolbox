@@ -7,7 +7,7 @@
     <artifactId>utils</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <groupId>eu.ascetic</groupId>
+  <groupId>eu.ascetic.utils</groupId>
   <artifactId>energy-modeller-display-tool</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>Energy Modeller Display Tool</name>
