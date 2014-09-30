@@ -371,6 +371,7 @@ iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/sc
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/schedulingalgorithms/SchedAlgDistributionTest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/schedulingalgorithms/SchedAlgGroupByAppTest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/schedulingalgorithms/SchedAlgRandomTest.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/vmplacement/OptaVmPlacementConversorTest.java -text
 paas/application-manager-datamodel/LICENSE.TXT -text
 paas/application-manager-datamodel/pom.xml -text
 paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/Agreement.java -text

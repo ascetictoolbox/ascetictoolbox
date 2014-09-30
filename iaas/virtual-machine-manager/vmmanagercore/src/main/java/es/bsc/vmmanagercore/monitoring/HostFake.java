@@ -18,6 +18,8 @@
 
 package es.bsc.vmmanagercore.monitoring;
 
+import com.google.common.base.Preconditions;
+
 /**
  * Information about the status of a fake host.
  * This class is useful to perform tests without configuring real hosts.
@@ -58,38 +60,20 @@ public class HostFake extends Host {
     }
 
     //TODO: I think this method should be in the class HostInfo.
-    private void checkConstructorParams(int totalCpus, int totalMemoryMb, int totalDiskGb,
-            double assignedCpus, int assignedMemoryMb, int assignedDiskGb) {
-        if (totalCpus <= 0) {
-            throw new IllegalArgumentException("The number of total cpus has to be greater than 0");
-        }
-        if (totalMemoryMb <= 0) {
-            throw new IllegalArgumentException("The total memory has to be greater than 0");
-        }
-        if (totalDiskGb <= 0) {
-            throw new IllegalArgumentException("The total disk size has to be greater than 0");
-        }
-        if (assignedCpus < 0) {
-            throw new IllegalArgumentException("The number of assigned cpus cannot be negative");
-        }
-        if (assignedMemoryMb < 0) {
-            throw new IllegalArgumentException("The amount of assigned memory cannot be negative");
-        }
-        if (assignedDiskGb < 0) {
-            throw new IllegalArgumentException("The amount of assigned disk cannot be negative");
-        }
-        if (assignedCpus > totalCpus) {
-            throw new IllegalArgumentException("The number of assigned cpus cannot be greater"
-                    + " than the total number of cpus");
-        }
-        if (assignedMemoryMb > totalMemoryMb) {
-            throw new IllegalArgumentException("The amount of assigned memory cannot be greater"
-                    + " than the total amount of memory");
-        }
-        if (assignedDiskGb > totalDiskGb) {
-            throw new IllegalArgumentException("The assigned disk space cannot be greater"
-                    + " than the total amount of disk space");
-        }
+    private void checkConstructorParams(int totalCpus, int totalMemoryMb, int totalDiskGb, double assignedCpus,
+            int assignedMemoryMb, int assignedDiskGb) {
+        Preconditions.checkArgument(totalCpus > 0, "The number of total cpus has to be greater than 0");
+        Preconditions.checkArgument(totalMemoryMb > 0, "The total memory has to be greater than 0");
+        Preconditions.checkArgument(totalDiskGb > 0, "The total disk size has to be greater than 0");
+        Preconditions.checkArgument(assignedCpus >= 0, "The number of assigned cpus cannot be negative");
+        Preconditions.checkArgument(assignedMemoryMb >= 0, "The amount of assigned memory cannot be negative");
+        Preconditions.checkArgument(assignedDiskGb >= 0, "The amount of assigned disk cannot be negative");
+        Preconditions.checkArgument(assignedCpus <= totalCpus, "The number of assigned cpus cannot be greater"
+                + " than the total number of cpus");
+        Preconditions.checkArgument(assignedMemoryMb <= totalMemoryMb, "The amount of assigned memory cannot be greater"
+                + " than the total amount of memory");
+        Preconditions.checkArgument(assignedDiskGb <= totalDiskGb, "The assigned disk space cannot be greater"
+                + " than the total amount of disk space");
     }
 
 }

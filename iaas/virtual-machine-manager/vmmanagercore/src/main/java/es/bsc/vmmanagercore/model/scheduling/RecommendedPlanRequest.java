@@ -54,7 +54,7 @@ public class RecommendedPlanRequest {
     private void validateConstructorParams(int timeLimitSeconds, String constructionHeuristicName,
             LocalSearchAlgorithmsOptionsSet localSearchAlgorithm) {
         Preconditions.checkNotNull(timeLimitSeconds);
-        Preconditions.checkArgument(timeLimitSeconds >= 0, "Argument was %s but expected non-negative",
+        Preconditions.checkArgument(timeLimitSeconds >= 0, "time limit was %s but expected non-negative",
                 timeLimitSeconds);
         Preconditions.checkNotNull(constructionHeuristicName);
         Preconditions.checkNotNull(localSearchAlgorithm);

@@ -1,7 +1,7 @@
 package es.bsc.vmplacement.placement;
 
-import es.bsc.vmplacement.scorecalculators.*;
 import es.bsc.vmplacement.placement.config.VmPlacementConfig;
+import es.bsc.vmplacement.scorecalculators.*;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicSolverPhaseConfig;
