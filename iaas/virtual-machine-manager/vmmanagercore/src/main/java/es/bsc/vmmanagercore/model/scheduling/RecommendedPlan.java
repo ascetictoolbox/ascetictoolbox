@@ -18,29 +18,25 @@
 
 package es.bsc.vmmanagercore.model.scheduling;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  */
-public class LocalSearchAlgorithm {
+public class RecommendedPlan {
 
-    private final String name;
-    private final List<String> options;
+    private final Map<String, String> plan = new HashMap<>(); // VM ID -> Host ID
 
-    public LocalSearchAlgorithm(String name, List<String> options) {
-        this.name = name;
-        this.options = new ArrayList<>(options);
+    public RecommendedPlan() { }
+
+    public Map<String, String> getPlan() {
+        return Collections.unmodifiableMap(plan);
     }
 
-    public String getName() {
-        return name;
+    public void addVmToHostAssignment(String vmId, String hostId) {
+        plan.put(vmId, hostId);
     }
 
-    public List<String> getOptions() {
-        return Collections.unmodifiableList(options);
-    }
-    
 }

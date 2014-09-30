@@ -24,6 +24,7 @@ import es.bsc.vmplacement.placement.config.VmPlacementConfig;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -64,14 +65,13 @@ public class OptaVmPlacement {
      */
     public List<LocalSearchAlgorithm> getLocalSearchAlgorithms() {
         List<LocalSearchAlgorithm> result = new ArrayList<>();
-        result.add(new LocalSearchAlgorithm("Hill Climbing", Arrays.asList("Accepted Count Limit")));
-        result.add(new LocalSearchAlgorithm("Late Acceptance", Arrays.asList("Accepted Count Limit", "Size")));
-        result.add(new LocalSearchAlgorithm("Late Simulated Annealing", Arrays.asList("Accepted Count Limit", "Size")));
-        result.add(new LocalSearchAlgorithm("Simulated Annealing", Arrays.asList("Accepted Count Limit",
-                "Initial Hard Temperature", "Initial Soft Temperature")));
-        result.add(new LocalSearchAlgorithm("Step Counting Hill Climbing", Arrays.asList("Accepted Count Limit",
-                "Size")));
-        result.add(new LocalSearchAlgorithm("Tabu Search", Arrays.asList("Accepted Count Limit", "Size")));
+        result.add(new LocalSearchAlgorithm("Hill Climbing", Collections.<String>emptyList()));
+        result.add(new LocalSearchAlgorithm("Late Acceptance", Arrays.asList("Size")));
+        result.add(new LocalSearchAlgorithm("Late Simulated Annealing", Arrays.asList("Size", "Accepted Count Limit")));
+        result.add(new LocalSearchAlgorithm("Simulated Annealing", Arrays.asList("Initial Hard Temperature",
+                "Initial Soft Temperature")));
+        result.add(new LocalSearchAlgorithm("Step Counting Hill Climbing", Arrays.asList("Size")));
+        result.add(new LocalSearchAlgorithm("Tabu Search", Arrays.asList("Size", "Accepted Count Limit")));
         return result;
     }
 

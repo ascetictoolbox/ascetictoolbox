@@ -303,7 +303,10 @@ iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/mo
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/images/ListImagesUploaded.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/scheduling/ConstructionHeuristic.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/scheduling/DeploymentPlan.java -text
-iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/scheduling/LocalSearchAlgorithm.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/scheduling/LocalSearchAlgorithmOptionsUnset.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/scheduling/LocalSearchAlgorithmsOptionsSet.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/scheduling/RecommendedPlan.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/scheduling/RecommendedPlanRequest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/scheduling/SchedulingAlgorithm.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/scheduling/VmAssignmentToHost.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/vms/ListVms.java -text
@@ -342,6 +345,7 @@ iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/sc
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/scheduler/schedulingalgorithms/SchedAlgorithm.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/utils/CommandExecutor.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/utils/HttpUtils.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/vmplacement/OptaVmPlacementConversor.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/resources/configBSC.properties -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/resources/configTUB.properties -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/resources/init-scripts/hello.sh -text

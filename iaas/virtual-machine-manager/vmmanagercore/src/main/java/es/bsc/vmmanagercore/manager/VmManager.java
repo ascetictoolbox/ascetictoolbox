@@ -33,6 +33,8 @@ import es.bsc.vmmanagercore.model.vms.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.*;
 import es.bsc.vmmanagercore.scheduler.EstimatesGenerator;
 import es.bsc.vmmanagercore.scheduler.Scheduler;
+import es.bsc.vmmanagercore.vmplacement.OptaVmPlacementConversor;
+import es.bsc.vmplacement.domain.ClusterState;
 import es.bsc.vmplacement.lib.OptaVmPlacement;
 
 import java.io.BufferedWriter;
@@ -61,7 +63,9 @@ public class VmManager {
     private EstimatesGenerator estimatesGenerator = new EstimatesGenerator();
     private List<Host> hosts = new ArrayList<>();
     SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+
     private OptaVmPlacement optaVmPlacement = new OptaVmPlacement(); // Library used for the VM Placement
+    private OptaVmPlacementConversor optaVmPlacementConversor = new OptaVmPlacementConversor();
 
     /**
      * Constructs a VmManager with the name of the database to be used.
@@ -410,12 +414,27 @@ public class VmManager {
      *
      * @return the list of local search algorithms
      */
-    public List<LocalSearchAlgorithm> getLocalSearchAlgorithms() {
-        List<LocalSearchAlgorithm> result = new ArrayList<>();
+    public List<LocalSearchAlgorithmOptionsUnset> getLocalSearchAlgorithms() {
+        List<LocalSearchAlgorithmOptionsUnset> result = new ArrayList<>();
         for (es.bsc.vmplacement.domain.LocalSearchAlgorithm algorithm: optaVmPlacement.getLocalSearchAlgorithms()) {
-            result.add(new LocalSearchAlgorithm(algorithm.getName(), algorithm.getOptions()));
+            result.add(new LocalSearchAlgorithmOptionsUnset(algorithm.getName(), algorithm.getOptions()));
         }
         return result;
+    }
+
+    /**
+     * This function calculates a deployment plan based on a request. It uses the OptaVMPlacement library.
+     *
+     * @param recommendedPlanRequest the request
+     * @return the recommended plan
+     */
+    public RecommendedPlan getRecommendedPlan(RecommendedPlanRequest recommendedPlanRequest) {
+        ClusterState clusterStateRecommendedPlan = optaVmPlacement.getBestSolution(
+                optaVmPlacementConversor.getOptaHosts(getHosts()),
+                optaVmPlacementConversor.getOptaVms(getAllVms()),
+                optaVmPlacementConversor.getOptaPlacementConfig(getCurrentSchedulingAlgorithm(),
+                        recommendedPlanRequest));
+        return optaVmPlacementConversor.getRecommendedPlan(clusterStateRecommendedPlan);
     }
 
 

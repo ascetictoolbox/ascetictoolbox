@@ -20,8 +20,11 @@ package es.bsc.vmmanagercore.rest;
 
 import com.google.gson.Gson;
 import es.bsc.vmmanagercore.manager.VmManager;
+import es.bsc.vmmanagercore.model.scheduling.RecommendedPlanRequest;
 
 /**
+ * This class implements the REST calls that are related with the placement of VMs.
+ *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  */
 public class VmPlacementCallsManager {
@@ -40,4 +43,10 @@ public class VmPlacementCallsManager {
     public String getLocalSearchAlgorithms() {
         return gson.toJson(vmManager.getLocalSearchAlgorithms());
     }
+
+    public String getRecommendedPlan(String recommendedPlanRequest) {
+        return gson.toJson(vmManager.getRecommendedPlan(gson.fromJson(recommendedPlanRequest,
+                RecommendedPlanRequest.class)));
+    }
+
 }

@@ -175,6 +175,14 @@ public class VmManagerRest {
         return vmPlacementCallsManager.getLocalSearchAlgorithms();
     }
 
+    @PUT
+    @Path("/vm_placement/recommended_plan")
+    @Consumes("application/json")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getRecommendedPlan(String recommendedPlanRequest) {
+        return vmPlacementCallsManager.getRecommendedPlan(recommendedPlanRequest);
+    }
+
 
     //================================================================================
     // Node Methods

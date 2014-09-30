@@ -35,8 +35,12 @@ public class Vm extends AbstractPersistable {
     private int diskGb;
     private String appId = null;
     private Host host;
+    private String alphaNumericId; /* This might be needed in some cases. For example, OpenStack uses alphanumeric
+                                   IDs, and optaplanner needs an ID of type long. */
 
     public Vm() { }
+
+    // I should apply the builder pattern here, but Optaplanner needs Vm() to clone
 
     public Vm(Long id, int ncpus, int ramMb, int diskGb) {
         this.id = id;
@@ -53,32 +57,33 @@ public class Vm extends AbstractPersistable {
         this.appId = appId;
     }
 
-    public int getNcpus() {
-        return ncpus;
+    public Vm(Long id, int ncpus, int ramMb, int diskGb, String appId, String alphaNumericId) {
+        this.id = id;
+        this.ncpus = ncpus;
+        this.ramMb = ramMb;
+        this.diskGb = diskGb;
+        this.appId = appId;
+        this.alphaNumericId = alphaNumericId;
     }
 
-    public void setNcpus(int ncpus) {
-        this.ncpus = ncpus;
+    public int getNcpus() {
+        return ncpus;
     }
 
     public int getRamMb() {
         return ramMb;
     }
 
-    public void setRamMb(int ramMb) {
-        this.ramMb = ramMb;
-    }
-
     public int getDiskGb() {
         return diskGb;
     }
 
-    public void setDiskGb(int diskGb) {
-        this.diskGb = diskGb;
-    }
-
     public String getAppId() {
         return appId;
+    }
+
+    public String getAlphaNumericId() {
+        return alphaNumericId;
     }
 
     @PlanningVariable(valueRangeProviderRefs = {"hostRange"}, strengthComparatorClass = HostStrengthComparator.class)

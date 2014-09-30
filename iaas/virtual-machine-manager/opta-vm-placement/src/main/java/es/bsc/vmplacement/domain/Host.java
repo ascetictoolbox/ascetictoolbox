@@ -30,11 +30,11 @@ public class Host extends AbstractPersistable {
 
     private final String hostname;
     private final int ncpus;
-    private final int ramMb;
-    private final int diskGb;
+    private final double ramMb;
+    private final double diskGb;
     private List<Long> fixedVmsIds = new ArrayList<>(); // IDs of the VMs that need to be deployed in this host
 
-    public Host(Long id, String hostname, int ncpus, int ramMb, int diskGb) {
+    public Host(Long id, String hostname, int ncpus, double ramMb, double diskGb) {
         this.hostname = hostname;
         this.id = id;
         this.ncpus = ncpus;
@@ -101,11 +101,11 @@ public class Host extends AbstractPersistable {
         return ncpus;
     }
 
-    public int getRamMb() {
+    public double getRamMb() {
         return ramMb;
     }
 
-    public int getDiskGb() {
+    public double getDiskGb() {
         return diskGb;
     }
 
