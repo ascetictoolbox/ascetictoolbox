@@ -27,7 +27,7 @@ import es.bsc.vmplacement.domain.ClusterState;
 import es.bsc.vmplacement.domain.ConstructionHeuristic;
 import es.bsc.vmplacement.placement.config.Policy;
 import es.bsc.vmplacement.placement.config.VmPlacementConfig;
-import es.bsc.vmplacement.placement.config.localSearch.*;
+import es.bsc.vmplacement.placement.config.localsearch.*;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -44,51 +44,46 @@ public class VmTest {
     }
 
     @Test
-    public void setGetInstanceName() {
-        vmDesc.setInstanceName("newInstanceName");
-        assertEquals("newInstanceName", vmDesc.getName());
+    public void getInstanceName() {
+        assertEquals("TestVm", vmDesc.getName());
     }
 
     @Test
-    public void setGetImageId() {
-        vmDesc.setImage("newImageId");
-        assertEquals("newImageId", vmDesc.getImage());
+    public void getImageId() {
+        assertEquals("fakeImageId", vmDesc.getImage());
     }
 
     @Test
-    public void setGetCpus() {
-        vmDesc.setCpus(2);
-        assertTrue(vmDesc.getCpus() == 2);
+    public void getCpus() {
+        assertTrue(vmDesc.getCpus() == 1);
     }
 
     @Test
     public void paramSetCpusHasToBePositive() {
         exception.expect(IllegalArgumentException.class);
-        vmDesc.setCpus(-1);
+        vmDesc = new Vm("TestVm", "fakeImageId", -1, 1024, 2, null, "app1");
     }
 
     @Test
-    public void setGetRamMb() {
-        vmDesc.setRamMb(2048);
-        assertTrue(vmDesc.getRamMb() == 2048);
+    public void getRamMb() {
+        assertTrue(vmDesc.getRamMb() == 1024);
     }
 
     @Test
     public void paramSetRamMbHasToBePositive() {
         exception.expect(IllegalArgumentException.class);
-        vmDesc.setRamMb(-2);
+        vmDesc = new Vm("TestVm", "fakeImageId", 1, -1024, 2, null, "app1");
     }
 
     @Test
-    public void setGetDiskGb() {
-        vmDesc.setDiskGb(4);
-        assertTrue(vmDesc.getDiskGb() == 4);
+    public void getDiskGb() {
+        assertTrue(vmDesc.getDiskGb() == 2);
     }
 
     @Test
     public void paramSetDiskGbHasToBePositive() {
         exception.expect(IllegalArgumentException.class);
-        vmDesc.setDiskGb(-1);
+        vmDesc = new Vm("TestVm", "fakeImageId", 1, 1024, -2, null, "app1");
     }
 
     // Not all VMs will have an init script associated, so we need

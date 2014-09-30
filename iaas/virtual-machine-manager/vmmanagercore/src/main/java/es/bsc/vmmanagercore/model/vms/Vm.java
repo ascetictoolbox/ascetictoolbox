@@ -18,6 +18,7 @@
 
 package es.bsc.vmmanagercore.model.vms;
 
+import com.google.common.base.Preconditions;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 import java.io.File;
@@ -29,11 +30,11 @@ import java.io.File;
  */
 public class Vm {
 
-    private String name;
-    private String image; // It can be an ID or a URL
-    private int cpus;
-    private int ramMb;
-    private int diskGb;
+    private final String name;
+    private final String image; // It can be an ID or a URL
+    private final int cpus;
+    private final int ramMb;
+    private final int diskGb;
     private String initScript;
     private String applicationId;
 
@@ -47,11 +48,12 @@ public class Vm {
      * @param initScript Script that will be executed when the VM is deployed.
      */
     public Vm(String name, String image, int cpus, int ramMb, int diskGb, String initScript, String applicationId) {
+        validateConstructorParams(cpus, ramMb, diskGb);
         this.name = name;
         this.image = image;
-        setCpus(cpus);
-        setRamMb(ramMb);
-        setDiskGb(diskGb);
+        this.cpus = cpus;
+        this.ramMb = ramMb;
+        this.diskGb = diskGb;
         setInitScript(initScript);
         this.applicationId = applicationId;
     }
@@ -60,49 +62,20 @@ public class Vm {
         return name;
     }
 
-    public void setInstanceName(String name) {
-        this.name = name;
-    }
-
     public String getImage() {
         return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
     }
 
     public int getCpus() {
         return cpus;
     }
 
-    public void setCpus(int cpus) {
-        if (cpus <= 0) {
-            throw new IllegalArgumentException("The number of cpus has to be greater than 0");
-        }
-        this.cpus = cpus;
-    }
-
     public int getRamMb() {
         return ramMb;
     }
 
-    public void setRamMb(int ramMb) {
-        if (ramMb <= 0) {
-            throw new IllegalArgumentException("The amount of memory has to be greater than 0");
-        }
-        this.ramMb = ramMb;
-    }
-
     public int getDiskGb() {
         return diskGb;
-    }
-
-    public void setDiskGb(int diskGb) {
-        if (diskGb <= 0) {
-            throw new IllegalArgumentException("The amount of disk size has to be greater than 0");
-        }
-        this.diskGb = diskGb;
     }
 
     public String getInitScript() {
@@ -134,4 +107,9 @@ public class Vm {
         return ReflectionToStringBuilder.toString(this);
     }
 
+    private void validateConstructorParams(int cpus, int ramMb, int diskGb) {
+        Preconditions.checkArgument(cpus > 0, "Argument was %s but expected positive", cpus);
+        Preconditions.checkArgument(ramMb > 0, "Argument was %s but expected positive", ramMb);
+        Preconditions.checkArgument(diskGb > 0, "Argument was %s but expected positive", diskGb);
+    }
 }

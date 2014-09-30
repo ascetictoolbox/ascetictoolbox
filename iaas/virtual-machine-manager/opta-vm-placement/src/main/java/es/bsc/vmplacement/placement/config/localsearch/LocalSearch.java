@@ -1,4 +1,4 @@
-package es.bsc.vmplacement.placement.config.localSearch;
+package es.bsc.vmplacement.placement.config.localsearch;
 
 import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorConfig;
 import org.optaplanner.core.config.localsearch.decider.forager.ForagerConfig;

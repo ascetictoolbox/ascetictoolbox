@@ -18,17 +18,22 @@
 
 package es.bsc.vmmanagercore.model.scheduling;
 
+import com.google.common.base.Preconditions;
+
 /**
+ * This class represents a request made by a client that asks for a recommended deployment plan.
+ *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  */
 public class RecommendedPlanRequest {
 
-    private final int timeLimitSeconds;
-    private final String constructionHeuristicName;
-    private final LocalSearchAlgorithmsOptionsSet localSearchAlgorithm;
+    private final int timeLimitSeconds; // maximum execution time allowed for the engine that computes the plan
+    private final String constructionHeuristicName; // name of the heuristic to be used by the engine
+    private final LocalSearchAlgorithmsOptionsSet localSearchAlgorithm; // local search algorithm to be used
 
     public RecommendedPlanRequest(int timeLimitSeconds, String constructionHeuristicName,
             LocalSearchAlgorithmsOptionsSet localSearchAlgorithm) {
+        validateConstructorParams(timeLimitSeconds, constructionHeuristicName, localSearchAlgorithm);
         this.timeLimitSeconds = timeLimitSeconds;
         this.constructionHeuristicName = constructionHeuristicName;
         this.localSearchAlgorithm = localSearchAlgorithm;
@@ -44,6 +49,15 @@ public class RecommendedPlanRequest {
 
     public LocalSearchAlgorithmsOptionsSet getLocalSearchAlgorithm() {
         return localSearchAlgorithm;
+    }
+
+    private void validateConstructorParams(int timeLimitSeconds, String constructionHeuristicName,
+            LocalSearchAlgorithmsOptionsSet localSearchAlgorithm) {
+        Preconditions.checkNotNull(timeLimitSeconds);
+        Preconditions.checkArgument(timeLimitSeconds >= 0, "Argument was %s but expected non-negative",
+                timeLimitSeconds);
+        Preconditions.checkNotNull(constructionHeuristicName);
+        Preconditions.checkNotNull(localSearchAlgorithm);
     }
 
 }
