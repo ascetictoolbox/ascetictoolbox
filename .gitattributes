@@ -2032,6 +2032,7 @@ utils/io-utils/src/main/java/eu/ascetic/ioutils/execution/stream/FileGobbler.jav
 utils/io-utils/src/main/java/eu/ascetic/ioutils/execution/stream/RedirectGobbler.java -text
 utils/io-utils/src/main/java/eu/ascetic/ioutils/execution/stream/ScreenGobbler.java -text
 utils/io-utils/src/main/java/eu/ascetic/ioutils/execution/stream/StreamGobbler.java -text
+utils/kwapi-patch/LICENSE -text
 utils/kwapi-patch/make.sh -text
 utils/kwapi-patch/patches/001-gembird_driver.patch -text
 utils/kwapi-patch/pom.xml -text
