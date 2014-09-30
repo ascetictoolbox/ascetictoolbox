@@ -26,8 +26,8 @@ package es.bsc.vmmanagercore.model.images;
  */
 public class ImageToUpload {
 
-    private String name;
-    private String url;
+    private final String name;
+    private final String url;
 
     public ImageToUpload(String name, String url) {
         this.name = name;
@@ -38,16 +38,8 @@ public class ImageToUpload {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getUrl() {
         return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 
 }

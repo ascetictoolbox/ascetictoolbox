@@ -26,10 +26,9 @@ import org.junit.rules.ExpectedException;
 import static org.junit.Assert.*;
 
 /**
- *
+ * Tests for the Vm class.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
- *
  */
 public class VmTest {
 

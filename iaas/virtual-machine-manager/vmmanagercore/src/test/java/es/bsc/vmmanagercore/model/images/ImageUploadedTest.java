@@ -18,34 +18,39 @@
 
 package es.bsc.vmmanagercore.model.images;
 
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+
 /**
- * Image that has been uploaded to the cloud middleware.
- *
- * @author David Ortiz Lopez (david.ortiz@bsc.es)
- *
- */
-public class ImageUploaded {
+* Tests for the ImageUploaded class.
+*
+* @author David Ortiz Lopez (david.ortiz@bsc.es)
+*
+*/
+public class ImageUploadedTest {
 
-    private final String id;
-    private final String name;
-    private final String status;
+    private ImageUploaded imageDesc;
 
-    public ImageUploaded(String id, String name, String status) {
-        this.id = id;
-        this.name = name;
-        this.status = status;
+    @Before
+    public void setUp() {
+        imageDesc = new ImageUploaded("testImageId", "testImage", "active");
     }
 
-    public String getId() {
-        return id;
+    @Test
+    public void getId() {
+        assertEquals("testImageId", imageDesc.getId());
     }
 
-    public String getName() {
-        return name;
+    @Test
+    public void getName() {
+        assertEquals("testImage", imageDesc.getName());
     }
 
-    public String getStatus() {
-        return status;
+    @Test
+    public void getStatus() {
+        assertEquals("active", imageDesc.getStatus());
     }
 
 }

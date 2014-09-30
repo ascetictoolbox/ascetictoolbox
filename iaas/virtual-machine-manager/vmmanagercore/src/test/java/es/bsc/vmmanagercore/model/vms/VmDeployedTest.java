@@ -16,44 +16,42 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.vmmanagercore.model.images;
+package es.bsc.vmmanagercore.model.vms;
 
-import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import java.util.Date;
+
+import static junit.framework.TestCase.assertEquals;
 
 /**
-*
-*
-* @author David Ortiz Lopez (david.ortiz@bsc.es)
-*
-*/
-public class ImageDescriptionTest {
+ * Tests for the VmDeployed class.
+ *
+ * @author David Ortiz Lopez (david.ortiz@bsc.es)
+ */
+public class VmDeployedTest {
 
-    private ImageUploaded imageDesc;
+    private VmDeployed vmDeployed = new VmDeployed("vm", "fakeImage", 1, 1024, 1, "", "", "vmId", "172.16.8.1",
+            "ACTIVE", new Date(), "host1");
 
-    @Before
-    public void setUp() {
-        imageDesc = new ImageUploaded("testImageId", "testImage", "active");
+    @Test
+    public void getId() {
+        assertEquals("vmId", vmDeployed.getId());
     }
 
     @Test
-    public void setGetId() {
-        imageDesc.setId("newImageId");
-        assertEquals("newImageId", imageDesc.getId());
+    public void getIpAddress() {
+        assertEquals("172.16.8.1", vmDeployed.getIpAddress());
     }
 
     @Test
-    public void setGetName() {
-        imageDesc.setName("newImageName");
-        assertEquals("newImageName", imageDesc.getName());
+    public void getState() {
+        assertEquals("ACTIVE", vmDeployed.getState());
     }
 
     @Test
-    public void setGetStatus() {
-        imageDesc.setStatus("fakeStatus");
-        assertEquals("fakeStatus", imageDesc.getStatus());
+    public void getHostname() {
+        assertEquals("host1", vmDeployed.getHostName());
     }
 
 }

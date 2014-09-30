@@ -28,11 +28,11 @@ import java.util.Date;
  */
 public class VmDeployed extends Vm {
 
-    private String id;
-    private String ipAddress;
-    private String state;
-    private Date created;
-    private String hostName;
+    private final String id;
+    private final String ipAddress;
+    private final String state;
+    private final Date created;
+    private final String hostName;
 
     public VmDeployed(String name, String image, int cpus, int ramMb,
             int diskGb, String initScript, String applicationId, String id,
