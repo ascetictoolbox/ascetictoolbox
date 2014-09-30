@@ -1,0 +1,10 @@
+org.clamshellcli.wattsup.WattsUpShell
+org.clamshellcli.wattsup.WattsUpSplashScreen
+org.clamshellcli.impl.CliConsole
+org.clamshellcli.wattsup.WattsUpPrompt
+org.clamshellcli.wattsup.WattsUpController
+org.clamshellcli.impl.CmdController
+org.clamshellcli.wattsup.ConnectCommand
+org.clamshellcli.impl.commands.ExitCmd
+org.clamshellcli.impl.commands.HelpCmd
+org.clamshellcli.impl.commands.SysInfoCmd

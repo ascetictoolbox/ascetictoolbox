@@ -1,0 +1,77 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>compss-xml-schemas</artifactId>
+    <groupId>integratedtoolkit</groupId>
+    <version>1.2</version>
+    <relativePath>..</relativePath>
+  </parent>
+  <artifactId>compss-project-schema</artifactId>
+  <name>Project Schema</name>
+  <description>Project schema</description>
+  
+  <build>
+		<finalName>${project.artifactId}</finalName>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
+				<configuration>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+                </configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.jvnet.jaxb2.maven2</groupId>
+				<artifactId>maven-jaxb2-plugin</artifactId>
+				<version>0.8.0</version>
+				<!-- groupId>org.codehaus.mojo</groupId>
+				<artifactId>jaxb2-maven-plugin</artifactId-->
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+							<!-- goal>xjc</goal-->
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<schemaDirectory>${basedir}</schemaDirectory>
+					<schemaFiles>project_schema.xsd</schemaFiles>
+					<generateDirectory>${basedir}/src/main/java/</generateDirectory>
+					<generatePackage>integratedtoolkit.types.project.jaxb</generatePackage>
+					<!-- outputDirectory>${basedir}/src/main/java/</outputDirectory>
+					<packageName>integratedtoolkit.types.project.jaxb</packageName-->
+				</configuration>
+			</plugin>
+			<!-- plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+			  	<artifactId>maven-shade-plugin</artifactId>
+			  	<version>${maven-shade-plugin.version}</version>
+			  	<executions>
+			    	<execution>
+			      		<phase>package</phase>
+			      		<goals>
+			        		<goal>shade</goal>
+			     	 	</goals>
+			      		<configuration>
+			        		<finalName>${project.artifactId}</finalName>
+			        		<filters>
+				      			<filter>
+									<artifact>*</artifact>
+					   				<excludes>
+					       				<exclude>META-INF/*.SF</exclude>
+					       				<exclude>META-INF/*.RSA</exclude>
+					       				<exclude>META-INF/*.INF</exclude>
+					   				</excludes>
+				       			</filter>
+			        		</filters>
+			      		</configuration>
+			    	</execution>
+			  	</executions>
+     		 </plugin-->
+     	</plugins>
+	</build>
+			
+</project>

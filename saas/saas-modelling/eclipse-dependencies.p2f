@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?p2f version='1.0.0'?>
+<p2f version='1.0.0'>
+  <ius size='14'>
+    <iu id='org.eclipse.acceleo.feature.group' name='Acceleo' version='3.4.2.201401221203'>
+      <repositories size='1'>
+        <repository location='http://download.eclipse.org/releases/kepler/'/>
+      </repositories>
+    </iu>
+    <iu id='org.eclipse.m2m.atl.sdk.feature.group' name='ATL SDK - ATLAS Transformation Language SDK' version='3.4.0.v201305211502'>
+      <repositories size='2'>
+        <repository location='http://download.eclipse.org/releases/kepler/'/>
+        <repository location='http://marketplace.obeonetwork.com/updates/od62/'/>
+      </repositories>
+    </iu>
+    <iu id='com.collabnet.subversion.merge.feature.feature.group' name='CollabNet Merge Client' version='4.0.2'>
+      <repositories size='1'>
+        <repository location='http://subclipse.tigris.org/update_1.10.x'/>
+      </repositories>
+    </iu>
+    <iu id='epp.package.modeling' name='Eclipse Modeling Tools' version='2.0.2.20140224-0000'>
+      <repositories size='1'>
+        <repository location='http://download.eclipse.org/releases/kepler/'/>
+      </repositories>
+    </iu>
+    <iu id='org.eclipse.graphiti.sdk.feature.feature.group' name='Graphiti SDK (Incubation)' version='0.10.2.v20140217-1225'>
+      <repositories size='1'>
+        <repository location='http://download.eclipse.org/releases/kepler/'/>
+      </repositories>
+    </iu>
+    <iu id='net.java.dev.jna.feature.group' name='JNA Library' version='3.5.2'>
+      <repositories size='1'>
+        <repository location='http://subclipse.tigris.org/update_1.10.x'/>
+      </repositories>
+    </iu>
+    <iu id='org.eclipse.modisco.sdk.feature.feature.group' name='MoDisco SDK (Incubation)' version='0.11.2.201401201005'>
+      <repositories size='1'>
+        <repository location='http://download.eclipse.org/releases/kepler/'/>
+      </repositories>
+    </iu>
+    <iu id='org.eclipse.papyrus.extra.sources.feature.feature.group' name='Papyrus Extra Binaries and Sources (Incubation)' version='0.10.2.v201402281314'>
+      <repositories size='2'>
+        <repository location='http://download.eclipse.org/modeling/mdt/papyrus/updates/nightly/kepler'/>
+        <repository location='http://download.eclipse.org/modeling/mdt/papyrus/updates/releases/kepler'/>
+      </repositories>
+    </iu>
+    <iu id='org.eclipse.papyrus.extra.feature.feature.group' name='Papyrus Extra Feature (Incubation)' version='0.10.2.v201402281314'>
+      <repositories size='2'>
+        <repository location='http://download.eclipse.org/modeling/mdt/papyrus/updates/nightly/kepler'/>
+        <repository location='http://download.eclipse.org/modeling/mdt/papyrus/updates/releases/kepler'/>
+      </repositories>
+    </iu>
+    <iu id='org.eclipse.papyrus.sdk.sources.feature.feature.group' name='Papyrus SDK Binaries and sources (Incubation)' version='0.10.2.v201402281227'>
+      <repositories size='2'>
+        <repository location='http://download.eclipse.org/modeling/mdt/papyrus/updates/nightly/kepler'/>
+        <repository location='http://download.eclipse.org/modeling/mdt/papyrus/updates/releases/kepler'/>
+      </repositories>
+    </iu>
+    <iu id='org.eclipse.papyrus.sdk.feature.feature.group' name='Papyrus UML (Incubation)' version='0.10.2.v201402281227'>
+      <repositories size='2'>
+        <repository location='http://download.eclipse.org/modeling/mdt/papyrus/updates/nightly/kepler'/>
+        <repository location='http://download.eclipse.org/modeling/mdt/papyrus/updates/releases/kepler'/>
+      </repositories>
+    </iu>
+    <iu id='org.eclipse.m2m.qvt.oml.sdk.feature.group' name='QVT Operational SDK' version='3.3.0.v20130611-0213'>
+      <repositories size='1'>
+        <repository location='http://download.eclipse.org/releases/kepler/'/>
+      </repositories>
+    </iu>
+    <iu id='org.eclipse.xpand.sdk.feature.group' name='Xpand SDK' version='1.4.0.v201306110406'>
+      <repositories size='1'>
+        <repository location='http://download.eclipse.org/releases/kepler/'/>
+      </repositories>
+    </iu>
+    <iu id='org.eclipse.xtext.sdk.feature.group' name='Xtext SDK' version='2.4.3.v201309030823'>
+      <repositories size='1'>
+        <repository location='http://download.eclipse.org/releases/kepler/'/>
+      </repositories>
+    </iu>
+  </ius>
+</p2f>

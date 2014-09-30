@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
+	<title>Bootply.com - 100983</title>
+	<meta name="generator" content="Bootply" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link href="lib/css/bootstrap.min.css" rel="stylesheet">
+	<!--[if lt IE 9]>
+	<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link href="lib/css/styles.css" rel="stylesheet">
+</head>
+<body ng-app="ApplicationMonitor" ng-controller="PageController as pageCtrl">
+<nav class="navbar navbar-default navbar-fixed-top" role="banner">
+	<div class="container">
+		<div class="navbar-header">
+			<button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a href="/" class="navbar-brand">Bootply</a>
+		</div>
+		<nav class="collapse navbar-collapse" role="navigation">
+			<ul class="nav navbar-nav">
+				<li>
+					<a href="#sec">Get Started</a>
+				</li>
+				<li>
+					<a href="#sec">Edit</a>
+				</li>
+				<li>
+					<a href="#sec">Visualize</a>
+				</li>
+				<li>
+					<a href="#sec">Prototype</a>
+				</li>
+			</ul>
+		</nav>
+	</div>
+</nav>
+
+<div id="masthead">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-7">
+				<h1>Bootstrap Sidebar
+					<p class="lead">With Affix and Scrollspy</p>
+				</h1>
+			</div>
+			<div class="col-md-5">
+				<div class="well well-lg">
+					<div class="row">
+						<div class="col-sm-6">
+							<img src="//placehold.it/180x100" class="img-responsive">
+						</div>
+						<div class="col-sm-6">
+							Some text here
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div><!--/container-->
+</div><!--/masthead-->
+
+
+
+<!--main-->
+<div class="container">
+	<div class="row" ng-include="pageCtrl.page"></div><!--/row-->
+</div><!--/container-->
+
+<footer>
+	<img src="img/ascetic.png"/>
+	<img src="img/bsc.png"/>
+</footer>
+
+
+<!-- script references -->
+<script src="lib/js/jquery.2.0.2.min.js"></script>
+<script src="lib/js/bootstrap.min.js"></script>
+<script src="lib/js/scripts.js"></script>
+<script src="lib/js/angular.min.js"></script>
+<script src="js/application-monitor.js"></script>
+<script src="js/dashboard.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,7 @@
+Time Written Out,Command,Finished,Working Directory,Standard In,Standard Out,Standard Error
+15:10:48,java -jar ISQoSTestApp.jar 5 5 30,false,C:\Users\Richard\Documents\University Work\Research\ASCETiC\ProjectSVN\trunk\utils\wattsup\.,,test.out,error.out
+15:11:19,java -jar ISQoSTestApp.jar 5 5 30,true,C:\Users\Richard\Documents\University Work\Research\ASCETiC\ProjectSVN\trunk\utils\wattsup\.,,test.out,error.out
+15:12:28,java -jar ISQoSTestApp.jar 5 5 31,false,C:\Users\Richard\Documents\University Work\Research\ASCETiC\ProjectSVN\trunk\utils\wattsup\.,,test.out,error.out
+15:13:00,java -jar ISQoSTestApp.jar 5 5 31,true,C:\Users\Richard\Documents\University Work\Research\ASCETiC\ProjectSVN\trunk\utils\wattsup\.,,test.out,error.out
+15:14:29,java -jar ISQoSTestApp.jar 5 5 32,false,C:\Users\Richard\Documents\University Work\Research\ASCETiC\ProjectSVN\trunk\utils\wattsup\.,,test.out,error.out
+15:15:02,java -jar ISQoSTestApp.jar 5 5 32,true,C:\Users\Richard\Documents\University Work\Research\ASCETiC\ProjectSVN\trunk\utils\wattsup\.,,test.out,error.out

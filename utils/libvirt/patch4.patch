@@ -1,0 +1,88 @@
+src/main/java/eu/optimis/vc/libvirt/Connect.java     |   24 ------------------------
+ src/main/java/eu/optimis/vc/libvirt/jna/Libvirt.java |   22 +++++++++++++++++-----
+ 2 files changed, 17 insertions(+), 29 deletions(-)
+
+diff --git a/src/main/java/eu/optimis/vc/libvirt/Connect.java
+b/src/main/java/eu/optimis/vc/libvirt/Connect.java
+index eecad06..b26fca4 100644
+--- a/src/main/java/eu/optimis/vc/libvirt/Connect.java
++++ b/src/main/java/eu/optimis/vc/libvirt/Connect.java
+@@ -318,30 +318,6 @@ public class Connect {
+     }
+
+     /**
+-     * Adds a callback to receive notifications of arbitrary domain events
+-     * occurring on a domain.
+-     *
+-     * @see <a
+-     * href="http://www.libvirt.org/html/libvirt-libvirt.html#virConnectDomainEventRegisterAny">Libvirt
+-     *      Documentation</a>
+-     * @param domain
+-     *            option domain to limit the events monitored
+-     * @param eventId
+-     *            the events to monitor
+-     * @param cb
+-     *            the callback function to use.
+-     * @return The return value from this method is a positive integer
+-     *         identifier for the callback.
+-     * @throws LibvirtException on failure
+-     */
+-    public int domainEventRegisterAny(Domain domain, int eventId, Libvirt.VirConnectDomainEventGenericCallback cb)
+-            throws LibvirtException {
+-        DomainPointer ptr = domain == null ? null : domain.VDP;
+-        int returnValue = libvirt.virConnectDomainEventRegisterAny(VCP, ptr, eventId, cb, null, null);
+-        return processError(returnValue);
+-    }
+-
+-    /**
+      * Registers a default event implementation based on the poll()
+      * system call.
+      * <p>
+diff --git a/src/main/java/eu/optimis/vc/libvirt/jna/Libvirt.java
+b/src/main/java/eu/optimis/vc/libvirt/jna/Libvirt.java
+index 69ec221..29db556 100644
+--- a/src/main/java/eu/optimis/vc/libvirt/jna/Libvirt.java
++++ b/src/main/java/eu/optimis/vc/libvirt/jna/Libvirt.java
+@@ -65,6 +65,19 @@ public interface Libvirt extends Library {
+     }
+
+     /**
++     * Domain Event Callbacks
++     */
++
++    /**
++     * Common Event Callback super interface.
++     *
++     * All domain event callbacks extend this interface.
++     *
++     * @see #virConnectDomainEventRegisterAny
++     */
++    interface VirDomainEventCallback extends Callback {}
++
++    /**
+      * Error callback
+      */
+     interface VirErrorCallback extends Callback {
+@@ -93,10 +106,6 @@ public interface Libvirt extends Library {
+         void freeCallback(Pointer opaque) ;
+     }
+
+-    interface VirConnectDomainEventGenericCallback extends Callback {
+-        void eventCallback(ConnectionPointer virConnectPtr, DomainPointer virDomainPointer, Pointer opaque) ;
+-    }
+-
+     Libvirt INSTANCE = (Libvirt) Native.loadLibrary("virt", Libvirt.class);
+
+     // Constants we need
+@@ -117,7 +126,10 @@ public interface Libvirt extends Library {
+     int virConnCopyLastError(ConnectionPointer virConnectPtr, virError to);
+     int virConnectClose(ConnectionPointer virConnectPtr);
+     int virConnectCompareCPU(ConnectionPointer virConnectPtr, String xmlDesc, int flags);
+-    int virConnectDomainEventRegisterAny(ConnectionPointer virConnectPtr, DomainPointer virDomainPtr, int eventID, Libvirt.VirConnectDomainEventGenericCallback cb, Pointer opaque, Libvirt.VirFreeCallback freecb);
++
++    // Register Domain Event Callbacks
++    int virConnectDomainEventRegisterAny(ConnectionPointer virConnectPtr, DomainPointer virDomainPtr, int eventID, VirDomainEventCallback cb, Pointer opaque, Libvirt.VirFreeCallback freecb);
++
+     int virConnectDomainEventDeregisterAny(ConnectionPointer virConnectPtr, int callbackID) ;
+     void virConnSetErrorFunc(ConnectionPointer virConnectPtr, Pointer userData, VirErrorCallback callback);
+     int virConnectIsAlive(ConnectionPointer virConnectPtr);

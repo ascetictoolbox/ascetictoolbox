@@ -1,0 +1,107 @@
+####### Default logging level: for ProActive and JavaGAT
+
+log4j.rootLogger=OFF, ACON_SIMPLE
+#log4j.rootLogger=DEBUG, AFILE
+
+
+####### IT Loggers
+## Change default logging level: log4j.logger.loggerName = Level, Appender
+
+# Integrated Toolkit: by default at info level
+log4j.logger.integratedtoolkit=OFF, ACON_SIMPLE
+log4j.additivity.integratedtoolkit=false
+
+# Loader: by default turned off
+log4j.logger.integratedtoolkit.Loader=, ACON_SIMPLE
+log4j.additivity.integratedtoolkit.Loader=false
+
+# API: by default inherited from IT general logger
+log4j.logger.integratedtoolkit.API=INFO, ACON_SIMPLE
+log4j.additivity.integratedtoolkit.API=false
+
+# All Resources Monitoring
+log4j.logger.integratedtoolkit.resources=, AFILE_SIMPLE
+log4j.additivity.integratedtoolkit.resources=false
+
+# Cloud connectors
+log4j.logger.integratedtoolkit.connectors=, AFILE
+log4j.additivity.integratedtoolkit.connectors=false
+
+# All components: by default at info level
+log4j.logger.integratedtoolkit.components=INFO, AFILE
+log4j.additivity.integratedtoolkit.components=false
+
+# Particular components: by default inherited from parent all components logger
+log4j.logger.integratedtoolkit.components.TaskProcessor=, AFILE
+log4j.additivity.integratedtoolkit.components.TaskProcessor=false
+
+log4j.logger.integratedtoolkit.components.TaskDispatcher=, AFILE
+log4j.additivity.integratedtoolkit.components.TaskDispatcher=false
+
+#Task Processing subcomponents
+log4j.logger.integratedtoolkit.components.TaskProcessor.TaskAnalyser=, AFILE
+log4j.additivity.integratedtoolkit.components.TaskProcessor.TaskAnalyser=false
+
+log4j.logger.integratedtoolkit.components.TaskProcessor.DataInfoProvider=, AFILE
+log4j.additivity.integratedtoolkit.components.TaskProcessor.DataInfoProvider=false
+
+# Task Dispatching subcomponents
+log4j.logger.integratedtoolkit.components.TaskDispatcher.TaskScheduler=, AFILE
+log4j.additivity.integratedtoolkit.components.TaskDispatcher.TaskScheduler=false
+
+log4j.logger.integratedtoolkit.components.TaskDispatcher.JobManager=, AFILE
+log4j.additivity.integratedtoolkit.components.TaskDispatcher.JobManager=false
+
+log4j.logger.integratedtoolkit.components.TaskDispatcher.FileTransferManager=, AFILE
+log4j.additivity.integratedtoolkit.components.TaskDispatcher.FileTransferManager=false
+
+# Worker: by default OFF, can be OFF or ALL
+log4j.logger.integratedtoolkit.Worker=, ACON_SIMPLE
+log4j.additivity.integratedtoolkit.Worker=false
+
+
+####### Disable all logging for the entire hierarchy
+#log4j.threshold=off 
+
+####### Appenders and Layouts
+
+# ACON: ConsoleAppender, PatternLayout
+log4j.appender.ACON=org.apache.log4j.ConsoleAppender
+log4j.appender.ACON.layout=org.apache.log4j.PatternLayout
+log4j.appender.ACON.layout.ConversionPattern=[%c{1}]    %C{1}@%M  -  %m%n
+#log4j.appender.ACON.layout.ConversionPattern=[%t] %-5p %c{2} %x - %m%n
+#log4j.appender.ACON.layout.ConversionPattern=%c - %C{1}@%M,line %L :%n %m%n
+
+# ACON_SIMPLE: ConsoleAppender, PatternLayout
+log4j.appender.ACON_SIMPLE=org.apache.log4j.ConsoleAppender
+log4j.appender.ACON_SIMPLE.layout=org.apache.log4j.PatternLayout
+log4j.appender.ACON_SIMPLE.layout.ConversionPattern=[%6c{1}]  -  %m%n
+
+# AFILE: FileAppender, PatternLayout
+log4j.appender.AFILE=org.apache.log4j.FileAppender
+log4j.appender.AFILE.append=false
+log4j.appender.AFILE.File=${it.log.root}.it.log
+log4j.appender.AFILE.layout=org.apache.log4j.PatternLayout
+#log4j.appender.AFILE.layout.ConversionPattern=[%19c{1}]    @%-15.15M  -  %m%n
+#log4j.appender.AFILE.layout.ConversionPattern=[%c{1}] - %m %n
+log4j.appender.AFILE.layout.ConversionPattern=[(%r)(%d) %19c{1}]    @%-15.15M  -  %m%n
+
+
+# AFILE_SIMPLE: FileAppender, PatternLayout
+log4j.appender.AFILE_SIMPLE=org.apache.log4j.FileAppender
+log4j.appender.AFILE_SIMPLE.append=false
+log4j.appender.AFILE_SIMPLE.File=${it.log.root}.resources.log
+log4j.appender.AFILE_SIMPLE.layout=org.apache.log4j.PatternLayout
+log4j.appender.AFILE_SIMPLE.layout.ConversionPattern=%m%n
+
+
+## Syntax
+# - %c : name of logger
+# - %C : name of the class
+# - %L : line number
+# - %m : associated message
+# - %M : method name
+# - %n : platform dependant separator
+# - %r : milliseconds since start of application
+# - %d : date
+

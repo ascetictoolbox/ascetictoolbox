@@ -1,0 +1,57 @@
+<!--
+Copyright (C) 2013-2014  Barcelona Supercomputing Center
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+-->
+
+<!DOCTYPE html>
+<html ng-app="vmmanager">
+    <head ng-include src="'views/common/head.html'"></head>
+    <body>
+        <div ng-include src="'views/common/navbar.html'"></div>
+        <div class="container-fluid">
+            <div class="row">
+                <div ng-include src="'views/common/sidebar.html'"></div>
+                <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                    <div ng-view></div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script src="http://getbootstrap.com/dist/js/bootstrap.min.js"></script>
+        <script src="http://getbootstrap.com/assets/js/docs.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-rc.0/angular.min.js"></script>
+        <script src='https://code.angularjs.org/1.3.0-rc.0/angular-route.min.js'></script>
+        <script src='https://code.angularjs.org/1.3.0-rc.0/angular-animate.min.js'></script>
+        <script src="http://code.highcharts.com/highcharts.js"></script>
+        <script src="http://code.highcharts.com/highcharts-3d.js"></script>
+        <script src="http://code.highcharts.com/modules/exporting.js"></script>
+        <script src="app.js"></script>
+        <script src="services/services.js"></script>
+        <script src="services/hostService.js"></script>
+        <script src="services/imageService.js"></script>
+        <script src="services/logService.js"></script>
+        <script src="services/schedulingAlgService.js"></script>
+        <script src="services/vmService.js"></script>
+        <script src="controllers/controllers.js"></script>
+        <script src="controllers/vmManagerCtrl.js"></script>
+        <script src="controllers/schedulingAlgCtrl.js"></script>
+        <script src="controllers/imageCtrl.js"></script>
+        <script src="controllers/hostCtrl.js"></script>
+        <script src="controllers/logsCtrl.js"></script>
+        <script src="controllers/sidebarCtrl.js"></script>
+    </body>
+</html>

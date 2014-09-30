@@ -1,0 +1,541 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>eu.ascetic</groupId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+		<artifactId>paas</artifactId>
+	</parent> 
+
+
+	<groupId>eu.ascetic.paas</groupId>
+	<artifactId>application-manager</artifactId>
+	<version>0.2-SNAPSHOT</version>
+	<packaging>war</packaging>
+
+	<name>Application Manager</name>
+	<url>http://www.ascetic.eu</url>
+
+	<ciManagement>
+		<system>hudson</system>
+		<url>https://ascetic-jenkins.cit.tu-berlin.de/job/${jenkins.project.name}</url>
+		<notifiers>
+			<notifier>
+				<type>mail</type>
+				<configuration>
+					<recipients>david.garciaperez@atos.net david.rojoa@atos.net</recipients>
+				</configuration>
+				<sendOnError>true</sendOnError>
+				<sendOnFailure>true</sendOnFailure>
+				<sendOnSuccess>false</sendOnSuccess>
+				<sendOnWarning>false</sendOnWarning>
+			</notifier>
+		</notifiers>
+	</ciManagement>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<jersey-version>1.18.1</jersey-version>
+		<spring-version>3.2.9.RELEASE</spring-version>
+		<hibernate-version>4.3.5.Final</hibernate-version>
+	</properties>
+
+
+	<build>
+		<plugins>
+			<plugin>
+      			<groupId>org.commonjava.maven.plugins</groupId>
+      			<artifactId>directory-maven-plugin</artifactId>
+      			<version>0.1</version>
+      			<executions>
+        			<execution>
+          				<id>directories</id>
+          				<goals>
+            				<goal>highest-basedir</goal>
+          				</goals>
+          				<phase>initialize</phase>
+          				<configuration>
+            				<property>myDirectory</property>
+          				</configuration>
+        			</execution>
+      			</executions>
+    		</plugin>
+    		<plugin>
+      			<artifactId>maven-antrun-plugin</artifactId>
+      			<version>1.7</version>
+      			<executions>
+        			<execution>
+          				<id>echo</id>
+          			<phase>initialize</phase>
+          			<goals>
+            			<goal>run</goal>
+          			</goals>
+          		<configuration>
+            		<target>
+              			<echo>Test Configuration Directory: ${myDirectory}</echo>
+            		</target>
+          		</configuration>
+        		</execution>
+      		</executions>
+    		</plugin>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.3</version>
+				<configuration>
+					<webXml>${project.basedir}/src/main/webapp/WEB-INF/web.xml</webXml>
+				</configuration>
+			</plugin>
+			<plugin>
+				<!-- Default jar with main method to run unit tests on testbed. -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
+				<configuration>
+					<show>private</show>
+					<nohelp>true</nohelp>
+				</configuration>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.axis2</groupId>
+				<artifactId>axis2-wsdl2code-maven-plugin</artifactId>
+				<!-- version>1.6.2</version -->
+				<version>1.5.6</version>
+				<configuration>
+					<packageName>eu.ascetic.applicationmanager.slam.stub</packageName>
+					<outputDirectory>src/main/java</outputDirectory>
+					<databindingName>adb</databindingName>
+					<flattenFiles>true</flattenFiles>
+					<!-- generateServerSide>true</generateServerSide -->
+					<wsdlFile>${myDirectory}/paas/application-manager/src/main/resources/ProviderNegotiation.wsdl</wsdlFile>
+					<serverSide>false</serverSide>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>wsdl2code</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>	
+		</plugins>
+	</build>
+	
+	<repositories>
+                <repository>
+                <id>slasoi-hp-snapshots</id>
+                <name>SLA@SOI SOURCEFORGE repository for snapshots</name>
+                <url>http://sourceforge.net/projects/contra-slaatsoi/files/m2-repo-snapshot/</url>
+                <releases>
+                        <enabled>false</enabled>
+                </releases>
+                <snapshots>
+                        <enabled>true</enabled>
+                </snapshots>
+        </repository>
+
+        <repository>
+                <id>slasoi-hp-releases</id>
+                <name>SLA@SOI SOURCEFORGE repository for releases</name>
+                <url>http://sourceforge.net/projects/contra-slaatsoi/files/m2-repo/</url>
+                <releases>
+                        <enabled>true</enabled>
+                </releases>
+                <snapshots>
+                        <enabled>false</enabled>
+                </snapshots>
+        </repository>
+	</repositories>	
+
+	<dependencies>
+
+		<!-- ASCETiC Dependencies -->
+		<dependency>
+			<groupId>eu.ascetic.paas</groupId>
+			<artifactId>application-manager-datamodel</artifactId>
+			<version>0.9-SNAPSHOT</version>
+		</dependency>
+		
+			<!-- OVF LIBRARIES -->
+		<dependency>
+			<groupId>eu.ascetic.utils</groupId>
+			<artifactId>ovf-xmlbeans</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>eu.ascetic.utils</groupId>
+			<artifactId>ovf-xmlbeans-api</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+			<!--  VM Contextualizer -->
+		<dependency>
+			<groupId>eu.ascetic.paas</groupId>
+			<artifactId>virtual-machine-contextualizer</artifactId>
+			<version>3.3.0-SNAPSHOT</version>
+		</dependency>
+		
+			<!-- PaaS Energy Modeller -->
+		<dependency>
+			<groupId>eu.ascetic.paas</groupId>
+			<artifactId>paas-energy-modeller</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
+		    <!-- PaaS SLAM -->
+		
+		<dependency>
+ 			<groupId>org.slasoi.generic-slamanager.syntaxconverter</groupId>
+ 			<artifactId>gslam-syntaxconverter</artifactId>
+ 			<version>0.1-SNAPSHOT</version>
+ 			<exclusions>
+        		<exclusion>  
+          			<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+        		</exclusion>
+        		<exclusion>  
+          			<groupId>junit</groupId>
+					<artifactId>junit</artifactId>
+        		</exclusion>
+        	    <exclusion>  
+          			<groupId>org.springframework</groupId>
+					<artifactId>org.springframework.aop</artifactId>
+        		</exclusion>
+        		<exclusion>  
+          			<groupId>org.springframework</groupId>
+					<artifactId>org.springframework.beans</artifactId>
+        		</exclusion>
+        		<exclusion>  
+          			<groupId>org.springframework</groupId>
+					<artifactId>org.springframework.core</artifactId>
+        		</exclusion>
+        		<exclusion>  
+          			<groupId>org.springframework.osgi</groupId>
+					<artifactId>spring-osgi-core</artifactId>
+        		</exclusion>
+        		<exclusion>  
+          			<groupId>org.springframework.osgi</groupId>
+					<artifactId>spring-osgi-io</artifactId>
+        		</exclusion>
+        		 <exclusion>  
+          			<groupId>org.springframework</groupId>
+					<artifactId>org.springframework.context</artifactId>
+        		</exclusion>
+        		<exclusion>  
+          			<groupId>org.aopalliance</groupId>
+					<artifactId>com.springsource.org.aopalliance</artifactId>
+        		</exclusion>
+        		<exclusion>  
+          			<groupId>org.springframework</groupId>
+					<artifactId>spring-context</artifactId>
+        		</exclusion>
+        		<exclusion>  
+          			<groupId>org.springframework.osgi</groupId>
+					<artifactId>spring-osgi-annotation</artifactId>
+        		</exclusion>
+        		<exclusion>  
+          			<groupId>org.springframework</groupId>
+					<artifactId>spring</artifactId>
+        		</exclusion>
+      		</exclusions> 
+		</dependency> 
+		
+		<dependency>
+			<groupId>org.slasoi.models</groupId>
+ 			<artifactId>slamodel</artifactId>
+ 			<version>0.6-SNAPSHOT</version>
+ 			<exclusions>
+        		<exclusion>  
+          			<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+        		</exclusion>
+        		<exclusion>  
+          			<groupId>junit</groupId>
+					<artifactId>junit</artifactId>
+        		</exclusion>
+        	    <exclusion>  
+          			<groupId>org.hamcrest</groupId>
+					<artifactId>hamcrest-core</artifactId>
+        		</exclusion>
+      		</exclusions> 
+		</dependency>
+		
+		<dependency>
+			<groupId>xmlunit</groupId>
+			<artifactId>xmlunit</artifactId>
+			<version>1.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>stax</groupId>
+			<artifactId>stax-api</artifactId>
+			<version>1.0.1</version>
+		</dependency>
+		
+		<dependency>
+        	<groupId>org.apache.axis2</groupId>
+          	<artifactId>axis2</artifactId>
+          	<version>1.5.6</version>
+    	</dependency>
+    	
+    	<dependency>
+			<groupId>org.apache.ws.commons.axiom</groupId>
+			<artifactId>axiom-api</artifactId>
+			<version>1.2.9</version>
+		</dependency>
+    	
+    	<dependency>
+			<groupId>org.apache.ws.commons.axiom</groupId>
+			<artifactId>axiom-c14n</artifactId>
+			<version>1.2.9</version>
+		</dependency>
+    	
+    	<dependency>
+			<groupId>org.apache.ws.commons.axiom</groupId>
+			<artifactId>axiom-dom</artifactId>
+			<version>1.2.9</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.ws.commons.axiom</groupId>
+			<artifactId>axiom-impl</artifactId>
+			<version>1.2.9</version>
+		</dependency>
+			
+    	
+    	<!-- Pricing Modeller -->
+    	<dependency>
+    	    <groupId>eu.ascetic.paas</groupId>
+        	<artifactId>paas-pricing-modeller</artifactId>
+        	<version>1.0-SNAPSHOT</version>
+       </dependency>
+    	
+
+		<!-- General -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
+
+		<!-- Test -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jdom</groupId>
+			<artifactId>jdom</artifactId>
+			<version>1.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>jaxen</groupId>
+			<artifactId>jaxen</artifactId>
+			<version>1.1.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<version>2.3.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.9.5</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<!-- VM manager -->
+		<dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.1</version>
+        </dependency>
+        		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore</artifactId>
+			<version>4.3.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpmime</artifactId>
+			<version>4.3.2</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-configuration</groupId>
+			<artifactId>commons-configuration</artifactId>
+			<version>1.7</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.2.4</version>
+		</dependency>
+
+		<!-- Jersey + Spring -->
+		<dependency>
+			<groupId>com.sun.jersey.contribs</groupId>
+			<artifactId>jersey-spring</artifactId>
+			<version>${jersey-version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-web</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-beans</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-aop</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- Spring 3 dependencies -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<version>${spring-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${spring-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${spring-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>${spring-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${spring-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring-version}</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<!-- Hibernate -->
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>${hibernate-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>${hibernate-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-c3p0</artifactId>
+			<version>${hibernate-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.1-api</artifactId>
+		</dependency>
+
+		<!-- Mysql connector -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+		
+	</dependencies>
+</project>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plannerBenchmark>
+    <benchmarkDirectory>local/data/vmplacement</benchmarkDirectory>
+    <parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
+    <warmUpSecondsSpend>30</warmUpSecondsSpend>
+
+    <inheritedSolverBenchmark>
+        <problemBenchmarks>
+            <xstreamAnnotatedClass>es.bsc.vmplacement.domain.ClusterState</xstreamAnnotatedClass>
+            <inputSolutionFile>data/vmplacement/unsolved/vmplacement.xml</inputSolutionFile>
+            <inputSolutionFile>data/vmplacement/unsolved/vmplacement2.xml</inputSolutionFile>
+            <inputSolutionFile>data/vmplacement/unsolved/vmplacement3.xml</inputSolutionFile>
+            <!--<inputSolutionFile>data/vmplacement/unsolved/vmplacement4.xml</inputSolutionFile>
+            <inputSolutionFile>data/vmplacement/unsolved/vmplacement5.xml</inputSolutionFile>-->
+            <writeOutputSolutionEnabled>true</writeOutputSolutionEnabled>
+            <problemStatisticType>BEST_SCORE</problemStatisticType>
+            <problemStatisticType>STEP_SCORE</problemStatisticType>
+        </problemBenchmarks>
+        <solver>
+            <solutionClass>es.bsc.vmplacement.domain.ClusterState</solutionClass>
+            <planningEntityClass>es.bsc.vmplacement.domain.Vm</planningEntityClass>
+            <scoreDirectorFactory>
+                <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
+                <simpleScoreCalculatorClass>es.bsc.vmplacement.scorecalculators.ScoreCalculatorConsolidation</simpleScoreCalculatorClass>
+            </scoreDirectorFactory>
+            <termination>
+                <maximumSecondsSpend>60</maximumSecondsSpend>
+            </termination>
+        </solver>
+    </inheritedSolverBenchmark>
+
+      <solverBenchmark>
+        <name>FIRST_FIT</name>
+        <solver>
+          <constructionHeuristic>
+            <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+            <forager>
+              <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
+            </forager>
+          </constructionHeuristic>
+        </solver>
+      </solverBenchmark>
+      <solverBenchmark>
+        <name>FIRST_FIT_DECREASING</name>
+        <solver>
+          <constructionHeuristic>
+            <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+            <forager>
+              <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
+            </forager>
+          </constructionHeuristic>
+        </solver>
+      </solverBenchmark>
+      <solverBenchmark>
+        <name>BEST_FIT</name>
+        <solver>
+          <constructionHeuristic>
+            <constructionHeuristicType>BEST_FIT</constructionHeuristicType>
+            <forager>
+              <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
+            </forager>
+          </constructionHeuristic>
+        </solver>
+      </solverBenchmark>
+      <solverBenchmark>
+        <name>BEST_FIT_DECREASING</name>
+        <solver>
+          <constructionHeuristic>
+            <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
+            <forager>
+              <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
+            </forager>
+          </constructionHeuristic>
+        </solver>
+      </solverBenchmark>
+
+    <#list ["FIRST_FIT", "FIRST_FIT_DECREASING"] as constructionHeuristicType>
+    <#list [5, 10] as entityTabuSize>
+    <#list [500] as acceptedCountLimit>
+    <solverBenchmark>
+        <name>entityTabuSize ${entityTabuSize} acceptedCountLimit ${acceptedCountLimit} construction ${constructionHeuristicType}</name>
+        <solver>
+            <constructionHeuristic>
+                <constructionHeuristicType>${constructionHeuristicType}</constructionHeuristicType>
+                <forager>
+                    <pickEarlyType>NEVER</pickEarlyType>
+                </forager>
+            </constructionHeuristic>
+            <localSearch>
+                <acceptor>
+                    <entityTabuSize>${entityTabuSize}</entityTabuSize>
+                </acceptor>
+                <forager>
+                    <acceptedCountLimit>${acceptedCountLimit}</acceptedCountLimit>
+                </forager>
+            </localSearch>
+        </solver>
+    </solverBenchmark>
+    </#list>
+    </#list>
+    </#list>
+</plannerBenchmark>

@@ -1,0 +1,85 @@
+#!/bin/bash -e
+
+mode=$1
+
+PKGNAME=`cat $mode/control | grep 'Package:' | tail -n 1 | cut -d ":" -f2- | cut -d " " -f2-`
+PKGVERSION=`cat $mode/control | grep 'Version:' | tail -n 1 | cut -d ":" -f2- | cut -d " " -f2-`
+
+if [ -d tmp ] ;
+then
+    rm -rf tmp
+fi
+
+scriptDir=`dirname $0`
+IT_HOME=$scriptDir/../../../../compss/compss-rt
+
+echo " * Building COMP Superscalar Framework..."
+echo " "
+cd $IT_HOME/..
+mvn clean package
+cd - 
+echo " "
+
+mkdir -p COMPSs/Runtime
+mkdir -p COMPSs/Runtime/rt
+#mkdir -p COMPSs/Runtime/rt/connectors
+mkdir -p COMPSs/Runtime/xml
+mkdir -p COMPSs/Runtime/xml/projects
+mkdir -p COMPSs/Runtime/xml/resources
+mkdir -p COMPSs/Runtime/xml/monitor
+mkdir -p COMPSs/JAVA_GAT/lib
+mkdir -p COMPSs/Monitor
+mkdir -p etc/profile.d
+
+cp -rf $IT_HOME/../../doc/ COMPSs/
+cp -rf $IT_HOME/../../files/JAVA_GAT/lib/adaptors COMPSs/JAVA_GAT/lib/
+
+cp -rf $IT_HOME/rt/target/*.jar COMPSs/Runtime/rt/
+cp -rf $IT_HOME/rt/target/lib COMPSs/Runtime/rt/
+
+#Copying included connectors
+#cp -rf $IT_HOME/../compss-connectors/emotive/target/compss-*.jar COMPSs/Runtime/rt/connectors/
+#cp -rf $IT_HOME/../compss-connectors/one/target/compss-*.jar COMPSs/Runtime/rt/connectors/
+#cp -rf $IT_HOME/../compss-connectors/rocci/target/compss-*.jar COMPSs/Runtime/rt/connectors/
+#cp -rf $IT_HOME/../compss-connectors/amazon/target/compss-*.jar COMPSs/Runtime/rt/connectors/
+#cp -rf $IT_HOME/../compss-connectors/azure/target/compss-*.jar COMPSs/Runtime/rt/connectors/
+
+cp -rf $IT_HOME/../../LICENSE COMPSs/Runtime/
+cp -rf $IT_HOME/log COMPSs/Runtime/
+cp -rf $IT_HOME/scripts COMPSs/Runtime/
+
+cp -rf $IT_HOME/xml/projects/project_schema.xsd COMPSs/Runtime/xml/projects/
+cp -rf $IT_HOME/xml/projects/project.xml COMPSs/Runtime/xml/projects/
+cp -rf $IT_HOME/xml/projects/examples COMPSs/Runtime/xml/projects/
+
+cp -rf $IT_HOME/xml/resources/resource_schema.xsd COMPSs/Runtime/xml/resources/
+cp -rf $IT_HOME/xml/resources/resources.xml COMPSs/Runtime/xml/resources/
+cp -rf $IT_HOME/xml/resources/examples COMPSs/Runtime/xml/resources/
+
+cp -rf $IT_HOME/xml/monitor COMPSs/Runtime/xml/
+cp -rf $IT_HOME/xml/templates COMPSs/Runtime/xml/
+
+cp -rf $IT_HOME/../compss-monitor/target/*.war COMPSs/Monitor/
+
+echo "export PATH=\$PATH:/opt/COMPSs/Runtime/scripts/user" > etc/profile.d/compss.sh
+#echo -e "for i in /opt/COMPSs/Runtime/rt/connectors/*.jar ; do\n\texport CLASSPATH=\$CLASSPATH:\$i\ndone" >> etc/profile.d/compss.sh
+
+find COMPSs -name .svn -print0 | xargs -0 rm -rf
+
+mkdir -p tmp/DEBIAN
+chmod 755 .
+cp $mode/control tmp/DEBIAN/control
+cp preinst tmp/DEBIAN/preinst
+cp postinst tmp/DEBIAN/postinst
+cp postrm tmp/DEBIAN/postrm
+
+awk '/./ { print "test -d tmp/`dirname " $2 "` || mkdir -p tmp/`dirname " $2 "` && cp -r ../" $1 " tmp/" $2 }' files | sh
+
+if [ $? == 0 ];
+then
+	dpkg -b tmp $PKGNAME-$PKGVERSION-$mode.deb
+	rm -rf tmp
+	rm -rf COMPSs
+	mkdir -p $scriptDir/../../../packages/deb/compss-framework 
+	mv $PKGNAME-$PKGVERSION-$mode.deb $scriptDir/../../../packages/deb/compss-framework
+fi

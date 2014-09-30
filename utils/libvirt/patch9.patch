@@ -1,0 +1,113 @@
+ src/main/java/eu/optimis/vc/libvirt/Connect.java     |   43 ++++++++++++++++++++++++++++
+ src/main/java/eu/optimis/vc/libvirt/Domain.java      |   18 ++++++++++++
+ src/main/java/eu/optimis/vc/libvirt/jna/Libvirt.java |    4 +++
+ 3 files changed, 65 insertions(+)
+
+diff --git a/src/main/java/eu/optimis/vc/libvirt/Connect.java
+b/src/main/java/eu/optimis/vc/libvirt/Connect.java
+index b7befc4..380aca2 100644
+--- a/src/main/java/eu/optimis/vc/libvirt/Connect.java
++++ b/src/main/java/eu/optimis/vc/libvirt/Connect.java
+@@ -60,6 +60,12 @@ public class Connect {
+                            String devAlias,
+                            int action);
+         }
++
++        public interface RebootCallback {
++            final int eventID = DomainEventID.REBOOT;
++
++            void onReboot(Connect connect, Domain domain);
++        }
+     }
+
+     /**
+@@ -432,6 +438,43 @@ public class Connect {
+         return domainEventRegister(null, cb);
+     }
+
++    int domainEventRegister(Domain domain, final DomainEvent.RebootCallback cb) throws LibvirtException {
++        if (cb == null)
++            throw new IllegalArgumentException("RebootCallback cannot be null");
++
++        Libvirt.VirConnectDomainEventGenericCallback virCB = new Libvirt.VirConnectDomainEventGenericCallback() {
++                @Override
++                public void eventCallback(ConnectionPointer virConnectPtr,
++                                          DomainPointer virDomainPointer,
++                                          com.sun.jna.Pointer opaque)
++                {
++                    assert(VCP.equals(virConnectPtr));
++                    Domain d = new Domain(Connect.this, virDomainPointer);
++                    cb.onReboot(Connect.this, d);
++                }
++            };
++
++        return domainEventRegister(domain, cb.eventID, virCB);
++    }
++
++    /**
++     * Adds a callback to receive notifications of Reboot domain events
++     * occurring on an arbitrary domain.
++     *
++     * @see <a
++     * href="http://www.libvirt.org/html/libvirt-libvirt.html#virConnectDomainEventRegisterAny">Libvirt
++     *      Documentation</a>
++     * @param cb
++     *            the RebootCallback instance
++     * @return The return value from this method is a positive integer identifier for the callback.
++     * @throws LibvirtException on failure
++     */
++    public int domainEventRegister(final DomainEvent.RebootCallback cb)
++        throws LibvirtException
++    {
++        return domainEventRegister(null, cb);
++    }
++
+     /**
+      * Finds a domain based on the hypervisor ID number.
+      *
+diff --git a/src/main/java/eu/optimis/vc/libvirt/Domain.java
+b/src/main/java/eu/optimis/vc/libvirt/Domain.java
+index 7d31326..650018f 100644
+--- a/src/main/java/eu/optimis/vc/libvirt/Domain.java
++++ b/src/main/java/eu/optimis/vc/libvirt/Domain.java
+@@ -881,6 +881,24 @@ public class Domain {
+     }
+
+     /**
++     * Adds a callback to receive notifications of Reboot domain events
++     * occurring on this domain.
++     *
++     * @see <a
++     * href="http://www.libvirt.org/html/libvirt-libvirt.html#virConnectDomainEventRegisterAny">Libvirt
++     *      Documentation</a>
++     * @param cb
++     *            the RebootCallback instance
++     * @return The return value from this method is a positive integer identifier for the callback.
++     * @throws LibvirtException on failure
++     */
++    public int domainEventRegister(final Connect.DomainEvent.RebootCallback cb)
++        throws LibvirtException
++    {
++        return virConnect.domainEventRegister(this, cb);
++    }
++
++    /**
+      * Revert the domain to a given snapshot.
+      *
+      * @see <a href=
+diff --git a/src/main/java/eu/optimis/vc/libvirt/jna/Libvirt.java
+b/src/main/java/eu/optimis/vc/libvirt/jna/Libvirt.java
+index 5791ee3..566cff6 100644
+--- a/src/main/java/eu/optimis/vc/libvirt/jna/Libvirt.java
++++ b/src/main/java/eu/optimis/vc/libvirt/jna/Libvirt.java
+@@ -85,6 +85,10 @@ public interface Libvirt extends Library {
+                            Pointer opaque);
+     }
+
++    interface VirConnectDomainEventGenericCallback extends VirDomainEventCallback {
++        void eventCallback(ConnectionPointer virConnectPtr, DomainPointer virDomainPointer, Pointer opaque);
++    }
++
+     /**
+      * Error callback
+      */

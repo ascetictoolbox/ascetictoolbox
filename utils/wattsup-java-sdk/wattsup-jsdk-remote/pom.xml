@@ -1,0 +1,39 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>eu.ascetic.utils</groupId>
+		<artifactId>wattsup-java-sdk</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
+
+	<artifactId>wattsup-java-sdk-remote</artifactId>
+	<packaging>jar</packaging>
+
+	<properties>
+		<license-header-file>${basedir}/../LICENSE</license-header-file>
+		<checkstyle.file>${project.basedir}/../checkstyle.xml</checkstyle.file>
+		<gson.version>2.2.4</gson.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>eu.ascetic.utils.wattsup-java-sdk</groupId>
+			<artifactId>wattsup-java-sdk-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>${gson.version}</version>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+
+	<groupId>eu.ascetic.utils.wattsup-java-sdk</groupId>
+	<name>Wattsup Java SDK Remote</name>
+</project>

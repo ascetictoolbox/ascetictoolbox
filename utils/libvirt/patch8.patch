@@ -1,0 +1,125 @@
+ src/main/java/eu/optimis/vc/libvirt/Connect.java     |   53 ++++++++++++++++++++++++++++
+ src/main/java/eu/optimis/vc/libvirt/Domain.java      |   16 +++++++++
+ src/main/java/eu/optimis/vc/libvirt/jna/Libvirt.java |    8 +++++
+ 3 files changed, 77 insertions(+)
+
+diff --git a/src/main/java/eu/optimis/vc/libvirt/Connect.java
+b/src/main/java/eu/optimis/vc/libvirt/Connect.java
+index aea5e31..b7befc4 100644
+--- a/src/main/java/eu/optimis/vc/libvirt/Connect.java
++++ b/src/main/java/eu/optimis/vc/libvirt/Connect.java
+@@ -49,6 +49,19 @@ public class Connect {
+         static final int PMSUSPEND = 12;
+     }
+
++    public static abstract class DomainEvent {
++        /* Event Callbacks */
++
++        interface IOErrorCallback {
++            final int eventID = DomainEventID.IO_ERROR;
++
++            void onIOError(Connect connect, Domain domain,
++                           String srcPath,
++                           String devAlias,
++                           int action);
++        }
++    }
++
+     /**
+      * Get the version of a connection.
+      *
+@@ -379,6 +392,46 @@ public class Connect {
+                                                                      null, null));
+     }
+
++    int domainEventRegister(Domain domain, final DomainEvent.IOErrorCallback cb) throws LibvirtException {
++        if (cb == null)
++            throw new IllegalArgumentException("IOError callback cannot be null");
++
++        Libvirt.VirConnectDomainEventIOErrorCallback virCB = new Libvirt.VirConnectDomainEventIOErrorCallback() {
++                @Override
++                public void eventCallback(ConnectionPointer virConnectPtr, DomainPointer virDomainPointer,
++                                          String srcPath,
++                                          String devAlias,
++                                          int action,
++                                          com.sun.jna.Pointer opaque) {
++                    assert(VCP.equals(virConnectPtr));
++
++                    Domain d = new Domain(Connect.this, virDomainPointer);
++                    cb.onIOError(Connect.this, d,
++                                 srcPath,
++                                 devAlias,
++                                 action);
++                }
++            };
++
++        return domainEventRegister(domain, cb.eventID, virCB);
++    }
++
++    /**
++     * Adds a callback to receive notifications of IOError domain events
++     * occurring on a domain.
++     *
++     * @see <a
++     * href="http://www.libvirt.org/html/libvirt-libvirt.html#virConnectDomainEventRegisterAny">Libvirt
++     *      Documentation</a>
++     * @param cb
++     *            the IOErrorCallback instance
++     * @return The return value from this method is a positive integer identifier for the callback.
++     * @throws LibvirtException on failure
++     */
++    public int domainEventRegister(final DomainEvent.IOErrorCallback cb) throws LibvirtException {
++        return domainEventRegister(null, cb);
++    }
++
+     /**
+      * Finds a domain based on the hypervisor ID number.
+      *
+diff --git a/src/main/java/eu/optimis/vc/libvirt/Domain.java
+b/src/main/java/eu/optimis/vc/libvirt/Domain.java
+index 1c86bd4..7d31326 100644
+--- a/src/main/java/eu/optimis/vc/libvirt/Domain.java
++++ b/src/main/java/eu/optimis/vc/libvirt/Domain.java
+@@ -865,6 +865,22 @@ public class Domain {
+     }
+
+     /**
++     * Adds a callback to receive notifications of IOError domain events
++     * occurring on this domain.
++     *
++     * @see <a
++     * href="http://www.libvirt.org/html/libvirt-libvirt.html#virConnectDomainEventRegisterAny">Libvirt
++     *      Documentation</a>
++     * @param cb
++     *            the IOErrorCallback instance
++     * @return The return value from this method is a positive integer identifier for the callback.
++     * @throws LibvirtException on failure
++     */
++    public int register(final Connect.DomainEvent.IOErrorCallback cb) throws LibvirtException {
++        return virConnect.domainEventRegister(this, cb);
++    }
++
++    /**
+      * Revert the domain to a given snapshot.
+      *
+      * @see <a href=
+diff --git a/src/main/java/eu/optimis/vc/libvirt/jna/Libvirt.java
+b/src/main/java/eu/optimis/vc/libvirt/jna/Libvirt.java
+index 29db556..5791ee3 100644
+--- a/src/main/java/eu/optimis/vc/libvirt/jna/Libvirt.java
++++ b/src/main/java/eu/optimis/vc/libvirt/jna/Libvirt.java
+@@ -77,6 +77,14 @@ public interface Libvirt extends Library {
+      */
+     interface VirDomainEventCallback extends Callback {}
+
++    interface VirConnectDomainEventIOErrorCallback extends VirDomainEventCallback {
++        void eventCallback(ConnectionPointer virConnectPtr, DomainPointer virDomainPointer,
++                           String srcPath,
++                           String devAlias,
++                           int action,
++                           Pointer opaque);
++    }
++
+     /**
+      * Error callback
+      */

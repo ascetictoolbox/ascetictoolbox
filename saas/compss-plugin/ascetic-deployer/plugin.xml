@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="ascetic.saas.compss-plugin.ascetic.deployer"
+         name="ASCETIC Deployer"
+         point="es.bsc.compss.ide.plugin.deployer">
+      <deployer
+            class="es.bsc.servicess.ide.editors.deployers.AsceticDeployer"
+            name="ASCETIC Cloud">
+      </deployer>
+   </extension>
+
+</plugin>

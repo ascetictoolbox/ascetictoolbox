@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
+	<title>ASCETiC Application Monitor</title>
+	<meta name="generator" content="Bootply" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link href="lib/css/bootstrap.min.css" rel="stylesheet">
+	<!--[if lt IE 9]>
+	<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link href="lib/css/styles.css" rel="stylesheet">
+	<link href="lib/css/cubeGraph.css" rel="stylesheet">
+	<link href="css/bsc.css" rel="stylesheet">
+</head>
+<body ng-app="ApplicationMonitor" ng-controller="PageController as pageCtrl">
+<nav class="navbar navbar-inverse navbar-fixed-top" role="banner">
+	<div class="container">
+		<div class="navbar-header">
+			<button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a href="/" class="navbar-brand">Application Monitor v0.1</a>
+		</div>
+		<nav class="collapse navbar-collapse" role="navigation">
+			<ul class="nav navbar-nav">
+				<li>
+					<a href="#sec" ng-click="pageCtrl.setPage('global.html')">Global Status</a>
+				</li>
+				<li>
+					<a href="#sec" ng-click="pageCtrl.setPage('metrics.html')">App Metrics</a>
+				</li>
+			</ul>
+		</nav>
+	</div>
+</nav>
+
+<div class="container" style="margin-top: 5px" ng-include="pageCtrl.page"></div>
+
+<footer>
+	<img src="img/bsc.png"/>
+	<img src="img/ascetic.png"/>
+</footer>
+
+
+
+<!-- script references -->
+<script src="lib/js/jquery.2.0.2.min.js"></script>
+<script src="lib/js/bootstrap.js"></script>
+<script src="lib/js/angular.min.js"></script>
+<!--<script src="lib/js/ui-bootstrap-0.11.0.min.js"></script>-->
+<script src="lib/js/ui-bootstrap-custom-0.10.0.js"></script>
+<script src="lib/js/ui-bootstrap-custom-tpls-0.10.0.js"></script>
+<script src="js/application-monitor.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
+</html>

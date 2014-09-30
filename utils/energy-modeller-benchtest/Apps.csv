@@ -1,0 +1,8 @@
+Time From Start,Command,stdOut,stdError,Working Directory,Output To Screen
+20,java -cp ascetic-load-generator-app.jar eu.ascetic.ascetic.load.generator.app.Main 5 5 30 2,test.out,error.out,.,TRUE
+30,java -cp ascetic-load-generator-app.jar eu.ascetic.ascetic.load.generator.app.Main 5 5 20 2,test.out,error.out,.,TRUE
+40,java -cp ascetic-load-generator-app.jar eu.ascetic.ascetic.load.generator.app.Main 5 5 10 4,test.out,error.out,.,TRUE
+70,java -cp ascetic-load-generator-app.jar eu.ascetic.ascetic.load.generator.app.Main 5 5 30 2,test.out,error.out,.,TRUE
+120,java -cp ascetic-load-generator-app.jar eu.ascetic.ascetic.load.generator.app.Main 5 5 30 2,test.out,error.out,.,TRUE
+130,java -cp ascetic-load-generator-app.jar eu.ascetic.ascetic.load.generator.app.Main 5 5 20 2,test.out,error.out,.,TRUE
+140,java -cp ascetic-load-generator-app.jar eu.ascetic.ascetic.load.generator.app.Main 5 5 10 4,test.out,error.out,.,TRUE

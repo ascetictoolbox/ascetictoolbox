@@ -1,0 +1,28 @@
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog"
+         id="ascetic-schemas">
+
+    <system systemId="file:XMLSchema.dtd"
+            uri="./schema/XMLSchema.dtd"/>
+
+    <system systemId="file:datatypes.dtd"
+            uri="./schema/datatypes.dtd"/>
+
+    <system systemId="http://www.w3.org/2001/XMLSchema.dtd"
+            uri="./schema/XMLSchema.dtd"/>
+
+    <system systemId="http://www.w3.org/2001/xml.xsd"
+            uri="./schema/xml.xsd"/>
+
+    <public publicId="http://schemas.dmtf.org/ovf/envelope/1"
+            uri="./schema/dsp8023.xsd"/>
+
+    <public publicId="http://schemas.dmtf.org/wbem/wscim/1/common"
+            uri="./schema/common.xsd"/>
+
+    <public publicId="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData"
+            uri="./schema/CIM_VirtualSystemSettingData.xsd"/>
+
+    <public publicId="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData"
+            uri="./schema/CIM_ResourceAllocationSettingData.xsd"/>
+                     
+</catalog>

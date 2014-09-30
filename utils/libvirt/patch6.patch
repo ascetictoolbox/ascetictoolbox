@@ -1,0 +1,25 @@
+src/main/java/eu/optimis/vc/libvirt/Connect.java |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/src/main/java/eu/optimis/vc/libvirt/Connect.java
+b/src/main/java/eu/optimis/vc/libvirt/Connect.java
+index 1b05f6f..c8ae1ec 100644
+--- a/src/main/java/eu/optimis/vc/libvirt/Connect.java
++++ b/src/main/java/eu/optimis/vc/libvirt/Connect.java
+@@ -350,6 +350,16 @@ public class Connect {
+             ErrorHandler.processError(Libvirt.INSTANCE);
+    }
+
++    int domainEventRegister(Domain domain, int eventID, Libvirt.VirDomainEventCallback cb)
++        throws LibvirtException
++    {
++        DomainPointer ptr = domain == null ? null : domain.VDP;
++
++        return processError(libvirt.virConnectDomainEventRegisterAny(VCP, ptr,
++                                                                     eventID, cb,
++                                                                     null, null));
++    }
++
+     /**
+      * Finds a domain based on the hypervisor ID number.
+      *

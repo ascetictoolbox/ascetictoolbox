@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>eu.ascetic</groupId>
+	<artifactId>paas</artifactId>
+	<packaging>pom</packaging>
+	<name>ASCETiC PaaS Layer Components</name>
+	<description>The parent project for the ASCETiC reference architecture PaaS layer components.</description>
+	<parent>
+		<groupId>eu</groupId>
+		<artifactId>ascetic</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<modules>
+	    <!-- PaaS Modules -->
+		<module>virtual-machine-contextualizer</module>
+		<module>provider-registry</module>
+		<module>paas-energy-modeller</module>
+		<module>slam</module>
+                <module>paas-pricing-modeller</module>
+		<module>application-manager</module>
+		<module>application-manager-datamodel</module>
+        </modules>
+
+        <url>http://www.ascetic.eu</url>
+	<version>0.0.1-SNAPSHOT</version>
+
+        <dependencyManagement>
+                <dependencies>
+					<dependency>
+						<groupId>org.hibernate.javax.persistence</groupId>
+						<artifactId>hibernate-jpa-2.1-api</artifactId>
+						<version>1.0.0.Final</version>
+					</dependency>
+		</dependencies>
+	</dependencyManagement>
+</project>

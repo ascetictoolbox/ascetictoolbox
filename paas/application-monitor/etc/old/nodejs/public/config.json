@@ -1,0 +1,5 @@
+{
+	"collector" : "http://localhost:1080",
+	"evaluator" : "http://localhost:1081"
+
+}

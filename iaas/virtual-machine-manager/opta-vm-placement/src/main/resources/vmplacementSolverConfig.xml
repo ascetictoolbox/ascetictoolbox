@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solver>
+    <!--<environmentMode>FAST_ASSERT</environmentMode>-->
+    <solutionClass>es.bsc.vmplacement.domain.ClusterState</solutionClass>
+    <planningEntityClass>es.bsc.vmplacement.domain.Vm</planningEntityClass>
+
+    <scoreDirectorFactory>
+        <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
+        <simpleScoreCalculatorClass>es.bsc.vmplacement.scorecalculators.ScoreCalculatorConsolidation</simpleScoreCalculatorClass>
+    </scoreDirectorFactory>
+
+    <termination>
+        <maximumSecondsSpend>30</maximumSecondsSpend>
+    </termination>
+
+    <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+        <forager>
+            <pickEarlyType>NEVER</pickEarlyType>
+        </forager>
+    </constructionHeuristic>
+    <localSearch>
+        <acceptor>
+            <lateAcceptanceSize>400</lateAcceptanceSize>
+        </acceptor>
+        <forager>
+            <acceptedCountLimit>1</acceptedCountLimit>
+        </forager>
+    </localSearch>
+</solver>

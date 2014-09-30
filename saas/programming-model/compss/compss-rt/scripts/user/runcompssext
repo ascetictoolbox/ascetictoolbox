@@ -1,0 +1,384 @@
+#!/bin/bash
+                                                                                                                                                                                                                                                                                                                                               
+usage ()                                                                                                                                                                          
+{                                                                                                                                                                                 
+        /bin/cat <<EOT                                                                                                                                                            
+Usage: $0 required_options [other_options]
+Required options:
+--app=<name>                            Java - Fully qualified name of the application | C - Path to the master binary | Python - Path to the .py file containing the main program
+	--project=<path>			Path to the project XML file
+	--resources=<path>			Path to the resources XML file
+Other options:
+        --cline_args="<args>"                   Command line arguments to pass to the application - Default none
+        --classpath=<path>                      Path for the application classes / modules - Default current dir
+        --lang=<name>                           Language of the application (java/c/python) - Default java
+	--graph=<bool>                        	Generation of the complete graph (true/false) - Default true
+        --tracing=<bool>                        Generation of traces (true/false) - Default false
+        --monitoring=<int>                      Period between monitoring samples (milliseconds) - Default 2000 (every 2 seconds)
+	--library_path=<path>			Non-standard directories to search for libraries (e.g. Java JVM library, Python library, C binding library) - Default "."
+	--task_count<int>			Number of different functions/methods, invoked from the application, that have been selected as a task - Default 50
+        -h --help                               Print this help message
+EOT
+        exit 0;
+}
+
+check_options()
+{
+
+        if [ -z "$projFile" ]
+        then
+		echo "Using default location for project file: $IT_HOME/xml/projects/project.xml"
+		projFile=$IT_HOME/xml/projects/project.xml
+        fi
+
+        if [ -z "$resFile" ]
+        then
+		echo "Using default location for resources file: $IT_HOME/xml/resources/resources.xml"
+		resFile=$IT_HOME/xml/resources/resources.xml
+        fi
+
+        if [ -z "$fullAppPath" ]
+        then
+                echo "Option --app=<n> not provided"
+                echo
+                usage;
+        fi
+
+        if [ -z "$clArgs" ]
+        then
+                clArgs=""
+        fi
+
+	if [ -z "$lang" ]
+        then
+                lang=java
+        elif [ "$lang" = "java" ]
+	then
+		lang=java
+        elif [ "$lang" = "c" ]
+	then
+		lang=c
+	elif [ "$lang" = "python" ]
+        then
+                lang=python
+	else
+                echo "Option --lang value must be java, c or python"
+                echo
+                usage;
+	fi
+
+        if [ -z "$cp" ]
+        then
+                cp=.
+        fi
+
+        if [ -z "$graph" ]
+        then
+                graph=true
+        fi
+
+        if [ -z "$tracing" ]
+        then
+                tracing=false
+        fi
+
+        if [ -z "$monitoring" ]
+        then
+                monitoring=2000
+        fi
+
+	if [ -z "$task_count" ]
+        then
+        	task_count=50
+        fi
+
+	if [ -z "$library_path" ]
+        then
+                library_path=.
+	fi
+
+}
+
+
+export XML_DIR=`pwd`
+# Parse options
+while getopts vhL:P:-: o
+do case "$o" in
+        h)
+                usage;
+                ;;
+        -) 
+                case "$OPTARG" in
+                        project=*)
+                                projFile=`echo $OPTARG | sed -e 's/project=//g'`;
+                        ;;
+                        resources=*)
+                                resFile=`echo $OPTARG | sed -e 's/resources=//g'`;
+                        ;;
+                        app=*)
+                                fullAppPath=`echo $OPTARG | sed -e 's/app=//g'`;
+                        ;;
+                        cline_args=*)
+                                clArgs=`echo $OPTARG | sed -e 's/cline_args=//g'`;
+                        ;;
+                        lang=*)
+                                lang=`echo $OPTARG | sed -e 's/lang=//g'`;
+                        ;;
+                        classpath=*)
+                                cp=`echo $OPTARG | sed -e 's/classpath=//g'`;
+                        ;;
+                        graph=*)
+                                graph=`echo $OPTARG | sed -e 's/graph=//g'`;
+                        ;;
+                        tracing=*)
+                                tracing=`echo $OPTARG | sed -e 's/tracing=//g'`;
+                        ;;
+                        monitoring=*)
+                                monitoring=`echo $OPTARG | sed -e 's/monitoring=//g'`;
+                        ;;
+			library_path=*)
+                                library_path=`echo $OPTARG | sed -e 's/library_path=//g'`;
+                        ;;
+			task_count=*)
+                                task_count=`echo $OPTARG | sed -e 's/task_count=//g'`;
+                        ;;
+                        help)
+                                usage;
+                        ;;
+                        *) 
+                                echo "Bad argument: $OPTARG";
+                                echo;
+                                usage;
+                        ;;
+                        esac
+        ;;
+        esac
+done
+
+
+check_var()
+{
+	var_name=$1
+	var_value=${!var_name}
+	if [ -z $var_value ]
+	then
+		echo "Environment variable $var_name not set"
+		echo "Please use:"
+		echo " export $var_name=<value>"
+		exit 1
+	fi
+}
+
+
+
+# Pre-checks
+check_options
+
+export IT_HOME=`dirname $0`/../..
+
+if [ -z $GAT_LOCATION ]
+then
+	GAT_LOCATION=$IT_HOME/../JAVA_GAT
+fi
+
+if [ "$tracing" == "true" ]
+then
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$IT_HOME/../extrae/lib
+	export EXTRAE_ON=1
+fi
+
+
+echo -e "\n----------------- Executing $fullAppPath --------------------------\n"
+
+if [ $lang = java ]
+then
+	userDir=~
+	workingDir=$userDir/IT/$fullAppPath
+	mkdir -p $workingDir/jobs
+	cd $workingDir
+	
+	if [[ -z "$JAVA_HOME" ]]
+	then
+		JAVA=java
+        elif [ -f $JAVA_HOME/jre/bin/java ]
+        then
+                JAVA=$JAVA_HOME/jre/bin/java
+        elif [ -f $JAVA_HOME/bin/java ]
+        then
+                JAVA=$JAVA_HOME/bin/java
+        else
+                echo "Cannot find Java JRE installation, please set JAVA_HOME"
+                exit 1
+        fi
+	
+	export LD_LIBRARY_PATH=$library_path:$LD_LIBRARY_PATH
+
+	# $* == loader + full_app_name + params 
+	JAVACMD=$JAVA" \
+	-classpath $cp:$IT_HOME/rt/compss-rt.jar:$CLASSPATH \
+	-Dlog4j.configuration=$IT_HOME/log/it-log4j \
+	-Dgat.adaptor.path=$GAT_LOCATION/lib/adaptors \
+        -Dit.to.file=false \
+        -Dit.gat.broker.adaptor=sshtrilead \
+        -Dit.gat.file.adaptor=sshtrilead \
+        -Dit.lang=$lang \
+	-Dit.project.file=$projFile \
+	-Dit.resources.file=$resFile \
+	-Dit.project.schema=$IT_HOME/xml/projects/project_schema.xsd \
+	-Dit.resources.schema=$IT_HOME/xml/resources/resource_schema.xsd \
+        -Dit.appName=$fullAppPath \
+	-Dit.graph=$graph \
+	-Dit.monitor=$monitoring \
+	-Dit.tracing=$tracing \
+	-Dit.script.dir=$IT_HOME/scripts/system \
+	-Dit.worker.cp=$cp:$CLASSPATH "
+
+	$JAVACMD integratedtoolkit.loader.ITAppLoader total $fullAppPath $clArgs
+	if [ $? -ne 0 ]; then
+		echo "Error running application";
+		exit 1;
+	fi
+elif [ $lang = c ]
+then
+	check_var JAVA_HOME
+    
+    if [ -d $IT_HOME/bindings/c ]
+	then
+		CPP_COMPSS_HOME=$IT_HOME/bindings/c
+		export CPP_PATH=$CPP_COMPSS_HOME:$cp
+	else
+		export CPP_PATH=$cp
+	fi
+	
+	app_name=$(basename "$fullAppPath")
+	userDir=~
+	workingDir=$userDir/IT/$app_name
+	mkdir -p $workingDir/jobs
+	cd $workingDir
+    
+	# Setup library path
+	if [ -f $JAVA_HOME/jre/lib/amd64/server/libjvm.so ]
+	then
+		libjava=$JAVA_HOME/jre/lib/amd64/server
+	elif [ -f $JAVA_HOME/jre/lib/i386/client/libjvm.so ]
+	then
+		libjava=$JAVA_HOME/jre/lib/i386/client
+	else
+		echo "Can't find JVM libraries in $JAVA_HOME, please check your Java JDK installation"
+		exit 1
+	fi
+	
+	export LD_LIBRARY_PATH=$library_path:$LD_LIBRARY_PATH:$libjava:$IT_HOME/bindings/bindings-common/lib:$IT_HOME/bindings/c/lib
+	
+	jvm_options_file=`mktemp`
+	if [ $? -ne 0 ]
+	then
+		echo "Can't create temp file for JVM options, exiting..."
+	        exit 1
+	fi
+	export JVM_OPTIONS_FILE=$jvm_options_file
+	
+	/bin/cat >> $jvm_options_file << EOT
+#-Xdebug
+#-Xcheck:jni
+#-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000	
+-Djava.class.path=$IT_HOME/rt/compss-rt.jar
+-Dlog4j.configuration=$IT_HOME/log/it-log4j
+-Dgat.adaptor.path=$GAT_LOCATION/lib/adaptors
+-Dit.to.file=false
+-Dit.gat.broker.adaptor=sshtrilead
+-Dit.gat.file.adaptor=sshtrilead
+-Dit.lang=$lang
+-Dit.project.file=$projFile
+-Dit.resources.file=$resFile
+-Dit.constraints.file=$fullAppPath.idl
+-Dit.project.schema=$IT_HOME/xml/projects/project_schema.xsd
+-Dit.resources.schema=$IT_HOME/xml/resources/resource_schema.xsd
+-Dit.appName=$app_name
+-Dit.graph=$graph
+-Dit.monitor=$monitoring
+-Dit.tracing=$tracing
+-Dit.script.dir=$IT_HOME/scripts/system
+-Dit.core.count=$task_count
+-Dit.worker.cp=$cp:$CLASSPATH
+EOT
+	echo -e "\nJVM_OPTION_FILE: $jvm_options_file \n"
+	echo -e "\nIT_HOME: $IT_HOME \n"
+	echo -e "\nArgs: $clArgs \n"
+	$fullAppPath $clArgs        
+	if [ $? -ne 0 ]; then
+		echo "Error running application";
+		exit 1;
+	fi
+elif [ $lang = python ]
+then
+	check_var JAVA_HOME
+
+	if [ -d $IT_HOME/bindings/python ]
+	then
+		PYCOMPSS_HOME=$IT_HOME/bindings/python
+		export PYTHONPATH=$PYCOMPSS_HOME:$cp
+	else
+		export PYTHONPATH=$cp
+	fi
+
+	app_name=$(basename "$fullAppPath" ".py")
+	userDir=~
+	workingDir=$userDir/IT/$app_name
+	mkdir -p $workingDir/jobs
+	cd $workingDir
+
+	# Setup library path
+	if [ -f $JAVA_HOME/jre/lib/amd64/server/libjvm.so ]
+	then
+		libjava=$JAVA_HOME/jre/lib/amd64/server
+	elif [ -f $JAVA_HOME/jre/lib/i386/client/libjvm.so ]
+	then
+		libjava=$JAVA_HOME/jre/lib/i386/client
+	else
+		echo "Can't find JVM libraries in $JAVA_HOME, please check your Java JDK installation"
+		exit 1
+	fi
+
+	export LD_LIBRARY_PATH=$library_path:$LD_LIBRARY_PATH:$libjava:$IT_HOME/bindings/bindings-common/lib
+
+	jvm_options_file=`mktemp`
+	if [ $? -ne 0 ]
+	then
+		echo "Can't create temp file for JVM options, exiting..."
+	        exit 1
+	fi
+	export JVM_OPTIONS_FILE=$jvm_options_file
+
+	/bin/cat >> $jvm_options_file << EOT
+-Djava.class.path=$IT_HOME/rt/compss-rt.jar
+-Dlog4j.configuration=$IT_HOME/log/it-log4j
+-Dgat.adaptor.path=$GAT_LOCATION/lib/adaptors
+-Dit.to.file=false
+-Dit.gat.broker.adaptor=sshtrilead
+-Dit.gat.file.adaptor=sshtrilead
+-Dit.lang=$lang
+-Dit.project.file=$projFile
+-Dit.resources.file=$resFile
+-Dit.project.schema=$IT_HOME/xml/projects/project_schema.xsd
+-Dit.resources.schema=$IT_HOME/xml/resources/resource_schema.xsd
+-Dit.appName=$app_name
+-Dit.graph=$graph
+-Dit.monitor=$monitoring
+-Dit.tracing=$tracing
+-Dit.script.dir=$IT_HOME/scripts/system
+-Dit.core.count=$task_count
+-Dit.worker.cp=$cp:$CLASSPATH
+EOT
+
+	python $PYCOMPSS_HOME/pycompss/runtime/launch.py $fullAppPath $clArgs
+	if [ $? -ne 0 ]; then
+		echo "Error running application";
+		exit 1;
+	fi
+	
+fi
+
+
+echo
+echo ------------------------------------------------------------

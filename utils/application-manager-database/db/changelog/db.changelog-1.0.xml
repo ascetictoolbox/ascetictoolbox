@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+  <changeSet id="creation-applications-table" author="davidgp">
+        <createTable tableName="applications">
+            <column name="application_id" type="int">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <modifySql dbms="mysql">
+          	<append value=" engine innodb charset=utf8"/>
+        </modifySql>
+  </changeSet>
+
+  <changeSet author="davidgp" id="autoincriment-applications">
+    <addAutoIncrement 
+    	    columnDataType="int"
+            columnName="application_id"
+            incrementBy="1"
+            startWith="1"
+            tableName="applications"/>
+  </changeSet>
+
+  <changeSet id="creation-deployments-table" author="davidgp">
+        <createTable tableName="deployments">
+            <column name="deployment_id" type="int">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="application_id" type="int">
+                <constraints nullable="true"/>
+            </column>
+            <column name="status" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+        <modifySql dbms="mysql">
+            <append value=" engine innodb charset=utf8"/>
+        </modifySql>
+  </changeSet>
+
+  <changeSet author="davidgp" id="autoincriment-deployments">
+      <addAutoIncrement 
+            columnDataType="int"
+            columnName="deployment_id"
+            incrementBy="1"
+            startWith="1"
+            tableName="deployments"/>
+  </changeSet>
+
+  <changeSet author="dperez" id="add_foreign_key_for_deployments_table">
+        <addForeignKeyConstraint 
+            baseColumnNames="application_id"
+            baseTableName="deployments"
+            constraintName="fk_deployments_applications"
+            referencedColumnNames="application_id"
+            referencedTableName="applications"/>
+  </changeSet>
+
+  <changeSet id="creation-vms-table" author="davidgp">
+        <createTable tableName="vms">
+            <column name="vm_id" type="int">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="deployment_id" type="int">
+                <constraints nullable="true"/>
+            </column>
+            <column name="ovf_id" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="provider_vm_id" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="provider_id" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="sla_agreement" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="ip_address" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="status" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+        <modifySql dbms="mysql">
+            <append value=" engine innodb charset=utf8"/>
+        </modifySql>
+  </changeSet>
+
+  <changeSet author="davidgp" id="autoincriment-vms">
+    <addAutoIncrement 
+          columnDataType="int"
+            columnName="vm_id"
+            incrementBy="1"
+            startWith="1"
+            tableName="vms"/>
+  </changeSet>
+
+  <changeSet author="dperez" id="add_foreign_key_for_vms_table">
+        <addForeignKeyConstraint 
+            baseColumnNames="deployment_id"
+            baseTableName="vms"
+            constraintName="fk_vms_deployments"
+            referencedColumnNames="deployment_id"
+            referencedTableName="deployments"/>
+  </changeSet>
+
+</databaseChangeLog>

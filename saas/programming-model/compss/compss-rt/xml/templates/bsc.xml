@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<Templates>
+    <Instance>
+        <Type>small</Type>
+        <CPU>1</CPU>
+        <Memory>2.0</Memory>
+        <Disk>5</Disk>
+        <Price>0.085</Price>
+    </Instance>
+    <Instance> 
+        <Type>medium</Type>
+        <CPU>2</CPU>
+        <Memory>3.0</Memory>
+        <Disk>5</Disk>
+        <Price>0.212</Price>
+    </Instance>
+    <Instance> 
+        <Type>large</Type>
+        <CPU>4</CPU>
+        <Memory>4</Memory>
+        <Disk>5</Disk>
+        <Price>0.34</Price>
+    </Instance>
+    <Instance> 
+        <Type>extra_large</Type>
+        <CPU>4</CPU>
+        <Memory>7.5</Memory>
+        <Disk>5</Disk>
+        <Price>0.68</Price>
+    </Instance>
+
+    <!-- In seconds -->
+    <EstimatedCreationTime>70</EstimatedCreationTime>
+</Templates>

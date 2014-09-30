@@ -1,0 +1,1487 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmlns:uml="http://www.eclipse.org/uml2/4.0.0/UML">
+  <notation:Diagram xmi:id="_BHxXQN-MEeOanJwEUOB9pQ" type="PapyrusUMLActivityDiagram" name="ProcessView-Activity-NewsAsset" measurementUnit="Pixel">
+    <children xmi:type="notation:Shape" xmi:id="_BHxXQd-MEeOanJwEUOB9pQ" type="2001">
+      <children xmi:type="notation:DecorationNode" xmi:id="_BHxXQt-MEeOanJwEUOB9pQ" type="5001"/>
+      <children xmi:type="notation:DecorationNode" xmi:id="_BHxXRN-MEeOanJwEUOB9pQ" type="7001">
+        <styles xmi:type="notation:SortingStyle" xmi:id="_BHxXRd-MEeOanJwEUOB9pQ"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_BHxXRt-MEeOanJwEUOB9pQ"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_BHxXR9-MEeOanJwEUOB9pQ"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_BHxXSN-MEeOanJwEUOB9pQ" type="7002">
+        <styles xmi:type="notation:SortingStyle" xmi:id="_BHxXSd-MEeOanJwEUOB9pQ"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_BHxXSt-MEeOanJwEUOB9pQ"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_BHxXS9-MEeOanJwEUOB9pQ"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_BHxXTN-MEeOanJwEUOB9pQ" type="7003">
+        <styles xmi:type="notation:SortingStyle" xmi:id="_BHxXTd-MEeOanJwEUOB9pQ"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_BHxXTt-MEeOanJwEUOB9pQ"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_BHxXT9-MEeOanJwEUOB9pQ"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_BHxXUN-MEeOanJwEUOB9pQ" type="7004">
+        <children xmi:type="notation:Shape" xmi:id="_9Mg4kOC9EeO8GOIf1l3bJg" type="3004">
+          <children xmi:type="notation:DecorationNode" xmi:id="_9MiGsOC9EeO8GOIf1l3bJg" type="5080">
+            <layoutConstraint xmi:type="notation:Location" xmi:id="_9MiGseC9EeO8GOIf1l3bJg" y="5"/>
+          </children>
+          <styles xmi:type="notation:HintedDiagramLinkStyle" xmi:id="_9Mg4keC9EeO8GOIf1l3bJg"/>
+          <element xmi:type="uml:InitialNode" href="NewsAsset-model.uml#_9LSwkOC9EeO8GOIf1l3bJg"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_9Mg4kuC9EeO8GOIf1l3bJg" x="459" y="32" width="26" height="26"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_0HsaYODDEeO8GOIf1l3bJg" type="3007">
+          <children xmi:type="notation:DecorationNode" xmi:id="_0HtBcODDEeO8GOIf1l3bJg" type="5003"/>
+          <styles xmi:type="notation:HintedDiagramLinkStyle" xmi:id="_0HsaYeDDEeO8GOIf1l3bJg"/>
+          <element xmi:type="uml:OpaqueAction" href="NewsAsset-model.uml#_0HkekODDEeO8GOIf1l3bJg"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_0HsaYuDDEeO8GOIf1l3bJg" x="38" y="94" width="384"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_AjZGEODEEeO8GOIf1l3bJg" type="3007">
+          <children xmi:type="notation:DecorationNode" xmi:id="_AjZtIODEEeO8GOIf1l3bJg" type="5003"/>
+          <styles xmi:type="notation:HintedDiagramLinkStyle" xmi:id="_AjZGEeDEEeO8GOIf1l3bJg"/>
+          <element xmi:type="uml:OpaqueAction" href="NewsAsset-model.uml#_AjU0oODEEeO8GOIf1l3bJg"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_AjZGEuDEEeO8GOIf1l3bJg" x="56" y="179" width="275"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_Cv8AsODFEeO8GOIf1l3bJg" type="3007">
+          <children xmi:type="notation:DecorationNode" xmi:id="_Cv8As-DFEeO8GOIf1l3bJg" type="5003"/>
+          <styles xmi:type="notation:HintedDiagramLinkStyle" xmi:id="_Cv8AseDFEeO8GOIf1l3bJg"/>
+          <element xmi:type="uml:OpaqueAction" href="NewsAsset-model.uml#_Cv5kcODFEeO8GOIf1l3bJg"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Cv8AsuDFEeO8GOIf1l3bJg" x="665" y="118" width="273"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_XbC90ODFEeO8GOIf1l3bJg" type="3007">
+          <children xmi:type="notation:DecorationNode" xmi:id="_XbC90-DFEeO8GOIf1l3bJg" type="5003"/>
+          <styles xmi:type="notation:HintedDiagramLinkStyle" xmi:id="_XbC90eDFEeO8GOIf1l3bJg"/>
+          <element xmi:type="uml:OpaqueAction" href="NewsAsset-model.uml#_XbAhkODFEeO8GOIf1l3bJg"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_XbC90uDFEeO8GOIf1l3bJg" x="640" y="224" width="250"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_siXD4ODHEeO8GOIf1l3bJg" type="3040">
+          <children xmi:type="notation:DecorationNode" xmi:id="_siXD4-DHEeO8GOIf1l3bJg" type="5100">
+            <layoutConstraint xmi:type="notation:Location" xmi:id="_siXq8ODHEeO8GOIf1l3bJg" y="5"/>
+          </children>
+          <styles xmi:type="notation:HintedDiagramLinkStyle" xmi:id="_siXD4eDHEeO8GOIf1l3bJg"/>
+          <element xmi:type="uml:ForkNode" href="NewsAsset-model.uml#_siUnoODHEeO8GOIf1l3bJg"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_siXD4uDHEeO8GOIf1l3bJg" x="503" y="244" height="73"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_ZY7S4ODdEeO8GOIf1l3bJg" type="3007">
+          <children xmi:type="notation:DecorationNode" xmi:id="_ZY758ODdEeO8GOIf1l3bJg" type="5003"/>
+          <styles xmi:type="notation:HintedDiagramLinkStyle" xmi:id="_ZY7S4eDdEeO8GOIf1l3bJg"/>
+          <element xmi:type="uml:OpaqueAction" href="NewsAsset-model.uml#_ZY5dsODdEeO8GOIf1l3bJg"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_ZY7S4uDdEeO8GOIf1l3bJg" x="701" y="37" width="441" height="46"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_Hd1w4ODeEeO8GOIf1l3bJg" type="3005">
+          <children xmi:type="notation:DecorationNode" xmi:id="_Hd1w4-DeEeO8GOIf1l3bJg" type="5081">
+            <layoutConstraint xmi:type="notation:Location" xmi:id="_Hd1w5ODeEeO8GOIf1l3bJg" y="5"/>
+          </children>
+          <styles xmi:type="notation:HintedDiagramLinkStyle" xmi:id="_Hd1w4eDeEeO8GOIf1l3bJg"/>
+          <element xmi:type="uml:ActivityFinalNode" href="NewsAsset-model.uml#_HdxfcODeEeO8GOIf1l3bJg"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Hd1w4uDeEeO8GOIf1l3bJg" x="983" y="226" width="28" height="28"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_x2XsMOswEeOsSf0lAkOcAA" type="3083">
+          <children xmi:type="notation:DecorationNode" xmi:id="_x2XsMuswEeOsSf0lAkOcAA" type="5142"/>
+          <children xmi:type="notation:DecorationNode" xmi:id="_x2XsM-swEeOsSf0lAkOcAA" type="5143"/>
+          <children xmi:type="notation:DecorationNode" xmi:id="_x2XsNOswEeOsSf0lAkOcAA" type="7014">
+            <styles xmi:type="notation:SortingStyle" xmi:id="_x2XsNeswEeOsSf0lAkOcAA"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_x2XsNuswEeOsSf0lAkOcAA"/>
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_x2XsN-swEeOsSf0lAkOcAA"/>
+          </children>
+          <children xmi:type="notation:DecorationNode" xmi:id="_x2XsOOswEeOsSf0lAkOcAA" type="7015">
+            <styles xmi:type="notation:SortingStyle" xmi:id="_x2XsOeswEeOsSf0lAkOcAA"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_x2XsOuswEeOsSf0lAkOcAA"/>
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_x2XsO-swEeOsSf0lAkOcAA"/>
+          </children>
+          <children xmi:type="notation:DecorationNode" xmi:id="_x2XsPOswEeOsSf0lAkOcAA" type="7016">
+            <styles xmi:type="notation:SortingStyle" xmi:id="_x2XsPeswEeOsSf0lAkOcAA"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_x2XsPuswEeOsSf0lAkOcAA"/>
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_x2XsP-swEeOsSf0lAkOcAA"/>
+          </children>
+          <children xmi:type="notation:DecorationNode" xmi:id="_x2XsQOswEeOsSf0lAkOcAA" type="7013">
+            <children xmi:type="notation:Shape" xmi:id="_eXFmEODJEeO8GOIf1l3bJg" type="3007">
+              <children xmi:type="notation:DecorationNode" xmi:id="_eXGNIODJEeO8GOIf1l3bJg" type="5003"/>
+              <styles xmi:type="notation:HintedDiagramLinkStyle" xmi:id="_eXFmEeDJEeO8GOIf1l3bJg"/>
+              <element xmi:type="uml:OpaqueAction" href="NewsAsset-model.uml#_eXB7sODJEeO8GOIf1l3bJg"/>
+              <layoutConstraint xmi:type="notation:Bounds" xmi:id="_eXFmEuDJEeO8GOIf1l3bJg" x="48" y="13" width="255" height="49"/>
+            </children>
+            <children xmi:type="notation:Shape" xmi:id="_TGT1QPhKEeOjOP_PVdMAFg" type="3083">
+              <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_3L_D4P3lEeOjOP_PVdMAFg" source="Stereotype_Annotation">
+                <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_6-5_cBQsEeSbRqcniHIcDA" key="StereotypeWithQualifiedNameList" value=""/>
+                <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_6-5_cRQsEeSbRqcniHIcDA" key="StereotypeList" value="KPIProfile::forMeasurement"/>
+                <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_6-5_chQsEeSbRqcniHIcDA" key="Stereotype_Presentation_Kind" value="HorizontalStereo"/>
+                <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_6-6mgBQsEeSbRqcniHIcDA" key="PropStereoDisplay" value=""/>
+                <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_6-6mgRQsEeSbRqcniHIcDA" key="StereotypePropertyLocation" value="Compartment"/>
+              </eAnnotations>
+              <children xmi:type="notation:DecorationNode" xmi:id="_TGT1QvhKEeOjOP_PVdMAFg" type="5142"/>
+              <children xmi:type="notation:DecorationNode" xmi:id="_TGT1Q_hKEeOjOP_PVdMAFg" type="5143"/>
+              <children xmi:type="notation:DecorationNode" xmi:id="_TGT1RPhKEeOjOP_PVdMAFg" type="7014">
+                <styles xmi:type="notation:SortingStyle" xmi:id="_TGT1RfhKEeOjOP_PVdMAFg"/>
+                <styles xmi:type="notation:FilteringStyle" xmi:id="_TGT1RvhKEeOjOP_PVdMAFg"/>
+                <layoutConstraint xmi:type="notation:Bounds" xmi:id="_TGT1R_hKEeOjOP_PVdMAFg"/>
+              </children>
+              <children xmi:type="notation:DecorationNode" xmi:id="_TGUcUPhKEeOjOP_PVdMAFg" type="7015">
+                <styles xmi:type="notation:SortingStyle" xmi:id="_TGUcUfhKEeOjOP_PVdMAFg"/>
+                <styles xmi:type="notation:FilteringStyle" xmi:id="_TGUcUvhKEeOjOP_PVdMAFg"/>
+                <layoutConstraint xmi:type="notation:Bounds" xmi:id="_TGUcU_hKEeOjOP_PVdMAFg"/>
+              </children>
+              <children xmi:type="notation:DecorationNode" xmi:id="_TGUcVPhKEeOjOP_PVdMAFg" type="7016">
+                <styles xmi:type="notation:SortingStyle" xmi:id="_TGUcVfhKEeOjOP_PVdMAFg"/>
+                <styles xmi:type="notation:FilteringStyle" xmi:id="_TGUcVvhKEeOjOP_PVdMAFg"/>
+                <layoutConstraint xmi:type="notation:Bounds" xmi:id="_TGUcV_hKEeOjOP_PVdMAFg"/>
+              </children>
+              <children xmi:type="notation:DecorationNode" xmi:id="_TGUcWPhKEeOjOP_PVdMAFg" type="7013">
+                <children xmi:type="notation:Shape" xmi:id="_JicVgPhOEeOjOP_PVdMAFg" type="3007">
+                  <children xmi:type="notation:DecorationNode" xmi:id="_JicVg_hOEeOjOP_PVdMAFg" type="5003"/>
+                  <styles xmi:type="notation:HintedDiagramLinkStyle" xmi:id="_JicVgfhOEeOjOP_PVdMAFg"/>
+                  <element xmi:type="uml:OpaqueAction" href="NewsAsset-model.uml#_JiagUPhOEeOjOP_PVdMAFg"/>
+                  <layoutConstraint xmi:type="notation:Bounds" xmi:id="_JicVgvhOEeOjOP_PVdMAFg" x="28" y="26" width="346"/>
+                </children>
+                <children xmi:type="notation:Shape" xmi:id="_irT3YPhOEeOjOP_PVdMAFg" type="3040">
+                  <children xmi:type="notation:DecorationNode" xmi:id="_irT3Y_hOEeOjOP_PVdMAFg" type="5100">
+                    <layoutConstraint xmi:type="notation:Location" xmi:id="_irT3ZPhOEeOjOP_PVdMAFg" y="5"/>
+                  </children>
+                  <styles xmi:type="notation:HintedDiagramLinkStyle" xmi:id="_irT3YfhOEeOjOP_PVdMAFg"/>
+                  <element xmi:type="uml:ForkNode" href="NewsAsset-model.uml#_irRbIPhOEeOjOP_PVdMAFg"/>
+                  <layoutConstraint xmi:type="notation:Bounds" xmi:id="_irT3YvhOEeOjOP_PVdMAFg" x="112" y="109" width="203" height="10"/>
+                </children>
+                <children xmi:type="notation:Shape" xmi:id="_crAsYPhPEeOjOP_PVdMAFg" type="3007">
+                  <children xmi:type="notation:DecorationNode" xmi:id="_crAsY_hPEeOjOP_PVdMAFg" type="5003"/>
+                  <styles xmi:type="notation:HintedDiagramLinkStyle" xmi:id="_crAsYfhPEeOjOP_PVdMAFg"/>
+                  <element xmi:type="uml:OpaqueAction" href="NewsAsset-model.uml#_cq-3MPhPEeOjOP_PVdMAFg"/>
+                  <layoutConstraint xmi:type="notation:Bounds" xmi:id="_crAsYvhPEeOjOP_PVdMAFg" x="9" y="174" width="401"/>
+                </children>
+                <children xmi:type="notation:Shape" xmi:id="_hiEFcPhQEeOjOP_PVdMAFg" type="3041">
+                  <children xmi:type="notation:DecorationNode" xmi:id="_hiEFc_hQEeOjOP_PVdMAFg" type="5042">
+                    <layoutConstraint xmi:type="notation:Location" xmi:id="_hiEsgPhQEeOjOP_PVdMAFg" y="5"/>
+                  </children>
+                  <children xmi:type="notation:DecorationNode" xmi:id="_hiEsgfhQEeOjOP_PVdMAFg" type="5101">
+                    <layoutConstraint xmi:type="notation:Location" xmi:id="_hiEsgvhQEeOjOP_PVdMAFg" y="5"/>
+                  </children>
+                  <styles xmi:type="notation:HintedDiagramLinkStyle" xmi:id="_hiEFcfhQEeOjOP_PVdMAFg"/>
+                  <element xmi:type="uml:JoinNode" href="NewsAsset-model.uml#_hiBpMPhQEeOjOP_PVdMAFg"/>
+                  <layoutConstraint xmi:type="notation:Bounds" xmi:id="_hiEFcvhQEeOjOP_PVdMAFg" x="182" y="242" width="69" height="10"/>
+                </children>
+                <children xmi:type="notation:Shape" xmi:id="_Fu_ckPhPEeOjOP_PVdMAFg" type="3007">
+                  <children xmi:type="notation:DecorationNode" xmi:id="_FvADoPhPEeOjOP_PVdMAFg" type="5003"/>
+                  <styles xmi:type="notation:HintedDiagramLinkStyle" xmi:id="_Fu_ckfhPEeOjOP_PVdMAFg"/>
+                  <element xmi:type="uml:OpaqueAction" href="NewsAsset-model.uml#_Fu5V8PhPEeOjOP_PVdMAFg"/>
+                  <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Fu_ckvhPEeOjOP_PVdMAFg" x="31" y="301" width="330"/>
+                </children>
+                <children xmi:type="notation:Shape" xmi:id="_M4BNYPhSEeOjOP_PVdMAFg" type="3007">
+                  <children xmi:type="notation:DecorationNode" xmi:id="_M4B0cPhSEeOjOP_PVdMAFg" type="5003"/>
+                  <styles xmi:type="notation:HintedDiagramLinkStyle" xmi:id="_M4BNYfhSEeOjOP_PVdMAFg"/>
+                  <element xmi:type="uml:OpaqueAction" href="NewsAsset-model.uml#_M3__QPhSEeOjOP_PVdMAFg"/>
+                  <layoutConstraint xmi:type="notation:Bounds" xmi:id="_M4BNYvhSEeOjOP_PVdMAFg" x="487" y="272" width="143"/>
+                </children>
+                <children xmi:type="notation:Shape" xmi:id="_oRswwPhREeOjOP_PVdMAFg" type="3041">
+                  <children xmi:type="notation:DecorationNode" xmi:id="_oRtX0PhREeOjOP_PVdMAFg" type="5042">
+                    <layoutConstraint xmi:type="notation:Location" xmi:id="_oRtX0fhREeOjOP_PVdMAFg" y="5"/>
+                  </children>
+                  <children xmi:type="notation:DecorationNode" xmi:id="_oRtX0vhREeOjOP_PVdMAFg" type="5101">
+                    <layoutConstraint xmi:type="notation:Location" xmi:id="_oRtX0_hREeOjOP_PVdMAFg" y="5"/>
+                  </children>
+                  <styles xmi:type="notation:HintedDiagramLinkStyle" xmi:id="_oRswwfhREeOjOP_PVdMAFg"/>
+                  <element xmi:type="uml:JoinNode" href="NewsAsset-model.uml#_oRrioPhREeOjOP_PVdMAFg"/>
+                  <layoutConstraint xmi:type="notation:Bounds" xmi:id="_oRswwvhREeOjOP_PVdMAFg" x="267" y="383" width="81" height="10"/>
+                </children>
+                <layoutConstraint xmi:type="notation:Bounds" xmi:id="_TGUcWfhKEeOjOP_PVdMAFg"/>
+              </children>
+              <element xmi:type="uml:Activity" href="NewsAsset-model.uml#_TGO8wPhKEeOjOP_PVdMAFg"/>
+              <layoutConstraint xmi:type="notation:Bounds" xmi:id="_TGT1QfhKEeOjOP_PVdMAFg" x="30" y="83" width="659" height="471"/>
+            </children>
+            <children xmi:type="notation:Shape" xmi:id="_Zw76MPhKEeOjOP_PVdMAFg" type="3007">
+              <children xmi:type="notation:DecorationNode" xmi:id="_Zw76M_hKEeOjOP_PVdMAFg" type="5003"/>
+              <styles xmi:type="notation:HintedDiagramLinkStyle" xmi:id="_Zw76MfhKEeOjOP_PVdMAFg"/>
+              <element xmi:type="uml:OpaqueAction" href="NewsAsset-model.uml#_Zwz-YPhKEeOjOP_PVdMAFg"/>
+              <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Zw76MvhKEeOjOP_PVdMAFg" x="410" y="16" width="260"/>
+            </children>
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_x2XsQeswEeOsSf0lAkOcAA"/>
+          </children>
+          <element xmi:type="uml:Activity" href="NewsAsset-model.uml#_x2Uo4OswEeOsSf0lAkOcAA"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_x2XsMeswEeOsSf0lAkOcAA" x="41" y="372" width="623" height="660"/>
+        </children>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_BHxXUd-MEeOanJwEUOB9pQ"/>
+      </children>
+      <element xmi:type="uml:Activity" href="NewsAsset-model.uml#_BHwwMN-MEeOanJwEUOB9pQ"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_BHxXUt-MEeOanJwEUOB9pQ" x="-110" width="1179"/>
+    </children>
+    <styles xmi:type="notation:DiagramStyle" xmi:id="_BHxXU9-MEeOanJwEUOB9pQ"/>
+    <element xmi:type="uml:Activity" href="NewsAsset-model.uml#_BHwwMN-MEeOanJwEUOB9pQ"/>
+    <edges xmi:type="notation:Connector" xmi:id="_Aj74oODEEeO8GOIf1l3bJg" type="4004" source="_0HsaYODDEeO8GOIf1l3bJg" target="_AjZGEODEEeO8GOIf1l3bJg">
+      <children xmi:type="notation:DecorationNode" xmi:id="_Aj74o-DEEeO8GOIf1l3bJg" type="6003">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_Aj74pODEEeO8GOIf1l3bJg" x="-13" y="63"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_Aj74peDEEeO8GOIf1l3bJg" type="6004">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_Aj74puDEEeO8GOIf1l3bJg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_Aj74p-DEEeO8GOIf1l3bJg" type="6009">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_Aj74qODEEeO8GOIf1l3bJg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_Aj74qeDEEeO8GOIf1l3bJg" type="6011">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_Aj74quDEEeO8GOIf1l3bJg" y="-20"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_Aj74oeDEEeO8GOIf1l3bJg"/>
+      <element xmi:type="uml:ControlFlow" href="NewsAsset-model.uml#_AjjeIODEEeO8GOIf1l3bJg"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_Aj74ouDEEeO8GOIf1l3bJg" points="[-4, 20, 16, -76]$[-16, 76, 4, -20]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_NbRXcODEEeO8GOIf1l3bJg" id="(0.3031161473087819,0.95)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_N7S7UODEEeO8GOIf1l3bJg" id="(0.28,0.1)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_YiuNAODEEeO8GOIf1l3bJg" type="4004" source="_9Mg4kOC9EeO8GOIf1l3bJg" target="_0HsaYODDEeO8GOIf1l3bJg">
+      <children xmi:type="notation:DecorationNode" xmi:id="_Yi06sODEEeO8GOIf1l3bJg" type="6003">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_Yi06seDEEeO8GOIf1l3bJg" x="-96" y="21"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_Yi06suDEEeO8GOIf1l3bJg" type="6004">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_Yi06s-DEEeO8GOIf1l3bJg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_Yi06tODEEeO8GOIf1l3bJg" type="6009">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_Yi06teDEEeO8GOIf1l3bJg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_Yi06tuDEEeO8GOIf1l3bJg" type="6011">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_Yi06t-DEEeO8GOIf1l3bJg" y="-20"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_YiuNAeDEEeO8GOIf1l3bJg"/>
+      <element xmi:type="uml:ControlFlow" href="NewsAsset-model.uml#_YilDEODEEeO8GOIf1l3bJg"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_YiuNAuDEEeO8GOIf1l3bJg" points="[34, 10, -154, -46]$[179, 47, -9, -9]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_YjDkMODEEeO8GOIf1l3bJg" id="(0.07692307692307693,0.6153846153846154)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_YjDkMeDEEeO8GOIf1l3bJg" id="(0.4702549575070821,0.225)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_Ho5TsODFEeO8GOIf1l3bJg" type="4004" source="_9Mg4kOC9EeO8GOIf1l3bJg" target="_Cv8AsODFEeO8GOIf1l3bJg">
+      <children xmi:type="notation:DecorationNode" xmi:id="_Ho5Ts-DFEeO8GOIf1l3bJg" type="6003">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_Ho5TtODFEeO8GOIf1l3bJg" x="-72" y="-34"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_Ho56wODFEeO8GOIf1l3bJg" type="6004">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_Ho56weDFEeO8GOIf1l3bJg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_Ho56wuDFEeO8GOIf1l3bJg" type="6009">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_Ho56w-DFEeO8GOIf1l3bJg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_Ho56xODFEeO8GOIf1l3bJg" type="6011">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_Ho56xeDFEeO8GOIf1l3bJg" y="-20"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_Ho5TseDFEeO8GOIf1l3bJg"/>
+      <element xmi:type="uml:ControlFlow" href="NewsAsset-model.uml#_HovisODFEeO8GOIf1l3bJg"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_Ho5TsuDFEeO8GOIf1l3bJg" points="[10, 7, -180, -107]$[54, 105, -136, -9]"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_O2mQgODFEeO8GOIf1l3bJg" type="4004" source="_AjZGEODEEeO8GOIf1l3bJg" target="_Cv8AsODFEeO8GOIf1l3bJg">
+      <children xmi:type="notation:DecorationNode" xmi:id="_O2mQg-DFEeO8GOIf1l3bJg" type="6003">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_O2mQhODFEeO8GOIf1l3bJg" x="-70" y="-12"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_O2mQheDFEeO8GOIf1l3bJg" type="6004">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_O2mQhuDFEeO8GOIf1l3bJg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_O2mQh-DFEeO8GOIf1l3bJg" type="6009">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_O2mQiODFEeO8GOIf1l3bJg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_O2mQieDFEeO8GOIf1l3bJg" type="6011">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_O2mQiuDFEeO8GOIf1l3bJg" y="-20"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_O2mQgeDFEeO8GOIf1l3bJg"/>
+      <element xmi:type="uml:ControlFlow" href="NewsAsset-model.uml#_O2PEIODFEeO8GOIf1l3bJg"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_O2mQguDFEeO8GOIf1l3bJg" points="[14, -5, -285, 79]$[144, -51, -155, 33]$[176, -84, -123, 0]$[277, -84, -22, 0]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_O2810ODFEeO8GOIf1l3bJg" id="(0.850909090909091,0.125)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_O2810eDFEeO8GOIf1l3bJg" id="(0.08058608058608059,0.25)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_tDHdAODGEeO8GOIf1l3bJg" type="4004" source="_Cv8AsODFEeO8GOIf1l3bJg" target="_XbC90ODFEeO8GOIf1l3bJg">
+      <children xmi:type="notation:DecorationNode" xmi:id="_tDIrIODGEeO8GOIf1l3bJg" type="6003">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_tDIrIeDGEeO8GOIf1l3bJg" x="-19" y="18"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_tDIrIuDGEeO8GOIf1l3bJg" type="6004">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_tDIrI-DGEeO8GOIf1l3bJg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_tDJSMODGEeO8GOIf1l3bJg" type="6009">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_tDJSMeDGEeO8GOIf1l3bJg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_tDJSMuDGEeO8GOIf1l3bJg" type="6011">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_tDJSM-DGEeO8GOIf1l3bJg" y="-20"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_tDHdAeDGEeO8GOIf1l3bJg"/>
+      <element xmi:type="uml:ControlFlow" href="NewsAsset-model.uml#_tC_hMODGEeO8GOIf1l3bJg"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_tDHdAuDGEeO8GOIf1l3bJg" points="[-10, 20, -8, -59]$[-127, 77, -125, -2]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_MsC9IODIEeO8GOIf1l3bJg" id="(0.5897435897435898,0.85)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_sisbEODHEeO8GOIf1l3bJg" type="4004" source="_XbC90ODFEeO8GOIf1l3bJg" target="_siXD4ODHEeO8GOIf1l3bJg">
+      <children xmi:type="notation:DecorationNode" xmi:id="_sisbE-DHEeO8GOIf1l3bJg" type="6003">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_sisbFODHEeO8GOIf1l3bJg" x="-102" y="-12"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_sisbFeDHEeO8GOIf1l3bJg" type="6004">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_sitCIODHEeO8GOIf1l3bJg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_sitCIeDHEeO8GOIf1l3bJg" type="6009">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_sitCIuDHEeO8GOIf1l3bJg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_sitCI-DHEeO8GOIf1l3bJg" type="6011">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_sitCJODHEeO8GOIf1l3bJg" y="-20"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_sisbEeDHEeO8GOIf1l3bJg"/>
+      <element xmi:type="uml:ControlFlow" href="NewsAsset-model.uml#_siltYODHEeO8GOIf1l3bJg"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_sisbEuDHEeO8GOIf1l3bJg" points="[-18, 20, 177, -53]$[-63, 73, 132, 0]$[-190, 73, 5, 0]"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_SMxawODIEeO8GOIf1l3bJg" type="4004" source="_siXD4ODHEeO8GOIf1l3bJg" target="_AjZGEODEEeO8GOIf1l3bJg">
+      <children xmi:type="notation:DecorationNode" xmi:id="_SMyB0ODIEeO8GOIf1l3bJg" type="6003">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_SMyB0eDIEeO8GOIf1l3bJg" x="-98" y="45"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_SMyB0uDIEeO8GOIf1l3bJg" type="6004">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_SMyB0-DIEeO8GOIf1l3bJg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_SMyB1ODIEeO8GOIf1l3bJg" type="6009">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_SMyB1eDIEeO8GOIf1l3bJg" y="-10"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_SMyB1uDIEeO8GOIf1l3bJg" type="6011">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_SMyo4ODIEeO8GOIf1l3bJg" y="-20"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_SMxaweDIEeO8GOIf1l3bJg"/>
+      <element xmi:type="uml:ControlFlow" href="NewsAsset-model.uml#_SMrUIODIEeO8GOIf1l3bJg"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_SMxawuDIEeO8GOIf1l3bJg" points="[-2, 0, 310, 83]$[-197, -20, 115, 63]$[-276, -63, 36, 20]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_SM9A8ODIEeO8GOIf1l3bJg" id="(0.2,0.525)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_RMUtcPhNEeOjOP_PVdMAFg" id="(0.7563636363636363,0.8)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_nXvjsODIEeO8GOIf1l3bJg" type="4004" source="_0HsaYODDEeO8GOIf1l3bJg" target="_siXD4ODHEeO8GOIf1l3bJg">
+      <children xmi:type="notation:DecorationNode" xmi:id="_nXwKwODIEeO8GOIf1l3bJg" type="6003">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_nXwKweDIEeO8GOIf1l3bJg" x="-83" y="36"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_nXwKwuDIEeO8GOIf1l3bJg" type="6004">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_nXwKw-DIEeO8GOIf1l3bJg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_nXwKxODIEeO8GOIf1l3bJg" type="6009">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_nXwKxeDIEeO8GOIf1l3bJg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_nXwKxuDIEeO8GOIf1l3bJg" type="6011">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_nXwKx-DIEeO8GOIf1l3bJg" y="-20"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_nXvjseDIEeO8GOIf1l3bJg"/>
+      <element xmi:type="uml:ControlFlow" href="NewsAsset-model.uml#_nXqEIODIEeO8GOIf1l3bJg"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_nXvjsuDIEeO8GOIf1l3bJg" points="[29, 8, -147, -138]$[239, 65, 63, -81]$[213, 143, 37, -3]$[178, 143, 2, -3]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_nX7J4ODIEeO8GOIf1l3bJg" id="(0.8470254957507082,0.8)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_nX7J4eDIEeO8GOIf1l3bJg" id="(0.8,0.2465753424657534)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_n7QD8ODJEeO8GOIf1l3bJg" type="4004" source="_AjZGEODEEeO8GOIf1l3bJg" target="_eXFmEODJEeO8GOIf1l3bJg">
+      <children xmi:type="notation:DecorationNode" xmi:id="_n7QrAODJEeO8GOIf1l3bJg" type="6003">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_n7QrAeDJEeO8GOIf1l3bJg" x="-20" y="28"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_n7RSEODJEeO8GOIf1l3bJg" type="6004">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_n7RSEeDJEeO8GOIf1l3bJg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_n7RSEuDJEeO8GOIf1l3bJg" type="6009">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_n7RSE-DJEeO8GOIf1l3bJg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_n7RSFODJEeO8GOIf1l3bJg" type="6011">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_n7RSFeDJEeO8GOIf1l3bJg" y="-20"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_n7QD8eDJEeO8GOIf1l3bJg"/>
+      <element xmi:type="uml:ControlFlow" href="NewsAsset-model.uml#_n7J9UODJEeO8GOIf1l3bJg"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_n7QD8uDJEeO8GOIf1l3bJg" points="[-3, 20, -21, -94]$[-50, 94, -68, -20]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_TIzZgPhTEeOjOP_PVdMAFg" id="(0.6618181818181819,0.95)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_TcoUcPhTEeOjOP_PVdMAFg" id="(0.5686274509803921,0.04081632653061224)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_bsedAPhOEeOjOP_PVdMAFg" type="4004" source="_eXFmEODJEeO8GOIf1l3bJg" target="_JicVgPhOEeOjOP_PVdMAFg">
+      <children xmi:type="notation:DecorationNode" xmi:id="_bsfEEPhOEeOjOP_PVdMAFg" type="6003">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_bsfEEfhOEeOjOP_PVdMAFg" x="-6" y="5"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_bsfEEvhOEeOjOP_PVdMAFg" type="6004">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_bsfEE_hOEeOjOP_PVdMAFg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_bsfEFPhOEeOjOP_PVdMAFg" type="6009">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_bsfEFfhOEeOjOP_PVdMAFg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_bsfEFvhOEeOjOP_PVdMAFg" type="6011">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_bsfEF_hOEeOjOP_PVdMAFg" y="-20"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_bsedAfhOEeOjOP_PVdMAFg"/>
+      <element xmi:type="uml:ControlFlow" href="NewsAsset-model.uml#_bsWhMPhOEeOjOP_PVdMAFg"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_bsedAvhOEeOjOP_PVdMAFg" points="[-1, 25, 0, -103]$[-11, 124, -10, -4]"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_bsoOAPhOEeOjOP_PVdMAFg" id="(0.3930635838150289,0.1)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_irmyUPhOEeOjOP_PVdMAFg" type="4004" source="_JicVgPhOEeOjOP_PVdMAFg" target="_irT3YPhOEeOjOP_PVdMAFg">
+      <children xmi:type="notation:DecorationNode" xmi:id="_irmyU_hOEeOjOP_PVdMAFg" type="6003">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_irmyVPhOEeOjOP_PVdMAFg" x="-20" y="12"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_irmyVfhOEeOjOP_PVdMAFg" type="6004">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_irmyVvhOEeOjOP_PVdMAFg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_irmyV_hOEeOjOP_PVdMAFg" type="6009">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_irnZYPhOEeOjOP_PVdMAFg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_irnZYfhOEeOjOP_PVdMAFg" type="6011">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_irnZYvhOEeOjOP_PVdMAFg" y="-20"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_irmyUfhOEeOjOP_PVdMAFg"/>
+      <element xmi:type="uml:ControlFlow" href="NewsAsset-model.uml#_irZ-APhOEeOjOP_PVdMAFg"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_irmyUvhOEeOjOP_PVdMAFg" points="[-31, -20, 182, 118]$[-213, -138, 0, 0]"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_mYf60PhOEeOjOP_PVdMAFg" type="4004" source="_irT3YPhOEeOjOP_PVdMAFg" target="_Zw76MPhKEeOjOP_PVdMAFg">
+      <children xmi:type="notation:DecorationNode" xmi:id="_mYf60_hOEeOjOP_PVdMAFg" type="6003">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_mYf61PhOEeOjOP_PVdMAFg" x="10" y="4"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_mYf61fhOEeOjOP_PVdMAFg" type="6004">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_mYf61vhOEeOjOP_PVdMAFg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_mYf61_hOEeOjOP_PVdMAFg" type="6009">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_mYf62PhOEeOjOP_PVdMAFg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_mYgh4PhOEeOjOP_PVdMAFg" type="6011">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_mYgh4fhOEeOjOP_PVdMAFg" y="-20"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_mYf60fhOEeOjOP_PVdMAFg"/>
+      <element xmi:type="uml:ControlFlow" href="NewsAsset-model.uml#_mYZNIPhOEeOjOP_PVdMAFg"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_mYf60vhOEeOjOP_PVdMAFg" points="[0, 2, -157, 189]$[0, 22, -157, 209]$[151, 22, -6, 209]$[151, -177, -6, 10]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_mYodsPhOEeOjOP_PVdMAFg" id="(0.7745098039215687,0.8)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_OEO-UPhREeOjOP_PVdMAFg" id="(0.2,0.75)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_0DCiwPhPEeOjOP_PVdMAFg" type="4004" source="_irT3YPhOEeOjOP_PVdMAFg" target="_crAsYPhPEeOjOP_PVdMAFg">
+      <children xmi:type="notation:DecorationNode" xmi:id="_0DDJ0PhPEeOjOP_PVdMAFg" type="6003">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_0DDJ0fhPEeOjOP_PVdMAFg" x="-26" y="6"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_0DDJ0vhPEeOjOP_PVdMAFg" type="6004">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_0DDJ0_hPEeOjOP_PVdMAFg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_0DDJ1PhPEeOjOP_PVdMAFg" type="6009">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_0DDJ1fhPEeOjOP_PVdMAFg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_0DDJ1vhPEeOjOP_PVdMAFg" type="6011">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_0DDJ1_hPEeOjOP_PVdMAFg" y="-20"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_0DCiwfhPEeOjOP_PVdMAFg"/>
+      <element xmi:type="uml:ControlFlow" href="NewsAsset-model.uml#_0C9qQPhPEeOjOP_PVdMAFg"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_0DCiwvhPEeOjOP_PVdMAFg" points="[-2, 6, 0, -113]$[-23, 111, -21, -8]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_0DNh4PhPEeOjOP_PVdMAFg" id="(0.19704433497536947,0.4)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_0DNh4fhPEeOjOP_PVdMAFg" id="(0.33915211970074816,0.05)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_hiNPYPhQEeOjOP_PVdMAFg" type="4004" source="_crAsYPhPEeOjOP_PVdMAFg" target="_hiEFcPhQEeOjOP_PVdMAFg">
+      <children xmi:type="notation:DecorationNode" xmi:id="_hiNPY_hQEeOjOP_PVdMAFg" type="6003">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_hiNPZPhQEeOjOP_PVdMAFg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_hiNPZfhQEeOjOP_PVdMAFg" type="6004">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_hiNPZvhQEeOjOP_PVdMAFg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_hiNPZ_hQEeOjOP_PVdMAFg" type="6009">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_hiNPaPhQEeOjOP_PVdMAFg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_hiNPafhQEeOjOP_PVdMAFg" type="6011">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_hiN2cPhQEeOjOP_PVdMAFg" y="-20"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_hiNPYfhQEeOjOP_PVdMAFg"/>
+      <element xmi:type="uml:ControlFlow" href="NewsAsset-model.uml#_hiKzIPhQEeOjOP_PVdMAFg"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_hiNPYvhQEeOjOP_PVdMAFg" points="[-15, -20, 206, 266]$[-221, -286, 0, 0]"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_qcAhoPhQEeOjOP_PVdMAFg" type="4004" source="_hiEFcPhQEeOjOP_PVdMAFg" target="_Zw76MPhKEeOjOP_PVdMAFg">
+      <children xmi:type="notation:DecorationNode" xmi:id="_qcAho_hQEeOjOP_PVdMAFg" type="6003">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_qcAhpPhQEeOjOP_PVdMAFg" x="-77" y="11"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_qcBIsPhQEeOjOP_PVdMAFg" type="6004">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_qcBIsfhQEeOjOP_PVdMAFg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_qcBIsvhQEeOjOP_PVdMAFg" type="6009">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_qcBIs_hQEeOjOP_PVdMAFg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_qcBItPhQEeOjOP_PVdMAFg" type="6011">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_qcBItfhQEeOjOP_PVdMAFg" y="-20"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_qcAhofhQEeOjOP_PVdMAFg"/>
+      <element xmi:type="uml:ControlFlow" href="NewsAsset-model.uml#_qb7CEPhQEeOjOP_PVdMAFg"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_qcAhovhQEeOjOP_PVdMAFg" points="[3, 0, -238, 309]$[241, 0, 0, 309]$[241, -305, 0, 4]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_qcH2YPhQEeOjOP_PVdMAFg" id="(0.9565217391304348,0.3)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_qcIdcPhQEeOjOP_PVdMAFg" id="(0.4423076923076923,0.9)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_0TxQ8PhQEeOjOP_PVdMAFg" type="4004" source="_hiEFcPhQEeOjOP_PVdMAFg" target="_Fu_ckPhPEeOjOP_PVdMAFg">
+      <children xmi:type="notation:DecorationNode" xmi:id="_0TxQ8_hQEeOjOP_PVdMAFg" type="6003">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_0TxQ9PhQEeOjOP_PVdMAFg" x="-29" y="21"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_0Tx4APhQEeOjOP_PVdMAFg" type="6004">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_0Tx4AfhQEeOjOP_PVdMAFg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_0Tx4AvhQEeOjOP_PVdMAFg" type="6009">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_0Tx4A_hQEeOjOP_PVdMAFg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_0Tx4BPhQEeOjOP_PVdMAFg" type="6011">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_0Tx4BfhQEeOjOP_PVdMAFg" y="-20"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_0TxQ8fhQEeOjOP_PVdMAFg"/>
+      <element xmi:type="uml:ControlFlow" href="NewsAsset-model.uml#_0TsYcPhQEeOjOP_PVdMAFg"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_0TxQ8vhQEeOjOP_PVdMAFg" points="[-6, 7, 22, -55]$[-128, 53, -100, -9]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_0T-sUPhQEeOjOP_PVdMAFg" id="(0.2463768115942029,0.3)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_oR1ToPhREeOjOP_PVdMAFg" type="4004" source="_Fu_ckPhPEeOjOP_PVdMAFg" target="_oRswwPhREeOjOP_PVdMAFg">
+      <children xmi:type="notation:DecorationNode" xmi:id="_oR16sPhREeOjOP_PVdMAFg" type="6003">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_oR16sfhREeOjOP_PVdMAFg" x="-18" y="28"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_oR16svhREeOjOP_PVdMAFg" type="6004">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_oR16s_hREeOjOP_PVdMAFg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_oR16tPhREeOjOP_PVdMAFg" type="6009">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_oR16tfhREeOjOP_PVdMAFg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_oR16tvhREeOjOP_PVdMAFg" type="6011">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_oR16t_hREeOjOP_PVdMAFg" y="-20"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_oR1TofhREeOjOP_PVdMAFg"/>
+      <element xmi:type="uml:ControlFlow" href="NewsAsset-model.uml#_oRy3YPhREeOjOP_PVdMAFg"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_oR1TovhREeOjOP_PVdMAFg" points="[-11, -20, 197, 393]$[-208, -413, 0, 0]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_rS0YYPhREeOjOP_PVdMAFg" id="(0.8303030303030303,0.85)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_x8CvIPhREeOjOP_PVdMAFg" type="4004" source="_oRswwPhREeOjOP_PVdMAFg" target="_Zw76MPhKEeOjOP_PVdMAFg">
+      <children xmi:type="notation:DecorationNode" xmi:id="_x8CvI_hREeOjOP_PVdMAFg" type="6003">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_x8CvJPhREeOjOP_PVdMAFg" x="33" y="3"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_x8CvJfhREeOjOP_PVdMAFg" type="6004">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_x8CvJvhREeOjOP_PVdMAFg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_x8CvJ_hREeOjOP_PVdMAFg" type="6009">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_x8CvKPhREeOjOP_PVdMAFg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_x8CvKfhREeOjOP_PVdMAFg" type="6011">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_x8CvKvhREeOjOP_PVdMAFg" y="-20"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_x8CvIfhREeOjOP_PVdMAFg"/>
+      <element xmi:type="uml:ControlFlow" href="NewsAsset-model.uml#_x8AS4PhREeOjOP_PVdMAFg"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_x8CvIvhREeOjOP_PVdMAFg" points="[3, 5, -262, 458]$[3, 14, -262, 467]$[361, 14, 96, 467]$[361, -455, 96, -2]$[327, -455, 62, -2]"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_x8Jc0fhREeOjOP_PVdMAFg" id="(0.7615384615384615,0.875)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_SPpZYPhSEeOjOP_PVdMAFg" type="4004" source="_oRswwPhREeOjOP_PVdMAFg" target="_M4BNYPhSEeOjOP_PVdMAFg">
+      <children xmi:type="notation:DecorationNode" xmi:id="_SPpZY_hSEeOjOP_PVdMAFg" type="6003">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_SPpZZPhSEeOjOP_PVdMAFg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_SPpZZfhSEeOjOP_PVdMAFg" type="6004">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_SPpZZvhSEeOjOP_PVdMAFg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_SPpZZ_hSEeOjOP_PVdMAFg" type="6009">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_SPqAcPhSEeOjOP_PVdMAFg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_SPqAcfhSEeOjOP_PVdMAFg" type="6011">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_SPqAcvhSEeOjOP_PVdMAFg" y="-20"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_SPpZYfhSEeOjOP_PVdMAFg"/>
+      <element xmi:type="uml:ControlFlow" href="NewsAsset-model.uml#_SPj50PhSEeOjOP_PVdMAFg"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_SPpZYvhSEeOjOP_PVdMAFg" points="[41, 0, -197, 84]$[238, 0, 0, 84]$[238, -76, 0, 8]"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_SP4p8PhSEeOjOP_PVdMAFg" id="(0.40559440559440557,0.8)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_YeZaoPhSEeOjOP_PVdMAFg" type="4004" source="_M4BNYPhSEeOjOP_PVdMAFg" target="_Zw76MPhKEeOjOP_PVdMAFg">
+      <children xmi:type="notation:DecorationNode" xmi:id="_YeZao_hSEeOjOP_PVdMAFg" type="6003">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_YeZapPhSEeOjOP_PVdMAFg" x="-58" y="8"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_YeZapfhSEeOjOP_PVdMAFg" type="6004">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_YeZapvhSEeOjOP_PVdMAFg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_YeZap_hSEeOjOP_PVdMAFg" type="6009">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_YeaBsPhSEeOjOP_PVdMAFg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_YeaBsfhSEeOjOP_PVdMAFg" type="6011">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_YeaBsvhSEeOjOP_PVdMAFg" y="-20"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_YeZaofhSEeOjOP_PVdMAFg"/>
+      <element xmi:type="uml:ControlFlow" href="NewsAsset-model.uml#_YeW-YPhSEeOjOP_PVdMAFg"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_YeZaovhSEeOjOP_PVdMAFg" points="[0, -5, -22, 314]$[75, -314, 53, 5]"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_YegIUfhSEeOjOP_PVdMAFg" id="(0.7115384615384616,0.875)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_-adiMPhSEeOjOP_PVdMAFg" type="4004" source="_Zw76MPhKEeOjOP_PVdMAFg" target="_AjZGEODEEeO8GOIf1l3bJg">
+      <children xmi:type="notation:DecorationNode" xmi:id="_-adiM_hSEeOjOP_PVdMAFg" type="6003">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_-adiNPhSEeOjOP_PVdMAFg" x="11" y="54"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_-adiNfhSEeOjOP_PVdMAFg" type="6004">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_-adiNvhSEeOjOP_PVdMAFg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_-aeJQPhSEeOjOP_PVdMAFg" type="6009">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_-aeJQfhSEeOjOP_PVdMAFg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_-aeJQvhSEeOjOP_PVdMAFg" type="6011">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_-aeJQ_hSEeOjOP_PVdMAFg" y="-20"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_-adiMfhSEeOjOP_PVdMAFg"/>
+      <element xmi:type="uml:ControlFlow" href="NewsAsset-model.uml#_-aYCoPhSEeOjOP_PVdMAFg"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_-adiMvhSEeOjOP_PVdMAFg" points="[7, -5, 449, 214]$[7, -92, 449, 127]$[-467, -92, -25, 127]$[-467, -226, -25, -7]$[-450, -226, -8, -7]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_-aqWgPhSEeOjOP_PVdMAFg" id="(0.19230769230769232,0.125)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_-aqWgfhSEeOjOP_PVdMAFg" id="(0.02909090909090909,0.65)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_6TpBUPhTEeOjOP_PVdMAFg" type="4004" source="_AjZGEODEEeO8GOIf1l3bJg" target="_ZY7S4ODdEeO8GOIf1l3bJg">
+      <children xmi:type="notation:DecorationNode" xmi:id="_6TpBU_hTEeOjOP_PVdMAFg" type="6003">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_6TpBVPhTEeOjOP_PVdMAFg" x="-49" y="17"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_6TpBVfhTEeOjOP_PVdMAFg" type="6004">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_6TpBVvhTEeOjOP_PVdMAFg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_6TpBV_hTEeOjOP_PVdMAFg" type="6009">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_6TpBWPhTEeOjOP_PVdMAFg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_6TpBWfhTEeOjOP_PVdMAFg" type="6011">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_6TpBWvhTEeOjOP_PVdMAFg" y="-20"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_6TpBUfhTEeOjOP_PVdMAFg"/>
+      <element xmi:type="uml:ControlFlow" href="NewsAsset-model.uml#_6Tl-APhTEeOjOP_PVdMAFg"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_6TpBUvhTEeOjOP_PVdMAFg" points="[-31, -6, -861, 142]$[-67, -6, -897, 142]$[-67, -179, -897, -31]$[830, -179, 0, -31]$[830, -152, 0, -4]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_6TvH8PhTEeOjOP_PVdMAFg" id="(0.11272727272727273,0.25)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_6TvH8fhTEeOjOP_PVdMAFg" id="(0.49184782608695654,0.08695652173913043)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_AkCoYPhUEeOjOP_PVdMAFg" type="4004" source="_ZY7S4ODdEeO8GOIf1l3bJg" target="_Hd1w4ODeEeO8GOIf1l3bJg">
+      <children xmi:type="notation:DecorationNode" xmi:id="_AkDPcPhUEeOjOP_PVdMAFg" type="6003">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_AkDPcfhUEeOjOP_PVdMAFg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_AkDPcvhUEeOjOP_PVdMAFg" type="6004">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_AkDPc_hUEeOjOP_PVdMAFg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_AkDPdPhUEeOjOP_PVdMAFg" type="6009">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_AkDPdfhUEeOjOP_PVdMAFg" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_AkDPdvhUEeOjOP_PVdMAFg" type="6011">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_AkDPd_hUEeOjOP_PVdMAFg" y="-20"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_AkCoYfhUEeOjOP_PVdMAFg"/>
+      <element xmi:type="uml:ControlFlow" href="NewsAsset-model.uml#_Aj8hwPhUEeOjOP_PVdMAFg"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_AkCoYvhUEeOjOP_PVdMAFg" points="[13, 23, -74, -120]$[81, 130, -6, -13]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_Ir78kPhUEeOjOP_PVdMAFg" id="(0.6657608695652174,0.8043478260869565)"/>
+    </edges>
+  </notation:Diagram>
+  <notation:Diagram xmi:id="_BHylYN-MEeOanJwEUOB9pQ" type="PapyrusUMLClassDiagram" name="DevelopmentView-Class-NewsAsset" measurementUnit="Pixel">
+    <children xmi:type="notation:Shape" xmi:id="_2yNEkODeEeO8GOIf1l3bJg" type="2008">
+      <children xmi:type="notation:DecorationNode" xmi:id="_2yNroODeEeO8GOIf1l3bJg" type="5029"/>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_2yNroeDeEeO8GOIf1l3bJg" type="7017">
+        <styles xmi:type="notation:TitleStyle" xmi:id="_2yNrouDeEeO8GOIf1l3bJg"/>
+        <styles xmi:type="notation:SortingStyle" xmi:id="_2yNro-DeEeO8GOIf1l3bJg"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_2yNrpODeEeO8GOIf1l3bJg"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_2yNrpeDeEeO8GOIf1l3bJg"/>
+      </children>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_2yOSsODeEeO8GOIf1l3bJg" type="7018">
+        <children xmi:type="notation:Shape" xmi:id="_APMjcODfEeO8GOIf1l3bJg" type="3013">
+          <element xmi:type="uml:Operation" href="NewsAsset-model.uml#_API5EODfEeO8GOIf1l3bJg"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_APMjceDfEeO8GOIf1l3bJg"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_ESR-YODfEeO8GOIf1l3bJg" type="3013">
+          <element xmi:type="uml:Operation" href="NewsAsset-model.uml#_ESQJMODfEeO8GOIf1l3bJg"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_ESR-YeDfEeO8GOIf1l3bJg"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_GWyMwODfEeO8GOIf1l3bJg" type="3013">
+          <element xmi:type="uml:Operation" href="NewsAsset-model.uml#_GWw-oODfEeO8GOIf1l3bJg"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_GWyMweDfEeO8GOIf1l3bJg"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_IesUcODfEeO8GOIf1l3bJg" type="3013">
+          <element xmi:type="uml:Operation" href="NewsAsset-model.uml#_IerGUODfEeO8GOIf1l3bJg"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_IesUceDfEeO8GOIf1l3bJg"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_ZxfR8ODfEeO8GOIf1l3bJg" type="3013">
+          <element xmi:type="uml:Operation" href="NewsAsset-model.uml#_Zxc1sODfEeO8GOIf1l3bJg"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_ZxfR8eDfEeO8GOIf1l3bJg"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_bM6HEODfEeO8GOIf1l3bJg" type="3013">
+          <element xmi:type="uml:Operation" href="NewsAsset-model.uml#_bM4R4ODfEeO8GOIf1l3bJg"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_bM6HEeDfEeO8GOIf1l3bJg"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_hLwrIODfEeO8GOIf1l3bJg" type="3013">
+          <element xmi:type="uml:Operation" href="NewsAsset-model.uml#_hLtn0ODfEeO8GOIf1l3bJg"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_hLwrIeDfEeO8GOIf1l3bJg"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_ls9lcODfEeO8GOIf1l3bJg" type="3013">
+          <element xmi:type="uml:Operation" href="NewsAsset-model.uml#_ls8XUODfEeO8GOIf1l3bJg"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_ls9lceDfEeO8GOIf1l3bJg"/>
+        </children>
+        <styles xmi:type="notation:TitleStyle" xmi:id="_2yOSseDeEeO8GOIf1l3bJg"/>
+        <styles xmi:type="notation:SortingStyle" xmi:id="_2yOSsuDeEeO8GOIf1l3bJg"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_2yOSs-DeEeO8GOIf1l3bJg"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_2yOStODeEeO8GOIf1l3bJg"/>
+      </children>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_2yOSteDeEeO8GOIf1l3bJg" type="7019">
+        <styles xmi:type="notation:TitleStyle" xmi:id="_2yOStuDeEeO8GOIf1l3bJg"/>
+        <styles xmi:type="notation:SortingStyle" xmi:id="_2yOSt-DeEeO8GOIf1l3bJg"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_2yOSuODeEeO8GOIf1l3bJg"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_2yOSueDeEeO8GOIf1l3bJg"/>
+      </children>
+      <element xmi:type="uml:Class" href="NewsAsset-model.uml#_2yFv0ODeEeO8GOIf1l3bJg"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_2yNEkeDeEeO8GOIf1l3bJg" x="37" y="133" width="262" height="267"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_rrup8ODfEeO8GOIf1l3bJg" type="2008">
+      <children xmi:type="notation:DecorationNode" xmi:id="_rrv4EODfEeO8GOIf1l3bJg" type="5029"/>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_rrv4EeDfEeO8GOIf1l3bJg" type="7017">
+        <styles xmi:type="notation:TitleStyle" xmi:id="_rrv4EuDfEeO8GOIf1l3bJg"/>
+        <styles xmi:type="notation:SortingStyle" xmi:id="_rrv4E-DfEeO8GOIf1l3bJg"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_rrv4FODfEeO8GOIf1l3bJg"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_rrv4FeDfEeO8GOIf1l3bJg"/>
+      </children>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_rrv4FuDfEeO8GOIf1l3bJg" type="7018">
+        <children xmi:type="notation:Shape" xmi:id="_yvbWMODfEeO8GOIf1l3bJg" type="3013">
+          <element xmi:type="uml:Operation" href="NewsAsset-model.uml#_yvZhAODfEeO8GOIf1l3bJg"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_yvbWMeDfEeO8GOIf1l3bJg"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_1jojMODfEeO8GOIf1l3bJg" type="3013">
+          <element xmi:type="uml:Operation" href="NewsAsset-model.uml#_1jnVEODfEeO8GOIf1l3bJg"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_1jpKQODfEeO8GOIf1l3bJg"/>
+        </children>
+        <styles xmi:type="notation:TitleStyle" xmi:id="_rrv4F-DfEeO8GOIf1l3bJg"/>
+        <styles xmi:type="notation:SortingStyle" xmi:id="_rrv4GODfEeO8GOIf1l3bJg"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_rrv4GeDfEeO8GOIf1l3bJg"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_rrv4GuDfEeO8GOIf1l3bJg"/>
+      </children>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_rrv4G-DfEeO8GOIf1l3bJg" type="7019">
+        <styles xmi:type="notation:TitleStyle" xmi:id="_rrv4HODfEeO8GOIf1l3bJg"/>
+        <styles xmi:type="notation:SortingStyle" xmi:id="_rrv4HeDfEeO8GOIf1l3bJg"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_rrv4HuDfEeO8GOIf1l3bJg"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_rrv4H-DfEeO8GOIf1l3bJg"/>
+      </children>
+      <element xmi:type="uml:Class" href="NewsAsset-model.uml#_rrq_kODfEeO8GOIf1l3bJg"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_rrup8eDfEeO8GOIf1l3bJg" x="524" y="41" width="213"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_uJGrUODfEeO8GOIf1l3bJg" type="2008">
+      <children xmi:type="notation:DecorationNode" xmi:id="_uJGrUuDfEeO8GOIf1l3bJg" type="5029"/>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_uJGrU-DfEeO8GOIf1l3bJg" type="7017">
+        <styles xmi:type="notation:TitleStyle" xmi:id="_uJGrVODfEeO8GOIf1l3bJg"/>
+        <styles xmi:type="notation:SortingStyle" xmi:id="_uJGrVeDfEeO8GOIf1l3bJg"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_uJGrVuDfEeO8GOIf1l3bJg"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_uJGrV-DfEeO8GOIf1l3bJg"/>
+      </children>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_uJGrWODfEeO8GOIf1l3bJg" type="7018">
+        <children xmi:type="notation:Shape" xmi:id="_5B6A4ODfEeO8GOIf1l3bJg" type="3013">
+          <element xmi:type="uml:Operation" href="NewsAsset-model.uml#_5B4LsODfEeO8GOIf1l3bJg"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_5B6A4eDfEeO8GOIf1l3bJg"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_9KRkcODfEeO8GOIf1l3bJg" type="3013">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_Kf9xEOJ-EeOsSf0lAkOcAA" source="Stereotype_Annotation">
+            <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_EZOh8PfrEeOsG98FQi63Qg" key="StereotypeWithQualifiedNameList" value=""/>
+            <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_EZOh8ffrEeOsG98FQi63Qg" key="StereotypeList" value=""/>
+            <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_EZPJAPfrEeOsG98FQi63Qg" key="Stereotype_Presentation_Kind" value="HorizontalStereo"/>
+            <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_EZPJAffrEeOsG98FQi63Qg" key="PropStereoDisplay" value=""/>
+            <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_EZPJAvfrEeOsG98FQi63Qg" key="StereotypePropertyLocation" value="Compartment"/>
+          </eAnnotations>
+          <element xmi:type="uml:Operation" href="NewsAsset-model.uml#_9KQWUODfEeO8GOIf1l3bJg"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_9KRkceDfEeO8GOIf1l3bJg"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_-3HgwODfEeO8GOIf1l3bJg" type="3013">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_PM_pcOKVEeOsSf0lAkOcAA" source="Stereotype_Annotation">
+            <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_EZQ-MPfrEeOsG98FQi63Qg" key="StereotypeWithQualifiedNameList" value=""/>
+            <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_EZQ-MffrEeOsG98FQi63Qg" key="StereotypeList" value=""/>
+            <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_EZQ-MvfrEeOsG98FQi63Qg" key="Stereotype_Presentation_Kind" value="HorizontalStereo"/>
+            <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_EZQ-M_frEeOsG98FQi63Qg" key="PropStereoDisplay" value=""/>
+            <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_EZQ-NPfrEeOsG98FQi63Qg" key="StereotypePropertyLocation" value="Compartment"/>
+          </eAnnotations>
+          <element xmi:type="uml:Operation" href="NewsAsset-model.uml#_-3GSoODfEeO8GOIf1l3bJg"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_-3HgweDfEeO8GOIf1l3bJg"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_BZpH4ODgEeO8GOIf1l3bJg" type="3013">
+          <element xmi:type="uml:Operation" href="NewsAsset-model.uml#_BZnSsODgEeO8GOIf1l3bJg"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_BZpH4eDgEeO8GOIf1l3bJg"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_EUmdIODgEeO8GOIf1l3bJg" type="3013">
+          <element xmi:type="uml:Operation" href="NewsAsset-model.uml#_EUlPAODgEeO8GOIf1l3bJg"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_EUmdIeDgEeO8GOIf1l3bJg"/>
+        </children>
+        <styles xmi:type="notation:TitleStyle" xmi:id="_uJGrWeDfEeO8GOIf1l3bJg"/>
+        <styles xmi:type="notation:SortingStyle" xmi:id="_uJGrWuDfEeO8GOIf1l3bJg"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_uJGrW-DfEeO8GOIf1l3bJg"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_uJGrXODfEeO8GOIf1l3bJg"/>
+      </children>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_uJGrXeDfEeO8GOIf1l3bJg" type="7019">
+        <styles xmi:type="notation:TitleStyle" xmi:id="_uJHSYODfEeO8GOIf1l3bJg"/>
+        <styles xmi:type="notation:SortingStyle" xmi:id="_uJHSYeDfEeO8GOIf1l3bJg"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_uJHSYuDfEeO8GOIf1l3bJg"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_uJHSY-DfEeO8GOIf1l3bJg"/>
+      </children>
+      <element xmi:type="uml:Class" href="NewsAsset-model.uml#_uJE2IODfEeO8GOIf1l3bJg"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_uJGrUeDfEeO8GOIf1l3bJg" x="520" y="274" width="473"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_WydiwODkEeO8GOIf1l3bJg" type="2012">
+      <children xmi:type="notation:DecorationNode" xmi:id="_WydiwuDkEeO8GOIf1l3bJg" type="5038"/>
+      <element xmi:type="uml:Comment" href="NewsAsset-model.uml#_WyWOAODkEeO8GOIf1l3bJg"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_WydiweDkEeO8GOIf1l3bJg" x="773" y="27"/>
+    </children>
+    <styles xmi:type="notation:DiagramStyle" xmi:id="_BHylYd-MEeOanJwEUOB9pQ"/>
+    <element xmi:type="uml:Model" href="NewsAsset-model.uml#_BHwJIN-MEeOanJwEUOB9pQ"/>
+    <edges xmi:type="notation:Connector" xmi:id="_RR-5kODgEeO8GOIf1l3bJg" type="4001" source="_rrup8ODfEeO8GOIf1l3bJg" target="_uJGrUODfEeO8GOIf1l3bJg">
+      <children xmi:type="notation:DecorationNode" xmi:id="_RR-5k-DgEeO8GOIf1l3bJg" type="6001">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_RR-5lODgEeO8GOIf1l3bJg" y="-20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_RR_goODgEeO8GOIf1l3bJg" type="6002">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_RR_goeDgEeO8GOIf1l3bJg" x="-18" y="15"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_RR_gouDgEeO8GOIf1l3bJg" type="6003">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_RSAHsODgEeO8GOIf1l3bJg" x="-38" y="41"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_RSAHseDgEeO8GOIf1l3bJg" type="6005">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_RSAHsuDgEeO8GOIf1l3bJg" x="-43" y="53"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_RSAHs-DgEeO8GOIf1l3bJg" type="6033">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_RSAHtODgEeO8GOIf1l3bJg" x="8" y="-13"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_RSAHteDgEeO8GOIf1l3bJg" type="6034">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_RSAHtuDgEeO8GOIf1l3bJg" x="26" y="-28"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_RR-5keDgEeO8GOIf1l3bJg"/>
+      <element xmi:type="uml:Association" href="NewsAsset-model.uml#_RR9EYODgEeO8GOIf1l3bJg"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_RR-5kuDgEeO8GOIf1l3bJg" points="[2, 13, -20, -126]$[10, 116, -12, -23]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_RSKfwODgEeO8GOIf1l3bJg" id="(0.49765258215962443,0.9516129032258065)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_RSKfweDgEeO8GOIf1l3bJg" id="(0.45495495495495497,0.02717391304347826)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_m20gUOsuEeOsSf0lAkOcAA" type="4001" source="_2yNEkODeEeO8GOIf1l3bJg" target="_rrup8ODfEeO8GOIf1l3bJg">
+      <children xmi:type="notation:DecorationNode" xmi:id="_m21HYOsuEeOsSf0lAkOcAA" type="6001">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_m21HYesuEeOsSf0lAkOcAA" y="-20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_m21HYusuEeOsSf0lAkOcAA" type="6002">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_m21ucOsuEeOsSf0lAkOcAA" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_m21ucesuEeOsSf0lAkOcAA" type="6003">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_m21ucusuEeOsSf0lAkOcAA" x="13" y="-12"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_m21uc-suEeOsSf0lAkOcAA" type="6005">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_m21udOsuEeOsSf0lAkOcAA" x="-14" y="25"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_m21udesuEeOsSf0lAkOcAA" type="6033">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_m21udusuEeOsSf0lAkOcAA" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_m21ud-suEeOsSf0lAkOcAA" type="6034">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_m21ueOsuEeOsSf0lAkOcAA" y="-20"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_m20gUesuEeOsSf0lAkOcAA"/>
+      <element xmi:type="uml:Association" href="NewsAsset-model.uml#_m2yEEOsuEeOsSf0lAkOcAA"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_m20gUusuEeOsSf0lAkOcAA" points="[22, -8, -246, 83]$[251, -101, -17, -10]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_m3E_AOsuEeOsSf0lAkOcAA" id="(0.916030534351145,0.033707865168539325)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_m3E_AesuEeOsSf0lAkOcAA" id="(0.09859154929577464,0.08064516129032258)"/>
+    </edges>
+  </notation:Diagram>
+  <notation:Diagram xmi:id="_BH7IQN-MEeOanJwEUOB9pQ" type="PapyrusUMLDeploymentDiagram" name="PhysicalView-Deployment-NewsAssetOnTUB" measurementUnit="Pixel">
+    <children xmi:type="notation:Shape" xmi:id="_XAQ4gOGEEeO8GOIf1l3bJg" type="2002">
+      <children xmi:type="notation:DecorationNode" xmi:id="_XARfkOGEEeO8GOIf1l3bJg" type="5"/>
+      <children xmi:type="notation:DecorationNode" xmi:id="_XARfkeGEEeO8GOIf1l3bJg" type="18">
+        <children xmi:type="notation:Shape" xmi:id="_Xk7EwOGEEeO8GOIf1l3bJg" type="21">
+          <children xmi:type="notation:DecorationNode" xmi:id="_Xk7r0OGEEeO8GOIf1l3bJg" type="22"/>
+          <styles xmi:type="notation:DescriptionStyle" xmi:id="_Xk7EweGEEeO8GOIf1l3bJg"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_Xk7EwuGEEeO8GOIf1l3bJg"/>
+          <element xmi:type="uml:ExecutionEnvironment" href="NewsAsset-model.uml#_Xk52oOGEEeO8GOIf1l3bJg"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Xk7Ew-GEEeO8GOIf1l3bJg" x="13" y="97" width="379" height="66"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_kcSG0OGGEeO8GOIf1l3bJg" type="21">
+          <children xmi:type="notation:DecorationNode" xmi:id="_kcSt4OGGEeO8GOIf1l3bJg" type="22"/>
+          <styles xmi:type="notation:DescriptionStyle" xmi:id="_kcSG0eGGEeO8GOIf1l3bJg"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_kcSG0uGGEeO8GOIf1l3bJg"/>
+          <element xmi:type="uml:ExecutionEnvironment" href="NewsAsset-model.uml#_kcQRoOGGEeO8GOIf1l3bJg"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_kcSG0-GGEeO8GOIf1l3bJg" x="16" y="13" width="376" height="59"/>
+        </children>
+        <styles xmi:type="notation:TitleStyle" xmi:id="_XARfkuGEEeO8GOIf1l3bJg"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_XARfk-GEEeO8GOIf1l3bJg"/>
+      </children>
+      <styles xmi:type="notation:DescriptionStyle" xmi:id="_XAQ4geGEEeO8GOIf1l3bJg"/>
+      <styles xmi:type="notation:FontStyle" xmi:id="_XAQ4guGEEeO8GOIf1l3bJg"/>
+      <element xmi:type="uml:ExecutionEnvironment" href="NewsAsset-model.uml#_XAHHgOGEEeO8GOIf1l3bJg"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_XAQ4g-GEEeO8GOIf1l3bJg" x="122" y="62" width="460" height="251"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_UxtiAOGfEeO8GOIf1l3bJg" type="2002">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_vpEJgOGgEeO8GOIf1l3bJg" source="Stereotype_Annotation">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_ecVZsOJOEeOsSf0lAkOcAA" key="StereotypeWithQualifiedNameList" value=""/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_ecVZseJOEeOsSf0lAkOcAA" key="StereotypeList" value=""/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_ecVZsuJOEeOsSf0lAkOcAA" key="Stereotype_Presentation_Kind" value="HorizontalStereo"/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_ecVZs-JOEeOsSf0lAkOcAA" key="PropStereoDisplay" value=""/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_ecVZtOJOEeOsSf0lAkOcAA" key="StereotypePropertyLocation" value="Compartment"/>
+      </eAnnotations>
+      <children xmi:type="notation:DecorationNode" xmi:id="_UxuJEOGfEeO8GOIf1l3bJg" type="5"/>
+      <children xmi:type="notation:DecorationNode" xmi:id="_UxuJEeGfEeO8GOIf1l3bJg" type="18">
+        <children xmi:type="notation:Shape" xmi:id="_YL2toOGfEeO8GOIf1l3bJg" type="21">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_gFLxYOJPEeOsSf0lAkOcAA" source="Stereotype_Annotation">
+            <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_EZYS8PfrEeOsG98FQi63Qg" key="StereotypeWithQualifiedNameList" value=""/>
+            <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_EZY6APfrEeOsG98FQi63Qg" key="StereotypeList" value=""/>
+            <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_EZY6AffrEeOsG98FQi63Qg" key="Stereotype_Presentation_Kind" value="HorizontalStereo"/>
+            <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_EZY6AvfrEeOsG98FQi63Qg" key="PropStereoDisplay" value=""/>
+            <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_EZY6A_frEeOsG98FQi63Qg" key="StereotypePropertyLocation" value="Compartment"/>
+          </eAnnotations>
+          <children xmi:type="notation:DecorationNode" xmi:id="_YL3UsOGfEeO8GOIf1l3bJg" type="22"/>
+          <styles xmi:type="notation:DescriptionStyle" xmi:id="_YL2toeGfEeO8GOIf1l3bJg"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_YL2touGfEeO8GOIf1l3bJg"/>
+          <element xmi:type="uml:ExecutionEnvironment" href="NewsAsset-model.uml#_YL1fgOGfEeO8GOIf1l3bJg"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_YL2to-GfEeO8GOIf1l3bJg" x="23" y="82" width="392" height="75"/>
+        </children>
+        <children xmi:type="notation:Shape" xmi:id="_itF3wOGfEeO8GOIf1l3bJg" type="21">
+          <children xmi:type="notation:DecorationNode" xmi:id="_itGe0OGfEeO8GOIf1l3bJg" type="22"/>
+          <styles xmi:type="notation:DescriptionStyle" xmi:id="_itF3weGfEeO8GOIf1l3bJg"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_itF3wuGfEeO8GOIf1l3bJg"/>
+          <element xmi:type="uml:ExecutionEnvironment" href="NewsAsset-model.uml#_itECkOGfEeO8GOIf1l3bJg"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_itF3w-GfEeO8GOIf1l3bJg" x="24" y="5" width="387" height="56"/>
+        </children>
+        <styles xmi:type="notation:TitleStyle" xmi:id="_UxuJEuGfEeO8GOIf1l3bJg"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_UxuJE-GfEeO8GOIf1l3bJg"/>
+      </children>
+      <styles xmi:type="notation:DescriptionStyle" xmi:id="_UxtiAeGfEeO8GOIf1l3bJg"/>
+      <styles xmi:type="notation:FontStyle" xmi:id="_UxtiAuGfEeO8GOIf1l3bJg"/>
+      <element xmi:type="uml:ExecutionEnvironment" href="NewsAsset-model.uml#_UxccQOGfEeO8GOIf1l3bJg"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_UxtiA-GfEeO8GOIf1l3bJg" x="127" y="346" width="462" height="247"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_9TX9kOHFEeO8GOIf1l3bJg" type="2006">
+      <children xmi:type="notation:DecorationNode" xmi:id="_9TYkoOHFEeO8GOIf1l3bJg" type="8"/>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_9TYkoeHFEeO8GOIf1l3bJg" type="26">
+        <styles xmi:type="notation:TitleStyle" xmi:id="_9TYkouHFEeO8GOIf1l3bJg"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_9TYko-HFEeO8GOIf1l3bJg"/>
+      </children>
+      <styles xmi:type="notation:DescriptionStyle" xmi:id="_9TX9keHFEeO8GOIf1l3bJg"/>
+      <styles xmi:type="notation:FontStyle" xmi:id="_9TX9kuHFEeO8GOIf1l3bJg"/>
+      <element xmi:type="uml:Artifact" href="NewsAsset-model.uml#_9TVhUOHFEeO8GOIf1l3bJg"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_9TX9k-HFEeO8GOIf1l3bJg" x="898" y="125" width="288"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_BHyqYOHGEeO8GOIf1l3bJg" type="2006">
+      <children xmi:type="notation:DecorationNode" xmi:id="_BHyqZOHGEeO8GOIf1l3bJg" type="8"/>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_BHyqZeHGEeO8GOIf1l3bJg" type="26">
+        <styles xmi:type="notation:TitleStyle" xmi:id="_BHyqZuHGEeO8GOIf1l3bJg"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_BHyqZ-HGEeO8GOIf1l3bJg"/>
+      </children>
+      <styles xmi:type="notation:DescriptionStyle" xmi:id="_BHyqYeHGEeO8GOIf1l3bJg"/>
+      <styles xmi:type="notation:FontStyle" xmi:id="_BHyqYuHGEeO8GOIf1l3bJg"/>
+      <element xmi:type="uml:Artifact" href="NewsAsset-model.uml#_BHwOIOHGEeO8GOIf1l3bJg"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_BHyqY-HGEeO8GOIf1l3bJg" x="900" y="252" width="288"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_JCNjQOHGEeO8GOIf1l3bJg" type="2006">
+      <children xmi:type="notation:DecorationNode" xmi:id="_JCNjROHGEeO8GOIf1l3bJg" type="8"/>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_JCOKUOHGEeO8GOIf1l3bJg" type="26">
+        <styles xmi:type="notation:TitleStyle" xmi:id="_JCOKUeHGEeO8GOIf1l3bJg"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_JCOKUuHGEeO8GOIf1l3bJg"/>
+      </children>
+      <styles xmi:type="notation:DescriptionStyle" xmi:id="_JCNjQeHGEeO8GOIf1l3bJg"/>
+      <styles xmi:type="notation:FontStyle" xmi:id="_JCNjQuHGEeO8GOIf1l3bJg"/>
+      <element xmi:type="uml:Artifact" href="NewsAsset-model.uml#_JCLuEOHGEeO8GOIf1l3bJg"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_JCNjQ-HGEeO8GOIf1l3bJg" x="899" y="385" width="287"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_X_3OUOHGEeO8GOIf1l3bJg" type="2006">
+      <children xmi:type="notation:DecorationNode" xmi:id="_X_3OVOHGEeO8GOIf1l3bJg" type="8"/>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_X_3OVeHGEeO8GOIf1l3bJg" type="26">
+        <styles xmi:type="notation:TitleStyle" xmi:id="_X_3OVuHGEeO8GOIf1l3bJg"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_X_3OV-HGEeO8GOIf1l3bJg"/>
+      </children>
+      <styles xmi:type="notation:DescriptionStyle" xmi:id="_X_3OUeHGEeO8GOIf1l3bJg"/>
+      <styles xmi:type="notation:FontStyle" xmi:id="_X_3OUuHGEeO8GOIf1l3bJg"/>
+      <element xmi:type="uml:Artifact" href="NewsAsset-model.uml#_X_0yEOHGEeO8GOIf1l3bJg"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_X_3OU-HGEeO8GOIf1l3bJg" x="902" y="496" width="285"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_c6fVQOHGEeO8GOIf1l3bJg" type="2006">
+      <children xmi:type="notation:DecorationNode" xmi:id="_c6fVROHGEeO8GOIf1l3bJg" type="8"/>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_c6fVReHGEeO8GOIf1l3bJg" type="26">
+        <styles xmi:type="notation:TitleStyle" xmi:id="_c6fVRuHGEeO8GOIf1l3bJg"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_c6fVR-HGEeO8GOIf1l3bJg"/>
+      </children>
+      <styles xmi:type="notation:DescriptionStyle" xmi:id="_c6fVQeHGEeO8GOIf1l3bJg"/>
+      <styles xmi:type="notation:FontStyle" xmi:id="_c6fVQuHGEeO8GOIf1l3bJg"/>
+      <element xmi:type="uml:Artifact" href="NewsAsset-model.uml#_c6euMOHGEeO8GOIf1l3bJg"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_c6fVQ-HGEeO8GOIf1l3bJg" x="902" y="613" width="290"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_MrQ4IOHHEeO8GOIf1l3bJg" type="2001">
+      <children xmi:type="notation:DecorationNode" xmi:id="_MrQ4IuHHEeO8GOIf1l3bJg" type="1"/>
+      <element xmi:type="uml:Comment" href="NewsAsset-model.uml#_MrN00OHHEeO8GOIf1l3bJg"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_MrQ4IeHHEeO8GOIf1l3bJg" x="669" y="362"/>
+    </children>
+    <styles xmi:type="notation:DiagramStyle" xmi:id="_BH7IQd-MEeOanJwEUOB9pQ"/>
+    <element xmi:type="uml:Model" href="NewsAsset-model.uml#_BHwJIN-MEeOanJwEUOB9pQ"/>
+    <edges xmi:type="notation:Connector" xmi:id="_nkLQwOHGEeO8GOIf1l3bJg" type="4004" source="_c6fVQOHGEeO8GOIf1l3bJg" target="_itF3wOGfEeO8GOIf1l3bJg">
+      <children xmi:type="notation:DecorationNode" xmi:id="_nkLQw-HGEeO8GOIf1l3bJg" type="12">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_nkL30OHGEeO8GOIf1l3bJg" x="-22" y="-37"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_nkL30eHGEeO8GOIf1l3bJg" type="15">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_nkL30uHGEeO8GOIf1l3bJg" y="60"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_nkLQweHGEeO8GOIf1l3bJg"/>
+      <element xmi:type="uml:Dependency" href="NewsAsset-model.uml#_nkINcOHGEeO8GOIf1l3bJg"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_nkLQwuHGEeO8GOIf1l3bJg" points="[-18, -9, 403, 188]$[-377, -201, 44, -4]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_nkVo0OHGEeO8GOIf1l3bJg" id="(0.06206896551724138,0.25555555555555554)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_nkVo0eHGEeO8GOIf1l3bJg" id="(0.8863049095607235,0.2857142857142857)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_2xJxQOHGEeO8GOIf1l3bJg" type="4004" source="_9TX9kOHFEeO8GOIf1l3bJg" target="_kcSG0OGGEeO8GOIf1l3bJg">
+      <children xmi:type="notation:DecorationNode" xmi:id="_2xKYUeHGEeO8GOIf1l3bJg" type="12">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_2xKYUuHGEeO8GOIf1l3bJg" x="-23" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_2xKYU-HGEeO8GOIf1l3bJg" type="15">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_2xKYVOHGEeO8GOIf1l3bJg" y="60"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_2xJxQeHGEeO8GOIf1l3bJg"/>
+      <element xmi:type="uml:Dependency" href="NewsAsset-model.uml#_2xH8EOHGEeO8GOIf1l3bJg"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_2xKYUOHGEeO8GOIf1l3bJg" points="[-17, 0, 435, -13]$[-396, 15, 56, 2]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_2xSUIOHGEeO8GOIf1l3bJg" id="(0.059027777777777776,0.25555555555555554)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_2xSUIeHGEeO8GOIf1l3bJg" id="(0.851063829787234,0.5932203389830508)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_CYzw4OHHEeO8GOIf1l3bJg" type="4004" source="_9TX9kOHFEeO8GOIf1l3bJg" target="_itF3wOGfEeO8GOIf1l3bJg">
+      <children xmi:type="notation:DecorationNode" xmi:id="_CY0X8uHHEeO8GOIf1l3bJg" type="12">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_CY0X8-HHEeO8GOIf1l3bJg" x="-82" y="40"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_CY0X9OHHEeO8GOIf1l3bJg" type="15">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_CY0X9eHHEeO8GOIf1l3bJg" y="60"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_CY0X8OHHEeO8GOIf1l3bJg"/>
+      <element xmi:type="uml:Dependency" href="NewsAsset-model.uml#_CYxUoOHHEeO8GOIf1l3bJg"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_CY0X8eHHEeO8GOIf1l3bJg" points="[-18, 11, 422, -279]$[-373, 287, 67, -3]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_CY9h4OHHEeO8GOIf1l3bJg" id="(0.0625,0.34444444444444444)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_CY9h4eHHEeO8GOIf1l3bJg" id="(0.8268733850129198,0.4107142857142857)"/>
+    </edges>
+  </notation:Diagram>
+  <notation:Diagram xmi:id="_BH9kgN-MEeOanJwEUOB9pQ" type="Package" name="DevelopmentView-Package-NewsAsset" measurementUnit="Pixel">
+    <styles xmi:type="notation:DiagramStyle" xmi:id="_BH9kgd-MEeOanJwEUOB9pQ"/>
+    <element xmi:type="uml:Model" href="NewsAsset-model.uml#_BHwJIN-MEeOanJwEUOB9pQ"/>
+  </notation:Diagram>
+  <notation:Diagram xmi:id="_BIDEEN-MEeOanJwEUOB9pQ" type="UseCase" name="ScenarioView-UseCase-NewsAsset" measurementUnit="Pixel">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_RoOAMP3oEeOjOP_PVdMAFg" source="Stereotype_Annotation">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_XCE84BNJEeSSeOXAWAn9pQ" key="StereotypeWithQualifiedNameList" value=""/>
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_XCE84RNJEeSSeOXAWAn9pQ" key="StereotypeList" value="ASCETICProfile::preparedForMeasurement,KPIProfile::preparedForMeasurement"/>
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_XCE84hNJEeSSeOXAWAn9pQ" key="Stereotype_Presentation_Kind" value="HorizontalStereo"/>
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_XCE84xNJEeSSeOXAWAn9pQ" key="PropStereoDisplay" value=""/>
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_XCE85BNJEeSSeOXAWAn9pQ" key="StereotypePropertyLocation" value="Compartment"/>
+    </eAnnotations>
+    <children xmi:type="notation:Shape" xmi:id="_djWesN-aEeOanJwEUOB9pQ" type="2011">
+      <children xmi:type="notation:DecorationNode" xmi:id="_djWest-aEeOanJwEUOB9pQ" type="5014">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_djWes9-aEeOanJwEUOB9pQ" x="10" y="63"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_djWetN-aEeOanJwEUOB9pQ" type="6029">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_djWetd-aEeOanJwEUOB9pQ" x="20" y="100"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_djWett-aEeOanJwEUOB9pQ" type="6037">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_djWet9-aEeOanJwEUOB9pQ" x="20" y="80"/>
+      </children>
+      <element xmi:type="uml:Actor" href="NewsAsset-model.uml#_diotAN-aEeOanJwEUOB9pQ"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_djWesd-aEeOanJwEUOB9pQ" x="131" y="418"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_gTpcEN-aEeOanJwEUOB9pQ" type="2013">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_PrsV4N-bEeOanJwEUOB9pQ" source="Stereotype_Annotation">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_4UadMBQuEeSbRqcniHIcDA" key="StereotypeWithQualifiedNameList" value=""/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_4UadMRQuEeSbRqcniHIcDA" key="StereotypeList" value="KPIProfile::forMeasurement"/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_4UadMhQuEeSbRqcniHIcDA" key="Stereotype_Presentation_Kind" value="HorizontalStereo"/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_4UadMxQuEeSbRqcniHIcDA" key="PropStereoDisplay" value=""/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_4UadNBQuEeSbRqcniHIcDA" key="StereotypePropertyLocation" value="Compartment"/>
+      </eAnnotations>
+      <children xmi:type="notation:DecorationNode" xmi:id="_gTpcEt-aEeOanJwEUOB9pQ" type="5016"/>
+      <children xmi:type="notation:DecorationNode" xmi:id="_gTpcE9-aEeOanJwEUOB9pQ" type="7009">
+        <styles xmi:type="notation:SortingStyle" xmi:id="_gTqDIN-aEeOanJwEUOB9pQ"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_gTqDId-aEeOanJwEUOB9pQ"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_gTqDIt-aEeOanJwEUOB9pQ"/>
+      </children>
+      <element xmi:type="uml:UseCase" href="NewsAsset-model.uml#_gTmYwN-aEeOanJwEUOB9pQ"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_gTpcEd-aEeOanJwEUOB9pQ" x="417" y="316" width="277" height="87"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_nZePQN-aEeOanJwEUOB9pQ" type="2013">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_yi_-IOsvEeOsSf0lAkOcAA" source="Stereotype_Annotation">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_EVZK0PfrEeOsG98FQi63Qg" key="StereotypeWithQualifiedNameList" value=""/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_EVZK0ffrEeOsG98FQi63Qg" key="StereotypeList" value=""/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_EVZK0vfrEeOsG98FQi63Qg" key="Stereotype_Presentation_Kind" value="HorizontalStereo"/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_EVZx4PfrEeOsG98FQi63Qg" key="PropStereoDisplay" value=""/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_EVZx4ffrEeOsG98FQi63Qg" key="StereotypePropertyLocation" value="Compartment"/>
+      </eAnnotations>
+      <children xmi:type="notation:DecorationNode" xmi:id="_nZe2UN-aEeOanJwEUOB9pQ" type="5016"/>
+      <children xmi:type="notation:DecorationNode" xmi:id="_nZe2Ud-aEeOanJwEUOB9pQ" type="7009">
+        <styles xmi:type="notation:SortingStyle" xmi:id="_nZe2Ut-aEeOanJwEUOB9pQ"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_nZe2U9-aEeOanJwEUOB9pQ"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_nZe2VN-aEeOanJwEUOB9pQ"/>
+      </children>
+      <element xmi:type="uml:UseCase" href="NewsAsset-model.uml#_nZak4N-aEeOanJwEUOB9pQ"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_nZePQd-aEeOanJwEUOB9pQ" x="408" y="504" width="274" height="86"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_RzGVAN-gEeOanJwEUOB9pQ" type="2011">
+      <children xmi:type="notation:DecorationNode" xmi:id="_RzGVAt-gEeOanJwEUOB9pQ" type="5014">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_RzGVA9-gEeOanJwEUOB9pQ" x="-12" y="67"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_RzGVBN-gEeOanJwEUOB9pQ" type="6029">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_RzGVBd-gEeOanJwEUOB9pQ" x="20" y="100"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_RzGVBt-gEeOanJwEUOB9pQ" type="6037">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_RzGVB9-gEeOanJwEUOB9pQ" x="20" y="80"/>
+      </children>
+      <element xmi:type="uml:Actor" href="NewsAsset-model.uml#_RzDRsN-gEeOanJwEUOB9pQ"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_RzGVAd-gEeOanJwEUOB9pQ" x="131" y="654"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_f7FjYN-gEeOanJwEUOB9pQ" type="2013">
+      <children xmi:type="notation:DecorationNode" xmi:id="_f7FjYt-gEeOanJwEUOB9pQ" type="5016"/>
+      <children xmi:type="notation:DecorationNode" xmi:id="_f7FjY9-gEeOanJwEUOB9pQ" type="7009">
+        <styles xmi:type="notation:SortingStyle" xmi:id="_f7FjZN-gEeOanJwEUOB9pQ"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_f7FjZd-gEeOanJwEUOB9pQ"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_f7FjZt-gEeOanJwEUOB9pQ"/>
+      </children>
+      <element xmi:type="uml:UseCase" href="NewsAsset-model.uml#_f7CgEN-gEeOanJwEUOB9pQ"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_f7FjYd-gEeOanJwEUOB9pQ" x="434" y="644" width="369" height="94"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_0ODtUN-gEeOanJwEUOB9pQ" type="2013">
+      <children xmi:type="notation:DecorationNode" xmi:id="_0ODtUt-gEeOanJwEUOB9pQ" type="5016"/>
+      <children xmi:type="notation:DecorationNode" xmi:id="_0ODtU9-gEeOanJwEUOB9pQ" type="7009">
+        <styles xmi:type="notation:SortingStyle" xmi:id="_0ODtVN-gEeOanJwEUOB9pQ"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_0ODtVd-gEeOanJwEUOB9pQ"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_0ODtVt-gEeOanJwEUOB9pQ"/>
+      </children>
+      <element xmi:type="uml:UseCase" href="NewsAsset-model.uml#_0OAC8N-gEeOanJwEUOB9pQ"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_0ODtUd-gEeOanJwEUOB9pQ" x="929" y="640" width="235" height="86"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="__FfR0OAMEeOanJwEUOB9pQ" type="2018">
+      <children xmi:type="notation:DecorationNode" xmi:id="__FfR0-AMEeOanJwEUOB9pQ" type="5027"/>
+      <styles xmi:type="notation:HintedDiagramLinkStyle" xmi:id="__FfR0eAMEeOanJwEUOB9pQ"/>
+      <element xmi:type="uml:Comment" href="NewsAsset-model.uml#__D9AwOAMEeOanJwEUOB9pQ"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="__FfR0uAMEeOanJwEUOB9pQ" x="723" y="758"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_m2hW8OANEeOanJwEUOB9pQ" type="2011">
+      <children xmi:type="notation:DecorationNode" xmi:id="_m2hW8uANEeOanJwEUOB9pQ" type="5014">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_m2hW8-ANEeOanJwEUOB9pQ" x="-41" y="72"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_m2hW9OANEeOanJwEUOB9pQ" type="6029">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_m2hW9eANEeOanJwEUOB9pQ" x="20" y="100"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_m2hW9uANEeOanJwEUOB9pQ" type="6037">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_m2hW9-ANEeOanJwEUOB9pQ" x="20" y="80"/>
+      </children>
+      <element xmi:type="uml:Actor" href="NewsAsset-model.uml#_m2dskOANEeOanJwEUOB9pQ"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_m2hW8eANEeOanJwEUOB9pQ" x="143" y="176"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_tR2boOANEeOanJwEUOB9pQ" type="2013">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_K6Yu8OJMEeOsSf0lAkOcAA" source="Stereotype_Annotation">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_EW0uMPfrEeOsG98FQi63Qg" key="StereotypeWithQualifiedNameList" value=""/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_EW0uMffrEeOsG98FQi63Qg" key="StereotypeList" value=""/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_EW0uMvfrEeOsG98FQi63Qg" key="Stereotype_Presentation_Kind" value="HorizontalStereo"/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_EW0uM_frEeOsG98FQi63Qg" key="PropStereoDisplay" value=""/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_EW0uNPfrEeOsG98FQi63Qg" key="StereotypePropertyLocation" value="Compartment"/>
+      </eAnnotations>
+      <children xmi:type="notation:DecorationNode" xmi:id="_tR2bouANEeOanJwEUOB9pQ" type="5016"/>
+      <children xmi:type="notation:DecorationNode" xmi:id="_tR2bo-ANEeOanJwEUOB9pQ" type="7009">
+        <styles xmi:type="notation:SortingStyle" xmi:id="_tR2bpOANEeOanJwEUOB9pQ"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_tR2bpeANEeOanJwEUOB9pQ"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_tR2bpuANEeOanJwEUOB9pQ"/>
+      </children>
+      <element xmi:type="uml:UseCase" href="NewsAsset-model.uml#_tRyxQOANEeOanJwEUOB9pQ"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_tR2boeANEeOanJwEUOB9pQ" x="429" y="178"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_jSI0wOAOEeOanJwEUOB9pQ" type="2011">
+      <children xmi:type="notation:DecorationNode" xmi:id="_jSI0wuAOEeOanJwEUOB9pQ" type="5014">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_jSI0w-AOEeOanJwEUOB9pQ" x="-32" y="72"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_jSI0xOAOEeOanJwEUOB9pQ" type="6029">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_jSI0xeAOEeOanJwEUOB9pQ" x="20" y="100"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_jSI0xuAOEeOanJwEUOB9pQ" type="6037">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_jSI0x-AOEeOanJwEUOB9pQ" x="20" y="80"/>
+      </children>
+      <element xmi:type="uml:Actor" href="NewsAsset-model.uml#_jSGYgOAOEeOanJwEUOB9pQ"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_jSI0weAOEeOanJwEUOB9pQ" x="127" y="-197"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_ri8NUOAOEeOanJwEUOB9pQ" type="2013">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_3kBjMOHHEeO8GOIf1l3bJg" source="Stereotype_Annotation">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_EXrp0PfrEeOsG98FQi63Qg" key="StereotypeWithQualifiedNameList" value=""/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_EXrp0ffrEeOsG98FQi63Qg" key="StereotypeList" value=""/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_EXrp0vfrEeOsG98FQi63Qg" key="Stereotype_Presentation_Kind" value="HorizontalStereo"/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_EXrp0_frEeOsG98FQi63Qg" key="PropStereoDisplay" value=""/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_EXrp1PfrEeOsG98FQi63Qg" key="StereotypePropertyLocation" value="Compartment"/>
+      </eAnnotations>
+      <children xmi:type="notation:DecorationNode" xmi:id="_ri8NUuAOEeOanJwEUOB9pQ" type="5016"/>
+      <children xmi:type="notation:DecorationNode" xmi:id="_ri8NU-AOEeOanJwEUOB9pQ" type="7009">
+        <styles xmi:type="notation:SortingStyle" xmi:id="_ri8NVOAOEeOanJwEUOB9pQ"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_ri8NVeAOEeOanJwEUOB9pQ"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_ri8NVuAOEeOanJwEUOB9pQ"/>
+      </children>
+      <element xmi:type="uml:UseCase" href="NewsAsset-model.uml#_ripSYOAOEeOanJwEUOB9pQ"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_ri8NUeAOEeOanJwEUOB9pQ" x="440" y="-199"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_CvcJIOAPEeOanJwEUOB9pQ" type="2018">
+      <children xmi:type="notation:DecorationNode" xmi:id="_CvcJI-APEeOanJwEUOB9pQ" type="5027"/>
+      <styles xmi:type="notation:HintedDiagramLinkStyle" xmi:id="_CvcJIeAPEeOanJwEUOB9pQ"/>
+      <element xmi:type="uml:Comment" href="NewsAsset-model.uml#_CvaT8OAPEeOanJwEUOB9pQ"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_CvcJIuAPEeOanJwEUOB9pQ" x="831" y="-347"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_Wd4F0OATEeOanJwEUOB9pQ" type="2018">
+      <children xmi:type="notation:DecorationNode" xmi:id="_Wd4s4OATEeOanJwEUOB9pQ" type="5027"/>
+      <styles xmi:type="notation:HintedDiagramLinkStyle" xmi:id="_Wd4F0eATEeOanJwEUOB9pQ"/>
+      <element xmi:type="uml:Comment" href="NewsAsset-model.uml#_Wd1CgOATEeOanJwEUOB9pQ"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Wd4F0uATEeOanJwEUOB9pQ" x="741" y="18"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_OZKzEOAUEeOanJwEUOB9pQ" type="2018">
+      <children xmi:type="notation:DecorationNode" xmi:id="_OZKzE-AUEeOanJwEUOB9pQ" type="5027"/>
+      <styles xmi:type="notation:HintedDiagramLinkStyle" xmi:id="_OZKzEeAUEeOanJwEUOB9pQ"/>
+      <element xmi:type="uml:Comment" href="NewsAsset-model.uml#_OZJk8OAUEeOanJwEUOB9pQ"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_OZKzEuAUEeOanJwEUOB9pQ" x="746" y="234"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_mL3E0OAXEeOanJwEUOB9pQ" type="2018">
+      <children xmi:type="notation:DecorationNode" xmi:id="_mL3E0-AXEeOanJwEUOB9pQ" type="5027"/>
+      <styles xmi:type="notation:HintedDiagramLinkStyle" xmi:id="_mL3E0eAXEeOanJwEUOB9pQ"/>
+      <element xmi:type="uml:Comment" href="NewsAsset-model.uml#_mL1PoOAXEeOanJwEUOB9pQ"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_mL3E0uAXEeOanJwEUOB9pQ" x="750" y="358"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_GWHJUOAZEeOanJwEUOB9pQ" type="2018">
+      <children xmi:type="notation:DecorationNode" xmi:id="_GWHJU-AZEeOanJwEUOB9pQ" type="5027"/>
+      <styles xmi:type="notation:HintedDiagramLinkStyle" xmi:id="_GWHJUeAZEeOanJwEUOB9pQ"/>
+      <element xmi:type="uml:Comment" href="NewsAsset-model.uml#_GWF7MOAZEeOanJwEUOB9pQ"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_GWHJUuAZEeOanJwEUOB9pQ" x="833" y="-82"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_zGigoOAZEeOanJwEUOB9pQ" type="2018">
+      <children xmi:type="notation:DecorationNode" xmi:id="_zGigo-AZEeOanJwEUOB9pQ" type="5027"/>
+      <styles xmi:type="notation:HintedDiagramLinkStyle" xmi:id="_zGigoeAZEeOanJwEUOB9pQ"/>
+      <element xmi:type="uml:Comment" href="NewsAsset-model.uml#_zGgrcOAZEeOanJwEUOB9pQ"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_zGigouAZEeOanJwEUOB9pQ" x="738" y="513"/>
+    </children>
+    <styles xmi:type="notation:DiagramStyle" xmi:id="_BIDEEd-MEeOanJwEUOB9pQ"/>
+    <element xmi:type="uml:Model" href="NewsAsset-model.uml#_BHwJIN-MEeOanJwEUOB9pQ"/>
+    <edges xmi:type="notation:Connector" xmi:id="_1an10N-aEeOanJwEUOB9pQ" type="4016" source="_djWesN-aEeOanJwEUOB9pQ" target="_gTpcEN-aEeOanJwEUOB9pQ">
+      <children xmi:type="notation:DecorationNode" xmi:id="_1an109-aEeOanJwEUOB9pQ" type="6012">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_1an11N-aEeOanJwEUOB9pQ" x="-17" y="-12"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_1an11d-aEeOanJwEUOB9pQ" type="6013">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_1an11t-aEeOanJwEUOB9pQ" y="-20"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_1an10d-aEeOanJwEUOB9pQ"/>
+      <element xmi:type="uml:Usage" href="NewsAsset-model.uml#_1aU64N-aEeOanJwEUOB9pQ"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_1an10t-aEeOanJwEUOB9pQ" points="[40, -8, -296, 57]$[281, -65, -55, 0]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_3DS9AOAMEeOanJwEUOB9pQ" id="(0.825,0.0)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_1a90EN-aEeOanJwEUOB9pQ" id="(0.0,0.6551724137931034)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_86aBIN-aEeOanJwEUOB9pQ" type="4016" source="_djWesN-aEeOanJwEUOB9pQ" target="_nZePQN-aEeOanJwEUOB9pQ">
+      <children xmi:type="notation:DecorationNode" xmi:id="_86aBI9-aEeOanJwEUOB9pQ" type="6012">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_86aBJN-aEeOanJwEUOB9pQ" x="-5" y="11"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_86aBJd-aEeOanJwEUOB9pQ" type="6013">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_86aBJt-aEeOanJwEUOB9pQ" x="-9" y="-9"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_86aBId-aEeOanJwEUOB9pQ"/>
+      <element xmi:type="uml:Usage" href="NewsAsset-model.uml#_86Xk4N-aEeOanJwEUOB9pQ"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_86aBIt-aEeOanJwEUOB9pQ" points="[40, 10, -275, -71]$[277, 82, -38, 1]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_ceAYgN-gEeOanJwEUOB9pQ" id="(1.0,0.75)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_86kZMN-aEeOanJwEUOB9pQ" id="(0.0,0.37209302325581395)"/>
+    </edges>
+    <edges xmi:type="notation:Edge" xmi:id="_6asOsN-gEeOanJwEUOB9pQ" type="4008" source="_0ODtUN-gEeOanJwEUOB9pQ" target="_f7FjYN-gEeOanJwEUOB9pQ">
+      <children xmi:type="notation:DecorationNode" xmi:id="_6asOtN-gEeOanJwEUOB9pQ" type="6006">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_6asOtd-gEeOanJwEUOB9pQ" y="20"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_6asOtt-gEeOanJwEUOB9pQ" type="6030">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_6asOt9-gEeOanJwEUOB9pQ" y="-20"/>
+      </children>
+      <styles xmi:type="notation:RoutingStyle" xmi:id="_6asOsd-gEeOanJwEUOB9pQ"/>
+      <styles xmi:type="notation:FontStyle" xmi:id="_6asOst-gEeOanJwEUOB9pQ"/>
+      <element xmi:type="uml:Include" href="NewsAsset-model.uml#_6amIEN-gEeOanJwEUOB9pQ"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_6asOs9-gEeOanJwEUOB9pQ" points="[-12, 4, 168, 0]$[-161, 3, 19, -1]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_6axHMN-gEeOanJwEUOB9pQ" id="(0.0,0.5232558139534884)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_6axHMd-gEeOanJwEUOB9pQ" id="(1.0,0.43617021276595747)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_8Ao40N-gEeOanJwEUOB9pQ" type="4016" source="_RzGVAN-gEeOanJwEUOB9pQ" target="_f7FjYN-gEeOanJwEUOB9pQ">
+      <children xmi:type="notation:DecorationNode" xmi:id="_8Ao409-gEeOanJwEUOB9pQ" type="6012">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_8Ao41N-gEeOanJwEUOB9pQ" x="2" y="21"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_8Ao41d-gEeOanJwEUOB9pQ" type="6013">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_8Apf4N-gEeOanJwEUOB9pQ" y="-20"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_8Ao40d-gEeOanJwEUOB9pQ"/>
+      <element xmi:type="uml:Usage" href="NewsAsset-model.uml#_8AmckN-gEeOanJwEUOB9pQ"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_8Ao40t-gEeOanJwEUOB9pQ" points="[40, -8, -281, 0]$[285, -11, -36, -3]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="__ufqoN-gEeOanJwEUOB9pQ" id="(1.0,0.45)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_8Ayp0N-gEeOanJwEUOB9pQ" id="(0.0,0.4574468085106383)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_WFg34OANEeOanJwEUOB9pQ" type="4014" source="__FfR0OAMEeOanJwEUOB9pQ" target="_f7FjYN-gEeOanJwEUOB9pQ">
+      <styles xmi:type="notation:FontStyle" xmi:id="_WFg34eANEeOanJwEUOB9pQ"/>
+      <element xsi:nil="true"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_WFg34uANEeOanJwEUOB9pQ" points="[0, 0, 0, 0]$[0, 0, 0, 0]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_WFmXcOANEeOanJwEUOB9pQ" id="(0.01881720430107527,0.31521739130434784)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_wKtosOAZEeOanJwEUOB9pQ" id="(0.6043360433604336,1.0)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_QUdCwOAOEeOanJwEUOB9pQ" type="4016" source="_m2hW8OANEeOanJwEUOB9pQ" target="_tR2boOANEeOanJwEUOB9pQ">
+      <children xmi:type="notation:DecorationNode" xmi:id="_QUdp0OAOEeOanJwEUOB9pQ" type="6012">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_QUdp0eAOEeOanJwEUOB9pQ" y="16"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_QUdp0uAOEeOanJwEUOB9pQ" type="6013">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_QUeQ4OAOEeOanJwEUOB9pQ" y="-20"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_QUdCweAOEeOanJwEUOB9pQ"/>
+      <element xmi:type="uml:Usage" href="NewsAsset-model.uml#_QUZ_cOAOEeOanJwEUOB9pQ"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_QUdCwuAOEeOanJwEUOB9pQ"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_WDvg0OAOEeOanJwEUOB9pQ" id="(1.0,0.45)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_QUna0OAOEeOanJwEUOB9pQ" id="(0.0045871559633027525,0.4166666666666667)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_8zE4YOAOEeOanJwEUOB9pQ" type="4016" source="_jSI0wOAOEeOanJwEUOB9pQ" target="_ri8NUOAOEeOanJwEUOB9pQ">
+      <children xmi:type="notation:DecorationNode" xmi:id="_8zE4Y-AOEeOanJwEUOB9pQ" type="6012">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_8zE4ZOAOEeOanJwEUOB9pQ" x="2" y="25"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_8zE4ZeAOEeOanJwEUOB9pQ" type="6013">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_8zE4ZuAOEeOanJwEUOB9pQ" y="-20"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_8zE4YeAOEeOanJwEUOB9pQ"/>
+      <element xmi:type="uml:Usage" href="NewsAsset-model.uml#_8zDDMOAOEeOanJwEUOB9pQ"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_8zE4YuAOEeOanJwEUOB9pQ" points="[40, 1, -257, 0]$[258, 0, -39, -1]"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_8zKX8OAOEeOanJwEUOB9pQ" id="(0.0,0.4666666666666667)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_HbsDkOAUEeOanJwEUOB9pQ" type="4014" source="_Wd4F0OATEeOanJwEUOB9pQ" target="_tR2boOANEeOanJwEUOB9pQ">
+      <styles xmi:type="notation:FontStyle" xmi:id="_HbsDkeAUEeOanJwEUOB9pQ"/>
+      <element xsi:nil="true"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_HbsDkuAUEeOanJwEUOB9pQ" points="[0, 0, 0, 0]$[0, 0, 0, 0]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_HbtRsOAUEeOanJwEUOB9pQ" id="(0.1366906474820144,0.95)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_iodPgOAXEeOanJwEUOB9pQ" type="4014" source="_OZKzEOAUEeOanJwEUOB9pQ" target="_tR2boOANEeOanJwEUOB9pQ">
+      <styles xmi:type="notation:FontStyle" xmi:id="_iodPgeAXEeOanJwEUOB9pQ"/>
+      <element xsi:nil="true"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_iodPguAXEeOanJwEUOB9pQ" points="[-121, -7, 267, 26]$[-313, -12, 75, 21]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_iogS0OAXEeOanJwEUOB9pQ" id="(0.06326034063260341,0.21296296296296297)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_cILj8OAYEeOanJwEUOB9pQ" type="4014" source="_mL3E0OAXEeOanJwEUOB9pQ" target="_gTpcEN-aEeOanJwEUOB9pQ">
+      <styles xmi:type="notation:FontStyle" xmi:id="_cILj8eAYEeOanJwEUOB9pQ"/>
+      <element xsi:nil="true"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_cILj8uAYEeOanJwEUOB9pQ" points="[-50, -15, 195, 37]$[-109, -59, 136, -7]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_cIMyEOAYEeOanJwEUOB9pQ" id="(0.10460251046025104,0.37857142857142856)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_FS7OAOAZEeOanJwEUOB9pQ" type="4014" source="_CvcJIOAPEeOanJwEUOB9pQ" target="_ri8NUOAOEeOanJwEUOB9pQ">
+      <styles xmi:type="notation:FontStyle" xmi:id="_FS7OAeAZEeOanJwEUOB9pQ"/>
+      <element xsi:nil="true"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_FS7OAuAZEeOanJwEUOB9pQ" points="[-15, 0, 188, -75]$[-138, 0, 65, -75]$[-197, 67, 6, -8]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_FS9qQOAZEeOanJwEUOB9pQ" id="(0.040983606557377046,0.5192307692307693)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_a0kKgOAZEeOanJwEUOB9pQ" id="(0.4879807692307692,0.13333333333333333)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_rCULgOAZEeOanJwEUOB9pQ" type="4014" source="_GWHJUOAZEeOanJwEUOB9pQ" target="_ri8NUOAOEeOanJwEUOB9pQ">
+      <styles xmi:type="notation:FontStyle" xmi:id="_rCULgeAZEeOanJwEUOB9pQ"/>
+      <element xsi:nil="true"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_rCULguAZEeOanJwEUOB9pQ" points="[-11, -9, 137, 108]$[-125, -127, 23, -10]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_rCWnwOAZEeOanJwEUOB9pQ" id="(0.02564102564102564,0.14473684210526316)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_rCWnweAZEeOanJwEUOB9pQ" id="(0.6153846153846154,0.18333333333333332)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_OBPMgOAaEeOanJwEUOB9pQ" type="4014" source="_zGigoOAZEeOanJwEUOB9pQ" target="_nZePQN-aEeOanJwEUOB9pQ">
+      <styles xmi:type="notation:FontStyle" xmi:id="_OBPMgeAaEeOanJwEUOB9pQ"/>
+      <element xsi:nil="true"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_OBPMguAaEeOanJwEUOB9pQ" points="[-12, 0, 193, -2]$[-197, -41, 8, -43]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_OBRowOAaEeOanJwEUOB9pQ" id="(0.02643171806167401,0.34782608695652173)"/>
+    </edges>
+  </notation:Diagram>
+  <notation:Diagram xmi:id="_4KYroOAyEeOtkOv8TOvAFQ" type="PapyrusUMLComponentDiagram" name="LogicalView-Component-NewsAsset" measurementUnit="Pixel">
+    <children xmi:type="notation:Shape" xmi:id="_yw57IOBWEeOrqJsLB4VSYw" type="2002">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_RHPh4OKQEeOsSf0lAkOcAA" source="Stereotype_Annotation">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_VjKgEBQTEeSbRqcniHIcDA" key="StereotypeWithQualifiedNameList" value=""/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_VjKgERQTEeSbRqcniHIcDA" key="StereotypeList" value="KPIProfile::forMeasurement"/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_VjKgEhQTEeSbRqcniHIcDA" key="Stereotype_Presentation_Kind" value="HorizontalStereo"/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_VjKgExQTEeSbRqcniHIcDA" key="PropStereoDisplay" value=""/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_VjKgFBQTEeSbRqcniHIcDA" key="StereotypePropertyLocation" value="Compartment"/>
+      </eAnnotations>
+      <children xmi:type="notation:DecorationNode" xmi:id="_yw57JOBWEeOrqJsLB4VSYw" type="5004"/>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_yw57JeBWEeOrqJsLB4VSYw" type="7001">
+        <children xmi:type="notation:Shape" xmi:id="_gkHlIOBXEeOrqJsLB4VSYw" type="2002">
+          <children xmi:type="notation:DecorationNode" xmi:id="_gkIMMOBXEeOrqJsLB4VSYw" type="5004"/>
+          <children xmi:type="notation:BasicCompartment" xmi:id="_gkIMMeBXEeOrqJsLB4VSYw" type="7001">
+            <styles xmi:type="notation:TitleStyle" xmi:id="_gkIMMuBXEeOrqJsLB4VSYw"/>
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_gkIMM-BXEeOrqJsLB4VSYw"/>
+          </children>
+          <styles xmi:type="notation:DescriptionStyle" xmi:id="_gkHlIeBXEeOrqJsLB4VSYw"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_gkHlIuBXEeOrqJsLB4VSYw"/>
+          <element xmi:type="uml:Component" href="NewsAsset-model.uml#_gkCFkOBXEeOrqJsLB4VSYw"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_gkHlI-BXEeOrqJsLB4VSYw" x="45" y="34" width="317"/>
+        </children>
+        <styles xmi:type="notation:TitleStyle" xmi:id="_yw57JuBWEeOrqJsLB4VSYw"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_yw57J-BWEeOrqJsLB4VSYw"/>
+      </children>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_yxFhUOBWEeOrqJsLB4VSYw" type="compartment_shape_display">
+        <styles xmi:type="notation:TitleStyle" xmi:id="_yxFhUeBWEeOrqJsLB4VSYw"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_yxFhUuBWEeOrqJsLB4VSYw"/>
+      </children>
+      <children xmi:type="notation:Shape" xmi:id="_JgYuUOBYEeOrqJsLB4VSYw" type="3069">
+        <children xmi:type="notation:DecorationNode" xmi:id="_JgZVYOBYEeOrqJsLB4VSYw" type="5006">
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_JgZVYeBYEeOrqJsLB4VSYw" x="-156" y="22"/>
+        </children>
+        <children xmi:type="notation:DecorationNode" xmi:id="_JgZVYuBYEeOrqJsLB4VSYw" type="5007">
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_JgZVY-BYEeOrqJsLB4VSYw" x="25" y="-10"/>
+        </children>
+        <element xmi:type="uml:Port" href="NewsAsset-model.uml#_JgWSEOBYEeOrqJsLB4VSYw"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_JgYuUeBYEeOrqJsLB4VSYw" x="141" y="209"/>
+      </children>
+      <styles xmi:type="notation:DescriptionStyle" xmi:id="_yw57IeBWEeOrqJsLB4VSYw"/>
+      <styles xmi:type="notation:FontStyle" xmi:id="_yw57IuBWEeOrqJsLB4VSYw"/>
+      <element xmi:type="uml:Component" href="NewsAsset-model.uml#_ywz0gOBWEeOrqJsLB4VSYw"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_yw57I-BWEeOrqJsLB4VSYw" x="181" y="51" width="447" height="219"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_qYGnsOBXEeOrqJsLB4VSYw" type="2002">
+      <children xmi:type="notation:DecorationNode" xmi:id="_qYHOwOBXEeOrqJsLB4VSYw" type="5004"/>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_qYHOweBXEeOrqJsLB4VSYw" type="7001">
+        <styles xmi:type="notation:TitleStyle" xmi:id="_qYHOwuBXEeOrqJsLB4VSYw"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_qYHOw-BXEeOrqJsLB4VSYw"/>
+      </children>
+      <styles xmi:type="notation:DescriptionStyle" xmi:id="_qYGnseBXEeOrqJsLB4VSYw"/>
+      <styles xmi:type="notation:FontStyle" xmi:id="_qYGnsuBXEeOrqJsLB4VSYw"/>
+      <element xmi:type="uml:Component" href="NewsAsset-model.uml#_qYBvMOBXEeOrqJsLB4VSYw"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_qYGns-BXEeOrqJsLB4VSYw" x="491" y="399" width="281" height="146"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_L2CkMOCyEeO8GOIf1l3bJg" type="2003">
+      <children xmi:type="notation:DecorationNode" xmi:id="_L2DyUOCyEeO8GOIf1l3bJg" type="5005">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_L2DyUeCyEeO8GOIf1l3bJg" x="-28" y="29"/>
+      </children>
+      <styles xmi:type="notation:DescriptionStyle" xmi:id="_L2CkMeCyEeO8GOIf1l3bJg"/>
+      <styles xmi:type="notation:FontStyle" xmi:id="_L2CkMuCyEeO8GOIf1l3bJg"/>
+      <styles xmi:type="notation:FillStyle" xmi:id="_L2CkM-CyEeO8GOIf1l3bJg"/>
+      <element xmi:type="uml:Interface" href="NewsAsset-model.uml#_L172gOCyEeO8GOIf1l3bJg"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_L2CkNOCyEeO8GOIf1l3bJg" x="407" y="321"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_JmPgQOC8EeO8GOIf1l3bJg" type="2002">
+      <children xmi:type="notation:DecorationNode" xmi:id="_JmQHUOC8EeO8GOIf1l3bJg" type="5004"/>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_JmQHUeC8EeO8GOIf1l3bJg" type="7001">
+        <styles xmi:type="notation:TitleStyle" xmi:id="_JmQHUuC8EeO8GOIf1l3bJg"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_JmQHU-C8EeO8GOIf1l3bJg"/>
+      </children>
+      <styles xmi:type="notation:DescriptionStyle" xmi:id="_JmPgQeC8EeO8GOIf1l3bJg"/>
+      <styles xmi:type="notation:FontStyle" xmi:id="_JmPgQuC8EeO8GOIf1l3bJg"/>
+      <element xmi:type="uml:Component" href="NewsAsset-model.uml#_Jl0CcOC8EeO8GOIf1l3bJg"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_JmPgQ-C8EeO8GOIf1l3bJg" x="1010" y="302" width="212" height="94"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_Mv2VgOC8EeO8GOIf1l3bJg" type="2002">
+      <children xmi:type="notation:DecorationNode" xmi:id="_Mv28kOC8EeO8GOIf1l3bJg" type="5004"/>
+      <children xmi:type="notation:BasicCompartment" xmi:id="_Mv28keC8EeO8GOIf1l3bJg" type="7001">
+        <styles xmi:type="notation:TitleStyle" xmi:id="_Mv28kuC8EeO8GOIf1l3bJg"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Mv28k-C8EeO8GOIf1l3bJg"/>
+      </children>
+      <styles xmi:type="notation:DescriptionStyle" xmi:id="_Mv2VgeC8EeO8GOIf1l3bJg"/>
+      <styles xmi:type="notation:FontStyle" xmi:id="_Mv2VguC8EeO8GOIf1l3bJg"/>
+      <element xmi:type="uml:Component" href="NewsAsset-model.uml#_Mvr9cOC8EeO8GOIf1l3bJg"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Mv2Vg-C8EeO8GOIf1l3bJg" x="1009" y="159" width="204" height="104"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_UsmwsOC8EeO8GOIf1l3bJg" type="3201">
+      <children xmi:type="notation:DecorationNode" xmi:id="_UsnXwOC8EeO8GOIf1l3bJg" type="5255"/>
+      <element xmi:type="uml:Comment" href="NewsAsset-model.uml#_UskUcOC8EeO8GOIf1l3bJg"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_UsmwseC8EeO8GOIf1l3bJg" x="653" y="68" width="304" height="103"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_AqxS4ODkEeO8GOIf1l3bJg" type="2003">
+      <children xmi:type="notation:DecorationNode" xmi:id="_Aq09QODkEeO8GOIf1l3bJg" type="5005">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_Aq09QeDkEeO8GOIf1l3bJg" x="-18" y="20"/>
+      </children>
+      <styles xmi:type="notation:DescriptionStyle" xmi:id="_Aqx58ODkEeO8GOIf1l3bJg"/>
+      <styles xmi:type="notation:FontStyle" xmi:id="_Aqx58eDkEeO8GOIf1l3bJg"/>
+      <styles xmi:type="notation:FillStyle" xmi:id="_Aqx58uDkEeO8GOIf1l3bJg"/>
+      <element xmi:type="uml:Interface" href="NewsAsset-model.uml#_Aqp-IODkEeO8GOIf1l3bJg"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_AqzIEODkEeO8GOIf1l3bJg" x="865" y="294"/>
+    </children>
+    <children xmi:type="notation:Shape" xmi:id="_KrfJ4ODkEeO8GOIf1l3bJg" type="2003">
+      <children xmi:type="notation:DecorationNode" xmi:id="_Krfw8ODkEeO8GOIf1l3bJg" type="5005">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_Krfw8eDkEeO8GOIf1l3bJg" x="-22" y="24"/>
+      </children>
+      <styles xmi:type="notation:DescriptionStyle" xmi:id="_KrfJ4eDkEeO8GOIf1l3bJg"/>
+      <styles xmi:type="notation:FontStyle" xmi:id="_KrfJ4uDkEeO8GOIf1l3bJg"/>
+      <styles xmi:type="notation:FillStyle" xmi:id="_KrfJ4-DkEeO8GOIf1l3bJg"/>
+      <element xmi:type="uml:Interface" href="NewsAsset-model.uml#_KraRYODkEeO8GOIf1l3bJg"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_KrfJ5ODkEeO8GOIf1l3bJg" x="891" y="395"/>
+    </children>
+    <styles xmi:type="notation:DiagramStyle" xmi:id="_4KYroeAyEeOtkOv8TOvAFQ"/>
+    <element xmi:type="uml:Model" href="NewsAsset-model.uml#_BHwJIN-MEeOanJwEUOB9pQ"/>
+    <edges xmi:type="notation:Edge" xmi:id="_L2Tp8OCyEeO8GOIf1l3bJg" type="4006" source="_qYGnsOBXEeOrqJsLB4VSYw" target="_L2CkMOCyEeO8GOIf1l3bJg">
+      <styles xmi:type="notation:RoutingStyle" xmi:id="_L2Tp8eCyEeO8GOIf1l3bJg"/>
+      <styles xmi:type="notation:FontStyle" xmi:id="_L2Tp8uCyEeO8GOIf1l3bJg"/>
+      <element xmi:type="uml:InterfaceRealization" href="NewsAsset-model.uml#_L2QmoOCyEeO8GOIf1l3bJg"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_L2Tp8-CyEeO8GOIf1l3bJg" points="[-13, -9, 586, 369]$[-599, -378, 0, 0]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_L2a-sOCyEeO8GOIf1l3bJg" id="(0.0,0.06164383561643835)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_3CuhwOC7EeO8GOIf1l3bJg" id="(1.0,1.0)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_fU6XsOCyEeO8GOIf1l3bJg" type="4001" source="_JgYuUOBYEeOrqJsLB4VSYw" target="_L2CkMOCyEeO8GOIf1l3bJg">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_oZR7MOCyEeO8GOIf1l3bJg" source="PapyrusCSSForceValue">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_oZc6UOCyEeO8GOIf1l3bJg" key="smoothness" value="true"/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_rwZA8OCyEeO8GOIf1l3bJg" key="jumpLinkType" value="true"/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_tVAOUOCyEeO8GOIf1l3bJg" key="jumpLinkStatus" value="true"/>
+      </eAnnotations>
+      <styles xmi:type="notation:FontStyle" xmi:id="_fU6XseCyEeO8GOIf1l3bJg"/>
+      <element xmi:type="uml:Usage" href="NewsAsset-model.uml#_fUfg8OCyEeO8GOIf1l3bJg"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_fU6XsuCyEeO8GOIf1l3bJg" points="[16, 12, -75, -55]$[81, 67, -10, 0]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_fU-CEOCyEeO8GOIf1l3bJg" id="(0.2,0.2)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_IlAb0OCzEeO8GOIf1l3bJg" type="4010" source="_gkHlIOBXEeOrqJsLB4VSYw" target="_JgYuUOBYEeOrqJsLB4VSYw">
+      <children xmi:type="notation:DecorationNode" xmi:id="_IlBC4OCzEeO8GOIf1l3bJg" type="6009">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_IlBC4eCzEeO8GOIf1l3bJg" x="3" y="5"/>
+      </children>
+      <children xmi:type="notation:DecorationNode" xmi:id="_IlBC4uCzEeO8GOIf1l3bJg" type="6023">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_IlBp8OCzEeO8GOIf1l3bJg" y="60"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_IlAb0eCzEeO8GOIf1l3bJg"/>
+      <element xmi:type="uml:Dependency" href="NewsAsset-model.uml#_IkxyUOCzEeO8GOIf1l3bJg"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_IlAb0uCzEeO8GOIf1l3bJg" points="[-7, 35, 14, -68]$[-25, 99, -4, -4]"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_IlVzAOCzEeO8GOIf1l3bJg" id="(0.2,0.25)"/>
+    </edges>
+    <edges xmi:type="notation:Edge" xmi:id="_Aq_8YODkEeO8GOIf1l3bJg" type="4006" source="_qYGnsOBXEeOrqJsLB4VSYw" target="_AqxS4ODkEeO8GOIf1l3bJg">
+      <styles xmi:type="notation:RoutingStyle" xmi:id="_Aq_8YeDkEeO8GOIf1l3bJg"/>
+      <styles xmi:type="notation:FontStyle" xmi:id="_Aq_8YuDkEeO8GOIf1l3bJg"/>
+      <element xmi:type="uml:InterfaceRealization" href="NewsAsset-model.uml#_Aq9gIODkEeO8GOIf1l3bJg"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_Aq_8Y-DkEeO8GOIf1l3bJg" points="[-21, -12, 679, 399]$[-700, -411, 0, 0]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_ArEN0ODkEeO8GOIf1l3bJg" id="(0.7437722419928826,0.0821917808219178)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_I4T8EODkEeO8GOIf1l3bJg" type="4001" source="_Mv2VgOC8EeO8GOIf1l3bJg" target="_AqxS4ODkEeO8GOIf1l3bJg">
+      <styles xmi:type="notation:FontStyle" xmi:id="_I4T8EeDkEeO8GOIf1l3bJg"/>
+      <element xmi:type="uml:Usage" href="NewsAsset-model.uml#_I4OcgODkEeO8GOIf1l3bJg"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_I4T8EuDkEeO8GOIf1l3bJg" points="[-5, 3, 134, -93]$[-135, 86, 4, -10]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_I4YNgODkEeO8GOIf1l3bJg" id="(0.024509803921568627,0.47115384615384615)"/>
+    </edges>
+    <edges xmi:type="notation:Edge" xmi:id="_Krr-MODkEeO8GOIf1l3bJg" type="4006" source="_qYGnsOBXEeOrqJsLB4VSYw" target="_KrfJ4ODkEeO8GOIf1l3bJg">
+      <styles xmi:type="notation:RoutingStyle" xmi:id="_Krr-MeDkEeO8GOIf1l3bJg"/>
+      <styles xmi:type="notation:FontStyle" xmi:id="_Krr-MuDkEeO8GOIf1l3bJg"/>
+      <element xmi:type="uml:InterfaceRealization" href="NewsAsset-model.uml#_KrmeoODkEeO8GOIf1l3bJg"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_Krr-M-DkEeO8GOIf1l3bJg" points="[-58, -33, 694, 399]$[-752, -432, 0, 0]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_KrwPoODkEeO8GOIf1l3bJg" id="(0.9288256227758007,0.22602739726027396)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_NEBHgODkEeO8GOIf1l3bJg" type="4001" source="_JmPgQOC8EeO8GOIf1l3bJg" target="_KrfJ4ODkEeO8GOIf1l3bJg">
+      <styles xmi:type="notation:FontStyle" xmi:id="_NEBHgeDkEeO8GOIf1l3bJg"/>
+      <element xmi:type="uml:Usage" href="NewsAsset-model.uml#_ND7A4ODkEeO8GOIf1l3bJg"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_NEBHguDkEeO8GOIf1l3bJg" points="[-2, 1, 109, -87]$[-113, 78, -2, -10]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_NEFY8ODkEeO8GOIf1l3bJg" id="(0.009433962264150943,0.1595744680851064)"/>
+    </edges>
+  </notation:Diagram>
+</xmi:XMI>

@@ -1,0 +1,1806 @@
+<es.bsc.vmplacement.domain.ClusterState id="1">
+  <vms id="2">
+    <es.bsc.vmplacement.domain.Vm id="3">
+      <id>0</id>
+      <ncpus>1</ncpus>
+      <ramMb>1821</ramMb>
+      <diskGb>2</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="4">
+      <id>1</id>
+      <ncpus>7</ncpus>
+      <ramMb>7925</ramMb>
+      <diskGb>3</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="5">
+      <id>2</id>
+      <ncpus>6</ncpus>
+      <ramMb>5632</ramMb>
+      <diskGb>4</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="6">
+      <id>3</id>
+      <ncpus>6</ncpus>
+      <ramMb>5146</ramMb>
+      <diskGb>8</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="7">
+      <id>4</id>
+      <ncpus>1</ncpus>
+      <ramMb>3427</ramMb>
+      <diskGb>4</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="8">
+      <id>5</id>
+      <ncpus>8</ncpus>
+      <ramMb>3330</ramMb>
+      <diskGb>8</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="9">
+      <id>6</id>
+      <ncpus>2</ncpus>
+      <ramMb>2000</ramMb>
+      <diskGb>4</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="10">
+      <id>7</id>
+      <ncpus>6</ncpus>
+      <ramMb>4589</ramMb>
+      <diskGb>5</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="11">
+      <id>8</id>
+      <ncpus>1</ncpus>
+      <ramMb>7862</ramMb>
+      <diskGb>1</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="12">
+      <id>9</id>
+      <ncpus>6</ncpus>
+      <ramMb>6310</ramMb>
+      <diskGb>6</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="13">
+      <id>10</id>
+      <ncpus>7</ncpus>
+      <ramMb>4289</ramMb>
+      <diskGb>7</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="14">
+      <id>11</id>
+      <ncpus>6</ncpus>
+      <ramMb>2870</ramMb>
+      <diskGb>2</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="15">
+      <id>12</id>
+      <ncpus>2</ncpus>
+      <ramMb>3390</ramMb>
+      <diskGb>8</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="16">
+      <id>13</id>
+      <ncpus>5</ncpus>
+      <ramMb>5691</ramMb>
+      <diskGb>2</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="17">
+      <id>14</id>
+      <ncpus>2</ncpus>
+      <ramMb>5093</ramMb>
+      <diskGb>6</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="18">
+      <id>15</id>
+      <ncpus>8</ncpus>
+      <ramMb>5682</ramMb>
+      <diskGb>2</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="19">
+      <id>16</id>
+      <ncpus>5</ncpus>
+      <ramMb>1796</ramMb>
+      <diskGb>8</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="20">
+      <id>17</id>
+      <ncpus>5</ncpus>
+      <ramMb>8072</ramMb>
+      <diskGb>2</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="21">
+      <id>18</id>
+      <ncpus>2</ncpus>
+      <ramMb>4780</ramMb>
+      <diskGb>2</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="22">
+      <id>19</id>
+      <ncpus>1</ncpus>
+      <ramMb>1179</ramMb>
+      <diskGb>7</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="23">
+      <id>20</id>
+      <ncpus>8</ncpus>
+      <ramMb>6752</ramMb>
+      <diskGb>4</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="24">
+      <id>21</id>
+      <ncpus>5</ncpus>
+      <ramMb>2809</ramMb>
+      <diskGb>5</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="25">
+      <id>22</id>
+      <ncpus>6</ncpus>
+      <ramMb>4495</ramMb>
+      <diskGb>2</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="26">
+      <id>23</id>
+      <ncpus>3</ncpus>
+      <ramMb>4428</ramMb>
+      <diskGb>3</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="27">
+      <id>24</id>
+      <ncpus>7</ncpus>
+      <ramMb>4753</ramMb>
+      <diskGb>1</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="28">
+      <id>25</id>
+      <ncpus>1</ncpus>
+      <ramMb>4920</ramMb>
+      <diskGb>2</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="29">
+      <id>26</id>
+      <ncpus>1</ncpus>
+      <ramMb>2815</ramMb>
+      <diskGb>5</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="30">
+      <id>27</id>
+      <ncpus>7</ncpus>
+      <ramMb>7814</ramMb>
+      <diskGb>4</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="31">
+      <id>28</id>
+      <ncpus>1</ncpus>
+      <ramMb>5490</ramMb>
+      <diskGb>7</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="32">
+      <id>29</id>
+      <ncpus>2</ncpus>
+      <ramMb>3740</ramMb>
+      <diskGb>2</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="33">
+      <id>30</id>
+      <ncpus>5</ncpus>
+      <ramMb>5492</ramMb>
+      <diskGb>3</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="34">
+      <id>31</id>
+      <ncpus>3</ncpus>
+      <ramMb>2076</ramMb>
+      <diskGb>4</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="35">
+      <id>32</id>
+      <ncpus>8</ncpus>
+      <ramMb>3408</ramMb>
+      <diskGb>6</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="36">
+      <id>33</id>
+      <ncpus>1</ncpus>
+      <ramMb>3784</ramMb>
+      <diskGb>1</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="37">
+      <id>34</id>
+      <ncpus>1</ncpus>
+      <ramMb>5179</ramMb>
+      <diskGb>5</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="38">
+      <id>35</id>
+      <ncpus>1</ncpus>
+      <ramMb>1451</ramMb>
+      <diskGb>1</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="39">
+      <id>36</id>
+      <ncpus>5</ncpus>
+      <ramMb>3131</ramMb>
+      <diskGb>8</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="40">
+      <id>37</id>
+      <ncpus>3</ncpus>
+      <ramMb>4475</ramMb>
+      <diskGb>4</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="41">
+      <id>38</id>
+      <ncpus>8</ncpus>
+      <ramMb>1198</ramMb>
+      <diskGb>2</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="42">
+      <id>39</id>
+      <ncpus>7</ncpus>
+      <ramMb>1183</ramMb>
+      <diskGb>1</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="43">
+      <id>40</id>
+      <ncpus>8</ncpus>
+      <ramMb>3925</ramMb>
+      <diskGb>8</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="44">
+      <id>41</id>
+      <ncpus>1</ncpus>
+      <ramMb>5883</ramMb>
+      <diskGb>4</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="45">
+      <id>42</id>
+      <ncpus>7</ncpus>
+      <ramMb>3180</ramMb>
+      <diskGb>5</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="46">
+      <id>43</id>
+      <ncpus>4</ncpus>
+      <ramMb>5800</ramMb>
+      <diskGb>1</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="47">
+      <id>44</id>
+      <ncpus>4</ncpus>
+      <ramMb>7277</ramMb>
+      <diskGb>4</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="48">
+      <id>45</id>
+      <ncpus>5</ncpus>
+      <ramMb>5330</ramMb>
+      <diskGb>7</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="49">
+      <id>46</id>
+      <ncpus>3</ncpus>
+      <ramMb>7045</ramMb>
+      <diskGb>8</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="50">
+      <id>47</id>
+      <ncpus>4</ncpus>
+      <ramMb>6622</ramMb>
+      <diskGb>7</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="51">
+      <id>48</id>
+      <ncpus>6</ncpus>
+      <ramMb>7675</ramMb>
+      <diskGb>5</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="52">
+      <id>49</id>
+      <ncpus>8</ncpus>
+      <ramMb>7161</ramMb>
+      <diskGb>8</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="53">
+      <id>50</id>
+      <ncpus>6</ncpus>
+      <ramMb>7352</ramMb>
+      <diskGb>6</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="54">
+      <id>51</id>
+      <ncpus>1</ncpus>
+      <ramMb>5002</ramMb>
+      <diskGb>3</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="55">
+      <id>52</id>
+      <ncpus>5</ncpus>
+      <ramMb>2732</ramMb>
+      <diskGb>3</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="56">
+      <id>53</id>
+      <ncpus>6</ncpus>
+      <ramMb>6598</ramMb>
+      <diskGb>1</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="57">
+      <id>54</id>
+      <ncpus>6</ncpus>
+      <ramMb>1529</ramMb>
+      <diskGb>1</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="58">
+      <id>55</id>
+      <ncpus>8</ncpus>
+      <ramMb>3632</ramMb>
+      <diskGb>6</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="59">
+      <id>56</id>
+      <ncpus>7</ncpus>
+      <ramMb>4592</ramMb>
+      <diskGb>5</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="60">
+      <id>57</id>
+      <ncpus>1</ncpus>
+      <ramMb>3231</ramMb>
+      <diskGb>8</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="61">
+      <id>58</id>
+      <ncpus>5</ncpus>
+      <ramMb>2099</ramMb>
+      <diskGb>6</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="62">
+      <id>59</id>
+      <ncpus>7</ncpus>
+      <ramMb>7332</ramMb>
+      <diskGb>3</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="63">
+      <id>60</id>
+      <ncpus>3</ncpus>
+      <ramMb>7292</ramMb>
+      <diskGb>8</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="64">
+      <id>61</id>
+      <ncpus>3</ncpus>
+      <ramMb>5652</ramMb>
+      <diskGb>6</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="65">
+      <id>62</id>
+      <ncpus>4</ncpus>
+      <ramMb>6321</ramMb>
+      <diskGb>8</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="66">
+      <id>63</id>
+      <ncpus>3</ncpus>
+      <ramMb>5608</ramMb>
+      <diskGb>7</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="67">
+      <id>64</id>
+      <ncpus>4</ncpus>
+      <ramMb>5324</ramMb>
+      <diskGb>8</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="68">
+      <id>65</id>
+      <ncpus>8</ncpus>
+      <ramMb>4909</ramMb>
+      <diskGb>7</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="69">
+      <id>66</id>
+      <ncpus>7</ncpus>
+      <ramMb>3777</ramMb>
+      <diskGb>1</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="70">
+      <id>67</id>
+      <ncpus>6</ncpus>
+      <ramMb>1458</ramMb>
+      <diskGb>5</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="71">
+      <id>68</id>
+      <ncpus>8</ncpus>
+      <ramMb>1997</ramMb>
+      <diskGb>7</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="72">
+      <id>69</id>
+      <ncpus>6</ncpus>
+      <ramMb>4051</ramMb>
+      <diskGb>2</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="73">
+      <id>70</id>
+      <ncpus>3</ncpus>
+      <ramMb>6509</ramMb>
+      <diskGb>1</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="74">
+      <id>71</id>
+      <ncpus>7</ncpus>
+      <ramMb>7700</ramMb>
+      <diskGb>3</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="75">
+      <id>72</id>
+      <ncpus>3</ncpus>
+      <ramMb>6309</ramMb>
+      <diskGb>2</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="76">
+      <id>73</id>
+      <ncpus>4</ncpus>
+      <ramMb>5231</ramMb>
+      <diskGb>3</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="77">
+      <id>74</id>
+      <ncpus>5</ncpus>
+      <ramMb>4316</ramMb>
+      <diskGb>2</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="78">
+      <id>75</id>
+      <ncpus>2</ncpus>
+      <ramMb>5939</ramMb>
+      <diskGb>2</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="79">
+      <id>76</id>
+      <ncpus>1</ncpus>
+      <ramMb>2331</ramMb>
+      <diskGb>5</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="80">
+      <id>77</id>
+      <ncpus>8</ncpus>
+      <ramMb>5369</ramMb>
+      <diskGb>5</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="81">
+      <id>78</id>
+      <ncpus>7</ncpus>
+      <ramMb>6021</ramMb>
+      <diskGb>1</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="82">
+      <id>79</id>
+      <ncpus>8</ncpus>
+      <ramMb>7585</ramMb>
+      <diskGb>7</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="83">
+      <id>80</id>
+      <ncpus>8</ncpus>
+      <ramMb>1537</ramMb>
+      <diskGb>3</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="84">
+      <id>81</id>
+      <ncpus>5</ncpus>
+      <ramMb>5366</ramMb>
+      <diskGb>8</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="85">
+      <id>82</id>
+      <ncpus>4</ncpus>
+      <ramMb>6619</ramMb>
+      <diskGb>7</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="86">
+      <id>83</id>
+      <ncpus>8</ncpus>
+      <ramMb>6500</ramMb>
+      <diskGb>5</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="87">
+      <id>84</id>
+      <ncpus>6</ncpus>
+      <ramMb>6400</ramMb>
+      <diskGb>1</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="88">
+      <id>85</id>
+      <ncpus>3</ncpus>
+      <ramMb>7247</ramMb>
+      <diskGb>4</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="89">
+      <id>86</id>
+      <ncpus>7</ncpus>
+      <ramMb>2230</ramMb>
+      <diskGb>2</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="90">
+      <id>87</id>
+      <ncpus>2</ncpus>
+      <ramMb>4943</ramMb>
+      <diskGb>6</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="91">
+      <id>88</id>
+      <ncpus>2</ncpus>
+      <ramMb>4522</ramMb>
+      <diskGb>5</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="92">
+      <id>89</id>
+      <ncpus>6</ncpus>
+      <ramMb>3289</ramMb>
+      <diskGb>1</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="93">
+      <id>90</id>
+      <ncpus>8</ncpus>
+      <ramMb>2315</ramMb>
+      <diskGb>4</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="94">
+      <id>91</id>
+      <ncpus>4</ncpus>
+      <ramMb>6755</ramMb>
+      <diskGb>4</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="95">
+      <id>92</id>
+      <ncpus>7</ncpus>
+      <ramMb>7628</ramMb>
+      <diskGb>5</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="96">
+      <id>93</id>
+      <ncpus>4</ncpus>
+      <ramMb>1978</ramMb>
+      <diskGb>6</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="97">
+      <id>94</id>
+      <ncpus>4</ncpus>
+      <ramMb>7694</ramMb>
+      <diskGb>1</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="98">
+      <id>95</id>
+      <ncpus>8</ncpus>
+      <ramMb>7834</ramMb>
+      <diskGb>7</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="99">
+      <id>96</id>
+      <ncpus>1</ncpus>
+      <ramMb>5077</ramMb>
+      <diskGb>1</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="100">
+      <id>97</id>
+      <ncpus>6</ncpus>
+      <ramMb>4440</ramMb>
+      <diskGb>8</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="101">
+      <id>98</id>
+      <ncpus>5</ncpus>
+      <ramMb>1778</ramMb>
+      <diskGb>4</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+    <es.bsc.vmplacement.domain.Vm id="102">
+      <id>99</id>
+      <ncpus>8</ncpus>
+      <ramMb>6537</ramMb>
+      <diskGb>8</diskGb>
+    </es.bsc.vmplacement.domain.Vm>
+  </vms>
+  <hosts id="103">
+    <es.bsc.vmplacement.domain.Host id="104">
+      <id>0</id>
+      <ncpus>24</ncpus>
+      <ramMb>26592</ramMb>
+      <diskGb>248</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="105">
+      <id>1</id>
+      <ncpus>14</ncpus>
+      <ramMb>16283</ramMb>
+      <diskGb>5</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="106">
+      <id>2</id>
+      <ncpus>11</ncpus>
+      <ramMb>1235</ramMb>
+      <diskGb>179</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="107">
+      <id>3</id>
+      <ncpus>23</ncpus>
+      <ramMb>26908</ramMb>
+      <diskGb>74</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="108">
+      <id>4</id>
+      <ncpus>31</ncpus>
+      <ramMb>5012</ramMb>
+      <diskGb>163</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="109">
+      <id>5</id>
+      <ncpus>18</ncpus>
+      <ramMb>25741</ramMb>
+      <diskGb>163</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="110">
+      <id>6</id>
+      <ncpus>30</ncpus>
+      <ramMb>15463</ramMb>
+      <diskGb>177</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="111">
+      <id>7</id>
+      <ncpus>30</ncpus>
+      <ramMb>28874</ramMb>
+      <diskGb>300</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="112">
+      <id>8</id>
+      <ncpus>10</ncpus>
+      <ramMb>9293</ramMb>
+      <diskGb>299</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="113">
+      <id>9</id>
+      <ncpus>28</ncpus>
+      <ramMb>30681</ramMb>
+      <diskGb>3</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="114">
+      <id>10</id>
+      <ncpus>25</ncpus>
+      <ramMb>22688</ramMb>
+      <diskGb>1</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="115">
+      <id>11</id>
+      <ncpus>2</ncpus>
+      <ramMb>20152</ramMb>
+      <diskGb>256</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="116">
+      <id>12</id>
+      <ncpus>13</ncpus>
+      <ramMb>15394</ramMb>
+      <diskGb>76</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="117">
+      <id>13</id>
+      <ncpus>29</ncpus>
+      <ramMb>26244</ramMb>
+      <diskGb>261</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="118">
+      <id>14</id>
+      <ncpus>26</ncpus>
+      <ramMb>9401</ramMb>
+      <diskGb>178</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="119">
+      <id>15</id>
+      <ncpus>28</ncpus>
+      <ramMb>1439</ramMb>
+      <diskGb>289</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="120">
+      <id>16</id>
+      <ncpus>24</ncpus>
+      <ramMb>15841</ramMb>
+      <diskGb>53</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="121">
+      <id>17</id>
+      <ncpus>9</ncpus>
+      <ramMb>30385</ramMb>
+      <diskGb>256</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="122">
+      <id>18</id>
+      <ncpus>18</ncpus>
+      <ramMb>9144</ramMb>
+      <diskGb>159</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="123">
+      <id>19</id>
+      <ncpus>31</ncpus>
+      <ramMb>32083</ramMb>
+      <diskGb>285</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="124">
+      <id>20</id>
+      <ncpus>20</ncpus>
+      <ramMb>26005</ramMb>
+      <diskGb>287</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="125">
+      <id>21</id>
+      <ncpus>1</ncpus>
+      <ramMb>25732</ramMb>
+      <diskGb>97</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="126">
+      <id>22</id>
+      <ncpus>6</ncpus>
+      <ramMb>15508</ramMb>
+      <diskGb>66</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="127">
+      <id>23</id>
+      <ncpus>16</ncpus>
+      <ramMb>24663</ramMb>
+      <diskGb>17</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="128">
+      <id>24</id>
+      <ncpus>32</ncpus>
+      <ramMb>12122</ramMb>
+      <diskGb>223</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="129">
+      <id>25</id>
+      <ncpus>7</ncpus>
+      <ramMb>17656</ramMb>
+      <diskGb>32</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="130">
+      <id>26</id>
+      <ncpus>7</ncpus>
+      <ramMb>21576</ramMb>
+      <diskGb>189</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="131">
+      <id>27</id>
+      <ncpus>31</ncpus>
+      <ramMb>17125</ramMb>
+      <diskGb>109</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="132">
+      <id>28</id>
+      <ncpus>29</ncpus>
+      <ramMb>23073</ramMb>
+      <diskGb>180</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="133">
+      <id>29</id>
+      <ncpus>9</ncpus>
+      <ramMb>8398</ramMb>
+      <diskGb>211</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="134">
+      <id>30</id>
+      <ncpus>21</ncpus>
+      <ramMb>32185</ramMb>
+      <diskGb>75</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="135">
+      <id>31</id>
+      <ncpus>32</ncpus>
+      <ramMb>23267</ramMb>
+      <diskGb>126</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="136">
+      <id>32</id>
+      <ncpus>32</ncpus>
+      <ramMb>27830</ramMb>
+      <diskGb>237</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="137">
+      <id>33</id>
+      <ncpus>9</ncpus>
+      <ramMb>9418</ramMb>
+      <diskGb>233</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="138">
+      <id>34</id>
+      <ncpus>15</ncpus>
+      <ramMb>29464</ramMb>
+      <diskGb>295</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="139">
+      <id>35</id>
+      <ncpus>10</ncpus>
+      <ramMb>13942</ramMb>
+      <diskGb>244</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="140">
+      <id>36</id>
+      <ncpus>17</ncpus>
+      <ramMb>4651</ramMb>
+      <diskGb>68</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="141">
+      <id>37</id>
+      <ncpus>21</ncpus>
+      <ramMb>19650</ramMb>
+      <diskGb>234</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="142">
+      <id>38</id>
+      <ncpus>30</ncpus>
+      <ramMb>7200</ramMb>
+      <diskGb>78</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="143">
+      <id>39</id>
+      <ncpus>9</ncpus>
+      <ramMb>21949</ramMb>
+      <diskGb>170</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="144">
+      <id>40</id>
+      <ncpus>14</ncpus>
+      <ramMb>10507</ramMb>
+      <diskGb>291</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="145">
+      <id>41</id>
+      <ncpus>18</ncpus>
+      <ramMb>13015</ramMb>
+      <diskGb>197</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="146">
+      <id>42</id>
+      <ncpus>31</ncpus>
+      <ramMb>23923</ramMb>
+      <diskGb>135</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="147">
+      <id>43</id>
+      <ncpus>12</ncpus>
+      <ramMb>11697</ramMb>
+      <diskGb>172</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="148">
+      <id>44</id>
+      <ncpus>18</ncpus>
+      <ramMb>20709</ramMb>
+      <diskGb>196</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="149">
+      <id>45</id>
+      <ncpus>4</ncpus>
+      <ramMb>17708</ramMb>
+      <diskGb>292</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="150">
+      <id>46</id>
+      <ncpus>26</ncpus>
+      <ramMb>30365</ramMb>
+      <diskGb>89</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="151">
+      <id>47</id>
+      <ncpus>12</ncpus>
+      <ramMb>6500</ramMb>
+      <diskGb>263</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="152">
+      <id>48</id>
+      <ncpus>9</ncpus>
+      <ramMb>3744</ramMb>
+      <diskGb>80</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="153">
+      <id>49</id>
+      <ncpus>6</ncpus>
+      <ramMb>10526</ramMb>
+      <diskGb>164</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="154">
+      <id>50</id>
+      <ncpus>32</ncpus>
+      <ramMb>1831</ramMb>
+      <diskGb>24</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="155">
+      <id>51</id>
+      <ncpus>24</ncpus>
+      <ramMb>32095</ramMb>
+      <diskGb>76</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="156">
+      <id>52</id>
+      <ncpus>6</ncpus>
+      <ramMb>24538</ramMb>
+      <diskGb>108</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="157">
+      <id>53</id>
+      <ncpus>11</ncpus>
+      <ramMb>20833</ramMb>
+      <diskGb>257</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="158">
+      <id>54</id>
+      <ncpus>21</ncpus>
+      <ramMb>4493</ramMb>
+      <diskGb>84</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="159">
+      <id>55</id>
+      <ncpus>30</ncpus>
+      <ramMb>12185</ramMb>
+      <diskGb>247</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="160">
+      <id>56</id>
+      <ncpus>23</ncpus>
+      <ramMb>27084</ramMb>
+      <diskGb>278</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="161">
+      <id>57</id>
+      <ncpus>14</ncpus>
+      <ramMb>5596</ramMb>
+      <diskGb>236</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="162">
+      <id>58</id>
+      <ncpus>32</ncpus>
+      <ramMb>19614</ramMb>
+      <diskGb>71</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="163">
+      <id>59</id>
+      <ncpus>20</ncpus>
+      <ramMb>30059</ramMb>
+      <diskGb>109</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="164">
+      <id>60</id>
+      <ncpus>27</ncpus>
+      <ramMb>32154</ramMb>
+      <diskGb>36</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="165">
+      <id>61</id>
+      <ncpus>21</ncpus>
+      <ramMb>16447</ramMb>
+      <diskGb>288</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="166">
+      <id>62</id>
+      <ncpus>16</ncpus>
+      <ramMb>26418</ramMb>
+      <diskGb>103</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="167">
+      <id>63</id>
+      <ncpus>3</ncpus>
+      <ramMb>21455</ramMb>
+      <diskGb>261</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="168">
+      <id>64</id>
+      <ncpus>1</ncpus>
+      <ramMb>21117</ramMb>
+      <diskGb>6</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="169">
+      <id>65</id>
+      <ncpus>17</ncpus>
+      <ramMb>2905</ramMb>
+      <diskGb>216</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="170">
+      <id>66</id>
+      <ncpus>3</ncpus>
+      <ramMb>7290</ramMb>
+      <diskGb>97</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="171">
+      <id>67</id>
+      <ncpus>21</ncpus>
+      <ramMb>17862</ramMb>
+      <diskGb>139</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="172">
+      <id>68</id>
+      <ncpus>20</ncpus>
+      <ramMb>24456</ramMb>
+      <diskGb>233</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="173">
+      <id>69</id>
+      <ncpus>12</ncpus>
+      <ramMb>14167</ramMb>
+      <diskGb>246</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="174">
+      <id>70</id>
+      <ncpus>20</ncpus>
+      <ramMb>4735</ramMb>
+      <diskGb>37</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="175">
+      <id>71</id>
+      <ncpus>1</ncpus>
+      <ramMb>17987</ramMb>
+      <diskGb>99</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="176">
+      <id>72</id>
+      <ncpus>24</ncpus>
+      <ramMb>25602</ramMb>
+      <diskGb>275</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="177">
+      <id>73</id>
+      <ncpus>21</ncpus>
+      <ramMb>21588</ramMb>
+      <diskGb>190</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="178">
+      <id>74</id>
+      <ncpus>9</ncpus>
+      <ramMb>20231</ramMb>
+      <diskGb>41</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="179">
+      <id>75</id>
+      <ncpus>26</ncpus>
+      <ramMb>14604</ramMb>
+      <diskGb>77</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="180">
+      <id>76</id>
+      <ncpus>2</ncpus>
+      <ramMb>29657</ramMb>
+      <diskGb>167</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="181">
+      <id>77</id>
+      <ncpus>11</ncpus>
+      <ramMb>30984</ramMb>
+      <diskGb>21</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="182">
+      <id>78</id>
+      <ncpus>29</ncpus>
+      <ramMb>16288</ramMb>
+      <diskGb>240</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="183">
+      <id>79</id>
+      <ncpus>18</ncpus>
+      <ramMb>28898</ramMb>
+      <diskGb>187</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="184">
+      <id>80</id>
+      <ncpus>14</ncpus>
+      <ramMb>21083</ramMb>
+      <diskGb>179</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="185">
+      <id>81</id>
+      <ncpus>31</ncpus>
+      <ramMb>17806</ramMb>
+      <diskGb>249</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="186">
+      <id>82</id>
+      <ncpus>19</ncpus>
+      <ramMb>10966</ramMb>
+      <diskGb>277</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="187">
+      <id>83</id>
+      <ncpus>18</ncpus>
+      <ramMb>22883</ramMb>
+      <diskGb>212</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="188">
+      <id>84</id>
+      <ncpus>30</ncpus>
+      <ramMb>2482</ramMb>
+      <diskGb>249</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="189">
+      <id>85</id>
+      <ncpus>23</ncpus>
+      <ramMb>24880</ramMb>
+      <diskGb>203</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="190">
+      <id>86</id>
+      <ncpus>23</ncpus>
+      <ramMb>23319</ramMb>
+      <diskGb>166</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="191">
+      <id>87</id>
+      <ncpus>25</ncpus>
+      <ramMb>31610</ramMb>
+      <diskGb>71</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="192">
+      <id>88</id>
+      <ncpus>11</ncpus>
+      <ramMb>6209</ramMb>
+      <diskGb>99</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="193">
+      <id>89</id>
+      <ncpus>27</ncpus>
+      <ramMb>26205</ramMb>
+      <diskGb>100</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="194">
+      <id>90</id>
+      <ncpus>12</ncpus>
+      <ramMb>12181</ramMb>
+      <diskGb>21</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="195">
+      <id>91</id>
+      <ncpus>5</ncpus>
+      <ramMb>4327</ramMb>
+      <diskGb>211</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="196">
+      <id>92</id>
+      <ncpus>22</ncpus>
+      <ramMb>25782</ramMb>
+      <diskGb>93</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="197">
+      <id>93</id>
+      <ncpus>19</ncpus>
+      <ramMb>14315</ramMb>
+      <diskGb>254</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="198">
+      <id>94</id>
+      <ncpus>30</ncpus>
+      <ramMb>3145</ramMb>
+      <diskGb>109</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="199">
+      <id>95</id>
+      <ncpus>21</ncpus>
+      <ramMb>4239</ramMb>
+      <diskGb>30</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="200">
+      <id>96</id>
+      <ncpus>4</ncpus>
+      <ramMb>3237</ramMb>
+      <diskGb>42</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="201">
+      <id>97</id>
+      <ncpus>27</ncpus>
+      <ramMb>30448</ramMb>
+      <diskGb>29</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="202">
+      <id>98</id>
+      <ncpus>29</ncpus>
+      <ramMb>1865</ramMb>
+      <diskGb>77</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="203">
+      <id>99</id>
+      <ncpus>18</ncpus>
+      <ramMb>24522</ramMb>
+      <diskGb>282</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="204">
+      <id>100</id>
+      <ncpus>7</ncpus>
+      <ramMb>11959</ramMb>
+      <diskGb>96</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="205">
+      <id>101</id>
+      <ncpus>8</ncpus>
+      <ramMb>13256</ramMb>
+      <diskGb>6</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="206">
+      <id>102</id>
+      <ncpus>2</ncpus>
+      <ramMb>4604</ramMb>
+      <diskGb>45</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="207">
+      <id>103</id>
+      <ncpus>2</ncpus>
+      <ramMb>16579</ramMb>
+      <diskGb>25</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="208">
+      <id>104</id>
+      <ncpus>23</ncpus>
+      <ramMb>27727</ramMb>
+      <diskGb>64</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="209">
+      <id>105</id>
+      <ncpus>26</ncpus>
+      <ramMb>24110</ramMb>
+      <diskGb>67</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="210">
+      <id>106</id>
+      <ncpus>1</ncpus>
+      <ramMb>6490</ramMb>
+      <diskGb>117</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="211">
+      <id>107</id>
+      <ncpus>28</ncpus>
+      <ramMb>5252</ramMb>
+      <diskGb>132</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="212">
+      <id>108</id>
+      <ncpus>14</ncpus>
+      <ramMb>6042</ramMb>
+      <diskGb>270</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="213">
+      <id>109</id>
+      <ncpus>3</ncpus>
+      <ramMb>30598</ramMb>
+      <diskGb>50</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="214">
+      <id>110</id>
+      <ncpus>12</ncpus>
+      <ramMb>6306</ramMb>
+      <diskGb>164</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="215">
+      <id>111</id>
+      <ncpus>21</ncpus>
+      <ramMb>29718</ramMb>
+      <diskGb>90</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="216">
+      <id>112</id>
+      <ncpus>17</ncpus>
+      <ramMb>26961</ramMb>
+      <diskGb>121</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="217">
+      <id>113</id>
+      <ncpus>1</ncpus>
+      <ramMb>10544</ramMb>
+      <diskGb>78</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="218">
+      <id>114</id>
+      <ncpus>2</ncpus>
+      <ramMb>9122</ramMb>
+      <diskGb>111</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="219">
+      <id>115</id>
+      <ncpus>9</ncpus>
+      <ramMb>32155</ramMb>
+      <diskGb>15</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="220">
+      <id>116</id>
+      <ncpus>24</ncpus>
+      <ramMb>11966</ramMb>
+      <diskGb>4</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="221">
+      <id>117</id>
+      <ncpus>1</ncpus>
+      <ramMb>14282</ramMb>
+      <diskGb>71</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="222">
+      <id>118</id>
+      <ncpus>26</ncpus>
+      <ramMb>14158</ramMb>
+      <diskGb>56</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="223">
+      <id>119</id>
+      <ncpus>31</ncpus>
+      <ramMb>24893</ramMb>
+      <diskGb>285</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="224">
+      <id>120</id>
+      <ncpus>8</ncpus>
+      <ramMb>3527</ramMb>
+      <diskGb>158</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="225">
+      <id>121</id>
+      <ncpus>24</ncpus>
+      <ramMb>8781</ramMb>
+      <diskGb>183</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="226">
+      <id>122</id>
+      <ncpus>8</ncpus>
+      <ramMb>15469</ramMb>
+      <diskGb>6</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="227">
+      <id>123</id>
+      <ncpus>6</ncpus>
+      <ramMb>5743</ramMb>
+      <diskGb>1</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="228">
+      <id>124</id>
+      <ncpus>18</ncpus>
+      <ramMb>7839</ramMb>
+      <diskGb>133</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="229">
+      <id>125</id>
+      <ncpus>13</ncpus>
+      <ramMb>4864</ramMb>
+      <diskGb>28</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="230">
+      <id>126</id>
+      <ncpus>24</ncpus>
+      <ramMb>11985</ramMb>
+      <diskGb>22</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="231">
+      <id>127</id>
+      <ncpus>2</ncpus>
+      <ramMb>16272</ramMb>
+      <diskGb>295</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="232">
+      <id>128</id>
+      <ncpus>6</ncpus>
+      <ramMb>7165</ramMb>
+      <diskGb>150</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="233">
+      <id>129</id>
+      <ncpus>15</ncpus>
+      <ramMb>29501</ramMb>
+      <diskGb>129</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="234">
+      <id>130</id>
+      <ncpus>20</ncpus>
+      <ramMb>25667</ramMb>
+      <diskGb>235</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="235">
+      <id>131</id>
+      <ncpus>16</ncpus>
+      <ramMb>6108</ramMb>
+      <diskGb>70</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="236">
+      <id>132</id>
+      <ncpus>3</ncpus>
+      <ramMb>17118</ramMb>
+      <diskGb>255</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="237">
+      <id>133</id>
+      <ncpus>11</ncpus>
+      <ramMb>18138</ramMb>
+      <diskGb>37</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="238">
+      <id>134</id>
+      <ncpus>8</ncpus>
+      <ramMb>14102</ramMb>
+      <diskGb>30</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="239">
+      <id>135</id>
+      <ncpus>14</ncpus>
+      <ramMb>1240</ramMb>
+      <diskGb>74</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="240">
+      <id>136</id>
+      <ncpus>28</ncpus>
+      <ramMb>12013</ramMb>
+      <diskGb>209</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="241">
+      <id>137</id>
+      <ncpus>2</ncpus>
+      <ramMb>24281</ramMb>
+      <diskGb>151</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="242">
+      <id>138</id>
+      <ncpus>9</ncpus>
+      <ramMb>18849</ramMb>
+      <diskGb>274</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="243">
+      <id>139</id>
+      <ncpus>14</ncpus>
+      <ramMb>19730</ramMb>
+      <diskGb>184</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="244">
+      <id>140</id>
+      <ncpus>3</ncpus>
+      <ramMb>7378</ramMb>
+      <diskGb>205</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="245">
+      <id>141</id>
+      <ncpus>32</ncpus>
+      <ramMb>5447</ramMb>
+      <diskGb>262</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="246">
+      <id>142</id>
+      <ncpus>1</ncpus>
+      <ramMb>7563</ramMb>
+      <diskGb>157</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="247">
+      <id>143</id>
+      <ncpus>30</ncpus>
+      <ramMb>5041</ramMb>
+      <diskGb>224</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="248">
+      <id>144</id>
+      <ncpus>4</ncpus>
+      <ramMb>30578</ramMb>
+      <diskGb>15</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="249">
+      <id>145</id>
+      <ncpus>4</ncpus>
+      <ramMb>28164</ramMb>
+      <diskGb>56</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="250">
+      <id>146</id>
+      <ncpus>8</ncpus>
+      <ramMb>26502</ramMb>
+      <diskGb>144</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="251">
+      <id>147</id>
+      <ncpus>11</ncpus>
+      <ramMb>19007</ramMb>
+      <diskGb>264</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="252">
+      <id>148</id>
+      <ncpus>26</ncpus>
+      <ramMb>2986</ramMb>
+      <diskGb>119</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="253">
+      <id>149</id>
+      <ncpus>22</ncpus>
+      <ramMb>28618</ramMb>
+      <diskGb>198</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="254">
+      <id>150</id>
+      <ncpus>2</ncpus>
+      <ramMb>6485</ramMb>
+      <diskGb>137</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="255">
+      <id>151</id>
+      <ncpus>32</ncpus>
+      <ramMb>28209</ramMb>
+      <diskGb>101</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="256">
+      <id>152</id>
+      <ncpus>19</ncpus>
+      <ramMb>21256</ramMb>
+      <diskGb>168</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="257">
+      <id>153</id>
+      <ncpus>7</ncpus>
+      <ramMb>13925</ramMb>
+      <diskGb>13</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="258">
+      <id>154</id>
+      <ncpus>22</ncpus>
+      <ramMb>11013</ramMb>
+      <diskGb>118</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="259">
+      <id>155</id>
+      <ncpus>11</ncpus>
+      <ramMb>8426</ramMb>
+      <diskGb>206</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="260">
+      <id>156</id>
+      <ncpus>23</ncpus>
+      <ramMb>12190</ramMb>
+      <diskGb>110</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="261">
+      <id>157</id>
+      <ncpus>32</ncpus>
+      <ramMb>26179</ramMb>
+      <diskGb>52</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="262">
+      <id>158</id>
+      <ncpus>11</ncpus>
+      <ramMb>26971</ramMb>
+      <diskGb>277</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="263">
+      <id>159</id>
+      <ncpus>7</ncpus>
+      <ramMb>19213</ramMb>
+      <diskGb>241</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="264">
+      <id>160</id>
+      <ncpus>15</ncpus>
+      <ramMb>7027</ramMb>
+      <diskGb>44</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="265">
+      <id>161</id>
+      <ncpus>29</ncpus>
+      <ramMb>18924</ramMb>
+      <diskGb>295</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="266">
+      <id>162</id>
+      <ncpus>17</ncpus>
+      <ramMb>22679</ramMb>
+      <diskGb>251</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="267">
+      <id>163</id>
+      <ncpus>18</ncpus>
+      <ramMb>20002</ramMb>
+      <diskGb>229</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="268">
+      <id>164</id>
+      <ncpus>4</ncpus>
+      <ramMb>23703</ramMb>
+      <diskGb>119</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="269">
+      <id>165</id>
+      <ncpus>12</ncpus>
+      <ramMb>14367</ramMb>
+      <diskGb>73</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="270">
+      <id>166</id>
+      <ncpus>1</ncpus>
+      <ramMb>8414</ramMb>
+      <diskGb>90</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="271">
+      <id>167</id>
+      <ncpus>9</ncpus>
+      <ramMb>13513</ramMb>
+      <diskGb>139</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="272">
+      <id>168</id>
+      <ncpus>16</ncpus>
+      <ramMb>13271</ramMb>
+      <diskGb>27</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="273">
+      <id>169</id>
+      <ncpus>32</ncpus>
+      <ramMb>14566</ramMb>
+      <diskGb>292</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="274">
+      <id>170</id>
+      <ncpus>12</ncpus>
+      <ramMb>2429</ramMb>
+      <diskGb>88</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="275">
+      <id>171</id>
+      <ncpus>2</ncpus>
+      <ramMb>19634</ramMb>
+      <diskGb>25</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="276">
+      <id>172</id>
+      <ncpus>26</ncpus>
+      <ramMb>11505</ramMb>
+      <diskGb>268</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="277">
+      <id>173</id>
+      <ncpus>2</ncpus>
+      <ramMb>25199</ramMb>
+      <diskGb>260</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="278">
+      <id>174</id>
+      <ncpus>24</ncpus>
+      <ramMb>2847</ramMb>
+      <diskGb>278</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="279">
+      <id>175</id>
+      <ncpus>8</ncpus>
+      <ramMb>32058</ramMb>
+      <diskGb>221</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="280">
+      <id>176</id>
+      <ncpus>25</ncpus>
+      <ramMb>7224</ramMb>
+      <diskGb>20</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="281">
+      <id>177</id>
+      <ncpus>8</ncpus>
+      <ramMb>7478</ramMb>
+      <diskGb>94</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="282">
+      <id>178</id>
+      <ncpus>1</ncpus>
+      <ramMb>17498</ramMb>
+      <diskGb>110</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="283">
+      <id>179</id>
+      <ncpus>30</ncpus>
+      <ramMb>5193</ramMb>
+      <diskGb>284</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="284">
+      <id>180</id>
+      <ncpus>31</ncpus>
+      <ramMb>17989</ramMb>
+      <diskGb>164</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="285">
+      <id>181</id>
+      <ncpus>5</ncpus>
+      <ramMb>17569</ramMb>
+      <diskGb>210</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="286">
+      <id>182</id>
+      <ncpus>27</ncpus>
+      <ramMb>22647</ramMb>
+      <diskGb>117</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="287">
+      <id>183</id>
+      <ncpus>23</ncpus>
+      <ramMb>31493</ramMb>
+      <diskGb>270</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="288">
+      <id>184</id>
+      <ncpus>9</ncpus>
+      <ramMb>5320</ramMb>
+      <diskGb>29</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="289">
+      <id>185</id>
+      <ncpus>10</ncpus>
+      <ramMb>8075</ramMb>
+      <diskGb>104</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="290">
+      <id>186</id>
+      <ncpus>26</ncpus>
+      <ramMb>27789</ramMb>
+      <diskGb>29</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="291">
+      <id>187</id>
+      <ncpus>15</ncpus>
+      <ramMb>13276</ramMb>
+      <diskGb>70</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="292">
+      <id>188</id>
+      <ncpus>17</ncpus>
+      <ramMb>13771</ramMb>
+      <diskGb>210</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="293">
+      <id>189</id>
+      <ncpus>19</ncpus>
+      <ramMb>5504</ramMb>
+      <diskGb>245</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="294">
+      <id>190</id>
+      <ncpus>18</ncpus>
+      <ramMb>1685</ramMb>
+      <diskGb>191</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="295">
+      <id>191</id>
+      <ncpus>19</ncpus>
+      <ramMb>13330</ramMb>
+      <diskGb>19</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="296">
+      <id>192</id>
+      <ncpus>29</ncpus>
+      <ramMb>30576</ramMb>
+      <diskGb>219</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="297">
+      <id>193</id>
+      <ncpus>5</ncpus>
+      <ramMb>26089</ramMb>
+      <diskGb>184</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="298">
+      <id>194</id>
+      <ncpus>8</ncpus>
+      <ramMb>31445</ramMb>
+      <diskGb>85</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="299">
+      <id>195</id>
+      <ncpus>10</ncpus>
+      <ramMb>31956</ramMb>
+      <diskGb>50</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="300">
+      <id>196</id>
+      <ncpus>10</ncpus>
+      <ramMb>2644</ramMb>
+      <diskGb>137</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="301">
+      <id>197</id>
+      <ncpus>2</ncpus>
+      <ramMb>23839</ramMb>
+      <diskGb>217</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="302">
+      <id>198</id>
+      <ncpus>23</ncpus>
+      <ramMb>29332</ramMb>
+      <diskGb>131</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+    <es.bsc.vmplacement.domain.Host id="303">
+      <id>199</id>
+      <ncpus>31</ncpus>
+      <ramMb>11910</ramMb>
+      <diskGb>144</diskGb>
+    </es.bsc.vmplacement.domain.Host>
+  </hosts>
+</es.bsc.vmplacement.domain.ClusterState>

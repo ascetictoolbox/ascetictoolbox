@@ -1,0 +1,28 @@
+#!/bin/bash
+
+if [ $# = 0 ]
+then
+ echo " "
+ echo Usage: $0 "<"appname">" "<"cline_args">"
+ echo " "
+else
+ if [ $# = 1 ]
+ then
+   runcompssext --app=$1
+   if [ $? -ne 0 ]; then
+		echo "Error running application";
+		exit 1;
+	fi
+ else 
+   if [ $# -ge 2 ]
+   then
+     appName=$1
+     shift
+     runcompssext --app=$appName --cline_args="$*"
+     if [ $? -ne 0 ]; then
+		echo "Error running application";
+		exit 1;
+	 fi
+   fi
+ fi
+fi

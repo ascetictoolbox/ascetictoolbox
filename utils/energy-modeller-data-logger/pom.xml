@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>eu.ascetic</groupId>
+		<artifactId>utils</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<groupId>eu.ascetic.iaas</groupId>
+	<artifactId>energy-modeller-data-logger</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<name>Energy Modeller Data Logger</name>
+	<url>http://maven.apache.org</url>
+
+	<ciManagement>
+		<system>hudson</system>
+		<url>https://ascetic-jenkins.cit.tu-berlin.de/job/${jenkins.project.name}</url>
+		<notifiers>
+			<notifier>
+				<type>mail</type>
+				<configuration>
+					<recipients>scsrek@leeds.ac.uk scsdja@leeds.ac.uk</recipients>
+				</configuration>
+				<sendOnError>true</sendOnError>
+				<sendOnFailure>true</sendOnFailure>
+				<sendOnSuccess>false</sendOnSuccess>
+				<sendOnWarning>false</sendOnWarning>
+			</notifier>
+		</notifiers>
+	</ciManagement>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>eu.ascetic.iaas</groupId>
+			<artifactId>energy-modeller</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>eu.ascetic.api.zabbix</groupId>
+			<artifactId>ascetic-zabbix-api</artifactId>
+			<version>0.1</version>
+		</dependency>
+	 <dependency>
+	  <groupId>eu.ascetic.utils</groupId>
+	  <artifactId>io-utils</artifactId>
+	  <version>0.0.1-SNAPSHOT</version>
+	 </dependency>
+	</dependencies>
+</project>

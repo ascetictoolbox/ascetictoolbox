@@ -1,0 +1,46 @@
+#!/bin/bash -e
+
+echo " "
+echo " - Building compss-framework..."
+echo " "
+cd compss-framework
+./build x86_64
+./build noarch
+cd ..
+echo " "
+
+echo " "
+echo " - Building compss-bindings-common..."
+echo " "
+cd compss-bindings-common
+./build x86_64
+./build noarch
+cd ..
+echo " "
+
+echo " "
+echo " - Building compss-python-binding..."
+echo " "
+cd compss-python-binding
+./build x86_64
+./build noarch
+cd ..
+echo " "
+
+echo " "
+echo " - Building compss-c-binding..."
+echo " "
+cd compss-c-binding
+./build x86_64
+./build noarch
+cd ..
+echo " "
+
+echo " "
+echo " - Building compss-extrae..."
+echo " "
+cd compss-extrae
+./build x86_64
+./build noarch
+cd ..
+echo " "
