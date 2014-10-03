@@ -24,9 +24,9 @@
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
-	<changeSet author="davidgp" id="addColumn-ovf-to-table-deployments">
+	<changeSet author="davidgp" id="addColumn-sla-agreement-to-table-deployments">
     	<addColumn tableName="deployments">
-            <column name="ovf" type="longtext">
+            <column name="sla_agreement" type="longtext">
                 <constraints nullable="true"/>
             </column>
     	</addColumn>
