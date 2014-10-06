@@ -86,7 +86,7 @@ public class CalibratorDataLogger implements Runnable {
                 }
                 faultCount = (faultCount > 0 ? faultCount - 1 : 0);
             } catch (Exception ex) { //This should always try to gather data from the data source.
-                Logger.getLogger(CalibratorDataLogger.class.getName()).log(Level.SEVERE, "The data collector had a problem.", ex);
+                Logger.getLogger(CalibratorDataLogger.class.getName()).log(Level.SEVERE, "The calibrator's data logger had a problem.", ex);
                 faultCount = faultCount + 1;
                 if (faultCount > 25) {
                     break; //Exit if faults keep occuring in a sequence.
