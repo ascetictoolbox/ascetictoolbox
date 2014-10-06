@@ -19,6 +19,7 @@ import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Collection;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
+import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.Items;
 import eu.ascetic.paas.applicationmanager.model.Link;
 import eu.ascetic.paas.applicationmanager.model.Root;
@@ -275,6 +276,12 @@ public class ModelConverterTest {
 		vm1.setProviderVmId("IaaS provider Id");
 		vm1.setStatus("IaaS status of the VM");
 		vm1.setIp("172.0.0.1");
+		Image image1 = new Image();
+		image1.setHref("hrefImage1");
+		image1.setId(111);
+		image1.setOvfId("333");
+		image1.setProviderImageId("444");
+		vm1.addImage(image1);
 		vm1.setSlaAgreement("sla agreement reference");
 		Link linkVm1Self = new Link();
 		linkVm1Self.setRel("self");
@@ -297,6 +304,12 @@ public class ModelConverterTest {
 		vm2.setStatus("IaaS status of the VM");
 		vm2.setIp("172.0.0.2");
 		vm2.setSlaAgreement("sla agreement reference");
+		Image image2 = new Image();
+		image2.setHref("hrefImage2");
+		image2.setId(111);
+		image2.setOvfId("333");
+		image2.setProviderImageId("444");
+		vm2.addImage(image2);
 		Link linkVm2Self = new Link();
 		linkVm2Self.setRel("self");
 		linkVm2Self.setType("application/xml");
@@ -326,7 +339,7 @@ public class ModelConverterTest {
 		XPath xpathName = XPath.newInstance("//bnf:id");
 		xpathName.addNamespace("bnf", APPLICATION_MANAGER_NAMESPACE);
 		List listxpathName = xpathName.selectNodes(xmldoc);
-		assertEquals(4, listxpathName.size());
+		assertEquals(6, listxpathName.size());
 		element = (Element) listxpathName.get(0);
 		assertEquals("101", element.getValue());
 		
@@ -336,6 +349,11 @@ public class ModelConverterTest {
 		assertEquals(1, listxpathName.size());
 		element = (Element) listxpathName.get(0);
 		assertEquals("/applications/101/deployments/1", element.getAttributeValue("href"));
+		
+		xpathName = XPath.newInstance("//bnf:image");
+		xpathName.addNamespace("bnf", APPLICATION_MANAGER_NAMESPACE);
+		listxpathName = xpathName.selectNodes(xmldoc);
+		assertEquals(2, listxpathName.size());
 		
 		xpathName = XPath.newInstance("//bnf:link");
 		xpathName.addNamespace("bnf", APPLICATION_MANAGER_NAMESPACE);
@@ -572,6 +590,13 @@ public class ModelConverterTest {
 					 	+ "<sla-agreement>sla</sla-agreement>"
 					 	+ "<status>XXX</status>"
 					 	+ "<ip>127.0.0.1</ip>"
+	                    + "<images>"
+                        	+ "<image href=\"hrefImage2\">"
+                            	+ "<id>111</id>"
+                            	+ "<ovf-id>333</ovf-id>"
+                            	+ "<provider-image-id>444</provider-image-id>"
+                            + "</image>"
+                        + "</images>"
 					 	+ "<link rel=\"deployment\" href=\"/applications/101/deployments/22\" type=\"application/xml\" />"
 						+ "<link rel=\"self\" href=\"/applications/101/deployments/22/vms/33\" type=\"application/xml\" />"
 					 + "</vm>";
@@ -584,6 +609,11 @@ public class ModelConverterTest {
 		assertEquals("222", vm.getProviderId());
 		assertEquals("sla", vm.getSlaAgreement());
 		assertEquals("XXX", vm.getStatus());
+		assertEquals(1, vm.getImages().size());
+		assertEquals("hrefImage2", vm.getImages().get(0).getHref());
+		assertEquals(111, vm.getImages().get(0).getId());
+		assertEquals("333", vm.getImages().get(0).getOvfId());
+		assertEquals("444", vm.getImages().get(0).getProviderImageId());
 		assertEquals(2, vm.getLinks().size());
 		assertEquals("deployment", vm.getLinks().get(0).getRel());
 		assertEquals("/applications/101/deployments/22", vm.getLinks().get(0).getHref());

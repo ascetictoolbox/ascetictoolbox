@@ -40,6 +40,8 @@ public class VMTest {
 		vm.setStatus("XXX");
 		vm.setIp("172.0.0.1");
 		vm.setSlaAgreement("slaAggrementId");
+		List<Image> images = new ArrayList<Image>();
+		vm.setImages(images);
 		List<Link> links = new ArrayList<Link>();
 		vm.setLinks(links);
 		
@@ -51,7 +53,20 @@ public class VMTest {
 		assertEquals("XXX", vm.getStatus());
 		assertEquals("172.0.0.1", vm.getIp());
 		assertEquals("slaAggrementId", vm.getSlaAgreement());
+		assertEquals(images, vm.getImages());
 		assertEquals(links, vm.getLinks());
+	}
+	
+	@Test
+	public void addImageTest() {
+		VM vm = new VM();
+		
+		assertEquals(null, vm.getImages());
+		
+		Image image = new Image();
+		vm.addImage(image);
+		assertEquals(1, vm.getImages().size());
+		assertEquals(image, vm.getImages().get(0));
 	}
 	
 	@Test
@@ -62,6 +77,7 @@ public class VMTest {
 		
 		Link link = new Link();
 		vm.addLink(link);
+		assertEquals(1, vm.getLinks().size());
 		assertEquals(link, vm.getLinks().get(0));
 	}
 }

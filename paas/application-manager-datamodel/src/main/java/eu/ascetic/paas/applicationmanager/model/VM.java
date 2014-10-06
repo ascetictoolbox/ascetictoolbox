@@ -5,11 +5,16 @@ import static eu.ascetic.paas.applicationmanager.model.Dictionary.APPLICATION_MA
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn; 
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -18,6 +23,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -68,6 +74,9 @@ public class VM {
 	private String status;
 	@XmlElement(name = "ip", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private String ip;
+	@XmlElementWrapper(name = "images", namespace = APPLICATION_MANAGER_NAMESPACE)
+	@XmlElement(name = "image", namespace = APPLICATION_MANAGER_NAMESPACE )
+	private List<Image> images;
 	@XmlElement(name="link", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private List<Link> links;
 	
@@ -127,6 +136,21 @@ public class VM {
 	}
 	public void setIp(String ip) {
 		this.ip = ip;
+	}
+	
+	public void addImage(Image image) {
+		if(images == null) images = new ArrayList<Image>(); 
+		images.add(image);
+	}
+	@ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+	@JoinTable(name = "vms_images", joinColumns = { 
+			@JoinColumn(name = "vm_id", nullable = false) }, 
+			inverseJoinColumns = { @JoinColumn(name = "image_id", nullable = false) })
+	public List<Image> getImages() {
+		return images;
+	}
+	public void setImages(List<Image> images) {
+		this.images = images;
 	}
 	
 	@Transient
