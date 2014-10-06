@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 
 /**
  * This logs the data for a specified host and writes them out to disk.
+ *
  * @author Richard
  */
 public class CalibratorDataLogger implements Runnable {
@@ -39,11 +40,13 @@ public class CalibratorDataLogger implements Runnable {
 
     /**
      * This creates a data logger for calibration information.
+     *
      * @param host The host to get the calibration data for
      * @param datasource The data source to use to gather the required data
      * @param database The database used to store the information gathered
      * @param calibratorWaitSec The duration between readings in seconds
-     * @param calibratorMaxDurationSec The duration the calibration phase occurs for
+     * @param calibratorMaxDurationSec The duration the calibration phase occurs
+     * for
      */
     public CalibratorDataLogger(Host host, HostDataSource datasource, DatabaseConnector database,
             int calibratorWaitSec, int calibratorMaxDurationSec) {
@@ -65,24 +68,33 @@ public class CalibratorDataLogger implements Runnable {
         ArrayList<HostEnergyCalibrationData> calibrationData = host.getCalibrationData();
         ArrayList<HostMeasurement> data = new ArrayList<>();
         long lastClock = 0;
-        
+        int faultCount = 0;
         long stopTime = System.currentTimeMillis();
         stopTime = stopTime + TimeUnit.SECONDS.toMillis(calibratorMaxDurationSec);
 
         while (System.currentTimeMillis() < stopTime) {
-            HostMeasurement dataEntry = datasource.getHostData(host);
-            long currentClock = dataEntry.getClock();
-            if (currentClock > lastClock) {
-                data.add(dataEntry);
-            }
             try {
-                Thread.sleep(TimeUnit.SECONDS.toMillis(calibratorWaitSec));
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Calibrator.class.getName()).log(Level.SEVERE, "The data gatherer was interupted.", ex);
+                HostMeasurement dataEntry = datasource.getHostData(host);
+                long currentClock = dataEntry.getClock();
+                if (currentClock > lastClock) {
+                    data.add(dataEntry);
+                }
+                try {
+                    Thread.sleep(TimeUnit.SECONDS.toMillis(calibratorWaitSec));
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Calibrator.class.getName()).log(Level.SEVERE, "The data gatherer was interupted.", ex);
+                }
+                faultCount = (faultCount > 0 ? faultCount - 1 : 0);
+            } catch (Exception ex) { //This should always try to gather data from the data source.
+                Logger.getLogger(CalibratorDataLogger.class.getName()).log(Level.SEVERE, "The data collector had a problem.", ex);
+                faultCount = faultCount + 1;
+                if (faultCount > 25) {
+                    break; //Exit if faults keep occuring in a sequence.
+                }
             }
         }
         calibrationData.addAll(HostEnergyCalibrationData.getCalibrationData(data));
-         host.setCalibrationData(calibrationData);
+        host.setCalibrationData(calibrationData);
         if (database != null) {
             database.setHostCalibrationData(host);
         }
