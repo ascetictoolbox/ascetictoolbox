@@ -7,6 +7,7 @@
         <class>eu.ascetic.paas.applicationmanager.model.Application</class>
         <class>eu.ascetic.paas.applicationmanager.model.Deployment</class>
 		<class>eu.ascetic.paas.applicationmanager.model.VM</class>
+		<class>eu.ascetic.paas.applicationmanager.model.Image</class>
             <properties>
                 <property name="hibernate.archive.autodetection" value="class, hbm"/>
                 <property name="hibernate.show_sql" value="true"/>

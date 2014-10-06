@@ -2,7 +2,7 @@ package eu.ascetic.paas.applicationmanager.dao;
 
 import java.util.List;
 
-import eu.ascetic.paas.applicationmanager.model.VM;
+import eu.ascetic.paas.applicationmanager.model.Image;
 
 /**
  * 
@@ -23,47 +23,46 @@ import eu.ascetic.paas.applicationmanager.model.VM;
  * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
  * @email david.garciaperez@atos.net 
  * 
- * DAO interface to perform database actions over an VM object
+ * DAO interface to perform database actions over an Image object
  *
  */
-
-public interface VMDAO extends DAO<VM> {
+public interface ImageDAO extends DAO<Image> {
 	/**
-	 * Returns the VM from the database by its Id
+	 * Returns the Image from the database by its Id
 	 * 
-	 * @param id of the VM
-	 * @return the corresponding VM from the database
+	 * @param id of the Image
+	 * @return the corresponding Image from the database
 	 */
-	public VM getById(int id);
+	public Image getById(int id);
 
 	/**
-	 * Returns all the VM stored in the database
+	 * Returns all the Image stored in the database
 	 * 
 	 * @return all the VM stored in the database
 	 */
-	public List<VM> getAll();
+	public List<Image> getAll();
 
 	/**
-	 * Stores a VM into the database
+	 * Stores a Image into the database
 	 * 
-	 * @param VM to be saved.
-	 * @return <code>true</code> if the VM was saved correctly
+	 * @param Image to be saved.
+	 * @return <code>true</code> if the Image was saved correctly
 	 */
-	public boolean save(VM vn);
+	public boolean save(Image image);
 
 	/**
-	 * Updates a VM in the database
+	 * Updates a Image in the database
 	 * 
-	 * @param VM to be updated
-	 * @return <code>true</code> if the Deployment was updated correctly
+	 * @param Image to be updated
+	 * @return <code>true</code> if the Image was updated correctly
 	 */
-	public boolean update(VM vm);
+	public boolean update(Image image);
 
 	/**
-	 * Deletes a VM from the database
+	 * Deletes a Image from the database
 	 * 
 	 * @param VM to be deleted
-	 * @return <code>true</code> if the VM was deleted correctly
+	 * @return <code>true</code> if the Image was deleted correctly
 	 */
-	public boolean delete(VM vm);
+	public boolean delete(Image image);
 }

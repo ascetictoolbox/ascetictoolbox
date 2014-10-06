@@ -414,9 +414,11 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/contex
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/ApplicationDAO.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/DAO.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/DeploymentDAO.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/ImageDAO.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/VMDAO.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/jpa/ApplicationDAOJpa.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/jpa/DeploymentDAOJpa.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/jpa/ImageDAOJpa.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/jpa/VMDAOJpa.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/http/Client.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/ovf/OVFUtils.java -text
@@ -474,6 +476,7 @@ paas/application-manager/src/main/webapp/META-INF/MANIFEST.MF -text
 paas/application-manager/src/main/webapp/WEB-INF/web.xml -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/jpa/ApplicationDAOJpaTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/jpa/DeploymentDAOJpaTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/jpa/ImageDAOJpaTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/jpa/MysqJPATestIT.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/jpa/VMDAOJpaTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/ovf/OVFUtilsTest.java -text

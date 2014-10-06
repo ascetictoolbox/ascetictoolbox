@@ -8,6 +8,7 @@ import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.dao.VMDAO;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
+import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.VM;
 
 
@@ -95,6 +96,12 @@ public class MysqJPATestIT {
 		vm.setSlaAgreement("sla-agreement");
 		vm.setStatus("RUNNING");
 		
+		Image image = new Image();
+		image.setProviderImageId("provider-image-id");
+		image.setOvfId("ovf-id");
+		
+		vm.addImage(image);
+		
 		saved = vmDAO.save(vm);
 		
 		if(saved == false) {
@@ -106,7 +113,20 @@ public class MysqJPATestIT {
 		
 		size = vmDAO.getAll().size();
 		
-		System.out.println("Number of VMs in DB after storing one: " + size);
+		System.out.println("###### Number of VMs in DB after storing one: " + size);
+		System.out.println("###### New Image stored: id -> " + vmFromDatabase.getImages().get(0).getId()
+										 + ", provider-id -> " + vmFromDatabase.getImages().get(0).getProviderImageId()
+										 + ", ovf-id -> " + vmFromDatabase.getImages().get(0).getOvfId());
+		
+		vmFromDatabase = vmDAO.getById(vmFromDatabase.getId());
+		Image imageFromDatabase = vmFromDatabase.getImages().get(0);
+		imageFromDatabase.setOvfId("ooo");
+		vmDAO.update(vmFromDatabase);
+		
+		vmFromDatabase = vmDAO.getById(vmFromDatabase.getId());
+		System.out.println("###### New Image stored: id -> " + vmFromDatabase.getImages().get(0).getId()
+				 + ", provider-id -> " + vmFromDatabase.getImages().get(0).getProviderImageId()
+				 + ", ovf-id -> " + vmFromDatabase.getImages().get(0).getOvfId());
 		
 		applicationFromDatabae = applicationDAO.getById(applicationFromDatabae.getId());
 		deploymentFrDeployment = deploymentDAO.getById(deploymentFrDeployment.getId());

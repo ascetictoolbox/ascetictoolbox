@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.AbstractTransactionalJUnit4Spring
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eu.ascetic.paas.applicationmanager.dao.VMDAO;
+import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.VM;
 
 /**
@@ -32,7 +33,7 @@ import eu.ascetic.paas.applicationmanager.model.VM;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * 
- * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
+ * @author: David Garcia Perez. Ato#s Research and Innovation, Atos SPAIN SA
  * @email david.garciaperez@atos.net 
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -157,6 +158,43 @@ public class VMDAOJpaTest extends AbstractTransactionalJUnit4SpringContextTests 
 		
 		vmFromDatabase = vmDAO.getById(id);
 		assertEquals("STOPPED", vmFromDatabase.getStatus());
+	}
+	
+	@Test
+	public void vmWithImages() {
+		int size = vmDAO.getAll().size();
+		
+		VM vm = new VM();
+		vm.setIp("127.0.0.1");
+		vm.setOvfId("ovf-id");
+		vm.setProviderId("provider-id");
+		vm.setProviderVmId("provider-vm-id");
+		vm.setSlaAgreement("sla-agreement");
+		vm.setStatus("RUNNING");
+		
+		Image image = new Image();
+		image.setProviderImageId("providerId");
+		image.setOvfId("ovf-id11");
+		
+		vm.addImage(image);
+		
+		boolean saved = vmDAO.save(vm);
+		assertTrue(saved);
+		
+		VM vmFromDatabase = vmDAO.getAll().get(size);
+		int id = vmFromDatabase.getId();
+		
+		assertEquals(1, vmFromDatabase.getImages().size());
+		assertEquals("ovf-id11", vmFromDatabase.getImages().get(0).getOvfId());
+		
+		image = vmFromDatabase.getImages().get(0);
+		image.setOvfId("ovf-id22");
+		
+		boolean updated = vmDAO.update(vmFromDatabase);
+		assertTrue(updated);
+		
+		vmFromDatabase = vmDAO.getById(id);
+		assertEquals("ovf-id22", vmFromDatabase.getImages().get(0).getOvfId());
 	}
 }
 
