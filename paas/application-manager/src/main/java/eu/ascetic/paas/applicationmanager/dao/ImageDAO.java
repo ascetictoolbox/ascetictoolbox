@@ -65,4 +65,12 @@ public interface ImageDAO extends DAO<Image> {
 	 * @return <code>true</code> if the Image was deleted correctly
 	 */
 	public boolean delete(Image image);
+	
+	/**
+	 * Selects the last created image with an specific ovf-id
+	 * 
+	 * @param ovf-id
+	 * @return the last image with that ovf-id
+	 */
+	public Image getLastImageWithOvfId(String ovfId);
 }

@@ -15,7 +15,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eu.ascetic.paas.applicationmanager.dao.ImageDAO;
 import eu.ascetic.paas.applicationmanager.model.Image;
-import eu.ascetic.paas.applicationmanager.model.VM;
 
 /**
  * 
@@ -134,6 +133,37 @@ public class ImageDAOJpaTest extends AbstractTransactionalJUnit4SpringContextTes
 		
 		imageFromDatabase = imageDAO.getById(id);
 		assertEquals("ovf-id2", imageFromDatabase.getOvfId());
+	}
+	
+	@Test
+	public void getLastImageWithOvfIdTest() {
+		int size = imageDAO.getAll().size();
+		
+		Image image1 = new Image();
+		image1.setOvfId("ovf-id");
+		image1.setProviderImageId("provider-image-id");
+		
+		boolean saved = imageDAO.save(image1);
+		assertTrue(saved);
+		
+		Image image2 = new Image();
+		image2.setOvfId("ovf-id");
+		image2.setProviderImageId("provider-image-id");
+		
+		saved = imageDAO.save(image2);
+		assertTrue(saved);
+		
+		Image image3 = new Image();
+		image3.setOvfId("ovf-id");
+		image3.setProviderImageId("provider-image-id");
+		
+		saved = imageDAO.save(image3);
+		assertTrue(saved);
+		Image image3FromDatabase = imageDAO.getAll().get(size+2);
+		int id3 = image3FromDatabase.getId();
+		
+		image3FromDatabase = imageDAO.getLastImageWithOvfId("ovf-id");
+		assertEquals(id3, image3FromDatabase.getId());
 	}
 }
 

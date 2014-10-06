@@ -95,6 +95,14 @@ public class ImageDAOJpa implements ImageDAO {
 			return false;
 		} 
 	}
+
+	@Override
+	public Image getLastImageWithOvfId(String ovfId) {
+		Query query = entityManager.createQuery("from Image where ovfId = :ovfIdentifier order by id desc").setMaxResults(1);
+		query.setParameter("ovfIdentifier", ovfId);
+		Image image = (Image) query.getSingleResult();
+		return image;
+	}
 }
 
 
