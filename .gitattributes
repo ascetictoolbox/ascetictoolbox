@@ -1010,7 +1010,7 @@ saas/SaaSMonitorController/WebContent/WEB-INF/web.xml -text svneol=unset#text/pl
 saas/SaaSMonitorController/src/eu/ascetic/saas/monitorcontroller/UserInfo.java -text svneol=unset#text/plain
 saas/SaaSMonitorController/src/eu/ascetic/saas/monitorcontroller/WinPowerShell.java -text svneol=unset#text/plain
 saas/SaaSVisualization/SaaSDB/saasdbcreatetable.sql -text
-saas/SaaSVisualization/SaaSDB/saasdbexample1.sql -text
+saas/SaaSVisualization/SaaSDB/saasdbexample2.sql -text
 saas/application-descriptor-tool/pom.xml -text
 saas/application-packager/.classpath -text
 saas/application-packager/.project -text

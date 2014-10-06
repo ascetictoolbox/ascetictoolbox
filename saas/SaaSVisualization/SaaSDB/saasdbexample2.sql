@@ -178,12 +178,18 @@ CREATE TABLE `measurevalues` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `session` bigint(20) NOT NULL,
   `instance` bigint(20) NOT NULL,
-  `measurenames` varchar(256) COLLATE utf8_bin NOT NULL,
-  `measurevalue` decimal(14,2) NOT NULL,
+  `processor` decimal(6,2) NOT NULL,
+  `idle` int(11) NOT NULL,
+  `workingset` bigint(20) NOT NULL,
+  `ioread` decimal(6,2) NOT NULL,
+  `iowrite` decimal(6,2) NOT NULL,
+  `iodata` decimal(6,2) NOT NULL,
+  `vm` decimal(6,2) NOT NULL,
+  `node` decimal(8,2) NOT NULL,
   `time` bigint(20) NOT NULL,
-  `step` int(11) NOT NULL,
+  `step` bigint(20) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -192,7 +198,7 @@ CREATE TABLE `measurevalues` (
 
 LOCK TABLES `measurevalues` WRITE;
 /*!40000 ALTER TABLE `measurevalues` DISABLE KEYS */;
-INSERT INTO `measurevalues` VALUES (1,1,1,'\\process(ASSET2008.windowsservice)\\%Processor Time',2.00,1409672417548,1),(2,1,1,'\\process(ASSET2008.windowsservice)\\%Processor Time',2.05,1409672417548,1),(3,1,1,'Processor(idle)\\% Processor Time',80.00,1409672417548,1),(4,1,1,'Process(ASSET2008.windowsservice)Working Set',500244388.00,1409672417548,1),(5,1,1,'process(ASSET2008.windowsservice)\\%Processor Time',2.53,1409672417548,2),(6,1,1,'Processor(idle)\\% Processor Time',30.91,1409672417548,2),(7,1,1,'Process(ASSET2008.windowsservice)Working Set',50005904280.00,1409672417548,2),(8,1,1,'process(ASSET2008.windowsservice)\\%Processor Time',8.70,1409672417548,3),(9,1,1,'Processor(idle)\\% Processor Time',14.67,1409672417548,3),(10,1,1,'Process(ASSET2008.windowsservice)Working Set',500189424.00,1409672417548,3);
+INSERT INTO `measurevalues` VALUES (1,1,1,2.05,80,500244388,0.00,0.98,0.98,34.00,71.00,1409672417548,1),(2,1,1,2.53,31,500059042,6.26,1.04,7.30,15.93,66.54,1409672418548,2),(3,1,1,8.70,15,500189424,1.15,1.12,2.27,33.56,83.65,1409672419548,3);
 /*!40000 ALTER TABLE `measurevalues` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -312,4 +318,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-09-24 16:33:00
+-- Dump completed on 2014-10-06 16:35:06

@@ -123,12 +123,18 @@ CREATE TABLE `measurevalues` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `session` bigint(20) NOT NULL,
   `instance` bigint(20) NOT NULL,
-  `measurenames` varchar(256) COLLATE utf8_bin NOT NULL,
-  `measurevalue` decimal(14,2) NOT NULL,
+  `processor` decimal(6,2) NOT NULL,
+  `idle` int(11) NOT NULL,
+  `workingset` bigint(20) NOT NULL,
+  `ioread` decimal(6,2) NOT NULL,
+  `iowrite` decimal(6,2) NOT NULL,
+  `iodata` decimal(6,2) NOT NULL,
+  `vm` decimal(6,2) NOT NULL,
+  `node` decimal(8,2) NOT NULL,
   `time` bigint(20) NOT NULL,
-  `step` int(11) NOT NULL,
+  `step` bigint(20) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
