@@ -181,21 +181,21 @@ public class OptaVmPlacementConversor {
             case "Hill Climbing":
                 return new HillClimbing();
             case "Late Acceptance":
-                return new LateAcceptance(recommendedPlanRequest.getLocalSearchAlgorithm().getOptions().get("Size"));
+                return new LateAcceptance(recommendedPlanRequest.getLocalSearchAlgorithm().getOptions().get("size"));
             case "Late Simulated Annealing":
                 return new LateSimulatedAnnealing(
-                        recommendedPlanRequest.getLocalSearchAlgorithm().getOptions().get("Size"),
-                        recommendedPlanRequest.getLocalSearchAlgorithm().getOptions().get("Accepted Count Limit"));
+                        recommendedPlanRequest.getLocalSearchAlgorithm().getOptions().get("size"),
+                        recommendedPlanRequest.getLocalSearchAlgorithm().getOptions().get("acceptedCountLimit"));
             case "Simulated Annealing":
                 return new SimulatedAnnealing(
-                        recommendedPlanRequest.getLocalSearchAlgorithm().getOptions().get("Initial Hard Temperature"),
-                        recommendedPlanRequest.getLocalSearchAlgorithm().getOptions().get("Initial Soft Temperature"));
+                        recommendedPlanRequest.getLocalSearchAlgorithm().getOptions().get("initialHardTemp"),
+                        recommendedPlanRequest.getLocalSearchAlgorithm().getOptions().get("initialSoftTemp"));
             case "Step Counting Hill Climbing":
-                return new StepCountingHC(recommendedPlanRequest.getLocalSearchAlgorithm().getOptions().get("Size"));
+                return new StepCountingHC(recommendedPlanRequest.getLocalSearchAlgorithm().getOptions().get("size"));
             case "Tabu Search":
                 return new TabuSearch(
-                        recommendedPlanRequest.getLocalSearchAlgorithm().getOptions().get("Size"),
-                        recommendedPlanRequest.getLocalSearchAlgorithm().getOptions().get("Accepted Count Limit"));
+                        recommendedPlanRequest.getLocalSearchAlgorithm().getOptions().get("size"),
+                        recommendedPlanRequest.getLocalSearchAlgorithm().getOptions().get("acceptedCountLimit"));
             default:
                 throw new IllegalArgumentException("Invalid local search algorithm");
         }
