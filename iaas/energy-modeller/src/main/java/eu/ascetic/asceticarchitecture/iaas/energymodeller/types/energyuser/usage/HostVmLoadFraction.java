@@ -20,6 +20,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -150,6 +151,20 @@ public class HostVmLoadFraction implements Comparable<HostVmLoadFraction> {
             answer.put(loadMeasure.getVm(), (loadMeasure.getCpuUtilisation() / totalLoad));
         }
         return answer;
+    }
+    
+    /**
+     * This utility function goes through a list of HostVmLoadFraction and lists
+     * the VMs that were involved.
+     * @param fractionData The collection of load fraction data to parse.
+     * @return The list of VMs listed in the load fraction data.
+     */
+    public static HashSet<VmDeployed> getVMs(Collection<HostVmLoadFraction> fractionData) {
+            HashSet<VmDeployed> answer = new HashSet<>();
+            for (HostVmLoadFraction hostVmLoadFraction : fractionData) {
+                answer.addAll(hostVmLoadFraction.getVMs());
+            }
+            return answer;
     }
 
     /**

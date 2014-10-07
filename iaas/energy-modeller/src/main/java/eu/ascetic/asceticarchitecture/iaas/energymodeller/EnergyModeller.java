@@ -16,6 +16,7 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration.Calibrator;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration.DefaultLoadGenerator;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DataGatherer;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DatabaseConnector;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DefaultDatabaseConnector;
@@ -84,8 +85,8 @@ public class EnergyModeller {
         datasource =  new ZabbixDataSourceAdaptor();
         database = new DefaultDatabaseConnector();
         startup();
-    }  
-
+    }
+    
     /**
      * This creates a new energy modeller.
      *
@@ -109,9 +110,9 @@ public class EnergyModeller {
             calibratorThread.setDaemon(true);
             calibratorThread.start();
             calibrateAllHostsWithoutData();
-                dataGatherThread = new Thread(dataGatherer);
-                dataGatherThread.setDaemon(true);
-                dataGatherThread.start();
+            dataGatherThread = new Thread(dataGatherer);
+            dataGatherThread.setDaemon(true);
+            dataGatherThread.start();
         } catch (Exception ex) {
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The energry modeller failed to start correctly", ex);
         }
@@ -340,9 +341,6 @@ public class EnergyModeller {
     public HistoricUsageRecord getEnergyRecordForVM(VmDeployed vm, TimePeriod timePeriod) {
         HistoricUsageRecord answer = new HistoricUsageRecord(vm);
         Host host = vm.getAllocatedTo();
-        ArrayList<VmDeployed> otherVms = dataGatherer.getVMsOnHost(host);
-        ArrayList<VM> vms = new ArrayList<>();
-        vms.addAll(otherVms);
         List<HostEnergyRecord> hostsData = database.getHostHistoryData(host, timePeriod);
         List<HostVmLoadFraction> loadFractionData = (List<HostVmLoadFraction>) database.getHostVmHistoryLoadData(host, timePeriod);
         HistoricLoadBasedDivision shareRule;
@@ -356,7 +354,9 @@ public class EnergyModeller {
                     + "failed to be created, falling back to defaults.", ex);
         }
         //Fraction off energy used based upon this share rule.
-        shareRule.addVM(vms);
+        for(VmDeployed deployed: HostVmLoadFraction.getVMs(loadFractionData)) {
+            shareRule.addVM(((VM) deployed));
+        }
         shareRule.setEnergyUsage(hostsData);
         shareRule.setLoadFraction(loadFractionData);
         double totalEnergy = shareRule.getEnergyUsage(vm);
