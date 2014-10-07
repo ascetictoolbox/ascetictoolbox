@@ -47,7 +47,7 @@ public class Ascetic {
         return newResources;
     }
 
-    public static int[] getConsumptions(String IPv4, int coreId) {
+    public static double[] getConsumptions(String IPv4, int coreId) {
         return resources.get(IPv4).getConsumptions(coreId);
     }
 

@@ -15,9 +15,12 @@
  */
 package integratedtoolkit.ascetic;
 
+import eu.ascetic.saas.application_uploader.ApplicationUploaderException;
 import integratedtoolkit.types.ResourceDescription;
 import integratedtoolkit.util.CoreManager;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class VM {
 
@@ -36,7 +39,7 @@ public class VM {
 
     private final ResourceDescription description;
 
-    private int[][] consumption;
+    private double[][] consumption;
 
     public VM(eu.ascetic.paas.applicationmanager.model.VM vm) {
         String IPv4 = vm.getIp();
@@ -44,9 +47,9 @@ public class VM {
         ResourceDescription rd = Configuration.getComponentDescriptions(vm.getOvfId());
         description = new ResourceDescription(rd);
         description.setName(IPv4);
-        consumption = new int[CoreManager.coreCount][];
+        consumption = new double[CoreManager.coreCount][];
         for (int coreId = 0; coreId < CoreManager.coreCount; coreId++) {
-            consumption[coreId] = new int[implCount[coreId]];
+            consumption[coreId] = new double[implCount[coreId]];
         }
         updateConsumptions();
     }
@@ -67,7 +70,7 @@ public class VM {
         return description;
     }
 
-    public int[] getConsumptions(int coreId) {
+    public double[] getConsumptions(int coreId) {
         return consumption[coreId];
     }
 
@@ -76,9 +79,12 @@ public class VM {
             for (int coreId = 0; coreId < CoreManager.coreCount; coreId++) {
                 for (int implId = 0; implId < implCount[coreId]; implId++) {
                     String eventType = "core" + coreId + "impl" + implId;
-                    consumption[coreId][implId] = AppManager.getConsumption(vm.getIp(), eventType);
+                    try {
+                        consumption[coreId][implId] = AppManager.getConsumption(vm.getIp(), eventType);
+                    } catch (ApplicationUploaderException ex) {
+                        System.err.println("Could not update the energy consumtion for " + eventType + " in " + vm.getIp());
+                    }
                 }
-
             }
             lastUpdate = System.currentTimeMillis();
         }

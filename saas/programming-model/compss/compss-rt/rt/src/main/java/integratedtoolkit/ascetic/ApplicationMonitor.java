@@ -35,7 +35,7 @@ public class ApplicationMonitor {
             method = new PostMethod(endpoint + "/event");
         }
         try {
-            method.setRequestEntity(new StringRequestEntity("{\"appId\":\"" + Configuration.getApplicationId() + "\", \"nodeId\":\"" + vm.getProviderId() + "\", \"instanceId\":\"" + Configuration.getDeploymentId() + "\", \"data\":{ \"ip\":\""+vm.getIPv4()+"\"}}", "application/json", "UTF-8"));
+            method.setRequestEntity(new StringRequestEntity("{\"appId\":\"" + Configuration.getApplicationId() + "\", \"nodeId\":\"" + vm.getProviderId() + "\", \"instanceId\":\"" + Configuration.getDeploymentId() + "\", \"data\":{ \"ip\":\""+vm.getIPv4()+"\", \"eventType\":\""+eventType+"\"}}", "application/json", "UTF-8"));
             client.executeMethod(method);
             br = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream()));
             String readLine;

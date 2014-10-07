@@ -47,8 +47,8 @@ public class AppManager {
         return detectedVMs.values();
     }
 
-    public static int getConsumption(String IPv4, String eventId) {
-        return new java.util.Random().nextInt(100);
+    public static double getConsumption(String IPv4, String eventId) throws ApplicationUploaderException {
+        return uploader.getEventEnergyEstimationInVM(applicationId, deploymentId, eventId, IPv4);        
     }
 
 }

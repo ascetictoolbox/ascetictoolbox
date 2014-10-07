@@ -390,7 +390,7 @@ public abstract class TaskScheduler {
             sb.append("\t\t\t<EnergyEstimation cores=\"").append(CoreManager.coreCount).append("\">\n");
             for (int coreId = 0; coreId < CoreManager.coreCount; coreId++) {
                 sb.append("\t\t\t\t<Core id=\"").append(coreId).append("\" implementations=\"").append(CoreManager.getCoreImplementations(coreId).length).append("\">\n");
-                int[] consumptions = Ascetic.getConsumptions(resourceName, coreId);
+                double[] consumptions = Ascetic.getConsumptions(resourceName, coreId);
                 for (int implId = 0; implId < CoreManager.getCoreImplementations(coreId).length; implId++) {
                     sb.append("\t\t\t\t\t<Implementation id=\"").append(implId).append("\">").append(consumptions[implId]).append("</Implementation>\n");
                 }

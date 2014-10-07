@@ -297,7 +297,7 @@ public class DefaultTaskScheduler extends TaskScheduler {
 
         while (!executableCores.isEmpty()) {
             Integer coreId = null;
-            int maxValue = Integer.MIN_VALUE;
+            double maxValue = Double.MIN_VALUE;
             for (Integer i : executableCores) {
                 if (sortedTasks[i].peek().value > maxValue) {
                     maxValue = sortedTasks[i].peek().value;

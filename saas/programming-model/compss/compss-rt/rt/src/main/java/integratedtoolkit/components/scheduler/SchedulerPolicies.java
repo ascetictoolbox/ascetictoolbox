@@ -54,15 +54,23 @@ public abstract class SchedulerPolicies {
     public class Object_Value<T> implements Comparable<Object_Value<T>> {
 
         public T o;
-        public int value;
+        public double value;
 
-        public Object_Value(T o, int value) {
+        public Object_Value(T o, double value) {
             this.o = o;
             this.value = value;
         }
 
         public int compareTo(Object_Value<T> o) {
-            return o.value - this.value;
+            double result = o.value - this.value;
+            if (result != 0 && (int) result == 0) {
+                if (result > 0) {
+                    result = 1;
+                } else {
+                    result = -1;
+                }
+            }
+            return (int) result;
         }
     }
 
