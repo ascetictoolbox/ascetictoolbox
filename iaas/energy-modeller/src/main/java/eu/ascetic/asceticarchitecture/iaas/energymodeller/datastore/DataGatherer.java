@@ -25,6 +25,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -164,7 +165,7 @@ public class DataGatherer implements Runnable {
                 }
                 try {
                     //Note: The Zabbix API takes a few seconds to call, so don't call it faster than 3-4 seconds
-                    Thread.sleep(10000);
+                    Thread.sleep(1000);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(DataGatherer.class.getName()).log(Level.SEVERE, "The data gatherer was interupted.", ex);
                 }
@@ -327,9 +328,11 @@ public class DataGatherer implements Runnable {
      * @return The list of VMs on the specified host
      */
     public ArrayList<VmDeployed> getVMsOnHost(Host host) {
+        HashSet<VmDeployed> current = new HashSet<>();
+        current.addAll(datasource.getVmList());
         ArrayList<VmDeployed> answer = new ArrayList<>();
         for (VmDeployed vm : knownVms.values()) {
-            if (host.equals(vm.getAllocatedTo())) {
+            if (host.equals(vm.getAllocatedTo()) && current.contains(vm)) {
                 answer.add(vm);
             }
         }
