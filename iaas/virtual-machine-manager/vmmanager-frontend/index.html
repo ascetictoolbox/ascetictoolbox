@@ -18,40 +18,47 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 <!DOCTYPE html>
 <html ng-app="vmmanager">
-    <head ng-include src="'views/common/head.html'"></head>
+    <head ng-include src="'app/views/common/head.html'"></head>
     <body>
-        <div ng-include src="'views/common/navbar.html'"></div>
+        <div ng-include src="'app/views/common/navbar.html'"></div>
         <div class="container-fluid">
             <div class="row">
-                <div ng-include src="'views/common/sidebar.html'"></div>
+                <div ng-include src="'app/views/common/sidebar.html'"></div>
                 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
                     <div ng-view></div>
                 </div>
             </div>
         </div>
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-        <script src="http://getbootstrap.com/dist/js/bootstrap.min.js"></script>
-        <script src="http://getbootstrap.com/assets/js/docs.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-rc.0/angular.min.js"></script>
-        <script src='https://code.angularjs.org/1.3.0-rc.0/angular-route.min.js'></script>
-        <script src='https://code.angularjs.org/1.3.0-rc.0/angular-animate.min.js'></script>
-        <script src="http://code.highcharts.com/highcharts.js"></script>
-        <script src="http://code.highcharts.com/highcharts-3d.js"></script>
-        <script src="http://code.highcharts.com/modules/exporting.js"></script>
-        <script src="app.js"></script>
-        <script src="services/services.js"></script>
-        <script src="services/hostService.js"></script>
-        <script src="services/imageService.js"></script>
-        <script src="services/logService.js"></script>
-        <script src="services/schedulingAlgService.js"></script>
-        <script src="services/vmService.js"></script>
-        <script src="controllers/controllers.js"></script>
-        <script src="controllers/vmManagerCtrl.js"></script>
-        <script src="controllers/schedulingAlgCtrl.js"></script>
-        <script src="controllers/imageCtrl.js"></script>
-        <script src="controllers/hostCtrl.js"></script>
-        <script src="controllers/logsCtrl.js"></script>
-        <script src="controllers/sidebarCtrl.js"></script>
+
+        <script src="scripts/angular.min.js"></script>
+        <script src='scripts/angular-route.min.js'></script>
+        <script src='scripts/angular-animate.min.js'></script>
+        <script src="scripts/jquery.min.js"></script>
+        <script src="scripts/bootstrap.min.js"></script>
+        <script src="scripts/docs.min.js"></script>
+        <script src="scripts/highcharts.js"></script>
+        <script src="scripts/highcharts-3d.js"></script>
+        <script src="scripts/exporting.js"></script>
+        <script src="scripts/toastr.min.js"></script>
+        <script src="app/app.js"></script>
+        <script src="app/services/services.js"></script>
+        <script src="app/services/hostService.js"></script>
+        <script src="app/services/imageService.js"></script>
+        <script src="app/services/logService.js"></script>
+        <script src="app/services/schedulingAlgService.js"></script>
+        <script src="app/services/vmService.js"></script>
+        <script src="app/services/vmPlacementService.js"></script>
+        <script src="app/controllers/controllers.js"></script>
+        <script src="app/controllers/chartsCtrl.js"></script>
+        <script src="app/controllers/vmManagerCtrl.js"></script>
+        <script src="app/controllers/schedulingAlgCtrl.js"></script>
+        <script src="app/controllers/imageCtrl.js"></script>
+        <script src="app/controllers/hostCtrl.js"></script>
+        <script src="app/controllers/logsCtrl.js"></script>
+        <script src="app/controllers/sidebarCtrl.js"></script>
+        <script src="app/controllers/vmPlacementCtrl.js"></script>
+        <script src="app/filters/filters.js"></script>
+        <script src="app/filters/formatLogMessage.js"></script>
     </body>
 </html>

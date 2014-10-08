@@ -1,0 +1,9 @@
+/* I needed to define this because otherwise, the toasts looked transparent */
+
+.toast {
+    opacity: 1 !important;
+}
+
+#toast-container > div {
+    opacity: 1 !important;
+}
