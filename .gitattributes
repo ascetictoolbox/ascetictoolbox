@@ -928,7 +928,6 @@ paas/application-monitor/public/js/ang/global-view.js -text
 paas/application-monitor/public/js/ang/metrics-old.js -text
 paas/application-monitor/public/js/ang/metrics.js -text
 paas/application-monitor/public/metrics.html -text
-paas/application-monitor/public/notas.txt -text
 paas/application-monitor/public/test.html -text
 paas/application-monitor/test/ApplicationTest.java -text
 paas/application-monitor/test/IntegrationTest.java -text

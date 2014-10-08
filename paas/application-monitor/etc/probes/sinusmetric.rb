@@ -24,7 +24,7 @@ ENV["LANG"]="en_US.UTF-8"
 ENV["LC_NUMERIC"]="en_US.UTF-8"
 
 #one notification each second
-FREQUENCY = 1
+FREQUENCY = 5
 VERBOSE = true
 
 URL = URI(ARGV[0])
@@ -76,7 +76,9 @@ loop do
 
     data["metric"] = t
 
-    sendData(data,"/event")
+    event["data"] = data;
+
+    sendData(event,"/event")
     sleep(FREQUENCY)
 
     loopNum += 1

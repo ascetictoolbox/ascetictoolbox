@@ -65,12 +65,15 @@
 
     }]);
 
-    appip.directive("hcSeries",function() {
+    var MAX_TIME = 15*60*1000;
+    var STEP_TIME = 5*1000;
+
+    appip.directive("hcSeries",function($http) {
         return {
             restrict : 'E',
             replace : true,
             scope: true,
-            controller :function ($scope, $element, $attrs, $interval) {
+            controller :function ($scope, $element, $attrs, $interval, $http) {
                 $interval(function() {
                     var x = (new Date()).getTime(), // current time
                         y = Math.random();
@@ -114,23 +117,47 @@
 
                     series: [{
                         type: 'area',
-                        data: (function () {
-                            // generate an array of random data
-                            var data = [],
-                                time = (new Date()).getTime(),
-                                i;
-
-                            for (i = -100; i <= 0; i += 1) {
-                                data.push({
-                                    x: time + i * 1000,
-                                    y: Math.random()
-                                });
-                            }
-                            return data;
-                        }())
+                        data: null // cargar aquí dinámicamente toda esta mierda
                     }]
                 };
-                $scope.chart = new Highcharts.Chart(chartInfo);
+
+                // get last timestamp of an application
+                var getLastTimestamp =
+                    [{"$match":{"appId":"SinusApp"}},
+                        {"$group" : { "_id": null,
+                            "last": {"$max": "$timestamp"}
+                        }}];
+
+                $http.post("/query",JSON.stringify(getLastTimestamp))
+                    .success(function(ret) {
+                        console.log("Last reported metric: " + ret[0].last);
+                        var groupTimesTamps <-- poner aquí query comentada mas abajo
+                        $http.post("/query",JS
+
+
+                        console.log();
+                        var data = [],
+                            time = (new Date()).getTime(),
+                            i;
+
+                        for (i = -100; i <= 0; i += 1) {
+                            data.push({
+                                x: time + i * 1000,
+                                y: Math.random()
+                            });
+                        }
+                        chartInfo.series[0].data = data;
+                        $scope.chart = new Highcharts.Chart(chartInfo);
+
+                    });
+
+
+                /*var query = '[{"$match":{"appId":"SinusApp"}},'+
+                 '{"$group" : {'+
+                 '"_id" : { "$subtract" : ["$timestamp" , {"$mod" : [ "$timestamp", 100000 ] }]},'+
+                 '"data" : {"$avg": "$data.metric"}'+
+                 '}}]';*/
+
 
                 /*scope.$watch("items", function (newValue) {
                     chart.series[0].setData(newValue, true);
