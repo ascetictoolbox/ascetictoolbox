@@ -16,7 +16,6 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration.Calibrator;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration.DefaultLoadGenerator;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DataGatherer;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DatabaseConnector;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DefaultDatabaseConnector;
@@ -79,14 +78,30 @@ public class EnergyModeller {
     private boolean considerIdleEnergyCurrentVm = false;
 
     /**
+     * This runs the energy modeller in standalone mode.
+     * @param args 
+     */
+    public static void main(String[] args) {
+        EnergyModeller modeller = new EnergyModeller();
+        while (true) {
+            try {
+                //Note: The Zabbix API takes a few seconds to call, so don't call it faster than 3-4 seconds
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(DataGatherer.class.getName()).log(Level.SEVERE, "The data gatherer was interupted.", ex);
+            }
+        }
+    }
+
+    /**
      * This creates a new energy modeller.
      */
     public EnergyModeller() {
-        datasource =  new ZabbixDataSourceAdaptor();
+        datasource = new ZabbixDataSourceAdaptor();
         database = new DefaultDatabaseConnector();
         startup();
     }
-    
+
     /**
      * This creates a new energy modeller.
      *
@@ -97,14 +112,14 @@ public class EnergyModeller {
         this.datasource = datasource;
         this.database = database;
         startup();
-    }    
-    
+    }
+
     /**
      * This is common code for both constructors
      */
     private void startup() {
         calibrator = new Calibrator(datasource, database);
-            dataGatherer = new DataGatherer(datasource, new DefaultDatabaseConnector(), calibrator);
+        dataGatherer = new DataGatherer(datasource, new DefaultDatabaseConnector(), calibrator);
         try {
             calibratorThread = new Thread(calibrator);
             calibratorThread.setDaemon(true);
@@ -199,10 +214,11 @@ public class EnergyModeller {
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The energy division rule specified was not found", ex);
         }
     }
-    
+
     /**
-     * This indicates if the current energy usage for a VM should consider
-     * idle energy of the host or not.
+     * This indicates if the current energy usage for a VM should consider idle
+     * energy of the host or not.
+     *
      * @param considerIdleEnergy If idle energy should be considered or not
      */
     public void setConsiderIdleEnergyCurrentVm(boolean considerIdleEnergy) {
@@ -354,7 +370,7 @@ public class EnergyModeller {
                     + "failed to be created, falling back to defaults.", ex);
         }
         //Fraction off energy used based upon this share rule.
-        for(VmDeployed deployed: HostVmLoadFraction.getVMs(loadFractionData)) {
+        for (VmDeployed deployed : HostVmLoadFraction.getVMs(loadFractionData)) {
             shareRule.addVM(((VM) deployed));
         }
         shareRule.setEnergyUsage(hostsData);
@@ -451,7 +467,7 @@ public class EnergyModeller {
      * This takes a host name and provides the object representation of this
      * host.
      *
-     * @param hostname  The host name to get the host object for
+     * @param hostname The host name to get the host object for
      * @return The host for the specified host name.
      */
     public Host getHost(String hostname) {
@@ -526,7 +542,7 @@ public class EnergyModeller {
     public void calibrateModelForHost(Host host) {
         calibrator.calibrateHostEnergyData(host);
     }
-    
+
     /**
      * This permanently stops the energy modeller from running, closing threads
      * and ensuring it no longer consumes resources.

@@ -75,6 +75,7 @@ iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymod
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/usage/HostEnergyRecord.java -text
 iaas/energy-modeller/src/main/resources/dummydata.sql -text
 iaas/energy-modeller/src/main/resources/iaas[!!-~]energy[!!-~]modeller[!!-~]db.sql -text
+iaas/energy-modeller/src/main/resources/log4j.properties -text
 iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/EnergyModellerTest.java -text
 iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/calibration/CalibratorTest.java -text
 iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/calibration/DefaultLoadGeneratorTest.java -text

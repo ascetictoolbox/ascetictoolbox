@@ -87,7 +87,20 @@
                     </webResources>
                 </configuration>
             </plugin>
-        </plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>            
+        </plugins>        
     </build>
     <dependencies>
         <dependency>
@@ -140,5 +153,5 @@
             <artifactId>io-utils</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
-    </dependencies>
+    </dependencies>  
 </project>
