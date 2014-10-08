@@ -23,7 +23,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 /**
- *
+ * Tests for the ServerLoad class.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  */
