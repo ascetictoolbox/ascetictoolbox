@@ -75,7 +75,7 @@ public class VMMLogger {
 
     public static void logServersLoadsAfterDeploymentPlan(DeploymentPlan deploymentPlan, int idleServers,
             double stdDevCpu, double stdDevRam, double stdDevDisk, String deploymentId) {
-        logger.debug("[VMM] Server loads for deployment plan [ " + deploymentPlan.toString() + "]:\n idle servers:"
+        logger.debug("[VMM] Server loads for deployment plan [ " + deploymentPlan.toString() + "]: idle servers:"
                 + idleServers + ", stdDevCpu:" + stdDevCpu + ", stdDevRam: " + stdDevRam + ", stdDevDisk: "
                 + stdDevDisk + " --id:" + deploymentId);
     }
@@ -83,7 +83,7 @@ public class VMMLogger {
     public static void logUnusedServerLoadsAfterDeploymentPlan(DeploymentPlan deploymentPlan, int idleServers,
             double unusedCpu, double unusedRam, double unusedDisk, String deploymentId) {
         logger.debug("[VMM] Total unused loads for deployment plan [ " + deploymentPlan.toString()
-                + "]:\n idle servers:" + idleServers + ", unusedCpu:" + unusedCpu + ", unusedRam: "
+                + "]: idle servers:" + idleServers + ", unusedCpu:" + unusedCpu + ", unusedRam: "
                 + unusedRam + ", unusedDisk: " + unusedDisk + " --id:" + deploymentId);
     }
 
