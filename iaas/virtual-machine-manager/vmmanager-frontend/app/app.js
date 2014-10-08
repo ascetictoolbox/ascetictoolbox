@@ -59,6 +59,11 @@
                 templateUrl: 'app/views/logs.html',
                 controller: 'LogsCtrl',
                 controllerAs: 'logs'
+            })
+            .when('/zabbix', {
+                templateUrl: 'app/views/zabbix.html',
+                controller: 'ZabbixCtrl',
+                controllerAs: 'zabbix'
             });
     }
 

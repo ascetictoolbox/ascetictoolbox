@@ -270,6 +270,7 @@ iaas/virtual-machine-manager/vmmanager-frontend/app/controllers/schedulingAlgCtr
 iaas/virtual-machine-manager/vmmanager-frontend/app/controllers/sidebarCtrl.js -text
 iaas/virtual-machine-manager/vmmanager-frontend/app/controllers/vmManagerCtrl.js -text
 iaas/virtual-machine-manager/vmmanager-frontend/app/controllers/vmPlacementCtrl.js -text
+iaas/virtual-machine-manager/vmmanager-frontend/app/controllers/zabbixCtrl.js -text
 iaas/virtual-machine-manager/vmmanager-frontend/app/filters/filters.js -text
 iaas/virtual-machine-manager/vmmanager-frontend/app/filters/formatLogMessage.js -text
 iaas/virtual-machine-manager/vmmanager-frontend/app/services/hostService.js -text
@@ -287,6 +288,7 @@ iaas/virtual-machine-manager/vmmanager-frontend/app/views/images.html -text
 iaas/virtual-machine-manager/vmmanager-frontend/app/views/logs.html -text
 iaas/virtual-machine-manager/vmmanager-frontend/app/views/schedulingAlgorithms.html -text
 iaas/virtual-machine-manager/vmmanager-frontend/app/views/virtualMachines.html -text
+iaas/virtual-machine-manager/vmmanager-frontend/app/views/zabbix.html -text
 iaas/virtual-machine-manager/vmmanager-frontend/css/bootstrap.min.css -text
 iaas/virtual-machine-manager/vmmanager-frontend/css/dashboard.css -text
 iaas/virtual-machine-manager/vmmanager-frontend/css/styles.css -text
