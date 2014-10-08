@@ -1755,6 +1755,7 @@ utils/application-manager-database/db/changelog/db.changelog-1.0.xml -text
 utils/application-manager-database/db/changelog/db.changelog-1.1.xml -text
 utils/application-manager-database/db/changelog/db.changelog-1.2.xml -text
 utils/application-manager-database/db/changelog/db.changelog-2.0.xml -text
+utils/application-manager-database/db/changelog/db.changelog-2.1.xml -text
 utils/application-manager-database/db/changelog/db.changelog-master.xml -text
 utils/application-manager-database/liquibase/LICENSE.txt -text
 utils/application-manager-database/liquibase/lib/README.txt -text
