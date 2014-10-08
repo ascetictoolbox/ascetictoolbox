@@ -279,7 +279,6 @@ iaas/virtual-machine-manager/vmmanager-frontend/app/services/schedulingAlgServic
 iaas/virtual-machine-manager/vmmanager-frontend/app/services/services.js -text
 iaas/virtual-machine-manager/vmmanager-frontend/app/services/vmPlacementService.js -text
 iaas/virtual-machine-manager/vmmanager-frontend/app/services/vmService.js -text
-iaas/virtual-machine-manager/vmmanager-frontend/app/views/common/head.html -text
 iaas/virtual-machine-manager/vmmanager-frontend/app/views/common/navbar.html -text
 iaas/virtual-machine-manager/vmmanager-frontend/app/views/common/sidebar.html -text
 iaas/virtual-machine-manager/vmmanager-frontend/app/views/dashboard.html -text
