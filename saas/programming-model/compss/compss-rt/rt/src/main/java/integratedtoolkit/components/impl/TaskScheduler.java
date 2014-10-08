@@ -22,11 +22,13 @@ import integratedtoolkit.ITConstants;
 import integratedtoolkit.ascetic.Ascetic;
 import integratedtoolkit.log.Loggers;
 import integratedtoolkit.types.Implementation;
+import integratedtoolkit.types.Method;
 import integratedtoolkit.types.Resource;
 import integratedtoolkit.types.Task;
 import integratedtoolkit.types.ScheduleDecisions;
 import integratedtoolkit.types.ScheduleState;
 import integratedtoolkit.types.ResourceDescription;
+import integratedtoolkit.types.Service;
 import integratedtoolkit.util.CoreManager;
 import integratedtoolkit.util.ResourceManager;
 import java.util.HashMap;
@@ -293,6 +295,49 @@ public abstract class TaskScheduler {
         }
     }
 
+    private long[] getImplStats(int coreId, int implId, long defaultValue) {
+        long[] result = new long[4];
+
+        int counter = 0;
+        long maxTime = Long.MIN_VALUE;
+        long minTime = Long.MAX_VALUE;
+        long avgTime = 0l;
+        if (profile[coreId][implId].executionCount > 0) {//Implementation has been executed
+            result[0] = profile[coreId][implId].executionCount;
+            result[2] = profile[coreId][implId].avgExecutionTime;
+            if (profile[coreId][implId].maxExecutionTime > maxTime) {
+                result[3] = profile[coreId][implId].maxExecutionTime;
+            }
+            if (profile[coreId][implId].minExecutionTime < minTime) {
+                result[1] = profile[coreId][implId].minExecutionTime;
+            }
+        } else {
+            Task earlier = null;
+            if (profile[coreId][implId].firstExecution != null) {
+                if (earlier == null) {
+                    earlier = profile[coreId][implId].firstExecution;
+                } else {
+                    if (earlier.getInitialTimeStamp() > profile[coreId][implId].firstExecution.getInitialTimeStamp()) {
+                        earlier = profile[coreId][implId].firstExecution;
+                    }
+                }
+            }
+            if (earlier == null) {
+                result[0] = 0;
+                result[1] = defaultValue;
+                result[2] = defaultValue;
+                result[3] = defaultValue;
+            } else {
+                result[0] = 0;
+                long difference = System.currentTimeMillis() - earlier.getInitialTimeStamp();
+                result[1] = difference;
+                result[2] = difference;
+                result[3] = difference;
+            }
+        }
+        return result;
+    }
+
     private long[] getCoreStats(int coreId, long defaultValue) {
         long[] result = new long[4];
 
@@ -362,15 +407,26 @@ public abstract class TaskScheduler {
      */
     public String getMonitoringState() {
         StringBuilder sb = new StringBuilder("\t<CoresInfo>\n");
-        for (java.util.Map.Entry<String, Integer> entry : CoreManager.signatureToId.entrySet()) {
-            int core = entry.getValue();
-            String signature = entry.getKey();
-            sb.append("\t\t<Core id=\"").append(core).append("\" signature=\"" + signature + "\">\n");
-            long stats[] = getCoreStats(core, 0);
-            sb.append("\t\t\t<MeanExecutionTime>").append(stats[2]).append("</MeanExecutionTime>\n");
-            sb.append("\t\t\t<MinExecutionTime>").append(stats[1]).append("</MinExecutionTime>\n");
-            sb.append("\t\t\t<MaxExecutionTime>").append(stats[3]).append("</MaxExecutionTime>\n");
-            sb.append("\t\t\t<ExecutedCount>").append(stats[3]).append("</ExecutedCount>\n");
+        for (int coreId = 0; coreId < CoreManager.coreCount; coreId++) {
+            String coreSignature = CoreManager.getCoreSignature(coreId);
+            sb.append("\t\t<Core id=\"").append(coreId).append("\" signature=\"" + coreSignature + "\">\n");
+            for (Implementation impl : CoreManager.getCoreImplementations(coreId)) {
+                String definingClass = "";
+                if (impl.getType() == Implementation.Type.SERVICE) {
+                    Service s = (Service) impl;
+                    definingClass = s.getNamespace() + "." + s.getServiceName() + "." + s.getPortName();
+                } else {
+                    Method m = (Method) impl;
+                    definingClass = m.getDeclaringClass();
+                }
+                sb.append("\t\t\t<Implementation id=\"").append(impl.getImplementationId()).append("\" definingClass=\"").append(definingClass).append("\">\n");
+                long[] stats = this.getImplStats(coreId, impl.getImplementationId(), 0);
+                sb.append("\t\t\t\t<MeanExecutionTime>").append(stats[2]).append("</MeanExecutionTime>\n");
+                sb.append("\t\t\t\t<MinExecutionTime>").append(stats[1]).append("</MinExecutionTime>\n");
+                sb.append("\t\t\t\t<MaxExecutionTime>").append(stats[3]).append("</MaxExecutionTime>\n");
+                sb.append("\t\t\t\t<ExecutedCount>").append(stats[0]).append("</ExecutedCount>\n");
+                sb.append("\t\t\t</Implementation>\n");
+            }
             sb.append("\t\t</Core>\n");
         }
         sb.append("\t</CoresInfo>\n");
@@ -494,7 +550,7 @@ public abstract class TaskScheduler {
             firstExecution = null;
             avgExecutionTime = 0l;
             maxExecutionTime = 0l;
-            minExecutionTime = 0l;
+            minExecutionTime = Long.MAX_VALUE;
         }
 
         public void executionEnded(Task task) {

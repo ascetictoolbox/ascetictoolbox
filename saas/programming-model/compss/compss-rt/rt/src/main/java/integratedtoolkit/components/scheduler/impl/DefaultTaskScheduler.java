@@ -15,6 +15,7 @@
  */
 package integratedtoolkit.components.scheduler.impl;
 
+import integratedtoolkit.ascetic.AsceticSchedulerPolicies;
 import integratedtoolkit.components.impl.TaskScheduler;
 import integratedtoolkit.components.scheduler.SchedulerPolicies;
 import integratedtoolkit.types.Implementation;
@@ -44,7 +45,7 @@ public class DefaultTaskScheduler extends TaskScheduler {
     public DefaultTaskScheduler() {
         super();
         taskSets = new TaskSets();
-        schedulerPolicies = new DefaultSchedulerPolicies();
+        schedulerPolicies = new AsceticSchedulerPolicies();
         logger.info("Initialization finished");
     }
 
@@ -278,6 +279,7 @@ public class DefaultTaskScheduler extends TaskScheduler {
     }
 
     private boolean assignTasks(LinkedList<Task>[] tasks, LinkedList<Integer> executableCores, Resource resource, LinkedList<Implementation>[] fittingImplementations) {
+        System.out.println("ASSING TASKS");
         boolean assigned = false;
         PriorityQueue<SchedulerPolicies.Object_Value<Task>>[] sortedTasks = new PriorityQueue[CoreManager.coreCount];
         LinkedList<Integer> unloadedCores = new LinkedList<Integer>();
@@ -294,12 +296,11 @@ public class DefaultTaskScheduler extends TaskScheduler {
         for (Integer coreId : unloadedCores) {
             executableCores.remove(coreId);
         }
-
         while (!executableCores.isEmpty()) {
             Integer coreId = null;
-            double maxValue = Double.MIN_VALUE;
+            double maxValue = -1;
             for (Integer i : executableCores) {
-                if (sortedTasks[i].peek().value > maxValue) {
+                if (Double.compare(sortedTasks[i].peek().value, maxValue) > 0) {
                     maxValue = sortedTasks[i].peek().value;
                     coreId = i;
                 }

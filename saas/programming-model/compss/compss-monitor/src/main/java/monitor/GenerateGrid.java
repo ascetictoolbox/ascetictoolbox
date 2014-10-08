@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -31,13 +30,16 @@ import org.zkoss.zul.Columns;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Row;
+import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Rows;
 import org.zkoss.zul.event.ColSizeEvent;
 
 public class GenerateGrid {
 
-	public static void computeEnergyColumns(Grid grid,
-			Map<String, int[][]> values) {
+	public static void computeEnergyColumns(Grid grid) {
+
+		Core[] coreInfo = MonitoringParser.getCoreInfo();
+		Map<String, Resource> resourceInfo = MonitoringParser.getResourceInfo();
 
 		Iterator<Component> comps = grid.getChildren().iterator();
 		LinkedList<Component> compslist = new LinkedList<Component>();
@@ -52,30 +54,25 @@ public class GenerateGrid {
 		while (columns.getFirstChild() != null) {
 			columns.removeChild(columns.getFirstChild());
 		}
-		int coreCount = 0;
+
+		int coreCount = coreInfo.length;
 		int implCount = 0;
-		int[] implCounts = new int[0];
-		for (int[][] entry : values.values()) {
-			coreCount = entry.length;
-			implCounts = new int[coreCount];
-			for (int j = 0; j < coreCount; j++) {
-				implCounts[j] = entry[j].length;
-				implCount += implCounts[j];
-			}
-			break;
+		int[] implCounts = new int[coreCount];
+		for (int coreId = 0; coreId < coreCount; coreId++) {
+			implCounts[coreId] = coreInfo[coreId].getImplementations().length;
+			implCount += implCounts[coreId];
 		}
 
-		System.out.println("Hi ha "+coreCount+" cores");
-		System.out.println("Hi ha "+implCount+" implementacions");
-		
+		System.out.println("Hi ha " + coreCount + " cores");
+		System.out.println("Hi ha " + implCount + " implementacions");
+
 		Auxhead head = new Auxhead();
 		Auxheader header = new Auxheader();
-		//header.setColspan(implCount+1);
+		// header.setColspan(implCount+1);
 		header.setLabel("Energy Consumption Estimation");
 		header.setParent(head);
 		head.setParent(grid);
-		
-		
+
 		head = new Auxhead();
 		header = new Auxheader();
 		header.setRowspan(2);
@@ -86,34 +83,34 @@ public class GenerateGrid {
 		for (int i = 0; i < coreCount; i++) {
 			header = new Auxheader();
 			header.setColspan(implCounts[i]);
-			header.setLabel("Core" + i);
+			header.setLabel(coreInfo[i].getCoreName());
 			header.setParent(head);
 		}
 		head.setParent(grid);
 
-		for (int coreId=0;coreId<coreCount;coreId++){
-			for (int implId=0;implId<implCounts[coreId];implId++){
+		for (int coreId = 0; coreId < coreCount; coreId++) {
+			for (int implId = 0; implId < implCounts[coreId]; implId++) {
 				Column c = new Column();
-				c.setLabel("Implementation"+implId);
+				c.setLabel(coreInfo[coreId].getImplementations()[implId]);
 				c.setParent(columns);
 				c.setWidth("75");
-			}			
+			}
 		}
-		
+
 		columns.setParent(grid);
 		head.setParent(grid);
-		
-		Rows rows= new Rows();
-		for (java.util.Map.Entry<String, int[][]> entry: values.entrySet()){
-			Row row= new Row();
-			Label resource= new Label (entry.getKey());
-			resource.setParent(row);
+
+		Rows rows = new Rows();
+		for (Resource resource : resourceInfo.values()) {
+			Row row = new Row();
+			Label resourceName = new Label(resource.getName());
+			resourceName.setParent(row);
 			row.setParent(rows);
-			for (int coreId=0;coreId<coreCount;coreId++){
-				for (int implId=0;implId<implCounts[coreId];implId++){
-					Label cost = new Label(""+entry.getValue()[coreId][implId]);
+			for (int coreId = 0; coreId < coreCount; coreId++) {
+				for (int implId = 0; implId < implCounts[coreId]; implId++) {
+					Label cost = new Label(resource.getEnergyEstimations()[coreId][implId]);
 					cost.setParent(row);
-				}			
+				}
 			}
 		}
 		rows.setParent(grid);
@@ -124,4 +121,5 @@ public class GenerateGrid {
 		 */
 
 	}
+
 }

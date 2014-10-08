@@ -45,6 +45,7 @@ public class CoreManager {
     private static final Map<String, Implementation> signatureToImpl = new HashMap<String, Implementation>();
     public static int coreCount = 0;
     private static int nextId = 0;
+    private static String[] coreSignatures;
     private static Implementation[][] implementations;
     private static Constraints[][] annot;
     private static ResourceDescription[][] resources;
@@ -147,6 +148,7 @@ public class CoreManager {
             annot = new Constraints[coreCount][];
             resources = new ResourceDescription[coreCount][];
             implementations = new Implementation[coreCount][];
+            coreSignatures = new String[coreCount];
         } else {
             updateArrays(CoreManager.coreCount + coreCount);
         }
@@ -216,8 +218,8 @@ public class CoreManager {
             }
 
         }
-        StringBuilder sb= new StringBuilder("CoreElementInterface signatures:\n");
-        for (java.util.Map.Entry<String, Implementation> entry:signatureToImpl.entrySet()){
+        StringBuilder sb = new StringBuilder("CoreElementInterface signatures:\n");
+        for (java.util.Map.Entry<String, Implementation> entry : signatureToImpl.entrySet()) {
             sb.append("\t signature: ").append(entry.getKey()).append("--> ").append(entry.getValue());
         }
         System.out.println(signatureToImpl);
@@ -250,6 +252,7 @@ public class CoreManager {
         annot[coreId] = new Constraints[implementationCount];
         resources[coreId] = new ResourceDescription[implementationCount];
         implementations[coreId] = new Implementation[implementationCount];
+        coreSignatures[coreId] = signature;
 
         for (int i = 0; i < implementationCount; i++) {
             annot[coreId] = cts;
@@ -445,11 +448,15 @@ public class CoreManager {
         Implementation[][] oldImplementations = implementations;
         Constraints[][] oldAnnot = annot;
         ResourceDescription[][] oldResources = resources;
+        String[] oldSignatures = coreSignatures;
 
         annot = new Constraints[newCoreCount][];
         resources = new ResourceDescription[newCoreCount][];
         implementations = new Implementation[newCoreCount][];
+        coreSignatures = new String[newCoreCount];
 
+        System.arraycopy(oldSignatures, 0, coreSignatures, 0, oldSignatures.length);
+        System.arraycopy(oldAnnot, 0, annot, 0, oldAnnot.length);
         System.arraycopy(oldAnnot, 0, annot, 0, oldAnnot.length);
         System.arraycopy(oldResources, 0, resources, 0, oldResources.length);
         System.arraycopy(oldImplementations, 0, implementations, 0, oldImplementations.length);
@@ -457,6 +464,10 @@ public class CoreManager {
 
     public static Implementation getImplementation(String signature) {
         return signatureToImpl.get(signature);
+    }
+
+    public static String getCoreSignature(int coreId) {
+        return coreSignatures[coreId];
     }
 
     //CUSTOM EXCEPTIONS

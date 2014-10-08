@@ -16,6 +16,7 @@
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,9 +28,8 @@ import org.w3c.dom.NodeList;
 
 public class MonitoringParser {
 
-	private static List<String[]> WorkersDataArray;
-	private static List<String[]> CoresDataArray;
-	private static Map<String, int[][]> EnergyArray;
+	private static Core[] coreInfo = new Core[0];
+	private static Map<String, Resource> resourceInfo = new HashMap<String, Resource>();
 
 	public static void parse() {
 
@@ -45,6 +45,7 @@ public class MonitoringParser {
 		monitorLocation = "/tmp/monitor.xml";
 		while (true) {
 			try {
+				System.out.println("Parsing document");
 				DocumentBuilderFactory docFactory = DocumentBuilderFactory
 						.newInstance();
 				docFactory.setNamespaceAware(true);
@@ -59,8 +60,6 @@ public class MonitoringParser {
 					}
 
 				}
-				WorkersDataArray = new ArrayList<String[]>();
-				EnergyArray = new HashMap<String, int[][]>();
 				if (COMPSs == null) {
 					// NO COMPSs item --> empty
 					return;
@@ -69,159 +68,88 @@ public class MonitoringParser {
 				for (int i = 0; i < nl.getLength(); i++) {
 					Node n = nl.item(i);
 					if (n.getNodeName().compareTo("ResourceInfo") == 0) {
-						WorkersDataArray = parseResourceInfoNode(n);
+						System.out.println("ResourceInfo");
+						parseResourceInfoNode(n);
 					}
 					if (n.getNodeName().compareTo("CoresInfo") == 0) {
-						CoresDataArray = parseCoresInfoNode(n);
+						System.out.println("CoresInfo");
+						parseCoresInfoNode(n);
 					}
 				}
 				return;
 			} catch (Exception e) {
 				e.printStackTrace();
-				try {
-					Thread.sleep(1000);
-				} catch (Exception e2) {
-
-				}
 			}
 		}
 	}
 
-	private static List<String[]> parseResourceInfoNode(Node resourceInfo) {
-		List<String[]> datas = new ArrayList<String[]>();
-		NodeList nl = resourceInfo.getChildNodes();
-		for (int i = 0; i < nl.getLength(); i++) {
-			Node n = nl.item(i);
-			if (n.getNodeName().equals("Resource")) {
-				datas.add(parseResourceNode(n));
-			}
-		}
-		return datas;
-	}
-
-	private static String[] parseResourceNode(Node resource) {
-		String[] data = new String[7];
+	private static void parseResourceInfoNode(Node resourcesInfo) {
 		try {
-			data[0] = resource.getAttributes().getNamedItem("id")
-					.getTextContent();
-			NodeList nl = resource.getChildNodes();
-			int slots = 0;
-			int plens = 0;
-			StringBuilder tasks = new StringBuilder();
-			String status = "Ready";
+			resourceInfo.clear();
+			NodeList nl = resourcesInfo.getChildNodes();
 			for (int i = 0; i < nl.getLength(); i++) {
 				Node n = nl.item(i);
-				if (n.getNodeName().equals("Slot")) {
-					slots++;
-					String content = n.getTextContent();
-					if (content.compareTo("") != 0) {
-						if (plens > 0) {
-							tasks.append(", ");
-						}
-						tasks.append(content);
-						plens++;
-					}
-				} else if (n.getNodeName().equals("Status")) {
-					status = n.getTextContent();
-				} else if (n.getNodeName().equals("CPU")) {
-					data[4] = n.getTextContent();
-				} else if (n.getNodeName().equals("Memory")) {
-					data[5] = n.getTextContent();
-				} else if (n.getNodeName().equals("Disk")) {
-					data[6] = n.getTextContent();
-				} else if (n.getNodeName().equals("EnergyEstimation")) {
-					parseEnergyEstimations(data[0], n);
+				if (n.getNodeName().equals("Resource")) {
+					String resourceName = n.getAttributes().getNamedItem("id")
+							.getTextContent();
+					Resource r = new Resource(n);
+					resourceInfo.put(resourceName, r);
 				}
 			}
-			data[1] = tasks.toString();
-			if (slots > 0) {
-				data[2] = (plens * 100) / slots + "%";
-			} else {
-				data[2] = "-";
-			}
-			data[3] = status;
 		} catch (Exception e) {
-			// e.printStackTrace();
+			System.out.println("ResourceInfo not parsed properly");
 		}
-		return data;
 	}
 
-	private static void parseEnergyEstimations(String resource,
-			Node energyEstimations) {
-		int coreCount = Integer.parseInt(energyEstimations.getAttributes()
-				.getNamedItem("cores").getTextContent());
-		int[][] estimations = new int[coreCount][];
-		NodeList coreList = energyEstimations.getChildNodes();
-		for (int i = 0; i < coreList.getLength(); i++) {
-			Node core = coreList.item(i);
-			if (core.getNodeName().compareTo("Core") == 0) {
+
+	private static void parseCoresInfoNode(Node coresInfo) {
+		try {
+			NodeList nl = coresInfo.getChildNodes();
+			LinkedList<Node> cores = new LinkedList<Node>();
+			int coreCount = 0;
+			for (int i = 0; i < nl.getLength(); i++) {
+				Node n = nl.item(i);
+				if (n.getNodeName().equals("Core")) {
+					cores.add(n);
+					coreCount++;
+				}
+			}
+			coreInfo = new Core[coreCount];
+			for (Node core : cores) {
 				int coreId = Integer.parseInt(core.getAttributes()
 						.getNamedItem("id").getTextContent());
-				int implCount = Integer.parseInt(core.getAttributes()
-						.getNamedItem("implementations").getTextContent());
-				estimations[coreId] = new int[implCount];
-				NodeList implList = core.getChildNodes();
-				for (int j = 0; j < implList.getLength(); j++) {
-					Node impl = implList.item(j);
-					if (impl.getNodeName().equals("Implementation")) {
-						int implId = Integer.parseInt(impl.getAttributes()
-								.getNamedItem("id").getTextContent());
-						estimations[coreId][implId] = Integer.parseInt(impl.getTextContent());
-					}
-				}
-			}
-		}
-		EnergyArray.put(resource, estimations);
-
-	}
-
-	private static List<String[]> parseCoresInfoNode(Node coresInfo) {
-		List<String[]> datas = new ArrayList<String[]>();
-		NodeList nl = coresInfo.getChildNodes();
-		for (int i = 0; i < nl.getLength(); i++) {
-			Node n = nl.item(i);
-			if (n.getNodeName().equals("Core")) {
-				datas.add(parseCoreNode(n));
-			}
-		}
-		return datas;
-	}
-
-	private static String[] parseCoreNode(Node cores) {
-		String[] data = new String[5];
-		try {
-			data[0] = cores.getAttributes().getNamedItem("id").getTextContent();
-			String signature = cores.getAttributes().getNamedItem("signature")
-					.getTextContent();
-			int pos = signature.indexOf("(");
-			int posfin = signature.indexOf(")");
-			data[1] = signature.substring(0, pos);
-			data[2] = signature.substring(pos + 1, posfin);
-			NodeList nl = cores.getChildNodes();
-			for (int i = 0; i < nl.getLength(); i++) {
-				Node n = nl.item(i);
-				if (n.getNodeName().equals("MeanExecutionTime")) {
-					data[3] = n.getTextContent();
-				} else if (n.getNodeName().equals("ExecutedCount")) {
-					data[4] = n.getTextContent();
-				}
+				coreInfo[coreId] = new Core(core);
 			}
 		} catch (Exception e) {
-			// e.printStackTrace();
+			System.out.println("CoreInfo not parsed properly");
 		}
-		return data;
 	}
 
+	
+	
+	
 	public static List<String[]> getWorkersDataArray() {
-		return WorkersDataArray;
+		List<String[]> values = new LinkedList<String[]>();
+		for (Resource r:resourceInfo.values()){
+			values.add(r.getResourceRow());
+		}
+		return values;
 	}
 
 	public static List<String[]> getCoresDataArray() {
-		return CoresDataArray;
+		LinkedList<String[]> values = new LinkedList<String[]>();
+		for (Core core : coreInfo) {
+			values.addAll(core.getCoreRows());
+		}
+		return values;
 	}
 
-	public static Map<String, int[][]> getEnergyArray() {
-		return EnergyArray;
+	
+	public static Core[] getCoreInfo(){
+		return coreInfo;
 	}
-
+	
+	public static Map<String, Resource> getResourceInfo(){
+		return resourceInfo;
+	}
 }

@@ -48,6 +48,7 @@ public class AppManager {
     }
 
     public static double getConsumption(String IPv4, String eventId) throws ApplicationUploaderException {
+        //return Math.random()*100d;
         return uploader.getEventEnergyEstimationInVM(applicationId, deploymentId, eventId, IPv4);        
     }
 
