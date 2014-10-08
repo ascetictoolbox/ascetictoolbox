@@ -1135,8 +1135,10 @@ saas/programming-model/compss/compss-annotations/src/main/java/integratedtoolkit
 saas/programming-model/compss/compss-annotations/src/main/java/integratedtoolkit/types/annotations/Parameter.java -text
 saas/programming-model/compss/compss-annotations/src/main/java/integratedtoolkit/types/annotations/Service.java -text
 saas/programming-model/compss/compss-monitor/pom.xml -text
+saas/programming-model/compss/compss-monitor/src/main/java/monitor/Core.java -text
 saas/programming-model/compss/compss-monitor/src/main/java/monitor/GenerateGrid.java -text
 saas/programming-model/compss/compss-monitor/src/main/java/monitor/MonitoringParser.java -text
+saas/programming-model/compss/compss-monitor/src/main/java/monitor/Resource.java -text
 saas/programming-model/compss/compss-monitor/src/main/webapp/WEB-INF/web.xml -text
 saas/programming-model/compss/compss-monitor/src/main/webapp/WEB-INF/zk.xml -text
 saas/programming-model/compss/compss-monitor/src/main/webapp/images/bsc/logo.jpg -text
