@@ -16,6 +16,8 @@
 package eu.ascetic.ioutils;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -28,8 +30,9 @@ import java.util.logging.Logger;
  *
  * @author Richard Kavanagh
  * @param <T> This type is expected to be specified in any implementation of
- * this abstract class. A print header and print body method is expected to be 
- * implemented thus completing the ability to write the specified object to disk.
+ * this abstract class. A print header and print body method is expected to be
+ * implemented thus completing the ability to write the specified object to
+ * disk.
  */
 public abstract class GenericLogger<T> implements Runnable {
 
@@ -56,8 +59,8 @@ public abstract class GenericLogger<T> implements Runnable {
 
     /**
      * This prints a items value to file in an asynchronously fashion. i.e. the
-     * item's data is sent to a queue for printing to disk and then does
-     * not further interrupt the operations of the data logger tool.
+     * item's data is sent to a queue for printing to disk and then does not
+     * further interrupt the operations of the data logger tool.
      *
      * @param item The item to print to file.
      */
@@ -77,13 +80,16 @@ public abstract class GenericLogger<T> implements Runnable {
                 T currentItem = queue.poll(30, TimeUnit.SECONDS);
                 if (currentItem != null) {
                     Logger.getLogger(GenericLogger.class.getName()).log(Level.FINER, "The logger for the file {0} wrote to disk.", saveFile.getResultsFile().getName());
-                    saveToDisk(saveFile, currentItem);
+                    ArrayList<T> items = new ArrayList<>();
+                    items.add(currentItem);
+                    queue.drainTo(items);
+                    saveToDisk(saveFile, items);
                 }
             } catch (InterruptedException ex) {
                 Logger.getLogger(GenericLogger.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        Logger.getLogger(GenericLogger.class.getName()).log(Level.INFO, "The schedule reporter for the file {0} has now stopped.", saveFile.getResultsFile().getName());
+        Logger.getLogger(GenericLogger.class.getName()).log(Level.INFO, "The logger for the file {0} has now stopped.", saveFile.getResultsFile().getName());
     }
 
     /**
@@ -99,8 +105,8 @@ public abstract class GenericLogger<T> implements Runnable {
     }
 
     /**
-     * This writes an item out to disk for the purpose of auditing what is
-     * going on.
+     * This writes an item out to disk for the purpose of auditing what is going
+     * on.
      *
      * @param store The results store to save data to
      * @param item The item to write to file
@@ -115,6 +121,32 @@ public abstract class GenericLogger<T> implements Runnable {
                 writeHeader(store);
             }
             writebody(item, store);
+            store.saveMemoryConservative();
+        } catch (Exception ex) {
+            //logging is important but should not stop the main thread from running!
+            Logger.getLogger(GenericLogger.class.getName()).log(Level.SEVERE, "An error occurred when saving an item to disk", ex);
+        }
+    }
+
+    /**
+     * This writes a collection of items out to disk for the purpose of auditing 
+     * what is going on.
+     *
+     * @param store The results store to save data to
+     * @param items The item to write to file
+     */
+    public void saveToDisk(ResultsStore store, Collection<T> items) {
+        try {
+            if (!store.getResultsFile().exists()) {
+                /**
+                 * Write out the header if the file does not exist or is to be
+                 * overwritten
+                 */
+                writeHeader(store);
+            }
+            for (T item : items) {
+                writebody(item, store);
+            }
             store.saveMemoryConservative();
         } catch (Exception ex) {
             //logging is important but should not stop the main thread from running!
