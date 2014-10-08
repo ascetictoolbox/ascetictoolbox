@@ -31,6 +31,7 @@ import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.VM_PHYSICAL_HOST_NAME;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.hostvmfilter.NameBeginsFilter;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.hostvmfilter.ZabbixHostVMFilter;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.EnergyUsageSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.client.ZabbixClient;
@@ -139,6 +140,22 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         }
         return vms;
     }
+
+    @Override
+    public List<EnergyUsageSource> getHostAndVmList() {
+        List<Host> hostsList = client.getAllHosts();
+        ArrayList<EnergyUsageSource> energyUsers = new ArrayList<>();
+        for (Host host : hostsList) {
+            if (hostFilter.isHost(host)) {
+                energyUsers.add(convert(host));
+            } else {
+                energyUsers.add(convertToVm(host, client.getItemsFromHost(host.getHost()), hostsList));
+            }
+        }
+        return energyUsers;
+    }
+    
+    
 
     /**
      * This converts a monitoring infrastructure host into a Energy Modeller

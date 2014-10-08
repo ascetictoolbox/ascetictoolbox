@@ -19,9 +19,11 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration.Calibrator
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostMeasurement;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.VmMeasurement;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.EnergyUsageSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostVmLoadFraction;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -29,6 +31,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 
 /**
  * The data gatherer takes data from the data source and writes them into the
@@ -46,6 +50,8 @@ public class DataGatherer implements Runnable {
     private HashMap<String, Host> knownHosts = new HashMap<>();
     private HashMap<String, VmDeployed> knownVms = new HashMap<>();
     private final HashMap<Host, Long> lastTimeStampSeen = new HashMap<>();
+    private static final String CONFIG_FILE = "energymodeller_data_gatherer.properties";
+    private boolean logVmsToDisk = true;
 
     /**
      * This creates a data gather component for the energy modeller.
@@ -63,6 +69,21 @@ public class DataGatherer implements Runnable {
         this.connector = connector;
         this.calibrator = calibrator;
         populateHostList();
+        try {
+            PropertiesConfiguration config;
+            if (new File(CONFIG_FILE).exists()) {
+                config = new PropertiesConfiguration(CONFIG_FILE);
+            } else {
+                config = new PropertiesConfiguration();
+                config.setFile(new File(CONFIG_FILE));
+            }
+            config.setAutoSave(true); //This will save the configuration file back to disk. In case the defaults need setting.
+            logVmsToDisk = config.getBoolean("iaas.energy.modeller.data.gatherer.log.vms", logVmsToDisk);
+            config.setProperty("iaas.energy.modeller.data.gatherer.log.vms", logVmsToDisk);
+
+        } catch (ConfigurationException ex) {
+            Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Error loading the configuration of the IaaS energy modeller", ex);
+        }
     }
 
     /**
@@ -133,19 +154,67 @@ public class DataGatherer implements Runnable {
         connector.closeConnection();
     }
 
+    /**
+     * This filters a list of energy users and returns only the list of hosts 
+     * @param energyUsers The list of energy users
+     * @return The list of hosts.
+     */    
+    private List<Host> getHostList(List<EnergyUsageSource> input) {
+        ArrayList<Host> answer = new ArrayList<>();
+        for (EnergyUsageSource item : input) {
+            if (item.getClass().equals(Host.class)) {
+                answer.add((Host) item);
+            }
+        }
+        return answer;
+    }
+
+    /**
+     * This filters a list of energy users and returns only the list of vms 
+     * that have been deployed
+     * @param energyUsers The list of energy users
+     * @return The list of VMs that have been deployed.
+     */
+    private List<VmDeployed> getVMList(List<EnergyUsageSource> energyUsers) {
+        ArrayList<VmDeployed> answer = new ArrayList<>();
+        for (EnergyUsageSource item : energyUsers) {
+            if (item.getClass().equals(VmDeployed.class)) {
+                answer.add((VmDeployed) item);
+            }
+        }
+        return answer;
+    }
+
     @Override
     public void run() {
+        VmEnergyUsageLogger logger = null;
+        if (logVmsToDisk) {
+            logger = new VmEnergyUsageLogger(new File("VmEnergyUsageData.txt"), true);
+            Thread loggerThread = new Thread(logger);
+            loggerThread.setDaemon(true);
+            loggerThread.start();
+        }
         /**
          * Polls the data source and write values to the database. TODO consider
          * buffering the db writes.
          */
         while (running) {
             try {
-                List<Host> hostList = datasource.getHostList();
+                List<EnergyUsageSource> energyConsumers = datasource.getHostAndVmList();
+                List<Host> hostList = getHostList(energyConsumers);
                 refreshKnownHostList(hostList);
-                refreshKnownVMList(datasource.getVmList());
-                for (Host host : hostList) {
-                    HostMeasurement measurement = datasource.getHostData(host);
+                List<VmDeployed> vmList = getVMList(energyConsumers);
+                refreshKnownVMList(vmList);
+                List<HostMeasurement> measurements = datasource.getHostData(hostList);
+                for (HostMeasurement measurement : measurements) {
+                    Host host = knownHosts.get(measurement.getHost().getHostName());
+                    /**
+                     * This ensures all the calibration data is available, by setting
+                     * the host from the cached data. HostList originates from the
+                     * data source and not from the database/cache, which includes
+                     * information such as idle energy usage.
+                     */
+                    measurement.setHost(host); 
                     /**
                      * Update only if a value has not been provided before or
                      * the timestamp value has changed. This keeps the data
@@ -154,12 +223,15 @@ public class DataGatherer implements Runnable {
                     if (lastTimeStampSeen.get(host) == null || measurement.getClock() > lastTimeStampSeen.get(host)) {
                         lastTimeStampSeen.put(host, measurement.getClock());
                         connector.writeHostHistoricData(host, measurement.getClock(), measurement.getPower(), measurement.getEnergy());
-                        ArrayList<VmDeployed> vms = getVMsOnHost(host);
+                        ArrayList<VmDeployed> vms = getVMsOnHost(host, vmList);
                         if (!vms.isEmpty()) {
                             HostVmLoadFraction fraction = new HostVmLoadFraction(host, measurement.getClock());
                             List<VmMeasurement> vmMeasurements = datasource.getVmData(vms);
                             fraction.setFraction(vmMeasurements);
                             connector.writeHostVMHistoricData(host, measurement.getClock(), fraction);
+                            if (logger != null) {
+                                logger.printToFile(logger.new Pair(measurement, fraction));
+                            }
                         }
                     }
                 }
@@ -328,8 +400,19 @@ public class DataGatherer implements Runnable {
      * @return The list of VMs on the specified host
      */
     public ArrayList<VmDeployed> getVMsOnHost(Host host) {
+        return getVMsOnHost(host, datasource.getVmList());
+    }    
+    
+    /**
+     * This gets a list of the VMs that are currently on a host machine.
+     *
+     * @param host The host machine to get the VM list for
+     * @param activeVMs The list of VMs known to be active on the host.
+     * @return The list of VMs on the specified host
+     */
+    public ArrayList<VmDeployed> getVMsOnHost(Host host, List<VmDeployed> activeVMs) {
         HashSet<VmDeployed> current = new HashSet<>();
-        current.addAll(datasource.getVmList());
+        current.addAll(activeVMs);
         ArrayList<VmDeployed> answer = new ArrayList<>();
         for (VmDeployed vm : knownVms.values()) {
             if (host.equals(vm.getAllocatedTo()) && current.contains(vm)) {

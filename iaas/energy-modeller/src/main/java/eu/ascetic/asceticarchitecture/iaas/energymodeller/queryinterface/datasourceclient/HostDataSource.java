@@ -15,6 +15,7 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient;
 
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.EnergyUsageSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
@@ -51,6 +52,12 @@ public interface HostDataSource {
      */
     public List<Host> getHostList();
 
+    /**
+     * This provides a list of hosts and VMs for the energy modeller
+     * @return A list of energy users for the energy modeller.
+     */
+    public List<EnergyUsageSource> getHostAndVmList();
+    
     /**
      * This provides a list of VMs for the energy modeller
      *

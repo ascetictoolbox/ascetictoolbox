@@ -16,6 +16,7 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient;
 
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.POWER_KPI_NAME;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.EnergyUsageSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
@@ -74,8 +75,10 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
     }
 
     /**
-     * This creates a new instance of the WattsUp Meter data source adaptor. 
-     * This adaptor is intended for using the energy modeller on a local machine.
+     * This creates a new instance of the WattsUp Meter data source adaptor.
+     * This adaptor is intended for using the energy modeller on a local
+     * machine.
+     *
      * @return A singleton instance of a WattsUp? meter data source adaptor.
      */
     public static WattsUpMeterDataSourceAdaptor getInstance() {
@@ -106,8 +109,8 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
      * architecture.
      *
      * @param port The port to connect to
-     * @param duration The duration to connect for (< 0 means forever)
-     * @param interval The interval at which to take logging data.
+     * @param duration The duration to connect for (< 0 means forever) @param int
+     * erval The interval at which to take logging data.
      */
     public WattsUpMeterDataSourceAdaptor(String port, int duration, int interval) {
 
@@ -241,6 +244,13 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
     }
 
     @Override
+    public List<EnergyUsageSource> getHostAndVmList() {
+        List<EnergyUsageSource> answer = new ArrayList<>();
+        answer.add(host);
+        return answer;
+    }
+
+    @Override
     public HostMeasurement getHostData(Host host) {
         while (current == null) {
             try {
@@ -326,7 +336,8 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
     }
 
     /**
-     * This is a CPU utilisation record for the WattsUp Meter data source adaptor.
+     * This is a CPU utilisation record for the WattsUp Meter data source
+     * adaptor.
      */
     private class CPUUtilisation {
 
@@ -335,6 +346,7 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
 
         /**
          * This creates a new CPU Utilisation record
+         *
          * @param clock the time when the CPU Utilisation was taken
          * @param cpu The CPU utilisation record.
          */
@@ -345,6 +357,7 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
 
         /**
          * The time when this record was taken
+         *
          * @return The UTC time for this record.
          */
         public long getClock() {
@@ -353,6 +366,7 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
 
         /**
          * This returns the Sigar object representing CPU load information.
+         *
          * @return The sigar CPU object
          */
         public CpuPerc getCpu() {
@@ -361,6 +375,7 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
 
         /**
          * This returns the percentage of time the CPU was idle.
+         *
          * @return 0..1 for how idle the CPU was at a specified time frame.
          */
         public double getCpuIdle() {
@@ -369,6 +384,7 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
 
         /**
          * This returns the percentage of time the CPU was busy.
+         *
          * @return 0..1 for how busy the CPU was at a specified time frame.
          */
         public double getCpuBusy() {
@@ -376,8 +392,9 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
         }
 
         /**
-         * This indicates if this CPU utilisation object is older than a 
+         * This indicates if this CPU utilisation object is older than a
          * specified time.
+         *
          * @param time The UTC time to compare to
          * @return If the current item is older than the date specified.
          */
