@@ -31,6 +31,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
@@ -423,8 +424,27 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
         }
     }
 
+    /**
+     * This is part of a caching mechansim for Vms when getting historic load data, 
+     * the aim is to create less vm objects (and thus reduce the footprint of this method).
+     * @param id The VM id.
+     * @param name The name of the VM
+     * @param host The host it is running from.
+     * @return The reference to the VM.
+     */
+    private VmDeployed getVM(int id, String name, Host host, HashMap<String, VmDeployed> vmCache) {
+        VmDeployed vm = vmCache.get(name);
+        if (vm == null || !vm.getAllocatedTo().equals(host)) {
+            vm = new VmDeployed(id, name);
+            vm.setAllocatedTo(host);
+            vmCache.put(vm.getName(), vm);
+        }
+        return vm;
+    }
+
     @Override
     public Collection<HostVmLoadFraction> getHostVmHistoryLoadData(Host host, TimePeriod timePeriod) {
+        HashMap<String, VmDeployed> vmCache = new HashMap<>();
         connection = getConnection(connection);
         if (connection == null) {
             return null;
@@ -436,32 +456,34 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
                 long start = timePeriod.getStartTimeInSeconds();
                 long end = timePeriod.getEndTimeInSeconds();
                 preparedStatement = connection.prepareStatement(
-                        "SELECT host_id, vm_measurement.vm_id, vm_name, clock, cpu_load FROM vm_measurement, vm WHERE vm_measurement.vm_id = vm.vm_id and vm_measurement.host_id = ? "
+                        "SELECT host_id, vm_measurement.vm_id, vm_name, clock, cpu_load FROM vm_measurement, vm "
+                                + "WHERE vm_measurement.vm_id = vm.vm_id "
+                                + "and vm_measurement.host_id = ? "
                         + " AND clock >= ? AND clock <= ?;");
                 preparedStatement.setLong(2, start);
                 preparedStatement.setLong(3, end);
             } else {
                 preparedStatement = connection.prepareStatement(
-                        "SELECT host_id, vm_measurement.vm_id, vm_name, clock, cpu_load FROM vm_measurement, vm WHERE vm_measurement.vm_id = vm.vm_id and vm_measurement.host_id = ?;");
+                        "SELECT host_id, vm_measurement.vm_id, vm_name, clock, cpu_load FROM vm_measurement, vm "
+                                + "WHERE vm_measurement.vm_id = vm.vm_id "
+                                + "and vm_measurement.host_id = ?;");
             }
             preparedStatement.setInt(1, host.getId());
             ResultSet resultSet = preparedStatement.executeQuery();
             ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
             long lastClock = Long.MIN_VALUE;
             long currentClock;
-            HostVmLoadFraction current = null;
+            HostVmLoadFraction currentHostLoadFraction = null;
             for (ArrayList<Object> measurement : results) {
                 currentClock = (long) measurement.get(3); //clock is the 3rd item)
-                if (currentClock != lastClock || current == null) {
-                    current = new HostVmLoadFraction(host, currentClock);
-                    VmDeployed vm = new VmDeployed((int) measurement.get(1), (String) measurement.get(2));
-                    vm.setAllocatedTo(host);
-                    current.addFraction(vm, (double) measurement.get(4)); //load is the fourth item
-                    answer.add(current);
+                if (currentClock != lastClock || currentHostLoadFraction == null) {
+                    currentHostLoadFraction = new HostVmLoadFraction(host, currentClock);
+                    VmDeployed vm = getVM((int) measurement.get(1), (String) measurement.get(2), host, vmCache);
+                    currentHostLoadFraction.addFraction(vm, (double) measurement.get(4)); //load is the fourth item
+                    answer.add(currentHostLoadFraction);
                 } else {
-                    VmDeployed vm = new VmDeployed((int) measurement.get(1), (String) measurement.get(2));
-                    vm.setAllocatedTo(host);
-                    current.addFraction(vm, (double) measurement.get(4)); //load is the fourth item
+                    VmDeployed vm = getVM((int) measurement.get(1), (String) measurement.get(2), host, vmCache);
+                    currentHostLoadFraction.addFraction(vm, (double) measurement.get(4)); //load is the fourth item
                 }
                 lastClock = currentClock;
             }
