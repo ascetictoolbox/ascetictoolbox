@@ -41,21 +41,22 @@ public class ZabbixApiClientTest {
 
 	/** The host name. */
 //	private static String hostName = "cloudsuite---data-analytics";
-	private static String hostName ="asok09";
+	private static String hostName ="cloudsuite---data-analytics";
 	
 	/** The item name. */
-	private static String itemName = "Version of zabbix_agent(d) running";
+	private static String itemName = "Power";
 	
 	/** The limit. */
-	private static int limit = 10;
+	private static int limit = 5;
 	
 	/** The item key. */
-	private static String itemKey = "vfs.fs.size[/boot,used]";
+	private static String itemKey = "power";
 ////	private static String itemKey = "vfs.fs.size[/,used]";
 //	private static String itemKey = "java.wrapper.sent.test";
 	
 	/** The history item format. */
-	private static String historyItemFormat = Dictionary.HISTORY_ITEM_FORMAT_INTEGER;
+	private static String historyItemFormat = Dictionary.HISTORY_ITEM_FORMAT_FLOAT;
+//	private static String historyItemFormat = Dictionary.HISTORY_ITEM_FORMAT_FLOAT;
 	/**
 	 * The main method.
 	 *
@@ -63,18 +64,18 @@ public class ZabbixApiClientTest {
 	 */
 	public static void main(String[] args) {
 			ZabbixClient client = new ZabbixClient();
-			insertSeparator("getAllHosts");
-			testGetAllHosts(client);
-			insertSeparator("getItemsFromHost");
-			testItemsFromHost(client);
-			insertSeparator("itemsCountFromHosts");
-			testItemsCountFromHosts(client);	
+//			insertSeparator("getAllHosts");
+//			testGetAllHosts(client);
+//			insertSeparator("getItemsFromHost");
+//			testItemsFromHost(client);
+//			insertSeparator("itemsCountFromHosts");
+//			testItemsCountFromHosts(client);	
 			insertSeparator("getItemByNameFromHost");
 			testGetItemByNameFromHost(client);
 			insertSeparator("getHistoryDataByLimit");
 			testGetHistoryDataByLimit(client);
-			insertSeparator("getItemByKeyFromHost");
-			testGetItemByKeyFromHost(client);
+//			insertSeparator("getItemByKeyFromHost");
+//			testGetItemByKeyFromHost(client);
 //			insertSeparator("getTemplateByName");
 //			testGetTemplateByName(client);
 //			insertSeparator("createVM");
@@ -167,6 +168,7 @@ public class ZabbixApiClientTest {
 				System.out.println("host: " + h.getHost());
 				System.out.println("host id: " + h.getHostid());
 				System.out.println("available: " + h.getAvailable());
+				System.out.println("name: " + h.getName());
 				index++;
 				System.out.println();
 			}	
@@ -366,8 +368,8 @@ public class ZabbixApiClientTest {
 	}
 	
 	
-//	public static void testSendData(ZabbixClient client){
-//		boolean sent = client.pushData(hostName, itemKey, "1234");	
-//	}
+	public static void testSendData(ZabbixClient client){
+		boolean sent = client.pushData(hostName, itemKey, "1234");	
+	}
 
 }

@@ -36,6 +36,9 @@ public class Host {
 	/** The available. */
 	private String available;
 	
+	/** The name. */
+	private String name;
+	
 	/**
 	 * Instantiates a new host.
 	 */
@@ -96,6 +99,13 @@ public class Host {
 	public void setAvailable(String available) {
 		this.available = available;
 	}
-	
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 	
 }

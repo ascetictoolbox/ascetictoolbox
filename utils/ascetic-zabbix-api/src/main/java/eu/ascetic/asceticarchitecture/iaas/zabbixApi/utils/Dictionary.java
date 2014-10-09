@@ -33,6 +33,7 @@ public class Dictionary {
 	public static String HOST_HOSTID = "hostid"; 
 	public static String HOST_AVAILABLE = "available";
 	public static String HOST_HOST = "host";
+	public static String HOST_NAME = "name";
 	
 	//USER
 	public static String USER_LOGIN = "user";

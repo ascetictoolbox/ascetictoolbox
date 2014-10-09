@@ -45,6 +45,7 @@ public class Json2ObjectMapper {
 		host.setHostid(hmJsonHost.get(Dictionary.HOST_HOSTID));
 		host.setHost(hmJsonHost.get(Dictionary.HOST_HOST));
 		host.setAvailable(hmJsonHost.get(Dictionary.HOST_AVAILABLE));
+		host.setName(hmJsonHost.get(Dictionary.HOST_NAME));
 		return host;
 	}
 	
