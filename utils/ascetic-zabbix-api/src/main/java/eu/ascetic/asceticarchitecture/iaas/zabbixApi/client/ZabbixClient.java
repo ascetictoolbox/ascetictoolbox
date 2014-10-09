@@ -849,41 +849,41 @@ public class ZabbixClient {
 	 * @param value the value
 	 * @return the string
 	 */
-	public boolean pushData(String hostName, String itemKey, String value){
-		boolean sent = false;
-
-		
-		if (getHostByName(hostName) != null){
-			try {
-				String jsonRequest = 							
-						"{\"request\":\"sender data\",\"data\":[{" + 
-								"\"host\":\"" + hostName + "\"," +
-						        "\"key\":\"" + itemKey + "\"," +
-						        "\"value\":\"" + value + "\"}]}";
-				
-				HttpResponse response = postAndGet(jsonRequest);
-				HttpEntity entity = response.getEntity();
-				ObjectMapper mapper = new ObjectMapper ();
-				HashMap untyped = mapper.readValue(EntityUtils.toString(entity), HashMap.class);
-	//			LinkedHashMap<String, Object> result = (LinkedHashMap<String, Object>) untyped.get("result");
-				String result = (String) untyped.get("info");
-	
-				if (result != null){		
-					log.info("Data sent to zabbix. Result:  " + result);
-					System.out.println("Data sent to zabbix. Result:  " + result);
-					return true;
-				}	
-			} catch (Exception e) {
-				log.error(e.getMessage() + "\n"); 
-				System.out.println(e.getMessage() + "\n");
-				return false;
-			}
-		}
-		else {
-			log.error("The host " + hostName + " doesn't exists in the ASCETiC Zabbix environment. Please choose another hostname" );
-			return false;
-		}
-		
-		return sent;
-	}
+//	public boolean pushData(String hostName, String itemKey, String value){
+//		boolean sent = false;
+//
+//		
+//		if (getHostByName(hostName) != null){
+//			try {
+//				String jsonRequest = 							
+//						"{\"request\":\"sender data\",\"data\":[{" + 
+//								"\"host\":\"" + hostName + "\"," +
+//						        "\"key\":\"" + itemKey + "\"," +
+//						        "\"value\":\"" + value + "\"}]}";
+//				
+//				HttpResponse response = postAndGet(jsonRequest);
+//				HttpEntity entity = response.getEntity();
+//				ObjectMapper mapper = new ObjectMapper ();
+//				HashMap untyped = mapper.readValue(EntityUtils.toString(entity), HashMap.class);
+//	//			LinkedHashMap<String, Object> result = (LinkedHashMap<String, Object>) untyped.get("result");
+//				String result = (String) untyped.get("info");
+//	
+//				if (result != null){		
+//					log.info("Data sent to zabbix. Result:  " + result);
+//					System.out.println("Data sent to zabbix. Result:  " + result);
+//					return true;
+//				}	
+//			} catch (Exception e) {
+//				log.error(e.getMessage() + "\n"); 
+//				System.out.println(e.getMessage() + "\n");
+//				return false;
+//			}
+//		}
+//		else {
+//			log.error("The host " + hostName + " doesn't exists in the ASCETiC Zabbix environment. Please choose another hostname" );
+//			return false;
+//		}
+//		
+//		return sent;
+//	}
 }

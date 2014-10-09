@@ -368,8 +368,8 @@ public class ZabbixApiClientTest {
 	}
 	
 	
-	public static void testSendData(ZabbixClient client){
-		boolean sent = client.pushData(hostName, itemKey, "1234");	
-	}
+//	public static void testSendData(ZabbixClient client){
+//		boolean sent = client.pushData(hostName, itemKey, "1234");	
+//	}
 
 }
