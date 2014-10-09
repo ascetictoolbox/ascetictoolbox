@@ -59,11 +59,11 @@
 		}else{
 			monitorLocation = System.getenv("IT_MONITOR")+"/monitor.dot";
 		}
-		
+		monitorLocation="/tmp/monitor.dot";
 		String[] cmd = {
 				"/bin/sh",
 				"-c",
-				"dot -Tpng "+ monitorLocation +" > "+System.getProperty("catalina.base")+"/webapps/compss-monitor/images/graph.png"};
+				"dot -Tjpg "+ monitorLocation +" > "+System.getProperty("catalina.base")+"/webapps/compss-monitor/images/graph.jpg"};
 				
 					
 		Process p = Runtime.getRuntime().exec(cmd);
@@ -146,7 +146,7 @@
 		
 		
 		p.waitFor();
-		graph.setSrc("/images/graph.png");
+		graph.setSrc("/images/graph.jpg");
 		graph.setStyle("max-width:100%;");
 		graph.invalidate();
 	}
