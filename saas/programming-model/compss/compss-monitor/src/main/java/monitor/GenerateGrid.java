@@ -28,13 +28,79 @@ import org.zkoss.zul.Auxheader;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Columns;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Rows;
 import org.zkoss.zul.event.ColSizeEvent;
 
 public class GenerateGrid {
+
+	private static RowRenderer resourceRowRenderer = new RowRenderer() {
+
+		public void render(Row row, Object model, int index) throws Exception {
+			String[] data = (String[]) model;
+
+			// add something to row...
+			Image state = new Image();
+			state.setWidth("25px");
+			if (data[1].compareTo("Ready") == 0) {
+				state.setSrc("/images/state/green.jpg");
+			} else if (data[1].compareTo("Removing") == 0) {
+				state.setSrc("/images/state/yellow.jpg");
+			} else if (data[1].compareTo("Waiting") == 0) {
+				state.setSrc("/images/state/red.jpg");
+			}
+			row.appendChild(state);
+
+			row.appendChild(new Label(data[0]));
+			row.appendChild(new Label(data[2]));
+
+			if (data[3] != null) {
+				if (data[5].startsWith("0.")) {
+					Float memsize = Float.parseFloat(data[3]);
+					row.appendChild(new Label((memsize * 1024) + " MB"));
+				} else {
+					row.appendChild(new Label(data[3] + " GB"));
+				}
+			} else {
+				row.appendChild(new Label(data[3]));
+			}
+
+			if (data[4] != null) {
+				if (data[4].startsWith("0.")) {
+					Float disksize = Float.parseFloat(data[4]);
+					row.appendChild(new Label((disksize * 1024) + " MB"));
+				} else {
+					row.appendChild(new Label(data[4] + " GB"));
+				}
+			} else {
+				row.appendChild(new Label(data[4]));
+			}
+
+			row.appendChild(new Label(data[5]));
+		}
+	};
+	private static RowRenderer coreRowRenderer = new RowRenderer() {
+
+		public void render(Row row, Object model, int index) throws Exception {
+			String[] data = (String[]) model;
+
+			// add something to row...
+			int i = Integer.parseInt(data[0]) % 12;
+			Image color = new Image();
+			color.setWidth("25px");
+			color.setSrc("/images/colors/" + i + ".png");
+			row.appendChild(color);
+			row.appendChild(new Label(data[1]));
+			row.appendChild(new Label(data[2]));
+			row.appendChild(new Label(data[3]));
+			row.appendChild(new Label(data[4]));
+			row.appendChild(new Label(data[5]));
+		}
+	};
 
 	public static void computeEnergyColumns(Grid grid) {
 
@@ -68,8 +134,8 @@ public class GenerateGrid {
 
 		Auxhead head = new Auxhead();
 		Auxheader header = new Auxheader();
-		// header.setColspan(implCount+1);
 		header.setLabel("Energy Consumption Estimation");
+		header.setColspan(1+implCount);
 		header.setParent(head);
 		head.setParent(grid);
 
@@ -108,7 +174,8 @@ public class GenerateGrid {
 			row.setParent(rows);
 			for (int coreId = 0; coreId < coreCount; coreId++) {
 				for (int implId = 0; implId < implCounts[coreId]; implId++) {
-					Label cost = new Label(resource.getEnergyEstimations()[coreId][implId]);
+					Label cost = new Label(
+							resource.getEnergyEstimations()[coreId][implId]);
 					cost.setParent(row);
 				}
 			}
@@ -122,4 +189,14 @@ public class GenerateGrid {
 
 	}
 
+	public static void updateWorkersGrid(Grid grid) {
+		grid.setModel(new ListModelList(MonitoringParser.getWorkersDataArray()));
+		grid.setRowRenderer(resourceRowRenderer);
+	}
+
+	public static void updateCoresGrid(Grid grid) {
+
+		grid.setModel(new ListModelList(MonitoringParser.getCoresDataArray()));
+		grid.setRowRenderer(coreRowRenderer);
+	}
 }
