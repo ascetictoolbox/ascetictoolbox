@@ -37,6 +37,16 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="metrics.html" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/public/metrics.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-16.875" vertical-offset="15" max-vertical-offset="1020">
+              <caret line="28" column="69" selection-start-line="28" selection-start-column="69" selection-end-line="28" selection-end-column="69" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="routes" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/conf/routes">
           <provider selected="true" editor-type-id="text-editor">
@@ -80,27 +90,27 @@
       <file leaf-file-name="metrics.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/public/js/ang/metrics.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="2.76" vertical-offset="0" max-vertical-offset="4035">
-              <caret line="152" column="45" selection-start-line="152" selection-start-column="45" selection-end-line="152" selection-end-column="45" />
+            <state vertical-scroll-proportion="0.79333335" vertical-offset="710" max-vertical-offset="4035">
+              <caret line="101" column="0" selection-start-line="101" selection-start-column="0" selection-end-line="101" selection-end-column="0" />
               <folding>
-                <marker date="1412955196000" expanded="true" signature="1437:1870" placeholder="[...]" />
-                <marker date="1412955196000" expanded="true" signature="1511:1869" placeholder="{...}" />
-                <marker date="1412955196000" expanded="true" signature="1535:1648" placeholder="{&quot;appId&quot;: &quot;&quot;...}" />
-                <marker date="1412955196000" expanded="true" signature="2091:7499" placeholder="{...}" />
-                <marker date="1412955196000" expanded="true" signature="2108:7488" placeholder="{&quot;restrict&quot;: 'E'...}" />
-                <marker date="1412955196000" expanded="true" signature="2269:3426" placeholder="{...}" />
-                <marker date="1412955196000" expanded="true" signature="2308:3340" placeholder="{...}" />
-                <marker date="1412955196000" expanded="true" signature="2466:2843" placeholder="[...]" />
-                <marker date="1412955196000" expanded="true" signature="2467:2617" placeholder="{...}" />
-                <marker date="1412955196000" expanded="true" signature="2477:2616" placeholder="{&quot;appId&quot;: &quot;SinusApp&quot;...}" />
-                <marker date="1412955196000" expanded="true" signature="2965:3320" placeholder="{...}" />
-                <marker date="1412955196000" expanded="true" signature="3014:3294" placeholder="{...}" />
-                <marker date="1412955196000" expanded="true" signature="3493:7038" placeholder="{...}" />
-                <marker date="1412955196000" expanded="true" signature="5211:7013" placeholder="{...}" />
-                <marker date="1412955196000" expanded="true" signature="5447:5890" placeholder="[...]" />
-                <marker date="1412955196000" expanded="true" signature="5448:5634" placeholder="{...}" />
-                <marker date="1412955196000" expanded="true" signature="5458:5633" placeholder="{&quot;appId&quot;: &quot;SinusApp&quot;...}" />
-                <marker date="1412955196000" expanded="true" signature="6021:6985" placeholder="{...}" />
+                <marker date="1412956113000" expanded="true" signature="1437:1914" placeholder="[...]" />
+                <marker date="1412956113000" expanded="true" signature="1511:1913" placeholder="{...}" />
+                <marker date="1412956113000" expanded="true" signature="1535:1692" placeholder="{&quot;appId&quot;: &quot;&quot;...}" />
+                <marker date="1412956113000" expanded="true" signature="2135:7523" placeholder="{...}" />
+                <marker date="1412956113000" expanded="true" signature="2152:7512" placeholder="{&quot;restrict&quot;: 'E'...}" />
+                <marker date="1412956113000" expanded="true" signature="2313:3490" placeholder="{...}" />
+                <marker date="1412956113000" expanded="true" signature="2352:3404" placeholder="{...}" />
+                <marker date="1412956113000" expanded="true" signature="2510:2907" placeholder="[...]" />
+                <marker date="1412956113000" expanded="true" signature="2511:2666" placeholder="{...}" />
+                <marker date="1412956113000" expanded="true" signature="2521:2665" placeholder="{&quot;appId&quot;: &quot;SinusApp&quot;...}" />
+                <marker date="1412956113000" expanded="true" signature="3029:3384" placeholder="{...}" />
+                <marker date="1412956113000" expanded="true" signature="3078:3358" placeholder="{...}" />
+                <marker date="1412956113000" expanded="true" signature="3557:7062" placeholder="{...}" />
+                <marker date="1412956113000" expanded="true" signature="5215:7037" placeholder="{...}" />
+                <marker date="1412956113000" expanded="true" signature="5451:5914" placeholder="[...]" />
+                <marker date="1412956113000" expanded="true" signature="5452:5643" placeholder="{...}" />
+                <marker date="1412956113000" expanded="true" signature="5462:5642" placeholder="{&quot;appId&quot;: &quot;SinusApp&quot;...}" />
+                <marker date="1412956113000" expanded="true" signature="6045:7009" placeholder="{...}" />
               </folding>
             </state>
           </provider>
@@ -696,7 +706,7 @@
       <workItem from="1412611157737" duration="29000" />
       <workItem from="1412672993205" duration="4539000" />
       <workItem from="1412930653382" duration="142000" />
-      <workItem from="1412949226403" duration="5040000" />
+      <workItem from="1412949226403" duration="5718000" />
     </task>
     <task id="LOCAL-00001" summary="Porting to Play! 2.3.1">
       <created>1404212010039</created>
@@ -770,11 +780,15 @@
       <created>1411986118047</created>
       <updated>1411986118047</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="Now metrics graphs are read from real sources!">
+      <created>1412955440207</created>
+      <updated>1412955440207</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="105435000" />
+    <option name="totallyTimeSpent" value="106113000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
@@ -795,6 +809,7 @@
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2725367" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -805,7 +820,6 @@
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2725367" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -1194,14 +1208,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/metrics.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.31914893" vertical-offset="15" max-vertical-offset="975">
-          <caret line="17" column="27" selection-start-line="17" selection-start-column="27" selection-end-line="17" selection-end-column="27" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/api/Queries.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="390">
@@ -1210,29 +1216,37 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/public/metrics.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-16.875" vertical-offset="15" max-vertical-offset="1020">
+          <caret line="28" column="69" selection-start-line="28" selection-start-column="69" selection-end-line="28" selection-end-column="69" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/public/js/ang/metrics.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="2.76" vertical-offset="0" max-vertical-offset="4035">
-          <caret line="152" column="45" selection-start-line="152" selection-start-column="45" selection-end-line="152" selection-end-column="45" />
+        <state vertical-scroll-proportion="0.79333335" vertical-offset="710" max-vertical-offset="4035">
+          <caret line="101" column="0" selection-start-line="101" selection-start-column="0" selection-end-line="101" selection-end-column="0" />
           <folding>
-            <marker date="1412955196000" expanded="true" signature="1437:1870" placeholder="[...]" />
-            <marker date="1412955196000" expanded="true" signature="1511:1869" placeholder="{...}" />
-            <marker date="1412955196000" expanded="true" signature="1535:1648" placeholder="{&quot;appId&quot;: &quot;&quot;...}" />
-            <marker date="1412955196000" expanded="true" signature="2091:7499" placeholder="{...}" />
-            <marker date="1412955196000" expanded="true" signature="2108:7488" placeholder="{&quot;restrict&quot;: 'E'...}" />
-            <marker date="1412955196000" expanded="true" signature="2269:3426" placeholder="{...}" />
-            <marker date="1412955196000" expanded="true" signature="2308:3340" placeholder="{...}" />
-            <marker date="1412955196000" expanded="true" signature="2466:2843" placeholder="[...]" />
-            <marker date="1412955196000" expanded="true" signature="2467:2617" placeholder="{...}" />
-            <marker date="1412955196000" expanded="true" signature="2477:2616" placeholder="{&quot;appId&quot;: &quot;SinusApp&quot;...}" />
-            <marker date="1412955196000" expanded="true" signature="2965:3320" placeholder="{...}" />
-            <marker date="1412955196000" expanded="true" signature="3014:3294" placeholder="{...}" />
-            <marker date="1412955196000" expanded="true" signature="3493:7038" placeholder="{...}" />
-            <marker date="1412955196000" expanded="true" signature="5211:7013" placeholder="{...}" />
-            <marker date="1412955196000" expanded="true" signature="5447:5890" placeholder="[...]" />
-            <marker date="1412955196000" expanded="true" signature="5448:5634" placeholder="{...}" />
-            <marker date="1412955196000" expanded="true" signature="5458:5633" placeholder="{&quot;appId&quot;: &quot;SinusApp&quot;...}" />
-            <marker date="1412955196000" expanded="true" signature="6021:6985" placeholder="{...}" />
+            <marker date="1412956113000" expanded="true" signature="1437:1914" placeholder="[...]" />
+            <marker date="1412956113000" expanded="true" signature="1511:1913" placeholder="{...}" />
+            <marker date="1412956113000" expanded="true" signature="1535:1692" placeholder="{&quot;appId&quot;: &quot;&quot;...}" />
+            <marker date="1412956113000" expanded="true" signature="2135:7523" placeholder="{...}" />
+            <marker date="1412956113000" expanded="true" signature="2152:7512" placeholder="{&quot;restrict&quot;: 'E'...}" />
+            <marker date="1412956113000" expanded="true" signature="2313:3490" placeholder="{...}" />
+            <marker date="1412956113000" expanded="true" signature="2352:3404" placeholder="{...}" />
+            <marker date="1412956113000" expanded="true" signature="2510:2907" placeholder="[...]" />
+            <marker date="1412956113000" expanded="true" signature="2511:2666" placeholder="{...}" />
+            <marker date="1412956113000" expanded="true" signature="2521:2665" placeholder="{&quot;appId&quot;: &quot;SinusApp&quot;...}" />
+            <marker date="1412956113000" expanded="true" signature="3029:3384" placeholder="{...}" />
+            <marker date="1412956113000" expanded="true" signature="3078:3358" placeholder="{...}" />
+            <marker date="1412956113000" expanded="true" signature="3557:7062" placeholder="{...}" />
+            <marker date="1412956113000" expanded="true" signature="5215:7037" placeholder="{...}" />
+            <marker date="1412956113000" expanded="true" signature="5451:5914" placeholder="[...]" />
+            <marker date="1412956113000" expanded="true" signature="5452:5643" placeholder="{...}" />
+            <marker date="1412956113000" expanded="true" signature="5462:5642" placeholder="{&quot;appId&quot;: &quot;SinusApp&quot;...}" />
+            <marker date="1412956113000" expanded="true" signature="6045:7009" placeholder="{...}" />
           </folding>
         </state>
       </provider>

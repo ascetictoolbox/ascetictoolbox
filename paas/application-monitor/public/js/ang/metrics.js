@@ -45,10 +45,11 @@
 
     appip.controller("NewPanelFrame", ["$scope","$modalInstance","valor", function($scope,$modalInstance,valor) {
         $scope.form = {
-            appId : "",
+            appId : "SinusApp",
             nodeId : "",
             instanceId : "",
-            metric : ""
+            description : "",
+            metric : "metric"
         }
         $scope.valor = valor;
 
@@ -79,13 +80,13 @@
 
                     // update graph with new info since last query
                     var queryLastMetric = [{"$match":{
-                        "appId":$scope.appId,
+                        "appId":$scope.info.appId,
                         "timestamp": {"$gt" : $scope.latestTimestamp}
                     }},
                     {"$group" : {
                         "_id" : null,
                         "latestTimestamp" : { "$max" : "$timestamp" },
-                        "data" : {"$avg": "$data.metric"}
+                        "data" : {"$avg": "$data." + $scope.info.metric}
                     }}];
                     $http.post("/query",JSON.stringify(queryLastMetric))
                         .success(function(ret) {
@@ -98,7 +99,6 @@
                 },STEP_TIME); // todo: kill timer when panel is closed or page is changed
             },
             link : function($scope, $element, $attrs, $interval) {
-                console.log($scope.info);
 
                 $element.append('<div id="panel'+$scope.id+'">not working {{id}}</div>');
 
@@ -109,14 +109,14 @@
                         animation : false
                     },
                     title: {
-                        text: 'USD to EUR exchange rate from 2006 through 2008'
+                        text: $scope.info.description
                     },
                     xAxis: {
                         type: 'datetime'
                     },
                     yAxis: {
                         title: {
-                            text: 'Exchange rate'
+                            text: $scope.info.metric
                         }
                     },
                     legend: {
@@ -141,7 +141,7 @@
 
                 // get last timestamp of an application
                 var getLastTimestamp =
-                    [{"$match":{"appId":$scope.appId}},
+                    [{"$match":{"appId":$scope.info.appId}},
                         {"$group" : { "_id": null,
                             "last": {"$max": "$timestamp"}
                         }}];
@@ -152,12 +152,12 @@
                         $scope.latestTimestamp = ret[0].last;
                         var groupTimestamps =
                             [{"$match":{
-                                "appId": $scope.appId,
+                                "appId": $scope.info.appId,
                                 "timestamp": {"$gt" : $scope.latestTimestamp - MAX_TIME}
                             }},
                             {"$group" : {
                                 "_id" : { "$subtract" : ["$timestamp" , {"$mod" : [ "$timestamp", STEP_TIME ] }]},
-                                "data" : {"$avg": "$data.metric"}
+                                "data" : {"$avg": "$data." + $scope.info.metric}
                             }}];
 
                         $http.post("/query",JSON.stringify(groupTimestamps)).
