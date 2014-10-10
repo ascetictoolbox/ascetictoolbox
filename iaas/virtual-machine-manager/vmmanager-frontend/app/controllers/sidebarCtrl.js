@@ -23,18 +23,16 @@
         .controller('SidebarCtrl', SidebarCtrl);
 
     /* @ngInject */
-    function SidebarCtrl($location) {
+    function SidebarCtrl($location, $rootScope) {
 
         var sidebarCtrl = this;
-        sidebarCtrl.section = $location.url().substr(1);
         sidebarCtrl.sectionIsActive = sectionIsActive;
-        sidebarCtrl.setSection = setSection;
 
         activate();
 
         function activate() {
-            if (!sidebarCtrl.section) { // If we are on the root, we set the section to 'dashboard'
-                sidebarCtrl.section = 'dashboard';
+            if (!sidebarCtrl.section) {
+                sidebarCtrl.section = $location.url().substr(1);
             }
         }
 
@@ -42,11 +40,25 @@
             return sidebarCtrl.section === section;
         }
 
-        function setSection (section) {
+        // Watches for a change in the URL to change the active section in the sidebar accordingly
+        $rootScope.$on('$locationChangeStart', function(event, next) {
+            var section = next.split("#/")[1];
+            if (!section || section === '') {
+                section = 'dashboard';
+            }
+            if (section === 'hosts/') {
+                section = 'hosts';
+            }
+            if (section.indexOf('zabbix') === 0) {
+                section = 'zabbix';
+            }
+            if (section === 'virtual_machines') {
+                section = 'vms';
+            }
             sidebarCtrl.section = section;
-        }
+        });
 
     }
-    SidebarCtrl.$inject = ['$location'];
+    SidebarCtrl.$inject = ['$location', '$rootScope'];
 
 })();

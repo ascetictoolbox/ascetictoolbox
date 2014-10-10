@@ -29,8 +29,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="host in hosts.hosts | orderBy:hosts.columnSort.criteria:hosts.columnSort.reverse">
-                <td>{{host["hostname"]}}</td>
+            <tr ng-repeat="host in hosts.hosts | orderBy:hosts.columnSort.criteria:hosts.columnSort.reverse"
+                    ng-init="url = '#zabbix/' + host.hostname.charAt(0).toUpperCase() + host.hostname.slice(1)">
+                <td><a href={{url}}>{{host["hostname"]}}</a></td>
                 <td>{{host["totalCpus"]}}</td>
                 <td>{{100*(host["assignedCpus"]/host["totalCpus"]) | number:2}}%</td>
                 <td>{{host["totalMemoryMb"]}}</td>
@@ -45,4 +46,5 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     <div class="btn-toolbar" role="toolbar">
         <button type="button" class="btn btn-default pull-right" ng-click="hosts.loadHosts()">Refresh</button>
     </div>
+    <div loading-spinner="loading"></div>
 </div>

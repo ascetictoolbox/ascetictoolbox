@@ -68,7 +68,7 @@
         }
 
         function changeSchedulingAlg(newSchedulingAlg) {
-            toastr.info('Changing scheduling algorithm.');
+            toastr.info('Changing scheduling algorithm...');
             SchedulingAlgService
                 .changeCurrentSchedulingAlg(newSchedulingAlg)
                 .then(

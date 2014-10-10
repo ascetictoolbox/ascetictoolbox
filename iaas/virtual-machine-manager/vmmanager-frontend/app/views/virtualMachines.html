@@ -29,7 +29,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="vm in vms.vms | orderBy:vms.columnSort.criteria:vms.columnSort.reverse">
+            <tr ng-repeat="vm in vms.vms | orderBy:vms.columnSort.criteria:vms.columnSort.reverse"
+                ng-init="url = '#zabbix/' + vm.hostName.charAt(0).toUpperCase() + vm.hostName.slice(1)">
                 <td>{{vm.name}}</td>
                 <td>{{vm.id}}</td>
                 <td>{{vm.image}}</td>
@@ -38,7 +39,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
                 <td>{{vm.diskGb}}</td>
                 <td>{{vm.state}}</td>
                 <td>{{vm.ipAddress}}</td>
-                <td>{{vm.hostName}}</td>
+                <td><a href={{url}}>{{vm.hostName}}</a></td>
                 <td>{{vm.created | date:'medium'}}</td>
                 <td>{{vm.applicationId}}</td>
                 <td>
@@ -65,6 +66,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
         </button>
         <button type="button" class="btn btn-default pull-right" ng-click="vms.loadVms()">Refresh</button>
     </div>
+    <div loading-spinner="loading"></div>
 
     <!-- Modal Launch VM -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"

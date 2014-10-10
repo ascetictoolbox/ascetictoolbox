@@ -33,8 +33,8 @@
         activate();
 
         function activate() {
-            $('#power-chart').empty(); // TODO: Should not be in a controller
-           chartsCtrl.loadHosts();
+            toastr.info("Loading graphs...");
+            chartsCtrl.loadHosts();
         }
 
         function loadHosts() {

@@ -23,9 +23,10 @@
         .controller('VmManagerController', vmManagerCtrl);
 
     /* @ngInject */
-    function vmManagerCtrl(VmService) {
+    function vmManagerCtrl(VmService, $scope) {
 
         var vmmanager = this;
+        $scope.loading = true;
         vmmanager.vmAttributes = ['Name', 'ID', 'Image', 'CPUs', 'RAM(MB)',
             'Disk(GB)', 'State', 'IP', 'Host', 'Created', 'App ID', 'Actions'];
         vmmanager.vmActions = ['Destroy', 'Hard reboot', 'Soft reboot', 'Start', 'Stop', 'Suspend', 'Resume'];
@@ -54,10 +55,12 @@
                     function(response) {
                         vmmanager.vms = response.data.vms;
                         convertVmsStringDates();
+                        $scope.loading = false;
                         toastr.success('List of VMs loaded.');
                     },
                     function() {
                         toastr.error('Could not load the list of VMs.');
+                        $scope.loading = false;
                     });
         }
 
@@ -145,6 +148,6 @@
         }
 
     }
-    vmManagerCtrl.$inject = ['VmService'];
+    vmManagerCtrl.$inject = ['VmService', '$scope'];
 
 })();

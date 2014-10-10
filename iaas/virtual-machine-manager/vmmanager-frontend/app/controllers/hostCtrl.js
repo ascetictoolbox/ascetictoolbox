@@ -23,9 +23,10 @@
         .controller('HostCtrl', HostCtrl);
 
     /* @ngInject */
-    function HostCtrl(HostService) {
+    function HostCtrl(HostService, $scope) {
 
         var hostCtrl = this;
+        $scope.loading = true;
         hostCtrl.hostAttributes = ['Host', 'CPUs', 'CPUs used (%)', 'RAM(MB)', 'RAM used (%)',
             'Disk(GB)', 'Disk used (%)', 'Current Power (W)'];
         hostCtrl.hosts = [];
@@ -49,9 +50,11 @@
                     function(response) {
                         hostCtrl.hosts = response.data.nodes;
                         toastr.success('List of Hosts loaded.');
+                        $scope.loading = false;
                     },
                     function() {
                         toastr.error('Could not load the hosts.');
+                        $scope.loading = false;
                     });
         }
 
@@ -60,6 +63,6 @@
         }
 
     }
-    HostCtrl.$inject = ['HostService'];
+    HostCtrl.$inject = ['HostService', '$scope'];
 
 })();

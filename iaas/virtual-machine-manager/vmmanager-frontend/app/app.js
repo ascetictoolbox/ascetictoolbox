@@ -24,6 +24,7 @@
             'vmmanager.controllers',
             'vmmanager.services',
             'vmmanager.filters',
+            'vmmanager.directives',
             // Angular modules
             'ngRoute'])
         .config(configRoutes);
@@ -50,7 +51,7 @@
                 controller: 'SchedulingAlgCtrl',
                 controllerAs: 'schedulingAlgorithms'
             })
-            .when('/hosts', {
+            .when('/hosts/', {
                 templateUrl: 'app/views/hosts.html',
                 controller: 'HostCtrl',
                 controllerAs: 'hosts'
@@ -64,6 +65,14 @@
                 templateUrl: 'app/views/zabbix.html',
                 controller: 'ZabbixCtrl',
                 controllerAs: 'zabbix'
+            })
+            .when('/zabbix/:host', {
+                templateUrl: 'app/views/zabbix.html',
+                controller: 'ZabbixCtrl',
+                controllerAs: 'zabbix'
+            })
+            .otherwise({
+                redirectTo: '/'
             });
     }
 

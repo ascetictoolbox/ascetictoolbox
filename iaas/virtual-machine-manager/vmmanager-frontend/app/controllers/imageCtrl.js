@@ -23,8 +23,9 @@
         .controller('ImageCtrl', ImageCtrl);
 
     /* @ngInject */
-    function ImageCtrl(ImageService) {
+    function ImageCtrl(ImageService, $scope) {
         var imageCtrl = this;
+        $scope.loading = true;
         imageCtrl.imageAttributes = ['Name', 'ID', 'State', 'Actions'];
         imageCtrl.images = [];
         imageCtrl.sortingCriteria = ['name', 'id', 'status'];
@@ -48,9 +49,11 @@
                     function(response) {
                         imageCtrl.images = response.data.images;
                         toastr.success('List of images loaded.');
+                        $scope.loading = false;
                     },
                     function() {
                         toastr.error('Could not load the images');
+                        $scope.loading = false;
                     });
         }
 
@@ -88,6 +91,6 @@
         }
 
     }
-    ImageCtrl.$inject = ['ImageService'];
+    ImageCtrl.$inject = ['ImageService', '$scope'];
 
 })();

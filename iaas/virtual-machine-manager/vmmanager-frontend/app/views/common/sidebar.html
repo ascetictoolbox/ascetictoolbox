@@ -19,26 +19,33 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 <div class="col-sm-3 col-md-2 sidebar" ng-controller="SidebarCtrl as sidebar">
     <ul class="nav nav-sidebar">
         <li ng-class="{active: sidebar.sectionIsActive('dashboard')}">
-            <a href="#" ng-click ="sidebar.setSection('dashboard')">Dashboard</a>
+            <a href="#">Dashboard</a>
         </li>
         <li ng-class="{active: sidebar.sectionIsActive('vms')}">
-            <a href="#virtual_machines" ng-click="sidebar.setSection('vms')">Virtual Machines</a>
+            <a href="#virtual_machines">Virtual Machines</a>
         </li>
         <li ng-class="{active: sidebar.sectionIsActive('images')}">
-            <a href="#images" ng-click="sidebar.setSection('images')">Images</a>
+            <a href="#images">Images</a>
         </li>
         <li ng-class="{active: sidebar.sectionIsActive('scheduling_algorithms')}">
-            <a href="#scheduling_algorithms" ng-click="sidebar.setSection('scheduling_algorithms')">
-                Scheduling Algorithms</a>
+            <a href="#scheduling_algorithms">Scheduling Algorithms</a>
         </li>
         <li ng-class="{active: sidebar.sectionIsActive('hosts')}">
-            <a href="#hosts" ng-click="sidebar.setSection('hosts')">Hosts</a>
+            <a href="#hosts">Hosts</a>
         </li>
         <li ng-class="{active: sidebar.sectionIsActive('zabbix')}">
-            <a href="#zabbix" ng-click="sidebar.setSection('zabbix')">Zabbix info</a>
+            <a href="#zabbix">Zabbix Info</a>
         </li>
         <li ng-class="{active: sidebar.sectionIsActive('logs')}">
-            <a href="#logs" ng-click="sidebar.setSection('logs')">Logs</a>
+            <a href="#logs">Logs</a>
         </li>
     </ul>
+    <div style="position: absolute; bottom:20px; background-color: transparent;">
+        <a href="http://www.bsc.es">
+            <img height="66" width="73" ng-src="/images/bsc.png" align="center"/>
+        </a>
+        <a href="http://www.ascetic-project.eu/">
+            <img height="60" width="95" ng-src="/images/ascetic.png" align="center"/>
+        </a>
+    </div>
 </div>

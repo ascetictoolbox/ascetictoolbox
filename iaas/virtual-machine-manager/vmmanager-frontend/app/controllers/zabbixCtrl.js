@@ -22,22 +22,33 @@
         .module('vmmanager.controllers')
         .controller('ZabbixCtrl', ZabbixCtrl);
 
-    function ZabbixCtrl() {
-
+    /* @ngInject */
+    function ZabbixCtrl($route) {
         var zabbixCtrl = this;
         zabbixCtrl.hosts = ['Asok09', 'Asok10', 'Asok11', 'Asok12']; // TODO: this should not be hardcoded
         zabbixCtrl.tab = zabbixCtrl.hosts[0];
 
         zabbixCtrl.tabIsActive = tabIsActive;
-        zabbixCtrl.setTab = setTab;
         zabbixCtrl.getGraphLink = getGraphLink;
+
+        activate();
+
+        function activate() {
+            setInitialTab();
+        }
+
+        function setInitialTab() {
+            if ($route.current.params.host) {
+                var indexHostSelected = zabbixCtrl.hosts.indexOf($route.current.params.host);
+                if (indexHostSelected === -1) {
+                    indexHostSelected = 0;
+                }
+                zabbixCtrl.tab = zabbixCtrl.hosts[indexHostSelected];
+            }
+        }
 
         function tabIsActive(tab) {
             return zabbixCtrl.tab === tab;
-        }
-
-        function setTab(tab) {
-            zabbixCtrl.tab = tab;
         }
 
         function getGraphLink(hostname, width, height, seconds) {
@@ -64,5 +75,6 @@
             }
         }
     }
+    ZabbixCtrl.$inject = ['$route'];
 
 })();
