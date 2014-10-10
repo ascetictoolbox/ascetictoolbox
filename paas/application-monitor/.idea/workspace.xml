@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="1bd83930-70a5-4c7a-8c35-52d857124ace" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/public/notas.txt" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/api/Queries.java" afterPath="$PROJECT_DIR$/app/api/Queries.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/metrics.html" afterPath="$PROJECT_DIR$/public/metrics.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/js/ang/metrics.js" afterPath="$PROJECT_DIR$/public/js/ang/metrics.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/etc/probes/sinusmetric.rb" afterPath="$PROJECT_DIR$/etc/probes/sinusmetric.rb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="application-monitor.iws" />
@@ -29,30 +27,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="metrics.js" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/public/js/ang/metrics.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.5507559" vertical-offset="1485" max-vertical-offset="3765">
-              <caret line="133" column="84" selection-start-line="133" selection-start-column="84" selection-end-line="133" selection-end-column="84" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="metrics.html" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/public/metrics.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="195" max-vertical-offset="975">
-              <caret line="13" column="26" selection-start-line="13" selection-start-column="26" selection-end-line="13" selection-end-column="26" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="Queries.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/api/Queries.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="390">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="720">
               <caret line="33" column="58" selection-start-line="33" selection-start-column="58" selection-end-line="33" selection-end-column="58" />
               <folding />
             </state>
@@ -62,7 +40,7 @@
       <file leaf-file-name="routes" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/conf/routes">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="645">
+            <state vertical-scroll-proportion="0.0" vertical-offset="555" max-vertical-offset="645">
               <caret line="37" column="0" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
               <folding />
             </state>
@@ -92,9 +70,38 @@
       <file leaf-file-name="test.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/public/test.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="90">
+            <state vertical-scroll-proportion="-0.0" vertical-offset="0" max-vertical-offset="90">
               <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="metrics.js" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/public/js/ang/metrics.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="2.76" vertical-offset="0" max-vertical-offset="4035">
+              <caret line="152" column="45" selection-start-line="152" selection-start-column="45" selection-end-line="152" selection-end-column="45" />
+              <folding>
+                <marker date="1412955196000" expanded="true" signature="1437:1870" placeholder="[...]" />
+                <marker date="1412955196000" expanded="true" signature="1511:1869" placeholder="{...}" />
+                <marker date="1412955196000" expanded="true" signature="1535:1648" placeholder="{&quot;appId&quot;: &quot;&quot;...}" />
+                <marker date="1412955196000" expanded="true" signature="2091:7499" placeholder="{...}" />
+                <marker date="1412955196000" expanded="true" signature="2108:7488" placeholder="{&quot;restrict&quot;: 'E'...}" />
+                <marker date="1412955196000" expanded="true" signature="2269:3426" placeholder="{...}" />
+                <marker date="1412955196000" expanded="true" signature="2308:3340" placeholder="{...}" />
+                <marker date="1412955196000" expanded="true" signature="2466:2843" placeholder="[...]" />
+                <marker date="1412955196000" expanded="true" signature="2467:2617" placeholder="{...}" />
+                <marker date="1412955196000" expanded="true" signature="2477:2616" placeholder="{&quot;appId&quot;: &quot;SinusApp&quot;...}" />
+                <marker date="1412955196000" expanded="true" signature="2965:3320" placeholder="{...}" />
+                <marker date="1412955196000" expanded="true" signature="3014:3294" placeholder="{...}" />
+                <marker date="1412955196000" expanded="true" signature="3493:7038" placeholder="{...}" />
+                <marker date="1412955196000" expanded="true" signature="5211:7013" placeholder="{...}" />
+                <marker date="1412955196000" expanded="true" signature="5447:5890" placeholder="[...]" />
+                <marker date="1412955196000" expanded="true" signature="5448:5634" placeholder="{...}" />
+                <marker date="1412955196000" expanded="true" signature="5458:5633" placeholder="{&quot;appId&quot;: &quot;SinusApp&quot;...}" />
+                <marker date="1412955196000" expanded="true" signature="6021:6985" placeholder="{...}" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -143,7 +150,6 @@
         <option value="$PROJECT_DIR$/public/global-apps.html" />
         <option value="$PROJECT_DIR$/public/index.html" />
         <option value="$PROJECT_DIR$/public/time-series.html" />
-        <option value="$PROJECT_DIR$/public/metrics.html" />
         <option value="$PROJECT_DIR$/test/ApplicationTest.java" />
         <option value="$PROJECT_DIR$/test/IntegrationTest.java" />
         <option value="$PROJECT_DIR$/test/MappingTest.java" />
@@ -156,6 +162,7 @@
         <option value="$PROJECT_DIR$/public/js/ang/metrics-old.js" />
         <option value="$PROJECT_DIR$/etc/probes/sinusmetric.rb" />
         <option value="$PROJECT_DIR$/app/api/Queries.java" />
+        <option value="$PROJECT_DIR$/public/metrics.html" />
         <option value="$PROJECT_DIR$/public/js/ang/metrics.js" />
       </list>
     </option>
@@ -165,8 +172,8 @@
     <config-path />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="width" value="1680" />
-    <option name="height" value="1050" />
+    <option name="width" value="1440" />
+    <option name="height" value="900" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -219,7 +226,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
@@ -285,40 +291,9 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="application-monitor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="application-monitor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="application-monitor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="application-monitor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="api" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -719,7 +694,9 @@
       <workItem from="1411650859653" duration="1953000" />
       <workItem from="1411985925788" duration="391000" />
       <workItem from="1412611157737" duration="29000" />
-      <workItem from="1412672993205" duration="4482000" />
+      <workItem from="1412672993205" duration="4539000" />
+      <workItem from="1412930653382" duration="142000" />
+      <workItem from="1412949226403" duration="5040000" />
     </task>
     <task id="LOCAL-00001" summary="Porting to Play! 2.3.1">
       <created>1404212010039</created>
@@ -797,10 +774,10 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="100196000" />
+    <option name="totallyTimeSpent" value="105435000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1680" height="1050" extended-state="6" />
+    <frame x="0" y="0" width="1440" height="900" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -809,7 +786,7 @@
       <window_info id="Bean Validation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.20879121" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.26703298" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.26616916" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -823,7 +800,7 @@
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2026862" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23748212" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -863,7 +840,8 @@
     <MESSAGE value="Added licenses to test files" />
     <MESSAGE value="Added new &quot;sinusmetric&quot; fake probe" />
     <MESSAGE value="Added some license headers in non-java files" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added some license headers in non-java files" />
+    <MESSAGE value="Now metrics graphs are read from real sources!" />
+    <option name="LAST_COMMIT_MESSAGE" value="Now metrics graphs are read from real sources!" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1152,15 +1130,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3060">
           <caret line="14" column="43" selection-start-line="14" selection-start-column="43" selection-end-line="14" selection-end-column="43" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/metrics.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="195" max-vertical-offset="975">
-          <caret line="13" column="26" selection-start-line="13" selection-start-column="26" selection-end-line="13" selection-end-column="26" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1180,6 +1149,35 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/es/bsc/amon/controller/EventsDBMapper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3286385" vertical-offset="0" max-vertical-offset="2730">
+          <caret line="42" column="31" selection-start-line="42" selection-start-column="31" selection-end-line="42" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/etc/probes/sinusmetric.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7746479" vertical-offset="0" max-vertical-offset="1380">
+          <caret line="33" column="0" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/js/ang/metrics-old.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.91549295" vertical-offset="0" max-vertical-offset="1605">
+          <caret line="53" column="25" selection-start-line="53" selection-start-column="25" selection-end-line="53" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/conf/routes">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="645">
+          <caret line="37" column="0" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/public/test.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="648">
@@ -1188,36 +1186,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/es/bsc/amon/controller/EventsDBMapper.java">
+    <entry file="file://$PROJECT_DIR$/public/bower_components/angular/angular.min.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3286385" vertical-offset="0" max-vertical-offset="2730">
-          <caret line="42" column="31" selection-start-line="42" selection-start-column="31" selection-end-line="42" selection-end-column="31" />
+        <state vertical-scroll-proportion="0.33333334" vertical-offset="252" max-vertical-offset="3270">
+          <caret line="33" column="100" selection-start-line="33" selection-start-column="100" selection-end-line="33" selection-end-column="100" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/etc/probes/sinusmetric.rb">
+    <entry file="file://$PROJECT_DIR$/public/metrics.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7746479" vertical-offset="0" max-vertical-offset="1380">
-          <caret line="33" column="0" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
-          <folding>
-            <marker date="1412674981000" expanded="true" signature="-1:-1" placeholder="if ... end" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/js/ang/metrics-old.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.91549295" vertical-offset="0" max-vertical-offset="1605">
-          <caret line="53" column="25" selection-start-line="53" selection-start-column="25" selection-end-line="53" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/conf/routes">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="645">
-          <caret line="37" column="0" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.31914893" vertical-offset="15" max-vertical-offset="975">
+          <caret line="17" column="27" selection-start-line="17" selection-start-column="27" selection-end-line="17" selection-end-column="27" />
           <folding />
         </state>
       </provider>
@@ -1232,9 +1212,28 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/public/js/ang/metrics.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5507559" vertical-offset="1485" max-vertical-offset="3765">
-          <caret line="133" column="84" selection-start-line="133" selection-start-column="84" selection-end-line="133" selection-end-column="84" />
-          <folding />
+        <state vertical-scroll-proportion="2.76" vertical-offset="0" max-vertical-offset="4035">
+          <caret line="152" column="45" selection-start-line="152" selection-start-column="45" selection-end-line="152" selection-end-column="45" />
+          <folding>
+            <marker date="1412955196000" expanded="true" signature="1437:1870" placeholder="[...]" />
+            <marker date="1412955196000" expanded="true" signature="1511:1869" placeholder="{...}" />
+            <marker date="1412955196000" expanded="true" signature="1535:1648" placeholder="{&quot;appId&quot;: &quot;&quot;...}" />
+            <marker date="1412955196000" expanded="true" signature="2091:7499" placeholder="{...}" />
+            <marker date="1412955196000" expanded="true" signature="2108:7488" placeholder="{&quot;restrict&quot;: 'E'...}" />
+            <marker date="1412955196000" expanded="true" signature="2269:3426" placeholder="{...}" />
+            <marker date="1412955196000" expanded="true" signature="2308:3340" placeholder="{...}" />
+            <marker date="1412955196000" expanded="true" signature="2466:2843" placeholder="[...]" />
+            <marker date="1412955196000" expanded="true" signature="2467:2617" placeholder="{...}" />
+            <marker date="1412955196000" expanded="true" signature="2477:2616" placeholder="{&quot;appId&quot;: &quot;SinusApp&quot;...}" />
+            <marker date="1412955196000" expanded="true" signature="2965:3320" placeholder="{...}" />
+            <marker date="1412955196000" expanded="true" signature="3014:3294" placeholder="{...}" />
+            <marker date="1412955196000" expanded="true" signature="3493:7038" placeholder="{...}" />
+            <marker date="1412955196000" expanded="true" signature="5211:7013" placeholder="{...}" />
+            <marker date="1412955196000" expanded="true" signature="5447:5890" placeholder="[...]" />
+            <marker date="1412955196000" expanded="true" signature="5448:5634" placeholder="{...}" />
+            <marker date="1412955196000" expanded="true" signature="5458:5633" placeholder="{&quot;appId&quot;: &quot;SinusApp&quot;...}" />
+            <marker date="1412955196000" expanded="true" signature="6021:6985" placeholder="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>

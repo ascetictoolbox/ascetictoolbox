@@ -75,13 +75,31 @@
             scope: true,
             controller :function ($scope, $element, $attrs, $interval, $http) {
                 $interval(function() {
-                    var x = (new Date()).getTime(), // current time
-                        y = Math.random();
-                    var series = $scope.chart.series[0];
-                    series.addPoint([x, y], true, true);
-                },1000); // todo: kill timer when panel is closed or page is changed
+                    console.log($scope.info);
+
+                    // update graph with new info since last query
+                    var queryLastMetric = [{"$match":{
+                        "appId":$scope.appId,
+                        "timestamp": {"$gt" : $scope.latestTimestamp}
+                    }},
+                    {"$group" : {
+                        "_id" : null,
+                        "latestTimestamp" : { "$max" : "$timestamp" },
+                        "data" : {"$avg": "$data.metric"}
+                    }}];
+                    $http.post("/query",JSON.stringify(queryLastMetric))
+                        .success(function(ret) {
+                            if(ret.length > 0) {
+                                $scope.latestTimestamp = ret[0].latestTimestamp;
+                                var series = $scope.chart.series[0];
+                                series.addPoint([$scope.latestTimestamp,ret[0].data], true, true);
+                            }
+                        });
+                },STEP_TIME); // todo: kill timer when panel is closed or page is changed
             },
             link : function($scope, $element, $attrs, $interval) {
+                console.log($scope.info);
+
                 $element.append('<div id="panel'+$scope.id+'">not working {{id}}</div>');
 
                 var mierdaca = $scope.id;
@@ -123,33 +141,48 @@
 
                 // get last timestamp of an application
                 var getLastTimestamp =
-                    [{"$match":{"appId":"SinusApp"}},
+                    [{"$match":{"appId":$scope.appId}},
                         {"$group" : { "_id": null,
                             "last": {"$max": "$timestamp"}
                         }}];
 
                 $http.post("/query",JSON.stringify(getLastTimestamp))
                     .success(function(ret) {
-                        console.log("Last reported metric: " + ret[0].last);
-                        var groupTimesTamps <-- poner aquí query comentada mas abajo
-                        $http.post("/query",JS
+                        // get all metrics in the last MAX_TIME aggregated in STEP_TIME intervals
+                        $scope.latestTimestamp = ret[0].last;
+                        var groupTimestamps =
+                            [{"$match":{
+                                "appId": $scope.appId,
+                                "timestamp": {"$gt" : $scope.latestTimestamp - MAX_TIME}
+                            }},
+                            {"$group" : {
+                                "_id" : { "$subtract" : ["$timestamp" , {"$mod" : [ "$timestamp", STEP_TIME ] }]},
+                                "data" : {"$avg": "$data.metric"}
+                            }}];
 
+                        $http.post("/query",JSON.stringify(groupTimestamps)).
+                            success(function(ret) {
+                                var data = [],
+                                    time = 0,
+                                    i;
 
-                        console.log();
-                        var data = [],
-                            time = (new Date()).getTime(),
-                            i;
-
-                        for (i = -100; i <= 0; i += 1) {
-                            data.push({
-                                x: time + i * 1000,
-                                y: Math.random()
+                                // metrics will be inserted sorted
+                                for( i in ret ) {
+                                    var ipos = 0;
+                                    while(ipos < data.length && ret[i]._id > data[ipos].x) {
+                                        ipos++;
+                                    }
+                                    data.splice(ipos,0,{
+                                                            x: ret[i]._id,  //time
+                                                            y: ret[i].data
+                                                        });
+                                }
+                                chartInfo.series[0].data = data;
+                                $scope.chart = new Highcharts.Chart(chartInfo);
                             });
-                        }
-                        chartInfo.series[0].data = data;
-                        $scope.chart = new Highcharts.Chart(chartInfo);
+                        });
 
-                    });
+                    }
 
 
                 /*var query = '[{"$match":{"appId":"SinusApp"}},'+
@@ -164,8 +197,7 @@
                 }, true);*/
             }
 
-        };
-    });
+        });
 
     /*
 
