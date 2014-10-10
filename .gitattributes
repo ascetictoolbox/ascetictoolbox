@@ -301,6 +301,7 @@ iaas/virtual-machine-manager/vmmanager-frontend/css/styles.css -text
 iaas/virtual-machine-manager/vmmanager-frontend/css/toastr.min.css -text
 iaas/virtual-machine-manager/vmmanager-frontend/gulpfile.js -text
 iaas/virtual-machine-manager/vmmanager-frontend/images/ascetic.png -text
+iaas/virtual-machine-manager/vmmanager-frontend/images/bsc.jpg -text svneol=unset#application/octet-stream
 iaas/virtual-machine-manager/vmmanager-frontend/images/bsc.png -text
 iaas/virtual-machine-manager/vmmanager-frontend/index.html -text
 iaas/virtual-machine-manager/vmmanager-frontend/jshintrc.json -text
