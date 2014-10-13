@@ -41,12 +41,15 @@ public class ApplicationTest {
 		application.setLinks(links);
 		List<Deployment> deployments = new ArrayList<Deployment>();
 		application.setDeployments(deployments);
+		List<Image> images = new ArrayList<Image>();
+		application.setImages(images);
 		
 		assertEquals(links, application.getLinks());
 		assertEquals(1, application.getId());
 		assertEquals("href", application.getHref());
 		assertEquals(deployments, application.getDeployments());
 		assertEquals("name", application.getName());
+		assertEquals(images, application.getImages());
 	}
 	
 	@Test
@@ -70,5 +73,18 @@ public class ApplicationTest {
 		application.addDeployment(deployment);
 		
 		assertEquals(deployment, application.getDeployments().get(0));
+	}
+	
+	@Test
+	public void addImageTest() {
+		Application application = new Application();
+		
+		assertEquals(null, application.getImages());
+		
+		Image image = new Image();
+		application.addImage(image);
+		
+		assertEquals(1, application.getImages().size());
+		assertEquals(image, application.getImages().get(0));
 	}
 }

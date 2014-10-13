@@ -281,6 +281,8 @@ public class ModelConverterTest {
 		image1.setId(111);
 		image1.setOvfId("333");
 		image1.setProviderImageId("444");
+		image1.setOvfHref("dfs//");
+		image1.setProviderId("provider-id");
 		vm1.addImage(image1);
 		vm1.setSlaAgreement("sla agreement reference");
 		Link linkVm1Self = new Link();

@@ -86,14 +86,6 @@ public class Deployment {
 		this.id = id;
 	}
 	
-//	@Column(name = "application_id", nullable = true)
-//	public int getApplicationId() {
-//		return appId;
-//	}
-//	public void setApplicationId(int appId) {
-//		this.appId = appId;
-//	}
-	
 	@Column(name = "status", nullable = false)
 	public String getStatus() {
 		return status;

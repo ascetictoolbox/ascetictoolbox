@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * 
@@ -69,6 +70,8 @@ public class Application {
 	private List<Deployment> deployments;
 	@XmlElement(name="link", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private List<Link> links;
+	@XmlTransient
+	private List<Image> images;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -98,6 +101,19 @@ public class Application {
 	public void addLink(Link link) {
 		if(links==null) links = new ArrayList<Link>();
 		links.add(link);
+	}
+	
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinColumn(name = "application_id", referencedColumnName="application_id", nullable = true)
+	public List<Image> getImages() {
+		return images;
+	}
+	public void setImages(List<Image> images) {
+		this.images = images;
+	}
+	public void addImage(Image image) {
+		if(images==null) images = new ArrayList<Image>();
+		images.add(image);
 	}
 	
 	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
