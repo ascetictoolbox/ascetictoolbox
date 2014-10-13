@@ -19,7 +19,8 @@
 
 	appip.time = 0;
 
-	appip.controller("GraphicsPanelController", ["$modal","$scope","$interval", function($modal, $scope, $interval) {
+	appip.controller("GraphicsPanelController", ["$modal","$scope","$interval","$http", function($modal, $scope, $interval,$http) {
+
 
         // kills all the $interval instances when the global page changes (this controller is closed)
         $scope.$watch('page',function() {
@@ -29,6 +30,14 @@
         });
 
         $scope.panels = { };
+
+        $http.get("/gui/metricPanel").success(function(recvPanels) {
+            for(var i in recvPanels) {
+                var p = recvPanels[i];
+                $scope.panels[p["_id"].$oid] = p;
+            }
+        });
+
         $scope.idCounter = 0;
 
         $scope.addNewPanel = function() {
@@ -41,19 +50,24 @@
             });
 
             modalInstance.result.then(function(form) {
-                $scope.panels[$scope.idCounter] = form;
-                $scope.idCounter++;
+                $http.post("/gui/metricPanel",JSON.stringify(form))
+                    .success(function(panelId) {
+                        $scope.panels[panelId] = form;
+                    });
+
             }, function() {
             });
-
 
 		};
 
         $scope.removePanel = function(id) {
-            console.log("deleting : ");
-            console.log($scope.panels[id].theInterval);
-            $interval.cancel($scope.panels[id].theInterval);
-            delete $scope.panels[id];
+            console.log("deleting : " + id);
+            $http.delete("/gui/metricPanel/"+id)
+                .success(function() {
+                    console.log($scope.panels[id].theInterval);
+                    $interval.cancel($scope.panels[id].theInterval);
+                    delete $scope.panels[id];
+                });
         };
 
 	}]);
@@ -92,7 +106,6 @@
             controller :function ($scope, $element, $attrs, $interval, $http) {
                 $scope.info.theInterval = $interval(function() {
                     // update graph with new info since last query
-                    console.log("tick: " + $scope.info.theInterval.$$intervalId);
                     var queryLastMetric = [{"$match":{
                         "appId":$scope.info.appId,
                         "timestamp": {"$gt" : $scope.latestTimestamp}
@@ -111,7 +124,6 @@
                             }
                         });
                 },STEP_TIME); // todo: kill timer when panel is closed or page is changed
-                console.log($scope.info.theInterval);
             },
             link : function($scope, $element, $attrs, $interval) {
 

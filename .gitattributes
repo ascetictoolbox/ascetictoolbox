@@ -707,6 +707,7 @@ paas/application-monitor/activator-sbt-echo-akka-shim.sbt -text
 paas/application-monitor/activator.bat -text
 paas/application-monitor/app/api/Apps.java -text
 paas/application-monitor/app/api/Events.java -text
+paas/application-monitor/app/api/Gui.java -text
 paas/application-monitor/app/api/Metrics.java -text
 paas/application-monitor/app/api/Misc.java -text
 paas/application-monitor/app/api/Queries.java -text
@@ -716,6 +717,7 @@ paas/application-monitor/app/es/bsc/amon/Global.java -text
 paas/application-monitor/app/es/bsc/amon/controller/AppsDBMapper.java -text
 paas/application-monitor/app/es/bsc/amon/controller/EventsDBMapper.java -text
 paas/application-monitor/app/es/bsc/amon/controller/QueriesDBMapper.java -text
+paas/application-monitor/app/es/bsc/amon/gui/GuiMetricsDBMapper.java -text
 paas/application-monitor/app/es/bsc/amon/model/Event.java -text
 paas/application-monitor/app/es/bsc/amon/util/tree/NodeArray.java -text
 paas/application-monitor/app/es/bsc/amon/util/tree/NumberValue.java -text

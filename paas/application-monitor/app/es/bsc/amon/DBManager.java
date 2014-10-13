@@ -95,5 +95,10 @@ public class DBManager {
         return o;
     }
 
+    public void add(String collectionName, DBObject obj) {
+        database.getCollection(collectionName).insert(obj);
+    }
+
+
 
 }

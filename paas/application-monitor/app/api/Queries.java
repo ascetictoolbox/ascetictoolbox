@@ -31,10 +31,7 @@ public class Queries extends Controller {
     @BodyParser.Of(BodyParser.Json.class)
     public static Result post() {
 
-        Logger.info("body = " + request().body().asText());
-
         String qs = request().body().asJson().toString();
-        Logger.info("qs = " + qs);
 
         return ok(QueriesDBMapper.instance.aggregate(qs));
     }
