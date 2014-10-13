@@ -87,8 +87,19 @@ def getIostat()
 
 end
 
+## Converts a string to a float, if it can parse to float. If not, leaves the string as is
+def to_number(str)
+  begin
+    Float(str)
+  rescue ArgumentError, TypeError
+    str
+  end
+end
+
 ## TODO: remove non-numeric values from here
-def getProcessesInfo(options)
+## If allProcesses == false, returns a document with the info of the first process
+## If allProcesses == true, returns an array with all the processes that matches the searching chriteria
+def getProcessesInfo(options,allProcesses)
 	pslines = `ps auxw`.split("\n")
 	headers = []
 
@@ -103,7 +114,7 @@ def getProcessesInfo(options)
 			if (headers[i].nil?)
 				processInfo[headers[i-1]] += " " + data
 			else
-				processInfo[headers[i]]= data
+				processInfo[headers[i]]= to_number(data)
 				i+=1
 			end
 		end
@@ -112,7 +123,12 @@ def getProcessesInfo(options)
 			(options.user.nil? || options.user == processInfo["user"]) and
 			(options.command.nil? || processInfo["command"] =~ /#{options.command}/)
 		)
-			psinfo.push processInfo
+      if(allProcesses)
+			  psinfo.push processInfo
+      else
+        return processInfo
+      end
+
 		end
 	end
 	return psinfo
@@ -153,7 +169,7 @@ loop do
     data = {};
 
 		begin
-      data["ps"] = getProcessesInfo(options)
+      data["ps"] = getProcessesInfo(options,false)
 		rescue Exception => e
 			$stderr.puts "Warning! 'ps' returned an error: #{e.message}"
 		end

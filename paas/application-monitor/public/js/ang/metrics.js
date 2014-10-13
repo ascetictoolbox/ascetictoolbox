@@ -19,7 +19,15 @@
 
 	appip.time = 0;
 
-	appip.controller("GraphicsPanelController", ["$modal","$scope", function($modal, $scope) {
+	appip.controller("GraphicsPanelController", ["$modal","$scope","$interval", function($modal, $scope, $interval) {
+
+        // kills all the $interval instances when the global page changes (this controller is closed)
+        $scope.$watch('page',function() {
+            for(var i in $scope.panels) {
+                $interval.cancel($scope.panels[i].theInterval);
+            }
+        });
+
         $scope.panels = { };
         $scope.idCounter = 0;
 
@@ -40,6 +48,13 @@
 
 
 		};
+
+        $scope.removePanel = function(id) {
+            console.log("deleting : ");
+            console.log($scope.panels[id].theInterval);
+            $interval.cancel($scope.panels[id].theInterval);
+            delete $scope.panels[id];
+        };
 
 	}]);
 
@@ -75,10 +90,9 @@
             replace : true,
             scope: true,
             controller :function ($scope, $element, $attrs, $interval, $http) {
-                $interval(function() {
-                    console.log($scope.info);
-
+                $scope.info.theInterval = $interval(function() {
                     // update graph with new info since last query
+                    console.log("tick: " + $scope.info.theInterval.$$intervalId);
                     var queryLastMetric = [{"$match":{
                         "appId":$scope.info.appId,
                         "timestamp": {"$gt" : $scope.latestTimestamp}
@@ -97,6 +111,7 @@
                             }
                         });
                 },STEP_TIME); // todo: kill timer when panel is closed or page is changed
+                console.log($scope.info.theInterval);
             },
             link : function($scope, $element, $attrs, $interval) {
 
@@ -162,6 +177,7 @@
 
                         $http.post("/query",JSON.stringify(groupTimestamps)).
                             success(function(ret) {
+                                var minDataSize = MAX_TIME / STEP_TIME;
                                 var data = [],
                                     time = 0,
                                     i;
@@ -176,6 +192,10 @@
                                                             x: ret[i]._id,  //time
                                                             y: ret[i].data
                                                         });
+                                }
+                                // fill the rest of gaps if the received data does not fill the MAX_TIME window
+                                for(i = 0 ; i < minDataSize - ret.length ; i++) {
+                                    data.splice(0,0, { x: (data[0].x-STEP_TIME) , y:0 });
                                 }
                                 chartInfo.series[0].data = data;
                                 $scope.chart = new Highcharts.Chart(chartInfo);

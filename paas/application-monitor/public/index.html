@@ -10,7 +10,7 @@
     <link href="bower_components/bootstrap/dist/css/bootstrap-theme.css" rel="stylesheet">
 	<link href="css/bsc.css" rel="stylesheet">
 </head>
-<body ng-app="ApplicationMonitor" ng-controller="PageController as pageCtrl">
+<body ng-app="ApplicationMonitor" ng-controller="PageController">
 <nav class="navbar navbar-inverse navbar-fixed-top" role="banner">
 	<div class="container">
 		<div class="navbar-header">
@@ -25,17 +25,17 @@
 		<nav class="collapse navbar-collapse" role="navigation">
 			<ul class="nav navbar-nav">
 				<li>
-					<a href="#sec" ng-click="pageCtrl.setPage('global.html')">System Status</a>
+					<a href="#sec" ng-click="setPage('global.html')">System Status</a>
 				</li>
 				<li>
-					<a href="#sec" ng-click="pageCtrl.setPage('metrics.html')">App Metrics</a>
+					<a href="#sec" ng-click="setPage('metrics.html')">App Metrics</a>
 				</li>
 			</ul>
 		</nav>
 	</div>
 </nav>
 
-<div class="container" style="margin-top: 60px" ng-include="pageCtrl.page"></div>
+<div class="container" style="margin-top: 60px" ng-include="page"></div>
 
 <footer>
 	<img src="img/bsc.png"/>

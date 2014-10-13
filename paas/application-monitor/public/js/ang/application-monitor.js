@@ -18,11 +18,24 @@
 
 	var appm = angular.module('ApplicationMonitor',["Metrics","GlobalView"]);
 
-	appm.controller('PageController',  function() {
-		this.page = 'metrics.html';
-		this.setPage = function(newPage) {
-			this.page = newPage;
+	appm.controller('PageController',  ["$scope",function($scope) {
+
+        $scope.page = 'metrics.html';
+        $scope.setPage = function(newPage) {
+            $scope.page = newPage;
 		};
-	});
+        /*if(registeredPage) {
+
+            delete registeredPage;
+        }*/
+
+	}]);
+
+    appm.factory("registerPageModule", function(thePageModule) {
+        console.log("registering module: ");
+        console.log(thePageModule);
+        this.registeredPage = thePageModule;
+    });
+
 })();
 
