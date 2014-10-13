@@ -38,6 +38,18 @@ public class Apps extends Controller {
 			end = now;
 		}
 
-		return Results.ok(AppsDBMapper.getInstance().getAllApps(start, end).toString());
+		return Results.ok(AppsDBMapper.getInstance().getAllApps(start, end,false).toString());
 	}
+
+    public static Result listInstances(Long start, Long end) throws ParseException {
+        long now = System.currentTimeMillis();
+        if(start < 0L) {
+            start = now + start;
+        }
+        if(end <= 0L) {
+            end = now;
+        }
+
+        return Results.ok(AppsDBMapper.getInstance().getAllApps(start, end,true).toString());
+    }
 }

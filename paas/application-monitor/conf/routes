@@ -15,6 +15,9 @@ GET     /gui/*file                               controllers.Assets.at(path="/pu
 GET     /apps                                    api.Apps.listApps(start:Long?=0,end:Long?=0)
 GET     /apps/                                   api.Apps.listApps(start:Long?=0,end:Long?=0)
 
+GET     /instances                               api.Apps.listInstances(start:Long?=0,end:Long?=0)
+GET     /instances/                              api.Apps.listInstances(start:Long?=0,end:Long?=0)
+
 POST    /event                                   api.Events.post()
 PATCH   /event                                   api.Events.update()
 GET     /event/:id                               api.Events.get(id:String)

@@ -24,18 +24,6 @@
         $scope.setPage = function(newPage) {
             $scope.page = newPage;
 		};
-        /*if(registeredPage) {
-
-            delete registeredPage;
-        }*/
-
 	}]);
-
-    appm.factory("registerPageModule", function(thePageModule) {
-        console.log("registering module: ");
-        console.log(thePageModule);
-        this.registeredPage = thePageModule;
-    });
-
 })();
 

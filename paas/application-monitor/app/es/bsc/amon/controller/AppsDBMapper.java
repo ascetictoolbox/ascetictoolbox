@@ -26,6 +26,7 @@ import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 import es.bsc.amon.DBManager;
+import org.bson.BSONObject;
 import play.Logger;
 
 import java.util.*;
@@ -43,7 +44,14 @@ public class AppsDBMapper {
         return instance;
     }
 
-    public ObjectNode getAllApps(long start, long end) {
+    /**
+     *
+     * @param start
+     * @param end
+     * @param showInstances if true, shows instances information instead of nodes information
+     * @return
+     */
+    public ObjectNode getAllApps(long start, long end, boolean showInstances) {
         DBObject query = (DBObject) JSON.parse("{'$query' :" +
             "{ '$or' : ["+
                 "{ '$and' : [ { timestamp : { '$gte' : " + start + " }}, { timestamp : {'$lte' : " + end + "}} ] }," +
@@ -61,7 +69,8 @@ public class AppsDBMapper {
             DBObject event = (DBObject) iter.next();
             try {
                 String appName = event.get(EventsDBMapper.APPID).toString();
-                String nodeName = event.get(EventsDBMapper.NODEID).toString();
+                Object node = event.get(showInstances ? EventsDBMapper.INSTANCEID : EventsDBMapper.NODEID);
+                String nodeName = node==null?"":node.toString();
                 Set<String> appSet = appsInfo.get(appName);
                 if (appSet == null) {
                     appSet = new TreeSet<String>();
@@ -86,7 +95,6 @@ public class AppsDBMapper {
             }
             all.put(entry.getKey(), nodes);
         }
-
         return all;
     }
 }

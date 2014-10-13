@@ -63,7 +63,7 @@ public class Metrics extends Controller {
 		try {
 			long now = System.currentTimeMillis();
 			// TODO: ArrayNode allApps = Apps.getInstance().getAllApps(now - REMEMBER_TIME, now);
-			ObjectNode allApps = AppsDBMapper.getInstance().getAllApps(0, now);
+			ObjectNode allApps = AppsDBMapper.getInstance().getAllApps(0, now, false);
 			StringBuilder sb = new StringBuilder("[");
 			Iterator<String> it = allApps.fieldNames();
 			while(it.hasNext()) {
@@ -82,7 +82,7 @@ public class Metrics extends Controller {
 	public static Result getNavigationPathA(String appId) {
 		try {
 			// TODO: add remember time
-			ObjectNode allApps = AppsDBMapper.getInstance().getAllApps(0,System.currentTimeMillis());
+			ObjectNode allApps = AppsDBMapper.getInstance().getAllApps(0,System.currentTimeMillis(), false);
 			return ok(allApps.get(appId).toString());
 		} catch(Throwable e) {
 			Logger.warn("For " + request().uri() + " --> " +e.getMessage());

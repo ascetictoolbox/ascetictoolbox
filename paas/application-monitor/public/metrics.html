@@ -10,7 +10,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Application ID:</label>
-                        <input type="text" ng-model="form.appId" class="form-control"/> <!-- appId debe estar en el $scope -->
+                        <input type="text" typeahead-on-select="onAppSelected(form.appId)" ng-model="form.appId" typeahead="app for app in getApps() | filter:$viewValue | limitTo:8 " class="form-control"/> <!-- appId debe estar en el $scope -->
                     </div>
                     <!--div class="form-group">
                         <label>Node ID:</label>
@@ -18,7 +18,7 @@
                     </div-->
                     <div class="form-group">
                         <label>Instance ID:</label>
-                        <input type="text" ng-model="form.instanceId" class="form-control"/> <!-- appId debe estar en el $scope -->
+                        <input type="text" ng-model="form.instanceId" typeahead="instance for instance in getInstances() | filter:$viewValue | limitTo:8" class="form-control"/> <!-- appId debe estar en el $scope -->
                     </div>
                     <div class="form-group">
                         <label>Metric Path:</label>
@@ -27,6 +27,7 @@
                     <div class="form-group">
                         <label>Description</label>
                         <input type="text" ng-model="form.description" class="form-control"/> <!-- appId debe estar en el $scope -->
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary" ng-click="ok()">OK</button>

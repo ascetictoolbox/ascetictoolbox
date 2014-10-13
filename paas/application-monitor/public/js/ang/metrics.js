@@ -72,13 +72,13 @@
 
 	}]);
 
-    appip.controller("NewPanelFrame", ["$scope","$modalInstance","valor", function($scope,$modalInstance,valor) {
+    appip.controller("NewPanelFrame", ["$http", "$scope","$modalInstance","valor", function($http,$scope,$modalInstance,valor) {
         $scope.form = {
-            appId : "SinusApp",
+            appId : "",
             nodeId : "",
             instanceId : "",
             description : "",
-            metric : "metric"
+            metric : ""
         }
         $scope.valor = valor;
 
@@ -89,6 +89,30 @@
         $scope.cancel = function() {
             $modalInstance.dismiss('cancel');
         }
+        $scope.appsInstances = [];
+        $http.get("/instances").then(function (response) {
+                $scope.appsInstances = response.data;
+            });
+        $scope.getApps = function() {
+
+            var ret = [];
+            for(var a in $scope.appsInstances) {
+                ret.push(a);
+            }
+            return ret;
+        }
+        $scope.getInstances = function() {
+            var ret = $scope.appsInstances[$scope.form.appId];
+            if(ret) {
+                return ret;
+            } else {
+                return [];
+            }
+        }
+        $scope.onAppSelected = function() {
+            console.log("Seleccionado: " + $scope.form.appId);
+        }
+
     }]);
 
     appip.controller("TimeSeriesController", ["$scope", "$interval", function($scope, $interval) {
@@ -216,94 +240,7 @@
 
                     }
 
-
-                /*var query = '[{"$match":{"appId":"SinusApp"}},'+
-                 '{"$group" : {'+
-                 '"_id" : { "$subtract" : ["$timestamp" , {"$mod" : [ "$timestamp", 100000 ] }]},'+
-                 '"data" : {"$avg": "$data.metric"}'+
-                 '}}]';*/
-
-
-                /*scope.$watch("items", function (newValue) {
-                    chart.series[0].setData(newValue, true);
-                }, true);*/
-            }
-
-        });
-
-    /*
-
-        Highcharts.setOptions({
-            global: {
-                useUTC: false
             }
         });
 
-        $scope.highchartsNG = {
-            chart: {
-                animation : false
-            },
-            title: {
-                text: 'USD to EUR exchange rate from 2006 through 2008'
-            },
-            xAxis: {
-                type: 'datetime'
-            },
-            yAxis: {
-                title: {
-                    text: 'Exchange rate'
-                }
-            },
-            legend: {
-                enabled: false
-            },
-
-            series: [{
-                data: (function () {
-                    // generate an array of random data
-                    var data = [],
-                        time = (new Date()).getTime(),
-                        i;
-
-                    for (i = -19; i <= 0; i += 1) {
-                        data.push({
-                            x: time + i * 1000,
-                            y: Math.random()
-                        });
-                    }
-                    return data;
-                }())
-            }]
-        };
-
-        $interval(function() {
-            var x = (new Date()).getTime(), // current time
-                y = Math.random();
-            console.log(x + " - " , y);
-            var series = $scope.highchartsNG.series[0];
-            series.data.shift();
-            series.data.push({"x":x,"y":y});
-            //series.addPoint([x, y], true, true);
-        },3000);
-
-
-
-
-
-        /*{
-            options: {
-                chart: {
-                    type: 'bar'
-                }
-            },
-            series: [{
-                data: [10, 15, 12, 8, 7]
-            }],
-            title: {
-                text: 'Hello'
-            },
-            loading: false
-        }
-    }]);
-*/
 })();
