@@ -20,6 +20,8 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This directly connects to a Zabbix database and scavenges the data required
@@ -38,6 +40,7 @@ public class FastDataSourceAdaptor implements HostDataSource {
         try {
             return zabbixDbRoute.getHostByName(hostname);
         } catch (Exception ex) {
+            Logger.getLogger(FastDataSourceAdaptor.class.getName()).log(Level.INFO, "Performing fallback to Zabbix API", ex);
             return zabbixAPI.getHostByName(hostname);
         }
     }
@@ -47,6 +50,7 @@ public class FastDataSourceAdaptor implements HostDataSource {
         try {
             return zabbixDbRoute.getVmByName(name);
         } catch (Exception ex) {
+            Logger.getLogger(FastDataSourceAdaptor.class.getName()).log(Level.INFO, "Performing fallback to Zabbix API", ex);
             return zabbixAPI.getVmByName(name);
         }
     }
@@ -56,6 +60,7 @@ public class FastDataSourceAdaptor implements HostDataSource {
         try {
             return zabbixDbRoute.getHostList();
         } catch (Exception ex) {
+            Logger.getLogger(FastDataSourceAdaptor.class.getName()).log(Level.INFO, "Performing fallback to Zabbix API", ex);
             return zabbixAPI.getHostList();
         }
     }
@@ -65,6 +70,7 @@ public class FastDataSourceAdaptor implements HostDataSource {
         try {
             return zabbixDbRoute.getHostAndVmList();
         } catch (Exception ex) {
+            Logger.getLogger(FastDataSourceAdaptor.class.getName()).log(Level.INFO, "Performing fallback to Zabbix API", ex);
             return zabbixAPI.getHostAndVmList();
         }
     }
@@ -74,6 +80,7 @@ public class FastDataSourceAdaptor implements HostDataSource {
         try {
             return zabbixDbRoute.getVmList();
         } catch (Exception ex) {
+            Logger.getLogger(FastDataSourceAdaptor.class.getName()).log(Level.INFO, "Performing fallback to Zabbix API", ex);
             return zabbixAPI.getVmList();
         }
     }
@@ -83,6 +90,7 @@ public class FastDataSourceAdaptor implements HostDataSource {
         try {
             return zabbixDbRoute.getHostData(host);
         } catch (Exception ex) {
+            Logger.getLogger(FastDataSourceAdaptor.class.getName()).log(Level.INFO, "Performing fallback to Zabbix API", ex);
             return zabbixAPI.getHostData(host);
         }
     }
@@ -92,6 +100,7 @@ public class FastDataSourceAdaptor implements HostDataSource {
         try {
             return zabbixDbRoute.getHostData();
         } catch (Exception ex) {
+            Logger.getLogger(FastDataSourceAdaptor.class.getName()).log(Level.INFO, "Performing fallback to Zabbix API", ex);
             return zabbixAPI.getHostData();
         }
     }
@@ -101,6 +110,7 @@ public class FastDataSourceAdaptor implements HostDataSource {
         try {
             return zabbixDbRoute.getHostData(hostList);
         } catch (Exception ex) {
+            Logger.getLogger(FastDataSourceAdaptor.class.getName()).log(Level.INFO, "Performing fallback to Zabbix API", ex);
             return zabbixAPI.getHostData(hostList);
         }
     }
@@ -110,6 +120,7 @@ public class FastDataSourceAdaptor implements HostDataSource {
         try {
             return zabbixDbRoute.getVmData(vm);
         } catch (Exception ex) {
+            Logger.getLogger(FastDataSourceAdaptor.class.getName()).log(Level.INFO, "Performing fallback to Zabbix API", ex);
             return zabbixAPI.getVmData(vm);
         }
     }
@@ -119,6 +130,7 @@ public class FastDataSourceAdaptor implements HostDataSource {
         try {
             return zabbixDbRoute.getVmData();
         } catch (Exception ex) {
+            Logger.getLogger(FastDataSourceAdaptor.class.getName()).log(Level.INFO, "Performing fallback to Zabbix API", ex);
             return zabbixAPI.getVmData();
         }
     }
@@ -128,6 +140,7 @@ public class FastDataSourceAdaptor implements HostDataSource {
         try {
             return zabbixDbRoute.getVmData(vmList);
         } catch (Exception ex) {
+            Logger.getLogger(FastDataSourceAdaptor.class.getName()).log(Level.INFO, "Performing fallback to Zabbix API", ex);
             return zabbixAPI.getVmData(vmList);
         }
     }
@@ -137,6 +150,7 @@ public class FastDataSourceAdaptor implements HostDataSource {
         try {
             return zabbixDbRoute.getCurrentEnergyUsage(host);
         } catch (Exception ex) {
+            Logger.getLogger(FastDataSourceAdaptor.class.getName()).log(Level.INFO, "Performing fallback to Zabbix API", ex);
             return zabbixAPI.getCurrentEnergyUsage(host);
         }
     }
@@ -146,6 +160,7 @@ public class FastDataSourceAdaptor implements HostDataSource {
         try {
             return zabbixAPI.getLowestHostPowerUsage(host);
         } catch (Exception ex) {
+            Logger.getLogger(FastDataSourceAdaptor.class.getName()).log(Level.INFO, "Performing fallback to Zabbix DB", ex);
             return zabbixDbRoute.getLowestHostPowerUsage(host);
         }
     }
@@ -155,6 +170,7 @@ public class FastDataSourceAdaptor implements HostDataSource {
         try {
             return zabbixAPI.getHighestHostPowerUsage(host);
         } catch (Exception ex) {
+            Logger.getLogger(FastDataSourceAdaptor.class.getName()).log(Level.INFO, "Performing fallback to Zabbix DB", ex);
             return zabbixDbRoute.getLowestHostPowerUsage(host);
         }
     }
@@ -164,6 +180,7 @@ public class FastDataSourceAdaptor implements HostDataSource {
         try {
             return zabbixAPI.getCpuUtilisation(host, durationSeconds);
         } catch (Exception ex) {
+            Logger.getLogger(FastDataSourceAdaptor.class.getName()).log(Level.INFO, "Performing fallback to Zabbix DB", ex);
             return zabbixDbRoute.getCpuUtilisation(host, durationSeconds);
         }
     }

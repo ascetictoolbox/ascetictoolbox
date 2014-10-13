@@ -15,9 +15,7 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient;
 
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration.Calibrator;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.Configuration;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DefaultDatabaseConnector;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.BOOT_TIME_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_COUNT_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_IDLE_KPI_NAME;
@@ -120,7 +118,7 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
     /**
      * The url to contact the database.
      */
-    private static String databaseURL = "jdbc:mysql://10.4.0.15:3306/zabbix";
+    private static String databaseURL = "jdbc:mysql://localhost/zabbix";
     /**
      * The driver to be used to contact the database.
      */
@@ -128,11 +126,11 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
     /**
      * The user details to contact the database.
      */
-    private static String databaseUser = "ascetic-em";
+    private static String databaseUser = "zabbix";
     /**
      * The user's password to contact the database.
      */
-    private static String databasePassword = "em";
+    private static String databasePassword = "yxCHARvjZRJi";
     /**
      * The filter string, if a host/VM begins with this then it is a host, if
      * isHost equals true.
@@ -173,12 +171,12 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
             config.setProperty("iaas.energy.modeller.filter.isHost", isHost);
 
         } catch (ConfigurationException ex) {
-            Logger.getLogger(Calibrator.class.getName()).log(Level.INFO, "Error loading the configuration of the IaaS energy modeller", ex);
+            Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName()).log(Level.SEVERE, "Error loading the configuration of the IaaS energy modeller", ex);
         }
         try {
             connection = getConnection();
         } catch (IOException | SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -213,7 +211,7 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
             }
             return connection;
         } catch (SQLException | IOException | ClassNotFoundException ex) {
-            Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
@@ -286,7 +284,7 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
@@ -327,7 +325,7 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
@@ -415,7 +413,7 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName()).log(Level.SEVERE, null, ex);
         }
         return answer;
     }
@@ -441,7 +439,7 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName()).log(Level.SEVERE, null, ex);
         }
         return answer;
     }
@@ -465,7 +463,7 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName()).log(Level.SEVERE, null, ex);
         }
         return answer;
     }
@@ -473,6 +471,7 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
     @Override
     public HostMeasurement getHostData(Host host) {
         HostMeasurement answer = new HostMeasurement(host);
+        long clock = 0;
         connection = getConnection(connection);
         if (connection == null) {
             return null;
@@ -485,6 +484,10 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
                 ResultSet resultSet = preparedStatement.executeQuery();
                 ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
                 for (ArrayList<Object> dataItem : results) {
+                    if ((int) dataItem.get(1) > clock) {
+                        clock = (int) dataItem.get(1);
+                        answer.setClock(clock);
+                    }
                     //itemid | clock | name | key_ | value   
                     MetricValue value = new MetricValue(
                             (String) dataItem.get(2),
@@ -495,7 +498,7 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName()).log(Level.SEVERE, null, ex);
         }
         return answer;
     }
@@ -521,6 +524,7 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
     @Override
     public VmMeasurement getVmData(VmDeployed vm) {
         VmMeasurement answer = new VmMeasurement(vm);
+        long clock = 0;
         connection = getConnection(connection);
         if (connection == null) {
             return null;
@@ -533,17 +537,21 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
                 ResultSet resultSet = preparedStatement.executeQuery();
                 ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
                 for (ArrayList<Object> dataItem : results) {
-                    //itemid | clock | name | key_ | value   
+                    if ((int) dataItem.get(1) > clock) {
+                        clock = (int) dataItem.get(1);
+                        answer.setClock(clock);
+                    }
+                    //itemid | clock | name | key_ | value  
                     MetricValue value = new MetricValue(
-                            (String) dataItem.get(2),
-                            (String) dataItem.get(3),
-                            dataItem.get(4) + "",
-                            (Integer) dataItem.get(1));
+                            (String) dataItem.get(2), //name
+                            (String) dataItem.get(3), //key
+                            dataItem.get(4) + "",//value
+                            (Integer) dataItem.get(1)); //clock
                     answer.addMetric(value);
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName()).log(Level.SEVERE, null, ex);
         }
         return answer;
     }
@@ -656,7 +664,7 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
                 answer.add(value);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName()).log(Level.SEVERE, null, ex);
         }
         return answer;
     }
