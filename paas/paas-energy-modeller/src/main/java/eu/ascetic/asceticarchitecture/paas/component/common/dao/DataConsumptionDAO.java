@@ -9,6 +9,7 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import eu.ascetic.asceticarchitecture.paas.component.common.model.DataConsumption;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EnergySamples;
 
 public interface DataConsumptionDAO {
     
@@ -42,6 +43,12 @@ public interface DataConsumptionDAO {
 		public double getTotalEnergyForDeployment(String applicationid,String deploymentid);
 
 		public double getTotalEnergyForVM(String applicationid, String deploymentid,String vmid);
+
+		double getTotalEnergyForVMTime(String applicationid,String vmid, Timestamp start, Timestamp end);
+
+		//List<EnergySamples> getDataSamplesVM(String applicationid, String deployment,String vmid, Timestamp start, Timestamp end);
+
+		void insertBatch(List<DataConsumption> samples);
 	
 	    
 }

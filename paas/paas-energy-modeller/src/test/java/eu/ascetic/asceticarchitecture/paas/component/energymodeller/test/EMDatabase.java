@@ -13,12 +13,10 @@ import org.junit.Test;
 import eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.DataConsumptionDAOImpl;
 import eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.DataEventDAOImpl;
 import eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.EnergyModellerMonitoringDAOImpl;
-import eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.IaaSDataDAOImpl;
 import eu.ascetic.asceticarchitecture.paas.component.common.database.PaaSEMDatabaseManager;
 import eu.ascetic.asceticarchitecture.paas.component.common.model.DataConsumption;
 import eu.ascetic.asceticarchitecture.paas.component.common.model.DataEvent;
 import eu.ascetic.asceticarchitecture.paas.component.common.model.EnergyModellerMonitoring;
-import eu.ascetic.asceticarchitecture.paas.component.common.model.IaaSVMConsumption;
 
 public class EMDatabase {
 	private static PaaSEMDatabaseManager dbmanager;
@@ -42,13 +40,9 @@ public class EMDatabase {
 		Timestamp ts = Timestamp.valueOf("2014-09-27 03:23:34");
 		data.setTime(ts);
 		data.setCpu(50.5);
-		data.setMemory(1024);
-		data.setNetwork(100);
-		data.setDisk(50);
-		data.setHosttotalcpu(50);
-		data.setVmtotalcpu(100);
+		data.setVmpower(100);
 		data.setVmenergy(15);
-		data.setHostenergy(150);
+		
 		dataConsumptionDAO.save(data);
 		Timestamp tsres = dataConsumptionDAO.getLastConsumptionForVM("test1", "vm1");
 		Assert.assertEquals(ts,tsres);
@@ -117,15 +111,15 @@ public class EMDatabase {
 		
 	}
 	
-	@Test
-	public void testIaaSData() {
-		IaaSDataDAOImpl iaasdao = dbmanager.getIaasdatadao();
-		Assert.assertEquals("10106",iaasdao.getHostIdForVM("10111"));
-		Assert.assertEquals("0",iaasdao.getHostTotalCpu("10106"));
-		List<IaaSVMConsumption> list = iaasdao.getEnergyForVM("10106", "10111");
-		Assert.assertEquals(299,list.size());
-	}
-	
+//	@Test
+//	public void testIaaSData() {
+//		IaaSDataDAOImpl iaasdao = dbmanager.getIaasdatadao();
+//		Assert.assertEquals("10106",iaasdao.getHostIdForVM("10111"));
+//		Assert.assertEquals("0",iaasdao.getHostTotalCpu("10106"));
+//		List<IaaSVMConsumption> list = iaasdao.getEnergyForVM("10106", "10111");
+//		Assert.assertEquals(299,list.size());
+//	}
+//	
 
 	
 }

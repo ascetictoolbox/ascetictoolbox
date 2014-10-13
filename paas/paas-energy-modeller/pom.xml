@@ -63,7 +63,11 @@
 			<artifactId>jersey-client</artifactId>
 			<version>1.18.1</version>
 		</dependency>
-
+    <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>4.3.4</version>
+    </dependency>
 		<dependency>
 			<groupId>org.apache.jmeter</groupId>
 			<artifactId>ApacheJMeter_core</artifactId>
@@ -105,8 +109,16 @@
 			<artifactId>commons-math3</artifactId>
 			<version>3.2</version>
 		</dependency>
-
-
+		<dependency>
+			<groupId>org.apache.jmeter</groupId>
+			<artifactId>jorphan</artifactId>
+			<version>${paasem.jmeter}</version>
+		</dependency>
+		<dependency>
+			<groupId>eu.ascetic.iaas</groupId>
+			<artifactId>zabbix-api</artifactId>
+			<version>0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<build>

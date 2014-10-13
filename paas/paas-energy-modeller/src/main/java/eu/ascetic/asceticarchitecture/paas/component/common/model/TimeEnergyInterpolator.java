@@ -31,7 +31,7 @@ public class TimeEnergyInterpolator implements Interpolator {
 		Vector<Double> newdata = new Vector<Double>();
 		newtimes.add(timedata[0]);
 		newdata.add(endata[0]);
-		LOGGER.info("Removing duplicate "+timedata.length);
+		//LOGGER.info("Removing duplicate "+timedata.length);
 		for(int i=1;i<timedata.length;i++){
 			if (timedata[i]!=timedata[i-1]){
 				newtimes.add(timedata[i]);
@@ -39,7 +39,7 @@ public class TimeEnergyInterpolator implements Interpolator {
 			}
 			
 		}
-		LOGGER.info("Removed "+newtimes.size());
+		//LOGGER.info("Removed "+newtimes.size());
 		timedata = new double[newtimes.size()];
 		endata = new double[newtimes.size()];
 		for (int j=0;j<newtimes.size();j++){
@@ -69,9 +69,9 @@ public class TimeEnergyInterpolator implements Interpolator {
 		interpolator = new SplineInterpolator().interpolate(timedata,endata);
 		ols.newSampleData(samples, observation, variable);
 		estimatedols = ols.estimateRegressionParameters();
-		for (double d : estimatedols){
-			LOGGER.info("coeff "+d);
-		}
+		//for (double d : estimatedols){
+			//LOGGER.info("coeff "+d);
+		//}
 	}
 
 	
@@ -80,9 +80,9 @@ public class TimeEnergyInterpolator implements Interpolator {
 	public double estimate(double value) {
 
 		
-		LOGGER.info("Linear Predictor Value " +rs.predict(value));
+		//LOGGER.info("Linear Predictor Value " +rs.predict(value));
 		double est = estimate(value,estimatedols);
-		LOGGER.info("Value from poly " +est);
+		//LOGGER.info("Value from poly " +est);
 		return est;
 		
 	}

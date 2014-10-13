@@ -23,32 +23,32 @@ public class PaaSEMDatabaseManager {
 	private DataConsumptionDAOImpl dataconsumptiondao;
 	private DataEventDAOImpl dataeeventdao;
 	private EnergyModellerMonitoringDAOImpl monitoringdata;
-	private IaaSDataDAOImpl iaasdatadao;
+	//private IaaSDataDAOImpl iaasdatadao;
 	
 
 	public boolean setup(EMSettings emSettings){
 		dataconsumptiondao = new DataConsumptionDAOImpl();
 		dataeeventdao = new DataEventDAOImpl();
 		monitoringdata = new EnergyModellerMonitoringDAOImpl();
-		iaasdatadao = new IaaSDataDAOImpl();
+		//iaasdatadao = new IaaSDataDAOImpl();
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
    		dataSource.setDriverClassName(emSettings.getPaasdriver());
    		dataSource.setUrl(emSettings.getPaasurl());
 		dataSource.setUsername(emSettings.getPaasdbuser());
 		dataSource.setPassword(emSettings.getPaasdbpassword());
-		DriverManagerDataSource iaasdataSource = new DriverManagerDataSource();
-		iaasdataSource.setDriverClassName(emSettings.getIaasdriver());
-		iaasdataSource.setUrl(emSettings.getIaasurl());
-		iaasdataSource.setUsername(emSettings.getIaasdbuser());
-		iaasdataSource.setPassword(emSettings.getIaasdbpassword());
+		//DriverManagerDataSource iaasdataSource = new DriverManagerDataSource();
+//		iaasdataSource.setDriverClassName(emSettings.getIaasdriver());
+//		iaasdataSource.setUrl(emSettings.getIaasurl());
+//		iaasdataSource.setUsername(emSettings.getIaasdbuser());
+//		iaasdataSource.setPassword(emSettings.getIaasdbpassword());
 		dataconsumptiondao.setDataSource(dataSource);
 		dataeeventdao.setDataSource(dataSource);
 		monitoringdata.setDataSource(dataSource);
-		iaasdatadao.setDataSource(iaasdataSource);
+		//iaasdatadao.setDataSource(iaasdataSource);
 		dataconsumptiondao.initialize();
 		dataeeventdao.initialize();
 		monitoringdata.initialize();
-		iaasdatadao.initialize();
+		//iaasdatadao.initialize();
 		return true;
 	}
 	
@@ -57,12 +57,12 @@ public class PaaSEMDatabaseManager {
 		dataconsumptiondao = (DataConsumptionDAOImpl)context.getBean("dataConsumptionDAO");
 		dataeeventdao = (DataEventDAOImpl)context.getBean("dataEventDAO");
 		monitoringdata = (EnergyModellerMonitoringDAOImpl)context.getBean("emModelDAO");
-		iaasdatadao = (IaaSDataDAOImpl) context.getBean("dataSourceIaaSDAO");
+		//iaasdatadao = (IaaSDataDAOImpl) context.getBean("dataSourceIaaSDAO");
 		
 		dataconsumptiondao.initialize();
 		dataeeventdao.initialize();
 		monitoringdata.initialize();
-		iaasdatadao.initialize();
+		//iaasdatadao.initialize();
 		return true;
 	}
 	
@@ -78,13 +78,10 @@ public class PaaSEMDatabaseManager {
 		return monitoringdata;
 	}
 	
-	public IaaSDataDAOImpl getIaasdatadao() {
-		return iaasdatadao;
-	}
+//	public IaaSDataDAOImpl getIaasdatadao() {
+//		return iaasdatadao;
+//	}
 	
-	public void getMeasurementQuery(String applicationid,String deployment, List<String> vms, Timestamp start, Timestamp end){
-		
-	}
 
 	
 }

@@ -3,16 +3,22 @@
  */
 package eu.ascetic.asceticarchitecture.paas.component.energymodeller.test;
 
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.Vector;
+
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.builder.EnergyModellerFactory;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EnergySamples;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.EnergyModellerSimple;
 
 public class EnergyModellerData {
 
 	private static EnergyModellerSimple serviceEM;
+	private static String HOST = "cdf624c1-1bc9-49dd-adc4-627fa25c1969";
 	
 	@BeforeClass
 	public static void setup() {
@@ -20,48 +26,51 @@ public class EnergyModellerData {
 		
 	}
 	
+	
 	@Test
-	public void testEnergyModellerApplicationConsumption() {
-		double energy = serviceEM.energyApplicationConsumption("providerid", "applicationid", "deploymentid");
-		
+	public void testEEnergyForApp() {
+		System.out.println("Test 1");
+		List<String> vmids = new Vector<String>();
+		vmids.add(HOST);
+		double energy  = serviceEM.energyApplicationConsumption("providerid", "HMMERpfam", vmids, null);
 		Assert.assertNotNull(energy);
 	}
 	
 	@Test
-	public void testEnergyModellerEnergyEstimation() {
-		double energy = serviceEM.energyEstimation("providerid", "applicationid", "deploymentid",null);
-		Assert.assertNotNull(energy);
-	}
-
-	@Test
-	public void testEnergyModellerEnergyEstimationEvent() {
-		String appid = "applicationID_deploymentID";
-		double energy = serviceEM.energyEstimation("providerid", appid, "null","null");
+	public void testEEnergyForEvent() {
+		System.out.println("Test 2");
+		List<String> vmids = new Vector<String>();
+		vmids.add(HOST);
+		double energy = serviceEM.energyApplicationConsumption("providerid", "HMMERpfam", vmids, "testevent");
 		Assert.assertNotNull(energy);
 	}
 	
 	@Test
-	public void testEnergyModellerStartModelling() {
-		boolean started = serviceEM.startModellingApplicationEnergy("providerid", "applicationid", "deploymentid");
-		Assert.assertTrue(started);
+	public void testEEnergyForAppTime() {
+		System.out.println("Test 3");
+		double energy = serviceEM.energyApplicationConsumptionTimeInterval("providerid", "HMMERpfam", HOST, null, new Timestamp(1413117929000L), new Timestamp(1413118709000L));
+		Assert.assertNotNull(energy);
+	
 	}
 	
 	@Test
-	public void testEnergyModellerEndModelling() {
-		boolean ended = serviceEM.stopModellingApplicationEnergy("providerid", "applicationid", "deploymentid");
-		Assert.assertTrue(ended);
+	public void testEEnergyForEventTime() {
+		System.out.println("Test 4");
+		double energy = serviceEM.energyApplicationConsumptionTimeInterval("providerid", "HMMERpfam", HOST, "eventtype", new Timestamp(1413117929000L), new Timestamp(1413118709000L));
+		Assert.assertNotNull(energy);
+	
 	}
 	
 	@Test
-	public void trainApplication() {
-		boolean training = serviceEM.trainApplication("providerid", "applicationid", "deploymentid",null);
-		Assert.assertTrue(training);
-	}
+	public void testEEnergySamplesForEventTime() {
+	System.out.println("Test 5");
+		List<EnergySamples> energy = serviceEM.energyApplicationConsumptionData("providerid", "HMMERpfam",  HOST, "eventtype", new Timestamp(1413117929000L), new Timestamp(1413118709000L));
+		System.out.println("Energy "+ energy.size());
+		for (EnergySamples es : energy){
+			System.out.println("Energy sample "+ es.getValue()+ " vmid "+es.getVmid()+ " ts "+es.getTimestampBeging());
+		}
+		Assert.assertNotNull(energy);
 	
-	@Test
-	public void trainEvent() {
-		boolean training = serviceEM.trainApplication("providerid", "HMMERpfam", "45","event");
-		Assert.assertTrue(training);
 	}
 	
 

@@ -4,10 +4,12 @@
 package eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.task;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
 import eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.DataConsumptionDAOImpl;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EnergySamples;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.DataAggregatorTaskInterface;
 
 public class EnergyDataAggregatorService implements DataAggregatorTaskInterface {
@@ -15,48 +17,53 @@ public class EnergyDataAggregatorService implements DataAggregatorTaskInterface 
 	private DataConsumptionDAOImpl dataDAO;
 	private static final Logger logger = Logger.getLogger(EnergyDataAggregatorService.class);
 	
-	@Override
-	public double getTotal(String app, String depl, String event) {
-		double result = dataDAO.getTotalEnergyForDeployment(app, depl);
-		logger.info("Total is "+result);
-		return result;
+	public void setDataDAO(DataConsumptionDAOImpl dataDAO) {
+		this.dataDAO = dataDAO;
 	}
+	
 
 	@Override
 	public double getTotal(String app, String depl, String vmid,String event) {
 		double result = dataDAO.getTotalEnergyForVM(app, depl, vmid);
-		logger.info("Total is "+result);
+		//logger.info("Total is "+result);
 		return result;
 	}
 
-	@Override
-	public double getTotalAtTime(String app, String depl, String event,	Timestamp time) {
-		// TODO Auto-generated method stub
-		return 1;
-	}
-
-	@Override
-	public double getTotalAtTime(String app, String depl, String vmid, String event, Timestamp time) {
-		// TODO Auto-generated method stub
-		return 1;
-	}
-
-	public void setDataDAO(DataConsumptionDAOImpl dataDAO) {
-		this.dataDAO = dataDAO;
-	}
 
 	@Override
 	public double getAverage(String app, String depl, String vmid, String event) {
 		double result = dataDAO.getTotalEnergyForVM(app, depl, vmid);
 		Timestamp min = dataDAO.getFirsttConsumptionForVM(app, vmid);
 		Timestamp max= dataDAO.getLastConsumptionForVM(app, vmid);
-		long diff = max.getTime()-min.getTime();
+		double diff = max.getTime()-min.getTime();
 		diff = diff / 3600000;
 		
-		logger.info("Total is "+result + " over "+diff);
-		logger.info("Per hour is "+result /diff);
-		return result;
+		if (result>0)logger.info("Total is "+result + " over "+diff);
+		//logger.info("Average is "+result );
+		if (diff==0)return 0;
+		return result*diff;
 	}
+
+	@Override
+	public double getAverageInInterval(String app, String vmid,String event, long start, long end) {
+		double result = dataDAO.getTotalEnergyForVMTime(app, vmid,new Timestamp(start),new Timestamp(end));
+		
+		logger.info("Total is "+result);
+		//logger.info("Per hour is "+result );
+		double diff = end -start;
+		logger.info("from "+start + " to "+end);
+		diff = diff / 3600000;
+		if (result>0)logger.info("Total is "+result + " over "+diff);
+		if (diff==0)return 0;
+		return result*diff;
+		
+	}
+
+//	@Override
+//	public List<EnergySamples> getSamplesInInterval(String app, String depl, String vmid, String event, Timestamp start, Timestamp end, long freq) {
+//		
+//		return dataDAO.getDataSamplesVM(app, depl, vmid, start, end);
+//	}
 
 
 

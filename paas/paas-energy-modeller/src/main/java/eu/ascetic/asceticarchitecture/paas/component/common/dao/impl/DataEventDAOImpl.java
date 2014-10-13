@@ -24,13 +24,16 @@ public class DataEventDAOImpl implements DataeEventDAO {
 			+ "vmid varchar(50), eventid varchar(50), data varchar(100), starttime timestamp,endtime timestamp, energy double)";
 	private static String SQL_INSERT="insert into DATAEVENT (applicationid,deploymentid,vmid, data, starttime,endtime, energy,eventid ) values (?,?,?, ?, ?, ?, ?,?) ";
 	private static String SQL_Q_APPID="select * from DATAEVENT where applicationid = ?";
+	private static String SQL_Q_APPIDTime="select * from DATAEVENT where applicationid = ? and UNIX_TIMESTAMP(starttime) >= ? and UNIX_TIMESTAMP(starttime) <= ?";
 	private static String SQL_Q_DEPID="select * from DATAEVENT where deploymentid = ?";
-	private static String SQL_Q_LASTVM="select max(starttime) from DATAEVENT where applicationid = ? and vmid = ? and eventid = ?";
 	private static String SQL_Q_VMID="select * from DATAEVENT where vmid = ?";
 	private static String SQL_FIRST_EV="select min(starttime) from DATAEVENT where applicationid = ? and deploymentid = ? and eventid = ?";
-	private static String SQL_LAST_EV="select max(endtime) from DATAEVENT where applicationid = ? and deploymentid = ? and eventid = ?";
+	
 	private static String SQL_FIRST_EV_VM="select min(starttime) from DATAEVENT where applicationid = ? and deploymentid = ? and vmid = ? and eventid = ?";
 	private static String SQL_LAST_EV_VM="select max(endtime) from DATAEVENT where applicationid = ? and deploymentid = ? and vmid = ? and eventid = ?";
+	private static String SQL_LAST_EV="select max(endtime) from DATAEVENT where applicationid = ? and deploymentid = ? and eventid = ?";
+	private static String SQL_Q_LASTVM="select max(starttime) from DATAEVENT where applicationid = ? and vmid = ? and eventid = ?";
+	private static String SQL_Q_LASTEV="select max(starttime) from DATAEVENT where applicationid = ? and eventid = ?";
 	private static String SQL_COUNT_EV="select IFNULL(count(*),0) from DATAEVENT where applicationid = ? and deploymentid = ? and eventid = ?";
 	private static String SQL_COUNT_EV_VM="select IFNULL(count(*),0) from DATAEVENT where applicationid = ? and deploymentid = ? and vmid = ? and eventid = ?";
 	private static String SQL_CLEAN="DELETE FROM DATAEVENT";
@@ -39,7 +42,7 @@ public class DataEventDAOImpl implements DataeEventDAO {
 	@Override
 	public void initialize() {
 		jdbcTemplate.execute(SQL_CREATE);
-		//jdbcTemplate.execute(SQL_CLEAN);
+		jdbcTemplate.execute(SQL_CLEAN);
 	    LOGGER.debug("Created table DATAEVENT");
 	}
 	
@@ -63,7 +66,12 @@ public class DataEventDAOImpl implements DataeEventDAO {
 		return jdbcTemplate.query(SQL_Q_APPID,new Object[]{applicationid}, new DataEventMapper());
 		
 	}
-
+	@Override
+	public List<DataEvent> getByApplicationIdTime(String applicationid,Timestamp start,Timestamp end) {
+		System.out.println("times "+start.getTime()+" " + end.getTime());
+		return jdbcTemplate.query(SQL_Q_APPIDTime,new Object[]{applicationid,start.getTime()/1000,end.getTime()/1000}, new DataEventMapper());
+		
+	}
 	@Override
 	public List<DataEvent> getByDeploymentId(String deploymentyid) {
 		return jdbcTemplate.query(SQL_Q_DEPID,new Object[]{deploymentyid}, new DataEventMapper());
@@ -76,44 +84,47 @@ public class DataEventDAOImpl implements DataeEventDAO {
 
 	@Override
 	public Timestamp getLastEventForVM(String applicationid, String vmid, String eventid) {
-		Timestamp ts =	jdbcTemplate.queryForObject(SQL_Q_LASTVM,new Object[]{applicationid,vmid, eventid}, Timestamp.class);
+		Timestamp ts = null;
+		if (vmid==null){
+			 ts =	jdbcTemplate.queryForObject(SQL_Q_LASTEV,new Object[]{applicationid, eventid}, Timestamp.class);
+		}else{
+			 ts =	jdbcTemplate.queryForObject(SQL_Q_LASTVM,new Object[]{applicationid,vmid, eventid}, Timestamp.class);
+		}
 		return ts;
 	}
 
-	@Override
-	public Timestamp getFirstEventTime(String applicationid, String deploymentid, String eventid) {
-		Timestamp ts =	jdbcTemplate.queryForObject(SQL_FIRST_EV,new Object[]{applicationid,deploymentid, eventid}, Timestamp.class);
-		return ts;
-	}
-	
-	@Override
-	public Timestamp getLastEventTime(String applicationid, String deploymentid, String eventid) {
-		Timestamp ts =	jdbcTemplate.queryForObject(SQL_LAST_EV,new Object[]{applicationid,deploymentid, eventid}, Timestamp.class);
-		return ts;
-	}
 
 	@Override
 	public Timestamp getFirstEventTimeVM(String applicationid,String deploymentid, String vmid, String eventid) {
-		Timestamp ts =	jdbcTemplate.queryForObject(SQL_FIRST_EV_VM,new Object[]{applicationid,deploymentid, vmid, eventid}, Timestamp.class);
+		Timestamp ts = null;
+		if (vmid==null){
+			ts =	jdbcTemplate.queryForObject(SQL_FIRST_EV,new Object[]{applicationid,deploymentid, eventid}, Timestamp.class);
+		}else {
+			ts = jdbcTemplate.queryForObject(SQL_FIRST_EV_VM,new Object[]{applicationid,deploymentid, vmid, eventid}, Timestamp.class);
+		}
 		return ts;
 	}
 
-	@Override
-	public Timestamp getLastEventTimeVM(String applicationid,String deploymentid, String vmid, String eventid) {
-		Timestamp ts =	jdbcTemplate.queryForObject(SQL_LAST_EV_VM,new Object[]{applicationid,deploymentid,vmid , eventid}, Timestamp.class);
-		return ts;
-	}
-	
-	@Override
-	public int getEventCount(String applicationid,String deploymentid, String eventid) {
-		int res =	jdbcTemplate.queryForObject(SQL_COUNT_EV,new Object[]{applicationid,deploymentid , eventid}, Integer.class);
-		LOGGER.info("Count is "+res);
-		return res;
-	}
+//	@Override
+//	public Timestamp getLastEventTimeVM(String applicationid,String deploymentid, String vmid, String eventid) {
+//		Timestamp ts = null;
+//		if (vmid==null){
+//			ts =	jdbcTemplate.queryForObject(SQL_LAST_EV,new Object[]{applicationid,deploymentid, eventid}, Timestamp.class);
+//		}else {
+//			ts =	jdbcTemplate.queryForObject(SQL_LAST_EV_VM,new Object[]{applicationid,deploymentid,vmid , eventid}, Timestamp.class);	
+//		}
+//		return ts;
+//	}
 	
 	@Override
 	public int getEventCountVM(String applicationid,String deploymentid, String vmid, String eventid) {
-		int res =	jdbcTemplate.queryForObject(SQL_COUNT_EV_VM,new Object[]{applicationid,deploymentid,vmid , eventid}, Integer.class);
+		int res = 0;
+		if (vmid==null){
+			res =	jdbcTemplate.queryForObject(SQL_COUNT_EV,new Object[]{applicationid,deploymentid , eventid}, Integer.class);
+		} else {
+			res =	jdbcTemplate.queryForObject(SQL_COUNT_EV_VM,new Object[]{applicationid,deploymentid,vmid , eventid}, Integer.class);
+		}
+		
 		LOGGER.info("Count is "+res);
 		return res;
 	}

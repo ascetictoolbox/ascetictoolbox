@@ -17,9 +17,6 @@
         <property name="dataSource" ref="dataSource" />
     </bean>
     
-    <bean id="dataSourceIaaSDAO" class="eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.IaaSDataDAOImpl">
-        <property name="dataSource" ref="dataSourceIaaS" />
-    </bean>
      
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver" />
@@ -27,14 +24,7 @@
         <property name="username" value="root" />
         <property name="password" value="root" />
     </bean>
-
-    <bean id="dataSourceIaaS" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-        <property name="url" value="jdbc:mysql://localhost:3306/ascetic-em" />
-        <property name="username" value="root" />
-        <property name="password" value="root" />
-    </bean>
-    
+   
    <bean id="instance" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver" />
         <property name="url" value="jdbc:mysql://localhost:3306/" />
