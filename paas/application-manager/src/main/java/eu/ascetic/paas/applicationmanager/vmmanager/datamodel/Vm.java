@@ -138,4 +138,62 @@ public class Vm {
 	public void setOvfId(String ovfId) {
 		this.ovfId = ovfId;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+        if (!(obj instanceof Vm))
+            return false;
+        if (obj == this)
+            return true;
+
+        Vm vm = (Vm) obj;
+        
+        if(this.ovfId == null) {
+        	if(vm.getOvfId() != null) {
+        		return false;
+        	}
+        } else if(!this.ovfId.equals(vm.ovfId)) {
+        	return false;
+        }
+        
+        if(this.name == null) {
+        	if(vm.getName() != null ) {
+        		return false;
+        	}
+        } else if(!this.name.equals(vm.name)) {
+        	return false;
+        }
+        
+        if(this.image == null) {
+        	if(vm.getImage() != null) {
+        		return false;
+        	}
+        } else if(!this.image.equals(vm.image)) {
+        	return false;
+        }
+        
+        if(this.initScript == null) {
+        	if(vm.getInitScript() != null) {
+        		return false;
+        	}
+        } else if(!this.initScript.equals(vm.initScript)) {
+        	return false;
+        }
+        
+        if(this.applicationId == null) {
+        	if(vm.getApplicationId() != null) {
+        		return false;
+        	}
+        } else if(!this.applicationId.equals(vm.applicationId)) {
+        	return false;
+        }
+        
+        if(this.cpus == vm.getCpus()
+           && this.ramMb == vm.getRamMb()
+           && this.diskGb == vm.getDiskGb()) {
+        	return true;
+        } else {
+        	return false;
+        }
+	}
 }

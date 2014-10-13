@@ -15,8 +15,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
+import eu.ascetic.paas.applicationmanager.dao.ImageDAO;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
+import eu.ascetic.paas.applicationmanager.model.Image;
 
 /**
  * 
@@ -45,10 +47,12 @@ public class ApplicationDAOJpaTest extends AbstractTransactionalJUnit4SpringCont
 	protected ApplicationDAO applicationDAO;
 	@Autowired
 	protected DeploymentDAO deploymentDAO;
+	@Autowired
+	protected ImageDAO imageDAO;
 	
 	@Test
 	public void notNull() {
-		if(applicationDAO == null || deploymentDAO == null) fail();
+		if(applicationDAO == null || deploymentDAO == null || imageDAO == null) fail();
 	}
 	
 	@Test
@@ -175,8 +179,6 @@ public class ApplicationDAOJpaTest extends AbstractTransactionalJUnit4SpringCont
 		boolean saved = applicationDAO.save(application);
 		assertTrue(saved);
 		
-
-		
 		Application applicationFromDatabase = applicationDAO.getAll().get(size);
 		int id = applicationFromDatabase.getId();
 		applicationFromDatabase = applicationDAO.getById(id);
@@ -193,5 +195,41 @@ public class ApplicationDAOJpaTest extends AbstractTransactionalJUnit4SpringCont
 		assertEquals(0, deployments.size());
 	}
 	
+	@Test
+	public void imageCascadeTest() {
+		int size = applicationDAO.getAll().size();
+		int sizeImages = imageDAO.getAll().size();
+		
+		Application application = new Application();
+		application.setName("name");
+		
+		Image image1 = new Image();
+		image1.setOvfId("ovf-id1");
+		Image image2 = new Image();
+		image2.setOvfId("ovf-id2");
+		
+		application.addImage(image1);
+		application.addImage(image2);
+		
+		boolean saved = applicationDAO.save(application);
+		assertTrue(saved);
+		
+		int sizeImagesNew = imageDAO.getAll().size();
+		assertEquals(sizeImages + 2, sizeImagesNew);
+		
+		Application applicationFromDatabase = applicationDAO.getAll().get(size);
+		int id = applicationFromDatabase.getId();
+		applicationFromDatabase = applicationDAO.getById(id);
+		assertEquals("name", applicationFromDatabase.getName());
+		
+		assertEquals(2, applicationFromDatabase.getImages().size());
+		assertEquals("ovf-id1", applicationFromDatabase.getImages().get(0).getOvfId());
+		
+		boolean deleted = applicationDAO.delete(applicationFromDatabase);
+		assertTrue(deleted);
+		
+		sizeImagesNew = imageDAO.getAll().size();
+		assertEquals(sizeImages, sizeImagesNew);
+	}
 }
 

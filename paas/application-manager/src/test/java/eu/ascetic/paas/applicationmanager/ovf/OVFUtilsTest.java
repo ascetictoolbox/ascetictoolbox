@@ -59,163 +59,163 @@ public class OVFUtilsTest {
 		threeTierWebAppOvfString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
 	}
 	
-//	@Test
-//	public void integrationTest() throws Exception {
-//		File file = new File(this.getClass().getResource( "/saas.ovf" ).toURI());
-//		String ovf = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
-//		ovfDocument = OvfDefinition.Factory.newInstance(ovf);
-//		System.out.println("OVF: " + ovfDocument);
-//		
-//		VirtualSystemCollection vsc = ovfDocument.getVirtualSystemCollection();
-//		
-//		for(int i = 0; i < vsc.getVirtualSystemArray().length; i++) {
-//			VirtualSystem virtSystem = vsc.getVirtualSystemAtIndex(i);
-//			System.out.println("Virtual System: " + virtSystem);
-//			
-//			int asceticUpperBound = virtSystem.getProductSectionAtIndex(0).getUpperBound();
-//			String vmName = virtSystem.getName();
-//			int cpus = virtSystem.getVirtualHardwareSection().getNumberOfVirtualCPUs();
-//			int ramMb = virtSystem.getVirtualHardwareSection().getMemorySize();
-//			int diskSize = getDiskSizeFromVm(getDiskId(virtSystem.getVirtualHardwareSection()), ovfDocument);
-//			String isoPath = getIsoPathFromVm(virtSystem.getVirtualHardwareSection(), ovfDocument);
-//			
-//			System.out.println("THINGS: " + cpus + " " + ramMb + " " + diskSize + " " + isoPath + " " + vmName + " " + asceticUpperBound);
-//			
-//			ImageToUpload imgToUpload = getImageToUpload(getImgFileRefOvfDocument(virtSystem.getVirtualHardwareSection(), 
-//					ovfDocument));
-//			
-//			System.out.println("IMAGES: " + imgToUpload.getName());
-//			System.out.println("OVF-ID: " + virtSystem.getId());
-//		}
-//	}
-//	
-//	private String getImgFileRefOvfDocument(VirtualHardwareSection virtualHardwareSection, 
-//			OvfDefinition ovfDefinition) {
-//		String urlImg = null;
-//		String fileId = getFileIdFromDiskId(getDiskId(virtualHardwareSection), ovfDefinition);
-//		System.out.println("FILE ID: " + fileId);
-//		eu.ascetic.utils.ovf.api.File[] files = ovfDefinition.getReferences().getFileArray();
-//		if (files != null && files.length>0){
-//			eu.ascetic.utils.ovf.api.File file = null;
-//			for (int i = 0; i<files.length; i++){
-//				file = files[i];
-//				if (file.getId().equalsIgnoreCase(fileId)){
-//					return file.getHref();
-//				}
-//			}
-//		}
-//		else {
-//			System.out.println("No references section available in OVF!!");
-//		}
-//		
-//		return urlImg;
-//	}
-//	
-//	private ImageToUpload getImageToUpload(String imgFileRefOvfDocument) {
-//		System.out.println("imgFileRefOvfDocument " + imgFileRefOvfDocument);
-//		ImageToUpload imgToUpload = null;
-//		if (!imgFileRefOvfDocument.equalsIgnoreCase("")){
-//			String name = imgFileRefOvfDocument.substring(imgFileRefOvfDocument.lastIndexOf("/")+1, imgFileRefOvfDocument.length());
-//			imgToUpload = new ImageToUpload(name, imgFileRefOvfDocument);
-//		}
-//		return imgToUpload;
-//	}
-//	
-//	private String getIsoId(VirtualHardwareSection virtHwSection){
-//		String isoId = "";
-//		Item item = null;
-//		for (int i=0; i<virtHwSection.getItemArray().length; i++){
-//			item = virtHwSection.getItemAtIndex(i);
-//			if (item.getDescription().equalsIgnoreCase("VM CDROM")){
-//				String list[] = item.getHostResourceArray();
-//				String hostResource = "";
-//				if (list!=null && list.length >0){
-//					hostResource = list[0];
-//					isoId = hostResource.substring(hostResource.lastIndexOf("/")+1, hostResource.length());
-//					return isoId;
-//				}				
-//			}
-//		}
-//		return isoId;
-//	}
-//	
-//	private String getFileIdFromDiskId(String diskId, OvfDefinition ovfDocument){
-//		String fileId = null;
-//		if (!diskId.equalsIgnoreCase("")){
-//			Disk[] diskList = ovfDocument.getDiskSection().getDiskArray();
-//			if (diskList != null && diskList.length>0){
-//				Disk disk = null;
-//				for (int i = 0; i<diskList.length; i++){
-//					disk = diskList[i];
-//					if (disk.getDiskId().equalsIgnoreCase(diskId)){
-//						return disk.getFileRef();
-//					}
-//				}
-//			}
-//			else {
-//				System.out.println("No disk section available in OVF!!");
-//			}
-//		}
-//		return fileId;
-//	}
-//	
-//	
-//	private String getIsoPathFromVm(VirtualHardwareSection virtHwSection, OvfDefinition ovfDocument){
-//		String isoPath = null;
-//		String fileId = getFileIdFromDiskId(getIsoId(virtHwSection), ovfDocument);
-//		eu.ascetic.utils.ovf.api.File[] files = ovfDocument.getReferences().getFileArray();
-//		if (files != null && files.length>0){
-//			eu.ascetic.utils.ovf.api.File file = null;
-//			for (int i = 0; i<files.length; i++){
-//				file = files[i];
-//				if (file.getId().equalsIgnoreCase(fileId)){
-//					return file.getHref();
-//				}
-//			}
-//		}
-//		else {
-//			System.out.println("No references section available in OVF!!");
-//		}
-//		
-//		return isoPath;
-//	}
-//	
-//	private String getDiskId(VirtualHardwareSection virtHwSection){
-//		String diskId = "";
-//		Item item = null;
-//		for (int i=0; i<virtHwSection.getItemArray().length; i++){
-//			item = virtHwSection.getItemAtIndex(i);
-//			if (item.getResourceType().getNumber() == 17){
-//				String list[] = item.getHostResourceArray();
-//				String hostResource = "";
-//				if (list!=null && list.length >0){
-//					hostResource = list[0];
-//					diskId = hostResource.substring(hostResource.lastIndexOf("/")+1, hostResource.length());
-//					return diskId;
-//				}				
-//			}
-//		}
-//		System.out.println("DISK ID: " + diskId);
-//		return diskId;
-//	}
-//	
-//	private  int getDiskSizeFromVm(String diskId, OvfDefinition ovfDocument){
-//		int diskSize = 0;
-//		Disk[] diskList = ovfDocument.getDiskSection().getDiskArray();
-//		if (diskList != null && diskList.length>0){
-//			Disk disk = null;
-//			for (int i = 0; i<diskList.length; i++){
-//				disk = diskList[i];
-//				if (disk.getDiskId().equalsIgnoreCase(diskId)){
-//					return Integer.parseInt(disk.getCapacity());
-//				}
-//			}
-//		}
-//		else {
-//			System.out.println("No disk section available in OVF!!");
-//		}
-//		return diskSize;
-//	}
+	@Test
+	public void integrationTest() throws Exception {
+		File file = new File(this.getClass().getResource( "/saas.ovf" ).toURI());
+		String ovf = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
+		ovfDocument = OvfDefinition.Factory.newInstance(ovf);
+		System.out.println("OVF: " + ovfDocument);
+		
+		VirtualSystemCollection vsc = ovfDocument.getVirtualSystemCollection();
+		
+		for(int i = 0; i < vsc.getVirtualSystemArray().length; i++) {
+			VirtualSystem virtSystem = vsc.getVirtualSystemAtIndex(i);
+			System.out.println("Virtual System: " + virtSystem);
+			
+			int asceticUpperBound = virtSystem.getProductSectionAtIndex(0).getUpperBound();
+			String vmName = virtSystem.getName();
+			int cpus = virtSystem.getVirtualHardwareSection().getNumberOfVirtualCPUs();
+			int ramMb = virtSystem.getVirtualHardwareSection().getMemorySize();
+			int diskSize = getDiskSizeFromVm(getDiskId(virtSystem.getVirtualHardwareSection()), ovfDocument);
+			String isoPath = getIsoPathFromVm(virtSystem.getVirtualHardwareSection(), ovfDocument);
+			
+			System.out.println("THINGS: " + cpus + " " + ramMb + " " + diskSize + " " + isoPath + " " + vmName + " " + asceticUpperBound);
+			
+			ImageToUpload imgToUpload = getImageToUpload(getImgFileRefOvfDocument(virtSystem.getVirtualHardwareSection(), 
+					ovfDocument));
+			
+			System.out.println("IMAGES: " + imgToUpload.getName());
+			System.out.println("OVF-ID: " + virtSystem.getId());
+		}
+	}
+	
+	private String getImgFileRefOvfDocument(VirtualHardwareSection virtualHardwareSection, 
+			OvfDefinition ovfDefinition) {
+		String urlImg = null;
+		String fileId = getFileIdFromDiskId(getDiskId(virtualHardwareSection), ovfDefinition);
+		System.out.println("FILE ID: " + fileId);
+		eu.ascetic.utils.ovf.api.File[] files = ovfDefinition.getReferences().getFileArray();
+		if (files != null && files.length>0){
+			eu.ascetic.utils.ovf.api.File file = null;
+			for (int i = 0; i<files.length; i++){
+				file = files[i];
+				if (file.getId().equalsIgnoreCase(fileId)){
+					return file.getHref();
+				}
+			}
+		}
+		else {
+			System.out.println("No references section available in OVF!!");
+		}
+		
+		return urlImg;
+	}
+	
+	private ImageToUpload getImageToUpload(String imgFileRefOvfDocument) {
+		System.out.println("imgFileRefOvfDocument " + imgFileRefOvfDocument);
+		ImageToUpload imgToUpload = null;
+		if (!imgFileRefOvfDocument.equalsIgnoreCase("")){
+			String name = imgFileRefOvfDocument.substring(imgFileRefOvfDocument.lastIndexOf("/")+1, imgFileRefOvfDocument.length());
+			imgToUpload = new ImageToUpload(name, imgFileRefOvfDocument);
+		}
+		return imgToUpload;
+	}
+	
+	private String getIsoId(VirtualHardwareSection virtHwSection){
+		String isoId = "";
+		Item item = null;
+		for (int i=0; i<virtHwSection.getItemArray().length; i++){
+			item = virtHwSection.getItemAtIndex(i);
+			if (item.getDescription().equalsIgnoreCase("VM CDROM")){
+				String list[] = item.getHostResourceArray();
+				String hostResource = "";
+				if (list!=null && list.length >0){
+					hostResource = list[0];
+					isoId = hostResource.substring(hostResource.lastIndexOf("/")+1, hostResource.length());
+					return isoId;
+				}				
+			}
+		}
+		return isoId;
+	}
+	
+	private String getFileIdFromDiskId(String diskId, OvfDefinition ovfDocument){
+		String fileId = null;
+		if (!diskId.equalsIgnoreCase("")){
+			Disk[] diskList = ovfDocument.getDiskSection().getDiskArray();
+			if (diskList != null && diskList.length>0){
+				Disk disk = null;
+				for (int i = 0; i<diskList.length; i++){
+					disk = diskList[i];
+					if (disk.getDiskId().equalsIgnoreCase(diskId)){
+						return disk.getFileRef();
+					}
+				}
+			}
+			else {
+				System.out.println("No disk section available in OVF!!");
+			}
+		}
+		return fileId;
+	}
+	
+	
+	private String getIsoPathFromVm(VirtualHardwareSection virtHwSection, OvfDefinition ovfDocument){
+		String isoPath = null;
+		String fileId = getFileIdFromDiskId(getIsoId(virtHwSection), ovfDocument);
+		eu.ascetic.utils.ovf.api.File[] files = ovfDocument.getReferences().getFileArray();
+		if (files != null && files.length>0){
+			eu.ascetic.utils.ovf.api.File file = null;
+			for (int i = 0; i<files.length; i++){
+				file = files[i];
+				if (file.getId().equalsIgnoreCase(fileId)){
+					return file.getHref();
+				}
+			}
+		}
+		else {
+			System.out.println("No references section available in OVF!!");
+		}
+		
+		return isoPath;
+	}
+	
+	private String getDiskId(VirtualHardwareSection virtHwSection){
+		String diskId = "";
+		Item item = null;
+		for (int i=0; i<virtHwSection.getItemArray().length; i++){
+			item = virtHwSection.getItemAtIndex(i);
+			if (item.getResourceType().getNumber() == 17){
+				String list[] = item.getHostResourceArray();
+				String hostResource = "";
+				if (list!=null && list.length >0){
+					hostResource = list[0];
+					diskId = hostResource.substring(hostResource.lastIndexOf("/")+1, hostResource.length());
+					return diskId;
+				}				
+			}
+		}
+		System.out.println("DISK ID: " + diskId);
+		return diskId;
+	}
+	
+	private  int getDiskSizeFromVm(String diskId, OvfDefinition ovfDocument){
+		int diskSize = 0;
+		Disk[] diskList = ovfDocument.getDiskSection().getDiskArray();
+		if (diskList != null && diskList.length>0){
+			Disk disk = null;
+			for (int i = 0; i<diskList.length; i++){
+				disk = diskList[i];
+				if (disk.getDiskId().equalsIgnoreCase(diskId)){
+					return Integer.parseInt(disk.getCapacity());
+				}
+			}
+		}
+		else {
+			System.out.println("No disk section available in OVF!!");
+		}
+		return diskSize;
+	}
 	
 
 	@Test

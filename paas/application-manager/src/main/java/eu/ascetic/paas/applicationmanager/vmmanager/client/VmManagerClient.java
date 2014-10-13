@@ -127,5 +127,13 @@ public interface VmManagerClient {
 	 * @return the new VM created ID
 	 */
 	public String uploadImage(ImageToUpload imageInfo);
+	
+	/**
+	 * Deletes an image.
+	 *
+	 * @param imageInfo the image info
+	 * @return <code>true</code> if the image was deleted
+	 */
+	public boolean deleteImage(String id);
 
 }

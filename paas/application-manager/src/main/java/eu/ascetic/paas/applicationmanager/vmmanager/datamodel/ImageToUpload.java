@@ -50,4 +50,18 @@ public class ImageToUpload {
         this.url = url;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof ImageToUpload))
+             return false;
+         if (obj == this)
+             return true;
+
+         ImageToUpload imageToUpload = (ImageToUpload) obj;
+         if(this.name.equals(imageToUpload.getName()) && this.url.equals(imageToUpload.getUrl())) {
+        	 return true;
+         } else {
+        	 return false;
+         }
+     }
 }

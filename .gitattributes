@@ -516,6 +516,8 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/jp
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/jpa/ImageDAOJpaTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/jpa/MysqJPATestIT.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/jpa/VMDAOJpaTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/testUtil/MockWebServer.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/ovf/OVFThingsIT.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/ovf/OVFUtilsTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/ApplicationRestTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/DeploymentRestTest.java -text
@@ -539,6 +541,11 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/s
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/vmmanager/VmManagerTest2IT.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/vmmanager/VmManagerTestIT.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/vmmanager/VmManagerUtilsTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/vmmanager/client/VmManagerClientHCIT.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/vmmanager/client/VmManagerClientHCTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/vmmanager/datamodel/ImageToUploadTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/vmmanager/datamodel/VmTest.java -text
+paas/application-manager/src/test/resources/3tier-webapp.ovf.vmc.xml -text
 paas/application-manager/src/test/resources/3tier-webapp.ovf.xml -text
 paas/application-manager/src/test/resources/META-INF/persistence.mysql.test.xml -text
 paas/application-manager/src/test/resources/META-INF/persistence.test.xml -text

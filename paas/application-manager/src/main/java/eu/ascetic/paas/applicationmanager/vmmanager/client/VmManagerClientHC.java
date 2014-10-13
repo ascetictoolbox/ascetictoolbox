@@ -32,56 +32,34 @@ import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.converter.ModelCon
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * 
- * @author: David Rojo. Atos Research and Innovation, Atos SPAIN SA
- * @email david.rojoa@atos.net 
- *
- * Implements the methods that perform the different Actions against the ASCETiC IaaS VM Manager (VMManager)
+ * @author: David Rojo, David Garcia Perez Atos Research and Innovation, Atos SPAIN SA
+ * @email david.rojoa@atos.net , david.garciaperez@atos.net
  * 
+ * The Apache HTTP Client implementation of the VM Manager ASCETiC Client
  */
-
 public class VmManagerClientHC implements VmManagerClient {
-
-	/** The logger. */
 	private static Logger logger = Logger.getLogger(VmManagerClientHC.class);
-	
-	/** The url. */
-	protected String url;
+	private String url;
 	
 	/**
-	 * Instantiates a new vm manager client hc.
+	 * Creates a new VM Manager Client using the URL
+	 * to the VM Manager the one in the Application Manager
+	 * Configuration file.
 	 */
 	public VmManagerClientHC() {
 		this.url = Configuration.vmManagerServiceUrl;
 	}
-	
-	/**
-	 * Instantiates a new vm manager client hc.
-	 *
-	 * @param url the url
-	 */
-	public VmManagerClientHC(String url) {
-		this.url = url;
-	}
 
-	/* (non-Javadoc)
-	 * @see eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient#getURL()
-	 */
 	@Override
 	public String getURL() {
 		return url;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient#setURL(java.lang.String)
-	 */
 	@Override
 	public void setURL(String url) {
 		this.url = url;
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient#getListOfImagesUploaded()
-	 */
+
 	@Override
 	public ListImagesUploaded getAllImages() {
 		Boolean exception = false;
@@ -105,10 +83,7 @@ public class VmManagerClientHC implements VmManagerClient {
 		
 		return imagesUploaded;
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient#getImage(java.lang.String)
-	 */
+
 	@Override
 	public ImageUploaded getImage(String id) {
 		Boolean exception = false;
@@ -132,9 +107,6 @@ public class VmManagerClientHC implements VmManagerClient {
 		return imageUploaded;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient#getAllVMs()
-	 */
 	@Override
 	public ListVmsDeployed getAllVMs() {
 		Boolean exception = false;
@@ -182,9 +154,6 @@ public class VmManagerClientHC implements VmManagerClient {
 		return vm;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient#getVmsOfApp(java.lang.String)
-	 */
 	@Override
 	public ListVmsDeployed getVmsOfApp(String appId) {
 		Boolean exception = false;
@@ -209,22 +178,18 @@ public class VmManagerClientHC implements VmManagerClient {
 		return vmsOfApp;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient#deployVMs(java.util.List)
-	 */
 	@Override
 	public List<String> deployVMs(List<Vm> vms) {
 		List<String> listIDs = null;
 		Boolean exception = false;
-		String experimentUrl = url + "/vms";
-		logger.debug("URL build: " + experimentUrl);
+		String vmDeployUrl = url + "/vms";
+		logger.debug("URL build: " + vmDeployUrl);
 		
 		try {
 			ListVms listVms = new ListVms(vms);
 			String payload = ModelConverter.objectListVmsToJSON(listVms);
 			
-			String response = Client.postMethod(experimentUrl, payload, Dictionary.CONTENT_TYPE_JSON, Dictionary.CONTENT_TYPE_JSON, exception);
+			String response = Client.postMethod(vmDeployUrl, payload, Dictionary.CONTENT_TYPE_JSON, Dictionary.CONTENT_TYPE_JSON, exception);
 			logger.debug("PAYLOAD: " + response);
 			
 			try {
@@ -242,9 +207,34 @@ public class VmManagerClientHC implements VmManagerClient {
 		return listIDs;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient#uploadImage(eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ImageToUpload)
-	 */
+	@Override
+	public boolean changeStateVm(String vmId, String action) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean deleteVM(String vmId) {
+		Boolean exception = false;
+		String experimentUrl = url + "/vms/" + vmId;
+		logger.debug("URL build: " + experimentUrl);
+		
+		try {
+			Client.deleteMethod(experimentUrl, Dictionary.CONTENT_TYPE_JSON, exception);			
+		} catch(Exception e) {
+			logger.warn("Error trying to delete the VM with ID = " + vmId + ": " + url + "/vms/" + vmId + " Exception: " + e.getMessage());
+			exception = true;
+		}
+		
+		return !exception; 
+	}
+
+	@Override
+	public boolean deleteVmsOfApp(String appId) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	@Override
 	public String uploadImage(ImageToUpload imageInfo) {
 		String newImageID = null;
@@ -274,62 +264,19 @@ public class VmManagerClientHC implements VmManagerClient {
 		return newImageID;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient#deleteVmsOfApp(java.lang.String)
-	 */
 	@Override
-	public boolean deleteVmsOfApp(String appId) {
-		
+	public boolean deleteImage(String id) {
 		Boolean exception = false;
-		String experimentUrl = url + "/vmsapp/" + appId;
-		logger.debug("URL build: " + experimentUrl);
+		String imageUrl = url + "/images/" + id;
 		
 		try {
-			Client.deleteMethod(experimentUrl, Dictionary.CONTENT_TYPE_JSON, exception);			
+			Client.deleteMethod(imageUrl, Dictionary.CONTENT_TYPE_JSON, exception);			
 		} catch(Exception e) {
-			logger.warn("Error trying to delete VMs of App: " + url  + "/vmsapp/" + appId + " Exception: " + e.getMessage());
+			logger.warn("Error trying to delete the image with ID = " + id + ": " + imageUrl + " Exception: " + e.getMessage());
 			exception = true;
 		}
 		
-		return !exception;		
-	}
-
-	/* (non-Javadoc)
-	 * @see eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient#destroyVM(java.lang.String)
-	 */
-	@Override
-	public boolean deleteVM(String vmId) {
-
-		Boolean exception = false;
-		String experimentUrl = url + "/vms/" + vmId;
-		logger.debug("URL build: " + experimentUrl);
-		
-		try {
-			Client.deleteMethod(experimentUrl, Dictionary.CONTENT_TYPE_JSON, exception);			
-		} catch(Exception e) {
-			logger.warn("Error trying to delete the VM with ID = " + vmId + ": " + url + "/vms/" + vmId + " Exception: " + e.getMessage());
-			exception = true;
-		}
-		
-		return !exception;  		
-	}
-
-	@Override
-	public boolean changeStateVm(String vmId, String action) {
-		
-		Boolean exception = false;
-		String experimentUrl = url + "/vms/" + vmId;
-		logger.debug("URL build: " + experimentUrl);
-		
-		try {
-			String payload = ModelConverter.getJsonObjectAction(action);			
-			String response = Client.putMethod(experimentUrl, payload, Dictionary.CONTENT_TYPE_JSON, Dictionary.CONTENT_TYPE_JSON, exception);
-			logger.debug("PAYLOAD: " + response);			
-		} catch(Exception e) {
-			logger.warn("Error trying to changeStateVm: " + url + "/vms/" + vmId + " Exception: " + e.getMessage());
-			exception = true;
-		}		
-		return !exception;
+		return !exception;  
 	}
 
 }

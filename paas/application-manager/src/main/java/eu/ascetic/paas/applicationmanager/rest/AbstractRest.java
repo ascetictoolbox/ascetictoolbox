@@ -32,7 +32,7 @@ import eu.ascetic.paas.applicationmanager.rest.util.XMLBuilder;
  * limitations under the License.
  * 
  * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
- * @email david.garciaperez@atos.net 
+ * e-mail: david.garciaperez@atos.net 
  * 
  * Common methods for all the rest APIs
  *

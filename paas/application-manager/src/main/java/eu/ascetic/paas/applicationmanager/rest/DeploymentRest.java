@@ -24,10 +24,11 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.Ener
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
+import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.applicationmanager.rest.util.XMLBuilder;
+import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientHC;
-
 /**
  * 
  * Copyright 2014 ATOS SPAIN S.A. 
@@ -45,7 +46,7 @@ import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientHC;
  * limitations under the License.
  * 
  * @author David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
- * @email david.garciaperez@atos.net 
+ * e-mail david.garciaperez@atos.net 
  * 
  * ASCETiC Application Manager REST API to perform actions over an deployment of an Application
  *
@@ -57,6 +58,7 @@ import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientHC;
 public class DeploymentRest extends AbstractRest {
 	private static Logger logger = Logger.getLogger(DeploymentRest.class);
 	protected static PaaSEnergyModeller energyModeller; 
+	protected VmManagerClient vmManagerClient = new VmManagerClientHC();
 	
 	/**
 	 * Constructs the EnergyModeller with an specific configuration if necessary
@@ -189,7 +191,6 @@ public class DeploymentRest extends AbstractRest {
 	public Response deleteDeployment(@PathParam("application_name") String applicationName, @PathParam("deployment_id") String deploymentId) {
 		logger.info("DELETE request to path: /applications/" + applicationName + "/deployments/" + deploymentId);
 
-		
 		int intDeploymentId = 0;
 		try{
 			intDeploymentId = Integer.parseInt(deploymentId);
@@ -201,17 +202,34 @@ public class DeploymentRest extends AbstractRest {
 		Deployment deployment = deploymentDAO.getById(intDeploymentId);
 		
 		if (deployment == null){
-			return buildResponse(Status.BAD_REQUEST, "Deployment id = " +  deploymentId + " not found in database");
+			return buildResponse(Status.NOT_FOUND, "Deployment id = " +  deploymentId + " not found in database");
 		}
+		
 		//Get the vms
 		List<VM> deploymentVms = deployment.getVms();
+		List<Image> images = new ArrayList<Image>();
 		
 		//Delete the vms from VM manager
-		VmManagerClientHC vmManagerClient = new VmManagerClientHC();
-		//boolean deleted = true;
 		for (VM vm : deploymentVms){
+			logger.info("DELETING VM: " + vm.getProviderVmId());
+			
 			if (!vmManagerClient.deleteVM(vm.getProviderVmId())){
-				return buildResponse(Status.BAD_REQUEST, "VM with provider vm id = " +  vm.getProviderVmId() + " cannot be deleted in VM manager");
+				return buildResponse(Status.BAD_REQUEST, "VM with provider vm id = " +  vm.getProviderVmId() + " cannot be deleted in VM Manager");
+			}
+			
+			vm.setStatus("DELETED");
+			
+			images.addAll(vm.getImages());
+		}
+		
+		for(Image image : images) {
+			if(!image.isDemo()) {
+				logger.info("DELETING IMAGE: " + image.getProviderImageId());
+				
+				if (!vmManagerClient.deleteImage(image.getProviderImageId())){
+					
+					return buildResponse(Status.BAD_REQUEST, "Image with provider image id = " +  image.getProviderImageId() + " cannot be deleted in VM Manager");
+				}
 			}
 		}
 		
@@ -221,7 +239,7 @@ public class DeploymentRest extends AbstractRest {
 		//update deployment in database
 		deploymentDAO.update(deployment);
 		
-		return buildResponse(Status.OK, "Deployment terminated successfully");
+		return buildResponse(Status.NO_CONTENT, "");
 	}
 	
 	@GET
@@ -279,4 +297,5 @@ public class DeploymentRest extends AbstractRest {
 				
 		return buildResponse(Status.OK, xml);
 	}
+	
 }

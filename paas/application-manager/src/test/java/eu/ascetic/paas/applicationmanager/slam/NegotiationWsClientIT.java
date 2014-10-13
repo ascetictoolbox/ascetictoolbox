@@ -1,4 +1,5 @@
 package eu.ascetic.paas.applicationmanager.slam;
+
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;

@@ -39,7 +39,9 @@ import eu.ascetic.paas.applicationmanager.model.Collection;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
+import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.VM;
+import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
 
 /**
  * 
@@ -58,7 +60,7 @@ import eu.ascetic.paas.applicationmanager.model.VM;
  * limitations under the License.
  * 
  * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
- * @email david.garciaperez@atos.net 
+ * e-mail: david.garciaperez@atos.net 
  * 
  * Collection of Unit test that verify the correct work of the REST service for Deployment entities
  *
@@ -220,6 +222,98 @@ public class DeploymentRestTest {
 		String xml = (String) response.getEntity();
 		
 		assertEquals("ovf1", xml);
+	}
+	
+	@Test
+	public void deleteDeploymentWrongIdFormat() {
+		DeploymentRest deploymentRest = new DeploymentRest();
+		
+		Response response = deploymentRest.deleteDeployment("", "xadasd");
+		
+		assertEquals(400, response.getStatus());
+		assertEquals("The deployment id must be a number", (String) response.getEntity());
+	}
+	
+	@Test
+	public void deleteDeploymentNotInDB() {
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		when(deploymentDAO.getById(1)).thenReturn(null);
+		
+		DeploymentRest deploymentRest = new DeploymentRest();
+		deploymentRest.deploymentDAO = deploymentDAO;
+		
+		Response response = deploymentRest.deleteDeployment("", "1");
+		
+		assertEquals(404, response.getStatus());
+		assertEquals("Deployment id = 1 not found in database", (String) response.getEntity());
+	}
+	
+	@Test
+	public void deleteDeployment() {
+		Deployment deployment = new Deployment();
+		deployment.setId(1);
+		deployment.setOvf("ovf1");
+		deployment.setPrice("price1");
+		deployment.setStatus("Status1");
+		
+		VM vm1 = new VM();
+		vm1.setId(1);
+		vm1.setIp("10.0.0.1");
+		vm1.setProviderVmId("aaaa-bbbb-1");
+		vm1.setStatus("ACTIVE");
+		deployment.addVM(vm1);
+		
+		VM vm2 = new VM();
+		vm2.setId(2);
+		vm2.setIp("10.0.0.2");
+		vm2.setProviderVmId("aaaa-bbbb-2");
+		vm2.setStatus("ACTIVE");
+		deployment.addVM(vm2);
+		
+		Image image1 = new Image();
+		image1.setDemo(false);
+		image1.setOvfHref("ovf-href1");
+		image1.setProviderImageId("zzzz-1");
+		vm1.addImage(image1);
+		
+		Image image2 = new Image();
+		image2.setDemo(false);
+		image2.setOvfHref("ovf-href2");
+		image2.setProviderImageId("zzzz-2");
+		vm2.addImage(image2);
+		
+		Image image3 = new Image();
+		image3.setDemo(true);
+		image3.setOvfHref("ovf-href2");
+		image3.setProviderImageId("zzzz-3");
+		vm2.addImage(image3);
+		
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		when(deploymentDAO.getById(1)).thenReturn(deployment);
+		when(deploymentDAO.update(deployment)).thenReturn(true);
+		
+		VmManagerClient vmManagerClient = mock(VmManagerClient.class);
+		when(vmManagerClient.deleteVM("aaaa-bbbb-2")).thenReturn(true);
+		when(vmManagerClient.deleteVM("aaaa-bbbb-1")).thenReturn(true);
+		when(vmManagerClient.deleteImage("zzzz-1")).thenReturn(true);
+		when(vmManagerClient.deleteImage("zzzz-2")).thenReturn(true);
+		
+		DeploymentRest deploymentRest = new DeploymentRest();
+		deploymentRest.deploymentDAO = deploymentDAO;
+		deploymentRest.vmManagerClient = vmManagerClient;
+		
+		Response response = deploymentRest.deleteDeployment("", "1");
+		
+		assertEquals(204, response.getStatus());
+		assertEquals("", (String) response.getEntity());
+		
+		verify(deploymentDAO, times(1)).getById(1);
+		verify(deploymentDAO, times(1)).update(deployment);
+		verify(vmManagerClient, times(1)).deleteVM("aaaa-bbbb-2");
+		verify(vmManagerClient, times(1)).deleteVM("aaaa-bbbb-1");
+		verify(vmManagerClient, times(1)).deleteImage("zzzz-1");
+		verify(vmManagerClient, times(1)).deleteImage("zzzz-2");
+		verify(vmManagerClient, times(0)).deleteImage("zzzz-3");
 	}
 	
 	@Test

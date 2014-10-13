@@ -53,6 +53,9 @@ public class ImageDAOJpaTest extends AbstractTransactionalJUnit4SpringContextTes
 		Image image = new Image();
 		image.setOvfId("ovf-id");
 		image.setProviderImageId("provider-image-id");
+		image.setDemo(true);
+		image.setOvfHref("ovf-href");
+		image.setProviderId("provider-id");
 		
 		boolean saved = imageDAO.save(image);
 		assertTrue(saved);
@@ -64,6 +67,9 @@ public class ImageDAOJpaTest extends AbstractTransactionalJUnit4SpringContextTes
 		Image imageFromDatabase = images.get(size-1);
 		assertEquals("ovf-id", imageFromDatabase.getOvfId());
 		assertEquals("provider-image-id", imageFromDatabase.getProviderImageId());
+		assertEquals("provider-id", imageFromDatabase.getProviderId());
+		assertTrue(imageFromDatabase.isDemo());
+		assertEquals("ovf-href", image.getOvfHref());
 	}
 	
 	@Test
