@@ -483,7 +483,6 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/s
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/translator/SlaTranslator.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/translator/SlaTranslatorImpl.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/translator/SlaTranslatorImplNoOsgi.java -text
-paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/vmmanager/VmManagerUtils.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/vmmanager/client/VmManagerClient.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/vmmanager/client/VmManagerClientHC.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/vmmanager/datamodel/DeploymentPlan.java -text
@@ -540,7 +539,6 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/s
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/SLATest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/vmmanager/VmManagerTest2IT.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/vmmanager/VmManagerTestIT.java -text
-paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/vmmanager/VmManagerUtilsTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/vmmanager/client/VmManagerClientHCIT.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/vmmanager/client/VmManagerClientHCTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/vmmanager/datamodel/ImageToUploadTest.java -text
