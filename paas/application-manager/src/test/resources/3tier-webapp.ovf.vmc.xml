@@ -61,7 +61,6 @@
         <!--Product Properties that stores variables such as probe end points-->
         <ovf:Property ovf:key="asceticLowerBound" ovf:type="uint32" ovf:value="1"/>
         <ovf:Property ovf:key="asceticUpperBound" ovf:type="uint32" ovf:value="1"/>
-        <ovf:Property ovf:key="asceticCacheImage" ovf:type="uint32" ovf:value="1"/>
       </ovf:ProductSection>
       <!--Operating System details-->
       <ovf:OperatingSystemSection ovf:id="32" ovf:version=">6.5">
@@ -138,7 +137,7 @@
         <ovf:Version>1.0</ovf:Version>
         <!--Product Properties that stores variables such as probe end points-->
         <ovf:Property ovf:key="asceticLowerBound" ovf:type="uint32" ovf:value="1"/>
-        <ovf:Property ovf:key="asceticUpperBound" ovf:type="uint32" ovf:value="1"/>
+        <ovf:Property ovf:key="asceticUpperBound" ovf:type="uint32" ovf:value="2"/>
         <ovf:Property ovf:key="asceticProbeUri-1" ovf:type="string" ovf:value="uri://some-end-point/application-monitor"/>
         <ovf:Property ovf:key="asceticProbeType-1" ovf:type="string" ovf:value="mem"/>
         <ovf:Property ovf:key="asceticProbeInterval-1" ovf:type="string" ovf:value="1sec"/>
@@ -219,7 +218,6 @@
         <!--Product Properties that stores variables such as probe end points-->
         <ovf:Property ovf:key="asceticLowerBound" ovf:type="uint32" ovf:value="1"/>
         <ovf:Property ovf:key="asceticUpperBound" ovf:type="uint32" ovf:value="1"/>
-        <ovf:Property ovf:key="asceticCacheImage" ovf:type="uint32" ovf:value="1"/>
       </ovf:ProductSection>
       <!--Operating System details-->
       <ovf:OperatingSystemSection ovf:id="32" ovf:Version="6.5">

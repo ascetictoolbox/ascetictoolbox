@@ -67,6 +67,7 @@ public class DeploymentDAOJpa implements DeploymentDAO {
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
 	public boolean save(Deployment deployment) {
 		entityManager.persist(deployment);
+		//entityManager.merge(deployment);
 		entityManager.flush();
 		return true;
 	}

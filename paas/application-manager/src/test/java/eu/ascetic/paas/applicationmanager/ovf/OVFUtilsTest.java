@@ -1,6 +1,8 @@
 package eu.ascetic.paas.applicationmanager.ovf;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,6 +48,8 @@ import eu.ascetic.utils.ovf.api.VirtualSystemCollection;
 public class OVFUtilsTest {
 	private String threeTierWebAppOvfFile = "3tier-webapp.ovf.xml";
 	private String threeTierWebAppOvfString;
+	private String threeTierWebAppDEMOOvfFile = "3tier-webapp.ovf.vmc.xml";
+	private String threeTierWebAppDEMOOvfString;
 	private OvfDefinition ovfDocument;
 	
 	/**
@@ -57,6 +61,27 @@ public class OVFUtilsTest {
 	public void setup() throws IOException, URISyntaxException {
 		File file = new File(this.getClass().getResource( "/" + threeTierWebAppOvfFile ).toURI());		
 		threeTierWebAppOvfString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
+		// Reading the OVF file with DEMO tags...
+		file = new File(this.getClass().getResource( "/" + threeTierWebAppDEMOOvfFile ).toURI());		
+		threeTierWebAppDEMOOvfString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
+	}
+	
+	@Test
+	public void determineIfAVirtualSystemHasACacheImage() {
+		OvfDefinition ovfDocument = OVFUtils.getOvfDefinition(threeTierWebAppDEMOOvfString);
+		VirtualSystemCollection vsc = ovfDocument.getVirtualSystemCollection();
+		
+		VirtualSystem virtualSystem1 = vsc.getVirtualSystemArray()[0];
+		assertFalse(OVFUtils.usesACacheImage(virtualSystem1));
+		
+		VirtualSystem virtualSystem2 = vsc.getVirtualSystemArray()[1];
+		assertTrue(OVFUtils.usesACacheImage(virtualSystem2));
+		
+		VirtualSystem virtualSystem3 = vsc.getVirtualSystemArray()[2];
+		assertFalse(OVFUtils.usesACacheImage(virtualSystem3));
+		
+		VirtualSystem virtualSystem4 = vsc.getVirtualSystemArray()[3];
+		assertTrue(OVFUtils.usesACacheImage(virtualSystem4));
 	}
 	
 	@Test

@@ -14,7 +14,9 @@ import eu.ascetic.utils.ovf.api.Disk;
 import eu.ascetic.utils.ovf.api.File;
 import eu.ascetic.utils.ovf.api.Item;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
+import eu.ascetic.utils.ovf.api.ProductProperty;
 import eu.ascetic.utils.ovf.api.VirtualHardwareSection;
+import eu.ascetic.utils.ovf.api.VirtualSystem;
 //import eu.ascetic.utils.ovf.api.VirtualSystem;
 //import eu.ascetic.utils.ovf.api.VirtualSystemCollection;
 import eu.ascetic.utils.ovf.api.utils.OvfRuntimeException;
@@ -173,29 +175,29 @@ public class OVFUtils {
 //	}
 
 
-	/**
-	 * Gets the disk id.
-	 *
-	 * @param virtHwSection the virt hw section
-	 * @return the disk id
-	 */
-	private static String getDiskId(VirtualHardwareSection virtHwSection){
-		String diskId = "";
-		Item item = null;
-		for (int i=0; i<virtHwSection.getItemArray().length; i++){
-			item = virtHwSection.getItemAtIndex(i);
-			if (item.getResourceType().getNumber() == 17){
-				String list[] = item.getHostResourceArray();
-				String hostResource = "";
-				if (list!=null && list.length >0){
-					hostResource = list[0];
-					diskId = hostResource.substring(hostResource.lastIndexOf("/")+1, hostResource.length());
-					return diskId;
-				}				
-			}
-		}
-		return diskId;
-	}
+//	/**
+//	 * Gets the disk id.
+//	 *
+//	 * @param virtHwSection the virt hw section
+//	 * @return the disk id
+//	 */
+//	private static String getDiskId(VirtualHardwareSection virtHwSection){
+//		String diskId = "";
+//		Item item = null;
+//		for (int i=0; i<virtHwSection.getItemArray().length; i++){
+//			item = virtHwSection.getItemAtIndex(i);
+//			if (item.getResourceType().getNumber() == 17){
+//				String list[] = item.getHostResourceArray();
+//				String hostResource = "";
+//				if (list!=null && list.length >0){
+//					hostResource = list[0];
+//					diskId = hostResource.substring(hostResource.lastIndexOf("/")+1, hostResource.length());
+//					return diskId;
+//				}				
+//			}
+//		}
+//		return diskId;
+//	}
 	
 //	/**
 //	 * Gets the disk size from vm.
@@ -252,33 +254,33 @@ public class OVFUtils {
 	}
 	
 	
-	/**
-	 * Gets the img file ref ovf document.
-	 *
-	 * @param virtualHardwareSection the virtual hardware section
-	 * @param ovfDefinition the ovf definition
-	 * @return the img file ref ovf document
-	 */
-	private static String getImgFileRefOvfDocument(VirtualHardwareSection virtualHardwareSection, 
-			OvfDefinition ovfDefinition) {
-		String urlImg = null;
-		String fileId = getFileIdFromDiskId(getDiskId(virtualHardwareSection), ovfDefinition);
-		File[] files = ovfDefinition.getReferences().getFileArray();
-		if (files != null && files.length>0){
-			File file = null;
-			for (int i = 0; i<files.length; i++){
-				file = files[i];
-				if (file.getId().equalsIgnoreCase(fileId)){
-					return file.getHref();
-				}
-			}
-		}
-		else {
-			logger.debug("No references section available in OVF!!");
-		}
-		
-		return urlImg;
-	}
+//	/**
+//	 * Gets the img file ref ovf document.
+//	 *
+//	 * @param virtualHardwareSection the virtual hardware section
+//	 * @param ovfDefinition the ovf definition
+//	 * @return the img file ref ovf document
+//	 */
+//	private static String getImgFileRefOvfDocument(VirtualHardwareSection virtualHardwareSection, 
+//			OvfDefinition ovfDefinition) {
+//		String urlImg = null;
+//		String fileId = getFileIdFromDiskId(getDiskId(virtualHardwareSection), ovfDefinition);
+//		File[] files = ovfDefinition.getReferences().getFileArray();
+//		if (files != null && files.length>0){
+//			File file = null;
+//			for (int i = 0; i<files.length; i++){
+//				file = files[i];
+//				if (file.getId().equalsIgnoreCase(fileId)){
+//					return file.getHref();
+//				}
+//			}
+//		}
+//		else {
+//			logger.debug("No references section available in OVF!!");
+//		}
+//		
+//		return urlImg;
+//	}
 	
 	
 	/**
@@ -360,8 +362,20 @@ public class OVFUtils {
 		
 		return isoPath;
 	}
-	
-	
-	
-	
+
+
+	public static boolean usesACacheImage(VirtualSystem virtualSystem1) {
+		ProductProperty[] productPropertyArray = virtualSystem1.getProductSectionAtIndex(0).getPropertyArray();
+		
+		for(int i = 0; i < productPropertyArray.length; i++ ) {
+			ProductProperty productProperty = productPropertyArray[i];
+			if(productProperty.getKey().equals("asceticCacheImage")) {
+				if(productProperty.getValue().equals("1")) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
 }

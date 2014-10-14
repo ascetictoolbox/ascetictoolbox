@@ -5,6 +5,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
+import eu.ascetic.paas.applicationmanager.dao.ImageDAO;
 import eu.ascetic.paas.applicationmanager.dao.VMDAO;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
@@ -34,6 +35,122 @@ import eu.ascetic.paas.applicationmanager.model.VM;
 
 public class MysqJPATestIT {
 	
+//	public static void main(String args[]) throws InterruptedException {
+//		// Load Spring configuration
+//		@SuppressWarnings("resource")
+//		ApplicationContext context = new ClassPathXmlApplicationContext("/mysql-jpa-test-configuration.xml");
+//		ApplicationDAO applicationDAO = (ApplicationDAO) context.getBean("ApplicationService");
+//		DeploymentDAO deploymentDAO = (DeploymentDAO) context.getBean("DeploymentService");
+//		VMDAO vmDAO = (VMDAO) context.getBean("VMService");
+//		
+//		int size = applicationDAO.getAll().size();
+//		
+//		System.out.println("Number of Applications in DB at Start: " + size);
+//		
+//		// We create an application
+//		Application application = new Application();
+//		application.setName("name");
+//		
+//		// We store the application
+//		boolean saved = applicationDAO.save(application);
+//		Application applicationFromDatabae = applicationDAO.getById(size+1);
+//		size = applicationDAO.getAll().size();
+//	
+//		
+//		System.out.println("Number of Applications in DB after storing an application: " + size);
+//		
+//		if(saved == false) {
+//			System.out.println("IMPOSIBLE TO SAVE EXPERIMENT!!!!");
+//			Thread.sleep(600000l);
+//		}
+//		
+//		size = deploymentDAO.getAll().size();
+//		
+//		System.out.println("Number of Deployments in DB at Start: " + size);
+//		
+//		// We store a deployment
+//		Deployment deployment = new Deployment();
+//		deployment.setStatus("RUNNIG");
+//		deployment.setPrice("expensive");
+//		
+//		saved = deploymentDAO.save(deployment);
+//		
+//		if(saved == false) {
+//			System.out.println("IMPOSIBLE TO SAVE DEPLOYMENT!!!!");
+//			Thread.sleep(600000l);
+//		}
+//		
+//		Deployment deploymentFrDeployment = deploymentDAO.getById(size+1);
+//		size = deploymentDAO.getAll().size();
+//		
+//		System.out.println("Number of Deployments in DB after storing one: " + size);
+//		
+//		size = vmDAO.getAll().size();
+//		
+//		System.out.println("Number of VMs in DB at Start: " + size);
+//		
+//		VM vm = new VM();
+//		vm.setIp("127.0.0.1");
+//		vm.setOvfId("ovf-id");
+//		vm.setProviderId("provider-id");
+//		vm.setProviderVmId("provider-vm-id");
+//		vm.setSlaAgreement("sla-agreement");
+//		vm.setStatus("RUNNING");
+//		
+//		Image image = new Image();
+//		image.setProviderImageId("provider-image-id");
+//		image.setOvfId("ovf-id");
+//		
+//		vm.addImage(image);
+//		
+//		saved = vmDAO.save(vm);
+//		
+//		if(saved == false) {
+//			System.out.println("IMPOSIBLE TO SAVE VM!!!!");
+//			Thread.sleep(600000l);
+//		}
+//		
+//		VM vmFromDatabase = vmDAO.getById(size+1);
+//		
+//		size = vmDAO.getAll().size();
+//		
+//		System.out.println("###### Number of VMs in DB after storing one: " + size);
+//		System.out.println("###### New Image stored: id -> " + vmFromDatabase.getImages().get(0).getId()
+//										 + ", provider-id -> " + vmFromDatabase.getImages().get(0).getProviderImageId()
+//										 + ", ovf-id -> " + vmFromDatabase.getImages().get(0).getOvfId());
+//		
+//		vmFromDatabase = vmDAO.getById(vmFromDatabase.getId());
+//		Image imageFromDatabase = vmFromDatabase.getImages().get(0);
+//		imageFromDatabase.setOvfId("ooo");
+//		vmDAO.update(vmFromDatabase);
+//		
+//		vmFromDatabase = vmDAO.getById(vmFromDatabase.getId());
+//		System.out.println("###### New Image stored: id -> " + vmFromDatabase.getImages().get(0).getId()
+//				 + ", provider-id -> " + vmFromDatabase.getImages().get(0).getProviderImageId()
+//				 + ", ovf-id -> " + vmFromDatabase.getImages().get(0).getOvfId());
+//		
+//		applicationFromDatabae = applicationDAO.getById(applicationFromDatabae.getId());
+//		deploymentFrDeployment = deploymentDAO.getById(deploymentFrDeployment.getId());
+//		vmFromDatabase = vmDAO.getById(vmFromDatabase.getId());
+//		
+//		applicationFromDatabae.addDeployment(deploymentFrDeployment);
+//		deploymentFrDeployment.addVM(vmFromDatabase);
+//		
+//		boolean updated = applicationDAO.update(applicationFromDatabae);
+//		
+//		if(updated == false) {
+//			System.out.println("IMPOSIBLE TO UPDATE APPLICATION!!!!");
+//			Thread.sleep(600000l);
+//		}
+//		
+//		boolean deleted = applicationDAO.delete(applicationFromDatabae);
+//		
+//		if(deleted == false) {
+//			System.out.println("IMPOSIBLE TO DELETE APPLICATION!!!!");
+//			Thread.sleep(600000l);
+//		}
+//	}
+	
 	public static void main(String args[]) throws InterruptedException {
 		// Load Spring configuration
 		@SuppressWarnings("resource")
@@ -41,8 +158,17 @@ public class MysqJPATestIT {
 		ApplicationDAO applicationDAO = (ApplicationDAO) context.getBean("ApplicationService");
 		DeploymentDAO deploymentDAO = (DeploymentDAO) context.getBean("DeploymentService");
 		VMDAO vmDAO = (VMDAO) context.getBean("VMService");
+		ImageDAO imageDAO = (ImageDAO) context.getBean("ImageService");
 		
-		int size = applicationDAO.getAll().size();
+		int size = imageDAO.getAll().size();
+		Image image = new Image();
+		image.setProviderImageId("provider-image-id");
+		image.setOvfId("ovf-id");
+		
+		imageDAO.save(image);
+		image = imageDAO.getById(size+1);
+		
+		size = applicationDAO.getAll().size();
 		
 		System.out.println("Number of Applications in DB at Start: " + size);
 		
@@ -95,59 +221,66 @@ public class MysqJPATestIT {
 		vm.setProviderVmId("provider-vm-id");
 		vm.setSlaAgreement("sla-agreement");
 		vm.setStatus("RUNNING");
-		
-		Image image = new Image();
-		image.setProviderImageId("provider-image-id");
-		image.setOvfId("ovf-id");
-		
+		vmDAO.save(vm);
 		vm.addImage(image);
+		vmDAO.update(vm);
 		
-		saved = vmDAO.save(vm);
 		
-		if(saved == false) {
-			System.out.println("IMPOSIBLE TO SAVE VM!!!!");
-			Thread.sleep(600000l);
-		}
 		
-		VM vmFromDatabase = vmDAO.getById(size+1);
+		System.out.println(" ID deployment: " + deploymentFrDeployment);
 		
-		size = vmDAO.getAll().size();
+		deploymentFrDeployment.addVM(vm);
+		deploymentDAO.update(deploymentFrDeployment);
+		Deployment deploymentFrDeployment2 = deploymentDAO.getById(deploymentFrDeployment.getId());
+		System.out.println("Number of VMs in deployment: " + deploymentFrDeployment.getVms().size());
+		System.out.println("### Number of VMs in deployment: " + deploymentFrDeployment2.getVms().size());
 		
-		System.out.println("###### Number of VMs in DB after storing one: " + size);
-		System.out.println("###### New Image stored: id -> " + vmFromDatabase.getImages().get(0).getId()
-										 + ", provider-id -> " + vmFromDatabase.getImages().get(0).getProviderImageId()
-										 + ", ovf-id -> " + vmFromDatabase.getImages().get(0).getOvfId());
+		System.out.println("We create second VM");
 		
-		vmFromDatabase = vmDAO.getById(vmFromDatabase.getId());
-		Image imageFromDatabase = vmFromDatabase.getImages().get(0);
-		imageFromDatabase.setOvfId("ooo");
-		vmDAO.update(vmFromDatabase);
+		//deploymentFrDeployment = deploymentFrDeployment2;
 		
-		vmFromDatabase = vmDAO.getById(vmFromDatabase.getId());
-		System.out.println("###### New Image stored: id -> " + vmFromDatabase.getImages().get(0).getId()
-				 + ", provider-id -> " + vmFromDatabase.getImages().get(0).getProviderImageId()
-				 + ", ovf-id -> " + vmFromDatabase.getImages().get(0).getOvfId());
+		VM vm2 = new VM();
+		vm2.setIp("127.0.0.1");
+		vm2.setOvfId("ovf-id");
+		vm2.setProviderId("provider-id");
+		vm2.setProviderVmId("provider-vm-id");
+		vm2.setSlaAgreement("sla-agreement");
+		vm2.setStatus("RUNNING");
+		vmDAO.save(vm2);
+		vm2.addImage(image);
+		vmDAO.update(vm2);
 		
-		applicationFromDatabae = applicationDAO.getById(applicationFromDatabae.getId());
-		deploymentFrDeployment = deploymentDAO.getById(deploymentFrDeployment.getId());
-		vmFromDatabase = vmDAO.getById(vmFromDatabase.getId());
 		
-		applicationFromDatabae.addDeployment(deploymentFrDeployment);
-		deploymentFrDeployment.addVM(vmFromDatabase);
 		
-		boolean updated = applicationDAO.update(applicationFromDatabae);
+		deploymentFrDeployment.addVM(vm2);
+		deploymentDAO.update(deploymentFrDeployment);
+		System.out.println("Number of VMs in deployment: " + deploymentFrDeployment.getVms().size());
+		deploymentFrDeployment2 = deploymentDAO.getById(deploymentFrDeployment.getId());
+		System.out.println("Number of VMs in deployment: " + deploymentFrDeployment.getVms().size());
+		System.out.println("### Number of VMs in deployment: " + deploymentFrDeployment2.getVms().size());
 		
-		if(updated == false) {
-			System.out.println("IMPOSIBLE TO UPDATE APPLICATION!!!!");
-			Thread.sleep(600000l);
-		}
+		//deploymentFrDeployment = deploymentFrDeployment2;
 		
-		boolean deleted = applicationDAO.delete(applicationFromDatabae);
+		VM vm3 = new VM();
+		vm3.setIp("127.0.0.1");
+		vm3.setOvfId("ovf-id");
+		vm3.setProviderId("provider-id");
+		vm3.setProviderVmId("provider-vm-id");
+		vm3.setSlaAgreement("sla-agreement");
 		
-		if(deleted == false) {
-			System.out.println("IMPOSIBLE TO DELETE APPLICATION!!!!");
-			Thread.sleep(600000l);
-		}
+		vm3.setStatus("RUNNING");
+		vmDAO.save(vm3);
+		vm3.addImage(image);
+		vmDAO.update(vm3);
+		
+		
+		deploymentFrDeployment.addVM(vm3);
+		deploymentDAO.update(deploymentFrDeployment);
+		System.out.println("Number of VMs in deployment: " + deploymentFrDeployment.getVms().size());
+	    deploymentFrDeployment2 = deploymentDAO.getById(deploymentFrDeployment.getId());
+		System.out.println("Number of VMs in deployment: " + deploymentFrDeployment.getVms().size());
+		System.out.println("### Number of VMs in deployment: " + deploymentFrDeployment2.getVms().size());
+		
 	}
 }
 

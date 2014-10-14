@@ -69,6 +69,7 @@ public class VMDAOJpa implements VMDAO {
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
 	public boolean save(VM vm) {
 		entityManager.persist(vm);
+		//entityManager.merge(vm);
 		entityManager.flush();
 		return true;
 	}

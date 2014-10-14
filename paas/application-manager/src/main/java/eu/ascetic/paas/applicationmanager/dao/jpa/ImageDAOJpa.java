@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -102,6 +103,19 @@ public class ImageDAOJpa implements ImageDAO {
 		query.setParameter("ovfIdentifier", ovfId);
 		Image image = (Image) query.getSingleResult();
 		return image;
+	}
+
+	@Override
+	public Image getDemoCacheImage(String ovfId, String ovfHref) {
+		try {
+			Query query = entityManager.createQuery("from Image where ovfId = :ovfIdentifier and ovfHref = :ovfReference and demo = true order by id desc").setMaxResults(1);
+			query.setParameter("ovfIdentifier", ovfId);
+			query.setParameter("ovfReference", ovfHref);
+			Image image = (Image) query.getSingleResult();
+			return image;
+		} catch(NoResultException ex) {
+			return null;
+		}
 	}
 }
 

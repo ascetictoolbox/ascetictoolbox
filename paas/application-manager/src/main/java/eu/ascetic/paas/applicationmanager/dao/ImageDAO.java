@@ -73,4 +73,6 @@ public interface ImageDAO extends DAO<Image> {
 	 * @return the last image with that ovf-id
 	 */
 	public Image getLastImageWithOvfId(String ovfId);
+
+	public Image getDemoCacheImage(String string, String string2);
 }

@@ -171,5 +171,59 @@ public class ImageDAOJpaTest extends AbstractTransactionalJUnit4SpringContextTes
 		image3FromDatabase = imageDAO.getLastImageWithOvfId("ovf-id");
 		assertEquals(id3, image3FromDatabase.getId());
 	}
+	
+	@Test
+	public void getDemoCacheImage() {
+		Image image1 = new Image();
+		image1.setOvfId("ovf-id1");
+		image1.setProviderImageId("provider-image-id1");
+		image1.setDemo(true);
+		image1.setOvfHref("href1");
+		
+		boolean saved = imageDAO.save(image1);
+		assertTrue(saved);
+		
+		Image image2 = new Image();
+		image2.setOvfId("ovf-id2");
+		image2.setProviderImageId("provider-image-id2");
+		image2.setDemo(false);
+		image2.setOvfHref("href2");
+		
+		saved = imageDAO.save(image2);
+		assertTrue(saved);
+		
+		Image image3 = new Image();
+		image3.setOvfId("ovf-id3");
+		image3.setProviderImageId("provider-image-id3");
+		image3.setDemo(true);
+		image3.setOvfHref("href1");
+		
+		saved = imageDAO.save(image3);
+		assertTrue(saved);
+		
+		Image image4 = new Image();
+		image4.setOvfId("ovf-id1");
+		image4.setProviderImageId("provider-image-id4");
+		image4.setDemo(true);
+		image4.setOvfHref("href4");
+		
+		Image image5 = new Image();
+		image5.setOvfId("ovf-id1");
+		image5.setProviderImageId("provider-image-id5");
+		image5.setDemo(false);
+		image5.setOvfHref("href1");
+		
+		saved = imageDAO.save(image5);
+		assertTrue(saved);
+		
+		saved = imageDAO.save(image4);
+		assertTrue(saved);
+		
+		Image image = imageDAO.getDemoCacheImage("ovf-id1", "href1");
+		assertEquals("provider-image-id1", image.getProviderImageId());
+		
+		image = imageDAO.getDemoCacheImage("ovf-id6", "href6");
+		assertEquals(null, image);
+	}
 }
 
