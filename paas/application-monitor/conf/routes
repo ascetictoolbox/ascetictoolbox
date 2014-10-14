@@ -25,16 +25,6 @@ PATCH   /event/:id                               api.Events.finish(id:String)
 
 POST    /query                                   api.Queries.post()
 
-
-# Navigation through metrics (Ajax helper services)
-GET     /metrics/nav                             api.Metrics.getNavigationPath()
-GET     /metrics/nav/                            api.Metrics.getNavigationPath()
-GET     /metrics/nav/:appId                      api.Metrics.getNavigationPathA(appId:String)
-GET     /metrics/nav/:appId/                     api.Metrics.getNavigationPathA(appId:String)
-GET     /metrics/nav/:appId/:nodeId              api.Metrics.getNavigationPathAN(appId:String,nodeId:String)
-GET     /metrics/nav/:appId/:nodeId/             api.Metrics.getNavigationPathAN(appId:String,nodeId:String)
-GET     /metrics/nav/:appId/:nodeId/*path        api.Metrics.getNavigationPathANP(appId:String,nodeId:String,path:String)
-
 #Get consolidated metrics for an application/node
 GET     /metrics/:oper/:appId/:nodeId            api.Metrics.getAllMetricsHistory(oper:String,appId:String,nodeId:String,start:Long ?=-1,end:Long?=-1,resolution:Long?=-1)
 

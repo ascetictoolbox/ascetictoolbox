@@ -79,9 +79,9 @@ def getIostat()
 	for i in 0...secondHeader.length
 		if i%3==0
 			entry = {}
-			iostat[firstHeader[(i/3).to_i]] = entry;
+			iostat[firstHeader[(i/3).to_i]] = to_number(entry);
 		end
-		entry[secondHeader[i]] = metrics[i];
+		entry[secondHeader[i]] = to_number(metrics[i]);
 	end
 	return iostat
 

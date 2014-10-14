@@ -22,7 +22,7 @@
                     </div>
                     <div class="form-group">
                         <label>Metric Path:</label>
-                        <input type="text" ng-model="form.metric" class="form-control"/> <!-- appId debe estar en el $scope -->
+                        <input type="text" ng-model="form.metric" typeahead="metric for metric in metrics | filter:$viewValue | limitTo:8" class="form-control"/> <!-- appId debe estar en el $scope -->
                     </div>
                     <div class="form-group">
                         <label>Description</label>

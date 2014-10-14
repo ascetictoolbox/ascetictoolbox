@@ -109,11 +109,39 @@
                 return [];
             }
         }
+        $scope.metrics = [];
         $scope.onAppSelected = function() {
             console.log("Seleccionado: " + $scope.form.appId);
+            var getLastMetric =
+                [{"$match":{"appId":$scope.form.appId}},
+                    {"$sort":{ "timestamp":1}},
+                    {"$group" : { "_id": null,
+                        "data": {"$last": "$data"}
+                    }}];
+            $http.post("/query",JSON.stringify(getLastMetric))
+                .success(function(lastMetric) {
+                    // show only metrics that parse
+                    $scope.metrics = getAllMetrics(lastMetric[0].data);
+                });
         }
 
     }]);
+
+    function getAllMetrics(metrics) {
+        var paths = [];
+        for(var m in metrics) {
+            if(metrics[m] instanceof Object) {
+                var ppaths = getAllMetrics(metrics[m]);
+                if(ppaths) for(var p in ppaths) {
+                    paths.push(m + "." + ppaths[p]);
+                }
+            } else if(typeof metrics[m] == "number") { // only adds properties that parse into a number
+                paths.push(m);
+            }
+        }
+        return paths;
+    }
+
 
     appip.controller("TimeSeriesController", ["$scope", "$interval", function($scope, $interval) {
 
