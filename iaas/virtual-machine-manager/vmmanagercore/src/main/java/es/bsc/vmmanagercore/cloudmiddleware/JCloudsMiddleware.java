@@ -66,8 +66,11 @@ public class JCloudsMiddleware implements CloudMiddleware {
 
     // Needed by JClouds
     private NovaApi novaApi;
-    private String zone; // TODO This could be important/problematic in the future.
-    // Right now I am assuming that the cluster only has one zone configured for deployments.
+    private ServerApi serverApi;
+    private ImageApi imageApi;
+    private FlavorApi flavorApi;
+    private String zone; // This could be important/problematic in the future because I am assuming that
+                         // the cluster only has one zone configured for deployments.
 
     private String[] hosts; //hosts in the cluster
     private OpenStackGlance glanceConnector = new OpenStackGlance(); // Connector for OS Glance
@@ -86,6 +89,9 @@ public class JCloudsMiddleware implements CloudMiddleware {
                 .credentials(conf.keyStoneTenant + ":" + conf.keyStoneUser, conf.keyStonePassword)
                 .buildApi(NovaApi.class);
         zone = novaApi.getConfiguredZones().toArray()[0].toString();
+        serverApi = novaApi.getServerApiForZone(zone);
+        imageApi = novaApi.getImageApiForZone(zone);
+        flavorApi = novaApi.getFlavorApiForZone(zone);
         hosts = conf.hosts;
         this.db = db;
     }
@@ -104,6 +110,8 @@ public class JCloudsMiddleware implements CloudMiddleware {
 
     //TODO this is a temporary hack. The security groups should not be hard-coded.
     private void includeSecurityGroupInDeploymentOption(CreateServerOptions options) {
+        // This comparison is not 100% correct. To be rigorous, it should evaluate whether the TUB testbed is being
+        // used, not whether Zabbix is the monitoring system being used
         if (conf.monitoring.equals(VmManagerConfiguration.Monitoring.ZABBIX)) {
             options.securityGroupNames("vmm_allow_all", "default"); //sec.group name in the TUB testbed
         }
@@ -134,24 +142,19 @@ public class JCloudsMiddleware implements CloudMiddleware {
      * Otherwise, the function creates a new flavor and returns its ID.
      *
      * @param vm the VM to be deployed
-     * @param zone the zone where the VM will be deployed
      * @return the flavor ID that the VM should use
      */
-    private String getFlavorIdForDeployment(Vm vm, String zone) {
-        // Specs of the flavor
-        int cpus = vm.getCpus();
-        int ram = vm.getRamMb();
-        int disk = vm.getDiskGb();
-
+    private String getFlavorIdForDeployment(Vm vm) {
         // If there is a flavor with the same specs as the ones we need to use return it
-        String flavorId = getFlavorId(zone, cpus, ram, disk);
+        String flavorId = getFlavorId(vm.getCpus(), vm.getRamMb(), vm.getDiskGb());
         if (flavorId != null) {
             return flavorId;
         }
+
         //If the flavor does not exist, create it and return the ID
         String id, name;
-        id = name = cpus + "-" + disk + "-" + ram;
-        return createFlavor(zone, id, name, cpus, ram, disk);
+        id = name = vm.getCpus() + "-" + vm.getDiskGb() + "-" + vm.getRamMb();
+        return createFlavor(id, name, vm.getCpus(), vm.getRamMb(), vm.getDiskGb());
     }
 
     /**
@@ -186,9 +189,8 @@ public class JCloudsMiddleware implements CloudMiddleware {
         includeSecurityGroupInDeploymentOption(options);
 
         // Deploy the VM
-        ServerApi serverApi = novaApi.getServerApiForZone(zone);
         ServerCreated server = serverApi.create(vm.getName(), getImageIdForDeployment(vm),
-                getFlavorIdForDeployment(vm, zone), options);
+                getFlavorIdForDeployment(vm), options);
 
         // Wait until the VM is deployed
         while (serverApi.get(server.getId()).getStatus().toString().equals(BUILD)) { }
@@ -199,7 +201,6 @@ public class JCloudsMiddleware implements CloudMiddleware {
 
     @Override
     public void destroy(String vmId) {
-        ServerApi serverApi = novaApi.getServerApiForZone(zone);
         Server server = serverApi.get(vmId);
         if (server != null) { // If the VM is in the zone
             serverApi.delete(vmId); // Delete the VM
@@ -209,9 +210,7 @@ public class JCloudsMiddleware implements CloudMiddleware {
 
     @Override
     public void migrate(String vmId, String destinationNodeHostName) {
-        ServerApi serverApi = novaApi.getServerApiForZone(zone);
         Server server = serverApi.get(vmId);
-
         // If the server is in the zone
         if (server != null) {
             // Get the API with admin functions
@@ -224,27 +223,27 @@ public class JCloudsMiddleware implements CloudMiddleware {
 
     @Override
     public boolean existsVm(String vmId) {
-        return novaApi.getServerApiForZone(zone).get(vmId) != null;
+        return serverApi.get(vmId) != null;
     }
 
     @Override
     public void rebootHardVm(String vmId) {
-        novaApi.getServerApiForZone(zone).reboot(vmId, RebootType.HARD);
+        serverApi.reboot(vmId, RebootType.HARD);
     }
     
     @Override
     public void rebootSoftVm(String vmId) {
-        novaApi.getServerApiForZone(zone).reboot(vmId, RebootType.SOFT);
+        serverApi.reboot(vmId, RebootType.SOFT);
     }
     
     @Override
     public void startVm(String vmId) {
-        novaApi.getServerApiForZone(zone).start(vmId);
+        serverApi.start(vmId);
     }
 
     @Override
     public void stopVm(String vmId) {
-        novaApi.getServerApiForZone(zone).stop(vmId);
+        serverApi.stop(vmId);
     }
 
     @Override
@@ -260,7 +259,6 @@ public class JCloudsMiddleware implements CloudMiddleware {
     @Override
     public List<String> getAllVMsId() {
         List<String> vmIds = new ArrayList<>();
-        ServerApi serverApi = novaApi.getServerApiForZone(zone);
         for (Server server: serverApi.listInDetail().concat()) {
             ServerExtendedStatus vmStatus = server.getExtendedStatus().get();
 
@@ -291,8 +289,6 @@ public class JCloudsMiddleware implements CloudMiddleware {
     @Override
     public VmDeployed getVMInfo(String vmId) {
         VmDeployed vmDescription = null;
-
-        ServerApi serverApi = novaApi.getServerApiForZone(zone);
         Server server = serverApi.get(vmId);
 
         // If the VM is in the zone
@@ -302,7 +298,6 @@ public class JCloudsMiddleware implements CloudMiddleware {
             boolean vmIsActive = ACTIVE.equals(vmStatus.getVmState());
             boolean vmIsBeingDeleted = DELETING.equals(vmStatus.getTaskState());
             if (vmIsActive && !vmIsBeingDeleted) {
-                FlavorApi flavorApi = novaApi.getFlavorApiForZone(zone);
                 Flavor flavor = flavorApi.get(server.getFlavor().getId());
                 String vmIp = getVmIp(server);
                 vmDescription = new VmDeployed(server.getName(),
@@ -319,7 +314,6 @@ public class JCloudsMiddleware implements CloudMiddleware {
     @Override
     public List<ImageUploaded> getVmImages() {
         List<ImageUploaded> vmImages = new ArrayList<>();
-        ImageApi imageApi = novaApi.getImageApiForZone(zone);
         for (Image image: imageApi.listInDetail().concat()) {
             vmImages.add(new ImageUploaded(image.getId(), image.getName(), image.getStatus().toString()));
         }
@@ -328,7 +322,6 @@ public class JCloudsMiddleware implements CloudMiddleware {
 
     @Override
     public ImageUploaded getVmImage(String imageId) {
-        ImageApi imageApi = novaApi.getImageApiForZone(zone);
         Image image = imageApi.get(imageId);
         return new ImageUploaded(image.getId(), image.getName(), image.getStatus().toString());
     }
@@ -366,15 +359,13 @@ public class JCloudsMiddleware implements CloudMiddleware {
 
     /**
      * Gets the ID of the flavor with the specified characteristics.
-     * @param zone the zone where the flavor is located
      * @param cpus the number of CPUs of the flavor
      * @param memoryMb the amount of RAM of the flavor in MB
      * @param diskGb the amount of disk space of the flavor in GB
      * @return The ID of the flavor. Null if a flavor with the specified characteristics does not
      * exist.
      */
-    private String getFlavorId(String zone, int cpus, int memoryMb, int diskGb) {
-        FlavorApi flavorApi = novaApi.getFlavorApiForZone(zone);
+    private String getFlavorId(int cpus, int memoryMb, int diskGb) {
         for (Flavor flavor: flavorApi.listInDetail().concat()) {
             if (flavor.getVcpus() == cpus && flavor.getRam() == memoryMb && flavor.getDisk() == diskGb) {
                 return flavor.getId();
@@ -385,15 +376,13 @@ public class JCloudsMiddleware implements CloudMiddleware {
 
     /**
      * Creates a flavor with the specified characteristics.
-     * @param zone the zone where the flavor needs to be located
      * @param cpus the number of CPUs of the flavor
      * @param ramMb the amount of RAM of the flavor in MB
      * @param diskGb the amount of disk space of the flavor in GB
      * @return The ID of the created flavor.
      */
-    private String createFlavor(String zone, String id, String name, int cpus, int ramMb, int diskGb) {
-        Flavor flavor = Flavor.builder().id(id).name(name).vcpus(cpus).ram(ramMb).disk(diskGb).build();
-        novaApi.getFlavorApiForZone(zone).create(flavor);
+    private String createFlavor(String id, String name, int cpus, int ramMb, int diskGb) {
+        flavorApi.create(Flavor.builder().id(id).name(name).vcpus(cpus).ram(ramMb).disk(diskGb).build());
         return id;
     }
 
@@ -404,7 +393,7 @@ public class JCloudsMiddleware implements CloudMiddleware {
      * @return true if an image exists with the given Id, false otherwise
      */
     private boolean existsImageWithId(String id) {
-        return novaApi.getImageApiForZone(zone).get(id) != null;
+        return imageApi.get(id) != null;
     }
 
 }
