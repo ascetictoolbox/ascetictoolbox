@@ -17,7 +17,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 -->
 
 <h1 class="page-header">Scheduling Algorithms</h1>
-<div>
+<div ng-if="!loading">
     <p>Current scheduling algorithm: {{schedulingAlgorithms.currentAlgorithm}}</p>
     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
         Select algorithm <span class="caret"></span>
@@ -29,8 +29,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
         </li>
     </ul>
     <br>
+</div>
 
-<div ng-controller="VmPlacementCtrl as vmPlacement">
+<div ng-if="!loading" ng-controller="VmPlacementCtrl as vmPlacement">
 
     <h3>VM Placement</h3>
     <div>
@@ -131,5 +132,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
                 </div>
             </div>
         </div>
-    </div>
 </div>
+<br/>
+<div loading-spinner="loading"></div>

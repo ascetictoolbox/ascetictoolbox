@@ -23,48 +23,18 @@
         .controller('SchedulingAlgCtrl', SchedulingAlgCtrl);
 
     /* @ngInject */
-    function SchedulingAlgCtrl(SchedulingAlgService) {
+    function SchedulingAlgCtrl(SchedulingAlgService, $q, $scope) {
 
         var schedulingAlgCtrl = this;
+        $scope.loading = true;
         schedulingAlgCtrl.algorithms = [];
         schedulingAlgCtrl.currentAlgorithm = '';
-
-        schedulingAlgCtrl.loadSchedulingAlg = loadSchedulingAlg;
-        schedulingAlgCtrl.getCurrentSchedulingAlg = getCurrentSchedulingAlg;
         schedulingAlgCtrl.changeSchedulingAlg = changeSchedulingAlg;
 
         activate();
 
         function activate() {
-            schedulingAlgCtrl.loadSchedulingAlg();
-            schedulingAlgCtrl.getCurrentSchedulingAlg();
-        }
-
-        function loadSchedulingAlg() {
-            SchedulingAlgService
-                .getSchedulingAlgorithms()
-                .then(
-                    function(response) {
-                        schedulingAlgCtrl.algorithms = response.data.scheduling_algorithms;
-                        toastr.success('Scheduling algorithms loaded.');
-                    },
-                    function() {
-                        toastr.error('Could not load the scheduling algorithms.');
-                    });
-
-        }
-
-        function getCurrentSchedulingAlg() {
-            SchedulingAlgService
-                .getCurrentSchedulingAlg()
-                .then(
-                    function(response) {
-                        schedulingAlgCtrl.currentAlgorithm = response.data.name;
-                        toastr.success('Current scheduling algorithm loaded.');
-                    },
-                    function() {
-                        toastr.error('Could not load the current scheduling algorithm.');
-                    });
+            loadSchedulingAlgsInfo();
         }
 
         function changeSchedulingAlg(newSchedulingAlg) {
@@ -78,10 +48,28 @@
                     },
                     function() {
                         toastr.error('Error while changing the scheduling algorithm.');
-                    });
+                    }
+                );
+        }
+
+        /** Loads the scheduling algorithms available and the current one */
+        function loadSchedulingAlgsInfo() {
+            $q.all([SchedulingAlgService.getSchedulingAlgorithms(), SchedulingAlgService.getCurrentSchedulingAlg()])
+                .then(
+                    function(responses) {
+                        schedulingAlgCtrl.algorithms = responses[0].data.scheduling_algorithms;
+                        schedulingAlgCtrl.currentAlgorithm = responses[1].data.name;
+                        toastr.success('Scheduling algorithms loaded.');
+                        $scope.loading = false;
+                    },
+                    function() {
+                        toastr.error('Could not load the current scheduling algorithm.');
+                        $scope.loading = false;
+                    }
+                );
         }
 
     }
-    SchedulingAlgCtrl.$inject = ['SchedulingAlgService'];
+    SchedulingAlgCtrl.$inject = ['SchedulingAlgService', '$q', '$scope'];
 
 })();
