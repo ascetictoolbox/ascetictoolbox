@@ -404,6 +404,7 @@ iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/mo
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/monitoring/HostFakeTest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/rest/VmManagerRestTest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/rest/VmmRestInputValidatorTest.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/DeploymentPlanFiltererTest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/DeploymentPlanGeneratorTest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/SchedulerTest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/schedulingalgorithms/SchedAlgConsolidationTest.java -text

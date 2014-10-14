@@ -34,7 +34,7 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 
 /**
- *
+ *  Tests for the Scheduler class.
  *
  *  @author David Ortiz Lopez (david.ortiz@bsc.es)
  */
