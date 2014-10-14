@@ -31,7 +31,7 @@ import java.util.List;
 import static junit.framework.TestCase.assertTrue;
 
 /**
- * Tests for the DeploymentPlan class.
+ * Tests for the DeploymentPlanFilterer class.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  */

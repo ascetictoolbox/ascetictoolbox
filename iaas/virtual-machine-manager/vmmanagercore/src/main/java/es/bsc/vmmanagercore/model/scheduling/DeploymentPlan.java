@@ -18,8 +18,13 @@
 
 package es.bsc.vmmanagercore.model.scheduling;
 
+import es.bsc.vmmanagercore.model.vms.Vm;
+import es.bsc.vmmanagercore.monitoring.Host;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Deployment plan. A deployment plan is a list where each item contains a pair {vm, host}. The pair indicates on
@@ -33,6 +38,16 @@ public class DeploymentPlan {
 
     public DeploymentPlan(List<VmAssignmentToHost> vmsAssignationsToHosts) {
         this.vmsAssignationsToHosts = vmsAssignationsToHosts;
+    }
+
+    /**
+     * Checks whether the hosts of the deployment plan have enough resources to host the VMs that they have
+     * been assigned.
+     *
+     * @return true if the deployment plan can be applied, false otherwise
+     */
+    public boolean canBeApplied() {
+        return allHostsHaveEnoughResourcesForTheirAssignations();
     }
 
     public void addVmAssignmentToPlan(VmAssignmentToHost vmAssignmentToHost) {
@@ -51,6 +66,38 @@ public class DeploymentPlan {
             stringBuilder.append(" ");
         }
         return stringBuilder.toString();
+    }
+
+    /**
+     * Checks whether a list of hosts have enough resources to deploy all the VMs that they have been assigned.
+     *
+     * @return true if all hosts have enough resources to deploy all the VMs that they have been assigned.
+     * False otherwise
+     */
+    private boolean allHostsHaveEnoughResourcesForTheirAssignations() {
+        for (Map.Entry<Host, List<Vm>> entry: getMapOfHostsAndTheirVmsAssignations().entrySet()) {
+            if (!entry.getKey().hasEnoughResourcesToDeployVms(entry.getValue())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Gets a map of hosts and the VMs that they have been assigned. Each entry of the map contains a host (key),
+     * and a list of VMs (values).
+     *
+     * @return the map
+     */
+    private Map<Host, List<Vm>> getMapOfHostsAndTheirVmsAssignations() {
+        Map<Host, List<Vm> > result = new HashMap<>();
+        for (VmAssignmentToHost vmAssignmentToHost: vmsAssignationsToHosts) {
+            if (!result.containsKey(vmAssignmentToHost.getHost())) {
+                result.put(vmAssignmentToHost.getHost(), new ArrayList<Vm>());
+            }
+            result.get(vmAssignmentToHost.getHost()).add(vmAssignmentToHost.getVm());
+        }
+        return result;
     }
 
 }
