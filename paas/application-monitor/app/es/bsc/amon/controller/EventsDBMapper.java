@@ -93,7 +93,7 @@ public class EventsDBMapper {
     // {$orderby : {timestamp : -1}, $data : { $and : [ { timestamp : { $gte : 1402162324197 }}, { timestamp : {$lte : 1402162469099}} ] } }
     // el -1 ordena de mayor a menor y un 1 ordenaría de menor a mayor
     public ObjectNode storeEvent(ObjectNode event) {
-	    long timestamp = Calendar.getInstance().getTimeInMillis();
+	    long timestamp = System.currentTimeMillis();
 
         event.put(EventsDBMapper.TIMESTAMP, timestamp);
 

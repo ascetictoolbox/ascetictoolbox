@@ -14,6 +14,8 @@ GET     /gui/*file                               controllers.Assets.at(path="/pu
 #List running apps
 GET     /apps                                    api.Apps.listApps(start:Long?=0,end:Long?=0)
 GET     /apps/                                   api.Apps.listApps(start:Long?=0,end:Long?=0)
+POST    /apps                                    api.Apps.onAppFinished()
+GET     /apps/finished                           api.Apps.listFinishedInstances(start:Long?=0,end:Long?=0,limit:Integer?=-1)
 
 GET     /instances                               api.Apps.listInstances(start:Long?=0,end:Long?=0)
 GET     /instances/                              api.Apps.listInstances(start:Long?=0,end:Long?=0)

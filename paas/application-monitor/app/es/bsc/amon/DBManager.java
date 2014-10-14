@@ -70,6 +70,9 @@ public class DBManager {
     }
 
     public BasicDBList find(String collectionName, DBObject query) {
+        return find(collectionName, query, null);
+    }
+    public BasicDBList find(String collectionName, DBObject query, Integer limit) {
         BasicDBList result = new BasicDBList();
 
         DBCursor c = null;
@@ -77,6 +80,9 @@ public class DBManager {
             c = database.getCollection(collectionName).find();
         } else {
             c = database.getCollection(collectionName).find(query);
+        }
+        if(limit != null && limit > 0) {
+            c = c.limit(limit);
         }
         while(c.hasNext()) {
             result.add(c.next());

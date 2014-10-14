@@ -16,6 +16,7 @@
 package api;
 
 import es.bsc.amon.controller.AppsDBMapper;
+import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Results;
@@ -52,4 +53,31 @@ public class Apps extends Controller {
 
         return Results.ok(AppsDBMapper.getInstance().getAllApps(start, end,true).toString());
     }
+
+    @BodyParser.Of(BodyParser.Json.class)
+    public static Result onAppFinished() {
+        try {
+            String appInstance = request().body().asJson().toString();
+            AppsDBMapper.getInstance().addAppInstance(appInstance);
+            return ok();
+        } catch(AppsDBMapper.AppException e) {
+            e.printStackTrace();
+            return badRequest(e.getMessage());
+        }
+    }
+
+    public static Result listFinishedInstances(Long start, Long end, Integer limit) {
+        long now = System.currentTimeMillis();
+        if(start < 0L) {
+            start = now + start;
+        }
+        if(end <= 0L) {
+            end = now;
+        }
+        if(limit <= 0) {
+            limit = null;
+        }
+        return ok(AppsDBMapper.getInstance().getFinishedAppInstances(start, end, limit));
+    }
+
 }

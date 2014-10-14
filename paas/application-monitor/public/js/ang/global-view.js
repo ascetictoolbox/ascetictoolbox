@@ -24,23 +24,39 @@
         });
     }]);
 
-    globalView.controller("AppsListController", ["$http","$interval",function($http, $interval) {
-        var self = this;
-        this.appsTree = {};
+    globalView.controller("AppsListController", ["$http","$interval","$scope",function($http, $interval,$scope) {
+        $scope.appsTree = {};
 
-
-        // todo: echar un ojo a esto: http://angular-ui.github.io/bootstrap/
-        // Typeahead
 
         var loadApps = function() {
             var start = - 5*60*1000; // look for activity in the last 5 minutes
             $http.get("/apps?start="+start).success(function(data) {
-                self.appsTree = data;
+                $scope.appsTree = data;
             });
         }
         $interval(loadApps,5000);
         loadApps();
     }]);
 
+    var MAX_ROWS = 12;
+    var REFRESH = 5000;
+    globalView.controller("FinishedInstancesController", ["$http","$scope","$interval",function($http, $scope, $interval) {
+        $scope.finishedInstances = [ ];
+        $scope.latestTimestamp = 0;
+        var getFinishedApps = function() {
+            console.log("---");
+            $http.get("/apps/finished?limit="+MAX_ROWS)
+                .success(function(ret) {
+                    console.log("ok");
+                    $scope.finishedInstances = ret;
+                });
+        }
+        getFinishedApps();
+        if($scope.updateInterval) {
+            $interval.cancel($scope.updateInterval);
+        }
+        $interval.updateInterval = $interval(getFinishedApps,REFRESH);
+
+    }]);
 
 })();

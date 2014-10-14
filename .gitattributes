@@ -936,8 +936,8 @@ paas/application-monitor/public/bower_components/underscore/underscore-min.js -t
 paas/application-monitor/public/bower_components/underscore/underscore.js -text
 paas/application-monitor/public/config.json -text
 paas/application-monitor/public/css/bsc.css -text
-paas/application-monitor/public/global-apps-copy.html -text
 paas/application-monitor/public/global-apps.html -text
+paas/application-monitor/public/global-finished-instances.html -text
 paas/application-monitor/public/global-status.html -text
 paas/application-monitor/public/global.html -text
 paas/application-monitor/public/img/ascetic.png -text

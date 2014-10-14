@@ -20,7 +20,7 @@
 
 	appm.controller('PageController',  ["$scope",function($scope) {
 
-        $scope.page = 'metrics.html';
+        $scope.page = 'global.html';
         $scope.setPage = function(newPage) {
             $scope.page = newPage;
 		};
