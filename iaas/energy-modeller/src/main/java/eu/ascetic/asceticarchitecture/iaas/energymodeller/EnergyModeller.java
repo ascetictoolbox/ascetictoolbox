@@ -26,6 +26,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmener
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.HistoricLoadBasedDivision;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.LoadBasedDivision;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.LoadFractionShareRule;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.FastDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.WattsUpMeterDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDataSourceAdaptor;
@@ -97,7 +98,7 @@ public class EnergyModeller {
      * This creates a new energy modeller.
      */
     public EnergyModeller() {
-        datasource = new ZabbixDataSourceAdaptor();
+        datasource = new FastDataSourceAdaptor();
         database = new DefaultDatabaseConnector();
         startup();
     }
@@ -129,7 +130,7 @@ public class EnergyModeller {
             dataGatherThread.setDaemon(true);
             dataGatherThread.start();
         } catch (Exception ex) {
-            Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The energry modeller failed to start correctly", ex);
+            Logger.getLogger(EnergyModeller.class.getName()).log(Level.SEVERE, "The energry modeller failed to start correctly", ex);
         }
     }
 

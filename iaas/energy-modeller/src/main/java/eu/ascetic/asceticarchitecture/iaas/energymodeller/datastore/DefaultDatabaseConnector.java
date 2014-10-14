@@ -134,7 +134,7 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
                 } else if (results.getMetaData().getColumnTypeName(i).compareTo("datetime") == 0) {
                     row.add(results.getDate(i));
                 } else {
-                    throw new SQLException("Error processing SQl datatye:" + results.getMetaData().getColumnTypeName(i));
+                    throw new SQLException("Error processing SQL datatype:" + results.getMetaData().getColumnTypeName(i));
                 }
             }
             table.add(row);

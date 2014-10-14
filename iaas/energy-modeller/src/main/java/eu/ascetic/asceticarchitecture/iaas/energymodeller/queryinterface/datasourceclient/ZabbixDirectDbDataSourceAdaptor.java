@@ -176,7 +176,7 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
         try {
             connection = getConnection();
         } catch (IOException | SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName()).log(Level.SEVERE, "Failed to establish the connection to the Zabbix DB", ex);
         }
     }
 
@@ -211,7 +211,7 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
             }
             return connection;
         } catch (SQLException | IOException | ClassNotFoundException ex) {
-            Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName()).log(Level.SEVERE, "Failed to establish the connection to the Zabbix DB", ex);
         }
         return null;
     }

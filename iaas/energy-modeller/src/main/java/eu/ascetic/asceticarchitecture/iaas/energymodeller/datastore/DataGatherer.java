@@ -155,10 +155,11 @@ public class DataGatherer implements Runnable {
     }
 
     /**
-     * This filters a list of energy users and returns only the list of hosts 
+     * This filters a list of energy users and returns only the list of hosts
+     *
      * @param energyUsers The list of energy users
      * @return The list of hosts.
-     */    
+     */
     private List<Host> getHostList(List<EnergyUsageSource> input) {
         ArrayList<Host> answer = new ArrayList<>();
         for (EnergyUsageSource item : input) {
@@ -170,8 +171,9 @@ public class DataGatherer implements Runnable {
     }
 
     /**
-     * This filters a list of energy users and returns only the list of vms 
-     * that have been deployed
+     * This filters a list of energy users and returns only the list of vms that
+     * have been deployed
+     *
      * @param energyUsers The list of energy users
      * @return The list of VMs that have been deployed.
      */
@@ -209,12 +211,13 @@ public class DataGatherer implements Runnable {
                 for (HostMeasurement measurement : measurements) {
                     Host host = knownHosts.get(measurement.getHost().getHostName());
                     /**
-                     * This ensures all the calibration data is available, by setting
-                     * the host from the cached data. HostList originates from the
-                     * data source and not from the database/cache, which includes
-                     * information such as idle energy usage.
+                     * This ensures all the calibration data is available, by
+                     * setting the host from the cached data. HostList
+                     * originates from the data source and not from the
+                     * database/cache, which includes information such as idle
+                     * energy usage.
                      */
-                    measurement.setHost(host); 
+                    measurement.setHost(host);
                     /**
                      * Update only if a value has not been provided before or
                      * the timestamp value has changed. This keeps the data
@@ -242,9 +245,11 @@ public class DataGatherer implements Runnable {
                     Logger.getLogger(DataGatherer.class.getName()).log(Level.SEVERE, "The data gatherer was interupted.", ex);
                 }
                 faultCount = (faultCount > 0 ? faultCount - 1 : 0);
-            } catch (Exception e) { //This should always try to gather data from the data source.
+            } catch (Exception ex) { //This should always try to gather data from the data source.
                 faultCount = faultCount + 1;
-                if (faultCount > 25) {
+                Logger.getLogger(DataGatherer.class.getName()).log(Level.SEVERE, "The data gatherer encountered a fault, Fault Number:" + faultCount, ex);
+                if (faultCount > 100) {
+                    Logger.getLogger(DataGatherer.class.getName()).log(Level.SEVERE, "Many faults were seen in a row the energy modeller is now stopping. Fault Number:{0}", faultCount);
                     stop(); //Exit if faults keep occuring in a sequence.
                 }
             }
@@ -401,8 +406,8 @@ public class DataGatherer implements Runnable {
      */
     public ArrayList<VmDeployed> getVMsOnHost(Host host) {
         return getVMsOnHost(host, datasource.getVmList());
-    }    
-    
+    }
+
     /**
      * This gets a list of the VMs that are currently on a host machine.
      *
