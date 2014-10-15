@@ -183,6 +183,12 @@ public class VmManagerRest {
         return vmPlacementCallsManager.getRecommendedPlan(recommendedPlanRequest);
     }
 
+    @PUT
+    @Path("/vm_placement/execute_deployment_plan")
+    @Consumes("application/json")
+    public void executeDeploymentPlan(String deploymentPlan) {
+        vmPlacementCallsManager.executeDeploymentPlan(deploymentPlan);
+    }
 
     //================================================================================
     // Node Methods

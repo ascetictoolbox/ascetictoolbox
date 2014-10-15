@@ -437,6 +437,22 @@ public class VmManager {
         return optaVmPlacementConversor.getRecommendedPlan(clusterStateRecommendedPlan);
     }
 
+    /**
+     * This function executes a deployment plan. This means that each of the VMs of the deployment plan are migrated
+     * to the host specified if they were not already deployed there.
+     *
+     * @param deploymentPlan the deployment plan
+     */
+    public void executeDeploymentPlan(VmPlacement[] deploymentPlan) {
+        for (VmPlacement vmPlacement: deploymentPlan) {
+            boolean vmAlreadyDeployedInHost = vmPlacement.getHostname().equals(cloudMiddleware.getVMInfo(
+                    vmPlacement.getVmId()).getHostName());
+            if (!vmAlreadyDeployedInHost) {
+                cloudMiddleware.migrate(vmPlacement.getVmId(), vmPlacement.getHostname());
+            }
+        }
+    }
+
 
     //================================================================================
     // Hosts
