@@ -930,6 +930,9 @@ paas/application-monitor/public/bower_components/highcharts-ng/dist/highcharts-n
 paas/application-monitor/public/bower_components/highcharts-ng/dist/highcharts-ng.min.js -text
 paas/application-monitor/public/bower_components/highcharts/highcharts-all.js -text
 paas/application-monitor/public/bower_components/highcharts/highcharts-more.js -text
+paas/application-monitor/public/bower_components/highcharts/highcharts.js -text
+paas/application-monitor/public/bower_components/highcharts/modules/solid-gauge.js -text
+paas/application-monitor/public/bower_components/highcharts/modules/solid-gauge.src.js -text
 paas/application-monitor/public/bower_components/jquery/dist/jquery.js -text
 paas/application-monitor/public/bower_components/jquery/dist/jquery.min.js -text
 paas/application-monitor/public/bower_components/underscore/underscore-min.js -text

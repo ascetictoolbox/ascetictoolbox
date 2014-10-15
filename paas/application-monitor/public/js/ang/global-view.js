@@ -44,10 +44,8 @@
         $scope.finishedInstances = [ ];
         $scope.latestTimestamp = 0;
         var getFinishedApps = function() {
-            console.log("---");
             $http.get("/apps/finished?limit="+MAX_ROWS)
                 .success(function(ret) {
-                    console.log("ok");
                     $scope.finishedInstances = ret;
                 });
         }
