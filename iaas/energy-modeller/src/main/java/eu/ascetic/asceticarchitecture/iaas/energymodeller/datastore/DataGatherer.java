@@ -202,11 +202,13 @@ public class DataGatherer implements Runnable {
          */
         while (running) {
             try {
+                Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Obtaining online host and vm list");
                 List<EnergyUsageSource> energyConsumers = datasource.getHostAndVmList();
                 List<Host> hostList = getHostList(energyConsumers);
                 refreshKnownHostList(hostList);
                 List<VmDeployed> vmList = getVMList(energyConsumers);
                 refreshKnownVMList(vmList);
+                Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Obtaining specific host information");
                 List<HostMeasurement> measurements = datasource.getHostData(hostList);
                 for (HostMeasurement measurement : measurements) {
                     Host host = knownHosts.get(measurement.getHost().getHostName());
@@ -225,14 +227,19 @@ public class DataGatherer implements Runnable {
                      */
                     if (lastTimeStampSeen.get(host) == null || measurement.getClock() > lastTimeStampSeen.get(host)) {
                         lastTimeStampSeen.put(host, measurement.getClock());
+                        Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Writing out host information");
                         connector.writeHostHistoricData(host, measurement.getClock(), measurement.getPower(), measurement.getEnergy());
+                        Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Obtaining list of vms on host " + host.getHostName());
                         ArrayList<VmDeployed> vms = getVMsOnHost(host, vmList);
                         if (!vms.isEmpty()) {
                             HostVmLoadFraction fraction = new HostVmLoadFraction(host, measurement.getClock());
+                            Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Obtaining specific vm information");
                             List<VmMeasurement> vmMeasurements = datasource.getVmData(vms);
                             fraction.setFraction(vmMeasurements);
+                            Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Writing out vm information");
                             connector.writeHostVMHistoricData(host, measurement.getClock(), fraction);
                             if (logger != null) {
+                                Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Logging out to Zabbix file");
                                 logger.printToFile(logger.new Pair(measurement, fraction));
                             }
                         }

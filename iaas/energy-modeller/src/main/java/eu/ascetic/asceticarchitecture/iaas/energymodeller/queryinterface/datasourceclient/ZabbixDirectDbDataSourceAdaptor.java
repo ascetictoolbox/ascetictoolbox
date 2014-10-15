@@ -139,6 +139,8 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
     private static boolean isHost = true;
 
     private static final String CONFIG_FILE = "zabbix_db_adaptor.properties";
+    
+    private static final Logger dbLogger = Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName());
 
     /**
      * This creates a new database connector for use. It establishes a database
@@ -171,12 +173,12 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
             config.setProperty("iaas.energy.modeller.filter.isHost", isHost);
 
         } catch (ConfigurationException ex) {
-            Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName()).log(Level.SEVERE, "Error loading the configuration of the IaaS energy modeller", ex);
+            dbLogger.log(Level.SEVERE, "Error loading the configuration of the IaaS energy modeller", ex);
         }
         try {
             connection = getConnection();
         } catch (IOException | SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName()).log(Level.SEVERE, "Failed to establish the connection to the Zabbix DB", ex);
+            dbLogger.log(Level.SEVERE, "Failed to establish the connection to the Zabbix DB", ex);
         }
     }
 
@@ -211,7 +213,7 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
             }
             return connection;
         } catch (SQLException | IOException | ClassNotFoundException ex) {
-            Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName()).log(Level.SEVERE, "Failed to establish the connection to the Zabbix DB", ex);
+            dbLogger.log(Level.SEVERE, "Failed to establish the connection to the Zabbix DB", ex);
         }
         return null;
     }
@@ -284,7 +286,7 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName()).log(Level.SEVERE, null, ex);
+            dbLogger.log(Level.SEVERE, null, ex);
         }
         return null;
     }
@@ -325,7 +327,7 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName()).log(Level.SEVERE, null, ex);
+            dbLogger.log(Level.SEVERE, null, ex);
         }
         return null;
     }
@@ -413,7 +415,7 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName()).log(Level.SEVERE, null, ex);
+            dbLogger.log(Level.SEVERE, null, ex);
         }
         return answer;
     }
@@ -439,7 +441,7 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName()).log(Level.SEVERE, null, ex);
+            dbLogger.log(Level.SEVERE, null, ex);
         }
         return answer;
     }
@@ -463,7 +465,7 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName()).log(Level.SEVERE, null, ex);
+            dbLogger.log(Level.SEVERE, null, ex);
         }
         return answer;
     }
@@ -498,7 +500,7 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName()).log(Level.SEVERE, null, ex);
+            dbLogger.log(Level.SEVERE, null, ex);
         }
         return answer;
     }
@@ -551,7 +553,7 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName()).log(Level.SEVERE, null, ex);
+            dbLogger.log(Level.SEVERE, null, ex);
         }
         return answer;
     }
@@ -664,7 +666,7 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
                 answer.add(value);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName()).log(Level.SEVERE, null, ex);
+            dbLogger.log(Level.SEVERE, null, ex);
         }
         return answer;
     }

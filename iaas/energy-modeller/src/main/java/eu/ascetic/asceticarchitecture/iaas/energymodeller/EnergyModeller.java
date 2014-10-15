@@ -39,12 +39,17 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsa
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HistoricUsageRecord;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostEnergyRecord;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 /**
@@ -80,16 +85,29 @@ public class EnergyModeller {
 
     /**
      * This runs the energy modeller in standalone mode.
-     * @param args 
+     *
+     * @param args
      */
     public static void main(String[] args) {
+        try {
+            if (new File("logging.properties").exists()) {
+                LogManager.getLogManager().readConfiguration(new FileInputStream(new File("logging.properties")));
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(EnergyModeller.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException | SecurityException ex) {
+            Logger.getLogger(EnergyModeller.class.getName()).log(Level.SEVERE,
+                    "Could not read the energy modeller's log settings file", ex);
+        }
         EnergyModeller modeller = new EnergyModeller();
+        Logger.getLogger(EnergyModeller.class.getName()).log(Level.SEVERE,
+                "The logger for the energy modeller has now started");
         while (true) {
             try {
                 //Note: The Zabbix API takes a few seconds to call, so don't call it faster than 3-4 seconds
                 Thread.sleep(1000);
             } catch (InterruptedException ex) {
-                Logger.getLogger(DataGatherer.class.getName()).log(Level.SEVERE, "The data gatherer was interupted.", ex);
+                Logger.getLogger(EnergyModeller.class.getName()).log(Level.SEVERE, "The data gatherer was interupted.", ex);
             }
         }
     }
