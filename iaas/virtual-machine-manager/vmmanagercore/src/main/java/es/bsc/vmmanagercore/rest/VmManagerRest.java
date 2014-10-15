@@ -190,6 +190,7 @@ public class VmManagerRest {
         vmPlacementCallsManager.executeDeploymentPlan(deploymentPlan);
     }
 
+
     //================================================================================
     // Node Methods
     //================================================================================

@@ -43,7 +43,7 @@
                 .changeCurrentSchedulingAlg(newSchedulingAlg)
                 .then(
                     function() {
-                        schedulingAlgCtrl.getCurrentSchedulingAlg();
+                        loadSchedulingAlgsInfo();
                         toastr.success('Scheduling algorithm changed.');
                     },
                     function() {
