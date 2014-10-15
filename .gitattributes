@@ -468,6 +468,7 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/ovf/OV
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/pm/PriceModellerClient.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/AbstractRest.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/ApplicationRest.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/CacheImageRest.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/DeploymentRest.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/RootRest.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/VMRest.java -text
@@ -525,6 +526,7 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/te
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/ovf/OVFThingsIT.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/ovf/OVFUtilsTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/ApplicationRestTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/CacheImageRestTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/DeploymentRestTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/RootRestTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/VMRestTest.java -text
@@ -557,6 +559,7 @@ paas/application-manager/src/test/resources/a.xml -text
 paas/application-manager/src/test/resources/application-manager-db-JPA-test-context.xml -text
 paas/application-manager/src/test/resources/ascetic-basic-slat.xml -text
 paas/application-manager/src/test/resources/b.xml -text
+paas/application-manager/src/test/resources/davidg-test.ovf.vmc.xml -text
 paas/application-manager/src/test/resources/mysql-jpa-test-configuration.xml -text
 paas/application-manager/src/test/resources/saas.ovf -text
 paas/application-manager/src/test/resources/sla-agreement.xml -text

@@ -2,6 +2,7 @@ package eu.ascetic.paas.applicationmanager.dao;
 
 import java.util.List;
 
+import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.VM;
 
 /**
@@ -66,4 +67,11 @@ public interface VMDAO extends DAO<VM> {
 	 * @return <code>true</code> if the VM was deleted correctly
 	 */
 	public boolean delete(VM vm);
+	
+	/**
+	 * Returns all the VMs that are not deleted using the image
+	 * @param image
+	 * @return
+	 */
+	public List<VM> getNotDeletedVMsWithImage(Image image);
 }

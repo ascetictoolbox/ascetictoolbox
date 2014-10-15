@@ -1,5 +1,6 @@
 package eu.ascetic.paas.applicationmanager.dao.jpa;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.ascetic.paas.applicationmanager.dao.ImageDAO;
+import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Image;
 
 /**
@@ -115,6 +117,26 @@ public class ImageDAOJpa implements ImageDAO {
 			return image;
 		} catch(NoResultException ex) {
 			return null;
+		}
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<Image> getCacheImagesForApplication(Application application) {
+		if(application == null) {
+			return new ArrayList<Image>();
+		}
+		
+		try {
+			Query query = entityManager.createQuery("from Image where demo = true and application = :applicationIdentifier");
+			query.setParameter("applicationIdentifier", application);
+		
+			List<Image> images = (List<Image>) query.getResultList();
+		
+			return images;
+		} catch(IllegalStateException ex) {
+			logger.debug("Trying to get information for an application that does not exists in the databse");
+			return new ArrayList<Image>();
 		}
 	}
 }

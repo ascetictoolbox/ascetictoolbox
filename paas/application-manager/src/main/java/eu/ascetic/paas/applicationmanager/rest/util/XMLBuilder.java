@@ -8,6 +8,7 @@ import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Collection;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
+import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.Items;
 import eu.ascetic.paas.applicationmanager.model.Link;
 import eu.ascetic.paas.applicationmanager.model.VM;
@@ -63,6 +64,12 @@ public class XMLBuilder {
 		linkDeployments.setRel("deployments");
 		linkDeployments.setType(MediaType.APPLICATION_XML);
 		application.addLink(linkDeployments);
+		
+		Link linkCacheImages = new Link();
+		linkCacheImages.setHref(application.getHref() + "/cache-images");
+		linkCacheImages.setRel("cache-image");
+		linkCacheImages.setType(MediaType.APPLICATION_XML);
+		application.addLink(linkCacheImages);
 		
 		// If the Application has Deployments we add the necessary information
 		List<Deployment> deployments = application.getDeployments();
@@ -216,6 +223,44 @@ public class XMLBuilder {
 			}
 		} else {
 			items.setTotal(0);
+		}
+		
+		return ModelConverter.objectCollectionToXML(collection);
+	}
+	
+	/**
+	 * Adds the necessary XML information to a collection of cache image and generates the XML
+	 * @param images List of images to add the information
+	 * @param applicationName name of the application to add the information
+	 * @return the XML string
+	 */
+	public static String getCollectionOfCacheImagesXML(List<Image> images, String applicationName) {
+		Collection collection = new Collection();
+		collection.setHref("/applications/" + applicationName + "/cache-images");
+		
+		Link linkParent = new Link();
+		linkParent.setHref("/applications/" + applicationName);
+		linkParent.setRel("parent");
+		linkParent.setType(MediaType.APPLICATION_XML);
+		collection.addLink(linkParent);
+		
+		Link linkSelf = new Link();
+		linkSelf.setHref(collection.getHref());
+		linkSelf.setRel("self");
+		linkSelf.setType(MediaType.APPLICATION_XML);
+		collection.addLink(linkSelf);
+		
+		Items items = new Items();
+		items.setOffset(0);
+		collection.setItems(items);
+		
+		if(images != null) {
+			items.setTotal(images.size());
+			
+			for(Image image : images) {
+				image.setHref(collection.getHref() + "/" + image.getId());
+				items.addImage(image);
+			}
 		}
 		
 		return ModelConverter.objectCollectionToXML(collection);

@@ -17,6 +17,7 @@ import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Collection;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
+import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.VM;
 
 /**
@@ -52,7 +53,7 @@ public class XMLBuilderTest {
 		
 		assertEquals(1, application.getId());
 		assertEquals("/applications/name", application.getHref());
-		assertEquals(3, application.getLinks().size());
+		assertEquals(4, application.getLinks().size());
 		assertEquals("/applications", application.getLinks().get(0).getHref());
 		assertEquals("parent", application.getLinks().get(0).getRel());
 		assertEquals(MediaType.APPLICATION_XML, application.getLinks().get(0).getType());
@@ -136,7 +137,7 @@ public class XMLBuilderTest {
 		
 		assertEquals(22, application.getId());
 		assertEquals("/applications/name", application.getHref());
-		assertEquals(3, application.getLinks().size());
+		assertEquals(4, application.getLinks().size());
 		assertEquals("/applications", application.getLinks().get(0).getHref());
 		assertEquals("parent", application.getLinks().get(0).getRel());
 		assertEquals(MediaType.APPLICATION_XML, application.getLinks().get(0).getType());
@@ -191,7 +192,7 @@ public class XMLBuilderTest {
 		
 		assertEquals(1, application.getId());
 		assertEquals("/applications/name", application.getHref());
-		assertEquals(3, application.getLinks().size());
+		assertEquals(4, application.getLinks().size());
 		assertEquals("/applications", application.getLinks().get(0).getHref());
 		assertEquals("parent", application.getLinks().get(0).getRel());
 		assertEquals(MediaType.APPLICATION_XML, application.getLinks().get(0).getType());
@@ -201,6 +202,9 @@ public class XMLBuilderTest {
 		assertEquals("/applications/name/deployments", application.getLinks().get(2).getHref());
 		assertEquals("deployments",application.getLinks().get(2).getRel());
 		assertEquals(MediaType.APPLICATION_XML, application.getLinks().get(2).getType());
+		assertEquals("/applications/name/cache-images", application.getLinks().get(3).getHref());
+		assertEquals("cache-image",application.getLinks().get(3).getRel());
+		assertEquals(MediaType.APPLICATION_XML, application.getLinks().get(3).getType());
 	}
 	
 	@Test
@@ -339,9 +343,9 @@ public class XMLBuilderTest {
 		assertEquals(0, collection.getItems().getOffset());
 		assertEquals(2, collection.getItems().getTotal());
 		assertEquals("/applications/name-1", collection.getItems().getApplications().get(0).getHref());
-		assertEquals(3, collection.getItems().getApplications().get(0).getLinks().size());
+		assertEquals(4, collection.getItems().getApplications().get(0).getLinks().size());
 		assertEquals("/applications/name-2", collection.getItems().getApplications().get(1).getHref());
-		assertEquals(3, collection.getItems().getApplications().get(1).getLinks().size());
+		assertEquals(4, collection.getItems().getApplications().get(1).getLinks().size());
 		assertEquals(2, collection.getLinks().size());
 		assertEquals("/", collection.getLinks().get(0).getHref());
 		assertEquals("parent", collection.getLinks().get(0).getRel());
@@ -362,6 +366,59 @@ public class XMLBuilderTest {
 		assertEquals(0, collection.getItems().getOffset());
 		assertEquals(0, collection.getItems().getTotal());
 		assertEquals(null, collection.getItems().getApplications());
+	}
+	
+	@Test
+	public void getCollectionOfCacheImagesTest() throws JAXBException {
+		Image image1 = new Image();
+		image1.setDemo(true);
+		image1.setId(1);
+		image1.setOvfHref("ovf-href-1");
+		image1.setOvfId("ovf-id1");
+		image1.setProviderImageId("uuid1");
+		Image image2 = new Image();
+		image2.setDemo(true);
+		image2.setId(2);
+		image2.setOvfHref("ovf-href-2");
+		image2.setOvfId("ovf-id2");
+		image2.setProviderImageId("uuid2");
+		List<Image> images = new ArrayList<Image>();
+		images.add(image1);
+		images.add(image2);
+		
+		String xml = XMLBuilder.getCollectionOfCacheImagesXML(images, "name");
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(Collection.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		Collection collection = (Collection) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals("/applications/name/cache-images", collection.getHref());
+		assertEquals(0, collection.getItems().getOffset());
+		assertEquals(2, collection.getItems().getTotal());
+		// Links
+		assertEquals(2, collection.getLinks().size());
+		assertEquals("/applications/name", collection.getLinks().get(0).getHref());
+		assertEquals("parent", collection.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, collection.getLinks().get(0).getType());
+		assertEquals("/applications/name/cache-images", collection.getLinks().get(1).getHref());
+		assertEquals("self", collection.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, collection.getLinks().get(1).getType());
+		// Images
+		assertEquals(2, collection.getItems().getImages().size());
+		//     Image 1
+		image1 = collection.getItems().getImages().get(0);
+		assertEquals("/applications/name/cache-images/1", image1.getHref());
+		assertEquals(1, image1.getId());
+		assertEquals("ovf-href-1", image1.getOvfHref());
+		assertEquals("ovf-id1", image1.getOvfId());
+		assertEquals("uuid1", image1.getProviderImageId());
+		//     Image 2
+		image2 = collection.getItems().getImages().get(1);
+		assertEquals("/applications/name/cache-images/2", image2.getHref());
+		assertEquals(2, image2.getId());
+		assertEquals("ovf-href-2", image2.getOvfHref());
+		assertEquals("ovf-id2", image2.getOvfId());
+		assertEquals("uuid2", image2.getProviderImageId());
 	}
 	
 	@Test

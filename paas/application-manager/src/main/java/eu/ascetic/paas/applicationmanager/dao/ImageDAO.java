@@ -2,6 +2,7 @@ package eu.ascetic.paas.applicationmanager.dao;
 
 import java.util.List;
 
+import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Image;
 
 /**
@@ -74,5 +75,18 @@ public interface ImageDAO extends DAO<Image> {
 	 */
 	public Image getLastImageWithOvfId(String ovfId);
 
-	public Image getDemoCacheImage(String string, String string2);
+	/**
+	 * Returns only a specific demo cache image with that string id, and that ovfHref
+	 * @param ovfId ovf id of the image
+	 * @param ovfHref file href of the image
+	 * @return the last cache image that fulfills those requirements
+	 */
+	public Image getDemoCacheImage(String ovfId, String ovfHref);
+	
+	/**
+	 * Returns the list of cache images for an application
+	 * @param application to which we want to retrieve the list of cache images
+	 * @return List of cache images for that application.
+	 */
+	public List<Image> getCacheImagesForApplication(Application application);
 }

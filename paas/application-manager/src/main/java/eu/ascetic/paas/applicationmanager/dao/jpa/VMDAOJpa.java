@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.ascetic.paas.applicationmanager.dao.VMDAO;
+import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.VM;
 
 /**
@@ -94,6 +95,17 @@ public class VMDAOJpa implements VMDAO {
 			logger.debug(e);
 			return false;
 		} 
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<VM> getNotDeletedVMsWithImage(Image image) {
+		Query query = entityManager.createQuery("select distinct a from VM a " +
+												   "join a.images t where t.id = :id and a.status != :status");
+		
+		query.setParameter("status", "DELETED");
+		query.setParameter("id", image.getId());
+		return (List<VM>) query.getResultList();
 	}
 }
 

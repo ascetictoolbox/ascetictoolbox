@@ -110,7 +110,7 @@ public class ApplicationRestTest {
 		//Application 1
 		assertEquals(1, collection.getItems().getApplications().get(0).getId());
 		assertEquals("/applications/name-1", collection.getItems().getApplications().get(0).getHref());
-		assertEquals(3, collection.getItems().getApplications().get(0).getLinks().size());
+		assertEquals(4, collection.getItems().getApplications().get(0).getLinks().size());
 		assertEquals("/applications", collection.getItems().getApplications().get(0).getLinks().get(0).getHref());
 		assertEquals("parent", collection.getItems().getApplications().get(0).getLinks().get(0).getRel());
 		assertEquals(MediaType.APPLICATION_XML, collection.getItems().getApplications().get(0).getLinks().get(0).getType());
@@ -123,7 +123,7 @@ public class ApplicationRestTest {
 		//Application 2
 		assertEquals(2, collection.getItems().getApplications().get(1).getId());
 		assertEquals("/applications/name-2", collection.getItems().getApplications().get(1).getHref());
-		assertEquals(3, collection.getItems().getApplications().get(0).getLinks().size());
+		assertEquals(4, collection.getItems().getApplications().get(0).getLinks().size());
 		assertEquals("/applications", collection.getItems().getApplications().get(1).getLinks().get(0).getHref());
 		assertEquals("parent", collection.getItems().getApplications().get(1).getLinks().get(0).getRel());
 		assertEquals(MediaType.APPLICATION_XML, collection.getItems().getApplications().get(1).getLinks().get(0).getType());
@@ -167,7 +167,7 @@ public class ApplicationRestTest {
 		
 		assertEquals(1, applicationResponse.getId());
 		assertEquals("/applications/name", applicationResponse.getHref());
-		assertEquals(3, applicationResponse.getLinks().size());
+		assertEquals(4, applicationResponse.getLinks().size());
 		assertEquals("/applications", applicationResponse.getLinks().get(0).getHref());
 		assertEquals("parent", applicationResponse.getLinks().get(0).getRel());
 		assertEquals(MediaType.APPLICATION_XML, applicationResponse.getLinks().get(0).getType());

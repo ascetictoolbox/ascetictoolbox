@@ -25,9 +25,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
+import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.dao.ImageDAO;
 import eu.ascetic.paas.applicationmanager.dao.VMDAO;
+import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.model.Image;
@@ -54,7 +56,7 @@ import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.VmDeployed;
  * limitations under the License.
  * 
  * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
- * @email david.garciaperez@atos.net 
+ * e-mail: david.garciaperez@atos.net 
  */
 
 public class DeploymentStatusTaskTest {	
@@ -191,6 +193,13 @@ public class DeploymentStatusTaskTest {
 		Deployment deployment = new Deployment();
 		deployment.setOvf(threeTierWebAppDEMOOvfString);
 		
+		// Application DAO mock
+		ApplicationDAO applicationDAO = mock(ApplicationDAO.class);
+		
+		Application application = new Application();
+		when(applicationDAO.getByName("threeTierWebApp")).thenReturn(application);
+		when(applicationDAO.update(application)).thenReturn(true);
+		
 		// The object will be updated in the database
 		when(deploymentDAO.update(deployment)).thenReturn(true);
 		
@@ -281,7 +290,7 @@ public class DeploymentStatusTaskTest {
 		when(imageDAO.getDemoCacheImage("jmeter-img", "/DFS/ascetic/vm-images/threeTierWebApp/jmeter.img")).thenReturn(null);
 		when(imageDAO.save(eq(image4))).thenReturn(true);
 		
-		//when(imageDAO.getById(0)).thenReturn(image1, image2, image2, image3, image4);
+		when(imageDAO.getById(0)).thenReturn(image1, image2, image3, image4);
 		
 		// We mock the calls to get VMs
 		when(vmMaClient.getVM("haproxy-vm1")).thenReturn(new VmDeployed("haproxyVM", "haproxy-img", 1, 2, 3, "", "", "", "10.0.0.1", "ACTIVE", new Date(), ""));
@@ -297,6 +306,7 @@ public class DeploymentStatusTaskTest {
 		task.vmManagerClient = vmMaClient;
 		task.imageDAO = imageDAO;
 		task.vmDAO = vmDAO;
+		task.applicationDAO = applicationDAO;
 		
 		//We start the task
 		task.deploymentDeployApplicationActions(deployment);
@@ -371,6 +381,9 @@ public class DeploymentStatusTaskTest {
 		assertEquals("jmeter-img", deploymentCaptor.getValue().getVms().get(4).getImages().get(0).getOvfId());
 		assertEquals("jmeter-uuid", deploymentCaptor.getValue().getVms().get(4).getImages().get(0).getProviderImageId());
 		assertTrue(deploymentCaptor.getValue().getVms().get(4).getImages().get(0).isDemo());
+		
+		verify(applicationDAO, times(3)).getByName("threeTierWebApp");
+		verify(applicationDAO, times(3)).update(application);
 	}
 	
 	@Test
@@ -379,6 +392,13 @@ public class DeploymentStatusTaskTest {
 		
 		Deployment deployment = new Deployment();
 		deployment.setOvf(threeTierWebAppOvfString);
+		
+		// Application DAO mock
+		ApplicationDAO applicationDAO = mock(ApplicationDAO.class);
+		
+		Application application = new Application();
+		when(applicationDAO.getByName("threeTierWebApp")).thenReturn(application);
+		when(applicationDAO.update(application)).thenReturn(true);
 		
 		// The object will be updated in the database
 		when(deploymentDAO.update(deployment)).thenReturn(true);
@@ -452,7 +472,7 @@ public class DeploymentStatusTaskTest {
 		image4.setOvfHref("/DFS/ascetic/vm-images/threeTierWebApp/jmeter.img");
 		image4.setProviderImageId("jmeter-uuid");
 		when(imageDAO.save(eq(image4))).thenReturn(true);
-		//when(imageDAO.getById(0)).thenReturn(image1, image2, image3, image4);
+		when(imageDAO.getById(0)).thenReturn(image1, image2, image3, image4);
 		
 		// We mock the calls to get VMs
 		when(vmMaClient.getVM("haproxy-vm1")).thenReturn(new VmDeployed("haproxyVM", "haproxy-img", 1, 2, 3, "", "", "", "10.0.0.1", "ACTIVE", new Date(), ""));
@@ -467,6 +487,7 @@ public class DeploymentStatusTaskTest {
 		task.vmManagerClient = vmMaClient;
 		task.imageDAO = imageDAO;
 		task.vmDAO = vmDAO;
+		task.applicationDAO = applicationDAO;
 		
 		//We start the task
 		task.deploymentDeployApplicationActions(deployment);
@@ -524,6 +545,9 @@ public class DeploymentStatusTaskTest {
 		assertEquals("/DFS/ascetic/vm-images/threeTierWebApp/jmeter.img", deploymentCaptor.getValue().getVms().get(3).getImages().get(0).getOvfHref());
 		assertEquals("jmeter-img", deploymentCaptor.getValue().getVms().get(3).getImages().get(0).getOvfId());
 		assertEquals("jmeter-uuid", deploymentCaptor.getValue().getVms().get(3).getImages().get(0).getProviderImageId());
+		
+		verify(applicationDAO, times(4)).getByName("threeTierWebApp");
+		verify(applicationDAO, times(4)).update(application);
 	}
 	
 	//@Test

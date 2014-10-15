@@ -195,7 +195,7 @@
 		<dependency>
 			<groupId>eu.ascetic.paas</groupId>
 			<artifactId>application-manager-datamodel</artifactId>
-			<version>0.11-SNAPSHOT</version>
+			<version>0.12-SNAPSHOT</version>
 		</dependency>
 		
 			<!-- OVF LIBRARIES -->

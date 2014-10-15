@@ -13,9 +13,11 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.contextualizer.VmcClient;
+import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.dao.ImageDAO;
 import eu.ascetic.paas.applicationmanager.dao.VMDAO;
+import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.model.Image;
@@ -67,6 +69,8 @@ import eu.ascetic.vmc.api.datamodel.ProgressData;
 public class DeploymentsStatusTask {
 	private static Logger logger = Logger.getLogger(DeploymentsStatusTask.class);
 	
+	@Autowired
+	protected ApplicationDAO applicationDAO;
 	@Autowired
 	protected DeploymentDAO deploymentDAO;
 	@Autowired
@@ -318,6 +322,7 @@ public class DeploymentsStatusTask {
 		
 		try {
 			OvfDefinition ovfDocument = OVFUtils.getOvfDefinition(deployment.getOvf());
+			String applicationName = OVFUtils.getApplicationName(deployment.getOvf());
 			VirtualSystemCollection vsc = ovfDocument.getVirtualSystemCollection();
 			
 			// We check all the Virtual Systems in the OVF file
@@ -345,10 +350,10 @@ public class DeploymentsStatusTask {
 					image = imageDAO.getDemoCacheImage(fileId, urlImg);
 					if(image == null) {
 						logger.info("The image was not cached, we need to uplaod first");
-						image = uploadImage(urlImg, fileId, true);
+						image = uploadImage(urlImg, fileId, true, applicationName);
 					}
 				} else {
-					image = uploadImage(urlImg, fileId, false);
+					image = uploadImage(urlImg, fileId, false, applicationName);
 				}
 
 				//Now we have the image... lets see what it is the rest to build the VM to Upload...
@@ -360,6 +365,9 @@ public class DeploymentsStatusTask {
 				int ramMb = virtualSystem.getVirtualHardwareSection().getMemorySize();
 				String isoPath = OVFUtils.getIsoPathFromVm(virtualSystem.getVirtualHardwareSection(), ovfDocument);
 				int capacity = getCapacity(ovfDocument, diskId);
+				
+				// We force to refresh the image from the DB... 
+				image = imageDAO.getById(image.getId());
 				
 				for(int j = 0; j < asceticUpperBound; j++) {
 
@@ -388,6 +396,7 @@ public class DeploymentsStatusTask {
 						vmToDB.setStatus(vmDeployed.getState());
 						vmToDB.setProviderVmId(id);
 						vmDAO.save(vmToDB);
+						
 						vmToDB.addImage(image);
 						vmDAO.update(vmToDB);
 						
@@ -417,7 +426,7 @@ public class DeploymentsStatusTask {
 		}
 	}
 	
-	private Image uploadImage(String urlImg, String fileId, boolean demo) {
+	private Image uploadImage(String urlImg, String fileId, boolean demo, String applicationName) {
 		String name = urlImg.substring(urlImg.lastIndexOf("/")+1, urlImg.length());
 		
 		ImageToUpload imgToUpload = new ImageToUpload(name, urlImg);
@@ -437,6 +446,17 @@ public class DeploymentsStatusTask {
 		imageDAO.save(image);
 		logger.info("Image storaged to the DB: id: " + image.getId() + ", ovf-id: " + image.getOvfId() + ", ovf-href: " + image.getOvfHref() 
 				                                 + ", provider-image-id: " + image.getProviderImageId() + ", is demo?: " + image.isDemo());
+		
+		logger.debug("#### applicationName: " + applicationName);
+		
+		Application application = applicationDAO.getByName(applicationName);
+		logger.debug("#### applicationName: " + application);
+		if(application != null) {
+			logger.debug("#### applicationName: <-->");
+			application.addImage(image);
+			boolean x = applicationDAO.update(application);
+			logger.debug("#### applicationName: " + x);
+		}
 		
 		return image;
 	}

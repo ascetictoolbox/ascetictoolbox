@@ -13,6 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import eu.ascetic.paas.applicationmanager.dao.ImageDAO;
 import eu.ascetic.paas.applicationmanager.dao.VMDAO;
 import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.VM;
@@ -41,6 +42,8 @@ import eu.ascetic.paas.applicationmanager.model.VM;
 public class VMDAOJpaTest extends AbstractTransactionalJUnit4SpringContextTests {
 	@Autowired
 	protected VMDAO vmDAO;
+	@Autowired
+	protected ImageDAO imageDAO;
 	
 	@Test
 	public void notNull() {
@@ -195,6 +198,71 @@ public class VMDAOJpaTest extends AbstractTransactionalJUnit4SpringContextTests 
 		
 		vmFromDatabase = vmDAO.getById(id);
 		assertEquals("ovf-id22", vmFromDatabase.getImages().get(0).getOvfId());
+	}
+	
+	@Test
+	public void getNoDeletedVMsWithImage() {
+		int size = imageDAO.getAll().size();
+		Image image1 = new Image();
+		image1.setOvfHref("ovf-href");
+		image1.setOvfId("ovf-id");
+		image1.setProviderImageId("uuid");
+		Image image2 = new Image();
+		image2.setOvfHref("ovf-href");
+		image2.setOvfId("ovf-id");
+		image2.setProviderImageId("uuid");
+		
+		imageDAO.save(image1);
+		image1 = imageDAO.getAll().get(size);
+		imageDAO.save(image2);
+		image2 = imageDAO.getAll().get(size+1);
+		
+		VM vm1 = new VM();
+		vm1.setIp("127.0.0.1");
+		vm1.setOvfId("ovf-id");
+		vm1.setProviderId("provider-id");
+		vm1.setProviderVmId("provider-vm-id");
+		vm1.setSlaAgreement("sla-agreement");
+		vm1.setStatus("ACTIVE");
+		vm1.addImage(image1);
+		
+		VM vm2 = new VM();
+		vm2.setIp("127.0.0.1");
+		vm2.setOvfId("ovf-id");
+		vm2.setProviderId("provider-id");
+		vm2.setProviderVmId("provider-vm-id");
+		vm2.setSlaAgreement("sla-agreement");
+		vm2.setStatus("DELETED");
+		vm2.addImage(image1);
+		
+		VM vm3 = new VM();
+		vm3.setIp("127.0.0.1");
+		vm3.setOvfId("ovf-id");
+		vm3.setProviderId("provider-id");
+		vm3.setProviderVmId("provider-vm-id");
+		vm3.setSlaAgreement("sla-agreement");
+		vm3.setStatus("DELETED");
+		vm3.addImage(image1);
+		
+		VM vm4 = new VM();
+		vm4.setIp("127.0.0.1");
+		vm4.setOvfId("ovf-id");
+		vm4.setProviderId("provider-id");
+		vm4.setProviderVmId("provider-vm-id");
+		vm4.setSlaAgreement("sla-agreement");
+		vm4.setStatus("DELETED");
+		vm4.addImage(image2);
+		
+		vmDAO.save(vm1);
+		vmDAO.save(vm2);
+		vmDAO.save(vm3);
+		vmDAO.save(vm4);
+		
+		List<VM> vms1 = vmDAO.getNotDeletedVMsWithImage(image1);
+		List<VM> vms2 = vmDAO.getNotDeletedVMsWithImage(image2);
+		
+		assertEquals(1, vms1.size());
+		assertEquals(0, vms2.size());
 	}
 }
 
