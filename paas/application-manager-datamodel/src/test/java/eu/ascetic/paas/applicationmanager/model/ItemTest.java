@@ -50,12 +50,27 @@ public class ItemTest {
 		List<Agreement> agreements = new ArrayList<Agreement>();
 		items.setAgreements(agreements);
 		
+		List<Image> images = new ArrayList<Image>();
+		items.setImages(images);
+		
 		assertEquals(1, items.getOffset());
 		assertEquals(2, items.getTotal());
 		assertEquals(applications, items.getApplications());
 		assertEquals(deployments, items.getDeployments());
 		assertEquals(vms, items.getVms());
 		assertEquals(agreements, items.getAgreements());
+	}
+	
+	@Test
+	public void addImage() {
+		Items items = new Items();
+		assertEquals(null, items.getImages());
+		
+		Image image = new Image();
+		items.addImage(image);
+		
+		assertEquals(1, items.getImages().size());
+		assertEquals(image, items.getImages().get(0));
 	}
 	
 	@Test

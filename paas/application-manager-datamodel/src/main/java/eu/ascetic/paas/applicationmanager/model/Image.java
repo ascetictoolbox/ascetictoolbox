@@ -4,9 +4,12 @@ import static eu.ascetic.paas.applicationmanager.model.Dictionary.APPLICATION_MA
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -16,6 +19,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 
 /**
@@ -64,7 +68,9 @@ public class Image {
 	private boolean demo = false;
 	@XmlElement(name = "provider-id", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private String providerId;
-
+	@XmlTransient
+	private Application application;
+	
 	@Transient
 	public String getHref() {
 		return href;
@@ -121,6 +127,15 @@ public class Image {
 	}
 	public void setProviderId(String providerId) {
 		this.providerId = providerId;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "application_id", nullable = true)
+	public Application getApplication() {
+		return application;
+	}
+	public void setApplication(Application application) {
+		this.application = application;
 	}
 	
 	@Override

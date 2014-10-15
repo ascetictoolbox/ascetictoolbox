@@ -50,6 +50,8 @@ public class Items {
 	private List<VM> vms;
 	@XmlElement(name="agreement", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private List<Agreement> agreements;
+	@XmlElement(name="images", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private List<Image> images;
 	
 	public int getOffset() {
 		return offset;
@@ -108,5 +110,16 @@ public class Items {
 	public void addAgreement(Agreement agreement) {
 		if(agreements == null) agreements = new ArrayList<Agreement>();
 		agreements.add(agreement);
+	}
+	
+	public List<Image> getImages() {
+		return images;
+	}
+	public void setImages(List<Image> images) {
+		this.images = images;
+	}
+	public void addImage(Image image) {
+		if(images == null) images = new ArrayList<Image>();
+		images.add(image);
 	}
 }
