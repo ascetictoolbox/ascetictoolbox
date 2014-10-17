@@ -113,6 +113,24 @@ public class EnergyModeller {
     }
 
     /**
+     * SingletonHolder is loaded on the first execution of
+     * Singleton.getInstance() or the first access to SingletonHolder.INSTANCE,
+     * not before.
+     */
+    private static class SingletonHolder {
+        private static final EnergyModeller INSTANCE = new EnergyModeller();
+    }
+
+    /**
+     * This creates a new singleton instance of the energy modeller.
+     *
+     * @return A singleton instance of a energy modeller.
+     */
+    public static EnergyModeller getInstance() {
+        return SingletonHolder.INSTANCE;
+    }
+
+    /**
      * This creates a new energy modeller.
      */
     public EnergyModeller() {
