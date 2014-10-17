@@ -68,6 +68,10 @@ public class Deployment {
 	private String status;
 	@XmlElement(name = "price", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private String price;
+	@XmlElement(name = "start-date", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private String startDate;
+	@XmlElement(name = "end-date", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private String endDate;
 	@XmlElement(name = "ovf", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private String ovf;
 	@XmlElementWrapper(name = "vms", namespace = APPLICATION_MANAGER_NAMESPACE)
@@ -142,4 +146,20 @@ public class Deployment {
 		if(vms == null) vms = new ArrayList<VM>();
 		vms.add(vm);
 	}
+	
+	@Column(name = "start_date", nullable = true)
+	public String getStartDate() {
+		return startDate;
+	}
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+	
+	@Column(name = "end_date", nullable = true)
+	public String getEndDate() {
+		return endDate;
+	}
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
+	}	
 }

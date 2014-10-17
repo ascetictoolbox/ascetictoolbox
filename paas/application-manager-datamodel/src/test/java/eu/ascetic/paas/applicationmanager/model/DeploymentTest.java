@@ -39,6 +39,8 @@ public class DeploymentTest {
 		deployment.setHref("href");
 		deployment.setPrice("provider-id");
 		deployment.setStatus("STATUS");
+		deployment.setStartDate("aaa");
+		deployment.setEndDate("bbb");
 		List<Link> links = new ArrayList<Link>();
 		deployment.setLinks(links);
 		List<VM> vms = new ArrayList<VM>();
@@ -50,6 +52,8 @@ public class DeploymentTest {
 		assertEquals("STATUS", deployment.getStatus());
 		assertEquals(links, deployment.getLinks());
 		assertEquals(vms, deployment.getVms());
+		assertEquals("aaa", deployment.getStartDate());
+		assertEquals("bbb", deployment.getEndDate());
 	}
 	
 	@Test
