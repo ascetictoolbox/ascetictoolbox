@@ -18,7 +18,6 @@
 
 package es.bsc.vmmanagercore.vmplacement;
 
-import es.bsc.vmmanagercore.manager.VmManager;
 import es.bsc.vmplacement.domain.Host;
 import es.bsc.vmplacement.domain.Vm;
 import es.bsc.vmplacement.modellers.energy.EnergyModel;
@@ -35,7 +34,7 @@ import java.util.List;
  */
 public class OptaEnergyModeller implements EnergyModel {
 
-    private EnergyModeller energyModeller = VmManager.energyModeller;
+    private EnergyModeller energyModeller = EnergyModeller.getInstance();
 
     @Override
     public double getPowerConsumption(Host host, List<Vm> vmsDeployedInHost) {
