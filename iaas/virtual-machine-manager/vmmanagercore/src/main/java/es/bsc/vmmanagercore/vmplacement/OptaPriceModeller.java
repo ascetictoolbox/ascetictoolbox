@@ -27,6 +27,11 @@ import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.IaaSPricingModell
 
 import java.util.List;
 
+/**
+ * This class is a pricing modeller that can be used by the Opta Vm Placement library.
+ *
+ * @author David Ortiz Lopez (david.ortiz@bsc.es)
+ */
 public class OptaPriceModeller implements PriceModel {
 
     private IaaSPricingModeller pricingModeller = VmManager.pricingModeller;

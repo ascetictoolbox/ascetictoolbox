@@ -28,6 +28,11 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class is an energy modeller that can be used by the Opta Vm Placement library.
+ *
+ * @author David Ortiz Lopez (david.ortiz@bsc.es)
+ */
 public class OptaEnergyModeller implements EnergyModel {
 
     private EnergyModeller energyModeller = VmManager.energyModeller;
@@ -38,6 +43,13 @@ public class OptaEnergyModeller implements EnergyModel {
                 convertVmsToEMAsceticVMs(vmsDeployedInHost)).getAvgPowerUsed();
     }
 
+    /**
+     * Converts a list of VMs from the format used in the Opta Vm Placement library to the format used by
+     * Ascetic's Energy Modeller
+     *
+     * @param vms the list of VMs for the placement library
+     * @return the list of VMs for the Energy Modeller
+     */
     private List<VM> convertVmsToEMAsceticVMs(List<Vm> vms) {
         List<VM> result = new ArrayList<>();
         for (Vm vm: vms) {
