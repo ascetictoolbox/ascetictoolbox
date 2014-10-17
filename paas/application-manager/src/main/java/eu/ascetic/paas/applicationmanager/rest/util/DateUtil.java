@@ -1,8 +1,7 @@
-package eu.ascetic.paas.applicationmanager.slam.sla.model;
+package eu.ascetic.paas.applicationmanager.rest.util;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * 
@@ -21,21 +20,20 @@ import org.junit.Test;
  * limitations under the License.
  * 
  * @author David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
- * @email david.garciaperez@atos.net
+ * @email david.garciaperez@atos.net 
  * 
- * This class is the Unit test that verifies the correct parsing of the SLA Action
+ * Utils to format dates... 
+ *
  */
+public class DateUtil {
 
-public class ActionTest {
-
-	@Test
-	public void pojo() throws Exception {
-		Action action = new Action();
-		action.setId("id");
-		PostCondition postCondition = new PostCondition();
-		action.setPostCondition(postCondition);
-		
-		assertEquals("id", action.getId());
-		assertEquals(postCondition, action.getPostCondition());
+	/**
+	 * Formats a data using standard common log format
+	 * @param date to be converted to standard date format
+	 * @return the formated string
+	 */
+	public static String getDateStringLogStandardFormat(Date date) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy:HH:mm:ss Z");
+        return dateFormat.format(date);
 	}
 }

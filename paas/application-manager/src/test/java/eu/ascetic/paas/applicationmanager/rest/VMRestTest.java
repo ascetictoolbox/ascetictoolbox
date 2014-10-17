@@ -1,8 +1,12 @@
 package eu.ascetic.paas.applicationmanager.rest;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -11,7 +15,10 @@ import javax.xml.bind.Unmarshaller;
 
 import org.junit.Test;
 
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.EnergyModellerSimple;
+import eu.ascetic.paas.applicationmanager.dao.VMDAO;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
+import eu.ascetic.paas.applicationmanager.model.VM;
 
 /**
  * 
@@ -39,10 +46,24 @@ import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
 public class VMRestTest {
 
 	@Test
+	@SuppressWarnings(value = { "static-access" }) 
 	public void testGetEnergyEstimationForAVMAndEvent() throws Exception {
 		VMRest vmRest = new VMRest();
+		EnergyModellerSimple energyModeller = mock(EnergyModellerSimple.class);
+		vmRest.energyModeller = energyModeller;
+		VMDAO vmDAO = mock(VMDAO.class);
+		vmRest.vmDAO = vmDAO;
 		
-		Response response = vmRest.getEnergyConsumption("111", "333", "444", "eventX");
+		VM vm = new VM();
+		vm.setProviderVmId("abab");
+		
+		when(vmDAO.getById(444)).thenReturn(vm);
+		
+		List<String> ids = new ArrayList<String>();
+		ids.add("abab");
+		when(energyModeller.energyEstimation(null, "111", ids, "eventX")).thenReturn(22.0);
+		
+		Response response = vmRest.getEnergyEstimation("111", "333", "444", "eventX");
 		assertEquals(200, response.getStatus());
 		
 		String xml = (String) response.getEntity();
@@ -52,7 +73,7 @@ public class VMRestTest {
 		EnergyMeasurement energyMeasurement = (EnergyMeasurement) jaxbUnmarshaller.unmarshal(new StringReader(xml));
 		
 		assertEquals("/applications/111/deployments/333/vms/444/events/eventX/energy-estimation", energyMeasurement.getHref());
-		//(22.0, energyMeasurement.getValue(), 0.00001);
+		assertEquals(22.0, energyMeasurement.getValue(), 0.00001);
 		assertEquals("Aggregated energy estimation for an event in a vm in a specific VM", energyMeasurement.getDescription());
 		assertEquals(2, energyMeasurement.getLinks().size());
 		assertEquals("/applications/111/deployments/333/vms/444/events/eventX", energyMeasurement.getLinks().get(0).getHref());

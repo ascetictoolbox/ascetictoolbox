@@ -314,7 +314,7 @@ public class XMLBuilder {
 	public static EnergyMeasurement addEnergyMeasurementForDeploymentXMLInfo(
 			EnergyMeasurement energyMeasurement, String applicationId, String deploymentId, String href) {
 		
-		energyMeasurement.setDescription("Aggregated energy consumption for this aplication deployment");
+		energyMeasurement.setDescription("Aggregated energy consumption in Wh for this aplication deployment");
 		energyMeasurement.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/" + href);
 		
 		Link linkParent = new Link();

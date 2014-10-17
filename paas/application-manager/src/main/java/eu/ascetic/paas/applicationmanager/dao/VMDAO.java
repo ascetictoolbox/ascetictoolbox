@@ -32,10 +32,10 @@ public interface VMDAO extends DAO<VM> {
 	/**
 	 * Returns the VM from the database by its Id
 	 * 
-	 * @param id of the VM
+	 * @param vmId of the VM
 	 * @return the corresponding VM from the database
 	 */
-	public VM getById(int id);
+	public VM getById(int vmId);
 
 	/**
 	 * Returns all the VM stored in the database

@@ -4,11 +4,15 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.PaaSEnergyModeller;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.EnergyModellerSimple;
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
+import eu.ascetic.paas.applicationmanager.dao.VMDAO;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
@@ -38,15 +42,33 @@ import eu.ascetic.paas.applicationmanager.rest.util.XMLBuilder;
  *
  */
 public abstract class AbstractRest {
+	private static Logger logger = Logger.getLogger(AbstractRest.class);
 	@Autowired
 	protected ApplicationDAO applicationDAO;
 	@Autowired
 	protected DeploymentDAO deploymentDAO;
+	@Autowired
+	protected VMDAO vmDAO;
+	protected static PaaSEnergyModeller energyModeller;
 	
 	protected Response buildResponse(Response.Status status, String payload) {
 		ResponseBuilder builder = Response.status(status);
 		builder.entity(payload);
 		return builder.build();
+	}
+	
+	/**
+	 * Constructs the EnergyModeller with an specific configuration if necessary
+	 * @return the new EnergyModeller or a previous created object
+	 */
+	protected static PaaSEnergyModeller getEnergyModeller() {
+		if(energyModeller == null) {
+			logger.debug("Initializing Energy Modeller...");
+			return new EnergyModellerSimple("/etc/ascetic/paas/em/config.properties");
+		}
+		else {
+			return energyModeller;
+		}
 	}
 	
 	/**

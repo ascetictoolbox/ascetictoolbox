@@ -472,6 +472,7 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/C
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/DeploymentRest.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/RootRest.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/VMRest.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/util/DateUtil.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/util/XMLBuilder.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/scheduler/DeploymentsStatusTask.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/NegotiationClient.java -text
@@ -530,6 +531,7 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/C
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/DeploymentRestTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/RootRestTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/VMRestTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/util/DateUtilTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/util/XMLBuilderTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/scheduler/DeploymentStatusTaskTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/NegotiationWsClientIT.java -text

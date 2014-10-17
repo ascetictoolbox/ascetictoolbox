@@ -408,7 +408,7 @@ public class DeploymentRestTest {
 		EnergyMeasurement energyMeasurement = (EnergyMeasurement) jaxbUnmarshaller.unmarshal(new StringReader(xml));
 		
 		assertEquals(22.0, energyMeasurement.getValue(), 0.000001);
-		assertEquals("Aggregated energy consumption for this aplication deployment", energyMeasurement.getDescription());
+		assertEquals("Aggregated energy consumption in Wh for this aplication deployment", energyMeasurement.getDescription());
 	}
 	
 	@Test

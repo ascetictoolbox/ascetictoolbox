@@ -74,7 +74,7 @@ public class XMLBuilderTest {
 		
 		assertEquals("/applications/111/deployments/333/energy-consumption", energyMeasurement.getHref());
 		assertEquals(22.0, energyMeasurement.getValue(), 0.00001);
-		assertEquals("Aggregated energy consumption for this aplication deployment", energyMeasurement.getDescription());
+		assertEquals("Aggregated energy consumption in Wh for this aplication deployment", energyMeasurement.getDescription());
 		assertEquals(2, energyMeasurement.getLinks().size());
 		assertEquals("/applications/111/deployments/333", energyMeasurement.getLinks().get(0).getHref());
 		assertEquals("parent", energyMeasurement.getLinks().get(0).getRel());
@@ -97,7 +97,7 @@ public class XMLBuilderTest {
 		
 		assertEquals("/applications/111/deployments/333/energy-consumption", energyMeasurement.getHref());
 		assertEquals(22.0, energyMeasurement.getValue(), 0.00001);
-		assertEquals("Aggregated energy consumption for this aplication deployment", energyMeasurement.getDescription());
+		assertEquals("Aggregated energy consumption in Wh for this aplication deployment", energyMeasurement.getDescription());
 		assertEquals(2, energyMeasurement.getLinks().size());
 		assertEquals("/applications/111/deployments/333", energyMeasurement.getLinks().get(0).getHref());
 		assertEquals("parent", energyMeasurement.getLinks().get(0).getRel());

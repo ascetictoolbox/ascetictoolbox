@@ -19,8 +19,6 @@ import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.PaaSEnergyModeller;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.EnergyModellerSimple;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
@@ -57,22 +55,7 @@ import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientHC;
 @Scope("request")
 public class DeploymentRest extends AbstractRest {
 	private static Logger logger = Logger.getLogger(DeploymentRest.class);
-	protected static PaaSEnergyModeller energyModeller; 
 	protected VmManagerClient vmManagerClient = new VmManagerClientHC();
-	
-	/**
-	 * Constructs the EnergyModeller with an specific configuration if necessary
-	 * @return the new EnergyModeller or a previous created object
-	 */
-	protected static PaaSEnergyModeller getEnergyModeller() {
-		if(energyModeller == null) {
-			logger.debug("Initializing Energy Modeller...");
-			return new EnergyModellerSimple("/etc/ascetic/paas/em/config.properties");
-		}
-		else {
-			return energyModeller;
-		}
-	}
 	
 	/**
 	 * @param applicationName the name of the application for which we want to know the deployments
@@ -246,7 +229,7 @@ public class DeploymentRest extends AbstractRest {
 	@Path("{deployment_id}/energy-consumption")
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getEnergyConsumption(@PathParam("application_name") String applicationName, @PathParam("deployment_id") String deploymentId) {
-		logger.info("GET request to path: /applications/" + applicationName + "/deployments/" + deploymentId + "/energy-measurement");
+		logger.info("GET request to path: /applications/" + applicationName + "/deployments/" + deploymentId + "/energy-consumption");
 		// Make sure we have the right configuration
 		energyModeller = getEnergyModeller();
 		
