@@ -23,15 +23,20 @@
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
-  <!-- Initial tables: applications, deployments, and vms 
-        and later modifications to them -->
-  <include file="db/changelog/db.changelog-1.0.xml"/>
-  <include file="db/changelog/db.changelog-1.1.xml"/>
-  <include file="db/changelog/db.changelog-1.2.xml"/>
+  <changeSet author="davidgp" id="addColumn-startDate-deployments-table">
+      <addColumn tableName="deployments">
+            <column name="start_date" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+      </addColumn>
+  </changeSet>
 
-  <!-- It adds images table -->
-  <include file="db/changelog/db.changelog-2.0.xml"/>
-  <include file="db/changelog/db.changelog-2.1.xml"/>
-  <include file="db/changelog/db.changelog-2.2.xml"/>
-
+  <changeSet author="davidgp" id="addColumn-endDate-deployments-table">
+      <addColumn tableName="deployments">
+            <column name="end_date" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+      </addColumn>
+  </changeSet>
+  
 </databaseChangeLog>
