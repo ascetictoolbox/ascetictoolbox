@@ -325,4 +325,8 @@ public class Scheduler {
         return bestDeploymentPlan;
     }
 
+    public String getSchedulingAlgorithmName() {
+        return schedAlgorithmName;
+    }
+
 }

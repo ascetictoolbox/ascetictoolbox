@@ -18,6 +18,7 @@
 
 package es.bsc.vmmanagercore.energymodeller;
 
+import es.bsc.vmmanagercore.manager.VmManager;
 import es.bsc.vmmanagercore.model.scheduling.DeploymentPlan;
 import es.bsc.vmmanagercore.model.scheduling.VmAssignmentToHost;
 import es.bsc.vmmanagercore.model.vms.Vm;
@@ -37,7 +38,7 @@ import java.util.List;
  */
 public class EnergyModellerConnector {
 
-    private static EnergyModeller energyModeller = new EnergyModeller();
+    private static EnergyModeller energyModeller = VmManager.energyModeller;
 
     /**
      * Returns the predicted avg. power for a VM if it was deployed in a specific host.

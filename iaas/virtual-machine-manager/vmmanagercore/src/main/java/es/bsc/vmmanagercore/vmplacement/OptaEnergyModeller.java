@@ -16,22 +16,21 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.vmplacement.modellers.energy;
+package es.bsc.vmmanagercore.vmplacement;
 
+import es.bsc.vmmanagercore.manager.VmManager;
 import es.bsc.vmplacement.domain.Host;
 import es.bsc.vmplacement.domain.Vm;
+import es.bsc.vmplacement.modellers.energy.EnergyModel;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author David Ortiz (david.ortiz@bsc.es)
- */
-public class EnergyModelAscetic implements EnergyModel {
+public class OptaEnergyModeller implements EnergyModel {
 
-    private final EnergyModeller energyModeller = new EnergyModeller();
+    private EnergyModeller energyModeller = VmManager.energyModeller;
 
     @Override
     public double getPowerConsumption(Host host, List<Vm> vmsDeployedInHost) {

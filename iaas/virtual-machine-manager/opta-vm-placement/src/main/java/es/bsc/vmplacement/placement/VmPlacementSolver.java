@@ -41,9 +41,15 @@ public class VmPlacementSolver {
                         ScoreCalculatorDistribution.class);
                 break;
             case PRICE:
+                if (VmPlacementConfig.priceModel == null) {
+                    throw new IllegalArgumentException("The price policy cannot be applied without a pricing model");
+                }
                 solverConfig.getScoreDirectorFactoryConfig().setSimpleScoreCalculatorClass(ScoreCalculatorPrice.class);
                 break;
             case ENERGY:
+                if (VmPlacementConfig.energyModel == null) {
+                    throw new IllegalArgumentException("The energy policy cannot be applied without an energy model");
+                }
                 solverConfig.getScoreDirectorFactoryConfig().setSimpleScoreCalculatorClass(ScoreCalculatorEnergy.class);
                 break;
             case GROUP_BY_APP:

@@ -18,6 +18,7 @@
 
 package es.bsc.vmmanagercore.pricingmodeller;
 
+import es.bsc.vmmanagercore.manager.VmManager;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.IaaSPricingModeller;
 
 /**
@@ -27,7 +28,7 @@ import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.IaaSPricingModell
  */
 public class PricingModellerConnector {
 
-    private static IaaSPricingModeller pricingModeller = new IaaSPricingModeller();
+    private static IaaSPricingModeller pricingModeller = VmManager.pricingModeller;
 
     /**
      * Returns the predicted cost on a given host for a given amount of energy.

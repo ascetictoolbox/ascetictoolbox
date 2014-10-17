@@ -16,21 +16,20 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.vmplacement.modellers.price;
+package es.bsc.vmmanagercore.vmplacement;
 
+import es.bsc.vmmanagercore.manager.VmManager;
 import es.bsc.vmplacement.domain.Host;
 import es.bsc.vmplacement.domain.Vm;
 import es.bsc.vmplacement.modellers.energy.EnergyModel;
+import es.bsc.vmplacement.modellers.price.PriceModel;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.IaaSPricingModeller;
 
 import java.util.List;
 
-/**
- * @author David Ortiz (david.ortiz@bsc.es)
- */
-public class PriceModelAscetic implements PriceModel {
+public class OptaPriceModeller implements PriceModel {
 
-    private final IaaSPricingModeller pricingModeller = new IaaSPricingModeller();
+    private IaaSPricingModeller pricingModeller = VmManager.pricingModeller;
 
     @Override
     public double getCost(Host host, List<Vm> vmsDeployedInHost, EnergyModel energyModel) {

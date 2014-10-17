@@ -77,12 +77,15 @@ public class OptaVmPlacementConversor {
      */
     public VmPlacementConfig getOptaPlacementConfig(SchedulingAlgorithm schedulingAlgorithm,
             RecommendedPlanRequest recommendedPlanRequest) {
-        return new VmPlacementConfig(
+        return new VmPlacementConfig.Builder(
                 getPolicy(schedulingAlgorithm),
                 recommendedPlanRequest.getTimeLimitSeconds(),
                 getConstructionHeuristic(recommendedPlanRequest.getConstructionHeuristicName()),
                 getLocalSearch(recommendedPlanRequest),
-                false);
+                false)
+                .energyModel(new OptaEnergyModeller())
+                .priceModel(new OptaPriceModeller())
+                .build();
     }
 
     /**

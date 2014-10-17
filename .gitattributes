@@ -231,9 +231,7 @@ iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/domain/comparators/VmDifficultyComparator.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/lib/OptaVmPlacement.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/modellers/energy/EnergyModel.java -text
-iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/modellers/energy/EnergyModelAscetic.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/modellers/price/PriceModel.java -text
-iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/modellers/price/PriceModelAscetic.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/placement/VmPlacementProblem.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/placement/VmPlacementSolver.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/placement/config/Policy.java -text
@@ -387,6 +385,8 @@ iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/sc
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/scheduler/schedulingalgorithms/SchedAlgorithm.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/utils/CommandExecutor.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/utils/HttpUtils.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/vmplacement/OptaEnergyModeller.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/vmplacement/OptaPriceModeller.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/vmplacement/OptaVmPlacementConversor.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/resources/configBSC.properties -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/resources/configTUB.properties -text

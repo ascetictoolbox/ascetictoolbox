@@ -36,6 +36,8 @@ import es.bsc.vmmanagercore.scheduler.Scheduler;
 import es.bsc.vmmanagercore.vmplacement.OptaVmPlacementConversor;
 import es.bsc.vmplacement.domain.ClusterState;
 import es.bsc.vmplacement.lib.OptaVmPlacement;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.IaaSPricingModeller;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -67,6 +69,9 @@ public class VmManager {
     private OptaVmPlacement optaVmPlacement = new OptaVmPlacement(); // Library used for the VM Placement
     private OptaVmPlacementConversor optaVmPlacementConversor = new OptaVmPlacementConversor();
 
+    public static EnergyModeller energyModeller;
+    public static IaaSPricingModeller pricingModeller;
+
     /**
      * Constructs a VmManager with the name of the database to be used.
      *
@@ -85,6 +90,13 @@ public class VmManager {
         initializeHostsAccordingToMonitoring(conf.monitoring, conf.hosts);
         List<VmDeployed> vmsDeployed = getAllVms();
         scheduler = new Scheduler(db.getCurrentSchedulingAlg(), vmsDeployed);
+
+        if (scheduler.getSchedulingAlgorithmName().equals(SchedulingAlgorithm.ENERGY_AWARE.getName())) {
+            energyModeller = new EnergyModeller();
+        }
+        else if (scheduler.getSchedulingAlgorithmName().equals(SchedulingAlgorithm.COST_AWARE.getName())) {
+            pricingModeller = new IaaSPricingModeller();
+        }
     }
 
 

@@ -22,9 +22,8 @@ import es.bsc.vmplacement.domain.ClusterState;
 import es.bsc.vmplacement.domain.Host;
 import es.bsc.vmplacement.domain.Vm;
 import es.bsc.vmplacement.modellers.energy.EnergyModel;
-import es.bsc.vmplacement.modellers.energy.EnergyModelAscetic;
 import es.bsc.vmplacement.modellers.price.PriceModel;
-import es.bsc.vmplacement.modellers.price.PriceModelAscetic;
+import es.bsc.vmplacement.placement.config.VmPlacementConfig;
 
 import java.util.List;
 
@@ -33,8 +32,8 @@ import java.util.List;
  */
 public class ScoreCalculatorPrice extends ScoreCalculator {
 
-    private final PriceModel priceModel = new PriceModelAscetic();
-    private final EnergyModel energyModel = new EnergyModelAscetic();
+    private final PriceModel priceModel = VmPlacementConfig.priceModel;
+    private final EnergyModel energyModel = VmPlacementConfig.energyModel;
 
     @Override
     protected double calculateHardScoreForHost(Host host, List<Vm> vms) {
