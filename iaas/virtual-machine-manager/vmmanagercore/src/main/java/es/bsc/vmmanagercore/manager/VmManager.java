@@ -95,6 +95,7 @@ public class VmManager {
             energyModeller = new EnergyModeller();
         }
         else if (scheduler.getSchedulingAlgorithmName().equals(SchedulingAlgorithm.COST_AWARE.getName())) {
+            energyModeller = new EnergyModeller(); // Our pricing modeller needs the energy modeller
             pricingModeller = new IaaSPricingModeller();
         }
     }
