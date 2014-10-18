@@ -21,8 +21,8 @@ public class DataEventMapper implements RowMapper<DataEvent>{
 		data.setVmid(result.getString("vmid"));
 		data.setEnergy(result.getDouble("energy"));
 		data.setEventid(result.getString("eventid"));
-		data.setBegintime(result.getTimestamp("starttime"));
-		data.setEndtime(result.getTimestamp("endtime"));
+		data.setBegintime(result.getLong("starttime"));
+		data.setEndtime(result.getLong("endtime"));
 		data.setData(result.getString("data"));
 		return data;
 	}

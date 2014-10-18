@@ -16,7 +16,10 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.task
 
 public class EnergyModellerDataZabbix {
 
-	private static String HOST = "cdf624c1-1bc9-49dd-adc4-627fa25c1969";
+	private static String HOST = "bebeb35b-d4a0-49c6-91c6-7b4064e50828";
+	private static String HOST2 = "59d2ae8d-1ea0-46df-993f-fddbdd48c830";
+	private static String HOST3 = "8f805a34-4ef1-4a9a-93e8-028651de28cc";
+	private static String hst ="asok10";
 	private static DataCollector dcollector;
 	private static PaaSEMDatabaseManager dbmanager;
 	
@@ -39,6 +42,7 @@ public class EnergyModellerDataZabbix {
 		Assert.notNull(result);
 		
 		
+		
 	}
 	
 	@Test
@@ -46,7 +50,7 @@ public class EnergyModellerDataZabbix {
 		System.out.println("################################## ");
 		System.out.println("### ALL DATA FOR "+dcollector.searchFullHostsname(HOST));
 		System.out.println("################################## ");
-		dcollector.getHistoryForItem("apptest","deptest","Power", dcollector.searchFullHostsname(HOST),5);
+		dcollector.getHistoryForItem("apptest","deptest","Power", dcollector.searchFullHostsname(HOST),30);
 	}
 	
 	@Test
@@ -56,21 +60,37 @@ public class EnergyModellerDataZabbix {
 		System.out.println("################################## ");
 		dcollector.getHistoryForItemSamples("apptest","deptest","Power", dcollector.searchFullHostsname(HOST), 100);
 	}
+//	
+//	@Test
+//	public void testVMInterval() {
+//		System.out.println("################################## ");
+//		System.out.println("### INTERVAL DATA FOR "+dcollector.searchFullHostsname(HOST));
+//		System.out.println("################################## ");
+//		dcollector.getHistoryForItemInterval("apptest","deptest","Power", dcollector.searchFullHostsname(HOST), 1412179349000L, 1412870549000L);
+//	}
+//	@Test
+//	public void testVMCPU() {
+//		System.out.println("################################## ");
+//		System.out.println("### INTERVAL DATA FOR "+dcollector.searchFullHostsname(HOST));
+//		System.out.println("################################## ");
+//		dcollector.getHistoryForItem("apptest","deptest","CPU user time", dcollector.searchFullHostsname(HOST), 100);
+//	}
+//	@Test
+//	public void testVMMemory() {
+//		System.out.println("################################## ");
+//		System.out.println("### INTERVAL DATA FOR "+dcollector.searchFullHostsname(HOST));
+//		System.out.println("################################## ");
+//		dcollector.getSeriesHistoryForItemInterval("apptest","deptest","CPU user time", dcollector.searchFullHostsname(HOST), 1412179349000L, 1412870549000L);
+//		dcollector.getHistoryForItem("apptest","deptest","Memory Available", dcollector.searchFullHostsname(HOST), 100);
+//	}
+//	
+//	@Test
+//	public void testVMfrom() {
+//		System.out.println("################################## ");
+//		System.out.println("### FROM DATA FOR "+dcollector.searchFullHostsname(HOST));
+//		System.out.println("################################## ");
+//		dcollector.getHistoryForItemFrom("apptest","deptest","Power", dcollector.searchFullHostsname(HOST), 1412870549000L);
 	
-	@Test
-	public void testVMInterval() {
-		System.out.println("################################## ");
-		System.out.println("### INTERVAL DATA FOR "+dcollector.searchFullHostsname(HOST));
-		System.out.println("################################## ");
-		dcollector.getHistoryForItemInterval("apptest","deptest","Power", dcollector.searchFullHostsname(HOST), 1412179349000L, 1412870549000L);
-	}
-	
-	@Test
-	public void testVMfrom() {
-		System.out.println("################################## ");
-		System.out.println("### FROM DATA FOR "+dcollector.searchFullHostsname(HOST));
-		System.out.println("################################## ");
-		dcollector.getHistoryForItemFrom("apptest","deptest","Power", dcollector.searchFullHostsname(HOST), 1412870549000L);
-	}
+//	}
 
 }

@@ -3,7 +3,6 @@
  */
 package eu.ascetic.asceticarchitecture.paas.component.common.model;
 
-import java.sql.Timestamp;
 
 //application id | deployment id | event id |  start time | end time | event load (cpu/ram usage) | energy consumed total | min | max | avg
 
@@ -15,8 +14,8 @@ public class DataEvent {
 	private String vmid;
 	private String eventid;
 	private String data;
-	private Timestamp begintime;
-	private Timestamp endtime;
+	private long begintime;
+	private long endtime;
 	private double energy;
 	
 	public String getEventid() {
@@ -55,16 +54,16 @@ public class DataEvent {
 	public void setData(String data) {
 		this.data = data;
 	}
-	public Timestamp getBegintime() {
+	public long getBegintime() {
 		return begintime;
 	}
-	public void setBegintime(Timestamp begintime) {
+	public void setBegintime(long begintime) {
 		this.begintime = begintime;
 	}
-	public Timestamp getEndtime() {
+	public long getEndtime() {
 		return endtime;
 	}
-	public void setEndtime(Timestamp endtime) {
+	public void setEndtime(long endtime) {
 		this.endtime = endtime;
 	} 
 	

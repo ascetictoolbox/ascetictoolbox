@@ -13,7 +13,7 @@ public class DataConsumption {
 	private String deploymentid;
 	private String vmid;
 	private String eventid;
-	private Timestamp time;
+	private long time;
 	private double cpu;
 	private double vmenergy;
 	private double vmpower;
@@ -48,10 +48,10 @@ public class DataConsumption {
 		this.eventid = eventid;
 	}
 
-	public Timestamp getTime() {
+	public long getTime() {
 		return time;
 	}
-	public void setTime(Timestamp time) {
+	public void setTime(long time) {
 		this.time = time;
 	}
 	public double getCpu() {

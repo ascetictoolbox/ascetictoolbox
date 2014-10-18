@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
 
 import eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.DataEventDAOImpl;
 import eu.ascetic.asceticarchitecture.paas.component.common.model.DataEvent;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EnergySamples;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EnergySample;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.DataAggregatorTaskInterface;
 
 public class EventDataAggregatorService implements DataAggregatorTaskInterface {

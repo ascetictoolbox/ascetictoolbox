@@ -38,7 +38,7 @@ public class EMDatabase {
 		data.setDeploymentid("deployment1");
 		data.setVmid("vm1");
 		Timestamp ts = Timestamp.valueOf("2014-09-27 03:23:34");
-		data.setTime(ts);
+		data.setTime(ts.getTime());
 		data.setCpu(50.5);
 		data.setVmpower(100);
 		data.setVmenergy(15);
@@ -70,9 +70,9 @@ public class EMDatabase {
 		data.setEnergy(50);
 		data.setEnergy(100.5);
 		Timestamp tsbeg = Timestamp.valueOf("2014-09-27 03:23:34");
-		data.setBegintime(tsbeg);
+		data.setBegintime(tsbeg.getTime());
 		Timestamp ts = Timestamp.valueOf("2014-09-27 03:25:34");
-		data.setEndtime(ts);
+		data.setEndtime(ts.getTime());
 		data.setData("generic data");
 		data.setVmid("vm1");
 		dataEventDAO.save(data);

@@ -13,27 +13,26 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import eu.ascetic.asceticarchitecture.paas.component.common.dao.DataConsumptionDAO;
 import eu.ascetic.asceticarchitecture.paas.component.common.mapper.DataConsumptionMapper;
+import eu.ascetic.asceticarchitecture.paas.component.common.mapper.EnergySampleMapper;
 import eu.ascetic.asceticarchitecture.paas.component.common.model.DataConsumption;
-import eu.ascetic.asceticarchitecture.paas.component.common.model.IaaSVMConsumption;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EnergySamples;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EnergySample;
 
 public class DataConsumptionDAOImpl implements DataConsumptionDAO {
 
 	private JdbcTemplate jdbcTemplate;
 	private final static Logger LOGGER = Logger.getLogger(DataConsumptionDAOImpl.class.getName());
 	private static String SQL_CREATE="CREATE TABLE IF NOT EXISTS DATACONSUMPTION (applicationid varchar(50),deploymentid varchar(50),"
-			+ "vmid varchar(50), eventid varchar(50), time timestamp, vmenergy double, vmpower double,vmcpu double)";
+			+ "vmid varchar(50), eventid varchar(50), time bigint, vmenergy double, vmpower double,vmcpu double)";
 	private static String SQL_DROP="DROP TABLE IF EXISTS DATACONSUMPTION";
 	private static String SQL_INSERT="insert into DATACONSUMPTION (applicationid,deploymentid,vmid, eventid, time, vmenergy,vmpower , vmcpu ) values (?, ?, ?, ? ,?, ?,  ?, ?) ";
 	private static String SQL_Q_APPID="select * from DATACONSUMPTION where applicationid = ?";
 	private static String SQL_Q_DEPID="select * from DATACONSUMPTION where deploymentid = ?";
 	private static String SQL_Q_VMID="select * from DATACONSUMPTION where vmid = ?";
-	private static String SQL_Q_ALLTIME="select UNIX_TIMESTAMP(time) from DATACONSUMPTION where applicationid = ? and vmid like ? order by time asc";
+	private static String SQL_Q_ALLTIME="select time from DATACONSUMPTION where applicationid = ? and vmid like ? order by time asc";
 	private static String SQL_Q_ENERGYBYTIME="select vmenergy from DATACONSUMPTION where applicationid = ? and vmid like ?  order by time asc";
 	private static String SQL_Q_ENERGY="select vmenergy from DATACONSUMPTION where applicationid = ? and vmid = ?  order by vmcpu asc";
 	private static String SQL_Q_CPU="select cpu from DATACONSUMPTION where applicationid = ? and vmid = ? order by vmcpu asc";
@@ -42,10 +41,11 @@ public class DataConsumptionDAOImpl implements DataConsumptionDAO {
 	private static String SQL_Q_EMID="select * from DATACONSUMPTION where eventid = ?";
 	private static String SQL_SUM_DEPLOY="select IFNULL(sum(vmenergy),0) from DATACONSUMPTION where applicationid = ? and deploymentid = ?";
 	private static String SQL_SUM_VM="select IFNULL(sum(vmenergy),0) from DATACONSUMPTION where applicationid = ? and  vmid like ?";
-	private static String SQL_AVG_VM="select IFNULL(avg(vmenergy),0) from DATACONSUMPTION where applicationid = ? and  vmid like ?";
+	private static String SQL_AVG_VM="select IFNULL(sum(vmenergy),0) from DATACONSUMPTION where applicationid = ? and  vmid like ?";
 	private static String SQL_COUNT_VM="select count(*) from DATACONSUMPTION where applicationid = ? and  vmid like ?";
-	private static String SQL_AVG_VMTIME="select IFNULL(avg(vmenergy),0) from DATACONSUMPTION where applicationid = ? and vmid like ? and UNIX_TIMESTAMP(time) >= ? and UNIX_TIMESTAMP(time) <= ?";
-	private static String SQL_MEASURES_VMTIME="select time,vmenergy from DATACONSUMPTION where applicationid = ? and vmid = ? and UNIX_TIMESTAMP(time) >= ? and UNIX_TIMESTAMP(time) <= ?";
+	private static String SQL_AVG_VMTIME="select IFNULL(sum(vmenergy),0) from DATACONSUMPTION where applicationid = ? and vmid like ? and time >= ? and time <= ?";
+	private static String SQL_AVG_VMPOWER="select IFNULL(avg(vmpower),0) from DATACONSUMPTION where applicationid = ? and vmid like ? and time >= ? and time <= ?";
+	private static String SQL_MEASURES_VMTIME="select vmid,time,vmenergy, vmpower from DATACONSUMPTION where applicationid = ? and vmid like ? and time >= ? and time <= ?";
 	private static String SQL_CLEAN="DELETE FROM DATACONSUMPTION";
 	
 	
@@ -66,7 +66,7 @@ public class DataConsumptionDAOImpl implements DataConsumptionDAO {
 	public void save(DataConsumption data) {
 		 LOGGER.debug("Inserting into table DATACONSUMPTION");
 		 Object[] params = new Object[] { data.getApplicationid() , data.getDeploymentid() , data.getVmid(), data.getEventid(), data.getTime() ,  data.getVmenergy(),data.getVmpower() ,data.getCpu() };
-		 int[] types = new int[] { Types.VARCHAR,Types.VARCHAR,Types.VARCHAR,Types.VARCHAR,Types.TIMESTAMP, Types.DOUBLE, Types.DOUBLE,Types.DOUBLE};
+		 int[] types = new int[] { Types.VARCHAR,Types.VARCHAR,Types.VARCHAR,Types.VARCHAR,Types.BIGINT, Types.DOUBLE, Types.DOUBLE,Types.DOUBLE};
 		 jdbcTemplate.update(SQL_INSERT, params, types);
 		 LOGGER.debug("Inserted");
 	}
@@ -93,9 +93,12 @@ public class DataConsumptionDAOImpl implements DataConsumptionDAO {
 
 	@Override
 	public Timestamp getLastConsumptionForVM(String applicationid, String vmid) {
-		 
-		Timestamp results =	jdbcTemplate.queryForObject(SQL_Q_LASTVM,new Object[]{applicationid,vmid+"%"}, Timestamp.class);
-		return results;
+		LOGGER.info("Getting last measurement ");
+		LOGGER.info(jdbcTemplate==null);
+		Long results =	jdbcTemplate.queryForObject(SQL_Q_LASTVM,new Object[]{applicationid,vmid+"%"}, Long.class);
+		LOGGER.info("Got "+results);
+		if (results==null)return null;
+		return new Timestamp(results);
 	}
 	
 	@Override
@@ -115,19 +118,28 @@ public class DataConsumptionDAOImpl implements DataConsumptionDAO {
 		
 		return results;
 	}
-
+	
+	
+	
+	public double getPowerInIntervalForVM(String applicationid, String vmid,Timestamp start,Timestamp end) {
+		double results = jdbcTemplate.queryForObject(SQL_AVG_VMPOWER,new Object[]{applicationid,vmid+"%",start.getTime(),end.getTime()}, Double.class);
+		LOGGER.debug("Power is "+results);
+		return results;
+	}
 	@Override
 	public double getTotalEnergyForVMTime(String applicationid, String vmid,Timestamp start,Timestamp end) {
-		LOGGER.info("app "+applicationid + " vmid " +vmid+ " start "+ start.getTime()/1000+ " end "+end.getTime()/1000);
-		double results = jdbcTemplate.queryForObject(SQL_AVG_VMTIME,new Object[]{applicationid,vmid+"%",start.getTime()/1000,end.getTime()/1000}, Double.class);
-		//LOGGER.info("Energy is "+results);
+		//LOGGER.info("app "+applicationid + " vmid " +vmid+ " start "+ start.getTime()+ " end "+end.getTime());
+		double results = jdbcTemplate.queryForObject(SQL_AVG_VMTIME,new Object[]{applicationid,vmid+"%",start.getTime(),end.getTime()}, Double.class);
+		LOGGER.debug("Energy is "+results);
 		return results;
 	}
 
 	@Override
 	public Timestamp getFirsttConsumptionForVM(String applicationid, String vmid) {
-		Timestamp results =	jdbcTemplate.queryForObject(SQL_Q_FIRSTVM,new Object[]{applicationid,vmid+"%"}, Timestamp.class);
-		return results;
+		Long results =	jdbcTemplate.queryForObject(SQL_Q_FIRSTVM,new Object[]{applicationid,vmid+"%"}, Long.class);
+		LOGGER.info("Got "+results);
+		if (results==null)return null;
+		return new Timestamp(results);
 	}
 
 	@Override
@@ -175,12 +187,12 @@ public class DataConsumptionDAOImpl implements DataConsumptionDAO {
 		return results;
 	}
 
-//	@Override
-//	public List<EnergySamples> getDataSamplesVM(String applicationid, String deployment,String vmid,Timestamp start,Timestamp end) {
-//		List<EnergySamples> res = jdbcTemplate.queryForList(SQL_MEASURES_VMTIME,new Object[]{applicationid,deployment,vmid,start,end}, EnergySamples.class);
-//		LOGGER.info("Total vm time samples "+res.size());
-//		return res;
-//	}
+
+	public List<EnergySample> getDataSamplesVM(String applicationid, String deployment,String vmid,long start,long end) {
+		List<EnergySample> res = jdbcTemplate.query(SQL_MEASURES_VMTIME,new Object[]{applicationid,vmid+"%",start,end}, new EnergySampleMapper());
+		LOGGER.info("Total vm time samples "+res.size());
+		return res;
+	}
 
 	@Override
 	public void insertBatch(List<DataConsumption> samples){
@@ -200,7 +212,7 @@ public class DataConsumptionDAOImpl implements DataConsumptionDAO {
 			    ps.setString(2, sample.getDeploymentid());
 			    ps.setString(3, sample.getVmid());
 			    ps.setString(4, sample.getEventid());
-			    ps.setTimestamp(5, sample.getTime());
+			    ps.setLong(5, sample.getTime());
 			    ps.setDouble(6, sample.getVmenergy());
 			    ps.setDouble(7, sample.getVmpower());
 			    ps.setDouble(8, sample.getCpu());

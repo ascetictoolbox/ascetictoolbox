@@ -9,7 +9,7 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import eu.ascetic.asceticarchitecture.paas.component.common.model.DataConsumption;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EnergySamples;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EnergySample;
 
 public interface DataConsumptionDAO {
     

@@ -6,7 +6,7 @@ package eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces;
 import java.sql.Timestamp;
 import java.util.List;
 
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EnergySamples;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EnergySample;
 
 public interface DataAggregatorTaskInterface {
 	double getTotal(String app, String depl, String vmid, String event);

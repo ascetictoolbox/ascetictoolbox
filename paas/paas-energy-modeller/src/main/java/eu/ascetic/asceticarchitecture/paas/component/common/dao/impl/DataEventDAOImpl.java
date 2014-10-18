@@ -21,10 +21,10 @@ public class DataEventDAOImpl implements DataeEventDAO {
 	private JdbcTemplate jdbcTemplate;
 	private final static Logger LOGGER = Logger.getLogger(DataEventDAOImpl.class.getName());
 	private static String SQL_CREATE="CREATE TABLE IF NOT EXISTS DATAEVENT (applicationid varchar(50),deploymentid varchar(50),"
-			+ "vmid varchar(50), eventid varchar(50), data varchar(100), starttime timestamp,endtime timestamp, energy double)";
+			+ "vmid varchar(50), eventid varchar(50), data varchar(100), starttime bigint,endtime bigint, energy double)";
 	private static String SQL_INSERT="insert into DATAEVENT (applicationid,deploymentid,vmid, data, starttime,endtime, energy,eventid ) values (?,?,?, ?, ?, ?, ?,?) ";
 	private static String SQL_Q_APPID="select * from DATAEVENT where applicationid = ?";
-	private static String SQL_Q_APPIDTime="select * from DATAEVENT where applicationid = ? and UNIX_TIMESTAMP(starttime) >= ? and UNIX_TIMESTAMP(starttime) <= ?";
+	private static String SQL_Q_APPIDTime="select * from DATAEVENT where applicationid = ? and starttime >= ? and starttime <= ?";
 	private static String SQL_Q_DEPID="select * from DATAEVENT where deploymentid = ?";
 	private static String SQL_Q_VMID="select * from DATAEVENT where vmid = ?";
 	private static String SQL_FIRST_EV="select min(starttime) from DATAEVENT where applicationid = ? and deploymentid = ? and eventid = ?";
@@ -37,10 +37,12 @@ public class DataEventDAOImpl implements DataeEventDAO {
 	private static String SQL_COUNT_EV="select IFNULL(count(*),0) from DATAEVENT where applicationid = ? and deploymentid = ? and eventid = ?";
 	private static String SQL_COUNT_EV_VM="select IFNULL(count(*),0) from DATAEVENT where applicationid = ? and deploymentid = ? and vmid = ? and eventid = ?";
 	private static String SQL_CLEAN="DELETE FROM DATAEVENT";
+	private static String SQL_DROP="DROP TABLE IF EXISTS DATAEVENT";
 	
 	
 	@Override
 	public void initialize() {
+		jdbcTemplate.execute(SQL_DROP);
 		jdbcTemplate.execute(SQL_CREATE);
 		jdbcTemplate.execute(SQL_CLEAN);
 	    LOGGER.debug("Created table DATAEVENT");
@@ -50,7 +52,7 @@ public class DataEventDAOImpl implements DataeEventDAO {
 	public void save(DataEvent data) {
 		LOGGER.debug("Inserting into table DATAEVENT");
 		 Object[] params = new Object[] { data.getApplicationid() , data.getDeploymentid() , data.getVmid(), data.getData(), data.getBegintime(), data.getEndtime() , data.getEnergy(), data.getEventid() };
-		 int[] types = new int[] { Types.VARCHAR,Types.VARCHAR,Types.VARCHAR,Types.VARCHAR,Types.TIMESTAMP,Types.TIMESTAMP, Types.DOUBLE, Types.VARCHAR };
+		 int[] types = new int[] { Types.VARCHAR,Types.VARCHAR,Types.VARCHAR,Types.VARCHAR,Types.BIGINT,Types.BIGINT, Types.DOUBLE, Types.VARCHAR };
 		 jdbcTemplate.update(SQL_INSERT, params, types);
 		 LOGGER.debug("Inserted");
 	}
@@ -68,8 +70,8 @@ public class DataEventDAOImpl implements DataeEventDAO {
 	}
 	@Override
 	public List<DataEvent> getByApplicationIdTime(String applicationid,Timestamp start,Timestamp end) {
-		System.out.println("times "+start.getTime()+" " + end.getTime());
-		return jdbcTemplate.query(SQL_Q_APPIDTime,new Object[]{applicationid,start.getTime()/1000,end.getTime()/1000}, new DataEventMapper());
+		LOGGER.info("times "+start.getTime()+" " + end.getTime());
+		return jdbcTemplate.query(SQL_Q_APPIDTime,new Object[]{applicationid,start.getTime(),end.getTime()}, new DataEventMapper());
 		
 	}
 	@Override
@@ -84,25 +86,30 @@ public class DataEventDAOImpl implements DataeEventDAO {
 
 	@Override
 	public Timestamp getLastEventForVM(String applicationid, String vmid, String eventid) {
-		Timestamp ts = null;
+		 LOGGER.info("Last event ++++++++++++++++++++++++++++");
+		Long res;
 		if (vmid==null){
-			 ts =	jdbcTemplate.queryForObject(SQL_Q_LASTEV,new Object[]{applicationid, eventid}, Timestamp.class);
+			 res =	jdbcTemplate.queryForObject(SQL_Q_LASTEV,new Object[]{applicationid, eventid}, Long.class);
+			 LOGGER.info("Last event "+res + eventid +vmid +applicationid);
 		}else{
-			 ts =	jdbcTemplate.queryForObject(SQL_Q_LASTVM,new Object[]{applicationid,vmid, eventid}, Timestamp.class);
+			 res =	jdbcTemplate.queryForObject(SQL_Q_LASTVM,new Object[]{applicationid,vmid, eventid}, Long.class);
+			 LOGGER.info("Last event "+res + eventid +vmid +applicationid);
 		}
-		return ts;
+		if (res==null)return null;
+		return new Timestamp(res);
 	}
 
 
 	@Override
 	public Timestamp getFirstEventTimeVM(String applicationid,String deploymentid, String vmid, String eventid) {
-		Timestamp ts = null;
+		Long res;
 		if (vmid==null){
-			ts =	jdbcTemplate.queryForObject(SQL_FIRST_EV,new Object[]{applicationid,deploymentid, eventid}, Timestamp.class);
+			res =	jdbcTemplate.queryForObject(SQL_FIRST_EV,new Object[]{applicationid,deploymentid, eventid}, Long.class);
 		}else {
-			ts = jdbcTemplate.queryForObject(SQL_FIRST_EV_VM,new Object[]{applicationid,deploymentid, vmid, eventid}, Timestamp.class);
+			res = jdbcTemplate.queryForObject(SQL_FIRST_EV_VM,new Object[]{applicationid,deploymentid, vmid, eventid}, Long.class);
 		}
-		return ts;
+		if (res==null)return null;
+		return new Timestamp(res);
 	}
 
 //	@Override
