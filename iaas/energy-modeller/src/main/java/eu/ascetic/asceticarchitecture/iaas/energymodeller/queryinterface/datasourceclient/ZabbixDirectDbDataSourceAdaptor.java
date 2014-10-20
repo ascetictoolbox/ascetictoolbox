@@ -112,9 +112,7 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
             + "WHERE hosts.hostid = it.hostid AND "
             + "hosts.hostid = ? AND "
             + "it.key_ = ?)";
-
     private static final HashSet<String> HISTORY_TABLES = new HashSet<>();
-
     /**
      * The url to contact the database.
      */
@@ -137,9 +135,7 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
      */
     private static String begins = "asok";
     private static boolean isHost = true;
-
     private static final String CONFIG_FILE = "zabbix_db_adaptor.properties";
-    
     private static final Logger dbLogger = Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName());
 
     /**
@@ -403,9 +399,8 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
         if (connection == null) {
             return null;
         }
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(ALL_ZABBIX_HOSTS);
-            ResultSet resultSet = preparedStatement.executeQuery();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(ALL_ZABBIX_HOSTS);
+                ResultSet resultSet = preparedStatement.executeQuery()) {
             ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
             for (ArrayList<Object> hostData : results) {
                 if (isHost((String) hostData.get(1))) {
@@ -427,9 +422,8 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
         if (connection == null) {
             return null;
         }
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(ALL_ZABBIX_HOSTS);
-            ResultSet resultSet = preparedStatement.executeQuery();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(ALL_ZABBIX_HOSTS);
+                ResultSet resultSet = preparedStatement.executeQuery()) {
             ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
             for (ArrayList<Object> hostData : results) {
                 if (isHost((String) hostData.get(1))) {
@@ -453,9 +447,8 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
         if (connection == null) {
             return null;
         }
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(ALL_ZABBIX_HOSTS);
-            ResultSet resultSet = preparedStatement.executeQuery();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(ALL_ZABBIX_HOSTS);
+                ResultSet resultSet = preparedStatement.executeQuery()) {
             ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
             for (ArrayList<Object> hostData : results) {
                 if (!isHost((String) hostData.get(1))) {
@@ -478,10 +471,11 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
         if (connection == null) {
             return null;
         }
+        PreparedStatement preparedStatement = null;
         try {
             for (String historyTable : HISTORY_TABLES) {
                 String query = QUERY_DATA_BY_ID.replace("XXXX", historyTable);
-                PreparedStatement preparedStatement = connection.prepareStatement(query);
+                preparedStatement = connection.prepareStatement(query);
                 preparedStatement.setInt(1, host.getId());
                 ResultSet resultSet = preparedStatement.executeQuery();
                 ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
@@ -501,8 +495,14 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
             }
         } catch (SQLException ex) {
             dbLogger.log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                preparedStatement.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return answer;
         }
-        return answer;
     }
 
     @Override
@@ -534,22 +534,24 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
         try {
             for (String historyTable : HISTORY_TABLES) {
                 String query = QUERY_DATA_BY_ID.replace("XXXX", historyTable);
-                PreparedStatement preparedStatement = connection.prepareStatement(query);
-                preparedStatement.setInt(1, vm.getId());
-                ResultSet resultSet = preparedStatement.executeQuery();
-                ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
-                for (ArrayList<Object> dataItem : results) {
-                    if ((int) dataItem.get(1) > clock) {
-                        clock = (int) dataItem.get(1);
-                        answer.setClock(clock);
+                try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                    preparedStatement.setInt(1, vm.getId());
+                    ResultSet resultSet = preparedStatement.executeQuery();
+                    ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
+                    for (ArrayList<Object> dataItem : results) {
+                        if ((int) dataItem.get(1) > clock) {
+                            clock = (int) dataItem.get(1);
+                            answer.setClock(clock);
+                        }
+                        //itemid | clock | name | key_ | value  
+                        MetricValue value = new MetricValue(
+                                (String) dataItem.get(2), //name
+                                (String) dataItem.get(3), //key
+                                dataItem.get(4) + "",//value
+                                (Integer) dataItem.get(1)); //clock
+                        answer.addMetric(value);
                     }
-                    //itemid | clock | name | key_ | value  
-                    MetricValue value = new MetricValue(
-                            (String) dataItem.get(2), //name
-                            (String) dataItem.get(3), //key
-                            dataItem.get(4) + "",//value
-                            (Integer) dataItem.get(1)); //clock
-                    answer.addMetric(value);
+                    resultSet.close();
                 }
             }
         } catch (SQLException ex) {
@@ -652,8 +654,9 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
         if (connection == null) {
             return null;
         }
+        PreparedStatement preparedStatement = null;
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(HISTORY_QUERY);
+            preparedStatement = connection.prepareStatement(HISTORY_QUERY);
             //hostid, item name, clock start, clock end
             preparedStatement.setLong(1, startTime);
             preparedStatement.setLong(2, endTime);
@@ -667,6 +670,12 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
             }
         } catch (SQLException ex) {
             dbLogger.log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                preparedStatement.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return answer;
     }
@@ -684,5 +693,4 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
         }
         return answer;
     }
-
 }

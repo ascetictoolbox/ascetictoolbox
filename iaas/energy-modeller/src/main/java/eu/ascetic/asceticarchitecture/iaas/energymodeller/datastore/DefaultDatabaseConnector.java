@@ -155,8 +155,9 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
         if (connection == null) {
             return null;
         }
+        PreparedStatement preparedStatement = null;
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(
+            preparedStatement = connection.prepareStatement(
                     "SELECT host_id , host_name  FROM host");
             ResultSet resultSet = preparedStatement.executeQuery();
             ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
@@ -167,6 +168,12 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
             }
         } catch (SQLException ex) {
             Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                preparedStatement.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return answer;
     }
@@ -184,8 +191,9 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
         if (connection == null) {
             return null;
         }
+        PreparedStatement preparedStatement = null;
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(
+            preparedStatement = connection.prepareStatement(
                     "SELECT vm_id , vm_name  FROM vm");
             ResultSet resultSet = preparedStatement.executeQuery();
             ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
@@ -195,6 +203,14 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
             }
         } catch (SQLException ex) {
             Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return answer;
     }
@@ -227,8 +243,9 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
         if (connection == null) {
             return null;
         }
+        PreparedStatement preparedStatement = null;
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(
+            preparedStatement = connection.prepareStatement(
                     "SELECT calibration_id, host_id, cpu, memory, energy FROM host_calibration_data WHERE host_id = ?");
             preparedStatement.setInt(1, host.getId());
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -241,6 +258,14 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
             }
         } catch (SQLException ex) {
             Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return host;
     }
@@ -257,8 +282,9 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
         if (connection == null) {
             return;
         }
+        PreparedStatement preparedStatement = null;
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(
+            preparedStatement = connection.prepareStatement(
                     "INSERT INTO host (host_id, host_name) VALUES (?,?) ON DUPLICATE KEY UPDATE host_name=VALUES(`host_name`);");
             for (Host host : hosts) {
                 preparedStatement.setInt(1, host.getId());
@@ -268,6 +294,14 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
 
         } catch (SQLException ex) {
             Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -283,8 +317,9 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
         if (connection == null) {
             return;
         }
+        PreparedStatement preparedStatement = null;
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(
+            preparedStatement = connection.prepareStatement(
                     "INSERT INTO vm (vm_id, vm_name) VALUES (?,?) ON DUPLICATE KEY UPDATE vm_name=VALUES(`vm_name`);");
             for (VmDeployed vm : vms) {
                 preparedStatement.setInt(1, vm.getId());
@@ -294,6 +329,14 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
 
         } catch (SQLException ex) {
             Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -308,8 +351,9 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
         if (connection == null) {
             return;
         }
+        PreparedStatement preparedStatement = null;
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(
+            preparedStatement = connection.prepareStatement(
                     "INSERT INTO host_calibration_data (host_id, cpu, memory, energy) VALUES (?, ?, ? , ?) "
                     + " ON DUPLICATE KEY UPDATE host_id=VALUES(`host_id`), cpu=VALUES(`cpu`), memory=VALUES(`memory`), energy=VALUES(`energy`);");
             preparedStatement.setInt(1, host.getId());
@@ -322,6 +366,14 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
             }
         } catch (SQLException ex) {
             Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -343,8 +395,9 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
         if (connection == null) {
             return;
         }
+        PreparedStatement preparedStatement = null;
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(
+            preparedStatement = connection.prepareStatement(
                     "INSERT INTO host_measurement (host_id, clock, energy, power) VALUES (?, ?, ? , ?);");
             preparedStatement.setInt(1, host.getId());
             preparedStatement.setLong(2, time);
@@ -353,6 +406,14 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
             preparedStatement.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -372,8 +433,8 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
             return null;
         }
         List<HostEnergyRecord> answer = new ArrayList<>();
+        PreparedStatement preparedStatement = null;
         try {
-            PreparedStatement preparedStatement;
             if (timePeriod != null) {
                 long start = timePeriod.getStartTimeInSeconds();
                 long end = timePeriod.getEndTimeInSeconds();
@@ -399,6 +460,14 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
         } catch (SQLException ex) {
             Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
             return null;
+        } finally {
+            try {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return answer;
     }
@@ -409,8 +478,9 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
         if (connection == null) {
             return;
         }
+        PreparedStatement preparedStatement = null;
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(
+            preparedStatement = connection.prepareStatement(
                     "INSERT INTO vm_measurement (host_id, vm_id, clock, cpu_load) VALUES (?, ?, ? , ?);");
             preparedStatement.setInt(1, host.getId());
             for (VmDeployed vm : load.getVMs()) {
@@ -421,12 +491,22 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
             }
         } catch (SQLException ex) {
             Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
     /**
-     * This is part of a caching mechansim for Vms when getting historic load data, 
-     * the aim is to create less vm objects (and thus reduce the footprint of this method).
+     * This is part of a caching mechanism for Vms when getting historic load
+     * data, the aim is to create less vm objects (and thus reduce the footprint
+     * of this method).
+     *
      * @param id The VM id.
      * @param name The name of the VM
      * @param host The host it is running from.
@@ -450,23 +530,23 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
             return null;
         }
         List<HostVmLoadFraction> answer = new ArrayList<>();
+        PreparedStatement preparedStatement = null;
         try {
-            PreparedStatement preparedStatement;
             if (timePeriod != null) {
                 long start = timePeriod.getStartTimeInSeconds();
                 long end = timePeriod.getEndTimeInSeconds();
                 preparedStatement = connection.prepareStatement(
                         "SELECT host_id, vm_measurement.vm_id, vm_name, clock, cpu_load FROM vm_measurement, vm "
-                                + "WHERE vm_measurement.vm_id = vm.vm_id "
-                                + "and vm_measurement.host_id = ? "
+                        + "WHERE vm_measurement.vm_id = vm.vm_id "
+                        + "and vm_measurement.host_id = ? "
                         + " AND clock >= ? AND clock <= ?;");
                 preparedStatement.setLong(2, start);
                 preparedStatement.setLong(3, end);
             } else {
                 preparedStatement = connection.prepareStatement(
                         "SELECT host_id, vm_measurement.vm_id, vm_name, clock, cpu_load FROM vm_measurement, vm "
-                                + "WHERE vm_measurement.vm_id = vm.vm_id "
-                                + "and vm_measurement.host_id = ?;");
+                        + "WHERE vm_measurement.vm_id = vm.vm_id "
+                        + "and vm_measurement.host_id = ?;");
             }
             preparedStatement.setInt(1, host.getId());
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -490,6 +570,14 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
         } catch (SQLException ex) {
             Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
             return null;
+        } finally {
+            try {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return answer;
     }
@@ -509,5 +597,4 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
             Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, "The connection close operation failed.", ex);
         }
     }
-
 }
