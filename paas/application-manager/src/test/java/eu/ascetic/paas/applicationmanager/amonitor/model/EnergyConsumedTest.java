@@ -1,9 +1,6 @@
-package eu.ascetic.paas.applicationmanager.rest.util;
+package eu.ascetic.paas.applicationmanager.amonitor.model;
 
 import static org.junit.Assert.assertEquals;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import org.junit.Test;
 
@@ -24,19 +21,23 @@ import org.junit.Test;
  * limitations under the License.
  * 
  * @author David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
- * email david.garciaperez@atos.net
+ * email: david.garciaperez@atos.net
  * 
- * Test the formated date...
+ * Test the POJO Json EnergyConsumed class
  */
-public class DateUtilTest {
+public class EnergyConsumedTest {
 
 	@Test
-	public void getDateStringLogStandardFormatTest() throws Exception {
-		String oldstring = "2011-01-18 00:00:00.0";
-		Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").parse(oldstring);
+	public void pojo() {
+		EnergyCosumed energyConsumed = new EnergyCosumed();
+		energyConsumed.setAppId("appId");
+		energyConsumed.setInstanceId("instanceId");
 		
-		String output = DateUtil.getDateStringLogStandardFormat(date);
+		Data data = new Data();
+		energyConsumed.setData(data);
 		
-		assertEquals("18/01/2011:00:00:00 +0100", output);
+		assertEquals("appId", energyConsumed.getAppId());
+		assertEquals("instanceId", energyConsumed.getInstanceId());
+		assertEquals(data, energyConsumed.getData());
 	}
 }

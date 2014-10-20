@@ -35,7 +35,7 @@ import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.VmDeployed;
  * limitations under the License.
  * 
  * @author David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
- * @email david.garciaperez@atos.net
+ * e-mail david.garciaperez@atos.net
  * 
  * This class is the Unit test that verifies the correct work of the VM Manager Client for ASCETiC
  */

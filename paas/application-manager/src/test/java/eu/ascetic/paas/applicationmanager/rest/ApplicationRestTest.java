@@ -1,6 +1,7 @@
 package eu.ascetic.paas.applicationmanager.rest;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.any;
@@ -17,6 +18,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -211,6 +214,9 @@ public class ApplicationRestTest {
 		assertEquals(1, applicationResponse.getDeployments().size());
 		assertEquals(threeTierWebAppOvfString, applicationResponse.getDeployments().get(0).getOvf());
 		assertEquals(Dictionary.APPLICATION_STATUS_NEGOTIATIED, applicationResponse.getDeployments().get(0).getStatus());
+		Pattern p = Pattern.compile("\\d\\d/\\d\\d/\\d\\d\\d\\d:\\d\\d:\\d\\d:\\d\\d \\+\\d\\d\\d\\d");
+		Matcher m = p.matcher(applicationResponse.getDeployments().get(0).getStartDate());
+		assertTrue(m.matches());
 		
 		// We verify the number of calls to the DAO
 		verify(applicationDAO, times(2)).getByName("threeTierWebApp");

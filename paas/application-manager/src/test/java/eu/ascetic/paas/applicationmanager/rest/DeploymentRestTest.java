@@ -28,10 +28,13 @@ import javax.xml.bind.Unmarshaller;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.EnergyModellerSimple;
+import eu.ascetic.paas.applicationmanager.amonitor.ApplicationMonitorClient;
+import eu.ascetic.paas.applicationmanager.amonitor.model.EnergyCosumed;
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.model.Application;
@@ -249,6 +252,7 @@ public class DeploymentRestTest {
 	}
 	
 	@Test
+	@SuppressWarnings(value = { "static-access", "unchecked" })
 	public void deleteDeployment() {
 		Deployment deployment = new Deployment();
 		deployment.setId(1);
@@ -288,6 +292,9 @@ public class DeploymentRestTest {
 		image3.setProviderImageId("zzzz-3");
 		vm2.addImage(image3);
 		
+		EnergyModellerSimple modeller = mock(EnergyModellerSimple.class);
+		ApplicationMonitorClient amonitorClient = mock(ApplicationMonitorClient.class);
+		
 		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
 		when(deploymentDAO.getById(1)).thenReturn(deployment);
 		when(deploymentDAO.update(deployment)).thenReturn(true);
@@ -301,6 +308,32 @@ public class DeploymentRestTest {
 		DeploymentRest deploymentRest = new DeploymentRest();
 		deploymentRest.deploymentDAO = deploymentDAO;
 		deploymentRest.vmManagerClient = vmManagerClient;
+		deploymentRest.energyModeller = modeller;
+		deploymentRest.applicationMonitorClient = amonitorClient;
+		
+		
+		when(modeller.energyApplicationConsumption(isNull(String.class), eq(""), argThat(new BaseMatcher<List<String>>() {
+ 
+																				@Override
+																				public boolean matches(Object arg0) {
+																					
+																					List<String> ids = (List<String>) arg0;
+																					
+																					boolean isTheList = true;
+																					
+																					if(!(ids.size() == 2)) isTheList = false; 
+																					
+																					if(!(ids.get(0).equals("aaaa-bbbb-1"))) isTheList = false;
+																					
+																					if(!(ids.get(1).equals("aaaa-bbbb-2"))) isTheList = false;
+
+																					return isTheList;
+																				}
+ 
+																				@Override
+																				public void describeTo(Description arg0) {}
+        																	
+																			}), isNull(String.class))).thenReturn(22.0);
 		
 		Response response = deploymentRest.deleteDeployment("", "1");
 		
@@ -314,6 +347,11 @@ public class DeploymentRestTest {
 		verify(vmManagerClient, times(1)).deleteImage("zzzz-1");
 		verify(vmManagerClient, times(1)).deleteImage("zzzz-2");
 		verify(vmManagerClient, times(0)).deleteImage("zzzz-3");
+		
+		ArgumentCaptor<EnergyCosumed> argument = ArgumentCaptor.forClass(EnergyCosumed.class);
+		verify(amonitorClient, times(1)).postFinalEnergyConsumption(argument.capture());
+		
+		assertEquals("22.0 Wh", argument.getValue().getData().getPower());
 	}
 	
 	@Test

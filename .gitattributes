@@ -452,6 +452,11 @@ paas/application-manager/src/main/java/eu/ascetic/applicationmanager/slam/stub/P
 paas/application-manager/src/main/java/eu/ascetic/applicationmanager/slam/stub/SLACreationExceptionException.java -text
 paas/application-manager/src/main/java/eu/ascetic/applicationmanager/slam/stub/SLANotFoundExceptionException.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/Dictionary.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/amonitor/ApplicationMonitorClient.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/amonitor/ApplicationMonitorClientHC.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/amonitor/model/Data.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/amonitor/model/EnergyCosumed.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/amonitor/model/parser/Parser.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/conf/Configuration.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/contextualizer/VmcClient.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/ApplicationDAO.java -text
@@ -518,6 +523,10 @@ paas/application-manager/src/main/resources/config.properties -text
 paas/application-manager/src/main/resources/log4j.properties -text
 paas/application-manager/src/main/webapp/META-INF/MANIFEST.MF -text
 paas/application-manager/src/main/webapp/WEB-INF/web.xml -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/amonitor/ApplicationMonitorHCTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/amonitor/model/DataTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/amonitor/model/EnergyConsumedTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/amonitor/model/parser/ParserTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/jpa/ApplicationDAOJpaTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/jpa/DeploymentDAOJpaTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/jpa/ImageDAOJpaTest.java -text

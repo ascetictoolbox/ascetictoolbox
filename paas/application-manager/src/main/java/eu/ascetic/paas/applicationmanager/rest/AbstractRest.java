@@ -1,5 +1,7 @@
 package eu.ascetic.paas.applicationmanager.rest;
 
+import java.util.Date;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
@@ -17,6 +19,7 @@ import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
+import eu.ascetic.paas.applicationmanager.rest.util.DateUtil;
 import eu.ascetic.paas.applicationmanager.rest.util.XMLBuilder;
 
 /**
@@ -87,6 +90,8 @@ public abstract class AbstractRest {
 			deployment.setStatus(Dictionary.APPLICATION_STATUS_NEGOTIATIED);
 		}
 		deployment.setOvf(ovf);
+		String startDate = DateUtil.getDateStringLogStandardFormat(new Date());
+		deployment.setStartDate(startDate);
 		
 		return deployment;
 	}

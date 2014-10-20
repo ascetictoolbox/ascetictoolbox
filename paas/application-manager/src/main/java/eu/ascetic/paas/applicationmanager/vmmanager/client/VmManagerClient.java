@@ -27,7 +27,7 @@ import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.VmDeployed;
  * limitations under the License.
  * 
  * @author: David Rojo. Atos Research and Innovation, Atos SPAIN SA
- * @email david.rojoa@atos.net 
+ * e-mail david.rojoa@atos.net 
  * 
  * The Interface VmManagerClient.
  */

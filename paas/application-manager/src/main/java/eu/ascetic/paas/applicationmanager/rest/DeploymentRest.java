@@ -1,6 +1,7 @@
 package eu.ascetic.paas.applicationmanager.rest;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -19,11 +20,16 @@ import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import eu.ascetic.paas.applicationmanager.amonitor.ApplicationMonitorClient;
+import eu.ascetic.paas.applicationmanager.amonitor.ApplicationMonitorClientHC;
+import eu.ascetic.paas.applicationmanager.amonitor.model.Data;
+import eu.ascetic.paas.applicationmanager.amonitor.model.EnergyCosumed;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
 import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.VM;
+import eu.ascetic.paas.applicationmanager.rest.util.DateUtil;
 import eu.ascetic.paas.applicationmanager.rest.util.XMLBuilder;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientHC;
@@ -56,6 +62,7 @@ import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientHC;
 public class DeploymentRest extends AbstractRest {
 	private static Logger logger = Logger.getLogger(DeploymentRest.class);
 	protected VmManagerClient vmManagerClient = new VmManagerClientHC();
+	protected ApplicationMonitorClient applicationMonitorClient = new ApplicationMonitorClientHC();
 	
 	/**
 	 * @param applicationName the name of the application for which we want to know the deployments
@@ -188,6 +195,20 @@ public class DeploymentRest extends AbstractRest {
 			return buildResponse(Status.NOT_FOUND, "Deployment id = " +  deploymentId + " not found in database");
 		}
 		
+		deployment.setEndDate(DateUtil.getDateStringLogStandardFormat(new Date()));
+		
+		// TODO put this inside a try-catch
+		EnergyMeasurement energyMeasurement = getEnergyConsumptionFromEM(applicationName, deployment);
+		EnergyCosumed energyConsumed = new EnergyCosumed();
+		energyConsumed.setAppId(applicationName);
+		energyConsumed.setInstanceId(deploymentId);
+		Data data = new Data();
+		data.setEnd(deployment.getEndDate());
+		data.setStart(deployment.getStartDate());
+		data.setPower(energyMeasurement.getValue() + " Wh");
+		energyConsumed.setData(data);
+		applicationMonitorClient.postFinalEnergyConsumption(energyConsumed);
+		
 		//Get the vms
 		List<VM> deploymentVms = deployment.getVms();
 		List<Image> images = new ArrayList<Image>();
@@ -225,15 +246,10 @@ public class DeploymentRest extends AbstractRest {
 		return buildResponse(Status.NO_CONTENT, "");
 	}
 	
-	@GET
-	@Path("{deployment_id}/energy-consumption")
-	@Produces(MediaType.APPLICATION_XML)
-	public Response getEnergyConsumption(@PathParam("application_name") String applicationName, @PathParam("deployment_id") String deploymentId) {
-		logger.info("GET request to path: /applications/" + applicationName + "/deployments/" + deploymentId + "/energy-consumption");
+	private EnergyMeasurement getEnergyConsumptionFromEM(String applicationName, Deployment deployment) {
 		// Make sure we have the right configuration
 		energyModeller = getEnergyModeller();
 		
-		Deployment deployment = deploymentDAO.getById(Integer.parseInt(deploymentId));
 		List<String> ids = getVmsProviderIds(deployment);
 		
 		logger.debug("Connecting to Energy Modeller");
@@ -241,6 +257,19 @@ public class DeploymentRest extends AbstractRest {
 		
 		EnergyMeasurement energyMeasurement = new EnergyMeasurement();
 		energyMeasurement.setValue(energyConsumed);
+		
+		return energyMeasurement;
+	}
+	
+	@GET
+	@Path("{deployment_id}/energy-consumption")
+	@Produces(MediaType.APPLICATION_XML)
+	public Response getEnergyConsumption(@PathParam("application_name") String applicationName, @PathParam("deployment_id") String deploymentId) {
+		logger.info("GET request to path: /applications/" + applicationName + "/deployments/" + deploymentId + "/energy-consumption");
+		
+		Deployment deployment = deploymentDAO.getById(Integer.parseInt(deploymentId));
+		
+		EnergyMeasurement energyMeasurement = getEnergyConsumptionFromEM(applicationName, deployment);
 		
 		// We create the XMl response
 		String xml = XMLBuilder.getEnergyMeasurementForDeploymentXMLInfo(energyMeasurement, applicationName, deploymentId);

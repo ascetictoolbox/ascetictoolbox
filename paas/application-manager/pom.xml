@@ -195,7 +195,7 @@
 		<dependency>
 			<groupId>eu.ascetic.paas</groupId>
 			<artifactId>application-manager-datamodel</artifactId>
-			<version>0.12-SNAPSHOT</version>
+			<version>0.13-SNAPSHOT</version>
 		</dependency>
 		
 			<!-- OVF LIBRARIES -->
@@ -454,6 +454,12 @@
 					<artifactId>spring-aop</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.2</version>
 		</dependency>
 
 		<!-- Spring 3 dependencies -->
