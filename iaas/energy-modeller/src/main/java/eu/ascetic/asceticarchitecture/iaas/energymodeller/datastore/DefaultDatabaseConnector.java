@@ -155,11 +155,9 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
         if (connection == null) {
             return null;
         }
-        PreparedStatement preparedStatement = null;
-        try {
-            preparedStatement = connection.prepareStatement(
-                    "SELECT host_id , host_name  FROM host");
-            ResultSet resultSet = preparedStatement.executeQuery();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                        "SELECT host_id , host_name  FROM host");
+                ResultSet resultSet = preparedStatement.executeQuery()) {
             ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
             for (ArrayList<Object> hostData : results) {
                 Host host = new Host((Integer) hostData.get(0), (String) hostData.get(1));
@@ -168,12 +166,6 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
             }
         } catch (SQLException ex) {
             Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                preparedStatement.close();
-            } catch (SQLException ex) {
-                Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
         return answer;
     }
@@ -191,11 +183,9 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
         if (connection == null) {
             return null;
         }
-        PreparedStatement preparedStatement = null;
-        try {
-            preparedStatement = connection.prepareStatement(
-                    "SELECT vm_id , vm_name  FROM vm");
-            ResultSet resultSet = preparedStatement.executeQuery();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                        "SELECT vm_id , vm_name  FROM vm");
+                ResultSet resultSet = preparedStatement.executeQuery()) {
             ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
             for (ArrayList<Object> hostData : results) {
                 VmDeployed vm = new VmDeployed((Integer) hostData.get(0), (String) hostData.get(1));
@@ -203,14 +193,6 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
             }
         } catch (SQLException ex) {
             Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
         return answer;
     }
@@ -243,29 +225,20 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
         if (connection == null) {
             return null;
         }
-        PreparedStatement preparedStatement = null;
-        try {
-            preparedStatement = connection.prepareStatement(
-                    "SELECT calibration_id, host_id, cpu, memory, energy FROM host_calibration_data WHERE host_id = ?");
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                        "SELECT calibration_id, host_id, cpu, memory, energy FROM host_calibration_data WHERE host_id = ?")) {
             preparedStatement.setInt(1, host.getId());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            ArrayList<ArrayList<Object>> result = resultSetToArray(resultSet);
-            for (ArrayList<Object> calibrationData : result) {
-                host.addCalibrationData(new HostEnergyCalibrationData(
-                        (Double) calibrationData.get(2),
-                        (Double) calibrationData.get(3),
-                        (Double) calibrationData.get(4)));
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                ArrayList<ArrayList<Object>> result = resultSetToArray(resultSet);
+                for (ArrayList<Object> calibrationData : result) {
+                    host.addCalibrationData(new HostEnergyCalibrationData(
+                            (Double) calibrationData.get(2),
+                            (Double) calibrationData.get(3),
+                            (Double) calibrationData.get(4)));
+                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
         return host;
     }
@@ -282,10 +255,8 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
         if (connection == null) {
             return;
         }
-        PreparedStatement preparedStatement = null;
-        try {
-            preparedStatement = connection.prepareStatement(
-                    "INSERT INTO host (host_id, host_name) VALUES (?,?) ON DUPLICATE KEY UPDATE host_name=VALUES(`host_name`);");
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                        "INSERT INTO host (host_id, host_name) VALUES (?,?) ON DUPLICATE KEY UPDATE host_name=VALUES(`host_name`);")) {
             for (Host host : hosts) {
                 preparedStatement.setInt(1, host.getId());
                 preparedStatement.setString(2, host.getHostName());
@@ -294,14 +265,6 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
 
         } catch (SQLException ex) {
             Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
     }
 
@@ -317,10 +280,8 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
         if (connection == null) {
             return;
         }
-        PreparedStatement preparedStatement = null;
-        try {
-            preparedStatement = connection.prepareStatement(
-                    "INSERT INTO vm (vm_id, vm_name) VALUES (?,?) ON DUPLICATE KEY UPDATE vm_name=VALUES(`vm_name`);");
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                        "INSERT INTO vm (vm_id, vm_name) VALUES (?,?) ON DUPLICATE KEY UPDATE vm_name=VALUES(`vm_name`);")) {
             for (VmDeployed vm : vms) {
                 preparedStatement.setInt(1, vm.getId());
                 preparedStatement.setString(2, vm.getName());
@@ -329,14 +290,6 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
 
         } catch (SQLException ex) {
             Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
     }
 
@@ -351,11 +304,9 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
         if (connection == null) {
             return;
         }
-        PreparedStatement preparedStatement = null;
-        try {
-            preparedStatement = connection.prepareStatement(
-                    "INSERT INTO host_calibration_data (host_id, cpu, memory, energy) VALUES (?, ?, ? , ?) "
-                    + " ON DUPLICATE KEY UPDATE host_id=VALUES(`host_id`), cpu=VALUES(`cpu`), memory=VALUES(`memory`), energy=VALUES(`energy`);");
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                        "INSERT INTO host_calibration_data (host_id, cpu, memory, energy) VALUES (?, ?, ? , ?) "
+                        + " ON DUPLICATE KEY UPDATE host_id=VALUES(`host_id`), cpu=VALUES(`cpu`), memory=VALUES(`memory`), energy=VALUES(`energy`);")) {
             preparedStatement.setInt(1, host.getId());
             for (HostEnergyCalibrationData data : host.getCalibrationData()) {
                 preparedStatement.setDouble(1, host.getId());
@@ -366,14 +317,6 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
             }
         } catch (SQLException ex) {
             Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
     }
 
@@ -395,10 +338,8 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
         if (connection == null) {
             return;
         }
-        PreparedStatement preparedStatement = null;
-        try {
-            preparedStatement = connection.prepareStatement(
-                    "INSERT INTO host_measurement (host_id, clock, energy, power) VALUES (?, ?, ? , ?);");
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                        "INSERT INTO host_measurement (host_id, clock, energy, power) VALUES (?, ?, ? , ?);")) {
             preparedStatement.setInt(1, host.getId());
             preparedStatement.setLong(2, time);
             preparedStatement.setDouble(3, energy);
@@ -406,14 +347,6 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
             preparedStatement.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
     }
 
@@ -448,14 +381,15 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
                         "SELECT host_id, clock, energy, power FROM host_measurement WHERE host_id = ?;");
             }
             preparedStatement.setInt(1, host.getId());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
-            for (ArrayList<Object> hostMeasurement : results) {
-                answer.add(new HostEnergyRecord(
-                        host,
-                        (long) hostMeasurement.get(1), //clock is the 1st item
-                        (double) hostMeasurement.get(3), //power 3rd item
-                        (double) hostMeasurement.get(2))); //energy is 2nd item
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
+                for (ArrayList<Object> hostMeasurement : results) {
+                    answer.add(new HostEnergyRecord(
+                            host,
+                            (long) hostMeasurement.get(1), //clock is the 1st item
+                            (double) hostMeasurement.get(3), //power 3rd item
+                            (double) hostMeasurement.get(2))); //energy is 2nd item
+                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
@@ -478,10 +412,8 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
         if (connection == null) {
             return;
         }
-        PreparedStatement preparedStatement = null;
-        try {
-            preparedStatement = connection.prepareStatement(
-                    "INSERT INTO vm_measurement (host_id, vm_id, clock, cpu_load) VALUES (?, ?, ? , ?);");
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                        "INSERT INTO vm_measurement (host_id, vm_id, clock, cpu_load) VALUES (?, ?, ? , ?);")) {
             preparedStatement.setInt(1, host.getId());
             for (VmDeployed vm : load.getVMs()) {
                 preparedStatement.setInt(2, vm.getId());
@@ -491,14 +423,6 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
             }
         } catch (SQLException ex) {
             Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
     }
 
@@ -549,23 +473,24 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
                         + "and vm_measurement.host_id = ?;");
             }
             preparedStatement.setInt(1, host.getId());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
-            long lastClock = Long.MIN_VALUE;
-            long currentClock;
-            HostVmLoadFraction currentHostLoadFraction = null;
-            for (ArrayList<Object> measurement : results) {
-                currentClock = (long) measurement.get(3); //clock is the 3rd item)
-                if (currentClock != lastClock || currentHostLoadFraction == null) {
-                    currentHostLoadFraction = new HostVmLoadFraction(host, currentClock);
-                    VmDeployed vm = getVM((int) measurement.get(1), (String) measurement.get(2), host, vmCache);
-                    currentHostLoadFraction.addFraction(vm, (double) measurement.get(4)); //load is the fourth item
-                    answer.add(currentHostLoadFraction);
-                } else {
-                    VmDeployed vm = getVM((int) measurement.get(1), (String) measurement.get(2), host, vmCache);
-                    currentHostLoadFraction.addFraction(vm, (double) measurement.get(4)); //load is the fourth item
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
+                long lastClock = Long.MIN_VALUE;
+                long currentClock;
+                HostVmLoadFraction currentHostLoadFraction = null;
+                for (ArrayList<Object> measurement : results) {
+                    currentClock = (long) measurement.get(3); //clock is the 3rd item)
+                    if (currentClock != lastClock || currentHostLoadFraction == null) {
+                        currentHostLoadFraction = new HostVmLoadFraction(host, currentClock);
+                        VmDeployed vm = getVM((int) measurement.get(1), (String) measurement.get(2), host, vmCache);
+                        currentHostLoadFraction.addFraction(vm, (double) measurement.get(4)); //load is the fourth item
+                        answer.add(currentHostLoadFraction);
+                    } else {
+                        VmDeployed vm = getVM((int) measurement.get(1), (String) measurement.get(2), host, vmCache);
+                        currentHostLoadFraction.addFraction(vm, (double) measurement.get(4)); //load is the fourth item
+                    }
+                    lastClock = currentClock;
                 }
-                lastClock = currentClock;
             }
         } catch (SQLException ex) {
             Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
