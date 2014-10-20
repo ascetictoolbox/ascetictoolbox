@@ -34,7 +34,7 @@ import java.util.List;
 public class VMMToEMConversor {
 
     public static List<VM> getVmsEnergyModFromVms(List<Vm> vms) {
-        List<eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM> result = new ArrayList<>();
+        List<VM> result = new ArrayList<>();
         for (Vm vm: vms) {
             result.add(EnergyModeller.getVM(vm.getCpus(), vm.getRamMb(), vm.getDiskGb()));
         }
