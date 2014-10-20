@@ -16,7 +16,7 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.task
 
 public class EnergyModellerDataZabbix {
 
-	private static String HOST = "bebeb35b-d4a0-49c6-91c6-7b4064e50828";
+	private static String HOST = "2488a180-e644-484a-a579-4cdbe02b2420";
 	private static String HOST2 = "59d2ae8d-1ea0-46df-993f-fddbdd48c830";
 	private static String HOST3 = "8f805a34-4ef1-4a9a-93e8-028651de28cc";
 	private static String hst ="asok10";
@@ -45,21 +45,21 @@ public class EnergyModellerDataZabbix {
 		
 	}
 	
-	@Test
-	public void testVMDataAll() {
-		System.out.println("################################## ");
-		System.out.println("### ALL DATA FOR "+dcollector.searchFullHostsname(HOST));
-		System.out.println("################################## ");
-		dcollector.getHistoryForItem("apptest","deptest","Power", dcollector.searchFullHostsname(HOST),30);
-	}
-	
-	@Test
-	public void testVMDataSamples() {
-		System.out.println("################################## ");
-		System.out.println("### SAMPLES DATA FOR "+dcollector.searchFullHostsname(HOST));
-		System.out.println("################################## ");
-		dcollector.getHistoryForItemSamples("apptest","deptest","Power", dcollector.searchFullHostsname(HOST), 100);
-	}
+//	@Test
+//	public void testVMDataAll() {
+//		System.out.println("################################## ");
+//		System.out.println("### ALL DATA FOR "+dcollector.searchFullHostsname(HOST));
+//		System.out.println("################################## ");
+//		dcollector.getHistoryForItem("apptest","deptest","Power", dcollector.searchFullHostsname(HOST),30);
+//	}
+//	
+//	@Test
+//	public void testVMDataSamples() {
+//		System.out.println("################################## ");
+//		System.out.println("### SAMPLES DATA FOR "+dcollector.searchFullHostsname(HOST));
+//		System.out.println("################################## ");
+//		dcollector.getHistoryForItemSamples("apptest","deptest","Power", dcollector.searchFullHostsname(HOST), 100);
+//	}
 //	
 //	@Test
 //	public void testVMInterval() {
@@ -68,21 +68,22 @@ public class EnergyModellerDataZabbix {
 //		System.out.println("################################## ");
 //		dcollector.getHistoryForItemInterval("apptest","deptest","Power", dcollector.searchFullHostsname(HOST), 1412179349000L, 1412870549000L);
 //	}
-//	@Test
-//	public void testVMCPU() {
-//		System.out.println("################################## ");
-//		System.out.println("### INTERVAL DATA FOR "+dcollector.searchFullHostsname(HOST));
-//		System.out.println("################################## ");
-//		dcollector.getHistoryForItem("apptest","deptest","CPU user time", dcollector.searchFullHostsname(HOST), 100);
-//	}
-//	@Test
-//	public void testVMMemory() {
-//		System.out.println("################################## ");
-//		System.out.println("### INTERVAL DATA FOR "+dcollector.searchFullHostsname(HOST));
-//		System.out.println("################################## ");
-//		dcollector.getSeriesHistoryForItemInterval("apptest","deptest","CPU user time", dcollector.searchFullHostsname(HOST), 1412179349000L, 1412870549000L);
-//		dcollector.getHistoryForItem("apptest","deptest","Memory Available", dcollector.searchFullHostsname(HOST), 100);
-//	}
+	
+	@Test
+	public void testVMCPU() {
+		System.out.println("################################## ");
+		System.out.println("### INTERVAL DATeA FOR "+dcollector.searchFullHostsname(HOST));
+		System.out.println("################################## ");
+		dcollector.getHistoryForItemSamples("apptest","deptest","vm.memory.size[total]", dcollector.searchFullHostsname(HOST), 100);
+	}
+	@Test
+	public void testVMMemory() {
+		System.out.println("################################## ");
+		System.out.println("### INTERVAL DATA FOR "+dcollector.searchFullHostsname(HOST));
+		System.out.println("################################## ");
+		//dcollector.getSeriesHistoryForItemInterval("apptest","deptest","CPU user time", dcollector.searchFullHostsname(HOST), 1412179349000L, 1412870549000L);
+		dcollector.getHistoryForItemSamples("apptest","deptest","system.cpu.load[percpu,avg15]", dcollector.searchFullHostsname(HOST), 100);
+	}
 //	
 //	@Test
 //	public void testVMfrom() {

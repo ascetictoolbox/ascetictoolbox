@@ -35,6 +35,12 @@ public class EnergyDataAggregatorService implements DataAggregatorTaskInterface 
 		double result = dataDAO.getTotalEnergyForVM(app, depl, vmid);
 		Timestamp min = dataDAO.getFirsttConsumptionForVM(app, vmid);
 		Timestamp max= dataDAO.getLastConsumptionForVM(app, vmid);
+		if (min == null){
+			return -1;
+		}
+		if (max == null){
+			return -1;
+		}
 		double diff = max.getTime()-min.getTime();
 		diff = diff / 3600000;
 		

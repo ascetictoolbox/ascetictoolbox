@@ -19,7 +19,7 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.Ener
 public class EnergyModellerData {
 
 	private static EnergyModellerSimple serviceEM;
-	private static String HOST = "2488a180-e644-484a-a579-4cdbe02b2420";
+	private static String HOST = "dcf8e3eb-9cfd-4f34-a48b-2421fc9c423d";
 	private static String EVENT = "core0impl0";
 	private static String APP = "JEPlus";
 	
@@ -61,14 +61,14 @@ public class EnergyModellerData {
 //		Assert.assertNotNull(energy);
 //	}
 	
-//	@Test
-//	public void testSampleForVM() {
-//		System.out.println("Test Sample");
-//		List<String> vmids = new Vector<String>();
-//		vmids.add(HOST);
-//		List<Sample> energy = serviceEM.applicationData(null, APP, HOST, null , 1 , new Timestamp(1413476443000L),new Timestamp(1413476452000L) );
-//		Assert.assertNotNull(energy);
-//	}
+	@Test
+	public void testSampleForVM() {
+		System.out.println("Test Sample");
+		List<String> vmids = new Vector<String>();
+		vmids.add(HOST);
+		List<Sample> energy = serviceEM.applicationData(null, APP, HOST, null , 1 , new Timestamp(1413798058000L),new Timestamp(1413819659000L) );
+		Assert.assertNotNull(energy);
+	}
 
 //	@Test
 //	public void testEEnergyForAppTime() {

@@ -15,8 +15,11 @@ import java.util.Vector;
 import org.apache.log4j.Logger;
 
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.HistoryItem;
+import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Item;
 import eu.ascetic.asceticarchitecture.paas.component.common.database.PaaSEMDatabaseManager;
+import eu.ascetic.asceticarchitecture.paas.component.common.model.DataConsumption;
 import eu.ascetic.asceticarchitecture.paas.component.common.model.DataEvent;
+import eu.ascetic.asceticarchitecture.paas.component.common.model.GenericValuesInterpolator;
 import eu.ascetic.asceticarchitecture.paas.component.common.model.TimeEnergyInterpolator;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EMSettings;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EnergySample;
@@ -148,14 +151,124 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 	public List<Sample> applicationData(String providerid,String applicationid, String vmids, String eventid,long samplingperiod, Timestamp start, Timestamp end) {
 		
 		
-		//List<HistoryItem> hcpu = this.datacollector.getSeriesHistoryForItemInterval("apptest","deptest","CPU user time", datacollector.searchFullHostsname(vmids), start.getTime(), end.getTime());
+		List<HistoryItem> hcpu = this.datacollector.getSeriesHistoryForItemInterval("apptest","deptest","system.cpu.load[percpu,avg1]", datacollector.searchFullHostsname(vmids), start.getTime(), end.getTime());
 		List<HistoryItem> hpower = this.datacollector.getSeriesHistoryForItemInterval("apptest","deptest","Power", datacollector.searchFullHostsname(vmids), start.getTime(), end.getTime());
-		//List<HistoryItem> hmemory = this.datacollector.getSeriesHistoryForItemInterval("apptest","deptest","Memory", datacollector.searchFullHostsname(vmids), start.getTime(), end.getTime());
+		List<HistoryItem> hmenergy = buildenergyHistory (hpower);
+		if ( (hcpu == null)|| (hpower==null)|| (hmenergy==null)){
+			LOGGER.warn("Missing data");
+			return null;
+			
+		}else {
+			LOGGER.info("Ok I have data");
+		}
+		
+		GenericValuesInterpolator cpu = getInterpolator(hcpu);
+		GenericValuesInterpolator power = getInterpolator(hpower);
+		GenericValuesInterpolator energy = getInterpolator(hmenergy);
+		long startts = start.getTime()/1000;
+		long endts = end.getTime()/1000;
+		long currenttime = 0;
+		int iteration = 0;
+		currenttime = startts + (iteration * samplingperiod);
+		List<Sample> result = new Vector<Sample>();
+		//LOGGER.info("SAmple period  CPU "+currenttime + " last " +endts);
+		while (currenttime < endts){
+			
+			//LOGGER.info("SAmple period  CPU "+currenttime);
+			Sample cur_sample = new Sample();
+			cur_sample.setTimestampBeging(currenttime*1000);
+			if ((currenttime>cpu.getStarttime())&&(currenttime<cpu.getLasttime())){
+				cur_sample.setCvalue(cpu.estimate(currenttime-cpu.getStarttime()));
+			} else {
+				cur_sample.setCvalue(0);
+			}
+			if ((currenttime>power.getStarttime())&&(currenttime<power.getLasttime())){
+				cur_sample.setPvalue(power.estimate(currenttime-power.getStarttime()));
+			} else {
+				cur_sample.setPvalue(0);
+			}
+			if ((currenttime>energy.getStarttime())&&(currenttime<energy.getLasttime())){
+				cur_sample.setEvalue(energy.estimate(currenttime-energy.getStarttime()));
+			} else {
+				cur_sample.setEvalue(0);
+			}
+			LOGGER.info("SAmple CPU " + cur_sample.getCvalue() + " Energy " + cur_sample.getEvalue() + " Power " + cur_sample.getPvalue() +" Time " +cur_sample.getTimestampBeging());
+			result.add(cur_sample);
+			iteration++;
+			currenttime = startts + (iteration * samplingperiod);
+			
+		}
 		
 		
-		
-		return null;
+		return result;
 	}
+	
+	private List<HistoryItem> buildenergyHistory (List<HistoryItem> power){
+		if (power==null)return null;
+		List<HistoryItem> results = new Vector<HistoryItem>();
+
+		HistoryItem previous=null;
+		for (int i=0;i<power.size();i++){
+
+			HistoryItem item = power.get(i);
+			HistoryItem energyitem = new HistoryItem();
+
+			if (previous!=null){
+				
+				Double energy = integrate(new Double(previous.getValue()).doubleValue(),new Double(item.getValue()).doubleValue(),previous.getClock(),item.getClock());
+				energyitem.setValue(energy.toString());
+				energyitem.setClock(item.getClock());
+				//LOGGER.info("val " + energy+ " clock " + item.getClock());
+				results.add(energyitem);
+	
+				
+			} else {
+				Double energy = integrate(0,new Double(item.getValue()).doubleValue(),0,0);
+				energyitem.setValue(energy.toString());
+				energyitem.setClock(item.getClock());
+				//LOGGER.info("val " + energy+ " clock " + item.getClock());
+				results.add(energyitem);
+
+		
+			}
+			
+			
+			previous = item;
+		}
+		return results;
+		
+	}
+	
+	private double integrate(double powera,double powerb, long timea,long timeb){
+		return 	Math.abs((timeb-timea)*(powera+powerb)*0.5)/3600;
+	}
+	
+	private GenericValuesInterpolator getInterpolator (List<HistoryItem> items){
+		if (items.size()<=0)return null;
+		GenericValuesInterpolator genInt = new GenericValuesInterpolator();
+		
+		double[] timeseries = new double[items.size()];
+		double[] dataseries = new double[items.size()];
+		HistoryItem item;
+		genInt.setLasttime(items.get(0).getClock());
+		genInt.setStarttime(items.get(items.size()-1).getClock());
+		int count=0;
+		for (int i=items.size()-1;i>=0;i--){
+			item = items.get(i);
+			timeseries[count]=(item.getClock()-genInt.getStarttime());
+			dataseries[count]=Double.parseDouble(item.getValue());
+			//LOGGER.info(" Sample: "+count+";"+timeseries[count]+";"+dataseries[count]);
+			count++;
+		}
+		
+		
+		
+		
+		genInt.buildmodel(timeseries, dataseries); 
+		return genInt;
+		
+	}
+	
 	
 	@Override
 	public boolean startModellingApplicationEnergy(String providerid,String applicationid, String deploymentid) {

@@ -8,13 +8,29 @@ public class Sample {
 	private String vmid;
 	private long timestampBeging;
 	private long timestampEnd;
-	private double value;
+	private double evalue;
+	private double pvalue;
+	private double cvalue;
 
-	public double getValue() {
-		return value;
+	
+	
+	public double getEvalue() {
+		return evalue;
 	}
-	public void setValue(double value) {
-		this.value = value;
+	public void setEvalue(double evalue) {
+		this.evalue = evalue;
+	}
+	public double getPvalue() {
+		return pvalue;
+	}
+	public void setPvalue(double pvalue) {
+		this.pvalue = pvalue;
+	}
+	public double getCvalue() {
+		return cvalue;
+	}
+	public void setCvalue(double cvalue) {
+		this.cvalue = cvalue;
 	}
 	public long getTimestampBeging() {
 		return timestampBeging;
