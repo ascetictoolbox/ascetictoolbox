@@ -267,7 +267,7 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
             return null;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
-                    ALL_ZABBIX_HOSTS + " AND name = ?")) {
+                        ALL_ZABBIX_HOSTS + " AND name = ?")) {
             preparedStatement.setString(1, hostname);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
@@ -645,28 +645,21 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
         if (connection == null) {
             return null;
         }
-        PreparedStatement preparedStatement = null;
-        try {
-            preparedStatement = connection.prepareStatement(HISTORY_QUERY);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(HISTORY_QUERY)) {
             //hostid, item name, clock start, clock end
             preparedStatement.setLong(1, startTime);
             preparedStatement.setLong(2, endTime);
             preparedStatement.setInt(3, hostId);
             preparedStatement.setString(4, key);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
-            for (ArrayList<Object> hostData : results) {
-                Double value = ((Double) hostData.get(2));
-                answer.add(value);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
+                for (ArrayList<Object> hostData : results) {
+                    Double value = ((Double) hostData.get(2));
+                    answer.add(value);
+                }
             }
         } catch (SQLException ex) {
             dbLogger.log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                preparedStatement.close();
-            } catch (SQLException ex) {
-                Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
         return answer;
     }
