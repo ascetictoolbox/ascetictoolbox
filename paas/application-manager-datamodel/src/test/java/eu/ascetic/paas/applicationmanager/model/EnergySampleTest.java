@@ -23,35 +23,23 @@ import org.junit.Test;
  * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
  * e-mail david.garciaperez@atos.net 
  */
-
-public class AgreementTest {
+public class EnergySampleTest {
 
 	@Test
-	public void pojoTest() {
-		Agreement agreement = new Agreement();
-		agreement.setId(1);
-		agreement.setDeploymentId("deployment-id");
-		agreement.setHref("href");
-		agreement.setPrice("222");
-		agreement.setSlaAgreement("sla-agreement");
-	
-		assertEquals(1, agreement.getId());
-		assertEquals("deployment-id", agreement.getDeploymentId());
-		assertEquals("href", agreement.getHref());
-		assertEquals("222", agreement.getPrice());
-		assertEquals("sla-agreement", agreement.getSlaAgreement());
-	}
-	
-	@Test
-	public void addLinkTest() {
-		Agreement agreement = new Agreement();
+	public void pojo() {
+		EnergySample energySample = new EnergySample();
+		energySample.setCvalue(1.0);
+		energySample.setEvalue(2.0);
+		energySample.setPvalue(3.0);
+		energySample.setTimestampBeging(1l);
+		energySample.setTimestampEnd(2l);
+		energySample.setVmid("vmid");
 		
-		assertEquals(null, agreement.getLinks());
-		
-		Link link = new Link();
-		agreement.addLink(link);
-		
-		assertEquals(1, agreement.getLinks().size());
-		assertEquals(link, agreement.getLinks().get(0));
+		assertEquals("vmid", energySample.getVmid());
+		assertEquals(1.0, energySample.getCvalue(), 0.00001);
+		assertEquals(2.0, energySample.getEvalue(), 0.00001);
+		assertEquals(3.0, energySample.getPvalue(), 0.00001);
+		assertEquals(1l, energySample.getTimestampBeging());
+		assertEquals(2l, energySample.getTimestampEnd());
 	}
 }

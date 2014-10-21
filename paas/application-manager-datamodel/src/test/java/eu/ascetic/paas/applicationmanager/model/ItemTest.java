@@ -24,7 +24,7 @@ import org.junit.Test;
  * limitations under the License.
  * 
  * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
- * @email david.garciaperez@atos.net 
+ * e-mail david.garciaperez@atos.net 
  * 
  * Test the POJO Item funcitonality
  * 
@@ -53,12 +53,16 @@ public class ItemTest {
 		List<Image> images = new ArrayList<Image>();
 		items.setImages(images);
 		
+		List<EnergySample> energySamples = new ArrayList<EnergySample>();
+		items.setEnergySamples(energySamples);
+		
 		assertEquals(1, items.getOffset());
 		assertEquals(2, items.getTotal());
 		assertEquals(applications, items.getApplications());
 		assertEquals(deployments, items.getDeployments());
 		assertEquals(vms, items.getVms());
 		assertEquals(agreements, items.getAgreements());
+		assertEquals(energySamples, items.getEnergySamples());
 	}
 	
 	@Test
@@ -120,5 +124,18 @@ public class ItemTest {
 		
 		assertEquals(1, items.getAgreements().size());
 		assertEquals(agreement, items.getAgreements().get(0));
+	}
+	
+	@Test
+	public void addEnergySampleTest() {
+		Items items = new Items();
+		
+		assertEquals(null, items.getEnergySamples());
+		
+		EnergySample energySample = new EnergySample();
+		items.addEnergySample(energySample);
+		
+		assertEquals(1, items.getEnergySamples().size());
+		assertEquals(energySample, items.getEnergySamples().get(0));
 	}
 }

@@ -43,7 +43,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * limitations under the License.
  * 
  * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
- * @email david.garciaperez@atos.net 
+ * e-mail david.garciaperez@atos.net 
  * 
  * POJO Representing a VM at Application Manager level
  * 

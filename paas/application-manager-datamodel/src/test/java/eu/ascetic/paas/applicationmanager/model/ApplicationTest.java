@@ -24,7 +24,7 @@ import org.junit.Test;
  * limitations under the License.
  * 
  * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
- * @email david.garciaperez@atos.net 
+ * e-mail david.garciaperez@atos.net 
  * 
  * Collection of unit test to verify that the POJO class representing an Application works as expected
  * 

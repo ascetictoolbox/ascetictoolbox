@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * limitations under the License.
  * 
  * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
- * @email david.garciaperez@atos.net 
+ * e-mail david.garciaperez@atos.net 
  * 
  * POJO representation of the items inside a Provider Registry Collection
  * 
@@ -52,6 +52,8 @@ public class Items {
 	private List<Agreement> agreements;
 	@XmlElement(name="images", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private List<Image> images;
+	@XmlElement(name="energy-samples", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private List<EnergySample> energySamples;
 	
 	public int getOffset() {
 		return offset;
@@ -121,5 +123,16 @@ public class Items {
 	public void addImage(Image image) {
 		if(images == null) images = new ArrayList<Image>();
 		images.add(image);
+	}
+	
+	public List<EnergySample> getEnergySamples() {
+		return energySamples;
+	}
+	public void setEnergySamples(List<EnergySample> energySamples) {
+		this.energySamples = energySamples;
+	}
+	public void addEnergySample(EnergySample energySample) {
+		if(energySamples == null) energySamples = new ArrayList<EnergySample>();
+		energySamples.add(energySample);
 	}
 }

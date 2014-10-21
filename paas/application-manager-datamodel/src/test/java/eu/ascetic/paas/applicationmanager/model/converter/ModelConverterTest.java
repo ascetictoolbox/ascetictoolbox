@@ -42,7 +42,7 @@ import eu.ascetic.paas.applicationmanager.model.VM;
  * limitations under the License.
  * 
  * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
- * @email david.garciaperez@atos.net 
+ * e-mail david.garciaperez@atos.net 
  * 
  * Verifies the right work of the class responsible of converting XML representations and viceversa for the Application Manager
  * 
@@ -56,6 +56,7 @@ public class ModelConverterTest {
 	}
 	
 	@Test
+	@SuppressWarnings(value = { "rawtypes" }) 
 	public void objectRootToXMLTest() throws JDOMException, IOException {
 		Root root = new Root();
 		root.setHref("/");
@@ -113,6 +114,7 @@ public class ModelConverterTest {
 	}
 
 	@Test
+	@SuppressWarnings(value = { "rawtypes" }) 
 	public void objectCollectionToXMLTest() throws JDOMException, IOException {
 		Application application = new Application();
 		application.setHref("href");
@@ -233,6 +235,7 @@ public class ModelConverterTest {
 	}
 
 	@Test
+	@SuppressWarnings(value = { "rawtypes" }) 
 	public void objectApplicationToXMLTest() throws JDOMException, IOException {
 		Application application = new Application();
 		application.setHref("/applications/101");
@@ -462,6 +465,7 @@ public class ModelConverterTest {
 	}
 	
 	@Test
+	@SuppressWarnings(value = { "rawtypes" }) 
 	public void objectDeploymentToXMLTest() throws Exception {
 		Deployment deployment = new Deployment();
 		deployment.setHref("/applications/101/deployments/2");
@@ -532,6 +536,7 @@ public class ModelConverterTest {
 	}
 	
 	@Test
+	@SuppressWarnings(value = { "rawtypes" }) 
 	public void objectEnergyMeasurementToXMLTest() throws Exception {
 		EnergyMeasurement energyMeasurement = new EnergyMeasurement(); 
 		energyMeasurement.setHref("href");
@@ -626,6 +631,7 @@ public class ModelConverterTest {
 	}
 	
 	@Test
+	@SuppressWarnings(value = { "rawtypes" }) 
 	public void objectVMToXMLTest() throws Exception {
 		VM vm = new VM();
 		vm.setId(33);
@@ -736,6 +742,7 @@ public class ModelConverterTest {
 	}
 	
 	@Test
+	@SuppressWarnings(value = { "rawtypes" }) 
 	public void objectAgreementToXMLTest() throws Exception {
 		Agreement agreement = new Agreement();
 		agreement.setId(44);

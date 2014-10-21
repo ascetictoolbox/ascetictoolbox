@@ -24,7 +24,7 @@ import org.junit.Test;
  * limitations under the License.
  * 
  * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
- * @email david.garciaperez@atos.net 
+ * e-mail david.garciaperez@atos.net 
  * 
  * This Unit test verifies the correct behaviour of the POJO Root
  * 

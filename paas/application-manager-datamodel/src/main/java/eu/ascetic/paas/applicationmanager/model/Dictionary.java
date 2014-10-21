@@ -17,7 +17,7 @@ package eu.ascetic.paas.applicationmanager.model;
  * limitations under the License.
  * 
  * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
- * @email david.garciaperez@atos.net 
+ * e-mail david.garciaperez@atos.net 
  * 
  * Collection of variables to maintain equal through the entire application
  */
