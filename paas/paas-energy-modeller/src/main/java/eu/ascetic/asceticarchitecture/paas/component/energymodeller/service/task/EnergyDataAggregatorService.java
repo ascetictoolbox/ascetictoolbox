@@ -25,7 +25,6 @@ public class EnergyDataAggregatorService implements DataAggregatorTaskInterface 
 	@Override
 	public double getTotal(String app, String depl, String vmid,String event) {
 		double result = dataDAO.getTotalEnergyForVM(app, depl, vmid);
-		//logger.info("Total is "+result);
 		return result;
 	}
 

@@ -222,14 +222,7 @@ public class DataCollector extends TimerTask implements DataCollectorTaskInterfa
 	}
 	
 	public void getHistoryForItem(String appid, String depid,String itemkey,String hostname, int daysbefore){
-		List<Item> itemz = zCli.getItemsFromHost(hostname);
-		logger.warn("ew");
-		for (Item itz:itemz){
-			logger.info(itz.getItemid());
-			logger.info(itz.getKey());
-			logger.info(itz.getName());
-		}
-		logger.warn("ew");
+		
 		Item item = zCli.getItemByNameFromHost(itemkey, hostname);
 		if (item==null)return;
 		logger.info(""+item.getLastClock());
@@ -268,6 +261,7 @@ public class DataCollector extends TimerTask implements DataCollectorTaskInterfa
 	
 	public void getHistoryForItemInterval(String appid, String depid,String itemkey,String hostname,String eventid, long since, long to){
 		List<HistoryItem> items = zCli.getHistoryDataFromItem(itemkey, hostname, "text", since , to);
+		
 		if (items.size()==0){
 			logger.warn("no data available");
 			return;

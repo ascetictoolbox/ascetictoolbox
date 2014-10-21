@@ -65,51 +65,73 @@ public class DataEventDAOImpl implements DataeEventDAO {
 
 	@Override
 	public List<DataEvent> getByApplicationId(String applicationid) {
-		return jdbcTemplate.query(SQL_Q_APPID,new Object[]{applicationid}, new DataEventMapper());
-		
+		try{
+			return jdbcTemplate.query(SQL_Q_APPID,new Object[]{applicationid}, new DataEventMapper());
+		}catch (Exception e){
+			return null;
+		}
 	}
 	@Override
 	public List<DataEvent> getByApplicationIdTime(String applicationid,Timestamp start,Timestamp end) {
-		LOGGER.info("times "+start.getTime()+" " + end.getTime());
-		return jdbcTemplate.query(SQL_Q_APPIDTime,new Object[]{applicationid,start.getTime(),end.getTime()}, new DataEventMapper());
-		
+		try{
+			LOGGER.info("times "+start.getTime()+" " + end.getTime());
+			return jdbcTemplate.query(SQL_Q_APPIDTime,new Object[]{applicationid,start.getTime(),end.getTime()}, new DataEventMapper());
+		}catch (Exception e){
+			return null;
+		}
 	}
 	@Override
 	public List<DataEvent> getByDeploymentId(String deploymentyid) {
-		return jdbcTemplate.query(SQL_Q_DEPID,new Object[]{deploymentyid}, new DataEventMapper());
+		try{
+			return jdbcTemplate.query(SQL_Q_DEPID,new Object[]{deploymentyid}, new DataEventMapper());
+		}catch (Exception e){
+			return null;
+		}
 	}
 
 	@Override
 	public List<DataEvent> getByVMId(String vmid) {
-		return jdbcTemplate.query(SQL_Q_VMID,new Object[]{vmid}, new DataEventMapper());
+		try{
+			return jdbcTemplate.query(SQL_Q_VMID,new Object[]{vmid}, new DataEventMapper());
+		}catch (Exception e){
+			return null;
+		}	
 	}
 
 	@Override
 	public Timestamp getLastEventForVM(String applicationid, String vmid, String eventid) {
-		 LOGGER.info("Last event ++++++++++++++++++++++++++++");
+		LOGGER.info("Last event ++++++++++++++++++++++++++++");
 		Long res;
-		if (vmid==null){
-			 res =	jdbcTemplate.queryForObject(SQL_Q_LASTEV,new Object[]{applicationid, eventid}, Long.class);
-			 LOGGER.info("Last event "+res + eventid +vmid +applicationid);
-		}else{
-			 res =	jdbcTemplate.queryForObject(SQL_Q_LASTVM,new Object[]{applicationid,vmid, eventid}, Long.class);
-			 LOGGER.info("Last event "+res + eventid +vmid +applicationid);
+		try{
+			if (vmid==null){
+				 res =	jdbcTemplate.queryForObject(SQL_Q_LASTEV,new Object[]{applicationid, eventid}, Long.class);
+				 LOGGER.info("Last event "+res + eventid +vmid +applicationid);
+			}else{
+				 res =	jdbcTemplate.queryForObject(SQL_Q_LASTVM,new Object[]{applicationid,vmid, eventid}, Long.class);
+				 LOGGER.info("Last event "+res + eventid +vmid +applicationid);
+			}
+			if (res==null)return null;
+			return new Timestamp(res);
+		}catch (Exception e){
+			return null;
 		}
-		if (res==null)return null;
-		return new Timestamp(res);
 	}
 
 
 	@Override
 	public Timestamp getFirstEventTimeVM(String applicationid,String deploymentid, String vmid, String eventid) {
 		Long res;
-		if (vmid==null){
-			res =	jdbcTemplate.queryForObject(SQL_FIRST_EV,new Object[]{applicationid,deploymentid, eventid}, Long.class);
-		}else {
-			res = jdbcTemplate.queryForObject(SQL_FIRST_EV_VM,new Object[]{applicationid,deploymentid, vmid, eventid}, Long.class);
+		try{
+			if (vmid==null){
+				res =	jdbcTemplate.queryForObject(SQL_FIRST_EV,new Object[]{applicationid,deploymentid, eventid}, Long.class);
+			}else {
+				res = jdbcTemplate.queryForObject(SQL_FIRST_EV_VM,new Object[]{applicationid,deploymentid, vmid, eventid}, Long.class);
+			}
+			if (res==null)return null;
+			return new Timestamp(res);
+		}catch (Exception e){
+			return null;
 		}
-		if (res==null)return null;
-		return new Timestamp(res);
 	}
 
 //	@Override
@@ -126,14 +148,17 @@ public class DataEventDAOImpl implements DataeEventDAO {
 	@Override
 	public int getEventCountVM(String applicationid,String deploymentid, String vmid, String eventid) {
 		int res = 0;
-		if (vmid==null){
-			res =	jdbcTemplate.queryForObject(SQL_COUNT_EV,new Object[]{applicationid,deploymentid , eventid}, Integer.class);
-		} else {
-			res =	jdbcTemplate.queryForObject(SQL_COUNT_EV_VM,new Object[]{applicationid,deploymentid,vmid , eventid}, Integer.class);
+		try{
+			if (vmid==null){
+				res =	jdbcTemplate.queryForObject(SQL_COUNT_EV,new Object[]{applicationid,deploymentid , eventid}, Integer.class);
+			} else {
+				res =	jdbcTemplate.queryForObject(SQL_COUNT_EV_VM,new Object[]{applicationid,deploymentid,vmid , eventid}, Integer.class);
+			}
+			LOGGER.info("Count is "+res);
+			return res;
+		}catch (Exception e){
+			return 0;
 		}
-		
-		LOGGER.info("Count is "+res);
-		return res;
 	}
 
 }

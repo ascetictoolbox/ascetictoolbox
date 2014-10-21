@@ -32,6 +32,7 @@ public class EventDataAggregatorService implements DataAggregatorTaskInterface {
 	public List<DataEvent> getEvents(String app, String depl, String vmid, String event) {
 
 		List<DataEvent> events = daoEvent.getByApplicationId(app);
+		if (events==null)return null;
 		logger.info("##################### Total events "+events.size());
 		return events;
 	}
@@ -39,6 +40,7 @@ public class EventDataAggregatorService implements DataAggregatorTaskInterface {
 	public List<DataEvent> getEventsInTime(String app, String depl, String vmid, String event,Timestamp start,Timestamp end) {
 
 		List<DataEvent> events = daoEvent.getByApplicationIdTime(app,start,end);
+		if (events==null)return null;
 		logger.info("##################### Total is "+events.size());
 		return events;
 	}

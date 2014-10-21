@@ -58,11 +58,7 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 	@Override
 	public double energyApplicationConsumption(String providerid,String applicationid, List<String> vmids, String eventid) {
 		double total_energy=0;
-		// Ensure all vm energy data is loaded in to PaaS Database
-		//this.loadEnergyData(applicationid, vmids);
-		// check if the request is for a specific event or for the whole application/vm
 		if (eventid==null){
-			// Sum each consumption in every VM
 			for (String vm : vmids) {
 				double energy = energyEstimationForVM(providerid, applicationid, vm, eventid);
 				LOGGER.info("This VM "+ vm + " consumed " + String.format( "%.2f", energy ));
@@ -77,7 +73,7 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 			// if more vm are there, then is the sum of the average consumption over each vm
 			for (String vm : vmids) {
 				LOGGER.debug("This events consumed on VM "+vm); 
-				return energyEstimationForEventInVM(providerid, applicationid, vm, eventid);
+				total_energy = total_energy + energyEstimationForEventInVM(providerid, applicationid, vm, eventid);
 				
 			}
 		}
@@ -135,7 +131,7 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 		vmidsv.add(vmid);
 		if (eventid==null){
 			this.loadEnergyData(applicationid, vmidsv);
-			return this.energyVMDataInInterval(providerid, applicationid, vmid, start, end);
+			return energyVMDataInInterval(providerid, applicationid, vmid, start, end);
 		}else {
 			
 			this.loadEventData(applicationid, vmidsv,eventid);
@@ -324,8 +320,6 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 		this.loadEnergyData(applicationid, vmids);
 		if (eventid==null){
 			LOGGER.info("Energy estimation for " + applicationid );
-
-			//datacollector.handleConsumptionData(applicationid, vm, "deployment1");
 			double energy =  energyService.getAverage(applicationid, "deployment1", vmid, eventid);
 			
 			return energy;
@@ -350,7 +344,6 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 			}
 			if (eventnum==0)return -1;
 			LOGGER.info("Wh : "+ generalAvg + " over "+eventnum);
-			
 			
 			return (generalAvg/eventnum );
 
@@ -443,6 +436,7 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 	
 	private List<EnergySample> energyVMDataInInterval(String providerid,String applicationid, String vmid,Timestamp start, Timestamp endtime) {
 		List<EnergySample> eSamples = energyService.getSamplesInInterval(applicationid, applicationid, vmid, start,endtime);
+		if (eSamples==null)return null;
 		LOGGER.info("Total samples : "+ eSamples.size());
 		return eSamples;
 	}

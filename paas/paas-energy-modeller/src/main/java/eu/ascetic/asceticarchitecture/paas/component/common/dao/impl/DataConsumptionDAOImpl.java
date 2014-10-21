@@ -73,125 +73,199 @@ public class DataConsumptionDAOImpl implements DataConsumptionDAO {
 
 	@Override
 	public List<DataConsumption> getByApplicationId(String applicationid) {
-		return jdbcTemplate.query(SQL_Q_APPID,new Object[]{applicationid}, new DataConsumptionMapper());
+		List<DataConsumption> result = null;
+		try{
+			result = jdbcTemplate.query(SQL_Q_APPID,new Object[]{applicationid}, new DataConsumptionMapper());
+			return result;
+		}catch (Exception e) {
+			return null;
+		}
 	}
 
 	@Override
 	public List<DataConsumption> getByDeploymentId(String deploymentyid) {
-		return jdbcTemplate.query(SQL_Q_DEPID,new Object[]{deploymentyid}, new DataConsumptionMapper());
+		List<DataConsumption> result = null;
+		try{
+			result = jdbcTemplate.query(SQL_Q_DEPID,new Object[]{deploymentyid}, new DataConsumptionMapper());
+			return result;
+		}catch (Exception e) {
+			return null;
+		}
 	}
 
 	@Override
 	public List<DataConsumption> getByVMId(String vmid) {
-		return jdbcTemplate.query(SQL_Q_VMID,new Object[]{vmid}, new DataConsumptionMapper());
+		List<DataConsumption> result = null;
+		try{
+			result = jdbcTemplate.query(SQL_Q_VMID,new Object[]{vmid}, new DataConsumptionMapper());
+			return result;
+		}catch (Exception e) {
+			return null;
+		}
 	}
 
 	@Override
 	public List<DataConsumption> getByEventId(String eventid) {
-		return jdbcTemplate.query(SQL_Q_EMID,new Object[]{eventid}, new DataConsumptionMapper());
+		List<DataConsumption> result = null;
+		try{
+			result = jdbcTemplate.query(SQL_Q_EMID,new Object[]{eventid}, new DataConsumptionMapper());
+			return result;
+		}catch (Exception e) {
+			return null;
+		}
 	}
 
 	@Override
 	public Timestamp getLastConsumptionForVM(String applicationid, String vmid) {
 		LOGGER.info("Getting last measurement ");
 		LOGGER.info(jdbcTemplate==null);
-		Long results =	jdbcTemplate.queryForObject(SQL_Q_LASTVM,new Object[]{applicationid,vmid+"%"}, Long.class);
-		LOGGER.info("Got "+results);
-		if (results==null)return null;
-		return new Timestamp(results);
+		try{
+			Long results =	jdbcTemplate.queryForObject(SQL_Q_LASTVM,new Object[]{applicationid,vmid+"%"}, Long.class);
+			LOGGER.info("Got "+results);
+			if (results==null)return null;
+			return new Timestamp(results);
+		}catch (Exception e) {
+			return null;
+		}
 	}
 	
 	@Override
 	public double getTotalEnergyForDeployment(String applicationid, String deploymentid) {
-		 
-		double results = jdbcTemplate.queryForObject(SQL_SUM_DEPLOY,new Object[]{applicationid,deploymentid}, Double.class);
-		LOGGER.info("Total Energy is "+results);
-		return results;
+		try{
+			Double results = jdbcTemplate.queryForObject(SQL_SUM_DEPLOY,new Object[]{applicationid,deploymentid}, Double.class);
+			if (results==null)return 0;
+			LOGGER.info("Total Energy is "+results);
+			return results;
+		}catch (Exception e) {
+			return 0;
+		}
 	}
 	
 	@Override
 	public double getTotalEnergyForVM(String applicationid, String deploymentid, String vmid) {
-		//LOGGER.info ("AVG "+jdbcTemplate.queryForObject(SQL_AVG_VM,new Object[]{applicationid,vmid+"%"}, Double.class));
-		//.info ("SAMPLES "+jdbcTemplate.queryForObject(SQL_COUNT_VM,new Object[]{applicationid,vmid+"%"}, Double.class));
-		double results = jdbcTemplate.queryForObject(SQL_AVG_VM,new Object[]{applicationid,vmid+"%"}, Double.class);
-		LOGGER.info("Energy is "+results);
-		
-		return results;
+		try{
+			Double results = jdbcTemplate.queryForObject(SQL_AVG_VM,new Object[]{applicationid,vmid+"%"}, Double.class);
+			if (results==null)return 0;
+			LOGGER.info("Total Energy is "+results);
+			return results;
+		}catch (Exception e) {
+			return 0;
+		}
 	}
 	
 	
 	
 	public double getPowerInIntervalForVM(String applicationid, String vmid,Timestamp start,Timestamp end) {
-		double results = jdbcTemplate.queryForObject(SQL_AVG_VMPOWER,new Object[]{applicationid,vmid+"%",start.getTime(),end.getTime()}, Double.class);
-		LOGGER.debug("Power is "+results);
-		return results;
+		try{
+			Double  results = jdbcTemplate.queryForObject(SQL_AVG_VMPOWER,new Object[]{applicationid,vmid+"%",start.getTime(),end.getTime()}, Double.class);
+			LOGGER.debug("Power is "+results);
+			if (results==null)return 0;
+			LOGGER.info("Total Energy is "+results);
+			return results;
+		}catch (Exception e) {
+			return 0;
+		}
 	}
 	@Override
 	public double getTotalEnergyForVMTime(String applicationid, String vmid,Timestamp start,Timestamp end) {
-		//LOGGER.info("app "+applicationid + " vmid " +vmid+ " start "+ start.getTime()+ " end "+end.getTime());
-		double results = jdbcTemplate.queryForObject(SQL_AVG_VMTIME,new Object[]{applicationid,vmid+"%",start.getTime(),end.getTime()}, Double.class);
-		LOGGER.debug("Energy is "+results);
-		return results;
+		try{
+			Double results = jdbcTemplate.queryForObject(SQL_AVG_VMTIME,new Object[]{applicationid,vmid+"%",start.getTime(),end.getTime()}, Double.class);
+			LOGGER.debug("Power is "+results);
+			if (results==null)return 0;
+			LOGGER.info("Total Energy is "+results);
+			return results;
+		}catch (Exception e) {
+			return 0;
+		}
 	}
 
 	@Override
 	public Timestamp getFirsttConsumptionForVM(String applicationid, String vmid) {
-		Long results =	jdbcTemplate.queryForObject(SQL_Q_FIRSTVM,new Object[]{applicationid,vmid+"%"}, Long.class);
-		LOGGER.info("Got "+results);
-		if (results==null)return null;
-		return new Timestamp(results);
+		try{
+			Long results =	jdbcTemplate.queryForObject(SQL_Q_FIRSTVM,new Object[]{applicationid,vmid+"%"}, Long.class);
+			LOGGER.info("Got "+results);
+			if (results==null)return null;
+			return new Timestamp(results);
+		}catch (Exception e) {
+			return null;
+		}
 	}
 
 	@Override
 	public double[] getConsumptionDataVM(String applicationid, String vmid) {
-		List<Object> res = jdbcTemplate.queryForList(SQL_Q_ENERGY,new Object[]{applicationid,vmid}, Object.class);
-		LOGGER.info("Total vm energy samples "+res.size());
-		double[] results = new double[res.size()];
-		for ( int i=0;i<res.size();i++){
-			results[i]=Double.parseDouble(res.get(i).toString());
+		try{
+			List<Object> res = jdbcTemplate.queryForList(SQL_Q_ENERGY,new Object[]{applicationid,vmid}, Object.class);
+			LOGGER.info("Total vm energy samples "+res.size());
+			double[] results = new double[res.size()];
+			for ( int i=0;i<res.size();i++){
+				results[i]=Double.parseDouble(res.get(i).toString());
+			}
+			return results;
+		}catch (Exception e) {
+			return null;
 		}
-		return results;
 	}
 	@Override
 	public double[] getConsumptionByTimeVM(String applicationid, String vmid) {
-		List<Object> res = jdbcTemplate.queryForList(SQL_Q_ENERGYBYTIME,new Object[]{applicationid,vmid+"%"}, Object.class);
-		LOGGER.info("app  "+applicationid + " vm "+ vmid);
-		LOGGER.info("Total vm energy samples "+res.size());
-		double[] results = new double[res.size()];
-		for ( int i=0;i<res.size();i++){
-			results[i]=Double.parseDouble(res.get(i).toString());
+		try{
+			List<Object> res = jdbcTemplate.queryForList(SQL_Q_ENERGYBYTIME,new Object[]{applicationid,vmid+"%"}, Object.class);
+			if (res==null) return null;
+			LOGGER.info("app  "+applicationid + " vm "+ vmid);
+			LOGGER.info("Total vm energy samples "+res.size());
+			
+			double[] results = new double[res.size()];
+			for ( int i=0;i<res.size();i++){
+				results[i]=Double.parseDouble(res.get(i).toString());
+			}
+			return results;
+		}catch (Exception e) {
+			return null;
 		}
-		return results;
 	}
 	@Override
 	public double[] getTimeDataVM(String applicationid, String vmid) {
-		List<Object> res = jdbcTemplate.queryForList(SQL_Q_ALLTIME,new Object[]{applicationid,vmid+"%"}, Object.class);
-		LOGGER.info("app  "+applicationid + " vm "+ vmid);
-		LOGGER.info("Total vm time samples "+res.size());
-		double[] results = new double[res.size()];
-		for ( int i=0;i<res.size();i++){
-			results[i]=Double.parseDouble(res.get(i).toString());
+		try{
+			List<Object> res = jdbcTemplate.queryForList(SQL_Q_ALLTIME,new Object[]{applicationid,vmid+"%"}, Object.class);
+			if (res==null) return null;
+			LOGGER.info("app  "+applicationid + " vm "+ vmid);
+			LOGGER.info("Total vm time samples "+res.size());
+			double[] results = new double[res.size()];
+			for ( int i=0;i<res.size();i++){
+				results[i]=Double.parseDouble(res.get(i).toString());
+			}
+			return results;
+		}catch (Exception e) {
+			return null;
 		}
-		return results;
 	}
 	
 	@Override
 	public double[] getCpuDataVM(String applicationid, String vmid) {
-		LOGGER.info("app  "+applicationid + " vm "+ vmid);
-		List<Object> res = jdbcTemplate.queryForList(SQL_Q_CPU,new Object[]{applicationid,vmid}, Object.class);
-		LOGGER.info("Total vm time samples "+res.size());
-		double[] results = new double[res.size()];
-		for ( int i=0;i<res.size();i++){
-			results[i]=Double.parseDouble(res.get(i).toString());
+		try{
+			LOGGER.info("app  "+applicationid + " vm "+ vmid);
+			List<Object> res = jdbcTemplate.queryForList(SQL_Q_CPU,new Object[]{applicationid,vmid}, Object.class);
+			if (res==null) return null;
+			LOGGER.info("Total vm time samples "+res.size());
+			double[] results = new double[res.size()];
+			for ( int i=0;i<res.size();i++){
+				results[i]=Double.parseDouble(res.get(i).toString());
+			}
+			return results;
+		}catch (Exception e) {
+			return null;
 		}
-		return results;
 	}
 
 
 	public List<EnergySample> getDataSamplesVM(String applicationid, String deployment,String vmid,long start,long end) {
-		List<EnergySample> res = jdbcTemplate.query(SQL_MEASURES_VMTIME,new Object[]{applicationid,vmid+"%",start,end}, new EnergySampleMapper());
-		LOGGER.info("Total vm time samples "+res.size());
-		return res;
+		try{
+			List<EnergySample> res = jdbcTemplate.query(SQL_MEASURES_VMTIME,new Object[]{applicationid,vmid+"%",start,end}, new EnergySampleMapper());
+			if (res==null) return null;
+			LOGGER.info("Total vm time samples "+res.size());
+			return res;
+		}catch (Exception e) {
+			return null;
+		}
 	}
 
 	@Override
