@@ -61,7 +61,7 @@ public class GraphManager {
 
 	public static void updateGraph(Process p, Image graph) throws InterruptedException{
 		p.waitFor();
-		graph.setSrc("/images/graph.jpg");
+		graph.setSrc("/images/graph.jpg?"+System.currentTimeMillis());
 		graph.setStyle("max-width:100%;");
 		graph.invalidate();
 	}

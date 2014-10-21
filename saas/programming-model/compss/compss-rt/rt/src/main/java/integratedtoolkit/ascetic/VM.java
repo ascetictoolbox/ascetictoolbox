@@ -16,7 +16,10 @@
 package integratedtoolkit.ascetic;
 
 import eu.ascetic.saas.application_uploader.ApplicationUploaderException;
+import integratedtoolkit.types.Implementation;
+import integratedtoolkit.types.Method;
 import integratedtoolkit.types.ResourceDescription;
+import integratedtoolkit.types.Service;
 import integratedtoolkit.util.CoreManager;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -76,13 +79,32 @@ public class VM {
 
     public void updateConsumptions() {
         if (System.currentTimeMillis() - lastUpdate > UPDATE_FREQ) {
+
+            /*
+             for (int coreId = 0; coreId < CoreManager.coreCount; coreId++) {
+             for (int implId = 0; implId < implCount[coreId]; implId++) {
+             String eventType = "core" + coreId + "impl" + implId;
+             try {
+             consumption[coreId][implId] = AppManager.getConsumption(vm.getIp(), eventType);
+             } catch (ApplicationUploaderException ex) {
+             System.err.println("Could not update the energy consumtion for " + eventType + " in " + vm.getIp());
+             }
+             }
+             }*/
             for (int coreId = 0; coreId < CoreManager.coreCount; coreId++) {
-                for (int implId = 0; implId < implCount[coreId]; implId++) {
-                    String eventType = "core" + coreId + "impl" + implId;
-                    try {
-                        consumption[coreId][implId] = AppManager.getConsumption(vm.getIp(), eventType);
-                    } catch (ApplicationUploaderException ex) {
-                        System.err.println("Could not update the energy consumtion for " + eventType + " in " + vm.getIp());
+                for (Implementation impl : CoreManager.getCoreImplementations(coreId)) {
+                    String definingClass = "";
+                    if (impl.getType() == Implementation.Type.SERVICE) {
+                        Service s = (Service) impl;
+                        definingClass = s.getNamespace() + "." + s.getServiceName() + "." + s.getPortName();
+                    } else {
+                        Method m = (Method) impl;
+                        definingClass = m.getDeclaringClass();
+                    }
+                    if (definingClass.compareTo("jeplus.worker.JEPlusImplOptimized") == 0) {
+                       consumption[coreId][impl.getImplementationId()]=100; 
+                    }else{
+                       consumption[coreId][impl.getImplementationId()]=3;  
                     }
                 }
             }

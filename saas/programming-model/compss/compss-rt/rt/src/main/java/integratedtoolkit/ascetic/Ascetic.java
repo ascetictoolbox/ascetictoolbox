@@ -21,6 +21,7 @@ import integratedtoolkit.types.Job;
 import integratedtoolkit.types.ProjectWorker;
 import integratedtoolkit.types.ResourceDescription;
 import integratedtoolkit.util.ProjectManager;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -32,7 +33,7 @@ public class Ascetic {
         LinkedList<ResourceDescription> newResources = new LinkedList<ResourceDescription>();
         try {
             for (VM vm : AppManager.getResources()) {
-                if (resources.get(vm.getIPv4()) == null) {
+                if (resources.get(vm.getIPv4()) == null && connectionAvailable(vm.getIPv4(), "root")) {
                     newResources.add(vm.getDescription());
                     resources.put(vm.getIPv4(), vm);
                     CloudImageDescription cid = vm.getDescription().getImage();
@@ -74,4 +75,31 @@ public class Ascetic {
         return Configuration.getComponentImplementations(name);
     }
 
+    private static boolean connectionAvailable(String resourceName, String user) {
+
+        String[] command;
+        if (resourceName.startsWith("http://")) {
+            command = new String[]{"/bin/sh", "-c", "wget " + resourceName};
+        } else {
+            command = new String[]{"/bin/sh", "-c", "timeout 10 ssh " + user + "@" + resourceName + " ls"};
+        }
+        /*System.out.println("--------------- Connection Available??----------");
+         System.out.println("USER:" + System.getProperty("user.name"));
+         System.out.println("COMMAND:" + command[2]);
+         System.out.println("--------------- Connection Available  END----------");*/
+        Process p;
+        int exitValue = -1;
+        try {
+            p = Runtime.getRuntime().exec(command);
+            p.waitFor();
+            exitValue = p.exitValue();
+        } catch (IllegalThreadStateException ex) {
+            exitValue = -1;
+        } catch (IOException ex) {
+            exitValue = -1;
+        } catch (InterruptedException ex) {
+            exitValue = -1;
+        }
+        return (exitValue == 0);
+    }
 }
