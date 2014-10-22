@@ -25,11 +25,11 @@ import java.util.Map;
 /**
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  */
-public class LocalSearchAlgorithmsOptionsSet extends LocalSearchAlgorithm {
+public class LocalSearchAlgorithmOptionsSet extends LocalSearchAlgorithm {
 
     private Map<String, Integer> options;
 
-    public LocalSearchAlgorithmsOptionsSet(String name, Map<String, Integer> options) {
+    public LocalSearchAlgorithmOptionsSet(String name, Map<String, Integer> options) {
         super(name);
         this.options = new HashMap<>(options);
     }

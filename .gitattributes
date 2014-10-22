@@ -342,8 +342,8 @@ iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/mo
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/scheduling/ConstructionHeuristic.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/scheduling/DeploymentPlan.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/scheduling/LocalSearchAlgorithm.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/scheduling/LocalSearchAlgorithmOptionsSet.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/scheduling/LocalSearchAlgorithmOptionsUnset.java -text
-iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/scheduling/LocalSearchAlgorithmsOptionsSet.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/scheduling/RecommendedPlan.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/scheduling/RecommendedPlanRequest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/scheduling/SchedulingAlgorithm.java -text
