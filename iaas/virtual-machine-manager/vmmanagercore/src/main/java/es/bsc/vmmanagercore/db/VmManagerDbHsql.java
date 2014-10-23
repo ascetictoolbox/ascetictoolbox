@@ -110,8 +110,9 @@ public class VmManagerDbHsql implements VmManagerDb {
             update("CREATE TABLE IF NOT EXISTS current_scheduling_alg " +
                     "(algorithm VARCHAR(255), PRIMARY KEY (algorithm))");
             update("CREATE TABLE IF NOT EXISTS self_adaptation_options "
-                    + "(options VARCHAR(255), PRIMARY KEY (options)) ");
+                    + "(options LONGVARCHAR) ");
         } catch (SQLException e) {
+            e.printStackTrace();
             System.out.println(ERROR_SETUP_DB);
         }
 
