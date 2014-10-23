@@ -27,6 +27,8 @@ import java.util.LinkedList;
 
 public class Ascetic {
 
+    public static boolean changes = false;
+
     private static final HashMap<String, VM> resources = new HashMap<String, VM>();
 
     public static LinkedList<ResourceDescription> getNewResources() {
@@ -65,10 +67,12 @@ public class Ascetic {
         VM vm = resources.get(IPv4);
         String eventId = ApplicationMonitor.startEvent(vm, eventType);
         job.setEventId(eventId);
+        changes = true;
     }
 
     public static void stopEvent(Job job) {
         ApplicationMonitor.stopEvent(job.getEventId());
+        changes = true;
     }
 
     public static LinkedList<Implementation> getComponentImplementations(String name) {

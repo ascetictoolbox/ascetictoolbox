@@ -129,12 +129,9 @@ public class GenerateGrid {
 			implCount += implCounts[coreId];
 		}
 
-		System.out.println("Hi ha " + coreCount + " cores");
-		System.out.println("Hi ha " + implCount + " implementacions");
-
 		Auxhead head = new Auxhead();
 		Auxheader header = new Auxheader();
-		header.setLabel("Energy Consumption Estimation");
+		header.setLabel("Power Consumption Estimation");
 		header.setColspan(1+implCount);
 		header.setParent(head);
 		head.setParent(grid);
