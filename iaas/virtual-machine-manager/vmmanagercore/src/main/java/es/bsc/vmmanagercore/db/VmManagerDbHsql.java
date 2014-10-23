@@ -22,8 +22,6 @@ import com.google.gson.Gson;
 import es.bsc.vmmanagercore.model.scheduling.SchedulingAlgorithm;
 import es.bsc.vmmanagercore.model.selfadaptation.SelfAdaptationOptions;
 
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectOutputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
