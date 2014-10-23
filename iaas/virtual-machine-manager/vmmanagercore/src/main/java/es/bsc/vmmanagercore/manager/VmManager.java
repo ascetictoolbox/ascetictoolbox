@@ -28,6 +28,8 @@ import es.bsc.vmmanagercore.model.estimations.VmToBeEstimated;
 import es.bsc.vmmanagercore.model.images.ImageToUpload;
 import es.bsc.vmmanagercore.model.images.ImageUploaded;
 import es.bsc.vmmanagercore.model.scheduling.*;
+import es.bsc.vmmanagercore.model.selfadaptation.AfterVmDeploymentSelfAdaptationOps;
+import es.bsc.vmmanagercore.model.selfadaptation.SelfAdaptationOptions;
 import es.bsc.vmmanagercore.model.vms.Vm;
 import es.bsc.vmmanagercore.model.vms.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.*;
@@ -468,6 +470,34 @@ public class VmManager {
 
 
     //================================================================================
+    // Self Adaptation
+    //================================================================================
+
+    /**
+     * This function updates the configuration options for the self-adaptation capabilities of the VMM.
+     *
+     * @param selfAdaptationOptions the options
+     */
+    public void saveSelfAdaptationOptions(SelfAdaptationOptions selfAdaptationOptions) {
+        db.saveSelfAdaptationOptions(selfAdaptationOptions);
+    }
+
+    /**
+     * Returns the self-adaptation options for the self-adaptation capabilities of the VMM.
+     * If the system does not have any self-adaptation options save, it returns a set of options that have
+     * been defined as the default ones.
+     *
+     * @return the options
+     */
+    public SelfAdaptationOptions getSelfAdaptationOptions() {
+        if (db.getSelfAdaptationOptions() == null) {
+            return getDefaultSelfAdaptationOptions();
+        }
+        return db.getSelfAdaptationOptions();
+    }
+
+
+    //================================================================================
     // Hosts
     //================================================================================
 
@@ -582,6 +612,12 @@ public class VmManager {
     private boolean isoReceivedInInitScript(Vm vm) {
         return vm.getInitScript() != null && !vm.getInitScript().equals("")
                 && (vm.getInitScript().contains(".iso_") || vm.getInitScript().endsWith(".iso"));
+    }
+
+    private SelfAdaptationOptions getDefaultSelfAdaptationOptions() {
+        AfterVmDeploymentSelfAdaptationOps afterVmDeploymentSelfAdaptationOps =
+                new AfterVmDeploymentSelfAdaptationOps(new ConstructionHeuristic("firstFit"), null);
+        return new SelfAdaptationOptions(afterVmDeploymentSelfAdaptationOps, null, null);
     }
 
 }

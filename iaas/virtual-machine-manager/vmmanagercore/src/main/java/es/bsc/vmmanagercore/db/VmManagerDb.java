@@ -19,6 +19,7 @@
 package es.bsc.vmmanagercore.db;
 
 import es.bsc.vmmanagercore.model.scheduling.SchedulingAlgorithm;
+import es.bsc.vmmanagercore.model.selfadaptation.SelfAdaptationOptions;
 
 import java.util.List;
 
@@ -96,4 +97,19 @@ public interface VmManagerDb {
      * @param alg the scheduling algorithm to be used
      */
     public void setCurrentSchedulingAlg(SchedulingAlgorithm alg);
+
+    /**
+     * Changes the options for the self-adaptation capabilities.
+     *
+     * @param options the options
+     */
+    public void saveSelfAdaptationOptions(SelfAdaptationOptions options);
+
+    /**
+     * Returns the options for the self-adaptation capabilities.
+     *
+     * @return the options
+     */
+    public SelfAdaptationOptions getSelfAdaptationOptions();
+
 }

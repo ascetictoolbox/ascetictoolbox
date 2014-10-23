@@ -37,7 +37,7 @@ public class HostZabbix extends Host {
     private static final String NUMBER_OF_CPUS_KEY = "system.cpu.num";
     private static final String SYSTEM_CPU_LOAD_KEY = "system.cpu.load[all,avg1]";
     private static final String TOTAL_MEMORY_BYTES_KEY = "vm.memory.size[total]";
-    private static final String AVAILABLE_MEMORY_BYTES_KEY = "vm.memory.size[used]";
+    private static final String AVAILABLE_MEMORY_BYTES_KEY = "vm.memory.size[available]";
     private static final String TOTAL_DISK_BYTES_KEY = "vfs.fs.size[/var/lib/nova/instances,total]";
     private static final String USED_DISK_BYTES_KEY = "vfs.fs.size[/var/lib/nova/instances,used]";
     private static final String POWER_KEY = "power";

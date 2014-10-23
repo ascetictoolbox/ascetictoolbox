@@ -18,8 +18,12 @@
 
 package es.bsc.vmmanagercore.db;
 
+import com.google.gson.Gson;
 import es.bsc.vmmanagercore.model.scheduling.SchedulingAlgorithm;
+import es.bsc.vmmanagercore.model.selfadaptation.SelfAdaptationOptions;
 
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +39,8 @@ public class VmManagerDbHsql implements VmManagerDb {
     /* NOTE: For now, we are using DBHSQL. In the future, it may be needed to use a different DB. */
 
     private Connection conn;
+
+    private final Gson gson = new Gson(); // Using JSON provisionally
 
     // Error messages
     private static final String ERROR_SETUP_DB = "There was an error while trying to set up the DB.";
@@ -103,6 +109,8 @@ public class VmManagerDbHsql implements VmManagerDb {
                     + "(id VARCHAR(255), appId VARCHAR(255), PRIMARY KEY (id)) ");
             update("CREATE TABLE IF NOT EXISTS current_scheduling_alg " +
                     "(algorithm VARCHAR(255), PRIMARY KEY (algorithm))");
+            update("CREATE TABLE IF NOT EXISTS self_adaptation_options "
+                    + "(options VARCHAR(255), PRIMARY KEY (options)) ");
         } catch (SQLException e) {
             System.out.println(ERROR_SETUP_DB);
         }
@@ -236,4 +244,34 @@ public class VmManagerDbHsql implements VmManagerDb {
             // execute the instructions, but it does not affect us
         }
     }
+
+    @Override
+    public void saveSelfAdaptationOptions(SelfAdaptationOptions options) {
+        //This function uses JSON provisionally. Just because it's easier and we will change the DB soon.
+        String optionsJson = gson.toJson(options, SelfAdaptationOptions.class);
+
+        try {
+            update("DELETE FROM self_adaptation_options");
+            update("INSERT INTO self_adaptation_options (options) VALUES ('" + optionsJson + "')");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public SelfAdaptationOptions getSelfAdaptationOptions() {
+        //This function uses JSON provisionally. Just because it's easier and we will change the DB soon.
+        List<String> optionsJson;
+        try {
+            optionsJson = query("SELECT options FROM self_adaptation_options");
+        } catch (SQLException e) {
+            return null;
+        }
+        if (optionsJson.size() != 0) {
+            return gson.fromJson(optionsJson.get(0), SelfAdaptationOptions.class);
+        }
+        return null;
+    }
+
 }

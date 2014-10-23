@@ -43,6 +43,7 @@ public class VmManagerRest {
     private LogCallsManager logCallsManager = new LogCallsManager();
     private EstimatesCallsManager estimatesCallsManager = new EstimatesCallsManager(vmManager);
     private VmPlacementCallsManager vmPlacementCallsManager = new VmPlacementCallsManager(vmManager);
+    private SelfAdaptationCallsManager selfAdaptationCallsManager = new SelfAdaptationCallsManager(vmManager);
 
 
     //================================================================================
@@ -188,6 +189,25 @@ public class VmManagerRest {
     @Consumes("application/json")
     public void executeDeploymentPlan(String deploymentPlan) {
         vmPlacementCallsManager.executeDeploymentPlan(deploymentPlan);
+    }
+
+
+    //================================================================================
+    //  Self Adaptation Methods
+    //================================================================================
+
+    @GET
+    @Path("/self_adaptation/options")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getSelfAdaptationOptions() {
+        return selfAdaptationCallsManager.getSelfAdaptationOptions();
+    }
+
+    @PUT
+    @Path("/self_adaptation/options")
+    @Consumes("application/json")
+    public void saveSelfAdaptationOptions(String options) {
+        selfAdaptationCallsManager.saveSelfAdaptationOptions(options);
     }
 
 
