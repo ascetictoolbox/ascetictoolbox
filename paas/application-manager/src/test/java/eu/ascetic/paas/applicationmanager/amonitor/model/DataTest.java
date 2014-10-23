@@ -2,6 +2,10 @@ package eu.ascetic.paas.applicationmanager.amonitor.model;
 
 import static org.junit.Assert.assertEquals;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.junit.Test;
 
 /**
@@ -37,5 +41,25 @@ public class DataTest {
 		assertEquals("start", data.getStart());
 		assertEquals("end", data.getEnd());
 		assertEquals("power", data.getPower());
+	}
+	
+	@Test
+	public void testingTimestamps() {
+		SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+		String dateInString1 = "17-Oct-2014";
+		String dateInString2 = "18-Oct-2014";
+	 
+		try {
+	 
+			Date date1 = formatter.parse(dateInString1);
+			System.out.println(date1 + " "  + date1.getTime());
+			System.out.println(formatter.format(date1));
+			Date date2 = formatter.parse(dateInString2);
+			System.out.println(date2 + " "  + date2.getTime());
+			System.out.println(formatter.format(date2));
+	 
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 	}
 }

@@ -17,6 +17,7 @@ import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Collection;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
+import eu.ascetic.paas.applicationmanager.model.EnergySample;
 import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.VM;
 
@@ -572,12 +573,35 @@ public class XMLBuilderTest {
 		
 		assertEquals("/applications/111/deployments/333/vms/444/events/eventX/energy-estimation", energyMeasurement.getHref());
 		assertEquals(22.0, energyMeasurement.getValue(), 0.00001);
-		assertEquals("Aggregated energy estimation for an event in a vm in a specific VM", energyMeasurement.getDescription());
+		assertEquals("Aggregated energy estimation in Wh for an event in a specific VM", energyMeasurement.getDescription());
 		assertEquals(2, energyMeasurement.getLinks().size());
 		assertEquals("/applications/111/deployments/333/vms/444/events/eventX", energyMeasurement.getLinks().get(0).getHref());
 		assertEquals("parent", energyMeasurement.getLinks().get(0).getRel());
 		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(0).getType());
 		assertEquals("/applications/111/deployments/333/vms/444/events/eventX/energy-estimation", energyMeasurement.getLinks().get(1).getHref());
+		assertEquals("self",energyMeasurement.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(1).getType());
+	}
+	
+	@Test
+	public void getEnergyConsumptionForAnVMForAnEventXMLInfoTest() throws Exception {
+		EnergyMeasurement energyMeasurement = new EnergyMeasurement();
+		energyMeasurement.setValue(22.0);
+		
+		String xml = XMLBuilder.getEnergyConsumptionForAnEventInAVMXMLInfo(energyMeasurement, "111", "333", "444", "eventX");
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(EnergyMeasurement.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		energyMeasurement = (EnergyMeasurement) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals("/applications/111/deployments/333/vms/444/events/eventX/energy-consumption", energyMeasurement.getHref());
+		assertEquals(22.0, energyMeasurement.getValue(), 0.00001);
+		assertEquals("Aggregated energy consumption in Wh for an event in a specific VM", energyMeasurement.getDescription());
+		assertEquals(2, energyMeasurement.getLinks().size());
+		assertEquals("/applications/111/deployments/333/vms/444/events/eventX", energyMeasurement.getLinks().get(0).getHref());
+		assertEquals("parent", energyMeasurement.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(0).getType());
+		assertEquals("/applications/111/deployments/333/vms/444/events/eventX/energy-consumption", energyMeasurement.getLinks().get(1).getHref());
 		assertEquals("self",energyMeasurement.getLinks().get(1).getRel());
 		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(1).getType());
 	}
@@ -597,5 +621,78 @@ public class XMLBuilderTest {
 		assertEquals("self", energyMeasurement.getLinks().get(1).getRel());
 		assertEquals("/applications/111/deployments/333/vms/444/events/eventX/energy-estimation", energyMeasurement.getLinks().get(1).getHref());
 
+	}
+	
+	@Test
+	public void addEnergyConsumptionForAnVMForAnEventXMLInfoTest() throws Exception {
+		EnergyMeasurement energyMeasurement = new EnergyMeasurement();
+		energyMeasurement.setValue(22.0);
+		
+		energyMeasurement = XMLBuilder.addEnergyConsumptionForAnEventInAVMXMLInfo(energyMeasurement, "111", "333", "444", "eventX");
+		
+		assertEquals(2, energyMeasurement.getLinks().size());
+		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(0).getType());
+		assertEquals("parent", energyMeasurement.getLinks().get(0).getRel());
+		assertEquals("/applications/111/deployments/333/vms/444/events/eventX", energyMeasurement.getLinks().get(0).getHref());
+		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(1).getType());
+		assertEquals("self", energyMeasurement.getLinks().get(1).getRel());
+		assertEquals("/applications/111/deployments/333/vms/444/events/eventX/energy-consumption", energyMeasurement.getLinks().get(1).getHref());
+
+	}
+	
+	@Test
+	public void getEnergySampleCollectionXMLInfo() throws Exception {
+		EnergySample energySample1 = new EnergySample();
+		energySample1.setCvalue(1.0);
+		energySample1.setEvalue(2.0);
+		energySample1.setPvalue(3.0);
+		energySample1.setTimestampBeging(1l);
+		energySample1.setTimestampEnd(2l);
+		energySample1.setVmid("vmid1");
+		EnergySample energySample2 = new EnergySample();
+		energySample2.setCvalue(4.0);
+		energySample2.setEvalue(5.0);
+		energySample2.setPvalue(6.0);
+		energySample2.setTimestampBeging(3l);
+		energySample2.setTimestampEnd(5l);
+		energySample2.setVmid("vmid2");
+		
+		List<EnergySample> energySamples = new ArrayList<EnergySample>();
+		energySamples.add(energySample1);
+		energySamples.add(energySample2);
+		
+		String xml = XMLBuilder.getEnergySampleCollectionXMLInfo(energySamples, "appId", "deploymentId", "vmId", "eventId");
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(Collection.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		Collection collection = (Collection) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals("/applications/appId/deployments/deploymentId/vms/vmId/events/eventId/energy-sample", collection.getHref());
+		assertEquals(0, collection.getItems().getOffset());
+		assertEquals(2, collection.getItems().getTotal());
+		//Links
+		assertEquals(2, collection.getLinks().size());
+		assertEquals("/applications/appId/deployments/deploymentId/vms/vmId/events/eventId", collection.getLinks().get(0).getHref());
+		assertEquals("parent", collection.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, collection.getLinks().get(0).getType());
+		assertEquals("/applications/appId/deployments/deploymentId/vms/vmId/events/eventId/energy-sample", collection.getLinks().get(1).getHref());
+		assertEquals("self", collection.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, collection.getLinks().get(1).getType());
+		// EnergySamples
+		assertEquals(2, collection.getItems().getEnergySamples().size());
+		// EnergySamples 1
+		assertEquals(1.0, collection.getItems().getEnergySamples().get(0).getCvalue(), 0.00001);
+		assertEquals(2.0, collection.getItems().getEnergySamples().get(0).getEvalue(), 0.00001);
+		assertEquals(3.0, collection.getItems().getEnergySamples().get(0).getPvalue(), 0.00001);
+		assertEquals(1l, collection.getItems().getEnergySamples().get(0).getTimestampBeging());
+		assertEquals(2l, collection.getItems().getEnergySamples().get(0).getTimestampEnd());
+		assertEquals("vmid1", collection.getItems().getEnergySamples().get(0).getVmid());
+		// EnergySamples 2
+		assertEquals(4.0, collection.getItems().getEnergySamples().get(1).getCvalue(), 0.00001);
+		assertEquals(5.0, collection.getItems().getEnergySamples().get(1).getEvalue(), 0.00001);
+		assertEquals(6.0, collection.getItems().getEnergySamples().get(1).getPvalue(), 0.00001);
+		assertEquals(3l, collection.getItems().getEnergySamples().get(1).getTimestampBeging());
+		assertEquals(5l, collection.getItems().getEnergySamples().get(1).getTimestampEnd());
+		assertEquals("vmid2", collection.getItems().getEnergySamples().get(1).getVmid());
 	}
 }
