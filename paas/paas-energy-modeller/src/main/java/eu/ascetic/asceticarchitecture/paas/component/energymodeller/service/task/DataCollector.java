@@ -283,9 +283,14 @@ public class DataCollector extends TimerTask implements DataCollectorTaskInterfa
 		HistoryItem previous=null;
 		DataConsumption dc = null;
 		for (int i=items.size()-1;i>=0;i--){
-
-			HistoryItem item = items.get(i);
 			
+			HistoryItem item = items.get(i);
+			if (i==items.size()-1){
+				logger.info("ENDS AT : "+item.getClock());
+			}
+			if (i==0){
+				logger.info("STARTS AT : "+item.getClock());
+			}
 			dc = new DataConsumption();
 			if (previous!=null){
 				
@@ -328,6 +333,7 @@ public class DataCollector extends TimerTask implements DataCollectorTaskInterfa
 			
 			previous = item;
 		}
+		
 		logger.info("Sample built for "+items.size());
 		dataconsumption.insertBatch(result);
 		logger.info("Inserted");

@@ -64,10 +64,14 @@ public class EnergyDataAggregatorService implements DataAggregatorTaskInterface 
 		
 	}
 	public double getAvgPower(String app, String vmid,String event, long start, long end) {
+		
+		logger.info("from "+start + " to "+end);
 		double result = dataDAO.getPowerInIntervalForVM(app, vmid, new Timestamp(start),  new Timestamp(end));
 		logger.info("######### Avg power is "+result);
 		return result;
 	}
+	
+
 	
 	public List<EnergySample> getSamplesInInterval(String app, String depl, String vmid, Timestamp start, Timestamp end) {
 		return dataDAO.getDataSamplesVM(app, depl, vmid, start.getTime(), end.getTime());

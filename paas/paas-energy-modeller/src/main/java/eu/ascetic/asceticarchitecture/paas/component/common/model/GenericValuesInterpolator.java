@@ -78,6 +78,7 @@ public class GenericValuesInterpolator  {
 			//LOGGER.info("Linear Predictor Value for "+ value + " now :"+rs.predict(value));
 			//LOGGER.info("Linear Predictor Value for "+ value + " now :"+est);
 			//LOGGER.info("Value from poly " +est);
+			if (est<0)return 0;
 			return est;
 
 		//return interpolator.value(value);

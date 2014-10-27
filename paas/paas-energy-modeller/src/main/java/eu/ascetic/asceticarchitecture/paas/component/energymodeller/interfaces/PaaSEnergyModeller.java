@@ -32,7 +32,7 @@ public interface PaaSEnergyModeller {
 	 * @param vmids
 	 * @return the value for total energy consumption of the provided application,requries the list of vmids to compute all informations
 	 */
-	public double energyApplicationConsumptionTimeInterval( String providerid, String applicationid,String vmids, String eventid, Timestamp start, Timestamp end);	
+	public double applicationConsumptionTimeInterval( String providerid, String applicationid,String vmids, String eventid,String unit, Timestamp start, Timestamp end);	
 	
 	/**
 	 * @param providerid
@@ -60,14 +60,22 @@ public interface PaaSEnergyModeller {
 	 */
 	public double energyEstimation( String providerid, String applicationid,List<String> vmids, String eventid);	
 	
-
+	/**
+	 * @param providerid
+	 * @param applicationid
+	 * @param deploymentid
+	 * @param eventid
+	 * @return the value for average energy estimation of the provided application,running on the vm list provided. eventid can be specified 
+	 */
+	public double estimation( String providerid, String applicationid,List<String> vmids, String eventid, String unit);	
+	
 	/**
 	 * @param providerid
 	 * @param applicationid
 	 * @param deploymentid
 	 * @return true if the modelling has been already started or false if not. register the modeling of the application inside the em database
 	 */
-	public boolean startModellingApplicationEnergy(String providerid, String applicationid,String deploymentid);
+//	public boolean startModellingApplicationEnergy(String providerid, String applicationid,String deploymentid);
 	
 	/**
 	 * @param providerid
@@ -75,7 +83,7 @@ public interface PaaSEnergyModeller {
 	 * @param deploymentid
 	 * @return true if the modelling has stopped or false if it was not running. register that modeling stopped inside the database
 	 */
-	public boolean stopModellingApplicationEnergy(String providerid, String applicationid,String deploymentid);
+//	public boolean stopModellingApplicationEnergy(String providerid, String applicationid,String deploymentid);
 
 	/**
 	 * @param providerid
@@ -83,7 +91,7 @@ public interface PaaSEnergyModeller {
 	 * @param deploymentid
 	 * @return will train application model in future
 	 */	
-	boolean trainApplication(String providerid, String applicationid,String deploymentid, String eventid);
+//	boolean trainApplication(String providerid, String applicationid,String deploymentid, String eventid);
 	
 
 }

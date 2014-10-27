@@ -18,8 +18,17 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.Ener
 
 public class EnergyModellerData {
 
+//	
+//	HST cb65d79c-8f68-428e-9166-ece36ac27949_asok09
+//	HST 73570473-e6f4-4f3a-9c65-4668c485a58d_asok09
+//	HST 0e12ea48-7b26-4133-924c-6bf08c3ea067_asok09
+//	HST 2d9f5a8f-da75-4ef0-aa9a-3c0747250a89_asok09
+//	HST 87db8f11-ec86-4617-9dcf-16192a3b0668_asok09
+//	HST 23025351-6bf2-47d6-b5c4-ddd2de804f86_asok09
+//	HST 6ee74f86-1c39-412c-9866-94a49b3aed0d_asok09
+	
 	private static EnergyModellerSimple serviceEM;
-	private static String HOST = "dcf8e3eb-9cfd-4f34-a48b-2421fc9c423d";
+	private static String HOST = "cb65d79c-8f68-428e-9166-ece36ac27949";
 	private static String EVENT = "core0impl0";
 	private static String APP = "JEPlus";
 	
@@ -41,34 +50,47 @@ public class EnergyModellerData {
 //		Assert.assertNotNull(energy);
 //	}
 //	
+	@Test
+	public void testEEnergyEstApp() {
+		System.out.println("Test Energy App Event");
+		List<String> vmids = new Vector<String>();
+		vmids.add(HOST);
+		double energy  = serviceEM.energyApplicationConsumption(null, APP, vmids, EVENT);
+		System.out.println("--------------------------------------------RESULT:"+energy);
+		Assert.assertNotNull(energy);
+	}
+	
+	
 //	@Test
-//	public void testEEnergyEstApp() {
-//		System.out.println("Test Energy App Event");
+//	public void testEstimationEnergyApp() {
+//		System.out.println("Testing energy estimation");
 //		List<String> vmids = new Vector<String>();
 //		vmids.add(HOST);
-//		double energy  = serviceEM.energyApplicationConsumption(null, APP, vmids, EVENT);
-//		System.out.println("--------------------------------------------RESULT:"+energy);
-//		Assert.assertNotNull(energy);
-//	}
-//
-//	@Test
-//	public void testEEnergyForEve() {
-//		System.out.println("Testing energy estimation event");
-//		List<String> vmids = new Vector<String>();
-//		vmids.add(HOST);
-//		double energy  = serviceEM.energyEstimation(null, APP, vmids, EVENT);
-//		System.out.println("--------------------------------------------RESULT:"+energy);
+//		double energy  = serviceEM.estimation(null, APP, vmids, null,"energy");
+//		System.out.println("--------------------------------------------ENERGY :"+energy);
 //		Assert.assertNotNull(energy);
 //	}
 	
-	@Test
-	public void testSampleForVM() {
-		System.out.println("Test Sample");
-		List<String> vmids = new Vector<String>();
-		vmids.add(HOST);
-		List<Sample> energy = serviceEM.applicationData(null, APP, HOST, null , 1 , new Timestamp(1413798058000L),new Timestamp(1413819659000L) );
-		Assert.assertNotNull(energy);
-	}
+//	@Test
+//	public void testEstimationPowerApp() {
+//		System.out.println("Test Energy App Event");
+//		List<String> vmids = new Vector<String>();
+//		vmids.add(HOST);
+//		double energy  = serviceEM.estimation(null, APP, vmids, null,"power");
+//		System.out.println("--------------------------------------------POWER :"+energy);
+//		Assert.assertNotNull(energy);
+//	}
+	
+
+	
+//	@Test
+//	public void testSampleForVM() {
+//		System.out.println("Test Sample");
+//		List<String> vmids = new Vector<String>();
+//		vmids.add(HOST);
+//		List<Sample> energy = serviceEM.applicationData(null, APP, HOST, null , 1 , new Timestamp(1414104343000L),new Timestamp(1414108801000L) );
+//		Assert.assertNotNull(energy);
+//	}
 
 //	@Test
 //	public void testEEnergyForAppTime() {
@@ -78,7 +100,7 @@ public class EnergyModellerData {
 //		Assert.assertNotNull(energy);
 //	
 //	}
-//	
+	
 //	@Test
 //	public void testEEnergyForEventTime() {
 //		System.out.println("Test ++++++++++++++++++++++APP");
@@ -91,10 +113,10 @@ public class EnergyModellerData {
 //	@Test
 //	public void testEEnergySamplesForEventTime() {
 //	System.out.println("Test 5");
-//		List<EnergySample> energy = serviceEM.energyApplicationConsumptionData(null, APP,  HOST, EVENT, new Timestamp(1413549656000L), new Timestamp(1413555016000L));
+//		List<EnergySample> energy = serviceEM.energyApplicationConsumptionData(null, APP,  HOST, EVENT, new Timestamp(1414104343000L),new Timestamp(1414108801000L) );
 //		System.out.println("Energy "+ energy.size());
 //		for (EnergySample es : energy){
-//			System.out.println("Energy sample "+ es.getValue()+ " vmid "+es.getVmid()+ " ts "+es.getTimestampBeging());
+//			System.out.println("Energy sample "+ es.getE_value()+ " vmid "+es.getVmid()+ " ts "+es.getTimestampBeging()+ " po "+es.getP_value()) ;
 //		}
 //		Assert.assertNotNull(energy);
 //	
@@ -103,9 +125,11 @@ public class EnergyModellerData {
 //	@Test
 //	public void testEEnergySamplesForTime() {
 //	System.out.println("Test NEWW");
-//		List<EnergySample> energy = serviceEM.energyApplicationConsumptionData(null, APP,  HOST, null, new Timestamp(1413549656000L), new Timestamp(1413555016000L));
+//		List<EnergySample> energy = serviceEM.energyApplicationConsumptionData(null, APP,  HOST, null, new Timestamp(1414104343000L),new Timestamp(1414108801000L) );
 //		System.out.println("Energy from samplse: "+ energy.size());
-//	
+//		for (EnergySample es : energy){
+//			System.out.println("Energy sample "+ es.getE_value()+ " vmid "+es.getVmid()+ " ts "+es.getTimestampBeging()+ " po "+es.getP_value()) ;
+//		}
 //		Assert.assertNotNull(energy);
 //	
 //	}

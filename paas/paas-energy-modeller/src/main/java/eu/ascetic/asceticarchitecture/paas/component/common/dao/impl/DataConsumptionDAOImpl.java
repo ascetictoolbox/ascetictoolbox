@@ -43,7 +43,7 @@ public class DataConsumptionDAOImpl implements DataConsumptionDAO {
 	private static String SQL_SUM_VM="select IFNULL(sum(vmenergy),0) from DATACONSUMPTION where applicationid = ? and  vmid like ?";
 	private static String SQL_AVG_VM="select IFNULL(sum(vmenergy),0) from DATACONSUMPTION where applicationid = ? and  vmid like ?";
 	private static String SQL_COUNT_VM="select count(*) from DATACONSUMPTION where applicationid = ? and  vmid like ?";
-	private static String SQL_AVG_VMTIME="select IFNULL(sum(vmenergy),0) from DATACONSUMPTION where applicationid = ? and vmid like ? and time >= ? and time <= ?";
+	private static String SQL_E_SUM_VMTIME="select IFNULL(sum(vmenergy),0) from DATACONSUMPTION where applicationid = ? and vmid like ? and time >= ? and time <= ?";
 	private static String SQL_AVG_VMPOWER="select IFNULL(avg(vmpower),0) from DATACONSUMPTION where applicationid = ? and vmid like ? and time >= ? and time <= ?";
 	private static String SQL_MEASURES_VMTIME="select vmid,time,vmenergy, vmpower from DATACONSUMPTION where applicationid = ? and vmid like ? and time >= ? and time <= ?";
 	private static String SQL_CLEAN="DELETE FROM DATACONSUMPTION";
@@ -118,7 +118,7 @@ public class DataConsumptionDAOImpl implements DataConsumptionDAO {
 	@Override
 	public Timestamp getLastConsumptionForVM(String applicationid, String vmid) {
 		LOGGER.info("Getting last measurement ");
-		LOGGER.info(jdbcTemplate==null);
+		
 		try{
 			Long results =	jdbcTemplate.queryForObject(SQL_Q_LASTVM,new Object[]{applicationid,vmid+"%"}, Long.class);
 			LOGGER.info("Got "+results);
@@ -144,6 +144,8 @@ public class DataConsumptionDAOImpl implements DataConsumptionDAO {
 	@Override
 	public double getTotalEnergyForVM(String applicationid, String deploymentid, String vmid) {
 		try{
+			LOGGER.info("performing the query "+SQL_AVG_VM);
+			LOGGER.info("with "+vmid);
 			Double results = jdbcTemplate.queryForObject(SQL_AVG_VM,new Object[]{applicationid,vmid+"%"}, Double.class);
 			if (results==null)return 0;
 			LOGGER.info("Total Energy is "+results);
@@ -152,8 +154,6 @@ public class DataConsumptionDAOImpl implements DataConsumptionDAO {
 			return 0;
 		}
 	}
-	
-	
 	
 	public double getPowerInIntervalForVM(String applicationid, String vmid,Timestamp start,Timestamp end) {
 		try{
@@ -169,7 +169,7 @@ public class DataConsumptionDAOImpl implements DataConsumptionDAO {
 	@Override
 	public double getTotalEnergyForVMTime(String applicationid, String vmid,Timestamp start,Timestamp end) {
 		try{
-			Double results = jdbcTemplate.queryForObject(SQL_AVG_VMTIME,new Object[]{applicationid,vmid+"%",start.getTime(),end.getTime()}, Double.class);
+			Double results = jdbcTemplate.queryForObject(SQL_E_SUM_VMTIME,new Object[]{applicationid,vmid+"%",start.getTime(),end.getTime()}, Double.class);
 			LOGGER.debug("Power is "+results);
 			if (results==null)return 0;
 			LOGGER.info("Total Energy is "+results);
