@@ -21,10 +21,12 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmener
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * This implements the default and utility functions for an energy predictor. 
- * It is expected that any energy predictor loaded into the ASCETiC architecture, 
+ * This implements the default and utility functions for an energy predictor. It
+ * is expected that any energy predictor loaded into the ASCETiC architecture,
  * will override this class.
  *
  * @author Richard
@@ -32,7 +34,9 @@ import java.util.Collection;
 public abstract class AbstractEnergyPredictor implements EnergyPredictorInterface {
 
     private EnergyShareRule energyShareRule = new DefaultEnergyShareRule();
-    
+    private static final String DEFAULT_ENERGY_SHARE_RULE_PACKAGE
+            = "eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare";
+
     /**
      * This uses the current energy share rule for the energy predictor
      * allowing for the translation between host energy usage and VMs energy usage.
@@ -40,7 +44,7 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
      * @param vms The VMs that are on/to be on the host
      * @return The fraction of energy or used per host.
      */
-    public EnergyDivision getEnergyUsage(Host host, Collection<VM> vms){
+    public EnergyDivision getEnergyUsage(Host host, Collection<VM> vms) {
         return energyShareRule.getEnergyUsage(host, vms);
     }
 
@@ -63,7 +67,28 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
     public void setEnergyShareRule(EnergyShareRule energyShareRule) {
         this.energyShareRule = energyShareRule;
     }
-    
+
+    /**
+     * This sets the current energy share rule that is in use by the energy
+     * predictor.
+     *
+     * @param energyShareRule The rule that divides the energy usage of hosts
+     * into each VM.
+     */
+    public void setEnergyShareRule(String energyShareRule) {
+        try {
+            if (!energyShareRule.startsWith(DEFAULT_ENERGY_SHARE_RULE_PACKAGE)) {
+                energyShareRule = DEFAULT_ENERGY_SHARE_RULE_PACKAGE + "." + energyShareRule;
+            }
+            this.energyShareRule = (EnergyShareRule) (Class.forName(energyShareRule).newInstance());
+        } catch (IllegalAccessException | InstantiationException | ClassNotFoundException ex) {
+            if (energyShareRule == null) {
+                this.energyShareRule = new DefaultEnergyShareRule();
+            }
+            Logger.getLogger(AbstractEnergyPredictor.class.getName()).log(Level.WARNING, "The energy share rule specified was not found", ex);
+        }
+    }
+
     /**
      * This for a set of VMs provides the amount of memory allocated in Mb.
      * @param virtualMachines The VMs to get the memory used.
@@ -76,8 +101,8 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
         }
         return answer;
     }
-    
-   /**
+
+    /**
      * This for a set of VMs provides the amount of memory allocated in Mb.
      * @param virtualMachines The VMs to get the memory used.
      * @return The amount of memory allocated to VMs in Mb.
@@ -89,8 +114,8 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
         }
         return answer;
     }
-    
-   /**
+
+    /**
      * This for a set of VMs provides the amount of memory allocated in Mb.
      * @param virtualMachines The VMs to get the memory used.
      * @return The amount of memory allocated to VMs in Mb.
@@ -101,10 +126,10 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
             answer = answer + vm.getDiskGb();
         }
         return answer;
-    }      
-    
+    }
+
     /**
-     * TODO Add utility functions here that may be used by the energy models 
+     * TODO Add utility functions here that may be used by the energy models
      * that are created over the time of the project.
      */
     

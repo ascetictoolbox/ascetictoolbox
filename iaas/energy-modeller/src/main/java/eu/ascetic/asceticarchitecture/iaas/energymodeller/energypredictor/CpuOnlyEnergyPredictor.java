@@ -51,6 +51,7 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
     private int cpuUtilObservationTimeMin = 15;
     private int cpuUtilObservationTimeSec = 0;
     private int cpuUtilObservationTimeSecTotal = 0;
+    private boolean considerIdleEnergy = true;
 
     /**
      * This creates a new CPU only energy predictor.
@@ -81,6 +82,9 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
             }
             config.setAutoSave(true); //This will save the configuration file back to disk. In case the defaults need setting.
             usageCPU = config.getDouble("iaas.energy.modeller.cpu.energy.predictor.default_load", usageCPU);
+            String shareRule = config.getString("iaas.energy.modeller.cpu.energy.predictor.vm_share_rule", "DefaultEnergyShareRule");
+            setEnergyShareRule(shareRule);
+            considerIdleEnergy = config.getBoolean("iaas.energy.modeller.cpu.energy.predictor.consider_idle_energy", considerIdleEnergy);
             config.setProperty("iaas.energy.modeller.cpu.energy.predictor.default_load", usageCPU);
             if (usageCPU == -1) {
                 String dataSrcStr = config.getString("iaas.energy.modeller.cpu.energy.predictor.datasource", "ZabbixDataSourceAdaptor");
@@ -178,6 +182,7 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
         answer.setDuration(hostAnswer.getDuration());
         //Find the fraction to be associated with the VM
         double vmsEnergyFraction = division.getEnergyUsage(hostAnswer.getTotalEnergyUsed(), vm);
+        division.setConsiderIdleEnergy(considerIdleEnergy);
         answer.setTotalEnergyUsed(vmsEnergyFraction);
         double vmsPowerFraction = division.getEnergyUsage(hostAnswer.getAvgPowerUsed(), vm);
         answer.setAvgPowerUsed(vmsPowerFraction);
