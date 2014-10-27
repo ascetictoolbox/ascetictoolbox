@@ -146,6 +146,8 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
         HISTORY_TABLES.add("history");
         HISTORY_TABLES.add("history_str");
         HISTORY_TABLES.add("history_uint");
+        HISTORY_TABLES.add("history_text");
+
         try {
             PropertiesConfiguration config;
             if (new File(CONFIG_FILE).exists()) {
@@ -245,6 +247,8 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
                     row.add(new Double(results.getDouble(i)));
                 } else if (results.getMetaData().getColumnType(i) == Types.TINYINT) {
                     row.add(new Integer(results.getInt(i)));
+                } else if (results.getMetaData().getColumnType(i) == Types.LONGVARCHAR) {
+                    row.add(results.getString(i));
                 } else if (results.getMetaData().getColumnType(i) == Types.VARCHAR) {
                     row.add(results.getString(i));
                 } else if (results.getMetaData().getColumnType(i) == Types.NULL) {
@@ -267,7 +271,7 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
             return null;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
-                        ALL_ZABBIX_HOSTS + " AND name = ?")) {
+                ALL_ZABBIX_HOSTS + " AND name = ?")) {
             preparedStatement.setString(1, hostname);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
@@ -308,7 +312,7 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
             return null;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
-                        ALL_ZABBIX_HOSTS + " AND name = ?")) {
+                ALL_ZABBIX_HOSTS + " AND name = ?")) {
             preparedStatement.setString(1, name);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
