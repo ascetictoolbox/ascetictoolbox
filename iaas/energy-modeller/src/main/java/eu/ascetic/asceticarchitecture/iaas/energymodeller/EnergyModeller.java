@@ -81,7 +81,7 @@ public class EnergyModeller {
     private DataGatherer dataGatherer;
     private Thread dataGatherThread;
     private Class<?> historicEnergyDivionMethod = LoadBasedDivision.class;
-    private boolean considerIdleEnergyCurrentVm = false;
+    private boolean considerIdleEnergyCurrentVm = true;
 
     /**
      * This runs the energy modeller in standalone mode.

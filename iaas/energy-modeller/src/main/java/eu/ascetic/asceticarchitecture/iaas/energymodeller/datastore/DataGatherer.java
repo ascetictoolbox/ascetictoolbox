@@ -52,6 +52,7 @@ public class DataGatherer implements Runnable {
     private final HashMap<Host, Long> lastTimeStampSeen = new HashMap<>();
     private static final String CONFIG_FILE = "energymodeller_data_gatherer.properties";
     private boolean logVmsToDisk = false;
+    private boolean loggerConsiderIdleEnergy = true;
 
     /**
      * This creates a data gather component for the energy modeller.
@@ -80,6 +81,8 @@ public class DataGatherer implements Runnable {
             config.setAutoSave(true); //This will save the configuration file back to disk. In case the defaults need setting.
             logVmsToDisk = config.getBoolean("iaas.energy.modeller.data.gatherer.log.vms", logVmsToDisk);
             config.setProperty("iaas.energy.modeller.data.gatherer.log.vms", logVmsToDisk);
+            loggerConsiderIdleEnergy = config.getBoolean("iaas.energy.modeller.data.gatherer.log.consider_idle_energy", loggerConsiderIdleEnergy);
+            config.setProperty("iaas.energy.modeller.data.gatherer.log.consider_idle_energy", loggerConsiderIdleEnergy);
 
         } catch (ConfigurationException ex) {
             Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Error loading the configuration of the IaaS energy modeller", ex);
@@ -192,6 +195,7 @@ public class DataGatherer implements Runnable {
         VmEnergyUsageLogger logger = null;
         if (logVmsToDisk) {
             logger = new VmEnergyUsageLogger(new File("VmEnergyUsageData.txt"), true);
+            logger.setConsiderIdleEnergy(loggerConsiderIdleEnergy);
             Thread loggerThread = new Thread(logger);
             loggerThread.setDaemon(true);
             loggerThread.start();
@@ -229,7 +233,7 @@ public class DataGatherer implements Runnable {
                         lastTimeStampSeen.put(host, measurement.getClock());
                         Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Writing out host information");
                         connector.writeHostHistoricData(host, measurement.getClock(), measurement.getPower(), measurement.getEnergy());
-                        Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Obtaining list of vms on host " + host.getHostName());
+                        Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Obtaining list of vms on host {0}", host.getHostName());
                         ArrayList<VmDeployed> vms = getVMsOnHost(host, vmList);
                         if (!vms.isEmpty()) {
                             HostVmLoadFraction fraction = new HostVmLoadFraction(host, measurement.getClock());
