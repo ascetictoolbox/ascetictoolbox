@@ -42,8 +42,7 @@ public class LogCallsManager {
      */
     public String getLogs() {
         String logs;
-        try {
-            BufferedReader br = new BufferedReader(new FileReader("log/vmmanager.log"));
+        try (BufferedReader br = new BufferedReader(new FileReader("log/vmmanager.log"))) {
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();
             while (line != null) {
