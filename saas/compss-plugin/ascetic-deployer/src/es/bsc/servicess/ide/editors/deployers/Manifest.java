@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.xmlbeans.XmlOptions;
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanProductSectionDocument;
@@ -85,6 +86,7 @@ public class Manifest {
 	private static final String IMAGE_SUFFIX = "-img";
 	private static final String ASCETIC_APPMAN_PROP = "asceticAppManagerURL";
 	private static final String ASCETIC_APPMON_PROP = "asceticAppMonitorURL";
+	private static final String ASCETIC_IMAGE_CACHE_PROP = "asceticCacheImage";
 	private IJavaProject project;
 	private OvfDefinition ovf;
 	
@@ -1036,6 +1038,49 @@ public class Manifest {
 			ps.addNewProperty(ASCETIC_APPMON_PROP, ProductPropertyType.STRING, monLoc);
 		
 	}
+
+
+	public int getVMsToDeploy() {
+		int vms = 0;
+		VirtualSystemCollection vsc = ovf.getVirtualSystemCollection();
+		if (vsc == null){
+			return 0;
+		}
+		VirtualSystem[] vsa = vsc.getVirtualSystemArray();
+		for (VirtualSystem vs :vsa){
+			ProductSection ps = vs.getProductSectionAtIndex(0);
+			if (ps == null)
+				vms ++;
+			else
+				vms = vms + ps.getUpperBound();
+		}
+		return vms;
+	}
+	
+	public void setImageCaching(boolean enabled){
+		VirtualSystemCollection vsc = ovf.getVirtualSystemCollection();
+		if (vsc!=null && vsc.getVirtualSystemArray()!=null){
+			for (VirtualSystem component :vsc.getVirtualSystemArray()){
+			ProductSection ps;
+			if (component.getProductSectionArray() == null || component.getProductSectionArray().length<1){
+				setAsceticProductSection(component);
+			}
+			ps = component.getProductSectionAtIndex(0);
+			ProductProperty prop = ps.getPropertyByKey(ASCETIC_IMAGE_CACHE_PROP);
+			if (prop != null){
+				if (enabled)
+					prop.setValue("1");
+				else
+					prop.setValue("0");
+			}else{
+				if (enabled)
+				ps.addNewProperty(ASCETIC_IMAGE_CACHE_PROP, ProductPropertyType.UINT32, "1");	
+			}
+			}
+		}
+		
+	}
+	
 	
 	
 }

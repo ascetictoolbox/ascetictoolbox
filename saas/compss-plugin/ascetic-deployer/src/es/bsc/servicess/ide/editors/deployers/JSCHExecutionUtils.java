@@ -21,8 +21,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;
@@ -30,30 +32,78 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
+import com.jcraft.jsch.SftpProgressMonitor;
 
 public class JSCHExecutionUtils {
 	public static final String EXECUTION_FILENAME = "runCommand.sh";
 	public static final String CANCEL_FILENAME = "stopCommand.sh";
 	public static final int START = 0;
 	public static final int STOP = 1;
+	
+	
 	/**
 	 * @param args
 	 * @throws Exception 
 	 */
+	
+	public static class MyProgressMonitor implements SftpProgressMonitor{
+
+		long count=0;
+	    long max=1;
+	    long percent=-1;
+		
+	    public MyProgressMonitor() {
+		
+	    }
+	    
+	    @Override
+		public boolean count(long count){
+		    this.count+=count;
+	    	if(percent>=this.count*100/max){ 
+		    	System.out.println("Completed");
+		    	return true; 
+		    }
+		    percent=this.count*100/max;
+		    System.out.print("..."+percent+"%");
+			return false;
+		}
+
+		@Override
+		public void end() {
+			System.out.println("Operation Finished");
+			
+		}
+
+		@Override
+		public void init(int op, String src, String dest, long max) {
+			System.out.println("Starting "+((op==SftpProgressMonitor.PUT)? 
+                    "put" : "get")+": "+src );
+			this.max= max;
+		}
+		
+	}
+	
 	public static void main(String[] args) throws Exception {
 		if (args.length < 2){
-			throw new Exception("Incorrect number of arguments"+ args.length);
+			System.err.println("Incorrect number of arguments"+ args.length);
+			System.exit(-1);
 		}else{
-			int type = Integer.parseInt(args[0]);
-			switch (type) {
-			case START:
-				mainStart(args);
-				break;
-			case STOP:
-				mainStop(args);
-				break;
-			default:
-				throw new Exception("Incorrect type ("+type+")");
+			try{
+				int type = Integer.parseInt(args[0]);
+				switch (type) {
+				case START:
+					mainStart(args);
+					break;
+				case STOP:
+					mainStop(args);
+					break;
+				default:
+					System.err.println("Incorrect type ("+type+")");
+					System.exit(-1);
+				}
+			}catch(Exception e){
+				System.err.println("Error executing application...");
+				e.printStackTrace();
 			}
 		}
 			
@@ -183,7 +233,8 @@ public class JSCHExecutionUtils {
         ChannelSftp sftpChannel = (ChannelSftp) channel;
 		for (Entry<String, String> e:stageIns.entrySet()){
 	    	System.out.println("Stage-In file" +e.getKey() +" to "+e.getValue());
-	    	sftpChannel.put(e.getKey(),e.getValue());
+	    	SftpProgressMonitor pm =  new MyProgressMonitor();
+	    	sftpChannel.put(e.getKey(),e.getValue(),pm);
 	    	
 	    }
 		channel.disconnect();
@@ -213,16 +264,25 @@ public class JSCHExecutionUtils {
 	}
 	
 	private static void stageOutFiles(Session session,
-			HashMap<String, String> stageOuts) throws JSchException, SftpException {
+			HashMap<String, String> stageOuts) throws Exception{
 		System.out.println("*** Stage-Out...");
 		Channel channel = session.openChannel("sftp");
-        channel.connect();
-        ChannelSftp sftpChannel = (ChannelSftp) channel;
-		for (Entry<String, String> e:stageOuts.entrySet()){
-	    	System.out.println("Stage-Out file" +e.getKey() +" to "+e.getValue());
-	    	sftpChannel.get(e.getKey(),e.getValue());
-	    }
-		channel.disconnect();
+		
+			channel.connect();
+			ChannelSftp sftpChannel = (ChannelSftp) channel;
+			for (Entry<String, String> e:stageOuts.entrySet()){
+				try{
+					System.out.println("Stage-Out file" +e.getKey() +" to "+e.getValue());
+					SftpProgressMonitor pm =  new MyProgressMonitor();
+					sftpChannel.get(e.getKey(),e.getValue(), pm);
+				}catch (Exception ex){
+					channel.disconnect();
+					throw new Exception("Error: Staging out file" +e.getKey() +" to "+e.getValue(), ex);
+				}
+			}
+			channel.disconnect();
+		
+		
 	}
 
 	
@@ -265,6 +325,34 @@ public class JSCHExecutionUtils {
 				"echo $pid > compss_$execID.pid\n" +
 				"fg %1");
 		return command;
+	}
+
+
+	public static boolean checkVMsBoot(Map<String, Map<String, String>> vms,
+			String username, String privateKey) {
+		for (Map<String, String> prov: vms.values()){
+
+			for (Entry<String,String> e: prov.entrySet()){
+				System.out.println("Connecting to vm "+ e.getKey());
+				try{
+					String hostname = e.getKey();
+					JSch jsch = new JSch();
+					Session session = jsch.getSession(username, hostname, 22);
+					jsch.addIdentity(privateKey);
+
+					// Avoid asking for key confirmation
+					Properties prop = new Properties();
+					prop.put("StrictHostKeyChecking", "no");
+					session.setConfig(prop);
+					session.connect(60*1000);
+					session.disconnect();
+				}catch (Exception ex){
+					System.out.println(ex.getMessage());
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 }

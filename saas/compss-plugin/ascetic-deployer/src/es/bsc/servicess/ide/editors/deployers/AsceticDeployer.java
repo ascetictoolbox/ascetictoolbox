@@ -26,14 +26,16 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
-import org.apache.commons.configuration.ConfigurationException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
@@ -45,6 +47,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
@@ -72,7 +75,9 @@ import es.bsc.servicess.ide.views.DeploymentChecker;
 import es.bsc.servicess.ide.views.ServiceDataComposite;
 import es.bsc.servicess.ide.views.ServiceManagerView;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
+import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.saas.application_uploader.ApplicationUploader;
+import eu.ascetic.saas.application_uploader.ApplicationUploaderException;
 
 
 /**
@@ -84,6 +89,7 @@ public class AsceticDeployer extends Deployer {
 
 	private boolean created;
 	private boolean toBeUpdated;
+	private boolean generating;
 	private AsceticProperties op_prop;
 	
 	//Manifest
@@ -124,6 +130,7 @@ public class AsceticDeployer extends Deployer {
 	public AsceticDeployer(){
 		super();
 		toBeUpdated = true;
+		generating = false;
 	}
 	@Override
 	public void bind(BuildingDeploymentFormPage page){
@@ -330,106 +337,183 @@ public class AsceticDeployer extends Deployer {
 	 */
 	@Override
 	public void deploy() {
-		ProgressMonitorDialog dialog = new ProgressMonitorDialog(getShell());
-		try {
-			dialog.run(false, false, new IRunnableWithProgress() {
+		generating = true;
+		try{
+			ProjectMetadata prMetadata = new ProjectMetadata(super.getEditor()
+					.getMetadataFile().getRawLocation().toFile());
+			HashMap<String, ServiceElement> coreEls = CommonFormPage.getElements(
+					prMetadata.getAllOrchestrationClasses(), PackageMetadata.CORE_TYPE, 
+					super.getProject(), prMetadata);
+			HashMap<String, ServiceElement> orchEls = CommonFormPage.getElements(
+					prMetadata.getAllOrchestrationClasses(), PackageMetadata.ORCH_TYPE, 
+					super.getProject(), prMetadata);
+			final String serviceID = editor.getProject().getProject().getName();
+			// check if manifest already created
+			if (manifest == null) {
+				//Manifest not created so packages not generated.Ask if do it automatically
+				if (MessageDialog.openQuestion(getShell(), CREATE_PACKS_DEF_TITLE, 
+						serviceID + CREATE_PACKS_DEF_QUESTION)){
+					packSection.generate();
+				}else{
+					generating =false;
+					return;
+				}
+			}
+			PackageMetadata packMetadata = packSection.getPackageMetadata();
+			//Check if packages contains all the elements defined
+			if (PackagingUtils.checkAllElementsInPackages(orchEls.keySet(), coreEls.keySet(), 
+					prMetadata, packMetadata)){
 
-				@Override
-				public void run(IProgressMonitor monitor)
-						throws InvocationTargetException, InterruptedException {
-					try {
-						executeDeployment(monitor);
-					} catch (Exception e) {
-						throw (new InvocationTargetException(e));
+				if (!manifest.hasImages()){
+					if (MessageDialog.openQuestion(getShell(), CREATE_IMAGES_DEF_TITLE, 
+							serviceID + CREATE_IMAGES_DEF_QUESTION)){
+						imageSection.createServiceImages();
+					}else{
+						generating = false;
+						return;
 					}
 				}
-			});
-		} catch (InterruptedException e) {
-			String message = "Deployment interrumped";
-			log.error("Error message: " , e.getCause());
-			ErrorDialog.openError(super.getShell(), "Error",
-					"Deploying the service: "+ message, new Status(IStatus.ERROR,Activator.PLUGIN_ID,
-							message, e));
-		} catch (InvocationTargetException e) {
-			String message = e.getCause().getMessage();
-			log.error("Error message: " + message,e.getCause());
-			ErrorDialog.openError(super.getShell(), "Error deploying the application",
-					message, new Status(IStatus.ERROR,Activator.PLUGIN_ID,
-							message, e.getCause()));
-		}
-	}
-
-	/**
-	 * Perform the service deployment contacting the Deployment service 
-	 * 
-	 * @param monitor Progress monitor
-	 * @throws Exception 
-	 */
-	public void executeDeployment(IProgressMonitor monitor)
-			throws Exception {
-		
-		ProjectMetadata prMetadata = new ProjectMetadata(super.getEditor()
-				.getMetadataFile().getRawLocation().toFile());
-		HashMap<String, ServiceElement> coreEls = CommonFormPage.getElements(
-				prMetadata.getAllOrchestrationClasses(), PackageMetadata.CORE_TYPE, 
-				super.getProject(), prMetadata);
-		HashMap<String, ServiceElement> orchEls = CommonFormPage.getElements(
-				prMetadata.getAllOrchestrationClasses(), PackageMetadata.ORCH_TYPE, 
-				super.getProject(), prMetadata);
-		String serviceID = editor.getProject().getProject().getName();
-		// check if manifest already created
-		if (manifest == null) {
-			//Manifest not created so packages not generated.Ask if do it automatically
-			if (MessageDialog.openQuestion(getShell(), CREATE_PACKS_DEF_TITLE, serviceID + CREATE_PACKS_DEF_QUESTION)){
-				 packSection.generate();
-			}else
-				return;
-		}
-		PackageMetadata packMetadata = packSection.getPackageMetadata();
-		//Check if packages contains all the elements defined
-		if (PackagingUtils.checkAllElementsInPackages(orchEls.keySet(), coreEls.keySet(), prMetadata, packMetadata)){
-		
-			if (!manifest.hasImages()){
-				if (MessageDialog.openQuestion(getShell(), CREATE_IMAGES_DEF_TITLE, serviceID + CREATE_IMAGES_DEF_QUESTION)){
-					imageSection.createServiceImages();
-				}else
-					return;
-			}
-			manifest.setServiceId(serviceID);
-			boolean executable = false;
-			String mainClass = prMetadata.getMainClass();
-			if (mainClass!= null && !mainClass.isEmpty()){
-				executable = true;
-			}
-			String location = deploymentSection.getServerLocation();
-			if (location != null && location.length() > 0) {
-				monitor.beginTask("Deploying application", 100);
-				ApplicationUploader appUploader = new ApplicationUploader(location);
-				deploymentSection.setApplicationSecurityInManifest(manifest);
-				manifest.setApplicationMangerEPR(location);
-				String monLoc = deploymentSection.getMonitorLocation();
-				if (monLoc == null || monLoc.isEmpty()) {
-					throw (new AsceticDeploymentException("Error incorrect application monitor location"));
+				manifest.setServiceId(serviceID);
+				boolean executable = false;
+				final String mainClass = prMetadata.getMainClass();
+				if (mainClass!= null && !mainClass.isEmpty()){
+					executable = true;
 				}
-				manifest.setApplicationMonitorEPR(monLoc);
-				//String deploymentID = "47";
-				String deploymentID = Integer.toString(appUploader.createAndDeployAplication(manifest.getString()));			
-				monitorProgress(appUploader, serviceID, deploymentID, monitor);
-				ServiceManagerView smview = (ServiceManagerView) PlatformUI
-					.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-					.showView("es.bsc.servicess.ide.views.ServiceManagerView");
-				DeploymentChecker dc = new AsceticDeploymentChecker(appUploader, serviceID, mainClass, null, serviceID,this);
-				DeployedApplicationSection das = new ServiceDataComposite(deploymentID, 
-						dc, DeploymentChecker.PENDING, smview, executable, this.getShell());
-				smview.addNewDeployement(deploymentID, das);
-				monitor.done();
-			} else {
-				throw (new AsceticDeploymentException("Error incorrect application manager location"));
-			}
-		}
-		
+				String location = deploymentSection.getServerLocation();
+				if (location != null && !location.isEmpty()) {
 
+					final ApplicationUploader appUploader = new ApplicationUploader(location);
+					String monLoc = deploymentSection.getMonitorLocation();
+					if (monLoc != null && !monLoc.isEmpty()) {
+
+						manifest.setApplicationMonitorEPR(monLoc);
+						manifest.setImageCaching(deploymentSection.getImageCaching());
+						final int vms = manifest.getVMsToDeploy();
+						deploymentSection.setApplicationSecurityInManifest(manifest);
+						
+							manifest.setApplicationMangerEPR(location);
+							final String ovf = manifest.getString();
+							final boolean ex = executable;
+							final AsceticDeployer deployer = this;
+							//String deploymentID = "116";
+							/*ProgressMonitorDialog dialog = new ProgressMonitorDialog(getShell());
+							dialog.setBlockOnOpen(false);
+							dialog.setCancelable(true);
+							try {
+								dialog.run(true, true, new IRunnableWithProgress() {*/
+							
+							Job job = new Job ("Deploying "+ serviceID ){
+									@Override
+									public IStatus run(IProgressMonitor monitor){
+										//throws InvocationTargetException, InterruptedException {
+										try {
+											String deploymentID = Integer.toString(appUploader.createAndDeployAplication(ovf));
+											
+											monitorProgress(appUploader, serviceID, deploymentID, vms, monitor);
+									
+											openSMView(appUploader, serviceID, deploymentID, mainClass, ex, deployer);
+											generating = false;
+											return Status.OK_STATUS;
+										} catch (ApplicationUploaderException e) {
+											generating = false;
+											String message = "Deployment error:  " + e.getMessage();
+											log.debug(message);
+											return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error contacting the Application Manager", e );
+										} catch (InterruptedException e) {
+											generating = false;
+											String message = "Deployment interrumped:  " + e.getMessage();
+											log.debug(message);
+											return Status.CANCEL_STATUS;
+										} catch (InvocationTargetException e) {
+											generating = false;
+											String message = e.getCause().getMessage();
+											log.error("Error message: " + message,e.getCause());
+											return new Status(IStatus.ERROR,Activator.PLUGIN_ID,
+															message, e.getCause());
+										}
+									}
+								};
+							
+								job.setUser(true);
+								job.schedule();
+							/*} catch (InterruptedException e) {
+									generating = false;
+									String message = "Deployment interrumped:  " + e.getMessage();
+									log.debug(message);
+									ErrorDialog.openError(getShell(), "Service deployment cancelled",
+											"Deployment Cancelled.", new Status(IStatus.ERROR,Activator.PLUGIN_ID,
+													message, e));
+							} catch (InvocationTargetException e) {
+									generating = false;
+									String message = e.getCause().getMessage();
+									log.error("Error message: " + message,e.getCause());
+									ErrorDialog.openError(getShell(), "Error deploying the application",
+											message, new Status(IStatus.ERROR,Activator.PLUGIN_ID,
+													message, e.getCause()));
+							}*/
+					} else {
+						generating = false;
+						log.error("Error application monitor location not defined");
+						ErrorDialog.openError(super.getShell(), "Error deploying the application",
+								"Application Monitor location not defined",
+								new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+										"Incorrect Application Monitor location"));
+					}
+
+				} else {
+					generating = false;
+					log.error("Error application manager location not defined");
+					ErrorDialog.openError(super.getShell(), "Error deploying the application",
+							"Application Manager location not defined",
+							new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+									"Incorrect application manager location"));
+				}
+			}else{
+				generating = false;
+				log.error("Created packages don't include all the elements. " +
+						"Review the resources properties or element constraints.\n");
+				ErrorDialog.openError(super.getShell(), "Error deploying the application",
+						"Created packages don't include all the elements.\n"
+								+ "Review the resources properties or element constraints.", 
+								new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+										"Incorrect packaging."));
+			}
+		}catch(Exception e){
+			generating = false;
+			String message = e.getMessage();
+			log.error("Execption when preparing the deployment ",e);
+			ErrorDialog.openError(super.getShell(), "Error preparing the application deployment",
+					"Execption when preparing the deployment.", 
+					new Status(IStatus.ERROR,Activator.PLUGIN_ID, message, e));
+		}
 	}
+	
+	private void openSMView(final ApplicationUploader appUploader, final String serviceID, 
+			final String deploymentID, final String mainClass, final boolean executable, 
+			final AsceticDeployer deployer) {
+		Display.getDefault().syncExec(new Runnable() {
+			public void run() {
+				try{
+					ServiceManagerView smview = (ServiceManagerView) PlatformUI
+						.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+						.showView("es.bsc.servicess.ide.views.ServiceManagerView");
+					DeploymentChecker dc = new AsceticDeploymentChecker(appUploader, serviceID, 
+						mainClass, null, serviceID, deployer);
+					DeployedApplicationSection das = new ServiceDataComposite(deploymentID, 
+						dc, DeploymentChecker.BOOTING, smview, executable, getShell());
+					smview.addNewDeployement(deploymentID, das);
+				} catch (PartInitException e) {
+					generating = false;
+					String message = e.getMessage();
+					log.error("Error opening the Service Manager view ",e);
+					ErrorDialog.openError(getShell(), "Error deploying the application",
+							"Service was deployed but an error has occurred opening the Service Manager View", 
+							new Status(IStatus.ERROR,Activator.PLUGIN_ID,message, e));
+				}
+			}
+		});
+	}
+	
 
 	/** 
 	 * Monitor the progress of the service deployment process
@@ -441,55 +525,84 @@ public class AsceticDeployer extends Deployer {
 	 * @throws InterruptedException
 	 * @throws AsceticDeploymentException
 	 */
-	private void monitorProgress(ApplicationUploader appUploader, String applicationID,
-			String deploymentID, IProgressMonitor monitor) throws AsceticDeploymentException {
+	private void monitorProgress(final ApplicationUploader appUploader, final String applicationID,
+			final String deploymentID, final int vms, IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 		
-		int retries = 0;
-		int progress = 0;
 		
-		while (progress >= 0 && progress < 100 & retries < 30) {
-			int new_progress = 0;
-			try{
-				Thread.sleep(10000);
-				String resp = appUploader.getDeploymentStatus(applicationID, deploymentID);
-				if (resp.contains(Dictionary.APPLICATION_STATUS_ERROR)) {
-					throw (new AsceticDeploymentException(resp));
-				} else if (resp.contains(Dictionary.APPLICATION_STATUS_TERMINATED)) {
-					throw (new AsceticDeploymentException("Deployment was canceled"));
-				} else if (resp.contains(Dictionary.APPLICATION_STATUS_SUBMITTED)) {
-					new_progress = 5;
-				} else if (resp.contains(Dictionary.APPLICATION_STATUS_NEGOTIATION)) {
-					new_progress = 10;
-					//TODO: In some place we have to ask for accepting or rejecting the agreement
-				} else if (resp.contains(Dictionary.APPLICATION_STATUS_NEGOTIATIED)) {
-					new_progress = 15;
-					//TODO: In some place we have to ask for accepting or rejecting the agreement
-				} else if (resp.contains(Dictionary.APPLICATION_STATUS_CONTEXTUALIZING)) {
-					new_progress = 20;
-				} else if (resp.contains(Dictionary.APPLICATION_STATUS_CONTEXTUALIZATION)) {
-					new_progress = 20;
-				} else if (resp.contains(Dictionary.APPLICATION_STATUS_CONTEXTUALIZED)) {
-					new_progress = 30;	
-				} else if (resp.contains(Dictionary.APPLICATION_STATUS_DEPLOYING)) {
-					new_progress = 35;
-					//TODO: check vm creation, still not implemented	
-				} else if (resp.contains(Dictionary.APPLICATION_STATUS_DEPLOYED)) {
-					new_progress = 100;
-				} else {
-					throw (new AsceticDeploymentException("Unknown response: "
-							+ resp));
-				}
-				monitor.subTask(resp);
-				monitor.worked(new_progress - progress);
-				progress = new_progress;
-				log.debug("Progressing...(" + progress + ")");
-			}catch(Exception e){
-				throw (new AsceticDeploymentException(e));
-			}
+		/*ProgressMonitorDialog dialog = new ProgressMonitorDialog(getShell());
+		dialog.run(true, true, new IRunnableWithProgress() {
 
-		}
+			@Override
+			public void run(IProgressMonitor monitor)
+					throws InvocationTargetException, InterruptedException {*/
+				try {
+					monitor.beginTask("Deploying application", 100);
+					int retries = 0;
+					int progress = 0;
+
+					while (progress >= 0 && progress < 100 & retries < 30) {
+						if (monitor.isCanceled()){
+							appUploader.undeploy(applicationID, deploymentID);
+							throw new InterruptedException("Deployment Cancelled");
+						}
+						int new_progress = 0;
+						Thread.sleep(10000);
+						String resp = appUploader.getDeploymentStatus(applicationID, deploymentID);
+						if (resp.contains(Dictionary.APPLICATION_STATUS_ERROR)) {
+							throw (new AsceticDeploymentException(resp));
+						} else if (resp.contains(Dictionary.APPLICATION_STATUS_TERMINATED)) {
+							throw (new AsceticDeploymentException("Deployment was canceled"));
+						} else if (resp.contains(Dictionary.APPLICATION_STATUS_SUBMITTED)) {
+							new_progress = 5;
+						} else if (resp.contains(Dictionary.APPLICATION_STATUS_NEGOTIATION)) {
+							new_progress = 10;
+							//TODO: In some place we have to ask for accepting or rejecting the agreement
+						} else if (resp.contains(Dictionary.APPLICATION_STATUS_NEGOTIATIED)) {
+							new_progress = 15;
+							//TODO: In some place we have to ask for accepting or rejecting the agreement
+						} else if (resp.contains(Dictionary.APPLICATION_STATUS_CONTEXTUALIZING)) {
+							new_progress = 20;
+						} else if (resp.contains(Dictionary.APPLICATION_STATUS_CONTEXTUALIZATION)) {
+							new_progress = 20;
+						} else if (resp.contains(Dictionary.APPLICATION_STATUS_CONTEXTUALIZED)) {
+							new_progress = 30;	
+						} else if (resp.contains(Dictionary.APPLICATION_STATUS_DEPLOYING)) {
+							new_progress = calculateProgress(appUploader, applicationID, deploymentID, vms, progress);
+
+						} else if (resp.contains(Dictionary.APPLICATION_STATUS_DEPLOYED)) {
+							new_progress = 100;
+						} else {
+							throw (new AsceticDeploymentException("Unknown response: "
+									+ resp));
+						}
+						monitor.subTask(resp);
+						monitor.worked(new_progress - progress);
+						progress = new_progress;
+						log.debug("Progressing...(" + progress + ")");
+						if (progress >= 100)
+							monitor.done();
+					}
+				} catch (Exception e) {
+					throw (new InvocationTargetException(e));
+				}
+	/*		}
+		});*/
 	}
 
+	private int calculateProgress(ApplicationUploader appUploader,
+			String applicationID, String deploymentID, int vms, int progress) {
+		float vmIncrement = 70/vms;
+		try{
+			List<VM> vmDescs = appUploader.getDeploymentVMDescriptions(applicationID, deploymentID);
+			if (vmDescs == null || vmDescs.isEmpty())
+				return progress;
+			log.debug("Deployed " + vmDescs.size() + " of " + vms+ " VMs");
+			return (int) (30 +(vmIncrement*vmDescs.size()));
+		}catch(Exception e){
+			return progress;
+		}
+		
+	}
 	@Override
 	public void diposeComposite() {
 		/*
@@ -540,6 +653,7 @@ public class AsceticDeployer extends Deployer {
 	 * Open the current service manifest file for editing
 	 */
 	protected void openServiceManifest() {
+		generating = true;
 		try {
 			manifest.toFile();
 			IFile sm = getProject().getProject()
@@ -547,7 +661,9 @@ public class AsceticDeployer extends Deployer {
 					.getFolder(PACKAGES_FOLDER)
 					.getFile(AsceticProperties.SERVICE_MANIFEST);
 			IDE.openEditor(this.getWorkbenchPage(), sm);
+			generating = false;
 		} catch (Exception e) {
+			generating = false;
 			log.error("Exception opening manifest", e);
 			ErrorDialog.openError(getShell(), "Opening service manifest",
 					e.getMessage(), new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getMessage(), e));
@@ -581,7 +697,7 @@ public class AsceticDeployer extends Deployer {
 	}
 	
 	public PackageMetadata getPackageMetadata() 
-			throws SAXException, IOException, ParserConfigurationException{
+			throws SAXException, IOException, ParserConfigurationException, TransformerException{
 		return packSection.getPackageMetadata();
 	}
 	
@@ -606,7 +722,7 @@ public class AsceticDeployer extends Deployer {
 	
 	@Override
 	public boolean isBlocking() {
-		return packSection.isBlocking()||imageSection.isBlocking();
+		return packSection.isBlocking()||imageSection.isBlocking()|| generating;
 	}
 	
 	protected  void setManifest(PackageMetadata packMeta,

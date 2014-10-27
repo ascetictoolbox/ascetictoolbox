@@ -30,6 +30,8 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -484,8 +486,8 @@ public class PackagesSection extends ServiceEditorSection{
 	 */
 	protected void createPackage() {
 		String pName;
+		
 		try {
-			
 			PackageDialog dialog = new PackageDialog(editor.getSite().getShell(), 
 					SUPPORTED_PACK_TYPES);
 			if (dialog.open() == Window.OK) {
@@ -750,6 +752,7 @@ public class PackagesSection extends ServiceEditorSection{
 	 * @throws Exception 
 	 */
 	private void buildPackages() throws Exception {
+		redoingPackages = true;
 		final ProgressMonitorDialog dialog = new ProgressMonitorDialog(
 				editor.getSite().getShell());
 		dialog.run(true, true, new IRunnableWithProgress() {
@@ -757,6 +760,7 @@ public class PackagesSection extends ServiceEditorSection{
 				try {
 					PackagingUtils.initPackageFolder(editor.getProject(), monitor);
 				} catch (Exception e) {
+					redoingPackages = false;
 					throw (new InvocationTargetException(e));
 				}
 			}
@@ -784,13 +788,17 @@ public class PackagesSection extends ServiceEditorSection{
 					try {
 						PackagingUtils.buildPackages(editor.getProject(), prMetadata, packMetadata, monitor);
 					} catch (Exception e) {
+						redoingPackages = false;
 						throw (new InvocationTargetException(e));
 					}
 				}
 			});
+			redoingPackages = false;
 		}else{
+			redoingPackages = false;
 			throw new Exception("There are missing elements in the current package distribution");
 		}
+		
 	}
 	
 	public void refreshData() throws PartInitException {	
@@ -830,8 +838,11 @@ public class PackagesSection extends ServiceEditorSection{
 				String[] els = packMeta.getElementsInPackage(p);
 				for(String e:els){
 					if (!constraintsElements.containsKey(e)){
-						log.debug("Element " + e + "in package "+ p +" not found.");
-						return true;
+						MethodCoreElement mce = MethodCoreElement.getImplementationElement(constraintsElements, e);
+						if (mce == null) {
+							log.debug("Element " + e + "in package "+ p +" not found.");
+							return true;
+						}
 					}
 				}
 			}
@@ -843,8 +854,15 @@ public class PackagesSection extends ServiceEditorSection{
 		return redoingPackages;
 	}
 	
-	public PackageMetadata getPackageMetadata() throws SAXException, IOException, ParserConfigurationException{
-		return new PackageMetadata(packageMetadataFile);
+	public PackageMetadata getPackageMetadata() throws SAXException, IOException, ParserConfigurationException, TransformerException{
+		PackageMetadata packMeta;
+		if (packageMetadataFile.exists())
+			packMeta = new PackageMetadata(packageMetadataFile);
+		else{
+			packMeta = new PackageMetadata();
+			packMeta.toFile(packageMetadataFile);
+		}
+		return packMeta;
 	}
 
 	@Override
@@ -866,7 +884,7 @@ public class PackagesSection extends ServiceEditorSection{
 	}
 	
 	public void init() throws Exception{
-		PackageMetadata packMeta = new PackageMetadata(packageMetadataFile);
+		PackageMetadata packMeta = getPackageMetadata();
 		String[] packs = packMeta.getPackages();
 		if (packs!= null && packs.length>0){
 			initManual(packMeta, packs, null);

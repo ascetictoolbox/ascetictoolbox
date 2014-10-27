@@ -16,8 +16,6 @@
 
 package es.bsc.servicess.ide.editors.deployers;
 
-
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,7 +47,7 @@ import org.eclipse.jface.window.Window;
 
 import es.bsc.servicess.ide.Activator;
 import es.bsc.servicess.ide.Logger;
-import es.bsc.servicess.ide.dialogs.JarExecutionDialog;
+import es.bsc.servicess.ide.dialogs.JarExecutionWithStagingDialog;
 import es.bsc.servicess.ide.views.DeploymentChecker;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.saas.application_uploader.ApplicationUploader;
@@ -79,7 +77,7 @@ public class AsceticDeploymentChecker implements DeploymentChecker {
 		this.jars = jars;
 		this.deployer = deployer;
 		this.masterPackage = masterPackage;
-		this.status = DeploymentChecker.PENDING;
+		this.status = DeploymentChecker.BOOTING;
 	}
 
 	@Override
@@ -113,8 +111,21 @@ public class AsceticDeploymentChecker implements DeploymentChecker {
 				log.error("Error getting deployment status", e);
 				this.status = DeploymentChecker.DEPLOYMENT_FAILED;
 			}	
+		}else if (status.equals(DeploymentChecker.BOOTING)){
+			if (checkVMsBoot(deploymentID)){
+				this.status = DeploymentChecker.DEPLOYED;
+			}else
+				this.status = DeploymentChecker.BOOTING;
+			
 		}
 		return this.status;
+	}
+
+	private boolean checkVMsBoot(String deploymentID) {
+		Map<String,Map<String,String>> vms = getMachines(deploymentID);
+		return JSCHExecutionUtils.checkVMsBoot(vms, ImageCreation.ASCETIC_USER, 
+				deployer.getProperties().getApplicationSSHPrivateKeyPath());
+		
 	}
 
 	@Override
@@ -193,7 +204,7 @@ public class AsceticDeploymentChecker implements DeploymentChecker {
 		}
 		
 		if (ceLocation != null && !ceLocation.isEmpty()) {
-			JarExecutionDialog dialog = new JarExecutionDialog(deployer.getShell(), masterPackage);
+			JarExecutionWithStagingDialog dialog = new JarExecutionWithStagingDialog(deployer.getShell(), masterPackage);
 			if (mainClass!=null)
 				dialog.setMainClass(mainClass);
 			if (dialog.open() != Window.OK){
@@ -214,9 +225,7 @@ public class AsceticDeploymentChecker implements DeploymentChecker {
 				}
 			}
 			String arguments = generateArguments(JSCHExecutionUtils.START, username, hostname, ceLocation, 
-					new HashMap<String, String>(), new HashMap<String, String>(), 
-					dialog.getMainClass(), dialog.getArguments());
-					//TODO add data staging "deployer.getDataStageIn(), deployer.getDataStageOut(), dialog.getMainClass(), dialog.getArguments());
+					dialog.getStageIns(), dialog.getStageOuts(), dialog.getMainClass(), dialog.getArguments());
 			ILaunchConfigurationWorkingCopy workingCopy = type.newInstance(
 					null,getLaunchName(applicationID+"-"+executionID));
 			workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME,

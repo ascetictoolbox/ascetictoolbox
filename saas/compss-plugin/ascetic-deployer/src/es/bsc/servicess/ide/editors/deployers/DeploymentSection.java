@@ -28,6 +28,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
@@ -46,6 +47,7 @@ public class DeploymentSection extends ServiceEditorSection{
 	private Text sshPublicKeyPathText;
 	private Text sshPrivateKeyPathText;
 	private Text monitorText;
+	private Button imageCache;
 	
 	private static Logger log = Logger.getLogger(DeploymentSection.class);
 	
@@ -189,6 +191,7 @@ public class DeploymentSection extends ServiceEditorSection{
 			}
 	
 		});
+		imageCache = toolkit.createButton(comp, "Enable Image Caching", SWT.CHECK);
 		
 	}
 	
@@ -211,6 +214,10 @@ public class DeploymentSection extends ServiceEditorSection{
 	
 	public String getMonitorLocation() {
 		return monitorText.getText().trim();
+	}
+	
+	public boolean getImageCaching(){
+		return imageCache.getSelection();
 	}
 
 	public void setApplicationSecurityInManifest(Manifest manifest) throws Exception {
