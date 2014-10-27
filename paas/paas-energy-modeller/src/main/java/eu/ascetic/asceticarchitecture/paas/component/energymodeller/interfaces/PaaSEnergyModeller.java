@@ -50,7 +50,10 @@ public interface PaaSEnergyModeller {
 	 */
 	public List<Sample> applicationData( String providerid, String applicationid,String vmids, String eventid, long samplingperiod,Timestamp start, Timestamp end);	
 
-
+	@Deprecated
+	public double energyApplicationConsumptionTimeInterval( String providerid, String applicationid,String vmids, String eventid, Timestamp start, Timestamp end);	
+	
+	
 	/**
 	 * @param providerid
 	 * @param applicationid

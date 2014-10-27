@@ -207,6 +207,12 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 		
 
 	}
+	
+	@Override
+	public double energyApplicationConsumptionTimeInterval(String providerid,String applicationid, String vmids, String eventid,Timestamp start, Timestamp end) {
+		// TODO Auto-generated method stub
+		return applicationConsumptionTimeInterval(providerid,applicationid, vmids, eventid, "energy" , start, end);
+	}
 
 	@Override
 	public List<EnergySample> energyApplicationConsumptionData(String providerid,	String applicationid, String vmid, String eventid,Timestamp start, Timestamp end) {
@@ -576,6 +582,8 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 	private void loadEnergyData(String appid, List<String> vm){
 		datacollector.handleConsumptionData(appid, vm, "deployment1");
 	}
+
+
 
 
 
