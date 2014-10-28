@@ -26,13 +26,19 @@ import es.bsc.vmmanagercore.model.scheduling.LocalSearchAlgorithmOptionsSet;
 public class AfterVmDeleteSelfAdaptationOps {
 
     private final LocalSearchAlgorithmOptionsSet localSearchAlgorithm;
+    private final int maxExecTimeSeconds;
 
-    public AfterVmDeleteSelfAdaptationOps(LocalSearchAlgorithmOptionsSet localSearchAlgorithm) {
+    public AfterVmDeleteSelfAdaptationOps(LocalSearchAlgorithmOptionsSet localSearchAlgorithm, int maxExecTimeSeconds) {
         this.localSearchAlgorithm = localSearchAlgorithm;
+        this.maxExecTimeSeconds = maxExecTimeSeconds;
     }
 
     public LocalSearchAlgorithmOptionsSet getLocalSearchAlgorithm() {
         return localSearchAlgorithm;
+    }
+
+    public int getMaxExecTimeSeconds() {
+        return maxExecTimeSeconds;
     }
 
 }

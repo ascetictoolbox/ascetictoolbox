@@ -27,10 +27,13 @@ public class PeriodicSelfAdaptationOps {
 
     private final LocalSearchAlgorithmOptionsSet localSearchAlgorithm;
     private final int timeIntervalMinutes;
+    private final int maxExecTimeSeconds;
 
-    public PeriodicSelfAdaptationOps(LocalSearchAlgorithmOptionsSet localSearchAlgorithm, int timeIntervalMinutes) {
+    public PeriodicSelfAdaptationOps(LocalSearchAlgorithmOptionsSet localSearchAlgorithm, int timeIntervalMinutes,
+                                     int maxExecTimeSeconds) {
         this.localSearchAlgorithm = localSearchAlgorithm;
         this.timeIntervalMinutes = timeIntervalMinutes;
+        this.maxExecTimeSeconds = maxExecTimeSeconds;
     }
 
     public LocalSearchAlgorithmOptionsSet getLocalSearchAlgorithm() {
@@ -39,6 +42,10 @@ public class PeriodicSelfAdaptationOps {
 
     public int getTimeIntervalMinutes() {
         return timeIntervalMinutes;
+    }
+
+    public int getMaxExecTimeSeconds() {
+        return maxExecTimeSeconds;
     }
 
 }

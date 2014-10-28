@@ -28,11 +28,14 @@ public class AfterVmDeploymentSelfAdaptationOps {
 
     private final ConstructionHeuristic constructionHeuristic;
     private final LocalSearchAlgorithmOptionsSet localSearchAlgorithm;
+    private final int maxExecTimeSeconds;
 
     public AfterVmDeploymentSelfAdaptationOps(ConstructionHeuristic constructionHeuristic,
-                                              LocalSearchAlgorithmOptionsSet localSearchAlgorithm) {
+                                              LocalSearchAlgorithmOptionsSet localSearchAlgorithm,
+                                              int maxExecTimeSeconds) {
         this.constructionHeuristic = constructionHeuristic;
         this.localSearchAlgorithm = localSearchAlgorithm;
+        this.maxExecTimeSeconds = maxExecTimeSeconds;
     }
 
     public ConstructionHeuristic getConstructionHeuristic() {
@@ -41,6 +44,10 @@ public class AfterVmDeploymentSelfAdaptationOps {
 
     public LocalSearchAlgorithmOptionsSet getLocalSearchAlgorithm() {
         return localSearchAlgorithm;
+    }
+
+    public int getMaxExecTimeSeconds() {
+        return maxExecTimeSeconds;
     }
 
 }
