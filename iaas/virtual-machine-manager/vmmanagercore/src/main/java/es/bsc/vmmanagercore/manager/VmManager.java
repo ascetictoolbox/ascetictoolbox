@@ -28,7 +28,9 @@ import es.bsc.vmmanagercore.model.estimations.VmToBeEstimated;
 import es.bsc.vmmanagercore.model.images.ImageToUpload;
 import es.bsc.vmmanagercore.model.images.ImageUploaded;
 import es.bsc.vmmanagercore.model.scheduling.*;
+import es.bsc.vmmanagercore.model.selfadaptation.AfterVmDeleteSelfAdaptationOps;
 import es.bsc.vmmanagercore.model.selfadaptation.AfterVmDeploymentSelfAdaptationOps;
+import es.bsc.vmmanagercore.model.selfadaptation.PeriodicSelfAdaptationOps;
 import es.bsc.vmmanagercore.model.selfadaptation.SelfAdaptationOptions;
 import es.bsc.vmmanagercore.model.vms.Vm;
 import es.bsc.vmmanagercore.model.vms.VmDeployed;
@@ -615,9 +617,10 @@ public class VmManager {
     }
 
     private SelfAdaptationOptions getDefaultSelfAdaptationOptions() {
-        AfterVmDeploymentSelfAdaptationOps afterVmDeploymentSelfAdaptationOps =
-                new AfterVmDeploymentSelfAdaptationOps(new ConstructionHeuristic("firstFit"), null, 0);
-        return new SelfAdaptationOptions(afterVmDeploymentSelfAdaptationOps, null, null);
+        return new SelfAdaptationOptions(
+                new AfterVmDeploymentSelfAdaptationOps(new ConstructionHeuristic("firstFit"), null, 0),
+                new AfterVmDeleteSelfAdaptationOps(null, 0),
+                new PeriodicSelfAdaptationOps(null, 0, 0));
     }
 
 }
