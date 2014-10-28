@@ -97,6 +97,8 @@ public class EventsDBMapper {
 
         if(event.get(EventsDBMapper.TIMESTAMP) == null) {
             event.put(EventsDBMapper.TIMESTAMP, timestamp);
+        } else {
+            timestamp = event.get(EventsDBMapper.TIMESTAMP).asLong();
         }
 
 		DBObject dbo = (DBObject) JSON.parse(event.toString());
