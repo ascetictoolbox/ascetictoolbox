@@ -23,6 +23,7 @@ import java.sql.Timestamp;
 
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.EnergyModellerSimple;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EnergySample;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Sample;
 import eu.ascetic.paas.applicationmanager.dao.VMDAO;
 import eu.ascetic.paas.applicationmanager.model.Collection;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
@@ -211,20 +212,22 @@ public class VMRestTest {
 	
 	@Test
 	@SuppressWarnings(value = { "static-access" })
-	public void getEnergySampleWithIntervalTest() {
-		EnergySample energySample3 = new EnergySample();
-		energySample3.setE_value(8.0);
-		energySample3.setP_value(9.0);
+	public void getEnergySampleWithIntervalTest() throws Exception {
+		Sample energySample3 = new Sample();
+		energySample3.setCvalue(7.0);
+		energySample3.setEvalue(8.0);
+		energySample3.setPvalue(9.0);
 		energySample3.setTimestampBeging(5l);
 		energySample3.setTimestampEnd(6l);
 		energySample3.setVmid("vm3");
-		EnergySample energySample4 = new EnergySample();
-		energySample4.setE_value(11.0);
-		energySample4.setP_value(12.0);
+		Sample energySample4 = new Sample();
+		energySample4.setCvalue(10.0);
+		energySample4.setEvalue(11.0);
+		energySample4.setPvalue(12.0);
 		energySample4.setTimestampBeging(7l);
 		energySample4.setTimestampEnd(8l);
 		energySample4.setVmid("vm4");
-		List<EnergySample> energySamples2 = new ArrayList<EnergySample>();
+		List<Sample> energySamples2 = new ArrayList<Sample>();
 		energySamples2.add(energySample3);
 		energySamples2.add(energySample4);
 		
@@ -239,50 +242,49 @@ public class VMRestTest {
 		vm.setProviderVmId("abab");
 		when(vmDAO.getById(444)).thenReturn(vm);
 		
-//		when(energyModeller.applicationData(null, "", "abab", "eventX", 1l, new Timestamp(2l), new Timestamp(3l))).thenReturn(energySamples2);
-//		
-//		// We perform the action
-//		Response response = vmRest.getEnergySample("", "", "444", "eventX", 2l, 3l, 0l);
-//		assertEquals(200, response.getStatus());
-//		
-//		String xml = (String) response.getEntity();
-//		
-//		JAXBContext jaxbContext = JAXBContext.newInstance(Collection.class);
-//		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-//		Collection collection = (Collection) jaxbUnmarshaller.unmarshal(new StringReader(xml));
-//		
-//		assertEquals("/applications//deployments//vms/444/events/eventX/energy-sample", collection.getHref());
-//		assertEquals(0, collection.getItems().getOffset());
-//		assertEquals(2, collection.getItems().getTotal());
-//		//Links
-//		assertEquals(2, collection.getLinks().size());
-//		assertEquals("/applications//deployments//vms/444/events/eventX", collection.getLinks().get(0).getHref());
-//		assertEquals("parent", collection.getLinks().get(0).getRel());
-//		assertEquals(MediaType.APPLICATION_XML, collection.getLinks().get(0).getType());
-//		assertEquals("/applications//deployments//vms/444/events/eventX/energy-sample", collection.getLinks().get(1).getHref());
-//		assertEquals("self", collection.getLinks().get(1).getRel());
-//		assertEquals(MediaType.APPLICATION_XML, collection.getLinks().get(1).getType());
-//		// EnergySamples
-//		assertEquals(2, collection.getItems().getEnergySamples().size());
-//		// EnergySamples 1
-//		assertEquals(0.0, collection.getItems().getEnergySamples().get(0).getCvalue(), 0.00001);
-//		assertEquals(2.0, collection.getItems().getEnergySamples().get(0).getEvalue(), 0.00001);
-//		assertEquals(3.0, collection.getItems().getEnergySamples().get(0).getPvalue(), 0.00001);
-//		assertEquals(1l, collection.getItems().getEnergySamples().get(0).getTimestampBeging());
-//		assertEquals(2l, collection.getItems().getEnergySamples().get(0).getTimestampEnd());
-//		assertEquals("vm1", collection.getItems().getEnergySamples().get(0).getVmid());
-//		// EnergySamples 2
-//		assertEquals(0.0, collection.getItems().getEnergySamples().get(1).getCvalue(), 0.00001);
-//		assertEquals(5.0, collection.getItems().getEnergySamples().get(1).getEvalue(), 0.00001);
-//		assertEquals(6.0, collection.getItems().getEnergySamples().get(1).getPvalue(), 0.00001);
-//		assertEquals(3l, collection.getItems().getEnergySamples().get(1).getTimestampBeging());
-//		assertEquals(4l, collection.getItems().getEnergySamples().get(1).getTimestampEnd());
-//		assertEquals("vm2", collection.getItems().getEnergySamples().get(1).getVmid());
-//		
-//		
-//		// We verify the calls to the mocks
-//		verify(vmDAO, times(1)).getById(444);
-//		verify(energyModeller, times(1)).energyApplicationConsumptionData(null, "", "abab", "eventX", new Timestamp(2l), new Timestamp(3l));
+		when(energyModeller.applicationData(null, "", "abab", "eventX", 1l, new Timestamp(2l), new Timestamp(3l))).thenReturn(energySamples2);
+		
+		// We perform the action
+		Response response = vmRest.getEnergySample("", "", "444", "eventX", 2l, 3l, 1000l);
+		assertEquals(200, response.getStatus());
+		
+		String xml = (String) response.getEntity();
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(Collection.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		Collection collection = (Collection) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals("/applications//deployments//vms/444/events/eventX/energy-sample", collection.getHref());
+		assertEquals(0, collection.getItems().getOffset());
+		assertEquals(2, collection.getItems().getTotal());
+		//Links
+		assertEquals(2, collection.getLinks().size());
+		assertEquals("/applications//deployments//vms/444/events/eventX", collection.getLinks().get(0).getHref());
+		assertEquals("parent", collection.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, collection.getLinks().get(0).getType());
+		assertEquals("/applications//deployments//vms/444/events/eventX/energy-sample", collection.getLinks().get(1).getHref());
+		assertEquals("self", collection.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, collection.getLinks().get(1).getType());
+		// EnergySamples
+		assertEquals(2, collection.getItems().getEnergySamples().size());
+		// EnergySamples 1
+		assertEquals(7.0, collection.getItems().getEnergySamples().get(0).getCvalue(), 0.00001);
+		assertEquals(8.0, collection.getItems().getEnergySamples().get(0).getEvalue(), 0.00001);
+		assertEquals(9.0, collection.getItems().getEnergySamples().get(0).getPvalue(), 0.00001);
+		assertEquals(5l, collection.getItems().getEnergySamples().get(0).getTimestampBeging());
+		assertEquals(6l, collection.getItems().getEnergySamples().get(0).getTimestampEnd());
+		assertEquals("vm3", collection.getItems().getEnergySamples().get(0).getVmid());
+		// EnergySamples 2
+		assertEquals(10.0, collection.getItems().getEnergySamples().get(1).getCvalue(), 0.00001);
+		assertEquals(11.0, collection.getItems().getEnergySamples().get(1).getEvalue(), 0.00001);
+		assertEquals(12.0, collection.getItems().getEnergySamples().get(1).getPvalue(), 0.00001);
+		assertEquals(7l, collection.getItems().getEnergySamples().get(1).getTimestampBeging());
+		assertEquals(8l, collection.getItems().getEnergySamples().get(1).getTimestampEnd());
+		assertEquals("vm4", collection.getItems().getEnergySamples().get(1).getVmid());
+		
+		// We verify the calls to the mocks
+		verify(vmDAO, times(1)).getById(444);
+		verify(energyModeller, times(1)).applicationData(null, "", "abab", "eventX", 1l, new Timestamp(2l), new Timestamp(3l));
 	}
 	
 	@Test

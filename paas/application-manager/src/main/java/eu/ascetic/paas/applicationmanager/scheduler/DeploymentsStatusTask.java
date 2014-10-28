@@ -79,7 +79,8 @@ public class DeploymentsStatusTask {
 	protected ImageDAO imageDAO;
 	protected VmManagerClient vmManagerClient = new VmManagerClientHC();
 	
-	@Scheduled(cron="${check.deployments.status}")
+	//@Scheduled(cron="${check.deployments.status}")
+	@Scheduled(fixedDelay=5000)
 	public void checkDeploymentStatus() {
 		logger.info("Retrieving application deployments from DB to see if it is necessary to move applications to other state");
 		

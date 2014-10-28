@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EnergySample;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Sample;
 
 /**
  * 
@@ -44,6 +45,22 @@ public class EnergyModellerConverter {
 		return newEnergySample;
 	}
 	
+	public static eu.ascetic.paas.applicationmanager.model.EnergySample convertSample(Sample energySample) {
+		if(energySample == null) {
+			return null;
+		}
+		
+		eu.ascetic.paas.applicationmanager.model.EnergySample newEnergySample = new eu.ascetic.paas.applicationmanager.model.EnergySample();
+		newEnergySample.setCvalue(energySample.getCvalue());
+		newEnergySample.setEvalue(energySample.getEvalue());
+		newEnergySample.setPvalue(energySample.getPvalue());
+		newEnergySample.setTimestampBeging(energySample.getTimestampBeging());
+		newEnergySample.setTimestampEnd(energySample.getTimestampEnd());
+		newEnergySample.setVmid(energySample.getVmid());
+		
+		return newEnergySample;
+	}
+	
 	public static List<eu.ascetic.paas.applicationmanager.model.EnergySample> convertList(List<EnergySample> energySamples) {
 		if(energySamples == null) {
 			return null;
@@ -53,6 +70,21 @@ public class EnergyModellerConverter {
 		
 		for(EnergySample eSample : energySamples) {
 			eu.ascetic.paas.applicationmanager.model.EnergySample energySample = convert(eSample);
+			samples.add(energySample);
+		}
+		
+		return samples;
+	}
+	
+	public static List<eu.ascetic.paas.applicationmanager.model.EnergySample> convertSampleList(List<Sample> energySamples) {
+		if(energySamples == null) {
+			return null;
+		}
+		
+		List<eu.ascetic.paas.applicationmanager.model.EnergySample> samples = new ArrayList<eu.ascetic.paas.applicationmanager.model.EnergySample>();
+		
+		for(Sample eSample : energySamples) {
+			eu.ascetic.paas.applicationmanager.model.EnergySample energySample = convertSample(eSample);
 			samples.add(energySample);
 		}
 		

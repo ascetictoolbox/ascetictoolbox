@@ -487,46 +487,47 @@
     <slam:Text/>
     <slam:Properties/>
     <slam:ID>Infrastructure_Price_Of_jboss</slam:ID>
-    <slam:Guaranteed><slam:Text/>
-    <slam:Properties/>
-    <slam:Action>
-        <slam:ID>Price_Of_VirtualSystem_jboss</slam:ID>
-        <slam:ActorRef>http://www.slaatsoi.org/slamodel#provider</slam:ActorRef>
-        <slam:Policy>http://www.slaatsoi.org/slamodel#mandatory</slam:Policy>
-        <slam:Precondition>
-            <slam:Text/>
-            <slam:Properties/>
-            <slam:Operator>http://www.slaatsoi.org/coremodel#invocation</slam:Operator>
-            <slam:Parameter>
-                <slam:ValueExpr>
-                    <slam:ID>jboss</slam:ID>
-                </slam:ValueExpr>
-            </slam:Parameter>
-        </slam:Precondition>
-        <slam:Postcondition>
-            <slam:Text/>
-            <slam:Properties/>
-            <slam:ProductOfferingPrice>
-                <slam:ID>Product_Offering_Price_Of_jboss</slam:ID>
-                <slam:Name/>
-                <slam:Description/>
-                <slam:BillingFrequency>http://www.slaatsoi.org/business#http://www.slaatsoi.org/business#per_month</slam:BillingFrequency>
-                <slam:ValidFrom>2014-09-25T14:15:41.158Z</slam:ValidFrom>
-                <slam:ValidUntil>2015-09-25T14:15:41.158Z</slam:ValidUntil>
-                <slam:ComponentProdOfferingPrice><slam:ID>Price_OF_jboss</slam:ID>
-                <slam:PriceType>http://www.slaatsoi.org/business#http://www.slaatsoi.org/business#per_hour</slam:PriceType>
-                <slam:Price>
-                    <slam:Value>0.0</slam:Value>
-                    <slam:Datatype>http://www.slaatsoi.org/coremodel/units#http://www.slaatsoi.org/coremodel/units#EUR</slam:Datatype>
-                </slam:Price>
-                <slam:Quantity>
-                    <slam:Value>1</slam:Value>
-                    <slam:Datatype>http://www.slaatsoi.org/coremodel/units#vm</slam:Datatype>
-                </slam:Quantity>
-            </slam:ComponentProdOfferingPrice>
-        </slam:ProductOfferingPrice>
-    </slam:Postcondition>
-</slam:Action>
+    <slam:Guaranteed>
+        <slam:Text/>
+        <slam:Properties/>
+        <slam:Action>
+            <slam:ID>Price_Of_VirtualSystem_jboss</slam:ID>
+            <slam:ActorRef>http://www.slaatsoi.org/slamodel#provider</slam:ActorRef>
+            <slam:Policy>http://www.slaatsoi.org/slamodel#mandatory</slam:Policy>
+            <slam:Precondition>
+                <slam:Text/>
+                <slam:Properties/>
+                <slam:Operator>http://www.slaatsoi.org/coremodel#invocation</slam:Operator>
+                <slam:Parameter>
+                    <slam:ValueExpr>
+                        <slam:ID>jboss</slam:ID>
+                    </slam:ValueExpr>
+                </slam:Parameter>
+            </slam:Precondition>
+            <slam:Postcondition>
+                <slam:Text/>
+                <slam:Properties/>
+                <slam:ProductOfferingPrice>
+                    <slam:ID>Product_Offering_Price_Of_jboss</slam:ID>
+                    <slam:Name/>
+                    <slam:Description/>
+                    <slam:BillingFrequency>http://www.slaatsoi.org/business#http://www.slaatsoi.org/business#per_month</slam:BillingFrequency>
+                    <slam:ValidFrom>2014-09-25T14:15:41.158Z</slam:ValidFrom>
+                    <slam:ValidUntil>2015-09-25T14:15:41.158Z</slam:ValidUntil>
+                    <slam:ComponentProdOfferingPrice><slam:ID>Price_OF_jboss</slam:ID>
+                    <slam:PriceType>http://www.slaatsoi.org/business#http://www.slaatsoi.org/business#per_hour</slam:PriceType>
+                    <slam:Price>
+                        <slam:Value>0.0</slam:Value>
+                        <slam:Datatype>http://www.slaatsoi.org/coremodel/units#http://www.slaatsoi.org/coremodel/units#EUR</slam:Datatype>
+                    </slam:Price>
+                    <slam:Quantity>
+                        <slam:Value>1</slam:Value>
+                        <slam:Datatype>http://www.slaatsoi.org/coremodel/units#vm</slam:Datatype>
+                    </slam:Quantity>
+                </slam:ComponentProdOfferingPrice>
+            </slam:ProductOfferingPrice>
+        </slam:Postcondition>
+    </slam:Action>
 </slam:Guaranteed>
 </slam:AgreementTerm>
 <slam:AgreementTerm>

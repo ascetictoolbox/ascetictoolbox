@@ -8,6 +8,7 @@ import java.util.List;
 import org.junit.Test;
 
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EnergySample;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Sample;
 
 /**
  * 
@@ -56,6 +57,30 @@ public class EnergyModellerConverterTest {
 	}
 	
 	@Test
+	public void convertSampleTest() {
+		
+		eu.ascetic.paas.applicationmanager.model.EnergySample energySample = EnergyModellerConverter.convertSample(null);
+		assertEquals(null, energySample);
+		
+		Sample eSample = new Sample();
+		eSample.setEvalue(1);
+		eSample.setPvalue(2);
+		eSample.setCvalue(3);
+		eSample.setTimestampBeging(11l);
+		eSample.setTimestampEnd(22l);
+		eSample.setVmid("aaa");
+		
+		energySample = EnergyModellerConverter.convertSample(eSample);
+		
+		assertEquals(1.0, energySample.getEvalue(), 0.00001);
+		assertEquals(2.0, energySample.getPvalue(), 0.00001);
+		assertEquals(3.0, energySample.getCvalue(), 0.00001);
+		assertEquals(11l, energySample.getTimestampBeging());
+		assertEquals(22l, energySample.getTimestampEnd());
+		assertEquals("aaa", energySample.getVmid());
+	}
+	
+	@Test
 	public void convertEnergySampleListTest() {
 		List<eu.ascetic.paas.applicationmanager.model.EnergySample> samples = EnergyModellerConverter.convertList(null);
 		assertEquals(null, samples);
@@ -78,6 +103,43 @@ public class EnergyModellerConverterTest {
  		eSamples.add(eSample2);
  		
  		samples = EnergyModellerConverter.convertList(eSamples);
+ 		
+ 		assertEquals(2, samples.size());
+		assertEquals(1.0, samples.get(0).getEvalue(), 0.00001);
+		assertEquals(2.0, samples.get(0).getPvalue(), 0.00001);
+		assertEquals(11l, samples.get(0).getTimestampBeging());
+		assertEquals(22l, samples.get(0).getTimestampEnd());
+		assertEquals("aaa", samples.get(0).getVmid());
+		assertEquals(3.0, samples.get(1).getEvalue(), 0.00001);
+		assertEquals(4.0, samples.get(1).getPvalue(), 0.00001);
+		assertEquals(33l, samples.get(1).getTimestampBeging());
+		assertEquals(44l, samples.get(1).getTimestampEnd());
+		assertEquals("bbb", samples.get(1).getVmid());
+	}
+	
+	@Test
+	public void convertSampleListTest() {
+		List<eu.ascetic.paas.applicationmanager.model.EnergySample> samples = EnergyModellerConverter.convertSampleList(null);
+		assertEquals(null, samples);
+		
+		Sample eSample1 = new Sample();
+		eSample1.setEvalue(1);
+		eSample1.setPvalue(2);
+		eSample1.setTimestampBeging(11l);
+		eSample1.setTimestampEnd(22l);
+		eSample1.setVmid("aaa");
+		Sample eSample2 = new Sample();
+		eSample2.setEvalue(3);
+		eSample2.setPvalue(4);
+		eSample2.setTimestampBeging(33l);
+		eSample2.setTimestampEnd(44l);
+		eSample2.setVmid("bbb");
+		
+ 		List<Sample> eSamples = new ArrayList<Sample>();
+ 		eSamples.add(eSample1);
+ 		eSamples.add(eSample2);
+ 		
+ 		samples = EnergyModellerConverter.convertSampleList(eSamples);
  		
  		assertEquals(2, samples.size());
 		assertEquals(1.0, samples.get(0).getEvalue(), 0.00001);

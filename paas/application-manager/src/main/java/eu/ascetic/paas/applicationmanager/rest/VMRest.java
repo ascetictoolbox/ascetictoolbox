@@ -8,6 +8,7 @@ import java.util.List;
 
 
 
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -25,7 +26,9 @@ import org.springframework.stereotype.Component;
 
 
 
+
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EnergySample;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Sample;
 //import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
 import eu.ascetic.paas.applicationmanager.model.VM;
@@ -200,6 +203,9 @@ public class VMRest extends AbstractRest {
 				samples = EnergyModellerConverter.convertList(eSamples);
 			} else {
 				// Going for applicationData
+				interval = interval / 1000;
+				List<Sample> sSamples = energyModeller.applicationData(null, applicationName, providerVMId, eventId, interval, startStamp, endStamp);
+				samples = EnergyModellerConverter.convertSampleList(sSamples);
 			}
 			
 			return  buildResponse(Status.OK, XMLBuilder.getEnergySampleCollectionXMLInfo(samples, applicationName, deploymentId, vmId, eventId));
