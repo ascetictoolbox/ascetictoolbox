@@ -616,7 +616,7 @@ public class VmManager {
 
     private SelfAdaptationOptions getDefaultSelfAdaptationOptions() {
         AfterVmDeploymentSelfAdaptationOps afterVmDeploymentSelfAdaptationOps =
-                new AfterVmDeploymentSelfAdaptationOps(new ConstructionHeuristic("firstFit"), null);
+                new AfterVmDeploymentSelfAdaptationOps(new ConstructionHeuristic("firstFit"), null, 0);
         return new SelfAdaptationOptions(afterVmDeploymentSelfAdaptationOps, null, null);
     }
 
