@@ -15,7 +15,7 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodellerdatalogger;
 
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDataSourceAdaptor;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDirectDbDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import java.io.File;
 import java.io.IOException;
@@ -46,7 +46,7 @@ public class Logger {
         new Thread(logger).start();
         QuitWatcher quitWatcher = new QuitWatcher();
         new Thread(quitWatcher).start();
-        ZabbixDataSourceAdaptor adaptor = new ZabbixDataSourceAdaptor();
+        ZabbixDirectDbDataSourceAdaptor adaptor = new ZabbixDirectDbDataSourceAdaptor();
         Host host = adaptor.getHostByName(hostname);
         while (running) {
             logger.printToFile(adaptor.getHostData(host));

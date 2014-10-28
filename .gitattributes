@@ -2106,6 +2106,7 @@ utils/energy-modeller-data-logger/nbactions.xml -text
 utils/energy-modeller-data-logger/pom.xml -text
 utils/energy-modeller-data-logger/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodellerdatalogger/Logger.java -text
 utils/energy-modeller-data-logger/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodellerdatalogger/MeasurementLogger.java -text
+utils/energy-modeller-data-logger/zabbix_db_adaptor.properties -text
 utils/energy-modeller-display-tool/ascetic-zabbix-api.properties -text
 utils/energy-modeller-display-tool/energymodeller.properties -text
 utils/energy-modeller-display-tool/energymodeller_calibrator.properties -text
