@@ -146,4 +146,14 @@ public class HostOpenStack extends Host {
         return totalDiskGb - getAssignedDiskGb();
     }
 
+    @Override
+    public void refreshMonitoringInfo() {
+        initTotalResources();
+        initAssignedResources();
+    }
+
+    public void setJcm(JCloudsMiddleware jcm) {
+        this.jcm = jcm;
+    }
+
 }

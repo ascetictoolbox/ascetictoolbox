@@ -183,4 +183,5 @@ public abstract class Host {
         return new ServerLoad(assignedCpus/totalCpus, assignedMemoryMb/totalMemoryMb, assignedDiskGb/totalDiskGb);
     }
 
+    public abstract void refreshMonitoringInfo();
 }

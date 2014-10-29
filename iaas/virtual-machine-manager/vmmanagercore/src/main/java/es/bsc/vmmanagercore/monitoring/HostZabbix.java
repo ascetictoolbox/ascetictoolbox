@@ -45,6 +45,14 @@ public class HostZabbix extends Host {
     private final static ZabbixClient zabbixClient = ZabbixConnector.getZabbixClient();
     private List<Item> items = new ArrayList<>(); // Metrics available in the host
 
+    public HostZabbix(String hostname) {
+        super(hostname);
+        items = zabbixClient.getItemsFromHost(hostname);
+        initTotalResources();
+        initAssignedResources();
+        currentPower = Float.parseFloat(getItemByKey(POWER_KEY).getLastValue());
+    }
+
     private Item getItemByKey(String key) {
         for (Item item: items) {
             if (item.getKey().equals(key)) {
@@ -64,14 +72,6 @@ public class HostZabbix extends Host {
         assignedCpus = getAssignedCpus();
         assignedMemoryMb = getAssignedMemoryMb();
         assignedDiskGb = getAssignedDiskGb();
-    }
-
-    public HostZabbix(String hostname) {
-        super(hostname);
-        items = zabbixClient.getItemsFromHost(hostname);
-        initTotalResources();
-        initAssignedResources();
-        currentPower = Float.parseFloat(getItemByKey(POWER_KEY).getLastValue());
     }
 
     @Override
@@ -120,6 +120,15 @@ public class HostZabbix extends Host {
     @Override
     public double getFreeDiskGb() {
         return totalDiskGb - getAssignedDiskGb();
+    }
+
+    @Override
+    public void refreshMonitoringInfo() {
+        items = zabbixClient.getItemsFromHost(hostname);
+        zabbixClient.getAllItems();
+        initTotalResources();
+        initAssignedResources();
+        currentPower = Float.parseFloat(getItemByKey(POWER_KEY).getLastValue());
     }
 
 }

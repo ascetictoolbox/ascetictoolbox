@@ -76,4 +76,10 @@ public class HostFake extends Host {
                 + " than the total amount of disk space");
     }
 
+    @Override
+    public void refreshMonitoringInfo() {
+        // Do nothing.
+    }
+
+
 }

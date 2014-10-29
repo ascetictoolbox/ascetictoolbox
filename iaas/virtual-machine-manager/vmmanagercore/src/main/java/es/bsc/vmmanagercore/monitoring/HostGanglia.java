@@ -35,8 +35,12 @@ public class HostGanglia extends Host {
 
     public HostGanglia(String hostname) {
         super(hostname);
+        setGangliaHost();
+        initTotalResources();
+        initAssignedResources();
+    }
 
-        //get the Ganglia host from its hostname
+    private void setGangliaHost() {
         List<Cluster> clusterList = new Ganglia().getGridInfo();
         for (Cluster cluster : clusterList) {
             List<es.bsc.monitoring.ganglia.infrastructure.Host> hosts = cluster.getHosts();
@@ -46,9 +50,6 @@ public class HostGanglia extends Host {
                 }
             }
         }
-
-        initTotalResources();
-        initAssignedResources();
     }
 
     private void initTotalResources() {
@@ -108,6 +109,13 @@ public class HostGanglia extends Host {
     @Override
     public double getFreeDiskGb() {
         return totalDiskGb - getAssignedDiskGb();
+    }
+
+    @Override
+    public void refreshMonitoringInfo() {
+        setGangliaHost();
+        initTotalResources();
+        initAssignedResources();
     }
 
 }

@@ -91,7 +91,7 @@ public class VmManager {
 
         VmManagerConfiguration conf = VmManagerConfiguration.getInstance();
         selectMiddleware(conf.middleware);
-        initializeHostsAccordingToMonitoring(conf.monitoring, conf.hosts);
+        initializeHosts(conf.monitoring, conf.hosts);
         List<VmDeployed> vmsDeployed = getAllVms();
         scheduler = new Scheduler(db.getCurrentSchedulingAlg(), vmsDeployed);
 
@@ -554,9 +554,24 @@ public class VmManager {
      * @param monitoring the monitoring software (Ganglia, Zabbix, etc.)
      * @param hostnames the names of the hosts in the infrastructure
      */
-    private void initializeHostsAccordingToMonitoring(VmManagerConfiguration.Monitoring monitoring,
-                                                      String[] hostnames) {
-        switch (monitoring) {
+    private void initializeHosts(VmManagerConfiguration.Monitoring monitoring, String[] hostnames) {
+        for (String hostname: hostnames) {
+            switch (monitoring) {
+                case OPENSTACK:
+                    hosts.add(HostFactory.getHost(hostname, HostType.OPENSTACK, (JCloudsMiddleware) cloudMiddleware));
+                    break;
+                case GANGLIA:
+                    hosts.add(HostFactory.getHost(hostname, HostType.GANGLIA, null));
+                    break;
+                case ZABBIX:
+                    hosts.add(HostFactory.getHost(hostname, HostType.ZABBIX, null));
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        /*switch (monitoring) {
             case GANGLIA:
                 for (String hostname: hostnames) {
                     hosts.add(new HostGanglia(hostname));
@@ -574,7 +589,7 @@ public class VmManager {
                 break;
             default:
                 throw new IllegalArgumentException("The monitoring software selected is not supported.");
-        }
+        }*/
     }
 
     /**
