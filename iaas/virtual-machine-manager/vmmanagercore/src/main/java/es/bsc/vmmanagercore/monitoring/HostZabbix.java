@@ -18,11 +18,7 @@
 
 package es.bsc.vmmanagercore.monitoring;
 
-import eu.ascetic.asceticarchitecture.iaas.zabbixApi.client.ZabbixClient;
-import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Item;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Status of a host monitored by Zabbix.
@@ -42,92 +38,45 @@ public class HostZabbix extends Host {
     private static final String USED_DISK_BYTES_KEY = "vfs.fs.size[/var/lib/nova/instances,used]";
     private static final String POWER_KEY = "power";
 
-    private final static ZabbixClient zabbixClient = ZabbixConnector.getZabbixClient();
-    private List<Item> items = new ArrayList<>(); // Metrics available in the host
+    private final int zabbixId;
 
     public HostZabbix(String hostname) {
         super(hostname);
-        items = zabbixClient.getItemsFromHost(hostname);
-        initTotalResources();
-        initAssignedResources();
-        currentPower = Float.parseFloat(getItemByKey(POWER_KEY).getLastValue());
+        zabbixId = getZabbixId(hostname);
+        updateMetrics();
     }
 
-    private Item getItemByKey(String key) {
-        for (Item item: items) {
-            if (item.getKey().equals(key)) {
-                return item;
-            }
+    // I am 'cheating' here. The Zabbix ID should not be hardcoded
+    private int getZabbixId(String hostname) {
+        switch(hostname) {
+            case "asok09":
+                return ZabbixConnector.ASOK09_ID;
+            case "asok10":
+                return ZabbixConnector.ASOK10_ID;
+            case "asok11":
+                return ZabbixConnector.ASOK11_ID;
+            case "asok12":
+                return ZabbixConnector.ASOK12_ID;
+            default:
+                break;
         }
-        return null;
+        throw new IllegalArgumentException("Invalid hostname");
     }
 
-    private void initTotalResources() {
-        totalCpus = Integer.parseInt(getItemByKey(NUMBER_OF_CPUS_KEY).getLastValue());
-        totalMemoryMb = (int) ((Long.parseLong(getItemByKey(TOTAL_MEMORY_BYTES_KEY).getLastValue()))/(1024*1024));
-        totalDiskGb = (Long.parseLong(getItemByKey(TOTAL_DISK_BYTES_KEY).getLastValue()))/(1024.0*1024*1024);
-    }
-
-    private void initAssignedResources() {
-        assignedCpus = getAssignedCpus();
-        assignedMemoryMb = getAssignedMemoryMb();
-        assignedDiskGb = getAssignedDiskGb();
-    }
-
-    @Override
-    public double getAssignedCpus() {
-        double assignedCpus = Double.parseDouble(getItemByKey(SYSTEM_CPU_LOAD_KEY).getLastValue());
-        updateAssignedCpus(assignedCpus);
-        return assignedCpus;
-    }
-
-    @Override
-    public double getAssignedMemoryMb() {
-        int availableMemoryMb = (int) (Long.parseLong(getItemByKey(AVAILABLE_MEMORY_BYTES_KEY)
-                .getLastValue())/(1024*1024));
-        double assignedMemoryMb = totalMemoryMb - availableMemoryMb;
-        updateAssignedMemoryMb(assignedMemoryMb);
-        return assignedMemoryMb;
-    }
-
-    @Override
-    public double getAssignedDiskGb() {
-        double assignedDiskGb = (Double.parseDouble(getItemByKey(USED_DISK_BYTES_KEY)
-                .getLastValue())/(1024.0*1024*1024));
-        updateAssignedDiskGb(assignedDiskGb);
-        return assignedDiskGb;
-    }
-
-    /**
-     * @return number of available CPUs of the host
-     */
-    @Override
-    public double getFreeCpus() {
-        return totalCpus - getAssignedCpus();
-    }
-
-    /**
-     * @return available memory of the host (in MB)
-     */
-    @Override
-    public double getFreeMemoryMb() {
-        return totalMemoryMb - getAssignedMemoryMb();
-    }
-
-    /**
-     * @return available disk space of the host (in GB)
-     */
-    @Override
-    public double getFreeDiskGb() {
-        return totalDiskGb - getAssignedDiskGb();
+    private void updateMetrics() {
+        Map<String, Double> latestMetricValues = ZabbixConnector.getHostItems(zabbixId);
+        totalCpus = latestMetricValues.get(NUMBER_OF_CPUS_KEY).intValue();
+        totalMemoryMb = (int) (latestMetricValues.get(TOTAL_MEMORY_BYTES_KEY)/(1024*1024));
+        totalDiskGb = latestMetricValues.get(TOTAL_DISK_BYTES_KEY)/(1024.0*1024*1024);
+        assignedCpus = latestMetricValues.get(SYSTEM_CPU_LOAD_KEY);
+        assignedMemoryMb = totalMemoryMb - latestMetricValues.get(AVAILABLE_MEMORY_BYTES_KEY)/(1024*1024);
+        assignedDiskGb = latestMetricValues.get(USED_DISK_BYTES_KEY)/(1024.0*1024*1024);
+        currentPower = latestMetricValues.get(POWER_KEY);
     }
 
     @Override
     public void refreshMonitoringInfo() {
-        items = zabbixClient.getItemsFromHost(hostname);
-        initTotalResources();
-        initAssignedResources();
-        currentPower = Float.parseFloat(getItemByKey(POWER_KEY).getLastValue());
+        updateMetrics();
     }
 
 }

@@ -20,6 +20,10 @@ package es.bsc.vmmanagercore.monitoring;
 
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.client.ZabbixClient;
 
+import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
@@ -30,6 +34,77 @@ public class ZabbixConnector {
 
     public static ZabbixClient getZabbixClient() {
         return zabbixClient;
+    }
+
+    // Zabbix DB
+    private static final String databaseURL = "jdbc:mysql://10.4.0.15/zabbix";
+    private static final String databaseDriver = "com.mysql.jdbc.Driver";
+    private static final String databaseUser = "zabbix";
+    private static final String databasePassword = "yxCHARvjZRJi";
+    private static final String[] ZABBIX_TABLES = {"history", "history_uint"};
+
+    private static Connection connection = null;
+
+    public static final int ASOK09_ID = 10105;
+    public static final int ASOK10_ID = 10084;
+    public static final int ASOK11_ID = 10107;
+    public static final int ASOK12_ID = 10106;
+
+    // Note: the keys that we need should not be hardcoded in the query
+    private static final String ZABBIX_QUERY = "SELECT i.key_, h.value "
+            + "FROM items i, XXXX h, "
+            + "(SELECT hs.itemid, max(hs.clock) AS mostrecent FROM XXXX hs GROUP BY hs.itemid) ms "
+            + "WHERE i.key_ IN ('system.cpu.num', 'system.cpu.load[all,avg1]', 'vm.memory.size[total]', " +
+            " 'vm.memory.size[available]', 'vm.memory.size[available]', " +
+            " 'vfs.fs.size[/var/lib/nova/instances,total]', 'vfs.fs.size[/var/lib/nova/instances,used]', 'power') AND "
+            + "h.itemid = ms.itemid AND "
+            + "h.clock = mostrecent AND "
+            + "h.itemid = i.itemid AND "
+            + "h.itemid IN (select it.itemid from hosts, items it "
+            + "WHERE hosts.hostid = it.hostid AND "
+            + "hosts.hostid = ?);";
+
+    /**
+     * Establishes a connection to the database.
+     *
+     * @return Connection object representing the connection
+     */
+    private static Connection getConnection() {
+        if (connection != null) {
+            return connection;
+        }
+        else {
+            System.setProperty("jdbc.drivers", databaseDriver); // Define JDBC driver
+            try {
+                Class.forName(databaseDriver); //Ensure that the driver has been loaded
+                connection = DriverManager.getConnection(databaseURL,databaseUser, databasePassword);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return connection;
+        }
+    }
+
+    public static Map<String, Double> getHostItems(int hostId) {
+        Map<String, Double> result = new HashMap<>();
+        try {
+            for (String historyTable: ZABBIX_TABLES) {
+                String query = ZABBIX_QUERY.replace("XXXX", historyTable);
+                try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
+                    preparedStatement.setInt(1, hostId); // host ID
+                    ResultSet resultSet = preparedStatement.executeQuery();
+                    while (resultSet.next()) {
+                        String key = resultSet.getString(1);
+                        double value = resultSet.getDouble(2);
+                        result.put(key, value);
+                    }
+                    resultSet.close();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
 }
