@@ -570,26 +570,6 @@ public class VmManager {
                     break;
             }
         }
-
-        /*switch (monitoring) {
-            case GANGLIA:
-                for (String hostname: hostnames) {
-                    hosts.add(new HostGanglia(hostname));
-                }
-                break;
-            case OPENSTACK:
-                for (String hostname: hostnames) {
-                    hosts.add(new HostOpenStack(hostname, (JCloudsMiddleware) cloudMiddleware));
-                }
-                break;
-            case ZABBIX:
-                for (String hostname: hostnames) {
-                    hosts.add(new HostZabbix(hostname));
-                }
-                break;
-            default:
-                throw new IllegalArgumentException("The monitoring software selected is not supported.");
-        }*/
     }
 
     /**
