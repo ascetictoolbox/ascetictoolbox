@@ -125,7 +125,6 @@ public class HostZabbix extends Host {
     @Override
     public void refreshMonitoringInfo() {
         items = zabbixClient.getItemsFromHost(hostname);
-        zabbixClient.getAllItems();
         initTotalResources();
         initAssignedResources();
         currentPower = Float.parseFloat(getItemByKey(POWER_KEY).getLastValue());
