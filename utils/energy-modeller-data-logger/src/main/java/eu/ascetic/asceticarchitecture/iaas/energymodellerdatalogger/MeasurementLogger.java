@@ -20,6 +20,7 @@ import eu.ascetic.ioutils.GenericLogger;
 import eu.ascetic.ioutils.ResultsStore;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.logging.Level;
 
 /**
@@ -40,10 +41,10 @@ public class MeasurementLogger extends GenericLogger<HostMeasurement> {
      * going on. It by default overwrites the previous file
      *
      * @param store The results store to save data to
-     * @param measurement The measurement to write to file
+     * @param measurements The measurement to write to file
      */
     @Override
-    public void saveToDisk(ResultsStore store, HostMeasurement measurement) {
+    public void saveToDisk(ResultsStore store, Collection<HostMeasurement> measurements) {
         try {
             if (!store.getResultsFile().exists() || metricNames.isEmpty()) {
                 /**
@@ -51,11 +52,21 @@ public class MeasurementLogger extends GenericLogger<HostMeasurement> {
                  * file is been appended to for the first time. i.e. the headers
                  * may be in a different order.
                  */
-                metricNames.addAll(measurement.getMetricNameList());
-                writeHeader(store);
+                for (HostMeasurement measurement : measurements) {
+                    metricNames.addAll(measurement.getMetricNameList());
+                    writeHeader(store);
+                    /**
+                     * This gets the first item out of the measurements list, so
+                     * the header can be written.
+                     */
+                    break;  
+                }
+
             }
-            writebody(measurement, store);
-            store.saveMemoryConservative();
+            for (HostMeasurement measurement : measurements) {
+                writebody(measurement, store);
+                store.saveMemoryConservative();
+            }
         } catch (Exception ex) {
             //logging is important but should not stop the main thread from running!
             java.util.logging.Logger.getLogger(GenericLogger.class.getName()).log(Level.SEVERE, "An error occurred when saving an item to disk", ex);
