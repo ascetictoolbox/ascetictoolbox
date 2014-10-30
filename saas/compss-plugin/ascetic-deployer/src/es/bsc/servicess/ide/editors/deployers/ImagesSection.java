@@ -27,6 +27,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
@@ -41,8 +42,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+
 import es.bsc.servicess.ide.Activator;
 import es.bsc.servicess.ide.Logger;
 import es.bsc.servicess.ide.PackageMetadata;
@@ -289,46 +292,83 @@ public class ImagesSection extends ServiceEditorSection {
 	 * Invokes the runnable for creating the service images
 	 */
 	protected void createServiceImages() {
-		ProgressMonitorDialog dialog = new ProgressMonitorDialog(editor.getSite().getShell());
+		//ProgressMonitorDialog dialog = new ProgressMonitorDialog(editor.getSite().getShell());
 		final String host = icsText.getText().trim();
 		final String repoPath = repoPathText.getText().trim();
 		final String rsyncPath = rsyncPathText.getText().trim();
 		final String rshPath = rshPathText.getText().trim();
 		final String rshUsername = usernameText.getText().trim();
 		final String rshKeyPath = userKeyPathText.getText().trim();
-		if (host != null && host.length() > 0 && repoPath != null && repoPath.length() > 0
-				&& rsyncPath != null && rsyncPath.length() > 0 	&& rshPath != null && rshPath.length() > 0
-				&& rshKeyPath != null && rshKeyPath.length() > 0 && rshUsername != null && rshUsername.length() > 0){
-			try {
-				dialog.run(false, false, new IRunnableWithProgress() {
+		if (!redoingImages && !deployer.isBlocking()){
+
+			if (host != null && host.length() > 0 && repoPath != null && repoPath.length() > 0
+					&& rsyncPath != null && rsyncPath.length() > 0 	&& rshPath != null && rshPath.length() > 0
+					&& rshKeyPath != null && rshKeyPath.length() > 0 && rshUsername != null && rshUsername.length() > 0){
+				final String serviceID = editor.getProject().getProject().getName();
+				Job job = new Job ("Creating Images for "+ serviceID){
+
+					@Override
+					public IStatus run(IProgressMonitor monitor){
+						redoingImages=true;
+						try {
+
+							/*/dialog.run(false, false, new IRunnableWithProgress() {
 
 					@Override
 					public void run(IProgressMonitor monitor)
-							throws InvocationTargetException, InterruptedException {
-						try {
+							throws InvocationTargetException, InterruptedException {*/
 							redoingImages=true;
 							executeImageCreation( host, repoPath, rsyncPath, rshPath, rshUsername, rshKeyPath, monitor);
 							redoingImages=false;
-						} catch (Exception e) {
+							sendFinishMessage(serviceID);
+							return Status.OK_STATUS;
+							
+
+						} catch (InterruptedException e) {
+							log.error("Error creating images", e);
+							Status errSt = new Status(Status.CANCEL, Activator.PLUGIN_ID,"Creation cancelled", e);
+							/*ErrorDialog.openError(editor.getSite().getShell(), "Error creating images",
+									e.getMessage(), errSt);*/
 							redoingImages=false;
-							throw (new InvocationTargetException(e));
+							return errSt;
+
+						} catch (InvocationTargetException e) {
+							log.error("Error creating images", e);
+							Status errSt = new Status(Status.ERROR, Activator.PLUGIN_ID,"Exception creating Images", e);
+							/*ErrorDialog.openError(editor.getSite().getShell(), "Error creating images",
+									e.getMessage(), );*/
+							redoingImages=false;
+							return errSt;
+
+						} catch (Exception e) {
+							log.error("Error creating images", e);
+							Status errSt = new Status(Status.ERROR, Activator.PLUGIN_ID,"Exception creating Images", e);	redoingImages=false;
+							redoingImages=false;
+							return errSt;
 						}
+						
 					}
-				});
-			} catch (InterruptedException e) {
-				log.error("Error creating images", e);
-				ErrorDialog.openError(editor.getSite().getShell(), "Error creating images",
-					e.getMessage(), new Status(Status.ERROR, Activator.PLUGIN_ID,"Exception creating Images", e));
-			} catch (InvocationTargetException e) {
-				log.error("Error creating images", e);
-				ErrorDialog.openError(editor.getSite().getShell(), "Error creating images",
-					e.getMessage(), new Status(Status.ERROR, Activator.PLUGIN_ID,"Exception creating Images", e));
+
+				};
+				job.setUser(true);
+				job.schedule();
+			}else{
+				log.error("Empty image creation service");
+				ErrorDialog.openError(editor.getSite().getShell(),"Empty Location" , "Image Creation Service loaction is empty",
+						new Status(Status.ERROR, Activator.PLUGIN_ID, "Image Creation Service loaction is empty"));
 			}
-		}else{
-			log.error("Empty image creation service");
-			ErrorDialog.openError(editor.getSite().getShell(),"Empty Location" , "Image Creation Service loaction is empty",
-				 new Status(Status.ERROR, Activator.PLUGIN_ID, "Image Creation Service loaction is empty"));
-		}
+		}else
+			MessageDialog.openInformation(getShell(), "Incompatible work in Progress", 
+					"There is a deployment or another image creation job in progress");
+	}
+
+	private void sendFinishMessage(final String serviceID) {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				MessageDialog.openInformation(getShell(), "Image Creation Finished", 
+						"Job for creating the images of service " + serviceID + " has finished.");
+			}
+		});
 	}
 
 	/**
@@ -341,7 +381,7 @@ public class ImagesSection extends ServiceEditorSection {
 	 */
 	protected void executeImageCreation(String location, String repoPath, String rsyncPath, 
 			String rshPath, String rshUsername, String rshKeyPath, IProgressMonitor monitor)
-			throws Exception {
+			throws InterruptedException, Exception {
 		Manifest manifest = deployer.getManifest();
 		if (manifest == null) {
 			if (MessageDialog.openQuestion(getShell(), AsceticDeployer.CREATE_PACKS_DEF_TITLE, 
@@ -384,6 +424,9 @@ public class ImagesSection extends ServiceEditorSection {
 		IFolder packageFolder = editor.getProject().getProject().
 				getFolder(OUTPUT_FOLDER).getFolder(PACKAGES_FOLDER);
 		ImageCreation.generateConfigurationFiles(allPacks, packageFolder, prMeta, monitor);
+		if (monitor.isCanceled()){
+			throw new InterruptedException("Creation Cancelled");
+		}
 		if (oePacks != null && oePacks.length > 0) {
 			for (String p : oePacks) {
 				ImageCreation.uploadOrchestrationPackages(vmic, p, oePacks[0], allPacks,

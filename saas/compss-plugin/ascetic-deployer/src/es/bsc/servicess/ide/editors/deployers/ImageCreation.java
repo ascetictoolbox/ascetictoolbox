@@ -18,7 +18,6 @@ package es.bsc.servicess.ide.editors.deployers;
 import integratedtoolkit.types.project.ProjectFile;
 import integratedtoolkit.types.resources.ResourcesFile;
 import integratedtoolkit.util.RuntimeConfigManager;
-
 import static es.bsc.servicess.ide.Constants.*;
 
 import java.io.ByteArrayInputStream;
@@ -79,10 +78,12 @@ public class ImageCreation {
 	public static void uploadOrchestrationPackages(VmicApi vmic,
 			String packName, String schPackage, String[] packs, IFolder packageFolder,
 			ProjectMetadata pr_meta, PackageMetadata packMeta, Manifest manifest, IProgressMonitor monitor ) 
-				throws Exception{
+					throws InterruptedException, Exception {
 		InstallationScript is = new InstallationScript(MOUNT_POINT_VAR+IMAGE_DEPLOYMENT_FOLDER);
 		generatePropertiesFile(packName, schPackage, packs, packageFolder, monitor);
-		
+		if (monitor.isCanceled()){
+			throw new InterruptedException("Creation Cancelled");
+		}
 		monitor.subTask("Uploading war file with orchestration elements");
 		IFile f = packageFolder.getFile(packName + ".war");
 		if (f!=null && f.exists()){
@@ -92,6 +93,10 @@ public class ImageCreation {
 					.toFile(), packageFolder, PackagingUtils.WAR_CLASSES_PATH, monitor);
 			log.debug("Uploading " + f.getLocation().toOSString());
 			uploadWar(vmic, f.getLocation().toFile(), manifest, is, monitor);
+		}
+		monitor.worked(1);
+		if (monitor.isCanceled()){
+			throw new InterruptedException("Creation Cancelled");
 		}
 		f = packageFolder.getFile(packName + ".jar");
 		if (f!=null && f.exists()){
@@ -103,21 +108,26 @@ public class ImageCreation {
 			uploadAndCopy(vmic, f.getLocation().toFile(), manifest, is, monitor);
 		}
 		monitor.worked(1);
-		
+		if (monitor.isCanceled()){
+			throw new InterruptedException("Creation Cancelled");
+		}
 		monitor.beginTask("Uploading files for " + packName, 12);
-		
 		// Uploading file
 		monitor.subTask("Uploading runtime configuration files orchestration elements");
 		f = packageFolder.getFile("project.xml");
 		log.debug("Uploading " + f.getLocation().toOSString());
 		uploadAndCopy(vmic, f.getLocation().toFile(), manifest, is, monitor);
 		monitor.worked(1);
-		
+		if (monitor.isCanceled()){
+			throw new InterruptedException("Creation Cancelled");
+		}
 		f = packageFolder.getFile("resources.xml");
 		log.debug("Uploading " + f.getLocation().toOSString());
 		uploadAndCopy(vmic, f.getLocation().toFile(), manifest, is, monitor);
 		monitor.worked(1);
-		
+		if (monitor.isCanceled()){
+			throw new InterruptedException("Creation Cancelled");
+		}
 		/*f = packageFolder.getFile("service_manifest.xml");
 		log.debug("Uploading " + f.getLocation().toOSString());
 		uploadFile(resource, f.getLocation().toFile(), image_id);
@@ -129,20 +139,24 @@ public class ImageCreation {
 			uploadAndCopy(vmic, file, manifest, is, monitor);
 		}
 		monitor.worked(1);
-		
+		if (monitor.isCanceled()){
+			throw new InterruptedException("Creation Cancelled");
+		}
 		file = new File(pr_meta.getRuntimeLocation()
 				+ COMPSS_RT_XMLS_PATH+COMPSS_PROJECTS_PATH+COMPSS_PROJECT_SCHEMA_NAME);
 		if (f != null && f.exists()) {
 			uploadAndCopy(vmic, file, manifest, is, monitor);
 		}
 		monitor.worked(1);
-		
+		if (monitor.isCanceled()){
+			throw new InterruptedException("Creation Cancelled");
+		}
 		file = new File(pr_meta.getRuntimeLocation()
 				+ COMPSS_RT_XMLS_PATH+COMPSS_RESOURCES_PATH+COMPSS_RESOURCE_SCHEMA_NAME);
 		if (f != null && f.exists()) {
 			uploadAndCopy(vmic, file, manifest, is, monitor);
 		}
-		monitor.worked(1);
+		
 		/*
 		file = new File(pr_meta.getRuntimeLocation()
 				+ COMPSS_RT_SCRIPTS_PATH + COMPSS_SYSTEM_PATH+ "worker.sh");
@@ -165,11 +179,16 @@ public class ImageCreation {
 			uploadAndCopy(vmic, file, manifest, is, monitor);
 		}*/
 		monitor.worked(1);
-		
+		monitor.worked(1);
+		if (monitor.isCanceled()){
+			throw new InterruptedException("Creation Cancelled");
+		}
 		monitor.subTask("Setting file permissions in core elements installations");
 		settingExecutablePermissions(new String[] { MOUNT_POINT_VAR+IMAGE_DEPLOYMENT_FOLDER + "*.sh" },is);
 		monitor.worked(1);
-		
+		if (monitor.isCanceled()){
+			throw new InterruptedException("Creation Cancelled");
+		}
 		monitor.subTask("Uploading war file with orchestration elements");
 		f = packageFolder.getFile(packName + ".war");
 		if (f!=null && f.exists()){
@@ -190,7 +209,9 @@ public class ImageCreation {
 			uploadAndCopy(vmic, f.getLocation().toFile(), manifest, is, monitor);
 		}
 		monitor.worked(1);
-		
+		if (monitor.isCanceled()){
+			throw new InterruptedException("Creation Cancelled");
+		}
 		monitor.subTask("Uploading dependencies");
 		f = packageFolder.getFile(packName + "_deps.zip");
 		if (f != null && f.exists()) {
@@ -201,21 +222,34 @@ public class ImageCreation {
 			// TODO he borrado algo??
 		}
 		monitor.worked(1);
+		if (monitor.isCanceled()){
+			throw new InterruptedException("Creation Cancelled");
+		}
 		List<Dependency> packDeps = pr_meta.getAllDependencies(packMeta
 				.getElementsInPackage(packName));
 		deployZipDeps(vmic, packDeps, packName, 
 				packageFolder, manifest, is, monitor);
 		monitor.worked(1);
-		
+		if (monitor.isCanceled()){
+			throw new InterruptedException("Creation Cancelled");
+		}
 		deployWarDeps(vmic, packDeps, packName, 
 				packageFolder, manifest, is, monitor);
 		monitor.worked(1);
-		
+		if (monitor.isCanceled()){
+			throw new InterruptedException("Creation Cancelled");
+		}
 		deployMonitoring(vmic, pr_meta.getRuntimeLocation(), manifest, is, monitor);
 		monitor.worked(1);
-		
+		if (monitor.isCanceled()){
+			throw new InterruptedException("Creation Cancelled");
+		}
 		manifest.addVMICExecutionInComponent(Manifest.generateManifestName(packName), is.getCommand());
 		monitor.done();
+		if (monitor.isCanceled()){
+			throw new InterruptedException("Creation Cancelled");
+		}
+		
 	}
 
 	private static void deployMonitoring(VmicApi vmic, String runtimeLocation, 
@@ -508,7 +542,8 @@ public class ImageCreation {
 	
 	public static void uploadCoreElementPackages(VmicApi vmic, String pack, 
 			IFolder packageFolder, ProjectMetadata prMeta, PackageMetadata packMeta, 
-			Manifest manifest, IJavaProject project, IProgressMonitor monitor) throws Exception{
+			Manifest manifest, IJavaProject project, IProgressMonitor monitor) 
+					throws InterruptedException, Exception{
 		InstallationScript is = new InstallationScript(MOUNT_POINT_VAR + IMAGE_DEPLOYMENT_FOLDER);
 		monitor.beginTask("Uploading packages for " + pack, 5);
 		
@@ -516,13 +551,18 @@ public class ImageCreation {
 		monitor.subTask("Uploading and unziping core elements");
 		uploadAndUnzip(vmic, f.getLocation().toFile(), manifest, is, monitor);
 		monitor.worked(1);
-				
+		if (monitor.isCanceled()){
+			throw new InterruptedException("Creation Cancelled");
+		}	
 		monitor.subTask("Uploading dependencies");
 		f = packageFolder.getFile(pack + "_deps.zip");
 		if (f != null && f.exists()) {
 			uploadAndUnzip(vmic, f.getLocation().toFile(), manifest, is, monitor);
 		}
 		monitor.worked(1);
+		if (monitor.isCanceled()){
+			throw new InterruptedException("Creation Cancelled");
+		}
 		HashMap<String, ServiceElement> coreElements = CommonFormPage.getElements(
 				prMeta.getAllOrchestrationClasses(), PackageMetadata.CORE_TYPE, 
 				project, prMeta);
@@ -531,16 +571,22 @@ public class ImageCreation {
 		monitor.subTask("Uploading zip dependencies");
 		deployZipDeps(vmic, packDeps, pack, packageFolder, manifest, is, monitor);
 		monitor.worked(1);
-		
+		if (monitor.isCanceled()){
+			throw new InterruptedException("Creation Cancelled");
+		}	
 		monitor.subTask("Uploading war dependencies");
 		deployWarDeps(vmic, packDeps, pack, packageFolder, manifest, is, monitor);
 		monitor.worked(1);
-		
+		if (monitor.isCanceled()){
+			throw new InterruptedException("Creation Cancelled");
+		}	
 		// Setting file permissions
 		monitor.subTask("Setting file permissions in core elements installations");
 		settingExecutablePermissions(new String[] { MOUNT_POINT_VAR + IMAGE_DEPLOYMENT_FOLDER + "*" },is);
 		monitor.worked(1);
-		
+		if (monitor.isCanceled()){
+			throw new InterruptedException("Creation Cancelled");
+		}	
 		manifest.addVMICExecutionInComponent(Manifest.generateManifestName(pack), is.getCommand());
 		monitor.done();
 	}
@@ -562,11 +608,14 @@ public class ImageCreation {
 	}
 	
 	public static void generateImages(VmicApi vmic, Manifest manifest, 
-			IProgressMonitor monitor) throws Exception {
+			IProgressMonitor monitor) throws InterruptedException, Exception {
 		monitor.beginTask("Creating Images", 100);
 		vmic.generateImage(manifest.getOVFDefinition());
 		boolean complete = false;
 		do{
+			if (monitor.isCanceled()){
+				throw new InterruptedException("Creation Cancelled");
+			}
 			Thread.sleep(CREATION_PULL_INTERVAL);
 			ProgressDataImage pd = (ProgressDataImage) vmic.progressCallback(
 					manifest.getServiceId(), null);
@@ -580,6 +629,7 @@ public class ImageCreation {
 			}else{
 				monitor.worked(pd.getCurrentPercentageCompletion().intValue());
 			}
+			
 		}while(!complete);
 		monitor.done();
 	}
