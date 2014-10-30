@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * Host factory
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  */

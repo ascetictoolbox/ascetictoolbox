@@ -29,7 +29,8 @@ import java.util.*;
 public class HostZabbix extends Host {
 
     // Keys to identify each metric in Zabbix.
-    // Note: The metrics used for the disk space are specific for the Ascetic project.
+    // Note: The metrics used for the disk space are specific for the Ascetic project. Also, some metrics might not
+    // be available by default in Zabbix. I had to add some of them manually.
     private static final String NUMBER_OF_CPUS_KEY = "system.cpu.num";
     private static final String SYSTEM_CPU_LOAD_KEY = "system.cpu.load[all,avg1]";
     private static final String TOTAL_MEMORY_BYTES_KEY = "vm.memory.size[total]";
@@ -38,16 +39,27 @@ public class HostZabbix extends Host {
     private static final String USED_DISK_BYTES_KEY = "vfs.fs.size[/var/lib/nova/instances,used]";
     private static final String POWER_KEY = "power";
 
-    private final int zabbixId;
+    private final int zabbixId; // Each host has an ID in Zabbix and this ID is not the hostname
 
+    /**
+     * Class constructor.
+     *
+     * @param hostname the hostname
+     */
     public HostZabbix(String hostname) {
         super(hostname);
         zabbixId = getZabbixId(hostname);
         updateMetrics();
     }
 
-    // I am 'cheating' here. The Zabbix ID should not be hardcoded
+    /**
+     * Returns the Zabbix ID for a specific host given its hostname.
+     *
+     * @param hostname the hostname
+     * @return the Zabbix ID
+     */
     private int getZabbixId(String hostname) {
+        // I am cheating here. The Zabbix ID should not be hardcoded
         switch(hostname) {
             case "asok09":
                 return ZabbixConnector.ASOK09_ID;
@@ -58,11 +70,14 @@ public class HostZabbix extends Host {
             case "asok12":
                 return ZabbixConnector.ASOK12_ID;
             default:
-                break;
+                throw new IllegalArgumentException("Invalid hostname");
         }
-        throw new IllegalArgumentException("Invalid hostname");
     }
 
+    /**
+     * This function updates the metrics (assigned cpus, memory, etc.) of the host based on the information that
+     * it receives from Zabbix.
+     */
     private void updateMetrics() {
         Map<String, Double> latestMetricValues = ZabbixConnector.getHostItems(zabbixId);
         totalCpus = latestMetricValues.get(NUMBER_OF_CPUS_KEY).intValue();

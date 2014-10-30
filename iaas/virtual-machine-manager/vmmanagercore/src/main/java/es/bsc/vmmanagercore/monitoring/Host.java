@@ -183,5 +183,9 @@ public abstract class Host {
         return new ServerLoad(assignedCpus/totalCpus, assignedMemoryMb/totalMemoryMb, assignedDiskGb/totalDiskGb);
     }
 
+    /**
+     * Refreshes the metrics of the host (assigned CPUs, memory, etc.).
+     */
     public abstract void refreshMonitoringInfo();
+
 }
