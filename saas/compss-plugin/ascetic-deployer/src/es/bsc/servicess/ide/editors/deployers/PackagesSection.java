@@ -611,31 +611,35 @@ public class PackagesSection extends ServiceEditorSection{
 	 * Generate the service package
 	 */
 	protected void generate() {
-		try{
-			redoingPackages= true;
-			if (automaticButton.getSelection()) {
-				definePackagesAutomatically();
+		if (!redoingPackages && !deployer.isBlocking()){
+			try{
+				redoingPackages= true;
+				if (automaticButton.getSelection()) {
+					definePackagesAutomatically();
+				}
+				buildPackages();
+				updateManifest();
+				redoingPackages=false;
+			} catch (InvocationTargetException e) {
+				log.error("Exception during package creation process execution", e);
+				ErrorDialog.openError(getShell(),
+						"Error creating packages", "Exception during package creation process execution", 
+						new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getCause().getMessage(),e.getCause()));
+
+			} catch (InterruptedException e) {
+				log.error("Package creation process interrumped", e);
+				ErrorDialog.openError(getShell(), "Package creation interrumped",
+						e.getMessage(),new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getMessage(),e));
+				e.printStackTrace();
+			} catch (Exception e) {
+				log.error("Error creating packages", e);
+				ErrorDialog.openError(getShell(),"Error defining packages", "Error during package definition",
+						new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getMessage(),e));
+
 			}
-			buildPackages();
-			updateManifest();
-			redoingPackages=false;
-		} catch (InvocationTargetException e) {
-			log.error("Exception during package creation process execution", e);
-			ErrorDialog.openError(getShell(),
-					"Error creating packages", "Exception during package creation process execution", 
-					new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getCause().getMessage(),e.getCause()));
-			
-		} catch (InterruptedException e) {
-			log.error("Package creation process interrumped", e);
-			ErrorDialog.openError(getShell(), "Package creation interrumped",
-					e.getMessage(),new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getMessage(),e));
-			e.printStackTrace();
-		} catch (Exception e) {
-			log.error("Error creating packages", e);
-			ErrorDialog.openError(getShell(),"Error defining packages", "Error during package definition",
-					new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getMessage(),e));
-			
-		}
+		}else
+			MessageDialog.openInformation(getShell(), "Incompatible work in Progress", 
+					"There is a deployment or image creation job in progress");
 	}
 	
 	private void updateManifest() throws Exception {
