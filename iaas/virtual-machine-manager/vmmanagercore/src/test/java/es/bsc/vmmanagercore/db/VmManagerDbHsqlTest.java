@@ -35,17 +35,12 @@ import static org.junit.Assert.*;
  */
 public class VmManagerDbHsqlTest {
 	
-	private static VmManagerDbHsql db;
+	private static VmManagerDb db;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() {
-		//create a test DB
-		try {
-			db = new VmManagerDbHsql("testDb");
-			db.deleteAllVms();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+        db = VmManagerDbFactory.getDb("tesDb");
+        db.deleteAllVms();
 	}
 	
 	@AfterClass

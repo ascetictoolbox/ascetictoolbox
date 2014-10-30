@@ -41,6 +41,7 @@ public class VmManagerDbHsql implements VmManagerDb {
     private final Gson gson = new Gson(); // Using JSON provisionally
 
     // Error messages
+    private static final String ERROR_DB_CONNECTION = "There was an error while connection to the DB";
     private static final String ERROR_SETUP_DB = "There was an error while trying to set up the DB.";
     private static final String ERROR_CLOSE_CONNECTION = "There was an error while closing the connection to the DB.";
     private static final String ERROR_CLEAN_DB = "There was an error while trying to clean the DB.";
@@ -49,12 +50,15 @@ public class VmManagerDbHsql implements VmManagerDb {
     private static final String ERROR_DELETE_ALL_VMS = "There was an error while deleting the VMs from the DB.";
     private static final String ERROR_GET_VMS_OF_APP = "There was an error while getting the VMs IDs from the DB.";
 
-    public VmManagerDbHsql(String dbFileNamePrefix) throws Exception {
-        // Load the HSQL Database Engine JDBC driver
-        Class.forName("org.hsqldb.jdbcDriver");
-
-        // Connect to the database. This will load the DB files and start the DB if it is not already running
-        conn = DriverManager.getConnection("jdbc:hsqldb:file:db/" + dbFileNamePrefix, "sa", "");
+    public VmManagerDbHsql(String dbFileNamePrefix) {
+        try {
+            // Load the HSQL Database Engine JDBC driver
+            Class.forName("org.hsqldb.jdbcDriver");
+            // Connect to the database. This will load the DB files and start the DB if it is not already running
+            conn = DriverManager.getConnection("jdbc:hsqldb:file:db/" + dbFileNamePrefix, "sa", "");
+        } catch (Exception e) {
+            System.out.println(ERROR_DB_CONNECTION);
+        }
         setupDb();
     }
     
@@ -110,7 +114,6 @@ public class VmManagerDbHsql implements VmManagerDb {
             update("CREATE TABLE IF NOT EXISTS self_adaptation_options "
                     + "(options LONGVARCHAR) ");
         } catch (SQLException e) {
-            e.printStackTrace();
             System.out.println(ERROR_SETUP_DB);
         }
 

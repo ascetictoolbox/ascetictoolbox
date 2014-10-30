@@ -19,7 +19,8 @@
 package es.bsc.vmmanagercore.cloudmiddleware;
 
 import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
-import es.bsc.vmmanagercore.db.VmManagerDbHsql;
+import es.bsc.vmmanagercore.db.VmManagerDb;
+import es.bsc.vmmanagercore.db.VmManagerDbFactory;
 import es.bsc.vmmanagercore.model.vms.Vm;
 import org.jclouds.openstack.nova.v2_0.domain.Flavor;
 import org.jclouds.openstack.nova.v2_0.domain.Server;
@@ -80,13 +81,9 @@ public class JCloudsMiddlewareTest {
 		testingImageId = VmManagerConfiguration.getInstance().testingImageId;
 		
 		//initialize JClouds variables
-		VmManagerDbHsql db = null;
-		try {
-			db = new VmManagerDbHsql("testDb");
-			db.deleteAllVms();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		VmManagerDb db = VmManagerDbFactory.getDb("testDb");
+		db.deleteAllVms();
+
 		jCloudsMiddleware = new JCloudsMiddleware(db);
         serverApi = jCloudsMiddleware.getNovaApi().getServerApiForZone(jCloudsMiddleware.getZone());
         flavorApi = jCloudsMiddleware.getNovaApi().getFlavorApiForZone(jCloudsMiddleware.getZone());

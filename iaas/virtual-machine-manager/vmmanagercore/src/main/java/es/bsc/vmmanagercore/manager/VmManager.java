@@ -22,7 +22,7 @@ import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddleware;
 import es.bsc.vmmanagercore.cloudmiddleware.JCloudsMiddleware;
 import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
 import es.bsc.vmmanagercore.db.VmManagerDb;
-import es.bsc.vmmanagercore.db.VmManagerDbHsql;
+import es.bsc.vmmanagercore.db.VmManagerDbFactory;
 import es.bsc.vmmanagercore.model.estimations.ListVmEstimates;
 import es.bsc.vmmanagercore.model.estimations.VmToBeEstimated;
 import es.bsc.vmmanagercore.model.images.ImageToUpload;
@@ -82,13 +82,7 @@ public class VmManager {
      * @param dbName the name of the DB
      */
     public VmManager(String dbName) {
-        // Choose the DB
-        try {
-            db = new VmManagerDbHsql(dbName);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        db = VmManagerDbFactory.getDb(dbName);
         VmManagerConfiguration conf = VmManagerConfiguration.getInstance();
         selectMiddleware(conf.middleware);
         initializeHosts(conf.monitoring, conf.hosts);
@@ -166,7 +160,6 @@ public class VmManager {
         String hostname = getVm(vmId).getHostName();
         cloudMiddleware.destroy(vmId);
         db.deleteVm(vmId);
-        db.closeConnection();
 
         // // If the monitoring system is Zabbix, then we need to delete the VM from Zabbix
         if (usingZabbix()) {
@@ -261,9 +254,6 @@ public class VmManager {
                 }
             }
         }
-
-        // Close the DB connection
-        db.closeConnection();
 
         // Return the IDs of the VMs deployed in the same order that they were received
         List<String> idsDeployedVms = new ArrayList<>();
