@@ -19,6 +19,8 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasou
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Scanner;
 import java.util.logging.Level;
 
@@ -38,14 +40,18 @@ public class Logger {
             System.exit(0);
         }
         String hostname = args[0];
-        System.out.println("This application will run continually until the word "
-                + "'quit' is written.)");
-        System.out.println("It is currently logging data out for: " + hostname);
-        System.out.println("This is being output to the file: Dataset_" + hostname + ".txt");
+        HashSet<String> strArgs = new HashSet<>();
+        strArgs.addAll(Arrays.asList(args));
         MeasurementLogger logger = new MeasurementLogger(new File("Dataset_" + hostname + ".txt"), false);
         new Thread(logger).start();
-        QuitWatcher quitWatcher = new QuitWatcher();
-        new Thread(quitWatcher).start();
+        if (!(strArgs.contains("silent") || strArgs.contains("s"))) {
+            System.out.println("This application will run continually until the word "
+                    + "'quit' is written.)");
+            System.out.println("It is currently logging data out for: " + hostname);
+            System.out.println("This is being output to the file: Dataset_" + hostname + ".txt");
+            QuitWatcher quitWatcher = new QuitWatcher();
+            new Thread(quitWatcher).start();
+        }
         ZabbixDirectDbDataSourceAdaptor adaptor = new ZabbixDirectDbDataSourceAdaptor();
         Host host = adaptor.getHostByName(hostname);
         while (running) {
@@ -60,8 +66,8 @@ public class Logger {
     }
 
     /**
-     * This looks for input from the console so that the application can be
-     * told when to quit.
+     * This looks for input from the console so that the application can be told
+     * when to quit.
      */
     private static class QuitWatcher implements Runnable {
 
