@@ -23,23 +23,23 @@
         .controller('ImageCtrl', ImageCtrl);
 
     /* @ngInject */
-    function ImageCtrl(ImageService, $scope) {
+    function ImageCtrl(ImageService) {
         var imageCtrl = this;
-        $scope.loading = true;
+        imageCtrl.loading = true;
         imageCtrl.imageAttributes = ['Name', 'ID', 'State', 'Actions'];
         imageCtrl.images = [];
         imageCtrl.sortingCriteria = ['name', 'id', 'status'];
         imageCtrl.columnSort = { criteria:imageCtrl.sortingCriteria[0], reverse:false };
 
-        imageCtrl.loadImages = loadImages;
         imageCtrl.deleteImage = deleteImage;
         imageCtrl.uploadImage = uploadImage;
         imageCtrl.changeColumnSort = changeColumnSort;
+        imageCtrl.refreshImageList = refreshImageList;
 
         activate();
 
         function activate() {
-            imageCtrl.loadImages();
+            loadImages();
         }
 
         function loadImages() {
@@ -49,11 +49,11 @@
                     function(response) {
                         imageCtrl.images = response.data.images;
                         toastr.success('List of images loaded.');
-                        $scope.loading = false;
+                        imageCtrl.loading = false;
                     },
                     function() {
                         toastr.error('Could not load the images');
-                        $scope.loading = false;
+                        imageCtrl.loading = false;
                     });
         }
 
@@ -63,7 +63,7 @@
                 .deleteImage(imageId)
                 .then(
                     function() {
-                        imageCtrl.loadImages();
+                        loadImages();
                         toastr.success('Image Deleted.');
                     },
                     function() {
@@ -78,7 +78,7 @@
                 .uploadImage(imageName, imageUrl)
                 .then(
                     function() {
-                        imageCtrl.loadImages();
+                        loadImages();
                         toastr.success('Image Uploaded.');
                     },
                     function() {
@@ -90,7 +90,12 @@
             imageCtrl.columnSort = { criteria: imageCtrl.sortingCriteria[criteriaIndex], reverse: reverse };
         }
 
+        function refreshImageList() {
+            toastr.info('Refreshing list of images...');
+            loadImages();
+        }
+
     }
-    ImageCtrl.$inject = ['ImageService', '$scope'];
+    ImageCtrl.$inject = ['ImageService'];
 
 })();

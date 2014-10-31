@@ -270,6 +270,7 @@ iaas/virtual-machine-manager/vmmanager-frontend/app/controllers/hostCtrl.js -tex
 iaas/virtual-machine-manager/vmmanager-frontend/app/controllers/imageCtrl.js -text
 iaas/virtual-machine-manager/vmmanager-frontend/app/controllers/logsCtrl.js -text
 iaas/virtual-machine-manager/vmmanager-frontend/app/controllers/schedulingAlgCtrl.js -text
+iaas/virtual-machine-manager/vmmanager-frontend/app/controllers/selfAdaptationCtrl.js -text
 iaas/virtual-machine-manager/vmmanager-frontend/app/controllers/sidebarCtrl.js -text
 iaas/virtual-machine-manager/vmmanager-frontend/app/controllers/vmManagerCtrl.js -text
 iaas/virtual-machine-manager/vmmanager-frontend/app/controllers/vmPlacementCtrl.js -text
@@ -283,6 +284,7 @@ iaas/virtual-machine-manager/vmmanager-frontend/app/services/hostService.js -tex
 iaas/virtual-machine-manager/vmmanager-frontend/app/services/imageService.js -text
 iaas/virtual-machine-manager/vmmanager-frontend/app/services/logService.js -text
 iaas/virtual-machine-manager/vmmanager-frontend/app/services/schedulingAlgService.js -text
+iaas/virtual-machine-manager/vmmanager-frontend/app/services/selfAdaptationService.js -text
 iaas/virtual-machine-manager/vmmanager-frontend/app/services/services.js -text
 iaas/virtual-machine-manager/vmmanager-frontend/app/services/vmPlacementService.js -text
 iaas/virtual-machine-manager/vmmanager-frontend/app/services/vmService.js -text
@@ -294,6 +296,7 @@ iaas/virtual-machine-manager/vmmanager-frontend/app/views/hosts.html -text
 iaas/virtual-machine-manager/vmmanager-frontend/app/views/images.html -text
 iaas/virtual-machine-manager/vmmanager-frontend/app/views/logs.html -text
 iaas/virtual-machine-manager/vmmanager-frontend/app/views/schedulingAlgorithms.html -text
+iaas/virtual-machine-manager/vmmanager-frontend/app/views/selfAdaptation.html -text
 iaas/virtual-machine-manager/vmmanager-frontend/app/views/virtualMachines.html -text
 iaas/virtual-machine-manager/vmmanager-frontend/app/views/zabbix.html -text
 iaas/virtual-machine-manager/vmmanager-frontend/css/bootstrap.min.css -text

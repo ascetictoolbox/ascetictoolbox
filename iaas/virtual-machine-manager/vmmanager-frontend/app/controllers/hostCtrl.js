@@ -23,10 +23,10 @@
         .controller('HostCtrl', HostCtrl);
 
     /* @ngInject */
-    function HostCtrl(HostService, $scope) {
+    function HostCtrl(HostService) {
 
         var hostCtrl = this;
-        $scope.loading = true;
+        hostCtrl.loading = true;
         hostCtrl.hostAttributes = ['Host', 'CPUs', 'CPUs used (%)', 'RAM(MB)', 'RAM used (%)',
             'Disk(GB)', 'Disk used (%)', 'Current Power (W)'];
         hostCtrl.hosts = [];
@@ -34,13 +34,13 @@
             'assignedMemoryMb/totalMemoryMb', 'totalDiskGb', 'assignedDiskGb/totalDiskGb', 'currentPower'];
         hostCtrl.columnSort = { criteria:hostCtrl.sortingCriteria[0], reverse:false };
 
-        hostCtrl.loadHosts = loadHosts;
         hostCtrl.changeColumnSort = changeColumnSort;
+        hostCtrl.refreshHostList = refreshHostList;
 
         activate();
 
         function activate() {
-            hostCtrl.loadHosts();
+            loadHosts();
         }
 
         function loadHosts() {
@@ -50,11 +50,11 @@
                     function(response) {
                         hostCtrl.hosts = response.data.nodes;
                         toastr.success('List of Hosts loaded.');
-                        $scope.loading = false;
+                        hostCtrl.loading = false;
                     },
                     function() {
                         toastr.error('Could not load the hosts.');
-                        $scope.loading = false;
+                        hostCtrl.loading = false;
                     });
         }
 
@@ -62,7 +62,12 @@
             hostCtrl.columnSort = { criteria: hostCtrl.sortingCriteria[criteriaIndex], reverse: reverse };
         }
 
+        function refreshHostList() {
+            toastr.info('Refreshing list of hosts...');
+            loadHosts();
+        }
+
     }
-    HostCtrl.$inject = ['HostService', '$scope'];
+    HostCtrl.$inject = ['HostService'];
 
 })();

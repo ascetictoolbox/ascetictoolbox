@@ -27,7 +27,8 @@
         return {
             getConstructionHeuristics: getConstructionHeuristics,
             getLocalSearchAlgs: getLocalSearchAlgs,
-            getVmPlacement: getVmPlacement
+            getVmPlacement: getVmPlacement,
+            executeVmPlacement: executeVmPlacement
         };
 
         function getConstructionHeuristics() {
@@ -38,16 +39,12 @@
             return $http({method: 'GET', url: BASE_URL + 'vm_placement/local_search_algorithms'});
         }
 
-        function getVmPlacement(timeLimit, constructionHeuristic, localSearchAlgName, localSearchAlgOptions) {
-            var placementRequest = {
-                timeLimitSeconds: timeLimit,
-                constructionHeuristicName: constructionHeuristic,
-                localSearchAlgorithm: {
-                    name: localSearchAlgName,
-                    options: localSearchAlgOptions
-                }
-            };
+        function getVmPlacement(placementRequest) {
             return $http({method: 'PUT', url: BASE_URL + 'vm_placement/recommended_plan', data: placementRequest});
+        }
+
+        function executeVmPlacement(vmPlacement) {
+            return $http({method: 'PUT', url: BASE_URL + 'vm_placement/execute_deployment_plan', data: vmPlacement});
         }
     }
     VmPlacementService.$inject = ['$http', 'BASE_URL'];

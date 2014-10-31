@@ -23,10 +23,10 @@
         .controller('LogsCtrl', LogsCtrl);
 
     /* @ngInject */
-    function LogsCtrl(LogService, $scope) {
+    function LogsCtrl(LogService) {
 
         var logsCtrl = this;
-        $scope.loading = true;
+        logsCtrl.loading = true;
         logsCtrl.logs = '';
         logsCtrl.logHeaders = [];
         logsCtrl.getDeploymentLogs = getDeploymentLogs;
@@ -45,11 +45,11 @@
                         logsCtrl.logs = response.data.toString().split('\n');
                         getLogHeaders();
                         toastr.success('Logs loaded.');
-                        $scope.loading = false;
+                        logsCtrl.loading = false;
                     },
                     function() {
                         toastr.error('Could not load the logs');
-                        $scope.loading = false;
+                        logsCtrl.loading = false;
                     });
         }
 
@@ -109,6 +109,6 @@
         }
 
     }
-    LogsCtrl.$inject = ['LogService', '$scope'];
+    LogsCtrl.$inject = ['LogService'];
 
 })();

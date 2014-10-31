@@ -51,6 +51,11 @@
                 controller: 'SchedulingAlgCtrl',
                 controllerAs: 'schedulingAlgorithms'
             })
+            .when('/self_adaptation', {
+                templateUrl: 'app/views/selfAdaptation.html',
+                controller: 'SelfAdaptationCtrl',
+                controllerAs: 'selfAdaptation'
+            })
             .when('/hosts/', {
                 templateUrl: 'app/views/hosts.html',
                 controller: 'HostCtrl',

@@ -23,10 +23,10 @@
         .controller('VmManagerController', vmManagerCtrl);
 
     /* @ngInject */
-    function vmManagerCtrl(VmService, $scope) {
+    function vmManagerCtrl(VmService) {
 
         var vmmanager = this;
-        $scope.loading = true;
+        vmmanager.loading = true;
         vmmanager.vmAttributes = ['Name', 'ID', 'Image', 'CPUs', 'RAM(MB)',
             'Disk(GB)', 'State', 'IP', 'Host', 'Created', 'App ID', 'Actions'];
         vmmanager.vmActions = ['Destroy', 'Hard reboot', 'Soft reboot', 'Start', 'Stop', 'Suspend', 'Resume'];
@@ -35,17 +35,17 @@
         vmmanager.columnSort = { criteria:vmmanager.sortingCriteria[9], reverse:true };
         vmmanager.vms = [];
 
-        vmmanager.loadVms = loadVms;
         vmmanager.deleteVm = deleteVm;
         vmmanager.performActionVm = performActionVm;
         vmmanager.changeColumnSort = changeColumnSort;
         vmmanager.performAction = performAction;
         vmmanager.newVm = newVm;
+        vmmanager.refreshVmList = refreshVmList;
 
         activate();
 
         function activate() {
-            vmmanager.loadVms();
+            loadVms();
         }
 
         function loadVms() {
@@ -55,12 +55,12 @@
                     function(response) {
                         vmmanager.vms = response.data.vms;
                         convertVmsStringDates();
-                        $scope.loading = false;
+                        vmmanager.loading = false;
                         toastr.success('List of VMs loaded.');
                     },
                     function() {
                         toastr.error('Could not load the list of VMs.');
-                        $scope.loading = false;
+                        vmmanager.loading = false;
                     });
         }
 
@@ -69,7 +69,7 @@
                 .deleteVm(vmId)
                 .then(
                     function() {
-                        vmmanager.loadVms();
+                        loadVms();
                         toastr.success('VM deleted.');
                     },
                     function() {
@@ -82,7 +82,7 @@
                 .performActionOnVm(vmId, apiAction)
                 .then(
                     function() {
-                        vmmanager.loadVms();
+                        loadVms();
                         toastr.success('Action performed on VM.');
                     },
                     function() {
@@ -127,11 +127,24 @@
         function newVm(name, imageId, cpus, ramMb, diskGb, appId) {
             $('#myModal').modal('hide'); // TODO: This should be done using a directive
             toastr.info('Deploying VM...');
+
+            var newVm = {
+                vms: [
+                    {
+                        name: name,
+                        image: imageId,
+                        cpus: cpus,
+                        ramMb: ramMb,
+                        diskGb: diskGb,
+                        applicationId: appId
+                    }
+                ]};
+
             VmService
-                .deployVm(name, imageId, cpus, ramMb, diskGb, appId)
+                .deployVm(newVm)
                 .then(
                     function() {
-                        vmmanager.loadVms();
+                        loadVms();
                         toastr.success("VM deployed.");
                     },
                     function() {
@@ -147,7 +160,12 @@
             });
         }
 
+        function refreshVmList() {
+            toastr.info('Refreshing list of VMs...');
+            loadVms();
+        }
+
     }
-    vmManagerCtrl.$inject = ['VmService', '$scope'];
+    vmManagerCtrl.$inject = ['VmService'];
 
 })();

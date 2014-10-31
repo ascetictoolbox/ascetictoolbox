@@ -20,33 +20,23 @@
 
     angular
         .module('vmmanager.services')
-        .factory('VmService', VmService);
+        .factory('SelfAdaptationService', SelfAdaptationService);
 
     /* @ngInject */
-    function VmService($http, BASE_URL) {
+    function SelfAdaptationService($http, BASE_URL) {
         return {
-            getVms: getVms,
-            deployVm: deployVm,
-            deleteVm: deleteVm,
-            performActionOnVm: performActionOnVm
+            getSelfAdaptationOptions: getSelfAdaptationOptions,
+            saveSelfAdaptationOptions: saveSelfAdaptationOptions
         };
 
-        function getVms() {
-            return $http({method: 'GET', url: BASE_URL + 'vms'});
+        function getSelfAdaptationOptions() {
+            return $http({method: 'GET', url: BASE_URL + 'self_adaptation/options'});
         }
 
-        function deployVm(vm) {
-            return $http({method: 'POST', url: BASE_URL + 'vms/', data: vm});
-        }
-
-        function deleteVm(vmId) {
-            return $http({method: 'DELETE', url: BASE_URL + 'vms/' + vmId});
-        }
-
-        function performActionOnVm(vmId, apiAction) {
-            return $http({method: 'PUT', url: BASE_URL + 'vms/' + vmId, data: {action: apiAction}});
+        function saveSelfAdaptationOptions(options) {
+            return $http({method: 'PUT', url: BASE_URL + 'self_adaptation/options', data: options});
         }
     }
-    VmService.$inject = ['$http', 'BASE_URL'];
+    SelfAdaptationService.$inject = ['$http', 'BASE_URL'];
 
 })();

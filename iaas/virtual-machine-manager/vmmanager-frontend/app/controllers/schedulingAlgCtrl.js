@@ -23,10 +23,10 @@
         .controller('SchedulingAlgCtrl', SchedulingAlgCtrl);
 
     /* @ngInject */
-    function SchedulingAlgCtrl(SchedulingAlgService, $q, $scope) {
+    function SchedulingAlgCtrl(SchedulingAlgService, $q) {
 
         var schedulingAlgCtrl = this;
-        $scope.loading = true;
+        schedulingAlgCtrl.loading = true;
         schedulingAlgCtrl.algorithms = [];
         schedulingAlgCtrl.currentAlgorithm = '';
         schedulingAlgCtrl.changeSchedulingAlg = changeSchedulingAlg;
@@ -60,16 +60,16 @@
                         schedulingAlgCtrl.algorithms = responses[0].data.scheduling_algorithms;
                         schedulingAlgCtrl.currentAlgorithm = responses[1].data.name;
                         toastr.success('Scheduling algorithms loaded.');
-                        $scope.loading = false;
+                        schedulingAlgCtrl.loading = false;
                     },
                     function() {
                         toastr.error('Could not load the current scheduling algorithm.');
-                        $scope.loading = false;
+                        schedulingAlgCtrl.loading = false;
                     }
                 );
         }
 
     }
-    SchedulingAlgCtrl.$inject = ['SchedulingAlgService', '$q', '$scope'];
+    SchedulingAlgCtrl.$inject = ['SchedulingAlgService', '$q'];
 
 })();

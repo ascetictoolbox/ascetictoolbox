@@ -30,6 +30,7 @@
         vmPlacement.localSearchAlgs = [];
         vmPlacement.recommendedPlan = [];
         vmPlacement.getVmPlacement = getVmPlacement;
+        vmPlacement.executeVmPlacement = executeVmPlacement;
         vmPlacement.inputOptionIsActive = inputOptionIsActive;
         vmPlacement.showOptions = showOptions;
 
@@ -66,6 +67,7 @@
 
         function getVmPlacement(timeLimit, heuristic, localSearchAlg, optionSize, optionAcceptedCountLimit,
                 optionInitialHardTemp, optionInitialSoftTemp) {
+            toastr.info('Calculating a new deployment plan...');
             var localSearchAlgOptions;
             switch (localSearchAlg) {
                 case 'Hill Climbing':
@@ -91,8 +93,17 @@
                     break;
             }
 
+            var placementRequest = {
+                timeLimitSeconds: timeLimit,
+                constructionHeuristicName: heuristic,
+                localSearchAlgorithm: {
+                    name: localSearchAlg,
+                    options: localSearchAlgOptions
+                }
+            };
+
             VmPlacementService
-                .getVmPlacement(timeLimit, heuristic, localSearchAlg, localSearchAlgOptions)
+                .getVmPlacement(placementRequest)
                 .then(
                     function(response) {
                         vmPlacement.recommendedPlan = response.data.plan;
@@ -103,6 +114,23 @@
                     });
 
             $('#vmPlacementModal').modal('hide'); // TODO: This should be done using a directive
+        }
+
+        function executeVmPlacement() {
+            var placementToExecute = [];
+            $.map(vmPlacement.recommendedPlan, function(value, index) { // Convert to the format needed
+                placementToExecute.push({vmId: index, hostname: value});
+            });
+
+            VmPlacementService
+                .executeVmPlacement(placementToExecute)
+                .then(
+                    function() {
+                       toastr.success('Deployment plan executed correctly.');
+                    },
+                    function() {
+                        toastr.error('Error while executing the deployment plan');
+                    });
         }
 
         function inputOptionIsActive(localSearchAlgName, option) {

@@ -64,9 +64,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
         <button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#myModal">
             Launch VM
         </button>
-        <button type="button" class="btn btn-default pull-right" ng-click="vms.loadVms()">Refresh</button>
+        <button type="button" class="btn btn-default pull-right" ng-click="vms.refreshVmList()">Refresh</button>
     </div>
-    <div loading-spinner="loading"></div>
+    <div loading-spinner="vms.loading"></div>
 
     <!-- Modal Launch VM -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
