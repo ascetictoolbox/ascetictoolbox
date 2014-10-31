@@ -19,6 +19,7 @@
 package es.bsc.vmmanagercore.scheduler;
 
 import es.bsc.vmmanagercore.model.scheduling.DeploymentPlan;
+import es.bsc.vmmanagercore.model.scheduling.VmAssignmentToHost;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,8 +44,30 @@ public class DeploymentPlanFilterer {
      */
     public static List<DeploymentPlan> filterDeploymentPlans(List<DeploymentPlan> deploymentPlans) {
         List<DeploymentPlan> result = new ArrayList<>();
-        for (DeploymentPlan deploymentPlan: deploymentPlans) {
+
+        /* Ugly hack: in the Ascetic project I should not consider Asok10 */
+        List<DeploymentPlan> plansWithoutExcludedHosts = filterDeploymentPlansThatUseHost(deploymentPlans, "Asok10");
+
+        for (DeploymentPlan deploymentPlan: plansWithoutExcludedHosts) {
             if (deploymentPlan.canBeApplied()) {
+                result.add(deploymentPlan);
+            }
+        }
+
+        return result;
+    }
+
+    private static List<DeploymentPlan> filterDeploymentPlansThatUseHost(List<DeploymentPlan> deploymentPlans,
+                                                                  String hostname) {
+        List<DeploymentPlan> result = new ArrayList<>();
+        for (DeploymentPlan deploymentPlan: deploymentPlans) {
+            boolean asok10Used = false;
+            for (VmAssignmentToHost vmAssignment: deploymentPlan.getVmsAssignationsToHosts()) {
+                if (vmAssignment.getHost().getHostname().equals(hostname)) {
+                    asok10Used = true;
+                }
+            }
+            if (!asok10Used) {
                 result.add(deploymentPlan);
             }
         }
