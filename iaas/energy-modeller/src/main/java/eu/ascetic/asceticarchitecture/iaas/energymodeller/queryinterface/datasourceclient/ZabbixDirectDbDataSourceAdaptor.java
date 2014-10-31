@@ -79,7 +79,7 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
      */
     private static final String ALL_ZABBIX_HOSTS = "SELECT hostid, host FROM hosts where status <> 3 and available > 0";
     /**
-     * This query searches for a named host it's current latest items.
+     * This query searches for a named host and provides it's current latest items.
      *
      * The order of the ? is as follows: table, table, hostid
      *
@@ -205,12 +205,22 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
      */
     private static Connection getConnection(Connection connection) {
         try {
-            if (connection == null || connection.isClosed()) {
+            if (connection == null) {
                 return getConnection();
+            }
+            if (connection.isValid(30)) {
+                return getConnection();                
             }
             return connection;
         } catch (SQLException | IOException | ClassNotFoundException ex) {
             DB_LOGGER.log(Level.SEVERE, "Failed to establish the connection to the Zabbix DB", ex);
+            try {
+                if (connection == null || connection.isValid(30)) {                
+                    return getConnection();
+                }
+            } catch (    SQLException | IOException | ClassNotFoundException ex1) {
+                Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName()).log(Level.SEVERE, "Failed to connect to the Zabbix DB on the second attempt", ex1);
+            }
         }
         return null;
     }

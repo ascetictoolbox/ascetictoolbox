@@ -86,12 +86,22 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
      */
     private static Connection getConnection(Connection connection) {
         try {
-            if (connection == null || connection.isClosed()) {
+            if (connection == null) {
+                return getConnection();
+            }
+            if (connection.isValid(30)) {
                 return getConnection();
             }
             return connection;
         } catch (SQLException | IOException | ClassNotFoundException ex) {
-            Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, "Failed to establish the connection to the database", ex);
+            try {
+                if (connection == null || connection.isValid(30)) {
+                    return getConnection();
+                }
+            } catch (SQLException | IOException | ClassNotFoundException ex1) {
+                Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, "Failed to connect to the database on the second attempt", ex1);
+            }
         }
         return null;
     }
@@ -156,7 +166,7 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
             return null;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
-                        "SELECT host_id , host_name  FROM host");
+                "SELECT host_id , host_name  FROM host");
                 ResultSet resultSet = preparedStatement.executeQuery()) {
             ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
             for (ArrayList<Object> hostData : results) {
@@ -184,7 +194,7 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
             return null;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
-                        "SELECT vm_id , vm_name  FROM vm");
+                "SELECT vm_id , vm_name  FROM vm");
                 ResultSet resultSet = preparedStatement.executeQuery()) {
             ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
             for (ArrayList<Object> hostData : results) {
@@ -226,7 +236,7 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
             return null;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
-                        "SELECT calibration_id, host_id, cpu, memory, energy FROM host_calibration_data WHERE host_id = ?")) {
+                "SELECT calibration_id, host_id, cpu, memory, energy FROM host_calibration_data WHERE host_id = ?")) {
             preparedStatement.setInt(1, host.getId());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 ArrayList<ArrayList<Object>> result = resultSetToArray(resultSet);
@@ -256,7 +266,7 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
             return;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
-                        "INSERT INTO host (host_id, host_name) VALUES (?,?) ON DUPLICATE KEY UPDATE host_name=VALUES(`host_name`);")) {
+                "INSERT INTO host (host_id, host_name) VALUES (?,?) ON DUPLICATE KEY UPDATE host_name=VALUES(`host_name`);")) {
             for (Host host : hosts) {
                 preparedStatement.setInt(1, host.getId());
                 preparedStatement.setString(2, host.getHostName());
@@ -281,7 +291,7 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
             return;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
-                        "INSERT INTO vm (vm_id, vm_name) VALUES (?,?) ON DUPLICATE KEY UPDATE vm_name=VALUES(`vm_name`);")) {
+                "INSERT INTO vm (vm_id, vm_name) VALUES (?,?) ON DUPLICATE KEY UPDATE vm_name=VALUES(`vm_name`);")) {
             for (VmDeployed vm : vms) {
                 preparedStatement.setInt(1, vm.getId());
                 preparedStatement.setString(2, vm.getName());
@@ -305,8 +315,8 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
             return;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
-                        "INSERT INTO host_calibration_data (host_id, cpu, memory, energy) VALUES (?, ?, ? , ?) "
-                        + " ON DUPLICATE KEY UPDATE host_id=VALUES(`host_id`), cpu=VALUES(`cpu`), memory=VALUES(`memory`), energy=VALUES(`energy`);")) {
+                "INSERT INTO host_calibration_data (host_id, cpu, memory, energy) VALUES (?, ?, ? , ?) "
+                + " ON DUPLICATE KEY UPDATE host_id=VALUES(`host_id`), cpu=VALUES(`cpu`), memory=VALUES(`memory`), energy=VALUES(`energy`);")) {
             preparedStatement.setInt(1, host.getId());
             for (HostEnergyCalibrationData data : host.getCalibrationData()) {
                 preparedStatement.setDouble(1, host.getId());
@@ -339,7 +349,7 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
             return;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
-                        "INSERT INTO host_measurement (host_id, clock, energy, power) VALUES (?, ?, ? , ?);")) {
+                "INSERT INTO host_measurement (host_id, clock, energy, power) VALUES (?, ?, ? , ?);")) {
             preparedStatement.setInt(1, host.getId());
             preparedStatement.setLong(2, time);
             preparedStatement.setDouble(3, energy);
@@ -413,7 +423,7 @@ public class DefaultDatabaseConnector implements DatabaseConnector {
             return;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
-                        "INSERT INTO vm_measurement (host_id, vm_id, clock, cpu_load) VALUES (?, ?, ? , ?);")) {
+                "INSERT INTO vm_measurement (host_id, vm_id, clock, cpu_load) VALUES (?, ?, ? , ?);")) {
             preparedStatement.setInt(1, host.getId());
             for (VmDeployed vm : load.getVMs()) {
                 preparedStatement.setInt(2, vm.getId());

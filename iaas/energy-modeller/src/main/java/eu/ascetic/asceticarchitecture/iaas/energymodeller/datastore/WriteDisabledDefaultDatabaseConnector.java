@@ -21,7 +21,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage
 import java.util.Collection;
 
 /**
- *
+ * This provides a default database connector that can only work in a read only mode.
  * @author Richard
  */
 public class WriteDisabledDefaultDatabaseConnector extends DefaultDatabaseConnector {
