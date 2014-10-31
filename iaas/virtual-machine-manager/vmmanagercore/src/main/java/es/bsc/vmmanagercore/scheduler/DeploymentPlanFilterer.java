@@ -46,7 +46,7 @@ public class DeploymentPlanFilterer {
         List<DeploymentPlan> result = new ArrayList<>();
 
         /* Ugly hack: in the Ascetic project I should not consider Asok10 */
-        List<DeploymentPlan> plansWithoutExcludedHosts = filterDeploymentPlansThatUseHost(deploymentPlans, "Asok10");
+        List<DeploymentPlan> plansWithoutExcludedHosts = filterDeploymentPlansThatUseHost(deploymentPlans, "asok10");
 
         for (DeploymentPlan deploymentPlan: plansWithoutExcludedHosts) {
             if (deploymentPlan.canBeApplied()) {
