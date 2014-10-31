@@ -44,30 +44,32 @@ public class DeploymentPlanFilterer {
      */
     public static List<DeploymentPlan> filterDeploymentPlans(List<DeploymentPlan> deploymentPlans) {
         List<DeploymentPlan> result = new ArrayList<>();
-
-        /* Ugly hack: in the Ascetic project I should not consider Asok10 */
-        List<DeploymentPlan> plansWithoutExcludedHosts = filterDeploymentPlansThatUseHost(deploymentPlans, "asok10");
-
-        for (DeploymentPlan deploymentPlan: plansWithoutExcludedHosts) {
+        for (DeploymentPlan deploymentPlan: deploymentPlans) {
             if (deploymentPlan.canBeApplied()) {
                 result.add(deploymentPlan);
             }
         }
-
         return result;
     }
 
-    private static List<DeploymentPlan> filterDeploymentPlansThatUseHost(List<DeploymentPlan> deploymentPlans,
-                                                                  String hostname) {
+    /**
+     * From a list of deployment plans, returns only the ones that do not schedule any VMs on a specified host.
+     *
+     * @param deploymentPlans the list of deployment plans
+     * @param hostname the hostname
+     * @return the filtered list of deployment plans
+     */
+    public static List<DeploymentPlan> filterDeploymentPlansThatUseHost(List<DeploymentPlan> deploymentPlans,
+                                                                        String hostname) {
         List<DeploymentPlan> result = new ArrayList<>();
         for (DeploymentPlan deploymentPlan: deploymentPlans) {
-            boolean asok10Used = false;
+            boolean bannedHostUsed = false;
             for (VmAssignmentToHost vmAssignment: deploymentPlan.getVmsAssignationsToHosts()) {
                 if (vmAssignment.getHost().getHostname().equals(hostname)) {
-                    asok10Used = true;
+                    bannedHostUsed = true;
                 }
             }
-            if (!asok10Used) {
+            if (!bannedHostUsed) {
                 result.add(deploymentPlan);
             }
         }

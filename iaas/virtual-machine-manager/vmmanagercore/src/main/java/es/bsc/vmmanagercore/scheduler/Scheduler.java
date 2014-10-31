@@ -307,6 +307,10 @@ public class Scheduler {
         List<DeploymentPlan> possibleDeploymentPlans =
                 new DeploymentPlanGenerator().getPossibleDeploymentPlans(vms, hosts);
 
+        // TODO. This is an ugly quick fix for Ascetic so asok10 is never used.
+        possibleDeploymentPlans = DeploymentPlanFilterer.filterDeploymentPlansThatUseHost(
+                possibleDeploymentPlans, "asok10");
+
         // Find the best deployment plan
         DeploymentPlan bestDeploymentPlan = schedAlgorithm.chooseBestDeploymentPlan(
                 possibleDeploymentPlans, hosts, deploymentId);
@@ -315,8 +319,13 @@ public class Scheduler {
             VMMLogger.logChosenDeploymentPlan(bestDeploymentPlan.toString(), deploymentId);
         }
         else { // No plans could be chosen, so apply overbooking
+
+            // TODO. Ugly fix included again to avoid deploying VMs to asok10
             bestDeploymentPlan = findBestEffortDeploymentPlan(
-                    new DeploymentPlanGenerator().getDeploymentPlansWithoutRestrictions(vms, hosts), hosts);
+                    DeploymentPlanFilterer.filterDeploymentPlansThatUseHost(
+                            new DeploymentPlanGenerator().getDeploymentPlansWithoutRestrictions(vms, hosts),
+                            "asok10"),
+                    hosts);
             VMMLogger.logOverbookingNeeded(deploymentId);
         }
 
