@@ -28,9 +28,9 @@ import java.util.*;
  */
 public class HostZabbix extends Host {
 
-    // Keys to identify each metric in Zabbix.
-    // Note: The metrics used for the disk space are specific for the Ascetic project. Also, some metrics might not
-    // be available by default in Zabbix. I had to add some of them manually.
+    /* Keys to identify each metric in Zabbix.
+       Note: The metrics used for the disk space are specific for the Ascetic project. Also, some metrics might not
+       be available by default in Zabbix. I had to add some of them manually. */
     private static final String NUMBER_OF_CPUS_KEY = "system.cpu.num";
     private static final String SYSTEM_CPU_LOAD_KEY = "system.cpu.load[all,avg1]";
     private static final String TOTAL_MEMORY_BYTES_KEY = "vm.memory.size[total]";
@@ -75,18 +75,36 @@ public class HostZabbix extends Host {
     }
 
     /**
-     * This function updates the metrics (assigned cpus, memory, etc.) of the host based on the information that
-     * it receives from Zabbix.
+     * This function updates the metrics (assigned cpus, memory, etc.) of the host based on the information
+     * received from Zabbix.
      */
     private void updateMetrics() {
         Map<String, Double> latestMetricValues = ZabbixConnector.getHostItems(zabbixId);
-        totalCpus = latestMetricValues.get(NUMBER_OF_CPUS_KEY).intValue();
-        totalMemoryMb = (int) (latestMetricValues.get(TOTAL_MEMORY_BYTES_KEY)/(1024*1024));
-        totalDiskGb = latestMetricValues.get(TOTAL_DISK_BYTES_KEY)/(1024.0*1024*1024);
-        assignedCpus = latestMetricValues.get(SYSTEM_CPU_LOAD_KEY);
-        assignedMemoryMb = totalMemoryMb - latestMetricValues.get(AVAILABLE_MEMORY_BYTES_KEY)/(1024*1024);
-        assignedDiskGb = latestMetricValues.get(USED_DISK_BYTES_KEY)/(1024.0*1024*1024);
-        currentPower = latestMetricValues.get(POWER_KEY);
+
+        /* If there is an error while trying to get data from Zabbix, some of the fields that I expect to be in
+           the latestMetricValues map are not going to be there. Therefore, I need to check that they are not null */
+        if (latestMetricValues.get(NUMBER_OF_CPUS_KEY) != null) {
+            totalCpus = latestMetricValues.get(NUMBER_OF_CPUS_KEY).intValue();
+        }
+        if (latestMetricValues.get(TOTAL_MEMORY_BYTES_KEY) != null) {
+            totalMemoryMb = (int) (latestMetricValues.get(TOTAL_MEMORY_BYTES_KEY) / (1024 * 1024));
+        }
+        if (latestMetricValues.get(TOTAL_DISK_BYTES_KEY) != null) {
+            totalDiskGb = latestMetricValues.get(TOTAL_DISK_BYTES_KEY) / (1024.0 * 1024 * 1024);
+        }
+        if (latestMetricValues.get(SYSTEM_CPU_LOAD_KEY) != null) {
+            assignedCpus = latestMetricValues.get(SYSTEM_CPU_LOAD_KEY);
+        }
+        if (latestMetricValues.get(AVAILABLE_MEMORY_BYTES_KEY) != null) {
+            assignedMemoryMb = totalMemoryMb - latestMetricValues.get(AVAILABLE_MEMORY_BYTES_KEY) / (1024 * 1024);
+        }
+        if (latestMetricValues.get(USED_DISK_BYTES_KEY) != null) {
+            assignedDiskGb = latestMetricValues.get(USED_DISK_BYTES_KEY) / (1024.0 * 1024 * 1024);
+        }
+        if (latestMetricValues.get(POWER_KEY) != null) {
+            currentPower = latestMetricValues.get(POWER_KEY);
+        }
+
     }
 
     @Override

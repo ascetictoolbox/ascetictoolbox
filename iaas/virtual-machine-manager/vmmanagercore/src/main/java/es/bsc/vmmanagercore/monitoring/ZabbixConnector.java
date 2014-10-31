@@ -101,22 +101,19 @@ public class ZabbixConnector {
      */
     public static Map<String, Double> getHostItems(int hostId) {
         Map<String, Double> result = new HashMap<>();
-        try {
-            for (String historyTable: ZABBIX_TABLES) {
-                String query = ZABBIX_QUERY.replace("XXXX", historyTable);
-                try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
-                    preparedStatement.setInt(1, hostId);
-                    ResultSet resultSet = preparedStatement.executeQuery();
-                    while (resultSet.next()) {
-                        String key = resultSet.getString(1);
-                        double value = resultSet.getDouble(2);
-                        result.put(key, value);
-                    }
-                    resultSet.close();
+        for (String historyTable: ZABBIX_TABLES) {
+            String query = ZABBIX_QUERY.replace("XXXX", historyTable);
+            try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
+                preparedStatement.setInt(1, hostId);
+                ResultSet resultSet = preparedStatement.executeQuery();
+                while (resultSet.next()) {
+                    result.put(resultSet.getString(1), resultSet.getDouble(2)); // key at pos 1 and value at pos 2
                 }
+                resultSet.close();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            catch (Exception e) {
+                System.out.println("Could not get data from Zabbix");
+            }
         }
         return result;
     }
