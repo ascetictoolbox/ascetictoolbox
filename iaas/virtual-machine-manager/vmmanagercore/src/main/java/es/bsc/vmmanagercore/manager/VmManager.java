@@ -88,14 +88,8 @@ public class VmManager {
         initializeHosts(conf.monitoring, conf.hosts);
         List<VmDeployed> vmsDeployed = getAllVms();
         scheduler = new Scheduler(db.getCurrentSchedulingAlg(), vmsDeployed);
-
-        if (scheduler.getSchedulingAlgorithmName().equals(SchedulingAlgorithm.ENERGY_AWARE.getName())) {
-            energyModeller = EnergyModeller.getInstance();
-        }
-        else if (scheduler.getSchedulingAlgorithmName().equals(SchedulingAlgorithm.COST_AWARE.getName())) {
-            energyModeller = EnergyModeller.getInstance(); // Our pricing modeller needs the energy modeller
-            pricingModeller = new IaaSPricingModeller();
-        }
+        energyModeller = EnergyModeller.getInstance();
+        pricingModeller = new IaaSPricingModeller();
     }
 
 
