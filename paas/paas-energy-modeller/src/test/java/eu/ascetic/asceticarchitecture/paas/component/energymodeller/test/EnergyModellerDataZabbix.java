@@ -16,7 +16,7 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.task
 
 public class EnergyModellerDataZabbix {
 
-	private static String HOST = "cb65d79c-8f68-428e-9166-ece36ac27949";
+	private static String HOST = "c33fb406-7dde-4c23-aa58-063be456aedd";
 	private static String HOST2 = "59d2ae8d-1ea0-46df-993f-fddbdd48c830";
 	private static String HOST3 = "8f805a34-4ef1-4a9a-93e8-028651de28cc";
 	private static String hst ="asok10";

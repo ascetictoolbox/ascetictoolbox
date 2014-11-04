@@ -32,21 +32,22 @@ public class EnergyDataAggregatorService implements DataAggregatorTaskInterface 
 	@Override
 	public double getAverage(String app, String depl, String vmid, String event) {
 		double result = dataDAO.getTotalEnergyForVM(app, depl, vmid);
-		Timestamp min = dataDAO.getFirsttConsumptionForVM(app, vmid);
-		Timestamp max= dataDAO.getLastConsumptionForVM(app, vmid);
-		if (min == null){
-			return -1;
-		}
-		if (max == null){
-			return -1;
-		}
-		double diff = max.getTime()-min.getTime();
-		diff = diff / 3600000;
+//		Timestamp min = dataDAO.getFirsttConsumptionForVM(app, vmid);
+//		Timestamp max= dataDAO.getLastConsumptionForVM(app, vmid);
+//		if (min == null){
+//			return -1;
+//		}
+//		if (max == null){
+//			return -1;
+//		}
+		//double diff = max.getTime()-min.getTime();
+		//diff = diff / 3600000;
 		
-		if (result>0)logger.info("Total is "+result + " over "+diff);
+		//if (result>0)logger.info("Total is "+result + " over "+diff);
 		//logger.info("Average is "+result );
-		if (diff==0)return 0;
-		return result/diff;
+		//if (diff==0)return 0;
+		//return result/diff;
+		return result;
 	}
 
 	@Override
@@ -55,12 +56,13 @@ public class EnergyDataAggregatorService implements DataAggregatorTaskInterface 
 		
 		logger.debug("Total is "+result);
 		//logger.info("Per hour is "+result );
-		double diff = end -start;
-		logger.debug("from "+start + " to "+end);
-		diff = diff / 3600000;
-		if (result>0)logger.info("Total is "+result + " over "+diff);
-		if (diff==0)return 0;
-		return result/diff;
+		//double diff = end -start;
+		//logger.debug("from "+start + " to "+end);
+		//diff = diff / 3600000;
+		//if (result>0)logger.info("Total is "+result + " over "+diff);
+		//if (diff==0)return 0;
+		//return result/diff;
+		return result;
 		
 	}
 	public double getAvgPower(String app, String vmid,String event, long start, long end) {

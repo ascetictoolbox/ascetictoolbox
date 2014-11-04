@@ -28,8 +28,14 @@ public class EnergyModellerData {
 //	HST 6ee74f86-1c39-412c-9866-94a49b3aed0d_asok09
 	
 	private static EnergyModellerSimple serviceEM;
-	private static String HOST = "cb65d79c-8f68-428e-9166-ece36ac27949";
-	private static String EVENT = "core0impl0";
+	private static String HOST = "e33bf9f7-f500-4776-8016-3eca8d4817a5";
+	private static String HOST2 = "16070ce5-9f09-4c6d-a7fc-fe5e814e46ba";
+//	private static String HOST3 = "96a8e5ea-9335-4cec-96da-b5bb34349adb";
+//	private static String HOST4 = "a54d58a7-4772-4106-8522-6adb0d8bdbf7";
+
+
+
+	private static String EVENT = "TestSession1";
 	private static String APP = "JEPlus";
 	
 	
@@ -55,7 +61,11 @@ public class EnergyModellerData {
 		System.out.println("Test Energy App Event");
 		List<String> vmids = new Vector<String>();
 		vmids.add(HOST);
-		double energy  = serviceEM.energyApplicationConsumption(null, APP, vmids, EVENT);
+		vmids.add(HOST2);
+//		vmids.add(HOST3);
+//		vmids.add(HOST4);
+		//vmids.add(HOST5);
+		double energy  = serviceEM.energyApplicationConsumption(null, APP, vmids, null);
 		System.out.println("--------------------------------------------RESULT:"+energy);
 		Assert.assertNotNull(energy);
 	}
