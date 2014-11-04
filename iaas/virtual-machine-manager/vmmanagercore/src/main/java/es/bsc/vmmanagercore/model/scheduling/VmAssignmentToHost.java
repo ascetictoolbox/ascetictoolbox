@@ -56,8 +56,11 @@ public class VmAssignmentToHost {
         return host;
     }
 
-    public VmEstimate getVmEstimate(List<VmDeployed> vmsDeployed) {
-        return new VmEstimate(vm.getName(), getPowerEstimate(vmsDeployed), getPriceEstimate(vmsDeployed));
+    public VmEstimate getVmEstimate(List<VmDeployed> vmsDeployed, DeploymentPlan deploymentPlan) {
+        return new VmEstimate(
+                vm.getName(),
+                getPowerEstimate(vmsDeployed, deploymentPlan),
+                getPriceEstimate(vmsDeployed, deploymentPlan));
     }
 
     /**
@@ -66,8 +69,8 @@ public class VmAssignmentToHost {
      * @param vmsDeployed VMs deployed in the infrastructure
      * @return the predicted avg power
      */
-    private double getPowerEstimate(List<VmDeployed> vmsDeployed) {
-        return EnergyModellerConnector.getPredictedAvgPowerVm(vm, host, vmsDeployed, null);
+    private double getPowerEstimate(List<VmDeployed> vmsDeployed, DeploymentPlan deploymentPlan) {
+        return EnergyModellerConnector.getPredictedAvgPowerVm(vm, host, vmsDeployed, deploymentPlan);
     }
 
     /**
@@ -76,8 +79,8 @@ public class VmAssignmentToHost {
      * @param vmsDeployed VMs deployed in the infrastructure
      * @return the predicted energy
      */
-    private double getEnergyEstimate(List<VmDeployed> vmsDeployed) {
-        return EnergyModellerConnector.getPredictedEnergyVm(vm, host, vmsDeployed, null);
+    private double getEnergyEstimate(List<VmDeployed> vmsDeployed, DeploymentPlan deploymentPlan) {
+        return EnergyModellerConnector.getPredictedEnergyVm(vm, host, vmsDeployed, deploymentPlan);
     }
 
     /**
@@ -86,8 +89,8 @@ public class VmAssignmentToHost {
      * @param vmsDeployed VMs deployed in the infrastructure
      * @return the predicted price
      */
-    private double getPriceEstimate(List<VmDeployed> vmsDeployed) {
-        return PricingModellerConnector.getVmCost(getEnergyEstimate(vmsDeployed), host.getHostname());
+    private double getPriceEstimate(List<VmDeployed> vmsDeployed, DeploymentPlan deploymentPlan) {
+        return PricingModellerConnector.getVmCost(getEnergyEstimate(vmsDeployed, deploymentPlan), host.getHostname());
     }
 
     @Override

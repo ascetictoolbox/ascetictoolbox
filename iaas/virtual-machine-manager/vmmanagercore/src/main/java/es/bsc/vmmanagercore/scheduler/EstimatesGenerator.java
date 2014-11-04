@@ -44,7 +44,7 @@ public class EstimatesGenerator {
     public ListVmEstimates getVmEstimates(DeploymentPlan deploymentPlan, List<VmDeployed> vmsDeployed) {
         List<VmEstimate> vmEstimates = new ArrayList<>();
         for (VmAssignmentToHost vmAssignmentToHost: deploymentPlan.getVmsAssignationsToHosts()) {
-            vmEstimates.add(vmAssignmentToHost.getVmEstimate(vmsDeployed));
+            vmEstimates.add(vmAssignmentToHost.getVmEstimate(vmsDeployed, deploymentPlan));
         }
         return new ListVmEstimates(vmEstimates);
     }
