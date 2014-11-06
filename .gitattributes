@@ -25,6 +25,7 @@ iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymod
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/datastore/DataGatherer.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/datastore/DatabaseConnector.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/datastore/DefaultDatabaseConnector.java -text
+iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/datastore/MySqlDatabaseConnector.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/datastore/VmEnergyUsageLogger.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/datastore/WriteDisabledDefaultDatabaseConnector.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/energypredictor/AbstractEnergyPredictor.java -text

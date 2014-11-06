@@ -15,6 +15,7 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient;
 
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.MySqlDatabaseConnector;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.BOOT_TIME_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_COUNT_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_IDLE_KPI_NAME;
@@ -32,9 +33,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -53,7 +52,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
  *
  * @author Richard
  */
-public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
+public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector implements HostDataSource {
 
     /**
      * Get max item id values for history items select itemid, max(clock) from
@@ -223,54 +222,6 @@ public class ZabbixDirectDbDataSourceAdaptor implements HostDataSource {
             }
         }
         return null;
-    }
-
-    /**
-     * This converts a result set into an array list structure that has alll the
-     * objects precast and ready for use.
-     *
-     * @param results The result set to convert
-     * @return The ArrayList representing the object.
-     * @throws SQLException Thrown if there is errors in the meta data or if the
-     * type specified in the meta data is not found.
-     */
-    private ArrayList<ArrayList<Object>> resultSetToArray(ResultSet results) throws SQLException {
-        ArrayList<ArrayList<Object>> table = new ArrayList<>();
-        ResultSetMetaData metaData = results.getMetaData();
-
-        int numberOfColumns = metaData.getColumnCount();
-
-        // Loop through the result set
-        while (results.next()) {
-            ArrayList<Object> row = new ArrayList<>();
-            for (int i = 1; i <= numberOfColumns; i++) {
-                if (results.getMetaData().getColumnType(i) == Types.BOOLEAN) {
-                    row.add(results.getBoolean(i));
-                } else if (results.getMetaData().getColumnType(i) == Types.BIGINT) {
-                    row.add(new Long(results.getLong(i)));
-                } else if (results.getMetaData().getColumnType(i) == Types.INTEGER) {
-                    row.add(new Integer(results.getInt(i)));
-                } else if (results.getMetaData().getColumnType(i) == Types.DECIMAL) {
-                    row.add(new Double(results.getDouble(i)));
-                } else if (results.getMetaData().getColumnType(i) == Types.DOUBLE) {
-                    row.add(new Double(results.getDouble(i)));
-                } else if (results.getMetaData().getColumnType(i) == Types.TINYINT) {
-                    row.add(new Integer(results.getInt(i)));
-                } else if (results.getMetaData().getColumnType(i) == Types.LONGVARCHAR) {
-                    row.add(results.getString(i));
-                } else if (results.getMetaData().getColumnType(i) == Types.VARCHAR) {
-                    row.add(results.getString(i));
-                } else if (results.getMetaData().getColumnType(i) == Types.NULL) {
-                    row.add(null);
-                } else if (results.getMetaData().getColumnTypeName(i).compareTo("datetime") == 0) {
-                    row.add(results.getDate(i));
-                } else {
-                    throw new SQLException("Error processing SQL datatype:" + results.getMetaData().getColumnTypeName(i));
-                }
-            }
-            table.add(row);
-        }
-        return table;
     }
 
     @Override
