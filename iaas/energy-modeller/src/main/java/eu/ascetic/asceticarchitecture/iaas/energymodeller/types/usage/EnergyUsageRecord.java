@@ -16,8 +16,8 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.EnergyUsageSource;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 
 /**
  * This represents the sources by which energy may be used within the energy modellers
@@ -26,13 +26,13 @@ import java.util.HashSet;
  */
 public abstract class EnergyUsageRecord {
 
-    private final HashSet<EnergyUsageSource> energyUser = new HashSet<>();    
+    private final ArrayList<EnergyUsageSource> energyUser = new ArrayList<>();    
 
     /**
      * This gets the energy users for the energy usage record.
      * @return the energy users that this record represents.
      */
-    public HashSet<EnergyUsageSource> getEnergyUser() {
+    public Collection<EnergyUsageSource> getEnergyUser() {
         return energyUser;
     }
     

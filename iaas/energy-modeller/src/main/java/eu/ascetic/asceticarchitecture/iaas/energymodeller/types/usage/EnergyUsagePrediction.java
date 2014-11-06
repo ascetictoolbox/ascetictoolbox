@@ -19,6 +19,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.EnergyUsageSource;
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.Objects;
 
 /**
  * This stores the result of a prediction that has been made regarding energy
@@ -31,7 +32,7 @@ import java.util.HashSet;
  *
  * @author Richard
  */
-public class EnergyUsagePrediction extends EnergyUsageRecord {
+public class EnergyUsagePrediction extends EnergyUsageRecord implements Comparable<EnergyUsagePrediction> {
 
     private double avgPowerUsed; // units Watts
     private double totalEnergyUsed; //units kWh
@@ -149,4 +150,46 @@ public class EnergyUsagePrediction extends EnergyUsageRecord {
         this.timePeriod = timePeriod;
     }
 
+    @Override
+    /**
+     * An Energy usage prediction is considered to be equal if the average power
+     * used and the total energy used is equal. The equality ignores the 
+     * respective time period.
+     */
+    public boolean equals(Object obj) {
+        if (obj instanceof EnergyUsagePrediction) {
+            EnergyUsagePrediction energyPrediction = (EnergyUsagePrediction) obj;
+            return this.avgPowerUsed == energyPrediction.getAvgPowerUsed()&& 
+                    this.totalEnergyUsed == energyPrediction.getTotalEnergyUsed() &&
+                    this.timePeriod.equals(energyPrediction.getDuration());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 83 * hash + (int) (Double.doubleToLongBits(this.avgPowerUsed) ^ (Double.doubleToLongBits(this.avgPowerUsed) >>> 32));
+        hash = 83 * hash + (int) (Double.doubleToLongBits(this.totalEnergyUsed) ^ (Double.doubleToLongBits(this.totalEnergyUsed) >>> 32));
+        hash = 83 * hash + Objects.hashCode(this.timePeriod);
+        return hash;
+    }
+
+    /**
+     * This compares two energy prediction values and places them in the natural
+     * ordering of power consumption for each of the predictions. The ordering
+     * produced by this comparator is ascending.
+     * @param anotherPrediction The prediction to compare to
+     * @return The value 0 if anotherPrediction's power value is numerically 
+     * equal to this energy usage records power value; a value less than 0 
+     * if this energy usage records power value is numerically less than 
+     * anotherPrediction's power value; and a value greater than 0 if this 
+     * energy prediction's power value is numerically greater than 
+     * anotherPrediction's power value.
+     */
+    @Override
+    public int compareTo(EnergyUsagePrediction anotherPrediction) {
+        return Double.valueOf(avgPowerUsed).compareTo(anotherPrediction.avgPowerUsed);
+    }
+    
 }
