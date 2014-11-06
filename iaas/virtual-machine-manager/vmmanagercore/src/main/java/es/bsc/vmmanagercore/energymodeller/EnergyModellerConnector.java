@@ -19,7 +19,6 @@
 package es.bsc.vmmanagercore.energymodeller;
 
 import es.bsc.vmmanagercore.model.scheduling.DeploymentPlan;
-import es.bsc.vmmanagercore.model.scheduling.VmAssignmentToHost;
 import es.bsc.vmmanagercore.model.vms.Vm;
 import es.bsc.vmmanagercore.model.vms.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.Host;
@@ -77,35 +76,14 @@ public class EnergyModellerConnector {
     private static EnergyUsagePrediction getEnergyUsagePrediction(Vm vm, Host host, List<VmDeployed> vmsDeployed,
             DeploymentPlan deploymentPlan) {
         // We need to send to the Energy Modeller the list of VMs that are already deployed in the host plus the
-        // list of VMs that would be deployed if the deploymentPlan was executed
+        // list of VMs that would be deployed if the deploymentPlan was executed.
+        // Note: This list also needs to include the VM that we want to deploy, because the EM expects it.
         List<VM> vmsInHost = VMMToEMConversor.getVmsEnergyModFromVms(
                 getVmsDeployedInHost(host.getHostname(), vmsDeployed)); // VMs already deployed
 
         // Add the VMs that would be deployed if the deployment plan was executed
-        boolean vmToDeployFound = false; // Useful to not include the VM that is going to be deployed
-        if (deploymentPlan != null) { //It is null in the estimates calls
-            for (VmAssignmentToHost vmAssignmentToHost : deploymentPlan.getVmsAssignationsToHosts()) {
-                if (host.getHostname().equals(vmAssignmentToHost.getHost().getHostname())) {
-                    Vm assignedVm = vmAssignmentToHost.getVm();
-                    if (assignedVm.getCpus() == vm.getCpus() && assignedVm.getRamMb() == vm.getRamMb()
-                            && assignedVm.getDiskGb() == vm.getDiskGb()) {
-                        // VM that we want to deploy or one with the same characteristics.
-                        if (!vmToDeployFound) { // Do not count the first time
-                            vmToDeployFound = true;
-                        }
-                        else {
-                            // Add to the list of VMs for the Energy Modeller
-                            vmsInHost.add(EnergyModeller.getVM(assignedVm.getCpus(), assignedVm.getRamMb(),
-                                    assignedVm.getDiskGb()));
-                        }
-                    }
-                    else {
-                        // Add to the list of VMs for the Energy Modeller
-                        vmsInHost.add(EnergyModeller.getVM(assignedVm.getCpus(), assignedVm.getRamMb(),
-                                assignedVm.getDiskGb()));
-                    }
-                }
-            }
+        for (Vm vmInHost: deploymentPlan.getVmsAssignedToHost(host.getHostname())) {
+            vmsInHost.add(EnergyModeller.getVM(vmInHost.getCpus(), vmInHost.getRamMb(), vmInHost.getDiskGb()));
         }
 
         return energyModeller.getPredictedEnergyForVM(
@@ -119,8 +97,6 @@ public class EnergyModellerConnector {
      * @param hostname the host name
      * @return the VMs deployed in the host
      */
-    //TODO Right now this is returning only the VMs managed by the VM Manager. Maybe it should return all
-    //so the energy modeller can function correctly.
     private static List<Vm> getVmsDeployedInHost(String hostname, List<VmDeployed> vmsDeployed) {
         List<Vm> vms = new ArrayList<>();
         for (VmDeployed vm: vmsDeployed) {

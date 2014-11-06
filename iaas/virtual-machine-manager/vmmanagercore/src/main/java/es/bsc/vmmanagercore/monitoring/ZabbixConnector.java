@@ -20,7 +20,10 @@ package es.bsc.vmmanagercore.monitoring;
 
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.client.ZabbixClient;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
 

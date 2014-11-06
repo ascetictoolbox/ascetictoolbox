@@ -18,7 +18,7 @@
 
 package es.bsc.vmmanagercore.monitoring;
 
-import java.util.*;
+import java.util.Map;
 
 /**
  * Status of a host monitored by Zabbix.

@@ -34,6 +34,7 @@ import java.util.Map;
  */
 public class DeploymentPlan {
 
+    //TODO: I should control that in this list a single host does not appear in several assignations
     private List<VmAssignmentToHost> vmsAssignationsToHosts = new ArrayList<>();
 
     public DeploymentPlan(List<VmAssignmentToHost> vmsAssignationsToHosts) {
@@ -48,6 +49,22 @@ public class DeploymentPlan {
      */
     public boolean canBeApplied() {
         return allHostsHaveEnoughResourcesForTheirAssignations();
+    }
+
+    /**
+     * Returns the VMs that are assigned to a given host within the deployment plan.
+     *
+     * @param hostname the hostname
+     * @return the list of VMs
+     */
+    public List<Vm> getVmsAssignedToHost(String hostname) {
+        List<Vm> result = new ArrayList<>();
+        for (VmAssignmentToHost assignment: vmsAssignationsToHosts) {
+            if (hostname.equals(assignment.getHost().getHostname())) {
+                result.add(assignment.getVm());
+            }
+        }
+        return result;
     }
 
     public void addVmAssignmentToPlan(VmAssignmentToHost vmAssignmentToHost) {
