@@ -186,42 +186,14 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
      * @throws SQLException if connection fails
      * @throws ClassNotFoundException if the database driver class is not found
      */
-    private static Connection getConnection() throws IOException, SQLException, ClassNotFoundException {
+    @Override
+    protected final Connection getConnection() throws IOException, SQLException, ClassNotFoundException {
         // Define JDBC driver
         System.setProperty("jdbc.drivers", databaseDriver);
         //Ensure that the driver has been loaded
         Class.forName(databaseDriver);
         return DriverManager.getConnection(databaseURL,
                 databaseUser, databasePassword);
-    }
-
-    /**
-     * This tests and sets the connection to make sure that it is established.
-     *
-     * @param connection The connection to test
-     * @return The connection passed in or a new one if it is null or otherwise
-     * closed. If a connection cannot be created null is returned.
-     */
-    private static Connection getConnection(Connection connection) {
-        try {
-            if (connection == null) {
-                return getConnection();
-            }
-            if (connection.isValid(30)) {
-                return getConnection();                
-            }
-            return connection;
-        } catch (SQLException | IOException | ClassNotFoundException ex) {
-            DB_LOGGER.log(Level.SEVERE, "Failed to establish the connection to the Zabbix DB", ex);
-            try {
-                if (connection == null || connection.isValid(30)) {                
-                    return getConnection();
-                }
-            } catch (    SQLException | IOException | ClassNotFoundException ex1) {
-                Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName()).log(Level.SEVERE, "Failed to connect to the Zabbix DB on the second attempt", ex1);
-            }
-        }
-        return null;
     }
 
     @Override

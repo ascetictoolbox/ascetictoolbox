@@ -15,11 +15,15 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore;
 
+import java.io.IOException;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This holds basic functions that are useful for any MySQL database access.
@@ -28,6 +32,34 @@ import java.util.ArrayList;
  */
 public abstract class MySqlDatabaseConnector {
 
+    protected abstract Connection getConnection() throws IOException, SQLException, ClassNotFoundException;
+
+    /**
+     * This tests and sets the connection to make sure that it is established.
+     *
+     * @param connection The connection to test
+     * @return The connection passed in or a new one if it is null or otherwise
+     * closed. If a connection cannot be created null is returned.
+     */
+    protected Connection getConnection(Connection connection) {
+        try {
+            if (connection == null || connection.isValid(30)) {
+                return getConnection();
+            }
+            return connection;
+        } catch (SQLException | IOException | ClassNotFoundException ex) {
+            Logger.getLogger(MySqlDatabaseConnector.class.getName()).log(Level.SEVERE, "Failed to establish the connection to the database", ex);
+            try {
+                if (connection == null || connection.isValid(30)) {
+                    return getConnection();
+                }
+            } catch (SQLException | IOException | ClassNotFoundException ex1) {
+                Logger.getLogger(MySqlDatabaseConnector.class.getName()).log(Level.SEVERE, "Failed to connect to the database on the second attempt", ex1);
+            }
+        }
+        return null;
+    }    
+    
     /**
      * This converts a result set into an array list structure that has all the
      * objects precast and ready for use.

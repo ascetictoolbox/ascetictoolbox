@@ -26,9 +26,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -67,7 +65,8 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
      * @throws SQLException if connection fails
      * @throws ClassNotFoundException if the database driver class is not found
      */
-    private static Connection getConnection() throws IOException, SQLException, ClassNotFoundException {
+    @Override
+    protected final Connection getConnection() throws IOException, SQLException, ClassNotFoundException {
         // Define JDBC driver
         System.setProperty("jdbc.drivers", Configuration.databaseDriver);
         //Ensure that the driver has been loaded
@@ -75,35 +74,6 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
         return DriverManager.getConnection(Configuration.databaseURL,
                 Configuration.databaseUser,
                 Configuration.databasePassword);
-    }
-
-    /**
-     * This tests and sets the connection to make sure that it is established.
-     *
-     * @param connection The connection to test
-     * @return The connection passed in or a new one if it is null or otherwise
-     * closed. If a connection cannot be created null is returned.
-     */
-    private static Connection getConnection(Connection connection) {
-        try {
-            if (connection == null) {
-                return getConnection();
-            }
-            if (connection.isValid(30)) {
-                return getConnection();
-            }
-            return connection;
-        } catch (SQLException | IOException | ClassNotFoundException ex) {
-            Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, "Failed to establish the connection to the database", ex);
-            try {
-                if (connection == null || connection.isValid(30)) {
-                    return getConnection();
-                }
-            } catch (SQLException | IOException | ClassNotFoundException ex1) {
-                Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, "Failed to connect to the database on the second attempt", ex1);
-            }
-        }
-        return null;
     }
 
     /**
