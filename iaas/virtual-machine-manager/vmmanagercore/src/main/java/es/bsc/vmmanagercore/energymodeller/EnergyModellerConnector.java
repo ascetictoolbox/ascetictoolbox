@@ -86,6 +86,8 @@ public class EnergyModellerConnector {
             vmsInHost.add(EnergyModeller.getVM(vmInHost.getCpus(), vmInHost.getRamMb(), vmInHost.getDiskGb()));
         }
 
+        System.out.println("TEST " + vmsInHost.size());
+
         return energyModeller.getPredictedEnergyForVM(
                 EnergyModeller.getVM(vm.getCpus(), vm.getRamMb(), vm.getDiskGb()), vmsInHost,
                 energyModeller.getHost(host.getHostname()));
