@@ -18,7 +18,7 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.EnergyUsageSource;
 import java.util.Calendar;
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.Objects;
 
 /**
@@ -60,7 +60,7 @@ public class EnergyUsagePrediction extends EnergyUsageRecord implements Comparab
      * @param energyUser The energy users, either a VM, a host or a VM -> host
      * mapping
      */
-    public EnergyUsagePrediction(HashSet<EnergyUsageSource> energyUser) {
+    public EnergyUsagePrediction(Collection<EnergyUsageSource> energyUser) {
         addEnergyUser(energyUser);
     }
 
@@ -72,7 +72,7 @@ public class EnergyUsagePrediction extends EnergyUsageRecord implements Comparab
      * @param avgPowerUsed The average power used
      * @param totalEnergyUsed The total energy used
      */
-    public EnergyUsagePrediction(HashSet<EnergyUsageSource> energyUser, double avgPowerUsed, double totalEnergyUsed) {
+    public EnergyUsagePrediction(Collection<EnergyUsageSource> energyUser, double avgPowerUsed, double totalEnergyUsed) {
         addEnergyUser(energyUser);
         this.avgPowerUsed = avgPowerUsed;
         this.totalEnergyUsed = totalEnergyUsed;
