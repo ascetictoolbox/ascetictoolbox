@@ -118,6 +118,7 @@ public class EnergyModeller {
      * not before.
      */
     private static class SingletonHolder {
+
         private static final EnergyModeller INSTANCE = new EnergyModeller();
     }
 
@@ -455,7 +456,8 @@ public class EnergyModeller {
      * of a VM.
      *
      * @param vmImage The VM that is to be deployed
-     * @param vMsOnHost The VMs that are already on the host
+     * @param vMsOnHost The collection of VMs that are expected to be running on
+     * the host
      * @param host The host on which the VM is to be placed
      * @return
      *
@@ -464,8 +466,10 @@ public class EnergyModeller {
      */
     public EnergyUsagePrediction getPredictedEnergyForVM(VM vmImage, Collection<VM> vMsOnHost, Host host) {
         /**
-         * Adding a sanity check that ensures the vmImage (deployed or
-         * otherwise, represents load on the VM.
+         * There is an expectation that the vmImage that is expected to be be
+         * deployed is in the collection of VMs that induce workload on the
+         * physical host. This line below is a sanity check that ensures the
+         * vmImage (deployed or otherwise, represents load on the VM.
          */
         if (!vMsOnHost.contains(vmImage)) {
             vMsOnHost.add(vmImage);

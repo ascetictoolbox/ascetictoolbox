@@ -53,12 +53,14 @@ public class VmEnergyUsageLogger extends GenericLogger<VmEnergyUsageLogger.Pair>
         store.setDelimeter(" ");
         /**
          * No header should be provided. The <Zabbix_Host> <Metric_Key> <Value>
-         */        
+         */
     }
 
     /**
      * This writes a host energy record and vm load fraction data to disk.
-     * @param hostMeasurement The host energy record relating to the fraction data.
+     *
+     * @param hostMeasurement The host energy record relating to the fraction
+     * data.
      * @param vmLoadFraction The VM load fraction data.
      * @param store The storage that this data will be written to disk for.
      */
@@ -89,6 +91,7 @@ public class VmEnergyUsageLogger extends GenericLogger<VmEnergyUsageLogger.Pair>
 
     /**
      * Indicates if the logged value should include idle energy or not.
+     *
      * @return if idle energy is taken account of or not
      */
     public boolean isConsiderIdleEnergy() {
@@ -97,6 +100,7 @@ public class VmEnergyUsageLogger extends GenericLogger<VmEnergyUsageLogger.Pair>
 
     /**
      * Sets if the logged value should include idle energy or not.
+     *
      * @param considerIdleEnergy if idle energy is taken account of or not
      */
     public void setConsiderIdleEnergy(boolean considerIdleEnergy) {
@@ -115,6 +119,7 @@ public class VmEnergyUsageLogger extends GenericLogger<VmEnergyUsageLogger.Pair>
         /**
          * This creates a new pair object that links host energy records toVM
          * load fraction data.
+         *
          * @param host The host energy record
          * @param vmLoadFraction The VM load fraction data.
          */
@@ -125,6 +130,7 @@ public class VmEnergyUsageLogger extends GenericLogger<VmEnergyUsageLogger.Pair>
 
         /**
          * The host of the records that have been paired together.
+         *
          * @return the host The host
          */
         public HostMeasurement getHost() {
@@ -132,7 +138,9 @@ public class VmEnergyUsageLogger extends GenericLogger<VmEnergyUsageLogger.Pair>
         }
 
         /**
-         * The VM load fraction data of the records that have been paired together.
+         * The VM load fraction data of the records that have been paired
+         * together.
+         *
          * @return the vmLoadFraction The VM load fraction data
          */
         public HostVmLoadFraction getVmLoadFraction() {
