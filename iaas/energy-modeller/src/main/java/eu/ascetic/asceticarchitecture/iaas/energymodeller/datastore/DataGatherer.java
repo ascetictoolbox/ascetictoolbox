@@ -261,10 +261,9 @@ public class DataGatherer implements Runnable {
                 faultCount = faultCount + 1;
                 Logger.getLogger(DataGatherer.class.getName()).log(Level.SEVERE, "The data gatherer encountered a fault, Fault Number:" + faultCount, ex);
                 if (faultCount > 100) {
-                    Logger.getLogger(DataGatherer.class.getName()).log(Level.SEVERE, "Many faults were seen in a row the energy modeller is now pausing gathering data. Fault Number:{0}", faultCount);
+                    Logger.getLogger(DataGatherer.class.getName()).log(Level.SEVERE, "Many faults were seen in a row the energy modeller is now pausing from gathering data.");
                     faultCount = 0;
                     try {
-                        //Note: The Zabbix API takes a few seconds to call, so don't call it faster than 3-4 seconds
                         Thread.sleep(TimeUnit.MINUTES.toMillis(5));
                     } catch (InterruptedException e) {
                         Logger.getLogger(DataGatherer.class.getName()).log(Level.SEVERE, "The data gatherer was interupted.", ex);
