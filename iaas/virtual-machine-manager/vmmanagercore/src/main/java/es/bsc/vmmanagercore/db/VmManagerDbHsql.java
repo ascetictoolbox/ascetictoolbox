@@ -116,11 +116,6 @@ public class VmManagerDbHsql implements VmManagerDb {
         } catch (SQLException e) {
             System.out.println(ERROR_SETUP_DB);
         }
-
-        // If there is not a current scheduling algorithm selected, select Distribution
-        /*if (getCurrentSchedulingAlg() == null) {
-            setCurrentSchedulingAlg(SchedulingAlgorithm.DISTRIBUTION);
-        }*/
     }
     
     @Override
