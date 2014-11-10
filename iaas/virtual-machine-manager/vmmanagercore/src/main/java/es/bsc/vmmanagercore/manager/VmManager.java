@@ -467,7 +467,7 @@ public class VmManager {
                 boolean vmAlreadyDeployedInHost = vmPlacement.getHostname().equals(cloudMiddleware.getVMInfo(
                         vmPlacement.getVmId()).getHostName());
                 if (!vmAlreadyDeployedInHost) {
-                    cloudMiddleware.migrate(vmPlacement.getVmId(), vmPlacement.getHostname());
+                    migrateVm(vmPlacement.getVmId(), vmPlacement.getHostname());
                 }
             }
 
