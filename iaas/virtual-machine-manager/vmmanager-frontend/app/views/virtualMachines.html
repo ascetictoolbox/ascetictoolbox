@@ -22,7 +22,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
         <thead>
             <tr>
                 <th ng-repeat="vmAttribute in vms.vmAttributes">
-                    <a style="color: black" ng-click="changeColumnSort($index, !vms.columnSort.reverse)">
+                    <a style="color: black" ng-click="vms.changeColumnSort($index, !vms.columnSort.reverse)">
                         {{vmAttribute}}
                     </a>
                 </th>
