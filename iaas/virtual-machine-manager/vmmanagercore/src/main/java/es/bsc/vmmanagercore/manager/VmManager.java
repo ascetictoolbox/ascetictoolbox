@@ -28,10 +28,7 @@ import es.bsc.vmmanagercore.model.estimations.VmToBeEstimated;
 import es.bsc.vmmanagercore.model.images.ImageToUpload;
 import es.bsc.vmmanagercore.model.images.ImageUploaded;
 import es.bsc.vmmanagercore.model.scheduling.*;
-import es.bsc.vmmanagercore.model.selfadaptation.AfterVmDeleteSelfAdaptationOps;
-import es.bsc.vmmanagercore.model.selfadaptation.AfterVmDeploymentSelfAdaptationOps;
-import es.bsc.vmmanagercore.model.selfadaptation.PeriodicSelfAdaptationOps;
-import es.bsc.vmmanagercore.model.selfadaptation.SelfAdaptationOptions;
+import es.bsc.vmmanagercore.selfadaptation.*;
 import es.bsc.vmmanagercore.model.vms.Vm;
 import es.bsc.vmmanagercore.model.vms.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.Host;
@@ -70,6 +67,7 @@ public class VmManager {
     private VmManagerDb db;
     private Scheduler scheduler;
     private EstimatesGenerator estimatesGenerator = new EstimatesGenerator();
+    private SelfAdaptationManager selfAdaptationManager;
     private List<Host> hosts = new ArrayList<>();
     SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
@@ -91,6 +89,7 @@ public class VmManager {
         initializeHosts(conf.monitoring, conf.hosts);
         List<VmDeployed> vmsDeployed = getAllVms();
         scheduler = new Scheduler(db.getCurrentSchedulingAlg(), vmsDeployed);
+        selfAdaptationManager = new SelfAdaptationManager(dbName);
         energyModeller = EnergyModeller.getInstance();
         pricingModeller = new IaaSPricingModeller();
     }
@@ -154,13 +153,13 @@ public class VmManager {
      * @param vmId the ID of the VM
      */
     public void deleteVm(String vmId) {
-        String hostname = getVm(vmId).getHostName();
         cloudMiddleware.destroy(vmId);
         db.deleteVm(vmId);
 
-        // // If the monitoring system is Zabbix, then we need to delete the VM from Zabbix
+        // If the monitoring system is Zabbix, then we need to delete the VM from Zabbix
         if (usingZabbix()) {
-            ZabbixConnector.getZabbixClient().deleteVM(vmId + "_" + hostname);
+            // The ID of a VM in Zabbix is: vm_id + _ + hostname_where_vm_is_deployed
+            ZabbixConnector.getZabbixClient().deleteVM(vmId + "_" + getVm(vmId).getHostName());
         }
     }
 
@@ -291,6 +290,12 @@ public class VmManager {
         }
     }
 
+    /**
+     * Migrates a VM to a specific host.
+     *
+     * @param vmId the ID of the VM
+     * @param destinationHostName the host where the VM will be migrated to
+     */
     public void migrateVm(String vmId, String destinationHostName) {
         cloudMiddleware.migrate(vmId, destinationHostName);
     }
@@ -468,21 +473,16 @@ public class VmManager {
      * @param selfAdaptationOptions the options
      */
     public void saveSelfAdaptationOptions(SelfAdaptationOptions selfAdaptationOptions) {
-        db.saveSelfAdaptationOptions(selfAdaptationOptions);
+        selfAdaptationManager.saveSelfAdaptationOptions(selfAdaptationOptions);
     }
 
     /**
      * Returns the self-adaptation options for the self-adaptation capabilities of the VMM.
-     * If the system does not have any self-adaptation options save, it returns a set of options that have
-     * been defined as the default ones.
      *
      * @return the options
      */
     public SelfAdaptationOptions getSelfAdaptationOptions() {
-        if (db.getSelfAdaptationOptions() == null) {
-            return getDefaultSelfAdaptationOptions();
-        }
-        return db.getSelfAdaptationOptions();
+        return selfAdaptationManager.getSelfAdaptationOptions();
     }
 
 
@@ -596,13 +596,6 @@ public class VmManager {
     private boolean isoReceivedInInitScript(Vm vm) {
         return vm.getInitScript() != null && !vm.getInitScript().equals("")
                 && (vm.getInitScript().contains(".iso_") || vm.getInitScript().endsWith(".iso"));
-    }
-
-    private SelfAdaptationOptions getDefaultSelfAdaptationOptions() {
-        return new SelfAdaptationOptions(
-                new AfterVmDeploymentSelfAdaptationOps(new ConstructionHeuristic("FIRST_FIT"), null, 0),
-                new AfterVmDeleteSelfAdaptationOps(null, 0),
-                new PeriodicSelfAdaptationOps(null, 0, 0));
     }
 
 }

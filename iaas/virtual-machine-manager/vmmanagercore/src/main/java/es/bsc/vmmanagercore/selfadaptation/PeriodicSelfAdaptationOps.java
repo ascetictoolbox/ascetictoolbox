@@ -16,25 +16,32 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.vmmanagercore.model.selfadaptation;
+package es.bsc.vmmanagercore.selfadaptation;
 
 import es.bsc.vmmanagercore.model.scheduling.LocalSearchAlgorithmOptionsSet;
 
 /**
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  */
-public class AfterVmDeleteSelfAdaptationOps {
+public class PeriodicSelfAdaptationOps {
 
     private final LocalSearchAlgorithmOptionsSet localSearchAlgorithm;
+    private final int timeIntervalMinutes;
     private final int maxExecTimeSeconds;
 
-    public AfterVmDeleteSelfAdaptationOps(LocalSearchAlgorithmOptionsSet localSearchAlgorithm, int maxExecTimeSeconds) {
+    public PeriodicSelfAdaptationOps(LocalSearchAlgorithmOptionsSet localSearchAlgorithm, int timeIntervalMinutes,
+                                     int maxExecTimeSeconds) {
         this.localSearchAlgorithm = localSearchAlgorithm;
+        this.timeIntervalMinutes = timeIntervalMinutes;
         this.maxExecTimeSeconds = maxExecTimeSeconds;
     }
 
     public LocalSearchAlgorithmOptionsSet getLocalSearchAlgorithm() {
         return localSearchAlgorithm;
+    }
+
+    public int getTimeIntervalMinutes() {
+        return timeIntervalMinutes;
     }
 
     public int getMaxExecTimeSeconds() {
