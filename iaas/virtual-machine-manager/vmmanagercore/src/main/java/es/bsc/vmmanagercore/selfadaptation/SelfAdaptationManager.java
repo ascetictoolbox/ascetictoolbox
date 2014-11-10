@@ -20,7 +20,9 @@ package es.bsc.vmmanagercore.selfadaptation;
 
 import es.bsc.vmmanagercore.db.VmManagerDb;
 import es.bsc.vmmanagercore.db.VmManagerDbFactory;
+import es.bsc.vmmanagercore.manager.VmManager;
 import es.bsc.vmmanagercore.model.scheduling.ConstructionHeuristic;
+import es.bsc.vmmanagercore.model.scheduling.RecommendedPlanRequest;
 
 /**
  * Self-adaptation Manager.
@@ -29,14 +31,17 @@ import es.bsc.vmmanagercore.model.scheduling.ConstructionHeuristic;
  */
 public class SelfAdaptationManager {
 
+    private VmManager vmManager;
     private VmManagerDb db;
 
     /**
      * Class constructor.
      *
+     * @param vmManager instance of the VMM
      * @param dbName The name of the DB used by the VMM
      */
-    public SelfAdaptationManager(String dbName) {
+    public SelfAdaptationManager(VmManager vmManager, String dbName) {
+        this.vmManager = vmManager;
         db = VmManagerDbFactory.getDb(dbName);
     }
 
@@ -74,7 +79,18 @@ public class SelfAdaptationManager {
      * Applies the self-adaptation configured to take place after deleting a VM.
      */
     public void applyAfterVmDeleteSelfAdaptation() {
-        //TODO
+        AfterVmDeleteSelfAdaptationOps options = getSelfAdaptationOptions().getAfterVmDeleteSelfAdaptationOps();
+
+        if (options.getLocalSearchAlgorithm() != null && options.getMaxExecTimeSeconds() > 0) {
+            // The construction heuristic is set to first fit, but anyone could be selected because in this case,
+            // all the VMs are already assigned to a host. Therefore, it is not needed to apply a construction heuristic
+            RecommendedPlanRequest recommendedPlanRequest =
+                    new RecommendedPlanRequest(options.getMaxExecTimeSeconds(),
+                            "FIRST_FIT",
+                            options.getLocalSearchAlgorithm());
+
+            vmManager.executeDeploymentPlan(vmManager.getRecommendedPlan(recommendedPlanRequest).getVMPlacements());
+        }
     }
 
     /**

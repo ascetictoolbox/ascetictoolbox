@@ -87,4 +87,8 @@ public class VMMLogger {
                 + unusedRam + ", unusedDisk: " + unusedDisk + " --id:" + deploymentId);
     }
 
+    public static void logMigration(String vmId, String hostname) {
+        logger.debug("[VMM] Requested to migrate VM with ID=" + vmId + " to host " + hostname);
+    }
+
 }

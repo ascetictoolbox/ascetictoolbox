@@ -18,25 +18,52 @@
 
 package es.bsc.vmmanagercore.model.scheduling;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
+ * Describes a recommended plan.
+ *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  */
 public class RecommendedPlan {
 
     private final Map<String, String> plan = new HashMap<>(); // VM ID -> Host ID
 
+    /**
+     * Class constructor.
+     */
     public RecommendedPlan() { }
 
+    /**
+     * Returns the plan.
+     *
+     * @return the plan
+     */
     public Map<String, String> getPlan() {
         return Collections.unmodifiableMap(plan);
     }
 
+    /**
+     * Adds a VM assignation to host to the plan.
+     *
+     * @param vmId the ID of the VM
+     * @param hostId the ID of the host
+     */
     public void addVmToHostAssignment(String vmId, String hostId) {
         plan.put(vmId, hostId);
+    }
+
+    /**
+     * Gets the VMPlacements described in the plan.
+     *
+     * @return the VMPlacements
+     */
+    public VmPlacement[] getVMPlacements() {
+        List<VmPlacement> vmPlacements = new ArrayList<>();
+        for (Map.Entry<String, String> entry: plan.entrySet()) {
+            vmPlacements.add(new VmPlacement(entry.getKey(), entry.getValue()));
+        }
+        return vmPlacements.toArray(new VmPlacement[vmPlacements.size()]);
     }
 
 }

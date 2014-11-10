@@ -23,6 +23,7 @@ import es.bsc.vmmanagercore.cloudmiddleware.JCloudsMiddleware;
 import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
 import es.bsc.vmmanagercore.db.VmManagerDb;
 import es.bsc.vmmanagercore.db.VmManagerDbFactory;
+import es.bsc.vmmanagercore.logging.VMMLogger;
 import es.bsc.vmmanagercore.model.estimations.ListVmEstimates;
 import es.bsc.vmmanagercore.model.estimations.VmToBeEstimated;
 import es.bsc.vmmanagercore.model.images.ImageToUpload;
@@ -89,7 +90,7 @@ public class VmManager {
         initializeHosts(conf.monitoring, conf.hosts);
         List<VmDeployed> vmsDeployed = getAllVms();
         scheduler = new Scheduler(db.getCurrentSchedulingAlg(), vmsDeployed);
-        selfAdaptationManager = new SelfAdaptationManager(dbName);
+        selfAdaptationManager = new SelfAdaptationManager(this, dbName);
         energyModeller = EnergyModeller.getInstance();
         pricingModeller = new IaaSPricingModeller();
     }
@@ -161,6 +162,8 @@ public class VmManager {
             // The ID of a VM in Zabbix is: vm_id + _ + hostname_where_vm_is_deployed
             ZabbixConnector.getZabbixClient().deleteVM(vmId + "_" + getVm(vmId).getHostName());
         }
+
+        selfAdaptationManager.applyAfterVmDeleteSelfAdaptation();
     }
 
     /**
@@ -297,6 +300,7 @@ public class VmManager {
      * @param destinationHostName the host where the VM will be migrated to
      */
     public void migrateVm(String vmId, String destinationHostName) {
+        VMMLogger.logMigration(vmId, destinationHostName);
         cloudMiddleware.migrate(vmId, destinationHostName);
     }
 
