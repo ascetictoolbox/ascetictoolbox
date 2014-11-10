@@ -154,13 +154,14 @@ public class VmManager {
      * @param vmId the ID of the VM
      */
     public void deleteVm(String vmId) {
+        String hostname = getVm(vmId).getHostName(); // We need to get the hostname before we delete the VM
         cloudMiddleware.destroy(vmId);
         db.deleteVm(vmId);
 
         // If the monitoring system is Zabbix, then we need to delete the VM from Zabbix
         if (usingZabbix()) {
             // The ID of a VM in Zabbix is: vm_id + _ + hostname_where_vm_is_deployed
-            ZabbixConnector.getZabbixClient().deleteVM(vmId + "_" + getVm(vmId).getHostName());
+            ZabbixConnector.getZabbixClient().deleteVM(vmId + "_" + hostname);
         }
 
         selfAdaptationManager.applyAfterVmDeleteSelfAdaptation();

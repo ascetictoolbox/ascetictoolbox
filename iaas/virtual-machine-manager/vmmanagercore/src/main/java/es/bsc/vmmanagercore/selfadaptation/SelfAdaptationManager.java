@@ -72,7 +72,14 @@ public class SelfAdaptationManager {
      * Applies the self-adaptation configured to take place after a VM deployment.
      */
     public void applyAfterVmDeploymentSelfAdaptation() {
-        //TODO
+        AfterVmDeploymentSelfAdaptationOps options = getSelfAdaptationOptions().getAfterVmDeploymentSelfAdaptationOps();
+
+        RecommendedPlanRequest recommendedPlanRequest = new RecommendedPlanRequest(
+                options.getMaxExecTimeSeconds(),
+                options.getConstructionHeuristic().getName(),
+                options.getLocalSearchAlgorithm());
+
+        vmManager.executeDeploymentPlan(vmManager.getRecommendedPlan(recommendedPlanRequest).getVMPlacements());
     }
 
     /**
@@ -97,7 +104,18 @@ public class SelfAdaptationManager {
      * Applies the self-adaptation configured to take place periodically.
      */
     public void applyPeriodicSelfAdaptation() {
-        //TODO
+        PeriodicSelfAdaptationOps options = getSelfAdaptationOptions().getPeriodicSelfAdaptationOps();
+
+        if (options.getLocalSearchAlgorithm() != null && options.getMaxExecTimeSeconds() > 0) {
+            // The construction heuristic is set to first fit, but anyone could be selected because in this case,
+            // all the VMs are already assigned to a host. Therefore, it is not needed to apply a construction heuristic
+            RecommendedPlanRequest recommendedPlanRequest =
+                    new RecommendedPlanRequest(options.getMaxExecTimeSeconds(),
+                            "FIRST_FIT",
+                            options.getLocalSearchAlgorithm());
+
+            vmManager.executeDeploymentPlan(vmManager.getRecommendedPlan(recommendedPlanRequest).getVMPlacements());
+        }
     }
 
     /**
