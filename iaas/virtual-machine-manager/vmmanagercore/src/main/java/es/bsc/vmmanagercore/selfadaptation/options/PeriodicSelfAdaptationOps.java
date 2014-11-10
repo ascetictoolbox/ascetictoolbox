@@ -16,34 +16,32 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.vmmanagercore.selfadaptation;
+package es.bsc.vmmanagercore.selfadaptation.options;
 
-import es.bsc.vmmanagercore.model.scheduling.ConstructionHeuristic;
 import es.bsc.vmmanagercore.model.scheduling.LocalSearchAlgorithmOptionsSet;
 
 /**
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  */
-public class AfterVmDeploymentSelfAdaptationOps {
+public class PeriodicSelfAdaptationOps {
 
-    private final ConstructionHeuristic constructionHeuristic;
     private final LocalSearchAlgorithmOptionsSet localSearchAlgorithm;
+    private final int timeIntervalMinutes;
     private final int maxExecTimeSeconds;
 
-    public AfterVmDeploymentSelfAdaptationOps(ConstructionHeuristic constructionHeuristic,
-                                              LocalSearchAlgorithmOptionsSet localSearchAlgorithm,
-                                              int maxExecTimeSeconds) {
-        this.constructionHeuristic = constructionHeuristic;
+    public PeriodicSelfAdaptationOps(LocalSearchAlgorithmOptionsSet localSearchAlgorithm, int timeIntervalMinutes,
+                                     int maxExecTimeSeconds) {
         this.localSearchAlgorithm = localSearchAlgorithm;
+        this.timeIntervalMinutes = timeIntervalMinutes;
         this.maxExecTimeSeconds = maxExecTimeSeconds;
-    }
-
-    public ConstructionHeuristic getConstructionHeuristic() {
-        return constructionHeuristic;
     }
 
     public LocalSearchAlgorithmOptionsSet getLocalSearchAlgorithm() {
         return localSearchAlgorithm;
+    }
+
+    public int getTimeIntervalMinutes() {
+        return timeIntervalMinutes;
     }
 
     public int getMaxExecTimeSeconds() {

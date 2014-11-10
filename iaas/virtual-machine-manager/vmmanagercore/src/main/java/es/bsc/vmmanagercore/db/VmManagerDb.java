@@ -19,7 +19,7 @@
 package es.bsc.vmmanagercore.db;
 
 import es.bsc.vmmanagercore.model.scheduling.SchedulingAlgorithm;
-import es.bsc.vmmanagercore.selfadaptation.SelfAdaptationOptions;
+import es.bsc.vmmanagercore.selfadaptation.options.SelfAdaptationOptions;
 
 import java.util.List;
 

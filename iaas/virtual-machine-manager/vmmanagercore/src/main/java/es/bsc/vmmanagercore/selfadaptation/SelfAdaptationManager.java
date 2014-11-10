@@ -23,6 +23,10 @@ import es.bsc.vmmanagercore.db.VmManagerDbFactory;
 import es.bsc.vmmanagercore.manager.VmManager;
 import es.bsc.vmmanagercore.model.scheduling.ConstructionHeuristic;
 import es.bsc.vmmanagercore.model.scheduling.RecommendedPlanRequest;
+import es.bsc.vmmanagercore.selfadaptation.options.AfterVmDeleteSelfAdaptationOps;
+import es.bsc.vmmanagercore.selfadaptation.options.AfterVmDeploymentSelfAdaptationOps;
+import es.bsc.vmmanagercore.selfadaptation.options.PeriodicSelfAdaptationOps;
+import es.bsc.vmmanagercore.selfadaptation.options.SelfAdaptationOptions;
 
 /**
  * Self-adaptation Manager.

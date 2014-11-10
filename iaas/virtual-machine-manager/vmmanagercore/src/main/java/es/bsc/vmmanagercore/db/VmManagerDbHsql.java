@@ -20,7 +20,7 @@ package es.bsc.vmmanagercore.db;
 
 import com.google.gson.Gson;
 import es.bsc.vmmanagercore.model.scheduling.SchedulingAlgorithm;
-import es.bsc.vmmanagercore.selfadaptation.SelfAdaptationOptions;
+import es.bsc.vmmanagercore.selfadaptation.options.SelfAdaptationOptions;
 
 import java.sql.*;
 import java.util.ArrayList;

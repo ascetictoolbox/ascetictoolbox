@@ -16,7 +16,7 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.vmmanagercore.selfadaptation;
+package es.bsc.vmmanagercore.selfadaptation.options;
 
 /**
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
