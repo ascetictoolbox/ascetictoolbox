@@ -459,11 +459,18 @@ public class VmManager {
      */
     public void executeDeploymentPlan(VmPlacement[] deploymentPlan) {
         for (VmPlacement vmPlacement: deploymentPlan) {
-            boolean vmAlreadyDeployedInHost = vmPlacement.getHostname().equals(cloudMiddleware.getVMInfo(
-                    vmPlacement.getVmId()).getHostName());
-            if (!vmAlreadyDeployedInHost) {
-                cloudMiddleware.migrate(vmPlacement.getVmId(), vmPlacement.getHostname());
+
+            // We need to check that the VM is still deployed.
+            // It might be the case that a VM was deleted in the time interval between a recommended plan is
+            // calculated and the execution order for that deployment plan is received
+            if (cloudMiddleware.getVMInfo(vmPlacement.getVmId()) != null) {
+                boolean vmAlreadyDeployedInHost = vmPlacement.getHostname().equals(cloudMiddleware.getVMInfo(
+                        vmPlacement.getVmId()).getHostName());
+                if (!vmAlreadyDeployedInHost) {
+                    cloudMiddleware.migrate(vmPlacement.getVmId(), vmPlacement.getHostname());
+                }
             }
+
         }
     }
 
