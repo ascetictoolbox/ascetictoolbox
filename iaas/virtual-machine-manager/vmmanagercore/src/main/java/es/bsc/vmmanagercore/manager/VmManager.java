@@ -39,6 +39,7 @@ import es.bsc.vmmanagercore.scheduler.EstimatesGenerator;
 import es.bsc.vmmanagercore.scheduler.Scheduler;
 import es.bsc.vmmanagercore.selfadaptation.SelfAdaptationManager;
 import es.bsc.vmmanagercore.selfadaptation.options.SelfAdaptationOptions;
+import es.bsc.vmmanagercore.utils.FileSystem;
 import es.bsc.vmmanagercore.vmplacement.OptaVmPlacementConversor;
 import es.bsc.vmplacement.domain.ClusterState;
 import es.bsc.vmplacement.lib.OptaVmPlacement;
@@ -71,7 +72,7 @@ public class VmManager {
     private EstimatesGenerator estimatesGenerator = new EstimatesGenerator();
     private SelfAdaptationManager selfAdaptationManager;
     private List<Host> hosts = new ArrayList<>();
-    SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
     private OptaVmPlacement optaVmPlacement = new OptaVmPlacement(); // Library used for the VM Placement
     private OptaVmPlacementConversor optaVmPlacementConversor = new OptaVmPlacementConversor();
@@ -228,30 +229,21 @@ public class VmManager {
                 }
             }
 
-            // Deploy the VM
             String vmId = cloudMiddleware.deploy(vmToDeploy, hostForDeployment.getHostname());
-
-            // Insert the VM info in the DB
             db.insertVm(vmId, vmToDeploy.getApplicationId());
-
-            // Save the ID of the VM deployed
             ids.put(vmToDeploy, vmId);
 
             // If the monitoring system is Zabbix, then we need to call the Zabbix wrapper to initialize
             // the Zabbix agents. To register the VM we agreed to use the name <vmId>_<hostWhereTheVmIsDeployed>
             // We also need to delete the script for the VM if it was created before
             if (usingZabbix()) {
-                ZabbixConnector.getZabbixClient().createVM(vmId + "_" + cloudMiddleware.getVMInfo(vmId).getHostName(),
+                ZabbixConnector.getZabbixClient().createVM(
+                        vmId + "_" + cloudMiddleware.getVMInfo(vmId).getHostName(),
                         cloudMiddleware.getVMInfo(vmId).getIpAddress());
 
-                // Delete the script created
+                // Delete the script if one was created
                 if (vmScriptName != null) {
-                    Path path = FileSystems.getDefault().getPath("/DFS/ascetic/vm-scripts/" + vmScriptName);
-                    try {
-                        Files.deleteIfExists(path);
-                    } catch (IOException e) {
-                        throw new RuntimeException("Could not delete the script file.");
-                    }
+                    FileSystem.deleteFile("/DFS/ascetic/vm-scripts/" + vmScriptName);
                 }
             }
         }
