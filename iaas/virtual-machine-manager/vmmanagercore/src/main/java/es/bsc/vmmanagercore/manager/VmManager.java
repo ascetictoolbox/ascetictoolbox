@@ -192,45 +192,11 @@ public class VmManager {
             Vm vmToDeploy = vmAssignmentToHost.getVm();
             Host hostForDeployment = vmAssignmentToHost.getHost();
 
-            // TODO this is a quick fix for the Ascetic project
+            // Note: this is only valid for the Ascetic project
             // If the monitoring system is Zabbix, we need to make sure that the script that sets up the Zabbix
             // agents is executed. Also, if an ISO is received, we need to make sure that we execute a script
             // that mounts it
-            String vmScriptName = null;
-            if (usingZabbix()) {
-                if (isoReceivedInInitScript(vmToDeploy)) {
-                    try {
-                        // Copy the Zabbix agents script
-                        vmScriptName = "vm_" + vmToDeploy.getName() +
-                                "_" + dateFormat.format(Calendar.getInstance().getTime()) + ".sh";
-                        Files.copy(Paths.get(ASCETIC_ZABBIX_SCRIPT_PATH),
-                                Paths.get(ASCETIC_SCRIPTS_PATH + vmScriptName), REPLACE_EXISTING);
-
-                        // Append the instruction to mount the ISO
-                        try (PrintWriter out = new PrintWriter(new BufferedWriter(
-                                new FileWriter(ASCETIC_SCRIPTS_PATH + vmScriptName, true)))) {
-                            out.println("/usr/local/sbin/set_iso_path " + vmToDeploy.getInitScript());
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                        // Assign the new script to the VM
-                        vmToDeploy.setInitScript(ASCETIC_SCRIPTS_PATH + vmScriptName);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                else {
-                    Path zabbixAgentsScriptPath = FileSystems.getDefault().getPath(ASCETIC_ZABBIX_SCRIPT_PATH);
-                    if (Files.exists(zabbixAgentsScriptPath)) {
-                        vmToDeploy.setInitScript(ASCETIC_ZABBIX_SCRIPT_PATH);
-                    }
-                    else { // This is for when I perform tests locally and don't have access to the script (and
-                        // do not need it)
-                        vmToDeploy.setInitScript(null);
-                    }
-                }
-            }
+            String vmScriptName = setAsceticInitScript(vmToDeploy);
 
             String vmId = cloudMiddleware.deploy(vmToDeploy, hostForDeployment.getHostname());
             db.insertVm(vmId, vmToDeploy.getApplicationId());
@@ -604,6 +570,45 @@ public class VmManager {
     private boolean isoReceivedInInitScript(Vm vm) {
         return vm.getInitScript() != null && !vm.getInitScript().equals("")
                 && (vm.getInitScript().contains(".iso_") || vm.getInitScript().endsWith(".iso"));
+    }
+
+    private String setAsceticInitScript(Vm vmToDeploy) {
+        String vmScriptName = null;
+        if (usingZabbix()) {
+            if (isoReceivedInInitScript(vmToDeploy)) {
+                try {
+                    // Copy the Zabbix agents script
+                    vmScriptName = "vm_" + vmToDeploy.getName() +
+                            "_" + dateFormat.format(Calendar.getInstance().getTime()) + ".sh";
+                    Files.copy(Paths.get(ASCETIC_ZABBIX_SCRIPT_PATH),
+                            Paths.get(ASCETIC_SCRIPTS_PATH + vmScriptName), REPLACE_EXISTING);
+
+                    // Append the instruction to mount the ISO
+                    try (PrintWriter out = new PrintWriter(new BufferedWriter(
+                            new FileWriter(ASCETIC_SCRIPTS_PATH + vmScriptName, true)))) {
+                        out.println("/usr/local/sbin/set_iso_path " + vmToDeploy.getInitScript());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    // Assign the new script to the VM
+                    vmToDeploy.setInitScript(ASCETIC_SCRIPTS_PATH + vmScriptName);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            else {
+                Path zabbixAgentsScriptPath = FileSystems.getDefault().getPath(ASCETIC_ZABBIX_SCRIPT_PATH);
+                if (Files.exists(zabbixAgentsScriptPath)) {
+                    vmToDeploy.setInitScript(ASCETIC_ZABBIX_SCRIPT_PATH);
+                }
+                else { // This is for when I perform tests locally and do not have access to the script (and
+                    // do not need it)
+                    vmToDeploy.setInitScript(null);
+                }
+            }
+        }
+        return vmScriptName;
     }
 
 }

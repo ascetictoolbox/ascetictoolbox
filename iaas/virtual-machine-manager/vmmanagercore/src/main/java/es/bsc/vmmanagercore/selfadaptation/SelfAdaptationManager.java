@@ -22,6 +22,7 @@ import es.bsc.vmmanagercore.db.VmManagerDb;
 import es.bsc.vmmanagercore.db.VmManagerDbFactory;
 import es.bsc.vmmanagercore.manager.VmManager;
 import es.bsc.vmmanagercore.model.scheduling.ConstructionHeuristic;
+import es.bsc.vmmanagercore.model.scheduling.LocalSearchAlgorithmOptionsSet;
 import es.bsc.vmmanagercore.model.scheduling.RecommendedPlanRequest;
 import es.bsc.vmmanagercore.selfadaptation.options.AfterVmDeleteSelfAdaptationOps;
 import es.bsc.vmmanagercore.selfadaptation.options.AfterVmDeploymentSelfAdaptationOps;
@@ -74,14 +75,27 @@ public class SelfAdaptationManager {
 
     /**
      * Applies the self-adaptation configured to take place after a VM deployment.
+     * It gives the option of applying a local search algorithm if it has been defined.
+     * If a deployment request contains several VMs, the local search algorithm should only be applied
+     * after all of them have been deployed. It does not make sense to execute the local search algorithm
+     * after each deployment.
+     *
+     * @param useLocalSearch indicates whether to apply a local search algorithm
      */
-    public void applyAfterVmDeploymentSelfAdaptation() {
+    public void applyAfterVmDeploymentSelfAdaptation(boolean useLocalSearch) {
         AfterVmDeploymentSelfAdaptationOps options = getSelfAdaptationOptions().getAfterVmDeploymentSelfAdaptationOps();
 
+        // Decide local search algorithm
+        LocalSearchAlgorithmOptionsSet localSearchAlg = null;
+        if (useLocalSearch) {
+            localSearchAlg = options.getLocalSearchAlgorithm();
+        }
+
+        // Prepare the request to get a recommended deployment plan
         RecommendedPlanRequest recommendedPlanRequest = new RecommendedPlanRequest(
                 options.getMaxExecTimeSeconds(),
                 options.getConstructionHeuristic().getName(),
-                options.getLocalSearchAlgorithm());
+                localSearchAlg);
 
         vmManager.executeDeploymentPlan(vmManager.getRecommendedPlan(recommendedPlanRequest).getVMPlacements());
     }
