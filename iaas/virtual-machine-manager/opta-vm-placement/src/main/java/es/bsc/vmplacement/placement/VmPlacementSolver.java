@@ -69,32 +69,42 @@ public class VmPlacementSolver {
     }
 
     private static void configureConstructionHeuristic(SolverConfig solverConfig, VmPlacementConfig vmPlacementConfig) {
-        ConstructionHeuristicSolverPhaseConfig heuristicConfig =
-                (ConstructionHeuristicSolverPhaseConfig) solverConfig.getSolverPhaseConfigList().toArray()[0];
-        switch(vmPlacementConfig.getConstructionHeuristic()) {
-            case FIRST_FIT:
-                heuristicConfig.setConstructionHeuristicType(
-                        ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType.FIRST_FIT);
-                break;
-            case FIRST_FIT_DECREASING:
-                heuristicConfig.setConstructionHeuristicType(
-                        ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType.FIRST_FIT_DECREASING);
-                break;
-            case BEST_FIT:
-                heuristicConfig.setConstructionHeuristicType(
-                        ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType.BEST_FIT);
-                break;
-            case BEST_FIT_DECREASING:
-                heuristicConfig.setConstructionHeuristicType(
-                        ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType.BEST_FIT_DECREASING);
-                break;
-            default:
-                throw new IllegalArgumentException("The construction heuristic selected is not supported");
+        // If we do not want to use a const. heuristic, remove the default one
+        if (vmPlacementConfig.getConstructionHeuristic() == null) {
+            solverConfig.getSolverPhaseConfigList().remove(0);
+        }
+
+        else {
+            ConstructionHeuristicSolverPhaseConfig heuristicConfig =
+                    (ConstructionHeuristicSolverPhaseConfig) solverConfig.getSolverPhaseConfigList().toArray()[0];
+            switch (vmPlacementConfig.getConstructionHeuristic()) {
+                case FIRST_FIT:
+                    heuristicConfig.setConstructionHeuristicType(
+                            ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType.FIRST_FIT);
+                    break;
+                case FIRST_FIT_DECREASING:
+                    heuristicConfig.setConstructionHeuristicType(
+                            ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType.FIRST_FIT_DECREASING);
+                    break;
+                case BEST_FIT:
+                    heuristicConfig.setConstructionHeuristicType(
+                            ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType.BEST_FIT);
+                    break;
+                case BEST_FIT_DECREASING:
+                    heuristicConfig.setConstructionHeuristicType(
+                            ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType.BEST_FIT_DECREASING);
+                    break;
+                default:
+                    throw new IllegalArgumentException("The construction heuristic selected is not supported");
+            }
         }
     }
 
     private static void configureLocalSearch(SolverConfig solverConfig, VmPlacementConfig vmPlacementConfig) {
-        solverConfig.getSolverPhaseConfigList().remove(1); // remove the local search alg included by default
+        // remove the local search alg included by default. It is in position 0 if the const.heuristic
+        // was removed, and 1 otherwise
+        solverConfig.getSolverPhaseConfigList().remove(solverConfig.getSolverPhaseConfigList().size() - 1);
+
         // Local search can be null if we are only interested in applying the construction step
         if (vmPlacementConfig.getLocalSearch() != null) {
             LocalSearchSolverPhaseConfig localSearchSolverPhaseConfig = new LocalSearchSolverPhaseConfig();
