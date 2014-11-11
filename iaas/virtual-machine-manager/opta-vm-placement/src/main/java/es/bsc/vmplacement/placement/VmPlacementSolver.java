@@ -94,11 +94,14 @@ public class VmPlacementSolver {
     }
 
     private static void configureLocalSearch(SolverConfig solverConfig, VmPlacementConfig vmPlacementConfig) {
-        LocalSearchSolverPhaseConfig localSearchSolverPhaseConfig = new LocalSearchSolverPhaseConfig();
-        localSearchSolverPhaseConfig.setAcceptorConfig(vmPlacementConfig.getLocalSearch().getAcceptorConfig());
-        localSearchSolverPhaseConfig.setForagerConfig(vmPlacementConfig.getLocalSearch().getForagerConfig());
-        solverConfig.getSolverPhaseConfigList().remove(1);
-        solverConfig.getSolverPhaseConfigList().add(localSearchSolverPhaseConfig);
+        solverConfig.getSolverPhaseConfigList().remove(1); // remove the local search alg included by default
+        // Local search can be null if we are only interested in applying the construction step
+        if (vmPlacementConfig.getLocalSearch() != null) {
+            LocalSearchSolverPhaseConfig localSearchSolverPhaseConfig = new LocalSearchSolverPhaseConfig();
+            localSearchSolverPhaseConfig.setAcceptorConfig(vmPlacementConfig.getLocalSearch().getAcceptorConfig());
+            localSearchSolverPhaseConfig.setForagerConfig(vmPlacementConfig.getLocalSearch().getForagerConfig());
+            solverConfig.getSolverPhaseConfigList().add(localSearchSolverPhaseConfig);
+        }
     }
 
 }
