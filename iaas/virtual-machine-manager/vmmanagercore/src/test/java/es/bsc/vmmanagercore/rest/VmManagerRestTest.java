@@ -489,7 +489,7 @@ public class VmManagerRestTest {
 
     private String getValidActionJson() {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("action", "stop");
+        jsonObject.addProperty("action", "rebootSoft");
         return jsonObject.toString();
     }
 
