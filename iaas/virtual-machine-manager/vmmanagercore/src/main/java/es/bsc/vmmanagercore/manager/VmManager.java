@@ -574,7 +574,7 @@ public class VmManager {
 
     private String setAsceticInitScript(Vm vmToDeploy) {
         String vmScriptName = null;
-        if (usingZabbix()) {
+        if (usingZabbix()) { // It would be more correct to check whether the VMM is running for the Ascetic project.
             if (isoReceivedInInitScript(vmToDeploy)) {
                 try {
                     // Copy the Zabbix agents script
