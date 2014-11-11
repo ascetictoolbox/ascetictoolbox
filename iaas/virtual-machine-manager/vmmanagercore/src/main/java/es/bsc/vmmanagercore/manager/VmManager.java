@@ -81,6 +81,10 @@ public class VmManager {
     public static EnergyModeller energyModeller;
     public static IaaSPricingModeller pricingModeller;
 
+    // Paths specific for the Ascetic project
+    private static final String ASCETIC_SCRIPTS_PATH = "/DFS/ascetic/vm-scripts/";
+    private static final String ASCETIC_ZABBIX_SCRIPT_PATH = "/DFS/ascetic/vm-scripts/zabbix_agents.sh";
+
     /**
      * Constructs a VmManager with the name of the database to be used.
      *
@@ -177,8 +181,7 @@ public class VmManager {
      * @return the IDs of the VMs deployed in the same order that they were received
      */
     public List<String> deployVms(List<Vm> vms) {
-        // HashMap VmDescription -> ID after deployment.
-        // This is used to return the IDs in the same order of the input
+        // HashMap (VmDescription,ID after deployment). Used to return the IDs in the same order that they are received
         Map<Vm, String> ids = new HashMap<>();
 
         // Choose the best deployment plan
@@ -200,28 +203,27 @@ public class VmManager {
                         // Copy the Zabbix agents script
                         vmScriptName = "vm_" + vmToDeploy.getName() +
                                 "_" + dateFormat.format(Calendar.getInstance().getTime()) + ".sh";
-                        Files.copy(Paths.get("/DFS/ascetic/vm-scripts/zabbix_agents.sh"),
-                                Paths.get("/DFS/ascetic/vm-scripts/" + vmScriptName), REPLACE_EXISTING);
+                        Files.copy(Paths.get(ASCETIC_ZABBIX_SCRIPT_PATH),
+                                Paths.get(ASCETIC_SCRIPTS_PATH + vmScriptName), REPLACE_EXISTING);
 
                         // Append the instruction to mount the ISO
                         try (PrintWriter out = new PrintWriter(new BufferedWriter(
-                                new FileWriter("/DFS/ascetic/vm-scripts/" + vmScriptName, true)))) {
+                                new FileWriter(ASCETIC_SCRIPTS_PATH + vmScriptName, true)))) {
                             out.println("/usr/local/sbin/set_iso_path " + vmToDeploy.getInitScript());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
 
                         // Assign the new script to the VM
-                        vmToDeploy.setInitScript("/DFS/ascetic/vm-scripts/" + vmScriptName);
+                        vmToDeploy.setInitScript(ASCETIC_SCRIPTS_PATH + vmScriptName);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
                 else {
-                    Path zabbixAgentsScriptPath =
-                            FileSystems.getDefault().getPath("/DFS/ascetic/vm-scripts/zabbix_agents.sh");
+                    Path zabbixAgentsScriptPath = FileSystems.getDefault().getPath(ASCETIC_ZABBIX_SCRIPT_PATH);
                     if (Files.exists(zabbixAgentsScriptPath)) {
-                        vmToDeploy.setInitScript("/DFS/ascetic/vm-scripts/zabbix_agents.sh");
+                        vmToDeploy.setInitScript(ASCETIC_ZABBIX_SCRIPT_PATH);
                     }
                     else { // This is for when I perform tests locally and don't have access to the script (and
                         // do not need it)
