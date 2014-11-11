@@ -33,7 +33,7 @@ public class RecommendedPlanRequest {
 
     public RecommendedPlanRequest(int timeLimitSeconds, String constructionHeuristicName,
             LocalSearchAlgorithmOptionsSet localSearchAlgorithm) {
-        validateConstructorParams(timeLimitSeconds, constructionHeuristicName);
+        validateConstructorParams(timeLimitSeconds);
         this.timeLimitSeconds = timeLimitSeconds;
         this.constructionHeuristicName = constructionHeuristicName;
         this.localSearchAlgorithm = localSearchAlgorithm;
@@ -51,11 +51,10 @@ public class RecommendedPlanRequest {
         return localSearchAlgorithm;
     }
 
-    private void validateConstructorParams(int timeLimitSeconds, String constructionHeuristicName) {
+    private void validateConstructorParams(int timeLimitSeconds) {
         Preconditions.checkNotNull(timeLimitSeconds);
         Preconditions.checkArgument(timeLimitSeconds >= 0, "time limit was %s but expected non-negative",
                 timeLimitSeconds);
-        Preconditions.checkNotNull(constructionHeuristicName);
     }
 
 }
