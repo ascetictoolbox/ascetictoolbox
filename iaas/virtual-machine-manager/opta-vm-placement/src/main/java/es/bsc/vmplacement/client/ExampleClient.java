@@ -22,6 +22,7 @@ import es.bsc.vmplacement.domain.ConstructionHeuristic;
 import es.bsc.vmplacement.domain.Host;
 import es.bsc.vmplacement.domain.Vm;
 import es.bsc.vmplacement.lib.OptaVmPlacement;
+import es.bsc.vmplacement.lib.OptaVmPlacementImpl;
 import es.bsc.vmplacement.placement.config.Policy;
 import es.bsc.vmplacement.placement.config.VmPlacementConfig;
 import es.bsc.vmplacement.placement.config.localsearch.LateAcceptance;
@@ -78,7 +79,7 @@ public class ExampleClient {
     }
 
     public static void main(String[] args) {
-        OptaVmPlacement optaVmPlacement = new OptaVmPlacement();
+        OptaVmPlacement optaVmPlacement = new OptaVmPlacementImpl();
         VmPlacementConfig vmPlacementConfig = new VmPlacementConfig.Builder(Policy.CONSOLIDATION, 30,
                 ConstructionHeuristic.FIRST_FIT_DECREASING, new LateAcceptance(400), false).build();
         System.out.println(optaVmPlacement.getBestSolution(getInitialHosts(), getInitialVms(), vmPlacementConfig));

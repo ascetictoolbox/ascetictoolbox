@@ -32,37 +32,21 @@ import java.util.List;
  *
  * @author David Ortiz (david.ortiz@bsc.es)
  */
-public class OptaVmPlacement {
+public class OptaVmPlacementImpl implements OptaVmPlacement {
 
-    /**
-     * Given a list of hosts, a list of VMs, applies the best placement that can be found according to the
-     * configuration parameters specified.
-     *
-     * @param hosts the hosts
-     * @param vms the VMs
-     * @param config the configuration parameters for the placement
-     * @return the state of the cluster after applying the best placement that could be found
-     */
+    @Override
     public ClusterState getBestSolution(List<Host> hosts, List<Vm> vms, VmPlacementConfig config) {
         return new VmPlacementProblem(hosts, vms, config).getBestSolution();
     }
 
-    /**
-     * Returns a list of the construction heuristics that are supported by the library.
-     *
-     * @return List of the construction heuristics
-     */
+    @Override
     public List<ConstructionHeuristic> getConstructionHeuristics() {
         List<ConstructionHeuristic> result = new ArrayList<>();
         result.addAll(Arrays.asList((ConstructionHeuristic.values())));
         return result;
     }
 
-    /**
-     * Returns a list of the local search algorithm that are supported by the library.
-     *
-     * @return the list of local search algorithms
-     */
+    @Override
     public List<LocalSearchAlgorithm> getLocalSearchAlgorithms() {
         List<LocalSearchAlgorithm> result = new ArrayList<>();
         result.add(new LocalSearchAlgorithm("Hill Climbing", Collections.<String>emptyList()));

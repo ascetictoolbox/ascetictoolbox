@@ -43,6 +43,7 @@ import es.bsc.vmmanagercore.utils.FileSystem;
 import es.bsc.vmmanagercore.vmplacement.OptaVmPlacementConversor;
 import es.bsc.vmplacement.domain.ClusterState;
 import es.bsc.vmplacement.lib.OptaVmPlacement;
+import es.bsc.vmplacement.lib.OptaVmPlacementImpl;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.IaaSPricingModeller;
 
@@ -74,7 +75,7 @@ public class VmManager {
     private List<Host> hosts = new ArrayList<>();
     private SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
-    private OptaVmPlacement optaVmPlacement = new OptaVmPlacement(); // Library used for the VM Placement
+    private OptaVmPlacement optaVmPlacement = new OptaVmPlacementImpl(); // Library used for the VM Placement
     private OptaVmPlacementConversor optaVmPlacementConversor = new OptaVmPlacementConversor();
 
     public static EnergyModeller energyModeller;
