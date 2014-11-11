@@ -212,10 +212,12 @@ public class VmManager {
 
                 // Delete the script if one was created
                 if (vmScriptName != null) {
-                    FileSystem.deleteFile("/DFS/ascetic/vm-scripts/" + vmScriptName);
+                    FileSystem.deleteFile(ASCETIC_SCRIPTS_PATH + vmScriptName);
                 }
             }
         }
+
+        selfAdaptationManager.applyAfterVmDeploymentSelfAdaptation(false, true);
 
         // Return the IDs of the VMs deployed in the same order that they were received
         List<String> idsDeployedVms = new ArrayList<>();
@@ -404,10 +406,11 @@ public class VmManager {
      * @param recommendedPlanRequest the request
      * @return the recommended plan
      */
-    public RecommendedPlan getRecommendedPlan(RecommendedPlanRequest recommendedPlanRequest) {
+    public RecommendedPlan getRecommendedPlan(RecommendedPlanRequest recommendedPlanRequest,
+                                              boolean assignVmsToCurrentHosts) {
         ClusterState clusterStateRecommendedPlan = optaVmPlacement.getBestSolution(
                 optaVmPlacementConversor.getOptaHosts(getHosts()),
-                optaVmPlacementConversor.getOptaVms(getAllVms()),
+                optaVmPlacementConversor.getOptaVms(getAllVms(), getHosts(), assignVmsToCurrentHosts),
                 optaVmPlacementConversor.getOptaPlacementConfig(getCurrentSchedulingAlgorithm(),
                         recommendedPlanRequest));
         return optaVmPlacementConversor.getRecommendedPlan(clusterStateRecommendedPlan);

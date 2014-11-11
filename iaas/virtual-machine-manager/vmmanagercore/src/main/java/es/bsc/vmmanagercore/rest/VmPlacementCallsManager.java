@@ -47,7 +47,7 @@ public class VmPlacementCallsManager {
 
     public String getRecommendedPlan(String recommendedPlanRequest) {
         return gson.toJson(vmManager.getRecommendedPlan(gson.fromJson(recommendedPlanRequest,
-                RecommendedPlanRequest.class)));
+                RecommendedPlanRequest.class), false));
     }
 
     public void executeDeploymentPlan(String deploymentPlan) {

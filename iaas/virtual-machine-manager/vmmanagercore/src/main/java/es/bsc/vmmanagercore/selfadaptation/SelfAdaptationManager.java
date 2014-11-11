@@ -75,29 +75,44 @@ public class SelfAdaptationManager {
 
     /**
      * Applies the self-adaptation configured to take place after a VM deployment.
-     * It gives the option of applying a local search algorithm if it has been defined.
+     * It gives the option of applying a local search algorithm or const. heuristic if they have been defined.
      * If a deployment request contains several VMs, the local search algorithm should only be applied
      * after all of them have been deployed. It does not make sense to execute the local search algorithm
-     * after each deployment.
+     * after each deployment. Similarly, the construction heuristic should only be applied when
      *
      * @param useLocalSearch indicates whether to apply a local search algorithm
      */
-    public void applyAfterVmDeploymentSelfAdaptation(boolean useLocalSearch) {
+    public void applyAfterVmDeploymentSelfAdaptation(boolean useConstrHeuristic, boolean useLocalSearch) {
         AfterVmDeploymentSelfAdaptationOps options = getSelfAdaptationOptions().getAfterVmDeploymentSelfAdaptationOps();
+
+        // Decide construction heuristic
+        String constrHeuristicName = null;
+        if (useConstrHeuristic) {
+            constrHeuristicName = options.getConstructionHeuristic().getName();
+        }
 
         // Decide local search algorithm
         LocalSearchAlgorithmOptionsSet localSearchAlg = null;
-        if (useLocalSearch) {
+        if (options.getMaxExecTimeSeconds() > 0 && useLocalSearch) {
             localSearchAlg = options.getLocalSearchAlgorithm();
         }
 
         // Prepare the request to get a recommended deployment plan
         RecommendedPlanRequest recommendedPlanRequest = new RecommendedPlanRequest(
                 options.getMaxExecTimeSeconds(),
-                options.getConstructionHeuristic().getName(),
+                constrHeuristicName,
                 localSearchAlg);
 
-        vmManager.executeDeploymentPlan(vmManager.getRecommendedPlan(recommendedPlanRequest).getVMPlacements());
+        if (constrHeuristicName != null || localSearchAlg != null) {
+            if (constrHeuristicName == null) {
+                vmManager.executeDeploymentPlan(
+                        vmManager.getRecommendedPlan(recommendedPlanRequest, true).getVMPlacements());
+            }
+            else {
+                vmManager.executeDeploymentPlan(
+                        vmManager.getRecommendedPlan(recommendedPlanRequest, false).getVMPlacements());
+            }
+        }
     }
 
     /**
@@ -107,14 +122,11 @@ public class SelfAdaptationManager {
         AfterVmDeleteSelfAdaptationOps options = getSelfAdaptationOptions().getAfterVmDeleteSelfAdaptationOps();
 
         if (options.getLocalSearchAlgorithm() != null && options.getMaxExecTimeSeconds() > 0) {
-            // The construction heuristic is set to first fit, but anyone could be selected because in this case,
-            // all the VMs are already assigned to a host. Therefore, it is not needed to apply a construction heuristic
-            RecommendedPlanRequest recommendedPlanRequest =
-                    new RecommendedPlanRequest(options.getMaxExecTimeSeconds(),
-                            "FIRST_FIT",
-                            options.getLocalSearchAlgorithm());
+            RecommendedPlanRequest recommendedPlanRequest = new RecommendedPlanRequest(
+                    options.getMaxExecTimeSeconds(), null, options.getLocalSearchAlgorithm());
 
-            vmManager.executeDeploymentPlan(vmManager.getRecommendedPlan(recommendedPlanRequest).getVMPlacements());
+            vmManager.executeDeploymentPlan(
+                    vmManager.getRecommendedPlan(recommendedPlanRequest, true).getVMPlacements());
         }
     }
 
@@ -127,12 +139,11 @@ public class SelfAdaptationManager {
         if (options.getLocalSearchAlgorithm() != null && options.getMaxExecTimeSeconds() > 0) {
             // The construction heuristic is set to first fit, but anyone could be selected because in this case,
             // all the VMs are already assigned to a host. Therefore, it is not needed to apply a construction heuristic
-            RecommendedPlanRequest recommendedPlanRequest =
-                    new RecommendedPlanRequest(options.getMaxExecTimeSeconds(),
-                            "FIRST_FIT",
-                            options.getLocalSearchAlgorithm());
+            RecommendedPlanRequest recommendedPlanRequest = new RecommendedPlanRequest(
+                    options.getMaxExecTimeSeconds(), null, options.getLocalSearchAlgorithm());
 
-            vmManager.executeDeploymentPlan(vmManager.getRecommendedPlan(recommendedPlanRequest).getVMPlacements());
+            vmManager.executeDeploymentPlan(
+                    vmManager.getRecommendedPlan(recommendedPlanRequest, true).getVMPlacements());
         }
     }
 

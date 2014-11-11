@@ -46,10 +46,11 @@ public class OptaVmPlacementConversor {
      * @param vms the list of VMs used by the VMM core
      * @return the list of VMs used by the OptaVmPlacement library
      */
-    public List<es.bsc.vmplacement.domain.Vm> getOptaVms(List<VmDeployed> vms) {
+    public List<es.bsc.vmplacement.domain.Vm> getOptaVms(List<VmDeployed> vms, List<Host> hosts,
+                                                         boolean assignVmsToHosts) {
         List<es.bsc.vmplacement.domain.Vm> result = new ArrayList<>();
         for (int i = 0; i < vms.size(); ++i) {
-            result.add(getOptaVm((long) i, vms.get(i)));
+            result.add(getOptaVm((long) i, vms.get(i), getOptaHosts(hosts), assignVmsToHosts));
         }
         return result;
     }
@@ -77,9 +78,15 @@ public class OptaVmPlacementConversor {
      */
     public VmPlacementConfig getOptaPlacementConfig(SchedulingAlgorithm schedulingAlgorithm,
             RecommendedPlanRequest recommendedPlanRequest) {
+        int timeLimitSec = recommendedPlanRequest.getTimeLimitSeconds();
+        if (getLocalSearch(recommendedPlanRequest) == null) {
+            timeLimitSec = 1; // It does not matter because the local search alg will not be run, but the
+                              // VM placement library complains if we send 0
+        }
+
         return new VmPlacementConfig.Builder(
                 getPolicy(schedulingAlgorithm),
-                recommendedPlanRequest.getTimeLimitSeconds(),
+                timeLimitSec,
                 getConstructionHeuristic(recommendedPlanRequest.getConstructionHeuristicName()),
                 getLocalSearch(recommendedPlanRequest),
                 false)
@@ -109,9 +116,20 @@ public class OptaVmPlacementConversor {
      * @param vm the VM used by the VMM core
      * @return the VM used by the OptaVMPlacement library
      */
-    private es.bsc.vmplacement.domain.Vm getOptaVm(Long id, VmDeployed vm) {
-        return new es.bsc.vmplacement.domain.Vm(id, vm.getCpus(), vm.getRamMb(), vm.getDiskGb(),
-                vm.getApplicationId(), vm.getId());
+    private es.bsc.vmplacement.domain.Vm getOptaVm(Long id, VmDeployed vm,
+                                                   List<es.bsc.vmplacement.domain.Host> optaHosts,
+                                                   boolean assignVmsToHosts) {
+        es.bsc.vmplacement.domain.Vm result = new es.bsc.vmplacement.domain.Vm(
+                id, vm.getCpus(), vm.getRamMb(), vm.getDiskGb(), vm.getApplicationId(), vm.getId());
+
+        // If we do not need to assign the VMs to their current hosts, then return the result
+        if (!assignVmsToHosts) {
+            return result;
+        }
+
+        // Else, find the host by its hostname and assign it to the VM
+        result.setHost(findOptaHost(optaHosts, vm.getHostName()));
+        return result;
     }
 
     /**
@@ -159,6 +177,10 @@ public class OptaVmPlacementConversor {
      * @return the construction heuristic
      */
     private ConstructionHeuristic getConstructionHeuristic(String name) {
+        if (name == null) {
+            return null;
+        }
+
         switch (name) {
             case "FIRST_FIT":
                 return ConstructionHeuristic.FIRST_FIT;
@@ -180,6 +202,10 @@ public class OptaVmPlacementConversor {
      * @return the local search
      */
     private LocalSearch getLocalSearch(RecommendedPlanRequest recommendedPlanRequest) {
+        if (recommendedPlanRequest.getLocalSearchAlgorithm() == null) {
+            return null;
+        }
+
         switch (recommendedPlanRequest.getLocalSearchAlgorithm().getName()) {
             case "Hill Climbing":
                 return new HillClimbing();
@@ -202,6 +228,16 @@ public class OptaVmPlacementConversor {
             default:
                 throw new IllegalArgumentException("Invalid local search algorithm");
         }
+    }
+
+    private es.bsc.vmplacement.domain.Host findOptaHost(List<es.bsc.vmplacement.domain.Host> optaHosts,
+                                                        String hostname) {
+        for (es.bsc.vmplacement.domain.Host optaHost: optaHosts) {
+            if (hostname.equals(optaHost.getHostname())) {
+                return optaHost;
+            }
+        }
+        return null;
     }
 
 }
