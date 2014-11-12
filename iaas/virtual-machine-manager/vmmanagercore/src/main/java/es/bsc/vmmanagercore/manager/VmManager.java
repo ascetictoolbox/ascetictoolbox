@@ -185,7 +185,8 @@ public class VmManager {
         Map<Vm, String> ids = new HashMap<>();
 
         // Choose the best deployment plan
-        DeploymentPlan deploymentPlan = scheduler.chooseBestDeploymentPlan(vms, hosts);
+        DeploymentPlan deploymentPlan = chooseBestDeploymentPlan(
+                vms, VmManagerConfiguration.getInstance().deploymentEngine);
 
         // Loop through the VM assignments to hosts defined in the best deployment plan
         for (VmAssignmentToHost vmAssignmentToHost: deploymentPlan.getVmsAssignationsToHosts()) {
@@ -617,6 +618,15 @@ public class VmManager {
             }
         }
         return vmScriptName;
+    }
+
+    private DeploymentPlan chooseBestDeploymentPlan(List<Vm> vms, String deploymentEngine) {
+        switch (deploymentEngine) {
+            case "legacy":
+                return scheduler.chooseBestDeploymentPlan(vms, hosts);
+            default:
+                throw new IllegalArgumentException("The deployment engine selected is not supported");
+        }
     }
 
 }

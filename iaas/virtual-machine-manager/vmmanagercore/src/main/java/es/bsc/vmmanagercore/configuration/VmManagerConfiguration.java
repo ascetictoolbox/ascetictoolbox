@@ -64,6 +64,9 @@ public class VmManagerConfiguration {
     public String deployBaseUrl;
     public String deployPackage;
 
+    // VM deployments
+    public String deploymentEngine;
+
     // Software used
     public enum Monitoring { OPENSTACK, GANGLIA, ZABBIX }
     public enum Middleware { OPENSTACK }
@@ -109,6 +112,7 @@ public class VmManagerConfiguration {
         deployBaseUrl = prop.getProperty("deployBaseUrl");
         deployPackage = prop.getProperty("deployPackage");
         hosts = prop.getProperty("hosts").split(",");
+        deploymentEngine = prop.getProperty("deploymentEngine");
 
         if(prop.getProperty("monitoring").equals("openstack")) {
             monitoring = Monitoring.OPENSTACK;
