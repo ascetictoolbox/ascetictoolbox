@@ -25,10 +25,14 @@ import es.bsc.vmmanagercore.model.scheduling.ConstructionHeuristic;
 import es.bsc.vmmanagercore.model.scheduling.LocalSearchAlgorithmOptionsSet;
 import es.bsc.vmmanagercore.model.scheduling.RecommendedPlan;
 import es.bsc.vmmanagercore.model.scheduling.RecommendedPlanRequest;
+import es.bsc.vmmanagercore.model.vms.Vm;
 import es.bsc.vmmanagercore.selfadaptation.options.AfterVmDeleteSelfAdaptationOps;
 import es.bsc.vmmanagercore.selfadaptation.options.AfterVmDeploymentSelfAdaptationOps;
 import es.bsc.vmmanagercore.selfadaptation.options.PeriodicSelfAdaptationOps;
 import es.bsc.vmmanagercore.selfadaptation.options.SelfAdaptationOptions;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Self-adaptation Manager.
@@ -79,7 +83,7 @@ public class SelfAdaptationManager {
      *
      * @return the recommended plan
      */
-    public RecommendedPlan getRecommendedPlanForDeployment() {
+    public RecommendedPlan getRecommendedPlanForDeployment(List<Vm> vmsToDeploy) {
         AfterVmDeploymentSelfAdaptationOps options = getSelfAdaptationOptions().getAfterVmDeploymentSelfAdaptationOps();
         String constrHeuristicName = options.getConstructionHeuristic().getName();
 
@@ -89,7 +93,7 @@ public class SelfAdaptationManager {
                 constrHeuristicName,
                 null);
 
-        return vmManager.getRecommendedPlan(recommendedPlanRequest, true);
+        return vmManager.getRecommendedPlan(recommendedPlanRequest, true, vmsToDeploy);
     }
 
     /**
@@ -112,7 +116,7 @@ public class SelfAdaptationManager {
 
         if (localSearchAlg != null) {
             vmManager.executeDeploymentPlan(
-                    vmManager.getRecommendedPlan(recommendedPlanRequest, true).getVMPlacements());
+                    vmManager.getRecommendedPlan(recommendedPlanRequest, true, new ArrayList<Vm>()).getVMPlacements());
         }
     }
 
@@ -127,7 +131,7 @@ public class SelfAdaptationManager {
                     options.getMaxExecTimeSeconds(), null, options.getLocalSearchAlgorithm());
 
             vmManager.executeDeploymentPlan(
-                    vmManager.getRecommendedPlan(recommendedPlanRequest, true).getVMPlacements());
+                    vmManager.getRecommendedPlan(recommendedPlanRequest, true, new ArrayList<Vm>()).getVMPlacements());
         }
     }
 
@@ -144,7 +148,7 @@ public class SelfAdaptationManager {
                     options.getMaxExecTimeSeconds(), null, options.getLocalSearchAlgorithm());
 
             vmManager.executeDeploymentPlan(
-                    vmManager.getRecommendedPlan(recommendedPlanRequest, true).getVMPlacements());
+                    vmManager.getRecommendedPlan(recommendedPlanRequest, true, new ArrayList<Vm>()).getVMPlacements());
         }
     }
 

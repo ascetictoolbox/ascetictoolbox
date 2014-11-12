@@ -22,6 +22,9 @@ import com.google.gson.Gson;
 import es.bsc.vmmanagercore.manager.VmManager;
 import es.bsc.vmmanagercore.model.scheduling.RecommendedPlanRequest;
 import es.bsc.vmmanagercore.model.scheduling.VmPlacement;
+import es.bsc.vmmanagercore.model.vms.Vm;
+
+import java.util.ArrayList;
 
 /**
  * This class implements the REST calls that are related with the placement of VMs.
@@ -47,7 +50,7 @@ public class VmPlacementCallsManager {
 
     public String getRecommendedPlan(String recommendedPlanRequest) {
         return gson.toJson(vmManager.getRecommendedPlan(gson.fromJson(recommendedPlanRequest,
-                RecommendedPlanRequest.class), false));
+                RecommendedPlanRequest.class), false, new ArrayList<Vm>()));
     }
 
     public void executeDeploymentPlan(String deploymentPlan) {

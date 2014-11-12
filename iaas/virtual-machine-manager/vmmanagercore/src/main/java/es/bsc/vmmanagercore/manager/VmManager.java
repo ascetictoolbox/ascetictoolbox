@@ -406,14 +406,17 @@ public class VmManager {
      *
      * @param recommendedPlanRequest the request
      * @param assignVmsToCurrentHosts indicates whether the hosts should be set in the VM instances
+     * @param vmsToDeploy list of VMs that need to be deployed
      * @return the recommended plan
      */
     public RecommendedPlan getRecommendedPlan(RecommendedPlanRequest recommendedPlanRequest,
-                                              boolean assignVmsToCurrentHosts) {
+                                              boolean assignVmsToCurrentHosts,
+                                              List<Vm> vmsToDeploy) {
         ClusterState clusterStateRecommendedPlan = optaVmPlacement.getBestSolution(
                 optaVmPlacementConversor.getOptaHosts(getHosts()),
                 optaVmPlacementConversor.getOptaVms(
                         getAllVms(),
+                        vmsToDeploy,
                         optaVmPlacementConversor.getOptaHosts(getHosts()),
                         assignVmsToCurrentHosts),
                 optaVmPlacementConversor.getOptaPlacementConfig(
@@ -620,13 +623,49 @@ public class VmManager {
         return vmScriptName;
     }
 
+
     private DeploymentPlan chooseBestDeploymentPlan(List<Vm> vms, String deploymentEngine) {
         switch (deploymentEngine) {
             case "legacy":
                 return scheduler.chooseBestDeploymentPlan(vms, hosts);
+            case "optaPlanner":
+                if (repeatedNameInVmList(vms)) {
+                    throw new IllegalArgumentException("There was an error while choosing a deployment plan.");
+                }
+
+                RecommendedPlan recommendedPlan = selfAdaptationManager.getRecommendedPlanForDeployment(vms);
+
+                // Construct deployment plan from recommended plan with only the VMs that we want to deploy,
+                // we do not need here the ones that are already deployed even though they appear in the plan
+                List<VmAssignmentToHost> vmAssignmentToHosts = new ArrayList<>();
+                for (Vm vm: vms) {
+                    VmPlacement vmPlacement = findVmPlacementByVmId(recommendedPlan.getVMPlacements(), vm.getName());
+                    Host host = getHost(vmPlacement.getHostname());
+                    vmAssignmentToHosts.add(new VmAssignmentToHost(vm, host));
+                }
+                return new DeploymentPlan(vmAssignmentToHosts);
             default:
-                throw new IllegalArgumentException("The deployment engine selected is not supported");
+                throw new IllegalArgumentException("The deployment engine selected is not supported.");
         }
     }
 
+    private VmPlacement findVmPlacementByVmId(VmPlacement[] vmPlacements, String vmId) {
+        for (VmPlacement vmPlacement: vmPlacements) {
+            if (vmId.equals(vmPlacement.getVmId())) {
+                return vmPlacement;
+            }
+        }
+        return null;
+    }
+
+    private boolean repeatedNameInVmList(List<Vm> vms) {
+        for (int i = 0; i < vms.size(); ++i) {
+            for (int j = i + 1; j < vms.size(); ++j) {
+                if (vms.get(i).getName().equals(vms.get(j).getName())) {
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
 }

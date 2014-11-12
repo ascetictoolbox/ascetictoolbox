@@ -21,6 +21,7 @@ package es.bsc.vmmanagercore.vmplacement;
 import es.bsc.vmmanagercore.model.scheduling.RecommendedPlan;
 import es.bsc.vmmanagercore.model.scheduling.RecommendedPlanRequest;
 import es.bsc.vmmanagercore.model.scheduling.SchedulingAlgorithm;
+import es.bsc.vmmanagercore.model.vms.Vm;
 import es.bsc.vmmanagercore.model.vms.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.Host;
 import es.bsc.vmplacement.domain.ClusterState;
@@ -50,12 +51,21 @@ public class OptaVmPlacementConversor {
      * @return the list of VMs used by the OptaVmPlacement library
      */
     public List<es.bsc.vmplacement.domain.Vm> getOptaVms(List<VmDeployed> vms,
+                                                         List<Vm> vmsToDeploy,
                                                          List<es.bsc.vmplacement.domain.Host> hosts,
                                                          boolean assignVmsToHosts) {
         List<es.bsc.vmplacement.domain.Vm> result = new ArrayList<>();
+
+        // Add the VMs already deployed
         for (int i = 0; i < vms.size(); ++i) {
             result.add(getOptaVm((long) i, vms.get(i), hosts, assignVmsToHosts));
         }
+
+        // Add the VMs that need to be deployed
+        for (int i = vms.size(); i < vms.size() + vmsToDeploy.size(); ++i) {
+            result.add(getOptaVmToDeploy((long) i, vmsToDeploy.get(i - vms.size())));
+        }
+
         return result;
     }
 
@@ -136,6 +146,12 @@ public class OptaVmPlacementConversor {
         // Else, find the host by its hostname and assign it to the VM
         result.setHost(findOptaHost(optaHosts, vm.getHostName()));
         return result;
+    }
+
+    // Note: This function should probably be merged with getOptaVm
+    private es.bsc.vmplacement.domain.Vm getOptaVmToDeploy(Long id, Vm vm) {
+        return new es.bsc.vmplacement.domain.Vm(id, vm.getCpus(), vm.getRamMb(), vm.getDiskGb(),
+                vm.getApplicationId(), vm.getName());
     }
 
     /**
