@@ -42,15 +42,19 @@ public class OptaVmPlacementConversor {
 
     /**
      * Converts a list of VMs as defined in the VMM core to a list of VMs as defined in the OptaVMPlacement library.
+     * It is possible to initialize in each one of the VMs, the host where they are deployed in.
      *
      * @param vms the list of VMs used by the VMM core
+     * @param hosts the list of hosts as defined by the OptaVmPlacement library
+     * @param assignVmsToHosts indicates whether it is needed to set the hosts in the VMs
      * @return the list of VMs used by the OptaVmPlacement library
      */
-    public List<es.bsc.vmplacement.domain.Vm> getOptaVms(List<VmDeployed> vms, List<Host> hosts,
+    public List<es.bsc.vmplacement.domain.Vm> getOptaVms(List<VmDeployed> vms,
+                                                         List<es.bsc.vmplacement.domain.Host> hosts,
                                                          boolean assignVmsToHosts) {
         List<es.bsc.vmplacement.domain.Vm> result = new ArrayList<>();
         for (int i = 0; i < vms.size(); ++i) {
-            result.add(getOptaVm((long) i, vms.get(i), getOptaHosts(hosts), assignVmsToHosts));
+            result.add(getOptaVm((long) i, vms.get(i), hosts, assignVmsToHosts));
         }
         return result;
     }
@@ -63,8 +67,8 @@ public class OptaVmPlacementConversor {
      */
     public List<es.bsc.vmplacement.domain.Host> getOptaHosts(List<Host> hosts) {
         List<es.bsc.vmplacement.domain.Host> result = new ArrayList<>();
-        for (int i = 0; i < hosts.size(); ++i) {
-            result.add(getOptaHost((long) i, hosts.get(i)));
+        for (Host host: hosts) {
+            result.add(OptaHostFactory.getOptaHost(host));
         }
         return result;
     }
@@ -114,6 +118,8 @@ public class OptaVmPlacementConversor {
      *
      * @param id the id of the VM used by the OptaVMPlacement library
      * @param vm the VM used by the VMM core
+     * @param optaHosts list of hosts of the cluster as defined by the OptaVMPlacement library
+     * @param assignVmsToHosts indicates whether it is needed to set the hosts in the VMs
      * @return the VM used by the OptaVMPlacement library
      */
     private es.bsc.vmplacement.domain.Vm getOptaVm(Long id, VmDeployed vm,
@@ -130,18 +136,6 @@ public class OptaVmPlacementConversor {
         // Else, find the host by its hostname and assign it to the VM
         result.setHost(findOptaHost(optaHosts, vm.getHostName()));
         return result;
-    }
-
-    /**
-     * Converts a host as defined in the VMM core to a host as defined in the OptaVMPlacement library.
-     *
-     * @param id the id of the host used by the OptaVMPlacement library
-     * @param host the host used by the VMM core
-     * @return the host used by the OptaVMPlacement library
-     */
-    private es.bsc.vmplacement.domain.Host getOptaHost(Long id, Host host) {
-        return new es.bsc.vmplacement.domain.Host(id, host.getHostname(), host.getTotalCpus(),
-                host.getTotalMemoryMb(), host.getTotalDiskGb());
     }
 
     /**
@@ -230,6 +224,13 @@ public class OptaVmPlacementConversor {
         }
     }
 
+    /**
+     * Finds an optaHost by hostname in a list of optaHosts
+     *
+     * @param optaHosts the list of optaHosts
+     * @param hostname the hostname
+     * @return the optaHost found
+     */
     private es.bsc.vmplacement.domain.Host findOptaHost(List<es.bsc.vmplacement.domain.Host> optaHosts,
                                                         String hostname) {
         for (es.bsc.vmplacement.domain.Host optaHost: optaHosts) {

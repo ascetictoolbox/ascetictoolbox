@@ -401,6 +401,7 @@ iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/ut
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/utils/FileSystem.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/utils/HttpUtils.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/vmplacement/OptaEnergyModeller.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/vmplacement/OptaHostFactory.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/vmplacement/OptaPriceModeller.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/vmplacement/OptaVmPlacementConversor.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/resources/configBSC.properties -text

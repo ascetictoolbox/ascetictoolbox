@@ -404,14 +404,19 @@ public class VmManager {
      * This function calculates a deployment plan based on a request. It uses the OptaVMPlacement library.
      *
      * @param recommendedPlanRequest the request
+     * @param assignVmsToCurrentHosts indicates whether the hosts should be set in the VM instances
      * @return the recommended plan
      */
     public RecommendedPlan getRecommendedPlan(RecommendedPlanRequest recommendedPlanRequest,
                                               boolean assignVmsToCurrentHosts) {
         ClusterState clusterStateRecommendedPlan = optaVmPlacement.getBestSolution(
                 optaVmPlacementConversor.getOptaHosts(getHosts()),
-                optaVmPlacementConversor.getOptaVms(getAllVms(), getHosts(), assignVmsToCurrentHosts),
-                optaVmPlacementConversor.getOptaPlacementConfig(getCurrentSchedulingAlgorithm(),
+                optaVmPlacementConversor.getOptaVms(
+                        getAllVms(),
+                        optaVmPlacementConversor.getOptaHosts(getHosts()),
+                        assignVmsToCurrentHosts),
+                optaVmPlacementConversor.getOptaPlacementConfig(
+                        getCurrentSchedulingAlgorithm(),
                         recommendedPlanRequest));
         return optaVmPlacementConversor.getRecommendedPlan(clusterStateRecommendedPlan);
     }

@@ -45,7 +45,8 @@ public class OptaVmPlacementConversorTest {
         List<VmDeployed> vmsDeployed = new ArrayList<>();
         vmsDeployed.add(new VmDeployed("vm", "fakeImage", 1, 1024, 1, "", "appId", "vmId", "172.16.8.1", "ACTIVE",
                 new Date(), "host1"));
-        Vm optaVm = optaVmPlacementConversor.getOptaVms(vmsDeployed, new ArrayList<Host>(), false).get(0);
+        Vm optaVm = optaVmPlacementConversor.getOptaVms(vmsDeployed,
+                new ArrayList<es.bsc.vmplacement.domain.Host>(), false).get(0);
         assertEquals(1, optaVm.getNcpus());
         assertEquals(1024, optaVm.getRamMb());
         assertEquals(1, optaVm.getDiskGb());
