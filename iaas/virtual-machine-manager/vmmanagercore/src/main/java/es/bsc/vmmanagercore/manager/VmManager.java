@@ -218,7 +218,7 @@ public class VmManager {
             }
         }
 
-        selfAdaptationManager.applyAfterVmDeploymentSelfAdaptation(false, true);
+        selfAdaptationManager.applyAfterVmsDeploymentSelfAdaptation();
 
         // Return the IDs of the VMs deployed in the same order that they were received
         List<String> idsDeployedVms = new ArrayList<>();

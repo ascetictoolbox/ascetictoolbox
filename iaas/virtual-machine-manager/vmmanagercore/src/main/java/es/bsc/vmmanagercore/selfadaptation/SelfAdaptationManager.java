@@ -23,6 +23,7 @@ import es.bsc.vmmanagercore.db.VmManagerDbFactory;
 import es.bsc.vmmanagercore.manager.VmManager;
 import es.bsc.vmmanagercore.model.scheduling.ConstructionHeuristic;
 import es.bsc.vmmanagercore.model.scheduling.LocalSearchAlgorithmOptionsSet;
+import es.bsc.vmmanagercore.model.scheduling.RecommendedPlan;
 import es.bsc.vmmanagercore.model.scheduling.RecommendedPlanRequest;
 import es.bsc.vmmanagercore.selfadaptation.options.AfterVmDeleteSelfAdaptationOps;
 import es.bsc.vmmanagercore.selfadaptation.options.AfterVmDeploymentSelfAdaptationOps;
@@ -74,44 +75,44 @@ public class SelfAdaptationManager {
     }
 
     /**
-     * Applies the self-adaptation configured to take place after a VM deployment.
-     * It gives the option of applying a local search algorithm or const. heuristic if they have been defined.
-     * If a deployment request contains several VMs, the local search algorithm should only be applied
-     * after all of them have been deployed. It does not make sense to execute the local search algorithm
-     * after each deployment. Similarly, the construction heuristic should only be applied when
+     * Returns a recommended plan for deployment according to the self-adaptation options defined.
      *
-     * @param useLocalSearch indicates whether to apply a local search algorithm
+     * @return the recommended plan
      */
-    public void applyAfterVmDeploymentSelfAdaptation(boolean useConstrHeuristic, boolean useLocalSearch) {
+    public RecommendedPlan getRecommendedPlanForDeployment() {
         AfterVmDeploymentSelfAdaptationOps options = getSelfAdaptationOptions().getAfterVmDeploymentSelfAdaptationOps();
+        String constrHeuristicName = options.getConstructionHeuristic().getName();
 
-        // Decide construction heuristic
-        String constrHeuristicName = null;
-        if (useConstrHeuristic) {
-            constrHeuristicName = options.getConstructionHeuristic().getName();
-        }
+        // Prepare the request to get a recommended deployment plan
+        RecommendedPlanRequest recommendedPlanRequest = new RecommendedPlanRequest(
+                options.getMaxExecTimeSeconds(),
+                constrHeuristicName,
+                null);
+
+        return vmManager.getRecommendedPlan(recommendedPlanRequest, true);
+    }
+
+    /**
+     * Applies the self-adaptation configured to take place after a deployment request.
+     */
+    public void applyAfterVmsDeploymentSelfAdaptation() {
+        AfterVmDeploymentSelfAdaptationOps options = getSelfAdaptationOptions().getAfterVmDeploymentSelfAdaptationOps();
 
         // Decide local search algorithm
         LocalSearchAlgorithmOptionsSet localSearchAlg = null;
-        if (options.getMaxExecTimeSeconds() > 0 && useLocalSearch) {
+        if (options.getMaxExecTimeSeconds() > 0) {
             localSearchAlg = options.getLocalSearchAlgorithm();
         }
 
         // Prepare the request to get a recommended deployment plan
         RecommendedPlanRequest recommendedPlanRequest = new RecommendedPlanRequest(
                 options.getMaxExecTimeSeconds(),
-                constrHeuristicName,
+                null,
                 localSearchAlg);
 
-        if (constrHeuristicName != null || localSearchAlg != null) {
-            if (constrHeuristicName == null) {
-                vmManager.executeDeploymentPlan(
-                        vmManager.getRecommendedPlan(recommendedPlanRequest, true).getVMPlacements());
-            }
-            else {
-                vmManager.executeDeploymentPlan(
-                        vmManager.getRecommendedPlan(recommendedPlanRequest, false).getVMPlacements());
-            }
+        if (localSearchAlg != null) {
+            vmManager.executeDeploymentPlan(
+                    vmManager.getRecommendedPlan(recommendedPlanRequest, true).getVMPlacements());
         }
     }
 
