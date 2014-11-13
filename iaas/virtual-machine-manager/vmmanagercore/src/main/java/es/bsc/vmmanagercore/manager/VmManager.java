@@ -37,6 +37,7 @@ import es.bsc.vmmanagercore.monitoring.HostType;
 import es.bsc.vmmanagercore.monitoring.ZabbixConnector;
 import es.bsc.vmmanagercore.scheduler.EstimatesGenerator;
 import es.bsc.vmmanagercore.scheduler.Scheduler;
+import es.bsc.vmmanagercore.selfadaptation.AfterVmDeleteSelfAdaptationRunnable;
 import es.bsc.vmmanagercore.selfadaptation.SelfAdaptationManager;
 import es.bsc.vmmanagercore.selfadaptation.options.SelfAdaptationOptions;
 import es.bsc.vmmanagercore.utils.FileSystem;
@@ -156,7 +157,7 @@ public class VmManager {
     }
 
     /**
-     * Deletes a VM.
+     * Deletes a VM and applies self-adaptation if it is enabled.
      *
      * @param vmId the ID of the VM
      */
@@ -171,7 +172,11 @@ public class VmManager {
             ZabbixConnector.getZabbixClient().deleteVM(vmId + "_" + hostname);
         }
 
-        selfAdaptationManager.applyAfterVmDeleteSelfAdaptation();
+        // Execute self adaptation in a separate thread
+        Thread thread = new Thread(
+                new AfterVmDeleteSelfAdaptationRunnable(selfAdaptationManager),
+                "afterVmDeleteSelfAdaptationThread");
+        thread.start();
     }
 
     /**
