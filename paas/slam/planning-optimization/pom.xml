@@ -88,6 +88,12 @@
             <version>${slasoi-version}</version>
             <scope>provided</scope>
         </dependency>
+        
+        <dependency>
+			<groupId>org.drizzle.jdbc</groupId>
+			<artifactId>drizzle-jdbc</artifactId>
+			<version>1.2</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -214,7 +220,8 @@
 									antlr.*, 
 									org.antlr.runtime.*,
 									org.antlr.stringtemplate,
-									org.antlr.stringtemplate.language
+									org.antlr.stringtemplate.language,
+									org.drizzle.jdbc.*
 								</Export-Package>
 								<Import-Package>
 														
@@ -223,6 +230,7 @@
 									org.antlr.runtime.*,
 									org.antlr.stringtemplate,
 									org.antlr.stringtemplate.language,
+									org.drizzle.jdbc.*,
 									org.json;resolution:=optional,
 									org.slasoi.gslam.syntaxconverter;resolution:=optional,
 									*;resolution:=optional
