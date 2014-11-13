@@ -36,7 +36,7 @@
 			<notifier>
 				<type>mail</type>
 				<configuration>
-					<recipients>davide.sommacampagna@hp.com pasquale.panuccio@hp.com christian.temporale@hp.com</recipients>
+					<recipients>davide.sommacampagna@hp.com luca.porrini@hp.com christian.temporale@hp.com</recipients>
 				</configuration>
 				<sendOnError>true</sendOnError>
 				<sendOnFailure>true</sendOnFailure>
