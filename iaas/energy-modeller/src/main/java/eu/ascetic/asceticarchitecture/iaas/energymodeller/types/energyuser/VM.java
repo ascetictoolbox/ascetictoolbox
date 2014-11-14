@@ -51,7 +51,7 @@ public class VM extends EnergyUsageSource {
      * @param ramMb The amount of RAM in MB.
      * @param diskGb The size of the disk in GB.
      */
-    public VM(int cpus, int ramMb, float diskGb) {
+    public VM(int cpus, int ramMb, double diskGb) {
         this.cpus = cpus;
         this.ramMb = ramMb;
         this.diskGb = diskGb;

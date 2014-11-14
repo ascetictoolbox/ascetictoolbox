@@ -20,6 +20,6 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser;
  * to.
  * @author Richard
  */
-public class EnergyUsageSource {
+public abstract class EnergyUsageSource {
     
 }
