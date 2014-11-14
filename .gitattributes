@@ -58,6 +58,7 @@ iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymod
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/hostvmfilter/ZabbixHostVMFilter.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/training/DefaultEnergyModelTrainer.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/training/EnergyModelTrainerInterface.java -text
+iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/OVFConverterFactory.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/TimePeriod.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/energymodel/EnergyModel.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/energyuser/CandidateVMHostMapping.java -text
@@ -89,6 +90,7 @@ iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymod
 iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/energypredictor/DefaultEnergyPredictorTest.java -text
 iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/ZabbixDataSourceAdaptorTest.java -text
 iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/training/DefaultEnergyModelTrainerTest.java -text
+iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/OVFConverterFactoryTest.java -text
 iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/TimePeriodTest.java -text
 iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/input/VMProjectedWorkloadElementTest.java -text
 iaas/energy-modeller/src/wsdl/localhost_8080/EnergyModellerCalibrationTool/CalibrationLoadGenerator.wsdl -text

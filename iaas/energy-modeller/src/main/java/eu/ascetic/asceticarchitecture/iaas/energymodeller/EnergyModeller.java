@@ -30,6 +30,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasou
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.WattsUpMeterDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDataSourceAdaptor;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.OVFConverterFactory;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
@@ -39,6 +40,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsa
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HistoricUsageRecord;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostEnergyRecord;
+import eu.ascetic.utils.ovf.api.OvfDefinition;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -529,6 +531,16 @@ public class EnergyModeller {
      */
     public static VM getVM(int cpuCount, int ramMb, int diskGb) {
         return new VM(cpuCount, ramMb, diskGb);
+    }
+    
+    /**
+     * This converts an OVF description into collection of VM objects for cases 
+     * where the VM has yet to be instantiated.
+     * @param deploymentOVF The OVF file containing VMs to be deployed.
+     * @return The list of VM objects
+     */
+    public static Collection<VM> getVMs(OvfDefinition deploymentOVF) {
+        return OVFConverterFactory.getVMs(deploymentOVF);
     }
 
     /**

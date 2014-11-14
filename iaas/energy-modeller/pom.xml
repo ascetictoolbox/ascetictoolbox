@@ -32,7 +32,7 @@
             </notifier>
         </notifiers>
     </ciManagement>
-    <build>
+    <build> 
         <plugins>
             <plugin>
                 <groupId>org.jvnet.jax-ws-commons</groupId>
@@ -99,7 +99,7 @@
                         </manifest>
                     </archive>
                 </configuration>
-            </plugin>            
+            </plugin>
         </plugins>        
     </build>
     <dependencies>
@@ -151,6 +151,11 @@
         <dependency>
             <groupId>eu.ascetic.utils</groupId>
             <artifactId>io-utils</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.ascetic.utils</groupId>
+            <artifactId>ovf-xmlbeans-api</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>  
