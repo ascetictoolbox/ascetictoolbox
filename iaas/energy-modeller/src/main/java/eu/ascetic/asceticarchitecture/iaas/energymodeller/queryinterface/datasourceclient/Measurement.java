@@ -65,6 +65,44 @@ public abstract class Measurement {
         }
         return highest - lowest;
     }
+    
+    /**
+     * This looks at the metrics gained and compares two named metrics and 
+     * observes the difference in time between the two readings.
+     *
+     * @param metricName The first metric value to compare
+     * @param metricName2 The second metric value to compare
+     * @return The difference in seconds between the two metric values.
+     */
+    public long getClockDifference(String metricName, String metricName2) {
+        MetricValue value1 = metrics.get(metricName);
+        MetricValue value2 = metrics.get(metricName2);
+        if (value1 == null || value2 == null) {
+            return 0;
+        }
+        long first = value1.getClock();
+        long second = value2.getClock();
+        if (second > first) {
+            return second - first;
+        } else {
+            return first - second;
+        }
+    }
+    
+    /**
+     * This tests to see if for this measurement record that two metrics have 
+     * clock values that are within an acceptable tolerance bound.
+     * @param metricName The first metric value to compare
+     * @param metricName2 The second metric value to compare
+     * @param tolerance The amount of seconds gap allowed between measurements,
+     * for the record to be valid for the required analysis.
+     * @return If this measurement record is valid for performing analysis on
+     * based upon the difference between two metrics clock values.
+     */
+    public boolean isContemporary(String metricName, String metricName2, int tolerance) {
+        System.out.println(getClockDifference(metricName, metricName2));
+        return getClockDifference(metricName, metricName2) <= tolerance;
+    }
 
     /**
      * This returns the maximum delay that any metric encountered.

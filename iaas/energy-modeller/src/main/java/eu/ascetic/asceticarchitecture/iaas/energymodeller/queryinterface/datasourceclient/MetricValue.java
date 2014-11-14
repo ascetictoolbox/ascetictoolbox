@@ -152,7 +152,7 @@ public class MetricValue {
     }
 
     /**
-     * Gets the last clock.
+     * Gets the last clock. The value is given in Unix time.
      *
      * @return the last clock
      */
@@ -161,7 +161,7 @@ public class MetricValue {
     }
 
     /**
-     * Sets the last clock.
+     * Sets the last clock. The value is given in Unix time.
      *
      * @param clock the new last clock
      */

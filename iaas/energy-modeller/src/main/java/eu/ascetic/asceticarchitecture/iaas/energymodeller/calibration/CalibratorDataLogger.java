@@ -18,6 +18,8 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DatabaseConnector;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostMeasurement;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_IDLE_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.POWER_KPI_NAME;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostEnergyCalibrationData;
 import java.util.ArrayList;
@@ -76,7 +78,7 @@ public class CalibratorDataLogger implements Runnable {
             try {
                 HostMeasurement dataEntry = datasource.getHostData(host);
                 long currentClock = dataEntry.getClock();
-                if (currentClock > lastClock) {
+                if (currentClock > lastClock && dataEntry.isContemporary(CPU_IDLE_KPI_NAME, POWER_KPI_NAME, 3)) {
                     data.add(dataEntry);
                 }
                 try {
