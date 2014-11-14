@@ -100,7 +100,6 @@ public abstract class Measurement {
      * based upon the difference between two metrics clock values.
      */
     public boolean isContemporary(String metricName, String metricName2, int tolerance) {
-        System.out.println(getClockDifference(metricName, metricName2));
         return getClockDifference(metricName, metricName2) <= tolerance;
     }
 
