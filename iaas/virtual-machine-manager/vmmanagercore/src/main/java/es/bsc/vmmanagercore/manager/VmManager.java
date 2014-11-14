@@ -168,11 +168,12 @@ public class VmManager {
 
         // If the monitoring system is Zabbix, then we need to delete the VM from Zabbix
         if (usingZabbix()) {
-            // The ID of a VM in Zabbix is: vm_id + _ + hostname_where_vm_is_deployed
+            // The ID of a VM in Zabbix is: vm_id + _ + hostname_where_vm_is_deployed (agreed in Ascetic)
             ZabbixConnector.getZabbixClient().deleteVM(vmId + "_" + hostname);
         }
 
-        // Execute self adaptation in a separate thread
+        // Execute self adaptation in a separate thread.
+        // We need to give an answer without waiting for the self-adaptation to finish
         Thread thread = new Thread(
                 new AfterVmDeleteSelfAdaptationRunnable(selfAdaptationManager),
                 "afterVmDeleteSelfAdaptationThread");
