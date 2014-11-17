@@ -39,6 +39,7 @@ import es.bsc.vmmanagercore.scheduler.EstimatesGenerator;
 import es.bsc.vmmanagercore.scheduler.Scheduler;
 import es.bsc.vmmanagercore.selfadaptation.AfterVmDeleteSelfAdaptationRunnable;
 import es.bsc.vmmanagercore.selfadaptation.AfterVmsDeploymentSelfAdaptationRunnable;
+import es.bsc.vmmanagercore.selfadaptation.PeriodicSelfAdaptationRunnable;
 import es.bsc.vmmanagercore.selfadaptation.SelfAdaptationManager;
 import es.bsc.vmmanagercore.selfadaptation.options.SelfAdaptationOptions;
 import es.bsc.vmmanagercore.utils.FileSystem;
@@ -87,6 +88,8 @@ public class VmManager {
     private static final String ASCETIC_SCRIPTS_PATH = "/DFS/ascetic/vm-scripts/";
     private static final String ASCETIC_ZABBIX_SCRIPT_PATH = "/DFS/ascetic/vm-scripts/zabbix_agents.sh";
 
+    private static boolean periodicSelfAdaptationThreadRunning = false;
+
     /**
      * Constructs a VmManager with the name of the database to be used.
      *
@@ -102,6 +105,14 @@ public class VmManager {
         selfAdaptationManager = new SelfAdaptationManager(this, dbName);
         energyModeller = EnergyModeller.getInstance();
         pricingModeller = new IaaSPricingModeller();
+
+        // Start periodic self-adaptation thread if it is not already running.
+        // This check would not be needed if only one instance of this class was created.
+        if (!periodicSelfAdaptationThreadRunning) {
+            periodicSelfAdaptationThreadRunning = true;
+            startPeriodicSelfAdaptationThread();
+        }
+
     }
 
 
@@ -686,4 +697,12 @@ public class VmManager {
                 "afterVmsDeploymentSelfAdaptationThread");
         thread.start();
     }
+
+    private void startPeriodicSelfAdaptationThread() {
+        Thread thread = new Thread(
+                new PeriodicSelfAdaptationRunnable(selfAdaptationManager),
+                "periodicSelfAdaptationThread");
+        thread.start();
+    }
+
 }

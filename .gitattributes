@@ -396,6 +396,7 @@ iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/sc
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/scheduler/schedulingalgorithms/SchedAlgorithm.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/selfadaptation/AfterVmDeleteSelfAdaptationRunnable.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/selfadaptation/AfterVmsDeploymentSelfAdaptationRunnable.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/selfadaptation/PeriodicSelfAdaptationRunnable.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/selfadaptation/SelfAdaptationManager.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/selfadaptation/options/AfterVmDeleteSelfAdaptationOps.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/selfadaptation/options/AfterVmDeploymentSelfAdaptationOps.java -text
