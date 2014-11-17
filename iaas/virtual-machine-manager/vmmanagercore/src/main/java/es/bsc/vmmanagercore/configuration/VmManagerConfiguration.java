@@ -18,8 +18,6 @@
 
 package es.bsc.vmmanagercore.configuration;
 
-import es.bsc.vmmanagercore.manager.VmManager;
-
 import java.io.IOException;
 import java.util.Properties;
 
@@ -81,7 +79,7 @@ public class VmManagerConfiguration {
     private Properties getPropertiesObjectFromConfigFile() {
         Properties prop = new Properties();
         try {
-            prop.load(VmManager.class.getClassLoader().getResourceAsStream(CONF_FILE_LOCATION));
+            prop.load(VmManagerConfiguration.class.getClassLoader().getResourceAsStream(CONF_FILE_LOCATION));
         } catch (IOException e) {
             e.printStackTrace();
         }
