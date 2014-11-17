@@ -38,6 +38,7 @@ import es.bsc.vmmanagercore.monitoring.ZabbixConnector;
 import es.bsc.vmmanagercore.scheduler.EstimatesGenerator;
 import es.bsc.vmmanagercore.scheduler.Scheduler;
 import es.bsc.vmmanagercore.selfadaptation.AfterVmDeleteSelfAdaptationRunnable;
+import es.bsc.vmmanagercore.selfadaptation.AfterVmsDeploymentSelfAdaptationRunnable;
 import es.bsc.vmmanagercore.selfadaptation.SelfAdaptationManager;
 import es.bsc.vmmanagercore.selfadaptation.options.SelfAdaptationOptions;
 import es.bsc.vmmanagercore.utils.FileSystem;
@@ -172,12 +173,7 @@ public class VmManager {
             ZabbixConnector.getZabbixClient().deleteVM(vmId + "_" + hostname);
         }
 
-        // Execute self adaptation in a separate thread.
-        // We need to give an answer without waiting for the self-adaptation to finish
-        Thread thread = new Thread(
-                new AfterVmDeleteSelfAdaptationRunnable(selfAdaptationManager),
-                "afterVmDeleteSelfAdaptationThread");
-        thread.start();
+        performAfterVmDeleteSelfAdaptation();
     }
 
     /**
@@ -224,7 +220,7 @@ public class VmManager {
             }
         }
 
-        selfAdaptationManager.applyAfterVmsDeploymentSelfAdaptation();
+        performAfterVmsDeploymentSelfAdaptation();
 
         // Return the IDs of the VMs deployed in the same order that they were received
         List<String> idsDeployedVms = new ArrayList<>();
@@ -524,7 +520,7 @@ public class VmManager {
 
 
     //================================================================================
-    // Auxiliary Methods
+    // Private Methods
     //================================================================================
 
     /**
@@ -673,5 +669,21 @@ public class VmManager {
             }
         }
         return false;
+    }
+
+    private void performAfterVmDeleteSelfAdaptation() {
+        // Execute self adaptation in a separate thread, because we need to give an answer without
+        // waiting for the self-adaptation to finish
+        Thread thread = new Thread(
+                new AfterVmDeleteSelfAdaptationRunnable(selfAdaptationManager),
+                "afterVmDeleteSelfAdaptationThread");
+        thread.start();
+    }
+
+    private void performAfterVmsDeploymentSelfAdaptation() {
+        Thread thread = new Thread(
+                new AfterVmsDeploymentSelfAdaptationRunnable(selfAdaptationManager),
+                "afterVmsDeploymentSelfAdaptationThread");
+        thread.start();
     }
 }
