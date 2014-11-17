@@ -21,6 +21,7 @@ import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_IO_WAIT_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_NICE_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_SOFT_IRQ_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_SPOT_USAGE_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_STEAL_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_SYSTEM_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_USER_KPI_NAME;
@@ -154,8 +155,6 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         }
         return energyUsers;
     }
-    
-    
 
     /**
      * This converts a monitoring infrastructure host into a Energy Modeller
@@ -229,9 +228,12 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
     }
 
     /**
-     * This returns the host of the named VM. A host list is provide to accelerate this search.
+     * This returns the host of the named VM. A host list is provide to
+     * accelerate this search.
+     *
      * @param hostName The host name as found through Zabbix.
-     * @param allHosts The list of all pre-discovered hosts. If null it will query for the host.
+     * @param allHosts The list of all pre-discovered hosts. If null it will
+     * query for the host.
      * @return The Host object for the physical host.
      */
     private eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host getHostByName(String hostName, List<Host> allHosts) {
@@ -483,21 +485,27 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
     public double getCpuUtilisation(eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host, int lastNSeconds) {
         long currentTime = new GregorianCalendar().getTimeInMillis();
         long timeInPast = currentTime - TimeUnit.SECONDS.toMillis(lastNSeconds);
-        List<HistoryItem> interruptData = client.getHistoryDataFromItem(CPU_INTERUPT_KPI_NAME, host.getHostName(), Dictionary.HISTORY_ITEM_FORMAT_FLOAT, timeInPast, currentTime);
-        List<HistoryItem> iowaitData = client.getHistoryDataFromItem(CPU_IO_WAIT_KPI_NAME, host.getHostName(), Dictionary.HISTORY_ITEM_FORMAT_FLOAT, timeInPast, currentTime);
-        List<HistoryItem> niceData = client.getHistoryDataFromItem(CPU_NICE_KPI_NAME, host.getHostName(), Dictionary.HISTORY_ITEM_FORMAT_FLOAT, timeInPast, currentTime);
-        List<HistoryItem> softirqData = client.getHistoryDataFromItem(CPU_SOFT_IRQ_KPI_NAME, host.getHostName(), Dictionary.HISTORY_ITEM_FORMAT_FLOAT, timeInPast, currentTime);
-        List<HistoryItem> stealData = client.getHistoryDataFromItem(CPU_STEAL_KPI_NAME, host.getHostName(), Dictionary.HISTORY_ITEM_FORMAT_FLOAT, timeInPast, currentTime);
-        List<HistoryItem> systemData = client.getHistoryDataFromItem(CPU_SYSTEM_KPI_NAME, host.getHostName(), Dictionary.HISTORY_ITEM_FORMAT_FLOAT, timeInPast, currentTime);
-        List<HistoryItem> userData = client.getHistoryDataFromItem(CPU_USER_KPI_NAME, host.getHostName(), Dictionary.HISTORY_ITEM_FORMAT_FLOAT, timeInPast, currentTime);
-        double interrupt = removeNaN(sumArray(interruptData) / ((double) interruptData.size()));
-        double iowait = removeNaN(sumArray(iowaitData) / ((double) iowaitData.size()));
-        double nice = removeNaN(sumArray(niceData) / ((double) niceData.size()));
-        double softirq = removeNaN(sumArray(softirqData) / ((double) softirqData.size()));
-        double steal = removeNaN(sumArray(stealData) / ((double) stealData.size()));
-        double system = removeNaN(sumArray(systemData) / ((double) systemData.size()));
-        double user = removeNaN(sumArray(userData) / ((double) userData.size()));
-        return (system + user + interrupt + iowait + nice + softirq + steal) / 100;
+        List<HistoryItem> spotCpuData = client.getHistoryDataFromItem(CPU_SPOT_USAGE_KPI_NAME, host.getHostName(), Dictionary.HISTORY_ITEM_FORMAT_FLOAT, timeInPast, currentTime);
+        if (spotCpuData != null && !spotCpuData.isEmpty()) {
+            double answer = removeNaN(sumArray(spotCpuData) / ((double) spotCpuData.size()));
+            return answer / 100;
+        } else {
+            List<HistoryItem> interruptData = client.getHistoryDataFromItem(CPU_INTERUPT_KPI_NAME, host.getHostName(), Dictionary.HISTORY_ITEM_FORMAT_FLOAT, timeInPast, currentTime);
+            List<HistoryItem> iowaitData = client.getHistoryDataFromItem(CPU_IO_WAIT_KPI_NAME, host.getHostName(), Dictionary.HISTORY_ITEM_FORMAT_FLOAT, timeInPast, currentTime);
+            List<HistoryItem> niceData = client.getHistoryDataFromItem(CPU_NICE_KPI_NAME, host.getHostName(), Dictionary.HISTORY_ITEM_FORMAT_FLOAT, timeInPast, currentTime);
+            List<HistoryItem> softirqData = client.getHistoryDataFromItem(CPU_SOFT_IRQ_KPI_NAME, host.getHostName(), Dictionary.HISTORY_ITEM_FORMAT_FLOAT, timeInPast, currentTime);
+            List<HistoryItem> stealData = client.getHistoryDataFromItem(CPU_STEAL_KPI_NAME, host.getHostName(), Dictionary.HISTORY_ITEM_FORMAT_FLOAT, timeInPast, currentTime);
+            List<HistoryItem> systemData = client.getHistoryDataFromItem(CPU_SYSTEM_KPI_NAME, host.getHostName(), Dictionary.HISTORY_ITEM_FORMAT_FLOAT, timeInPast, currentTime);
+            List<HistoryItem> userData = client.getHistoryDataFromItem(CPU_USER_KPI_NAME, host.getHostName(), Dictionary.HISTORY_ITEM_FORMAT_FLOAT, timeInPast, currentTime);
+            double interrupt = removeNaN(sumArray(interruptData) / ((double) interruptData.size()));
+            double iowait = removeNaN(sumArray(iowaitData) / ((double) iowaitData.size()));
+            double nice = removeNaN(sumArray(niceData) / ((double) niceData.size()));
+            double softirq = removeNaN(sumArray(softirqData) / ((double) softirqData.size()));
+            double steal = removeNaN(sumArray(stealData) / ((double) stealData.size()));
+            double system = removeNaN(sumArray(systemData) / ((double) systemData.size()));
+            double user = removeNaN(sumArray(userData) / ((double) userData.size()));
+            return (system + user + interrupt + iowait + nice + softirq + steal) / 100;
+        }
     }
 
     /**

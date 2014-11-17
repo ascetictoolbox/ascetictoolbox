@@ -43,7 +43,7 @@ public abstract class MySqlDatabaseConnector {
      */
     protected Connection getConnection(Connection connection) {
         try {
-            if (connection == null || connection.isValid(30)) {
+            if (connection == null || !connection.isValid(30)) {
                 return getConnection();
             }
             return connection;

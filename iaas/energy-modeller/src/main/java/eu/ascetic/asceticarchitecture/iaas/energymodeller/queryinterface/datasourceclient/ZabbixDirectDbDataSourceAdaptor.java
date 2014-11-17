@@ -19,6 +19,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.MySqlDatabas
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.BOOT_TIME_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_COUNT_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_IDLE_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_SPOT_USAGE_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.DISK_TOTAL_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.MEMORY_TOTAL_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.POWER_KPI_NAME;
@@ -78,7 +79,8 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
      */
     private static final String ALL_ZABBIX_HOSTS = "SELECT hostid, host FROM hosts where status <> 3 and available > 0";
     /**
-     * This query searches for a named host and provides it's current latest items.
+     * This query searches for a named host and provides it's current latest
+     * items.
      *
      * The order of the ? is as follows: table, table, hostid
      *
@@ -549,6 +551,11 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
     public double getCpuUtilisation(Host host, int durationSeconds) {
         long currentTime = TimeUnit.MILLISECONDS.toSeconds(new GregorianCalendar().getTimeInMillis());
         long timeInPast = currentTime - durationSeconds;
+        List<Double> spotCpuData = getHistoryDataItems(CPU_SPOT_USAGE_KPI_NAME, host.getId(), timeInPast, currentTime);
+        if (spotCpuData != null && !spotCpuData.isEmpty()) {
+            double usage = removeNaN(sumArray(spotCpuData) / ((double) spotCpuData.size()));
+            return usage / 100;
+        }
         List<Double> idleData = getHistoryDataItems(CPU_IDLE_KPI_NAME, host.getId(), timeInPast, currentTime);
         double idle = removeNaN(sumArray(idleData) / ((double) idleData.size()));
         return 1 - ((idle) / 100);
@@ -568,7 +575,7 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
     }
 
     /**
-     *
+     * This query returns a set of history items for querying.
      * @param key The key of the data item to return
      * @param hostId The host id that the data is associated with
      * @param startTime The start time of the search
