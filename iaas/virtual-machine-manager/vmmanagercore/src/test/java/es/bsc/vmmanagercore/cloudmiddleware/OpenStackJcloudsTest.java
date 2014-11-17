@@ -18,7 +18,7 @@
 
 package es.bsc.vmmanagercore.cloudmiddleware;
 
-import es.bsc.vmmanagercore.cloudmiddleware.openstack.JCloudsMiddleware;
+import es.bsc.vmmanagercore.cloudmiddleware.openstack.OpenStackJclouds;
 import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
 import es.bsc.vmmanagercore.db.VmManagerDb;
 import es.bsc.vmmanagercore.db.VmManagerDbFactory;
@@ -39,16 +39,16 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 /**
- * Tests for JCloudsMiddleware.
+ * Tests for OpenStackJclouds.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  */
-public class JCloudsMiddlewareTest {
+public class OpenStackJcloudsTest {
 	
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
 	
-	private static JCloudsMiddleware jCloudsMiddleware;
+	private static OpenStackJclouds openStackJclouds;
 	
 	private static String testingImageId; // ID of the image used by the VMs created in this test
 	
@@ -84,11 +84,11 @@ public class JCloudsMiddlewareTest {
 		db.deleteAllVms();
 
         // Initialize JClouds variables
-		jCloudsMiddleware = new JCloudsMiddleware(conf.openStackIP, conf.keyStonePort, conf.keyStoneTenant,
+		openStackJclouds = new OpenStackJclouds(conf.openStackIP, conf.keyStonePort, conf.keyStoneTenant,
                 conf.keyStoneUser, conf.keyStonePassword, conf.glancePort, conf.keyStoneTenantId,
                 db, new String[]{}); // I am ignoring the sec. groups here
-        serverApi = jCloudsMiddleware.getNovaApi().getServerApiForZone(jCloudsMiddleware.getZone());
-        flavorApi = jCloudsMiddleware.getNovaApi().getFlavorApiForZone(jCloudsMiddleware.getZone());
+        serverApi = openStackJclouds.getNovaApi().getServerApiForZone(openStackJclouds.getZone());
+        flavorApi = openStackJclouds.getNovaApi().getFlavorApiForZone(openStackJclouds.getZone());
 		
 		saveIdsOfInstancesThatExistBeforeTheTest();
 		saveIdsOfFlavorsThatExistBeforeTheTest();
@@ -115,7 +115,7 @@ public class JCloudsMiddlewareTest {
     public void deployVmWithNonExistingFlavor() {
         //deploy a VM
         Vm vmDescription = new Vm("TestVM", testingImageId, 1, 1024, 2, null, "app1");
-        String instanceId = jCloudsMiddleware.deploy(vmDescription, null);
+        String instanceId = openStackJclouds.deploy(vmDescription, null);
 
         //check that the information of the VM is correct
         Server server = serverApi.get(instanceId);
@@ -128,15 +128,15 @@ public class JCloudsMiddlewareTest {
         assertTrue(flavor.getVcpus() == 1 && flavor.getRam() == 1024 && flavor.getDisk() == 2);
 
         //destroy the VM
-        jCloudsMiddleware.destroy(instanceId);
+        openStackJclouds.destroy(instanceId);
 	}
 	
 	@Test
     public void deployVmWithExistingFlavor() {
         //This test can only be performed if there is at least one flavor registered in OpenStack
-        if (JCloudsMiddleware.DEFAULT_FLAVORS.length > 0) {
+        if (OpenStackJclouds.DEFAULT_FLAVORS.length > 0) {
             //get the ID of one of the default flavors
-            String flavorId = JCloudsMiddleware.DEFAULT_FLAVORS[0];
+            String flavorId = OpenStackJclouds.DEFAULT_FLAVORS[0];
 
             //get the flavor with that ID
             Flavor flavor = flavorApi.get(flavorId);
@@ -144,7 +144,7 @@ public class JCloudsMiddlewareTest {
             //deploy a VM with the specs described in the flavor
             Vm vmDescription = new Vm("TestVM", testingImageId,
                     flavor.getVcpus(), flavor.getRam(), flavor.getDisk(), null, "app1");
-            String instanceId = jCloudsMiddleware.deploy(vmDescription, null);
+            String instanceId = openStackJclouds.deploy(vmDescription, null);
 
             //check that the information of the VM is correct
             Server server = serverApi.get(instanceId);
@@ -156,7 +156,7 @@ public class JCloudsMiddlewareTest {
             assertEquals(flavorId, flavor.getId());
 
             //destroy the VM
-            jCloudsMiddleware.destroy(instanceId);
+            openStackJclouds.destroy(instanceId);
 		}
 	}
 	
@@ -164,20 +164,20 @@ public class JCloudsMiddlewareTest {
 	public void cannotDeployVmWithoutExistingImageId() {
 		Vm vmDescription = new Vm("TestVM", "nonExistingImageId", 1, 1024, 2, null, "app1");
 		exception.expect(IllegalArgumentException.class);
-		jCloudsMiddleware.deploy(vmDescription, null);
+		openStackJclouds.deploy(vmDescription, null);
 	}
 	
 	@Test
 	public void destroy() {
 		//deploy a VM
 		Vm vmDescription = new Vm("TestVM", testingImageId, 1, 1024, 2, null, "app1");
-		String instanceId = jCloudsMiddleware.deploy(vmDescription, null);
+		String instanceId = openStackJclouds.deploy(vmDescription, null);
 		
 		//destroy the VM
-		jCloudsMiddleware.destroy(instanceId);
+		openStackJclouds.destroy(instanceId);
 		
 		//check that the instance no longer exists
-		List<String> instancesIds = jCloudsMiddleware.getAllVMsIds();
+		List<String> instancesIds = openStackJclouds.getAllVMsIds();
 		assertFalse(instancesIds.contains(instanceId));
 	}
 	
@@ -185,28 +185,28 @@ public class JCloudsMiddlewareTest {
 	public void getAllVMs() {
 		//deploy two VMs
 		Vm vmDescription1 = new Vm("TestVM1", testingImageId, 1, 1024, 1, null, "app1");
-		String instanceId1 = jCloudsMiddleware.deploy(vmDescription1, null);
+		String instanceId1 = openStackJclouds.deploy(vmDescription1, null);
 		Vm vmDescription2 = new Vm("TestVM2", testingImageId, 1, 1024, 2, null, "app1");
-		String instanceId2 = jCloudsMiddleware.deploy(vmDescription2, null);
+		String instanceId2 = openStackJclouds.deploy(vmDescription2, null);
 		
 		//get the list of IDs
-		List<String> ids = jCloudsMiddleware.getAllVMsIds();
+		List<String> ids = openStackJclouds.getAllVMsIds();
 		
 		//check that the two VMs exist
 		assertTrue(ids.contains(instanceId1) && ids.contains(instanceId2));
 		
 		//delete the two VMs
-		jCloudsMiddleware.destroy(instanceId1);
-		jCloudsMiddleware.destroy(instanceId2);
+		openStackJclouds.destroy(instanceId1);
+		openStackJclouds.destroy(instanceId2);
 	}
 	
 	@Test
 	public void getVMInfo() {
 		//deploy a VM
-		String instanceId = jCloudsMiddleware.deploy(new Vm("TestVM1", testingImageId, 1, 1024, 2, null, "app1"), null);
+		String instanceId = openStackJclouds.deploy(new Vm("TestVM1", testingImageId, 1, 1024, 2, null, "app1"), null);
 		
 		//check that the information of the VM is correct
-		Vm resultVmDescription = jCloudsMiddleware.getVM(instanceId);
+		Vm resultVmDescription = openStackJclouds.getVM(instanceId);
 		assertEquals("TestVM1", resultVmDescription.getName());
 		assertEquals(testingImageId, resultVmDescription.getImage());
 		assertTrue(resultVmDescription.getCpus() == 1);
@@ -214,15 +214,15 @@ public class JCloudsMiddlewareTest {
 		assertTrue(resultVmDescription.getDiskGb() == 2);
 		
 		//destroy the VM 
-		jCloudsMiddleware.destroy(instanceId);
+		openStackJclouds.destroy(instanceId);
 		
 		//check that the function returns null when there is not a VM with the id specified
-		assertNull(jCloudsMiddleware.getVM(instanceId));
+		assertNull(openStackJclouds.getVM(instanceId));
 	}
 
     @Test
     public void getNonExistingImageReturnsNull() {
-        assertNull(jCloudsMiddleware.getVmImage("fakeImage"));
+        assertNull(openStackJclouds.getVmImage("fakeImage"));
     }
 
 	@Test

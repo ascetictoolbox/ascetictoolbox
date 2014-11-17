@@ -18,7 +18,7 @@
 
 package es.bsc.vmmanagercore.monitoring;
 
-import es.bsc.vmmanagercore.cloudmiddleware.openstack.JCloudsMiddleware;
+import es.bsc.vmmanagercore.cloudmiddleware.openstack.OpenStackJclouds;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,20 +38,20 @@ public class HostFactory {
     private static Map<String, Host> hosts = new HashMap<>(); // List of hosts already created
 
     /**
-     * Returns a host given a hostname, a type of host, and the jCloudsMiddleware connector
+     * Returns a host given a hostname, a type of host, and the openStackJclouds connector
      *
      * @param hostname the hostname
      * @param type the type of the host
-     * @param jCloudsMiddleware the jCloudsMiddleware connector
+     * @param openStackJclouds the openStackJclouds connector
      * @return the host
      */
-    // Note: I should get rid of the JCloudsMiddleware dependency here
-    public static Host getHost(String hostname, HostType type, JCloudsMiddleware jCloudsMiddleware) {
+    // Note: I should get rid of the OpenStackJclouds dependency here
+    public static Host getHost(String hostname, HostType type, OpenStackJclouds openStackJclouds) {
         // If the host already exists, return it
         Host host = hosts.get(hostname);
         if (host != null) {
             if (host instanceof HostOpenStack) {
-                ((HostOpenStack) host).setJcm(jCloudsMiddleware);
+                ((HostOpenStack) host).setOpenStackJclouds(openStackJclouds);
             }
             host.refreshMonitoringInfo();
             return host;
@@ -67,7 +67,7 @@ public class HostFactory {
                 newHost = new HostZabbix(hostname);
                 break;
             case OPENSTACK:
-                newHost = new HostOpenStack(hostname, jCloudsMiddleware);
+                newHost = new HostOpenStack(hostname, openStackJclouds);
                 break;
             default:
                 break;

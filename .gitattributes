@@ -330,8 +330,8 @@ iaas/virtual-machine-manager/vmmanager-frontend/scripts/spin.min.js -text
 iaas/virtual-machine-manager/vmmanager-frontend/scripts/toastr.min.js -text
 iaas/virtual-machine-manager/vmmanagercore/pom.xml -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/cloudmiddleware/CloudMiddleware.java -text
-iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/cloudmiddleware/openstack/JCloudsMiddleware.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/cloudmiddleware/openstack/OpenStackGlance.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/cloudmiddleware/openstack/OpenStackJclouds.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/configuration/VmManagerConfiguration.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/db/VmManagerDb.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/db/VmManagerDbFactory.java -text
@@ -417,8 +417,8 @@ iaas/virtual-machine-manager/vmmanagercore/src/main/resources/init-scripts/zabbi
 iaas/virtual-machine-manager/vmmanagercore/src/main/resources/log4j.xml -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/webapp/META-INF/context.xml -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/webapp/index.jsp -text
-iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/cloudmiddleware/JCloudsMiddlewareTest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/cloudmiddleware/OpenStackGlanceTest.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/cloudmiddleware/OpenStackJcloudsTest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/db/VmManagerDbHsqlTest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/model/hosts/ServerLoadTest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/model/images/ImageUploadedTest.java -text

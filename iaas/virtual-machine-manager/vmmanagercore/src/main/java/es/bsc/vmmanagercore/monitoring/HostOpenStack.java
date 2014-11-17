@@ -20,7 +20,7 @@ package es.bsc.vmmanagercore.monitoring;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.FluentIterable;
-import es.bsc.vmmanagercore.cloudmiddleware.openstack.JCloudsMiddleware;
+import es.bsc.vmmanagercore.cloudmiddleware.openstack.OpenStackJclouds;
 import org.jclouds.openstack.nova.v2_0.domain.HostResourceUsage;
 import org.jclouds.openstack.nova.v2_0.extensions.HostAdministrationApi;
 
@@ -32,11 +32,11 @@ import org.jclouds.openstack.nova.v2_0.extensions.HostAdministrationApi;
  */
 public class HostOpenStack extends Host {
 
-    private JCloudsMiddleware jcm;
+    private OpenStackJclouds openStackJclouds;
 
-    public HostOpenStack(String name, JCloudsMiddleware jcm) {
+    public HostOpenStack(String name, OpenStackJclouds openStackJclouds) {
         super(name);
-        this.jcm = jcm;
+        this.openStackJclouds = openStackJclouds;
         initTotalResources();
         initAssignedResources();
     }
@@ -44,7 +44,7 @@ public class HostOpenStack extends Host {
     private void initTotalResources() {
         //get the host administration API
         Optional<? extends HostAdministrationApi> hostAdminApi =
-                jcm.getNovaApi().getHostAdministrationExtensionForZone(jcm.getZone());
+                openStackJclouds.getNovaApi().getHostAdministrationExtensionForZone(openStackJclouds.getZone());
 
         //get the information about the host resources
         FluentIterable<? extends HostResourceUsage> hostResourcesInfo = hostAdminApi.get().listResourceUsage(hostname);
@@ -68,7 +68,7 @@ public class HostOpenStack extends Host {
     public double getAssignedCpus() {
         //get the host administration API
         Optional<? extends HostAdministrationApi> hostAdminApi =
-                jcm.getNovaApi().getHostAdministrationExtensionForZone(jcm.getZone());
+                openStackJclouds.getNovaApi().getHostAdministrationExtensionForZone(openStackJclouds.getZone());
 
         //get the information about the host resources
         FluentIterable<? extends HostResourceUsage> hostResourcesInfo = hostAdminApi.get().listResourceUsage(hostname);
@@ -86,7 +86,7 @@ public class HostOpenStack extends Host {
     public double getAssignedMemoryMb() {
         //get the host administration API
         Optional<? extends HostAdministrationApi> hostAdminApi =
-                jcm.getNovaApi().getHostAdministrationExtensionForZone(jcm.getZone());
+                openStackJclouds.getNovaApi().getHostAdministrationExtensionForZone(openStackJclouds.getZone());
 
         //get the information about the host resources
         FluentIterable<? extends HostResourceUsage> hostResourcesInfo = hostAdminApi.get().listResourceUsage(hostname);
@@ -104,7 +104,7 @@ public class HostOpenStack extends Host {
     public double getAssignedDiskGb() {
         //get the host administration API
         Optional<? extends HostAdministrationApi> hostAdminApi =
-                jcm.getNovaApi().getHostAdministrationExtensionForZone(jcm.getZone());
+                openStackJclouds.getNovaApi().getHostAdministrationExtensionForZone(openStackJclouds.getZone());
 
         //get the information about the host resources
         FluentIterable<? extends HostResourceUsage> hostResourcesInfo = hostAdminApi.get().listResourceUsage(hostname);
@@ -148,8 +148,8 @@ public class HostOpenStack extends Host {
         initAssignedResources();
     }
 
-    public void setJcm(JCloudsMiddleware jcm) {
-        this.jcm = jcm;
+    public void setOpenStackJclouds(OpenStackJclouds openStackJclouds) {
+        this.openStackJclouds = openStackJclouds;
     }
 
 }

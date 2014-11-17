@@ -49,7 +49,7 @@ import java.util.List;
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  *
  */
-public class JCloudsMiddleware implements CloudMiddleware {
+public class OpenStackJclouds implements CloudMiddleware {
 
     /* NOTE: in the deployment function, I am assuming that there is only one OpenStack zone configured.
     The rest of the functions should work fine even with several zones configured, but this scenario has
@@ -89,9 +89,9 @@ public class JCloudsMiddleware implements CloudMiddleware {
      * @param db database used by the VM Manager
      * @param securityGroups the security groups to which the VM will be part of
      */
-    public JCloudsMiddleware(String openStackIP, int keyStonePort, String keyStoneTenant, String keyStoneUser,
-                             String keyStonePassword, int glancePort, String keyStoneTenantId, VmManagerDb db,
-                             String[] securityGroups) {
+    public OpenStackJclouds(String openStackIP, int keyStonePort, String keyStoneTenant, String keyStoneUser,
+                            String keyStonePassword, int glancePort, String keyStoneTenantId, VmManagerDb db,
+                            String[] securityGroups) {
         getOpenStackApis(openStackIP, keyStonePort, keyStoneTenant, keyStoneUser, keyStonePassword);
         this.securityGroups = securityGroups;
         this.db = db;
@@ -253,7 +253,7 @@ public class JCloudsMiddleware implements CloudMiddleware {
     }
 
     /**
-     * @return NovaApi object associated with the JCloudsMiddleware class
+     * @return NovaApi object associated with the OpenStackJclouds class
      */
     public NovaApi getNovaApi() {
         return novaApi;

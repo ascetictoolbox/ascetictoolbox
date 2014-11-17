@@ -19,7 +19,7 @@
 package es.bsc.vmmanagercore.manager;
 
 import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddleware;
-import es.bsc.vmmanagercore.cloudmiddleware.openstack.JCloudsMiddleware;
+import es.bsc.vmmanagercore.cloudmiddleware.openstack.OpenStackJclouds;
 import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
 import es.bsc.vmmanagercore.db.VmManagerDb;
 import es.bsc.vmmanagercore.db.VmManagerDbFactory;
@@ -546,7 +546,7 @@ public class VmManager {
         for (String hostname: hostnames) {
             switch (monitoring) {
                 case OPENSTACK:
-                    hosts.add(HostFactory.getHost(hostname, HostType.OPENSTACK, (JCloudsMiddleware) cloudMiddleware));
+                    hosts.add(HostFactory.getHost(hostname, HostType.OPENSTACK, (OpenStackJclouds) cloudMiddleware));
                     break;
                 case GANGLIA:
                     hosts.add(HostFactory.getHost(hostname, HostType.GANGLIA, null));
@@ -572,7 +572,7 @@ public class VmManager {
                 if (usingZabbix()) { // I should check whether the VMM is configured for the Ascetic project
                     securityGroups = ASCETIC_DEFAULT_SEC_GROUPS;
                 }
-                cloudMiddleware = new JCloudsMiddleware(conf.openStackIP, conf.keyStonePort, conf.keyStoneTenant,
+                cloudMiddleware = new OpenStackJclouds(conf.openStackIP, conf.keyStonePort, conf.keyStoneTenant,
                         conf.keyStoneUser, conf.keyStonePassword, conf.glancePort, conf.keyStoneTenantId,
                         db, securityGroups);
                 break;
