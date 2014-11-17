@@ -18,7 +18,6 @@
 
 package es.bsc.vmmanagercore.cloudmiddleware;
 
-import com.google.common.base.Optional;
 import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
 import es.bsc.vmmanagercore.db.VmManagerDb;
 import es.bsc.vmmanagercore.model.images.ImageToUpload;
@@ -64,11 +63,13 @@ public class JCloudsMiddleware implements CloudMiddleware {
     private static final String BUILD = "BUILD";
     private static final String DELETING = "deleting";
 
-    // Needed by JClouds
+    // OpenStack APIs defined by JClouds
     private NovaApi novaApi;
     private ServerApi serverApi;
     private ImageApi imageApi;
     private FlavorApi flavorApi;
+    private ServerAdminApi serverAdminApi;
+
     private String zone; // This could be important/problematic in the future because I am assuming that
                          // the cluster only has one zone configured for deployments.
 
@@ -84,56 +85,189 @@ public class JCloudsMiddleware implements CloudMiddleware {
      * @param db Database used by the VM Manager
      */
     public JCloudsMiddleware(VmManagerDb db) {
-        novaApi = ContextBuilder.newBuilder(new NovaApiMetadata())
-                .endpoint("http://" + conf.openStackIP + ":" + conf.keyStonePort + "/v2.0")
-                .credentials(conf.keyStoneTenant + ":" + conf.keyStoneUser, conf.keyStonePassword)
-                .buildApi(NovaApi.class);
-        zone = novaApi.getConfiguredZones().toArray()[0].toString();
-        serverApi = novaApi.getServerApiForZone(zone);
-        imageApi = novaApi.getImageApiForZone(zone);
-        flavorApi = novaApi.getFlavorApiForZone(zone);
+        getOpenStackApis(conf.openStackIP,
+                conf.keyStonePort,
+                conf.keyStoneTenant,
+                conf.keyStoneUser,
+                conf.keyStonePassword);
         hosts = conf.hosts;
         this.db = db;
     }
 
-    /**
-     * Specifies in the VM deployment options the server on which to deploy the VM.
-     *
-     * @param dstNode the node where to deploy the VM
-     * @param options VM deployment options
-     */
-    private void includeDstNodeInDeploymentOption(String dstNode, CreateServerOptions options) {
-        if (dstNode != null) {
-            options.availabilityZone("nova:" + dstNode);
+    @Override
+    public String deploy(Vm vm, String hostname) {
+        // Deploy the VM
+        ServerCreated server = serverApi.create(
+                vm.getName(),
+                getImageIdForDeployment(vm),
+                getFlavorIdForDeployment(vm),
+                getDeploymentOptionsForVm(vm, hostname));
+
+        // Wait until the VM is deployed
+        while (serverApi.get(server.getId()).getStatus().toString().equals(BUILD)) { }
+
+        // Return the VM id
+        return server.getId();
+    }
+
+    @Override
+    public void destroy(String vmId) {
+        Server server = serverApi.get(vmId);
+        if (server != null) { // If the VM is in the zone
+            serverApi.delete(vmId); // Delete the VM
+            while (server.getStatus().toString().equals(DELETING)) { } // Wait while deleting
         }
     }
 
-    //TODO this is a temporary hack. The security groups should not be hard-coded.
-    private void includeSecurityGroupInDeploymentOption(CreateServerOptions options) {
-        // This comparison is not 100% correct. To be rigorous, it should evaluate whether the TUB testbed is being
-        // used, not whether Zabbix is the monitoring system being used
-        if (conf.monitoring.equals(VmManagerConfiguration.Monitoring.ZABBIX)) {
-            options.securityGroupNames("vmm_allow_all", "default"); //sec.group name in the TUB testbed
+    @Override
+    public void migrate(String vmId, String destinationNodeHostName) {
+        if (serverApi.get(vmId) != null) {
+            serverAdminApi.liveMigrate(vmId, destinationNodeHostName, false, false);
         }
     }
 
-    /**
-     * Specifies in the VM deployment options a script that will be executed when the VM is deployed.
-     *
-     * @param vmDescription VM that will use the init script
-     * @param options VM deployment options
-     */
-    private void includeInitScriptInDeploymentOptions(Vm vmDescription, CreateServerOptions options) {
-        String initScript = vmDescription.getInitScript();
-        if (initScript != null && !"".equals(initScript)) {
-            try {
-                InputStream inputStream = new FileInputStream(initScript);
-                options.userData(IOUtils.toByteArray(inputStream));
-                inputStream.close();
-            } catch (IOException e) {
-                // Do not include anything in the VM deployment options
+    @Override
+    public List<String> getAllVMsIds() {
+        List<String> vmIds = new ArrayList<>();
+        for (Server server: serverApi.listInDetail().concat()) {
+            ServerExtendedStatus vmStatus = server.getExtendedStatus().get();
+
+            // Add the VM to the result if it is active and it is not being deleted
+            boolean vmIsActive = ACTIVE.equals(vmStatus.getVmState());
+            boolean vmIsBeingDeleted = DELETING.equals(vmStatus.getTaskState());
+            if (vmIsActive && !vmIsBeingDeleted) {
+                vmIds.add(server.getId());
             }
         }
+        return vmIds;
+    }
+
+    @Override
+    public VmDeployed getVM(String vmId) {
+        VmDeployed vm = null;
+        Server server = serverApi.get(vmId);
+
+        // If the VM is in the zone
+        if (server != null ) {
+            // Get the information of the VM if it is active and it is not being deleted
+            ServerExtendedStatus vmStatus = server.getExtendedStatus().get();
+            boolean vmIsActive = ACTIVE.equals(vmStatus.getVmState());
+            boolean vmIsBeingDeleted = DELETING.equals(vmStatus.getTaskState());
+            if (vmIsActive && !vmIsBeingDeleted) {
+                Flavor flavor = flavorApi.get(server.getFlavor().getId());
+                String vmIp = getVmIp(server);
+                vm = new VmDeployed(server.getName(),
+                        server.getImage().getId(), flavor.getVcpus(), flavor.getRam(),
+                        flavor.getDisk(), null, db.getAppIdOfVm(vmId), vmId,
+                        vmIp, server.getStatus().toString(), server.getCreated(),
+                        server.getExtendedAttributes().get().getHostName());
+            }
+        }
+
+        return vm;
+    }
+
+    @Override
+    public boolean existsVm(String vmId) {
+        return serverApi.get(vmId) != null;
+    }
+
+    @Override
+    public void rebootHardVm(String vmId) {
+        serverApi.reboot(vmId, RebootType.HARD);
+    }
+    
+    @Override
+    public void rebootSoftVm(String vmId) {
+        serverApi.reboot(vmId, RebootType.SOFT);
+    }
+    
+    @Override
+    public void startVm(String vmId) {
+        serverApi.start(vmId);
+    }
+
+    @Override
+    public void stopVm(String vmId) {
+        serverApi.stop(vmId);
+    }
+
+    @Override
+    public void suspendVm(String vmId) {
+        novaApi.getServerAdminExtensionForZone(zone).get().suspend(vmId);
+    }
+
+    @Override
+    public void resumeVm(String vmId) {
+        novaApi.getServerAdminExtensionForZone(zone).get().resume(vmId);
+    }
+
+    @Override
+    public List<ImageUploaded> getVmImages() {
+        List<ImageUploaded> vmImages = new ArrayList<>();
+        for (Image image: imageApi.listInDetail().concat()) {
+            vmImages.add(new ImageUploaded(image.getId(), image.getName(), image.getStatus().toString()));
+        }
+        return vmImages;
+    }
+
+    @Override
+    public String createVmImage(ImageToUpload imageToUpload) {
+        return glanceConnector.createImageFromUrl(imageToUpload);
+    }
+
+    @Override
+    public ImageUploaded getVmImage(String imageId) {
+        Image image = imageApi.get(imageId);
+        return image != null ? new ImageUploaded(image.getId(), image.getName(), image.getStatus().toString()) : null;
+    }
+
+    @Override
+    public void deleteVmImage(String id) {
+        glanceConnector.deleteImage(id);
+    }
+
+    /**
+     * @return the zone
+     */
+    public String getZone() {
+        return zone;
+    }
+
+    /**
+     * @return NovaApi object associated with the JCloudsMiddleware class
+     */
+    public NovaApi getNovaApi() {
+        return novaApi;
+    }
+
+    /**
+     * @return array containing the host names of the servers of the cluster
+     */
+    public String[] getHosts() {
+        return hosts.clone();
+    }
+
+    /**
+     * Gets the OpenStack APIs (nova, server, image, flavor) as defined by the JClouds library.
+     *
+     * @param openStackIP IP of the OpenStack installation
+     * @param keystonePort port where the Keystone service is running
+     * @param keystoneTenant tenant of the Keystone service
+     * @param keystoneUser user of the Keystone service
+     * @param keystonePassword password of the Keystone service
+     */
+    private void getOpenStackApis(String openStackIP, int keystonePort, String keystoneTenant,
+                                  String keystoneUser, String keystonePassword) {
+        novaApi = ContextBuilder.newBuilder(new NovaApiMetadata())
+                .endpoint("http://" + openStackIP + ":" + keystonePort + "/v2.0")
+                .credentials(keystoneTenant + ":" + keystoneUser, keystonePassword)
+                .buildApi(NovaApi.class);
+        zone = novaApi.getConfiguredZones().toArray()[0].toString(); // Assuming that there is only 1 zone configured
+        serverApi = novaApi.getServerApiForZone(zone);
+        imageApi = novaApi.getImageApiForZone(zone);
+        flavorApi = novaApi.getFlavorApiForZone(zone);
+        serverAdminApi = novaApi.getServerAdminExtensionForZone(zone).get();
     }
 
     /**
@@ -180,181 +314,58 @@ public class JCloudsMiddleware implements CloudMiddleware {
         }
     }
 
-    @Override
-    public String deploy(Vm vm, String dstNode) {
-        // Specify deployment options
+    /**
+     * Retrieves the deployment options needed for deploying a VM in a specific host.
+     *
+     * @param vm the VM to be deployed
+     * @param hostname the hostname
+     */
+    private CreateServerOptions getDeploymentOptionsForVm(Vm vm, String hostname) {
         CreateServerOptions options = new CreateServerOptions();
-        includeDstNodeInDeploymentOption(dstNode, options);
+        includeDstNodeInDeploymentOption(hostname, options);
         includeInitScriptInDeploymentOptions(vm, options);
         includeSecurityGroupInDeploymentOption(options);
-
-        // Deploy the VM
-        ServerCreated server = serverApi.create(vm.getName(), getImageIdForDeployment(vm),
-                getFlavorIdForDeployment(vm), options);
-
-        // Wait until the VM is deployed
-        while (serverApi.get(server.getId()).getStatus().toString().equals(BUILD)) { }
-
-        // Return the VM id
-        return server.getId();
-    }
-
-    @Override
-    public void destroy(String vmId) {
-        Server server = serverApi.get(vmId);
-        if (server != null) { // If the VM is in the zone
-            serverApi.delete(vmId); // Delete the VM
-            while (server.getStatus().toString().equals(DELETING)) { } // Wait while deleting
-        }
-    }
-
-    @Override
-    public void migrate(String vmId, String destinationNodeHostName) {
-        Server server = serverApi.get(vmId);
-        // If the server is in the zone
-        if (server != null) {
-            // Get the API with admin functions
-            Optional<? extends ServerAdminApi> serverAdminApi = novaApi.getServerAdminExtensionForZone(zone);
-
-            // Live-migrate the VM to the destination node
-            serverAdminApi.get().liveMigrate(vmId, destinationNodeHostName, false, false);
-        }
-    }
-
-    @Override
-    public boolean existsVm(String vmId) {
-        return serverApi.get(vmId) != null;
-    }
-
-    @Override
-    public void rebootHardVm(String vmId) {
-        serverApi.reboot(vmId, RebootType.HARD);
-    }
-    
-    @Override
-    public void rebootSoftVm(String vmId) {
-        serverApi.reboot(vmId, RebootType.SOFT);
-    }
-    
-    @Override
-    public void startVm(String vmId) {
-        serverApi.start(vmId);
-    }
-
-    @Override
-    public void stopVm(String vmId) {
-        serverApi.stop(vmId);
-    }
-
-    @Override
-    public void suspendVm(String vmId) {
-        novaApi.getServerAdminExtensionForZone(zone).get().suspend(vmId);
-    }
-
-    @Override
-    public void resumeVm(String vmId) {
-        novaApi.getServerAdminExtensionForZone(zone).get().resume(vmId);
-    }
-
-    @Override
-    public List<String> getAllVMsId() {
-        List<String> vmIds = new ArrayList<>();
-        for (Server server: serverApi.listInDetail().concat()) {
-            ServerExtendedStatus vmStatus = server.getExtendedStatus().get();
-
-            // Add the VM to the result if it is active and it is not being deleted
-            boolean vmIsActive = ACTIVE.equals(vmStatus.getVmState());
-            boolean vmIsBeingDeleted = DELETING.equals(vmStatus.getTaskState());
-            if (vmIsActive && !vmIsBeingDeleted) {
-                vmIds.add(server.getId());
-            }
-        }
-        return vmIds;
+        return options;
     }
 
     /**
-     * Returns the IP of a VM.
+     * Specifies in the VM deployment options the server on which to deploy the VM.
      *
-     * @param server the VM
-     * @return the IP of the VM
+     * @param dstNode the node where to deploy the VM
+     * @param options VM deployment options
      */
-    // TODO Redo this. The name of the network should be obtained automatically. This might only work in TUB and BSC.
-    private String getVmIp(Server server) {
-        if (server.getAddresses().get("vmnet").toArray().length != 0) { // VM network
-            return ((Address) server.getAddresses().get("vmnet").toArray()[0]).getAddr();
+    private void includeDstNodeInDeploymentOption(String dstNode, CreateServerOptions options) {
+        if (dstNode != null) {
+            options.availabilityZone("nova:" + dstNode);
         }
-        return (((Address) server.getAddresses().get("NattedNetwork").toArray()[0]).getAddr()); // Nat network
     }
 
-    @Override
-    public VmDeployed getVMInfo(String vmId) {
-        VmDeployed vmDescription = null;
-        Server server = serverApi.get(vmId);
-
-        // If the VM is in the zone
-        if (server != null ) {
-            // Get the information of the VM if it is active and it is not being deleted
-            ServerExtendedStatus vmStatus = server.getExtendedStatus().get();
-            boolean vmIsActive = ACTIVE.equals(vmStatus.getVmState());
-            boolean vmIsBeingDeleted = DELETING.equals(vmStatus.getTaskState());
-            if (vmIsActive && !vmIsBeingDeleted) {
-                Flavor flavor = flavorApi.get(server.getFlavor().getId());
-                String vmIp = getVmIp(server);
-                vmDescription = new VmDeployed(server.getName(),
-                        server.getImage().getId(), flavor.getVcpus(), flavor.getRam(),
-                        flavor.getDisk(), null, db.getAppIdOfVm(vmId), vmId,
-                        vmIp, server.getStatus().toString(), server.getCreated(),
-                        server.getExtendedAttributes().get().getHostName());
+    /**
+     * Specifies in the VM deployment options a script that will be executed when the VM is deployed.
+     *
+     * @param vmDescription VM that will use the init script
+     * @param options VM deployment options
+     */
+    private void includeInitScriptInDeploymentOptions(Vm vmDescription, CreateServerOptions options) {
+        String initScript = vmDescription.getInitScript();
+        if (initScript != null && !"".equals(initScript)) {
+            try {
+                InputStream inputStream = new FileInputStream(initScript);
+                options.userData(IOUtils.toByteArray(inputStream));
+                inputStream.close();
+            } catch (IOException e) {
+                // Do not include anything in the VM deployment options
             }
         }
-
-        return vmDescription;
     }
 
-    @Override
-    public List<ImageUploaded> getVmImages() {
-        List<ImageUploaded> vmImages = new ArrayList<>();
-        for (Image image: imageApi.listInDetail().concat()) {
-            vmImages.add(new ImageUploaded(image.getId(), image.getName(), image.getStatus().toString()));
+    //TODO this is a temporary hack. The security groups should not be hard-coded.
+    private void includeSecurityGroupInDeploymentOption(CreateServerOptions options) {
+        // This comparison is not 100% correct. To be rigorous, it should evaluate whether the TUB testbed is being
+        // used, not whether Zabbix is the monitoring system being used
+        if (conf.monitoring.equals(VmManagerConfiguration.Monitoring.ZABBIX)) {
+            options.securityGroupNames("vmm_allow_all", "default"); //sec.group name in the TUB testbed
         }
-        return vmImages;
-    }
-
-    @Override
-    public ImageUploaded getVmImage(String imageId) {
-        Image image = imageApi.get(imageId);
-        return new ImageUploaded(image.getId(), image.getName(), image.getStatus().toString());
-    }
-
-    @Override
-    public String createVmImage(ImageToUpload imageToUpload) {
-        return glanceConnector.createImageFromUrl(imageToUpload);
-    }
-
-    @Override
-    public void deleteVmImage(String id) {
-        glanceConnector.deleteImage(id);
-    }
-
-    /**
-     * @return the zone
-     */
-    public String getZone() {
-        return zone;
-    }
-
-    /**
-     * @return NovaApi object associated with the JCloudsMiddleware class
-     */
-    public NovaApi getNovaApi() {
-        return novaApi;
-    }
-
-    /**
-     * @return array containing the host names of the servers of the cluster
-     */
-    public String[] getHosts() {
-        return hosts.clone();
     }
 
     /**
@@ -394,6 +405,20 @@ public class JCloudsMiddleware implements CloudMiddleware {
      */
     private boolean existsImageWithId(String id) {
         return imageApi.get(id) != null;
+    }
+
+    /**
+     * Returns the IP of a VM.
+     *
+     * @param server the VM
+     * @return the IP of the VM
+     */
+    // TODO Redo this. The name of the network should be obtained automatically. This might only work in TUB and BSC.
+    private String getVmIp(Server server) {
+        if (server.getAddresses().get("vmnet").toArray().length != 0) { // VM network
+            return ((Address) server.getAddresses().get("vmnet").toArray()[0]).getAddr();
+        }
+        return (((Address) server.getAddresses().get("NattedNetwork").toArray()[0]).getAddr()); // Nat network
     }
 
 }

@@ -175,7 +175,7 @@ public class JCloudsMiddlewareTest {
 		jCloudsMiddleware.destroy(instanceId);
 		
 		//check that the instance no longer exists
-		List<String> instancesIds = jCloudsMiddleware.getAllVMsId();
+		List<String> instancesIds = jCloudsMiddleware.getAllVMsIds();
 		assertFalse(instancesIds.contains(instanceId));
 	}
 	
@@ -188,7 +188,7 @@ public class JCloudsMiddlewareTest {
 		String instanceId2 = jCloudsMiddleware.deploy(vmDescription2, null);
 		
 		//get the list of IDs
-		List<String> ids = jCloudsMiddleware.getAllVMsId();
+		List<String> ids = jCloudsMiddleware.getAllVMsIds();
 		
 		//check that the two VMs exist
 		assertTrue(ids.contains(instanceId1) && ids.contains(instanceId2));
@@ -204,7 +204,7 @@ public class JCloudsMiddlewareTest {
 		String instanceId = jCloudsMiddleware.deploy(new Vm("TestVM1", testingImageId, 1, 1024, 2, null, "app1"), null);
 		
 		//check that the information of the VM is correct
-		Vm resultVmDescription = jCloudsMiddleware.getVMInfo(instanceId);
+		Vm resultVmDescription = jCloudsMiddleware.getVM(instanceId);
 		assertEquals("TestVM1", resultVmDescription.getName());
 		assertEquals(testingImageId, resultVmDescription.getImage());
 		assertTrue(resultVmDescription.getCpus() == 1);
@@ -215,15 +215,16 @@ public class JCloudsMiddlewareTest {
 		jCloudsMiddleware.destroy(instanceId);
 		
 		//check that the function returns null when there is not a VM with the id specified
-		assertNull(jCloudsMiddleware.getVMInfo(instanceId));
+		assertNull(jCloudsMiddleware.getVM(instanceId));
 	}
+
+    @Test
+    public void getNonExistingImageReturnsNull() {
+        assertNull(jCloudsMiddleware.getVmImage("fakeImage"));
+    }
 
 	@Test
 	public void migrateTest() {
-		String[] hosts = jCloudsMiddleware.getHosts();
-		//perform this test only if there are 2 or more nodes in the infrastructure
-		if (hosts.length >= 2) {
-			//TODO
-		}
+		// TODO perform this test only if there are 2 or more nodes in the infrastructure
 	}
 }

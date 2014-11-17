@@ -127,8 +127,8 @@ public class VmManager {
      */
     public List<VmDeployed> getAllVms() {
         List<VmDeployed> result = new ArrayList<>();
-        for (String vmId: cloudMiddleware.getAllVMsId()) {
-            result.add(cloudMiddleware.getVMInfo(vmId));
+        for (String vmId: cloudMiddleware.getAllVMsIds()) {
+            result.add(cloudMiddleware.getVM(vmId));
         }
         return result;
     }
@@ -140,7 +140,7 @@ public class VmManager {
      * @return the VM
      */
     public VmDeployed getVm(String vmId) {
-        return cloudMiddleware.getVMInfo(vmId);
+        return cloudMiddleware.getVM(vmId);
     }
 
     /**
@@ -152,7 +152,7 @@ public class VmManager {
     public List<VmDeployed> getVmsOfApp(String appId) {
         List<VmDeployed> result = new ArrayList<>();
         for (String vmId: db.getVmsOfApp(appId)) {
-            result.add(cloudMiddleware.getVMInfo(vmId));
+            result.add(cloudMiddleware.getVM(vmId));
         }
         return result;
     }
@@ -221,8 +221,8 @@ public class VmManager {
             // We also need to delete the script for the VM if it was created before
             if (usingZabbix()) {
                 ZabbixConnector.getZabbixClient().createVM(
-                        vmId + "_" + cloudMiddleware.getVMInfo(vmId).getHostName(),
-                        cloudMiddleware.getVMInfo(vmId).getIpAddress());
+                        vmId + "_" + cloudMiddleware.getVM(vmId).getHostName(),
+                        cloudMiddleware.getVM(vmId).getIpAddress());
 
                 // Delete the script if one was created
                 if (vmScriptName != null) {
@@ -450,8 +450,8 @@ public class VmManager {
             // We need to check that the VM is still deployed.
             // It might be the case that a VM was deleted in the time interval between a recommended plan is
             // calculated and the execution order for that deployment plan is received
-            if (cloudMiddleware.getVMInfo(vmPlacement.getVmId()) != null) {
-                boolean vmAlreadyDeployedInHost = vmPlacement.getHostname().equals(cloudMiddleware.getVMInfo(
+            if (cloudMiddleware.getVM(vmPlacement.getVmId()) != null) {
+                boolean vmAlreadyDeployedInHost = vmPlacement.getHostname().equals(cloudMiddleware.getVM(
                         vmPlacement.getVmId()).getHostName());
                 if (!vmAlreadyDeployedInHost) {
                     migrateVm(vmPlacement.getVmId(), vmPlacement.getHostname());
