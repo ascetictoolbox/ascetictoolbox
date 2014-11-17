@@ -18,7 +18,6 @@
 
 package es.bsc.vmmanagercore.cloudmiddleware;
 
-import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
 import es.bsc.vmmanagercore.db.VmManagerDb;
 import es.bsc.vmmanagercore.model.images.ImageToUpload;
 import es.bsc.vmmanagercore.model.images.ImageUploaded;
@@ -72,10 +71,10 @@ public class JCloudsMiddleware implements CloudMiddleware {
 
     private String zone; // This could be important/problematic in the future because I am assuming that
                          // the cluster only has one zone configured for deployments.
+    private String[] securityGroups = {};
 
     private OpenStackGlance glanceConnector = new OpenStackGlance(); // Connector for OS Glance
     private VmManagerDb db; // DB that contains the relationship VM-application, the scheduling algorithms, etc.
-    private VmManagerConfiguration conf = VmManagerConfiguration.getInstance();
 
     /**
      * Class constructor. It performs the connection to the infrastructure and initializes
@@ -86,11 +85,13 @@ public class JCloudsMiddleware implements CloudMiddleware {
      * @param keyStoneTenant tenant of the Keystone service
      * @param keyStoneUser user of the Keystone service
      * @param keyStonePassword password of the Keystone service
-     * @param db Database used by the VM Manager
+     * @param db database used by the VM Manager
+     * @param securityGroups the security groups to which the VM will be part of
      */
-    public JCloudsMiddleware(String openStackIP, int keyStonePort, String keyStoneTenant,
-                             String keyStoneUser, String keyStonePassword, VmManagerDb db) {
+    public JCloudsMiddleware(String openStackIP, int keyStonePort, String keyStoneTenant, String keyStoneUser,
+                             String keyStonePassword, VmManagerDb db, String[] securityGroups) {
         getOpenStackApis(openStackIP, keyStonePort, keyStoneTenant, keyStoneUser, keyStonePassword);
+        this.securityGroups = securityGroups;
         this.db = db;
     }
 
@@ -101,7 +102,7 @@ public class JCloudsMiddleware implements CloudMiddleware {
                 vm.getName(),
                 getImageIdForDeployment(vm),
                 getFlavorIdForDeployment(vm),
-                getDeploymentOptionsForVm(vm, hostname));
+                getDeploymentOptionsForVm(vm, hostname, securityGroups));
 
         // Wait until the VM is deployed
         while (serverApi.get(server.getId()).getStatus().toString().equals(BUILD)) {
@@ -325,12 +326,15 @@ public class JCloudsMiddleware implements CloudMiddleware {
      *
      * @param vm the VM to be deployed
      * @param hostname the hostname
+     * @param securityGroups the security groups to which the VM will be part of
+     *
+     * @return the deployment options
      */
-    private CreateServerOptions getDeploymentOptionsForVm(Vm vm, String hostname) {
+    private CreateServerOptions getDeploymentOptionsForVm(Vm vm, String hostname, String[] securityGroups) {
         CreateServerOptions options = new CreateServerOptions();
         includeDstNodeInDeploymentOption(hostname, options);
         includeInitScriptInDeploymentOptions(vm, options);
-        includeSecurityGroupInDeploymentOption(options);
+        includeSecurityGroupInDeploymentOption(options, securityGroups);
         return options;
     }
 
@@ -365,12 +369,9 @@ public class JCloudsMiddleware implements CloudMiddleware {
         }
     }
 
-    //TODO this is a temporary hack. The security groups should not be hard-coded.
-    private void includeSecurityGroupInDeploymentOption(CreateServerOptions options) {
-        // This comparison is not 100% correct. To be rigorous, it should evaluate whether the TUB testbed is being
-        // used, not whether Zabbix is the monitoring system being used
-        if (conf.monitoring.equals(VmManagerConfiguration.Monitoring.ZABBIX)) {
-            options.securityGroupNames("vmm_allow_all", "default"); //sec.group name in the TUB testbed
+    private void includeSecurityGroupInDeploymentOption(CreateServerOptions options, String[] securityGroups) {
+        if (securityGroups.length > 0) {
+            options.securityGroupNames(securityGroups);
         }
     }
 
@@ -379,8 +380,7 @@ public class JCloudsMiddleware implements CloudMiddleware {
      * @param cpus the number of CPUs of the flavor
      * @param memoryMb the amount of RAM of the flavor in MB
      * @param diskGb the amount of disk space of the flavor in GB
-     * @return The ID of the flavor. Null if a flavor with the specified characteristics does not
-     * exist.
+     * @return The ID of the flavor. Null if a flavor with the specified characteristics does not exist.
      */
     private String getFlavorId(int cpus, int memoryMb, int diskGb) {
         for (Flavor flavor: flavorApi.listInDetail().concat()) {

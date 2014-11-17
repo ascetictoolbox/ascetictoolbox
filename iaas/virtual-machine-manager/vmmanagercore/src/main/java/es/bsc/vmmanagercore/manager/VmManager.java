@@ -84,9 +84,10 @@ public class VmManager {
     public static EnergyModeller energyModeller;
     public static IaaSPricingModeller pricingModeller;
 
-    // Paths specific for the Ascetic project
+    // Specific for the Ascetic project
     private static final String ASCETIC_SCRIPTS_PATH = "/DFS/ascetic/vm-scripts/";
     private static final String ASCETIC_ZABBIX_SCRIPT_PATH = "/DFS/ascetic/vm-scripts/zabbix_agents.sh";
+    private static final String[] ASCETIC_DEFAULT_SEC_GROUPS = {"vmm_allow_all", "default"};
 
     private static boolean periodicSelfAdaptationThreadRunning = false;
 
@@ -567,8 +568,12 @@ public class VmManager {
     private void selectMiddleware(VmManagerConfiguration.Middleware middleware) {
         switch (middleware) {
             case OPENSTACK:
+                String[] securityGroups = {};
+                if (usingZabbix()) { // I should check whether the VMM is configured for the Ascetic project
+                    securityGroups = ASCETIC_DEFAULT_SEC_GROUPS;
+                }
                 cloudMiddleware = new JCloudsMiddleware(conf.openStackIP, conf.keyStonePort, conf.keyStoneTenant,
-                        conf.keyStoneUser, conf.keyStonePassword, db);
+                        conf.keyStoneUser, conf.keyStonePassword, db, securityGroups);
                 break;
             default:
                 throw new IllegalArgumentException("The cloud middleware selected is not supported");

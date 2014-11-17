@@ -84,7 +84,7 @@ public class JCloudsMiddlewareTest {
 
         // Initialize JClouds variables
 		jCloudsMiddleware = new JCloudsMiddleware(conf.openStackIP, conf.keyStonePort, conf.keyStoneTenant,
-                conf.keyStoneUser, conf.keyStonePassword, db);
+                conf.keyStoneUser, conf.keyStonePassword, db, new String[]{}); // I am ignoring the sec. groups here
         serverApi = jCloudsMiddleware.getNovaApi().getServerApiForZone(jCloudsMiddleware.getZone());
         flavorApi = jCloudsMiddleware.getNovaApi().getFlavorApiForZone(jCloudsMiddleware.getZone());
 		
