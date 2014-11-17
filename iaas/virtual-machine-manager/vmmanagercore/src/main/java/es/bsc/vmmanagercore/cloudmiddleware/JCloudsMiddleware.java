@@ -73,7 +73,6 @@ public class JCloudsMiddleware implements CloudMiddleware {
     private String zone; // This could be important/problematic in the future because I am assuming that
                          // the cluster only has one zone configured for deployments.
 
-    private String[] hosts; //hosts in the cluster
     private OpenStackGlance glanceConnector = new OpenStackGlance(); // Connector for OS Glance
     private VmManagerDb db; // DB that contains the relationship VM-application, the scheduling algorithms, etc.
     private VmManagerConfiguration conf = VmManagerConfiguration.getInstance();
@@ -90,7 +89,6 @@ public class JCloudsMiddleware implements CloudMiddleware {
                 conf.keyStoneTenant,
                 conf.keyStoneUser,
                 conf.keyStonePassword);
-        hosts = conf.hosts;
         this.db = db;
     }
 
@@ -239,13 +237,6 @@ public class JCloudsMiddleware implements CloudMiddleware {
      */
     public NovaApi getNovaApi() {
         return novaApi;
-    }
-
-    /**
-     * @return array containing the host names of the servers of the cluster
-     */
-    public String[] getHosts() {
-        return hosts.clone();
     }
 
     /**
