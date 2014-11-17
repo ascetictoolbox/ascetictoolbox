@@ -330,6 +330,7 @@ iaas/virtual-machine-manager/vmmanager-frontend/scripts/spin.min.js -text
 iaas/virtual-machine-manager/vmmanager-frontend/scripts/toastr.min.js -text
 iaas/virtual-machine-manager/vmmanagercore/pom.xml -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/cloudmiddleware/CloudMiddleware.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/cloudmiddleware/openstack/OpenStackCredentials.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/cloudmiddleware/openstack/OpenStackGlance.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/cloudmiddleware/openstack/OpenStackJclouds.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/configuration/VmManagerConfiguration.java -text

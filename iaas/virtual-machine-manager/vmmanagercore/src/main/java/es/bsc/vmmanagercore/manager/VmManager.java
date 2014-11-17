@@ -19,6 +19,7 @@
 package es.bsc.vmmanagercore.manager;
 
 import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddleware;
+import es.bsc.vmmanagercore.cloudmiddleware.openstack.OpenStackCredentials;
 import es.bsc.vmmanagercore.cloudmiddleware.openstack.OpenStackJclouds;
 import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
 import es.bsc.vmmanagercore.db.VmManagerDb;
@@ -572,9 +573,7 @@ public class VmManager {
                 if (usingZabbix()) { // I should check whether the VMM is configured for the Ascetic project
                     securityGroups = ASCETIC_DEFAULT_SEC_GROUPS;
                 }
-                cloudMiddleware = new OpenStackJclouds(conf.openStackIP, conf.keyStonePort, conf.keyStoneTenant,
-                        conf.keyStoneUser, conf.keyStonePassword, conf.glancePort, conf.keyStoneTenantId,
-                        db, securityGroups);
+                cloudMiddleware = new OpenStackJclouds(getOpenStackCredentials(), db, securityGroups);
                 break;
             default:
                 throw new IllegalArgumentException("The cloud middleware selected is not supported");
@@ -711,6 +710,16 @@ public class VmManager {
                 new PeriodicSelfAdaptationRunnable(selfAdaptationManager),
                 "periodicSelfAdaptationThread");
         thread.start();
+    }
+
+    private OpenStackCredentials getOpenStackCredentials() {
+        return new OpenStackCredentials(conf.openStackIP,
+                conf.keyStonePort,
+                conf.keyStoneTenant,
+                conf.keyStoneUser,
+                conf.keyStonePassword,
+                conf.glancePort,
+                conf.keyStoneTenantId);
     }
 
 }

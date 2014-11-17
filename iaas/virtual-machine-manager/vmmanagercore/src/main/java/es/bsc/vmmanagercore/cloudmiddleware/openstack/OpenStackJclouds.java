@@ -47,7 +47,6 @@ import java.util.List;
  * Class that performs requests to OpenStack using the JClouds library.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
- *
  */
 public class OpenStackJclouds implements CloudMiddleware {
 
@@ -81,22 +80,15 @@ public class OpenStackJclouds implements CloudMiddleware {
      * Class constructor. It performs the connection to the infrastructure and initializes
      * JClouds attributes.
      *
-     * @param openStackIP IP of the OpenStack installation
-     * @param keyStonePort port where the Keystone service is running
-     * @param keyStoneTenant tenant of the Keystone service
-     * @param keyStoneUser user of the Keystone service
-     * @param keyStonePassword password of the Keystone service
+     * @param openStackCredentials OpenStack credentials
      * @param db database used by the VM Manager
      * @param securityGroups the security groups to which the VM will be part of
      */
-    public OpenStackJclouds(String openStackIP, int keyStonePort, String keyStoneTenant, String keyStoneUser,
-                            String keyStonePassword, int glancePort, String keyStoneTenantId, VmManagerDb db,
-                            String[] securityGroups) {
-        getOpenStackApis(openStackIP, keyStonePort, keyStoneTenant, keyStoneUser, keyStonePassword);
+    public OpenStackJclouds(OpenStackCredentials openStackCredentials, VmManagerDb db, String[] securityGroups) {
+        getOpenStackApis(openStackCredentials);
         this.securityGroups = securityGroups;
         this.db = db;
-        glanceConnector = new OpenStackGlance(openStackIP, glancePort, keyStonePort,
-                keyStoneUser, keyStonePassword, keyStoneTenantId);
+        glanceConnector = new OpenStackGlance(openStackCredentials);
     }
 
     @Override
@@ -262,17 +254,14 @@ public class OpenStackJclouds implements CloudMiddleware {
     /**
      * Gets the OpenStack APIs (nova, server, image, flavor) as defined by the JClouds library.
      *
-     * @param openStackIP IP of the OpenStack installation
-     * @param keystonePort port where the Keystone service is running
-     * @param keystoneTenant tenant of the Keystone service
-     * @param keystoneUser user of the Keystone service
-     * @param keystonePassword password of the Keystone service
+     * @param openStackCredentials OpenStack credentials
      */
-    private void getOpenStackApis(String openStackIP, int keystonePort, String keystoneTenant,
-                                  String keystoneUser, String keystonePassword) {
+    private void getOpenStackApis(OpenStackCredentials openStackCredentials) {
         novaApi = ContextBuilder.newBuilder(new NovaApiMetadata())
-                .endpoint("http://" + openStackIP + ":" + keystonePort + "/v2.0")
-                .credentials(keystoneTenant + ":" + keystoneUser, keystonePassword)
+                .endpoint("http://" + openStackCredentials.getOpenStackIP() + ":" +
+                        openStackCredentials.getKeyStonePort() + "/v2.0")
+                .credentials(openStackCredentials.getKeyStoneTenant() + ":" +
+                        openStackCredentials.getKeyStoneUser(), openStackCredentials.getKeyStonePassword())
                 .buildApi(NovaApi.class);
         zone = novaApi.getConfiguredZones().toArray()[0].toString(); // Assuming that there is only 1 zone configured
         serverApi = novaApi.getServerApiForZone(zone);

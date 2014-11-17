@@ -36,25 +36,14 @@ import java.util.Map;
  */
 public class OpenStackGlance {
 
-    private String openStackIp;
-    private int glancePort;
-    private int keyStonePort;
-    private String keyStoneUser;
-    private String keyStonePassword;
-    private String keyStoneTenantId;
+    private final OpenStackCredentials openStackCredentials;
     private String token; // token needed for authentication
 
     /**
      * Class constructor.
      */
-    public OpenStackGlance(String openStackIP, int glancePort, int keyStonePort, String keyStoneUser,
-                           String keyStonePassword, String keyStoneTenantId) {
-        this.openStackIp = openStackIP;
-        this.glancePort = glancePort;
-        this.keyStonePort = keyStonePort;
-        this.keyStoneUser = keyStoneUser;
-        this.keyStonePassword = keyStonePassword;
-        this.keyStoneTenantId = keyStoneTenantId;
+    public OpenStackGlance(OpenStackCredentials openStackCredentials) {
+        this.openStackCredentials = openStackCredentials;
         token = getToken();
     }
 
@@ -69,7 +58,10 @@ public class OpenStackGlance {
         String responseContent;
         if (new UrlValidator().isValid(imageToUpload.getUrl())) {
             responseContent = HttpUtils.executeHttpRequest("POST",
-                    HttpUtils.buildURI("http", openStackIp, glancePort, "/v1/images"),
+                    HttpUtils.buildURI("http",
+                            openStackCredentials.getOpenStackIP(),
+                            openStackCredentials.getGlancePort(),
+                            "/v1/images"),
                     getHeadersForCreateImageRequest(imageToUpload), "");
             return getIdFromCreateImageImageResponse(responseContent);
         }
@@ -131,7 +123,10 @@ public class OpenStackGlance {
      */
     public void deleteImage(String imageId) {
         HttpUtils.executeHttpRequest("DELETE",
-                HttpUtils.buildURI("http", openStackIp, glancePort, "/v2/images/" + imageId),
+                HttpUtils.buildURI("http",
+                        openStackCredentials.getOpenStackIP(),
+                        openStackCredentials.getGlancePort(),
+                        "/v2/images/" + imageId),
                 getHeadersForDeleteImageRequest(), "");
     }
 
@@ -155,7 +150,10 @@ public class OpenStackGlance {
      */
     public boolean imageIsActive(String imageId) {
         String responseContent = HttpUtils.executeHttpRequest("GET",
-                HttpUtils.buildURI("http", openStackIp, glancePort, "/v2/images/" + imageId),
+                HttpUtils.buildURI("http",
+                        openStackCredentials.getOpenStackIP(),
+                        openStackCredentials.getGlancePort(),
+                        "/v2/images/" + imageId),
                 getHeadersForImageIsActiveRequest(), "");
         return imageIsActiveFromResponse(responseContent);
     }
@@ -195,8 +193,13 @@ public class OpenStackGlance {
      * @return Token needed for authentication
      */
     private String getToken() {
-        String responseContent = HttpUtils.executeHttpRequest("POST", HttpUtils.buildURI("http", openStackIp,
-                keyStonePort, "/v2.0/tokens"), getHeadersForGetTokenRequest(), getParamsForGetTokenRequest());
+        String responseContent = HttpUtils.executeHttpRequest("POST",
+                HttpUtils.buildURI("http",
+                        openStackCredentials.getOpenStackIP(),
+                        openStackCredentials.getKeyStonePort(),
+                        "/v2.0/tokens"),
+                getHeadersForGetTokenRequest(),
+                getParamsForGetTokenRequest());
         return getTokenFromGetTokenResponse(responseContent);
     }
 
@@ -218,9 +221,9 @@ public class OpenStackGlance {
      */
     private String getParamsForGetTokenRequest() {
         return "{\"auth\":{\"passwordCredentials\":"
-                + "{\"username\":" + "\"" + keyStoneUser + "\""
-                + ", \"password\":" + "\"" + keyStonePassword + "\"}"
-                + ", \"tenantId\":" + "\"" + keyStoneTenantId + "\"}}";
+                + "{\"username\":" + "\"" + openStackCredentials.getKeyStoneUser() + "\""
+                + ", \"password\":" + "\"" + openStackCredentials.getKeyStonePassword() + "\"}"
+                + ", \"tenantId\":" + "\"" + openStackCredentials.getKeyStoneTenantId() + "\"}}";
     }
 
     /**
