@@ -16,8 +16,9 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.vmmanagercore.cloudmiddleware;
+package es.bsc.vmmanagercore.cloudmiddleware.openstack;
 
+import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddleware;
 import es.bsc.vmmanagercore.db.VmManagerDb;
 import es.bsc.vmmanagercore.model.images.ImageToUpload;
 import es.bsc.vmmanagercore.model.images.ImageUploaded;
@@ -55,7 +56,7 @@ public class JCloudsMiddleware implements CloudMiddleware {
     not been tested. */
 
     // OpenStack default flavors
-    public static final String[] DEFAULT_FLAVORS = new String[] {"1","2","3","4","5"};
+    public static final String[] DEFAULT_FLAVORS = new String[] {"1", "2", "3", "4", "5"};
 
     // OpenStack VMs state
     private static final String ACTIVE = "active";
@@ -73,7 +74,7 @@ public class JCloudsMiddleware implements CloudMiddleware {
                          // the cluster only has one zone configured for deployments.
     private String[] securityGroups = {};
 
-    private OpenStackGlance glanceConnector = new OpenStackGlance(); // Connector for OS Glance
+    private OpenStackGlance glanceConnector; // Connector for OS Glance
     private VmManagerDb db; // DB that contains the relationship VM-application, the scheduling algorithms, etc.
 
     /**
@@ -89,10 +90,13 @@ public class JCloudsMiddleware implements CloudMiddleware {
      * @param securityGroups the security groups to which the VM will be part of
      */
     public JCloudsMiddleware(String openStackIP, int keyStonePort, String keyStoneTenant, String keyStoneUser,
-                             String keyStonePassword, VmManagerDb db, String[] securityGroups) {
+                             String keyStonePassword, int glancePort, String keyStoneTenantId, VmManagerDb db,
+                             String[] securityGroups) {
         getOpenStackApis(openStackIP, keyStonePort, keyStoneTenant, keyStoneUser, keyStonePassword);
         this.securityGroups = securityGroups;
         this.db = db;
+        glanceConnector = new OpenStackGlance(openStackIP, glancePort, keyStonePort,
+                keyStoneUser, keyStonePassword, keyStoneTenantId);
     }
 
     @Override

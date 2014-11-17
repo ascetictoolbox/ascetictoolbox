@@ -20,7 +20,7 @@ package es.bsc.vmmanagercore.monitoring;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.FluentIterable;
-import es.bsc.vmmanagercore.cloudmiddleware.JCloudsMiddleware;
+import es.bsc.vmmanagercore.cloudmiddleware.openstack.JCloudsMiddleware;
 import org.jclouds.openstack.nova.v2_0.domain.HostResourceUsage;
 import org.jclouds.openstack.nova.v2_0.extensions.HostAdministrationApi;
 
@@ -66,8 +66,6 @@ public class HostOpenStack extends Host {
 
     @Override
     public double getAssignedCpus() {
-        int assignedCpus = 0;
-
         //get the host administration API
         Optional<? extends HostAdministrationApi> hostAdminApi =
                 jcm.getNovaApi().getHostAdministrationExtensionForZone(jcm.getZone());
@@ -76,7 +74,7 @@ public class HostOpenStack extends Host {
         FluentIterable<? extends HostResourceUsage> hostResourcesInfo = hostAdminApi.get().listResourceUsage(hostname);
 
         //get the assigned CPUs
-        assignedCpus = hostResourcesInfo.get(1).getCpu();
+        int assignedCpus = hostResourcesInfo.get(1).getCpu();
 
         //update the class attribute
         updateAssignedCpus(assignedCpus);
@@ -86,7 +84,6 @@ public class HostOpenStack extends Host {
 
     @Override
     public double getAssignedMemoryMb() {
-        int assignedMemoryMb = 0;
         //get the host administration API
         Optional<? extends HostAdministrationApi> hostAdminApi =
                 jcm.getNovaApi().getHostAdministrationExtensionForZone(jcm.getZone());
@@ -95,7 +92,7 @@ public class HostOpenStack extends Host {
         FluentIterable<? extends HostResourceUsage> hostResourcesInfo = hostAdminApi.get().listResourceUsage(hostname);
 
         //get the assigned memory
-        assignedMemoryMb = hostResourcesInfo.get(1).getMemoryMb();
+        int assignedMemoryMb = hostResourcesInfo.get(1).getMemoryMb();
 
         //update the class attribute
         updateAssignedMemoryMb(assignedMemoryMb);
@@ -105,7 +102,6 @@ public class HostOpenStack extends Host {
 
     @Override
     public double getAssignedDiskGb() {
-        int assignedDiskGb = 0;
         //get the host administration API
         Optional<? extends HostAdministrationApi> hostAdminApi =
                 jcm.getNovaApi().getHostAdministrationExtensionForZone(jcm.getZone());
@@ -114,7 +110,7 @@ public class HostOpenStack extends Host {
         FluentIterable<? extends HostResourceUsage> hostResourcesInfo = hostAdminApi.get().listResourceUsage(hostname);
 
         //get the assigned disk
-        assignedDiskGb = hostResourcesInfo.get(1).getDiskGb();
+        int assignedDiskGb = hostResourcesInfo.get(1).getDiskGb();
 
         //update the class attribute
         updateAssignedDiskGb(assignedDiskGb);

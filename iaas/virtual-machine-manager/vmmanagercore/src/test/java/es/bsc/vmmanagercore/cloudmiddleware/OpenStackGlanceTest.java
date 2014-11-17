@@ -18,6 +18,7 @@
 
 package es.bsc.vmmanagercore.cloudmiddleware;
 
+import es.bsc.vmmanagercore.cloudmiddleware.openstack.OpenStackGlance;
 import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
 import es.bsc.vmmanagercore.model.images.ImageToUpload;
 import org.junit.BeforeClass;
@@ -29,7 +30,9 @@ public class OpenStackGlanceTest {
 
     @BeforeClass
     public static void setUpClass() {
-        glance = new OpenStackGlance();
+        VmManagerConfiguration config = VmManagerConfiguration.getInstance();
+        glance = new OpenStackGlance(config.openStackIP, config.glancePort, config.keyStonePort, config.keyStoneUser,
+                config.keyStonePassword, config.keyStoneTenantId);
     }
 
     //This test only checks that the create and delete operations do not raise exceptions.

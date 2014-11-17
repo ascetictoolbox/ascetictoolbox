@@ -19,7 +19,7 @@
 package es.bsc.vmmanagercore.manager;
 
 import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddleware;
-import es.bsc.vmmanagercore.cloudmiddleware.JCloudsMiddleware;
+import es.bsc.vmmanagercore.cloudmiddleware.openstack.JCloudsMiddleware;
 import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
 import es.bsc.vmmanagercore.db.VmManagerDb;
 import es.bsc.vmmanagercore.db.VmManagerDbFactory;
@@ -573,7 +573,8 @@ public class VmManager {
                     securityGroups = ASCETIC_DEFAULT_SEC_GROUPS;
                 }
                 cloudMiddleware = new JCloudsMiddleware(conf.openStackIP, conf.keyStonePort, conf.keyStoneTenant,
-                        conf.keyStoneUser, conf.keyStonePassword, db, securityGroups);
+                        conf.keyStoneUser, conf.keyStonePassword, conf.glancePort, conf.keyStoneTenantId,
+                        db, securityGroups);
                 break;
             default:
                 throw new IllegalArgumentException("The cloud middleware selected is not supported");

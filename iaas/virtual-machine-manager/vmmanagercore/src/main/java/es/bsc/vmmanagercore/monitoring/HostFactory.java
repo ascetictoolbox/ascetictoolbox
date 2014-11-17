@@ -18,7 +18,7 @@
 
 package es.bsc.vmmanagercore.monitoring;
 
-import es.bsc.vmmanagercore.cloudmiddleware.JCloudsMiddleware;
+import es.bsc.vmmanagercore.cloudmiddleware.openstack.JCloudsMiddleware;
 
 import java.util.HashMap;
 import java.util.Map;

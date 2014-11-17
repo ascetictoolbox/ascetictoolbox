@@ -16,9 +16,8 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.vmmanagercore.cloudmiddleware;
+package es.bsc.vmmanagercore.cloudmiddleware.openstack;
 
-import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
 import es.bsc.vmmanagercore.model.images.ImageToUpload;
 import es.bsc.vmmanagercore.utils.CommandExecutor;
 import es.bsc.vmmanagercore.utils.HttpUtils;
@@ -34,7 +33,6 @@ import java.util.Map;
  * the version of JClouds that we are using does not implement the communication with Glance.
  * 
  * @author David Ortiz Lopez (david.ortiz@bsc.es).
- * 
  */
 public class OpenStackGlance {
 
@@ -49,14 +47,14 @@ public class OpenStackGlance {
     /**
      * Class constructor.
      */
-    public OpenStackGlance() {
-        VmManagerConfiguration conf = VmManagerConfiguration.getInstance();
-        this.openStackIp = conf.openStackIP;
-        this.glancePort = conf.glancePort;
-        this.keyStonePort = conf.keyStonePort;
-        this.keyStoneUser = conf.keyStoneUser;
-        this.keyStonePassword = conf.keyStonePassword;
-        this.keyStoneTenantId = conf.keyStoneTenantId;
+    public OpenStackGlance(String openStackIP, int glancePort, int keyStonePort, String keyStoneUser,
+                           String keyStonePassword, String keyStoneTenantId) {
+        this.openStackIp = openStackIP;
+        this.glancePort = glancePort;
+        this.keyStonePort = keyStonePort;
+        this.keyStoneUser = keyStoneUser;
+        this.keyStonePassword = keyStonePassword;
+        this.keyStoneTenantId = keyStoneTenantId;
         token = getToken();
     }
 
@@ -66,7 +64,7 @@ public class OpenStackGlance {
      * @param imageToUpload the image to upload
      * @return the ID of the image just created. This ID is the same as the ID assigned in OpenStack.
      */
-    //TODO I need to refactor this function and get rid of the hard-coded values
+    //Note: I need to refactor this function and get rid of the hard-coded values
     public String createImageFromUrl(ImageToUpload imageToUpload) {
         String responseContent;
         if (new UrlValidator().isValid(imageToUpload.getUrl())) {
