@@ -81,14 +81,16 @@ public class JCloudsMiddleware implements CloudMiddleware {
      * Class constructor. It performs the connection to the infrastructure and initializes
      * JClouds attributes.
      *
+     * @param openStackIP IP of the OpenStack installation
+     * @param keyStonePort port where the Keystone service is running
+     * @param keyStoneTenant tenant of the Keystone service
+     * @param keyStoneUser user of the Keystone service
+     * @param keyStonePassword password of the Keystone service
      * @param db Database used by the VM Manager
      */
-    public JCloudsMiddleware(VmManagerDb db) {
-        getOpenStackApis(conf.openStackIP,
-                conf.keyStonePort,
-                conf.keyStoneTenant,
-                conf.keyStoneUser,
-                conf.keyStonePassword);
+    public JCloudsMiddleware(String openStackIP, int keyStonePort, String keyStoneTenant,
+                             String keyStoneUser, String keyStonePassword, VmManagerDb db) {
+        getOpenStackApis(openStackIP, keyStonePort, keyStoneTenant, keyStoneUser, keyStonePassword);
         this.db = db;
     }
 
@@ -102,7 +104,13 @@ public class JCloudsMiddleware implements CloudMiddleware {
                 getDeploymentOptionsForVm(vm, hostname));
 
         // Wait until the VM is deployed
-        while (serverApi.get(server.getId()).getStatus().toString().equals(BUILD)) { }
+        while (serverApi.get(server.getId()).getStatus().toString().equals(BUILD)) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
 
         // Return the VM id
         return server.getId();
@@ -112,8 +120,15 @@ public class JCloudsMiddleware implements CloudMiddleware {
     public void destroy(String vmId) {
         Server server = serverApi.get(vmId);
         if (server != null) { // If the VM is in the zone
-            serverApi.delete(vmId); // Delete the VM
-            while (server.getStatus().toString().equals(DELETING)) { } // Wait while deleting
+            serverApi.delete(vmId);
+            // Wait until the VM is destroyed
+            while (server.getStatus().toString().equals(DELETING)) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

@@ -90,6 +90,8 @@ public class VmManager {
 
     private static boolean periodicSelfAdaptationThreadRunning = false;
 
+    private static final VmManagerConfiguration conf = VmManagerConfiguration.getInstance();
+
     /**
      * Constructs a VmManager with the name of the database to be used.
      *
@@ -97,7 +99,6 @@ public class VmManager {
      */
     public VmManager(String dbName) {
         db = VmManagerDbFactory.getDb(dbName);
-        VmManagerConfiguration conf = VmManagerConfiguration.getInstance();
         selectMiddleware(conf.middleware);
         initializeHosts(conf.monitoring, conf.hosts);
         List<VmDeployed> vmsDeployed = getAllVms();
@@ -566,7 +567,8 @@ public class VmManager {
     private void selectMiddleware(VmManagerConfiguration.Middleware middleware) {
         switch (middleware) {
             case OPENSTACK:
-                cloudMiddleware = new JCloudsMiddleware(db);
+                cloudMiddleware = new JCloudsMiddleware(conf.openStackIP, conf.keyStonePort, conf.keyStoneTenant,
+                        conf.keyStoneUser, conf.keyStonePassword, db);
                 break;
             default:
                 throw new IllegalArgumentException("The cloud middleware selected is not supported");

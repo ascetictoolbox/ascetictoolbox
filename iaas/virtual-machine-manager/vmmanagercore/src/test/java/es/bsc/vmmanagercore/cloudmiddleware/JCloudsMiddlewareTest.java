@@ -77,14 +77,14 @@ public class JCloudsMiddlewareTest {
 	
 	@BeforeClass
 	public static void setUpBeforeClass() {
-		//get the test image ID from the configuration file
-		testingImageId = VmManagerConfiguration.getInstance().testingImageId;
-		
-		//initialize JClouds variables
+        VmManagerConfiguration conf = VmManagerConfiguration.getInstance();
+		testingImageId = conf.testingImageId;
 		VmManagerDb db = VmManagerDbFactory.getDb("testDb");
 		db.deleteAllVms();
 
-		jCloudsMiddleware = new JCloudsMiddleware(db);
+        // Initialize JClouds variables
+		jCloudsMiddleware = new JCloudsMiddleware(conf.openStackIP, conf.keyStonePort, conf.keyStoneTenant,
+                conf.keyStoneUser, conf.keyStonePassword, db);
         serverApi = jCloudsMiddleware.getNovaApi().getServerApiForZone(jCloudsMiddleware.getZone());
         flavorApi = jCloudsMiddleware.getNovaApi().getFlavorApiForZone(jCloudsMiddleware.getZone());
 		
