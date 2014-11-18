@@ -16,7 +16,7 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.vmmanagercore.energymodeller;
+package es.bsc.vmmanagercore.energymodeller.ascetic;
 
 import es.bsc.vmmanagercore.model.vms.Vm;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller;

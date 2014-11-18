@@ -71,6 +71,10 @@ public class VmManagerConfiguration {
     public Monitoring monitoring;
     public Middleware middleware;
 
+    // Some things need to be adapted depending on the project for which the VMM has been deployed.
+    // Therefore, we need an attribute that indicates the current project
+    public String project;
+
     /**
      * Returns a properties file that contains the configuration parameters for the VM Manager.
      *
@@ -111,6 +115,7 @@ public class VmManagerConfiguration {
         deployPackage = prop.getProperty("deployPackage");
         hosts = prop.getProperty("hosts").split(",");
         deploymentEngine = prop.getProperty("deploymentEngine");
+        project = prop.getProperty("project");
 
         if(prop.getProperty("monitoring").equals("openstack")) {
             monitoring = Monitoring.OPENSTACK;

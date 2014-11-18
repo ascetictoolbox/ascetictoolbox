@@ -18,6 +18,7 @@
 
 package es.bsc.vmmanagercore.scheduler;
 
+import es.bsc.vmmanagercore.energymodeller.EnergyModeller;
 import es.bsc.vmmanagercore.model.estimations.ListVmEstimates;
 import es.bsc.vmmanagercore.model.estimations.VmEstimate;
 import es.bsc.vmmanagercore.model.scheduling.DeploymentPlan;
@@ -41,10 +42,11 @@ public class EstimatesGenerator {
      * @param vmsDeployed VMs deployed in the infrastructure
      * @return the price and energy estimates for each VM
      */
-    public ListVmEstimates getVmEstimates(DeploymentPlan deploymentPlan, List<VmDeployed> vmsDeployed) {
+    public ListVmEstimates getVmEstimates(DeploymentPlan deploymentPlan, List<VmDeployed> vmsDeployed,
+                                          EnergyModeller energyModeller) {
         List<VmEstimate> vmEstimates = new ArrayList<>();
         for (VmAssignmentToHost vmAssignmentToHost: deploymentPlan.getVmsAssignationsToHosts()) {
-            vmEstimates.add(vmAssignmentToHost.getVmEstimate(vmsDeployed, deploymentPlan));
+            vmEstimates.add(vmAssignmentToHost.getVmEstimate(vmsDeployed, deploymentPlan, energyModeller));
         }
         return new ListVmEstimates(vmEstimates);
     }

@@ -18,6 +18,7 @@
 
 package es.bsc.vmmanagercore.scheduler;
 
+import es.bsc.vmmanagercore.energymodeller.EnergyModeller;
 import es.bsc.vmmanagercore.logging.VMMLogger;
 import es.bsc.vmmanagercore.model.hosts.ServerLoad;
 import es.bsc.vmmanagercore.model.scheduling.DeploymentPlan;
@@ -44,6 +45,7 @@ public class Scheduler {
     private SchedAlgorithm schedAlgorithm;
     private List<VmDeployed> vmsDeployed;
     private String schedAlgorithmName;
+    private EnergyModeller energyModeller;
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss.SSS"); // Useful for logs
 
     /**
@@ -52,8 +54,9 @@ public class Scheduler {
      * @param schedAlg scheduling algorithm used
      * @param vmsDeployed list of VMs deployed in the infrastructure
      */
-    public Scheduler(SchedulingAlgorithm schedAlg, List<VmDeployed> vmsDeployed) {
+    public Scheduler(SchedulingAlgorithm schedAlg, List<VmDeployed> vmsDeployed, EnergyModeller energyModeller) {
         this.vmsDeployed = vmsDeployed;
+        this.energyModeller = energyModeller;
         setSchedAlgorithm(schedAlg);
         schedAlgorithmName = schedAlg.getName();
     }
@@ -75,7 +78,7 @@ public class Scheduler {
                 schedAlgorithm = new SchedAlgDistribution();
                 break;
             case ENERGY_AWARE:
-                schedAlgorithm = new SchedAlgEnergyAware(vmsDeployed);
+                schedAlgorithm = new SchedAlgEnergyAware(vmsDeployed, energyModeller);
                 break;
             case GROUP_BY_APP:
                 schedAlgorithm = new SchedAlgGroupByApp(vmsDeployed);
@@ -332,10 +335,6 @@ public class Scheduler {
         VMMLogger.logEndOfDeploymentPlansEvaluation(schedAlgorithmName, deploymentId);
 
         return bestDeploymentPlan;
-    }
-
-    public String getSchedulingAlgorithmName() {
-        return schedAlgorithmName;
     }
 
 }

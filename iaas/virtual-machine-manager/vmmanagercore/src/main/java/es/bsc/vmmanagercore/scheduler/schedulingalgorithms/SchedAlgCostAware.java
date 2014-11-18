@@ -18,7 +18,7 @@
 
 package es.bsc.vmmanagercore.scheduler.schedulingalgorithms;
 
-import es.bsc.vmmanagercore.energymodeller.EnergyModellerConnector;
+import es.bsc.vmmanagercore.energymodeller.ascetic.AsceticEnergyModellerAdapter;
 import es.bsc.vmmanagercore.logging.VMMLogger;
 import es.bsc.vmmanagercore.model.scheduling.DeploymentPlan;
 import es.bsc.vmmanagercore.model.scheduling.VmAssignmentToHost;
@@ -48,7 +48,7 @@ public class SchedAlgCostAware implements SchedAlgorithm {
     private double getPredictedCostDeploymentPlan(DeploymentPlan deploymentPlan) {
         double result = 0;
         for (VmAssignmentToHost vmAssignmentToHost: deploymentPlan.getVmsAssignationsToHosts()) {
-            double energyEstimate = EnergyModellerConnector.getPredictedEnergyVm(vmAssignmentToHost.getVm(),
+            double energyEstimate = AsceticEnergyModellerAdapter.getPredictedEnergyVm(vmAssignmentToHost.getVm(),
                     vmAssignmentToHost.getHost(), vmsDeployed, deploymentPlan);
             double costEstimate = PricingModellerConnector.getVmCost(energyEstimate,
                     vmAssignmentToHost.getHost().getHostname());

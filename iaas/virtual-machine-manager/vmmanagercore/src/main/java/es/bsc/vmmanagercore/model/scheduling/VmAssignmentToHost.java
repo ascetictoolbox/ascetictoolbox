@@ -18,7 +18,8 @@
 
 package es.bsc.vmmanagercore.model.scheduling;
 
-import es.bsc.vmmanagercore.energymodeller.EnergyModellerConnector;
+import es.bsc.vmmanagercore.energymodeller.EnergyModeller;
+import es.bsc.vmmanagercore.energymodeller.ascetic.AsceticEnergyModellerAdapter;
 import es.bsc.vmmanagercore.model.estimations.VmEstimate;
 import es.bsc.vmmanagercore.model.vms.Vm;
 import es.bsc.vmmanagercore.model.vms.VmDeployed;
@@ -56,10 +57,11 @@ public class VmAssignmentToHost {
         return host;
     }
 
-    public VmEstimate getVmEstimate(List<VmDeployed> vmsDeployed, DeploymentPlan deploymentPlan) {
+    public VmEstimate getVmEstimate(List<VmDeployed> vmsDeployed, DeploymentPlan deploymentPlan,
+                                    EnergyModeller energyModeller) {
         return new VmEstimate(
                 vm.getName(),
-                getPowerEstimate(vmsDeployed, deploymentPlan),
+                getPowerEstimate(vmsDeployed, deploymentPlan, energyModeller),
                 getPriceEstimate(vmsDeployed, deploymentPlan));
     }
 
@@ -69,8 +71,9 @@ public class VmAssignmentToHost {
      * @param vmsDeployed VMs deployed in the infrastructure
      * @return the predicted avg power
      */
-    private double getPowerEstimate(List<VmDeployed> vmsDeployed, DeploymentPlan deploymentPlan) {
-        return EnergyModellerConnector.getPredictedAvgPowerVm(vm, host, vmsDeployed, deploymentPlan);
+    private double getPowerEstimate(List<VmDeployed> vmsDeployed, DeploymentPlan deploymentPlan,
+                                    EnergyModeller energyModeller) {
+        return energyModeller.getPredictedAvgPowerVm(vm, host, vmsDeployed, deploymentPlan);
     }
 
     /**
@@ -80,7 +83,7 @@ public class VmAssignmentToHost {
      * @return the predicted energy
      */
     private double getEnergyEstimate(List<VmDeployed> vmsDeployed, DeploymentPlan deploymentPlan) {
-        return EnergyModellerConnector.getPredictedEnergyVm(vm, host, vmsDeployed, deploymentPlan);
+        return AsceticEnergyModellerAdapter.getPredictedEnergyVm(vm, host, vmsDeployed, deploymentPlan);
     }
 
     /**

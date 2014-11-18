@@ -16,7 +16,7 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.vmmanagercore.energymodeller;
+package es.bsc.vmmanagercore.energymodeller.ascetic;
 
 import es.bsc.vmmanagercore.model.scheduling.DeploymentPlan;
 import es.bsc.vmmanagercore.model.vms.Vm;
@@ -34,20 +34,13 @@ import java.util.List;
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  */
-public class EnergyModellerConnector {
+public class AsceticEnergyModellerAdapter implements es.bsc.vmmanagercore.energymodeller.EnergyModeller {
 
-    private static EnergyModeller energyModeller = EnergyModeller.getInstance();
+    private static eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller energyModeller =
+            eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller.getInstance();
 
-    /**
-     * Returns the predicted avg. power for a VM if it was deployed in a specific host.
-     *
-     * @param vm the VM
-     * @param host the host
-     * @param vmsDeployed the VMs already deployed in the host
-     * @param deploymentPlan where it is defined that the vm has been assigned to the host
-     * @return the predicted avg. power in Watts
-     */
-    public static double getPredictedAvgPowerVm(Vm vm, Host host, List<VmDeployed> vmsDeployed,
+    @Override
+    public double getPredictedAvgPowerVm(Vm vm, Host host, List<VmDeployed> vmsDeployed,
             DeploymentPlan deploymentPlan) {
         return getEnergyUsagePrediction(vm, host, vmsDeployed, deploymentPlan).getAvgPowerUsed();
     }
@@ -87,7 +80,8 @@ public class EnergyModellerConnector {
         }
 
         return energyModeller.getPredictedEnergyForVM(
-                EnergyModeller.getVM(vm.getCpus(), vm.getRamMb(), vm.getDiskGb()), vmsInHost,
+                eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller
+                        .getVM(vm.getCpus(), vm.getRamMb(), vm.getDiskGb()), vmsInHost,
                 energyModeller.getHost(host.getHostname()));
     }
 

@@ -24,6 +24,8 @@ import es.bsc.vmmanagercore.cloudmiddleware.openstack.OpenStackJclouds;
 import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
 import es.bsc.vmmanagercore.db.VmManagerDb;
 import es.bsc.vmmanagercore.db.VmManagerDbFactory;
+import es.bsc.vmmanagercore.energymodeller.EnergyModeller;
+import es.bsc.vmmanagercore.energymodeller.ascetic.AsceticEnergyModellerAdapter;
 import es.bsc.vmmanagercore.logging.VMMLogger;
 import es.bsc.vmmanagercore.model.estimations.ListVmEstimates;
 import es.bsc.vmmanagercore.model.estimations.VmToBeEstimated;
@@ -48,7 +50,6 @@ import es.bsc.vmmanagercore.vmplacement.OptaVmPlacementConversor;
 import es.bsc.vmplacement.domain.ClusterState;
 import es.bsc.vmplacement.lib.OptaVmPlacement;
 import es.bsc.vmplacement.lib.OptaVmPlacementImpl;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.IaaSPricingModeller;
 
 import java.io.BufferedWriter;
@@ -103,11 +104,10 @@ public class VmManager {
         db = VmManagerDbFactory.getDb(dbName);
         selectMiddleware(conf.middleware);
         initializeHosts(conf.monitoring, conf.hosts);
+        selectModellers(conf.project);
         List<VmDeployed> vmsDeployed = getAllVms();
-        scheduler = new Scheduler(db.getCurrentSchedulingAlg(), vmsDeployed);
+        scheduler = new Scheduler(db.getCurrentSchedulingAlg(), vmsDeployed, energyModeller);
         selfAdaptationManager = new SelfAdaptationManager(this, dbName);
-        energyModeller = EnergyModeller.getInstance();
-        pricingModeller = new IaaSPricingModeller();
 
         // Start periodic self-adaptation thread if it is not already running.
         // This check would not be needed if only one instance of this class was created.
@@ -536,7 +536,7 @@ public class VmManager {
      */
     public ListVmEstimates getVmEstimates(List<VmToBeEstimated> vmsToBeEstimated) {
         return estimatesGenerator.getVmEstimates(scheduler.chooseBestDeploymentPlan(
-                vmsToBeEstimatedToVms(vmsToBeEstimated), hosts), getAllVms());
+                vmsToBeEstimatedToVms(vmsToBeEstimated), hosts), getAllVms(), energyModeller);
     }
 
 
@@ -584,6 +584,19 @@ public class VmManager {
                 break;
             default:
                 throw new IllegalArgumentException("The cloud middleware selected is not supported");
+        }
+    }
+
+    private void selectModellers(String project) {
+        switch (project) {
+            case "ascetic":
+                energyModeller = new AsceticEnergyModellerAdapter();
+                pricingModeller = new IaaSPricingModeller();
+                break;
+            default:
+                energyModeller = null;
+                pricingModeller = null;
+                break;
         }
     }
 

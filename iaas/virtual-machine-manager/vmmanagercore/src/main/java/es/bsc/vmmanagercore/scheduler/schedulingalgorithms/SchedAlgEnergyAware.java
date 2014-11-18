@@ -18,7 +18,7 @@
 
 package es.bsc.vmmanagercore.scheduler.schedulingalgorithms;
 
-import es.bsc.vmmanagercore.energymodeller.EnergyModellerConnector;
+import es.bsc.vmmanagercore.energymodeller.EnergyModeller;
 import es.bsc.vmmanagercore.logging.VMMLogger;
 import es.bsc.vmmanagercore.model.scheduling.DeploymentPlan;
 import es.bsc.vmmanagercore.model.scheduling.VmAssignmentToHost;
@@ -39,15 +39,17 @@ import java.util.List;
 public class SchedAlgEnergyAware implements SchedAlgorithm {
 
     List<VmDeployed> vmsDeployed = new ArrayList<>();
+    EnergyModeller energyModeller;
 
-    public SchedAlgEnergyAware(List<VmDeployed> vmsDeployed) {
+    public SchedAlgEnergyAware(List<VmDeployed> vmsDeployed, EnergyModeller energyModeller) {
         this.vmsDeployed = vmsDeployed;
+        this.energyModeller = energyModeller;
     }
 
     private double getPredictedAvgPowerDeploymentPlan(DeploymentPlan deploymentPlan) {
         double result = 0;
         for (VmAssignmentToHost vmAssignmentToHost: deploymentPlan.getVmsAssignationsToHosts()) {
-            double predictedAvgPower = EnergyModellerConnector.getPredictedAvgPowerVm(vmAssignmentToHost.getVm(),
+            double predictedAvgPower = energyModeller.getPredictedAvgPowerVm(vmAssignmentToHost.getVm(),
                     vmAssignmentToHost.getHost(), vmsDeployed, deploymentPlan);
             result += predictedAvgPower;
         }
