@@ -18,6 +18,8 @@
 
 package es.bsc.vmmanagercore.cloudmiddleware.openstack;
 
+import com.google.common.base.Preconditions;
+
 /**
  * OpenStack credentials.
  *
@@ -35,6 +37,8 @@ public class OpenStackCredentials {
 
     public OpenStackCredentials(String openStackIP, int keyStonePort, String keyStoneTenant, String keyStoneUser,
                                 String keyStonePassword, int glancePort, String keyStoneTenantId) {
+        validateConstructorParams(openStackIP, keyStonePort, keyStoneTenant, keyStoneUser, keyStonePassword,
+                glancePort, keyStoneTenantId);
         this.openStackIP = openStackIP;
         this.keyStonePort = keyStonePort;
         this.keyStoneTenant = keyStoneTenant;
@@ -70,6 +74,18 @@ public class OpenStackCredentials {
 
     public String getKeyStoneTenantId() {
         return keyStoneTenantId;
+    }
+
+    private void validateConstructorParams(String openStackIP, int keyStonePort, String keyStoneTenant,
+                                           String keyStoneUser, String keyStonePassword, int glancePort,
+                                           String keyStoneTenantId) {
+        Preconditions.checkNotNull(openStackIP);
+        Preconditions.checkNotNull(keyStonePort);
+        Preconditions.checkNotNull(keyStoneTenant);
+        Preconditions.checkNotNull(keyStoneUser);
+        Preconditions.checkNotNull(keyStonePassword);
+        Preconditions.checkNotNull(glancePort);
+        Preconditions.checkNotNull(keyStoneTenantId);
     }
 
 }
