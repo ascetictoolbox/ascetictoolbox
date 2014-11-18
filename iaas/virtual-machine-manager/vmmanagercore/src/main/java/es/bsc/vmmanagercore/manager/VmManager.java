@@ -147,7 +147,9 @@ public class VmManager {
         // Typical middlewares such as OpenStack do not store that information.
         // Therefore, we need to set the app ID here
         VmDeployed vm = cloudMiddleware.getVM(vmId);
-        vm.setApplicationId(db.getAppIdOfVm(vm.getId()));
+        if (vm != null) {
+            vm.setApplicationId(db.getAppIdOfVm(vm.getId()));
+        }
         return vm;
     }
 
