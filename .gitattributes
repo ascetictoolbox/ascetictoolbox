@@ -340,6 +340,7 @@ iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/db
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/energymodeller/EnergyModeller.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/energymodeller/ascetic/AsceticEnergyModellerAdapter.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/energymodeller/ascetic/VMMToEMConversor.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/energymodeller/dummy/DummyEnergyModeller.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/logging/VMMLogger.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/manager/VmManager.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/model/estimations/ListVmEstimates.java -text

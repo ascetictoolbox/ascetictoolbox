@@ -26,6 +26,7 @@ import es.bsc.vmmanagercore.db.VmManagerDb;
 import es.bsc.vmmanagercore.db.VmManagerDbFactory;
 import es.bsc.vmmanagercore.energymodeller.EnergyModeller;
 import es.bsc.vmmanagercore.energymodeller.ascetic.AsceticEnergyModellerAdapter;
+import es.bsc.vmmanagercore.energymodeller.dummy.DummyEnergyModeller;
 import es.bsc.vmmanagercore.logging.VMMLogger;
 import es.bsc.vmmanagercore.model.estimations.ListVmEstimates;
 import es.bsc.vmmanagercore.model.estimations.VmToBeEstimated;
@@ -594,7 +595,7 @@ public class VmManager {
                 pricingModeller = new IaaSPricingModeller();
                 break;
             default:
-                energyModeller = null;
+                energyModeller = new DummyEnergyModeller();
                 pricingModeller = null;
                 break;
         }
