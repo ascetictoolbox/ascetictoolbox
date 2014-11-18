@@ -53,7 +53,6 @@ public class OpenStackGlance {
      * @param imageToUpload the image to upload
      * @return the ID of the image just created. This ID is the same as the ID assigned in OpenStack.
      */
-    //Note: I need to refactor this function and get rid of the hard-coded values
     public String createImageFromUrl(ImageToUpload imageToUpload) {
         String responseContent;
         if (new UrlValidator().isValid(imageToUpload.getUrl())) {
@@ -67,9 +66,10 @@ public class OpenStackGlance {
         }
         else {
             String glanceCommandOutput = CommandExecutor.executeCommand(
-                    "glance --os-username vm.manager --os-password vmmanager14 " +
-                    "--os-tenant-id f559470b483c48f18479bd039400b007 " +
-                    "--os-auth-url http://130.149.248.39:35357/v2.0 " +
+                    "glance --os-username " + openStackCredentials.getKeyStoneUser() +
+                    " --os-password " + openStackCredentials.getKeyStonePassword() + " " +
+                    "--os-tenant-id " + openStackCredentials.getKeyStoneTenantId() + " " +
+                    "--os-auth-url http://" + openStackCredentials.getOpenStackIP() + ":35357/v2.0 " +
                     "image-create --name=" + imageToUpload.getName() + " " +
                     "--disk-format=qcow2 --container-format=bare --is-public=True " +
                     "--file " + imageToUpload.getUrl());
