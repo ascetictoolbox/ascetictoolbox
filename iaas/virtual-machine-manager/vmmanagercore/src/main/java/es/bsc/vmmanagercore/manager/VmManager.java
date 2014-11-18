@@ -447,7 +447,8 @@ public class VmManager {
                         assignVmsToCurrentHosts),
                 optaVmPlacementConversor.getOptaPlacementConfig(
                         getCurrentSchedulingAlgorithm(),
-                        recommendedPlanRequest));
+                        recommendedPlanRequest,
+                        pricingModeller));
         return optaVmPlacementConversor.getRecommendedPlan(clusterStateRecommendedPlan);
     }
 

@@ -24,6 +24,7 @@ import es.bsc.vmmanagercore.model.scheduling.SchedulingAlgorithm;
 import es.bsc.vmmanagercore.model.vms.Vm;
 import es.bsc.vmmanagercore.model.vms.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.Host;
+import es.bsc.vmmanagercore.pricingmodeller.PricingModeller;
 import es.bsc.vmplacement.domain.ClusterState;
 import es.bsc.vmplacement.domain.ConstructionHeuristic;
 import es.bsc.vmplacement.placement.config.Policy;
@@ -91,7 +92,7 @@ public class OptaVmPlacementConversor {
      * @return the placement configuration for the OptaVmPlacement library
      */
     public VmPlacementConfig getOptaPlacementConfig(SchedulingAlgorithm schedulingAlgorithm,
-            RecommendedPlanRequest recommendedPlanRequest) {
+            RecommendedPlanRequest recommendedPlanRequest, PricingModeller pricingModeller) {
         int timeLimitSec = recommendedPlanRequest.getTimeLimitSeconds();
         if (getLocalSearch(recommendedPlanRequest) == null) {
             timeLimitSec = 1; // It does not matter because the local search alg will not be run, but the
@@ -105,7 +106,7 @@ public class OptaVmPlacementConversor {
                 getLocalSearch(recommendedPlanRequest),
                 false)
                 .energyModel(new OptaEnergyModeller())
-                .priceModel(new OptaPriceModeller())
+                .priceModel(new OptaPriceModeller(pricingModeller))
                 .build();
     }
 

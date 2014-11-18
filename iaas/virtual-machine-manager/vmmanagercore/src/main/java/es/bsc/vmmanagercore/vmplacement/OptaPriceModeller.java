@@ -18,11 +18,11 @@
 
 package es.bsc.vmmanagercore.vmplacement;
 
+import es.bsc.vmmanagercore.pricingmodeller.PricingModeller;
 import es.bsc.vmplacement.domain.Host;
 import es.bsc.vmplacement.domain.Vm;
 import es.bsc.vmplacement.modellers.energy.EnergyModel;
 import es.bsc.vmplacement.modellers.price.PriceModel;
-import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.IaaSPricingModeller;
 
 import java.util.List;
 
@@ -33,11 +33,15 @@ import java.util.List;
  */
 public class OptaPriceModeller implements PriceModel {
 
-    private IaaSPricingModeller pricingModeller = new IaaSPricingModeller();
+    private final PricingModeller pricingModeller;
+
+    public OptaPriceModeller(PricingModeller pricingModeller) {
+        this.pricingModeller = pricingModeller;
+    }
 
     @Override
     public double getCost(Host host, List<Vm> vmsDeployedInHost, EnergyModel energyModel) {
-        return pricingModeller.getVMCostEstimation(energyModel.getPowerConsumption(host, vmsDeployedInHost),
+        return pricingModeller.getVmCost(energyModel.getPowerConsumption(host, vmsDeployedInHost),
                 host.getHostname());
     }
 
