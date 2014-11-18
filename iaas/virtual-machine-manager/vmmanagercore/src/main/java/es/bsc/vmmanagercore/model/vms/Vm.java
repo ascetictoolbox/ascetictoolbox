@@ -98,6 +98,10 @@ public class Vm {
         return applicationId;
     }
 
+    public void setApplicationId(String applicationId) {
+        this.applicationId = applicationId;
+    }
+
     public boolean belongsToAnApp() {
         return applicationId != null && !applicationId.equals("") && !applicationId.equals(" ");
     }

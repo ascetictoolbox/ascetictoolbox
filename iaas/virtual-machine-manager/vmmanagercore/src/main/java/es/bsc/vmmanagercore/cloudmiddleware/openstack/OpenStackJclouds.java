@@ -19,7 +19,6 @@
 package es.bsc.vmmanagercore.cloudmiddleware.openstack;
 
 import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddleware;
-import es.bsc.vmmanagercore.db.VmManagerDb;
 import es.bsc.vmmanagercore.model.images.ImageToUpload;
 import es.bsc.vmmanagercore.model.images.ImageUploaded;
 import es.bsc.vmmanagercore.model.vms.Vm;
@@ -74,20 +73,17 @@ public class OpenStackJclouds implements CloudMiddleware {
     private String[] securityGroups = {};
 
     private OpenStackGlance glanceConnector; // Connector for OS Glance
-    private VmManagerDb db; // DB that contains the relationship VM-application, the scheduling algorithms, etc.
 
     /**
      * Class constructor. It performs the connection to the infrastructure and initializes
      * JClouds attributes.
      *
      * @param openStackCredentials OpenStack credentials
-     * @param db database used by the VM Manager
      * @param securityGroups the security groups to which the VM will be part of
      */
-    public OpenStackJclouds(OpenStackCredentials openStackCredentials, VmManagerDb db, String[] securityGroups) {
+    public OpenStackJclouds(OpenStackCredentials openStackCredentials, String[] securityGroups) {
         getOpenStackApis(openStackCredentials);
         this.securityGroups = securityGroups;
-        this.db = db;
         glanceConnector = new OpenStackGlance(openStackCredentials);
     }
 
@@ -168,7 +164,7 @@ public class OpenStackJclouds implements CloudMiddleware {
                 String vmIp = getVmIp(server);
                 vm = new VmDeployed(server.getName(),
                         server.getImage().getId(), flavor.getVcpus(), flavor.getRam(),
-                        flavor.getDisk(), null, db.getAppIdOfVm(vmId), vmId,
+                        flavor.getDisk(), null, null, vmId,
                         vmIp, server.getStatus().toString(), server.getCreated(),
                         server.getExtendedAttributes().get().getHostName());
             }

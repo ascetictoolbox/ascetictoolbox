@@ -88,7 +88,6 @@ public class OpenStackJcloudsTest {
 		openStackJclouds = new OpenStackJclouds(
                 new OpenStackCredentials(conf.openStackIP, conf.keyStonePort, conf.keyStoneTenant,
                 conf.keyStoneUser, conf.keyStonePassword, conf.glancePort, conf.keyStoneTenantId),
-                db,
                 new String[]{}); // I am ignoring the sec. groups here
         serverApi = openStackJclouds.getNovaApi().getServerApiForZone(openStackJclouds.getZone());
         flavorApi = openStackJclouds.getNovaApi().getFlavorApiForZone(openStackJclouds.getZone());

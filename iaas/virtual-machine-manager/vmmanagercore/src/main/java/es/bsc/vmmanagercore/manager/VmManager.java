@@ -131,7 +131,7 @@ public class VmManager {
     public List<VmDeployed> getAllVms() {
         List<VmDeployed> result = new ArrayList<>();
         for (String vmId: cloudMiddleware.getAllVMsIds()) {
-            result.add(cloudMiddleware.getVM(vmId));
+            result.add(getVm(vmId));
         }
         return result;
     }
@@ -143,7 +143,12 @@ public class VmManager {
      * @return the VM
      */
     public VmDeployed getVm(String vmId) {
-        return cloudMiddleware.getVM(vmId);
+        // The cloud middleware should not have knowledge of the app a specific VM is part of.
+        // Typical middlewares such as OpenStack do not store that information.
+        // Therefore, we need to set the app ID here
+        VmDeployed vm = cloudMiddleware.getVM(vmId);
+        vm.setApplicationId(db.getAppIdOfVm(vm.getId()));
+        return vm;
     }
 
     /**
@@ -155,7 +160,7 @@ public class VmManager {
     public List<VmDeployed> getVmsOfApp(String appId) {
         List<VmDeployed> result = new ArrayList<>();
         for (String vmId: db.getVmsOfApp(appId)) {
-            result.add(cloudMiddleware.getVM(vmId));
+            result.add(getVm(vmId));
         }
         return result;
     }
@@ -224,8 +229,8 @@ public class VmManager {
             // We also need to delete the script for the VM if it was created before
             if (usingZabbix()) {
                 ZabbixConnector.getZabbixClient().createVM(
-                        vmId + "_" + cloudMiddleware.getVM(vmId).getHostName(),
-                        cloudMiddleware.getVM(vmId).getIpAddress());
+                        vmId + "_" + getVm(vmId).getHostName(),
+                        getVm(vmId).getIpAddress());
 
                 // Delete the script if one was created
                 if (vmScriptName != null) {
@@ -453,9 +458,9 @@ public class VmManager {
             // We need to check that the VM is still deployed.
             // It might be the case that a VM was deleted in the time interval between a recommended plan is
             // calculated and the execution order for that deployment plan is received
-            if (cloudMiddleware.getVM(vmPlacement.getVmId()) != null) {
-                boolean vmAlreadyDeployedInHost = vmPlacement.getHostname().equals(cloudMiddleware.getVM(
-                        vmPlacement.getVmId()).getHostName());
+            if (getVm(vmPlacement.getVmId()) != null) {
+                boolean vmAlreadyDeployedInHost = vmPlacement.getHostname()
+                        .equals(getVm(vmPlacement.getVmId()).getHostName());
                 if (!vmAlreadyDeployedInHost) {
                     migrateVm(vmPlacement.getVmId(), vmPlacement.getHostname());
                 }
@@ -573,7 +578,7 @@ public class VmManager {
                 if (usingZabbix()) { // I should check whether the VMM is configured for the Ascetic project
                     securityGroups = ASCETIC_DEFAULT_SEC_GROUPS;
                 }
-                cloudMiddleware = new OpenStackJclouds(getOpenStackCredentials(), db, securityGroups);
+                cloudMiddleware = new OpenStackJclouds(getOpenStackCredentials(), securityGroups);
                 break;
             default:
                 throw new IllegalArgumentException("The cloud middleware selected is not supported");
