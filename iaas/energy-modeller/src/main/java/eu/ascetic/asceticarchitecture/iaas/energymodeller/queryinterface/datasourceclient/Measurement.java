@@ -20,6 +20,7 @@ import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_IO_WAIT_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_NICE_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_SOFT_IRQ_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_SPOT_USAGE_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_STEAL_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_SYSTEM_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_USER_KPI_NAME;
@@ -65,9 +66,9 @@ public abstract class Measurement {
         }
         return highest - lowest;
     }
-    
+
     /**
-     * This looks at the metrics gained and compares two named metrics and 
+     * This looks at the metrics gained and compares two named metrics and
      * observes the difference in time between the two readings.
      *
      * @param metricName The first metric value to compare
@@ -88,10 +89,33 @@ public abstract class Measurement {
             return first - second;
         }
     }
+
+    /**
+     * This looks at the metrics gained and compares a named metric and
+     * a specified time and indicates if the values are close enough together.
+     *
+     * @param metricName The first metric value to compare
+     * @param time The time to compare the metric to
+     * @return The difference in seconds between the metric's clock value and the
+     * time specified in Unix time.
+     */
+    public long getClockDifference(String metricName, long time) {
+        MetricValue value1 = metrics.get(metricName);
+        if (value1 == null) {
+            return 0;
+        }
+        long first = value1.getClock();
+        if (time > first) {
+            return time - first;
+        } else {
+            return first - time;
+        }
+    }    
     
     /**
-     * This tests to see if for this measurement record that two metrics have 
+     * This tests to see if for this measurement record that two metrics have
      * clock values that are within an acceptable tolerance bound.
+     *
      * @param metricName The first metric value to compare
      * @param metricName2 The second metric value to compare
      * @param tolerance The amount of seconds gap allowed between measurements,
@@ -102,6 +126,23 @@ public abstract class Measurement {
     public boolean isContemporary(String metricName, String metricName2, int tolerance) {
         return getClockDifference(metricName, metricName2) <= tolerance;
     }
+    
+    /**
+     * This tests to see if for this measurement record to see if a metric has
+     * a clock value that is within an acceptable tolerance bound.
+     *
+     * @param metricName The metric value to compare
+     * @param time The time to compare the metric to
+     * @param tolerance The amount of seconds gap allowed between the 
+     * measurement and the specified time for the record to be valid for 
+     * the required analysis.
+     * @return If this measurement record is valid for performing analysis on
+     * based upon the difference between a metric's clock value and a specified
+     * time.
+     */
+    public boolean isContemporary(String metricName, long time, int tolerance) {
+        return getClockDifference(metricName, time) <= tolerance;
+    }    
 
     /**
      * This returns the maximum delay that any metric encountered.
@@ -146,7 +187,7 @@ public abstract class Measurement {
     public Set<String> getMetricNameList() {
         return metrics.keySet();
     }
-    
+
     /**
      * This lists the metrics that are available in this measurement
      *
@@ -155,7 +196,7 @@ public abstract class Measurement {
      */
     public HashMap<String, MetricValue> getMetrics() {
         return metrics;
-    }    
+    }
 
     /**
      * This gets the count of how many values for different metrics are stored.
@@ -224,10 +265,13 @@ public abstract class Measurement {
     /**
      * This provides rapid access to cpu utilisation values from a measurement.
      *
-     * @return The cpu utilisation when the measurement was taken. Values in range
-     * 0...1
+     * @return The cpu utilisation when the measurement was taken. Values in
+     * range 0...1
      */
     public double getCpuUtilisation() {
+        if (metrics.containsKey(CPU_SPOT_USAGE_KPI_NAME)) {
+            return this.getMetric(CPU_SPOT_USAGE_KPI_NAME).getValue() / 100;
+        }
         double interrupt = 0.0;
         double iowait = 0.0;
         double nice = 0.0;
@@ -260,15 +304,48 @@ public abstract class Measurement {
     }
 
     /**
+     * This provides rapid access to cpu utilisation metrics timestamp.
+     *
+     * @return The cpu utilisation's time stamp data.
+     */
+    public long getCpuUtilisationTimeStamp() {
+        if (metrics.containsKey(CPU_SPOT_USAGE_KPI_NAME)) {
+            return this.getMetric(CPU_SPOT_USAGE_KPI_NAME).getClock();
+        }
+        if (metrics.containsKey(CPU_SYSTEM_KPI_NAME)) {
+            return this.getMetric(CPU_SYSTEM_KPI_NAME).getClock();
+        }
+        if (metrics.containsKey(CPU_USER_KPI_NAME)) {
+            return this.getMetric(CPU_USER_KPI_NAME).getClock();
+        }
+        if (metrics.containsKey(CPU_INTERUPT_KPI_NAME)) {
+            return this.getMetric(CPU_INTERUPT_KPI_NAME).getClock();
+        }
+        if (metrics.containsKey(CPU_IO_WAIT_KPI_NAME)) {
+            return this.getMetric(CPU_IO_WAIT_KPI_NAME).getClock();
+        }
+        if (metrics.containsKey(CPU_NICE_KPI_NAME)) {
+            return this.getMetric(CPU_NICE_KPI_NAME).getClock();
+        }
+        if (metrics.containsKey(CPU_SOFT_IRQ_KPI_NAME)) {
+            return this.getMetric(CPU_SOFT_IRQ_KPI_NAME).getClock();
+        }
+        if (metrics.containsKey(CPU_STEAL_KPI_NAME)) {
+            return this.getMetric(CPU_STEAL_KPI_NAME).getClock();
+        }
+        return 0;
+    }    
+    
+    /**
      * This provides rapid access to cpu utilisation values from a measurement.
      *
-     * @return The cpu utilisation when the measurement was taken. Values in range
-     * 0...1
+     * @return The cpu utilisation when the measurement was taken. Values in
+     * range 0...1
      */
     public double getCpuIdle() {
-        return this.getMetric(CPU_IDLE_KPI_NAME).getValue()/ 100;
-    }    
-     
+        return this.getMetric(CPU_IDLE_KPI_NAME).getValue() / 100;
+    }
+
     /**
      * This provides rapid access to memory values for a measurement.
      *
@@ -277,7 +354,7 @@ public abstract class Measurement {
      */
     public double getMemoryAvailable() {
         //Original value given in bytes. 1024 * 1024 = 1048576
-        return this.getMetric(MEMORY_AVAILABLE_KPI_NAME).getValue()/ 1048576;
+        return this.getMetric(MEMORY_AVAILABLE_KPI_NAME).getValue() / 1048576;
     }
 
     /**
@@ -302,8 +379,9 @@ public abstract class Measurement {
     }
 
     /**
-     * This provides information on the network activity of the host at the 
-     * time of measurement.
+     * This provides information on the network activity of the host at the time
+     * of measurement.
+     *
      * @return The amount of data transfered in, units are in bits/second.
      */
     public double getNetworkIn() {
@@ -317,8 +395,9 @@ public abstract class Measurement {
     }
 
     /**
-     * This provides information on the network activity of the host at the 
-     * time of measurement.
+     * This provides information on the network activity of the host at the time
+     * of measurement.
+     *
      * @return The amount of data transfered out, units are in bits/second.
      */
     public double getNetworkOut() {

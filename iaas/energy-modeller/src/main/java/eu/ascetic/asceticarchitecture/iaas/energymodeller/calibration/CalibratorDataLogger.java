@@ -18,7 +18,6 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DatabaseConnector;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostMeasurement;
-import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_IDLE_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.POWER_KPI_NAME;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostEnergyCalibrationData;
@@ -70,6 +69,7 @@ public class CalibratorDataLogger implements Runnable {
         ArrayList<HostEnergyCalibrationData> calibrationData = host.getCalibrationData();
         ArrayList<HostMeasurement> data = new ArrayList<>();
         long lastClock = 0;
+        double lastPowerValue = 0;
         int faultCount = 0;
         long stopTime = System.currentTimeMillis();
         stopTime = stopTime + TimeUnit.SECONDS.toMillis(calibratorMaxDurationSec);
@@ -78,9 +78,22 @@ public class CalibratorDataLogger implements Runnable {
             try {
                 HostMeasurement dataEntry = datasource.getHostData(host);
                 long currentClock = dataEntry.getClock();
-                if (currentClock > lastClock && dataEntry.isContemporary(CPU_IDLE_KPI_NAME, POWER_KPI_NAME, 3)) {
+                double currentPower = dataEntry.getPower();
+                /**
+                 * The next checks ensure, that at least one metric value has
+                 * been updated since the last poll interval. Plus it checks
+                 * that the power and CPU values are within close enough
+                 * proximity to be still useful. and finally it checks to make
+                 * sure the dependant and independent variables are within close
+                 * enough to be still representing the same time period.
+                 */
+                if (currentClock > lastClock
+                        && dataEntry.isContemporary(POWER_KPI_NAME,
+                                dataEntry.getCpuUtilisationTimeStamp(), 3)
+                        && absdifference(currentPower, lastPowerValue) < 0.1) {
                     data.add(dataEntry);
                 }
+                lastPowerValue = dataEntry.getPower();
                 try {
                     Thread.sleep(TimeUnit.SECONDS.toMillis(calibratorWaitSec));
                 } catch (InterruptedException ex) {
@@ -101,6 +114,17 @@ public class CalibratorDataLogger implements Runnable {
             database.setHostCalibrationData(host);
         }
         return host;
+    }
+
+    /**
+     * This returns the absolute difference between two values
+     *
+     * @param value1 The first value
+     * @param value2 The second value
+     * @return The absolute difference between the two values
+     */
+    private double absdifference(double value1, double value2) {
+        return Math.max(value1, value2) - Math.min(value1, value2);
     }
 
     @Override
