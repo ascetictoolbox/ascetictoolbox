@@ -18,13 +18,13 @@
 
 package es.bsc.vmmanagercore.scheduler.schedulingalgorithms;
 
-import es.bsc.vmmanagercore.energymodeller.ascetic.AsceticEnergyModellerAdapter;
+import es.bsc.vmmanagercore.energymodeller.EnergyModeller;
 import es.bsc.vmmanagercore.logging.VMMLogger;
 import es.bsc.vmmanagercore.model.scheduling.DeploymentPlan;
 import es.bsc.vmmanagercore.model.scheduling.VmAssignmentToHost;
 import es.bsc.vmmanagercore.model.vms.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.Host;
-import es.bsc.vmmanagercore.pricingmodeller.PricingModellerConnector;
+import es.bsc.vmmanagercore.pricingmodeller.PricingModeller;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,18 +39,23 @@ import java.util.List;
  */
 public class SchedAlgCostAware implements SchedAlgorithm {
 
-    List<VmDeployed> vmsDeployed = new ArrayList<>();
+    private List<VmDeployed> vmsDeployed = new ArrayList<>();
+    private PricingModeller pricingModeller;
+    private EnergyModeller energyModeller;
 
-    public SchedAlgCostAware(List<VmDeployed> vmsDeployed) {
+    public SchedAlgCostAware(List<VmDeployed> vmsDeployed, PricingModeller pricingModeller,
+                             EnergyModeller energyModeller) {
         this.vmsDeployed = vmsDeployed;
+        this.pricingModeller = pricingModeller;
+        this.energyModeller = energyModeller;
     }
 
     private double getPredictedCostDeploymentPlan(DeploymentPlan deploymentPlan) {
         double result = 0;
         for (VmAssignmentToHost vmAssignmentToHost: deploymentPlan.getVmsAssignationsToHosts()) {
-            double energyEstimate = AsceticEnergyModellerAdapter.getPredictedEnergyVm(vmAssignmentToHost.getVm(),
+            double energyEstimate = energyModeller.getPredictedEnergyVm(vmAssignmentToHost.getVm(),
                     vmAssignmentToHost.getHost(), vmsDeployed, deploymentPlan);
-            double costEstimate = PricingModellerConnector.getVmCost(energyEstimate,
+            double costEstimate = pricingModeller.getVmCost(energyEstimate,
                     vmAssignmentToHost.getHost().getHostname());
             result += costEstimate;
         }

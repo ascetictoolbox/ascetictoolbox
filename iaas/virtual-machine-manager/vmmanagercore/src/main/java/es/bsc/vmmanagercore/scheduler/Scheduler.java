@@ -27,6 +27,7 @@ import es.bsc.vmmanagercore.model.scheduling.VmAssignmentToHost;
 import es.bsc.vmmanagercore.model.vms.Vm;
 import es.bsc.vmmanagercore.model.vms.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.Host;
+import es.bsc.vmmanagercore.pricingmodeller.PricingModeller;
 import es.bsc.vmmanagercore.scheduler.schedulingalgorithms.*;
 
 import java.text.DateFormat;
@@ -46,6 +47,7 @@ public class Scheduler {
     private List<VmDeployed> vmsDeployed;
     private String schedAlgorithmName;
     private EnergyModeller energyModeller;
+    private PricingModeller pricingModeller;
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss.SSS"); // Useful for logs
 
     /**
@@ -54,9 +56,11 @@ public class Scheduler {
      * @param schedAlg scheduling algorithm used
      * @param vmsDeployed list of VMs deployed in the infrastructure
      */
-    public Scheduler(SchedulingAlgorithm schedAlg, List<VmDeployed> vmsDeployed, EnergyModeller energyModeller) {
+    public Scheduler(SchedulingAlgorithm schedAlg, List<VmDeployed> vmsDeployed,
+                     EnergyModeller energyModeller, PricingModeller pricingModeller) {
         this.vmsDeployed = vmsDeployed;
         this.energyModeller = energyModeller;
+        this.pricingModeller = pricingModeller;
         setSchedAlgorithm(schedAlg);
         schedAlgorithmName = schedAlg.getName();
     }
@@ -72,7 +76,7 @@ public class Scheduler {
                 schedAlgorithm = new SchedAlgConsolidation();
                 break;
             case COST_AWARE:
-                schedAlgorithm = new SchedAlgCostAware(vmsDeployed);
+                schedAlgorithm = new SchedAlgCostAware(vmsDeployed, pricingModeller, energyModeller);
                 break;
             case DISTRIBUTION:
                 schedAlgorithm = new SchedAlgDistribution();

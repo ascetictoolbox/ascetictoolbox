@@ -42,4 +42,14 @@ public interface EnergyModeller {
     public double getPredictedAvgPowerVm(Vm vm, Host host, List<VmDeployed> vmsDeployed,
                                          DeploymentPlan deploymentPlan);
 
+    /**
+     * Returns the predicted energy that will be consumed by a VM if it was deployed in a specific host.
+     *
+     * @param vm the VM
+     * @param host the host
+     * @param vmsDeployed the VMs already deployed in the host
+     * @return the predicted energy in Joules
+     */
+    public double getPredictedEnergyVm(Vm vm, Host host, List<VmDeployed> vmsDeployed,
+                                       DeploymentPlan deploymentPlan);
 }

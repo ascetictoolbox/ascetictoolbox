@@ -19,12 +19,11 @@
 package es.bsc.vmmanagercore.model.scheduling;
 
 import es.bsc.vmmanagercore.energymodeller.EnergyModeller;
-import es.bsc.vmmanagercore.energymodeller.ascetic.AsceticEnergyModellerAdapter;
 import es.bsc.vmmanagercore.model.estimations.VmEstimate;
 import es.bsc.vmmanagercore.model.vms.Vm;
 import es.bsc.vmmanagercore.model.vms.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.Host;
-import es.bsc.vmmanagercore.pricingmodeller.PricingModellerConnector;
+import es.bsc.vmmanagercore.pricingmodeller.PricingModeller;
 
 import java.util.List;
 
@@ -58,11 +57,11 @@ public class VmAssignmentToHost {
     }
 
     public VmEstimate getVmEstimate(List<VmDeployed> vmsDeployed, DeploymentPlan deploymentPlan,
-                                    EnergyModeller energyModeller) {
+                                    EnergyModeller energyModeller, PricingModeller pricingModeller) {
         return new VmEstimate(
                 vm.getName(),
                 getPowerEstimate(vmsDeployed, deploymentPlan, energyModeller),
-                getPriceEstimate(vmsDeployed, deploymentPlan));
+                getPriceEstimate(vmsDeployed, deploymentPlan, pricingModeller, energyModeller));
     }
 
     /**
@@ -82,8 +81,9 @@ public class VmAssignmentToHost {
      * @param vmsDeployed VMs deployed in the infrastructure
      * @return the predicted energy
      */
-    private double getEnergyEstimate(List<VmDeployed> vmsDeployed, DeploymentPlan deploymentPlan) {
-        return AsceticEnergyModellerAdapter.getPredictedEnergyVm(vm, host, vmsDeployed, deploymentPlan);
+    private double getEnergyEstimate(List<VmDeployed> vmsDeployed, DeploymentPlan deploymentPlan,
+                                     EnergyModeller energyModeller) {
+        return energyModeller.getPredictedEnergyVm(vm, host, vmsDeployed, deploymentPlan);
     }
 
     /**
@@ -92,8 +92,11 @@ public class VmAssignmentToHost {
      * @param vmsDeployed VMs deployed in the infrastructure
      * @return the predicted price
      */
-    private double getPriceEstimate(List<VmDeployed> vmsDeployed, DeploymentPlan deploymentPlan) {
-        return PricingModellerConnector.getVmCost(getEnergyEstimate(vmsDeployed, deploymentPlan), host.getHostname());
+    private double getPriceEstimate(List<VmDeployed> vmsDeployed, DeploymentPlan deploymentPlan,
+                                    PricingModeller pricingModeller, EnergyModeller energyModeller) {
+        return pricingModeller.getVmCost(
+                getEnergyEstimate(vmsDeployed, deploymentPlan, energyModeller),
+                host.getHostname());
     }
 
     @Override

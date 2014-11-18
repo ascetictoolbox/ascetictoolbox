@@ -18,17 +18,10 @@
 
 package es.bsc.vmmanagercore.pricingmodeller;
 
-import es.bsc.vmmanagercore.manager.VmManager;
-import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.IaaSPricingModeller;
-
 /**
- * Connector for the pricing modeller developed by AUEB.
- *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  */
-public class PricingModellerConnector {
-
-    private static IaaSPricingModeller pricingModeller = VmManager.pricingModeller;
+public interface PricingModeller {
 
     /**
      * Returns the predicted cost on a given host for a given amount of energy.
@@ -37,8 +30,6 @@ public class PricingModellerConnector {
      * @param hostname the hostname
      * @return the predicted cost of the VM
      */
-    public static double getVmCost(double totalEnergy, String hostname) {
-        return pricingModeller.getVMCostEstimation(totalEnergy, hostname);
-    }
+    public double getVmCost(double totalEnergy, String hostname);
 
 }

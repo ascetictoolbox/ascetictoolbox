@@ -41,4 +41,10 @@ public class DummyEnergyModeller implements EnergyModeller {
                                          DeploymentPlan deploymentPlan) {
         return 0;
     }
+
+    @Override
+    public double getPredictedEnergyVm(Vm vm, Host host, List<VmDeployed> vmsDeployed,
+                                       DeploymentPlan deploymentPlan) {
+        return 0;
+    }
 }

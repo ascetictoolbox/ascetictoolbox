@@ -16,29 +16,23 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.vmmanagercore.vmplacement;
+package es.bsc.vmmanagercore.pricingmodeller.ascetic;
 
-import es.bsc.vmplacement.domain.Host;
-import es.bsc.vmplacement.domain.Vm;
-import es.bsc.vmplacement.modellers.energy.EnergyModel;
-import es.bsc.vmplacement.modellers.price.PriceModel;
+import es.bsc.vmmanagercore.pricingmodeller.PricingModeller;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.IaaSPricingModeller;
 
-import java.util.List;
-
 /**
- * This class is a pricing modeller that can be used by the Opta Vm Placement library.
+ * Connector for the pricing modeller developed in the Ascetic project by AUEB.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  */
-public class OptaPriceModeller implements PriceModel {
+public class AsceticPricingModellerAdapter implements PricingModeller {
 
-    private IaaSPricingModeller pricingModeller = new IaaSPricingModeller();
+    private static IaaSPricingModeller pricingModeller = new IaaSPricingModeller();
 
     @Override
-    public double getCost(Host host, List<Vm> vmsDeployedInHost, EnergyModel energyModel) {
-        return pricingModeller.getVMCostEstimation(energyModel.getPowerConsumption(host, vmsDeployedInHost),
-                host.getHostname());
+    public double getVmCost(double totalEnergy, String hostname) {
+        return pricingModeller.getVMCostEstimation(totalEnergy, hostname);
     }
 
 }

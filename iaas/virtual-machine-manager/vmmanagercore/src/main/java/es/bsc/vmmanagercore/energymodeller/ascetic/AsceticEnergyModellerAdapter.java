@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Connector for the energy modeller developed by University of Leeds and AUEB.
+ * Connector for the energy modeller developed in the Ascetic project by University of Leeds and AUEB.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  */
@@ -45,16 +45,9 @@ public class AsceticEnergyModellerAdapter implements es.bsc.vmmanagercore.energy
         return getEnergyUsagePrediction(vm, host, vmsDeployed, deploymentPlan).getAvgPowerUsed();
     }
 
-    /**
-     * Returns the predicted energy that will be consumed by a VM if it was deployed in a specific host.
-     *
-     * @param vm the VM
-     * @param host the host
-     * @param vmsDeployed the VMs already deployed in the host
-     * @return the predicted energy in Joules
-     */
-    public static double getPredictedEnergyVm(Vm vm, Host host, List<VmDeployed> vmsDeployed,
-            DeploymentPlan deploymentPlan) {
+    @Override
+    public double getPredictedEnergyVm(Vm vm, Host host, List<VmDeployed> vmsDeployed,
+                                       DeploymentPlan deploymentPlan) {
         return getEnergyUsagePrediction(vm, host, vmsDeployed, deploymentPlan).getTotalEnergyUsed();
     }
 

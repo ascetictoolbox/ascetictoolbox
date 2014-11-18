@@ -39,6 +39,9 @@ import es.bsc.vmmanagercore.monitoring.Host;
 import es.bsc.vmmanagercore.monitoring.HostFactory;
 import es.bsc.vmmanagercore.monitoring.HostType;
 import es.bsc.vmmanagercore.monitoring.ZabbixConnector;
+import es.bsc.vmmanagercore.pricingmodeller.PricingModeller;
+import es.bsc.vmmanagercore.pricingmodeller.ascetic.AsceticPricingModellerAdapter;
+import es.bsc.vmmanagercore.pricingmodeller.dummy.DummyPricingModeller;
 import es.bsc.vmmanagercore.scheduler.EstimatesGenerator;
 import es.bsc.vmmanagercore.scheduler.Scheduler;
 import es.bsc.vmmanagercore.selfadaptation.AfterVmDeleteSelfAdaptationRunnable;
@@ -51,7 +54,6 @@ import es.bsc.vmmanagercore.vmplacement.OptaVmPlacementConversor;
 import es.bsc.vmplacement.domain.ClusterState;
 import es.bsc.vmplacement.lib.OptaVmPlacement;
 import es.bsc.vmplacement.lib.OptaVmPlacementImpl;
-import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.IaaSPricingModeller;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -85,7 +87,7 @@ public class VmManager {
     private OptaVmPlacementConversor optaVmPlacementConversor = new OptaVmPlacementConversor();
 
     public static EnergyModeller energyModeller;
-    public static IaaSPricingModeller pricingModeller;
+    public static PricingModeller pricingModeller;
 
     // Specific for the Ascetic project
     private static final String ASCETIC_SCRIPTS_PATH = "/DFS/ascetic/vm-scripts/";
@@ -107,7 +109,7 @@ public class VmManager {
         initializeHosts(conf.monitoring, conf.hosts);
         selectModellers(conf.project);
         List<VmDeployed> vmsDeployed = getAllVms();
-        scheduler = new Scheduler(db.getCurrentSchedulingAlg(), vmsDeployed, energyModeller);
+        scheduler = new Scheduler(db.getCurrentSchedulingAlg(), vmsDeployed, energyModeller, pricingModeller);
         selfAdaptationManager = new SelfAdaptationManager(this, dbName);
 
         // Start periodic self-adaptation thread if it is not already running.
@@ -537,7 +539,7 @@ public class VmManager {
      */
     public ListVmEstimates getVmEstimates(List<VmToBeEstimated> vmsToBeEstimated) {
         return estimatesGenerator.getVmEstimates(scheduler.chooseBestDeploymentPlan(
-                vmsToBeEstimatedToVms(vmsToBeEstimated), hosts), getAllVms(), energyModeller);
+                vmsToBeEstimatedToVms(vmsToBeEstimated), hosts), getAllVms(), energyModeller, pricingModeller);
     }
 
 
@@ -592,11 +594,11 @@ public class VmManager {
         switch (project) {
             case "ascetic":
                 energyModeller = new AsceticEnergyModellerAdapter();
-                pricingModeller = new IaaSPricingModeller();
+                pricingModeller = new AsceticPricingModellerAdapter();
                 break;
             default:
                 energyModeller = new DummyEnergyModeller();
-                pricingModeller = null;
+                pricingModeller = new DummyPricingModeller();
                 break;
         }
     }

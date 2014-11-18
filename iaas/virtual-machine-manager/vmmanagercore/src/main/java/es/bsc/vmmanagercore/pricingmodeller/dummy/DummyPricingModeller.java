@@ -16,29 +16,21 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.vmmanagercore.vmplacement;
+package es.bsc.vmmanagercore.pricingmodeller.dummy;
 
-import es.bsc.vmplacement.domain.Host;
-import es.bsc.vmplacement.domain.Vm;
-import es.bsc.vmplacement.modellers.energy.EnergyModel;
-import es.bsc.vmplacement.modellers.price.PriceModel;
-import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.IaaSPricingModeller;
-
-import java.util.List;
+import es.bsc.vmmanagercore.pricingmodeller.PricingModeller;
 
 /**
- * This class is a pricing modeller that can be used by the Opta Vm Placement library.
+ * This is a dummy Pricing Modeller. It always returns 0, but it can be helpful in cases where there is not any
+ * Pricing Modeller defined. Using this Modeller is safer than setting the Pricing Modeller attribute to null in the VMM.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  */
-public class OptaPriceModeller implements PriceModel {
-
-    private IaaSPricingModeller pricingModeller = new IaaSPricingModeller();
+public class DummyPricingModeller implements PricingModeller {
 
     @Override
-    public double getCost(Host host, List<Vm> vmsDeployedInHost, EnergyModel energyModel) {
-        return pricingModeller.getVMCostEstimation(energyModel.getPowerConsumption(host, vmsDeployedInHost),
-                host.getHostname());
+    public double getVmCost(double totalEnergy, String hostname) {
+        return 0;
     }
 
 }
