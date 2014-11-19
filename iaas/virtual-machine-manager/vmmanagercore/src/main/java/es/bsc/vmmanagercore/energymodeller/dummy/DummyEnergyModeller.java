@@ -47,4 +47,10 @@ public class DummyEnergyModeller implements EnergyModeller {
                                        DeploymentPlan deploymentPlan) {
         return 0;
     }
+
+    @Override
+    public double getHostPredictedAvgPower(String hostname, List<Vm> vms) {
+        return 0;
+    }
+
 }

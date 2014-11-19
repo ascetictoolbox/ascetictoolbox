@@ -52,4 +52,15 @@ public interface EnergyModeller {
      */
     public double getPredictedEnergyVm(Vm vm, Host host, List<VmDeployed> vmsDeployed,
                                        DeploymentPlan deploymentPlan);
+
+
+    /**
+     * Returns the average power to be consumed by a given host.
+     *
+     * @param hostname The name of the host that the prediction is for
+     * @param vms The VMs that are deployed or expected to be deployed in the host.
+     * @return the predicted avg. power in Watts
+     */
+    public double getHostPredictedAvgPower(String hostname, List<Vm> vms);
+
 }

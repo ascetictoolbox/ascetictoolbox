@@ -18,6 +18,7 @@
 
 package es.bsc.vmmanagercore.vmplacement;
 
+import es.bsc.vmmanagercore.energymodeller.EnergyModeller;
 import es.bsc.vmmanagercore.model.scheduling.RecommendedPlan;
 import es.bsc.vmmanagercore.model.scheduling.RecommendedPlanRequest;
 import es.bsc.vmmanagercore.model.scheduling.SchedulingAlgorithm;
@@ -42,6 +43,11 @@ import java.util.List;
  */
 public class OptaVmPlacementConversor {
 
+    // Suppress default constructor for non-instantiability
+    private OptaVmPlacementConversor() {
+        throw new AssertionError();
+    }
+
     /**
      * Converts a list of VMs as defined in the VMM core to a list of VMs as defined in the OptaVMPlacement library.
      * It is possible to initialize in each one of the VMs, the host where they are deployed in.
@@ -51,7 +57,7 @@ public class OptaVmPlacementConversor {
      * @param assignVmsToHosts indicates whether it is needed to set the hosts in the VMs
      * @return the list of VMs used by the OptaVmPlacement library
      */
-    public List<es.bsc.vmplacement.domain.Vm> getOptaVms(List<VmDeployed> vms,
+    public static List<es.bsc.vmplacement.domain.Vm> getOptaVms(List<VmDeployed> vms,
                                                          List<Vm> vmsToDeploy,
                                                          List<es.bsc.vmplacement.domain.Host> hosts,
                                                          boolean assignVmsToHosts) {
@@ -76,7 +82,7 @@ public class OptaVmPlacementConversor {
      * @param hosts the list of host used by the VMM core
      * @return the list of host used by the OptaVmPlacement library
      */
-    public List<es.bsc.vmplacement.domain.Host> getOptaHosts(List<Host> hosts) {
+    public static List<es.bsc.vmplacement.domain.Host> getOptaHosts(List<Host> hosts) {
         List<es.bsc.vmplacement.domain.Host> result = new ArrayList<>();
         for (Host host: hosts) {
             result.add(OptaHostFactory.getOptaHost(host));
@@ -91,8 +97,9 @@ public class OptaVmPlacementConversor {
      * @param recommendedPlanRequest the recommended plan request
      * @return the placement configuration for the OptaVmPlacement library
      */
-    public VmPlacementConfig getOptaPlacementConfig(SchedulingAlgorithm schedulingAlgorithm,
-            RecommendedPlanRequest recommendedPlanRequest, PricingModeller pricingModeller) {
+    public static VmPlacementConfig getOptaPlacementConfig(SchedulingAlgorithm schedulingAlgorithm,
+                                                    RecommendedPlanRequest recommendedPlanRequest,
+                                                    EnergyModeller energyModeller, PricingModeller pricingModeller) {
         int timeLimitSec = recommendedPlanRequest.getTimeLimitSeconds();
         if (getLocalSearch(recommendedPlanRequest) == null) {
             timeLimitSec = 1; // It does not matter because the local search alg will not be run, but the
@@ -105,7 +112,7 @@ public class OptaVmPlacementConversor {
                 getConstructionHeuristic(recommendedPlanRequest.getConstructionHeuristicName()),
                 getLocalSearch(recommendedPlanRequest),
                 false)
-                .energyModel(new OptaEnergyModeller())
+                .energyModel(new OptaEnergyModeller(energyModeller))
                 .priceModel(new OptaPriceModeller(pricingModeller))
                 .build();
     }
@@ -116,10 +123,33 @@ public class OptaVmPlacementConversor {
      * @param clusterState the cluster state
      * @return the recommended plan
      */
-    public RecommendedPlan getRecommendedPlan(ClusterState clusterState) {
+    public static RecommendedPlan getRecommendedPlan(ClusterState clusterState) {
         RecommendedPlan result = new RecommendedPlan();
         for (es.bsc.vmplacement.domain.Vm vm: clusterState.getVms()) {
             result.addVmToHostAssignment(vm.getAlphaNumericId(), vm.getHost().getHostname());
+        }
+        return result;
+    }
+
+    /**
+     * Converts a list of VMs from the format used in the Opta Vm Placement library to the format used by
+     * the VMM
+     *
+     * @param vms the list of VMs for the placement library
+     * @return the list of VMs for the Energy Modeller
+     */
+    public static List<es.bsc.vmmanagercore.model.vms.Vm> convertOptaVmsToVmmType(
+            List<es.bsc.vmplacement.domain.Vm> vms) {
+        List<es.bsc.vmmanagercore.model.vms.Vm> result = new ArrayList<>();
+        for (es.bsc.vmplacement.domain.Vm vm: vms) {
+            result.add(new es.bsc.vmmanagercore.model.vms.Vm(
+                    vm.getAlphaNumericId(),
+                    null,
+                    vm.getNcpus(),
+                    vm.getRamMb(),
+                    vm.getDiskGb(),
+                    null,
+                    null));
         }
         return result;
     }
@@ -133,7 +163,7 @@ public class OptaVmPlacementConversor {
      * @param assignVmsToHosts indicates whether it is needed to set the hosts in the VMs
      * @return the VM used by the OptaVMPlacement library
      */
-    private es.bsc.vmplacement.domain.Vm getOptaVm(Long id, VmDeployed vm,
+    private static es.bsc.vmplacement.domain.Vm getOptaVm(Long id, VmDeployed vm,
                                                    List<es.bsc.vmplacement.domain.Host> optaHosts,
                                                    boolean assignVmsToHosts) {
         es.bsc.vmplacement.domain.Vm result = new es.bsc.vmplacement.domain.Vm(
@@ -150,7 +180,7 @@ public class OptaVmPlacementConversor {
     }
 
     // Note: This function should probably be merged with getOptaVm
-    private es.bsc.vmplacement.domain.Vm getOptaVmToDeploy(Long id, Vm vm) {
+    private static es.bsc.vmplacement.domain.Vm getOptaVmToDeploy(Long id, Vm vm) {
         return new es.bsc.vmplacement.domain.Vm(id, vm.getCpus(), vm.getRamMb(), vm.getDiskGb(),
                 vm.getApplicationId(), vm.getName());
     }
@@ -162,7 +192,7 @@ public class OptaVmPlacementConversor {
      * @param schedulingAlgorithm the scheduling algorithm
      * @return the policy
      */
-    private Policy getPolicy(SchedulingAlgorithm schedulingAlgorithm) {
+    private static Policy getPolicy(SchedulingAlgorithm schedulingAlgorithm) {
         switch (schedulingAlgorithm) {
             case CONSOLIDATION:
                 return Policy.CONSOLIDATION;
@@ -187,7 +217,7 @@ public class OptaVmPlacementConversor {
      * @param name the name
      * @return the construction heuristic
      */
-    private ConstructionHeuristic getConstructionHeuristic(String name) {
+    private static ConstructionHeuristic getConstructionHeuristic(String name) {
         if (name == null) {
             return null;
         }
@@ -212,7 +242,7 @@ public class OptaVmPlacementConversor {
      * @param recommendedPlanRequest the recommended plan request
      * @return the local search
      */
-    private LocalSearch getLocalSearch(RecommendedPlanRequest recommendedPlanRequest) {
+    private static LocalSearch getLocalSearch(RecommendedPlanRequest recommendedPlanRequest) {
         if (recommendedPlanRequest.getLocalSearchAlgorithm() == null) {
             return null;
         }
@@ -248,7 +278,7 @@ public class OptaVmPlacementConversor {
      * @param hostname the hostname
      * @return the optaHost found
      */
-    private es.bsc.vmplacement.domain.Host findOptaHost(List<es.bsc.vmplacement.domain.Host> optaHosts,
+    private static es.bsc.vmplacement.domain.Host findOptaHost(List<es.bsc.vmplacement.domain.Host> optaHosts,
                                                         String hostname) {
         for (es.bsc.vmplacement.domain.Host optaHost: optaHosts) {
             if (hostname.equals(optaHost.getHostname())) {

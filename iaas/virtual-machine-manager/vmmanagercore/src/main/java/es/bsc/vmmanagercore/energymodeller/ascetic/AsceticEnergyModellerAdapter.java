@@ -51,6 +51,14 @@ public class AsceticEnergyModellerAdapter implements es.bsc.vmmanagercore.energy
         return getEnergyUsagePrediction(vm, host, vmsDeployed, deploymentPlan).getTotalEnergyUsed();
     }
 
+    @Override
+    public double getHostPredictedAvgPower(String hostname, List<Vm> vms) {
+        return energyModeller.getHostPredictedEnergy(
+                energyModeller.getHost(hostname),
+                VMMToEMConversor.getVmsEnergyModFromVms(vms))
+                .getAvgPowerUsed();
+    }
+
     /**
      * Returns the energy usage predicted for a VM if it was deployed in a specific host.
      *

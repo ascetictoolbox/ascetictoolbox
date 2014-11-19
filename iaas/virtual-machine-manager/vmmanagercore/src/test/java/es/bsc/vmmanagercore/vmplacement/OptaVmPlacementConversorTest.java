@@ -38,14 +38,12 @@ import static org.junit.Assert.assertNull;
  */
 public class OptaVmPlacementConversorTest {
 
-    private OptaVmPlacementConversor optaVmPlacementConversor = new OptaVmPlacementConversor();
-
     @Test
     public void getOptaVms() {
         List<VmDeployed> vmsDeployed = new ArrayList<>();
         vmsDeployed.add(new VmDeployed("vm", "fakeImage", 1, 1024, 1, "", "appId", "vmId", "172.16.8.1", "ACTIVE",
                 new Date(), "host1"));
-        Vm optaVm = optaVmPlacementConversor.getOptaVms(vmsDeployed, new ArrayList<es.bsc.vmmanagercore.model.vms.Vm>(),
+        Vm optaVm = OptaVmPlacementConversor.getOptaVms(vmsDeployed, new ArrayList<es.bsc.vmmanagercore.model.vms.Vm>(),
                 new ArrayList<es.bsc.vmplacement.domain.Host>(), false).get(0);
         assertEquals(1, optaVm.getNcpus());
         assertEquals(1024, optaVm.getRamMb());
@@ -59,7 +57,7 @@ public class OptaVmPlacementConversorTest {
     public void getOptaHosts() {
         List<Host> hosts = new ArrayList<>();
         hosts.add(new HostFake("host1", 1, 1024, 1, 0, 0, 0));
-        es.bsc.vmplacement.domain.Host optaHost = optaVmPlacementConversor.getOptaHosts(hosts).get(0);
+        es.bsc.vmplacement.domain.Host optaHost = OptaVmPlacementConversor.getOptaHosts(hosts).get(0);
         assertEquals("host1", optaHost.getHostname());
         assertEquals(1, optaHost.getNcpus());
         assertEquals(1024.0, optaHost.getRamMb());

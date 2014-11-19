@@ -84,7 +84,6 @@ public class VmManager {
     private SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
     private OptaVmPlacement optaVmPlacement = new OptaVmPlacementImpl(); // Library used for the VM Placement
-    private OptaVmPlacementConversor optaVmPlacementConversor = new OptaVmPlacementConversor();
 
     public static EnergyModeller energyModeller;
     public static PricingModeller pricingModeller;
@@ -439,17 +438,18 @@ public class VmManager {
                                               boolean assignVmsToCurrentHosts,
                                               List<Vm> vmsToDeploy) {
         ClusterState clusterStateRecommendedPlan = optaVmPlacement.getBestSolution(
-                optaVmPlacementConversor.getOptaHosts(getHosts()),
-                optaVmPlacementConversor.getOptaVms(
+                OptaVmPlacementConversor.getOptaHosts(getHosts()),
+                OptaVmPlacementConversor.getOptaVms(
                         getAllVms(),
                         vmsToDeploy,
-                        optaVmPlacementConversor.getOptaHosts(getHosts()),
+                        OptaVmPlacementConversor.getOptaHosts(getHosts()),
                         assignVmsToCurrentHosts),
-                optaVmPlacementConversor.getOptaPlacementConfig(
+                OptaVmPlacementConversor.getOptaPlacementConfig(
                         getCurrentSchedulingAlgorithm(),
                         recommendedPlanRequest,
+                        energyModeller,
                         pricingModeller));
-        return optaVmPlacementConversor.getRecommendedPlan(clusterStateRecommendedPlan);
+        return OptaVmPlacementConversor.getRecommendedPlan(clusterStateRecommendedPlan);
     }
 
     /**

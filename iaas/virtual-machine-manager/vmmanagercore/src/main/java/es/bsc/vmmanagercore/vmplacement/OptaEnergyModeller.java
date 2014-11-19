@@ -18,13 +18,11 @@
 
 package es.bsc.vmmanagercore.vmplacement;
 
+import es.bsc.vmmanagercore.energymodeller.EnergyModeller;
 import es.bsc.vmplacement.domain.Host;
 import es.bsc.vmplacement.domain.Vm;
 import es.bsc.vmplacement.modellers.energy.EnergyModel;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,27 +32,17 @@ import java.util.List;
  */
 public class OptaEnergyModeller implements EnergyModel {
 
-    private EnergyModeller energyModeller = EnergyModeller.getInstance();
+    private final EnergyModeller energyModeller;
 
-    @Override
-    public double getPowerConsumption(Host host, List<Vm> vmsDeployedInHost) {
-        return energyModeller.getHostPredictedEnergy(energyModeller.getHost(host.getHostname()),
-                convertVmsToEMAsceticVMs(vmsDeployedInHost)).getAvgPowerUsed();
+    public OptaEnergyModeller(EnergyModeller energyModeller) {
+        this.energyModeller = energyModeller;
     }
 
-    /**
-     * Converts a list of VMs from the format used in the Opta Vm Placement library to the format used by
-     * Ascetic's Energy Modeller
-     *
-     * @param vms the list of VMs for the placement library
-     * @return the list of VMs for the Energy Modeller
-     */
-    private List<VM> convertVmsToEMAsceticVMs(List<Vm> vms) {
-        List<VM> result = new ArrayList<>();
-        for (Vm vm: vms) {
-            result.add(EnergyModeller.getVM(vm.getNcpus(), vm.getRamMb(), vm.getDiskGb()));
-        }
-        return result;
+    @Override
+    public double getPowerConsumption(Host host, List<Vm> vms) {
+        return energyModeller.getHostPredictedAvgPower(
+                host.getHostname(),
+                OptaVmPlacementConversor.convertOptaVmsToVmmType(vms));
     }
 
 }
