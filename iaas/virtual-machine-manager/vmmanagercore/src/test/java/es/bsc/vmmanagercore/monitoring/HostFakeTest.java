@@ -77,24 +77,6 @@ public class HostFakeTest {
     }
 
     @Test
-    public void constructorDoesNotAcceptMoreAssignedCpusThanTotal() {
-        exception.expect(IllegalArgumentException.class);
-        new HostFake("hostName", 1, 1024, 1, 2, 0, 0);
-    }
-
-    @Test
-    public void constructorDoesNotAcceptMoreAssignedMemoryThanTotal() {
-        exception.expect(IllegalArgumentException.class);
-        new HostFake("hostName", 1, 1024, 1, 0, 2048, 0);
-    }
-
-    @Test
-    public void constructorDoesNotAcceptMoreAssignedDiskThanTotal() {
-        exception.expect(IllegalArgumentException.class);
-        new HostFake("hostName", 1, 1024, 1, 0, 0, 2);
-    }
-
-    @Test
     public void constructorWithHostName() {
         HostFake hostInfo = new HostFake("hostName");
         assertEquals("hostName", hostInfo.getHostname());

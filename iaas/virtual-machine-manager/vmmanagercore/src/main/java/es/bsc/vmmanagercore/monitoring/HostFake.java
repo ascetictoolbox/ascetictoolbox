@@ -19,6 +19,7 @@
 package es.bsc.vmmanagercore.monitoring;
 
 import com.google.common.base.Preconditions;
+import es.bsc.vmmanagercore.model.vms.Vm;
 
 /**
  * Information about the status of a fake host.
@@ -68,12 +69,6 @@ public class HostFake extends Host {
         Preconditions.checkArgument(assignedCpus >= 0, "The number of assigned cpus cannot be negative");
         Preconditions.checkArgument(assignedMemoryMb >= 0, "The amount of assigned memory cannot be negative");
         Preconditions.checkArgument(assignedDiskGb >= 0, "The amount of assigned disk cannot be negative");
-        Preconditions.checkArgument(assignedCpus <= totalCpus, "The number of assigned cpus cannot be greater"
-                + " than the total number of cpus");
-        Preconditions.checkArgument(assignedMemoryMb <= totalMemoryMb, "The amount of assigned memory cannot be greater"
-                + " than the total amount of memory");
-        Preconditions.checkArgument(assignedDiskGb <= totalDiskGb, "The assigned disk space cannot be greater"
-                + " than the total amount of disk space");
     }
 
     @Override
@@ -81,5 +76,16 @@ public class HostFake extends Host {
         // Do nothing.
     }
 
+    public void updateAssignedResourcesAfterVmDeployed(Vm vm) {
+        assignedCpus += vm.getCpus();
+        assignedMemoryMb += vm.getRamMb();
+        assignedDiskGb += vm.getDiskGb();
+    }
+
+    public void updateAssignedResourcesAfterVmDeleted(Vm vm) {
+        assignedCpus -= vm.getCpus();
+        assignedMemoryMb -= vm.getRamMb();
+        assignedDiskGb -= vm.getDiskGb();
+    }
 
 }

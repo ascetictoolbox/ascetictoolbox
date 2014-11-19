@@ -32,7 +32,7 @@ public class VmDeployed extends Vm {
     private final String ipAddress;
     private final String state;
     private final Date created;
-    private final String hostName;
+    private String hostName;
 
     public VmDeployed(String name, String image, int cpus, int ramMb,
             int diskGb, String initScript, String applicationId, String id,
@@ -63,6 +63,10 @@ public class VmDeployed extends Vm {
 
     public String getHostName() {
         return hostName;
+    }
+
+    public void setHostName(String hostname) {
+        this.hostName = hostname;
     }
 
 }
