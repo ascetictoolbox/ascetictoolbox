@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 /**
  * Tests for the DeploymentPlanFilterer class.
@@ -75,6 +76,36 @@ public class DeploymentPlanFiltererTest {
         assertTrue(!filteredDeploymentPlans.contains(dp1) && !filteredDeploymentPlans.contains(dp4));
     }
 
+    @Test
+    public void filterDeploymentPlansThatUseHost() {
+        // Create the VMs
+        Vm vm1 = new Vm("vm1", "fakeImage", 1, 1024, 1, "", "");
+        Vm vm2 = new Vm("vm2", "fakeImage", 2, 2048, 2, "", "");
+
+        // Create the Hosts
+        Host host1 = new HostFake("host1", 2, 2048, 2, 0, 0, 0);
+        Host host2 = new HostFake("host2", 2, 2048, 2, 0, 0, 0);
+
+        // Create the VM assignations to hosts
+        VmAssignmentToHost vm1ToHost1 = new VmAssignmentToHost(vm1, host1);
+        VmAssignmentToHost vm2ToHost1 = new VmAssignmentToHost(vm2, host1);
+        VmAssignmentToHost vm2ToHost2 = new VmAssignmentToHost(vm2, host2);
+
+        // Create the deployment plans
+        List<DeploymentPlan> deploymentPlans = new ArrayList<>();
+        DeploymentPlan dp1 = new DeploymentPlan(getAssignmentsList(vm1ToHost1, vm2ToHost1));
+        deploymentPlans.add(dp1);
+        DeploymentPlan dp2 = new DeploymentPlan(getAssignmentsList(vm1ToHost1, vm2ToHost2));
+        deploymentPlans.add(dp2);
+
+        // Filter the deployment plans containing "host2"
+        List<DeploymentPlan> planWithoutHost2 =
+                DeploymentPlanFilterer.filterDeploymentPlansThatUseHost(deploymentPlans, "host2");
+
+        assertTrue(planWithoutHost2.contains(dp1));
+        assertFalse(planWithoutHost2.contains(dp2));
+    }
+
     /**
      * Returns a list of VM assignments to hosts from two assignments.
      *
@@ -83,7 +114,7 @@ public class DeploymentPlanFiltererTest {
      * @return the list
      */
     private List<VmAssignmentToHost> getAssignmentsList(VmAssignmentToHost assignment1,
-            VmAssignmentToHost assignment2) {
+                                                        VmAssignmentToHost assignment2) {
         List<VmAssignmentToHost> result = new ArrayList<>();
         result.add(assignment1);
         result.add(assignment2);
