@@ -165,8 +165,63 @@ public class FakeCloudMiddlewareTest {
     }
 
     @Test
+    public void getVm() {
+        fakeCloudMiddleware.deploy(new Vm("testVm1", "image", 2, 2048, 2, null, null), "host1");
+        String idDeployedVm = fakeCloudMiddleware.deploy(new Vm("testVm2", "image", 1, 1024, 1, null, null), "host2");
+        VmDeployed vmDeployed = fakeCloudMiddleware.getVM(idDeployedVm);
+        assertEquals(idDeployedVm, vmDeployed.getId());
+        assertEquals("testVm2", vmDeployed.getName());
+        assertEquals("image", vmDeployed.getImage());
+        assertTrue(vmDeployed.getCpus() == 1);
+        assertTrue(vmDeployed.getRamMb() == 1024);
+        assertTrue(vmDeployed.getDiskGb() == 1);
+
+    }
+
+    @Test
     public void getVmReturnsNullWhenVmDoesNotExist() {
         assertNull(fakeCloudMiddleware.getVM("fakeId"));
+    }
+
+    @Test
+    public void existsVmReturnsTrueWhenTheVmExists() {
+        String idDeployedVm = fakeCloudMiddleware.deploy(new Vm("testVm", "image", 1, 1024, 1, null, null), "host1");
+        assertTrue(fakeCloudMiddleware.existsVm(idDeployedVm));
+    }
+
+    @Test
+    public void existsVmReturnsFalseWhenTheVmDoesNotExist() {
+        assertFalse(fakeCloudMiddleware.existsVm("fakeId"));
+    }
+
+    @Test
+    public void rebootHardVmDoesNothing() {
+        fakeCloudMiddleware.rebootHardVm("id");
+    }
+
+    @Test
+    public void rebootSoftVmDoesNothing() {
+        fakeCloudMiddleware.rebootSoftVm("id");
+    }
+
+    @Test
+    public void startVmDoesNothing() {
+        fakeCloudMiddleware.startVm("id");
+    }
+
+    @Test
+    public void stopVmDoesNothing() {
+        fakeCloudMiddleware.stopVm("id");
+    }
+
+    @Test
+    public void suspendVmDoesNothing() {
+        fakeCloudMiddleware.suspendVm("id");
+    }
+
+    @Test
+    public void resumeVmDoesNothing() {
+        fakeCloudMiddleware.resumeVm("id");
     }
 
     @Test
@@ -181,6 +236,21 @@ public class FakeCloudMiddlewareTest {
     @Test
     public void getVmImagesReturnsEmptyListWhenThereAreNoImages() {
         assertTrue(fakeCloudMiddleware.getVmImages().isEmpty());
+    }
+
+    @Test
+    public void getVmImageReturnsNullWhenInvalidId() {
+        assertNull(fakeCloudMiddleware.getVmImage("invalidId"));
+    }
+
+    @Test
+    public void getVmImage() {
+        fakeCloudMiddleware.createVmImage(new ImageToUpload("newImage1", "fakeUrl1"));
+        String newImageId2 = fakeCloudMiddleware.createVmImage(new ImageToUpload("newImage2", "fakeUrl2"));
+        ImageUploaded imageUploaded = fakeCloudMiddleware.getVmImage(newImageId2);
+        assertNotNull(imageUploaded.getId());
+        assertEquals("newImage2", imageUploaded.getName());
+        assertNotNull(imageUploaded.getStatus());
     }
 
     @Test

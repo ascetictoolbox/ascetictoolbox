@@ -38,6 +38,9 @@ import java.util.List;
  */
 public class FakeCloudMiddleware implements CloudMiddleware {
 
+    // Note: The methods that perform operations on VMs are not needed.
+    // They would be needed if knowing the current state of a Vm ("active", "deleting", etc.) was required.
+
     private List<HostFake> hosts = new ArrayList<>();
     private List<VmDeployed> deployedVms = new ArrayList<>();
     private List<ImageUploaded> images = new ArrayList<>();
