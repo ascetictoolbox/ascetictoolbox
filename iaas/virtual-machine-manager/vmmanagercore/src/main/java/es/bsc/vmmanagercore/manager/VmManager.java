@@ -71,6 +71,9 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
  */
 public class VmManager {
 
+    // Note: This class has become too large.
+    // It would be a good idea to try to split it.
+
     private CloudMiddleware cloudMiddleware;
     private VmManagerDb db;
     private Scheduler scheduler;
@@ -554,42 +557,58 @@ public class VmManager {
     private void initializeHosts(VmManagerConfiguration.Monitoring monitoring, String[] hostnames) {
         switch (monitoring) {
             case OPENSTACK:
-                for (String hostname: hostnames) {
-                    hosts.add(HostFactory.getHost(hostname, HostType.OPENSTACK, (OpenStackJclouds) cloudMiddleware));
-                }
+                generateOpenStackHosts(hostnames);
                 break;
             case GANGLIA:
-                for (String hostname: hostnames) {
-                    hosts.add(HostFactory.getHost(hostname, HostType.GANGLIA, null));
-                }
+                generateGangliaHosts(hostnames);
                 break;
             case ZABBIX:
-                for (String hostname: hostnames) {
-                    hosts.add(HostFactory.getHost(hostname, HostType.ZABBIX, null));
-                }
+                generateZabbixHosts(hostnames);
                 break;
             case FAKE:
-                BufferedReader bReader = new BufferedReader(new InputStreamReader(
-                        this.getClass().getResourceAsStream("/hostsFakeMonitoring.json")));
-                List<HostFake> hostsFromFile = Arrays.asList(gson.fromJson(bReader, HostFake[].class));
-                for (Host host: hostsFromFile) {
-                    HostFake hostFake = new HostFake(host.getHostname(),
-                            host.getTotalCpus(),
-                            (int) host.getTotalMemoryMb(),
-                            (int) host.getTotalDiskGb(),
-                            0, 0, 0);
-
-                    hosts.add(hostFake);
-                    ((FakeCloudMiddleware) cloudMiddleware).addHost(hostFake);
-                }
-                try {
-                    bReader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                generateFakeHosts();
                 break;
             default:
                 break;
+        }
+    }
+
+    private void generateOpenStackHosts(String[] hostnames) {
+        for (String hostname: hostnames) {
+            hosts.add(HostFactory.getHost(hostname, HostType.OPENSTACK, (OpenStackJclouds) cloudMiddleware));
+        }
+    }
+
+    private void generateGangliaHosts(String[] hostnames) {
+        for (String hostname: hostnames) {
+            hosts.add(HostFactory.getHost(hostname, HostType.GANGLIA, null));
+        }
+    }
+
+    private void generateZabbixHosts(String[] hostnames) {
+        for (String hostname: hostnames) {
+            hosts.add(HostFactory.getHost(hostname, HostType.ZABBIX, null));
+        }
+    }
+
+    private void generateFakeHosts() {
+        BufferedReader bReader = new BufferedReader(new InputStreamReader(
+                this.getClass().getResourceAsStream("/hostsFakeMonitoring.json")));
+        List<HostFake> hostsFromFile = Arrays.asList(gson.fromJson(bReader, HostFake[].class));
+        for (Host host: hostsFromFile) {
+            HostFake hostFake = new HostFake(host.getHostname(),
+                    host.getTotalCpus(),
+                    (int) host.getTotalMemoryMb(),
+                    (int) host.getTotalDiskGb(),
+                    0, 0, 0);
+
+            hosts.add(hostFake);
+            ((FakeCloudMiddleware) cloudMiddleware).addHost(hostFake);
+        }
+        try {
+            bReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
