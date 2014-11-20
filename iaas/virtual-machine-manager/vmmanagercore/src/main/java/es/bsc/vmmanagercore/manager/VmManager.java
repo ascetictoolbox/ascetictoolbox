@@ -93,6 +93,8 @@ public class VmManager {
     private static final String ASCETIC_ZABBIX_SCRIPT_PATH = "/DFS/ascetic/vm-scripts/zabbix_agents.sh";
     private static final String[] ASCETIC_DEFAULT_SEC_GROUPS = {"vmm_allow_all", "default"};
 
+    private static final String FAKE_HOSTS_DESCRIPTIONS_PATH = "/hostsFakeMonitoring.json";
+
     private static boolean periodicSelfAdaptationThreadRunning = false;
 
     private static final VmManagerConfiguration conf = VmManagerConfiguration.getInstance();
@@ -593,7 +595,7 @@ public class VmManager {
 
     private void generateFakeHosts() {
         BufferedReader bReader = new BufferedReader(new InputStreamReader(
-                this.getClass().getResourceAsStream("/hostsFakeMonitoring.json")));
+                this.getClass().getResourceAsStream(FAKE_HOSTS_DESCRIPTIONS_PATH)));
         List<HostFake> hostsFromFile = Arrays.asList(gson.fromJson(bReader, HostFake[].class));
         for (Host host: hostsFromFile) {
             HostFake hostFake = new HostFake(host.getHostname(),

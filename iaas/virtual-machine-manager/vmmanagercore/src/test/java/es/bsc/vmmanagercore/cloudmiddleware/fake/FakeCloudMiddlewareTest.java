@@ -49,12 +49,10 @@ public class FakeCloudMiddlewareTest {
     @BeforeClass
     public static void setUpBeforeClass() {
         // Initialize the hosts that are going to be used for the tests
-        List<HostFake> hosts = new ArrayList<>();
-        hosts.add(new HostFake("host1", 2, 2048, 2, 0, 0, 0));
-        hosts.add(new HostFake("host2", 4, 4096, 4, 0, 0, 0));
-        hosts.add(new HostFake("host3", 8, 8192, 8, 0, 0, 0));
-
-        fakeCloudMiddleware = new FakeCloudMiddleware(hosts);
+        fakeCloudMiddleware = new FakeCloudMiddleware(new ArrayList<HostFake>());
+        fakeCloudMiddleware.addHost(new HostFake("host1", 2, 2048, 2, 0, 0, 0));
+        fakeCloudMiddleware.addHost(new HostFake("host2", 4, 4096, 4, 0, 0, 0));
+        fakeCloudMiddleware.addHost(new HostFake("host3", 8, 8192, 8, 0, 0, 0));
     }
 
     @Before
