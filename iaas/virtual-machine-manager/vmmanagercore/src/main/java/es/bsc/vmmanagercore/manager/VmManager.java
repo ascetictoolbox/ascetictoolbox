@@ -18,7 +18,9 @@
 
 package es.bsc.vmmanagercore.manager;
 
+import com.google.gson.Gson;
 import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddleware;
+import es.bsc.vmmanagercore.cloudmiddleware.fake.FakeCloudMiddleware;
 import es.bsc.vmmanagercore.cloudmiddleware.openstack.OpenStackCredentials;
 import es.bsc.vmmanagercore.cloudmiddleware.openstack.OpenStackJclouds;
 import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
@@ -35,10 +37,7 @@ import es.bsc.vmmanagercore.model.images.ImageUploaded;
 import es.bsc.vmmanagercore.model.scheduling.*;
 import es.bsc.vmmanagercore.model.vms.Vm;
 import es.bsc.vmmanagercore.model.vms.VmDeployed;
-import es.bsc.vmmanagercore.monitoring.Host;
-import es.bsc.vmmanagercore.monitoring.HostFactory;
-import es.bsc.vmmanagercore.monitoring.HostType;
-import es.bsc.vmmanagercore.monitoring.ZabbixConnector;
+import es.bsc.vmmanagercore.monitoring.*;
 import es.bsc.vmmanagercore.pricingmodeller.PricingModeller;
 import es.bsc.vmmanagercore.pricingmodeller.ascetic.AsceticPricingModellerAdapter;
 import es.bsc.vmmanagercore.pricingmodeller.dummy.DummyPricingModeller;
@@ -55,10 +54,7 @@ import es.bsc.vmplacement.domain.ClusterState;
 import es.bsc.vmplacement.lib.OptaVmPlacement;
 import es.bsc.vmplacement.lib.OptaVmPlacementImpl;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -82,6 +78,7 @@ public class VmManager {
     private SelfAdaptationManager selfAdaptationManager;
     private List<Host> hosts = new ArrayList<>();
     private SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+    private Gson gson = new Gson();
 
     private OptaVmPlacement optaVmPlacement = new OptaVmPlacementImpl(); // Library used for the VM Placement
 
@@ -555,20 +552,44 @@ public class VmManager {
      * @param hostnames the names of the hosts in the infrastructure
      */
     private void initializeHosts(VmManagerConfiguration.Monitoring monitoring, String[] hostnames) {
-        for (String hostname: hostnames) {
-            switch (monitoring) {
-                case OPENSTACK:
+        switch (monitoring) {
+            case OPENSTACK:
+                for (String hostname: hostnames) {
                     hosts.add(HostFactory.getHost(hostname, HostType.OPENSTACK, (OpenStackJclouds) cloudMiddleware));
-                    break;
-                case GANGLIA:
+                }
+                break;
+            case GANGLIA:
+                for (String hostname: hostnames) {
                     hosts.add(HostFactory.getHost(hostname, HostType.GANGLIA, null));
-                    break;
-                case ZABBIX:
+                }
+                break;
+            case ZABBIX:
+                for (String hostname: hostnames) {
                     hosts.add(HostFactory.getHost(hostname, HostType.ZABBIX, null));
-                    break;
-                default:
-                    break;
-            }
+                }
+                break;
+            case FAKE:
+                BufferedReader bReader = new BufferedReader(new InputStreamReader(
+                        this.getClass().getResourceAsStream("/hostsFakeMonitoring.json")));
+                List<HostFake> hostsFromFile = Arrays.asList(gson.fromJson(bReader, HostFake[].class));
+                for (Host host: hostsFromFile) {
+                    HostFake hostFake = new HostFake(host.getHostname(),
+                            host.getTotalCpus(),
+                            (int) host.getTotalMemoryMb(),
+                            (int) host.getTotalDiskGb(),
+                            0, 0, 0);
+
+                    hosts.add(hostFake);
+                    ((FakeCloudMiddleware) cloudMiddleware).addHost(hostFake);
+                }
+                try {
+                    bReader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            default:
+                break;
         }
     }
 
@@ -585,6 +606,9 @@ public class VmManager {
                     securityGroups = ASCETIC_DEFAULT_SEC_GROUPS;
                 }
                 cloudMiddleware = new OpenStackJclouds(getOpenStackCredentials(), securityGroups);
+                break;
+            case FAKE:
+                cloudMiddleware = new FakeCloudMiddleware(new ArrayList<HostFake>());
                 break;
             default:
                 throw new IllegalArgumentException("The cloud middleware selected is not supported");

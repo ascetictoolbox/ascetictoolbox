@@ -417,6 +417,7 @@ iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/vm
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/vmplacement/OptaVmPlacementConversor.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/resources/configBSC.properties -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/resources/configTUB.properties -text
+iaas/virtual-machine-manager/vmmanagercore/src/main/resources/hostsFakeMonitoring.json -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/resources/init-scripts/hello.sh -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/resources/init-scripts/mount_isos.sh -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/resources/init-scripts/zabbix_agents.sh -text

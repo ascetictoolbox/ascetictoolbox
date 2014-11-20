@@ -1,0 +1,14 @@
+[
+  {
+    "hostname":"host1",
+    "totalCpus":4,
+    "totalMemoryMb":4096,
+    "totalDiskGb":40
+  },
+  {
+    "hostname":"host2",
+    "totalCpus":8,
+    "totalMemoryMb":8192,
+    "totalDiskGb":80
+  }
+]

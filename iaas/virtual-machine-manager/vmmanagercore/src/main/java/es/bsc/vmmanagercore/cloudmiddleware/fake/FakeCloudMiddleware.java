@@ -41,18 +41,18 @@ public class FakeCloudMiddleware implements CloudMiddleware {
     // Note: The methods that perform operations on VMs are not needed.
     // They would be needed if knowing the current state of a Vm ("active", "deleting", etc.) was required.
 
-    private List<HostFake> hosts = new ArrayList<>();
-    private List<VmDeployed> deployedVms = new ArrayList<>();
-    private List<ImageUploaded> images = new ArrayList<>();
+    private static List<HostFake> hosts = new ArrayList<>();
+    private static List<VmDeployed> deployedVms = new ArrayList<>();
+    private static List<ImageUploaded> images = new ArrayList<>();
 
     // For assigning IDs and IPs manually
-    private int nextVmId = 0;
-    private int nextVmIp = 0; // Invalid IPs but it does not matter
-    private int nextImageId = 0;
+    private static int nextVmId = 0;
+    private static int nextVmIp = 0; // Invalid IPs but it does not matter
+    private static int nextImageId = 0;
 
     public FakeCloudMiddleware(List<HostFake> hosts) {
         for (HostFake host: hosts) {
-            this.hosts.add(host);
+            FakeCloudMiddleware.hosts.add(host);
         }
     }
 
@@ -60,7 +60,13 @@ public class FakeCloudMiddleware implements CloudMiddleware {
     public String deploy(Vm vm, String hostname) {
         HostFake host = getHost(hostname);
         if (host == null) {
-            throw new IllegalArgumentException("There is not a host with the given hostname.");
+            throw new IllegalArgumentException(
+                    "Error during VM deployment. There is not a host with the given hostname.");
+        }
+
+        if (getVmImage(vm.getImage()) == null) {
+            throw new IllegalArgumentException(
+                    "Error during VM deployment. There is not an image with the given ID.");
         }
 
         VmDeployed newVm = new VmDeployed(
@@ -208,6 +214,10 @@ public class FakeCloudMiddleware implements CloudMiddleware {
             }
         }
         return null;
+    }
+
+    public void addHost(HostFake host) {
+        hosts.add(host);
     }
 
     private VmDeployed getVmById(String id) {

@@ -69,13 +69,15 @@ public class FakeCloudMiddlewareTest {
 
     @Test
     public void deployVm() {
-        String idDeployedVm = fakeCloudMiddleware.deploy(new Vm("testVm", "image", 1, 1024, 1, null, null), "host1");
+        String newImageId = fakeCloudMiddleware.createVmImage(new ImageToUpload("newImage", "fakeUrl"));
+        String idDeployedVm = fakeCloudMiddleware.deploy(
+                new Vm("testVm", newImageId, 1, 1024, 1, null, null), "host1");
 
         // Check that the VM was created correctly
         VmDeployed vmDeployed = fakeCloudMiddleware.getVM(idDeployedVm);
         assertEquals(idDeployedVm, vmDeployed.getId());
         assertEquals("testVm", vmDeployed.getName());
-        assertEquals("image", vmDeployed.getImage());
+        assertEquals(newImageId, vmDeployed.getImage());
         assertTrue(vmDeployed.getCpus() == 1);
         assertTrue(vmDeployed.getRamMb() == 1024);
         assertTrue(vmDeployed.getDiskGb() == 1);
@@ -92,14 +94,22 @@ public class FakeCloudMiddlewareTest {
     }
 
     @Test
-    public void deployVmInNonExistingHostRaisesException() {
+    public void deployVmNonExistingImageRaisesException() {
         exception.expect(IllegalArgumentException.class);
-        fakeCloudMiddleware.deploy(new Vm("testVm", "image", 1, 1024, 1, null, null), "nonExistingId");
+        fakeCloudMiddleware.deploy(new Vm("testVm", "nonExistingImage", 1, 1024, 1, null, null), "nonExistingId");
+    }
+
+    @Test
+    public void deployVmInNonExistingHostRaisesException() {
+        String newImageId = fakeCloudMiddleware.createVmImage(new ImageToUpload("newImage", "fakeUrl"));
+        exception.expect(IllegalArgumentException.class);
+        fakeCloudMiddleware.deploy(new Vm("testVm", newImageId, 1, 1024, 1, null, null), "nonExistingId");
     }
 
     @Test
     public void destroyVm() {
-        String idDeployedVm = fakeCloudMiddleware.deploy(new Vm("testVm", "image", 1, 1024, 1, null, null), "host1");
+        String newImageId = fakeCloudMiddleware.createVmImage(new ImageToUpload("newImage", "fakeUrl"));
+        String idDeployedVm = fakeCloudMiddleware.deploy(new Vm("testVm", newImageId, 1, 1024, 1, null, null), "host1");
         fakeCloudMiddleware.destroy(idDeployedVm);
 
         // Check that the VM no longer exists
@@ -117,7 +127,8 @@ public class FakeCloudMiddlewareTest {
 
     @Test
     public void migrate() {
-        String idDeployedVm = fakeCloudMiddleware.deploy(new Vm("testVm", "image", 1, 1024, 1, null, null), "host1");
+        String newImageId = fakeCloudMiddleware.createVmImage(new ImageToUpload("newImage", "fakeUrl"));
+        String idDeployedVm = fakeCloudMiddleware.deploy(new Vm("testVm", newImageId, 1, 1024, 1, null, null), "host1");
         fakeCloudMiddleware.migrate(idDeployedVm, "host2");
 
         // Check that the hostname in the Vm changed
@@ -142,16 +153,18 @@ public class FakeCloudMiddlewareTest {
 
     @Test
     public void migrateToNonExistingHostDoesNothingAndDoesNotRaiseException() {
-        String idDeployedVm = fakeCloudMiddleware.deploy(new Vm("testVm", "image", 1, 1024, 1, null, null), "host1");
+        String newImageId = fakeCloudMiddleware.createVmImage(new ImageToUpload("newImage", "fakeUrl"));
+        String idDeployedVm = fakeCloudMiddleware.deploy(new Vm("testVm", newImageId, 1, 1024, 1, null, null), "host1");
         fakeCloudMiddleware.migrate(idDeployedVm, "nonExistingHost");
         assertEquals("host1", fakeCloudMiddleware.getVM(idDeployedVm).getHostName());
     }
 
     @Test
     public void getAllVms() {
-        String idDeployedVm1 = fakeCloudMiddleware.deploy(new Vm("testVm1", "image", 1, 1024, 1, null, null), "host1");
-        String idDeployedVm2 = fakeCloudMiddleware.deploy(new Vm("testVm2", "image", 1, 1024, 1, null, null), "host2");
-        String idDeployedVm3 = fakeCloudMiddleware.deploy(new Vm("testVm3", "image", 1, 1024, 1, null, null), "host3");
+        String newImageId = fakeCloudMiddleware.createVmImage(new ImageToUpload("newImage", "fakeUrl"));
+        String idDeployedVm1 = fakeCloudMiddleware.deploy(new Vm("testVm1", newImageId, 1, 1024, 1, null, null), "host1");
+        String idDeployedVm2 = fakeCloudMiddleware.deploy(new Vm("testVm2", newImageId, 1, 1024, 1, null, null), "host2");
+        String idDeployedVm3 = fakeCloudMiddleware.deploy(new Vm("testVm3", newImageId, 1, 1024, 1, null, null), "host3");
 
         List<String> idsDeployedVms = fakeCloudMiddleware.getAllVMsIds();
         assertTrue(idsDeployedVms.contains(idDeployedVm1));
@@ -166,12 +179,14 @@ public class FakeCloudMiddlewareTest {
 
     @Test
     public void getVm() {
-        fakeCloudMiddleware.deploy(new Vm("testVm1", "image", 2, 2048, 2, null, null), "host1");
-        String idDeployedVm = fakeCloudMiddleware.deploy(new Vm("testVm2", "image", 1, 1024, 1, null, null), "host2");
+        String newImageId = fakeCloudMiddleware.createVmImage(new ImageToUpload("newImage", "fakeUrl"));
+        fakeCloudMiddleware.deploy(new Vm("testVm1", newImageId, 2, 2048, 2, null, null), "host1");
+        String idDeployedVm = fakeCloudMiddleware.deploy(
+                new Vm("testVm2", newImageId, 1, 1024, 1, null, null), "host2");
         VmDeployed vmDeployed = fakeCloudMiddleware.getVM(idDeployedVm);
         assertEquals(idDeployedVm, vmDeployed.getId());
         assertEquals("testVm2", vmDeployed.getName());
-        assertEquals("image", vmDeployed.getImage());
+        assertEquals(newImageId, vmDeployed.getImage());
         assertTrue(vmDeployed.getCpus() == 1);
         assertTrue(vmDeployed.getRamMb() == 1024);
         assertTrue(vmDeployed.getDiskGb() == 1);
@@ -185,7 +200,8 @@ public class FakeCloudMiddlewareTest {
 
     @Test
     public void existsVmReturnsTrueWhenTheVmExists() {
-        String idDeployedVm = fakeCloudMiddleware.deploy(new Vm("testVm", "image", 1, 1024, 1, null, null), "host1");
+        String newImageId = fakeCloudMiddleware.createVmImage(new ImageToUpload("newImage", "fakeUrl"));
+        String idDeployedVm = fakeCloudMiddleware.deploy(new Vm("testVm", newImageId, 1, 1024, 1, null, null), "host1");
         assertTrue(fakeCloudMiddleware.existsVm(idDeployedVm));
     }
 

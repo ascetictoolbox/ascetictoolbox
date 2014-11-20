@@ -66,8 +66,8 @@ public class VmManagerConfiguration {
     public String deploymentEngine;
 
     // Software used
-    public enum Monitoring { OPENSTACK, GANGLIA, ZABBIX }
-    public enum Middleware { OPENSTACK }
+    public enum Monitoring { OPENSTACK, GANGLIA, ZABBIX, FAKE }
+    public enum Middleware { OPENSTACK, FAKE }
     public Monitoring monitoring;
     public Middleware middleware;
 
@@ -117,7 +117,7 @@ public class VmManagerConfiguration {
         deploymentEngine = prop.getProperty("deploymentEngine");
         project = prop.getProperty("project");
 
-        if(prop.getProperty("monitoring").equals("openstack")) {
+        if (prop.getProperty("monitoring").equals("openstack")) {
             monitoring = Monitoring.OPENSTACK;
         }
         else if (prop.getProperty("monitoring").equals("ganglia")) {
@@ -126,12 +126,18 @@ public class VmManagerConfiguration {
         else if (prop.getProperty("monitoring").equals("zabbix")) {
             monitoring = Monitoring.ZABBIX;
         }
+        else if (prop.getProperty("monitoring").equals("fake")) {
+            monitoring = Monitoring.FAKE;
+        }
         else {
             throw new IllegalArgumentException("The monitoring software selected is not supported.");
         }
 
-        if(prop.getProperty("middleware").equals("openstack")) {
+        if (prop.getProperty("middleware").equals("openstack")) {
             middleware = Middleware.OPENSTACK;
+        }
+        else if (prop.getProperty("middleware").equals("fake")) {
+            middleware = Middleware.FAKE;
         }
         else {
             throw new IllegalArgumentException("The cloud middleware selected is not supported");
