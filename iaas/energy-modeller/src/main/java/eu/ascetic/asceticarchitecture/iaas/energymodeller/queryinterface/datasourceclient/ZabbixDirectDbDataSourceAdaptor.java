@@ -77,7 +77,7 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
     /**
      * This query lists all hosts data items.
      */
-    private static final String ALL_ZABBIX_HOSTS = "SELECT hostid, host FROM hosts where status <> 3 and available > 0";
+    private static final String ALL_ZABBIX_HOSTS = "SELECT hostid, host FROM hosts WHERE status <> 3 AND available > 0";
     /**
      * This query searches for a named host and provides it's current latest
      * items.
@@ -92,9 +92,10 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
             + "WHERE h.itemid = ms.itemid AND "
             + "h.clock = mostrecent AND "
             + "h.itemid = i.itemid AND "
-            + "h.itemid IN (select it.itemid from hosts, items it "
+            + "h.itemid IN (SELECT it.itemid FROM hosts, items it "
             + "WHERE hosts.hostid = it.hostid AND "
-            + "hosts.hostid = ?);";
+            + "hosts.hostid = ?)";
+
     /**
      * This query searches for a named double valued history item for a given
      * host between a range of specified times.
@@ -106,7 +107,7 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
             + "FROM history h "
             + "WHERE h.clock >= ? AND "
             + "h.clock <= ? AND "
-            + "h.itemid IN ("
+            + "h.itemid = ("
             + "SELECT it.itemid "
             + "FROM hosts, items it "
             + "WHERE hosts.hostid = it.hostid AND "
@@ -492,8 +493,8 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
     @Override
     public List<VmMeasurement> getVmData() {
         List<VmMeasurement> answer = new ArrayList<>();
-        for (VmDeployed host : getVmList()) {
-            answer.add(getVmData(host));
+        for (VmDeployed vm : getVmList()) {
+            answer.add(getVmData(vm));
         }
         return answer;
     }
@@ -576,6 +577,7 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
 
     /**
      * This query returns a set of history items for querying.
+     *
      * @param key The key of the data item to return
      * @param hostId The host id that the data is associated with
      * @param startTime The start time of the search
