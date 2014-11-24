@@ -25,8 +25,9 @@ import java.util.logging.Logger;
 
 /**
  * This directly connects to a Zabbix database and scavenges the data required
- * directly, but also uses the Zabbix API in cases where it is faster. This thus
- * eliminates overhead and improves overall performance.
+ * directly, but also uses the Zabbix API in cases where the DB route fails. 
+ * This thus eliminates some overheads of using the API but allows it as a 
+ * fallback method.
  *
  * @author Richard
  */
@@ -158,30 +159,30 @@ public class FastDataSourceAdaptor implements HostDataSource {
     @Override
     public double getLowestHostPowerUsage(Host host) {
         try {
-            return zabbixAPI.getLowestHostPowerUsage(host);
-        } catch (Exception ex) {
-            Logger.getLogger(FastDataSourceAdaptor.class.getName()).log(Level.INFO, "Performing fallback to Zabbix DB", ex);
             return zabbixDbRoute.getLowestHostPowerUsage(host);
+        } catch (Exception ex) {
+            Logger.getLogger(FastDataSourceAdaptor.class.getName()).log(Level.INFO, "Performing fallback to Zabbix API", ex);
+            return zabbixAPI.getLowestHostPowerUsage(host);
         }
     }
 
     @Override
     public double getHighestHostPowerUsage(Host host) {
         try {
-            return zabbixAPI.getHighestHostPowerUsage(host);
+            return zabbixDbRoute.getHighestHostPowerUsage(host);
         } catch (Exception ex) {
-            Logger.getLogger(FastDataSourceAdaptor.class.getName()).log(Level.INFO, "Performing fallback to Zabbix DB", ex);
-            return zabbixDbRoute.getLowestHostPowerUsage(host);
+            Logger.getLogger(FastDataSourceAdaptor.class.getName()).log(Level.INFO, "Performing fallback to Zabbix API", ex);
+            return zabbixAPI.getLowestHostPowerUsage(host);
         }
     }
 
     @Override
     public double getCpuUtilisation(Host host, int durationSeconds) {
         try {
-            return zabbixAPI.getCpuUtilisation(host, durationSeconds);
-        } catch (Exception ex) {
-            Logger.getLogger(FastDataSourceAdaptor.class.getName()).log(Level.INFO, "Performing fallback to Zabbix DB", ex);
             return zabbixDbRoute.getCpuUtilisation(host, durationSeconds);
+        } catch (Exception ex) {
+            Logger.getLogger(FastDataSourceAdaptor.class.getName()).log(Level.INFO, "Performing fallback to Zabbix API", ex);
+            return zabbixAPI.getCpuUtilisation(host, durationSeconds);
         }
     }
 
