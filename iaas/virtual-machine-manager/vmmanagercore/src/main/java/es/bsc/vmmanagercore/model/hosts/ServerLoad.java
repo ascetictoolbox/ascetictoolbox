@@ -28,9 +28,9 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 public class ServerLoad {
 
     // All the loads have values in the [0,1] range
-    private double cpuLoad;
-    private double ramLoad;
-    private double diskLoad;
+    private final double cpuLoad;
+    private final double ramLoad;
+    private final double diskLoad;
 
     /**
      * Class constructor.
@@ -53,24 +53,12 @@ public class ServerLoad {
         return cpuLoad;
     }
 
-    public void setCpuLoad(double cpuLoad) {
-        this.cpuLoad = cpuLoad;
-    }
-
     public double getRamLoad() {
         return ramLoad;
     }
 
-    public void setRamLoad(double ramLoad) {
-        this.ramLoad = ramLoad;
-    }
-
     public double getDiskLoad() {
         return diskLoad;
-    }
-
-    public void setDiskLoad(double diskLoad) {
-        this.diskLoad = diskLoad;
     }
 
     public double getUnusedCpuPerc() {

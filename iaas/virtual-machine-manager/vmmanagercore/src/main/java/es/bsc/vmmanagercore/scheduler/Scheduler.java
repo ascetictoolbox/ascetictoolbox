@@ -231,9 +231,7 @@ public class Scheduler {
                     + vmAssigned.getRamMb()/deploymentHost.getTotalMemoryMb();
             double newDiskLoad = serversLoad.get(deploymentHost.getHostname()).getDiskLoad()
                     + vmAssigned.getDiskGb()/deploymentHost.getTotalDiskGb();
-            serversLoad.get(deploymentHost.getHostname()).setCpuLoad(newCpuLoad);
-            serversLoad.get(deploymentHost.getHostname()).setRamLoad(newRamLoad);
-            serversLoad.get(deploymentHost.getHostname()).setDiskLoad(newDiskLoad);
+            serversLoad.put(deploymentHost.getHostname(), new ServerLoad(newCpuLoad, newRamLoad, newDiskLoad));
         }
 
         return serversLoad;
