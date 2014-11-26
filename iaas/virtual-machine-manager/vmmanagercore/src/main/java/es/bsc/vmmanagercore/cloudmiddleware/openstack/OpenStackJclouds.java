@@ -25,14 +25,8 @@ import es.bsc.vmmanagercore.model.vms.Vm;
 import es.bsc.vmmanagercore.model.vms.VmDeployed;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.validator.UrlValidator;
-import org.jclouds.ContextBuilder;
 import org.jclouds.openstack.nova.v2_0.NovaApi;
-import org.jclouds.openstack.nova.v2_0.NovaApiMetadata;
 import org.jclouds.openstack.nova.v2_0.domain.*;
-import org.jclouds.openstack.nova.v2_0.extensions.ServerAdminApi;
-import org.jclouds.openstack.nova.v2_0.features.FlavorApi;
-import org.jclouds.openstack.nova.v2_0.features.ImageApi;
-import org.jclouds.openstack.nova.v2_0.features.ServerApi;
 import org.jclouds.openstack.nova.v2_0.options.CreateServerOptions;
 
 import java.io.FileInputStream;
@@ -40,7 +34,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-
 
 /**
  * Class that performs requests to OpenStack using the JClouds library.
@@ -61,18 +54,12 @@ public class OpenStackJclouds implements CloudMiddleware {
     private static final String BUILD = "BUILD";
     private static final String DELETING = "deleting";
 
-    // OpenStack APIs defined by JClouds
-    private NovaApi novaApi;
-    private ServerApi serverApi;
-    private ImageApi imageApi;
-    private FlavorApi flavorApi;
-    private ServerAdminApi serverAdminApi;
-
-    private String zone; // This could be important/problematic in the future because I am assuming that
+    private final String zone; // This could be important/problematic in the future because I am assuming that
                          // the cluster only has one zone configured for deployments.
-    private String[] securityGroups = {};
+    private final String[] securityGroups;
 
-    private OpenStackGlance glanceConnector; // Connector for OS Glance
+    private final OpenStackJcloudsApis openStackJcloudsApis;
+    private final OpenStackGlance glanceConnector; // Connector for OS Glance
 
     /**
      * Class constructor. It performs the connection to the infrastructure and initializes
@@ -82,7 +69,8 @@ public class OpenStackJclouds implements CloudMiddleware {
      * @param securityGroups the security groups to which the VM will be part of
      */
     public OpenStackJclouds(OpenStackCredentials openStackCredentials, String[] securityGroups) {
-        getOpenStackApis(openStackCredentials);
+        openStackJcloudsApis = new OpenStackJcloudsApis(openStackCredentials);
+        zone = openStackJcloudsApis.getNovaApi().getConfiguredZones().toArray()[0].toString();
         this.securityGroups = securityGroups;
         glanceConnector = new OpenStackGlance(openStackCredentials);
     }
@@ -90,14 +78,14 @@ public class OpenStackJclouds implements CloudMiddleware {
     @Override
     public String deploy(Vm vm, String hostname) {
         // Deploy the VM
-        ServerCreated server = serverApi.create(
+        ServerCreated server = openStackJcloudsApis.getServerApi().create(
                 vm.getName(),
                 getImageIdForDeployment(vm),
                 getFlavorIdForDeployment(vm),
                 getDeploymentOptionsForVm(vm, hostname, securityGroups));
 
         // Wait until the VM is deployed
-        while (serverApi.get(server.getId()).getStatus().toString().equals(BUILD)) {
+        while (openStackJcloudsApis.getServerApi().get(server.getId()).getStatus().toString().equals(BUILD)) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -111,9 +99,9 @@ public class OpenStackJclouds implements CloudMiddleware {
 
     @Override
     public void destroy(String vmId) {
-        Server server = serverApi.get(vmId);
+        Server server = openStackJcloudsApis.getServerApi().get(vmId);
         if (server != null) { // If the VM is in the zone
-            serverApi.delete(vmId);
+            openStackJcloudsApis.getServerApi().delete(vmId);
             // Wait until the VM is destroyed
             while (server.getStatus().toString().equals(DELETING)) {
                 try {
@@ -127,15 +115,15 @@ public class OpenStackJclouds implements CloudMiddleware {
 
     @Override
     public void migrate(String vmId, String destinationNodeHostName) {
-        if (serverApi.get(vmId) != null) {
-            serverAdminApi.liveMigrate(vmId, destinationNodeHostName, false, false);
+        if (openStackJcloudsApis.getServerApi().get(vmId) != null) {
+            openStackJcloudsApis.getServerAdminApi().liveMigrate(vmId, destinationNodeHostName, false, false);
         }
     }
 
     @Override
     public List<String> getAllVMsIds() {
         List<String> vmIds = new ArrayList<>();
-        for (Server server: serverApi.listInDetail().concat()) {
+        for (Server server: openStackJcloudsApis.getServerApi().listInDetail().concat()) {
             ServerExtendedStatus vmStatus = server.getExtendedStatus().get();
 
             // Add the VM to the result if it is active and it is not being deleted
@@ -151,7 +139,7 @@ public class OpenStackJclouds implements CloudMiddleware {
     @Override
     public VmDeployed getVM(String vmId) {
         VmDeployed vm = null;
-        Server server = serverApi.get(vmId);
+        Server server = openStackJcloudsApis.getServerApi().get(vmId);
 
         // If the VM is in the zone
         if (server != null ) {
@@ -160,7 +148,7 @@ public class OpenStackJclouds implements CloudMiddleware {
             boolean vmIsActive = ACTIVE.equals(vmStatus.getVmState());
             boolean vmIsBeingDeleted = DELETING.equals(vmStatus.getTaskState());
             if (vmIsActive && !vmIsBeingDeleted) {
-                Flavor flavor = flavorApi.get(server.getFlavor().getId());
+                Flavor flavor = openStackJcloudsApis.getFlavorApi().get(server.getFlavor().getId());
                 String vmIp = getVmIp(server);
                 vm = new VmDeployed(server.getName(),
                         server.getImage().getId(), flavor.getVcpus(), flavor.getRam(),
@@ -175,43 +163,43 @@ public class OpenStackJclouds implements CloudMiddleware {
 
     @Override
     public boolean existsVm(String vmId) {
-        return serverApi.get(vmId) != null;
+        return openStackJcloudsApis.getServerApi().get(vmId) != null;
     }
 
     @Override
     public void rebootHardVm(String vmId) {
-        serverApi.reboot(vmId, RebootType.HARD);
+        openStackJcloudsApis.getServerApi().reboot(vmId, RebootType.HARD);
     }
     
     @Override
     public void rebootSoftVm(String vmId) {
-        serverApi.reboot(vmId, RebootType.SOFT);
+        openStackJcloudsApis.getServerApi().reboot(vmId, RebootType.SOFT);
     }
     
     @Override
     public void startVm(String vmId) {
-        serverApi.start(vmId);
+        openStackJcloudsApis.getServerApi().start(vmId);
     }
 
     @Override
     public void stopVm(String vmId) {
-        serverApi.stop(vmId);
+        openStackJcloudsApis.getServerApi().stop(vmId);
     }
 
     @Override
     public void suspendVm(String vmId) {
-        novaApi.getServerAdminExtensionForZone(zone).get().suspend(vmId);
+        openStackJcloudsApis.getServerAdminApi().suspend(vmId);
     }
 
     @Override
     public void resumeVm(String vmId) {
-        novaApi.getServerAdminExtensionForZone(zone).get().resume(vmId);
+        openStackJcloudsApis.getServerAdminApi().resume(vmId);
     }
 
     @Override
     public List<ImageUploaded> getVmImages() {
         List<ImageUploaded> vmImages = new ArrayList<>();
-        for (Image image: imageApi.listInDetail().concat()) {
+        for (Image image: openStackJcloudsApis.getImageApi().listInDetail().concat()) {
             vmImages.add(new ImageUploaded(image.getId(), image.getName(), image.getStatus().toString()));
         }
         return vmImages;
@@ -224,7 +212,7 @@ public class OpenStackJclouds implements CloudMiddleware {
 
     @Override
     public ImageUploaded getVmImage(String imageId) {
-        Image image = imageApi.get(imageId);
+        Image image = openStackJcloudsApis.getImageApi().get(imageId);
         return image != null ? new ImageUploaded(image.getId(), image.getName(), image.getStatus().toString()) : null;
     }
 
@@ -244,26 +232,7 @@ public class OpenStackJclouds implements CloudMiddleware {
      * @return NovaApi object associated with the OpenStackJclouds class
      */
     public NovaApi getNovaApi() {
-        return novaApi;
-    }
-
-    /**
-     * Gets the OpenStack APIs (nova, server, image, flavor) as defined by the JClouds library.
-     *
-     * @param openStackCredentials OpenStack credentials
-     */
-    private void getOpenStackApis(OpenStackCredentials openStackCredentials) {
-        novaApi = ContextBuilder.newBuilder(new NovaApiMetadata())
-                .endpoint("http://" + openStackCredentials.getOpenStackIP() + ":" +
-                        openStackCredentials.getKeyStonePort() + "/v2.0")
-                .credentials(openStackCredentials.getKeyStoneTenant() + ":" +
-                        openStackCredentials.getKeyStoneUser(), openStackCredentials.getKeyStonePassword())
-                .buildApi(NovaApi.class);
-        zone = novaApi.getConfiguredZones().toArray()[0].toString(); // Assuming that there is only 1 zone configured
-        serverApi = novaApi.getServerApiForZone(zone);
-        imageApi = novaApi.getImageApiForZone(zone);
-        flavorApi = novaApi.getFlavorApiForZone(zone);
-        serverAdminApi = novaApi.getServerAdminExtensionForZone(zone).get();
+        return openStackJcloudsApis.getNovaApi();
     }
 
     /**
@@ -372,7 +341,7 @@ public class OpenStackJclouds implements CloudMiddleware {
      * @return The ID of the flavor. Null if a flavor with the specified characteristics does not exist.
      */
     private String getFlavorId(int cpus, int memoryMb, int diskGb) {
-        for (Flavor flavor: flavorApi.listInDetail().concat()) {
+        for (Flavor flavor: openStackJcloudsApis.getFlavorApi().listInDetail().concat()) {
             if (flavor.getVcpus() == cpus && flavor.getRam() == memoryMb && flavor.getDisk() == diskGb) {
                 return flavor.getId();
             }
@@ -388,7 +357,8 @@ public class OpenStackJclouds implements CloudMiddleware {
      * @return The ID of the created flavor.
      */
     private String createFlavor(String id, String name, int cpus, int ramMb, int diskGb) {
-        flavorApi.create(Flavor.builder().id(id).name(name).vcpus(cpus).ram(ramMb).disk(diskGb).build());
+        openStackJcloudsApis.getFlavorApi().create(
+                Flavor.builder().id(id).name(name).vcpus(cpus).ram(ramMb).disk(diskGb).build());
         return id;
     }
 
@@ -399,7 +369,7 @@ public class OpenStackJclouds implements CloudMiddleware {
      * @return true if an image exists with the given Id, false otherwise
      */
     private boolean existsImageWithId(String id) {
-        return imageApi.get(id) != null;
+        return openStackJcloudsApis.getImageApi().get(id) != null;
     }
 
     /**
