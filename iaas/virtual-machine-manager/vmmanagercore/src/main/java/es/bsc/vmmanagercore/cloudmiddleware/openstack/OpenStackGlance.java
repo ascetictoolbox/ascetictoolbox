@@ -37,7 +37,7 @@ import java.util.Map;
 public class OpenStackGlance {
 
     private final OpenStackCredentials openStackCredentials;
-    private String token; // token needed for authentication
+    private final String token; // token needed for authentication
 
     /**
      * Class constructor.

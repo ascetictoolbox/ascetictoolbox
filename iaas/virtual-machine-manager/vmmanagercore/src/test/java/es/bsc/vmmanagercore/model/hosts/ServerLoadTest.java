@@ -20,7 +20,9 @@ package es.bsc.vmmanagercore.model.hosts;
 
 import org.junit.Test;
 
+import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 /**
  * Tests for the ServerLoad class.
@@ -30,6 +32,21 @@ import static org.junit.Assert.assertEquals;
 public class ServerLoadTest {
 
     private final static double DELTA_DOUBLE_COMP = 0.05;
+
+    @Test
+    public void getCpuLoad() {
+        assertEquals(0.1, new ServerLoad(0.1, 0.2, 0.3).getCpuLoad(), DELTA_DOUBLE_COMP);
+    }
+
+    @Test
+    public void getRamLoad() {
+        assertEquals(0.2, new ServerLoad(0.1, 0.2, 0.3).getRamLoad(), DELTA_DOUBLE_COMP);
+    }
+
+    @Test
+    public void getDiskLoad() {
+        assertEquals(0.3, new ServerLoad(0.1, 0.2, 0.3).getDiskLoad(), DELTA_DOUBLE_COMP);
+    }
 
     @Test
     public void getTotalOverloadReturnsZeroWhenThereIsNoOverload() {
@@ -69,6 +86,16 @@ public class ServerLoadTest {
     @Test
     public void getUnusedDiskPercWhenThereIsNoOverload() {
         assertEquals(0.6, new ServerLoad(0.1, 0.1, 0.4).getUnusedDiskPerc(), DELTA_DOUBLE_COMP);
+    }
+
+    @Test
+    public void idleHostReturnsTrueWhenEmpty() {
+        assertTrue(new ServerLoad(0, 0, 0).isIdle());
+    }
+
+    @Test
+    public void idleHostReturnsFalseWhenHostIsBusy() {
+        assertFalse(new ServerLoad(0.5, 0.6, 0.7).isIdle());
     }
 
 }
