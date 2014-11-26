@@ -22,7 +22,6 @@ package es.bsc.vmmanagercore.model.images;
  * Image to be uploaded to the cloud middleware.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
- *
  */
 public class ImageToUpload {
 

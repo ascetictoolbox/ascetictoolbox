@@ -31,7 +31,7 @@ import java.util.List;
  */
 public abstract class Host {
 
-    protected String hostname;
+    protected final String hostname;
     protected int totalCpus;
     protected double totalMemoryMb;
     protected double totalDiskGb;
@@ -69,19 +69,12 @@ public abstract class Host {
     public boolean hasEnoughResourcesToDeployVms(List<Vm> vms) {
         int totalCpus, totalRamMb, totalDiskGb;
         totalCpus = totalRamMb = totalDiskGb = 0;
-        for (Vm vm: vms) {
+        for (Vm vm : vms) {
             totalCpus += vm.getCpus();
             totalRamMb += vm.getRamMb();
             totalDiskGb += vm.getDiskGb();
         }
         return hasEnoughResources(totalCpus, totalRamMb, totalDiskGb);
-    }
-
-    /**
-     * @param hostname host name to set
-     */
-    public void setHostname(String hostname) {
-        this.hostname = hostname;
     }
 
     /**

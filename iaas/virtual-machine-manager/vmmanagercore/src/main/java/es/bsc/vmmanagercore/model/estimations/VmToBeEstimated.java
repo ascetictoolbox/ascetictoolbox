@@ -21,57 +21,44 @@ package es.bsc.vmmanagercore.model.estimations;
 import es.bsc.vmmanagercore.model.vms.Vm;
 
 /**
- *
+ * VM for which an price/energy estimation needs to be provided.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
- *
  */
 public class VmToBeEstimated {
 
-    private String id;
-    private int vcpus;
-    private int cpuFreq;
-    private int ramMb;
-    private int diskGb;
+    private final String id;
+    private final int vcpus;
+    private final int cpuFreq;
+    private final int ramMb;
+    private final int diskGb;
+
+    public VmToBeEstimated(String id, int vcpus, int cpuFreq, int ramMb, int diskGb) {
+        this.id = id;
+        this.vcpus = vcpus;
+        this.cpuFreq = cpuFreq;
+        this.ramMb = ramMb;
+        this.diskGb = diskGb;
+    }
 
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public int getVcpus() {
         return vcpus;
     }
 
-    public void setVcpus(int vcpus) {
-        this.vcpus = vcpus;
-    }
-
     public int getCpuFreq() {
         return cpuFreq;
-    }
-
-    public void setCpuFreq(int cpuFreq) {
-        this.cpuFreq = cpuFreq;
     }
 
     public int getRamMb() {
         return ramMb;
     }
 
-    public void setRamMb(int ramMb) {
-        this.ramMb = ramMb;
-    }
-
     public int getDiskGb() {
         return diskGb;
-    }
-
-    public void setDiskGb(int diskGb) {
-        this.diskGb = diskGb;
     }
 
     public Vm toVm() {

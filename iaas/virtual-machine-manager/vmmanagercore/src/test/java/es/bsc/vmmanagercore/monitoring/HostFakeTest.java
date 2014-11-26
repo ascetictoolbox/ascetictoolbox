@@ -137,13 +137,6 @@ public class HostFakeTest {
     }
 
     @Test
-    public void setGetHostName() {
-        HostFake hostInfo = new HostFake("hostName", 4, 4096, 4, 2, 2048, 2);
-        hostInfo.setHostname("newHostName");
-        assertEquals("newHostName", hostInfo.getHostname());
-    }
-
-    @Test
     public void getTotalCpus() {
         HostFake hostInfo = new HostFake("hostName", 4, 4096, 4, 2, 2048, 2);
         assertTrue(hostInfo.getTotalCpus() == 4);

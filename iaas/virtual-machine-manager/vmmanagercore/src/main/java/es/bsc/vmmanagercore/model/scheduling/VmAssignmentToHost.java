@@ -34,8 +34,8 @@ import java.util.List;
  */
 public class VmAssignmentToHost {
 
-    private Vm vm;
-    private Host host;
+    private final Vm vm;
+    private final Host host;
 
     /**
      * Class constructor.

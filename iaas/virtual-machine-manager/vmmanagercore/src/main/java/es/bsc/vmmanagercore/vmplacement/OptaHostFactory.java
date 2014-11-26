@@ -33,7 +33,9 @@ public class OptaHostFactory {
         throw new AssertionError();
     }
 
-    private static final Map<String, es.bsc.vmplacement.domain.Host> optaHosts = new HashMap<>(); // hosts already created
+    // hosts already created
+    private static final Map<String, es.bsc.vmplacement.domain.Host> optaHosts = new HashMap<>();
+
     private static Long optaHostId = (long) 0;
 
     public static es.bsc.vmplacement.domain.Host getOptaHost(es.bsc.vmmanagercore.monitoring.Host host) {
