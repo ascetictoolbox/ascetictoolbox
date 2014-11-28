@@ -23,15 +23,15 @@ public class DataEventDAOImpl implements DataeEventDAO {
 	private static String SQL_CREATE="CREATE TABLE IF NOT EXISTS DATAEVENT (applicationid varchar(50),deploymentid varchar(50),"
 			+ "vmid varchar(50), eventid varchar(50), data varchar(100), starttime bigint,endtime bigint, energy double)";
 	private static String SQL_INSERT="insert into DATAEVENT (applicationid,deploymentid,vmid, data, starttime,endtime, energy,eventid ) values (?,?,?, ?, ?, ?, ?,?) ";
-	private static String SQL_Q_APPID="select * from DATAEVENT where applicationid = ?";
-	private static String SQL_Q_APPIDTime="select * from DATAEVENT where applicationid = ? and starttime >= ? and starttime <= ?";
-	private static String SQL_Q_DEPID="select * from DATAEVENT where deploymentid = ?";
-	private static String SQL_Q_VMID="select * from DATAEVENT where vmid = ?";
+	private static String SQL_Q_APPID="select * from DATAEVENT where applicationid = ? and vmid = ? and eventid = ?";
+	private static String SQL_Q_APPIDTime="select * from DATAEVENT where applicationid = ? and vmid = ? and eventid = ? and starttime >= ? and starttime <= ?";
+	private static String SQL_Q_DEPID="select * from DATAEVENT where deploymentid = ? and vmid = ? and eventid = ?";
+	private static String SQL_Q_VMID="select * from DATAEVENT where vmid = ? and eventid = ?";
 	private static String SQL_FIRST_EV="select min(starttime) from DATAEVENT where applicationid = ? and deploymentid = ? and eventid = ?";
-	
+	private static String SQL_LAST_APP ="select max(endtime) from DATAEVENT where applicationid = ? ";
 	private static String SQL_FIRST_EV_VM="select min(starttime) from DATAEVENT where applicationid = ? and deploymentid = ? and vmid = ? and eventid = ?";
-	private static String SQL_LAST_EV_VM="select max(endtime) from DATAEVENT where applicationid = ? and deploymentid = ? and vmid = ? and eventid = ?";
-	private static String SQL_LAST_EV="select max(endtime) from DATAEVENT where applicationid = ? and deploymentid = ? and eventid = ?";
+	//private static String SQL_LAST_EV_VM="select max(endtime) from DATAEVENT where applicationid = ? and deploymentid = ? and vmid = ? and eventid = ?";
+	//private static String SQL_LAST_EV="select max(endtime) from DATAEVENT where applicationid = ? and deploymentid = ? and eventid = ?";
 	private static String SQL_Q_LASTVM="select max(starttime) from DATAEVENT where applicationid = ? and vmid = ? and eventid = ?";
 	private static String SQL_Q_LASTEV="select max(starttime) from DATAEVENT where applicationid = ? and eventid = ?";
 	private static String SQL_COUNT_EV="select IFNULL(count(*),0) from DATAEVENT where applicationid = ? and deploymentid = ? and eventid = ?";
@@ -42,9 +42,9 @@ public class DataEventDAOImpl implements DataeEventDAO {
 	
 	@Override
 	public void initialize() {
-		jdbcTemplate.execute(SQL_DROP);
-		jdbcTemplate.execute(SQL_CREATE);
-		jdbcTemplate.execute(SQL_CLEAN);
+		//jdbcTemplate.execute(SQL_DROP);
+		//jdbcTemplate.execute(SQL_CREATE);
+		//jdbcTemplate.execute(SQL_CLEAN);
 	    LOGGER.debug("Created table DATAEVENT");
 	}
 	
@@ -64,35 +64,35 @@ public class DataEventDAOImpl implements DataeEventDAO {
 	}
 
 	@Override
-	public List<DataEvent> getByApplicationId(String applicationid) {
+	public List<DataEvent> getByApplicationId(String applicationid,String vmid,String eventid) {
 		try{
-			return jdbcTemplate.query(SQL_Q_APPID,new Object[]{applicationid}, new DataEventMapper());
+			return jdbcTemplate.query(SQL_Q_APPID,new Object[]{applicationid,vmid,eventid}, new DataEventMapper());
 		}catch (Exception e){
 			return null;
 		}
 	}
 	@Override
-	public List<DataEvent> getByApplicationIdTime(String applicationid,Timestamp start,Timestamp end) {
+	public List<DataEvent> getByApplicationIdTime(String applicationid,String vmid, String eventid ,Timestamp start,Timestamp end) {
 		try{
 			LOGGER.info("times "+start.getTime()+" " + end.getTime());
-			return jdbcTemplate.query(SQL_Q_APPIDTime,new Object[]{applicationid,start.getTime(),end.getTime()}, new DataEventMapper());
+			return jdbcTemplate.query(SQL_Q_APPIDTime,new Object[]{applicationid,vmid,eventid,start.getTime(),end.getTime()}, new DataEventMapper());
 		}catch (Exception e){
 			return null;
 		}
 	}
 	@Override
-	public List<DataEvent> getByDeploymentId(String deploymentyid) {
+	public List<DataEvent> getByDeploymentId(String deploymentyid,String vmid, String eventid) {
 		try{
-			return jdbcTemplate.query(SQL_Q_DEPID,new Object[]{deploymentyid}, new DataEventMapper());
+			return jdbcTemplate.query(SQL_Q_DEPID,new Object[]{deploymentyid,vmid,eventid}, new DataEventMapper());
 		}catch (Exception e){
 			return null;
 		}
 	}
 
 	@Override
-	public List<DataEvent> getByVMId(String vmid) {
+	public List<DataEvent> getByVMId(String vmid,String eventid) {
 		try{
-			return jdbcTemplate.query(SQL_Q_VMID,new Object[]{vmid}, new DataEventMapper());
+			return jdbcTemplate.query(SQL_Q_VMID,new Object[]{vmid,eventid}, new DataEventMapper());
 		}catch (Exception e){
 			return null;
 		}	
@@ -158,6 +158,20 @@ public class DataEventDAOImpl implements DataeEventDAO {
 			return res;
 		}catch (Exception e){
 			return 0;
+		}
+	}
+
+	@Override
+	public Timestamp getLastByApplicationId(String applicationid) {
+		Long res;
+		try{
+			
+			res =	jdbcTemplate.queryForObject(SQL_LAST_APP,new Object[]{applicationid}, Long.class);
+
+			if (res==null)return null;
+			return new Timestamp(res);
+		}catch (Exception e){
+			return null;
 		}
 	}
 

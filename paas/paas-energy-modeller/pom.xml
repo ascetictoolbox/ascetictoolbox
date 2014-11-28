@@ -115,7 +115,7 @@
 			<version>${paasem.jmeter}</version>
 		</dependency>
 		<dependency>
-			<groupId>eu.ascetic.iaas</groupId>
+			<groupId>eu.ascetic.utils</groupId>
 			<artifactId>zabbix-api</artifactId>
 			<version>0.1-SNAPSHOT</version>
 		</dependency>

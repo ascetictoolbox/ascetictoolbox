@@ -12,7 +12,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.TimerTask;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
@@ -30,9 +29,8 @@ import eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.DataConsump
 import eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.DataEventDAOImpl;
 import eu.ascetic.asceticarchitecture.paas.component.common.model.DataConsumption;
 import eu.ascetic.asceticarchitecture.paas.component.common.model.DataEvent;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.DataCollectorTaskInterface;
 
-public class DataCollector extends TimerTask implements DataCollectorTaskInterface {
+public class DataCollector  {
 
 	private DataConsumptionDAOImpl dataconsumption;
 	private DataEventDAOImpl dataevent;
@@ -46,14 +44,14 @@ public class DataCollector extends TimerTask implements DataCollectorTaskInterfa
 	private ZabbixClient zCli ;
 	
 
-	@Override
+	
 	public void handleConsumptionDataInterval(String applicationid, List<String> vm, String deploymentid, Timestamp start, Timestamp end) {
 		for (String virtmac : vm){
 			loadVMData(applicationid, deploymentid,virtmac,start,end);
 		}
 	}
 
-	@Override
+	
 	public void handleConsumptionData(String applicationid, List<String> vm, String deploymentid) {
 		for (String vmid : vm){
 			loadVMData(applicationid, deploymentid,vmid,null,null);
@@ -86,7 +84,7 @@ public class DataCollector extends TimerTask implements DataCollectorTaskInterfa
 	}
 	
 	
-	@Override
+	
 	public void setup() {
 		try {
 			 url = new URL(AMPath);
@@ -98,20 +96,10 @@ public class DataCollector extends TimerTask implements DataCollectorTaskInterfa
 	    
 	}
 	
-
-	
-
-	@Override
 	public void handleEventData(String applicationid, String deploymentid,String vmid,String eventid) {
 		logger.info("select * from DATAEVENT where applicationid = ? getting data task");
 		Timestamp lastts=null;
-		if ( vmid ==""){
-			 lastts = dataevent.getLastEventForVM(applicationid, vmid, eventid);
-		} else {
-			 lastts = dataevent.getLastEventForVM(applicationid, null, eventid);
-		}
-		
-		
+		lastts = dataevent.getLastByApplicationId(applicationid);	
 		
 		
 		String requestEntity;
@@ -126,7 +114,7 @@ public class DataCollector extends TimerTask implements DataCollectorTaskInterfa
 		
 		HttpURLConnection connection;
 		try {
-			logger.debug("App monitor connection on "+url.getHost() + url.getPort() + url.getPath() + url.getProtocol());
+			logger.info("App monitor connection on "+url.getHost() + url.getPort() + url.getPath() + url.getProtocol());
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setDoOutput(true);
 			connection.setDoInput(true);
@@ -154,9 +142,9 @@ public class DataCollector extends TimerTask implements DataCollectorTaskInterfa
 		    long time;
 		    for (JsonElement el : entries){
 		    	JsonObject jo = (JsonObject) el;
-		    	logger.debug("id" + jo.getAsJsonObject("_id"));
+		    	logger.info("id" + jo.getAsJsonObject("_id"));
 		    	logger.debug("appId" + jo.getAsJsonPrimitive("appId"));
-		    	logger.debug("nodeId" + jo.getAsJsonPrimitive("nodeId"));
+		    	logger.info("nodeId" + jo.getAsJsonPrimitive("nodeId"));
 		    	logger.debug("data" + jo.getAsJsonObject("data"));
 		    	logger.debug("timestamp" + jo.getAsJsonPrimitive("timestamp"));
 		    	logger.debug("endtime" + jo.getAsJsonPrimitive("endtime"));
@@ -176,12 +164,10 @@ public class DataCollector extends TimerTask implements DataCollectorTaskInterfa
 		    		logger.warn("endtime negative skipping this event");
 		    	} else {
 		    		if (vmid!=""){
-			    		if (jo.getAsJsonPrimitive("nodeId").getAsString().equals(vmid)){
+			    		
 			    			dataevent.save(data);
 			    			//logger.info("saving "+data.getEventid()+data.getApplicationid()+data.getBegintime()+data.getEndtime());
-			    		}else {
-			    			logger.debug("event not in the vm");
-			    		}
+			    		
 		    		}else{
 		    			dataevent.save(data);
 		    			logger.info("saving "+data.getEventid()+data.getApplicationid()+data.getBegintime()+data.getEndtime());
@@ -198,7 +184,7 @@ public class DataCollector extends TimerTask implements DataCollectorTaskInterfa
 	}
 
 
-	@Override
+//	
 	public void handleEventData(String applicationid, String deploymentid,List<String> vm, String eventid) {
 		if (vm!=null)for (String vmid : vm)handleEventData( applicationid,  deploymentid, vmid , eventid);
 		if (vm==null)handleEventData( applicationid,  deploymentid, "" , eventid);
@@ -247,8 +233,8 @@ public class DataCollector extends TimerTask implements DataCollectorTaskInterfa
 		}else {
 			logger.info("From (need to add 000) "+item.getLastClock()+" begin "+begin);
 		}
-		if (begin>item.getLastClock()){
-			logger.info("No need to load data)");
+		if (begin>(item.getLastClock()*1000)){
+			logger.info("No need to load data");
 			return;
 		}
 		List<HistoryItem> items = zCli.getHistoryDataFromItem(itemkey, hostname, "text", begin,item.getLastClock()*1000);
@@ -403,11 +389,6 @@ public class DataCollector extends TimerTask implements DataCollectorTaskInterfa
 		this.dataevent = dataevent;
 	}
 	
-	
-	@Override
-	public void run() {
-		
-	}	
 
 	
 }

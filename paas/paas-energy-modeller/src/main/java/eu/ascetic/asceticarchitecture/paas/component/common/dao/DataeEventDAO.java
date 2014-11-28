@@ -18,11 +18,13 @@ public interface DataeEventDAO {
 	
     public void save(DataEvent data);
     
-    public List<DataEvent> getByApplicationId(String applicationid);
+    public List<DataEvent> getByApplicationId(String applicationid,String vmid,String eventid);
     
-    public List<DataEvent> getByDeploymentId(String deploymentyid);
+    public Timestamp getLastByApplicationId(String applicationid);
     
-    public List<DataEvent> getByVMId(String vmid);
+    public List<DataEvent> getByDeploymentId(String deploymentyid,String vmid, String eventid);
+    
+    public List<DataEvent> getByVMId(String vmid,String eventid);
     
     public Timestamp getLastEventForVM(String applicationid, String vmid, String eventid);
 	
@@ -32,7 +34,7 @@ public interface DataeEventDAO {
 	
 	public int getEventCountVM(String applicationid,String deploymentid, String vmid, String eventid);
 
-	List<DataEvent> getByApplicationIdTime(String applicationid,Timestamp start, Timestamp end);
+	List<DataEvent> getByApplicationIdTime(String applicationid,String vmid,String eventid,Timestamp start, Timestamp end);
 	
 	
     

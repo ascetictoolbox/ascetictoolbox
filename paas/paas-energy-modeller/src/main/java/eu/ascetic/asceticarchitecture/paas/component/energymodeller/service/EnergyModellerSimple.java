@@ -16,12 +16,9 @@ import java.util.Vector;
 import org.apache.log4j.Logger;
 
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.HistoryItem;
-import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Item;
 import eu.ascetic.asceticarchitecture.paas.component.common.database.PaaSEMDatabaseManager;
-import eu.ascetic.asceticarchitecture.paas.component.common.model.DataConsumption;
 import eu.ascetic.asceticarchitecture.paas.component.common.model.DataEvent;
 import eu.ascetic.asceticarchitecture.paas.component.common.model.GenericValuesInterpolator;
-import eu.ascetic.asceticarchitecture.paas.component.common.model.TimeEnergyInterpolator;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EMSettings;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EnergySample;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Sample;
@@ -67,13 +64,10 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 			}			
 			LOGGER.info("Application consumed " + String.format( "%.2f", total_energy ));
 		} else {
-			//  also ensure event data is loaded
-			this.loadEnergyData(applicationid, vmids);
 			this.loadEventData(applicationid, vmids,eventid);
-			LOGGER.debug("## Loading events data ##");
-			// if more vm are there, then is the sum of the average consumption over each vm
+			LOGGER.debug("## Loaded events data ##");
 			for (String vm : vmids) {
-				LOGGER.debug("This events consumed on VM "+vm); 
+				LOGGER.debug("Analyzing events on VM "+vm); 
 				total_energy = total_energy + energyEstimationForEventInVM(providerid, applicationid, vm, eventid);
 				
 			}
@@ -149,7 +143,7 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 					totalp = totalp + power;
 				}
 				if (cevents<=0)return 0;
-				return totalp/cevents;
+				return totalp;
 			}
 		}
 	}
@@ -376,7 +370,7 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 			
 			return energy;
 		} else {
-			this.loadEnergyData(applicationid, vmids);
+			this.loadEventData(applicationid, vmids,eventid);
 			LOGGER.info("Energy estimation for " + applicationid + " and event " + eventid);
 			LOGGER.info("############################Loading events data "); 
 
@@ -419,8 +413,8 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 			}
 				
 		}
-		if (eventnum==0)return -1;
-		LOGGER.info("Wh : "+ generalAvg + " over "+eventnum);
+		if (eventnum==0)return 0;
+		LOGGER.info("On the VM "+vmid+" The event " +eventid+"eventid"+"Consumed total Wh : "+ generalAvg + " over "+eventnum+"with an average Wh for event "+(generalAvg/eventnum));
 		
 		
 		return (generalAvg/eventnum );		
@@ -436,7 +430,8 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 		for (DataEvent de: events){
 			
 			double energy = averageEventConsumption(de.getApplicationid(),de.getVmid(),de.getBegintime(),de.getEndtime());
-			//if (energy > 0)LOGGER.info("This event : "+ de.getBegintime() + " and " +de.getEndtime() + " energy "+energy);
+			//if (energy > 0)LOGGER.info("This event : "+de.getBegintime() + " and " +de.getEndtime() + " energy "+energy);
+			
 			if (energy >0){
 				eventnum++;
 				generalAvg = generalAvg + energy;
@@ -476,8 +471,6 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 				eSamples.add(es);
 			}
 			
-			
-			
 		}
 		
 		LOGGER.info("Total samples : "+ eSamples.size());
@@ -493,7 +486,7 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 	}
 	
 	public double averageEventConsumption(String appid, String vmid,long start, long end){
-		
+		LOGGER.info("consumption of this event from "+start+" to "+end);
 		double energy = energyService.getAverageInInterval(appid, vmid, null, start, end);
 		return energy;
 	}

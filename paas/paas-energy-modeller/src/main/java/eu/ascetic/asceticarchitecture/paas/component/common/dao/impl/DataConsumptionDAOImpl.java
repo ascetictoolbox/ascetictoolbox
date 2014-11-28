@@ -40,19 +40,26 @@ public class DataConsumptionDAOImpl implements DataConsumptionDAO {
 	private static String SQL_Q_FIRSTVM="select min(time) from DATACONSUMPTION where applicationid = ? and vmid like ?";
 	private static String SQL_Q_EMID="select * from DATACONSUMPTION where eventid = ?";
 	private static String SQL_SUM_DEPLOY="select IFNULL(sum(vmenergy),0) from DATACONSUMPTION where applicationid = ? and deploymentid = ?";
-	private static String SQL_SUM_VM="select IFNULL(sum(vmenergy),0) from DATACONSUMPTION where applicationid = ? and  vmid like ?";
+	//private static String SQL_SUM_VM="select IFNULL(sum(vmenergy),0) from DATACONSUMPTION where applicationid = ? and  vmid like ?";
 	private static String SQL_AVG_VM="select IFNULL(sum(vmenergy),0) from DATACONSUMPTION where applicationid = ? and  vmid like ?";
-	private static String SQL_COUNT_VM="select count(*) from DATACONSUMPTION where applicationid = ? and  vmid like ?";
+	//private static String SQL_COUNT_VM="select count(*) from DATACONSUMPTION where applicationid = ? and  vmid like ?";
 	private static String SQL_E_SUM_VMTIME="select IFNULL(sum(vmenergy),0) from DATACONSUMPTION where applicationid = ? and vmid like ? and time >= ? and time <= ?";
 	private static String SQL_AVG_VMPOWER="select IFNULL(avg(vmpower),0) from DATACONSUMPTION where applicationid = ? and vmid like ? and time >= ? and time <= ?";
 	private static String SQL_MEASURES_VMTIME="select vmid,time,vmenergy, vmpower from DATACONSUMPTION where applicationid = ? and vmid like ? and time >= ? and time <= ?";
+	private static String SQL_Q_COUNTSAMPLES="select count(*) from DATACONSUMPTION where applicationid = ? and vmid like ? and time >= ? and time <= ?";
 	private static String SQL_CLEAN="DELETE FROM DATACONSUMPTION";
+	
+	// provided a timestamp i can get the firt sample after or before a given time
+	private static String SQL_SAMPLE_BEFORE_TIME="select max(time) from DATACONSUMPTION where applicationid = ? and vmid like ? and time <= ?";
+	private static String SQL_SAMPLE_AFTER_TIME="select min(time) from DATACONSUMPTION where applicationid = ? and vmid like ? and time >= ? ";
+	
+	private static String SQL_SAMPLE_AT_TIME="select vmid,time,vmenergy, vmpower from DATACONSUMPTION where applicationid = ? and vmid like ? and time = ? ";
 	
 	
 	@Override
 	public void initialize() {
-		jdbcTemplate.execute(SQL_DROP);
-		jdbcTemplate.execute(SQL_CREATE);
+		//jdbcTemplate.execute(SQL_DROP);
+		//jdbcTemplate.execute(SQL_CREATE);
 		//jdbcTemplate.execute(SQL_CLEAN);
 	    LOGGER.debug("Created table DATACONSUMPTION");
 	}
@@ -302,6 +309,53 @@ public class DataConsumptionDAOImpl implements DataConsumptionDAO {
 			e.printStackTrace();
 		}
 	}
+
+	@Override
+	public int getSamplesBetweenTime(String applicationid, String vmid,	long start, long end) {
+		Integer results = jdbcTemplate.queryForObject(SQL_Q_COUNTSAMPLES,new Object[]{applicationid,vmid+"%",start,end}, Integer.class);
+		return results;
+	}
+
+	@Override
+	public EnergySample getSampleAtTime(String applicationid, String vmid,long time) {
+		try{
+			EnergySample res = jdbcTemplate.queryForObject(SQL_SAMPLE_AT_TIME,new Object[]{applicationid,vmid+"%",time}, new EnergySampleMapper());
+			if (res==null) return null;
+			LOGGER.info("Sample found ");
+			return res;
+		}catch (Exception e) {
+			return null;
+		}
+
+	}
+
+	@Override
+	public long getSampleTimeBefore(String applicationid, String vmid, long time) {
+
+		try{
+			Long results =	jdbcTemplate.queryForObject(SQL_SAMPLE_BEFORE_TIME,new Object[]{applicationid,vmid+"%",time}, Long.class);
+			LOGGER.info("Got "+results);
+			if (results==null)return 0;
+			return results;
+		}catch (Exception e) {
+			return 0;
+		}
+	}
+
+	@Override
+	public long getSampleTimeAfter(String applicationid, String vmid, long time) {
+		try{
+			Long results =	jdbcTemplate.queryForObject(SQL_SAMPLE_AFTER_TIME,new Object[]{applicationid,vmid+"%",time}, Long.class);
+			LOGGER.info("Got "+results);
+			if (results==null)return 0;
+			return results;
+		}catch (Exception e) {
+			return 0;
+		}
+
+	}
+
+
 	
 
 }

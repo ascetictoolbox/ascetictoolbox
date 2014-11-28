@@ -5,16 +5,13 @@ package eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.tas
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
 import eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.DataEventDAOImpl;
 import eu.ascetic.asceticarchitecture.paas.component.common.model.DataEvent;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EnergySample;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.DataAggregatorTaskInterface;
 
-public class EventDataAggregatorService implements DataAggregatorTaskInterface {
+public class EventDataAggregatorService {
 
 	private DataEventDAOImpl daoEvent;
 	private static final Logger logger = Logger.getLogger(EventDataAggregatorService.class);
@@ -22,7 +19,6 @@ public class EventDataAggregatorService implements DataAggregatorTaskInterface {
 	
 	
 
-	@Override
 	public double getTotal(String app, String depl, String vmid, String event) {
 		double total = daoEvent.getEventCountVM(app, depl, vmid, event);
 		logger.info("Total is "+total);
@@ -31,15 +27,15 @@ public class EventDataAggregatorService implements DataAggregatorTaskInterface {
 	
 	public List<DataEvent> getEvents(String app, String depl, String vmid, String event) {
 
-		List<DataEvent> events = daoEvent.getByApplicationId(app);
+		List<DataEvent> events = daoEvent.getByApplicationId(app,vmid,event);
 		if (events==null)return null;
-		logger.info("##################### Total events "+events.size());
+		logger.info("##################### Total events "+events.size()+"from " + vmid + " event" + event);
 		return events;
 	}
 	
 	public List<DataEvent> getEventsInTime(String app, String depl, String vmid, String event,Timestamp start,Timestamp end) {
 
-		List<DataEvent> events = daoEvent.getByApplicationIdTime(app,start,end);
+		List<DataEvent> events = daoEvent.getByApplicationIdTime(app,vmid,event,start,end);
 		if (events==null)return null;
 		logger.info("##################### Total is "+events.size());
 		return events;
@@ -50,22 +46,6 @@ public class EventDataAggregatorService implements DataAggregatorTaskInterface {
 		this.daoEvent = daoEvent;
 	}
 
-	@Override
-	public double getAverage(String app, String depl, String vmid, String event) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
-	@Override
-	public double getAverageInInterval(String app,  String vmid, String event, long start, long end) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-//	@Override
-//	public List<EnergySamples> getSamplesInInterval(String app, String depl,String vmid, String event, Timestamp start, Timestamp end, long freq) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
 
 }

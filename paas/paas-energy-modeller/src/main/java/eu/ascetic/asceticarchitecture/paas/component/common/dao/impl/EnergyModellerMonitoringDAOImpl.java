@@ -34,8 +34,8 @@ public class EnergyModellerMonitoringDAOImpl implements EnergyModellerMonitoring
 	
 	@Override
 	public void initialize() {
-		jdbcTemplate.execute(SQL_CREATE);
-		jdbcTemplate.execute(SQL_CLEAN);
+		//jdbcTemplate.execute(SQL_CREATE);
+		//jdbcTemplate.execute(SQL_CLEAN);
 	    LOGGER.debug("Created table EMONITORING");
 	}
 

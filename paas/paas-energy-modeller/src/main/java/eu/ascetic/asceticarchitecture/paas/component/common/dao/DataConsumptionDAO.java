@@ -45,8 +45,14 @@ public interface DataConsumptionDAO {
 		public double getTotalEnergyForVM(String applicationid, String deploymentid,String vmid);
 
 		double getTotalEnergyForVMTime(String applicationid,String vmid, Timestamp start, Timestamp end);
-
-		//List<EnergySamples> getDataSamplesVM(String applicationid, String deployment,String vmid, Timestamp start, Timestamp end);
+		
+		int getSamplesBetweenTime(String applicationid,String vmid, long start, long end);
+		
+		EnergySample getSampleAtTime(String applicationid,String vmid, long time);
+		
+		long getSampleTimeBefore(String applicationid,String vmid, long time);
+		
+		long getSampleTimeAfter(String applicationid,String vmid, long time);
 
 		void insertBatch(List<DataConsumption> samples);
 	

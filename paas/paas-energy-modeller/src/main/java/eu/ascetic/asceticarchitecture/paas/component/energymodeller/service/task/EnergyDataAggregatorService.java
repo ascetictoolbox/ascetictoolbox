@@ -10,9 +10,8 @@ import org.apache.log4j.Logger;
 
 import eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.DataConsumptionDAOImpl;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EnergySample;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.DataAggregatorTaskInterface;
 
-public class EnergyDataAggregatorService implements DataAggregatorTaskInterface {
+public class EnergyDataAggregatorService {
 
 	private DataConsumptionDAOImpl dataDAO;
 	private static final Logger logger = Logger.getLogger(EnergyDataAggregatorService.class);
@@ -22,46 +21,72 @@ public class EnergyDataAggregatorService implements DataAggregatorTaskInterface 
 	}
 	
 
-	@Override
 	public double getTotal(String app, String depl, String vmid,String event) {
 		double result = dataDAO.getTotalEnergyForVM(app, depl, vmid);
 		return result;
 	}
 
 
-	@Override
 	public double getAverage(String app, String depl, String vmid, String event) {
 		double result = dataDAO.getTotalEnergyForVM(app, depl, vmid);
-//		Timestamp min = dataDAO.getFirsttConsumptionForVM(app, vmid);
-//		Timestamp max= dataDAO.getLastConsumptionForVM(app, vmid);
-//		if (min == null){
-//			return -1;
-//		}
-//		if (max == null){
-//			return -1;
-//		}
-		//double diff = max.getTime()-min.getTime();
-		//diff = diff / 3600000;
-		
-		//if (result>0)logger.info("Total is "+result + " over "+diff);
-		//logger.info("Average is "+result );
-		//if (diff==0)return 0;
-		//return result/diff;
 		return result;
 	}
 
-	@Override
 	public double getAverageInInterval(String app, String vmid,String event, long start, long end) {
+		
+		int samples = dataDAO.getSamplesBetweenTime( app,vmid,start, end);
+		
+		if (samples ==0){
+			logger.info("No samples available for the given interval "+start+ " to "+end+" estimating consumption from available samples");
+			long previoussampletime = dataDAO.getSampleTimeBefore(app, vmid, start);
+			long aftersampletime = dataDAO.getSampleTimeAfter(app, vmid, end);
+			if (previoussampletime == 0){
+				logger.info("No samples before this interval");
+				return 0;
+			}
+			if (aftersampletime == 0){
+				logger.info("No samples after this interval");
+				return 0;
+			}
+			EnergySample esfirst = dataDAO.getSampleAtTime(app, vmid, previoussampletime);
+			EnergySample eslast = dataDAO.getSampleAtTime(app, vmid, previoussampletime);
+			
+			logger.info("The lower bound at "+esfirst.getTimestampBeging()+" value "+esfirst.getP_value());
+			logger.info("The upper bound at "+eslast.getTimestampBeging()+" value "+eslast.getP_value());
+			double avgpower = (esfirst.getP_value()+eslast.getP_value())/2;
+			double energy = avgpower * ((end-start))/3600000;
+			
+			logger.info("This interval has consumed energy Wh "+energy);
+			return energy;
+			
+		} else{
+			logger.info("Samples available for the given interval " + samples);
+			if (samples ==1){
+				logger.info("Only one sample available for the given interval "+start+ " to "+end+" estimating consumption from available samples");
+				double avgpower = dataDAO.getPowerInIntervalForVM(app, vmid, new Timestamp(start),  new Timestamp(end));
+				logger.info("Power is "+avgpower);
+				
+				
+				double energy = avgpower * ((end-start))/3600000;
+				
+				logger.info("This interval has consumed energy Wh "+energy);
+				return energy;
+				
+				
+			}
+			
+			
+		}
+		
 		double result = dataDAO.getTotalEnergyForVMTime(app, vmid,new Timestamp(start),new Timestamp(end));
 		
+
+		
 		logger.debug("Total is "+result);
-		//logger.info("Per hour is "+result );
-		//double diff = end -start;
-		//logger.debug("from "+start + " to "+end);
-		//diff = diff / 3600000;
-		//if (result>0)logger.info("Total is "+result + " over "+diff);
-		//if (diff==0)return 0;
-		//return result/diff;
+		double diff = end -start;
+		logger.debug("from "+start + " to "+end);
+		diff = diff / 3600000;
+		if (result>0)logger.info("Total is "+result + " over "+diff);
 		return result;
 		
 	}

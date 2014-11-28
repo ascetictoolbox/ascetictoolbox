@@ -17,7 +17,7 @@ public class EnergySampleMapper implements RowMapper<EnergySample>{
 		
 		EnergySample data = new EnergySample();
 		data.setVmid(result.getString("vmid"));
-		data.setTimestampBeging(result.getLong("time")*1000);
+		data.setTimestampBeging(result.getLong("time"));
 		data.setE_value(result.getDouble("vmenergy"));
 		data.setP_value(result.getDouble("vmpower"));
 		return data;

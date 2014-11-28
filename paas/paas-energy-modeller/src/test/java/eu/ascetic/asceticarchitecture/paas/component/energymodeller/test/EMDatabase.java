@@ -76,11 +76,11 @@ public class EMDatabase {
 		data.setData("generic data");
 		data.setVmid("vm1");
 		dataEventDAO.save(data);
-		List<DataEvent> result = dataEventDAO.getByApplicationId("test1");
+		List<DataEvent> result = dataEventDAO.getByApplicationId("test1","vm1","event1");
 		Assert.assertEquals(result.size(),1);
-		result = dataEventDAO.getByDeploymentId("deployment1");
+		result = dataEventDAO.getByDeploymentId("deployment1","vm1","event1");
 		Assert.assertEquals(result.size(),1);
-		result = dataEventDAO.getByVMId("vm1");
+		result = dataEventDAO.getByVMId("vm1","event1");
 		Assert.assertEquals(result.size(),1);
 		Timestamp tsev = dataEventDAO.getLastEventForVM("test1", "vm1", "event1");
 		Assert.assertEquals(tsev,tsbeg);

@@ -16,7 +16,8 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Sam
  */
 
 public interface PaaSEnergyModeller {
-	
+
+	// used
 
 	/**
 	 * @param providerid
@@ -25,6 +26,16 @@ public interface PaaSEnergyModeller {
 	 * @return the value for total energy consumption of the provided application,requries the list of vmids to compute all informations
 	 */
 	public double energyApplicationConsumption( String providerid, String applicationid,List<String> vmids, String eventid);	
+	/**
+	 * @param providerid
+	 * @param applicationid
+	 * @param deploymentid
+	 * @param eventid
+	 * @return the value for average energy estimation of the provided application,running on the vm list provided. eventid can be specified 
+	 */
+	public double energyEstimation( String providerid, String applicationid,List<String> vmids, String eventid);	
+
+	// used
 	
 	/**
 	 * @param providerid
@@ -54,14 +65,6 @@ public interface PaaSEnergyModeller {
 	public double energyApplicationConsumptionTimeInterval( String providerid, String applicationid,String vmids, String eventid, Timestamp start, Timestamp end);	
 	
 	
-	/**
-	 * @param providerid
-	 * @param applicationid
-	 * @param deploymentid
-	 * @param eventid
-	 * @return the value for average energy estimation of the provided application,running on the vm list provided. eventid can be specified 
-	 */
-	public double energyEstimation( String providerid, String applicationid,List<String> vmids, String eventid);	
 	
 	/**
 	 * @param providerid
