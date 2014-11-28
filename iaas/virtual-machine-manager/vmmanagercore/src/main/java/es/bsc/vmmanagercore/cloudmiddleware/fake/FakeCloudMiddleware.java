@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -42,9 +43,12 @@ public class FakeCloudMiddleware implements CloudMiddleware {
     // Note: The methods that perform operations on VMs are not needed.
     // They would be needed if knowing the current state of a Vm ("active", "deleting", etc.) was required.
 
-    private static List<HostFake> hosts = new ArrayList<>();
-    private static List<VmDeployed> deployedVms = new ArrayList<>();
-    private static List<ImageUploaded> images = new ArrayList<>();
+    // Several threads can access the following attributes at the same time.
+    // We need to make sure that we will not fall into an inconsistent state (for example, trying to assign
+    // twice the same IDs. Therefore, we need to use the java.util.concurrent classes.
+    private static List<HostFake> hosts = new CopyOnWriteArrayList<>();
+    private static List<VmDeployed> deployedVms = new CopyOnWriteArrayList<>();
+    private static List<ImageUploaded> images = new CopyOnWriteArrayList<>();
 
     // For assigning IDs and IPs manually
     private static AtomicInteger nextVmId = new AtomicInteger(0);
