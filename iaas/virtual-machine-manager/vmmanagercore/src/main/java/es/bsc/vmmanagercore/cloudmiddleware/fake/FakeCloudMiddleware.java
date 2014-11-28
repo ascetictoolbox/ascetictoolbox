@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * This class simulates a fake middleware. It stores all the information about hosts and VMs in memory, without
@@ -46,9 +47,9 @@ public class FakeCloudMiddleware implements CloudMiddleware {
     private static List<ImageUploaded> images = new ArrayList<>();
 
     // For assigning IDs and IPs manually
-    private static int nextVmId = 0;
-    private static int nextVmIp = 0; // Invalid IPs but it does not matter
-    private static int nextImageId = 0;
+    private static AtomicInteger nextVmId = new AtomicInteger(0);
+    private static AtomicInteger nextVmIp = new AtomicInteger(0); // Invalid IPs but it does not matter
+    private static AtomicInteger nextImageId = new AtomicInteger(0);
 
     public FakeCloudMiddleware(List<HostFake> hosts) {
         for (HostFake host: hosts) {
@@ -77,8 +78,8 @@ public class FakeCloudMiddleware implements CloudMiddleware {
                 vm.getDiskGb(),
                 vm.getInitScript(),
                 vm.getApplicationId(),
-                Integer.toString(nextVmId),
-                Integer.toString(nextVmIp),
+                nextVmId.toString(),
+                nextVmIp.toString(),
                 "active",
                 new Date(),
                 hostname
@@ -86,8 +87,8 @@ public class FakeCloudMiddleware implements CloudMiddleware {
 
         deployedVms.add(newVm);
         host.updateAssignedResourcesAfterVmDeployed(vm);
-        ++nextVmId;
-        ++nextVmIp;
+        nextVmId.getAndIncrement();
+        nextVmIp.getAndIncrement();
         return newVm.getId();
     }
 
@@ -175,11 +176,11 @@ public class FakeCloudMiddleware implements CloudMiddleware {
     @Override
     public String createVmImage(ImageToUpload imageToUpload) {
         ImageUploaded newImage = new ImageUploaded(
-                Integer.toString(nextImageId),
+                nextImageId.toString(),
                 imageToUpload.getName(),
                 "active");
         images.add(newImage);
-        ++nextImageId;
+        nextImageId.getAndIncrement();
         return newImage.getId();
     }
 

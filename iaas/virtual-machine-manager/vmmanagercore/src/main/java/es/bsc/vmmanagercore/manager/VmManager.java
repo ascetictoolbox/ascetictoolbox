@@ -18,7 +18,6 @@
 
 package es.bsc.vmmanagercore.manager;
 
-import com.google.gson.Gson;
 import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddleware;
 import es.bsc.vmmanagercore.cloudmiddleware.fake.FakeCloudMiddleware;
 import es.bsc.vmmanagercore.cloudmiddleware.openstack.OpenStackCredentials;
@@ -54,7 +53,10 @@ import es.bsc.vmplacement.domain.ClusterState;
 import es.bsc.vmplacement.lib.OptaVmPlacement;
 import es.bsc.vmplacement.lib.OptaVmPlacementImpl;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -81,7 +83,6 @@ public class VmManager {
     private SelfAdaptationManager selfAdaptationManager;
     private List<Host> hosts = new ArrayList<>();
     private SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-    private Gson gson = new Gson();
 
     private OptaVmPlacement optaVmPlacement = new OptaVmPlacementImpl(); // Library used for the VM Placement
 
@@ -92,8 +93,6 @@ public class VmManager {
     private static final String ASCETIC_SCRIPTS_PATH = "/DFS/ascetic/vm-scripts/";
     private static final String ASCETIC_ZABBIX_SCRIPT_PATH = "/DFS/ascetic/vm-scripts/zabbix_agents.sh";
     private static final String[] ASCETIC_DEFAULT_SEC_GROUPS = {"vmm_allow_all", "default"};
-
-    private static final String FAKE_HOSTS_DESCRIPTIONS_PATH = "/hostsFakeMonitoring.json";
 
     private static boolean periodicSelfAdaptationThreadRunning = false;
 
@@ -568,7 +567,7 @@ public class VmManager {
                 generateZabbixHosts(hostnames);
                 break;
             case FAKE:
-                generateFakeHosts();
+                generateFakeHosts(hostnames);
                 break;
             default:
                 break;
@@ -577,7 +576,7 @@ public class VmManager {
 
     private void generateOpenStackHosts(String[] hostnames) {
         for (String hostname: hostnames) {
-            hosts.add(HostFactory.getHost(hostname, HostType.OPENSTACK, (OpenStackJclouds) cloudMiddleware));
+            hosts.add(HostFactory.getHost(hostname, HostType.OPENSTACK, cloudMiddleware));
         }
     }
 
@@ -593,24 +592,9 @@ public class VmManager {
         }
     }
 
-    private void generateFakeHosts() {
-        BufferedReader bReader = new BufferedReader(new InputStreamReader(
-                this.getClass().getResourceAsStream(FAKE_HOSTS_DESCRIPTIONS_PATH)));
-        List<HostFake> hostsFromFile = Arrays.asList(gson.fromJson(bReader, HostFake[].class));
-        for (Host host: hostsFromFile) {
-            HostFake hostFake = new HostFake(host.getHostname(),
-                    host.getTotalCpus(),
-                    (int) host.getTotalMemoryMb(),
-                    (int) host.getTotalDiskGb(),
-                    0, 0, 0);
-
-            hosts.add(hostFake);
-            ((FakeCloudMiddleware) cloudMiddleware).addHost(hostFake);
-        }
-        try {
-            bReader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+    private void generateFakeHosts(String[] hostnames) {
+        for (String hostname: hostnames) {
+            hosts.add(HostFactory.getHost(hostname, HostType.FAKE, cloudMiddleware));
         }
     }
 

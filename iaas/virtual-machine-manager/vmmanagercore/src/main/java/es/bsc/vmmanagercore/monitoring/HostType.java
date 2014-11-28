@@ -24,5 +24,5 @@ package es.bsc.vmmanagercore.monitoring;
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  */
 public enum HostType {
-    GANGLIA, ZABBIX, OPENSTACK
+    GANGLIA, ZABBIX, OPENSTACK, FAKE
 }
