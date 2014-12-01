@@ -21,7 +21,9 @@ import eu.ascetic.asceticarchitecture.paas.component.common.database.table.DataE
 import eu.ascetic.asceticarchitecture.paas.component.common.model.interpolator.GenericValuesInterpolator;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.ApplicationSample;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EMSettings;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EnergySample;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EventSample;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Sample;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.PaaSEnergyModeller;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.task.DataCollector;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.task.EnergyDataAggregatorService;
@@ -563,6 +565,38 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 	
 	private void loadEnergyData(String appid, List<String> vm){
 		datacollector.handleConsumptionData(appid, vm, "deployment1");
+	}
+
+	@Override
+	public double applicationConsumptionTimeInterval(String providerid,
+			String applicationid, String vmids, String eventid, String unit,
+			Timestamp start, Timestamp end) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public List<EnergySample> energyApplicationConsumptionData(
+			String providerid, String applicationid, String vmids,
+			String eventid, Timestamp start, Timestamp end) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Sample> applicationData(String providerid,
+			String applicationid, String vmids, String eventid,
+			long samplingperiod, Timestamp start, Timestamp end) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public double energyApplicationConsumptionTimeInterval(String providerid,
+			String applicationid, String vmids, String eventid,
+			Timestamp start, Timestamp end) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 
