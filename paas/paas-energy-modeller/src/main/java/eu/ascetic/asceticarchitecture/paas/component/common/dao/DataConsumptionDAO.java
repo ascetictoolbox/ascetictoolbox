@@ -8,8 +8,8 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import eu.ascetic.asceticarchitecture.paas.component.common.model.DataConsumption;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EnergySample;
+import eu.ascetic.asceticarchitecture.paas.component.common.database.table.DataConsumption;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.ApplicationSample;
 
 public interface DataConsumptionDAO {
     
@@ -48,7 +48,7 @@ public interface DataConsumptionDAO {
 		
 		int getSamplesBetweenTime(String applicationid,String vmid, long start, long end);
 		
-		EnergySample getSampleAtTime(String applicationid,String vmid, long time);
+		ApplicationSample getSampleAtTime(String applicationid,String vmid, long time);
 		
 		long getSampleTimeBefore(String applicationid,String vmid, long time);
 		

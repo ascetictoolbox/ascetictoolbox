@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
-import eu.ascetic.asceticarchitecture.paas.component.common.model.EnergyModellerMonitoring;
+import eu.ascetic.asceticarchitecture.paas.component.common.database.table.EnergyModellerMonitoring;
 
 public class EnergyModellerMonitoringMapper implements RowMapper<EnergyModellerMonitoring>{
 

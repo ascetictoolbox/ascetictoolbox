@@ -9,7 +9,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.DataConsumptionDAOImpl;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EnergySample;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.ApplicationSample;
 
 public class EnergyDataAggregatorService {
 
@@ -48,11 +48,11 @@ public class EnergyDataAggregatorService {
 				logger.info("No samples after this interval");
 				return 0;
 			}
-			EnergySample esfirst = dataDAO.getSampleAtTime(app, vmid, previoussampletime);
-			EnergySample eslast = dataDAO.getSampleAtTime(app, vmid, previoussampletime);
+			ApplicationSample esfirst = dataDAO.getSampleAtTime(app, vmid, previoussampletime);
+			ApplicationSample eslast = dataDAO.getSampleAtTime(app, vmid, previoussampletime);
 			
-			logger.info("The lower bound at "+esfirst.getTimestampBeging()+" value "+esfirst.getP_value());
-			logger.info("The upper bound at "+eslast.getTimestampBeging()+" value "+eslast.getP_value());
+			logger.info("The lower bound at "+esfirst.getTime()+" value "+esfirst.getP_value());
+			logger.info("The upper bound at "+eslast.getTime()+" value "+eslast.getP_value());
 			double avgpower = (esfirst.getP_value()+eslast.getP_value())/2;
 			double energy = avgpower * ((end-start))/3600000;
 			
@@ -100,7 +100,7 @@ public class EnergyDataAggregatorService {
 	
 
 	
-	public List<EnergySample> getSamplesInInterval(String app, String depl, String vmid, Timestamp start, Timestamp end) {
+	public List<ApplicationSample> getSamplesInInterval(String app, String depl, String vmid, Timestamp start, Timestamp end) {
 		return dataDAO.getDataSamplesVM(app, depl, vmid, start.getTime(), end.getTime());
 	}
 

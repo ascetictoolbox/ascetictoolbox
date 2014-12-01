@@ -3,7 +3,7 @@
  */
 package eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype;
 
-public class Sample {
+public class EventSample {
 
 	private String vmid;
 	private long timestampBeging;

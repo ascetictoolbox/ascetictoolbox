@@ -1,7 +1,7 @@
 /**
 * Copyright 2014 Hewlett-Packard Development Company, L.P.                                         
  */
-package eu.ascetic.asceticarchitecture.paas.component.common.model;
+package eu.ascetic.asceticarchitecture.paas.component.common.model.interpolator;
 
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
@@ -9,6 +9,7 @@ import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
 import eu.ascetic.asceticarchitecture.paas.component.common.dao.DataConsumptionDAO;
+import eu.ascetic.asceticarchitecture.paas.component.common.model.interfaces.Interpolator;
 
 public class WorkLoadEnergyInterpolator implements Interpolator {
 	OLSMultipleLinearRegression ols;

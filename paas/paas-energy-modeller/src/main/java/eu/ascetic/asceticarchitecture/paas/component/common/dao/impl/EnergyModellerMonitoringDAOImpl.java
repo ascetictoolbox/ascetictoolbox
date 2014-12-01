@@ -16,8 +16,8 @@ import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import eu.ascetic.asceticarchitecture.paas.component.common.dao.EnergyModellerMonitoringDAO;
+import eu.ascetic.asceticarchitecture.paas.component.common.database.table.EnergyModellerMonitoring;
 import eu.ascetic.asceticarchitecture.paas.component.common.mapper.EnergyModellerMonitoringMapper;
-import eu.ascetic.asceticarchitecture.paas.component.common.model.EnergyModellerMonitoring;
 
 public class EnergyModellerMonitoringDAOImpl implements EnergyModellerMonitoringDAO {
 

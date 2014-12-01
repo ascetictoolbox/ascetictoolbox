@@ -8,7 +8,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import eu.ascetic.asceticarchitecture.paas.component.common.model.DataEvent;
+import eu.ascetic.asceticarchitecture.paas.component.common.database.table.DataEvent;
 
 public interface DataeEventDAO {
 

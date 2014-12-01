@@ -1,7 +1,7 @@
 /**
 * Copyright 2014 Hewlett-Packard Development Company, L.P.                                         
  */
-package eu.ascetic.asceticarchitecture.paas.component.common.model;
+package eu.ascetic.asceticarchitecture.paas.component.common.database.table;
 
 import java.sql.Timestamp;
 
@@ -17,10 +17,6 @@ public class DataConsumption {
 	private double cpu;
 	private double vmenergy;
 	private double vmpower;
-//	private String year;
-//	private String month;
-//	private String day;
-//	private String hour;
 	
 		
 	public String getApplicationid() {
@@ -74,31 +70,7 @@ public class DataConsumption {
 	public void setVmpower(double vmpower) {
 		this.vmpower = vmpower;
 	}
-//	public String getYear() {
-//		return year;
-//	}
-//	public void setYear(String year) {
-//		this.year = year;
-//	}
-//	public String getMonth() {
-//		return month;
-//	}
-//	public void setMonth(String month) {
-//		this.month = month;
-//	}
-//	public String getDay() {
-//		return day;
-//	}
-//	public void setDay(String day) {
-//		this.day = day;
-//	}
-//	public String getHour() {
-//		return hour;
-//	}
-//	public void setHour(String hour) {
-//		this.hour = hour;
-//	}
-	
+
 	
 }
 

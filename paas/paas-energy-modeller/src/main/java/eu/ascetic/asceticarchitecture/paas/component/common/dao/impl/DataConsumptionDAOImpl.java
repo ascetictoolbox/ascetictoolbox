@@ -16,10 +16,10 @@ import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import eu.ascetic.asceticarchitecture.paas.component.common.dao.DataConsumptionDAO;
+import eu.ascetic.asceticarchitecture.paas.component.common.database.table.DataConsumption;
 import eu.ascetic.asceticarchitecture.paas.component.common.mapper.DataConsumptionMapper;
-import eu.ascetic.asceticarchitecture.paas.component.common.mapper.EnergySampleMapper;
-import eu.ascetic.asceticarchitecture.paas.component.common.model.DataConsumption;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EnergySample;
+import eu.ascetic.asceticarchitecture.paas.component.common.mapper.ApplicationSampleMapper;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.ApplicationSample;
 
 public class DataConsumptionDAOImpl implements DataConsumptionDAO {
 
@@ -264,16 +264,7 @@ public class DataConsumptionDAOImpl implements DataConsumptionDAO {
 	}
 
 
-	public List<EnergySample> getDataSamplesVM(String applicationid, String deployment,String vmid,long start,long end) {
-		try{
-			List<EnergySample> res = jdbcTemplate.query(SQL_MEASURES_VMTIME,new Object[]{applicationid,vmid+"%",start,end}, new EnergySampleMapper());
-			if (res==null) return null;
-			LOGGER.info("Total vm time samples "+res.size());
-			return res;
-		}catch (Exception e) {
-			return null;
-		}
-	}
+
 
 	@Override
 	public void insertBatch(List<DataConsumption> samples){
@@ -310,6 +301,23 @@ public class DataConsumptionDAOImpl implements DataConsumptionDAO {
 		}
 	}
 
+	/**
+	 * 
+	 * Sample methods are used to retrieve data to be exposed externally to the EM
+	 */
+	
+	
+	public List<ApplicationSample> getDataSamplesVM(String applicationid, String deployment,String vmid,long start,long end) {
+		try{
+			List<ApplicationSample> res = jdbcTemplate.query(SQL_MEASURES_VMTIME,new Object[]{applicationid,vmid+"%",start,end}, new ApplicationSampleMapper());
+			if (res==null) return null;
+			LOGGER.info("Total vm time samples "+res.size());
+			return res;
+		}catch (Exception e) {
+			return null;
+		}
+	}
+	
 	@Override
 	public int getSamplesBetweenTime(String applicationid, String vmid,	long start, long end) {
 		Integer results = jdbcTemplate.queryForObject(SQL_Q_COUNTSAMPLES,new Object[]{applicationid,vmid+"%",start,end}, Integer.class);
@@ -317,9 +325,9 @@ public class DataConsumptionDAOImpl implements DataConsumptionDAO {
 	}
 
 	@Override
-	public EnergySample getSampleAtTime(String applicationid, String vmid,long time) {
+	public ApplicationSample getSampleAtTime(String applicationid, String vmid,long time) {
 		try{
-			EnergySample res = jdbcTemplate.queryForObject(SQL_SAMPLE_AT_TIME,new Object[]{applicationid,vmid+"%",time}, new EnergySampleMapper());
+			ApplicationSample res = jdbcTemplate.queryForObject(SQL_SAMPLE_AT_TIME,new Object[]{applicationid,vmid+"%",time}, new ApplicationSampleMapper());
 			if (res==null) return null;
 			LOGGER.info("Sample found ");
 			return res;

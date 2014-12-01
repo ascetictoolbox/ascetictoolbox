@@ -7,7 +7,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import eu.ascetic.asceticarchitecture.paas.component.common.model.EnergyModellerMonitoring;
+import eu.ascetic.asceticarchitecture.paas.component.common.database.table.EnergyModellerMonitoring;
 
 public interface EnergyModellerMonitoringDAO {
 		

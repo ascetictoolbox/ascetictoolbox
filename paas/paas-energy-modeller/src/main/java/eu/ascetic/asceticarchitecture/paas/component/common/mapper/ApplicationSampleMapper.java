@@ -8,16 +8,16 @@ import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EnergySample;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.ApplicationSample;
 
-public class EnergySampleMapper implements RowMapper<EnergySample>{
+public class ApplicationSampleMapper implements RowMapper<ApplicationSample>{
 
 	@Override
-	public EnergySample mapRow(ResultSet result, int rowNum) throws SQLException {
+	public ApplicationSample mapRow(ResultSet result, int rowNum) throws SQLException {
 		
-		EnergySample data = new EnergySample();
+		ApplicationSample data = new ApplicationSample();
 		data.setVmid(result.getString("vmid"));
-		data.setTimestampBeging(result.getLong("time"));
+		data.setTime(result.getLong("time"));
 		data.setE_value(result.getDouble("vmenergy"));
 		data.setP_value(result.getDouble("vmpower"));
 		return data;

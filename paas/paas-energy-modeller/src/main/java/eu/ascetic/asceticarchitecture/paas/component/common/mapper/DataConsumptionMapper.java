@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
-import eu.ascetic.asceticarchitecture.paas.component.common.model.DataConsumption;
+import eu.ascetic.asceticarchitecture.paas.component.common.database.table.DataConsumption;
 
 public class DataConsumptionMapper implements RowMapper<DataConsumption>{
 

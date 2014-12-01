@@ -27,8 +27,8 @@ import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Host;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Item;
 import eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.DataConsumptionDAOImpl;
 import eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.DataEventDAOImpl;
-import eu.ascetic.asceticarchitecture.paas.component.common.model.DataConsumption;
-import eu.ascetic.asceticarchitecture.paas.component.common.model.DataEvent;
+import eu.ascetic.asceticarchitecture.paas.component.common.database.table.DataConsumption;
+import eu.ascetic.asceticarchitecture.paas.component.common.database.table.DataEvent;
 
 public class DataCollector  {
 
@@ -150,7 +150,12 @@ public class DataCollector  {
 		    	logger.debug("endtime" + jo.getAsJsonPrimitive("endtime"));
 		    	DataEvent data = new DataEvent();
 		    	data.setApplicationid(applicationid);
-		    	data.setEventid(eventid);
+		    	if (jo.getAsJsonPrimitive("eventType")!=null){
+		    		data.setEventid(jo.getAsJsonPrimitive("eventType").getAsString());
+		    	} else {
+		    		data.setEventid(eventid);
+		    	}
+		    	
 		    	data.setVmid(jo.getAsJsonPrimitive("nodeId").getAsString());
 		    	time=jo.getAsJsonPrimitive("timestamp").getAsLong();
 		    	//ts = new Timestamp(time);

@@ -9,15 +9,12 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.DataEventDAOImpl;
-import eu.ascetic.asceticarchitecture.paas.component.common.model.DataEvent;
+import eu.ascetic.asceticarchitecture.paas.component.common.database.table.DataEvent;
 
 public class EventDataAggregatorService {
 
 	private DataEventDAOImpl daoEvent;
 	private static final Logger logger = Logger.getLogger(EventDataAggregatorService.class);
-	//private long CONVERSIONTIME_MILLISEC = 3600000;
-	
-	
 
 	public double getTotal(String app, String depl, String vmid, String event) {
 		double total = daoEvent.getEventCountVM(app, depl, vmid, event);

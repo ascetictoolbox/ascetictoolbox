@@ -14,9 +14,9 @@ import eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.DataConsump
 import eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.DataEventDAOImpl;
 import eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.EnergyModellerMonitoringDAOImpl;
 import eu.ascetic.asceticarchitecture.paas.component.common.database.PaaSEMDatabaseManager;
-import eu.ascetic.asceticarchitecture.paas.component.common.model.DataConsumption;
-import eu.ascetic.asceticarchitecture.paas.component.common.model.DataEvent;
-import eu.ascetic.asceticarchitecture.paas.component.common.model.EnergyModellerMonitoring;
+import eu.ascetic.asceticarchitecture.paas.component.common.database.table.DataConsumption;
+import eu.ascetic.asceticarchitecture.paas.component.common.database.table.DataEvent;
+import eu.ascetic.asceticarchitecture.paas.component.common.database.table.EnergyModellerMonitoring;
 
 public class EMDatabase {
 	private static PaaSEMDatabaseManager dbmanager;

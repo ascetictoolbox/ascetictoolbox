@@ -3,7 +3,6 @@
  */
 package eu.ascetic.asceticarchitecture.paas.component.energymodeller.test;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Vector;
 
@@ -12,8 +11,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.builder.EnergyModellerFactory;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EnergySample;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Sample;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.EnergyModellerSimple;
 
 public class EnergyModellerData {
@@ -26,16 +23,16 @@ public class EnergyModellerData {
 	private static EnergyModellerSimple serviceEM;
 	//private static String HOST = "9d9864885-77db-4a92-ab6b-feec3e5eded6";
 	//private static String HOST2 = "c919174d-c60b-4108-9d36-21530ae7ba8d";
-	private static String HOST = "d9864885-77db-4a92-ab6b-feec3e5eded6";
+	private static String HOST = "c0fcc44e-b29f-4fcc-b1e3-b9c017b7865f";
 	//private static String HOST2 = "c919174d-c60b-4108-9d36-21530ae7ba8d";
-	private static String HOST2 = "708834af-4e90-424b-9dc2-c2fe1542918f";
-//	private static String HOST4 = "a54d58a7-4772-4106-8522-6adb0d8bdbf7";
+	private static String HOST2 = "2d915d73-8999-420c-b2b0-2ac853052b7e";
+	private static String HOST3 = "b52da74d-585c-404d-8f29-4de0d93cfe5e";
 
-	private static String EVENT = "core0impl0";
-	private static String APP = "JEPlus";
+	//private static String EVENT = "core0impl0";
+	//private static String APP = "JEPlus";
 
-	//private static String EVENT = "TestEvent2";
-	//private static String APP = "NewsAsAssets";
+	private static String EVENT = "TestEvent3";
+	private static String APP = "NewsAsset";
 	
 	
 	@BeforeClass
@@ -51,7 +48,7 @@ public class EnergyModellerData {
 		List<String> vmids = new Vector<String>();
 		vmids.add(HOST);
 		vmids.add(HOST2);
-		//vmids.add(HOST3);s
+		vmids.add(HOST3);
 		double energy  = serviceEM.energyEstimation(null, APP, vmids, EVENT);
 		System.out.println("--------------------------------------------RESULT:"+energy);
 		Assert.assertNotNull(energy);
@@ -78,7 +75,7 @@ public class EnergyModellerData {
 //		List<String> vmids = new Vector<String>();
 //		vmids.add(HOST);
 //		vmids.add(HOST2);
-//		//vmids.add(HOST3);
+//		vmids.add(HOST3);
 //
 //		double energy  = serviceEM.estimation(null, APP, vmids, null,"energy");
 //		System.out.println("--------------------------------------------ENERGY :"+energy);

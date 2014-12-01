@@ -13,8 +13,8 @@ import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import eu.ascetic.asceticarchitecture.paas.component.common.dao.DataeEventDAO;
+import eu.ascetic.asceticarchitecture.paas.component.common.database.table.DataEvent;
 import eu.ascetic.asceticarchitecture.paas.component.common.mapper.DataEventMapper;
-import eu.ascetic.asceticarchitecture.paas.component.common.model.DataEvent;
 
 public class DataEventDAOImpl implements DataeEventDAO {
 

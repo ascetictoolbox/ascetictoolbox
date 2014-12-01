@@ -1,7 +1,7 @@
 /**
 * Copyright 2014 Hewlett-Packard Development Company, L.P.                                         
  */
-package eu.ascetic.asceticarchitecture.paas.component.common.model;
+package eu.ascetic.asceticarchitecture.paas.component.common.model.interpolator;
 
 import java.util.Vector;
 
@@ -10,6 +10,7 @@ import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 import org.apache.log4j.Logger;
 
 import eu.ascetic.asceticarchitecture.paas.component.common.dao.DataConsumptionDAO;
+import eu.ascetic.asceticarchitecture.paas.component.common.model.interfaces.Interpolator;
 
 public class EnergyInterpolator implements Interpolator {
 

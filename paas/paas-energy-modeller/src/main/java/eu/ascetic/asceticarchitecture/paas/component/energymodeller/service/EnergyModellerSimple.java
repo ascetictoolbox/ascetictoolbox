@@ -17,11 +17,11 @@ import org.apache.log4j.Logger;
 
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.HistoryItem;
 import eu.ascetic.asceticarchitecture.paas.component.common.database.PaaSEMDatabaseManager;
-import eu.ascetic.asceticarchitecture.paas.component.common.model.DataEvent;
-import eu.ascetic.asceticarchitecture.paas.component.common.model.GenericValuesInterpolator;
+import eu.ascetic.asceticarchitecture.paas.component.common.database.table.DataEvent;
+import eu.ascetic.asceticarchitecture.paas.component.common.model.interpolator.GenericValuesInterpolator;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.ApplicationSample;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EMSettings;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EnergySample;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Sample;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EventSample;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.PaaSEnergyModeller;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.task.DataCollector;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.task.EnergyDataAggregatorService;
@@ -56,6 +56,7 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 	@Override
 	public double energyApplicationConsumption(String providerid,String applicationid, List<String> vmids, String eventid) {
 		double total_energy=0;
+		this.loadEnergyData(applicationid, vmids);
 		if (eventid==null){
 			for (String vm : vmids) {
 				double energy = energyEstimationForVM(providerid, applicationid, vm, eventid);
@@ -156,7 +157,7 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 	 */
 	
 	@Override
-	public double applicationConsumptionTimeInterval(String providerid,String applicationid, String vmids, String eventid,String unit , Timestamp start, Timestamp end) {
+	public double applicationConsumptionInInterval(String providerid,String applicationid, String vmids, String eventid,String unit , Timestamp start, Timestamp end) {
 		if (unit.equals("energy")){
 			List<String> vmidsv = new Vector<String>();
 			vmidsv.add(vmids);
@@ -197,39 +198,35 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 	
 		}
 		
-		
-		
 
 	}
 	
-	@Override
-	public double energyApplicationConsumptionTimeInterval(String providerid,String applicationid, String vmids, String eventid,Timestamp start, Timestamp end) {
-		// TODO Auto-generated method stub
-		return applicationConsumptionTimeInterval(providerid,applicationid, vmids, eventid, "energy" , start, end);
-	}
 
 	@Override
-	public List<EnergySample> energyApplicationConsumptionData(String providerid,	String applicationid, String vmid, String eventid,Timestamp start, Timestamp end) {
-		List<String> vmidsv = new Vector<String>();
-		vmidsv.add(vmid);
-		if (eventid==null){
-			this.loadEnergyData(applicationid, vmidsv);
-			return energyVMDataInInterval(providerid, applicationid, vmid, start, end);
-		}else {
-			
-			this.loadEventData(applicationid, vmidsv,eventid);
-			this.loadEnergyData(applicationid, vmidsv);
-			return energyEventDataForEventInInterval( providerid, applicationid,  vmid,  eventid,start, end);
+	public List<EventSample> eventsData(String providerid,String applicationid, List<String> vmids, String eventid,Timestamp start, Timestamp end) {
+		this.loadEventData(applicationid, vmids,eventid);
+		this.loadEnergyData(applicationid, vmids);
+		List<EventSample> results = new Vector<EventSample>();
+		for (String vm : vmids){
+			results.addAll(eventsSamplesInInterval( providerid, applicationid,  vm,  eventid,start, end));
 		}
 		
+		return results;
 		
 	}
 	
 	
 	@Override
-	public List<Sample> applicationData(String providerid,String applicationid, String vmids, String eventid,long samplingperiod, Timestamp start, Timestamp end) {
-		
-		
+	public List<ApplicationSample> applicationData( String providerid, String applicationid,List<String> vmids, long samplingperiod,Timestamp start, Timestamp end){
+		List<ApplicationSample> results = new Vector<ApplicationSample>();
+		//LOGGER.info("SAmple period  CPU "+currenttime + " last " +endts);
+		for(String vm : vmids){
+			results.addAll(applicationVMData( applicationid, vm, samplingperiod,  start,  end));
+		}
+		return results;
+	}
+	
+	private List<ApplicationSample> applicationVMData(String applicationid, String vmids, long samplingperiod, Timestamp start, Timestamp end) {
 		List<HistoryItem> hcpu = this.datacollector.getSeriesHistoryForItemInterval("apptest","deptest","system.cpu.load[percpu,avg1]", datacollector.searchFullHostsname(vmids), start.getTime(), end.getTime());
 		List<HistoryItem> hpower = this.datacollector.getSeriesHistoryForItemInterval("apptest","deptest","Power", datacollector.searchFullHostsname(vmids), start.getTime(), end.getTime());
 		List<HistoryItem> hmenergy = buildenergyHistory (hpower);
@@ -249,36 +246,34 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 		long currenttime = 0;
 		int iteration = 0;
 		currenttime = startts + (iteration * samplingperiod);
-		List<Sample> result = new Vector<Sample>();
+		List<ApplicationSample> result = new Vector<ApplicationSample>();
 		//LOGGER.info("SAmple period  CPU "+currenttime + " last " +endts);
 		while (currenttime < endts){
 			
 			//LOGGER.info("SAmple period  CPU "+currenttime);
-			Sample cur_sample = new Sample();
-			cur_sample.setTimestampBeging(currenttime*1000);
+			ApplicationSample cur_sample = new ApplicationSample();
+			cur_sample.setTime(currenttime*1000);
 			if ((currenttime>cpu.getStarttime())&&(currenttime<cpu.getLasttime())){
-				cur_sample.setCvalue(cpu.estimate(currenttime-cpu.getStarttime()));
+				cur_sample.setC_value(cpu.estimate(currenttime-cpu.getStarttime()));
 			} else {
-				cur_sample.setCvalue(0);
+				cur_sample.setC_value(0);
 			}
 			if ((currenttime>power.getStarttime())&&(currenttime<power.getLasttime())){
-				cur_sample.setPvalue(power.estimate(currenttime-power.getStarttime()));
+				cur_sample.setP_value(power.estimate(currenttime-power.getStarttime()));
 			} else {
-				cur_sample.setPvalue(0);
+				cur_sample.setP_value(0);
 			}
 			if ((currenttime>energy.getStarttime())&&(currenttime<energy.getLasttime())){
-				cur_sample.setEvalue(energy.estimate(currenttime-energy.getStarttime()));
+				cur_sample.setE_value(energy.estimate(currenttime-energy.getStarttime()));
 			} else {
-				cur_sample.setEvalue(0);
+				cur_sample.setE_value(0);
 			}
-			LOGGER.info("SAmple CPU " + cur_sample.getCvalue() + " Energy " + cur_sample.getEvalue() + " Power " + cur_sample.getPvalue() +" Time " +cur_sample.getTimestampBeging());
+			LOGGER.info("SAmple CPU " + cur_sample.getC_value() + " Energy " + cur_sample.getE_value() + " Power " + cur_sample.getP_value() +" Time " +cur_sample.getP_value());
 			result.add(cur_sample);
 			iteration++;
 			currenttime = startts + (iteration * samplingperiod);
 			
 		}
-		
-		
 		return result;
 	}
 	
@@ -449,42 +444,36 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 	
 	
 	
-	private List<EnergySample> energyEventDataForEventInInterval(String providerid,String applicationid, String vmid, String eventid,Timestamp start, Timestamp endtime) {
+	private List<EventSample> eventsSamplesInInterval(String providerid,String applicationid, String vmid, String eventid,Timestamp start, Timestamp endtime) {
 		
 
-		List<EnergySample> eSamples = new Vector<EnergySample>();
+		List<EventSample> eSamples = new Vector<EventSample>();
 		
-		EnergySample es = new EnergySample();
+		EventSample es = new EventSample();
 		List<DataEvent> events = eventService.getEventsInTime(applicationid, applicationid, vmid, eventid,start,endtime);
 		for (DataEvent de: events){
 			
-			es = new EnergySample();
+			es = new EventSample();
 			double power  = energyService.getAvgPower(applicationid, vmid, eventid, start.getTime(), endtime.getTime());
 			double energy = averageEventConsumption(de.getApplicationid(),vmid,de.getBegintime(),de.getEndtime());
 			if (energy > 0){
 				LOGGER.info("This event :  "+energy);
 				es.setTimestampBeging(de.getBegintime());
-				es.setTimestampBeging(de.getEndtime());
+				es.setTimestampEnd(de.getEndtime());
 				es.setVmid(vmid);
-				es.setE_value(energy);
-				es.setP_value(power);
+				es.setEvalue(energy);
+				es.setPvalue(power);
 				eSamples.add(es);
 			}
 			
 		}
 		
-		LOGGER.info("Total samples : "+ eSamples.size());
+		LOGGER.info("Total events collected : "+ eSamples.size());
 		return eSamples;
 	
 	}
 	
-	private List<EnergySample> energyVMDataInInterval(String providerid,String applicationid, String vmid,Timestamp start, Timestamp endtime) {
-		List<EnergySample> eSamples = energyService.getSamplesInInterval(applicationid, applicationid, vmid, start,endtime);
-		if (eSamples==null)return null;
-		LOGGER.info("Total samples : "+ eSamples.size());
-		return eSamples;
-	}
-	
+
 	public double averageEventConsumption(String appid, String vmid,long start, long end){
 		LOGGER.info("consumption of this event from "+start+" to "+end);
 		double energy = energyService.getAverageInInterval(appid, vmid, null, start, end);
@@ -598,7 +587,7 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 	/**
 	 * 
 	 * 
-	 * TRAINING
+	 * TRAINING function to be fully implemented in Y2
 	 * 
 	 */
 	
