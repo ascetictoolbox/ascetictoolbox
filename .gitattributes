@@ -103,6 +103,7 @@ iaas/iaas-pricing-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/iaa
 iaas/iaas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/IaaSPricingModeller.class -text
 iaas/iaas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/IaaSPricingModellerInterface.class -text
 iaas/iaas-pricing-modeller/target/test-classes/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/IaaSPricingModellerTest.class -text
+iaas/iaas-slamanager/LICENSE-2.0.txt -text
 iaas/iaas-slamanager/core/src/main/java/eu/ascetic/iaas/slamanager/core/DataType.java -text
 iaas/iaas-slamanager/core/src/main/java/eu/ascetic/iaas/slamanager/core/SkeletonService.java -text
 iaas/iaas-slamanager/main/src/main/java/eu/ascetic/iaas/slamanager/main/beans/SkeletonSLAMBean.java -text
@@ -1043,6 +1044,7 @@ paas/provider-registry/src/test/java/eu/ascetic/providerregistry/service/jpa/Pro
 paas/provider-registry/src/test/java/eu/ascetic/providerregistry/xml/ConverterTest.java -text
 paas/provider-registry/src/test/resources/META-INF/persistence.test.xml -text
 paas/provider-registry/src/test/resources/provider-registry-db-JPA-test-context.xml -text
+paas/slam/LICENSE-2.0.txt -text
 paas/slam/planning-optimization/src/main/java/eu/ascetic/paas/slam/poc/exceptions/SelectionException.java -text
 paas/slam/planning-optimization/src/main/java/eu/ascetic/paas/slam/poc/exceptions/SubNegotiationException.java -text
 paas/slam/planning-optimization/src/main/java/eu/ascetic/paas/slam/poc/impl/config/ConfigManager.java -text
