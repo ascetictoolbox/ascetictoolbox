@@ -322,7 +322,9 @@ public class OpenStackJclouds implements CloudMiddleware {
                 options.userData(IOUtils.toByteArray(inputStream));
                 inputStream.close();
             } catch (IOException e) {
-                // Do not include anything in the VM deployment options
+                // If a file path was not received, it means that we received a string containing the
+                // script directly.
+                options.userData(initScript.getBytes());
             }
         }
     }
