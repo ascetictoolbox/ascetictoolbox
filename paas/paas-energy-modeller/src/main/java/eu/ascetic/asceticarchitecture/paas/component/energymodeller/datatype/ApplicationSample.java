@@ -7,7 +7,7 @@ public class ApplicationSample {
 
 	private int orderID;
 	private String vmid;
-	private String eventid;
+	private String appid;
 	private long time;
 	private double e_value;
 	private double p_value;
@@ -45,11 +45,11 @@ public class ApplicationSample {
 	public void setVmid(String vmid) {
 		this.vmid = vmid;
 	}
-	public String getEventid() {
-		return eventid;
+	public String getAppid() {
+		return appid;
 	}
-	public void setEventid(String eventid) {
-		this.eventid = eventid;
+	public void setAppid(String appid) {
+		this.appid = appid;
 	}
 	public double getC_value() {
 		return c_value;
@@ -57,5 +57,9 @@ public class ApplicationSample {
 	public void setC_value(double c_value) {
 		this.c_value = c_value;
 	}	
+	
+	public String toString(){
+		return "App. Sample  "+ this.getAppid() + " VM "+ this.getVmid() + " CPU " + this.getC_value() + " Energy " + this.getE_value() + " Power " + this.getP_value() +" Time " +this.getTime();
+	}
 	
 }

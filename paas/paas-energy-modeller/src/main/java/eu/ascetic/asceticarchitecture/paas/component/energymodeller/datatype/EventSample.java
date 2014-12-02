@@ -6,6 +6,8 @@ package eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype;
 public class EventSample {
 
 	private String vmid;
+	private String appid;
+	private String eventid;
 	private long timestampBeging;
 	private long timestampEnd;
 	private double evalue;
@@ -14,6 +16,18 @@ public class EventSample {
 
 	
 	
+	public String getAppid() {
+		return appid;
+	}
+	public void setAppid(String appid) {
+		this.appid = appid;
+	}
+	public String getEventid() {
+		return eventid;
+	}
+	public void setEventid(String eventid) {
+		this.eventid = eventid;
+	}
 	public double getEvalue() {
 		return evalue;
 	}
@@ -52,4 +66,8 @@ public class EventSample {
 		this.vmid = vmid;
 	}
 	
+	
+	public String toString(){
+		return " VMid "+this.getVmid()+" eventid " + this.getEventid()+" power "+this.getPvalue()+" energy "+this.getEvalue()+" tsbegin "+this.getTimestampBeging()+" tsend "+this.getTimestampEnd();
+	}
 }

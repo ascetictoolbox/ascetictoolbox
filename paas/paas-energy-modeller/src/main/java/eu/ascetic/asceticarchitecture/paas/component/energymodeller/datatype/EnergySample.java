@@ -8,6 +8,7 @@ public class EnergySample {
 	private long timestampEnd;
 	private double e_value;
 	private double p_value;
+	
 
 
 	public double getE_value() {
@@ -47,5 +48,7 @@ public class EnergySample {
 	public void setEventid(String eventid) {
 		this.eventid = eventid;
 	}	
+	
+
 	
 }

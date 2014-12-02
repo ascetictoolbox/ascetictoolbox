@@ -10,6 +10,7 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.App
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EnergySample;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EventSample;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Sample;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Unit;
 
 
 /**
@@ -43,7 +44,7 @@ public interface PaaSEnergyModeller {
 	 * @param vmids
 	 * @return the value for total energy consumption of the provided application,requries the list of vmids to compute all informations
 	 */
-	public double applicationConsumptionInInterval( String providerid, String applicationid,String vmids, String eventid,String unit, Timestamp start, Timestamp end);	
+	public double applicationConsumptionInInterval( String providerid, String applicationid,List<String> vmids, String eventid,Unit unit, Timestamp start, Timestamp end);	
 	
 	/**
 	 * @param providerid
@@ -69,7 +70,7 @@ public interface PaaSEnergyModeller {
 	 * @param eventid
 	 * @return the value for average energy estimation of the provided application,running on the vm list provided. eventid can be specified 
 	 */
-	public double estimation( String providerid, String applicationid,List<String> vmids, String eventid, String unit);	
+	public double measure( String providerid, String applicationid,List<String> vmids, String eventid, Unit unit,Timestamp start, Timestamp end);	
 	
 	/**
 	 * @param providerid

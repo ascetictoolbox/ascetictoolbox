@@ -72,8 +72,9 @@ public class DataCollector  {
 			logger.info ("Data from this vm already loaded untill "+ts.toString());
 			logger.info("Retrieving only newer data from Zabbix");
 			// retrieving only most recent data
-			this.getHistoryForItemFrom(applicationid, deploymentid, "Power", searchFullHostsname(vmid), ts.getTime()+1);
-			logger.info("Data loaded from "+ts.getTime()+1);
+			long datalong = ts.getTime()+1;
+			this.getHistoryForItemFrom(applicationid, deploymentid, "Power", searchFullHostsname(vmid),datalong );
+			logger.info("Data loaded from "+datalong);
 			
 		}else{
 			logger.info ("Missing energy data");
@@ -189,7 +190,6 @@ public class DataCollector  {
 	}
 
 
-//	
 	public void handleEventData(String applicationid, String deploymentid,List<String> vm, String eventid) {
 		if (vm!=null)for (String vmid : vm)handleEventData( applicationid,  deploymentid, vmid , eventid);
 		if (vm==null)handleEventData( applicationid,  deploymentid, "" , eventid);
@@ -270,23 +270,22 @@ public class DataCollector  {
 		String eventid="vm";
 		List<DataConsumption> result=new Vector<DataConsumption>();
 		logger.info("I got total items: "+items.size());
-		int count = 0;
 		HistoryItem previous=null;
 		DataConsumption dc = null;
 		for (int i=items.size()-1;i>=0;i--){
 			
 			HistoryItem item = items.get(i);
 			if (i==items.size()-1){
-				logger.info("ENDS AT : "+item.getClock());
+				logger.info("START TS AT : "+item.getClock());
 			}
 			if (i==0){
-				logger.info("STARTS AT : "+item.getClock());
+				logger.info("END TS AT : "+item.getClock());
 			}
 			dc = new DataConsumption();
 			if (previous!=null){
 				
 				double energy = integrate(new Double(previous.getValue()).doubleValue(),new Double(item.getValue()).doubleValue(),previous.getClock(),item.getClock());
-				if (energy > 10) logger.info("@@@@@@@@@@@@@ HighEnergy is: " + energy +	"Power is : "+item.getValue()+ "Clock is : "+item.getClock());
+				if (energy > 10) logger.info(" HighEnergy is: " + energy +	"Power is : "+item.getValue()+ "Clock is : "+item.getClock());
 
 				dc.setApplicationid(appid);
 				dc.setDeploymentid(depid);
@@ -303,12 +302,10 @@ public class DataCollector  {
 				dc.setVmpower(Double.parseDouble(item.getValue()));
 				dc.setTime((item.getClock()*1000));
 				result.add(dc);
-				count++;
 				
 			} else {
 				double energy = integrate(0,new Double(item.getValue()).doubleValue(),0,0);
-				if (energy > 10) logger.info("@@@@@@@@@@@@@ HighEnergy is: " + energy +	"Power is : "+item.getValue()+ "Clock is : "+item.getClock());
-				//if (i >2321)logger.info("@@@@@@@@@@@@@ HighEnergy"+i+" is: " + energy +	"Power is : "+item.getValue()+ "Clock is : "+new Timestamp(item.getClock()*1000));
+				if (energy > 10) logger.info(" HighEnergy is: " + energy +	"Power is : "+item.getValue()+ "Clock is : "+item.getClock());
 				dc.setApplicationid(appid);
 				dc.setDeploymentid(depid);
 				dc.setVmid(vmid);
@@ -318,7 +315,6 @@ public class DataCollector  {
 				dc.setVmpower(Double.parseDouble(item.getValue()));
 				dc.setTime((item.getClock()*1000));
 				result.add(dc);
-				count++;
 			}
 			
 			
