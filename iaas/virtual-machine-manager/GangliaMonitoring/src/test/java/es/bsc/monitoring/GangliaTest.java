@@ -35,8 +35,8 @@ import java.util.List;
  */
 public class GangliaTest {
 
-    String clusterName = "minerva";
-    String hostName = "minerva-21";
+    String clusterName = "testing-cloud";
+    String hostName = "bscgrid29";
 
     @Test
     public void gridTest() {
