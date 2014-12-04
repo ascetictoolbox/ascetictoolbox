@@ -163,6 +163,9 @@ public interface GangliaMetKeys {
     public static final String VPKTS_OUT = "vpkts_out";
     public static final String VERRS_OUT = "verrs_out";
     public static final String VDROPS_OUT = "vdrops_out";
-    
+
+    /* Power */
+    public static final String POWER_WATTS = "powerWatts";
+
 }
 

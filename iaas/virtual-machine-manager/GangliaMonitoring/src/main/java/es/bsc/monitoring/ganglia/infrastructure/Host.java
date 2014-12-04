@@ -257,5 +257,14 @@ public class Host {
         return this.getDiskTotal() - this.getDiskFree();
     }
 
+    public Double getPowerWatts() {
+        Double val = null;
+        for (Metric m : this.metrics) {
+            if (m.getName().equals(POWER_WATTS)) {
+                val = Double.parseDouble(m.getValue());
+            }
+        }
+        return val;
+    }
 
 }
