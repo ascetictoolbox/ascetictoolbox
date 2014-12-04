@@ -38,6 +38,7 @@ public class HostGanglia extends Host {
         setGangliaHost();
         initTotalResources();
         initAssignedResources();
+        initPower();
     }
 
     private void setGangliaHost() {
@@ -62,6 +63,10 @@ public class HostGanglia extends Host {
         assignedCpus = getAssignedCpus();
         assignedMemoryMb = getAssignedMemoryMb();
         assignedDiskGb = getAssignedDiskGb();
+    }
+
+    private void initPower() {
+        currentPower = gangliaHost.getPowerWatts();
     }
 
     @Override
@@ -116,6 +121,7 @@ public class HostGanglia extends Host {
         setGangliaHost();
         initTotalResources();
         initAssignedResources();
+        initPower();
     }
 
 }
