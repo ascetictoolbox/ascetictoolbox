@@ -80,7 +80,7 @@ public class ExampleClient {
 
     public static void main(String[] args) {
         OptaVmPlacement optaVmPlacement = new OptaVmPlacementImpl();
-        VmPlacementConfig vmPlacementConfig = new VmPlacementConfig.Builder(Policy.CONSOLIDATION, 30,
+        VmPlacementConfig vmPlacementConfig = new VmPlacementConfig.Builder(Policy.DISTRIBUTION, 30,
                 ConstructionHeuristic.FIRST_FIT_DECREASING, new LateAcceptance(400), false).build();
         System.out.println(optaVmPlacement.getBestSolution(getInitialHosts(), getInitialVms(), vmPlacementConfig));
     }

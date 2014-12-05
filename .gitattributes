@@ -251,6 +251,7 @@ iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/scorecalculators/ScoreCalculator.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/scorecalculators/ScoreCalculatorConsolidation.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/scorecalculators/ScoreCalculatorDistribution.java -text
+iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/scorecalculators/ScoreCalculatorDistributionStdDev.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/scorecalculators/ScoreCalculatorEnergy.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/scorecalculators/ScoreCalculatorGroupByApp.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/scorecalculators/ScoreCalculatorPrice.java -text

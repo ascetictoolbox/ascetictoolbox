@@ -23,7 +23,7 @@ import es.bsc.vmplacement.common.domain.AbstractPersistable;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.value.ValueRangeProvider;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.persistence.xstream.XStreamScoreConverter;
@@ -34,13 +34,13 @@ import java.util.*;
  * @author David Ortiz (david.ortiz@bsc.es)
  */
 @PlanningSolution
-public class ClusterState extends AbstractPersistable implements Solution<HardSoftScore> {
+public class ClusterState extends AbstractPersistable implements Solution<Score> {
 
     private List<Vm> vms;
     private List<Host> hosts;
 
     @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftScoreDefinition.class})
-    private HardSoftScore score;
+    private Score score;
 
     @PlanningEntityCollectionProperty
     public List<Vm> getVms() {
@@ -61,12 +61,12 @@ public class ClusterState extends AbstractPersistable implements Solution<HardSo
     }
 
     @Override
-    public HardSoftScore getScore() {
+    public Score getScore() {
         return score;
     }
 
     @Override
-    public void setScore(HardSoftScore score) {
+    public void setScore(Score score) {
         this.score = score;
     }
 
@@ -124,6 +124,23 @@ public class ClusterState extends AbstractPersistable implements Solution<HardSo
             if (host.equals(vm.getHost())) {
                 result.add(vm);
             }
+        }
+        return result;
+    }
+
+    public double avgCpusAssignedPerHost() {
+        int totalAssignedCpus = 0;
+        for (Host host: hosts) {
+            totalAssignedCpus += cpusAssignedInHost(host);
+        }
+        return totalAssignedCpus/hosts.size();
+    }
+
+    public int cpusAssignedInHost(Host host) {
+        int result = 0;
+        List<Vm> vms = getVmsDeployedInHost(host);
+        for (Vm vm: vms) {
+            result += vm.getNcpus();
         }
         return result;
     }

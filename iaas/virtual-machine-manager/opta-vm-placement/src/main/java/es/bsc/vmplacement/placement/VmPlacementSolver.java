@@ -38,7 +38,7 @@ public class VmPlacementSolver {
                 break;
             case DISTRIBUTION:
                 solverConfig.getScoreDirectorFactoryConfig().setSimpleScoreCalculatorClass(
-                        ScoreCalculatorDistribution.class);
+                        ScoreCalculatorDistributionStdDev.class);
                 break;
             case PRICE:
                 if (VmPlacementConfig.priceModel == null) {
