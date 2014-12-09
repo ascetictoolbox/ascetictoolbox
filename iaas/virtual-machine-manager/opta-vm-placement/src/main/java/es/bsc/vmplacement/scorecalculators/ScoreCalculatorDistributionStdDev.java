@@ -40,16 +40,13 @@ public final class ScoreCalculatorDistributionStdDev implements SimpleScoreCalcu
     }
 
     private int calculateSoftScore(ClusterState solution) {
-        double averageCpus = solution.avgCpusAssignedPerHost();
         double temp = 0;
-        for(Host host: solution.getHosts()) {
-            temp += (averageCpus - solution.getVmsDeployedInHost(host).size()) *
-                    (averageCpus - solution.getVmsDeployedInHost(host).size());
+        for (Host host: solution.getHosts()) {
+            temp += (solution.avgCpusAssignedPerHost() - solution.cpusAssignedInHost(host))
+                    * (solution.avgCpusAssignedPerHost() - solution.cpusAssignedInHost(host));
         }
         double variance = temp/solution.getHosts().size();
         return -(int) Math.sqrt(variance);
     }
-
-
 
 }
