@@ -137,6 +137,8 @@ public class ModelConverterTest {
 		
 		String xml = ModelConverter.objectCollectionToXML(collection);
 		
+		System.out.println("XML: " + xml);
+		
 		//We now verify the XML has the right format... a bit a pain in the a**...
 		SAXBuilder builder = new SAXBuilder();
 		builder.setValidation(false);

@@ -54,6 +54,30 @@ public class Items {
 	private List<Image> images;
 	@XmlElement(name="energy-samples", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private List<EnergySample> energySamples;
+	@XmlElement(name="cc", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private List<ApplicationSample> applicationSamples;
+	@XmlElement(name="eventsamples", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private List<EventSample> eventSamples;
+
+	
+	public List<ApplicationSample> getApplicationSamples() {
+		return applicationSamples;
+	}
+	public void setApplicationSamples(List<ApplicationSample> applicationSamples) {
+		this.applicationSamples = applicationSamples;
+	}
+	public void addApplicationSample(ApplicationSample applicationSample) {
+		if(applicationSamples == null) applicationSamples = new ArrayList<ApplicationSample>();
+		applicationSamples.add(applicationSample);
+	}
+	
+	
+	public List<EventSample> getEventSamples() {
+		return eventSamples;
+	}
+	public void setEventSamples(List<EventSample> eventSamples) {
+		this.eventSamples = eventSamples;
+	}
 	
 	public int getOffset() {
 		return offset;

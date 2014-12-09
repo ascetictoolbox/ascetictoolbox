@@ -56,6 +56,12 @@ public class ItemTest {
 		List<EnergySample> energySamples = new ArrayList<EnergySample>();
 		items.setEnergySamples(energySamples);
 		
+		List<EventSample> eventSamples = new ArrayList<EventSample>();
+		items.setEventSamples(eventSamples);
+		
+		List<ApplicationSample> applicationSamples = new ArrayList<ApplicationSample>();
+		items.setApplicationSamples(applicationSamples);
+		
 		assertEquals(1, items.getOffset());
 		assertEquals(2, items.getTotal());
 		assertEquals(applications, items.getApplications());
@@ -63,6 +69,8 @@ public class ItemTest {
 		assertEquals(vms, items.getVms());
 		assertEquals(agreements, items.getAgreements());
 		assertEquals(energySamples, items.getEnergySamples());
+		assertEquals(eventSamples, items.getEventSamples());
+		assertEquals(applicationSamples, items.getApplicationSamples());
 	}
 	
 	@Test

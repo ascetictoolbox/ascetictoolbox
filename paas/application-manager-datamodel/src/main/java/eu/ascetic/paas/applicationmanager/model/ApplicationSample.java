@@ -2,7 +2,10 @@ package eu.ascetic.paas.applicationmanager.model;
 
 import static eu.ascetic.paas.applicationmanager.model.Dictionary.APPLICATION_MANAGER_NAMESPACE;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * 
@@ -26,6 +29,8 @@ import javax.xml.bind.annotation.XmlElement;
  * Basic XML representation for any Application Sample coming from the ASCETiC Energy Modeller
  * 
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "application-sample", namespace = APPLICATION_MANAGER_NAMESPACE)
 public class ApplicationSample {
 	@XmlElement(name = "orderID", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private int orderID;
