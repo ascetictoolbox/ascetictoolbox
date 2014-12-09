@@ -13,15 +13,16 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author David Ortiz (david.ortiz@bsc.es)
  */
-public class ScoreCalculatorDistributionTest {
+public class ScoreCalculatorDistributionStdDevTest {
 
-    private ScoreCalculatorDistribution scoreCalculatorDistribution = new ScoreCalculatorDistribution();
+    private ScoreCalculatorDistributionStdDev scoreCalculatorDistribution = new ScoreCalculatorDistributionStdDev();
 
     @Test
-    public void genericTestSoftAndHardScoreCalculator() {
+    public void genericTestHardMediumSoftScoreCalculator() {
         ClusterState clusterState = getTestClusterState();
-        assertEquals(2, scoreCalculatorDistribution.calculateScore(clusterState).getSoftScore());
         assertEquals(-3, scoreCalculatorDistribution.calculateScore(clusterState).getHardScore());
+        assertEquals(2, scoreCalculatorDistribution.calculateScore(clusterState).getMediumScore());
+        assertEquals(-2, scoreCalculatorDistribution.calculateScore(clusterState).getSoftScore()); // int vs roundings!
     }
 
     private ClusterState getTestClusterState() {

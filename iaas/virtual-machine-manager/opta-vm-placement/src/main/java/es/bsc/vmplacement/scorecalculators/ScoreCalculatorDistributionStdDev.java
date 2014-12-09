@@ -2,7 +2,6 @@ package es.bsc.vmplacement.scorecalculators;
 
 import es.bsc.vmplacement.domain.ClusterState;
 import es.bsc.vmplacement.domain.Host;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
 
@@ -11,7 +10,7 @@ public final class ScoreCalculatorDistributionStdDev implements SimpleScoreCalcu
     protected final static int PENALTY_FOR_MOVING_FIXED_VMS = 10000;
 
     @Override
-    public Score calculateScore(ClusterState solution) {
+    public HardMediumSoftScore calculateScore(ClusterState solution) {
         return HardMediumSoftScore.valueOf(
                 calculateHardScore(solution),
                 calculateMediumScore(solution),
@@ -32,18 +31,18 @@ public final class ScoreCalculatorDistributionStdDev implements SimpleScoreCalcu
     private int calculateMediumScore(ClusterState solution) {
         int result = 0;
         for (Host host: solution.getHosts()) {
-            if (!solution.hostIsIdle(host)) {
-                ++result;
-            }
+            result += solution.hostIsIdle(host) ? 0 : 1;
         }
         return result;
     }
 
     private int calculateSoftScore(ClusterState solution) {
         double temp = 0;
+        double avgCpusAssignedPerHost = solution.avgCpusAssignedPerHost();
         for (Host host: solution.getHosts()) {
-            temp += (solution.avgCpusAssignedPerHost() - solution.cpusAssignedInHost(host))
-                    * (solution.avgCpusAssignedPerHost() - solution.cpusAssignedInHost(host));
+            int cpusAssignedInHost = solution.cpusAssignedInHost(host);
+            temp += (avgCpusAssignedPerHost - cpusAssignedInHost)
+                    * (avgCpusAssignedPerHost - cpusAssignedInHost);
         }
         double variance = temp/solution.getHosts().size();
         return -(int) Math.sqrt(variance);

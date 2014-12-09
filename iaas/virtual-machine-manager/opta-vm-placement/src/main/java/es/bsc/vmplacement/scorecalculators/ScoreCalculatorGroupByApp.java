@@ -20,33 +20,49 @@ package es.bsc.vmplacement.scorecalculators;
 
 import es.bsc.vmplacement.domain.ClusterState;
 import es.bsc.vmplacement.domain.Host;
-import es.bsc.vmplacement.domain.Vm;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
 
 import java.util.List;
 
 /**
  * @author David Ortiz (david.ortiz@bsc.es)
  */
-public class ScoreCalculatorGroupByApp extends ScoreCalculator {
+public class ScoreCalculatorGroupByApp implements SimpleScoreCalculator<ClusterState> {
+
+    protected final static int PENALTY_FOR_MOVING_FIXED_VMS = 10000;
 
     @Override
-    protected double calculateHardScoreForHost(Host host, List<Vm> vms) {
-        if (host.missingFixedVMs(vms)) {
-            return -PENALTY_FOR_MOVING_FIXED_VMS;
-        }
-        return host.getOverCapacityScore(vms);
+    public HardSoftScore calculateScore(ClusterState solution) {
+        return HardSoftScore.valueOf(
+                calculateHardScore(solution),
+                calculateSoftScore(solution));
     }
 
-    @Override
-    protected double calculateSoftScoreForHost(Host host, ClusterState clusterState) {
-        double result = 0;
-        List<String> idsOfVmsOfHost = clusterState.getIdsOfAppsDeployedInHost(host);
-        for (int i = 0; i < idsOfVmsOfHost.size(); ++i) {
-            for (int j = 0; j < idsOfVmsOfHost.size(); ++j) {
-                if (idsOfVmsOfHost.get(i).equals(idsOfVmsOfHost.get(j)) && i != j) {
-                    ++result;
+    private int calculateHardScore(ClusterState solution) {
+        int result = 0;
+        for (Host host: solution.getHosts()) {
+            if (host.missingFixedVMs(solution.getVms())) {
+                return -PENALTY_FOR_MOVING_FIXED_VMS;
+            }
+            result += host.getOverCapacityScore(solution.getVms());
+        }
+        return result;
+    }
+
+    private int calculateSoftScore(ClusterState solution) {
+        int result = 0;
+        for (Host host: solution.getHosts()) {
+            double hostScore = 0;
+            List<String> idsOfVmsOfHost = solution.getIdsOfAppsDeployedInHost(host);
+            for (int i = 0; i < idsOfVmsOfHost.size(); ++i) {
+                for (int j = 0; j < idsOfVmsOfHost.size(); ++j) {
+                    if (idsOfVmsOfHost.get(i).equals(idsOfVmsOfHost.get(j)) && i != j) {
+                        ++hostScore;
+                    }
                 }
             }
+            result += hostScore;
         }
         return result;
     }

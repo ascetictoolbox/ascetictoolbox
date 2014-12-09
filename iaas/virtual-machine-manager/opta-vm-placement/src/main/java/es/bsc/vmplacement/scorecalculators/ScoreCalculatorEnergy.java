@@ -20,30 +20,44 @@ package es.bsc.vmplacement.scorecalculators;
 
 import es.bsc.vmplacement.domain.ClusterState;
 import es.bsc.vmplacement.domain.Host;
-import es.bsc.vmplacement.domain.Vm;
 import es.bsc.vmplacement.modellers.energy.EnergyModel;
 import es.bsc.vmplacement.placement.config.VmPlacementConfig;
-
-import java.util.List;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
 
 /**
  * @author David Ortiz (david.ortiz@bsc.es)
  */
-public class ScoreCalculatorEnergy extends ScoreCalculator {
+public final class ScoreCalculatorEnergy implements SimpleScoreCalculator<ClusterState> {
 
+    protected final static int PENALTY_FOR_MOVING_FIXED_VMS = 10000;
     private final EnergyModel energyModel = VmPlacementConfig.energyModel;
 
     @Override
-    protected double calculateHardScoreForHost(Host host, List<Vm> vms) {
-        if (host.missingFixedVMs(vms)) {
-            return -PENALTY_FOR_MOVING_FIXED_VMS;
-        }
-        return host.getOverCapacityScore(vms);
+    public HardSoftScore calculateScore(ClusterState solution) {
+        return HardSoftScore.valueOf(
+                calculateHardScore(solution),
+                calculateSoftScore(solution));
     }
 
-    @Override
-    protected double calculateSoftScoreForHost(Host host, ClusterState clusterState) {
-        return -energyModel.getPowerConsumption(host, clusterState.getVmsDeployedInHost(host));
+    private int calculateHardScore(ClusterState solution) {
+        int result = 0;
+        for (Host host: solution.getHosts()) {
+            if (host.missingFixedVMs(solution.getVms())) {
+                return -PENALTY_FOR_MOVING_FIXED_VMS;
+            }
+            result += host.getOverCapacityScore(solution.getVms());
+        }
+        return result;
     }
+
+    private int calculateSoftScore(ClusterState solution) {
+        double result = 0;
+        for (Host host: solution.getHosts()) {
+            result -= energyModel.getPowerConsumption(host, solution.getVmsDeployedInHost(host));
+        }
+        return (int) result;
+    }
+
 
 }

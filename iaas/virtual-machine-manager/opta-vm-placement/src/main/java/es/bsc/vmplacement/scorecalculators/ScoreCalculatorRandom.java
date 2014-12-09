@@ -20,28 +20,38 @@ package es.bsc.vmplacement.scorecalculators;
 
 import es.bsc.vmplacement.domain.ClusterState;
 import es.bsc.vmplacement.domain.Host;
-import es.bsc.vmplacement.domain.Vm;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
 
-import java.util.List;
 import java.util.Random;
 
 /**
  * @author David Ortiz (david.ortiz@bsc.es)
  */
-public class ScoreCalculatorRandom extends ScoreCalculator {
+public final class ScoreCalculatorRandom implements SimpleScoreCalculator<ClusterState> {
 
     private final Random rand = new Random();
+    protected final static int PENALTY_FOR_MOVING_FIXED_VMS = 10000;
 
     @Override
-    protected double calculateHardScoreForHost(Host host, List<Vm> vms) {
-        if (host.missingFixedVMs(vms)) {
-            return -PENALTY_FOR_MOVING_FIXED_VMS;
-        }
-        return host.getOverCapacityScore(vms);
+    public HardSoftScore calculateScore(ClusterState solution) {
+        return HardSoftScore.valueOf(
+                calculateHardScore(solution),
+                calculateSoftScore());
     }
 
-    @Override
-    protected double calculateSoftScoreForHost(Host host, ClusterState clusterState) {
+    private int calculateHardScore(ClusterState solution) {
+        int result = 0;
+        for (Host host: solution.getHosts()) {
+            if (host.missingFixedVMs(solution.getVms())) {
+                return -PENALTY_FOR_MOVING_FIXED_VMS;
+            }
+            result += host.getOverCapacityScore(solution.getVms());
+        }
+        return result;
+    }
+
+    private int calculateSoftScore() {
         return rand.nextInt(100);
     }
 

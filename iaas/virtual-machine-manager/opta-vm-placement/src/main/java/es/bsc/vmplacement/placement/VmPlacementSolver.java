@@ -29,8 +29,6 @@ public class VmPlacementSolver {
     }
 
     private static void configurePolicy(SolverConfig solverConfig, VmPlacementConfig vmPlacementConfig) {
-        solverConfig.getScoreDirectorFactoryConfig().setScoreDefinitionType(
-                ScoreDirectorFactoryConfig.ScoreDefinitionType.HARD_SOFT);
         switch(vmPlacementConfig.getPolicy()) {
             case CONSOLIDATION:
                 solverConfig.getScoreDirectorFactoryConfig().setSimpleScoreCalculatorClass(

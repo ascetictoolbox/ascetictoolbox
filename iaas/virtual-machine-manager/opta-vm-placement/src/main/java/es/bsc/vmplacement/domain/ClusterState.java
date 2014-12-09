@@ -105,7 +105,7 @@ public class ClusterState extends AbstractPersistable implements Solution<Score>
     public List<String> getIdsOfAppsDeployedInHost(Host host) {
         List<String> result = new ArrayList<>();
         for (Vm vm: vms) {
-            if (host.equals(vm.getHost())) {
+            if (host.equals(vm.getHost()) && vm.getAppId() != null) {
                 result.add(vm.getAppId());
             }
         }

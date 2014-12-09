@@ -248,9 +248,7 @@ iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/placement/config/localsearch/SimulatedAnnealing.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/placement/config/localsearch/StepCountingHC.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/placement/config/localsearch/TabuSearch.java -text
-iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/scorecalculators/ScoreCalculator.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/scorecalculators/ScoreCalculatorConsolidation.java -text
-iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/scorecalculators/ScoreCalculatorDistribution.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/scorecalculators/ScoreCalculatorDistributionStdDev.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/scorecalculators/ScoreCalculatorEnergy.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/scorecalculators/ScoreCalculatorGroupByApp.java -text
@@ -264,7 +262,7 @@ iaas/virtual-machine-manager/opta-vm-placement/src/test/java/es/bsc/vmplacement/
 iaas/virtual-machine-manager/opta-vm-placement/src/test/java/es/bsc/vmplacement/domain/comparators/HostStrengthComparatorTest.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/test/java/es/bsc/vmplacement/domain/comparators/VmDifficultyComparatorTest.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/test/java/es/bsc/vmplacement/scorecalculators/ScoreCalculatorConsolidationTest.java -text
-iaas/virtual-machine-manager/opta-vm-placement/src/test/java/es/bsc/vmplacement/scorecalculators/ScoreCalculatorDistributionTest.java -text
+iaas/virtual-machine-manager/opta-vm-placement/src/test/java/es/bsc/vmplacement/scorecalculators/ScoreCalculatorDistributionStdDevTest.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/test/java/es/bsc/vmplacement/scorecalculators/ScoreCalculatorGroupByAppTest.java -text
 iaas/virtual-machine-manager/pom.xml -text
 iaas/virtual-machine-manager/vmmanager-frontend/LICENSE.md -text
