@@ -78,22 +78,29 @@ public class ClusterState extends AbstractPersistable implements Solution<Score>
     /**
      * Checks whether a given host is idle.
      *
-     * @param aHost the host
+     * @param host the host
      * @return true if the host is idle, false otherwise.
      */
-    public boolean hostIsIdle(Host aHost) {
-        // Initialize all hosts to idle
-        Map<Host, Boolean> idleHosts = new HashMap<>();
-        for (Host host: hosts) {
-            idleHosts.put(host, true);
-        }
+    public boolean hostIsIdle(Host host) {
+        return getIdleHosts().contains(host);
+    }
 
-        // Check what hosts are not idle
-        for (Vm vm: vms) {
-            idleHosts.put(vm.getHost(), false);
-        }
+    /**
+     * Counts the hosts that do not have any VMs assigned.
+     *
+     * @return the number of hosts that do not have any VMs assigned.
+     */
+    public int countIdleHosts() {
+        return getIdleHosts().size();
+    }
 
-        return idleHosts.get(aHost);
+    /**
+     * Counts the hosts that have at least one VM assigned.
+     *
+     * @return the number of hosts that have at least one VM assigned.
+     */
+    public int countNonIdleHosts() {
+        return hosts.size() - getIdleHosts().size();
     }
 
     /**
@@ -145,6 +152,14 @@ public class ClusterState extends AbstractPersistable implements Solution<Score>
         return result;
     }
 
+    public double calculateCumulativeUnusedCpuPerc() {
+        double result = 0;
+        for (Host host: hosts) {
+            result += (double)(host.getNcpus() - cpusAssignedInHost(host))/(host.getNcpus());
+        }
+        return result;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -152,6 +167,28 @@ public class ClusterState extends AbstractPersistable implements Solution<Score>
             sb.append(vm).append(" --> ").append(vm.getHost()).append("\n");
         }
         return sb.toString();
+    }
+
+    private List<Host> getIdleHosts() {
+        // Initialize all hosts to idle
+        Map<Host, Boolean> idleHosts = new HashMap<>();
+        for (Host host: hosts) {
+            idleHosts.put(host, true);
+        }
+
+        // Check what hosts are not idle
+        for (Vm vm: vms) {
+            idleHosts.put(vm.getHost(), false);
+        }
+
+        // Return result
+        List<Host> result = new ArrayList<>();
+        for (Map.Entry<Host, Boolean> idleHostsEntry: idleHosts.entrySet()) {
+            if (idleHostsEntry.getValue()) {
+                result.add(idleHostsEntry.getKey());
+            }
+        }
+        return result;
     }
 
 }

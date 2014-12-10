@@ -33,11 +33,25 @@ public class ClusterStateTest {
     }
 
     @Test
-    public void getIdsOfVmsDeployedInHost() {
+    public void countIdleHosts() {
+        assertEquals(1, clusterState.countIdleHosts());
+    }
+
+    @Test
+    public void countNonIdleHosts() {
+        assertEquals(1, clusterState.countNonIdleHosts());
+    }
+
+    @Test
+    public void getIdsOfAppsDeployedInHost() {
         for (Host host: clusterState.getHosts()) {
             if (host.getId() == (long) 1) {
                 assertTrue(clusterState.getIdsOfAppsDeployedInHost(host).contains("app1"));
+                assertTrue(clusterState.getIdsOfAppsDeployedInHost(host).contains("app2"));
                 assertFalse(clusterState.getIdsOfAppsDeployedInHost(host).contains("fakeApp"));
+            }
+            else if (host.getId() == (long) 2) {
+                assertTrue(clusterState.getIdsOfAppsDeployedInHost(host).isEmpty());
             }
         }
     }
@@ -48,10 +62,32 @@ public class ClusterStateTest {
             if (host.getId() == (long) 1) {
                 assertEquals(2, clusterState.getVmsDeployedInHost(host).size());
             }
-            else {
+            else if (host.getId() == (long) 2) {
                 assertEquals(0, clusterState.getVmsDeployedInHost(host).size());
             }
         }
+    }
+
+    @Test
+    public void avgCpusAssignedPerHost() {
+        assertEquals(1.0, clusterState.avgCpusAssignedPerHost(), 0.05);
+    }
+
+    @Test
+    public void cpusAssignedInHost() {
+        for (Host host: clusterState.getHosts()) {
+            if (host.getId() == (long) 1) {
+                assertEquals(2, clusterState.cpusAssignedInHost(host));
+            }
+            else if (host.getId() == (long) 2) {
+                assertEquals(0, clusterState.cpusAssignedInHost(host));
+            }
+        }
+    }
+
+    @Test
+    public void calculateCumulativeUnusedCpuPerc() {
+        assertEquals(1.5, clusterState.calculateCumulativeUnusedCpuPerc(), 0.05);
     }
 
     private void initializeTestClusterState(ClusterState clusterState) {

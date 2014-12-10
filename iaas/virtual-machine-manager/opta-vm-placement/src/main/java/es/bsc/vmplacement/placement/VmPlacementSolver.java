@@ -6,7 +6,6 @@ import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicSolverPhaseConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchSolverPhaseConfig;
-import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.XmlSolverFactory;
 
@@ -36,7 +35,7 @@ public class VmPlacementSolver {
                 break;
             case DISTRIBUTION:
                 solverConfig.getScoreDirectorFactoryConfig().setSimpleScoreCalculatorClass(
-                        ScoreCalculatorDistributionStdDev.class);
+                        ScoreCalculatorDistribution.class);
                 break;
             case PRICE:
                 if (VmPlacementConfig.priceModel == null) {

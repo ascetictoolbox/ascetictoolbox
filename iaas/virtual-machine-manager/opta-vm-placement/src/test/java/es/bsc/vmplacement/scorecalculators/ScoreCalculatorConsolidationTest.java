@@ -20,8 +20,9 @@ public class ScoreCalculatorConsolidationTest {
     @Test
     public void genericTestSoftAndHardScoreCalculator() {
         ClusterState clusterState = getTestClusterState();
-        assertEquals(1, scoreCalculatorConsolidation.calculateScore(clusterState).getSoftScore());
         assertEquals(-4, scoreCalculatorConsolidation.calculateScore(clusterState).getHardScore());
+        assertEquals(1, scoreCalculatorConsolidation.calculateScore(clusterState).getMediumScore());
+        assertEquals(-1, scoreCalculatorConsolidation.calculateScore(clusterState).getSoftScore());
     }
 
     private ClusterState getTestClusterState() {

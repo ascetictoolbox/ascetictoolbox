@@ -23,6 +23,14 @@ public class HostTest {
     }
 
     @Test
+    public void testGetters() {
+        assertEquals("1", host.getHostname());
+        assertEquals(4, host.getNcpus());
+        assertEquals(4096, host.getRamMb(), 0.1);
+        assertEquals(20, host.getDiskGb(), 0.1);
+    }
+
+    @Test
     public void getUsage() {
         List<Vm> vms = new ArrayList<>();
         Vm vm1 = new Vm((long) 1, 1, 1024, 1);
@@ -40,12 +48,12 @@ public class HostTest {
     @Test
     public void getOverCapacityScore() {
         List<Vm> vms = new ArrayList<>();
-        Vm vm1 = new Vm((long) 1, 8, 8192, 1);
+        Vm vm1 = new Vm((long) 1, 8, 8192, 40);
         vm1.setHost(host);
         Vm vm2 = new Vm((long) 2, 2, 2048, 2);
         vms.add(vm1);
         vms.add(vm2);
-        assertEquals(-4, host.getOverCapacityScore(vms), 0.1); // -(8/4 + 8192/4096) = -4
+        assertEquals(-6, host.getOverCapacityScore(vms), 0.1); // -(8/4 + 8192/4096 + 40/20) = -6
     }
 
     @Test

@@ -13,9 +13,9 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author David Ortiz (david.ortiz@bsc.es)
  */
-public class ScoreCalculatorDistributionStdDevTest {
+public class ScoreCalculatorDistributionTest {
 
-    private ScoreCalculatorDistributionStdDev scoreCalculatorDistribution = new ScoreCalculatorDistributionStdDev();
+    private ScoreCalculatorDistribution scoreCalculatorDistribution = new ScoreCalculatorDistribution();
 
     @Test
     public void genericTestHardMediumSoftScoreCalculator() {

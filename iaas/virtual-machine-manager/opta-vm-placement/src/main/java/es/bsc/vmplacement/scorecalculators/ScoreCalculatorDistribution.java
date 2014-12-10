@@ -5,7 +5,7 @@ import es.bsc.vmplacement.domain.Host;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
 
-public final class ScoreCalculatorDistributionStdDev implements SimpleScoreCalculator<ClusterState> {
+public final class ScoreCalculatorDistribution implements SimpleScoreCalculator<ClusterState> {
 
     protected final static int PENALTY_FOR_MOVING_FIXED_VMS = 10000;
 
@@ -29,11 +29,7 @@ public final class ScoreCalculatorDistributionStdDev implements SimpleScoreCalcu
     }
 
     private int calculateMediumScore(ClusterState solution) {
-        int result = 0;
-        for (Host host: solution.getHosts()) {
-            result += solution.hostIsIdle(host) ? 0 : 1;
-        }
-        return result;
+        return solution.countNonIdleHosts();
     }
 
     private int calculateSoftScore(ClusterState solution) {

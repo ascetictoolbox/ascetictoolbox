@@ -20,7 +20,7 @@ package es.bsc.vmplacement.scorecalculators;
 
 import es.bsc.vmplacement.domain.ClusterState;
 import es.bsc.vmplacement.domain.Host;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
 
 
@@ -32,9 +32,10 @@ public final class ScoreCalculatorConsolidation implements SimpleScoreCalculator
     protected final static int PENALTY_FOR_MOVING_FIXED_VMS = 10000;
 
     @Override
-    public HardSoftScore calculateScore(ClusterState solution) {
-        return HardSoftScore.valueOf(
+    public HardMediumSoftScore calculateScore(ClusterState solution) {
+        return HardMediumSoftScore.valueOf(
                 calculateHardScore(solution),
+                calculateMediumScore(solution),
                 calculateSoftScore(solution));
     }
 
@@ -49,12 +50,12 @@ public final class ScoreCalculatorConsolidation implements SimpleScoreCalculator
         return result;
     }
 
+    private int calculateMediumScore(ClusterState solution) {
+        return solution.countIdleHosts();
+    }
+
     private int calculateSoftScore(ClusterState solution) {
-        int result = 0;
-        for (Host host: solution.getHosts()) {
-            result += solution.hostIsIdle(host) ? 1 : 0;
-        }
-        return result;
+        return (int) -solution.calculateCumulativeUnusedCpuPerc();
     }
 
 }
