@@ -42,14 +42,14 @@ public class AppManager {
             if (vm == null) {
                 vm = new VM(rvm);
                 detectedVMs.put(IPv4, vm);
-            }            
+            }
         }
         return detectedVMs.values();
     }
 
-    public static double getConsumption(String IPv4, String eventId) throws ApplicationUploaderException {
-        //return Math.random()*100d;
-        return uploader.getEventEnergyEstimationInVM(applicationId, deploymentId, eventId, IPv4);        
+    public static double getConsumption(String id, String eventId) throws ApplicationUploaderException {
+        //return Math.random()*100d;               
+        return uploader.getEventEnergyEstimationInVM(applicationId, deploymentId, eventId, id);
     }
 
 }

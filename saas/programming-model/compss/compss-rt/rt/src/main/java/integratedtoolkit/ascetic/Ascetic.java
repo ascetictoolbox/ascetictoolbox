@@ -55,6 +55,7 @@ public class Ascetic {
     }
 
     public static void updateConsumptions() {
+        System.out.println("Updating Consumptions:");
         for (VM vm : resources.values()) {
             vm.updateConsumptions();
         }
@@ -85,7 +86,7 @@ public class Ascetic {
         if (resourceName.startsWith("http://")) {
             command = new String[]{"/bin/sh", "-c", "wget " + resourceName};
         } else {
-            command = new String[]{"/bin/sh", "-c", "timeout 10 ssh " + user + "@" + resourceName + " ls"};
+            command = new String[]{"/bin/sh", "-c", "timeout 10 ssh -o StrictHostKeyChecking=no " + user + "@" + resourceName + " ls"};
         }
         /*System.out.println("--------------- Connection Available??----------");
          System.out.println("USER:" + System.getProperty("user.name"));

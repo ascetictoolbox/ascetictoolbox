@@ -321,7 +321,7 @@ public class DefaultTaskScheduler extends TaskScheduler {
                     taskSets.regularTaskScheduled(t);
                 }
             }
-
+            
             sendJob(t, resource, fittingImplementations[coreId].get(0));
             assigned = true;
             if (sortedTasks[coreId].isEmpty()) {

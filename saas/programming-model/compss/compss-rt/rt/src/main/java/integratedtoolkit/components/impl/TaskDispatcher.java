@@ -37,6 +37,7 @@ import integratedtoolkit.types.data.ResultFile;
 import integratedtoolkit.types.request.td.*;
 import integratedtoolkit.types.ResourceDestructionRequest;
 import integratedtoolkit.types.WorkerNode;
+import integratedtoolkit.types.request.td.TDRequest.TDRequestType;
 import integratedtoolkit.util.CoreManager;
 import integratedtoolkit.util.ProjectManager;
 import integratedtoolkit.util.ResourceManager;
@@ -165,6 +166,7 @@ public class TaskDispatcher implements Runnable, Schedule, JobStatus {
     }
 
     public void cleanup() {
+        SO.kill();
         if (ResourceManager.useCloud()) {
             // Stop all Cloud VM
             try {
@@ -175,7 +177,6 @@ public class TaskDispatcher implements Runnable, Schedule, JobStatus {
         }
         FTM.cleanup();
         JM.cleanup();
-        SO.kill();
 
         keepGoing = false;
         dispatcher.interrupt();
@@ -183,15 +184,22 @@ public class TaskDispatcher implements Runnable, Schedule, JobStatus {
 
     // Dispatcher thread
     public void run() {
+        TDRequest request;
         while (keepGoing) {
 
-            TDRequest request = null;
+            request = null;
             try {
                 request = readQueue.take();
             } catch (InterruptedException e) {
                 continue;
             }
             dispatchRequest(request);
+        }
+        while ((request = readQueue.poll()) != null) {
+            if (request.getRequestType() == TDRequestType.GET_STATE) {
+                ((GetCurrentScheduleRequest) request).setResponse(null);
+                ((GetCurrentScheduleRequest) request).getSemaphore().release();
+            }
         }
     }
 

@@ -105,6 +105,7 @@ public class Configuration {
                 }
             }
             componentImplementations.put(componentName, impls);
+            System.out.println("Adding COMPONENT: "+componentName);
         }
     }
 

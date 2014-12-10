@@ -101,11 +101,15 @@ public class SchedulingOptimizer extends Thread {
                         alarmClock.wait(20000);
                     }
                 } catch (InterruptedException ex) {
-                    ex.printStackTrace();
+                    if (!running) {
+                        ex.printStackTrace();
+                    }
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                if (!running) {
+                    e.printStackTrace();
+                }
             }
         }
     }

@@ -116,7 +116,7 @@ public class AsceticSchedulerPolicies extends SchedulerPolicies {
         for (Resource resource : resources) {
             double[] consumptions = Ascetic.getConsumptions(resource.getName(), coreId);
             double minConsumption = Integer.MAX_VALUE;
-            
+
             for (int implId=0;implId<profiles[coreId].length;implId++){
                 double consumption = profiles[coreId][implId].getAverageExecutionTime(0l)*consumptions[implId];
                 if (minConsumption>consumption){
@@ -150,9 +150,9 @@ public class AsceticSchedulerPolicies extends SchedulerPolicies {
             double[] consumptions = Ascetic.getConsumptions(IPv4, coreId);
             for (Implementation impl : runnable) {
                 pq.add(new SchedulerPolicies.Object_Value<Implementation>(
-                        impl, 
-                        (profiles[impl.getCoreId()][impl.getImplementationId()].getAverageExecutionTime(100l)).intValue()*consumptions[impl.getImplementationId()]
-                        )
+                        impl,
+                        -(profiles[impl.getCoreId()][impl.getImplementationId()].getAverageExecutionTime(100l)).intValue() * consumptions[impl.getImplementationId()]
+                )
                 );
             }
         }
