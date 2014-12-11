@@ -1,7 +1,7 @@
 /**
 * Copyright 2014 Hewlett-Packard Development Company, L.P.                                         
  */
-package eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.task;
+package eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.dconnector;
 
 import java.sql.Timestamp;
 import java.util.List;

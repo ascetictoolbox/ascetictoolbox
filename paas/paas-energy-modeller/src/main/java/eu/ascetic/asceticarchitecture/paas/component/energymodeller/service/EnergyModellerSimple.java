@@ -27,9 +27,9 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Eve
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Sample;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Unit;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.PaaSEnergyModeller;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.task.DataCollector;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.task.EnergyDataAggregatorService;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.task.EventDataAggregatorService;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.dconnector.DataCollector;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.dconnector.EnergyDataAggregatorService;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.dconnector.EventDataAggregatorService;
 import eu.ascetic.asceticarchitecture.paas.component.loadinjector.interfaces.LoadInjectorInterface;
 import eu.ascetic.asceticarchitecture.paas.component.loadinjector.service.LoadInjectorService;
 
@@ -275,8 +275,10 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 	public List<ApplicationSample> applicationData( String providerid, String applicationid,List<String> vmids, long samplingperiod,Timestamp start, Timestamp end){
 		List<ApplicationSample> results = new Vector<ApplicationSample>();
 		//LOGGER.info("SAmple period  CPU "+currenttime + " last " +endts);
+		List<ApplicationSample> restemp;
 		for(String vm : vmids){
-			results.addAll(applicationVMData( applicationid, vm, samplingperiod,  start,  end));
+			restemp = applicationVMData( applicationid, vm, samplingperiod,  start,  end);
+			if (restemp!=null)results.addAll(restemp);
 		}
 		return results;
 	}
@@ -286,59 +288,66 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 	
 	private List<ApplicationSample> applicationVMData(String applicationid, String vmids, long samplingperiod, Timestamp start, Timestamp end) {
 		List<HistoryItem> hcpu = this.datacollector.getSeriesHistoryForItemInterval("apptest","deptest","system.cpu.load[percpu,avg1]", datacollector.searchFullHostsname(vmids), start.getTime(), end.getTime());
-		List<HistoryItem> hpower = this.datacollector.getSeriesHistoryForItemInterval("apptest","deptest","Power", datacollector.searchFullHostsname(vmids), start.getTime(), end.getTime());
-		List<HistoryItem> hmenergy = buildenergyHistory (hpower);
-		if ( (hcpu == null)|| (hpower==null)|| (hmenergy==null)){
-			LOGGER.warn("Missing data");
-			return null;
-			
-		}else {
-			LOGGER.info("Data already available");
-		}
+		//List<HistoryItem> hpower = this.datacollector.getSeriesHistoryForItemInterval("apptest","deptest","Power", datacollector.searchFullHostsname(vmids), start.getTime(), end.getTime());
+		//List<HistoryItem> hmenergy = buildenergyHistory (hpower);
 		
-		GenericValuesInterpolator cpu = getInterpolator(hcpu);
-		GenericValuesInterpolator power = getInterpolator(hpower);
-		GenericValuesInterpolator energy = getInterpolator(hmenergy);
-		long startts = start.getTime()/1000;
-		long endts = end.getTime()/1000;
-		long currenttime = 0;
-		int iteration = 0;
-		currenttime = startts + (iteration * samplingperiod);
-		List<ApplicationSample> result = new Vector<ApplicationSample>();
-		//LOGGER.info("SAmple period  CPU "+currenttime + " last " +endts);
-		while (currenttime < endts){
-			
-			//LOGGER.info("SAmple period  CPU "+currenttime);
-			ApplicationSample cur_sample = new ApplicationSample();
-			cur_sample.setVmid(vmids);
-			cur_sample.setAppid(applicationid);
-			cur_sample.setTime(currenttime*1000);
-			if (cpu!=null){
-				if ((currenttime>cpu.getStarttime())&&(currenttime<cpu.getLasttime())){
-					cur_sample.setC_value(cpu.estimate(currenttime-cpu.getStarttime()));
-				} else {
-					cur_sample.setC_value(0);
-				}
-			}else {
-				cur_sample.setC_value(0);
-			}
-			if ((currenttime>power.getStarttime())&&(currenttime<power.getLasttime())){
-				cur_sample.setP_value(power.estimate(currenttime-power.getStarttime()));
-			} else {
-				cur_sample.setP_value(0);
-			}
-			if ((currenttime>energy.getStarttime())&&(currenttime<energy.getLasttime())){
-				cur_sample.setE_value(energy.estimate(currenttime-energy.getStarttime()));
-			} else {
-				cur_sample.setE_value(0);
-			}
-			//LOGGER.info("Sample  "+ cur_sample.getEventid() + " VM "+ cur_sample.getVmid() + " CPU " + cur_sample.getC_value() + " Energy " + cur_sample.getE_value() + " Power " + cur_sample.getP_value() +" Time " +cur_sample.getTime());
-			if (cur_sample.getE_value()>0)result.add(cur_sample);
-			iteration++;
-			currenttime = startts + (iteration * samplingperiod);
-			
-		}
-		return result;
+		
+		List<ApplicationSample> estim_sample = energyService.sampleMeasurements(applicationid, vmids, start.getTime(),end.getTime(),samplingperiod);
+		return estim_sample;
+//		GenericValuesInterpolator cpu = getInterpolator(hcpu);
+////		GenericValuesInterpolator power = getInterpolator(hpower);
+////		GenericValuesInterpolator energy = getInterpolator(hmenergy);
+//		long startts = start.getTime()/1000;
+//		long endts = end.getTime()/1000;
+//		long currenttime = 0;
+//		int iteration = 0;
+//		currenttime = startts + (iteration * samplingperiod);
+//		List<ApplicationSample> result = new Vector<ApplicationSample>();
+//		double aggr_energy = 0;
+//		while (currenttime < endts){
+//			
+//			//LOGGER.info("SAmple period  CPU "+currenttime);
+//			ApplicationSample cur_sample = new ApplicationSample();
+//			cur_sample.setVmid(vmids);
+//			cur_sample.setAppid(applicationid);
+//			cur_sample.setTime(currenttime*1000);
+//			
+//			
+//			
+//			if (cpu!=null){
+//				if ((currenttime>cpu.getStarttime())&&(currenttime<cpu.getLasttime())){
+//					cur_sample.setC_value(cpu.estimate(currenttime-cpu.getStarttime()));
+//				} else {
+//					cur_sample.setC_value(0);
+//				}
+//			}else {
+//				cur_sample.setC_value(0);
+//			}
+//			
+//			
+//			
+//			
+//			
+//			if (estim_sample!=null){
+//				cur_sample.setP_value(estim_sample.getP_value());
+//			} else {
+//				cur_sample.setP_value(0);
+//			}
+//			if (estim_sample!=null){
+//				if (iteration>0){
+//					aggr_energy = aggr_energy + estim_sample.getE_value();
+//					cur_sample.setE_value(aggr_energy);
+//				}else {cur_sample.setE_value(0);};
+//			} else {
+//				cur_sample.setE_value(0);
+//			}
+//			//LOGGER.info("Sample  "+ cur_sample.getEventid() + " VM "+ cur_sample.getVmid() + " CPU " + cur_sample.getC_value() + " Energy " + cur_sample.getE_value() + " Power " + cur_sample.getP_value() +" Time " +cur_sample.getTime());
+//			if (cur_sample.getE_value()>0)result.add(cur_sample);
+//			iteration++;
+//			currenttime = startts + (iteration * samplingperiod);
+//			
+//		}
+//		return result;
 	}
 	
 	private List<HistoryItem> buildenergyHistory (List<HistoryItem> power){
@@ -382,8 +391,12 @@ public class EnergyModellerSimple implements PaaSEnergyModeller {
 	}
 	
 	private GenericValuesInterpolator getInterpolator (List<HistoryItem> items){
-		if (items.size()<=0){
+		if (items==null){
 			LOGGER.info(" Samples not available");
+			return null;
+		}
+		if (items.size()<=0){
+			LOGGER.info(" Samples empty");
 			return null;
 		}
 		GenericValuesInterpolator genInt = new GenericValuesInterpolator();

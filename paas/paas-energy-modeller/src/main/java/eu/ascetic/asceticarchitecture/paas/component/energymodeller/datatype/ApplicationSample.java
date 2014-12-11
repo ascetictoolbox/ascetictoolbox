@@ -58,8 +58,12 @@ public class ApplicationSample {
 		this.c_value = c_value;
 	}	
 	
+	public String export(){
+		return this.getAppid() + ","+ this.getVmid() + "," +this.getTime()+"," + this.getC_value() + "," + this.getE_value() + "," + this.getP_value() ;
+	}
+	
 	public String toString(){
-		return "App. Sample  "+ this.getAppid() + " VM "+ this.getVmid() + " CPU " + this.getC_value() + " Energy " + this.getE_value() + " Power " + this.getP_value() +" Time " +this.getTime();
+		return "App. Sample  "+ this.getAppid() + " VM "+ this.getVmid() + " Time " +this.getTime()+ " CPU " + this.getC_value() + " Energy " + this.getE_value() + " Power " + this.getP_value() ;
 	}
 	
 }

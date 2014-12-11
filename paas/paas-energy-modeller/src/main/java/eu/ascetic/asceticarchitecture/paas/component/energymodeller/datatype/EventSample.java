@@ -65,7 +65,9 @@ public class EventSample {
 	public void setVmid(String vmid) {
 		this.vmid = vmid;
 	}
-	
+	public String export(){
+		return this.getVmid()+"," + this.getEventid()+","+this.getTimestampBeging()+","+this.getTimestampEnd()+","+this.getPvalue()+","+this.getEvalue();
+	}	
 	
 	public String toString(){
 		return " VMid "+this.getVmid()+" eventid " + this.getEventid()+" power "+this.getPvalue()+" energy "+this.getEvalue()+" tsbegin "+this.getTimestampBeging()+" tsend "+this.getTimestampEnd();

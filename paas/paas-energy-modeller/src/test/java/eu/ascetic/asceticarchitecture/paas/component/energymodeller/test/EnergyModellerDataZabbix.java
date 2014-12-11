@@ -12,11 +12,11 @@ import org.springframework.util.Assert;
 import eu.ascetic.asceticarchitecture.paas.component.common.database.PaaSEMDatabaseManager;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.builder.EnergyModellerFactory;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.EnergyModellerSimple;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.task.DataCollector;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.dconnector.DataCollector;
 
 public class EnergyModellerDataZabbix {
 
-	private static String HOST = "c33fb406-7dde-4c23-aa58-063be456aedd";
+	private static String HOST = "c0fcc44e-b29f-4fcc-b1e3-b9c017b7865f";
 	private static String HOST2 = "59d2ae8d-1ea0-46df-993f-fddbdd48c830";
 	private static String HOST3 = "8f805a34-4ef1-4a9a-93e8-028651de28cc";
 	private static String hst ="asok10";
@@ -41,8 +41,6 @@ public class EnergyModellerDataZabbix {
 		System.out.println("HST "+result);
 		Assert.notNull(result);
 		
-		
-		
 	}
 	
 //	@Test
@@ -61,13 +59,14 @@ public class EnergyModellerDataZabbix {
 //		dcollector.getHistoryForItemSamples("apptest","deptest","Power", dcollector.searchFullHostsname(HOST), 100);
 //	}
 //	
-//	@Test
-//	public void testVMInterval() {
-//		System.out.println("################################## ");
-//		System.out.println("### INTERVAL DATA FOR "+dcollector.searchFullHostsname(HOST));
-//		System.out.println("################################## ");
-//		dcollector.getHistoryForItemInterval("apptest","deptest","Power", dcollector.searchFullHostsname(HOST), 1412179349000L, 1412870549000L);
-//	}
+	@Test
+	public void testVMInterval() {
+		System.out.println("################################## ");
+		System.out.println("### INTERVAL DATA FOR "+dcollector.searchFullHostsname(HOST));
+		System.out.println("################################## ");
+		dcollector.getHistoryForItemInterval("apptest","deptest","Power", dcollector.searchFullHostsname(HOST),"", 1418218075000L, 1418304475000L);
+		 
+	}
 	
 //	@Test
 //	public void testVMCPU() {

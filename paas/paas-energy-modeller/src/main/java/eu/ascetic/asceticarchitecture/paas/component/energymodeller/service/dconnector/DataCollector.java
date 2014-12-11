@@ -1,7 +1,7 @@
 /**
 * Copyright 2014 Hewlett-Packard Development Company, L.P.                                         
  */
-package eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.task;
+package eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.dconnector;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -217,13 +217,13 @@ public class DataCollector  {
 		Item item = zCli.getItemByNameFromHost(itemkey, hostname);
 		if (item==null)return;
 		logger.info(""+item.getLastClock());
-		long time = item.getLastClock() - (86400*daysbefore);
+		long time = item.getLastClock() - (86400*2);
 		logger.info("going back "+time);
 		if (item.getLastClock()==0){
 			logger.warn("no data available");
 			return;
 		}
-		List<HistoryItem> items = zCli.getHistoryDataFromItem(itemkey, hostname, "text", time ,item.getLastClock()*1000);
+		List<HistoryItem> items = zCli.getHistoryDataFromItem(itemkey, hostname, "text", time * 1000 ,item.getLastClock()*1000);
 		storeEnergyFromData(appid,depid,hostname,items);
 				
 	}
@@ -242,12 +242,19 @@ public class DataCollector  {
 			logger.info("No need to load data");
 			return;
 		}
-		List<HistoryItem> items = zCli.getHistoryDataFromItem(itemkey, hostname, "text", begin,item.getLastClock()*1000);
-		if (items.size()==0){
-			logger.warn("no data available");
-			return;
+		long delta = (item.getLastClock()*1000) - begin;
+		if (delta > 86400000){
+			
+		} else {
+			List<HistoryItem> items = zCli.getHistoryDataFromItem(itemkey, hostname, "text", begin,item.getLastClock()*1000);
+			if (items.size()==0){
+				logger.warn("no data available");
+				return;
+			}
+			
+			storeEnergyFromData(appid,depid,hostname,items);
 		}
-		storeEnergyFromData(appid,depid,hostname,items);
+		
 	}
 	
 	public void getHistoryForItemInterval(String appid, String depid,String itemkey,String hostname,String eventid, long since, long to){
@@ -260,10 +267,47 @@ public class DataCollector  {
 		storeEnergyFromData(appid,depid,hostname,items);
 	}
 	
+	
+	public void getHistoryForLargeInterval(String itemkey,String hostname, long since, long to){
+		
+		// how many days
+
+		long numdays = 1;
+		long partialintervalstart = since;
+		long partialintervalend = since+86400000;
+		logger.info("split request in days");
+		while (to>partialintervalend){
+			getHistoryForItemInterval("", "",itemkey,hostname,"", partialintervalstart, partialintervalend);
+			logger.info("day "+numdays);
+			numdays=numdays+1;
+			partialintervalstart=partialintervalend+1000;
+			partialintervalend = partialintervalend + (86400000*numdays);
+				
+			
+			
+		}
+		partialintervalstart = partialintervalstart+1;
+		if (partialintervalstart<to)getHistoryForItemInterval("", "",itemkey,hostname,"", partialintervalstart, to);
+		// for each day get history in interval
+		
+		
+	}
+	
+	
 	public List<HistoryItem> getSeriesHistoryForItemInterval(String appid, String depid,String itemkey,String hostname,long since, long to){
 		List<HistoryItem> items = zCli.getHistoryDataFromItem(itemkey, hostname, "text", since , to);
 		return items;
 	}
+	
+	public List<HistoryItem> splitSeriesHistoryForItemInterval(String appid, String depid,String itemkey,String hostname,long since, long to){
+		
+		
+		
+		
+		List<HistoryItem> items = zCli.getHistoryDataFromItem(itemkey, hostname, "text", since , to);
+		return items;
+	}
+	
 	
 	private void storeEnergyFromData(String appid, String depid, String vmid, List<HistoryItem> items){
 		if (items==null)return;
