@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EnergySample;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.ApplicationSample;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EventSample;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Sample;
 
 /**
@@ -29,65 +31,68 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Sam
  *
  */
 public class EnergyModellerConverter {
-
-	public static eu.ascetic.paas.applicationmanager.model.EnergySample convert(EnergySample energySample) {
-		if(energySample == null) {
+	
+	public static eu.ascetic.paas.applicationmanager.model.EventSample convert(EventSample eventSample) {
+		if(eventSample == null) {
 			return null;
 		}
 		
-		eu.ascetic.paas.applicationmanager.model.EnergySample newEnergySample = new eu.ascetic.paas.applicationmanager.model.EnergySample();
-		newEnergySample.setEvalue(energySample.getE_value());
-		newEnergySample.setPvalue(energySample.getP_value());
-		newEnergySample.setTimestampBeging(energySample.getTimestampBeging());
-		newEnergySample.setTimestampEnd(energySample.getTimestampEnd());
-		newEnergySample.setVmid(energySample.getVmid());
+		eu.ascetic.paas.applicationmanager.model.EventSample newEventSample = new eu.ascetic.paas.applicationmanager.model.EventSample();
+		newEventSample.setAppid(eventSample.getAppid());
+		newEventSample.setCvalue(eventSample.getCvalue());
+		newEventSample.setEvalue(eventSample.getEvalue());
+		newEventSample.setPvalue(eventSample.getPvalue());
+		newEventSample.setTimestampBeging(eventSample.getTimestampBeging());
+		newEventSample.setTimestampEnd(eventSample.getTimestampEnd());
+		newEventSample.setVmid(eventSample.getVmid());
 		
-		return newEnergySample;
+		return newEventSample;
 	}
 	
-	public static eu.ascetic.paas.applicationmanager.model.EnergySample convertSample(Sample energySample) {
-		if(energySample == null) {
+	public static eu.ascetic.paas.applicationmanager.model.ApplicationSample convert(ApplicationSample applicationSample) {
+		if(applicationSample == null) {
 			return null;
 		}
 		
-		eu.ascetic.paas.applicationmanager.model.EnergySample newEnergySample = new eu.ascetic.paas.applicationmanager.model.EnergySample();
-		newEnergySample.setCvalue(energySample.getCvalue());
-		newEnergySample.setEvalue(energySample.getEvalue());
-		newEnergySample.setPvalue(energySample.getPvalue());
-		newEnergySample.setTimestampBeging(energySample.getTimestampBeging());
-		newEnergySample.setTimestampEnd(energySample.getTimestampEnd());
-		newEnergySample.setVmid(energySample.getVmid());
+		eu.ascetic.paas.applicationmanager.model.ApplicationSample newApplicationSample = new eu.ascetic.paas.applicationmanager.model.ApplicationSample();
+		newApplicationSample.setAppid(applicationSample.getAppid());
+		newApplicationSample.setcValue(applicationSample.getC_value());
+		newApplicationSample.seteValue(applicationSample.getE_value());
+		newApplicationSample.setOrderID(applicationSample.getOrderID());
+		newApplicationSample.setpValue(applicationSample.getP_value());
+		newApplicationSample.setTime(applicationSample.getTime());
+		newApplicationSample.setVmid(applicationSample.getVmid());
 		
-		return newEnergySample;
+		return newApplicationSample;
 	}
 	
-	public static List<eu.ascetic.paas.applicationmanager.model.EnergySample> convertList(List<EnergySample> energySamples) {
-		if(energySamples == null) {
+	public static List<eu.ascetic.paas.applicationmanager.model.EventSample> convertList(List<EventSample> eventSamples) {
+		if(eventSamples == null) {
 			return null;
 		}
 		
-		List<eu.ascetic.paas.applicationmanager.model.EnergySample> samples = new ArrayList<eu.ascetic.paas.applicationmanager.model.EnergySample>();
+		List<eu.ascetic.paas.applicationmanager.model.EventSample> newEventSamples = new ArrayList<eu.ascetic.paas.applicationmanager.model.EventSample>();
 		
-		for(EnergySample eSample : energySamples) {
-			eu.ascetic.paas.applicationmanager.model.EnergySample energySample = convert(eSample);
-			samples.add(energySample);
+		for(EventSample eventSample : eventSamples) {
+			eu.ascetic.paas.applicationmanager.model.EventSample newEventSample = convert(eventSample);
+			newEventSamples.add(newEventSample);
 		}
 		
-		return samples;
+		return newEventSamples;
 	}
 	
-	public static List<eu.ascetic.paas.applicationmanager.model.EnergySample> convertSampleList(List<Sample> energySamples) {
-		if(energySamples == null) {
+	public static List<eu.ascetic.paas.applicationmanager.model.ApplicationSample> convertSampleList(List<ApplicationSample> applicationSamples) {
+		if(applicationSamples == null) {
 			return null;
 		}
 		
-		List<eu.ascetic.paas.applicationmanager.model.EnergySample> samples = new ArrayList<eu.ascetic.paas.applicationmanager.model.EnergySample>();
+		List<eu.ascetic.paas.applicationmanager.model.ApplicationSample> newApplicationSamples = new ArrayList<eu.ascetic.paas.applicationmanager.model.ApplicationSample>();
 		
-		for(Sample eSample : energySamples) {
-			eu.ascetic.paas.applicationmanager.model.EnergySample energySample = convertSample(eSample);
-			samples.add(energySample);
+		for(ApplicationSample applicationSample : applicationSamples) {
+			eu.ascetic.paas.applicationmanager.model.ApplicationSample newApplicationSample = convert(applicationSample);
+			newApplicationSamples.add(newApplicationSample);
 		}
 		
-		return samples;
+		return newApplicationSamples;
 	}
 }

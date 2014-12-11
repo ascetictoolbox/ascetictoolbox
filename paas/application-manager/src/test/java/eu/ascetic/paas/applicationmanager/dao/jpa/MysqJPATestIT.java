@@ -4,13 +4,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
-import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
+//import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.dao.ImageDAO;
-import eu.ascetic.paas.applicationmanager.dao.VMDAO;
+//import eu.ascetic.paas.applicationmanager.dao.VMDAO;
 import eu.ascetic.paas.applicationmanager.model.Application;
-import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Image;
-import eu.ascetic.paas.applicationmanager.model.VM;
 
 
 /**
@@ -156,8 +154,8 @@ public class MysqJPATestIT {
 		@SuppressWarnings("resource")
 		ApplicationContext context = new ClassPathXmlApplicationContext("/mysql-jpa-test-configuration.xml");
 		ApplicationDAO applicationDAO = (ApplicationDAO) context.getBean("ApplicationService");
-		DeploymentDAO deploymentDAO = (DeploymentDAO) context.getBean("DeploymentService");
-		VMDAO vmDAO = (VMDAO) context.getBean("VMService");
+//		DeploymentDAO deploymentDAO = (DeploymentDAO) context.getBean("DeploymentService");
+//		VMDAO vmDAO = (VMDAO) context.getBean("VMService");
 		ImageDAO imageDAO = (ImageDAO) context.getBean("ImageService");
 		
 		int size = imageDAO.getAll().size();

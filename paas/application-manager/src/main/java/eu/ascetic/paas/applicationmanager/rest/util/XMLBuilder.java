@@ -9,9 +9,11 @@ import eu.ascetic.paas.applicationmanager.model.Collection;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
 import eu.ascetic.paas.applicationmanager.model.EnergySample;
+import eu.ascetic.paas.applicationmanager.model.EventSample;
 import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.Items;
 import eu.ascetic.paas.applicationmanager.model.Link;
+import eu.ascetic.paas.applicationmanager.model.PowerMeasurement;
 import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
 
@@ -339,6 +341,40 @@ public class XMLBuilder {
 		return ModelConverter.objectEnergyMeasurementToXML(energyMeasurement);
 	}
 	
+	/**
+	 * Adds the necessary fields to build the XML of an Power Measurement aggregated for all the VMs of an Application
+	 * @param powerMeasurement the object to be updated
+	 * @param applicationId application id from which the calculation is made
+	 * @param deploymentId from which the calculation is made
+	 * @return the updated object with all its XML fields
+	 */
+	public static PowerMeasurement addPowerMeasurementForDeploymentXMLInfo(
+			PowerMeasurement powerMeasurement, String applicationId, String deploymentId, String href) {
+		
+		powerMeasurement.setDescription("Aggregated power consumption in W for this aplication deployment");
+		powerMeasurement.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/" + href);
+		
+		Link linkParent = new Link();
+		linkParent.setHref("/applications/" + applicationId + "/deployments/" + deploymentId);
+		linkParent.setRel("parent");
+		linkParent.setType(MediaType.APPLICATION_XML);
+		powerMeasurement.addLink(linkParent);
+		
+		Link linkSelf = new Link();
+		linkSelf.setHref(powerMeasurement.getHref());
+		linkSelf.setRel("self");
+		linkSelf.setType(MediaType.APPLICATION_XML);
+		powerMeasurement.addLink(linkSelf);
+		
+		return powerMeasurement;
+	}
+	
+	public static String getPowerMeasurementForDeploymentXMLInfo(PowerMeasurement powerMeasurement, String applicationId, String deploymentId) {
+		powerMeasurement = XMLBuilder.addPowerMeasurementForDeploymentXMLInfo(powerMeasurement, applicationId, deploymentId, "energy-consumption");
+		
+		return ModelConverter.objectPowerMeasurementToXML(powerMeasurement);
+	}
+	
 	public static String getEnergyEstimationForAnEventInAVMXMLInfo(
 			EnergyMeasurement energyMeasurement, String applicationId, String deploymentId, String vmId, String eventId) {
 		
@@ -445,11 +481,11 @@ public class XMLBuilder {
 		return ModelConverter.objectEnergyMeasurementToXML(energyMeasurement);
 	}
 	
-	public static String getEnergySampleCollectionXMLInfo(List<EnergySample> energySamples, String applicationId, String deploymentId, String vmId, String eventId) {
+	public static String getEventSampleCollectionXMLInfo(List<EventSample> eventSamples, String applicationId, String deploymentId, String vmId, String eventId) {
 		Collection collection = new Collection();
 		
 		String parentHref = "/applications/" + applicationId + "/deployments/" + deploymentId + "/vms/" + vmId + "/events/" + eventId; 
-		collection.setHref(parentHref + "/energy-sample");
+		collection.setHref(parentHref + "/event-samples");
 		
 		Link linkParent = new Link();
 		linkParent.setHref(parentHref);
@@ -464,8 +500,8 @@ public class XMLBuilder {
 		
 		Items items = new Items();
 		items.setOffset(0);
-		items.setTotal(energySamples.size());
-		items.setEnergySamples(energySamples);
+		items.setTotal(eventSamples.size());
+		items.setEventSamples(eventSamples);
 		collection.setItems(items);
 		
 		return ModelConverter.objectCollectionToXML(collection);

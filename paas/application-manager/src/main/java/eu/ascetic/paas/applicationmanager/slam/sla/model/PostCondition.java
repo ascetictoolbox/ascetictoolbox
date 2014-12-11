@@ -2,8 +2,6 @@ package eu.ascetic.paas.applicationmanager.slam.sla.model;
 
 import static eu.ascetic.paas.applicationmanager.Dictionary.SLA_XMLNS;
 
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;

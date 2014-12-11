@@ -195,10 +195,10 @@
 		<dependency>
 			<groupId>eu.ascetic.paas</groupId>
 			<artifactId>application-manager-datamodel</artifactId>
-			<version>0.13-SNAPSHOT</version>
+			<version>0.14-SNAPSHOT</version>
 		</dependency>
 		
-			<!-- OVF LIBRARIES -->
+		<!-- OVF LIBRARIES -->
 		<dependency>
 			<groupId>eu.ascetic.utils</groupId>
 			<artifactId>ovf-xmlbeans</artifactId>

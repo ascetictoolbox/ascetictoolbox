@@ -7,8 +7,8 @@ import java.util.List;
 
 import org.junit.Test;
 
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EnergySample;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Sample;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.ApplicationSample;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EventSample;
 
 /**
  * 
@@ -36,121 +36,144 @@ public class EnergyModellerConverterTest {
 
 	@Test
 	public void convertEnergySampleTest() {
+		EventSample nullEventSample = null;
+		eu.ascetic.paas.applicationmanager.model.EventSample newEventSample = EnergyModellerConverter.convert(nullEventSample);
+		assertEquals(null, newEventSample);
 		
-		eu.ascetic.paas.applicationmanager.model.EnergySample energySample = EnergyModellerConverter.convert(null);
-		assertEquals(null, energySample);
+		EventSample eventSample = new EventSample();
+		eventSample.setCvalue(1.0);
+		eventSample.setEvalue(2.0);
+		eventSample.setPvalue(3.0);
+		eventSample.setTimestampBeging(1l);
+		eventSample.setTimestampEnd(2l);
+		eventSample.setVmid("vmid");
+		eventSample.setAppid("appid");
 		
-		EnergySample eSample = new EnergySample();
-		eSample.setE_value(1);
-		eSample.setP_value(2);
-		eSample.setTimestampBeging(11l);
-		eSample.setTimestampEnd(22l);
-		eSample.setVmid("aaa");
+		newEventSample = EnergyModellerConverter.convert(eventSample);
 		
-		energySample = EnergyModellerConverter.convert(eSample);
-		
-		assertEquals(1.0, energySample.getEvalue(), 0.00001);
-		assertEquals(2.0, energySample.getPvalue(), 0.00001);
-		assertEquals(11l, energySample.getTimestampBeging());
-		assertEquals(22l, energySample.getTimestampEnd());
-		assertEquals("aaa", energySample.getVmid());
+		assertEquals("vmid", newEventSample.getVmid());
+		assertEquals(1.0, newEventSample.getCvalue(), 0.00001);
+		assertEquals(2.0, newEventSample.getEvalue(), 0.00001);
+		assertEquals(3.0, newEventSample.getPvalue(), 0.00001);
+		assertEquals(1l, newEventSample.getTimestampBeging());
+		assertEquals(2l, newEventSample.getTimestampEnd());
+		assertEquals("appid", newEventSample.getAppid());
 	}
 	
 	@Test
 	public void convertSampleTest() {
+		ApplicationSample nullApplicationSample = null;
+		eu.ascetic.paas.applicationmanager.model.ApplicationSample newApplicationSample = EnergyModellerConverter.convert(nullApplicationSample);
+		assertEquals(null, newApplicationSample);
 		
-		eu.ascetic.paas.applicationmanager.model.EnergySample energySample = EnergyModellerConverter.convertSample(null);
-		assertEquals(null, energySample);
+		ApplicationSample applicationSample = new ApplicationSample();
+		applicationSample.setAppid("appid");
+		applicationSample.setC_value(1.0);
+		applicationSample.setE_value(2.0);
+		applicationSample.setOrderID(5);
+		applicationSample.setP_value(3.0);
+		applicationSample.setTime(2l);
+		applicationSample.setVmid("vmid");
 		
-		Sample eSample = new Sample();
-		eSample.setEvalue(1);
-		eSample.setPvalue(2);
-		eSample.setCvalue(3);
-		eSample.setTimestampBeging(11l);
-		eSample.setTimestampEnd(22l);
-		eSample.setVmid("aaa");
+		newApplicationSample = EnergyModellerConverter.convert(applicationSample);
 		
-		energySample = EnergyModellerConverter.convertSample(eSample);
-		
-		assertEquals(1.0, energySample.getEvalue(), 0.00001);
-		assertEquals(2.0, energySample.getPvalue(), 0.00001);
-		assertEquals(3.0, energySample.getCvalue(), 0.00001);
-		assertEquals(11l, energySample.getTimestampBeging());
-		assertEquals(22l, energySample.getTimestampEnd());
-		assertEquals("aaa", energySample.getVmid());
+		assertEquals("appid", newApplicationSample.getAppid());
+		assertEquals(1.0, newApplicationSample.getcValue(), 0.0001);
+		assertEquals(2.0, newApplicationSample.geteValue(), 0.0001);
+		assertEquals(5, newApplicationSample.getOrderID());
+		assertEquals(3.0, newApplicationSample.getpValue(), 0.0001);
+		assertEquals(2l, newApplicationSample.getTime());
+		assertEquals("vmid", newApplicationSample.getVmid());
 	}
 	
 	@Test
 	public void convertEnergySampleListTest() {
-		List<eu.ascetic.paas.applicationmanager.model.EnergySample> samples = EnergyModellerConverter.convertList(null);
-		assertEquals(null, samples);
+		List<EventSample> nullEventSamples = null;
+		List<eu.ascetic.paas.applicationmanager.model.EventSample> newEventSamples = EnergyModellerConverter.convertList(nullEventSamples);
+		assertEquals(null, newEventSamples);
 		
-		EnergySample eSample1 = new EnergySample();
-		eSample1.setE_value(1);
-		eSample1.setP_value(2);
-		eSample1.setTimestampBeging(11l);
-		eSample1.setTimestampEnd(22l);
-		eSample1.setVmid("aaa");
-		EnergySample eSample2 = new EnergySample();
-		eSample2.setE_value(3);
-		eSample2.setP_value(4);
-		eSample2.setTimestampBeging(33l);
-		eSample2.setTimestampEnd(44l);
-		eSample2.setVmid("bbb");
+		EventSample eventSample1 = new EventSample();
+		eventSample1.setCvalue(1.0);
+		eventSample1.setEvalue(2.0);
+		eventSample1.setPvalue(3.0);
+		eventSample1.setTimestampBeging(1l);
+		eventSample1.setTimestampEnd(2l);
+		eventSample1.setVmid("vmid");
+		eventSample1.setAppid("appid");
+
+		EventSample eventSample2 = new EventSample();
+		eventSample2.setCvalue(4.0);
+		eventSample2.setEvalue(5.0);
+		eventSample2.setPvalue(6.0);
+		eventSample2.setTimestampBeging(3l);
+		eventSample2.setTimestampEnd(4l);
+		eventSample2.setVmid("vmid2");
+		eventSample2.setAppid("appid2");
 		
- 		List<EnergySample> eSamples = new ArrayList<EnergySample>();
- 		eSamples.add(eSample1);
- 		eSamples.add(eSample2);
+ 		List<EventSample> eventSamples = new ArrayList<EventSample>();
+ 		eventSamples.add(eventSample1);
+ 		eventSamples.add(eventSample2);
  		
- 		samples = EnergyModellerConverter.convertList(eSamples);
+ 		newEventSamples = EnergyModellerConverter.convertList(eventSamples);
  		
- 		assertEquals(2, samples.size());
-		assertEquals(1.0, samples.get(0).getEvalue(), 0.00001);
-		assertEquals(2.0, samples.get(0).getPvalue(), 0.00001);
-		assertEquals(11l, samples.get(0).getTimestampBeging());
-		assertEquals(22l, samples.get(0).getTimestampEnd());
-		assertEquals("aaa", samples.get(0).getVmid());
-		assertEquals(3.0, samples.get(1).getEvalue(), 0.00001);
-		assertEquals(4.0, samples.get(1).getPvalue(), 0.00001);
-		assertEquals(33l, samples.get(1).getTimestampBeging());
-		assertEquals(44l, samples.get(1).getTimestampEnd());
-		assertEquals("bbb", samples.get(1).getVmid());
+ 		assertEquals(2, newEventSamples.size());
+ 		assertEquals(1.0, newEventSamples.get(0).getCvalue(), 0.00001);
+		assertEquals(2.0, newEventSamples.get(0).getEvalue(), 0.00001);
+		assertEquals(3.0, newEventSamples.get(0).getPvalue(), 0.00001);
+		assertEquals(1l, newEventSamples.get(0).getTimestampBeging());
+		assertEquals(2l, newEventSamples.get(0).getTimestampEnd());
+		assertEquals("vmid", newEventSamples.get(0).getVmid());
+		assertEquals("appid", newEventSamples.get(0).getAppid());
+ 		assertEquals(4.0, newEventSamples.get(1).getCvalue(), 0.00001);
+		assertEquals(5.0, newEventSamples.get(1).getEvalue(), 0.00001);
+		assertEquals(6.0, newEventSamples.get(1).getPvalue(), 0.00001);
+		assertEquals(3l, newEventSamples.get(1).getTimestampBeging());
+		assertEquals(4l, newEventSamples.get(1).getTimestampEnd());
+		assertEquals("vmid2", newEventSamples.get(1).getVmid());
+		assertEquals("appid2", newEventSamples.get(1).getAppid());
 	}
 	
 	@Test
 	public void convertSampleListTest() {
-		List<eu.ascetic.paas.applicationmanager.model.EnergySample> samples = EnergyModellerConverter.convertSampleList(null);
-		assertEquals(null, samples);
+		List<eu.ascetic.paas.applicationmanager.model.ApplicationSample> newApplicationSamples = EnergyModellerConverter.convertSampleList(null);
+		assertEquals(null, newApplicationSamples);
 		
-		Sample eSample1 = new Sample();
-		eSample1.setEvalue(1);
-		eSample1.setPvalue(2);
-		eSample1.setTimestampBeging(11l);
-		eSample1.setTimestampEnd(22l);
-		eSample1.setVmid("aaa");
-		Sample eSample2 = new Sample();
-		eSample2.setEvalue(3);
-		eSample2.setPvalue(4);
-		eSample2.setTimestampBeging(33l);
-		eSample2.setTimestampEnd(44l);
-		eSample2.setVmid("bbb");
+		ApplicationSample applicationSample1 = new ApplicationSample();
+		applicationSample1.setAppid("appid");
+		applicationSample1.setC_value(1.0);
+		applicationSample1.setE_value(2.0);
+		applicationSample1.setOrderID(5);
+		applicationSample1.setP_value(3.0);
+		applicationSample1.setTime(2l);
+		applicationSample1.setVmid("vmid");
+		ApplicationSample applicationSample2 = new ApplicationSample();
+		applicationSample2.setAppid("appid2");
+		applicationSample2.setC_value(4.0);
+		applicationSample2.setE_value(5.0);
+		applicationSample2.setOrderID(7);
+		applicationSample2.setP_value(6.0);
+		applicationSample2.setTime(3l);
+		applicationSample2.setVmid("vmid2");
 		
- 		List<Sample> eSamples = new ArrayList<Sample>();
- 		eSamples.add(eSample1);
- 		eSamples.add(eSample2);
+		List<ApplicationSample> applicationSamples = new ArrayList<ApplicationSample>();
+		applicationSamples.add(applicationSample1);
+		applicationSamples.add(applicationSample2);
  		
- 		samples = EnergyModellerConverter.convertSampleList(eSamples);
+ 		newApplicationSamples = EnergyModellerConverter.convertSampleList(applicationSamples);
  		
- 		assertEquals(2, samples.size());
-		assertEquals(1.0, samples.get(0).getEvalue(), 0.00001);
-		assertEquals(2.0, samples.get(0).getPvalue(), 0.00001);
-		assertEquals(11l, samples.get(0).getTimestampBeging());
-		assertEquals(22l, samples.get(0).getTimestampEnd());
-		assertEquals("aaa", samples.get(0).getVmid());
-		assertEquals(3.0, samples.get(1).getEvalue(), 0.00001);
-		assertEquals(4.0, samples.get(1).getPvalue(), 0.00001);
-		assertEquals(33l, samples.get(1).getTimestampBeging());
-		assertEquals(44l, samples.get(1).getTimestampEnd());
-		assertEquals("bbb", samples.get(1).getVmid());
-	}
+ 		assertEquals(2, newApplicationSamples.size());
+		assertEquals(1.0, newApplicationSamples.get(0).getcValue(), 0.00001);
+		assertEquals(2.0, newApplicationSamples.get(0).geteValue(), 0.00001);
+		assertEquals(3.0, newApplicationSamples.get(0).getpValue(), 0.00001);
+		assertEquals(2l, newApplicationSamples.get(0).getTime());
+		assertEquals("appid", newApplicationSamples.get(0).getAppid());
+		assertEquals("vmid", newApplicationSamples.get(0).getVmid());
+		assertEquals(5, newApplicationSamples.get(0).getOrderID());
+		assertEquals(4.0, newApplicationSamples.get(1).getcValue(), 0.00001);
+		assertEquals(5.0, newApplicationSamples.get(1).geteValue(), 0.00001);
+		assertEquals(6.0, newApplicationSamples.get(1).getpValue(), 0.00001);
+		assertEquals(3l, newApplicationSamples.get(1).getTime());
+		assertEquals("appid2", newApplicationSamples.get(1).getAppid());
+		assertEquals("vmid2", newApplicationSamples.get(1).getVmid());
+		assertEquals(7, newApplicationSamples.get(1).getOrderID());	}
 }
