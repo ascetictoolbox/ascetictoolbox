@@ -30,10 +30,9 @@ public class DataEventDAOImpl implements DataeEventDAO {
 	private static String SQL_FIRST_EV="select min(starttime) from DATAEVENT where applicationid = ? and deploymentid = ? and eventid = ?";
 	private static String SQL_LAST_APP ="select max(endtime) from DATAEVENT where applicationid = ? ";
 	private static String SQL_FIRST_EV_VM="select min(starttime) from DATAEVENT where applicationid = ? and deploymentid = ? and vmid = ? and eventid = ?";
-	//private static String SQL_LAST_EV_VM="select max(endtime) from DATAEVENT where applicationid = ? and deploymentid = ? and vmid = ? and eventid = ?";
-	//private static String SQL_LAST_EV="select max(endtime) from DATAEVENT where applicationid = ? and deploymentid = ? and eventid = ?";
 	private static String SQL_Q_LASTVM="select max(starttime) from DATAEVENT where applicationid = ? and vmid = ? and eventid = ?";
 	private static String SQL_Q_LASTEV="select max(starttime) from DATAEVENT where applicationid = ? and eventid = ?";
+	private static String SQL_CHECK_EV="select count(*) from DATAEVENT where applicationid = ? and vmid = ?  and eventid = ? and starttime = ? and endtime = ?";
 	private static String SQL_COUNT_EV="select IFNULL(count(*),0) from DATAEVENT where applicationid = ? and deploymentid = ? and eventid = ?";
 	private static String SQL_COUNT_EV_VM="select IFNULL(count(*),0) from DATAEVENT where applicationid = ? and deploymentid = ? and vmid = ? and eventid = ?";
 	private static String SQL_CLEAN="DELETE FROM DATAEVENT";
@@ -160,11 +159,29 @@ public class DataEventDAOImpl implements DataeEventDAO {
 			return 0;
 		}
 	}
+	
+	public int checkIfExists(String applicationid,String vmid,String eventid, long tstart,long tend){
+		//SQL_CHECK_EV
+		int res = 0;
+		res =	jdbcTemplate.queryForObject(SQL_CHECK_EV,new Object[]{applicationid,vmid,eventid, tstart, tend}, Integer.class);
+		if (res==1){
+			LOGGER.info("Already available event "+eventid+" started "+tstart+" ended "+tend+" on vm "+vmid);
+		}
+		return res;
+		
+	}
 
+	public void purgedata(){
+		jdbcTemplate.execute(SQL_CLEAN);
+	}
+	
+	
 	@Override
 	public Timestamp getLastByApplicationId(String applicationid) {
 		Long res;
 		try{
+			
+			
 			
 			res =	jdbcTemplate.queryForObject(SQL_LAST_APP,new Object[]{applicationid}, Long.class);
 

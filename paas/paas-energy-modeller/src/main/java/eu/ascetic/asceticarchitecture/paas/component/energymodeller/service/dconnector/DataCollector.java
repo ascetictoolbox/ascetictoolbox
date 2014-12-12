@@ -100,16 +100,17 @@ public class DataCollector  {
 	public void handleEventData(String applicationid, String deploymentid,String vmid,String eventid) {
 		logger.info("select * from DATAEVENT where applicationid = ? getting data task");
 		Timestamp lastts=null;
-		lastts = dataevent.getLastByApplicationId(applicationid);	
+//		lastts = dataevent.getLastByApplicationId(applicationid);	
+		
 		
 		
 		String requestEntity;
-		if (lastts!=null){
-			logger.info("Data has been loaded in the past, checking for newer events only");
-			requestEntity = "{\"$match\":{\"appId\":\""+applicationid+"\",\"timestamp\":{\"$gt\":"+lastts.getTime()+"}}}";
-		}else{
+//		if (lastts!=null){
+//			logger.info("Data has been loaded in the past, checking for newer events only");
+//			requestEntity = "{\"$match\":{\"appId\":\""+applicationid+"\",\"timestamp\":{\"$gt\":"+lastts.getTime()+"}}}";
+//		}else{
 			requestEntity = "{\"$match\":{\"appId\":\""+applicationid+"\"}}";
-		}
+//		}
 		
 		
 		
@@ -138,9 +139,11 @@ public class DataCollector  {
 			logger.debug("received "+jsonres);
 			logger.debug("getting result");
 			connection.disconnect();
+			
 		    JsonArray entries = (JsonArray) new JsonParser().parse(jsonres);
 		    Timestamp ts;
 		    long time;
+		    dataevent.purgedata();
 		    for (JsonElement el : entries){
 		    	JsonObject jo = (JsonObject) el;
 		    	logger.info("id" + jo.getAsJsonObject("_id"));
@@ -170,11 +173,14 @@ public class DataCollector  {
 		    		logger.warn("endtime negative skipping this event");
 		    	} else {
 		    		if (vmid!=""){
-			    		
+			    			//int found = dataevent.checkIfExists(data.getApplicationid(),data.getEventid(),data.getVmid(),data.getBegintime(),data.getEndtime());
+			    			//if (found == 0)
 			    			dataevent.save(data);
 			    			//logger.info("saving "+data.getEventid()+data.getApplicationid()+data.getBegintime()+data.getEndtime());
 			    		
 		    		}else{
+		    			//int found = dataevent.checkIfExists(data.getApplicationid(),data.getEventid(),data.getVmid(),data.getBegintime(),data.getEndtime());
+		    			//if (found == 0);
 		    			dataevent.save(data);
 		    			logger.info("saving "+data.getEventid()+data.getApplicationid()+data.getBegintime()+data.getEndtime());
 		    		}
