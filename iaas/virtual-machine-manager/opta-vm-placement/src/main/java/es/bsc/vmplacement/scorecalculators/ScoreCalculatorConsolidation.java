@@ -55,7 +55,7 @@ public final class ScoreCalculatorConsolidation implements SimpleScoreCalculator
     }
 
     private int calculateSoftScore(ClusterState solution) {
-        return (int) -solution.calculateCumulativeUnusedCpuPerc();
+        return -solution.calculateCumulativeUnusedCpuPerc();
     }
 
 }
