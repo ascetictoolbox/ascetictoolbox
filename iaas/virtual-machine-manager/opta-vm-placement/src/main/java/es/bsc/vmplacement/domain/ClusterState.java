@@ -152,12 +152,15 @@ public class ClusterState extends AbstractPersistable implements Solution<Score>
         return result;
     }
 
-    public double calculateCumulativeUnusedCpuPerc() {
-        double result = 0;
+    public int calculateCumulativeUnusedCpuPerc() {
+        double cumulativeUnusedCpuPerc = 0;
         for (Host host: hosts) {
-            result += (double)(host.getNcpus() - cpusAssignedInHost(host))/(host.getNcpus());
+            double unusedPerc = (double)(host.getNcpus() - cpusAssignedInHost(host))/(host.getNcpus());
+            if (unusedPerc > 0) {
+                cumulativeUnusedCpuPerc += unusedPerc;
+            }
         }
-        return result;
+        return (int)(cumulativeUnusedCpuPerc*100);
     }
 
     @Override
