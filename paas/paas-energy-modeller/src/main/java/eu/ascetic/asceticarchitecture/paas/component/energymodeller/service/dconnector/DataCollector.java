@@ -250,6 +250,21 @@ public class DataCollector  {
 		}
 		long delta = (item.getLastClock()*1000) - begin;
 		if (delta > 86400000){
+			// more that 2 days time range, need to import gradually all data
+			long finalts = 0;
+			finalts = begin;
+			// load 2 days
+			while (delta>86400000){
+				
+				finalts = finalts + 86400000;
+				this.getHistoryForItemInterval(appid, depid, itemkey, hostname, "", begin, finalts);
+				Item reloadeditem = zCli.getItemByNameFromHost(itemkey, hostname);
+				reloadeditem.getLastClock();
+				delta = (item.getLastClock()*1000) - finalts;
+				begin=finalts;
+			}
+			
+			this.getHistoryForItemInterval(appid, depid, itemkey, hostname, "", finalts, item.getLastClock()*1000);
 			
 		} else {
 			List<HistoryItem> items = zCli.getHistoryDataFromItem(itemkey, hostname, "text", begin,item.getLastClock()*1000);
@@ -262,6 +277,8 @@ public class DataCollector  {
 		}
 		
 	}
+	
+	
 	
 	public void getHistoryForItemInterval(String appid, String depid,String itemkey,String hostname,String eventid, long since, long to){
 		List<HistoryItem> items = zCli.getHistoryDataFromItem(itemkey, hostname, "text", since , to);
