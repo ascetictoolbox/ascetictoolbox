@@ -4,11 +4,11 @@
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /gui                                     api.Misc.redirectTo(url="/gui/")
-GET     /gui/                                    controllers.Assets.at(path="/public", file="index.html")
+GET     /gui/                                    controllers.StaticAssets.at(path="/public", file="index.html")
 GET     /gui/metricPanel                         api.Gui.getAllMetricPanels()
 POST    /gui/metricPanel                         api.Gui.addMetricPanel()
 DELETE  /gui/metricPanel/:id                     api.Gui.deleteMetricPanel(id:String)
-GET     /gui/*file                               controllers.Assets.at(path="/public", file)
+GET     /gui/*file                               controllers.StaticAssets.at(path="/public", file)
 
 
 #List running apps

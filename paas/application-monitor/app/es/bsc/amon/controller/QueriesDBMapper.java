@@ -16,6 +16,7 @@
 
 package es.bsc.amon.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -24,6 +25,8 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
+import es.bsc.amon.DBManager;
+import es.bsc.mongoal.QueryGenerator;
 import play.Logger;
 import play.libs.Json;
 
@@ -32,16 +35,16 @@ import play.libs.Json;
  */
 public class QueriesDBMapper {
     public static final QueriesDBMapper instance = new QueriesDBMapper();
+    private static es.bsc.mongoal.QueryGenerator mongoAlQG = null;
     private QueriesDBMapper() {}
 
-    public ArrayNode find(String query) {
-        DBObject dbo = (DBObject)JSON.parse(query);
-
-        return (ArrayNode)Json.parse(EventsDBMapper.getInstance().find(dbo).toString());
-    }
-
-    public ArrayNode aggregate(String query) {
-        Object raw = JSON.parse(query);
+    /**
+     * Uses the MongoDB Json query language
+     * @param query
+     * @return
+     */
+    public ArrayNode aggregate(JsonNode query) {
+        Object raw = JSON.parse(query.toString());
         ArrayNode ret = new ArrayNode(JsonNodeFactory.instance);
 
         if(raw instanceof BasicDBObject) {
@@ -52,6 +55,20 @@ public class QueriesDBMapper {
 
         return ret;
     }
+
+    /**
+     * Uses the MongoAL query language
+     */
+    public ArrayNode aggregate(String query) {
+        if(mongoAlQG == null) {
+            mongoAlQG = new QueryGenerator(DBManager.instance.getDatabase());
+        }
+        ArrayNode ret = new ArrayNode(JsonNodeFactory.instance);
+
+        return (ArrayNode)Json.parse(mongoAlQG.query(query).toString());
+
+    }
+
     public static final String START = "start";
     public static final String END = "end";
     public static final String APPID = "appId";

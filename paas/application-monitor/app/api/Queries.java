@@ -16,24 +16,30 @@
 
 package api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import es.bsc.amon.DBManager;
 import es.bsc.amon.controller.QueriesDBMapper;
-import play.Logger;
+
+import es.bsc.mongoal.QueryGenerator;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 
-import java.io.IOException;
-
 public class Queries extends Controller {
 
-    @BodyParser.Of(BodyParser.Json.class)
+    @BodyParser.Of(BodyParser.AnyContent.class)
     public static Result post() {
+        String contentType = request().getHeader("Content-Type");
+        if("application/json".equals(contentType)) {
+            return ok(QueriesDBMapper.instance.aggregate(request().body().asJson()));
+        } else if("text/plain".equals(contentType)) {
+            return ok(QueriesDBMapper.instance.aggregate(request().body().asText()));
+        } else {
+            return badRequest("Unknown mime type. Supported types are:\n" +
+                    "\tapplication/json for MongoDB JSON-like aggregation query\n" +
+                    "\ttext/plain for MongoAL aggregation language (http://github.com/mariomac/MongoAL)");
 
-        String qs = request().body().asJson().toString();
-
-        return ok(QueriesDBMapper.instance.aggregate(qs));
+        }
     }
 
 }
