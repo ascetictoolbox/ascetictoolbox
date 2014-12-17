@@ -18,6 +18,7 @@
 
 package es.bsc.vmmanagercore.rest;
 
+import es.bsc.vmmanagercore.manager.GenericVmManager;
 import es.bsc.vmmanagercore.manager.VmManager;
 
 import javax.ws.rs.*;
@@ -27,14 +28,13 @@ import javax.ws.rs.core.MediaType;
  * REST interface for the VM Manager.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
- *
  */
 
 @Path("/vmmanager")
 public class VmManagerRest {
 
     private static final String DB_NAME = "VmManagerDb";
-    private VmManager vmManager = new VmManager(DB_NAME);
+    private VmManager vmManager = new GenericVmManager(DB_NAME);
 
     private VmCallsManager vmCallsManager = new VmCallsManager(vmManager);
     private ImageCallsManager imageCallsManager = new ImageCallsManager(vmManager);

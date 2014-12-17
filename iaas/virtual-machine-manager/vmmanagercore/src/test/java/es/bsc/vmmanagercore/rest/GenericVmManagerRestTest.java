@@ -36,7 +36,7 @@ import java.util.List;
 import static com.jayway.restassured.RestAssured.*;
 import static org.junit.Assert.*;
 
-public class VmManagerRestTest {
+public class GenericVmManagerRestTest {
 
     // Testing configuration variables
     private static String testImageUrl;
