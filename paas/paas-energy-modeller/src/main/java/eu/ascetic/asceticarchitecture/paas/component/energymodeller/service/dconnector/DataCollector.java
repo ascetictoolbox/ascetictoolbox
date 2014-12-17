@@ -98,9 +98,10 @@ public class DataCollector  {
 	}
 	
 	public void handleEventData(String applicationid, String deploymentid,String vmid,String eventid) {
-		logger.info("select * from DATAEVENT where applicationid = ? getting data task");
-		Timestamp lastts=null;
+		//logger.info("select * from DATAEVENT where applicationid = ? getting data task");
+//		Timestamp lastts=null;
 //		lastts = dataevent.getLastByApplicationId(applicationid);	
+		
 		
 		
 		
@@ -109,9 +110,17 @@ public class DataCollector  {
 //			logger.info("Data has been loaded in the past, checking for newer events only");
 //			requestEntity = "{\"$match\":{\"appId\":\""+applicationid+"\",\"timestamp\":{\"$gt\":"+lastts.getTime()+"}}}";
 //		}else{
-			requestEntity = "{\"$match\":{\"appId\":\""+applicationid+"\"}}";
+			//requestEntity = "{\"$match\":{\"appId\":\""+applicationid+"\"}}";
+			
 //		}
 		
+		requestEntity = "FROM events MATCH appId=\""+applicationid+"\" AND eventType=\""+eventid+"\" AND nodeId=\""+vmid+"\"";
+		
+		if (eventid==null){
+			logger.warn("No event id supplied. I will load all events for the application");
+			requestEntity = "FROM events MATCH appId=\""+applicationid+"\"";
+			
+		}
 		
 		
 		HttpURLConnection connection;
@@ -121,12 +130,12 @@ public class DataCollector  {
 			connection.setDoOutput(true);
 			connection.setDoInput(true);
 			connection.setRequestMethod("POST");
-			connection.setRequestProperty("Content-Type", "application/json");
+			connection.setRequestProperty("Content-Type", "text/plain");
 			OutputStream response = connection.getOutputStream();
 			response.write(requestEntity.getBytes());
 			response.flush();
 			logger.debug("Connected !");
-			if (connection.getResponseCode() != HttpURLConnection.HTTP_CREATED) {
+			if (connection.getResponseCode() >= 400) {
 				logger.info("App monitor connection error");
 				logger.info("code "+connection.getResponseCode());
 			}
@@ -141,9 +150,8 @@ public class DataCollector  {
 			connection.disconnect();
 			
 		    JsonArray entries = (JsonArray) new JsonParser().parse(jsonres);
-		    Timestamp ts;
 		    long time;
-		    dataevent.purgedata();
+		    dataevent.purgedata(applicationid,vmid,eventid);
 		    for (JsonElement el : entries){
 		    	JsonObject jo = (JsonObject) el;
 		    	logger.info("id" + jo.getAsJsonObject("_id"));
@@ -153,40 +161,65 @@ public class DataCollector  {
 		    	logger.debug("timestamp" + jo.getAsJsonPrimitive("timestamp"));
 		    	logger.debug("endtime" + jo.getAsJsonPrimitive("endtime"));
 		    	DataEvent data = new DataEvent();
+		    	
+		    	boolean valid_data = true;
+		    	
 		    	data.setApplicationid(applicationid);
 		    	if (jo.getAsJsonPrimitive("eventType")!=null){
 		    		data.setEventid(jo.getAsJsonPrimitive("eventType").getAsString());
 		    	} else {
-		    		data.setEventid(eventid);
-		    	}
-		    	
-		    	data.setVmid(jo.getAsJsonPrimitive("nodeId").getAsString());
-		    	time=jo.getAsJsonPrimitive("timestamp").getAsLong();
-		    	//ts = new Timestamp(time);
-		    	data.setBegintime(time);
-		    	time=jo.getAsJsonPrimitive("endtime").getAsLong();
-		    	//ts = new Timestamp(time);
-		    	data.setEndtime(time);
-		    	if (jo.getAsJsonPrimitive("endtime")==null){
-		    		logger.warn("endtime not available skippint this event");
-		    	} else if (jo.getAsJsonPrimitive("endtime").getAsLong()<=0){
-		    		logger.warn("endtime negative skipping this event");
-		    	} else {
-		    		if (vmid!=""){
-			    			//int found = dataevent.checkIfExists(data.getApplicationid(),data.getEventid(),data.getVmid(),data.getBegintime(),data.getEndtime());
-			    			//if (found == 0)
-			    			dataevent.save(data);
-			    			//logger.info("saving "+data.getEventid()+data.getApplicationid()+data.getBegintime()+data.getEndtime());
-			    		
-		    		}else{
-		    			//int found = dataevent.checkIfExists(data.getApplicationid(),data.getEventid(),data.getVmid(),data.getBegintime(),data.getEndtime());
-		    			//if (found == 0);
-		    			dataevent.save(data);
-		    			logger.info("saving "+data.getEventid()+data.getApplicationid()+data.getBegintime()+data.getEndtime());
+		    		valid_data = false;
+		    		logger.warn("Event id is null looking into non standard location within the data");
+		    		if (jo.getAsJsonObject("data")!=null){
+		    			if (jo.getAsJsonObject("data").getAsJsonPrimitive("eventType")!=null){
+		    				logger.warn("Document Event id was in legacy location"+jo.getAsJsonObject("_id"));
+		    				valid_data = true;
+		    				data.setEventid(jo.getAsJsonObject("data").getAsJsonPrimitive("eventType").getAsString());
+		    			}
+		    			if (jo.getAsJsonObject("data").getAsJsonPrimitive("eventtype")!=null){
+		    				logger.warn("Document Event id was in legacy location"+jo.getAsJsonObject("_id"));
+		    				data.setEventid(jo.getAsJsonObject("data").getAsJsonPrimitive("eventtype").getAsString());	
+		    				valid_data = true;
+		    			}
 		    		}
-		    	}
 		    		
+		    	}
 		    	
+		    	if (jo.getAsJsonPrimitive("appId")==null) 	{
+		    		valid_data = false;
+		    		logger.warn("app id is null"+jo.getAsJsonObject("_id"));
+		    	}
+		    	if (jo.getAsJsonPrimitive("nodeId")==null) 	{
+		    		valid_data = false;
+		    		logger.warn("app id is null"+jo.getAsJsonObject("_id"));
+		    	}
+		    	if (jo.getAsJsonPrimitive("timestamp")==null) 	{
+		    		valid_data = false;
+		    		logger.warn("begin ts null"+jo.getAsJsonObject("_id"));
+		    	}
+		    	if (jo.getAsJsonPrimitive("endtime")==null) 	{
+		    		valid_data = false;
+		    		logger.warn("end ts null"+jo.getAsJsonObject("_id"));
+		    	}
+		    	
+		    	if (valid_data){
+		    		data.setVmid(jo.getAsJsonPrimitive("nodeId").getAsString());
+		    		time=jo.getAsJsonPrimitive("timestamp").getAsLong();
+		    		data.setBegintime(time);
+		    		time=jo.getAsJsonPrimitive("endtime").getAsLong();
+			    	data.setEndtime(time);
+		    		if (jo.getAsJsonPrimitive("endtime").getAsLong()<=0){
+		    			valid_data = false;
+		    			logger.warn("final timestamp issues skipping this event"+jo.getAsJsonObject("_id"));
+		    		} else if (data.getBegintime()>data.getEndtime()) {
+		    			valid_data = false;
+		    			logger.warn("timestamps issues skipping this event"+jo.getAsJsonObject("_id"));
+		    		} else {
+			    			if (valid_data)dataevent.save(data);
+			    			if (valid_data)logger.info("saving "+data.getEventid()+data.getApplicationid()+data.getBegintime()+data.getEndtime());
+			    		}
+		    		}
+		    		
 		    }
 		} catch (IOException e) {
 			 logger.error("#problem occurred");
@@ -287,33 +320,12 @@ public class DataCollector  {
 			logger.warn("no data available");
 			return;
 		}
-		storeEnergyFromData(appid,depid,hostname,items);
-	}
-	
-	
-	public void getHistoryForLargeInterval(String itemkey,String hostname, long since, long to){
-		
-		// how many days
-
-		long numdays = 1;
-		long partialintervalstart = since;
-		long partialintervalend = since+86400000;
-		logger.info("split request in days");
-		while (to>partialintervalend){
-			getHistoryForItemInterval("", "",itemkey,hostname,"", partialintervalstart, partialintervalend);
-			logger.info("day "+numdays);
-			numdays=numdays+1;
-			partialintervalstart=partialintervalend+1000;
-			partialintervalend = partialintervalend + (86400000*numdays);
-				
-			
-			
+		logger.info("Size of sample "+items.size());
+		for (HistoryItem item : items){
+			logger.info("This Item "+item.getClock()+" host "+item.getHostid()+ " item val "+item.getValue());
 		}
-		partialintervalstart = partialintervalstart+1;
-		if (partialintervalstart<to)getHistoryForItemInterval("", "",itemkey,hostname,"", partialintervalstart, to);
-		// for each day get history in interval
 		
-		
+		storeEnergyFromData(appid,depid,hostname,items);
 	}
 	
 	
@@ -323,9 +335,6 @@ public class DataCollector  {
 	}
 	
 	public List<HistoryItem> splitSeriesHistoryForItemInterval(String appid, String depid,String itemkey,String hostname,long since, long to){
-		
-		
-		
 		
 		List<HistoryItem> items = zCli.getHistoryDataFromItem(itemkey, hostname, "text", since , to);
 		return items;

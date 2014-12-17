@@ -171,8 +171,10 @@ public class DataEventDAOImpl implements DataeEventDAO {
 		
 	}
 
-	public void purgedata(){
-		jdbcTemplate.execute(SQL_CLEAN);
+	public void purgedata(String appid,String vmid,String eventid){
+		String delete = "DELETE FROM DATAEVENT WHERE applicationid = \""+appid+"\" and vmid=\""+vmid+"\" and eventid=\""+eventid+"\"";
+		LOGGER.info("delete "+delete);
+		jdbcTemplate.execute(delete);
 	}
 	
 	

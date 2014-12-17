@@ -16,12 +16,15 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.dcon
 
 public class EnergyModellerDataZabbix {
 
-	private static String HOST = "c0fcc44e-b29f-4fcc-b1e3-b9c017b7865f";
+	private static String HOST = "48f2dd77-9818-46e5-b79d-58b5e2d80613";
 	private static String HOST2 = "59d2ae8d-1ea0-46df-993f-fddbdd48c830";
 	private static String HOST3 = "8f805a34-4ef1-4a9a-93e8-028651de28cc";
 	private static String hst ="asok10";
 	private static DataCollector dcollector;
 	private static PaaSEMDatabaseManager dbmanager;
+	
+	long beginlong = 1418580703000L;
+	long endlong = 1418587903000L;
 	
 	@BeforeClass
 	public static void setup() {
@@ -64,7 +67,7 @@ public class EnergyModellerDataZabbix {
 		System.out.println("################################## ");
 		System.out.println("### INTERVAL DATA FOR "+dcollector.searchFullHostsname(HOST));
 		System.out.println("################################## ");
-		dcollector.getHistoryForItemInterval("apptest","deptest","Power", dcollector.searchFullHostsname(HOST),"", 1418218075000L, 1418304475000L);
+		dcollector.getHistoryForItemInterval("apptest","deptest","Power", dcollector.searchFullHostsname(HOST),"", beginlong, endlong);
 		 
 	}
 	
