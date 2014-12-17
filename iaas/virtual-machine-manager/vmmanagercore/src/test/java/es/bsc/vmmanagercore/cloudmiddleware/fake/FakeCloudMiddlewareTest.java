@@ -22,7 +22,7 @@ import es.bsc.vmmanagercore.model.images.ImageToUpload;
 import es.bsc.vmmanagercore.model.images.ImageUploaded;
 import es.bsc.vmmanagercore.model.vms.Vm;
 import es.bsc.vmmanagercore.model.vms.VmDeployed;
-import es.bsc.vmmanagercore.monitoring.HostFake;
+import es.bsc.vmmanagercore.monitoring.hosts.HostFake;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;

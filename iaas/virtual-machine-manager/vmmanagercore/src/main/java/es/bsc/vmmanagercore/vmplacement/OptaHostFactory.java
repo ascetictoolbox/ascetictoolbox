@@ -18,6 +18,8 @@
 
 package es.bsc.vmmanagercore.vmplacement;
 
+import es.bsc.vmmanagercore.monitoring.hosts.Host;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,7 +40,7 @@ public class OptaHostFactory {
 
     private static Long optaHostId = (long) 0;
 
-    public static es.bsc.vmplacement.domain.Host getOptaHost(es.bsc.vmmanagercore.monitoring.Host host) {
+    public static es.bsc.vmplacement.domain.Host getOptaHost(Host host) {
         es.bsc.vmplacement.domain.Host result = optaHosts.get(host.getHostname());
         if (result != null) {
             return result;

@@ -19,7 +19,7 @@
 package es.bsc.vmmanagercore.model.scheduling;
 
 import es.bsc.vmmanagercore.model.vms.Vm;
-import es.bsc.vmmanagercore.monitoring.Host;
+import es.bsc.vmmanagercore.monitoring.hosts.Host;
 
 import java.util.ArrayList;
 import java.util.HashMap;

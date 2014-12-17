@@ -16,13 +16,30 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.vmmanagercore.monitoring;
+package es.bsc.vmmanagercore.monitoring.zabbix;
 
 /**
- * Types of hosts that the VMM supports. Each type of host corresponds to a monitoring system.
+ * Runnable to register a VM in Zabbix. A client who makes a deployment request should not wait
+ * for Zabbix to register a VM. This is why we execute the register action in a separated thread.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  */
-public enum HostType {
-    GANGLIA, ZABBIX, OPENSTACK, FAKE
+public class RegisterZabbixVmRunnable implements Runnable {
+
+    private final String vmId;
+    private final String hostname;
+    private final String ipAddress;
+
+    public RegisterZabbixVmRunnable(String vmId, String hostname, String ipAddress) {
+        this.vmId = vmId;
+        this.hostname = hostname;
+        this.ipAddress = ipAddress;
+    }
+
+    @Override
+    public void run() {
+        // The ID of a VM in Zabbix is: vm_id + _ + hostname_where_vm_is_deployed (agreed in Ascetic)
+        ZabbixConnector.getZabbixClient().createVM(vmId + "_" + hostname, ipAddress);
+    }
+
 }

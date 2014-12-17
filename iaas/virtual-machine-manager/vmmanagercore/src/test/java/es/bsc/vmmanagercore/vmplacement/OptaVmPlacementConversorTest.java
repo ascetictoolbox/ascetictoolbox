@@ -19,8 +19,8 @@
 package es.bsc.vmmanagercore.vmplacement;
 
 import es.bsc.vmmanagercore.model.vms.VmDeployed;
-import es.bsc.vmmanagercore.monitoring.Host;
-import es.bsc.vmmanagercore.monitoring.HostFake;
+import es.bsc.vmmanagercore.monitoring.hosts.Host;
+import es.bsc.vmmanagercore.monitoring.hosts.HostFake;
 import es.bsc.vmplacement.domain.Vm;
 import org.junit.Test;
 

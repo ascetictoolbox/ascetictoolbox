@@ -21,7 +21,7 @@ package es.bsc.vmmanagercore.energymodeller.ascetic;
 import es.bsc.vmmanagercore.model.scheduling.DeploymentPlan;
 import es.bsc.vmmanagercore.model.vms.Vm;
 import es.bsc.vmmanagercore.model.vms.VmDeployed;
-import es.bsc.vmmanagercore.monitoring.Host;
+import es.bsc.vmmanagercore.monitoring.hosts.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;

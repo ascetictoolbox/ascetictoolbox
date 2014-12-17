@@ -36,7 +36,12 @@ import es.bsc.vmmanagercore.model.images.ImageUploaded;
 import es.bsc.vmmanagercore.model.scheduling.*;
 import es.bsc.vmmanagercore.model.vms.Vm;
 import es.bsc.vmmanagercore.model.vms.VmDeployed;
-import es.bsc.vmmanagercore.monitoring.*;
+import es.bsc.vmmanagercore.monitoring.hosts.Host;
+import es.bsc.vmmanagercore.monitoring.hosts.HostFactory;
+import es.bsc.vmmanagercore.monitoring.hosts.HostFake;
+import es.bsc.vmmanagercore.monitoring.hosts.HostType;
+import es.bsc.vmmanagercore.monitoring.zabbix.DeleteZabbixVmRunnable;
+import es.bsc.vmmanagercore.monitoring.zabbix.RegisterZabbixVmRunnable;
 import es.bsc.vmmanagercore.pricingmodeller.PricingModeller;
 import es.bsc.vmmanagercore.pricingmodeller.ascetic.AsceticPricingModellerAdapter;
 import es.bsc.vmmanagercore.pricingmodeller.dummy.DummyPricingModeller;
@@ -193,8 +198,7 @@ public class VmManager {
 
         // If the monitoring system is Zabbix, then we need to delete the VM from Zabbix
         if (usingZabbix()) {
-            // The ID of a VM in Zabbix is: vm_id + _ + hostname_where_vm_is_deployed (agreed in Ascetic)
-            ZabbixConnector.getZabbixClient().deleteVM(vmId + "_" + hostname);
+            deleteVmFromZabbix(vmId, hostname);
         }
 
         performAfterVmDeleteSelfAdaptation();
@@ -231,16 +235,13 @@ public class VmManager {
 
             // If the monitoring system is Zabbix, then we need to call the Zabbix wrapper to initialize
             // the Zabbix agents. To register the VM we agreed to use the name <vmId>_<hostWhereTheVmIsDeployed>
-            // We also need to delete the script for the VM if it was created before
             if (usingZabbix()) {
-                ZabbixConnector.getZabbixClient().createVM(
-                        vmId + "_" + getVm(vmId).getHostName(),
-                        getVm(vmId).getIpAddress());
+                registerVmInZabbix(vmId, getVm(vmId).getHostName(), getVm(vmId).getIpAddress());
+            }
 
-                // Delete the script if one was created
-                if (vmScriptName != null) {
-                    FileSystem.deleteFile(ASCETIC_SCRIPTS_PATH + vmScriptName);
-                }
+            // Delete the script if one was created
+            if (vmScriptName != null) {
+                FileSystem.deleteFile(ASCETIC_SCRIPTS_PATH + vmScriptName);
             }
         }
 
@@ -762,6 +763,20 @@ public class VmManager {
         Thread thread = new Thread(
                 new PeriodicSelfAdaptationRunnable(selfAdaptationManager),
                 "periodicSelfAdaptationThread");
+        thread.start();
+    }
+
+    private void registerVmInZabbix(String vmId, String hostname, String ipAddress) {
+        Thread thread = new Thread(
+                new RegisterZabbixVmRunnable(vmId, hostname, ipAddress),
+                "registerVmInZabbixThread");
+        thread.start();
+    }
+
+    private void deleteVmFromZabbix(String vmId, String hostname) {
+        Thread thread = new Thread(
+                new DeleteZabbixVmRunnable(vmId, hostname),
+                "deleteVmFromZabbixThread");
         thread.start();
     }
 

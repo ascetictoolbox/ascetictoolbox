@@ -19,8 +19,8 @@
 package es.bsc.vmmanagercore.model.scheduling;
 
 import es.bsc.vmmanagercore.model.vms.Vm;
-import es.bsc.vmmanagercore.monitoring.Host;
-import es.bsc.vmmanagercore.monitoring.HostFake;
+import es.bsc.vmmanagercore.monitoring.hosts.Host;
+import es.bsc.vmmanagercore.monitoring.hosts.HostFake;
 import org.junit.Test;
 
 import java.util.ArrayList;

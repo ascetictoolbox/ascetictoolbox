@@ -24,7 +24,7 @@ import es.bsc.vmmanagercore.model.scheduling.RecommendedPlanRequest;
 import es.bsc.vmmanagercore.model.scheduling.SchedulingAlgorithm;
 import es.bsc.vmmanagercore.model.vms.Vm;
 import es.bsc.vmmanagercore.model.vms.VmDeployed;
-import es.bsc.vmmanagercore.monitoring.Host;
+import es.bsc.vmmanagercore.monitoring.hosts.Host;
 import es.bsc.vmmanagercore.pricingmodeller.PricingModeller;
 import es.bsc.vmplacement.domain.ClusterState;
 import es.bsc.vmplacement.domain.ConstructionHeuristic;

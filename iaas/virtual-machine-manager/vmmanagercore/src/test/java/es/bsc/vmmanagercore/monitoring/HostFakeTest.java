@@ -20,6 +20,7 @@ package es.bsc.vmmanagercore.monitoring;
 
 import es.bsc.vmmanagercore.model.hosts.ServerLoad;
 import es.bsc.vmmanagercore.model.vms.Vm;
+import es.bsc.vmmanagercore.monitoring.hosts.HostFake;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
