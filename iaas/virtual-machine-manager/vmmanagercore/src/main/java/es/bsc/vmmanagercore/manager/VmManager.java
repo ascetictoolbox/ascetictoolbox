@@ -40,8 +40,7 @@ import es.bsc.vmmanagercore.monitoring.hosts.Host;
 import es.bsc.vmmanagercore.monitoring.hosts.HostFactory;
 import es.bsc.vmmanagercore.monitoring.hosts.HostFake;
 import es.bsc.vmmanagercore.monitoring.hosts.HostType;
-import es.bsc.vmmanagercore.monitoring.zabbix.DeleteZabbixVmRunnable;
-import es.bsc.vmmanagercore.monitoring.zabbix.RegisterZabbixVmRunnable;
+import es.bsc.vmmanagercore.monitoring.zabbix.ZabbixConnector;
 import es.bsc.vmmanagercore.pricingmodeller.PricingModeller;
 import es.bsc.vmmanagercore.pricingmodeller.ascetic.AsceticPricingModellerAdapter;
 import es.bsc.vmmanagercore.pricingmodeller.dummy.DummyPricingModeller;
@@ -198,7 +197,7 @@ public class VmManager {
 
         // If the monitoring system is Zabbix, then we need to delete the VM from Zabbix
         if (usingZabbix()) {
-            deleteVmFromZabbix(vmId, hostname);
+            ZabbixConnector.deleteVmFromZabbix(vmId, hostname);
         }
 
         performAfterVmDeleteSelfAdaptation();
@@ -236,7 +235,7 @@ public class VmManager {
             // If the monitoring system is Zabbix, then we need to call the Zabbix wrapper to initialize
             // the Zabbix agents. To register the VM we agreed to use the name <vmId>_<hostWhereTheVmIsDeployed>
             if (usingZabbix()) {
-                registerVmInZabbix(vmId, getVm(vmId).getHostName(), getVm(vmId).getIpAddress());
+                ZabbixConnector.registerVmInZabbix(vmId, getVm(vmId).getHostName(), getVm(vmId).getIpAddress());
             }
 
             // Delete the script if one was created
@@ -763,20 +762,6 @@ public class VmManager {
         Thread thread = new Thread(
                 new PeriodicSelfAdaptationRunnable(selfAdaptationManager),
                 "periodicSelfAdaptationThread");
-        thread.start();
-    }
-
-    private void registerVmInZabbix(String vmId, String hostname, String ipAddress) {
-        Thread thread = new Thread(
-                new RegisterZabbixVmRunnable(vmId, hostname, ipAddress),
-                "registerVmInZabbixThread");
-        thread.start();
-    }
-
-    private void deleteVmFromZabbix(String vmId, String hostname) {
-        Thread thread = new Thread(
-                new DeleteZabbixVmRunnable(vmId, hostname),
-                "deleteVmFromZabbixThread");
         thread.start();
     }
 

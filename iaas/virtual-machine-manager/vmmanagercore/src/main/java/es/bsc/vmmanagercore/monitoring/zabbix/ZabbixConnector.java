@@ -35,11 +35,7 @@ public class ZabbixConnector {
 
     private final static ZabbixClient zabbixClient = new ZabbixClient();
 
-    public static ZabbixClient getZabbixClient() {
-        return zabbixClient;
-    }
-
-    // Zabbix DB. I would prefer these constants to be in the VmManagerConfiguration class...
+    // Zabbix DB. I would prefer to see these constants in a config file...
     private static final String DB_URL = "jdbc:mysql://10.4.0.15/zabbix";
     private static final String DB_DRIVER = "com.mysql.jdbc.Driver";
     private static final String DB_USER = "zabbix";
@@ -73,6 +69,10 @@ public class ZabbixConnector {
     // Suppress default constructor for non-instantiability
     private ZabbixConnector() {
         throw new AssertionError();
+    }
+
+    public static ZabbixClient getZabbixClient() {
+        return zabbixClient;
     }
 
     /**
@@ -119,6 +119,35 @@ public class ZabbixConnector {
             }
         }
         return result;
+    }
+
+    /**
+     * Registers a VM in Zabbix. A client who makes a deployment request should not wait
+     * for Zabbix to register a VM. This is why we execute the register action in a separated thread.
+     *
+     * @param vmId the ID of the VM
+     * @param hostname the host where the VM is deployed
+     * @param ipAddress the IP address of the VM
+     */
+    public static void registerVmInZabbix(String vmId, String hostname, String ipAddress) {
+        Thread thread = new Thread(
+                new RegisterZabbixVmRunnable(vmId, hostname, ipAddress),
+                "registerVmInZabbixThread");
+        thread.start();
+    }
+
+    /**
+     * Deletes a VM from Zabbix. A client who makes a delete VM request should not wait
+     * for Zabbix to delete the VM from its DB. This is why we execute the delete action in a separated thread.
+     *
+     * @param vmId the ID of the VM
+     * @param hostname the host where the VM is deployed
+     */
+    public static void deleteVmFromZabbix(String vmId, String hostname) {
+        Thread thread = new Thread(
+                new DeleteZabbixVmRunnable(vmId, hostname),
+                "deleteVmFromZabbixThread");
+        thread.start();
     }
 
 }
