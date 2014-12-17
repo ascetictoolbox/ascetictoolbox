@@ -61,6 +61,8 @@ public class OpenStackJclouds implements CloudMiddleware {
     private final OpenStackJcloudsApis openStackJcloudsApis;
     private final OpenStackGlance glanceConnector; // Connector for OS Glance
 
+    private final int BLOCKING_TIME_SEC_DEPLOY_AND_DESTROY = 1000;
+
     /**
      * Class constructor. It performs the connection to the infrastructure and initializes
      * JClouds attributes.
@@ -76,6 +78,9 @@ public class OpenStackJclouds implements CloudMiddleware {
     }
 
     @Override
+    // This function is blocking. The thread execution blocks until the VM is deployed.
+    // I would prefer to see this blocking in the VmManager class. I need to block the execution because
+    // I need to return the ID of the deployed VM to the Application Manager.
     public String deploy(Vm vm, String hostname) {
         // Deploy the VM
         ServerCreated server = openStackJcloudsApis.getServerApi().create(
@@ -84,32 +89,17 @@ public class OpenStackJclouds implements CloudMiddleware {
                 getFlavorIdForDeployment(vm),
                 getDeploymentOptionsForVm(vm, hostname, securityGroups));
 
-        // Wait until the VM is deployed
-        while (openStackJcloudsApis.getServerApi().get(server.getId()).getStatus().toString().equals(BUILD)) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        // Return the VM id
+        blockUntilVmIsDeployed(server.getId());
         return server.getId();
     }
 
     @Override
+    // This function is also blocking. The reason is the same as in the deploy function.
     public void destroy(String vmId) {
         Server server = openStackJcloudsApis.getServerApi().get(vmId);
         if (server != null) { // If the VM is in the zone
             openStackJcloudsApis.getServerApi().delete(vmId);
-            // Wait until the VM is destroyed
-            while (server.getStatus().toString().equals(DELETING)) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
+            blockUntilVmIsDeleted(vmId);
         }
     }
 
@@ -386,6 +376,36 @@ public class OpenStackJclouds implements CloudMiddleware {
             return ((Address) server.getAddresses().get("vmnet").toArray()[0]).getAddr();
         }
         return (((Address) server.getAddresses().get("NattedNetwork").toArray()[0]).getAddr()); // Nat network
+    }
+
+    /**
+     * Blocks the thread execution until a specific VM is deployed.
+     *
+     * @param vmId the ID of the VM
+     */
+    private void blockUntilVmIsDeployed(String vmId) {
+        while (openStackJcloudsApis.getServerApi().get(vmId).getStatus().toString().equals(BUILD)) {
+            try {
+                Thread.sleep(BLOCKING_TIME_SEC_DEPLOY_AND_DESTROY);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Blocks the thread execution until a specific VM is deleted.
+     *
+     * @param vmId the ID of the VM
+     */
+    private void blockUntilVmIsDeleted(String vmId) {
+        while (openStackJcloudsApis.getServerApi().get(vmId).getStatus().toString().equals(DELETING)) {
+            try {
+                Thread.sleep(BLOCKING_TIME_SEC_DEPLOY_AND_DESTROY);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }
