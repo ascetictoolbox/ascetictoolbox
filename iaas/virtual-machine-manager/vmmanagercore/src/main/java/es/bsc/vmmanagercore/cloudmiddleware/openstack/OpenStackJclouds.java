@@ -370,15 +370,9 @@ public class OpenStackJclouds implements CloudMiddleware {
      * @param server the VM
      * @return the IP of the VM
      */
-    // TODO Redo this. The name of the network should be obtained automatically. This might only work in TUB and BSC.
     private String getVmIp(Server server) {
-        if (server.getAddresses().get("vmnet").toArray().length != 0) { // VM network
-            return ((Address) server.getAddresses().get("vmnet").toArray()[0]).getAddr();
-        }
-        else if (server.getAddresses().get("NattedNetwork").toArray().length != 0) {
-            return (((Address) server.getAddresses().get("NattedNetwork").toArray()[0]).getAddr()); // Nat network
-        }
-        return ((Address) server.getAddresses().get("baseNet").toArray()[0]).getAddr();
+        List<Address> addresses = new ArrayList<>(server.getAddresses().values());
+        return addresses.get(0).getAddr(); // Important: this returns only 1 IP, but VMs can have more than 1.
     }
 
     /**
