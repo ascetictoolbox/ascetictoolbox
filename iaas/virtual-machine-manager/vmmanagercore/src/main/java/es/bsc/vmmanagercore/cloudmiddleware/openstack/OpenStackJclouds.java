@@ -375,7 +375,10 @@ public class OpenStackJclouds implements CloudMiddleware {
         if (server.getAddresses().get("vmnet").toArray().length != 0) { // VM network
             return ((Address) server.getAddresses().get("vmnet").toArray()[0]).getAddr();
         }
-        return (((Address) server.getAddresses().get("NattedNetwork").toArray()[0]).getAddr()); // Nat network
+        else if (server.getAddresses().get("NattedNetwork").toArray().length != 0) {
+            return (((Address) server.getAddresses().get("NattedNetwork").toArray()[0]).getAddr()); // Nat network
+        }
+        return ((Address) server.getAddresses().get("baseNet").toArray()[0]).getAddr();
     }
 
     /**
