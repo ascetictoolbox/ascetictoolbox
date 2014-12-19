@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * @author David Ortiz (david.ortiz@bsc.es)
  */
-public class ScoreCalculatorGroupByApp implements SimpleScoreCalculator<ClusterState> {
+public final class ScoreCalculatorGroupByApp implements SimpleScoreCalculator<ClusterState> {
 
     protected final static int PENALTY_FOR_MOVING_FIXED_VMS = 10000;
 

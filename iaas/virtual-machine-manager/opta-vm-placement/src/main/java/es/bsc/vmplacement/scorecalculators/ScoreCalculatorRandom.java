@@ -32,6 +32,7 @@ public final class ScoreCalculatorRandom implements SimpleScoreCalculator<Cluste
 
     private final Random rand = new Random();
     protected final static int PENALTY_FOR_MOVING_FIXED_VMS = 10000;
+    private final static int POSSIBLE_SCORES = 1000000; // Range of values for the random scores
 
     @Override
     public HardSoftScore calculateScore(ClusterState solution) {
@@ -52,7 +53,7 @@ public final class ScoreCalculatorRandom implements SimpleScoreCalculator<Cluste
     }
 
     private int calculateSoftScore() {
-        return rand.nextInt(100);
+        return rand.nextInt(POSSIBLE_SCORES);
     }
 
 }
