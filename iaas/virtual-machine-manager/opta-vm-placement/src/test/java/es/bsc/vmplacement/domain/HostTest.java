@@ -88,4 +88,9 @@ public class HostTest {
         assertFalse(host.missingFixedVMs(vms));
     }
 
+    @Test
+    public void toStringTest() {
+        assertEquals("Host - ID:1, cpus:4, ram:4096.0, disk:20.0", host.toString());
+    }
+
 }

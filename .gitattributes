@@ -220,8 +220,8 @@ iaas/virtual-machine-manager/opta-vm-placement/data/vmplacement/unsolved/vmplace
 iaas/virtual-machine-manager/opta-vm-placement/data/vmplacement/unsolved/vmplacement4.xml -text
 iaas/virtual-machine-manager/opta-vm-placement/data/vmplacement/unsolved/vmplacement5.xml -text
 iaas/virtual-machine-manager/opta-vm-placement/pom.xml -text
+iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/client/ExampleBenchmark.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/client/ExampleClient.java -text
-iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/client/VmplacementBenchmark.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/common/app/CommonBenchmarkApp.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/common/app/LoggingMain.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/common/domain/AbstractPersistable.java -text
@@ -248,6 +248,7 @@ iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/placement/config/localsearch/SimulatedAnnealing.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/placement/config/localsearch/StepCountingHC.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/placement/config/localsearch/TabuSearch.java -text
+iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/scorecalculators/ScoreCalculatorCommon.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/scorecalculators/ScoreCalculatorConsolidation.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/scorecalculators/ScoreCalculatorDistribution.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/scorecalculators/ScoreCalculatorEnergy.java -text

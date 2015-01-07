@@ -26,12 +26,12 @@ import es.bsc.vmplacement.common.app.CommonBenchmarkApp;
  *
  * @author David Ortiz (david.ortiz@bsc.es)
  */
-public class VmplacementBenchmark extends CommonBenchmarkApp {
+public class ExampleBenchmark extends CommonBenchmarkApp {
 
     private static final String BENCHMARK_CONFIG = "/vmplacementBenchmarkConfig.xml.ftl";
 
     public static void main(String[] args) {
-        new VmplacementBenchmark().buildFromTemplateAndBenchmark(BENCHMARK_CONFIG);
+        new ExampleBenchmark().buildFromTemplateAndBenchmark(BENCHMARK_CONFIG);
     }
 
 }

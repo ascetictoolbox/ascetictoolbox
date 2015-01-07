@@ -34,8 +34,6 @@ public final class ScoreCalculatorPrice implements SimpleScoreCalculator<Cluster
     private final PriceModel priceModel = VmPlacementConfig.priceModel;
     private final EnergyModel energyModel = VmPlacementConfig.energyModel;
 
-    protected final static int PENALTY_FOR_MOVING_FIXED_VMS = 10000;
-
     @Override
     public HardSoftScore calculateScore(ClusterState solution) {
         return HardSoftScore.valueOf(
@@ -44,14 +42,7 @@ public final class ScoreCalculatorPrice implements SimpleScoreCalculator<Cluster
     }
 
     private int calculateHardScore(ClusterState solution) {
-        int result = 0;
-        for (Host host: solution.getHosts()) {
-            if (host.missingFixedVMs(solution.getVms())) {
-                return -PENALTY_FOR_MOVING_FIXED_VMS;
-            }
-            result += host.getOverCapacityScore(solution.getVms());
-        }
-        return result;
+        return ScoreCalculatorCommon.getClusterOverCapacitySCoreWithPenaltyForFixedVms(solution);
     }
 
     private int calculateSoftScore(ClusterState solution) {

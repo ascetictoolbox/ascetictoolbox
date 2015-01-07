@@ -29,8 +29,6 @@ import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
  */
 public final class ScoreCalculatorConsolidation implements SimpleScoreCalculator<ClusterState> {
 
-    protected final static int PENALTY_FOR_MOVING_FIXED_VMS = 10000;
-
     @Override
     public HardMediumSoftScore calculateScore(ClusterState solution) {
         return HardMediumSoftScore.valueOf(
@@ -40,14 +38,7 @@ public final class ScoreCalculatorConsolidation implements SimpleScoreCalculator
     }
 
     private int calculateHardScore(ClusterState solution) {
-        int result = 0;
-        for (Host host: solution.getHosts()) {
-            if (host.missingFixedVMs(solution.getVms())) {
-                return -PENALTY_FOR_MOVING_FIXED_VMS;
-            }
-            result += host.getOverCapacityScore(solution.getVms());
-        }
-        return result;
+        return ScoreCalculatorCommon.getClusterOverCapacitySCoreWithPenaltyForFixedVms(solution);
     }
 
     private int calculateMediumScore(ClusterState solution) {

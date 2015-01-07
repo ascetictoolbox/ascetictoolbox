@@ -41,6 +41,26 @@ public class ExampleClient {
     // Fix a seed for the random number generator so the experiments can be repeated
     private static final Random r = new Random(1);
 
+    // Number of VMs and hosts
+    private static final int N_VMS = 200;
+    private static final int N_HOSTS = 100;
+
+    // Limits for the size of a VM
+    private static final int MIN_CPUS_VMS = 1;
+    private static final int MAX_CPUS_VMS = 8;
+    private static final int MIN_RAMMB_VMS = 1024;
+    private static final int MAX_RAMMB_VMS = 8192;
+    private static final int MIN_DISKGB_VMS = 1;
+    private static final int MAX_DISKGB_VMS = 8;
+
+    // Limits for the size of a host
+    private static final int MIN_CPUS_HOST = 1;
+    private static final int MAX_CPUS_HOST = 32;
+    private static final int MIN_RAMMB_HOST = 1024;
+    private static final int MAX_RAMMB_HOST = 32768;
+    private static final int MIN_DISKGB_HOST = 1;
+    private static final int MAX_DISKGB_HOST = 300;
+
     /**
      * Returns an initial list of VMs generated randomly.
      *
@@ -48,8 +68,12 @@ public class ExampleClient {
      */
     private static List<Vm> getInitialVms() {
         List<Vm> result = new ArrayList<>();
-        for (int i = 0; i < 200; ++i) {
-            result.add(new Vm((long) i, randInt(1, 8), randInt(1024, 8192), randInt(1, 8)));
+        for (int i = 0; i < N_VMS; ++i) {
+            result.add(new Vm(
+                    (long) i,
+                    randInt(MIN_CPUS_VMS, MAX_CPUS_VMS),
+                    randInt(MIN_RAMMB_VMS, MAX_RAMMB_VMS),
+                    randInt(MIN_DISKGB_VMS, MAX_DISKGB_VMS)));
         }
         return result;
     }
@@ -61,8 +85,13 @@ public class ExampleClient {
      */
     private static List<Host> getInitialHosts() {
         List<Host> result = new ArrayList<>();
-        for (int i = 0; i < 100; ++i) {
-            result.add(new Host((long) i, String.valueOf(i), randInt(1, 32), randInt(1024, 32768), randInt(1, 300)));
+        for (int i = 0; i < N_HOSTS; ++i) {
+            result.add(new Host(
+                    (long) i,
+                    String.valueOf(i),
+                    randInt(MIN_CPUS_HOST, MAX_CPUS_HOST),
+                    randInt(MIN_RAMMB_HOST, MAX_RAMMB_HOST),
+                    randInt(MIN_DISKGB_HOST, MAX_DISKGB_HOST)));
         }
         return result;
     }
@@ -80,8 +109,12 @@ public class ExampleClient {
 
     public static void main(String[] args) {
         OptaVmPlacement optaVmPlacement = new OptaVmPlacementImpl();
-        VmPlacementConfig vmPlacementConfig = new VmPlacementConfig.Builder(Policy.CONSOLIDATION, 30,
-                ConstructionHeuristic.FIRST_FIT_DECREASING, new LateAcceptance(400), false).build();
+        VmPlacementConfig vmPlacementConfig =
+                new VmPlacementConfig.Builder(
+                        Policy.CONSOLIDATION,
+                        30,
+                        ConstructionHeuristic.FIRST_FIT_DECREASING,
+                        new LateAcceptance(400), false).build();
         System.out.println(optaVmPlacement.getBestSolution(getInitialHosts(), getInitialVms(), vmPlacementConfig));
     }
 

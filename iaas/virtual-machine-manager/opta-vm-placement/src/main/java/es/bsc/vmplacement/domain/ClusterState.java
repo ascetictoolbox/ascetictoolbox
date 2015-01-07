@@ -135,14 +135,21 @@ public class ClusterState extends AbstractPersistable implements Solution<Score>
         return result;
     }
 
+    /**
+     * Calculates the avg number of CPUs assigned per host.
+     *
+     * @return the avg number of CPUs assigned per host
+     */
     public double avgCpusAssignedPerHost() {
-        int totalAssignedCpus = 0;
-        for (Host host: hosts) {
-            totalAssignedCpus += cpusAssignedInHost(host);
-        }
-        return totalAssignedCpus/hosts.size();
+        return calculateTotalCpusAssigned()/hosts.size();
     }
 
+    /**
+     * Returns the number of CPUs assigned in a specific host.
+     *
+     * @param host the host
+     * @return the number of CPUs
+     */
     public int cpusAssignedInHost(Host host) {
         int result = 0;
         List<Vm> vms = getVmsDeployedInHost(host);
@@ -152,15 +159,28 @@ public class ClusterState extends AbstractPersistable implements Solution<Score>
         return result;
     }
 
+    /**
+     * Returns the total unused CPU % of the cluster.
+     * It is calculated as follows. The unused CPU % of a host is (unused_cpus/total_cpus).
+     * The total unused CPU % of the cluster is simply the sum for all the hosts.
+     *
+     * @return the total unused CPU % of the cluster.
+     */
     public int calculateCumulativeUnusedCpuPerc() {
         double cumulativeUnusedCpuPerc = 0;
         for (Host host: hosts) {
-            double unusedPerc = (double)(host.getNcpus() - cpusAssignedInHost(host))/(host.getNcpus());
-            if (unusedPerc > 0) {
-                cumulativeUnusedCpuPerc += unusedPerc;
-            }
+            cumulativeUnusedCpuPerc += calculateUnusedCpuRatio(host);
         }
         return (int)(cumulativeUnusedCpuPerc*100);
+    }
+
+    /**
+     * Returns the stddev of the CPUs assigned per host.
+     *
+     * @return the stddev of CPUs assigned per host
+     */
+    public double calculateStdDevCpusAssignedPerHost() {
+        return Math.sqrt(calculateVarianceCpusAssignedPerHost());
     }
 
     @Override
@@ -172,6 +192,12 @@ public class ClusterState extends AbstractPersistable implements Solution<Score>
         return sb.toString();
     }
 
+    /**
+     * Returns a list with the hosts that are idle.
+     * We consider a host to be idle if there are not VMs deployed in it.
+     *
+     * @return the list of idle hosts
+     */
     private List<Host> getIdleHosts() {
         // Initialize all hosts to idle
         Map<Host, Boolean> idleHosts = new HashMap<>();
@@ -192,6 +218,27 @@ public class ClusterState extends AbstractPersistable implements Solution<Score>
             }
         }
         return result;
+    }
+
+    private int calculateTotalCpusAssigned() {
+        int result = 0;
+        for (Host host: hosts) {
+            result += cpusAssignedInHost(host);
+        }
+        return result;
+    }
+
+    private double calculateVarianceCpusAssignedPerHost() {
+        double temp = 0;
+        for (Host host: hosts) {
+            temp += Math.pow((avgCpusAssignedPerHost() - cpusAssignedInHost(host)), 2);
+        }
+        return temp/(hosts.size());
+    }
+
+    private double calculateUnusedCpuRatio(Host host) {
+        double unusedPerc = (double)(host.getNcpus() - cpusAssignedInHost(host))/(host.getNcpus());
+        return unusedPerc > 0 ? unusedPerc : 0; // If a host is overbooked simply return 0
     }
 
 }

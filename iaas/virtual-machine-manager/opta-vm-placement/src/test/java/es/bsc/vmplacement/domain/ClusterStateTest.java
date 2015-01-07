@@ -87,29 +87,38 @@ public class ClusterStateTest {
 
     @Test
     public void calculateCumulativeUnusedCpuPerc() {
-        assertEquals(1.5, clusterState.calculateCumulativeUnusedCpuPerc(), 0.05);
+        assertEquals(150, clusterState.calculateCumulativeUnusedCpuPerc());
+    }
+
+    @Test
+    public void calculateStdDevCpusAssignedPerHost() {
+        assertEquals(1.0, clusterState.calculateStdDevCpusAssignedPerHost(), 0.05);
     }
 
     private void initializeTestClusterState(ClusterState clusterState) {
-        // Create the hosts
+        List<Host> hosts = getTestHosts();
+        clusterState.setHosts(hosts);
+        clusterState.setVms(getTestVms(hosts));
+    }
+
+    private List<Host> getTestHosts() {
         List<Host> hosts = new ArrayList<>();
         Host host1 = new Host((long) 1, "1", 4, 4096, 4);
         Host host2 = new Host((long) 2, "2", 2, 2048, 2);
         hosts.add(host1);
         hosts.add(host2);
+        return hosts;
+    }
 
-        // Create the VMs
+    private List<Vm> getTestVms(List<Host> hosts) {
         List<Vm> vms = new ArrayList<>();
         Vm vm1 = new Vm((long) 1, 1, 1024, 1, "app1");
         Vm vm2 = new Vm((long) 2, 1, 1024, 1, "app2");
-        vm1.setHost(host1);
-        vm2.setHost(host1);
+        vm1.setHost(hosts.get(0));
+        vm2.setHost(hosts.get(0));
         vms.add(vm1);
         vms.add(vm2);
-
-        // Add the VMs and the hosts to the cluster state
-        clusterState.setHosts(hosts);
-        clusterState.setVms(vms);
+        return vms;
     }
 
 }

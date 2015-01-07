@@ -21,7 +21,7 @@ public class ScoreCalculatorGroupByAppTest {
     public void genericTestSoftAndHardScoreCalculator() {
         ClusterState clusterState = getTestClusterState();
         assertEquals(2, scoreCalculatorGroupByApp.calculateScore(clusterState).getSoftScore());
-        assertEquals(-3, scoreCalculatorGroupByApp.calculateScore(clusterState).getHardScore());
+        assertEquals(-4, scoreCalculatorGroupByApp.calculateScore(clusterState).getHardScore());
     }
 
     private ClusterState getTestClusterState() {

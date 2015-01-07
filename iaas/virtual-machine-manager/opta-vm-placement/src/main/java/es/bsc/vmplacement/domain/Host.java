@@ -63,26 +63,15 @@ public class Host extends AbstractPersistable {
      * @return the overcapacity score
      */
     public double getOverCapacityScore(List<Vm> vms) {
-        int result = 0;
         HostUsage hostUsage = getUsage(vms);
-        if ((ncpus - hostUsage.getNcpusUsed()) < 0) {
-            result -= (hostUsage.getNcpusUsed()/ncpus);
-        }
-        if ((ramMb - hostUsage.getRamMbUsed()) < 0) {
-            result -= (hostUsage.getRamMbUsed()/ramMb);
-        }
-        if ((diskGb - hostUsage.getDiskGbUsed()) < 0) {
-            result -= (hostUsage.getDiskGbUsed()/diskGb);
-        }
-        return result;
+        return getCpuOverCapacityScore(hostUsage)
+                + getRamOverCapacityScore(hostUsage)
+                + getDiskOverCapacityScore(hostUsage);
     }
 
     public boolean missingFixedVMs(List<Vm> vms) {
-        if (fixedVmsIds == null) {
-            return false;
-        }
-        for (long vmId : fixedVmsIds) {
-            for (Vm vm : vms) {
+        for (long vmId: fixedVmsIds) {
+            for (Vm vm: vms) {
                 if (vm.getId().equals(vmId)) {
                     if (vm.getHost() == null || !vm.getHost().getId().equals(id)) {
                         return true;
@@ -116,6 +105,18 @@ public class Host extends AbstractPersistable {
     @Override
     public String toString() {
         return "Host - ID:" + id.toString() + ", cpus:" + ncpus + ", ram:" + ramMb + ", disk:" + diskGb;
+    }
+
+    private double getCpuOverCapacityScore(HostUsage hostUsage) {
+        return ((ncpus - hostUsage.getNcpusUsed()) < 0) ? -(hostUsage.getNcpusUsed()/(double)ncpus) : 0.0;
+    }
+
+    private double getRamOverCapacityScore(HostUsage hostUsage) {
+        return ((ramMb - hostUsage.getRamMbUsed()) < 0) ? -(hostUsage.getRamMbUsed()/ramMb) : 0.0;
+    }
+
+    private double getDiskOverCapacityScore(HostUsage hostUsage) {
+        return ((diskGb - hostUsage.getDiskGbUsed()) < 0) ? -(hostUsage.getDiskGbUsed()/diskGb) : 0.0;
     }
 
 }

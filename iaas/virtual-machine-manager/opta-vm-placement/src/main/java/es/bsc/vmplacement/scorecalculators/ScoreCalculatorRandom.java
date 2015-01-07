@@ -31,7 +31,6 @@ import java.util.Random;
 public final class ScoreCalculatorRandom implements SimpleScoreCalculator<ClusterState> {
 
     private final Random rand = new Random();
-    protected final static int PENALTY_FOR_MOVING_FIXED_VMS = 10000;
     private final static int POSSIBLE_SCORES = 1000000; // Range of values for the random scores
 
     @Override
@@ -42,14 +41,7 @@ public final class ScoreCalculatorRandom implements SimpleScoreCalculator<Cluste
     }
 
     private int calculateHardScore(ClusterState solution) {
-        int result = 0;
-        for (Host host: solution.getHosts()) {
-            if (host.missingFixedVMs(solution.getVms())) {
-                return -PENALTY_FOR_MOVING_FIXED_VMS;
-            }
-            result += host.getOverCapacityScore(solution.getVms());
-        }
-        return result;
+        return ScoreCalculatorCommon.getClusterOverCapacitySCoreWithPenaltyForFixedVms(solution);
     }
 
     private int calculateSoftScore() {
