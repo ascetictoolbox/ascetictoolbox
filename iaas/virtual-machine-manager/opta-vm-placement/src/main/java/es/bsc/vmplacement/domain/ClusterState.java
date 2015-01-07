@@ -19,7 +19,6 @@
 package es.bsc.vmplacement.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamConverter;
-import es.bsc.vmplacement.common.domain.AbstractPersistable;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.value.ValueRangeProvider;

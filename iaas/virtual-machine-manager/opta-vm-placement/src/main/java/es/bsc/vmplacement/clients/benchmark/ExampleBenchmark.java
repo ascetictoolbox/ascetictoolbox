@@ -16,17 +16,20 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.vmplacement.common.app;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package es.bsc.vmplacement.clients.benchmark;
 
 /**
+ * This class executes a benchmark that compares several construction and local search algorithms.
+ * The algorithms to compare as well as the details of the benchmark are defined in an xml file.
+ *
  * @author David Ortiz (david.ortiz@bsc.es)
  */
-public class LoggingMain {
+public class ExampleBenchmark extends CommonBenchmarkApp {
 
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
+    private static final String BENCHMARK_CONFIG = "/vmplacementBenchmarkConfig.xml.ftl";
+
+    public static void main(String[] args) {
+        new ExampleBenchmark().buildFromTemplateAndBenchmark(BENCHMARK_CONFIG);
+    }
 
 }
-

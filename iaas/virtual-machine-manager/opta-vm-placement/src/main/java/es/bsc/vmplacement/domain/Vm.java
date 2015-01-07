@@ -18,7 +18,6 @@
 
 package es.bsc.vmplacement.domain;
 
-import es.bsc.vmplacement.common.domain.AbstractPersistable;
 import es.bsc.vmplacement.domain.comparators.HostStrengthComparator;
 import es.bsc.vmplacement.domain.comparators.VmDifficultyComparator;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;

@@ -8,12 +8,7 @@ import es.bsc.vmplacement.domain.Host;
  *
  * @author David Ortiz (david.ortiz@bsc.es)
  */
-public final class ScoreCalculatorCommon {
-
-    // Suppress default constructor for non-instantiability
-    private ScoreCalculatorCommon() {
-        throw new AssertionError();
-    }
+public abstract class ScoreCalculatorCommon {
 
     private final static int PENALTY_FOR_MOVING_FIXED_VMS = 10000;
 

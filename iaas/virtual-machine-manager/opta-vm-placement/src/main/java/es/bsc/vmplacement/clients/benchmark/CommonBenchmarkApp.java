@@ -16,7 +16,7 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.vmplacement.common.app;
+package es.bsc.vmplacement.clients.benchmark;
 
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
@@ -27,12 +27,6 @@ import org.optaplanner.benchmark.config.XmlPlannerBenchmarkFactory;
  * @author David Ortiz (david.ortiz@bsc.es)
  */
 public abstract class CommonBenchmarkApp extends LoggingMain {
-
-    public void buildAndBenchmark(String benchmarkConfig) {
-        PlannerBenchmarkFactory plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory(benchmarkConfig);
-        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
-        plannerBenchmark.benchmark();
-    }
 
     public void buildFromTemplateAndBenchmark(String benchmarkConfigTemplate) {
         PlannerBenchmarkFactory plannerBenchmarkFactory = new FreemarkerXmlPlannerBenchmarkFactory(

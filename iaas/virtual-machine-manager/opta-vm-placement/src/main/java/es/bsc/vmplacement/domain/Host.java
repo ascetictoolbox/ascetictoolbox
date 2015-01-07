@@ -18,8 +18,6 @@
 
 package es.bsc.vmplacement.domain;
 
-import es.bsc.vmplacement.common.domain.AbstractPersistable;
-
 import java.util.ArrayList;
 import java.util.List;
 

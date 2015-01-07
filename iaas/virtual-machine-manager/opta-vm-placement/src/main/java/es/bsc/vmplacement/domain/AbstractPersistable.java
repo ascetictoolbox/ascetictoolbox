@@ -16,7 +16,7 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.vmplacement.common.domain;
+package es.bsc.vmplacement.domain;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
