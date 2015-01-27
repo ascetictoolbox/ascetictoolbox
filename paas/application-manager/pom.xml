@@ -512,6 +512,20 @@
 			<scope>test</scope>
 		</dependency>
 		
+		<!--Spring reactor events -->
+		<dependency>
+        	<groupId>org.projectreactor</groupId>
+            <artifactId>reactor-spring</artifactId>
+            <version>1.0.1.RELEASE</version>
+        </dependency>
+        
+        <!-- <dependency>
+			<groupId>org.projectreactor</groupId>
+			<artifactId>reactor-core</artifactId>
+			<version>1.1.5.RELEASE</version>
+		</dependency> -->
+        
+		
 		<!-- Hibernate -->
 
 		<dependency>
