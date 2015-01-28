@@ -581,6 +581,7 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/jp
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/jpa/VMDAOJpaTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/testUtil/MockWebServer.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/DeploymentStatusTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/deployment/CreatedEventTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/deployment/DeploymentServiceTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/reactor/EventTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/reactor/HandlerBean.java -text

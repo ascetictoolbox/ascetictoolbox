@@ -1,7 +1,5 @@
 package eu.ascetic.paas.applicationmanager.event.deployment;
 
-import static eu.ascetic.paas.applicationmanager.Dictionary.DEPLOYMENT_EVENT_TOPIC;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -42,9 +40,11 @@ public class CreatedEvent {
 	
 	@Autowired
 	protected DeploymentDAO deploymentDAO;
+	@Autowired
+	protected DeploymentEventService deploymentEventService;
 
 	@Selector(value="topic.deployment.status", reactor="@rootReactor")
-	public void DeploymentCreated(Event<DeploymentEvent> event) {
+	public void deploymentCreated(Event<DeploymentEvent> event) {
 
 		DeploymentEvent deploymentEvent = event.getData();
 
@@ -61,7 +61,7 @@ public class CreatedEvent {
 			deploymentDAO.update(deployment);
 			
 			//We notify that the deployment has been modified
-			//rootReactor.notify("deployment.status", Event.wrap(deploymentEvent));
+			deploymentEventService.fireDeploymentEvent(deploymentEvent);
 		}	
 	}
 }

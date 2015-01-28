@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import eu.ascetic.paas.applicationmanager.event.DeploymentEvent;
 import reactor.core.Reactor;
 import reactor.event.Event;
-import reactor.spring.annotation.Consumer;
 
 /**
  * 
