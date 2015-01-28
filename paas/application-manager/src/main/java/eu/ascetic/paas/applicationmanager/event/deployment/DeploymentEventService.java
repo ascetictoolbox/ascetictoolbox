@@ -1,14 +1,19 @@
-package eu.ascetic.paas.applicationmanager.event.reactor;
+package eu.ascetic.paas.applicationmanager.event.deployment;
 
+import static eu.ascetic.paas.applicationmanager.Dictionary.DEPLOYMENT_EVENT_TOPIC;
+
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import eu.ascetic.paas.applicationmanager.event.DeploymentEvent;
 import reactor.core.Reactor;
 import reactor.event.Event;
+import reactor.spring.annotation.Consumer;
 
 /**
  * 
- * Copyright 2014 ATOS SPAIN S.A. 
+ * Copyright 2015 ATOS SPAIN S.A. 
  * 
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -25,21 +30,18 @@ import reactor.event.Event;
  * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
  * e-mail david.garciaperez@atos.net 
  * 
- * Test to check the configuration of the internal event services
- *
+ * This is the service used to launch events related to a Deployment
  */
+
 @Service
-public class TestService {
+public class DeploymentEventService {
+	private static Logger logger = Logger.getLogger(DeploymentEventService.class);
 
 	@Autowired
-	private Reactor rootReactor;
+	protected Reactor rootReactor;
 
-
-	public void fireEvent(String s) {
-		rootReactor.notify("test.topic", Event.wrap(s));
-	}
-
-	public void fireEvent2(String s) {
-		rootReactor.notify("test.topic2", Event.wrap(s));
+	public void fireDeploymentEvent(DeploymentEvent event) {
+		logger.debug(" Sending internal event for topic: " + DEPLOYMENT_EVENT_TOPIC + " with deployment id: " + event.getDeploymentId() + " with status: " + event.getDeploymentStatus());
+		rootReactor.notify(DEPLOYMENT_EVENT_TOPIC, Event.wrap(event));
 	}
 }

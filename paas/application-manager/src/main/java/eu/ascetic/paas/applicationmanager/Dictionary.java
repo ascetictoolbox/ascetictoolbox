@@ -30,4 +30,7 @@ public class Dictionary {
 	public static String DISK_SIZE_UNIT_GBYTE =  "byte * 2^30";
 	public static String DISK_SIZE_UNIT_MBYTE =  "byte * 2^20";
 	public static String DISK_SIZE_UNIT_KBYTE =  "byte * 2^10";
+	
+	// Events
+	public static String DEPLOYMENT_EVENT_TOPIC = "topic.deployment.status";
 }

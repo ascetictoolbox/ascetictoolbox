@@ -31,10 +31,10 @@ public class DeploymentStatusTest {
 	@Test
 	public void pojoTest() {
 		DeploymentEvent deploymentEvent = new DeploymentEvent();
-		deploymentEvent.setDeploymentId(1l);
+		deploymentEvent.setDeploymentId(2);
 		deploymentEvent.setDeploymentStatus("1111");
 		
-		assertEquals(1l, deploymentEvent.getDeploymentId());
+		assertEquals(2, deploymentEvent.getDeploymentId());
 		assertEquals("1111", deploymentEvent.getDeploymentStatus());
 	}
 	

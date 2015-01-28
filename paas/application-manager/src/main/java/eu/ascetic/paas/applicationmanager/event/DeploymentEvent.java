@@ -23,13 +23,13 @@ package eu.ascetic.paas.applicationmanager.event;
  */
 public class DeploymentEvent {
 
-	private long deploymentId;
+	private int deploymentId;
 	private String deploymentStatus;
 	
-	public long getDeploymentId() {
+	public int getDeploymentId() {
 		return deploymentId;
 	}
-	public void setDeploymentId(long deploymentId) {
+	public void setDeploymentId(int deploymentId) {
 		this.deploymentId = deploymentId;
 	}
 	

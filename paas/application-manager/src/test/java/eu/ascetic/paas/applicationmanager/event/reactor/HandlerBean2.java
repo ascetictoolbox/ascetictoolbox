@@ -1,9 +1,5 @@
 package eu.ascetic.paas.applicationmanager.event.reactor;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-
-import reactor.core.Reactor;
 import reactor.event.Event;
 import reactor.spring.annotation.Consumer;
 import reactor.spring.annotation.Selector;
@@ -31,22 +27,12 @@ import reactor.spring.annotation.Selector;
  *
  */
 @Consumer
-public class HandlerBean {
-	
-//	@Autowired
-//	@Qualifier("rootReactor")
-//	private Reactor rootReactor;
-	
-	@Autowired
-	protected TestService testService;
+public class HandlerBean2 {
 
-	@Selector(value="test.topic", reactor="@rootReactor")
-	public void handleTestTopic(Event<String> evt) {
-
-		String event = evt.getData();
-		System.out.println("Getting the event - " + event);
-		
-		//rootReactor.notify("test.topic2", Event.wrap("otro event!!!"));
-		testService.fireEvent2("otro event!!!");
-	}
+  @Selector(value="test.topic2", reactor="@rootReactor")
+  public void handleTestTopic(Event<String> evt) {
+	  
+	String event = evt.getData();
+    System.out.println("2 Getting the event - " + event);
+  }
 }
