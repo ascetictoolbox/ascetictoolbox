@@ -41,7 +41,7 @@ import eu.ascetic.utils.ovf.api.VirtualSystem;
  * limitations under the License.
  * 
  * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
- * @email david.garciaperez@atos.net 
+ * e-mail david.garciaperez@atos.net 
  * 
  * It creates an SLA Template form an OVF document
  *

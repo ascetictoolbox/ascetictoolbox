@@ -24,7 +24,7 @@ import eu.ascetic.vmc.api.datamodel.GlobalConfiguration;
  * limitations under the License.
  * 
  * @author: David Rojo. Atos Research and Innovation, Atos SPAIN SA
- * @email david.rojo@atos.net
+ * e-mail david.rojo@atos.net
  *
  * Class that connects to the VM Contextualizer API
  *

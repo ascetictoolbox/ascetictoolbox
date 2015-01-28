@@ -19,7 +19,7 @@ import java.util.List;
  * limitations under the License.
  * 
  * @author: David Rojo. Atos Research and Innovation, Atos SPAIN SA
- * @email david.rojoa@atos.net 
+ * e-mail david.rojoa@atos.net 
  *
  * List of VMs deployed.
  *

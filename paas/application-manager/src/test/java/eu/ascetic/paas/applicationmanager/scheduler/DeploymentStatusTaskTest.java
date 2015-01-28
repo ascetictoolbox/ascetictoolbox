@@ -128,25 +128,6 @@ public class DeploymentStatusTaskTest {
 		verify(deploymentDAO, times(1)).update(deployment3);
 		verify(deploymentDAO, times(1)).update(deployment4);
 	} */
-
-	// TODO this test should be updated as soon as new functionality it is added... 
-	@Test
-	public void testdeploymentSubmittedActions() {
-		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
-		
-		Deployment deployment = new Deployment();
-		
-		// The object will be updated in the database
-		when(deploymentDAO.update(deployment)).thenReturn(true);
-		
-		DeploymentsStatusTask task = new DeploymentsStatusTask();
-		task.deploymentDAO = deploymentDAO;
-		task.deploymentSubmittedActions(deployment);
-		
-		assertEquals(Dictionary.APPLICATION_STATUS_NEGOTIATION, deployment.getStatus());
-		// We check that the DAO was called
-		verify(deploymentDAO, times(1)).update(deployment);
-	}
 	
 	// TODO this test should be updated as soon as new functionality it is added... 
 	@Test

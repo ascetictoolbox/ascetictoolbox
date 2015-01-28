@@ -35,7 +35,7 @@ import eu.ascetic.paas.applicationmanager.model.Image;
  * limitations under the License.
  * 
  * @author: David Garcia Perez. Ato#s Research and Innovation, Atos SPAIN SA
- * @email david.garciaperez@atos.net 
+ * e-mail david.garciaperez@atos.net 
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/application-manager-db-JPA-test-context.xml")

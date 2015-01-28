@@ -29,8 +29,11 @@ import javax.xml.bind.Unmarshaller;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
+import eu.ascetic.paas.applicationmanager.event.DeploymentEvent;
+import eu.ascetic.paas.applicationmanager.event.deployment.DeploymentEventService;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Collection;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
@@ -53,7 +56,7 @@ import eu.ascetic.paas.applicationmanager.model.Dictionary;
  * limitations under the License.
  * 
  * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
- * @email david.garciaperez@atos.net 
+ * e-mail david.garciaperez@atos.net 
  * 
  * Set of unit tests that verify the correct work of the Application Manager Rest Interface
  *
@@ -195,8 +198,11 @@ public class ApplicationRestTest {
 		when(applicationDAO.getByName("threeTierWebApp")).thenReturn(application, application);
 		when(applicationDAO.update(any(Application.class))).thenReturn(true);
 		
+		DeploymentEventService deploymentEventService = mock(DeploymentEventService.class);
+		
 		ApplicationRest applicationRest = new ApplicationRest();
 		applicationRest.applicationDAO = applicationDAO;
+		applicationRest.deploymentEventService = deploymentEventService;
 		
 		Response response = applicationRest.postApplication(threeTierWebAppOvfString);
 		assertEquals(201, response.getStatus());
@@ -213,7 +219,7 @@ public class ApplicationRestTest {
 		assertEquals("threeTierWebApp", applicationResponse.getName());
 		assertEquals(1, applicationResponse.getDeployments().size());
 		assertEquals(threeTierWebAppOvfString, applicationResponse.getDeployments().get(0).getOvf());
-		assertEquals(Dictionary.APPLICATION_STATUS_NEGOTIATIED, applicationResponse.getDeployments().get(0).getStatus());
+		assertEquals(Dictionary.APPLICATION_STATUS_SUBMITTED, applicationResponse.getDeployments().get(0).getStatus());
 		Pattern p = Pattern.compile("\\d\\d/\\d\\d/\\d\\d\\d\\d:\\d\\d:\\d\\d:\\d\\d \\+\\d\\d\\d\\d");
 		Matcher m = p.matcher(applicationResponse.getDeployments().get(0).getStartDate());
 		assertTrue(m.matches());
@@ -221,6 +227,12 @@ public class ApplicationRestTest {
 		// We verify the number of calls to the DAO
 		verify(applicationDAO, times(2)).getByName("threeTierWebApp");
 		verify(applicationDAO, times(1)).update(any(Application.class));
+		
+		//We verify that the event is fired
+		ArgumentCaptor<DeploymentEvent> argument = ArgumentCaptor.forClass(DeploymentEvent.class);
+		verify(deploymentEventService).fireDeploymentEvent(argument.capture());
+		
+		assertEquals(Dictionary.APPLICATION_STATUS_SUBMITTED, argument.getValue().getDeploymentStatus());
 	}
 	
 	@Test
@@ -240,8 +252,11 @@ public class ApplicationRestTest {
 		when(applicationDAO.getByName("threeTierWebApp")).thenReturn(null, application);
 		when(applicationDAO.save(any(Application.class))).thenReturn(true);
 		
+		DeploymentEventService deploymentEventService = mock(DeploymentEventService.class);
+		
 		ApplicationRest applicationRest = new ApplicationRest();
 		applicationRest.applicationDAO = applicationDAO;
+		applicationRest.deploymentEventService = deploymentEventService;
 		
 		Response response = applicationRest.postApplication(threeTierWebAppOvfString);
 		assertEquals(201, response.getStatus());
@@ -260,6 +275,11 @@ public class ApplicationRestTest {
 		// We verify the number of calls to the DAO
 		verify(applicationDAO, times(2)).getByName("threeTierWebApp");
 		verify(applicationDAO, times(1)).save(any(Application.class));
+		
+		ArgumentCaptor<DeploymentEvent> argument = ArgumentCaptor.forClass(DeploymentEvent.class);
+		verify(deploymentEventService).fireDeploymentEvent(argument.capture());
+		
+		assertEquals(Dictionary.APPLICATION_STATUS_SUBMITTED, argument.getValue().getDeploymentStatus());
 	}
 	
 	
@@ -283,7 +303,7 @@ public class ApplicationRestTest {
 		Deployment deployment = applicationRest.createDeploymentToApplication(ovf);
 
 		assertEquals("ovf", deployment.getOvf());
-		assertEquals(Dictionary.APPLICATION_STATUS_NEGOTIATIED, deployment.getStatus());
+		assertEquals(Dictionary.APPLICATION_STATUS_SUBMITTED, deployment.getStatus());
 	}
 	
 	/**

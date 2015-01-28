@@ -20,7 +20,7 @@ import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ListImagesUploaded
  * limitations under the License.
  * 
  * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
- * @email david.garciaperez@atos.net 
+ * e-mail david.garciaperez@atos.net 
  */
 
 public class VmManagerTestIT {

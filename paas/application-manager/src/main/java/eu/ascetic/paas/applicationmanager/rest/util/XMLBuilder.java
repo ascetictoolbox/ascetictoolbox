@@ -34,7 +34,7 @@ import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
  * limitations under the License.
  * 
  * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
- * @email david.garciaperez@atos.net 
+ * e-mail david.garciaperez@atos.net 
  * 
  * This class prepares objects that are going to be converted to XML to be sent from the REST interface
  *

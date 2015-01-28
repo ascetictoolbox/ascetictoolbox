@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * limitations under the License.
  * 
  * @author David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
- * @email david.garciaperez@atos.net
+ * e-mail david.garciaperez@atos.net
  * 
  * This class represents an object from the XML SLA Agreement, to be specific
  * an ProductOfferingPrice inside the SLA Agreement

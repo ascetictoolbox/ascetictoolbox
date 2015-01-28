@@ -3,15 +3,10 @@ package eu.ascetic.paas.applicationmanager.scheduler;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.axis2.AxisFault;
 import org.apache.log4j.Logger;
-import org.slasoi.gslam.core.negotiation.INegotiation;
-import org.slasoi.slamodel.sla.SLA;
-import org.slasoi.slamodel.sla.SLATemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.contextualizer.VmcClient;
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
@@ -24,8 +19,6 @@ import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
 import eu.ascetic.paas.applicationmanager.pm.PriceModellerClient;
-import eu.ascetic.paas.applicationmanager.slam.SLAMClient;
-import eu.ascetic.paas.applicationmanager.slam.SLATemplateCreator;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientHC;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ImageToUpload;
@@ -59,7 +52,7 @@ import eu.ascetic.vmc.api.datamodel.ProgressData;
  * limitations under the License.
  * 
  * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
- * @email david.garciaperez@atos.net 
+ * e-mail david.garciaperez@atos.net 
  * 
  * This periodical taks will go through the deployments table, and look the ones that need some update
  * to be moved to a new state
@@ -88,13 +81,8 @@ public class DeploymentsStatusTask {
 		
 		for(Deployment deployment : deployments) {
 			logger.info("Checking deployment id: " + deployment.getId() + " Status: " + deployment.getStatus());
-			if(deployment.getStatus().equals(Dictionary.APPLICATION_STATUS_SUBMITTED)) {
-				logger.info(" Moving deployment id: " + deployment.getId()  + " to NEGOTIATION state");
-				deploymentSubmittedActions(deployment);
-			} else if(deployment.getStatus().equals(Dictionary.APPLICATION_STATUS_NEGOTIATION)) {
-				logger.info(" Checking status of NEGOTIATION proccess for deployment: " + deployment.getId());
-				deploymentNegotiationActions(deployment);
-			} else if(deployment.getStatus().equals(Dictionary.APPLICATION_STATUS_NEGOTIATIED)) {
+			
+			if(deployment.getStatus().equals(Dictionary.APPLICATION_STATUS_NEGOTIATIED)) {
 				// TODO this check needs to be deleted when we enable the user to be able to 
 				//      manually accept the negotiation proccess... for the moment we just give the 
 				//      deployment an automatic push... 
@@ -111,75 +99,6 @@ public class DeploymentsStatusTask {
 				deploymentDeployApplicationActions(deployment);
 			}
 		}
-	}
-
-	/**
-	 * Starts to interact over a recently deployed application
-	 * @param deployment 
-	 */
-	protected void deploymentSubmittedActions(Deployment deployment) {
-		
-		// Since we are not doing this step right now, we just move the application to the next state
-		deployment.setStatus(Dictionary.APPLICATION_STATUS_NEGOTIATION);
-		
-		// We save the changes to the DB
-		deploymentDAO.update(deployment);
-	}
-	
-	/**
-	 * Checks if the negotiation ended
-	 * @param deployment
-	 */
-	protected void deploymentNegotiationActions(Deployment deployment) {
-		deployment.setStatus(Dictionary.APPLICATION_STATUS_NEGOTIATING);
-		// We save the changes to the DB
-		deploymentDAO.update(deployment);
-		
-		// First we create the SLA template from the OVF
-		OvfDefinition ovfDefinition = OVFUtils.getOvfDefinition(deployment.getOvf());
-		SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "http://10.4.0.16/application-manager" + deployment.getHref() + "/ovf");
-		logger.debug("Initial SLA Template document: " + slaTemplate);
-		
-		try {
-			// Then we initiate the Negotiation
-			SLAMClient client = new SLAMClient(Configuration.slamURL);
-			
-			String initiatieNegotiationID = client.initiateNegotiation(slaTemplate);
-			logger.info("Negotiation ID: " + initiatieNegotiationID);
-			
-			// After the negotiation it is initiated, we get and negotiation ID, we use it to start the actual negotiation process
-			SLATemplate[] slaTemplates = client.negotiate(initiatieNegotiationID, slaTemplate);
-			logger.info("Agreement selected: " + slaTemplates[0]);
-
-			// Then we get a list of possible SLAs
-			// Since we only have a provider the first year, we actually accept the first contract (this could be changed)
-			SLA slaAgreement = client.createAgreement(initiatieNegotiationID, slaTemplates[0]);
-			logger.info("Agreement reached... "  + slaAgreement);
-		}
-		catch(AxisFault exception) {
-			logger.warn("ERROR connecting to PaaS SLAM");
-			exception.printStackTrace();
-		}
-		catch(INegotiation.OperationNotPossibleException exception) {
-			logger.warn("ERROR starting the initialization of the Negotiation with the PaaS SLAM");
-			exception.printStackTrace();
-		}
-		catch(INegotiation.OperationInProgressException exception) {
-			logger.warn("ERROR trying to negotiate an SLA Negotiation");
-			exception.printStackTrace();
-		}
-		catch(INegotiation.InvalidNegotiationIDException exception) {
-			logger.warn("ERROR trying to negotiate an SLA Negotiation");
-			exception.printStackTrace();
-		}
-		catch(INegotiation.SLACreationException exception) {
-			logger.warn("ERROR creating the SLA Agreement");
-			exception.printStackTrace();
-		}
-		
-		deployment.setStatus(Dictionary.APPLICATION_STATUS_NEGOTIATIED);
-		// We save the changes to the DB
-		deploymentDAO.update(deployment);
 	}
 	
 	/**
@@ -215,7 +134,7 @@ public class DeploymentsStatusTask {
 				logger.debug(" Creating the VM Client");
 				VmcClient vmcClient = new VmcClient(ovf);
 				
-				if (vmcClient.getVmcClient() != null){
+				if (vmcClient.getVmcClient() != null) {
 					logger.debug(" VM Contextualizer successfully created");
 					//only continue with process if vm contextualizer connection has been successful
 					

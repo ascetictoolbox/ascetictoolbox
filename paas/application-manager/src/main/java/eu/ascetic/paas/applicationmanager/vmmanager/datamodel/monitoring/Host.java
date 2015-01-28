@@ -24,7 +24,7 @@ import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.Vm;
  * limitations under the License.
  * 
  * @author: David Rojo. Atos Research and Innovation, Atos SPAIN SA
- * @email david.rojoa@atos.net 
+ * e-mail david.rojoa@atos.net 
  *
  * Status of a host of an infrastructure.
  * 

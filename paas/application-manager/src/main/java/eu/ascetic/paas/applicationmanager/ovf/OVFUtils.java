@@ -38,7 +38,7 @@ import eu.ascetic.utils.ovf.api.utils.OvfRuntimeException;
  * limitations under the License.
  * 
  * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
- * @email david.garciaperez@atos.net 
+ * e-mail david.garciaperez@atos.net 
  * 
  * Class that handles all the parsing of the OVF incoming from the different modules in the Application Manager.
  *

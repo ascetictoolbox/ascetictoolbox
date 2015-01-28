@@ -32,7 +32,7 @@ import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
  * limitations under the License.
  * 
  * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
- * @email david.garciaperez@atos.net 
+ * e-mail david.garciaperez@atos.net 
  * 
  * Entry Point of the Application Manager ASCETiC REST API
  *

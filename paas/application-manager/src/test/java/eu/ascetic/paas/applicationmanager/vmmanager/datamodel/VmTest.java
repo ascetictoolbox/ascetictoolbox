@@ -22,7 +22,7 @@ import org.junit.Test;
  * limitations under the License.
  * 
  * @author David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
- * @email david.garciaperez@atos.net
+ * e-mail david.garciaperez@atos.net
  * 
  * This class is the Unit test that verifies the correct work of the Vm VMManager class for ASCETiC
  */

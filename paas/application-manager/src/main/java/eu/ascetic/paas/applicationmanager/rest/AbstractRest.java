@@ -11,10 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.PaaSEnergyModeller;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.EnergyModellerSimple;
-import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.dao.VMDAO;
+import eu.ascetic.paas.applicationmanager.event.DeploymentEvent;
+import eu.ascetic.paas.applicationmanager.event.deployment.DeploymentEventService;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
@@ -52,6 +53,8 @@ public abstract class AbstractRest {
 	protected DeploymentDAO deploymentDAO;
 	@Autowired
 	protected VMDAO vmDAO;
+	@Autowired
+	protected DeploymentEventService deploymentEventService;
 	protected static PaaSEnergyModeller energyModeller;
 	
 	protected Response buildResponse(Response.Status status, String payload) {
@@ -80,15 +83,9 @@ public abstract class AbstractRest {
 	 */
 	protected Deployment createDeploymentToApplication(String ovf) {
 		Deployment deployment = new Deployment();
-		//The commented code is the final code, but for initial version, when a OVF arrives to the system, directly pass to 
-		//CONTEXTUALIZED method in order to be deployed next time that automatic task execute
-		//deployment.setStatus(Dictionary.APPLICATION_STATUS_SUBMITTED);
+	
+	    deployment.setStatus(Dictionary.APPLICATION_STATUS_SUBMITTED);
 		
-		if(Configuration.enableSLAM.equals("yes")) {
-			deployment.setStatus(Dictionary.APPLICATION_STATUS_SUBMITTED);
-		} else {
-			deployment.setStatus(Dictionary.APPLICATION_STATUS_NEGOTIATIED);
-		}
 		deployment.setOvf(ovf);
 		String startDate = DateUtil.getDateStringLogStandardFormat(new Date());
 		deployment.setStartDate(startDate);
@@ -134,6 +131,12 @@ public abstract class AbstractRest {
 
 		// So we know the id the DB has given to it
 		application = applicationDAO.getByName(name);
+		
+		//We notify that the deployment has been created
+		DeploymentEvent deploymentEvent = new DeploymentEvent();
+		deploymentEvent.setDeploymentId(deployment.getId());
+		deploymentEvent.setDeploymentStatus(deployment.getStatus());
+		deploymentEventService.fireDeploymentEvent(deploymentEvent);
 		
 		return buildResponse(Status.CREATED, XMLBuilder.getApplicationXML(application));
 	}

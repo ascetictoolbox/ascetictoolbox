@@ -19,7 +19,7 @@ import java.util.List;
  * limitations under the License.
  * 
  * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
- * @email david.garciaperez@atos.net 
+ * e-mail david.garciaperez@atos.net 
  * 
  * Describes the generic Data Access Object 
  * It is used by Spring to do the specific DAO injections

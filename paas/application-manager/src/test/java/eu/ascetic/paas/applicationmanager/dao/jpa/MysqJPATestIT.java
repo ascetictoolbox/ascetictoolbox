@@ -28,7 +28,7 @@ import eu.ascetic.paas.applicationmanager.model.Image;
  * limitations under the License.
  * 
  * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
- * @email david.garciaperez@atos.net 
+ * e-mail david.garciaperez@atos.net 
  */
 
 public class MysqJPATestIT {

@@ -20,7 +20,7 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
  * limitations under the License.
  * 
  * @author: David Rojo. Atos Research and Innovation, Atos SPAIN SA
- * @email david.rojoa@atos.net 
+ * e-mail david.rojoa@atos.net 
  *
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)

@@ -513,6 +513,7 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/jp
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/event/DeploymentEvent.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/event/deployment/CreatedEvent.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/event/deployment/DeploymentEventService.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/event/deployment/NegotiationEvent.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/event/reactor/ReactorConfig.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/http/Client.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/ovf/OVFUtils.java -text
@@ -583,6 +584,7 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/te
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/DeploymentStatusTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/deployment/CreatedEventTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/deployment/DeploymentServiceTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/deployment/NegotitationEventTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/reactor/EventTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/reactor/HandlerBean.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/reactor/HandlerBean2.java -text

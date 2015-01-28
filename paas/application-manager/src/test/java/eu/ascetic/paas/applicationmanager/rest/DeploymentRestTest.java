@@ -37,6 +37,8 @@ import eu.ascetic.paas.applicationmanager.amonitor.ApplicationMonitorClient;
 import eu.ascetic.paas.applicationmanager.amonitor.model.EnergyCosumed;
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
+import eu.ascetic.paas.applicationmanager.event.DeploymentEvent;
+import eu.ascetic.paas.applicationmanager.event.deployment.DeploymentEventService;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Collection;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
@@ -366,8 +368,11 @@ public class DeploymentRestTest {
 		when(applicationDAO.getByName("threeTierWebApp")).thenReturn(application, application);
 		when(applicationDAO.update(any(Application.class))).thenReturn(true);
 		
+		DeploymentEventService deploymentEventService = mock(DeploymentEventService.class);
+		
 		DeploymentRest deploymentRest = new DeploymentRest();
 		deploymentRest.applicationDAO = applicationDAO;
+		deploymentRest.deploymentEventService = deploymentEventService;
 		
 		Response response = deploymentRest.postDeployment("1", threeTierWebAppOvfString);
 		assertEquals(201, response.getStatus());
@@ -384,11 +389,17 @@ public class DeploymentRestTest {
 		assertEquals("threeTierWebApp", applicationResponse.getName());
 		assertEquals(1, applicationResponse.getDeployments().size());
 		assertEquals(threeTierWebAppOvfString, applicationResponse.getDeployments().get(0).getOvf());
-		assertEquals(Dictionary.APPLICATION_STATUS_NEGOTIATIED, applicationResponse.getDeployments().get(0).getStatus());
+		assertEquals(Dictionary.APPLICATION_STATUS_SUBMITTED, applicationResponse.getDeployments().get(0).getStatus());
 		
 		// We verify the number of calls to the DAO
 		verify(applicationDAO, times(2)).getByName("threeTierWebApp");
 		verify(applicationDAO, times(1)).update(any(Application.class));
+		
+		//We verify that the event is fired
+		ArgumentCaptor<DeploymentEvent> argument = ArgumentCaptor.forClass(DeploymentEvent.class);
+		verify(deploymentEventService).fireDeploymentEvent(argument.capture());
+		
+		assertEquals(Dictionary.APPLICATION_STATUS_SUBMITTED, argument.getValue().getDeploymentStatus());
 	} 
 	
 	@Test

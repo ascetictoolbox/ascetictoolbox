@@ -17,7 +17,7 @@ package eu.ascetic.paas.applicationmanager.vmmanager.datamodel;
  * limitations under the License.
  * 
  * @author: David Rojo. Atos Research and Innovation, Atos SPAIN SA
- * @email david.rojoa@atos.net 
+ * e-mail david.rojoa@atos.net 
  *
  * The scheduling algorithms that can be applied in the VM Manager.
  *

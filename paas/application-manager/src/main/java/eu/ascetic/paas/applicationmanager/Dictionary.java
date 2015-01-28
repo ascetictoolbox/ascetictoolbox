@@ -17,7 +17,7 @@ package eu.ascetic.paas.applicationmanager;
  * limitations under the License.
  * 
  * @author David Garcia Perez. David Rojo, Atos Research and Innovation, Atos SPAIN SA
- * @email david.garciaperez@atos.net david.rojoa@atos.net
+ * e-mail david.garciaperez@atos.net david.rojoa@atos.net
  */
 
 public class Dictionary {

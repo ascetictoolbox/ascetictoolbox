@@ -1,9 +1,7 @@
 package eu.ascetic.paas.applicationmanager.event.reactor;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
-import reactor.core.Reactor;
 import reactor.event.Event;
 import reactor.spring.annotation.Consumer;
 import reactor.spring.annotation.Selector;

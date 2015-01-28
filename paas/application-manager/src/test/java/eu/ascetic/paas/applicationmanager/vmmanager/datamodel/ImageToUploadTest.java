@@ -22,7 +22,7 @@ import org.junit.Test;
  * limitations under the License.
  * 
  * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
- * @email david.garciaperez@atos.net 
+ * e-mail david.garciaperez@atos.net 
  * 
  * Set of unit tests that verify the correct work of the Application Manager Rest Interface
  *
