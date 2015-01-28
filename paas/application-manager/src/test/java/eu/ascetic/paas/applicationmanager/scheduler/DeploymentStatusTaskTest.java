@@ -55,7 +55,7 @@ import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.VmDeployed;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * 
- * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
+ * @author David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
  * e-mail: david.garciaperez@atos.net 
  */
 
@@ -128,25 +128,6 @@ public class DeploymentStatusTaskTest {
 		verify(deploymentDAO, times(1)).update(deployment3);
 		verify(deploymentDAO, times(1)).update(deployment4);
 	} */
-	
-	// TODO this test should be updated as soon as new functionality it is added... 
-	@Test
-	public void testDeploymentAcceptAgreementActions() {
-		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
-		
-		Deployment deployment = new Deployment();
-		
-		// The object will be updated in the database
-		when(deploymentDAO.update(deployment)).thenReturn(true);
-		
-		DeploymentsStatusTask task = new DeploymentsStatusTask();
-		task.deploymentDAO = deploymentDAO;
-		task.deploymentAcceptAgreementActions(deployment);
-		
-		assertEquals(Dictionary.APPLICATION_STATUS_CONTEXTUALIZATION, deployment.getStatus());
-		// We check that the DAO was called
-		verify(deploymentDAO, times(1)).update(deployment);
-	}
 	
 	/* // TODO this test should be updated as soon as new functionality it is added... 
 	@Test

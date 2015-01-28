@@ -18,7 +18,6 @@ import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
-import eu.ascetic.paas.applicationmanager.pm.PriceModellerClient;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientHC;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ImageToUpload;
@@ -51,7 +50,7 @@ import eu.ascetic.vmc.api.datamodel.ProgressData;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * 
- * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
+ * @author David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
  * e-mail david.garciaperez@atos.net 
  * 
  * This periodical taks will go through the deployments table, and look the ones that need some update
@@ -82,14 +81,7 @@ public class DeploymentsStatusTask {
 		for(Deployment deployment : deployments) {
 			logger.info("Checking deployment id: " + deployment.getId() + " Status: " + deployment.getStatus());
 			
-			if(deployment.getStatus().equals(Dictionary.APPLICATION_STATUS_NEGOTIATIED)) {
-				// TODO this check needs to be deleted when we enable the user to be able to 
-				//      manually accept the negotiation proccess... for the moment we just give the 
-				//      deployment an automatic push... 
-				logger.info("  TO BE DELETED -> automatically moving deployment " + deployment.getId() + " to SLA_AGREEMENT_ACCEPTED");
-				
-				deploymentAcceptAgreementActions(deployment);
-			} else if(deployment.getStatus().equals(Dictionary.APPLICATION_STATUS_CONTEXTUALIZATION)) {
+			if(deployment.getStatus().equals(Dictionary.APPLICATION_STATUS_CONTEXTUALIZATION)) {
 				logger.info(" The deployment " + deployment.getId() + " is ready to be contextualized, starting the contextualization process");
 				
 				deploymentStartContextualizationActions(deployment);
@@ -99,23 +91,6 @@ public class DeploymentsStatusTask {
 				deploymentDeployApplicationActions(deployment);
 			}
 		}
-	}
-	
-	/**
-	 * Actions to be performed when an agreement is accepted by the user for an
-	 * Specific deployment
-	 * @param deployment
-	 */
-	protected void deploymentAcceptAgreementActions(Deployment deployment) {
-		
-		// We calculate the new price, since we are not updating the SLATemplate Price I'm doing this here:
-		PriceModellerClient.calculatePrice(1, deployment.getId(), 100.0);
-		
-		// Since we are not doing this right now, we move the application to the next step
-		deployment.setStatus(Dictionary.APPLICATION_STATUS_CONTEXTUALIZATION);
-		
-		// We save the changes to the DB
-		deploymentDAO.update(deployment);
 	}
 	
 	/**
