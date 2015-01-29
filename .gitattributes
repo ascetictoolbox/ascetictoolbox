@@ -530,7 +530,6 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/V
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/util/DateUtil.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/util/EnergyModellerConverter.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/util/XMLBuilder.java -text
-paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/scheduler/DeploymentsStatusTask.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/NegotiationClient.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/NegotiationWsClient.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/SLAMClient.java -text
