@@ -43,8 +43,8 @@ import reactor.spring.annotation.Selector;
  * It contacts the SLA Manager. Negotiates the event and moves the state to NEGOTIATIED
  */
 @Consumer
-public class NegotiationEvent {
-	private static Logger logger = Logger.getLogger(NegotiationEvent.class);
+public class NegotiationEventHandler {
+	private static Logger logger = Logger.getLogger(NegotiationEventHandler.class);
 	
 	@Autowired
 	protected DeploymentDAO deploymentDAO;

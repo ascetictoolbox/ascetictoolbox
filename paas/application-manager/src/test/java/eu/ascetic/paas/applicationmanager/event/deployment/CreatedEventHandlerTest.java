@@ -39,14 +39,14 @@ import eu.ascetic.paas.applicationmanager.model.Dictionary;
  * deployment has been submitted.
  */
 
-public class CreatedEventTest {
+public class CreatedEventHandlerTest {
 
 	@Test
 	public void testWrongStateDoesNothing() {
 		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
 		DeploymentEventService deploymentEventService = mock(DeploymentEventService.class);
 		
-		CreatedEvent createdEvent = new CreatedEvent();
+		CreatedEventHandler createdEvent = new CreatedEventHandler();
 		createdEvent.deploymentDAO = deploymentDAO;
 		createdEvent.deploymentEventService = deploymentEventService;
 		
@@ -66,7 +66,7 @@ public class CreatedEventTest {
 		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
 		DeploymentEventService deploymentEventService = mock(DeploymentEventService.class);
 		
-		CreatedEvent createdEvent = new CreatedEvent();
+		CreatedEventHandler createdEvent = new CreatedEventHandler();
 		createdEvent.deploymentDAO = deploymentDAO;
 		createdEvent.deploymentEventService = deploymentEventService;
 		

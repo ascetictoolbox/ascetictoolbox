@@ -36,8 +36,8 @@ import eu.ascetic.paas.applicationmanager.pm.PriceModellerClient;
  * TODO this should be seriusly udapted during the second year.
  */
 @Consumer
-public class AcceptAgreementEvent {
-private static Logger logger = Logger.getLogger(AcceptAgreementEvent.class);
+public class AcceptAgreementEventHandler {
+private static Logger logger = Logger.getLogger(AcceptAgreementEventHandler.class);
 	
 	@Autowired
 	protected DeploymentDAO deploymentDAO;

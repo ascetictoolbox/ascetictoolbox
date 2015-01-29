@@ -1,7 +1,7 @@
 package eu.ascetic.paas.applicationmanager.event.deployment;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -11,7 +11,6 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import reactor.event.Event;
-import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.event.DeploymentEvent;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
@@ -36,25 +35,26 @@ import eu.ascetic.paas.applicationmanager.model.Dictionary;
  * @author David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
  * e-mail david.garciaperez@atos.net 
  * 
- * Test that verifies the Application Manager reacts well to the event that a 
- * deployment that has been moved to its Negotiation step
+ * Test that verifies the Application Manager reacts well to the event that  
+ * a deployment has been negotiated... 
  */
-public class NegotitationEventTest {
+
+public class AcceptAgreementEventHandlerTest {
 
 	@Test
 	public void testWrongStateDoesNothing() {
 		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
 		DeploymentEventService deploymentEventService = mock(DeploymentEventService.class);
 		
-		NegotiationEvent negotiationEvent = new NegotiationEvent();
-		negotiationEvent.deploymentDAO = deploymentDAO;
-		negotiationEvent.deploymentEventService = deploymentEventService;
+		AcceptAgreementEventHandler acceptAgreementEvent = new AcceptAgreementEventHandler();
+		acceptAgreementEvent.deploymentDAO = deploymentDAO;
+		acceptAgreementEvent.deploymentEventService = deploymentEventService;
 		
 		DeploymentEvent deploymentEvent = new DeploymentEvent();
 		deploymentEvent.setDeploymentId(22);
 		deploymentEvent.setDeploymentStatus("1111");
 		
-		negotiationEvent.negotiationProcess(Event.wrap(deploymentEvent));
+		acceptAgreementEvent.acceptAgreement(Event.wrap(deploymentEvent));
 		
 		verify(deploymentDAO, never()).getById(deploymentEvent.getDeploymentId());
 		verify(deploymentDAO, never()).update(any(Deployment.class));
@@ -62,19 +62,17 @@ public class NegotitationEventTest {
 	}
 	
 	@Test
-	public void negotiationDisabled() {
-		Configuration.enableSLAM = "false";
-		
+	public void testChangeState() {
 		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
 		DeploymentEventService deploymentEventService = mock(DeploymentEventService.class);
 		
-		NegotiationEvent negotiationEvent = new NegotiationEvent();
-		negotiationEvent.deploymentDAO = deploymentDAO;
-		negotiationEvent.deploymentEventService = deploymentEventService;
+		AcceptAgreementEventHandler acceptAgreementEvent = new AcceptAgreementEventHandler();
+		acceptAgreementEvent.deploymentDAO = deploymentDAO;
+		acceptAgreementEvent.deploymentEventService = deploymentEventService;
 		
 		DeploymentEvent deploymentEvent = new DeploymentEvent();
 		deploymentEvent.setDeploymentId(22);
-		deploymentEvent.setDeploymentStatus(Dictionary.APPLICATION_STATUS_NEGOTIATION);
+		deploymentEvent.setDeploymentStatus(Dictionary.APPLICATION_STATUS_NEGOTIATIED);
 		
 		Deployment deployment = new Deployment();
 		deployment.setId(22);
@@ -83,12 +81,13 @@ public class NegotitationEventTest {
 		when(deploymentDAO.getById(22)).thenReturn(deployment);
 		when(deploymentDAO.update(deployment)).thenReturn(true);
 		
-		negotiationEvent.negotiationProcess(Event.wrap(deploymentEvent));
+		acceptAgreementEvent.acceptAgreement(Event.wrap(deploymentEvent));
 		
 		ArgumentCaptor<DeploymentEvent> argument = ArgumentCaptor.forClass(DeploymentEvent.class);
 		verify(deploymentEventService).fireDeploymentEvent(argument.capture());
 		
 		assertEquals(22, argument.getValue().getDeploymentId());
-		assertEquals(Dictionary.APPLICATION_STATUS_NEGOTIATIED, argument.getValue().getDeploymentStatus());
+		assertEquals(Dictionary.APPLICATION_STATUS_CONTEXTUALIZATION, argument.getValue().getDeploymentStatus());
+		assertEquals("120.0", deployment.getPrice());
 	}
 }

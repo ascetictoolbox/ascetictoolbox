@@ -35,8 +35,8 @@ import reactor.spring.annotation.Selector;
  * automatic, so it just moves it to an NEGOTIATION state
  */
 @Consumer
-public class CreatedEvent {
-	private static Logger logger = Logger.getLogger(CreatedEvent.class);
+public class CreatedEventHandler {
+	private static Logger logger = Logger.getLogger(CreatedEventHandler.class);
 	
 	@Autowired
 	protected DeploymentDAO deploymentDAO;
