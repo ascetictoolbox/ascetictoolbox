@@ -514,6 +514,7 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/event/
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/event/deployment/AcceptAgreementEventHandler.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/event/deployment/ContextualizationEventHandler.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/event/deployment/CreatedEventHandler.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/event/deployment/DeployEventHandler.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/event/deployment/DeploymentEventService.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/event/deployment/NegotiationEventHandler.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/event/reactor/ReactorConfig.java -text
@@ -587,6 +588,7 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/deployment/AcceptAgreementEventHandlerTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/deployment/ContextualizationEventHandlerTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/deployment/CreatedEventHandlerTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/deployment/DeployEventHandlerTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/deployment/DeploymentServiceTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/deployment/NegotitationEventHandlerTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/reactor/EventTest.java -text
@@ -603,7 +605,6 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/V
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/util/DateUtilTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/util/EnergyModellerConverterTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/util/XMLBuilderTest.java -text
-paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/scheduler/DeploymentStatusTaskTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/NegotiationWsClientIT.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/PlayingTestIT.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/SLAMClientTest.java -text

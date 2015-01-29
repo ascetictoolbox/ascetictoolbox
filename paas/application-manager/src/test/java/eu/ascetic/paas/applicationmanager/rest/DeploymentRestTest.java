@@ -64,7 +64,7 @@ import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * 
- * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
+ * @author David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
  * e-mail: david.garciaperez@atos.net 
  * 
  * Collection of Unit test that verify the correct work of the REST service for Deployment entities

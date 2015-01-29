@@ -33,7 +33,7 @@ import eu.ascetic.paas.applicationmanager.Dictionary;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * 
- * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
+ * @author David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
  * e-mail david.garciaperez@atos.net 
  * 
  * Basic REST methods implemented using the HTTPClient Apache Libraries

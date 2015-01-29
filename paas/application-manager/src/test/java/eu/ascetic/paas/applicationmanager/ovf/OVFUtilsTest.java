@@ -39,7 +39,7 @@ import eu.ascetic.utils.ovf.api.VirtualSystemCollection;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * 
- * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
+ * @author David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
  * e-mail david.garciaperez@atos.net 
  * 
  * Collection of unit tests to validate the correct functionality of the OVFUtils class

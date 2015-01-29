@@ -42,7 +42,7 @@ import eu.ascetic.utils.ovf.api.OvfDefinition;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * 
- * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
+ * @author David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
  * e-mail david.garciaperez@atos.net 
  */
 public class NegotiationWsClientIT {

@@ -55,7 +55,7 @@ import eu.ascetic.paas.applicationmanager.model.Dictionary;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * 
- * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
+ * @author David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
  * e-mail david.garciaperez@atos.net 
  * 
  * Set of unit tests that verify the correct work of the Application Manager Rest Interface

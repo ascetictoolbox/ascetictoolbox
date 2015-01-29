@@ -20,8 +20,8 @@ import org.codehaus.jackson.map.annotate.JsonRootName;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * 
- * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
- * e-mail: david.garciaperez@atos.net 
+ * @author David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
+ * e-mail david.garciaperez@atos.net 
  * 
  * Common methods for all the rest APIs
  * 

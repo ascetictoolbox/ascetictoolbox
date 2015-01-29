@@ -24,7 +24,7 @@ import eu.ascetic.paas.applicationmanager.http.Client;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * 
- * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
+ * @autho David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
  * e-mail david.garciaperez@atos.net
  * 
  * Apache HTTPD implementation of the Client to Application Monitor

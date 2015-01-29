@@ -18,8 +18,8 @@ import java.util.Date;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * 
- * @author: David Rojo. Atos Research and Innovation, Atos SPAIN SA
- * @email david.rojoa@atos.net 
+ * @author David Rojo. Atos Research and Innovation, Atos SPAIN SA
+ * e-mail david.rojoa@atos.net 
  *
  * VM that has been deployed in the cloud middleware.
  *

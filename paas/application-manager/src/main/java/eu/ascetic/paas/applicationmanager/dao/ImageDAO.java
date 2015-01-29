@@ -21,8 +21,8 @@ import eu.ascetic.paas.applicationmanager.model.Image;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * 
- * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
- * @email david.garciaperez@atos.net 
+ * @author David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
+ * e-mail david.garciaperez@atos.net 
  * 
  * DAO interface to perform database actions over an Image object
  *

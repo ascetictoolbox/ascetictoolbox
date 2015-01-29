@@ -17,7 +17,7 @@ package eu.ascetic.paas.applicationmanager.vmmanager.datamodel;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * 
- * @author: David Rojo. Atos Research and Innovation, Atos SPAIN SA
+ * @author David Rojo. Atos Research and Innovation, Atos SPAIN SA
  * e-mail david.rojoa@atos.net 
  *
  *

@@ -32,7 +32,7 @@ import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.converter.ModelCon
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * 
- * @author: David Rojo, David Garcia Perez Atos Research and Innovation, Atos SPAIN SA
+ * @author David Rojo, David Garcia Perez Atos Research and Innovation, Atos SPAIN SA
  * e-mail david.rojoa@atos.net , david.garciaperez@atos.net
  * 
  * The Apache HTTP Client implementation of the VM Manager ASCETiC Client

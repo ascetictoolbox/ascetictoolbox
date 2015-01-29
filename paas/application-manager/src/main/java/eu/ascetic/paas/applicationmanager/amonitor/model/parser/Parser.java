@@ -26,8 +26,8 @@ import eu.ascetic.paas.applicationmanager.amonitor.model.EnergyCosumed;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * 
- * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
- * e-mail: david.garciaperez@atos.net 
+ * @author David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
+ * e-mail david.garciaperez@atos.net 
  * 
  * Parser to generate the strings for the application monitor
  */
