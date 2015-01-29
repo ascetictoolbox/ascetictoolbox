@@ -512,6 +512,7 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/jp
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/jpa/VMDAOJpa.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/event/DeploymentEvent.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/event/deployment/AcceptAgreementEventHandler.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/event/deployment/ContextualizationEventHandler.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/event/deployment/CreatedEventHandler.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/event/deployment/DeploymentEventService.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/event/deployment/NegotiationEventHandler.java -text
@@ -584,6 +585,7 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/jp
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/testUtil/MockWebServer.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/DeploymentStatusTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/deployment/AcceptAgreementEventHandlerTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/deployment/ContextualizationEventHandlerTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/deployment/CreatedEventHandlerTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/deployment/DeploymentServiceTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/deployment/NegotitationEventHandlerTest.java -text
