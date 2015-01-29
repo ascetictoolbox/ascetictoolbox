@@ -30,6 +30,7 @@ public class VM extends EnergyUsageSource {
     private int cpus;
     private int ramMb;
     private double diskGb;
+    private String deploymentID;
     /**
      *
      * E_i^v: is the "idle power consumption" of a VM which includes the
@@ -168,6 +169,26 @@ public class VM extends EnergyUsageSource {
         hash = 37 * hash + this.ramMb;
         hash = 37 * hash + (int) (Double.doubleToLongBits(this.diskGb) ^ (Double.doubleToLongBits(this.diskGb) >>> 32));
         return hash;
+    }
+
+    /**
+     * This returns the deployment id of a VM. The deployment ID is a reference 
+     * string that is used to identify a set of VMs that belong together as part 
+     * of a single deployment. This field is optional.
+     * @return the deploymentID for the VM
+     */
+    public String getDeploymentID() {
+        return deploymentID;
+    }
+
+    /**
+      * This sets the deployment id of a VM. The deployment ID is a reference 
+     * string that is used to identify a set of VMs that belong together as part 
+     * of a single deployment. This field is optional.
+     * @param deploymentID the deploymentID to set
+     */
+    public void setDeploymentID(String deploymentID) {
+        this.deploymentID = deploymentID;
     }
 
 }

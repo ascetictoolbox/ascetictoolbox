@@ -51,13 +51,31 @@ public class OVFConverterFactory {
         }
         DiskSection diskSection = deploymentOVF.getDiskSection();
         VirtualSystemCollection vmsSection = deploymentOVF.getVirtualSystemCollection();
+        String deploymentId = getDeploymentID(deploymentOVF);
         for (VirtualSystem virtualMachine : vmsSection.getVirtualSystemArray()) {
-
-            answer.add(new VM(virtualMachine.getVirtualHardwareSection().getNumberOfVirtualCPUs(),
+            VM vm = new VM(virtualMachine.getVirtualHardwareSection().getNumberOfVirtualCPUs(),
                     virtualMachine.getVirtualHardwareSection().getMemorySize(),
-                    getVmDiskSize(virtualMachine, diskSection)));
+                    getVmDiskSize(virtualMachine, diskSection));
+            vm.setDeploymentID(deploymentId);
+            answer.add(vm);
         }
         return answer;
+    }
+
+    /**
+     * This returns the ASCETiC deployment ID for a set of VMs, if it exists
+     * @param deploymentOVF the virtual machines for deployment as described in
+     * OVF.
+     * @return The deploymentID for a VM if it exists otherwise it returns the 
+     * empty string "".
+     */
+    private static String getDeploymentID(OvfDefinition deploymentOVF) {
+        if (deploymentOVF == null || deploymentOVF.getVirtualSystemCollection().
+                getProductSectionAtIndex(0) == null) {
+            return "";
+        }
+        return deploymentOVF.getVirtualSystemCollection()
+                .getProductSectionAtIndex(0).getDeploymentId();
     }
 
     /**
