@@ -38,7 +38,6 @@ import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.VM;
-import eu.ascetic.paas.applicationmanager.scheduler.DeploymentsStatusTask;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ImageToUpload;
 import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.Vm;
