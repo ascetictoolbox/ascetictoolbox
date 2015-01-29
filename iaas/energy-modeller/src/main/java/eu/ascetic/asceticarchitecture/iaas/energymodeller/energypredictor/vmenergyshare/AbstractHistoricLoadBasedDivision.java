@@ -219,7 +219,7 @@ public abstract class AbstractHistoricLoadBasedDivision implements HistoricLoadB
      */
     public void cleanData() {
 
-        if (energyUsage.size() <= loadFraction.size()) {
+        if (energyUsage.size() != loadFraction.size()) {
             LinkedHashMap<HostEnergyRecord, HostVmLoadFraction> cleanedData = cleanData(loadFraction, energyUsage);
             energyUsage.clear();
             energyUsage.addAll(cleanedData.keySet());

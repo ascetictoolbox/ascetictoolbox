@@ -81,7 +81,8 @@ public class Calibrator implements Runnable {
     }
 
     /**
-     * This finds the upper and lower bounds of a host.
+     * This performs a calibration for a host finding its power usage profile.
+     * Including details of its upper and lower bounds of power consumption.
      *
      * @param host The host to train
      */
@@ -143,7 +144,6 @@ public class Calibrator implements Runnable {
          * This is separated from the reset of the calibration procedure as it
          * can be called again without having to induce load on the host.
          */
-        //TODO Implement better code here, fixing assumptions
         double watts = datasource.getLowestHostPowerUsage(host);
         host.setDefaultIdlePowerConsumption(watts);
         return host;

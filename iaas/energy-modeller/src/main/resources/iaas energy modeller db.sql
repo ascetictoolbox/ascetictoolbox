@@ -85,3 +85,8 @@ ALTER TABLE vm_measurement
 ADD CONSTRAINT fk_vm_measurement_vm_id
 FOREIGN KEY (vm_id)
 REFERENCES vm(vm_id);
+
+CREATE INDEX idx_vm_clock ON vm_measurement (clock);
+CREATE INDEX idx_vm_measure_spd ON vm_measurement (host_id, vm_id, clock);
+CREATE INDEX idx_host_clock ON host_measurement (clock);
+CREATE INDEX idx_vm_measure_spd ON host_measurement (host_id, clock);

@@ -20,8 +20,6 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostVmLoadFraction;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostEnergyRecord;
-import java.util.LinkedHashMap;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This creates a load based division mechanism for dividing host energy among
@@ -60,7 +58,7 @@ public class LoadBasedDivisionWithIdleEnergy extends AbstractHistoricLoadBasedDi
     @Override
     public double getEnergyUsage(VM vm) {
         VmDeployed deployed = (VmDeployed) vm;
-        cleanData();      
+        cleanData();
         int recordCount = (energyUsage.size() <= loadFraction.size() ? energyUsage.size() : loadFraction.size());
 
         /**
@@ -82,22 +80,14 @@ public class LoadBasedDivisionWithIdleEnergy extends AbstractHistoricLoadBasedDi
             HostVmLoadFraction load2 = loadFraction.get(i + 1);
             long timePeriod = energy2.getTime() - energy1.getTime();
             double vmIdlePower = idlePower / vms.size();
-            double idleEnergy = idlePower * ((double) TimeUnit.SECONDS.toHours(timePeriod));
-            double idleVMEnergy = vmIdlePower * ((double) TimeUnit.SECONDS.toHours(timePeriod));
+            double idleEnergy = idlePower * (((double) timePeriod) / 3600);
+            double idleVMEnergy = vmIdlePower * (((double) timePeriod) / 3600);
+            double deltaEnergy = Math.abs(((double) timePeriod / 3600) * (energy1.getPower() + energy2.getPower()) * 0.5);
 
-            double deltaEnergy = energy2.getEnergy() - energy1.getEnergy();
-            /**
-             * The sanity check below tests to see if the energy value clock
-             * counter has been reset or not. If it has then that round of
-             * energy data is ignored.
-             */
-            if (deltaEnergy > 0) {
-                double activeEnergyUsed = deltaEnergy - idleEnergy;
-
-                double avgLoadFraction = (load1.getFraction(deployed) + load2.getFraction(deployed)) / 2;
-                //Add previous to previous energy idle energy + fraction of active energy associated with VM.
-                vmEnergy = vmEnergy + idleVMEnergy + (activeEnergyUsed * avgLoadFraction);
-            }
+            double activeEnergyUsed = deltaEnergy - idleEnergy;
+            double avgLoadFraction = (load1.getFraction(deployed) + load2.getFraction(deployed)) / 2;
+            //Add previous to previous energy idle energy + fraction of active energy associated with VM.
+            vmEnergy = vmEnergy + idleVMEnergy + (activeEnergyUsed * avgLoadFraction);
         }
         return vmEnergy;
     }

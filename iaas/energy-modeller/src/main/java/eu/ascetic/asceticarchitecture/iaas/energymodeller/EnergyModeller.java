@@ -49,7 +49,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -82,7 +81,7 @@ public class EnergyModeller {
     private Thread calibratorThread;
     private DataGatherer dataGatherer;
     private Thread dataGatherThread;
-    private Class<?> historicEnergyDivionMethod = LoadBasedDivision.class;
+    private Class<?> historicEnergyDivisionMethod = LoadBasedDivision.class;
     private boolean considerIdleEnergyCurrentVm = true;
 
     /**
@@ -246,10 +245,10 @@ public class EnergyModeller {
             if (!divisionRule.startsWith(DEFAULT_ENERGY_DIVISION_RULE_PACKAGE)) {
                 divisionRule = DEFAULT_ENERGY_DIVISION_RULE_PACKAGE + "." + divisionRule;
             }
-            historicEnergyDivionMethod = (Class.forName(divisionRule));
+            historicEnergyDivisionMethod = (Class.forName(divisionRule));
         } catch (ClassNotFoundException ex) {
-            if (historicEnergyDivionMethod == null) {
-                historicEnergyDivionMethod = LoadBasedDivision.class;
+            if (historicEnergyDivisionMethod == null) {
+                historicEnergyDivisionMethod = LoadBasedDivision.class;
             }
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The energy division rule specified was not found", ex);
         }
@@ -401,7 +400,7 @@ public class EnergyModeller {
         List<HostVmLoadFraction> loadFractionData = (List<HostVmLoadFraction>) database.getHostVmHistoryLoadData(host, timePeriod);
         HistoricLoadBasedDivision shareRule;
         try {
-            shareRule = (HistoricLoadBasedDivision) historicEnergyDivionMethod.newInstance();
+            shareRule = (HistoricLoadBasedDivision) historicEnergyDivisionMethod.newInstance();
             shareRule.setHost(host);
         } catch (InstantiationException | IllegalAccessException ex) {
             shareRule = new LoadBasedDivision(host);
@@ -417,7 +416,7 @@ public class EnergyModeller {
         shareRule.setLoadFraction(loadFractionData);
         double totalEnergy = shareRule.getEnergyUsage(vm);
         answer.setTotalEnergyUsed(totalEnergy);
-        answer.setAvgPowerUsed(totalEnergy / ((double) TimeUnit.SECONDS.toHours(shareRule.getDuration())));
+        answer.setAvgPowerUsed(totalEnergy / (((double) shareRule.getDuration()) / 3600));
         answer.setDuration(new TimePeriod(shareRule.getStart(), shareRule.getEnd()));
         return answer;
     }
