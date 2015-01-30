@@ -22,7 +22,8 @@
 		<module>io-utils</module>
 		<module>ascetic-load-generator-app</module>
 		<module>energy-modeller-benchtest</module>
-    <module>energy-modeller-display-tool</module>
+		<module>energy-modeller-display-tool</module>
+		<module>energy-modeller-trace-file-generator</module>
   </modules>
 
     <url>http://www.ascetic.eu</url>
