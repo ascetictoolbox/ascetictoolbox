@@ -223,7 +223,7 @@ public class VMSummaryGenerator {
         shareRule.setLoadFraction(loadFractionData);
         double totalEnergy = shareRule.getEnergyUsage(vm);
         answer.setTotalEnergyUsed(totalEnergy);
-        answer.setAvgPowerUsed(totalEnergy / (((double) shareRule.getDuration()) / 3600));
+        answer.setAvgPowerUsed(totalEnergy / (((double) shareRule.getDuration(vm)) / 3600));
         answer.setDuration(new TimePeriod(shareRule.getStart(), shareRule.getEnd()));
         return answer;
     }
