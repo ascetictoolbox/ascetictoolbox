@@ -17,6 +17,7 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmene
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostVmLoadFraction;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostEnergyRecord;
 import java.util.Calendar;
@@ -106,6 +107,31 @@ public abstract class AbstractHistoricLoadBasedDivision implements HistoricLoadB
     @Override
     public void removeVM(VM vm) {
         vms.remove(vm);
+    }
+
+    /**
+     * This gets the duration that a VM was running for during
+     * the lifetime of the energy record describes.
+     *
+     * @param vm The VM to get the duration it was seen for
+     * @return The duration in seconds a VM exists in the energy records.
+     */
+    @Override
+    public long getDuration(VmDeployed vm) {
+        HostVmLoadFraction first = null;
+        HostVmLoadFraction last = loadFraction.get(0);
+        for (HostVmLoadFraction current : loadFraction) {
+            if (current.getVMs().contains(vm) && first == null) {
+                first = current;
+            }
+            if (current.getVMs().contains(vm)) {
+                last = current;
+            }            
+        }
+        if (first != null) {
+            return last.getTime() - first.getTime();
+        }
+        return 0;
     }
 
     /**
@@ -215,7 +241,7 @@ public abstract class AbstractHistoricLoadBasedDivision implements HistoricLoadB
 
     /**
      * This compares the vm resource utilisation dataset and the host energy
-     * data and ensures that they have a 1:1 mapping 
+     * data and ensures that they have a 1:1 mapping
      */
     public void cleanData() {
 

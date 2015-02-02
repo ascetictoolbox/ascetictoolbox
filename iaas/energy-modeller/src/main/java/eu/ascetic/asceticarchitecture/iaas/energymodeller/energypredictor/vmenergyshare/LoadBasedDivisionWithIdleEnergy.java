@@ -78,16 +78,18 @@ public class LoadBasedDivisionWithIdleEnergy extends AbstractHistoricLoadBasedDi
             HostEnergyRecord energy2 = energyUsage.get(i + 1);
             HostVmLoadFraction load1 = loadFraction.get(i);
             HostVmLoadFraction load2 = loadFraction.get(i + 1);
-            long timePeriod = energy2.getTime() - energy1.getTime();
-            double vmIdlePower = idlePower / vms.size();
-            double idleEnergy = idlePower * (((double) timePeriod) / 3600);
-            double idleVMEnergy = vmIdlePower * (((double) timePeriod) / 3600);
-            double deltaEnergy = Math.abs(((double) timePeriod / 3600) * (energy1.getPower() + energy2.getPower()) * 0.5);
-
-            double activeEnergyUsed = deltaEnergy - idleEnergy;
-            double avgLoadFraction = (load1.getFraction(deployed) + load2.getFraction(deployed)) / 2;
-            //Add previous to previous energy idle energy + fraction of active energy associated with VM.
-            vmEnergy = vmEnergy + idleVMEnergy + (activeEnergyUsed * avgLoadFraction);
+            if (load1.getVMs().contains(deployed) && load2.getVMs().contains(deployed)) {
+                long timePeriod = energy2.getTime() - energy1.getTime();
+                double vmCount = load1.getVMs().size() + load2.getVMs().size() / 2;
+                double vmIdlePower = idlePower / vmCount;
+                double idleEnergy = idlePower * (((double) timePeriod) / 3600);
+                double idleVMEnergy = vmIdlePower * (((double) timePeriod) / 3600);
+                double deltaEnergy = Math.abs((((double) timePeriod) / 3600d) * (energy1.getPower() + energy2.getPower()) * 0.5);
+                double activeEnergyUsed = deltaEnergy - idleEnergy;
+                double avgLoadFraction = (load1.getFraction(deployed) + load2.getFraction(deployed)) / 2;
+                //Add previous to previous energy idle energy + fraction of active energy associated with VM.
+                vmEnergy = vmEnergy + idleVMEnergy + (activeEnergyUsed * avgLoadFraction);
+            }
         }
         return vmEnergy;
     }

@@ -17,6 +17,7 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmene
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostVmLoadFraction;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostEnergyRecord;
 import java.util.Calendar;
@@ -63,6 +64,15 @@ public interface HistoricLoadBasedDivision {
      */
     public void removeVM(VM vm);
 
+    /**
+     * This gets the duration that a VM was running for during
+     * the lifetime of the energy record describes.
+     *
+     * @param vm The VM to get the duration it was seen for
+     * @return The duration in seconds the energy records describe.
+     */  
+    public long getDuration(VmDeployed vm); 
+    
     /**
      * This gets the duration that the energy records describe.
      *

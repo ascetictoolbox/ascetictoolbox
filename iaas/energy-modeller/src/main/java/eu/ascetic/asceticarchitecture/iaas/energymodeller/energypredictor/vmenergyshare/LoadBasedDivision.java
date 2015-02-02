@@ -71,11 +71,12 @@ public class LoadBasedDivision extends AbstractHistoricLoadBasedDivision {
             HostEnergyRecord energy2 = energyUsage.get(i + 1);
             HostVmLoadFraction load1 = loadFraction.get(i);
             HostVmLoadFraction load2 = loadFraction.get(i + 1);
-            
-            long timePeriod = energy2.getTime() - energy1.getTime();
-            double deltaEnergy = Math.abs(((double) timePeriod / 3600) * (energy1.getPower() + energy2.getPower()) * 0.5);
-            double avgLoadFraction = (load1.getFraction(deployed) + load2.getFraction(deployed)) / 2;
-            vmEnergy = vmEnergy + (deltaEnergy * avgLoadFraction);
+            if (load1.getVMs().contains(deployed) && load2.getVMs().contains(deployed)) {
+                long timePeriod = energy2.getTime() - energy1.getTime();
+                double deltaEnergy = Math.abs((((double) timePeriod) / 3600d) * (energy1.getPower() + energy2.getPower()) * 0.5);
+                double avgLoadFraction = (load1.getFraction(deployed) + load2.getFraction(deployed)) / 2;
+                vmEnergy = vmEnergy + (deltaEnergy * avgLoadFraction);
+            }
         }
         return vmEnergy;
     }
