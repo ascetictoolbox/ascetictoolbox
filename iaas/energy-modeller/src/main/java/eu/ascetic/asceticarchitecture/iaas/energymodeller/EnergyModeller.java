@@ -174,6 +174,7 @@ public class EnergyModeller {
     private void startup(boolean performDataGathering) {
         calibrator = new Calibrator(datasource, database);
         dataGatherer = new DataGatherer(datasource, new DefaultDatabaseConnector(), calibrator);
+        dataGatherer.setPerformDataGathering(performDataGathering);
         try {
             calibratorThread = new Thread(calibrator);
             calibratorThread.setDaemon(true);
