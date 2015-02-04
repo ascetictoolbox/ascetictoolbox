@@ -22,6 +22,8 @@ import es.bsc.vmmanagercore.model.scheduling.DeploymentPlan;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import java.util.Calendar;
+
 /**
  * Logs system for the VMM.
  *
@@ -89,6 +91,10 @@ public class VMMLogger {
 
     public static void logMigration(String vmId, String hostname) {
         logger.debug("[VMM] Requested to migrate VM with ID=" + vmId + " to host " + hostname);
+    }
+    
+    public static void logVmDeploymentWaitingTime(String vmId, long seconds) {
+        logger.debug("[VMM] The Deployment of the VM with ID=" + vmId + " took " + seconds + " seconds");
     }
 
 }

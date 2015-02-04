@@ -52,6 +52,7 @@ import es.bsc.vmmanagercore.selfadaptation.PeriodicSelfAdaptationRunnable;
 import es.bsc.vmmanagercore.selfadaptation.SelfAdaptationManager;
 import es.bsc.vmmanagercore.selfadaptation.options.SelfAdaptationOptions;
 import es.bsc.vmmanagercore.utils.FileSystem;
+import es.bsc.vmmanagercore.utils.TimeUtils;
 import es.bsc.vmmanagercore.vmplacement.OptaVmPlacementConversor;
 import es.bsc.vmplacement.domain.ClusterState;
 import es.bsc.vmplacement.lib.OptaVmPlacement;
@@ -218,10 +219,12 @@ public class GenericVmManager implements VmManager {
      */
     @Override
     public List<String> deployVms(List<Vm> vms) {
+        // Get current time to know how much each VM has to wait until it is deployed.
+        Calendar calendarDeployRequestReceived = Calendar.getInstance();
+        
         // HashMap (VmDescription,ID after deployment). Used to return the IDs in the same order that they are received
         Map<Vm, String> ids = new HashMap<>();
 
-        // Choose the best deployment plan
         DeploymentPlan deploymentPlan = chooseBestDeploymentPlan(
                 vms, VmManagerConfiguration.getInstance().deploymentEngine);
 
@@ -240,6 +243,9 @@ public class GenericVmManager implements VmManager {
             db.insertVm(vmId, vmToDeploy.getApplicationId());
             ids.put(vmToDeploy, vmId);
 
+            VMMLogger.logVmDeploymentWaitingTime(vmId, 
+                    TimeUtils.getDifferenceInSeconds(calendarDeployRequestReceived, Calendar.getInstance()));
+            
             // If the monitoring system is Zabbix, then we need to call the Zabbix wrapper to initialize
             // the Zabbix agents. To register the VM we agreed to use the name <vmId>_<hostWhereTheVmIsDeployed>
             if (usingZabbix()) {

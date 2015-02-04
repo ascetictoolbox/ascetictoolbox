@@ -28,7 +28,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 /**
- *
+ * Tests for the VmManagerDbHsql class.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  *
