@@ -74,6 +74,10 @@ public class VmManagerConfiguration {
     // Some things need to be adapted depending on the project for which the VMM has been deployed.
     // Therefore, we need an attribute that indicates the current project
     public String project;
+    
+    // Turn on/off servers
+    public int defaultServerTurnOnDelaySeconds;
+    public int defaultServerTurnOffDelaySeconds;
 
     /**
      * Returns a properties file that contains the configuration parameters for the VM Manager.
@@ -116,6 +120,8 @@ public class VmManagerConfiguration {
         hosts = prop.getProperty("hosts").split(",");
         deploymentEngine = prop.getProperty("deploymentEngine");
         project = prop.getProperty("project");
+        defaultServerTurnOnDelaySeconds = Integer.parseInt(prop.getProperty("defaultServerTurnOnDelaySeconds"));
+        defaultServerTurnOffDelaySeconds = Integer.parseInt(prop.getProperty("defaultServerTurnOffDelaySeconds"));
 
         if (prop.getProperty("monitoring").equals("openstack")) {
             monitoring = Monitoring.OPENSTACK;

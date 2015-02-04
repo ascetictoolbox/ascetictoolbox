@@ -18,10 +18,14 @@
 
 package es.bsc.vmmanagercore.monitoring.hosts;
 
+import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
+import es.bsc.vmmanagercore.logging.VMMLogger;
+import es.bsc.vmmanagercore.model.hosts.HostPowerButtonAction;
 import es.bsc.vmmanagercore.model.hosts.ServerLoad;
 import es.bsc.vmmanagercore.model.vms.Vm;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Status of a host of an infrastructure.
@@ -39,6 +43,10 @@ public abstract class Host {
     protected double assignedMemoryMb;
     protected double assignedDiskGb;
     protected double currentPower;
+    
+    protected AtomicBoolean turnedOff = new AtomicBoolean(false); // Several threads might try to turn on/off
+    protected final int turnOnDelaySeconds;
+    protected final int turnOffDelaySeconds;
 
     /**
      * Class constructor
@@ -46,6 +54,14 @@ public abstract class Host {
      */
     public Host(String hostname) {
         this.hostname = hostname;
+        this.turnOnDelaySeconds = VmManagerConfiguration.getInstance().defaultServerTurnOnDelaySeconds;
+        this.turnOffDelaySeconds = VmManagerConfiguration.getInstance().defaultServerTurnOffDelaySeconds;
+    }
+    
+    public Host(String hostname, int turnOnDelaySeconds, int turnOffDelaySeconds) {
+        this.hostname = hostname;
+        this.turnOnDelaySeconds = turnOnDelaySeconds;
+        this.turnOffDelaySeconds = turnOffDelaySeconds;
     }
 
     /**
@@ -147,6 +163,14 @@ public abstract class Host {
         return totalDiskGb - assignedDiskGb;
     }
 
+    public int getTurnOnDelaySeconds() {
+        return turnOnDelaySeconds;
+    }
+    
+    public int getTurnOffDelaySeconds() {
+        return turnOffDelaySeconds;
+    }
+    
     /**
      * Returns the load that a host would have if a VM was deployed in it.
      *
@@ -154,10 +178,10 @@ public abstract class Host {
      * @return the future load
      */
     public ServerLoad getFutureLoadIfVMDeployed(Vm vm) {
-        double cpus = getAssignedCpus() + vm.getCpus();
-        double ramMb = getAssignedMemoryMb() + vm.getRamMb();
-        double diskGb = getAssignedDiskGb() + vm.getDiskGb();
-        return new ServerLoad(cpus/getTotalCpus(), ramMb/getTotalMemoryMb(), diskGb/getTotalDiskGb());
+        return new ServerLoad(
+                (getAssignedCpus() + vm.getCpus())/getTotalCpus(),
+                (getAssignedMemoryMb() + vm.getRamMb())/getTotalMemoryMb(),
+                (getAssignedDiskGb() + vm.getDiskGb())/getTotalDiskGb());
     }
 
     public void updateAssignedCpus(double assignedCpus) {
@@ -180,5 +204,41 @@ public abstract class Host {
      * Refreshes the metrics of the host (assigned CPUs, memory, etc.).
      */
     public abstract void refreshMonitoringInfo();
+
+    /**
+     * Presses the power button of the host.
+     * If the host is turned on, then this function turns it off and vice versa. 
+     */
+    public void pressPowerButton() {
+        // This is executed in a different thread. The reason is that we have defined a time delay between
+        // the moment the power button is pressed and the moment the server is on or off.
+        // In order to avoid blocking the main thread of execution, this is executed in a different thread.
+        Thread thread;
+        if (turnedOff.get()) {
+            VMMLogger.logServerTurnOnRequest(hostname);
+            thread = new Thread(new HostButtonPresserRunnable(this, HostPowerButtonAction.TURN_ON));
+        }
+        else {
+            VMMLogger.logServerTurnOffRequest(hostname);
+            thread = new Thread(new HostButtonPresserRunnable(this, HostPowerButtonAction.TURN_OFF));
+        }
+        thread.start();
+    }
+    
+    /**
+     * Turns on the host.
+     */
+    public void turnOn() {
+        turnedOff.getAndSet(false);
+        VMMLogger.logServerTurnedOn(hostname);
+    }
+
+    /**
+     * Turns off the host.
+     */
+    public void turnOff() {
+        turnedOff.getAndSet(true);
+        VMMLogger.logServerTurnedOff(hostname);
+    }
 
 }

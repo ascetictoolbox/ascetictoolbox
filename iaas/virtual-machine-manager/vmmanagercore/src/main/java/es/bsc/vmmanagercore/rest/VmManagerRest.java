@@ -229,7 +229,13 @@ public class VmManagerRest {
         return nodeCallsManager.getVMsDeployedInNode(hostname);
     }
 
+    @PUT
+    @Path("/node/{hostname}/powerButton")
+    public void pessHostPowerButton(@PathParam("hostname") String hostname) {
+        nodeCallsManager.pressHostPowerButton(hostname);
+    }
 
+    
     //================================================================================
     // Logs Methods
     //================================================================================

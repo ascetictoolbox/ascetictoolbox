@@ -54,5 +54,9 @@ public class NodeCallsManager {
     public String getVMsDeployedInNode(String hostname) {
         return gson.toJson(vmManager.getHost(hostname), Host.class);
     }
+    
+    public void pressHostPowerButton(String hostname) {
+        vmManager.pressHostPowerButton(hostname);
+    }
 
 }

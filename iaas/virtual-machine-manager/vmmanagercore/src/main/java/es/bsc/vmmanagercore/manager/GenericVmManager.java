@@ -561,7 +561,20 @@ public class GenericVmManager implements VmManager {
         return null;
     }
 
+    /**
+     * Simulates pressing the power button of a host
+     * @param hostname the hostname
+     */
+    @Override
+    public void pressHostPowerButton(String hostname) {
+        for (Host host: hosts) {
+            if (hostname.equals(host.getHostname())) {
+                host.pressPowerButton();
+            }
+        }
+    }
 
+    
     //================================================================================
     // VM price and energy estimates
     //================================================================================

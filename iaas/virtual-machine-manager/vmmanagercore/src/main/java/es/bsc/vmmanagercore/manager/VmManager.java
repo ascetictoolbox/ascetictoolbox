@@ -237,7 +237,12 @@ public interface VmManager {
      */
     public Host getHost(String hostname);
 
-
+    /**
+     * Simulates pressing the power button of a host
+     * @param hostname the hostname
+     */
+    public void pressHostPowerButton(String hostname);
+    
     //================================================================================
     // VM price and energy estimates
     //================================================================================
