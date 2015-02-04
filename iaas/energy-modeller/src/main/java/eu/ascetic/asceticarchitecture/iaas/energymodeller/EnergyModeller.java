@@ -100,7 +100,12 @@ public class EnergyModeller {
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.SEVERE,
                     "Could not read the energy modeller's log settings file", ex);
         }
-        EnergyModeller modeller = new EnergyModeller();
+        /**
+         * Only the instance that is stated in standalone mode should write
+         * to the background database and log VM data out to disk. All other
+         * instances should read from the database only.
+         */
+        EnergyModeller modeller = new EnergyModeller(true);
         Logger.getLogger(EnergyModeller.class.getName()).log(Level.SEVERE,
                 "The logger for the energy modeller has now started");
         while (true) {
@@ -130,16 +135,27 @@ public class EnergyModeller {
     public static EnergyModeller getInstance() {
         return SingletonHolder.INSTANCE;
     }
-
+  
     /**
      * This creates a new energy modeller.
      */
     public EnergyModeller() {
         datasource = new FastDataSourceAdaptor();
         database = new DefaultDatabaseConnector();
-        startup();
+        startup(false);
     }
 
+    /**
+     * This creates a new energy modeller.
+     * @param performDataGathering Indicates if this energy modeller should,
+     * write to disk and also write to the background database.
+     */
+    public EnergyModeller(boolean performDataGathering) {
+        datasource = new FastDataSourceAdaptor();
+        database = new DefaultDatabaseConnector();
+        startup(performDataGathering);
+    }        
+    
     /**
      * This creates a new energy modeller.
      *
@@ -149,13 +165,13 @@ public class EnergyModeller {
     public EnergyModeller(HostDataSource datasource, DatabaseConnector database) {
         this.datasource = datasource;
         this.database = database;
-        startup();
+        startup(false);
     }
 
     /**
      * This is common code for both constructors
      */
-    private void startup() {
+    private void startup(boolean performDataGathering) {
         calibrator = new Calibrator(datasource, database);
         dataGatherer = new DataGatherer(datasource, new DefaultDatabaseConnector(), calibrator);
         try {

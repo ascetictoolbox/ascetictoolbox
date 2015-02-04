@@ -53,6 +53,7 @@ public class DataGatherer implements Runnable {
     private final HashMap<Host, Long> lastTimeStampSeen = new HashMap<>();
     private static final String CONFIG_FILE = "energymodeller_data_gatherer.properties";
     private boolean logVmsToDisk = false;
+    private boolean performDataGathering = false;    
     private boolean loggerConsiderIdleEnergy = true;
 
     /**
@@ -194,7 +195,7 @@ public class DataGatherer implements Runnable {
     @Override
     public void run() {
         VmEnergyUsageLogger logger = null;
-        if (logVmsToDisk) {
+        if (logVmsToDisk && performDataGathering) {
             logger = new VmEnergyUsageLogger(new File("VmEnergyUsageData.txt"), true);
             logger.setConsiderIdleEnergy(loggerConsiderIdleEnergy);
             Thread loggerThread = new Thread(logger);
@@ -202,8 +203,7 @@ public class DataGatherer implements Runnable {
             loggerThread.start();
         }
         /**
-         * Polls the data source and write values to the database. TODO consider
-         * buffering the db writes.
+         * Polls the data source and write values to the database.
          */
         while (running) {
             try {
@@ -230,24 +230,8 @@ public class DataGatherer implements Runnable {
                      * the timestamp value has changed. This keeps the data
                      * written to backing store as clean as possible.
                      */
-                    if ((lastTimeStampSeen.get(host) == null || measurement.getClock() > lastTimeStampSeen.get(host)) && measurement.isLive()) {
-                        lastTimeStampSeen.put(host, measurement.getClock());
-                        Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Writing out host information");
-                        connector.writeHostHistoricData(host, measurement.getClock(), measurement.getPower(), measurement.getEnergy());
-                        Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Obtaining list of vms on host {0}", host.getHostName());
-                        ArrayList<VmDeployed> vms = getVMsOnHost(host, vmList);
-                        if (!vms.isEmpty()) {
-                            HostVmLoadFraction fraction = new HostVmLoadFraction(host, measurement.getClock());
-                            Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Obtaining specific vm information");
-                            List<VmMeasurement> vmMeasurements = datasource.getVmData(vms);
-                            fraction.setFraction(vmMeasurements);
-                            Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Writing out vm information");
-                            connector.writeHostVMHistoricData(host, measurement.getClock(), fraction);
-                            if (logger != null) {
-                                Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Logging out to Zabbix file");
-                                logger.printToFile(logger.new Pair(measurement, fraction));
-                            }
-                        }
+                    if (performDataGathering) {
+                        gatherMeasurements(host, measurement, vmList, logger);
                     }
                 }
                 try {
@@ -274,7 +258,38 @@ public class DataGatherer implements Runnable {
     }
 
     /**
-     * The hashmap gives a faster way to find a specific host. This converts
+     * This method gathers and writes host measurements to disk and to the
+     * background database for future usage.
+     *
+     * @param host The host to gather data for
+     * @param measurement The measurement data to write to disk.
+     * @param vmList The list of VMs that are currently running
+     * @param logger The logger that is used to write VM data to disk.
+     */
+    private void gatherMeasurements(Host host, HostMeasurement measurement, List<VmDeployed> vmList, VmEnergyUsageLogger logger) {
+        if ((lastTimeStampSeen.get(host) == null || measurement.getClock() > lastTimeStampSeen.get(host)) && measurement.isLive()) {
+            lastTimeStampSeen.put(host, measurement.getClock());
+            Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Writing out host information");
+            connector.writeHostHistoricData(host, measurement.getClock(), measurement.getPower(), measurement.getEnergy());
+            Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Obtaining list of vms on host {0}", host.getHostName());
+            ArrayList<VmDeployed> vms = getVMsOnHost(host, vmList);
+            if (!vms.isEmpty()) {
+                HostVmLoadFraction fraction = new HostVmLoadFraction(host, measurement.getClock());
+                Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Obtaining specific vm information");
+                List<VmMeasurement> vmMeasurements = datasource.getVmData(vms);
+                fraction.setFraction(vmMeasurements);
+                Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Writing out vm information");
+                connector.writeHostVMHistoricData(host, measurement.getClock(), fraction);
+                if (logger != null) {
+                    Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Logging out to Zabbix file");
+                    logger.printToFile(logger.new Pair(measurement, fraction));
+                }
+            }
+        }
+    }
+
+    /**
+     * The hash map gives a faster way to find a specific host. This converts
      * from a raw list of hosts into the indexed structure.
      *
      * @param hostList The host list
@@ -442,6 +457,31 @@ public class DataGatherer implements Runnable {
             }
         }
         return answer;
+    }
+
+    /**
+     * This sets if this data gatherer should log to disk VM data and write the
+     * data it finds regarding hosts to its backing store. It is expected that a
+     * energy modeller running in standalone mode will gather data while one
+     * using for querying that is instantiated as a class inside a larger
+     * program will not gather data.
+     *
+     * @param performDataGathering true if this energy modeller is responsible
+     * for writing to the energy modeller's database.
+     */
+    public void setPerformDataGathering(boolean performDataGathering) {
+        this.performDataGathering = performDataGathering;
+    }
+
+    /**
+     * This indicates if this data gatherer should log to disk VM data and write
+     * the data it finds regarding hosts to its backing store.
+     *
+     * @return true if data is to be written to disk and to the background
+     * database otherwise false.
+     */
+    public boolean PerformDataGathering() {
+        return this.performDataGathering;
     }
 
 }
