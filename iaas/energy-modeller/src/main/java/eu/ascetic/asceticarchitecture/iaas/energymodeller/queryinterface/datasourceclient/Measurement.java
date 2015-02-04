@@ -24,6 +24,7 @@ import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_STEAL_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_SYSTEM_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_USER_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.LIVELINESS_CHECK;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.MEMORY_AVAILABLE_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.MEMORY_TOTAL_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.NETWORK_IN_STARTS_WITH_KPI_NAME;
@@ -91,13 +92,13 @@ public abstract class Measurement {
     }
 
     /**
-     * This looks at the metrics gained and compares a named metric and
-     * a specified time and indicates if the values are close enough together.
+     * This looks at the metrics gained and compares a named metric and a
+     * specified time and indicates if the values are close enough together.
      *
      * @param metricName The first metric value to compare
      * @param time The time to compare the metric to
-     * @return The difference in seconds between the metric's clock value and the
-     * time specified in Unix time.
+     * @return The difference in seconds between the metric's clock value and
+     * the time specified in Unix time.
      */
     public long getClockDifference(String metricName, long time) {
         MetricValue value1 = metrics.get(metricName);
@@ -110,8 +111,8 @@ public abstract class Measurement {
         } else {
             return first - time;
         }
-    }    
-    
+    }
+
     /**
      * This tests to see if for this measurement record that two metrics have
      * clock values that are within an acceptable tolerance bound.
@@ -126,23 +127,23 @@ public abstract class Measurement {
     public boolean isContemporary(String metricName, String metricName2, int tolerance) {
         return getClockDifference(metricName, metricName2) <= tolerance;
     }
-    
+
     /**
-     * This tests to see if for this measurement record to see if a metric has
-     * a clock value that is within an acceptable tolerance bound.
+     * This tests to see if for this measurement record to see if a metric has a
+     * clock value that is within an acceptable tolerance bound.
      *
      * @param metricName The metric value to compare
      * @param time The time to compare the metric to
-     * @param tolerance The amount of seconds gap allowed between the 
-     * measurement and the specified time for the record to be valid for 
-     * the required analysis.
+     * @param tolerance The amount of seconds gap allowed between the
+     * measurement and the specified time for the record to be valid for the
+     * required analysis.
      * @return If this measurement record is valid for performing analysis on
      * based upon the difference between a metric's clock value and a specified
      * time.
      */
     public boolean isContemporary(String metricName, long time, int tolerance) {
         return getClockDifference(metricName, time) <= tolerance;
-    }    
+    }
 
     /**
      * This returns the maximum delay that any metric encountered.
@@ -334,8 +335,8 @@ public abstract class Measurement {
             return this.getMetric(CPU_STEAL_KPI_NAME).getClock();
         }
         return 0;
-    }    
-    
+    }
+
     /**
      * This provides rapid access to cpu utilisation values from a measurement.
      *
@@ -408,6 +409,16 @@ public abstract class Measurement {
             }
         }
         return answer;
+    }
+
+    /**
+     * This indicates if the measurement indicates if the resource that it
+     * records was active at the time of taking the measurement.
+     *
+     * @return The amount of data transfered out, units are in bits/second.
+     */
+    public boolean isLive() {
+        return metrics.containsKey(LIVELINESS_CHECK);
     }
 
 }

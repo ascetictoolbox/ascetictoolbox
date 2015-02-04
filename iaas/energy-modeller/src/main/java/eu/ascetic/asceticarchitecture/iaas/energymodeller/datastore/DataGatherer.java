@@ -230,7 +230,7 @@ public class DataGatherer implements Runnable {
                      * the timestamp value has changed. This keeps the data
                      * written to backing store as clean as possible.
                      */
-                    if (lastTimeStampSeen.get(host) == null || measurement.getClock() > lastTimeStampSeen.get(host)) {
+                    if ((lastTimeStampSeen.get(host) == null || measurement.getClock() > lastTimeStampSeen.get(host)) && measurement.isLive()) {
                         lastTimeStampSeen.put(host, measurement.getClock());
                         Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Writing out host information");
                         connector.writeHostHistoricData(host, measurement.getClock(), measurement.getPower(), measurement.getEnergy());

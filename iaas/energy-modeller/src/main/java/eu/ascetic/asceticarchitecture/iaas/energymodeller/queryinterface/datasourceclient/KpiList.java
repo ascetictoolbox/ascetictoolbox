@@ -58,5 +58,7 @@ public abstract class KpiList {
     public static final String BOOT_TIME_KPI_NAME = "system.boottime";
     //physical host mapping
     public static final String VM_PHYSICAL_HOST_NAME = "physical_host";
+    //Indicator flag to state that the resource is available
+    public static final String LIVELINESS_CHECK = "agent.ping";
 
 }
