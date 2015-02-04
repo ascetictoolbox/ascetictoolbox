@@ -344,6 +344,9 @@ public abstract class Measurement {
      * range 0...1
      */
     public double getCpuIdle() {
+        if (metrics.containsKey(CPU_SPOT_USAGE_KPI_NAME)) {
+            return 1 - this.getMetric(CPU_SPOT_USAGE_KPI_NAME).getClock();
+        }        
         return this.getMetric(CPU_IDLE_KPI_NAME).getValue() / 100;
     }
 

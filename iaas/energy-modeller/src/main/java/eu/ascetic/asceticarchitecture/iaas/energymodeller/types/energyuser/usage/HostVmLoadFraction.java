@@ -134,7 +134,9 @@ public class HostVmLoadFraction implements Comparable<HostVmLoadFraction> {
         HashMap<VmDeployed, Double> answer = new HashMap<>();
         double totalLoad = 0.0;
         for (VmMeasurement loadMeasure : load) {
-            totalLoad = totalLoad + loadMeasure.getCpuUtilisation();
+            if (loadMeasure.isLive()) {
+                totalLoad = totalLoad + loadMeasure.getCpuUtilisation();
+            }
         }
         /**
          * This is an error handling state. If no data is been presented from
@@ -143,28 +145,33 @@ public class HostVmLoadFraction implements Comparable<HostVmLoadFraction> {
         if (totalLoad == 0) {
             double count = load.size();
             for (VmMeasurement loadMeasure : load) {
-                answer.put(loadMeasure.getVm(), (1 / count));
+                if (loadMeasure.isLive()) {
+                    answer.put(loadMeasure.getVm(), (1 / count));
+                }
             }
             return answer;
         }
         for (VmMeasurement loadMeasure : load) {
-            answer.put(loadMeasure.getVm(), (loadMeasure.getCpuUtilisation() / totalLoad));
+            if (loadMeasure.isLive()) {
+                answer.put(loadMeasure.getVm(), (loadMeasure.getCpuUtilisation() / totalLoad));
+            }
         }
         return answer;
     }
-    
+
     /**
      * This utility function goes through a list of HostVmLoadFraction and lists
      * the VMs that were involved.
+     *
      * @param fractionData The collection of load fraction data to parse.
      * @return The list of VMs listed in the load fraction data.
      */
     public static HashSet<VmDeployed> getVMs(Collection<HostVmLoadFraction> fractionData) {
-            HashSet<VmDeployed> answer = new HashSet<>();
-            for (HostVmLoadFraction hostVmLoadFraction : fractionData) {
-                answer.addAll(hostVmLoadFraction.getVMs());
-            }
-            return answer;
+        HashSet<VmDeployed> answer = new HashSet<>();
+        for (HostVmLoadFraction hostVmLoadFraction : fractionData) {
+            answer.addAll(hostVmLoadFraction.getVMs());
+        }
+        return answer;
     }
 
     /**
@@ -182,7 +189,7 @@ public class HostVmLoadFraction implements Comparable<HostVmLoadFraction> {
      * responsible for.
      *
      * @param vm The vm to get the load information for
-     * @return The fraction between 0..1 of how much load was induced and 0 if 
+     * @return The fraction between 0..1 of how much load was induced and 0 if
      * the VM was not found.
      */
     public double getFraction(VmDeployed vm) {

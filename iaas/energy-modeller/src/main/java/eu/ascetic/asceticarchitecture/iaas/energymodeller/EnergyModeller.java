@@ -105,10 +105,9 @@ public class EnergyModeller {
                 "The logger for the energy modeller has now started");
         while (true) {
             try {
-                //Note: The Zabbix API takes a few seconds to call, so don't call it faster than 3-4 seconds
                 Thread.sleep(1000);
             } catch (InterruptedException ex) {
-                Logger.getLogger(EnergyModeller.class.getName()).log(Level.SEVERE, "The data gatherer was interupted.", ex);
+                Logger.getLogger(EnergyModeller.class.getName()).log(Level.SEVERE, "The energy modeller was interupted.", ex);
             }
         }
     }
