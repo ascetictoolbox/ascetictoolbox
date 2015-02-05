@@ -241,4 +241,12 @@ public abstract class Host {
         VMMLogger.logServerTurnedOff(hostname);
     }
 
+    /**
+     * Returns whether the host is on.
+     * @return True if the host is on, false otherwise
+     */
+    public boolean isOn() {
+        return !turnedOff.get();
+    }
+
 }

@@ -239,7 +239,7 @@ public class GenericVmManager implements VmManager {
             // that mounts it
             String vmScriptName = setAsceticInitScript(vmToDeploy);
 
-            String vmId = cloudMiddleware.deploy(vmToDeploy, hostForDeployment.getHostname());
+            String vmId = deployVm(vmToDeploy, hostForDeployment);
             db.insertVm(vmId, vmToDeploy.getApplicationId());
             ids.put(vmToDeploy, vmId);
 
@@ -595,7 +595,22 @@ public class GenericVmManager implements VmManager {
     //================================================================================
     // Private Methods
     //================================================================================
-
+    
+    private String deployVm(Vm vm, Host host) {
+        // If the host is not on, turn it on and wait
+        if (!host.isOn()) {
+            pressHostPowerButton(host.getHostname());
+            while (!host.isOn()) { // Is there a cleaner way to do this?
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return cloudMiddleware.deploy(vm, host.getHostname());
+    }
+    
     /**
      * Instantiates the hosts according to the monitoring software selected.
      *

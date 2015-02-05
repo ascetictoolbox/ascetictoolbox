@@ -109,12 +109,12 @@ public class OptaVmPlacementImplTest {
     }
     
     @Test
-    public void weakestFitTest() {
+    public void bestFitTest() {
         // TODO
     }
     
     @Test
-    public void weakestFitDecreasingTest() {
+    public void bestFitDecreasingTest() {
         // TODO
     }
     
