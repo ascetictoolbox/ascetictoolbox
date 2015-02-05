@@ -76,8 +76,10 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
     private Connection connection;
     /**
      * This query lists all hosts data items.
+     * status <> 3 excludes templates
+     * available = 0 is for templates, available = 1 = true available = 2 = false
      */
-    private static final String ALL_ZABBIX_HOSTS = "SELECT hostid, host FROM hosts WHERE status <> 3 AND available > 0";
+    private static final String ALL_ZABBIX_HOSTS = "SELECT hostid, host FROM hosts WHERE status <> 3 AND available = 1";
     /**
      * This query searches for a named host and provides it's current latest
      * items.
