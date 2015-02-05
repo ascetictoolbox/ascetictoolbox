@@ -26,7 +26,7 @@ import java.util.Comparator;
 /**
  * This class compares the "strength" of two hosts. Hosts with more resources are considered to be "stronger"
  * because they are more likely to meet the requirements needed to deploy a VM.
- * Comparing the "strength" of two hosts is needed to apply some construction heuristic algoriths like the best fit
+ * Comparing the "strength" of two hosts is needed to apply some construction heuristic algorithms like the best fit
  * (aka weakest fit).
  *
  * @author David Ortiz (david.ortiz@bsc.es)

@@ -1,10 +1,9 @@
-package es.bsc.vmplacement;
+package es.bsc.vmplacement.lib;
 
 import es.bsc.vmplacement.domain.ClusterState;
 import es.bsc.vmplacement.domain.ConstructionHeuristic;
 import es.bsc.vmplacement.domain.Host;
 import es.bsc.vmplacement.domain.Vm;
-import es.bsc.vmplacement.lib.OptaVmPlacementImpl;
 import es.bsc.vmplacement.placement.config.Policy;
 import es.bsc.vmplacement.placement.config.VmPlacementConfig;
 import org.junit.Test;
