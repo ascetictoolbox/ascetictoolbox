@@ -15,7 +15,6 @@
  */
 package eu.ascetic.utils.hostpoweremulator;
 
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DataGatherer;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DatabaseConnector;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DefaultDatabaseConnector;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.CpuOnlyEnergyPredictor;
@@ -23,6 +22,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasou
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDirectDbDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
+import eu.ascetic.ioutils.Settings;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -40,6 +40,9 @@ public class HostPowerEmulator implements Runnable {
     private String hostname = "";
     private String cloneHostname = "";
     private boolean running = true;
+    private int pollInterval = 1;
+    private String outputName = "power";
+    private Settings settings = new Settings("PowerEmulatorSettings.properties");
 
     /**
      * This runs the emulation tool.
@@ -79,6 +82,11 @@ public class HostPowerEmulator implements Runnable {
     public HostPowerEmulator(String hostname, String cloneHostname) {
         this.hostname = hostname;
         this.cloneHostname = cloneHostname;
+        pollInterval = settings.getInt("poll_interval", pollInterval);
+        outputName = settings.getString("output_name", outputName);
+        if (settings.isChanged()) {
+            settings.save("PowerEmulatorSettings.properties");
+        }        
     }
 
     /**
@@ -141,7 +149,7 @@ public class HostPowerEmulator implements Runnable {
             double power = prediction.getAvgPowerUsed();
             logger.printToFile(logger.new Pair(host, power));
             try {
-                Thread.sleep(TimeUnit.SECONDS.toMillis(1));
+                Thread.sleep(TimeUnit.SECONDS.toMillis(pollInterval));
             } catch (InterruptedException ex) {
                 Logger.getLogger(HostPowerEmulator.class.getName()).log(Level.SEVERE, "The power emulator was interupted.", ex);
             }
