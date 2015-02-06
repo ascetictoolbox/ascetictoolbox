@@ -22,6 +22,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasou
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDirectDbDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
+import java.io.File;
 
 /**
  * The aim of this application is to clone another's calibration profile so that
@@ -39,7 +40,9 @@ public class HostPowerEmulator implements Runnable {
     /**
      * This runs the emulation tool.
      *
-     * @param args
+     * @param args The first argument indicates the host to generate the host
+     * power consumption data for, the second argument is optional and indicates
+     * 
      */
     public static void main(String[] args) {
         Thread emulatorThread;
@@ -59,7 +62,7 @@ public class HostPowerEmulator implements Runnable {
         HostPowerEmulator emulator = new HostPowerEmulator(hostname, cloneHostname);
         emulatorThread = new Thread(emulator);
         emulatorThread.setDaemon(false);
-        emulatorThread.start();        
+        emulatorThread.start();
     }
 
     /**
@@ -107,7 +110,17 @@ public class HostPowerEmulator implements Runnable {
     public void run() {
         CpuOnlyEnergyPredictor predictor = new CpuOnlyEnergyPredictor();
         Host host = source.getHostByName(hostname);
+        HostPowerLogger logger = new HostPowerLogger(new File("EstimatedHostPowerData.txt"), true);
+        Thread loggerThread = new Thread(logger);
+        loggerThread.setDaemon(true);
+        loggerThread.start();
         database.getHostCalibrationData(host);
+        if (!host.isCalibrated()) {
+            running = false;
+            System.out.println("The host has no calibration data, so emulation cannot occur!"
+                    + "please specifiy where to clone the calibration data from.");
+            System.exit(0);
+        }
         /**
          * The first phase is to clone the resource calibration data of another
          * in the event that this is necessary.
@@ -119,34 +132,39 @@ public class HostPowerEmulator implements Runnable {
          * The second phase is to monitor the host and to report its estimated
          * host energy usage.
          */
-        while (running) {            
-            EnergyUsagePrediction prediction = predictor.getHostPredictedEnergy(host,null);
+        while (running) {
+            EnergyUsagePrediction prediction = predictor.getHostPredictedEnergy(host, null);
             double power = prediction.getAvgPowerUsed();
+            logger.printToFile(logger.new Pair(host, power));
         }
     }
 
     /**
-     * @return the hostname
+     * This returns the host name which the watt meter emulator runs for
+     * @return the name of the host
      */
     public String getHostname() {
         return hostname;
     }
 
     /**
-     * @param hostname the hostname to set
+     * This sets the host name which the watt meter emulator runs for
+     * @param hostname the host name to set
      */
     public void setHostname(String hostname) {
         this.hostname = hostname;
     }
 
     /**
-     * @return the cloneHostname
+     * This gets the name of the host which the calibration data should be cloned.
+     * @return The name of the host from which the calibration data should be cloned.
      */
     public String getCloneHostname() {
         return cloneHostname;
     }
 
     /**
+     * This sets the name of the host which the calibration data should be cloned.
      * @param cloneHostname the cloneHostname to set
      */
     public void setCloneHostname(String cloneHostname) {
@@ -154,6 +172,7 @@ public class HostPowerEmulator implements Runnable {
     }
 
     /**
+     * This indicates if the main thread should carry on running.
      * @return the running
      */
     public boolean isRunning() {
@@ -161,9 +180,9 @@ public class HostPowerEmulator implements Runnable {
     }
 
     /**
-     * @param running the running to set
+     * This allows the main thread to be stopped from running.
      */
-    public void setRunning(boolean running) {
-        this.running = running;
+    public void stop() {
+        this.running = false;
     }
 }
