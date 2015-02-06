@@ -28,9 +28,9 @@ public class ScoreCalculatorConsolidationTest {
     private ClusterState getTestClusterState() {
         // Create hosts
         List<Host> hosts = new ArrayList<>();
-        Host host1 = new Host((long) 1, "1", 8, 8192, 8);
-        Host host2 = new Host((long) 2, "2", 4, 4096, 4);
-        Host host3 = new Host((long) 3, "3", 2, 2048, 2);
+        Host host1 = new Host((long) 1, "1", 8, 8192, 8, false);
+        Host host2 = new Host((long) 2, "2", 4, 4096, 4, false);
+        Host host3 = new Host((long) 3, "3", 2, 2048, 2, false);
         hosts.add(host1);
         hosts.add(host2);
         hosts.add(host3);

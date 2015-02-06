@@ -19,7 +19,7 @@ public class HostTest {
 
     @Before
     public void setUp() {
-        host = new Host((long) 1, "1", 4, 4096, 20); // 4 CPUs, 4GB RAM, 20GB disk
+        host = new Host((long) 1, "1", 4, 4096, 20, false); // 4 CPUs, 4GB RAM, 20GB disk
     }
 
     @Test
@@ -70,7 +70,7 @@ public class HostTest {
     public void missingFixedVmsReturnsTrueWhenTheMissingVmIsAssignedToAnotherHost() {
         List<Vm> vms = new ArrayList<>();
         Vm vm1 = new Vm((long) 1, 8, 8192, 1);
-        vm1.setHost(new Host((long) 2, "2", 8, 8192, 1));
+        vm1.setHost(new Host((long) 2, "2", 8, 8192, 1, false));
         vms.add(vm1);
 
         host.addFixedVm(1);

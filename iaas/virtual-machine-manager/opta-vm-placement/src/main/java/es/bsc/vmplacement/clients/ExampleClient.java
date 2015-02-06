@@ -91,7 +91,8 @@ public class ExampleClient {
                     String.valueOf(i),
                     randInt(MIN_CPUS_HOST, MAX_CPUS_HOST),
                     randInt(MIN_RAMMB_HOST, MAX_RAMMB_HOST),
-                    randInt(MIN_DISKGB_HOST, MAX_DISKGB_HOST)));
+                    randInt(MIN_DISKGB_HOST, MAX_DISKGB_HOST),
+                    false));
         }
         return result;
     }

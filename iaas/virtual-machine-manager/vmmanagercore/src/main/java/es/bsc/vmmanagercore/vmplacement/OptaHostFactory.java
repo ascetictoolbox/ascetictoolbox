@@ -46,7 +46,7 @@ public class OptaHostFactory {
             return result;
         }
         result = new es.bsc.vmplacement.domain.Host(optaHostId, host.getHostname(), host.getTotalCpus(),
-                host.getTotalMemoryMb(), host.getTotalDiskGb());
+                host.getTotalMemoryMb(), host.getTotalDiskGb(), !host.isOn());
         ++optaHostId;
         optaHosts.put(host.getHostname(), result);
         return result;

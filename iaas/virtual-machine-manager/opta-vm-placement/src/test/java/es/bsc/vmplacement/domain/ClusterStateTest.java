@@ -103,8 +103,8 @@ public class ClusterStateTest {
 
     private List<Host> getTestHosts() {
         List<Host> hosts = new ArrayList<>();
-        Host host1 = new Host((long) 1, "1", 4, 4096, 4);
-        Host host2 = new Host((long) 2, "2", 2, 2048, 2);
+        Host host1 = new Host((long) 1, "1", 4, 4096, 4, false);
+        Host host2 = new Host((long) 2, "2", 2, 2048, 2, false);
         hosts.add(host1);
         hosts.add(host2);
         return hosts;

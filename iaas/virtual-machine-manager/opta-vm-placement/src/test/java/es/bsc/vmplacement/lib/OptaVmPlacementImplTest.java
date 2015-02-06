@@ -35,8 +35,8 @@ public class OptaVmPlacementImplTest {
         
         // Initialize hosts
         List<Host> hosts = new ArrayList<>();
-        Host host1 = new Host((long) 1, "1", 2, 8192, 8);
-        Host host2 = new Host((long) 2, "2", 5, 8192, 8);
+        Host host1 = new Host((long) 1, "1", 2, 8192, 8, false);
+        Host host2 = new Host((long) 2, "2", 5, 8192, 8, false);
         hosts.add(host1);
         hosts.add(host2);
         
@@ -79,8 +79,8 @@ public class OptaVmPlacementImplTest {
         
         // Initialize hosts
         List<Host> hosts = new ArrayList<>();
-        Host host1 = new Host((long) 1, "1", 3, 8192, 8);
-        Host host2 = new Host((long) 2, "2", 3, 8192, 8);
+        Host host1 = new Host((long) 1, "1", 3, 8192, 8, false);
+        Host host2 = new Host((long) 2, "2", 3, 8192, 8, false);
         hosts.add(host1);
         hosts.add(host2);
 

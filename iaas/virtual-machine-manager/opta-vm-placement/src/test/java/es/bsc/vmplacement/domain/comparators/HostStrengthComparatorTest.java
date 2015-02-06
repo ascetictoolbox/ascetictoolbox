@@ -15,22 +15,25 @@ public class HostStrengthComparatorTest {
     @Test
     public void comparisonShouldReturnPositiveWhenFirstHostStronger() {
         // Compare host1(CPUs = 2, ramMb = 1, diskGb = 1) vs host2(CPUs = 1, ramMb = 1, diskGb = 1)
-        assertTrue(hostStrengthComparator.compare(new Host((long) 1, "1", 2, 1, 1),
-                new Host((long) 2, "2", 1, 1, 1)) > 0);
+        assertTrue(hostStrengthComparator.compare(
+                new Host((long) 1, "1", 2, 1, 1, false),
+                new Host((long) 2, "2", 1, 1, 1, false)) > 0);
     }
 
     @Test
     public void comparisonShouldReturnZeroWhenHostsEquallyStronger() {
         // Compare host1(CPUs = 2, ramMb = 1, diskGb = 1) vs host2(CPUs = 2, ramMb = 1, diskGb = 1)
-        assertTrue(hostStrengthComparator.compare(new Host((long) 1, "1", 2, 1, 1),
-                new Host((long) 2, "2", 2, 1, 1)) == 0);
+        assertTrue(hostStrengthComparator.compare(
+                new Host((long) 1, "1", 2, 1, 1, false),
+                new Host((long) 2, "2", 2, 1, 1, false)) == 0);
     }
 
     @Test
     public void comparisonShouldReturnNegativeWhenFirstHostWeaker() {
         // Compare host1(CPUs = 1, ramMb = 1, diskGb = 1) vs host2(CPUs = 2, ramMb = 1, diskGb = 1)
-        assertTrue(hostStrengthComparator.compare(new Host((long) 1, "1", 1, 1, 1),
-                new Host((long) 2, "2", 2, 1, 1)) < 0);
+        assertTrue(hostStrengthComparator.compare(
+                new Host((long) 1, "1", 1, 1, 1, false),
+                new Host((long) 2, "2", 2, 1, 1, false)) < 0);
     }
 
 }

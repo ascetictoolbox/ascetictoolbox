@@ -31,13 +31,15 @@ public class Host extends AbstractPersistable {
     private final double ramMb;
     private final double diskGb;
     private List<Long> fixedVmsIds = new ArrayList<>(); // IDs of the VMs that need to be deployed in this host
+    private final boolean initiallyOff; // Host was off before starting planning
 
-    public Host(Long id, String hostname, int ncpus, double ramMb, double diskGb) {
+    public Host(Long id, String hostname, int ncpus, double ramMb, double diskGb, boolean initiallyOff) {
         this.hostname = hostname;
         this.id = id;
         this.ncpus = ncpus;
         this.ramMb = ramMb;
         this.diskGb = diskGb;
+        this.initiallyOff = initiallyOff;
     }
 
     public HostUsage getUsage(List<Vm> vms) {
@@ -100,6 +102,10 @@ public class Host extends AbstractPersistable {
         fixedVmsIds.add(vmId);
     }
 
+    public boolean wasOffInitiallly() {
+        return initiallyOff;
+    }
+    
     @Override
     public String toString() {
         return "Host - ID:" + id.toString() + ", cpus:" + ncpus + ", ram:" + ramMb + ", disk:" + diskGb;
