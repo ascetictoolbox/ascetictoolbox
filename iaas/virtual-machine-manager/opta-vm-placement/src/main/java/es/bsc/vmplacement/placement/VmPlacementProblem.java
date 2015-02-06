@@ -6,6 +6,7 @@ import es.bsc.vmplacement.domain.Vm;
 import es.bsc.vmplacement.placement.config.VmPlacementConfig;
 import org.optaplanner.core.api.solver.Solver;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -87,7 +88,40 @@ public class VmPlacementProblem {
     private ClusterState getInitialState() {
         ClusterState result = new ClusterState();
         result.setVms(vms);
-        result.setHosts(hosts);
+        result.setHosts(putOffHostsAtTheEndOfTheList(hosts));
+        return result;
+    }
+
+    /**
+     * Returns a modified list of the hosts, where the ones that are off are placed at the end of the list.
+     * This method does not modify the order of the rest of the elements. 
+     * @param hosts the list of hosts
+     * @return the list of hosts with the ones that are off at the end
+     */
+    private List<Host> putOffHostsAtTheEndOfTheList(List<Host> hosts) {
+        List<Host> result = new ArrayList<>();
+        result.addAll(getOnHosts(hosts));
+        result.addAll(getOffHosts(hosts));
+        return result;
+    }
+    
+    private List<Host> getOnHosts(List<Host> hosts) {
+        List<Host> result = new ArrayList<>();
+        for (Host host: hosts) {
+            if (!host.wasOffInitiallly()) {
+                result.add(host);
+            }
+        }
+        return result;
+    }
+    
+    private List<Host> getOffHosts(List<Host> hosts) {
+        List<Host> result = new ArrayList<>();
+        for (Host host: hosts) {
+            if (host.wasOffInitiallly()) {
+                result.add(host);
+            }
+        }
         return result;
     }
 
