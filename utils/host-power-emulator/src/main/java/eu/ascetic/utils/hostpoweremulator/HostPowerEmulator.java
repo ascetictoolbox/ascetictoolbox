@@ -15,6 +15,7 @@
  */
 package eu.ascetic.utils.hostpoweremulator;
 
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DataGatherer;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DatabaseConnector;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DefaultDatabaseConnector;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.CpuOnlyEnergyPredictor;
@@ -23,6 +24,9 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasou
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
 import java.io.File;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The aim of this application is to clone another's calibration profile so that
@@ -42,13 +46,13 @@ public class HostPowerEmulator implements Runnable {
      *
      * @param args The first argument indicates the host to generate the host
      * power consumption data for, the second argument is optional and indicates
-     * 
+     *
      */
     public static void main(String[] args) {
         Thread emulatorThread;
         String hostname = null;
         String cloneHostname = "";
-        if (args.length > 1) {
+        if (args.length > 0) {
             hostname = args[0];
         } else {
             System.out.println("The first argument provided to this application"
@@ -136,11 +140,17 @@ public class HostPowerEmulator implements Runnable {
             EnergyUsagePrediction prediction = predictor.getHostPredictedEnergy(host, null);
             double power = prediction.getAvgPowerUsed();
             logger.printToFile(logger.new Pair(host, power));
+            try {
+                Thread.sleep(TimeUnit.SECONDS.toMillis(1));
+            } catch (InterruptedException ex) {
+                Logger.getLogger(HostPowerEmulator.class.getName()).log(Level.SEVERE, "The power emulator was interupted.", ex);
+            }
         }
     }
 
     /**
      * This returns the host name which the watt meter emulator runs for
+     *
      * @return the name of the host
      */
     public String getHostname() {
@@ -149,6 +159,7 @@ public class HostPowerEmulator implements Runnable {
 
     /**
      * This sets the host name which the watt meter emulator runs for
+     *
      * @param hostname the host name to set
      */
     public void setHostname(String hostname) {
@@ -156,15 +167,20 @@ public class HostPowerEmulator implements Runnable {
     }
 
     /**
-     * This gets the name of the host which the calibration data should be cloned.
-     * @return The name of the host from which the calibration data should be cloned.
+     * This gets the name of the host which the calibration data should be
+     * cloned.
+     *
+     * @return The name of the host from which the calibration data should be
+     * cloned.
      */
     public String getCloneHostname() {
         return cloneHostname;
     }
 
     /**
-     * This sets the name of the host which the calibration data should be cloned.
+     * This sets the name of the host which the calibration data should be
+     * cloned.
+     *
      * @param cloneHostname the cloneHostname to set
      */
     public void setCloneHostname(String cloneHostname) {
@@ -173,6 +189,7 @@ public class HostPowerEmulator implements Runnable {
 
     /**
      * This indicates if the main thread should carry on running.
+     *
      * @return the running
      */
     public boolean isRunning() {
