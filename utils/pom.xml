@@ -24,6 +24,7 @@
 		<module>energy-modeller-benchtest</module>
 		<module>energy-modeller-display-tool</module>
 		<module>energy-modeller-trace-file-generator</module>
+		<module>host-power-emulator</module>
   </modules>
 
     <url>http://www.ascetic.eu</url>

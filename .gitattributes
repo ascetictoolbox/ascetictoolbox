@@ -2061,6 +2061,10 @@ utils/energy-modeller-vm-summary-generator/src/test/java/eu/ascetic/iaasvmenergy
 utils/energy-modeller-vm-summary-generator/vm_experimental_list.csv -text
 utils/energy-modeller-vm-summary-generator/vm_experimental_list.txt -text
 utils/energy-modeller-vm-summary-generator/zabbix_db_adaptor.properties -text
+utils/host-power-emulator/pom.xml -text
+utils/host-power-emulator/src/main/java/eu/ascetic/utils/hostpoweremulator/HostPowerEmulator.java -text
+utils/host-power-emulator/src/main/java/eu/ascetic/utils/hostpoweremulator/HostPowerLogger.java -text
+utils/host-power-emulator/src/test/java/eu/ascetic/utils/hostpoweremulator/AppTest.java -text
 utils/io-utils/LICENCE.TXT -text
 utils/io-utils/pom.xml -text
 utils/io-utils/src/main/java/eu/ascetic/ioutils/GenericLogger.java -text
