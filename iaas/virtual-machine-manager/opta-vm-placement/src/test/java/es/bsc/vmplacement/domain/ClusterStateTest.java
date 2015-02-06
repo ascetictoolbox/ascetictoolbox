@@ -94,6 +94,48 @@ public class ClusterStateTest {
     public void calculateStdDevCpusAssignedPerHost() {
         assertEquals(1.0, clusterState.calculateStdDevCpusAssignedPerHost(), 0.05);
     }
+    
+    @Test
+    public void countOffHostsReturns0WhenNoneOfTheHostsWereOff() {
+        ClusterState clusterState = new ClusterState();
+        List<Host> hosts = new ArrayList<>();
+        Host host1 = new Host((long) 1, "1", 4, 4096, 4, false);
+        Host host2 = new Host((long) 2, "2", 2, 2048, 2, false);
+        hosts.add(host1);
+        hosts.add(host2);
+        clusterState.setHosts(hosts);
+        clusterState.setVms(new ArrayList<Vm>());
+        assertEquals(0, clusterState.countOffHosts());
+    }
+    
+    @Test
+    public void countOffHostsWhenOneOfTheHostsWasOffButNowHasVms() {
+        ClusterState clusterState = new ClusterState();
+        List<Host> hosts = new ArrayList<>();
+        Host host1 = new Host((long) 1, "1", 4, 4096, 4, false);
+        hosts.add(host1);
+        clusterState.setHosts(hosts);
+        
+        List<Vm> vms = new ArrayList<>();
+        Vm vm1 = new Vm((long) 1, 1, 1024, 1, "app1");
+        vm1.setHost(hosts.get(0));
+        clusterState.setVms(vms);
+        
+        assertEquals(0, clusterState.countOffHosts());
+    }
+    
+    @Test
+    public void countOffHostsWhenThereWereSwitchedOffHosts() {
+        ClusterState clusterState = new ClusterState();
+        List<Host> hosts = new ArrayList<>();
+        Host host1 = new Host((long) 1, "1", 4, 4096, 4, true);
+        Host host2 = new Host((long) 2, "2", 2, 2048, 2, false);
+        hosts.add(host1);
+        hosts.add(host2);
+        clusterState.setHosts(hosts);
+        clusterState.setVms(new ArrayList<Vm>());
+        assertEquals(1, clusterState.countOffHosts());
+    }
 
     private void initializeTestClusterState(ClusterState clusterState) {
         List<Host> hosts = getTestHosts();

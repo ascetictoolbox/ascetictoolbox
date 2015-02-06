@@ -182,6 +182,21 @@ public class ClusterState extends AbstractPersistable implements Solution<Score>
         return Math.sqrt(calculateVarianceCpusAssignedPerHost());
     }
 
+    /**
+     * Counts the number of hosts that are switched off.
+     *
+     * @return the number of hosts that are switched off
+     */
+    public int countOffHosts() {
+        int result = 0;
+        for (Host host: hosts) {
+            if (host.wasOffInitiallly() && getVmsDeployedInHost(host).size() == 0) {
+                ++result;
+            }
+        }
+        return result;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

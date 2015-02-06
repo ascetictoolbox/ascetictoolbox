@@ -20,6 +20,7 @@ package es.bsc.vmplacement.scorecalculators;
 
 import es.bsc.vmplacement.domain.ClusterState;
 import es.bsc.vmplacement.domain.Host;
+import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
 
@@ -30,23 +31,28 @@ import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
 public final class ScoreCalculatorConsolidation implements SimpleScoreCalculator<ClusterState> {
 
     @Override
-    public HardMediumSoftScore calculateScore(ClusterState solution) {
-        return HardMediumSoftScore.valueOf(
-                calculateHardScore(solution),
-                calculateMediumScore(solution),
-                calculateSoftScore(solution));
+    public BendableScore calculateScore(ClusterState solution) {
+        int[] hardScores = {calculateHardScore(solution)};
+        int [] softScores = {
+                calculateSoftScore1(solution), 
+                calculateSoftScore2(solution), 
+                calculateSoftScore3(solution)};
+        return BendableScore.valueOf(hardScores, softScores);
     }
 
     private int calculateHardScore(ClusterState solution) {
         return ScoreCalculatorCommon.getClusterOverCapacitySCoreWithPenaltyForFixedVms(solution);
     }
 
-    private int calculateMediumScore(ClusterState solution) {
+    private int calculateSoftScore1(ClusterState solution) {
+        return solution.countOffHosts();
+    }
+
+    private int calculateSoftScore2(ClusterState solution) {
         return solution.countIdleHosts();
     }
 
-    private int calculateSoftScore(ClusterState solution) {
+    private int calculateSoftScore3(ClusterState solution) {
         return -solution.calculateCumulativeUnusedCpuPerc();
     }
-
 }
