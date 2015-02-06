@@ -20,6 +20,7 @@ package es.bsc.vmplacement.scorecalculators;
 
 import es.bsc.vmplacement.domain.ClusterState;
 import es.bsc.vmplacement.domain.Host;
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
 
@@ -34,9 +35,10 @@ public final class ScoreCalculatorRandom implements SimpleScoreCalculator<Cluste
     private final static int POSSIBLE_SCORES = 1000000; // Range of values for the random scores
 
     @Override
-    public HardSoftScore calculateScore(ClusterState solution) {
-        return HardSoftScore.valueOf(
+    public HardMediumSoftScore calculateScore(ClusterState solution) {
+        return HardMediumSoftScore.valueOf(
                 calculateHardScore(solution),
+                calculateMediumScore(solution),
                 calculateSoftScore());
     }
 
@@ -44,6 +46,10 @@ public final class ScoreCalculatorRandom implements SimpleScoreCalculator<Cluste
         return ScoreCalculatorCommon.getClusterOverCapacitySCoreWithPenaltyForFixedVms(solution);
     }
 
+    private int calculateMediumScore(ClusterState solution) {
+        return solution.countOffHosts();
+    }
+    
     private int calculateSoftScore() {
         return rand.nextInt(POSSIBLE_SCORES);
     }
