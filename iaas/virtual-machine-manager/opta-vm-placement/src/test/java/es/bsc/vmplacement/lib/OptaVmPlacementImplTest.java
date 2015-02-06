@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 /**
  * @author David Ortiz (david.ortiz@bsc.es)
@@ -115,6 +116,37 @@ public class OptaVmPlacementImplTest {
     @Test
     public void bestFitDecreasingTest() {
         // TODO
+    }
+    
+    @Test
+    public void bestFirstDeploysLastInOffServer() {
+        // Initialize hosts
+        List<Host> hosts = new ArrayList<>();
+        Host host1 = new Host((long) 1, "1", 1, 8192, 8, false);
+        Host host2 = new Host((long) 2, "2", 1, 8192, 8, true);
+        Host host3 = new Host((long) 3, "3", 1, 8192, 8, false);
+        hosts.add(host1);
+        hosts.add(host2);
+        hosts.add(host3);
+        
+        // Initialize VMs
+        List<Vm> vms = new ArrayList<>();
+        Vm vm1 = new Vm((long) 1, 1, 1024, 1);
+        Vm vm2 = new Vm((long) 2, 1, 1024, 1);
+        vms.add(vm1);
+        vms.add(vm2);
+
+        // Set the configuration
+        VmPlacementConfig config = new VmPlacementConfig.Builder(
+                Policy.CONSOLIDATION, 5, ConstructionHeuristic.BEST_FIT_DECREASING, null, false).build();
+
+        // Get the best planning solution
+        ClusterState clusterState = optaVmPlacement.getBestSolution(hosts, vms, config);
+        List<Vm> solutionVms = clusterState.getVms();
+
+        // Check that the none of the VMs have been deployed in host2, the one that was off.
+        assertNotEquals(host2, findVmById(solutionVms, 1).getHost());
+        assertNotEquals(host2, findVmById(solutionVms, 2).getHost());
     }
     
     private Vm findVmById(List<Vm> vms, long id) {

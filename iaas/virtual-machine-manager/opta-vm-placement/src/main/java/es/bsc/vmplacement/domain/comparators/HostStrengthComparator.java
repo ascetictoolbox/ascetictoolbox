@@ -38,11 +38,19 @@ public class HostStrengthComparator implements Comparator<Host>, Serializable {
      *
      * @param host1 a host
      * @param host2 a host
-     * @return a negative number if host1 is weaker than host2, a positive number if host1 is stronger than host2, and
-     * 0 if they are equal
+     * @return a positive number if host1 was off at the start of the planning and host2 was on.
+     * a negative number if host2 was off at the start of the planning and host1 was on.
+     * If both of them were on/off, a negative number if host1 is weaker than host2, 
+     * a positive number if host1 is stronger than host2, and 0 if they have the same strength.
      */
     @Override
     public int compare(Host host1, Host host2) {
+        if (host1.wasOffInitiallly() && !host2.wasOffInitiallly()) {
+            return 1;
+        }
+        else if (!host1.wasOffInitiallly() && host2.wasOffInitiallly()) {
+            return -1;
+        }
         return Double.compare(strength(host1), strength(host2));
     }
 

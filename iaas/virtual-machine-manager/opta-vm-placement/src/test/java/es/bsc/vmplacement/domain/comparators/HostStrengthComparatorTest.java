@@ -10,7 +10,7 @@ import static junit.framework.TestCase.assertTrue;
  */
 public class HostStrengthComparatorTest {
 
-    private HostStrengthComparator hostStrengthComparator = new HostStrengthComparator();
+    private final HostStrengthComparator hostStrengthComparator = new HostStrengthComparator();
 
     @Test
     public void comparisonShouldReturnPositiveWhenFirstHostStronger() {
@@ -34,6 +34,20 @@ public class HostStrengthComparatorTest {
         assertTrue(hostStrengthComparator.compare(
                 new Host((long) 1, "1", 1, 1, 1, false),
                 new Host((long) 2, "2", 2, 1, 1, false)) < 0);
+    }
+    
+    @Test
+    public void comparisonShouldReturnPositiveWhenFirstHostWasOff() {
+        assertTrue(hostStrengthComparator.compare(
+                new Host((long) 1, "1", 1, 1, 1, true),
+                new Host((long) 2, "2", 2, 1, 1, false)) > 0);
+    }
+
+    @Test
+    public void comparisonShouldReturnNegativeWhenSecondHostWasOff() {
+        assertTrue(hostStrengthComparator.compare(
+                new Host((long) 1, "1", 2, 1, 1, false),
+                new Host((long) 2, "2", 1, 1, 1, true)) < 0);
     }
 
 }
