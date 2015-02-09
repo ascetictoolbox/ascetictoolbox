@@ -123,6 +123,7 @@ public class HostPowerEmulator implements Runnable {
         CpuOnlyEnergyPredictor predictor = new CpuOnlyEnergyPredictor();
         Host host = source.getHostByName(hostname);
         HostPowerLogger logger = new HostPowerLogger(new File("EstimatedHostPowerData.txt"), true);
+        logger.setMetricName(outputName);
         Thread loggerThread = new Thread(logger);
         loggerThread.setDaemon(true);
         loggerThread.start();

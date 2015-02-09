@@ -26,6 +26,8 @@ import java.io.File;
  */
 public class HostPowerLogger extends GenericLogger<HostPowerLogger.Pair> {
 
+    private String metricName = "power";
+    
     /**
      * This creates a new host power logger
      *
@@ -47,8 +49,24 @@ public class HostPowerLogger extends GenericLogger<HostPowerLogger.Pair> {
     public void writebody(Pair item, ResultsStore store) {
         store.setDelimeter(" ");
         store.add(item.host.getHostName());
-            store.append("power");
+            store.append(metricName);
             store.append(item.getPower());
+    }
+
+    /**
+     * This gets the name of the metric that should be output to disk
+     * @return the metricName
+     */
+    public String getMetricName() {
+        return metricName;
+    }
+
+    /**
+     * This sets the name of the metric that should be output to disk
+     * @param metricName the metricName to set
+     */
+    public void setMetricName(String metricName) {
+        this.metricName = metricName;
     }
 
     /**
