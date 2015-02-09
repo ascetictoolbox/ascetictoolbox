@@ -231,7 +231,7 @@ public class VmManagerRest {
 
     @PUT
     @Path("/node/{hostname}/powerButton")
-    public void pessHostPowerButton(@PathParam("hostname") String hostname) {
+    public void pressHostPowerButton(@PathParam("hostname") String hostname) {
         nodeCallsManager.pressHostPowerButton(hostname);
     }
 

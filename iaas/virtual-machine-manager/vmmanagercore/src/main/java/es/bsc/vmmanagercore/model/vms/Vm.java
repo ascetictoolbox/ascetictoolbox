@@ -116,4 +116,5 @@ public class Vm {
         Preconditions.checkArgument(ramMb > 0, "Argument was %s but expected positive", ramMb);
         Preconditions.checkArgument(diskGb > 0, "Argument was %s but expected positive", diskGb);
     }
+    
 }
