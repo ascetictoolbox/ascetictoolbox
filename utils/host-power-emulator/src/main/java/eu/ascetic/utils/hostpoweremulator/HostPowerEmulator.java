@@ -19,11 +19,14 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DatabaseConn
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DefaultDatabaseConnector;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.CpuOnlyEnergyPredictor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostMeasurement;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDirectDbDataSourceAdaptor;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
 import eu.ascetic.ioutils.Settings;
 import java.io.File;
+import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,7 +45,7 @@ public class HostPowerEmulator implements Runnable {
     private boolean running = true;
     private int pollInterval = 1;
     private String outputName = "power";
-    private Settings settings = new Settings("PowerEmulatorSettings.properties");
+    private final Settings settings = new Settings("PowerEmulatorSettings.properties");
 
     /**
      * This runs the emulation tool.
@@ -86,7 +89,7 @@ public class HostPowerEmulator implements Runnable {
         outputName = settings.getString("output_name", outputName);
         if (settings.isChanged()) {
             settings.save("PowerEmulatorSettings.properties");
-        }        
+        }
     }
 
     /**
@@ -141,12 +144,20 @@ public class HostPowerEmulator implements Runnable {
         if (cloneHostname != null) {
             cloneHostProfile(hostname, cloneHostname);
         }
+        //The lines below represent an arbritary time period in order to call
+        //the predictTotalEnergy method
+        GregorianCalendar now = new GregorianCalendar();
+        long startTime = TimeUnit.MILLISECONDS.toSeconds(now.getTimeInMillis());
+        startTime = startTime - pollInterval;
+        long endTime = TimeUnit.MILLISECONDS.toSeconds(now.getTimeInMillis());
+        TimePeriod duration = new TimePeriod(startTime, endTime);
         /**
          * The second phase is to monitor the host and to report its estimated
          * host energy usage.
          */
         while (running) {
-            EnergyUsagePrediction prediction = predictor.getHostPredictedEnergy(host, null);
+            HostMeasurement mesurement = source.getHostData(host);
+            EnergyUsagePrediction prediction = predictor.predictTotalEnergy(host, mesurement.getCpuUtilisation(), duration);
             double power = prediction.getAvgPowerUsed();
             logger.printToFile(logger.new Pair(host, power));
             try {
