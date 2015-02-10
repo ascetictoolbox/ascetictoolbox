@@ -17,6 +17,7 @@
  */
 
 import config.Config;
+import hostselectors.RandomHostSelector;
 import httpClient.HttpClient;
 import models.ClusterState;
 import powerbuttonstrategies.*;
@@ -53,7 +54,7 @@ public class PowerButtonPresser {
             case JUST_IN_TIME:
                 return new JustInTimeStrategy(vmmClient);
             case N_BACKUP_HOSTS:
-                return new NBackupHostsStrategy(vmmClient, 1);
+                return new NBackupHostsStrategy(vmmClient, 1, new RandomHostSelector());
             case PATTERN_RECOGNITION:
                 return new PatternRecognitionStrategy(vmmClient);
             default:

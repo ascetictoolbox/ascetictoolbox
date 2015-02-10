@@ -270,6 +270,8 @@ iaas/virtual-machine-manager/pom.xml -text
 iaas/virtual-machine-manager/power-button-presser/pom.xml -text
 iaas/virtual-machine-manager/power-button-presser/src/main/java/PowerButtonPresser.java -text
 iaas/virtual-machine-manager/power-button-presser/src/main/java/config/Config.java -text
+iaas/virtual-machine-manager/power-button-presser/src/main/java/hostselectors/HostSelector.java -text
+iaas/virtual-machine-manager/power-button-presser/src/main/java/hostselectors/RandomHostSelector.java -text
 iaas/virtual-machine-manager/power-button-presser/src/main/java/httpClient/HttpClient.java -text
 iaas/virtual-machine-manager/power-button-presser/src/main/java/models/ClusterState.java -text
 iaas/virtual-machine-manager/power-button-presser/src/main/java/models/Host.java -text
