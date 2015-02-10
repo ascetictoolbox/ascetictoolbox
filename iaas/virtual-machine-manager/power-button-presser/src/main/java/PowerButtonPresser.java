@@ -16,12 +16,12 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-import config.Config;
-import hostselectors.RandomHostSelector;
-import httpClient.HttpClient;
-import models.ClusterState;
-import powerbuttonstrategies.*;
-import vmm.VmmClient;
+import es.bsc.power_button_presser.config.Config;
+import es.bsc.power_button_presser.hostselectors.RandomHostSelector;
+import es.bsc.power_button_presser.httpClient.HttpClient;
+import es.bsc.power_button_presser.models.ClusterState;
+import es.bsc.power_button_presser.powerbuttonstrategies.*;
+import es.bsc.power_button_presser.vmm.VmmClient;
 
 public class PowerButtonPresser {
     
