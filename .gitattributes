@@ -269,6 +269,7 @@ iaas/virtual-machine-manager/opta-vm-placement/src/test/java/es/bsc/vmplacement/
 iaas/virtual-machine-manager/pom.xml -text
 iaas/virtual-machine-manager/power-button-presser/pom.xml -text
 iaas/virtual-machine-manager/power-button-presser/src/main/java/PowerButtonPresser.java -text
+iaas/virtual-machine-manager/power-button-presser/src/main/java/es/bsc/power_button_presser/PruebaRCalls.java -text
 iaas/virtual-machine-manager/power-button-presser/src/main/java/es/bsc/power_button_presser/config/Config.java -text
 iaas/virtual-machine-manager/power-button-presser/src/main/java/es/bsc/power_button_presser/hostselectors/HostSelector.java -text
 iaas/virtual-machine-manager/power-button-presser/src/main/java/es/bsc/power_button_presser/hostselectors/RandomHostSelector.java -text
@@ -284,6 +285,9 @@ iaas/virtual-machine-manager/power-button-presser/src/main/java/es/bsc/power_but
 iaas/virtual-machine-manager/power-button-presser/src/main/java/es/bsc/power_button_presser/powerbuttonstrategies/PowerButtonStrategy.java -text
 iaas/virtual-machine-manager/power-button-presser/src/main/java/es/bsc/power_button_presser/powerbuttonstrategies/Strategy.java -text
 iaas/virtual-machine-manager/power-button-presser/src/main/java/es/bsc/power_button_presser/vmm/VmmClient.java -text
+iaas/virtual-machine-manager/power-button-presser/src/main/resources/holtWinters.R -text
+iaas/virtual-machine-manager/power-button-presser/src/test/java/es/bsc/power_button_presser/config/ConfigTest.java -text
+iaas/virtual-machine-manager/power-button-presser/src/test/java/es/bsc/power_button_presser/hostselectors/RandomHostSelectorTest.java -text
 iaas/virtual-machine-manager/vmmanager-frontend/LICENSE.md -text
 iaas/virtual-machine-manager/vmmanager-frontend/README.md -text
 iaas/virtual-machine-manager/vmmanager-frontend/app/app.js -text
