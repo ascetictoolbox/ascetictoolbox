@@ -20,7 +20,7 @@ package es.bsc.vmplacement.scorecalculators;
 
 import es.bsc.vmplacement.domain.ClusterState;
 import es.bsc.vmplacement.domain.Host;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
 
 import java.util.List;
@@ -31,14 +31,19 @@ import java.util.List;
 public final class ScoreCalculatorGroupByApp implements SimpleScoreCalculator<ClusterState> {
 
     @Override
-    public HardSoftScore calculateScore(ClusterState solution) {
-        return HardSoftScore.valueOf(
+    public HardMediumSoftScore calculateScore(ClusterState solution) {
+        return HardMediumSoftScore.valueOf(
                 calculateHardScore(solution),
+                calculateMediumScore(solution),
                 calculateSoftScore(solution));
     }
-
+    
     private int calculateHardScore(ClusterState solution) {
         return ScoreCalculatorCommon.getClusterOverCapacitySCoreWithPenaltyForFixedVms(solution);
+    }
+
+    private int calculateMediumScore(ClusterState solution) {
+        return solution.countOffHosts();
     }
 
     private int calculateSoftScore(ClusterState solution) {

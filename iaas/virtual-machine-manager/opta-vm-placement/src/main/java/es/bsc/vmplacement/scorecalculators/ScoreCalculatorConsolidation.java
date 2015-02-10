@@ -19,9 +19,7 @@
 package es.bsc.vmplacement.scorecalculators;
 
 import es.bsc.vmplacement.domain.ClusterState;
-import es.bsc.vmplacement.domain.Host;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
-import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
 
 
@@ -33,7 +31,7 @@ public final class ScoreCalculatorConsolidation implements SimpleScoreCalculator
     @Override
     public BendableScore calculateScore(ClusterState solution) {
         int[] hardScores = {calculateHardScore(solution)};
-        int [] softScores = {
+        int[] softScores = {
                 calculateSoftScore1(solution), 
                 calculateSoftScore2(solution), 
                 calculateSoftScore3(solution)};

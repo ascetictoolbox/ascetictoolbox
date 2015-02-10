@@ -21,7 +21,6 @@ package es.bsc.vmplacement.clients.benchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.FreemarkerXmlPlannerBenchmarkFactory;
-import org.optaplanner.benchmark.config.XmlPlannerBenchmarkFactory;
 
 /**
  * @author David Ortiz (david.ortiz@bsc.es)
