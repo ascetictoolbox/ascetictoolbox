@@ -25,7 +25,7 @@ import vmm.VmmClient;
 public class PowerButtonPresser {
     
     private static Config config = new Config(
-            60, Strategy.JUST_IN_TIME, "http://0.0.0.0:34372/vmmanager/", "vms/", "nodes/",
+            60, Strategy.N_BACKUP_HOSTS, "http://0.0.0.0:34372/vmmanager/", "vms/", "nodes/",
             "node/", "powerButton/");
     
     private static VmmClient vmmClient = new VmmClient(
@@ -53,7 +53,7 @@ public class PowerButtonPresser {
             case JUST_IN_TIME:
                 return new JustInTimeStrategy(vmmClient);
             case N_BACKUP_HOSTS:
-                return new NBackupHostsStrategy(vmmClient);
+                return new NBackupHostsStrategy(vmmClient, 1);
             case PATTERN_RECOGNITION:
                 return new PatternRecognitionStrategy(vmmClient);
             default:

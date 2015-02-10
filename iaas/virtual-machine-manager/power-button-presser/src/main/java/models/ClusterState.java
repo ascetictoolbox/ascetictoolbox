@@ -39,7 +39,7 @@ public class ClusterState {
         this.hosts = adaptedHosts;
     }
 
-    public List<Host> getSwitchedOffHosts() {
+    public List<Host> getTurnedOffHosts() {
         List<Host> result = new ArrayList<>();
         for (Host host: hosts) {
             if (host.isOff()) {

@@ -34,7 +34,7 @@ public class AllServersOnStrategy implements PowerButtonStrategy {
 
     @Override
     public void applyStrategy(ClusterState clusterState) {
-        pressPowerButton(clusterState.getSwitchedOffHosts());
+        pressPowerButton(clusterState.getTurnedOffHosts());
     }
     
     private void pressPowerButton(List<Host> hosts) {
