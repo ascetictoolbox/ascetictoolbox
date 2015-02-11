@@ -59,6 +59,14 @@ public class ClusterState {
         return result;
     }
 
+    public int getTotalNumberOfCpusInOnServers() {
+        int result = 0;
+        for (Host host: getOnHosts()) {
+            result += host.getTotalCpus();
+        }
+        return result;
+    }
+    
     private Host getHostWithAppropriateLoad(Host host) {
         return new Host(
                 host.getHostname(),
@@ -103,6 +111,16 @@ public class ClusterState {
         for (Vm vm: vms) {
             if (hostname.equals(vm.getHostname())) {
                 result.add(vm);
+            }
+        }
+        return result;
+    }
+    
+    private List<Host> getOnHosts() {
+        List<Host> result = new ArrayList<>();
+        for (Host host: hosts) {
+            if (!host.isOff()) {
+                result.add(host);
             }
         }
         return result;

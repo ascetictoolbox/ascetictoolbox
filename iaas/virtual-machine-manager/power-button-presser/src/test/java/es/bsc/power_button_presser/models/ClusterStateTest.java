@@ -16,27 +16,32 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.power_button_presser.hostselectors;
+package es.bsc.power_button_presser.models;
 
-import es.bsc.power_button_presser.models.Host;
+import org.junit.Test;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
-public class RandomHostSelector implements HostSelector {
-    
-    @Override
-    public List<Host> selectHostsToBeTurnedOn(List<Host> candidateHosts, int nHosts) {
-        int hostsToTurnOn = Math.min(nHosts, candidateHosts.size());
-        Collections.shuffle(candidateHosts);
-        return candidateHosts.subList(0, hostsToTurnOn);
-    }
+import static org.junit.Assert.assertEquals;
 
-    @Override
-    public List<Host> selectHostsToBeTurnedOff(List<Host> candidateHosts, int nHosts) {
-        int hostsToTurnOff = Math.min(nHosts, candidateHosts.size());
-        Collections.shuffle(candidateHosts);
-        return candidateHosts.subList(0, hostsToTurnOff);
+public class ClusterStateTest {
+    
+    @Test
+    public void getTotalNumberOfCpusOnServers() {
+        assertEquals(2, getTestClusterState().getTotalNumberOfCpusInOnServers());
+    }
+    
+    private ClusterState getTestClusterState() {
+        List<Vm> vms = new ArrayList<>();
+        vms.add(new Vm("vm1", 1, 1024, 1, "host1"));
+        
+        List<Host> hosts = new ArrayList<>();
+        hosts.add(new Host("host1", 1, 1024, 1, 0, 0, 0, false));
+        hosts.add(new Host("host2", 1, 1024, 1, 1, 1024, 1, false));
+        hosts.add(new Host("host3", 1, 1024, 1, 0, 0, 0, true));
+                
+        return new ClusterState(vms, hosts);
     }
     
 }

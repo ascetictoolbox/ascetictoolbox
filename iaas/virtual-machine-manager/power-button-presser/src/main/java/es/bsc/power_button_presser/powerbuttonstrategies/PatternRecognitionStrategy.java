@@ -18,31 +18,66 @@
 
 package es.bsc.power_button_presser.powerbuttonstrategies;
 
+import es.bsc.power_button_presser.hostselectors.HostSelector;
 import es.bsc.power_button_presser.models.ClusterState;
+import es.bsc.power_button_presser.models.Host;
 import es.bsc.power_button_presser.utils.RscriptWrapper;
 import es.bsc.power_button_presser.vmm.VmmClient;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.PrintWriter;
+import java.util.List;
 
 public class PatternRecognitionStrategy implements PowerButtonStrategy {
     
     private final VmmClient vmmClient;
+    private final HostSelector hostSelector;
     private final static String HOLT_WINTERS_R_SCRIPT_PATH = "power-button-presser/src/main/resources/holtWinters.R";
     private final static String CPUS_DEMAND_HISTORY_CSV_PATH = "cpus_demand_history.csv";
 
-    public PatternRecognitionStrategy(VmmClient vmmClient) {
+    public PatternRecognitionStrategy(VmmClient vmmClient, HostSelector hostSelector) {
         this.vmmClient = vmmClient;
+        this.hostSelector = hostSelector;
     }
 
     @Override
     public void applyStrategy(ClusterState clusterState) {
         // TODO recibir histórico de donde
         int[] v = {4,4,4,4,4,5,5,5,5,3};
-        HoltWintersForecast forecast = getHoltWintersForecast(v);
-        // TODO decidir en funcion del forecast
+        actAccordingToForecast(clusterState, getHoltWintersForecast(v));
     }
  
+    private void actAccordingToForecast(ClusterState clusterState, HoltWintersForecast forecast) {
+        if (clusterState.getTotalNumberOfCpusInOnServers() > forecast.getHigh95()) {
+            turnOnSomeHostsToBeInTheRangeOfCpusNeeded(clusterState, forecast);
+        }
+        else if (clusterState.getTotalNumberOfCpusInOnServers() < forecast.getLow95()) {
+            turnOffSomeHostsToBeInTheRangeOfCpusNeeded(clusterState, forecast);
+        }
+    }
+    
+    private void turnOnSomeHostsToBeInTheRangeOfCpusNeeded(ClusterState clusterState, HoltWintersForecast forecast) {
+        // First version using 95% confidence interval
+        pressPowerButton(hostSelector.selectHostsToBeTurnedOff(
+                clusterState.getHostsWithoutVmsAndSwitchedOn(),
+                (int) Math.round(forecast.getLow95()),
+                (int) Math.round(forecast.getHigh95())));
+    }
+    
+    private void turnOffSomeHostsToBeInTheRangeOfCpusNeeded(ClusterState clusterState, HoltWintersForecast forecast) {
+        // First version using 95% confidence interval
+        pressPowerButton(hostSelector.selectHostsToBeTurnedOn(
+                clusterState.getTurnedOffHosts(),
+                (int) Math.round(forecast.getLow95()),
+                (int) Math.round(forecast.getHigh95())));
+    }
+
+    private void pressPowerButton(List<Host> hosts) {
+        for (Host host: hosts) {
+            vmmClient.pressPowerButton(host.getHostname());
+        }
+    }
+    
     private HoltWintersForecast getHoltWintersForecast(int[] cpusDemandHistory) {
         writeCpusDemandToCsv(cpusDemandHistory);
         return parseRscriptOutput(RscriptWrapper.runRscript(
@@ -66,4 +101,5 @@ public class PatternRecognitionStrategy implements PowerButtonStrategy {
                 Double.parseDouble(outputFields[4]),
                 Double.parseDouble(outputFields[5]));
     }
+    
 }

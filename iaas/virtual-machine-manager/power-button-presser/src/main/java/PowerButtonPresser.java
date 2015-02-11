@@ -17,7 +17,7 @@
  */
 
 import es.bsc.power_button_presser.config.Config;
-import es.bsc.power_button_presser.hostselectors.RandomHostSelector;
+import es.bsc.power_button_presser.hostselectors.BasicHostSelector;
 import es.bsc.power_button_presser.httpClient.HttpClient;
 import es.bsc.power_button_presser.models.ClusterState;
 import es.bsc.power_button_presser.powerbuttonstrategies.*;
@@ -26,7 +26,7 @@ import es.bsc.power_button_presser.vmm.VmmClient;
 public class PowerButtonPresser {
     
     private static Config config = new Config(
-            60, Strategy.ALL_SERVERS_ON, "http://0.0.0.0:34372/vmmanager/", "vms/", "nodes/",
+            60, Strategy.PATTERN_RECOGNITION, "http://0.0.0.0:34372/vmmanager/", "vms/", "nodes/",
             "node/", "powerButton/");
     
     private static VmmClient vmmClient = new VmmClient(
@@ -54,9 +54,9 @@ public class PowerButtonPresser {
             case JUST_IN_TIME:
                 return new JustInTimeStrategy(vmmClient);
             case N_BACKUP_HOSTS:
-                return new NBackupHostsStrategy(vmmClient, 1, new RandomHostSelector());
+                return new NBackupHostsStrategy(vmmClient, 1, new BasicHostSelector());
             case PATTERN_RECOGNITION:
-                return new PatternRecognitionStrategy(vmmClient);
+                return new PatternRecognitionStrategy(vmmClient, new BasicHostSelector());
             default:
                 return null; // Throw exception here
         }

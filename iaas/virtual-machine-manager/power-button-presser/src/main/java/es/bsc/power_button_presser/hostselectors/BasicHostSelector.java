@@ -20,16 +20,33 @@ package es.bsc.power_button_presser.hostselectors;
 
 import es.bsc.power_button_presser.models.Host;
 
+import java.util.Collections;
 import java.util.List;
 
-public interface HostSelector {
+public class BasicHostSelector implements HostSelector {
+    
+    @Override
+    public List<Host> selectHostsToBeTurnedOn(List<Host> candidateHosts, int nHosts) {
+        Collections.shuffle(candidateHosts);
+        return candidateHosts.subList(0, Math.min(nHosts, candidateHosts.size()));
+    }
 
-    public List<Host> selectHostsToBeTurnedOn(List<Host> candidateHosts, int nHosts);
+    @Override
+    public List<Host> selectHostsToBeTurnedOff(List<Host> candidateHosts, int nHosts) {
+        Collections.shuffle(candidateHosts);
+        return candidateHosts.subList(0, Math.min(nHosts, candidateHosts.size()));
+    }
 
-    public List<Host> selectHostsToBeTurnedOff(List<Host> candidateHosts, int nHosts);
+    @Override
+    public List<Host> selectHostsToBeTurnedOn(List<Host> candidateHosts, int minTotalCpus, int maxTotalCpus) {
+        //TODO
+        return null;
+    }
 
-    public List<Host> selectHostsToBeTurnedOn(List<Host> candidateHosts, int minTotalCpus, int maxTotalCpus);
- 
-    public List<Host> selectHostsToBeTurnedOff(List<Host> candidateHosts, int minTotalCpus, int maxTotalCpus);
- 
+    @Override
+    public List<Host> selectHostsToBeTurnedOff(List<Host> candidateHosts, int minTotalCpus, int maxTotalCpus) {
+        //TODO
+        return null;
+    }
+
 }
