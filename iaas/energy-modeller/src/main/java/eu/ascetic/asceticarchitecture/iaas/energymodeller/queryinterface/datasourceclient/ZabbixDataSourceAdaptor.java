@@ -479,7 +479,7 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
      *
      * @param host The host to get the cpu utilisation data for.
      * @param lastNSeconds The amount of minutes to get the data for
-     * @return The average utilisation of the host.
+     * @return The average utilisation of the host. In the range 0..1.
      */
     @Override
     public double getCpuUtilisation(eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host, int lastNSeconds) {

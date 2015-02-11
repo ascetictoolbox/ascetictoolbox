@@ -53,7 +53,7 @@ public class DataGatherer implements Runnable {
     private final HashMap<Host, Long> lastTimeStampSeen = new HashMap<>();
     private static final String CONFIG_FILE = "energymodeller_data_gatherer.properties";
     private boolean logVmsToDisk = false;
-    private boolean performDataGathering = false;    
+    private boolean performDataGathering = false;
     private boolean loggerConsiderIdleEnergy = true;
 
     /**
@@ -267,7 +267,7 @@ public class DataGatherer implements Runnable {
      * @param logger The logger that is used to write VM data to disk.
      */
     private void gatherMeasurements(Host host, HostMeasurement measurement, List<VmDeployed> vmList, VmEnergyUsageLogger logger) {
-        if ((lastTimeStampSeen.get(host) == null || measurement.getClock() > lastTimeStampSeen.get(host)) && measurement.isLive()) {
+        if (lastTimeStampSeen.get(host) == null || measurement.getClock() > lastTimeStampSeen.get(host)) {
             lastTimeStampSeen.put(host, measurement.getClock());
             Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Writing out host information");
             connector.writeHostHistoricData(host, measurement.getClock(), measurement.getPower(), measurement.getEnergy());
@@ -318,7 +318,7 @@ public class DataGatherer implements Runnable {
             connector.setHosts(newHosts);
             for (Host host : newHosts) {
                 knownHosts.put(host.getHostName(), host);
-                calibrator.calibrateHostEnergyData(host);
+                    calibrator.calibrateHostEnergyData(host);
             }
         }
     }
