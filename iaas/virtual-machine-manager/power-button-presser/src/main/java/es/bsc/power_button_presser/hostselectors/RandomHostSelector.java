@@ -59,7 +59,7 @@ public class RandomHostSelector implements HostSelector {
         stackedHosts.addAll(candidateHosts);
         List<Host> result = new ArrayList<>();
         int cpusOfSelectedHosts = 0;
-        while (cpusOfSelectedHosts < minCpus) {
+        while (cpusOfSelectedHosts < minCpus && !stackedHosts.empty()) {
             Host currentCandidateHost = stackedHosts.peek();
             if ((currentCandidateHost.getTotalCpus() + cpusOfSelectedHosts) <= maxCpus) {
                 result.add(currentCandidateHost);
