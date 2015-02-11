@@ -18,11 +18,13 @@
 
 package es.bsc.power_button_presser.powerbuttonstrategies;
 
+import es.bsc.power_button_presser.historicaldata.HistoricalCpuDemand;
 import es.bsc.power_button_presser.hostselectors.HostSelector;
 import es.bsc.power_button_presser.models.ClusterState;
 import es.bsc.power_button_presser.models.Host;
 import es.bsc.power_button_presser.utils.RscriptWrapper;
 import es.bsc.power_button_presser.vmm.VmmClient;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.PrintWriter;
@@ -32,19 +34,26 @@ public class PatternRecognitionStrategy implements PowerButtonStrategy {
     
     private final VmmClient vmmClient;
     private final HostSelector hostSelector;
+    private final HistoricalCpuDemand historicalCpuDemand;
     private final static String HOLT_WINTERS_R_SCRIPT_PATH = "power-button-presser/src/main/resources/holtWinters.R";
     private final static String CPUS_DEMAND_HISTORY_CSV_PATH = "cpus_demand_history.csv";
+    private final static int MINIMUM_HISTORICAL_CPU_DEMAND_POINTS = 10;
 
-    public PatternRecognitionStrategy(VmmClient vmmClient, HostSelector hostSelector) {
+    public PatternRecognitionStrategy(VmmClient vmmClient, HostSelector hostSelector, 
+                                      HistoricalCpuDemand historicalCpuDemand) {
         this.vmmClient = vmmClient;
         this.hostSelector = hostSelector;
+        this.historicalCpuDemand = historicalCpuDemand;
     }
 
     @Override
     public void applyStrategy(ClusterState clusterState) {
-        // TODO recibir histórico de donde
-        int[] v = {4,4,4,4,4,5,5,5,5,3};
-        actAccordingToForecast(clusterState, getHoltWintersForecast(v));
+        int[] cpuDemandHistory = ArrayUtils.toPrimitive(historicalCpuDemand.getCpuDemandValues()
+                .toArray(new Integer[historicalCpuDemand.getCpuDemandValues().size()]));
+        if (cpuDemandHistory.length >= MINIMUM_HISTORICAL_CPU_DEMAND_POINTS) {
+            actAccordingToForecast(clusterState, getHoltWintersForecast(cpuDemandHistory));
+        }
+        saveCurrentCpuDemand(clusterState);
     }
  
     private void actAccordingToForecast(ClusterState clusterState, HoltWintersForecast forecast) {
@@ -100,6 +109,10 @@ public class PatternRecognitionStrategy implements PowerButtonStrategy {
                 Double.parseDouble(outputFields[3]),
                 Double.parseDouble(outputFields[4]),
                 Double.parseDouble(outputFields[5]));
+    }
+    
+    private void saveCurrentCpuDemand(ClusterState clusterState) {
+        historicalCpuDemand.addCpuDemandPoint(clusterState.getTotalNumberOfCpusInOnServers());
     }
     
 }
