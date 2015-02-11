@@ -279,11 +279,13 @@ iaas/virtual-machine-manager/power-button-presser/src/main/java/es/bsc/power_but
 iaas/virtual-machine-manager/power-button-presser/src/main/java/es/bsc/power_button_presser/models/ListVms.java -text
 iaas/virtual-machine-manager/power-button-presser/src/main/java/es/bsc/power_button_presser/models/Vm.java -text
 iaas/virtual-machine-manager/power-button-presser/src/main/java/es/bsc/power_button_presser/powerbuttonstrategies/AllServersOnStrategy.java -text
+iaas/virtual-machine-manager/power-button-presser/src/main/java/es/bsc/power_button_presser/powerbuttonstrategies/HoltWintersForecast.java -text
 iaas/virtual-machine-manager/power-button-presser/src/main/java/es/bsc/power_button_presser/powerbuttonstrategies/JustInTimeStrategy.java -text
 iaas/virtual-machine-manager/power-button-presser/src/main/java/es/bsc/power_button_presser/powerbuttonstrategies/NBackupHostsStrategy.java -text
 iaas/virtual-machine-manager/power-button-presser/src/main/java/es/bsc/power_button_presser/powerbuttonstrategies/PatternRecognitionStrategy.java -text
 iaas/virtual-machine-manager/power-button-presser/src/main/java/es/bsc/power_button_presser/powerbuttonstrategies/PowerButtonStrategy.java -text
 iaas/virtual-machine-manager/power-button-presser/src/main/java/es/bsc/power_button_presser/powerbuttonstrategies/Strategy.java -text
+iaas/virtual-machine-manager/power-button-presser/src/main/java/es/bsc/power_button_presser/utils/RscriptWrapper.java -text
 iaas/virtual-machine-manager/power-button-presser/src/main/java/es/bsc/power_button_presser/vmm/VmmClient.java -text
 iaas/virtual-machine-manager/power-button-presser/src/main/resources/holtWinters.R -text
 iaas/virtual-machine-manager/power-button-presser/src/test/java/es/bsc/power_button_presser/config/ConfigTest.java -text

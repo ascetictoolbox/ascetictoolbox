@@ -26,7 +26,7 @@ import es.bsc.power_button_presser.vmm.VmmClient;
 public class PowerButtonPresser {
     
     private static Config config = new Config(
-            60, Strategy.N_BACKUP_HOSTS, "http://0.0.0.0:34372/vmmanager/", "vms/", "nodes/",
+            60, Strategy.ALL_SERVERS_ON, "http://0.0.0.0:34372/vmmanager/", "vms/", "nodes/",
             "node/", "powerButton/");
     
     private static VmmClient vmmClient = new VmmClient(
