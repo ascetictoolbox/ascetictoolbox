@@ -97,7 +97,7 @@ public class CalibratorDataLogger implements Runnable {
                 try {
                     Thread.sleep(TimeUnit.SECONDS.toMillis(calibratorWaitSec));
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(Calibrator.class.getName()).log(Level.SEVERE, "The data gatherer was interupted.", ex);
+                    Logger.getLogger(CalibratorDataLogger.class.getName()).log(Level.SEVERE, "The calibrator's data logger was interupted.", ex);
                 }
                 faultCount = (faultCount > 0 ? faultCount - 1 : 0);
             } catch (Exception ex) { //This should always try to gather data from the data source.
