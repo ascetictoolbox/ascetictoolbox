@@ -60,16 +60,16 @@ public class PatternRecognitionStrategy implements PowerButtonStrategy {
         // First version using 95% confidence interval
         pressPowerButton(hostSelector.selectHostsToBeTurnedOff(
                 clusterState.getHostsWithoutVmsAndSwitchedOn(),
-                (int) Math.round(forecast.getLow95()),
-                (int) Math.round(forecast.getHigh95())));
+                (int) Math.round(forecast.getLow95()) - clusterState.getTotalNumberOfCpusInOnServers(),
+                (int) Math.round(forecast.getHigh95()) - clusterState.getTotalNumberOfCpusInOnServers()));
     }
     
     private void turnOffSomeHostsToBeInTheRangeOfCpusNeeded(ClusterState clusterState, HoltWintersForecast forecast) {
         // First version using 95% confidence interval
         pressPowerButton(hostSelector.selectHostsToBeTurnedOn(
                 clusterState.getTurnedOffHosts(),
-                (int) Math.round(forecast.getLow95()),
-                (int) Math.round(forecast.getHigh95())));
+                clusterState.getTotalNumberOfCpusInOnServers() - (int) Math.round(forecast.getHigh95()),
+                clusterState.getTotalNumberOfCpusInOnServers() - (int) Math.round(forecast.getLow95())));
     }
 
     private void pressPowerButton(List<Host> hosts) {

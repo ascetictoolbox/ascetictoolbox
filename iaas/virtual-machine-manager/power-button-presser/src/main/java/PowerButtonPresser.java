@@ -17,7 +17,7 @@
  */
 
 import es.bsc.power_button_presser.config.Config;
-import es.bsc.power_button_presser.hostselectors.BasicHostSelector;
+import es.bsc.power_button_presser.hostselectors.RandomHostSelector;
 import es.bsc.power_button_presser.httpClient.HttpClient;
 import es.bsc.power_button_presser.models.ClusterState;
 import es.bsc.power_button_presser.powerbuttonstrategies.*;
@@ -54,9 +54,9 @@ public class PowerButtonPresser {
             case JUST_IN_TIME:
                 return new JustInTimeStrategy(vmmClient);
             case N_BACKUP_HOSTS:
-                return new NBackupHostsStrategy(vmmClient, 1, new BasicHostSelector());
+                return new NBackupHostsStrategy(vmmClient, 1, new RandomHostSelector());
             case PATTERN_RECOGNITION:
-                return new PatternRecognitionStrategy(vmmClient, new BasicHostSelector());
+                return new PatternRecognitionStrategy(vmmClient, new RandomHostSelector());
             default:
                 return null; // Throw exception here
         }

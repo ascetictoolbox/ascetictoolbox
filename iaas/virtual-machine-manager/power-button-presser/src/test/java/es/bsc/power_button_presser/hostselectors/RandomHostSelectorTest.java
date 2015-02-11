@@ -28,7 +28,7 @@ import static org.junit.Assert.assertEquals;
 
 public class RandomHostSelectorTest {
     
-    private final BasicHostSelector randomHostSelector = new BasicHostSelector();
+    private final RandomHostSelector randomHostSelector = new RandomHostSelector();
     
     @Test
     public void selectHostsToBeTurnedOn() {
