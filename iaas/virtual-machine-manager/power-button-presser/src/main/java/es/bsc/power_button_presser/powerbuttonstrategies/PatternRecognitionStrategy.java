@@ -92,10 +92,9 @@ public class PatternRecognitionStrategy implements PowerButtonStrategy {
         return parseRscriptOutput(RscriptWrapper.runRscript(
                 HOLT_WINTERS_R_SCRIPT_PATH, CPUS_DEMAND_HISTORY_CSV_PATH));
     }
-    
-    // Returns the absolute path of the CSV file
+
     private void writeCpusDemandToCsv(int[] cpusDemandHistory) {
-        try (PrintWriter writer = new PrintWriter("cpus_demand_history.csv", "UTF-8")) {
+        try (PrintWriter writer = new PrintWriter(CPUS_DEMAND_HISTORY_CSV_PATH, "UTF-8")) {
             writer.println(StringUtils.join(cpusDemandHistory, ','));
         } catch (Exception e) {
             e.printStackTrace();
