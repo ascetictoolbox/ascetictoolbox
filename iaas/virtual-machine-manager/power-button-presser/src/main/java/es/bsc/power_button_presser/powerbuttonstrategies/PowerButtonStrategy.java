@@ -19,9 +19,13 @@
 package es.bsc.power_button_presser.powerbuttonstrategies;
 
 import es.bsc.power_button_presser.models.ClusterState;
+import es.bsc.power_button_presser.models.Host;
+
+import java.util.List;
 
 public interface PowerButtonStrategy {
 
-    public void applyStrategy(ClusterState clusterState);
+    // Returns a list of the host to turn off/on
+    public List<Host> getPowerButtonsToPress(ClusterState clusterState);
     
 }

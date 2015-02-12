@@ -19,28 +19,16 @@
 package es.bsc.power_button_presser.powerbuttonstrategies;
 
 import es.bsc.power_button_presser.models.ClusterState;
-import es.bsc.power_button_presser. models.Host;
-import es.bsc.power_button_presser.vmm.VmmClient;
+import es.bsc.power_button_presser.models.Host;
 
 import java.util.List;
 
 public class AllServersOnStrategy implements PowerButtonStrategy {
 
-    private final VmmClient vmmClient;
-
-    public AllServersOnStrategy(VmmClient vmmClient) {
-        this.vmmClient = vmmClient;
-    }
+    public AllServersOnStrategy() { }
 
     @Override
-    public void applyStrategy(ClusterState clusterState) {
-        pressPowerButton(clusterState.getTurnedOffHosts());
+    public List<Host> getPowerButtonsToPress(ClusterState clusterState) {
+        return clusterState.getTurnedOffHosts();
     }
-    
-    private void pressPowerButton(List<Host> hosts) {
-        for (Host host: hosts) {
-            vmmClient.pressPowerButton(host.getHostname());
-        }
-    }
-
 }

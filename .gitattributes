@@ -268,7 +268,7 @@ iaas/virtual-machine-manager/opta-vm-placement/src/test/java/es/bsc/vmplacement/
 iaas/virtual-machine-manager/opta-vm-placement/src/test/java/es/bsc/vmplacement/scorecalculators/ScoreCalculatorGroupByAppTest.java -text
 iaas/virtual-machine-manager/pom.xml -text
 iaas/virtual-machine-manager/power-button-presser/pom.xml -text
-iaas/virtual-machine-manager/power-button-presser/src/main/java/PowerButtonPresser.java -text
+iaas/virtual-machine-manager/power-button-presser/src/main/java/Main.java -text
 iaas/virtual-machine-manager/power-button-presser/src/main/java/es/bsc/power_button_presser/config/Config.java -text
 iaas/virtual-machine-manager/power-button-presser/src/main/java/es/bsc/power_button_presser/historicaldata/HistoricalCpuDemand.java -text
 iaas/virtual-machine-manager/power-button-presser/src/main/java/es/bsc/power_button_presser/hostselectors/HostSelector.java -text
@@ -278,6 +278,7 @@ iaas/virtual-machine-manager/power-button-presser/src/main/java/es/bsc/power_but
 iaas/virtual-machine-manager/power-button-presser/src/main/java/es/bsc/power_button_presser/models/Host.java -text
 iaas/virtual-machine-manager/power-button-presser/src/main/java/es/bsc/power_button_presser/models/ListVms.java -text
 iaas/virtual-machine-manager/power-button-presser/src/main/java/es/bsc/power_button_presser/models/Vm.java -text
+iaas/virtual-machine-manager/power-button-presser/src/main/java/es/bsc/power_button_presser/powerbuttonpresser/PowerButtonPresser.java -text
 iaas/virtual-machine-manager/power-button-presser/src/main/java/es/bsc/power_button_presser/powerbuttonstrategies/AllServersOnStrategy.java -text
 iaas/virtual-machine-manager/power-button-presser/src/main/java/es/bsc/power_button_presser/powerbuttonstrategies/HoltWintersForecast.java -text
 iaas/virtual-machine-manager/power-button-presser/src/main/java/es/bsc/power_button_presser/powerbuttonstrategies/JustInTimeStrategy.java -text

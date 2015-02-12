@@ -21,33 +21,30 @@ package es.bsc.power_button_presser.powerbuttonstrategies;
 import es.bsc.power_button_presser.hostselectors.HostSelector;
 import es.bsc.power_button_presser.models.ClusterState;
 import es.bsc.power_button_presser.models.Host;
-import es.bsc.power_button_presser.vmm.VmmClient;
 
 import java.util.List;
 
 public class NBackupHostsStrategy implements PowerButtonStrategy {
 
-    private final VmmClient vmmClient;
     private final int desiredBackupHosts;
     private final HostSelector hostSelector;
 
-    public NBackupHostsStrategy(VmmClient vmmClient, int desiredBackupHosts, HostSelector hostSelector) {
-        this.vmmClient = vmmClient;
+    public NBackupHostsStrategy(int desiredBackupHosts, HostSelector hostSelector) {
         this.desiredBackupHosts = desiredBackupHosts;
         this.hostSelector = hostSelector;
     }
 
     @Override
-    public void applyStrategy(ClusterState clusterState) {
+    public List<Host> getPowerButtonsToPress(ClusterState clusterState) {
         if (currentNumberOfBackUpHosts(clusterState) > desiredBackupHosts) {
-            pressPowerButton(hostSelector.selectHostsToBeTurnedOff(
+            return hostSelector.selectHostsToBeTurnedOff(
                     clusterState.getHostsWithoutVmsAndSwitchedOn(),
-                    currentNumberOfBackUpHosts(clusterState) - desiredBackupHosts));
+                    currentNumberOfBackUpHosts(clusterState) - desiredBackupHosts);
         }
         else {
-            pressPowerButton(hostSelector.selectHostsToBeTurnedOn(
+            return hostSelector.selectHostsToBeTurnedOn(
                     clusterState.getTurnedOffHosts(),
-                    desiredBackupHosts - currentNumberOfBackUpHosts(clusterState)));
+                    desiredBackupHosts - currentNumberOfBackUpHosts(clusterState));
         }
     }
 
@@ -58,12 +55,6 @@ public class NBackupHostsStrategy implements PowerButtonStrategy {
      */
     private int currentNumberOfBackUpHosts(ClusterState clusterState) {
         return clusterState.getHostsWithoutVmsAndSwitchedOn().size();
-    }
-
-    private void pressPowerButton(List<Host> hosts) {
-        for (Host host: hosts) {
-            vmmClient.pressPowerButton(host.getHostname());
-        }
     }
     
 }

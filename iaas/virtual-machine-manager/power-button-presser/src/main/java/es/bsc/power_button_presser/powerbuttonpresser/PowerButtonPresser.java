@@ -16,20 +16,25 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.power_button_presser.powerbuttonstrategies;
+package es.bsc.power_button_presser.powerbuttonpresser;
 
-import es.bsc.power_button_presser.models.ClusterState;
 import es.bsc.power_button_presser.models.Host;
+import es.bsc.power_button_presser.vmm.VmmClient;
 
 import java.util.List;
 
-public class JustInTimeStrategy implements PowerButtonStrategy {
+public class PowerButtonPresser {
 
-    public JustInTimeStrategy() { }
+    private final VmmClient vmmClient;
 
-    @Override
-    public List<Host> getPowerButtonsToPress(ClusterState clusterState) {
-        return clusterState.getHostsWithoutVmsAndSwitchedOn();
+    public PowerButtonPresser(VmmClient vmmClient) {
+        this.vmmClient = vmmClient;
+    }
+    
+    public void pressPowerButtons(List<Host> hosts) {
+        for (Host host: hosts) {
+            vmmClient.pressPowerButton(host.getHostname());
+        }
     }
     
 }

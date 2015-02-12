@@ -21,13 +21,17 @@ import es.bsc.power_button_presser.historicaldata.HistoricalCpuDemand;
 import es.bsc.power_button_presser.hostselectors.RandomHostSelector;
 import es.bsc.power_button_presser.httpClient.HttpClient;
 import es.bsc.power_button_presser.models.ClusterState;
+import es.bsc.power_button_presser.models.Host;
+import es.bsc.power_button_presser.powerbuttonpresser.PowerButtonPresser;
 import es.bsc.power_button_presser.powerbuttonstrategies.*;
 import es.bsc.power_button_presser.vmm.VmmClient;
 
-public class PowerButtonPresser {
+import java.util.List;
+
+public class Main {
     
     private static Config config = new Config(
-            60, Strategy.PATTERN_RECOGNITION, "http://0.0.0.0:34372/vmmanager/", "vms/", "nodes/",
+            60, Strategy.ALL_SERVERS_ON, "http://0.0.0.0:34372/vmmanager/", "vms/", "nodes/",
             "node/", "powerButton/");
     
     private static VmmClient vmmClient = new VmmClient(
@@ -35,11 +39,14 @@ public class PowerButtonPresser {
             config.getVmmNodePath(), config.getVmmPowerButtonPath());
     
     private static PowerButtonStrategy powerButtonStrategy = getStrategy();
+    private static PowerButtonPresser powerButtonPresser = new PowerButtonPresser(vmmClient);
     
     @SuppressWarnings("InfiniteLoopStatement")
     public static void main(String[] args) {
         while (true) {
-            powerButtonStrategy.applyStrategy(new ClusterState(vmmClient.getVms(), vmmClient.getHosts()));
+            List<Host> powerButtonsToPress = powerButtonStrategy.getPowerButtonsToPress(
+                    new ClusterState(vmmClient.getVms(), vmmClient.getHosts()));
+            powerButtonPresser.pressPowerButtons(powerButtonsToPress);
             try {
                 Thread.sleep(config.getIntervalSeconds()*1000);
             } catch (InterruptedException e) {
@@ -51,14 +58,13 @@ public class PowerButtonPresser {
     private static PowerButtonStrategy getStrategy() { // Turn into factory?
         switch (config.getStrategy()) {
             case ALL_SERVERS_ON:
-                return new AllServersOnStrategy(vmmClient);
+                return new AllServersOnStrategy();
             case JUST_IN_TIME:
-                return new JustInTimeStrategy(vmmClient);
+                return new JustInTimeStrategy();
             case N_BACKUP_HOSTS:
-                return new NBackupHostsStrategy(vmmClient, 1, new RandomHostSelector());
+                return new NBackupHostsStrategy(1, new RandomHostSelector());
             case PATTERN_RECOGNITION:
-                return new PatternRecognitionStrategy(vmmClient, new RandomHostSelector(), 
-                        new HistoricalCpuDemand(10000));
+                return new PatternRecognitionStrategy(new RandomHostSelector(), new HistoricalCpuDemand(10000));
             default:
                 return null; // Throw exception here
         }

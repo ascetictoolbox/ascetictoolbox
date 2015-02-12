@@ -23,68 +23,65 @@ import es.bsc.power_button_presser.hostselectors.HostSelector;
 import es.bsc.power_button_presser.models.ClusterState;
 import es.bsc.power_button_presser.models.Host;
 import es.bsc.power_button_presser.utils.RscriptWrapper;
-import es.bsc.power_button_presser.vmm.VmmClient;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PatternRecognitionStrategy implements PowerButtonStrategy {
     
-    private final VmmClient vmmClient;
     private final HostSelector hostSelector;
     private final HistoricalCpuDemand historicalCpuDemand;
     private final static String HOLT_WINTERS_R_SCRIPT_PATH = "power-button-presser/src/main/resources/holtWinters.R";
     private final static String CPUS_DEMAND_HISTORY_CSV_PATH = "cpus_demand_history.csv";
     private final static int MINIMUM_HISTORICAL_CPU_DEMAND_POINTS = 10;
 
-    public PatternRecognitionStrategy(VmmClient vmmClient, HostSelector hostSelector, 
-                                      HistoricalCpuDemand historicalCpuDemand) {
-        this.vmmClient = vmmClient;
+    public PatternRecognitionStrategy(HostSelector hostSelector, HistoricalCpuDemand historicalCpuDemand) {
         this.hostSelector = hostSelector;
         this.historicalCpuDemand = historicalCpuDemand;
     }
 
     @Override
-    public void applyStrategy(ClusterState clusterState) {
+    public List<Host> getPowerButtonsToPress(ClusterState clusterState) {
+        saveCurrentCpuDemand(clusterState);
         int[] cpuDemandHistory = ArrayUtils.toPrimitive(historicalCpuDemand.getCpuDemandValues()
                 .toArray(new Integer[historicalCpuDemand.getCpuDemandValues().size()]));
         if (cpuDemandHistory.length >= MINIMUM_HISTORICAL_CPU_DEMAND_POINTS) {
-            actAccordingToForecast(clusterState, getHoltWintersForecast(cpuDemandHistory));
+            return hostToBeTurnedOnOrOffAccordingToForecast(
+                    clusterState, getHoltWintersForecast(cpuDemandHistory));
         }
-        saveCurrentCpuDemand(clusterState);
+        return new ArrayList<>();
     }
  
-    private void actAccordingToForecast(ClusterState clusterState, HoltWintersForecast forecast) {
+    private List<Host> hostToBeTurnedOnOrOffAccordingToForecast(ClusterState clusterState, 
+                                                                HoltWintersForecast forecast) {
         if (clusterState.getTotalNumberOfCpusInOnServers() > forecast.getHigh95()) {
-            turnOnSomeHostsToBeInTheRangeOfCpusNeeded(clusterState, forecast);
+            return hostsToBeTurnedOnToBeInTheRangeOfCpusNeeded(clusterState, forecast);
         }
         else if (clusterState.getTotalNumberOfCpusInOnServers() < forecast.getLow95()) {
-            turnOffSomeHostsToBeInTheRangeOfCpusNeeded(clusterState, forecast);
+            return hostsToBeTurnedOffToBeInTheRangeOfCpusNeeded(clusterState, forecast);
         }
+        return new ArrayList<>();
     }
     
-    private void turnOnSomeHostsToBeInTheRangeOfCpusNeeded(ClusterState clusterState, HoltWintersForecast forecast) {
+    private List<Host> hostsToBeTurnedOnToBeInTheRangeOfCpusNeeded(ClusterState clusterState, 
+                                                                   HoltWintersForecast forecast) {
         // First version using 95% confidence interval
-        pressPowerButton(hostSelector.selectHostsToBeTurnedOff(
+        return hostSelector.selectHostsToBeTurnedOff(
                 clusterState.getHostsWithoutVmsAndSwitchedOn(),
                 (int) Math.round(forecast.getLow95()) - clusterState.getTotalNumberOfCpusInOnServers(),
-                (int) Math.round(forecast.getHigh95()) - clusterState.getTotalNumberOfCpusInOnServers()));
+                (int) Math.round(forecast.getHigh95()) - clusterState.getTotalNumberOfCpusInOnServers());
     }
     
-    private void turnOffSomeHostsToBeInTheRangeOfCpusNeeded(ClusterState clusterState, HoltWintersForecast forecast) {
+    private List<Host> hostsToBeTurnedOffToBeInTheRangeOfCpusNeeded(ClusterState clusterState, 
+                                                                    HoltWintersForecast forecast) {
         // First version using 95% confidence interval
-        pressPowerButton(hostSelector.selectHostsToBeTurnedOn(
+        return hostSelector.selectHostsToBeTurnedOn(
                 clusterState.getTurnedOffHosts(),
                 clusterState.getTotalNumberOfCpusInOnServers() - (int) Math.round(forecast.getHigh95()),
-                clusterState.getTotalNumberOfCpusInOnServers() - (int) Math.round(forecast.getLow95())));
-    }
-
-    private void pressPowerButton(List<Host> hosts) {
-        for (Host host: hosts) {
-            vmmClient.pressPowerButton(host.getHostname());
-        }
+                clusterState.getTotalNumberOfCpusInOnServers() - (int) Math.round(forecast.getLow95()));
     }
     
     private HoltWintersForecast getHoltWintersForecast(int[] cpusDemandHistory) {
