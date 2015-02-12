@@ -23,7 +23,7 @@ import es.bsc.power_button_presser.httpClient.HttpClient;
 import es.bsc.power_button_presser.models.ClusterState;
 import es.bsc.power_button_presser.models.Host;
 import es.bsc.power_button_presser.powerbuttonpresser.PowerButtonPresser;
-import es.bsc.power_button_presser.powerbuttonstrategies.*;
+import es.bsc.power_button_presser.strategies.*;
 import es.bsc.power_button_presser.vmm.VmmClient;
 
 import java.util.List;

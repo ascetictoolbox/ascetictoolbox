@@ -18,7 +18,7 @@
 
 package es.bsc.power_button_presser.config;
 
-import es.bsc.power_button_presser.powerbuttonstrategies.Strategy;
+import es.bsc.power_button_presser.strategies.Strategy;
 
 public class Config {
     
