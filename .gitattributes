@@ -301,7 +301,9 @@ iaas/virtual-machine-manager/power-button-presser/src/test/java/es/bsc/power_but
 iaas/virtual-machine-manager/power-button-presser/src/test/java/es/bsc/power_button_presser/hostselectors/RandomHostSelectorTest.java -text
 iaas/virtual-machine-manager/power-button-presser/src/test/java/es/bsc/power_button_presser/models/ClusterStateTest.java -text
 iaas/virtual-machine-manager/power-button-presser/src/test/java/es/bsc/power_button_presser/strategies/AllServersOnStrategyTest.java -text
+iaas/virtual-machine-manager/power-button-presser/src/test/java/es/bsc/power_button_presser/strategies/HoltWintersForecastTest.java -text
 iaas/virtual-machine-manager/power-button-presser/src/test/java/es/bsc/power_button_presser/strategies/JustInTimeStrategyTest.java -text
+iaas/virtual-machine-manager/power-button-presser/src/test/java/es/bsc/power_button_presser/strategies/NBackupHostsStrategyTest.java -text
 iaas/virtual-machine-manager/vmmanager-frontend/LICENSE.md -text
 iaas/virtual-machine-manager/vmmanager-frontend/README.md -text
 iaas/virtual-machine-manager/vmmanager-frontend/app/app.js -text

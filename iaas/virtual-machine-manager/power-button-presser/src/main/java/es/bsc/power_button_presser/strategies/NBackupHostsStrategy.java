@@ -41,11 +41,9 @@ public class NBackupHostsStrategy implements PowerButtonStrategy {
                     clusterState.getHostsWithoutVmsAndSwitchedOn(),
                     currentNumberOfBackUpHosts(clusterState) - desiredBackupHosts);
         }
-        else {
-            return hostSelector.selectHostsToBeTurnedOn(
-                    clusterState.getTurnedOffHosts(),
-                    desiredBackupHosts - currentNumberOfBackUpHosts(clusterState));
-        }
+        return hostSelector.selectHostsToBeTurnedOn(
+                clusterState.getTurnedOffHosts(), 
+                desiredBackupHosts - currentNumberOfBackUpHosts(clusterState));
     }
 
     /**
