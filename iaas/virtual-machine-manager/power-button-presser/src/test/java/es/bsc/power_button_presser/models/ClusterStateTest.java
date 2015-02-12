@@ -29,7 +29,19 @@ public class ClusterStateTest {
     
     @Test
     public void getTotalNumberOfCpusOnServers() {
-        assertEquals(2, getTestClusterState().getTotalNumberOfCpusInOnServers());
+        assertEquals(5, getTestClusterState().getTotalNumberOfCpusInOnServers());
+    }
+    
+    @Test
+    public void getTurnedOffHosts() {
+        assertEquals(1, getTestClusterState().getTurnedOffHosts().size());
+        assertEquals("host3", getTestClusterState().getTurnedOffHosts().get(0).getHostname());
+    }
+    
+    @Test
+    public void getHostsWithoutVmsAndSwitchedOn() {
+        assertEquals(1, getTestClusterState().getHostsWithoutVmsAndSwitchedOn().size());
+        assertEquals("host2", getTestClusterState().getHostsWithoutVmsAndSwitchedOn().get(0).getHostname());
     }
     
     private ClusterState getTestClusterState() {
@@ -37,11 +49,10 @@ public class ClusterStateTest {
         vms.add(new Vm("vm1", 1, 1024, 1, "host1"));
         
         List<Host> hosts = new ArrayList<>();
-        hosts.add(new Host("host1", 1, 1024, 1, 0, 0, 0, false));
+        hosts.add(new Host("host1", 4, 1024, 1, 0, 0, 0, false));
         hosts.add(new Host("host2", 1, 1024, 1, 1, 1024, 1, false));
         hosts.add(new Host("host3", 1, 1024, 1, 0, 0, 0, true));
                 
         return new ClusterState(vms, hosts);
     }
-    
 }

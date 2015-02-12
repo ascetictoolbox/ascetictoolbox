@@ -68,8 +68,8 @@ public class RandomHostSelectorTest {
     public void selectHostsToBeTurnedOffGivenMinMax() {
         List<Host> candidateHosts = new ArrayList<>();
         candidateHosts.add(new Host("host1", 5, 1024, 1, 0, 0, 0, false));
-        candidateHosts.add(new Host("host2", 10, 1024, 1, 0, 0, 0, false));
-        candidateHosts.add(new Host("host3", 15, 1024, 1, 0, 0, 0, false));
+        candidateHosts.add(new Host("host2", 5, 1024, 1, 0, 0, 0, false));
+        candidateHosts.add(new Host("host3", 20, 1024, 1, 0, 0, 0, false));
         List<Host> selectedHosts = randomHostSelector.selectHostsToBeTurnedOn(candidateHosts, 10, 18);
         assertEquals(2, selectedHosts.size());
         assertNotEquals("host3", selectedHosts.get(0).getHostname());
