@@ -12,15 +12,26 @@ public abstract class ScoreCalculatorCommon {
 
     private final static int PENALTY_FOR_MOVING_FIXED_VMS = 10000;
 
-    public static int getClusterOverCapacitySCoreWithPenaltyForFixedVms(ClusterState solution) {
-        double result = 0;
-        for (Host host: solution.getHosts()) {
-            if (host.missingFixedVMs(solution.getVms())) {
-                result -= PENALTY_FOR_MOVING_FIXED_VMS;
-            }
-            result += host.getOverCapacityScore(solution.getVms());
-        }
-        return (int) result;
+    public static int getClusterOverCapacityScoreWithPenaltyForFixedVms(ClusterState solution) {
+        return (int) (getClusterOverCapacityScore(solution) + getClusterPenaltyScoreForFixedVms(solution));
     }
 
+    private static double getClusterOverCapacityScore(ClusterState clusterState) {
+        double result = 0;
+        for (Host host: clusterState.getHosts()) {
+            result += host.getOverCapacityScore(clusterState.getVms());
+        }
+        return result;
+    }
+    
+    private static double getClusterPenaltyScoreForFixedVms(ClusterState clusterState) {
+        double result = 0;
+        for (Host host: clusterState.getHosts()) {
+            if (host.missingFixedVMs(clusterState.getVms())) {
+                result -= PENALTY_FOR_MOVING_FIXED_VMS;
+            }
+        }
+        return result;
+    }
+    
 }

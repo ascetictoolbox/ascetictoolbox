@@ -42,7 +42,7 @@ public final class ScoreCalculatorPrice implements SimpleScoreCalculator<Cluster
     }
 
     private int calculateHardScore(ClusterState solution) {
-        return ScoreCalculatorCommon.getClusterOverCapacitySCoreWithPenaltyForFixedVms(solution);
+        return ScoreCalculatorCommon.getClusterOverCapacityScoreWithPenaltyForFixedVms(solution);
     }
 
     private int calculateSoftScore(ClusterState solution) {

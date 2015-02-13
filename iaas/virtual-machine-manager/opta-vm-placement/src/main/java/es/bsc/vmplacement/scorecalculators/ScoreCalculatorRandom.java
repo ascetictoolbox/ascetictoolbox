@@ -41,7 +41,7 @@ public final class ScoreCalculatorRandom implements SimpleScoreCalculator<Cluste
     }
 
     private int calculateHardScore(ClusterState solution) {
-        return ScoreCalculatorCommon.getClusterOverCapacitySCoreWithPenaltyForFixedVms(solution);
+        return ScoreCalculatorCommon.getClusterOverCapacityScoreWithPenaltyForFixedVms(solution);
     }
 
     private int calculateMediumScore(ClusterState solution) {

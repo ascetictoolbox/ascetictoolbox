@@ -39,7 +39,7 @@ public final class ScoreCalculatorConsolidation implements SimpleScoreCalculator
     }
 
     private int calculateHardScore(ClusterState solution) {
-        return ScoreCalculatorCommon.getClusterOverCapacitySCoreWithPenaltyForFixedVms(solution);
+        return ScoreCalculatorCommon.getClusterOverCapacityScoreWithPenaltyForFixedVms(solution);
     }
 
     private int calculateSoftScore1(ClusterState solution) {

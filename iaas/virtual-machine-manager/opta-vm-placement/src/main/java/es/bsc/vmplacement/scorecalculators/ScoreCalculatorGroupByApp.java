@@ -39,7 +39,7 @@ public final class ScoreCalculatorGroupByApp implements SimpleScoreCalculator<Cl
     }
     
     private int calculateHardScore(ClusterState solution) {
-        return ScoreCalculatorCommon.getClusterOverCapacitySCoreWithPenaltyForFixedVms(solution);
+        return ScoreCalculatorCommon.getClusterOverCapacityScoreWithPenaltyForFixedVms(solution);
     }
 
     private int calculateMediumScore(ClusterState solution) {
