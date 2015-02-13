@@ -117,7 +117,7 @@ public class ClusterStateTest {
         clusterState.setHosts(hosts);
         
         List<Vm> vms = new ArrayList<>();
-        Vm vm1 = new Vm((long) 1, 1, 1024, 1, "app1");
+        Vm vm1 = new Vm.Builder((long) 1, 1, 1024, 1).appId("app1").build();
         vm1.setHost(hosts.get(0));
         clusterState.setVms(vms);
         
@@ -154,8 +154,8 @@ public class ClusterStateTest {
 
     private List<Vm> getTestVms(List<Host> hosts) {
         List<Vm> vms = new ArrayList<>();
-        Vm vm1 = new Vm((long) 1, 1, 1024, 1, "app1");
-        Vm vm2 = new Vm((long) 2, 1, 1024, 1, "app2");
+        Vm vm1 = new Vm.Builder((long) 1, 1, 1024, 1).appId("app1").build();
+        Vm vm2 = new Vm.Builder((long) 2, 1, 1024, 1).appId("app2").build();
         vm1.setHost(hosts.get(0));
         vm2.setHost(hosts.get(0));
         vms.add(vm1);

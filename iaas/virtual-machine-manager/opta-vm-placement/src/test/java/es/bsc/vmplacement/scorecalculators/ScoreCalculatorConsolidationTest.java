@@ -40,9 +40,9 @@ public class ScoreCalculatorConsolidationTest {
 
         // Create VMs
         List<Vm> vms = new ArrayList<>();
-        Vm vm1 = new Vm((long) 1, 4, 4096, 4);
-        Vm vm2 = new Vm((long) 2, 5, 5120, 5);
-        Vm vm3 = new Vm((long) 3, 1, 5120, 1);
+        Vm vm1 = new Vm.Builder((long) 1, 4, 4096, 4).build();
+        Vm vm2 = new Vm.Builder((long) 2, 5, 5120, 5).build();
+        Vm vm3 = new Vm.Builder((long) 3, 1, 5120, 1).build();
         vm1.setHost(host1);
         vm2.setHost(host1);
         vm3.setHost(host2);

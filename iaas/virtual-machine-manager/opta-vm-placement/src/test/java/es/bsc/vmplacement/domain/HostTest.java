@@ -33,9 +33,9 @@ public class HostTest {
     @Test
     public void getUsage() {
         List<Vm> vms = new ArrayList<>();
-        Vm vm1 = new Vm((long) 1, 1, 1024, 1);
+        Vm vm1 = new Vm.Builder((long) 1, 1, 1024, 1).build();
         vm1.setHost(host);
-        Vm vm2 = new Vm((long) 2, 2, 2048, 2);
+        Vm vm2 = new Vm.Builder((long) 2, 2, 2048, 2).build();
         vms.add(vm1);
         vms.add(vm2);
 
@@ -48,9 +48,9 @@ public class HostTest {
     @Test
     public void getOverCapacityScore() {
         List<Vm> vms = new ArrayList<>();
-        Vm vm1 = new Vm((long) 1, 8, 8192, 40);
+        Vm vm1 = new Vm.Builder((long) 1, 8, 8192, 40).build();
         vm1.setHost(host);
-        Vm vm2 = new Vm((long) 2, 2, 2048, 2);
+        Vm vm2 = new Vm.Builder((long) 2, 2, 2048, 2).build();
         vms.add(vm1);
         vms.add(vm2);
         assertEquals(-6, host.getOverCapacityScore(vms), 0.1); // -(8/4 + 8192/4096 + 40/20) = -6
@@ -59,7 +59,7 @@ public class HostTest {
     @Test
     public void missingFixedVmsReturnsTrueWhenTheMissingVmIsNotAssignedToAnyHosts() {
         List<Vm> vms = new ArrayList<>();
-        Vm vm1 = new Vm((long) 1, 8, 8192, 1);
+        Vm vm1 = new Vm.Builder((long) 1, 8, 8192, 1).build();
         vms.add(vm1);
 
         host.addFixedVm(1);
@@ -69,7 +69,7 @@ public class HostTest {
     @Test
     public void missingFixedVmsReturnsTrueWhenTheMissingVmIsAssignedToAnotherHost() {
         List<Vm> vms = new ArrayList<>();
-        Vm vm1 = new Vm((long) 1, 8, 8192, 1);
+        Vm vm1 = new Vm.Builder((long) 1, 8, 8192, 1).build();
         vm1.setHost(new Host((long) 2, "2", 8, 8192, 1, false));
         vms.add(vm1);
 
@@ -80,7 +80,7 @@ public class HostTest {
     @Test
     public void missingFixedVmsReturnsFalse() {
         List<Vm> vms = new ArrayList<>();
-        Vm vm1 = new Vm((long) 1, 8, 8192, 1);
+        Vm vm1 = new Vm.Builder((long) 1, 8, 8192, 1).build();
         vm1.setHost(host);
         vms.add(vm1);
 

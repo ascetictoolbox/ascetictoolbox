@@ -15,19 +15,25 @@ public class VmDifficultyComparatorTest {
     @Test
     public void comparisonShouldReturnPositiveWhenFirstVmMoreDifficult() {
         // Compare vm1(CPUs = 2, ramMb = 1, diskGb = 1) vs vm2(CPUs = 1, ramMb = 1, diskGb = 1)
-        assertTrue(vmDifficultyComparator.compare(new Vm((long) 1, 2, 1, 1), new Vm((long) 2, 1, 1, 1)) > 0);
+        assertTrue(vmDifficultyComparator.compare(
+                new Vm.Builder((long) 1, 2, 1, 1).build(), 
+                new Vm.Builder((long) 2, 1, 1, 1).build()) > 0);
     }
 
     @Test
     public void comparisonShouldReturnZeroWhenVmsEquallyDifficult() {
         // Compare vm1(CPUs = 2, ramMb = 1, diskGb = 1) vs vm2(CPUs = 2, ramMb = 1, diskGb = 1)
-        assertTrue(vmDifficultyComparator.compare(new Vm((long) 1, 2, 1, 1), new Vm((long) 2, 2, 1, 1)) == 0);
+        assertTrue(vmDifficultyComparator.compare(
+                new Vm.Builder((long) 1, 2, 1, 1).build(),
+                new Vm.Builder((long) 2, 2, 1, 1).build()) == 0);
     }
 
     @Test
     public void comparisonShouldReturnNegativeWhenFirstVmLessDifficult() {
         // Compare vm1(CPUs = 1, ramMb = 1, diskGb = 1) vs vm2(CPUs = 2, ramMb = 1, diskGb = 1)
-        assertTrue(vmDifficultyComparator.compare(new Vm((long) 1, 1, 1, 1), new Vm((long) 2, 2, 1, 1)) < 0);
+        assertTrue(vmDifficultyComparator.compare(
+                new Vm.Builder((long) 1, 1, 1, 1).build(),
+                new Vm.Builder((long) 2, 2, 1, 1).build()) < 0);
     }
 
 }

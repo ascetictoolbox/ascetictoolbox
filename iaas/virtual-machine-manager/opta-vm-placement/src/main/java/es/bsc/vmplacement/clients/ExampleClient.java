@@ -69,11 +69,11 @@ public class ExampleClient {
     private static List<Vm> getInitialVms() {
         List<Vm> result = new ArrayList<>();
         for (int i = 0; i < N_VMS; ++i) {
-            result.add(new Vm(
+            result.add(new Vm.Builder(
                     (long) i,
                     randInt(MIN_CPUS_VMS, MAX_CPUS_VMS),
                     randInt(MIN_RAMMB_VMS, MAX_RAMMB_VMS),
-                    randInt(MIN_DISKGB_VMS, MAX_DISKGB_VMS)));
+                    randInt(MIN_DISKGB_VMS, MAX_DISKGB_VMS)).build());
         }
         return result;
     }

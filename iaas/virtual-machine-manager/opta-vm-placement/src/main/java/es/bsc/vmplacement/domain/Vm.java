@@ -37,32 +37,50 @@ public class Vm extends AbstractPersistable {
     private String alphaNumericId; /* This might be needed in some cases. For example, OpenStack uses alphanumeric
                                    IDs, and optaplanner needs an ID of type long. */
 
-    public Vm() { }
+    public Vm() { } // Optaplanner needs to clone
 
-    // I should apply the builder pattern here, but Optaplanner needs Vm() to clone
-
-    public Vm(Long id, int ncpus, int ramMb, int diskGb) {
-        this.id = id;
-        this.ncpus = ncpus;
-        this.ramMb = ramMb;
-        this.diskGb = diskGb;
+    public static class Builder {
+        
+        // Required parameters
+        private final Long id;
+        private final int ncpus;
+        private final int ramMb;
+        private final int diskGb;
+        
+        // Optional parameters
+        private String appId;
+        private String alphaNumericId;
+        
+        public Builder (Long id, int ncpus, int ramMb, int diskGb) {
+            this.id = id;
+            this.ncpus = ncpus;
+            this.ramMb = ramMb;
+            this.diskGb = diskGb;
+        }
+        
+        public Builder appId(String appId) {
+            this.appId = appId;
+            return this;
+        }
+        
+        public Builder alphaNumericId(String alphaNumericId) {
+            this.alphaNumericId = alphaNumericId;
+            return this;
+        }
+        
+        public Vm build() {
+            return new Vm(this);
+        }
+        
     }
-
-    public Vm(Long id, int ncpus, int ramMb, int diskGb, String appId) {
-        this.id = id;
-        this.ncpus = ncpus;
-        this.ramMb = ramMb;
-        this.diskGb = diskGb;
-        this.appId = appId;
-    }
-
-    public Vm(Long id, int ncpus, int ramMb, int diskGb, String appId, String alphaNumericId) {
-        this.id = id;
-        this.ncpus = ncpus;
-        this.ramMb = ramMb;
-        this.diskGb = diskGb;
-        this.appId = appId;
-        this.alphaNumericId = alphaNumericId;
+    
+    private Vm(Builder builder) {
+        id = builder.id;
+        ncpus = builder.ncpus;
+        ramMb = builder.ramMb;
+        diskGb = builder.diskGb;
+        appId = builder.appId;
+        alphaNumericId = builder.alphaNumericId;
     }
 
     public int getNcpus() {

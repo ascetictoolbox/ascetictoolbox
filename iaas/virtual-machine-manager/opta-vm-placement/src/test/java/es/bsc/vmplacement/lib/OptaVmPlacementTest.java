@@ -50,9 +50,9 @@ public class OptaVmPlacementTest {
         
         // Initialize VMs
         List<Vm> vms = new ArrayList<>();
-        Vm vm1 = new Vm((long) 1, 4, 1024, 1);
-        Vm vm2 = new Vm((long) 2, 2, 1024, 1);
-        Vm vm3 = new Vm((long) 3, 3, 1024, 1);
+        Vm vm1 = new Vm.Builder((long) 1, 4, 1024, 1).build();
+        Vm vm2 = new Vm.Builder((long) 2, 2, 1024, 1).build();
+        Vm vm3 = new Vm.Builder((long) 3, 3, 1024, 1).build();
         vms.add(vm1);
         vms.add(vm2);
         vms.add(vm3);
@@ -94,9 +94,9 @@ public class OptaVmPlacementTest {
 
         // Initialize VMs
         List<Vm> vms = new ArrayList<>();
-        Vm vm1 = new Vm((long) 1, 1, 1024, 1);
-        Vm vm2 = new Vm((long) 2, 2, 1024, 1);
-        Vm vm3 = new Vm((long) 3, 3, 1024, 1);
+        Vm vm1 = new Vm.Builder((long) 1, 1, 1024, 1).build();
+        Vm vm2 = new Vm.Builder((long) 2, 2, 1024, 1).build();
+        Vm vm3 = new Vm.Builder((long) 3, 3, 1024, 1).build();
         vms.add(vm1);
         vms.add(vm2);
         vms.add(vm3);
@@ -138,8 +138,8 @@ public class OptaVmPlacementTest {
 
         // Initialize VMs
         List<Vm> vms = new ArrayList<>();
-        Vm vm1 = new Vm((long) 1, 1, 1024, 1);
-        Vm vm2 = new Vm((long) 2, 1, 1024, 1);
+        Vm vm1 = new Vm.Builder((long) 1, 1, 1024, 1).build();
+        Vm vm2 = new Vm.Builder((long) 2, 1, 1024, 1).build();
         vms.add(vm1);
         vms.add(vm2);
 
@@ -169,8 +169,8 @@ public class OptaVmPlacementTest {
         
         // Initialize VMs
         List<Vm> vms = new ArrayList<>();
-        Vm vm1 = new Vm((long) 1, 1, 1024, 1);
-        Vm vm2 = new Vm((long) 2, 1, 1024, 1);
+        Vm vm1 = new Vm.Builder((long) 1, 1, 1024, 1).build();
+        Vm vm2 = new Vm.Builder((long) 2, 1, 1024, 1).build();
         vms.add(vm1);
         vms.add(vm2);
 

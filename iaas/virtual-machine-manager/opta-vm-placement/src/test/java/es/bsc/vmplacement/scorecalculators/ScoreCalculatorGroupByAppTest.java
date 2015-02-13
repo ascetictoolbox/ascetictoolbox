@@ -39,9 +39,9 @@ public class ScoreCalculatorGroupByAppTest {
 
         // Create VMs
         List<Vm> vms = new ArrayList<>();
-        Vm vm1 = new Vm((long) 1, 1, 1024, 1, "app1");
-        Vm vm2 = new Vm((long) 2, 1, 1024, 1, "app1");
-        Vm vm3 = new Vm((long) 3, 5, 5120, 5, "app1");
+        Vm vm1 = new Vm.Builder((long) 1, 1, 1024, 1).appId("app1").build();
+        Vm vm2 = new Vm.Builder((long) 2, 1, 1024, 1).appId("app1").build();
+        Vm vm3 = new Vm.Builder((long) 3, 5, 5120, 5).appId("app1").build();
         vm1.setHost(host1);
         vm2.setHost(host2);
         vm3.setHost(host2);
