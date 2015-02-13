@@ -166,8 +166,11 @@ public class OptaVmPlacementConversor {
     private static es.bsc.vmplacement.domain.Vm getOptaVm(Long id, VmDeployed vm,
                                                    List<es.bsc.vmplacement.domain.Host> optaHosts,
                                                    boolean assignVmsToHosts) {
-        es.bsc.vmplacement.domain.Vm result = new es.bsc.vmplacement.domain.Vm(
-                id, vm.getCpus(), vm.getRamMb(), vm.getDiskGb(), vm.getApplicationId(), vm.getId());
+        es.bsc.vmplacement.domain.Vm result = new es.bsc.vmplacement.domain.Vm.Builder(
+                id, vm.getCpus(), vm.getRamMb(), vm.getDiskGb())
+                .appId(vm.getApplicationId())
+                .alphaNumericId(vm.getId())
+                .build();
 
         // If we do not need to assign the VMs to their current hosts, then return the result
         if (!assignVmsToHosts) {
@@ -181,8 +184,11 @@ public class OptaVmPlacementConversor {
 
     // Note: This function should probably be merged with getOptaVm
     private static es.bsc.vmplacement.domain.Vm getOptaVmToDeploy(Long id, Vm vm) {
-        return new es.bsc.vmplacement.domain.Vm(id, vm.getCpus(), vm.getRamMb(), vm.getDiskGb(),
-                vm.getApplicationId(), vm.getName());
+        return new es.bsc.vmplacement.domain.Vm.Builder(
+                id, vm.getCpus(), vm.getRamMb(), vm.getDiskGb())
+                .appId(vm.getApplicationId())
+                .alphaNumericId(vm.getName())
+                .build();
     }
 
     /**
