@@ -18,7 +18,7 @@ public class ScoreCalculatorDistributionTest {
     private ScoreCalculatorDistribution scoreCalculatorDistribution = new ScoreCalculatorDistribution();
 
     @Test
-    public void genericTestHardMediumSoftScoreCalculator() {
+    public void scoreTest() {
         ClusterState clusterState = getTestClusterState();
         assertEquals(-4, scoreCalculatorDistribution.calculateScore(clusterState).getHardScore());
         assertEquals(2, scoreCalculatorDistribution.calculateScore(clusterState).getMediumScore());

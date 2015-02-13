@@ -8,24 +8,21 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
-/**
- * @author David Ortiz (david.ortiz@bsc.es)
- */
-public class ScoreCalculatorConsolidationTest {
-
-    private ScoreCalculatorConsolidation scoreCalculatorConsolidation = new ScoreCalculatorConsolidation();
+public class ScoreCalculatorRandomTest {
+    
+    private final ScoreCalculatorRandom scoreCalculatorRandom = new ScoreCalculatorRandom();
 
     @Test
     public void scoreTest() {
         ClusterState clusterState = getTestClusterState();
-        assertEquals(-4, scoreCalculatorConsolidation.calculateScore(clusterState).getHardScore(0));
-        assertEquals(1, scoreCalculatorConsolidation.calculateScore(clusterState).getSoftScore(0));
-        assertEquals(2, scoreCalculatorConsolidation.calculateScore(clusterState).getSoftScore(1));
-        assertEquals(-275, scoreCalculatorConsolidation.calculateScore(clusterState).getSoftScore(2));
+        assertEquals(-4, scoreCalculatorRandom.calculateScore(clusterState).getHardScore());
+        assertEquals(1, scoreCalculatorRandom.calculateScore(clusterState).getMediumScore());
+        assertTrue(scoreCalculatorRandom.calculateScore(clusterState).getSoftScore() >= 0);
     }
-
+    
     private ClusterState getTestClusterState() {
         // Create hosts
         List<Host> hosts = new ArrayList<>();
@@ -56,5 +53,5 @@ public class ScoreCalculatorConsolidationTest {
         result.setVms(vms);
         return result;
     }
-
+    
 }
