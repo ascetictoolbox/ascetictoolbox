@@ -43,4 +43,19 @@ public class LocalSearchAlgorithm {
         return Collections.unmodifiableList(options);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof LocalSearchAlgorithm)) return false;
+        LocalSearchAlgorithm that = (LocalSearchAlgorithm) o;
+        return name.equals(that.name) && options.equals(that.options);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + options.hashCode();
+        return result;
+    }
+    
 }

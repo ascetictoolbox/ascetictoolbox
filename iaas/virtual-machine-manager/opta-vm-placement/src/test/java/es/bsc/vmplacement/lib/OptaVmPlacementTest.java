@@ -1,17 +1,16 @@
 package es.bsc.vmplacement.lib;
 
-import es.bsc.vmplacement.domain.ClusterState;
-import es.bsc.vmplacement.domain.ConstructionHeuristic;
-import es.bsc.vmplacement.domain.Host;
-import es.bsc.vmplacement.domain.Vm;
+import es.bsc.vmplacement.domain.*;
 import es.bsc.vmplacement.placement.config.Policy;
 import es.bsc.vmplacement.placement.config.VmPlacementConfig;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
@@ -24,8 +23,24 @@ public class OptaVmPlacementTest {
     
     @Test
     public void getConstructionHeuristics() {
-        optaVmPlacement.getConstructionHeuristics()
-                .containsAll(Arrays.asList(ConstructionHeuristic.values()));
+        assertTrue(optaVmPlacement.getConstructionHeuristics()
+                .containsAll(Arrays.asList(ConstructionHeuristic.values())));
+    }
+    
+    @Test
+    public void getLocalSearchAlgorithms() {
+        List<LocalSearchAlgorithm> expectedLocalSearchAlgorithms = new ArrayList<>();
+        expectedLocalSearchAlgorithms.add(new LocalSearchAlgorithm("Hill Climbing", Collections.<String>emptyList()));
+        expectedLocalSearchAlgorithms.add(new LocalSearchAlgorithm("Late Acceptance", Arrays.asList("Size")));
+        expectedLocalSearchAlgorithms.add(new LocalSearchAlgorithm("Late Simulated Annealing", 
+                Arrays.asList("Size", "Accepted Count Limit")));
+        expectedLocalSearchAlgorithms.add(new LocalSearchAlgorithm("Simulated Annealing", 
+                Arrays.asList("Initial Hard Temperature", "Initial Soft Temperature")));
+        expectedLocalSearchAlgorithms.add(new LocalSearchAlgorithm("Step Counting Hill Climbing", 
+                Arrays.asList("Size")));
+        expectedLocalSearchAlgorithms.add(new LocalSearchAlgorithm("Tabu Search", Arrays.asList("Size", 
+                "Accepted Count Limit")));
+        assertTrue(optaVmPlacement.getLocalSearchAlgorithms().containsAll(expectedLocalSearchAlgorithms));
     }
     
     @Test
