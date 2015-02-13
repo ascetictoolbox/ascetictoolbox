@@ -18,10 +18,9 @@
 
 package es.bsc.vmmanagercore.vmplacement;
 
-import es.bsc.vmmanagercore.energymodeller.EnergyModeller;
 import es.bsc.vmplacement.domain.Host;
 import es.bsc.vmplacement.domain.Vm;
-import es.bsc.vmplacement.modellers.energy.EnergyModel;
+import es.bsc.vmplacement.modellers.EnergyModeller;
 
 import java.util.List;
 
@@ -30,11 +29,11 @@ import java.util.List;
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  */
-public class OptaEnergyModeller implements EnergyModel {
+public class OptaEnergyModeller implements EnergyModeller {
 
-    private final EnergyModeller energyModeller;
+    private final es.bsc.vmmanagercore.energymodeller.EnergyModeller energyModeller;
 
-    public OptaEnergyModeller(EnergyModeller energyModeller) {
+    public OptaEnergyModeller(es.bsc.vmmanagercore.energymodeller.EnergyModeller energyModeller) {
         this.energyModeller = energyModeller;
     }
 

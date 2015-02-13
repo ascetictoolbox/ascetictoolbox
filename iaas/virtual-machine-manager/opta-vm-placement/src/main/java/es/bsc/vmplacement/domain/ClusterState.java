@@ -151,8 +151,7 @@ public class ClusterState extends AbstractPersistable implements Solution<Score>
      */
     public int cpusAssignedInHost(Host host) {
         int result = 0;
-        List<Vm> vms = getVmsDeployedInHost(host);
-        for (Vm vm: vms) {
+        for (Vm vm: getVmsDeployedInHost(host)) {
             result += vm.getNcpus();
         }
         return result;

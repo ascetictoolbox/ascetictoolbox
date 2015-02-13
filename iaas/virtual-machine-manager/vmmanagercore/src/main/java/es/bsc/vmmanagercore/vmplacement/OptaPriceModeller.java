@@ -21,8 +21,8 @@ package es.bsc.vmmanagercore.vmplacement;
 import es.bsc.vmmanagercore.pricingmodeller.PricingModeller;
 import es.bsc.vmplacement.domain.Host;
 import es.bsc.vmplacement.domain.Vm;
-import es.bsc.vmplacement.modellers.energy.EnergyModel;
-import es.bsc.vmplacement.modellers.price.PriceModel;
+import es.bsc.vmplacement.modellers.EnergyModeller;
+import es.bsc.vmplacement.modellers.PriceModeller;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ import java.util.List;
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  */
-public class OptaPriceModeller implements PriceModel {
+public class OptaPriceModeller implements PriceModeller {
 
     private final PricingModeller pricingModeller;
 
@@ -40,8 +40,8 @@ public class OptaPriceModeller implements PriceModel {
     }
 
     @Override
-    public double getCost(Host host, List<Vm> vmsDeployedInHost, EnergyModel energyModel) {
-        return pricingModeller.getVmCost(energyModel.getPowerConsumption(host, vmsDeployedInHost),
+    public double getCost(Host host, List<Vm> vmsDeployedInHost, EnergyModeller energyModeller) {
+        return pricingModeller.getVmCost(energyModeller.getPowerConsumption(host, vmsDeployedInHost),
                 host.getHostname());
     }
 

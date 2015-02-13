@@ -112,8 +112,8 @@ public class OptaVmPlacementConversor {
                 getConstructionHeuristic(recommendedPlanRequest.getConstructionHeuristicName()),
                 getLocalSearch(recommendedPlanRequest),
                 false)
-                .energyModel(new OptaEnergyModeller(energyModeller))
-                .priceModel(new OptaPriceModeller(pricingModeller))
+                .energyModeller(new OptaEnergyModeller(energyModeller))
+                .priceModeller(new OptaPriceModeller(pricingModeller))
                 .build();
     }
 
@@ -278,8 +278,8 @@ public class OptaVmPlacementConversor {
      * @param hostname the hostname
      * @return the optaHost found
      */
-    private static es.bsc.vmplacement.domain.Host findOptaHost(List<es.bsc.vmplacement.domain.Host> optaHosts,
-                                                        String hostname) {
+    private static es.bsc.vmplacement.domain.Host findOptaHost(List<es.bsc.vmplacement.domain.Host> optaHosts, 
+                                                               String hostname) {
         for (es.bsc.vmplacement.domain.Host optaHost: optaHosts) {
             if (hostname.equals(optaHost.getHostname())) {
                 return optaHost;

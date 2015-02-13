@@ -16,19 +16,18 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.vmplacement.modellers.price;
+package es.bsc.vmplacement.modellers;
 
 import es.bsc.vmplacement.domain.Host;
 import es.bsc.vmplacement.domain.Vm;
-import es.bsc.vmplacement.modellers.energy.EnergyModel;
 
 import java.util.List;
 
 /**
  * @author David Ortiz (david.ortiz@bsc.es)
  */
-public interface PriceModel {
+public interface PriceModeller {
 
-    double getCost(Host host, List<Vm> vmsDeployedInHost, EnergyModel energyModel);
+    double getCost(Host host, List<Vm> vmsDeployedInHost, EnergyModeller energyModeller);
 
 }

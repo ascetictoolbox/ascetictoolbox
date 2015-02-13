@@ -1,8 +1,8 @@
 package es.bsc.vmplacement.placement.config;
 
 import es.bsc.vmplacement.domain.ConstructionHeuristic;
-import es.bsc.vmplacement.modellers.energy.EnergyModel;
-import es.bsc.vmplacement.modellers.price.PriceModel;
+import es.bsc.vmplacement.modellers.EnergyModeller;
+import es.bsc.vmplacement.modellers.PriceModeller;
 import es.bsc.vmplacement.placement.config.localsearch.LocalSearch;
 
 /**
@@ -18,8 +18,8 @@ public class VmPlacementConfig {
     private final LocalSearch localSearch;
     private final boolean vmsAreFixed; // When set to true, the VMs that are already assigned to a host should not be
                                        // moved to a different one
-    public static EnergyModel energyModel;
-    public static PriceModel priceModel;
+    public static EnergyModeller energyModeller;
+    public static PriceModeller priceModeller;
 
     public static class Builder {
         // Required parameters
@@ -30,8 +30,8 @@ public class VmPlacementConfig {
         private final boolean vmsAreFixed;
 
         // Optional parameters
-        private EnergyModel energyModel = null;
-        private PriceModel priceModel = null;
+        private EnergyModeller energyModeller = null;
+        private PriceModeller priceModeller = null;
 
         public Builder(Policy policy, int timeLimitSeconds, ConstructionHeuristic constructionHeuristic,
                 LocalSearch localSearch, boolean vmsAreFixed) {
@@ -42,13 +42,13 @@ public class VmPlacementConfig {
             this.vmsAreFixed = vmsAreFixed;
         }
 
-        public Builder energyModel(EnergyModel val) {
-            energyModel = val;
+        public Builder energyModeller(EnergyModeller val) {
+            energyModeller = val;
             return this;
         }
 
-        public Builder priceModel(PriceModel val) {
-            priceModel = val;
+        public Builder priceModeller(PriceModeller val) {
+            priceModeller = val;
             return this;
         }
 
@@ -63,8 +63,8 @@ public class VmPlacementConfig {
         constructionHeuristic = builder.constructionHeuristic;
         localSearch = builder.localSearch;
         vmsAreFixed = builder.vmsAreFixed;
-        energyModel = builder.energyModel;
-        priceModel = builder.priceModel;
+        energyModeller = builder.energyModeller;
+        priceModeller = builder.priceModeller;
     }
 
     public Policy getPolicy() {
