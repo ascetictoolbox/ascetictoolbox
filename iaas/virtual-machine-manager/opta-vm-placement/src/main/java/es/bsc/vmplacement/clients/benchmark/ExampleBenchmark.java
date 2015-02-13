@@ -19,8 +19,9 @@
 package es.bsc.vmplacement.clients.benchmark;
 
 /**
- * This class executes a benchmark that compares several construction and local search algorithms.
- * The algorithms to compare as well as the details of the benchmark are defined in an xml file.
+ * This class executes a benchmark that compares several construction and local search algorithms
+ * for the given planning problem.
+ * The algorithms to compare amd the details of the benchmark are defined in an xml file.
  *
  * @author David Ortiz (david.ortiz@bsc.es)
  */
