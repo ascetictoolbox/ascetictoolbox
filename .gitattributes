@@ -233,8 +233,8 @@ iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/domain/Vm.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/domain/comparators/HostStrengthComparator.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/domain/comparators/VmDifficultyComparator.java -text
+iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/lib/IOptaVmPlacement.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/lib/OptaVmPlacement.java -text
-iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/lib/OptaVmPlacementImpl.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/modellers/EnergyModeller.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/modellers/PriceModeller.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/placement/VmPlacementProblem.java -text
@@ -262,7 +262,7 @@ iaas/virtual-machine-manager/opta-vm-placement/src/test/java/es/bsc/vmplacement/
 iaas/virtual-machine-manager/opta-vm-placement/src/test/java/es/bsc/vmplacement/domain/HostTest.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/test/java/es/bsc/vmplacement/domain/comparators/HostStrengthComparatorTest.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/test/java/es/bsc/vmplacement/domain/comparators/VmDifficultyComparatorTest.java -text
-iaas/virtual-machine-manager/opta-vm-placement/src/test/java/es/bsc/vmplacement/lib/OptaVmPlacementImplTest.java -text
+iaas/virtual-machine-manager/opta-vm-placement/src/test/java/es/bsc/vmplacement/lib/OptaVmPlacementTest.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/test/java/es/bsc/vmplacement/scorecalculators/ScoreCalculatorConsolidationTest.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/test/java/es/bsc/vmplacement/scorecalculators/ScoreCalculatorDistributionTest.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/test/java/es/bsc/vmplacement/scorecalculators/ScoreCalculatorGroupByAppTest.java -text

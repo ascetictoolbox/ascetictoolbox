@@ -17,9 +17,9 @@ import static org.junit.Assert.assertNotEquals;
 /**
  * @author David Ortiz (david.ortiz@bsc.es)
  */
-public class OptaVmPlacementImplTest {
+public class OptaVmPlacementTest {
     
-    private OptaVmPlacementImpl optaVmPlacement = new OptaVmPlacementImpl();
+    private IOptaVmPlacement optaVmPlacement = new OptaVmPlacement();
     
     @Test
     public void firstFitTest() {

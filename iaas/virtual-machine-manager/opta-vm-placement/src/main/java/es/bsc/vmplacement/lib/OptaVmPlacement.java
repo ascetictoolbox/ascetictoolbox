@@ -19,38 +19,44 @@
 package es.bsc.vmplacement.lib;
 
 import es.bsc.vmplacement.domain.*;
+import es.bsc.vmplacement.placement.VmPlacementProblem;
 import es.bsc.vmplacement.placement.config.VmPlacementConfig;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
+ * This class exposes the functionality of the library.
+ *
  * @author David Ortiz (david.ortiz@bsc.es)
  */
-public interface OptaVmPlacement {
+public class OptaVmPlacement implements IOptaVmPlacement {
 
-    /**
-     * Given a list of hosts, a list of VMs, applies the best placement that can be found according to the
-     * configuration parameters specified.
-     *
-     * @param hosts the hosts
-     * @param vms the VMs
-     * @param config the configuration parameters for the placement
-     * @return the state of the cluster after applying the best placement that could be found
-     */
-    public ClusterState getBestSolution(List<Host> hosts, List<Vm> vms, VmPlacementConfig config);
+    @Override
+    public ClusterState getBestSolution(List<Host> hosts, List<Vm> vms, VmPlacementConfig config) {
+        return new VmPlacementProblem(hosts, vms, config).getBestSolution();
+    }
 
-    /**
-     * Returns a list of the construction heuristics that are supported by the library.
-     *
-     * @return List of the construction heuristics
-     */
-    public List<ConstructionHeuristic> getConstructionHeuristics();
+    @Override
+    public List<ConstructionHeuristic> getConstructionHeuristics() {
+        List<ConstructionHeuristic> result = new ArrayList<>();
+        result.addAll(Arrays.asList((ConstructionHeuristic.values())));
+        return result;
+    }
 
-    /**
-     * Returns a list of the local search algorithm that are supported by the library.
-     *
-     * @return the list of local search algorithms
-     */
-    public List<LocalSearchAlgorithm> getLocalSearchAlgorithms();
+    @Override
+    public List<LocalSearchAlgorithm> getLocalSearchAlgorithms() {
+        List<LocalSearchAlgorithm> result = new ArrayList<>();
+        result.add(new LocalSearchAlgorithm("Hill Climbing", Collections.<String>emptyList()));
+        result.add(new LocalSearchAlgorithm("Late Acceptance", Arrays.asList("Size")));
+        result.add(new LocalSearchAlgorithm("Late Simulated Annealing", Arrays.asList("Size", "Accepted Count Limit")));
+        result.add(new LocalSearchAlgorithm("Simulated Annealing", Arrays.asList("Initial Hard Temperature",
+                "Initial Soft Temperature")));
+        result.add(new LocalSearchAlgorithm("Step Counting Hill Climbing", Arrays.asList("Size")));
+        result.add(new LocalSearchAlgorithm("Tabu Search", Arrays.asList("Size", "Accepted Count Limit")));
+        return result;
+    }
 
 }

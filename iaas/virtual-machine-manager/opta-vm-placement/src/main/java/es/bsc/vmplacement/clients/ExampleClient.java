@@ -21,8 +21,8 @@ package es.bsc.vmplacement.clients;
 import es.bsc.vmplacement.domain.ConstructionHeuristic;
 import es.bsc.vmplacement.domain.Host;
 import es.bsc.vmplacement.domain.Vm;
+import es.bsc.vmplacement.lib.IOptaVmPlacement;
 import es.bsc.vmplacement.lib.OptaVmPlacement;
-import es.bsc.vmplacement.lib.OptaVmPlacementImpl;
 import es.bsc.vmplacement.placement.config.Policy;
 import es.bsc.vmplacement.placement.config.VmPlacementConfig;
 import es.bsc.vmplacement.placement.config.localsearch.LateAcceptance;
@@ -109,7 +109,7 @@ public class ExampleClient {
     }
 
     public static void main(String[] args) {
-        OptaVmPlacement optaVmPlacement = new OptaVmPlacementImpl();
+        IOptaVmPlacement optaVmPlacement = new OptaVmPlacement();
         VmPlacementConfig vmPlacementConfig =
                 new VmPlacementConfig.Builder(
                         Policy.CONSOLIDATION,

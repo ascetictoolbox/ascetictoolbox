@@ -55,8 +55,8 @@ import es.bsc.vmmanagercore.utils.FileSystem;
 import es.bsc.vmmanagercore.utils.TimeUtils;
 import es.bsc.vmmanagercore.vmplacement.OptaVmPlacementConversor;
 import es.bsc.vmplacement.domain.ClusterState;
+import es.bsc.vmplacement.lib.IOptaVmPlacement;
 import es.bsc.vmplacement.lib.OptaVmPlacement;
-import es.bsc.vmplacement.lib.OptaVmPlacementImpl;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -91,7 +91,7 @@ public class GenericVmManager implements VmManager {
     private List<Host> hosts = new ArrayList<>();
     private SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
-    private OptaVmPlacement optaVmPlacement = new OptaVmPlacementImpl(); // Library used for the VM Placement
+    private IOptaVmPlacement optaVmPlacement = new OptaVmPlacement(); // Library used for the VM Placement
 
     public static EnergyModeller energyModeller;
     public static PricingModeller pricingModeller;
