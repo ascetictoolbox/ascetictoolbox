@@ -88,24 +88,28 @@ public class VmPlacementProblem {
     private ClusterState getInitialState() {
         ClusterState result = new ClusterState();
         result.setVms(vms);
-        result.setHosts(putOffHostsAtTheEndOfTheList(hosts));
+        result.setHosts(putOffHostsAtTheEndOfTheList());
         return result;
     }
 
     /**
      * Returns a modified list of the hosts, where the ones that are off are placed at the end of the list.
-     * This method does not modify the order of the rest of the elements. 
-     * @param hosts the list of hosts
+     * This method does not modify the order of the rest of the elements.
      * @return the list of hosts with the ones that are off at the end
      */
-    private List<Host> putOffHostsAtTheEndOfTheList(List<Host> hosts) {
+    private List<Host> putOffHostsAtTheEndOfTheList() {
         List<Host> result = new ArrayList<>();
-        result.addAll(getOnHosts(hosts));
-        result.addAll(getOffHosts(hosts));
+        result.addAll(getOnHosts());
+        result.addAll(getInitiallyOffHosts());
         return result;
     }
-    
-    private List<Host> getOnHosts(List<Host> hosts) {
+
+    /**
+     * Returns a list that contains the hosts that are on.
+     *
+     * @return the list of hosts
+     */
+    private List<Host> getOnHosts() {
         List<Host> result = new ArrayList<>();
         for (Host host: hosts) {
             if (!host.wasOffInitiallly()) {
@@ -114,8 +118,13 @@ public class VmPlacementProblem {
         }
         return result;
     }
-    
-    private List<Host> getOffHosts(List<Host> hosts) {
+
+    /**
+     * Returns a list that contains the hosts that were off at the beginning of the planning.
+     *
+     * @return the list of hosts
+     */
+    private List<Host> getInitiallyOffHosts() {
         List<Host> result = new ArrayList<>();
         for (Host host: hosts) {
             if (host.wasOffInitiallly()) {

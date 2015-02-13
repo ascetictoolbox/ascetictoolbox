@@ -9,6 +9,7 @@ import es.bsc.vmplacement.placement.config.VmPlacementConfig;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -20,6 +21,12 @@ import static org.junit.Assert.assertNotEquals;
 public class OptaVmPlacementTest {
     
     private IOptaVmPlacement optaVmPlacement = new OptaVmPlacement();
+    
+    @Test
+    public void getConstructionHeuristics() {
+        optaVmPlacement.getConstructionHeuristics()
+                .containsAll(Arrays.asList(ConstructionHeuristic.values()));
+    }
     
     @Test
     public void firstFitTest() {

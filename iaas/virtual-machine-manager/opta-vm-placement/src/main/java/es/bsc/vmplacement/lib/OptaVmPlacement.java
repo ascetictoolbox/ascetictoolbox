@@ -41,9 +41,7 @@ public class OptaVmPlacement implements IOptaVmPlacement {
 
     @Override
     public List<ConstructionHeuristic> getConstructionHeuristics() {
-        List<ConstructionHeuristic> result = new ArrayList<>();
-        result.addAll(Arrays.asList((ConstructionHeuristic.values())));
-        return result;
+        return new ArrayList<>(Arrays.asList(ConstructionHeuristic.values()));
     }
 
     @Override

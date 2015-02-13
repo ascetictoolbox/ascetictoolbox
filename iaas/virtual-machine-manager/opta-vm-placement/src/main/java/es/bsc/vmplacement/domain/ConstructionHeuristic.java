@@ -19,6 +19,8 @@
 package es.bsc.vmplacement.domain;
 
 /**
+ * Enumeration of the supported construction heuristics.
+ *
  * @author David Ortiz (david.ortiz@bsc.es)
  */
 public enum ConstructionHeuristic {
