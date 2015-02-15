@@ -24,6 +24,8 @@ import es.bsc.vmplacement.domain.Vm;
 import java.util.List;
 
 /**
+ * Interface for the Price Modeller to be used in the pricing policy.
+ *  
  * @author David Ortiz (david.ortiz@bsc.es)
  */
 public interface PriceModeller {
