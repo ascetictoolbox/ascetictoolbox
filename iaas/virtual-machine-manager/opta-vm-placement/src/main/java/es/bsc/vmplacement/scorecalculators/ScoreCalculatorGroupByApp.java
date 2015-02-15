@@ -26,6 +26,14 @@ import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
 import java.util.List;
 
 /**
+ * This class defines the score used in the 'group by app' policy.
+ * The score in this case contains a hard, a medium, and a soft score.
+ * Hard score: overcapacity of the servers of the cluster
+ *             plus number of fixed VMs that were moved. (minimize)
+ * Medium score: number of hosts that are off. (maximize)
+ * Soft score: for each VM, sums the number of VMs that are deployed in the same host
+ *             and that belong to the same application. (maximize)
+ *
  * @author David Ortiz (david.ortiz@bsc.es)
  */
 public final class ScoreCalculatorGroupByApp implements SimpleScoreCalculator<ClusterState> {
@@ -39,7 +47,8 @@ public final class ScoreCalculatorGroupByApp implements SimpleScoreCalculator<Cl
     }
     
     private int calculateHardScore(ClusterState solution) {
-        return ScoreCalculatorCommon.getClusterOverCapacityScoreWithPenaltyForFixedVms(solution);
+        return (int) (ScoreCalculatorCommon.getClusterOverCapacityScore(solution)
+                + ScoreCalculatorCommon.getClusterPenaltyScoreForFixedVms(solution));
     }
 
     private int calculateMediumScore(ClusterState solution) {

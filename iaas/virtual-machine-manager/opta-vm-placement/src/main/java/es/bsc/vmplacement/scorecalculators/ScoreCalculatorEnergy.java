@@ -26,6 +26,12 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
 
 /**
+ * This class defines the score used in the energy-aware policy.
+ * The score in this case contains a hard score and a soft score.
+ * Hard score: overcapacity of the servers of the cluster
+ *             plus number of fixed VMs that were moved. (minimize)
+ * Soft score: power consumption of the cluster. (minimize)
+ *
  * @author David Ortiz (david.ortiz@bsc.es)
  */
 public final class ScoreCalculatorEnergy implements SimpleScoreCalculator<ClusterState> {
@@ -40,7 +46,8 @@ public final class ScoreCalculatorEnergy implements SimpleScoreCalculator<Cluste
     }
 
     private int calculateHardScore(ClusterState solution) {
-        return ScoreCalculatorCommon.getClusterOverCapacityScoreWithPenaltyForFixedVms(solution);
+        return (int) (ScoreCalculatorCommon.getClusterOverCapacityScore(solution)
+                + ScoreCalculatorCommon.getClusterPenaltyScoreForFixedVms(solution));
     }
 
     private int calculateSoftScore(ClusterState solution) {

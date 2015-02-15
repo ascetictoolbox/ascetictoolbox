@@ -25,6 +25,13 @@ import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
 import java.util.Random;
 
 /**
+ * This class defines the score used in the random policy.
+ * The score in this case contains a hard, a medium, and a soft score.
+ * Hard score: overcapacity of the servers of the cluster
+ *             plus number of fixed VMs that were moved. (minimize)
+ * Medium score: Number of hosts that are off. (maximize)
+ * Soft score: random value. (maximize)
+ *
  * @author David Ortiz (david.ortiz@bsc.es)
  */
 public final class ScoreCalculatorRandom implements SimpleScoreCalculator<ClusterState> {
@@ -41,7 +48,8 @@ public final class ScoreCalculatorRandom implements SimpleScoreCalculator<Cluste
     }
 
     private int calculateHardScore(ClusterState solution) {
-        return ScoreCalculatorCommon.getClusterOverCapacityScoreWithPenaltyForFixedVms(solution);
+        return (int) (ScoreCalculatorCommon.getClusterOverCapacityScore(solution)
+                + ScoreCalculatorCommon.getClusterPenaltyScoreForFixedVms(solution));
     }
 
     private int calculateMediumScore(ClusterState solution) {

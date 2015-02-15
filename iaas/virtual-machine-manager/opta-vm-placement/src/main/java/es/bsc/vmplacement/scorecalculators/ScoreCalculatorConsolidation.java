@@ -24,13 +24,21 @@ import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
 
 
 /**
+ * This class defines the score used in the consolidation policy.
+ * The score in this case contains 1 hard score and 3 levels of soft scores.
+ * Hard score: overcapacity of the servers of the cluster 
+ *             plus number of fixed VMs that were moved. (minimize)
+ * Soft scores: 1) Number of hosts that are off. (maximize)
+ *              2) Number of hosts that are idle. (maximize)
+ *              3) Total unused CPU %. (minimize)
+ *  
  * @author David Ortiz (david.ortiz@bsc.es)
  */
 public final class ScoreCalculatorConsolidation implements SimpleScoreCalculator<ClusterState> {
 
     @Override
     public BendableScore calculateScore(ClusterState solution) {
-        int[] hardScores = {calculateHardScore(solution)};
+        int[] hardScores = { calculateHardScore(solution) };
         int[] softScores = {
                 calculateSoftScore1(solution), 
                 calculateSoftScore2(solution), 
@@ -39,7 +47,8 @@ public final class ScoreCalculatorConsolidation implements SimpleScoreCalculator
     }
 
     private int calculateHardScore(ClusterState solution) {
-        return ScoreCalculatorCommon.getClusterOverCapacityScoreWithPenaltyForFixedVms(solution);
+        return (int) (ScoreCalculatorCommon.getClusterOverCapacityScore(solution)
+                + ScoreCalculatorCommon.getClusterPenaltyScoreForFixedVms(solution));
     }
 
     private int calculateSoftScore1(ClusterState solution) {
