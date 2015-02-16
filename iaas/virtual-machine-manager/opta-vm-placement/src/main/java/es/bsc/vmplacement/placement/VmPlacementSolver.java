@@ -10,6 +10,8 @@ import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.XmlSolverFactory;
 
 /**
+ * This class creates an instance of an OptaPlanner Solver from an instance of VmPlacementConfig.
+ *  
  * @author David Ortiz (david.ortiz@bsc.es)
  */
 public class VmPlacementSolver {
@@ -20,6 +22,14 @@ public class VmPlacementSolver {
         return solverFactory.buildSolver();
     }
 
+    /**
+     * Modifies the given SolverConfig according to the given placement configuration.
+     * This function sets the policy, the timeout, the construction heuristic, and the local search
+     * algorithm for the given SolverConfig.
+     * 
+     * @param solverConfig the instance of SolverConfig
+     * @param vmPlacementConfig the configuration for the VM placement problem
+     */
     private static void configureSolver(SolverConfig solverConfig, VmPlacementConfig vmPlacementConfig) {
         configurePolicy(solverConfig, vmPlacementConfig);
         configureTimeout(solverConfig, vmPlacementConfig);
@@ -39,22 +49,27 @@ public class VmPlacementSolver {
                 break;
             case PRICE:
                 if (VmPlacementConfig.priceModeller == null) {
-                    throw new IllegalArgumentException("The price policy cannot be applied without a pricing model");
+                    throw new IllegalArgumentException(
+                            "The price policy cannot be applied without a pricing model");
                 }
-                solverConfig.getScoreDirectorFactoryConfig().setSimpleScoreCalculatorClass(ScoreCalculatorPrice.class);
+                solverConfig.getScoreDirectorFactoryConfig()
+                        .setSimpleScoreCalculatorClass(ScoreCalculatorPrice.class);
                 break;
             case ENERGY:
                 if (VmPlacementConfig.energyModeller == null) {
-                    throw new IllegalArgumentException("The energy policy cannot be applied without an energy model");
+                    throw new IllegalArgumentException(
+                            "The energy policy cannot be applied without an energy model");
                 }
-                solverConfig.getScoreDirectorFactoryConfig().setSimpleScoreCalculatorClass(ScoreCalculatorEnergy.class);
+                solverConfig.getScoreDirectorFactoryConfig()
+                        .setSimpleScoreCalculatorClass(ScoreCalculatorEnergy.class);
                 break;
             case GROUP_BY_APP:
                 solverConfig.getScoreDirectorFactoryConfig().setSimpleScoreCalculatorClass(
                         ScoreCalculatorGroupByApp.class);
                 break;
             case RANDOM:
-                solverConfig.getScoreDirectorFactoryConfig().setSimpleScoreCalculatorClass(ScoreCalculatorRandom.class);
+                solverConfig.getScoreDirectorFactoryConfig()
+                        .setSimpleScoreCalculatorClass(ScoreCalculatorRandom.class);
                 break;
             default:
                 throw new IllegalArgumentException("The selected policy is not supported");
@@ -74,26 +89,28 @@ public class VmPlacementSolver {
         else {
             ConstructionHeuristicSolverPhaseConfig heuristicConfig =
                     (ConstructionHeuristicSolverPhaseConfig) solverConfig.getSolverPhaseConfigList().toArray()[0];
+            ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType constructionHeuristicType;
             switch (vmPlacementConfig.getConstructionHeuristic()) {
                 case FIRST_FIT:
-                    heuristicConfig.setConstructionHeuristicType(
-                            ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType.FIRST_FIT);
+                    constructionHeuristicType = 
+                            ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType.FIRST_FIT;
                     break;
                 case FIRST_FIT_DECREASING:
-                    heuristicConfig.setConstructionHeuristicType(
-                            ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType.FIRST_FIT_DECREASING);
+                    constructionHeuristicType =
+                            ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType.FIRST_FIT_DECREASING;
                     break;
                 case BEST_FIT:
-                    heuristicConfig.setConstructionHeuristicType(
-                            ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType.BEST_FIT);
+                    constructionHeuristicType = 
+                            ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType.BEST_FIT;
                     break;
                 case BEST_FIT_DECREASING:
-                    heuristicConfig.setConstructionHeuristicType(
-                            ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType.BEST_FIT_DECREASING);
+                    constructionHeuristicType =
+                            ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType.BEST_FIT_DECREASING;
                     break;
                 default:
                     throw new IllegalArgumentException("The construction heuristic selected is not supported");
             }
+            heuristicConfig.setConstructionHeuristicType(constructionHeuristicType);
         }
     }
 

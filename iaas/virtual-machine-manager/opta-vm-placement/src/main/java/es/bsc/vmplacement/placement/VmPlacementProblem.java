@@ -30,8 +30,8 @@ public class VmPlacementProblem {
      * @param config the configuration object for the VM placement problem
      */
     public VmPlacementProblem(List<Host> hosts, List<Vm> vms, VmPlacementConfig config) {
-        this.hosts = hosts;
-        this.vms = vms;
+        this.hosts = new ArrayList<>(hosts);
+        this.vms = new ArrayList<>(vms);
         this.config = config;
         addFixedVmsToHosts();
     }
