@@ -225,9 +225,6 @@ iaas/virtual-machine-manager/opta-vm-placement/data/vmplacement/unsolved/vmplace
 iaas/virtual-machine-manager/opta-vm-placement/data/vmplacement/unsolved/vmplacement5.xml -text
 iaas/virtual-machine-manager/opta-vm-placement/pom.xml -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/clients/ExampleClient.java -text
-iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/clients/benchmark/CommonBenchmarkApp.java -text
-iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/clients/benchmark/ExampleBenchmark.java -text
-iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/clients/benchmark/LoggingMain.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/domain/AbstractPersistable.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/domain/ClusterState.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/domain/ConstructionHeuristic.java -text
@@ -260,7 +257,6 @@ iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/scorecalculators/ScoreCalculatorPrice.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/scorecalculators/ScoreCalculatorRandom.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/resources/logback.xml -text
-iaas/virtual-machine-manager/opta-vm-placement/src/main/resources/vmplacementBenchmarkConfig.xml.ftl -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/resources/vmplacementSolverConfig.xml -text
 iaas/virtual-machine-manager/opta-vm-placement/src/test/java/es/bsc/vmplacement/domain/ClusterStateTest.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/test/java/es/bsc/vmplacement/domain/HostTest.java -text
