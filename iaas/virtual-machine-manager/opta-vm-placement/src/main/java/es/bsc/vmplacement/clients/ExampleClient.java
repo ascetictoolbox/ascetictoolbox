@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * This class shows an example of how to use the API.
+ * This class shows an example of how to use the library.
  *
  * @author David Ortiz (david.ortiz@bsc.es)
  */

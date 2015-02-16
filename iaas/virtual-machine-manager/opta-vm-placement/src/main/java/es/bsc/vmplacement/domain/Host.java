@@ -30,7 +30,7 @@ public class Host extends AbstractPersistable {
     private final int ncpus;
     private final double ramMb;
     private final double diskGb;
-    private List<Long> fixedVmsIds = new ArrayList<>(); // IDs of the VMs that need to be deployed in this host
+    private final List<Long> fixedVmsIds = new ArrayList<>(); // IDs of the VMs that need to be deployed in this host
     private final boolean initiallyOff; // Host was off before starting planning
 
     public Host(Long id, String hostname, int ncpus, double ramMb, double diskGb, boolean initiallyOff) {

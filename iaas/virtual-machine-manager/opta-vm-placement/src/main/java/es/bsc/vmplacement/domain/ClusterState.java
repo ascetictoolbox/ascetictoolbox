@@ -38,43 +38,10 @@ public class ClusterState extends AbstractPersistable implements Solution<Score>
     private List<Vm> vms;
     private List<Host> hosts;
 
-    public ClusterState () { } // OptaPlanner needs no arg constructor to make clone
+    public ClusterState () { } // OptaPlanner needs no arg constructor to mclone
     
     @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftScoreDefinition.class})
     private Score score;
-
-    @PlanningEntityCollectionProperty
-    public List<Vm> getVms() {
-        return vms;
-    }
-
-    public void setVms(List<Vm> vms) {
-        this.vms = vms;
-    }
-
-    @ValueRangeProvider(id = "hostRange")
-    public List<Host> getHosts() {
-        return hosts;
-    }
-
-    public void setHosts(List<Host> hosts) {
-        this.hosts = hosts;
-    }
-
-    @Override
-    public Score getScore() {
-        return score;
-    }
-
-    @Override
-    public void setScore(Score score) {
-        this.score = score;
-    }
-
-    @Override
-    public Collection<?> getProblemFacts() {
-        return new ArrayList<Object>();
-    }
 
     /**
      * Checks whether a given host is idle.
@@ -197,6 +164,39 @@ public class ClusterState extends AbstractPersistable implements Solution<Score>
         }
         return result;
     }
+    
+    @PlanningEntityCollectionProperty
+    public List<Vm> getVms() {
+        return vms;
+    }
+
+    public void setVms(List<Vm> vms) {
+        this.vms = vms;
+    }
+
+    @ValueRangeProvider(id = "hostRange")
+    public List<Host> getHosts() {
+        return hosts;
+    }
+
+    public void setHosts(List<Host> hosts) {
+        this.hosts = hosts;
+    }
+
+    @Override
+    public Score getScore() {
+        return score;
+    }
+
+    @Override
+    public void setScore(Score score) {
+        this.score = score;
+    }
+
+    @Override
+    public Collection<?> getProblemFacts() {
+        return new ArrayList<Object>();
+    }
 
     @Override
     public String toString() {
@@ -207,12 +207,6 @@ public class ClusterState extends AbstractPersistable implements Solution<Score>
         return sb.toString();
     }
 
-    /**
-     * Returns a list with the hosts that are idle.
-     * We consider a host to be idle if there are not VMs deployed in it.
-     *
-     * @return the list of idle hosts
-     */
     private List<Host> getIdleHosts() {
         // Initialize all hosts to idle
         Map<Host, Boolean> idleHosts = new HashMap<>();

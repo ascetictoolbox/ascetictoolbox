@@ -19,7 +19,6 @@
 package es.bsc.vmplacement.domain;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
-import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 
 import java.io.Serializable;
 
@@ -27,12 +26,7 @@ public abstract class AbstractPersistable implements Serializable, Comparable<Ab
 
     protected Long id;
 
-    protected AbstractPersistable() {
-    }
-
-    protected AbstractPersistable(long id) {
-        this.id = id;
-    }
+    protected AbstractPersistable() { }
 
     public Long getId() {
         return id;
@@ -42,12 +36,6 @@ public abstract class AbstractPersistable implements Serializable, Comparable<Ab
         this.id = id;
     }
 
-    /**
-     * Used by the GUI to sort the {@link ConstraintMatch} list
-     * by {@link ConstraintMatch#getJustificationList()}.
-     * @param other never null
-     * @return comparison
-     */
     public int compareTo(AbstractPersistable other) {
         return new CompareToBuilder()
                 .append(getClass().getName(), other.getClass().getName())

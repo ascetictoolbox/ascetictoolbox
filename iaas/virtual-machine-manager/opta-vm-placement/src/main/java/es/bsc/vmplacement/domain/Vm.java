@@ -32,12 +32,12 @@ public class Vm extends AbstractPersistable {
     private int ncpus;
     private int ramMb;
     private int diskGb;
-    private String appId = null;
+    private String appId;
     private Host host;
     private String alphaNumericId; /* This might be needed in some cases. For example, OpenStack uses alphanumeric
                                    IDs, and optaplanner needs an ID of type long. */
 
-    public Vm() { } // Optaplanner needs to clone
+    public Vm() { } // OptaPlanner needs no arg constructor to clone
 
     public static class Builder {
         
