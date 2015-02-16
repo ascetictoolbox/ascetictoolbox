@@ -21,6 +21,7 @@
 	<module>iaas-slamanager</module>
     <module>iaas-pricing-modeller</module>
     <module>energy-modeller-load-calibration-tool</module>
+	<module>energy-modeller-standalone-calibration-tool</module>
   </modules>
 	<version>0.0.1-SNAPSHOT</version>
 

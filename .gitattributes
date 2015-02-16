@@ -10,6 +10,10 @@ iaas/energy-modeller-load-calibration-tool/src/main/webapp/WEB-INF/glassfish-web
 iaas/energy-modeller-load-calibration-tool/src/main/webapp/WEB-INF/sun-jaxws.xml -text
 iaas/energy-modeller-load-calibration-tool/src/main/webapp/WEB-INF/web.xml -text
 iaas/energy-modeller-load-calibration-tool/src/main/webapp/index.jsp -text
+iaas/energy-modeller-standalone-calibration-tool/nbactions.xml -text
+iaas/energy-modeller-standalone-calibration-tool/pom.xml -text
+iaas/energy-modeller-standalone-calibration-tool/src/main/java/eu/ascetic/iaas/energy/modeller/standalone/calibration/tool/CalibrationRunManager.java -text
+iaas/energy-modeller-standalone-calibration-tool/src/main/java/eu/ascetic/iaas/energy/modeller/standalone/calibration/tool/StandaloneCalibrationTool.java -text
 iaas/energy-modeller/LICENCE.TXT -text
 iaas/energy-modeller/filter.properties -text
 iaas/energy-modeller/nb-configuration.xml -text
