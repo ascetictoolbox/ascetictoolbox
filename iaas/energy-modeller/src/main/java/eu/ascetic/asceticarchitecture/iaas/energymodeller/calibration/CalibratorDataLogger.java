@@ -93,6 +93,7 @@ public class CalibratorDataLogger implements Runnable {
                         && absdifference(currentPower, lastPowerValue) < 0.1) {
                     data.add(dataEntry);
                 }
+                lastClock = dataEntry.getClock();
                 lastPowerValue = dataEntry.getPower();
                 try {
                     Thread.sleep(TimeUnit.SECONDS.toMillis(calibratorWaitSec));
