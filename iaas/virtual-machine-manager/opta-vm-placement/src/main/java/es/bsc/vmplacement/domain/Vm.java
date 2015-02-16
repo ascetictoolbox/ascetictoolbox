@@ -24,6 +24,8 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 
 /**
+ * This class represents a virtual machine.
+ *
  * @author David Ortiz (david.ortiz@bsc.es)
  */
 @PlanningEntity(difficultyComparatorClass = VmDifficultyComparator.class)
@@ -33,7 +35,7 @@ public class Vm extends AbstractPersistable {
     private int ramMb;
     private int diskGb;
     private String appId;
-    private Host host;
+    private Host host; // The host where the Vm should be deployed according to the planner.
     private String alphaNumericId; /* This might be needed in some cases. For example, OpenStack uses alphanumeric
                                    IDs, and optaplanner needs an ID of type long. */
 

@@ -19,7 +19,7 @@
 package es.bsc.vmplacement.domain;
 
 /**
- * Enumeration of the supported construction heuristics.
+ * Enumeration of the construction heuristics supported by this library.
  *
  * @author David Ortiz (david.ortiz@bsc.es)
  */

@@ -19,6 +19,9 @@
 package es.bsc.vmplacement.domain;
 
 /**
+ * This class describes the usage of a host. 
+ * The resources that are taken into account are: cpus, memory, and disk.
+ *  
  * @author David Ortiz (david.ortiz@bsc.es)
  */
 public class HostUsage {

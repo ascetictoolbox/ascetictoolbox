@@ -115,7 +115,8 @@ public class ExampleClient {
                         Policy.CONSOLIDATION,
                         30,
                         ConstructionHeuristic.FIRST_FIT_DECREASING,
-                        new LateAcceptance(400), false).build();
+                        new LateAcceptance(400), 
+                        false).build();
         System.out.println(optaVmPlacement.getBestSolution(getInitialHosts(), getInitialVms(), vmPlacementConfig));
     }
 
