@@ -30,6 +30,10 @@ import org.optaplanner.persistence.xstream.XStreamScoreConverter;
 import java.util.*;
 
 /**
+ * This class defines the state of the cluster at any given time. 
+ * The state contains the hosts of the cluster and the VMs that are deployed or need to be deployed. 
+ * The state also specifies, for each VM, the host where it should be deployed.
+ *  
  * @author David Ortiz (david.ortiz@bsc.es)
  */
 @PlanningSolution
@@ -38,7 +42,7 @@ public class ClusterState extends AbstractPersistable implements Solution<Score>
     private List<Vm> vms;
     private List<Host> hosts;
 
-    public ClusterState () { } // OptaPlanner needs no arg constructor to mclone
+    public ClusterState () { } // OptaPlanner needs no arg constructor to clone
     
     @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftScoreDefinition.class})
     private Score score;
