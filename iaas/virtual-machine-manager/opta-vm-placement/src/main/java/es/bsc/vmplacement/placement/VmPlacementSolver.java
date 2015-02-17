@@ -16,8 +16,19 @@ import org.optaplanner.core.config.solver.XmlSolverFactory;
  */
 public class VmPlacementSolver {
 
+    private static final String BASE_SOLVER_XML_PATH = "/vmplacementSolverConfig.xml";
+
+    /**
+     * This functions builds a solver from an instance of VmPlacementConfig that contains the
+     * information needed to configure it. 
+     *  
+     * @param vmPlacementConfig the configuration to be used to build the solver
+     * @return the solver
+     */
     public static Solver buildSolver(VmPlacementConfig vmPlacementConfig) {
-        SolverFactory solverFactory = new XmlSolverFactory("/vmplacementSolverConfig.xml");
+        // The solver is built from an XML that contains a basic configuration.
+        // This should be a bit simpler than building the solver from scratch.
+        SolverFactory solverFactory = new XmlSolverFactory(BASE_SOLVER_XML_PATH);
         configureSolver(solverFactory.getSolverConfig(), vmPlacementConfig);
         return solverFactory.buildSolver();
     }
