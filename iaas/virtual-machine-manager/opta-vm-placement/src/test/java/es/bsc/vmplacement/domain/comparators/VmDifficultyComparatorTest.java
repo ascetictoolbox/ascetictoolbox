@@ -10,7 +10,7 @@ import static junit.framework.TestCase.assertTrue;
  */
 public class VmDifficultyComparatorTest {
 
-    private VmDifficultyComparator vmDifficultyComparator = new VmDifficultyComparator();
+    private final VmDifficultyComparator vmDifficultyComparator = new VmDifficultyComparator();
 
     @Test
     public void comparisonShouldReturnPositiveWhenFirstVmMoreDifficult() {

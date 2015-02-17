@@ -17,7 +17,7 @@ import static org.junit.Assert.*;
  */
 public class OptaVmPlacementTest {
     
-    private IOptaVmPlacement optaVmPlacement = new OptaVmPlacement();
+    private final IOptaVmPlacement optaVmPlacement = new OptaVmPlacement();
     
     @Test
     public void getConstructionHeuristics() {

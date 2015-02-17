@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class ScoreCalculatorConsolidationTest {
 
-    private ScoreCalculatorConsolidation scoreCalculatorConsolidation = new ScoreCalculatorConsolidation();
+    private final ScoreCalculatorConsolidation scoreCalculatorConsolidation = new ScoreCalculatorConsolidation();
 
     @Test
     public void scoreTest() {

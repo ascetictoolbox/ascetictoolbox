@@ -1,6 +1,5 @@
 package es.bsc.vmplacement.domain;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -15,12 +14,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class HostTest {
 
-    private Host host;
-
-    @Before
-    public void setUp() {
-        host = new Host((long) 1, "1", 4, 4096, 20, false); // 4 CPUs, 4GB RAM, 20GB disk
-    }
+    private Host host = new Host((long) 1, "1", 4, 4096, 20, false); // 4 CPUs, 4GB RAM, 20GB disk;
 
     @Test
     public void testGetters() {

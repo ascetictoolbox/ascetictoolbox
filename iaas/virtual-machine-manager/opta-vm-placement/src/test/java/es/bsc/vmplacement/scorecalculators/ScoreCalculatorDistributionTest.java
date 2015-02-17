@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class ScoreCalculatorDistributionTest {
 
-    private ScoreCalculatorDistribution scoreCalculatorDistribution = new ScoreCalculatorDistribution();
+    private final ScoreCalculatorDistribution scoreCalculatorDistribution = new ScoreCalculatorDistribution();
 
     @Test
     public void scoreTest() {

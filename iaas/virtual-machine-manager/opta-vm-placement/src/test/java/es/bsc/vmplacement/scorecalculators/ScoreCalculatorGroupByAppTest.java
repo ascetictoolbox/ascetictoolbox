@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class ScoreCalculatorGroupByAppTest {
 
-    private ScoreCalculatorGroupByApp scoreCalculatorGroupByApp = new ScoreCalculatorGroupByApp();
+    private final ScoreCalculatorGroupByApp scoreCalculatorGroupByApp = new ScoreCalculatorGroupByApp();
 
     @Test
     public void scoreTest() {
