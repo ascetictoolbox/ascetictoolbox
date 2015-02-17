@@ -3,6 +3,8 @@ package es.bsc.vmplacement.placement.config.localsearch;
 import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorConfig;
 
 /**
+ * Tabu search algorithm.
+ *
  * @author David Ortiz (david.ortiz@bsc.es)
  */
 public class TabuSearch extends LocalSearch {

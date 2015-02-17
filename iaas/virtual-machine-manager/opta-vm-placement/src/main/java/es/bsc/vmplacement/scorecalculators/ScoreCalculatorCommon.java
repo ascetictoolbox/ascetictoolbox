@@ -4,7 +4,7 @@ import es.bsc.vmplacement.domain.ClusterState;
 import es.bsc.vmplacement.domain.Host;
 
 /**
- * This class includes several score functions that are common to different score calculators.
+ * This class includes several score functions that are used in several score calculators.
  *
  * @author David Ortiz (david.ortiz@bsc.es)
  */

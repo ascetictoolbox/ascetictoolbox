@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Hill Climbing algorithm.
+ *
  * @author David Ortiz (david.ortiz@bsc.es)
  */
 public class HillClimbing extends LocalSearch {

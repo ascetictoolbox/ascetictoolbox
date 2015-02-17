@@ -24,7 +24,7 @@ import es.bsc.vmplacement.domain.Vm;
 import java.util.List;
 
 /**
- * Interface for the Energy Modeller to be used in the energy-aware and the price policies.
+ * Interface for the Energy Modeller to be used in the energy-aware and the pricing policies.
  *  
  * @author David Ortiz (david.ortiz@bsc.es)
  */

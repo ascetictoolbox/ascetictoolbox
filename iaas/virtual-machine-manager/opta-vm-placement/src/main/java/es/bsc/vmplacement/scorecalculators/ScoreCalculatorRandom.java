@@ -34,7 +34,7 @@ import java.util.Random;
  *
  * @author David Ortiz (david.ortiz@bsc.es)
  */
-public final class ScoreCalculatorRandom implements SimpleScoreCalculator<ClusterState> {
+public class ScoreCalculatorRandom implements SimpleScoreCalculator<ClusterState> {
 
     private final Random rand = new Random();
     private final static int POSSIBLE_SCORES = 1000000; // Range of values for the random scores

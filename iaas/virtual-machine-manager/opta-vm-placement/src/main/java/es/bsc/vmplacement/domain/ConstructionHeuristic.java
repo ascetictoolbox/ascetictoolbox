@@ -25,8 +25,10 @@ package es.bsc.vmplacement.domain;
  */
 public enum ConstructionHeuristic {
 
-    FIRST_FIT("firstFit"), FIRST_FIT_DECREASING("firstFitDecreasing"), BEST_FIT("bestFit"),
-            BEST_FIT_DECREASING("bestFitDecreasing");
+    FIRST_FIT("First Fit"), 
+    FIRST_FIT_DECREASING("First Fit Decreasing"), 
+    BEST_FIT("Best Fit"),
+    BEST_FIT_DECREASING("Best Fit Decreasing");
 
     private final String name;
 
@@ -34,4 +36,9 @@ public enum ConstructionHeuristic {
         this.name = name;
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
+    
 }

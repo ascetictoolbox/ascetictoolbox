@@ -4,6 +4,8 @@ import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorConfig;
 import org.optaplanner.core.config.localsearch.decider.forager.ForagerConfig;
 
 /**
+ * Local search algorithm.
+ *
  * @author David Ortiz (david.ortiz@bsc.es)
  */
 public abstract class LocalSearch {

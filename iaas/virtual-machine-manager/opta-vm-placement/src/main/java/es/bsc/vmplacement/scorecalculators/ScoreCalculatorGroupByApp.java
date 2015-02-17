@@ -36,7 +36,7 @@ import java.util.List;
  *
  * @author David Ortiz (david.ortiz@bsc.es)
  */
-public final class ScoreCalculatorGroupByApp implements SimpleScoreCalculator<ClusterState> {
+public class ScoreCalculatorGroupByApp implements SimpleScoreCalculator<ClusterState> {
 
     @Override
     public HardMediumSoftScore calculateScore(ClusterState solution) {

@@ -35,7 +35,7 @@ import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
  *
  * @author David Ortiz (david.ortiz@bsc.es)
  */
-public final class ScoreCalculatorPrice implements SimpleScoreCalculator<ClusterState> {
+public class ScoreCalculatorPrice implements SimpleScoreCalculator<ClusterState> {
 
     private final PriceModeller priceModeller = VmPlacementConfig.priceModeller;
     private final EnergyModeller energyModeller = VmPlacementConfig.energyModeller;

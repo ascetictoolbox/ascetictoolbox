@@ -3,6 +3,8 @@ package es.bsc.vmplacement.placement.config.localsearch;
 import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorConfig;
 
 /**
+ * Late acceptance algorithm.
+ *
  * @author David Ortiz (david.ortiz@bsc.es)
  */
 public class LateAcceptance extends LocalSearch {

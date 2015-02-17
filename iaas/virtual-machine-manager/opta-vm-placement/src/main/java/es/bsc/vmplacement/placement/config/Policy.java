@@ -1,12 +1,18 @@
 package es.bsc.vmplacement.placement.config;
 
 /**
+ * Enumeration of the policies supported by this library.
+ *
  * @author David Ortiz (david.ortiz@bsc.es)
  */
 public enum Policy {
 
-    CONSOLIDATION("consolidation"), DISTRIBUTION("distribution"), PRICE("price"), ENERGY("energy"),
-        GROUP_BY_APP("groupByApp"), RANDOM("random");
+    CONSOLIDATION("Consolidation"), 
+    DISTRIBUTION("Distribution"), 
+    PRICE("Price"), 
+    ENERGY("Energy"),
+    GROUP_BY_APP("Group by App"), 
+    RANDOM("Random");
 
     private final String name;
 
@@ -14,4 +20,9 @@ public enum Policy {
         this.name = name;
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
+    
 }

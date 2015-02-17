@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
  *  
  * @author David Ortiz (david.ortiz@bsc.es)
  */
-public final class ScoreCalculatorConsolidation implements SimpleScoreCalculator<ClusterState> {
+public class ScoreCalculatorConsolidation implements SimpleScoreCalculator<ClusterState> {
 
     @Override
     public BendableScore calculateScore(ClusterState solution) {

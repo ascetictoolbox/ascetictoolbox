@@ -3,6 +3,8 @@ package es.bsc.vmplacement.placement.config.localsearch;
 import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorConfig;
 
 /**
+ * Late simulated annealing algorithm.
+ *
  * @author David Ortiz (david.ortiz@bsc.es)
  */
 public class LateSimulatedAnnealing extends LocalSearch {

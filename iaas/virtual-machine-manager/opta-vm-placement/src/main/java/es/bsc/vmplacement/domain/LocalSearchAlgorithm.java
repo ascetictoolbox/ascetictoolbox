@@ -24,7 +24,7 @@ import java.util.List;
 
 /**
  * This class describes a local search algorithm. A local search algorithm is defined by its name
- * and a list of options that it supports.
+ * and the list of options that it supports.
  *
  * @author David Ortiz (david.ortiz@bsc.es)
  */

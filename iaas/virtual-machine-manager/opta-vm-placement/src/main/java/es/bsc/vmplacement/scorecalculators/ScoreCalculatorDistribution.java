@@ -14,7 +14,7 @@ import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
  *
  * @author David Ortiz (david.ortiz@bsc.es)
  */
-public final class ScoreCalculatorDistribution implements SimpleScoreCalculator<ClusterState> {
+public class ScoreCalculatorDistribution implements SimpleScoreCalculator<ClusterState> {
 
     @Override
     public HardMediumSoftScore calculateScore(ClusterState solution) {
