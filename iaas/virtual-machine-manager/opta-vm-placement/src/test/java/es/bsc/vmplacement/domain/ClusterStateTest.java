@@ -155,6 +155,58 @@ public class ClusterStateTest {
         assertEquals(1, clusterState.countOffHosts());
     }
 
+    @Test
+    public void countVmMigrationsNeededWhenResultIsZero() {
+        ClusterState clusterState = new ClusterState();
+        
+        List<Host> hosts = new ArrayList<>();
+        Host host1 = new Host((long) 1, "1", 4, 4096, 4, true);
+        hosts.add(host1);
+        
+        List<Vm> vms = new ArrayList<>();
+        Vm vm1 = new Vm.Builder((long) 1, 1, 1024, 1).build();
+        vm1.setHost(host1);
+        vms.add(vm1);
+        
+        clusterState.setHosts(hosts);
+        clusterState.setVms(vms);
+        
+        assertEquals(0, clusterState.countVmMigrationsNeeded(clusterState));
+    }
+    
+    @Test
+    public void countVmMigrationsNeededWhenResultIsGreaterThanZero() {
+        // Prepare first cluster
+        ClusterState clusterState1 = new ClusterState();
+        
+        List<Host> hosts = new ArrayList<>();
+        Host host1 = new Host((long) 1, "1", 4, 4096, 4, true);
+        Host host2 = new Host((long) 2, "2", 2, 2048, 4, true);
+        hosts.add(host1);
+        hosts.add(host2);
+        
+        List<Vm> vms1 = new ArrayList<>();
+        Vm vm1 = new Vm.Builder((long) 1, 1, 1024, 1).build();
+        vm1.setHost(host1);
+        vms1.add(vm1);
+        
+        clusterState1.setHosts(hosts);
+        clusterState1.setVms(vms1);
+        
+        // Prepare second cluster
+        ClusterState clusterState2 = new ClusterState();
+        
+        List<Vm> vms2 = new ArrayList<>();
+        Vm vm2 = new Vm.Builder((long) 1, 1, 1024, 1).build(); // VM with same ID
+        vm2.setHost(host2); // VM on different cluster
+        vms2.add(vm2);
+        
+        clusterState2.setHosts(hosts); // Hosts are the same
+        clusterState2.setVms(vms2);
+        
+        assertEquals(1, clusterState1.countVmMigrationsNeeded(clusterState2));
+    }
+    
     private void initializeTestClusterState(ClusterState clusterState) {
         List<Host> hosts = getTestHosts();
         clusterState.setHosts(hosts);

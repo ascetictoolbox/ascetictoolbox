@@ -85,6 +85,16 @@ public class Vm extends AbstractPersistable {
         alphaNumericId = builder.alphaNumericId;
     }
 
+    /**
+     * Checks whether this VM is deployed in the same host as the given one.
+     *
+     * @param vm the given VM
+     * @return True if the two VMs are deployed in the same host, False otherwise.
+     */
+    public boolean isInTheSameHost(Vm vm) {
+        return host.getId().equals(vm.getHost().getId());
+    }
+    
     public int getNcpus() {
         return ncpus;
     }

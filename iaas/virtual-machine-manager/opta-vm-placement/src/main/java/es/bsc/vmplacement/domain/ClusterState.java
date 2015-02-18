@@ -168,6 +168,37 @@ public class ClusterState extends AbstractPersistable implements Solution<Score>
         }
         return result;
     }
+
+    /**
+     * Returns the number of VM migrations needed to go from this cluster state to the given one.
+     *  
+     * @param destinyClusterState the destiny cluster state
+     * @return the number of VM migrations needed
+     */
+    public int countVmMigrationsNeeded(ClusterState destinyClusterState) {
+        int result = 0;
+        for (Vm vm: vms) {
+            if (!vm.isInTheSameHost(destinyClusterState.getVmById(vm.getId()))) {
+                ++result;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Gets a VM by ID.
+     *  
+     * @param id the VM ID
+     * @return the VM or null if it does not exist
+     */
+    public Vm getVmById(long id) {
+        for (Vm vm: vms) {
+            if (vm.getId() == id) {
+                return vm;
+            }
+        }
+        return null;
+    }
     
     @PlanningEntityCollectionProperty
     public List<Vm> getVms() {
@@ -253,5 +284,5 @@ public class ClusterState extends AbstractPersistable implements Solution<Score>
         double unusedPerc = (double)(host.getNcpus() - cpusAssignedInHost(host))/(host.getNcpus());
         return unusedPerc > 0 ? unusedPerc : 0; // If a host is overbooked simply return 0
     }
-
+    
 }

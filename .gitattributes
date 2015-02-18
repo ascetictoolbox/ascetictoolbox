@@ -261,6 +261,7 @@ iaas/virtual-machine-manager/opta-vm-placement/src/main/resources/vmplacementSol
 iaas/virtual-machine-manager/opta-vm-placement/src/test/java/es/bsc/vmplacement/domain/ClusterStateTest.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/test/java/es/bsc/vmplacement/domain/HostTest.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/test/java/es/bsc/vmplacement/domain/HostUsageTest.java -text
+iaas/virtual-machine-manager/opta-vm-placement/src/test/java/es/bsc/vmplacement/domain/VmTest.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/test/java/es/bsc/vmplacement/domain/comparators/HostStrengthComparatorTest.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/test/java/es/bsc/vmplacement/domain/comparators/VmDifficultyComparatorTest.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/test/java/es/bsc/vmplacement/lib/OptaVmPlacementTest.java -text
