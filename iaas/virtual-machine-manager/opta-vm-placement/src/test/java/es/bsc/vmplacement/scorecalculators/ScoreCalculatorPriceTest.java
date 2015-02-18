@@ -21,7 +21,7 @@ package es.bsc.vmplacement.scorecalculators;
 import es.bsc.vmplacement.domain.ClusterState;
 import es.bsc.vmplacement.domain.Host;
 import es.bsc.vmplacement.domain.Vm;
-import es.bsc.vmplacement.modellers.EnergyModeller;
+import es.bsc.vmplacement.modellers.PriceModeller;
 import es.bsc.vmplacement.placement.config.VmPlacementConfig;
 import org.junit.AfterClass;
 import org.junit.Test;
@@ -35,17 +35,17 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author David Ortiz (david.ortiz@bsc.es)
  */
-public class ScoreCalculatorEnergyTest {
+public class ScoreCalculatorPriceTest {
 
     private final Host host1 = new Host((long) 1, "1", 8, 8192, 8, false);
     private final Host host2 = new Host((long) 2, "2", 4, 4096, 4, false);
     private final Vm vm1 = new Vm.Builder((long) 1, 2, 2048, 2).build();
     private final Vm vm2 = new Vm.Builder((long) 2, 1, 1024, 1).build();
-    
+
     @AfterClass
     public static void tearDown() {
-        VmPlacementConfig.energyModeller = null; // It was mocked, we need to null it again so it does
-                                                // interfere with other tests.
+        VmPlacementConfig.priceModeller = null; // It was mocked, we need to null it again so it does
+                                                 // interfere with other tests.
     }
     
     @Test
@@ -55,20 +55,20 @@ public class ScoreCalculatorEnergyTest {
         vmsInHost1.add(vm1);
         List<Vm> vmsInHost2 = new ArrayList<>();
         vmsInHost2.add(vm2);
-        
-        mockEnergyModeller(vmsInHost1, vmsInHost2);
 
-        ScoreCalculatorEnergy scoreCalculatorEnergy = new ScoreCalculatorEnergy();
-        
-        assertEquals(0, scoreCalculatorEnergy.calculateScore(testClusterState).getHardScore());
-        assertEquals(-30, scoreCalculatorEnergy.calculateScore(testClusterState).getSoftScore());
+        mockPriceModeller(vmsInHost1, vmsInHost2);
+
+        ScoreCalculatorPrice scoreCalculatorPrice = new ScoreCalculatorPrice();
+
+        assertEquals(0, scoreCalculatorPrice.calculateScore(testClusterState).getHardScore());
+        assertEquals(-30, scoreCalculatorPrice.calculateScore(testClusterState).getSoftScore());
     }
-    
-    private void mockEnergyModeller(List<Vm> vmsInHost1, List<Vm> vmsInHost2) {
-        VmPlacementConfig.energyModeller = Mockito.mock(EnergyModeller.class);
-        Mockito.when(VmPlacementConfig.energyModeller.getPowerConsumption(host1, vmsInHost1))
+
+    private void mockPriceModeller(List<Vm> vmsInHost1, List<Vm> vmsInHost2) {
+        VmPlacementConfig.priceModeller = Mockito.mock(PriceModeller.class);
+        Mockito.when(VmPlacementConfig.priceModeller.getCost(host1, vmsInHost1, null))
                 .thenReturn(20.0);
-        Mockito.when(VmPlacementConfig.energyModeller.getPowerConsumption(host2, vmsInHost2))
+        Mockito.when(VmPlacementConfig.priceModeller.getCost(host2, vmsInHost2, null))
                 .thenReturn(10.0);
     }
 
