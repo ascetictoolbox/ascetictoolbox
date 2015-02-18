@@ -18,30 +18,22 @@
 
 package es.bsc.vmplacement.domain;
 
-import org.apache.commons.lang.builder.CompareToBuilder;
+import org.junit.Test;
 
-import java.io.Serializable;
+import static org.junit.Assert.assertEquals;
 
-public abstract class AbstractPersistable implements Serializable, Comparable<AbstractPersistable> {
+/**
+ * @author David Ortiz (david.ortiz@bsc.es)
+ */
+public class HostUsageTest {
 
-    protected Long id;
+    private HostUsage hostUsage = new HostUsage(1, 2048, 4);
 
-    protected AbstractPersistable() { }
-
-    public Long getId() {
-        return id;
-    }
-
-    public int compareTo(AbstractPersistable other) {
-        return new CompareToBuilder()
-                .append(getClass().getName(), other.getClass().getName())
-                .append(id, other.id)
-                .toComparison();
-    }
-
-    public String toString() {
-        return "[" + getClass().getName().replaceAll(".*\\.", "") + "-" + id + "]";
+    @Test
+    public void testGetters() {
+        assertEquals(1, hostUsage.getNcpusUsed());
+        assertEquals(2048, hostUsage.getRamMbUsed());
+        assertEquals(4, hostUsage.getDiskGbUsed());
     }
 
 }
-

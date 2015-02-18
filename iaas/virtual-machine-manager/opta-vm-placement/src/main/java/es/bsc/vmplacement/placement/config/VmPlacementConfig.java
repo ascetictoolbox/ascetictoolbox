@@ -42,13 +42,13 @@ public class VmPlacementConfig {
             this.vmsAreFixed = vmsAreFixed;
         }
 
-        public Builder energyModeller(EnergyModeller val) {
-            energyModeller = val;
+        public Builder energyModeller(EnergyModeller energyModeller) {
+            this.energyModeller = energyModeller;
             return this;
         }
 
-        public Builder priceModeller(PriceModeller val) {
-            priceModeller = val;
+        public Builder priceModeller(PriceModeller priceModeller) {
+            this.priceModeller = priceModeller;
             return this;
         }
 

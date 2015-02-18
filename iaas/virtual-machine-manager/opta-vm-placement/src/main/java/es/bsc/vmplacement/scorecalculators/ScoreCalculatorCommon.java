@@ -10,7 +10,7 @@ import es.bsc.vmplacement.domain.Host;
  */
 public abstract class ScoreCalculatorCommon {
 
-    private final static int PENALTY_FOR_MOVING_FIXED_VMS = 10000;
+    public final static int PENALTY_FOR_MOVING_FIXED_VMS = 10000;
 
     public static double getClusterOverCapacityScore(ClusterState clusterState) {
         double result = 0;
