@@ -55,6 +55,8 @@ import es.bsc.vmmanagercore.utils.FileSystem;
 import es.bsc.vmmanagercore.utils.TimeUtils;
 import es.bsc.vmmanagercore.vmplacement.OptaVmPlacementConversor;
 import es.bsc.vmplacement.domain.ClusterState;
+import es.bsc.vmplacement.domain.LocalSearchHeuristic;
+import es.bsc.vmplacement.domain.LocalSearchHeuristicOption;
 import es.bsc.vmplacement.lib.IOptaVmPlacement;
 import es.bsc.vmplacement.lib.OptaVmPlacement;
 
@@ -447,9 +449,18 @@ public class GenericVmManager implements VmManager {
      */
     @Override
     public List<LocalSearchAlgorithmOptionsUnset> getLocalSearchAlgorithms() {
+        // This function could be simplified changing the LocalSearchAlgorithmOptionsUnset
+        // It would be a good idea to use the same approach as in the vm placement library
         List<LocalSearchAlgorithmOptionsUnset> result = new ArrayList<>();
-        for (es.bsc.vmplacement.domain.LocalSearchAlgorithm algorithm: optaVmPlacement.getLocalSearchAlgorithms()) {
-            result.add(new LocalSearchAlgorithmOptionsUnset(algorithm.getName(), algorithm.getOptions()));
+        for (Map.Entry<LocalSearchHeuristic, List<LocalSearchHeuristicOption>> entry : 
+                optaVmPlacement.getLocalSearchAlgorithms().entrySet()) {
+            String heuristicName = entry.getKey().toString();
+            List<String> heuristicOptions = new ArrayList<>();
+            for (LocalSearchHeuristicOption option: entry.getValue()) {
+                heuristicOptions.add(option.toString());
+            }
+            result.add(new LocalSearchAlgorithmOptionsUnset(heuristicName, heuristicOptions));
+            
         }
         return result;
     }

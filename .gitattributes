@@ -230,7 +230,8 @@ iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/domain/ConstructionHeuristic.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/domain/Host.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/domain/HostUsage.java -text
-iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/domain/LocalSearchAlgorithm.java -text
+iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/domain/LocalSearchHeuristic.java -text
+iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/domain/LocalSearchHeuristicOption.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/domain/Vm.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/domain/comparators/HostStrengthComparator.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/domain/comparators/VmDifficultyComparator.java -text

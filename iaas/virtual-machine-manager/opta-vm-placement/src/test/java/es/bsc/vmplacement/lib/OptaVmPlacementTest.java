@@ -23,10 +23,7 @@ import es.bsc.vmplacement.placement.config.Policy;
 import es.bsc.vmplacement.placement.config.VmPlacementConfig;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -45,18 +42,30 @@ public class OptaVmPlacementTest {
     
     @Test
     public void getLocalSearchAlgorithms() {
-        List<LocalSearchAlgorithm> expectedLocalSearchAlgorithms = new ArrayList<>();
-        expectedLocalSearchAlgorithms.add(new LocalSearchAlgorithm("Hill Climbing", Collections.<String>emptyList()));
-        expectedLocalSearchAlgorithms.add(new LocalSearchAlgorithm("Late Acceptance", Arrays.asList("Size")));
-        expectedLocalSearchAlgorithms.add(new LocalSearchAlgorithm("Late Simulated Annealing", 
-                Arrays.asList("Size", "Accepted Count Limit")));
-        expectedLocalSearchAlgorithms.add(new LocalSearchAlgorithm("Simulated Annealing", 
-                Arrays.asList("Initial Hard Temperature", "Initial Soft Temperature")));
-        expectedLocalSearchAlgorithms.add(new LocalSearchAlgorithm("Step Counting Hill Climbing", 
-                Arrays.asList("Size")));
-        expectedLocalSearchAlgorithms.add(new LocalSearchAlgorithm("Tabu Search", Arrays.asList("Size", 
-                "Accepted Count Limit")));
-        assertTrue(optaVmPlacement.getLocalSearchAlgorithms().containsAll(expectedLocalSearchAlgorithms));
+        Map<LocalSearchHeuristic, List<LocalSearchHeuristicOption>> expectedLocalSearchAlgorithms
+                = new HashMap<>();
+        expectedLocalSearchAlgorithms.put(
+                LocalSearchHeuristic.HILL_CLIMBING,
+                Collections.<LocalSearchHeuristicOption>emptyList());
+        expectedLocalSearchAlgorithms.put(
+                LocalSearchHeuristic.LATE_ACCEPTANCE,
+                Arrays.asList(LocalSearchHeuristicOption.SIZE));
+        expectedLocalSearchAlgorithms.put(
+                LocalSearchHeuristic.LATE_SIMULATED_ANNEALING,
+                Arrays.asList(LocalSearchHeuristicOption.SIZE, 
+                        LocalSearchHeuristicOption.ACCEPTED_COUNT_LIMIT));
+        expectedLocalSearchAlgorithms.put(
+                LocalSearchHeuristic.SIMULATED_ANNEALING,
+                Arrays.asList(LocalSearchHeuristicOption.INITIAL_HARD_TEMPERATURE,
+                        LocalSearchHeuristicOption.INITIAL_SOFT_TEMPERATURE));
+        expectedLocalSearchAlgorithms.put(
+                LocalSearchHeuristic.STEP_COUNTING_HILL_CLIMBING,
+                Arrays.asList(LocalSearchHeuristicOption.SIZE));
+        expectedLocalSearchAlgorithms.put(
+                LocalSearchHeuristic.TABU_SEARCH,
+                Arrays.asList(LocalSearchHeuristicOption.SIZE, 
+                        LocalSearchHeuristicOption.ACCEPTED_COUNT_LIMIT));
+        assertTrue(optaVmPlacement.getLocalSearchAlgorithms().equals(expectedLocalSearchAlgorithms));
     }
     
     @Test

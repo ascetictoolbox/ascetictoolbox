@@ -22,6 +22,7 @@ import es.bsc.vmplacement.domain.*;
 import es.bsc.vmplacement.placement.config.VmPlacementConfig;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author David Ortiz (david.ortiz@bsc.es)
@@ -47,10 +48,10 @@ public interface IOptaVmPlacement {
     public List<ConstructionHeuristic> getConstructionHeuristics();
 
     /**
-     * Returns a list of the local search algorithm that are supported by the library.
+     * Returns a map with the local search algorithms supported by the library and the options they use.
      *
-     * @return the list of local search algorithms
+     * @return the map of local search algorithms
      */
-    public List<LocalSearchAlgorithm> getLocalSearchAlgorithms();
+    public Map<LocalSearchHeuristic, List<LocalSearchHeuristicOption>> getLocalSearchAlgorithms();
 
 }
