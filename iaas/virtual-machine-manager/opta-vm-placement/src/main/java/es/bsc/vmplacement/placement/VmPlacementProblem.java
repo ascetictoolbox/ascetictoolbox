@@ -23,6 +23,7 @@ import es.bsc.vmplacement.domain.ClusterState;
 import es.bsc.vmplacement.domain.Host;
 import es.bsc.vmplacement.domain.Vm;
 import es.bsc.vmplacement.placement.config.VmPlacementConfig;
+import es.bsc.vmplacement.placement.solver.VmPlacementSolver;
 import org.optaplanner.core.api.solver.Solver;
 
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class VmPlacementProblem {
     private final List<Vm> vms;
     private final List<Host> hosts;
     private final VmPlacementConfig config;
-    private final VmPlacementSolver vmPlacementSolver = new VmPlacementSolver();
+    private final VmPlacementSolver vmPlacementSolver;
 
     /**
      * Class constructor.
@@ -53,6 +54,7 @@ public class VmPlacementProblem {
         this.hosts = new ArrayList<>(hosts);
         this.vms = new ArrayList<>(vms);
         this.config = config;
+        this.vmPlacementSolver = new VmPlacementSolver(config);
         addFixedVmsToHosts();
     }
 
@@ -62,7 +64,7 @@ public class VmPlacementProblem {
      * @return the state of a cluster after solving the placement problem
      */
     public ClusterState getBestSolution() {
-        Solver solver = vmPlacementSolver.buildSolver(config);
+        Solver solver = vmPlacementSolver.buildSolver();
         solver.setPlanningProblem(getInitialState());
         solver.solve();
         return (ClusterState) solver.getBestSolution();

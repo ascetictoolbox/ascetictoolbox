@@ -17,11 +17,10 @@
  * under the License.
  */
 
-package es.bsc.vmplacement.placement;
+package es.bsc.vmplacement.placement.solver;
 
 import es.bsc.vmplacement.placement.config.VmPlacementConfig;
 import es.bsc.vmplacement.scorecalculators.*;
-import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicSolverPhaseConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchSolverPhaseConfig;
@@ -29,36 +28,33 @@ import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.XmlSolverFactory;
 
 /**
- * This class creates an instance of an OptaPlanner Solver from an instance of VmPlacementConfig.
- *  
+ * This class creates an instance of an OptaPlanner SolverFactory from an instance of VmPlacementConfig.
+ *
  * @author David Ortiz (david.ortiz@bsc.es)
  */
-public class VmPlacementSolver {
+public class VmPlacementSolverFactory {
 
     private static final String BASE_SOLVER_XML_PATH = "/vmplacementSolverConfig.xml";
+    
+    private final VmPlacementConfig vmPlacementConfig;
 
-    public VmPlacementSolver() { }
+    public VmPlacementSolverFactory(VmPlacementConfig vmPlacementConfig) {
+        this.vmPlacementConfig = vmPlacementConfig;
+    }
 
-    /**
-     * This functions builds a solver from an instance of VmPlacementConfig that contains the
-     * information needed to configure it. 
-     *  
-     * @param vmPlacementConfig the configuration to be used to build the solver
-     * @return the solver
-     */
-    public Solver buildSolver(VmPlacementConfig vmPlacementConfig) {
+    public SolverFactory getSolverFactory() {
         // The solver is built from an XML that contains a basic configuration.
         // This should be a bit simpler than building the solver from scratch.
         SolverFactory solverFactory = new XmlSolverFactory(BASE_SOLVER_XML_PATH);
         configureSolver(solverFactory.getSolverConfig(), vmPlacementConfig);
-        return solverFactory.buildSolver();
+        return solverFactory;
     }
 
     /**
      * Modifies the given SolverConfig according to the given placement configuration.
      * This function sets the policy, the timeout, the construction heuristic, and the local search
      * algorithm for the given SolverConfig.
-     * 
+     *
      * @param solverConfig the instance of SolverConfig
      * @param vmPlacementConfig the configuration for the VM placement problem
      */
@@ -124,7 +120,7 @@ public class VmPlacementSolver {
             ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType constructionHeuristicType;
             switch (vmPlacementConfig.getConstructionHeuristic()) {
                 case FIRST_FIT:
-                    constructionHeuristicType = 
+                    constructionHeuristicType =
                             ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType.FIRST_FIT;
                     break;
                 case FIRST_FIT_DECREASING:
@@ -132,7 +128,7 @@ public class VmPlacementSolver {
                             ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType.FIRST_FIT_DECREASING;
                     break;
                 case BEST_FIT:
-                    constructionHeuristicType = 
+                    constructionHeuristicType =
                             ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType.BEST_FIT;
                     break;
                 case BEST_FIT_DECREASING:
@@ -159,5 +155,5 @@ public class VmPlacementSolver {
             solverConfig.getSolverPhaseConfigList().add(localSearchSolverPhaseConfig);
         }
     }
-
+    
 }
