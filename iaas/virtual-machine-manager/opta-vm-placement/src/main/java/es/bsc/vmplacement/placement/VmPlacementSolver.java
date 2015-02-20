@@ -18,6 +18,8 @@ public class VmPlacementSolver {
 
     private static final String BASE_SOLVER_XML_PATH = "/vmplacementSolverConfig.xml";
 
+    public VmPlacementSolver() { }
+
     /**
      * This functions builds a solver from an instance of VmPlacementConfig that contains the
      * information needed to configure it. 
@@ -25,7 +27,7 @@ public class VmPlacementSolver {
      * @param vmPlacementConfig the configuration to be used to build the solver
      * @return the solver
      */
-    public static Solver buildSolver(VmPlacementConfig vmPlacementConfig) {
+    public Solver buildSolver(VmPlacementConfig vmPlacementConfig) {
         // The solver is built from an XML that contains a basic configuration.
         // This should be a bit simpler than building the solver from scratch.
         SolverFactory solverFactory = new XmlSolverFactory(BASE_SOLVER_XML_PATH);
@@ -41,14 +43,14 @@ public class VmPlacementSolver {
      * @param solverConfig the instance of SolverConfig
      * @param vmPlacementConfig the configuration for the VM placement problem
      */
-    private static void configureSolver(SolverConfig solverConfig, VmPlacementConfig vmPlacementConfig) {
+    private void configureSolver(SolverConfig solverConfig, VmPlacementConfig vmPlacementConfig) {
         configurePolicy(solverConfig, vmPlacementConfig);
         configureTimeout(solverConfig, vmPlacementConfig);
         configureConstructionHeuristic(solverConfig, vmPlacementConfig);
         configureLocalSearch(solverConfig, vmPlacementConfig);
     }
 
-    private static void configurePolicy(SolverConfig solverConfig, VmPlacementConfig vmPlacementConfig) {
+    private void configurePolicy(SolverConfig solverConfig, VmPlacementConfig vmPlacementConfig) {
         switch(vmPlacementConfig.getPolicy()) {
             case CONSOLIDATION:
                 solverConfig.getScoreDirectorFactoryConfig().setSimpleScoreCalculatorClass(
@@ -87,11 +89,11 @@ public class VmPlacementSolver {
         }
     }
 
-    private static void configureTimeout(SolverConfig solverConfig, VmPlacementConfig vmPlacementConfig) {
+    private void configureTimeout(SolverConfig solverConfig, VmPlacementConfig vmPlacementConfig) {
         solverConfig.getTerminationConfig().setMaximumSecondsSpend((long) vmPlacementConfig.getTimeLimitSeconds());
     }
 
-    private static void configureConstructionHeuristic(SolverConfig solverConfig, VmPlacementConfig vmPlacementConfig) {
+    private void configureConstructionHeuristic(SolverConfig solverConfig, VmPlacementConfig vmPlacementConfig) {
         // If we do not want to use a const. heuristic, remove the default one
         if (vmPlacementConfig.getConstructionHeuristic() == null) {
             solverConfig.getSolverPhaseConfigList().remove(0);
@@ -125,7 +127,7 @@ public class VmPlacementSolver {
         }
     }
 
-    private static void configureLocalSearch(SolverConfig solverConfig, VmPlacementConfig vmPlacementConfig) {
+    private void configureLocalSearch(SolverConfig solverConfig, VmPlacementConfig vmPlacementConfig) {
         // remove the local search alg included by default. It is in position 0 if the const.heuristic
         // was removed, and 1 otherwise
         solverConfig.getSolverPhaseConfigList().remove(solverConfig.getSolverPhaseConfigList().size() - 1);

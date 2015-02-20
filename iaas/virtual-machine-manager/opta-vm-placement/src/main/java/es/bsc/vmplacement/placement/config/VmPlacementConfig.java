@@ -18,6 +18,9 @@ public class VmPlacementConfig {
     private final LocalSearch localSearch;
     private final boolean vmsAreFixed; // When set to true, the VMs that are already assigned to a host should not be
                                        // moved to a different one
+    
+    // energyModeller and priceModeller are static variables because they are needed in the score calculators
+    // and I cannot call their constructors directly. Is there a better solution?
     public static EnergyModeller energyModeller;
     public static PriceModeller priceModeller;
 

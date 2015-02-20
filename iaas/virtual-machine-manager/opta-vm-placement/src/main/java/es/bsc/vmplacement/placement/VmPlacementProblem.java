@@ -21,6 +21,7 @@ public class VmPlacementProblem {
     private final List<Vm> vms;
     private final List<Host> hosts;
     private final VmPlacementConfig config;
+    private final VmPlacementSolver vmPlacementSolver = new VmPlacementSolver();
 
     /**
      * Class constructor.
@@ -42,7 +43,7 @@ public class VmPlacementProblem {
      * @return the state of a cluster after solving the placement problem
      */
     public ClusterState getBestSolution() {
-        Solver solver = VmPlacementSolver.buildSolver(config);
+        Solver solver = vmPlacementSolver.buildSolver(config);
         solver.setPlanningProblem(getInitialState());
         solver.solve();
         return (ClusterState) solver.getBestSolution();
