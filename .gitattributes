@@ -224,7 +224,6 @@ iaas/virtual-machine-manager/opta-vm-placement/data/vmplacement/unsolved/vmplace
 iaas/virtual-machine-manager/opta-vm-placement/data/vmplacement/unsolved/vmplacement4.xml -text
 iaas/virtual-machine-manager/opta-vm-placement/data/vmplacement/unsolved/vmplacement5.xml -text
 iaas/virtual-machine-manager/opta-vm-placement/pom.xml -text
-iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/clients/ExampleClient.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/domain/AbstractPersistable.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/domain/ClusterState.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/domain/ConstructionHeuristic.java -text
@@ -234,6 +233,7 @@ iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/domain/Vm.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/domain/comparators/HostStrengthComparator.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/domain/comparators/VmDifficultyComparator.java -text
+iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/examples/ExampleClient.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/lib/IOptaVmPlacement.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/lib/OptaVmPlacement.java -text
 iaas/virtual-machine-manager/opta-vm-placement/src/main/java/es/bsc/vmplacement/modellers/EnergyModeller.java -text
