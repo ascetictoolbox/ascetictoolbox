@@ -113,7 +113,7 @@ public class OptaVmPlacementConversor {
                 getLocalSearch(recommendedPlanRequest),
                 false)
                 .energyModeller(new OptaEnergyModeller(energyModeller))
-                .priceModeller(new OptaPriceModeller(pricingModeller))
+                .priceModeller(new OptaPriceModeller(pricingModeller, energyModeller))
                 .build();
     }
 

@@ -18,10 +18,10 @@
 
 package es.bsc.vmmanagercore.vmplacement;
 
+import es.bsc.vmmanagercore.energymodeller.EnergyModeller;
 import es.bsc.vmmanagercore.pricingmodeller.PricingModeller;
 import es.bsc.vmplacement.domain.Host;
 import es.bsc.vmplacement.domain.Vm;
-import es.bsc.vmplacement.modellers.EnergyModeller;
 import es.bsc.vmplacement.modellers.PriceModeller;
 
 import java.util.List;
@@ -34,15 +34,23 @@ import java.util.List;
 public class OptaPriceModeller implements PriceModeller {
 
     private final PricingModeller pricingModeller;
+    private final EnergyModeller energyModeller;
 
-    public OptaPriceModeller(PricingModeller pricingModeller) {
+    public OptaPriceModeller(PricingModeller pricingModeller, EnergyModeller energyModeller) {
         this.pricingModeller = pricingModeller;
+        this.energyModeller = energyModeller;
     }
 
     @Override
-    public double getCost(Host host, List<Vm> vmsDeployedInHost, EnergyModeller energyModeller) {
-        return pricingModeller.getVmCost(energyModeller.getPowerConsumption(host, vmsDeployedInHost),
-                host.getHostname());
+    public double getCost(Host host, List<Vm> vmsDeployedInHost) {
+        return pricingModeller.getVmCost(
+                getPowerConsumption(host, vmsDeployedInHost), host.getHostname());
+    }
+    
+    private double getPowerConsumption(Host host, List<Vm> vmsDeployedInHost) {
+        return energyModeller.getHostPredictedAvgPower(
+                host.getHostname(),
+                OptaVmPlacementConversor.convertOptaVmsToVmmType(vmsDeployedInHost));
     }
 
 }

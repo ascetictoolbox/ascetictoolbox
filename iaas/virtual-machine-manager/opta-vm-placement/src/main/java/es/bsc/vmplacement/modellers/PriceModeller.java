@@ -30,6 +30,6 @@ import java.util.List;
  */
 public interface PriceModeller {
 
-    double getCost(Host host, List<Vm> vmsDeployedInHost, EnergyModeller energyModeller);
+    double getCost(Host host, List<Vm> vmsDeployedInHost);
 
 }

@@ -66,9 +66,9 @@ public class ScoreCalculatorPriceTest {
 
     private void mockPriceModeller(List<Vm> vmsInHost1, List<Vm> vmsInHost2) {
         VmPlacementConfig.priceModeller = Mockito.mock(PriceModeller.class);
-        Mockito.when(VmPlacementConfig.priceModeller.getCost(host1, vmsInHost1, null))
+        Mockito.when(VmPlacementConfig.priceModeller.getCost(host1, vmsInHost1))
                 .thenReturn(20.0);
-        Mockito.when(VmPlacementConfig.priceModeller.getCost(host2, vmsInHost2, null))
+        Mockito.when(VmPlacementConfig.priceModeller.getCost(host2, vmsInHost2))
                 .thenReturn(10.0);
     }
 
