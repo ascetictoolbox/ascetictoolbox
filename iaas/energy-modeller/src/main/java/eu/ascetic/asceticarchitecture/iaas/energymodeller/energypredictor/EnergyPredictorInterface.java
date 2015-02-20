@@ -31,6 +31,7 @@ public interface EnergyPredictorInterface {
 
     /**
      * This provides a prediction of how much energy is to be used by a host
+     * in the next hour.
      *
      * @param host The host to get the energy prediction for
      * @param virtualMachines The virtual machines giving a workload on the host
@@ -40,7 +41,20 @@ public interface EnergyPredictorInterface {
     public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines);
 
     /**
-     * This provides a prediction of how much energy is to be used by a VM
+     * This provides a prediction of how much energy is to be used by a host
+     * in a specified period of time.
+     *
+     * @param host The host to get the energy prediction for
+     * @param virtualMachines The virtual machines giving a workload on the host
+     * machine
+     * @param timePeriod The time period to run the prediction for
+     * @return The prediction of the energy to be used.
+     */
+    public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines, TimePeriod timePeriod);    
+    
+    /**
+     * This provides a prediction of how much energy is to be used by a VM in 
+     * the next hour.
      *
      * @param vm The vm to be deployed
      * @param virtualMachines The virtual machines that are expected to be on
@@ -51,7 +65,8 @@ public interface EnergyPredictorInterface {
     public EnergyUsagePrediction getVMPredictedEnergy(VM vm, Collection<VM> virtualMachines, Host host);
 
     /**
-     * This provides a prediction of how much energy is to be used by a VM
+     * This provides a prediction of how much energy is to be used by a VM, in 
+     * a specified period of time.
      *
      * @param vm The vm to be deployed
      * @param virtualMachines The virtual machines giving a workload on the host

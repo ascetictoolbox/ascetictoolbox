@@ -21,27 +21,26 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
 import java.util.Collection;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 
 /**
- * This class provides dummy data for the energy modeller component. It therefore
- * cannot be used in normal operating of the system but is useful for initial 
- * testing purposes. It provides random power and energy values between 0 and 20.
- * 
+ * This class provides dummy data for the energy modeller component. It
+ * therefore cannot be used in normal operating of the system but is useful for
+ * initial testing purposes. It provides random power and energy values between
+ * 0 and 20.
+ *
  * These values will remain constant for the life of the energy predictor.
+ *
  * @author Richard
  */
 public class DummyEnergyPredictor extends AbstractEnergyPredictor {
 
     HashMap<Host, Double> tempAvgPowerUsed = new HashMap<>();
     HashMap<Host, Double> tempTotalEnergyUsed = new HashMap<>();
-    
+
     @Override
-    public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines) {
+    public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines, TimePeriod duration) {
         EnergyUsagePrediction answer = new EnergyUsagePrediction(host);
-        TimePeriod duration = new TimePeriod(new GregorianCalendar(), 1, TimeUnit.HOURS);
         answer.setDuration(duration);
         if (tempAvgPowerUsed.containsKey(host)) {
             answer.setAvgPowerUsed(tempAvgPowerUsed.get(host));
@@ -61,10 +60,9 @@ public class DummyEnergyPredictor extends AbstractEnergyPredictor {
     HashMap<CandidateVMHostMapping, Double> temp2TotalEnergyUsed = new HashMap<>();
 
     @Override
-    public EnergyUsagePrediction getVMPredictedEnergy(VM vm, Collection<VM> virtualMachines, Host host) {
+    public EnergyUsagePrediction getVMPredictedEnergy(VM vm, Collection<VM> virtualMachines, Host host, TimePeriod timePeriod) {
         EnergyUsagePrediction answer = new EnergyUsagePrediction(vm);
-        TimePeriod duration = new TimePeriod(new GregorianCalendar(), 1, TimeUnit.HOURS);
-        answer.setDuration(duration);
+        answer.setDuration(timePeriod);
         if (tempAvgPowerUsed.containsKey(host)) {
             answer.setAvgPowerUsed(temp2AvgPowerUsed.get(new CandidateVMHostMapping(vm, host)));
             answer.setTotalEnergyUsed(temp2TotalEnergyUsed.get(new CandidateVMHostMapping(vm, host)));
@@ -77,11 +75,6 @@ public class DummyEnergyPredictor extends AbstractEnergyPredictor {
             answer.setTotalEnergyUsed(tempEnergy);
         }
         return answer;
-    }    
-
-    @Override
-    public EnergyUsagePrediction getVMPredictedEnergy(VM vm, Collection<VM> virtualMachines, Host host, TimePeriod timePeriod) {
-        return getVMPredictedEnergy(vm, virtualMachines, host);
     }
-    
+
 }

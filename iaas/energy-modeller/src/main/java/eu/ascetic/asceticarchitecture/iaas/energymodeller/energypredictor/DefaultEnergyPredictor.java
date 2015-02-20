@@ -25,7 +25,6 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
 import java.io.File;
 import java.util.Collection;
-import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,19 +33,18 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 
 /**
  * This implements the default energy predictor for the ASCETiC project.
- *
+ * @deprecated This will no longer be supported use the CPU only energy predictor
  * @author Richard Kavanagh and Eleni Agiatzidou
  */
 public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
 
-    //TO FIX TIME!!
     private EnergyModelTrainerInterface trainer = new DefaultEnergyModelTrainer();
     private static final String CONFIG_FILE = "energymodeller_cpu_predictor.properties";
     private double usageCPU = 1;
 
     /**
-     * This creates a new Default energy predictor, that compares CPU and
-     * RAM utilisation.
+     * This creates a new Default energy predictor, that compares CPU and RAM
+     * utilisation.
      */
     public DefaultEnergyPredictor() {
         try {
@@ -58,7 +56,7 @@ public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
                 config.setFile(new File(CONFIG_FILE));
             }
             //This will save the configuration file back to disk. In case the defaults need setting.
-            config.setAutoSave(true); 
+            config.setAutoSave(true);
             usageCPU = config.getDouble("iaas.energy.modeller.cpu.energy.predcitor.default_load", usageCPU);
             config.setProperty("iaas.energy.modeller.cpu.energy.predcitor.default_load", usageCPU);
         } catch (ConfigurationException ex) {
@@ -67,23 +65,14 @@ public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
         }
     }
 
-    /**
-     * This provides a prediction of how much energy is to be used by a host
-     *
-     * @param host The host to get the energy prediction for
-     * @param virtualMachines The virtual machines giving a workload on the host
-     * machine
-     * @return The prediction of the energy to be used.
-     */
     @Override
-    public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines) {
+    public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines, TimePeriod duration) {
         double usageMemory = 0;
         for (VM vm : virtualMachines) {
             usageMemory = usageMemory + vm.getRamMb();
         }
         usageMemory = usageMemory + host.getIdleRamUsage();
         EnergyUsagePrediction wattsUsed;
-        TimePeriod duration = new TimePeriod(new GregorianCalendar(), 1, TimeUnit.HOURS);
         wattsUsed = predictTotalEnergy(host, usageCPU, usageMemory / host.getRamMb(), duration);
         return wattsUsed;
     }
@@ -148,22 +137,6 @@ public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
     }
 
     /**
-     * This provides a prediction of how much energy is to be used by a VM
-     *
-     * @param vm The vm to be deployed
-     * @param virtualMachines The virtual machines giving a workload on the host
-     * machine
-     * @param host The host that the VMs will be running on
-     * @return The prediction of the energy to be used.
-     */
-    @Override
-    public EnergyUsagePrediction getVMPredictedEnergy(VM vm, Collection<VM> virtualMachines, Host host) {
-        //Run the prediction for the next hour.
-        TimePeriod duration = new TimePeriod(new GregorianCalendar(), TimeUnit.HOURS.toSeconds(1));
-        return getVMPredictedEnergy(vm, virtualMachines, host, duration);
-    }
-
-    /**
      * This gets the current energy trainer in use.
      *
      * @return the trainer
@@ -180,5 +153,5 @@ public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
     public void setTrainer(DefaultEnergyModelTrainer trainer) {
         this.trainer = trainer;
     }
-    
+
 }
