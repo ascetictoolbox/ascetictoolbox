@@ -40,7 +40,7 @@ public class ScoreCalculatorDistributionTest {
         ClusterState clusterState = getTestClusterState();
         assertEquals(-4, scoreCalculatorDistribution.calculateScore(clusterState).getHardScore());
         assertEquals(2, scoreCalculatorDistribution.calculateScore(clusterState).getMediumScore());
-        assertEquals(-2, scoreCalculatorDistribution.calculateScore(clusterState).getSoftScore()); // int vs roundings!
+        assertEquals(-1, scoreCalculatorDistribution.calculateScore(clusterState).getSoftScore()); // rounding
     }
 
     private ClusterState getTestClusterState() {

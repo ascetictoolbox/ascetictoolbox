@@ -10,7 +10,7 @@ import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
  * Hard score: overcapacity of the servers of the cluster 
  *             plus number of fixed VMs that were moved. (minimize)
  * Medium score: Number of hosts that are not idle. (maximize)
- * Soft score: std dev of the CPUs assigned to the hosts of the cluster. (minimize)
+ * Soft score: std dev of the avg cpus_assigned/cpus_total in the hosts of the cluster. (minimize)
  *
  * @author David Ortiz (david.ortiz@bsc.es)
  */
@@ -34,7 +34,7 @@ public class ScoreCalculatorDistribution implements SimpleScoreCalculator<Cluste
     }
 
     private int calculateSoftScore(ClusterState solution) {
-        return -((int) solution.calculateStdDevCpusAssignedPerHost());
+        return - (int) Math.round(solution.calculateStdDevCpuPercUsedPerHost());
     }
 
 }

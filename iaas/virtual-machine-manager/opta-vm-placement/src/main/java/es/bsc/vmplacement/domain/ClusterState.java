@@ -146,14 +146,14 @@ public class ClusterState extends AbstractPersistable implements Solution<Score>
     }
 
     /**
-     * Returns the stddev of the CPUs assigned per host.
-     *
-     * @return the stddev of CPUs assigned per host
+     * Returns the std dev of the cpu % assigned per host (cpu_demand/total_cpus)
+     * *
+     * @return the std dev of the cpu % assigned per host.
      */
-    public double calculateStdDevCpusAssignedPerHost() {
-        return Math.sqrt(calculateVarianceCpusAssignedPerHost());
+    public double calculateStdDevCpuPercUsedPerHost() {
+        return Math.sqrt(calculateVariaceCpuPercUsedPerHost());
     }
-
+    
     /**
      * Counts the number of hosts that are switched off.
      *
@@ -272,14 +272,23 @@ public class ClusterState extends AbstractPersistable implements Solution<Score>
         return result;
     }
 
-    private double calculateVarianceCpusAssignedPerHost() {
+    private double calculateVariaceCpuPercUsedPerHost() {
         double temp = 0;
+        double avgCpuPercUsed = avgCpuPercUsedPerHost();
         for (Host host: hosts) {
-            temp += Math.pow((avgCpusAssignedPerHost() - cpusAssignedInHost(host)), 2);
+            temp += Math.pow(avgCpuPercUsed - (cpusAssignedInHost(host))/(host.getNcpus()/1.0), 2);
         }
         return temp/(hosts.size());
     }
-
+    
+    private double avgCpuPercUsedPerHost() {
+        double cpuPercUsedSum = 0;
+        for (Host host: hosts) {
+            cpuPercUsedSum += cpusAssignedInHost(host)/(host.getNcpus()/1.0);
+        }
+        return cpuPercUsedSum/hosts.size();
+    }
+    
     private double calculateUnusedCpuRatio(Host host) {
         double unusedPerc = (double)(host.getNcpus() - cpusAssignedInHost(host))/(host.getNcpus());
         return unusedPerc > 0 ? unusedPerc : 0; // If a host is overbooked simply return 0

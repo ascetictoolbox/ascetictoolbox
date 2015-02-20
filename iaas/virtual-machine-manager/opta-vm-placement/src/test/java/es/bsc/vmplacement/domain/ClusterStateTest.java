@@ -109,10 +109,10 @@ public class ClusterStateTest {
     }
 
     @Test
-    public void calculateStdDevCpusAssignedPerHost() {
-        assertEquals(1.0, clusterState.calculateStdDevCpusAssignedPerHost(), 0.05);
+    public void calculateStdDevCpuPercUsedPerHost() {
+        assertEquals(0.25, clusterState.calculateStdDevCpuPercUsedPerHost(), 0.1);
     }
-    
+
     @Test
     public void countOffHostsReturns0WhenNoneOfTheHostsWereOff() {
         ClusterState clusterState = new ClusterState();
