@@ -55,6 +55,7 @@ public class VmPlacementProblem {
         this.vms = new ArrayList<>(vms);
         this.config = config;
         this.vmPlacementSolver = new VmPlacementSolver(config);
+        VmPlacementConfig.initialClusterState = getInitialState(); // This is problematic for thread safety
         addFixedVmsToHosts();
     }
 

@@ -25,6 +25,7 @@ import es.bsc.vmplacement.domain.Vm;
 import es.bsc.vmplacement.modellers.PriceModeller;
 import es.bsc.vmplacement.placement.config.VmPlacementConfig;
 import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -43,6 +44,14 @@ public class ScoreCalculatorPriceTest {
     private final Vm vm1 = new Vm.Builder((long) 1, 2, 2048, 2).build();
     private final Vm vm2 = new Vm.Builder((long) 2, 1, 1024, 1).build();
 
+    @BeforeClass
+    public static void onceExecutedBeforeAll() {
+        ClusterState initialClusterState = new ClusterState();
+        initialClusterState.setVms(new ArrayList<Vm>());
+        initialClusterState.setHosts(new ArrayList<Host>());
+        VmPlacementConfig.initialClusterState = initialClusterState;
+    }
+    
     @AfterClass
     public static void tearDown() {
         VmPlacementConfig.priceModeller = null; // It was mocked, we need to null it again so it does
@@ -62,7 +71,7 @@ public class ScoreCalculatorPriceTest {
         ScoreCalculatorPrice scoreCalculatorPrice = new ScoreCalculatorPrice();
 
         assertEquals(0, scoreCalculatorPrice.calculateScore(testClusterState).getHardScore());
-        assertEquals(-30, scoreCalculatorPrice.calculateScore(testClusterState).getSoftScore());
+        assertEquals(-30, scoreCalculatorPrice.calculateScore(testClusterState).getMediumScore());
     }
 
     private void mockPriceModeller(List<Vm> vmsInHost1, List<Vm> vmsInHost2) {

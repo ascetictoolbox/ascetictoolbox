@@ -19,6 +19,7 @@
 
 package es.bsc.vmplacement.placement.config;
 
+import es.bsc.vmplacement.domain.ClusterState;
 import es.bsc.vmplacement.domain.ConstructionHeuristic;
 import es.bsc.vmplacement.modellers.EnergyModeller;
 import es.bsc.vmplacement.modellers.PriceModeller;
@@ -38,10 +39,12 @@ public class VmPlacementConfig {
     private final boolean vmsAreFixed; // When set to true, the VMs that are already assigned to a host should not be
                                        // moved to a different one
     
-    // energyModeller and priceModeller are static variables because they are needed in the score calculators
-    // and I cannot call their constructors directly. Is there a better solution?
+    // energyModeller, priceModeller, and initialClusterState are static variables because they are needed in 
+    // the score calculators and I cannot call their constructors directly. 
+    // This makes the library non thread safe. Find a better solution.
     public static EnergyModeller energyModeller;
     public static PriceModeller priceModeller;
+    public static ClusterState initialClusterState;
 
     public static class Builder {
         // Required parameters

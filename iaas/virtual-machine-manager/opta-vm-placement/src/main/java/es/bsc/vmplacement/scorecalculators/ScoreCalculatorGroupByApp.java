@@ -21,30 +21,34 @@ package es.bsc.vmplacement.scorecalculators;
 
 import es.bsc.vmplacement.domain.ClusterState;
 import es.bsc.vmplacement.domain.Host;
-import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
+import es.bsc.vmplacement.placement.config.VmPlacementConfig;
+import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
 
 import java.util.List;
 
 /**
  * This class defines the score used in the 'group by app' policy.
- * The score in this case contains a hard, a medium, and a soft score.
+ * The score in this case contains 1 hard score and 3 levels of soft scores.
  * Hard score: overcapacity of the servers of the cluster
  *             plus number of fixed VMs that were moved. (minimize)
- * Medium score: number of hosts that are off. (maximize)
- * Soft score: for each VM, sums the number of VMs that are deployed in the same host
- *             and that belong to the same application. (maximize)
+ * Soft scores: 1) number of hosts that are off. (maximize)
+ *              2) for each VM, sums the number of VMs that are deployed in the same host
+ *                 and that belong to the same application. (maximize)
+ *              3) Number of migrations needed from initial state (minimize)
  *
  * @author David Ortiz (david.ortiz@bsc.es)
  */
 public class ScoreCalculatorGroupByApp implements SimpleScoreCalculator<ClusterState> {
 
     @Override
-    public HardMediumSoftScore calculateScore(ClusterState solution) {
-        return HardMediumSoftScore.valueOf(
-                calculateHardScore(solution),
-                calculateMediumScore(solution),
-                calculateSoftScore(solution));
+    public BendableScore calculateScore(ClusterState solution) {
+        int[] hardScores = { calculateHardScore(solution) };
+        int[] softScores = {
+                solution.countOffHosts(),
+                calculateSoftScore2(solution),
+                VmPlacementConfig.initialClusterState.countVmMigrationsNeeded(solution)};
+        return BendableScore.valueOf(hardScores, softScores);
     }
     
     private int calculateHardScore(ClusterState solution) {
@@ -52,11 +56,7 @@ public class ScoreCalculatorGroupByApp implements SimpleScoreCalculator<ClusterS
                 + ScoreCalculatorCommon.getClusterPenaltyScoreForFixedVms(solution));
     }
 
-    private int calculateMediumScore(ClusterState solution) {
-        return solution.countOffHosts();
-    }
-
-    private int calculateSoftScore(ClusterState solution) {
+    private int calculateSoftScore2(ClusterState solution) {
         int result = 0;
         for (Host host: solution.getHosts()) {
             double hostScore = 0;

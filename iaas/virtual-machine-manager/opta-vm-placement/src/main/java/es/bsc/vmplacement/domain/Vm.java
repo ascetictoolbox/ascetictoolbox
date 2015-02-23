@@ -93,7 +93,13 @@ public class Vm extends AbstractPersistable {
      * @return True if the two VMs are deployed in the same host, False otherwise.
      */
     public boolean isInTheSameHost(Vm vm) {
-        return host.getId().equals(vm.getHost().getId());
+        if (vm.getHost() == null && host == null) {
+            return true;
+        }
+        else if (host != null && vm.getHost() != null) {
+            return host.getId().equals(vm.getHost().getId());
+        }
+        return false;
     }
     
     public int getNcpus() {

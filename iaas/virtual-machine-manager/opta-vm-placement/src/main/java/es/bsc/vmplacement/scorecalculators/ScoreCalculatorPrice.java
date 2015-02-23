@@ -23,15 +23,16 @@ import es.bsc.vmplacement.domain.ClusterState;
 import es.bsc.vmplacement.domain.Host;
 import es.bsc.vmplacement.modellers.PriceModeller;
 import es.bsc.vmplacement.placement.config.VmPlacementConfig;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
 
 /**
  * This class defines the score used in the price policy.
- * The score in this case contains a hard score and a soft score.
+ * The score in this case contains a hard, a medium, and a soft score.
  * Hard score: overcapacity of the servers of the cluster
  *             plus number of fixed VMs that were moved. (minimize)
- * Soft score: price of running the VMs in the hosts indicated. (minimize)
+ * Medium score: price of running the VMs in the hosts indicated. (minimize)
+ * Soft score: number of migrations needed from initial state (minimize) 
  *
  * @author David Ortiz (david.ortiz@bsc.es)
  */
@@ -40,10 +41,11 @@ public class ScoreCalculatorPrice implements SimpleScoreCalculator<ClusterState>
     private final PriceModeller priceModeller = VmPlacementConfig.priceModeller;
 
     @Override
-    public HardSoftScore calculateScore(ClusterState solution) {
-        return HardSoftScore.valueOf(
+    public HardMediumSoftScore calculateScore(ClusterState solution) {
+        return HardMediumSoftScore.valueOf(
                 calculateHardScore(solution),
-                calculateSoftScore(solution));
+                calculateSoftScore(solution),
+                VmPlacementConfig.initialClusterState.countVmMigrationsNeeded(solution));
     }
 
     private int calculateHardScore(ClusterState solution) {

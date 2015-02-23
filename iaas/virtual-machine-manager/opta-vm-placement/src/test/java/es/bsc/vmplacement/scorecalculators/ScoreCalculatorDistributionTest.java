@@ -22,6 +22,8 @@ package es.bsc.vmplacement.scorecalculators;
 import es.bsc.vmplacement.domain.ClusterState;
 import es.bsc.vmplacement.domain.Host;
 import es.bsc.vmplacement.domain.Vm;
+import es.bsc.vmplacement.placement.config.VmPlacementConfig;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -36,12 +38,20 @@ public class ScoreCalculatorDistributionTest {
 
     private final ScoreCalculatorDistribution scoreCalculatorDistribution = new ScoreCalculatorDistribution();
 
+    @BeforeClass
+    public static void onceExecutedBeforeAll() {
+        ClusterState initialClusterState = new ClusterState();
+        initialClusterState.setVms(new ArrayList<Vm>());
+        initialClusterState.setHosts(new ArrayList<Host>());
+        VmPlacementConfig.initialClusterState = initialClusterState;
+    }
+    
     @Test
     public void scoreTest() {
         ClusterState clusterState = getTestClusterState();
-        assertEquals(-4, scoreCalculatorDistribution.calculateScore(clusterState).getHardScore());
-        assertEquals(2, scoreCalculatorDistribution.calculateScore(clusterState).getMediumScore());
-        assertEquals(-1, scoreCalculatorDistribution.calculateScore(clusterState).getSoftScore()); // rounding
+        assertEquals(-4, scoreCalculatorDistribution.calculateScore(clusterState).getHardScore(0));
+        assertEquals(2, scoreCalculatorDistribution.calculateScore(clusterState).getSoftScore(0));
+        assertEquals(-1, scoreCalculatorDistribution.calculateScore(clusterState).getSoftScore(1)); // rounding
     }
 
     private ClusterState getTestClusterState() {

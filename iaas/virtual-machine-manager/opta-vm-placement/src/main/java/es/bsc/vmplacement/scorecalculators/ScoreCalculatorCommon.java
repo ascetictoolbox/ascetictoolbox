@@ -48,5 +48,5 @@ public abstract class ScoreCalculatorCommon {
         }
         return result;
     }
-    
+
 }

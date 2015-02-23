@@ -22,6 +22,8 @@ package es.bsc.vmplacement.scorecalculators;
 import es.bsc.vmplacement.domain.ClusterState;
 import es.bsc.vmplacement.domain.Host;
 import es.bsc.vmplacement.domain.Vm;
+import es.bsc.vmplacement.placement.config.VmPlacementConfig;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -35,6 +37,14 @@ import static org.junit.Assert.assertEquals;
 public class ScoreCalculatorConsolidationTest {
 
     private final ScoreCalculatorConsolidation scoreCalculatorConsolidation = new ScoreCalculatorConsolidation();
+
+    @BeforeClass
+    public static void onceExecutedBeforeAll() {
+        ClusterState initialClusterState = new ClusterState();
+        initialClusterState.setVms(new ArrayList<Vm>());
+        initialClusterState.setHosts(new ArrayList<Host>());
+        VmPlacementConfig.initialClusterState = initialClusterState;
+    }
 
     @Test
     public void scoreTest() {

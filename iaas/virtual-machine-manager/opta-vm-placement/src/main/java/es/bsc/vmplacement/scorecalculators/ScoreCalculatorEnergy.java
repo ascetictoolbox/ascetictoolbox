@@ -23,15 +23,16 @@ import es.bsc.vmplacement.domain.ClusterState;
 import es.bsc.vmplacement.domain.Host;
 import es.bsc.vmplacement.modellers.EnergyModeller;
 import es.bsc.vmplacement.placement.config.VmPlacementConfig;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
 
 /**
  * This class defines the score used in the energy-aware policy.
- * The score in this case contains a hard score and a soft score.
+ * The score in this case contains a hard, a medium, and a soft score.
  * Hard score: overcapacity of the servers of the cluster
  *             plus number of fixed VMs that were moved. (minimize)
- * Soft score: power consumption of the cluster. (minimize)
+ * Medium score: power consumption of the cluster. (minimize)
+ * Soft score: number of migrations needed from initial state (minimize) 
  *
  * @author David Ortiz (david.ortiz@bsc.es)
  */
@@ -40,10 +41,11 @@ public class ScoreCalculatorEnergy implements SimpleScoreCalculator<ClusterState
     private final EnergyModeller energyModeller = VmPlacementConfig.energyModeller;
 
     @Override
-    public HardSoftScore calculateScore(ClusterState solution) {
-        return HardSoftScore.valueOf(
+    public HardMediumSoftScore calculateScore(ClusterState solution) {
+        return HardMediumSoftScore.valueOf(
                 calculateHardScore(solution),
-                calculateSoftScore(solution));
+                calculateMediumScore(solution),
+                VmPlacementConfig.initialClusterState.countVmMigrationsNeeded(solution));
     }
 
     private int calculateHardScore(ClusterState solution) {
@@ -51,13 +53,12 @@ public class ScoreCalculatorEnergy implements SimpleScoreCalculator<ClusterState
                 + ScoreCalculatorCommon.getClusterPenaltyScoreForFixedVms(solution));
     }
 
-    private int calculateSoftScore(ClusterState solution) {
+    private int calculateMediumScore(ClusterState solution) {
         double result = 0;
         for (Host host: solution.getHosts()) {
             result -= energyModeller.getPowerConsumption(host, solution.getVmsDeployedInHost(host));
         }
         return (int) result;
     }
-
 
 }
