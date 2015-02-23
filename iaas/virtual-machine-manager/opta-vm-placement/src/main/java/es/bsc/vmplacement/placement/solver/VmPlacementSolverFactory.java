@@ -19,6 +19,9 @@
 
 package es.bsc.vmplacement.placement.solver;
 
+import com.google.common.collect.ImmutableMap;
+import es.bsc.vmplacement.domain.ConstructionHeuristic;
+import es.bsc.vmplacement.placement.config.Policy;
 import es.bsc.vmplacement.placement.config.VmPlacementConfig;
 import es.bsc.vmplacement.scorecalculators.*;
 import org.optaplanner.core.api.solver.SolverFactory;
@@ -26,6 +29,9 @@ import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicSo
 import org.optaplanner.core.config.localsearch.LocalSearchSolverPhaseConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.XmlSolverFactory;
+import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
+
+import java.util.Map;
 
 /**
  * This class creates an instance of an OptaPlanner SolverFactory from an instance of VmPlacementConfig.
@@ -35,6 +41,29 @@ import org.optaplanner.core.config.solver.XmlSolverFactory;
 public class VmPlacementSolverFactory {
 
     private static final String BASE_SOLVER_XML_PATH = "/vmplacementSolverConfig.xml";
+
+    private static final Map<Policy, Class<? extends SimpleScoreCalculator>> policyScoreCalculatorImplementations =
+            ImmutableMap.<Policy, Class<? extends SimpleScoreCalculator>>builder()
+                    .put(Policy.CONSOLIDATION, ScoreCalculatorConsolidation.class)
+                    .put(Policy.DISTRIBUTION, ScoreCalculatorDistribution.class)
+                    .put(Policy.PRICE, ScoreCalculatorPrice.class)
+                    .put(Policy.ENERGY, ScoreCalculatorEnergy.class)
+                    .put(Policy.GROUP_BY_APP, ScoreCalculatorGroupByApp.class)
+                    .put(Policy.RANDOM, ScoreCalculatorRandom.class).build();
+    
+    private static final Map<ConstructionHeuristic, ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType>
+            optaPlannerConstructionHeuristics =
+            ImmutableMap.<ConstructionHeuristic, ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType>
+                    builder()
+                    .put(ConstructionHeuristic.FIRST_FIT,
+                            ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType.FIRST_FIT)
+                    .put(ConstructionHeuristic.FIRST_FIT_DECREASING,
+                            ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType.FIRST_FIT_DECREASING)
+                    .put(ConstructionHeuristic.BEST_FIT,
+                            ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType.BEST_FIT)
+                    .put(ConstructionHeuristic.BEST_FIT_DECREASING,
+                            ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType.BEST_FIT_DECREASING)
+                    .build();
     
     private final VmPlacementConfig vmPlacementConfig;
 
@@ -66,42 +95,21 @@ public class VmPlacementSolverFactory {
     }
 
     private void configurePolicy(SolverConfig solverConfig, VmPlacementConfig vmPlacementConfig) {
-        switch(vmPlacementConfig.getPolicy()) {
-            case CONSOLIDATION:
-                solverConfig.getScoreDirectorFactoryConfig().setSimpleScoreCalculatorClass(
-                        ScoreCalculatorConsolidation.class);
-                break;
-            case DISTRIBUTION:
-                solverConfig.getScoreDirectorFactoryConfig().setSimpleScoreCalculatorClass(
-                        ScoreCalculatorDistribution.class);
-                break;
-            case PRICE:
-                if (VmPlacementConfig.priceModeller == null) {
-                    throw new IllegalArgumentException(
-                            "The price policy cannot be applied without a pricing model");
-                }
-                solverConfig.getScoreDirectorFactoryConfig()
-                        .setSimpleScoreCalculatorClass(ScoreCalculatorPrice.class);
-                break;
-            case ENERGY:
-                if (VmPlacementConfig.energyModeller == null) {
-                    throw new IllegalArgumentException(
-                            "The energy policy cannot be applied without an energy model");
-                }
-                solverConfig.getScoreDirectorFactoryConfig()
-                        .setSimpleScoreCalculatorClass(ScoreCalculatorEnergy.class);
-                break;
-            case GROUP_BY_APP:
-                solverConfig.getScoreDirectorFactoryConfig().setSimpleScoreCalculatorClass(
-                        ScoreCalculatorGroupByApp.class);
-                break;
-            case RANDOM:
-                solverConfig.getScoreDirectorFactoryConfig()
-                        .setSimpleScoreCalculatorClass(ScoreCalculatorRandom.class);
-                break;
-            default:
-                throw new IllegalArgumentException("The selected policy is not supported");
+        if (vmPlacementConfig.getPolicy().equals(Policy.PRICE)) {
+            if (VmPlacementConfig.priceModeller == null) {
+                throw new IllegalArgumentException(
+                        "The price policy cannot be applied without a pricing model");
+            }
         }
+        else if (vmPlacementConfig.getPolicy().equals(Policy.ENERGY)) {
+            if (VmPlacementConfig.energyModeller == null) {
+                throw new IllegalArgumentException(
+                        "The energy policy cannot be applied without an energy model");
+            }
+        }
+        
+        solverConfig.getScoreDirectorFactoryConfig().setSimpleScoreCalculatorClass(
+                policyScoreCalculatorImplementations.get(vmPlacementConfig.getPolicy()));
     }
 
     private void configureTimeout(SolverConfig solverConfig, VmPlacementConfig vmPlacementConfig) {
@@ -113,32 +121,11 @@ public class VmPlacementSolverFactory {
         if (vmPlacementConfig.getConstructionHeuristic() == null) {
             solverConfig.getSolverPhaseConfigList().remove(0);
         }
-
         else {
             ConstructionHeuristicSolverPhaseConfig heuristicConfig =
                     (ConstructionHeuristicSolverPhaseConfig) solverConfig.getSolverPhaseConfigList().toArray()[0];
-            ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType constructionHeuristicType;
-            switch (vmPlacementConfig.getConstructionHeuristic()) {
-                case FIRST_FIT:
-                    constructionHeuristicType =
-                            ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType.FIRST_FIT;
-                    break;
-                case FIRST_FIT_DECREASING:
-                    constructionHeuristicType =
-                            ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType.FIRST_FIT_DECREASING;
-                    break;
-                case BEST_FIT:
-                    constructionHeuristicType =
-                            ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType.BEST_FIT;
-                    break;
-                case BEST_FIT_DECREASING:
-                    constructionHeuristicType =
-                            ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType.BEST_FIT_DECREASING;
-                    break;
-                default:
-                    throw new IllegalArgumentException("The construction heuristic selected is not supported");
-            }
-            heuristicConfig.setConstructionHeuristicType(constructionHeuristicType);
+            heuristicConfig.setConstructionHeuristicType(optaPlannerConstructionHeuristics.get(
+                    vmPlacementConfig.getConstructionHeuristic()));
         }
     }
 
