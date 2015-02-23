@@ -15,18 +15,17 @@
  */
 package eu.ascetic.utils.hostpoweremulator;
 
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DatabaseConnector;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DefaultDatabaseConnector;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.CpuOnlyEnergyPredictor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostMeasurement;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.SigarDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDirectDbDataSourceAdaptor;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
 import eu.ascetic.ioutils.Settings;
 import java.io.File;
-import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,7 +37,7 @@ import java.util.logging.Logger;
  */
 public class HostPowerEmulator implements Runnable {
 
-    private final HostDataSource source = new ZabbixDirectDbDataSourceAdaptor();
+    private HostDataSource source = new ZabbixDirectDbDataSourceAdaptor();
     private final DatabaseConnector database = new DefaultDatabaseConnector();
     private String hostname = "";
     private String cloneHostname = "";
@@ -46,6 +45,7 @@ public class HostPowerEmulator implements Runnable {
     private int pollInterval = 1;
     private String outputName = "power";
     private final Settings settings = new Settings("PowerEmulatorSettings.properties");
+    private static final String DEFAULT_DATA_SOURCE_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient";
 
     /**
      * This runs the emulation tool.
@@ -118,8 +118,41 @@ public class HostPowerEmulator implements Runnable {
             clone = database.getHostCalibrationData(clone);
             host.setCalibrationData(clone.getCalibrationData());
         }
-
     }
+    
+    /**
+     * This allows the energy modellers data source to be set
+     *
+     * @param dataSource The name of the data source to use for the energy
+     * modeller
+     */
+    public void setDataSource(String dataSource) {
+        try {
+            if (!dataSource.startsWith(DEFAULT_DATA_SOURCE_PACKAGE)) {
+                dataSource = DEFAULT_DATA_SOURCE_PACKAGE + "." + dataSource;
+            }
+            /**
+             * This is a special case that requires it to be loaded under the
+             * singleton design pattern.
+             */
+            String wattMeter = DEFAULT_DATA_SOURCE_PACKAGE + ".WattsUpMeterDataSourceAdaptor";
+            if (wattMeter.equals(dataSource)) {
+                source = SigarDataSourceAdaptor.getInstance();
+            } else {
+                source = (HostDataSource) (Class.forName(dataSource).newInstance());
+            }
+        } catch (ClassNotFoundException ex) {
+            if (source == null) {
+                source = new ZabbixDirectDbDataSourceAdaptor();
+            }
+            Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The data source specified was not found");
+        } catch (InstantiationException | IllegalAccessException ex) {
+            if (source == null) {
+                source = new ZabbixDirectDbDataSourceAdaptor();
+            }
+            Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The data source did not work", ex);
+        }
+    }    
 
     @Override
     public void run() {
@@ -144,21 +177,13 @@ public class HostPowerEmulator implements Runnable {
         if (cloneHostname != null) {
             cloneHostProfile(hostname, cloneHostname);
         }
-        //The lines below represent an arbritary time period in order to call
-        //the predictTotalEnergy method
-        GregorianCalendar now = new GregorianCalendar();
-        long startTime = TimeUnit.MILLISECONDS.toSeconds(now.getTimeInMillis());
-        startTime = startTime - pollInterval;
-        long endTime = TimeUnit.MILLISECONDS.toSeconds(now.getTimeInMillis());
-        TimePeriod duration = new TimePeriod(startTime, endTime);
         /**
          * The second phase is to monitor the host and to report its estimated
          * host energy usage.
          */
         while (running) {
             HostMeasurement mesurement = source.getHostData(host);
-            EnergyUsagePrediction prediction = predictor.predictTotalEnergy(host, mesurement.getCpuUtilisation(), duration);
-            double power = prediction.getAvgPowerUsed();
+            double power = predictor.predictPowerUsed(host, mesurement.getCpuUtilisation());
             logger.printToFile(logger.new Pair(host, power));
             try {
                 Thread.sleep(TimeUnit.SECONDS.toMillis(pollInterval));
@@ -167,7 +192,7 @@ public class HostPowerEmulator implements Runnable {
             }
         }
     }
-
+    
     /**
      * This returns the host name which the watt meter emulator runs for
      *
