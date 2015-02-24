@@ -39,7 +39,7 @@ import java.util.Random;
  */
 public class ExampleClient {
 
-    // Fix a seed for the random number generator so the experiments can be repeated
+    // Fix a seed for the random number generator so the executions can be repeated
     private static final Random r = new Random(1);
 
     // Number of VMs and hosts
@@ -110,13 +110,21 @@ public class ExampleClient {
     }
 
     public static void main(String[] args) {
+        // This example gets a list of random hosts, a list of random VMs, and then tries to find the best 
+        // placement using the following options:
+        //     policy: consolidation
+        //     max. execution time: 30s
+        //     local search algorithm: late acceptance (with late acceptance size = 400)
+        //     vmsAreFixed = false. This means that we do not want to force the VMs to be deployed in the same host
+        //         where they are now. In this case, we did not specify any host for any of the VMs.
+        
         IOptaVmPlacement optaVmPlacement = new OptaVmPlacement();
         VmPlacementConfig vmPlacementConfig =
                 new VmPlacementConfig.Builder(
                         Policy.CONSOLIDATION,
                         30,
                         ConstructionHeuristic.FIRST_FIT_DECREASING,
-                        new LateAcceptance(400), 
+                        new LateAcceptance(400),
                         false).build();
         System.out.println(optaVmPlacement.getBestSolution(getInitialHosts(), getInitialVms(), vmPlacementConfig));
     }

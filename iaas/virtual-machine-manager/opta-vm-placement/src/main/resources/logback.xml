@@ -27,8 +27,8 @@
         </encoder>
     </appender>
 
-    <logger name="org.optaplanner" level="debug"/>
-    <logger name="es.bsc" level="debug"/>
+    <!-- Modify the next two to see the Optaplanner output step by step -->
+    <logger name="org.optaplanner" level="warn"/>
 
     <root level="warn">
         <appender-ref ref="consoleAppender" />

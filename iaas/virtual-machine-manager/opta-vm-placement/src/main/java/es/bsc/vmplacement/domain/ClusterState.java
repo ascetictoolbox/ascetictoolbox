@@ -240,6 +240,7 @@ public class ClusterState extends AbstractPersistable implements Solution<Score>
         for (Vm vm: getVms()) {
             sb.append(vm).append(" --> ").append(vm.getHost()).append("\n");
         }
+        sb.append("Score: ").append(score);
         return sb.toString();
     }
 
