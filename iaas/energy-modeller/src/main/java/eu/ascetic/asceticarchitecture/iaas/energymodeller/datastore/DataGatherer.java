@@ -480,7 +480,7 @@ public class DataGatherer implements Runnable {
      * @return true if data is to be written to disk and to the background
      * database otherwise false.
      */
-    public boolean PerformDataGathering() {
+    public boolean performDataGathering() {
         return this.performDataGathering;
     }
 

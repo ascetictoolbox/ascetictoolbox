@@ -48,7 +48,7 @@ public class SigarDataSourceAdaptor implements HostDataSource {
 
     private static final String VOLTAGE_KPI_NAME = "Voltage";
     private static final String CURRENT_KPI_NAME = "Current";
-    private static final Sigar source = new Sigar();    
+    private static final Sigar SOURCE = new Sigar();    
     private Host host = new Host(1, "localhost");
     private HostMeasurement lowest = null;
     private HostMeasurement highest = null;
@@ -83,7 +83,7 @@ public class SigarDataSourceAdaptor implements HostDataSource {
     private SigarDataSourceAdaptor() {
 
         try {
-            Mem mem = source.getMem();
+            Mem mem = SOURCE.getMem();
             host.setRamMb((int) (Double.valueOf(mem.getTotal()) / 1048576));
         } catch (SigarException ex) {
             Logger.getLogger(SigarDataSourceAdaptor.class.getName()).log(Level.SEVERE, null, ex);
@@ -100,9 +100,9 @@ public class SigarDataSourceAdaptor implements HostDataSource {
         long clock = TimeUnit.MILLISECONDS.toSeconds(calander.getTimeInMillis());
         HostMeasurement measurement = new HostMeasurement(host, clock);
         try {
-            CpuPerc cpu = source.getCpuPerc();
+            CpuPerc cpu = SOURCE.getCpuPerc();
             cpuMeasure.add(new CPUUtilisation(clock, cpu));
-            Mem mem = source.getMem();
+            Mem mem = SOURCE.getMem();
             measurement.addMetric(new MetricValue(KpiList.CPU_IDLE_KPI_NAME, KpiList.CPU_IDLE_KPI_NAME, cpu.getIdle() * 100 + "", clock));
             measurement.addMetric(new MetricValue(KpiList.CPU_INTERUPT_KPI_NAME, KpiList.CPU_INTERUPT_KPI_NAME, cpu.getIrq() * 100 + "", clock));
             measurement.addMetric(new MetricValue(KpiList.CPU_IO_WAIT_KPI_NAME, KpiList.CPU_IO_WAIT_KPI_NAME, cpu.getWait() * 100 + "", clock));
