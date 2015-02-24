@@ -21,7 +21,7 @@ import java.util.HashMap;
 
 /**
  * This class provides a way of assigning weights to VMs to indicate how much of
- * a hosts energy usage should be allocated to each Vm.
+ * a hosts energy usage should be allocated to each VM.
  *
  * This is expected to be used particularly in regards to prediction where load
  * data is not available, hence fractioning energy usage cannot simply use

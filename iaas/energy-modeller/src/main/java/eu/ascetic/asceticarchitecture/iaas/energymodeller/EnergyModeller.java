@@ -20,12 +20,11 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DataGatherer
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DatabaseConnector;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DefaultDatabaseConnector;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.CpuOnlyEnergyPredictor;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.DefaultEnergyPredictor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.EnergyPredictorInterface;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.EnergyDivision;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.HistoricLoadBasedDivision;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.LoadBasedDivision;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.LoadFractionShareRule;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.historic.HistoricLoadBasedDivision;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.historic.LoadBasedDivision;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.FastDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.WattsUpMeterDataSourceAdaptor;
@@ -73,7 +72,7 @@ public class EnergyModeller {
 
     private static final String DEFAULT_PREDICTOR_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor";
     private static final String DEFAULT_DATA_SOURCE_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient";
-    private static final String DEFAULT_ENERGY_DIVISION_RULE_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare";
+    private static final String DEFAULT_HISTORIC_ENERGY_DIVISION_RULE_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.historic";
     private EnergyPredictorInterface predictor = new CpuOnlyEnergyPredictor();
     private HostDataSource datasource;
     private final DatabaseConnector database;
@@ -201,12 +200,12 @@ public class EnergyModeller {
             predictor = (EnergyPredictorInterface) (Class.forName(energyPredictor).newInstance());
         } catch (ClassNotFoundException ex) {
             if (predictor == null) {
-                predictor = new DefaultEnergyPredictor();
+                predictor = new CpuOnlyEnergyPredictor();
             }
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The scheduling algorithm specified was not found");
         } catch (InstantiationException | IllegalAccessException ex) {
             if (predictor == null) {
-                predictor = new DefaultEnergyPredictor();
+                predictor = new CpuOnlyEnergyPredictor();
             }
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The scheduling algorithm did not work", ex);
         }
@@ -258,8 +257,8 @@ public class EnergyModeller {
      */
     public void setHistoricEnergyDivisionRule(String divisionRule) {
         try {
-            if (!divisionRule.startsWith(DEFAULT_ENERGY_DIVISION_RULE_PACKAGE)) {
-                divisionRule = DEFAULT_ENERGY_DIVISION_RULE_PACKAGE + "." + divisionRule;
+            if (!divisionRule.startsWith(DEFAULT_HISTORIC_ENERGY_DIVISION_RULE_PACKAGE)) {
+                divisionRule = DEFAULT_HISTORIC_ENERGY_DIVISION_RULE_PACKAGE + "." + divisionRule;
             }
             historicEnergyDivisionMethod = (Class.forName(divisionRule));
         } catch (ClassNotFoundException ex) {

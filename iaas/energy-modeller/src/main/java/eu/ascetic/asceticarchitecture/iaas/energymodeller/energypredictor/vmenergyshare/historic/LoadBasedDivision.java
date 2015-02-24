@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare;
+package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.historic;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
@@ -26,18 +26,17 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostEnergy
  * VMs. It is intended to be used with historic load data.
  *
  * Energy is fractioned out taking into account the amount of load has been
- * placed on each machine and the static energy usage as well, as determined by
- * training data.
+ * placed on each machine. This is done by ratio.
  *
  * @author Richard
  */
-public class LoadBasedDivisionWithIdleEnergy extends AbstractHistoricLoadBasedDivision {
+public class LoadBasedDivision extends AbstractHistoricLoadBasedDivision {
 
     /**
      * This creates a load based division mechanism for the specified host, that
      * is yet to be specified.
      */
-    public LoadBasedDivisionWithIdleEnergy() {
+    public LoadBasedDivision() {
     }
 
     /**
@@ -45,7 +44,7 @@ public class LoadBasedDivisionWithIdleEnergy extends AbstractHistoricLoadBasedDi
      *
      * @param host The host to divide energy for, among its VMs.
      */
-    public LoadBasedDivisionWithIdleEnergy(Host host) {
+    public LoadBasedDivision(Host host) {
         super(host);
     }
 
@@ -62,12 +61,6 @@ public class LoadBasedDivisionWithIdleEnergy extends AbstractHistoricLoadBasedDi
         int recordCount = (energyUsage.size() <= loadFraction.size() ? energyUsage.size() : loadFraction.size());
 
         /**
-         * Calculate the idle power used for the vm been idle. This is
-         * fractioned out evenly among VMs
-         */
-        double idlePower = getHost().getIdlePowerConsumption();
-
-        /**
          * Calculate the energy used by a VM taking into account the work it has
          * performed.
          */
@@ -80,18 +73,11 @@ public class LoadBasedDivisionWithIdleEnergy extends AbstractHistoricLoadBasedDi
             HostVmLoadFraction load2 = loadFraction.get(i + 1);
             if (load1.getVMs().contains(deployed) && load2.getVMs().contains(deployed)) {
                 long timePeriod = energy2.getTime() - energy1.getTime();
-                double vmCount = load1.getVMs().size() + load2.getVMs().size() / 2;
-                double vmIdlePower = idlePower / vmCount;
-                double idleEnergy = idlePower * (((double) timePeriod) / 3600);
-                double idleVMEnergy = vmIdlePower * (((double) timePeriod) / 3600);
                 double deltaEnergy = Math.abs((((double) timePeriod) / 3600d) * (energy1.getPower() + energy2.getPower()) * 0.5);
-                double activeEnergyUsed = deltaEnergy - idleEnergy;
                 double avgLoadFraction = (load1.getFraction(deployed) + load2.getFraction(deployed)) / 2;
-                //Add previous to previous energy idle energy + fraction of active energy associated with VM.
-                vmEnergy = vmEnergy + idleVMEnergy + (activeEnergyUsed * avgLoadFraction);
+                vmEnergy = vmEnergy + (deltaEnergy * avgLoadFraction);
             }
         }
         return vmEnergy;
     }
-
 }

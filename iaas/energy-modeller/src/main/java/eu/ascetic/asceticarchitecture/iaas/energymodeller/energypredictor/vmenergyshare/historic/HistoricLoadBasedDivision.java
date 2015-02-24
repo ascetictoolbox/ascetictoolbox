@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare;
+package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.historic;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
