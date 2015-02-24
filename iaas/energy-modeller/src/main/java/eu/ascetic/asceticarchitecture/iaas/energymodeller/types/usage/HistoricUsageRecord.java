@@ -17,13 +17,8 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.EnergyUsageSource;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.GregorianCalendar;
 import java.util.HashSet;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -59,55 +54,6 @@ public class HistoricUsageRecord extends EnergyUsageRecord {
      */
     public HistoricUsageRecord(HashSet<EnergyUsageSource> energyUsers) {
         addEnergyUser(energyUsers);
-    }
-
-    /**
-     * This creates a historic usage record from a list of host energy records.
-     * The historic usage record therefore acts a summary.
-     *
-     * @param energyUser The energy user, namely a host.
-     * @param data The data about how much energy the host has used.
-     */
-    public HistoricUsageRecord(Host energyUser, List<HostEnergyRecord> data) {
-        addEnergyUser(energyUser);
-        if (data.size() > 2) {
-            Collections.sort(data);
-            int startIndex = getLastTrustableIndex(data);
-            HostEnergyRecord first = data.get(startIndex);
-            HostEnergyRecord last = data.get(data.size() - 1);
-            totalEnergyUsed = last.getEnergy() - first.getEnergy();
-            GregorianCalendar start = new GregorianCalendar();
-            start.setTimeInMillis(TimeUnit.SECONDS.toMillis(first.getTime()));
-            GregorianCalendar end = new GregorianCalendar();
-            end.setTimeInMillis(TimeUnit.SECONDS.toMillis(last.getTime()));
-            duration = new TimePeriod(start, end);
-            avgPowerUsed = totalEnergyUsed / ((double) TimeUnit.SECONDS.toHours(duration.getDuration()));
-        }
-        if (data.size() == 1) {
-            avgPowerUsed = data.get(0).getPower();
-        }
-    }
-
-    /**
-     * This searches through the data and looks for the last point at which the
-     * log's energy value was reset.
-     *
-     * @param data The host energy record data
-     * @return The index position where the reset was detected.
-     */
-    private int getLastTrustableIndex(List<HostEnergyRecord> data) {
-        double successor = data.get(data.size() -1).getEnergy();
-        /**
-         * This loop sweeps backwards through the collection.
-         * A number must have its successor be either equal or greater than the
-         * current number.
-         */
-        for (int i = data.size() - 2; i >= 0; i--) {
-            if (successor < data.get(i).getEnergy()) {
-                return i + 2;
-            }
-        }
-        return 0;
     }
 
     /**

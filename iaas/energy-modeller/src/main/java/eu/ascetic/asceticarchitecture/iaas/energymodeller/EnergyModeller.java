@@ -46,6 +46,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
@@ -316,7 +317,7 @@ public class EnergyModeller {
         answer.setAvgPowerUsed(totalEnergy / (((double) shareRule.getDuration()) / 3600));
         answer.setDuration(new TimePeriod(shareRule.getStart(), shareRule.getEnd()));
         return answer;
-    }
+    }  
 
     /**
      * This provides for a collection of VMs the amount of energy that has
@@ -356,9 +357,30 @@ public class EnergyModeller {
      */
     public HistoricUsageRecord getEnergyRecordForHost(Host host, TimePeriod timePeriod) {
         List<HostEnergyRecord> data = database.getHostHistoryData(host, timePeriod);
-        HistoricUsageRecord answer = new HistoricUsageRecord(host, data);
+        HistoricUsageRecord answer = new HistoricUsageRecord(host);
+        double totalEnergy = 0;
+        if (data.size() > 2) {
+            Collections.sort(data);
+            for (int i = 0; i <= data.size() - 2; i++) {
+                HostEnergyRecord energy1 = data.get(i);
+                HostEnergyRecord energy2 = data.get(i + 1);
+                long deltaTime = energy2.getTime() - energy1.getTime();
+                double deltaEnergy = Math.abs((((double) deltaTime) / 3600d) * (energy1.getPower() + energy2.getPower()) * 0.5);
+                totalEnergy = totalEnergy + deltaEnergy;
+            }
+            TimePeriod period = new TimePeriod(data.get(0).getTime() / 1000l, data.get(data.size() -1).getTime() / 1000l);
+            answer.setAvgPowerUsed(totalEnergy / (((double) period.getDuration()) / 3600d));
+            answer.setTotalEnergyUsed(totalEnergy);
+            answer.setDuration(period);
+        }
+        if (data.size() == 1) {
+            TimePeriod duration =  new TimePeriod(data.get(0).getTime(), data.get(0).getTime());
+            answer.setDuration(duration);            
+            answer.setAvgPowerUsed(data.get(0).getPower());
+            answer.setTotalEnergyUsed(0);
+        }
         return answer;
-    }
+    }      
 
     /**
      * This provides for a collection of physical machines the amount of energy
