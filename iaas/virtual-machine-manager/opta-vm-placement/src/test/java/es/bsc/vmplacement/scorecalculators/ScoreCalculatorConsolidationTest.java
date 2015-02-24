@@ -23,6 +23,7 @@ import es.bsc.vmplacement.domain.ClusterState;
 import es.bsc.vmplacement.domain.Host;
 import es.bsc.vmplacement.domain.Vm;
 import es.bsc.vmplacement.placement.config.VmPlacementConfig;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -43,7 +44,12 @@ public class ScoreCalculatorConsolidationTest {
         ClusterState initialClusterState = new ClusterState();
         initialClusterState.setVms(new ArrayList<Vm>());
         initialClusterState.setHosts(new ArrayList<Host>());
-        VmPlacementConfig.initialClusterState = initialClusterState;
+        VmPlacementConfig.initialClusterState.set(initialClusterState);
+    }
+    
+    @AfterClass
+    public static void onceExecutedAfterAll() {
+        VmPlacementConfig.initialClusterState.set(null);
     }
 
     @Test

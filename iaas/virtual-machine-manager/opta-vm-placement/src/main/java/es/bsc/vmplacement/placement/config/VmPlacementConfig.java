@@ -41,10 +41,10 @@ public class VmPlacementConfig {
     
     // energyModeller, priceModeller, and initialClusterState are static variables because they are needed in 
     // the score calculators and I cannot call their constructors directly. 
-    // This makes the library non thread safe. Find a better solution.
-    public static EnergyModeller energyModeller;
-    public static PriceModeller priceModeller;
-    public static ClusterState initialClusterState;
+    // I made them ThreadLocal to make the library thread-safe. Is there a cleaner solution?
+    public static ThreadLocal<EnergyModeller> energyModeller = new ThreadLocal<>();
+    public static ThreadLocal<PriceModeller> priceModeller = new ThreadLocal<>();
+    public static ThreadLocal<ClusterState> initialClusterState = new ThreadLocal<>();
 
     public static class Builder {
         // Required parameters
@@ -88,8 +88,8 @@ public class VmPlacementConfig {
         constructionHeuristic = builder.constructionHeuristic;
         localSearch = builder.localSearch;
         vmsAreFixed = builder.vmsAreFixed;
-        energyModeller = builder.energyModeller;
-        priceModeller = builder.priceModeller;
+        energyModeller.set(builder.energyModeller);
+        priceModeller.set(builder.priceModeller);
     }
 
     public Policy getPolicy() {

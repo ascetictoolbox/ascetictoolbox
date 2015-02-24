@@ -21,7 +21,6 @@ package es.bsc.vmplacement.scorecalculators;
 
 import es.bsc.vmplacement.domain.ClusterState;
 import es.bsc.vmplacement.domain.Host;
-import es.bsc.vmplacement.modellers.PriceModeller;
 import es.bsc.vmplacement.placement.config.VmPlacementConfig;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
@@ -38,14 +37,12 @@ import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
  */
 public class ScoreCalculatorPrice implements SimpleScoreCalculator<ClusterState> {
 
-    private final PriceModeller priceModeller = VmPlacementConfig.priceModeller;
-
     @Override
     public HardMediumSoftScore calculateScore(ClusterState solution) {
         return HardMediumSoftScore.valueOf(
                 calculateHardScore(solution),
                 calculateSoftScore(solution),
-                VmPlacementConfig.initialClusterState.countVmMigrationsNeeded(solution));
+                VmPlacementConfig.initialClusterState.get().countVmMigrationsNeeded(solution));
     }
 
     private int calculateHardScore(ClusterState solution) {
@@ -56,7 +53,7 @@ public class ScoreCalculatorPrice implements SimpleScoreCalculator<ClusterState>
     private int calculateSoftScore(ClusterState solution) {
         double result = 0;
         for (Host host: solution.getHosts()) {
-            result -= priceModeller.getCost(host, solution.getVmsDeployedInHost(host));
+            result -= VmPlacementConfig.priceModeller.get().getCost(host, solution.getVmsDeployedInHost(host));
         }
         return (int) result;
     }

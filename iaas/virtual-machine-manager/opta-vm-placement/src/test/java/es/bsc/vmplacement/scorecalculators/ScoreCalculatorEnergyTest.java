@@ -49,13 +49,14 @@ public class ScoreCalculatorEnergyTest {
         ClusterState initialClusterState = new ClusterState();
         initialClusterState.setVms(new ArrayList<Vm>());
         initialClusterState.setHosts(new ArrayList<Host>());
-        VmPlacementConfig.initialClusterState = initialClusterState;
+        VmPlacementConfig.initialClusterState.set(initialClusterState);
     }
     
     @AfterClass
-    public static void tearDown() {
-        VmPlacementConfig.energyModeller = null; // It was mocked, we need to null it again so it does
-                                                // interfere with other tests.
+    public static void onceExecutedAfterAll() {
+        VmPlacementConfig.energyModeller.set(null); // It was mocked, we need to null it again so it does
+                                                    // interfere with other tests.
+        VmPlacementConfig.initialClusterState.set(null);
     }
     
     @Test
@@ -75,10 +76,10 @@ public class ScoreCalculatorEnergyTest {
     }
     
     private void mockEnergyModeller(List<Vm> vmsInHost1, List<Vm> vmsInHost2) {
-        VmPlacementConfig.energyModeller = Mockito.mock(EnergyModeller.class);
-        Mockito.when(VmPlacementConfig.energyModeller.getPowerConsumption(host1, vmsInHost1))
+        VmPlacementConfig.energyModeller.set(Mockito.mock(EnergyModeller.class));
+        Mockito.when(VmPlacementConfig.energyModeller.get().getPowerConsumption(host1, vmsInHost1))
                 .thenReturn(20.0);
-        Mockito.when(VmPlacementConfig.energyModeller.getPowerConsumption(host2, vmsInHost2))
+        Mockito.when(VmPlacementConfig.energyModeller.get().getPowerConsumption(host2, vmsInHost2))
                 .thenReturn(10.0);
     }
 

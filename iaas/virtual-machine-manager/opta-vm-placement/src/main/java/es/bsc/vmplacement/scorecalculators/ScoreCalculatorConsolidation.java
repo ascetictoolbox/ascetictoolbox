@@ -45,7 +45,7 @@ public class ScoreCalculatorConsolidation implements SimpleScoreCalculator<Clust
                 solution.countOffHosts(),
                 solution.countIdleHosts(),
                 -solution.calculateCumulativeUnusedCpuPerc(),
-                VmPlacementConfig.initialClusterState.countVmMigrationsNeeded(solution)};
+                VmPlacementConfig.initialClusterState.get().countVmMigrationsNeeded(solution)};
         return BendableScore.valueOf(hardScores, softScores);
     }
 

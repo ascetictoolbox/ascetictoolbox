@@ -48,7 +48,7 @@ public class ScoreCalculatorRandom implements SimpleScoreCalculator<ClusterState
         int[] softScores = {
                 solution.countOffHosts(),
                 rand.nextInt(POSSIBLE_SCORES),
-                VmPlacementConfig.initialClusterState.countVmMigrationsNeeded(solution)};
+                VmPlacementConfig.initialClusterState.get().countVmMigrationsNeeded(solution)};
         return BendableScore.valueOf(hardScores, softScores);
     }
 

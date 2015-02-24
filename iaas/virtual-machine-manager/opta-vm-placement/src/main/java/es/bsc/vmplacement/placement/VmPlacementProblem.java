@@ -55,7 +55,7 @@ public class VmPlacementProblem {
         this.vms = new ArrayList<>(vms);
         this.config = config;
         this.vmPlacementSolver = new VmPlacementSolver(config);
-        VmPlacementConfig.initialClusterState = getInitialState(); // This is problematic for thread safety
+        VmPlacementConfig.initialClusterState.set(getInitialState());
         addFixedVmsToHosts();
     }
 
@@ -68,7 +68,9 @@ public class VmPlacementProblem {
         Solver solver = vmPlacementSolver.buildSolver();
         solver.setPlanningProblem(getInitialState());
         solver.solve();
-        return (ClusterState) solver.getBestSolution();
+        ClusterState result = (ClusterState) solver.getBestSolution();
+        cleanThreadLocals(); // to avoid memory leaks
+        return result;
     }
 
     /**
@@ -155,6 +157,12 @@ public class VmPlacementProblem {
             }
         }
         return result;
+    }
+    
+    private void cleanThreadLocals() {
+        VmPlacementConfig.energyModeller.set(null);
+        VmPlacementConfig.priceModeller.set(null);
+        VmPlacementConfig.initialClusterState.set(null);
     }
 
 }

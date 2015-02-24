@@ -49,13 +49,14 @@ public class ScoreCalculatorPriceTest {
         ClusterState initialClusterState = new ClusterState();
         initialClusterState.setVms(new ArrayList<Vm>());
         initialClusterState.setHosts(new ArrayList<Host>());
-        VmPlacementConfig.initialClusterState = initialClusterState;
+        VmPlacementConfig.initialClusterState.set(initialClusterState);
     }
     
     @AfterClass
-    public static void tearDown() {
-        VmPlacementConfig.priceModeller = null; // It was mocked, we need to null it again so it does
-                                                 // interfere with other tests.
+    public static void onceExecutedAfterAll() {
+        VmPlacementConfig.priceModeller.set(null); // It was mocked, we need to null it again so it does
+                                                   // interfere with other tests.
+        VmPlacementConfig.initialClusterState.set(null);
     }
     
     @Test
@@ -75,10 +76,10 @@ public class ScoreCalculatorPriceTest {
     }
 
     private void mockPriceModeller(List<Vm> vmsInHost1, List<Vm> vmsInHost2) {
-        VmPlacementConfig.priceModeller = Mockito.mock(PriceModeller.class);
-        Mockito.when(VmPlacementConfig.priceModeller.getCost(host1, vmsInHost1))
+        VmPlacementConfig.priceModeller.set(Mockito.mock(PriceModeller.class));
+        Mockito.when(VmPlacementConfig.priceModeller.get().getCost(host1, vmsInHost1))
                 .thenReturn(20.0);
-        Mockito.when(VmPlacementConfig.priceModeller.getCost(host2, vmsInHost2))
+        Mockito.when(VmPlacementConfig.priceModeller.get().getCost(host2, vmsInHost2))
                 .thenReturn(10.0);
     }
 

@@ -47,7 +47,7 @@ public class ScoreCalculatorGroupByApp implements SimpleScoreCalculator<ClusterS
         int[] softScores = {
                 solution.countOffHosts(),
                 calculateSoftScore2(solution),
-                VmPlacementConfig.initialClusterState.countVmMigrationsNeeded(solution)};
+                VmPlacementConfig.initialClusterState.get().countVmMigrationsNeeded(solution)};
         return BendableScore.valueOf(hardScores, softScores);
     }
     
