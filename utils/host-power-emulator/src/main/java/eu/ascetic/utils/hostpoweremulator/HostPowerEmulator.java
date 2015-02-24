@@ -19,6 +19,8 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DatabaseConnector;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DefaultDatabaseConnector;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.CpuOnlyEnergyPredictor;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.CpuOnlyPolynomialEnergyPredictor;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.EnergyPredictorInterface;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostMeasurement;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.SigarDataSourceAdaptor;
@@ -119,7 +121,7 @@ public class HostPowerEmulator implements Runnable {
             host.setCalibrationData(clone.getCalibrationData());
         }
     }
-    
+
     /**
      * This allows the energy modellers data source to be set
      *
@@ -152,11 +154,13 @@ public class HostPowerEmulator implements Runnable {
             }
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The data source did not work", ex);
         }
-    }    
+    }
 
     @Override
     public void run() {
-        CpuOnlyEnergyPredictor predictor = new CpuOnlyEnergyPredictor();
+        EnergyPredictorInterface predictor;
+        CpuOnlyEnergyPredictor linearPredictor = new CpuOnlyEnergyPredictor();
+        CpuOnlyPolynomialEnergyPredictor polyPredictor = new CpuOnlyPolynomialEnergyPredictor();
         Host host = source.getHostByName(hostname);
         HostPowerLogger logger = new HostPowerLogger(new File("EstimatedHostPowerData.txt"), true);
         logger.setMetricName(outputName);
@@ -170,6 +174,16 @@ public class HostPowerEmulator implements Runnable {
                     + "please specifiy where to clone the calibration data from.");
             System.exit(0);
         }
+        if (linearPredictor.getSumOfSquareError(host) < polyPredictor.getSumOfSquareError(host)) {
+            predictor = linearPredictor;
+            System.out.println("Using the linear predictor");
+        } else {
+            predictor = polyPredictor;
+            System.out.println("Using the polynomial predictor");
+        }
+        System.out.println("Linear SSE: " + linearPredictor.getSumOfSquareError(host));
+        System.out.println("Polynomial SSE: " + polyPredictor.getSumOfSquareError(host));
+        
         /**
          * The first phase is to clone the resource calibration data of another
          * in the event that this is necessary.
@@ -183,7 +197,12 @@ public class HostPowerEmulator implements Runnable {
          */
         while (running) {
             HostMeasurement mesurement = source.getHostData(host);
-            double power = predictor.predictPowerUsed(host, mesurement.getCpuUtilisation());
+            double power = 0;
+            if (predictor.getClass().equals(CpuOnlyEnergyPredictor.class)) {
+                power = ((CpuOnlyEnergyPredictor) predictor).predictPowerUsed(host, mesurement.getCpuUtilisation());
+            } else {
+                power = ((CpuOnlyPolynomialEnergyPredictor) predictor).predictPowerUsed(host, mesurement.getCpuUtilisation());
+            }
             logger.printToFile(logger.new Pair(host, power));
             try {
                 Thread.sleep(TimeUnit.SECONDS.toMillis(pollInterval));
@@ -192,7 +211,7 @@ public class HostPowerEmulator implements Runnable {
             }
         }
     }
-    
+
     /**
      * This returns the host name which the watt meter emulator runs for
      *
