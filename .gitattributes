@@ -222,6 +222,7 @@ iaas/virtual-machine-manager/LICENSE.md -text
 iaas/virtual-machine-manager/README -text
 iaas/virtual-machine-manager/opta-vm-placement/LICENSE -text
 iaas/virtual-machine-manager/opta-vm-placement/NOTICE -text
+iaas/virtual-machine-manager/opta-vm-placement/README.md -text
 iaas/virtual-machine-manager/opta-vm-placement/data/vmplacement/unsolved/vmplacement.xml -text
 iaas/virtual-machine-manager/opta-vm-placement/data/vmplacement/unsolved/vmplacement2.xml -text
 iaas/virtual-machine-manager/opta-vm-placement/data/vmplacement/unsolved/vmplacement3.xml -text
