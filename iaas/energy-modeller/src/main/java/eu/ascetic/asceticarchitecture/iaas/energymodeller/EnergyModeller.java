@@ -280,125 +280,6 @@ public class EnergyModeller {
     }
 
     /**
-     * This provides for a collection of VMs the amount of energy that has
-     * historically been used.
-     *
-     * @param vms The set of virtual machines.
-     * @param timePeriod The time period for which the query applies.
-     * @return The value returned should be separated on per VM basis. This
-     * allows for a set of values to be queried at the same time and also
-     * aggregated correctly.
-     *
-     * Envisaged purpose: Determining the amount of energy being used/having
-     * been used by an SLA.
-     *
-     * Historic Values: Avg Watts over time Avg Current (useful??) Avg Voltage
-     * (useful??) kWh of energy used since instantiation
-     */
-    public HashSet<HistoricUsageRecord> getEnergyRecordForVM(Collection<VmDeployed> vms, TimePeriod timePeriod) {
-        HashSet<HistoricUsageRecord> answer = new HashSet<>();
-        for (VmDeployed vm : vms) {
-            answer.add(getEnergyRecordForVM(vm, timePeriod));
-        }
-        return answer;
-    }
-
-    /**
-     * This provides for a collection of VMs the amount of energy currently in
-     * use.
-     *
-     * @param vms The set of virtual machines.
-     * @return The value returned should be separated on per VM basis. This
-     * allows for a set of values to be queried at the same time and also
-     * aggregated correctly.
-     *
-     * Envisaged purpose: Determining the amount of energy being used/having
-     * been used by an SLA.
-     *
-     * Current Values: Watts, current and voltage
-     *
-     */
-    public HashSet<CurrentUsageRecord> getCurrentEnergyForVM(Collection<VmDeployed> vms) {
-        HashSet<CurrentUsageRecord> answer = new HashSet<>();
-        for (VmDeployed vm : vms) {
-            answer.add(getCurrentEnergyForVM(vm));
-        }
-        return answer;
-    }
-
-    /**
-     * This provides for a collection of physical machines the amount of energy
-     * that has historically been used.
-     *
-     * @param hosts The set of physical machines.
-     * @param timePeriod The time period for which the query applies.
-     * @return The value returned should be separated on per machine basis. This
-     * allows for a set of values to be queried at the same time and also
-     * aggregated correctly.
-     *
-     * Historic Values: Avg Watts over time (+ Max/Min??) Avg Current (useful??)
-     * Avg Voltage (useful??) kWh of energy used since boot/time immemorial
-     * (i.e. long as recorded data)
-     *
-     */
-    public HashSet<HistoricUsageRecord> getEnergyRecordForHost(Collection<Host> hosts, TimePeriod timePeriod) {
-        HashSet<HistoricUsageRecord> answer = new HashSet<>();
-        for (Host host : hosts) {
-            answer.add(getEnergyRecordForHost(host, timePeriod));
-        }
-        return answer;
-    }
-
-    /**
-     * This provides for a collection of physical machines the amount of energy
-     * currently in use.
-     *
-     * @param hosts The set of physical machines.
-     * @return The value returned should be separated on per machine basis. This
-     * allows for a set of values to be queried at the same time and also
-     * aggregated correctly.
-     *
-     * Current Values: Watts, current and voltage
-     *
-     */
-    public HashSet<CurrentUsageRecord> getCurrentEnergyForHost(Collection<Host> hosts) {
-        HashSet<CurrentUsageRecord> answer = new HashSet<>();
-        for (Host host : hosts) {
-            answer.add(getCurrentEnergyForHost(host));
-        }
-        return answer;
-    }
-
-    /**
-     * This returns the energy usage for a named virtual machine.
-     *
-     * @param vm A reference to the VM
-     * @return
-     *
-     * Current Values: Watts, current and voltage
-     *
-     */
-    public CurrentUsageRecord getCurrentEnergyForVM(VmDeployed vm) {
-        LoadFractionShareRule rule = new LoadFractionShareRule();
-        Host host = vm.getAllocatedTo();
-        ArrayList<VmDeployed> otherVms = dataGatherer.getVMsOnHost(host);
-        ArrayList<VmDeployed> vmsDeployedOnHost = new ArrayList<>();
-        ArrayList<VM> vmsOnHost = new ArrayList<>();
-        vmsDeployedOnHost.addAll(otherVms);
-        vmsDeployedOnHost.add(vm);
-        vmsOnHost.addAll(otherVms);
-        vmsOnHost.add(vm);
-        rule.setVmMeasurements(datasource.getVmData(vmsDeployedOnHost));
-        CurrentUsageRecord hostAnswer = datasource.getCurrentEnergyUsage(host);
-        EnergyDivision divider = rule.getEnergyUsage(host, vmsOnHost);
-        divider.setConsiderIdleEnergy(considerIdleEnergyCurrentVm);
-        CurrentUsageRecord answer = new CurrentUsageRecord(vm);
-        answer.setTime(hostAnswer.getTime());
-        answer.setPower(divider.getEnergyUsage(hostAnswer.getPower(), vm));
-        return answer;
-    }
-
-    /**
      * This returns the energy usage for a named virtual machine.
      *
      * @param vm A reference to the VM
@@ -434,6 +315,30 @@ public class EnergyModeller {
         answer.setAvgPowerUsed(totalEnergy / (((double) shareRule.getDuration()) / 3600));
         answer.setDuration(new TimePeriod(shareRule.getStart(), shareRule.getEnd()));
         return answer;
+    }   
+    
+    /**
+     * This provides for a collection of VMs the amount of energy that has
+     * historically been used.
+     *
+     * @param vms The set of virtual machines.
+     * @param timePeriod The time period for which the query applies.
+     * @return The value returned should be separated on per VM basis. This
+     * allows for a set of values to be queried at the same time and also
+     * aggregated correctly.
+     *
+     * Envisaged purpose: Determining the amount of energy being used/having
+     * been used by an SLA.
+     *
+     * Historic Values: Avg Watts over time Avg Current (useful??) Avg Voltage
+     * (useful??) kWh of energy used since instantiation
+     */
+    public HashSet<HistoricUsageRecord> getEnergyRecordForVM(Collection<VmDeployed> vms, TimePeriod timePeriod) {
+        HashSet<HistoricUsageRecord> answer = new HashSet<>();
+        for (VmDeployed vm : vms) {
+            answer.add(getEnergyRecordForVM(vm, timePeriod));
+        }
+        return answer;
     }
 
     /**
@@ -452,6 +357,81 @@ public class EnergyModeller {
         List<HostEnergyRecord> data = database.getHostHistoryData(host, timePeriod);
         HistoricUsageRecord answer = new HistoricUsageRecord(host, data);
         return answer;
+    }    
+    
+    /**
+     * This provides for a collection of physical machines the amount of energy
+     * that has historically been used.
+     *
+     * @param hosts The set of physical machines.
+     * @param timePeriod The time period for which the query applies.
+     * @return The value returned should be separated on per machine basis. This
+     * allows for a set of values to be queried at the same time and also
+     * aggregated correctly.
+     *
+     * Historic Values: Avg Watts over time (+ Max/Min??) Avg Current (useful??)
+     * Avg Voltage (useful??) kWh of energy used since boot/time immemorial
+     * (i.e. long as recorded data)
+     *
+     */
+    public HashSet<HistoricUsageRecord> getEnergyRecordForHost(Collection<Host> hosts, TimePeriod timePeriod) {
+        HashSet<HistoricUsageRecord> answer = new HashSet<>();
+        for (Host host : hosts) {
+            answer.add(getEnergyRecordForHost(host, timePeriod));
+        }
+        return answer;
+    }
+    
+    /**
+     * This returns the energy usage for a named virtual machine.
+     *
+     * @param vm A reference to the VM
+     * @return
+     *
+     * Current Values: Watts, current and voltage
+     *
+     */
+    public CurrentUsageRecord getCurrentEnergyForVM(VmDeployed vm) {
+        LoadFractionShareRule rule = new LoadFractionShareRule();
+        Host host = vm.getAllocatedTo();
+        ArrayList<VmDeployed> otherVms = dataGatherer.getVMsOnHost(host);
+        ArrayList<VmDeployed> vmsDeployedOnHost = new ArrayList<>();
+        ArrayList<VM> vmsOnHost = new ArrayList<>();
+        vmsDeployedOnHost.addAll(otherVms);
+        vmsDeployedOnHost.add(vm);
+        vmsOnHost.addAll(otherVms);
+        vmsOnHost.add(vm);
+        rule.setVmMeasurements(datasource.getVmData(vmsDeployedOnHost));
+        CurrentUsageRecord hostAnswer = datasource.getCurrentEnergyUsage(host);
+        EnergyDivision divider = rule.getEnergyUsage(host, vmsOnHost);
+        divider.setConsiderIdleEnergy(considerIdleEnergyCurrentVm);
+        CurrentUsageRecord answer = new CurrentUsageRecord(vm);
+        answer.setTime(hostAnswer.getTime());
+        answer.setPower(divider.getEnergyUsage(hostAnswer.getPower(), vm));
+        return answer;
+    }    
+    
+    /**
+     * This provides for a collection of VMs the amount of energy currently in
+     * use.
+     *
+     * @param vms The set of virtual machines.
+     * @return The value returned should be separated on per VM basis. This
+     * allows for a set of values to be queried at the same time and also
+     * aggregated correctly.
+     *
+     * Envisaged purpose: Determining the amount of energy being used/having
+     * been used by an SLA.
+     *
+     * Current Values: Watts, current and voltage
+     *
+     */
+    public HashSet<CurrentUsageRecord> getCurrentEnergyForVM(Collection<VmDeployed> vms) {
+        HashSet<CurrentUsageRecord> answer = new HashSet<>();
+        for (VmDeployed vm : vms) {
+            answer.add(getCurrentEnergyForVM(vm));
+        }
+        return answer;
     }
 
     /**
@@ -464,6 +444,26 @@ public class EnergyModeller {
      */
     public CurrentUsageRecord getCurrentEnergyForHost(Host host) {
         CurrentUsageRecord answer = datasource.getCurrentEnergyUsage(host);
+        return answer;
+    }    
+    
+    /**
+     * This provides for a collection of physical machines the amount of energy
+     * currently in use.
+     *
+     * @param hosts The set of physical machines.
+     * @return The value returned should be separated on per machine basis. This
+     * allows for a set of values to be queried at the same time and also
+     * aggregated correctly.
+     *
+     * Current Values: Watts, current and voltage
+     *
+     */
+    public HashSet<CurrentUsageRecord> getCurrentEnergyForHost(Collection<Host> hosts) {
+        HashSet<CurrentUsageRecord> answer = new HashSet<>();
+        for (Host host : hosts) {
+            answer.add(getCurrentEnergyForHost(host));
+        }
         return answer;
     }
 
