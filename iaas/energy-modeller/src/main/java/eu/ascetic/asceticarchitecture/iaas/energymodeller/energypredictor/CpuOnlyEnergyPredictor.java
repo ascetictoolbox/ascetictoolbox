@@ -52,6 +52,8 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
     private int cpuUtilObservationTimeSec = 0;
     private int cpuUtilObservationTimeSecTotal = 0;
     private boolean considerIdleEnergy = true;
+    private EnergyModel lastModel = null;
+    private Host lastModelHost = null;
 
     /**
      * This creates a new CPU only energy predictor.
@@ -234,6 +236,12 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
      * @return The coefficients and the intercept of the model.
      */
     private EnergyModel retrieveModel(Host host) {
+        if (host.equals(lastModelHost)) {
+            /**
+             * A small cache avoids recalculating the regression so often.
+             */
+            return lastModel;
+        }
         EnergyModel answer = new EnergyModel();
         SimpleRegression regressor = new SimpleRegression(true);
         for (HostEnergyCalibrationData data : host.getCalibrationData()) {
@@ -241,6 +249,8 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
         }
         answer.setIntercept(regressor.getIntercept());
         answer.setCoefCPU(regressor.getSlope());
+        lastModel = answer;
+        lastModelHost = host;
         return answer;
     }
 

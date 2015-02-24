@@ -57,6 +57,8 @@ public class CpuOnlyPolynomialEnergyPredictor extends AbstractEnergyPredictor {
     private int cpuUtilObservationTimeSec = 0;
     private int cpuUtilObservationTimeSecTotal = 0;
     private boolean considerIdleEnergy = true;
+    private PolynomialFunction lastModel = null;
+    private Host lastModelHost = null;    
 
     /**
      * This creates a new CPU only energy predictor.
@@ -241,13 +243,22 @@ public class CpuOnlyPolynomialEnergyPredictor extends AbstractEnergyPredictor {
      * @return The coefficients and the intercept of the model.
      */
     private PolynomialFunction retrieveModel(Host host) {
+        if (host.equals(lastModelHost)) {
+            /**
+             * A small cache avoids recalculating the regression so often.
+             */
+            return lastModel;
+        }
         WeightedObservedPoints points = new WeightedObservedPoints();
         for (HostEnergyCalibrationData data : host.getCalibrationData()) {
             points.add(data.getCpuUsage(), data.getWattsUsed());
         }
         PolynomialCurveFitter fitter = PolynomialCurveFitter.create(2);
         final double[] best = fitter.fit(points.toList());
-        return new PolynomialFunction(best);
+        PolynomialFunction answer = new PolynomialFunction(best);
+        lastModel = answer;
+        lastModelHost = host;
+        return answer;
     }
 
     /**
