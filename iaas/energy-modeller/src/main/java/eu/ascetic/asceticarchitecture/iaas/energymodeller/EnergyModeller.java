@@ -100,8 +100,8 @@ public class EnergyModeller {
                     "Could not read the energy modeller's log settings file", ex);
         }
         /**
-         * Only the instance that is stated in standalone mode should write
-         * to the background database and log VM data out to disk. All other
+         * Only the instance that is stated in standalone mode should write to
+         * the background database and log VM data out to disk. All other
          * instances should read from the database only.
          */
         EnergyModeller modeller = new EnergyModeller(true);
@@ -134,7 +134,7 @@ public class EnergyModeller {
     public static EnergyModeller getInstance() {
         return SingletonHolder.INSTANCE;
     }
-  
+
     /**
      * This creates a new energy modeller.
      */
@@ -146,6 +146,7 @@ public class EnergyModeller {
 
     /**
      * This creates a new energy modeller.
+     *
      * @param performDataGathering Indicates if this energy modeller should,
      * write to disk and also write to the background database.
      */
@@ -153,8 +154,8 @@ public class EnergyModeller {
         datasource = new FastDataSourceAdaptor();
         database = new DefaultDatabaseConnector();
         startup(performDataGathering);
-    }        
-    
+    }
+
     /**
      * This creates a new energy modeller.
      *
@@ -315,8 +316,8 @@ public class EnergyModeller {
         answer.setAvgPowerUsed(totalEnergy / (((double) shareRule.getDuration()) / 3600));
         answer.setDuration(new TimePeriod(shareRule.getStart(), shareRule.getEnd()));
         return answer;
-    }   
-    
+    }
+
     /**
      * This provides for a collection of VMs the amount of energy that has
      * historically been used.
@@ -357,8 +358,8 @@ public class EnergyModeller {
         List<HostEnergyRecord> data = database.getHostHistoryData(host, timePeriod);
         HistoricUsageRecord answer = new HistoricUsageRecord(host, data);
         return answer;
-    }    
-    
+    }
+
     /**
      * This provides for a collection of physical machines the amount of energy
      * that has historically been used.
@@ -381,7 +382,7 @@ public class EnergyModeller {
         }
         return answer;
     }
-    
+
     /**
      * This returns the energy usage for a named virtual machine.
      *
@@ -409,8 +410,8 @@ public class EnergyModeller {
         answer.setTime(hostAnswer.getTime());
         answer.setPower(divider.getEnergyUsage(hostAnswer.getPower(), vm));
         return answer;
-    }    
-    
+    }
+
     /**
      * This provides for a collection of VMs the amount of energy currently in
      * use.
@@ -445,8 +446,8 @@ public class EnergyModeller {
     public CurrentUsageRecord getCurrentEnergyForHost(Host host) {
         CurrentUsageRecord answer = datasource.getCurrentEnergyUsage(host);
         return answer;
-    }    
-    
+    }
+
     /**
      * This provides for a collection of physical machines the amount of energy
      * currently in use.
@@ -546,10 +547,11 @@ public class EnergyModeller {
     public static VM getVM(int cpuCount, int ramMb, int diskGb) {
         return new VM(cpuCount, ramMb, diskGb);
     }
-    
+
     /**
-     * This converts an OVF description into collection of VM objects for cases 
+     * This converts an OVF description into collection of VM objects for cases
      * where the VM has yet to be instantiated.
+     *
      * @param deploymentOVF The OVF file containing VMs to be deployed.
      * @return The list of VM objects
      */
