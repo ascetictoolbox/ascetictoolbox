@@ -1,5 +1,5 @@
 /**
- * Copyright 2014 University of Leeds
+ * Copyright 2015 University of Leeds
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -20,29 +20,34 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasou
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.WattsUpMeterDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energymodel.EnergyModel;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostEnergyCalibrationData;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
 import java.io.File;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.commons.math3.stat.regression.SimpleRegression;
+import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
+import org.apache.commons.math3.fitting.PolynomialCurveFitter;
+import org.apache.commons.math3.fitting.WeightedObservedPoint;
+import org.apache.commons.math3.fitting.WeightedObservedPoints;
 
 /**
- * This implements the CPU only energy predictor for the ASCETiC project.
+ * This implements the CPU only polynomial energy predictor for the ASCETiC
+ * project.
  *
- * It performs simple linear regression in order to determine from the CPU load
+ * It performs simple polynomial fitting in order to determine from the CPU load
  * the current power consumption.
- * @author Richard Kavanagh 
+ *
+ * @author Richard Kavanagh
  *
  */
-public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
+public class CpuOnlyPolynomialEnergyPredictor extends AbstractEnergyPredictor {
 
     private static final String CONFIG_FILE = "energymodeller_cpu_predictor.properties";
     private static final String DEFAULT_DATA_SOURCE_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient";
@@ -55,23 +60,23 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
 
     /**
      * This creates a new CPU only energy predictor.
-     * 
-     * It will create a energymodeller_CPU_predictor properties file if it doesn't
-     * exist. 
-     * 
+     *
+     * It will create a energymodeller_CPU_predictor properties file if it
+     * doesn't exist.
+     *
      * The main property: iaas.energy.modeller.cpu.energy.predictor.default_load
      * should be in the range 0..1 or -1. This indicates the predictor's default
-     * assumption on how much load is been induced. -1 measures the CPU's current
-     * load and uses that to forecast into the future.
-     * 
+     * assumption on how much load is been induced. -1 measures the CPU's
+     * current load and uses that to forecast into the future.
+     *
      * In the case of using -1 as a parameter to additional parameters are used:
      * iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.sec
      * iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.min
-     * 
-     * These indicate the window of how long the CPU should be monitored for, to 
+     *
+     * These indicate the window of how long the CPU should be monitored for, to
      * determine the current load.
      */
-    public CpuOnlyEnergyPredictor() {
+    public CpuOnlyPolynomialEnergyPredictor() {
         try {
             PropertiesConfiguration config;
             if (new File(CONFIG_FILE).exists()) {
@@ -98,7 +103,7 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
 
             }
         } catch (ConfigurationException ex) {
-            Logger.getLogger(CpuOnlyEnergyPredictor.class.getName()).log(Level.SEVERE,
+            Logger.getLogger(CpuOnlyPolynomialEnergyPredictor.class.getName()).log(Level.SEVERE,
                     "Taking the default load from the settings file did not work", ex);
         }
     }
@@ -128,12 +133,12 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
             if (source == null) {
                 source = new ZabbixDataSourceAdaptor();
             }
-            Logger.getLogger(CpuOnlyEnergyPredictor.class.getName()).log(Level.WARNING, "The data source specified was not found", ex);
+            Logger.getLogger(CpuOnlyPolynomialEnergyPredictor.class.getName()).log(Level.WARNING, "The data source specified was not found", ex);
         } catch (InstantiationException | IllegalAccessException ex) {
             if (source == null) {
                 source = new ZabbixDataSourceAdaptor();
             }
-            Logger.getLogger(CpuOnlyEnergyPredictor.class.getName()).log(Level.WARNING, "The data source did not work", ex);
+            Logger.getLogger(CpuOnlyPolynomialEnergyPredictor.class.getName()).log(Level.WARNING, "The data source did not work", ex);
         }
     }
 
@@ -190,39 +195,41 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
      */
     public EnergyUsagePrediction predictTotalEnergy(Host host, double usageCPU, TimePeriod timePeriod) {
         EnergyUsagePrediction answer = new EnergyUsagePrediction(host);
-        EnergyModel model = retrieveModel(host);
+        PolynomialFunction model = retrieveModel(host);
         double powerUsed;
-        powerUsed = model.getIntercept() + model.getCoefCPU() * usageCPU;
+        powerUsed = model.value(usageCPU);
         answer.setAvgPowerUsed(powerUsed);
         answer.setTotalEnergyUsed(powerUsed * ((double) TimeUnit.SECONDS.toHours(timePeriod.getDuration())));
         answer.setDuration(timePeriod);
         return answer;
     }
- 
+
     /**
      * This estimates the power used by a host, given its CPU load. The CPU load
      * value is determined from the settings file.
+     *
      * @param host The host to get the energy prediction for.
      * @return The predicted power usage.
      */
     public double predictPowerUsed(Host host) {
-        EnergyModel model = retrieveModel(host);
+        PolynomialFunction model = retrieveModel(host);
         if (usageCPU == -1) {
-            return model.getIntercept() + model.getCoefCPU() * source.getCpuUtilisation(host, cpuUtilObservationTimeSecTotal);
+            return model.value(source.getCpuUtilisation(host, cpuUtilObservationTimeSecTotal));
         } else {
-            return model.getIntercept() + model.getCoefCPU() * usageCPU;
-        }     
-    }    
-    
+            return model.value(usageCPU);
+        }
+    }
+
     /**
      * This estimates the power used by a host, given its CPU load.
+     *
      * @param host The host to get the energy prediction for
      * @param usageCPU The amount of CPU load placed on the host
      * @return The predicted power usage.
      */
     public double predictPowerUsed(Host host, double usageCPU) {
-        EnergyModel model = retrieveModel(host);
-        return model.getIntercept() + model.getCoefCPU() * usageCPU;       
+        PolynomialFunction model = retrieveModel(host);
+        return model.value(usageCPU);
     }
 
     /**
@@ -233,24 +240,42 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
      *
      * @return The coefficients and the intercept of the model.
      */
-    private EnergyModel retrieveModel(Host host) {
-        EnergyModel answer = new EnergyModel();
-        SimpleRegression regressor = new SimpleRegression(true);
+    private PolynomialFunction retrieveModel(Host host) {
+        WeightedObservedPoints points = new WeightedObservedPoints();
         for (HostEnergyCalibrationData data : host.getCalibrationData()) {
-            regressor.addData(data.getCpuUsage(), data.getWattsUsed());
+            points.add(data.getCpuUsage(), data.getWattsUsed());
         }
-        answer.setIntercept(regressor.getIntercept());
-        answer.setCoefCPU(regressor.getSlope());
+        PolynomialCurveFitter fitter = PolynomialCurveFitter.create(2);
+        final double[] best = fitter.fit(points.toList());
+        return new PolynomialFunction(best);
+    }
+
+    /**
+     * This performs a calculation to determine how close the fit is for a given
+     * model.
+     *
+     * @param function The PolynomialFunction to assess
+     * @param observed The actual set of observed points
+     * @return The sum of the square error.
+     */
+    private double getSumOfSquareError(PolynomialFunction function, List<WeightedObservedPoint> observed) {
+        double answer = 0;
+        for (int i = 0; i < observed.size(); i++) {
+            WeightedObservedPoint current = observed.get(i);
+            double error = current.getY() - function.value(current.getX());
+            answer = answer + (error * error);
+        }
         return answer;
     }
 
     @Override
     public double getSumOfSquareError(Host host) {
-        SimpleRegression regressor = new SimpleRegression(true);
+        WeightedObservedPoints points = new WeightedObservedPoints();
         for (HostEnergyCalibrationData data : host.getCalibrationData()) {
-            regressor.addData(data.getCpuUsage(), data.getWattsUsed());
+            points.add(data.getCpuUsage(), data.getWattsUsed());
         }
-        return regressor.getSumSquaredErrors();
+        PolynomialFunction function = retrieveModel(host);
+        return getSumOfSquareError(function, points.toList());
     }
 
 }

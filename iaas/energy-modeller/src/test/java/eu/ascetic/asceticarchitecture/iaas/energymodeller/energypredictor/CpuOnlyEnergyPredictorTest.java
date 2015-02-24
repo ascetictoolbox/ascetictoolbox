@@ -16,7 +16,6 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DefaultDatabaseConnector;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energymodel.EnergyModel;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
@@ -105,16 +104,6 @@ public class CpuOnlyEnergyPredictorTest {
         prediction = predictor.getVMPredictedEnergy(vm1, vms, host);
         System.out.println("watts: " + prediction.getAvgPowerUsed() + " energy: " + prediction.getTotalEnergyUsed());
 
-    }
-
-    @Test
-    public void TestRetrieveModel() {
-        CpuOnlyEnergyPredictor predictor = new CpuOnlyEnergyPredictor();
-        setCalibrationData(host);
-        EnergyModel model = predictor.retrieveModel(host);
-        System.out.println("Y = " + model.getCoefCPU() + " X + " + model.getIntercept());
-        assert model != null;
-        assert model.getIntercept() > 0;
-    }    
-    
+    } 
+ 
 }

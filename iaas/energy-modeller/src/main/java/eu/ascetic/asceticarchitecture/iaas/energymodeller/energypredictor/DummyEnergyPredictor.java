@@ -77,4 +77,9 @@ public class DummyEnergyPredictor extends AbstractEnergyPredictor {
         return answer;
     }
 
+    @Override
+    public double getSumOfSquareError(Host host) {
+        return Double.NaN;
+    }
+
 }

@@ -154,4 +154,9 @@ public class DefaultEnergyPredictor extends AbstractEnergyPredictor {
         this.trainer = trainer;
     }
 
+    @Override
+    public double getSumOfSquareError(Host host) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 }

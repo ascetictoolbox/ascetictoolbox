@@ -21,8 +21,8 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.training;
  *
  * @author E. Agiatzidou
  */
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energymodel.EnergyModel;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostEnergyCalibrationData;
 import java.util.ArrayList;
 
