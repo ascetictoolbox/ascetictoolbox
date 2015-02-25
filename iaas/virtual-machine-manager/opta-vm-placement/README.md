@@ -29,7 +29,7 @@ For example, suppose that we want the we want to find an optimized placement usi
 
 The java code for finding a placement using those options is:
 ```java
-IOptaVmPlacement optaVmPlacement = new OptaVmPlacement();
+IClopla clopla = new Clopla();
     VmPlacementConfig vmPlacementConfig = new VmPlacementConfig.Builder(
         Policy.CONSOLIDATION, // Scheduling policy
         30, // Timeout
@@ -37,7 +37,7 @@ IOptaVmPlacement optaVmPlacement = new OptaVmPlacement();
         new HillClimbing(), // Local Search heuristic
         false) // Deploy VMs in specific hosts?
         .build();
-    System.out.println(optaVmPlacement.getBestSolution(hosts, vms, vmPlacementConfig)); // get placement and print it
+    System.out.println(clopla.getBestSolution(hosts, vms, vmPlacementConfig)); // get placement and print it
 ```
 The only thing missing from the example is knowing how to instantiate a list of VMs and a list of hosts:
  ```java

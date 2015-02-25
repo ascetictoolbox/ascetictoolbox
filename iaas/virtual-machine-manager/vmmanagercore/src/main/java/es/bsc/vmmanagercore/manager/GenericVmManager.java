@@ -54,11 +54,11 @@ import es.bsc.vmmanagercore.selfadaptation.options.SelfAdaptationOptions;
 import es.bsc.vmmanagercore.utils.FileSystem;
 import es.bsc.vmmanagercore.utils.TimeUtils;
 import es.bsc.vmmanagercore.vmplacement.OptaVmPlacementConversor;
-import es.bsc.vmplacement.domain.ClusterState;
-import es.bsc.vmplacement.domain.LocalSearchHeuristic;
-import es.bsc.vmplacement.domain.LocalSearchHeuristicOption;
-import es.bsc.vmplacement.lib.IOptaVmPlacement;
-import es.bsc.vmplacement.lib.OptaVmPlacement;
+import es.bsc.clopla.domain.ClusterState;
+import es.bsc.clopla.domain.LocalSearchHeuristic;
+import es.bsc.clopla.domain.LocalSearchHeuristicOption;
+import es.bsc.clopla.lib.IClopla;
+import es.bsc.clopla.lib.Clopla;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -93,7 +93,7 @@ public class GenericVmManager implements VmManager {
     private List<Host> hosts = new ArrayList<>();
     private SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
-    private IOptaVmPlacement optaVmPlacement = new OptaVmPlacement(); // Library used for the VM Placement
+    private IClopla optaVmPlacement = new Clopla(); // Library used for the VM Placement
 
     public static EnergyModeller energyModeller;
     public static PricingModeller pricingModeller;
@@ -436,7 +436,7 @@ public class GenericVmManager implements VmManager {
     @Override
     public List<ConstructionHeuristic> getConstructionHeuristics() {
         List<ConstructionHeuristic> result = new ArrayList<>();
-        for (es.bsc.vmplacement.domain.ConstructionHeuristic heuristic: optaVmPlacement.getConstructionHeuristics()) {
+        for (es.bsc.clopla.domain.ConstructionHeuristic heuristic: optaVmPlacement.getConstructionHeuristics()) {
             result.add(new ConstructionHeuristic(heuristic.name()));
         }
         return result;

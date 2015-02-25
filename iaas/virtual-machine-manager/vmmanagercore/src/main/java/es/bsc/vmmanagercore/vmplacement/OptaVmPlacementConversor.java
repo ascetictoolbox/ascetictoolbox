@@ -26,11 +26,11 @@ import es.bsc.vmmanagercore.model.vms.Vm;
 import es.bsc.vmmanagercore.model.vms.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.hosts.Host;
 import es.bsc.vmmanagercore.pricingmodeller.PricingModeller;
-import es.bsc.vmplacement.domain.ClusterState;
-import es.bsc.vmplacement.domain.ConstructionHeuristic;
-import es.bsc.vmplacement.placement.config.Policy;
-import es.bsc.vmplacement.placement.config.VmPlacementConfig;
-import es.bsc.vmplacement.placement.config.localsearch.*;
+import es.bsc.clopla.domain.ClusterState;
+import es.bsc.clopla.domain.ConstructionHeuristic;
+import es.bsc.clopla.placement.config.Policy;
+import es.bsc.clopla.placement.config.VmPlacementConfig;
+import es.bsc.clopla.placement.config.localsearch.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,11 +57,11 @@ public class OptaVmPlacementConversor {
      * @param assignVmsToHosts indicates whether it is needed to set the hosts in the VMs
      * @return the list of VMs used by the OptaVmPlacement library
      */
-    public static List<es.bsc.vmplacement.domain.Vm> getOptaVms(List<VmDeployed> vms,
+    public static List<es.bsc.clopla.domain.Vm> getOptaVms(List<VmDeployed> vms,
                                                          List<Vm> vmsToDeploy,
-                                                         List<es.bsc.vmplacement.domain.Host> hosts,
+                                                         List<es.bsc.clopla.domain.Host> hosts,
                                                          boolean assignVmsToHosts) {
-        List<es.bsc.vmplacement.domain.Vm> result = new ArrayList<>();
+        List<es.bsc.clopla.domain.Vm> result = new ArrayList<>();
 
         // Add the VMs already deployed
         for (int i = 0; i < vms.size(); ++i) {
@@ -82,8 +82,8 @@ public class OptaVmPlacementConversor {
      * @param hosts the list of host used by the VMM core
      * @return the list of host used by the OptaVmPlacement library
      */
-    public static List<es.bsc.vmplacement.domain.Host> getOptaHosts(List<Host> hosts) {
-        List<es.bsc.vmplacement.domain.Host> result = new ArrayList<>();
+    public static List<es.bsc.clopla.domain.Host> getOptaHosts(List<Host> hosts) {
+        List<es.bsc.clopla.domain.Host> result = new ArrayList<>();
         for (Host host: hosts) {
             result.add(OptaHostFactory.getOptaHost(host));
         }
@@ -125,7 +125,7 @@ public class OptaVmPlacementConversor {
      */
     public static RecommendedPlan getRecommendedPlan(ClusterState clusterState) {
         RecommendedPlan result = new RecommendedPlan();
-        for (es.bsc.vmplacement.domain.Vm vm: clusterState.getVms()) {
+        for (es.bsc.clopla.domain.Vm vm: clusterState.getVms()) {
             result.addVmToHostAssignment(vm.getAlphaNumericId(), vm.getHost().getHostname());
         }
         return result;
@@ -139,9 +139,9 @@ public class OptaVmPlacementConversor {
      * @return the list of VMs for the Energy Modeller
      */
     public static List<es.bsc.vmmanagercore.model.vms.Vm> convertOptaVmsToVmmType(
-            List<es.bsc.vmplacement.domain.Vm> vms) {
+            List<es.bsc.clopla.domain.Vm> vms) {
         List<es.bsc.vmmanagercore.model.vms.Vm> result = new ArrayList<>();
-        for (es.bsc.vmplacement.domain.Vm vm: vms) {
+        for (es.bsc.clopla.domain.Vm vm: vms) {
             result.add(new es.bsc.vmmanagercore.model.vms.Vm(
                     vm.getAlphaNumericId(),
                     null,
@@ -163,10 +163,10 @@ public class OptaVmPlacementConversor {
      * @param assignVmsToHosts indicates whether it is needed to set the hosts in the VMs
      * @return the VM used by the OptaVMPlacement library
      */
-    private static es.bsc.vmplacement.domain.Vm getOptaVm(Long id, VmDeployed vm,
-                                                   List<es.bsc.vmplacement.domain.Host> optaHosts,
+    private static es.bsc.clopla.domain.Vm getOptaVm(Long id, VmDeployed vm,
+                                                   List<es.bsc.clopla.domain.Host> optaHosts,
                                                    boolean assignVmsToHosts) {
-        es.bsc.vmplacement.domain.Vm result = new es.bsc.vmplacement.domain.Vm.Builder(
+        es.bsc.clopla.domain.Vm result = new es.bsc.clopla.domain.Vm.Builder(
                 id, vm.getCpus(), vm.getRamMb(), vm.getDiskGb())
                 .appId(vm.getApplicationId())
                 .alphaNumericId(vm.getId())
@@ -183,8 +183,8 @@ public class OptaVmPlacementConversor {
     }
 
     // Note: This function should probably be merged with getOptaVm
-    private static es.bsc.vmplacement.domain.Vm getOptaVmToDeploy(Long id, Vm vm) {
-        return new es.bsc.vmplacement.domain.Vm.Builder(
+    private static es.bsc.clopla.domain.Vm getOptaVmToDeploy(Long id, Vm vm) {
+        return new es.bsc.clopla.domain.Vm.Builder(
                 id, vm.getCpus(), vm.getRamMb(), vm.getDiskGb())
                 .appId(vm.getApplicationId())
                 .alphaNumericId(vm.getName())
@@ -284,9 +284,9 @@ public class OptaVmPlacementConversor {
      * @param hostname the hostname
      * @return the optaHost found
      */
-    private static es.bsc.vmplacement.domain.Host findOptaHost(List<es.bsc.vmplacement.domain.Host> optaHosts, 
+    private static es.bsc.clopla.domain.Host findOptaHost(List<es.bsc.clopla.domain.Host> optaHosts,
                                                                String hostname) {
-        for (es.bsc.vmplacement.domain.Host optaHost: optaHosts) {
+        for (es.bsc.clopla.domain.Host optaHost: optaHosts) {
             if (hostname.equals(optaHost.getHostname())) {
                 return optaHost;
             }

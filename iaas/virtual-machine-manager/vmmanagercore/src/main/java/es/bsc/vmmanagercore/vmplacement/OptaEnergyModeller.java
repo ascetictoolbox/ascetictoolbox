@@ -18,9 +18,9 @@
 
 package es.bsc.vmmanagercore.vmplacement;
 
-import es.bsc.vmplacement.domain.Host;
-import es.bsc.vmplacement.domain.Vm;
-import es.bsc.vmplacement.modellers.EnergyModeller;
+import es.bsc.clopla.domain.Host;
+import es.bsc.clopla.domain.Vm;
+import es.bsc.clopla.modellers.EnergyModeller;
 
 import java.util.List;
 

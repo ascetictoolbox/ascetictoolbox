@@ -36,16 +36,16 @@ public class OptaHostFactory {
     }
 
     // hosts already created
-    private static final Map<String, es.bsc.vmplacement.domain.Host> optaHosts = new HashMap<>();
+    private static final Map<String, es.bsc.clopla.domain.Host> optaHosts = new HashMap<>();
 
     private static Long optaHostId = (long) 0;
 
-    public static es.bsc.vmplacement.domain.Host getOptaHost(Host host) {
-        es.bsc.vmplacement.domain.Host result = optaHosts.get(host.getHostname());
+    public static es.bsc.clopla.domain.Host getOptaHost(Host host) {
+        es.bsc.clopla.domain.Host result = optaHosts.get(host.getHostname());
         if (result != null) {
             return result;
         }
-        result = new es.bsc.vmplacement.domain.Host(optaHostId, host.getHostname(), host.getTotalCpus(),
+        result = new es.bsc.clopla.domain.Host(optaHostId, host.getHostname(), host.getTotalCpus(),
                 host.getTotalMemoryMb(), host.getTotalDiskGb(), !host.isOn());
         ++optaHostId;
         optaHosts.put(host.getHostname(), result);

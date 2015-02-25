@@ -20,9 +20,9 @@ package es.bsc.vmmanagercore.vmplacement;
 
 import es.bsc.vmmanagercore.energymodeller.EnergyModeller;
 import es.bsc.vmmanagercore.pricingmodeller.PricingModeller;
-import es.bsc.vmplacement.domain.Host;
-import es.bsc.vmplacement.domain.Vm;
-import es.bsc.vmplacement.modellers.PriceModeller;
+import es.bsc.clopla.domain.Host;
+import es.bsc.clopla.domain.Vm;
+import es.bsc.clopla.modellers.PriceModeller;
 
 import java.util.List;
 
