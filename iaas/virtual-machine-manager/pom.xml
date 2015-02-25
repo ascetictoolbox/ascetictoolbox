@@ -33,7 +33,7 @@
 	<modules>
 		<module>GangliaMonitoring</module>
 		<module>vmmanagercore</module>
-        <module>opta-vm-placement</module>
+        <module>clopla</module>
 		<module>power-button-presser</module>
 	</modules>
 </project>
