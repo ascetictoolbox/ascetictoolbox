@@ -18,10 +18,10 @@
 
 package es.bsc.vmmanagercore.vmplacement;
 
+import es.bsc.clopla.domain.Vm;
 import es.bsc.vmmanagercore.model.vms.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.hosts.Host;
 import es.bsc.vmmanagercore.monitoring.hosts.HostFake;
-import es.bsc.clopla.domain.Vm;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -32,36 +32,36 @@ import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertNull;
 
 /**
- * Tests for the VmDeployed class.
+ * Tests for the CloplaConversor class.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  */
-public class OptaVmPlacementConversorTest {
+public class CloplaConversorTest {
 
     @Test
-    public void getOptaVms() {
+    public void getCloplaVms() {
         List<VmDeployed> vmsDeployed = new ArrayList<>();
         vmsDeployed.add(new VmDeployed("vm", "fakeImage", 1, 1024, 1, "", "appId", "vmId", "172.16.8.1", "ACTIVE",
                 new Date(), "host1"));
-        Vm optaVm = OptaVmPlacementConversor.getOptaVms(vmsDeployed, new ArrayList<es.bsc.vmmanagercore.model.vms.Vm>(),
+        Vm cloplaVm = CloplaConversor.getCloplaVms(vmsDeployed, new ArrayList<es.bsc.vmmanagercore.model.vms.Vm>(),
                 new ArrayList<es.bsc.clopla.domain.Host>(), false).get(0);
-        assertEquals(1, optaVm.getNcpus());
-        assertEquals(1024, optaVm.getRamMb());
-        assertEquals(1, optaVm.getDiskGb());
-        assertEquals("appId", optaVm.getAppId());
-        assertEquals("vmId", optaVm.getAlphaNumericId());
-        assertNull(optaVm.getHost());
+        assertEquals(1, cloplaVm.getNcpus());
+        assertEquals(1024, cloplaVm.getRamMb());
+        assertEquals(1, cloplaVm.getDiskGb());
+        assertEquals("appId", cloplaVm.getAppId());
+        assertEquals("vmId", cloplaVm.getAlphaNumericId());
+        assertNull(cloplaVm.getHost());
     }
 
     @Test
-    public void getOptaHosts() {
+    public void getCloplaHosts() {
         List<Host> hosts = new ArrayList<>();
         hosts.add(new HostFake("host1", 1, 1024, 1, 0, 0, 0));
-        es.bsc.clopla.domain.Host optaHost = OptaVmPlacementConversor.getOptaHosts(hosts).get(0);
-        assertEquals("host1", optaHost.getHostname());
-        assertEquals(1, optaHost.getNcpus());
-        assertEquals(1024.0, optaHost.getRamMb());
-        assertEquals(1.0, optaHost.getDiskGb());
+        es.bsc.clopla.domain.Host cloplaHost = CloplaConversor.getCloplaHosts(hosts).get(0);
+        assertEquals("host1", cloplaHost.getHostname());
+        assertEquals(1, cloplaHost.getNcpus());
+        assertEquals(1024.0, cloplaHost.getRamMb());
+        assertEquals(1.0, cloplaHost.getDiskGb());
     }
 
 }

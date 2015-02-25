@@ -20,28 +20,37 @@ package es.bsc.vmmanagercore.vmplacement;
 
 import es.bsc.clopla.domain.Host;
 import es.bsc.clopla.domain.Vm;
-import es.bsc.clopla.modellers.EnergyModeller;
+import es.bsc.clopla.modellers.PriceModeller;
+import es.bsc.vmmanagercore.energymodeller.EnergyModeller;
+import es.bsc.vmmanagercore.pricingmodeller.PricingModeller;
 
 import java.util.List;
 
 /**
- * This class is an energy modeller that can be used by the Opta Vm Placement library.
+ * This class is a pricing modeller that can be used by the Vm Placement library.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  */
-public class OptaEnergyModeller implements EnergyModeller {
+public class CloplaPriceModeller implements PriceModeller {
 
-    private final es.bsc.vmmanagercore.energymodeller.EnergyModeller energyModeller;
+    private final PricingModeller pricingModeller;
+    private final EnergyModeller energyModeller;
 
-    public OptaEnergyModeller(es.bsc.vmmanagercore.energymodeller.EnergyModeller energyModeller) {
+    public CloplaPriceModeller(PricingModeller pricingModeller, EnergyModeller energyModeller) {
+        this.pricingModeller = pricingModeller;
         this.energyModeller = energyModeller;
     }
 
     @Override
-    public double getPowerConsumption(Host host, List<Vm> vms) {
+    public double getCost(Host host, List<Vm> vmsDeployedInHost) {
+        return pricingModeller.getVmCost(
+                getPowerConsumption(host, vmsDeployedInHost), host.getHostname());
+    }
+    
+    private double getPowerConsumption(Host host, List<Vm> vmsDeployedInHost) {
         return energyModeller.getHostPredictedAvgPower(
                 host.getHostname(),
-                OptaVmPlacementConversor.convertOptaVmsToVmmType(vms));
+                CloplaConversor.cloplaVmsToVmmType(vmsDeployedInHost));
     }
 
 }

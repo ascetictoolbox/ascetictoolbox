@@ -471,10 +471,10 @@ iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/ut
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/utils/FileSystem.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/utils/HttpUtils.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/utils/TimeUtils.java -text
-iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/vmplacement/OptaEnergyModeller.java -text
-iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/vmplacement/OptaHostFactory.java -text
-iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/vmplacement/OptaPriceModeller.java -text
-iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/vmplacement/OptaVmPlacementConversor.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/vmplacement/CloplaConversor.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/vmplacement/CloplaEnergyModeller.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/vmplacement/CloplaHostFactory.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/vmplacement/CloplaPriceModeller.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/resources/configTUB.properties -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/resources/hostsFakeMonitoring.json -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/resources/init-scripts/hello.sh -text
@@ -504,7 +504,7 @@ iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/sc
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/schedulingalgorithms/SchedAlgGroupByAppTest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/scheduler/schedulingalgorithms/SchedAlgRandomTest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/utils/TimeUtilsTest.java -text
-iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/vmplacement/OptaVmPlacementConversorTest.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/vmplacement/CloplaConversorTest.java -text
 paas/application-manager-datamodel/LICENSE.TXT -text
 paas/application-manager-datamodel/pom.xml -text
 paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/Agreement.java -text

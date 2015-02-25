@@ -18,6 +18,11 @@
 
 package es.bsc.vmmanagercore.manager;
 
+import es.bsc.clopla.domain.ClusterState;
+import es.bsc.clopla.domain.LocalSearchHeuristic;
+import es.bsc.clopla.domain.LocalSearchHeuristicOption;
+import es.bsc.clopla.lib.Clopla;
+import es.bsc.clopla.lib.IClopla;
 import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddleware;
 import es.bsc.vmmanagercore.cloudmiddleware.fake.FakeCloudMiddleware;
 import es.bsc.vmmanagercore.cloudmiddleware.openstack.OpenStackCredentials;
@@ -53,12 +58,7 @@ import es.bsc.vmmanagercore.selfadaptation.SelfAdaptationManager;
 import es.bsc.vmmanagercore.selfadaptation.options.SelfAdaptationOptions;
 import es.bsc.vmmanagercore.utils.FileSystem;
 import es.bsc.vmmanagercore.utils.TimeUtils;
-import es.bsc.vmmanagercore.vmplacement.OptaVmPlacementConversor;
-import es.bsc.clopla.domain.ClusterState;
-import es.bsc.clopla.domain.LocalSearchHeuristic;
-import es.bsc.clopla.domain.LocalSearchHeuristicOption;
-import es.bsc.clopla.lib.IClopla;
-import es.bsc.clopla.lib.Clopla;
+import es.bsc.vmmanagercore.vmplacement.CloplaConversor;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -93,7 +93,7 @@ public class GenericVmManager implements VmManager {
     private List<Host> hosts = new ArrayList<>();
     private SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
-    private IClopla optaVmPlacement = new Clopla(); // Library used for the VM Placement
+    private IClopla clopla = new Clopla(); // Library used for the VM Placement
 
     public static EnergyModeller energyModeller;
     public static PricingModeller pricingModeller;
@@ -436,7 +436,7 @@ public class GenericVmManager implements VmManager {
     @Override
     public List<ConstructionHeuristic> getConstructionHeuristics() {
         List<ConstructionHeuristic> result = new ArrayList<>();
-        for (es.bsc.clopla.domain.ConstructionHeuristic heuristic: optaVmPlacement.getConstructionHeuristics()) {
+        for (es.bsc.clopla.domain.ConstructionHeuristic heuristic: clopla.getConstructionHeuristics()) {
             result.add(new ConstructionHeuristic(heuristic.name()));
         }
         return result;
@@ -453,7 +453,7 @@ public class GenericVmManager implements VmManager {
         // It would be a good idea to use the same approach as in the vm placement library
         List<LocalSearchAlgorithmOptionsUnset> result = new ArrayList<>();
         for (Map.Entry<LocalSearchHeuristic, List<LocalSearchHeuristicOption>> entry : 
-                optaVmPlacement.getLocalSearchAlgorithms().entrySet()) {
+                clopla.getLocalSearchAlgorithms().entrySet()) {
             String heuristicName = entry.getKey().toString();
             List<String> heuristicOptions = new ArrayList<>();
             for (LocalSearchHeuristicOption option: entry.getValue()) {
@@ -466,7 +466,7 @@ public class GenericVmManager implements VmManager {
     }
 
     /**
-     * This function calculates a deployment plan based on a request. It uses the OptaVMPlacement library.
+     * This function calculates a deployment plan based on a request. It uses the VM placement library.
      *
      * @param recommendedPlanRequest the request
      * @param assignVmsToCurrentHosts indicates whether the hosts should be set in the VM instances
@@ -477,19 +477,19 @@ public class GenericVmManager implements VmManager {
     public RecommendedPlan getRecommendedPlan(RecommendedPlanRequest recommendedPlanRequest,
                                               boolean assignVmsToCurrentHosts,
                                               List<Vm> vmsToDeploy) {
-        ClusterState clusterStateRecommendedPlan = optaVmPlacement.getBestSolution(
-                OptaVmPlacementConversor.getOptaHosts(getHosts()),
-                OptaVmPlacementConversor.getOptaVms(
+        ClusterState clusterStateRecommendedPlan = clopla.getBestSolution(
+                CloplaConversor.getCloplaHosts(getHosts()),
+                CloplaConversor.getCloplaVms(
                         getAllVms(),
                         vmsToDeploy,
-                        OptaVmPlacementConversor.getOptaHosts(getHosts()),
+                        CloplaConversor.getCloplaHosts(getHosts()),
                         assignVmsToCurrentHosts),
-                OptaVmPlacementConversor.getOptaPlacementConfig(
+                CloplaConversor.getCloplaConfig(
                         getCurrentSchedulingAlgorithm(),
                         recommendedPlanRequest,
                         energyModeller,
                         pricingModeller));
-        return OptaVmPlacementConversor.getRecommendedPlan(clusterStateRecommendedPlan);
+        return CloplaConversor.getRecommendedPlan(clusterStateRecommendedPlan);
     }
 
     /**

@@ -179,7 +179,7 @@ public interface VmManager {
     public List<LocalSearchAlgorithmOptionsUnset> getLocalSearchAlgorithms();
 
     /**
-     * This function calculates a deployment plan based on a request. It uses the OptaVMPlacement library.
+     * This function calculates a deployment plan based on a request. It uses the VM placement library.
      *
      * @param recommendedPlanRequest the request
      * @param assignVmsToCurrentHosts indicates whether the hosts should be set in the VM instances
