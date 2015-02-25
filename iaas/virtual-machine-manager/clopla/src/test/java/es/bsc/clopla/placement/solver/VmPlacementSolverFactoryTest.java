@@ -23,7 +23,7 @@ import es.bsc.clopla.domain.ConstructionHeuristic;
 import es.bsc.clopla.placement.config.Policy;
 import es.bsc.clopla.placement.config.VmPlacementConfig;
 import es.bsc.clopla.placement.config.localsearch.SimulatedAnnealing;
-import es.bsc.clopla.scorecalculators.ScoreCalculatorDistribution;
+import es.bsc.clopla.placement.scorecalculators.ScoreCalculatorDistribution;
 import org.junit.Test;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicSolverPhaseConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchSolverPhaseConfig;

@@ -17,32 +17,25 @@
  * under the License.
  */
 
-package es.bsc.clopla.scorecalculators;
+package es.bsc.clopla.placement.scorecalculators;
 
 import es.bsc.clopla.domain.ClusterState;
 import es.bsc.clopla.domain.Host;
 import es.bsc.clopla.domain.Vm;
-import es.bsc.clopla.modellers.PriceModeller;
 import es.bsc.clopla.placement.config.VmPlacementConfig;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-/**
- * @author David Ortiz (david.ortiz@bsc.es)
- */
-public class ScoreCalculatorPriceTest {
-
-    private final Host host1 = new Host((long) 1, "1", 8, 8192, 8, false);
-    private final Host host2 = new Host((long) 2, "2", 4, 4096, 4, false);
-    private final Vm vm1 = new Vm.Builder((long) 1, 2, 2048, 2).build();
-    private final Vm vm2 = new Vm.Builder((long) 2, 1, 1024, 1).build();
+public class ScoreCalculatorRandomTest {
+    
+    private final ScoreCalculatorRandom scoreCalculatorRandom = new ScoreCalculatorRandom();
 
     @BeforeClass
     public static void onceExecutedBeforeAll() {
@@ -51,49 +44,45 @@ public class ScoreCalculatorPriceTest {
         initialClusterState.setHosts(new ArrayList<Host>());
         VmPlacementConfig.initialClusterState.set(initialClusterState);
     }
-    
+
     @AfterClass
     public static void onceExecutedAfterAll() {
-        VmPlacementConfig.priceModeller.set(null); // It was mocked, we need to null it again so it does
-                                                   // interfere with other tests.
         VmPlacementConfig.initialClusterState.set(null);
     }
     
     @Test
     public void scoreTest() {
-        ClusterState testClusterState = getTestClusterState();
-        List<Vm> vmsInHost1 = new ArrayList<>();
-        vmsInHost1.add(vm1);
-        List<Vm> vmsInHost2 = new ArrayList<>();
-        vmsInHost2.add(vm2);
-
-        mockPriceModeller(vmsInHost1, vmsInHost2);
-
-        ScoreCalculatorPrice scoreCalculatorPrice = new ScoreCalculatorPrice();
-
-        assertEquals(0, scoreCalculatorPrice.calculateScore(testClusterState).getHardScore());
-        assertEquals(-30, scoreCalculatorPrice.calculateScore(testClusterState).getMediumScore());
+        ClusterState clusterState = getTestClusterState();
+        assertEquals(-4, scoreCalculatorRandom.calculateScore(clusterState).getHardScore(0));
+        assertEquals(1, scoreCalculatorRandom.calculateScore(clusterState).getSoftScore(0));
+        assertTrue(scoreCalculatorRandom.calculateScore(clusterState).getSoftScore(1) >= 0);
     }
-
-    private void mockPriceModeller(List<Vm> vmsInHost1, List<Vm> vmsInHost2) {
-        VmPlacementConfig.priceModeller.set(Mockito.mock(PriceModeller.class));
-        Mockito.when(VmPlacementConfig.priceModeller.get().getCost(host1, vmsInHost1))
-                .thenReturn(20.0);
-        Mockito.when(VmPlacementConfig.priceModeller.get().getCost(host2, vmsInHost2))
-                .thenReturn(10.0);
-    }
-
+    
     private ClusterState getTestClusterState() {
+        // Create hosts
         List<Host> hosts = new ArrayList<>();
+        Host host1 = new Host((long) 1, "1", 8, 8192, 8, false);
+        Host host2 = new Host((long) 2, "2", 4, 4096, 4, false);
+        Host host3 = new Host((long) 3, "3", 2, 2048, 2, false);
+        Host host4 = new Host((long) 4, "4", 1, 1024, 1, true);
         hosts.add(host1);
         hosts.add(host2);
+        hosts.add(host3);
+        hosts.add(host4);
 
+        // Create VMs
         List<Vm> vms = new ArrayList<>();
+        Vm vm1 = new Vm.Builder((long) 1, 4, 4096, 4).build();
+        Vm vm2 = new Vm.Builder((long) 2, 5, 5120, 5).build();
+        Vm vm3 = new Vm.Builder((long) 3, 1, 5120, 1).build();
         vm1.setHost(host1);
-        vm2.setHost(host2);
+        vm2.setHost(host1);
+        vm3.setHost(host2);
         vms.add(vm1);
         vms.add(vm2);
+        vms.add(vm3);
 
+        // Build the solution
         ClusterState result = new ClusterState();
         result.setHosts(hosts);
         result.setVms(vms);

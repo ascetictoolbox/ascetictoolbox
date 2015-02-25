@@ -17,45 +17,41 @@
  * under the License.
  */
 
-package es.bsc.clopla.scorecalculators;
+package es.bsc.clopla.placement.scorecalculators;
 
 import es.bsc.clopla.domain.ClusterState;
-import es.bsc.clopla.domain.Host;
 import es.bsc.clopla.placement.config.VmPlacementConfig;
-import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
+import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
 
 /**
- * This class defines the score used in the energy-aware policy.
- * The score in this case contains a hard, a medium, and a soft score.
- * Hard score: overcapacity of the servers of the cluster
+ * This class defines the score used in the consolidation policy.
+ * The score in this case contains 1 hard score and 4 levels of soft scores.
+ * Hard score: overcapacity of the servers of the cluster 
  *             plus number of fixed VMs that were moved. (minimize)
- * Medium score: power consumption of the cluster. (minimize)
- * Soft score: number of migrations needed from initial state (minimize) 
- *
+ * Soft scores: 1) Number of hosts that are off. (maximize)
+ *              2) Number of hosts that are idle. (maximize)
+ *              3) Total unused CPU %. (minimize)
+ *              4) Number of migrations needed from initial state (minimize)              
+ *  
  * @author David Ortiz (david.ortiz@bsc.es)
  */
-public class ScoreCalculatorEnergy implements SimpleScoreCalculator<ClusterState> {
+public class ScoreCalculatorConsolidation implements SimpleScoreCalculator<ClusterState> {
 
     @Override
-    public HardMediumSoftScore calculateScore(ClusterState solution) {
-        return HardMediumSoftScore.valueOf(
-                calculateHardScore(solution),
-                calculateMediumScore(solution),
-                VmPlacementConfig.initialClusterState.get().countVmMigrationsNeeded(solution));
+    public BendableScore calculateScore(ClusterState solution) {
+        int[] hardScores = { calculateHardScore(solution) };
+        int[] softScores = {
+                solution.countOffHosts(),
+                solution.countIdleHosts(),
+                -solution.calculateCumulativeUnusedCpuPerc(),
+                VmPlacementConfig.initialClusterState.get().countVmMigrationsNeeded(solution)};
+        return BendableScore.valueOf(hardScores, softScores);
     }
 
     private int calculateHardScore(ClusterState solution) {
         return (int) (ScoreCalculatorCommon.getClusterOverCapacityScore(solution)
                 + ScoreCalculatorCommon.getClusterPenaltyScoreForFixedVms(solution));
     }
-
-    private int calculateMediumScore(ClusterState solution) {
-        double result = 0;
-        for (Host host: solution.getHosts()) {
-            result -= VmPlacementConfig.energyModeller.get().getPowerConsumption(host, solution.getVmsDeployedInHost(host));
-        }
-        return (int) result;
-    }
-
+    
 }

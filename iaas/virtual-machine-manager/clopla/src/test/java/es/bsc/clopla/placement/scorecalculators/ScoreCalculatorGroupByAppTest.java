@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package es.bsc.clopla.scorecalculators;
+package es.bsc.clopla.placement.scorecalculators;
 
 import es.bsc.clopla.domain.ClusterState;
 import es.bsc.clopla.domain.Host;

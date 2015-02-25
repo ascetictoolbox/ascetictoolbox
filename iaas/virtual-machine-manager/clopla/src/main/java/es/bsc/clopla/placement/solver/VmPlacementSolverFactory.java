@@ -23,7 +23,7 @@ import com.google.common.collect.ImmutableMap;
 import es.bsc.clopla.domain.ConstructionHeuristic;
 import es.bsc.clopla.placement.config.Policy;
 import es.bsc.clopla.placement.config.VmPlacementConfig;
-import es.bsc.clopla.scorecalculators.*;
+import es.bsc.clopla.placement.scorecalculators.*;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicSolverPhaseConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchSolverPhaseConfig;

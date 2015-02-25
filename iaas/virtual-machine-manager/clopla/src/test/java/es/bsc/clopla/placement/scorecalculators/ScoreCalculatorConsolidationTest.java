@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package es.bsc.clopla.scorecalculators;
+package es.bsc.clopla.placement.scorecalculators;
 
 import es.bsc.clopla.domain.ClusterState;
 import es.bsc.clopla.domain.Host;
@@ -35,9 +35,9 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author David Ortiz (david.ortiz@bsc.es)
  */
-public class ScoreCalculatorDistributionTest {
+public class ScoreCalculatorConsolidationTest {
 
-    private final ScoreCalculatorDistribution scoreCalculatorDistribution = new ScoreCalculatorDistribution();
+    private final ScoreCalculatorConsolidation scoreCalculatorConsolidation = new ScoreCalculatorConsolidation();
 
     @BeforeClass
     public static void onceExecutedBeforeAll() {
@@ -46,18 +46,19 @@ public class ScoreCalculatorDistributionTest {
         initialClusterState.setHosts(new ArrayList<Host>());
         VmPlacementConfig.initialClusterState.set(initialClusterState);
     }
-
+    
     @AfterClass
     public static void onceExecutedAfterAll() {
         VmPlacementConfig.initialClusterState.set(null);
     }
-    
+
     @Test
     public void scoreTest() {
         ClusterState clusterState = getTestClusterState();
-        assertEquals(-4, scoreCalculatorDistribution.calculateScore(clusterState).getHardScore(0));
-        assertEquals(2, scoreCalculatorDistribution.calculateScore(clusterState).getSoftScore(0));
-        assertEquals(-1, scoreCalculatorDistribution.calculateScore(clusterState).getSoftScore(1)); // rounding
+        assertEquals(-4, scoreCalculatorConsolidation.calculateScore(clusterState).getHardScore(0));
+        assertEquals(1, scoreCalculatorConsolidation.calculateScore(clusterState).getSoftScore(0));
+        assertEquals(2, scoreCalculatorConsolidation.calculateScore(clusterState).getSoftScore(1));
+        assertEquals(-275, scoreCalculatorConsolidation.calculateScore(clusterState).getSoftScore(2));
     }
 
     private ClusterState getTestClusterState() {
@@ -66,17 +67,19 @@ public class ScoreCalculatorDistributionTest {
         Host host1 = new Host((long) 1, "1", 8, 8192, 8, false);
         Host host2 = new Host((long) 2, "2", 4, 4096, 4, false);
         Host host3 = new Host((long) 3, "3", 2, 2048, 2, false);
+        Host host4 = new Host((long) 4, "4", 1, 1024, 1, true);
         hosts.add(host1);
         hosts.add(host2);
         hosts.add(host3);
+        hosts.add(host4);
 
         // Create VMs
         List<Vm> vms = new ArrayList<>();
-        Vm vm1 = new Vm.Builder((long) 1, 1, 1024, 1).build();
-        Vm vm2 = new Vm.Builder((long) 2, 1, 1024, 1).build();
-        Vm vm3 = new Vm.Builder((long) 3, 5, 5120, 5).build();
+        Vm vm1 = new Vm.Builder((long) 1, 4, 4096, 4).build();
+        Vm vm2 = new Vm.Builder((long) 2, 5, 5120, 5).build();
+        Vm vm3 = new Vm.Builder((long) 3, 1, 5120, 1).build();
         vm1.setHost(host1);
-        vm2.setHost(host2);
+        vm2.setHost(host1);
         vm3.setHost(host2);
         vms.add(vm1);
         vms.add(vm2);
