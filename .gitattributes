@@ -2127,6 +2127,7 @@ utils/io-utils/src/main/java/eu/ascetic/ioutils/GenericLogger.java -text
 utils/io-utils/src/main/java/eu/ascetic/ioutils/ResultsIO.java -text
 utils/io-utils/src/main/java/eu/ascetic/ioutils/ResultsStore.java -text
 utils/io-utils/src/main/java/eu/ascetic/ioutils/Settings.java -text
+utils/io-utils/src/main/java/eu/ascetic/ioutils/caching/LRUCache.java -text
 utils/io-utils/src/main/java/eu/ascetic/ioutils/execution/CompletedListener.java -text
 utils/io-utils/src/main/java/eu/ascetic/ioutils/execution/ManagedProcess.java -text
 utils/io-utils/src/main/java/eu/ascetic/ioutils/execution/ManagedProcessCommandData.java -text
@@ -2140,6 +2141,7 @@ utils/io-utils/src/main/java/eu/ascetic/ioutils/execution/stream/FileGobbler.jav
 utils/io-utils/src/main/java/eu/ascetic/ioutils/execution/stream/RedirectGobbler.java -text
 utils/io-utils/src/main/java/eu/ascetic/ioutils/execution/stream/ScreenGobbler.java -text
 utils/io-utils/src/main/java/eu/ascetic/ioutils/execution/stream/StreamGobbler.java -text
+utils/io-utils/src/test/java/eu/ascetic/ioutils/caching/LRUCacheTest.java -text
 utils/kwapi-patch/LICENSE -text
 utils/kwapi-patch/make.sh -text
 utils/kwapi-patch/patches/001-gembird_driver.patch -text
