@@ -197,9 +197,8 @@ public class CpuOnlyPolynomialEnergyPredictor extends AbstractEnergyPredictor {
      */
     public EnergyUsagePrediction predictTotalEnergy(Host host, double usageCPU, TimePeriod timePeriod) {
         EnergyUsagePrediction answer = new EnergyUsagePrediction(host);
-        PolynomialFunction model = retrieveModel(host);
-        double powerUsed;
-        powerUsed = model.value(usageCPU);
+        PolynomialFunction model = retrieveModel(host).getFunction();
+        double powerUsed = model.value(usageCPU);
         answer.setAvgPowerUsed(powerUsed);
         answer.setTotalEnergyUsed(powerUsed * ((double) TimeUnit.SECONDS.toHours(timePeriod.getDuration())));
         answer.setDuration(timePeriod);
@@ -214,7 +213,7 @@ public class CpuOnlyPolynomialEnergyPredictor extends AbstractEnergyPredictor {
      * @return The predicted power usage.
      */
     public double predictPowerUsed(Host host) {
-        PolynomialFunction model = retrieveModel(host);
+        PolynomialFunction model = retrieveModel(host).getFunction();
         if (usageCPU == -1) {
             return model.value(source.getCpuUtilisation(host, cpuUtilObservationTimeSecTotal));
         } else {
@@ -230,7 +229,7 @@ public class CpuOnlyPolynomialEnergyPredictor extends AbstractEnergyPredictor {
      * @return The predicted power usage.
      */
     public double predictPowerUsed(Host host, double usageCPU) {
-        PolynomialFunction model = retrieveModel(host);
+        PolynomialFunction model = retrieveModel(host).getFunction();
         return model.value(usageCPU);
     }
 
@@ -242,12 +241,13 @@ public class CpuOnlyPolynomialEnergyPredictor extends AbstractEnergyPredictor {
      *
      * @return The coefficients and the intercept of the model.
      */
-    private PolynomialFunction retrieveModel(Host host) {
+    private PredictorFunction<PolynomialFunction> retrieveModel(Host host) {
+        PredictorFunction<PolynomialFunction> answer;
         if (modelCache.containsKey(host)) {
             /**
              * A small cache avoids recalculating the regression so often.
              */
-            return modelCache.get(host).getFunction();
+            return modelCache.get(host);
         }
         WeightedObservedPoints points = new WeightedObservedPoints();
         for (HostEnergyCalibrationData data : host.getCalibrationData()) {
@@ -255,8 +255,9 @@ public class CpuOnlyPolynomialEnergyPredictor extends AbstractEnergyPredictor {
         }
         PolynomialCurveFitter fitter = PolynomialCurveFitter.create(2);
         final double[] best = fitter.fit(points.toList());
-        PolynomialFunction answer = new PolynomialFunction(best);
-        modelCache.put(host, new PredictorFunction<>(answer, getSumOfSquareError(host)));
+        PolynomialFunction function = new PolynomialFunction(best);
+        answer = new PredictorFunction<>(function, getSumOfSquareError(function, points.toList()));
+        modelCache.put(host, answer);
         return answer;
     }
 
@@ -280,15 +281,7 @@ public class CpuOnlyPolynomialEnergyPredictor extends AbstractEnergyPredictor {
 
     @Override
     public double getSumOfSquareError(Host host) {
-        if (modelCache.containsKey(host)) {
-            return modelCache.get(host).getSumOfSquareError();
-        }
-        WeightedObservedPoints points = new WeightedObservedPoints();
-        for (HostEnergyCalibrationData data : host.getCalibrationData()) {
-            points.add(data.getCpuUsage(), data.getWattsUsed());
-        }
-        PolynomialFunction function = retrieveModel(host);
-        return getSumOfSquareError(function, points.toList());
+        return retrieveModel(host).getSumOfSquareError();
     }
 
 }

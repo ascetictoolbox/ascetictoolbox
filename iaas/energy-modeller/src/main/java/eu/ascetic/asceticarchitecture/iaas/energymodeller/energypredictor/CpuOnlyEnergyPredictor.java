@@ -20,7 +20,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasou
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.WattsUpMeterDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energymodel.EnergyModel;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energymodel.LinearFunction;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostEnergyCalibrationData;
@@ -54,7 +54,7 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
     private int cpuUtilObservationTimeSec = 0;
     private int cpuUtilObservationTimeSecTotal = 0;
     private boolean considerIdleEnergy = true;
-    private final LRUCache<Host, PredictorFunction<EnergyModel>> modelCache = new LRUCache<>(5, 50);
+    private final LRUCache<Host, PredictorFunction<LinearFunction>> modelCache = new LRUCache<>(5, 50);
 
     /**
      * This creates a new CPU only energy predictor.
@@ -193,9 +193,8 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
      */
     public EnergyUsagePrediction predictTotalEnergy(Host host, double usageCPU, TimePeriod timePeriod) {
         EnergyUsagePrediction answer = new EnergyUsagePrediction(host);
-        EnergyModel model = retrieveModel(host);
-        double powerUsed;
-        powerUsed = model.getIntercept() + model.getCoefCPU() * usageCPU;
+        LinearFunction model = retrieveModel(host).getFunction();
+        double powerUsed = model.value(usageCPU);
         answer.setAvgPowerUsed(powerUsed);
         answer.setTotalEnergyUsed(powerUsed * ((double) TimeUnit.SECONDS.toHours(timePeriod.getDuration())));
         answer.setDuration(timePeriod);
@@ -210,11 +209,11 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
      * @return The predicted power usage.
      */
     public double predictPowerUsed(Host host) {
-        EnergyModel model = retrieveModel(host);
+        LinearFunction model = retrieveModel(host).getFunction();
         if (usageCPU == -1) {
-            return model.getIntercept() + model.getCoefCPU() * source.getCpuUtilisation(host, cpuUtilObservationTimeSecTotal);
+            return model.value(source.getCpuUtilisation(host, cpuUtilObservationTimeSecTotal));
         } else {
-            return model.getIntercept() + model.getCoefCPU() * usageCPU;
+            return model.value(usageCPU);
         }
     }
 
@@ -226,46 +225,40 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
      * @return The predicted power usage.
      */
     public double predictPowerUsed(Host host, double usageCPU) {
-        EnergyModel model = retrieveModel(host);
-        return model.getIntercept() + model.getCoefCPU() * usageCPU;
+        LinearFunction model = retrieveModel(host).getFunction();
+        return model.value(usageCPU);
     }
 
     /**
-     * This function should use the values stored to create the coefficients of
-     * the model.
+     * This calculates the mathematical function that predicts the power
+     * consumption given the cpu utilisation.
      *
-     * @param host The host (key) for which the values are going to be printed.
-     *
-     * @return The coefficients and the intercept of the model.
+     * @param host The host to get the function for
+     * @return The mathematical function that predicts the power consumption
+     * given the cpu utilisation.
      */
-    private EnergyModel retrieveModel(Host host) {
+    private PredictorFunction<LinearFunction> retrieveModel(Host host) {
         if (modelCache.containsKey(host)) {
             /**
              * A small cache avoids recalculating the regression so often.
              */
-            return modelCache.get(host).getFunction();
+            return modelCache.get(host);
         }
-        EnergyModel answer = new EnergyModel();
+        LinearFunction model = new LinearFunction();
         SimpleRegression regressor = new SimpleRegression(true);
         for (HostEnergyCalibrationData data : host.getCalibrationData()) {
             regressor.addData(data.getCpuUsage(), data.getWattsUsed());
         }
-        answer.setIntercept(regressor.getIntercept());
-        answer.setCoefCPU(regressor.getSlope());
-        modelCache.put(host, new PredictorFunction<>(answer,regressor.getSumSquaredErrors()));
+        model.setIntercept(regressor.getIntercept());
+        model.setCoefficient(regressor.getSlope());
+        PredictorFunction<LinearFunction> answer = new PredictorFunction<>(model, regressor.getSumSquaredErrors());
+        modelCache.put(host, answer);
         return answer;
     }
 
     @Override
     public double getSumOfSquareError(Host host) {
-        if (modelCache.containsKey(host)) {
-            return modelCache.get(host).getSumOfSquareError();
-        }
-        SimpleRegression regressor = new SimpleRegression(true);
-        for (HostEnergyCalibrationData data : host.getCalibrationData()) {
-            regressor.addData(data.getCpuUsage(), data.getWattsUsed());
-        }
-        return regressor.getSumSquaredErrors();
+        return retrieveModel(host).getSumOfSquareError();
     }
 
 }
