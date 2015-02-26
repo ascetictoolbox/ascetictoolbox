@@ -25,6 +25,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostEnergyCalibrationData;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
+import eu.ascetic.ioutils.caching.LRUCache;
 import java.io.File;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
@@ -39,7 +40,8 @@ import org.apache.commons.math3.stat.regression.SimpleRegression;
  *
  * It performs simple linear regression in order to determine from the CPU load
  * the current power consumption.
- * @author Richard Kavanagh 
+ *
+ * @author Richard Kavanagh
  *
  */
 public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
@@ -52,25 +54,24 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
     private int cpuUtilObservationTimeSec = 0;
     private int cpuUtilObservationTimeSecTotal = 0;
     private boolean considerIdleEnergy = true;
-    private EnergyModel lastModel = null;
-    private Host lastModelHost = null;
+    private final LRUCache<Host, PredictorFunction<EnergyModel>> modelCache = new LRUCache<>(5, 50);
 
     /**
      * This creates a new CPU only energy predictor.
-     * 
-     * It will create a energymodeller_CPU_predictor properties file if it doesn't
-     * exist. 
-     * 
+     *
+     * It will create a energymodeller_CPU_predictor properties file if it
+     * doesn't exist.
+     *
      * The main property: iaas.energy.modeller.cpu.energy.predictor.default_load
      * should be in the range 0..1 or -1. This indicates the predictor's default
-     * assumption on how much load is been induced. -1 measures the CPU's current
-     * load and uses that to forecast into the future.
-     * 
+     * assumption on how much load is been induced. -1 measures the CPU's
+     * current load and uses that to forecast into the future.
+     *
      * In the case of using -1 as a parameter to additional parameters are used:
      * iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.sec
      * iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.min
-     * 
-     * These indicate the window of how long the CPU should be monitored for, to 
+     *
+     * These indicate the window of how long the CPU should be monitored for, to
      * determine the current load.
      */
     public CpuOnlyEnergyPredictor() {
@@ -200,10 +201,11 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
         answer.setDuration(timePeriod);
         return answer;
     }
- 
+
     /**
      * This estimates the power used by a host, given its CPU load. The CPU load
      * value is determined from the settings file.
+     *
      * @param host The host to get the energy prediction for.
      * @return The predicted power usage.
      */
@@ -213,18 +215,19 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
             return model.getIntercept() + model.getCoefCPU() * source.getCpuUtilisation(host, cpuUtilObservationTimeSecTotal);
         } else {
             return model.getIntercept() + model.getCoefCPU() * usageCPU;
-        }     
-    }    
-    
+        }
+    }
+
     /**
      * This estimates the power used by a host, given its CPU load.
+     *
      * @param host The host to get the energy prediction for
      * @param usageCPU The amount of CPU load placed on the host
      * @return The predicted power usage.
      */
     public double predictPowerUsed(Host host, double usageCPU) {
         EnergyModel model = retrieveModel(host);
-        return model.getIntercept() + model.getCoefCPU() * usageCPU;       
+        return model.getIntercept() + model.getCoefCPU() * usageCPU;
     }
 
     /**
@@ -236,11 +239,11 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
      * @return The coefficients and the intercept of the model.
      */
     private EnergyModel retrieveModel(Host host) {
-        if (host.equals(lastModelHost)) {
+        if (modelCache.containsKey(host)) {
             /**
              * A small cache avoids recalculating the regression so often.
              */
-            return lastModel;
+            return modelCache.get(host).getFunction();
         }
         EnergyModel answer = new EnergyModel();
         SimpleRegression regressor = new SimpleRegression(true);
@@ -249,13 +252,15 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
         }
         answer.setIntercept(regressor.getIntercept());
         answer.setCoefCPU(regressor.getSlope());
-        lastModel = answer;
-        lastModelHost = host;
+        modelCache.put(host, new PredictorFunction<>(answer,regressor.getSumSquaredErrors()));
         return answer;
     }
 
     @Override
     public double getSumOfSquareError(Host host) {
+        if (modelCache.containsKey(host)) {
+            return modelCache.get(host).getSumOfSquareError();
+        }
         SimpleRegression regressor = new SimpleRegression(true);
         for (HostEnergyCalibrationData data : host.getCalibrationData()) {
             regressor.addData(data.getCpuUsage(), data.getWattsUsed());

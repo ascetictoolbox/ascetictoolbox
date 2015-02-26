@@ -33,7 +33,7 @@ import java.util.logging.Logger;
  * is expected that any energy predictor loaded into the ASCETiC architecture,
  * will override this class.
  *
- * @author Richard
+ * @author Richard Kavanagh
  */
 public abstract class AbstractEnergyPredictor implements EnergyPredictorInterface {
 
@@ -161,7 +161,47 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
             answer = answer + vm.getDiskGb();
         }
         return answer;
-    }  
+    }
+    
+    /**
+     * The predictor function class represents a wrap around of a predictor 
+     * and its estimated error.
+     * @param <T> The type of the object that is to be used to generate the
+     * prediction.
+     */
+    public class PredictorFunction<T> {
+        
+        T function;
+        double sumOfSquareError;
+
+        /**
+         * This creates a new instance of a prediction function.
+         * @param function The function that the predictor is to use to estimate
+         * power/energy consumption.
+         * @param sumOfSquareError The sum of the square error for the prediction function.
+         */
+        public PredictorFunction(T function, double sumOfSquareError) {
+            this.function = function;
+            this.sumOfSquareError = sumOfSquareError;
+        }
+
+        /**
+         * This returns the object that provides the prediction function
+         * @return The function that the predictor is to use to estimate
+         * power/energy consumption.
+         */
+        public T getFunction() {
+            return function;
+        }
+
+        /**
+         * This returns the sum of the square error for the prediction function.
+         * @return The sum of the square error for the prediction function.
+         */
+        public double getSumOfSquareError() {
+            return sumOfSquareError;
+        }    
+    }    
 
     /**
      * TODO Add utility functions here that may be used by the energy models

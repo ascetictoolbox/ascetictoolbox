@@ -25,7 +25,7 @@ import java.util.Collection;
  * This is the standard interface for any energy predictor module to be loaded
  * into the ASCETiC architecture.
  *
- * @author Richard
+ * @author Richard Kavanagh
  */
 public interface EnergyPredictorInterface {
 

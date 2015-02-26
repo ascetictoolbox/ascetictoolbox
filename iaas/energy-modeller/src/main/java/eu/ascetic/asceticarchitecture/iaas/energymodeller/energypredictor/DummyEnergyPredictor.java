@@ -31,7 +31,7 @@ import java.util.HashMap;
  *
  * These values will remain constant for the life of the energy predictor.
  *
- * @author Richard
+ * @author Richard Kavanagh
  */
 public class DummyEnergyPredictor extends AbstractEnergyPredictor {
 

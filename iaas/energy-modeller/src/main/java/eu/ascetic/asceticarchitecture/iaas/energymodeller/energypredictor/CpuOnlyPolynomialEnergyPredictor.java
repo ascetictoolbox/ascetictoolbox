@@ -24,6 +24,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostEnergyCalibrationData;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
+import eu.ascetic.ioutils.caching.LRUCache;
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
@@ -57,8 +58,7 @@ public class CpuOnlyPolynomialEnergyPredictor extends AbstractEnergyPredictor {
     private int cpuUtilObservationTimeSec = 0;
     private int cpuUtilObservationTimeSecTotal = 0;
     private boolean considerIdleEnergy = true;
-    private PolynomialFunction lastModel = null;
-    private Host lastModelHost = null;    
+    private final LRUCache<Host, PredictorFunction<PolynomialFunction>> modelCache = new LRUCache<>(5, 50);
 
     /**
      * This creates a new CPU only energy predictor.
@@ -243,11 +243,11 @@ public class CpuOnlyPolynomialEnergyPredictor extends AbstractEnergyPredictor {
      * @return The coefficients and the intercept of the model.
      */
     private PolynomialFunction retrieveModel(Host host) {
-        if (host.equals(lastModelHost)) {
+        if (modelCache.containsKey(host)) {
             /**
              * A small cache avoids recalculating the regression so often.
              */
-            return lastModel;
+            return modelCache.get(host).getFunction();
         }
         WeightedObservedPoints points = new WeightedObservedPoints();
         for (HostEnergyCalibrationData data : host.getCalibrationData()) {
@@ -256,8 +256,7 @@ public class CpuOnlyPolynomialEnergyPredictor extends AbstractEnergyPredictor {
         PolynomialCurveFitter fitter = PolynomialCurveFitter.create(2);
         final double[] best = fitter.fit(points.toList());
         PolynomialFunction answer = new PolynomialFunction(best);
-        lastModel = answer;
-        lastModelHost = host;
+        modelCache.put(host, new PredictorFunction<>(answer, getSumOfSquareError(host)));
         return answer;
     }
 
@@ -281,6 +280,9 @@ public class CpuOnlyPolynomialEnergyPredictor extends AbstractEnergyPredictor {
 
     @Override
     public double getSumOfSquareError(Host host) {
+        if (modelCache.containsKey(host)) {
+            return modelCache.get(host).getSumOfSquareError();
+        }
         WeightedObservedPoints points = new WeightedObservedPoints();
         for (HostEnergyCalibrationData data : host.getCalibrationData()) {
             points.add(data.getCpuUsage(), data.getWattsUsed());
