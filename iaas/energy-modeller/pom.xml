@@ -157,6 +157,12 @@
             <groupId>eu.ascetic.utils</groupId>
             <artifactId>ovf-xmlbeans-api</artifactId>
             <version>0.0.1-SNAPSHOT</version>
+        </dependency>     
+        <dependency>
+            <groupId>org.pacesys</groupId>
+            <artifactId>openstack4j</artifactId>
+            <version>2.0.0</version>
+            <classifier>withdeps</classifier>
         </dependency>
     </dependencies>  
 </project>
