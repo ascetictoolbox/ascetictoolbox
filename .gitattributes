@@ -36,7 +36,6 @@ iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymod
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/energypredictor/CPUOnlyBestFitEnergyPredictor.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/energypredictor/CpuOnlyEnergyPredictor.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/energypredictor/CpuOnlyPolynomialEnergyPredictor.java -text
-iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/energypredictor/DefaultEnergyPredictor.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/energypredictor/DummyEnergyPredictor.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/energypredictor/EnergyPredictorInterface.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/energypredictor/vmenergyshare/DefaultEnergyShareRule.java -text
@@ -63,11 +62,8 @@ iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymod
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/hostvmfilter/NameEndsFilter.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/hostvmfilter/NamedList.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/hostvmfilter/ZabbixHostVMFilter.java -text
-iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/training/DefaultEnergyModelTrainer.java -text
-iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/training/EnergyModelTrainerInterface.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/OVFConverterFactory.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/TimePeriod.java -text
-iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/energymodel/EnergyModel.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/energymodel/LinearFunction.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/energyuser/CandidateVMHostMapping.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/energyuser/EnergyUsageSource.java -text
@@ -95,9 +91,7 @@ iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymod
 iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/datastore/DataGathererTest.java -text
 iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/datastore/DefaultDatabaseConnectorTest.java -text
 iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/energypredictor/CpuOnlyEnergyPredictorTest.java -text
-iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/energypredictor/DefaultEnergyPredictorTest.java -text
 iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/queryinterface/datasourceclient/ZabbixDataSourceAdaptorTest.java -text
-iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/training/DefaultEnergyModelTrainerTest.java -text
 iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/OVFConverterFactoryTest.java -text
 iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/TimePeriodTest.java -text
 iaas/energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/input/VMProjectedWorkloadElementTest.java -text
