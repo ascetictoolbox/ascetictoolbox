@@ -123,7 +123,7 @@ public class DataGatherer implements Runnable {
     }
 
     /**
-     * This given a host determines its Host. It is used for the initial
+     * This given a VM determines its Host. It is used for the initial
      * assignment of this value.
      *
      * @param vm The deployed vm
@@ -318,7 +318,7 @@ public class DataGatherer implements Runnable {
             connector.setHosts(newHosts);
             for (Host host : newHosts) {
                 knownHosts.put(host.getHostName(), host);
-                    calibrator.calibrateHostEnergyData(host);
+                calibrator.calibrateHostEnergyData(host);
             }
         }
     }
@@ -370,7 +370,6 @@ public class DataGatherer implements Runnable {
             List<VmDeployed> newVms = discoverNewVMs(vmList);
             connector.setVms(newVms);
             for (VmDeployed vm : newVms) {
-                vm.setAllocatedTo(getVMsHost(vm));
                 knownVms.put(vm.getName(), vm);
             }
         }
@@ -385,7 +384,16 @@ public class DataGatherer implements Runnable {
     private List<VmDeployed> discoverNewVMs(List<VmDeployed> newList) {
         List<VmDeployed> answer = new ArrayList<>();
         for (VmDeployed vm : newList) {
+            if (vm.getAllocatedTo() == null) {
+                vm.setAllocatedTo(getVMsHost(vm));
+            }
             if (!knownVms.containsKey(vm.getName())) {
+                answer.add(vm);
+            } else if (vm.getAllocatedTo() != knownVms.get(vm.getName()).getAllocatedTo()) {
+                /**
+                 * Force an update if the host mapping changes, i.e. due to a VM
+                 * migration.
+                 */
                 answer.add(vm);
             }
         }
@@ -448,11 +456,11 @@ public class DataGatherer implements Runnable {
      * @return The list of VMs on the specified host
      */
     public ArrayList<VmDeployed> getVMsOnHost(Host host, List<VmDeployed> activeVMs) {
-        HashSet<VmDeployed> current = new HashSet<>();
-        current.addAll(activeVMs);
+        HashSet<VmDeployed> currentVMs = new HashSet<>();
+        currentVMs.addAll(activeVMs);
         ArrayList<VmDeployed> answer = new ArrayList<>();
         for (VmDeployed vm : knownVms.values()) {
-            if (host.equals(vm.getAllocatedTo()) && current.contains(vm)) {
+            if (host.equals(vm.getAllocatedTo()) && currentVMs.contains(vm)) {
                 answer.add(vm);
             }
         }
