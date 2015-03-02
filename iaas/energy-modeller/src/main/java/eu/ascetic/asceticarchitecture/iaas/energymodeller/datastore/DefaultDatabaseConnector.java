@@ -216,7 +216,7 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
             return;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
-                "INSERT INTO vm (vm_id, vm_name) VALUES (?,?,?) ON DUPLICATE KEY UPDATE vm_name=VALUES(`vm_name`);")) {
+                "INSERT INTO vm (vm_id, vm_name, deployment_id) VALUES (?,?,?) ON DUPLICATE KEY UPDATE vm_name=VALUES(`vm_name`) deployment_id=VALUES(`deployment_id`);")) {
             for (VmDeployed vm : vms) {
                 preparedStatement.setInt(1, vm.getId());
                 preparedStatement.setString(2, vm.getName());
