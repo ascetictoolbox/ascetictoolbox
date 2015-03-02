@@ -39,7 +39,7 @@ public abstract class KpiList {
     public static final String CPU_LOAD_LAST_1_MIN_KPI_NAME = "system.cpu.load[percpu,avg1]";
     public static final String CPU_LOAD_LAST_5_MIN_KPI_NAME = "system.cpu.load[percpu,avg5]";
     public static final String CPU_LOAD_LAST_15_MIN_KPI_NAME = "system.cpu.load[percpu,avg15]";    
-    //memory metrics
+    //memory metrics   
     public static final String MEMORY_AVAILABLE_KPI_NAME = "vm.memory.size[available]";     
     public static final String MEMORY_TOTAL_KPI_NAME = "vm.memory.size[total]";
     //swap space

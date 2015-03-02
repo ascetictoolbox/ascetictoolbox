@@ -55,7 +55,8 @@ REFERENCES host(host_id);
 CREATE TABLE IF NOT EXISTS vm
   (
      vm_id   INT NOT NULL,
-     vm_name VARCHAR(50)
+     vm_name VARCHAR(50),
+	 deployment_id VARCHAR(50)
   );
 
 ALTER TABLE vm

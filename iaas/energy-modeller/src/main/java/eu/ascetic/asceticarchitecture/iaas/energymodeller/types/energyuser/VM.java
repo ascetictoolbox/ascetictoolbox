@@ -33,8 +33,20 @@ public class VM extends EnergyUsageSource {
     private int cpus;
     private int ramMb;
     private double diskGb;
-    private String deploymentID;
+    /**
+     * VM identification concepts:
+     * DeploymentID: This is the PaaS layer deployment Id. The deployment Id can
+     * be used for several VMs.
+     * Disk Images: This identifies the disks that are attached to the VM. The
+     * principle is that these can the be used to identify the workload profile,
+     * of the VM.
+     * Application IDs: These can be used in a similar fashion, these tags 
+     * should be unique to an application but can be extended to indicate other
+     * factors as well.
+     */
+    private String deploymentID = null;
     private HashSet<VmDiskImage> diskImages = new HashSet<>();
+    private HashSet<String> applicationIDs = new HashSet<>();
     /**
      *
      * E_i^v: is the "idle power consumption" of a VM which includes the
@@ -176,9 +188,10 @@ public class VM extends EnergyUsageSource {
     }
 
     /**
-     * This returns the deployment id of a VM. The deployment ID is a reference 
-     * string that is used to identify a set of VMs that belong together as part 
+     * This returns the deployment id of a VM. The deployment ID is a reference
+     * string that is used to identify a set of VMs that belong together as part
      * of a single deployment. This field is optional.
+     *
      * @return the deploymentID for the VM
      */
     public String getDeploymentID() {
@@ -186,9 +199,10 @@ public class VM extends EnergyUsageSource {
     }
 
     /**
-      * This sets the deployment id of a VM. The deployment ID is a reference 
-     * string that is used to identify a set of VMs that belong together as part 
+     * This sets the deployment id of a VM. The deployment ID is a reference
+     * string that is used to identify a set of VMs that belong together as part
      * of a single deployment. This field is optional.
+     *
      * @param deploymentID the deploymentID to set
      */
     public void setDeploymentID(String deploymentID) {
@@ -197,6 +211,7 @@ public class VM extends EnergyUsageSource {
 
     /**
      * This gets the list of disk images that this VM is associated with.
+     *
      * @return the diskImages
      */
     public HashSet<VmDiskImage> getDiskImages() {
@@ -204,35 +219,77 @@ public class VM extends EnergyUsageSource {
     }
 
     /**
-     *  This sets the list of disk images that this VM is associated with.
+     * This sets the list of disk images that this VM is associated with.
+     *
      * @param diskImages the diskImages to set
      */
     public void setDiskImages(HashSet<VmDiskImage> diskImages) {
         this.diskImages = diskImages;
     }
-    
+
     /**
      * This indicates if a VM has the same set of disks as specified.
-     * @param vm The vm to perform the comparison on in regards to VM disk images.
+     *
+     * @param vm The vm to perform the comparison on in regards to VM disk
+     * images.
      * @return If the VM has the same set of disks as specified or not.
      */
     public boolean isDiskSetEqual(VM vm) {
         return isDiskSetEqual(vm.getDiskImages());
-    }       
-    
+    }
+
     /**
      * This indicates if a VM has the same set of disks as specified.
+     *
      * @param disks The set of disks to compare.
      * @return If the VM has the same set of disks as specified or not.
      */
     public boolean isDiskSetEqual(Collection<VmDiskImage> disks) {
-        if (disks.size() != diskImages.size())
+        if (disks.size() != diskImages.size()) {
             return false;
+        }
         for (VmDiskImage vmDiskImage : diskImages) {
-            if (!disks.contains(vmDiskImage))
+            if (!disks.contains(vmDiskImage)) {
                 return false;
+            }
         }
         return true;
-    } 
+    }
+
+    /**
+     * This provides the set of application IDs that are part of this VM.
+     * Application IDs are intended as unique tags that can be set to identify
+     * the applications on the VM.
+     *
+     * @return the applicationIDs The set of unique identifiers that can be used
+     * to classify a VM based upon the type of applications that generate a
+     * workload on the VM.
+     */
+    public HashSet<String> getApplicationIDs() {
+        return applicationIDs;
+    }
+
+    /**
+     * This allows the set of application IDs that are part of this VM to be
+     * set. Application IDs are intended as unique tags that can be set to
+     * identify the applications on the VM.
+     *
+     * @param applicationIDs the applicationIDs The set of unique identifiers
+     * that can be used to classify a VM based upon the type of applications
+     * that generate a workload on the VM.
+     */
+    public void setApplicationIDs(HashSet<String> applicationIDs) {
+        this.applicationIDs = applicationIDs;
+    }
+    
+    /**
+     * This checks to see if this VM contains a specified Application ID
+     * @param appId The id of the application to check to see if it is installed
+     * on a given VM.
+     * @return If the application ID is in the VMs set of known application IDs
+     */
+    public boolean containsApplication(String appId) {
+       return applicationIDs.contains(appId);
+    }
 
 }

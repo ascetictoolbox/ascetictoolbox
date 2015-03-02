@@ -118,11 +118,12 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
             return null;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
-                "SELECT vm_id , vm_name  FROM vm");
+                "SELECT vm_id , vm_name, deployment_id FROM vm");
                 ResultSet resultSet = preparedStatement.executeQuery()) {
             ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
             for (ArrayList<Object> hostData : results) {
                 VmDeployed vm = new VmDeployed((Integer) hostData.get(0), (String) hostData.get(1));
+                vm.setDeploymentID((String) hostData.get(2));
                 answer.add(vm);
             }
         } catch (SQLException ex) {
@@ -215,10 +216,11 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
             return;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
-                "INSERT INTO vm (vm_id, vm_name) VALUES (?,?) ON DUPLICATE KEY UPDATE vm_name=VALUES(`vm_name`);")) {
+                "INSERT INTO vm (vm_id, vm_name) VALUES (?,?,?) ON DUPLICATE KEY UPDATE vm_name=VALUES(`vm_name`);")) {
             for (VmDeployed vm : vms) {
                 preparedStatement.setInt(1, vm.getId());
                 preparedStatement.setString(2, vm.getName());
+                preparedStatement.setString(3, vm.getDeploymentID());
                 preparedStatement.executeUpdate();
             }
 
