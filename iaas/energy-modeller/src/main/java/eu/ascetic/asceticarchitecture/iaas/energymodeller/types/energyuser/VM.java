@@ -15,6 +15,9 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 /**
  * This class represents an energy user of the ASCETiC project and in particular
  * a VM that is to be deployed.
@@ -31,6 +34,7 @@ public class VM extends EnergyUsageSource {
     private int ramMb;
     private double diskGb;
     private String deploymentID;
+    private HashSet<VmDiskImage> diskImages = new HashSet<>();
     /**
      *
      * E_i^v: is the "idle power consumption" of a VM which includes the
@@ -190,5 +194,45 @@ public class VM extends EnergyUsageSource {
     public void setDeploymentID(String deploymentID) {
         this.deploymentID = deploymentID;
     }
+
+    /**
+     * This gets the list of disk images that this VM is associated with.
+     * @return the diskImages
+     */
+    public HashSet<VmDiskImage> getDiskImages() {
+        return diskImages;
+    }
+
+    /**
+     *  This sets the list of disk images that this VM is associated with.
+     * @param diskImages the diskImages to set
+     */
+    public void setDiskImages(HashSet<VmDiskImage> diskImages) {
+        this.diskImages = diskImages;
+    }
+    
+    /**
+     * This indicates if a VM has the same set of disks as specified.
+     * @param vm The vm to perform the comparison on in regards to VM disk images.
+     * @return If the VM has the same set of disks as specified or not.
+     */
+    public boolean isDiskSetEqual(VM vm) {
+        return isDiskSetEqual(vm.getDiskImages());
+    }       
+    
+    /**
+     * This indicates if a VM has the same set of disks as specified.
+     * @param disks The set of disks to compare.
+     * @return If the VM has the same set of disks as specified or not.
+     */
+    public boolean isDiskSetEqual(Collection<VmDiskImage> disks) {
+        if (disks.size() != diskImages.size())
+            return false;
+        for (VmDiskImage vmDiskImage : diskImages) {
+            if (!disks.contains(vmDiskImage))
+                return false;
+        }
+        return true;
+    } 
 
 }

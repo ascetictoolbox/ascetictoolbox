@@ -16,6 +16,7 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.types;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDiskImage;
 import eu.ascetic.utils.ovf.api.Disk;
 import eu.ascetic.utils.ovf.api.DiskSection;
 import eu.ascetic.utils.ovf.api.Item;
@@ -26,6 +27,7 @@ import eu.ascetic.utils.ovf.api.enums.ResourceType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -56,6 +58,7 @@ public class OVFConverterFactory {
             VM vm = new VM(virtualMachine.getVirtualHardwareSection().getNumberOfVirtualCPUs(),
                     virtualMachine.getVirtualHardwareSection().getMemorySize(),
                     getVmDiskSize(virtualMachine, diskSection));
+            vm.setDiskImages(getVmDiskImages(virtualMachine, diskSection));
             vm.setDeploymentID(deploymentId);
             answer.add(vm);
         }
@@ -79,7 +82,7 @@ public class OVFConverterFactory {
     }
 
     /**
-     *
+     * This returns the size of the overall disk space available to the VM.
      * @param diskSection The set of disks as defined in the OVF
      * @param virtualMachine The virtual machine to find the disk size for
      * @return The size of this disk in Gb
@@ -96,6 +99,24 @@ public class OVFConverterFactory {
         return answer / Math.pow(2, 30);
     }
 
+    /**
+     * This returns the list of images that make up the VM.
+     * @param diskSection The set of disks as defined in the OVF
+     * @param virtualMachine The virtual machine to find the disk size for
+     * @return The size of this disk in Gb
+     */
+    private static HashSet<VmDiskImage> getVmDiskImages(VirtualSystem virtualMachine, DiskSection diskSection) {
+        HashSet<VmDiskImage> answer = new HashSet<>();
+        List<Disk> disks = Arrays.asList(diskSection.getDiskArray());
+        ArrayList<String> diskIds = getVMsDiskIds(virtualMachine);
+        for (Disk disk : disks) {
+            if (diskIds.contains(disk.getDiskId())) {
+                answer.add(new VmDiskImage(disk.getFileRef()));
+            }
+        }
+        return answer;
+    }    
+    
     /**
      * This returns the disk capacity in bytes.
      *
