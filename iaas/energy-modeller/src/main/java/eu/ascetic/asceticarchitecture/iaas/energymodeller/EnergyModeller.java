@@ -342,6 +342,31 @@ public class EnergyModeller {
         }
         return answer;
     }
+    
+    /**
+     * This provides for a collection of VMs the amount of energy that has
+     * historically been used.
+     *
+     * @param deploymentId The deployment id of the set of virtual machines.
+     * @param timePeriod The time period for which the query applies.
+     * @return The value returned should be separated on per VM basis. This
+     * allows for a set of values to be queried at the same time and also
+     * aggregated correctly.
+     *
+     * Envisaged purpose: Determining the amount of energy being used/having
+     * been used by an SLA.
+     *
+     * Historic Values: Avg Watts over time Avg Current (useful??) Avg Voltage
+     * (useful??) kWh of energy used since instantiation
+     */
+    public HashSet<HistoricUsageRecord> getEnergyRecordForDeployment(String deploymentId, TimePeriod timePeriod) {
+        HashSet<HistoricUsageRecord> answer = new HashSet<>();
+        HashSet<VmDeployed> vms = dataGatherer.getVmList(deploymentId);
+        for (VmDeployed vm : vms) {
+            answer.add(getEnergyRecordForVM(vm, timePeriod));
+        }
+        return answer;
+    }    
 
     /**
      * This returns the energy usage for a named physical machine.
