@@ -389,7 +389,8 @@ public class DataGatherer implements Runnable {
             }
             if (!knownVms.containsKey(vm.getName())) {
                 answer.add(vm);
-            } else if (vm.getAllocatedTo() != knownVms.get(vm.getName()).getAllocatedTo()) {
+            } else if (vm.getAllocatedTo() != null
+                    && vm.getAllocatedTo() != knownVms.get(vm.getName()).getAllocatedTo()) {
                 /**
                  * Force an update if the host mapping changes, i.e. due to a VM
                  * migration.
