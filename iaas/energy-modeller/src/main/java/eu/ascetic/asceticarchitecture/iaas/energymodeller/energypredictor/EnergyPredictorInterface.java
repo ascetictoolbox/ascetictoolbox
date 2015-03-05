@@ -83,4 +83,11 @@ public interface EnergyPredictorInterface {
      * @return The sum of the square error
      */
     public double getSumOfSquareError(Host host);
+    
+    /**
+     * This determines how good the fit of the model is in regards to a particular named host 
+     * @param host The host that the energy predictions are for
+     * @return The root mean square error
+     */
+    public double getRootMeanSquareError(Host host);    
 }

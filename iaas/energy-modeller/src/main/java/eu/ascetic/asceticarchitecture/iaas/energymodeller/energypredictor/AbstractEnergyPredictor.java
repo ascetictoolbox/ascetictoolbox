@@ -173,16 +173,19 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
         
         T function;
         double sumOfSquareError;
+        double rootMeanSquareError;
 
         /**
          * This creates a new instance of a prediction function.
          * @param function The function that the predictor is to use to estimate
          * power/energy consumption.
          * @param sumOfSquareError The sum of the square error for the prediction function.
+         * @param rootMeanSquareError The root mean square error for the prediction function. 
          */
-        public PredictorFunction(T function, double sumOfSquareError) {
+        public PredictorFunction(T function, double sumOfSquareError, double rootMeanSquareError) {
             this.function = function;
             this.sumOfSquareError = sumOfSquareError;
+            this.rootMeanSquareError = rootMeanSquareError;
         }
 
         /**
@@ -200,7 +203,15 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
          */
         public double getSumOfSquareError() {
             return sumOfSquareError;
-        }    
+        }
+        
+        /**
+         * This returns the sum of the room mean error for the prediction function.
+         * @return The sum of the square error for the prediction function.
+         */
+        public double getRootMeanSquareError() {
+            return rootMeanSquareError;
+        }           
     }    
 
     /**

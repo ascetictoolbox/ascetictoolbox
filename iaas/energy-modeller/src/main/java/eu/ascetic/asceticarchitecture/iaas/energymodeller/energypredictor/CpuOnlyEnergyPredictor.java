@@ -251,7 +251,9 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
         }
         model.setIntercept(regressor.getIntercept());
         model.setCoefficient(regressor.getSlope());
-        PredictorFunction<LinearFunction> answer = new PredictorFunction<>(model, regressor.getSumSquaredErrors());
+        PredictorFunction<LinearFunction> answer = new PredictorFunction<>(model,
+                regressor.getSumSquaredErrors(),
+                Math.sqrt(regressor.getMeanSquareError()));
         modelCache.put(host, answer);
         return answer;
     }
@@ -259,6 +261,11 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
     @Override
     public double getSumOfSquareError(Host host) {
         return retrieveModel(host).getSumOfSquareError();
+    }
+
+    @Override
+    public double getRootMeanSquareError(Host host) {
+        return retrieveModel(host).getRootMeanSquareError();
     }
 
 }

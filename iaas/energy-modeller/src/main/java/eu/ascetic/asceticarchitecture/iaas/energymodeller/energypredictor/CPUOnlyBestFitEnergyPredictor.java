@@ -22,9 +22,10 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsag
 import java.util.Collection;
 
 /**
- * This predictor automatically selects between a polynomial or linear predictor,
- * based upon the CPU value only. It uses sum of the square error to determine
- * which option is best.
+ * This predictor automatically selects between a polynomial or linear
+ * predictor, based upon the CPU value only. It uses sum of the root mean square
+ * error to determine which option is best.
+ *
  * @author Richard Kavanagh
  */
 public class CPUOnlyBestFitEnergyPredictor extends AbstractEnergyPredictor {
@@ -34,7 +35,7 @@ public class CPUOnlyBestFitEnergyPredictor extends AbstractEnergyPredictor {
 
     @Override
     public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines, TimePeriod timePeriod) {
-        if (linear.getSumOfSquareError(host) <= polynomial.getSumOfSquareError(host)) {
+        if (linear.getRootMeanSquareError(host) <= polynomial.getRootMeanSquareError(host)) {
             return linear.getHostPredictedEnergy(host, virtualMachines, timePeriod);
         } else {
             return polynomial.getHostPredictedEnergy(host, virtualMachines, timePeriod);
@@ -43,7 +44,7 @@ public class CPUOnlyBestFitEnergyPredictor extends AbstractEnergyPredictor {
 
     @Override
     public EnergyUsagePrediction getVMPredictedEnergy(VM vm, Collection<VM> virtualMachines, Host host, TimePeriod timePeriod) {
-        if (linear.getSumOfSquareError(host) <= polynomial.getSumOfSquareError(host)) {
+        if (linear.getRootMeanSquareError(host) <= polynomial.getRootMeanSquareError(host)) {
             return linear.getVMPredictedEnergy(vm, virtualMachines, host, timePeriod);
         } else {
             return polynomial.getVMPredictedEnergy(vm, virtualMachines, host, timePeriod);
@@ -54,6 +55,13 @@ public class CPUOnlyBestFitEnergyPredictor extends AbstractEnergyPredictor {
     public double getSumOfSquareError(Host host) {
         double lin = linear.getSumOfSquareError(host);
         double poly = polynomial.getSumOfSquareError(host);
+        return (lin <= poly ? lin : poly);
+    }
+
+    @Override
+    public double getRootMeanSquareError(Host host) {
+        double lin = linear.getRootMeanSquareError(host);
+        double poly = polynomial.getRootMeanSquareError(host);
         return (lin <= poly ? lin : poly);
     }
 

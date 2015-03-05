@@ -256,7 +256,9 @@ public class CpuOnlyPolynomialEnergyPredictor extends AbstractEnergyPredictor {
         PolynomialCurveFitter fitter = PolynomialCurveFitter.create(2);
         final double[] best = fitter.fit(points.toList());
         PolynomialFunction function = new PolynomialFunction(best);
-        answer = new PredictorFunction<>(function, getSumOfSquareError(function, points.toList()));
+        double sse = getSumOfSquareError(function, points.toList());
+        double rmse = getRootMeanSquareError(sse, points.toList().size());
+        answer = new PredictorFunction<>(function, sse, rmse);
         modelCache.put(host, answer);
         return answer;
     }
@@ -278,10 +280,25 @@ public class CpuOnlyPolynomialEnergyPredictor extends AbstractEnergyPredictor {
         }
         return answer;
     }
+    
+    /**
+     * This calculates the root means square error
+     * @param sse The sum of the square error
+     * @param count The count of observed points
+     * @return the root means square error
+     */
+    private double getRootMeanSquareError(double sse, int count) {
+        return Math.sqrt(sse / ((double) count));
+    }
 
     @Override
     public double getSumOfSquareError(Host host) {
         return retrieveModel(host).getSumOfSquareError();
+    }
+
+    @Override
+    public double getRootMeanSquareError(Host host) {
+        return retrieveModel(host).getRootMeanSquareError();
     }
 
 }

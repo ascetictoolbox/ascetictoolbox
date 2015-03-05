@@ -82,4 +82,9 @@ public class DummyEnergyPredictor extends AbstractEnergyPredictor {
         return Double.NaN;
     }
 
+    @Override
+    public double getRootMeanSquareError(Host host) {
+        return Double.NaN;
+    }
+
 }
