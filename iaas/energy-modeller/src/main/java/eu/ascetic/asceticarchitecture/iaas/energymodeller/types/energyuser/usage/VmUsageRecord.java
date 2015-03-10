@@ -43,8 +43,8 @@ public class VmUsageRecord implements Comparable<VmUsageRecord> {
     }
 
     /**
-     * This returns the vm that induced the load
-     * @return 
+     * This returns the vm that induced the load for this usage record.
+     * @return The vm that induced the load
      */
     public VmDeployed getVm() {
         return vm;
@@ -52,7 +52,7 @@ public class VmUsageRecord implements Comparable<VmUsageRecord> {
 
     /**
      * This returns the time when the load was induced.
-     * @return 
+     * @return The time when the load was induced
      */
     public long getTime() {
         return time;
@@ -60,7 +60,8 @@ public class VmUsageRecord implements Comparable<VmUsageRecord> {
     
     /**
      * This returns the load percentage that was induced.
-     * @return 
+     * @return The returns the CPU load that was induced at the time specified
+     * in this usage record.
      */
     public double getLoad() {
         return load;

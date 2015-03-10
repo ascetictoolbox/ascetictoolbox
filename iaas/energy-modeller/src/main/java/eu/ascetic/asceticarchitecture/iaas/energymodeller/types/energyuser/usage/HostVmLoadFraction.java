@@ -67,7 +67,7 @@ public class HostVmLoadFraction implements Comparable<HostVmLoadFraction> {
     /**
      * The time that this record represents, in UTC time.
      *
-     * @return
+     * @return the time for this load fraction record.
      */
     public long getTime() {
         return time;

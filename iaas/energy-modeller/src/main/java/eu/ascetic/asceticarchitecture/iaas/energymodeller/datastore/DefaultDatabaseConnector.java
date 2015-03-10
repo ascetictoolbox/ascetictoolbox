@@ -39,7 +39,7 @@ import java.util.logging.Logger;
  * This connects to the background database to return historical information and
  * host calibration data.
  *
- * @author Richard
+ * @author Richard Kavanagh
  */
 public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements DatabaseConnector {
 
@@ -152,7 +152,7 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
      * of a given host machine.
      *
      * @param host The host to get the data for.
-     * @return
+     * @return The host with its calibration data defined.
      */
     @Override
     public Host getHostCalibrationData(Host host) {

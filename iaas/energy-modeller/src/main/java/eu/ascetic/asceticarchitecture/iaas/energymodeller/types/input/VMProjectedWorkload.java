@@ -16,7 +16,9 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.input;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.TreeSet;
 
 /**
  * This represents a projected workload on a VM.
@@ -41,7 +43,7 @@ public class VMProjectedWorkload {
     /**
      * This returns the VM associated with this workload.
      *
-     * @return
+     * @return the vm that is to induce the specified workload
      */
     public VM getVm() {
         return vm;
@@ -51,7 +53,7 @@ public class VMProjectedWorkload {
      * This adds a workload element to the overall workload
      *
      * @param element a part of the workload.
-     * @return
+     * @return if the element was successfully added or not
      */
     public boolean add(VMProjectedWorkloadElement element) {
         return workload.add(element);
@@ -60,8 +62,8 @@ public class VMProjectedWorkload {
     /**
      * This adds a collection of workload elements to the overall workload
      *
-     * @param collection
-     * @return
+     * @param collection The collection of workload elements to add
+     * @return if the collection of workload elements was successfully added or not
      */
     public boolean addAll(Collection<VMProjectedWorkloadElement> collection) {
         return workload.addAll(collection);
@@ -70,8 +72,8 @@ public class VMProjectedWorkload {
     /**
      * This removes a workload element to the overall workload
      *
-     * @param element
-     * @return
+     * @param element  a part of the workload.
+     * @return if the removal of the workload element was successful or not
      */
     public boolean remove(VMProjectedWorkloadElement element) {
         return workload.remove(element);
@@ -80,8 +82,8 @@ public class VMProjectedWorkload {
     /**
      * This removes a collection of workload elements from the overall workload
      *
-     * @param collection
-     * @return
+     * @param collection  The collection of workload elements to remove
+     * @return if the removal of the workload element was successful or not
      */
     public boolean removeAll(Collection<VMProjectedWorkloadElement> collection) {
         return workload.removeAll(collection);

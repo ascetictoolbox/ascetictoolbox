@@ -27,7 +27,7 @@ import java.util.List;
  * This interface for connecting to the background database with the aim of
  * returning historical information and host calibration data.
  *
- * @author Richard
+ * @author Richard Kavanagh
  */
 public interface DatabaseConnector {
 
@@ -72,7 +72,7 @@ public interface DatabaseConnector {
      * This gets the calibration data that indicates the performance properties
      * of a given host machine.
      * @param host The host to get the data for.
-     * @return 
+     * @return The host with its calibration data defined.
      */   
     public Host getHostCalibrationData(Host host);
 

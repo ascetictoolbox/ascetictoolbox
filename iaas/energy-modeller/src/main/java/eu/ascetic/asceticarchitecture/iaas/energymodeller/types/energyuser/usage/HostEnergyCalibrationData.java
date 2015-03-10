@@ -25,10 +25,8 @@ import java.util.List;
  *
  *
  * It is to be recorded as a 3-tuple record indicating the CPU usage, the memory
- * usage and the associate energy used for a given host.
+ * usage and the associate power used for a given host.
  *
- * @see HostUsage These classes are identical. One may need to supersede the
- * other!
  * @author Richard
  */
 public class HostEnergyCalibrationData {

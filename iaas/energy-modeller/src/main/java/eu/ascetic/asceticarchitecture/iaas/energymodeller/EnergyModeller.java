@@ -68,7 +68,7 @@ import java.util.logging.Logger;
  *
  * A historic record of energy usage for billing purposes.
  *
- * @author Richard
+ * @author Richard Kavanagh
  */
 public class EnergyModeller {
 
@@ -88,7 +88,7 @@ public class EnergyModeller {
     /**
      * This runs the energy modeller in standalone mode.
      *
-     * @param args
+     * @param args no args are expected.
      */
     public static void main(String[] args) {
         try {
@@ -287,7 +287,7 @@ public class EnergyModeller {
      *
      * @param vm A reference to the VM
      * @param timePeriod The time period for which the query applies.
-     * @return
+     * @return The energy usage record for the named VM.
      *
      * Historic Values: Avg Watts over time Avg Current (useful??) Avg Voltage
      * (useful??) kWh of energy used since instantiation
@@ -435,7 +435,7 @@ public class EnergyModeller {
      * This returns the energy usage for a named virtual machine.
      *
      * @param vm A reference to the VM
-     * @return
+     * @return The current power usage record for the named VM.
      *
      * Current Values: Watts, current and voltage
      *
@@ -487,7 +487,7 @@ public class EnergyModeller {
      * This returns the energy usage for a named physical machine.
      *
      * @param host A reference to physical machine
-     * @return
+     * @return The power usage record for the named physical host.
      *
      * Current Values for: Power (Watts), current and voltage
      */
@@ -524,7 +524,7 @@ public class EnergyModeller {
      * @param vMsOnHost The collection of VMs that are expected to be running on
      * the host
      * @param host The host on which the VM is to be placed
-     * @return
+     * @return the predicted average power and total energy usage for a VM.
      *
      * Avg Watts that is expected to use over time by the VM Predicted energy
      * used (kWh) during life of VM
@@ -547,7 +547,8 @@ public class EnergyModeller {
      *
      * @param host The host that the energy prediction is for
      * @param virtualMachines The VMs that are on the host.
-     * @return
+     * @return the predicted average power and total energy usage for a physical 
+     * host.
      */
     public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines) {
         return predictor.getHostPredictedEnergy(host, virtualMachines);
@@ -558,8 +559,8 @@ public class EnergyModeller {
      * This takes a set of hostname names and provides the object representation
      * of this host.
      *
-     * @param hostname The hostname
-     * @return
+     * @param hostname The set of hosts to return.
+     * @return The host objects of the hosts that were requested by name. 
      */
     public Collection<Host> getHost(Collection<String> hostname) {
         Collection<Host> answer = new ArrayList<>();

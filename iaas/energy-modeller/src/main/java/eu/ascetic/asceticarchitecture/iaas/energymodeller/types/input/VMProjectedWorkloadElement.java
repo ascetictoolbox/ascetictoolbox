@@ -48,9 +48,9 @@ public class VMProjectedWorkloadElement implements Comparable<Object> {
      */
    
 
-    private static int BEFORE = -1;
-    private static int EQUAL = 0;
-    private static int AFTER = 1;
+    private static final int BEFORE = -1;
+    private static final int EQUAL = 0;
+    private static final int AFTER = 1;
 
     /**
      * This provides the start time of this workload element.
@@ -82,7 +82,7 @@ public class VMProjectedWorkloadElement implements Comparable<Object> {
      * This indicates if the workload represents a deployment that has a
      * projected end period or not.
      *
-     * @return
+     * @return if the deployment is long term or not
      */
     public boolean isLongTermDeployment() {
         return duration == null;

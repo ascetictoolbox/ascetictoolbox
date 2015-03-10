@@ -89,7 +89,7 @@ public class VM extends EnergyUsageSource {
     /**
      * This gets the count of how many virtual cpu cores this vm has.
      *
-     * @return
+     * @return the amount of virtual cpus cores that the VM has.
      */
     public int getCpus() {
         return cpus;
