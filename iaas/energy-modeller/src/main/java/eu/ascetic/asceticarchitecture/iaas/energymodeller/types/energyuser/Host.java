@@ -27,7 +27,7 @@ import java.util.Objects;
  *
  * @see eu.ascetic.monitoring.api.datamodel.host
  *
- * @author Richard
+ * @author Richard Kavanagh
  */
 public class Host extends EnergyUsageSource implements Comparable<Host> {
 
@@ -170,7 +170,7 @@ public class Host extends EnergyUsageSource implements Comparable<Host> {
     /**
      * This allows for an additional piece of calibration data to be set.
      *
-     * @param calibrationData
+     * @param calibrationData The calibration data to add to the host
      */
     public void addCalibrationData(HostEnergyCalibrationData calibrationData) {
         this.calibrationData.add(calibrationData);
@@ -219,6 +219,25 @@ public class Host extends EnergyUsageSource implements Comparable<Host> {
         for (HostEnergyCalibrationData hostEnergyCalibrationData : calibrationData) {
             if ((hostEnergyCalibrationData.getMemoryUsage() * getRamMb()) < answer) {
                 answer = hostEnergyCalibrationData.getMemoryUsage() * getRamMb();
+            }
+        }
+        return answer;
+    }
+    
+    /**
+     * This returns the maximum energy consumption found from the calibration
+     * data.
+     *
+     * @return The maximum power consumption of a host
+     */
+    public double getMaximumPowerConsumption() {
+        if (calibrationData.isEmpty()) {
+            return Double.NaN;
+        }
+        double answer = 0;
+        for (HostEnergyCalibrationData hostEnergyCalibrationData : calibrationData) {
+            if (hostEnergyCalibrationData.getWattsUsed() > answer) {
+                answer = hostEnergyCalibrationData.getWattsUsed();
             }
         }
         return answer;

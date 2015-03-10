@@ -47,6 +47,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
@@ -170,7 +171,7 @@ public class EnergyModeller {
     }
 
     /**
-     * This is common code for both constructors
+     * This is common code for the constructors
      */
     private void startup(boolean performDataGathering) {
         calibrator = new Calibrator(datasource, database);
@@ -317,7 +318,7 @@ public class EnergyModeller {
         answer.setAvgPowerUsed(totalEnergy / (((double) shareRule.getDuration()) / 3600));
         answer.setDuration(new TimePeriod(shareRule.getStart(), shareRule.getEnd()));
         return answer;
-    }  
+    }
 
     /**
      * This provides for a collection of VMs the amount of energy that has
@@ -342,7 +343,7 @@ public class EnergyModeller {
         }
         return answer;
     }
-    
+
     /**
      * This provides for a collection of VMs the amount of energy that has
      * historically been used.
@@ -366,7 +367,7 @@ public class EnergyModeller {
             answer.add(getEnergyRecordForVM(vm, timePeriod));
         }
         return answer;
-    }    
+    }
 
     /**
      * This returns the energy usage for a named physical machine.
@@ -393,19 +394,19 @@ public class EnergyModeller {
                 double deltaEnergy = Math.abs((((double) deltaTime) / 3600d) * (energy1.getPower() + energy2.getPower()) * 0.5);
                 totalEnergy = totalEnergy + deltaEnergy;
             }
-            TimePeriod period = new TimePeriod(data.get(0).getTime() / 1000l, data.get(data.size() -1).getTime() / 1000l);
+            TimePeriod period = new TimePeriod(data.get(0).getTime() / 1000l, data.get(data.size() - 1).getTime() / 1000l);
             answer.setAvgPowerUsed(totalEnergy / (((double) period.getDuration()) / 3600d));
             answer.setTotalEnergyUsed(totalEnergy);
             answer.setDuration(period);
         }
         if (data.size() == 1) {
-            TimePeriod duration =  new TimePeriod(data.get(0).getTime(), data.get(0).getTime());
-            answer.setDuration(duration);            
+            TimePeriod duration = new TimePeriod(data.get(0).getTime(), data.get(0).getTime());
+            answer.setDuration(duration);
             answer.setAvgPowerUsed(data.get(0).getPower());
             answer.setTotalEnergyUsed(0);
         }
         return answer;
-    }      
+    }
 
     /**
      * This provides for a collection of physical machines the amount of energy
@@ -580,6 +581,35 @@ public class EnergyModeller {
             return dataGatherer.getHost(hostname);
         }
         return null;
+    }
+
+    /**
+     * This gets the list of hosts that the energy modeller knows about.
+     *
+     * @return The list of hosts currently known to the energy modeller.
+     */
+    public Collection<Host> getHostList() {
+        return dataGatherer.getHostList().values();
+    }
+
+    /**
+     * This gets the list of hosts that the energy modeller knows about.
+     *
+     * @param sort The sort order for the list of hosts. A list of prefabricated
+     * comparators are available in the energy user comparators package. If the 
+     * sort comparator is null the natural order of hosts will be provided.
+     * @see
+     * eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.comparators;
+     * @return The list of hosts the energy modeller knows about.
+     */
+    public List<Host> getHostList(Comparator<Host> sort) {
+        ArrayList<Host> hosts = new ArrayList<>(dataGatherer.getHostList().values());
+        if (sort == null) {
+            Collections.sort(hosts);
+        } else {
+            Collections.sort(hosts, sort);
+        }
+        return hosts;
     }
 
     /**
