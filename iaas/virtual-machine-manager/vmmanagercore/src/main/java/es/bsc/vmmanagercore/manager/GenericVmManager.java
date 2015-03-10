@@ -33,10 +33,7 @@ import es.bsc.vmmanagercore.db.VmManagerDbFactory;
 import es.bsc.vmmanagercore.energymodeller.EnergyModeller;
 import es.bsc.vmmanagercore.energymodeller.ascetic.AsceticEnergyModellerAdapter;
 import es.bsc.vmmanagercore.energymodeller.dummy.DummyEnergyModeller;
-import es.bsc.vmmanagercore.manager.components.HostsManager;
-import es.bsc.vmmanagercore.manager.components.ImageManager;
-import es.bsc.vmmanagercore.manager.components.SchedulingAlgorithmsManager;
-import es.bsc.vmmanagercore.manager.components.VmsManager;
+import es.bsc.vmmanagercore.manager.components.*;
 import es.bsc.vmmanagercore.model.estimations.ListVmEstimates;
 import es.bsc.vmmanagercore.model.estimations.VmToBeEstimated;
 import es.bsc.vmmanagercore.model.images.ImageToUpload;
@@ -77,12 +74,13 @@ public class GenericVmManager implements VmManager {
     private final SchedulingAlgorithmsManager schedulingAlgorithmsManager;
     private final HostsManager hostsManager;
     private final VmsManager vmsManager;
+    private final SelfAdaptationOptsManager selfAdaptationOptsManager;
     
     private CloudMiddleware cloudMiddleware;
-    private Scheduler scheduler;
     private EstimatesGenerator estimatesGenerator = new EstimatesGenerator();
     private SelfAdaptationManager selfAdaptationManager;
     private List<Host> hosts = new ArrayList<>();
+    private VmManagerDb db;
 
     private IClopla clopla = new Clopla(); // Library used for the VM Placement
 
@@ -102,19 +100,19 @@ public class GenericVmManager implements VmManager {
      * @param dbName the name of the DB
      */
     public GenericVmManager(String dbName) {
-        VmManagerDb db = VmManagerDbFactory.getDb(dbName);
+        db = VmManagerDbFactory.getDb(dbName);
         selectMiddleware(conf.middleware);
         initializeHosts(conf.monitoring, conf.hosts);
         selectModellers(conf.project);
-        List<VmDeployed> vmsDeployed = getAllVms();
-        scheduler = new Scheduler(db.getCurrentSchedulingAlg(), vmsDeployed, energyModeller, pricingModeller);
         selfAdaptationManager = new SelfAdaptationManager(this, dbName);
 
         // Initialize all the VMM components
         imageManager = new ImageManager(cloudMiddleware);
         schedulingAlgorithmsManager = new SchedulingAlgorithmsManager(db);
         hostsManager = new HostsManager(hosts);
-        vmsManager = new VmsManager(hostsManager, cloudMiddleware, db, selfAdaptationManager, scheduler);
+        vmsManager = new VmsManager(hostsManager, cloudMiddleware, db, selfAdaptationManager, 
+                energyModeller, pricingModeller);
+        selfAdaptationOptsManager = new SelfAdaptationOptsManager(selfAdaptationManager);
         
         // Start periodic self-adaptation thread if it is not already running.
         // This check would not be needed if only one instance of this class was created.
@@ -423,7 +421,7 @@ public class GenericVmManager implements VmManager {
      */
     @Override
     public void saveSelfAdaptationOptions(SelfAdaptationOptions selfAdaptationOptions) {
-        selfAdaptationManager.saveSelfAdaptationOptions(selfAdaptationOptions);
+        selfAdaptationOptsManager.saveSelfAdaptationOptions(selfAdaptationOptions);
     }
 
     /**
@@ -433,7 +431,7 @@ public class GenericVmManager implements VmManager {
      */
     @Override
     public SelfAdaptationOptions getSelfAdaptationOptions() {
-        return selfAdaptationManager.getSelfAdaptationOptions();
+        return selfAdaptationOptsManager.getSelfAdaptationOptions();
     }
 
 
@@ -484,8 +482,10 @@ public class GenericVmManager implements VmManager {
      */
     @Override
     public ListVmEstimates getVmEstimates(List<VmToBeEstimated> vmsToBeEstimated) {
-        return estimatesGenerator.getVmEstimates(scheduler.chooseBestDeploymentPlan(
-                vmsToBeEstimatedToVms(vmsToBeEstimated), hosts), getAllVms(), energyModeller, pricingModeller);
+        return estimatesGenerator.getVmEstimates(
+                new Scheduler(db.getCurrentSchedulingAlg(), getAllVms(), energyModeller, pricingModeller)
+                        .chooseBestDeploymentPlan(vmsToBeEstimatedToVms(vmsToBeEstimated), hosts), 
+                getAllVms(), energyModeller, pricingModeller);
     }
 
 

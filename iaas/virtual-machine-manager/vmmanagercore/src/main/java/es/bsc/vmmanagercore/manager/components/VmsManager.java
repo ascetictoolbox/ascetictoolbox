@@ -21,6 +21,7 @@ package es.bsc.vmmanagercore.manager.components;
 import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddleware;
 import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
 import es.bsc.vmmanagercore.db.VmManagerDb;
+import es.bsc.vmmanagercore.energymodeller.EnergyModeller;
 import es.bsc.vmmanagercore.logging.VMMLogger;
 import es.bsc.vmmanagercore.model.scheduling.DeploymentPlan;
 import es.bsc.vmmanagercore.model.scheduling.RecommendedPlan;
@@ -30,6 +31,7 @@ import es.bsc.vmmanagercore.model.vms.Vm;
 import es.bsc.vmmanagercore.model.vms.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.hosts.Host;
 import es.bsc.vmmanagercore.monitoring.zabbix.ZabbixConnector;
+import es.bsc.vmmanagercore.pricingmodeller.PricingModeller;
 import es.bsc.vmmanagercore.scheduler.Scheduler;
 import es.bsc.vmmanagercore.selfadaptation.AfterVmDeleteSelfAdaptationRunnable;
 import es.bsc.vmmanagercore.selfadaptation.AfterVmsDeploymentSelfAdaptationRunnable;
@@ -66,12 +68,13 @@ public class VmsManager {
     private static final String ASCETIC_ZABBIX_SCRIPT_PATH = "/DFS/ascetic/vm-scripts/zabbix_agents.sh";
     
     public VmsManager(HostsManager hostsManager, CloudMiddleware cloudMiddleware, VmManagerDb db, 
-                      SelfAdaptationManager selfAdaptationManager, Scheduler scheduler) {
+                      SelfAdaptationManager selfAdaptationManager, 
+                      EnergyModeller energyModeller, PricingModeller pricingModeller) {
         this.hostsManager = hostsManager;
         this.cloudMiddleware = cloudMiddleware;
         this.db = db;
         this.selfAdaptationManager = selfAdaptationManager;
-        this.scheduler = scheduler;
+        scheduler = new Scheduler(db.getCurrentSchedulingAlg(), getAllVms(), energyModeller, pricingModeller);
     }
     
     /**
