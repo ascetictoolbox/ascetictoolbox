@@ -18,11 +18,6 @@
 
 package es.bsc.vmmanagercore.manager;
 
-import es.bsc.clopla.domain.ClusterState;
-import es.bsc.clopla.domain.LocalSearchHeuristic;
-import es.bsc.clopla.domain.LocalSearchHeuristicOption;
-import es.bsc.clopla.lib.Clopla;
-import es.bsc.clopla.lib.IClopla;
 import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddleware;
 import es.bsc.vmmanagercore.cloudmiddleware.fake.FakeCloudMiddleware;
 import es.bsc.vmmanagercore.cloudmiddleware.openstack.OpenStackCredentials;
@@ -53,7 +48,6 @@ import es.bsc.vmmanagercore.scheduler.Scheduler;
 import es.bsc.vmmanagercore.selfadaptation.PeriodicSelfAdaptationRunnable;
 import es.bsc.vmmanagercore.selfadaptation.SelfAdaptationManager;
 import es.bsc.vmmanagercore.selfadaptation.options.SelfAdaptationOptions;
-import es.bsc.vmmanagercore.vmplacement.CloplaConversor;
 
 import java.util.*;
 
@@ -66,23 +60,19 @@ import java.util.*;
  */
 public class GenericVmManager implements VmManager {
 
-    // Note: This class has become too large.
-    // It would be a good idea to try to split it.
-
     // VMM components. The VMM delegates all the work to this subcomponents
     private final ImageManager imageManager;
     private final SchedulingAlgorithmsManager schedulingAlgorithmsManager;
     private final HostsManager hostsManager;
     private final VmsManager vmsManager;
     private final SelfAdaptationOptsManager selfAdaptationOptsManager;
+    private final VmPlacementManager vmPlacementManager;
     
     private CloudMiddleware cloudMiddleware;
     private EstimatesGenerator estimatesGenerator = new EstimatesGenerator();
     private SelfAdaptationManager selfAdaptationManager;
     private List<Host> hosts = new ArrayList<>();
     private VmManagerDb db;
-
-    private IClopla clopla = new Clopla(); // Library used for the VM Placement
 
     public static EnergyModeller energyModeller;
     public static PricingModeller pricingModeller;
@@ -113,6 +103,8 @@ public class GenericVmManager implements VmManager {
         vmsManager = new VmsManager(hostsManager, cloudMiddleware, db, selfAdaptationManager, 
                 energyModeller, pricingModeller);
         selfAdaptationOptsManager = new SelfAdaptationOptsManager(selfAdaptationManager);
+        vmPlacementManager = new VmPlacementManager(vmsManager, hostsManager, schedulingAlgorithmsManager,
+                energyModeller, pricingModeller);
         
         // Start periodic self-adaptation thread if it is not already running.
         // This check would not be needed if only one instance of this class was created.
@@ -328,11 +320,7 @@ public class GenericVmManager implements VmManager {
      */
     @Override
     public List<ConstructionHeuristic> getConstructionHeuristics() {
-        List<ConstructionHeuristic> result = new ArrayList<>();
-        for (es.bsc.clopla.domain.ConstructionHeuristic heuristic: clopla.getConstructionHeuristics()) {
-            result.add(new ConstructionHeuristic(heuristic.name()));
-        }
-        return result;
+        return vmPlacementManager.getConstructionHeuristics();
     }
 
     /**
@@ -342,20 +330,7 @@ public class GenericVmManager implements VmManager {
      */
     @Override
     public List<LocalSearchAlgorithmOptionsUnset> getLocalSearchAlgorithms() {
-        // This function could be simplified changing the LocalSearchAlgorithmOptionsUnset
-        // It would be a good idea to use the same approach as in the vm placement library
-        List<LocalSearchAlgorithmOptionsUnset> result = new ArrayList<>();
-        for (Map.Entry<LocalSearchHeuristic, List<LocalSearchHeuristicOption>> entry : 
-                clopla.getLocalSearchAlgorithms().entrySet()) {
-            String heuristicName = entry.getKey().toString();
-            List<String> heuristicOptions = new ArrayList<>();
-            for (LocalSearchHeuristicOption option: entry.getValue()) {
-                heuristicOptions.add(option.toString());
-            }
-            result.add(new LocalSearchAlgorithmOptionsUnset(heuristicName, heuristicOptions));
-            
-        }
-        return result;
+        return vmPlacementManager.getLocalSearchAlgorithms();
     }
 
     /**
@@ -370,19 +345,7 @@ public class GenericVmManager implements VmManager {
     public RecommendedPlan getRecommendedPlan(RecommendedPlanRequest recommendedPlanRequest,
                                               boolean assignVmsToCurrentHosts,
                                               List<Vm> vmsToDeploy) {
-        ClusterState clusterStateRecommendedPlan = clopla.getBestSolution(
-                CloplaConversor.getCloplaHosts(getHosts()),
-                CloplaConversor.getCloplaVms(
-                        getAllVms(),
-                        vmsToDeploy,
-                        CloplaConversor.getCloplaHosts(getHosts()),
-                        assignVmsToCurrentHosts),
-                CloplaConversor.getCloplaConfig(
-                        getCurrentSchedulingAlgorithm(),
-                        recommendedPlanRequest,
-                        energyModeller,
-                        pricingModeller));
-        return CloplaConversor.getRecommendedPlan(clusterStateRecommendedPlan);
+        return vmPlacementManager.getRecommendedPlan(recommendedPlanRequest, assignVmsToCurrentHosts, vmsToDeploy);
     }
 
     /**
@@ -393,20 +356,7 @@ public class GenericVmManager implements VmManager {
      */
     @Override
     public void executeDeploymentPlan(VmPlacement[] deploymentPlan) {
-        for (VmPlacement vmPlacement: deploymentPlan) {
-
-            // We need to check that the VM is still deployed.
-            // It might be the case that a VM was deleted in the time interval between a recommended plan is
-            // calculated and the execution order for that deployment plan is received
-            if (getVm(vmPlacement.getVmId()) != null) {
-                boolean vmAlreadyDeployedInHost = vmPlacement.getHostname()
-                        .equals(getVm(vmPlacement.getVmId()).getHostName());
-                if (!vmAlreadyDeployedInHost) {
-                    migrateVm(vmPlacement.getVmId(), vmPlacement.getHostname());
-                }
-            }
-
-        }
+        vmPlacementManager.executeDeploymentPlan(deploymentPlan);
     }
 
 
