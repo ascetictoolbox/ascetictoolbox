@@ -401,6 +401,7 @@ iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/en
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/logging/VMMLogger.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/manager/GenericVmManager.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/manager/VmManager.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/manager/components/EstimatesManager.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/manager/components/HostsManager.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/manager/components/ImageManager.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/manager/components/SchedulingAlgorithmsManager.java -text

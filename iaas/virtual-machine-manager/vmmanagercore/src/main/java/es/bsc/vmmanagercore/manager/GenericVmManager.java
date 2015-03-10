@@ -43,8 +43,6 @@ import es.bsc.vmmanagercore.monitoring.hosts.HostType;
 import es.bsc.vmmanagercore.pricingmodeller.PricingModeller;
 import es.bsc.vmmanagercore.pricingmodeller.ascetic.AsceticPricingModellerAdapter;
 import es.bsc.vmmanagercore.pricingmodeller.dummy.DummyPricingModeller;
-import es.bsc.vmmanagercore.scheduler.EstimatesGenerator;
-import es.bsc.vmmanagercore.scheduler.Scheduler;
 import es.bsc.vmmanagercore.selfadaptation.PeriodicSelfAdaptationRunnable;
 import es.bsc.vmmanagercore.selfadaptation.SelfAdaptationManager;
 import es.bsc.vmmanagercore.selfadaptation.options.SelfAdaptationOptions;
@@ -67,12 +65,11 @@ public class GenericVmManager implements VmManager {
     private final VmsManager vmsManager;
     private final SelfAdaptationOptsManager selfAdaptationOptsManager;
     private final VmPlacementManager vmPlacementManager;
+    private final EstimatesManager estimatesManager;
     
     private CloudMiddleware cloudMiddleware;
-    private EstimatesGenerator estimatesGenerator = new EstimatesGenerator();
     private SelfAdaptationManager selfAdaptationManager;
     private List<Host> hosts = new ArrayList<>();
-    private VmManagerDb db;
 
     public static EnergyModeller energyModeller;
     public static PricingModeller pricingModeller;
@@ -90,7 +87,7 @@ public class GenericVmManager implements VmManager {
      * @param dbName the name of the DB
      */
     public GenericVmManager(String dbName) {
-        db = VmManagerDbFactory.getDb(dbName);
+        VmManagerDb db = VmManagerDbFactory.getDb(dbName);
         selectMiddleware(conf.middleware);
         initializeHosts(conf.monitoring, conf.hosts);
         selectModellers(conf.project);
@@ -105,6 +102,7 @@ public class GenericVmManager implements VmManager {
         selfAdaptationOptsManager = new SelfAdaptationOptsManager(selfAdaptationManager);
         vmPlacementManager = new VmPlacementManager(vmsManager, hostsManager, schedulingAlgorithmsManager,
                 energyModeller, pricingModeller);
+        estimatesManager = new EstimatesManager(vmsManager, hostsManager, db, energyModeller, pricingModeller);
         
         // Start periodic self-adaptation thread if it is not already running.
         // This check would not be needed if only one instance of this class was created.
@@ -432,10 +430,7 @@ public class GenericVmManager implements VmManager {
      */
     @Override
     public ListVmEstimates getVmEstimates(List<VmToBeEstimated> vmsToBeEstimated) {
-        return estimatesGenerator.getVmEstimates(
-                new Scheduler(db.getCurrentSchedulingAlg(), getAllVms(), energyModeller, pricingModeller)
-                        .chooseBestDeploymentPlan(vmsToBeEstimatedToVms(vmsToBeEstimated), hosts), 
-                getAllVms(), energyModeller, pricingModeller);
+        return estimatesManager.getVmEstimates(vmsToBeEstimated);
     }
 
 
@@ -525,21 +520,6 @@ public class GenericVmManager implements VmManager {
                 pricingModeller = new DummyPricingModeller();
                 break;
         }
-    }
-
-    /**
-     * Transforms a list of VMs to be estimated to a list of VMs.
-     *
-     * @param vmsToBeEstimated the list of VMs to be estimated
-     * @return the list of VMs
-     */
-    // Note: this function would not be needed if VmToBeEstimated inherited from Vm
-    private List<Vm> vmsToBeEstimatedToVms(List<VmToBeEstimated> vmsToBeEstimated) {
-        List<Vm> result = new ArrayList<>();
-        for (VmToBeEstimated vmToBeEstimated: vmsToBeEstimated) {
-            result.add(vmToBeEstimated.toVm());
-        }
-        return result;
     }
 
     private boolean usingZabbix() {
