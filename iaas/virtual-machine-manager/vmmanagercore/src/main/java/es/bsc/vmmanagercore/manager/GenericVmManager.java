@@ -35,6 +35,7 @@ import es.bsc.vmmanagercore.energymodeller.ascetic.AsceticEnergyModellerAdapter;
 import es.bsc.vmmanagercore.energymodeller.dummy.DummyEnergyModeller;
 import es.bsc.vmmanagercore.logging.VMMLogger;
 import es.bsc.vmmanagercore.manager.components.ImageManager;
+import es.bsc.vmmanagercore.manager.components.SchedulingAlgorithmsManager;
 import es.bsc.vmmanagercore.model.estimations.ListVmEstimates;
 import es.bsc.vmmanagercore.model.estimations.VmToBeEstimated;
 import es.bsc.vmmanagercore.model.images.ImageToUpload;
@@ -86,8 +87,9 @@ public class GenericVmManager implements VmManager {
     // Note: This class has become too large.
     // It would be a good idea to try to split it.
 
-    // VMM components
+    // VMM components. The VMM delegates all the work to this subcomponents
     private final ImageManager imageManager;
+    private final SchedulingAlgorithmsManager schedulingAlgorithmsManager;
     
     private CloudMiddleware cloudMiddleware;
     private VmManagerDb db;
@@ -127,6 +129,7 @@ public class GenericVmManager implements VmManager {
 
         // Initialize all the VMM components
         imageManager = new ImageManager(cloudMiddleware);
+        schedulingAlgorithmsManager = new SchedulingAlgorithmsManager(db);
         
         // Start periodic self-adaptation thread if it is not already running.
         // This check would not be needed if only one instance of this class was created.
@@ -401,9 +404,7 @@ public class GenericVmManager implements VmManager {
      */
     @Override
     public List<SchedulingAlgorithm> getAvailableSchedulingAlgorithms() {
-        List<SchedulingAlgorithm> result = new ArrayList<>();
-        result.addAll(Arrays.asList(SchedulingAlgorithm.values()));
-        return result;
+        return schedulingAlgorithmsManager.getAvailableSchedulingAlgorithms();
     }
 
     /**
@@ -413,7 +414,7 @@ public class GenericVmManager implements VmManager {
      */
     @Override
     public SchedulingAlgorithm getCurrentSchedulingAlgorithm() {
-        return db.getCurrentSchedulingAlg();
+        return schedulingAlgorithmsManager.getCurrentSchedulingAlgorithm();
     }
 
     /**
@@ -423,7 +424,7 @@ public class GenericVmManager implements VmManager {
      */
     @Override
     public void setSchedulingAlgorithm(SchedulingAlgorithm schedulingAlg) {
-        db.setCurrentSchedulingAlg(schedulingAlg);
+        schedulingAlgorithmsManager.setSchedulingAlgorithm(schedulingAlg);
     }
 
 
