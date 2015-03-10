@@ -33,9 +33,10 @@ import es.bsc.vmmanagercore.db.VmManagerDbFactory;
 import es.bsc.vmmanagercore.energymodeller.EnergyModeller;
 import es.bsc.vmmanagercore.energymodeller.ascetic.AsceticEnergyModellerAdapter;
 import es.bsc.vmmanagercore.energymodeller.dummy.DummyEnergyModeller;
-import es.bsc.vmmanagercore.logging.VMMLogger;
+import es.bsc.vmmanagercore.manager.components.HostsManager;
 import es.bsc.vmmanagercore.manager.components.ImageManager;
 import es.bsc.vmmanagercore.manager.components.SchedulingAlgorithmsManager;
+import es.bsc.vmmanagercore.manager.components.VmsManager;
 import es.bsc.vmmanagercore.model.estimations.ListVmEstimates;
 import es.bsc.vmmanagercore.model.estimations.VmToBeEstimated;
 import es.bsc.vmmanagercore.model.images.ImageToUpload;
@@ -47,33 +48,17 @@ import es.bsc.vmmanagercore.monitoring.hosts.Host;
 import es.bsc.vmmanagercore.monitoring.hosts.HostFactory;
 import es.bsc.vmmanagercore.monitoring.hosts.HostFake;
 import es.bsc.vmmanagercore.monitoring.hosts.HostType;
-import es.bsc.vmmanagercore.monitoring.zabbix.ZabbixConnector;
 import es.bsc.vmmanagercore.pricingmodeller.PricingModeller;
 import es.bsc.vmmanagercore.pricingmodeller.ascetic.AsceticPricingModellerAdapter;
 import es.bsc.vmmanagercore.pricingmodeller.dummy.DummyPricingModeller;
 import es.bsc.vmmanagercore.scheduler.EstimatesGenerator;
 import es.bsc.vmmanagercore.scheduler.Scheduler;
-import es.bsc.vmmanagercore.selfadaptation.AfterVmDeleteSelfAdaptationRunnable;
-import es.bsc.vmmanagercore.selfadaptation.AfterVmsDeploymentSelfAdaptationRunnable;
 import es.bsc.vmmanagercore.selfadaptation.PeriodicSelfAdaptationRunnable;
 import es.bsc.vmmanagercore.selfadaptation.SelfAdaptationManager;
 import es.bsc.vmmanagercore.selfadaptation.options.SelfAdaptationOptions;
-import es.bsc.vmmanagercore.utils.FileSystem;
-import es.bsc.vmmanagercore.utils.TimeUtils;
 import es.bsc.vmmanagercore.vmplacement.CloplaConversor;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.*;
-
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 /**
  * Generic VM Manager.
@@ -90,14 +75,14 @@ public class GenericVmManager implements VmManager {
     // VMM components. The VMM delegates all the work to this subcomponents
     private final ImageManager imageManager;
     private final SchedulingAlgorithmsManager schedulingAlgorithmsManager;
+    private final HostsManager hostsManager;
+    private final VmsManager vmsManager;
     
     private CloudMiddleware cloudMiddleware;
-    private VmManagerDb db;
     private Scheduler scheduler;
     private EstimatesGenerator estimatesGenerator = new EstimatesGenerator();
     private SelfAdaptationManager selfAdaptationManager;
     private List<Host> hosts = new ArrayList<>();
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
     private IClopla clopla = new Clopla(); // Library used for the VM Placement
 
@@ -105,8 +90,6 @@ public class GenericVmManager implements VmManager {
     public static PricingModeller pricingModeller;
 
     // Specific for the Ascetic project
-    private static final String ASCETIC_SCRIPTS_PATH = "/DFS/ascetic/vm-scripts/";
-    private static final String ASCETIC_ZABBIX_SCRIPT_PATH = "/DFS/ascetic/vm-scripts/zabbix_agents.sh";
     private static final String[] ASCETIC_DEFAULT_SEC_GROUPS = {"vmm_allow_all", "default"};
 
     private static boolean periodicSelfAdaptationThreadRunning = false;
@@ -119,7 +102,7 @@ public class GenericVmManager implements VmManager {
      * @param dbName the name of the DB
      */
     public GenericVmManager(String dbName) {
-        db = VmManagerDbFactory.getDb(dbName);
+        VmManagerDb db = VmManagerDbFactory.getDb(dbName);
         selectMiddleware(conf.middleware);
         initializeHosts(conf.monitoring, conf.hosts);
         selectModellers(conf.project);
@@ -130,6 +113,8 @@ public class GenericVmManager implements VmManager {
         // Initialize all the VMM components
         imageManager = new ImageManager(cloudMiddleware);
         schedulingAlgorithmsManager = new SchedulingAlgorithmsManager(db);
+        hostsManager = new HostsManager(hosts);
+        vmsManager = new VmsManager(hostsManager, cloudMiddleware, db, selfAdaptationManager, scheduler);
         
         // Start periodic self-adaptation thread if it is not already running.
         // This check would not be needed if only one instance of this class was created.
@@ -152,11 +137,7 @@ public class GenericVmManager implements VmManager {
      */
     @Override
     public List<VmDeployed> getAllVms() {
-        List<VmDeployed> result = new ArrayList<>();
-        for (String vmId: cloudMiddleware.getAllVMsIds()) {
-            result.add(getVm(vmId));
-        }
-        return result;
+        return vmsManager.getAllVms();
     }
 
     /**
@@ -167,14 +148,7 @@ public class GenericVmManager implements VmManager {
      */
     @Override
     public VmDeployed getVm(String vmId) {
-        // The cloud middleware should not have knowledge of the app a specific VM is part of.
-        // Typical middlewares such as OpenStack do not store that information.
-        // Therefore, we need to set the app ID here
-        VmDeployed vm = cloudMiddleware.getVM(vmId);
-        if (vm != null) {
-            vm.setApplicationId(db.getAppIdOfVm(vm.getId()));
-        }
-        return vm;
+        return vmsManager.getVm(vmId);
     }
 
     /**
@@ -185,11 +159,7 @@ public class GenericVmManager implements VmManager {
      */
     @Override
     public List<VmDeployed> getVmsOfApp(String appId) {
-        List<VmDeployed> result = new ArrayList<>();
-        for (String vmId: db.getVmsOfApp(appId)) {
-            result.add(getVm(vmId));
-        }
-        return result;
+        return vmsManager.getVmsOfApp(appId);
     }
 
     /**
@@ -199,9 +169,7 @@ public class GenericVmManager implements VmManager {
      */
     @Override
     public void deleteVmsOfApp(String appId) {
-        for (VmDeployed vmDeployed: getVmsOfApp(appId)) {
-            deleteVm(vmDeployed.getId());
-        }
+        vmsManager.deleteVmsOfApp(appId);
     }
 
     /**
@@ -211,16 +179,7 @@ public class GenericVmManager implements VmManager {
      */
     @Override
     public void deleteVm(String vmId) {
-        String hostname = getVm(vmId).getHostName(); // We need to get the hostname before we delete the VM
-        cloudMiddleware.destroy(vmId);
-        db.deleteVm(vmId);
-
-        // If the monitoring system is Zabbix, then we need to delete the VM from Zabbix
-        if (usingZabbix()) {
-            ZabbixConnector.deleteVmFromZabbix(vmId, hostname);
-        }
-
-        performAfterVmDeleteSelfAdaptation();
+        vmsManager.deleteVm(vmId);
     }
 
     /**
@@ -231,53 +190,7 @@ public class GenericVmManager implements VmManager {
      */
     @Override
     public List<String> deployVms(List<Vm> vms) {
-        // Get current time to know how much each VM has to wait until it is deployed.
-        Calendar calendarDeployRequestReceived = Calendar.getInstance();
-        
-        // HashMap (VmDescription,ID after deployment). Used to return the IDs in the same order that they are received
-        Map<Vm, String> ids = new HashMap<>();
-
-        DeploymentPlan deploymentPlan = chooseBestDeploymentPlan(
-                vms, VmManagerConfiguration.getInstance().deploymentEngine);
-
-        // Loop through the VM assignments to hosts defined in the best deployment plan
-        for (VmAssignmentToHost vmAssignmentToHost: deploymentPlan.getVmsAssignationsToHosts()) {
-            Vm vmToDeploy = vmAssignmentToHost.getVm();
-            Host hostForDeployment = vmAssignmentToHost.getHost();
-
-            // Note: this is only valid for the Ascetic project
-            // If the monitoring system is Zabbix, we need to make sure that the script that sets up the Zabbix
-            // agents is executed. Also, if an ISO is received, we need to make sure that we execute a script
-            // that mounts it
-            String vmScriptName = setAsceticInitScript(vmToDeploy);
-
-            String vmId = deployVm(vmToDeploy, hostForDeployment);
-            db.insertVm(vmId, vmToDeploy.getApplicationId());
-            ids.put(vmToDeploy, vmId);
-
-            VMMLogger.logVmDeploymentWaitingTime(vmId, 
-                    TimeUtils.getDifferenceInSeconds(calendarDeployRequestReceived, Calendar.getInstance()));
-            
-            // If the monitoring system is Zabbix, then we need to call the Zabbix wrapper to initialize
-            // the Zabbix agents. To register the VM we agreed to use the name <vmId>_<hostWhereTheVmIsDeployed>
-            if (usingZabbix()) {
-                ZabbixConnector.registerVmInZabbix(vmId, getVm(vmId).getHostName(), getVm(vmId).getIpAddress());
-            }
-
-            // Delete the script if one was created
-            if (vmScriptName != null) {
-                FileSystem.deleteFile(ASCETIC_SCRIPTS_PATH + vmScriptName);
-            }
-        }
-
-        performAfterVmsDeploymentSelfAdaptation();
-
-        // Return the IDs of the VMs deployed in the same order that they were received
-        List<String> idsDeployedVms = new ArrayList<>();
-        for (Vm vm: vms) {
-            idsDeployedVms.add(ids.get(vm));
-        }
-        return idsDeployedVms;
+        return vmsManager.deployVms(vms);
     }
 
     /**
@@ -288,28 +201,7 @@ public class GenericVmManager implements VmManager {
      */
     @Override
     public void performActionOnVm(String vmId, String action) {
-        switch (action) {
-            case "rebootHard":
-                cloudMiddleware.rebootHardVm(vmId);
-                break;
-            case "rebootSoft":
-                cloudMiddleware.rebootSoftVm(vmId);
-                break;
-            case "start":
-                cloudMiddleware.startVm(vmId);
-                break;
-            case "stop":
-                cloudMiddleware.stopVm(vmId);
-                break;
-            case "suspend":
-                cloudMiddleware.suspendVm(vmId);
-                break;
-            case "resume":
-                cloudMiddleware.resumeVm(vmId);
-                break;
-            default:
-                throw new IllegalArgumentException("The action selected is not supported.");
-        }
+        vmsManager.performActionOnVm(vmId, action);
     }
 
     /**
@@ -320,8 +212,7 @@ public class GenericVmManager implements VmManager {
      */
     @Override
     public void migrateVm(String vmId, String destinationHostName) {
-        VMMLogger.logMigration(vmId, destinationHostName);
-        cloudMiddleware.migrate(vmId, destinationHostName);
+        vmsManager.migrateVm(vmId, destinationHostName);
     }
 
     /**
@@ -332,7 +223,7 @@ public class GenericVmManager implements VmManager {
      */
     @Override
     public boolean existsVm(String vmId) {
-        return cloudMiddleware.existsVm(vmId);
+        return vmsManager.existsVm(vmId);
     }
 
 
@@ -557,7 +448,7 @@ public class GenericVmManager implements VmManager {
      */
     @Override
     public List<Host> getHosts() {
-        return Collections.unmodifiableList(hosts);
+        return hostsManager.getHosts();
     }
 
     /**
@@ -568,12 +459,7 @@ public class GenericVmManager implements VmManager {
      */
     @Override
     public Host getHost(String hostname) {
-        for (Host host: hosts) {
-            if (hostname.equals(host.getHostname())) {
-                return host;
-            }
-        }
-        return null;
+        return hostsManager.getHost(hostname);
     }
 
     /**
@@ -582,11 +468,7 @@ public class GenericVmManager implements VmManager {
      */
     @Override
     public void pressHostPowerButton(String hostname) {
-        for (Host host: hosts) {
-            if (hostname.equals(host.getHostname())) {
-                host.pressPowerButton();
-            }
-        }
+        hostsManager.pressHostPowerButton(hostname);
     }
 
     
@@ -610,21 +492,6 @@ public class GenericVmManager implements VmManager {
     //================================================================================
     // Private Methods
     //================================================================================
-    
-    private String deployVm(Vm vm, Host host) {
-        // If the host is not on, turn it on and wait
-        if (!host.isOn()) {
-            pressHostPowerButton(host.getHostname());
-            while (!host.isOn()) { // Is there a cleaner way to do this?
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return cloudMiddleware.deploy(vm, host.getHostname());
-    }
     
     /**
      * Instantiates the hosts according to the monitoring software selected.
@@ -727,112 +594,6 @@ public class GenericVmManager implements VmManager {
 
     private boolean usingZabbix() {
         return VmManagerConfiguration.getInstance().monitoring.equals(VmManagerConfiguration.Monitoring.ZABBIX);
-    }
-
-    private boolean isoReceivedInInitScript(Vm vm) {
-        return vm.getInitScript() != null && !vm.getInitScript().equals("")
-                && (vm.getInitScript().contains(".iso_") || vm.getInitScript().endsWith(".iso"));
-    }
-
-    private String setAsceticInitScript(Vm vmToDeploy) {
-        String vmScriptName = null;
-        if (usingZabbix()) { // It would be more correct to check whether the VMM is running for the Ascetic project.
-            if (isoReceivedInInitScript(vmToDeploy)) {
-                try {
-                    // Copy the Zabbix agents script
-                    vmScriptName = "vm_" + vmToDeploy.getName() +
-                            "_" + dateFormat.format(Calendar.getInstance().getTime()) + ".sh";
-                    Files.copy(Paths.get(ASCETIC_ZABBIX_SCRIPT_PATH),
-                            Paths.get(ASCETIC_SCRIPTS_PATH + vmScriptName), REPLACE_EXISTING);
-
-                    // Append the instruction to mount the ISO
-                    try (PrintWriter out = new PrintWriter(new BufferedWriter(
-                            new FileWriter(ASCETIC_SCRIPTS_PATH + vmScriptName, true)))) {
-                        out.println("/usr/local/sbin/set_iso_path " + vmToDeploy.getInitScript());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                    // Assign the new script to the VM
-                    vmToDeploy.setInitScript(ASCETIC_SCRIPTS_PATH + vmScriptName);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            else {
-                Path zabbixAgentsScriptPath = FileSystems.getDefault().getPath(ASCETIC_ZABBIX_SCRIPT_PATH);
-                if (Files.exists(zabbixAgentsScriptPath)) {
-                    vmToDeploy.setInitScript(ASCETIC_ZABBIX_SCRIPT_PATH);
-                }
-                else { // This is for when I perform tests locally and do not have access to the script (and
-                    // do not need it)
-                    vmToDeploy.setInitScript(null);
-                }
-            }
-        }
-        return vmScriptName;
-    }
-
-
-    private DeploymentPlan chooseBestDeploymentPlan(List<Vm> vms, String deploymentEngine) {
-        switch (deploymentEngine) {
-            case "legacy":
-                return scheduler.chooseBestDeploymentPlan(vms, hosts);
-            case "optaPlanner":
-                if (repeatedNameInVmList(vms)) {
-                    throw new IllegalArgumentException("There was an error while choosing a deployment plan.");
-                }
-
-                RecommendedPlan recommendedPlan = selfAdaptationManager.getRecommendedPlanForDeployment(vms);
-
-                // Construct deployment plan from recommended plan with only the VMs that we want to deploy,
-                // we do not need here the ones that are already deployed even though they appear in the plan
-                List<VmAssignmentToHost> vmAssignmentToHosts = new ArrayList<>();
-                for (Vm vm: vms) {
-                    VmPlacement vmPlacement = findVmPlacementByVmId(recommendedPlan.getVMPlacements(), vm.getName());
-                    Host host = getHost(vmPlacement.getHostname());
-                    vmAssignmentToHosts.add(new VmAssignmentToHost(vm, host));
-                }
-                return new DeploymentPlan(vmAssignmentToHosts);
-            default:
-                throw new IllegalArgumentException("The deployment engine selected is not supported.");
-        }
-    }
-
-    private VmPlacement findVmPlacementByVmId(VmPlacement[] vmPlacements, String vmId) {
-        for (VmPlacement vmPlacement: vmPlacements) {
-            if (vmId.equals(vmPlacement.getVmId())) {
-                return vmPlacement;
-            }
-        }
-        return null;
-    }
-
-    private boolean repeatedNameInVmList(List<Vm> vms) {
-        for (int i = 0; i < vms.size(); ++i) {
-            for (int j = i + 1; j < vms.size(); ++j) {
-                if (vms.get(i).getName().equals(vms.get(j).getName())) {
-                    return false;
-                }
-            }
-        }
-        return false;
-    }
-
-    private void performAfterVmDeleteSelfAdaptation() {
-        // Execute self adaptation in a separate thread, because we need to give an answer without
-        // waiting for the self-adaptation to finish
-        Thread thread = new Thread(
-                new AfterVmDeleteSelfAdaptationRunnable(selfAdaptationManager),
-                "afterVmDeleteSelfAdaptationThread");
-        thread.start();
-    }
-
-    private void performAfterVmsDeploymentSelfAdaptation() {
-        Thread thread = new Thread(
-                new AfterVmsDeploymentSelfAdaptationRunnable(selfAdaptationManager),
-                "afterVmsDeploymentSelfAdaptationThread");
-        thread.start();
     }
 
     private void startPeriodicSelfAdaptationThread() {
