@@ -34,6 +34,7 @@ import es.bsc.vmmanagercore.energymodeller.EnergyModeller;
 import es.bsc.vmmanagercore.energymodeller.ascetic.AsceticEnergyModellerAdapter;
 import es.bsc.vmmanagercore.energymodeller.dummy.DummyEnergyModeller;
 import es.bsc.vmmanagercore.logging.VMMLogger;
+import es.bsc.vmmanagercore.manager.components.ImageManager;
 import es.bsc.vmmanagercore.model.estimations.ListVmEstimates;
 import es.bsc.vmmanagercore.model.estimations.VmToBeEstimated;
 import es.bsc.vmmanagercore.model.images.ImageToUpload;
@@ -85,6 +86,9 @@ public class GenericVmManager implements VmManager {
     // Note: This class has become too large.
     // It would be a good idea to try to split it.
 
+    // VMM components
+    private final ImageManager imageManager;
+    
     private CloudMiddleware cloudMiddleware;
     private VmManagerDb db;
     private Scheduler scheduler;
@@ -121,6 +125,9 @@ public class GenericVmManager implements VmManager {
         scheduler = new Scheduler(db.getCurrentSchedulingAlg(), vmsDeployed, energyModeller, pricingModeller);
         selfAdaptationManager = new SelfAdaptationManager(this, dbName);
 
+        // Initialize all the VMM components
+        imageManager = new ImageManager(cloudMiddleware);
+        
         // Start periodic self-adaptation thread if it is not already running.
         // This check would not be needed if only one instance of this class was created.
         if (!periodicSelfAdaptationThreadRunning) {
@@ -337,7 +344,7 @@ public class GenericVmManager implements VmManager {
      */
     @Override
     public List<ImageUploaded> getVmImages() {
-        return cloudMiddleware.getVmImages();
+        return imageManager.getVmImages();
     }
 
     /**
@@ -348,7 +355,7 @@ public class GenericVmManager implements VmManager {
      */
     @Override
     public String createVmImage(ImageToUpload imageToUpload) {
-        return cloudMiddleware.createVmImage(imageToUpload);
+        return imageManager.createVmImage(imageToUpload);
     }
 
     /**
@@ -359,7 +366,7 @@ public class GenericVmManager implements VmManager {
      */
     @Override
     public ImageUploaded getVmImage(String imageId) {
-        return cloudMiddleware.getVmImage(imageId);
+        return imageManager.getVmImage(imageId);
     }
 
     /**
@@ -369,7 +376,7 @@ public class GenericVmManager implements VmManager {
      */
     @Override
     public void deleteVmImage(String id) {
-        cloudMiddleware.deleteVmImage(id);
+        imageManager.deleteVmImage(id);
     }
 
     /**
@@ -379,11 +386,7 @@ public class GenericVmManager implements VmManager {
      */
     @Override
     public List<String> getVmImagesIds() {
-        List<String> vmImagesIds = new ArrayList<>();
-        for (ImageUploaded imageDesc: cloudMiddleware.getVmImages()) {
-            vmImagesIds.add(imageDesc.getId());
-        }
-        return vmImagesIds;
+        return imageManager.getVmImagesIds();
     }
 
 
