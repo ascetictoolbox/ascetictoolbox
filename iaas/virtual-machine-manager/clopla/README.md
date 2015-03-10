@@ -9,10 +9,13 @@ Clopla supports:
 * Several placement policies: consolidate the VMs, distribute the VMs, place the VMs randomly, and group the VMs
 by service or application.
 
+Clopla uses [OptaPlanner](http://www.optaplanner.org/).
+
 ## Installation
 
 Add this to your pom.xml:
-...
+
+TODO
 
 ## Usage
 
@@ -20,7 +23,7 @@ Clopla is very easy to use. You just need to define a set of VMs, a set of hosts
 placement engine: the scheduling policy, the maximum running time, a construction heuristic, a local search heuristic, 
 and whether some VMs are required to be deployed in specific hosts.
 
-For example, suppose that we want the we want to find an optimized placement using the following options:
+For example, suppose that we want to find an optimized placement using the following options:
 * Scheduling policy: consolidation.
 * Timeout: 30 seconds.
 * Construction heuristic: first fit decreasing.
@@ -30,14 +33,14 @@ For example, suppose that we want the we want to find an optimized placement usi
 The java code for finding a placement using those options is:
 ```java
 IClopla clopla = new Clopla();
-    VmPlacementConfig vmPlacementConfig = new VmPlacementConfig.Builder(
-        Policy.CONSOLIDATION, // Scheduling policy
-        30, // Timeout
-        ConstructionHeuristic.FIRST_FIT_DECREASING, // Construction heuristic
-        new HillClimbing(), // Local Search heuristic
-        false) // Deploy VMs in specific hosts?
-        .build();
-    System.out.println(clopla.getBestSolution(hosts, vms, vmPlacementConfig)); // get placement and print it
+VmPlacementConfig vmPlacementConfig = new VmPlacementConfig.Builder(
+    Policy.CONSOLIDATION, // Scheduling policy
+    30, // Timeout
+    ConstructionHeuristic.FIRST_FIT_DECREASING, // Construction heuristic
+    new HillClimbing(), // Local Search heuristic
+    false) // Deploy VMs in specific hosts?
+    .build();
+System.out.println(clopla.getBestSolution(hosts, vms, vmPlacementConfig)); // get placement and print it
 ```
 The only thing missing from the example is knowing how to instantiate a list of VMs and a list of hosts:
  ```java
