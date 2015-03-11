@@ -69,7 +69,7 @@ public class StandaloneCalibrationTool implements CompletedListener {
         } else {
             System.out.println("Please provide the name of the host!");
             System.out.println("Usage: host-name [halt-on-calibrated]");
-            System.out.println("The halt-on-calibrated flag will prevent calibration"
+            System.out.println("The halt-on-calibrated flag will prevent calibration "
                     + "in cases where the data has already been gathered.");
         }
     }

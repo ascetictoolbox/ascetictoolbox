@@ -108,7 +108,7 @@ public class CalibrationRunManager implements ManagedProcessListener {
      * write to the database will be stopped.
      *
      * @param appsList The list of apps to execute
-     * @return
+     * @return If the defaults settings have been written out to disk or not.
      */
     private boolean writeOutDefaults(ResultsStore appsList) {
         boolean answer = false;
@@ -134,6 +134,8 @@ public class CalibrationRunManager implements ManagedProcessListener {
 
     /**
      * This loads in from file the list of applications to run
+     * @param appsList The file on disk that has the list of applications to run.
+     * @return The result store after having performed a load operation.
      */
     private ResultsStore getApplicationListFromFile(ResultsStore appsList) {
         appsList.load();
@@ -170,11 +172,11 @@ public class CalibrationRunManager implements ManagedProcessListener {
      * This performs the execution of a given command and registers for the
      * commands completion event.
      *
-     * @param command
-     * @param stdOut
-     * @param stdError
-     * @param workingDirectory
-     * @param toScreen
+     * @param command The command to execute
+     * @param stdOut The directory for standard out
+     * @param stdError The directory for standard error
+     * @param workingDirectory The working directory of the application
+     * @param toScreen If the output should also be logged to screen or not.
      */
     private void execute(String command, String stdOut, String stdError, File workingDirectory, boolean toScreen) {
         counter = counter + 1;
