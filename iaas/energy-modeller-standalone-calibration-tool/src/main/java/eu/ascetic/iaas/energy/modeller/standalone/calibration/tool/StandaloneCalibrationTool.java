@@ -1,5 +1,5 @@
 /**
- * Copyright 2014 University of Leeds
+ * Copyright 2015 University of Leeds
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -21,18 +21,20 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasou
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDirectDbDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.ioutils.execution.CompletedListener;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * The aim of this is to induce load on the local host and measure the response.
  * The results will then be written into the Energy Modellers database
  *
- * @author Richard
+ * @author Richard Kavanagh
  */
 public class StandaloneCalibrationTool implements CompletedListener {
 
     private boolean working = false;
     private Host host;
-    private boolean forceCalibration = true;
+    private boolean stopOnCalibratedHosts = false;
     private final HostDataSource source = new ZabbixDirectDbDataSourceAdaptor();
     private final DatabaseConnector database = new DefaultDatabaseConnector();
     private CalibrationRunManager runManager;
@@ -48,7 +50,7 @@ public class StandaloneCalibrationTool implements CompletedListener {
     }
 
     public static void main(String[] args) {
-        StandaloneCalibrationTool instance = null;
+        StandaloneCalibrationTool instance;
         if (args.length != 0) {
             instance = new StandaloneCalibrationTool(args[0]);
             /**
@@ -59,14 +61,21 @@ public class StandaloneCalibrationTool implements CompletedListener {
             /**
              * Induce the training workload pattern
              */
+            ArrayList<String> strArgs = new ArrayList<>(Arrays.asList(args));
+            if (strArgs.contains("halt-on-calibrated")) {
+                instance.setHaltOnCalibratedHost(true);
+            }
             instance.induceLoad();
         } else {
             System.out.println("Please provide the name of the host!");
+            System.out.println("Usage: host-name [halt-on-calibrated]");
+            System.out.println("The halt-on-calibrated flag will prevent calibration"
+                    + "in cases where the data has already been gathered.");
         }
     }
 
     /**
-     * This induces load on the web server
+     * This induces load on the physical host
      *
      * @return If the executor has finished or not.
      */
@@ -75,7 +84,7 @@ public class StandaloneCalibrationTool implements CompletedListener {
          * Check to see if the host is calibrated. If it is then exit, unless
          * the calibration is been forced through anyway.
          */
-        if (host.isCalibrated() && !forceCalibration) {
+        if (host.isCalibrated() && stopOnCalibratedHosts) {
             System.out.println("Exiting due to being already calibrated");
             System.exit(0);
         }
@@ -99,6 +108,19 @@ public class StandaloneCalibrationTool implements CompletedListener {
     @Override
     public void finished() {
         working = false;
+    }
+
+    /**
+     * This allows the calibration of a physical host to be stopped in cases
+     * where the calibration data has already been gathered.
+     *
+     * @param stopOnCalibratedHosts If true this stops the calibrator from
+     * running on an already calibrated host. The default is to run anyway as a
+     * calibration run should merely gather more data which has the potential to
+     * improve the calibration of a physical host.
+     */
+    public void setHaltOnCalibratedHost(boolean stopOnCalibratedHosts) {
+        this.stopOnCalibratedHosts = !stopOnCalibratedHosts;
     }
 
 }
