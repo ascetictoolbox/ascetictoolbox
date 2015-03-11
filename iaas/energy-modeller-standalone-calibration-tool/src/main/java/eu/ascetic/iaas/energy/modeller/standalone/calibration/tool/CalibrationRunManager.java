@@ -58,11 +58,12 @@ public class CalibrationRunManager implements ManagedProcessListener {
     private boolean logging = true;
     private final Host host;
 
-    private ArrayList<HostMeasurement> measurements = new ArrayList<>();
+    private final ArrayList<HostMeasurement> measurements = new ArrayList<>();
     private final HostDataSource datasource;
     private final DatabaseConnector database;
     private int calibratorWaitSec = 2;
-    private Settings settings = new Settings("calibration_settings.properties");
+    private boolean simulateCalibrationRun = false;
+    private final Settings settings = new Settings("calibration_settings.properties");
 
     /**
      * Internal state variables ensuring that new values for measurements have
@@ -81,6 +82,7 @@ public class CalibrationRunManager implements ManagedProcessListener {
         appsToExecute = new ResultsStore(workingDir + TO_EXECUTE_SETTINGS_FILE);
         logging = settings.getBoolean("log_executions", true);
         calibratorWaitSec = settings.getInt("poll_interval", calibratorWaitSec);
+        simulateCalibrationRun = settings.getBoolean("simulate_calibration_run", simulateCalibrationRun);
         if (settings.isChanged()) {
             settings.save("calibration_settings.properties");
         }
@@ -247,10 +249,13 @@ public class CalibrationRunManager implements ManagedProcessListener {
     private ArrayList<HostEnergyCalibrationData> setHostCalibrationData(ArrayList<HostMeasurement> measurements, Host host) {
         ArrayList<HostEnergyCalibrationData> calibrationData = host.getCalibrationData();
         System.out.println("New Calibration Datapoints: " + measurements.size());
-        calibrationData.addAll(HostEnergyCalibrationData.getCalibrationData(measurements));
-        host.setCalibrationData(calibrationData);
-        if (database != null && !measurements.isEmpty()) {
-            database.setHostCalibrationData(host);
+        //This gives the opportunity to run a load without saving the result
+        if (simulateCalibrationRun == false) {
+            calibrationData.addAll(HostEnergyCalibrationData.getCalibrationData(measurements));
+            host.setCalibrationData(calibrationData);
+            if (database != null && !measurements.isEmpty()) {
+                database.setHostCalibrationData(host);
+            }
         }
         return calibrationData;
     }
