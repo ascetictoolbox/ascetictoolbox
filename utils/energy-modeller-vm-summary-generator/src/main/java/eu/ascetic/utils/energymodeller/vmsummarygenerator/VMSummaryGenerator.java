@@ -18,9 +18,9 @@ package eu.ascetic.utils.energymodeller.vmsummarygenerator;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DatabaseConnector;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DefaultDatabaseConnector;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.HistoricLoadBasedDivision;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.LoadBasedDivision;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.LoadBasedDivisionWithIdleEnergy;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.historic.HistoricLoadBasedDivision;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.historic.LoadBasedDivision;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.historic.LoadBasedDivisionWithIdleEnergy;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.FastDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
@@ -50,7 +50,7 @@ import java.util.logging.Logger;
  * usage. This includes data such as: 
  * it's average power usage 
  * and it's total energy consumption.
- * @author Richard
+ * @author Richard Kavanagh
  */
 public class VMSummaryGenerator {
 
