@@ -20,9 +20,12 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DefaultDatab
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDirectDbDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostProfileData;
 import eu.ascetic.ioutils.execution.CompletedListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import jnt.scimark2.Benchmark;
+import jnt.scimark2.Result;
 
 /**
  * The aim of this is to induce load on the local host and measure the response.
@@ -49,6 +52,15 @@ public class StandaloneCalibrationTool implements CompletedListener {
         host = database.getHostCalibrationData(host);
     }
 
+    /**
+     * This performs the calibration of a host.
+     *
+     * @param args The first argument should be the hostname after this there
+     * are several optional arguments can be passed namely: halt-on-calibrated
+     * which prevents a host from been recalibrated. and benchmark-only which
+     * which prevents calibration from running.
+     *
+     */
     public static void main(String[] args) {
         StandaloneCalibrationTool instance;
         if (args.length != 0) {
@@ -65,13 +77,38 @@ public class StandaloneCalibrationTool implements CompletedListener {
             if (strArgs.contains("halt-on-calibrated")) {
                 instance.setHaltOnCalibratedHost(true);
             }
-            instance.induceLoad();
+            instance.performBenchmark();
+            if (!strArgs.contains("benchmark-only")) {
+                instance.induceLoad();
+            }
         } else {
             System.out.println("Please provide the name of the host!");
-            System.out.println("Usage: host-name [halt-on-calibrated]");
+            System.out.println("Usage: host-name [halt-on-calibrated] [benchmark-only]");
             System.out.println("The halt-on-calibrated flag will prevent calibration "
                     + "in cases where the data has already been gathered.");
+            System.out.println("The [benchmark-only] flag skips the calibration run"
+                    + "and performs a benchmark run only.");
         }
+    }
+
+    /**
+     * This performs a basic benchmark that can be used to determine how fast a
+     * host is relative to others. It then can be used in calculating
+     * performance per watt.
+     */
+    public void performBenchmark() {
+        /**
+         * Check to see if the host is calibrated. If it is then exit, unless
+         * the calibration is been forced through anyway.
+         */
+        if (host.isCalibrated() && stopOnCalibratedHosts) {
+            System.out.println("Exiting due to being already calibrated");
+            System.exit(0);
+        }
+        Benchmark benchmark = new Benchmark();
+        Result result = benchmark.getBenchmarkResult();
+        host.addProfileData(new HostProfileData("flops", result.getCompositeScore()));
+        database.setHostProfileData(host);
     }
 
     /**
