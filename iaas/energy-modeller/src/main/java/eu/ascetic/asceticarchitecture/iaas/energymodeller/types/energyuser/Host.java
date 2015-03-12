@@ -16,6 +16,7 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostEnergyCalibrationData;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostProfileData;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -38,6 +39,7 @@ public class Host extends EnergyUsageSource implements Comparable<Host> {
     private double diskGb;
 
     private ArrayList<HostEnergyCalibrationData> calibrationData = new ArrayList<>();
+    private ArrayList<HostProfileData> hostProfileData = new ArrayList<>();
 
     /**
      * E_i^0: is the "idle power consumption" in Watts (with zero number of VMs
@@ -150,6 +152,107 @@ public class Host extends EnergyUsageSource implements Comparable<Host> {
     }
 
     /**
+     * This allows for an additional piece of host profile data to be set.
+     *
+     * @param profileData The profile data to add to the host
+     */
+    public void addProfileData(HostProfileData profileData) {
+        this.hostProfileData.add(profileData);
+    }
+
+    /**
+     * This returns a list of all the profile data that is held on the host.
+     *
+     * @return the profile data of the host.
+     */
+    public ArrayList<HostProfileData> getProfileData() {
+        return hostProfileData;
+    }
+
+    /**
+     * This allows the profile data of a host to be set.
+     *
+     * @param profileData the profile data to set
+     */
+    public void setProfileData(ArrayList<HostProfileData> profileData) {
+        this.hostProfileData = profileData;
+    }
+
+    /**
+     * This returns the average of a particular type of profile data about the
+     * host.
+     *
+     * @param type The profile data type
+     * @return The average value for the given data type.
+     */
+    public double getAverageOfProfileData(String type) {
+        if (hostProfileData.isEmpty()) {
+            return 0.0;
+        }
+        double count = 0;
+        double value = 0.0;
+        for (HostProfileData profileData : hostProfileData) {
+            if (profileData.getType().equals(type)) {
+                value = value + profileData.getValue();
+            }
+        }
+        return value / count;
+    }
+
+    /**
+     * This returns the lowest value of a particular type of profile data about
+     * the host.
+     *
+     * @param type The profile data type
+     * @return The highest value seen for the given data type.
+     */
+    public double getLowestProfileData(String type) {
+        if (hostProfileData.isEmpty()) {
+            return 0.0;
+        }
+        double answer = 0;
+        for (HostProfileData profileData : hostProfileData) {
+            if (profileData.getType().equals(type) && profileData.getValue() < answer) {
+                answer = profileData.getValue();
+            }
+        }
+        return answer;
+    }
+
+    /**
+     * This returns the highest value of a particular type of profile data about
+     * the host.
+     *
+     * @param type The profile data type
+     * @return The highest value seen for the given data type.
+     */
+    public double getHighestProfileData(String type) {
+        if (hostProfileData.isEmpty()) {
+            return Double.NaN;
+        }
+        double answer = 0;
+        for (HostProfileData profileData : hostProfileData) {
+            if (profileData.getType().equals(type) && profileData.getValue() > answer) {
+                answer = profileData.getValue();
+            }
+        }
+        return answer;
+    }
+    
+    /**
+     * This returns the amount of FlopsPerWatt the host uses at maximum power
+     * consumption.
+     * @return The amount of flops per Watt for the given host.
+     */
+    public double getFlopsPerWatt() {
+        double flops = getAverageOfProfileData("flop");
+        if (flops == 0) {
+            return Double.NaN;
+        }
+        return getAverageOfProfileData("flop") / getMaximumPowerConsumption();
+    }
+
+    /**
      * This returns a list of all the calibration data that is held on the host.
      *
      * @return the calibration data of the host.
@@ -204,7 +307,7 @@ public class Host extends EnergyUsageSource implements Comparable<Host> {
         }
         return answer;
     }
-    
+
     /**
      * This returns the lowest amount of ram usage found from the calibration
      * data.
@@ -223,7 +326,7 @@ public class Host extends EnergyUsageSource implements Comparable<Host> {
         }
         return answer;
     }
-    
+
     /**
      * This returns the maximum energy consumption found from the calibration
      * data.
@@ -241,7 +344,7 @@ public class Host extends EnergyUsageSource implements Comparable<Host> {
             }
         }
         return answer;
-    }    
+    }
 
     /**
      * This returns the value for the default idle power consumption of a host.

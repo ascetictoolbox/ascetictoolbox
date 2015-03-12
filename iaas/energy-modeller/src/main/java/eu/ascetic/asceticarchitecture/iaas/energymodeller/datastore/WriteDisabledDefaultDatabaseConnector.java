@@ -22,7 +22,7 @@ import java.util.Collection;
 
 /**
  * This provides a default database connector that can only work in a read only mode.
- * @author Richard
+ * @author Richard Kavanagh
  */
 public class WriteDisabledDefaultDatabaseConnector extends DefaultDatabaseConnector {
 
@@ -52,6 +52,15 @@ public class WriteDisabledDefaultDatabaseConnector extends DefaultDatabaseConnec
          * database.
          */    
     }
+    
+    @Override
+    public void setHostProfileData(Host host) {
+        /**
+         * Do nothing, the aim is to be able to run another data gatherer along
+         * side the main one, thus only one should be allowed to write to the
+         * database.
+         */    
+    }    
     
     @Override
     public void writeHostHistoricData(Host host, long time, double power, double energy) {

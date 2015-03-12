@@ -32,6 +32,25 @@ REFERENCES host(host_id);
 ALTER TABLE `host_calibration_data` 
 ADD UNIQUE INDEX `UNIQUE_SET` (`host_id`,  `cpu`, `memory`);
 
+CREATE TABLE IF NOT EXISTS host_profile_data
+  (
+     host_profile_id INT NOT NULL,
+     host_id        INT,
+	 type			VARCHAR(50),
+     value          DOUBLE
+  );
+
+ALTER TABLE host_profile_data
+ADD CONSTRAINT pk_host_profile_data PRIMARY KEY (host_profile_id);
+
+ALTER TABLE `host_profile_data` 
+CHANGE COLUMN `host_profile_id` `host_profile_id` INT(11) NOT NULL AUTO_INCREMENT ;
+
+ALTER TABLE host_profile_data
+ADD CONSTRAINT fk_host_profile_data_host_id
+FOREIGN KEY (host_id)
+REFERENCES host(host_id);
+
 CREATE TABLE IF NOT EXISTS host_measurement
   (
      measurement_id INT NOT NULL,

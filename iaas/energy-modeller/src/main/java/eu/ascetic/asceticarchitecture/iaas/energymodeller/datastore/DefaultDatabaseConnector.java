@@ -19,6 +19,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostEnergyCalibrationData;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostProfileData;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostVmLoadFraction;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostEnergyRecord;
 import java.io.IOException;
@@ -178,6 +179,29 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
         return host;
     }
 
+    @Override
+    public Host getHostProfileData(Host host) {
+        connection = getConnection(connection);
+        if (connection == null) {
+            return null;
+        }
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                "SELECT profile_id, host_id, type, value FROM host_profile_data WHERE host_id = ?")) {
+            preparedStatement.setInt(1, host.getId());
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                ArrayList<ArrayList<Object>> result = resultSetToArray(resultSet);
+                for (ArrayList<Object> profileData : result) {
+                    host.addProfileData(new HostProfileData(
+                            (String) profileData.get(2),
+                            (Double) profileData.get(3)));
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return host;
+    }
+
     /**
      * This adds set of host machines to the database. If the host already
      * exists the values contained will be overwritten.
@@ -245,10 +269,29 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
                 + " ON DUPLICATE KEY UPDATE host_id=VALUES(`host_id`), cpu=VALUES(`cpu`), memory=VALUES(`memory`), energy=VALUES(`energy`);")) {
             preparedStatement.setInt(1, host.getId());
             for (HostEnergyCalibrationData data : host.getCalibrationData()) {
-                preparedStatement.setDouble(1, host.getId());
+                preparedStatement.setInt(1, host.getId());
                 preparedStatement.setDouble(2, data.getCpuUsage());
                 preparedStatement.setDouble(3, data.getMemoryUsage());
                 preparedStatement.setDouble(4, data.getWattsUsed());
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
+    public void setHostProfileData(Host host) {
+        connection = getConnection(connection);
+        if (connection == null) {
+            return;
+        }
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                "INSERT INTO host_profile_data (host_id, type, value) VALUES (?, ?, ?);")) {
+            preparedStatement.setInt(1, host.getId());
+            for (HostProfileData data : host.getProfileData()) {
+                preparedStatement.setString(2, data.getType());
+                preparedStatement.setDouble(3, data.getValue());
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException ex) {
