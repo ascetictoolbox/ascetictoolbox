@@ -25,6 +25,7 @@
 		<module>energy-modeller-display-tool</module>
 		<module>energy-modeller-trace-file-generator</module>
 		<module>host-power-emulator</module>
+		<module>SciMark2</module>
   </modules>
 
     <url>http://www.ascetic.eu</url>
