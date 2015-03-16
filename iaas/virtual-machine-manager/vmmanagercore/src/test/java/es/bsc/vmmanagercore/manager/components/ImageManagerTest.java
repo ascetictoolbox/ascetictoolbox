@@ -19,6 +19,7 @@
 package es.bsc.vmmanagercore.manager.components;
 
 import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddleware;
+import es.bsc.vmmanagercore.model.images.ImageToUpload;
 import es.bsc.vmmanagercore.model.images.ImageUploaded;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -27,6 +28,7 @@ import org.powermock.api.mockito.PowerMockito;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
@@ -52,11 +54,53 @@ public class ImageManagerTest {
     
     @Test
     public void getVmImagesReturnsEmptyWhenThereAreNotAnyImages() {
+        Mockito.when(mockedCloudMiddleware.getVmImages()).thenReturn(new ArrayList<ImageUploaded>());
+        assertTrue(imageManager.getVmImages().isEmpty());
+    }
+    
+    @Test
+    public void createVmImage() {
+        // Mock cloud middleware response
+        String mockedCloudMiddlewareResponse = "NewImageId";
+        ImageToUpload imageToBeCreated = new ImageToUpload("newImageName", "http://fakeUrl.com");
+        Mockito.when(mockedCloudMiddleware.createVmImage(imageToBeCreated)).thenReturn(mockedCloudMiddlewareResponse);
+        
+        assertEquals(mockedCloudMiddlewareResponse, imageManager.createVmImage(imageToBeCreated));
+    }
+    
+    @Test
+    public void getVmImage() {
+        // Mock cloud middleware response
+        ImageUploaded mockedCloudMiddlewareResponse = new ImageUploaded("imageId", "imageName", "active");
+        Mockito.when(mockedCloudMiddleware.getVmImage("queryImageId")).thenReturn(mockedCloudMiddlewareResponse);
+        
+        assertEquals(mockedCloudMiddlewareResponse, imageManager.getVmImage("queryImageId"));
+    }
+    
+    @Test
+    public void getVmImageReturnsNullWhenItDoesNotExist() {
+        Mockito.when(mockedCloudMiddleware.getVmImage("queryImageId")).thenReturn(null);
+        assertNull(imageManager.getVmImage("queryImageId"));
+    }
+    
+    @Test
+    public void getVmImagesIds() {
         // Mock cloud middleware response
         List<ImageUploaded> mockedCloudMiddlewareResponse = new ArrayList<>();
+        mockedCloudMiddlewareResponse.add(new ImageUploaded("image1", "imageName1", "active"));
+        mockedCloudMiddlewareResponse.add(new ImageUploaded("image2", "imageName2", "active"));
         Mockito.when(mockedCloudMiddleware.getVmImages()).thenReturn(mockedCloudMiddlewareResponse);
-
-        assertTrue(imageManager.getVmImages().isEmpty());
+        
+        List<String> imagesIds = new ArrayList<>();
+        imagesIds.add("image1");
+        imagesIds.add("image2");
+        assertTrue(imageManager.getVmImagesIds().containsAll(imagesIds));
+    }
+    
+    @Test
+    public void getVmImagesIdsReturnsEmptyWhenThereAreNotAny() {
+        Mockito.when(mockedCloudMiddleware.getVmImages()).thenReturn(new ArrayList<ImageUploaded>());
+        assertTrue(imageManager.getVmImagesIds().isEmpty());
     }
     
 }
