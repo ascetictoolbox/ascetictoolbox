@@ -85,12 +85,19 @@ if [ "`mac2ip $MAC | cut -d'.' -f1`" == "10" ]
 then
   STATIC_HOSTNAME="" #Leave blank for IP generated name
   STATIC_NETMASK="255.0.0.0"
-  STATIC_GATEWAY="10.0.0.1"
+  STATIC_GATEWAY="10.0.0.254"
   STATIC_SUBNET="10.0.0.0"
-  STATIC_DNS[1]="129.11.144.1"
-  STATIC_DNS[2]="8.8.8.8"
-  STATIC_DNS_SEARCH="BaseImage"
-  EXTRA_HOSTS=""
+  STATIC_DNS[1]="129.11.159.144"
+  STATIC_DNS_SEARCH="leeds.ac.uk"
+  EXTRA_HOSTS[1]="10.10.0.1 testnode1"
+  EXTRA_HOSTS[2]="10.10.0.2 testnode2"
+  EXTRA_HOSTS[3]="10.10.0.3 testnode3 testgrid3"
+  EXTRA_HOSTS[4]="10.10.0.4 testnode4 testgrid7"
+  EXTRA_HOSTS[5]="10.10.0.5 testnode5 testgrid8"
+  EXTRA_HOSTS[6]="10.10.0.6 testnode6 testgrid9"
+  EXTRA_HOSTS[7]="10.10.0.7 testnode7 testgrid12"
+  EXTRA_HOSTS[8]="10.10.0.8 testnode8 testgrid13"
+  STATIC_NTP="129.11.159.114"
   echo_static_network_vars "PROVIDER A) LEEDS: (10.*)"
 else
   echo "WARNING: Unknown Networking Environment (Ignore if using ISO or DHCP)!"
@@ -132,6 +139,12 @@ then
   echo "Config is:"
   netsh interface ip show config
   ipconfig -all
+  
+  #Hack for leeds time server
+  if [ "STATIC_NTP" != "" ]
+  then
+    net time /setsntp:"$STATIC_NTP"
+  fi
 
 #### Static IP ####
 else
@@ -183,6 +196,12 @@ else
   echo "Config is:"
   netsh interface ip show config
   ipconfig -all
+  
+  #Hack for leeds time server
+  if [ "STATIC_NTP" != "" ]
+  then
+    net time /setsntp:"$STATIC_NTP"
+  fi
 fi
 
 ##### Add additional static hosts
