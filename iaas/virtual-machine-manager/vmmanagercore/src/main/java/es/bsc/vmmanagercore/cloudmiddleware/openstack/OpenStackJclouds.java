@@ -340,8 +340,9 @@ public class OpenStackJclouds implements CloudMiddleware {
     private String getFlavorId(int cpus, int memoryMb, int diskGb, int swapGb) {
         for (Flavor flavor: openStackJcloudsApis.getFlavorApi().listInDetail().concat()) {
             if (flavor.getVcpus() == cpus && flavor.getRam() == memoryMb && flavor.getDisk() == diskGb) {
-                if (((!flavor.getSwap().isPresent() || (flavor.getSwap().get().equals(""))) && swapGb == 0) ||
-                        (flavor.getSwap().isPresent() && Integer.parseInt(flavor.getSwap().get()) == swapGb)) {
+                boolean swapGreaterThanZero = (flavor.getSwap().isPresent() && !flavor.getSwap().get().equals(""));
+                if ((!swapGreaterThanZero && swapGb == 0)
+                        || (swapGreaterThanZero && (swapGb == Integer.parseInt(flavor.getSwap().get())))) {
                     return flavor.getId();
                 }
             }
