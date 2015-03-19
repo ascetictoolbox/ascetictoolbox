@@ -35,7 +35,7 @@ public class Vm {
     private final int cpus;
     private final int ramMb;
     private final int diskGb;
-    private final int swapGb;
+    private final int swapMb;
     private String initScript;
     private String applicationId;
     
@@ -46,18 +46,18 @@ public class Vm {
      * @param cpus The number of CPUs.
      * @param ramMb The amount of RAM in MB.
      * @param diskGb The size of the disk in GB.
-     * @param swapGb The amount of swap in GB.               
+     * @param swapMb The amount of swap in MB.
      * @param initScript Script that will be executed when the VM is deployed.
      */
-    public Vm(String name, String image, int cpus, int ramMb, int diskGb, int swapGb, 
+    public Vm(String name, String image, int cpus, int ramMb, int diskGb, int swapMb,
               String initScript, String applicationId) {
-        validateConstructorParams(cpus, ramMb, diskGb, swapGb);
+        validateConstructorParams(cpus, ramMb, diskGb, swapMb);
         this.name = name;
         this.image = image;
         this.cpus = cpus;
         this.ramMb = ramMb;
         this.diskGb = diskGb;
-        this.swapGb = swapGb;
+        this.swapMb = swapMb;
         setInitScript(initScript);
         this.applicationId = applicationId;
     }
@@ -70,7 +70,7 @@ public class Vm {
         this.cpus = cpus;
         this.ramMb = ramMb;
         this.diskGb = diskGb;
-        this.swapGb = 0;
+        this.swapMb = 0;
         setInitScript(initScript);
         this.applicationId = applicationId;
     }
@@ -95,8 +95,8 @@ public class Vm {
         return diskGb;
     }
     
-    public int getSwapGb() {
-        return swapGb;
+    public int getSwapMb() {
+        return swapMb;
     }
 
     public String getInitScript() {
@@ -132,11 +132,11 @@ public class Vm {
         return ReflectionToStringBuilder.toString(this);
     }
 
-    private void validateConstructorParams(int cpus, int ramMb, int diskGb, int swapGb) {
+    private void validateConstructorParams(int cpus, int ramMb, int diskGb, int swapMb) {
         Preconditions.checkArgument(cpus > 0, "CPUs was %s but expected positive", cpus);
         Preconditions.checkArgument(ramMb > 0, "RAM MB was %s but expected positive", ramMb);
         Preconditions.checkArgument(diskGb > 0, "Disk GB was %s but expected positive", diskGb);
-        Preconditions.checkArgument(swapGb >= 0, "Swap GB was %s but expected non-negative", diskGb);
+        Preconditions.checkArgument(swapMb >= 0, "Swap MB was %s but expected non-negative", swapMb);
     }
     
 }

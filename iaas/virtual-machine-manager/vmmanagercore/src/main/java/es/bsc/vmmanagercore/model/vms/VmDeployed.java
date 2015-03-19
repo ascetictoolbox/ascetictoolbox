@@ -35,9 +35,9 @@ public class VmDeployed extends Vm {
     private String hostName;
 
     public VmDeployed(String name, String image, int cpus, int ramMb,
-            int diskGb, int swapGb, String initScript, String applicationId, String id,
+            int diskGb, int swapMb, String initScript, String applicationId, String id,
             String ipAddress, String state, Date created, String hostName) {
-        super(name, image, cpus, ramMb, diskGb, swapGb, initScript, applicationId);
+        super(name, image, cpus, ramMb, diskGb, swapMb, initScript, applicationId);
         this.id = id;
         this.ipAddress = ipAddress;
         this.state = state;
