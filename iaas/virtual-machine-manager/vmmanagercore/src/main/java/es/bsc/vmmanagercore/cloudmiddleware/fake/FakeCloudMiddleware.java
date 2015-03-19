@@ -80,6 +80,7 @@ public class FakeCloudMiddleware implements CloudMiddleware {
                 vm.getCpus(),
                 vm.getRamMb(),
                 vm.getDiskGb(),
+                vm.getSwapGb(),
                 vm.getInitScript(),
                 vm.getApplicationId(),
                 nextVmId.toString(),

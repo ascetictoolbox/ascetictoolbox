@@ -31,7 +31,7 @@ import static junit.framework.TestCase.assertEquals;
  */
 public class VmDeployedTest {
 
-    private VmDeployed vmDeployed = new VmDeployed("vm", "fakeImage", 1, 1024, 1, "", "", "vmId", "172.16.8.1",
+    private VmDeployed vmDeployed = new VmDeployed("vm", "fakeImage", 1, 1024, 1, 0, "", "", "vmId", "172.16.8.1",
             "ACTIVE", new Date(), "host1");
 
     @Test

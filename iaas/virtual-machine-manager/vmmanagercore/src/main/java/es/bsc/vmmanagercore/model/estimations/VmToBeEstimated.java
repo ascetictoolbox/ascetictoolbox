@@ -32,13 +32,15 @@ public class VmToBeEstimated {
     private final int cpuFreq;
     private final int ramMb;
     private final int diskGb;
+    private final int swapGb;
 
-    public VmToBeEstimated(String id, int vcpus, int cpuFreq, int ramMb, int diskGb) {
+    public VmToBeEstimated(String id, int vcpus, int cpuFreq, int ramMb, int diskGb, int swapGb) {
         this.id = id;
         this.vcpus = vcpus;
         this.cpuFreq = cpuFreq;
         this.ramMb = ramMb;
         this.diskGb = diskGb;
+        this.swapGb = swapGb;
     }
 
     public String getId() {
@@ -62,7 +64,7 @@ public class VmToBeEstimated {
     }
 
     public Vm toVm() {
-        return new Vm(id, "", vcpus, ramMb, diskGb, null, "");
+        return new Vm(id, "", vcpus, ramMb, diskGb, swapGb, null, "");
     }
 
 }

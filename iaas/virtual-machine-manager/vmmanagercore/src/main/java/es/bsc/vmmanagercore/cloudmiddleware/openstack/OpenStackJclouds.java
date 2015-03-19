@@ -140,9 +140,13 @@ public class OpenStackJclouds implements CloudMiddleware {
             if (vmIsActive && !vmIsBeingDeleted) {
                 Flavor flavor = openStackJcloudsApis.getFlavorApi().get(server.getFlavor().getId());
                 String vmIp = getVmIp(server);
+                int swapGb = 0;
+                if (flavor.getSwap().isPresent() && !flavor.getSwap().get().equals("")) {
+                    swapGb = Integer.parseInt(flavor.getSwap().get());
+                }
                 vm = new VmDeployed(server.getName(),
                         server.getImage().getId(), flavor.getVcpus(), flavor.getRam(),
-                        flavor.getDisk(), null, null, vmId,
+                        flavor.getDisk(), swapGb, null, null, vmId,
                         vmIp, server.getStatus().toString(), server.getCreated(),
                         server.getExtendedAttributes().get().getHostName());
             }
@@ -235,15 +239,15 @@ public class OpenStackJclouds implements CloudMiddleware {
      */
     private String getFlavorIdForDeployment(Vm vm) {
         // If there is a flavor with the same specs as the ones we need to use return it
-        String flavorId = getFlavorId(vm.getCpus(), vm.getRamMb(), vm.getDiskGb());
+        String flavorId = getFlavorId(vm.getCpus(), vm.getRamMb(), vm.getDiskGb(), vm.getSwapGb());
         if (flavorId != null) {
             return flavorId;
         }
 
         //If the flavor does not exist, create it and return the ID
         String id, name;
-        id = name = vm.getCpus() + "-" + vm.getDiskGb() + "-" + vm.getRamMb();
-        return createFlavor(id, name, vm.getCpus(), vm.getRamMb(), vm.getDiskGb());
+        id = name = vm.getCpus() + "-" + vm.getDiskGb() + "-" + vm.getRamMb() + "-" + vm.getSwapGb();
+        return createFlavor(id, name, vm.getCpus(), vm.getRamMb(), vm.getDiskGb(), vm.getSwapGb());
     }
 
     /**
@@ -330,12 +334,16 @@ public class OpenStackJclouds implements CloudMiddleware {
      * @param cpus the number of CPUs of the flavor
      * @param memoryMb the amount of RAM of the flavor in MB
      * @param diskGb the amount of disk space of the flavor in GB
+     * @param swapGb the amount of swap in GB               
      * @return The ID of the flavor. Null if a flavor with the specified characteristics does not exist.
      */
-    private String getFlavorId(int cpus, int memoryMb, int diskGb) {
+    private String getFlavorId(int cpus, int memoryMb, int diskGb, int swapGb) {
         for (Flavor flavor: openStackJcloudsApis.getFlavorApi().listInDetail().concat()) {
             if (flavor.getVcpus() == cpus && flavor.getRam() == memoryMb && flavor.getDisk() == diskGb) {
-                return flavor.getId();
+                if (((!flavor.getSwap().isPresent() || (flavor.getSwap().get().equals(""))) && swapGb == 0) ||
+                        (flavor.getSwap().isPresent() && Integer.parseInt(flavor.getSwap().get()) == swapGb)) {
+                    return flavor.getId();
+                }
             }
         }
         return null;
@@ -346,11 +354,13 @@ public class OpenStackJclouds implements CloudMiddleware {
      * @param cpus the number of CPUs of the flavor
      * @param ramMb the amount of RAM of the flavor in MB
      * @param diskGb the amount of disk space of the flavor in GB
+     * @param swapGb the amount of swap of the flavor in GB
      * @return The ID of the created flavor.
      */
-    private String createFlavor(String id, String name, int cpus, int ramMb, int diskGb) {
+    private String createFlavor(String id, String name, int cpus, int ramMb, int diskGb, int swapGb) {
         openStackJcloudsApis.getFlavorApi().create(
-                Flavor.builder().id(id).name(name).vcpus(cpus).ram(ramMb).disk(diskGb).build());
+                Flavor.builder().id(id).name(name).vcpus(cpus).ram(ramMb).disk(diskGb)
+                        .swap(Integer.toString(swapGb)).build());
         return id;
     }
 

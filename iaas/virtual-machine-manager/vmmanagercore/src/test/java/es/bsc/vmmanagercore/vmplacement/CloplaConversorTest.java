@@ -41,7 +41,7 @@ public class CloplaConversorTest {
     @Test
     public void getCloplaVms() {
         List<VmDeployed> vmsDeployed = new ArrayList<>();
-        vmsDeployed.add(new VmDeployed("vm", "fakeImage", 1, 1024, 1, "", "appId", "vmId", "172.16.8.1", "ACTIVE",
+        vmsDeployed.add(new VmDeployed("vm", "fakeImage", 1, 1024, 1, 0, "", "appId", "vmId", "172.16.8.1", "ACTIVE",
                 new Date(), "host1"));
         Vm cloplaVm = CloplaConversor.getCloplaVms(vmsDeployed, new ArrayList<es.bsc.vmmanagercore.model.vms.Vm>(),
                 new ArrayList<es.bsc.clopla.domain.Host>(), false).get(0);

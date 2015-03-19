@@ -146,6 +146,7 @@ public class CloplaConversor {
                     vm.getNcpus(),
                     vm.getRamMb(),
                     vm.getDiskGb(),
+                    0, // Is this a problem? Clopla does not deal with swap
                     null,
                     null));
         }

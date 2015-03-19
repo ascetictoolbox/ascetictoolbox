@@ -52,10 +52,14 @@ public class SchedAlgGroupByAppTest {
 
     // Set up 2 VMs of app1 in host1 and 1 VM of app2 in host1. Also, 1 VM of app2 in host2
     private static void setUpVmsDeployed() {
-        vmsDeployed.add(new VmDeployed("vm1", "fakeId", 1, 1024, 1, null, "app1", "id1", "", "", new Date(), "host1"));
-        vmsDeployed.add(new VmDeployed("vm2", "fakeId", 1, 1024, 1, null, "app1", "id2", "", "", new Date(), "host1"));
-        vmsDeployed.add(new VmDeployed("vm3", "fakeId", 1, 1024, 1, null, "app1", "id3", "", "", new Date(), "host2"));
-        vmsDeployed.add(new VmDeployed("vm4", "fakeId", 1, 1024, 1, null, "app2", "id4", "", "", new Date(), "host2"));
+        vmsDeployed.add(new VmDeployed("vm1", "fakeId", 1, 1024, 1, 0, null, 
+                "app1", "id1", "", "", new Date(), "host1"));
+        vmsDeployed.add(new VmDeployed("vm2", "fakeId", 1, 1024, 1, 0, null, 
+                "app1", "id2", "", "", new Date(), "host1"));
+        vmsDeployed.add(new VmDeployed("vm3", "fakeId", 1, 1024, 1, 0, null, 
+                "app1", "id3", "", "", new Date(), "host2"));
+        vmsDeployed.add(new VmDeployed("vm4", "fakeId", 1, 1024, 1, 0, null, 
+                "app2", "id4", "", "", new Date(), "host2"));
     }
 
     @BeforeClass

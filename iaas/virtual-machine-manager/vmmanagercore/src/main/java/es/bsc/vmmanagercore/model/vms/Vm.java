@@ -35,9 +35,10 @@ public class Vm {
     private final int cpus;
     private final int ramMb;
     private final int diskGb;
+    private final int swapGb;
     private String initScript;
     private String applicationId;
-
+    
     /**
      * Class constructor.
      * @param name The name of the instance.
@@ -45,15 +46,31 @@ public class Vm {
      * @param cpus The number of CPUs.
      * @param ramMb The amount of RAM in MB.
      * @param diskGb The size of the disk in GB.
+     * @param swapGb The amount of swap in GB.               
      * @param initScript Script that will be executed when the VM is deployed.
      */
-    public Vm(String name, String image, int cpus, int ramMb, int diskGb, String initScript, String applicationId) {
-        validateConstructorParams(cpus, ramMb, diskGb);
+    public Vm(String name, String image, int cpus, int ramMb, int diskGb, int swapGb, 
+              String initScript, String applicationId) {
+        validateConstructorParams(cpus, ramMb, diskGb, swapGb);
         this.name = name;
         this.image = image;
         this.cpus = cpus;
         this.ramMb = ramMb;
         this.diskGb = diskGb;
+        this.swapGb = swapGb;
+        setInitScript(initScript);
+        this.applicationId = applicationId;
+    }
+
+    // TODO: apply builder pattern.
+    public Vm(String name, String image, int cpus, int ramMb, int diskGb, String initScript, String applicationId) {
+        validateConstructorParams(cpus, ramMb, diskGb, 0);
+        this.name = name;
+        this.image = image;
+        this.cpus = cpus;
+        this.ramMb = ramMb;
+        this.diskGb = diskGb;
+        this.swapGb = 0;
         setInitScript(initScript);
         this.applicationId = applicationId;
     }
@@ -76,6 +93,10 @@ public class Vm {
 
     public int getDiskGb() {
         return diskGb;
+    }
+    
+    public int getSwapGb() {
+        return swapGb;
     }
 
     public String getInitScript() {
@@ -111,10 +132,11 @@ public class Vm {
         return ReflectionToStringBuilder.toString(this);
     }
 
-    private void validateConstructorParams(int cpus, int ramMb, int diskGb) {
-        Preconditions.checkArgument(cpus > 0, "Argument was %s but expected positive", cpus);
-        Preconditions.checkArgument(ramMb > 0, "Argument was %s but expected positive", ramMb);
-        Preconditions.checkArgument(diskGb > 0, "Argument was %s but expected positive", diskGb);
+    private void validateConstructorParams(int cpus, int ramMb, int diskGb, int swapGb) {
+        Preconditions.checkArgument(cpus > 0, "CPUs was %s but expected positive", cpus);
+        Preconditions.checkArgument(ramMb > 0, "RAM MB was %s but expected positive", ramMb);
+        Preconditions.checkArgument(diskGb > 0, "Disk GB was %s but expected positive", diskGb);
+        Preconditions.checkArgument(swapGb >= 0, "Swap GB was %s but expected non-negative", diskGb);
     }
     
 }
