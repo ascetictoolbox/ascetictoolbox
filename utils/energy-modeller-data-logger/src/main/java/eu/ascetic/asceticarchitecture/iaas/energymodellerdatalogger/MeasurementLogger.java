@@ -15,7 +15,7 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodellerdatalogger;
 
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostMeasurement;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.Measurement;
 import eu.ascetic.ioutils.GenericLogger;
 import eu.ascetic.ioutils.ResultsStore;
 import java.io.File;
@@ -27,7 +27,7 @@ import java.util.logging.Level;
  *
  * @author Richard Kavanagh
  */
-public class MeasurementLogger extends GenericLogger<HostMeasurement> {
+public class MeasurementLogger extends GenericLogger<Measurement> {
 
     ArrayList<String> metricNames = new ArrayList<>();
 
@@ -44,7 +44,7 @@ public class MeasurementLogger extends GenericLogger<HostMeasurement> {
      * @param measurements The measurement to write to file
      */
     @Override
-    public void saveToDisk(ResultsStore store, Collection<HostMeasurement> measurements) {
+    public void saveToDisk(ResultsStore store, Collection<Measurement> measurements) {
         try {
             if (!store.getResultsFile().exists() || metricNames.isEmpty()) {
                 /**
@@ -52,7 +52,7 @@ public class MeasurementLogger extends GenericLogger<HostMeasurement> {
                  * file is been appended to for the first time. i.e. the headers
                  * may be in a different order.
                  */
-                for (HostMeasurement measurement : measurements) {
+                for (Measurement measurement : measurements) {
                     metricNames.addAll(measurement.getMetricNameList());
                     writeHeader(store);
                     /**
@@ -63,7 +63,7 @@ public class MeasurementLogger extends GenericLogger<HostMeasurement> {
                 }
 
             }
-            for (HostMeasurement measurement : measurements) {
+            for (Measurement measurement : measurements) {
                 writebody(measurement, store);
                 store.saveMemoryConservative();
             }
@@ -82,7 +82,7 @@ public class MeasurementLogger extends GenericLogger<HostMeasurement> {
     }
 
     @Override
-    public void writebody(HostMeasurement item, ResultsStore store) {
+    public void writebody(Measurement item, ResultsStore store) {
         store.add(item.getClock());
         for (String name : metricNames) {
             store.append(item.getMetric(name).getValueAsString());

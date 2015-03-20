@@ -17,6 +17,7 @@ package eu.ascetic.asceticarchitecture.iaas.energymodellerdatalogger;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDirectDbDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -54,8 +55,19 @@ public class Logger {
         }
         ZabbixDirectDbDataSourceAdaptor adaptor = new ZabbixDirectDbDataSourceAdaptor();
         Host host = adaptor.getHostByName(hostname);
+        VmDeployed vm = null;
+        if (host == null) {
+            vm = adaptor.getVmByName(hostname);
+        }
         while (running) {
-            logger.printToFile(adaptor.getHostData(host));
+            if (host != null) {
+                logger.printToFile(adaptor.getHostData(host));
+            } else if (vm != null) {
+                logger.printToFile(adaptor.getVmData(vm));
+            } else {
+                running = false;
+                java.util.logging.Logger.getLogger(Logger.class.getName()).log(Level.INFO, "The resource named was not found");
+            }
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException ex) {
