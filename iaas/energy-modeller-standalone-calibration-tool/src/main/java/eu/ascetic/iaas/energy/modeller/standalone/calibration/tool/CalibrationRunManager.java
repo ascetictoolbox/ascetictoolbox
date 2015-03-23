@@ -83,6 +83,9 @@ public class CalibrationRunManager implements ManagedProcessListener {
         logging = settings.getBoolean("log_executions", true);
         calibratorWaitSec = settings.getInt("poll_interval", calibratorWaitSec);
         simulateCalibrationRun = settings.getBoolean("simulate_calibration_run", simulateCalibrationRun);
+        if (simulateCalibrationRun) {
+            System.out.println("This is a simulated run, no data will be saved!");
+        }
         if (settings.isChanged()) {
             settings.save("calibration_settings.properties");
         }
@@ -258,6 +261,8 @@ public class CalibrationRunManager implements ManagedProcessListener {
             if (database != null && !measurements.isEmpty()) {
                 database.setHostCalibrationData(host);
             }
+        } else {
+            System.out.println("This was a simulated run! No data has been saved");
         }
         return calibrationData;
     }
