@@ -19,31 +19,35 @@
 package es.bsc.vmmanagercore.energymodeller.ascetic;
 
 import es.bsc.vmmanagercore.model.vms.Vm;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * This class converts the classes used in the VMM to the classes used in the Energy Modeller.
- * For example, the VM class is similar in the two components, but we need to apply some transformations.
- *
- * @author David Ortiz Lopez (david.ortiz@bsc.es)
- */
-public class VMMToEMConversor {
+import static junit.framework.TestCase.assertTrue;
 
-    // Suppress default constructor for non-instantiability
-    private VMMToEMConversor() {
-        throw new AssertionError();
+/**
+* @author David Ortiz Lopez (david.ortiz@bsc.es)
+*/
+public class VMMToEMConversorTest {
+    
+    @Test
+    public void getVmsEnergyModFromVms() {
+        List<Vm> vms = new ArrayList<>();
+        vms.add(new Vm("vm1", "image", 1, 1024, 10, "", ""));
+        vms.add(new Vm("vm2", "image", 2, 2048, 20, "", ""));
+        
+        List<VM> convertedVMs = VMMToEMConversor.getVmsEnergyModFromVms(vms);
+        VM firstVm = convertedVMs.get(0);
+        VM secondVm = convertedVMs.get(1);
+        assertTrue(firstVm.getCpus() == 1 && firstVm.getRamMb() == 1024 && firstVm.getDiskGb() == 10);
+        assertTrue(secondVm.getCpus() == 2 && secondVm.getRamMb() == 2048 && secondVm.getDiskGb() == 20);
     }
     
-    public static List<VM> getVmsEnergyModFromVms(List<Vm> vms) {
-        List<VM> result = new ArrayList<>();
-        for (Vm vm: vms) {
-            result.add(EnergyModeller.getVM(vm.getCpus(), vm.getRamMb(), vm.getDiskGb()));
-        }
-        return result;
+    @Test
+    public void getVmsEnergyModFromVmsReturnsEmptyWhenItReceivesAnEmptyList() {
+        assertTrue(VMMToEMConversor.getVmsEnergyModFromVms(new ArrayList<Vm>()).isEmpty());
     }
-
+    
 }
