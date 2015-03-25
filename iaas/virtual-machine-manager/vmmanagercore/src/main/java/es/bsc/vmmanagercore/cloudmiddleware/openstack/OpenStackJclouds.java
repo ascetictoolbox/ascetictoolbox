@@ -383,8 +383,10 @@ public class OpenStackJclouds implements CloudMiddleware {
      */
     private String getVmIp(Server server) {
         List<Address> addresses = new ArrayList<>(server.getAddresses().values());
-        return addresses.get(0).getAddr(); // Important: this returns only 1 IP, but VMs can have more than 1.
-    }
+        // IMPORTANT: this returns only 1 IP, but VMs can have more than 1.
+        // For now, I return just 1 to avoid breaking VMM clients.
+        return addresses.get(addresses.size() - 1).getAddr(); 
+     }
 
     /**
      * Blocks the thread execution until a specific VM is deployed.
