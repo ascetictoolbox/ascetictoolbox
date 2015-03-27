@@ -41,7 +41,11 @@ public class VMMToEMConversor {
     public static List<VM> getVmsEnergyModFromVms(List<Vm> vms) {
         List<VM> result = new ArrayList<>();
         for (Vm vm: vms) {
-            result.add(EnergyModeller.getVM(vm.getCpus(), vm.getRamMb(), vm.getDiskGb()));
+            VM emVM = EnergyModeller.getVM(vm.getCpus(), vm.getRamMb(), vm.getDiskGb());
+            //Examples of tags are: "JBoss", "MySQL", "HAProxy", "JEPlus"
+            emVM.addApplicationTag(vm.getApplicationId());
+            emVM.addDiskImage(vm.getImage());
+            result.add(emVM);
         }
         return result;
     }
