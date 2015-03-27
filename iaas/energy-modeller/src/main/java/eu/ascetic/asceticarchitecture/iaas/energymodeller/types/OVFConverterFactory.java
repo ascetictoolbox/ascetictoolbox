@@ -1,5 +1,5 @@
 /**
- * Copyright 2014 University of Leeds
+ * Copyright 2015 University of Leeds
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -55,21 +55,39 @@ public class OVFConverterFactory {
         VirtualSystemCollection vmsSection = deploymentOVF.getVirtualSystemCollection();
         String deploymentId = getDeploymentID(deploymentOVF);
         for (VirtualSystem virtualMachine : vmsSection.getVirtualSystemArray()) {
-            VM vm = new VM(virtualMachine.getVirtualHardwareSection().getNumberOfVirtualCPUs(),
-                    virtualMachine.getVirtualHardwareSection().getMemorySize(),
-                    getVmDiskSize(virtualMachine, diskSection));
-            vm.setDiskImages(getVmDiskImages(virtualMachine, diskSection));
-            vm.setDeploymentID(deploymentId);
+            VM vm = getVM(deploymentId, virtualMachine, diskSection);
             answer.add(vm);
         }
         return answer;
     }
 
     /**
+     * This creates a VM object in cases where the VM has yet to be
+     * instantiated.
+     *
+     * @param deploymentId The deployment Id for the set of VM deployments
+     * @param virtualMachine The OVF section describing the virtual machine
+     * @param diskSection The OVF section describing disk images
+     * @return A new VM with the parameters specified above.
+     */
+    public static VM getVM(String deploymentId, VirtualSystem virtualMachine, DiskSection diskSection) {
+        if (virtualMachine == null || diskSection == null) {
+            return null;
+        }
+        VM answer = new VM(virtualMachine.getVirtualHardwareSection().getNumberOfVirtualCPUs(),
+                virtualMachine.getVirtualHardwareSection().getMemorySize(),
+                getVmDiskSize(virtualMachine, diskSection));
+        answer.setDiskImages(getVmDiskImages(virtualMachine, diskSection));
+        answer.setDeploymentID(deploymentId);
+        return answer;
+    }
+
+    /**
      * This returns the ASCETiC deployment ID for a set of VMs, if it exists
+     *
      * @param deploymentOVF the virtual machines for deployment as described in
      * OVF.
-     * @return The deploymentID for a VM if it exists otherwise it returns the 
+     * @return The deploymentID for a VM if it exists otherwise it returns the
      * empty string "".
      */
     private static String getDeploymentID(OvfDefinition deploymentOVF) {
@@ -83,6 +101,7 @@ public class OVFConverterFactory {
 
     /**
      * This returns the size of the overall disk space available to the VM.
+     *
      * @param diskSection The set of disks as defined in the OVF
      * @param virtualMachine The virtual machine to find the disk size for
      * @return The size of this disk in Gb
@@ -101,6 +120,7 @@ public class OVFConverterFactory {
 
     /**
      * This returns the list of images that make up the VM.
+     *
      * @param diskSection The set of disks as defined in the OVF
      * @param virtualMachine The virtual machine to find the disk size for
      * @return The size of this disk in Gb
@@ -115,8 +135,8 @@ public class OVFConverterFactory {
             }
         }
         return answer;
-    }    
-    
+    }
+
     /**
      * This returns the disk capacity in bytes.
      *

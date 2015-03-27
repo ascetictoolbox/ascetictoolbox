@@ -34,16 +34,13 @@ public class VM extends EnergyUsageSource {
     private int ramMb;
     private double diskGb;
     /**
-     * VM identification concepts: 
-     * DeploymentID: This is the PaaS layer deployment Id. 
-     * The deployment Id can be used for several VMs. This may also be called
-     * the application id.
-     * Disk Images: This identifies the disks that are attached to the VM. The
-     * principle is that these can the be used to identify the workload profile,
-     * of the VM. 
-     * Application Tags: These can be used in a similar fashion, these
-     * tags should be unique to an application but can be extended to indicate
-     * other factors as well.
+     * VM identification concepts: DeploymentID: This is the PaaS layer
+     * deployment Id. The deployment Id can be used for several VMs. This may
+     * also be called the application id. Disk Images: This identifies the disks
+     * that are attached to the VM. The principle is that these can the be used
+     * to identify the workload profile, of the VM. Application Tags: These can
+     * be used in a similar fashion, these tags should be unique to an
+     * application but can be extended to indicate other factors as well.
      */
     private String deploymentID = null;
     private HashSet<VmDiskImage> diskImages = new HashSet<>();
@@ -227,13 +224,14 @@ public class VM extends EnergyUsageSource {
     public void setDiskImages(HashSet<VmDiskImage> diskImages) {
         this.diskImages = diskImages;
     }
-    
+
     /**
      * This adds a new disk image to the VM.
+     *
      * @param image The disk image to add
      */
     public void addDiskImage(String image) {
-       diskImages.add(new VmDiskImage(image));
+        diskImages.add(new VmDiskImage(image));
     }
 
     /**
@@ -279,8 +277,8 @@ public class VM extends EnergyUsageSource {
     }
 
     /**
-     * This allows the set of application IDs that are part of this VM to be
-     * set. Application IDs are intended as unique tags that can be set to
+     * This allows the set of application tags that are part of this VM to be
+     * set. Application Tags are intended as unique tags that can be set to
      * identify the applications on the VM.
      *
      * @param applicationTags the applicationTags The set of unique identifiers
@@ -289,6 +287,18 @@ public class VM extends EnergyUsageSource {
      */
     public void setApplicationTags(HashSet<String> applicationTags) {
         this.applicationTags = applicationTags;
+    }
+
+    /**
+     * This allows an application tags to be added to this VM.  
+     * Application Tags are intended as unique tags that can be set to
+     * identify the applications on the VM. 
+     * @param tag 
+     */
+    public void addApplicationTag(String tag) {
+        if (tag != null) {
+            this.applicationTags.add(tag);
+        }
     }
 
     /**
