@@ -51,7 +51,7 @@ public class DataGatherer implements Runnable {
     private HashMap<String, Host> knownHosts = new HashMap<>();
     private HashMap<String, VmDeployed> knownVms = new HashMap<>();
     private final HashMap<Host, Long> lastTimeStampSeen = new HashMap<>();
-    private static final String CONFIG_FILE = "energymodeller_data_gatherer.properties";
+    private static final String CONFIG_FILE = "energy-modeller-data-gatherer.properties";
     private boolean logVmsToDisk = false;
     private boolean performDataGathering = false;
     private boolean loggerConsiderIdleEnergy = true;

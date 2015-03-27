@@ -41,7 +41,7 @@ public class Calibrator implements Runnable {
     private static int calibratorWaitSec = 2; //Default 2 second poll interval during training
     private static int calibratorMaxDurationSec = 240; //for 2 minutes.
     private static String defaultLoadGenerator = "DefaultLoadGenerator";
-    private static final String CONFIG_FILE = "energymodeller_calibrator.properties";
+    private static final String CONFIG_FILE = "energy-modeller-calibrator.properties";
     private static final String DEFAULT_LOAD_GEN_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration";
     private Class<?> loadGenerator = DummyLoadGenerator.class;
     private String loadGeneratorDomain = ".cit.tu-berlin.de:8080/energy-modeller-load-calibration-tool-0.0.1-SNAPSHOT/";

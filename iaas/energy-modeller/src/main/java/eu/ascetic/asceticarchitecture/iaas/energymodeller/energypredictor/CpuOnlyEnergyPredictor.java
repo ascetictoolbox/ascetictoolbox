@@ -46,7 +46,7 @@ import org.apache.commons.math3.stat.regression.SimpleRegression;
  */
 public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
 
-    private static final String CONFIG_FILE = "energymodeller_cpu_predictor.properties";
+    private static final String CONFIG_FILE = "energy-modeller-predictor.properties";
     private static final String DEFAULT_DATA_SOURCE_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient";
     private double usageCPU = 0.6; //assumed 60 percent usage, by default
     private HostDataSource source = null;

@@ -25,10 +25,9 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmener
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.LoadFractionShareRule;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.historic.HistoricLoadBasedDivision;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.historic.LoadBasedDivision;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.FastDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.WattsUpMeterDataSourceAdaptor;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDataSourceAdaptor;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDirectDbDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.OVFConverterFactory;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
@@ -92,8 +91,8 @@ public class EnergyModeller {
      */
     public static void main(String[] args) {
         try {
-            if (new File("logging.properties").exists()) {
-                LogManager.getLogManager().readConfiguration(new FileInputStream(new File("logging.properties")));
+            if (new File("energy-modeller-logging.properties").exists()) {
+                LogManager.getLogManager().readConfiguration(new FileInputStream(new File("energy-modeller-logging.properties")));
             }
         } catch (FileNotFoundException ex) {
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.SEVERE, null, ex);
@@ -141,7 +140,7 @@ public class EnergyModeller {
      * This creates a new energy modeller.
      */
     public EnergyModeller() {
-        datasource = new FastDataSourceAdaptor();
+        datasource = new ZabbixDirectDbDataSourceAdaptor();
         database = new DefaultDatabaseConnector();
         startup(false);
     }
@@ -153,7 +152,7 @@ public class EnergyModeller {
      * write to disk and also write to the background database.
      */
     public EnergyModeller(boolean performDataGathering) {
-        datasource = new FastDataSourceAdaptor();
+        datasource = new ZabbixDirectDbDataSourceAdaptor();
         database = new DefaultDatabaseConnector();
         startup(performDataGathering);
     }
@@ -238,13 +237,13 @@ public class EnergyModeller {
             calibrator.setDatasource(datasource);
         } catch (ClassNotFoundException ex) {
             if (datasource == null) {
-                datasource = new ZabbixDataSourceAdaptor();
+                datasource = new ZabbixDirectDbDataSourceAdaptor();
                 calibrator.setDatasource(datasource);
             }
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The data source specified was not found");
         } catch (InstantiationException | IllegalAccessException ex) {
             if (datasource == null) {
-                datasource = new ZabbixDataSourceAdaptor();
+                datasource = new ZabbixDirectDbDataSourceAdaptor();
                 calibrator.setDatasource(datasource);
             }
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The data source did not work", ex);

@@ -33,7 +33,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
  */
 public class NamedList implements ZabbixHostVMFilter {
 
-    public static final String CONFIG_FILE = "filter.properties";
+    public static final String CONFIG_FILE = "energy-modeller-zabbix.properties";
 
     private String namedSet = "asok09,asok10,asok11,asok12";
     private HashSet<String> hostNames = new HashSet<>();

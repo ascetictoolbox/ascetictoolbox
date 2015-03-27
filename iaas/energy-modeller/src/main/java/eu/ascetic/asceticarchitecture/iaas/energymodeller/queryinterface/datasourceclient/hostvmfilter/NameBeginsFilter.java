@@ -29,7 +29,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
  */
 public class NameBeginsFilter implements ZabbixHostVMFilter {
 
-    public static final String CONFIG_FILE = "filter.properties";
+    public static final String CONFIG_FILE = "energy-modeller-zabbix.properties";
 
     private String begins = "asok";
     private boolean isHost = true;

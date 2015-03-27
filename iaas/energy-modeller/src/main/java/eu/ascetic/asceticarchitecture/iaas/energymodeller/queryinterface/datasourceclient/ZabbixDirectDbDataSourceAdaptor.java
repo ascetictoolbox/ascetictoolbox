@@ -138,7 +138,7 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
      */
     private static String begins = "asok";
     private static boolean isHost = true;
-    private static final String CONFIG_FILE = "zabbix_db_adaptor.properties";
+    private static final String CONFIG_FILE = "energy-modeller-db-zabbix.properties";
     private static final Logger DB_LOGGER = Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName());
 
     /**
