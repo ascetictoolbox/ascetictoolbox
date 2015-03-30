@@ -129,7 +129,7 @@ public interface DatabaseConnector {
     public List<HostEnergyRecord> getHostHistoryData(Host host, TimePeriod timePeriod);
 
     /**
-     *
+     * This writes VM utilisation data for a given physical host to the database.
      * @param host The host to set the vm load information for
      * @param time The time when the measurements were taken.
      * @param load The summary of the VM load data on the host.
@@ -137,7 +137,7 @@ public interface DatabaseConnector {
     public void writeHostVMHistoricData(Host host, long time, HostVmLoadFraction load);
 
     /**
-     *
+     * This gets VM utilisation data for a given physical host from the database.
      * @param host The host to get the vm load information for
      * @param timePeriod The start and end period for which to query for. If
      * null all records will be returned.

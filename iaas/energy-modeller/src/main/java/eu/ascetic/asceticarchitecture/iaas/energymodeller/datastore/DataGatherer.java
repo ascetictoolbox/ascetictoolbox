@@ -100,12 +100,7 @@ public class DataGatherer implements Runnable {
         connector.setHosts(hosts);
         //Ensure calibration data is recovered from the db.
         for (Host host : hosts) {
-            if (!host.isCalibrated()) {
-                host.setCalibrationData(connector.getHostCalibrationData(host).getCalibrationData());
-            }
-            if (!host.isCalibrated()) {
-                calibrator.calibrateHostEnergyData(host);
-            }
+            checkAndCalibrateHost(host);
         }
         Collection<VmDeployed> vms = datasource.getVmList();
         connector.setVms(vms);
@@ -317,10 +312,28 @@ public class DataGatherer implements Runnable {
             List<Host> newHosts = discoverNewHosts(hostList);
             connector.setHosts(newHosts);
             for (Host host : newHosts) {
+                host = checkAndCalibrateHost(host);
                 knownHosts.put(host.getHostName(), host);
-                calibrator.calibrateHostEnergyData(host);
             }
         }
+    }
+
+    /**
+     * This checks a host to see if its calibrated then performs calibration if
+     * it is not calibrated.
+     *
+     * @param host The host to check.
+     * @return The calibrated host.
+     */
+    private Host checkAndCalibrateHost(Host host) {
+        if (!host.isCalibrated()) {
+            host.setCalibrationData(connector.getHostCalibrationData(host).getCalibrationData());
+            host = connector.getHostProfileData(host);
+        }
+        if (!host.isCalibrated()) {
+            calibrator.calibrateHostEnergyData(host);
+        }
+        return host;
     }
 
     /**
@@ -428,7 +441,7 @@ public class DataGatherer implements Runnable {
     public HashMap<String, VmDeployed> getVmList() {
         return knownVms;
     }
-    
+
     /**
      * This provides the list of known Vms
      *
@@ -443,7 +456,7 @@ public class DataGatherer implements Runnable {
             }
         }
         return answer;
-    }    
+    }
 
     /**
      * This gets the named VM from the known VM list.
@@ -453,6 +466,21 @@ public class DataGatherer implements Runnable {
      */
     public VmDeployed getVm(String name) {
         return knownVms.get(name);
+    }
+
+    /**
+     * This allows a VM that has been deployed to have extra details about it
+     * set such as tag information. This only allows already known VMs to be
+     * edited.
+     *
+     * @param vm The vm to add to the list of known VMs
+     */
+    public boolean setVm(VmDeployed vm) {
+        if (knownVms.containsKey(vm.getName())) {
+            knownVms.put(vm.getName(), vm);
+            return true;
+        }
+        return false;
     }
 
     /**
