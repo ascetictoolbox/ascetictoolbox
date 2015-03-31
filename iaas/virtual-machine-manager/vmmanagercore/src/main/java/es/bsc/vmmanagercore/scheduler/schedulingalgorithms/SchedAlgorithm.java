@@ -38,7 +38,7 @@ public interface SchedAlgorithm {
      * @param deploymentId ID used to identify the deployment in the log messages
      * @return the best deployment plan
      */
-    public DeploymentPlan chooseBestDeploymentPlan(List<DeploymentPlan> deploymentPlans, List<Host> hosts,
-            String deploymentId);
+    DeploymentPlan chooseBestDeploymentPlan(List<DeploymentPlan> deploymentPlans, List<Host> hosts, 
+                                            String deploymentId);
 
 }

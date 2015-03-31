@@ -34,12 +34,12 @@ public interface VmManagerDb {
     /**
      * Closes the connection with the DB.
      */
-    public void closeConnection();
+    void closeConnection();
 
     /**
      * Deletes all the record from the DB.
      */
-    public void cleanDb();
+    void cleanDb();
 
     /**
      * Inserts a VM on the DB.
@@ -47,14 +47,14 @@ public interface VmManagerDb {
      * @param vmId the ID of the VM to be inserted
      * @param appId the ID of the application to which the VM belongs to.
      */
-    public void insertVm(String vmId, String appId);
+    void insertVm(String vmId, String appId);
 
     /**
      * Deletes a VM from the DB.
      *
      * @param vmId the ID of the VM to be deleted
      */
-    public void deleteVm(String vmId);
+    void deleteVm(String vmId);
 
     /**
      * Returns the ID of the application to which a specific VM belongs to.
@@ -62,19 +62,19 @@ public interface VmManagerDb {
      * @param vmId the ID of the VM
      * @return the ID of the application
      */
-    public String getAppIdOfVm(String vmId);
+    String getAppIdOfVm(String vmId);
 
     /**
      * Deletes all the VMs from the DB.
      */
-    public void deleteAllVms();
+    void deleteAllVms();
 
     /**
      * Returns the IDs of the VMs present in the DB.
      *
      * @return IDs of the VMs present in the DB
      */
-    public List<String> getAllVmIds();
+    List<String> getAllVmIds();
 
     /**
      * Returns the IDs of the VMs that belong to an application.
@@ -82,34 +82,34 @@ public interface VmManagerDb {
      * @param appId the ID of the application
      * @return the IDs of the VMs that belong to the application
      */
-    public List<String> getVmsOfApp(String appId);
+    List<String> getVmsOfApp(String appId);
 
     /**
      * Returns the scheduling algorithm being used.
      *
      * @return the scheduling algorithm
      */
-    public SchedulingAlgorithm getCurrentSchedulingAlg();
+    SchedulingAlgorithm getCurrentSchedulingAlg();
 
     /**
      * Changes the current scheduling algorithm.
      *
      * @param alg the scheduling algorithm to be used
      */
-    public void setCurrentSchedulingAlg(SchedulingAlgorithm alg);
+    void setCurrentSchedulingAlg(SchedulingAlgorithm alg);
 
     /**
      * Changes the options for the self-adaptation capabilities.
      *
      * @param options the options
      */
-    public void saveSelfAdaptationOptions(SelfAdaptationOptions options);
+    void saveSelfAdaptationOptions(SelfAdaptationOptions options);
 
     /**
      * Returns the options for the self-adaptation capabilities.
      *
      * @return the options
      */
-    public SelfAdaptationOptions getSelfAdaptationOptions();
+    SelfAdaptationOptions getSelfAdaptationOptions();
 
 }

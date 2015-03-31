@@ -39,8 +39,7 @@ public interface EnergyModeller {
      * @param deploymentPlan where it is defined that the vm has been assigned to the host
      * @return the predicted avg. power in Watts
      */
-    public double getPredictedAvgPowerVm(Vm vm, Host host, List<VmDeployed> vmsDeployed,
-                                         DeploymentPlan deploymentPlan);
+    double getPredictedAvgPowerVm(Vm vm, Host host, List<VmDeployed> vmsDeployed, DeploymentPlan deploymentPlan);
 
     /**
      * Returns the predicted energy that will be consumed by a VM if it was deployed in a specific host.
@@ -50,8 +49,7 @@ public interface EnergyModeller {
      * @param vmsDeployed the VMs already deployed in the host
      * @return the predicted energy in Joules
      */
-    public double getPredictedEnergyVm(Vm vm, Host host, List<VmDeployed> vmsDeployed,
-                                       DeploymentPlan deploymentPlan);
+    double getPredictedEnergyVm(Vm vm, Host host, List<VmDeployed> vmsDeployed, DeploymentPlan deploymentPlan);
 
 
     /**
@@ -61,6 +59,6 @@ public interface EnergyModeller {
      * @param vms The VMs that are deployed or expected to be deployed in the host.
      * @return the predicted avg. power in Watts
      */
-    public double getHostPredictedAvgPower(String hostname, List<Vm> vms);
+    double getHostPredictedAvgPower(String hostname, List<Vm> vms);
 
 }

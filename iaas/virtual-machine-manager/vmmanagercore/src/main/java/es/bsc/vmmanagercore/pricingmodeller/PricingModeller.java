@@ -30,6 +30,6 @@ public interface PricingModeller {
      * @param hostname the hostname
      * @return the predicted cost of the VM
      */
-    public double getVmCost(double totalEnergy, String hostname);
+    double getVmCost(double totalEnergy, String hostname);
 
 }
