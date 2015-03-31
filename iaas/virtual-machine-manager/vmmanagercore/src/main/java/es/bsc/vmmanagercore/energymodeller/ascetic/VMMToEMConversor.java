@@ -42,9 +42,12 @@ public class VMMToEMConversor {
         List<VM> result = new ArrayList<>();
         for (Vm vm: vms) {
             VM emVM = EnergyModeller.getVM(vm.getCpus(), vm.getRamMb(), vm.getDiskGb());
-            //Examples of tags are: "JBoss", "MySQL", "HAProxy", "JEPlus"
-            emVM.addApplicationTag(vm.getApplicationId());
             emVM.addDiskImage(vm.getImage());
+            
+            //Examples of tags are: "JBoss", "MySQL", "HAProxy", "JEPlus"
+            //Application is a hashset in the new version of the EM. What should I send?
+            //emVM.addApplicationTag(vm.getApplicationId());
+            
             result.add(emVM);
         }
         return result;
