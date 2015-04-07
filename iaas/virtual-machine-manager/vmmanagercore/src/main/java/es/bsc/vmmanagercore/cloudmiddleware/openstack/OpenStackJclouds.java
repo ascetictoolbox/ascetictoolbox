@@ -19,10 +19,10 @@
 package es.bsc.vmmanagercore.cloudmiddleware.openstack;
 
 import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddleware;
-import es.bsc.vmmanagercore.model.images.ImageToUpload;
-import es.bsc.vmmanagercore.model.images.ImageUploaded;
-import es.bsc.vmmanagercore.model.vms.Vm;
-import es.bsc.vmmanagercore.model.vms.VmDeployed;
+import es.bsc.vmmanagercore.models.images.ImageToUpload;
+import es.bsc.vmmanagercore.models.images.ImageUploaded;
+import es.bsc.vmmanagercore.models.vms.Vm;
+import es.bsc.vmmanagercore.models.vms.VmDeployed;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.validator.UrlValidator;
 import org.jclouds.openstack.nova.v2_0.NovaApi;

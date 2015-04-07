@@ -19,7 +19,7 @@
 package es.bsc.vmmanagercore.cloudmiddleware.openstack;
 
 import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
-import es.bsc.vmmanagercore.model.images.ImageToUpload;
+import es.bsc.vmmanagercore.models.images.ImageToUpload;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

@@ -19,7 +19,7 @@
 package es.bsc.vmmanagercore.vmplacement;
 
 import es.bsc.clopla.domain.Vm;
-import es.bsc.vmmanagercore.model.vms.VmDeployed;
+import es.bsc.vmmanagercore.models.vms.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.hosts.Host;
 import es.bsc.vmmanagercore.monitoring.hosts.HostFake;
 import org.junit.Test;
@@ -43,7 +43,7 @@ public class CloplaConversorTest {
         List<VmDeployed> vmsDeployed = new ArrayList<>();
         vmsDeployed.add(new VmDeployed("vm", "fakeImage", 1, 1024, 1, 0, "", "appId", "vmId", "172.16.8.1", "ACTIVE",
                 new Date(), "host1"));
-        Vm cloplaVm = CloplaConversor.getCloplaVms(vmsDeployed, new ArrayList<es.bsc.vmmanagercore.model.vms.Vm>(),
+        Vm cloplaVm = CloplaConversor.getCloplaVms(vmsDeployed, new ArrayList<es.bsc.vmmanagercore.models.vms.Vm>(),
                 new ArrayList<es.bsc.clopla.domain.Host>(), false).get(0);
         assertEquals(1, cloplaVm.getNcpus());
         assertEquals(1024, cloplaVm.getRamMb());

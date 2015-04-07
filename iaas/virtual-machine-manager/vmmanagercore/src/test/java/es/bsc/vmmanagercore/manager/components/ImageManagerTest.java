@@ -19,8 +19,8 @@
 package es.bsc.vmmanagercore.manager.components;
 
 import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddleware;
-import es.bsc.vmmanagercore.model.images.ImageToUpload;
-import es.bsc.vmmanagercore.model.images.ImageUploaded;
+import es.bsc.vmmanagercore.models.images.ImageToUpload;
+import es.bsc.vmmanagercore.models.images.ImageUploaded;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
@@ -28,9 +28,7 @@ import org.powermock.api.mockito.PowerMockito;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * Tests for ImageManager.

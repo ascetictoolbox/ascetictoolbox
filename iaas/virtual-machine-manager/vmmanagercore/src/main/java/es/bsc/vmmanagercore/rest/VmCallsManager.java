@@ -22,8 +22,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import es.bsc.vmmanagercore.manager.VmManager;
-import es.bsc.vmmanagercore.model.vms.ListVms;
-import es.bsc.vmmanagercore.model.vms.ListVmsDeployed;
+import es.bsc.vmmanagercore.models.vms.ListVms;
+import es.bsc.vmmanagercore.models.vms.ListVmsDeployed;
 
 import java.util.List;
 

@@ -21,8 +21,8 @@ package es.bsc.vmmanagercore.rest;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import es.bsc.vmmanagercore.manager.VmManager;
-import es.bsc.vmmanagercore.model.images.ImageToUpload;
-import es.bsc.vmmanagercore.model.images.ListImagesUploaded;
+import es.bsc.vmmanagercore.models.images.ImageToUpload;
+import es.bsc.vmmanagercore.models.images.ListImagesUploaded;
 
 /**
  * This class implements the REST calls that are related with VM images.

@@ -18,10 +18,10 @@
 
 package es.bsc.vmmanagercore.cloudmiddleware;
 
-import es.bsc.vmmanagercore.model.images.ImageToUpload;
-import es.bsc.vmmanagercore.model.images.ImageUploaded;
-import es.bsc.vmmanagercore.model.vms.Vm;
-import es.bsc.vmmanagercore.model.vms.VmDeployed;
+import es.bsc.vmmanagercore.models.images.ImageToUpload;
+import es.bsc.vmmanagercore.models.images.ImageUploaded;
+import es.bsc.vmmanagercore.models.vms.Vm;
+import es.bsc.vmmanagercore.models.vms.VmDeployed;
 
 import java.util.List;
 

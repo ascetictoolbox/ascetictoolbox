@@ -23,14 +23,14 @@ import es.bsc.clopla.domain.ConstructionHeuristic;
 import es.bsc.clopla.placement.config.Policy;
 import es.bsc.clopla.placement.config.VmPlacementConfig;
 import es.bsc.clopla.placement.config.localsearch.*;
-import es.bsc.vmmanagercore.energymodeller.EnergyModeller;
-import es.bsc.vmmanagercore.model.scheduling.RecommendedPlan;
-import es.bsc.vmmanagercore.model.scheduling.RecommendedPlanRequest;
-import es.bsc.vmmanagercore.model.scheduling.SchedulingAlgorithm;
-import es.bsc.vmmanagercore.model.vms.Vm;
-import es.bsc.vmmanagercore.model.vms.VmDeployed;
+import es.bsc.vmmanagercore.modellers.energy.EnergyModeller;
+import es.bsc.vmmanagercore.modellers.price.PricingModeller;
+import es.bsc.vmmanagercore.models.scheduling.RecommendedPlan;
+import es.bsc.vmmanagercore.models.scheduling.RecommendedPlanRequest;
+import es.bsc.vmmanagercore.models.scheduling.SchedulingAlgorithm;
+import es.bsc.vmmanagercore.models.vms.Vm;
+import es.bsc.vmmanagercore.models.vms.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.hosts.Host;
-import es.bsc.vmmanagercore.pricingmodeller.PricingModeller;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -137,10 +137,10 @@ public class CloplaConversor {
      * @param vms the list of VMs for the placement library
      * @return the list of VMs for the Energy Modeller
      */
-    public static List<es.bsc.vmmanagercore.model.vms.Vm> cloplaVmsToVmmType(List<es.bsc.clopla.domain.Vm> vms) {
-        List<es.bsc.vmmanagercore.model.vms.Vm> result = new ArrayList<>();
+    public static List<es.bsc.vmmanagercore.models.vms.Vm> cloplaVmsToVmmType(List<es.bsc.clopla.domain.Vm> vms) {
+        List<es.bsc.vmmanagercore.models.vms.Vm> result = new ArrayList<>();
         for (es.bsc.clopla.domain.Vm vm: vms) {
-            result.add(new es.bsc.vmmanagercore.model.vms.Vm(
+            result.add(new es.bsc.vmmanagercore.models.vms.Vm(
                     vm.getAlphaNumericId(),
                     null,
                     vm.getNcpus(),

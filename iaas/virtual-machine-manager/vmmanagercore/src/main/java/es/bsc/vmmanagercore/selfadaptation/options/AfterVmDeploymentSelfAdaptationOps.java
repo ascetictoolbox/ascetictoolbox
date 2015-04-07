@@ -18,8 +18,8 @@
 
 package es.bsc.vmmanagercore.selfadaptation.options;
 
-import es.bsc.vmmanagercore.model.scheduling.ConstructionHeuristic;
-import es.bsc.vmmanagercore.model.scheduling.LocalSearchAlgorithmOptionsSet;
+import es.bsc.vmmanagercore.models.scheduling.ConstructionHeuristic;
+import es.bsc.vmmanagercore.models.scheduling.LocalSearchAlgorithmOptionsSet;
 
 /**
  * @author David Ortiz Lopez (david.ortiz@bsc.es)

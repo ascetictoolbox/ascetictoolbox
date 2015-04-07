@@ -1,12 +1,12 @@
 package es.bsc.vmmanagercore.manager;
 
-import es.bsc.vmmanagercore.model.estimations.ListVmEstimates;
-import es.bsc.vmmanagercore.model.estimations.VmToBeEstimated;
-import es.bsc.vmmanagercore.model.images.ImageToUpload;
-import es.bsc.vmmanagercore.model.images.ImageUploaded;
-import es.bsc.vmmanagercore.model.scheduling.*;
-import es.bsc.vmmanagercore.model.vms.Vm;
-import es.bsc.vmmanagercore.model.vms.VmDeployed;
+import es.bsc.vmmanagercore.models.estimations.ListVmEstimates;
+import es.bsc.vmmanagercore.models.estimations.VmToBeEstimated;
+import es.bsc.vmmanagercore.models.images.ImageToUpload;
+import es.bsc.vmmanagercore.models.images.ImageUploaded;
+import es.bsc.vmmanagercore.models.scheduling.*;
+import es.bsc.vmmanagercore.models.vms.Vm;
+import es.bsc.vmmanagercore.models.vms.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.hosts.Host;
 import es.bsc.vmmanagercore.selfadaptation.options.SelfAdaptationOptions;
 

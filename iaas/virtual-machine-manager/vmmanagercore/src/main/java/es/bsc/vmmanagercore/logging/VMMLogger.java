@@ -18,7 +18,7 @@
 
 package es.bsc.vmmanagercore.logging;
 
-import es.bsc.vmmanagercore.model.scheduling.DeploymentPlan;
+import es.bsc.vmmanagercore.models.scheduling.DeploymentPlan;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 

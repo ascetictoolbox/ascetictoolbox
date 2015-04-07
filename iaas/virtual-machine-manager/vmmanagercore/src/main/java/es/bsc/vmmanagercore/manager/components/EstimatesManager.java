@@ -19,11 +19,11 @@
 package es.bsc.vmmanagercore.manager.components;
 
 import es.bsc.vmmanagercore.db.VmManagerDb;
-import es.bsc.vmmanagercore.energymodeller.EnergyModeller;
-import es.bsc.vmmanagercore.model.estimations.ListVmEstimates;
-import es.bsc.vmmanagercore.model.estimations.VmToBeEstimated;
-import es.bsc.vmmanagercore.model.vms.Vm;
-import es.bsc.vmmanagercore.pricingmodeller.PricingModeller;
+import es.bsc.vmmanagercore.modellers.energy.EnergyModeller;
+import es.bsc.vmmanagercore.modellers.price.PricingModeller;
+import es.bsc.vmmanagercore.models.estimations.ListVmEstimates;
+import es.bsc.vmmanagercore.models.estimations.VmToBeEstimated;
+import es.bsc.vmmanagercore.models.vms.Vm;
 import es.bsc.vmmanagercore.scheduler.EstimatesGenerator;
 import es.bsc.vmmanagercore.scheduler.Scheduler;
 

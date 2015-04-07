@@ -23,10 +23,10 @@ import es.bsc.clopla.domain.LocalSearchHeuristic;
 import es.bsc.clopla.domain.LocalSearchHeuristicOption;
 import es.bsc.clopla.lib.Clopla;
 import es.bsc.clopla.lib.IClopla;
-import es.bsc.vmmanagercore.energymodeller.EnergyModeller;
-import es.bsc.vmmanagercore.model.scheduling.*;
-import es.bsc.vmmanagercore.model.vms.Vm;
-import es.bsc.vmmanagercore.pricingmodeller.PricingModeller;
+import es.bsc.vmmanagercore.modellers.energy.EnergyModeller;
+import es.bsc.vmmanagercore.modellers.price.PricingModeller;
+import es.bsc.vmmanagercore.models.scheduling.*;
+import es.bsc.vmmanagercore.models.vms.Vm;
 import es.bsc.vmmanagercore.vmplacement.CloplaConversor;
 
 import java.util.ArrayList;

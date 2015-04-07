@@ -20,9 +20,9 @@ package es.bsc.vmmanagercore.monitoring.hosts;
 
 import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
 import es.bsc.vmmanagercore.logging.VMMLogger;
-import es.bsc.vmmanagercore.model.hosts.HostPowerButtonAction;
-import es.bsc.vmmanagercore.model.hosts.ServerLoad;
-import es.bsc.vmmanagercore.model.vms.Vm;
+import es.bsc.vmmanagercore.models.hosts.HostPowerButtonAction;
+import es.bsc.vmmanagercore.models.hosts.ServerLoad;
+import es.bsc.vmmanagercore.models.vms.Vm;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;

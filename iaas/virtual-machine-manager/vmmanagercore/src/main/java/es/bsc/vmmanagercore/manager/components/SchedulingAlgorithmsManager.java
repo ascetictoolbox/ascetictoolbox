@@ -19,7 +19,7 @@
 package es.bsc.vmmanagercore.manager.components;
 
 import es.bsc.vmmanagercore.db.VmManagerDb;
-import es.bsc.vmmanagercore.model.scheduling.SchedulingAlgorithm;
+import es.bsc.vmmanagercore.models.scheduling.SchedulingAlgorithm;
 
 import java.util.ArrayList;
 import java.util.Arrays;

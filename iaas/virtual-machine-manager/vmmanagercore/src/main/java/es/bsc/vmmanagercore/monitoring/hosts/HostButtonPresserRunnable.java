@@ -18,7 +18,7 @@
 
 package es.bsc.vmmanagercore.monitoring.hosts;
 
-import es.bsc.vmmanagercore.model.hosts.HostPowerButtonAction;
+import es.bsc.vmmanagercore.models.hosts.HostPowerButtonAction;
 
 /**
  * @author David Ortiz Lopez (david.ortiz@bsc.es)

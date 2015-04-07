@@ -20,9 +20,9 @@ package es.bsc.vmmanagercore.rest;
 
 import com.google.gson.Gson;
 import es.bsc.vmmanagercore.manager.VmManager;
-import es.bsc.vmmanagercore.model.scheduling.RecommendedPlanRequest;
-import es.bsc.vmmanagercore.model.scheduling.VmPlacement;
-import es.bsc.vmmanagercore.model.vms.Vm;
+import es.bsc.vmmanagercore.models.scheduling.RecommendedPlanRequest;
+import es.bsc.vmmanagercore.models.scheduling.VmPlacement;
+import es.bsc.vmmanagercore.models.vms.Vm;
 
 import java.util.ArrayList;
 

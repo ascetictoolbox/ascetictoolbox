@@ -18,8 +18,8 @@
 
 package es.bsc.vmmanagercore.scheduler;
 
-import es.bsc.vmmanagercore.model.scheduling.DeploymentPlan;
-import es.bsc.vmmanagercore.model.scheduling.VmAssignmentToHost;
+import es.bsc.vmmanagercore.models.scheduling.DeploymentPlan;
+import es.bsc.vmmanagercore.models.scheduling.VmAssignmentToHost;
 
 import java.util.ArrayList;
 import java.util.List;

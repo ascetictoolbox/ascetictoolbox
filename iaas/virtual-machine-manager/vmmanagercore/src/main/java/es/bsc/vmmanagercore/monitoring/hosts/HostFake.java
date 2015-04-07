@@ -19,7 +19,7 @@
 package es.bsc.vmmanagercore.monitoring.hosts;
 
 import com.google.common.base.Preconditions;
-import es.bsc.vmmanagercore.model.vms.Vm;
+import es.bsc.vmmanagercore.models.vms.Vm;
 
 /**
  * Information about the status of a fake host.

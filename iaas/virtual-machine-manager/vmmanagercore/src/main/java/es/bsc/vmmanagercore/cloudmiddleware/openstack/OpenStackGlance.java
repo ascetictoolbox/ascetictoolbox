@@ -18,7 +18,7 @@
 
 package es.bsc.vmmanagercore.cloudmiddleware.openstack;
 
-import es.bsc.vmmanagercore.model.images.ImageToUpload;
+import es.bsc.vmmanagercore.models.images.ImageToUpload;
 import es.bsc.vmmanagercore.utils.CommandExecutor;
 import es.bsc.vmmanagercore.utils.HttpUtils;
 import org.apache.commons.validator.UrlValidator;

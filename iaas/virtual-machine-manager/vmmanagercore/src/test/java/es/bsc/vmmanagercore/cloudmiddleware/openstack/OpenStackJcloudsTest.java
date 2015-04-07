@@ -21,7 +21,7 @@ package es.bsc.vmmanagercore.cloudmiddleware.openstack;
 import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
 import es.bsc.vmmanagercore.db.VmManagerDb;
 import es.bsc.vmmanagercore.db.VmManagerDbFactory;
-import es.bsc.vmmanagercore.model.vms.Vm;
+import es.bsc.vmmanagercore.models.vms.Vm;
 import org.jclouds.openstack.nova.v2_0.domain.Flavor;
 import org.jclouds.openstack.nova.v2_0.domain.Server;
 import org.jclouds.openstack.nova.v2_0.features.FlavorApi;

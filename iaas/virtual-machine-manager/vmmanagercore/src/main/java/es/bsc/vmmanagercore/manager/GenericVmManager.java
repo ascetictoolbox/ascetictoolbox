@@ -25,29 +25,30 @@ import es.bsc.vmmanagercore.cloudmiddleware.openstack.OpenStackJclouds;
 import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
 import es.bsc.vmmanagercore.db.VmManagerDb;
 import es.bsc.vmmanagercore.db.VmManagerDbFactory;
-import es.bsc.vmmanagercore.energymodeller.EnergyModeller;
-import es.bsc.vmmanagercore.energymodeller.ascetic.AsceticEnergyModellerAdapter;
-import es.bsc.vmmanagercore.energymodeller.dummy.DummyEnergyModeller;
 import es.bsc.vmmanagercore.manager.components.*;
-import es.bsc.vmmanagercore.model.estimations.ListVmEstimates;
-import es.bsc.vmmanagercore.model.estimations.VmToBeEstimated;
-import es.bsc.vmmanagercore.model.images.ImageToUpload;
-import es.bsc.vmmanagercore.model.images.ImageUploaded;
-import es.bsc.vmmanagercore.model.scheduling.*;
-import es.bsc.vmmanagercore.model.vms.Vm;
-import es.bsc.vmmanagercore.model.vms.VmDeployed;
+import es.bsc.vmmanagercore.modellers.energy.EnergyModeller;
+import es.bsc.vmmanagercore.modellers.energy.ascetic.AsceticEnergyModellerAdapter;
+import es.bsc.vmmanagercore.modellers.energy.dummy.DummyEnergyModeller;
+import es.bsc.vmmanagercore.modellers.price.PricingModeller;
+import es.bsc.vmmanagercore.modellers.price.ascetic.AsceticPricingModellerAdapter;
+import es.bsc.vmmanagercore.modellers.price.dummy.DummyPricingModeller;
+import es.bsc.vmmanagercore.models.estimations.ListVmEstimates;
+import es.bsc.vmmanagercore.models.estimations.VmToBeEstimated;
+import es.bsc.vmmanagercore.models.images.ImageToUpload;
+import es.bsc.vmmanagercore.models.images.ImageUploaded;
+import es.bsc.vmmanagercore.models.scheduling.*;
+import es.bsc.vmmanagercore.models.vms.Vm;
+import es.bsc.vmmanagercore.models.vms.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.hosts.Host;
 import es.bsc.vmmanagercore.monitoring.hosts.HostFactory;
 import es.bsc.vmmanagercore.monitoring.hosts.HostFake;
 import es.bsc.vmmanagercore.monitoring.hosts.HostType;
-import es.bsc.vmmanagercore.pricingmodeller.PricingModeller;
-import es.bsc.vmmanagercore.pricingmodeller.ascetic.AsceticPricingModellerAdapter;
-import es.bsc.vmmanagercore.pricingmodeller.dummy.DummyPricingModeller;
 import es.bsc.vmmanagercore.selfadaptation.PeriodicSelfAdaptationRunnable;
 import es.bsc.vmmanagercore.selfadaptation.SelfAdaptationManager;
 import es.bsc.vmmanagercore.selfadaptation.options.SelfAdaptationOptions;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Generic VM Manager.
