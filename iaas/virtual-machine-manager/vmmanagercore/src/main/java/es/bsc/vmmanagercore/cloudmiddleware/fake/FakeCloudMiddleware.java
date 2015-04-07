@@ -43,6 +43,9 @@ public class FakeCloudMiddleware implements CloudMiddleware {
     // Note: The methods that perform operations on VMs are not needed.
     // They would be needed if knowing the current state of a Vm ("active", "deleting", etc.) was required.
 
+    // The variables are static because this class is created with every request.
+    // I should fix this.
+    
     // Several threads can access the following attributes at the same time.
     // We need to make sure that we will not fall into an inconsistent state (for example, trying to assign
     // twice the same IDs. Therefore, we need to use the java.util.concurrent classes.
