@@ -63,7 +63,7 @@ public class VmsManager {
     private final SelfAdaptationManager selfAdaptationManager;
     private final Scheduler scheduler;
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss");
     private static final String ASCETIC_SCRIPTS_PATH = "/DFS/ascetic/vm-scripts/";
     private static final String ASCETIC_ZABBIX_SCRIPT_PATH = "/DFS/ascetic/vm-scripts/zabbix_agents.sh";
     
@@ -325,7 +325,7 @@ public class VmsManager {
                 try {
                     // Copy the Zabbix agents script
                     vmScriptName = "vm_" + vmToDeploy.getName() +
-                            "_" + dateFormat.format(Calendar.getInstance().getTime()) + ".sh";
+                            "_" + DATE_FORMAT.format(Calendar.getInstance().getTime()) + ".sh";
                     Files.copy(Paths.get(ASCETIC_ZABBIX_SCRIPT_PATH),
                             Paths.get(ASCETIC_SCRIPTS_PATH + vmScriptName), REPLACE_EXISTING);
 

@@ -32,6 +32,11 @@ import java.io.InputStreamReader;
  */
 public class CommandExecutor {
 
+    // Suppress default constructor for non-instantiability
+    private CommandExecutor() {
+        throw new AssertionError();
+    }
+    
     /**
      * Executes a system command.
      *

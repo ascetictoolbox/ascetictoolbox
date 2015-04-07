@@ -43,6 +43,11 @@ import java.util.Map;
  */
 public class HttpUtils {
 
+    // Suppress default constructor for non-instantiability
+    private HttpUtils() {
+        throw new AssertionError();
+    }
+    
     /**
      * Builds a URI with format: scheme:://host:port/path .
      *

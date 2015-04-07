@@ -55,7 +55,7 @@ public class OpenStackJclouds implements CloudMiddleware {
     private static final String DELETING = "deleting";
 
     private final String zone; // This could be important/problematic in the future because I am assuming that
-                         // the cluster only has one zone configured for deployments.
+                               // the cluster only has one zone configured for deployments.
     private final String[] securityGroups;
 
     private final OpenStackJcloudsApis openStackJcloudsApis;

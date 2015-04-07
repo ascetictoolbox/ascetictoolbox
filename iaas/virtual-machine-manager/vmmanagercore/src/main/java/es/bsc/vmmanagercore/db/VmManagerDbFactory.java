@@ -32,7 +32,7 @@ public class VmManagerDbFactory {
 
     private static VmManagerDb db = null;
     
-    public static VmManagerDb getDb(String dbName) {
+    public synchronized static VmManagerDb getDb(String dbName) {
         if (db != null) {
             return db;
         }

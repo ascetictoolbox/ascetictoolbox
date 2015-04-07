@@ -2,6 +2,7 @@ package es.bsc.vmmanagercore.manager.components;
 
 import es.bsc.vmmanagercore.monitoring.hosts.Host;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -10,10 +11,10 @@ import java.util.List;
  */
 public class HostsManager {
     
-    private final List<Host> hosts;
+    private final List<Host> hosts = new ArrayList<>();
     
     public HostsManager(List<Host> hosts) {
-        this.hosts = hosts;
+        this.hosts.addAll(hosts);
     }
 
     /**
