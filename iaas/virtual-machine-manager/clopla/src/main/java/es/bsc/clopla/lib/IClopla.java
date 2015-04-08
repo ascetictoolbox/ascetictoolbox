@@ -39,20 +39,20 @@ public interface IClopla {
      * @param config the configuration parameters for the placement
      * @return the state of the cluster after applying the best placement that could be found
      */
-    public ClusterState getBestSolution(List<Host> hosts, List<Vm> vms, VmPlacementConfig config);
+    ClusterState getBestSolution(List<Host> hosts, List<Vm> vms, VmPlacementConfig config);
 
     /**
      * Returns a list of the construction heuristics that are supported by the library.
      *
      * @return List of the construction heuristics
      */
-    public List<ConstructionHeuristic> getConstructionHeuristics();
+    List<ConstructionHeuristic> getConstructionHeuristics();
 
     /**
      * Returns a map with the local search algorithms supported by the library and the options they use.
      *
      * @return the map of local search algorithms
      */
-    public Map<LocalSearchHeuristic, List<LocalSearchHeuristicOption>> getLocalSearchAlgorithms();
+    Map<LocalSearchHeuristic, List<LocalSearchHeuristicOption>> getLocalSearchAlgorithms();
 
 }
