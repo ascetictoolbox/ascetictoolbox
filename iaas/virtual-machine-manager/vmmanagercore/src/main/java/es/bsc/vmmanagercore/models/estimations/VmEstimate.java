@@ -27,8 +27,8 @@ package es.bsc.vmmanagercore.models.estimations;
 public class VmEstimate {
 
     private String id;
-    private double powerEstimate;
-    private double priceEstimate;
+    private final double powerEstimate;
+    private final double priceEstimate;
 
     public VmEstimate(String id, double powerEstimate, double priceEstimate) {
         this.id = id;
@@ -48,16 +48,8 @@ public class VmEstimate {
         return powerEstimate;
     }
 
-    public void setPowerEstimate(double powerEstimate) {
-        this.powerEstimate = powerEstimate;
-    }
-
     public double getPriceEstimate() {
         return priceEstimate;
-    }
-
-    public void setPriceEstimate(double priceEstimate) {
-        this.priceEstimate = priceEstimate;
     }
 
 }
