@@ -413,9 +413,9 @@ iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/mo
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/modellers/price/PricingModeller.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/modellers/price/ascetic/AsceticPricingModellerAdapter.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/modellers/price/dummy/DummyPricingModeller.java -text
-iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/models/estimations/ListVmEstimates.java -text
-iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/models/estimations/VmEstimate.java -text
-iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/models/estimations/VmToBeEstimated.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/models/estimates/ListVmEstimates.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/models/estimates/VmEstimate.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/models/estimates/VmToBeEstimated.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/models/hosts/HostPowerButtonAction.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/models/hosts/ServerLoad.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/models/images/ImageToUpload.java -text

@@ -20,7 +20,7 @@ package es.bsc.vmmanagercore.models.scheduling;
 
 import es.bsc.vmmanagercore.modellers.energy.EnergyModeller;
 import es.bsc.vmmanagercore.modellers.price.PricingModeller;
-import es.bsc.vmmanagercore.models.estimations.VmEstimate;
+import es.bsc.vmmanagercore.models.estimates.VmEstimate;
 import es.bsc.vmmanagercore.models.vms.Vm;
 import es.bsc.vmmanagercore.models.vms.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.hosts.Host;

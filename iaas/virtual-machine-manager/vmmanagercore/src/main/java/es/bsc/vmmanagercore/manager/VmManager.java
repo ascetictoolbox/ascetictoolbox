@@ -1,7 +1,7 @@
 package es.bsc.vmmanagercore.manager;
 
-import es.bsc.vmmanagercore.models.estimations.ListVmEstimates;
-import es.bsc.vmmanagercore.models.estimations.VmToBeEstimated;
+import es.bsc.vmmanagercore.models.estimates.ListVmEstimates;
+import es.bsc.vmmanagercore.models.estimates.VmToBeEstimated;
 import es.bsc.vmmanagercore.models.images.ImageToUpload;
 import es.bsc.vmmanagercore.models.images.ImageUploaded;
 import es.bsc.vmmanagercore.models.scheduling.*;

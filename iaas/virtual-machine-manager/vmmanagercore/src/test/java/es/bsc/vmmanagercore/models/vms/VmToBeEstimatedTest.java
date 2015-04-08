@@ -1,6 +1,6 @@
 package es.bsc.vmmanagercore.models.vms;
 
-import es.bsc.vmmanagercore.models.estimations.VmToBeEstimated;
+import es.bsc.vmmanagercore.models.estimates.VmToBeEstimated;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

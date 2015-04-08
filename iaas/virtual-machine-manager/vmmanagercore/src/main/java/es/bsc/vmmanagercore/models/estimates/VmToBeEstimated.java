@@ -16,7 +16,7 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.vmmanagercore.models.estimations;
+package es.bsc.vmmanagercore.models.estimates;
 
 import es.bsc.vmmanagercore.models.vms.Vm;
 
