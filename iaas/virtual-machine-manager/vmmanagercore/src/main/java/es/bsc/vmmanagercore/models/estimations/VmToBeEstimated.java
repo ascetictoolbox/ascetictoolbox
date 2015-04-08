@@ -63,6 +63,10 @@ public class VmToBeEstimated {
         return diskGb;
     }
 
+    public int getSwapMb() {
+        return swapMb;
+    }
+    
     public Vm toVm() {
         return new Vm(id, "", vcpus, ramMb, diskGb, swapMb, null, "");
     }
