@@ -19,10 +19,9 @@
 package es.bsc.vmmanagercore.models.estimates;
 
 /**
- *
+ * VM power and price estimates.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
- *
  */
 public class VmEstimate {
 
