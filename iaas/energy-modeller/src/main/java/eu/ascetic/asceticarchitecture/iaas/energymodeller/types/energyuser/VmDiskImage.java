@@ -146,7 +146,10 @@ public class VmDiskImage {
         hash = 53 * hash + Objects.hashCode(this.diskImage);
         return hash;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return diskImage.getPath() + diskImage.getName();
+    }
 
 }

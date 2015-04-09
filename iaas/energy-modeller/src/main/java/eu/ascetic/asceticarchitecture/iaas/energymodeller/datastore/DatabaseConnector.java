@@ -56,6 +56,25 @@ public interface DatabaseConnector {
     public void setVms(Collection<VmDeployed> vms);
 
     /**
+     * This gets from the database for a VM its profile data that was originally
+     * obtained from the VMs description data. This can be information such as
+     * which are the main applications running on the VM.
+     *
+     * @param vm The VM to set the profile data for.
+     * @return The VM with its profile data defined.
+     */
+    public VmDeployed getVMProfileData(VmDeployed vm);
+
+    /**
+     * This writes to the database for a VM its profile data that was originally
+     * obtained from the VMs description data. This can be information such as
+     * which are the main applications running on the VM.
+     *
+     * @param vm The vm to set the profile data for.
+     */
+    public void setVMProfileData(VmDeployed vm);
+
+    /**
      * This adds set of host machines to the database. If the host already
      * exists the values contained will be overwritten.
      *
@@ -88,21 +107,23 @@ public interface DatabaseConnector {
      */
     public void setHostCalibrationData(Host host);
 
-     /**
-     * This gets the profile data that indicates the performance properties
-     * of a given host machine.
+    /**
+     * This gets the profile data that indicates the performance properties of a
+     * given host machine.
+     *
      * @param host The host to get the data for.
      * @return The host with its profile data defined.
-     */   
+     */
     public Host getHostProfileData(Host host);
 
     /**
      * This writes to the database for a named host its profile data obtained by
      * benchmarking.
+     *
      * @param host The host to set the profile data for.
      */
-    public void setHostProfileData(Host host);    
-    
+    public void setHostProfileData(Host host);
+
     /**
      * This writes historic data for a given host to the database.
      *
@@ -129,7 +150,9 @@ public interface DatabaseConnector {
     public List<HostEnergyRecord> getHostHistoryData(Host host, TimePeriod timePeriod);
 
     /**
-     * This writes VM utilisation data for a given physical host to the database.
+     * This writes VM utilisation data for a given physical host to the
+     * database.
+     *
      * @param host The host to set the vm load information for
      * @param time The time when the measurements were taken.
      * @param load The summary of the VM load data on the host.
@@ -137,7 +160,9 @@ public interface DatabaseConnector {
     public void writeHostVMHistoricData(Host host, long time, HostVmLoadFraction load);
 
     /**
-     * This gets VM utilisation data for a given physical host from the database.
+     * This gets VM utilisation data for a given physical host from the
+     * database.
+     *
      * @param host The host to get the vm load information for
      * @param timePeriod The start and end period for which to query for. If
      * null all records will be returned.

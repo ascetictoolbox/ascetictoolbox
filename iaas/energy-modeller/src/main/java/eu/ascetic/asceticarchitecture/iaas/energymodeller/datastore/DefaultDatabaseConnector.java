@@ -18,6 +18,7 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDiskImage;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostEnergyCalibrationData;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostProfileData;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostVmLoadFraction;
@@ -122,9 +123,9 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
                 "SELECT vm_id , vm_name, deployment_id FROM vm");
                 ResultSet resultSet = preparedStatement.executeQuery()) {
             ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
-            for (ArrayList<Object> hostData : results) {
-                VmDeployed vm = new VmDeployed((Integer) hostData.get(0), (String) hostData.get(1));
-                vm.setDeploymentID((String) hostData.get(2));
+            for (ArrayList<Object> vmData : results) {
+                VmDeployed vm = new VmDeployed((Integer) vmData.get(0), (String) vmData.get(1));
+                vm.setDeploymentID((String) vmData.get(2));
                 answer.add(vm);
             }
         } catch (SQLException ex) {
@@ -248,6 +249,176 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
                 preparedStatement.executeUpdate();
             }
 
+        } catch (SQLException ex) {
+            Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
+    public VmDeployed getVMProfileData(VmDeployed vm) {
+        //get the app tag data
+        vm = getVmAppTags(vm);
+        //get the disk data
+        vm = getVmDisks(vm);
+        return vm;
+    }
+
+    /**
+     * For the named vm this populates the app tags list of the VM.
+     *
+     * @param vm The VM to get the tags into the database for
+     * @return The VM with its application tags set
+     */
+    private VmDeployed getVmAppTags(VmDeployed vm) {
+        connection = getConnection(connection);
+        if (connection == null) {
+            return null;
+        }
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                "SELECT vm.vm_id, vm_app_tag.tag_name "
+                + "FROM vm, vm_app_tag, vm_app_tag_arr "
+                + "WHERE vm.vm_id = ? AND "
+                + "vm.vm_id = vm_app_tag_arr.vm_id AND "
+                + "vm_app_tag_arr.vm_app_tag_id = vm_app_tag.vm_app_tag_id")) {
+            preparedStatement.setInt(1, vm.getId());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
+            for (ArrayList<Object> vmData : results) {
+                vm.addApplicationTag((String) vmData.get(2));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return vm;
+    }
+
+    /**
+     * For the named vm this populates the disk list of the VM.
+     *
+     * @param vm The VM to get the disk list from the database
+     * @return The VM with its disk values set
+     */
+    private VmDeployed getVmDisks(VmDeployed vm) {
+        connection = getConnection(connection);
+        if (connection == null) {
+            return null;
+        }
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                "SELECT vm.vm_id, vm_disk.disk_name "
+                + "FROM vm, vm_disk, vm_disk_arr "
+                + "WHERE vm.vm_id = ? AND "
+                + "vm.vm_id = vm_disk_arr.vm_id AND "
+                + "vm_disk_arr.vm_disk_id = vm_disk.vm_disk_id")) {
+            preparedStatement.setInt(1, vm.getId());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
+            for (ArrayList<Object> vmData : results) {
+                vm.addApplicationTag((String) vmData.get(2));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return vm;
+    }
+
+    @Override
+    public void setVMProfileData(VmDeployed vm) {
+        //set the list of app tags
+        setVMAppTags(vm);
+        //assign the tags to the given vm
+        setVMAppTagArray(vm);
+        //set the list of disks
+        setDiskInformation(vm);
+        //set the references to each disk for the VM
+        setDiskInformationArray(vm);
+    }
+
+    /**
+     * This sets the association between a VM and its app tags.
+     *
+     * @param vm The VM to save the tags into the database for
+     */
+    private void setVMAppTagArray(VmDeployed vm) {
+        connection = getConnection(connection);
+        if (connection == null) {
+            return;
+        }
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                "INSERT INTO vm_app_tag_arr (?, vm_app_tag_arr.vm_app_tag_id) "
+                + "SELECT 1 as vm_id, vm_app_tag.vm_app_tag_id "
+                + "FROM vm_app_tag WHERE vm_app_tag.tag_name = ?")) {
+            for (String appTag : vm.getApplicationTags()) {
+                preparedStatement.setString(1, appTag);
+                preparedStatement.setInt(2, vm.getId());
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /**
+     * This sets the association between a VM and its disks.
+     *
+     * @param vm The VM to save the disk information into the database for
+     */
+    private void setDiskInformationArray(VmDeployed vm) {
+        connection = getConnection(connection);
+        if (connection == null) {
+            return;
+        }
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                "INSERT INTO vm_disk_arr (?, vm_disk_arr.vm_disk_id) "
+                + "SELECT 1 as vm_id, vm_disk.vm_disk_id "
+                + "FROM vm_disk WHERE vm_disk.disk_name = ?")) {
+            for (VmDiskImage diskImage : vm.getDiskImages()) {
+                preparedStatement.setString(1, diskImage.toString());
+                preparedStatement.setInt(2, vm.getId());
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /**
+     * For a given VM this records all the identified tags into the database.
+     *
+     * @param vm The VM to save the tags into the database for
+     */
+    private void setVMAppTags(VmDeployed vm) {
+        connection = getConnection(connection);
+        if (connection == null) {
+            return;
+        }
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                "INSERT INTO vm_app_tag (tag_name) VALUES (?) ON DUPLICATE KEY UPDATE tag_name=VALUES(tag_name)")) {
+            for (String appTag : vm.getApplicationTags()) {
+                preparedStatement.setString(1, appTag);
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /**
+     * For a given VM this records all the references to disks into the
+     * database.
+     *
+     * @param vm The VM to save the disk information into the database for
+     */
+    private void setDiskInformation(VmDeployed vm) {
+        connection = getConnection(connection);
+        if (connection == null) {
+            return;
+        }
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                "INSERT INTO vm_disk (disk_name) VALUES (?) ON DUPLICATE KEY UPDATE disk_name=VALUES(disk_name)")) {
+            for (VmDiskImage diskImage : vm.getDiskImages()) {
+                preparedStatement.setString(1, diskImage.toString());
+                preparedStatement.executeUpdate();
+            }
         } catch (SQLException ex) {
             Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
         }
