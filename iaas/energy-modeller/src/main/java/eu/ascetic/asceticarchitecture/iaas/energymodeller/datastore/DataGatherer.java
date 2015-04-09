@@ -103,6 +103,7 @@ public class DataGatherer implements Runnable {
             checkAndCalibrateHost(host);
         }
         Collection<VmDeployed> vms = datasource.getVmList();
+        vms = connector.getVMProfileData(vms);
         connector.setVms(vms);
         for (Host host : hosts) {
             if (!knownHosts.containsKey(host.getHostName())) {
@@ -378,9 +379,11 @@ public class DataGatherer implements Runnable {
         //Perform a refresh to make sure the host has been written to backing store
         if (knownVms == null) {
             knownVms = toHashMapVm(vmList);
+            connector.getVMProfileData(vmList);
             connector.setVms(vmList);
         } else {
             List<VmDeployed> newVms = discoverNewVMs(vmList);
+            connector.getVMProfileData(vmList);
             connector.setVms(newVms);
             for (VmDeployed vm : newVms) {
                 knownVms.put(vm.getName(), vm);
@@ -474,6 +477,7 @@ public class DataGatherer implements Runnable {
      * edited.
      *
      * @param vm The vm to add to the list of known VMs
+     * @return Indicates if the VM was in the list of known VMs.
      */
     public boolean setVm(VmDeployed vm) {
         if (knownVms.containsKey(vm.getName())) {

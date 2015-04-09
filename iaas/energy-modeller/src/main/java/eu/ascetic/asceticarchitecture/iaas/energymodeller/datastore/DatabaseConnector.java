@@ -48,7 +48,7 @@ public interface DatabaseConnector {
     public Collection<VmDeployed> getVms();
 
     /**
-     * This adds set of host machines to the database. If the vm already exists
+     * This adds set of vms to the database. If the vm already exists
      * the values contained will be overwritten.
      *
      * @param vms The set of vms to write to the database.
@@ -60,11 +60,21 @@ public interface DatabaseConnector {
      * obtained from the VMs description data. This can be information such as
      * which are the main applications running on the VM.
      *
-     * @param vm The VM to set the profile data for.
+     * @param vm The VM to get the profile data for.
      * @return The VM with its profile data defined.
      */
     public VmDeployed getVMProfileData(VmDeployed vm);
 
+    /**
+     * This gets from the database for a set of VM their profile data that was 
+     * originally obtained from the VMs description data. This can be information 
+     * such as which are the main applications running on the VM.
+     *
+     * @param vms The VMs to get the profile data for.
+     * @return The VM with its profile data defined.
+     */
+    public Collection<VmDeployed> getVMProfileData(Collection<VmDeployed> vms);    
+    
     /**
      * This writes to the database for a VM its profile data that was originally
      * obtained from the VMs description data. This can be information such as

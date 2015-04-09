@@ -78,6 +78,15 @@ public class WriteDisabledDefaultDatabaseConnector extends DefaultDatabaseConnec
          * side the main one, thus only one should be allowed to write to the
          * database.
          */              
-    }    
+    } 
+
+    @Override
+    public void setVMProfileData(VmDeployed vm) {
+        /**
+         * Do nothing, the aim is to be able to run another data gatherer along
+         * side the main one, thus only one should be allowed to write to the
+         * database.
+         */ 
+    }
     
 }

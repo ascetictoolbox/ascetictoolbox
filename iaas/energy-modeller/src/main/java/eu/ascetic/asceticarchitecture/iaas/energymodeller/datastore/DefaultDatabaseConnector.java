@@ -263,6 +263,14 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
         return vm;
     }
 
+    @Override
+    public Collection<VmDeployed> getVMProfileData(Collection<VmDeployed> vms) {
+        for (VmDeployed vm : vms) {
+            getVMProfileData(vm);
+        }
+        return vms;
+    }
+
     /**
      * For the named vm this populates the app tags list of the VM.
      *

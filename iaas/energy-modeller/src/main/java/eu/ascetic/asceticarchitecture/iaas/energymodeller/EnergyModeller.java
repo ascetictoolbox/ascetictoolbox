@@ -649,6 +649,22 @@ public class EnergyModeller {
         }
         return null;
     }
+    
+    /**
+     * This sets information about the VM that describes the applications,
+     * that are inside it.
+     * @param vm The VM that is to be deployed.
+     */
+    public void setVMProfileData(VmDeployed vm) {
+        Collection<VmDeployed> vms = new ArrayList<>();
+        vms.add(vm);
+        /**
+         * Write the data to the database, for later retrieval when the VM boots
+         * and is discovered via the data source adaptor.
+         */
+        database.setVms(vms);
+        database.setVMProfileData(vm);
+    }
 
     /**
      * This calibrates all hosts that are known to the energy modeller, that
