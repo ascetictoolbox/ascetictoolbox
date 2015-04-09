@@ -44,7 +44,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 public class DataGatherer implements Runnable {
 
     private final HostDataSource datasource;
-    private final DatabaseConnector connector;
+    private final DatabaseConnector database;
     private final Calibrator calibrator;
     private boolean running = true;
     private int faultCount = 0;
@@ -69,7 +69,7 @@ public class DataGatherer implements Runnable {
      */
     public DataGatherer(HostDataSource datasource, DatabaseConnector connector, Calibrator calibrator) {
         this.datasource = datasource;
-        this.connector = connector;
+        this.database = connector;
         this.calibrator = calibrator;
         populateHostList();
         try {
@@ -97,14 +97,14 @@ public class DataGatherer implements Runnable {
      */
     private void populateHostList() {
         Collection<Host> hosts = datasource.getHostList();
-        connector.setHosts(hosts);
+        database.setHosts(hosts);
         //Ensure calibration data is recovered from the db.
         for (Host host : hosts) {
             checkAndCalibrateHost(host);
         }
         Collection<VmDeployed> vms = datasource.getVmList();
-        vms = connector.getVMProfileData(vms);
-        connector.setVms(vms);
+        vms = database.getVMProfileData(vms);
+        database.setVms(vms);
         for (Host host : hosts) {
             if (!knownHosts.containsKey(host.getHostName())) {
                 knownHosts.put(host.getHostName(), host);
@@ -152,7 +152,7 @@ public class DataGatherer implements Runnable {
      */
     public void stop() {
         running = false;
-        connector.closeConnection();
+        database.closeConnection();
     }
 
     /**
@@ -190,13 +190,13 @@ public class DataGatherer implements Runnable {
 
     @Override
     public void run() {
-        VmEnergyUsageLogger logger = null;
+        VmEnergyUsageLogger vmUsageLogger = null;
         if (logVmsToDisk && performDataGathering) {
-            logger = new VmEnergyUsageLogger(new File("VmEnergyUsageData.txt"), true);
-            logger.setConsiderIdleEnergy(loggerConsiderIdleEnergy);
-            Thread loggerThread = new Thread(logger);
-            loggerThread.setDaemon(true);
-            loggerThread.start();
+            vmUsageLogger = new VmEnergyUsageLogger(new File("VmEnergyUsageData.txt"), true);
+            vmUsageLogger.setConsiderIdleEnergy(loggerConsiderIdleEnergy);
+            Thread vmUsageLoggerThread = new Thread(vmUsageLogger);
+            vmUsageLoggerThread.setDaemon(true);
+            vmUsageLoggerThread.start();
         }
         /**
          * Polls the data source and write values to the database.
@@ -227,7 +227,7 @@ public class DataGatherer implements Runnable {
                      * written to backing store as clean as possible.
                      */
                     if (performDataGathering) {
-                        gatherMeasurements(host, measurement, vmList, logger);
+                        gatherMeasurements(host, measurement, vmList, vmUsageLogger);
                     }
                 }
                 try {
@@ -266,7 +266,7 @@ public class DataGatherer implements Runnable {
         if (lastTimeStampSeen.get(host) == null || measurement.getClock() > lastTimeStampSeen.get(host)) {
             lastTimeStampSeen.put(host, measurement.getClock());
             Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Writing out host information");
-            connector.writeHostHistoricData(host, measurement.getClock(), measurement.getPower(), measurement.getEnergy());
+            database.writeHostHistoricData(host, measurement.getClock(), measurement.getPower(), measurement.getEnergy());
             Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Obtaining list of vms on host {0}", host.getHostName());
             ArrayList<VmDeployed> vms = getVMsOnHost(host, vmList);
             if (!vms.isEmpty()) {
@@ -275,7 +275,7 @@ public class DataGatherer implements Runnable {
                 List<VmMeasurement> vmMeasurements = datasource.getVmData(vms);
                 fraction.setFraction(vmMeasurements);
                 Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Writing out vm information");
-                connector.writeHostVMHistoricData(host, measurement.getClock(), fraction);
+                database.writeHostVMHistoricData(host, measurement.getClock(), fraction);
                 if (logger != null) {
                     Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Logging out to Zabbix file");
                     logger.printToFile(logger.new Pair(measurement, fraction));
@@ -308,10 +308,10 @@ public class DataGatherer implements Runnable {
         //Perform a refresh to make sure the host has been written to backing store
         if (knownHosts == null) {
             knownHosts = toHashMap(hostList);
-            connector.setHosts(hostList);
+            database.setHosts(hostList);
         } else {
             List<Host> newHosts = discoverNewHosts(hostList);
-            connector.setHosts(newHosts);
+            database.setHosts(newHosts);
             for (Host host : newHosts) {
                 host = checkAndCalibrateHost(host);
                 knownHosts.put(host.getHostName(), host);
@@ -328,8 +328,8 @@ public class DataGatherer implements Runnable {
      */
     private Host checkAndCalibrateHost(Host host) {
         if (!host.isCalibrated()) {
-            host.setCalibrationData(connector.getHostCalibrationData(host).getCalibrationData());
-            host = connector.getHostProfileData(host);
+            host.setCalibrationData(database.getHostCalibrationData(host).getCalibrationData());
+            host = database.getHostProfileData(host);
         }
         if (!host.isCalibrated()) {
             calibrator.calibrateHostEnergyData(host);
@@ -379,12 +379,12 @@ public class DataGatherer implements Runnable {
         //Perform a refresh to make sure the host has been written to backing store
         if (knownVms == null) {
             knownVms = toHashMapVm(vmList);
-            connector.getVMProfileData(vmList);
-            connector.setVms(vmList);
+            database.getVMProfileData(vmList);
+            database.setVms(vmList);
         } else {
             List<VmDeployed> newVms = discoverNewVMs(vmList);
-            connector.getVMProfileData(vmList);
-            connector.setVms(newVms);
+            database.getVMProfileData(vmList);
+            database.setVms(newVms);
             for (VmDeployed vm : newVms) {
                 knownVms.put(vm.getName(), vm);
             }
