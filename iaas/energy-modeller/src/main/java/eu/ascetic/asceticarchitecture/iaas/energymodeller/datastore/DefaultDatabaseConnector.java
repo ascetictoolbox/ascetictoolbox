@@ -292,7 +292,7 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
             ResultSet resultSet = preparedStatement.executeQuery();
             ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
             for (ArrayList<Object> vmData : results) {
-                vm.addApplicationTag((String) vmData.get(2));
+                vm.addApplicationTag((String) vmData.get(1));
             }
         } catch (SQLException ex) {
             Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
@@ -321,7 +321,7 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
             ResultSet resultSet = preparedStatement.executeQuery();
             ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
             for (ArrayList<Object> vmData : results) {
-                vm.addApplicationTag((String) vmData.get(2));
+                vm.addApplicationTag((String) vmData.get(1));
             }
         } catch (SQLException ex) {
             Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
