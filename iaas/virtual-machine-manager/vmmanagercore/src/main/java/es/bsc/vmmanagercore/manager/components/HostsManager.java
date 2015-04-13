@@ -23,6 +23,7 @@ public class HostsManager {
      * @return the list of hosts
      */
     public List<Host> getHosts() {
+        refreshHostsMonitoringInfo();
         return Collections.unmodifiableList(hosts);
     }
 
@@ -35,6 +36,7 @@ public class HostsManager {
     public Host getHost(String hostname) {
         for (Host host: hosts) {
             if (hostname.equals(host.getHostname())) {
+                host.refreshMonitoringInfo();
                 return host;
             }
         }
@@ -50,6 +52,16 @@ public class HostsManager {
             if (hostname.equals(host.getHostname())) {
                 host.pressPowerButton();
             }
+        }
+    }
+
+    /**
+     * Refresh the data for all the hosts. This operation can be costly because it needs to query the
+     * monitoring infrastructure (Ganglia, Zabbix, etc.)
+     */
+    private void refreshHostsMonitoringInfo() {
+        for (Host host: hosts) {
+            host.refreshMonitoringInfo();
         }
     }
     

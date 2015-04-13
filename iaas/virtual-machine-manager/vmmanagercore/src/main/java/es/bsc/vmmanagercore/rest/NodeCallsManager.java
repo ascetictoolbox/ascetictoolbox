@@ -22,6 +22,8 @@ import com.google.gson.Gson;
 import es.bsc.vmmanagercore.manager.VmManager;
 import es.bsc.vmmanagercore.monitoring.hosts.Host;
 
+import java.util.List;
+
 /**
  * This class implements the REST calls that are related with the nodes of the infrastructure.
  *
@@ -41,10 +43,11 @@ public class NodeCallsManager {
 
     public String getNodes() {
         // TODO Refactor this ugly hack
+        List<Host> hosts = vmManager.getHosts();
         String result = "{\"nodes\":[";
-        for (int i = 0; i < vmManager.getHosts().size(); ++i) {
-            result = result.concat(gson.toJson(vmManager.getHosts().get(i), Host.class));
-            if (i != vmManager.getHosts().size() -1) {
+        for (int i = 0; i < hosts.size(); ++i) {
+            result = result.concat(gson.toJson(hosts.get(i), Host.class));
+            if (i != hosts.size() -1) {
                 result = result.concat(",");
             }
         }

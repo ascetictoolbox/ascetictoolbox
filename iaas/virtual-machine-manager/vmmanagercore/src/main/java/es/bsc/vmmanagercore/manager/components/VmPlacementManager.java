@@ -27,6 +27,7 @@ import es.bsc.vmmanagercore.modellers.energy.EnergyModeller;
 import es.bsc.vmmanagercore.modellers.price.PricingModeller;
 import es.bsc.vmmanagercore.models.scheduling.*;
 import es.bsc.vmmanagercore.models.vms.Vm;
+import es.bsc.vmmanagercore.monitoring.hosts.Host;
 import es.bsc.vmmanagercore.vmplacement.CloplaConversor;
 
 import java.util.ArrayList;
@@ -101,12 +102,13 @@ public class VmPlacementManager {
     public RecommendedPlan getRecommendedPlan(RecommendedPlanRequest recommendedPlanRequest,
                                               boolean assignVmsToCurrentHosts,
                                               List<Vm> vmsToDeploy) {
+        List<Host> hosts = hostsManager.getHosts();
         ClusterState clusterStateRecommendedPlan = clopla.getBestSolution(
-                CloplaConversor.getCloplaHosts(hostsManager.getHosts()),
+                CloplaConversor.getCloplaHosts(hosts),
                 CloplaConversor.getCloplaVms(
                         vmsManager.getAllVms(),
                         vmsToDeploy,
-                        CloplaConversor.getCloplaHosts(hostsManager.getHosts()),
+                        CloplaConversor.getCloplaHosts(hosts),
                         assignVmsToCurrentHosts),
                 CloplaConversor.getCloplaConfig(
                         schedulingAlgorithmsManager.getCurrentSchedulingAlgorithm(),

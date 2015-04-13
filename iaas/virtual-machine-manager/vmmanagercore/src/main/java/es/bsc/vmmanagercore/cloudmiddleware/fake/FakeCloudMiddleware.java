@@ -43,24 +43,21 @@ public class FakeCloudMiddleware implements CloudMiddleware {
     // Note: The methods that perform operations on VMs are not needed.
     // They would be needed if knowing the current state of a Vm ("active", "deleting", etc.) was required.
 
-    // The variables are static because this class is created with every request.
-    // I should fix this.
-    
     // Several threads can access the following attributes at the same time.
     // We need to make sure that we will not fall into an inconsistent state (for example, trying to assign
     // twice the same IDs. Therefore, we need to use the java.util.concurrent classes.
-    private static List<HostFake> hosts = new CopyOnWriteArrayList<>();
-    private static List<VmDeployed> deployedVms = new CopyOnWriteArrayList<>();
-    private static List<ImageUploaded> images = new CopyOnWriteArrayList<>();
+    private final List<HostFake> hosts = new CopyOnWriteArrayList<>();
+    private final List<VmDeployed> deployedVms = new CopyOnWriteArrayList<>();
+    private final List<ImageUploaded> images = new CopyOnWriteArrayList<>();
 
     // For assigning IDs and IPs manually
-    private static AtomicInteger nextVmId = new AtomicInteger(0);
-    private static AtomicInteger nextVmIp = new AtomicInteger(0); // Invalid IPs but it does not matter
-    private static AtomicInteger nextImageId = new AtomicInteger(0);
+    private final AtomicInteger nextVmId = new AtomicInteger(0);
+    private final AtomicInteger nextVmIp = new AtomicInteger(0); // Invalid IPs but it does not matter
+    private final AtomicInteger nextImageId = new AtomicInteger(0);
 
     public FakeCloudMiddleware(List<HostFake> hosts) {
         for (HostFake host: hosts) {
-            FakeCloudMiddleware.hosts.add(host);
+            this.hosts.add(host);
         }
     }
 

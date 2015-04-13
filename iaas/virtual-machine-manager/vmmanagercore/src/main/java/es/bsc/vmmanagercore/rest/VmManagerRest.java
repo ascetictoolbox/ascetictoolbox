@@ -18,6 +18,7 @@
 
 package es.bsc.vmmanagercore.rest;
 
+import com.sun.jersey.spi.resource.Singleton;
 import es.bsc.vmmanagercore.manager.GenericVmManager;
 import es.bsc.vmmanagercore.manager.VmManager;
 
@@ -30,6 +31,9 @@ import javax.ws.rs.core.MediaType;
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  */
 
+/*It is important to indicate that it is a singleton. This way, the VMM is created only once instead of being created
+at every request. This increases performance greatly.*/
+@Singleton
 @Path("/vmmanager")
 public class VmManagerRest {
 
