@@ -29,26 +29,15 @@ import java.util.Objects;
  */
 public class VmDiskImage {
 
-    private File diskImage;
-    private File parentImage;
-
-    /**
-     * This creates a VM disk image object.
-     *
-     * @param diskImage The disk image to set
-     * @param parentImage The disk image's parent file.
-     */
-    public VmDiskImage(File diskImage, File parentImage) {
-        this.diskImage = diskImage;
-        this.parentImage = parentImage;
-    }
+    private String diskImage;
+    private String parentImage;
 
     /**
      * This creates a VM disk image object.
      *
      * @param diskImage The disk image to set
      */
-    public VmDiskImage(File diskImage) {
+    public VmDiskImage(String diskImage) {
         this.diskImage = diskImage;
         this.parentImage = null;
     }
@@ -60,26 +49,16 @@ public class VmDiskImage {
      * @param parentImage The disk image's parent file.
      */
     public VmDiskImage(String diskImage, String parentImage) {
-        this.diskImage = new File(diskImage);
-        this.parentImage = new File(parentImage);
+        this.diskImage = diskImage;
+        this.parentImage = parentImage;
     }
-
-    /**
-     * This creates a VM disk image object.
-     *
-     * @param diskImage The disk image to set
-     */
-    public VmDiskImage(String diskImage) {
-        this.diskImage = new File(diskImage);
-        this.parentImage = null;
-    }    
 
     /**
      * This gets the file representation of this disk image.
      *
      * @return the diskImage
      */
-    public File getDiskImage() {
+    public String getDiskImage() {
         return diskImage;
     }
 
@@ -88,7 +67,7 @@ public class VmDiskImage {
      *
      * @param diskImage the diskImage to set
      */
-    public void setDiskImage(File diskImage) {
+    public void setDiskImage(String diskImage) {
         this.diskImage = diskImage;
     }
 
@@ -98,7 +77,7 @@ public class VmDiskImage {
      *
      * @return the images parent image should one exist.
      */
-    public File getParentImage() {
+    public String getParentImage() {
         return parentImage;
     }
 
@@ -108,7 +87,7 @@ public class VmDiskImage {
      *
      * @param parentImage the images parent image should one exist.
      */
-    public void setParentImage(File parentImage) {
+    public void setParentImage(String parentImage) {
         this.parentImage = parentImage;
     }
 
@@ -126,16 +105,15 @@ public class VmDiskImage {
      * @return True if the disk image exists, otherwise false.
      */
     public boolean diskImageExists() {
-        return diskImage.exists();
+        return new File(diskImage).exists();
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj.getClass().equals(VmDiskImage.class)) {
             VmDiskImage img = (VmDiskImage) obj;
-            String imgPath = img.getDiskImage().getAbsolutePath() + img.getDiskImage().getName();
-            String thisPath = diskImage.getAbsolutePath() + diskImage.getName();
-            return (thisPath.equals(imgPath));
+            String imgPath = img.getDiskImage();
+            return (diskImage.equals(imgPath));
         }
         return false;
     }
@@ -149,7 +127,7 @@ public class VmDiskImage {
 
     @Override
     public String toString() {
-        return diskImage.getPath() + diskImage.getName();
+        return diskImage;
     }
 
 }
