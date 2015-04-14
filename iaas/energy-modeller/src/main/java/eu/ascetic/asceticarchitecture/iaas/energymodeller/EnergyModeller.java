@@ -637,7 +637,9 @@ public class EnergyModeller {
     }
 
     /**
-     * This given a name of a VM provides the object representation of it
+     * This given a name of a VM provides the object representation of it.
+     * Note: This will only return the representation of a VM if the VM has been
+     * deployed and reported by the monitoring infrastructure.
      *
      * @param name The name of the VM
      * @return The VM with the specified name, null if not known to the energy
@@ -664,7 +666,7 @@ public class EnergyModeller {
          */
         database.setVms(vms);
         database.setVMProfileData(vm);
-    }
+    }    
 
     /**
      * This calibrates all hosts that are known to the energy modeller, that

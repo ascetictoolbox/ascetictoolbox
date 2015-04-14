@@ -81,6 +81,8 @@ public class VM extends EnergyUsageSource {
         this.cpus = vm.cpus;
         this.ramMb = vm.ramMb;
         this.diskGb = vm.diskGb;
+        this.applicationTags = vm.getApplicationTags();
+        this.diskImages = vm.getDiskImages();
     }
 
     /**
