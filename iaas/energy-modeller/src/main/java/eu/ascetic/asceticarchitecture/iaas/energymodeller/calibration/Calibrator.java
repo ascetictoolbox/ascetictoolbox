@@ -1,5 +1,5 @@
 /**
- * Copyright 2014 University of Leeds
+ * Copyright 2015 University of Leeds
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -30,7 +30,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
  * This takes an existing host and calibrates the energy model, for it so that
  * predictions can be made regarding its energy usage.
  *
- * @author Richard
+ * @author Richard Kavanagh
  */
 public class Calibrator implements Runnable {
 
@@ -40,11 +40,12 @@ public class Calibrator implements Runnable {
     private final LinkedBlockingDeque<Host> queue = new LinkedBlockingDeque<>();
     private static int calibratorWaitSec = 2; //Default 2 second poll interval during training
     private static int calibratorMaxDurationSec = 240; //for 2 minutes.
-    private static String defaultLoadGenerator = "DefaultLoadGenerator";
-    private static final String CONFIG_FILE = "energy-modeller-calibrator.properties";
+    private static final String CONFIG_FILE = "energy-modeller-calibrator.properties";    
     private static final String DEFAULT_LOAD_GEN_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration";
-    private Class<?> loadGenerator = DummyLoadGenerator.class;
+    private static String loadGeneratorName = "DefaultLoadGenerator"; //the name of the load generator class to load    
+    private Class<?> loadGenerator; //The class instance to load, see the variable defaultLoadGenerator
     private String loadGeneratorDomain = ".cit.tu-berlin.de:8080/energy-modeller-load-calibration-tool-0.0.1-SNAPSHOT/";
+    private boolean logCalibrationDataRemotely = false;
 
     /**
      * This creates a new calibrator.
@@ -69,11 +70,13 @@ public class Calibrator implements Runnable {
             config.setProperty("iaas.energy.modeller.calibrator.wait", calibratorWaitSec);
             calibratorMaxDurationSec = config.getInt("iaas.energy.modeller.calibrator.duration", calibratorMaxDurationSec);
             config.setProperty("iaas.energy.modeller.calibrator.duration", calibratorMaxDurationSec);
-            defaultLoadGenerator = config.getString("iaas.energy.modeller.calibrator.load.generator", defaultLoadGenerator);
-            config.setProperty("iaas.energy.modeller.calibrator.load.generator", defaultLoadGenerator);
-            setGenerator(defaultLoadGenerator);
+            loadGeneratorName = config.getString("iaas.energy.modeller.calibrator.load.generator", loadGeneratorName);
+            config.setProperty("iaas.energy.modeller.calibrator.load.generator", loadGeneratorName);
+            setGenerator(loadGeneratorName);
             loadGeneratorDomain = config.getString("iaas.energy.modeller.calibrator.load.generator.domain", loadGeneratorDomain);
             config.setProperty("iaas.energy.modeller.calibrator.load.generator.domain", loadGeneratorDomain);
+            logCalibrationDataRemotely = config.getBoolean("iaas.energy.modeller.calibrator.remote.logging", logCalibrationDataRemotely);
+            config.setProperty("iaas.energy.modeller.calibrator.remote.loggingn", logCalibrationDataRemotely);
 
         } catch (ConfigurationException ex) {
             Logger.getLogger(Calibrator.class.getName()).log(Level.INFO, "Error loading the configuration of the IaaS energy modeller", ex);
@@ -123,10 +126,12 @@ public class Calibrator implements Runnable {
         //Gather basic data
         host = readLowestboundForHost(host);
         //Perform the full logging
-        CalibratorDataLogger logger = new CalibratorDataLogger(host, datasource, database, calibratorWaitSec, calibratorMaxDurationSec);
-        Thread dataLoggerThread = new Thread(logger);
-        dataLoggerThread.setDaemon(true);
-        dataLoggerThread.start();
+        if (logCalibrationDataRemotely) {
+            CalibratorDataLogger logger = new CalibratorDataLogger(host, datasource, database, calibratorWaitSec, calibratorMaxDurationSec);
+            Thread dataLoggerThread = new Thread(logger);
+            dataLoggerThread.setDaemon(true);
+            dataLoggerThread.start();
+        }
         return host;
     }
 
@@ -152,20 +157,25 @@ public class Calibrator implements Runnable {
     /**
      * This sets the load generator used by the calibration module.
      *
-     * @param loadGenerator the generator to set
+     * @param loadGeneratorName the generator to set
      *
      * If the name of the class is not identified then the dummy load generator
      * will be loaded as a default.
      */
-    public final void setGenerator(String loadGenerator) {
+    public final void setGenerator(String loadGeneratorName) {
         try {
-            if (!loadGenerator.startsWith(DEFAULT_LOAD_GEN_PACKAGE)) {
-                loadGenerator = DEFAULT_LOAD_GEN_PACKAGE + "." + loadGenerator;
+            if (!loadGeneratorName.startsWith(DEFAULT_LOAD_GEN_PACKAGE)) {
+                loadGeneratorName = DEFAULT_LOAD_GEN_PACKAGE + "." + loadGeneratorName;
             }
-            this.loadGenerator = (Class.forName(loadGenerator));
+            this.loadGenerator = (Class.forName(loadGeneratorName));
         } catch (ClassNotFoundException ex) {
             if (this.loadGenerator == null) {
+                /**
+                 * This disables the calibrator from working in the event
+                 * that the generator specified was not found
+                 */
                 this.loadGenerator = DummyLoadGenerator.class;
+                logCalibrationDataRemotely = false;
             }
             Logger.getLogger(Calibrator.class.getName()).log(Level.WARNING, "The load generator specified was not found", ex);
         }
@@ -190,7 +200,7 @@ public class Calibrator implements Runnable {
     @Override
     public void run() {
         /**
-         * Note the aim of starting a thread is so that the main, thread doesn't
+         * Note the aim of starting a thread is so that the main thread doesn't
          * have to wait for calibration to occur. It can carry on going once
          * calibration has started.
          */
