@@ -31,7 +31,7 @@ import java.util.Objects;
 public class VmDeployed extends VM {
 
     private int id;
-    private String name;
+    private String name;    
     private String ipAddress;
     private Host allocatedTo;
     private String state;
@@ -70,6 +70,22 @@ public class VmDeployed extends VM {
         this.state = state;
         this.created = created;
         this.allocatedTo = allocatedTo;
+    }
+    
+    /**
+     * This takes a previously uninstantiated VM and adds the additional
+     * information to represent the newly created VM.
+     * @param vm the VM that was previously uninstantiated and without identity 
+     * information.
+     * @param id The id of the VM as known by the infrastructure monitor used
+     * by the energy modeller.
+     * @param name The name of the VM as known by the source of information by
+     * the energy modeller.
+     */
+    public VmDeployed(VM vm, int id, String name) {
+        super(vm);
+        this.id = id;
+        this.name = name;
     }
 
     /**

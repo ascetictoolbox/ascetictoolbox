@@ -376,7 +376,7 @@ public class DataGatherer implements Runnable {
      * @param vmList The list of VMs gained from the data source.
      */
     private void refreshKnownVMList(List<VmDeployed> vmList) {
-        //Perform a refresh to make sure the host has been written to backing store
+        //Perform a refresh to make sure the VMs have been written to backing store
         if (knownVms == null) {
             knownVms = toHashMapVm(vmList);
             database.getVMProfileData(vmList);
