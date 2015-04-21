@@ -76,7 +76,7 @@ public class Calibrator implements Runnable {
             loadGeneratorDomain = config.getString("iaas.energy.modeller.calibrator.load.generator.domain", loadGeneratorDomain);
             config.setProperty("iaas.energy.modeller.calibrator.load.generator.domain", loadGeneratorDomain);
             logCalibrationDataRemotely = config.getBoolean("iaas.energy.modeller.calibrator.remote.logging", logCalibrationDataRemotely);
-            config.setProperty("iaas.energy.modeller.calibrator.remote.loggingn", logCalibrationDataRemotely);
+            config.setProperty("iaas.energy.modeller.calibrator.remote.logging", logCalibrationDataRemotely);
 
         } catch (ConfigurationException ex) {
             Logger.getLogger(Calibrator.class.getName()).log(Level.INFO, "Error loading the configuration of the IaaS energy modeller", ex);
