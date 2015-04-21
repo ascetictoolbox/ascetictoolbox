@@ -107,9 +107,11 @@ FOREIGN KEY (vm_id)
 REFERENCES vm(vm_id);
 
 CREATE INDEX idx_vm_clock ON vm_measurement (clock);
+CREATE INDEX idx_vm_measure_vm_clock ON vm_measurement (vm_id, clock);
 CREATE INDEX idx_vm_measure_spd ON vm_measurement (host_id, vm_id, clock);
+
 CREATE INDEX idx_host_clock ON host_measurement (clock);
-CREATE INDEX idx_vm_measure_spd ON host_measurement (host_id, clock);
+CREATE INDEX idx_host_measure_spd ON host_measurement (host_id, clock);
 
 CREATE TABLE IF NOT EXISTS vm_app_tag_arr
   (
