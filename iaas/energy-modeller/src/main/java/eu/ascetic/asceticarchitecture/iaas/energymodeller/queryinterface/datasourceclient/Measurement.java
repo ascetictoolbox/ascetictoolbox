@@ -243,6 +243,16 @@ public abstract class Measurement {
     public MetricValue getMetric(String key) {
         return metrics.get(key);
     }
+   
+    /**
+     * This indicates if an item exits that represents a given metric
+     *
+     * @param key The key that is used to identify a given measurement
+     * @return If a value for the metric exists or not.
+     */    
+    public boolean metricExists(String key) {
+       return metrics.containsKey(key);
+    }
 
     /**
      * This provides the time of the measurement in Unix time.

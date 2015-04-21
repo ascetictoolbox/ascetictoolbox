@@ -266,6 +266,9 @@ public class DataGatherer implements Runnable {
         if (lastTimeStampSeen.get(host) == null || measurement.getClock() > lastTimeStampSeen.get(host)) {
             lastTimeStampSeen.put(host, measurement.getClock());
             Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Writing out host information");
+            if (!measurement.getPowerAndEnergyMetricsExist()) {
+                return; //This guards against not having a Watt meter attached.
+            }
             database.writeHostHistoricData(host, measurement.getClock(), measurement.getPower(), measurement.getEnergy());
             Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Obtaining list of vms on host {0}", host.getHostName());
             ArrayList<VmDeployed> vms = getVMsOnHost(host, vmList);

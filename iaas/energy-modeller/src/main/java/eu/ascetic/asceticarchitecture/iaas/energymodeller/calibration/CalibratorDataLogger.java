@@ -77,7 +77,7 @@ public class CalibratorDataLogger implements Runnable {
         while (System.currentTimeMillis() < stopTime) {
             try {
                 HostMeasurement dataEntry = datasource.getHostData(host);
-                if (dataEntry.getMetric(POWER_KPI_NAME) == null) {
+                if (!dataEntry.getPowerMetricExist()) {
                     faultCount = faultCount + 1;
                     if (faultCount > 25) {
                         break; //Exit if faults keep occuring in a sequence.
