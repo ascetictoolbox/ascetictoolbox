@@ -28,7 +28,7 @@ import java.util.Collection;
  *
  * @author Richard Kavanagh
  */
-public class CPUOnlyBestFitEnergyPredictor extends AbstractEnergyPredictor {
+public class CpuOnlyBestFitEnergyPredictor extends AbstractEnergyPredictor {
 
     private final CpuOnlyEnergyPredictor linear = new CpuOnlyEnergyPredictor();
     private final CpuOnlyPolynomialEnergyPredictor polynomial = new CpuOnlyPolynomialEnergyPredictor();
