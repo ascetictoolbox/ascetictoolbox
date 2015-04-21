@@ -190,7 +190,7 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
             return null;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
-                "SELECT profile_id, host_id, type, value FROM host_profile_data WHERE host_id = ?")) {
+                "SELECT host_profile_id, host_id, type, value FROM host_profile_data WHERE host_id = ?")) {
             preparedStatement.setInt(1, host.getId());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 ArrayList<ArrayList<Object>> result = resultSetToArray(resultSet);
