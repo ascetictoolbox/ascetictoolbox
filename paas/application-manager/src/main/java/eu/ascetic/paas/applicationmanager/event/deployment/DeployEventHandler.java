@@ -80,7 +80,7 @@ public class DeployEventHandler {
 		DeploymentEvent deploymentEvent = event.getData();
 
 		if(deploymentEvent.getDeploymentStatus().equals(Dictionary.APPLICATION_STATUS_CONTEXTUALIZED)) {
-			logger.info(" Moving deployment id: " + deploymentEvent.getDeploymentId()  + " to " + Dictionary.APPLICATION_STATUS_NEGOTIATING + " state");
+			logger.info(" Moving deployment id: " + deploymentEvent.getDeploymentId()  + " to " + Dictionary.APPLICATION_STATUS_DEPLOYING + " state");
 			
 			// We need first to read the deployment from the DB:
 			Deployment deployment = deploymentDAO.getById(deploymentEvent.getDeploymentId());

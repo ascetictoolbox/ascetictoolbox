@@ -131,6 +131,8 @@ public abstract class AbstractRest {
 
 		// So we know the id the DB has given to it
 		application = applicationDAO.getByName(name);
+		// We update the deployment with the information from the DB so we know the Id
+		deployment = application.getDeployments().get(application.getDeployments().size() - 1);
 		
 		//We notify that the deployment has been created
 		DeploymentEvent deploymentEvent = new DeploymentEvent();

@@ -40,7 +40,7 @@ public class DeploymentEventService {
 	protected Reactor rootReactor;
 
 	public void fireDeploymentEvent(DeploymentEvent event) {
-		logger.debug(" Sending internal event for topic: " + DEPLOYMENT_EVENT_TOPIC + " with deployment id: " + event.getDeploymentId() + " with status: " + event.getDeploymentStatus());
+		logger.info(" Sending internal event for topic: " + DEPLOYMENT_EVENT_TOPIC + " with deployment id: " + event.getDeploymentId() + " with status: " + event.getDeploymentStatus());
 		rootReactor.notify(DEPLOYMENT_EVENT_TOPIC, Event.wrap(event));
 	}
 }
