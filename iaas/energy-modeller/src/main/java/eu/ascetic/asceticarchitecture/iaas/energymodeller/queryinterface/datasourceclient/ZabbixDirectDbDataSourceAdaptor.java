@@ -369,9 +369,11 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
             for (ArrayList<Object> hostData : results) {
                 if (isHost((String) hostData.get(1))) {
                     Host host = new Host(((Long) hostData.get(0)).intValue(), (String) hostData.get(1));
+                    host = fullyDescribeHost(host, getHostData(host).getMetrics().values());
                     answer.add(host);
                 } else {
                     VmDeployed vm = new VmDeployed(((Long) hostData.get(0)).intValue(), (String) hostData.get(1));
+                    vm = fullyDescribeVM(vm, getVmData(vm).getMetrics().values());
                     answer.add(vm);
                 }
             }

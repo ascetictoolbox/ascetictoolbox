@@ -126,14 +126,12 @@ public class DataGatherer implements Runnable {
      * @return The host that it belongs to.
      */
     private Host getVMsHost(VmDeployed vm) {
+        //This returns the already allocated answer
         if (vm.getAllocatedTo() != null) {
             return vm.getAllocatedTo();
         }
-        //TODO remove this temporary fix code here!
-        if (vm.getName().equals("cloudsuite---data-analytics")) {
-            return getHost("asok12");
-        }
-        //end of this temporary code fix
+        //TODO consider using the VM property for this mapping here
+        //TODO consider adding a file based map system here.
         /**
          * This block of code takes the agreed assumption that the host name
          * ends with "_<hostname>" and that "_" exist nowhere else in the name.
@@ -143,7 +141,6 @@ public class DataGatherer implements Runnable {
         if (parseTokenPos == -1 && vm.getAllocatedTo() == null) {
             return null;
         }
-        //TODO consider adding a file based map system here.
         return getHost(name.substring(parseTokenPos + 1, name.length()));
     }
 
