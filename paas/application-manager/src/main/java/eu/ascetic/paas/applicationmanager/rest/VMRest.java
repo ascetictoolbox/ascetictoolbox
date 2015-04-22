@@ -70,7 +70,7 @@ public class VMRest extends AbstractRest {
 		
 		logger.debug("Connecting to Energy Modeller");
 
-		double energyConsumed = energyModeller.energyEstimation(null, applicationName, ids, eventId);
+		double energyConsumed = energyModeller.measure(null,  applicationName, ids, eventId, Unit.ENERGY, null, null);
 		
 		EnergyMeasurement energyMeasurement = new EnergyMeasurement();
 		energyMeasurement.setValue(energyConsumed);
@@ -110,17 +110,17 @@ public class VMRest extends AbstractRest {
 		logger.debug("Connecting to Energy Modeller");
 		
 		if(startTime == 0) {
-			energyConsumed = energyModeller.energyApplicationConsumption(null, applicationName, ids, eventId);
+			energyConsumed = energyModeller.measure(null,  applicationName, ids, eventId, Unit.ENERGY, null, null); 
 		} else if(endTime == 0) {
 			Timestamp startStamp = new Timestamp(startTime);
 			Timestamp endStamp = new Timestamp(System.currentTimeMillis());
 			
-			energyConsumed = energyModeller.applicationConsumptionInInterval(null, applicationName, ids, eventId, Unit.ENERGY, startStamp, endStamp);
+			energyConsumed = energyModeller.measure(null,  applicationName, ids, eventId, Unit.ENERGY, startStamp, endStamp); 
 		} else {
 			Timestamp startStamp = new Timestamp(startTime);
 			Timestamp endStamp = new Timestamp(endTime);
 			
-			energyConsumed = energyModeller.applicationConsumptionInInterval(null, applicationName, ids, eventId, Unit.ENERGY, startStamp, endStamp);
+			energyConsumed = energyModeller.measure(null,  applicationName, ids, eventId, Unit.ENERGY, startStamp, endStamp); 
 		}
 		
 		energyMeasurement.setValue(energyConsumed);

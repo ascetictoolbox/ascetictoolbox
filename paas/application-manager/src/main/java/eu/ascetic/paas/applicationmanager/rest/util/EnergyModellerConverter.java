@@ -3,10 +3,8 @@ package eu.ascetic.paas.applicationmanager.rest.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EnergySample;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.ApplicationSample;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EventSample;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Sample;
 
 /**
  * 

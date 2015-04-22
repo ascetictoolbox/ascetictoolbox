@@ -9,8 +9,8 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.builder.EnergyModellerFactory;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.PaaSEnergyModeller;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.EnergyModellerSimple;
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.dao.VMDAO;
@@ -70,7 +70,8 @@ public abstract class AbstractRest {
 	protected static PaaSEnergyModeller getEnergyModeller() {
 		if(energyModeller == null) {
 			logger.debug("Initializing Energy Modeller...");
-			return new EnergyModellerSimple("/etc/ascetic/paas/em/config.properties");
+			// TODO this path here looks ugly, move it to the configuration file...
+			return EnergyModellerFactory.getEnergyModeller("/etc/ascetic/paas/em/config.properties");
 		}
 		else {
 			return energyModeller;
