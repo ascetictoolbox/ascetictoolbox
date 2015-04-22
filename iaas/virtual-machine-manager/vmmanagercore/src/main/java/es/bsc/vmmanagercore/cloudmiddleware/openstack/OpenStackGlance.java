@@ -37,14 +37,15 @@ import java.util.Map;
 public class OpenStackGlance {
 
     private final OpenStackCredentials openStackCredentials;
-    private final String token; // token needed for authentication
+
+    // I have not implemented a mechanism to reuse tokens.
+    // This might make things a bit slower.
 
     /**
      * Class constructor.
      */
     public OpenStackGlance(OpenStackCredentials openStackCredentials) {
         this.openStackCredentials = openStackCredentials;
-        token = getToken();
     }
 
     /**
@@ -87,7 +88,7 @@ public class OpenStackGlance {
      */
     private Map<String, String> getHeadersForCreateImageRequest(ImageToUpload imageToUpload) {
         Map<String, String> result = new HashMap<>();
-        result.put("X-Auth-Token", token);
+        result.put("X-Auth-Token", getToken());
         result.put("x-image-meta-container_format", "bare");
         result.put("User-Agent", "python-glanceclient");
         result.put("x-image-meta-is_public", "True");
@@ -137,7 +138,7 @@ public class OpenStackGlance {
      */
     private Map<String, String> getHeadersForDeleteImageRequest() {
         Map<String, String> result = new HashMap<>();
-        result.put("X-Auth-Token", token);
+        result.put("X-Auth-Token", getToken());
         return result;
     }
 
@@ -165,7 +166,7 @@ public class OpenStackGlance {
      */
     private Map<String, String> getHeadersForImageIsActiveRequest() {
         Map<String, String> result = new HashMap<>();
-        result.put("X-Auth-Token", token);
+        result.put("X-Auth-Token", getToken());
         result.put("User-Agent", "python-glanceclient");
         result.put("Content-Type", "application/octet-stream");
         return result;
