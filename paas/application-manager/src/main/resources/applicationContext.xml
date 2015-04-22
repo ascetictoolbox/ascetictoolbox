@@ -68,10 +68,10 @@
 		  p:showSql="true" />
 
 	<!-- Scheduled Spring tasks -->
-	<task:annotation-driven />
+	<!-- <task:annotation-driven /> 
 	<util:properties id="applicationProps" location="classpath:application-manager.properties" />
 	<context:property-placeholder properties-ref="applicationProps" />
-	<bean id="deploymentsStatusTask" class="eu.ascetic.paas.applicationmanager.scheduler.DeploymentsStatusTask"></bean>
+	<bean id="deploymentsStatusTask" class="eu.ascetic.paas.applicationmanager.scheduler.DeploymentsStatusTask"></bean> -->
 		  
 		  
 	<!-- Scheduled Spring tasks -->
