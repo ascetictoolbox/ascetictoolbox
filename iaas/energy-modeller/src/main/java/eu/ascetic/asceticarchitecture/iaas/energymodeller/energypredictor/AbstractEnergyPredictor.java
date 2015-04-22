@@ -73,7 +73,7 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
      *
      * These indicate the window of how long the CPU should be monitored for, to
      * determine the current load.
-     */    
+     */
     public AbstractEnergyPredictor() {
         try {
             PropertiesConfiguration config;
@@ -153,18 +153,20 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
     }
 
     /**
-     * This returns the current energy share rule that is in use by the 
-     * energy predictor.
-     * @return the energyShareRule The rule that divides the energy usage of hosts
-     * into each VM.
+     * This returns the current energy share rule that is in use by the energy
+     * predictor.
+     *
+     * @return the energyShareRule The rule that divides the energy usage of
+     * hosts into each VM.
      */
     public EnergyShareRule getEnergyShareRule() {
         return energyShareRule;
     }
 
     /**
-     * This sets the current energy share rule that is in use by the 
-     * energy predictor.
+     * This sets the current energy share rule that is in use by the energy
+     * predictor.
+     *
      * @param energyShareRule The rule that divides the energy usage of hosts
      * into each VM.
      */
@@ -234,7 +236,7 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
      */
     public void setDefaultAssumedCpuUsage(double usageCPU) {
         this.defaultAssumedCpuUsage = usageCPU;
-    }   
+    }
 
     /**
      * This provides a prediction of how much energy is to be used by a VM, over
@@ -253,9 +255,9 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
     }
 
     /**
-     * This provides a prediction of how much energy is to be used by a host 
-     * in the next hour.
-     * 
+     * This provides a prediction of how much energy is to be used by a host in
+     * the next hour.
+     *
      * @param host The host to get the energy prediction for
      * @param virtualMachines The virtual machines giving a workload on the host
      * machine
@@ -269,6 +271,7 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
 
     /**
      * This for a set of VMs provides the amount of memory allocated in Mb.
+     *
      * @param virtualMachines The VMs to get the memory used.
      * @return The amount of memory allocated to VMs in Mb.
      */
@@ -282,6 +285,7 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
 
     /**
      * This for a set of VMs provides the amount of memory allocated in Mb.
+     *
      * @param virtualMachines The VMs to get the memory used.
      * @return The amount of memory allocated to VMs in Mb.
      */
@@ -295,6 +299,7 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
 
     /**
      * This for a set of VMs provides the amount of memory allocated in Mb.
+     *
      * @param virtualMachines The VMs to get the memory used.
      * @return The amount of memory allocated to VMs in Mb.
      */
@@ -323,9 +328,10 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
      * TODO Add utility functions here that may be used by the energy models
      * that are created over the time of the project.
      */
-    
     /**
-     * The predictor function class represents a wrap around of a predictor and its estimated error.
+     * The predictor function class represents a wrap around of a predictor and
+     * its estimated error.
+     *
      * @param <T> The type of the object that is to be used to generate the
      * prediction.
      */
@@ -337,10 +343,13 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
 
         /**
          * This creates a new instance of a prediction function.
+         *
          * @param function The function that the predictor is to use to estimate
          * power/energy consumption.
-         * @param sumOfSquareError The sum of the square error for the prediction function.
-         * @param rootMeanSquareError The root mean square error for the prediction function.
+         * @param sumOfSquareError The sum of the square error for the
+         * prediction function.
+         * @param rootMeanSquareError The root mean square error for the
+         * prediction function.
          */
         public PredictorFunction(T function, double sumOfSquareError, double rootMeanSquareError) {
             this.function = function;
@@ -350,6 +359,7 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
 
         /**
          * This returns the object that provides the prediction function
+         *
          * @return The function that the predictor is to use to estimate
          * power/energy consumption.
          */
@@ -359,6 +369,7 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
 
         /**
          * This returns the sum of the square error for the prediction function.
+         *
          * @return The sum of the square error for the prediction function.
          */
         public double getSumOfSquareError() {
@@ -366,7 +377,9 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
         }
 
         /**
-         * This returns the sum of the room mean error for the prediction function.
+         * This returns the sum of the room mean error for the prediction
+         * function.
+         *
          * @return The sum of the square error for the prediction function.
          */
         public double getRootMeanSquareError() {
