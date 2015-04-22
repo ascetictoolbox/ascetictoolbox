@@ -43,7 +43,7 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
     /**
      * This creates a new CPU only energy predictor that uses a linear fit.
      *
-     * It will create a energymodeller_CPU_predictor properties file if it
+     * It will create a energy-modeller-predictor properties file if it
      * doesn't exist.
      *
      * The main property: iaas.energy.modeller.cpu.energy.predictor.default_load

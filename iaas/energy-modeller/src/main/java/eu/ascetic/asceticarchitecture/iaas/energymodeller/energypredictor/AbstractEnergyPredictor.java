@@ -59,7 +59,7 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
     /**
      * This creates a new abstract energy predictor.
      *
-     * It will create a energymodeller_CPU_predictor properties file if it
+     * It will create a energy-modeller-predictor properties file if it
      * doesn't exist.
      *
      * The main property: iaas.energy.modeller.cpu.energy.predictor.default_load
