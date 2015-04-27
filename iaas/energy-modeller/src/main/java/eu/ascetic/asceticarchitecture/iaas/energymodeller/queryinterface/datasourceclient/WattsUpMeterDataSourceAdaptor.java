@@ -20,6 +20,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Energ
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
+import eu.ascetic.ioutils.Settings;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -50,19 +51,20 @@ import wattsup.jsdk.core.meter.WattsUp;
  * The aim of this class is initially to take data from the Watts Up meter and
  * to place it into a format that is suitable for the Energy modeller.
  *
- * @author Richard
+ * @author Richard Kavanagh
  */
 public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
 
     private static final String VOLTAGE_KPI_NAME = "Voltage";
     private static final String CURRENT_KPI_NAME = "Current";
-    private final Host host = new Host(1, "localhost");
+    private final Host host;
     private WattsUp meter;
     private static Sigar sigar = new Sigar();
     private HostMeasurement lowest = null;
     private HostMeasurement highest = null;
     private HostMeasurement current = null;
     private final LinkedList<CPUUtilisation> cpuMeasure = new LinkedList<>();
+    private final Settings settings = new Settings("energy-modeller-watts-up-meter.properties");
 
     /**
      * SingletonHolder is loaded on the first execution of
@@ -92,8 +94,14 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
      *
      */
     private WattsUpMeterDataSourceAdaptor() {
-        this("COM9", -1, 1);
-
+        String port = settings.getString("port", "COM9");
+        int hostId = settings.getInt("hostId", 1);
+        String hostname = settings.getString("hostname", "localhost");
+        if (settings.isChanged()) {
+            settings.save("energy-modeller-watts-up-meter.properties");
+        }
+        startup(port, -1, 1);
+        host = new Host(hostId, hostname);
         try {
             Mem mem = sigar.getMem();
             host.setRamMb((int) (Double.valueOf(mem.getTotal()) / 1048576));
@@ -113,7 +121,18 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
      * erval The interval at which to take logging data.
      */
     public WattsUpMeterDataSourceAdaptor(String port, int duration, int interval) {
+        host = new Host(1, "localhost");
+        startup(port, duration, interval);
+    }
 
+    /**
+     * This is the generic startup code for the WattsUp data source adaptor
+     *
+     * @param port The port to connect to
+     * @param duration The duration to connect for (< 0 means forever) @param int
+     * erval The interval at which to take logging data.
+     */
+    public final void startup(String port, int duration, int interval) {
         try {
             WattsUpConfig config = new WattsUpConfig().withPort(port).scheduleDuration(duration).withInternalLoggingInterval(interval).withExternalLoggingInterval(interval);
             meter = new WattsUp(config);
@@ -223,7 +242,11 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
     @Override
     public Host getHostByName(String hostname) {
         //ignore hostname and just return the current localhost
-        return host;
+        if (hostname.equals(host.getHostName())) {
+            return host;
+        } else {
+            return new Host(1, hostname);
+        }
     }
 
     @Override

@@ -20,6 +20,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Energ
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
+import eu.ascetic.ioutils.Settings;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
@@ -35,12 +36,12 @@ import org.hyperic.sigar.SigarException;
 
 /**
  * The aim of this class is initially to take data from Sigar and to place it
- * into a format that is suitable for the Watt meter emulator. It will not report
- * on energy consumption, but avoids sending calls across the network to gain
- * local utilisation information such as CPU.
- * 
- * This will aid scalability and reduce network overhead but may mean measurements
- * do not match the main data source adaptor in use. 
+ * into a format that is suitable for the Watt meter emulator. It will not
+ * report on energy consumption, but avoids sending calls across the network to
+ * gain local utilisation information such as CPU.
+ *
+ * This will aid scalability and reduce network overhead but may mean
+ * measurements do not match the main data source adaptor in use.
  *
  * @author Richard
  */
@@ -48,11 +49,12 @@ public class SigarDataSourceAdaptor implements HostDataSource {
 
     private static final String VOLTAGE_KPI_NAME = "Voltage";
     private static final String CURRENT_KPI_NAME = "Current";
-    private static final Sigar SOURCE = new Sigar();    
-    private Host host = new Host(1, "localhost");
+    private static final Sigar SOURCE = new Sigar();
+    private Host host;
     private HostMeasurement lowest = null;
     private HostMeasurement highest = null;
     private final LinkedList<CPUUtilisation> cpuMeasure = new LinkedList<>();
+    private final Settings settings = new Settings("energy-modeller-data-source-sigar.properties");
 
     /**
      * SingletonHolder is loaded on the first execution of
@@ -76,12 +78,17 @@ public class SigarDataSourceAdaptor implements HostDataSource {
     }
 
     /**
-     * This creates a new Sigar data source adaptor, that is capable of
-     * taking data from Sigar, for use inside the ASCETiC architecture.
+     * This creates a new Sigar data source adaptor, that is capable of taking
+     * data from Sigar, for use inside the ASCETiC architecture.
      *
      */
     private SigarDataSourceAdaptor() {
-
+        int hostId = settings.getInt("hostId", 1);
+        String hostname = settings.getString("hostname", "localhost");
+        if (settings.isChanged()) {
+            settings.save("energy-modeller-data-source-sigar.properties");
+        }
+        host = new Host(hostId, hostname);
         try {
             Mem mem = SOURCE.getMem();
             host.setRamMb((int) (Double.valueOf(mem.getTotal()) / 1048576));
@@ -111,10 +118,10 @@ public class SigarDataSourceAdaptor implements HostDataSource {
             measurement.addMetric(new MetricValue(KpiList.CPU_STEAL_KPI_NAME, KpiList.CPU_STEAL_KPI_NAME, cpu.getStolen() * 100 + "", clock));
             measurement.addMetric(new MetricValue(KpiList.CPU_SYSTEM_KPI_NAME, KpiList.CPU_SYSTEM_KPI_NAME, cpu.getSys() * 100 + "", clock));
             measurement.addMetric(new MetricValue(KpiList.CPU_USER_KPI_NAME, KpiList.CPU_USER_KPI_NAME, cpu.getUser() * 100 + "", clock));
-            
+
             measurement.addMetric(new MetricValue(KpiList.MEMORY_AVAILABLE_KPI_NAME, KpiList.MEMORY_AVAILABLE_KPI_NAME, (int) (Double.valueOf(mem.getActualFree()) / 1048576) + "", clock));
             measurement.addMetric(new MetricValue(KpiList.MEMORY_TOTAL_KPI_NAME, KpiList.MEMORY_TOTAL_KPI_NAME, (int) (Double.valueOf(mem.getTotal()) / 1048576) + "", clock));
-            
+
         } catch (SigarException ex) {
             Logger.getLogger(SigarDataSourceAdaptor.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -126,14 +133,15 @@ public class SigarDataSourceAdaptor implements HostDataSource {
         }
         return measurement;
     }
-    
+
     /**
      * This sets the host object that is currently the local host.
+     *
      * @param host The host to report the data for
      */
-    public void setHost (Host host) {
+    public void setHost(Host host) {
         this.host = host;
-    }    
+    }
 
     @Override
     public Host getHostByName(String hostname) {
@@ -243,8 +251,7 @@ public class SigarDataSourceAdaptor implements HostDataSource {
     }
 
     /**
-     * This is a CPU utilisation record for the Sigar data source
-     * adaptor.
+     * This is a CPU utilisation record for the Sigar data source adaptor.
      */
     private class CPUUtilisation {
 

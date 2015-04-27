@@ -75,9 +75,9 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
      */
     private Connection connection;
     /**
-     * This query lists all hosts data items.
-     * status <> 3 excludes templates
-     * available = 0 is for templates, available = 1 = true available = 2 = false
+     * This query lists all hosts data items. status <> 3 excludes templates
+     * available = 0 is for templates, available = 1 = true available = 2 =
+     * false
      */
     private static final String ALL_ZABBIX_HOSTS = "SELECT hostid, host FROM hosts WHERE status <> 3 AND available = 1";
     /**
@@ -354,8 +354,8 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
             DB_LOGGER.log(Level.SEVERE, null, ex);
         }
         return answer;
-    }
-
+    } 
+    
     @Override
     public List<EnergyUsageSource> getHostAndVmList() {
         List<EnergyUsageSource> answer = new ArrayList<>();
