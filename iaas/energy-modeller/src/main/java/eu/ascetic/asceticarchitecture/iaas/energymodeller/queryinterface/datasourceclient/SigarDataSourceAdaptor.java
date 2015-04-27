@@ -43,7 +43,7 @@ import org.hyperic.sigar.SigarException;
  * This will aid scalability and reduce network overhead but may mean
  * measurements do not match the main data source adaptor in use.
  *
- * @author Richard
+ * @author Richard Kavanagh
  */
 public class SigarDataSourceAdaptor implements HostDataSource {
 
@@ -125,11 +125,17 @@ public class SigarDataSourceAdaptor implements HostDataSource {
         } catch (SigarException ex) {
             Logger.getLogger(SigarDataSourceAdaptor.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (lowest == null || measurement.getPower() < lowest.getPower()) {
-            lowest = measurement;
-        }
-        if (highest == null || measurement.getPower() > highest.getPower()) {
-            highest = measurement;
+        /**
+         * This is intrinsically false as Sigar doesn't currently provide power
+         * measurements.
+         */
+        if (measurement.getPowerMetricExist()) {
+            if (lowest == null || measurement.getPower() < lowest.getPower()) {
+                lowest = measurement;
+            }
+            if (highest == null || measurement.getPower() > highest.getPower()) {
+                highest = measurement;
+            }
         }
         return measurement;
     }
