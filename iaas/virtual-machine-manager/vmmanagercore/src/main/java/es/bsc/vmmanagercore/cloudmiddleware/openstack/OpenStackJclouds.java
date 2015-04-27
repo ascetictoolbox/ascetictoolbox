@@ -127,6 +127,21 @@ public class OpenStackJclouds implements CloudMiddleware {
     }
 
     @Override
+    public List<String> getScheduledNonDeployedVmsIds() {
+        List<String> result = new ArrayList<>();
+        for (Server server: openStackJcloudsApis.getServerApi().listInDetail().concat()) {
+            ServerExtendedStatus vmStatus = server.getExtendedStatus().get();
+
+            boolean vmIsBuilding = BUILD.equals(vmStatus.getVmState());
+            boolean vmIsBeingDeleted = DELETING.equals(vmStatus.getTaskState());
+            if (vmIsBuilding && !vmIsBeingDeleted) {
+                result.add(server.getId());
+            }
+        }
+        return result;
+    }
+
+    @Override
     public VmDeployed getVM(String vmId) {
         VmDeployed vm = null;
         Server server = openStackJcloudsApis.getServerApi().get(vmId);

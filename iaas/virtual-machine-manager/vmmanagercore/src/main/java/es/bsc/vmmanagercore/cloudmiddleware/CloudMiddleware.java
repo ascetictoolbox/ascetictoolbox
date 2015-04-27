@@ -61,10 +61,17 @@ public interface CloudMiddleware {
     /**
      * Retrieves the IDs of all the VMs that are running.
      *
-     * @return the list containing the IDs of all the VMs that are running
+     * @return a list containing the IDs of all the VMs that are running
      */
     List<String> getAllVMsIds();
-    
+
+    /**
+     * Retrieves the IDs of the VMs that have been scheduled but have not been deployed yet.
+     *
+     * @return a list containing the IDs of the VMs that are scheduled but not deployed
+     */
+    List<String> getScheduledNonDeployedVmsIds();
+
     /**
      * Retrieves a VM by its ID.
      *

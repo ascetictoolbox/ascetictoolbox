@@ -171,6 +171,11 @@ public class FakeCloudMiddlewareTest {
     }
 
     @Test
+    public void getScheduledNonDeployedVmsIds() {
+        assertTrue(fakeCloudMiddleware.getScheduledNonDeployedVmsIds().isEmpty());
+    }
+
+    @Test
     public void getAllVmsIdsReturnsEmptyListWhenThereAreNoVms() {
         assertTrue(fakeCloudMiddleware.getAllVMsIds().isEmpty());
     }

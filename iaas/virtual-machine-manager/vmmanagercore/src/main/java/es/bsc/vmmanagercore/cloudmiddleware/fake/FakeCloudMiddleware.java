@@ -134,6 +134,13 @@ public class FakeCloudMiddleware implements CloudMiddleware {
     }
 
     @Override
+    public List<String> getScheduledNonDeployedVmsIds() {
+        // In this simulated cloud middleware, we assume that deployments do not have a delay.
+        // Therefore, there cannot be VMs that are scheduled but not deployed.
+        return new ArrayList<>();
+    }
+
+    @Override
     public VmDeployed getVM(String vmId) {
         return getVmById(vmId);
     }
