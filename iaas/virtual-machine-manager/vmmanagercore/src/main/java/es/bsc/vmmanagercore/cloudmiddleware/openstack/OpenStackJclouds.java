@@ -132,7 +132,9 @@ public class OpenStackJclouds implements CloudMiddleware {
         for (Server server: openStackJcloudsApis.getServerApi().listInDetail().concat()) {
             ServerExtendedStatus vmStatus = server.getExtendedStatus().get();
 
-            boolean vmIsBuilding = BUILD.equals(vmStatus.getVmState());
+            // Here, the state is "building", but using a different API is "BUILD".
+            // Explore why and add the appropriate constant.
+            boolean vmIsBuilding = vmStatus.getVmState().equals("building");
             boolean vmIsBeingDeleted = DELETING.equals(vmStatus.getTaskState());
             if (vmIsBuilding && !vmIsBeingDeleted) {
                 result.add(server.getId());
@@ -150,9 +152,8 @@ public class OpenStackJclouds implements CloudMiddleware {
         if (server != null ) {
             // Get the information of the VM if it is active and it is not being deleted
             ServerExtendedStatus vmStatus = server.getExtendedStatus().get();
-            boolean vmIsActive = ACTIVE.equals(vmStatus.getVmState());
             boolean vmIsBeingDeleted = DELETING.equals(vmStatus.getTaskState());
-            if (vmIsActive && !vmIsBeingDeleted) {
+            if (!vmIsBeingDeleted) {
                 Flavor flavor = openStackJcloudsApis.getFlavorApi().get(server.getFlavor().getId());
                 String vmIp = getVmIp(server);
                 int swapMb = 0;

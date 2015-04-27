@@ -91,6 +91,24 @@ public class VmsManager {
     }
 
     /**
+     * Returns the VMs that have been scheduled (have been assigned a host), but have not been deployed yet.
+     *
+     * @return the list of VMs that have been scheduled, but not deployed
+     */
+    public List<VmDeployed> getScheduledNonDeployedVms() {
+        // It might seem confusing that this function returns a list of VmDeployed instead of Vm.
+        // The reason is that the Vm class does not have a host assigned whereas VmDeployed does.
+        // This is a temporary solution. I need to create a new 'ScheduledNonDeployedVm' class separated from
+        // Vm and VmDeployed.
+
+        List<VmDeployed> result = new ArrayList<>();
+        for (String vmId: cloudMiddleware.getScheduledNonDeployedVmsIds()) {
+            result.add(getVm(vmId));
+        }
+        return result;
+    }
+
+    /**
      * Returns a specific VM deployed.
      *
      * @param vmId the ID of the VM
@@ -266,7 +284,7 @@ public class VmsManager {
         // If the host is not on, turn it on and wait
         if (!host.isOn()) {
             hostsManager.pressHostPowerButton(host.getHostname());
-            while (!host.isOn()) { // Is there a cleaner way to do this?
+            while (!host.isOn()) { // Find a better way to do this
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {

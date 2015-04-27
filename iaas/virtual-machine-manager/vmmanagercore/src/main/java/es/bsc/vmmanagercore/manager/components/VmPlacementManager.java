@@ -27,6 +27,7 @@ import es.bsc.vmmanagercore.modellers.energy.EnergyModeller;
 import es.bsc.vmmanagercore.modellers.price.PricingModeller;
 import es.bsc.vmmanagercore.models.scheduling.*;
 import es.bsc.vmmanagercore.models.vms.Vm;
+import es.bsc.vmmanagercore.models.vms.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.hosts.Host;
 import es.bsc.vmmanagercore.vmplacement.CloplaConversor;
 
@@ -106,7 +107,7 @@ public class VmPlacementManager {
         ClusterState clusterStateRecommendedPlan = clopla.getBestSolution(
                 CloplaConversor.getCloplaHosts(hosts),
                 CloplaConversor.getCloplaVms(
-                        vmsManager.getAllVms(),
+                        getVmsDeployedAndScheduledNonDeployed(),
                         vmsToDeploy,
                         CloplaConversor.getCloplaHosts(hosts),
                         assignVmsToCurrentHosts),
@@ -140,5 +141,36 @@ public class VmPlacementManager {
 
         }
     }
-    
+
+    private List<VmDeployed> getVmsDeployedAndScheduledNonDeployed() {
+        List<VmDeployed> result = new ArrayList<>();
+
+        // I think that the VMs that are scheduled but not deployed should be gotten before the scheduled ones.
+        // The reason is that if we obtain first the ones that are deployed and then the ones that are scheduled but
+        // not deployed, we might not take into account those VMs that were not deployed at the moment of the first
+        // call but that were deployed before the making the second call.
+
+        List<VmDeployed> vmsScheduledNonDeployed = vmsManager.getScheduledNonDeployedVms();
+        List<VmDeployed> vmsDeployed = vmsManager.getAllVms();
+        result.addAll(vmsDeployed);
+
+        // Add only the ones that have not been deployed yet.
+        // (They could have been deployed during the two calls)
+        for (VmDeployed vmWasScheduledNonDeployed: vmsScheduledNonDeployed) {
+            boolean deployed = false;
+
+            for (int i = 0; i < vmsDeployed.size() && !deployed; ++i) {
+                if (vmWasScheduledNonDeployed.getId().equals(vmsDeployed.get(i).getId())) {
+                    deployed = true;
+                }
+            }
+
+            if (!deployed) {
+                result.add(vmWasScheduledNonDeployed);
+            }
+        }
+
+        return result;
+    }
+
 }
