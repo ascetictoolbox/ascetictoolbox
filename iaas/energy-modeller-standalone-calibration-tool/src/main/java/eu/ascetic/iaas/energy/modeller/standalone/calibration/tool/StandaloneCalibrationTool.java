@@ -18,12 +18,15 @@ package eu.ascetic.iaas.energy.modeller.standalone.calibration.tool;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DatabaseConnector;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DefaultDatabaseConnector;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.WattsUpMeterDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDirectDbDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostProfileData;
 import eu.ascetic.ioutils.execution.CompletedListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import jnt.scimark2.Benchmark;
 import jnt.scimark2.Result;
 
@@ -38,9 +41,10 @@ public class StandaloneCalibrationTool implements CompletedListener {
     private boolean working = false;
     private Host host;
     private boolean stopOnCalibratedHosts = false;
-    private final HostDataSource source = new ZabbixDirectDbDataSourceAdaptor();
+    private HostDataSource source;
     private final DatabaseConnector database = new DefaultDatabaseConnector();
     private CalibrationRunManager runManager;
+    private static final String DEFAULT_DATA_SOURCE_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient";
 
     /**
      * Creates a calibration tool for the ASECTiC energy modeller
@@ -48,6 +52,20 @@ public class StandaloneCalibrationTool implements CompletedListener {
      * @param hostname The host to calibrate
      */
     public StandaloneCalibrationTool(String hostname) {
+        source = new ZabbixDirectDbDataSourceAdaptor();
+        host = source.getHostByName(hostname);
+        host = database.getHostCalibrationData(host);
+    }
+
+    /**
+     * Creates a calibration tool for the ASECTiC energy modeller
+     *
+     * @param hostname The host to calibrate
+     * @param datasource This allows the data source to be changed to a named
+     * other from the default of ZabbixDirectDBDatasourceAdaptor.
+     */
+    public StandaloneCalibrationTool(String hostname, String datasource) {
+        setDataSource(datasource);
         host = source.getHostByName(hostname);
         host = database.getHostCalibrationData(host);
     }
@@ -55,25 +73,27 @@ public class StandaloneCalibrationTool implements CompletedListener {
     /**
      * This performs the calibration of a host.
      *
-     * @param args The first argument should be the hostname after this there
-     * are several optional arguments can be passed namely: halt-on-calibrated
-     * which prevents a host from been recalibrated. and benchmark-only which
-     * which prevents calibration from running.
+     * @param args The first argument should be the host name after this there
+     * are several optional arguments can be passed namely: 
+     * halt-on-calibrated which prevents a host from been re-calibrated. 
+     * benchmark-only which prevents calibration from running. and
+     * use-watts-up-meter which means a watts up meter is used locally for 
+     * measurements.
      *
      */
     public static void main(String[] args) {
+        ArrayList<String> strArgs = new ArrayList<>(Arrays.asList(args));
         StandaloneCalibrationTool instance;
         if (args.length != 0) {
-            instance = new StandaloneCalibrationTool(args[0]);
-            /**
-             * Wait for a short time, make sure the host is in an idle enough
-             * state. Noting this application may be part of the boot sequence.
-             */
-            //TODO see if a start delay is relevant
+            if (strArgs.contains("use-watts-up-meter")) {
+                instance = new StandaloneCalibrationTool(args[0],
+                        DEFAULT_DATA_SOURCE_PACKAGE + ".WattsUpMeterDataSourceAdaptor");
+            } else {
+                instance = new StandaloneCalibrationTool(args[0]);
+            }
             /**
              * Induce the training workload pattern
              */
-            ArrayList<String> strArgs = new ArrayList<>(Arrays.asList(args));
             if (strArgs.contains("halt-on-calibrated")) {
                 instance.setHaltOnCalibratedHost(true);
             }
@@ -86,8 +106,44 @@ public class StandaloneCalibrationTool implements CompletedListener {
             System.out.println("Usage: host-name [halt-on-calibrated] [benchmark-only]");
             System.out.println("The halt-on-calibrated flag will prevent calibration "
                     + "in cases where the data has already been gathered.");
-            System.out.println("The [benchmark-only] flag skips the calibration run"
+            System.out.println("The benchmark-only flag skips the calibration run "
                     + "and performs a benchmark run only.");
+            System.out.println("The use-watts-up-meter flag can be used so that "
+                    + "Zabbix is not used for calibration but local measurements "
+                    + "are performed instead.");
+        }
+    }
+
+    /**
+     * This allows the data source to be set
+     *
+     * @param dataSource The name of the data source to use for the calibration
+     */
+    public final void setDataSource(String dataSource) {
+        try {
+            if (!dataSource.startsWith(DEFAULT_DATA_SOURCE_PACKAGE)) {
+                dataSource = DEFAULT_DATA_SOURCE_PACKAGE + "." + dataSource;
+            }
+            /**
+             * This is a special case that requires it to be loaded under the
+             * singleton design pattern.
+             */
+            String wattsUpMeter = DEFAULT_DATA_SOURCE_PACKAGE + ".WattsUpMeterDataSourceAdaptor";
+            if (wattsUpMeter.equals(dataSource)) {
+                source = WattsUpMeterDataSourceAdaptor.getInstance();
+            } else {
+                source = (HostDataSource) (Class.forName(dataSource).newInstance());
+            }
+        } catch (ClassNotFoundException ex) {
+            if (source == null) {
+                source = new ZabbixDirectDbDataSourceAdaptor();
+            }
+            Logger.getLogger(StandaloneCalibrationTool.class.getName()).log(Level.WARNING, "The data source specified was not found");
+        } catch (InstantiationException | IllegalAccessException ex) {
+            if (source == null) {
+                source = new ZabbixDirectDbDataSourceAdaptor();
+            }
+            Logger.getLogger(StandaloneCalibrationTool.class.getName()).log(Level.WARNING, "The data source did not work", ex);
         }
     }
 
