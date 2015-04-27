@@ -103,7 +103,7 @@ public class StandaloneCalibrationTool implements CompletedListener {
             }
         } else {
             System.out.println("Please provide the name of the host!");
-            System.out.println("Usage: host-name [halt-on-calibrated] [benchmark-only]");
+            System.out.println("Usage: host-name [halt-on-calibrated] [benchmark-only] [use-watts-up-meter]");
             System.out.println("The halt-on-calibrated flag will prevent calibration "
                     + "in cases where the data has already been gathered.");
             System.out.println("The benchmark-only flag skips the calibration run "
