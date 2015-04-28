@@ -54,7 +54,7 @@ public class SigarDataSourceAdaptor implements HostDataSource {
     private HostMeasurement lowest = null;
     private HostMeasurement highest = null;
     private final LinkedList<CPUUtilisation> cpuMeasure = new LinkedList<>();
-    private final Settings settings = new Settings("energy-modeller-data-source-sigar.properties");
+    private final Settings settings = new Settings("energy-modeller-sigar.properties");
 
     /**
      * SingletonHolder is loaded on the first execution of
@@ -83,10 +83,10 @@ public class SigarDataSourceAdaptor implements HostDataSource {
      *
      */
     private SigarDataSourceAdaptor() {
-        int hostId = settings.getInt("hostId", 1);
-        String hostname = settings.getString("hostname", "localhost");
+        int hostId = settings.getInt("iaas.energy.modeller.sigar.hostId", 1);
+        String hostname = settings.getString("iaas.energy.modeller.sigar.hostname", "localhost");
         if (settings.isChanged()) {
-            settings.save("energy-modeller-data-source-sigar.properties");
+            settings.save("energy-modeller-sigar.properties");
         }
         host = new Host(hostId, hostname);
         try {

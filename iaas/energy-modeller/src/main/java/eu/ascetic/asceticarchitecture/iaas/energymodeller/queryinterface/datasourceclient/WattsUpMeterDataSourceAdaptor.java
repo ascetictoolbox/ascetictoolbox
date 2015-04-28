@@ -21,6 +21,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
 import eu.ascetic.ioutils.Settings;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -31,6 +32,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.io.input.Tailer;
+import org.apache.commons.io.input.TailerListenerAdapter;
 import org.hyperic.sigar.CpuPerc;
 import org.hyperic.sigar.Mem;
 import org.hyperic.sigar.Sigar;
@@ -59,6 +62,8 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
     private static final String CURRENT_KPI_NAME = "Current";
     private final Host host;
     private WattsUp meter;
+    private WattsUpTailer fileTailer;
+    private Tailer tailer;
     private static Sigar sigar = new Sigar();
     private HostMeasurement lowest = null;
     private HostMeasurement highest = null;
@@ -94,19 +99,20 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
      *
      */
     private WattsUpMeterDataSourceAdaptor() {
-        String port = settings.getString("port", "COM9");
-        int hostId = settings.getInt("hostId", 1);
-        String hostname = settings.getString("hostname", "localhost");
+        String port = settings.getString("iaas.energy.modeller.wattsup.port", "COM9");
+        int hostId = settings.getInt("iaas.energy.modeller.wattsup.hostId", 1);
+        String hostname = settings.getString("iaas.energy.modeller.wattsup.hostname", "localhost");
         if (settings.isChanged()) {
             settings.save("energy-modeller-watts-up-meter.properties");
         }
+        host = new Host(hostId, hostname);        
         startup(port, -1, 1);
-        host = new Host(hostId, hostname);
         try {
             Mem mem = sigar.getMem();
             host.setRamMb((int) (Double.valueOf(mem.getTotal()) / 1048576));
         } catch (SigarException ex) {
-            Logger.getLogger(WattsUpMeterDataSourceAdaptor.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(WattsUpMeterDataSourceAdaptor.class.getName()).log(Level.SEVERE, 
+                    "A problem occured with Sigar", ex);
         }
 
     }
@@ -117,8 +123,8 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
      * architecture.
      *
      * @param port The port to connect to
-     * @param duration The duration to connect for (< 0 means forever) @param int
-     * erval The interval at which to take logging data.
+     * @param duration The duration to connect for (< 0 means forever) 
+     * @param interval The interval at which to take logging data.
      */
     public WattsUpMeterDataSourceAdaptor(String port, int duration, int interval) {
         host = new Host(1, "localhost");
@@ -129,21 +135,33 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
      * This is the generic startup code for the WattsUp data source adaptor
      *
      * @param port The port to connect to
-     * @param duration The duration to connect for (< 0 means forever) @param int
-     * erval The interval at which to take logging data.
+     * @param duration The duration to connect for (< 0 means forever) 
+     * @param interval The interval at which to take logging data.
      */
     public final void startup(String port, int duration, int interval) {
-        try {
-            WattsUpConfig config = new WattsUpConfig().withPort(port).scheduleDuration(duration).withInternalLoggingInterval(interval).withExternalLoggingInterval(interval);
-            meter = new WattsUp(config);
-            System.out.println("WattsUp Meter Created");
-            registerEventListeners(meter);
-            System.out.println("WattsUp Meter Connecting");
-            meter.connect(false);
-            meter.setLoggingModeSerial(1);
-            System.out.println("WattsUp Meter Connected " + meter.isConnected());
-        } catch (IOException ex) {
-            Logger.getLogger(WattsUpMeterDataSourceAdaptor.class.getName()).log(Level.SEVERE, null, ex);
+        if (port.equalsIgnoreCase("file")) {
+            String filename = settings.getString("iaas.energy.modeller.wattsup.scrape.file", "testnodex-wattsup.log");
+            if (settings.isChanged()) {
+                settings.save("energy-modeller-watts-up-meter.properties");
+            }
+            File scrapeFile = new File(filename);
+            fileTailer = new WattsUpTailer();
+            tailer = Tailer.create(scrapeFile, fileTailer, (interval * 1000) / 16, true);
+            tailer.run();
+            System.out.println("Scraping from WattsUp meter file");
+        } else {
+            try {
+                WattsUpConfig config = new WattsUpConfig().withPort(port).scheduleDuration(duration).withInternalLoggingInterval(interval).withExternalLoggingInterval(interval);
+                meter = new WattsUp(config);
+                System.out.println("WattsUp Meter Created");
+                registerEventListeners(meter);
+                System.out.println("WattsUp Meter Connecting");
+                meter.connect(false);
+                meter.setLoggingModeSerial(1);
+                System.out.println("WattsUp Meter Connected " + meter.isConnected());
+            } catch (IOException ex) {
+                Logger.getLogger(WattsUpMeterDataSourceAdaptor.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -425,6 +443,78 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
             return clock < time;
         }
 
+    }
+
+    /**
+     * In the event the WattsUp Meter port is captured already and the output is
+     * being placed in a log file this can read the file and get the required
+     * data.
+     */
+    private class WattsUpTailer extends TailerListenerAdapter {
+
+        @Override
+        public void handle(String line) {
+            try {
+                //This avoids looking at the header of the file
+                if (line.startsWith("W")) { 
+                    return;
+                }
+                String[] values = line.split(",");
+                GregorianCalendar calander = new GregorianCalendar();
+                long clock = TimeUnit.MILLISECONDS.toSeconds(calander.getTimeInMillis());
+                /**
+                 * The Watts up meter column order is: W,V, A, WH, COST, WH/Mo,
+                 * Cost/Mo, Wmax, Vmax, Amax, Wmin, Vmin, Amin, PF, DC, PC, Hz,
+                 * VA
+                 */
+                String watts = values[0];
+                String volts = values[1];
+                String amps = values[2];
+                String wattskwh = values[3];
+                System.out.println(host.getHostName() + host.getId());
+                System.out.println(watts);
+                watts = "" + changeOrderOfMagnitude(watts, 1);
+                volts = "" + changeOrderOfMagnitude(volts, 1);
+                amps = "" + changeOrderOfMagnitude(amps, 3);
+
+                HostMeasurement measurement = new HostMeasurement(host, clock);
+                measurement.addMetric(new MetricValue(KpiList.POWER_KPI_NAME, KpiList.POWER_KPI_NAME, watts, clock));
+                measurement.addMetric(new MetricValue(KpiList.ENERGY_KPI_NAME, KpiList.ENERGY_KPI_NAME, wattskwh, clock));
+                measurement.addMetric(new MetricValue(VOLTAGE_KPI_NAME, VOLTAGE_KPI_NAME, volts, clock));
+                measurement.addMetric(new MetricValue(CURRENT_KPI_NAME, CURRENT_KPI_NAME, amps, clock));
+                try {
+                    CpuPerc cpu = sigar.getCpuPerc();
+                    cpuMeasure.add(new CPUUtilisation(clock, cpu));
+                    Mem mem = sigar.getMem();
+                    measurement.addMetric(new MetricValue(KpiList.CPU_IDLE_KPI_NAME, KpiList.CPU_IDLE_KPI_NAME, cpu.getIdle() * 100 + "", clock));
+                    measurement.addMetric(new MetricValue(KpiList.CPU_INTERUPT_KPI_NAME, KpiList.CPU_INTERUPT_KPI_NAME, cpu.getIrq() * 100 + "", clock));
+                    measurement.addMetric(new MetricValue(KpiList.CPU_IO_WAIT_KPI_NAME, KpiList.CPU_IO_WAIT_KPI_NAME, cpu.getWait() * 100 + "", clock));
+                    measurement.addMetric(new MetricValue(KpiList.CPU_NICE_KPI_NAME, KpiList.CPU_NICE_KPI_NAME, cpu.getNice() * 100 + "", clock));
+                    measurement.addMetric(new MetricValue(KpiList.CPU_SOFT_IRQ_KPI_NAME, KpiList.CPU_SOFT_IRQ_KPI_NAME, cpu.getIrq() * 100 + "", clock));
+                    measurement.addMetric(new MetricValue(KpiList.CPU_STEAL_KPI_NAME, KpiList.CPU_STEAL_KPI_NAME, cpu.getStolen() * 100 + "", clock));
+                    measurement.addMetric(new MetricValue(KpiList.CPU_SYSTEM_KPI_NAME, KpiList.CPU_SYSTEM_KPI_NAME, cpu.getSys() * 100 + "", clock));
+                    measurement.addMetric(new MetricValue(KpiList.CPU_USER_KPI_NAME, KpiList.CPU_USER_KPI_NAME, cpu.getUser() * 100 + "", clock));
+
+                    measurement.addMetric(new MetricValue(KpiList.MEMORY_AVAILABLE_KPI_NAME, KpiList.MEMORY_AVAILABLE_KPI_NAME, (int) (Double.valueOf(mem.getActualFree()) / 1048576) + "", clock));
+                    measurement.addMetric(new MetricValue(KpiList.MEMORY_TOTAL_KPI_NAME, KpiList.MEMORY_TOTAL_KPI_NAME, (int) (Double.valueOf(mem.getTotal()) / 1048576) + "", clock));
+                    System.out.println(measurement.getMetric(KpiList.CPU_IDLE_KPI_NAME));
+                } catch (SigarException ex) {
+                    Logger.getLogger(WattsUpMeterDataSourceAdaptor.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                current = measurement;
+                if (lowest == null || measurement.getPower() < lowest.getPower()) {
+                    System.out.println("lowest set");
+                    lowest = measurement;
+                }
+                if (highest == null || measurement.getPower() > highest.getPower()) {
+                    highest = measurement;
+                    System.out.println("highest set");
+                }
+            } catch (NumberFormatException ex) {
+                //Ignore these errors and carry on. It may just be the header line.
+                ex.printStackTrace();
+            }
+        }
     }
 
 }
