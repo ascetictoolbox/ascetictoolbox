@@ -398,11 +398,12 @@ public class OpenStackJclouds implements CloudMiddleware {
      * @return the IP of the VM
      */
     private String getVmIp(Server server) {
-        List<Address> addresses = new ArrayList<>(server.getAddresses().values());
         // IMPORTANT: this returns only 1 IP, but VMs can have more than 1.
         // For now, I return just 1 to avoid breaking VMM clients.
-        return addresses.get(addresses.size() - 1).getAddr(); 
-     }
+        // Also, when a VM is scheduled but not deployed, it might not have an IP.ç
+        List<Address> addresses = new ArrayList<>(server.getAddresses().values());
+        return addresses.isEmpty() ? "" : addresses.get(addresses.size() - 1).getAddr();
+    }
 
     /**
      * Blocks the thread execution until a specific VM is deployed.
