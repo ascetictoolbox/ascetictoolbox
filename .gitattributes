@@ -1880,6 +1880,16 @@ utils/ascetic-load-generator-app/pom.xml -text
 utils/ascetic-load-generator-app/src/main/java/eu/ascetic/ascetic/load/generator/app/Main.java -text
 utils/ascetic-load-generator-app/src/main/java/eu/ascetic/ascetic/load/generator/app/MemoryLoadGenerator.java -text
 utils/ascetic-load-generator-app/src/main/java/eu/ascetic/ascetic/load/generator/app/MemoryWriteGenerator.java -text
+utils/ascetic-qpid-amqp-client/pom.xml -text
+utils/ascetic-qpid-amqp-client/src/main/java/eu/ascetic/amqp/client/AmqpAbstract.java -text
+utils/ascetic-qpid-amqp-client/src/main/java/eu/ascetic/amqp/client/AmqpExceptionListener.java -text
+utils/ascetic-qpid-amqp-client/src/main/java/eu/ascetic/amqp/client/AmqpMessageProducer.java -text
+utils/ascetic-qpid-amqp-client/src/main/java/eu/ascetic/amqp/client/AmqpMessageReceiver.java -text
+utils/ascetic-qpid-amqp-client/src/test/java/eu/ascetic/amqp/AbstractTest.java -text
+utils/ascetic-qpid-amqp-client/src/test/java/eu/ascetic/amqp/client/AmqpMessageProducerTest.java -text
+utils/ascetic-qpid-amqp-client/src/test/java/eu/ascetic/amqp/client/AmqpMessageRecieverTest.java -text
+utils/ascetic-qpid-amqp-client/src/test/resources/jndi.properties -text
+utils/ascetic-qpid-amqp-client/src/test/resources/log4j.properties -text
 utils/ascetic-zabbix-api/.classpath -text
 utils/ascetic-zabbix-api/.project -text
 utils/ascetic-zabbix-api/.settings/org.eclipse.jdt.core.prefs -text
