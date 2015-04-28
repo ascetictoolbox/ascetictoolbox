@@ -325,6 +325,14 @@ iaas/virtual-machine-manager/power-button-presser/src/test/java/es/bsc/power_but
 iaas/virtual-machine-manager/power-button-presser/src/test/java/es/bsc/power_button_presser/strategies/JustInTimeStrategyTest.java -text
 iaas/virtual-machine-manager/power-button-presser/src/test/java/es/bsc/power_button_presser/strategies/NBackupHostsStrategyTest.java -text
 iaas/virtual-machine-manager/vmm-client/pom.xml -text
+iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/config/Configuration.java -text
+iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/examples/Examples.java -text
+iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/ListVmsDeployed.java -text
+iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/Vm.java -text
+iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/VmDeployed.java -text
+iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/rest/VmmClient.java -text
+iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/rest/VmmService.java -text
+iaas/virtual-machine-manager/vmm-client/src/main/resources/config.properties -text
 iaas/virtual-machine-manager/vmmanager-frontend/LICENSE.md -text
 iaas/virtual-machine-manager/vmmanager-frontend/README.md -text
 iaas/virtual-machine-manager/vmmanager-frontend/app/app.js -text
