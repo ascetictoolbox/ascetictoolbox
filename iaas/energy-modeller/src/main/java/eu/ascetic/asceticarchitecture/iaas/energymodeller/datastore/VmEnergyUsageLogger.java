@@ -24,12 +24,14 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage
 import eu.ascetic.ioutils.GenericLogger;
 import eu.ascetic.ioutils.ResultsStore;
 import java.io.File;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 
 /**
  * This provides logging facilities for VM energy usage data.
  *
- * @author Richard
+ * @author Richard Kavanagh
  */
 public class VmEnergyUsageLogger extends GenericLogger<VmEnergyUsageLogger.Pair> {
 
@@ -80,7 +82,7 @@ public class VmEnergyUsageLogger extends GenericLogger<VmEnergyUsageLogger.Pair>
             }
             store.add(vm.getName());
             store.append("power");
-            store.append(division.getEnergyUsage(hostMeasurement.getPower(), vm));
+            store.append(division.getEnergyUsage(formatDouble(hostMeasurement.getPower(), 1), vm));
         }
     }
 
@@ -105,6 +107,17 @@ public class VmEnergyUsageLogger extends GenericLogger<VmEnergyUsageLogger.Pair>
      */
     public void setConsiderIdleEnergy(boolean considerIdleEnergy) {
         this.considerIdleEnergy = considerIdleEnergy;
+    }
+
+    /**
+     * This formats a double to a set amount of decimal places.
+     *
+     * @param number The number to format
+     * @param decimalPlaces The amount of decimal places to format to
+     * @return The number formatted to a given amount of decimal places.
+     */
+    public static double formatDouble(double number, int decimalPlaces) {
+        return BigDecimal.valueOf(number).setScale(decimalPlaces, RoundingMode.HALF_UP).doubleValue();
     }
 
     /**
