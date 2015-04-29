@@ -473,9 +473,6 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
                 String volts = values[1];
                 String amps = values[2];
                 String wattskwh = values[3];
-                watts = "" + changeOrderOfMagnitude(watts, 1);
-                volts = "" + changeOrderOfMagnitude(volts, 1);
-                amps = "" + changeOrderOfMagnitude(amps, 3);
 
                 HostMeasurement measurement = new HostMeasurement(host, clock);
                 measurement.addMetric(new MetricValue(KpiList.POWER_KPI_NAME, KpiList.POWER_KPI_NAME, watts, clock));
