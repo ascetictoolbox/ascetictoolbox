@@ -471,8 +471,6 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
                 String volts = values[1];
                 String amps = values[2];
                 String wattskwh = values[3];
-                System.out.println(host.getHostName() + host.getId());
-                System.out.println(watts);
                 watts = "" + changeOrderOfMagnitude(watts, 1);
                 volts = "" + changeOrderOfMagnitude(volts, 1);
                 amps = "" + changeOrderOfMagnitude(amps, 3);
@@ -497,18 +495,15 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
 
                     measurement.addMetric(new MetricValue(KpiList.MEMORY_AVAILABLE_KPI_NAME, KpiList.MEMORY_AVAILABLE_KPI_NAME, (int) (Double.valueOf(mem.getActualFree()) / 1048576) + "", clock));
                     measurement.addMetric(new MetricValue(KpiList.MEMORY_TOTAL_KPI_NAME, KpiList.MEMORY_TOTAL_KPI_NAME, (int) (Double.valueOf(mem.getTotal()) / 1048576) + "", clock));
-                    System.out.println(measurement.getMetric(KpiList.CPU_IDLE_KPI_NAME));
                 } catch (SigarException ex) {
                     Logger.getLogger(WattsUpMeterDataSourceAdaptor.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 current = measurement;
                 if (lowest == null || measurement.getPower() < lowest.getPower()) {
-                    System.out.println("lowest set");
                     lowest = measurement;
                 }
                 if (highest == null || measurement.getPower() > highest.getPower()) {
                     highest = measurement;
-                    System.out.println("highest set");
                 }
             } catch (NumberFormatException ex) {
                 //Ignore these errors and carry on. It may just be the header line.
