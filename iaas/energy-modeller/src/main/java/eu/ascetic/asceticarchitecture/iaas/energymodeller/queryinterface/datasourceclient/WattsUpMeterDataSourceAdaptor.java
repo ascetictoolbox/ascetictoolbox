@@ -147,7 +147,9 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
             File scrapeFile = new File(filename);
             fileTailer = new WattsUpTailer();
             tailer = Tailer.create(scrapeFile, fileTailer, (interval * 1000) / 16, true);
-            tailer.run();
+            Thread tailerThread = new Thread(tailer);
+            tailerThread.setDaemon(true);
+            tailerThread.start();
             System.out.println("Scraping from WattsUp meter file");
         } else {
             try {
