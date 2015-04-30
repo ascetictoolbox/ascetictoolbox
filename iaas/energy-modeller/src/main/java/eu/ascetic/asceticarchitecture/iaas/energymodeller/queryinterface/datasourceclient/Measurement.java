@@ -37,7 +37,7 @@ import java.util.Set;
  * This is the base class for all measurements, either for a vm instance or a
  * host physical machine.
  *
- * @author Richard
+ * @author Richard Kavanagh
  */
 public abstract class Measurement {
 

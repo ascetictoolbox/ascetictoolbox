@@ -105,13 +105,13 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
         if (settings.isChanged()) {
             settings.save("energy-modeller-watts-up-meter.properties");
         }
-        host = new Host(hostId, hostname);        
+        host = new Host(hostId, hostname);
         startup(port, -1, 1);
         try {
             Mem mem = sigar.getMem();
             host.setRamMb((int) (Double.valueOf(mem.getTotal()) / 1048576));
         } catch (SigarException ex) {
-            Logger.getLogger(WattsUpMeterDataSourceAdaptor.class.getName()).log(Level.SEVERE, 
+            Logger.getLogger(WattsUpMeterDataSourceAdaptor.class.getName()).log(Level.SEVERE,
                     "A problem occured with Sigar", ex);
         }
 
@@ -458,7 +458,7 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
         public void handle(String line) {
             try {
                 //This avoids looking at the header of the file
-                if (line.startsWith("W")) { 
+                if (line.startsWith("W")) {
                     return;
                 }
                 String[] values = line.split(",");
@@ -479,23 +479,33 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
                 measurement.addMetric(new MetricValue(KpiList.ENERGY_KPI_NAME, KpiList.ENERGY_KPI_NAME, wattskwh, clock));
                 measurement.addMetric(new MetricValue(VOLTAGE_KPI_NAME, VOLTAGE_KPI_NAME, volts, clock));
                 measurement.addMetric(new MetricValue(CURRENT_KPI_NAME, CURRENT_KPI_NAME, amps, clock));
+                boolean valid = true;
                 try {
                     CpuPerc cpu = sigar.getCpuPerc();
                     cpuMeasure.add(new CPUUtilisation(clock, cpu));
                     Mem mem = sigar.getMem();
-                    measurement.addMetric(new MetricValue(KpiList.CPU_IDLE_KPI_NAME, KpiList.CPU_IDLE_KPI_NAME, cpu.getIdle() * 100 + "", clock));
-                    measurement.addMetric(new MetricValue(KpiList.CPU_INTERUPT_KPI_NAME, KpiList.CPU_INTERUPT_KPI_NAME, cpu.getIrq() * 100 + "", clock));
-                    measurement.addMetric(new MetricValue(KpiList.CPU_IO_WAIT_KPI_NAME, KpiList.CPU_IO_WAIT_KPI_NAME, cpu.getWait() * 100 + "", clock));
-                    measurement.addMetric(new MetricValue(KpiList.CPU_NICE_KPI_NAME, KpiList.CPU_NICE_KPI_NAME, cpu.getNice() * 100 + "", clock));
-                    measurement.addMetric(new MetricValue(KpiList.CPU_SOFT_IRQ_KPI_NAME, KpiList.CPU_SOFT_IRQ_KPI_NAME, cpu.getIrq() * 100 + "", clock));
-                    measurement.addMetric(new MetricValue(KpiList.CPU_STEAL_KPI_NAME, KpiList.CPU_STEAL_KPI_NAME, cpu.getStolen() * 100 + "", clock));
-                    measurement.addMetric(new MetricValue(KpiList.CPU_SYSTEM_KPI_NAME, KpiList.CPU_SYSTEM_KPI_NAME, cpu.getSys() * 100 + "", clock));
-                    measurement.addMetric(new MetricValue(KpiList.CPU_USER_KPI_NAME, KpiList.CPU_USER_KPI_NAME, cpu.getUser() * 100 + "", clock));
+                    valid = valid && validatedAddMetric(measurement, new MetricValue(KpiList.CPU_IDLE_KPI_NAME, KpiList.CPU_IDLE_KPI_NAME, cpu.getIdle() * 100 + "", clock));
+                    valid = valid && validatedAddMetric(measurement, new MetricValue(KpiList.CPU_INTERUPT_KPI_NAME, KpiList.CPU_INTERUPT_KPI_NAME, cpu.getIrq() * 100 + "", clock));
+                    valid = valid && validatedAddMetric(measurement, new MetricValue(KpiList.CPU_IO_WAIT_KPI_NAME, KpiList.CPU_IO_WAIT_KPI_NAME, cpu.getWait() * 100 + "", clock));
+                    valid = valid && validatedAddMetric(measurement, new MetricValue(KpiList.CPU_NICE_KPI_NAME, KpiList.CPU_NICE_KPI_NAME, cpu.getNice() * 100 + "", clock));
+                    valid = valid && validatedAddMetric(measurement, new MetricValue(KpiList.CPU_SOFT_IRQ_KPI_NAME, KpiList.CPU_SOFT_IRQ_KPI_NAME, cpu.getIrq() * 100 + "", clock));
+                    valid = valid && validatedAddMetric(measurement, new MetricValue(KpiList.CPU_STEAL_KPI_NAME, KpiList.CPU_STEAL_KPI_NAME, cpu.getStolen() * 100 + "", clock));
+                    valid = valid && validatedAddMetric(measurement, new MetricValue(KpiList.CPU_SYSTEM_KPI_NAME, KpiList.CPU_SYSTEM_KPI_NAME, cpu.getSys() * 100 + "", clock));
+                    valid = valid && validatedAddMetric(measurement, new MetricValue(KpiList.CPU_USER_KPI_NAME, KpiList.CPU_USER_KPI_NAME, cpu.getUser() * 100 + "", clock));
 
-                    measurement.addMetric(new MetricValue(KpiList.MEMORY_AVAILABLE_KPI_NAME, KpiList.MEMORY_AVAILABLE_KPI_NAME, (int) (Double.valueOf(mem.getActualFree()) / 1048576) + "", clock));
-                    measurement.addMetric(new MetricValue(KpiList.MEMORY_TOTAL_KPI_NAME, KpiList.MEMORY_TOTAL_KPI_NAME, (int) (Double.valueOf(mem.getTotal()) / 1048576) + "", clock));
+                    valid = valid && validatedAddMetric(measurement, new MetricValue(KpiList.MEMORY_AVAILABLE_KPI_NAME, KpiList.MEMORY_AVAILABLE_KPI_NAME, (int) (Double.valueOf(mem.getActualFree()) / 1048576) + "", clock));
+                    valid = valid && validatedAddMetric(measurement, new MetricValue(KpiList.MEMORY_TOTAL_KPI_NAME, KpiList.MEMORY_TOTAL_KPI_NAME, (int) (Double.valueOf(mem.getTotal()) / 1048576) + "", clock));
                 } catch (SigarException ex) {
-                    Logger.getLogger(WattsUpMeterDataSourceAdaptor.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(WattsUpMeterDataSourceAdaptor.class.getName()).log(Level.SEVERE,
+                            "An exception occured when obtaining data from Sigar", ex);
+                    /**
+                     * Returning to avoid placing a bad measurement into the
+                     * readable output of the WattsUp meter adaptor.
+                     */
+                    return;
+                }
+                if (!valid) {
+                    return;
                 }
                 current = measurement;
                 if (lowest == null || measurement.getPower() < lowest.getPower()) {
@@ -508,6 +518,23 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
                 //Ignore these errors and carry on. It may just be the header line.
                 ex.printStackTrace();
             }
+        }
+
+        /**
+         * This ensures that metric values are not added in cases where NaN etc
+         * is given as an output from Sigar.
+         *
+         * @param measurement The measurement to add the value to
+         * @param value The value to add.
+         * @return The measurement with the added metric only in cases where the
+         * values correct.
+         */
+        private boolean validatedAddMetric(Measurement measurement, MetricValue value) {
+            if (Double.isNaN(value.getValue()) || Double.isInfinite(value.getValue())) {
+                return false;
+            }
+            measurement.addMetric(value);
+            return true;
         }
     }
 
