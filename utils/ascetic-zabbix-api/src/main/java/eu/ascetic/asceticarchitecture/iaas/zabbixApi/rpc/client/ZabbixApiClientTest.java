@@ -40,8 +40,9 @@ import eu.ascetic.asceticarchitecture.iaas.zabbixApi.utils.Dictionary;
 public class ZabbixApiClientTest {
 
 	/** The host name. */
-//	private static String hostName = "cloudsuite---data-analytics";
-	private static String hostName ="cloudsuite---data-analytics";
+	private static String hostName = "c8fd1fe5-7b07-42c7-9991-0e348bad5fb3_asok09";
+//	private static String hostName ="aaeaa2fe-4035-4cba-a63a-f8b6a8c99ba0_asok09";
+	private static String hostName2 ="abdc85d2-fd11-4047-b3f4-a0bf86ad157d_asok09";
 	
 	/** The item name. */
 	private static String itemName = "Power";
@@ -64,16 +65,18 @@ public class ZabbixApiClientTest {
 	 */
 	public static void main(String[] args) {
 			ZabbixClient client = new ZabbixClient();
-//			insertSeparator("getAllHosts");
-//			testGetAllHosts(client);
-//			insertSeparator("getItemsFromHost");
-//			testItemsFromHost(client);
-//			insertSeparator("itemsCountFromHosts");
-//			testItemsCountFromHosts(client);	
-			insertSeparator("getItemByNameFromHost");
-			testGetItemByNameFromHost(client);
-			insertSeparator("getHistoryDataByLimit");
-			testGetHistoryDataByLimit(client);
+			insertSeparator("getAllHosts");
+			testGetAllHosts(client);
+			insertSeparator("itemsCountFromHosts");
+			testItemsCountFromHosts(client);	
+			insertSeparator("getItemsFromHost");
+			testItemsFromHost(client);
+			insertSeparator("getItemsFromHost");
+			testItemsFromHost2(client);
+//			insertSeparator("getItemByNameFromHost");
+//			testGetItemByNameFromHost(client);
+//			insertSeparator("getHistoryDataByLimit");
+//			testGetHistoryDataByLimit(client);
 //			insertSeparator("getItemByKeyFromHost");
 //			testGetItemByKeyFromHost(client);
 //			insertSeparator("getTemplateByName");
@@ -126,6 +129,29 @@ public class ZabbixApiClientTest {
 		}
 		else {
 			System.out.println("No items available for host " + hostName);
+		}
+	}
+	
+	public static void testItemsFromHost2(ZabbixClient client){
+		List<Item> itemsList = client.getItemsFromHost(hostName2);
+		int index = 0;
+		if (itemsList != null && !itemsList.isEmpty()){
+			for (Item i : itemsList){
+				System.out.println("ITEM " + index + ":");
+				System.out.println("name: " + i.getName());
+				System.out.println("key: " + i.getKey());
+				System.out.println("itemid: " + i.getItemid());
+				System.out.println("hostid: " + i.getHostid());
+				System.out.println("delay: " + i.getDelay());
+				System.out.println("history: " + i.getHistory());
+				System.out.println("lastvalue: " + i.getLastValue());
+				System.out.println("lastclock: " + i.getLastClock());
+				index++;
+				System.out.println();
+			}
+		}
+		else {
+			System.out.println("No items available for host " + hostName2);
 		}
 	}
 	

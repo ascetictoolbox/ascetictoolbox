@@ -210,7 +210,7 @@ public class ZabbixClient {
 
                 if (result != null && !result.isEmpty()) {
                     host = Json2ObjectMapper.getHost((HashMap<String, String>) result.get(0));
-                    log.info("Host " + hostName + " finded in Zabbix");
+                    log.debug("Host " + hostName + " finded in Zabbix");
                     return host;
                 }
             }
@@ -514,8 +514,8 @@ public class ZabbixClient {
      * Dictionary.HISTORY_ITEM_FORMAT_LOG = log<BR>
      * Dictionary.HISTORY_ITEM_FORMAT_INTEGER = integer<BR>
      * Dictionary.HISTORY_ITEM_FORMAT_TEXT = text<BR>
-     * @param startTime the start time in milliseconds
-     * @param endTime the end time in milliseconds
+     * @param startTime the start time in seconds
+     * @param endTime the end time in seconds
      * @return the history data from item
      */
     public List<HistoryItem> getHistoryDataFromItem(String itemKey, String hostName, String itemFormat, long startTime,
@@ -523,9 +523,6 @@ public class ZabbixClient {
         ArrayList<HistoryItem> historyItems = null;
 
         if (startTime <= endTime) {
-            Date date = new Date();
-            long actualDate = date.getTime();
-            if (!(startTime > actualDate) && !(endTime > actualDate)) {
                 //getHost
                 Host host = getHostByName(hostName);
                 if (host != null) {
@@ -543,8 +540,8 @@ public class ZabbixClient {
                                         + "\"history\": \"" + itemFormat + "\","
                                         + "\"itemids\": \"" + item.getItemid() + "\","
                                         + "\"hostids\": \"" + host.getHostid() + "\", "
-                                        + "\"time_from\": \"" + TimeUnit.MILLISECONDS.toSeconds(startTime) + "\", "
-                                        + "\"time_till\": \"" + TimeUnit.MILLISECONDS.toSeconds(endTime) + "\", "
+                                        + "\"time_from\": \"" + TimeUnit.SECONDS.toSeconds(startTime) + "\", "
+                                        + "\"time_till\": \"" + TimeUnit.SECONDS.toSeconds(endTime) + "\", "
                                         + "\"sortfield\": \"clock\","
                                         + "\"sortorder\": \"DESC\"},"
                                         + "\"auth\":\"" + token + "\","
@@ -578,7 +575,6 @@ public class ZabbixClient {
                 } else {
                     log.error("No host " + hostName + " available in Zabbix system");
                 }
-            }
         } else {
             log.error("endTime must be greater than startTime: startTime = " + startTime + ", endTime = " + endTime);
         }
@@ -724,7 +720,7 @@ public class ZabbixClient {
 
 					if (result != null){
 						hostGroup = Json2ObjectMapper.getHostGroup((HashMap<String, String>) result.get(0));					
-						log.info("HostGroup " + hostGroupName + " finded in Zabbix");
+						log.debug("HostGroup " + hostGroupName + " finded in Zabbix");
 						return hostGroup;
 					}	
 				}
@@ -771,7 +767,7 @@ public class ZabbixClient {
 
 					if (result != null){
 						template = Json2ObjectMapper.getTemplate((HashMap<String, String>) result.get(0));					
-						log.info("Template " + templateName + " finded in Zabbix");
+						log.debug("Template " + templateName + " finded in Zabbix");
 						return template;
 					}	
 				}
