@@ -1,1 +1,7 @@
 eu.ascetic.asceticarchitecture.iaas.zabbixApi.client
+eu.ascetic.asceticarchitecture.iaas.zabbixApi.conf
+eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel
+eu.ascetic.asceticarchitecture.iaas.zabbixApi.rpc.client
+eu.ascetic.asceticarchitecture.iaas.zabbixApi.utils
+eu.ascetic.monitoring.api.client
+eu.ascetic.monitoring.api.datamodel
