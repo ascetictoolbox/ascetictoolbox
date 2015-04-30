@@ -137,7 +137,9 @@ public class CalibrationRunManager implements ManagedProcessListener {
 
     /**
      * This loads in from file the list of applications to run
-     * @param appsList The file on disk that has the list of applications to run.
+     *
+     * @param appsList The file on disk that has the list of applications to
+     * run.
      * @return The result store after having performed a load operation.
      */
     private ResultsStore getApplicationListFromFile(ResultsStore appsList) {
@@ -240,7 +242,6 @@ public class CalibrationRunManager implements ManagedProcessListener {
         } catch (Exception ex) { //This should always try to gather data from the data source.
             Logger.getLogger(CalibrationRunManager.class.getName()).log(Level.SEVERE, "The calibrator's data logger had a problem.", ex);
         }
-        System.out.println("Data Proximity Criteria Not Met");
         return null;
     }
 
@@ -327,7 +328,7 @@ public class CalibrationRunManager implements ManagedProcessListener {
                             sender.finished();
                         }
                     }
-                    //Measurements should only be taken with an application runing
+                    //Measurements should only be taken with an application running
                     if (counter >= 1 && !justExecuted) {
                         //Take measurements if a process is currently running
                         HostMeasurement measurement = readEnergyDataForHost(host);

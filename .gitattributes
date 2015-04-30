@@ -10,10 +10,17 @@ iaas/energy-modeller-load-calibration-tool/src/main/webapp/WEB-INF/glassfish-web
 iaas/energy-modeller-load-calibration-tool/src/main/webapp/WEB-INF/sun-jaxws.xml -text
 iaas/energy-modeller-load-calibration-tool/src/main/webapp/WEB-INF/web.xml -text
 iaas/energy-modeller-load-calibration-tool/src/main/webapp/index.jsp -text
+iaas/energy-modeller-standalone-calibration-tool/Apps.csv -text
 iaas/energy-modeller-standalone-calibration-tool/nbactions.xml -text
 iaas/energy-modeller-standalone-calibration-tool/pom.xml -text
 iaas/energy-modeller-standalone-calibration-tool/src/main/java/eu/ascetic/iaas/energy/modeller/standalone/calibration/tool/CalibrationRunManager.java -text
+iaas/energy-modeller-standalone-calibration-tool/src/main/java/eu/ascetic/iaas/energy/modeller/standalone/calibration/tool/ResourceExtractor.java -text
 iaas/energy-modeller-standalone-calibration-tool/src/main/java/eu/ascetic/iaas/energy/modeller/standalone/calibration/tool/StandaloneCalibrationTool.java -text
+iaas/energy-modeller-standalone-calibration-tool/src/main/resources/libsigar-amd64-linux.so -text
+iaas/energy-modeller-standalone-calibration-tool/src/main/resources/libsigar-amd64-solaris.so -text
+iaas/energy-modeller-standalone-calibration-tool/src/main/resources/libsigar-ia64-linux.so -text
+iaas/energy-modeller-standalone-calibration-tool/src/main/resources/libsigar-universal64-macosx.dylib -text
+iaas/energy-modeller-standalone-calibration-tool/src/main/resources/libsigar-x86-linux.so -text
 iaas/energy-modeller/LICENCE.TXT -text
 iaas/energy-modeller/filter.properties -text
 iaas/energy-modeller/nb-configuration.xml -text

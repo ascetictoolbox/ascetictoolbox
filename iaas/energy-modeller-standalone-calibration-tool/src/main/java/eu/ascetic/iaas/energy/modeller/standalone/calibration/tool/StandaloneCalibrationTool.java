@@ -86,6 +86,7 @@ public class StandaloneCalibrationTool implements CompletedListener {
         StandaloneCalibrationTool instance;
         if (args.length != 0) {
             if (strArgs.contains("use-watts-up-meter")) {
+                ResourceExtractor.extractSigar();
                 instance = new StandaloneCalibrationTool(args[0],
                         DEFAULT_DATA_SOURCE_PACKAGE + ".WattsUpMeterDataSourceAdaptor");
             } else {

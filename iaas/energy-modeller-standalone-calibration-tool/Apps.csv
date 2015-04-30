@@ -1,0 +1,8 @@
+Time From Start,Command,stdOut,stdError,Working Directory,Output To Screen
+0,sleep 50,//root//em-ascetic//test.out,//root//em-ascetic//error.out,//root//em-ascetic//,TRUE
+60,/root/em-ascetic/run-stress-point.sh 10 4 60,//root//em-ascetic//test.out,//root//em-ascetic//error.out,//root//em-ascetic//,TRUE
+160,/root/em-ascetic/run-stress-point.sh 20 4 60,//root//em-ascetic//test1.out,//root//em-ascetic//error1.out,//root//em-ascetic//,TRUE
+260,/root/em-ascetic/run-stress-point.sh 40 4 60,//root//em-ascetic//test2.out,//root//em-ascetic//error2.out,//root//em-ascetic//,TRUE
+360,/root/em-ascetic/run-stress-point.sh 60 4 60,//root//em-ascetic//test3.out,//root//em-ascetic//error3.out,//root//em-ascetic//,TRUE
+460,/root/em-ascetic/run-stress-point.sh 80 4 60,//root//em-ascetic//test4.out,//root//em-ascetic//error4.out,//root//em-ascetic//,TRUE
+560,/root/em-ascetic/run-stress-point.sh 100 4 60,//root//em-ascetic//test5.out,//root//em-ascetic//error5.out,//root//em-ascetic//,TRUE
