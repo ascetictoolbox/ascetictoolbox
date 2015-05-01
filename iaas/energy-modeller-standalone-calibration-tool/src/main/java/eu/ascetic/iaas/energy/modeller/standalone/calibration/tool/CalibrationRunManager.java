@@ -305,10 +305,12 @@ public class CalibrationRunManager implements ManagedProcessListener {
         private boolean shouldTakeMeasurement() {
             GregorianCalendar now = new GregorianCalendar();
             if (now.before(latestMesurementStartTime)) {
+                System.out.println("Before Measurement Period");
                 return false;
             }
             if (latestMesurementEndTime != null
                     && now.after(latestMesurementEndTime)) {
+                System.out.println("After Measurement Period");
                 return false;
             }
             return true;
@@ -371,8 +373,8 @@ public class CalibrationRunManager implements ManagedProcessListener {
                     if (head != null && new GregorianCalendar().after(head.getActualStart())) {
                         Logger.getLogger(Actioner.class.getName()).log(Level.FINE, "Actioner: Executing: The heads type was {0}", head.getClass());
                         commandSet.remove(0);
+                        setLatestStartAndEndTimes(new GregorianCalendar(), head.getStartTime(), head.getEndTime());                        
                         execute(head);
-                        setLatestStartAndEndTimes(new GregorianCalendar(), head.getStartTime(), head.getEndTime());
                     }
                     try {
                         Thread.sleep(TimeUnit.SECONDS.toMillis(pollInterval));
