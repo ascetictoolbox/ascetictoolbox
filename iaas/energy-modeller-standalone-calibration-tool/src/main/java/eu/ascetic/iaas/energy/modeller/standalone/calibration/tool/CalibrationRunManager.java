@@ -61,7 +61,8 @@ public class CalibrationRunManager implements ManagedProcessListener {
     private final ArrayList<HostMeasurement> measurements = new ArrayList<>();
     private final HostDataSource datasource;
     private final DatabaseConnector database;
-    private int calibratorWaitSec = 2;
+    private int pollInterval = 2;
+    private int gapBeforeMeasurements = 4;
     private boolean simulateCalibrationRun = false;
     private final Settings settings = new Settings("calibration_settings.properties");
 
@@ -81,8 +82,9 @@ public class CalibrationRunManager implements ManagedProcessListener {
         }
         appsToExecute = new ResultsStore(workingDir + TO_EXECUTE_SETTINGS_FILE);
         logging = settings.getBoolean("log_executions", true);
-        calibratorWaitSec = settings.getInt("poll_interval", calibratorWaitSec);
+        pollInterval = settings.getInt("poll_interval", pollInterval);
         simulateCalibrationRun = settings.getBoolean("simulate_calibration_run", simulateCalibrationRun);
+        gapBeforeMeasurements = settings.getInt("delay_before_taking_measurements", gapBeforeMeasurements);
         if (simulateCalibrationRun) {
             System.out.println("This is a simulated run, no data will be saved!");
         }
@@ -122,6 +124,7 @@ public class CalibrationRunManager implements ManagedProcessListener {
             appsList.append("stdError");
             appsList.append("Working Directory");
             appsList.append("Output To Screen");
+            appsList.append("Time of Task End");
             appsList.save();
             answer = true;
             if (logging) {
@@ -159,6 +162,9 @@ public class CalibrationRunManager implements ManagedProcessListener {
             data.setStdError(current.get(3));
             data.setWorkingDirectory(new File(current.get(4)));
             data.setOutToScreen(Boolean.parseBoolean(current.get(5)));
+            if (current.size() >= 6) {
+                data.setEndTime(Integer.parseInt(current.get(6)));
+            }
             commandSet.add(data);
         }
         return appsList;
@@ -286,6 +292,55 @@ public class CalibrationRunManager implements ManagedProcessListener {
     private class Actioner implements Runnable {
 
         private boolean stop = false;
+        private GregorianCalendar latestMesurementStartTime = null;
+        private GregorianCalendar latestMesurementEndTime = null;
+
+        /**
+         * This indicates if a measurement should be taken or not. This depends
+         * on if an appropriate amount of time has passed since the load was
+         * first induced or expected to stop.
+         *
+         * @return If it is OK to take a measurement or not.
+         */
+        private boolean shouldTakeMeasurement() {
+            GregorianCalendar now = new GregorianCalendar();
+            if (now.before(latestMesurementStartTime)) {
+                return false;
+            }
+            if (latestMesurementEndTime != null
+                    && now.after(latestMesurementEndTime)) {
+                return false;
+            }
+            return true;
+        }
+
+        /**
+         * This sets the start and end time for the measurement period. It is
+         * designed to avoid measuring at the very start and end of a load
+         * period.
+         *
+         * @param taskStartTime The start time of the load
+         * @param startTime The start time of the load, seconds from start of
+         * experiment
+         * @param endTime The end time of the load, seconds from start of
+         * experiment
+         */
+        private void setLatestStartAndEndTimes(GregorianCalendar taskStartTime, int startTime, int endTime) {
+            long gap = 4;
+            //Calculated the start time
+            latestMesurementStartTime = (GregorianCalendar) taskStartTime.clone();
+            latestMesurementStartTime.setTimeInMillis(latestMesurementStartTime.getTimeInMillis() + TimeUnit.SECONDS.toMillis(gap));
+            //calculate the end time
+            if (endTime == -1) {
+                latestMesurementStartTime = null;
+            } else {
+                latestMesurementEndTime = (GregorianCalendar) taskStartTime.clone();
+                //find the end time
+                latestMesurementEndTime.setTimeInMillis(latestMesurementEndTime.getTimeInMillis() + TimeUnit.SECONDS.toMillis(endTime - startTime));
+                //find the time a few seconds before that stops the measurements
+                latestMesurementEndTime.setTimeInMillis(latestMesurementEndTime.getTimeInMillis() - TimeUnit.SECONDS.toMillis(gap));
+            }
+        }
 
         /**
          * This makes the actioner go through the action queue for actions to
@@ -296,7 +351,6 @@ public class CalibrationRunManager implements ManagedProcessListener {
         public void run() {
             Logger.getLogger(Actioner.class.getName()).log(Level.INFO, "FILE LOCATION: {0}", new File(workingDir + TO_EXECUTE_SETTINGS_FILE).getAbsolutePath());
             Logger.getLogger(Actioner.class.getName()).log(Level.INFO, "Actioner:Starting Thread");
-            boolean justExecuted = false;
             while (!stop) {
                 try {
                     if (commandSet.isEmpty() && counter == 0) {
@@ -317,10 +371,10 @@ public class CalibrationRunManager implements ManagedProcessListener {
                         Logger.getLogger(Actioner.class.getName()).log(Level.FINE, "Actioner: Executing: The heads type was {0}", head.getClass());
                         commandSet.remove(0);
                         execute(head);
-                        justExecuted = true;
+                        setLatestStartAndEndTimes(startTime, head.getStartTime(), head.getEndTime());
                     }
                     try {
-                        Thread.sleep(TimeUnit.SECONDS.toMillis(calibratorWaitSec));
+                        Thread.sleep(TimeUnit.SECONDS.toMillis(pollInterval));
 
                     } catch (InterruptedException ex) {
                         Logger.getLogger(Actioner.class.getName()).log(Level.WARNING, "Actioner: InterruptedException", ex);
@@ -329,14 +383,13 @@ public class CalibrationRunManager implements ManagedProcessListener {
                         }
                     }
                     //Measurements should only be taken with an application running
-                    if (counter >= 1 && !justExecuted) {
+                    if (counter >= 1 && shouldTakeMeasurement()) {
                         //Take measurements if a process is currently running
                         HostMeasurement measurement = readEnergyDataForHost(host);
                         if (measurement != null) {
                             measurements.add(measurement);
                         }
                     }
-                    justExecuted = false;
                 } catch (Exception ex) { //outer most try statement
                     Logger.getLogger(Actioner.class.getName()).log(Level.SEVERE, "Actioner: Exception", ex);
                     if (sender != null) {
