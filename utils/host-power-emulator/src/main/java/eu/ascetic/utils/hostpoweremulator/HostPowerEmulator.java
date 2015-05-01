@@ -174,7 +174,7 @@ public class HostPowerEmulator implements Runnable {
                     + "please specifiy where to clone the calibration data from.");
             System.exit(0);
         }
-        if (linearPredictor.getSumOfSquareError(host) < polyPredictor.getSumOfSquareError(host)) {
+        if (linearPredictor.getRootMeanSquareError(host) < polyPredictor.getRootMeanSquareError(host)) {
             predictor = linearPredictor;
             System.out.println("Using the linear predictor");
         } else {
@@ -183,6 +183,8 @@ public class HostPowerEmulator implements Runnable {
         }
         System.out.println("Linear SSE: " + linearPredictor.getSumOfSquareError(host));
         System.out.println("Polynomial SSE: " + polyPredictor.getSumOfSquareError(host));
+        System.out.println("Linear RMSE: " + linearPredictor.getRootMeanSquareError(host));
+        System.out.println("Polynomial RMSE: " + polyPredictor.getRootMeanSquareError(host));        
         
         /**
          * The first phase is to clone the resource calibration data of another
@@ -197,7 +199,7 @@ public class HostPowerEmulator implements Runnable {
          */
         while (running) {
             HostMeasurement mesurement = source.getHostData(host);
-            double power = 0;
+            double power;
             if (predictor.getClass().equals(CpuOnlyEnergyPredictor.class)) {
                 power = ((CpuOnlyEnergyPredictor) predictor).predictPowerUsed(host, mesurement.getCpuUtilisation());
             } else {
