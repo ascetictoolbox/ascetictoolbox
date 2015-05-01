@@ -38,6 +38,8 @@ import org.hyperic.sigar.CpuPerc;
 import org.hyperic.sigar.Mem;
 import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
+import org.hyperic.sigar.SigarProxy;
+import org.hyperic.sigar.SigarProxyCache;
 import wattsup.jsdk.core.data.WattsUpConfig;
 import wattsup.jsdk.core.data.WattsUpPacket;
 import wattsup.jsdk.core.event.WattsUpDataAvailableEvent;
@@ -64,7 +66,7 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
     private WattsUp meter;
     private WattsUpTailer fileTailer;
     private Tailer tailer;
-    private static Sigar sigar = new Sigar();
+    private static SigarProxy sigar = SigarProxyCache.newInstance(new Sigar(), 8);
     private HostMeasurement lowest = null;
     private HostMeasurement highest = null;
     private HostMeasurement current = null;
@@ -465,8 +467,25 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
                 GregorianCalendar calander = new GregorianCalendar();
                 long clock = TimeUnit.MILLISECONDS.toSeconds(calander.getTimeInMillis());
                 CpuPerc cpu = sigar.getCpuPerc();
-                cpuMeasure.add(new CPUUtilisation(clock, cpu));
+                /**
+                 * Test an arbritrary value to check to see if NaN has been
+                 * produced. This occurs when Sigar's internal state has not
+                 * been prepared sufficiently quickly. i.e. concurrency issues.
+                 */
+                if (Double.isNaN(cpu.getSys())) {
+                    try {
+                        //Delay for a short while and retry
+                        Thread.sleep(500);
+                        cpu = sigar.getCpuPerc();
+                        if (Double.isNaN(cpu.getSys())) {
+                            return;
+                        }
+                    } catch (InterruptedException ex) {
+
+                    }
+                }
                 Mem mem = sigar.getMem();
+                cpuMeasure.add(new CPUUtilisation(clock, cpu));
                 String[] values = line.split(",");
                 /**
                  * The Watts up meter column order is: W,V, A, WH, COST, WH/Mo,
@@ -489,7 +508,7 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
                      * This quickly exits if Sigar produces a Double.NaN value
                      * due to its internal state not been ready.
                      */
-                    return; 
+                    return;
                 }
                 valid = valid && validatedAddMetric(measurement, new MetricValue(KpiList.CPU_INTERUPT_KPI_NAME, KpiList.CPU_INTERUPT_KPI_NAME, cpu.getIrq() * 100 + "", clock));
                 valid = valid && validatedAddMetric(measurement, new MetricValue(KpiList.CPU_IO_WAIT_KPI_NAME, KpiList.CPU_IO_WAIT_KPI_NAME, cpu.getWait() * 100 + "", clock));

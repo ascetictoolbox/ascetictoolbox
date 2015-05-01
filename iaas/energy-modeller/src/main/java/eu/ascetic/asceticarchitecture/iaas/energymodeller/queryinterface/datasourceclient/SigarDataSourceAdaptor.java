@@ -33,6 +33,8 @@ import org.hyperic.sigar.CpuPerc;
 import org.hyperic.sigar.Mem;
 import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
+import org.hyperic.sigar.SigarProxy;
+import org.hyperic.sigar.SigarProxyCache;
 
 /**
  * The aim of this class is initially to take data from Sigar and to place it
@@ -49,7 +51,7 @@ public class SigarDataSourceAdaptor implements HostDataSource {
 
     private static final String VOLTAGE_KPI_NAME = "Voltage";
     private static final String CURRENT_KPI_NAME = "Current";
-    private static final Sigar SOURCE = new Sigar();
+    private static final SigarProxy SOURCE = SigarProxyCache.newInstance(new Sigar(), 8);
     private Host host;
     private HostMeasurement lowest = null;
     private HostMeasurement highest = null;
