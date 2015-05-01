@@ -326,19 +326,20 @@ public class CalibrationRunManager implements ManagedProcessListener {
          * experiment
          */
         private void setLatestStartAndEndTimes(GregorianCalendar taskStartTime, int startTime, int endTime) {
-            long gap = 4;
             //Calculated the start time
             latestMesurementStartTime = (GregorianCalendar) taskStartTime.clone();
-            latestMesurementStartTime.setTimeInMillis(latestMesurementStartTime.getTimeInMillis() + TimeUnit.SECONDS.toMillis(gap));
+            latestMesurementStartTime.setTimeInMillis(latestMesurementStartTime.getTimeInMillis() + TimeUnit.SECONDS.toMillis(gapBeforeMeasurements));
             //calculate the end time
             if (endTime == -1) {
                 latestMesurementStartTime = null;
             } else {
                 latestMesurementEndTime = (GregorianCalendar) taskStartTime.clone();
                 //find the end time
-                latestMesurementEndTime.setTimeInMillis(latestMesurementEndTime.getTimeInMillis() + TimeUnit.SECONDS.toMillis(endTime - startTime));
-                //find the time a few seconds before that stops the measurements
-                latestMesurementEndTime.setTimeInMillis(latestMesurementEndTime.getTimeInMillis() - TimeUnit.SECONDS.toMillis(gap));
+                long lastMeasureTime = latestMesurementEndTime.getTimeInMillis()
+                        + TimeUnit.SECONDS.toMillis(endTime - startTime) //find the duration
+                        - TimeUnit.SECONDS.toMillis(gapBeforeMeasurements);  //find the time a few seconds before that stops the measurements            
+
+                latestMesurementEndTime.setTimeInMillis(lastMeasureTime);
             }
         }
 
@@ -371,7 +372,7 @@ public class CalibrationRunManager implements ManagedProcessListener {
                         Logger.getLogger(Actioner.class.getName()).log(Level.FINE, "Actioner: Executing: The heads type was {0}", head.getClass());
                         commandSet.remove(0);
                         execute(head);
-                        setLatestStartAndEndTimes(startTime, head.getStartTime(), head.getEndTime());
+                        setLatestStartAndEndTimes(new GregorianCalendar(), head.getStartTime(), head.getEndTime());
                     }
                     try {
                         Thread.sleep(TimeUnit.SECONDS.toMillis(pollInterval));
