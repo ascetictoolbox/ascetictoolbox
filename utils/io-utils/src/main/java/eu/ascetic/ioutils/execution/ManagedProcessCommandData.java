@@ -20,12 +20,15 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
 /**
+ * This is the information required to describe a command that will make up a
+ * managed process.
  *
- * @author Richard
+ * @author Richard Kavanagh
  */
 public class ManagedProcessCommandData {
 
     private int startTime = 0;
+    private int endTime = -1;
     private GregorianCalendar actualStart = new GregorianCalendar();
     private File workingDirectory = null;
     private String command = "";
@@ -120,6 +123,8 @@ public class ManagedProcessCommandData {
     }
 
     /**
+     * The time in seconds from the start of a managed process run at which 
+     * this managed process command is due to run.
      * @return the startTime
      */
     public int getStartTime() {
@@ -131,6 +136,26 @@ public class ManagedProcessCommandData {
      */
     public void setStartTime(int startTime) {
         this.startTime = startTime;
+    }
+
+    /**
+     * This returns the estimated end time of the command. The returned value is
+     * -1 if the value is not set/ is unknown.
+     *
+     * @return The estimated end time of the command.
+     */
+    public int getEndTime() {
+        return endTime;
+    }
+
+    /**
+     * This sets the estimated end time of the command. The value can be set to
+     * be -1 if the value is not known.
+     *
+     * @param endTime The estimated end time of the command.
+     */
+    public void setEndTime(int endTime) {
+        this.endTime = endTime;
     }
 
     /**
