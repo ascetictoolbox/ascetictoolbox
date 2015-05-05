@@ -25,14 +25,16 @@ import java.util.List;
 
 public interface VmmService {
 
+    // OK - change ListVMsDeployed class
     @GET("/vms")
     ListVmsDeployed getVms();
 
     @POST("/vms")
     List<String> deployVms(List<Vm> vms);
 
+    // OK
     @GET("/vms/{id}")
-    VmDeployed getVM(@Path("id") String id);
+    VmDeployed getVm(@Path("id") String id);
 
     @PUT("/vms/{id}")
     //TODO

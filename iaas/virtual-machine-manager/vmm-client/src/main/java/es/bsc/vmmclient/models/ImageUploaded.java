@@ -18,6 +18,8 @@
 
 package es.bsc.vmmclient.models;
 
+import com.google.common.base.MoreObjects;
+
 public class ImageUploaded {
 
     private final String id;
@@ -42,4 +44,12 @@ public class ImageUploaded {
         return status;
     }
 
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("id", id)
+                .add("name", name)
+                .add("status", status)
+                .toString();
+    }
 }

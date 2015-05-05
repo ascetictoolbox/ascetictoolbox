@@ -18,6 +18,8 @@
 
 package es.bsc.vmmclient.models;
 
+import com.google.common.base.MoreObjects;
+
 import java.util.Date;
 
 public class VmDeployed extends Vm {
@@ -59,4 +61,22 @@ public class VmDeployed extends Vm {
         return hostName;
     }
 
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("name", name)
+                .add("image", image)
+                .add("cpus", cpus)
+                .add("ramMb", ramMb)
+                .add("diskGb", diskGb)
+                .add("swapMb", swapMb)
+                .add("initScript", initScript)
+                .add("applicationId", applicationId)
+                .add("id", id)
+                .add("ipAddress", ipAddress)
+                .add("state", state)
+                .add("created", created)
+                .add("hostName", hostName)
+                .toString();
+    }
 }

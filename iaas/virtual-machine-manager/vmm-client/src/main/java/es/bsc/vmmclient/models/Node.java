@@ -1,5 +1,7 @@
 package es.bsc.vmmclient.models;
 
+import com.google.common.base.MoreObjects;
+
 public class Node {
 
     private final String hostname;
@@ -55,4 +57,17 @@ public class Node {
         return currentPower;
     }
 
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("hostname", hostname)
+                .add("totalCpus", totalCpus)
+                .add("totalMemoryMb", totalMemoryMb)
+                .add("totalDiskGb", totalDiskGb)
+                .add("assignedCpus", assignedCpus)
+                .add("assignedMemoryMb", assignedMemoryMb)
+                .add("assignedDiskGb", assignedDiskGb)
+                .add("currentPower", currentPower)
+                .toString();
+    }
 }

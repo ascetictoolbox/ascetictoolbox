@@ -18,6 +18,8 @@
 
 package es.bsc.vmmclient.models;
 
+import com.google.common.base.MoreObjects;
+
 public class ImageToUpload {
 
     private final String name;
@@ -36,4 +38,11 @@ public class ImageToUpload {
         return url;
     }
 
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("name", name)
+                .add("url", url)
+                .toString();
+    }
 }

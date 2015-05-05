@@ -1,5 +1,8 @@
 package es.bsc.vmmclient.models;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,6 +17,13 @@ public class ListVmsDeployed {
 
     public List<VmDeployed> getVms() {
         return Collections.unmodifiableList(vms);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("vms", vms)
+                .toString();
     }
 
 }

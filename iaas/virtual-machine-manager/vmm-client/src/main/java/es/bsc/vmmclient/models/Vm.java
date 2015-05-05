@@ -18,16 +18,18 @@
 
 package es.bsc.vmmclient.models;
 
+import com.google.common.base.MoreObjects;
+
 public class Vm {
 
-    private final String name;
-    private final String image; // It can be an ID or a URL
-    private final int cpus;
-    private final int ramMb;
-    private final int diskGb;
-    private final int swapMb;
-    private final String initScript;
-    private final String applicationId;
+    protected final String name;
+    protected final String image; // It can be an ID or a URL
+    protected final int cpus;
+    protected final int ramMb;
+    protected final int diskGb;
+    protected final int swapMb;
+    protected final String initScript;
+    protected final String applicationId;
 
     public Vm(String name, String image, int cpus, int ramMb, int diskGb, int swapMb,
               String initScript, String applicationId) {
@@ -73,4 +75,17 @@ public class Vm {
         return applicationId;
     }
 
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("name", name)
+                .add("image", image)
+                .add("cpus", cpus)
+                .add("ramMb", ramMb)
+                .add("diskGb", diskGb)
+                .add("swapMb", swapMb)
+                .add("initScript", initScript)
+                .add("applicationId", applicationId)
+                .toString();
+    }
 }

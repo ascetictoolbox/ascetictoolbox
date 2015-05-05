@@ -27,12 +27,13 @@ public class Examples {
     private static void printVms() {
         ListVmsDeployed vms = VmmClient.getVmmService().getVms();
         for (VmDeployed vm : vms.getVms()) {
-            System.out.println(vm.getId());
+            System.out.println(vm);
         }
     }
 
     public static void main(String[] args) {
         printVms();
+        System.out.println(VmmClient.getVmmService().getVm("596b462a-96dc-42cc-adfd-e6427789fe81"));
     }
 
 }
