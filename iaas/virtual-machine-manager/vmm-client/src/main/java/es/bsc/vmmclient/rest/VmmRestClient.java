@@ -18,23 +18,20 @@
 
 package es.bsc.vmmclient.rest;
 
-import es.bsc.vmmclient.config.Configuration;
 import retrofit.RestAdapter;
 
 public class VmmRestClient {
 
-    private VmmRestClient() {
-        // Suppress default constructor for non-instantiability
-        throw new AssertionError();
+    private final VmmService service;
+
+    public VmmRestClient(String url) {
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(url)
+                .build();
+        service = restAdapter.create(VmmService.class);
     }
 
-    private static RestAdapter restAdapter = new RestAdapter.Builder()
-            .setEndpoint(Configuration.getInstance().restUrl)
-            .build();
-
-    private static VmmService service = restAdapter.create(VmmService.class);
-
-    public static VmmService getVmmService() {
+    public VmmService getVmmService() {
         return service;
     }
 
