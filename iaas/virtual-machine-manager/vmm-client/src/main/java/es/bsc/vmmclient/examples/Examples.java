@@ -18,21 +18,9 @@
 
 package es.bsc.vmmclient.examples;
 
-import es.bsc.vmmclient.models.Vm;
-import es.bsc.vmmclient.models.VmsList;
-import es.bsc.vmmclient.rest.VmmClient;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class Examples {
 
     public static void main(String[] args) {
-        /*Vm vm = new Vm("davidTest", "7992bad0-f410-4f72-916a-772f706ccc44", 1, 1024, 1, 0, "", "");
-        List<Vm> vmslist = new ArrayList<>();
-        vmslist.add(vm);
-        VmsList vms = new VmsList(vmslist);
-        System.out.println(VmmClient.getVmmService().deployVms(vms));*/
     }
 
 }

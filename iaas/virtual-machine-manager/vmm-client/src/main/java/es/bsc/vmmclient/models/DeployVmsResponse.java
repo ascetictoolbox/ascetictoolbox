@@ -18,8 +18,50 @@
 
 package es.bsc.vmmclient.models;
 
+import com.google.common.base.MoreObjects;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class DeployVmsResponse {
 
-    // TODO
+    private class IdResponse {
+
+        String id;
+
+        public IdResponse(String id) {
+            this.id = id;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        @Override
+        public String toString() {
+            return MoreObjects.toStringHelper(this)
+                    .add("id", id)
+                    .toString();
+        }
+
+    }
+
+    private final List<IdResponse> ids = new ArrayList<>();
+
+    public DeployVmsResponse(List<IdResponse> ids) {
+        this.ids.addAll(ids);
+    }
+
+    public List<IdResponse> getIds() {
+        return Collections.unmodifiableList(ids);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("ids", ids)
+                .toString();
+    }
 
 }

@@ -26,9 +26,7 @@ public interface VmmService {
 
     @GET("/vms")
     VmsDeployedResponse getVms();
-
-    // TODO - Necesito un objeto que detro tenga una lista de objetos que dentro solo tengan un string...
-    // Usar inner class mejor?
+    
     @POST("/vms")
     DeployVmsResponse deployVms(@Body VmsList vms);
 
