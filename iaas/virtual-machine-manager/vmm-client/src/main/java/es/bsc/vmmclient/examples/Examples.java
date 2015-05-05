@@ -18,9 +18,14 @@
 
 package es.bsc.vmmclient.examples;
 
+import es.bsc.vmmclient.vmm.VmManagerClient;
+
 public class Examples {
 
     public static void main(String[] args) {
+        VmManagerClient vmm = new VmManagerClient("http://10.4.0.15:34372/vmmanager");
+        System.out.println(vmm.getVms());
+        System.out.println(vmm.getImages());
     }
 
 }
