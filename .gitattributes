@@ -334,6 +334,7 @@ iaas/virtual-machine-manager/power-button-presser/src/test/java/es/bsc/power_but
 iaas/virtual-machine-manager/vmm-client/pom.xml -text
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/config/Configuration.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/examples/Examples.java -text
+iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/DeployVmsResponse.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/ImageToUpload.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/ImageUploaded.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/ImagesUploadedResponse.java -text
@@ -343,6 +344,7 @@ iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/Up
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/Vm.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/VmDeployed.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/VmsDeployedResponse.java -text
+iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/VmsList.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/rest/VmmClient.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/rest/VmmService.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/resources/config.properties -text

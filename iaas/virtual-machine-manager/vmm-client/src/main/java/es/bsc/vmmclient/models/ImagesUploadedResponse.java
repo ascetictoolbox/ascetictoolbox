@@ -26,7 +26,7 @@ import java.util.List;
 
 public class ImagesUploadedResponse {
 
-    List<ImageUploaded> images = new ArrayList<>();
+    private final List<ImageUploaded> images = new ArrayList<>();
 
     public ImagesUploadedResponse(List<ImageUploaded> images) {
         this.images.addAll(images);

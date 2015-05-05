@@ -9,7 +9,7 @@ import java.util.List;
 
 public class VmsDeployedResponse {
 
-    List<VmDeployed> vms = new ArrayList<>();
+    private final List<VmDeployed> vms = new ArrayList<>();
 
     public VmsDeployedResponse(List<VmDeployed> vms) {
         this.vms.addAll(vms);

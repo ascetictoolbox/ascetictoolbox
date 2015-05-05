@@ -22,16 +22,14 @@ import es.bsc.vmmclient.models.*;
 import retrofit.client.Response;
 import retrofit.http.*;
 
-import java.util.List;
-
 public interface VmmService {
 
     @GET("/vms")
     VmsDeployedResponse getVms();
 
-    // TODO
+    // TODO - Necesito un objeto que detro tenga una lista de objetos que dentro solo tengan un string...
     @POST("/vms")
-    List<String> deployVms(List<Vm> vms);
+    DeployVmsResponse deployVms(@Body VmsList vms);
 
     @GET("/vms/{id}")
     VmDeployed getVm(@Path("id") String id);
@@ -42,11 +40,9 @@ public interface VmmService {
     @DELETE("/vms/{id}")
     Response destroyVm(@Path("id") String id);
 
-    // TODO
     @GET("/vmsapp/{appId}")
-    List<VmDeployed> getAppVms(@Path("appId") String id);
+    VmsDeployedResponse getAppVms(@Path("appId") String id);
 
-    // TODO
     @DELETE("/vmsapp/{appId}")
     Response destroyAppVms(@Path("appId") String id);
 

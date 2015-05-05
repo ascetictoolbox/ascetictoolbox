@@ -26,7 +26,7 @@ import java.util.List;
 
 public class NodesResponse {
 
-    List<Node> nodes = new ArrayList<>();
+    private final List<Node> nodes = new ArrayList<>();
 
     public NodesResponse(List<Node> nodes) {
         this.nodes.addAll(nodes);
