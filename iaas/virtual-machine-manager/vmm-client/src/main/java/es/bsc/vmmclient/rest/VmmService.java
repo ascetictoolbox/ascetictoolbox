@@ -19,10 +19,7 @@
 package es.bsc.vmmclient.rest;
 
 import es.bsc.vmmclient.models.*;
-import retrofit.http.DELETE;
-import retrofit.http.GET;
-import retrofit.http.POST;
-import retrofit.http.Path;
+import retrofit.http.*;
 
 import java.util.List;
 
@@ -37,7 +34,8 @@ public interface VmmService {
     @GET("/vms/{id}")
     VmDeployed getVM(@Path("id") String id);
 
-    // PUT VM actions
+    @PUT("/vms/{id}")
+    //TODO
 
     @DELETE("/vms/{id}")
     void destroyVm(@Path("id") String id);
@@ -59,5 +57,8 @@ public interface VmmService {
 
     @DELETE("/images/{id}")
     void destroyImage(@Path("id") String id);
+
+    @GET("/nodes")
+    List<Node> getNodes();
 
 }
