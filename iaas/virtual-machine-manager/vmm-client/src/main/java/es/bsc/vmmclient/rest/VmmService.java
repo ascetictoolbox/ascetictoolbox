@@ -24,6 +24,14 @@ import retrofit.http.*;
 
 public interface VmmService {
 
+    /*
+    I should get rid of the classes whose only purpose is to wrap other classes.
+    For example, VmsDeployedResponse contains just one field with a list of VmDeployed.
+    It has been programmed this way, because of the current interface of the VMM. It should probably
+    be improved, but that would break compatibility with clients that are sending requests directly to the
+    REST service.
+     */
+
     @GET("/vms")
     VmsDeployedResponse getVms();
 
