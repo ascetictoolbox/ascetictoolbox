@@ -20,26 +20,22 @@ package es.bsc.vmmclient.models;
 
 import com.google.common.base.MoreObjects;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+public class IdResponse {
 
-public class DeployVmsResponse {
+    private final String id;
 
-    private final List<IdResponse> ids = new ArrayList<>();
-
-    public DeployVmsResponse(List<IdResponse> ids) {
-        this.ids.addAll(ids);
+    public IdResponse(String id) {
+        this.id = id;
     }
 
-    public List<IdResponse> getIds() {
-        return Collections.unmodifiableList(ids);
+    public String getId() {
+        return id;
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("ids", ids)
+                .add("id", id)
                 .toString();
     }
 

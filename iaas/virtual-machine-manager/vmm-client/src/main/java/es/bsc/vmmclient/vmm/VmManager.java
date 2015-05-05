@@ -16,21 +16,36 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.vmmclient.rest;
+package es.bsc.vmmclient.vmm;
 
-import es.bsc.vmmclient.config.Configuration;
-import retrofit.RestAdapter;
+import es.bsc.vmmclient.models.*;
 
-public class VmmClient {
+import java.util.List;
 
-    private static RestAdapter restAdapter = new RestAdapter.Builder()
-            .setEndpoint(Configuration.getInstance().restUrl)
-            .build();
+public interface VmManager {
 
-    private static VmmService service = restAdapter.create(VmmService.class);
+    List<VmDeployed> getVms();
 
-    public static VmmService getVmmService() {
-        return service;
-    }
+    List<String> deployVms(List<Vm> vms);
+
+    VmDeployed getVm(String id);
+
+    // TODO falta perform action
+
+    void destroyVm(String id);
+
+    List<VmDeployed> getAppVms(String id);
+
+    void destroyAppVms(String id);
+
+    List<ImageUploaded> getImages();
+
+    String uploadImage(ImageToUpload image);
+
+    ImageUploaded getImage(String id);
+
+    void destroyImage(String id);
+
+    List<Node> getNodes();
 
 }
