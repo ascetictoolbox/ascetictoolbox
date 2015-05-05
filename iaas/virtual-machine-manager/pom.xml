@@ -1,7 +1,4 @@
-<?xml version="1.0"?>
-<project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>iaas</artifactId>
@@ -12,10 +9,11 @@
 	<artifactId>virtual-machine-manager</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
-
 	<ciManagement>
 		<system>hudson</system>
-		<url>https://ascetic-jenkins.cit.tu-berlin.de/job/${jenkins.project.name}</url>
+		<url>
+			https://ascetic-jenkins.cit.tu-berlin.de/job/${jenkins.project.name}
+		</url>
 		<notifiers>
 			<notifier>
 				<type>mail</type>
@@ -29,11 +27,11 @@
 			</notifier>
 		</notifiers>
 	</ciManagement>
-
 	<modules>
 		<module>GangliaMonitoring</module>
 		<module>vmmanagercore</module>
-        <module>clopla</module>
+		<module>clopla</module>
 		<module>power-button-presser</module>
+		<module>vmm-client</module>
 	</modules>
 </project>
