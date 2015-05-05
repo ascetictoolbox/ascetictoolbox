@@ -24,22 +24,23 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ListImagesUploaded {
+public class NodesResponse {
 
-    List<ImageUploaded> images = new ArrayList<>();
+    List<Node> nodes = new ArrayList<>();
 
-    public ListImagesUploaded(List<ImageUploaded> images) {
-        this.images.addAll(images);
+    public NodesResponse(List<Node> nodes) {
+        this.nodes.addAll(nodes);
     }
 
-    public List<ImageUploaded> getImages() {
-        return Collections.unmodifiableList(images);
+    public List<Node> getNodes() {
+        return Collections.unmodifiableList(nodes);
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("images", images)
+                .add("nodes", nodes)
                 .toString();
     }
+
 }

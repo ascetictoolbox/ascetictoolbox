@@ -16,11 +16,27 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.vmmclient.examples;
+package es.bsc.vmmclient.models;
 
-public class Examples {
+import com.google.common.base.MoreObjects;
 
-    public static void main(String[] args) {
+public class UploadImageResponse {
+
+    private final String id;
+
+    public UploadImageResponse(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("id", id)
+                .toString();
     }
 
 }

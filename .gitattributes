@@ -336,11 +336,13 @@ iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/config/Co
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/examples/Examples.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/ImageToUpload.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/ImageUploaded.java -text
-iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/ListImagesUploaded.java -text
-iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/ListVmsDeployed.java -text
+iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/ImagesUploadedResponse.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/Node.java -text
+iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/NodesResponse.java -text
+iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/UploadImageResponse.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/Vm.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/VmDeployed.java -text
+iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/VmsDeployedResponse.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/rest/VmmClient.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/rest/VmmService.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/resources/config.properties -text

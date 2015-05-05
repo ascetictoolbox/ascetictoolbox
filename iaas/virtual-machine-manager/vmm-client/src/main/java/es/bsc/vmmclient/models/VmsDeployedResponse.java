@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ListVmsDeployed {
+public class VmsDeployedResponse {
 
     List<VmDeployed> vms = new ArrayList<>();
 
-    public ListVmsDeployed(List<VmDeployed> vms) {
+    public VmsDeployedResponse(List<VmDeployed> vms) {
         this.vms.addAll(vms);
     }
 

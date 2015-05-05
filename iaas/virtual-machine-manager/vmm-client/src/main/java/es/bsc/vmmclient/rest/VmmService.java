@@ -26,36 +26,35 @@ import java.util.List;
 
 public interface VmmService {
 
-    // OK
     @GET("/vms")
-    ListVmsDeployed getVms();
+    VmsDeployedResponse getVms();
 
+    // TODO
     @POST("/vms")
     List<String> deployVms(List<Vm> vms);
 
-    // OK
     @GET("/vms/{id}")
     VmDeployed getVm(@Path("id") String id);
 
     //@PUT("/vms/{id}")
     //TODO
 
-    // OK
     @DELETE("/vms/{id}")
     Response destroyVm(@Path("id") String id);
 
+    // TODO
     @GET("/vmsapp/{appId}")
     List<VmDeployed> getAppVms(@Path("appId") String id);
 
+    // TODO
     @DELETE("/vmsapp/{appId}")
     Response destroyAppVms(@Path("appId") String id);
 
-    // OK
     @GET("/images")
-    ListImagesUploaded getImages();
+    ImagesUploadedResponse getImages();
 
     @POST("/images")
-    String uploadImage(ImageToUpload image);
+    UploadImageResponse uploadImage(@Body ImageToUpload image);
 
     @GET("/images/{id}")
     ImageUploaded getImage(@Path("id") String id);
@@ -64,6 +63,6 @@ public interface VmmService {
     Response destroyImage(@Path("id") String id);
 
     @GET("/nodes")
-    List<Node> getNodes();
+    NodesResponse getNodes();
 
 }
