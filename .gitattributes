@@ -336,6 +336,7 @@ iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/config/Co
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/examples/Examples.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/ImageToUpload.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/ImageUploaded.java -text
+iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/ListImagesUploaded.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/ListVmsDeployed.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/Node.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/Vm.java -text

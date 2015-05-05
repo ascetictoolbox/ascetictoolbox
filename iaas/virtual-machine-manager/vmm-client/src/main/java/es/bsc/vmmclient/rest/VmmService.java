@@ -19,13 +19,14 @@
 package es.bsc.vmmclient.rest;
 
 import es.bsc.vmmclient.models.*;
+import retrofit.client.Response;
 import retrofit.http.*;
 
 import java.util.List;
 
 public interface VmmService {
 
-    // OK - change ListVMsDeployed class
+    // OK
     @GET("/vms")
     ListVmsDeployed getVms();
 
@@ -36,20 +37,22 @@ public interface VmmService {
     @GET("/vms/{id}")
     VmDeployed getVm(@Path("id") String id);
 
-    @PUT("/vms/{id}")
+    //@PUT("/vms/{id}")
     //TODO
 
+    // OK
     @DELETE("/vms/{id}")
-    void destroyVm(@Path("id") String id);
+    Response destroyVm(@Path("id") String id);
 
     @GET("/vmsapp/{appId}")
     List<VmDeployed> getAppVms(@Path("appId") String id);
 
     @DELETE("/vmsapp/{appId}")
-    void destroyAppVms(@Path("appId") String id);
+    Response destroyAppVms(@Path("appId") String id);
 
+    // OK
     @GET("/images")
-    List<ImageUploaded> getImages();
+    ListImagesUploaded getImages();
 
     @POST("/images")
     String uploadImage(ImageToUpload image);
@@ -58,7 +61,7 @@ public interface VmmService {
     ImageUploaded getImage(@Path("id") String id);
 
     @DELETE("/images/{id}")
-    void destroyImage(@Path("id") String id);
+    Response destroyImage(@Path("id") String id);
 
     @GET("/nodes")
     List<Node> getNodes();

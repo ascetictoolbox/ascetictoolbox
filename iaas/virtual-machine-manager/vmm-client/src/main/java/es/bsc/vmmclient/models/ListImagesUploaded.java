@@ -16,12 +16,30 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.vmmclient.examples;
+package es.bsc.vmmclient.models;
 
-public class Examples {
+import com.google.common.base.MoreObjects;
 
-    public static void main(String[] args) {
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
+public class ListImagesUploaded {
+
+    List<ImageUploaded> images = new ArrayList<>();
+
+    public ListImagesUploaded(List<ImageUploaded> images) {
+        this.images.addAll(images);
     }
 
+    public List<ImageUploaded> getImages() {
+        return Collections.unmodifiableList(images);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("images", images)
+                .toString();
+    }
 }
