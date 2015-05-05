@@ -16,38 +16,24 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.vmmclient.rest;
+package es.bsc.vmmclient.models;
 
-import es.bsc.vmmclient.models.ListVmsDeployed;
-import es.bsc.vmmclient.models.Vm;
-import es.bsc.vmmclient.models.VmDeployed;
-import retrofit.http.DELETE;
-import retrofit.http.GET;
-import retrofit.http.POST;
-import retrofit.http.Path;
+public class ImageToUpload {
 
-import java.util.List;
+    private final String name;
+    private final String url;
 
-public interface VmmService {
+    public ImageToUpload(String name, String url) {
+        this.name = name;
+        this.url = url;
+    }
 
-    @GET("/vms")
-    ListVmsDeployed getVms();
+    public String getName() {
+        return name;
+    }
 
-    @POST("/vms")
-    List<String> deployVms(List<Vm> vms);
-
-    @GET("/vms/{id}")
-    VmDeployed getVM(@Path("id") String id);
-
-    // PUT VM actions
-
-    @DELETE("/vms/{id}")
-    void destroyVm(@Path("id") String id);
-
-    @GET("/vmsapp/{appId}")
-    List<VmDeployed> getAppVms(@Path("appId") String id);
-
-    @DELETE("/vmsapp/{appId}")
-    void destroyAppVms(@Path("appId") String id);
+    public String getUrl() {
+        return url;
+    }
 
 }
