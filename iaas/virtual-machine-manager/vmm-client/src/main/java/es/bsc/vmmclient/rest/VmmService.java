@@ -26,7 +26,7 @@ public interface VmmService {
 
     @GET("/vms")
     VmsDeployedResponse getVms();
-    
+
     @POST("/vms")
     DeployVmsResponse deployVms(@Body VmsList vms);
 
