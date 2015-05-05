@@ -46,7 +46,8 @@ public class HostPowerEmulator implements Runnable {
     private boolean running = true;
     private int pollInterval = 1;
     private String outputName = "power";
-    private final Settings settings = new Settings("PowerEmulatorSettings.properties");
+    private final Settings settings = new Settings(PROPS_FILE_NAME);
+    private static final String PROPS_FILE_NAME = "watt-meter-emulator.properties";
     private static final String DEFAULT_DATA_SOURCE_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient";
 
     /**
@@ -54,7 +55,7 @@ public class HostPowerEmulator implements Runnable {
      *
      * @param args The first argument indicates the host to generate the host
      * power consumption data for, the second argument is optional and indicates
-     *
+     * the host to clone calibration data from.
      */
     public static void main(String[] args) {
         Thread emulatorThread;
@@ -64,7 +65,7 @@ public class HostPowerEmulator implements Runnable {
             hostname = args[0];
         } else {
             System.out.println("The first argument provided to this application"
-                    + "should be the hostname, the second if needed should "
+                    + " should be the hostname, the second if needed should "
                     + "be the hostname to clone the calibration data from.");
             System.exit(0);
         }
@@ -90,7 +91,7 @@ public class HostPowerEmulator implements Runnable {
         pollInterval = settings.getInt("poll_interval", pollInterval);
         outputName = settings.getString("output_name", outputName);
         if (settings.isChanged()) {
-            settings.save("PowerEmulatorSettings.properties");
+            settings.save(PROPS_FILE_NAME);
         }
     }
 
@@ -102,6 +103,11 @@ public class HostPowerEmulator implements Runnable {
     public HostPowerEmulator(String hostname) {
         this.hostname = hostname;
         this.cloneHostname = null;
+        pollInterval = settings.getInt("poll_interval", pollInterval);
+        outputName = settings.getString("output_name", outputName);
+        if (settings.isChanged()) {
+            settings.save(PROPS_FILE_NAME);
+        }        
     }
 
     /**
