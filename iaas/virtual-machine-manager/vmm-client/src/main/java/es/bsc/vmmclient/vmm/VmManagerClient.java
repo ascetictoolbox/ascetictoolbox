@@ -31,6 +31,11 @@ public class VmManagerClient implements VmManager {
     }
 
     @Override
+    public void performActionOnVm(String id, VmAction action) {
+        VmmRestClient.getVmmService().performActionOnVm(id, new VmActionQuery(action.toString()));
+    }
+
+    @Override
     public void destroyVm(String id) {
         VmmRestClient.getVmmService().destroyVm(id);
     }

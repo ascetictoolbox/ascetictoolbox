@@ -30,7 +30,7 @@ public interface VmManager {
 
     VmDeployed getVm(String id);
 
-    // TODO falta perform action
+    void performActionOnVm(String id, VmAction action);
 
     void destroyVm(String id);
 

@@ -33,8 +33,8 @@ public interface VmmService {
     @GET("/vms/{id}")
     VmDeployed getVm(@Path("id") String id);
 
-    //@PUT("/vms/{id}")
-    //TODO
+    @PUT("/vms/{id}")
+    Response performActionOnVm(@Path("id") String id, @Body VmActionQuery action);
 
     @DELETE("/vms/{id}")
     Response destroyVm(@Path("id") String id);

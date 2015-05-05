@@ -343,6 +343,8 @@ iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/No
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/NodesResponse.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/UploadImageResponse.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/Vm.java -text
+iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/VmAction.java -text
+iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/VmActionQuery.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/VmDeployed.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/VmsDeployedResponse.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/VmsList.java -text
