@@ -134,15 +134,16 @@ public class MultiHostPowerEmulator implements Runnable {
             }
             if (linearPredictor.getRootMeanSquareError(host) < polyPredictor.getRootMeanSquareError(host)) {
                 predictor.put(host, linearPredictor);
-                System.out.println("Using the linear predictor");
+                System.out.println("Using the linear predictor: " + host.getHostName());
             } else {
                 predictor.put(host, polyPredictor);
-                System.out.println("Using the polynomial predictor");
+                System.out.println("Using the polynomial predictor " + host.getHostName());
             }
             System.out.println("Linear SSE: " + linearPredictor.getSumOfSquareError(host));
             System.out.println("Polynomial SSE: " + polyPredictor.getSumOfSquareError(host));
             System.out.println("Linear RMSE: " + linearPredictor.getRootMeanSquareError(host));
             System.out.println("Polynomial RMSE: " + polyPredictor.getRootMeanSquareError(host));
+            System.out.println("");
         }
         /**
          * The main phase is to monitor the host and to report its estimated
