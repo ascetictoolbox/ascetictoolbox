@@ -38,7 +38,7 @@ import java.util.logging.Logger;
  * The aim of the multi host power emulator is to push out power meter values
  * for hosts that do not have a watt meter attached but do have calibration
  * data. This will push data out for all hosts that are detectable by the
- * monitoring infrastructure. Thus in the cases where the raw power value is 
+ * monitoring infrastructure. Thus in the cases where the raw power value is
  * missing the estimated power may be used instead.
  *
  * @author Richard Kavanagh
@@ -51,7 +51,7 @@ public class MultiHostPowerEmulator implements Runnable {
     private int pollInterval = 1;
     private String outputName = "estimated-power";
     private final Settings settings = new Settings(PROPS_FILE_NAME);
-    private static final String PROPS_FILE_NAME = "watt-meter-emulator.properties";    
+    private static final String PROPS_FILE_NAME = "watt-meter-emulator.properties";
     private static final String DEFAULT_DATA_SOURCE_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient";
 
     /**
@@ -163,11 +163,11 @@ public class MultiHostPowerEmulator implements Runnable {
                     power = ((CpuOnlyPolynomialEnergyPredictor) predictor.get(host)).predictPowerUsed(host, measurement.getCpuUtilisation());
                 }
                 logger.printToFile(logger.new Pair(host, power));
-                try {
-                    Thread.sleep(TimeUnit.SECONDS.toMillis(pollInterval));
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(HostPowerEmulator.class.getName()).log(Level.SEVERE, "The power emulator was interupted.", ex);
-                }
+            }
+            try {
+                Thread.sleep(TimeUnit.SECONDS.toMillis(pollInterval));
+            } catch (InterruptedException ex) {
+                Logger.getLogger(HostPowerEmulator.class.getName()).log(Level.SEVERE, "The power emulator was interupted.", ex);
             }
         }
     }
