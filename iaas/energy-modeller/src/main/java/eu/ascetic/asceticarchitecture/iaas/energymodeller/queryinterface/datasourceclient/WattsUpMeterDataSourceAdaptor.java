@@ -66,7 +66,8 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
     private WattsUp meter;
     private WattsUpTailer fileTailer;
     private Tailer tailer;
-    private static SigarProxy sigar = SigarProxyCache.newInstance(new Sigar(), 8);
+    private static SigarProxy sigar = getSigar();
+    private int sigarFailCounter = 0;
     private HostMeasurement lowest = null;
     private HostMeasurement highest = null;
     private HostMeasurement current = null;
@@ -117,6 +118,13 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
                     "A problem occured with Sigar", ex);
         }
 
+    }
+
+    /**
+     * This creates a new Sigar instance.
+     */
+    private static SigarProxy getSigar() {
+        return SigarProxyCache.newInstance(new Sigar(), 8);
     }
 
     /**
@@ -478,10 +486,12 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
                         Thread.sleep(500);
                         cpu = sigar.getCpuPerc();
                         if (Double.isNaN(cpu.getSys())) {
+                            System.out.println("The measurement taken was invalid - Sigar getCPU");
+                            restartSigar();
                             return;
                         }
                     } catch (InterruptedException ex) {
-
+                        ex.printStackTrace();
                     }
                 }
                 Mem mem = sigar.getMem();
@@ -504,10 +514,12 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
                 measurement.addMetric(new MetricValue(CURRENT_KPI_NAME, CURRENT_KPI_NAME, amps, clock));
                 valid = valid && validatedAddMetric(measurement, new MetricValue(KpiList.CPU_IDLE_KPI_NAME, KpiList.CPU_IDLE_KPI_NAME, cpu.getIdle() * 100 + "", clock));
                 if (!valid) {
+                    System.out.println("The measurement taken was invalid - Sigar");
                     /**
                      * This quickly exits if Sigar produces a Double.NaN value
                      * due to its internal state not been ready.
                      */
+                    restartSigar();
                     return;
                 }
                 valid = valid && validatedAddMetric(measurement, new MetricValue(KpiList.CPU_INTERUPT_KPI_NAME, KpiList.CPU_INTERUPT_KPI_NAME, cpu.getIrq() * 100 + "", clock));
@@ -521,6 +533,7 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
                 valid = valid && validatedAddMetric(measurement, new MetricValue(KpiList.MEMORY_AVAILABLE_KPI_NAME, KpiList.MEMORY_AVAILABLE_KPI_NAME, (int) (Double.valueOf(mem.getActualFree()) / 1048576) + "", clock));
                 valid = valid && validatedAddMetric(measurement, new MetricValue(KpiList.MEMORY_TOTAL_KPI_NAME, KpiList.MEMORY_TOTAL_KPI_NAME, (int) (Double.valueOf(mem.getTotal()) / 1048576) + "", clock));
                 if (!valid) {
+                    restartSigar();
                     return;
                 }
                 current = measurement;
@@ -554,6 +567,21 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
             }
             measurement.addMetric(value);
             return true;
+        }
+    }
+
+    /**
+     * This corrects Sigar in cases where its internal state becomes an issue.
+     * The result of which is that this adaptor no longer reports out data, without
+     * Sigar been restarted.
+     */
+    private void restartSigar() {
+        sigarFailCounter = sigarFailCounter + 1;
+        System.out.println("The measurement taken was invalid - Sigar getCPU");
+        if (sigarFailCounter >= 2) {
+            System.out.println("Sigar reset");
+            sigar = getSigar();
+            sigarFailCounter = 0;
         }
     }
 
