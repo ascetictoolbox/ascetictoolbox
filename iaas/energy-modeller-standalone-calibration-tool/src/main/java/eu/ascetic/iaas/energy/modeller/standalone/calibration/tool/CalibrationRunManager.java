@@ -242,6 +242,17 @@ public class CalibrationRunManager implements ManagedProcessListener {
                     && absdifference(currentPower, lastPowerValue) < 0.1) {
                 System.out.println("New Datapoint Generated!");
                 return dataEntry;
+            } else {
+                if (!(currentClock > lastClock)) {
+                    System.out.println("No New Datapoint: Clock not incrementing");
+                }
+                if (!dataEntry.isContemporary(POWER_KPI_NAME,
+                        dataEntry.getCpuUtilisationTimeStamp(), 3)) {
+                    System.out.println("No New Datapoint: CPU and power clock values out of sync");
+                }
+                if (!(absdifference(currentPower, lastPowerValue) < 0.1)) {
+                    System.out.println("No New Datapoint: No power values plateau detected");
+                }
             }
             lastClock = dataEntry.getClock();
             lastPowerValue = dataEntry.getPower();
@@ -373,7 +384,7 @@ public class CalibrationRunManager implements ManagedProcessListener {
                     if (head != null && new GregorianCalendar().after(head.getActualStart())) {
                         Logger.getLogger(Actioner.class.getName()).log(Level.FINE, "Actioner: Executing: The heads type was {0}", head.getClass());
                         commandSet.remove(0);
-                        setLatestStartAndEndTimes(new GregorianCalendar(), head.getStartTime(), head.getEndTime());                        
+                        setLatestStartAndEndTimes(new GregorianCalendar(), head.getStartTime(), head.getEndTime());
                         execute(head);
                     }
                     try {
@@ -401,15 +412,19 @@ public class CalibrationRunManager implements ManagedProcessListener {
                 } //outer most try statement
             } //While not stopped
             Logger.getLogger(Actioner.class.getName()).log(Level.INFO, "Actioner: Exiting Thread");
-            if (sender != null) {
-                sender.finished();
-            }
             actioner = null;
-            setHostCalibrationData(measurements, host);
+            ArrayList<HostEnergyCalibrationData> data = setHostCalibrationData(measurements, host);
+            System.out.println("Data Items saved: " + data.size());
             try {
                 Thread.sleep(TimeUnit.SECONDS.toMillis(20));
+                if (data.size() > 350) {
+                    Thread.sleep(TimeUnit.SECONDS.toMillis(10));
+                }
             } catch (InterruptedException ex) {
                 Logger.getLogger(Actioner.class.getName()).log(Level.WARNING, "Waiting at the end for DB writes was interupted", ex);
+            }
+            if (sender != null) {
+                sender.finished();
             }
         }
     }
