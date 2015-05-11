@@ -38,7 +38,14 @@ public class Vm {
     private final int swapMb;
     private String initScript;
     private String applicationId;
-    
+
+    // The next two parameters are just valid within the Ascetic project.
+    // It would be better to put them in a subclass
+    private String ovfId = "";
+    private String slaId = "";
+
+    // TODO: apply builder pattern instead of having several constructors.
+
     /**
      * Class constructor.
      * @param name The name of the instance.
@@ -62,7 +69,6 @@ public class Vm {
         this.applicationId = applicationId;
     }
 
-    // TODO: apply builder pattern.
     public Vm(String name, String image, int cpus, int ramMb, int diskGb, String initScript, String applicationId) {
         validateConstructorParams(cpus, ramMb, diskGb, 0);
         this.name = name;
@@ -73,6 +79,21 @@ public class Vm {
         this.swapMb = 0;
         setInitScript(initScript);
         this.applicationId = applicationId;
+    }
+
+    public Vm(String name, String image, int cpus, int ramMb, int diskGb, String initScript, String applicationId,
+              String ovfId, String slaId) {
+        validateConstructorParams(cpus, ramMb, diskGb, 0);
+        this.name = name;
+        this.image = image;
+        this.cpus = cpus;
+        this.ramMb = ramMb;
+        this.diskGb = diskGb;
+        this.swapMb = 0;
+        setInitScript(initScript);
+        this.applicationId = applicationId;
+        this.ovfId = ovfId;
+        this.slaId = slaId;
     }
 
     public String getName() {
@@ -121,6 +142,22 @@ public class Vm {
 
     public void setApplicationId(String applicationId) {
         this.applicationId = applicationId;
+    }
+
+    public String getOvfId() {
+        return ovfId;
+    }
+
+    public void setOvfId(String ovfId) {
+        this.ovfId = ovfId;
+    }
+
+    public String getSlaId() {
+        return slaId;
+    }
+
+    public void setSlaId(String slaId) {
+        this.slaId = slaId;
     }
 
     public boolean belongsToAnApp() {

@@ -25,6 +25,10 @@ import java.util.List;
 
 /**
  * Interface for the connection of the VM Manager with the DB.
+ * The DB is used to store the state of the VMM.
+ * For the moment, the state includes information of the VMs that is not stored in the Cloud Middleware,
+ * such as: the ID of the application to which the VM belongs, the SLA ID, and the OVF ID.
+ * The state also includes the scheduling policy and the self-adaptation options selected.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  *
@@ -46,8 +50,10 @@ public interface VmManagerDb {
      *
      * @param vmId the ID of the VM to be inserted
      * @param appId the ID of the application to which the VM belongs to.
+     * @param ovfId the OVF ID of the VM
+     * @param slaId the SLA ID of the VM
      */
-    void insertVm(String vmId, String appId);
+    void insertVm(String vmId, String appId, String ovfId, String slaId);
 
     /**
      * Deletes a VM from the DB.
@@ -63,6 +69,22 @@ public interface VmManagerDb {
      * @return the ID of the application
      */
     String getAppIdOfVm(String vmId);
+
+    /**
+     * Returns the OVF ID of a VM
+     *
+     * @param vmId the ID of the VM
+     * @return the OVF ID
+     */
+    String getOvfIdOfVm(String vmId);
+
+    /**
+     * Returns the SLA ID of a VM
+     *
+     * @param vmId the ID of the VM
+     * @return the SLA ID
+     */
+    String getSlaIdOfVm(String vmId);
 
     /**
      * Deletes all the VMs from the DB.

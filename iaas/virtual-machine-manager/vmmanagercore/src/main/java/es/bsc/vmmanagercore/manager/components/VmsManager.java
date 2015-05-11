@@ -115,12 +115,14 @@ public class VmsManager {
      * @return the VM
      */
     public VmDeployed getVm(String vmId) {
-        // The cloud middleware should not have knowledge of the app a specific VM is part of.
-        // Typical middlewares such as OpenStack do not store that information.
-        // Therefore, we need to set the app ID here
+        // We need to set the state information of the VM that is not managed by the cloud middleware here.
+        // Currently, we need to set the Application ID, the OVF ID, and the SLA ID.
+        // The OVF and the SLA IDs are specific for Ascetic.
         VmDeployed vm = cloudMiddleware.getVM(vmId);
         if (vm != null) {
             vm.setApplicationId(db.getAppIdOfVm(vm.getId()));
+            vm.setOvfId(db.getOvfIdOfVm(vm.getId()));
+            vm.setSlaId(db.getSlaIdOfVm(vm.getId()));
         }
         return vm;
     }
@@ -196,7 +198,7 @@ public class VmsManager {
             String vmScriptName = setAsceticInitScript(vmToDeploy);
 
             String vmId = deployVm(vmToDeploy, hostForDeployment);
-            db.insertVm(vmId, vmToDeploy.getApplicationId());
+            db.insertVm(vmId, vmToDeploy.getApplicationId(), vmToDeploy.getOvfId(), vmToDeploy.getSlaId());
             ids.put(vmToDeploy, vmId);
 
             VMMLogger.logVmDeploymentWaitingTime(vmId,

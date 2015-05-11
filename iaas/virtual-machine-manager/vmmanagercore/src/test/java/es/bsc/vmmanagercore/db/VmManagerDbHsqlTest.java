@@ -60,21 +60,21 @@ public class VmManagerDbHsqlTest {
 	
 	@Test
 	public void insertVm() {
-		db.insertVm("vmId1", "appId1");
+		db.insertVm("vmId1", "appId1", "", "");
 		assertTrue(db.getAllVmIds().contains("vmId1"));
 	}
 	
 	@Test
 	public void deleteExistingVm() {
-		db.insertVm("vmId1", "appId1");
+		db.insertVm("vmId1", "appId1", "", "");
 		db.deleteVm("vmId1");
 		assertFalse(db.getAllVmIds().contains("vmId1"));
 	}
 	
 	@Test
 	public void deleteAllVmsWhenThereAreTwo() {
-		db.insertVm("vmId1", "appId1");
-		db.insertVm("vmId2", "appId2");
+		db.insertVm("vmId1", "appId1", "", "");
+		db.insertVm("vmId2", "appId2", "", "");
 		db.deleteAllVms();
 		assertFalse(db.getAllVmIds().contains("vmId1"));
 		assertFalse(db.getAllVmIds().contains("vmId2"));
@@ -88,7 +88,7 @@ public class VmManagerDbHsqlTest {
 	
 	@Test
 	public void getAppIdOfExistingVm() {
-		db.insertVm("vmId1", "appId1");
+		db.insertVm("vmId1", "appId1", "", "");
 		assertEquals("appId1", db.getAppIdOfVm("vmId1"));
 	}
 	
@@ -99,8 +99,8 @@ public class VmManagerDbHsqlTest {
 	
 	@Test
 	public void getAllVmsIds() {
-		db.insertVm("vmId1", "appId1");
-		db.insertVm("vmId2", "appId2");
+		db.insertVm("vmId1", "appId1", "", "");
+		db.insertVm("vmId2", "appId2", "", "");
 		List<String> vmIds = db.getAllVmIds();
 		assertTrue(vmIds.contains("vmId1") && vmIds.contains("vmId2"));
 	}
@@ -112,8 +112,8 @@ public class VmManagerDbHsqlTest {
 	
 	@Test
 	public void getVmsIdsOfAnAppWithVms() {
-		db.insertVm("vmId1", "appId1");
-		db.insertVm("vmId2", "appId1");
+		db.insertVm("vmId1", "appId1", "", "");
+		db.insertVm("vmId2", "appId1", "", "");
 		List<String> vmIdsOfApp = db.getVmsOfApp("appId1");
 		assertTrue(vmIdsOfApp.contains("vmId1") && vmIdsOfApp.contains("vmId2"));
 	}

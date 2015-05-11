@@ -34,7 +34,7 @@ import java.util.List;
  */
 public class VmManagerDbHsql implements VmManagerDb {
 
-    /* NOTE: For now, we are using DBHSQL. In the future, it may be needed to use a different DB. */
+    // This class needs a refactor. I should probably use something like jOOQ.
 
     private Connection conn;
 
@@ -108,7 +108,8 @@ public class VmManagerDbHsql implements VmManagerDb {
     private synchronized void setupDb() {
         try {
             update("CREATE TABLE IF NOT EXISTS virtual_machines "
-                    + "(id VARCHAR(255), appId VARCHAR(255), PRIMARY KEY (id)) ");
+                    + "(id VARCHAR(255), appId VARCHAR(255), ovfId VARCHAR(255), slaId VARCHAR(255), "
+                    + "PRIMARY KEY (id)) ");
             update("CREATE TABLE IF NOT EXISTS current_scheduling_alg " +
                     "(algorithm VARCHAR(255), PRIMARY KEY (algorithm))");
             update("CREATE TABLE IF NOT EXISTS self_adaptation_options "
@@ -138,9 +139,10 @@ public class VmManagerDbHsql implements VmManagerDb {
     }
     
     @Override
-    public void insertVm(String vmId, String appId) {
+    public void insertVm(String vmId, String appId, String ovfId, String slaId) {
         try {
-            update("INSERT INTO virtual_machines (id, appId) VALUES ('" + vmId + "', '" + appId + "')");
+            update("INSERT INTO virtual_machines (id, appId, ovfId, slaId) "
+                    + "VALUES ('" + vmId + "', '" + appId + "', '" + ovfId + "', '" + slaId + "')");
         } catch (SQLException e) {
             System.out.println(ERROR_INSERT_VM);
         }
@@ -164,7 +166,7 @@ public class VmManagerDbHsql implements VmManagerDb {
         }
     }
     
-    // Returns "" if the VM does not have an app associated or if a VM with that ID does not exist
+    // Returns "" if the VM does not have an app associated or if a VM with the given ID does not exist
     @Override
     public String getAppIdOfVm(String vmId) {
         List<String> appId = new ArrayList<>();
@@ -178,7 +180,37 @@ public class VmManagerDbHsql implements VmManagerDb {
         }
         return appId.get(0);
     }
-    
+
+    // Returns "" if the VM does not have an OVF ID associated or if a VM with the given ID does not exist
+    @Override
+    public String getOvfIdOfVm(String vmId) {
+        List<String> appId = new ArrayList<>();
+        try {
+            appId = query("SELECT ovfId FROM virtual_machines WHERE id = '" + vmId + "'");
+        } catch (SQLException e) {
+            appId.add("");
+        }
+        if (appId.isEmpty()) {
+            appId.add("");
+        }
+        return appId.get(0);
+    }
+
+    // Returns "" if the VM does not have an SLA ID associated or if a VM with the given ID does not exist
+    @Override
+    public String getSlaIdOfVm(String vmId) {
+        List<String> appId = new ArrayList<>();
+        try {
+            appId = query("SELECT slaId FROM virtual_machines WHERE id = '" + vmId + "'");
+        } catch (SQLException e) {
+            appId.add("");
+        }
+        if (appId.isEmpty()) {
+            appId.add("");
+        }
+        return appId.get(0);
+    }
+
     @Override
     public List<String> getAllVmIds() {
         List<String> vmIds = new ArrayList<>();
