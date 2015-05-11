@@ -30,9 +30,11 @@ public class Vm {
     protected final int swapMb;
     protected final String initScript;
     protected final String applicationId;
+    protected final String ovfId;
+    protected final String slaId;
 
     public Vm(String name, String image, int cpus, int ramMb, int diskGb, int swapMb,
-              String initScript, String applicationId) {
+              String initScript, String applicationId, String ovfId, String slaId) {
         this.name = name;
         this.image = image;
         this.cpus = cpus;
@@ -41,6 +43,8 @@ public class Vm {
         this.swapMb = swapMb;
         this.initScript = initScript;
         this.applicationId = applicationId;
+        this.ovfId = ovfId;
+        this.slaId = slaId;
     }
 
     public String getName() {
@@ -75,6 +79,14 @@ public class Vm {
         return applicationId;
     }
 
+    public String getOvfId() {
+        return ovfId;
+    }
+
+    public String getSlaId() {
+        return slaId;
+    }
+
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
@@ -86,6 +98,8 @@ public class Vm {
                 .add("swapMb", swapMb)
                 .add("initScript", initScript)
                 .add("applicationId", applicationId)
+                .add("ovfId", ovfId)
+                .add("slaId", slaId)
                 .toString();
     }
 }
