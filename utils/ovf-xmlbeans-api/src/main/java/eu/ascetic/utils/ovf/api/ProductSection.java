@@ -79,6 +79,13 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      */
     private static final String ASCETIC_PRIVATE_SSH_KEY = "asceticSshPrivateKey";
 
+    private static final String ASCETIC_ENERGY_OPTIMIZATION_BOUNDARY = "asceticEnergyOptimizationBoundary";
+    private static final String ASCETIC_ENERGY_OPTIMIZATION_PARAMETER = "asceticEnergyOptimizationParameter";
+    private static final String ASCETIC_COST_OPTIMIZATION_BOUNDARY = "asceticCostOptimizationBoundary";
+    private static final String ASCETIC_COST_OPTIMIZATION_PARAMETER = "asceticCostOptimizationParameter";
+    private static final String ASCETIC_PERFORMANCE_OPTIMIZATION_BOUNDARY = "asceticPerformanceOptimizationBoundary";
+    private static final String ASCETIC_PERFORMANCE_OPTIMIZATION_PARAMETER = "asceticPerformanceOptimizationParameter";
+
     /**
      * The static KEY used to get and set the number of end points in the global
      * scope of {@link VirtualSystemCollection} or locally in
@@ -450,7 +457,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     public String getPublicSshKey() {
         ProductProperty property = getPropertyByKey(ASCETIC_PUBLIC_SSH_KEY);
         if (property != null) {
-            return new String(Base64.decodeBase64(property.getValue().getBytes()));
+            return new String(Base64.decodeBase64(property.getValue()
+                    .getBytes()));
         } else {
             return null;
         }
@@ -488,7 +496,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     public String getPrivateSshKey() {
         ProductProperty property = getPropertyByKey(ASCETIC_PRIVATE_SSH_KEY);
         if (property != null) {
-            return new String(Base64.decodeBase64(property.getValue().getBytes()));
+            return new String(Base64.decodeBase64(property.getValue()
+                    .getBytes()));
         } else {
             return null;
         }
@@ -510,6 +519,234 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
         if (productProperty == null) {
             addNewProperty(ASCETIC_PRIVATE_SSH_KEY, ProductPropertyType.STRING,
                     encodedBytes);
+        } else {
+            productProperty.setValue(encodedBytes);
+        }
+    }
+
+    /**
+     * Gets the energy optimization boundary on a per {@link VirtualSystem} or
+     * {@link VirtualSystemCollection} basis. Used by the PM runtime and to
+     * guide the negotiation.
+     * 
+     * @return The energy optimization boundary
+     */
+    public String getEnergyOptimizationBoundary() {
+        ProductProperty property = getPropertyByKey(ASCETIC_ENERGY_OPTIMIZATION_BOUNDARY);
+        if (property != null) {
+            return new String(Base64.decodeBase64(property.getValue()
+                    .getBytes()));
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Sets the energy optimization boundary on a per {@link VirtualSystem} or
+     * {@link VirtualSystemCollection} basis. Used by the PM runtime and to
+     * guide the negotiation.
+     * 
+     * @param energyBoundary
+     *            The energy boundary
+     */
+    public void setEnergyOptimizationBoundary(String energyBoundary) {
+        String encodedBytes = new String(Base64.encodeBase64(energyBoundary
+                .getBytes()));
+
+        ProductProperty productProperty = getPropertyByKey(ASCETIC_ENERGY_OPTIMIZATION_BOUNDARY);
+        if (productProperty == null) {
+            addNewProperty(ASCETIC_ENERGY_OPTIMIZATION_BOUNDARY,
+                    ProductPropertyType.STRING, encodedBytes);
+        } else {
+            productProperty.setValue(encodedBytes);
+        }
+    }
+
+    /**
+     * Gets the energy optimization parameter on a per {@link VirtualSystem} or
+     * {@link VirtualSystemCollection} basis. Used by the PM runtime and to
+     * guide the negotiation.
+     * 
+     * @return The energy optimization parameter
+     */
+    public String getEnergyOptimizationParameter() {
+        ProductProperty property = getPropertyByKey(ASCETIC_ENERGY_OPTIMIZATION_PARAMETER);
+        if (property != null) {
+            return new String(Base64.decodeBase64(property.getValue()
+                    .getBytes()));
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Sets the energy optimization parameter on a per {@link VirtualSystem} or
+     * {@link VirtualSystemCollection} basis. Used by the PM runtime and to
+     * guide the negotiation.
+     * 
+     * @param energyParameter
+     *            The energy parameter
+     */
+    public void setEnergyOptimizationParameter(String energyParameter) {
+        String encodedBytes = new String(Base64.encodeBase64(energyParameter
+                .getBytes()));
+
+        ProductProperty productProperty = getPropertyByKey(ASCETIC_ENERGY_OPTIMIZATION_PARAMETER);
+        if (productProperty == null) {
+            addNewProperty(ASCETIC_ENERGY_OPTIMIZATION_PARAMETER,
+                    ProductPropertyType.STRING, encodedBytes);
+        } else {
+            productProperty.setValue(encodedBytes);
+        }
+    }
+
+    /**
+     * Gets the cost optimization boundary on a per {@link VirtualSystem} or
+     * {@link VirtualSystemCollection} basis. Used by the PM runtime and to
+     * guide the negotiation.
+     * 
+     * @return The cost optimization boundary
+     */
+    public String getCostOptimizationBoundary() {
+        ProductProperty property = getPropertyByKey(ASCETIC_COST_OPTIMIZATION_BOUNDARY);
+        if (property != null) {
+            return new String(Base64.decodeBase64(property.getValue()
+                    .getBytes()));
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Sets the cost optimization boundary on a per {@link VirtualSystem} or
+     * {@link VirtualSystemCollection} basis. Used by the PM runtime and to
+     * guide the negotiation.
+     * 
+     * @param costBoundary
+     *            The cost boundary
+     */
+    public void setCostOptimizationBoundary(String costBoundary) {
+        String encodedBytes = new String(Base64.encodeBase64(costBoundary
+                .getBytes()));
+
+        ProductProperty productProperty = getPropertyByKey(ASCETIC_COST_OPTIMIZATION_BOUNDARY);
+        if (productProperty == null) {
+            addNewProperty(ASCETIC_COST_OPTIMIZATION_BOUNDARY,
+                    ProductPropertyType.STRING, encodedBytes);
+        } else {
+            productProperty.setValue(encodedBytes);
+        }
+    }
+
+    /**
+     * Gets the cost optimization parameter on a per {@link VirtualSystem} or
+     * {@link VirtualSystemCollection} basis. Used by the PM runtime and to
+     * guide the negotiation.
+     * 
+     * @return The cost optimization parameter
+     */
+    public String getCostOptimizationParameter() {
+        ProductProperty property = getPropertyByKey(ASCETIC_COST_OPTIMIZATION_PARAMETER);
+        if (property != null) {
+            return new String(Base64.decodeBase64(property.getValue()
+                    .getBytes()));
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Sets the cost optimization parameter on a per {@link VirtualSystem} or
+     * {@link VirtualSystemCollection} basis. Used by the PM runtime and to
+     * guide the negotiation.
+     * 
+     * @param costParameter
+     *            The energy parameter
+     */
+    public void setCostOptimizationParameter(String costParameter) {
+        String encodedBytes = new String(Base64.encodeBase64(costParameter
+                .getBytes()));
+
+        ProductProperty productProperty = getPropertyByKey(ASCETIC_COST_OPTIMIZATION_PARAMETER);
+        if (productProperty == null) {
+            addNewProperty(ASCETIC_COST_OPTIMIZATION_PARAMETER,
+                    ProductPropertyType.STRING, encodedBytes);
+        } else {
+            productProperty.setValue(encodedBytes);
+        }
+    }
+
+    /**
+     * Gets the performance optimization boundary on a per {@link VirtualSystem}
+     * or {@link VirtualSystemCollection} basis. Used by the PM runtime and to
+     * guide the negotiation.
+     * 
+     * @return The performance optimization boundary
+     */
+    public String getPerformanceOptimizationBoundary() {
+        ProductProperty property = getPropertyByKey(ASCETIC_PERFORMANCE_OPTIMIZATION_BOUNDARY);
+        if (property != null) {
+            return new String(Base64.decodeBase64(property.getValue()
+                    .getBytes()));
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Sets the performance optimization boundary on a per {@link VirtualSystem}
+     * or {@link VirtualSystemCollection} basis. Used by the PM runtime and to
+     * guide the negotiation.
+     * 
+     * @param performanceBoundary
+     *            The performance boundary
+     */
+    public void setPerformanceOptimizationBoundary(String performanceBoundary) {
+        String encodedBytes = new String(
+                Base64.encodeBase64(performanceBoundary.getBytes()));
+
+        ProductProperty productProperty = getPropertyByKey(ASCETIC_PERFORMANCE_OPTIMIZATION_BOUNDARY);
+        if (productProperty == null) {
+            addNewProperty(ASCETIC_PERFORMANCE_OPTIMIZATION_BOUNDARY,
+                    ProductPropertyType.STRING, encodedBytes);
+        } else {
+            productProperty.setValue(encodedBytes);
+        }
+    }
+
+    /**
+     * Gets the performance optimization parameter on a per
+     * {@link VirtualSystem} or {@link VirtualSystemCollection} basis. Used by
+     * the PM runtime and to guide the negotiation.
+     * 
+     * @return The performance optimization parameter
+     */
+    public String getPerformanceOptimizationParameter() {
+        ProductProperty property = getPropertyByKey(ASCETIC_PERFORMANCE_OPTIMIZATION_PARAMETER);
+        if (property != null) {
+            return new String(Base64.decodeBase64(property.getValue()
+                    .getBytes()));
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Sets the performance optimization parameter used to guide the negotiation
+     * on a per {@link VirtualSystem} or {@link VirtualSystemCollection} basis.
+     * Used by the PM runtime and to guide the negotiation.
+     * 
+     * @param performanceParameter
+     *            The performance parameter
+     */
+    public void setPerformanceOptimizationParameter(String performanceParameter) {
+        String encodedBytes = new String(
+                Base64.encodeBase64(performanceParameter.getBytes()));
+
+        ProductProperty productProperty = getPropertyByKey(ASCETIC_PERFORMANCE_OPTIMIZATION_PARAMETER);
+        if (productProperty == null) {
+            addNewProperty(ASCETIC_PERFORMANCE_OPTIMIZATION_PARAMETER,
+                    ProductPropertyType.STRING, encodedBytes);
         } else {
             productProperty.setValue(encodedBytes);
         }
