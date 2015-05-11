@@ -18,15 +18,25 @@
 
 package es.bsc.vmmclient.rest;
 
+import com.squareup.okhttp.OkHttpClient;
 import retrofit.RestAdapter;
+import retrofit.client.OkClient;
+
+import java.util.concurrent.TimeUnit;
 
 public class VmmRestClient {
 
     private final VmmService service;
+    private static final int TIMEOUT_SECONDS = 120; // Our testbed can be SLOW sometimes
 
     public VmmRestClient(String url) {
+        // Define our own okHttpClient to increase the timeout
+        OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.setReadTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS);
+
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(url)
+                .setClient(new OkClient(okHttpClient))
                 .build();
         service = restAdapter.create(VmmService.class);
     }
