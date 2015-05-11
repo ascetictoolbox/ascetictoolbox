@@ -22,7 +22,8 @@ public class VmManagerClient implements VmManager {
     @Override
     public List<String> deployVms(List<Vm> vms) {
         List<String> result = new ArrayList<>();
-        List<IdResponse> idResponses = vmmRestClient.getVmmService().deployVms(new VmsList(vms)).getIds();
+        DeployVmsResponse deployVmsResponse = vmmRestClient.getVmmService().deployVms(new VmsList(vms));
+        List<IdResponse> idResponses = deployVmsResponse.getIds();
         for (IdResponse idResponse: idResponses) {
             result.add(idResponse.getId());
         }

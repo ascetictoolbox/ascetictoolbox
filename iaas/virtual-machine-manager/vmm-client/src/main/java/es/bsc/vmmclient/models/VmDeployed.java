@@ -72,6 +72,8 @@ public class VmDeployed extends Vm {
                 .add("swapMb", swapMb)
                 .add("initScript", initScript)
                 .add("applicationId", applicationId)
+                .add("ovfId", ovfId)
+                .add("slaId", slaId)
                 .add("id", id)
                 .add("ipAddress", ipAddress)
                 .add("state", state)
