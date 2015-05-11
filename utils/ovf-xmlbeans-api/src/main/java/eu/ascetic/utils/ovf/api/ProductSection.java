@@ -79,11 +79,31 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      */
     private static final String ASCETIC_PRIVATE_SSH_KEY = "asceticSshPrivateKey";
 
+    /**
+     * The static KEY used to get and set energy optimization boundary.
+     */
     private static final String ASCETIC_ENERGY_OPTIMIZATION_BOUNDARY = "asceticEnergyOptimizationBoundary";
+    /**
+     * The static KEY used to get and set energy optimization parameter.
+     */
     private static final String ASCETIC_ENERGY_OPTIMIZATION_PARAMETER = "asceticEnergyOptimizationParameter";
+    
+    /**
+     * The static KEY used to get and set cost optimization boundary.
+     */
     private static final String ASCETIC_COST_OPTIMIZATION_BOUNDARY = "asceticCostOptimizationBoundary";
+    /**
+     * The static KEY used to get and set cost optimization parameter.
+     */
     private static final String ASCETIC_COST_OPTIMIZATION_PARAMETER = "asceticCostOptimizationParameter";
+    
+    /**
+     * The static KEY used to get and set performance optimization boundary.
+     */
     private static final String ASCETIC_PERFORMANCE_OPTIMIZATION_BOUNDARY = "asceticPerformanceOptimizationBoundary";
+    /**
+     * The static KEY used to get and set performance optimization parameter.
+     */
     private static final String ASCETIC_PERFORMANCE_OPTIMIZATION_PARAMETER = "asceticPerformanceOptimizationParameter";
 
     /**
@@ -1179,10 +1199,10 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            The ID of the software dependency (e.g. "memory-probe")
      * @param type
      *            The type of the software dependency (e.g. "zip")
-     * @param uri
+     * @param packageUri
      *            The URI to the software dependency (e.g.
      *            ("/some-end-point/probe-repository/memory-probe.zip")
-     * @param script
+     * @param installScriptUri
      *            The installation script of the software dependency (e.g.
      *            ("/some-end-point/probe-repository/memory-probe.sh")
      */
@@ -1259,7 +1279,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            The index of the software dependency (not to be confused with
      *            the index of a {@link ProductProperty}, see
      *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
-     * @Return The URI to the software dependency package (e.g.
+     * @return The URI to the software dependency package (e.g.
      *         ("/some-end-point/probe-repository/memory-probe.zip")
      */
     public String getSoftwareDependencyPackageUri(int index) {
