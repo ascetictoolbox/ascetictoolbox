@@ -16,38 +16,30 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.vmmclient.vmm;
+package es.bsc.vmmclient.models;
 
-import es.bsc.vmmclient.models.*;
+import com.google.common.base.MoreObjects;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public interface VmManager {
+public class EstimatesResponse {
 
-    List<VmDeployed> getVms();
+    private final List<VmEstimate> estimates = new ArrayList<>();
 
-    List<String> deployVms(List<Vm> vms);
+    public EstimatesResponse(List<VmEstimate> estimates) {
+        this.estimates.addAll(estimates);
+    }
 
-    VmDeployed getVm(String id);
+    public List<VmEstimate> getEstimates() {
+        return Collections.unmodifiableList(estimates);
+    }
 
-    void performActionOnVm(String id, VmAction action);
-
-    void destroyVm(String id);
-
-    List<VmDeployed> getAppVms(String id);
-
-    void destroyAppVms(String id);
-
-    List<ImageUploaded> getImages();
-
-    String uploadImage(ImageToUpload image);
-
-    ImageUploaded getImage(String id);
-
-    void destroyImage(String id);
-
-    List<Node> getNodes();
-
-    List<VmEstimate> getEstimates(List<VmToBeEstimated> vms);
-
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("estimates", estimates)
+                .toString();
+    }
 }

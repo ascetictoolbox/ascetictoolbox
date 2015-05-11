@@ -80,4 +80,9 @@ public class VmManagerClient implements VmManager {
         return vmmRestClient.getVmmService().getNodes().getNodes();
     }
 
+    @Override
+    public List<VmEstimate> getEstimates(List<VmToBeEstimated> vms) {
+        return vmmRestClient.getVmmService().getEstimates(new VmsToBeEstimatedList(vms)).getEstimates();
+    }
+
 }

@@ -68,4 +68,7 @@ public interface VmmService {
     @GET("/nodes")
     NodesResponse getNodes();
 
+    @POST("/estimates")
+    EstimatesResponse getEstimates(@Body VmsToBeEstimatedList vms);
+
 }
