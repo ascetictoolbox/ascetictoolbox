@@ -223,5 +223,10 @@ public class CpuOnlyPolynomialEnergyPredictor extends AbstractEnergyPredictor {
     public double getRootMeanSquareError(Host host) {
         return retrieveModel(host).getRootMeanSquareError();
     }
+    
+    @Override
+    public String toString() {
+        return "CPU only polynomial energy predictor";
+    }    
 
 }

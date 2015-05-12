@@ -19,6 +19,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -32,37 +33,50 @@ public class CpuOnlyBestFitEnergyPredictor extends AbstractEnergyPredictor {
 
     private final CpuOnlyEnergyPredictor linear = new CpuOnlyEnergyPredictor();
     private final CpuOnlyPolynomialEnergyPredictor polynomial = new CpuOnlyPolynomialEnergyPredictor();
-
+    private final ArrayList<EnergyPredictorInterface>predictors = new ArrayList<>();
+    
+    /**
+     * This creates a new CPU Only Best fit energy predictor
+     */
+    public CpuOnlyBestFitEnergyPredictor() {
+        super();
+        predictors.add(linear);
+        predictors.add(polynomial);
+    }
+    
     @Override
     public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines, TimePeriod timePeriod) {
-        if (linear.getRootMeanSquareError(host) <= polynomial.getRootMeanSquareError(host)) {
-            return linear.getHostPredictedEnergy(host, virtualMachines, timePeriod);
-        } else {
-            return polynomial.getHostPredictedEnergy(host, virtualMachines, timePeriod);
-        }
+        return getBestFit(host).getHostPredictedEnergy(host, virtualMachines, timePeriod);
     }
 
     @Override
     public EnergyUsagePrediction getVMPredictedEnergy(VM vm, Collection<VM> virtualMachines, Host host, TimePeriod timePeriod) {
-        if (linear.getRootMeanSquareError(host) <= polynomial.getRootMeanSquareError(host)) {
-            return linear.getVMPredictedEnergy(vm, virtualMachines, host, timePeriod);
-        } else {
-            return polynomial.getVMPredictedEnergy(vm, virtualMachines, host, timePeriod);
-        }
+            return getBestFit(host).getVMPredictedEnergy(vm, virtualMachines, host, timePeriod);
     }
 
     @Override
     public double getSumOfSquareError(Host host) {
-        double lin = linear.getSumOfSquareError(host);
-        double poly = polynomial.getSumOfSquareError(host);
-        return (lin <= poly ? lin : poly);
+        return getBestFit(host).getSumOfSquareError(host);
+    }
+
+    /**
+     * This takes the list of predictors and finds the best predictor for the given
+     * host.
+     * @param host The host to get the best predictor for
+     * @return The best predictor for the host specified.
+     */
+    public EnergyPredictorInterface getBestFit(Host host) {
+        return getBestPredictor(host, predictors);
     }
 
     @Override
     public double getRootMeanSquareError(Host host) {
-        double lin = linear.getRootMeanSquareError(host);
-        double poly = polynomial.getRootMeanSquareError(host);
-        return (lin <= poly ? lin : poly);
+        return getBestFit(host).getRootMeanSquareError(host);
     }
+    
+    @Override
+    public String toString() {
+        return "CPU only best fit energy predictor";
+    }    
 
 }

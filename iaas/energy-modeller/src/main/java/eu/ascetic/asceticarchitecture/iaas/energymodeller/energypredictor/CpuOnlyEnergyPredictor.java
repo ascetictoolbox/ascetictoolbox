@@ -189,5 +189,10 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
     public double getRootMeanSquareError(Host host) {
         return retrieveModel(host).getRootMeanSquareError();
     }
+    
+    @Override
+    public String toString() {
+        return "CPU only linear energy predictor";
+    }    
 
 }

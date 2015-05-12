@@ -323,7 +323,24 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
     protected double getCpuUtilisation(Host host) {
         return source.getCpuUtilisation(host, cpuUtilObservationTimeSecTotal);
     }
-
+    
+    /**
+     * This is a method that picks the best predictor for a host based upon
+     * the root mean square error produced by the predictor.
+     * @param host The host the predictors should be assessed against.
+     * @param predictors The collection of predictors to assess.
+     * @return The predictor with the least calibration error.
+     */
+    public static EnergyPredictorInterface getBestPredictor(Host host, Collection<EnergyPredictorInterface> predictors) {
+        EnergyPredictorInterface answer = null;
+        for (EnergyPredictorInterface predictor : predictors) {
+            if (answer == null || predictor.getRootMeanSquareError(host) < answer.getRootMeanSquareError(host)) {
+                answer = predictor;
+            }
+        }
+        return answer;
+    }
+    
     /**
      * TODO Add utility functions here that may be used by the energy models
      * that are created over the time of the project.
