@@ -28,6 +28,7 @@ import eu.ascetic.utils.ovf.api.ProductSection;
 import eu.ascetic.utils.ovf.api.References;
 import eu.ascetic.utils.ovf.api.VirtualSystem;
 import eu.ascetic.utils.ovf.api.enums.ResourceType;
+import eu.ascetic.utils.ovf.api.utils.OvfInvalidDocumentException;
 import eu.ascetic.vmic.api.VmicApi;
 
 /**
@@ -49,6 +50,8 @@ public class OvfDefinitionParser {
     private List<String> imageNames;
     private List<String> imageScripts;
 
+    private VmicApi vmicApi;
+
     /**
      * Constructor for setting up the parser.
      * 
@@ -60,19 +63,28 @@ public class OvfDefinitionParser {
      */
     public OvfDefinitionParser(OvfDefinition ovfDefinition, VmicApi vmicApi) {
         this.ovfDefinition = ovfDefinition;
-        this.ovfDefinitionId = ovfDefinition.getVirtualSystemCollection()
+        this.ovfDefinitionId = this.ovfDefinition.getVirtualSystemCollection()
                 .getId();
-        this.applicationRepositoryPath = vmicApi.getGlobalState()
+        this.vmicApi = vmicApi;
+        this.applicationRepositoryPath = this.vmicApi.getGlobalState()
                 .getConfiguration().getRepositoryPath()
                 + "/" + ovfDefinitionId;
         LOGGER.info("Application repository path is: "
                 + applicationRepositoryPath);
 
         // Parse the mode of operation
-        this.mode = ovfDefinition.getVirtualSystemCollection()
-                .getProductSectionAtIndex(0)
-                .getVmicMode();
-        LOGGER.info("VMIC Mode is: " + mode);
+        try {
+            this.mode = this.ovfDefinition.getVirtualSystemCollection()
+                    .getProductSectionAtIndex(0).getVmicMode();
+            LOGGER.info("VMIC Mode is: " + mode);
+        } catch (NullPointerException e) {
+            LOGGER.error("The VMIC Mode is not set in OVF!", e);
+            this.vmicApi.getGlobalState().getProgressData(ovfDefinitionId)
+                    .setError(true);
+            this.vmicApi.getGlobalState().getProgressData(ovfDefinitionId)
+                    .setException(e);
+            return;
+        }
 
         imageNames = new ArrayList<String>();
         imageScripts = new ArrayList<String>();
@@ -88,70 +100,108 @@ public class OvfDefinitionParser {
                 .getVirtualSystemCollection().getVirtualSystemArray();
         LOGGER.info("Parsing " + virtualSystems.length + " Virtual Systems");
 
-        for (int i = 0; i < virtualSystems.length; i++) {
-            VirtualSystem virtualSystem = virtualSystems[i];
+        try {
+            for (int i = 0; i < virtualSystems.length; i++) {
+                VirtualSystem virtualSystem = virtualSystems[i];
 
-            Item[] items = virtualSystem.getVirtualHardwareSection()
-                    .getItemArray();
-            LOGGER.info("Looking for disk ID in " + items.length + " Items");
+                Item[] items = virtualSystem.getVirtualHardwareSection()
+                        .getItemArray();
+                LOGGER.info("Looking for disk ID in " + items.length + " Items");
 
-            // Find the disk ID for this Virtual System
-            String diskId = "";
-            for (int j = 0; j < items.length; j++) {
-                if (ResourceType.DISK_DRIVE.equals(items[j].getResourceType())) {
-                    // FIXME: Assuming only one host resource per item (i.e. no
-                    // support for cow disks)
-                    LOGGER.debug(items[j].getHostResourceAtIndex(0));
+                // Find the disk ID for this Virtual System
+                String diskId = "";
+                for (int j = 0; j < items.length; j++) {
+                    if (ResourceType.DISK_DRIVE.equals(items[j]
+                            .getResourceType())) {
+                        // FIXME: Assuming only one host resource per item (i.e.
+                        // no
+                        // support for cow disks)
+                        LOGGER.debug(items[j].getHostResourceAtIndex(0));
 
-                    diskId = items[j].findHostRosourceId(items[j]
-                            .getHostResourceAtIndex(0));
-                    LOGGER.debug("Found diskId: " + diskId);
-                    break;
+                        diskId = items[j].findHostRosourceId(items[j]
+                                .getHostResourceAtIndex(0));
+                        LOGGER.debug("Found diskId: " + diskId);
+                        break;
+                    }
+                }
+
+                // Find the disk element from the disk ID.
+                String imageName = null;
+                Disk[] disks = ovfDefinition.getDiskSection().getDiskArray();
+                for (int j = 0; j < disks.length; j++) {
+                    if (disks[j].getDiskId().equals(diskId)) {
+                        String refId = disks[j].getFileRef();
+                        imageName = refId + ".img";
+                        // Set the image name
+                        imageNames.add(imageName);
+                        LOGGER.debug("Added image name: " + imageName);
+                        // Add the new file references
+                        String href = applicationRepositoryPath + "/"
+                                + imageName;
+                        File file = File.Factory.newInstance(refId, href);
+                        ovfDefinition.getReferences().addFile(file);
+                        break;
+                    }
+                }
+
+                // Get the script for this virtual system
+                // FIXME: Assuming only a single product section per Virtual
+                // System
+                if (this.mode.equals("offline")) {
+                    ProductSection productSection = virtualSystem
+                            .getProductSectionAtIndex(0);
+                    String script = productSection.getVmicScript();
+
+                    // Add the script replacing variables to local storage
+                    imageScripts.add(replaceVariablesInScript(script,
+                            ovfDefinition.getReferences(),
+                            getImageMountPointPath(i)));
+                    LOGGER.debug("Added script for image: " + imageName);
+                } else if (this.mode.equals("online")) {
+                    // TODO: Parse online related properties from SaaS modelling
+                    // tools.
+
+                } else {
+                    LOGGER.error("Unknown VMIC mode set in OVF! Value is: '"
+                            + this.mode
+                            + "'. Expected either 'offline' or 'online'");
+                    OvfInvalidDocumentException e = new OvfInvalidDocumentException(
+                            "Unknown mode set in OVF! Value is: '"
+                                    + this.mode
+                                    + "'. Expected either 'offline' or 'online'",
+                            ovfDefinition.getXmlObject());
+                    vmicApi.getGlobalState().getProgressData(ovfDefinitionId)
+                            .setError(true);
+                    vmicApi.getGlobalState().getProgressData(ovfDefinitionId)
+                            .setException(e);
+                    return;
                 }
             }
-
-            // Find the disk element from the disk ID.
-            String imageName = null;
-            Disk[] disks = ovfDefinition.getDiskSection().getDiskArray();
-            for (int j = 0; j < disks.length; j++) {
-                if (disks[j].getDiskId().equals(diskId)) {
-                    String refId = disks[j].getFileRef();
-                    imageName = refId + ".img";
-                    // Set the image name
-                    imageNames.add(imageName);
-                    LOGGER.debug("Added image name: " + imageName);
-                    // Add the new file references
-                    String href = applicationRepositoryPath + "/" + imageName;
-                    File file = File.Factory.newInstance(refId, href);
-                    ovfDefinition.getReferences().addFile(file);
-                    break;
-                }
-            }
-
-            // Get the script for this virtual system
-            // FIXME: Assuming only a single product section per Virtual System
-            ProductSection productSection = virtualSystem
-                    .getProductSectionAtIndex(0);
-            String script = productSection
-                    .getVmicScript();
-
-            // Add the script replacing variables to local storage
-            imageScripts.add(replaceVariablesInScript(script,
-                    ovfDefinition.getReferences(), getImageMountPointPath(i)));
-            LOGGER.debug("Added script for image: " + imageName);
+        } catch (NullPointerException e) {
+            LOGGER.error("Something is not set within OVF!", e);
+            vmicApi.getGlobalState().getProgressData(ovfDefinitionId)
+                    .setError(true);
+            vmicApi.getGlobalState().getProgressData(ovfDefinitionId)
+                    .setException(e);
+            return;
         }
     }
 
-
     /**
-     * Method to replace variables within an PM Plugin script passed to the VMIC via OVF.
+     * Method to replace variables within an PM Plugin script passed to the VMIC
+     * via OVF.
      * 
-     * @param scriptIn The script to replace variables in
-     * @param references The references to use in the variable replacement
-     * @param mountPoint The mount point of the image that the script will operate within
+     * @param scriptIn
+     *            The script to replace variables in
+     * @param references
+     *            The references to use in the variable replacement
+     * @param mountPoint
+     *            The mount point of the image that the script will operate
+     *            within
      * @return The script with variables replaced.
      */
-    public static String replaceVariablesInScript(String scriptIn, References references, String mountPoint) {
+    public static String replaceVariablesInScript(String scriptIn,
+            References references, String mountPoint) {
 
         LOGGER.debug("Script before variable replacement is: ");
         LOGGER.debug(scriptIn);
@@ -168,9 +218,9 @@ public class OvfDefinitionParser {
         // OVF
         scriptOut = scriptOut.replace("${IMAGE_WEBAPP_FOLDER}",
                 "var/lib/tomcat7/webapps");
-        
+
         // Set the mount point
-        scriptOut = scriptOut.replace("${MOUNT_POINT}", mountPoint); 
+        scriptOut = scriptOut.replace("${MOUNT_POINT}", mountPoint);
 
         LOGGER.debug("Script after variable replacement is: ");
         LOGGER.debug(scriptOut);
