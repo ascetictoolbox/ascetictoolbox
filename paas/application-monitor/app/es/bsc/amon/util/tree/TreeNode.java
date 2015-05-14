@@ -44,7 +44,7 @@ public abstract class TreeNode {
 	public abstract Collection<String> getChildrenIds();
 
 	/**
-	 * Gets the instance of the object, but if the object is a subtype of Value, returns the value itself (Number, String, array)...
+	 * Gets the INSTANCE of the object, but if the object is a subtype of Value, returns the value itself (Number, String, array)...
 	 * @return
 	 */
 	public Object getValue() {

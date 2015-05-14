@@ -16,14 +16,12 @@
 
 package es.bsc.amon.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mongodb.*;
 import com.mongodb.util.JSON;
 import es.bsc.amon.DBManager;
-import org.bson.BSONObject;
 import play.Logger;
 
 import java.util.*;
@@ -31,15 +29,16 @@ import java.util.*;
 /**
  * Created by mmacias on 08/06/14.
  */
-public class AppsDBMapper {
-    private static AppsDBMapper instance;
+public enum AppsDBMapper {
+    INSTANCE;
+
     private DBCollection colAppInstances;
 
     private AppsDBMapper() {
         // default table size to 64 MB
         Logger.info("Creating collection '"+ COLL_NAME +"'...");
-        Properties config = DBManager.instance.getConfig();
-        DB database = DBManager.instance.getDatabase();
+        Properties config = DBManager.INSTANCE.getConfig();
+        DB database = DBManager.INSTANCE.getDatabase();
 
         try {
 
@@ -48,8 +47,9 @@ public class AppsDBMapper {
             colAppInstances = database.createCollection(COLL_NAME,
                     new BasicDBObject("capped", true) //enable round robin database
                             .append("size", collectionSize));
-        } catch(CommandFailureException cfe) {
-            if("collection already exists".equalsIgnoreCase(cfe.getCommandResult().getErrorMessage())) {
+
+        } catch(MongoException cfe) {
+            if(cfe.getCode() == DBManager.COLLECTION_ALREADY_EXISTS) {
                 Logger.info("Collection '"+ COLL_NAME +"' already exists. Continuing normally...");
             }
             colAppInstances = database.getCollection(COLL_NAME);
@@ -59,13 +59,6 @@ public class AppsDBMapper {
         BasicDBObject indexInfo = new BasicDBObject();
         indexInfo.put(EventsDBMapper.TIMESTAMP, -1); // 1 for ascending, -1 for descending
         colAppInstances.createIndex(indexInfo);
-    }
-
-    public static AppsDBMapper getInstance() {
-        if(instance == null) {
-            instance = new AppsDBMapper();
-        }
-        return instance;
     }
 
     public void addAppInstance(String appInstanceJson) {
@@ -99,17 +92,15 @@ public class AppsDBMapper {
      * @return
      */
     public ObjectNode getAllApps(long start, long end, boolean showInstances) {
-        DBObject query = (DBObject) JSON.parse("{'$query' :" +
+        DBObject query = (DBObject) JSON.parse(
             "{ '$or' : ["+
                 "{ '$and' : [ { timestamp : { '$gte' : " + start + " }}, { timestamp : {'$lte' : " + end + "}} ] }," +
                 "{ '$and' : [ { endtime : { '$gte' : " + start + " }}, { endtime : {'$lte' : " + end + "}} ] }" +
-            "]}," +
-                "" +
-                "'$orderby' : {timestamp : -1}}");
+            "]}");
+        //DBObject orderby = new BasicDBObject("timestamp":-1);
+        BasicDBList ret = DBManager.INSTANCE.find(EventsDBMapper.COLL_NAME, query);
 
-        BasicDBList ret = DBManager.instance.find(EventsDBMapper.COLL_NAME, query);
-
-        Map<String,Set<String>> appsInfo = new HashMap<String,Set<String>>();
+        Map<String,Set<String>> appsInfo = new HashMap<>();
 
         Iterator<Object> iter = ret.iterator();
         while(iter.hasNext()) {
@@ -127,7 +118,7 @@ public class AppsDBMapper {
             } catch(NullPointerException ex) {
                 Logger.warn("This element did not parsed as an application: " + event.toString() + ". Removing it from DB...");
                 try {
-                    EventsDBMapper.getInstance().remove(event);
+                    EventsDBMapper.INSTANCE.remove(event);
                 } catch(Exception e) {
                     Logger.error("Cannot remove it from database");
                 }
@@ -146,14 +137,12 @@ public class AppsDBMapper {
     }
 
     public String getFinishedAppInstances(long start, long end, int limit) {
-        DBObject query = (DBObject) JSON.parse("{'$query' :" +
+        DBObject query = (DBObject) JSON.parse(
                 "{ '$or' : ["+
                 "{ '$and' : [ { timestamp : { '$gte' : " + start + " }}, { timestamp : {'$lte' : " + end + "}} ] }," +
                 "{ '$and' : [ { endtime : { '$gte' : " + start + " }}, { endtime : {'$lte' : " + end + "}} ] }" +
-                "]}," +
-                "" +
-                "'$orderby' : {timestamp : -1}}");
-        BasicDBList ret = DBManager.instance.find(COLL_NAME, query, limit);;
+                "]}");
+        BasicDBList ret = DBManager.INSTANCE.find(COLL_NAME, query, null, limit);
         return ret.toString();
     }
 

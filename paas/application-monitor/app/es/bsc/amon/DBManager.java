@@ -17,24 +17,31 @@
 package es.bsc.amon;
 
 import com.mongodb.*;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.util.JSON;
+import org.bson.BSONObject;
+import org.bson.Document;
+import org.bson.conversions.Bson;
+import org.bson.types.BasicBSONList;
+import org.jongo.Jongo;
 import play.Logger;
-import play.libs.Json;
 
+import java.util.List;
 import java.util.Properties;
 
 /**
  * Created by mmacias on 27/05/14.
  */
 
-public class DBManager {
-	public static final DBManager instance = new DBManager();
+public enum DBManager {
+	INSTANCE;
+    public static final int COLLECTION_ALREADY_EXISTS = 17399;
 
+	//private Jongo jongo;
 	private MongoClient client;
 	private DB database;
     private Properties config;
-
-    private DBManager() {
-    }
 
 	public void init(Properties config) {
 		close();
@@ -46,6 +53,7 @@ public class DBManager {
 			Logger.info("Connecting to mongodb://"+host+":"+port+"/"+dbName);
 			client = new MongoClient(host,port);
 			database = client.getDB(dbName);
+			//jongo = new Jongo(database);
 
 		} catch(Throwable e) {
 			Logger.info(e.getMessage());
@@ -70,9 +78,13 @@ public class DBManager {
     }
 
     public BasicDBList find(String collectionName, DBObject query) {
-        return find(collectionName, query, null);
+        return find(collectionName, query, null, null);
     }
-    public BasicDBList find(String collectionName, DBObject query, Integer limit) {
+
+    public BasicDBList find(String collectionName, DBObject query, DBObject orderby) {
+        return find(collectionName, query, orderby, null);
+    }
+    public BasicDBList find(String collectionName, DBObject query, DBObject orderby, Integer limit) {
         BasicDBList result = new BasicDBList();
 
         DBCursor c = null;
@@ -81,9 +93,15 @@ public class DBManager {
         } else {
             c = database.getCollection(collectionName).find(query);
         }
+
+        if(orderby == null) {
+            c.sort(orderby);
+        }
+
         if(limit != null && limit > 0) {
             c = c.limit(limit);
         }
+
         while(c.hasNext()) {
             result.add(c.next());
         }
@@ -104,7 +122,5 @@ public class DBManager {
     public void add(String collectionName, DBObject obj) {
         database.getCollection(collectionName).insert(obj);
     }
-
-
 
 }

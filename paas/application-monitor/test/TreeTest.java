@@ -16,6 +16,7 @@
 import com.fasterxml.jackson.databind.JsonNode;
 import es.bsc.amon.util.tree.TreeNode;
 import es.bsc.amon.util.tree.TreeNodeFactory;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.Test;
 
 
@@ -24,6 +25,7 @@ import static org.fest.assertions.Assertions.assertThat;
 /**
  * Created by mmacias on 09/06/14.
  */
+@Ignore
 public class TreeTest {
 	@Test
 	public void parseUnparseTest() {

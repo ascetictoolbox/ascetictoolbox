@@ -18,8 +18,6 @@ package es.bsc.amon.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.deser.std.JsonNodeDeserializer;
-import com.fasterxml.jackson.databind.node.JsonNodeCreator;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mongodb.*;
@@ -29,13 +27,14 @@ import org.bson.types.ObjectId;
 import play.Logger;
 import play.libs.Json;
 
-import javax.persistence.Basic;
 import java.util.*;
 
 /**
  * Created by mmacias on 07/06/14.
  */
-public class EventsDBMapper {
+public enum EventsDBMapper {
+	INSTANCE;
+
     public static final String TIMESTAMP = "timestamp";
 	public static final String ENDTIME = "endtime";
     public static final String APPID = "appId";
@@ -48,15 +47,14 @@ public class EventsDBMapper {
 
     public static final String COLL_NAME = "events";
 
-    private static EventsDBMapper instance = null;
 
     private DBCollection colEvents = null;
 
     private EventsDBMapper() {
         // default table size to 64 MB
         Logger.info("Creating collection '"+ COLL_NAME +"'...");
-        Properties config = DBManager.instance.getConfig();
-        DB database = DBManager.instance.getDatabase();
+        Properties config = DBManager.INSTANCE.getConfig();
+        DB database = DBManager.INSTANCE.getDatabase();
 
         try {
 
@@ -65,8 +63,8 @@ public class EventsDBMapper {
             colEvents = database.createCollection(COLL_NAME,
                     new BasicDBObject("capped", true) //enable round robin database
                             .append("size", collectionSize));
-        } catch(CommandFailureException cfe) {
-            if("collection already exists".equalsIgnoreCase(cfe.getCommandResult().getErrorMessage())) {
+        } catch(MongoException cfe) {
+            if(cfe.getCode() == DBManager.COLLECTION_ALREADY_EXISTS) {
                 Logger.info("Collection '"+ COLL_NAME +"' already exists. Continuing normally...");
             }
             colEvents = database.getCollection(COLL_NAME);
@@ -79,13 +77,6 @@ public class EventsDBMapper {
         indexInfo.put(EventsDBMapper.NODEID,1);
 
         colEvents.createIndex(indexInfo);
-    }
-
-    public static EventsDBMapper getInstance() {
-        if(instance == null) {
-            instance = new EventsDBMapper();
-        }
-        return instance;
     }
 
 
@@ -119,7 +110,7 @@ public class EventsDBMapper {
 	public JsonNode getLastEvent(String appId, String nodeId) {
 		DBObject query = (DBObject) JSON.parse("{$orderby : {timestamp : -1}, $data : { $and : [ { appId : \"" + appId
 				+ "\" }, { nodeId : \"" + nodeId + "\"} ] } }");
-		return Json.parse(DBManager.instance.findOne(COLL_NAME,query).toString());
+		return Json.parse(DBManager.INSTANCE.findOne(COLL_NAME,query).toString());
 	}
 
 	public ObjectNode get(String id) {
@@ -144,6 +135,12 @@ public class EventsDBMapper {
 		}
 		return null;
 	}
+
+    public void delete(String id) {
+        BasicDBObjectBuilder q = BasicDBObjectBuilder.start();
+        q.add(_ID, new ObjectId(id));
+        colEvents.remove(q.get());
+    }
 
 	public ObjectNode markAsFinished(String id) {
 		BasicDBObjectBuilder q = BasicDBObjectBuilder.start();

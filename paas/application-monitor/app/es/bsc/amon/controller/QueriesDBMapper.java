@@ -19,24 +19,17 @@ package es.bsc.amon.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
-import com.mongodb.BasicDBObjectBuilder;
-import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
-import es.bsc.amon.DBManager;
 import es.bsc.mongoal.QueryGenerator;
-import play.Logger;
 import play.libs.Json;
 
 /**
  * Created by mmacias on 02/07/14.
  */
-public class QueriesDBMapper {
-    public static final QueriesDBMapper instance = new QueriesDBMapper();
-    private static es.bsc.mongoal.QueryGenerator mongoAlQG = null;
-    private QueriesDBMapper() {}
+public enum QueriesDBMapper {
+	INSTANCE;
 
     /**
      * Uses the MongoDB Json query language
@@ -44,38 +37,27 @@ public class QueriesDBMapper {
      * @return
      */
     public ArrayNode aggregate(JsonNode query) {
-        Object raw = JSON.parse(query.toString());
-        ArrayNode ret = new ArrayNode(JsonNodeFactory.instance);
-
-        if(raw instanceof BasicDBObject) {
-            ret = (ArrayNode)Json.parse(EventsDBMapper.getInstance().aggregate((BasicDBObject)raw).toString());
-        } else if(raw instanceof BasicDBList) {
-            ret = (ArrayNode)Json.parse(EventsDBMapper.getInstance().aggregate((BasicDBList)raw).toString());
-        }
-
-        return ret;
+    	return aggregateFromJsonStr(query.toString());
     }
 
     /**
      * Uses the MongoAL query language
      */
     public ArrayNode aggregate(String query) {
-        if(mongoAlQG == null) {
-            mongoAlQG = new QueryGenerator(DBManager.instance.getDatabase());
-        }
-        ArrayNode ret = new ArrayNode(JsonNodeFactory.instance);
-
-        return (ArrayNode)Json.parse(mongoAlQG.query(query).toString());
-
+        QueryGenerator qg = new QueryGenerator(query);
+        return aggregateFromJsonStr(qg.getJsonQueryString());
     }
 
-    public static final String START = "start";
-    public static final String END = "end";
-    public static final String APPID = "appId";
-    public static final String NODEID = "nodeId";
-    public static final String INSTANCEID = "instanceId";
-    public static final String OP = "op";
-    public static final String DATA = "data";
+	private ArrayNode aggregateFromJsonStr(String jsonQueryString) {
+		Object raw = JSON.parse(jsonQueryString);
+		ArrayNode ret = new ArrayNode(JsonNodeFactory.instance);
 
-    public enum Operation { sum, avg, max, min, first, last, count, array };
+		if(raw instanceof BasicDBObject) {
+			ret = (ArrayNode)Json.parse(EventsDBMapper.INSTANCE.aggregate((BasicDBObject) raw).toString());
+		} else if(raw instanceof BasicDBList) {
+			ret = (ArrayNode)Json.parse(EventsDBMapper.INSTANCE.aggregate((BasicDBList) raw).toString());
+		}
+
+		return ret;
+	}
 }

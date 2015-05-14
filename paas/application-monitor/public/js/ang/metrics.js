@@ -50,7 +50,7 @@
             });
 
             modalInstance.result.then(function(form) {
-                $http.post("/gui/metricPanel",JSON.stringify(form))
+                $http.post("/gui/metricPanel",JSON.stringify(form), { headers : {"Content-Type":"application/json", "Accept":"application/json"}})
                     .success(function(panelId) {
                         $scope.panels[panelId] = form;
                     });
@@ -118,10 +118,14 @@
                     {"$group" : { "_id": null,
                         "data": {"$last": "$data"}
                     }}];
-            $http.post("/query",JSON.stringify(getLastMetric))
+            $http.post("/query",JSON.stringify(getLastMetric), { headers : {"Content-Type":"application/json", "Accept":"application/json"}})
                 .success(function(lastMetric) {
+                    console.log("successs!!!");
+
                     // show only metrics that parse
                     $scope.metrics = getAllMetrics(lastMetric[0].data);
+                }).error(function(err) {
+                    console.log("error " + JSON.stringify(err));
                 });
         }
 
@@ -147,7 +151,7 @@
 
     }]);
 
-    var MAX_TIME = 15*60*1000;
+    var MAX_TIME = 45*60*1000;
     var STEP_TIME = 5*1000;
 
     appip.directive("hcSeries",function($http) {
@@ -167,7 +171,7 @@
                         "latestTimestamp" : { "$max" : "$timestamp" },
                         "data" : {"$avg": "$data." + $scope.info.metric}
                     }}];
-                    $http.post("/query",JSON.stringify(queryLastMetric))
+                    $http.post("/query",JSON.stringify(queryLastMetric), { headers : {"Content-Type":"application/json", "Accept":"application/json"}})
                         .success(function(ret) {
                             if(ret.length > 0) {
                                 $scope.latestTimestamp = ret[0].latestTimestamp;
@@ -218,14 +222,14 @@
                     }]
                 };
 
-                // get last timestamp of an application
+                // get last timestamp of an application∫∫∫
                 var getLastTimestamp =
                     [{"$match":{"appId":$scope.info.appId}},
                         {"$group" : { "_id": null,
                             "last": {"$max": "$timestamp"}
                         }}];
 
-                $http.post("/query",JSON.stringify(getLastTimestamp))
+                $http.post("/query",JSON.stringify(getLastTimestamp), { headers : {"Content-Type":"application/json", "Accept":"application/json"}})
                     .success(function(ret) {
                         // get all metrics in the last MAX_TIME aggregated in STEP_TIME intervals
                         $scope.latestTimestamp = ret[0].last;
@@ -239,7 +243,7 @@
                                 "data" : {"$avg": "$data." + $scope.info.metric}
                             }}];
 
-                        $http.post("/query",JSON.stringify(groupTimestamps)).
+                        $http.post("/query",JSON.stringify(groupTimestamps), { headers : {"Content-Type":"application/json", "Accept":"application/json"}}).
                             success(function(ret) {
                                 var minDataSize = MAX_TIME / STEP_TIME;
                                 var data = [],

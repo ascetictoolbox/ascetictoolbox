@@ -24,6 +24,7 @@ import static org.fest.assertions.Assertions.*;
 
 import static org.fluentlenium.core.filter.FilterConstructor.*;
 
+@Ignore
 public class IntegrationTest {
 
     /**
