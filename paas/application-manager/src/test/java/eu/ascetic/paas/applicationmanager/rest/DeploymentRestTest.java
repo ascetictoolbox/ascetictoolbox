@@ -18,6 +18,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Timestamp;
 import java.util.List;
 
 import javax.ws.rs.core.MediaType;
@@ -32,6 +33,7 @@ import org.mockito.ArgumentCaptor;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Unit;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.EnergyModellerSimple;
 import eu.ascetic.paas.applicationmanager.amonitor.ApplicationMonitorClient;
 import eu.ascetic.paas.applicationmanager.amonitor.model.EnergyCosumed;
@@ -302,10 +304,6 @@ public class DeploymentRestTest {
 		when(deploymentDAO.update(deployment)).thenReturn(true);
 		
 		VmManagerClient vmManagerClient = mock(VmManagerClient.class);
-		when(vmManagerClient.deleteVM("aaaa-bbbb-2")).thenReturn(true);
-		when(vmManagerClient.deleteVM("aaaa-bbbb-1")).thenReturn(true);
-		when(vmManagerClient.deleteImage("zzzz-1")).thenReturn(true);
-		when(vmManagerClient.deleteImage("zzzz-2")).thenReturn(true);
 		
 		DeploymentRest deploymentRest = new DeploymentRest();
 		deploymentRest.deploymentDAO = deploymentDAO;
@@ -313,8 +311,9 @@ public class DeploymentRestTest {
 		deploymentRest.energyModeller = modeller;
 		deploymentRest.applicationMonitorClient = amonitorClient;
 		
-		
-		when(modeller.energyApplicationConsumption(isNull(String.class), eq(""), argThat(new BaseMatcher<List<String>>() {
+		when(modeller.measure(isNull(String.class), 
+				              eq(""), 
+				              argThat(new BaseMatcher<List<String>>() {
  
 																				@Override
 																				public boolean matches(Object arg0) {
@@ -335,7 +334,11 @@ public class DeploymentRestTest {
 																				@Override
 																				public void describeTo(Description arg0) {}
         																	
-																			}), isNull(String.class))).thenReturn(22.0);
+																			}), 
+							 isNull(String.class), 
+							 eq(Unit.ENERGY), 
+							 isNull(Timestamp.class), 
+							 isNull(Timestamp.class))).thenReturn(22.0);
 		
 		Response response = deploymentRest.deleteDeployment("", "1");
 		
@@ -425,7 +428,9 @@ public class DeploymentRestTest {
 		deploymentRest.deploymentDAO = deploymentDAO;
 		when(deploymentDAO.getById(1)).thenReturn(deployment);
 		
-		when(energyModeller.energyApplicationConsumption(isNull(String.class), eq("111"), argThat(new BaseMatcher<List<String>>() {
+		when(energyModeller.measure(isNull(String.class), 
+				                    eq("111"), 
+				                    argThat(new BaseMatcher<List<String>>() {
  
 																				@Override
 																				public boolean matches(Object arg0) {
@@ -446,7 +451,11 @@ public class DeploymentRestTest {
 																				@Override
 																				public void describeTo(Description arg0) {}
         																	
-																			}), isNull(String.class))).thenReturn(22.0);
+																			}), 
+								     isNull(String.class), 
+								     eq(Unit.ENERGY), 
+								     isNull(Timestamp.class), 
+								     isNull(Timestamp.class))).thenReturn(22.0);
 
 		Response response = deploymentRest.getEnergyConsumption("111", "1");
 		assertEquals(200, response.getStatus());
@@ -483,7 +492,7 @@ public class DeploymentRestTest {
 		deploymentRest.deploymentDAO = deploymentDAO;
 		when(deploymentDAO.getById(1)).thenReturn(deployment);
 				
-		when(energyModeller.energyEstimation(isNull(String.class), eq("111"), argThat(new BaseMatcher<List<String>>() {
+		when(energyModeller.measure(isNull(String.class),  eq("111"),  argThat(new BaseMatcher<List<String>>() {
 			 
 			@Override
 			public boolean matches(Object arg0) {
@@ -504,7 +513,8 @@ public class DeploymentRestTest {
 			@Override
 			public void describeTo(Description arg0) {}
 		
-		}), eq("eventX"))).thenReturn(22.0);
+		}), eq("eventX"), eq(Unit.ENERGY), isNull(Timestamp.class), isNull(Timestamp.class))).thenReturn(22.0);
+		
 		
 		Response response = deploymentRest.getEnergyEstimationForEvent("111", "1", "eventX");
 		

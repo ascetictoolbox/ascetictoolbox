@@ -40,9 +40,14 @@ public class MockWebServer {
 	private HttpServer mServer;
 	private String mRequestBody;
 	private Headers headers;
+	private String method;
 	
 	public MockWebServer() {
 		mRequestBody = "";
+	}
+	
+	public String getMethod() {
+		return method;
 	}
 
 	public int getPort() {
@@ -107,6 +112,7 @@ public class MockWebServer {
 			public void handle(HttpExchange t) throws IOException {
 				   // We retrieve the headers
 				   setHeaders(t.getRequestHeaders());
+				   method = t.getRequestMethod();
 				   
 				   // We retrieve the body
 		           InputStream is = t.getRequestBody();

@@ -15,7 +15,7 @@ import java.nio.file.Paths;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ImageToUpload;
+import es.bsc.vmmclient.models.ImageToUpload;
 import eu.ascetic.utils.ovf.api.Disk;
 import eu.ascetic.utils.ovf.api.Item;
 import eu.ascetic.utils.ovf.api.OvfDefinition;

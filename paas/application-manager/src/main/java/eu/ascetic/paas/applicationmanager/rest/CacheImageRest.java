@@ -22,7 +22,7 @@ import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.applicationmanager.rest.util.XMLBuilder;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
-import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientHC;
+import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientBSSC;;
 
 /**
  * 
@@ -53,7 +53,7 @@ public class CacheImageRest extends AbstractRest {
 	private static Logger logger = Logger.getLogger(CacheImageRest.class);
 	@Autowired
 	protected ImageDAO imageDAO;
-	protected VmManagerClient vmManagerClient = new VmManagerClientHC();
+	protected VmManagerClient vmManagerClient = new VmManagerClientBSSC();
 	
 	/**
 	 * Returns the cache images associated to an application in the DB
@@ -107,13 +107,10 @@ public class CacheImageRest extends AbstractRest {
 			return buildResponse(Status.CONFLICT, "Image with ID: " + image.getId() + " is still being used by one or more VMs.");
 		}
 		
-		if(vmManagerClient.deleteImage(image.getProviderImageId())) {
-			image.setDemo(false);
-			imageDAO.update(image);
-			
-			return buildResponse(Status.NO_CONTENT, "");
-		} else {
-			return buildResponse(Status.INTERNAL_SERVER_ERROR, "Image with provider image id = " +  image.getProviderImageId() + " cannot be deleted in VM Manager");
-		}
+		vmManagerClient.deleteImage(image.getProviderImageId()); 
+		image.setDemo(false);
+		imageDAO.update(image);
+
+		return buildResponse(Status.NO_CONTENT, "");
 	}
 }

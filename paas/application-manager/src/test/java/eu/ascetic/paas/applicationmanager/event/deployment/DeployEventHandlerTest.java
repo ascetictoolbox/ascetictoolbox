@@ -28,20 +28,21 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import reactor.event.Event;
+import es.bsc.vmmclient.models.Vm;
+import es.bsc.vmmclient.models.VmDeployed;
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.dao.ImageDAO;
 import eu.ascetic.paas.applicationmanager.dao.VMDAO;
 import eu.ascetic.paas.applicationmanager.event.DeploymentEvent;
+import eu.ascetic.paas.applicationmanager.event.deployment.matchers.ImageToUploadWithEquals;
+import eu.ascetic.paas.applicationmanager.event.deployment.matchers.VmWithEquals;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
-import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ImageToUpload;
-import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.Vm;
-import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.VmDeployed;
 
 /**
  * 
@@ -134,14 +135,13 @@ public class DeployEventHandlerTest {
 		
 		VmManagerClient vmMaClient = mock(VmManagerClient.class);
 		// We mock the class to the VmManagerClient
-		when(vmMaClient.uploadImage(eq(new ImageToUpload("haproxy.img","/DFS/ascetic/vm-images/threeTierWebApp/haproxy.img")))).thenReturn("haproxy-uuid");
-		when(vmMaClient.uploadImage(eq(new ImageToUpload("jboss.img","/DFS/ascetic/vm-images/threeTierWebApp/jboss.img")))).thenReturn("jboss-uuid");
-		when(vmMaClient.uploadImage(eq(new ImageToUpload("mysql.img","/DFS/ascetic/vm-images/threeTierWebApp/mysql.img")))).thenReturn("mysql-uuid");
-		when(vmMaClient.uploadImage(eq(new ImageToUpload("jmeter.img","/DFS/ascetic/vm-images/threeTierWebApp/jmeter.img")))).thenReturn("jmeter-uuid");
+		when(vmMaClient.uploadImage(eq(new ImageToUploadWithEquals("haproxy.img","/DFS/ascetic/vm-images/threeTierWebApp/haproxy.img")))).thenReturn("haproxy-uuid");
+		when(vmMaClient.uploadImage(eq(new ImageToUploadWithEquals("jboss.img","/DFS/ascetic/vm-images/threeTierWebApp/jboss.img")))).thenReturn("jboss-uuid");
+		when(vmMaClient.uploadImage(eq(new ImageToUploadWithEquals("mysql.img","/DFS/ascetic/vm-images/threeTierWebApp/mysql.img")))).thenReturn("mysql-uuid");
+		when(vmMaClient.uploadImage(eq(new ImageToUploadWithEquals("jmeter.img","/DFS/ascetic/vm-images/threeTierWebApp/jmeter.img")))).thenReturn("jmeter-uuid");
 		
 		List<Vm> vms1 = new ArrayList<Vm>();
-		Vm vm1 = new Vm("HAProxy_1","haproxy-uuid",1,512,20,"","threeTierWebApp");
-		vm1.setOvfId("haproxy");
+		VmWithEquals vm1 = new VmWithEquals("HAProxy_1","haproxy-uuid",1,512,20, 0,"","threeTierWebApp", "haproxy", "sla-id");
 		vms1.add(vm1);
 		List<String> ids1 = new ArrayList<String>();
 		ids1.add("haproxy-vm1");
@@ -149,8 +149,7 @@ public class DeployEventHandlerTest {
 		when(vmMaClient.deployVMs(eq(vms1))).thenReturn(ids1);
 		
 		List<Vm> vms2 = new ArrayList<Vm>();
-		Vm vm2 = new Vm("Jboss_1","jboss-uuid",1,2048,20,"","threeTierWebApp");
-		vm2.setOvfId("jboss");
+		VmWithEquals vm2 = new VmWithEquals("Jboss_1","jboss-uuid",1,2048,20, 0, "","threeTierWebApp", "jboss", "sla-id");
 		vms2.add(vm2);
 		List<String> ids2 = new ArrayList<String>();
 		ids2.add("jboss-vm1");
@@ -158,8 +157,7 @@ public class DeployEventHandlerTest {
 		when(vmMaClient.deployVMs(eq(vms2))).thenReturn(ids2);
 		
 		List<Vm> vms3 = new ArrayList<Vm>();
-		Vm vm3 = new Vm("MySQL_1","mysql-uuid",1,512,20,"","threeTierWebApp");
-		vm3.setOvfId("mysql");
+		VmWithEquals vm3 = new VmWithEquals("MySQL_1","mysql-uuid",1,512,20, 0, "","threeTierWebApp", "mysql", "");
 		vms3.add(vm3);
 		List<String> ids3 = new ArrayList<String>();
 		ids3.add("mysql-vm1");
@@ -167,8 +165,7 @@ public class DeployEventHandlerTest {
 		when(vmMaClient.deployVMs(eq(vms3))).thenReturn(ids3);
 		
 		List<Vm> vms4 = new ArrayList<Vm>();
-		Vm vm4 = new Vm("JMeter_1","jmeter-uuid",1,512,20,"","threeTierWebApp");
-		vm4.setOvfId("jmeter");
+		VmWithEquals vm4 = new VmWithEquals("JMeter_1","jmeter-uuid",1,512,20, 0, "","threeTierWebApp", "jmeter", "sla-id");
 		vms4.add(vm4);
 		List<String> ids4 = new ArrayList<String>();
 		ids4.add("jmeter-vm1");
@@ -200,11 +197,11 @@ public class DeployEventHandlerTest {
 		when(imageDAO.getById(0)).thenReturn(image1, image2, image3, image4);
 		
 		// We mock the calls to get VMs
-		when(vmMaClient.getVM("haproxy-vm1")).thenReturn(new VmDeployed("haproxyVM", "haproxy-img", 1, 2, 3, "", "", "", "10.0.0.1", "ACTIVE", new Date(), ""));
-		when(vmMaClient.getVM("jboss-vm1")).thenReturn(new VmDeployed("jbossVM", "jboss-img", 1, 2, 3, "", "", "", "10.0.0.2", "ACTIVE", new Date(), ""));
-		when(vmMaClient.getVM("mysql-vm1")).thenReturn(new VmDeployed("mysqlVM", "mysql-img", 1, 2, 3, "", "", "", "10.0.0.3", "ACTIVE", new Date(), ""));
-		when(vmMaClient.getVM("jmeter-vm1")).thenReturn(new VmDeployed("jmeterVM", "jmeter-img", 1, 2, 3, "", "", "", "10.0.0.4", "ACTIVE", new Date(), ""));
-		
+		when(vmMaClient.getVM("haproxy-vm1")).thenReturn(new VmDeployed("haproxyVM", "haproxy-img", 1, 2, 3, 0, "", "", "", "", "", "10.0.0.1", "ACTIVE", new Date(), ""));
+		when(vmMaClient.getVM("jboss-vm1")).thenReturn(new VmDeployed("jbossVM", "jboss-img", 1, 2, 3,  0, "", "", "", "", "", "10.0.0.2", "ACTIVE", new Date(), ""));
+		when(vmMaClient.getVM("mysql-vm1")).thenReturn(new VmDeployed("mysqlVM", "mysql-img", 1, 2, 3,  0, "", "", "", "", "", "10.0.0.3", "ACTIVE", new Date(), ""));
+		when(vmMaClient.getVM("jmeter-vm1")).thenReturn(new VmDeployed("jmeterVM", "jmeter-img", 1, 2, 3,  0, "", "", "", "", "", "10.0.0.4", "ACTIVE", new Date(), ""));
+				
 		// The test starts here
 		DeploymentEventService deploymentEventService = mock(DeploymentEventService.class);
 		
@@ -225,6 +222,7 @@ public class DeployEventHandlerTest {
 		deploymentEventHandler.deployDeployment(Event.wrap(deploymentEvent));
 		
 		// We verify the mock calls
+		//verify(vmMaClient, times(1)).uploadImage(imageToUploadWithArguments("haproxy.img","/DFS/ascetic/vm-images/threeTierWebApp/haproxy.img"));
 		verify(imageDAO, times(1)).save(eq(image1));
 		verify(imageDAO, times(1)).save(eq(image2));
 		verify(imageDAO, times(1)).save(eq(image3));
@@ -312,13 +310,12 @@ public class DeployEventHandlerTest {
 		
 		VmManagerClient vmMaClient = mock(VmManagerClient.class);
 		// We mock the class to the VmManagerClient
-		when(vmMaClient.uploadImage(eq(new ImageToUpload("haproxy.img","/DFS/ascetic/vm-images/threeTierWebApp/haproxy.img")))).thenReturn("haproxy-uuid");
-		when(vmMaClient.uploadImage(eq(new ImageToUpload("mysql.img","/DFS/ascetic/vm-images/threeTierWebApp/mysql.img")))).thenReturn("mysql-uuid");
-		when(vmMaClient.uploadImage(eq(new ImageToUpload("jmeter.img","/DFS/ascetic/vm-images/threeTierWebApp/jmeter.img")))).thenReturn("jmeter-uuid");
+		when(vmMaClient.uploadImage(eq(new ImageToUploadWithEquals("haproxy.img","/DFS/ascetic/vm-images/threeTierWebApp/haproxy.img")))).thenReturn("haproxy-uuid");
+		when(vmMaClient.uploadImage(eq(new ImageToUploadWithEquals("mysql.img","/DFS/ascetic/vm-images/threeTierWebApp/mysql.img")))).thenReturn("mysql-uuid");
+		when(vmMaClient.uploadImage(eq(new ImageToUploadWithEquals("jmeter.img","/DFS/ascetic/vm-images/threeTierWebApp/jmeter.img")))).thenReturn("jmeter-uuid");
 		
 		List<Vm> vms1 = new ArrayList<Vm>();
-		Vm vm1 = new Vm("HAProxy_1","haproxy-uuid",1,1024,20,"/DFS/ascetic/vm-images/threeTierWebApp/haproxy.iso_1","threeTierWebApp");
-		vm1.setOvfId("haproxy");
+		VmWithEquals vm1 = new VmWithEquals("HAProxy_1","haproxy-uuid",1,1024,20, 0, "/DFS/ascetic/vm-images/threeTierWebApp/haproxy.iso_1","threeTierWebApp", "haproxy", "sla-id");
 		vms1.add(vm1);
 		List<String> ids1 = new ArrayList<String>();
 		ids1.add("haproxy-vm1");
@@ -326,8 +323,7 @@ public class DeployEventHandlerTest {
 		when(vmMaClient.deployVMs(eq(vms1))).thenReturn(ids1);
 		
 		List<Vm> vms2 = new ArrayList<Vm>();
-		Vm vm2 = new Vm("Jboss_1","jboss-uuid",1,2048,20,"/DFS/ascetic/vm-images/threeTierWebApp/jboss.iso_1","threeTierWebApp");
-		vm2.setOvfId("jboss");
+		VmWithEquals vm2 = new VmWithEquals("Jboss_1","jboss-uuid",1,2048,20, 0, "/DFS/ascetic/vm-images/threeTierWebApp/jboss.iso_1","threeTierWebApp", "jboss", "sla-id");
 		vms2.add(vm2);
 		List<String> ids2 = new ArrayList<String>();
 		ids2.add("jboss-vm1");
@@ -335,8 +331,7 @@ public class DeployEventHandlerTest {
 		when(vmMaClient.deployVMs(eq(vms2))).thenReturn(ids2);
 		
 		List<Vm> vms5 = new ArrayList<Vm>();
-		Vm vm5 = new Vm("Jboss_2","jboss-uuid",1,2048,20,"/DFS/ascetic/vm-images/threeTierWebApp/jboss.iso_2","threeTierWebApp");
-		vm5.setOvfId("jboss");
+		VmWithEquals vm5 = new VmWithEquals("Jboss_2","jboss-uuid",1,2048,20, 0, "/DFS/ascetic/vm-images/threeTierWebApp/jboss.iso_2","threeTierWebApp", "jboss", "sla-id");
 		vms5.add(vm5);
 		List<String> ids5 = new ArrayList<String>();
 		ids5.add("jboss-vm2");
@@ -344,8 +339,7 @@ public class DeployEventHandlerTest {
 		when(vmMaClient.deployVMs(eq(vms5))).thenReturn(ids5);
 		
 		List<Vm> vms3 = new ArrayList<Vm>();
-		Vm vm3 = new Vm("MySQL_1","mysql-uuid",1,1024,20,"/DFS/ascetic/vm-images/threeTierWebApp/mysql.iso_1","threeTierWebApp");
-		vm3.setOvfId("mysql");
+		VmWithEquals vm3 = new VmWithEquals("MySQL_1","mysql-uuid",1,1024,20, 0, "/DFS/ascetic/vm-images/threeTierWebApp/mysql.iso_1","threeTierWebApp", "mysql", "sla-id");
 		vms3.add(vm3);
 		List<String> ids3 = new ArrayList<String>();
 		ids3.add("mysql-vm1");
@@ -353,8 +347,7 @@ public class DeployEventHandlerTest {
 		when(vmMaClient.deployVMs(eq(vms3))).thenReturn(ids3);
 		
 		List<Vm> vms4 = new ArrayList<Vm>();
-		Vm vm4 = new Vm("JMeter_1","jmeter-uuid",1,1024,20,"/DFS/ascetic/vm-images/threeTierWebApp/jmeter.iso_1","threeTierWebApp");
-		vm4.setOvfId("jmeter");
+		VmWithEquals vm4 = new VmWithEquals("JMeter_1","jmeter-uuid",1,1024,20, 0, "/DFS/ascetic/vm-images/threeTierWebApp/jmeter.iso_1","threeTierWebApp", "jmeter", "sla-id");
 		vms4.add(vm4);
 		List<String> ids4 = new ArrayList<String>();
 		ids4.add("jmeter-vm1");
@@ -399,11 +392,11 @@ public class DeployEventHandlerTest {
 		when(imageDAO.getById(0)).thenReturn(image1, image2, image3, image4);
 		
 		// We mock the calls to get VMs
-		when(vmMaClient.getVM("haproxy-vm1")).thenReturn(new VmDeployed("haproxyVM", "haproxy-img", 1, 2, 3, "", "", "", "10.0.0.1", "ACTIVE", new Date(), ""));
-		when(vmMaClient.getVM("jboss-vm1")).thenReturn(new VmDeployed("jbossVM", "jboss-img", 1, 2, 3, "", "", "", "10.0.0.2", "ACTIVE", new Date(), ""));
-		when(vmMaClient.getVM("jboss-vm2")).thenReturn(new VmDeployed("jbossVM", "jboss-img", 1, 2, 3, "", "", "", "10.0.0.2", "ACTIVE", new Date(), ""));
-		when(vmMaClient.getVM("mysql-vm1")).thenReturn(new VmDeployed("mysqlVM", "mysql-img", 1, 2, 3, "", "", "", "10.0.0.3", "ACTIVE", new Date(), ""));
-		when(vmMaClient.getVM("jmeter-vm1")).thenReturn(new VmDeployed("jmeterVM", "jmeter-img", 1, 2, 3, "", "", "", "10.0.0.4", "ACTIVE", new Date(), ""));
+		when(vmMaClient.getVM("haproxy-vm1")).thenReturn(new VmDeployed("haproxyVM", "haproxy-img", 1, 2, 3, 0, "", "", "", "", "", "10.0.0.1", "ACTIVE", new Date(), ""));
+		when(vmMaClient.getVM("jboss-vm1")).thenReturn(new VmDeployed("jbossVM", "jboss-img", 1, 2, 3,  0, "", "", "", "", "", "10.0.0.2", "ACTIVE", new Date(), ""));
+		when(vmMaClient.getVM("jboss-vm2")).thenReturn(new VmDeployed("jbossVM", "jboss-img", 1, 2, 3,  0, "", "", "", "", "", "10.0.0.2", "ACTIVE", new Date(), ""));
+		when(vmMaClient.getVM("mysql-vm1")).thenReturn(new VmDeployed("mysqlVM", "mysql-img", 1, 2, 3,  0, "", "", "", "", "", "10.0.0.3", "ACTIVE", new Date(), ""));
+		when(vmMaClient.getVM("jmeter-vm1")).thenReturn(new VmDeployed("jmeterVM", "jmeter-img", 1, 2, 3,  0, "", "", "", "", "", "10.0.0.4", "ACTIVE", new Date(), ""));
 		
 		// The test starts here
 		DeploymentEventService deploymentEventService = mock(DeploymentEventService.class);

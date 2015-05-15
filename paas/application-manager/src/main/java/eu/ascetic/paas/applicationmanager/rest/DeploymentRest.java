@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Unit;
 import eu.ascetic.paas.applicationmanager.amonitor.ApplicationMonitorClient;
 import eu.ascetic.paas.applicationmanager.amonitor.ApplicationMonitorClientHC;
 import eu.ascetic.paas.applicationmanager.amonitor.model.Data;
@@ -32,7 +33,8 @@ import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.applicationmanager.rest.util.DateUtil;
 import eu.ascetic.paas.applicationmanager.rest.util.XMLBuilder;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
-import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientHC;
+import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientBSSC;
+
 /**
  * 
  * Copyright 2014 ATOS SPAIN S.A. 
@@ -61,7 +63,7 @@ import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientHC;
 @Scope("request")
 public class DeploymentRest extends AbstractRest {
 	private static Logger logger = Logger.getLogger(DeploymentRest.class);
-	protected VmManagerClient vmManagerClient = new VmManagerClientHC();
+	protected VmManagerClient vmManagerClient = new VmManagerClientBSSC();
 	protected ApplicationMonitorClient applicationMonitorClient = new ApplicationMonitorClientHC();
 	
 	/**
@@ -217,10 +219,8 @@ public class DeploymentRest extends AbstractRest {
 		for (VM vm : deploymentVms){
 			logger.info("DELETING VM: " + vm.getProviderVmId());
 			
-			if (!vmManagerClient.deleteVM(vm.getProviderVmId())){
-				return buildResponse(Status.BAD_REQUEST, "VM with provider vm id = " +  vm.getProviderVmId() + " cannot be deleted in VM Manager");
-			}
-			
+			vmManagerClient.deleteVM(vm.getProviderVmId());
+				
 			vm.setStatus("DELETED");
 			
 			images.addAll(vm.getImages());
@@ -230,10 +230,7 @@ public class DeploymentRest extends AbstractRest {
 			if(!image.isDemo()) {
 				logger.info("DELETING IMAGE: " + image.getProviderImageId());
 				
-				if (!vmManagerClient.deleteImage(image.getProviderImageId())){
-					
-					return buildResponse(Status.BAD_REQUEST, "Image with provider image id = " +  image.getProviderImageId() + " cannot be deleted in VM Manager");
-				}
+				vmManagerClient.deleteImage(image.getProviderImageId());
 			}
 		}
 		
@@ -256,7 +253,7 @@ public class DeploymentRest extends AbstractRest {
 		
 		try {
 			logger.debug("Connecting to Energy Modeller");
-			energyConsumed = energyModeller.energyApplicationConsumption(null, applicationName, ids, null);
+			energyConsumed = energyModeller.measure(null,  applicationName, ids, null, Unit.ENERGY, null, null);
 		}
 		catch(Exception e) {
 			energyConsumed = -1.0;
@@ -306,7 +303,7 @@ public class DeploymentRest extends AbstractRest {
 		List<String> ids = getVmsProviderIds(deployment);
 		
 		logger.debug("Connecting to Energy Modeller");
-		double energyConsumed = energyModeller.energyEstimation(null, applicationName, ids, eventId);
+		double energyConsumed = energyModeller.measure(null,  applicationName, ids, eventId, Unit.ENERGY, null, null);
 		
 		EnergyMeasurement energyMeasurement = new EnergyMeasurement();
 		energyMeasurement.setValue(energyConsumed);

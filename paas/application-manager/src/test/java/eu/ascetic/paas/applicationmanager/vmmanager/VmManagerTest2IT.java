@@ -3,14 +3,12 @@ package eu.ascetic.paas.applicationmanager.vmmanager;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientHC;
-import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ImageToUpload;
-import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ImageUploaded;
-import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ListImagesUploaded;
-import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ListVmsDeployed;
-import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.SchedulingAlgorithm;
-import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.Vm;
-import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.VmDeployed;
+import es.bsc.vmmclient.models.ImageToUpload;
+import es.bsc.vmmclient.models.ImageUploaded;
+import es.bsc.vmmclient.models.Vm;
+import es.bsc.vmmclient.models.VmDeployed;
+import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientBSSC;;
+
 
 /**
  * 
@@ -34,17 +32,15 @@ import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.VmDeployed;
 
 public class VmManagerTest2IT {
 	
-	private static String testingImageId="0c6a0be4-38e5-4a99-bfc0-9cc32ab83e10";
 	private static String testingImageUrl="http://cdn.download.cirros-cloud.net/0.3.1/cirros-0.3.1-x86_64-disk.img";
 	private static String testingImageName="testingTestImageFromAppManager";
-	private static String testingDeploymentBaseUrl="http://0.0.0.0:34372/vmmanager/";
 	private static String testingVmDeployedId = "26607a9a-3a42-4c8b-8fac-2d4fc18d3855";
 	private static String testingVmNewStatus = "start"; //Posible actions are "rebootHard", "rebootSoft", "start", "stop", "suspend", and "resume"
 	private static String testingAppId = "appManager";
 	
 	public static void main(String[] args) {
 //		VmManagerClientHC client = new VmManagerClientHC("http://10.4.0.15:34372/vmmanager");
-		VmManagerClientHC client = new VmManagerClientHC();
+		VmManagerClientBSSC client = new VmManagerClientBSSC();
 
 //		insertSeparator("testGetAllImages");
 //		testGetAllImages(client);
@@ -85,7 +81,7 @@ public class VmManagerTest2IT {
 	}
 
 	
-	public static void testGetImage(VmManagerClientHC client){
+	public static void testGetImage(VmManagerClientBSSC client){
 		String imageId = "5fbdd9f8-67a8-4d08-af67-4918abdac4ef";
 		ImageUploaded img = client.getImage(imageId);
 		if (img != null){
@@ -97,7 +93,7 @@ public class VmManagerTest2IT {
 	}
 	
 	
-	public static void testGetVm(VmManagerClientHC client){
+	public static void testGetVm(VmManagerClientBSSC client){
 		String vmId = "d46a9677-d26d-4faa-8e78-848762ba6159";
 		VmDeployed vm = client.getVM(vmId);
 		if (vm!=null){
@@ -133,12 +129,12 @@ public class VmManagerTest2IT {
 	}
 	
 	
-	public static void testGetAllImages(VmManagerClientHC client){
-		ListImagesUploaded list = client.getAllImages();
+	public static void testGetAllImages(VmManagerClientBSSC client){
+		List<ImageUploaded> images = client.getAllImages();
 		
-		if (list != null && !list.getImages().isEmpty()){
+		if (images != null && !images.isEmpty()){
 			int index = 0;
-			for (ImageUploaded image : list.getImages()){
+			for (ImageUploaded image : images){
 				System.out.println("IMAGE " + index);
 				printImage(image);
 				System.out.println();
@@ -152,12 +148,12 @@ public class VmManagerTest2IT {
 	}
 	
 	
-	public static void testGetAllVms(VmManagerClientHC client){
-		ListVmsDeployed list = client.getAllVMs();
+	public static void testGetAllVms(VmManagerClientBSSC client){
+		List<VmDeployed> vms = client.getAllVMs();
 		
-		if (list != null && !list.getVms().isEmpty()){
+		if (vms != null && !vms.isEmpty()){
 			int index = 0;
-			for (VmDeployed vm : list.getVms()){
+			for (VmDeployed vm : vms){
 				System.out.println("VM " + index);
 				printVm(vm);
 				System.out.println();
@@ -171,7 +167,7 @@ public class VmManagerTest2IT {
 	}
 	
 	
-	public static void testUploadImage(VmManagerClientHC client){
+	public static void testUploadImage(VmManagerClientBSSC client){
 		//upload image
 		ImageToUpload image = new ImageToUpload(testingImageName, testingImageUrl);		
 		String newId = client.uploadImage(image);
@@ -180,32 +176,22 @@ public class VmManagerTest2IT {
 	}
 	
 	
-	public static void testDeleteVm(VmManagerClientHC client){
+	public static void testDeleteVm(VmManagerClientBSSC client){
 		//delete vm
 		String vmId = testingVmDeployedId;
-		boolean deleted = client.deleteVM(vmId);
-		if (deleted) {
-			System.out.println("VM with id = " + vmId + " deleted successfully");
-		}
-		else {
-			System.out.println("VM with id = " + vmId + " cannot be deleted");
-		}
+		client.deleteVM(vmId);
+		System.out.println("VM with id = " + vmId + " deleted successfully");
 	}
 	
-	public static void testDeleteVmsOfApp(VmManagerClientHC client){
-		boolean deleted = client.deleteVmsOfApp(testingAppId);
-		if (deleted) {
-			System.out.println("VmsOfApp with id = " + testingAppId + " deleted successfully");
-		}
-		else {
-			System.out.println("VmsOfApp with id = " + testingAppId + " cannot be deleted");
-		}
+	public static void testDeleteVmsOfApp(VmManagerClientBSSC client) {
+		client.deleteVmsOfApp(testingAppId);
+		System.out.println("VmsOfApp with id = " + testingAppId + " deleted successfully");
 	}
 	
 	
 	
-	public static void testDeployNewVm(VmManagerClientHC client){
-		Vm vm = new Vm("testVmAppManager", "0c6a0be4-38e5-4a99-bfc0-9cc32ab83e10", 1, 1024, 1, null , testingAppId);
+	public static void testDeployNewVm(VmManagerClientBSSC client) {
+		Vm vm = new Vm("testVmAppManager", "0c6a0be4-38e5-4a99-bfc0-9cc32ab83e10", 1, 1024, 1, 256, null , testingAppId, "", "");
 		List<Vm> listVm = new ArrayList<Vm>();
 		listVm.add(vm);
 		List<String> deployedVmsId = client.deployVMs(listVm);
@@ -222,26 +208,23 @@ public class VmManagerTest2IT {
 	}
 	
 	
-	public static void testChangeStateVm(VmManagerClientHC client){
+	public static void testChangeStateVm(VmManagerClientBSSC client){
 		
-		boolean changed = client.changeStateVm(testingVmDeployedId, testingVmNewStatus);
-		if (changed){
+		client.changeStateVm(testingVmDeployedId, testingVmNewStatus);
+		
 			System.out.println("State of the vm with id = " + testingVmDeployedId + " switched to " + testingVmNewStatus);
-		}
-		else {
-			System.out.println("Error. State of the vm with id = " + testingVmDeployedId + " cannot be switched to " + testingVmNewStatus);
-		}
+		
 		
 	}
 	
 	
-	public static void testGetVmsOfApp(VmManagerClientHC client) {
-		ListVmsDeployed listVmsDeployed = client.getVmsOfApp(testingAppId);
+	public static void testGetVmsOfApp(VmManagerClientBSSC client) {
+		List<VmDeployed> vms = client.getVmsOfApp(testingAppId);
 		
 
-		if (listVmsDeployed != null && !listVmsDeployed.getVms().isEmpty()){
+		if (vms != null && !vms.isEmpty()){
 			int index = 0;
-			for (VmDeployed vm : listVmsDeployed.getVms()){
+			for (VmDeployed vm : vms) {
 				System.out.println("VM " + index);
 				printVm(vm);
 				System.out.println();
@@ -254,11 +237,11 @@ public class VmManagerTest2IT {
 	}
 	
 	
-	public static void testDeployNewVms(VmManagerClientHC client){
-		Vm vm = new Vm("testVmAppManager_00", "0c6a0be4-38e5-4a99-bfc0-9cc32ab83e10", 1, 1024, 1, null , testingAppId);
-		Vm vm1 = new Vm("testVmAppManager_01", "0c6a0be4-38e5-4a99-bfc0-9cc32ab83e10", 1, 1024, 1, null , testingAppId);
-		Vm vm2 = new Vm("testVmAppManager_02", "0c6a0be4-38e5-4a99-bfc0-9cc32ab83e10", 1, 1024, 1, null , testingAppId);
-		Vm vm3 = new Vm("testVmAppManager_04", "0c6a0be4-38e5-4a99-bfc0-9cc32ab83e10", 1, 1024, 1, null , testingAppId);
+	public static void testDeployNewVms(VmManagerClientBSSC client){
+		Vm vm = new Vm("testVmAppManager_00", "0c6a0be4-38e5-4a99-bfc0-9cc32ab83e10", 1, 1024, 1, 256, null , testingAppId, "", "");
+		Vm vm1 = new Vm("testVmAppManager_01", "0c6a0be4-38e5-4a99-bfc0-9cc32ab83e10", 1, 1024, 1, 256, null , testingAppId, "", "");
+		Vm vm2 = new Vm("testVmAppManager_02", "0c6a0be4-38e5-4a99-bfc0-9cc32ab83e10", 1, 1024, 1, 256, null , testingAppId, "", "");
+		Vm vm3 = new Vm("testVmAppManager_04", "0c6a0be4-38e5-4a99-bfc0-9cc32ab83e10", 1, 1024, 1, 256, null , testingAppId, "", "");
 		List<Vm> listVm = new ArrayList<Vm>();
 		listVm.add(vm);
 		listVm.add(vm1);

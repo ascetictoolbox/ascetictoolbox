@@ -198,6 +198,12 @@
 			<version>0.14-SNAPSHOT</version>
 		</dependency>
 		
+		<dependency>
+			<groupId>es.bsc</groupId>
+			<artifactId>vmm-client</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		
 		<!-- OVF LIBRARIES -->
 		<dependency>
 			<groupId>eu.ascetic.utils</groupId>

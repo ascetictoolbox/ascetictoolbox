@@ -6,6 +6,9 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import es.bsc.vmmclient.models.ImageToUpload;
+import es.bsc.vmmclient.models.Vm;
+import es.bsc.vmmclient.models.VmDeployed;
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.dao.ImageDAO;
@@ -18,10 +21,7 @@ import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
-import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientHC;
-import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ImageToUpload;
-import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.Vm;
-import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.VmDeployed;
+import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientBSSC;
 import eu.ascetic.utils.ovf.api.Disk;
 import eu.ascetic.utils.ovf.api.File;
 import eu.ascetic.utils.ovf.api.Item;
@@ -72,7 +72,7 @@ public class DeployEventHandler {
 	protected VMDAO vmDAO;
 	@Autowired
 	protected ImageDAO imageDAO;
-	protected VmManagerClient vmManagerClient = new VmManagerClientHC();
+	protected VmManagerClient vmManagerClient = new VmManagerClientBSSC();
 
 	@Selector(value="topic.deployment.status", reactor="@rootReactor")
 	public void deployDeployment(Event<DeploymentEvent> event) {
@@ -147,13 +147,13 @@ public class DeployEventHandler {
 						String iso = "";
 						if(isoPath != null) iso = isoPath + suffix ;
 						
-						Vm virtMachine = new Vm(vmName + suffix, image.getProviderImageId(), cpus, ramMb, capacity, iso , ovfDocument.getVirtualSystemCollection().getId() );
-						virtMachine.setOvfId(ovfID);
+						Vm virtMachine = new Vm(vmName + suffix, image.getProviderImageId(), cpus, ramMb, capacity, 0, iso , ovfDocument.getVirtualSystemCollection().getId(), ovfID, "" );
 						logger.debug("virtMachine: " + virtMachine);
 						
 						List<Vm> vms = new ArrayList<Vm>();
 						vms.add(virtMachine);
 						List<String> vmIds = vmManagerClient.deployVMs(vms);
+						
 						logger.debug("Id: " + vmIds.get(0));
 						
 						for(String id : vmIds) {

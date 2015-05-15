@@ -12,8 +12,8 @@ import java.nio.file.Paths;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ImageToUpload;
-import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.Vm;
+import es.bsc.vmmclient.models.ImageToUpload;
+import es.bsc.vmmclient.models.Vm;
 import eu.ascetic.utils.ovf.api.Disk;
 import eu.ascetic.utils.ovf.api.Item;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
@@ -149,8 +149,7 @@ public class OVFThingsIT {
 			System.out.println(" OVF-ID: " + ovfVirtualSystemID + " #VMs: " + asceticUpperBound + " Name: " + vmName + " CPU: " + cpus + " RAM: " + ramMb + " Disk capacity: " + capacity + " ISO Path: " + isoPath);
 			
 			String suffix = "_1";
-			Vm virtMachine = new Vm(vmName + suffix, "imgId", cpus, ramMb, capacity, isoPath + suffix , ovfDocument.getVirtualSystemCollection().getId() );
-			virtMachine.setOvfId(ovfID);
+			Vm virtMachine = new Vm(vmName + suffix, "imgId", cpus, ramMb, capacity, 0,  isoPath + suffix , ovfDocument.getVirtualSystemCollection().getId(), ovfID, "");
 			System.out.println("virtMachine: " + virtMachine);
 		}
 	}

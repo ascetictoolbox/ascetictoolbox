@@ -1,7 +1,6 @@
 package eu.ascetic.paas.applicationmanager.vmmanager.client;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,14 +8,12 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import es.bsc.vmmclient.models.ImageToUpload;
+import es.bsc.vmmclient.models.ImageUploaded;
+import es.bsc.vmmclient.models.Vm;
+import es.bsc.vmmclient.models.VmDeployed;
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.dao.testUtil.MockWebServer;
-import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ImageToUpload;
-import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ImageUploaded;
-import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ListImagesUploaded;
-import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ListVmsDeployed;
-import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.Vm;
-import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.VmDeployed;
 
 /**
  * 
@@ -39,7 +36,7 @@ import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.VmDeployed;
  * 
  * This class is the Unit test that verifies the correct work of the VM Manager Client for ASCETiC
  */
-public class VmManagerClientHCTest {
+public class VmManagerClientBSCCTest {
 	private MockWebServer mServer;
 	private String mBaseURL = "http://localhost:";
 	
@@ -52,7 +49,7 @@ public class VmManagerClientHCTest {
 	
 	@Test
 	public void pojo() {
-		VmManagerClient vmManager = new VmManagerClientHC();
+		VmManagerClientBSSC vmManager = new VmManagerClientBSSC();
 		vmManager.setURL("url");
 		assertEquals("url", vmManager.getURL());
 	}
@@ -61,7 +58,7 @@ public class VmManagerClientHCTest {
 	public void checkConstructor() {
 		Configuration.vmManagerServiceUrl = "vm-manager-url";
 		
-		VmManagerClient vmManager = new VmManagerClientHC();
+		VmManagerClientBSSC vmManager = new VmManagerClientBSSC();
 		
 		assertEquals("vm-manager-url", vmManager.getURL());
 	}
@@ -76,12 +73,12 @@ public class VmManagerClientHCTest {
 		
 		mServer.addPath("/images", listOfImagesString);
 		
-		VmManagerClient vmManager = new VmManagerClientHC();
+		VmManagerClientBSSC vmManager = new VmManagerClientBSSC();
 		
-		ListImagesUploaded imagesUploaded = vmManager.getAllImages();
-		assertEquals(2, imagesUploaded.getImages().size());
+		List<ImageUploaded> images = vmManager.getAllImages();
+		assertEquals(2, images.size());
 	}
-	
+
 	@Test
 	public void getImageTest() {
 		Configuration.vmManagerServiceUrl = mBaseURL;
@@ -90,7 +87,7 @@ public class VmManagerClientHCTest {
 		
 		mServer.addPath("/images/ce1483ab-0399-443e-9e25-3a2e77cf873f", imageString);
 		
-		VmManagerClient vmManager = new VmManagerClientHC();
+		VmManagerClientBSSC vmManager = new VmManagerClientBSSC();
 		ImageUploaded imageUploaded = vmManager.getImage("ce1483ab-0399-443e-9e25-3a2e77cf873f");
 		assertEquals("ascetic-pm-coreOptimal-img.img", imageUploaded.getName());
 	}
@@ -105,9 +102,9 @@ public class VmManagerClientHCTest {
 		
 		mServer.addPath("/vms", listOfVmsString);
 		
-		VmManagerClient vmManager = new VmManagerClientHC();
-		ListVmsDeployed listVmsDeployed = vmManager.getAllVMs();
-		assertEquals(2, listVmsDeployed.getVms().size());
+		VmManagerClientBSSC vmManager = new VmManagerClientBSSC();
+		List<VmDeployed> listVmsDeployed = vmManager.getAllVMs();
+		assertEquals(2, listVmsDeployed.size());
 	}
 	
 	@Test
@@ -118,9 +115,10 @@ public class VmManagerClientHCTest {
 		
 		mServer.addPath("/vms/5bca1bfd-da97-4411-93e8-e35e8dcf2f07", vmString);
 		
-		VmManagerClient vmManager = new VmManagerClientHC();
+		VmManagerClientBSSC vmManager = new VmManagerClientBSSC();
 		VmDeployed vmDeployed = vmManager.getVM("5bca1bfd-da97-4411-93e8-e35e8dcf2f07");
 		assertEquals("ACTIVE", vmDeployed.getState());
+		assertEquals(2, vmDeployed.getCpus());
 	}
 	
 	@Test
@@ -133,9 +131,9 @@ public class VmManagerClientHCTest {
 		
 		mServer.addPath("/vmsapp/JEPlus", listVMsOfAApp);
 		
-		VmManagerClient vmManager = new VmManagerClientHC();
-		ListVmsDeployed listVmsDeployed = vmManager.getVmsOfApp("JEPlus");
-		assertEquals(2, listVmsDeployed.getVms().size());
+		VmManagerClientBSSC vmManager = new VmManagerClientBSSC();
+		List<VmDeployed> listVmsDeployed = vmManager.getVmsOfApp("JEPlus");
+		assertEquals(2, listVmsDeployed.size());
 	}
 	
 	@Test
@@ -147,7 +145,7 @@ public class VmManagerClientHCTest {
 		mServer.addPath("/images", payload);
 		
 		ImageToUpload iaageToUpload = new ImageToUpload("name", "url");
-		VmManagerClient vmManager = new VmManagerClientHC();
+		VmManagerClientBSSC vmManager = new VmManagerClientBSSC();
 		String id = vmManager.uploadImage(iaageToUpload);
 		
 		assertEquals("f7e36928-8e1f-472c-a2eb-6db21d8b23af", id);
@@ -161,10 +159,11 @@ public class VmManagerClientHCTest {
 		
 		mServer.addPath("/images/f7e36928-8e1f-472c-a2eb-6db21d8b23af", "");
 
-		VmManagerClient vmManager = new VmManagerClientHC();
-		boolean deleted = vmManager.deleteImage(id);
-		
-		assertTrue(deleted);
+		VmManagerClientBSSC vmManager = new VmManagerClientBSSC();
+		vmManager.deleteImage(id);
+
+		String method = mServer.getMethod();
+		assertEquals("DELETE", method);
 	}
 	
 	@Test
@@ -175,11 +174,11 @@ public class VmManagerClientHCTest {
 		
 		mServer.addPath("/vms", payload);
 		
-		Vm virtMachine = new Vm("JMeter", "imageId", 1, 1024, 20, "initScript=/DFS/ascetic/vm-images/threeTierWebApp/jmeter.iso_1" , "DavidGIntegrationTest" );
+		Vm virtMachine = new Vm("JMeter", "imageId", 1, 1024, 20, 512, "initScript=/DFS/ascetic/vm-images/threeTierWebApp/jmeter.iso_1" , "DavidGIntegrationTest", "ovfID", "slaId" );
 		List<Vm> vms = new ArrayList<Vm>();
 		vms.add(virtMachine);
 		
-		VmManagerClient vmManager = new VmManagerClientHC();
+		VmManagerClientBSSC vmManager = new VmManagerClientBSSC();
 		List<String> vmsIds = vmManager.deployVMs(vms);
 		
 		assertEquals(1, vmsIds.size());
@@ -194,9 +193,10 @@ public class VmManagerClientHCTest {
 		
 		mServer.addPath("/vms/f7e36928-8e1f-472c-a2eb-6db21d8b23af", "");
 
-		VmManagerClient vmManager = new VmManagerClientHC();
-		boolean deleted = vmManager.deleteVM(id);
+		VmManagerClientBSSC vmManager = new VmManagerClientBSSC();
+		vmManager.deleteVM(id);
 		
-		assertTrue(deleted);
+		String method = mServer.getMethod();
+		assertEquals("DELETE", method);
 	}
 }

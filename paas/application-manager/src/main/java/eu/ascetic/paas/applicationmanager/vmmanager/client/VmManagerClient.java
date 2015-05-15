@@ -2,12 +2,10 @@ package eu.ascetic.paas.applicationmanager.vmmanager.client;
 
 import java.util.List;
 
-import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ImageToUpload;
-import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ImageUploaded;
-import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ListImagesUploaded;
-import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.ListVmsDeployed;
-import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.Vm;
-import eu.ascetic.paas.applicationmanager.vmmanager.datamodel.VmDeployed;
+import es.bsc.vmmclient.models.ImageToUpload;
+import es.bsc.vmmclient.models.ImageUploaded;
+import es.bsc.vmmclient.models.Vm;
+import es.bsc.vmmclient.models.VmDeployed;
 
 
 /**
@@ -53,7 +51,7 @@ public interface VmManagerClient {
 	 *
 	 * @return the all images
 	 */
-	public ListImagesUploaded getAllImages();
+	public List<ImageUploaded> getAllImages();
 	
 	/**
 	 * Gets the image.
@@ -68,7 +66,7 @@ public interface VmManagerClient {
 	 *
 	 * @return the all v ms
 	 */
-	public ListVmsDeployed getAllVMs();
+	public List<VmDeployed> getAllVMs();
 	
 	/**
 	 * Gets the vm.
@@ -85,7 +83,7 @@ public interface VmManagerClient {
 	 * @param appId the app id
 	 * @return the vms of app
 	 */
-	public ListVmsDeployed getVmsOfApp(String appId);
+	public List<VmDeployed> getVmsOfApp(String appId);
 	
 	/**
 	 * Deploy v ms.
@@ -102,7 +100,7 @@ public interface VmManagerClient {
 	 * @param action the action
 	 * @return true, if successful
 	 */
-	public boolean changeStateVm(String vmId, String action);
+	public void changeStateVm(String vmId, String action);
 	
 	/**
 	 * Delete vm.
@@ -110,7 +108,7 @@ public interface VmManagerClient {
 	 * @param vmId the vm id
 	 * @return true, if successful
 	 */
-	public boolean deleteVM(String vmId);
+	public void deleteVM(String vmId);
 	
 	/**
 	 * Delete vms of app.
@@ -118,7 +116,7 @@ public interface VmManagerClient {
 	 * @param appId the app id
 	 * @return true, if successful
 	 */
-	public boolean deleteVmsOfApp(String appId);
+	public void deleteVmsOfApp(String appId);
  
 	/**
 	 * Upload image.
@@ -134,6 +132,6 @@ public interface VmManagerClient {
 	 * @param imageInfo the image info
 	 * @return <code>true</code> if the image was deleted
 	 */
-	public boolean deleteImage(String id);
+	public void deleteImage(String id);
 
 }

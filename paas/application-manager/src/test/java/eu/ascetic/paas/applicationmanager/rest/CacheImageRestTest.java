@@ -208,7 +208,6 @@ public class CacheImageRestTest {
 		List<VM> vms = new ArrayList<VM>();
 		when(vmDAO.getNotDeletedVMsWithImage(image)).thenReturn(vms);
 		
-		when(vMManagerClient.deleteImage("uuid1")).thenReturn(true);
 		when(imageDAO.update(image)).thenReturn(true);
 		
 		Response response = cacheImageRest.deleteCacheImage("applicationName", "1");
@@ -217,34 +216,5 @@ public class CacheImageRestTest {
 		
 		ArgumentCaptor<Image> imageCaptor = ArgumentCaptor.forClass(Image.class);
 		verify(imageDAO, times(1)).update(imageCaptor.capture());
-	}
-	
-	@Test
-	public void deleteImageTestErrorFromVMManager() {
-		ImageDAO imageDAO = mock(ImageDAO.class);
-		VMDAO vmDAO = mock(VMDAO.class);
-		VmManagerClient vMManagerClient = mock(VmManagerClient.class);
-		
-		CacheImageRest cacheImageRest = new CacheImageRest();
-		cacheImageRest.imageDAO = imageDAO;
-		cacheImageRest.vmDAO = vmDAO;
-		cacheImageRest.vmManagerClient = vMManagerClient;
-		
-		Image image = new Image();
-		image.setDemo(true);
-		image.setId(1);
-		image.setOvfHref("ovf-href-1");
-		image.setOvfId("ovf-id1");
-		image.setProviderImageId("uuid1");
-		when(imageDAO.getById(1)).thenReturn(image);
-		
-		List<VM> vms = new ArrayList<VM>();
-		when(vmDAO.getNotDeletedVMsWithImage(image)).thenReturn(vms);
-		
-		when(vMManagerClient.deleteImage("uuid1")).thenReturn(false);
-		
-		Response response = cacheImageRest.deleteCacheImage("applicationName", "1");
-		assertEquals(500, response.getStatus());
-		assertEquals("Image with provider image id = " +  image.getProviderImageId() + " cannot be deleted in VM Manager", (String) response.getEntity());
 	}
 }
