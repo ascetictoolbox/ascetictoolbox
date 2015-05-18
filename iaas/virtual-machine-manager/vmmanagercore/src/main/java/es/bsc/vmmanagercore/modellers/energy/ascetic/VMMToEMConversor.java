@@ -43,11 +43,12 @@ public class VMMToEMConversor {
         for (Vm vm: vms) {
             VM emVM = EnergyModeller.getVM(vm.getCpus(), vm.getRamMb(), vm.getDiskGb());
             emVM.addDiskImage(vm.getImage());
-            
-            //Examples of tags are: "JBoss", "MySQL", "HAProxy", "JEPlus"
-            //Application is a hashset in the new version of the EM. What should I send?
-            //emVM.addApplicationTag(vm.getApplicationId());
-            
+
+            // For now, I send the application ID as a tag.
+            // Is the application ID that I receive from the Application Manager valid for the
+            // Energy Modeller too?
+            emVM.addApplicationTag(vm.getApplicationId());
+
             result.add(emVM);
         }
         return result;
