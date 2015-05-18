@@ -23,6 +23,7 @@ import org.dmtf.schemas.wbem.wscim.x1.common.CimString;
 import eu.ascetic.utils.ovf.api.AbstractElement;
 import eu.ascetic.utils.ovf.api.enums.ProductPropertyType;
 import eu.ascetic.utils.ovf.api.utils.XmlSimpleTypeConverter;
+
 import org.apache.commons.codec.binary.Base64;
 
 /**
@@ -91,7 +92,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * The static KEY used to get and set performance optimization boundary.
      */
     private static final String ASCETIC_PERFORMANCE_OPTIMIZATION_BOUNDARY = "asceticPerformanceOptimizationBoundary";
-    
+
     /**
      * The static KEY used to get and set optimization parameter.
      */
@@ -174,6 +175,11 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * {@link VirtualSystem}.
      */
     private static final String ASCETIC_SOFTWARE_DEPENDENCY_INSTALL_SCRIPT_URI_KEY = "asceticSoftwareDependencyInstallScriptUri_";
+
+    private static final String ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_NUMBER = "asceticSoftwareDependencyAttributeNumber_";
+    private static final String ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_ID_KEY = "asceticSoftwareDependencyAttributeId_";
+    private static final String ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_NAME_KEY = "asceticSoftwareDependencyAttributeName_";
+    private static final String ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_VALUE_KEY = "asceticSoftwareDependencyAttributeValue_";
 
     /**
      * Default constructor.
@@ -650,9 +656,9 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     }
 
     /**
-     * Gets the optimization parameter on a per
-     * {@link VirtualSystem} or {@link VirtualSystemCollection} basis. Used by
-     * the PM runtime and to guide the negotiation.
+     * Gets the optimization parameter on a per {@link VirtualSystem} or
+     * {@link VirtualSystemCollection} basis. Used by the PM runtime and to
+     * guide the negotiation.
      * 
      * @return The optimization parameter
      */
@@ -667,16 +673,16 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     }
 
     /**
-     * Sets the optimization parameter used to guide the negotiation
-     * on a per {@link VirtualSystem} or {@link VirtualSystemCollection} basis.
-     * Used by the PM runtime and to guide the negotiation.
+     * Sets the optimization parameter used to guide the negotiation on a per
+     * {@link VirtualSystem} or {@link VirtualSystemCollection} basis. Used by
+     * the PM runtime and to guide the negotiation.
      * 
      * @param parameter
      *            The parameter
      */
     public void setOptimizationParameter(String parameter) {
-        String encodedBytes = new String(
-                Base64.encodeBase64(parameter.getBytes()));
+        String encodedBytes = new String(Base64.encodeBase64(parameter
+                .getBytes()));
 
         ProductProperty productProperty = getPropertyByKey(ASCETIC_OPTIMIZATION_PARAMETER);
         if (productProperty == null) {
@@ -1036,8 +1042,10 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            The URI to the software dependency package (e.g.
      *            ("/some-end-point/probe-repository/memory-probe.zip")
      * @param instalScriptUri
-     *            The URI to the installation script of the software dependency
-     *            (e.g "/some-end-point/probe-repository/memory-probe.sh")
+     *            The installation script of the software dependency for the
+     *            VMIC "offline" mode (e.g.
+     *            "/some-end-point/probe-repository/memory-probe.sh"). Should be
+     *            set to "" if VMIC mode is set to "online"
      * @return The index of the new software dependency (not to be confused with
      *         the index of a {@link ProductProperty})
      */
@@ -1118,8 +1126,10 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            The URI to the software dependency (e.g.
      *            ("/some-end-point/probe-repository/memory-probe.zip")
      * @param installScriptUri
-     *            The installation script of the software dependency (e.g.
-     *            ("/some-end-point/probe-repository/memory-probe.sh")
+     *            The installation script of the software dependency for the
+     *            VMIC "offline" mode (e.g.
+     *            "/some-end-point/probe-repository/memory-probe.sh"). Should be
+     *            set to "" if VMIC mode is set to "online"
      */
     public void setSoftwareDependencyProperties(int index, String id,
             String type, String packageUri, String installScriptUri) {
@@ -1220,7 +1230,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
 
     /**
      * Gets the URI of the installation script of a software dependency at a
-     * specific index.
+     * specific index. VMIC "offline" mode only.
      * 
      * @param index
      *            The index of the software dependency (not to be confused with
@@ -1237,7 +1247,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
 
     /**
      * Sets the URI of the installation script of a software dependency at a
-     * specific index.
+     * specific index. VMIC "offline" mode only.
      * 
      * @param index
      *            The index of the software dependency (not to be confused with
@@ -1252,6 +1262,306 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
         getPropertyByKey(
                 ASCETIC_SOFTWARE_DEPENDENCY_INSTALL_SCRIPT_URI_KEY + index)
                 .setValue(installScriptUri);
+    }
+
+    /**
+     * Adds an new attribute for a given software dependency package. VMIC
+     * online mode only.
+     * 
+     * @param softwareDependencyIndex
+     *            The index of the software dependency this attribute is
+     *            associated with which should exist before using any of the
+     *            attribute property accessor and mutator functions (not to be
+     *            confused with the index of a {@link ProductProperty}, see
+     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
+     * @param attributeId
+     *            The ID of the attribute (e.g. "chef-workload")
+     * @param attributeName
+     *            The name of the attribute
+     * @param attributeValue
+     *            The value of the attribute
+     * 
+     * @return The index of the new attribute for the given software dependency
+     *         package
+     */
+    public int addSoftwareDependencyPackageAttribute(
+            int softwareDependencyIndex, String attributeId,
+            String attributeName, String attributeValue) {
+
+        // Find the next software property attribute index
+        int i = 0;
+        while (true) {
+            ProductProperty productProperty = getPropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_ID_KEY
+                    + softwareDependencyIndex + "_" + i);
+            if (productProperty == null) {
+                break;
+            }
+            i++;
+        }
+
+        addNewProperty(ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_ID_KEY
+                + softwareDependencyIndex + "_" + i,
+                ProductPropertyType.STRING, attributeId);
+        addNewProperty(ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_NAME_KEY
+                + softwareDependencyIndex + "_" + i,
+                ProductPropertyType.STRING, attributeName);
+        addNewProperty(ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_VALUE_KEY
+                + softwareDependencyIndex + "_" + i,
+                ProductPropertyType.STRING, attributeValue);
+
+        // Increment the number of software dependency attributes stored
+        ProductProperty productProperty = getPropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_NUMBER
+                + softwareDependencyIndex);
+        if (productProperty == null) {
+            addNewProperty(ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_NUMBER
+                    + softwareDependencyIndex, ProductPropertyType.UINT32, "1");
+        } else {
+            Integer newSoftwareDependencyAttributeNumber = ((Integer) productProperty
+                    .getValueAsJavaObject()) + 1;
+            productProperty.setValue(newSoftwareDependencyAttributeNumber
+                    .toString());
+        }
+
+        // Return the software dependency's attribute index
+        return i;
+    }
+
+    /**
+     * Gets an attribute's index for a given software dependency by its ID in
+     * the array of attribute for a given software dependency property set. VMIC
+     * online mode only.
+     * 
+     * @param softwareDependencyIndex
+     *            The index of the software dependency this attribute is
+     *            associated with (not to be confused with the index of a
+     *            {@link ProductProperty}, see
+     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
+     * @param attributeId
+     *            The ID of the attribute
+     * @return The index of the attribute for a given software dependency
+     *         package
+     */
+    public int getSoftwareDependencyPackageAttributeIndexById(
+            int softwareDependencyIndex, String attributeId) {
+
+        for (int i = 0; i < getSoftwareDependencyNumber(); i++) {
+            ProductProperty productProperty = getPropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_ID_KEY
+                    + softwareDependencyIndex + "_" + i);
+
+            if (productProperty != null
+                    && attributeId.equals(productProperty.getValue())) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Sets the name and value of an attribute for a given software dependency
+     * package. VMIC online mode only.
+     * 
+     * @param softwareDependencyIndex
+     *            The index of the software dependency this attribute is
+     *            associated with (not to be confused with the index of a
+     *            {@link ProductProperty}, see
+     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
+     * @param attributeIndex
+     *            The index of the attribute
+     * @param attributeId
+     *            The ID of the attribute (e.g. "memory-probe")
+     * @param attributeName
+     *            The name of the attribute
+     * @param attributeValue
+     *            The value of the attribute
+     */
+    public void setSoftwareDependencyPackageAttribute(
+            int softwareDependencyIndex, int attributeIndex,
+            String attributeId, String attributeName, String attributeValue) {
+
+        setSoftwareDependencyPackageAttributeId(softwareDependencyIndex,
+                attributeIndex, attributeId);
+        setSoftwareDependencyPackageAttributeName(softwareDependencyIndex,
+                attributeIndex, attributeName);
+        setSoftwareDependencyPackageAttributeValue(softwareDependencyIndex,
+                attributeIndex, attributeValue);
+    }
+
+    /**
+     * Gets the ID of an attribute for a given software dependency at a specific
+     * index. VMIC online mode only.
+     * 
+     * @param softwareDependencyIndex
+     *            The index of the software dependency this attribute is
+     *            associated with (not to be confused with the index of a
+     *            {@link ProductProperty}, see
+     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
+     * @param attributeIndex
+     *            The index of the attribute
+     * @return The ID of the software dependency (e.g. "memory-probe")
+     */
+    public String getSoftwareDependencyPackageAttributeId(
+            int softwareDependencyIndex, int attributeIndex) {
+        return getPropertyByKey(
+                ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_ID_KEY
+                        + softwareDependencyIndex + "_" + attributeIndex)
+                .getValue();
+    }
+
+    /**
+     * Sets the ID of an attribute for a given software dependency at a specific
+     * index. VMIC online mode only.
+     * 
+     * @param softwareDependencyIndex
+     *            The index of the software dependency this attribute is
+     *            associated with (not to be confused with the index of a
+     *            {@link ProductProperty}, see
+     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
+     * @param attributeIndex
+     *            The index of the attribute
+     * @param attributeid
+     *            The ID of the software dependency (e.g. "memory-probe")
+     */
+    public void setSoftwareDependencyPackageAttributeId(
+            int softwareDependencyIndex, int attributeIndex, String attributeid) {
+        getPropertyByKey(
+                ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_ID_KEY
+                        + softwareDependencyIndex + "_" + attributeIndex)
+                .setValue(attributeid);
+    }
+
+    /**
+     * Gets an attribute's name of a software dependency package. VMIC online
+     * mode only.
+     * 
+     * @param softwareDependencyIndex
+     *            The index of the software dependency (not to be confused with
+     *            the index of a {@link ProductProperty}, see
+     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
+     * @param attributeIndex
+     *            The attribute index of a software dependency
+     * @return The name an attribute of a software dependency package
+     */
+    public String getSoftwareDependencyPackageAttributeName(
+            int softwareDependencyIndex, int attributeIndex) {
+
+        return getPropertyByKey(
+                ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_NAME_KEY
+                        + softwareDependencyIndex + "_" + attributeIndex)
+                .getValue();
+    }
+
+    /**
+     * Sets the name of an attribute for a given software dependency at a
+     * specific index. VMIC online mode only.
+     * 
+     * @param softwareDependencyIndex
+     *            The index of the software dependency this attribute is
+     *            associated with (not to be confused with the index of a
+     *            {@link ProductProperty}, see
+     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
+     * @param attributeIndex
+     *            The index of the attribute
+     * @param attributeName
+     *            The name of the attribute
+     */
+    public void setSoftwareDependencyPackageAttributeName(
+            int softwareDependencyIndex, int attributeIndex,
+            String attributeName) {
+        getPropertyByKey(
+                ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_NAME_KEY
+                        + softwareDependencyIndex + "_" + attributeIndex)
+                .setValue(attributeName);
+    }
+
+    /**
+     * Gets an attribute's value of a software dependency package. VMIC online
+     * mode only.
+     * 
+     * @param softwareDependencyIndex
+     *            The index of the software dependency (not to be confused with
+     *            the index of a {@link ProductProperty}, see
+     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
+     * @param attributeIndex
+     *            The attribute index of a software dependency
+     * @return The value of an attribute of a software dependency package
+     */
+    public String getSoftwareDependencyPackageAttributeValue(
+            int softwareDependencyIndex, int attributeIndex) {
+
+        return getPropertyByKey(
+                ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_VALUE_KEY
+                        + softwareDependencyIndex + "_" + attributeIndex)
+                .getValue();
+    }
+
+    /**
+     * Sets the value of an attribute for a given software dependency at a
+     * specific index. VMIC online mode only.
+     * 
+     * @param softwareDependencyIndex
+     *            The index of the software dependency this attribute is
+     *            associated with (not to be confused with the index of a
+     *            {@link ProductProperty}, see
+     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
+     * @param attributeIndex
+     *            The index of the attribute
+     * @param attributeValue
+     *            The value of the attribute
+     */
+    public void setSoftwareDependencyPackageAttributeValue(
+            int softwareDependencyIndex, int attributeIndex,
+            String attributeValue) {
+        getPropertyByKey(
+                ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_VALUE_KEY
+                        + softwareDependencyIndex + "_" + attributeIndex)
+                .setValue(attributeValue);
+    }
+
+    /**
+     * Remove a set of attribute properties for a given software dependency at a
+     * specific index.
+     * 
+     * @param softwareDependencyIndex
+     *            The index of the software dependency (not to be confused with
+     *            the index of a {@link ProductProperty}, see
+     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
+     * @param attributeIndex
+     *            The index of the attribute
+     */
+    public void removeSoftwareDependencyPackageAttribute(
+            int softwareDependencyIndex, int attributeIndex) {
+        removePropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_ID_KEY
+                + softwareDependencyIndex + "_" + attributeIndex);
+        removePropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_NAME_KEY
+                + softwareDependencyIndex + "_" + attributeIndex);
+        removePropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_VALUE_KEY
+                + softwareDependencyIndex + "_" + attributeIndex);
+
+        // FIXME: We should decrement by 1 the index of all subsequent property
+        // sets
+
+        ProductProperty productProperty = getPropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_NUMBER
+                + softwareDependencyIndex);
+        Integer newSoftwareDependencyNumber = ((Integer) productProperty
+                .getValueAsJavaObject()) - 1;
+        productProperty.setValue(newSoftwareDependencyNumber.toString());
+    }
+
+    /**
+     * Gets the number of attributes for a given software dependency stored in
+     * this {@link ProductSection}.
+     * 
+     * @return The number of attributes for a given software dependency
+     */
+    public int getSoftwareDependencyPackageAttributeNumber(
+            int softwareDependencyIndex) {
+        ProductProperty productProperty = getPropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_NUMBER
+                + softwareDependencyIndex);
+        if (productProperty == null) {
+            return 0;
+        } else {
+            return ((Integer) productProperty.getValueAsJavaObject());
+        }
     }
 
     /**

@@ -98,33 +98,6 @@ public class OvfDefinitionTest extends TestCase {
         assertEquals(privateKey, ovfDefinition.getVirtualSystemCollection()
                 .getProductSectionAtIndex(0).getPrivateSshKey());
 
-        // TODO: add these to the template
-        ovfDefinition
-                .getVirtualSystemCollection()
-                .getProductSectionAtIndex(0)
-                .addNewProperty("asceticWorkloadVmId",
-                        ProductPropertyType.STRING, "jmeter");
-        ovfDefinition
-                .getVirtualSystemCollection()
-                .getProductSectionAtIndex(0)
-                .addNewProperty("asceticWorkloadType",
-                        ProductPropertyType.STRING, "user-count");
-        ovfDefinition
-                .getVirtualSystemCollection()
-                .getProductSectionAtIndex(0)
-                .addNewProperty("asceticWorkloadRange",
-                        ProductPropertyType.STRING, "10-200");
-        ovfDefinition
-                .getVirtualSystemCollection()
-                .getProductSectionAtIndex(0)
-                .addNewProperty("asceticWorkloadIncrement",
-                        ProductPropertyType.STRING, "10");
-        ovfDefinition
-                .getVirtualSystemCollection()
-                .getProductSectionAtIndex(0)
-                .addNewProperty("asceticWorkloadInterval",
-                        ProductPropertyType.STRING, "1min");
-
         // Virtual Machine product details
 
         // Stores the Virtual Machine's ID
@@ -208,7 +181,7 @@ public class OvfDefinitionTest extends TestCase {
         assertNotNull(ovfDefinition.getVirtualSystemCollection()
                 .getVirtualSystemAtIndex(1).getProductSectionAtIndex(0)
                 .getSoftwareDependencyPackageUri(softwareDependencyIndex));
-        
+
         assertNotNull(ovfDefinition.getVirtualSystemCollection()
                 .getVirtualSystemAtIndex(1).getProductSectionAtIndex(0)
                 .getSoftwareDependencyInstallScriptUri(softwareDependencyIndex));
@@ -233,6 +206,117 @@ public class OvfDefinitionTest extends TestCase {
                         "/some-end-point/probe-repository/cpu-probe.zip",
                         "/some-end-point/probe-repository/cpu-probe.sh");
 
+        softwareDependencyIndex = ovfDefinition
+                .getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1)
+                .getProductSectionAtIndex(0)
+                .addSoftwareDependencyProperties("a-workload", "chef-cookbook",
+                        "/some-end-point/cookbook-repository/a-workload.zip",
+                        "");
+
+        int attributeIndex = ovfDefinition
+                .getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1)
+                .getProductSectionAtIndex(0)
+                .addSoftwareDependencyPackageAttribute(softwareDependencyIndex,
+                        "workload-name", "name",
+                        "small set of low activity multi-tenant customers");
+
+        assertNotNull(ovfDefinition
+                .getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1)
+                .getProductSectionAtIndex(0)
+                .getSoftwareDependencyPackageAttributeIndexById(
+                        softwareDependencyIndex, "workload-name"));
+
+        assertNotNull(ovfDefinition
+                .getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1)
+                .getProductSectionAtIndex(0)
+                .getSoftwareDependencyPackageAttributeId(
+                        softwareDependencyIndex, attributeIndex));
+        
+        assertNotNull(ovfDefinition
+                .getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1)
+                .getProductSectionAtIndex(0)
+                .getSoftwareDependencyPackageAttributeName(softwareDependencyIndex, attributeIndex));
+        
+        assertNotNull(ovfDefinition
+                .getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1)
+                .getProductSectionAtIndex(0)
+                .getSoftwareDependencyPackageAttributeValue(softwareDependencyIndex, attributeIndex));
+        
+        assertNotNull(ovfDefinition
+                .getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1)
+                .getProductSectionAtIndex(0)
+                .getSoftwareDependencyPackageAttributeNumber(softwareDependencyIndex));
+
+
+        softwareDependencyIndex = ovfDefinition
+                .getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1)
+                .getProductSectionAtIndex(0)
+                .addSoftwareDependencyProperties("another-workload", "chef-cookbook",
+                        "/some-end-point/cookbook-repository/a-workload.zip",
+                        "");
+        
+        attributeIndex = ovfDefinition
+                .getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1)
+                .getProductSectionAtIndex(0)
+                .addSoftwareDependencyPackageAttribute(softwareDependencyIndex,
+                        "workload-name-requests", "concurrentRequestRange",
+                        "1:100");
+        
+        attributeIndex = ovfDefinition
+                .getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1)
+                .getProductSectionAtIndex(0)
+                .addSoftwareDependencyPackageAttribute(softwareDependencyIndex,
+                        "workload-name", "name",
+                        "large set of low activity multi-tenant customers");
+        
+        assertNotNull(ovfDefinition
+                .getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1)
+                .getProductSectionAtIndex(0)
+                .getSoftwareDependencyPackageAttributeIndexById(
+                        softwareDependencyIndex, "another-workload-name"));
+
+        assertNotNull(ovfDefinition
+                .getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1)
+                .getProductSectionAtIndex(0)
+                .getSoftwareDependencyPackageAttributeId(
+                        softwareDependencyIndex, attributeIndex));
+        
+        assertNotNull(ovfDefinition
+                .getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1)
+                .getProductSectionAtIndex(0)
+                .getSoftwareDependencyPackageAttributeName(softwareDependencyIndex, attributeIndex));
+        
+        assertNotNull(ovfDefinition
+                .getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1)
+                .getProductSectionAtIndex(0)
+                .getSoftwareDependencyPackageAttributeValue(softwareDependencyIndex, attributeIndex));
+        
+        assertNotNull(ovfDefinition
+                .getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1)
+                .getProductSectionAtIndex(0)
+                .getSoftwareDependencyPackageAttributeNumber(softwareDependencyIndex));
+        
+        ovfDefinition
+                .getVirtualSystemCollection()
+                .getVirtualSystemAtIndex(1)
+                .getProductSectionAtIndex(0)
+                .setSoftwareDependencyPackageAttribute(softwareDependencyIndex, attributeIndex, "altered-workload-name", "new-name", "another set of high activity multi-tenant customers");
+        
         System.out.println(ovfDefinition.toString());
 
         writeToFile(ovfDefinition.getXmlObject(), "3tier-webapp.ovf");
