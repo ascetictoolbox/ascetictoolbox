@@ -53,6 +53,10 @@ public class ZabbixConnector {
             .put("asok10", 10084)
             .put("asok11", 10107)
             .put("asok12", 10106)
+            .put("wally157", 10112)
+            .put("wally158", 10113)
+            .put("wally160", 10115)
+            .put("wally161", 10116)
             .build();
 
     // Note: the keys that we need (system.cpu.num, vm.memory.size[total], etc.) should not be hardcoded in the query
