@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
+import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 /**
  * 
@@ -62,7 +63,7 @@ public class DeploymentDAOJpa implements DeploymentDAO {
 		List<Deployment> deployments = query.getResultList();
 		return deployments;
 	}
-
+	
 	@Override
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
 	public boolean save(Deployment deployment) {
@@ -92,6 +93,17 @@ public class DeploymentDAOJpa implements DeploymentDAO {
 			logger.debug(e);
 			return false;
 		} 
+	}
+
+	@Override
+	public List<Deployment> getDeploymentsForApplicationWithStatus(Application application, String status) {
+		Query query = entityManager.createQuery("SELECT d FROM Deployment d WHERE d.application = :application AND d.status = :status");
+		query.setParameter("application", application);
+		query.setParameter("status", status);
+		@SuppressWarnings("unchecked")
+		List<Deployment> deployments = query.getResultList();
+		
+		return deployments;
 	}
 }
 

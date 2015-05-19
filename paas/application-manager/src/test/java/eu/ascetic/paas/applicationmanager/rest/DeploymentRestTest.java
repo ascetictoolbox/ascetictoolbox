@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.core.MediaType;
@@ -116,7 +117,7 @@ public class DeploymentRestTest {
 		
 		when(applicationDAO.getByName("1")).thenReturn(application);
 		
-		Response response = deploymentRest.getDeployments("1");
+		Response response = deploymentRest.getDeployments("1", "");
 		
 		assertEquals(200, response.getStatus());
 		
@@ -165,6 +166,92 @@ public class DeploymentRestTest {
 		assertEquals("ovf2", deployment2.getOvf());
 		assertEquals("price2", deployment2.getPrice());
 		assertEquals("Status2", deployment2.getStatus());
+	}
+	
+	@Test
+	public void getDeploymentsWithStatusRunning() throws Exception {
+		DeploymentRest deploymentRest = new DeploymentRest();
+	
+		Application application = new Application();
+		application.setId(1);
+		application.setName("ApplicationName");
+		
+		Deployment deployment1 = new Deployment();
+		deployment1.setId(1);
+		deployment1.setOvf("ovf1");
+		deployment1.setPrice("price1");
+		deployment1.setStatus("RUNNING");
+		
+		Deployment deployment2 = new Deployment();
+		deployment2.setId(2);
+		deployment2.setOvf("ovf2");
+		deployment2.setPrice("price2");
+		deployment2.setStatus("RUNNING");
+		
+		application.addDeployment(deployment1);
+		application.addDeployment(deployment2);
+		
+		List<Deployment> deployments = new ArrayList<Deployment>();
+		deployments.add(deployment1);
+		deployments.add(deployment2);
+		
+		ApplicationDAO applicationDAO = mock(ApplicationDAO.class);
+		deploymentRest.applicationDAO = applicationDAO;
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		deploymentRest.deploymentDAO = deploymentDAO;
+		
+		when(applicationDAO.getByNameWithoutDeployments("ApplicationName")).thenReturn(application);
+		when(deploymentDAO.getDeploymentsForApplicationWithStatus(application, "RUNNING")).thenReturn(deployments);
+		
+		Response response = deploymentRest.getDeployments("ApplicationName", "RUNNING");
+		
+		assertEquals(200, response.getStatus());
+		
+		String xml = (String) response.getEntity();
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(Collection.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		Collection collection = (Collection) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		//Collection
+		assertEquals("/applications/ApplicationName/deployments", collection.getHref());
+		assertEquals(0, collection.getItems().getOffset());
+		assertEquals(2, collection.getItems().getTotal());
+		assertEquals(2, collection.getItems().getDeployments().size());
+		//     Deployment 1
+		deployment1 = collection.getItems().getDeployments().get(0);
+		assertEquals("/applications/ApplicationName/deployments/1", deployment1.getLinks().get(1).getHref());
+		assertEquals("self", deployment1.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment1.getLinks().get(1).getType());
+		assertEquals("/applications/ApplicationName/deployments", deployment1.getLinks().get(0).getHref());
+		assertEquals("parent", deployment1.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment1.getLinks().get(0).getType());
+		assertEquals("/applications/ApplicationName/deployments/1/ovf", deployment1.getLinks().get(2).getHref());
+		assertEquals("ovf", deployment1.getLinks().get(2).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment1.getLinks().get(2).getType());
+		assertEquals("/applications/ApplicationName/deployments/1/vms", deployment1.getLinks().get(3).getHref());
+		assertEquals("vms", deployment1.getLinks().get(3).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment1.getLinks().get(3).getType());
+		assertEquals("ovf1", deployment1.getOvf());
+		assertEquals("price1", deployment1.getPrice());
+		assertEquals("RUNNING", deployment1.getStatus());
+		//      Deployment 2
+		deployment2 = collection.getItems().getDeployments().get(1);
+		assertEquals("/applications/ApplicationName/deployments/2", deployment2.getLinks().get(1).getHref());
+		assertEquals("self", deployment2.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment1.getLinks().get(1).getType());
+		assertEquals("/applications/ApplicationName/deployments", deployment2.getLinks().get(0).getHref());
+		assertEquals("parent", deployment1.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment2.getLinks().get(0).getType());
+		assertEquals("/applications/ApplicationName/deployments/2/ovf", deployment2.getLinks().get(2).getHref());
+		assertEquals("ovf", deployment2.getLinks().get(2).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment2.getLinks().get(2).getType());
+		assertEquals("/applications/ApplicationName/deployments/2/vms", deployment2.getLinks().get(3).getHref());
+		assertEquals("vms", deployment2.getLinks().get(3).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment1.getLinks().get(3).getType());
+		assertEquals("ovf2", deployment2.getOvf());
+		assertEquals("price2", deployment2.getPrice());
+		assertEquals("RUNNING", deployment2.getStatus());
 	}
 	
 	@Test

@@ -2,6 +2,7 @@ package eu.ascetic.paas.applicationmanager.dao;
 
 import java.util.List;
 
+import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 
 /**
@@ -66,4 +67,12 @@ public interface DeploymentDAO extends DAO<Deployment> {
 	 * @return <code>true</code> if the Deployment was deleted correctly
 	 */
 	public boolean delete(Deployment deployment);
+	
+	/**
+	 * Returns all deployments for a given application with an specific status
+	 * @param application Application from which we want to know the status...	
+	 * @param status that we want to know...
+	 * @return the list of deployments
+	 */
+	public List<Deployment> getDeploymentsForApplicationWithStatus(Application application, String status);
 }

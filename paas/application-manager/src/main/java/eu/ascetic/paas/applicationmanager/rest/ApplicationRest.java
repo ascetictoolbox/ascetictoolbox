@@ -94,7 +94,7 @@ public class ApplicationRest extends AbstractRest {
 	public Response getApplication(@PathParam("application_name") String applicationName) {
 		logger.info("GET request to path: /applications/" + applicationName);
 		
-		Application application = applicationDAO.getByName(applicationName);
+		Application application = applicationDAO.getByNameWithoutDeployments(applicationName);
 		String xml = XMLBuilder.getApplicationXML(application);
 		
 		return buildResponse(Status.OK, xml);

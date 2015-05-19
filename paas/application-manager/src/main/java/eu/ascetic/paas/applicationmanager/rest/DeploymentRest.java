@@ -6,12 +6,14 @@ import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -25,6 +27,7 @@ import eu.ascetic.paas.applicationmanager.amonitor.ApplicationMonitorClient;
 import eu.ascetic.paas.applicationmanager.amonitor.ApplicationMonitorClientHC;
 import eu.ascetic.paas.applicationmanager.amonitor.model.Data;
 import eu.ascetic.paas.applicationmanager.amonitor.model.EnergyCosumed;
+import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
@@ -72,11 +75,17 @@ public class DeploymentRest extends AbstractRest {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
-	public Response getDeployments(@PathParam("application_name") String applicationName) {
-		logger.info("GET request to paht: /applications/" + applicationName + "/deployments");
+	public Response getDeployments(@PathParam("application_name") String applicationName, @DefaultValue("")@QueryParam("status") String status) {
+		logger.info("GET request to paht: /applications/" + applicationName + "/deployments?status=" + status);
+		List<Deployment> deployments = null;
 		
-		// We get the deployments for an application from the DB
-		List<Deployment> deployments = applicationDAO.getByName(applicationName).getDeployments();
+		if(status.equals("")) {
+			// We get the deployments for an application from the DB
+			deployments = applicationDAO.getByName(applicationName).getDeployments();		
+		} else {
+			Application application = applicationDAO.getByNameWithoutDeployments(applicationName);
+			 deployments = deploymentDAO.getDeploymentsForApplicationWithStatus(application, status);
+		}
 		
 		// We create the XMl response
 		String xml = XMLBuilder.getCollectionOfDeploymentsXML(deployments, applicationName);

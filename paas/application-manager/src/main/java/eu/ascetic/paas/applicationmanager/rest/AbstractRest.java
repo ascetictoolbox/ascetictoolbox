@@ -14,6 +14,7 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.P
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.dao.VMDAO;
+import eu.ascetic.paas.applicationmanager.datamodel.convert.ApplicationConverter;
 import eu.ascetic.paas.applicationmanager.event.DeploymentEvent;
 import eu.ascetic.paas.applicationmanager.event.deployment.DeploymentEventService;
 import eu.ascetic.paas.applicationmanager.model.Application;
@@ -140,6 +141,9 @@ public abstract class AbstractRest {
 		deploymentEvent.setDeploymentId(deployment.getId());
 		deploymentEvent.setDeploymentStatus(deployment.getStatus());
 		deploymentEventService.fireDeploymentEvent(deploymentEvent);
+		
+		Application applicationToBeShown = ApplicationConverter.withoutDeployments(application);
+		applicationToBeShown.addDeployment(deployment);
 		
 		return buildResponse(Status.CREATED, XMLBuilder.getApplicationXML(application));
 	}

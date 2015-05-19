@@ -229,7 +229,28 @@ public class MysqJPATestIT {
 		
 		application = applicationDAO.getByIdWithoutDeployments(application.getId());
 		
-		System.out.println("### of deployments " + application.getDeployments().size());
+		//System.out.println("### of deployments " + application.getDeployments().size());
+		
+		Application applicationNew = new Application();
+		applicationNew.setName("X1X12");
+		
+		Deployment deployment3 = new Deployment();
+		deployment3.setStatus("RUNNING");
+		deployment3.setPrice("expensive");
+		
+		Deployment deployment4 = new Deployment();
+		deployment4.setStatus("RUNNING");
+		deployment4.setPrice("expensive");
+		
+		applicationNew.addDeployment(deployment4);
+		applicationNew.addDeployment(deployment3);
+		
+		applicationDAO.save(applicationNew);
+		
+		Application applicationFromDB = applicationDAO.getByName(applicationNew.getName());
+		
+		System.out.println("### of deployments " + applicationFromDB.getDeployments().size());
+		
 	}
 	
 //	public static void main(String args[]) throws InterruptedException {

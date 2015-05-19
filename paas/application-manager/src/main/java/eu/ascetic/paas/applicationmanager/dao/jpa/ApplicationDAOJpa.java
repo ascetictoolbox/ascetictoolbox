@@ -133,17 +133,14 @@ public class ApplicationDAOJpa implements ApplicationDAO {
 	@Override
 	public Application getByName(String name) {
 		
-		Query query = entityManager.createQuery("SELECT a FROM Application a WHERE a.name = :appName");
+		Query query = entityManager.createQuery("SELECT a FROM Application a LEFT JOIN FETCH a.deployments WHERE a.name = :appName");
 		query.setParameter("appName", name);
 		query.setMaxResults(1);
 		@SuppressWarnings("unchecked")
 		List<Application> applications = query.getResultList();
 		
 		if(applications.size() > 0) {
-			Application application = applications.get(0);
-			initialize(application);
-			
-			return application;
+			return applications.get(0);
 		} else {
 			return null;
 		}

@@ -13,8 +13,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.dao.VMDAO;
+import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.VM;
 
@@ -43,11 +45,14 @@ import eu.ascetic.paas.applicationmanager.model.VM;
 public class DeploymentDAOJpaTest extends AbstractTransactionalJUnit4SpringContextTests {
 	@Autowired
 	protected DeploymentDAO deploymentDAO;
-	@Autowired VMDAO vmDAO;
+	@Autowired
+	protected ApplicationDAO applicationDAO;
+	@Autowired 
+	protected VMDAO vmDAO;
 	
 	@Test
 	public void notNull() {
-		if(deploymentDAO == null || vmDAO == null) fail();
+		if(deploymentDAO == null || vmDAO == null || applicationDAO == null) fail();
 	}
 	
 	@Test
@@ -184,6 +189,40 @@ public class DeploymentDAOJpaTest extends AbstractTransactionalJUnit4SpringConte
 		
 		vms = vmDAO.getAll();
 		assertEquals(0, vms.size());
+	}
+	
+	@Test
+	public void getDeploymentsForApplicationWithStatus() {
+		Application application = new Application();
+		application.setName("name");
+
+		Deployment deployment1 = new Deployment();
+		deployment1.setStatus("RUNNING");
+		deployment1.setPrice("expensive");
+				
+		Deployment deployment2 = new Deployment();
+		deployment2.setStatus("DELETED");
+		deployment2.setPrice("expensive");
+		
+		Deployment deployment3 = new Deployment();
+		deployment3.setStatus("RUNNING");
+		deployment3.setPrice("expensive");
+		
+		application.addDeployment(deployment1);
+		application.addDeployment(deployment2);
+		application.addDeployment(deployment3);
+		
+		boolean saved = applicationDAO.save(application);
+		assertTrue(saved);
+		
+		List<Deployment> deploymentsRUNNING = deploymentDAO.getDeploymentsForApplicationWithStatus(application, "RUNNING");
+		assertEquals(2, deploymentsRUNNING.size());
+		
+		List<Deployment> deploymentsDELETED = deploymentDAO.getDeploymentsForApplicationWithStatus(application, "DELETED");
+		assertEquals(1, deploymentsDELETED.size());
+		
+		List<Deployment> deploymentsXXX = deploymentDAO.getDeploymentsForApplicationWithStatus(application, "XXX");
+		assertEquals(0, deploymentsXXX.size());
 	}
 }
 

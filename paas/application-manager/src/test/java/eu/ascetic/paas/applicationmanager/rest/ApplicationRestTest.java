@@ -156,7 +156,7 @@ public class ApplicationRestTest {
 		application.setId(1);
 		application.setName("name");
 		
-		when(applicationDAO.getByName("1")).thenReturn(application);
+		when(applicationDAO.getByNameWithoutDeployments("1")).thenReturn(application);
 		
 		ApplicationRest applicationRest = new ApplicationRest();
 		applicationRest.applicationDAO = applicationDAO;
