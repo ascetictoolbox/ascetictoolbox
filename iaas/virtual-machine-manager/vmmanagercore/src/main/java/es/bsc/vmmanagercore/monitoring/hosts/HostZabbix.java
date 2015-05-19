@@ -61,19 +61,10 @@ public class HostZabbix extends Host {
      * @return the Zabbix ID
      */
     private int getZabbixId(String hostname) {
-        // I am cheating here. The Zabbix ID should not be hardcoded
-        switch(hostname) {
-            case "asok09":
-                return ZabbixConnector.ASOK09_ID;
-            case "asok10":
-                return ZabbixConnector.ASOK10_ID;
-            case "asok11":
-                return ZabbixConnector.ASOK11_ID;
-            case "asok12":
-                return ZabbixConnector.ASOK12_ID;
-            default:
-                throw new IllegalArgumentException("Invalid hostname");
+        if (!ZabbixConnector.hostIds.containsKey(hostname)) {
+            throw new IllegalArgumentException("The host specified does not seem to be registered in Zabbix.");
         }
+        return ZabbixConnector.hostIds.get(hostname);
     }
 
     /**

@@ -18,6 +18,7 @@
 
 package es.bsc.vmmanagercore.monitoring.zabbix;
 
+import com.google.common.collect.ImmutableMap;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.client.ZabbixClient;
 
 import java.sql.Connection;
@@ -46,11 +47,13 @@ public class ZabbixConnector {
     private static Connection connection = null;
 
     /* I have hardcoded the Zabbix IDs for each one of the hosts that we are using.
-       This is a quick fix. This should be done querying Zabbix */
-    public static final int ASOK09_ID = 10105;
-    public static final int ASOK10_ID = 10084;
-    public static final int ASOK11_ID = 10107;
-    public static final int ASOK12_ID = 10106;
+       This is a quick fix. This should be done querying Zabbix or in the Zabbix wrapper */
+    public static final Map<String, Integer> hostIds = ImmutableMap.<String, Integer>builder()
+            .put("asok09", 10105)
+            .put("asok10", 10084)
+            .put("asok11", 10107)
+            .put("asok12", 10106)
+            .build();
 
     // Note: the keys that we need (system.cpu.num, vm.memory.size[total], etc.) should not be hardcoded in the query
     private static final String ZABBIX_QUERY = "SELECT i.key_, h.value "
