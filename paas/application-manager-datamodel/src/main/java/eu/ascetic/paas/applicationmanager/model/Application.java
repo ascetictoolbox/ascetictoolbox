@@ -116,9 +116,9 @@ public class Application {
 		images.add(image);
 	}
 	
-	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "application_id", referencedColumnName="application_id", nullable = true)
-	public List<Deployment> getDeployments() {
+	public List<Deployment> getDeployments() {	
 		return deployments;
 	}
 	public void setDeployments(List<Deployment> deployments) {

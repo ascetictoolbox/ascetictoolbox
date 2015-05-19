@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -24,6 +25,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * 
@@ -79,6 +81,8 @@ public class Deployment {
 	private List<VM> vms;
 	@XmlElement(name="link", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private List<Link> links;
+	@XmlTransient
+	private Application application;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -162,4 +166,13 @@ public class Deployment {
 	public void setEndDate(String endDate) {
 		this.endDate = endDate;
 	}	
+	
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="application_id")
+	public Application getApplication() {
+		return application;
+	}
+	public void setApplication(Application application) {
+		this.application = application;
+	}
 }
