@@ -93,7 +93,7 @@ public class ApplicationRestTest {
 		applications.add(application1);
 		applications.add(application2);
 		
-		when(applicationDAO.getAll()).thenReturn(applications);
+		when(applicationDAO.getAllWithOutDeployments()).thenReturn(applications);
 		
 		ApplicationRest applicationRest = new ApplicationRest();
 		applicationRest.applicationDAO = applicationDAO;

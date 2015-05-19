@@ -8,7 +8,6 @@ import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Collection;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
-import eu.ascetic.paas.applicationmanager.model.EnergySample;
 import eu.ascetic.paas.applicationmanager.model.EventSample;
 import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.Items;
@@ -81,7 +80,7 @@ public class XMLBuilder {
 				deployment = addDeploymentXMLInfo(deployment, application.getName());
 			}
 		}
-		
+
 		return application;
 	}
 	

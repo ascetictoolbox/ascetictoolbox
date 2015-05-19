@@ -1,5 +1,6 @@
 package eu.ascetic.paas.applicationmanager.dao.jpa;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -8,11 +9,13 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
+import eu.ascetic.paas.applicationmanager.datamodel.convert.ApplicationConverter;
 import eu.ascetic.paas.applicationmanager.model.Application;
 
 /**
@@ -52,7 +55,19 @@ public class ApplicationDAOJpa implements ApplicationDAO {
 	@Override
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
 	public Application getById(int id) {
-		return entityManager.find(Application.class, id);
+		Application application = entityManager.find(Application.class, id);
+		
+		initialize(application);
+		
+		return application;
+	}
+	
+	@Override
+	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
+	public Application getByIdWithoutDeployments(int id) {
+		Application application = entityManager.find(Application.class, id);
+		
+		return ApplicationConverter.withoutDeployments(application);
 	}
 
 	@Override
@@ -61,7 +76,28 @@ public class ApplicationDAOJpa implements ApplicationDAO {
 		Query query = entityManager.createNamedQuery("Application.findAll");
 		@SuppressWarnings("unchecked")
 		List<Application> applications = query.getResultList();
+		
+		for(Application application : applications) {
+			initialize(application);
+		}
+		
 		return applications;
+	}
+	
+	@Override
+	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
+	public List<Application> getAllWithOutDeployments() {
+		Query query = entityManager.createNamedQuery("Application.findAll");
+		@SuppressWarnings("unchecked")
+		List<Application> applications = query.getResultList();
+		
+		List<Application> applicationsReturned = new ArrayList<Application>();
+		
+		for(Application application : applications) {
+			applicationsReturned.add(ApplicationConverter.withoutDeployments(application));
+		}
+		
+		return applicationsReturned;
 	}
 
 	@Override
@@ -104,9 +140,34 @@ public class ApplicationDAOJpa implements ApplicationDAO {
 		List<Application> applications = query.getResultList();
 		
 		if(applications.size() > 0) {
-			return applications.get(0);
+			Application application = applications.get(0);
+			initialize(application);
+			
+			return application;
 		} else {
 			return null;
+		}
+	}
+	
+	@Override
+	public Application getByNameWithoutDeployments(String name) {
+		
+		Query query = entityManager.createQuery("SELECT a FROM Application a WHERE a.name = :appName");
+		query.setParameter("appName", name);
+		query.setMaxResults(1);
+		@SuppressWarnings("unchecked")
+		List<Application> applications = query.getResultList();
+		
+		if(applications.size() > 0) {
+			return ApplicationConverter.withoutDeployments(applications.get(0));
+		} else {
+			return null;
+		}
+	}
+	
+	private void initialize(Application application) {
+		if(application != null) {
+			Hibernate.initialize(application.getDeployments());
 		}
 	}
 }

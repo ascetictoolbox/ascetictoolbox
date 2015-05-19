@@ -1,5 +1,7 @@
 package eu.ascetic.paas.applicationmanager.dao.jpa;
 
+import java.util.List;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -8,6 +10,7 @@ import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 import eu.ascetic.paas.applicationmanager.dao.ImageDAO;
 //import eu.ascetic.paas.applicationmanager.dao.VMDAO;
 import eu.ascetic.paas.applicationmanager.model.Application;
+import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Image;
 
 
@@ -158,7 +161,8 @@ public class MysqJPATestIT {
 //		VMDAO vmDAO = (VMDAO) context.getBean("VMService");
 		ImageDAO imageDAO = (ImageDAO) context.getBean("ImageService");
 		
-		int size = imageDAO.getAll().size();
+		int size = applicationDAO.getAll().size();
+		int sizeImages = imageDAO.getAll().size();
 		Application application = new Application();
 		application.setName("pepito");
 		applicationDAO.save(application);
@@ -188,8 +192,44 @@ public class MysqJPATestIT {
 		applicationDAO.update(application);
 		
 		application = applicationDAO.getById(application.getId());
-		
+				
 		System.out.println("### of images " + application.getImages().size());	
+		
+		Deployment deployment1 = new Deployment();
+		deployment1.setStatus("RUNNING");
+		deployment1.setPrice("expensive");
+		
+		Deployment deployment2 = new Deployment();
+		deployment2.setStatus("RUNNING");
+		deployment2.setPrice("expensive");
+		
+		application.addDeployment(deployment1);
+		application.addDeployment(deployment2);
+		
+		applicationDAO.update(application);
+		
+		application = applicationDAO.getById(application.getId());
+		
+		image2 = imageDAO.getById(sizeImages + 1);
+		
+		System.out.println("AAA: " + image2.getOvfId());
+		
+		image2 = imageDAO.getById(sizeImages + 1);
+		
+		System.out.println("AAA: " + image2.getOvfId());
+		
+		System.out.println("### of deployments " + application.getDeployments().size());
+		
+		List<Application> applications = applicationDAO.getAll();
+		
+		for(Application applicationList : applications) {
+			System.out.println(" ### of deployments in application...  " + applicationList.getDeployments().size());
+		}
+		
+		
+		application = applicationDAO.getByIdWithoutDeployments(application.getId());
+		
+		System.out.println("### of deployments " + application.getDeployments().size());
 	}
 	
 //	public static void main(String args[]) throws InterruptedException {

@@ -156,6 +156,101 @@ public class ApplicationDAOJpaTest extends AbstractTransactionalJUnit4SpringCont
 		applicationFromDatabase = applicationDAO.getByName("xxx");
 		assertEquals(null, applicationFromDatabase);
 	}
+	
+	@Test
+	public void getByNameWithoutDeployments() {
+		
+		Application application1 = new Application();
+		application1.setName("name1");
+
+		Deployment deployment1 = new Deployment();
+		deployment1.setStatus("RUNNING");
+		deployment1.setPrice("expensive");
+		
+		Deployment deployment2 = new Deployment();
+		deployment2.setStatus("RUNNING");
+		deployment2.setPrice("expensive");
+		
+		application1.addDeployment(deployment1);
+		application1.addDeployment(deployment2);
+		
+		Application application2 = new Application();
+		application2.setName("name2");
+
+		Deployment deployment3 = new Deployment();
+		deployment3.setStatus("RUNNING");
+		deployment3.setPrice("expensive");
+		
+		Deployment deployment4 = new Deployment();
+		deployment4.setStatus("RUNNING");
+		deployment4.setPrice("expensive");
+		
+		application2.addDeployment(deployment4);
+		application2.addDeployment(deployment3);
+		
+		boolean saved = applicationDAO.save(application1);
+		assertTrue(saved);
+		saved = applicationDAO.save(application2);
+		assertTrue(saved);
+		
+		Application applicationFromDatabase = applicationDAO.getByNameWithoutDeployments("name1");
+		assertEquals("name1", applicationFromDatabase.getName());
+		assertEquals(null, applicationFromDatabase.getDeployments());
+		
+		applicationFromDatabase = applicationDAO.getByName("name1");
+		assertEquals("name1", applicationFromDatabase.getName());
+		assertEquals(2, applicationFromDatabase.getDeployments().size());
+		
+		applicationFromDatabase = applicationDAO.getByNameWithoutDeployments("xxx");
+		assertEquals(null, applicationFromDatabase);
+	}
+	
+	@Test
+	public void lazyTest() throws Exception {
+		int size = applicationDAO.getAll().size();
+		
+		Application application = new Application();
+		application.setName("name");
+
+		Deployment deployment1 = new Deployment();
+		deployment1.setStatus("RUNNING");
+		deployment1.setPrice("expensive");
+		
+		Deployment deployment2 = new Deployment();
+		deployment2.setStatus("RUNNING");
+		deployment2.setPrice("expensive");
+		
+		application.addDeployment(deployment1);
+		application.addDeployment(deployment2);
+
+		boolean saved = applicationDAO.save(application);
+		assertTrue(saved);
+		
+		Application applicationFromDatabase = applicationDAO.getAll().get(size);
+		int id = applicationFromDatabase.getId();
+		applicationFromDatabase = applicationDAO.getById(id);
+		
+		assertEquals("name", applicationFromDatabase.getName());
+		assertEquals(2, application.getDeployments().size());
+		assertEquals("RUNNING", application.getDeployments().get(1).getStatus());
+		
+		Application applicationFromDatabase2 = applicationDAO.getByIdWithoutDeployments(id);
+		assertEquals("name", applicationFromDatabase2.getName());
+		assertEquals(null, applicationFromDatabase2.getDeployments());
+		
+		applicationFromDatabase = applicationDAO.getById(id);
+		
+		assertEquals("name", applicationFromDatabase.getName());
+		assertEquals(2, application.getDeployments().size());
+		assertEquals("RUNNING", application.getDeployments().get(1).getStatus());
+		
+		boolean deleted = applicationDAO.delete(applicationFromDatabase);
+		assertTrue(deleted);
+
+		
+		List<Deployment> deployments = deploymentDAO.getAll();
+		assertEquals(0, deployments.size());
+	}
 
 		
 	@Test
@@ -193,6 +288,50 @@ public class ApplicationDAOJpaTest extends AbstractTransactionalJUnit4SpringCont
 		
 		List<Deployment> deployments = deploymentDAO.getAll();
 		assertEquals(0, deployments.size());
+	}
+	
+	@Test
+	public void getAllWithoutDeployments() {
+		
+		Application application = new Application();
+		application.setName("name");
+
+		Deployment deployment1 = new Deployment();
+		deployment1.setStatus("RUNNING");
+		deployment1.setPrice("expensive");
+		
+		Deployment deployment2 = new Deployment();
+		deployment2.setStatus("RUNNING");
+		deployment2.setPrice("expensive");
+		
+		application.addDeployment(deployment1);
+		application.addDeployment(deployment2);
+		
+		Application application2 = new Application();
+		application2.setName("name");
+
+		Deployment deployment3 = new Deployment();
+		deployment3.setStatus("RUNNING");
+		deployment3.setPrice("expensive");
+		
+		Deployment deployment4 = new Deployment();
+		deployment4.setStatus("RUNNING");
+		deployment4.setPrice("expensive");
+		
+		application2.addDeployment(deployment4);
+		application2.addDeployment(deployment3);
+
+		boolean saved = applicationDAO.save(application);
+		assertTrue(saved);
+				
+		saved = applicationDAO.save(application2);
+		assertTrue(saved);
+		
+		List<Application> applications = applicationDAO.getAllWithOutDeployments();
+		
+		assertEquals(2, applications.size());
+		assertEquals(null, applications.get(0).getDeployments());
+		assertEquals(null, applications.get(1).getDeployments());
 	}
 	
 	@Test

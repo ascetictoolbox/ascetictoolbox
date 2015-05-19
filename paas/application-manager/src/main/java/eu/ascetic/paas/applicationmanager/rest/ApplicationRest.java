@@ -59,7 +59,7 @@ public class ApplicationRest extends AbstractRest {
 		// TODO it is necessary to implement a lot of query params here
 		
 		// We get the applications from the DB
-		List<Application> applications = applicationDAO.getAll();
+		List<Application> applications = applicationDAO.getAllWithOutDeployments();
 		
 		// We create the XMl response
 		String xml = XMLBuilder.getCollectionApplicationsXML(applications);

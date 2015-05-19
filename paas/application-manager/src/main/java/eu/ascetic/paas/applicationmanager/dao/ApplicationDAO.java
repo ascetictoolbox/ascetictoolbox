@@ -31,19 +31,34 @@ import eu.ascetic.paas.applicationmanager.model.Application;
 public interface ApplicationDAO extends DAO<Application> {
 
 	/**
-	 * Returns the Application from the database by its Id
+	 * Returns the Application from the database by its Id with deployment information
 	 * 
 	 * @param id of the Application
 	 * @return the corresponding Application from the database
 	 */
 	public Application getById(int id);
+	
+	/**
+	 * Returns the Application from the database by its Id with an empty list of deployments
+	 * 
+	 * @param id of the Application
+	 * @return the corresponding Application from the database
+	 */
+	public Application getByIdWithoutDeployments(int id);
 
 	/**
-	 * Returns all the Application stored in the database
+	 * Returns all the Application stored in the database with Deployments information
 	 * 
 	 * @return all the Application stored in the database
 	 */
 	public List<Application> getAll();
+	
+	/**
+	 * Returns all the Application stored in the database without Deployments information
+	 * 
+	 * @return all the Application stored in the database
+	 */
+	public List<Application> getAllWithOutDeployments();
 
 	/**
 	 * Stores a Application into the database
@@ -70,9 +85,16 @@ public interface ApplicationDAO extends DAO<Application> {
 	public boolean delete(Application application);
 	
 	/**
-	 * Returns an application from the database using its name as query paremeter
+	 * Returns an application from the database using its name as query paremeter with deployment information
 	 * @param name of the application
 	 * @return The Application object or <code>null</code> if there is no application by that name in the Database
 	 */
 	public Application getByName(String name);
+	
+	/**
+	 * Returns an application from the database using its name as query paremeter with deployment information without deployment information
+	 * @param name of the application
+	 * @return The Application object or <code>null</code> if there is no application by that name in the Database
+	 */
+	public Application getByNameWithoutDeployments(String name);
 }

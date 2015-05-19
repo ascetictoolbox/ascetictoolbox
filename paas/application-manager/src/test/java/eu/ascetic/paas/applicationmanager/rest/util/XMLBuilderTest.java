@@ -178,6 +178,27 @@ public class XMLBuilderTest {
 		assertEquals(MediaType.APPLICATION_XML, vm.getLinks().get(0).getType());
 		assertEquals("/applications/name/deployments/1/vms/44", vm.getLinks().get(1).getHref());
 		assertEquals("self",vm.getLinks().get(1).getRel());
+		
+		//We verify that we don't parse deployments if speficied... 
+		applicationBeforeXML = new Application();
+		applicationBeforeXML.setId(22);
+		applicationBeforeXML.setName("name");
+		
+		deploymentBeforeXML = new Deployment();
+		deploymentBeforeXML.setId(1);
+		deploymentBeforeXML.setStatus("RUNNIG");
+		deploymentBeforeXML.setPrice("expensive");
+		applicationBeforeXML.addDeployment(deploymentBeforeXML);
+		
+		vmBeforeXML = new VM();
+		vmBeforeXML.setId(44);
+		vmBeforeXML.setIp("127.0.0.1");
+		vmBeforeXML.setOvfId("ovf-id");
+		vmBeforeXML.setProviderId("provider-id");
+		vmBeforeXML.setProviderVmId("provider-vm-id");
+		vmBeforeXML.setSlaAgreement("sla-agreement");
+		vmBeforeXML.setStatus("RUNNING");
+		deploymentBeforeXML.addVM(vmBeforeXML);
 	}
 	
 	@Test
