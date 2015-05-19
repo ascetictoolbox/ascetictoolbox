@@ -79,6 +79,8 @@ public class VmManagerConfiguration {
     public int defaultServerTurnOnDelaySeconds;
     public int defaultServerTurnOffDelaySeconds;
 
+    public String zabbixDbIp;
+
     /**
      * Returns a properties file that contains the configuration parameters for the VM Manager.
      *
@@ -122,6 +124,7 @@ public class VmManagerConfiguration {
         project = prop.getProperty("project");
         defaultServerTurnOnDelaySeconds = Integer.parseInt(prop.getProperty("defaultServerTurnOnDelaySeconds"));
         defaultServerTurnOffDelaySeconds = Integer.parseInt(prop.getProperty("defaultServerTurnOffDelaySeconds"));
+        zabbixDbIp = prop.getProperty("zabbixDbIp");
 
         if (prop.getProperty("monitoring").equals("openstack")) {
             monitoring = Monitoring.OPENSTACK;

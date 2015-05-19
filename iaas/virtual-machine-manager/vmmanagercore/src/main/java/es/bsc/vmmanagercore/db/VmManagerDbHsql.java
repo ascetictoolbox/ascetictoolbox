@@ -41,7 +41,7 @@ public class VmManagerDbHsql implements VmManagerDb {
     private final Gson gson = new Gson(); // Using JSON provisionally
 
     // Error messages
-    private static final String ERROR_DB_CONNECTION = "There was an error while connection to the DB";
+    private static final String ERROR_DB_CONNECTION = "There was an error while connecting to the DB";
     private static final String ERROR_SETUP_DB = "There was an error while trying to set up the DB.";
     private static final String ERROR_CLOSE_CONNECTION = "There was an error while closing the connection to the DB.";
     private static final String ERROR_CLEAN_DB = "There was an error while trying to clean the DB.";

@@ -19,6 +19,7 @@
 package es.bsc.vmmanagercore.monitoring.zabbix;
 
 import com.google.common.collect.ImmutableMap;
+import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.client.ZabbixClient;
 
 import java.sql.Connection;
@@ -37,7 +38,7 @@ public class ZabbixConnector {
     private final static ZabbixClient zabbixClient = new ZabbixClient();
 
     // Zabbix DB. I would prefer to see these constants in a config file...
-    private static final String DB_URL = "jdbc:mysql://10.4.0.15/zabbix";
+    private static final String DB_URL = "jdbc:mysql://" + VmManagerConfiguration.getInstance().zabbixDbIp + "/zabbix";
     private static final String DB_DRIVER = "com.mysql.jdbc.Driver";
     private static final String DB_USER = "zabbix";
     private static final String DB_PASSWORD = "yxCHARvjZRJi";
