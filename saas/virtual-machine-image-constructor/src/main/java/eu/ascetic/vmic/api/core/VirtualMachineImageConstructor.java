@@ -145,6 +145,7 @@ public class VirtualMachineImageConstructor implements Runnable {
 
     /**
      * Method to generate images that mounts the image while it is offline.
+     * TODO: refactor progress reporting
      * 
      * @param ovfDefinitionParser
      *            The instance of {@link OvfDefinitionParser} to use in the
@@ -230,7 +231,7 @@ public class VirtualMachineImageConstructor implements Runnable {
                     // Do nothing
                 }
 
-                // Propogate the error
+                // Propagate the error
                 vmicApi.getGlobalState().getProgressData(ovfDefinitionId)
                         .setError(true);
                 vmicApi.getGlobalState().getProgressData(ovfDefinitionId)
@@ -241,31 +242,6 @@ public class VirtualMachineImageConstructor implements Runnable {
 
         LOGGER.info("Completed offline image generation...");
         return true;
-    }
-
-    /**
-     * Method to generate images using chef while the image is online and
-     * booted.
-     *
-     * @param ovfDefinitionParser
-     *            The instance of {@link OvfDefinitionParser} to use in the
-     *            image generation process
-     * @return False on error to true if image generation successful
-     */
-    private boolean generateImageOnline(OvfDefinitionParser ovfDefinitionParser) {
-
-        // TODO: Boot up the image from a snapshot (using libvirt?)
-
-        // TODO: Bootstrap the image to chef via a remote system call to knife.
-
-        // TODO: Upload the chef recipes to the chef workspace (using rsync?)
-
-        // TODO: Push out the chef recipe(s) via a remote system call to knife.
-
-        // TODO: Shutdown the VM (using libvirt?)
-
-        // TODO: Remove the node from the chef server
-        return false;
     }
 
     /**
@@ -529,5 +505,176 @@ public class VirtualMachineImageConstructor implements Runnable {
         } else {
             LOGGER.info("Unmounting complete");
         }
+    }
+
+    /**
+     * Method to generate images using chef while the image is online and
+     * booted. TODO: refactor progress reporting
+     *
+     * @param ovfDefinitionParser
+     *            The instance of {@link OvfDefinitionParser} to use in the
+     *            image generation process
+     * @return False on error to true if image generation successful
+     */
+    private boolean generateImageOnline(OvfDefinitionParser ovfDefinitionParser) {
+
+        LOGGER.info("Starting online image generation...");
+
+        vmicApi.getGlobalState().setProgressPhase(ovfDefinitionId,
+                ProgressDataImage.GENERATE_IMAGES_PHASE_ID);
+        vmicApi.getGlobalState().setProgressPercentage(ovfDefinitionId, 0.0);
+
+        // Iterate over every virtual system image
+        for (int i = 0; i < ovfDefinitionParser.getImageNumber(); i++) {
+
+            // TODO: Fetch parsed OVF attributes relevant for online image
+            // generation .
+            String newImagePath = ovfDefinitionParser.getImagePath(i);
+
+            LOGGER.info("Starting image generation for: " + newImagePath);
+
+            try {
+                // TODO: 1) Boot up the image and wait for completion (TODO: use
+                // libvirt instead of virsh system call)
+                bootImage();
+                vmicApi.getGlobalState()
+                        .setProgressPercentage(
+                                ovfDefinitionId,
+                                ((100.0 / ovfDefinitionParser.getImageNumber()) / 6)
+                                        * 1
+                                        + (100.0 / ovfDefinitionParser
+                                                .getImageNumber()) * i);
+
+                // TODO: 2) Bootstrap the image to chef via a remote system call
+                // to knife.
+                boostrapImage();
+                vmicApi.getGlobalState()
+                        .setProgressPercentage(
+                                ovfDefinitionId,
+                                ((100.0 / ovfDefinitionParser.getImageNumber()) / 6)
+                                        * 2
+                                        + (100.0 / ovfDefinitionParser
+                                                .getImageNumber()) * i);
+
+                // TODO: 3) Upload the chef cookbook(s) to the chef workspace
+                // (using rsync)
+                uploadCookbooks();
+                vmicApi.getGlobalState()
+                        .setProgressPercentage(
+                                ovfDefinitionId,
+                                ((100.0 / ovfDefinitionParser.getImageNumber()) / 6)
+                                        * 3
+                                        + (100.0 / ovfDefinitionParser
+                                                .getImageNumber()) * i);
+
+                // TODO: 4) Deploy the chef cookbooks(s) via a remote system
+                // call to knife.
+                deployCookbooks();
+                vmicApi.getGlobalState()
+                        .setProgressPercentage(
+                                ovfDefinitionId,
+                                ((100.0 / ovfDefinitionParser.getImageNumber()) / 6)
+                                        * 4
+                                        + (100.0 / ovfDefinitionParser
+                                                .getImageNumber()) * i);
+
+                // TODO: 5) Shutdown the VM (TODO: use libvirt instead of virsh
+                // system call)
+                shutdownVirtualMachine();
+                vmicApi.getGlobalState()
+                        .setProgressPercentage(
+                                ovfDefinitionId,
+                                ((100.0 / ovfDefinitionParser.getImageNumber()) / 6)
+                                        * 5
+                                        + (100.0 / ovfDefinitionParser
+                                                .getImageNumber()) * i);
+
+                // TODO: 6) Remove the node from the chef server
+                cleanChefServer();
+                vmicApi.getGlobalState()
+                        .setProgressPercentage(
+                                ovfDefinitionId,
+                                ((100.0 / ovfDefinitionParser.getImageNumber()) / 6)
+                                        * 6
+                                        + (100.0 / ovfDefinitionParser
+                                                .getImageNumber()) * i);
+
+            } catch (ProgressException e) {
+
+                // Try to clean up if something failed:
+                try {
+                    onlineCleanUpOnError();
+                } catch (ProgressException e1) {
+                    // Do nothing
+                }
+
+                // Propagate the error
+                vmicApi.getGlobalState().getProgressData(ovfDefinitionId)
+                        .setError(true);
+                vmicApi.getGlobalState().getProgressData(ovfDefinitionId)
+                        .setException(e);
+                return false;
+            }
+        }
+
+        LOGGER.info("Completed online image generation...");
+        return true;
+    }
+
+    /**
+     * Boots an image and waits for the OS initialisation process to finish.
+     */
+    private void bootImage() throws ProgressException {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * Install chef client via SHH into a Virtual Machine.
+     */
+    private void boostrapImage() throws ProgressException {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * Uploads the chef cookbook(s) to the chef workspace
+     */
+    private void uploadCookbooks() throws ProgressException {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * Deploys chef cookbook(s) to server and agent deployed in a Virtual Machine,
+     * installing required software for image.
+     */
+    private void deployCookbooks() throws ProgressException {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * Cleanly shuts down a Virtual Machine.
+     */
+    private void shutdownVirtualMachine() throws ProgressException {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * Removes uploaded cookbook(s) from workspace and server in addition to removing registration of node.
+     */
+    private void cleanChefServer() throws ProgressException {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * Attempts to clean up after a failure during online image generation.
+     */
+    private void onlineCleanUpOnError() throws ProgressException {
+        // TODO Auto-generated method stub
+
     }
 }
