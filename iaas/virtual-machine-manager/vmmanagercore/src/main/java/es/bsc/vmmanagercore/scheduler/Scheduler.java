@@ -70,7 +70,7 @@ public class Scheduler {
      *
      * @param schedAlg scheduling algorithm to be used
      */
-    private void setSchedAlgorithm(SchedulingAlgorithm schedAlg) {
+    public synchronized void setSchedAlgorithm(SchedulingAlgorithm schedAlg) {
         switch (schedAlg) {
             case CONSOLIDATION:
                 schedAlgorithm = new SchedAlgConsolidation();
@@ -91,6 +91,10 @@ public class Scheduler {
                 schedAlgorithm = new SchedAlgRandom();
                 break;
         }
+    }
+
+    public synchronized void setSchedAlgorithmName(SchedulingAlgorithm schedAlg) {
+        schedAlgorithmName = schedAlg.getName();
     }
 
     /**

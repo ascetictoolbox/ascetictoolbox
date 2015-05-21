@@ -24,10 +24,7 @@ import es.bsc.vmmanagercore.db.VmManagerDb;
 import es.bsc.vmmanagercore.logging.VMMLogger;
 import es.bsc.vmmanagercore.modellers.energy.EnergyModeller;
 import es.bsc.vmmanagercore.modellers.price.PricingModeller;
-import es.bsc.vmmanagercore.models.scheduling.DeploymentPlan;
-import es.bsc.vmmanagercore.models.scheduling.RecommendedPlan;
-import es.bsc.vmmanagercore.models.scheduling.VmAssignmentToHost;
-import es.bsc.vmmanagercore.models.scheduling.VmPlacement;
+import es.bsc.vmmanagercore.models.scheduling.*;
 import es.bsc.vmmanagercore.models.vms.Vm;
 import es.bsc.vmmanagercore.models.vms.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.hosts.Host;
@@ -316,6 +313,13 @@ public class VmsManager {
     private DeploymentPlan chooseBestDeploymentPlan(List<Vm> vms, String deploymentEngine) {
         switch (deploymentEngine) {
             case "legacy":
+                // The scheduling algorithm could have been changed. Therefore, we need to set it again.
+                // This is a quick fix. I need to find a way of telling the system to update properly the
+                // scheduling algorithm when using the legacy deployment engine. This does not occur when using
+                // the optaplanner deployment engine.
+                SchedulingAlgorithm currentSchedulingAlg = db.getCurrentSchedulingAlg();
+                scheduler.setSchedAlgorithmName(currentSchedulingAlg);
+                scheduler.setSchedAlgorithm(currentSchedulingAlg);
                 return scheduler.chooseBestDeploymentPlan(vms, hostsManager.getHosts());
             case "optaPlanner":
                 if (repeatedNameInVmList(vms)) {
