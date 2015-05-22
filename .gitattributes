@@ -232,6 +232,15 @@ iaas/virtual-machine-manager/GangliaMonitoring/src/main/resources/ganglia_connec
 iaas/virtual-machine-manager/GangliaMonitoring/src/test/java/es/bsc/monitoring/GangliaTest.java -text
 iaas/virtual-machine-manager/LICENSE.md -text
 iaas/virtual-machine-manager/README -text
+iaas/virtual-machine-manager/clopla-benchmarking/src/main/java/ClusterDimensions.java -text
+iaas/virtual-machine-manager/clopla-benchmarking/src/main/java/ClusterGenerator.java -text
+iaas/virtual-machine-manager/clopla-benchmarking/src/main/java/ExperimentExecution.java -text
+iaas/virtual-machine-manager/clopla-benchmarking/src/main/java/ExperimentExecutionRunner.java -text
+iaas/virtual-machine-manager/clopla-benchmarking/src/main/java/HostDimensions.java -text
+iaas/virtual-machine-manager/clopla-benchmarking/src/main/java/Main.java -text
+iaas/virtual-machine-manager/clopla-benchmarking/src/main/java/Randomizer.java -text
+iaas/virtual-machine-manager/clopla-benchmarking/src/main/java/VmCollectionGenerator.java -text
+iaas/virtual-machine-manager/clopla-benchmarking/src/main/java/VmDimensions.java -text
 iaas/virtual-machine-manager/clopla/LICENSE -text
 iaas/virtual-machine-manager/clopla/NOTICE -text
 iaas/virtual-machine-manager/clopla/README.md -text
