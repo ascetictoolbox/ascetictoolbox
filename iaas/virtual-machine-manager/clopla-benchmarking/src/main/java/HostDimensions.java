@@ -1,3 +1,5 @@
+import com.google.common.base.MoreObjects;
+
 public class HostDimensions {
 
     private final int minCpus;
@@ -39,6 +41,18 @@ public class HostDimensions {
 
     public int getMaxDiskGb() {
         return maxDiskGb;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("minCpus", minCpus)
+                .add("maxCpus", maxCpus)
+                .add("minRamGb", minRamGb)
+                .add("maxRamGb", maxRamGb)
+                .add("minDiskGb", minDiskGb)
+                .add("maxDiskGb", maxDiskGb)
+                .toString();
     }
 
 }

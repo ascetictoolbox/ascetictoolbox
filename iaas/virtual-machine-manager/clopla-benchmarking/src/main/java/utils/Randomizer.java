@@ -4,6 +4,11 @@ import java.util.Random;
 
 public class Randomizer {
 
+    // Supress default constructor for non-instantiability
+    private Randomizer() {
+        throw new AssertionError();
+    }
+
     private static final Random r = new Random();
 
     /**

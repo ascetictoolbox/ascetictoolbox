@@ -9,9 +9,11 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
-        Cluster cluster = ClusterGenerator.generateCluster(
+        /*Cluster cluster = ClusterGenerator.generateCluster(
                 100, new VmDimensions(1, 4, 1, 4, 10, 25),
-                40, new HostDimensions(1, 16, 1, 16, 10, 100));
+                40, new HostDimensions(1, 16, 1, 16, 10, 100));*/
+
+        Cluster cluster = ClusterGenerator.generateCluster(100, 50, 50, new HostDimensions(1, 16, 1, 16, 10, 100));
 
         VmPlacementConfig vmPlacementConfig = new VmPlacementConfig.Builder(
                 Policy.CONSOLIDATION,
