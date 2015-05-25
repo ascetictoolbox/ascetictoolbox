@@ -28,6 +28,8 @@ public class ExperimentExecutionRunner {
         List<Vm> vms = experimentExecution.getVms();
         List<Host> hosts = experimentExecution.getHosts();
 
+
+        // TODO: Made sure in the first execution that all the VMs have been placed!
         for (int i = 0; i < executionIntervals; ++i) {
             VmPlacementConfig currentConfig = new VmPlacementConfig.Builder(
                     experimentExecution.getVmPlacementConfig().getPolicy(),
