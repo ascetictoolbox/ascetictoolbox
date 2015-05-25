@@ -18,16 +18,15 @@ public class ExperimentExecutionRunner {
 
     // Returns a list of cluster states. This list contains one cluster state for each minute of execution.
     // This way, we can study how much better an algorithm gets given more execution time.
-    public static List<ClusterState> runExperimentExecution(ExperimentExecution experimentExecution,
-                                                            int intervalSeconds) {
-        List<ClusterState> result = new ArrayList<>();
+    public static ExperimentExecutionResults runExperimentExecution(ExperimentExecution experimentExecution,
+                                                                    int intervalSeconds) {
+        List<ClusterState> intermediateClusterStates = new ArrayList<>();
 
         // Good enough for now. Later, be careful with latest execution because of rounding.
         int executionIntervals = experimentExecution.getVmPlacementConfig().getTimeLimitSeconds()/intervalSeconds;
 
-        List<Vm> vms = experimentExecution.getVms();
-        List<Host> hosts = experimentExecution.getHosts();
-
+        List<Vm> vms = experimentExecution.getCluster().getVms();
+        List<Host> hosts = experimentExecution.getCluster().getHosts();
 
         // TODO: Made sure in the first execution that all the VMs have been placed!
         for (int i = 0; i < executionIntervals; ++i) {
@@ -41,9 +40,26 @@ public class ExperimentExecutionRunner {
             ClusterState currentClusterState = clopla.getBestSolution(hosts, vms, currentConfig);
             vms = currentClusterState.getVms();
             hosts = currentClusterState.getHosts();
-            result.add(currentClusterState);
+            intermediateClusterStates.add(currentClusterState);
         }
 
+        return new ExperimentExecutionResults(
+                intermediateClusterStates.get(0).getHosts().size(),
+                intermediateClusterStates.get(0).getVms().size(),
+                new Cluster(intermediateClusterStates.get(intermediateClusterStates.size() - 1).getVms(),
+                        intermediateClusterStates.get(intermediateClusterStates.size() - 1).getHosts())
+                        .getClusterLoad(),
+                experimentExecution.getVmPlacementConfig().getLocalSearch().toString(),
+                getScores(intermediateClusterStates));
+    }
+
+    // This is temporal. It returns the third score of the list, which is idle hosts for the consolidation
+    // policy, but later we might be interested in other metrics.
+    private static List<Integer> getScores(List<ClusterState> clusterStates) {
+        List<Integer> result = new ArrayList<>();
+        for (ClusterState clusterState : clusterStates) {
+            result.add(clusterState.getScore().toLevelNumbers()[2].intValue());
+        }
         return result;
     }
 
