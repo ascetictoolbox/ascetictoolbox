@@ -36,7 +36,7 @@ public class Cluster {
     }
 
     private double getDiskLoad() {
-        return (double)getTotalHostsDisk() / (double)getTotalVmsDisk();
+        return (double)getTotalVmsDisk() / (double)getTotalHostsDisk();
     }
 
     private int getTotalHostsCpus() {

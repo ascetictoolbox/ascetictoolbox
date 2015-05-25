@@ -28,7 +28,6 @@ public class ExperimentExecutionRunner {
         List<Vm> vms = experimentExecution.getCluster().getVms();
         List<Host> hosts = experimentExecution.getCluster().getHosts();
 
-        // TODO: Made sure in the first execution that all the VMs have been placed!
         for (int i = 0; i < executionIntervals; ++i) {
             VmPlacementConfig currentConfig = new VmPlacementConfig.Builder(
                     experimentExecution.getVmPlacementConfig().getPolicy(),
@@ -38,6 +37,16 @@ public class ExperimentExecutionRunner {
                     false).build();
 
             ClusterState currentClusterState = clopla.getBestSolution(hosts, vms, currentConfig);
+
+            // Make sure that in the first iteration all the VMs have been place
+            for (Vm vm : currentClusterState.getVms()) {
+                if (vm.getHost() == null) {
+                    throw new RuntimeException(
+                            "There are some VMs that have not been assigned to a host in the first iteration."
+                            + "Try setting longer iteration steps or reducing the size of the VM placement problem.");
+                }
+            }
+
             vms = currentClusterState.getVms();
             hosts = currentClusterState.getHosts();
             intermediateClusterStates.add(currentClusterState);

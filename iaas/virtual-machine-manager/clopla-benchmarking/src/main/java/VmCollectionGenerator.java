@@ -1,4 +1,5 @@
 import es.bsc.clopla.domain.Vm;
+import utils.Randomizer;
 
 import java.util.ArrayList;
 import java.util.List;
