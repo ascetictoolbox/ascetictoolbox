@@ -16,18 +16,23 @@ public class ClusterGenerator {
     // loadCpuCluster = (min_cpu_size_vm + max_cpu_size_vm)/(min_cpu_size_host + min_cpu_size_host).
     // Assuming uniform distribution!
     public static Cluster generateCluster(int nVms, int loadPerc, int nHosts, HostDimensions hostDimensions) {
-        VmDimensions vmDimensions = new VmDimensions(
-                1, getMaxVmDimensionSize(1, hostDimensions.getMinCpus(), hostDimensions.getMaxCpus(), loadPerc),
-                1, getMaxVmDimensionSize(1, hostDimensions.getMinRamGb(), hostDimensions.getMaxRamGb(), loadPerc),
-                1, getMaxVmDimensionSize(1, hostDimensions.getMinDiskGb(), hostDimensions.getMaxDiskGb(), loadPerc));
+        int maxVmCpus = getMaxVmDimensionSize(nVms, nHosts, 1,
+                hostDimensions.getMinCpus(), hostDimensions.getMaxCpus(), loadPerc);
+        int maxVmRamGb = getMaxVmDimensionSize(nVms, nHosts,1, hostDimensions.getMinRamGb(),
+                hostDimensions.getMaxRamGb(), loadPerc);
+        int maxVmDiskGb = getMaxVmDimensionSize(nVms, nHosts,1, hostDimensions.getMinDiskGb(),
+                hostDimensions.getMaxDiskGb(), loadPerc);
+        VmDimensions vmDimensions = new VmDimensions(1, maxVmCpus, 1, maxVmRamGb, 1, maxVmDiskGb);
+
         return new Cluster(
                 VmCollectionGenerator.generateVmCollection(nVms, vmDimensions),
                 HostCollectionGenerator.generateHostCollection(nHosts, hostDimensions));
     }
 
-    private static int getMaxVmDimensionSize(int minVmDimensionSize, int minHostDimensionSize,
+    private static int getMaxVmDimensionSize(int nVms, int nHosts, int minVmDimensionSize, int minHostDimensionSize,
                                              int maxHostDimensionSize, int loadPerc) {
-        return (int)(((loadPerc/100.0)*(minHostDimensionSize + maxHostDimensionSize)) - minVmDimensionSize);
+        return (int) Math.round(((((loadPerc/100.0)*(minHostDimensionSize + maxHostDimensionSize)) - minVmDimensionSize))
+                *((1.0*nHosts)/nVms));
     }
 
 }
