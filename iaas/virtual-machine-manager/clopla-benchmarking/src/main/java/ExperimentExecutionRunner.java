@@ -57,7 +57,7 @@ public class ExperimentExecutionRunner {
                 intermediateClusterStates.get(0).getVms().size(),
                 new Cluster(intermediateClusterStates.get(intermediateClusterStates.size() - 1).getVms(),
                         intermediateClusterStates.get(intermediateClusterStates.size() - 1).getHosts())
-                        .getClusterLoad(),
+                        .getClusterLoad().getAvgLoad(),
                 experimentExecution.getVmPlacementConfig().getLocalSearch().toString(),
                 getScores(intermediateClusterStates));
     }

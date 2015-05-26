@@ -24,6 +24,10 @@ public class ClusterLoad {
         return diskLoad;
     }
 
+    public double getAvgLoad() {
+        return (cpuLoad + ramLoad + diskLoad)/3;
+    }
+
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)

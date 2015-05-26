@@ -7,15 +7,15 @@ public class ExperimentExecutionResults {
 
     private final int nHosts;
     private final int nVms;
-    private final ClusterLoad clusterLoad;
+    private final double avgLoad;
     private final String localSearchAlg;
     private final List<Integer> scores = new ArrayList<>();
 
-    public ExperimentExecutionResults(int nHosts, int nVms, ClusterLoad clusterLoad, String localSearchAlg,
+    public ExperimentExecutionResults(int nHosts, int nVms, double avgLoad, String localSearchAlg,
                                       List<Integer> scores) {
         this.nHosts = nHosts;
         this.nVms = nVms;
-        this.clusterLoad = clusterLoad;
+        this.avgLoad = avgLoad;
         this.localSearchAlg = localSearchAlg;
         this.scores.addAll(scores);
     }
@@ -28,8 +28,8 @@ public class ExperimentExecutionResults {
         return nVms;
     }
 
-    public ClusterLoad getClusterLoad() {
-        return clusterLoad;
+    public double getAvgLoad() {
+        return avgLoad;
     }
 
     public String getLocalSearch() {
@@ -45,7 +45,7 @@ public class ExperimentExecutionResults {
         return MoreObjects.toStringHelper(this)
                 .add("nHosts", nHosts)
                 .add("nVms", nVms)
-                .add("clusterLoad", clusterLoad)
+                .add("avgLoad", avgLoad)
                 .add("localSearchAlg", localSearchAlg)
                 .add("scores", scores)
                 .toString();

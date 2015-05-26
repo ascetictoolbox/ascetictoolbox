@@ -13,11 +13,11 @@ public class Main {
                 100, new VmDimensions(1, 4, 1, 4, 10, 25),
                 40, new HostDimensions(1, 16, 1, 16, 10, 100));*/
 
-        Cluster cluster = ClusterGenerator.generateCluster(200, 50, 200, new HostDimensions(1, 16, 1, 16, 10, 100));
+        Cluster cluster = ClusterGenerator.generateCluster(40, 50, 40, new HostDimensions(1, 16, 1, 16, 10, 100));
 
         VmPlacementConfig vmPlacementConfig = new VmPlacementConfig.Builder(
                 Policy.CONSOLIDATION,
-                600,
+                60,
                 ConstructionHeuristic.FIRST_FIT_DECREASING,
                 new HillClimbing(),
                 false)
