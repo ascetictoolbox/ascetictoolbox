@@ -239,6 +239,7 @@ iaas/virtual-machine-manager/clopla-benchmarking/src/main/java/Experiment.java -
 iaas/virtual-machine-manager/clopla-benchmarking/src/main/java/ExperimentExecution.java -text
 iaas/virtual-machine-manager/clopla-benchmarking/src/main/java/ExperimentExecutionResults.java -text
 iaas/virtual-machine-manager/clopla-benchmarking/src/main/java/ExperimentExecutionRunner.java -text
+iaas/virtual-machine-manager/clopla-benchmarking/src/main/java/ExperimentGenerator.java -text
 iaas/virtual-machine-manager/clopla-benchmarking/src/main/java/ExperimentRunner.java -text
 iaas/virtual-machine-manager/clopla-benchmarking/src/main/java/HostCollectionGenerator.java -text
 iaas/virtual-machine-manager/clopla-benchmarking/src/main/java/HostDimensions.java -text

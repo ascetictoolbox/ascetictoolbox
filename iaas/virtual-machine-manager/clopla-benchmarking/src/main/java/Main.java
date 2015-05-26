@@ -1,7 +1,4 @@
-import es.bsc.clopla.domain.ConstructionHeuristic;
-import es.bsc.clopla.placement.config.Policy;
-import es.bsc.clopla.placement.config.VmPlacementConfig;
-import es.bsc.clopla.placement.config.localsearch.HillClimbing;
+import es.bsc.clopla.placement.config.localsearch.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,19 +10,17 @@ public class Main {
                 100, new VmDimensions(1, 4, 1, 4, 10, 25),
                 40, new HostDimensions(1, 16, 1, 16, 10, 100));*/
 
-        Cluster cluster = ClusterGenerator.generateCluster(40, 50, 40, new HostDimensions(1, 16, 1, 16, 10, 100));
+        Cluster cluster = ClusterGenerator.generateCluster(200, 50, 200, new HostDimensions(1, 16, 1, 16, 10, 100));
 
-        VmPlacementConfig vmPlacementConfig = new VmPlacementConfig.Builder(
-                Policy.CONSOLIDATION,
-                60,
-                ConstructionHeuristic.FIRST_FIT_DECREASING,
-                new HillClimbing(),
-                false)
-                .build();
+        List<LocalSearch> localSearchAlgs = new ArrayList<>();
+        localSearchAlgs.add(new HillClimbing());
+        localSearchAlgs.add(new LateAcceptance(400));
+        localSearchAlgs.add(new LateSimulatedAnnealing(100, 1000));
+        localSearchAlgs.add(new SimulatedAnnealing(2, 100));
+        localSearchAlgs.add(new StepCountingHC(400));
+        localSearchAlgs.add(new TabuSearch(7, 1000));
 
-        List<ExperimentExecution> experimentExecutions = new ArrayList<>();
-        experimentExecutions.add(new ExperimentExecution(cluster, vmPlacementConfig));
-        Experiment experiment = new Experiment(experimentExecutions);
+        Experiment experiment = ExperimentGenerator.generateExperiment(cluster, 60, localSearchAlgs);
         System.out.println(ExperimentRunner.runExperiment(experiment, 10));
     }
 
