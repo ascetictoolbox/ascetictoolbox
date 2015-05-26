@@ -1,3 +1,5 @@
+package es.bsc.clopla_benchmarking;
+
 import com.google.common.base.MoreObjects;
 
 public class ClusterLoad {

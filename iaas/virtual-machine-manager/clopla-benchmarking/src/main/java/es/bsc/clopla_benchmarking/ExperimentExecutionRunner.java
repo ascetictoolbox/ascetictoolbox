@@ -1,3 +1,5 @@
+package es.bsc.clopla_benchmarking;
+
 import es.bsc.clopla.domain.ClusterState;
 import es.bsc.clopla.domain.Host;
 import es.bsc.clopla.domain.Vm;
@@ -10,6 +12,7 @@ import java.util.List;
 
 public class ExperimentExecutionRunner {
 
+    // Suppress default constructor for non-instantiability
     private ExperimentExecutionRunner() {
         throw new AssertionError();
     }
@@ -58,7 +61,7 @@ public class ExperimentExecutionRunner {
                 new Cluster(intermediateClusterStates.get(intermediateClusterStates.size() - 1).getVms(),
                         intermediateClusterStates.get(intermediateClusterStates.size() - 1).getHosts())
                         .getClusterLoad().getAvgLoad(),
-                experimentExecution.getVmPlacementConfig().getLocalSearch().toString(),
+                experimentExecution.getVmPlacementConfig().getLocalSearch(),
                 getScores(intermediateClusterStates));
     }
 

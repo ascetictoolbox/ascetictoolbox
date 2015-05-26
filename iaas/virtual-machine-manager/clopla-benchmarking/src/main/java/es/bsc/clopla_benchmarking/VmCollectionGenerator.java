@@ -1,12 +1,14 @@
+package es.bsc.clopla_benchmarking;
+
 import es.bsc.clopla.domain.Vm;
-import utils.Randomizer;
+import es.bsc.clopla_benchmarking.utils.Randomizer;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class VmCollectionGenerator {
 
-    // Supress default constructor for non-instantiability
+    // Suppress default constructor for non-instantiability
     private VmCollectionGenerator() {
         throw new AssertionError();
     }

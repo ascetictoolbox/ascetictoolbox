@@ -1,8 +1,11 @@
+package es.bsc.clopla_benchmarking;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class ExperimentRunner {
 
+    // Suppress default constructor for non-instantiability
     private ExperimentRunner() {
         throw new AssertionError();
     }

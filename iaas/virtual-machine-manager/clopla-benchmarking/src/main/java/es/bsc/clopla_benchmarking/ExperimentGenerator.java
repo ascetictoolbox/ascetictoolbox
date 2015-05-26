@@ -1,3 +1,5 @@
+package es.bsc.clopla_benchmarking;
+
 import es.bsc.clopla.domain.ConstructionHeuristic;
 import es.bsc.clopla.placement.config.Policy;
 import es.bsc.clopla.placement.config.VmPlacementConfig;
@@ -11,6 +13,7 @@ public class ExperimentGenerator {
     private static final Policy POLICY = Policy.CONSOLIDATION;
     private static final ConstructionHeuristic CONSTRUCTION_HEURISTIC = ConstructionHeuristic.FIRST_FIT_DECREASING;
 
+    // Suppress default constructor for non-instantiability
     private ExperimentGenerator() {
         throw new AssertionError();
     }

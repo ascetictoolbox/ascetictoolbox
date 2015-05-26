@@ -1,3 +1,5 @@
+package es.bsc.clopla_benchmarking;
+
 import es.bsc.clopla.placement.config.localsearch.*;
 
 import java.util.ArrayList;
@@ -21,7 +23,8 @@ public class Main {
         localSearchAlgs.add(new TabuSearch(7, 1000));
 
         Experiment experiment = ExperimentGenerator.generateExperiment(cluster, 60, localSearchAlgs);
-        System.out.println(ExperimentRunner.runExperiment(experiment, 10));
+        System.out.println(ResultsCsvConverter.experimentExecutionResultsToCsv(
+                ExperimentRunner.runExperiment(experiment, 10)));
     }
 
 }

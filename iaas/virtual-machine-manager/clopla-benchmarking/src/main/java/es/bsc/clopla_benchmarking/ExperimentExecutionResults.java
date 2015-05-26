@@ -1,4 +1,7 @@
+package es.bsc.clopla_benchmarking;
+
 import com.google.common.base.MoreObjects;
+import es.bsc.clopla.placement.config.localsearch.LocalSearch;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,10 +11,10 @@ public class ExperimentExecutionResults {
     private final int nHosts;
     private final int nVms;
     private final double avgLoad;
-    private final String localSearchAlg;
+    private final LocalSearch localSearchAlg;
     private final List<Integer> scores = new ArrayList<>();
 
-    public ExperimentExecutionResults(int nHosts, int nVms, double avgLoad, String localSearchAlg,
+    public ExperimentExecutionResults(int nHosts, int nVms, double avgLoad, LocalSearch localSearchAlg,
                                       List<Integer> scores) {
         this.nHosts = nHosts;
         this.nVms = nVms;
@@ -32,7 +35,7 @@ public class ExperimentExecutionResults {
         return avgLoad;
     }
 
-    public String getLocalSearch() {
+    public LocalSearch getLocalSearch() {
         return localSearchAlg;
     }
 

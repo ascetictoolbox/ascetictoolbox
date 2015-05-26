@@ -1,4 +1,4 @@
-package utils;
+package es.bsc.clopla_benchmarking.utils;
 
 import java.util.Random;
 

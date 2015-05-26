@@ -1,6 +1,8 @@
+package es.bsc.clopla_benchmarking;
+
 public class ClusterGenerator {
 
-    // Supress default constructor for non-instantiability
+    // Suppress default constructor for non-instantiability
     private ClusterGenerator() {
         throw new AssertionError();
     }
