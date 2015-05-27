@@ -3277,6 +3277,7 @@ utils/JFuzzyLogic/fcl/trust/SingletonManyRules.fcl -text
 utils/JFuzzyLogic/fcl/trust/TSFewRules.fcl -text
 utils/JFuzzyLogic/fcl/trust/TSManyRules.fcl -text
 utils/JFuzzyLogic/fcl/z.fcl -text
+utils/JFuzzyLogic/pom.xml -text
 utils/JFuzzyLogic/src/main/java/net/sourceforge/jFuzzyLogic/CompileCpp.java -text
 utils/JFuzzyLogic/src/main/java/net/sourceforge/jFuzzyLogic/FIS.java -text
 utils/JFuzzyLogic/src/main/java/net/sourceforge/jFuzzyLogic/FunctionBlock.java -text

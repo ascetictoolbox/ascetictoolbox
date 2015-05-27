@@ -1,10 +1,10 @@
 package net.sourceforge.jFuzzyLogic.testCases;
 
+import java.io.File;
 import junit.framework.TestCase;
 import net.sourceforge.jFuzzyLogic.FIS;
 import net.sourceforge.jFuzzyLogic.Gpr;
 import net.sourceforge.jFuzzyLogic.JFuzzyLogic;
-import java.io.File;
 import org.junit.Assert;
 import org.junit.Test;
 
