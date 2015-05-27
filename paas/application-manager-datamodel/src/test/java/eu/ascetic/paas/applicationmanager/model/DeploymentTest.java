@@ -41,6 +41,7 @@ public class DeploymentTest {
 		deployment.setStatus("STATUS");
 		deployment.setStartDate("aaa");
 		deployment.setEndDate("bbb");
+		deployment.setSlaAgreement("sla");
 		List<Link> links = new ArrayList<Link>();
 		deployment.setLinks(links);
 		List<VM> vms = new ArrayList<VM>();
@@ -54,6 +55,7 @@ public class DeploymentTest {
 		assertEquals(vms, deployment.getVms());
 		assertEquals("aaa", deployment.getStartDate());
 		assertEquals("bbb", deployment.getEndDate());
+		assertEquals("sla", deployment.getSlaAgreement());
 	}
 	
 	@Test

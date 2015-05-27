@@ -74,6 +74,8 @@ public class Deployment {
 	private String startDate;
 	@XmlElement(name = "end-date", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private String endDate;
+	@XmlElement(name = "sla-agreement", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private String slaAgreement;
 	@XmlElement(name = "ovf", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private String ovf;
 	@XmlElementWrapper(name = "vms", namespace = APPLICATION_MANAGER_NAMESPACE)
@@ -128,6 +130,14 @@ public class Deployment {
 	public void addLink(Link link) {
 		if(links==null) links = new ArrayList<Link>();
 		links.add(link);
+	}
+	
+	@Column(name = "sla_agreement", nullable = true)
+	public String getSlaAgreement() {
+		return slaAgreement;
+	}
+	public void setSlaAgreement(String slaAgreement) {
+		this.slaAgreement = slaAgreement;
 	}
 
 	@Column(name = "ovf", length=900000)
