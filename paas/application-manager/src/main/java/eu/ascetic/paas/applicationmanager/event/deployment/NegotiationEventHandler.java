@@ -1,8 +1,6 @@
 package eu.ascetic.paas.applicationmanager.event.deployment;
 
-import org.apache.axis2.AxisFault;
 import org.apache.log4j.Logger;
-import org.slasoi.gslam.core.negotiation.INegotiation;
 import org.slasoi.slamodel.sla.SLA;
 import org.slasoi.slamodel.sla.SLATemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +11,10 @@ import eu.ascetic.paas.applicationmanager.event.DeploymentEvent;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
-import eu.ascetic.paas.applicationmanager.slam.SLAMClient;
+import eu.ascetic.paas.applicationmanager.slam.NegotiationWsClient;
 import eu.ascetic.paas.applicationmanager.slam.SLATemplateCreator;
+import eu.ascetic.paas.applicationmanager.slam.translator.SlaTranslator;
+import eu.ascetic.paas.applicationmanager.slam.translator.SlaTranslatorImplNoOsgi;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
 import reactor.event.Event;
 import reactor.spring.annotation.Consumer;
@@ -51,6 +51,7 @@ public class NegotiationEventHandler {
 	@Autowired
 	protected DeploymentEventService deploymentEventService;
 	
+	// TODO this method it is not multiprovider... 
 	@Selector(value="topic.deployment.status", reactor="@rootReactor")
 	public void negotiationProcess(Event<DeploymentEvent> event) {
 		DeploymentEvent deploymentEvent = event.getData();
@@ -66,49 +67,43 @@ public class NegotiationEventHandler {
 			deploymentDAO.update(deployment);
 			
 			if(Configuration.enableSLAM.equals("yes")) {
-				
+
 				// First we create the SLA template from the OVF
 				OvfDefinition ovfDefinition = OVFUtils.getOvfDefinition(deployment.getOvf());
-				SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "http://10.4.0.16/application-manager" + deployment.getHref() + "/ovf");
+				SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, Configuration.applicationManagerUrl + "/application-manager" + deployment.getHref() + "/ovf");
 				logger.debug("Initial SLA Template document: " + slaTemplate);
-				
-				try {
-					// Then we initiate the Negotiation
-					SLAMClient client = new SLAMClient(Configuration.slamURL);
-					
-					String initiatieNegotiationID = client.initiateNegotiation(slaTemplate);
-					logger.info("Negotiation ID: " + initiatieNegotiationID);
-					
-					// After the negotiation it is initiated, we get and negotiation ID, we use it to start the actual negotiation process
-					SLATemplate[] slaTemplates = client.negotiate(initiatieNegotiationID, slaTemplate);
-					logger.info("Agreement selected: " + slaTemplates[0]);
 
-					// Then we get a list of possible SLAs
-					// Since we only have a provider the first year, we actually accept the first contract (this could be changed)
-					SLA slaAgreement = client.createAgreement(initiatieNegotiationID, slaTemplates[0]);
-					logger.info("Agreement reached... "  + slaAgreement);
-				}
-				catch(AxisFault exception) {
-					logger.warn("ERROR connecting to PaaS SLAM");
-					exception.printStackTrace();
-				}
-				catch(INegotiation.OperationNotPossibleException exception) {
-					logger.warn("ERROR starting the initialization of the Negotiation with the PaaS SLAM");
-					exception.printStackTrace();
-				}
-				catch(INegotiation.OperationInProgressException exception) {
-					logger.warn("ERROR trying to negotiate an SLA Negotiation");
-					exception.printStackTrace();
-				}
-				catch(INegotiation.InvalidNegotiationIDException exception) {
-					logger.warn("ERROR trying to negotiate an SLA Negotiation");
-					exception.printStackTrace();
-				}
-				catch(INegotiation.SLACreationException exception) {
-					logger.warn("ERROR creating the SLA Agreement");
-					exception.printStackTrace();
-				}
-				
+				// We create a client to the SLAM
+				NegotiationWsClient client = new NegotiationWsClient();
+				SlaTranslator slaTranslator = new SlaTranslatorImplNoOsgi();
+				client.setSlaTranslator(slaTranslator);
+
+				// Then we initiate the Negotiation
+				logger.debug("Sending initiateNegotiation SOAP request...");
+				String negId = client.initiateNegotiation(Configuration.slamURL, slaTemplate);
+
+				logger.info("  Negotiation ID: " + negId);
+
+				// After the negotiation it is initiated, we get and negotiation ID, we use it to start the actual negotiation process
+				logger.debug("Sending negotiate SOAP request...");
+				logger.debug("Negotiation ID: " + negId);
+				SLATemplate[] slats = client.negotiate(Configuration.slamURL, slaTemplate, negId);
+
+				//					SLASOITemplateRenderer rend = new SLASOITemplateRenderer();
+				//					String xmlRetSlat = rend.renderSLATemplate(slats[0]); // TODO I need to retrieve a list of negotiations
+				//					logger.debug("SLA Template:");
+				//					logger.debug(xmlRetSlat);
+
+
+				// New code
+
+				//					SLASOITemplateParser parser = new SLASOITemplateParser();
+				//					SLATemplate slat = parser.parseTemplate(slatXml);
+				logger.debug("Sending create agreement SOAP request...");
+				SLA slaAgreement = client.createAgreement(Configuration.slamURL, slats[0], negId);  // TODO I need to store this somewhere... 
+				logger.debug("SLA:");
+				logger.debug(slaAgreement);  
+
 			}
 			
 			deployment.setStatus(Dictionary.APPLICATION_STATUS_NEGOTIATIED);

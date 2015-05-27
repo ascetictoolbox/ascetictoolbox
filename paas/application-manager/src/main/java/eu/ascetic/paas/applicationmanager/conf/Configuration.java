@@ -36,6 +36,7 @@ public class Configuration {
 	public static String slamURL = "http://10.4.0.16:8080/services/asceticNegotiation?wsdl";
 	public static String enableSLAM = "no";
 	public static String applicationMonitorUrl = "http://10.4.0.16:9000";
+	public static String applicationManagerUrl = "http://localhost";
 	
 	static {
         try {
@@ -52,6 +53,7 @@ public class Configuration {
         	slamURL = config.getString("slam.url");
         	enableSLAM = config.getString("enable.slam");
         	applicationMonitorUrl = config.getString("application-monitor.url");
+        	applicationManagerUrl = config.getString("application-manager.url");
         }
         catch (Exception e) {
             logger.info("Error loading Application Manager configuration file");

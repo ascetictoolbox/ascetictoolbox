@@ -51,8 +51,7 @@ public class NegotiationWsClientIT {
 	private String threeTierWebAppOvfFile = "3tier-webapp.ovf.xml";
 	private String threeTierWebAppOvfString;
 	
-	private String slatFile = "ascetic-basic-slat.xml";
-	private String slatXml;
+//	private String slatFile = "ascetic-basic-slat.xml";
 	
 	private static final String serverAddress = "localhost";//"10.4.0.15";
 
@@ -76,9 +75,9 @@ public class NegotiationWsClientIT {
 	public void setUp() throws Exception {
 		File file = new File(this.getClass().getResource( "/" + threeTierWebAppOvfFile ).toURI());		
 		threeTierWebAppOvfString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
-		
-		file = new File(this.getClass().getResource( "/" + slatFile ).toURI());		
-		slatXml = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
+//		
+//		file = new File(this.getClass().getResource( "/" + slatFile ).toURI());		
+//		String slatXml = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
 		
 		negotiationClient = new NegotiationWsClient();
 		SlaTranslator slaTranslator = new SlaTranslatorImplNoOsgi();
