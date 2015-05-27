@@ -2,6 +2,8 @@ package es.bsc.clopla_benchmarking.experiments;
 
 import es.bsc.clopla.placement.config.localsearch.*;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class ResultsCsvConverter {
@@ -17,7 +19,8 @@ public class ResultsCsvConverter {
         throw new AssertionError();
     }
 
-    public static String[] CSV_HEADERS = {"hosts", "vms", "avgLoad", "algorithm", "score"};
+    private static final List<String> CSV_HEADERS =
+            Collections.unmodifiableList(Arrays.asList("hosts", "vms", "avgLoad", "algorithm", "score"));
 
     public static String experimentExecutionResultsToCsv(List<ExperimentExecutionResults> experimentExecutionResults) {
         StringBuilder resultStringBuilder = new StringBuilder(csvHeaders()).append("\n");
