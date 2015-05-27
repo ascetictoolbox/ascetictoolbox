@@ -195,7 +195,7 @@
 		<dependency>
 			<groupId>eu.ascetic.paas</groupId>
 			<artifactId>application-manager-datamodel</artifactId>
-			<version>0.14-SNAPSHOT</version>
+			<version>0.15-SNAPSHOT</version>
 		</dependency>
 		
 		<dependency>
