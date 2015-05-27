@@ -36,6 +36,7 @@ public class ExperimentExecutionRunner {
                 new Cluster(solutionClusterState.getVms(), solutionClusterState.getHosts())
                         .getClusterLoad().getAvgLoad(),
                 experimentExecution.getVmPlacementConfig().getLocalSearch(),
+                experimentExecution.getVmPlacementConfig().getTimeLimitSeconds(),
                 getScore(solutionClusterState));
     }
 

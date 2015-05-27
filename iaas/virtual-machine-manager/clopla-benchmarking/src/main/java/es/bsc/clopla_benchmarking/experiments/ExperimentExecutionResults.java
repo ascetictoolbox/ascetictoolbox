@@ -9,13 +9,16 @@ public class ExperimentExecutionResults {
     private final int nVms;
     private final double avgLoad;
     private final LocalSearch localSearchAlg;
+    private final int seconds;
     private final int score;
 
-    public ExperimentExecutionResults(int nHosts, int nVms, double avgLoad, LocalSearch localSearchAlg, int score) {
+    public ExperimentExecutionResults(int nHosts, int nVms, double avgLoad, LocalSearch localSearchAlg,
+                                      int seconds, int score) {
         this.nHosts = nHosts;
         this.nVms = nVms;
         this.avgLoad = avgLoad;
         this.localSearchAlg = localSearchAlg;
+        this.seconds = seconds;
         this.score = score;
     }
 
@@ -29,6 +32,10 @@ public class ExperimentExecutionResults {
 
     public double getAvgLoad() {
         return avgLoad;
+    }
+
+    public int getSeconds() {
+        return seconds;
     }
 
     public LocalSearch getLocalSearch() {
@@ -46,6 +53,7 @@ public class ExperimentExecutionResults {
                 .add("nVms", nVms)
                 .add("avgLoad", avgLoad)
                 .add("localSearchAlg", localSearchAlg)
+                .add("seconds", seconds)
                 .add("score", score)
                 .toString();
     }

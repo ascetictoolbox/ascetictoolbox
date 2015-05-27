@@ -19,8 +19,8 @@ public class ResultsCsvConverter {
         throw new AssertionError();
     }
 
-    private static final List<String> CSV_HEADERS =
-            Collections.unmodifiableList(Arrays.asList("hosts", "vms", "avgLoad", "algorithm", "score"));
+    private static final List<String> CSV_HEADERS = Collections.unmodifiableList(
+            Arrays.asList("hosts", "vms", "avgLoad", "algorithm", "seconds", "score"));
 
     public static String experimentExecutionResultsToCsv(List<ExperimentExecutionResults> experimentExecutionResults) {
         StringBuilder resultStringBuilder = new StringBuilder(csvHeaders()).append("\n");
@@ -49,6 +49,7 @@ public class ResultsCsvConverter {
                 + experimentExecutionResults.getnVms() + ","
                 + (int) (experimentExecutionResults.getAvgLoad()*100) + ","
                 + localSearchAlgToString(experimentExecutionResults.getLocalSearch()) + ","
+                + experimentExecutionResults.getSeconds() + ","
                 + experimentExecutionResults.getScore());
 
         return resultStringBuilder.substring(0, resultStringBuilder.length() - 1); // Remove last comma
