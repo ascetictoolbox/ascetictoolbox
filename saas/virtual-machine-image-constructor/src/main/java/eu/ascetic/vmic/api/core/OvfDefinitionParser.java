@@ -16,7 +16,9 @@
 package eu.ascetic.vmic.api.core;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -27,6 +29,7 @@ import eu.ascetic.utils.ovf.api.OvfDefinition;
 import eu.ascetic.utils.ovf.api.ProductSection;
 import eu.ascetic.utils.ovf.api.References;
 import eu.ascetic.utils.ovf.api.VirtualSystem;
+import eu.ascetic.utils.ovf.api.enums.OperatingSystemType;
 import eu.ascetic.utils.ovf.api.enums.ResourceType;
 import eu.ascetic.utils.ovf.api.utils.OvfInvalidDocumentException;
 import eu.ascetic.vmic.api.VmicApi;
@@ -49,6 +52,8 @@ public class OvfDefinitionParser {
 
     private List<String> imageNames;
     private List<String> imageScripts;
+    private List<OperatingSystemType> imageOperatingSystems;
+    private List<Map<String, Map<String, String>>> imageSoftwareDependencies;
 
     private VmicApi vmicApi;
 
@@ -88,6 +93,8 @@ public class OvfDefinitionParser {
 
         imageNames = new ArrayList<String>();
         imageScripts = new ArrayList<String>();
+        imageOperatingSystems = new ArrayList<OperatingSystemType>();
+        imageSoftwareDependencies = new ArrayList<Map<String, Map<String, String>>>();
     }
 
     /**
@@ -147,9 +154,9 @@ public class OvfDefinitionParser {
                 // Get the script for this virtual system
                 // FIXME: Assuming only a single product section per Virtual
                 // System
+                ProductSection productSection = virtualSystem
+                        .getProductSectionAtIndex(0);
                 if (this.mode.equals("offline")) {
-                    ProductSection productSection = virtualSystem
-                            .getProductSectionAtIndex(0);
                     String script = productSection.getVmicScript();
 
                     // Add the script replacing variables to local storage
@@ -158,8 +165,66 @@ public class OvfDefinitionParser {
                             getImageMountPointPath(i)));
                     LOGGER.debug("Added script for image: " + imageName);
                 } else if (this.mode.equals("online")) {
-                    // TODO: Parse online related properties from SaaS modelling
+                    // Parse online related properties from SaaS modelling
                     // tools.
+
+                    // Get the OS for this virtual system (TODO: currently only
+                    // used in online mode for selecting an image).
+                    OperatingSystemType os = virtualSystem.getOperatingSystem()
+                            .getId();
+                    switch (os) {
+                    case LINUX:
+                        // Linux (TODO: add support for distribution flavours
+                        // and versions)
+                        imageOperatingSystems.add(OperatingSystemType.LINUX);
+                        LOGGER.debug("Parsed Linux as OS for image: "
+                                + imageName);
+                        break;
+                    case MICROSOFT_WINDOWS_SERVER_2003:
+                        // Windows
+                        imageOperatingSystems
+                                .add(OperatingSystemType.MICROSOFT_WINDOWS_SERVER_2003);
+                        LOGGER.debug("Parsed Windows 2003 as OS for image: "
+                                + imageName);
+                        break;
+                    default:
+                        // Unsupported OS, will cause an error later on
+                        imageOperatingSystems.add(OperatingSystemType.UNKNOWN);
+                        LOGGER.warn("Parsed unknown or unsupported OS!");
+                        break;
+                    }
+
+                    Integer softwareDendencyNumber = productSection
+                            .getSoftwareDependencyNumber();
+                    HashMap<String, Map<String, String>> softwareDependencies = new HashMap<String, Map<String, String>>();
+
+                    LOGGER.debug("Number of software depenencies for image "
+                            + imageName + " is : " + softwareDendencyNumber);
+                    for (int j = 0; j < softwareDendencyNumber; j++) {
+                        Integer packageAttributeNumber = productSection
+                                .getSoftwareDependencyPackageAttributeNumber(j);
+                        // Get URI to package (e.g. chef cookbook zipped up)
+                        String packageUri = productSection
+                                .getSoftwareDependencyPackageUri(j);
+                        LOGGER.debug("Found package for " + imageName
+                                + ", URI is : " + packageUri);
+                        Map<String, String> attributes = new HashMap<String, String>();
+                        // Get attributes describing the package (e.g. chef
+                        // cookbook attributes)
+                        for (int k = 0; k < packageAttributeNumber; k++) {
+                            String key = productSection
+                                    .getSoftwareDependencyPackageAttributeName(
+                                            j, k);
+                            String value = productSection
+                                    .getSoftwareDependencyPackageAttributeValue(
+                                            j, k);
+                            LOGGER.debug("Found attribute for package, key:value is: "
+                                    + key + ":" + value);
+                            attributes.put(key, value);
+                        }
+                        softwareDependencies.put(packageUri, attributes);
+                    }
+                    imageSoftwareDependencies.add(softwareDependencies);
 
                 } else {
                     LOGGER.error("Unknown VMIC mode set in OVF! Value is: '"
@@ -313,5 +378,44 @@ public class OvfDefinitionParser {
      */
     private String getImageName(int i) {
         return imageNames.get(i);
+    }
+
+    /**
+     * Gets the Operating System of an image.
+     * 
+     * @param i
+     *            The index i of the image defined by the order in which the
+     *            disks appears in the OVF
+     * @return The {@link OperatingSystemType} of the image
+     */
+    public OperatingSystemType getImageOperatingSystems(int i) {
+        return imageOperatingSystems.get(i);
+    }
+
+    /**
+     * Gets the number of software dependencies associated with an image.
+     * 
+     * @param i
+     *            The index i of the image defined by the order in which the
+     *            disks appears in the OVF
+     * @return The number of software dependencies of the image
+     */
+    public int getImageSoftwareDependencyNumber(int i) {
+        return imageSoftwareDependencies.get(i).size();
+    }
+
+    /**
+     * Gets the nested Map describing an image's software dependencies.
+     * 
+     * @param i
+     *            The index i of the image defined by the order in which the
+     *            disks appears in the OVF
+     * @return A Map describing the software dependencies of type: Map&ltString
+     *         <i>packageUri</i>, Map <i>attributes</i>&gt, where
+     *         <i>attributes</i> is a nested Map of type: Map&ltString
+     *         <i>attributeKey</i>, String <i>attributeValue</i>&gt
+     */
+    public Map<String, Map<String, String>> getImageSoftwareDependencies(int i) {
+        return imageSoftwareDependencies.get(i);
     }
 }
