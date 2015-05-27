@@ -2,9 +2,6 @@ package net.sourceforge.jFuzzyLogic.testCases;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import net.sourceforge.jFuzzyLogic.testCases.TestCaseCommandLine;
-import net.sourceforge.jFuzzyLogic.testCases.TestCaseJfuzzy;
-import net.sourceforge.jFuzzyLogic.testCases.TestCaseTipper;
 
 public class TestSuiteAll {
 

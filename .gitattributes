@@ -3434,11 +3434,11 @@ utils/JFuzzyLogic/src/main/java/net/sourceforge/jFuzzyLogic/ruleConnectionMethod
 utils/JFuzzyLogic/src/test/java/net/sourceforge/jFuzzyLogic/test/performance/PerformanceChart.java -text
 utils/JFuzzyLogic/src/test/java/net/sourceforge/jFuzzyLogic/test/performance/PerformanceTester.java -text
 utils/JFuzzyLogic/src/test/java/net/sourceforge/jFuzzyLogic/test/performance/TestExecutioner.java -text
-utils/JFuzzyLogic/src/test/java/net/sourceforge/jFuzzyLogic/test/performance/TestSuiteAll.java -text
 utils/JFuzzyLogic/src/test/java/net/sourceforge/jFuzzyLogic/testCases/TestCaseCommandLine.java -text
 utils/JFuzzyLogic/src/test/java/net/sourceforge/jFuzzyLogic/testCases/TestCaseJfuzzy.java -text
 utils/JFuzzyLogic/src/test/java/net/sourceforge/jFuzzyLogic/testCases/TestCaseTipper.java -text
 utils/JFuzzyLogic/src/test/java/net/sourceforge/jFuzzyLogic/testCases/TestCaseZzz.java -text
+utils/JFuzzyLogic/src/test/java/net/sourceforge/jFuzzyLogic/testCases/TestSuiteAll.java -text
 utils/JFuzzyLogic/tests/junit1.fcl -text
 utils/JFuzzyLogic/tests/junit2.fcl -text
 utils/JFuzzyLogic/tests/junit3.fcl -text
