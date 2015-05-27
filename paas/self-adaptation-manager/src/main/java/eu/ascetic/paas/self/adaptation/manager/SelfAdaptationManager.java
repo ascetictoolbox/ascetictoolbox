@@ -15,27 +15,45 @@
  */
 package eu.ascetic.paas.self.adaptation.manager;
 
+import eu.ascetic.paas.self.adaptation.manager.activemq.actuator.ActionRequester;
+import eu.ascetic.paas.self.adaptation.manager.activemq.listener.SlaManagerListener;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.jms.JMSException;
+import javax.naming.NamingException;
 
 /**
  * This is the main backbone of the self adaptation manager.
  */
-public class SelfAdaptationManager 
-{
+public class SelfAdaptationManager {
+
     /**
-     * TODO populate the list of listeners and actuators. Once is this done, 
+     * TODO populate the list of listeners and actuators. Once is this done,
      * attach the listeners to the decision logic that decides if an actuator
      * should fire or not.
      */
     ArrayList<EventListener> listeners = new ArrayList<>();
     ArrayList<ActuatorInvoker> actuators = new ArrayList<>();
 
-    public SelfAdaptationManager() {
+    /**
+     * This creates a new instance of the self-adaptation manager.
+     * @throws JMSException
+     * @throws NamingException 
+     */
+    public SelfAdaptationManager() throws JMSException, NamingException {
+        listeners.add(new SlaManagerListener());
+        actuators.add(new ActionRequester());
         //TODO load the actuator and listeners list in from file.
     }
-    
-    public static void main( String[] args )
-    {
-        new SelfAdaptationManager();
+
+    public static void main(String[] args) {
+        try {
+            new SelfAdaptationManager();
+        } catch (JMSException ex) {
+            Logger.getLogger(SelfAdaptationManager.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NamingException ex) {
+            Logger.getLogger(SelfAdaptationManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
