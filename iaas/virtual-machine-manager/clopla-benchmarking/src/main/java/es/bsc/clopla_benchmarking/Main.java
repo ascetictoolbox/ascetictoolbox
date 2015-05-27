@@ -24,7 +24,7 @@ public class Main {
         Cluster cluster = ClusterGenerator.generateCluster(1000, 50, 1000, new HostDimensions(1, 16, 1, 16, 10, 100));
 
         // Assign the hosts randomly, because we are only interested in comparing
-        // the local search heuristics (at least for now)
+        // the local search heuristics, not the construction heuristics (at least for now)
         assignVmsToHostRandomly(cluster.getVms(), cluster.getHosts());
 
         List<LocalSearch> localSearchAlgs = new ArrayList<>();
