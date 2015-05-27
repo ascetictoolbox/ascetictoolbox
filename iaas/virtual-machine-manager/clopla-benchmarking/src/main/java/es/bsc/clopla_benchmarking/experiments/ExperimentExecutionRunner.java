@@ -1,4 +1,4 @@
-package es.bsc.clopla_benchmarking;
+package es.bsc.clopla_benchmarking.experiments;
 
 import es.bsc.clopla.domain.ClusterState;
 import es.bsc.clopla.domain.Host;
@@ -6,6 +6,7 @@ import es.bsc.clopla.domain.Vm;
 import es.bsc.clopla.lib.Clopla;
 import es.bsc.clopla.lib.IClopla;
 import es.bsc.clopla.placement.config.VmPlacementConfig;
+import es.bsc.clopla_benchmarking.models.Cluster;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,7 @@
-package es.bsc.clopla_benchmarking;
+package es.bsc.clopla_benchmarking.experiments;
 
 import es.bsc.clopla.placement.config.VmPlacementConfig;
+import es.bsc.clopla_benchmarking.models.Cluster;
 
 public class ExperimentExecution {
 

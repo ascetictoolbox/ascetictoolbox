@@ -1,4 +1,4 @@
-package es.bsc.clopla_benchmarking;
+package es.bsc.clopla_benchmarking.experiments;
 
 import com.google.common.base.MoreObjects;
 import es.bsc.clopla.placement.config.localsearch.LocalSearch;

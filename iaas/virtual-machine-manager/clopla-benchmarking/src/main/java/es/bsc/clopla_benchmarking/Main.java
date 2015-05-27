@@ -1,12 +1,16 @@
 package es.bsc.clopla_benchmarking;
 
-import es.bsc.clopla.domain.ClusterState;
-import es.bsc.clopla.domain.ConstructionHeuristic;
+import es.bsc.clopla.domain.Host;
 import es.bsc.clopla.domain.Vm;
-import es.bsc.clopla.lib.Clopla;
-import es.bsc.clopla.placement.config.Policy;
-import es.bsc.clopla.placement.config.VmPlacementConfig;
 import es.bsc.clopla.placement.config.localsearch.*;
+import es.bsc.clopla_benchmarking.cluster_generation.ClusterGenerator;
+import es.bsc.clopla_benchmarking.cluster_generation.HostDimensions;
+import es.bsc.clopla_benchmarking.experiments.Experiment;
+import es.bsc.clopla_benchmarking.experiments.ExperimentGenerator;
+import es.bsc.clopla_benchmarking.experiments.ExperimentRunner;
+import es.bsc.clopla_benchmarking.experiments.ResultsCsvConverter;
+import es.bsc.clopla_benchmarking.models.Cluster;
+import es.bsc.clopla_benchmarking.utils.Randomizer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,33 +18,12 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
-        /*Cluster cluster = ClusterGenerator.generateCluster(
-                100, new VmDimensions(1, 4, 1, 4, 10, 25),
-                40, new HostDimensions(1, 16, 1, 16, 10, 100));*/
 
-        Cluster cluster = ClusterGenerator.generateCluster(100, 50, 100, new HostDimensions(1, 16, 1, 16, 10, 100));
+        Cluster cluster = ClusterGenerator.generateCluster(1000, 50, 1000, new HostDimensions(1, 16, 1, 16, 10, 100));
 
-        // Assign the hosts with any construction heuristic, because we are only interested in comparing the
-        // local search heuristics (at least for now)
-        // The timeout specified should be higher enough to finish placing all the VMs in the 'hardest' case.
-        ClusterState initialSolution = new Clopla().getBestSolution(
-                cluster.getHosts(),
-                cluster.getVms(),
-                new VmPlacementConfig.Builder(
-                        Policy.CONSOLIDATION,
-                        300,
-                        ConstructionHeuristic.FIRST_FIT,
-                        null,
-                        false).build());
-        cluster = new Cluster(initialSolution.getVms(), initialSolution.getHosts());
-
-        // Check that the construction heuristic had time to place all the VMs
-        for (Vm vm : cluster.getVms()) {
-            if (vm.getHost() == null) {
-                throw new RuntimeException("The construction heuristic did not have time to place all the VMs." +
-                        "Specify a higher timeout or reduce the cluster size.");
-            }
-        }
+        // Assign the hosts randomly, because we are only interested in comparing
+        // the local search heuristics (at least for now)
+        assignVmsToHostRandomly(cluster.getVms(), cluster.getHosts());
 
         List<LocalSearch> localSearchAlgs = new ArrayList<>();
         localSearchAlgs.add(new HillClimbing());
@@ -53,6 +36,12 @@ public class Main {
         Experiment experiment = ExperimentGenerator.generateExperiment(cluster, 60, localSearchAlgs);
         System.out.println(ResultsCsvConverter.experimentExecutionResultsToCsv(
                 ExperimentRunner.runExperiment(experiment, 10)));
+    }
+
+    private static void assignVmsToHostRandomly(List<Vm> vms, List<Host> hosts) {
+        for (Vm vm : vms) {
+            vm.setHost(hosts.get(Randomizer.generate(0, hosts.size() - 1)));
+        }
     }
 
 }

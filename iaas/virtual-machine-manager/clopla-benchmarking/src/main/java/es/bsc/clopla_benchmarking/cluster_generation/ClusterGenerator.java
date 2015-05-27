@@ -1,4 +1,6 @@
-package es.bsc.clopla_benchmarking;
+package es.bsc.clopla_benchmarking.cluster_generation;
+
+import es.bsc.clopla_benchmarking.models.Cluster;
 
 public class ClusterGenerator {
 

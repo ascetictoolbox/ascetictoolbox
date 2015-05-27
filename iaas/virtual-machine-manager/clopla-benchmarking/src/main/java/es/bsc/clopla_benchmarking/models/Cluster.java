@@ -1,4 +1,4 @@
-package es.bsc.clopla_benchmarking;
+package es.bsc.clopla_benchmarking.models;
 
 import es.bsc.clopla.domain.Host;
 import es.bsc.clopla.domain.Vm;

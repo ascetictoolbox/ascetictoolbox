@@ -1,4 +1,4 @@
-package es.bsc.clopla_benchmarking;
+package es.bsc.clopla_benchmarking.cluster_generation;
 
 import com.google.common.base.MoreObjects;
 

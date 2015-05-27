@@ -1,4 +1,4 @@
-package es.bsc.clopla_benchmarking;
+package es.bsc.clopla_benchmarking.models;
 
 import com.google.common.base.MoreObjects;
 

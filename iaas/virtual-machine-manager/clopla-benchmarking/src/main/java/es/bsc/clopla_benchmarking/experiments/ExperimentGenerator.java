@@ -1,9 +1,10 @@
-package es.bsc.clopla_benchmarking;
+package es.bsc.clopla_benchmarking.experiments;
 
 import es.bsc.clopla.domain.ConstructionHeuristic;
 import es.bsc.clopla.placement.config.Policy;
 import es.bsc.clopla.placement.config.VmPlacementConfig;
 import es.bsc.clopla.placement.config.localsearch.LocalSearch;
+import es.bsc.clopla_benchmarking.models.Cluster;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package es.bsc.clopla_benchmarking;
+package es.bsc.clopla_benchmarking.cluster_generation;
 
 import es.bsc.clopla.domain.Host;
 import es.bsc.clopla_benchmarking.utils.Randomizer;
