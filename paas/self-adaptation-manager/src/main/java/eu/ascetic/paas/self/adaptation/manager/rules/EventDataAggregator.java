@@ -30,13 +30,10 @@ public class EventDataAggregator {
     /**
      * This is a basic trend analysis that looks at the first and last data point
      * values in order to determine the direction in which the trend is going.
-     * @param eventList The list of events in which to perform the analysis on
-     * @param slaUuid The SLA identifier to perform analysis against
-     * @param guaranteeid The guarantee id to perform analysis against
+     * @param eventData The list of events in which to perform the analysis on
      * @return The direction and magnitude of event data.
      */
-    public static double analyseEventData(List<EventData> eventList, String slaUuid, int guaranteeid) {
-        List<EventData> eventData = filterEventData(eventList, slaUuid, guaranteeid);
+    public static double analyseEventData(List<EventData> eventData) {
         if (eventData.isEmpty()) {
             //This is a error case!
             return Double.NaN;
@@ -72,5 +69,25 @@ public class EventDataAggregator {
         return answer;
     }
     
+    /**
+     * This takes a list of event data and filters out old data.
+     * @param eventList The list of events to filter
+     * @param ageSeconds The time in seconds to allow data entry points for
+     * @return The list of events in ascending chronological order. 
+     * i.e. earliest first, that meet the time criteria.
+     */
+    public static List<EventData> filterEventDataByTime(List<EventData> eventList, int ageSeconds) {
+        ArrayList<EventData> answer = new ArrayList<>();
+        long now = System.currentTimeMillis();
+        now = now / 1000;
+        long filterTime = now - ageSeconds;
+        for (EventData eventData : eventList) {
+            if (eventData.getTime() >= filterTime) {
+                answer.add(eventData);
+            }
+        }
+        Collections.sort(answer);
+        return answer;        
+    }
     
 }

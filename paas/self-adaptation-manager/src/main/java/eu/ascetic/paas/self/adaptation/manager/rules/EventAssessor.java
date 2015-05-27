@@ -15,6 +15,8 @@
  */
 package eu.ascetic.paas.self.adaptation.manager.rules;
 
+import java.util.List;
+
 /**
  * This is the standard interface for all event assessors.
  * @author Richard Kavanagh
@@ -25,8 +27,9 @@ public interface EventAssessor {
      * This assesses an event and decides if a response is required. If no
      * response is required then null is returned.
      * @param event The SLA event to assess
+     * @param sequence The sequence of similar events that have been assessed.
      * @return A response object in cases where an adaptive response is required.
      */
-    public Response assessEvent(EventData event);
+    public Response assessEvent(EventData event, List<EventData> sequence);
     
 }

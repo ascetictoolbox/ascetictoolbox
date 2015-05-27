@@ -16,6 +16,7 @@
 package eu.ascetic.paas.self.adaptation.manager.rules;
 
 import java.io.FileNotFoundException;
+import java.util.List;
 import net.sourceforge.jFuzzyLogic.FIS;
 import net.sourceforge.jFuzzyLogic.rule.Rule;
 
@@ -73,10 +74,13 @@ public class FuzzyEventAssessor extends AbstractEventAssessor {
     }
     
     @Override
-    public Response assessEvent(EventData event) {
+    public Response assessEvent(EventData event, List<EventData> sequence) {
         Response answer = null;
+        List<EventData> eventData = EventDataAggregator.filterEventData(sequence, event.getSlaUuid(), event.getGuaranteeid());
+        eventData = EventDataAggregator.filterEventDataByTime(eventData, 120); //2mins
+        double trendValue = EventDataAggregator.analyseEventData(eventData);
         fis.setVariable("currentDifference", event.getDeviationBetweenRawAndGuarantee());
-        fis.setVariable("trendDifference", 5);
+        fis.setVariable("trendDifference", trendValue);
         fis.evaluate();
         for (Rule rule : fis.getFunctionBlock("adaptor").getFuzzyRuleBlock("No1").getRules()) {
             System.out.println(rule);
