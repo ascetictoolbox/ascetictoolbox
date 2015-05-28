@@ -41,6 +41,10 @@ public class ExperimentExecutionRunner {
     }
 
     private static int getScore(ClusterState clusterState) {
+        // Return - 1 if there is overbooking
+        if (clusterState.getScore().toLevelNumbers()[0].intValue() < 0) {
+            return -1;
+        }
         return clusterState.getScore().toLevelNumbers()[2].intValue();
     }
 
