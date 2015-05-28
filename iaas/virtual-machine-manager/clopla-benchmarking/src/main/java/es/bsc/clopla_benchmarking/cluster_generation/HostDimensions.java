@@ -68,6 +68,9 @@ public class HostDimensions {
         checkArgument(maxRamGb >= 0, "maxRamGb needs to be >= 0");
         checkArgument(minDiskGb >= 0, "minDiskGb needs to be >= 0");
         checkArgument(maxDiskGb >= 0, "maxDiskGb needs to be >= 0");
+        checkArgument(maxCpus >= minCpus, "maxCpus needs to be >= minCpus");
+        checkArgument(maxRamGb >= minRamGb, "maxRamGb needs to be >= minRamGb");
+        checkArgument(maxDiskGb >= minDiskGb, "maxDiskGb needs to be >= minDiskGb");
     }
 
 }
