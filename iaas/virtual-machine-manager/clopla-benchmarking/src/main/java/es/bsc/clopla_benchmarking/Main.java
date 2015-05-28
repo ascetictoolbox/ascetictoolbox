@@ -33,10 +33,10 @@ public class Main {
         clusters.add(ClusterGenerator.generateCluster(1000, 75, 1000, new HostDimensions(1, 16, 1, 16, 10, 100)));
         clusters.add(ClusterGenerator.generateCluster(1000, 100, 1000, new HostDimensions(1, 16, 1, 16, 10, 100)));
 
-        clusters.add(ClusterGenerator.generateCluster(1000, 25, 1000, new HostDimensions(1, 16, 1, 16, 10, 100)));
-        clusters.add(ClusterGenerator.generateCluster(1000, 50, 1000, new HostDimensions(1, 16, 1, 16, 10, 100)));
-        clusters.add(ClusterGenerator.generateCluster(1000, 75, 1000, new HostDimensions(1, 16, 1, 16, 10, 100)));
-        clusters.add(ClusterGenerator.generateCluster(1000, 100, 1000, new HostDimensions(1, 16, 1, 16, 10, 100)));
+        clusters.add(ClusterGenerator.generateCluster(10000, 25, 10000, new HostDimensions(1, 16, 1, 16, 10, 100)));
+        clusters.add(ClusterGenerator.generateCluster(10000, 50, 10000, new HostDimensions(1, 16, 1, 16, 10, 100)));
+        clusters.add(ClusterGenerator.generateCluster(10000, 75, 10000, new HostDimensions(1, 16, 1, 16, 10, 100)));
+        clusters.add(ClusterGenerator.generateCluster(10000, 100, 10000, new HostDimensions(1, 16, 1, 16, 10, 100)));
 
         List<LocalSearch> localSearchAlgs = new ArrayList<>();
         localSearchAlgs.add(new HillClimbing());
