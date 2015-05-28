@@ -17,6 +17,7 @@ package eu.ascetic.paas.self.adaptation.manager.activemq.listener;
 
 import eu.ascetic.paas.self.adaptation.manager.EventListener;
 import eu.ascetic.paas.self.adaptation.manager.activemq.ActiveMQBase;
+import eu.ascetic.paas.self.adaptation.manager.rules.EventAssessor;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -36,6 +37,7 @@ public class SlaManagerListener extends ActiveMQBase implements Runnable, EventL
     private static final String QUEUE_NAME = "";
     // Create a MessageConsumer from the Session to the Topic or Queue
     private final MessageConsumer consumer;
+    private EventAssessor eventAssessor;
 
     public SlaManagerListener() throws JMSException, NamingException {
         super();
@@ -65,6 +67,16 @@ public class SlaManagerListener extends ActiveMQBase implements Runnable, EventL
         } catch (JMSException ex) {
             ex.printStackTrace();
         }
+    }
+
+    @Override
+    public void setEventAssessor(EventAssessor assessor) {
+        eventAssessor = assessor;
+    }
+
+    @Override
+    public EventAssessor getEventAssessor() {
+        return eventAssessor;
     }
     
 }

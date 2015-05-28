@@ -15,6 +15,9 @@
  */
 package eu.ascetic.paas.self.adaptation.manager.rules;
 
+import eu.ascetic.paas.self.adaptation.manager.ActuatorInvoker;
+import eu.ascetic.paas.self.adaptation.manager.EventListener;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,5 +34,62 @@ public interface EventAssessor {
      * @return A response object in cases where an adaptive response is required.
      */
     public Response assessEvent(EventData event, List<EventData> sequence);
+
+    /**
+     * This assesses an event and decides if a response is required. If no
+     * response is required then null is returned. Calling this is equivalent to
+     * calling the method assessEvent(EventData event, List sequence) but
+     * in this case the event sequence list is maintained by the event assessor.
+     * @param event The SLA event to assess
+     * @return A response object in cases where an adaptive response is required.
+     */
+    public Response assessEvent(EventData event);    
+    
+    /**
+     * This gets the event assessors internal list of event listeners
+     * @return the list of event listeners the event assessor uses
+     */
+    public ArrayList<EventListener> getListeners();
+
+    /**
+      * This sets the event assessors internal list of event listeners
+     * @param listeners the listeners to set
+     */
+    public void setListeners(ArrayList<EventListener> listeners);
+    
+    /**
+     * This adds a listener to the event assessors internal list of event listeners
+     * @param listener The listener to add
+     */
+    public void addListeners(EventListener listener);
+    
+    /**
+     * This clears the event assessors internal list of event listeners
+     */
+    public void clearListeners();  
+
+    /**
+     * This gets the event assessors internal list of actuators
+     * @return the list of actuators the event assessor uses
+     */
+    public ArrayList<ActuatorInvoker> getActuators();
+
+    /**
+     * This sets the event assessors internal list of actuators
+     * @param actuators the actuators to set
+     */
+    public void setActuators(ArrayList<ActuatorInvoker> actuators);
+    
+    /**
+     * This adds an actuator to the event assessors internal list of actuators
+     * @param actuator The actuator to add
+     */
+    public void addActuators(ActuatorInvoker actuator);
+    
+    /**
+     * This clears the event assessors internal list of actuators
+     */
+    public void clearActuators();    
+    
     
 }

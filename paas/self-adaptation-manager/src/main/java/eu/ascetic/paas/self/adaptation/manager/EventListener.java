@@ -16,10 +16,16 @@
 
 package eu.ascetic.paas.self.adaptation.manager;
 
+import eu.ascetic.paas.self.adaptation.manager.rules.EventAssessor;
+
 /**
  * This is a the event listener interface for the self adaption manager.
  * @author Richard Kavanagh
  */
 public interface EventListener {
+    
+    public void setEventAssessor(EventAssessor assessor);
+    
+    public EventAssessor getEventAssessor();
     
 }

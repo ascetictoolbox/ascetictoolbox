@@ -39,14 +39,14 @@ public class EventDataAggregator {
             return Double.NaN;
         } else if (eventData.size() == 1) {
             //Too few datapoints for any trend analysis
-            return Double.NaN;
+            return 0.0;
         } else if (eventData.size() > 2) {
             //Further analysis
             EventData earliest = eventData.get(0);
             EventData latest = eventData.get(eventData.size() -1);
             return EventData.getChangeInSlack(earliest, latest);
         }
-        return Double.NaN;
+        return Double.NaN; //This is a error case!
     }
     
     /**

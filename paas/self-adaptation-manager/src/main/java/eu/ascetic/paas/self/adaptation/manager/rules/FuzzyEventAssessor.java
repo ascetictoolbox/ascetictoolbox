@@ -76,9 +76,7 @@ public class FuzzyEventAssessor extends AbstractEventAssessor {
     @Override
     public Response assessEvent(EventData event, List<EventData> sequence) {
         Response answer = null;
-        List<EventData> eventData = EventDataAggregator.filterEventData(sequence, event.getSlaUuid(), event.getGuaranteeid());
-        eventData = EventDataAggregator.filterEventDataByTime(eventData, 120); //2mins
-        double trendValue = EventDataAggregator.analyseEventData(eventData);
+        double trendValue = EventDataAggregator.analyseEventData(sequence);
         fis.setVariable("currentDifference", event.getDeviationBetweenRawAndGuarantee());
         fis.setVariable("trendDifference", trendValue);
         fis.evaluate();

@@ -15,15 +15,141 @@
  */
 package eu.ascetic.paas.self.adaptation.manager.rules;
 
+import eu.ascetic.paas.self.adaptation.manager.ActuatorInvoker;
+import eu.ascetic.paas.self.adaptation.manager.EventListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
- * The abstract class event assessor provides the generic routines for assessment
- * of adaptation events. These events are assessed by concrete implementations of 
- * this class. Adaption is then implemented based upon the outcomes rules 
- * associated with the assessor.
+ * The abstract class event assessor provides the generic routines for
+ * assessment of adaptation events. These events are assessed by concrete
+ * implementations of this class. Adaption is then implemented based upon the
+ * outcomes rules associated with the assessor.
+ *
  * @author Richard Kavanagh
  */
 public abstract class AbstractEventAssessor implements EventAssessor {
 
+    private ArrayList<EventListener> listeners = new ArrayList<>();
+    private ArrayList<ActuatorInvoker> actuators = new ArrayList<>();
+    private List<EventData> sequence;
+    private final int historyLengthSeconds = 120; //2 mins
+    private final int pollInterval = 5;
+
     //TODO add methods here
-    
+    @Override
+    public Response assessEvent(EventData event) {
+        //Add the current event into the sequence of all events.
+        sequence.add(event);
+        //filter event sequence for only relevent data    
+        List<EventData> eventData = EventDataAggregator.filterEventData(sequence, event.getSlaUuid(), event.getGuaranteeid());
+        //Purge old event map data
+        eventData = EventDataAggregator.filterEventDataByTime(eventData, historyLengthSeconds);
+        return assessEvent(event, eventData);
+    }
+
+    /**
+     * This gets the event assessors internal list of event listeners
+     *
+     * @return the list of event listeners the event assessor uses
+     */
+    @Override
+    public ArrayList<EventListener> getListeners() {
+        return listeners;
+    }
+
+    /**
+     * This sets the event assessors internal list of event listeners
+     *
+     * @param listeners the listeners to set
+     */
+    @Override
+    public void setListeners(ArrayList<EventListener> listeners) {
+        this.listeners = listeners;
+    }
+
+    /**
+     * This adds a listener to the event assessors internal list of event
+     * listeners
+     *
+     * @param listener The listener to add
+     */
+    @Override
+    public void addListeners(EventListener listener) {
+        listeners.add(listener);
+    }
+
+    /**
+     * This clears the event assessors internal list of event listeners
+     */
+    @Override
+    public void clearListeners() {
+        listeners.clear();
+    }
+
+    /**
+     * This gets the event assessors internal list of actuators
+     *
+     * @return the list of actuators the event assessor uses
+     */
+    @Override
+    public ArrayList<ActuatorInvoker> getActuators() {
+        return actuators;
+    }
+
+    /**
+     * This sets the event assessors internal list of actuators
+     *
+     * @param actuators the actuators to set
+     */
+    @Override
+    public void setActuators(ArrayList<ActuatorInvoker> actuators) {
+        this.actuators = actuators;
+    }
+
+    /**
+     * This adds an actuator to the event assessors internal list of actuators
+     *
+     * @param actuator The actuator to add
+     */
+    @Override
+    public void addActuators(ActuatorInvoker actuator) {
+        actuators.add(actuator);
+    }
+
+    /**
+     * This clears the event assessors internal list of actuators
+     */
+    @Override
+    public void clearActuators() {
+        actuators.clear();
+    }
+
+    /**
+     * The history clearer prunes the sequence of events of old redundant data.
+     */
+    private class HistoryClearer implements Runnable {
+
+        private boolean stop = false;
+
+        /**
+         * This makes the history clearer go through the historic event list and
+         * prune values as required.
+         */
+        @Override
+        @SuppressWarnings("SleepWhileInLoop")
+        public void run() {
+            if (!sequence.isEmpty()) {
+                sequence = EventDataAggregator.filterEventDataByTime(sequence, historyLengthSeconds);
+            }
+            try {
+                Thread.sleep(TimeUnit.SECONDS.toMillis(pollInterval));
+            } catch (InterruptedException ex) {
+                Logger.getLogger(HistoryClearer.class.getName()).log(Level.WARNING, "History Cleaner: InterruptedException", ex);
+            }
+        } //While not stopped
+    }
 }

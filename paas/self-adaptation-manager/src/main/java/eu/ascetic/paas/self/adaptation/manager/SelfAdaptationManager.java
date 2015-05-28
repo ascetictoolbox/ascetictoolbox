@@ -17,6 +17,9 @@ package eu.ascetic.paas.self.adaptation.manager;
 
 import eu.ascetic.paas.self.adaptation.manager.activemq.actuator.ActionRequester;
 import eu.ascetic.paas.self.adaptation.manager.activemq.listener.SlaManagerListener;
+import eu.ascetic.paas.self.adaptation.manager.rules.EventAssessor;
+import eu.ascetic.paas.self.adaptation.manager.rules.FuzzyEventAssessor;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,8 +36,9 @@ public class SelfAdaptationManager {
      * attach the listeners to the decision logic that decides if an actuator
      * should fire or not.
      */
-    ArrayList<EventListener> listeners = new ArrayList<>();
-    ArrayList<ActuatorInvoker> actuators = new ArrayList<>();
+    private ArrayList<EventListener> listeners = new ArrayList<>();
+    private ArrayList<ActuatorInvoker> actuators = new ArrayList<>();
+    private EventAssessor eventAssessor = null;
 
     /**
      * This creates a new instance of the self-adaptation manager.
@@ -42,9 +46,19 @@ public class SelfAdaptationManager {
      * @throws NamingException 
      */
     public SelfAdaptationManager() throws JMSException, NamingException {
-        listeners.add(new SlaManagerListener());
+        try {
+            //TODO load the actuator and listeners list in from file.
+            eventAssessor = new FuzzyEventAssessor();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(SelfAdaptationManager.class.getName()).log(Level.SEVERE, 
+                    "The event assessor rule file was not found", ex);
+        }
+        EventListener listener = new SlaManagerListener();
+        
+        listeners.add(listener);
         actuators.add(new ActionRequester());
-        //TODO load the actuator and listeners list in from file.
+        eventAssessor.setActuators(actuators);
+        eventAssessor.setListeners(listeners);
     }
 
     public static void main(String[] args) {
