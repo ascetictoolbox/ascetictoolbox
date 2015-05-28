@@ -12,8 +12,13 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.xpath.XPath;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.junit.Test;
 
+import eu.ascetic.paas.applicationmanager.amqp.model.ApplicationManagerMessage;
 import eu.ascetic.paas.applicationmanager.model.Agreement;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Collection;
@@ -809,5 +814,95 @@ public class ModelConverterTest {
 		assertEquals("self", element.getAttributeValue("rel"));
 		assertEquals("application/xml", element.getAttributeValue("type"));
 		assertEquals("/applications/101/deployments/22/agreements/44", element.getAttributeValue("href"));
+	}
+	
+	@Test
+	public void applicationManagerMessageToJSON() throws ParseException {
+		ApplicationManagerMessage amMessage = new ApplicationManagerMessage();
+		amMessage.setApplicationId("app-id");
+		amMessage.setDeploymentId("deplo-id");
+		amMessage.setStatus("status");
+		
+		eu.ascetic.paas.applicationmanager.amqp.model.VM vm1 = new eu.ascetic.paas.applicationmanager.amqp.model.VM();
+		vm1.setIaasMonitoringVmId("aaa");
+		vm1.setIaasVmId("bbb");
+		vm1.setOvfId("ccc");
+		vm1.setStatus("ddd");
+		vm1.setVmId("eee");
+		
+		eu.ascetic.paas.applicationmanager.amqp.model.VM vm2 = new eu.ascetic.paas.applicationmanager.amqp.model.VM();
+		vm2.setIaasMonitoringVmId("zzz");
+		vm2.setIaasVmId("yyy");
+		vm2.setOvfId("xxx");
+		vm2.setStatus("ttt");
+		vm2.setVmId("www");
+		
+		amMessage.addVM(vm1);
+		amMessage.addVM(vm2);
+		
+		String output = ModelConverter.applicationManagerMessageToJSON(amMessage);
+		
+		//We verify the output format
+		JSONParser parser = new JSONParser();
+		Object obj = parser.parse(output);
+		JSONObject jsonObject = (JSONObject) obj;
+		assertEquals("app-id", (String) jsonObject.get("applicationId"));
+		assertEquals("deplo-id", (String) jsonObject.get("deploymentId"));
+		assertEquals("status", (String) jsonObject.get("status"));
+		
+		JSONArray vms = (JSONArray) jsonObject.get("vms");
+		jsonObject = (JSONObject) vms.get(0);
+		assertEquals("eee", (String) jsonObject.get("vmId"));
+		assertEquals("bbb", (String) jsonObject.get("iaasVmId"));
+		assertEquals("aaa", (String) jsonObject.get("iaasMonitoringVmId"));
+		assertEquals("ccc", (String) jsonObject.get("ovfId"));
+		assertEquals("ddd", (String) jsonObject.get("status"));
+		
+		jsonObject = (JSONObject) vms.get(1);
+		assertEquals("www", (String) jsonObject.get("vmId"));
+		assertEquals("yyy", (String) jsonObject.get("iaasVmId"));
+		assertEquals("zzz", (String) jsonObject.get("iaasMonitoringVmId"));
+		assertEquals("xxx", (String) jsonObject.get("ovfId"));
+		assertEquals("ttt", (String) jsonObject.get("status"));
+	}
+	
+	@Test
+	public void fromJSONtoApplicationManagerMessage() {
+		String json = "{" +
+				 "\"applicationId\" : \"app-id\"," +
+				 "\"deploymentId\" : \"deplo-id\"," + 
+				 "\"status\" : \"status\"," +
+				 "\"vms\" : [ {" +
+				     "\"vmId\" : \"eee\"," +
+				     "\"iaasVmId\" : \"bbb\"," +
+				     "\"iaasMonitoringVmId\" : \"aaa\"," +
+				     "\"ovfId\" : \"ccc\"," +
+				     "\"status\" : \"ddd\"" +
+				 "}, {" +
+				     "\"vmId\" : \"www\"," +
+				     "\"iaasVmId\" : \"yyy\"," +
+				     "\"iaasMonitoringVmId\" : \"zzz\"," +
+				     "\"ovfId\" : \"xxx\"," +
+				     "\"status\" : \"ttt\"" +
+				 "} ]" +
+			  "}";
+		
+		ApplicationManagerMessage amMessage = ModelConverter.jsonToApplicationManagerMessage(json);
+		
+		assertEquals("app-id", amMessage.getApplicationId());
+		assertEquals("deplo-id", amMessage.getDeploymentId());
+		assertEquals("status", amMessage.getStatus());
+
+		assertEquals("eee", amMessage.getVms().get(0).getVmId());
+		assertEquals("bbb", amMessage.getVms().get(0).getIaasVmId());
+		assertEquals("aaa", amMessage.getVms().get(0).getIaasMonitoringVmId());
+		assertEquals("ccc", amMessage.getVms().get(0).getOvfId());
+		assertEquals("ddd", amMessage.getVms().get(0).getStatus());
+		
+		assertEquals("www", amMessage.getVms().get(1).getVmId());
+		assertEquals("yyy", amMessage.getVms().get(1).getIaasVmId());
+		assertEquals("zzz", amMessage.getVms().get(1).getIaasMonitoringVmId());
+		assertEquals("xxx", amMessage.getVms().get(1).getOvfId());
+		assertEquals("ttt", amMessage.getVms().get(1).getStatus());
 	}
 }

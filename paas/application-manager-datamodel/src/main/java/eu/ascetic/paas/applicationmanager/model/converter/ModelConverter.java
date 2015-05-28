@@ -6,9 +6,13 @@ import java.io.StringReader;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.log4j.Logger;
+import org.eclipse.persistence.jaxb.MarshallerProperties;
+import org.eclipse.persistence.jaxb.UnmarshallerProperties;
 
+import eu.ascetic.paas.applicationmanager.amqp.model.ApplicationManagerMessage;
 import eu.ascetic.paas.applicationmanager.model.Agreement;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Collection;
@@ -98,12 +102,32 @@ public class ModelConverter {
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			marshaller.marshal(t, out);
 			String output = out.toString();
-			logger.debug("Converting Collection object to XML: ");
+			logger.debug("Converting object to XML: ");
 			logger.debug(output);
 			
 			return output;
 		} catch(Exception exception) {
-			logger.info("Error converting Collection object to XML: " + exception.getMessage());
+			logger.info("Error converting object to XML: " + exception.getMessage());
+			return null;
+		}      
+	}
+	
+	private static <T> String toJSON(Class<T> clazz, T t) {
+	    try {
+			JAXBContext jc = org.eclipse.persistence.jaxb.JAXBContextFactory.createContext(new Class[] {clazz}, null);
+			Marshaller marshaller = jc.createMarshaller();
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+			marshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
+			
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			marshaller.marshal(t, out);
+			String output = out.toString();
+			logger.debug("Converting object to XML: ");
+			logger.debug(output);
+			
+			return output;
+		} catch(Exception exception) {
+			logger.info("Error converting object to XML: " + exception.getMessage());
 			return null;
 		}      
 	}
@@ -116,9 +140,47 @@ public class ModelConverter {
 			
 			return clazz.cast(obj);
 		} catch(Exception exception) {
-			logger.info("Error parsing XML of Collection: " + exception.getMessage());
+			logger.info("Error parsing XML: " + exception.getMessage());
 			return null;
 		}    
+	}
+	
+	private static <T> T fromJSONToObject(Class<T> clazz, String json) {
+		try {
+	        // Create a JaxBContext
+			JAXBContext jc = org.eclipse.persistence.jaxb.JAXBContextFactory.createContext(new Class[] {clazz}, null);
+	        
+	        // Create the Unmarshaller Object using the JaxB Context
+	        Unmarshaller unmarshaller = jc.createUnmarshaller();
+	        unmarshaller.setProperty(UnmarshallerProperties.MEDIA_TYPE, "application/json");
+	        unmarshaller.setProperty(UnmarshallerProperties.JSON_INCLUDE_ROOT, false);
+	        
+	        StreamSource jsonSource = new StreamSource(new StringReader(json));  
+	        T object = unmarshaller.unmarshal(jsonSource, clazz).getValue();
+			
+			return object;
+		} catch(Exception exception) {
+			logger.info("Error parsing XML: " + exception.getMessage());
+			return null;
+		}    
+	}
+	
+	/**
+	 * Converts an ApplicationManagerMessage object to its JSON representation
+	 * @param amMessage the object to be converted
+	 * @return the JSON representation of the object
+	 */
+	public static String applicationManagerMessageToJSON(ApplicationManagerMessage amMessage) {
+		return toJSON(ApplicationManagerMessage.class, amMessage);
+	}
+	
+	/**
+	 * Converts a json string into a ApplicationManagerMessage object
+	 * @param json to be converted
+	 * @return the ApplicaitonManagerMessage represented by that string
+	 */
+	public static ApplicationManagerMessage jsonToApplicationManagerMessage(String json) {
+		return fromJSONToObject(ApplicationManagerMessage.class, json);
 	}
 
 	/**

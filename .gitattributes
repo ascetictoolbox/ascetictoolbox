@@ -576,6 +576,8 @@ iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/ut
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/vmplacement/CloplaConversorTest.java -text
 paas/application-manager-datamodel/LICENSE.TXT -text
 paas/application-manager-datamodel/pom.xml -text
+paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/amqp/model/ApplicationManagerMessage.java -text
+paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/amqp/model/VM.java -text
 paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/Agreement.java -text
 paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/Application.java -text
 paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/ApplicationSample.java -text
@@ -592,6 +594,8 @@ paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmana
 paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/Root.java -text
 paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/VM.java -text
 paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/converter/ModelConverter.java -text
+paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmanager/amqp/model/ApplicationManagerMessageTest.java -text
+paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmanager/amqp/model/VMTest.java -text
 paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmanager/model/AgreementTest.java -text
 paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmanager/model/ApplicationSampleTest.java -text
 paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmanager/model/ApplicationTest.java -text
