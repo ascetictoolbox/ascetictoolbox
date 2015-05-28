@@ -19,6 +19,9 @@ public class Randomizer {
      * @return random number between min and max (both inclusive)
      */
     public static int generate(int min, int max) {
+        if (max == min) {
+            return max;
+        }
         return r.nextInt(max - min) + min;
     }
 

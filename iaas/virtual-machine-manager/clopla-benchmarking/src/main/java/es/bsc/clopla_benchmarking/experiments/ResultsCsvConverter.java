@@ -45,14 +45,12 @@ public class ResultsCsvConverter {
     }
 
     private static String experimentExecutionResultToCsv(ExperimentExecutionResults experimentExecutionResults) {
-        StringBuilder resultStringBuilder = new StringBuilder(experimentExecutionResults.getnHosts() + ","
+        return experimentExecutionResults.getnHosts() + ","
                 + experimentExecutionResults.getnVms() + ","
                 + (int) (experimentExecutionResults.getAvgLoad()*100) + ","
                 + localSearchAlgToString(experimentExecutionResults.getLocalSearch()) + ","
                 + experimentExecutionResults.getSeconds() + ","
-                + experimentExecutionResults.getScore());
-
-        return resultStringBuilder.substring(0, resultStringBuilder.length() - 1); // Remove last comma
+                + experimentExecutionResults.getScore();
     }
 
     // This function would not be needed if Clopla implemented the toString method for each LocalSearch subclass

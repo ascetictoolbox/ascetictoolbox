@@ -3,8 +3,8 @@ package es.bsc.clopla_benchmarking;
 import es.bsc.clopla.domain.Host;
 import es.bsc.clopla.domain.Vm;
 import es.bsc.clopla.placement.config.localsearch.HillClimbing;
-import es.bsc.clopla.placement.config.localsearch.LateAcceptance;
 import es.bsc.clopla.placement.config.localsearch.LocalSearch;
+import es.bsc.clopla.placement.config.localsearch.StepCountingHC;
 import es.bsc.clopla_benchmarking.cluster_generation.ClusterGenerator;
 import es.bsc.clopla_benchmarking.cluster_generation.HostDimensions;
 import es.bsc.clopla_benchmarking.experiments.Experiment;
@@ -29,13 +29,13 @@ public class Main {
 
         List<LocalSearch> localSearchAlgs = new ArrayList<>();
         localSearchAlgs.add(new HillClimbing());
-        localSearchAlgs.add(new LateAcceptance(400));
+        //localSearchAlgs.add(new LateAcceptance(400));
         //localSearchAlgs.add(new LateSimulatedAnnealing(100, 1000));
         //localSearchAlgs.add(new SimulatedAnnealing(2, 100));
-        //localSearchAlgs.add(new StepCountingHC(400));
+        localSearchAlgs.add(new StepCountingHC(400));
         //localSearchAlgs.add(new TabuSearch(7, 1000));
 
-        Experiment experiment = ExperimentGenerator.generateExperiment(cluster, 60, localSearchAlgs);
+        Experiment experiment = ExperimentGenerator.generateExperiment(cluster, 120, localSearchAlgs);
         System.out.println(ResultsCsvConverter.experimentExecutionResultsToCsv(
                 ExperimentRunner.runExperiment(experiment)));
     }

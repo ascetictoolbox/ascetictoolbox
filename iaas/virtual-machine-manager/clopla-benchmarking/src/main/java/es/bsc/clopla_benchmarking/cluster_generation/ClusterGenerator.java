@@ -35,8 +35,11 @@ public class ClusterGenerator {
 
     private static int getMaxVmDimensionSize(int nVms, int nHosts, int minVmDimensionSize, int minHostDimensionSize,
                                              int maxHostDimensionSize, int loadPerc) {
-        return (int) Math.round(((((loadPerc/100.0)*(minHostDimensionSize + maxHostDimensionSize)) - minVmDimensionSize))
-                *((1.0*nHosts)/nVms));
+        return Math.min(maxHostDimensionSize,
+                Math.max((int) Math.round(((((loadPerc/100.0)
+                                *(minHostDimensionSize + maxHostDimensionSize)) - minVmDimensionSize))
+                                *((1.0*nHosts)/nVms)),
+                        1));
     }
 
 }
