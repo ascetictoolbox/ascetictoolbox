@@ -12,7 +12,7 @@ import static org.junit.Assert.assertEquals;
 public class ClusterTest {
 
     @Test
-    public void avgLoadOfClusterIsCorrectOnStandardCase() {
+    public void calculatesClusterLoadCorrectlyInStandardCase() {
         List<Vm> vms = new ArrayList<>();
         vms.add(new Vm.Builder((long) 1, 1, 1024, 1).build()); // 1 CPU, 1GB RAM, 1GB Disk
         vms.add(new Vm.Builder((long) 2, 2, 2048, 2).build()); // 2 CPU, 2GB RAM, 2GB Disk
@@ -28,7 +28,7 @@ public class ClusterTest {
     }
 
     @Test
-    public void avgLoadOfClusterIsZeroWhenItHasNoVms() {
+    public void calculatesClusterLoadCorrectlyWhenThereAreNoVms() {
         List<Vm> vms = new ArrayList<>();
         List<Host> hosts = new ArrayList<>();
         hosts.add(new Host((long) 1, "1", 4, 6144, 8, false)); // 4 CPU, 6GB RAM, 4GB Disk
@@ -40,7 +40,7 @@ public class ClusterTest {
     }
 
     @Test
-    public void avgLoadOfClusterCanBe1() {
+    public void calculatesClusterLoadCorrectlyWhenIts1() {
         List<Vm> vms = new ArrayList<>();
         vms.add(new Vm.Builder((long) 1, 1, 1024, 1).build()); // 1 CPU, 1GB RAM, 1GB Disk
         vms.add(new Vm.Builder((long) 2, 2, 2048, 2).build()); // 2 CPU, 2GB RAM, 2GB Disk
@@ -56,7 +56,7 @@ public class ClusterTest {
     }
 
     @Test
-    public void avgLoadOfClusterCanBeMoreThan1() {
+    public void calculatesClusterLoadCorrectlyWhenItsMoreThan1() {
         List<Vm> vms = new ArrayList<>();
         vms.add(new Vm.Builder((long) 1, 1, 1024, 1).build()); // 1 CPU, 1GB RAM, 1GB Disk
         vms.add(new Vm.Builder((long) 2, 1, 2048, 3).build()); // 1 CPU, 2GB RAM, 3GB Disk
