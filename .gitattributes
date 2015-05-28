@@ -248,6 +248,7 @@ iaas/virtual-machine-manager/clopla-benchmarking/src/main/java/es/bsc/clopla_ben
 iaas/virtual-machine-manager/clopla-benchmarking/src/main/java/es/bsc/clopla_benchmarking/models/Cluster.java -text
 iaas/virtual-machine-manager/clopla-benchmarking/src/main/java/es/bsc/clopla_benchmarking/models/ClusterLoad.java -text
 iaas/virtual-machine-manager/clopla-benchmarking/src/main/java/es/bsc/clopla_benchmarking/utils/Randomizer.java -text
+iaas/virtual-machine-manager/clopla-benchmarking/src/test/java/es/bsc/clopla_benchmarking/models/ClusterTest.java -text
 iaas/virtual-machine-manager/clopla/LICENSE -text
 iaas/virtual-machine-manager/clopla/NOTICE -text
 iaas/virtual-machine-manager/clopla/README.md -text

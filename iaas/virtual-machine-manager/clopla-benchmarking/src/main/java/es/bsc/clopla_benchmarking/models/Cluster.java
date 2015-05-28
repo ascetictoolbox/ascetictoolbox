@@ -25,6 +25,13 @@ public class Cluster {
         return Collections.unmodifiableList(hosts);
     }
 
+    /**
+     * Returns the cluster load without taking into account the placement of the VMs.
+     * This means that this function returns total_size_VMs / total_size_Hosts, where
+     * size includes CPUs, RAM, and disk.
+     *
+     * @return the cluster load
+     */
     public ClusterLoad getClusterLoad() {
         return new ClusterLoad(getCpuLoad(), getRamLoad(), getDiskLoad());
     }
