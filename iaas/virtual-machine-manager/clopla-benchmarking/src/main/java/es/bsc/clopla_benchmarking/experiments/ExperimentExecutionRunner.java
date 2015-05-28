@@ -41,7 +41,9 @@ public class ExperimentExecutionRunner {
     }
 
     private static int getScore(ClusterState clusterState) {
-        // Return - 1 if there is overbooking
+        // If there is overbooking return a negative number (according to Clopla cluster overcapacity score),
+        // so we can distinguish the algorithms that are good enough to place all the VMs without overbooking.
+        // If there is no overbooking, simply return the number of idle hosts.
         if (clusterState.getScore().toLevelNumbers()[0].intValue() < 0) {
             return -1;
         }
