@@ -45,6 +45,21 @@ public class AmqpMessageProducer extends AmqpAbstract {
 	}
 	
 	/**
+	 * Creates a topic or queue programatically, instaed of loading that information from the JNDI file
+	 * @param url of the AMQP 1.0 broker, if it is <code>null</code> the system will use localhost:5672
+	 * @param user to connect to the AMQP Broker, if <code>null</code>, it is set to "guest"
+	 * @param password to connect to the AMQP Broker, if <code>null</code>, it is set to "guest"
+	 * @param queueOrTopicName queue or topic name to subscribe to
+	 * @param topic <code>true</code> if it is a topic, <code>false</code> if it iw a queue
+	 * @throws Exception
+	 */
+	public AmqpMessageProducer(String url, String user, String password, String queueOrTopicName, boolean topic) throws Exception {
+		super(url, user, password, queueOrTopicName, topic);
+
+		messageProducer = session.createProducer(queue);
+	}
+	
+	/**
 	 * It sends a message to the Message Queue for an specific topic
 	 * @param message text message to be sent.
 	 * @throws Exception

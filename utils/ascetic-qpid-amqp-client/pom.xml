@@ -4,7 +4,7 @@
 	<groupId>eu.ascetic.utils</groupId>
 	<artifactId>ascetic-qpid-amqp-client</artifactId>
 	<packaging>jar</packaging>
-	<version>0.1-SNAPSHOT</version>
+	<version>0.2-SNAPSHOT</version>
 	<name>ASCETiC QPid AMQP Client</name>
 	<url>http://www.ascetic.eu</url>
 
@@ -26,6 +26,15 @@
 	</ciManagement>
 
 	<build>
+		<plugins>
+			<plugin>
+  				<groupId>org.apache.maven.plugins</groupId>
+  				<artifactId>maven-surefire-plugin</artifactId>
+  				<configuration>
+    				<forkMode>always</forkMode>
+  				</configuration>
+			</plugin>
+		</plugins>
 
 	</build>
 

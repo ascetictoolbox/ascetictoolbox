@@ -1,5 +1,8 @@
 package eu.ascetic.amqp.client;
 
+import java.util.Properties;
+import java.util.UUID;
+
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
@@ -32,6 +35,7 @@ import javax.naming.InitialContext;
 public abstract class AmqpAbstract {
 	protected String user = "guest";
 	protected String password = "guest";
+	protected String url = "localhost:5672";
 	protected AmqpExceptionListener amqpExceptionListener = new AmqpExceptionListener();
 	protected Connection connection;
 	protected Session session;
@@ -55,6 +59,52 @@ public abstract class AmqpAbstract {
 		queue = (Destination) context.lookup(queueOrTopic);
 
 	    connection = factory.createConnection(this.user, this.password);
+		connection.setExceptionListener(amqpExceptionListener);
+		connection.start();
+
+		session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+	}
+	
+	public AmqpAbstract(String url, String user, String password, String queueOrTopicName, boolean topic) throws Exception {
+		this.queueOrTopic = "moment"; //TODO change this... 
+		
+		if(user != null) {
+			this.user = user;
+		} 
+		
+		if(password != null) {
+			this.password = password;
+		}
+		
+		if(url != null) {
+			this.url = url;
+		}
+		
+		String initialContextFactory = "org.apache.qpid.jms.jndi.JmsInitialContextFactory";
+		String connectionJNDIName = UUID.randomUUID().toString();
+		String connectionURL = "amqp://" + this.user + ":" + this.password + "@" + this.url;
+		String topicJNDIName = queueOrTopicName.replaceAll("\\.", "");
+		String topicName = queueOrTopicName;
+		
+		// Set the properties ...
+		Properties properties = new Properties();
+		properties.put(Context.INITIAL_CONTEXT_FACTORY, initialContextFactory);
+		properties.put("connectionfactory."+connectionJNDIName , connectionURL);
+
+		if(topic) {
+			properties.put("topic."+topicJNDIName , topicName);
+		} else {
+			properties.put("queue."+topicJNDIName , topicName);
+		}
+
+		// Now we have the context already configured... 
+		// Create the initial context
+		Context context = new InitialContext(properties);
+
+		ConnectionFactory factory = (ConnectionFactory) context.lookup(connectionJNDIName);
+		queue = (Destination) context.lookup(topicJNDIName);
+
+		connection = factory.createConnection(this.user, this.password);
 		connection.setExceptionListener(amqpExceptionListener);
 		connection.start();
 

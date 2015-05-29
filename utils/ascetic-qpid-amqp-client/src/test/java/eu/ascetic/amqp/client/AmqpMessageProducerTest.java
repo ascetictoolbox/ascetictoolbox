@@ -49,4 +49,22 @@ public class AmqpMessageProducerTest extends AbstractTest {
 		receiver.close();
 		producer.close();
 	}
+	
+	@Test
+	public void sendMessageTestWithDinamicTopic() throws Exception {
+		AmqpMessageReceiver receiver = new AmqpMessageReceiver(null, null, null,  "my.topic.queue", true);
+		AmqpMessageProducer producer = new AmqpMessageProducer(null, null, null, "my.topic.queue", true);
+		
+		producer.sendMessage("testX");
+		
+		Thread.sleep(1000l);
+		
+		TextMessage message = receiver.getLastMessage();
+		
+		assertEquals("my.topic.queue", message.getJMSDestination().toString());
+		assertEquals("testX", message.getText());
+		
+		receiver.close();
+		producer.close();
+	}
 }

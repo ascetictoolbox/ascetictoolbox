@@ -2,6 +2,8 @@ package eu.ascetic.amqp.client;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Properties;
+
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.DeliveryMode;
@@ -43,8 +45,12 @@ public class AmqpMessageRecieverTest extends AbstractTest {
 	private static final String PASSWORD = "guest";
 	private AmqpExceptionListener amqpExceptionListener = new AmqpExceptionListener();
 
+	/**
+	 * In this test we read the AMQP 1.0 configuration from a properties file in the classpath: jndi.properties
+	 * @throws Exception
+	 */
 	@Test
-	public void test() throws Exception {
+	public void testReadingFromJNDIPropertiesFile() throws Exception {
 		AmqpMessageReceiver messageReceiver = new AmqpMessageReceiver(USER, PASSWORD, "myTopicLookup");
 		
 		// The configuration for the Qpid InitialContextFactory has been supplied in
@@ -79,6 +85,116 @@ public class AmqpMessageRecieverTest extends AbstractTest {
 		assertEquals("topic.pepito", recievedMessage.getJMSDestination().toString());
 		assertEquals("Hello world!", recievedMessage.getText());
 
+		// We close all connections
+		connection.close();
+		messageReceiver.close();
+	}
+	
+	/**
+	 * Here we programatically configure the client to the AMQP without relaing in a JNDI properties file
+	 * @throws Exception
+	 */
+	@Test
+	public void withoutReadingFromJNDIPropertiesFile() throws Exception {
+		// Here we programmatically set the queue information
+		final String INITIAL_CONTEXT_FACTORY = "org.apache.qpid.jms.jndi.JmsInitialContextFactory";
+		 
+		final String CONNECTION_JNDI_NAME = "local";
+		final String CONNECTION_URL = "amqp://" + USER + ":" + PASSWORD + "@localhost:5672";
+		 
+		final String TOPIC_JNDI_NAME = "topic";
+		final String TOPIC_NAME = "example.MyTopic";
+		
+		AmqpMessageReceiver messageReceiver = new AmqpMessageReceiver("localhost:5672", USER, PASSWORD, TOPIC_NAME, true);
+		 
+		// Set the properties ...
+		Properties properties = new Properties();
+		properties.put(Context.INITIAL_CONTEXT_FACTORY, INITIAL_CONTEXT_FACTORY);
+		properties.put("connectionfactory."+CONNECTION_JNDI_NAME , CONNECTION_URL);
+		properties.put("topic."+TOPIC_JNDI_NAME , TOPIC_NAME);
+		 
+		// Now we have the context already configured... 
+		// Create the initial context
+		Context context = new InitialContext(properties);
+		
+		ConnectionFactory factory = (ConnectionFactory) context.lookup(CONNECTION_JNDI_NAME);
+		Destination queue = (Destination) context.lookup(TOPIC_JNDI_NAME);
+
+		Connection connection = factory.createConnection(USER, PASSWORD);
+		connection.setExceptionListener(amqpExceptionListener);
+		connection.start();
+
+		Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
+		MessageProducer messageProducer = session.createProducer(queue);
+
+		TextMessage message = session.createTextMessage("Hello world 1");
+		messageProducer.send(message, DeliveryMode.NON_PERSISTENT, Message.DEFAULT_PRIORITY, Message.DEFAULT_TIME_TO_LIVE);
+		
+		Thread.sleep(1000l);
+		TextMessage recievedMessage = messageReceiver.getLastMessage();
+		assertEquals(TOPIC_NAME, recievedMessage.getJMSDestination().toString());
+		assertEquals("Hello world 1", recievedMessage.getText());
+		
+		message = session.createTextMessage("Hello world!");
+		messageProducer.send(message, DeliveryMode.NON_PERSISTENT, Message.DEFAULT_PRIORITY, Message.DEFAULT_TIME_TO_LIVE);
+		
+		Thread.sleep(1000l);
+		recievedMessage = messageReceiver.getLastMessage();
+		assertEquals(TOPIC_NAME, recievedMessage.getJMSDestination().toString());
+		assertEquals("Hello world!", recievedMessage.getText());
+
+		// We close all connections
+		connection.close();
+		messageReceiver.close();
+	}
+	
+	/**
+	 * Here we programatically configure the client to the AMQP without relaing in a JNDI properties file
+	 * @throws Exception
+	 */
+	@Test
+	public void withoutReadingFromJNDIPropertiesFileQueue() throws Exception {
+		// Here we programmatically set the queue information
+		final String INITIAL_CONTEXT_FACTORY = "org.apache.qpid.jms.jndi.JmsInitialContextFactory";
+		 
+		final String CONNECTION_JNDI_NAME = "local";
+		final String CONNECTION_URL = "amqp://" + USER + ":" + PASSWORD + "@localhost:5672";
+		 
+		final String TOPIC_JNDI_NAME = "queue";
+		final String QUEUE_NAME = "example.MyQueue";
+		
+		AmqpMessageReceiver messageReceiver = new AmqpMessageReceiver("localhost:5672", USER, PASSWORD, QUEUE_NAME, false);
+		 
+		// Set the properties ...
+		Properties properties = new Properties();
+		properties.put(Context.INITIAL_CONTEXT_FACTORY, INITIAL_CONTEXT_FACTORY);
+		properties.put("connectionfactory."+CONNECTION_JNDI_NAME , CONNECTION_URL);
+		properties.put("queue."+TOPIC_JNDI_NAME , QUEUE_NAME);
+		 
+		// Now we have the context already configured... 
+		// Create the initial context
+		Context context = new InitialContext(properties);
+		
+		ConnectionFactory factory = (ConnectionFactory) context.lookup(CONNECTION_JNDI_NAME);
+		Destination queue = (Destination) context.lookup(TOPIC_JNDI_NAME);
+
+		Connection connection = factory.createConnection(USER, PASSWORD);
+		connection.setExceptionListener(amqpExceptionListener);
+		connection.start();
+
+		Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
+		MessageProducer messageProducer = session.createProducer(queue);
+
+		TextMessage message = session.createTextMessage("Hello world 1");
+		messageProducer.send(message, DeliveryMode.NON_PERSISTENT, Message.DEFAULT_PRIORITY, Message.DEFAULT_TIME_TO_LIVE);
+		
+		Thread.sleep(1000l);
+		TextMessage recievedMessage = messageReceiver.getLastMessage();
+		assertEquals(QUEUE_NAME, recievedMessage.getJMSDestination().toString());
+		assertEquals("Hello world 1", recievedMessage.getText());
+		
 		// We close all connections
 		connection.close();
 		messageReceiver.close();
@@ -121,6 +237,39 @@ public class AmqpMessageRecieverTest extends AbstractTest {
 		
 		reciever = new AmqpMessageReceiver("aaa", "bbb", "myTopicLookup");
 		
+		assertEquals("aaa", reciever.user);
+		assertEquals("bbb", reciever.password);
+		
+		reciever.close();
+		
+		// For the second constructor
+		reciever = new AmqpMessageReceiver(null, null, null, "myTopicLookup", false);
+		
+		assertEquals("localhost:5672", reciever.url);
+		assertEquals("guest", reciever.user);
+		assertEquals("guest", reciever.password);
+		
+		reciever.close();
+		
+		reciever = new AmqpMessageReceiver(null, "aaa", null, "myTopicLookup", false);
+		
+		assertEquals("localhost:5672", reciever.url);
+		assertEquals("aaa", reciever.user);
+		assertEquals("guest", reciever.password);
+		
+		reciever.close();
+		
+		reciever = new AmqpMessageReceiver(null, "aaa", "bbb", "myTopicLookup", false);
+		
+		assertEquals("localhost:5672", reciever.url);
+		assertEquals("aaa", reciever.user);
+		assertEquals("bbb", reciever.password);
+		
+		reciever.close();
+		
+		reciever = new AmqpMessageReceiver("127.0.0.1:5672", "aaa", "bbb", "myTopicLookup", false);
+		
+		assertEquals("127.0.0.1:5672", reciever.url);
 		assertEquals("aaa", reciever.user);
 		assertEquals("bbb", reciever.password);
 		
