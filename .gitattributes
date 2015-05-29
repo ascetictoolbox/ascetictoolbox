@@ -3633,6 +3633,7 @@ utils/ascetic-load-generator-app/pom.xml -text
 utils/ascetic-load-generator-app/src/main/java/eu/ascetic/ascetic/load/generator/app/Main.java -text
 utils/ascetic-load-generator-app/src/main/java/eu/ascetic/ascetic/load/generator/app/MemoryLoadGenerator.java -text
 utils/ascetic-load-generator-app/src/main/java/eu/ascetic/ascetic/load/generator/app/MemoryWriteGenerator.java -text
+utils/ascetic-qpid-amqp-client/LICENSE.TXT -text
 utils/ascetic-qpid-amqp-client/pom.xml -text
 utils/ascetic-qpid-amqp-client/src/main/java/eu/ascetic/amqp/client/AmqpAbstract.java -text
 utils/ascetic-qpid-amqp-client/src/main/java/eu/ascetic/amqp/client/AmqpExceptionListener.java -text
