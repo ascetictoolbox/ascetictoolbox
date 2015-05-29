@@ -49,9 +49,38 @@
 
 package eu.ascetic.paas.slam.pac.impl;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.MessageConsumer;
+import javax.jms.MessageListener;
+import javax.jms.Session;
+import javax.jms.TextMessage;
+import javax.jms.Topic;
+
+import org.apache.activemq.ActiveMQConnection;
+import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.slasoi.gslam.core.control.Policy;
 import org.slasoi.gslam.pac.ProvisioningAndAdjustment;
+
+import eu.ascetic.paas.slam.pac.PaasViolationChecker;
+import eu.ascetic.paas.slam.pac.applicationmanager.ModelConverter;
+import eu.ascetic.paas.slam.pac.applicationmanager.amqp.model.ApplicationManagerMessage;
+import eu.ascetic.paas.slam.pac.applicationmanager.model.Deployment;
+
 
 /**
  * DOMAIN SPECIFIC PAC.
@@ -64,7 +93,13 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
      * logger.
      */
     private static Logger logger = Logger.getLogger(ProvisioningAdjustmentImpl.class.getName());
-
+    private static String configurationFileImpl = null;
+    
+	/*
+	 * TODO
+	 * retrieve url from configuration file
+	 */
+    private static String url = ActiveMQConnection.DEFAULT_BROKER_URL;
     /**
      * Constructor.
      * 
@@ -74,6 +109,7 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
     public ProvisioningAdjustmentImpl(final String configFile) {
         super(configFile);
         logger.info("Creating Skeleton PAC...");
+        logger.info("Searching for Application Startup Events on ActiveMQ (configfile)...");
     }
 
     /**
@@ -81,7 +117,149 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
      */
     public ProvisioningAdjustmentImpl() {
         logger.info("Creating Skeleton PAC...");
+        logger.info("Searching for Application Startup Events on ActiveMQ...");
+        init();
+        retrieveApplicationEvents();
     }
+    
+    
+    public void init() {
+    	logger.debug("ASCETIC: ProvisioningAndAdjustment, init() method");
+		configurationFileImpl = configurationFile;
+		configurationFileImpl = configurationFileImpl.replace("/", System.getProperty("file.separator"));
+		try {
+
+			String initialPath = configurationFilesPath + configurationFile;
+			logger.debug("Initial path = " + initialPath);
+			String thePath = initialPath.replace("/", System.getProperty("file.separator"));
+			logger.debug("The path = " + thePath);
+			properties.load(new FileInputStream(thePath));
+			PropertyConfigurator.configure(configurationFilesPath + properties.getProperty(LOG4J_FILE));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		logger.debug("Properties file loaded...");
+    }
+    
+    /**
+     * 1. Gets 'application started' events from the message queue
+     */
+    private void retrieveApplicationEvents() {
+    	try{
+    	
+    	// Getting JMS connection from the server
+
+        ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(url);
+        Connection connection = connectionFactory.createConnection();
+
+        // need to setClientID value, any string value you wish
+        connection.setClientID("PaaS SLAM Application Event Listener");
+
+        
+        connection.start();
+        
+        Session session = connection.createSession(false,
+                Session.AUTO_ACKNOWLEDGE);
+
+        Topic topic = session.createTopic("app-manager.deployment.deployed");
+
+        //need to use createDurableSubscriber() method instead of createConsumer() for topic
+        // MessageConsumer consumer = session.createConsumer(topic);
+        MessageConsumer consumer = session.createDurableSubscriber(topic,
+                "PAAS SLAM");
+
+        MessageListener listener = new MessageListener() {
+            public void onMessage(Message message) {
+                try {
+                    if (message instanceof TextMessage) {
+                        TextMessage textMessage = (TextMessage) message;
+                        logger.info("ACTIVEMQ: Received message in the topic app-manager.deployment.deployed: "+ textMessage.getText());
+                        
+                        ApplicationManagerMessage amMessage = ModelConverter.jsonToApplicationManagerMessage(textMessage.getText());
+                        
+                        logger.info("Retrieving application Details from the Application Manager...");
+                        String slaId = retrieveApplicationDetails(amMessage.getApplicationId(),amMessage.getDeploymentId());
+                        
+                        logger.info("Asking ApplicationMonitor to initiateMonitoring...");
+	                    String topicId = initiateMonitoring(amMessage.getApplicationId(), amMessage.getDeploymentId(), slaId);
+                        
+                        logger.info("Creating an instance of Paas Violation Checker...");
+                        new Thread(new PaasViolationChecker(topicId, amMessage.getApplicationId(), amMessage.getDeploymentId(), slaId)).start();
+                        
+                    }
+                } catch (JMSException e) {
+                    logger.error("Caught:" + e);
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        consumer.setMessageListener(listener);
+        //connection.close();
+        }catch(Exception e){
+        	e.printStackTrace();
+        	logger.error(e.getMessage());
+//            System.err.println("NOT CONNECTED!!!");
+        }
+    }
+    
+    
+    /**
+     * 2. Retrieve application details from the application manager whenever an 
+     * "application starting" event is catched
+     */
+    private String retrieveApplicationDetails(String appId, String deploymentId) {
+    	String slaId = "";
+    	
+    	try {
+    		HttpClient client = new DefaultHttpClient();
+    		/*
+    		 * TODO
+    		 * retrieve url from configuration file
+    		 */
+			HttpGet request = new HttpGet("http://10.4.0.16/application-manager/applications/"+appId+"/deployments/"+deploymentId);
+			HttpResponse response = client.execute(request);
+			
+			System.out.println("status: " + response.getStatusLine());
+			System.out.println("headers: " + response.getAllHeaders());
+			System.out.println("body:" + response.getEntity());
+			
+			HttpEntity entity = response.getEntity();
+			String responseString = EntityUtils.toString(entity, "UTF-8");
+			logger.debug("Response string from the ApplicationManager: "+responseString);
+			
+			Deployment deployment = ModelConverter.xmlDeploymentToObject(responseString);
+			logger.debug("Deployment Id: "+deployment.getId());
+			logger.debug("SLA Agreement: "+deployment.getSlaAgreement());
+			
+			slaId = deployment.getSlaAgreement();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+    	return slaId;
+    }
+    
+    
+    /**
+     * 3. Asks the application monitor to initiate the monitoring on the given app, deployment
+     *  and SLA
+     * Returns the id of the topic where to read the measurements
+     */
+    private String initiateMonitoring(String appId, String deploymentId, String slaId) {
+    	/*
+    	 * TODO
+    	 */
+    	return "application-monitor.monitoring."+appId+".measurement";
+    }
+    
+    
+    
+   
 
     /**
      * Triggers the execution of a provisioning plan.
