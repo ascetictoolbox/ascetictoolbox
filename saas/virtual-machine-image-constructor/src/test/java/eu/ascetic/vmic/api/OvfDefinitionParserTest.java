@@ -63,5 +63,7 @@ public class OvfDefinitionParserTest {
                 .getVirtualSystemCollection().getVirtualSystemAtIndex(0).getProductSectionAtIndex(0)
                 .getPropertyByKey("asceticVmicScript").getValue(),
                 ovfDefinition.getReferences(), "/some/mount/point");
+        
+        LOGGER.info("VMIC mode is: " + ovfDefinition.getVirtualSystemCollection().getProductSectionAtIndex(0).getVmicMode());
     }
 }

@@ -43,7 +43,7 @@
         <Info>Virtual Systems for HMMERpfam application</Info>
         <ProductSection>
             <Info>Ascetic Application Wide Extensions</Info>
-            <Property ns:key="asceticVmicMode" ns:type="uint32"
+            <Property ns:key="asceticVmicMode" ns:type="string"
                 ns:value="offline" />
         </ProductSection>
         <VirtualSystem ns:id="ascetic-pm-HMMERpfam">
