@@ -1024,7 +1024,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     public void setVmicMode(String mode) {
         ProductProperty productProperty = getPropertyByKey(ASCETIC_VMIC_MODE_KEY);
         if (productProperty == null) {
-            addNewProperty(ASCETIC_VMIC_MODE_KEY, ProductPropertyType.UINT32,
+            addNewProperty(ASCETIC_VMIC_MODE_KEY, ProductPropertyType.STRING,
                     mode);
         } else {
             productProperty.setValue(mode);
