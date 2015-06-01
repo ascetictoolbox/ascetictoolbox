@@ -2475,6 +2475,7 @@ paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manag
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/EventAssessor.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/EventData.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/EventDataAggregator.java -text
+paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/EventDataConverter.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/FiringCriteria.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/FuzzyEventAssessor.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/IdleEventAssessor.java -text

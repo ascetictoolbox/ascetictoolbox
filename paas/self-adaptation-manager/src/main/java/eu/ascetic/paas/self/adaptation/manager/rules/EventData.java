@@ -29,7 +29,33 @@ public class EventData implements Comparable<EventData> {
     private EventData.Type type; //breach vs warning
     private EventData.Operator guranteeOperator; // threshold direction
     private String slaUuid; //sla id
-    private int guaranteeid; //sla gurantee id
+    private String guaranteeid; //sla gurantee id
+
+    /**
+     * 
+     */
+    public EventData() {
+    }
+    
+    /**
+     * 
+     * @param time
+     * @param rawValue
+     * @param guranteedValue
+     * @param type
+     * @param guranteeOperator
+     * @param slaUuid
+     * @param guaranteeid 
+     */
+    public EventData(long time, double rawValue, double guranteedValue, Type type, Operator guranteeOperator, String slaUuid, String guaranteeid) {
+        this.time = time;
+        this.rawValue = rawValue;
+        this.guranteedValue = guranteedValue;
+        this.type = type;
+        this.guranteeOperator = guranteeOperator;
+        this.slaUuid = slaUuid;
+        this.guaranteeid = guaranteeid;
+    }
 
     /**
      * @return the guranteeOperator
@@ -62,14 +88,14 @@ public class EventData implements Comparable<EventData> {
     /**
      * @return the guarantee id
      */
-    public int getGuaranteeid() {
+    public String getGuaranteeid() {
         return guaranteeid;
     }
 
     /**
      * @param guranteeid the guarantee id to set
      */
-    public void setGuaranteeid(int guranteeid) {
+    public void setGuaranteeid(String guranteeid) {
         this.guaranteeid = guranteeid;
     }
 
