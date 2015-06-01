@@ -58,10 +58,10 @@ public class EventDataAggregator {
      * @return The list of events associated with a given guarantee of an SLA, in
      * ascending chronological order. i.e. earliest first.
      */
-    public static List<EventData> filterEventData(List<EventData> eventList, String slaUuid, int guaranteeid) {
+    public static List<EventData> filterEventData(List<EventData> eventList, String slaUuid, String guaranteeid) {
         ArrayList<EventData> answer = new ArrayList<>();
         for (EventData eventData : eventList) {
-            if (eventData.getSlaUuid().equals(slaUuid) && eventData.getGuaranteeid() == guaranteeid) {
+            if (eventData.getSlaUuid().equals(slaUuid) && eventData.getGuaranteeid().equals(guaranteeid)) {
                 answer.add(eventData);
             }
         }
