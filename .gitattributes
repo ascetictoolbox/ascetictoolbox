@@ -11,6 +11,8 @@ iaas/energy-modeller-load-calibration-tool/src/main/webapp/WEB-INF/sun-jaxws.xml
 iaas/energy-modeller-load-calibration-tool/src/main/webapp/WEB-INF/web.xml -text
 iaas/energy-modeller-load-calibration-tool/src/main/webapp/index.jsp -text
 iaas/energy-modeller-standalone-calibration-tool/Apps.csv -text
+iaas/energy-modeller-standalone-calibration-tool/Read[!!-~]Me.docx -text
+iaas/energy-modeller-standalone-calibration-tool/Read[!!-~]Me.txt -text
 iaas/energy-modeller-standalone-calibration-tool/nbactions.xml -text
 iaas/energy-modeller-standalone-calibration-tool/pom.xml -text
 iaas/energy-modeller-standalone-calibration-tool/src/main/java/eu/ascetic/iaas/energy/modeller/standalone/calibration/tool/CalibrationRunManager.java -text
