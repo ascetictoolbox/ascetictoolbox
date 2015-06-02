@@ -3967,6 +3967,8 @@ utils/energy-modeller-vm-summary-generator/src/test/java/eu/ascetic/iaasvmenergy
 utils/energy-modeller-vm-summary-generator/vm_experimental_list.csv -text
 utils/energy-modeller-vm-summary-generator/vm_experimental_list.txt -text
 utils/energy-modeller-vm-summary-generator/zabbix_db_adaptor.properties -text
+utils/host-power-emulator/Read[!!-~]Me.docx -text
+utils/host-power-emulator/Read[!!-~]Me.txt -text
 utils/host-power-emulator/associate[!!-~]scripts/host-power-push-exec.sh -text
 utils/host-power-emulator/associate[!!-~]scripts/host-power-push-kill.sh -text
 utils/host-power-emulator/associate[!!-~]scripts/start-host-power.sh -text
