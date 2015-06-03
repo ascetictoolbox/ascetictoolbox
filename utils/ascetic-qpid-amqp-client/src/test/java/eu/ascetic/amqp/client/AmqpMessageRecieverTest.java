@@ -52,6 +52,8 @@ public class AmqpMessageRecieverTest extends AbstractTest {
 	@Test
 	public void testReadingFromJNDIPropertiesFile() throws Exception {
 		AmqpMessageReceiver messageReceiver = new AmqpMessageReceiver(USER, PASSWORD, "myTopicLookup");
+		AmqpBasicListener listener = new AmqpBasicListener();
+		messageReceiver.setMessageConsumer(listener);
 		
 		// The configuration for the Qpid InitialContextFactory has been supplied in
 		// a jndi.properties file in the classpath, which results in it being picked
@@ -73,17 +75,15 @@ public class AmqpMessageRecieverTest extends AbstractTest {
 		messageProducer.send(message, DeliveryMode.NON_PERSISTENT, Message.DEFAULT_PRIORITY, Message.DEFAULT_TIME_TO_LIVE);
 		
 		Thread.sleep(1000l);
-		TextMessage recievedMessage = messageReceiver.getLastMessage();
-		assertEquals("topic.pepito", recievedMessage.getJMSDestination().toString());
-		assertEquals("Hello world 1", recievedMessage.getText());
+		assertEquals("topic.pepito", listener.getDestination());
+		assertEquals("Hello world 1", listener.getMessage());
 		
 		message = session.createTextMessage("Hello world!");
 		messageProducer.send(message, DeliveryMode.NON_PERSISTENT, Message.DEFAULT_PRIORITY, Message.DEFAULT_TIME_TO_LIVE);
 		
 		Thread.sleep(1000l);
-		recievedMessage = messageReceiver.getLastMessage();
-		assertEquals("topic.pepito", recievedMessage.getJMSDestination().toString());
-		assertEquals("Hello world!", recievedMessage.getText());
+		assertEquals("topic.pepito", listener.getDestination());
+		assertEquals("Hello world!", listener.getMessage());
 
 		// We close all connections
 		connection.close();
@@ -106,6 +106,8 @@ public class AmqpMessageRecieverTest extends AbstractTest {
 		final String TOPIC_NAME = "example.MyTopic";
 		
 		AmqpMessageReceiver messageReceiver = new AmqpMessageReceiver("localhost:5672", USER, PASSWORD, TOPIC_NAME, true);
+		AmqpBasicListener listener = new AmqpBasicListener();
+		messageReceiver.setMessageConsumer(listener);
 		 
 		// Set the properties ...
 		Properties properties = new Properties();
@@ -132,17 +134,15 @@ public class AmqpMessageRecieverTest extends AbstractTest {
 		messageProducer.send(message, DeliveryMode.NON_PERSISTENT, Message.DEFAULT_PRIORITY, Message.DEFAULT_TIME_TO_LIVE);
 		
 		Thread.sleep(1000l);
-		TextMessage recievedMessage = messageReceiver.getLastMessage();
-		assertEquals(TOPIC_NAME, recievedMessage.getJMSDestination().toString());
-		assertEquals("Hello world 1", recievedMessage.getText());
+		assertEquals(TOPIC_NAME, listener.getDestination());
+		assertEquals("Hello world 1", listener.getMessage());
 		
 		message = session.createTextMessage("Hello world!");
 		messageProducer.send(message, DeliveryMode.NON_PERSISTENT, Message.DEFAULT_PRIORITY, Message.DEFAULT_TIME_TO_LIVE);
 		
 		Thread.sleep(1000l);
-		recievedMessage = messageReceiver.getLastMessage();
-		assertEquals(TOPIC_NAME, recievedMessage.getJMSDestination().toString());
-		assertEquals("Hello world!", recievedMessage.getText());
+		assertEquals(TOPIC_NAME, listener.getDestination());
+		assertEquals("Hello world!", listener.getMessage());
 
 		// We close all connections
 		connection.close();
@@ -165,7 +165,9 @@ public class AmqpMessageRecieverTest extends AbstractTest {
 		final String QUEUE_NAME = "example.MyQueue";
 		
 		AmqpMessageReceiver messageReceiver = new AmqpMessageReceiver("localhost:5672", USER, PASSWORD, QUEUE_NAME, false);
-		 
+		AmqpBasicListener listener = new AmqpBasicListener();
+		messageReceiver.setMessageConsumer(listener);
+		
 		// Set the properties ...
 		Properties properties = new Properties();
 		properties.put(Context.INITIAL_CONTEXT_FACTORY, INITIAL_CONTEXT_FACTORY);
@@ -191,9 +193,9 @@ public class AmqpMessageRecieverTest extends AbstractTest {
 		messageProducer.send(message, DeliveryMode.NON_PERSISTENT, Message.DEFAULT_PRIORITY, Message.DEFAULT_TIME_TO_LIVE);
 		
 		Thread.sleep(1000l);
-		TextMessage recievedMessage = messageReceiver.getLastMessage();
-		assertEquals(QUEUE_NAME, recievedMessage.getJMSDestination().toString());
-		assertEquals("Hello world 1", recievedMessage.getText());
+
+		assertEquals(QUEUE_NAME,  listener.getDestination());
+		assertEquals("Hello world 1", listener.getMessage());
 		
 		// We close all connections
 		connection.close();
@@ -274,5 +276,32 @@ public class AmqpMessageRecieverTest extends AbstractTest {
 		assertEquals("bbb", reciever.password);
 		
 		reciever.close();
+	}
+	
+	@Test
+	public void listeningToTopicsTest() throws Exception {
+
+		AmqpMessageReceiver receiver = new AmqpMessageReceiver("guest", "guest", "myTopicLookup");
+		AmqpBasicTopicListener listener = new AmqpBasicTopicListener();
+		receiver.setMessageConsumer(listener);
+		
+		AmqpMessageProducer producer = new AmqpMessageProducer("guest", "guest", "myTopicLookup");
+
+		producer.sendMessage("testX");
+		producer.sendMessage("testY");
+		producer.sendMessage("testZ");
+
+		Thread.sleep(1000l);
+
+		assertEquals(3, listener.getMessages().size());
+		assertEquals("topic.pepito", listener.getMessages().get(0).getJMSDestination().toString());
+		assertEquals("testX", listener.getMessages().get(0).getText());
+		assertEquals("topic.pepito", listener.getMessages().get(1).getJMSDestination().toString());
+		assertEquals("testY", listener.getMessages().get(1).getText());
+		assertEquals("topic.pepito", listener.getMessages().get(2).getJMSDestination().toString());
+		assertEquals("testZ", listener.getMessages().get(2).getText());
+
+		receiver.close();
+		producer.close();
 	}
 }

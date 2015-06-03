@@ -1,11 +1,11 @@
 package eu.ascetic.amqp.client;
 
-import javax.jms.Message;
+import javax.jms.Destination;
+import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
-import javax.jms.TextMessage;
+import javax.naming.NamingException;
 
-import org.apache.log4j.Logger;
 
 /**
  * 
@@ -29,10 +29,9 @@ import org.apache.log4j.Logger;
  * This is a basic class that can subscribe to any topic or queue using a JNDI configuration file. 
  * Extend this class an just override the onMessage method. 
  */
-public class AmqpMessageReceiver extends AmqpAbstract implements MessageListener {
-	private static Logger logger = Logger.getLogger(AmqpMessageReceiver.class);
+public class AmqpMessageReceiver extends AmqpAbstract {
 	private MessageConsumer messageConsumer;
-	private TextMessage textMessage;
+
 	
 	/**
 	 * Constructor of Message receiver
@@ -43,9 +42,6 @@ public class AmqpMessageReceiver extends AmqpAbstract implements MessageListener
 	 */
 	public AmqpMessageReceiver(String user, String password, String queueOrTopic) throws Exception {
 		super(user, password, queueOrTopic);
-
-		messageConsumer = session.createConsumer(queue);
-		messageConsumer.setMessageListener(this);
 	}
 	
 	/**
@@ -59,29 +55,14 @@ public class AmqpMessageReceiver extends AmqpAbstract implements MessageListener
 	 */
 	public AmqpMessageReceiver(String url, String user, String password, String queueOrTopicName, boolean topic) throws Exception {
 		super(url, user, password, queueOrTopicName, topic);
+	}
 
+	public void setMessageConsumer(MessageListener messageListener) throws JMSException, NamingException {
+		queue = (Destination) context.lookup(queueOrTopic);
 		messageConsumer = session.createConsumer(queue);
-		messageConsumer.setMessageListener(this);
-	}
-
-	@Override
-	public void onMessage(Message message) {
-        try {
-            logger.info("Received message with ID = " + message.getJMSMessageID() + " for the topic: " + message.getJMSDestination().toString());
-            message.acknowledge();
-            
-            textMessage = (TextMessage) message;
-              
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-	}
-	
-	/**
-	 * @return returns the latest message recieved, it returns <code>null</code> if it did not recieved anything.
-	 */
-	public TextMessage getLastMessage() {
-		return textMessage;
+		messageConsumer.setMessageListener(messageListener);
+		
+		startConnection();
 	}
 }
 

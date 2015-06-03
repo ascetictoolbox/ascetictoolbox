@@ -1,9 +1,12 @@
 package eu.ascetic.amqp.client;
 
 import javax.jms.DeliveryMode;
+import javax.jms.Destination;
+import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageProducer;
 import javax.jms.TextMessage;
+import javax.naming.NamingException;
 
 import org.apache.log4j.Logger;
 
@@ -41,7 +44,7 @@ public class AmqpMessageProducer extends AmqpAbstract {
 	public AmqpMessageProducer(String user, String password, String queueOrTopic) throws Exception {
 		super(user, password, queueOrTopic);
 		
-		messageProducer = session.createProducer(queue);
+		createProducer();
 	}
 	
 	/**
@@ -56,7 +59,14 @@ public class AmqpMessageProducer extends AmqpAbstract {
 	public AmqpMessageProducer(String url, String user, String password, String queueOrTopicName, boolean topic) throws Exception {
 		super(url, user, password, queueOrTopicName, topic);
 
+		createProducer();
+	}
+	
+	private void createProducer() throws NamingException, JMSException {
+		queue = (Destination) context.lookup(queueOrTopic);
 		messageProducer = session.createProducer(queue);
+		
+		startConnection();
 	}
 	
 	/**

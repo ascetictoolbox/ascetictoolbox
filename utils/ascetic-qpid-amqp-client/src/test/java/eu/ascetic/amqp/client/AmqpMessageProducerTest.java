@@ -3,8 +3,6 @@ package eu.ascetic.amqp.client;
 import static org.junit.Assert.assertEquals;
 
 
-import javax.jms.TextMessage;
-
 import org.junit.Test;
 
 import eu.ascetic.amqp.AbstractTest;
@@ -35,16 +33,17 @@ public class AmqpMessageProducerTest extends AbstractTest {
 	@Test
 	public void sendMessageTest() throws Exception {
 		AmqpMessageReceiver receiver = new AmqpMessageReceiver("guest", "guest", "myTopicLookup");
+		AmqpBasicListener listener = new AmqpBasicListener();
+		receiver.setMessageConsumer(listener);
+		
 		AmqpMessageProducer producer = new AmqpMessageProducer("guest", "guest", "myTopicLookup");
 		
 		producer.sendMessage("testX");
 		
 		Thread.sleep(1000l);
 		
-		TextMessage message = receiver.getLastMessage();
-		
-		assertEquals("topic.pepito", message.getJMSDestination().toString());
-		assertEquals("testX", message.getText());
+		assertEquals("topic.pepito", listener.getDestination());
+		assertEquals("testX", listener.getMessage());
 		
 		receiver.close();
 		producer.close();
@@ -53,16 +52,17 @@ public class AmqpMessageProducerTest extends AbstractTest {
 	@Test
 	public void sendMessageTestWithDinamicTopic() throws Exception {
 		AmqpMessageReceiver receiver = new AmqpMessageReceiver(null, null, null,  "my.topic.queue", true);
+		AmqpBasicListener listener = new AmqpBasicListener();
+		receiver.setMessageConsumer(listener);
+		
 		AmqpMessageProducer producer = new AmqpMessageProducer(null, null, null, "my.topic.queue", true);
 		
 		producer.sendMessage("testX");
 		
 		Thread.sleep(1000l);
-		
-		TextMessage message = receiver.getLastMessage();
-		
-		assertEquals("my.topic.queue", message.getJMSDestination().toString());
-		assertEquals("testX", message.getText());
+	
+		assertEquals("my.topic.queue", listener.getDestination());
+		assertEquals("testX", listener.getMessage());
 		
 		receiver.close();
 		producer.close();

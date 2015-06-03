@@ -38,6 +38,7 @@ public abstract class AmqpAbstract {
 	protected String url = "localhost:5672";
 	protected AmqpExceptionListener amqpExceptionListener = new AmqpExceptionListener();
 	protected Connection connection;
+	protected Context context;
 	protected Session session;
 	protected Destination queue;
 	protected String queueOrTopic;
@@ -53,11 +54,10 @@ public abstract class AmqpAbstract {
 			this.password = password;
 		}
 		
-		Context context = new InitialContext();
+		context = new InitialContext();
 
 		ConnectionFactory factory = (ConnectionFactory) context.lookup("myFactoryLookup");
-		queue = (Destination) context.lookup(queueOrTopic);
-
+		
 	    connection = factory.createConnection(this.user, this.password);
 		connection.setExceptionListener(amqpExceptionListener);
 		connection.start();
@@ -66,8 +66,7 @@ public abstract class AmqpAbstract {
 	}
 	
 	public AmqpAbstract(String url, String user, String password, String queueOrTopicName, boolean topic) throws Exception {
-		this.queueOrTopic = "moment"; //TODO change this... 
-		
+
 		if(user != null) {
 			this.user = user;
 		} 
@@ -83,7 +82,7 @@ public abstract class AmqpAbstract {
 		String initialContextFactory = "org.apache.qpid.jms.jndi.JmsInitialContextFactory";
 		String connectionJNDIName = UUID.randomUUID().toString();
 		String connectionURL = "amqp://" + this.user + ":" + this.password + "@" + this.url;
-		String topicJNDIName = queueOrTopicName.replaceAll("\\.", "");
+		this.queueOrTopic = queueOrTopicName.replaceAll("\\.", "");
 		String topicName = queueOrTopicName;
 		
 		// Set the properties ...
@@ -92,23 +91,25 @@ public abstract class AmqpAbstract {
 		properties.put("connectionfactory."+connectionJNDIName , connectionURL);
 
 		if(topic) {
-			properties.put("topic."+topicJNDIName , topicName);
+			properties.put("topic."+queueOrTopic , topicName);
 		} else {
-			properties.put("queue."+topicJNDIName , topicName);
+			properties.put("queue."+queueOrTopic , topicName);
 		}
 
 		// Now we have the context already configured... 
 		// Create the initial context
-		Context context = new InitialContext(properties);
+		context = new InitialContext(properties);
 
 		ConnectionFactory factory = (ConnectionFactory) context.lookup(connectionJNDIName);
-		queue = (Destination) context.lookup(topicJNDIName);
-
+		
 		connection = factory.createConnection(this.user, this.password);
 		connection.setExceptionListener(amqpExceptionListener);
-		connection.start();
-
 		session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+		
+	}
+	
+	protected void startConnection() throws JMSException {
+		connection.start();
 	}
 	
 	/**
