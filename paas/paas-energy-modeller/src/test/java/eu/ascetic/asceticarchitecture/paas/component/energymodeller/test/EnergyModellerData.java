@@ -15,7 +15,7 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.builder.Ener
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.ApplicationSample;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EventSample;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Unit;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.EnergyModellerSimple;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.service.EnergyModellerService;
 
 public class EnergyModellerData {
 
@@ -24,7 +24,7 @@ public class EnergyModellerData {
 //	HST 07027d74-dcfa-455d-b2b9-8b7a2471b1bd_asok12
 //	HST 7c8a3fc0-393d-4124-856e-05aedb2d23ca_asok12
 	
-	private static EnergyModellerSimple serviceEM;
+	private static EnergyModellerService serviceEM;
 //	private static String HOST = "c0fcc44e-b29f-4fcc-b1e3-b9c017b7865f";
 //	private static String HOST2 = "d9864885-77db-4a92-ab6b-feec3e5eded6";
 //	private static String HOST3 = "708834af-4e90-424b-9dc2-c2fe1542918f";
@@ -35,31 +35,31 @@ public class EnergyModellerData {
 	private static String HOST2 = "2d915d73-8999-420c-b2b0-2ac853052b7e";
 	private static String HOST3 = "b52da74d-585c-404d-8f29-4de0d93cfe5e";
 
-	private static String EVENT = "Create_Experiment_Run 2.1_1";
+	private static String EVENT = "TestScript15-oracle";
 	private static String APP = "NewsAsset";
 	
-	long beginlong = 1418720320223L;
-	long endlong = 1418724345333L;
+	long beginlong = 1419246350742L;
+	long endlong = 1419246415273L;
 	
 	
 	@BeforeClass
 	public static void setup() {
-		serviceEM = (EnergyModellerSimple) EnergyModellerFactory.getEnergyModeller("c:/test/testconfig.properties");
+		serviceEM = (EnergyModellerService) EnergyModellerFactory.getEnergyModeller("c:/test/testconfig.properties");
 		
 	}
 	
 	
-	@Test
-	public void testEnergyForEvent() {
-		System.out.println("Testing energy estimation");
-		List<String> vmids = new Vector<String>();
-		vmids.add(HOST);
-		vmids.add(HOST2);
-		vmids.add(HOST3);
-		double energy  = serviceEM.energyEstimation(null, APP, vmids, EVENT);
-		System.out.println("--------------------------------------------RESULT:"+energy);
-		Assert.assertNotNull(energy);
-	}
+//	@Test
+//	public void testEnergyForEvent() {
+//		System.out.println("Testing energy estimation");
+//		List<String> vmids = new Vector<String>();
+//		vmids.add(HOST);
+//		vmids.add(HOST2);
+//		vmids.add(HOST3);
+//		double energy  = serviceEM.energyEstimation(null, APP, vmids, EVENT);
+//		System.out.println("--------------------------------------------RESULT:"+energy);
+//		Assert.assertNotNull(energy);
+//	}
 	
 //	@Test
 //	public void testEnergyForApp() {
@@ -108,7 +108,7 @@ public class EnergyModellerData {
 //		vmids.add(HOST);
 //		vmids.add(HOST2);
 //		vmids.add(HOST3);
-//		List<ApplicationSample> energy = serviceEM.applicationData(null, APP, vmids, 60 , new Timestamp(beginlong),new Timestamp(endlong) );
+//		List<ApplicationSample> energy = serviceEM.applicationData(null, APP, vmids, 10 , new Timestamp(beginlong),new Timestamp(endlong) );
 //		for (ApplicationSample as : energy){
 //			System.out.println(as.export());
 //		}
@@ -151,7 +151,7 @@ public class EnergyModellerData {
 //		vmids.add(HOST2);
 //		vmids.add(HOST3);	
 //		
-//		double result = serviceEM.measure(null, APP, vmids, EVENT, Unit.POWER, new Timestamp(beginlong),new Timestamp(endlong));
+//		double result = serviceEM.measure(null, APP, vmids, EVENT, Unit.ENERGY, new Timestamp(beginlong),new Timestamp(endlong));
 //		System.out.println("Testing energy estimation gave "+result);
 //	}
 		

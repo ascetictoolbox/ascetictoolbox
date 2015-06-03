@@ -2385,6 +2385,7 @@ paas/application-monitor/test/IntegrationTest.java -text
 paas/application-monitor/test/MappingTest.java -text
 paas/application-monitor/test/MetricWatchTest.java -text
 paas/application-monitor/test/TreeTest.java -text
+paas/paas-energy-modeller/paas-energy-modeller.iml -text
 paas/paas-pricing-modeller/LICENSE.TXT -text
 paas/paas-pricing-modeller/pom.xml -text
 paas/paas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/paaspricingmodeller/PaaSPricingModeller.java -text

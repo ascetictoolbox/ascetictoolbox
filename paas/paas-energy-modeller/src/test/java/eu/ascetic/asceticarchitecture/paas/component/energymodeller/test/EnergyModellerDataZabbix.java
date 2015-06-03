@@ -9,18 +9,28 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.util.Assert;
 
-import eu.ascetic.asceticarchitecture.paas.component.common.database.PaaSEMDatabaseManager;
+import eu.ascetic.asceticarchitecture.paas.component.common.data.PaaSEMDatabaseManager;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.builder.EnergyModellerFactory;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.EnergyModellerSimple;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.dconnector.DataCollector;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.datacollector.DataCollectorService;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.service.EnergyModellerService;
 
 public class EnergyModellerDataZabbix {
 
+	
+	/**
+	 * 
+	 * 
+	 * This test class is used as a test client for the EM
+	 * 
+	 */
+	
+
+	
 	private static String HOST = "48f2dd77-9818-46e5-b79d-58b5e2d80613";
 	private static String HOST2 = "59d2ae8d-1ea0-46df-993f-fddbdd48c830";
 	private static String HOST3 = "8f805a34-4ef1-4a9a-93e8-028651de28cc";
 	private static String hst ="asok10";
-	private static DataCollector dcollector;
+	private static DataCollectorService dcollector;
 	private static PaaSEMDatabaseManager dbmanager;
 	
 	long beginlong = 1418580703000L;
@@ -30,7 +40,7 @@ public class EnergyModellerDataZabbix {
 	public static void setup() {
 		dbmanager = new PaaSEMDatabaseManager();
 		dbmanager.setup("springtest.xml");
-		dcollector = new DataCollector();
+		dcollector = new DataCollectorService();
 		dcollector.setDataconumption(dbmanager.getDataConsumptionDAOImpl());
 		dcollector.setup();
 	}
@@ -67,7 +77,7 @@ public class EnergyModellerDataZabbix {
 		System.out.println("################################## ");
 		System.out.println("### INTERVAL DATA FOR "+dcollector.searchFullHostsname(HOST));
 		System.out.println("################################## ");
-		dcollector.getHistoryForItemInterval("apptest","deptest","Power", dcollector.searchFullHostsname(HOST),"", beginlong, endlong);
+		dcollector.getHistoryForItemInterval("apptest","deptest","Power", dcollector.searchFullHostsname(HOST), beginlong, endlong);
 		 
 	}
 	

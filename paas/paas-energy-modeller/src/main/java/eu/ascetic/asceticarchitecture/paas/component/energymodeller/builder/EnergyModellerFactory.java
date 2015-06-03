@@ -4,12 +4,12 @@
 package eu.ascetic.asceticarchitecture.paas.component.energymodeller.builder;
 
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.PaaSEnergyModeller;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.EnergyModellerSimple;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.service.EnergyModellerService;
 
 public class EnergyModellerFactory {
 	
 	public static PaaSEnergyModeller getEnergyModeller(String propertyFile){
-			return (PaaSEnergyModeller) new EnergyModellerSimple(propertyFile);
+			return (PaaSEnergyModeller) new EnergyModellerService(propertyFile);
 	}
 
 }
