@@ -18,16 +18,17 @@ package eu.ascetic.paas.self.adaptation.manager.rules;
 import java.util.List;
 
 /**
- * This event assessor when faced with deciding if corrective action should be 
+ * This event assessor when faced with deciding if corrective action should be
  * taken will always report no, thus it can be used to switch off the adaptive
  * behaviour of the self-adaptation manager.
+ *
  * @author Richard Kavanagh
  */
 public class IdleEventAssessor extends AbstractEventAssessor {
 
     @Override
-    public Response assessEvent(EventData event, List<EventData> sequence) {
+    public Response assessEvent(EventData event, List<EventData> sequence, List<Response> recentAdaptation) {
         return null;
     }
-    
+
 }

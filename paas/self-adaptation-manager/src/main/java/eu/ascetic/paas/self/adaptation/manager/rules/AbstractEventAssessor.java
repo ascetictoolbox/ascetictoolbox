@@ -59,7 +59,7 @@ public abstract class AbstractEventAssessor implements EventAssessor {
         List<EventData> eventData = EventDataAggregator.filterEventData(sequence, event.getSlaUuid(), event.getGuaranteeid());
         //Purge old event map data
         eventData = EventDataAggregator.filterEventDataByTime(eventData, historyLengthSeconds);
-        Response answer = assessEvent(event, eventData);
+        Response answer = assessEvent(event, eventData, adaptations);
         if (answer != null) {
             adaptations.add(answer);
         }

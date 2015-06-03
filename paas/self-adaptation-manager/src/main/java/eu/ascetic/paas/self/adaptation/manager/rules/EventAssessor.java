@@ -33,10 +33,12 @@ public interface EventAssessor {
      *
      * @param event The SLA event to assess
      * @param sequence The sequence of similar events that have been assessed.
+     * @param recentAdaptation A list of recent relevant adaptations that have
+     * occurred.
      * @return A response object in cases where an adaptive response is
      * required.
      */
-    public Response assessEvent(EventData event, List<EventData> sequence);
+    public Response assessEvent(EventData event, List<EventData> sequence, List<Response> recentAdaptation);
 
     /**
      * This assesses an event and decides if a response is required. If no
