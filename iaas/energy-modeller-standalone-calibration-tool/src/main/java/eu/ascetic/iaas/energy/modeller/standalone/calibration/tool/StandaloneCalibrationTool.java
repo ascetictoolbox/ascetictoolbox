@@ -98,17 +98,20 @@ public class StandaloneCalibrationTool implements CompletedListener {
             if (strArgs.contains("halt-on-calibrated")) {
                 instance.setHaltOnCalibratedHost(true);
             }
-            instance.performBenchmark();
+            if (!strArgs.contains("no-benchmark")) {
+                instance.performBenchmark();
+            }
             if (!strArgs.contains("benchmark-only")) {
                 instance.induceLoad();
             }
         } else {
             System.out.println("Please provide the name of the host!");
-            System.out.println("Usage: host-name [halt-on-calibrated] [benchmark-only] [use-watts-up-meter]");
+            System.out.println("Usage: host-name [halt-on-calibrated] [benchmark-only] [no-benchmark] [use-watts-up-meter]");
             System.out.println("The halt-on-calibrated flag will prevent calibration "
                     + "in cases where the data has already been gathered.");
             System.out.println("The benchmark-only flag skips the calibration run "
                     + "and performs a benchmark run only.");
+            System.out.println("The no-benchmark flag skips the benchmarking.");
             System.out.println("The use-watts-up-meter flag can be used so that "
                     + "Zabbix is not used for calibration but local measurements "
                     + "are performed instead.");
