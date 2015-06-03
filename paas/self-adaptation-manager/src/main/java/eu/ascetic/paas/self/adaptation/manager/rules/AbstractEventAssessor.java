@@ -36,9 +36,20 @@ public abstract class AbstractEventAssessor implements EventAssessor {
     private ArrayList<EventListener> listeners = new ArrayList<>();
     private ArrayList<ActuatorInvoker> actuators = new ArrayList<>();
     private List<EventData> sequence;
-    private final int historyLengthSeconds = 120; //2 mins
+    private List<Response> adaptations;
+    //duration a history item can stay alive
+    private final int historyLengthSeconds = (int) TimeUnit.MINUTES.toSeconds(5);
+    //The rate at how often history items are checked to be still in date
     private final int pollInterval = 5;
+    private Thread historyClearerThread = null;
+    private HistoryClearer historyClearer = null;
 
+    /**
+     * This launches a new event assessor.
+     */
+    public AbstractEventAssessor() {        
+    }
+    
     //TODO add methods here
     @Override
     public Response assessEvent(EventData event) {
@@ -48,7 +59,11 @@ public abstract class AbstractEventAssessor implements EventAssessor {
         List<EventData> eventData = EventDataAggregator.filterEventData(sequence, event.getSlaUuid(), event.getGuaranteeid());
         //Purge old event map data
         eventData = EventDataAggregator.filterEventDataByTime(eventData, historyLengthSeconds);
-        return assessEvent(event, eventData);
+        Response answer = assessEvent(event, eventData);
+        if (answer != null) {
+            adaptations.add(answer);
+        }
+        return answer;
     }
 
     /**
@@ -127,6 +142,29 @@ public abstract class AbstractEventAssessor implements EventAssessor {
     public void clearActuators() {
         actuators.clear();
     }
+    
+    /**
+     * This starts the event history maintenance routines in the event assessor.
+     */
+    @Override
+    public void start() {
+                historyClearer = new HistoryClearer();
+        historyClearerThread = new Thread(historyClearer);
+        historyClearerThread.setDaemon(true);
+        historyClearerThread.start();
+    }
+    
+    /**
+     * This stops the event history maintenance routines in the event assessor.
+     */    
+    @Override
+    public void stop() {
+        if (historyClearer != null) {
+            historyClearer.stop();
+            historyClearer = null;
+            historyClearerThread = null;
+        }
+    }
 
     /**
      * The history clearer prunes the sequence of events of old redundant data.
@@ -144,6 +182,7 @@ public abstract class AbstractEventAssessor implements EventAssessor {
         public void run() {
             if (!sequence.isEmpty()) {
                 sequence = EventDataAggregator.filterEventDataByTime(sequence, historyLengthSeconds);
+                adaptations = filterAdaptationHistory();
             }
             try {
                 Thread.sleep(TimeUnit.SECONDS.toMillis(pollInterval));
@@ -151,5 +190,30 @@ public abstract class AbstractEventAssessor implements EventAssessor {
                 Logger.getLogger(HistoryClearer.class.getName()).log(Level.WARNING, "History Cleaner: InterruptedException", ex);
             }
         } //While not stopped
+
+        /**
+         * This filters the current adaptation history and return a new list
+         * that has all of the old entries removed.
+         * @return The list of recent adaptations made by the event assessor.
+         */
+        private List<Response> filterAdaptationHistory() {
+            ArrayList<Response> answer = new ArrayList<>();
+            long now = System.currentTimeMillis();
+            now = now / 1000;
+            long filterTime = now - historyLengthSeconds;
+            for (Response response : adaptations) {
+                if (response.getTime() >= filterTime) {
+                    answer.add(response);
+                }
+            }
+            return answer;
+        }
+        
+        /**
+         * This stops the history clearer thread.
+         */
+        private void stop() {
+            stop = true;
+        }
     }
 }

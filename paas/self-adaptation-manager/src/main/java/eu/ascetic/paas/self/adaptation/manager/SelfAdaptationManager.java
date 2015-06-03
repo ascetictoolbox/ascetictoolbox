@@ -48,6 +48,12 @@ public class SelfAdaptationManager {
     public SelfAdaptationManager() throws JMSException, NamingException {
         try {
             //TODO load the actuator and listeners list in from file.
+            /**
+             * These should be threads that will keep the application persistent.
+             * They should be given a copy of the event assessor in order to 
+             * invoke change, as required.
+             * 
+             */
             eventAssessor = new FuzzyEventAssessor();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(SelfAdaptationManager.class.getName()).log(Level.SEVERE, 

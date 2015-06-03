@@ -24,20 +24,30 @@ import eu.ascetic.paas.self.adaptation.manager.ActuatorInvoker;
  */
 public class Response {
 
-    ActuatorInvoker actuator;
-    String message;
+    private ActuatorInvoker actuator;
+    private EventData eventCause;
+    private String message;
 
     /**
      * This creates a standard response object. It indicates which actuator
      * to use and which message to send to it.
-     * @param actuator
+     * @param actuator The actuator used to invoke the change.
+     * @param eventCause A copy of the incoming event that caused the response to 
+     * fire.
      * @param message 
      */
-    public Response(ActuatorInvoker actuator, String message) {
+    public Response(ActuatorInvoker actuator, EventData eventCause, String message) {
         this.actuator = actuator;
+        this.eventCause = eventCause;
         this.message = message;
     }
     
-    
+    /**
+     * This gets the time of arrival of the event that caused the response.
+     * @return 
+     */
+    public long getTime() {
+        return eventCause.getTime();
+    }
     
 }

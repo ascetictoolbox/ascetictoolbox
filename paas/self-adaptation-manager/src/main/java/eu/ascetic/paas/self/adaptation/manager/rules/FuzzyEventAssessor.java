@@ -84,7 +84,11 @@ public class FuzzyEventAssessor extends AbstractEventAssessor {
             System.out.println(rule);
             if (rule.getDegreeOfSupport() == 1.0) {
                 //This creates the new response
-                answer = new Response(null, null); 
+                /**
+                 * TODO consider if a test is needed to see if adaptation is 
+                 * possible and if so which one?
+                 */
+                answer = new Response(null, event, null);
                 return answer;
             }
         }
