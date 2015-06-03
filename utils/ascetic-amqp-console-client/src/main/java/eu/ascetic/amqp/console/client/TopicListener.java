@@ -31,7 +31,14 @@ public class TopicListener implements MessageListener {
 	@Override
     public void onMessage(Message message) {
         try {
-            System.out.println("Message recieved > " + ((TextMessage) message).getText());
+        	TextMessage textMessage = (TextMessage) message;
+        	System.out.println("   ");
+        	System.out.println("####################################");
+            System.out.println("   Message received for destination: " + textMessage.getJMSDestination());
+            System.out.println("   Message:");
+            System.out.println("   ");
+            System.out.println(textMessage.getText());
+            System.out.println("   ");
         } catch (JMSException e) {
             System.err.println("Caught exception receiving message: " + e);
         }
