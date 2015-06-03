@@ -21,9 +21,9 @@ import org.junit.Test;
 
 import java.sql.Timestamp;
 
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.EnergyModellerSimple;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EventSample;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Unit;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.PaaSEnergyModeller;
 import eu.ascetic.paas.applicationmanager.dao.VMDAO;
 import eu.ascetic.paas.applicationmanager.model.Collection;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
@@ -58,7 +58,7 @@ public class VMRestTest {
 	@SuppressWarnings(value = { "static-access" }) 
 	public void testGetEnergyEstimationForAVMAndEvent() throws Exception {
 		VMRest vmRest = new VMRest();
-		EnergyModellerSimple energyModeller = mock(EnergyModellerSimple.class);
+		PaaSEnergyModeller energyModeller = mock(PaaSEnergyModeller.class);
 		vmRest.energyModeller = energyModeller;
 		VMDAO vmDAO = mock(VMDAO.class);
 		vmRest.vmDAO = vmDAO;
@@ -98,7 +98,7 @@ public class VMRestTest {
 	@SuppressWarnings(value = { "static-access" }) 
 	public void testGetEnergyConsumptionForAVMAndEvent() throws Exception {
 		VMRest vmRest = new VMRest();
-		EnergyModellerSimple energyModeller = mock(EnergyModellerSimple.class);
+		PaaSEnergyModeller energyModeller = mock(PaaSEnergyModeller.class);
 		vmRest.energyModeller = energyModeller;
 		VMDAO vmDAO = mock(VMDAO.class);
 		vmRest.vmDAO = vmDAO;
@@ -137,7 +137,7 @@ public class VMRestTest {
 	@SuppressWarnings(value = { "static-access" }) 
 	public void testGetEnergyConsumptionForAVMAndEventStarTimeUntilNow() throws Exception {
 		VMRest vmRest = new VMRest();
-		EnergyModellerSimple energyModeller = mock(EnergyModellerSimple.class);
+		PaaSEnergyModeller energyModeller = mock(PaaSEnergyModeller.class);
 		vmRest.energyModeller = energyModeller;
 		VMDAO vmDAO = mock(VMDAO.class);
 		vmRest.vmDAO = vmDAO;
@@ -177,7 +177,7 @@ public class VMRestTest {
 	@SuppressWarnings(value = { "static-access" }) 
 	public void testGetEnergyConsumptionForAVMAndEventStarTimeUntilSecondTime() throws Exception {
 		VMRest vmRest = new VMRest();
-		EnergyModellerSimple energyModeller = mock(EnergyModellerSimple.class);
+		PaaSEnergyModeller energyModeller = mock(PaaSEnergyModeller.class);
 		vmRest.energyModeller = energyModeller;
 		VMDAO vmDAO = mock(VMDAO.class);
 		vmRest.vmDAO = vmDAO;
@@ -321,7 +321,7 @@ public class VMRestTest {
 		
 		// We need to mock VMDAO and EnergyModeller
 		VMRest vmRest = new VMRest();
-		EnergyModellerSimple energyModeller = mock(EnergyModellerSimple.class);
+		PaaSEnergyModeller energyModeller = mock(PaaSEnergyModeller.class);
 		vmRest.energyModeller = energyModeller;
 		VMDAO vmDAO = mock(VMDAO.class);
 		vmRest.vmDAO = vmDAO;

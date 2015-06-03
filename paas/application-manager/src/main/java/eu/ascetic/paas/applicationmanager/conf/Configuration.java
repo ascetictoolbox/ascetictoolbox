@@ -28,15 +28,20 @@ import org.apache.log4j.Logger;
 
 public class Configuration {
 	private static Logger logger = Logger.getLogger(Configuration.class);
-	public static String vmManagerServiceUrl = "http://10.4.0.15:34372/vmmanager";
-	public static String checkDeploymentsStatus = "1 * * * * ?";
+	// This is the only parameter that can not be overwritten by the configuration file
+	// It could be done in a different way... 
 	private static final String applicationManagerConfigurationFile = "/etc/ascetic/paas/application-manager/application-manager.properties";
-//	public static String vmcontextualizerConfigurationFileDirectory = "/etc/ascetic/paas/application-manager";
-	public static String vmcontextualizerConfigurationFileDirectory = "/home/vmc";
-	public static String slamURL = "http://10.4.0.16:8080/services/asceticNegotiation?wsdl";
+	
+	// All this parameters can be overwritten by the application-manager.properties file
+	public static String checkDeploymentsStatus = "1 * * * * ?";
 	public static String enableSLAM = "no";
+	public static String slamURL = "http://10.4.0.16:8080/services/asceticNegotiation?wsdl";
 	public static String applicationMonitorUrl = "http://10.4.0.16:9000";
+	public static String vmcontextualizerConfigurationFileDirectory = "/home/vmc";
 	public static String applicationManagerUrl = "http://localhost";
+	
+	// TODO to remove this parameter, this configuration needs to be collected from the Provider Registry
+	public static String vmManagerServiceUrl = "http://10.4.0.15:34372/vmmanager";
 	
 	static {
         try {
@@ -48,12 +53,15 @@ public class Configuration {
         	}
         	
         	org.apache.commons.configuration.Configuration config = new PropertiesConfiguration(propertiesFile);
-        	vmManagerServiceUrl = config.getString("vm-manager.url");
         	checkDeploymentsStatus = config.getString("check.deployments.status");
-        	slamURL = config.getString("slam.url");
         	enableSLAM = config.getString("enable.slam");
+        	slamURL = config.getString("slam.url");
         	applicationMonitorUrl = config.getString("application-monitor.url");
+        	vmcontextualizerConfigurationFileDirectory = config.getString("vmcontextualizer.configuration.file.directory");
         	applicationManagerUrl = config.getString("application-manager.url");
+        	
+        	// TODO to change this to be collected by the Provider Registry
+        	vmManagerServiceUrl = config.getString("vm-manager.url");
         }
         catch (Exception e) {
             logger.info("Error loading Application Manager configuration file");

@@ -35,7 +35,7 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Unit;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.service.EnergyModellerSimple;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.PaaSEnergyModeller;
 import eu.ascetic.paas.applicationmanager.amonitor.ApplicationMonitorClient;
 import eu.ascetic.paas.applicationmanager.amonitor.model.EnergyCosumed;
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
@@ -383,7 +383,7 @@ public class DeploymentRestTest {
 		image3.setProviderImageId("zzzz-3");
 		vm2.addImage(image3);
 		
-		EnergyModellerSimple modeller = mock(EnergyModellerSimple.class);
+		PaaSEnergyModeller modeller = mock(PaaSEnergyModeller.class);
 		ApplicationMonitorClient amonitorClient = mock(ApplicationMonitorClient.class);
 		
 		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
@@ -506,7 +506,7 @@ public class DeploymentRestTest {
 		vm2.setProviderVmId("X2");
 		deployment.addVM(vm2);
 		
-		EnergyModellerSimple energyModeller = mock(EnergyModellerSimple.class);
+		PaaSEnergyModeller energyModeller = mock(PaaSEnergyModeller.class);
 		DeploymentRest deploymentRest = new DeploymentRest();
 		
 		deploymentRest.energyModeller = energyModeller;
@@ -570,7 +570,7 @@ public class DeploymentRestTest {
 		vm2.setProviderVmId("X2");
 		deployment.addVM(vm2);
 		
-		EnergyModellerSimple energyModeller = mock(EnergyModellerSimple.class);
+		PaaSEnergyModeller energyModeller = mock(PaaSEnergyModeller.class);
 		DeploymentRest deploymentRest = new DeploymentRest();
 		
 		deploymentRest.energyModeller = energyModeller;
