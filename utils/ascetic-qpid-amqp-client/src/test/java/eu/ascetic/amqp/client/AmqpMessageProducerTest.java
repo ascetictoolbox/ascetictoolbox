@@ -2,7 +2,6 @@ package eu.ascetic.amqp.client;
 
 import static org.junit.Assert.assertEquals;
 
-
 import org.junit.Test;
 
 import eu.ascetic.amqp.AbstractTest;

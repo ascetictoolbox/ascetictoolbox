@@ -3659,6 +3659,11 @@ utils/application-manager-database/liquibase/lib/snakeyaml-1.12.jar -text
 utils/application-manager-database/liquibase/liquibase -text
 utils/application-manager-database/liquibase/liquibase.bat -text
 utils/application-manager-database/liquibase/liquibase.jar -text
+utils/ascetic-amqp-console-client/pom.xml -text
+utils/ascetic-amqp-console-client/src/main/java/eu/ascetic/amqp/console/Cli.java -text
+utils/ascetic-amqp-console-client/src/main/java/eu/ascetic/amqp/console/Main.java -text
+utils/ascetic-amqp-console-client/src/main/java/eu/ascetic/amqp/console/client/TopicListener.java -text
+utils/ascetic-amqp-console-client/src/main/resources/log4j.properties -text
 utils/ascetic-dfs/make.sh -text
 utils/ascetic-dfs/pom.xml -text
 utils/ascetic-load-generator-app/Read[!!-~]Me.txt -text
