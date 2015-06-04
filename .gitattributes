@@ -631,6 +631,8 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/amonit
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/amonitor/model/Data.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/amonitor/model/EnergyCosumed.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/amonitor/model/parser/Parser.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/amqp/AmqpProducer.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/amqp/MessageCreator.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/conf/Configuration.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/contextualizer/VmcClient.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/ApplicationDAO.java -text
@@ -693,6 +695,9 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/amonit
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/amonitor/model/DataTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/amonitor/model/EnergyConsumedTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/amonitor/model/parser/ParserTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/amqp/AbstractTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/amqp/AmqpProducerTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/amqp/MessageCreatorTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/conf/ConfigurationTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/jpa/ApplicationDAOJpaTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/jpa/DeploymentDAOJpaTest.java -text
@@ -749,6 +754,7 @@ paas/application-manager/src/test/resources/application-manager.properties -text
 paas/application-manager/src/test/resources/ascetic-basic-slat.xml -text
 paas/application-manager/src/test/resources/b.xml -text
 paas/application-manager/src/test/resources/davidg-test.ovf.vmc.xml -text
+paas/application-manager/src/test/resources/jndi.properties -text
 paas/application-manager/src/test/resources/mysql-jpa-test-configuration.xml -text
 paas/application-manager/src/test/resources/saas.ovf -text
 paas/application-manager/src/test/resources/sla-agreement.xml -text

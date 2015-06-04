@@ -404,6 +404,18 @@
 			<version>1.9.5</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-broker</artifactId>
+			<version>5.11.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-amqp</artifactId>
+			<version>5.11.1</version>
+			<scope>test</scope>
+		</dependency>
 		
 		<!-- VM manager -->
 		<dependency>
