@@ -50,17 +50,17 @@ public class EventDataAggregator {
     }
     
     /**
-     * This takes a list of event data and filters out the irrelevant other
-     * event data.
-     * @param eventList The list of events to filter
+     * This takes a list of events and provides a list of events for a 
+     * single guarantee of a named SLA.
+     * @param events The list of events to filter
      * @param slaUuid The SLA identifier to filter against
      * @param guaranteeid The guarantee id to filter against.
      * @return The list of events associated with a given guarantee of an SLA, in
      * ascending chronological order. i.e. earliest first.
      */
-    public static List<EventData> filterEventData(List<EventData> eventList, String slaUuid, String guaranteeid) {
+    public static List<EventData> filterEventData(List<EventData> events, String slaUuid, String guaranteeid) {
         ArrayList<EventData> answer = new ArrayList<>();
-        for (EventData eventData : eventList) {
+        for (EventData eventData : events) {
             if (eventData.getSlaUuid().equals(slaUuid) && eventData.getGuaranteeid().equals(guaranteeid)) {
                 answer.add(eventData);
             }
@@ -68,6 +68,27 @@ public class EventDataAggregator {
         Collections.sort(answer);
         return answer;
     }
+    
+    /**
+     * This takes a list of events and provides a list of events for a 
+     * single named SLA.
+     *
+     * @param events The list of event records to filter
+     * @param slaUuid The SLA identifier to filter against
+     * @return The list of responses associated with a given SLA,in ascending
+     * chronological order. i.e. earliest first.
+     */
+    public static List<EventData> filterResponseHistory(List<EventData> events,
+            String slaUuid) {
+        ArrayList<EventData> answer = new ArrayList<>();
+        for (EventData event : events) {
+            if (event.getSlaUuid().equals(slaUuid)) {
+                answer.add(event);
+            }
+        }
+        Collections.sort(answer);
+        return answer;
+    }    
     
     /**
      * This takes a list of event data and filters out old data.

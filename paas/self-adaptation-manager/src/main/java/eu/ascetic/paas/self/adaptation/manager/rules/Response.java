@@ -22,23 +22,23 @@ import eu.ascetic.paas.self.adaptation.manager.ActuatorInvoker;
  * use in order to respond to the incoming events.
  * @author Richard Kavanagh
  */
-public class Response {
+public class Response implements Comparable<Response> {
 
     private ActuatorInvoker actuator;
-    private EventData eventCause;
+    private EventData cause;
     private String message;
 
     /**
      * This creates a standard response object. It indicates which actuator
      * to use and which message to send to it.
      * @param actuator The actuator used to invoke the change.
-     * @param eventCause A copy of the incoming event that caused the response to 
+     * @param cause A copy of the incoming event that caused the response to 
      * fire.
      * @param message 
      */
-    public Response(ActuatorInvoker actuator, EventData eventCause, String message) {
+    public Response(ActuatorInvoker actuator, EventData cause, String message) {
         this.actuator = actuator;
-        this.eventCause = eventCause;
+        this.cause = cause;
         this.message = message;
     }
     
@@ -47,7 +47,23 @@ public class Response {
      * @return 
      */
     public long getTime() {
-        return eventCause.getTime();
+        return cause.getTime();
     }
+
+    /**
+     * This returns a copy of the event that was the original cause of the 
+     * response to be created.
+     * @return The event that caused the response (or at least the last in a 
+     * sequence of events).
+     */
+    public EventData getCause() {
+        return cause;
+    }
+
+    @Override
+    public int compareTo(Response response) {
+        //This sequences responses in cronlogical order.
+        return Long.compare(this.getTime(), response.getTime());
+    }   
     
 }
