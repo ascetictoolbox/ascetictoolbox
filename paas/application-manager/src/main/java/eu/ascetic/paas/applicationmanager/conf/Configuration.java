@@ -25,7 +25,6 @@ import org.apache.log4j.Logger;
  * @author David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
  * e-mail david.garciaperez@atos.net 
  */
-
 public class Configuration {
 	private static Logger logger = Logger.getLogger(Configuration.class);
 	// This is the only parameter that can not be overwritten by the configuration file
@@ -33,12 +32,14 @@ public class Configuration {
 	private static final String applicationManagerConfigurationFile = "/etc/ascetic/paas/application-manager/application-manager.properties";
 	
 	// All this parameters can be overwritten by the application-manager.properties file
-	public static String checkDeploymentsStatus = "1 * * * * ?";
 	public static String enableSLAM = "no";
 	public static String slamURL = "http://10.4.0.16:8080/services/asceticNegotiation?wsdl";
 	public static String applicationMonitorUrl = "http://10.4.0.16:9000";
 	public static String vmcontextualizerConfigurationFileDirectory = "/home/vmc";
 	public static String applicationManagerUrl = "http://localhost";
+	public static String amqpAddress = "localhost:5673";
+	public static String amqpUsername = "guest";
+	public static String amqpPassword = "guest";
 	
 	// TODO to remove this parameter, this configuration needs to be collected from the Provider Registry
 	public static String vmManagerServiceUrl = "http://10.4.0.15:34372/vmmanager";
@@ -53,12 +54,14 @@ public class Configuration {
         	}
         	
         	org.apache.commons.configuration.Configuration config = new PropertiesConfiguration(propertiesFile);
-        	checkDeploymentsStatus = config.getString("check.deployments.status");
         	enableSLAM = config.getString("enable.slam");
         	slamURL = config.getString("slam.url");
         	applicationMonitorUrl = config.getString("application-monitor.url");
         	vmcontextualizerConfigurationFileDirectory = config.getString("vmcontextualizer.configuration.file.directory");
         	applicationManagerUrl = config.getString("application-manager.url");
+        	amqpAddress = config.getString("amqp.address");
+        	amqpUsername = config.getString("amqp.username");
+        	amqpPassword = config.getString("amqp.password");
         	
         	// TODO to change this to be collected by the Provider Registry
         	vmManagerServiceUrl = config.getString("vm-manager.url");
