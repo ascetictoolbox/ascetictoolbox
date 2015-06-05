@@ -180,4 +180,66 @@ public class MessageCreatorTest {
 		
 		assertEquals("name", amMessage.getApplicationId());
 	}
+	
+	public void fromDeploymentWithNullValuesTest() {
+		ApplicationManagerMessage message = MessageCreator.fromDeployment("aaa", null);
+		assertEquals(null, message);
+		
+		message = MessageCreator.fromDeployment(null, new Deployment());
+		assertEquals(null, message);
+	}
+	
+	public void fromDeploymentTest() {
+		
+		Deployment deployment1 = new Deployment();
+		deployment1.setId(11);
+		deployment1.setHref("href");
+		deployment1.setPrice("provider-id");
+		deployment1.setStatus("STATUS");
+		deployment1.setStartDate("aaa");
+		deployment1.setEndDate("bbb");
+		deployment1.setSlaAgreement("sla");
+		List<VM> vms = new ArrayList<VM>();
+		deployment1.setVms(vms);
+		
+		VM vm1 = new VM();
+		vm1.setId(12);
+		vm1.setHref("href1");
+		vm1.setOvfId("ovfId1");
+		vm1.setProviderId("provider-id1");
+		vm1.setProviderVmId("provider-vm-id1");
+		vm1.setStatus("XXX1");
+		vm1.setIp("172.0.0.1");
+		vm1.setSlaAgreement("slaAggrementId1");
+		
+		vms.add(vm1);
+		
+		VM vm2 = new VM();
+		vm2.setId(22);
+		vm2.setHref("href2");
+		vm2.setOvfId("ovfId2");
+		vm2.setProviderId("provider-id2");
+		vm2.setProviderVmId("provider-vm-id2");
+		vm2.setStatus("XXX2");
+		vm2.setIp("172.0.0.12");
+		vm2.setSlaAgreement("slaAggrementId2");
+		
+		vms.add(vm2);
+		
+		ApplicationManagerMessage amMessage = MessageCreator.fromDeployment("name", deployment1);
+		
+		assertEquals("name", amMessage.getApplicationId());
+		assertEquals("11", amMessage.getDeploymentId());
+		assertEquals("STATUS", amMessage.getStatus());
+		
+		assertEquals("provider-vm-id1", amMessage.getVms().get(0).getIaasVmId());
+		assertEquals("ovfId1", amMessage.getVms().get(0).getOvfId());
+		assertEquals("XXX1", amMessage.getVms().get(0).getStatus());
+		assertEquals("12", amMessage.getVms().get(0).getVmId());
+		
+		assertEquals("provider-vm-id2", amMessage.getVms().get(1).getIaasVmId());
+		assertEquals("ovfId2", amMessage.getVms().get(1).getOvfId());
+		assertEquals("XXX2", amMessage.getVms().get(1).getStatus());
+		assertEquals("22", amMessage.getVms().get(1).getVmId());
+	}
 }

@@ -505,6 +505,7 @@ public class DeploymentRestTest extends AbstractTest {
 		verify(deploymentEventService).fireDeploymentEvent(argument.capture());
 		
 		assertEquals(Dictionary.APPLICATION_STATUS_SUBMITTED, argument.getValue().getDeploymentStatus());
+		assertEquals("threeTierWebApp", argument.getValue().getApplicationName());
 		
 		// We verify that the right messages were sent to the AMQP
 		Thread.sleep(1000l);

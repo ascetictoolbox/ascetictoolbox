@@ -142,6 +142,7 @@ public abstract class AbstractRest {
 		
 		//We notify that the deployment has been created
 		DeploymentEvent deploymentEvent = new DeploymentEvent();
+		deploymentEvent.setApplicationName(application.getName());
 		deploymentEvent.setDeploymentId(deployment.getId());
 		deploymentEvent.setDeploymentStatus(deployment.getStatus());
 		deploymentEventService.fireDeploymentEvent(deploymentEvent);

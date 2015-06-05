@@ -6,6 +6,7 @@ import eu.ascetic.amqp.client.AmqpMessageProducer;
 import eu.ascetic.paas.applicationmanager.amqp.model.ApplicationManagerMessage;
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.model.Application;
+import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
 
@@ -89,5 +90,89 @@ public class AmqpProducer {
 		                         + DEPLOYMENT_PATH + "." + application.getDeployments().get(0).getId() + "." 
 				                 + Dictionary.APPLICATION_STATUS_SUBMITTED, 
 								 amMessage);
+	}
+	
+	/**
+	 * Sends the message that an application enters the NEGOTIATING state
+	 * @param applicationName
+	 * @param deployment
+	 */
+	public static void sendDeploymentNegotiatingMessage(String applicationName, Deployment deployment) {
+		ApplicationManagerMessage amMessage = MessageCreator.fromDeployment(applicationName, deployment);
+		
+		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + applicationName + "." 
+                                 + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
+                                 + Dictionary.APPLICATION_STATUS_NEGOTIATING, 
+                                 amMessage);
+	}
+	
+	/**
+	 * Sends the message that an application exits the NEGOTIATING state
+	 * @param applicationName
+	 * @param deployment
+	 */
+	public static void sendDeploymentNegotiatedMessage(String applicationName, Deployment deployment) {
+		ApplicationManagerMessage amMessage = MessageCreator.fromDeployment(applicationName, deployment);
+		
+		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + applicationName + "." 
+                                 + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
+                                 + Dictionary.APPLICATION_STATUS_NEGOTIATIED, 
+                                 amMessage);
+	}
+	
+	/**
+	 * Sends the message that an application enters the NEGOTIATING state
+	 * @param applicationName
+	 * @param deployment
+	 */
+	public static void sendDeploymentContextualizingMessage(String applicationName, Deployment deployment) {
+		ApplicationManagerMessage amMessage = MessageCreator.fromDeployment(applicationName, deployment);
+		
+		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + applicationName + "." 
+                                 + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
+                                 + Dictionary.APPLICATION_STATUS_CONTEXTUALIZING, 
+                                 amMessage);
+	}
+	
+	/**
+	 * Sends the message that an application enters the NEGOTIATING state
+	 * @param applicationName
+	 * @param deployment
+	 */
+	public static void sendDeploymentContextualizedMessage(String applicationName, Deployment deployment) {
+		ApplicationManagerMessage amMessage = MessageCreator.fromDeployment(applicationName, deployment);
+		
+		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + applicationName + "." 
+                                 + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
+                                 + Dictionary.APPLICATION_STATUS_CONTEXTUALIZED, 
+                                 amMessage);
+	}
+	
+	/**
+	 * Sends the message that an application enters the DEPLOYING state
+	 * @param applicationName
+	 * @param deployment
+	 */
+	public static void sendDeploymentDeployingMessage(String applicationName, Deployment deployment) {
+		ApplicationManagerMessage amMessage = MessageCreator.fromDeployment(applicationName, deployment);
+		
+		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + applicationName + "." 
+                                 + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
+                                 + Dictionary.APPLICATION_STATUS_DEPLOYING, 
+                                 amMessage);
+	}
+	
+	/**
+	 * Sends the message that an application exits the NEGOTIATING state
+	 * @param applicationName
+	 * @param deployment
+	 */
+	public static void sendDeploymentDeployedMessage(String applicationName, Deployment deployment) {
+		ApplicationManagerMessage amMessage = MessageCreator.fromDeployment(applicationName, deployment);
+		
+		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + applicationName + "." 
+                                 + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
+                                 + Dictionary.APPLICATION_STATUS_DEPLOYED, 
+                                 amMessage);
 	}
 }

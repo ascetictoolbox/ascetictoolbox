@@ -3,6 +3,7 @@ package eu.ascetic.paas.applicationmanager.event.deployment;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import eu.ascetic.paas.applicationmanager.amqp.AmqpProducer;
 import eu.ascetic.paas.applicationmanager.contextualizer.VmcClient;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.event.DeploymentEvent;
@@ -13,7 +14,6 @@ import eu.ascetic.utils.ovf.api.OvfDefinition;
 import eu.ascetic.utils.ovf.api.VirtualSystemCollection;
 import eu.ascetic.vmc.api.core.ProgressException;
 import eu.ascetic.vmc.api.datamodel.ProgressData;
-
 import reactor.event.Event;
 import reactor.spring.annotation.Consumer;
 import reactor.spring.annotation.Selector;
@@ -60,6 +60,15 @@ public class ContextualizationEventHandler {
 			
 			// We need first to read the deployment from the DB:
 			Deployment deployment = deploymentDAO.getById(deploymentEvent.getDeploymentId());
+			
+            // Since we are not doing this right now, we move the application to the next step
+            deployment.setStatus(Dictionary.APPLICATION_STATUS_CONTEXTUALIZING);
+			
+			// We save the changes to the DB
+			deploymentDAO.update(deployment);
+			
+			// We sent the message that the negottiating state starts:
+			AmqpProducer.sendDeploymentContextualizingMessage(deploymentEvent.getApplicationName(), deployment);
 			
 			OvfDefinition ovf = OVFUtils.getOvfDefinition(deployment.getOvf());
 			
@@ -157,6 +166,9 @@ public class ContextualizationEventHandler {
 						
 						// We save the changes to the DB
 						deploymentDAO.update(deployment);
+						
+						// We sent the message that the contextualization ends:
+						AmqpProducer.sendDeploymentContextualizedMessage(deploymentEvent.getApplicationName(), deployment);
 						
 						//We notify that the deployment has been modified
 						deploymentEventService.fireDeploymentEvent(deploymentEvent);

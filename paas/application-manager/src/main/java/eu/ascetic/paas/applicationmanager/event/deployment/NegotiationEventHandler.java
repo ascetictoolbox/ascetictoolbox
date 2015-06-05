@@ -5,6 +5,7 @@ import org.slasoi.slamodel.sla.SLA;
 import org.slasoi.slamodel.sla.SLATemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import eu.ascetic.paas.applicationmanager.amqp.AmqpProducer;
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.event.DeploymentEvent;
@@ -66,6 +67,9 @@ public class NegotiationEventHandler {
 			// We save the changes to the DB
 			deploymentDAO.update(deployment);
 			
+			// We sent the message that the negottiating state starts:
+			AmqpProducer.sendDeploymentNegotiatingMessage(deploymentEvent.getApplicationName(), deployment);
+			
 			if(Configuration.enableSLAM.equals("yes")) {
 
 				// First we create the SLA template from the OVF
@@ -111,6 +115,9 @@ public class NegotiationEventHandler {
 			
 			// We save the changes to the DB
 			deploymentDAO.update(deployment);
+			
+			// We sent the message that the negottiated state starts:
+			AmqpProducer.sendDeploymentNegotiatedMessage(deploymentEvent.getApplicationName(), deployment);
 			
 			//We notify that the deployment has been modified
 			deploymentEventService.fireDeploymentEvent(deploymentEvent);

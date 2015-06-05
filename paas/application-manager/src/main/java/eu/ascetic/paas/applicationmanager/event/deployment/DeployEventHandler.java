@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import es.bsc.vmmclient.models.ImageToUpload;
 import es.bsc.vmmclient.models.Vm;
 import es.bsc.vmmclient.models.VmDeployed;
+import eu.ascetic.paas.applicationmanager.amqp.AmqpProducer;
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.dao.ImageDAO;
@@ -88,6 +89,9 @@ public class DeployEventHandler {
 			// First we change the status of the deployment proccess... 
 			deployment.setStatus(Dictionary.APPLICATION_STATUS_DEPLOYING);
 			deploymentDAO.update(deployment);
+			
+			// We sent the message that the deploying state starts:
+			AmqpProducer.sendDeploymentDeployingMessage(deploymentEvent.getApplicationName(), deployment);
 			
 			try {
 				OvfDefinition ovfDocument = OVFUtils.getOvfDefinition(deployment.getOvf());
@@ -196,6 +200,9 @@ public class DeployEventHandler {
 			}
 			
 			deploymentEvent.setDeploymentStatus(deployment.getStatus());
+			
+			// We sent the message that the deployed state starts:
+			AmqpProducer.sendDeploymentDeployedMessage(deploymentEvent.getApplicationName(), deployment);
 					
 			//We notify that the deployment has been modified
 			deploymentEventService.fireDeploymentEvent(deploymentEvent);

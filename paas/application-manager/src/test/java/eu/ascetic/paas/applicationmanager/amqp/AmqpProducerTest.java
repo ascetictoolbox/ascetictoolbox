@@ -125,7 +125,7 @@ public class AmqpProducerTest extends AbstractTest {
 		
 		Deployment deployment = new Deployment();
 		deployment.setId(23);
-		deployment.setStatus("STATUS");
+		deployment.setStatus("SUBMITTED");
 		application.addDeployment(deployment);
 		
 		AmqpProducer.sendDeploymentSubmittedMessage(application);
@@ -140,8 +140,230 @@ public class AmqpProducerTest extends AbstractTest {
 		ApplicationManagerMessage amMessageReceived = ModelConverter.jsonToApplicationManagerMessage(listener.getMessage());
 		assertEquals("pepito", amMessageReceived.getApplicationId());
 		assertEquals("23", amMessageReceived.getDeploymentId());
-		assertEquals("STATUS", amMessageReceived.getStatus());
+		assertEquals("SUBMITTED", amMessageReceived.getStatus());
 		
+		receiver.close();
+	}
+	
+	@Test
+	public void sendDeploymentNegotiatingMessageTest() throws Exception {
+		// We manually modify the configuration object to be able to use personally for this test
+		Configuration.amqpAddress = "localhost:7672";
+		Configuration.amqpUsername = "guest";
+		Configuration.amqpPassword = "guest";
+		
+		// We set a listener to get the sent message from the MessageQueue
+		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, 
+				                                               Configuration.amqpUsername, 
+				                                               Configuration.amqpPassword,
+				                                               "APPLICATION.pepito.DEPLOYMENT.23.NEGOTIATING",
+				                                               true);
+		AmqpBasicListener listener = new AmqpBasicListener();
+		receiver.setMessageConsumer(listener);
+		
+		Deployment deployment = new Deployment();
+		deployment.setId(23);
+		deployment.setStatus("NEGOTIATING");
+		
+		AmqpProducer.sendDeploymentNegotiatingMessage("pepito", deployment);
+		
+		// We wait one second just in case
+		Thread.sleep(700l);
+		
+		// We verify the results
+		assertEquals("APPLICATION.pepito.DEPLOYMENT.23.NEGOTIATING", listener.getDestination());
+		
+		// We parse the received message and verify its values
+		ApplicationManagerMessage amMessageReceived = ModelConverter.jsonToApplicationManagerMessage(listener.getMessage());
+		assertEquals("pepito", amMessageReceived.getApplicationId());
+		assertEquals("23", amMessageReceived.getDeploymentId());
+		assertEquals("NEGOTIATING", amMessageReceived.getStatus());
+		
+		receiver.close();
+	}
+	
+	@Test
+	public void sendDeploymentNegotiatedMessageTest() throws Exception {
+		// We manually modify the configuration object to be able to use personally for this test
+		Configuration.amqpAddress = "localhost:7672";
+		Configuration.amqpUsername = "guest";
+		Configuration.amqpPassword = "guest";
+		
+		// We set a listener to get the sent message from the MessageQueue
+		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, 
+				                                               Configuration.amqpUsername, 
+				                                               Configuration.amqpPassword,
+				                                               "APPLICATION.pepito.DEPLOYMENT.23.NEGOTIATED",
+				                                               true);
+		AmqpBasicListener listener = new AmqpBasicListener();
+		receiver.setMessageConsumer(listener);
+		
+		Deployment deployment = new Deployment();
+		deployment.setId(23);
+		deployment.setStatus("NEGOTIATED");
+		
+		AmqpProducer.sendDeploymentNegotiatedMessage("pepito", deployment);
+		
+		// We wait one second just in case
+		Thread.sleep(700l);
+		
+		// We verify the results
+		assertEquals("APPLICATION.pepito.DEPLOYMENT.23.NEGOTIATED", listener.getDestination());
+		
+		// We parse the received message and verify its values
+		ApplicationManagerMessage amMessageReceived = ModelConverter.jsonToApplicationManagerMessage(listener.getMessage());
+		assertEquals("pepito", amMessageReceived.getApplicationId());
+		assertEquals("23", amMessageReceived.getDeploymentId());
+		assertEquals("NEGOTIATED", amMessageReceived.getStatus());
+		
+		receiver.close();
+	}
+	
+	@Test
+	public void sendDeploymentContextualizingMessageTest() throws Exception {
+		// We manually modify the configuration object to be able to use personally for this test
+		Configuration.amqpAddress = "localhost:7672";
+		Configuration.amqpUsername = "guest";
+		Configuration.amqpPassword = "guest";
+
+		// We set a listener to get the sent message from the MessageQueue
+		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, 
+				Configuration.amqpUsername, 
+				Configuration.amqpPassword,
+				"APPLICATION.pepito.DEPLOYMENT.23.CONTEXTUALIZING",
+				true);
+		AmqpBasicListener listener = new AmqpBasicListener();
+		receiver.setMessageConsumer(listener);
+
+		Deployment deployment = new Deployment();
+		deployment.setId(23);
+		deployment.setStatus("CONTEXTUALIZING");
+
+		AmqpProducer.sendDeploymentContextualizingMessage("pepito", deployment);
+
+		// We wait one second just in case
+		Thread.sleep(700l);
+
+		// We verify the results
+		assertEquals("APPLICATION.pepito.DEPLOYMENT.23.CONTEXTUALIZING", listener.getDestination());
+
+		// We parse the received message and verify its values
+		ApplicationManagerMessage amMessageReceived = ModelConverter.jsonToApplicationManagerMessage(listener.getMessage());
+		assertEquals("pepito", amMessageReceived.getApplicationId());
+		assertEquals("23", amMessageReceived.getDeploymentId());
+		assertEquals("CONTEXTUALIZING", amMessageReceived.getStatus());
+
+		receiver.close();
+	}
+	
+	@Test
+	public void sendDeploymentContextualizedMessageTest() throws Exception {
+		// We manually modify the configuration object to be able to use personally for this test
+		Configuration.amqpAddress = "localhost:7672";
+		Configuration.amqpUsername = "guest";
+		Configuration.amqpPassword = "guest";
+
+		// We set a listener to get the sent message from the MessageQueue
+		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, 
+				Configuration.amqpUsername, 
+				Configuration.amqpPassword,
+				"APPLICATION.pepito.DEPLOYMENT.23.CONTEXTUALIZED",
+				true);
+		AmqpBasicListener listener = new AmqpBasicListener();
+		receiver.setMessageConsumer(listener);
+
+		Deployment deployment = new Deployment();
+		deployment.setId(23);
+		deployment.setStatus("CONTEXTUALIZED");
+
+		AmqpProducer.sendDeploymentContextualizedMessage("pepito", deployment);
+
+		// We wait one second just in case
+		Thread.sleep(700l);
+
+		// We verify the results
+		assertEquals("APPLICATION.pepito.DEPLOYMENT.23.CONTEXTUALIZED", listener.getDestination());
+
+		// We parse the received message and verify its values
+		ApplicationManagerMessage amMessageReceived = ModelConverter.jsonToApplicationManagerMessage(listener.getMessage());
+		assertEquals("pepito", amMessageReceived.getApplicationId());
+		assertEquals("23", amMessageReceived.getDeploymentId());
+		assertEquals("CONTEXTUALIZED", amMessageReceived.getStatus());
+
+		receiver.close();
+	}
+	
+	@Test
+	public void sendDeploymentDeployingMessageTest() throws Exception {
+		// We manually modify the configuration object to be able to use personally for this test
+		Configuration.amqpAddress = "localhost:7672";
+		Configuration.amqpUsername = "guest";
+		Configuration.amqpPassword = "guest";
+
+		// We set a listener to get the sent message from the MessageQueue
+		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, 
+				Configuration.amqpUsername, 
+				Configuration.amqpPassword,
+				"APPLICATION.pepito.DEPLOYMENT.23.DEPLOYING",
+				true);
+		AmqpBasicListener listener = new AmqpBasicListener();
+		receiver.setMessageConsumer(listener);
+
+		Deployment deployment = new Deployment();
+		deployment.setId(23);
+		deployment.setStatus("DEPLOYING");
+
+		AmqpProducer.sendDeploymentDeployingMessage("pepito", deployment);
+
+		// We wait one second just in case
+		Thread.sleep(700l);
+
+		// We verify the results
+		assertEquals("APPLICATION.pepito.DEPLOYMENT.23.DEPLOYING", listener.getDestination());
+
+		// We parse the received message and verify its values
+		ApplicationManagerMessage amMessageReceived = ModelConverter.jsonToApplicationManagerMessage(listener.getMessage());
+		assertEquals("pepito", amMessageReceived.getApplicationId());
+		assertEquals("23", amMessageReceived.getDeploymentId());
+		assertEquals("DEPLOYING", amMessageReceived.getStatus());
+
+		receiver.close();
+	}
+	
+	@Test
+	public void sendDeploymentDeployedMessageTest() throws Exception {
+		// We manually modify the configuration object to be able to use personally for this test
+		Configuration.amqpAddress = "localhost:7672";
+		Configuration.amqpUsername = "guest";
+		Configuration.amqpPassword = "guest";
+
+		// We set a listener to get the sent message from the MessageQueue
+		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, 
+				Configuration.amqpUsername, 
+				Configuration.amqpPassword,
+				"APPLICATION.pepito.DEPLOYMENT.23.DEPLOYED",
+				true);
+		AmqpBasicListener listener = new AmqpBasicListener();
+		receiver.setMessageConsumer(listener);
+
+		Deployment deployment = new Deployment();
+		deployment.setId(23);
+		deployment.setStatus("DEPLOYED");
+
+		AmqpProducer.sendDeploymentDeployedMessage("pepito", deployment);
+
+		// We wait one second just in case
+		Thread.sleep(700l);
+
+		// We verify the results
+		assertEquals("APPLICATION.pepito.DEPLOYMENT.23.DEPLOYED", listener.getDestination());
+
+		// We parse the received message and verify its values
+		ApplicationManagerMessage amMessageReceived = ModelConverter.jsonToApplicationManagerMessage(listener.getMessage());
+		assertEquals("pepito", amMessageReceived.getApplicationId());
+		assertEquals("23", amMessageReceived.getDeploymentId());
+		assertEquals("DEPLOYED", amMessageReceived.getStatus());
+
 		receiver.close();
 	}
 }

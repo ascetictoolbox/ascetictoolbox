@@ -22,7 +22,7 @@ package eu.ascetic.paas.applicationmanager.event;
  * POJO object that represents the event information for a deployment internally
  */
 public class DeploymentEvent {
-
+	private String applicationName;
 	private int deploymentId;
 	private String deploymentStatus;
 	
@@ -38,5 +38,12 @@ public class DeploymentEvent {
 	}
 	public void setDeploymentStatus(String deploymentStatus) {
 		this.deploymentStatus = deploymentStatus;
+	}
+	
+	public String getApplicationName() {
+		return applicationName;
+	}
+	public void setApplicationName(String applicationName) {
+		this.applicationName = applicationName;
 	}
 }

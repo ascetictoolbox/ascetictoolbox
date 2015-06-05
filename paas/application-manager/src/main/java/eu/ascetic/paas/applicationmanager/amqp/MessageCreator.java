@@ -2,6 +2,7 @@ package eu.ascetic.paas.applicationmanager.amqp;
 
 import eu.ascetic.paas.applicationmanager.amqp.model.ApplicationManagerMessage;
 import eu.ascetic.paas.applicationmanager.model.Application;
+import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.VM;
 
 /**
@@ -44,21 +45,44 @@ public class MessageCreator {
 		message.setApplicationId(application.getName());
 		
 		if(application.getDeployments() != null && application.getDeployments().size() > 0) {
-			message.setDeploymentId("" + application.getDeployments().get(0).getId());
-			message.setStatus(application.getDeployments().get(0).getStatus());
+			completeMessage(message, application.getDeployments().get(0));
+		}
+		
+		return message;
+	}
+	
+	private static void completeMessage(ApplicationManagerMessage message, Deployment deployment) {
+		message.setDeploymentId("" + deployment.getId());
+		message.setStatus(deployment.getStatus());
 
-			if(application.getDeployments().get(0).getVms() != null ) {
-				for(VM vm : application.getDeployments().get(0).getVms()) {
-					eu.ascetic.paas.applicationmanager.amqp.model.VM messageVM = new eu.ascetic.paas.applicationmanager.amqp.model.VM();
-					messageVM.setIaasVmId(vm.getProviderVmId());
-					messageVM.setOvfId(vm.getOvfId());
-					messageVM.setStatus(vm.getStatus());
-					messageVM.setVmId("" + vm.getId());
+		if(deployment.getVms() != null ) {
+			for(VM vm : deployment.getVms()) {
+				eu.ascetic.paas.applicationmanager.amqp.model.VM messageVM = new eu.ascetic.paas.applicationmanager.amqp.model.VM();
+				messageVM.setIaasVmId(vm.getProviderVmId());
+				messageVM.setOvfId(vm.getOvfId());
+				messageVM.setStatus(vm.getStatus());
+				messageVM.setVmId("" + vm.getId());
 
-					message.addVM(messageVM);
-				}
+				message.addVM(messageVM);
 			}
 		}
+	}
+	
+	/**
+	 * Creates a message event from an application name and a Deployment object
+	 * @param applicationName to which the deployment belongs
+	 * @param deployment from which to extract the information
+	 * @return the JSON representation of the message
+	 */
+	public static ApplicationManagerMessage fromDeployment(String applicationName, Deployment deployment) {
+		if(applicationName == null || deployment == null) {
+			return null;
+		}
+		
+		ApplicationManagerMessage message = new ApplicationManagerMessage();
+		message.setApplicationId(applicationName);
+		
+		completeMessage(message, deployment);
 		
 		return message;
 	}

@@ -72,6 +72,7 @@ public class CreatedEventHandlerTest {
 		
 		DeploymentEvent deploymentEvent = new DeploymentEvent();
 		deploymentEvent.setDeploymentId(22);
+		deploymentEvent.setApplicationName("applicationName");
 		deploymentEvent.setDeploymentStatus(Dictionary.APPLICATION_STATUS_SUBMITTED);
 		
 		Deployment deployment = new Deployment();
@@ -88,5 +89,6 @@ public class CreatedEventHandlerTest {
 		
 		assertEquals(22, argument.getValue().getDeploymentId());
 		assertEquals(Dictionary.APPLICATION_STATUS_NEGOTIATION, argument.getValue().getDeploymentStatus());
+		assertEquals("applicationName", argument.getValue().getApplicationName());
 	}
 }
