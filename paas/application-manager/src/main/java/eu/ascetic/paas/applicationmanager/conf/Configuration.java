@@ -33,6 +33,7 @@ public class Configuration {
 	
 	// All this parameters can be overwritten by the application-manager.properties file
 	public static String enableSLAM = "no";
+	public static String enableAMQP = "yes";
 	public static String slamURL = "http://10.4.0.16:8080/services/asceticNegotiation?wsdl";
 	public static String applicationMonitorUrl = "http://10.4.0.16:9000";
 	public static String vmcontextualizerConfigurationFileDirectory = "/home/vmc";
@@ -55,6 +56,7 @@ public class Configuration {
         	
         	org.apache.commons.configuration.Configuration config = new PropertiesConfiguration(propertiesFile);
         	enableSLAM = config.getString("enable.slam");
+        	enableAMQP = config.getString("enable.amqp");
         	slamURL = config.getString("slam.url");
         	applicationMonitorUrl = config.getString("application-monitor.url");
         	vmcontextualizerConfigurationFileDirectory = config.getString("vmcontextualizer.configuration.file.directory");

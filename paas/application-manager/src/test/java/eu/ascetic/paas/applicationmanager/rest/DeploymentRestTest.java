@@ -34,10 +34,14 @@ import org.mockito.ArgumentCaptor;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 
+import eu.ascetic.amqp.client.AmqpMessageReceiver;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Unit;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.PaaSEnergyModeller;
 import eu.ascetic.paas.applicationmanager.amonitor.ApplicationMonitorClient;
 import eu.ascetic.paas.applicationmanager.amonitor.model.EnergyCosumed;
+import eu.ascetic.paas.applicationmanager.amqp.AbstractTest;
+import eu.ascetic.paas.applicationmanager.amqp.AmqpListListener;
+import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.event.DeploymentEvent;
@@ -49,6 +53,7 @@ import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
 import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.VM;
+import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
 
 /**
@@ -74,7 +79,7 @@ import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
  *
  */
 
-public class DeploymentRestTest {
+public class DeploymentRestTest extends AbstractTest {
 	private String threeTierWebAppOvfFile = "3tier-webapp.ovf.xml";
 	private String threeTierWebAppOvfString;
 	
@@ -447,7 +452,17 @@ public class DeploymentRestTest {
 	}
 	
 	@Test
-	public void postANewDeploymentInDB() throws JAXBException {
+	public void postANewDeploymentInDB() throws Exception {
+		// We manually modify the configuration object to be able to use personally for this test
+		Configuration.amqpAddress = "localhost:7672";
+		Configuration.amqpUsername = "guest";
+		Configuration.amqpPassword = "guest";
+		
+		// We set a listener to get the sent message from the MessageQueue
+		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword,  "APPLICATION.>", true);
+		AmqpListListener listener = new AmqpListListener();
+		receiver.setMessageConsumer(listener);
+		
 		ApplicationDAO applicationDAO = mock(ApplicationDAO.class);
 		
 		Application application = new Application();
@@ -490,6 +505,17 @@ public class DeploymentRestTest {
 		verify(deploymentEventService).fireDeploymentEvent(argument.capture());
 		
 		assertEquals(Dictionary.APPLICATION_STATUS_SUBMITTED, argument.getValue().getDeploymentStatus());
+		
+		// We verify that the right messages were sent to the AMQP
+		Thread.sleep(1000l);
+		assertEquals(1, listener.getTextMessages().size());
+		
+		assertEquals("APPLICATION.threeTierWebApp.DEPLOYMENT.0.SUBMITTED", listener.getTextMessages().get(0).getJMSDestination().toString());
+		assertEquals("threeTierWebApp", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getApplicationId());
+		assertEquals("0", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getDeploymentId());
+		assertEquals("SUBMITTED", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getStatus());
+		
+		receiver.close();
 	} 
 	
 	@Test

@@ -8,6 +8,8 @@ import eu.ascetic.amqp.client.AmqpBasicListener;
 import eu.ascetic.amqp.client.AmqpMessageReceiver;
 import eu.ascetic.paas.applicationmanager.amqp.model.ApplicationManagerMessage;
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
+import eu.ascetic.paas.applicationmanager.model.Application;
+import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
 
 /**
@@ -66,6 +68,79 @@ public class AmqpProducerTest extends AbstractTest {
 		assertEquals("111", amMessageReceived.getApplicationId());
 		assertEquals("222", amMessageReceived.getDeploymentId());
 		assertEquals("SOMETHING", amMessageReceived.getStatus());
+		
+		receiver.close();
+	}
+	
+	@Test
+	public void sendNewApplicationMessageTest() throws Exception {
+		// We manually modify the configuration object to be able to use personally for this test
+		Configuration.amqpAddress = "localhost:7672";
+		Configuration.amqpUsername = "guest";
+		Configuration.amqpPassword = "guest";
+		
+		// We set a listener to get the sent message from the MessageQueue
+		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword,  "APPLICATION.pepito.ADDED", true);
+		AmqpBasicListener listener = new AmqpBasicListener();
+		receiver.setMessageConsumer(listener);
+		
+		// We create the Application object
+		Application application = new Application();
+		application.setName("pepito");
+		
+		AmqpProducer.sendNewApplicationMessage(application);
+		
+		// We wait one second just in case
+		Thread.sleep(1000l);
+		
+		// We verify the results
+		assertEquals("APPLICATION.pepito.ADDED", listener.getDestination());
+		
+		// We parse the received message and verify its values
+		ApplicationManagerMessage amMessageReceived = ModelConverter.jsonToApplicationManagerMessage(listener.getMessage());
+		assertEquals("pepito", amMessageReceived.getApplicationId());
+		
+		receiver.close();
+	}
+	
+	@Test
+	public void sendDeploymentSubmittedMessageTest() throws Exception {
+		// We manually modify the configuration object to be able to use personally for this test
+		Configuration.amqpAddress = "localhost:7672";
+		Configuration.amqpUsername = "guest";
+		Configuration.amqpPassword = "guest";
+		
+		// We set a listener to get the sent message from the MessageQueue
+		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, 
+				                                               Configuration.amqpUsername, 
+				                                               Configuration.amqpPassword,
+				                                               "APPLICATION.pepito.DEPLOYMENT.23.SUBMITTED",
+				                                               true);
+		AmqpBasicListener listener = new AmqpBasicListener();
+		receiver.setMessageConsumer(listener);
+		
+		// We create the Application object
+		Application application = new Application();
+		application.setName("pepito");
+		
+		Deployment deployment = new Deployment();
+		deployment.setId(23);
+		deployment.setStatus("STATUS");
+		application.addDeployment(deployment);
+		
+		AmqpProducer.sendDeploymentSubmittedMessage(application);
+		
+		// We wait one second just in case
+		Thread.sleep(1000l);
+		
+		// We verify the results
+		assertEquals("APPLICATION.pepito.DEPLOYMENT.23.SUBMITTED", listener.getDestination());
+		
+		// We parse the received message and verify its values
+		ApplicationManagerMessage amMessageReceived = ModelConverter.jsonToApplicationManagerMessage(listener.getMessage());
+		assertEquals("pepito", amMessageReceived.getApplicationId());
+		assertEquals("23", amMessageReceived.getDeploymentId());
+		assertEquals("STATUS", amMessageReceived.getStatus());
 		
 		receiver.close();
 	}

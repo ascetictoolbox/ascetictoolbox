@@ -101,7 +101,7 @@ public class MessageCreatorTest {
 		
 		ApplicationManagerMessage amMessage = MessageCreator.fromApplication(application);
 		
-		assertEquals("1", amMessage.getApplicationId());
+		assertEquals("name", amMessage.getApplicationId());
 		assertEquals("11", amMessage.getDeploymentId());
 		assertEquals("STATUS", amMessage.getStatus());
 		
@@ -132,7 +132,7 @@ public class MessageCreatorTest {
 		
 		ApplicationManagerMessage amMessage = MessageCreator.fromApplication(application1);
 		
-		assertEquals("1", amMessage.getApplicationId());
+		assertEquals("name", amMessage.getApplicationId());
 		
 		Application application2 = new Application();
 		application2.setHref("href");
@@ -145,7 +145,7 @@ public class MessageCreatorTest {
 		
 		amMessage = MessageCreator.fromApplication(application2);
 		
-		assertEquals("1", amMessage.getApplicationId());
+		assertEquals("name", amMessage.getApplicationId());
 		
 		Application application3 = new Application();
 		application3.setHref("href");
@@ -155,7 +155,7 @@ public class MessageCreatorTest {
 		
 		amMessage = MessageCreator.fromApplication(application3);
 		
-		assertEquals("1", amMessage.getApplicationId());
+		assertEquals("name", amMessage.getApplicationId());
 		
 		Application application4 = new Application();
 		application4.setHref("href");
@@ -178,6 +178,6 @@ public class MessageCreatorTest {
 		
 		amMessage = MessageCreator.fromApplication(application4);
 		
-		assertEquals("1", amMessage.getApplicationId());
+		assertEquals("name", amMessage.getApplicationId());
 	}
 }

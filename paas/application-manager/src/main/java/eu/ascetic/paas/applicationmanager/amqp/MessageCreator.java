@@ -41,7 +41,7 @@ public class MessageCreator {
 		
 		ApplicationManagerMessage message = new ApplicationManagerMessage();
 		
-		message.setApplicationId("" + application.getId());
+		message.setApplicationId(application.getName());
 		
 		if(application.getDeployments() != null && application.getDeployments().size() > 0) {
 			message.setDeploymentId("" + application.getDeployments().get(0).getId());

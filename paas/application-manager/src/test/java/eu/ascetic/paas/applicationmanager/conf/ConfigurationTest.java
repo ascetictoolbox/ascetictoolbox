@@ -30,6 +30,7 @@ public class ConfigurationTest {
 	@Test
 	public void loadConfigurationTest() {
 		assertEquals("yes", Configuration.enableSLAM);
+		assertEquals("yes", Configuration.enableAMQP);
 		assertEquals("http://111.222.333.444:8080/services/asceticNegotiation?wsdl", Configuration.slamURL);
 		//assertEquals("http://111.222.333.444:9000", Configuration.applicationMonitorUrl);
 		assertEquals("/home/vmc2", Configuration.vmcontextualizerConfigurationFileDirectory);

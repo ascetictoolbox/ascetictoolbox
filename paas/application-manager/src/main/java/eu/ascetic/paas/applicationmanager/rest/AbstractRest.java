@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.builder.EnergyModellerFactory;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.PaaSEnergyModeller;
+import eu.ascetic.paas.applicationmanager.amqp.AmqpProducer;
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.dao.VMDAO;
@@ -119,6 +120,9 @@ public abstract class AbstractRest {
 			application = new Application();
 			application.setName(name);
 			alreadyInDB = false;
+			
+			// We sent the message that a new application has been added to the AMQP
+			AmqpProducer.sendNewApplicationMessage(application);
 		} 
 
 		// We add a new deployment to the application
@@ -144,6 +148,9 @@ public abstract class AbstractRest {
 		
 		Application applicationToBeShown = ApplicationConverter.withoutDeployments(application);
 		applicationToBeShown.addDeployment(deployment);
+		
+		// We notify to the AMQP that the deployment has been created
+		AmqpProducer.sendDeploymentSubmittedMessage(applicationToBeShown);
 		
 		return buildResponse(Status.CREATED, XMLBuilder.getApplicationXML(application));
 	}

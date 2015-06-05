@@ -696,6 +696,7 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/amonit
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/amonitor/model/EnergyConsumedTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/amonitor/model/parser/ParserTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/amqp/AbstractTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/amqp/AmqpListListener.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/amqp/AmqpProducerTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/amqp/MessageCreatorTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/conf/ConfigurationTest.java -text

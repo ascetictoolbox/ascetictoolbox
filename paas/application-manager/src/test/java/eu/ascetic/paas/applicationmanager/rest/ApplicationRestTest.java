@@ -31,6 +31,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
+import eu.ascetic.amqp.client.AmqpMessageReceiver;
+import eu.ascetic.paas.applicationmanager.amqp.AbstractTest;
+import eu.ascetic.paas.applicationmanager.amqp.AmqpListListener;
+import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 import eu.ascetic.paas.applicationmanager.event.DeploymentEvent;
 import eu.ascetic.paas.applicationmanager.event.deployment.DeploymentEventService;
@@ -38,6 +42,7 @@ import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Collection;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
+import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
 
 /**
  * 
@@ -62,7 +67,7 @@ import eu.ascetic.paas.applicationmanager.model.Dictionary;
  *
  */
 
-public class ApplicationRestTest {
+public class ApplicationRestTest extends AbstractTest {
 	private String threeTierWebAppOvfFile = "3tier-webapp.ovf.xml";
 	private String threeTierWebAppOvfString;
 	
@@ -187,7 +192,17 @@ public class ApplicationRestTest {
 	
 	
 	@Test
-	public void postAnApplicationInDB() throws JAXBException {
+	public void postAnApplicationInDB() throws Exception {
+		// We manually modify the configuration object to be able to use personally for this test
+		Configuration.amqpAddress = "localhost:7672";
+		Configuration.amqpUsername = "guest";
+		Configuration.amqpPassword = "guest";
+		
+		// We set a listener to get the sent message from the MessageQueue
+		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword,  "APPLICATION.>", true);
+		AmqpListListener listener = new AmqpListListener();
+		receiver.setMessageConsumer(listener);
+		
 		ApplicationDAO applicationDAO = mock(ApplicationDAO.class);
 		
 		Application application = new Application();
@@ -233,10 +248,31 @@ public class ApplicationRestTest {
 		verify(deploymentEventService).fireDeploymentEvent(argument.capture());
 		
 		assertEquals(Dictionary.APPLICATION_STATUS_SUBMITTED, argument.getValue().getDeploymentStatus());
+		
+		// We verify that the right messages were sent to the AMQP
+		Thread.sleep(1000l);
+		assertEquals(1, listener.getTextMessages().size());
+		
+		assertEquals("APPLICATION.threeTierWebApp.DEPLOYMENT.0.SUBMITTED", listener.getTextMessages().get(0).getJMSDestination().toString());
+		assertEquals("threeTierWebApp", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getApplicationId());
+		assertEquals("0", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getDeploymentId());
+		assertEquals("SUBMITTED", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getStatus());
+		
+		receiver.close();
 	}
 	
 	@Test
-	public void postAnApplicationNotInDB() throws JAXBException {
+	public void postAnApplicationNotInDB() throws Exception {
+		// We manually modify the configuration object to be able to use personally for this test
+		Configuration.amqpAddress = "localhost:7672";
+		Configuration.amqpUsername = "guest";
+		Configuration.amqpPassword = "guest";
+		
+		// We set a listener to get the sent message from the MessageQueue
+		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword,  "APPLICATION.>", true);
+		AmqpListListener listener = new AmqpListListener();
+		receiver.setMessageConsumer(listener);
+		
 		ApplicationDAO applicationDAO = mock(ApplicationDAO.class);
 		
 		Application application = new Application();
@@ -280,6 +316,19 @@ public class ApplicationRestTest {
 		verify(deploymentEventService).fireDeploymentEvent(argument.capture());
 		
 		assertEquals(Dictionary.APPLICATION_STATUS_SUBMITTED, argument.getValue().getDeploymentStatus());
+	
+		// We verify that the right messages were sent to the AMQP
+		Thread.sleep(1000l);
+		assertEquals(2, listener.getTextMessages().size());
+		assertEquals("APPLICATION.threeTierWebApp.ADDED", listener.getTextMessages().get(0).getJMSDestination().toString());
+		assertEquals("threeTierWebApp", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getApplicationId());
+		
+		assertEquals("APPLICATION.threeTierWebApp.DEPLOYMENT.1.SUBMITTED", listener.getTextMessages().get(1).getJMSDestination().toString());
+		assertEquals("threeTierWebApp", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(1).getText()).getApplicationId());
+		assertEquals("1", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(1).getText()).getDeploymentId());
+		assertEquals("SUBMITTED", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(1).getText()).getStatus());
+		
+		receiver.close();
 	}
 	
 	
