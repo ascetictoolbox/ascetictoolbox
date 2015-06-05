@@ -33,4 +33,5 @@ utils/energy-modeller-benchtest/energymodeller_calibrator.properties
 utils/energy-modeller-benchtest/energymodeller_cpu_predictor.properties
 utils/energy-modeller-benchtest/filter.properties
 utils/energy-modeller-data-logger/target
+utils/energy-modeller-display-tool/target
 utils/ovf-xmlbeans-api/velocity.log.1

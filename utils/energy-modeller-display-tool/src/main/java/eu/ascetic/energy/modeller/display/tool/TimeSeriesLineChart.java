@@ -38,7 +38,7 @@ public class TimeSeriesLineChart extends LineChartPanelSupport<ConcurrentHashMap
      * @param hosts The list of host names
      */
     public TimeSeriesLineChart(ConcurrentHashMap<String, TimeSeries> data, Collection<String> hosts) {
-        super("Energy Consumed on the Testbed", "Energy Consumption (W)", data, 2);
+        super("Power Consumption", "Power Consumption (W)", data, 2);
         setRangeAxisRange(Configuration.lowerMain, Configuration.upperMain);
         this.setDefaultLineStroke(new BasicStroke(50));
         this.hosts.addAll(hosts);

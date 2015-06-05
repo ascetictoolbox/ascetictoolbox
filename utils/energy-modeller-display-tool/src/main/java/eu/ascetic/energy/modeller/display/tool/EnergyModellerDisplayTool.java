@@ -15,9 +15,9 @@
  */
 package eu.ascetic.energy.modeller.display.tool;
 
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DefaultDatabaseConnector;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDataSourceAdaptor;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDirectDbDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import java.awt.Dimension;
 import java.io.File;
@@ -37,7 +37,8 @@ import javax.swing.JTabbedPane;
 import org.jfree.data.time.TimeSeries;
 
 /**
- * This displays energy usage of VMs and their hosts
+ * This displays the energy usage of VMs and their hosts
+ * @author Richard Kavanagh
  */
 public class EnergyModellerDisplayTool extends JFrame {
 
@@ -45,10 +46,9 @@ public class EnergyModellerDisplayTool extends JFrame {
      * Serial code version <code>serialVersionUID</code> for serialization.
      */
     private static final long serialVersionUID = 1733713840007288665L;
-    private static EnergyModeller modeller;
     private static EnergyModellerDisplayTool displayTool;
-    ZabbixDataSourceAdaptor dataSource = new ZabbixDataSourceAdaptor();
-    private DataCollector collector = new DataCollector(dataSource, new DefaultDatabaseConnector(), true);
+    private final HostDataSource dataSource = new ZabbixDirectDbDataSourceAdaptor();
+    private final DataCollector collector = new DataCollector(dataSource, new DefaultDatabaseConnector(), true);
     /**
      *
      */
@@ -72,7 +72,7 @@ public class EnergyModellerDisplayTool extends JFrame {
         this.addContent();
         Thread thread = new Thread(collector);
         thread.setDaemon(true);
-        thread.run();
+        thread.start();
     }
 
     /**
@@ -158,18 +158,12 @@ public class EnergyModellerDisplayTool extends JFrame {
      * @throws IOException If the power meter is not connected.
      */
     public static void main(final String[] args) throws IOException {
-        if (args.length == 0) {
-            modeller = new EnergyModeller();
-        }
         displayTool = new EnergyModellerDisplayTool();
         HashSet<String> argsSet = new HashSet<>();
         argsSet.addAll(Arrays.asList(args));
         if (argsSet.contains("Ignore-Idle-Energy")) {
             displayTool.collector.setConsiderIdleEnergy(false);
-        }
-        if (argsSet.contains("With-Own-Energy-Modeller")) {
-            modeller = new EnergyModeller();
-        }        
+        } 
 
     }
 }

@@ -19,11 +19,11 @@ import java.util.HashMap;
 import org.jfree.data.time.TimeSeries;
 
 /**
- *
- * @author Richard
+ * This is a basic implementation of a data available listener.
+ * @author Richard Kavanagh
  */
-public abstract class DataAvailableListener {
+public interface DataAvailableListener {
 
-    public abstract void processDataAvailable(final HashMap<String, TimeSeries> dataset);
+    public void processDataAvailable(final HashMap<String, TimeSeries> dataset);
     
 }

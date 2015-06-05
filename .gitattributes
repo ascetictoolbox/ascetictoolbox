@@ -3953,11 +3953,11 @@ utils/energy-modeller-data-logger/pom.xml -text
 utils/energy-modeller-data-logger/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodellerdatalogger/Logger.java -text
 utils/energy-modeller-data-logger/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodellerdatalogger/MeasurementLogger.java -text
 utils/energy-modeller-data-logger/zabbix_db_adaptor.properties -text
-utils/energy-modeller-display-tool/ascetic-zabbix-api.properties -text
-utils/energy-modeller-display-tool/energymodeller.properties -text
-utils/energy-modeller-display-tool/energymodeller_calibrator.properties -text
-utils/energy-modeller-display-tool/energymodeller_cpu_predictor.properties -text
-utils/energy-modeller-display-tool/filter.properties -text
+utils/energy-modeller-display-tool/display.properties -text
+utils/energy-modeller-display-tool/energy-modeller-data-gatherer.properties -text
+utils/energy-modeller-display-tool/energy-modeller-db-zabbix.properties -text
+utils/energy-modeller-display-tool/energy-modeller-db.properties -text
+utils/energy-modeller-display-tool/energy-modeller-predictor.properties -text
 utils/energy-modeller-display-tool/nbactions.xml -text
 utils/energy-modeller-display-tool/pom.xml -text
 utils/energy-modeller-display-tool/src/main/java/eu/ascetic/energy/modeller/display/tool/Configuration.java -text

@@ -44,7 +44,7 @@ import org.jfree.data.time.TimeSeriesDataItem;
 /**
  * This data collector displays energy data for the IaaS Energy Modeller.
  *
- * @author Richard
+ * @author Richard Kavanagh
  */
 public class DataCollector implements Runnable {
 
@@ -104,11 +104,6 @@ public class DataCollector implements Runnable {
         if (vm.getAllocatedTo() != null) {
             return vm.getAllocatedTo();
         }
-        //TODO remove this temporary fix code here!
-        if (vm.getName().equals("cloudsuite---data-analytics")) {
-            return getHost("asok12");
-        }
-        //end of this temporary code fix
         /**
          * This block of code takes the agreed assumption that the host name
          * ends with "_<hostname>" and that "_" exist nowhere else in the name.
@@ -118,7 +113,6 @@ public class DataCollector implements Runnable {
         if (parseTokenPos == -1 && vm.getAllocatedTo() == null) {
             return null;
         }
-        //TODO consider adding a file based map system here.
         return getHost(name.substring(parseTokenPos + 1, name.length()));
     }
 
@@ -258,8 +252,8 @@ public class DataCollector implements Runnable {
     }
 
     /**
-     * This appendToSeriess a host energy record into a current usage record
-     * dataset
+     * This takes a collection of host energy records and appends them onto
+     * the end of a time series.
      *
      * @param data The data to appendToSeries
      * @param toAppend The time series to append to
@@ -275,8 +269,7 @@ public class DataCollector implements Runnable {
     }
 
     /**
-     * The hashmap gives a faster way to find a specific host. This
-     * appendToSeriess from a raw list of hosts into the indexed structure.
+     * This provides from a raw list of hosts a hashmap of physical hosts.
      *
      * @param hostList The host list
      * @return The hashed host list
