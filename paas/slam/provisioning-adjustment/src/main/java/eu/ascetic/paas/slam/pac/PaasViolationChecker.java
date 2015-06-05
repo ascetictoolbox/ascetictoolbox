@@ -1,8 +1,7 @@
 package eu.ascetic.paas.slam.pac;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.Calendar;
+import java.util.Properties;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -15,10 +14,8 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 import javax.jms.Topic;
 
-import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.log4j.Logger;
-import org.slasoi.slamodel.primitives.STND;
 import org.slasoi.slamodel.sla.AgreementTerm;
 import org.slasoi.slamodel.sla.Guaranteed;
 import org.slasoi.slamodel.sla.SLA;
@@ -36,12 +33,13 @@ import eu.ascetic.paas.slam.pac.impl.provider.reporting.GetSLAClient;
 public class PaasViolationChecker implements Runnable {
 	private static Logger logger = Logger.getLogger(PaasViolationChecker.class.getName());
 
-	/*
-	 * TODO
-	 * retrieve url from configuration file
-	 */
-	private static String url = ActiveMQConnection.DEFAULT_BROKER_URL;
-
+	private Properties properties;
+    protected static String ACTIVEMQ_URL = "activemq_url";
+    private static String ACTIVEMQ_CHANNEL = "activemq_channel";
+    private static String TERMINATED_APPS_QUEUE = "terminated_apps_queue";
+    private static String BUSINESS_REPORTING_URL = "business_reporting_url";
+    
+    
 	private String topicId;
 	private String slaId;
 	private String deploymentId;
@@ -49,8 +47,9 @@ public class PaasViolationChecker implements Runnable {
 	private Connection measurementsConnection;
 	private Connection applicationEventsConnection;
 
-	public PaasViolationChecker(String topicId, String appId, String deploymentId, String slaId) {
+	public PaasViolationChecker(Properties properties, String topicId, String appId, String deploymentId, String slaId) {
 		super();
+		this.properties = properties;
 		this.topicId = topicId;
 		this.appId = appId;
 		this.deploymentId = deploymentId;
@@ -76,7 +75,7 @@ public class PaasViolationChecker implements Runnable {
 
 			// Getting JMS connection from the server
 
-			ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(url);
+			ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(properties.getProperty(ACTIVEMQ_URL));
 			applicationEventsConnection = connectionFactory.createConnection();
 
 
@@ -88,17 +87,17 @@ public class PaasViolationChecker implements Runnable {
 			Session session = applicationEventsConnection.createSession(false,
 					Session.AUTO_ACKNOWLEDGE);
 
-			Topic topic = session.createTopic("app-manager.deployment.terminated");
+			Topic topic = session.createTopic(properties.getProperty(TERMINATED_APPS_QUEUE));
 
 			MessageConsumer consumer = session.createDurableSubscriber(topic,
-					"PAAS SLAM");
+					properties.getProperty(ACTIVEMQ_CHANNEL));
 
 			MessageListener listener = new MessageListener() {
 				public void onMessage(Message message) {
 					try {
 						if (message instanceof TextMessage) {
 							TextMessage textMessage = (TextMessage) message;
-							logger.info("ACTIVEMQ: Received message in the topic app-manager.deployment.terminated: "+ textMessage.getText() );
+							logger.info("ACTIVEMQ: Received message in the terminated apps queue: "+ textMessage.getText() );
 
 							//se il messaggio riguarda appId,slaId e deploymentId relativi a questo ViolationChecker, interrompo il monitoring
 							ApplicationManagerMessage amMessage = ModelConverter.jsonToApplicationManagerMessage(textMessage.getText());
@@ -138,7 +137,7 @@ public class PaasViolationChecker implements Runnable {
 
 			// Getting JMS connection from the server
 
-			ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(url);
+			ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(properties.getProperty(ACTIVEMQ_URL));
 			measurementsConnection = connectionFactory.createConnection();
 
 			measurementsConnection.setClientID("PaaS Violation Checker "+System.currentTimeMillis());
@@ -152,7 +151,7 @@ public class PaasViolationChecker implements Runnable {
 			Topic topic = session.createTopic(topicId);
 
 			MessageConsumer consumer = session.createDurableSubscriber(topic,
-					"PAAS SLAM");
+					properties.getProperty(ACTIVEMQ_CHANNEL));
 
 			MessageListener listener = new MessageListener() {
 				public void onMessage(Message message) {
@@ -164,7 +163,7 @@ public class PaasViolationChecker implements Runnable {
 
 							logger.info("Getting SLA...");
 							SLA sla = null;
-							GetSLAClient gsc = new GetSLAClient(slaId);
+							GetSLAClient gsc = new GetSLAClient(properties.getProperty(BUSINESS_REPORTING_URL),slaId);
 							try {
 								sla = gsc.getSLA();
 							} catch (Exception e) {
@@ -226,7 +225,7 @@ public class PaasViolationChecker implements Runnable {
 	private void notifyViolation(String violationMessage) {
 		try{
 
-			ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(url);
+			ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(properties.getProperty(ACTIVEMQ_URL));
 			Connection connection = connectionFactory.createConnection();
 			connection.start();
 
@@ -262,7 +261,7 @@ public class PaasViolationChecker implements Runnable {
 	public static void main(String[] args) {
 		logger.info("Getting SLA...");
 		SLA sla = null;
-		GetSLAClient gsc = new GetSLAClient(null);
+		GetSLAClient gsc = new GetSLAClient("http://10.4.0.16:8080/services/BusinessManager_Reporting?wsdl", null);
 		try {
 			sla = gsc.getSLA();
 		} catch (Exception e) {

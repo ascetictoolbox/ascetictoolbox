@@ -93,13 +93,19 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
      * logger.
      */
     private static Logger logger = Logger.getLogger(ProvisioningAdjustmentImpl.class.getName());
-    private static String configurationFileImpl = null;
+    
+    protected static String ACTIVEMQ_URL = "activemq_url";
+    private static String ACTIVEMQ_CHANNEL = "activemq_channel";
+    private static String DEPLOYED_APPS_QUEUE = "deployed_apps_queue";
+    private static String APPMANAGER_URL = "appmanager_url";
+    
+//    private static String configurationFileImpl = null;
     
 	/*
 	 * TODO
 	 * retrieve url from configuration file
 	 */
-    private static String url = ActiveMQConnection.DEFAULT_BROKER_URL;
+    
     /**
      * Constructor.
      * 
@@ -125,15 +131,23 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
     
     public void init() {
     	logger.debug("ASCETIC: ProvisioningAndAdjustment, init() method");
-		configurationFileImpl = configurationFile;
-		configurationFileImpl = configurationFileImpl.replace("/", System.getProperty("file.separator"));
+//		configurationFileImpl = configurationFile;
+//		configurationFileImpl = configurationFileImpl.replace("/", System.getProperty("file.separator"));
+		
+		String sepr = System.getProperty("file.separator");
+		String confPath = System.getenv("SLASOI_HOME");
+		String configFile = confPath + sepr
+				+ "ascetic-slamanager" + sepr + "provisioning-adjustment" + sepr
+				+ "provisioning_adjustment.properties";
 		try {
 
-			String initialPath = configurationFilesPath + configurationFile;
+//			String initialPath = configurationFilesPath + configurationFile;
+			String initialPath = configFile;		
 			logger.debug("Initial path = " + initialPath);
 			String thePath = initialPath.replace("/", System.getProperty("file.separator"));
 			logger.debug("The path = " + thePath);
 			properties.load(new FileInputStream(thePath));
+			logger.debug("AMQP "+properties.getProperty("amqp_host"));
 			PropertyConfigurator.configure(configurationFilesPath + properties.getProperty(LOG4J_FILE));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -152,7 +166,7 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
     	
     	// Getting JMS connection from the server
 
-        ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(url);
+        ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(properties.getProperty(ACTIVEMQ_URL));
         Connection connection = connectionFactory.createConnection();
 
         // need to setClientID value, any string value you wish
@@ -164,30 +178,30 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
         Session session = connection.createSession(false,
                 Session.AUTO_ACKNOWLEDGE);
 
-        Topic topic = session.createTopic("app-manager.deployment.deployed");
+        Topic topic = session.createTopic(properties.getProperty(DEPLOYED_APPS_QUEUE));
 
         //need to use createDurableSubscriber() method instead of createConsumer() for topic
         // MessageConsumer consumer = session.createConsumer(topic);
         MessageConsumer consumer = session.createDurableSubscriber(topic,
-                "PAAS SLAM");
+                properties.getProperty(ACTIVEMQ_CHANNEL));
 
         MessageListener listener = new MessageListener() {
             public void onMessage(Message message) {
                 try {
                     if (message instanceof TextMessage) {
                         TextMessage textMessage = (TextMessage) message;
-                        logger.info("ACTIVEMQ: Received message in the topic app-manager.deployment.deployed: "+ textMessage.getText());
+                        logger.info("ACTIVEMQ: Received message in the deployed apps topic: "+ textMessage.getText());
                         
                         ApplicationManagerMessage amMessage = ModelConverter.jsonToApplicationManagerMessage(textMessage.getText());
                         
-                        logger.info("Retrieving application Details from the Application Manager...");
+                        logger.info("Retrieving application Details from the Application Manager with these parameters: "+amMessage.getApplicationId()+", "+amMessage.getDeploymentId());
                         String slaId = retrieveApplicationDetails(amMessage.getApplicationId(),amMessage.getDeploymentId());
                         
                         logger.info("Asking ApplicationMonitor to initiateMonitoring...");
 	                    String topicId = initiateMonitoring(amMessage.getApplicationId(), amMessage.getDeploymentId(), slaId);
                         
                         logger.info("Creating an instance of Paas Violation Checker...");
-                        new Thread(new PaasViolationChecker(topicId, amMessage.getApplicationId(), amMessage.getDeploymentId(), slaId)).start();
+                        new Thread(new PaasViolationChecker(properties, topicId, amMessage.getApplicationId(), amMessage.getDeploymentId(), slaId)).start();
                         
                     }
                 } catch (JMSException e) {
@@ -216,20 +230,17 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
     	
     	try {
     		HttpClient client = new DefaultHttpClient();
-    		/*
-    		 * TODO
-    		 * retrieve url from configuration file
-    		 */
-			HttpGet request = new HttpGet("http://10.4.0.16/application-manager/applications/"+appId+"/deployments/"+deploymentId);
+    		String appManagerUrl = properties.getProperty(APPMANAGER_URL);
+			HttpGet request = new HttpGet(appManagerUrl+"/applications/"+appId+"/deployments/"+deploymentId);
 			HttpResponse response = client.execute(request);
 			
-			System.out.println("status: " + response.getStatusLine());
-			System.out.println("headers: " + response.getAllHeaders());
-			System.out.println("body:" + response.getEntity());
+//			System.out.println("status: " + response.getStatusLine());
+//			System.out.println("headers: " + response.getAllHeaders());
+//			System.out.println("body:" + response.getEntity());
 			
 			HttpEntity entity = response.getEntity();
 			String responseString = EntityUtils.toString(entity, "UTF-8");
-			logger.debug("Response string from the ApplicationManager: "+responseString);
+//			logger.debug("Response string from the ApplicationManager: "+responseString);
 			
 			Deployment deployment = ModelConverter.xmlDeploymentToObject(responseString);
 			logger.debug("Deployment Id: "+deployment.getId());

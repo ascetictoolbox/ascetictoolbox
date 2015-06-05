@@ -134,7 +134,10 @@ public class ModelConverter {
 	
 	private static <T> T toObject(Class<T> clazz, String xml) {
 		try {
-			JAXBContext jaxbContext = JAXBContext.newInstance(clazz);
+//			JAXBContext jaxbContext = JAXBContext.newInstance(clazz);
+			// Create a JaxBContext
+			JAXBContext jaxbContext = org.eclipse.persistence.jaxb.JAXBContextFactory.createContext(new Class[] {clazz}, null);
+				        
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 			Object obj = jaxbUnmarshaller.unmarshal(new StringReader(xml));
 			

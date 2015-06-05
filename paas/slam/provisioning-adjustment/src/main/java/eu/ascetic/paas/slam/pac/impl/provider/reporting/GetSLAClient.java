@@ -33,10 +33,12 @@ import eu.ascetic.paas.slam.pac.impl.provider.translation.SlaTranslator;
 import eu.ascetic.paas.slam.pac.impl.provider.translation.SlaTranslatorImpl;
 public class GetSLAClient {
 	private String slaId;
+	private String wsURL;
 	
-	public GetSLAClient(String slaId) {
+	public GetSLAClient(String wsURL, String slaId) {
 		super();
 		this.slaId = slaId;
+		this.wsURL = wsURL;
 	}
 
 	private SlaTranslator slaTranslator = new SlaTranslatorImpl();
@@ -49,7 +51,6 @@ public class GetSLAClient {
 		//Code to make a webservice HTTP request
 		String responseString = "";
 		String outputString = "";
-		String wsURL = "http://10.4.0.16:8080/services/BusinessManager_Reporting?wsdl";
 		URL url = new URL(wsURL);
 		URLConnection connection = url.openConnection();
 		HttpURLConnection httpConn = (HttpURLConnection)connection;
@@ -160,7 +161,7 @@ public class GetSLAClient {
 	}
 
 	public static void main(String[] args) {
-		GetSLAClient gsc = new GetSLAClient(null);
+		GetSLAClient gsc = new GetSLAClient("http://10.4.0.16:8080/services/BusinessManager_Reporting?wsdl",null);
 		try {
 			gsc.getSLA();
 		} catch (MalformedURLException e) {
