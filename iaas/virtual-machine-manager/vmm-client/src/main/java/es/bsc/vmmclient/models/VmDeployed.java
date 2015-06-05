@@ -74,6 +74,7 @@ public class VmDeployed extends Vm {
                 .add("applicationId", applicationId)
                 .add("ovfId", ovfId)
                 .add("slaId", slaId)
+                .add("preferredHost", preferredHost)
                 .add("id", id)
                 .add("ipAddress", ipAddress)
                 .add("state", state)

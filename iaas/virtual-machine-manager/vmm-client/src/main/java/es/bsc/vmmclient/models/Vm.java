@@ -32,6 +32,9 @@ public class Vm {
     protected final String applicationId;
     protected final String ovfId;
     protected final String slaId;
+    protected String preferredHost = null; // Where we want the VM to be deployed
+
+    // Use builder pattern here...
 
     public Vm(String name, String image, int cpus, int ramMb, int diskGb, int swapMb,
               String initScript, String applicationId, String ovfId, String slaId) {
@@ -45,6 +48,21 @@ public class Vm {
         this.applicationId = applicationId;
         this.ovfId = ovfId;
         this.slaId = slaId;
+    }
+
+    public Vm(String name, String image, int cpus, int ramMb, int diskGb, int swapMb,
+              String initScript, String applicationId, String ovfId, String slaId, String preferredHost) {
+        this.name = name;
+        this.image = image;
+        this.cpus = cpus;
+        this.ramMb = ramMb;
+        this.diskGb = diskGb;
+        this.swapMb = swapMb;
+        this.initScript = initScript;
+        this.applicationId = applicationId;
+        this.ovfId = ovfId;
+        this.slaId = slaId;
+        this.preferredHost = preferredHost;
     }
 
     public String getName() {
@@ -87,6 +105,10 @@ public class Vm {
         return slaId;
     }
 
+    public String getPreferredHost() {
+        return preferredHost;
+    }
+
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
@@ -100,6 +122,8 @@ public class Vm {
                 .add("applicationId", applicationId)
                 .add("ovfId", ovfId)
                 .add("slaId", slaId)
+                .add("preferredHost", preferredHost)
                 .toString();
     }
+
 }

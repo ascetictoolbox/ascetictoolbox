@@ -332,9 +332,17 @@ public class VmsManager {
                 // we do not need here the ones that are already deployed even though they appear in the plan
                 List<VmAssignmentToHost> vmAssignmentToHosts = new ArrayList<>();
                 for (Vm vm: vms) {
-                    VmPlacement vmPlacement = findVmPlacementByVmId(recommendedPlan.getVMPlacements(), vm.getName());
-                    Host host = hostsManager.getHost(vmPlacement.getHostname());
-                    vmAssignmentToHosts.add(new VmAssignmentToHost(vm, host));
+                    // TODO: analyze if this works when some VMs have a preferred host and others do not
+                    if (vm.getPreferredHost() != null && !vm.getPreferredHost().equals("")) {
+                        vmAssignmentToHosts.add(new VmAssignmentToHost(
+                                vm, hostsManager.getHost(vm.getPreferredHost())));
+                    }
+                    else {
+                        VmPlacement vmPlacement = findVmPlacementByVmId(
+                                recommendedPlan.getVMPlacements(), vm.getName());
+                        Host host = hostsManager.getHost(vmPlacement.getHostname());
+                        vmAssignmentToHosts.add(new VmAssignmentToHost(vm, host));
+                    }
                 }
                 return new DeploymentPlan(vmAssignmentToHosts);
             default:

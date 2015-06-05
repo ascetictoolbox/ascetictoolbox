@@ -44,6 +44,8 @@ public class Vm {
     private String ovfId = "";
     private String slaId = "";
 
+    private String preferredHost;
+
     // TODO: apply builder pattern instead of having several constructors.
 
     /**
@@ -94,6 +96,22 @@ public class Vm {
         this.applicationId = applicationId;
         this.ovfId = ovfId;
         this.slaId = slaId;
+    }
+
+    public Vm(String name, String image, int cpus, int ramMb, int diskGb, String initScript, String applicationId,
+              String ovfId, String slaId, String preferredHost) {
+        validateConstructorParams(cpus, ramMb, diskGb, 0);
+        this.name = name;
+        this.image = image;
+        this.cpus = cpus;
+        this.ramMb = ramMb;
+        this.diskGb = diskGb;
+        this.swapMb = 0;
+        setInitScript(initScript);
+        this.applicationId = applicationId;
+        this.ovfId = ovfId;
+        this.slaId = slaId;
+        this.preferredHost = preferredHost;
     }
 
     public String getName() {
@@ -158,6 +176,10 @@ public class Vm {
 
     public void setSlaId(String slaId) {
         this.slaId = slaId;
+    }
+
+    public String getPreferredHost() {
+        return preferredHost;
     }
 
     public boolean belongsToAnApp() {
