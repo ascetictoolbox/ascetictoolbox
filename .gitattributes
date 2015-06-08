@@ -3961,8 +3961,12 @@ utils/energy-modeller-display-tool/energy-modeller-predictor.properties -text
 utils/energy-modeller-display-tool/nbactions.xml -text
 utils/energy-modeller-display-tool/pom.xml -text
 utils/energy-modeller-display-tool/src/main/java/eu/ascetic/energy/modeller/display/tool/Configuration.java -text
+utils/energy-modeller-display-tool/src/main/java/eu/ascetic/energy/modeller/display/tool/CounterData.java -text
+utils/energy-modeller-display-tool/src/main/java/eu/ascetic/energy/modeller/display/tool/CounterDataCollector.java -text
 utils/energy-modeller-display-tool/src/main/java/eu/ascetic/energy/modeller/display/tool/DataAvailableListener.java -text
 utils/energy-modeller-display-tool/src/main/java/eu/ascetic/energy/modeller/display/tool/DataCollector.java -text
+utils/energy-modeller-display-tool/src/main/java/eu/ascetic/energy/modeller/display/tool/EnergyCounter.form -text
+utils/energy-modeller-display-tool/src/main/java/eu/ascetic/energy/modeller/display/tool/EnergyCounter.java -text
 utils/energy-modeller-display-tool/src/main/java/eu/ascetic/energy/modeller/display/tool/EnergyModellerDisplayTool.java -text
 utils/energy-modeller-trace-file-generator/energymodeller.properties -text
 utils/energy-modeller-trace-file-generator/energymodeller_dump.properties -text

@@ -12,7 +12,7 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>Energy Modeller Display Tool</name>
   <url>http://maven.apache.org</url>
-  <properties>
+    <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   <dependencies>
