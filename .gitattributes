@@ -2637,6 +2637,8 @@ paas/slam/provisioning-adjustment/src/main/java/eu/ascetic/paas/slam/pac/events/
 paas/slam/provisioning-adjustment/src/main/java/eu/ascetic/paas/slam/pac/events/converter/NodeWithAttribute.java -text
 paas/slam/provisioning-adjustment/src/main/java/eu/ascetic/paas/slam/pac/events/converter/ValueConverter.java -text
 paas/slam/provisioning-adjustment/src/main/java/eu/ascetic/paas/slam/pac/impl/provider/reporting/GetSLAClient.java -text
+paas/slam/provisioning-adjustment/src/main/java/eu/ascetic/paas/slam/pac/impl/provider/translation/AsceticAgreementTerm.java -text
+paas/slam/provisioning-adjustment/src/main/java/eu/ascetic/paas/slam/pac/impl/provider/translation/MeasurableAgreementTerm.java -text
 paas/slam/provisioning-adjustment/src/main/java/eu/ascetic/paas/slam/pac/impl/provider/translation/SlaTranslator.java -text
 paas/slam/provisioning-adjustment/src/main/java/eu/ascetic/paas/slam/pac/impl/provider/translation/SlaTranslatorImpl.java -text
 paas/slam/provisioning-adjustment/src/main/java/eu/ascetic/paas/slam/pac/impl/provider/translation/SlaTranslatorImplNoOsgi.java -text

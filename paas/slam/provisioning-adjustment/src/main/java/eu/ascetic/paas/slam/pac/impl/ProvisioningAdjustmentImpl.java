@@ -147,7 +147,6 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 			String thePath = initialPath.replace("/", System.getProperty("file.separator"));
 			logger.debug("The path = " + thePath);
 			properties.load(new FileInputStream(thePath));
-			logger.debug("AMQP "+properties.getProperty("amqp_host"));
 			PropertyConfigurator.configure(configurationFilesPath + properties.getProperty(LOG4J_FILE));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

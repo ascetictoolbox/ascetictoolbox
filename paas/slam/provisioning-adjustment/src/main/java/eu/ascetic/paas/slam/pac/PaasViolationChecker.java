@@ -1,6 +1,7 @@
 package eu.ascetic.paas.slam.pac;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.Properties;
 
 import javax.jms.Connection;
@@ -16,10 +17,7 @@ import javax.jms.Topic;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.log4j.Logger;
-import org.slasoi.slamodel.sla.AgreementTerm;
-import org.slasoi.slamodel.sla.Guaranteed;
 import org.slasoi.slamodel.sla.SLA;
-import org.slasoi.slamodel.sla.VariableDeclr;
 
 import eu.ascetic.paas.slam.pac.applicationmanager.ModelConverter;
 import eu.ascetic.paas.slam.pac.applicationmanager.amqp.model.ApplicationManagerMessage;
@@ -29,17 +27,20 @@ import eu.ascetic.paas.slam.pac.events.ViolationMessage.Alert;
 import eu.ascetic.paas.slam.pac.events.ViolationMessage.Alert.SlaGuaranteedState;
 import eu.ascetic.paas.slam.pac.events.ViolationMessageTranslator;
 import eu.ascetic.paas.slam.pac.impl.provider.reporting.GetSLAClient;
+import eu.ascetic.paas.slam.pac.impl.provider.translation.MeasurableAgreementTerm;
 
 public class PaasViolationChecker implements Runnable {
 	private static Logger logger = Logger.getLogger(PaasViolationChecker.class.getName());
 
+
+
 	private Properties properties;
-    protected static String ACTIVEMQ_URL = "activemq_url";
-    private static String ACTIVEMQ_CHANNEL = "activemq_channel";
-    private static String TERMINATED_APPS_QUEUE = "terminated_apps_queue";
-    private static String BUSINESS_REPORTING_URL = "business_reporting_url";
-    
-    
+	protected static String ACTIVEMQ_URL = "activemq_url";
+	private static String ACTIVEMQ_CHANNEL = "activemq_channel";
+	private static String TERMINATED_APPS_QUEUE = "terminated_apps_queue";
+	private static String BUSINESS_REPORTING_URL = "business_reporting_url";
+
+
 	private String topicId;
 	private String slaId;
 	private String deploymentId;
@@ -101,9 +102,9 @@ public class PaasViolationChecker implements Runnable {
 
 							//se il messaggio riguarda appId,slaId e deploymentId relativi a questo ViolationChecker, interrompo il monitoring
 							ApplicationManagerMessage amMessage = ModelConverter.jsonToApplicationManagerMessage(textMessage.getText());
-	                        
+
 							if (appId.equalsIgnoreCase(amMessage.getApplicationId()) &&
-								deploymentId.equalsIgnoreCase(amMessage.getDeploymentId())) {
+									deploymentId.equalsIgnoreCase(amMessage.getDeploymentId())) {
 								/*
 								 * TODO: confronto anche su slaId?
 								 */
@@ -173,6 +174,7 @@ public class PaasViolationChecker implements Runnable {
 
 							if (sla!=null) {
 								logger.info("Comparing measurement with the threshold...");
+								List<MeasurableAgreementTerm> terms = gsc.getMeasurableTerms(sla);
 								/*
 								 * TODO
 								 */
@@ -180,7 +182,7 @@ public class PaasViolationChecker implements Runnable {
 
 
 							logger.info("Notifying violation...");  
-							
+
 							/*
 							 * dummy message, replace with real one
 							 */
@@ -198,7 +200,7 @@ public class PaasViolationChecker implements Runnable {
 							sgs.setOperator("less_than_or_equals");
 							alert.setSlaGuaranteedState(sgs);
 							violationMessage.setAlert(alert);
-							
+
 							ViolationMessageTranslator vmt = new ViolationMessageTranslator();
 							notifyViolation(vmt.toXML(violationMessage));
 						}
@@ -264,32 +266,12 @@ public class PaasViolationChecker implements Runnable {
 		GetSLAClient gsc = new GetSLAClient("http://10.4.0.16:8080/services/BusinessManager_Reporting?wsdl", null);
 		try {
 			sla = gsc.getSLA();
+			gsc.getMeasurableTerms(sla);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
-		
-		if (sla!=null) {
-			AgreementTerm[] terms = sla.getAgreementTerms();
-			if (terms!=null) {
-			for (AgreementTerm term:terms) {
-//				System.out.println("Found Term "+term);
-//				System.out.println("Precondition "+term.getPrecondition());
-				if (term.getGuarantees()!=null) {
-					for (Guaranteed g:term.getGuarantees()) {
-						System.out.println(g.getId());
-						
-//						System.out.println(g.getPropertyKeys().length);
-//						for (STND st:g.getPropertyKeys()) System.out.println(st);
-						System.out.println("Garanzia "+g);
-						
-					}
-				}
-				if (term.getVariableDeclrs()!=null) {
-					for (VariableDeclr v:term.getVariableDeclrs()) System.out.println("VariableDeclr "+v);
-				}
-			}
-			}
-		}
 	}
+
+
 }
