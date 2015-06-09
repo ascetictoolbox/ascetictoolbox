@@ -105,8 +105,6 @@ public class DeployEventHandler {
 					
 					logger.info(" Starting to deploy Virtual System: " + virtualSystem.getName());
 					
-				    // TODO aquí mandar el primer mensaje de deploying
-					
 					VirtualHardwareSection virtualHardwareSection = virtualSystem.getVirtualHardwareSection();
 					
 					// We find the disk id for each resource... 
@@ -180,7 +178,7 @@ public class DeployEventHandler {
 							deploymentDAO.update(deployment);
 							//deployment = deploymentDAO.getById(deployment.getId());
 							
-							//TODO aquí mandar el segundo mensaje de deployed
+							AmqpProducer.sendVMDeployedMessage(applicationName, deployment, vmToDB);
 						}
 					}
 				}

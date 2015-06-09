@@ -306,17 +306,41 @@ public class DeployEventHandlerTest extends AbstractTest {
 		
 		// We verify that the right messages were sent to the AMQP
 		Thread.sleep(500l);
-		assertEquals(2, listener.getTextMessages().size());
+		assertEquals(6, listener.getTextMessages().size());
 		
 		assertEquals("APPLICATION.threeTierWebApp.DEPLOYMENT.22.DEPLOYING", listener.getTextMessages().get(0).getJMSDestination().toString());
 		assertEquals("threeTierWebApp", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getApplicationId());
 		assertEquals("22", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getDeploymentId());
 		assertEquals("DEPLOYING", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getStatus());
 		
-		assertEquals("APPLICATION.threeTierWebApp.DEPLOYMENT.22.DEPLOYED", listener.getTextMessages().get(1).getJMSDestination().toString());
+		assertEquals("APPLICATION.threeTierWebApp.DEPLOYMENT.22.VM.0.DEPLOYED", listener.getTextMessages().get(1).getJMSDestination().toString());
 		assertEquals("threeTierWebApp", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(1).getText()).getApplicationId());
 		assertEquals("22", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(1).getText()).getDeploymentId());
-		assertEquals("DEPLOYED", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(1).getText()).getStatus());
+		assertEquals("DEPLOYING", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(1).getText()).getStatus());
+		assertEquals("haproxy", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(1).getText()).getVms().get(0).getOvfId());
+		
+		assertEquals("APPLICATION.threeTierWebApp.DEPLOYMENT.22.VM.0.DEPLOYED", listener.getTextMessages().get(2).getJMSDestination().toString());
+		assertEquals("threeTierWebApp", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(2).getText()).getApplicationId());
+		assertEquals("22", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(2).getText()).getDeploymentId());
+		assertEquals("DEPLOYING", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(1).getText()).getStatus());
+		assertEquals("jboss", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(2).getText()).getVms().get(0).getOvfId());
+		
+		assertEquals("APPLICATION.threeTierWebApp.DEPLOYMENT.22.VM.0.DEPLOYED", listener.getTextMessages().get(3).getJMSDestination().toString());
+		assertEquals("threeTierWebApp", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(3).getText()).getApplicationId());
+		assertEquals("22", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(3).getText()).getDeploymentId());
+		assertEquals("DEPLOYING", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(3).getText()).getStatus());
+		assertEquals("mysql", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(3).getText()).getVms().get(0).getOvfId());
+		
+		assertEquals("APPLICATION.threeTierWebApp.DEPLOYMENT.22.VM.0.DEPLOYED", listener.getTextMessages().get(4).getJMSDestination().toString());
+		assertEquals("threeTierWebApp", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(4).getText()).getApplicationId());
+		assertEquals("22", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(4).getText()).getDeploymentId());
+		assertEquals("DEPLOYING", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(4).getText()).getStatus());
+		assertEquals("jmeter", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(4).getText()).getVms().get(0).getOvfId());
+		
+		assertEquals("APPLICATION.threeTierWebApp.DEPLOYMENT.22.DEPLOYED", listener.getTextMessages().get(5).getJMSDestination().toString());
+		assertEquals("threeTierWebApp", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(5).getText()).getApplicationId());
+		assertEquals("22", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(5).getText()).getDeploymentId());
+		assertEquals("DEPLOYED", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(5).getText()).getStatus());
 		
 		receiver.close();
 	}

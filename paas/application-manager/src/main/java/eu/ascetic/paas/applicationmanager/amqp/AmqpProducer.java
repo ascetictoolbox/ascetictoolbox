@@ -8,6 +8,7 @@ import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
+import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
 
 /**
@@ -37,6 +38,7 @@ public class AmqpProducer {
 	
 	public static final String APPLLICATION_PATH = "APPLICATION";
 	public static final String DEPLOYMENT_PATH = "DEPLOYMENT";
+	public static final String VM_PATH = "VM";
 
 	/**
 	 * It sends a JSON message to the message queue to an specific topic. It reads the configuration from
@@ -172,6 +174,38 @@ public class AmqpProducer {
 		
 		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + applicationName + "." 
                                  + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
+                                 + Dictionary.APPLICATION_STATUS_DEPLOYED, 
+                                 amMessage);
+	}
+	
+	/**
+	 * Sends the message that a VM is in DEPLOYING STATE
+	 * @param applicationName
+	 * @param deployment
+	 * @param vm
+	 */
+	public static void sendVMDeployingMessage(String applicationName, Deployment deployment, VM vm) {
+		ApplicationManagerMessage amMessage = MessageCreator.fromVM(applicationName, deployment, vm);
+		
+		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + applicationName + "." 
+                                 + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
+                                 + VM_PATH + "." + vm.getId() + "."
+                                 + Dictionary.APPLICATION_STATUS_DEPLOYING, 
+                                 amMessage);
+	}
+	
+	/**
+	 * Sends the message that a VM has been DEPLOYED to the IaaS
+	 * @param applicationName
+	 * @param deployment
+	 * @param vm
+	 */
+	public static void sendVMDeployedMessage(String applicationName, Deployment deployment, VM vm) {
+		ApplicationManagerMessage amMessage = MessageCreator.fromVM(applicationName, deployment, vm);
+		
+		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + applicationName + "." 
+                                 + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
+                                 + VM_PATH + "." + vm.getId() + "."
                                  + Dictionary.APPLICATION_STATUS_DEPLOYED, 
                                  amMessage);
 	}
