@@ -27,6 +27,8 @@ import eu.ascetic.paas.applicationmanager.amonitor.ApplicationMonitorClient;
 import eu.ascetic.paas.applicationmanager.amonitor.ApplicationMonitorClientHC;
 import eu.ascetic.paas.applicationmanager.amonitor.model.Data;
 import eu.ascetic.paas.applicationmanager.amonitor.model.EnergyCosumed;
+import eu.ascetic.paas.applicationmanager.amqp.AmqpProducer;
+import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
@@ -208,17 +210,20 @@ public class DeploymentRest extends AbstractRest {
 		
 		deployment.setEndDate(DateUtil.getDateStringLogStandardFormat(new Date()));
 		
-		// TODO put this inside a try-catch
-		EnergyMeasurement energyMeasurement = getEnergyConsumptionFromEM(applicationName, deployment);
-		EnergyCosumed energyConsumed = new EnergyCosumed();
-		energyConsumed.setAppId(applicationName);
-		energyConsumed.setInstanceId(deploymentId);
-		Data data = new Data();
-		data.setEnd(deployment.getEndDate());
-		data.setStart(deployment.getStartDate());
-		data.setPower(energyMeasurement.getValue() + " Wh");
-		energyConsumed.setData(data);
-		applicationMonitorClient.postFinalEnergyConsumption(energyConsumed);
+		if(Configuration.emCalculateEnergyWhenDeletion != null && Configuration.emCalculateEnergyWhenDeletion.equals("yes")) {
+			// TODO put this inside a try-catch
+			EnergyMeasurement energyMeasurement = getEnergyConsumptionFromEM(applicationName, deployment);
+			EnergyCosumed energyConsumed = new EnergyCosumed();
+			energyConsumed.setAppId(applicationName);
+			energyConsumed.setInstanceId(deploymentId);
+			Data data = new Data();
+			data.setEnd(deployment.getEndDate());
+			data.setStart(deployment.getStartDate());
+			data.setPower(energyMeasurement.getValue() + " Wh");
+			energyConsumed.setData(data);
+			applicationMonitorClient.postFinalEnergyConsumption(energyConsumed);
+
+		}
 		
 		//Get the vms
 		List<VM> deploymentVms = deployment.getVms();
@@ -233,6 +238,8 @@ public class DeploymentRest extends AbstractRest {
 			vm.setStatus("DELETED");
 			
 			images.addAll(vm.getImages());
+			
+			AmqpProducer.sendVMDeletedMessage(applicationName, deployment, vm);
 		}
 		
 		for(Image image : images) {
@@ -245,6 +252,8 @@ public class DeploymentRest extends AbstractRest {
 		
 		//set the deployment status to terminated
 		deployment.setStatus(Dictionary.APPLICATION_STATUS_TERMINATED);
+		
+		AmqpProducer.sendDeploymentDeletedMessage(applicationName, deployment);
 		
 		//update deployment in database
 		deploymentDAO.update(deployment);

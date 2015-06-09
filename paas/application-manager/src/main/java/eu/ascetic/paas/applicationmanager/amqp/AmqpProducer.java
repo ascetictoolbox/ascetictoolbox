@@ -39,6 +39,7 @@ public class AmqpProducer {
 	public static final String APPLLICATION_PATH = "APPLICATION";
 	public static final String DEPLOYMENT_PATH = "DEPLOYMENT";
 	public static final String VM_PATH = "VM";
+	public static final String DELETED = "DELETED";
 
 	/**
 	 * It sends a JSON message to the message queue to an specific topic. It reads the configuration from
@@ -48,7 +49,7 @@ public class AmqpProducer {
 	 */
 	protected static void sendMessage(String topic, ApplicationManagerMessage message) {
 		
-		if(Configuration.enableAMQP.equals("yes")) {
+		if(Configuration.enableAMQP != null && Configuration.enableAMQP.equals("yes")) {
 		
 			// First we convert the actual message from Object to JSON String
 			String messageString = ModelConverter.applicationManagerMessageToJSON(message);
@@ -179,6 +180,34 @@ public class AmqpProducer {
 	}
 	
 	/**
+	 * Sends the message that an application exits the DELETED state
+	 * @param applicationName
+	 * @param deployment
+	 */
+	public static void sendDeploymentDeletedMessage(String applicationName, Deployment deployment) {
+		ApplicationManagerMessage amMessage = MessageCreator.fromDeployment(applicationName, deployment);
+		
+		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + applicationName + "." 
+                                 + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
+                                 + Dictionary.APPLICATION_STATUS_TERMINATED, 
+                                 amMessage);
+	}
+	
+	/**
+	 * Sends the message that an application exits the ERROR state
+	 * @param applicationName
+	 * @param deployment
+	 */
+	public static void sendDeploymentErrorMessage(String applicationName, Deployment deployment) {
+		ApplicationManagerMessage amMessage = MessageCreator.fromDeployment(applicationName, deployment);
+		
+		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + applicationName + "." 
+                                 + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
+                                 + Dictionary.APPLICATION_STATUS_ERROR, 
+                                 amMessage);
+	}
+	
+	/**
 	 * Sends the message that a VM is in DEPLOYING STATE
 	 * @param applicationName
 	 * @param deployment
@@ -207,6 +236,22 @@ public class AmqpProducer {
                                  + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
                                  + VM_PATH + "." + vm.getId() + "."
                                  + Dictionary.APPLICATION_STATUS_DEPLOYED, 
+                                 amMessage);
+	}
+	
+	/**
+	 * Sends the message that a VM has been DEPLOYED to the IaaS
+	 * @param applicationName
+	 * @param deployment
+	 * @param vm
+	 */
+	public static void sendVMDeletedMessage(String applicationName, Deployment deployment, VM vm) {
+		ApplicationManagerMessage amMessage = MessageCreator.fromVM(applicationName, deployment, vm);
+		
+		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + applicationName + "." 
+                                 + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
+                                 + VM_PATH + "." + vm.getId() + "."
+                                 + DELETED,
                                  amMessage);
 	}
 }

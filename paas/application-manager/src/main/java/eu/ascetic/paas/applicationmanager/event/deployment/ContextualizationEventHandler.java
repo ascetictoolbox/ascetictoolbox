@@ -176,6 +176,7 @@ public class ContextualizationEventHandler {
 				}
 				catch (Exception e){
 					logger.error("Exception ocurred. Cause: " + e.getMessage());
+					AmqpProducer.sendDeploymentErrorMessage(deploymentEvent.getApplicationName(), deployment);
 				}			
 			}
 		}

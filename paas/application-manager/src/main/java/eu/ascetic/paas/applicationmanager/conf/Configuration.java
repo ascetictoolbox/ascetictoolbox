@@ -41,6 +41,7 @@ public class Configuration {
 	public static String amqpAddress = "localhost:5673";
 	public static String amqpUsername = "guest";
 	public static String amqpPassword = "guest";
+	public static String emCalculateEnergyWhenDeletion = "yes";
 	
 	// TODO to remove this parameter, this configuration needs to be collected from the Provider Registry
 	public static String vmManagerServiceUrl = "http://10.4.0.15:34372/vmmanager";
@@ -64,6 +65,7 @@ public class Configuration {
         	amqpAddress = config.getString("amqp.address");
         	amqpUsername = config.getString("amqp.username");
         	amqpPassword = config.getString("amqp.password");
+        	emCalculateEnergyWhenDeletion = config.getString("em.calculate.energy.when.deletion");
         	
         	// TODO to change this to be collected by the Provider Registry
         	vmManagerServiceUrl = config.getString("vm-manager.url");

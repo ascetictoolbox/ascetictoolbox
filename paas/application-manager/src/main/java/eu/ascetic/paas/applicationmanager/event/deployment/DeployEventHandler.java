@@ -193,12 +193,14 @@ public class DeployEventHandler {
 				deployment.setStatus(Dictionary.APPLICATION_STATUS_ERROR);
 				// We save the changes to the DB
 				deploymentDAO.update(deployment);
+				AmqpProducer.sendDeploymentErrorMessage(deploymentEvent.getApplicationName(), deployment);
 			} catch (Exception ex){
 				logger.info("Error triying to deploy new VMs: " + ex.getMessage());
 				ex.printStackTrace();
 				deployment.setStatus(Dictionary.APPLICATION_STATUS_ERROR);
 				// We save the changes to the DB
 				deploymentDAO.update(deployment);
+				AmqpProducer.sendDeploymentErrorMessage(deploymentEvent.getApplicationName(), deployment);
 			}
 			
 			deploymentEvent.setDeploymentStatus(deployment.getStatus());

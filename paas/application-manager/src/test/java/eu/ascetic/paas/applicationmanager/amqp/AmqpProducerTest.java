@@ -369,6 +369,80 @@ public class AmqpProducerTest extends AbstractTest {
 	}
 	
 	@Test
+	public void sendDeploymentErrorMessageTest() throws Exception {
+		// We manually modify the configuration object to be able to use personally for this test
+		Configuration.amqpAddress = "localhost:7672";
+		Configuration.amqpUsername = "guest";
+		Configuration.amqpPassword = "guest";
+
+		// We set a listener to get the sent message from the MessageQueue
+		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, 
+				Configuration.amqpUsername, 
+				Configuration.amqpPassword,
+				"APPLICATION.pepito.DEPLOYMENT.23.ERROR",
+				true);
+		AmqpBasicListener listener = new AmqpBasicListener();
+		receiver.setMessageConsumer(listener);
+
+		Deployment deployment = new Deployment();
+		deployment.setId(23);
+		deployment.setStatus("ERROR");
+
+		AmqpProducer.sendDeploymentErrorMessage("pepito", deployment);
+
+		// We wait one second just in case
+		Thread.sleep(700l);
+
+		// We verify the results
+		assertEquals("APPLICATION.pepito.DEPLOYMENT.23.ERROR", listener.getDestination());
+
+		// We parse the received message and verify its values
+		ApplicationManagerMessage amMessageReceived = ModelConverter.jsonToApplicationManagerMessage(listener.getMessage());
+		assertEquals("pepito", amMessageReceived.getApplicationId());
+		assertEquals("23", amMessageReceived.getDeploymentId());
+		assertEquals("ERROR", amMessageReceived.getStatus());
+
+		receiver.close();
+	}
+	
+	@Test
+	public void sendDeploymentDeletedMessageTest() throws Exception {
+		// We manually modify the configuration object to be able to use personally for this test
+		Configuration.amqpAddress = "localhost:7672";
+		Configuration.amqpUsername = "guest";
+		Configuration.amqpPassword = "guest";
+
+		// We set a listener to get the sent message from the MessageQueue
+		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, 
+				Configuration.amqpUsername, 
+				Configuration.amqpPassword,
+				"APPLICATION.pepito.DEPLOYMENT.23.TERMINATED",
+				true);
+		AmqpBasicListener listener = new AmqpBasicListener();
+		receiver.setMessageConsumer(listener);
+
+		Deployment deployment = new Deployment();
+		deployment.setId(23);
+		deployment.setStatus("DELETED");
+
+		AmqpProducer.sendDeploymentDeletedMessage("pepito", deployment);
+
+		// We wait one second just in case
+		Thread.sleep(700l);
+
+		// We verify the results
+		assertEquals("APPLICATION.pepito.DEPLOYMENT.23.TERMINATED", listener.getDestination());
+
+		// We parse the received message and verify its values
+		ApplicationManagerMessage amMessageReceived = ModelConverter.jsonToApplicationManagerMessage(listener.getMessage());
+		assertEquals("pepito", amMessageReceived.getApplicationId());
+		assertEquals("23", amMessageReceived.getDeploymentId());
+		assertEquals("DELETED", amMessageReceived.getStatus());
+
+		receiver.close();
+	}
+	
+	@Test
 	public void sendVMDeployingMessageTest() throws Exception {
 		// We manually modify the configuration object to be able to use personally for this test
 		Configuration.amqpAddress = "localhost:7672";
@@ -463,6 +537,58 @@ public class AmqpProducerTest extends AbstractTest {
 		assertEquals("pepito", amMessageReceived.getApplicationId());
 		assertEquals("23", amMessageReceived.getDeploymentId());
 		assertEquals("DEPLOYING", amMessageReceived.getStatus());
+		assertEquals(1, amMessageReceived.getVms().size());
+		assertEquals("provider-vm-id4", amMessageReceived.getVms().get(0).getIaasVmId());
+		assertEquals("ovfId4", amMessageReceived.getVms().get(0).getOvfId());
+		assertEquals("XXX4", amMessageReceived.getVms().get(0).getStatus());
+		assertEquals("44", amMessageReceived.getVms().get(0).getVmId());
+
+		receiver.close();
+	}
+	
+	@Test
+	public void sendVMDeletedMessageTest() throws Exception {
+		// We manually modify the configuration object to be able to use personally for this test
+		Configuration.amqpAddress = "localhost:7672";
+		Configuration.amqpUsername = "guest";
+		Configuration.amqpPassword = "guest";
+
+		// We set a listener to get the sent message from the MessageQueue
+		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, 
+				Configuration.amqpUsername, 
+				Configuration.amqpPassword,
+				"APPLICATION.pepito.DEPLOYMENT.23.VM.44.DELETED",
+				true);
+		AmqpBasicListener listener = new AmqpBasicListener();
+		receiver.setMessageConsumer(listener);
+
+		Deployment deployment = new Deployment();
+		deployment.setId(23);
+		deployment.setStatus("DELETED");
+		
+		VM vmToTheMessage = new VM();
+		vmToTheMessage.setId(44);
+		vmToTheMessage.setHref("href4");
+		vmToTheMessage.setOvfId("ovfId4");
+		vmToTheMessage.setProviderId("provider-id4");
+		vmToTheMessage.setProviderVmId("provider-vm-id4");
+		vmToTheMessage.setStatus("XXX4");
+		vmToTheMessage.setIp("172.0.0.14");
+		vmToTheMessage.setSlaAgreement("slaAggrementId4");
+
+		AmqpProducer.sendVMDeletedMessage("pepito", deployment, vmToTheMessage);
+
+		// We wait one second just in case
+		Thread.sleep(700l);
+
+		// We verify the results
+		assertEquals("APPLICATION.pepito.DEPLOYMENT.23.VM.44.DELETED", listener.getDestination());
+
+		// We parse the received message and verify its values
+		ApplicationManagerMessage amMessageReceived = ModelConverter.jsonToApplicationManagerMessage(listener.getMessage());
+		assertEquals("pepito", amMessageReceived.getApplicationId());
+		assertEquals("23", amMessageReceived.getDeploymentId());
+		assertEquals("DELETED", amMessageReceived.getStatus());
 		assertEquals(1, amMessageReceived.getVms().size());
 		assertEquals("provider-vm-id4", amMessageReceived.getVms().get(0).getIaasVmId());
 		assertEquals("ovfId4", amMessageReceived.getVms().get(0).getOvfId());
