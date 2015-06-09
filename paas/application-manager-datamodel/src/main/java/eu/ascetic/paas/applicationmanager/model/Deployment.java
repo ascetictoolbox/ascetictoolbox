@@ -132,7 +132,7 @@ public class Deployment {
 		links.add(link);
 	}
 	
-	@Column(name = "sla_agreement", nullable = true)
+	@Column(name = "sla_agreement", length=900000, nullable = true)
 	public String getSlaAgreement() {
 		return slaAgreement;
 	}
