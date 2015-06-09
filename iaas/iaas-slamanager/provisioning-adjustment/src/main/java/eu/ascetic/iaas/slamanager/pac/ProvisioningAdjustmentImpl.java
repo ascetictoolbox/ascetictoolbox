@@ -1,21 +1,4 @@
 /**
- *  Copyright 2014 Hewlett-Packard Development Company, L.P.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
-
-
-/**
  * Copyright (c) 2008-2010, SLASOI
  * All rights reserved.
  *
@@ -49,11 +32,22 @@
 
 package eu.ascetic.iaas.slamanager.pac;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.MessageConsumer;
+import javax.jms.MessageListener;
+import javax.jms.Session;
+import javax.jms.TextMessage;
+import javax.jms.Topic;
+
+import org.apache.activemq.ActiveMQConnection;
+import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.slasoi.gslam.core.control.Policy;
@@ -61,6 +55,9 @@ import org.slasoi.gslam.pac.Agent;
 import org.slasoi.gslam.pac.Event;
 import org.slasoi.gslam.pac.EventType;
 import org.slasoi.gslam.pac.ProvisioningAndAdjustment;
+
+import eu.ascetic.iaas.slamanager.pac.vmm.VmManagerClient;
+import eu.ascetic.iaas.slamanager.pac.vmm.models.VmDeployed;
 
 /**
  * DOMAIN SPECIFIC PAC.
@@ -73,6 +70,11 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 	 * logger.
 	 */
 	private static Logger logger = Logger.getLogger(ProvisioningAdjustmentImpl.class.getName());
+	
+    protected static String ACTIVEMQ_URL = "activemq_url";
+    private static String ACTIVEMQ_CHANNEL = "activemq_channel";
+    private static String DEPLOYED_VMS_QUEUE = "deployed_vms_queue";
+    private static String VMMANAGER_URL = "vmmanager_url";
 
 	// private SlaParser slaParser=null;
 
@@ -99,6 +101,8 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 		logger.debug("Constructor default ASCETIC PAC");
 		// init();
 		logger.info("Creating Skeleton PAC...");
+		init();
+		retrieveVmEvents();
 	}
 
 	private void createAgents() {
@@ -123,11 +127,18 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 	public void init() {
 
 		logger.debug("ASCETIC: ProvisioningAndAdjustment, init() method");
-		configurationFileImpl = configurationFile;
-		configurationFileImpl = configurationFileImpl.replace("/", System.getProperty("file.separator"));
+//		configurationFileImpl = configurationFile;
+//		configurationFileImpl = configurationFileImpl.replace("/", System.getProperty("file.separator"));
+		
+		String sepr = System.getProperty("file.separator");
+		String confPath = System.getenv("SLASOI_HOME");
+		String configFile = confPath + sepr
+				+ "ascetic-iaas-slamanager" + sepr + "provisioning-adjustment" + sepr
+				+ "provisioning_adjustment.properties";
 		try {
 
-			String initialPath = configurationFilesPath + configurationFile;
+//			String initialPath = configurationFilesPath + configurationFile;
+			String initialPath = configFile;		
 			logger.debug("Initial path = " + initialPath);
 			String thePath = initialPath.replace("/", System.getProperty("file.separator"));
 			logger.debug("The path = " + thePath);
@@ -141,15 +152,96 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 
 		logger.debug("Properties file loaded...");
 
-		// SharedKnowledgePlane.getInstance(this.pacID).initKnowledgeBase(properties.getProperty(LOG_MODE_DROOLS));
-		String rules_path = configurationFilesPath + properties.getProperty(INITIAL_RULES_FILE);
-		rules_path = rules_path.replace("/", System.getProperty("file.separator"));
-		File f = new File(rules_path);
-		// SharedKnowledgePlane.getInstance(this.pacID).addRulesFile(f,
-		// ResourceType.DRL);
-		createAgents();
+//		// SharedKnowledgePlane.getInstance(this.pacID).initKnowledgeBase(properties.getProperty(LOG_MODE_DROOLS));
+//		String rules_path = configurationFilesPath + properties.getProperty(INITIAL_RULES_FILE);
+//		rules_path = rules_path.replace("/", System.getProperty("file.separator"));
+//		File f = new File(rules_path);
+//		// SharedKnowledgePlane.getInstance(this.pacID).addRulesFile(f,
+//		// ResourceType.DRL);
+//		createAgents();
 	}
 
+	
+	   /**
+     * 1. Gets 'application started' events from the message queue
+     */
+    private void retrieveVmEvents() {
+    	try{
+    	
+    	// Getting JMS connection from the server
+
+        ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(properties.getProperty(ACTIVEMQ_URL));
+        Connection connection = connectionFactory.createConnection();
+
+        // need to setClientID value, any string value you wish
+        connection.setClientID("IaaS SLAM Application Event Listener");
+
+        
+        connection.start();
+        
+        Session session = connection.createSession(false,
+                Session.AUTO_ACKNOWLEDGE);
+
+        Topic topic = session.createTopic(properties.getProperty(DEPLOYED_VMS_QUEUE));
+
+        //need to use createDurableSubscriber() method instead of createConsumer() for topic
+        // MessageConsumer consumer = session.createConsumer(topic);
+        MessageConsumer consumer = session.createDurableSubscriber(topic,
+        		properties.getProperty(ACTIVEMQ_CHANNEL));
+
+        MessageListener listener = new MessageListener() {
+            public void onMessage(Message message) {
+                try {
+                    if (message instanceof TextMessage) {
+                        TextMessage textMessage = (TextMessage) message;
+                        logger.info("ACTIVEMQ: Received message '"
+                                + textMessage.getText() + "' in the topic vm-manager.deployment.deployed");
+                        
+                        logger.info("Retrieving VM Details from the VM Manager...");
+                        retrieveVmDetails(null,null);
+                        
+                        logger.info("Creating an instance of Iaas Violation Checker...");
+                        new Thread(new IaasViolationChecker(properties, "infrastructure-monitor.monitoring.measurement", textMessage.getText(), textMessage.getText(), textMessage.getText())).start();
+                        
+                    }
+                } catch (JMSException e) {
+                    logger.error("Caught:" + e);
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        consumer.setMessageListener(listener);
+        //connection.close();
+        }catch(Exception e){
+        	e.printStackTrace();
+        	logger.error(e.getMessage());
+//            System.err.println("NOT CONNECTED!!!");
+        }
+    }
+    
+    
+    /**
+     * 2. Retrieve vm details from the vm manager whenever a 
+     * "vm starting" event is catched
+     */
+    private String retrieveVmDetails(String appId, String deploymentId) {
+    	VmManagerClient vmm = new VmManagerClient(properties.getProperty(VMMANAGER_URL));
+//        System.out.println(vmm.getVm("55a440c1-14ff-446d-9410-a2dce763085c"));
+        
+    	/*
+    	 * TODO retrieve VM details
+    	 */
+    	
+    	//dummy code
+    	for (VmDeployed vm : vmm.getVms()) {
+        System.out.println(vm);
+    	}
+    	return "";
+    }
+    
+
+	
 	/**
 	 * Triggers the execution of a provisioning plan.
 	 * 
@@ -268,4 +360,8 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 		return configurationFileImpl;
 	}
 
+	public static void main(String[] args) {
+		ProvisioningAdjustmentImpl pai = new ProvisioningAdjustmentImpl();
+		pai.retrieveVmDetails("", "");
+	}
 }

@@ -23,10 +23,8 @@ import org.slasoi.gslam.pac.events.Message;
 public class ViolationMessage implements Message {
 
 	private Calendar time;
-	private Integer ceeId;
-	private String vsName;
-	private String vmName;
-	private String sid;
+	private String vmId;
+	private String ovfId;
 	private Value value;
 	private Alert alert;
 
@@ -37,7 +35,7 @@ public class ViolationMessage implements Message {
 		private String slaAgreementTerm;
 		private SlaGuaranteedState slaGuaranteedState;
 		private SlaGuaranteedAction slaGuaranteedAction;
-		private Provider provider;
+//		private Provider provider;
 
 		public class SlaGuaranteedState {
 
@@ -71,28 +69,28 @@ public class ViolationMessage implements Message {
 
 		}
 
-		public class Provider {
-
-			private String providerUUID;
-			private String slaUUID;
-
-			public String getProviderUUID() {
-				return providerUUID;
-			}
-
-			public void setProviderUUID(String providerUUID) {
-				this.providerUUID = providerUUID;
-			}
-
-			public String getSlaUUID() {
-				return slaUUID;
-			}
-
-			public void setSlaUUID(String slaUUID) {
-				this.slaUUID = slaUUID;
-			}
-
-		}
+//		public class Provider {
+//
+//			private String providerUUID;
+//			private String slaUUID;
+//
+//			public String getProviderUUID() {
+//				return providerUUID;
+//			}
+//
+//			public void setProviderUUID(String providerUUID) {
+//				this.providerUUID = providerUUID;
+//			}
+//
+//			public String getSlaUUID() {
+//				return slaUUID;
+//			}
+//
+//			public void setSlaUUID(String slaUUID) {
+//				this.slaUUID = slaUUID;
+//			}
+//
+//		}
 
 		public class SlaGuaranteedAction {
 
@@ -157,22 +155,20 @@ public class ViolationMessage implements Message {
 			this.slaGuaranteedAction = slaGuaranteedAction;
 		}
 
-		public Provider getProvider() {
-			return provider;
-		}
-
-		public void setProvider(Provider provider) {
-			this.provider = provider;
-		}
+//		public Provider getProvider() {
+//			return provider;
+//		}
+//
+//		public void setProvider(Provider provider) {
+//			this.provider = provider;
+//		}
 
 	}
 
-	public ViolationMessage(Calendar time, Integer ceeId, String vsName, String vmName, String sid) {
+	public ViolationMessage(Calendar time, String appId, String deploymentId) {
 		this.time = time;
-		this.ceeId = ceeId;
-		this.vsName = vsName;
-		this.vmName = vmName;
-		this.sid = sid;
+		this.vmId = appId;
+		this.ovfId = deploymentId;
 	}
 
 	/**
@@ -184,18 +180,17 @@ public class ViolationMessage implements Message {
 		StringBuffer sb = new StringBuffer();
 
 		sb.append("\nTime: " + time);
-		sb.append("\nceeId: " + ceeId);
-		sb.append("\nvsName: " + vsName);
-		sb.append("\nvmName: " + vmName);
-		sb.append("\nsid: " + sid);
+		sb.append("\nvmId: " + vmId);
+		sb.append("\novfId: " + ovfId);
 		sb.append("\nvalue: " + value.getTextValue());
 		sb.append("\nvalue id: " + value.getAttributeValue());
 		sb.append("\nAlert type: " + alert.type);
+		sb.append("\nAlert SLA UUID: " + alert.slaUUID);
 		sb.append("\nAlert slaAgreementTerm: " + alert.slaAgreementTerm);
-		if (alert.provider != null) {
-			sb.append("\nAlert providerUUID: " + alert.provider.providerUUID);
-			sb.append("\nAlert providerSlaUUID: " + alert.provider.slaUUID);
-		}
+//		if (alert.provider != null) {
+//			sb.append("\nAlert providerUUID: " + alert.provider.providerUUID);
+//			sb.append("\nAlert providerSlaUUID: " + alert.provider.slaUUID);
+//		}
 		sb.append("\nAlert GuaranteeId: " + alert.slaGuaranteedState.guaranteedId);
 		sb.append("\nAlert Operator: " + alert.slaGuaranteedState.operator);
 		sb.append("\nAlert GuaranteeValue: " + alert.slaGuaranteedState.guaranteedValue);
@@ -203,44 +198,32 @@ public class ViolationMessage implements Message {
 		return sb.toString();
 	}
 
-	public Integer getCeeId() {
-		return ceeId;
-	}
 
-	public void setCeeId(Integer ceeId) {
-		this.ceeId = ceeId;
-	}
-
-	public String getVsName() {
-		return vsName;
-	}
-
-	public void setVsName(String vsName) {
-		this.vsName = vsName;
-	}
-
-	public String getVmName() {
-		return vmName;
-	}
-
-	public void setVmName(String vmName) {
-		this.vmName = vmName;
-	}
 
 	public void setTime(Calendar time) {
 		this.time = time;
 	}
 
-	public void setSid(String sid) {
-		this.sid = sid;
-	}
 
 	public Calendar getTime() {
 		return time;
 	}
 
-	public String getSid() {
-		return sid;
+
+	public String getAppId() {
+		return vmId;
+	}
+
+	public void setAppId(String appId) {
+		this.vmId = appId;
+	}
+
+	public String getDeploymentId() {
+		return ovfId;
+	}
+
+	public void setDeploymentId(String deploymentId) {
+		this.ovfId = deploymentId;
 	}
 
 	public Value getValue() {
