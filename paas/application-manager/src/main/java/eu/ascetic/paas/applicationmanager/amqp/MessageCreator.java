@@ -57,13 +57,7 @@ public class MessageCreator {
 
 		if(deployment.getVms() != null ) {
 			for(VM vm : deployment.getVms()) {
-				eu.ascetic.paas.applicationmanager.amqp.model.VM messageVM = new eu.ascetic.paas.applicationmanager.amqp.model.VM();
-				messageVM.setIaasVmId(vm.getProviderVmId());
-				messageVM.setOvfId(vm.getOvfId());
-				messageVM.setStatus(vm.getStatus());
-				messageVM.setVmId("" + vm.getId());
-
-				message.addVM(messageVM);
+				message.addVM(getMessageVM(vm));
 			}
 		}
 	}
@@ -83,6 +77,38 @@ public class MessageCreator {
 		message.setApplicationId(applicationName);
 		
 		completeMessage(message, deployment);
+		
+		return message;
+	}
+	
+	private static eu.ascetic.paas.applicationmanager.amqp.model.VM getMessageVM(VM vm) {
+		eu.ascetic.paas.applicationmanager.amqp.model.VM messageVM = new eu.ascetic.paas.applicationmanager.amqp.model.VM();
+		messageVM.setIaasVmId(vm.getProviderVmId());
+		messageVM.setOvfId(vm.getOvfId());
+		messageVM.setStatus(vm.getStatus());
+		messageVM.setVmId("" + vm.getId());
+		
+		return messageVM;
+	}
+	
+	/**
+	 * Creates an event message from an application name, Deployment object and Vm oject
+	 * @param applicationName to which deployment and vm belogns
+	 * @param deployment from which to extract the information
+	 * @param vm from which to extract the information
+	 * @return the message object to be sent to the message queue
+	 */
+	public static ApplicationManagerMessage fromVM(String applicationName, Deployment deployment, VM vm) {
+		if(applicationName == null || deployment == null || vm == null) {
+			return null;
+		}
+		
+		ApplicationManagerMessage message = new ApplicationManagerMessage();
+		message.setApplicationId(applicationName);
+		message.setDeploymentId("" + deployment.getId());
+		message.setStatus(deployment.getStatus());
+		
+		message.addVM(getMessageVM(vm));
 		
 		return message;
 	}

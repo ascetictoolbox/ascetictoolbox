@@ -242,4 +242,87 @@ public class MessageCreatorTest {
 		assertEquals("XXX2", amMessage.getVms().get(1).getStatus());
 		assertEquals("22", amMessage.getVms().get(1).getVmId());
 	}
+	
+	@Test
+	public void fromVMTest() {
+		Deployment deployment = new Deployment();
+		deployment.setId(11);
+		deployment.setHref("href");
+		deployment.setPrice("provider-id");
+		deployment.setStatus("STATUS");
+		deployment.setStartDate("aaa");
+		deployment.setEndDate("bbb");
+		deployment.setSlaAgreement("sla");
+		List<VM> vms = new ArrayList<VM>();
+		deployment.setVms(vms);
+		
+		VM vm1 = new VM();
+		vm1.setId(12);
+		vm1.setHref("href1");
+		vm1.setOvfId("ovfId1");
+		vm1.setProviderId("provider-id1");
+		vm1.setProviderVmId("provider-vm-id1");
+		vm1.setStatus("XXX1");
+		vm1.setIp("172.0.0.1");
+		vm1.setSlaAgreement("slaAggrementId1");
+		
+		vms.add(vm1);
+		
+		VM vm2 = new VM();
+		vm2.setId(22);
+		vm2.setHref("href2");
+		vm2.setOvfId("ovfId2");
+		vm2.setProviderId("provider-id2");
+		vm2.setProviderVmId("provider-vm-id2");
+		vm2.setStatus("XXX2");
+		vm2.setIp("172.0.0.12");
+		vm2.setSlaAgreement("slaAggrementId2");
+		
+		vms.add(vm2);
+		
+		VM vmToTheMessage = new VM();
+		vmToTheMessage.setId(44);
+		vmToTheMessage.setHref("href4");
+		vmToTheMessage.setOvfId("ovfId4");
+		vmToTheMessage.setProviderId("provider-id4");
+		vmToTheMessage.setProviderVmId("provider-vm-id4");
+		vmToTheMessage.setStatus("XXX4");
+		vmToTheMessage.setIp("172.0.0.14");
+		vmToTheMessage.setSlaAgreement("slaAggrementId4");
+		
+		ApplicationManagerMessage amMessage = MessageCreator.fromVM("app-name", deployment, vmToTheMessage);
+		
+		assertEquals("app-name", amMessage.getApplicationId());
+		assertEquals("11", amMessage.getDeploymentId());
+		assertEquals("STATUS", amMessage.getStatus());
+		
+		assertEquals(1, amMessage.getVms().size());
+		assertEquals("provider-vm-id4", amMessage.getVms().get(0).getIaasVmId());
+		assertEquals("ovfId4", amMessage.getVms().get(0).getOvfId());
+		assertEquals("XXX4", amMessage.getVms().get(0).getStatus());
+		assertEquals("44", amMessage.getVms().get(0).getVmId());
+	}
+	
+	public void fromVMNullsTest() {
+		ApplicationManagerMessage amMessage = MessageCreator.fromVM("app-name", new Deployment(), null);
+		assertEquals(null, amMessage);
+		
+		amMessage = MessageCreator.fromVM("app-name", null, new VM());
+		assertEquals(null, amMessage);
+		
+		amMessage = MessageCreator.fromVM(null, new Deployment(), new VM());
+		assertEquals(null, amMessage);
+		
+		amMessage = MessageCreator.fromVM(null, null, new VM());
+		assertEquals(null, amMessage);
+		
+		amMessage = MessageCreator.fromVM("app-name", null, null);
+		assertEquals(null, amMessage);
+		
+		amMessage = MessageCreator.fromVM(null, new Deployment(), null);
+		assertEquals(null, amMessage);
+		
+		amMessage = MessageCreator.fromVM(null, null, null);
+		assertEquals(null, amMessage);
+	}
 }
