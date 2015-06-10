@@ -82,7 +82,7 @@ public class HostMeasurement extends Measurement {
     }
 
     /**
-     * This provides rapid access to indicate if the power metric exits or not.
+     * This provides rapid access to indicate if the power metric exists or not.
      *
      * @return If the power metric is contained inside this host measurement.
      */
@@ -102,7 +102,7 @@ public class HostMeasurement extends Measurement {
     }
 
     /**
-     * This provides rapid access to indicate if the energy metric exits or not.
+     * This provides rapid access to indicate if the energy metric exists or not.
      *
      * @return If the energy metric is contained inside this host measurement.
      */
@@ -112,7 +112,7 @@ public class HostMeasurement extends Measurement {
 
     /**
      * This provides rapid access to indicate if the power and energy metric
-     * exits or not.
+     * exists or not.
      *
      * @return If the power and energy metrics are contained inside this host
      * measurement.

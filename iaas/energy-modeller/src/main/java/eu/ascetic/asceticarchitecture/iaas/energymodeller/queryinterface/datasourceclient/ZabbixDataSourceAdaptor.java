@@ -222,7 +222,7 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         }
         //A fall back incase the information is not available!
         if (answer.getCpus() == 0) {
-            answer.setCpus(Integer.valueOf(1));
+            answer.setCpus(1);
         }
         return answer;
     }

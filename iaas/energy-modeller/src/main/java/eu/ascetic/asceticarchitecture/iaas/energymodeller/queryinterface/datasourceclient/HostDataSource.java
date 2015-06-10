@@ -25,7 +25,7 @@ import java.util.List;
  * This is the interface for all data sources that the Energy modeller uses,
  * that concerns Hosts.
  *
- * @author Richard
+ * @author Richard Kavanagh
  */
 public interface HostDataSource {
 
@@ -141,6 +141,6 @@ public interface HostDataSource {
      * @param durationSeconds The amount of seconds to get the data for
      * @return The average utilisation of the host.
      */
-    public double getCpuUtilisation(eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host, int durationSeconds);
+    public double getCpuUtilisation(eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host, int durationSeconds); 
     
 }

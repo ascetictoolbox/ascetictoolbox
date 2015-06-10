@@ -666,7 +666,46 @@ public class EnergyModeller {
          */
         database.setVms(vms);
         database.setVMProfileData(vm);
-    }    
+    }
+    
+    /**
+     * This gets the total current power consumption of all VMs that are known
+     * to the energy modeller.
+     * @return The total power consumption allocated to all known Vms.
+     */
+    public double getVmTotalCurrentPowerConsumption() {
+        double answer = 0;
+        HashSet<CurrentUsageRecord> vmData = getCurrentEnergyForVM(datasource.getVmList());
+        for (CurrentUsageRecord current : vmData) {
+                answer = answer + current.getPower();
+        }        
+        return answer;
+    }
+    
+    /**
+     * This gets the total current power consumption of all physical hosts that 
+     * are known to the energy modeller. This is a notion of how efficient the
+     * cloud data centre is currently. It is sensitive to physical hosts that 
+     * have no VMs but are still powered.
+     * @return The total power consumption of all physical hosts.
+     */
+     public double getHostsTotalCurrentPowerConsumption() {
+        double answer = 0;
+        HashSet<CurrentUsageRecord> hostData = getCurrentEnergyForHost(datasource.getHostList());
+        for (CurrentUsageRecord current : hostData) {
+                answer = answer + current.getPower();
+        }        
+        return answer;
+    }   
+    
+    /**
+     * This provides the current fraction VM power consumption is of the overall 
+     * host power consumption.
+     * @return The total VM power consumption / total physical power consumption.
+     */
+    public double getVMToHostPowerRatio() {
+        return getVmTotalCurrentPowerConsumption() / getHostsTotalCurrentPowerConsumption();
+    }
 
     /**
      * This calibrates all hosts that are known to the energy modeller, that
