@@ -107,7 +107,7 @@ public class HostPowerEmulator implements Runnable {
         outputName = settings.getString("output_name", outputName);
         if (settings.isChanged()) {
             settings.save(PROPS_FILE_NAME);
-        }        
+        }
     }
 
     /**
@@ -174,10 +174,24 @@ public class HostPowerEmulator implements Runnable {
         loggerThread.setDaemon(true);
         loggerThread.start();
         database.getHostCalibrationData(host);
+
+        /**
+         * The first phase is to clone the resource calibration data of another
+         * in the event that this is necessary.
+         */
+        if (cloneHostname != null) {
+            cloneHostProfile(hostname, cloneHostname);
+            database.getHostCalibrationData(host);
+        }
+        try { //Ensure there is enough time to copy the calibration data.
+            Thread.sleep(TimeUnit.SECONDS.toMillis(5));
+        } catch (InterruptedException ex) {
+            Logger.getLogger(HostPowerEmulator.class.getName()).log(Level.SEVERE, "The power emulator was interupted.", ex);
+        }
         if (!host.isCalibrated()) {
             running = false;
-            System.out.println("The host has no calibration data, so emulation cannot occur!"
-                    + "please specifiy where to clone the calibration data from.");
+            System.out.println("The host has no calibration data, so emulation cannot occur! ");
+            System.out.println("Please specifiy where to clone the calibration data from.");
             System.exit(0);
         }
         if (linearPredictor.getRootMeanSquareError(host) < polyPredictor.getRootMeanSquareError(host)) {
@@ -190,26 +204,19 @@ public class HostPowerEmulator implements Runnable {
         System.out.println("Linear SSE: " + linearPredictor.getSumOfSquareError(host));
         System.out.println("Polynomial SSE: " + polyPredictor.getSumOfSquareError(host));
         System.out.println("Linear RMSE: " + linearPredictor.getRootMeanSquareError(host));
-        System.out.println("Polynomial RMSE: " + polyPredictor.getRootMeanSquareError(host));        
-        
-        /**
-         * The first phase is to clone the resource calibration data of another
-         * in the event that this is necessary.
-         */
-        if (cloneHostname != null) {
-            cloneHostProfile(hostname, cloneHostname);
-        }
+        System.out.println("Polynomial RMSE: " + polyPredictor.getRootMeanSquareError(host));
+
         /**
          * The second phase is to monitor the host and to report its estimated
          * host energy usage.
          */
         while (running) {
-            HostMeasurement mesurement = source.getHostData(host);
+            HostMeasurement measurement = source.getHostData(host);
             double power;
             if (predictor.getClass().equals(CpuOnlyEnergyPredictor.class)) {
-                power = ((CpuOnlyEnergyPredictor) predictor).predictPowerUsed(host, mesurement.getCpuUtilisation());
+                power = ((CpuOnlyEnergyPredictor) predictor).predictPowerUsed(host, measurement.getCpuUtilisation());
             } else {
-                power = ((CpuOnlyPolynomialEnergyPredictor) predictor).predictPowerUsed(host, mesurement.getCpuUtilisation());
+                power = ((CpuOnlyPolynomialEnergyPredictor) predictor).predictPowerUsed(host, measurement.getCpuUtilisation());
             }
             logger.printToFile(logger.new Pair(host, power));
             try {
