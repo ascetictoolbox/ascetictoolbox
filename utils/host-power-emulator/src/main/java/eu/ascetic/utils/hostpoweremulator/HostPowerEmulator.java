@@ -181,12 +181,12 @@ public class HostPowerEmulator implements Runnable {
          */
         if (cloneHostname != null) {
             cloneHostProfile(hostname, cloneHostname);
+            try { //Ensure there is enough time to copy the calibration data.
+                Thread.sleep(TimeUnit.SECONDS.toMillis(5));
+            } catch (InterruptedException ex) {
+                Logger.getLogger(HostPowerEmulator.class.getName()).log(Level.SEVERE, "The power emulator was interupted.", ex);
+            }
             database.getHostCalibrationData(host);
-        }
-        try { //Ensure there is enough time to copy the calibration data.
-            Thread.sleep(TimeUnit.SECONDS.toMillis(5));
-        } catch (InterruptedException ex) {
-            Logger.getLogger(HostPowerEmulator.class.getName()).log(Level.SEVERE, "The power emulator was interupted.", ex);
         }
         if (!host.isCalibrated()) {
             running = false;
