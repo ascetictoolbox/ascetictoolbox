@@ -143,9 +143,9 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 
 //			String initialPath = configurationFilesPath + configurationFile;
 			String initialPath = configFile;		
-			logger.debug("Initial path = " + initialPath);
+//			logger.debug("Initial path = " + initialPath);
 			String thePath = initialPath.replace("/", System.getProperty("file.separator"));
-			logger.debug("The path = " + thePath);
+			logger.debug("Configuration file path = " + thePath);
 			properties.load(new FileInputStream(thePath));
 			PropertyConfigurator.configure(configurationFilesPath + properties.getProperty(LOG4J_FILE));
 		} catch (FileNotFoundException e) {
