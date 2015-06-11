@@ -60,7 +60,7 @@ public class HostPowerEmulator implements Runnable {
     public static void main(String[] args) {
         Thread emulatorThread;
         String hostname = null;
-        String cloneHostname = "";
+        String cloneHostname = null;
         if (args.length > 0) {
             hostname = args[0];
         } else {
