@@ -102,6 +102,7 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 		// init();
 		logger.info("Creating Skeleton PAC...");
 		init();
+		logger.info("Searching for VM Startup Events on ActiveMQ...");
 		retrieveVmEvents();
 	}
 
@@ -194,14 +195,19 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
                 try {
                     if (message instanceof TextMessage) {
                         TextMessage textMessage = (TextMessage) message;
-                        logger.info("ACTIVEMQ: Received message '"
-                                + textMessage.getText() + "' in the topic vm-manager.deployment.deployed");
+                        logger.info("ACTIVEMQ: Received message in the VM deployed topic: "
+                                + textMessage.getText());
+                        
+                        /*
+                         * TODO
+                         * what I retrieve from VMM messages? vmId and ovfId?
+                         */
                         
                         logger.info("Retrieving VM Details from the VM Manager...");
-                        retrieveVmDetails(null,null);
+                        String slaId = retrieveVmDetails(null,null);
                         
                         logger.info("Creating an instance of Iaas Violation Checker...");
-                        new Thread(new IaasViolationChecker(properties, "infrastructure-monitor.monitoring.measurement", textMessage.getText(), textMessage.getText(), textMessage.getText())).start();
+                        new Thread(new IaasViolationChecker(properties, "infrastructure-monitor.monitoring.measurement", textMessage.getText(), textMessage.getText(), slaId)).start();
                         
                     }
                 } catch (JMSException e) {
@@ -225,19 +231,16 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
      * 2. Retrieve vm details from the vm manager whenever a 
      * "vm starting" event is catched
      */
-    private String retrieveVmDetails(String appId, String deploymentId) {
+    private String retrieveVmDetails(String vmId, String ovfId) {
     	VmManagerClient vmm = new VmManagerClient(properties.getProperty(VMMANAGER_URL));
 //        System.out.println(vmm.getVm("55a440c1-14ff-446d-9410-a2dce763085c"));
-        
-    	/*
-    	 * TODO retrieve VM details
-    	 */
+
     	
-    	//dummy code
-    	for (VmDeployed vm : vmm.getVms()) {
-        System.out.println(vm);
-    	}
-    	return "";
+    	VmDeployed vm = vmm.getVm(vmId);
+    	String slaId = vm.getSlaId();
+    	System.out.println("SLA ID: "+slaId);
+    	
+    	return slaId;
     }
     
 
