@@ -71,7 +71,7 @@ public class HostPowerEmulator implements Runnable {
                     + "be the hostname to clone the calibration data from.");
             System.exit(0);
         }
-        if (args.length > 2) {
+        if (args.length >= 2) {
             cloneHostname = args[1];
         }
         HostPowerEmulator emulator = new HostPowerEmulator(hostname, cloneHostname);
@@ -197,7 +197,7 @@ public class HostPowerEmulator implements Runnable {
         if (!host.isCalibrated()) {
             running = false;
             System.out.println("The host has no calibration data, so emulation cannot occur! ");
-            System.out.println("Please specifiy where to clone the calibration data from.");
+            System.out.println("Please specify where to clone the calibration data from.");
             System.exit(0);
         }
         predictor = AbstractEnergyPredictor.getBestPredictor(host, predictors);
@@ -205,7 +205,7 @@ public class HostPowerEmulator implements Runnable {
         System.out.println("Linear SSE: " + linearPredictor.getSumOfSquareError(host));
         System.out.println("Polynomial SSE: " + polyPredictor.getSumOfSquareError(host));
         System.out.println("Linear RMSE: " + linearPredictor.getRootMeanSquareError(host));
-        System.out.println("Polynomial RMSE: " + polyPredictor.getRootMeanSquareError(host));  
+        System.out.println("Polynomial RMSE: " + polyPredictor.getRootMeanSquareError(host));
 
         /**
          * The second phase is to monitor the host and to report its estimated
