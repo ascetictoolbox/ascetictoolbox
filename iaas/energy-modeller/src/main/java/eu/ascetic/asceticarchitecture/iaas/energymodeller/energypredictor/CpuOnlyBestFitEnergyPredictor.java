@@ -53,6 +53,16 @@ public class CpuOnlyBestFitEnergyPredictor extends AbstractEnergyPredictor {
     public EnergyUsagePrediction getVMPredictedEnergy(VM vm, Collection<VM> virtualMachines, Host host, TimePeriod timePeriod) {
             return getBestFit(host).getVMPredictedEnergy(vm, virtualMachines, host, timePeriod);
     }
+    
+    @Override
+    public double predictPowerUsed(Host host) {
+        return getBestFit(host).predictPowerUsed(host);
+    }
+
+    @Override
+    public double predictPowerUsed(Host host, double usageCPU) {
+        return getBestFit(host).predictPowerUsed(host, usageCPU);
+    }
 
     @Override
     public double getSumOfSquareError(Host host) {

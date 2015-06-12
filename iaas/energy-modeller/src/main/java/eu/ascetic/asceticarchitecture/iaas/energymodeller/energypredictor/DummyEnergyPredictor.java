@@ -76,6 +76,16 @@ public class DummyEnergyPredictor extends AbstractEnergyPredictor {
         }
         return answer;
     }
+      
+    @Override
+    public double predictPowerUsed(Host host) {
+        return tempAvgPowerUsed.get(host);
+    }
+
+    @Override
+    public double predictPowerUsed(Host host, double usageCPU) {
+        return tempAvgPowerUsed.get(host);
+    }    
 
     @Override
     public double getSumOfSquareError(Host host) {

@@ -78,6 +78,23 @@ public interface EnergyPredictorInterface {
     public EnergyUsagePrediction getVMPredictedEnergy(VM vm, Collection<VM> virtualMachines, Host host, TimePeriod timePeriod);
 
     /**
+     * This estimates the power used by a host, given its load characteristics.
+     *
+     * @param host The host to get the energy prediction for.
+     * @return The predicted power usage.
+     */
+    public double predictPowerUsed(Host host);
+
+    /**
+     * This estimates the power used by a host, given its CPU load.
+     *
+     * @param host The host to get the energy prediction for
+     * @param usageCPU The amount of CPU load placed on the host
+     * @return The predicted power usage.
+     */
+    public double predictPowerUsed(Host host, double usageCPU);    
+    
+    /**
      * This determines how good the fit of the model is in regards to a
      * particular named host
      *
