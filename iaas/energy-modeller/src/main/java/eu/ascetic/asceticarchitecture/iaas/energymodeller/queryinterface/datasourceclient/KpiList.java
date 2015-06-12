@@ -24,6 +24,7 @@ public abstract class KpiList {
 
     //Power and energy
     public static final String POWER_KPI_NAME = "power";
+    public static final String ESTIMATED_POWER_KPI_NAME = "power-estimated";
     public static final String ENERGY_KPI_NAME = "energy";
     //CPU based metrics
     public static final String CPU_COUNT_KPI_NAME = "system.cpu.num";
