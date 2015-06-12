@@ -25,6 +25,7 @@ import es.bsc.vmmanagercore.models.vms.Vm;
 import es.bsc.vmmanagercore.models.vms.VmDeployed;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.validator.UrlValidator;
+import org.jclouds.openstack.neutron.v2.NeutronApi;
 import org.jclouds.openstack.nova.v2_0.NovaApi;
 import org.jclouds.openstack.nova.v2_0.domain.*;
 import org.jclouds.openstack.nova.v2_0.options.CreateServerOptions;
@@ -303,6 +304,7 @@ public class OpenStackJclouds implements CloudMiddleware {
         includeDstNodeInDeploymentOption(hostname, options);
         includeInitScriptInDeploymentOptions(vm, options);
         includeSecurityGroupInDeploymentOption(options, securityGroups);
+        includeNetworkInDeploymentOptions(options, hostname);
         return options;
     }
 
@@ -342,6 +344,23 @@ public class OpenStackJclouds implements CloudMiddleware {
     private void includeSecurityGroupInDeploymentOption(CreateServerOptions options, String[] securityGroups) {
         if (securityGroups.length > 0) {
             options.securityGroupNames(securityGroups);
+        }
+    }
+
+    // This is a quick hack for the Ascetic project. It'll be refactored in the future :)
+    // In our new testbeds (wally) we need to select the network that we want the VM to use.
+    // This is not required in the other clusters that we use.
+    private void includeNetworkInDeploymentOptions(CreateServerOptions options, String hostname) {
+        if (hostname != null && hostname.startsWith("wally")) {
+            NeutronApi neutronApi = openStackJcloudsApis.getNeutronApi();
+            for (org.jclouds.openstack.neutron.v2.domain.Network network :
+                    neutronApi.getNetworkApi(zone).list().concat().toList()) {
+                System.out.println(network);
+            }
+
+            /*List<String> networks = new ArrayList<>();
+            networks.add();
+            options.networks(networks);*/
         }
     }
 

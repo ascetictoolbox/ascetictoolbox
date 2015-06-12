@@ -1,6 +1,8 @@
 package es.bsc.vmmanagercore.cloudmiddleware.openstack;
 
 import org.jclouds.ContextBuilder;
+import org.jclouds.openstack.neutron.v2.NeutronApi;
+import org.jclouds.openstack.neutron.v2.NeutronApiMetadata;
 import org.jclouds.openstack.nova.v2_0.NovaApi;
 import org.jclouds.openstack.nova.v2_0.NovaApiMetadata;
 import org.jclouds.openstack.nova.v2_0.extensions.ServerAdminApi;
@@ -15,6 +17,7 @@ import org.jclouds.openstack.nova.v2_0.features.ServerApi;
  */
 public class OpenStackJcloudsApis {
 
+    private final OpenStackCredentials openStackCredentials;
     private final NovaApi novaApi;
     private final ServerApi serverApi;
     private final ImageApi imageApi;
@@ -22,6 +25,7 @@ public class OpenStackJcloudsApis {
     private final ServerAdminApi serverAdminApi;
 
     public OpenStackJcloudsApis(OpenStackCredentials openStackCredentials) {
+        this.openStackCredentials = openStackCredentials;
         novaApi = ContextBuilder.newBuilder(new NovaApiMetadata())
                 .endpoint("http://" + openStackCredentials.getOpenStackIP() + ":" +
                         openStackCredentials.getKeyStonePort() + "/v2.0")
@@ -53,6 +57,16 @@ public class OpenStackJcloudsApis {
 
     public ServerAdminApi getServerAdminApi() {
         return serverAdminApi;
+    }
+
+    // Not always available. For now, call this function in OpenStack installations with Neutron enabled
+    public NeutronApi getNeutronApi() {
+        return ContextBuilder.newBuilder(new NeutronApiMetadata())
+                .endpoint("http://" + openStackCredentials.getOpenStackIP() + ":" +
+                        openStackCredentials.getKeyStonePort() + "/v2.0")
+                .credentials(openStackCredentials.getKeyStoneTenant() + ":" +
+                        openStackCredentials.getKeyStoneUser(), openStackCredentials.getKeyStonePassword())
+                .buildApi(NeutronApi.class);
     }
 
 }
