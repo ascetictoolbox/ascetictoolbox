@@ -18,6 +18,7 @@ package eu.ascetic.utils.hostpoweremulator;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DatabaseConnector;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DefaultDatabaseConnector;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.AbstractEnergyPredictor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.CpuOnlyEnergyPredictor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.CpuOnlyPolynomialEnergyPredictor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.EnergyPredictorInterface;
@@ -28,6 +29,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasou
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.ioutils.Settings;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -119,9 +121,12 @@ public class MultiHostPowerEmulator implements Runnable {
     @Override
     public void run() {
         List<Host> hosts = source.getHostList();
-        HashMap<Host, EnergyPredictorInterface> predictor = new HashMap<>();
+        HashMap<Host, EnergyPredictorInterface> predictorMap = new HashMap<>();
         CpuOnlyEnergyPredictor linearPredictor = new CpuOnlyEnergyPredictor();
         CpuOnlyPolynomialEnergyPredictor polyPredictor = new CpuOnlyPolynomialEnergyPredictor();
+        ArrayList<EnergyPredictorInterface> predictors = new ArrayList<>();
+        predictors.add(linearPredictor);
+        predictors.add(polyPredictor);
         HostPowerLogger logger = new HostPowerLogger(new File("EstimatedHostPowerData.txt"), true);
         logger.setMetricName(outputName);
         Thread loggerThread = new Thread(logger);
@@ -132,13 +137,9 @@ public class MultiHostPowerEmulator implements Runnable {
             if (!host.isCalibrated()) {
                 continue;
             }
-            if (linearPredictor.getRootMeanSquareError(host) < polyPredictor.getRootMeanSquareError(host)) {
-                predictor.put(host, linearPredictor);
-                System.out.println("Using the linear predictor: " + host.getHostName());
-            } else {
-                predictor.put(host, polyPredictor);
-                System.out.println("Using the polynomial predictor " + host.getHostName());
-            }
+            EnergyPredictorInterface predictor = AbstractEnergyPredictor.getBestPredictor(host, predictors);
+            predictorMap.put(host, predictor);            
+            System.out.println("Using the " + predictor.toString());
             System.out.println("Linear SSE: " + linearPredictor.getSumOfSquareError(host));
             System.out.println("Polynomial SSE: " + polyPredictor.getSumOfSquareError(host));
             System.out.println("Linear RMSE: " + linearPredictor.getRootMeanSquareError(host));
@@ -157,11 +158,7 @@ public class MultiHostPowerEmulator implements Runnable {
                 if (!host.isCalibrated()) {
                     continue;
                 }
-                if (predictor.get(host).getClass().equals(CpuOnlyEnergyPredictor.class)) {
-                    power = ((CpuOnlyEnergyPredictor) predictor.get(host)).predictPowerUsed(host, measurement.getCpuUtilisation());
-                } else {
-                    power = ((CpuOnlyPolynomialEnergyPredictor) predictor.get(host)).predictPowerUsed(host, measurement.getCpuUtilisation());
-                }
+                power = predictorMap.get(host).predictPowerUsed(host, measurement.getCpuUtilisation());           
                 logger.printToFile(logger.new Pair(host, power));
             }
             try {

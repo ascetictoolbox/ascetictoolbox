@@ -18,6 +18,7 @@ package eu.ascetic.utils.hostpoweremulator;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DatabaseConnector;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DefaultDatabaseConnector;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.AbstractEnergyPredictor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.CpuOnlyEnergyPredictor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.CpuOnlyPolynomialEnergyPredictor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.EnergyPredictorInterface;
@@ -28,6 +29,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasou
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.ioutils.Settings;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -125,6 +127,7 @@ public class HostPowerEmulator implements Runnable {
         if (!host.isCalibrated()) {
             clone = database.getHostCalibrationData(clone);
             host.setCalibrationData(clone.getCalibrationData());
+            database.setHostCalibrationData(host);
         }
     }
 
@@ -167,6 +170,9 @@ public class HostPowerEmulator implements Runnable {
         EnergyPredictorInterface predictor;
         CpuOnlyEnergyPredictor linearPredictor = new CpuOnlyEnergyPredictor();
         CpuOnlyPolynomialEnergyPredictor polyPredictor = new CpuOnlyPolynomialEnergyPredictor();
+        ArrayList<EnergyPredictorInterface> predictors = new ArrayList<>();
+        predictors.add(linearPredictor);
+        predictors.add(polyPredictor);
         Host host = source.getHostByName(hostname);
         HostPowerLogger logger = new HostPowerLogger(new File("EstimatedHostPowerData.txt"), true);
         logger.setMetricName(outputName);
@@ -194,17 +200,12 @@ public class HostPowerEmulator implements Runnable {
             System.out.println("Please specifiy where to clone the calibration data from.");
             System.exit(0);
         }
-        if (linearPredictor.getRootMeanSquareError(host) < polyPredictor.getRootMeanSquareError(host)) {
-            predictor = linearPredictor;
-            System.out.println("Using the linear predictor");
-        } else {
-            predictor = polyPredictor;
-            System.out.println("Using the polynomial predictor");
-        }
+        predictor = AbstractEnergyPredictor.getBestPredictor(host, predictors);
+        System.out.println("Using the " + predictor.toString());
         System.out.println("Linear SSE: " + linearPredictor.getSumOfSquareError(host));
         System.out.println("Polynomial SSE: " + polyPredictor.getSumOfSquareError(host));
         System.out.println("Linear RMSE: " + linearPredictor.getRootMeanSquareError(host));
-        System.out.println("Polynomial RMSE: " + polyPredictor.getRootMeanSquareError(host));
+        System.out.println("Polynomial RMSE: " + polyPredictor.getRootMeanSquareError(host));  
 
         /**
          * The second phase is to monitor the host and to report its estimated
@@ -212,12 +213,7 @@ public class HostPowerEmulator implements Runnable {
          */
         while (running) {
             HostMeasurement measurement = source.getHostData(host);
-            double power;
-            if (predictor.getClass().equals(CpuOnlyEnergyPredictor.class)) {
-                power = ((CpuOnlyEnergyPredictor) predictor).predictPowerUsed(host, measurement.getCpuUtilisation());
-            } else {
-                power = ((CpuOnlyPolynomialEnergyPredictor) predictor).predictPowerUsed(host, measurement.getCpuUtilisation());
-            }
+            double power = predictor.predictPowerUsed(host, measurement.getCpuUtilisation());
             logger.printToFile(logger.new Pair(host, power));
             try {
                 Thread.sleep(TimeUnit.SECONDS.toMillis(pollInterval));
