@@ -32,6 +32,7 @@ public class CounterData implements Comparable<CounterData> {
     private long lastTime = -1;
     private double lastPower = -1;
     private double energy = 0;
+    private boolean emulated = false;
 
     public CounterData(EnergyUsageSource energyUser) {
         this.energyUser = energyUser;
@@ -97,17 +98,34 @@ public class CounterData implements Comparable<CounterData> {
         lastPower = -1;
         startTime = -1;
         energy = 0;
+        emulated = false;
     }
 
     @Override
     public String toString() {
         DecimalFormat formatter = new DecimalFormat("#0.00");
-        return (isHost() ? "HOST: " : "VM: ") + getName() + " Energy (J): " + formatter.format(energy) + " Average Power (W): " + formatter.format(getAveragePower());
+        return (isHost() ? "HOST: " : "VM: ") + getName() + " Energy (J): " + formatter.format(energy) + " Average Power (W): " + formatter.format(getAveragePower()) + (isEmulated() ? " Emulated" : "");
     }
 
     @Override
     public int compareTo(CounterData data) {
         return this.getName().compareTo(data.getName());
+    }
+
+    /**
+     * This indicates if an emulated watt meter value was used.
+     * @return the emulated
+     */
+    public boolean isEmulated() {
+        return emulated;
+    }
+
+    /**
+     * This is used to indicate if an emulated watt meter value was used.
+     * @param emulated If emulation has been used or not
+     */
+    public void setEmulated(boolean emulated) {
+        this.emulated = emulated;
     }
 
 }

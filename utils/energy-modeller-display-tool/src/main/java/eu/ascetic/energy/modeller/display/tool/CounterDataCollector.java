@@ -18,6 +18,7 @@ package eu.ascetic.energy.modeller.display.tool;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostMeasurement;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.POWER_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.ESTIMATED_POWER_KPI_NAME;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.VmMeasurement;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.EnergyUsageSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
@@ -149,7 +150,7 @@ public class CounterDataCollector implements Runnable {
             }
         }
     }
-
+    
     /**
      * This takes a collection of current measurements and appends them onto the
      * counters running score.
@@ -161,7 +162,11 @@ public class CounterDataCollector implements Runnable {
             if (current.metricExists(POWER_KPI_NAME)) {
                 CounterData counter = counters.get(current.getHost().getHostName());
                 counter.add(current.getClock(), current.getPower());
-            }
+            } else if (current.metricExists(ESTIMATED_POWER_KPI_NAME)) {
+                CounterData counter = counters.get(current.getHost().getHostName());
+                counter.add(current.getClock(), current.getMetric(ESTIMATED_POWER_KPI_NAME).getValue());
+                counter.setEmulated(true);
+            }            
         }
     }
 
