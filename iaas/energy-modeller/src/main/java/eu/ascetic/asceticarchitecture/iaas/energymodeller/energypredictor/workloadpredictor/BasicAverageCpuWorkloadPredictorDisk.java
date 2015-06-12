@@ -30,7 +30,7 @@ public class BasicAverageCpuWorkloadPredictorDisk extends AbstractWorkloadEstima
 
     @Override
     public double getCpuUtilisation(Host host, Collection<VM> virtualMachines) {
-        double vmCount = 0; //vms with app tags
+        double vmCount = 0; //vms with disk refs
         double sumCpuUtilisation = 0;
         if (AbstractWorkloadEstimator.hasDiskReferences(virtualMachines)) {
             for (VM vm : virtualMachines) {

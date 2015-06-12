@@ -29,13 +29,13 @@ import java.util.List;
  *
  * @author Richard Kavanagh
  */
-public class BasicBootAverageCpuWorkloadPredictorDisk extends AbstractWorkloadEstimator {
+public class BootAverageCpuWorkloadPredictorDisk extends AbstractWorkloadEstimator {
 
     private int bootHistoryBucketSize = 500;
 
     @Override
     public double getCpuUtilisation(Host host, Collection<VM> virtualMachines) {
-        double vmCount = 0; //vms with app tags
+        double vmCount = 0; //vms with disk refs
         double sumCpuUtilisation = 0;
         if (AbstractWorkloadEstimator.hasDiskReferences(virtualMachines)) {
             for (VM vm : virtualMachines) {
