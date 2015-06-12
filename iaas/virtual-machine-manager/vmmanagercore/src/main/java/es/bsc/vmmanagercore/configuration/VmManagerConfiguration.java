@@ -30,7 +30,7 @@ import java.util.Properties;
 public class VmManagerConfiguration {
 
     // Configuration file
-    private static final String CONF_FILE_LOCATION = "configBSC.properties";
+    private static final String CONF_FILE_LOCATION = "configTUB.properties";
 
     // OpenStack configuration
     public String openStackIP;
