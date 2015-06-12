@@ -352,15 +352,18 @@ public class OpenStackJclouds implements CloudMiddleware {
     // This is not required in the other clusters that we use.
     private void includeNetworkInDeploymentOptions(CreateServerOptions options, String hostname) {
         if (hostname != null && hostname.startsWith("wally")) {
+            String networkId = "";
             NeutronApi neutronApi = openStackJcloudsApis.getNeutronApi();
             for (org.jclouds.openstack.neutron.v2.domain.Network network :
                     neutronApi.getNetworkApi(zone).list().concat().toList()) {
-                System.out.println(network);
+                if (network.getName().equals("VMManager_network")) {
+                    networkId = network.getId();
+                }
             }
 
-            /*List<String> networks = new ArrayList<>();
-            networks.add();
-            options.networks(networks);*/
+            List<String> networks = new ArrayList<>();
+            networks.add(networkId);
+            options.networks(networks);
         }
     }
 
