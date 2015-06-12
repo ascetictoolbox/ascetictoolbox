@@ -17,23 +17,24 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.workl
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDiskImage;
 import java.util.Collection;
 
 /**
- * This looks at an application tag and returns the average CPU workload induced 
+ * This looks at a disk reference and returns the average CPU workload induced 
  * by VMs as its estimate of CPU workload.
  *
  * @author Richard Kavanagh
  */
-public class BasicAverageCpuWorkloadPredictor extends AbstractWorkloadEstimator {
+public class BasicAverageCpuWorkloadPredictorDisk extends AbstractWorkloadEstimator {
 
     @Override
     public double getCpuUtilisation(Host host, Collection<VM> virtualMachines) {
         double vmCount = 0; //vms with app tags
         double sumCpuUtilisation = 0;
-        if (AbstractWorkloadEstimator.hasAppTags(virtualMachines)) {
+        if (AbstractWorkloadEstimator.hasDiskReferences(virtualMachines)) {
             for (VM vm : virtualMachines) {
-                if (!vm.getApplicationTags().isEmpty()) {
+                if (!vm.getDiskImages().isEmpty()) {
                     sumCpuUtilisation = sumCpuUtilisation + getAverageCpuUtilisastion(vm);
                     vmCount = vmCount + 1;
                 }
@@ -45,21 +46,21 @@ public class BasicAverageCpuWorkloadPredictor extends AbstractWorkloadEstimator 
     }
 
     /**
-     * This gets the average CPU utilisation for a VM given the app tags that it
+     * This gets the average CPU utilisation for a VM given the disk image that it
      * has.
      *
      * @param vm The VM to get the average utilisation for.
-     * @return The average utilisation of all application tags that a VM has.
+     * @return The average utilisation of all disk images that a VM has.
      */
     public double getAverageCpuUtilisastion(VM vm) {
         double answer = 0.0;
-        if (vm.getApplicationTags().isEmpty()) {
+        if (vm.getDiskImages().isEmpty()) {
             return answer;
         }
-        for (String tag : vm.getApplicationTags()) {
-            answer = answer + database.getAverageCPUUtilisationTag(tag);
+        for (VmDiskImage disk : vm.getDiskImages()) {
+            answer = answer + database.getAverageCPUUtilisationDisk(disk.getDiskImage());
         }
-        return answer / vm.getApplicationTags().size();
+        return answer / vm.getDiskImages().size();
     }
 
 }

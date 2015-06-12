@@ -17,16 +17,21 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.workl
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.VmLoadHistoryBootRecord;
 import java.util.Collection;
+import java.util.List;
 
 /**
- * This looks at an application tag and returns the average CPU workload induced 
+ * This looks at an application tag and returns the average CPU workload induced
  * by VMs as its estimate of CPU workload.
  *
  * @author Richard Kavanagh
  */
-public class BasicAverageCpuWorkloadPredictor extends AbstractWorkloadEstimator {
+public class BasicBootAverageCpuWorkloadPredictor extends AbstractWorkloadEstimator {
 
+    private int bootHistoryBucketSize = 500;
+    
     @Override
     public double getCpuUtilisation(Host host, Collection<VM> virtualMachines) {
         double vmCount = 0; //vms with app tags
@@ -57,9 +62,35 @@ public class BasicAverageCpuWorkloadPredictor extends AbstractWorkloadEstimator 
             return answer;
         }
         for (String tag : vm.getApplicationTags()) {
-            answer = answer + database.getAverageCPUUtilisationTag(tag);
+            if (vm.getClass().equals(VmDeployed.class)) {
+                List<VmLoadHistoryBootRecord> bootRecord = database.getAverageCPUUtilisationBootTraceForTag(
+                        tag,
+                        bootHistoryBucketSize);
+                answer = answer + AbstractWorkloadEstimator.getBootHistoryValue(bootRecord,
+                        bootHistoryBucketSize,
+                        (VmDeployed) vm).getLoad();
+            } else {
+                answer = answer + database.getAverageCPUUtilisationTag(tag);
+            }
         }
         return answer / vm.getApplicationTags().size();
     }
+    
+    /**
+     * This sets the boot history discrete time bucket size.
+     * @return the bootHistoryBucketSize
+     */
+    public int getBootHistoryBucketSize() {
+        return bootHistoryBucketSize;
+    }
+
+    /**
+     * This sets the boot history discrete time bucket size.
+     * @param bootHistoryBucketSize The bucket size is the time in
+     * seconds that each discrete time bucket represents.
+     */
+    public void setBootHistoryBucketSize(int bootHistoryBucketSize) {
+        this.bootHistoryBucketSize = bootHistoryBucketSize;
+    }    
 
 }
