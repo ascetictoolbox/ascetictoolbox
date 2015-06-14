@@ -20,50 +20,12 @@ package eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller;
 
 /**
  * This is the standard interface for any pricing module to be loaded into
- * the ASCETiC architecture.
+ * the ASCETiC architecture. This interface includes all the methods that another component
+ * from the architecture may call. 
  * @author E. Agiatzidou
  */
 
 public interface IaaSPricingModellerInterface{
 	
-	 /**
-     * This function returns the value of the cost of energy
-     */
-	public double getEnergyCost();
 	
-	 /**
-     * This function returns the value of the amortised cost of the host
-     */
-	public double getAmortHostCost();
-	
-	 /**
-     * This function returns the value of the PUE
-     */
-	public double getPUE();
-	
-	
-	/**
-     * This function set the value of the cost of energy for the model
-     */
-	public void setEnergyCost(double energycost);
-	
-	/**
-     * This function set the value of the amortised cost of the host
-     */
-	public void setAmortHostCost(double amorthostcost);
-	
-	/**
-     * This function set the value of the PUE
-     */
-	public void setPUE(double PUE);
-	
-	
-	/**
-     * Returns a cost (price) estimation based on the total energy that a VM consumes during an hour.
-     *
-     * @param totalEnergyUsed total energy that a VM consumes during an hour.
-     * @return the cost (price) estimation
-     */
-	public double getVMCostEstimation(double totalEnergyUsed, String hostId);
-	public double getVMPriceEstimation(double totalEnergyUsed, String hostId);
 }

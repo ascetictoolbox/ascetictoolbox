@@ -1,5 +1,5 @@
 /**
- *  Copyright 2014 Athens University of Economics and Business
+ *  Copyright 2015 Athens University of Economics and Business
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,16 +14,18 @@
  *  limitations under the License.
  */
 
-package eu.ascetic.asceticarchitecture.paas.paaspricingmodeller;
+
+package eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.cost;
+
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.Price;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.Time;
+
 
 /**
- * This is the standard interface for any pricing module to be loaded into
- * the ASCETiC architecture.
+ * This is the standard interface for sub-component of the Pricing Modeller called "Energy Charges". 
  * @author E. Agiatzidou
  */
 
-public interface PaaSPricingModellerInterface{
-	
-	
+public interface IaaSPricingModellerCostInterface{
 	
 }

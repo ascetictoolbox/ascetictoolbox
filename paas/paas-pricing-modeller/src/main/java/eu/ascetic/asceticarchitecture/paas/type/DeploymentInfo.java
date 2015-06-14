@@ -13,17 +13,37 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package eu.ascetic.asceticarchitecture.paas.type;
 
-package eu.ascetic.asceticarchitecture.paas.paaspricingmodeller;
+
+import java.util.LinkedList;
+
+import eu.ascetic.asceticarchitecture.paas.type.Time;
 
 /**
- * This is the standard interface for any pricing module to be loaded into
- * the ASCETiC architecture.
+ * This class creates objects that keep information about the deployment ID, the
+ * application ID, the IaaS ID, the IaaS Price and the total energy that has
+ * been used.
+ * 
  * @author E. Agiatzidou
  */
 
-public interface PaaSPricingModellerInterface{
+public class DeploymentInfo {
+
+	int deploymentId;
+
+	LinkedList<VMinfo> VMs = new LinkedList<VMinfo>();
+
+	public DeploymentInfo(int deploymentId) {
+		this.deploymentId=deploymentId;
+
+	}
+
+	public void addVM(VMinfo vm){
+		VMs.add(vm);
+	}
 	
-	
-	
+	public int getId(){
+		return deploymentId;
+	}
 }

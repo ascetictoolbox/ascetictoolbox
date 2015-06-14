@@ -14,16 +14,24 @@
  *  limitations under the License.
  */
 
-package eu.ascetic.asceticarchitecture.paas.paaspricingmodeller;
+
+package eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.billing;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesrepository.IaaSPricingModellerPricingScheme;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.*;
 
 /**
  * This is the standard interface for any pricing module to be loaded into
- * the ASCETiC architecture.
+ * the ASCETiC architecture. This interface includes all the methods that another component
+ * from the architecture may call. 
  * @author E. Agiatzidou
  */
 
-public interface PaaSPricingModellerInterface{
-	
-	
+public interface IaaSPricingModellerBillingInterface{
+	void registerVM(VMstate vm);
+	void unregisterVM(VMstate vm);
+	void stopChargingVM(VMstate vm);
+	double getVMCharges(int VMid);
+
+
 	
 }
