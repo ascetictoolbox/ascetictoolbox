@@ -20,117 +20,122 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.io.IOException;
 
-import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.billing.PaaSPricingModellerBilling;
-import eu.ascetic.asceticarchitecture.paas.type.AppState;
-import eu.ascetic.asceticarchitecture.paas.type.DeploymentInfo;
-import eu.ascetic.asceticarchitecture.paas.type.IaaSProvider;
-import eu.ascetic.asceticarchitecture.paas.type.PaaSPrice;
-import eu.ascetic.asceticarchitecture.paas.type.VMinfo;
 
-;
+import eu.ascetic.asceticarchitecture.paas.type.PaaSPrice;;
+
 
 /**
- * This is the main interface of the pricing modeller of PaaS layer.
- * Functionality: The ability to provide a price estimation of an application
- * per hour, given the energy consumed of this app, the deployment id, the
- * application id, the IaaS provider id and the IaaS provider's price.
+ * This is the main interface of the pricing modeller of PaaS layer. 
+ * Functionality:
+ * The ability to provide a price estimation of an application per hour, given the energy consumed of this app, the deployment id, 
+ * the application id, the IaaS provider id and the IaaS provider's price. 
  * 
- * The price estimation can be also given without the provision of energy
- * estimation.
+ * The price estimation can be also given without the provision of energy estimation.
  * 
- * The price estimation can be also given without the provision of an PaaS
- * price.
- * 
+ * The price estimation can be also given without the provision of an PaaS price. 
  * @author E. Agiatzidou
  */
 
-public class PaaSPricingModeller implements PaaSPricingModellerInterface {
 
-	IaaSProvider iaasProvider;
+public class PaaSPricingModeller implements PaaSPricingModellerInterface{
+	public static Collection<PaaSPrice> prices = new ArrayList<>();
+	private final double price =  0.24; //Default value in case we do not have enough information. It should be removed.
 
-	PaaSPricingModellerBilling billing = new PaaSPricingModellerBilling();
+    public PaaSPricingModeller() {
+    }
 
-	private static int idIaaPP = 0;
+    /**
+     * This function returns a price estimation based on the 
+     * total energy that the application has/will consume and the price of the IaaS provider.
+     * @param totalEnergyUsed The total estimated energy that the application has consumed.
+     * @param deploymentId The deployment ID
+     * @param appId The application ID
+     * @param iaasId The IaaS ID
+     * @param iaasPrice The price of the IaaS provider
+     * @return the estimated price of the application running on this IaaS provider
+     */
+    @Override
+    public double getAppPriceEstimation(double totalEnergyUsed, int deploymentId, int appId, int iaasId, double iaasPrice) {
+    	double tempPrice=iaasPrice + iaasPrice*20/100;
+        PaaSPrice paasPrice = new PaaSPrice(totalEnergyUsed, deploymentId, appId, iaasId, iaasPrice);
+        prices.add(paasPrice);
+    	return  tempPrice; 
+    }
 
-	public PaaSPricingModeller() {
-		idIaaPP = idIaaPP + 1;
-	}
-	
-	public void createDeployment(int deploymentId, double RAM, double CPU, double storage){
-		billing.createDeployment(deploymentId, RAM, CPU,  storage);
-	}
+    
+    /**
+     * This function returns a price estimation based on the price of the IaaS provider.
+     * @param deploymentId The deployment ID
+     * @param appId The application ID
+     * @param iaasId The IaaS ID
+     * @param iaasPrice The price of the IaaS provider
+     * @return the estimated price of the application running on this IaaS provider
+     */
+    public double getAppPriceEstimation(int deploymentId, int appId, int iaasId, double iaasPrice) {
+    	double tempPrice=iaasPrice + iaasPrice*20/100;
+         PaaSPrice paasPrice = new PaaSPrice(deploymentId, appId, iaasId, iaasPrice);
+         prices.add(paasPrice);
+     	return  tempPrice; 
+    }
 
-	// /////////////////////////////////////PREDICTION////////////////////////////////////////////
-
-	public double getAppChargesPrediction(int appID, int deploymentId, int IaaSId, double totalAppCharges, int schemeId,
-			double totalEnergyPredicted, double duration) {
-		
-		DeploymentInfo delp = billing.getDepl(deploymentId);
-		
-		AppState app = new AppState(appID, delp, IaaSId, schemeId);
-		
-		return billing.predictAppCharges(app, totalAppCharges, duration,
-				totalEnergyPredicted);
-	}
-
-	public double getAppChargesPrediction(int appID, int deploymentId,
-		int IaaSId, int schemeId, double totalEnergyPredicted, double duration) {
-
-		DeploymentInfo delp = billing.getDepl(deploymentId);
-		AppState app = new AppState(appID, delp, IaaSId, schemeId);
-		return billing.predictAppCharges(app, duration, totalEnergyPredicted);
-				
-	}
-	
-	//NOT for Y1
-	public double chooseIaaS(int appID, int deploymentId, int schemeId, double totalEnergyPredicted, double duration) {
-
-			//AppState app = new AppState(appID, deploymentId, IaaSId, schemeId);
-			//return billing.predictAppCharges(app, totalAppCharges, duration, totalEnergyPredicted);
-					return 0;
-		}
-	
-	//TO DECIDE
-	public double chooseIaaSPricingScheme(int appID, int deploymentId, int IaaSid, double totalEnergyPredicted, double duration) {
-
-		//AppState app = new AppState(appID, deploymentId, IaaSId, schemeId);
-		//return billing.predictAppCharges(app, totalAppCharges, duration, totalEnergyPredicted);
-				return 0;
-	}
-	
-	// /////////////////////////////////////////BILLING/////////////////////////////////////////////
-
-	public void initializeApp(int appID, int deploymentId, int IaaSId,
-			int schemeId) {
-		DeploymentInfo delp = billing.getDepl(deploymentId);
-		AppState app = new AppState(appID, delp, IaaSId, schemeId);
-		billing.registerApp(app);
-	}
-
-	public void initializeApp(int appID) {
-		billing.registerApp(appID);
-	}
-
-public double getAppCurrentCharges(int appID, double iaasCharges) {
-		return billing.getAppCharges(appID, iaasCharges);
-	}
-
-	public double getAppFinalCharges(int appID, double iaasCharges, boolean unregister) {
-		return billing.getAppCharges(appID,iaasCharges, unregister);
-	}
-	
-	
-	// /////////////////////Basic functions///////////////////////////////
-	public int getPaaSId() {
-		return idIaaPP;
-	}
-
-	public IaaSProvider getIaaSProvider() {
-		return this.iaasProvider;
-	}
-
-	public PaaSPricingModellerBilling getBilling() {
-		return this.billing;
-	}
-
+    
+    /**
+     * This function returns a price estimation based on the 
+     * total energy that the application has/will consume and the price of the IaaS provider.
+     * In this case the price of the provider is not given. It will be retrieved by historic data
+     * otherwise a default value is returned. 
+     * @param totalEnergyUsed The total estimated energy that the application has consumed.
+     * @param deploymentId The deployment ID
+     * @param appId The application ID
+     * @param iaasId The IaaS ID
+     * @return the estimated price of the application running on this IaaS provider or a default value of it.
+     */
+   public double getAppPriceEstimation(double totalEnergyUsed, int deploymentId, int appId, int iaasId) {
+    	double iaasPrice=findIaaSPrice(totalEnergyUsed, deploymentId, appId, iaasId);
+    
+    	if (iaasPrice!=0.0){
+    		double tempPrice=iaasPrice + iaasPrice*20/100;
+    		System.out.println("the price is:"+ tempPrice);
+    	        return tempPrice; 
+    	}
+    	System.out.println("the price is:"+ price);
+    	return price;
+    }
+    
+   /**
+    * This is a private function that searches the collection to find if a price has been given before 
+    * for this application under this deployment and on top of this IaaS Provider. 
+    * @param totalEnergyUsed The total estimated energy that the application has consumed.
+    * @param deploymentId The deployment ID
+    * @param appId The application ID
+    * @param iaasId The IaaS ID
+    * @return the estimated price of the application running on this IaaS provider or a default value of it.
+    */
+   private double findIaaSPrice(double totalEnergyUsed, int deploymentId, int appId, int iaasId){
+	   PaaSPrice next=new PaaSPrice();
+	   for (Iterator< PaaSPrice> it = prices.iterator(); it.hasNext();) {
+       	next=it.next();
+       	if (equals(next,totalEnergyUsed, deploymentId, appId, iaasId)){
+       		return next.getIaaSPrice();
+       	}
+	   }
+       	return 0.0;	
+   }
+   
+   
+   /**
+    * This is a private function that compares the query of the caller with the given parameters. 
+    * @param priceObj A PaaSPrice object which is compared to the parameters. 
+    * @param totalEnergyUsed The total estimated energy that the application has consumed.
+    * @param deploymentId The deployment ID
+    * @param appId The application ID
+    * @param iaasId The IaaS ID
+    * @return true if there is a match otherwise false.
+    */
+   private boolean equals(PaaSPrice priceObj, double totalEnergyUsed, int deploymentId, int appId, int iaasId){
+	   if ((priceObj.getIaaSId()==iaasId)&&(priceObj.getAppId()==appId)&&(priceObj.getDeploymentId()==deploymentId)&&(priceObj.getTotalEnergyUsed()==totalEnergyUsed)){
+		   return true;
+	   }
+	   else return false;
+   }
 }

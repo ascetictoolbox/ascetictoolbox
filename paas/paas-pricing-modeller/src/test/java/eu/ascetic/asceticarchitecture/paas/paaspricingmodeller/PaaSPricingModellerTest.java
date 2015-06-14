@@ -65,13 +65,13 @@ public class PaaSPricingModellerTest
     	 int appId=1;
     	 int iaasId=1;
     	 double iaasPrice=0.21;
-    	 double price=priceApp.getAppChargesPrediction(appId, deploymentId, iaasId, iaasPrice, 1, totalEnergyUsed, 1);
+    	 double price=priceApp.getAppPriceEstimation(totalEnergyUsed, deploymentId, appId, iaasId, iaasPrice);
     	 //  price=iaasPrice + iaasPrice*20/100;
     	 double expectedPrice = 0.25;
     	 assertEquals(expectedPrice, price, 0.02);
     }
 	
-   /* @Test
+    @Test
     public void testPriceEstimationWithoutEnergy(){
     	 System.out.println("test function for price estimation that does not take into account energy");
     	 PaaSPricingModeller priceApp = new PaaSPricingModeller();
@@ -83,9 +83,9 @@ public class PaaSPricingModellerTest
     	 //  price=iaasPrice + iaasPrice*20/100;
     	 double expectedPrice = 0.25;
     	 assertEquals(expectedPrice, price, 0.02);
-    }*/
+    }
     
-   /* @Test
+    @Test
     public void testPriceEstimationWithoutIaasPrice(){
     	 System.out.println("test function for price estimation without IaaS Price");
     	 PaaSPricingModeller priceApp = new PaaSPricingModeller();
@@ -104,5 +104,5 @@ public class PaaSPricingModellerTest
     	 double price2=priceApp.getAppPriceEstimation(totalEnergyUsed, 2, appId, iaasId);
     	 double expectedPrice2 = 0.24;
     	 assertEquals(expectedPrice2, price2, 0.02);
-    }*/
+    }
 }

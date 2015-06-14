@@ -25,5 +25,18 @@ package eu.ascetic.asceticarchitecture.paas.paaspricingmodeller;
 public interface PaaSPricingModellerInterface{
 	
 	
+	/**
+     * Returns a price estimation based on the total power that an application consumes during an hour.
+     *
+     * @param totalEnergyUsed total power that an application consumes during an hour.
+     * @param deploymentId the id of the deployment that the application is using
+     * @param appId the id of the application running
+     * @param iaasId the id of the IaaS provider that will be used or is a candidate for the application to be deployed
+     * @param iaasPrice the price that the IaaS provider is asking for the deployment of the application on his premises in $/hour
+     * @return the price estimation in $/hour of the PaaS provider
+     */
+	public double getAppPriceEstimation(double totalEnergyUsed, int deploymentId, int appId, int iaasId, double iaasPrice);
+	
+	
 	
 }
