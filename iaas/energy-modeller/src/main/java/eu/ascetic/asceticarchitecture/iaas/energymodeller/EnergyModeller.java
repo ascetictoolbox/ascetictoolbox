@@ -708,6 +708,16 @@ public class EnergyModeller {
     }
 
     /**
+     * This provides the current amount of host power that has not been allocated
+     * to a running VM.
+     * @return The total physical host power consumption - total VM allocated 
+     * power consumption.
+     */
+    public double getHostPowerUnallocatedToVMs() {
+        return getHostsTotalCurrentPowerConsumption() - getVmTotalCurrentPowerConsumption();
+    }    
+    
+    /**
      * This calibrates all hosts that are known to the energy modeller, that
      * currently are uncalibrated i.e. energy values for the host is unknown.
      */
