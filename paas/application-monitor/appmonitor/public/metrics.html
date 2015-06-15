@@ -1,0 +1,64 @@
+<!--main-->
+<div class="row">
+
+	<!--right-->
+		<div class="row" ng-controller="GraphicsPanelController">
+            <script type="text/ng-template" id="newPanelForm.html">
+                <div class="modal-header">
+                    <h3 class="modal-title">New graph...</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Application ID:</label>
+                        <input type="text" ng-focus="" typeahead-on-select="onAppSelected(form.appId)" ng-model="form.appId" typeahead="app for app in getApps() | filter:$viewValue | limitTo:8 " class="form-control"/> <!-- appId debe estar en el $scope -->
+                    </div>
+                    <!--div class="form-group">
+                        <label>Node ID:</label>
+                        <input type="text" ng-model="form.nodeId" class="form-control"/>
+                    </div-->
+                    <div class="form-group">
+                        <label>Deployment ID:</label>
+                        <input type="text" ng-model="form.instanceId" typeahead="instance for instance in getInstances() | filter:$viewValue | limitTo:8" class="form-control"/> <!-- appId debe estar en el $scope -->
+                    </div>
+                    <div class="form-group">
+                        <label>Metric Path:</label>
+                        <input type="text" ng-model="form.metric" typeahead="metric for metric in metrics | filter:$viewValue | limitTo:8" class="form-control"/> <!-- appId debe estar en el $scope -->
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <input type="text" ng-model="form.description" class="form-control"/> <!-- appId debe estar en el $scope -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" ng-click="ok()">OK</button>
+                    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+                </div>
+            </script>
+
+			<div class="col-md-12 ">
+				<button type="button" class="btn btn-default" ng-click="addNewPanel()">
+					<i class="glyphicon glyphicon-plus-sign"></i> Add new graph...
+				</button>
+			</div>
+			<div class="col-md-6" ng-repeat="(id,info) in panels">
+				<div class="panel panel-info bsc-graph-panel">
+					<div class="panel-heading">
+						{{info.appId}} / {{info.nodeId}}
+						<div class="btn-group pull-right">
+							<a href="#" ng-click="removePanel(id)"><i class="glyphicon glyphicon-remove"></i></a>
+						</div>
+						<div class="clearfix"></div>
+					</div>
+                    <div ng-controller="TimeSeriesController">
+                        <hc-series></hc-series>
+                    </div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+</div><!--/row-->
+</div><!--/container-->
+
+        <!-- vamos a meter grafos de este tipo -->
+<!--http://jsfiddle.net/gh/get/jquery/1.9.1/highslide-software/highcharts.com/tree/master/samples/highcharts/demo/columnrange/ -->

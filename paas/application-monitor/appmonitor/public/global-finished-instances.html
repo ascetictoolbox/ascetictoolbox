@@ -1,0 +1,11 @@
+<div ng-controller="FinishedInstancesController" class="panel panel-default">
+    <div class="panel-heading">Recently finished deployments</div>
+    <div class="panel-body">
+        <table class="table table-condensed table-striped">
+            <thead><th>Application</th><th>Deployment ID</th><th>Start Time</th><th>End Time</th>
+		<th>Total Energy Consumption</th></thead>
+            <tr ng-repeat="fi in finishedInstances"><td>{{fi.appId}}</td><td>{{fi.instanceId}}</td>
+                <td>{{fi.data.start}}</td><td>{{fi.data.end}}</td><td>{{fi.data.power}}</td></tr>
+        </table>
+    </div>
+</div>

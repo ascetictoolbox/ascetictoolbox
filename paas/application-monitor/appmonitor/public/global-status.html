@@ -1,0 +1,199 @@
+<div ng-controller="MetaController" class="panel panel-default">
+    <div class="panel-heading">System status</div>
+    <div class="panel-body">
+        <p>Running on {{meta.osName}} {{meta.osVersion}} ({{meta.cpus}} {{meta.arch}} CPU)</p>
+
+        <div id="container-cpu" style="height: 180px; "></div>
+        <div id="container-jvm" style="height: 180px; "></div>
+        <div id="container-mem" style="height: 180px; "></div>
+        <div id="container-fd" style="height: 180px; "></div>
+
+        <script>
+            $(function () {
+                $.get("/status", function (data) {
+                    var refreshInterval = 5000;
+                    data = JSON.parse(data);
+
+                    var gaugeOptions = {
+                        chart: {
+                            type: 'solidgauge'
+                        },
+                        title: null,
+
+                        pane: {
+                            center: ['50%', '85%'],
+                            size: '140%',
+                            startAngle: -90,
+                            endAngle: 90,
+                            background: {
+                                backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || '#EEE',
+                                innerRadius: '60%',
+                                outerRadius: '100%',
+                                shape: 'arc'
+                            }
+                        },
+
+                        tooltip: {
+                            enabled: false
+                        },
+
+                        // the value axis
+                        yAxis: {
+                            stops: [
+                                [0.4, '#55BF3B'], // green
+                                [0.7, '#DDDF0D'], // yellow
+                                [0.9, '#DF5353'] // red
+                            ],
+                            lineWidth: 1,
+                            minorTickInterval: 10,
+                            tickPixelInterval: 100,
+                            tickWidth: 1,
+                            title: {
+                                y: -70
+                            },
+                            labels: {
+                                y: 16
+                            }
+                        },
+
+                        plotOptions: {
+                            solidgauge: {
+                                dataLabels: {
+                                    y: 5,
+                                    borderWidth: 0,
+                                    useHTML: true
+                                }
+                            }
+                        }
+                    };
+                    $('#container-cpu').highcharts(Highcharts.merge(gaugeOptions, {
+                        yAxis: {
+                            min: 0,
+                            max: 100,
+                            title: {
+                                text: 'System CPU'
+                            }
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        series: [
+                            {
+                                name: 'load',
+                                data: [parseInt(data.cpuLoad * 100)],
+                                dataLabels: {
+                                    format: '<div style="text-align:center"><span style="font-size:30px;color:' +
+                                            ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}%</span><br/>'
+                                }
+                            }
+                        ]
+                    }));
+                    $('#container-jvm').highcharts(Highcharts.merge(gaugeOptions, {
+                        yAxis: {
+                            min: 0,
+                            max: 100,
+                            title: {
+                                text: 'Frontend Server CPU'
+                            }
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        series: [
+                            {
+                                name: 'load',
+                                data: [parseInt(data.jvmLoad * 100)],
+                                dataLabels: {
+                                    format: '<div style="text-align:center"><span style="font-size:30px;color:' +
+                                            ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}%</span><br/>'
+                                }
+                            }
+                        ]
+                    }));
+                    $('#container-mem').highcharts(Highcharts.merge(gaugeOptions, {
+                        yAxis: {
+                            min: 0,
+                            max: parseInt(data.totalMemory / (1024 * 1024)),
+                            title: {
+                                text: 'System Memory Usage'
+                            },
+                            lineWidth: 1,
+                            minorTickInterval: 512,
+                            tickPixelInterval: 50,
+                            tickWidth: 1
+                        },
+                        credits: {
+                            enabled: false
+                        },
+
+                        series: [
+                            {
+                                name: 'MB',
+                                data: [parseInt((data.totalMemory - data.freeMemory) / (1024 * 1024))],
+                                dataLabels: {
+                                    format: '<div style="text-align:center"><span style="font-size:30px;color:' +
+                                            ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}</span><br/>'
+                                }
+                            }
+                        ]
+                    }));
+                    $('#container-fd').highcharts(Highcharts.merge(gaugeOptions, {
+                        yAxis: {
+                            min: 0,
+                            max: data.maxFD,
+                            title: {
+                                text: 'Open File Descriptors'
+                            },
+                            minorTickInterval: 128
+                        },
+                        credits: {
+                            enabled: false
+                        },
+
+                        series: [
+                            {
+                                name: 'Number',
+                                data: [data.openFD],
+                                dataLabels: {
+                                    format: '<div style="text-align:center"><span style="font-size:30px;color:' +
+                                            ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}</span><br/>'
+                                }
+                            }
+                        ]
+                    }));
+                    // Bring life to the dials
+                    setInterval(function () {
+                        $.get("/status", function (data) {
+                            data = JSON.parse(data);
+                            var chart = $('#container-cpu').highcharts();
+                            if (chart) {
+                                var point = chart.series[0].points[0], newVal;
+                                newVal = parseInt(data.cpuLoad * 100);
+                                point.update(newVal);
+                            }
+                            chart = $('#container-jvm').highcharts();
+                            if (chart) {
+                                var point = chart.series[0].points[0], newVal;
+                                newVal = parseInt(data.jvmLoad * 100);
+                                point.update(newVal);
+                            }
+                            chart = $('#container-mem').highcharts();
+                            if (chart) {
+                                var point = chart.series[0].points[0], newVal;
+                                newVal = parseInt((data.totalMemory - data.freeMemory) / (1024 * 1024));
+                                point.update(newVal);
+                            }
+                            chart = $('#container-fd').highcharts();
+                            if (chart) {
+                                var point = chart.series[0].points[0], newVal;
+                                newVal = data.openFD;
+                                point.update(newVal);
+                            }
+                        });
+                    }, refreshInterval);
+
+                });
+            });
+        </script>
+    </div>
+</div>
