@@ -646,11 +646,21 @@ public class EnergyModeller {
      * modeller.
      */
     public VmDeployed getVM(String name) {
-        if (dataGatherer.getVmList().containsKey(name)) {
-            return dataGatherer.getVmList().get(name);
-        }
-        return null;
+        return dataGatherer.getVm(name);
     }
+
+    /**
+     * This given a name of a VM provides the object representation of it.
+     * Note: This will only return the representation of a VM if the VM has been
+     * deployed and reported by the monitoring infrastructure.
+     *
+     * @param vmId The name of the VM
+     * @return The VM with the specified name, null if not known to the energy
+     * modeller.
+     */
+    public VmDeployed getVM(int vmId) {
+        return dataGatherer.getVm(vmId);
+    }    
     
     /**
      * This sets information about the VM that describes the applications,

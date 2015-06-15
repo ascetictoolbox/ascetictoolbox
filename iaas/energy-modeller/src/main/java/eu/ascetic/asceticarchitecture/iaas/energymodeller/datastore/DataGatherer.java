@@ -444,7 +444,7 @@ public class DataGatherer implements Runnable {
     public HashMap<String, VmDeployed> getVmList() {
         return knownVms;
     }
-
+    
     /**
      * This provides the list of known Vms
      *
@@ -470,6 +470,21 @@ public class DataGatherer implements Runnable {
     public VmDeployed getVm(String name) {
         return knownVms.get(name);
     }
+    
+    /**
+     * This gets the named VM from the known VM list.
+     *
+     * @param vmId The vm id of the virtual machine.
+     * @return The VM that has the vm id specified.
+     */
+    public VmDeployed getVm(int vmId) {
+        for (VmDeployed current : knownVms.values()) {
+            if (current.getId() == vmId) {
+                return current;
+            }
+        }
+        return null;
+    }       
 
     /**
      * This allows a VM that has been deployed to have extra details about it
