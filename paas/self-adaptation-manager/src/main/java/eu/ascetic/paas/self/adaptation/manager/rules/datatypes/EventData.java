@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package eu.ascetic.paas.self.adaptation.manager.rules;
+package eu.ascetic.paas.self.adaptation.manager.rules.datatypes;
 
 /**
  * This class represents an event that arrives at self-adaptation manager for

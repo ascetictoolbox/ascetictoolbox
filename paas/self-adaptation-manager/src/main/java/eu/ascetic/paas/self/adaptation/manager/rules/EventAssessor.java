@@ -15,6 +15,8 @@
  */
 package eu.ascetic.paas.self.adaptation.manager.rules;
 
+import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.EventData;
+import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
 import eu.ascetic.paas.self.adaptation.manager.ActuatorInvoker;
 import eu.ascetic.paas.self.adaptation.manager.EventListener;
 import java.util.ArrayList;

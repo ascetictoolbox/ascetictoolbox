@@ -15,6 +15,7 @@
  */
 package eu.ascetic.paas.self.adaptation.manager.rules;
 
+import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.EventData;
 import eu.ascetic.paas.slam.pac.events.ViolationMessage;
 import eu.ascetic.paas.slam.pac.events.ViolationMessageTranslator;
 import org.slasoi.gslam.pac.events.Message;

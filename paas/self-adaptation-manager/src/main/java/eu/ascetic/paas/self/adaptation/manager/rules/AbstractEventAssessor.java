@@ -17,7 +17,10 @@ package eu.ascetic.paas.self.adaptation.manager.rules;
 
 import eu.ascetic.paas.self.adaptation.manager.ActuatorInvoker;
 import eu.ascetic.paas.self.adaptation.manager.EventListener;
+import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.EventData;
+import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -47,9 +50,9 @@ public abstract class AbstractEventAssessor implements EventAssessor {
     /**
      * This launches a new event assessor.
      */
-    public AbstractEventAssessor() {        
+    public AbstractEventAssessor() {
     }
-    
+
     //TODO add methods here
     @Override
     public Response assessEvent(EventData event) {
@@ -64,6 +67,17 @@ public abstract class AbstractEventAssessor implements EventAssessor {
             adaptations.add(answer);
         }
         return answer;
+    }
+    
+    /**
+     * This allows the ability to record adaptations that haven't been performed
+     * by this event assessor. It thus prevents the event assessor overturning
+     * a change made by another soon after the change has occurred.
+     * @param response The response to add into the modeller's history.
+     */
+    public void addRemoteAdaptationEvent(Response response) {
+        adaptations.add(response);
+        Collections.sort(adaptations);
     }
 
     /**
@@ -142,21 +156,21 @@ public abstract class AbstractEventAssessor implements EventAssessor {
     public void clearActuators() {
         actuators.clear();
     }
-    
+
     /**
      * This starts the event history maintenance routines in the event assessor.
      */
     @Override
     public void start() {
-                historyClearer = new HistoryClearer();
+        historyClearer = new HistoryClearer();
         historyClearerThread = new Thread(historyClearer);
         historyClearerThread.setDaemon(true);
         historyClearerThread.start();
     }
-    
+
     /**
      * This stops the event history maintenance routines in the event assessor.
-     */    
+     */
     @Override
     public void stop() {
         if (historyClearer != null) {
@@ -171,7 +185,7 @@ public abstract class AbstractEventAssessor implements EventAssessor {
      */
     private class HistoryClearer implements Runnable {
 
-        private boolean stop = false;
+        private boolean running = true;
 
         /**
          * This makes the history clearer go through the historic event list and
@@ -180,20 +194,23 @@ public abstract class AbstractEventAssessor implements EventAssessor {
         @Override
         @SuppressWarnings("SleepWhileInLoop")
         public void run() {
-            if (!sequence.isEmpty()) {
-                sequence = EventDataAggregator.filterEventDataByTime(sequence, historyLengthSeconds);
-                adaptations = filterAdaptationHistory();
-            }
-            try {
-                Thread.sleep(TimeUnit.SECONDS.toMillis(pollInterval));
-            } catch (InterruptedException ex) {
-                Logger.getLogger(HistoryClearer.class.getName()).log(Level.WARNING, "History Cleaner: InterruptedException", ex);
-            }
-        } //While not stopped
+            while (running) {
+                if (!sequence.isEmpty()) {
+                    sequence = EventDataAggregator.filterEventDataByTime(sequence, historyLengthSeconds);
+                    adaptations = filterAdaptationHistory();
+                }
+                try {
+                    Thread.sleep(TimeUnit.SECONDS.toMillis(pollInterval));
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(HistoryClearer.class.getName()).log(Level.WARNING, "History Cleaner: InterruptedException", ex);
+                }
+            } //While not stopped
+        }
 
         /**
          * This filters the current adaptation history and return a new list
          * that has all of the old entries removed.
+         *
          * @return The list of recent adaptations made by the event assessor.
          */
         private List<Response> filterAdaptationHistory() {
@@ -208,12 +225,12 @@ public abstract class AbstractEventAssessor implements EventAssessor {
             }
             return answer;
         }
-        
+
         /**
          * This stops the history clearer thread.
          */
         private void stop() {
-            stop = true;
+            running = false;
         }
     }
 }

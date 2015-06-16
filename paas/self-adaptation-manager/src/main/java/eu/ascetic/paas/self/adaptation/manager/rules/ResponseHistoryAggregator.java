@@ -15,6 +15,7 @@
  */
 package eu.ascetic.paas.self.adaptation.manager.rules;
 
+import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

@@ -15,6 +15,9 @@
  */
 package eu.ascetic.paas.self.adaptation.manager.rules;
 
+import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
+import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.FiringCriteria;
+
 /**
  *
  * @author Richard Kavanagh
