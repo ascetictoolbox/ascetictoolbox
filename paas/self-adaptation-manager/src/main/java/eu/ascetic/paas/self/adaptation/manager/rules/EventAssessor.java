@@ -15,10 +15,10 @@
  */
 package eu.ascetic.paas.self.adaptation.manager.rules;
 
-import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.EventData;
-import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
 import eu.ascetic.paas.self.adaptation.manager.ActuatorInvoker;
 import eu.ascetic.paas.self.adaptation.manager.EventListener;
+import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.EventData;
+import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,6 +53,14 @@ public interface EventAssessor {
      * required.
      */
     public Response assessEvent(EventData event);
+    
+    /**
+     * This allows the ability to record adaptations that haven't been performed
+     * by this event assessor. It thus prevents the event assessor overturning
+     * a change made by another soon after the change has occurred.
+     * @param response The response to add into the modeller's history.
+     */
+    public void addRemoteAdaptationEvent(Response response);    
 
     /**
      * This gets the event assessors internal list of event listeners

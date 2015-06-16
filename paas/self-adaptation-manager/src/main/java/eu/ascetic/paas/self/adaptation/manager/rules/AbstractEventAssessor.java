@@ -75,6 +75,7 @@ public abstract class AbstractEventAssessor implements EventAssessor {
      * a change made by another soon after the change has occurred.
      * @param response The response to add into the modeller's history.
      */
+    @Override
     public void addRemoteAdaptationEvent(Response response) {
         adaptations.add(response);
         Collections.sort(adaptations);

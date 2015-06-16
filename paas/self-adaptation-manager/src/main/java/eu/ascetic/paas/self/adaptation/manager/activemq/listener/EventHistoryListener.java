@@ -26,12 +26,13 @@ import javax.jms.TextMessage;
 import javax.naming.NamingException;
 
 /**
- * This listens to the SLA manager as a source of events to monitor for
- * adaptation.
+ * The aim of this listener is to find changes to the environment that were
+ * caused by other actors in the overall environment, i.e. an application
+ * auto-scaling.
  *
  * @author Richard Kavanagh
  */
-public class SlaManagerListener extends ActiveMQBase implements Runnable, EventListener {
+public class EventHistoryListener extends ActiveMQBase implements Runnable, EventListener {
 
     private final Destination queue;
     private static final String QUEUE_NAME = "";
@@ -39,18 +40,33 @@ public class SlaManagerListener extends ActiveMQBase implements Runnable, EventL
     private final MessageConsumer consumer;
     private EventAssessor eventAssessor;
 
-    public SlaManagerListener() throws JMSException, NamingException {
+    /**
+     * 
+     * @throws JMSException
+     * @throws NamingException 
+     */
+    public EventHistoryListener() throws JMSException, NamingException {
         super();
         queue = getMessageQueue(QUEUE_NAME);
-        consumer = session.createConsumer(queue);
+        consumer = session.createConsumer(queue);        
     }
 
     /**
-     * This is the main run method of the SLA manager's action listener.
+     * 
+     * @param user
+     * @param password
+     * @throws NamingException
+     * @throws JMSException 
      */
+    public EventHistoryListener(String user, String password) throws NamingException, JMSException {
+        super(user, password);
+        queue = getMessageQueue(QUEUE_NAME);
+        consumer = session.createConsumer(queue);        
+    }
+
     @Override
     public void run() {
-        try {
+try {
             // Wait for a message
             Message message = consumer.receive(1000);
 
@@ -62,8 +78,8 @@ public class SlaManagerListener extends ActiveMQBase implements Runnable, EventL
             } else {
                 System.out.println("Received: " + message);
             }
-            //TODO finish code here
-            eventAssessor.assessEvent(null);
+            //TODO finish here
+            eventAssessor.addRemoteAdaptationEvent(null);
             consumer.close();
             close();
         } catch (JMSException ex) {
@@ -80,5 +96,5 @@ public class SlaManagerListener extends ActiveMQBase implements Runnable, EventL
     public EventAssessor getEventAssessor() {
         return eventAssessor;
     }
-    
+
 }
