@@ -127,11 +127,17 @@ public class XMLBuilder {
 		linkVMs.setType(MediaType.APPLICATION_XML);
 		deployment.addLink(linkVMs);
 		
-		Link linEnergyConsumption = new Link();
-		linEnergyConsumption.setHref(deployment.getHref() + "/energy-consumption");
-		linEnergyConsumption.setRel("energy-consumption");
-		linEnergyConsumption.setType(MediaType.APPLICATION_XML);
-		deployment.addLink(linEnergyConsumption);
+		Link linkEnergyConsumption = new Link();
+		linkEnergyConsumption.setHref(deployment.getHref() + "/energy-consumption");
+		linkEnergyConsumption.setRel("energy-consumption");
+		linkEnergyConsumption.setType(MediaType.APPLICATION_XML);
+		deployment.addLink(linkEnergyConsumption);
+		
+		Link linkAgreements = new Link();
+		linkAgreements.setHref(deployment.getHref() + "/agreements");
+		linkAgreements.setRel("agreements");
+		linkAgreements.setType(MediaType.APPLICATION_XML);
+		deployment.addLink(linkAgreements);
 		
 		List<VM> vms = deployment.getVms();
 		if(vms != null) {

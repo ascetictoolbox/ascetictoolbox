@@ -152,7 +152,7 @@ public class XMLBuilderTest {
 		Deployment deployment = application.getDeployments().get(0);
 		assertEquals(1, deployment.getId());
 		assertEquals("/applications/name/deployments/1", deployment.getHref());
-		assertEquals(5, deployment.getLinks().size());
+		assertEquals(6, deployment.getLinks().size());
 		assertEquals("/applications/name/deployments", deployment.getLinks().get(0).getHref());
 		assertEquals("parent", deployment.getLinks().get(0).getRel());
 		assertEquals(MediaType.APPLICATION_XML, deployment.getLinks().get(0).getType());
@@ -168,6 +168,9 @@ public class XMLBuilderTest {
 		assertEquals("/applications/name/deployments/1/energy-consumption", deployment.getLinks().get(4).getHref());
 		assertEquals("energy-consumption",deployment.getLinks().get(4).getRel());
 		assertEquals(MediaType.APPLICATION_XML, deployment.getLinks().get(4).getType());
+		assertEquals("/applications/name/deployments/1/agreements", deployment.getLinks().get(5).getHref());
+		assertEquals("agreements",deployment.getLinks().get(5).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment.getLinks().get(5).getType());
 		
 		VM vm = deployment.getVms().get(0);
 		assertEquals(44, vm.getId());
@@ -240,7 +243,7 @@ public class XMLBuilderTest {
 		
 		assertEquals(1, deployment.getId());
 		assertEquals("/applications/22/deployments/1", deployment.getHref());
-		assertEquals(5, deployment.getLinks().size());
+		assertEquals(6, deployment.getLinks().size());
 		assertEquals("/applications/22/deployments", deployment.getLinks().get(0).getHref());
 		assertEquals("parent", deployment.getLinks().get(0).getRel());
 		assertEquals(MediaType.APPLICATION_XML, deployment.getLinks().get(0).getType());
@@ -256,6 +259,9 @@ public class XMLBuilderTest {
 		assertEquals("/applications/22/deployments/1/energy-consumption", deployment.getLinks().get(4).getHref());
 		assertEquals("energy-consumption",deployment.getLinks().get(4).getRel());
 		assertEquals(MediaType.APPLICATION_XML, deployment.getLinks().get(4).getType());
+		assertEquals("/applications/22/deployments/1/agreements", deployment.getLinks().get(5).getHref());
+		assertEquals("agreements",deployment.getLinks().get(5).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment.getLinks().get(5).getType());
 	}
 	
 	@Test
@@ -273,7 +279,7 @@ public class XMLBuilderTest {
 		
 		assertEquals(1, deployment.getId());
 		assertEquals("/applications/22/deployments/1", deployment.getHref());
-		assertEquals(5, deployment.getLinks().size());
+		assertEquals(6, deployment.getLinks().size());
 		assertEquals("/applications/22/deployments", deployment.getLinks().get(0).getHref());
 		assertEquals("parent", deployment.getLinks().get(0).getRel());
 		assertEquals(MediaType.APPLICATION_XML, deployment.getLinks().get(0).getType());
@@ -289,6 +295,9 @@ public class XMLBuilderTest {
 		assertEquals("/applications/22/deployments/1/energy-consumption", deployment.getLinks().get(4).getHref());
 		assertEquals("energy-consumption",deployment.getLinks().get(4).getRel());
 		assertEquals(MediaType.APPLICATION_XML, deployment.getLinks().get(4).getType());
+		assertEquals("/applications/22/deployments/1/agreements", deployment.getLinks().get(5).getHref());
+		assertEquals("agreements",deployment.getLinks().get(5).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment.getLinks().get(5).getType());
 	}
 	
 	@Test
