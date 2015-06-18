@@ -13,6 +13,7 @@ import javax.xml.bind.Unmarshaller;
 
 import org.junit.Test;
 
+import eu.ascetic.paas.applicationmanager.model.Agreement;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Collection;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
@@ -728,7 +729,64 @@ public class XMLBuilderTest {
 		assertEquals(3l, collection.getItems().getEventSamples().get(1).getTimestampBeging());
 		assertEquals(4l, collection.getItems().getEventSamples().get(1).getTimestampEnd());
 		assertEquals("vmid2", collection.getItems().getEventSamples().get(1).getVmid());
-		assertEquals("appid2", collection.getItems().getEventSamples().get(1).getAppid());
+		assertEquals("appid2", collection.getItems().getEventSamples().get(1).getAppid());	
+	}
+	
+	@Test
+	public void testAddAgreementXMLInfo() {
+		Agreement agreement = new Agreement();
+		agreement.setAccepted(true);
+		agreement.setId(2);
+		agreement.setPrice("222");
+		agreement.setProviderId("provider-id");
+		agreement.setSlaAgreement("sssas");
+		agreement.setSlaAgreementId("sla-agreement-id");
 		
+		agreement = XMLBuilder.addAgreementXMLInfo(agreement, "app-id", 223);
+		
+		assertEquals("/applications/app-id/deployments/223/agreements/2", agreement.getHref());
+		assertEquals("222", agreement.getPrice());
+		assertEquals(2, agreement.getId());
+		assertEquals("provider-id", agreement.getProviderId());
+		assertEquals("sssas", agreement.getSlaAgreement());
+		assertEquals("sla-agreement-id", agreement.getSlaAgreementId());
+		assertEquals(2, agreement.getLinks().size());
+		assertEquals("/applications/app-id/deployments/223/agreements", agreement.getLinks().get(0).getHref());
+		assertEquals("parent", agreement.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, agreement.getLinks().get(0).getType());
+		assertEquals("/applications/app-id/deployments/223/agreements/2", agreement.getLinks().get(1).getHref());
+		assertEquals("self", agreement.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, agreement.getLinks().get(1).getType());
+	}
+	
+	@Test
+	public void testGetAgreementXML() throws JAXBException {
+		Agreement agreement = new Agreement();
+		agreement.setAccepted(true);
+		agreement.setId(2);
+		agreement.setPrice("222");
+		agreement.setProviderId("provider-id");
+		agreement.setSlaAgreement("sssas");
+		agreement.setSlaAgreementId("sla-agreement-id");
+		
+		String xml = XMLBuilder.getAgreementXML(agreement, "app-id", 223);
+			
+		JAXBContext jaxbContext = JAXBContext.newInstance(Agreement.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		agreement = (Agreement) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+
+		assertEquals("/applications/app-id/deployments/223/agreements/2", agreement.getHref());
+		assertEquals("222", agreement.getPrice());
+		assertEquals(2, agreement.getId());
+		assertEquals("provider-id", agreement.getProviderId());
+		//assertEquals("sssas", agreement.getSlaAgreement());
+		assertEquals("sla-agreement-id", agreement.getSlaAgreementId());
+		assertEquals(2, agreement.getLinks().size());
+		assertEquals("/applications/app-id/deployments/223/agreements", agreement.getLinks().get(0).getHref());
+		assertEquals("parent", agreement.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, agreement.getLinks().get(0).getType());
+		assertEquals("/applications/app-id/deployments/223/agreements/2", agreement.getLinks().get(1).getHref());
+		assertEquals("self", agreement.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, agreement.getLinks().get(1).getType());
 	}
 }

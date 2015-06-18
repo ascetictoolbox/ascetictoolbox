@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.ws.rs.core.MediaType;
 
+import eu.ascetic.paas.applicationmanager.model.Agreement;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Collection;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
@@ -510,5 +511,31 @@ public class XMLBuilder {
 		collection.setItems(items);
 		
 		return ModelConverter.objectCollectionToXML(collection);
+	}
+	
+	public static Agreement addAgreementXMLInfo(Agreement agreemnt, String applicationId, int deploymentId) {
+		String parentHref = "/applications/" + applicationId + "/deployments/" + deploymentId + "/agreements"; 
+		
+		agreemnt.setHref(parentHref + "/" + agreemnt.getId());
+		
+		Link linkParent = new Link();
+		linkParent.setHref(parentHref);
+		linkParent.setRel("parent");
+		linkParent.setType(MediaType.APPLICATION_XML);
+		agreemnt.addLink(linkParent);
+		
+		Link linkSelf = new Link();
+		linkSelf.setHref(agreemnt.getHref());
+		linkSelf.setRel("self");
+		linkSelf.setType(MediaType.APPLICATION_XML);
+		agreemnt.addLink(linkSelf);
+		
+		return agreemnt;
+	}
+	
+	public static String getAgreementXML(Agreement agreement, String applicationId, int deploymentId) {
+		agreement = addAgreementXMLInfo(agreement, applicationId, deploymentId);
+		
+		return ModelConverter.objectAgreementToXML(agreement);
 	}
 }
