@@ -702,11 +702,13 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/amqp/A
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/amqp/MessageCreator.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/conf/Configuration.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/contextualizer/VmcClient.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/AgreementDAO.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/ApplicationDAO.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/DAO.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/DeploymentDAO.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/ImageDAO.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/VMDAO.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/jpa/AgreementDAOJpa.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/jpa/ApplicationDAOJpa.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/jpa/DeploymentDAOJpa.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/jpa/ImageDAOJpa.java -text
@@ -724,6 +726,7 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/http/C
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/ovf/OVFUtils.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/pm/PriceModellerClient.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/AbstractRest.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/AgreementRest.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/ApplicationRest.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/CacheImageRest.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/DeploymentRest.java -text
@@ -767,6 +770,7 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/amqp/A
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/amqp/AmqpProducerTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/amqp/MessageCreatorTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/conf/ConfigurationTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/jpa/AgreementDAOJpaTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/jpa/ApplicationDAOJpaTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/jpa/DeploymentDAOJpaTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/jpa/ImageDAOJpaTest.java -text

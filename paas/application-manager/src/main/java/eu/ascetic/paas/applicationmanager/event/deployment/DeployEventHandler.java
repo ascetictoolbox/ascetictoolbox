@@ -151,7 +151,8 @@ public class DeployEventHandler {
 						String iso = "";
 						if(isoPath != null) iso = isoPath + suffix ;
 						
-						Vm virtMachine = new Vm(vmName + suffix, image.getProviderImageId(), cpus, ramMb, capacity, 0, iso , ovfDocument.getVirtualSystemCollection().getId(), ovfID, deployment.getSlaAgreement() );
+						// TOOD I need to add here the slaagreement id. 
+						Vm virtMachine = new Vm(vmName + suffix, image.getProviderImageId(), cpus, ramMb, capacity, 0, iso , ovfDocument.getVirtualSystemCollection().getId(), ovfID, ""/*deployment.getSlaAgreement()*/ );
 						logger.debug("virtMachine: " + virtMachine);
 						
 						List<Vm> vms = new ArrayList<Vm>();
@@ -168,7 +169,8 @@ public class DeployEventHandler {
 							vmToDB.setOvfId(ovfVirtualSystemID);
 							vmToDB.setStatus(vmDeployed.getState());
 							vmToDB.setProviderVmId(id);
-							vmToDB.setSlaAgreement(deployment.getSlaAgreement());
+							// TODO I need to update this to get it from the table Agreements... 
+							//vmToDB.setSlaAgreement(deployment.getSlaAgreement());
 							vmDAO.save(vmToDB);
 							
 							vmToDB.addImage(image);

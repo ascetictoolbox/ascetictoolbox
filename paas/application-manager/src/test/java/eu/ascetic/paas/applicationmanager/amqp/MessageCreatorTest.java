@@ -58,7 +58,7 @@ public class MessageCreatorTest {
 		deployment1.setStatus("STATUS");
 		deployment1.setStartDate("aaa");
 		deployment1.setEndDate("bbb");
-		deployment1.setSlaAgreement("sla");
+		//deployment1.setSlaAgreement("sla");
 		List<VM> vms = new ArrayList<VM>();
 		deployment1.setVms(vms);
 		
@@ -71,7 +71,7 @@ public class MessageCreatorTest {
 		deployment2.setStatus("STATUS2");
 		deployment2.setStartDate("aaa");
 		deployment2.setEndDate("bbb");
-		deployment2.setSlaAgreement("sla");
+		//deployment2.setSlaAgreement("sla");
 		
 		deployments.add(deployment2);
 		
@@ -171,7 +171,7 @@ public class MessageCreatorTest {
 		deployment4.setStatus("STATUS");
 		deployment4.setStartDate("aaa");
 		deployment4.setEndDate("bbb");
-		deployment4.setSlaAgreement("sla");
+		//deployment4.setSlaAgreement("sla");
 		deployment4.setVms(null);
 		
 		deployments4.add(deployment4);
@@ -198,7 +198,7 @@ public class MessageCreatorTest {
 		deployment1.setStatus("STATUS");
 		deployment1.setStartDate("aaa");
 		deployment1.setEndDate("bbb");
-		deployment1.setSlaAgreement("sla");
+		//deployment1.setSlaAgreement("sla");
 		List<VM> vms = new ArrayList<VM>();
 		deployment1.setVms(vms);
 		
@@ -252,7 +252,7 @@ public class MessageCreatorTest {
 		deployment.setStatus("STATUS");
 		deployment.setStartDate("aaa");
 		deployment.setEndDate("bbb");
-		deployment.setSlaAgreement("sla");
+		//deployment.setSlaAgreement("sla");
 		List<VM> vms = new ArrayList<VM>();
 		deployment.setVms(vms);
 		

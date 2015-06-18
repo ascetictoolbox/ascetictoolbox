@@ -62,7 +62,7 @@ public class DeploymentDAOJpaTest extends AbstractTransactionalJUnit4SpringConte
 		Deployment deployment = new Deployment();
 		deployment.setStatus("RUNNIG");
 		deployment.setPrice("expensive");
-		deployment.setSlaAgreement("sla agreement");
+		//deployment.setSlaAgreement("sla agreement");
 		
 		boolean saved = deploymentDAO.save(deployment);
 		assertTrue(saved);
@@ -74,7 +74,7 @@ public class DeploymentDAOJpaTest extends AbstractTransactionalJUnit4SpringConte
 		Deployment deploymentFromDatabase = deployments.get(size-1);
 		assertEquals("RUNNIG", deploymentFromDatabase.getStatus());
 		assertEquals("expensive", deploymentFromDatabase.getPrice());
-		assertEquals("sla agreement", deploymentFromDatabase.getSlaAgreement());
+		//assertEquals("sla agreement", deploymentFromDatabase.getSlaAgreement());
 	}
 	
 	@Test
