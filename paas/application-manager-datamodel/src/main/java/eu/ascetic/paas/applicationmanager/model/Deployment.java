@@ -74,13 +74,13 @@ public class Deployment {
 	private String startDate;
 	@XmlElement(name = "end-date", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private String endDate;
-	@XmlElement(name = "sla-agreement", namespace = APPLICATION_MANAGER_NAMESPACE)
-	private String slaAgreement;
 	@XmlElement(name = "ovf", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private String ovf;
 	@XmlElementWrapper(name = "vms", namespace = APPLICATION_MANAGER_NAMESPACE)
 	@XmlElement(name = "vm", namespace = APPLICATION_MANAGER_NAMESPACE )
 	private List<VM> vms;
+	@XmlTransient
+	private List<Agreement> agreements;
 	@XmlElement(name="link", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private List<Link> links;
 	@XmlTransient
@@ -131,14 +131,6 @@ public class Deployment {
 		if(links==null) links = new ArrayList<Link>();
 		links.add(link);
 	}
-	
-	@Column(name = "sla_agreement", length=900000, nullable = true)
-	public String getSlaAgreement() {
-		return slaAgreement;
-	}
-	public void setSlaAgreement(String slaAgreement) {
-		this.slaAgreement = slaAgreement;
-	}
 
 	@Column(name = "ovf", length=900000)
 	public String getOvf() {
@@ -159,6 +151,19 @@ public class Deployment {
 	public void addVM(VM vm) {
 		if(vms == null) vms = new ArrayList<VM>();
 		vms.add(vm);
+	}
+	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "deployment_id", referencedColumnName="deployment_id", nullable = true)
+	public List<Agreement> getAgreements() {
+		return agreements;
+	}
+	public void setAgreements(List<Agreement> agreements) {
+		this.agreements = agreements;
+	}
+	public void addAgreement(Agreement agreement) {
+		if(agreements == null) agreements = new ArrayList<Agreement>();
+		agreements.add(agreement);
 	}
 	
 	@Column(name = "start_date", nullable = true)

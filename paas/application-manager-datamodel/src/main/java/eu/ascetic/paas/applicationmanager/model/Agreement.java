@@ -5,11 +5,24 @@ import static eu.ascetic.paas.applicationmanager.model.Dictionary.APPLICATION_MA
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * 
@@ -36,20 +49,32 @@ import javax.xml.bind.annotation.XmlRootElement;
 // XML annotations:
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "agreement", namespace = APPLICATION_MANAGER_NAMESPACE)
+@Entity
+@Table(name="agreements")
+@NamedQueries( { 
+	@NamedQuery(name="Agreement.findAll", query="SELECT p FROM Agreement p")
+} )
 public class Agreement {
 	@XmlAttribute
 	private String href;
 	@XmlElement(name = "id", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private int id;
-	@XmlElement(name = "deployment-id", namespace = APPLICATION_MANAGER_NAMESPACE)
-	private String deploymentId;
+	@XmlTransient
+	private Deployment deployment;
 	@XmlElement(name = "price", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private String price;
-	@XmlElement(name = "sla-agreement", namespace = APPLICATION_MANAGER_NAMESPACE)
+	@XmlTransient
 	private String slaAgreement;
+	@XmlElement(name = "provider-id", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private String providerId;
+	@XmlElement(name = "sla-agreement-id", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private String slaAgreementId;
+	@XmlElement(name = "accepted", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private boolean accepted;
 	@XmlElement(name="link", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private List<Link> links;
 	
+	@Transient
 	public String getHref() {
 		return href;
 	}
@@ -57,6 +82,9 @@ public class Agreement {
 		this.href = href;
 	}
 	
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name = "agreement_id", unique = true, nullable = false)
 	public int getId() {
 		return id;
 	}
@@ -64,13 +92,16 @@ public class Agreement {
 		this.id = id;
 	}
 	
-	public String getDeploymentId() {
-		return deploymentId;
+	@ManyToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="deployment_id")
+	public Deployment getDeployment() {
+		return deployment;
 	}
-	public void setDeploymentId(String deploymentId) {
-		this.deploymentId = deploymentId;
+	public void setDeployment(Deployment deployment) {
+		this.deployment = deployment;
 	}
 	
+	@Column(name = "price", nullable = true)
 	public String getPrice() {
 		return price;
 	}
@@ -78,6 +109,7 @@ public class Agreement {
 		this.price = price;
 	}
 	
+	@Column(name = "sla_agreement", length=900000)
 	public String getSlaAgreement() {
 		return slaAgreement;
 	}
@@ -85,6 +117,31 @@ public class Agreement {
 		this.slaAgreement = slaAgreement;
 	}
 	
+	@Column(name = "provider_id", nullable = true)
+	public String getProviderId() {
+		return providerId;
+	}
+	public void setProviderId(String providerId) {
+		this.providerId = providerId;
+	}
+	
+	@Column(name = "sla_agreement_id", nullable = true)
+	public String getSlaAgreementId() {
+		return slaAgreementId;
+	}
+	public void setSlaAgreementId(String slaAgreementId) {
+		this.slaAgreementId = slaAgreementId;
+	}
+	
+	@Column(name = "accepted", nullable = true)
+	public boolean isAccepted() {
+		return accepted;
+	}
+	public void setAccepted(boolean accepted) {
+		this.accepted = accepted;
+	}
+	
+	@Transient
 	public List<Link> getLinks() {
 		return links;
 	}

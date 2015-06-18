@@ -30,16 +30,21 @@ public class AgreementTest {
 	public void pojoTest() {
 		Agreement agreement = new Agreement();
 		agreement.setId(1);
-		agreement.setDeploymentId("deployment-id");
+		Deployment deployment = new Deployment();
+		agreement.setDeployment(deployment);
 		agreement.setHref("href");
 		agreement.setPrice("222");
 		agreement.setSlaAgreement("sla-agreement");
+		agreement.setProviderId("provider-id");
+		agreement.setSlaAgreementId("sla-agreement-id");
 	
 		assertEquals(1, agreement.getId());
-		assertEquals("deployment-id", agreement.getDeploymentId());
+		assertEquals(deployment, agreement.getDeployment());
 		assertEquals("href", agreement.getHref());
 		assertEquals("222", agreement.getPrice());
 		assertEquals("sla-agreement", agreement.getSlaAgreement());
+		assertEquals("provider-id", agreement.getProviderId());
+		assertEquals("sla-agreement-id", agreement.getSlaAgreementId());
 	}
 	
 	@Test

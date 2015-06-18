@@ -2,6 +2,7 @@ package eu.ascetic.paas.applicationmanager.model.converter;
 
 import static eu.ascetic.paas.applicationmanager.model.Dictionary.APPLICATION_MANAGER_NAMESPACE;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -733,9 +734,10 @@ public class ModelConverterTest {
 		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 					 + "<agreement xmlns=\"http://application_manager.ascetic.eu/doc/schemas/xml\" href=\"/applications/101/deployments/22/agreements/44\">"
 					 	+ "<id>33</id>"
-					 	+ "<deployment-id>IaaS Deployment Id</deployment-id>"
 					 	+ "<price>222</price>"
-					 	+ "<sla-agreement>sla-agreement-reference</sla-agreement>"
+					 	+ "<sla-agreement-id>sla-agreement-id</sla-agreement-id>"
+					 	+ "<provider-id>provider-id</provider-id>"
+					 	+ "<accepted>false</accepted>"
 					 	+ "<link rel=\"deployment\" href=\"/applications/101/deployments/22\" type=\"application/xml\" />"
 						+ "<link rel=\"self\" href=\"/applications/101/deployments/22/agreements/44\" type=\"application/xml\" />"
 					 + "</agreement>";
@@ -743,9 +745,10 @@ public class ModelConverterTest {
 		Agreement agreement = ModelConverter.xmlAgreementToObject(xml);
 		assertEquals("/applications/101/deployments/22/agreements/44", agreement.getHref());
 		assertEquals(33, agreement.getId());
-		assertEquals("IaaS Deployment Id", agreement.getDeploymentId());
 		assertEquals("222", agreement.getPrice());
-		assertEquals("sla-agreement-reference", agreement.getSlaAgreement());
+		assertEquals("sla-agreement-id", agreement.getSlaAgreementId());
+		assertEquals("provider-id", agreement.getProviderId());
+		assertFalse(agreement.isAccepted());
 	}
 	
 	@Test
@@ -754,9 +757,9 @@ public class ModelConverterTest {
 		Agreement agreement = new Agreement();
 		agreement.setId(44);
 		agreement.setHref("/applications/101/deployments/22/agreements/44");
-		agreement.setDeploymentId("iaas deployment id");
 		agreement.setPrice("333");
-		agreement.setSlaAgreement("sla agreement reference");
+		agreement.setSlaAgreementId("sla-id");
+		agreement.setProviderId("provider-id");
 		
 		Link link = new Link();
 		link.setRel("self");
@@ -777,27 +780,27 @@ public class ModelConverterTest {
 		assertEquals(1, listxpath.size());
 		Element element = (Element) listxpath.get(0);
 		assertEquals("/applications/101/deployments/22/agreements/44", element.getAttributeValue("href"));
-
-		XPath xpathName = XPath.newInstance("//bnf:deployment-id");
+		
+		XPath xpathName = XPath.newInstance("//bnf:price");
 		xpathName.addNamespace("bnf", APPLICATION_MANAGER_NAMESPACE);
 		List listxpathName = xpathName.selectNodes(xmldoc);
 		assertEquals(1, listxpathName.size());
 		element = (Element) listxpathName.get(0);
-		assertEquals("iaas deployment id", element.getValue());
-		
-		xpathName = XPath.newInstance("//bnf:price");
-		xpathName.addNamespace("bnf", APPLICATION_MANAGER_NAMESPACE);
-		listxpathName = xpathName.selectNodes(xmldoc);
-		assertEquals(1, listxpathName.size());
-		element = (Element) listxpathName.get(0);
 		assertEquals("333", element.getValue());
 		
-		xpathName = XPath.newInstance("//bnf:sla-agreement");
+		xpathName = XPath.newInstance("//bnf:sla-agreement-id");
 		xpathName.addNamespace("bnf", APPLICATION_MANAGER_NAMESPACE);
 		listxpathName = xpathName.selectNodes(xmldoc);
 		assertEquals(1, listxpathName.size());
 		element = (Element) listxpathName.get(0);
-		assertEquals("sla agreement reference", element.getValue());
+		assertEquals("sla-id", element.getValue());
+		
+		xpathName = XPath.newInstance("//bnf:provider-id");
+		xpathName.addNamespace("bnf", APPLICATION_MANAGER_NAMESPACE);
+		listxpathName = xpathName.selectNodes(xmldoc);
+		assertEquals(1, listxpathName.size());
+		element = (Element) listxpathName.get(0);
+		assertEquals("provider-id", element.getValue());
 		
 		xpathName = XPath.newInstance("//bnf:id");
 		xpathName.addNamespace("bnf", APPLICATION_MANAGER_NAMESPACE);
