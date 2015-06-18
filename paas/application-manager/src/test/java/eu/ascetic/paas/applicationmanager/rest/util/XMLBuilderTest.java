@@ -779,7 +779,7 @@ public class XMLBuilderTest {
 		assertEquals("222", agreement.getPrice());
 		assertEquals(2, agreement.getId());
 		assertEquals("provider-id", agreement.getProviderId());
-		//assertEquals("sssas", agreement.getSlaAgreement());
+		//assertEquals("sssas", agreement.getSlaAgreement());  // This it is not converted to XML... 
 		assertEquals("sla-agreement-id", agreement.getSlaAgreementId());
 		assertEquals(2, agreement.getLinks().size());
 		assertEquals("/applications/app-id/deployments/223/agreements", agreement.getLinks().get(0).getHref());
@@ -788,5 +788,100 @@ public class XMLBuilderTest {
 		assertEquals("/applications/app-id/deployments/223/agreements/2", agreement.getLinks().get(1).getHref());
 		assertEquals("self", agreement.getLinks().get(1).getRel());
 		assertEquals(MediaType.APPLICATION_XML, agreement.getLinks().get(1).getType());
+	}
+	
+	@Test
+	public void getCollectionOfAgreementsTest() throws JAXBException {
+		Agreement agreement1 = new Agreement();
+		agreement1.setAccepted(false);
+		agreement1.setId(1);
+		agreement1.setPrice("111");
+		agreement1.setProviderId("provider-id1");
+		agreement1.setSlaAgreement("sssas1");
+		agreement1.setSlaAgreementId("sla-agreement-id1");
+		
+		Agreement agreement2 = new Agreement();
+		agreement2.setAccepted(true);
+		agreement2.setId(2);
+		agreement2.setPrice("222");
+		agreement2.setProviderId("provider-id");
+		agreement2.setSlaAgreement("sssas");
+		agreement2.setSlaAgreementId("sla-agreement-id");
+		
+		List<Agreement> agreements = new ArrayList<Agreement>();
+		agreements.add(agreement1);
+		agreements.add(agreement2);
+		
+		String xml = XMLBuilder.getCollectionOfAgreements(agreements, "app-id", 223);
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(Collection.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		Collection collection = (Collection) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals("/applications/app-id/deployments/223/agreements", collection.getHref());
+		assertEquals(0, collection.getItems().getOffset());
+		assertEquals(2, collection.getItems().getTotal());
+		// Links
+		assertEquals(2, collection.getLinks().size());
+		assertEquals("/applications/app-id/deployments/223", collection.getLinks().get(0).getHref());
+		assertEquals("parent", collection.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, collection.getLinks().get(0).getType());
+		assertEquals("/applications/app-id/deployments/223/agreements", collection.getLinks().get(1).getHref());
+		assertEquals("self", collection.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, collection.getLinks().get(1).getType());
+		// # Agreements
+		assertEquals(2, collection.getItems().getAgreements().size());
+		// Agreement #1
+		Agreement agreement = collection.getItems().getAgreements().get(0);
+		assertEquals("/applications/app-id/deployments/223/agreements/1", agreement.getHref());
+		assertEquals("111", agreement.getPrice());
+		assertEquals(1, agreement.getId());
+		assertEquals("provider-id1", agreement.getProviderId());
+		//assertEquals("sssas", agreement.getSlaAgreement());  // This it is not converted to XML... 
+		assertEquals("sla-agreement-id1", agreement.getSlaAgreementId());
+		assertEquals(2, agreement.getLinks().size());
+		assertEquals("/applications/app-id/deployments/223/agreements", agreement.getLinks().get(0).getHref());
+		assertEquals("parent", agreement.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, agreement.getLinks().get(0).getType());
+		assertEquals("/applications/app-id/deployments/223/agreements/1", agreement.getLinks().get(1).getHref());
+		assertEquals("self", agreement.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, agreement.getLinks().get(1).getType());
+		// Agreement #2
+		agreement = collection.getItems().getAgreements().get(1);
+		assertEquals("/applications/app-id/deployments/223/agreements/2", agreement.getHref());
+		assertEquals("222", agreement.getPrice());
+		assertEquals(2, agreement.getId());
+		assertEquals("provider-id", agreement.getProviderId());
+		//assertEquals("sssas", agreement.getSlaAgreement());  // This it is not converted to XML... 
+		assertEquals("sla-agreement-id", agreement.getSlaAgreementId());
+		assertEquals(2, agreement.getLinks().size());
+		assertEquals("/applications/app-id/deployments/223/agreements", agreement.getLinks().get(0).getHref());
+		assertEquals("parent", agreement.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, agreement.getLinks().get(0).getType());
+		assertEquals("/applications/app-id/deployments/223/agreements/2", agreement.getLinks().get(1).getHref());
+		assertEquals("self", agreement.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, agreement.getLinks().get(1).getType());
+	}
+	
+	@Test
+	public void getCollectionOfNullAgreementsTest() throws JAXBException {
+		
+		String xml = XMLBuilder.getCollectionOfAgreements(null, "app-id", 223);
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(Collection.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		Collection collection = (Collection) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals("/applications/app-id/deployments/223/agreements", collection.getHref());
+		assertEquals(0, collection.getItems().getOffset());
+		assertEquals(0, collection.getItems().getTotal());
+		// Links
+		assertEquals(2, collection.getLinks().size());
+		assertEquals("/applications/app-id/deployments/223", collection.getLinks().get(0).getHref());
+		assertEquals("parent", collection.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, collection.getLinks().get(0).getType());
+		assertEquals("/applications/app-id/deployments/223/agreements", collection.getLinks().get(1).getHref());
+		assertEquals("self", collection.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, collection.getLinks().get(1).getType());
 	}
 }

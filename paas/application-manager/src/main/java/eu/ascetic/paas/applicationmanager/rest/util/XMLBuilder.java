@@ -538,4 +538,40 @@ public class XMLBuilder {
 		
 		return ModelConverter.objectAgreementToXML(agreement);
 	}
+	
+	public static String getCollectionOfAgreements(List<Agreement> agreements, String applicationId, int deploymentId) {
+		Collection collection = new Collection();
+		
+		String parentHref = "/applications/" + applicationId + "/deployments/" + deploymentId; 
+		
+		collection.setHref(parentHref  + "/agreements");
+		
+		Link linkParent = new Link();
+		linkParent.setHref(parentHref);
+		linkParent.setRel("parent");
+		linkParent.setType(MediaType.APPLICATION_XML);
+		collection.addLink(linkParent);
+		
+		Link linkSelf = new Link();
+		linkSelf.setHref(collection.getHref());
+		linkSelf.setRel("self");
+		linkSelf.setType(MediaType.APPLICATION_XML);
+		collection.addLink(linkSelf);
+		
+		Items items = new Items();
+		collection.setItems(items);
+		
+		if(agreements != null) {
+			
+			items.setOffset(0);
+			items.setTotal(agreements.size());
+			
+			for(Agreement agreement : agreements) {
+				agreement = addAgreementXMLInfo(agreement, applicationId, deploymentId);
+				items.addAgreement(agreement);
+			}
+		}
+		
+		return ModelConverter.objectCollectionToXML(collection);
+	}
 }
