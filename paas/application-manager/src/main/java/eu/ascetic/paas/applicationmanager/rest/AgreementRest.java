@@ -1,9 +1,23 @@
 package eu.ascetic.paas.applicationmanager.rest;
 
-import javax.ws.rs.Path;
+import java.util.List;
 
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
+import eu.ascetic.paas.applicationmanager.dao.AgreementDAO;
+import eu.ascetic.paas.applicationmanager.model.Agreement;
+import eu.ascetic.paas.applicationmanager.rest.util.XMLBuilder;
 
 /**
  * 
@@ -32,5 +46,53 @@ import org.springframework.stereotype.Component;
 @Component
 @Scope("request")
 public class AgreementRest extends AbstractRest {
+	private static Logger logger = Logger.getLogger(AgreementRest.class);
+	@Autowired
+	protected AgreementDAO agreementDAO;
 
+	/**
+	 * Returns the different agreements for a deployment
+	 * @param applicationName of name the application in the database
+	 * @param deploymentId of the Deployment for the previously specify application
+	 * @return an collection of agreements
+	 */
+	@GET
+	@Produces(MediaType.APPLICATION_XML)
+	public Response getAgreements(@PathParam("application_name") String applicationName, @PathParam("deployment_id") String deploymentId) {
+		logger.info("GET request to path: /applications/" + applicationName + "/deployments/" + deploymentId + "/agreements");
+		
+		List<Agreement> agreements = deploymentDAO.getById(Integer.parseInt(deploymentId)).getAgreements();
+		String xml = XMLBuilder.getCollectionOfAgreements(agreements, applicationName, Integer.parseInt(deploymentId));
+		
+		return buildResponse(Status.OK, xml);
+	}
+	
+	@GET
+	@Path("{agreement_id}")
+	@Produces(MediaType.APPLICATION_XML)
+	public Response getAgreement(@PathParam("application_name") String applicationName, 
+			                     @PathParam("deployment_id") String deploymentId,
+			                     @PathParam("agreement_id") String agreementId) {
+		
+		logger.info("GET request to path: /applications/" + applicationName + "/deployments/" + deploymentId + "/agreements/" + agreementId);
+
+		Agreement agreement = agreementDAO.getById(Integer.parseInt(agreementId));
+		String xml = XMLBuilder.getAgreementXML(agreement, applicationName, Integer.parseInt(deploymentId));
+		
+		return buildResponse(Status.OK, xml);
+	}
+	
+	@GET
+	@Path("{agreement_id}/sla")
+	@Produces(MediaType.APPLICATION_XML)
+	public Response getSlaAgreement(@PathParam("application_name") String applicationName, 
+			                     @PathParam("deployment_id") String deploymentId,
+			                     @PathParam("agreement_id") String agreementId) {
+		
+		logger.info("GET request to path: /applications/" + applicationName + "/deployments/" + deploymentId + "/agreements/" + agreementId);
+
+		Agreement agreement = agreementDAO.getById(Integer.parseInt(agreementId));
+		
+		return buildResponse(Status.OK, agreement.getSlaAgreement());
+	}
 }

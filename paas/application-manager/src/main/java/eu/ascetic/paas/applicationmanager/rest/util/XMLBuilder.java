@@ -513,24 +513,24 @@ public class XMLBuilder {
 		return ModelConverter.objectCollectionToXML(collection);
 	}
 	
-	public static Agreement addAgreementXMLInfo(Agreement agreemnt, String applicationId, int deploymentId) {
+	public static Agreement addAgreementXMLInfo(Agreement agreement, String applicationId, int deploymentId) {
 		String parentHref = "/applications/" + applicationId + "/deployments/" + deploymentId + "/agreements"; 
 		
-		agreemnt.setHref(parentHref + "/" + agreemnt.getId());
+		agreement.setHref(parentHref + "/" + agreement.getId());
 		
 		Link linkParent = new Link();
 		linkParent.setHref(parentHref);
 		linkParent.setRel("parent");
 		linkParent.setType(MediaType.APPLICATION_XML);
-		agreemnt.addLink(linkParent);
+		agreement.addLink(linkParent);
 		
 		Link linkSelf = new Link();
-		linkSelf.setHref(agreemnt.getHref());
+		linkSelf.setHref(agreement.getHref());
 		linkSelf.setRel("self");
 		linkSelf.setType(MediaType.APPLICATION_XML);
-		agreemnt.addLink(linkSelf);
+		agreement.addLink(linkSelf);
 		
-		return agreemnt;
+		return agreement;
 	}
 	
 	public static String getAgreementXML(Agreement agreement, String applicationId, int deploymentId) {

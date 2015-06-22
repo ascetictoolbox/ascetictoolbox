@@ -793,6 +793,7 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/reactor/TestService.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/ovf/OVFThingsIT.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/ovf/OVFUtilsTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/AgreementRestTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/ApplicationRestTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/CacheImageRestTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/DeploymentRestTest.java -text
