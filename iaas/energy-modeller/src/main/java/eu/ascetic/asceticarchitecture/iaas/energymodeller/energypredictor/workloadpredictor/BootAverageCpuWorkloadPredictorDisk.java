@@ -96,4 +96,9 @@ public class BootAverageCpuWorkloadPredictorDisk extends AbstractWorkloadEstimat
         this.bootHistoryBucketSize = bootHistoryBucketSize;
     }
 
+    @Override
+    public boolean requiresVMInformation() {
+        return true;
+    }    
+    
 }

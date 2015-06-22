@@ -15,9 +15,13 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor;
 
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DatabaseConnector;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DefaultDatabaseConnector;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.DefaultEnergyShareRule;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.EnergyDivision;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.EnergyShareRule;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.workloadpredictor.CpuRecentHistoryWorkloadPredictor;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.workloadpredictor.WorkloadEstimator;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.WattsUpMeterDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDataSourceAdaptor;
@@ -45,12 +49,12 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
 
     private static final String CONFIG_FILE = "energy-modeller-predictor.properties";
     private static final String DEFAULT_DATA_SOURCE_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient";
+    private static final String DEFAULT_WORKLOAD_PREDICTOR_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.workloadpredictor";
     private double defaultAssumedCpuUsage = 0.6; //assumed 60 percent usage, by default
     private HostDataSource source = null;
-    private int cpuUtilObservationTimeMin = 15;
-    private int cpuUtilObservationTimeSec = 0;
-    private int cpuUtilObservationTimeSecTotal = 0;
+    private DatabaseConnector database = null;
     private boolean considerIdleEnergy = true;
+    private WorkloadEstimator workloadEstimator = new CpuRecentHistoryWorkloadPredictor();
 
     private EnergyShareRule energyShareRule = new DefaultEnergyShareRule();
     private static final String DEFAULT_ENERGY_SHARE_RULE_PACKAGE
@@ -59,8 +63,8 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
     /**
      * This creates a new abstract energy predictor.
      *
-     * It will create a energy-modeller-predictor properties file if it
-     * doesn't exist.
+     * It will create a energy-modeller-predictor properties file if it doesn't
+     * exist.
      *
      * The main property: iaas.energy.modeller.cpu.energy.predictor.default_load
      * should be in the range 0..1 or -1. This indicates the predictor's default
@@ -93,13 +97,10 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
                 String dataSrcStr = config.getString("iaas.energy.modeller.cpu.energy.predictor.datasource", "ZabbixDataSourceAdaptor");
                 config.setProperty("iaas.energy.modeller.cpu.energy.predictor.datasource", dataSrcStr);
                 setDataSource(dataSrcStr);
-                cpuUtilObservationTimeMin = config.getInt("iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.min", cpuUtilObservationTimeMin);
-                config.setProperty("iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.min", cpuUtilObservationTimeMin);
-                cpuUtilObservationTimeSec = config.getInt("iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.sec", cpuUtilObservationTimeSec);
-                config.setProperty("iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.sec", cpuUtilObservationTimeSec);
-                cpuUtilObservationTimeSecTotal = cpuUtilObservationTimeSec + (int) TimeUnit.MINUTES.toSeconds(cpuUtilObservationTimeMin);
-
             }
+            String workloadPredictorStr = config.getString("iaas.energy.modeller.cpu.energy.predictor.workload", "CpuRecentHistoryWorkloadPredictor");
+            config.setProperty("iaas.energy.modeller.cpu.energy.predictor.workload", workloadPredictorStr);
+            setWorkloadPredictor(workloadPredictorStr);
         } catch (ConfigurationException ex) {
             Logger.getLogger(CpuOnlyEnergyPredictor.class.getName()).log(Level.SEVERE,
                     "Taking the default load from the settings file did not work", ex);
@@ -131,12 +132,44 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
             if (source == null) {
                 source = new ZabbixDataSourceAdaptor();
             }
-            Logger.getLogger(CpuOnlyPolynomialEnergyPredictor.class.getName()).log(Level.WARNING, "The data source specified was not found", ex);
+            Logger.getLogger(AbstractEnergyPredictor.class.getName()).log(Level.WARNING, "The data source specified was not found", ex);
         } catch (InstantiationException | IllegalAccessException ex) {
             if (source == null) {
                 source = new ZabbixDataSourceAdaptor();
             }
-            Logger.getLogger(CpuOnlyPolynomialEnergyPredictor.class.getName()).log(Level.WARNING, "The data source did not work", ex);
+            Logger.getLogger(AbstractEnergyPredictor.class.getName()).log(Level.WARNING, "The data source did not work", ex);
+        }
+    }
+
+    /**
+     * This allows the energy predictor's workload predictor to be set
+     *
+     * @param workloadPredictor The name of the workload predictor to use for
+     * this energy predictor
+     */
+    private void setWorkloadPredictor(String workloadPredictor) {
+        try {
+            if (!workloadPredictor.startsWith(DEFAULT_WORKLOAD_PREDICTOR_PACKAGE)) {
+                workloadPredictor = DEFAULT_WORKLOAD_PREDICTOR_PACKAGE + "." + workloadPredictor;
+            }
+            workloadEstimator = (WorkloadEstimator) (Class.forName(workloadPredictor).newInstance());
+        } catch (ClassNotFoundException ex) {
+            if (workloadEstimator == null) {
+                workloadEstimator = new CpuRecentHistoryWorkloadPredictor();
+            }
+            Logger.getLogger(AbstractEnergyPredictor.class.getName()).log(Level.WARNING, "The workload predictor specified was not found", ex);
+        } catch (InstantiationException | IllegalAccessException ex) {
+            if (workloadEstimator == null) {
+                workloadEstimator = new CpuRecentHistoryWorkloadPredictor();
+            }
+            Logger.getLogger(AbstractEnergyPredictor.class.getName()).log(Level.WARNING, "The workload predictor did not work", ex);
+        }
+        //Set the workload estimators dataabse if it requires one.
+        if (workloadEstimator.requiresVMInformation()) {
+            database = new DefaultDatabaseConnector();
+        } else {
+            database.closeConnection();
+            database = null;
         }
     }
 
@@ -321,12 +354,31 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
      * predictor's configured observation window.
      */
     protected double getCpuUtilisation(Host host) {
-        return source.getCpuUtilisation(host, cpuUtilObservationTimeSecTotal);
-    }
+        return workloadEstimator.getCpuUtilisation(host, null);
+    }    
     
     /**
-     * This is a method that picks the best predictor for a host based upon
-     * the root mean square error produced by the predictor.
+     * This provides an average of the recent CPU utilisation for a given host,
+     * based upon the CPU utilisation time window set for the energy predictor.
+     *
+     * @param host The host for which the average CPU utilisation over the last
+     * n seconds will be calculated for.
+     * @param virtualMachines
+     * @return The average recent CPU utilisation based upon the energy
+     * predictor's configured observation window.
+     */
+    protected double getCpuUtilisation(Host host, Collection<VM> virtualMachines) {
+        if (workloadEstimator.requiresVMInformation()) {
+            return workloadEstimator.getCpuUtilisation(host, virtualMachines);
+        } else {
+            return workloadEstimator.getCpuUtilisation(host, null);
+        }
+    }
+
+    /**
+     * This is a method that picks the best predictor for a host based upon the
+     * root mean square error produced by the predictor.
+     *
      * @param host The host the predictors should be assessed against.
      * @param predictors The collection of predictors to assess.
      * @return The predictor with the least calibration error.
@@ -340,7 +392,7 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
         }
         return answer;
     }
-    
+
     /**
      * TODO Add utility functions here that may be used by the energy models
      * that are created over the time of the project.

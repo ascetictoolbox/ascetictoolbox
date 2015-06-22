@@ -116,5 +116,10 @@ public class DoWAverageCpuWorkloadPredictor extends AbstractWorkloadEstimator {
     public void setBootHistoryBucketSize(int bootHistoryBucketSize) {
         this.bootHistoryBucketSize = bootHistoryBucketSize;
     }
+    
+    @Override
+    public boolean requiresVMInformation() {
+        return true;
+    }    
 
 }

@@ -93,4 +93,9 @@ public class BootAverageCpuWorkloadPredictor extends AbstractWorkloadEstimator {
         this.bootHistoryBucketSize = bootHistoryBucketSize;
     }    
 
+    @Override
+    public boolean requiresVMInformation() {
+        return true;
+    }    
+    
 }

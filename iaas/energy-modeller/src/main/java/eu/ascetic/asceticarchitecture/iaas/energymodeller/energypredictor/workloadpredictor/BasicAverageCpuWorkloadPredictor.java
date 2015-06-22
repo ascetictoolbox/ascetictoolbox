@@ -62,4 +62,9 @@ public class BasicAverageCpuWorkloadPredictor extends AbstractWorkloadEstimator 
         return answer / vm.getApplicationTags().size();
     }
 
+    @Override
+    public boolean requiresVMInformation() {
+        return true;
+    }
+
 }

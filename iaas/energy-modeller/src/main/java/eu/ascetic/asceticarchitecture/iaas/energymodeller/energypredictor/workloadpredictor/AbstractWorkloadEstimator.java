@@ -28,7 +28,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This produces workload estimates for providing better energy estimations.
+ * This produces workload estimates for the purpose of providing better 
+ * energy estimations.
  *
  * @author Richard Kavanagh
  */

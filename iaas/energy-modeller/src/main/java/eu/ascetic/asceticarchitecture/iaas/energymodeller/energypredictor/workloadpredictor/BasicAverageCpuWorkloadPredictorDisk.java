@@ -62,5 +62,10 @@ public class BasicAverageCpuWorkloadPredictorDisk extends AbstractWorkloadEstima
         }
         return answer / vm.getDiskImages().size();
     }
+    
+    @Override
+    public boolean requiresVMInformation() {
+        return true;
+    }    
 
 }

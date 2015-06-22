@@ -66,7 +66,7 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
     public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines, TimePeriod duration) {
         EnergyUsagePrediction wattsUsed;
         if (getDefaultAssumedCpuUsage() == -1) {
-            wattsUsed = predictTotalEnergy(host, getCpuUtilisation(host), duration);
+            wattsUsed = predictTotalEnergy(host, getCpuUtilisation(host, virtualMachines), duration);
         } else {
             wattsUsed = predictTotalEnergy(host, getDefaultAssumedCpuUsage(), duration);
         }
@@ -88,7 +88,7 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
         EnergyDivision division = getEnergyUsage(host, virtualMachines);
         EnergyUsagePrediction hostAnswer;
         if (getDefaultAssumedCpuUsage() == -1) {
-            hostAnswer = predictTotalEnergy(host, getCpuUtilisation(host), timePeriod);
+            hostAnswer = predictTotalEnergy(host, getCpuUtilisation(host, virtualMachines), timePeriod);
         } else {
             hostAnswer = predictTotalEnergy(host, getDefaultAssumedCpuUsage(), timePeriod);
         }
@@ -130,6 +130,7 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
      * @param host The host to get the energy prediction for.
      * @return The predicted power usage.
      */
+    @Override
     public double predictPowerUsed(Host host) {
         LinearFunction model = retrieveModel(host).getFunction();
         if (getDefaultAssumedCpuUsage() == -1) {
@@ -146,6 +147,7 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
      * @param usageCPU The amount of CPU load placed on the host
      * @return The predicted power usage.
      */
+    @Override    
     public double predictPowerUsed(Host host, double usageCPU) {
         LinearFunction model = retrieveModel(host).getFunction();
         return model.value(usageCPU);

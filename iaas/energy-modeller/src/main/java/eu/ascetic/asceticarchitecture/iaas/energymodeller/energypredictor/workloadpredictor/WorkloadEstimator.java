@@ -48,5 +48,14 @@ public interface WorkloadEstimator {
      * @param database The database to use
      */
     public void setDatabaseConnector(DatabaseConnector database);
+    
+    /**
+     * This indicates if the predictor requires VM information or not in order
+     * to make its prediction.
+     * @return If the predictor requires VM information to make a prediction. 
+     * True only if this is the case, otherwise the predictor will utilise 
+     * host only information.
+     */
+    public boolean requiresVMInformation();
 
 }
