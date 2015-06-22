@@ -105,11 +105,17 @@ public class DeploymentRest extends AbstractRest {
 	@POST
 	@Consumes(MediaType.APPLICATION_XML)
 	@Produces(MediaType.APPLICATION_XML)
-	public Response postDeployment(@PathParam("application_name") String applicationName, String payload) {
-		logger.info("POST request to path: /applications/" + applicationName + "/deployments");
+	public Response postDeployment(@PathParam("application_name") String applicationName, @QueryParam("negotiation") String negotiation, String payload) {
+		logger.info("POST request to path: /applications/" + applicationName + "/deployments?negotiation=" + negotiation);
 		logger.info("      PAYLOAD: " + payload);
 		
-		return createNewDeployment(payload);
+		boolean automaticaNegotiation = true;
+		
+		if(negotiation != null && negotiation.equals("manual")) {
+			automaticaNegotiation = false;
+		}
+		
+		return createNewDeployment(payload, automaticaNegotiation);
 	}
 	
 	/**

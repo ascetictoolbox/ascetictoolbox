@@ -1,12 +1,13 @@
 package eu.ascetic.paas.applicationmanager.event;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import org.junit.Test;
 
 /**
  * 
- * Copyright 2014 ATOS SPAIN S.A. 
+ * Copyright 2015 ATOS SPAIN S.A. 
  * 
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -33,9 +34,11 @@ public class DeploymentStatusTest {
 		DeploymentEvent deploymentEvent = new DeploymentEvent();
 		deploymentEvent.setDeploymentId(2);
 		deploymentEvent.setDeploymentStatus("1111");
+		deploymentEvent.setAutomaticNegotiation(false);
 		
 		assertEquals(2, deploymentEvent.getDeploymentId());
 		assertEquals("1111", deploymentEvent.getDeploymentStatus());
+		assertFalse(deploymentEvent.isAutomaticNegotiation());
 	}
 	
 }

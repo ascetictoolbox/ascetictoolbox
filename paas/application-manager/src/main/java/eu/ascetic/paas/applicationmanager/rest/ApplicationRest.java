@@ -9,6 +9,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -76,11 +77,17 @@ public class ApplicationRest extends AbstractRest {
 	@POST
 	@Consumes(MediaType.APPLICATION_XML)
 	@Produces(MediaType.APPLICATION_XML)
-	public Response postApplication(String payload) {
-		logger.info("POST request to path: /applications");
+	public Response postApplication(@QueryParam("negotiation") String negotiation, String payload) {
+		logger.info("POST request to path: /applications?negotiation=" + negotiation);
 		logger.info("      PAYLOAD: " + payload);
 		
-		return createNewDeployment(payload);
+		boolean automaticaNegotiation = true;
+		
+		if(negotiation != null && negotiation.equals("manual")) {
+			automaticaNegotiation = false;
+		}
+		
+		return createNewDeployment(payload, automaticaNegotiation);
 	}
 	
 	/**

@@ -514,7 +514,7 @@ public class DeploymentRestTest extends AbstractTest {
 		deploymentRest.applicationDAO = applicationDAO;
 		deploymentRest.deploymentEventService = deploymentEventService;
 		
-		Response response = deploymentRest.postDeployment("1", threeTierWebAppOvfString);
+		Response response = deploymentRest.postDeployment("1", "automatic", threeTierWebAppOvfString);
 		assertEquals(201, response.getStatus());
 		
 		String xml = (String) response.getEntity();
@@ -541,6 +541,76 @@ public class DeploymentRestTest extends AbstractTest {
 		
 		assertEquals(Dictionary.APPLICATION_STATUS_SUBMITTED, argument.getValue().getDeploymentStatus());
 		assertEquals("threeTierWebApp", argument.getValue().getApplicationName());
+		assertEquals(true, argument.getValue().isAutomaticNegotiation());
+		
+		// We verify that the right messages were sent to the AMQP
+		Thread.sleep(1000l);
+		assertEquals(1, listener.getTextMessages().size());
+		
+		assertEquals("APPLICATION.threeTierWebApp.DEPLOYMENT.0.SUBMITTED", listener.getTextMessages().get(0).getJMSDestination().toString());
+		assertEquals("threeTierWebApp", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getApplicationId());
+		assertEquals("0", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getDeploymentId());
+		assertEquals("SUBMITTED", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getStatus());
+		
+		receiver.close();
+	} 
+	
+	@Test
+	public void postANewDeploymentInDBManualNegotiationTest() throws Exception {
+		// We manually modify the configuration object to be able to use personally for this test
+		Configuration.amqpAddress = "localhost:7672";
+		Configuration.amqpUsername = "guest";
+		Configuration.amqpPassword = "guest";
+		
+		// We set a listener to get the sent message from the MessageQueue
+		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword,  "APPLICATION.>", true);
+		AmqpListListener listener = new AmqpListListener();
+		receiver.setMessageConsumer(listener);
+		
+		ApplicationDAO applicationDAO = mock(ApplicationDAO.class);
+		
+		Application application = new Application();
+		application.setId(1);
+		application.setName("threeTierWebApp");
+		
+		// We put in order the different calls to the DB
+		when(applicationDAO.getByName("threeTierWebApp")).thenReturn(application, application);
+		when(applicationDAO.update(any(Application.class))).thenReturn(true);
+		
+		DeploymentEventService deploymentEventService = mock(DeploymentEventService.class);
+		
+		DeploymentRest deploymentRest = new DeploymentRest();
+		deploymentRest.applicationDAO = applicationDAO;
+		deploymentRest.deploymentEventService = deploymentEventService;
+		
+		Response response = deploymentRest.postDeployment("1", "manual", threeTierWebAppOvfString);
+		assertEquals(201, response.getStatus());
+		
+		String xml = (String) response.getEntity();
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(Application.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		Application applicationResponse = (Application) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		// We verify the application was stored correctly
+		assertEquals(1, applicationResponse.getId());
+		assertEquals("/applications/threeTierWebApp", applicationResponse.getHref());
+		assertEquals("threeTierWebApp", applicationResponse.getName());
+		assertEquals(1, applicationResponse.getDeployments().size());
+		assertEquals(threeTierWebAppOvfString, applicationResponse.getDeployments().get(0).getOvf());
+		assertEquals(Dictionary.APPLICATION_STATUS_SUBMITTED, applicationResponse.getDeployments().get(0).getStatus());
+		
+		// We verify the number of calls to the DAO
+		verify(applicationDAO, times(2)).getByName("threeTierWebApp");
+		verify(applicationDAO, times(1)).update(any(Application.class));
+		
+		//We verify that the event is fired
+		ArgumentCaptor<DeploymentEvent> argument = ArgumentCaptor.forClass(DeploymentEvent.class);
+		verify(deploymentEventService).fireDeploymentEvent(argument.capture());
+		
+		assertEquals(Dictionary.APPLICATION_STATUS_SUBMITTED, argument.getValue().getDeploymentStatus());
+		assertEquals("threeTierWebApp", argument.getValue().getApplicationName());
+		assertEquals(false, argument.getValue().isAutomaticNegotiation());
 		
 		// We verify that the right messages were sent to the AMQP
 		Thread.sleep(1000l);

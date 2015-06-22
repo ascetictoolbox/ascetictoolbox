@@ -25,6 +25,7 @@ public class DeploymentEvent {
 	private String applicationName;
 	private int deploymentId;
 	private String deploymentStatus;
+	private boolean automaticNegotiation;
 	
 	public int getDeploymentId() {
 		return deploymentId;
@@ -45,5 +46,12 @@ public class DeploymentEvent {
 	}
 	public void setApplicationName(String applicationName) {
 		this.applicationName = applicationName;
+	}
+	
+	public boolean isAutomaticNegotiation() {
+		return automaticNegotiation;
+	}
+	public void setAutomaticNegotiation(boolean automaticNegotiation) {
+		this.automaticNegotiation = automaticNegotiation;
 	}
 }

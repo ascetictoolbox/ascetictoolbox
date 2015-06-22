@@ -102,7 +102,7 @@ public abstract class AbstractRest {
 	 * @param ovf
 	 * @return the XML response of the new deployment
 	 */
-	protected Response createNewDeployment(String ovf) {
+	protected Response createNewDeployment(String ovf, boolean automaticNegotiation) {
 		// We get the name of the application:
 		String name = OVFUtils.getApplicationName(ovf);
 		
@@ -145,6 +145,7 @@ public abstract class AbstractRest {
 		deploymentEvent.setApplicationName(application.getName());
 		deploymentEvent.setDeploymentId(deployment.getId());
 		deploymentEvent.setDeploymentStatus(deployment.getStatus());
+		deploymentEvent.setAutomaticNegotiation(automaticNegotiation);
 		deploymentEventService.fireDeploymentEvent(deploymentEvent);
 		
 		Application applicationToBeShown = ApplicationConverter.withoutDeployments(application);
