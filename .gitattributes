@@ -11,6 +11,15 @@ iaas/energy-modeller-load-calibration-tool/src/main/webapp/WEB-INF/sun-jaxws.xml
 iaas/energy-modeller-load-calibration-tool/src/main/webapp/WEB-INF/web.xml -text
 iaas/energy-modeller-load-calibration-tool/src/main/webapp/index.jsp -text
 iaas/energy-modeller-standalone-calibration-tool/Apps.csv -text
+iaas/energy-modeller-standalone-calibration-tool/Example[!!-~]Scripts/Apps.csv -text
+iaas/energy-modeller-standalone-calibration-tool/Example[!!-~]Scripts/calibration_settings.properties -text
+iaas/energy-modeller-standalone-calibration-tool/Example[!!-~]Scripts/energy-modeller-calibrator.jar -text
+iaas/energy-modeller-standalone-calibration-tool/Example[!!-~]Scripts/energy-modeller-db-zabbix.properties -text
+iaas/energy-modeller-standalone-calibration-tool/Example[!!-~]Scripts/energy-modeller-db.properties -text
+iaas/energy-modeller-standalone-calibration-tool/Example[!!-~]Scripts/run-stress-point-test.sh -text
+iaas/energy-modeller-standalone-calibration-tool/Example[!!-~]Scripts/run-stress-point.sh -text
+iaas/energy-modeller-standalone-calibration-tool/Example[!!-~]Scripts/start-stress.sh -text
+iaas/energy-modeller-standalone-calibration-tool/Example[!!-~]Scripts/stop-stress.sh -text
 iaas/energy-modeller-standalone-calibration-tool/Read[!!-~]Me.docx -text
 iaas/energy-modeller-standalone-calibration-tool/Read[!!-~]Me.txt -text
 iaas/energy-modeller-standalone-calibration-tool/nbactions.xml -text
