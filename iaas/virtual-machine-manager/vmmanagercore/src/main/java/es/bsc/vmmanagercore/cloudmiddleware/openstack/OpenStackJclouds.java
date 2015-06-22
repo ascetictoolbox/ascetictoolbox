@@ -358,7 +358,9 @@ public class OpenStackJclouds implements CloudMiddleware {
 
             for (org.jclouds.openstack.neutron.v2.domain.Network network :
                     neutronApi.getNetworkApi(zone).list().concat().toList()) {
-                networks.add(network.getId());
+                if (network.getName().equals("VMManager_network") || network.getName().equals("external")) {
+                    networks.add(network.getId());
+                }
             }
 
             options.networks(networks);
