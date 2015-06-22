@@ -349,20 +349,18 @@ public class OpenStackJclouds implements CloudMiddleware {
 
     // This is a quick hack for the Ascetic project. It'll be refactored in the future :)
     // In our new testbeds (wally) we need to select the network that we want the VM to use.
+    // Now we are using the VMM specific network and the "external" one.
     // This is not required in the other clusters that we use.
     private void includeNetworkInDeploymentOptions(CreateServerOptions options, String hostname) {
         if (hostname != null && hostname.startsWith("wally")) {
-            String networkId = "";
+            List<String> networks = new ArrayList<>();
             NeutronApi neutronApi = openStackJcloudsApis.getNeutronApi();
+
             for (org.jclouds.openstack.neutron.v2.domain.Network network :
                     neutronApi.getNetworkApi(zone).list().concat().toList()) {
-                if (network.getName().equals("VMManager_network")) {
-                    networkId = network.getId();
-                }
+                networks.add(network.getId());
             }
 
-            List<String> networks = new ArrayList<>();
-            networks.add(networkId);
             options.networks(networks);
         }
     }
