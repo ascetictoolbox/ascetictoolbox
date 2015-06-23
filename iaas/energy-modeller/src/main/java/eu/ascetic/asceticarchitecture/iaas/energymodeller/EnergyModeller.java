@@ -540,6 +540,33 @@ public class EnergyModeller {
         }
         return predictor.getVMPredictedEnergy(vmImage, vMsOnHost, host);
     }
+    
+    /**
+     * This provides the amount of energy predicted to be used by the placement
+     * of a VM.
+     *
+     * @param vmImage The VM that is to be deployed
+     * @param vMsOnHost The collection of VMs that are expected to be running on
+     * the host
+     * @param host The host on which the VM is to be placed
+     * @param duration The period of time the estimate should run for.
+     * @return the predicted average power and total energy usage for a VM.
+     *
+     * Avg Watts that is expected to use over time by the VM Predicted energy
+     * used (kWh) during life of VM
+     */
+    public EnergyUsagePrediction getPredictedEnergyForVM(VM vmImage, Collection<VM> vMsOnHost, Host host, TimePeriod duration) {
+        /**
+         * There is an expectation that the vmImage that is expected to be be
+         * deployed is in the collection of VMs that induce workload on the
+         * physical host. This line below is a sanity check that ensures the
+         * vmImage (deployed or otherwise, represents load on the VM.
+         */
+        if (!vMsOnHost.contains(vmImage)) {
+            vMsOnHost.add(vmImage);
+        }
+        return predictor.getVMPredictedEnergy(vmImage, vMsOnHost, host, duration);
+    }    
 
     /**
      * This provides the amount of energy predicted to be used by a given host.
@@ -552,6 +579,19 @@ public class EnergyModeller {
     public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines) {
         return predictor.getHostPredictedEnergy(host, virtualMachines);
     }
+    
+    /**
+     * This provides the amount of energy predicted to be used by a given host.
+     *
+     * @param host The host that the energy prediction is for
+     * @param virtualMachines The VMs that are on the host.
+     * @param duration The period of time the estimate should run for.
+     * @return the predicted average power and total energy usage for a physical 
+     * host.
+     */
+    public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines, TimePeriod duration) {
+        return predictor.getHostPredictedEnergy(host, virtualMachines, duration);
+    }    
 
     //Use a program called stress, benchmarking tool to test this
     /**
