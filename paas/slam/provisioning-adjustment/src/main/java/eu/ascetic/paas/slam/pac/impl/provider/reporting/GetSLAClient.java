@@ -82,7 +82,7 @@ public class GetSLAClient {
 		ByteArrayOutputStream bout = new ByteArrayOutputStream();
 		
 		//testing purposes, remove...
-		String slaId = "cbf1f8e2-4d90-46f4-be60-7a198f4def39";
+//		String slaId = "cbf1f8e2-4d90-46f4-be60-7a198f4def39";
 		
 		String xmlInput =
 				" <soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:rep=\"http://reportingWS.businessManager.slasoi.org\">"+
@@ -247,7 +247,7 @@ public class GetSLAClient {
 			String value = ((CONST)ve).getValue();
 			String unit = ((CONST)ve).getDatatype().toString();
 			MeasurableAgreementTerm a = new MeasurableAgreementTerm(termName, unit, value, operator);
-			System.out.println("Measurable term "+a);
+//			System.out.println("Measurable term "+a);
 			guarantees.add(a);
 		} else if (ve instanceof ID) {
 			DomainExpr cde = variablesAt.get(((ID)ve).getValue());
