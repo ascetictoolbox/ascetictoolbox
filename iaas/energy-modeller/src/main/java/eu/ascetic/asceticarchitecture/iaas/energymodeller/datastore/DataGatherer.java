@@ -263,10 +263,21 @@ public class DataGatherer implements Runnable {
         if (lastTimeStampSeen.get(host) == null || measurement.getClock() > lastTimeStampSeen.get(host)) {
             lastTimeStampSeen.put(host, measurement.getClock());
             Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Writing out host information");
-            if (!measurement.getPowerAndEnergyMetricsExist()) {
-                return; //This guards against not having a Watt meter attached.
+            double power;
+            if (measurement.getPowerAndEnergyMetricsExist()) {
+                power = measurement.getPower();
+            } else {
+                /**
+                 * This is a fall back to estimated values from the emulated
+                 * watt meter.
+                 */
+                if (measurement.getEstimatedPowerMetricExist()) {
+                    power = measurement.getEstimatedPower();
+                } else {
+                    return; //This guards against not having a Watt meter attached.                    
+                }
             }
-            database.writeHostHistoricData(host, measurement.getClock(), measurement.getPower(), measurement.getEnergy());
+            database.writeHostHistoricData(host, measurement.getClock(), power, measurement.getEnergy());
             Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Obtaining list of vms on host {0}", host.getHostName());
             ArrayList<VmDeployed> vms = getVMsOnHost(host, vmList);
             if (!vms.isEmpty()) {
@@ -444,7 +455,7 @@ public class DataGatherer implements Runnable {
     public HashMap<String, VmDeployed> getVmList() {
         return knownVms;
     }
-    
+
     /**
      * This provides the list of known Vms
      *
@@ -470,7 +481,7 @@ public class DataGatherer implements Runnable {
     public VmDeployed getVm(String name) {
         return knownVms.get(name);
     }
-    
+
     /**
      * This gets the named VM from the known VM list.
      *
@@ -484,7 +495,7 @@ public class DataGatherer implements Runnable {
             }
         }
         return null;
-    }       
+    }
 
     /**
      * This allows a VM that has been deployed to have extra details about it

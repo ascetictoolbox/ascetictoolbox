@@ -16,13 +16,14 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient;
 
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.ENERGY_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.ESTIMATED_POWER_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.POWER_KPI_NAME;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 
 /**
  * This represents a single snapshot of the data from a data source.
  *
- * @author Richard
+ * @author Richard Kavanagh
  */
 public class HostMeasurement extends Measurement {
 
@@ -89,6 +90,25 @@ public class HostMeasurement extends Measurement {
     public boolean getPowerMetricExist() {
         return this.metricExists(POWER_KPI_NAME);
     }
+    
+    /**
+     * This provides rapid access to estimated power values from a host measurement.
+     *
+     * @return The power consumed when the measurement was taken.
+     */
+    public double getEstimatedPower() {
+        return this.getMetric(ESTIMATED_POWER_KPI_NAME).getValue();
+    }
+
+    /**
+     * This provides rapid access to indicate if the estimated power metric 
+     * exists or not.
+     *
+     * @return If the power metric is contained inside this host measurement.
+     */
+    public boolean getEstimatedPowerMetricExist() {
+        return this.metricExists(ESTIMATED_POWER_KPI_NAME);
+    }    
 
     /**
      * This provides rapid access to energy value from a host measurement.
