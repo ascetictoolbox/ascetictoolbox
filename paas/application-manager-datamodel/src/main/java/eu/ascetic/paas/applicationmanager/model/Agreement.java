@@ -69,6 +69,8 @@ public class Agreement {
 	private String providerId;
 	@XmlElement(name = "sla-agreement-id", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private String slaAgreementId;
+	@XmlElement(name = "negotiation-id", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private String negotiationId;
 	@XmlElement(name = "accepted", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private boolean accepted;
 	@XmlElement(name="link", namespace = APPLICATION_MANAGER_NAMESPACE)
@@ -131,6 +133,14 @@ public class Agreement {
 	}
 	public void setSlaAgreementId(String slaAgreementId) {
 		this.slaAgreementId = slaAgreementId;
+	}
+	
+	@Column(name = "negotiation_id", nullable = true)
+	public String getNegotiationId() {
+		return negotiationId;
+	}
+	public void setNegotiationId(String negotiationId) {
+		this.negotiationId = negotiationId;
 	}
 	
 	@Column(name = "accepted", nullable = true)
