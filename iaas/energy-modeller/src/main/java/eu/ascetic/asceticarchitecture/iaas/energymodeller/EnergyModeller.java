@@ -675,6 +675,16 @@ public class EnergyModeller {
     public static Collection<VM> getVMs(OvfDefinition deploymentOVF) {
         return OVFConverterFactory.getVMs(deploymentOVF);
     }
+    
+    /**
+     * This gets the list of VMs on a named host that the energy modeller 
+     * knows about.
+     * @param host The host to get the VMs for
+     * @return The list of VMs that are currently running on the named host.
+     */
+    public ArrayList<VmDeployed> getVMsOnHost(Host host) {
+        return dataGatherer.getVMsOnHost(host);
+    }
 
     /**
      * This given a name of a VM provides the object representation of it.
