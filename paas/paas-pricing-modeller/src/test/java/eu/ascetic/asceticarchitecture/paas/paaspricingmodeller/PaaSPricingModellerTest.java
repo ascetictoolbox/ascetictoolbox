@@ -30,7 +30,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.ascetic.asceticarchitecture.paas.type.PaaSPrice;
 
 public class PaaSPricingModellerTest 
 {
@@ -56,7 +55,7 @@ public class PaaSPricingModellerTest
 	    public void tearDown() {
 	    }
     
-    @Test
+ /*   @Test
     public void testPriceEstimationBasic(){
     	 System.out.println("test basic function for price estimation ");
     	 PaaSPricingModeller priceApp = new PaaSPricingModeller();
@@ -104,5 +103,5 @@ public class PaaSPricingModellerTest
     	 double price2=priceApp.getAppPriceEstimation(totalEnergyUsed, 2, appId, iaasId);
     	 double expectedPrice2 = 0.24;
     	 assertEquals(expectedPrice2, price2, 0.02);
-    }
+    }*/
 }

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package eu.ascetic.asceticarchitecture.paas.paaspricingmodeller;
+package eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.billing;
 
 /**
  * This is the standard interface for any pricing module to be loaded into
@@ -22,8 +22,7 @@ package eu.ascetic.asceticarchitecture.paas.paaspricingmodeller;
  * @author E. Agiatzidou
  */
 
-public interface PaaSPricingModellerInterface{
-	
+public interface PaaSPricingModellerBillingInterface{
 	
 	
 }

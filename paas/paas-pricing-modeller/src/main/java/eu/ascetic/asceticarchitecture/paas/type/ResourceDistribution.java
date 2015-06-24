@@ -1,5 +1,4 @@
-/**
- *  Copyright 2014 Athens University of Economics and Business
+/*  Copyright 2015 Athens University of Economics and Business
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,16 +13,28 @@
  *  limitations under the License.
  */
 
-package eu.ascetic.asceticarchitecture.paas.paaspricingmodeller;
+package eu.ascetic.asceticarchitecture.paas.type;
 
-/**
- * This is the standard interface for any pricing module to be loaded into
- * the ASCETiC architecture.
- * @author E. Agiatzidou
- */
 
-public interface PaaSPricingModellerInterface{
+
+public class ResourceDistribution {
 	
+	double ramPer;
+	double cpuPer;
+	double storPer;
 	
+	public ResourceDistribution() {
+	 }
+	
+	public void setDistribution( double ramPer, double cpuPer, double storPer){
+		this.ramPer=ramPer;
+		this.cpuPer = cpuPer;
+		this.storPer = storPer;
+		
+	}
+	
+	public double getDistribution(VMinfo vm){
+		return vm.getRAM()*ramPer+vm.getCPU()*cpuPer+vm.getStorage()*storPer;
+	}
 	
 }
