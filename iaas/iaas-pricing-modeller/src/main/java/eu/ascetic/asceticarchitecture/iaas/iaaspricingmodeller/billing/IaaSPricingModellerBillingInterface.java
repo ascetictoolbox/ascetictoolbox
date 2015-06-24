@@ -15,8 +15,9 @@
  */
 
 
-package eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller;
-
+package eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.billing;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesrepository.IaaSPricingModellerPricingScheme;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.*;
 
 /**
  * This is the standard interface for any pricing module to be loaded into
@@ -25,7 +26,12 @@ package eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller;
  * @author E. Agiatzidou
  */
 
-public interface IaaSPricingModellerInterface{
-	
+public interface IaaSPricingModellerBillingInterface{
+	void registerVM(VMstate vm);
+	void unregisterVM(VMstate vm);
+	void stopChargingVM(VMstate vm);
+	double getVMCharges(String VMid);
+
+
 	
 }

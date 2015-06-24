@@ -30,7 +30,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.energyprovider.EnergyProvider;
-import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.Time;
 
 
 public class TimerTest
@@ -62,7 +61,7 @@ public class TimerTest
 	@Test
     public void testTimer() throws InterruptedException {
         System.out.println("test timer");
-        Time time = new Time();
+       // Time time = new Time();
 
 	}
 }

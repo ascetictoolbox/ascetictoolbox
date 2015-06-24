@@ -1,5 +1,5 @@
 /**
- *  Copyright 2014 Athens University of Economics and Business
+ *  Copyright 2015 Athens University of Economics and Business
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,17 +15,19 @@
  */
 
 
-package eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller;
+package eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.energyprovider;
+
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.Price;
 
 
 /**
- * This is the standard interface for any pricing module to be loaded into
- * the ASCETiC architecture. This interface includes all the methods that another component
- * from the architecture may call. 
+ * 
  * @author E. Agiatzidou
  */
 
-public interface IaaSPricingModellerInterface{
+public interface EnergyProviderInterface{
 	
+
 	
+
 }

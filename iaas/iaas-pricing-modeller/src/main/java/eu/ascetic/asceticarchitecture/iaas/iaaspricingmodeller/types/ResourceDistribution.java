@@ -1,5 +1,4 @@
-/**
- *  Copyright 2014 Athens University of Economics and Business
+/*  Copyright 2015 Athens University of Economics and Business
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,18 +13,28 @@
  *  limitations under the License.
  */
 
+package eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types;
 
-package eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller;
 
 
-/**
- * This is the standard interface for any pricing module to be loaded into
- * the ASCETiC architecture. This interface includes all the methods that another component
- * from the architecture may call. 
- * @author E. Agiatzidou
- */
-
-public interface IaaSPricingModellerInterface{
+public class ResourceDistribution {
 	
+	double ramPer;
+	double cpuPer;
+	double storPer;
+	
+	public ResourceDistribution() {
+	 }
+	
+	public void setDistribution( double ramPer, double cpuPer, double storPer){
+		this.ramPer=ramPer;
+		this.cpuPer = cpuPer;
+		this.storPer = storPer;
+		
+	}
+	
+	public double getDistribution(VMstate vm){
+		return vm.getVMinfo().getRAM()*ramPer+vm.getVMinfo().getCPU()*cpuPer+vm.getVMinfo().getStorage()*storPer;
+	}
 	
 }

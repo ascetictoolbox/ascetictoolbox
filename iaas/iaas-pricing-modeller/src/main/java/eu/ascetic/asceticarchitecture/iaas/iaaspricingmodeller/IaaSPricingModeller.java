@@ -16,6 +16,21 @@
 
 package eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.energyprovider.EnergyProvider;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesrepository.IaaSPricingModellerPricingScheme;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesrepository.PricingSchemeA;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesrepository.PricingSchemeB;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.*;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.billing.*;
+
 /**
  * This is the main interface of the pricing modeller of IaaS layer. 
  * Functionality:
@@ -27,90 +42,22 @@ package eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller;
  * @author E. Agiatzidou
  */
 
-
-
-
-//TO IMPLEMENT PER EACH HOST!!
 public class IaaSPricingModeller implements IaaSPricingModellerInterface{
+	
+	EnergyProvider energyProvider = new EnergyProvider(this);
+	EnergyModeller energyModeller;
+	IaaSPricingModellerBilling billing = new IaaSPricingModellerBilling(energyProvider);
+	private static int idIaaSP=0;
+	
+	public IaaSPricingModeller(EnergyModeller energyModeller) {
+		this.energyModeller = energyModeller;
+		//billing.setEnergyModeller(energyModeller);
+		idIaaSP=idIaaSP+1;
+		
+    }
+	
+	///////////////////////////////////////PREDICTION////////////////////////////////////////////
 	 /**
-     * @param energycost The current cost of the energy consumed in $/kwh
-     */
-	double energyCost;
-	
-	/**
-	@param amorthostcost The amortised cost of a host $/hour
-    */
-	double amortHostCost;
-	
-	/**
-	@param PUE The power usage effectiveness of the infrastructure
-	*/
-	double PUE;
-	 
-	
-	public IaaSPricingModeller() {
-    	energyCost = 0.07;
-    	amortHostCost=0.08;
-    	PUE=1.7;
-    	
-    }
-	
-	public IaaSPricingModeller(double energyCost, double amortHostCost, double PUE) {
-		super();
-    	this.energyCost=energyCost;
-    	this.amortHostCost=amortHostCost;
-    	this.PUE=PUE;
-    	
-    }
-   
-    @Override
-    public double getEnergyCost(){
-    	return energyCost;
-    }
-    
-    @Override
-	public double getAmortHostCost(){
-    	return amortHostCost;
-    }
-    
-    @Override
-	public double getPUE(){
-    	return PUE;
-    }
-	
-    @Override
-    public void setEnergyCost(double energycost){
-    	this.energyCost=energycost;
-    }
-	
-    @Override
-    public void setAmortHostCost(double amorthostcost){
-    	this.amortHostCost=amorthostcost;
-    }
-	
-    @Override
-    public void setPUE(double PUE){
-    	this.PUE=PUE;
-    }
-	
-	
-    /**
-     * This function returns a cost estimation based on the 
-     * total energy that a VM consumes during an hour. The VM runs on top of a 
-     * specific host.
-     * @param totalEnergyUsed total estimated energy that a VM consumes during an hour
-     * @param hostId the id of the host that the VM is running on
-     * @return the estimated cost of the VM running on this host
-     */
-    @Override
-    public double getVMCostEstimation(double totalEnergyUsed, String hostId) {
-        double cost=0.0;
-        cost=amortHostCost+(energyCost*totalEnergyUsed*PUE);
-    	return cost; 
-    }
-    
-    
-    /**
      * This function returns a price estimation based on the 
      * total energy that a VM consumes during an hour. The VM runs on top of a 
      * specific host.
@@ -118,12 +65,97 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
      * @param hostId the id of the host that the VM is running on
      * @return the estimated price of the VM running on this host
      */
-    @Override
-    public double getVMPriceEstimation(double totalEnergyUsed, String hostId) {
-    	double cost=0.0;
-    	double price = 0.0;
-        cost=amortHostCost+(energyCost*totalEnergyUsed*PUE);
-        price=cost+cost*20/100;
-     	return price; 
-}
+
+	public double getVMChargesPrediction(String VMid, int schemeId,  long duration){
+		int CPU = energyModeller.getVM(VMid).getCpus();
+		int RAM = energyModeller.getVM(VMid).getRamMb();
+		double storage = energyModeller.getVM(VMid).getDiskGb();
+		VMinfo vm = new VMinfo (RAM, CPU, storage);
+		IaaSPricingModellerPricingScheme scheme = null;
+		if (schemeId==0){
+			scheme = new PricingSchemeA(schemeId);
+		}
+		if (schemeId==1){
+			scheme = new PricingSchemeB(schemeId);
+		}
+		VMstate VM = new VMstate(VMid, vm, energyProvider, scheme);
+		scheme.setEnergyModeller(energyModeller);
+		
+		VM.getPredictedInformation().setDuration(duration);
+		
+		VmDeployed EVM = energyModeller.getVM(VMid);
+		Host host = EVM.getAllocatedTo();
+		Collection <VmDeployed> collection =  energyModeller.getVMsOnHost(host);
+		Collection <VM> col = castCollection(collection);
+		TimeParameters dur = new TimeParameters(duration);
+		TimePeriod dura = new TimePeriod(dur.getStartTime(), dur.getEndTime());
+		double energyPredicted = energyModeller.getPredictedEnergyForVM(EVM, col, host, dura).getTotalEnergyUsed();
+		VM.getPredictedInformation().setPredictedEnergy(energyPredicted);
+		
+		return billing.predictVMCharges(VM);
+	}
+    
+	private Collection <VM> castCollection(Collection<VmDeployed> collection){
+		Collection<VM> col = new ArrayList<VM>();
+		Iterator<VmDeployed> itr = collection.iterator();
+	      while(itr.hasNext()) {
+	         VmDeployed element = itr.next();
+	         col.add((VM)element);
+	      }
+	      return col;
+	}
+	
+	///////////////////////////////////////////BILLING/////////////////////////////////////////////
+	
+	
+	public void initializeVM(String VMid, int schemeId){
+		int CPU = energyModeller.getVM(VMid).getCpus();
+		int RAM = energyModeller.getVM(VMid).getRamMb();
+		double storage = energyModeller.getVM(VMid).getDiskGb();
+		VMinfo vm = new VMinfo (RAM, CPU, storage);
+
+		IaaSPricingModellerPricingScheme scheme = null;
+		if (schemeId==0){
+			scheme = new PricingSchemeA(schemeId);
+		}
+		if (schemeId==1){
+			scheme = new PricingSchemeB(schemeId);
+		}
+		scheme.setEnergyModeller(energyModeller);
+		VMstate VM = new VMstate(VMid, vm, energyProvider, scheme);
+		billing.registerVM(VM);
+	}
+	
+	public void initializeVM(String VMid){
+		billing.registerVM(VMid);
+	}
+	
+	
+	public double getVMCurrentCharges(String VMid){
+		return billing.getVMCharges(VMid);
+		
+	}
+	
+	public double getVMFinalCharges(String VMid, boolean deleteVM){
+		return billing.getVMCharges(VMid, deleteVM);
+	}
+   
+	
+	///////////////////////Basic functions///////////////////////////////
+	public int getIaaSId(){
+		return idIaaSP;
+	}
+	
+	
+    public EnergyProvider getEnergyProvider(){
+    	return this.energyProvider;
+    }
+    
+    public IaaSPricingModellerBilling getBilling(){
+    	return this.billing;
+    }
+    
+    public IaaSPricingModeller getIaaSprovider(int id){
+    	return this;
+    }
 }

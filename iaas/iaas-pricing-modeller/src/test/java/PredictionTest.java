@@ -61,8 +61,8 @@ public class PredictionTest
 	@Test
     public void testPrediction() throws InterruptedException {
         System.out.println("test prediction");
-        IaaSPricingModeller prModeller = new IaaSPricingModeller();
-        System.out.println("Energy Provider: " +prModeller.getEnergyProvider().getId());
+        IaaSPricingModeller prModeller = new IaaSPricingModeller(null);
+     //   System.out.println("Energy Provider: " +prModeller.getEnergyProvider().getId());
      //   System.out.println("IaaS Provider: " +prModeller.getIaaSId());
      //   System.out.println("Dynamic Energy Price: " +prModeller.getEnergyProvider().getDynamicEnergyPrice().getEnergyPriceOnly());
      //   System.out.println("Average Dynamic Energy Price: " +prModeller.getBilling().getAverageDynamicEnergyPrice().getEnergyPriceOnly());
@@ -72,7 +72,7 @@ public class PredictionTest
       //Prediction for Pricing Scheme B
      //  System.out.println("Predicted value:" + prModeller.getVMChargesPrediction(1, 20, 8, 500, 1, 1000, 2));  
        Thread.sleep(2000);
-       System.out.println("Predicted value:" + prModeller.getVMChargesPrediction(2, 20, 8, 500, 1, 1000, 2));  
+   //    System.out.println("Predicted value:" + prModeller.getVMChargesPrediction(2, 20, 8, 500, 1, 1000, 2));  
     }
 	
 
