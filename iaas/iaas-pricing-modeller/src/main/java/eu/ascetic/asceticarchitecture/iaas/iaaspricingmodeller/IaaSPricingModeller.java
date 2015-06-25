@@ -64,12 +64,11 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
      * @param totalEnergyUsed total estimated energy that a VM consumes during an hour
      * @param hostId the id of the host that the VM is running on
      * @return the estimated price of the VM running on this host
+     * ram mb
+     * disk gb
      */
 
-	public double getVMChargesPrediction(String VMid, int schemeId,  long duration, String hostname){
-		int CPU = energyModeller.getVM(VMid).getCpus();
-		int RAM = energyModeller.getVM(VMid).getRamMb();
-		double storage = energyModeller.getVM(VMid).getDiskGb();
+	public double getVMChargesPrediction(int CPU, int RAM, double storage, int schemeId,  long duration, String hostname){
 		VMinfo vm = new VMinfo (RAM, CPU, storage);
 		IaaSPricingModellerPricingScheme scheme = null;
 		if (schemeId==0){
@@ -78,21 +77,22 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
 		if (schemeId==1){
 			scheme = new PricingSchemeB(schemeId);
 		}
-		VMstate VM = new VMstate(VMid, vm, energyProvider, scheme);
+		VMstate Vm = new VMstate(vm, energyProvider, scheme);
 		scheme.setEnergyModeller(energyModeller);
 		
-		VM.getPredictedInformation().setDuration(duration);
+		Vm.getPredictedInformation().setDuration(duration);
 		
-		VmDeployed EVM = energyModeller.getVM(VMid);
+		VM newVM = new VM(CPU, RAM, storage);
+		
 		Host host = energyModeller.getHost(hostname);
 		Collection <VmDeployed> collection =  energyModeller.getVMsOnHost(host);
 		Collection <VM> col = castCollection(collection);
 		TimeParameters dur = new TimeParameters(duration);
 		TimePeriod dura = new TimePeriod(dur.getStartTime(), dur.getEndTime());
-		double energyPredicted = energyModeller.getPredictedEnergyForVM(EVM, col, host, dura).getTotalEnergyUsed();
-		VM.getPredictedInformation().setPredictedEnergy(energyPredicted);
+		double energyPredicted = energyModeller.getPredictedEnergyForVM(newVM, col, host, dura).getTotalEnergyUsed();
+		Vm.getPredictedInformation().setPredictedEnergy(energyPredicted);
 		
-		return billing.predictVMCharges(VM);
+		return billing.predictVMCharges(Vm);
 	}
     
 	private Collection <VM> castCollection(Collection<VmDeployed> collection){
@@ -126,9 +126,6 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
 		billing.registerVM(VM);
 	}
 	
-	public void initializeVM(String VMid){
-		billing.registerVM(VMid);
-	}
 	
 	
 	public double getVMCurrentCharges(String VMid){

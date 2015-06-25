@@ -66,9 +66,20 @@ public class VMstate {
 		//pricingScheme.getTotalCharges(this);
 		time = new TimeParameters();
 
-		
 	}
-			
+	
+	public VMstate (VMinfo vm, EnergyProvider provider, IaaSPricingModellerPricingScheme scheme){
+		changesToCharacteristics.push(vm);
+		this.provider = provider;
+		this.pricingScheme = scheme;
+		energyCharges = new Charges();
+		resourceCharges = new Charges();
+		TotalCharges = new Charges();
+		//pricingScheme.getTotalCharges(this);
+		time = new TimeParameters();
+		
+
+	}
 	
 
 	public VMstate (VMinfo vm, IaaSPricingModellerPricingScheme scheme){
