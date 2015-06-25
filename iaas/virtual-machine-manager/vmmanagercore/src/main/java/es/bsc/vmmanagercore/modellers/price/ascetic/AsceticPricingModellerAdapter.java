@@ -19,6 +19,7 @@
 package es.bsc.vmmanagercore.modellers.price.ascetic;
 
 import es.bsc.vmmanagercore.modellers.price.PricingModeller;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.IaaSPricingModeller;
 
 /**
@@ -34,5 +35,38 @@ public class AsceticPricingModellerAdapter implements PricingModeller {
     public double getVmCost(double totalEnergy, String hostname) {
         return pricingModeller.getVMCostEstimation(totalEnergy, hostname);
     }
+
+    /*
+    Right now, we do not know at the IaaS level how long a VM is going to be executed.
+    Anyway, we just need to make fair comparisons. Therefore, selecting the same time for all the VMs is good
+    enough for now. It is important to take into account that this ignores the fact that VMs that are given a host
+    with more available resources will take less time to complete its execution.
+     */
+
+    /*
+
+    private static final long FIXED_DURATION_MIN = 60;
+    private static IaaSPricingModeller pricingModeller;
+
+    public AsceticPricingModellerAdapter(EnergyModeller energyModeller) {
+        pricingModeller = new IaaSPricingModeller(energyModeller);
+    }
+
+    @Override
+    public double getVmCost(String vmId, String hostname) {
+        return pricingModeller.getVMChargesPrediction(
+                constructVmIdForPricingModeller(vmId, hostname), getSchemeIdForVm(), FIXED_DURATION_MIN);
+    }
+
+    private String constructVmIdForPricingModeller(String vmId, String hostname) {
+        return vmId + "_" + hostname;
+    }
+
+    // For now, return always 1. This will be changed once we get this information from the PaaS level.
+    private int getSchemeIdForVm() {
+        return 1;
+    }
+
+    */
 
 }

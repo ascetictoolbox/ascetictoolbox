@@ -32,4 +32,13 @@ public interface PricingModeller {
      */
     double getVmCost(double totalEnergy, String hostname);
 
+    /**
+     * Returns the predicted cost on a given host for a given Vm
+     *
+     * @param vmId the ID of the VM
+     * @param hostname the hostname
+     * @return the predicted cost of the VM
+     */
+    //double getVmCost(String vmId, String hostname);
+
 }
