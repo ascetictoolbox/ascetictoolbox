@@ -71,6 +71,8 @@ public class Agreement {
 	private String slaAgreementId;
 	@XmlElement(name = "negotiation-id", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private String negotiationId;
+	@XmlTransient
+	private int orderInArray;
 	@XmlElement(name = "accepted", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private boolean accepted;
 	@XmlElement(name="link", namespace = APPLICATION_MANAGER_NAMESPACE)
@@ -161,5 +163,13 @@ public class Agreement {
 	public void addLink(Link link) {
 		if(links==null) links = new ArrayList<Link>();
 		links.add(link);
+	}
+	
+	@Column(name = "order_in_array", nullable = true)
+	public int getOrderInArray() {
+		return orderInArray;
+	}
+	public void setOrderInArray(int orderInArray) {
+		this.orderInArray = orderInArray;
 	}
 }
