@@ -66,7 +66,7 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
      * @return the estimated price of the VM running on this host
      */
 
-	public double getVMChargesPrediction(String VMid, int schemeId,  long duration){
+	public double getVMChargesPrediction(String VMid, int schemeId,  long duration, String hostname){
 		int CPU = energyModeller.getVM(VMid).getCpus();
 		int RAM = energyModeller.getVM(VMid).getRamMb();
 		double storage = energyModeller.getVM(VMid).getDiskGb();
@@ -84,7 +84,7 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
 		VM.getPredictedInformation().setDuration(duration);
 		
 		VmDeployed EVM = energyModeller.getVM(VMid);
-		Host host = EVM.getAllocatedTo();
+		Host host = energyModeller.getHost(hostname);
 		Collection <VmDeployed> collection =  energyModeller.getVMsOnHost(host);
 		Collection <VM> col = castCollection(collection);
 		TimeParameters dur = new TimeParameters(duration);
