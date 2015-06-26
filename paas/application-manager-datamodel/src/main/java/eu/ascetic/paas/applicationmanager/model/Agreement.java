@@ -2,6 +2,7 @@ package eu.ascetic.paas.applicationmanager.model;
 
 import static eu.ascetic.paas.applicationmanager.model.Dictionary.APPLICATION_MANAGER_NAMESPACE;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,6 +74,8 @@ public class Agreement {
 	private String negotiationId;
 	@XmlTransient
 	private int orderInArray;
+	@XmlElement(name = "valid-until", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private Timestamp validUntil;
 	@XmlElement(name = "accepted", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private boolean accepted;
 	@XmlElement(name="link", namespace = APPLICATION_MANAGER_NAMESPACE)
@@ -171,5 +174,13 @@ public class Agreement {
 	}
 	public void setOrderInArray(int orderInArray) {
 		this.orderInArray = orderInArray;
+	}
+	
+	@Column(name = "valid_until", nullable = true)
+	public Timestamp getValidUntil() {
+		return validUntil;
+	}
+	public void setValidUntil(Timestamp validUntil) {
+		this.validUntil = validUntil;
 	}
 }
