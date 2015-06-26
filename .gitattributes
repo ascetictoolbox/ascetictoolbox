@@ -1178,9 +1178,12 @@ paas/slam/planning-optimization/src/main/java/eu/ascetic/paas/slam/poc/impl/prov
 paas/slam/planning-optimization/src/main/java/eu/ascetic/paas/slam/poc/impl/provider/negotiation/ws/ProvisioningExceptionException.java -text
 paas/slam/planning-optimization/src/main/java/eu/ascetic/paas/slam/poc/impl/provider/negotiation/ws/SLACreationExceptionException.java -text
 paas/slam/planning-optimization/src/main/java/eu/ascetic/paas/slam/poc/impl/provider/negotiation/ws/SLANotFoundExceptionException.java -text
+paas/slam/planning-optimization/src/main/java/eu/ascetic/paas/slam/poc/impl/provider/selection/Criterion.java -text
 paas/slam/planning-optimization/src/main/java/eu/ascetic/paas/slam/poc/impl/provider/selection/OfferSelector.java -text
-paas/slam/planning-optimization/src/main/java/eu/ascetic/paas/slam/poc/impl/provider/selection/OfferSelectorImpl.java -text
+paas/slam/planning-optimization/src/main/java/eu/ascetic/paas/slam/poc/impl/provider/selection/OfferSelectorAbstractImpl.java -text
 paas/slam/planning-optimization/src/main/java/eu/ascetic/paas/slam/poc/impl/provider/selection/WeightedSlat.java -text
+paas/slam/planning-optimization/src/main/java/eu/ascetic/paas/slam/poc/impl/provider/selection/algorithms/MaxAverageVirtualSystemDistance.java -text
+paas/slam/planning-optimization/src/main/java/eu/ascetic/paas/slam/poc/impl/provider/selection/algorithms/PriceSelection.java -text
 paas/slam/planning-optimization/src/main/java/eu/ascetic/paas/slam/poc/impl/provider/translation/SlaTranslator.java -text
 paas/slam/planning-optimization/src/main/java/eu/ascetic/paas/slam/poc/impl/provider/translation/SlaTranslatorImpl.java -text
 paas/slam/planning-optimization/src/main/java/eu/ascetic/paas/slam/poc/impl/provider/translation/SlaTranslatorImplNoOsgi.java -text

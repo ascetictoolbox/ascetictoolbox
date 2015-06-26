@@ -44,6 +44,8 @@ import org.slasoi.slamodel.sla.VariableDeclr;
 import org.slasoi.slamodel.sla.business.ComponentProductOfferingPrice;
 import org.slasoi.slamodel.sla.business.ProductOfferingPrice;
 
+import eu.ascetic.paas.slam.poc.impl.provider.selection.Criterion;
+
 
 
 public class AsceticSlaTemplateParser {
@@ -130,7 +132,7 @@ public class AsceticSlaTemplateParser {
 	}
 
 	
-	private void parseSlaTemplate(SLATemplate slaTemplate) {
+	private void parseSlaTemplate(SLATemplate slaTemplate, Criterion[] criteria) {
 		InterfaceDeclr[] interfaceDeclrs = slaTemplate.getInterfaceDeclrs();
 		HashMap<String, String> ovfVirtualSystems = new HashMap<String, String>();
 		@SuppressWarnings("deprecation")
@@ -181,6 +183,8 @@ public class AsceticSlaTemplateParser {
 
 					String termName = ssTermName.substring(ssTermName.indexOf('#') + 1);
 				
+					if (!isInCriteria(termName, criteria))
+						continue;
 
 					String ovfId = variablesVs.get(vsName);
 					String virtualSystemId = ovfVirtualSystems.get(ovfId);
@@ -208,15 +212,25 @@ public class AsceticSlaTemplateParser {
 	}
 
 	
+	private boolean isInCriteria(String termName, Criterion[] criteria) {
+		if (criteria == null)
+			return true;
+		for (Criterion c : criteria) 
+			if (termName.equals(c.getName()))
+				return true;
+			
+		return false;
+	}
+	
 	
 	private AsceticSlaTemplate getAsceticSlat() {
 		return asceticSlat;
 	}
 
 	
-	public static AsceticSlaTemplate getAsceticSlat(SLATemplate slat) {
+	public static AsceticSlaTemplate getAsceticSlat(SLATemplate slat,Criterion[] criteria) {
 		AsceticSlaTemplateParser parser= new AsceticSlaTemplateParser();
-		parser.parseSlaTemplate(slat);
+		parser.parseSlaTemplate(slat, criteria);
 		return parser.getAsceticSlat();
 	}
 

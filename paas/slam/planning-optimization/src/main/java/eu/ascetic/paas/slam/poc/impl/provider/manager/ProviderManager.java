@@ -20,9 +20,12 @@ import org.slasoi.slamodel.sla.SLA;
 import org.slasoi.slamodel.sla.SLATemplate;
 
 import eu.ascetic.paas.slam.poc.exceptions.SubNegotiationException;
+import eu.ascetic.paas.slam.poc.impl.provider.selection.Criterion;
 
 
 public interface ProviderManager {
+	
+	public Criterion[] getCriteria(SLATemplate slat);
 	
 	public String[] getProvidersList(SLATemplate slat);
 

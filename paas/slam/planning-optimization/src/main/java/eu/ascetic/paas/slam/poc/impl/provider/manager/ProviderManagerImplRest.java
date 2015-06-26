@@ -35,6 +35,7 @@ import com.sun.jersey.api.client.WebResource;
 import eu.ascetic.paas.slam.poc.exceptions.SubNegotiationException;
 import eu.ascetic.paas.slam.poc.impl.provider.negotiation.NegotiationClient;
 import eu.ascetic.paas.slam.poc.impl.provider.negotiation.NegotiationWsClient;
+import eu.ascetic.paas.slam.poc.impl.provider.selection.Criterion;
 
 
 
@@ -179,6 +180,10 @@ public class ProviderManagerImplRest implements ProviderManager {
 		return null;
 	}
 	
-	
+	@Override
+	public Criterion[] getCriteria(SLATemplate slat) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

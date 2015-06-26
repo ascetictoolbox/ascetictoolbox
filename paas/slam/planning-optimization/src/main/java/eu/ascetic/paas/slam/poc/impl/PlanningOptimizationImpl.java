@@ -74,14 +74,16 @@ import org.slasoi.slamodel.primitives.TIME;
 import org.slasoi.slamodel.primitives.UUID;
 import org.slasoi.slamodel.sla.SLA;
 import org.slasoi.slamodel.sla.SLATemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.ascetic.paas.slam.poc.exceptions.SubNegotiationException;
+import eu.ascetic.paas.slam.poc.impl.config.ConfigManager;
 import eu.ascetic.paas.slam.poc.impl.paasapi.PaaSApiManager;
 import eu.ascetic.paas.slam.poc.impl.provider.manager.ProviderManager;
 import eu.ascetic.paas.slam.poc.impl.provider.manager.ProviderManagerImpl;
+import eu.ascetic.paas.slam.poc.impl.provider.selection.Criterion;
 import eu.ascetic.paas.slam.poc.impl.provider.selection.OfferSelector;
-import eu.ascetic.paas.slam.poc.impl.provider.selection.OfferSelectorImpl;
+import eu.ascetic.paas.slam.poc.impl.provider.selection.algorithms.MaxAverageVirtualSystemDistance;
+import eu.ascetic.paas.slam.poc.impl.provider.selection.algorithms.PriceSelection;
 import eu.ascetic.paas.slam.poc.impl.slaparser.SlaTemplateEntitiesParser;
 import eu.ascetic.paas.slam.poc.negotiation.SLAT2SLAImpl;
 import eu.ascetic.paas.slam.poc.provision.PlanHandlerImpl;
@@ -103,6 +105,22 @@ public class PlanningOptimizationImpl implements PlanningOptimization, SLAMConte
 	 * Initializes a newly created <code>PlanningOptimizationImpl</code> object.
 	 */
 	public PlanningOptimizationImpl() {
+		ConfigManager cm = ConfigManager.getInstance();
+		
+		String algorithm = cm.getAlgorithmClass();
+		if (algorithm.equalsIgnoreCase("eu.ascetic.paas.slam.poc.impl.provider.selection.algorithms.PriceSelection")) {
+			LOGGER.debug("Price Selection Algorithm chosen.");
+			offerSelector = new PriceSelection();
+		}
+		else if (algorithm.equalsIgnoreCase("eu.ascetic.paas.slam.poc.impl.provider.selection.algorithms.MaxAverageVirtualSystemDistance")) {
+			LOGGER.debug("Max Average Virtual System Distance Algorithm chosen.");
+			offerSelector = new MaxAverageVirtualSystemDistance();
+		}
+		else {
+			LOGGER.debug("Unknown selection Algorithm. Choosing Price Selection...");
+			offerSelector = new PriceSelection();
+		}
+		
 		dsAssestmentAndCustomized = new DomainSpecAssessmentAndCustomize();
 		dsINotification = new POCINotification();
 		dsIPlanStatus = new POCIPlanStatus();
@@ -254,8 +272,8 @@ public class PlanningOptimizationImpl implements PlanningOptimization, SLAMConte
 
 			/*** 1. call provider registry the get the provider list ***/
 			//String[] providerEndpoints = providerManager.getProvidersList(slaTemplate);
-			System.out.println("Endpoint IaaS cablato...");
-			String[] providerEndpoints = {"http://10.4.0.15:8080/services/asceticNegotiation?wsdl"};
+			System.out.println("Endpoint IaaS da file di configurazione...");
+			String[] providerEndpoints = {ConfigManager.getInstance().getDefaultIaasProvider()};
 			
 			List<SLATemplate[]> providerSlats = new ArrayList<SLATemplate[]>();
 
@@ -271,13 +289,14 @@ public class PlanningOptimizationImpl implements PlanningOptimization, SLAMConte
 			}
 
 			/*** 3. provider selection ***/
+			Criterion[] criteria = providerManager.getCriteria(slaTemplate);
 			List<SLATemplate> flattenOffers = new ArrayList<SLATemplate>();
 			for (SLATemplate[] ps : providerSlats) {
 				for (SLATemplate s : ps) {
 					flattenOffers.add(s);
 				}
 			}
-			return offerSelector.selectOptimaSlaTemplates(flattenOffers, slaTemplate); 
+			return offerSelector.selectOptimaSlaTemplates(flattenOffers, slaTemplate, criteria); 
 		}
 
 		/**
@@ -432,7 +451,7 @@ public class PlanningOptimizationImpl implements PlanningOptimization, SLAMConte
 
 	private ProviderManager providerManager = new ProviderManagerImpl();
 	
-	private OfferSelector offerSelector = new OfferSelectorImpl();
+	private OfferSelector offerSelector;
 
 	protected SLAManagerContext context;
 	

@@ -70,6 +70,7 @@ public class ConfigManager {
 		properties.put("fed-api-port", "4444");
 		properties.put("fed-api-base-path", "api/cimi");
 		properties.put("registry-endpoint", "https://providerregistry.apiary-mock.com/");
+		properties.put("default-iaas-provider", "http://10.4.0.15:8080/services/asceticNegotiation?wsdl");
 	}
 	
 	
@@ -126,5 +127,8 @@ public class ConfigManager {
 		return properties.getProperty("registry-endpoint"); 
 	}
 
+	public String getDefaultIaasProvider() {
+		return properties.getProperty("default-iaas-provider"); 
+	}
 
 }

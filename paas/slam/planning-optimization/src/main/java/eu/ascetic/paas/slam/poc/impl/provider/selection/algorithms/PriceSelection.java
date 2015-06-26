@@ -14,7 +14,7 @@
  * limitations under the License.                                          
  */
 
-package eu.ascetic.paas.slam.poc.impl.provider.selection;
+package eu.ascetic.paas.slam.poc.impl.provider.selection.algorithms;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,13 +29,16 @@ import org.slasoi.slamodel.sla.SLATemplate;
 
 import eu.ascetic.paas.slam.poc.exceptions.SelectionException;
 import eu.ascetic.paas.slam.poc.impl.config.ConfigManager;
+import eu.ascetic.paas.slam.poc.impl.provider.selection.Criterion;
+import eu.ascetic.paas.slam.poc.impl.provider.selection.OfferSelectorAbstractImpl;
+import eu.ascetic.paas.slam.poc.impl.provider.selection.WeightedSlat;
 import eu.ascetic.paas.slam.poc.impl.slaparser.AsceticSlaTemplate;
 import eu.ascetic.paas.slam.poc.impl.slaparser.AsceticSlaTemplateParser;
 import eu.ascetic.paas.slam.poc.impl.slaparser.AsceticVirtualSystem;
 import eu.ascetic.paas.slam.poc.impl.slaparser.MeasurableAgreementTerm;
 
 
-public class OfferSelectorImpl implements OfferSelector {
+public class PriceSelection extends OfferSelectorAbstractImpl {
 
 	private static int maxOffersReturned = 4; 
 	private static String price_term = "price";
@@ -44,11 +47,11 @@ public class OfferSelectorImpl implements OfferSelector {
 	protected static String algClass = null;
 
 
-	public List<WeightedSlat> evaluate(List<SLATemplate> ssoffs,SLATemplate ssprop) throws SelectionException {
+	public List<WeightedSlat> evaluate(List<SLATemplate> ssoffs,SLATemplate ssprop, Criterion[] criteria) throws SelectionException {
 
 		Map<AsceticSlaTemplate, SLATemplate> offersMap = new HashMap<AsceticSlaTemplate, SLATemplate>();
 		for (SLATemplate ssoff : ssoffs) {
-			AsceticSlaTemplate offer = AsceticSlaTemplateParser.getAsceticSlat(ssoff);
+			AsceticSlaTemplate offer = AsceticSlaTemplateParser.getAsceticSlat(ssoff, criteria);
 			offersMap.put(offer, ssoff);
 		}
 
@@ -78,7 +81,9 @@ public class OfferSelectorImpl implements OfferSelector {
 
 					}
 				}
+				System.out.println("Weight "+vs.getWeight());
 			}
+			
 		}
 
 
@@ -92,7 +97,7 @@ public class OfferSelectorImpl implements OfferSelector {
 
 
 
-	public OfferSelectorImpl() {
+	public PriceSelection() {
 
 		ConfigManager cm = ConfigManager.getInstance();
 		price_term = cm.getPriceTermName();
@@ -114,12 +119,12 @@ public class OfferSelectorImpl implements OfferSelector {
 
 	@Override
 	public SLATemplate[] selectOptimaSlaTemplates(
-			List<SLATemplate> slatList, SLATemplate proposal) {
+			List<SLATemplate> slatList, SLATemplate proposal, Criterion[] criteria) {
 		
 		List<WeightedSlat> weightedSlats = null;
 		try {
 			// Call the specific selection algorithm
-			weightedSlats = evaluate(slatList, proposal);
+			weightedSlats = evaluate(slatList, proposal, criteria);
 
 		} catch (SelectionException e) {
 			e.printStackTrace();
@@ -219,7 +224,7 @@ public class OfferSelectorImpl implements OfferSelector {
 	}
 
 
-	private static final Logger LOGGER = Logger.getLogger(OfferSelectorImpl.class);
+	private static final Logger LOGGER = Logger.getLogger(PriceSelection.class);
 
 
 }

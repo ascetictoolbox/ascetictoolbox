@@ -29,6 +29,7 @@ import org.slasoi.slamodel.sla.SLATemplate;
 import eu.ascetic.paas.slam.poc.exceptions.SubNegotiationException;
 import eu.ascetic.paas.slam.poc.impl.provider.negotiation.NegotiationClient;
 import eu.ascetic.paas.slam.poc.impl.provider.negotiation.NegotiationWsClient;
+import eu.ascetic.paas.slam.poc.impl.provider.selection.Criterion;
 
 public class ProviderManagerImplDummy implements ProviderManager {
 
@@ -161,6 +162,10 @@ public class ProviderManagerImplDummy implements ProviderManager {
 		return null;
 	}
 
-
+	@Override
+	public Criterion[] getCriteria(SLATemplate slat) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

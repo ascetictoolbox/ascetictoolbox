@@ -32,9 +32,11 @@ import org.junit.Test;
 import org.slasoi.gslam.syntaxconverter.SLASOITemplateParser;
 import org.slasoi.slamodel.sla.SLATemplate;
 
+import eu.ascetic.paas.slam.poc.impl.provider.selection.Criterion;
 import eu.ascetic.paas.slam.poc.impl.provider.selection.OfferSelector;
-import eu.ascetic.paas.slam.poc.impl.provider.selection.OfferSelectorImpl;
 import eu.ascetic.paas.slam.poc.impl.provider.selection.WeightedSlat;
+import eu.ascetic.paas.slam.poc.impl.provider.selection.algorithms.MaxAverageVirtualSystemDistance;
+import eu.ascetic.paas.slam.poc.impl.provider.selection.algorithms.PriceSelection;
 import eu.ascetic.paas.slam.poc.impl.slaparser.AsceticSlaTemplate;
 import eu.ascetic.paas.slam.poc.impl.slaparser.AsceticSlaTemplateParser;
 
@@ -44,6 +46,9 @@ public class SelectionTest {
 	OfferSelector selectionAlgorithm;
 	static SLATemplate proposal, proposalDummy, proposalFull;
 	static List<SLATemplate> offersList, offersListDummy;
+	static Criterion[] criteria;
+	
+	
 	
 	
 	
@@ -80,6 +85,13 @@ public class SelectionTest {
     			new File("src/test/resources/slats/selection/ASCETiC-SlaTemplateIaaSRequest.xml"));
 
 	    proposalFull = tp.parseTemplate(xmlProposalFull);
+	    
+		List<Criterion> cc = new ArrayList<Criterion>();
+		cc.add(new Criterion("cpu_speed", 0.8));
+		cc.add(new Criterion("vm_cores", 0.5));
+		cc.add(new Criterion("memory", 0.7));
+		cc.add(new Criterion("price", 1.0));
+		criteria = cc.toArray(new Criterion[cc.size()]);
 
 
 	}
@@ -97,7 +109,7 @@ public class SelectionTest {
     			new File("src/test/resources/slats/selection/SlatProposalSimple.xml"));
 		SLASOITemplateParser tp = new SLASOITemplateParser();
 	    proposal = tp.parseTemplate(xmlProposal);
-		AsceticSlaTemplate cst = AsceticSlaTemplateParser.getAsceticSlat(proposal);
+		AsceticSlaTemplate cst = AsceticSlaTemplateParser.getAsceticSlat(proposal, criteria);
 		System.out.println("PROPOSAL: " + cst);
 		Assert.assertNotNull(cst.getVirtualSystems());
 	}
@@ -108,7 +120,7 @@ public class SelectionTest {
 		String xmlProposal = FileUtils.readFileToString(new File("src/test/resources/slats/selection/ASCETiC-SlaTemplateIaaSRequest.xml"));
 		SLASOITemplateParser tp = new SLASOITemplateParser();
 	    proposal = tp.parseTemplate(xmlProposal);
-		AsceticSlaTemplate cst = AsceticSlaTemplateParser.getAsceticSlat(proposal);
+		AsceticSlaTemplate cst = AsceticSlaTemplateParser.getAsceticSlat(proposal, criteria);
 		System.out.println("PROPOSAL: " + cst);
 		Assert.assertNotNull(cst.getVirtualSystems());
 	}
@@ -119,7 +131,7 @@ public class SelectionTest {
 		String xmlProposal = FileUtils.readFileToString(new File("src/test/resources/slats/selection/ASCETiC-SlaTemplateIaaSOffer.xml"));
 		SLASOITemplateParser tp = new SLASOITemplateParser();
 	    proposal = tp.parseTemplate(xmlProposal);
-		AsceticSlaTemplate cst = AsceticSlaTemplateParser.getAsceticSlat(proposal);
+		AsceticSlaTemplate cst = AsceticSlaTemplateParser.getAsceticSlat(proposal, criteria);
 		System.out.println("OFFER: " + cst);
 		Assert.assertNotNull(cst.getVirtualSystems());
 	}
@@ -131,7 +143,7 @@ public class SelectionTest {
     			new File("src/test/resources/slats/SlatOfferIntegrationTest.xml"));
 		SLASOITemplateParser tp = new SLASOITemplateParser();
 	    proposal = tp.parseTemplate(slat);
-		AsceticSlaTemplate cst = AsceticSlaTemplateParser.getAsceticSlat(proposal);
+		AsceticSlaTemplate cst = AsceticSlaTemplateParser.getAsceticSlat(proposal, criteria);
 		System.out.println("PROPOSAL: " + cst);
 		Assert.assertNotNull(cst.getVirtualSystems());
 	}
@@ -139,7 +151,7 @@ public class SelectionTest {
 	
 	@Test
 	public void parseProposal() {
-		AsceticSlaTemplate cst = AsceticSlaTemplateParser.getAsceticSlat(proposal);
+		AsceticSlaTemplate cst = AsceticSlaTemplateParser.getAsceticSlat(proposal, criteria);
 		System.out.println("PROPOSAL: " + cst);
 		Assert.assertNotNull(cst.getVirtualSystems());
 	}
@@ -149,7 +161,7 @@ public class SelectionTest {
 	public void parseOffers() {
 		int i = 0;
 		for (SLATemplate offer : offersList) {
-			AsceticSlaTemplate cst = AsceticSlaTemplateParser.getAsceticSlat(offer);
+			AsceticSlaTemplate cst = AsceticSlaTemplateParser.getAsceticSlat(offer, criteria);
 			System.out.println("\n----- OFFER[" + i++ + "] ----- " + cst);
 			Assert.assertNotNull(cst.getVirtualSystems());
 		}
@@ -157,10 +169,11 @@ public class SelectionTest {
 
 	
 	@Test
-	public void offerSelectorImplTest() {
-		selectionAlgorithm = new OfferSelectorImpl();
+	public void priceSelectionTest() {
+		selectionAlgorithm = new PriceSelection();
+		
 		SLATemplate[] bestSlats = selectionAlgorithm
-				.selectOptimaSlaTemplates(offersList, proposal);
+				.selectOptimaSlaTemplates(offersList, proposal, criteria);
 		
 		Assert.assertEquals(offersList.get(0), bestSlats[2]);
 		Assert.assertEquals(offersList.get(1), bestSlats[1]);
@@ -169,6 +182,18 @@ public class SelectionTest {
 	}
 	
 	
+	@Test
+	public void offerSelectorImplTest() {
+		selectionAlgorithm = new MaxAverageVirtualSystemDistance();
+		
+		SLATemplate[] bestSlats = selectionAlgorithm
+				.selectOptimaSlaTemplates(offersList, proposal, criteria);
+		
+		Assert.assertEquals(offersList.get(0), bestSlats[0]);
+		Assert.assertEquals(offersList.get(1), bestSlats[1]);
+		Assert.assertEquals(offersList.get(2), bestSlats[2]);
+
+	}
 	
 	@Test
 	public void orderTest() throws SecurityException, NoSuchFieldException {

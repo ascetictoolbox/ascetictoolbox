@@ -21,6 +21,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -48,6 +49,7 @@ import eu.ascetic.paas.slam.poc.exceptions.SubNegotiationException;
 import eu.ascetic.paas.slam.poc.impl.config.ConfigManager;
 import eu.ascetic.paas.slam.poc.impl.provider.negotiation.NegotiationClient;
 import eu.ascetic.paas.slam.poc.impl.provider.negotiation.NegotiationWsClient;
+import eu.ascetic.paas.slam.poc.impl.provider.selection.Criterion;
 import eu.ascetic.paas.slam.poc.impl.slaparser.SlaTemplateEntitiesParser;
 
 
@@ -300,6 +302,53 @@ public class ProviderManagerImpl implements ProviderManager {
 			intrf.setPropertyValue(new STND("SLA-ProvidersList"), jsonObj.toString());
 		}
 		
+	}
+	
+	@Override
+	public Criterion[] getCriteria(SLATemplate slat) {
+		
+		List<Criterion> criteria = new ArrayList<Criterion>();
+		
+		STND[] rootPropKeys = slat.getPropertyKeys();
+		if (rootPropKeys == null || rootPropKeys.length == 0)
+			return null;
+					
+		for (int i = 0; i < rootPropKeys.length; i++) {
+			if (rootPropKeys[i].equals("Criteria")) {
+				String criteriaValue = slat.getPropertyValue(rootPropKeys[i]);
+				
+				JSONObject json;
+				try {
+					json = new JSONObject(criteriaValue);
+					JSONArray array = json.names();
+					for (int j = 0; j < array.length(); j++) {
+						String key = (String) array.get(j);
+						String value = (String) json.get(key);
+						Criterion c = getCriterion(key, value);
+					    criteria.add(c);	
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		LOGGER.debug("Number of criteria: "+criteria.size());
+		return criteria.toArray(new Criterion[criteria.size()]);
+	}
+	
+	
+	private static Criterion getCriterion(String key, String value) {
+		
+		LOGGER.debug("Found criteria "+key+ " "+value);
+		if (null == key || null == value)
+			return null;
+		
+		Double dvalue = getFrac(value);
+		if (null == dvalue) 
+			return null; 
+		
+		return new Criterion(key, dvalue);
 	}
 
 
