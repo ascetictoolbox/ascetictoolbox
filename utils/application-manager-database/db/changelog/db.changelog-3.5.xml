@@ -23,26 +23,15 @@
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
-  <!-- Initial tables: applications, deployments, and vms 
-        and later modifications to them -->
-  <include file="db/changelog/db.changelog-1.0.xml"/>
-  <include file="db/changelog/db.changelog-1.1.xml"/>
-  <include file="db/changelog/db.changelog-1.2.xml"/>
-
-  <!-- It adds images table -->
-  <include file="db/changelog/db.changelog-2.0.xml"/>
-  <include file="db/changelog/db.changelog-2.1.xml"/>
-  <include file="db/changelog/db.changelog-2.2.xml"/>
-
-  <!-- It adds sla-agreement to deployments -->
-  <!-- <include file="db/changelog/db.changelog-2.3.xml"/> -->
-
-  <!-- It adds agreements table -->
-  <include file="db/changelog/db.changelog-3.0.xml"/>
-  <include file="db/changelog/db.changelog-3.1.xml"/>
-  <include file="db/changelog/db.changelog-3.2.xml"/>
-  <include file="db/changelog/db.changelog-3.3.xml"/>
-  <include file="db/changelog/db.changelog-3.4.xml"/>
-  <include file="db/changelog/db.changelog-3.5.xml"/>
-
+  <changeSet author="davidgp" id="addColumn-valid_until-agreements-table">
+      <addColumn tableName="agreements">
+            <column name="valid_until" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <!-- <modifySql dbms="mysql">
+              <regExpReplace replace="'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'" with="DEFAULT CURRENT_TIMESTAMP"/>
+            </modifySql> -->
+      </addColumn>
+  </changeSet>
+  
 </databaseChangeLog>
