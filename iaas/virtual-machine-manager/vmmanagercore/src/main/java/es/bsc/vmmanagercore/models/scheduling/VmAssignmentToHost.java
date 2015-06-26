@@ -61,7 +61,7 @@ public class VmAssignmentToHost {
         return new VmEstimate(
                 vm.getName(),
                 getPowerEstimate(vmsDeployed, deploymentPlan, energyModeller),
-                getPriceEstimate(vmsDeployed, deploymentPlan, pricingModeller, energyModeller));
+                getPriceEstimate(pricingModeller));
     }
 
     /**
@@ -76,27 +76,13 @@ public class VmAssignmentToHost {
     }
 
     /**
-     * Returns the predicted energy estimate of the placement.
-     *
-     * @param vmsDeployed VMs deployed in the infrastructure
-     * @return the predicted energy
-     */
-    private double getEnergyEstimate(List<VmDeployed> vmsDeployed, DeploymentPlan deploymentPlan,
-                                     EnergyModeller energyModeller) {
-        return energyModeller.getPredictedEnergyVm(vm, host, vmsDeployed, deploymentPlan);
-    }
-
-    /**
      * Returns the predicted price of the placement.
      *
-     * @param vmsDeployed VMs deployed in the infrastructure
+     * @param pricingModeller the Pricing Modeller responsible for calculating the price
      * @return the predicted price
      */
-    private double getPriceEstimate(List<VmDeployed> vmsDeployed, DeploymentPlan deploymentPlan,
-                                    PricingModeller pricingModeller, EnergyModeller energyModeller) {
-        return pricingModeller.getVmCost(
-                getEnergyEstimate(vmsDeployed, deploymentPlan, energyModeller),
-                host.getHostname());
+    private double getPriceEstimate(PricingModeller pricingModeller) {
+        return pricingModeller.getVmCost(vm.getCpus(), vm.getRamMb(), vm.getDiskGb(), host.getHostname());
     }
 
     @Override

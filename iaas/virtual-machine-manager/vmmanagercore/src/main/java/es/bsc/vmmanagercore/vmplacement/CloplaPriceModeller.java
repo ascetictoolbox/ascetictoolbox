@@ -43,14 +43,11 @@ public class CloplaPriceModeller implements PriceModeller {
 
     @Override
     public double getCost(Host host, List<Vm> vmsDeployedInHost) {
-        return pricingModeller.getVmCost(
-                getPowerConsumption(host, vmsDeployedInHost), host.getHostname());
-    }
-    
-    private double getPowerConsumption(Host host, List<Vm> vmsDeployedInHost) {
-        return energyModeller.getHostPredictedAvgPower(
-                host.getHostname(),
-                CloplaConversor.cloplaVmsToVmmType(vmsDeployedInHost));
+        double result = 0.0;
+        for (Vm vm: vmsDeployedInHost) {
+            result += pricingModeller.getVmCost(vm.getNcpus(), vm.getRamMb(), vm.getDiskGb(), host.getHostname());
+        }
+        return result;
     }
 
 }

@@ -22,14 +22,15 @@ import es.bsc.vmmanagercore.modellers.price.PricingModeller;
 
 /**
  * This is a dummy Pricing Modeller. It always returns 0, but it can be helpful in cases where there is not any
- * Pricing Modeller defined. Using this Modeller is safer than setting the Pricing Modeller attribute to null in the VMM.
+ * Pricing Modeller defined.
+ * Using this Modeller is safer than setting the Pricing Modeller attribute to null in the VMM.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  */
 public class DummyPricingModeller implements PricingModeller {
 
     @Override
-    public double getVmCost(double totalEnergy, String hostname) {
+    public double getVmCost(int cpus, int ramMb, int diskGb, String hostname) {
         return 0;
     }
 

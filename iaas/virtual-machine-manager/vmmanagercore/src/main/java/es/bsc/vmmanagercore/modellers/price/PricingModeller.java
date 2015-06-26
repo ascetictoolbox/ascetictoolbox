@@ -24,21 +24,14 @@ package es.bsc.vmmanagercore.modellers.price;
 public interface PricingModeller {
 
     /**
-     * Returns the predicted cost on a given host for a given amount of energy.
+     * Returns the predicted cost on a given host for a given VM size
      *
-     * @param totalEnergy total energy consumed by the VM (joules)
+     * @param cpus the cpus of the VM
+     * @param ramMb the RAM (in MB) of the VM
+     * @param diskGb the disk size (in GB) of the VM
      * @param hostname the hostname
      * @return the predicted cost of the VM
      */
-    double getVmCost(double totalEnergy, String hostname);
-
-    /**
-     * Returns the predicted cost on a given host for a given Vm
-     *
-     * @param vmId the ID of the VM
-     * @param hostname the hostname
-     * @return the predicted cost of the VM
-     */
-    //double getVmCost(String vmId, String hostname);
+    double getVmCost(int cpus, int ramMb, int diskGb, String hostname);
 
 }
