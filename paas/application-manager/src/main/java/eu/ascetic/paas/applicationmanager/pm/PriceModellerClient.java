@@ -44,7 +44,9 @@ public class PriceModellerClient {
 
 	public static double calculatePrice(int applicationId, int deploymentId, double iaasPrice) {
 		logger.debug("Connecting to Price Modeller using fixed IaaSPrice: " + iaasPrice);
-		double paasPrice = PriceModellerClient.getInstance().priceModeller.getAppPriceEstimation(deploymentId, applicationId, 0, iaasPrice);
+		//double paasPrice = PriceModellerClient.getInstance().priceModeller.getAppPriceEstimation(deploymentId, applicationId, 0, iaasPrice);
+		// TODO Change this to the new Price Modeller interface
+		double paasPrice = 120;
 		logger.debug("New price from the Price Modeller : " + paasPrice);
 		return paasPrice;
 	}

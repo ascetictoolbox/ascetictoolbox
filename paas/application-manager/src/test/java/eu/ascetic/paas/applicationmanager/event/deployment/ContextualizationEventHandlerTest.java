@@ -39,7 +39,7 @@ import eu.ascetic.paas.applicationmanager.model.Deployment;
 public class ContextualizationEventHandlerTest {
 	
 	@Test
-	public void testWrongStateDoesNothing() {
+	public void testWrongStateDoesNothing() throws Exception {
 		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
 		DeploymentEventService deploymentEventService = mock(DeploymentEventService.class);
 		

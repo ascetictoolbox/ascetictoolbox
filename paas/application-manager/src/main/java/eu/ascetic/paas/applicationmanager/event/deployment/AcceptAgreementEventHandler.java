@@ -1,16 +1,28 @@
 package eu.ascetic.paas.applicationmanager.event.deployment;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
+import org.slasoi.gslam.syntaxconverter.SLASOIRenderer;
+import org.slasoi.gslam.syntaxconverter.SLASOITemplateParser;
+import org.slasoi.slamodel.sla.SLA;
+import org.slasoi.slamodel.sla.SLATemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import reactor.event.Event;
 import reactor.spring.annotation.Consumer;
 import reactor.spring.annotation.Selector;
+import eu.ascetic.paas.applicationmanager.conf.Configuration;
+import eu.ascetic.paas.applicationmanager.dao.AgreementDAO;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.event.DeploymentEvent;
+import eu.ascetic.paas.applicationmanager.model.Agreement;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.pm.PriceModellerClient;
+import eu.ascetic.paas.applicationmanager.slam.NegotiationWsClient;
+import eu.ascetic.paas.applicationmanager.slam.translator.SlaTranslator;
+import eu.ascetic.paas.applicationmanager.slam.translator.SlaTranslatorImplNoOsgi;
 
 /**
  * 
@@ -42,6 +54,8 @@ private static Logger logger = Logger.getLogger(AcceptAgreementEventHandler.clas
 	@Autowired
 	protected DeploymentDAO deploymentDAO;
 	@Autowired
+	protected AgreementDAO agreementDAO;
+	@Autowired
 	protected DeploymentEventService deploymentEventService;
 	
 	/**
@@ -50,28 +64,68 @@ private static Logger logger = Logger.getLogger(AcceptAgreementEventHandler.clas
 	 * @param event Deployment event with the information of the deployment to check
 	 */
 	@Selector(value="topic.deployment.status", reactor="@rootReactor")
-	public void acceptAgreement(Event<DeploymentEvent> event) {
+	public void acceptAgreement(Event<DeploymentEvent> event) throws Exception {
 		DeploymentEvent deploymentEvent = event.getData();
 
-		if(deploymentEvent.getDeploymentStatus().equals(Dictionary.APPLICATION_STATUS_NEGOTIATIED)) {
+		if(deploymentEvent.getDeploymentStatus().equals(Dictionary.APPLICATION_STATUS_NEGOTIATIED) && deploymentEvent.isAutomaticNegotiation() == true) {
+			
 			logger.info(" Moving deployment id: " + deploymentEvent.getDeploymentId()  + " to " + Dictionary.APPLICATION_STATUS_NEGOTIATIED + " state");
 			
 			// We need first to read the deployment from the DB:
 			Deployment deployment = deploymentDAO.getById(deploymentEvent.getDeploymentId());
 			
-			// We calculate the new price, since we are not updating the SLATemplate Price I'm doing this here:
-			double price = PriceModellerClient.calculatePrice(1, deployment.getId(), 100.0);
-			
-			// Since we are not doing this right now, we move the application to the next step
-			deployment.setStatus(Dictionary.APPLICATION_STATUS_CONTEXTUALIZATION);
-			deployment.setPrice("" + price);
-			deploymentEvent.setDeploymentStatus(deployment.getStatus());
-			
-			// We save the changes to the DB
-			deploymentDAO.update(deployment);
-			
-			//We notify that the deployment has been modified
-			deploymentEventService.fireDeploymentEvent(deploymentEvent);
+			if(Configuration.enableSLAM.equals("yes")) {
+				// We get the list of agreements
+				List<Agreement> agreements = deploymentDAO.getById(deploymentEvent.getDeploymentId()).getAgreements();
+				
+				// We sign the first agreement
+				for(Agreement agreement: agreements) {
+					if(agreement.getOrderInArray() == 0) {
+						SLASOITemplateParser parser = new SLASOITemplateParser();
+						SLATemplate slat = parser.parseTemplate(agreement.getSlaAgreement());
+						
+						// We create a client to the SLAM
+						NegotiationWsClient client = new NegotiationWsClient();
+						SlaTranslator slaTranslator = new SlaTranslatorImplNoOsgi();
+						client.setSlaTranslator(slaTranslator);
+						
+						logger.debug("Sending create agreement SOAP request...");
+						SLA slaAgreement = client.createAgreement(Configuration.slamURL, slat, agreement.getNegotiationId());
+						logger.debug("SLA:");
+						logger.debug(slaAgreement);  
+						
+						// We calculate the new price, since we are not updating the SLATemplate Price I'm doing this here:
+						double price = PriceModellerClient.calculatePrice(1, deployment.getId(), 100.0);
+						deployment.setPrice("" + price);
+						
+						// We store the new agreement in the db:
+						SLASOIRenderer rendeder = new SLASOIRenderer();
+						String slaAgreementString = rendeder.renderSLA(slaAgreement);
+						
+						agreement.setAccepted(true);
+						agreement.setSlaAgreement(slaAgreementString);
+						agreement.setPrice("" + price);
+						
+						agreementDAO.update(agreement);
+				
+						finalization(deployment, deploymentEvent);
+					}
+				}
+			} else {
+				finalization(deployment, deploymentEvent);
+			}
 		}
+	}
+	
+	private void finalization(Deployment deployment, DeploymentEvent deploymentEvent) {
+		deployment.setStatus(Dictionary.APPLICATION_STATUS_CONTEXTUALIZATION);
+		
+		deploymentEvent.setDeploymentStatus(deployment.getStatus());
+		
+		// We save the changes to the DB
+		deploymentDAO.update(deployment);
+		
+		//We notify that the deployment has been modified
+		deploymentEventService.fireDeploymentEvent(deploymentEvent);
 	}
 }

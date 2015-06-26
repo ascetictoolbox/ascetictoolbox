@@ -1,7 +1,7 @@
 package eu.ascetic.paas.applicationmanager.event.deployment;
 
 import org.apache.log4j.Logger;
-import org.slasoi.slamodel.sla.SLA;
+import org.slasoi.gslam.syntaxconverter.SLASOITemplateRenderer;
 import org.slasoi.slamodel.sla.SLATemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -9,6 +9,7 @@ import eu.ascetic.paas.applicationmanager.amqp.AmqpProducer;
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.event.DeploymentEvent;
+import eu.ascetic.paas.applicationmanager.model.Agreement;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
@@ -46,7 +47,6 @@ import reactor.spring.annotation.Selector;
 @Consumer
 public class NegotiationEventHandler {
 	private static Logger logger = Logger.getLogger(NegotiationEventHandler.class);
-	
 	@Autowired
 	protected DeploymentDAO deploymentDAO;
 	@Autowired
@@ -54,7 +54,7 @@ public class NegotiationEventHandler {
 	
 	// TODO this method it is not multiprovider... 
 	@Selector(value="topic.deployment.status", reactor="@rootReactor")
-	public void negotiationProcess(Event<DeploymentEvent> event) {
+	public void negotiationProcess(Event<DeploymentEvent> event) throws Exception {
 		DeploymentEvent deploymentEvent = event.getData();
 
 		if(deploymentEvent.getDeploymentStatus().equals(Dictionary.APPLICATION_STATUS_NEGOTIATION)) {
@@ -97,17 +97,10 @@ public class NegotiationEventHandler {
 				//					String xmlRetSlat = rend.renderSLATemplate(slats[0]); // TODO I need to retrieve a list of negotiations
 				//					logger.debug("SLA Template:");
 				//					logger.debug(xmlRetSlat);
-
-
-				// New code
-
-				//					SLASOITemplateParser parser = new SLASOITemplateParser();
-				//					SLATemplate slat = parser.parseTemplate(slatXml);
-				logger.debug("Sending create agreement SOAP request...");
-				SLA slaAgreement = client.createAgreement(Configuration.slamURL, slats[0], negId);  // TODO I need to store this somewhere... 
-				logger.debug("SLA:");
-				logger.debug(slaAgreement);  
-
+				
+				
+				// New Y2 - We store all the templates in the database
+				storeTemplatesInDB(slats, negId, deployment);
 			}
 			
 			deployment.setStatus(Dictionary.APPLICATION_STATUS_NEGOTIATIED);
@@ -121,6 +114,32 @@ public class NegotiationEventHandler {
 			
 			//We notify that the deployment has been modified
 			deploymentEventService.fireDeploymentEvent(deploymentEvent);
+		}
+	}
+	
+	//TODO add the price estimation here and multiprovider
+	protected void storeTemplatesInDB(SLATemplate[] slats, String negotiationId, Deployment deployment) throws Exception {
+		
+		if(slats != null) {
+			
+			for(int i=0; i<slats.length; i++) {
+				Agreement agreement = new Agreement(); 
+				agreement.setAccepted(false);
+				agreement.setDeployment(deployment);
+				
+				SLASOITemplateRenderer rend = new SLASOITemplateRenderer();
+				String xmlRetSlat = rend.renderSLATemplate(slats[i]);
+				
+				
+				agreement.setSlaAgreement(xmlRetSlat);
+				agreement.setNegotiationId(negotiationId);
+				agreement.setSlaAgreementId(slats[i].getUuid().getValue());
+				agreement.setOrderInArray(i);
+				
+				deployment.addAgreement(agreement);
+			}
+			
+			deploymentDAO.update(deployment);
 		}
 	}
 }
