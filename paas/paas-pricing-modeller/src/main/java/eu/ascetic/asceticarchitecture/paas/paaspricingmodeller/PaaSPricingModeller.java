@@ -19,11 +19,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.io.IOException;
-
-import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesrepository.IaaSPricingModellerPricingScheme;
-import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesrepository.PricingSchemeA;
-import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesrepository.PricingSchemeB;
-import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.VMstate;
 import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.billing.PaaSPricingModellerBilling;
 import eu.ascetic.asceticarchitecture.paas.type.DeploymentInfo;
 import eu.ascetic.asceticarchitecture.paas.type.VMinfo;
