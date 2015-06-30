@@ -1,5 +1,0 @@
-compss-framework/COMPSs/JAVA_GAT/ /opt/COMPSs/JAVA_GAT/
-compss-framework/COMPSs/Runtime/ /opt/COMPSs/Runtime/
-compss-framework/COMPSs/Monitor/ /opt/COMPSs/Monitor/
-compss-framework/COMPSs/doc/compss-manual.pdf /opt/COMPSs/doc/compss-manual.pdf
-compss-framework/etc/profile.d/compss.sh /etc/profile.d/compss.sh

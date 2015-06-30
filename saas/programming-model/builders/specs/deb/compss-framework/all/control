@@ -1,8 +1,0 @@
-Package: compss-framework
-Version: 1.2
-Priority: optional
-Architecture: all
-Essential: no
-Depends: default-jre (>= 1.6), graphviz, xdg-utils
-Maintainer: Roger Rafanell <roger.rafanell@bsc.es>
-Description: The BSC COMP Superscalar Framework.

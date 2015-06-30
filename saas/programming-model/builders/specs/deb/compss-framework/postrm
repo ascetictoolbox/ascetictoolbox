@@ -1,4 +1,0 @@
-#!/bin/sh -e
-
-rm -rf /opt/COMPSs/
-rm -f /etc/profile.d/compss.sh
