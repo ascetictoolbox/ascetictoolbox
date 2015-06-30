@@ -1,5 +1,6 @@
 package eu.ascetic.paas.applicationmanager.dao.jpa;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.springframework.context.ApplicationContext;
@@ -8,6 +9,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 //import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.dao.ImageDAO;
+import eu.ascetic.paas.applicationmanager.model.Agreement;
 //import eu.ascetic.paas.applicationmanager.dao.VMDAO;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
@@ -203,6 +205,18 @@ public class MysqJPATestIT {
 		deployment2.setStatus("RUNNING");
 		deployment2.setPrice("expensive");
 		
+		Agreement agreement = new Agreement();
+		agreement.setAccepted(true);
+		agreement.setNegotiationId("neg-id");
+		agreement.setOrderInArray(1);
+		agreement.setPrice("122");
+		agreement.setProviderId("provider-id");
+		agreement.setSlaAgreement("asdfas");
+		agreement.setSlaAgreementId("adasdf");
+		agreement.setValidUntil(new Timestamp(System.currentTimeMillis() + 86400000l));
+		
+		deployment1.addAgreement(agreement);
+		
 		application.addDeployment(deployment1);
 		application.addDeployment(deployment2);
 		
@@ -250,6 +264,10 @@ public class MysqJPATestIT {
 		Application applicationFromDB = applicationDAO.getByName(applicationNew.getName());
 		
 		System.out.println("### of deployments " + applicationFromDB.getDeployments().size());
+		
+		long current = System.currentTimeMillis();
+		long current1Day = current + 86400000l;
+		System.out.println("Current time:" + current + " current+1 day: " + current1Day);
 		
 	}
 	

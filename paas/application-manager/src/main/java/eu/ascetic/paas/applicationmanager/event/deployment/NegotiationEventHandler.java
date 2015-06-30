@@ -1,5 +1,7 @@
 package eu.ascetic.paas.applicationmanager.event.deployment;
 
+import java.sql.Timestamp;
+
 import org.apache.log4j.Logger;
 import org.slasoi.gslam.syntaxconverter.SLASOITemplateRenderer;
 import org.slasoi.slamodel.sla.SLATemplate;
@@ -121,6 +123,11 @@ public class NegotiationEventHandler {
 	protected void storeTemplatesInDB(SLATemplate[] slats, String negotiationId, Deployment deployment) throws Exception {
 		
 		if(slats != null) {
+
+			// Calculating when the agreement it is going to expire
+			// TODO this needs to be converted into multiprovider
+			long  minutesToExpire = Long.parseLong(Configuration.slaAgreementExpirationTime);
+			long timeToExpire = System.currentTimeMillis() + minutesToExpire * 60* 1000;
 			
 			for(int i=0; i<slats.length; i++) {
 				Agreement agreement = new Agreement(); 
@@ -130,11 +137,11 @@ public class NegotiationEventHandler {
 				SLASOITemplateRenderer rend = new SLASOITemplateRenderer();
 				String xmlRetSlat = rend.renderSLATemplate(slats[i]);
 				
-				
 				agreement.setSlaAgreement(xmlRetSlat);
 				agreement.setNegotiationId(negotiationId);
 				agreement.setSlaAgreementId(slats[i].getUuid().getValue());
 				agreement.setOrderInArray(i);
+				agreement.setValidUntil(new Timestamp(timeToExpire));
 				
 				deployment.addAgreement(agreement);
 			}

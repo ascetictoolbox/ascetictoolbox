@@ -45,6 +45,7 @@ public class Configuration {
 	
 	// TODO to remove this parameter, this configuration needs to be collected from the Provider Registry
 	public static String vmManagerServiceUrl = "http://10.4.0.15:34372/vmmanager";
+	public static String slaAgreementExpirationTime = "30"; // This value has to be specified in minutes 
 	
 	static {
         try {
@@ -69,6 +70,7 @@ public class Configuration {
         	
         	// TODO to change this to be collected by the Provider Registry
         	vmManagerServiceUrl = config.getString("vm-manager.url");
+        	slaAgreementExpirationTime = config.getString("sla-agreement-expiration-time");
         }
         catch (Exception e) {
             logger.info("Error loading Application Manager configuration file");

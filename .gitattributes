@@ -768,6 +768,7 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/R
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/VMRest.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/util/DateUtil.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/util/EnergyModellerConverter.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/util/TimeStampComparator.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/util/XMLBuilder.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/NegotiationClient.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/NegotiationWsClient.java -text
@@ -835,6 +836,7 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/R
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/VMRestTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/util/DateUtilTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/util/EnergyModellerConverterTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/util/TimeStampComparatorTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/util/XMLBuilderTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/NegotiationWsClientIT.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/PlayingTestIT.java -text
