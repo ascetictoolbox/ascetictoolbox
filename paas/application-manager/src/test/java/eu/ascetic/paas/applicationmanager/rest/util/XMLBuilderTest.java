@@ -884,4 +884,77 @@ public class XMLBuilderTest {
 		assertEquals("self", collection.getLinks().get(1).getRel());
 		assertEquals(MediaType.APPLICATION_XML, collection.getLinks().get(1).getType());
 	}
+	
+	@Test
+	public void getCollectionOfVMsTest() throws JAXBException {
+		VM vm1 = new VM();
+		vm1.setId(33);
+		vm1.setIp("0.0.0.0");
+		vm1.setOvfId("vm-ovf-id");
+		vm1.setProviderId("provider-id");
+		vm1.setSlaAgreement("sla-agreement-id");
+		vm1.setStatus("ACTIVE");
+		
+		VM vm2 = new VM();
+		vm2.setId(44);
+		vm2.setIp("1.1.1.1");
+		vm2.setOvfId("vm-ovf-id2");
+		vm2.setProviderId("provider-id2");
+		vm2.setSlaAgreement("sla-agreement-id2");
+		vm2.setStatus("DELETED");
+		
+		List<VM> vms = new ArrayList<VM>();
+		vms.add(vm1);
+		vms.add(vm2);
+		
+		String xml = XMLBuilder.getCollectionOfVMs(vms, "app-id", 223);
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(Collection.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		Collection collection = (Collection) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals("/applications/app-id/deployments/223/vms", collection.getHref());
+		assertEquals(0, collection.getItems().getOffset());
+		assertEquals(2, collection.getItems().getTotal());
+		// Links
+		assertEquals(2, collection.getLinks().size());
+		assertEquals("/applications/app-id/deployments/223", collection.getLinks().get(0).getHref());
+		assertEquals("parent", collection.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, collection.getLinks().get(0).getType());
+		assertEquals("/applications/app-id/deployments/223/vms", collection.getLinks().get(1).getHref());
+		assertEquals("self", collection.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, collection.getLinks().get(1).getType());
+		// # VMs
+		assertEquals(2, collection.getItems().getVms().size());
+		// VM #1
+		VM vm = collection.getItems().getVms().get(0);
+		assertEquals("/applications/app-id/deployments/223/vms/33", vm.getHref());
+		assertEquals(33, vm.getId());
+		assertEquals("0.0.0.0", vm.getIp());
+		assertEquals("ACTIVE", vm.getStatus());
+		assertEquals("vm-ovf-id", vm.getOvfId());
+		assertEquals("provider-id", vm.getProviderId());
+		assertEquals(2, vm.getLinks().size());
+		assertEquals("/applications/app-id/deployments/223/vms", vm.getLinks().get(0).getHref());
+		assertEquals("parent", vm.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, vm.getLinks().get(0).getType());
+		assertEquals("/applications/app-id/deployments/223/vms/33", vm.getLinks().get(1).getHref());
+		assertEquals("self", vm.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, vm.getLinks().get(1).getType());
+		// VM #2
+		vm = collection.getItems().getVms().get(1);
+		assertEquals("/applications/app-id/deployments/223/vms/44", vm.getHref());
+		assertEquals(44, vm.getId());
+		assertEquals("1.1.1.1", vm.getIp());
+		assertEquals("DELETED", vm.getStatus());
+		assertEquals("vm-ovf-id2", vm.getOvfId());
+		assertEquals("provider-id2", vm.getProviderId());
+		assertEquals(2, vm.getLinks().size());
+		assertEquals("/applications/app-id/deployments/223/vms", vm.getLinks().get(0).getHref());
+		assertEquals("parent", vm.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, vm.getLinks().get(0).getType());
+		assertEquals("/applications/app-id/deployments/223/vms/44", vm.getLinks().get(1).getHref());
+		assertEquals("self", vm.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, vm.getLinks().get(1).getType());
+	}
 }

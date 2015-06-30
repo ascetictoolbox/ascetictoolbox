@@ -52,6 +52,27 @@ import eu.ascetic.paas.applicationmanager.rest.util.XMLBuilder;
 @Scope("request")
 public class VMRest extends AbstractRest {
 	private static Logger logger = Logger.getLogger(VMRest.class);
+	
+	@GET
+	@Produces(MediaType.APPLICATION_XML)
+	public Response getVMs(@PathParam("application_name") String applicationName, @PathParam("deployment_id") String deploymentId) {
+		List<VM> vms = deploymentDAO.getById(Integer.parseInt(deploymentId)).getVms();
+		
+		String xml = XMLBuilder.getCollectionOfVMs(vms, applicationName, Integer.parseInt(deploymentId));
+		
+		return buildResponse(Status.OK, xml);
+	}
+	
+	@GET
+	@Path("{vm_id}")
+	@Produces(MediaType.APPLICATION_XML)
+	public Response getVM(@PathParam("application_name") String applicationName,  @PathParam("deployment_id") String deploymentId, @PathParam("vm_id") String vmId) {
+		VM vm = vmDAO.getById(Integer.parseInt(vmId));
+		
+		String xml = XMLBuilder.getVMXML(vm, applicationName, Integer.parseInt(deploymentId));
+		
+		return buildResponse(Status.OK, xml);
+	}
 
 	@GET
 	@Path("{vm_id}/events/{event_id}/energy-estimation")
