@@ -6,6 +6,7 @@ import static org.junit.Assert.assertFalse;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.jdom.Document;
@@ -760,6 +761,7 @@ public class ModelConverterTest {
 		agreement.setPrice("333");
 		agreement.setSlaAgreementId("sla-id");
 		agreement.setProviderId("provider-id");
+		agreement.setValidUntil(new Timestamp(System.currentTimeMillis()));
 		
 		Link link = new Link();
 		link.setRel("self");

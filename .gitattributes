@@ -696,6 +696,7 @@ paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmana
 paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/PowerMeasurement.java -text
 paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/Root.java -text
 paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/VM.java -text
+paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/adapter/TimestampAdapter.java -text
 paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/converter/ModelConverter.java -text
 paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmanager/amqp/model/ApplicationManagerMessageTest.java -text
 paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmanager/amqp/model/VMTest.java -text

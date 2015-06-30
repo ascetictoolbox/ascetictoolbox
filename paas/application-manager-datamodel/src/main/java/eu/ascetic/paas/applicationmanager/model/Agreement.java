@@ -24,6 +24,9 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import eu.ascetic.paas.applicationmanager.model.adapter.TimestampAdapter;
 
 /**
  * 
@@ -75,6 +78,7 @@ public class Agreement {
 	@XmlTransient
 	private int orderInArray;
 	@XmlElement(name = "valid-until", namespace = APPLICATION_MANAGER_NAMESPACE)
+	@XmlJavaTypeAdapter(TimestampAdapter.class)
 	private Timestamp validUntil;
 	@XmlElement(name = "accepted", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private boolean accepted;
