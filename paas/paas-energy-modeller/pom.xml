@@ -40,6 +40,10 @@
 		<paasem.spring>3.2.9.RELEASE</paasem.spring>
 		<paasem.jmeter>2.11</paasem.jmeter>
 		<paasem.jersey>2.5.1</paasem.jersey>
+		<paasem.activemq>5.2.0</paasem.activemq>
+		<paasem.jackson>2.5.4</paasem.jackson>
+		<paasem.qpid>0.1.0</paasem.qpid>
+		<paasem.weka>0.1.0</paasem.weka>
 	</properties>
 
 	<dependencies>
@@ -112,6 +116,32 @@
 			<artifactId>zabbix-api</artifactId>
 			<version>0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+		  <groupId>org.apache.activemq</groupId>
+		  <artifactId>activemq-core</artifactId>
+		  <version>${paasem.activemq}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>${paasem.jackson}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${paasem.jackson}</version>
+		</dependency>	
+		<dependency>
+			<groupId>org.apache.qpid</groupId>
+			<artifactId>qpid-jms-client</artifactId>
+			<version>${paasem.qpid}</version>
+		</dependency>
+		<dependency>
+			<groupId>nz.ac.waikato.cms.weka</groupId>
+			<artifactId>weka-dev</artifactId>
+			<version>3.7.12</version>
+		</dependency>
+		
 	</dependencies>
 
 	<build>

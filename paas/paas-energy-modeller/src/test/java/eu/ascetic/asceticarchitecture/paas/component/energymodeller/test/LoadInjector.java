@@ -12,7 +12,7 @@ import java.util.Properties;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.ascetic.asceticarchitecture.paas.component.common.data.database.dao.EMSettings;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.dao.EMSettings;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.loadinjector.LoadInjectorService;
 
 public class LoadInjector {

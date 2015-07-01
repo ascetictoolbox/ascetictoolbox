@@ -42,11 +42,19 @@ public interface PaaSEnergyModeller {
 	/**
 	 * @param providerid
 	 * @param applicationid
-	 * @param deploymentid
-	 * @return will train application model in future
-	 */	
-	boolean monitorApplication(String providerid, String applicationid,String deploymentid, String eventid, Unit unit, long window, long frequency);
+	 * @param vmids
+	 * @return subscribe the publishing of measurement for an appl/event, if timewindow is >0 then is a forecast subscription referred to forecast window
+	 */
+	public boolean subscribeMonitoring(String applicationid, String deploymentid,String eventid,long timewindow, Unit unit);
 	
+	/**
+	 * @param providerid
+	 * @param applicationid
+	 * @param vmids
+	 * @return unsubscribe the publishing of prediction for an appl/event
+	 */
+	public boolean unsubscribeMonitoring(String applicationid, String deploymentid, String eventid, long timewindow, Unit unit);
+
 	
 	// Y2 new Interfaces to support training 
 	
@@ -87,6 +95,13 @@ public interface PaaSEnergyModeller {
 	 */
 	public List<ApplicationSample> applicationData( String providerid, String applicationid,List<String> vmids, long samplingperiod,Timestamp start, Timestamp end);	
 
+
+	/**
+	 * @param token
+	 * @param command
+	 * @return it asks the PEM to perform management operation (whipe data...) to be used for internal purpose
+	 */
+	public void manageComponent(String token, String command);
 	
 
 }

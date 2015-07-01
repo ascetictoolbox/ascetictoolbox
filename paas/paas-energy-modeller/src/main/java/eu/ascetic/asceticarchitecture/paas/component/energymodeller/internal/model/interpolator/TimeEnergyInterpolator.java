@@ -3,15 +3,12 @@
  */
 package eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.model.interpolator;
 
-import java.util.Vector;
-
-import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 import org.apache.log4j.Logger;
 
-import eu.ascetic.asceticarchitecture.paas.component.common.data.database.dao.DataConsumptionDAO;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.dao.DataConsumptionDAO;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.model.InterpolatorService;
 
 public class TimeEnergyInterpolator implements InterpolatorService {

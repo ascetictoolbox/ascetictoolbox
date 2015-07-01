@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
@@ -16,18 +17,22 @@ import java.util.Vector;
 import org.apache.log4j.Logger;
 
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.HistoryItem;
-import eu.ascetic.asceticarchitecture.paas.component.common.data.PaaSEMDatabaseManager;
-import eu.ascetic.asceticarchitecture.paas.component.common.data.database.dao.EMSettings;
-import eu.ascetic.asceticarchitecture.paas.component.common.data.database.table.DataEvent;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.ApplicationSample;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EventSample;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Unit;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.messages.GenericEnergyMessage;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.PaaSEnergyModeller;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.datacollector.DataCollectorService;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.datacollector.aggregator.EnergyDataAggregatorService;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.datacollector.aggregator.EventDataAggregatorService;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.PaaSEMDatabaseManager;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.dao.EMSettings;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.DataEvent;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.queue.MessageParserUtility;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.EnergyDataAggregatorService;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.EventDataAggregatorService;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.MonitoringDataService;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.ZabbixDataCollectorService;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.loadinjector.LoadInjectorService;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.model.interpolator.GenericValuesInterpolator;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.model.interpolator.old.GenericValuesInterpolator;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.queue.QueueManager;
 
 /**
  * @author davide sommacampagna
@@ -42,7 +47,13 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	
 	private PaaSEMDatabaseManager dbmanager;
 	private LoadInjectorService loadInjector;	
-	private DataCollectorService datacollector;
+	private ZabbixDataCollectorService datacollector;
+	private MonitoringDataService monitoringDataService;
+	
+	private QueueManager queueManager;
+	private String monitoringTopic="monitoring";
+	private String predictionTopic="prediction";
+	private Boolean queueEnabled = false;
 	private EnergyDataAggregatorService energyService;
 	private EventDataAggregatorService eventService;
 
@@ -57,15 +68,21 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	
 	@Override
 	public double measure(String providerid, String applicationid,List<String> vmids, String eventid, Unit unit,Timestamp start, Timestamp end) {
+		
+		
 		if((start==null)&&(end==null)){
 			LOGGER.info("Measuring from all available data since both timestamps are not specified");
 			if (unit==Unit.ENERGY){
 				LOGGER.info("Measuring energy consumption");
-				return energyConsumption(providerid,applicationid,vmids,eventid,null,null);
-				
+				double result = energyConsumption(providerid,applicationid,vmids,eventid,null,null);
+				sendToQueue(monitoringTopic, providerid, applicationid, vmids, eventid, GenericEnergyMessage.Unit.WATTHOUR, null, result);
+				return result;
 			} else {
 				LOGGER.info("Measuring average instant power"); 
-				return averagePower(providerid,applicationid, vmids,  eventid,null,null);
+				double result = averagePower(providerid,applicationid, vmids,  eventid,null,null);
+				sendToQueue(monitoringTopic, providerid, applicationid, vmids, eventid, GenericEnergyMessage.Unit.WATT, null, result);
+				LOGGER.info("Sending to queue"); 
+				return result;
 			}
 		}else {
 			LOGGER.info("Checking the timestamps"); 
@@ -88,10 +105,14 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 			}
 			if (unit==Unit.ENERGY){
 				LOGGER.info("Measuring energy consumption");
-				return energyConsumption( providerid, applicationid, vmids,  eventid,  start,  end);
+				double result =  energyConsumption( providerid, applicationid, vmids,  eventid,  start,  end);
+				sendToQueue(monitoringTopic, providerid, applicationid, vmids, eventid, GenericEnergyMessage.Unit.WATTHOUR, null, result);
+				return result;
 			} else {
 				LOGGER.info("Measuring average instant power"); 
-				return averagePower(providerid,applicationid, vmids,  eventid,start,end);
+				double result =  averagePower(providerid,applicationid, vmids,  eventid,start,end);
+				sendToQueue(monitoringTopic, providerid, applicationid, vmids, eventid, GenericEnergyMessage.Unit.WATT, null, result);
+				return result;
 			}
 			
 		}
@@ -100,15 +121,18 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 
 	@Override
 	public double estimate(String providerid, String applicationid,	List<String> vmids, String eventid, Unit unit, long window) {
-		// TODO Y2 Implementation
-		return 0;
+		
+		// call measurement, this updates values and also ensure data is loaded
+		double currentval = this.measure(providerid, applicationid, vmids, eventid, unit, null, null);
+		
+		
+		
+		
+		// not yet estimating
+		
+		return currentval;
 	}
 
-	@Override
-	public boolean monitorApplication(String providerid, String applicationid, String deploymentid, String eventid, Unit unit, long window, long frequency) {
-		// TODO Y2 Implementation
-		return false;
-	}
 
 	/**
 	 * 
@@ -171,6 +195,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		}
 		return results;
 	}
+
 	
 	/**
 	 * 
@@ -366,6 +391,19 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		return eSamples;
 	
 	}
+	
+	/**
+	 * 
+	 * Queue message generation
+	 *  
+	 */
+	
+	
+	private void sendToQueue(String queue,String providerid,String applicationid, List<String> vms, String eventid, GenericEnergyMessage.Unit unit, String referenceTime,double value){
+		
+		if (queueEnabled) queueManager.sendToQueue(queue, providerid, applicationid, vms, eventid, unit, referenceTime, value);
+		
+	}
 		
 	
 	/**
@@ -378,6 +416,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		initializeProperty();
 		initializeLoadInjector();
 		initializeDataConnectors();
+		initializeQueueService();
 		LOGGER.info("EM Initialization complete");
 	}
 	
@@ -427,7 +466,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	
 	private void initializeDataConnectors(){
 		LOGGER.debug("Setting connection to data sources for events and energy ");
-		datacollector = new DataCollectorService();
+		datacollector = new ZabbixDataCollectorService();
 		datacollector.setAMPath(emsettings.getAppmonitor());
 		datacollector.setup();
 		datacollector.setDataconumption(dbmanager.getDataConsumptionDAOImpl());
@@ -436,9 +475,23 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		energyService.setDataDAO(dbmanager.getDataConsumptionDAOImpl());
 		eventService = new EventDataAggregatorService();
 		eventService.setDaoEvent(dbmanager.getDataEventDAOImpl());
+		monitoringDataService = new MonitoringDataService();
+		monitoringDataService.setDataDAO(dbmanager.getMonitoringData());
 		LOGGER.debug("Configured ");
 	}
 	
+	private void initializeQueueService(){
+		if (emsettings.getEnableQueue()=="true"){
+			queueManager = new QueueManager();
+			try {
+				queueManager.setup(emsettings);
+				LOGGER.info("Initialized queue manager ");
+			} catch (Exception e) {
+				LOGGER.error("Issue while configuring the queue manager ");
+				e.printStackTrace();
+			}
+		}
+	}
 	
 	/**
 	 * private methods for collecting data
@@ -465,77 +518,95 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	 * 
 	 */
 	
-	private double integrate(double powera,double powerb, long timea,long timeb){
-		return 	Math.abs((timeb-timea)*(powera+powerb)*0.5)/3600;
-	}
+//	private double integrate(double powera,double powerb, long timea,long timeb){
+//		return 	Math.abs((timeb-timea)*(powera+powerb)*0.5)/3600;
+//	}
 
 	/**
 	 * those methods are legacy or for future implementation and here only temporarly 
 	 */
 	
-	private List<HistoryItem> buildenergyHistory (List<HistoryItem> power){
-		if (power==null)return null;
-		List<HistoryItem> results = new Vector<HistoryItem>();
-		HistoryItem previous=null;
-		for (int i=0;i<power.size();i++){
-			HistoryItem item = power.get(i);
-			HistoryItem energyitem = new HistoryItem();
-			if (previous!=null){
-				Double energy = integrate(new Double(previous.getValue()).doubleValue(),new Double(item.getValue()).doubleValue(),previous.getClock(),item.getClock());
-				energyitem.setValue(energy.toString());
-				energyitem.setClock(item.getClock());
-				results.add(energyitem);
-			} else {
-				Double energy = integrate(0,new Double(item.getValue()).doubleValue(),0,0);
-				energyitem.setValue(energy.toString());
-				energyitem.setClock(item.getClock());
-				results.add(energyitem);
-			}
-			
-			
-			previous = item;
-		}
-		return results;
+//	private List<HistoryItem> buildenergyHistory (List<HistoryItem> power){
+//		if (power==null)return null;
+//		List<HistoryItem> results = new Vector<HistoryItem>();
+//		HistoryItem previous=null;
+//		for (int i=0;i<power.size();i++){
+//			HistoryItem item = power.get(i);
+//			HistoryItem energyitem = new HistoryItem();
+//			if (previous!=null){
+//				Double energy = integrate(new Double(previous.getValue()).doubleValue(),new Double(item.getValue()).doubleValue(),previous.getClock(),item.getClock());
+//				energyitem.setValue(energy.toString());
+//				energyitem.setClock(item.getClock());
+//				results.add(energyitem);
+//			} else {
+//				Double energy = integrate(0,new Double(item.getValue()).doubleValue(),0,0);
+//				energyitem.setValue(energy.toString());
+//				energyitem.setClock(item.getClock());
+//				results.add(energyitem);
+//			}
+//			
+//			
+//			previous = item;
+//		}
+//		return results;
+//		
+//	}
+	
+//	private GenericValuesInterpolator getInterpolator (List<HistoryItem> items){
+//		if (items==null){
+//			LOGGER.info(" Samples not available");
+//			return null;
+//		}
+//		if (items.size()<=0){
+//			LOGGER.info(" Samples empty");
+//			return null;
+//		}
+//		GenericValuesInterpolator genInt = new GenericValuesInterpolator();
+//		double[] timeseries = new double[items.size()];
+//		double[] dataseries = new double[items.size()];
+//		HistoryItem item;
+//		genInt.setLasttime(items.get(0).getClock());
+//		genInt.setStarttime(items.get(items.size()-1).getClock());
+//		int count=0;
+//		for (int i=items.size()-1;i>=0;i--){
+//			item = items.get(i);
+//			timeseries[count]=(item.getClock()-genInt.getStarttime());
+//			dataseries[count]=Double.parseDouble(item.getValue());
+//			//LOGGER.info(" Sample: "+count+";"+timeseries[count]+";"+dataseries[count]);
+//			count++;
+//		}
+//		
+//		genInt.buildmodel(timeseries, dataseries); 
+//		return genInt;
+//		
+//	}	
+//
+//	private double energsyEstimation(String providerid, String applicationid,	List<String> vmids, String eventid) {
+//		double energy = energyConsumption(providerid,applicationid,vmids,eventid,null,null);
+//		if (eventid==null){
+//			LOGGER.info("Application consumed " +String.format( "%.2f", energy ));
+//		} else {
+//			LOGGER.info("Event consumed " +String.format( "%.2f", energy ));
+//		}
+//		return energy;
+//	}
+
+
+	@Override
+	public void manageComponent(String token, String command) {
 		
 	}
-	
-	private GenericValuesInterpolator getInterpolator (List<HistoryItem> items){
-		if (items==null){
-			LOGGER.info(" Samples not available");
-			return null;
-		}
-		if (items.size()<=0){
-			LOGGER.info(" Samples empty");
-			return null;
-		}
-		GenericValuesInterpolator genInt = new GenericValuesInterpolator();
-		double[] timeseries = new double[items.size()];
-		double[] dataseries = new double[items.size()];
-		HistoryItem item;
-		genInt.setLasttime(items.get(0).getClock());
-		genInt.setStarttime(items.get(items.size()-1).getClock());
-		int count=0;
-		for (int i=items.size()-1;i>=0;i--){
-			item = items.get(i);
-			timeseries[count]=(item.getClock()-genInt.getStarttime());
-			dataseries[count]=Double.parseDouble(item.getValue());
-			//LOGGER.info(" Sample: "+count+";"+timeseries[count]+";"+dataseries[count]);
-			count++;
-		}
-		
-		genInt.buildmodel(timeseries, dataseries); 
-		return genInt;
-		
-	}	
 
-	private double energsyEstimation(String providerid, String applicationid,	List<String> vmids, String eventid) {
-		double energy = energyConsumption(providerid,applicationid,vmids,eventid,null,null);
-		if (eventid==null){
-			LOGGER.info("Application consumed " +String.format( "%.2f", energy ));
-		} else {
-			LOGGER.info("Event consumed " +String.format( "%.2f", energy ));
-		}
-		return energy;
+	@Override
+	public boolean subscribeMonitoring(String applicationid, String deploymentid, String eventid, long timewindow, Unit unit) {
+		monitoringDataService.startMonitoring(applicationid, deploymentid, eventid);
+		return true;
+	}
+
+	@Override
+	public boolean unsubscribeMonitoring(String applicationid,String deploymentid, String eventid, long timewindow, Unit unit) {
+		monitoringDataService.stopMonitoring(applicationid, deploymentid);
+		return false;
 	}	
 		
 }

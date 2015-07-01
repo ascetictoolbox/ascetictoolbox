@@ -9,7 +9,7 @@ import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 import org.apache.log4j.Logger;
 
-import eu.ascetic.asceticarchitecture.paas.component.common.data.database.dao.DataConsumptionDAO;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.dao.DataConsumptionDAO;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.model.InterpolatorService;
 
 public class EnergyInterpolator implements InterpolatorService {

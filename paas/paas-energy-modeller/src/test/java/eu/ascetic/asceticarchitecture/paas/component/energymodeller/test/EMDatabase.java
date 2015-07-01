@@ -10,13 +10,13 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.ascetic.asceticarchitecture.paas.component.common.data.PaaSEMDatabaseManager;
-import eu.ascetic.asceticarchitecture.paas.component.common.data.database.dao.impl.DataConsumptionDAOImpl;
-import eu.ascetic.asceticarchitecture.paas.component.common.data.database.dao.impl.DataEventDAOImpl;
-import eu.ascetic.asceticarchitecture.paas.component.common.data.database.dao.impl.EnergyModellerMonitoringDAOImpl;
-import eu.ascetic.asceticarchitecture.paas.component.common.data.database.table.DataConsumption;
-import eu.ascetic.asceticarchitecture.paas.component.common.data.database.table.DataEvent;
-import eu.ascetic.asceticarchitecture.paas.component.common.data.database.table.EnergyModellerMonitoring;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.PaaSEMDatabaseManager;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.dao.impl.DataConsumptionDAOImpl;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.dao.impl.DataEventDAOImpl;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.dao.impl.EnergyModellerMonitoringDAOImpl;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.DataConsumption;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.DataEvent;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.EnergyModellerMonitoring;
 
 public class EMDatabase {
 	private static PaaSEMDatabaseManager dbmanager;
