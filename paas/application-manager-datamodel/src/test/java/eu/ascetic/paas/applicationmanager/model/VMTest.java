@@ -40,6 +40,20 @@ public class VMTest {
 		vm.setStatus("XXX");
 		vm.setIp("172.0.0.1");
 		vm.setSlaAgreement("slaAggrementId");
+		vm.setCpuActual(1);
+		vm.setCpuMax(2);
+		vm.setCpuMin(3);
+		vm.setDiskActual(4);
+		vm.setDiskMax(5);
+		vm.setDiskMin(6);
+		vm.setRamActual(7);
+		vm.setRamMax(8);
+		vm.setRamMin(9);
+		vm.setNumberVMsMax(10);
+		vm.setNumberVMsMin(11);
+		vm.setSwapActual(13);
+		vm.setSwapMax(14);
+		vm.setSwapMin(15);
 		List<Image> images = new ArrayList<Image>();
 		vm.setImages(images);
 		List<Link> links = new ArrayList<Link>();
@@ -55,6 +69,20 @@ public class VMTest {
 		assertEquals("slaAggrementId", vm.getSlaAgreement());
 		assertEquals(images, vm.getImages());
 		assertEquals(links, vm.getLinks());
+		assertEquals(1, vm.getCpuActual());
+		assertEquals(2, vm.getCpuMax());
+		assertEquals(3, vm.getCpuMin());
+		assertEquals(4, vm.getDiskActual());
+		assertEquals(5, vm.getDiskMax());
+		assertEquals(6, vm.getDiskMin());
+		assertEquals(7, vm.getRamActual());
+		assertEquals(8, vm.getRamMax());
+		assertEquals(9, vm.getRamMin());
+		assertEquals(10, vm.getNumberVMsMax());
+		assertEquals(11, vm.getNumberVMsMin());
+		assertEquals(13, vm.getSwapActual());
+		assertEquals(14, vm.getSwapMax());
+		assertEquals(15, vm.getSwapMin());
 	}
 	
 	@Test

@@ -77,6 +77,34 @@ public class VM {
 	@XmlElementWrapper(name = "images", namespace = APPLICATION_MANAGER_NAMESPACE)
 	@XmlElement(name = "image", namespace = APPLICATION_MANAGER_NAMESPACE )
 	private List<Image> images;
+	@XmlElement(name = "cpu-max", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private int cpuMax;
+	@XmlElement(name = "cpu-min", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private int cpuMin;
+	@XmlElement(name = "cpu-actual", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private int cpuActual;
+	@XmlElement(name = "ram-max", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private long ramMax;
+	@XmlElement(name = "ram-min", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private long ramMin;
+	@XmlElement(name = "ram-actual", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private long ramActual;
+	@XmlElement(name = "swap-max", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private long swapMax;
+	@XmlElement(name = "swap-min", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private long swapMin;
+	@XmlElement(name = "swap-actual", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private long swapActual;
+	@XmlElement(name = "disk-max", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private long diskMax;
+	@XmlElement(name = "disk-min", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private long diskMin;
+	@XmlElement(name = "disk-actual", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private long diskActual;
+	@XmlElement(name = "number-vms-max", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private long numberVMsMax;
+	@XmlElement(name = "number-vms-min", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private long numberVMsMin;
 	@XmlElement(name="link", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private List<Link> links;
 	
@@ -171,5 +199,117 @@ public class VM {
 	}
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	
+	@Column(name = "cpu_max", nullable = true)
+	public int getCpuMax() {
+		return cpuMax;
+	}
+	public void setCpuMax(int cpuMax) {
+		this.cpuMax = cpuMax;
+	}
+	
+	@Column(name = "cpu_min", nullable = true)
+	public int getCpuMin() {
+		return cpuMin;
+	}
+	public void setCpuMin(int cpuMin) {
+		this.cpuMin = cpuMin;
+	}
+	
+	@Column(name = "cpu_actual", nullable = true)
+	public int getCpuActual() {
+		return cpuActual;
+	}
+	public void setCpuActual(int cpuActual) {
+		this.cpuActual = cpuActual;
+	}
+	
+	@Column(name = "ram_max", nullable = true)
+	public long getRamMax() {
+		return ramMax;
+	}
+	public void setRamMax(long ramMax) {
+		this.ramMax = ramMax;
+	}
+	
+	@Column(name = "ram_min", nullable = true)
+	public long getRamMin() {
+		return ramMin;
+	}
+	public void setRamMin(long ramMin) {
+		this.ramMin = ramMin;
+	}
+	
+	@Column(name = "ram_actual", nullable = true)
+	public long getRamActual() {
+		return ramActual;
+	}
+	public void setRamActual(long ramActual) {
+		this.ramActual = ramActual;
+	}
+	
+	@Column(name = "swap_max", nullable = true)
+	public long getSwapMax() {
+		return swapMax;
+	}
+	public void setSwapMax(long swapMax) {
+		this.swapMax = swapMax;
+	}
+	
+	@Column(name = "swap_min", nullable = true)
+	public long getSwapMin() {
+		return swapMin;
+	}
+	public void setSwapMin(long swapMin) {
+		this.swapMin = swapMin;
+	}
+	
+	@Column(name = "swap_actual", nullable = true)
+	public long getSwapActual() {
+		return swapActual;
+	}
+	public void setSwapActual(long swapActual) {
+		this.swapActual = swapActual;
+	}
+	
+	@Column(name = "disk_max", nullable = true)
+	public long getDiskMax() {
+		return diskMax;
+	}
+	public void setDiskMax(long diskMax) {
+		this.diskMax = diskMax;
+	}
+	
+	@Column(name = "disk_min", nullable = true)
+	public long getDiskMin() {
+		return diskMin;
+	}
+	public void setDiskMin(long diskMin) {
+		this.diskMin = diskMin;
+	}
+	
+	@Column(name = "disk_actual", nullable = true)
+	public long getDiskActual() {
+		return diskActual;
+	}
+	public void setDiskActual(long diskActual) {
+		this.diskActual = diskActual;
+	}
+	
+	@Column(name = "number_vms_max", nullable = true)
+	public long getNumberVMsMax() {
+		return numberVMsMax;
+	}
+	public void setNumberVMsMax(long numberVMsMax) {
+		this.numberVMsMax = numberVMsMax;
+	}
+	
+	@Column(name = "number_vms_min", nullable = true)
+	public long getNumberVMsMin() {
+		return numberVMsMin;
+	}
+	public void setNumberVMsMin(long numberVMsMin) {
+		this.numberVMsMin = numberVMsMin;
 	}
 }
