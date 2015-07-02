@@ -164,12 +164,14 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
             }
             Logger.getLogger(AbstractEnergyPredictor.class.getName()).log(Level.WARNING, "The workload predictor did not work", ex);
         }
-        //Set the workload estimators dataabse if it requires one.
+        //Set the workload estimators database if it requires one.
         if (workloadEstimator.requiresVMInformation()) {
             database = new DefaultDatabaseConnector();
         } else {
-            database.closeConnection();
-            database = null;
+            if (database != null) {
+                database.closeConnection();
+                database = null;
+            }
         }
     }
 
