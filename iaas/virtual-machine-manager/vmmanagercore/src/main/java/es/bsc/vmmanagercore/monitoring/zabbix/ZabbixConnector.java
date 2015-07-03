@@ -87,7 +87,7 @@ public class ZabbixConnector {
             .put("wally195", 10110)
             .put("wally196", 10109)
             .put("wally197", 10108)
-            .put("wally196", 10107)
+            .put("wally198", 10107)
             .build();
 
     // Note: the keys that we need (system.cpu.num, vm.memory.size[total], etc.) should not be hardcoded in the query
