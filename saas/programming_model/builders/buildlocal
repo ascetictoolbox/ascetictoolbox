@@ -1,0 +1,253 @@
+#!/bin/bash -e 
+ 
+  #############################################################
+  # Name: buildlocal
+  # Description: SCRIPT FOR LOCAL COMPSs BUILD
+  # Parameters: [<targetDir>]   Base Target Installation folder. Full PATH
+  #                             Default: /opt/COMPSs/
+  #             [<monitor>]     Boolean to deploy monitor under the /etc/init.d folder or not
+  #                             Default: false
+  #             [<systemType>]  System type: suse / ubuntu
+  #                             Default: suse
+  #############################################################
+
+  ####################
+  # CONSTANTS
+  ####################
+  DEFAULT_TARGET_DIR=/opt/COMPSs
+  DEFAULT_INSTALL_MONITOR="false"  
+  DEFAULT_SYSTEM=suse
+
+  ####################
+  # FUNCTIONS
+  ####################
+  usage() {
+    echo " Usage: "
+    echo "   * buildlocal <targetDir>"
+    echo "   * buildlocal <monitor>"
+    echo "   * buildlocal <monitor> <systemType>"
+    echo "   * buildlocal <targetDir> <monitor> <systemType>"
+    echo "   -  targetDir must be a complete path"
+    echo "   -  monitor must be true / false"
+    echo "   -  systemType must be suse / ubuntu"
+    echo " "
+  }
+
+
+  ####################
+  # MAIN
+  ####################
+  targetDir=$DEFAULT_TARGET_DIR
+  monitor=$DEFAULT_INSTALL_MONITOR
+  system=$DEFAULT_SYSTEM
+  # Get parameters
+  if [ $# -eq 0 ]; then
+    true
+  elif [ $# -eq 1 ]; then
+    if [ "$1" == "usage" ]; then
+      usage
+      exit 0
+    elif [ "${1:0:1}" == "/" ]; then
+      targetDir=$1
+    else
+      monitor=$1
+    fi
+  elif [ $# -eq 2 ]; then
+    monitor=$1
+    system=$2
+  elif [ $# -eq 3 ]; then
+    targetDir=$1
+    monitor=$2
+    system=$3
+  else
+    echo "Incorrect number of parameters" 
+    usage
+    exit 1
+  fi
+
+  # DISPLAY WARNING
+  echo " WARNING: If you pretend to install COMPSs in a restricted folder"
+  echo "          please run this script with root permissions"
+  echo "    Example: sudo -E ./buildlocal [<targetDir>] [<monitor> <systemType>]"
+  echo "    !! Remember to export JAVA_HOME on root"
+  sleep 5     
+
+  # SET SCRIPT VARIABLES
+  scriptDir=$(pwd)/$(dirname $0)
+  sourcesDir=$(pwd)/$(dirname $0)/..
+  tmpDir=${scriptDir}/tmp
+
+  echo "- targetDir  = ${targetDir}"
+  echo "- monitor    = ${monitor}"
+  echo "- systemType = ${system}"
+  echo "- scriptDir  = ${scriptDir}"
+  echo "- sourceDir  = ${sourcesDir}"
+  echo "- tmpDir     = ${tmpDir}"
+  sleep 5
+  
+  # COPY TRUNK
+  echo "- Copy trunk to tmpdir"
+  rm -rf ${tmpDir}
+  mkdir -p ${tmpDir}
+  cp ${sourcesDir}/changelog ${tmpDir}
+  cp -r ${sourcesDir}/compss ${tmpDir}
+  cp -r ${sourcesDir}/dependencies ${tmpDir}
+  cp -r ${sourcesDir}/doc ${tmpDir}
+  cp -r ${sourcesDir}/files ${tmpDir}
+  cp ${sourcesDir}/LICENSE ${tmpDir}
+  cp ${sourcesDir}/NOTICE ${tmpDir}
+  cp ${sourcesDir}/pom.xml ${tmpDir}
+  cp ${sourcesDir}/README ${tmpDir}
+  cp ${sourcesDir}/RELEASE_NOTES ${tmpDir}
+  find . -name .svn | xargs rm -rf  #Cleans svn files
+
+  # COMPILE
+  echo "- Compile sources"
+  cd ${tmpDir}/compss/
+  mvn clean package
+  cd ${scriptDir}
+
+  # CREATE TARGET FOLDER
+  echo "- Create target folder"
+  rm -rf ${targetDir}
+  mkdir -p ${targetDir}
+  mkdir -p ${targetDir}/Doc
+  mkdir -p ${targetDir}/Dependencies
+  mkdir -p ${targetDir}/Dependencies/extrae
+  mkdir -p ${targetDir}/Runtime
+  mkdir -p ${targetDir}/Runtime/configuration
+  mkdir -p ${targetDir}/Runtime/scripts
+  mkdir -p ${targetDir}/Runtime/adaptors
+  mkdir -p ${targetDir}/Runtime/connectors
+  mkdir -p ${targetDir}/Runtime/scheduler
+  mkdir -p ${targetDir}/Tools
+  mkdir -p ${targetDir}/Tools/monitor
+  mkdir -p ${targetDir}/Bindings
+  mkdir -p ${targetDir}/Bindings/bindings-common
+
+  # RUNTIME DEPLOYMENT
+  echo "- Copy Runtime deployment files"
+  #Doc
+  echo "--- Copy docs"
+  find ${tmpDir}/doc/ -name *.html | xargs rm -rf
+  cp -r ${tmpDir}/doc/* ${targetDir}/Doc
+  cp ${tmpDir}/changelog ${targetDir}
+  cp ${tmpDir}/LICENSE ${targetDir}
+  cp ${tmpDir}/NOTICE ${targetDir}
+  cp ${tmpDir}/README ${targetDir}
+  cp ${tmpDir}/RELEASE_NOTES ${targetDir}
+  #Dependencies
+  echo "--- Copy dependencies"
+  cp -r ${tmpDir}/dependencies/JAVA_GAT ${targetDir}/Dependencies/
+  cp -r ${tmpDir}/files/paraver ${targetDir}/Dependencies/
+  cd ${tmpDir}/dependencies/extrae
+  ./install ${targetDir}/Dependencies/extrae
+  if [ $? -ne 0 ]; then
+    echo "ERROR: Failed to install extrae dependency"
+  fi
+  cd ${scriptDir}
+  #Config
+  echo "--- Copy configuration"
+  find ${tmpDir}/compss/runtime/config -name src | xargs rm -rf
+  find ${tmpDir}/compss/runtime/config -name target | xargs rm -rf
+  find ${tmpDir}/compss/runtime/config -name pom.xml | xargs rm -rf
+  cp -r ${tmpDir}/compss/runtime/config/* ${targetDir}/Runtime/configuration/
+  #Scripts
+  echo "--- Copy scripts"
+  cp -r ${tmpDir}/compss/runtime/scripts/* ${targetDir}/Runtime/scripts/
+  #Adaptors
+  echo "--- Copy adaptors"
+  find ${tmpDir}/compss/runtime/adaptors -name pom.xml | xargs rm -rf
+  rm -r ${tmpDir}/compss/runtime/adaptors/commons
+  path_source=${tmpDir}/compss/runtime/adaptors
+  path_target=${targetDir}/Runtime/adaptors
+  adaptors=$(ls ${path_source})
+  for adaptor in $adaptors; do
+    mkdir ${path_target}/$adaptor
+    mkdir ${path_target}/$adaptor/master
+    cp ${path_source}/$adaptor/master/*.jar ${path_target}/$adaptor/master
+    if [ -f ${path_source}/$adaptor/master/properties ]; then
+      cp ${path_source}/$adaptor/master/properties ${path_target}/$adaptor/master
+    fi
+    if [ -d "${path_source}/$adaptor/worker/" ]; then
+      mkdir ${path_target}/$adaptor/worker
+      cp ${path_source}/$adaptor/worker/*.jar ${path_target}/$adaptor/worker
+    fi
+    if [ -f ${path_source}/$adaptor/worker/properties ]; then 
+      cp ${path_source}/$adaptor/worker/properties ${path_target}/$adaptor/worker
+    fi
+    if [ -d "${path_source}/$adaptor/scripts/" ]; then
+      mkdir -p ${targetDir}/Runtime/scripts/system/adaptors/$adaptor/
+      cp -r ${path_source}/$adaptor/scripts/* ${targetDir}/Runtime/scripts/system/adaptors/$adaptor/
+    fi
+  done
+  #Connectors
+  echo "--- Copy connectors"
+  connectors=$(find ${tmpDir}/compss/runtime/resources/ -name "*.jar")
+  for conn in $connectors; do
+    cp -f $conn ${targetDir}/Runtime/connectors/
+  done
+  #Engine
+  echo "--- Copy engine"
+  cp ${tmpDir}/compss/runtime/compss-engine.jar ${targetDir}/Runtime/
+ 
+  # TOOLS DEPLOYMENT
+  echo "- Deploying COMPSs Tools"
+  cd ${tmpDir}
+  TOMCAT_VER="`curl http://ftp.cixug.es/apache/tomcat/tomcat-7/ | grep "v7" | tail -1 | awk '{print $5}' | cut -c 18-23`"
+  TOMCAT_URL="http://ftp.cixug.es/apache/tomcat/tomcat-7/v$TOMCAT_VER/bin/apache-tomcat-$TOMCAT_VER.tar.gz"
+  wget $TOMCAT_URL
+  tar xzf apache-tomcat-$TOMCAT_VER.tar.gz
+  cd ${scriptDir}
+  mv ${tmpDir}/apache-tomcat-$TOMCAT_VER ${targetDir}/Tools/monitor/apache-tomcat/
+  rm -rf ${targetDir}/Tools/monitor/apache-tomcat/webapps/*
+  rm -f ${targetDir}/Tools/monitor/apache-tomcat/conf/server.xml
+  cp -r ${tmpDir}/compss/tools/monitor/target/*.war ${targetDir}/Tools/monitor/apache-tomcat/webapps/
+  cp ${tmpDir}/compss/tools/monitor/target/classes/compss-monitor.conf ${targetDir}/Tools/monitor/apache-tomcat/conf/
+  cp ${tmpDir}/compss/tools/monitor/target/classes/server.xml ${targetDir}/Tools/monitor/apache-tomcat/conf/
+  cp ${tmpDir}/compss/tools/monitor/target/classes/log4j.properties ${targetDir}/Tools/monitor/
+
+  #BINDINGS DEPLOYMENT
+  echo "- Deploying bindings-common files"
+  cd ${tmpDir}/compss/programming_model/bindings/bindings-common
+  ./install_common ${targetDir}/Bindings/bindings-common
+  echo "- Deploying c-binding files"
+  cd ${tmpDir}/compss/programming_model/bindings/c
+  ./install ${targetDir}/Bindings/c
+  echo "- Deploying python-binding files"
+  cd ${tmpDir}/compss/programming_model/bindings/python
+  ./install ${targetDir}/Bindings/python
+  cd ${scriptDir}
+
+  # ADD RUNCOMPSS TO PROFILE
+  echo "- Add runcompss to profile"
+  echo "export PATH=\$PATH:${targetDir}/Runtime/scripts/user:${targetDir}/Bindings/c/bin" > /etc/profile.d/compss.sh
+
+  # ADD MONITOR SCRIPT TO ETC
+  if [ "$monitor" == "true" ]; then 
+    echo "- Add monitor script to init.d"
+    cp ${tmpDir}/compss/tools/monitor/scripts/compss-monitor /etc/init.d/compss-monitor
+    chmod 755 /etc/init.d/compss-monitor
+    if [ "$system" == "suse" ]; then
+      chkconfig --add compss-monitor
+    else 
+      update-rc.d compss-monitor defaults
+    fi
+  fi
+ 
+  # ERASE TMP FILES
+  echo "- Erase tmp files"
+  rm -rf ${tmpDir}
+
+  # SET TARGETDIR PERMISSIONS
+  echo "- Set COMPSs permissions"
+  chmod 755 -R ${targetDir}
+  chmod 777 -R ${targetDir}/Runtime/configuration/
+
+
+  # END
+  echo "Congratulations!"
+  echo "COMPSs Runtime Successfully installed!"
+  echo " "
+  exit 0
+

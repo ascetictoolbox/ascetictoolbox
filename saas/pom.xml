@@ -22,7 +22,7 @@
 	    <module>application-packager</module>
 	    <module>application-descriptor-tool</module>
 	    <module>compss-plugin</module>
-	    <!--module>programming_model/compss</module-->
+	    <module>programming_model/compss</module>
 	    <module>ascetic-eclipse-site</module>
 	</modules>
 	<url>http://www.ascetic.eu</url>

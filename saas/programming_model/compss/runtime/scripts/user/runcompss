@@ -1,0 +1,511 @@
+#!/bin/bash
+
+#---------------------------------------------------
+# SCRIPT CONSTANTS DECLARATION
+#---------------------------------------------------
+DEFAULT_LANGUAGE=java
+DEFAULT_DEBUG=false
+DEFAULT_DEBUG_ARGUMENT=debug
+DEFAULT_GRAPH=false
+DEFAULT_GRAPH_ARGUMENT=true
+DEFAULT_TRACING=false
+DEFAULT_TRACING_ARGUMENT=true
+DEFAULT_MONITORING_INTERVAL=0
+DEFAULT_MONITORING_INTERVAL_ARGUMENT=2000
+DEFAULT_TASK_COUNT=50
+DEFAULT_CLASSPATH=.
+DEFAULT_LIBRARY_PATH=.
+DEFAULT_COMMUNICATION_ADAPTOR=integratedtoolkit.nio.master.NIOAdaptor
+#DEFAULT_COMMUNICATION_ADAPTOR=integratedtoolkit.gat.master.GATAdaptor
+RUNTIME_LOADER=integratedtoolkit.loader.ITAppLoader
+
+APPLICATION_ERROR="Error: Application name not provided"
+LANGUAGE_ERROR="Value of option --lang must be: java, c or python"
+JAVA_HOME_ERROR="Error: Cannot find Java JRE installation. Please set JAVA_HOME."
+JAVA_JRE_ERROR="Error: Can't find JVM libraries in JAVA_HOME. Please check your Java JRE Installation."
+RUNTIME_ERROR="Error running application"
+TMP_FILE_JVM_ERROR="Error: Can't create temporary file for JVM options."
+
+
+#---------------------------------------------------
+# FUNCTIONS DECLARATION
+#---------------------------------------------------
+show_opts() {
+/bin/cat <<EOT
+  Tools enablers:
+    --graph=<bool>, --graph, -g             Generation of the complete graph (true/false)
+                                            When no value is provided it is set to ${DEFAULT_GRAPH_ARGUMENT}
+                                            Default: ${DEFAULT_GRAPH}
+    --tracing=<bool>, --tracing, -t         Generation of traces (true/false)
+                                            When no value is provided it is set to ${DEFAULT_TRACING_ARGUMENT}
+                                            Default: ${DEFAULT_TRACING}
+    --monitoring=<int>, --monitoring, -m    Period between monitoring samples (milliseconds)
+                                            When no value is provided it is set to ${DEFAULT_MONITORING_INTERVAL_ARGUMENT}
+                                            Default: ${DEFAULT_MONITORING_INTERVAL}
+  Runtime configuration options:
+    --project=<path>                        Path to the project XML file
+                                            Default: ${DEFAULT_PROJECT}
+    --resources=<path>                      Path to the resources XML file
+                                            Default: ${DEFAULT_RESOURCES}
+    --lang=<name>                           Language of the application (java/c/python)
+                                            Default: ${DEFAULT_LANGUAGE}
+    --debug=<level>, --debug, -d            Set the debug level: off | info | debug
+                                            Default: ${DEFAULT_DEBUG}
+  Advanced options:
+    --comm=<path>                           Class that implements the adaptor for communications
+                                            Default: ${DEFAULT_COMMUNICATION_ADAPTOR}
+    --library_path=<path>                   Non-standard directories to search for libraries (e.g. Java JVM library, Python library, C binding library) 
+                                            Default: ${DEFAULT_LIBRARY_PATH}
+    --classpath=<path>                      Path for the application classes / modules
+                                            Default: ${DEFAULT_CLASSPATH}
+    --task_count=<int>                      Only for C/Python Bindings. Maximum number of different functions/methods, invoked from the application, that have been selected as tasks
+                                            Default: ${DEFAULT_TASK_COUNT}
+
+* Application name:
+    For Java applications:   Fully qualified name of the application
+    For C applications:      Path to the master binary
+    For Python applications: Path to the .py file containing the main program
+    
+* Application arguments:
+    Command line arguments to pass to the application. Can be empty. 
+                                            
+EOT
+}
+
+usage() { 
+  exitValue=$1
+  
+  /bin/cat <<EOT
+Usage: $0 [options] application_name application_arguments
+
+* Options:
+  General:
+    --help, -h                              Print this help message
+EOT
+  show_opts
+  exit $exitValue
+}
+
+# Displays parsing arguments errors
+display_error() {
+  local error_msg=$1
+  
+  echo $error_msg
+  echo " "
+  
+  usage 1
+}
+
+# Displays runtime/application errors
+error_msg() {
+  local error_msg=$1
+  
+  echo 
+  echo $error_msg
+  echo 
+  
+  exit 1
+}
+
+check_env() {
+  #if [ -z "${XML_DIR}" ]; then
+  #  export XML_DIR=$(dirname $0)
+  #fi
+  
+  export IT_HOME=$(dirname $0)/../..
+  
+  if [ -z "$DEFAULT_PROJECT" ]; then
+    DEFAULT_PROJECT=${IT_HOME}/configuration/xml/projects/project.xml
+  fi
+  
+  if [ -z "$DEFAULT_RESOURCES" ]; then
+    DEFAULT_RESOURCES=${IT_HOME}/configuration/xml/resources/resources.xml
+  fi
+  
+  if [ -z "${GAT_LOCATION}" ]; then
+    GAT_LOCATION=${IT_HOME}/../Dependencies/JAVA_GAT
+  fi
+  
+  if [ -z "${EXTRAE_LIB}" ]; then
+    EXTRAE_LIB=${IT_HOME}/../Dependencies/extrae/lib
+  fi
+  
+  if [[ -z "$JAVA_HOME" ]]; then
+    JAVA=java
+  elif [ -f $JAVA_HOME/jre/bin/java ]; then
+    JAVA=$JAVA_HOME/jre/bin/java
+  elif [ -f $JAVA_HOME/bin/java ]; then
+    JAVA=$JAVA_HOME/bin/java
+  else
+    display_error "${JAVA_HOME_ERROR}"
+  fi
+}
+
+get_args() {
+  #Parse COMPSs Options
+  while getopts hgtm-: flag; do 
+    # Treat the argument
+    case "$flag" in
+      h)
+	# Display help
+	usage 0
+	;;
+      g) 
+	# Enable graph generation at the end of the execution
+	graph=${DEFAULT_GRAPH_ARGUMENT}
+	;;
+      t)
+	# Enable tracing
+	tracing=${DEFAULT_TRACING_ARGUMENT}
+	;;
+      m)
+	# Enable montoring with default value
+	monitoring=${DEFAULT_MONITORING_INTERVAL_ARGUMENT}
+	;;
+      d)
+        # Enable debug in level debug
+        debug=${DEFAULT_DEBUG_ARGUMENT}
+        ;;
+      -)
+	# Check more complex arguments 
+	case "$OPTARG" in
+	  help)
+	    # Display help
+	    usage 0
+	    ;;
+          opts)
+            # Display help
+            show_opts
+            exit 0
+            ;;
+	  project=*)
+	    # Custom project file
+	    projFile=$(echo $OPTARG | sed -e 's/project=//g')
+	    ;;
+	  resources=*)
+	    # Custom resources file
+	    resFile=$(echo $OPTARG | sed -e 's/resources=//g')
+	    ;;
+	  lang=*)
+	    # Language selection
+	    lang=$(echo $OPTARG | sed -e 's/lang=//g')
+	    ;;
+          debug=*)
+            # Graph generation at the end of the execution
+            debug=$(echo $OPTARG | sed -e 's/debug=//g')
+            ;;
+          debug*)
+            # Graph generation at the end of the execution
+            debug=${DEFAULT_DEBUG_ARGUMENT}
+            ;;
+	  graph=*)
+	    # Graph generation at the end of the execution
+	    graph=$(echo $OPTARG | sed -e 's/graph=//g')
+	    ;;
+	  graph*)
+	    # Graph generation at the end of the execution
+	    graph=${DEFAULT_GRAPH_ARGUMENT}
+	    ;;
+	  tracing=*)
+	    # Tracing system
+	    tracing=$(echo $OPTARG | sed -e 's/tracing=//g')
+	    ;;
+	  tracing*)
+	    # Tracing system
+	    tracing=${DEFAULT_TRACING_ARGUMENT}
+	    ;;
+	  monitoring=*)
+	    # Value between monitor steps (ms)
+	    monitoring=$(echo $OPTARG | sed -e 's/monitoring=//g')
+	    ;;    
+	  monitoring*)
+	    # Value between monitor steps (ms)
+	    monitoring=${DEFAULT_MONITORING_INTERVAL_ARGUMENT}
+	    ;;   
+	  comm=*)
+	    # Communication adaptor main class
+	    comm=$(echo $OPTARG | sed -e 's/comm=//g')
+	    ;;
+	  classpath=*)
+	    # Additional classpath
+	    cp=$(echo $OPTARG | sed -e 's/classpath=//g')
+	    ;;
+	  library_path=*)
+	    # Additional library path
+	    library_path=$(echo $OPTARG | sed -e 's/library_path=//g')
+	    ;;
+	  task_count=*)
+	    # Maximum task count. Only for bindings
+	    task_count=$(echo $OPTARG | sed -e 's/task_count=//g')
+	    ;;
+	  *)
+	    # Flag didn't match any patern. Raise exception 
+	    display_error "Bad argument: $OPTARG"
+	    ;;
+	esac
+	;;
+      *)
+	# Flag didn't match any patern. End of COMPSs flags
+	break
+	;; 
+    esac
+  done
+  #Shift COMPSs arguments
+  shift $((OPTIND-1))
+  
+  #Parse application name
+  if [[ $# -eq 0 ]]; then     
+    display_error "${APPLICATION_ERROR}"
+  else
+    fullAppPath=$1
+    if [ -z "$fullAppPath" ]; then
+      display_error "${APPLICATION_ERROR}"
+    else 
+      shift 1
+    fi
+  fi
+
+  #Parse application arguments
+  application_args=$*
+}
+
+check_args() {
+  if [ -z "$projFile" ]; then
+    echo "Using default location for project file: ${DEFAULT_PROJECT}"
+    projFile=${DEFAULT_PROJECT}
+  fi
+
+  if [ -z "$resFile" ]; then
+    echo "Using default location for resources file: ${DEFAULT_RESOURCES}"
+    resFile=${DEFAULT_RESOURCES}
+  fi      
+        
+  if [ -z "$lang" ]; then
+    lang=${DEFAULT_LANGUAGE}
+  elif [ "$lang" = "java" ]; then
+    lang=java
+  elif [ "$lang" = "c" ]; then
+    lang=c 
+  elif [ "$lang" = "python" ]; then
+    lang=python
+  else    
+    display_error "${LANGUAGE_ERROR}"
+  fi 
+
+  if [ -z "$debug" ]; then
+    debug=${DEFAULT_DEBUG} 
+  fi
+
+  if [ "$debug" == "${DEFAULT_DEBUG}" ]; then
+    itlog4j_file="it-log4j"
+  else
+    itlog4j_file="it-log4j.$debug"
+  fi
+
+  if [ -z "$graph" ]; then
+    graph=${DEFAULT_GRAPH}
+  fi      
+        
+  if [ -z "$tracing" ]; then
+    tracing=${DEFAULT_TRACING} 
+  elif [ "$tracing" == true ]; then
+    export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${EXTRAE_LIB}
+  fi
+        
+  if [ -z "$monitoring" ]; then
+    monitoring=${DEFAULT_MONITORING_INTERVAL}
+  fi
+  
+  if [ -z "$comm" ]; then
+    comm=${DEFAULT_COMMUNICATION_ADAPTOR}
+  fi
+        
+  if [ -z "$cp" ]; then
+    cp=${DEFAULT_CLASSPATH}
+  fi          
+        
+  if [ -z "$task_count" ]; then
+    task_count=${DEFAULT_TASK_COUNT}
+  fi      
+        
+  if [ -z "$library_path" ]; then
+    library_path=${DEFAULT_LIBRARY_PATH}
+  fi  
+}
+
+execute_runtime() {
+  appName=$(basename "$fullAppPath")
+  echo -e "\n----------------- Executing $appName --------------------------\n"
+  if [ $lang = java ]; then
+    exec_java
+  elif [ $lang = c ]; then
+    exec_c
+  elif [ $lang = python ]; then
+    exec_python
+  fi
+  echo 
+  echo ------------------------------------------------------------
+}
+
+exec_java() {
+  # Export needed variables
+  export LD_LIBRARY_PATH=$library_path:$LD_LIBRARY_PATH
+  
+  # Define command
+  local JAVACMD=$JAVA" \
+    -XX:-UseSplitVerifier \
+    -classpath $cp:${IT_HOME}/compss-engine.jar:$CLASSPATH \
+    -Dlog4j.configuration=${IT_HOME}/configuration/log/${itlog4j_file} \
+    -Dit.to.file=false \
+    -Dit.lang=$lang \
+    -Dit.project.file=$projFile \
+    -Dit.resources.file=$resFile \
+    -Dit.project.schema=${IT_HOME}/configuration/xml/projects/project_schema.xsd \
+    -Dit.resources.schema=${IT_HOME}/configuration/xml/resources/resource_schema.xsd \
+    -Dit.appName=$appName \
+    -Dit.appLogDir=/tmp/ \
+    -Dit.graph=$graph \
+    -Dit.monitor=$monitoring \
+    -Dit.tracing=$tracing \
+    -Dit.script.dir=${IT_HOME}/scripts/system \
+    -Dit.worker.cp=$cp:$CLASSPATH \
+    -Dit.comm=$comm \
+    -Dgat.adaptor.path=${GAT_LOCATION}/lib/adaptors \
+    -Dit.gat.broker.adaptor=sshtrilead \
+    -Dit.gat.file.adaptor=sshtrilead "
+  
+  # Launch application
+  $JAVACMD ${RUNTIME_LOADER} total $fullAppPath $application_args
+  if [ $? -ne 0 ]; then
+    error_msg "${RUNTIME_ERROR}"
+  fi
+}
+
+exec_c() {  
+  # Export needed variables
+  if [ -d ${IT_HOME}/../Bindings/c ]; then
+    local CPP_COMPSS_HOME=${IT_HOME}/../Bindings/c
+    export CPP_PATH=${CPP_COMPSS_HOME}:$cp
+  else
+    export CPP_PATH=$cp
+  fi
+  
+  if [ -f ${JAVA_HOME}/jre/lib/amd64/server/libjvm.so ]; then
+    local libjava=${JAVA_HOME}/jre/lib/amd64/server
+  elif [ -f ${JAVA_HOME}/jre/lib/i386/client/libjvm.so ]; then
+    local libjava=${JAVA_HOME}/jre/lib/i386/client
+  else
+    display_error "${JAVA_JRE_ERROR}"
+  fi
+
+  export LD_LIBRARY_PATH=$library_path:${LD_LIBRARY_PATH}:$libjava:${IT_HOME}/../Bindings/bindings-common/lib:${IT_HOME}/../Bindings/c/lib
+
+  # Define command
+  local jvm_options_file=`mktemp`
+  if [ $? -ne 0 ]; then
+    display_error "${TMP_FILE_JVM_ERROR}"
+  fi
+  export JVM_OPTIONS_FILE=$jvm_options_file
+  /bin/cat >> $jvm_options_file << EOT
+#-Xdebug
+#-Xcheck:jni
+#-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000
+-Djava.class.path=$cp:$IT_HOME/compss-engine.jar:$CLASSPATH
+-Dlog4j.configuration=$IT_HOME/configuration/log/${itlog4j_file}
+-Dit.to.file=false
+-Dit.lang=$lang
+-Dit.project.file=$projFile
+-Dit.resources.file=$resFile
+-Dit.constraints.file=$fullAppPath.idl
+-Dit.project.schema=$IT_HOME/configuration/xml/projects/project_schema.xsd
+-Dit.resources.schema=$IT_HOME/configuration/xml/resources/resource_schema.xsd
+-Dit.appName=$appName
+-Dit.appLogDir=/tmp/
+-Dit.graph=$graph
+-Dit.monitor=$monitoring
+-Dit.tracing=$tracing
+-Dit.script.dir=$IT_HOME/scripts/system
+-Dit.core.count=$task_count
+-Dit.worker.cp=$cp:$CLASSPATH
+-Dit.comm=$comm
+-Dgat.adaptor.path=$GAT_LOCATION/lib/adaptors
+-Dit.gat.broker.adaptor=sshtrilead 
+-Dit.gat.file.adaptor=sshtrilead 
+EOT
+
+  # Launch application
+  echo -e "\nJVM_OPTION_FILE: $jvm_options_file \n"
+  echo -e "\nIT_HOME: $IT_HOME \n"
+  echo -e "\nArgs: $application_args \n"
+  
+  $fullAppPath $application_args 
+  if [ $? -ne 0 ]; then
+    error_msg "${RUNTIME_ERROR}"
+  fi
+}
+
+exec_python() {
+  # Export needed variables
+  if [ -d $IT_HOME/../Bindings/python ]; then
+
+    PYCOMPSS_HOME=${IT_HOME}/../Bindings/python
+    export PYTHONPATH=${PYCOMPSS_HOME}:$cp:$PYTHONPATH
+  else
+
+    export PYTHONPATH=$cp:$PYTHONPATH
+  fi
+        # Setup library path
+  if [ -f ${JAVA_HOME}/jre/lib/amd64/server/libjvm.so ]; then
+    local libjava=${JAVA_HOME}/jre/lib/amd64/server
+  elif [ -f ${JAVA_HOME}/jre/lib/i386/client/libjvm.so ]; then
+    local libjava=${JAVA_HOME}/jre/lib/i386/client
+  else
+    display_error "${JAVA_JRE_ERROR}"
+  fi
+
+  export LD_LIBRARY_PATH=$library_path:${LD_LIBRARY_PATH}:$libjava:${IT_HOME}/../Bindings/bindings-common/lib
+
+  # Define command
+  local jvm_options_file=`mktemp`
+  if [ $? -ne 0 ]; then
+    display_error "${TMP_FILE_JVM_ERROR}"
+  fi
+  export JVM_OPTIONS_FILE=$jvm_options_file
+  /bin/cat >> $jvm_options_file << EOT
+-Djava.class.path=$cp:$IT_HOME/compss-engine.jar:$CLASSPATH
+-Dlog4j.configuration=$IT_HOME/configuration/log/${itlog4j_file}
+-Dit.to.file=false
+-Dit.lang=$lang
+-Dit.project.file=$projFile
+-Dit.resources.file=$resFile
+-Dit.project.schema=$IT_HOME/configuration/xml/projects/project_schema.xsd
+-Dit.resources.schema=$IT_HOME/configuration/xml/resources/resource_schema.xsd
+-Dit.appName=$appName
+-Dit.appLogDir=/tmp/
+-Dit.graph=$graph
+-Dit.monitor=$monitoring
+-Dit.tracing=$tracing
+-Dit.script.dir=$IT_HOME/scripts/system
+-Dit.core.count=$task_count
+-Dit.worker.cp=$cp:$CLASSPATH
+-Dit.comm=$comm
+-Dgat.adaptor.path=$GAT_LOCATION/lib/adaptors
+-Dit.gat.broker.adaptor=sshtrilead 
+-Dit.gat.file.adaptor=sshtrilead 
+EOT
+
+  # Launch application
+  python $PYCOMPSS_HOME/pycompss/runtime/launch.py $fullAppPath $application_args 
+  if [ $? -ne 0 ]; then
+     error_msg "${RUNTIME_ERROR}"
+  fi
+}
+
+
+#---------------------------------------------------
+# MAIN EXECUTION
+#---------------------------------------------------
+  check_env
+  get_args $*
+  check_args
+  execute_runtime

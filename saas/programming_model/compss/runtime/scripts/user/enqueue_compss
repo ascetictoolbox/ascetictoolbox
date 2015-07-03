@@ -1,0 +1,223 @@
+#!/bin/bash
+
+#---------------------------------------------------
+# SCRIPT CONSTANTS DECLARATION
+#---------------------------------------------------
+DEFAULT_EXEC_TIME=10
+DEFAULT_NUM_NODES=2
+DEFAULT_QUEUE_SYSTEM=lsf
+DEFAULT_TASKS_PER_NODE=16
+DEFAULT_TASKS_IN_MASTER=0
+DEFAULT_MASTER_WORKING_DIR=.
+DEFAULT_WORKER_WORKING_DIR=scratch
+DEFAULT_NETWORK=default
+
+# Next default values need to be consistent with runcompss
+DEFAULT_LIBRARY_PATH=.
+DEFAULT_CLASSPATH=.
+DEFAULT_DEBUG=false
+DEFAULT_COMMUNICATION_ADAPTOR=integratedtoolkit.nio.master.NIOAdaptor
+
+# Error constant messages
+ERROR_WORKER_WD="Invalid Worker Working Dir option"
+ERROR_NETWORK="Invalid network option"
+
+#---------------------------------------------------
+# FUNCTIONS DECLARATION
+#---------------------------------------------------
+usage() { 
+  exitValue=$1
+  
+  /bin/cat <<EOT
+Usage: $0 [queue_system_options] [COMPSs_options] application_name application_arguments
+
+* Options:
+  General:
+    --help, -h                              Print this help message
+  
+  Queue system configuration:
+    --exec_time=<minutes>                   Expected execution time of the application (in minutes)
+                                            Default: ${DEFAULT_EXEC_TIME}
+    --num_nodes=<int>                       Number of nodes to use
+                                            Default: ${DEFAULT_NUM_NODES}
+    --queue_system=<name>                   Queue system to use: lsf | pbs | slurm
+                                            Default: ${DEFAULT_QUEUE_SYSTEM}
+    --tasks_per_node=<int>                  Maximum number of simultaneous tasks running on a node
+                                            Default: ${DEFAULT_TASKS_PER_NODE}
+    --master_working_dir=<path>             Working directory of the application
+                                            Default: ${DEFAULT_MASTER_WORKING_DIR}
+    --worker_working_dir=<name>             Worker directory. Use: scratch | gpfs
+                                            Default: ${DEFAULT_WORKER_WORKING_DIR}
+    --tasks_in_master=<int>		    Maximum number of tasks that the master node can run as worker. Cannot exceed tasks_per_node.
+					    Default: ${DEFAULT_TASKS_IN_MASTER}
+    --network=<name>                        Communication network for transfers: default | infiniband | data.
+				            Default: ${DEFAULT_NETWORK}
+  Runcompss catched parameters:
+
+    --debug=<level>                         Set the debug level: off | info | debug
+                                            Default: ${DEFAULT_DEBUG}
+    --comm=<path>                           Class that implements the adaptor for communications
+                                            Default: ${DEFAULT_COMMUNICATION_ADAPTOR}
+    --library_path=<path>                   Non-standard directories to search for libraries (e.g. Java JVM library, Python library, C binding library) 
+                                            Default: ${DEFAULT_LIBRARY_PATH}
+    --classpath=<path>                      Path for the application classes / modules
+                                            Default: ${DEFAULT_CLASSPATH}
+
+EOT
+  ${scriptDir}/runcompss --opts 
+
+  exit $exitValue
+}
+
+# Displays parsing arguments errors
+display_error() {
+  local error_msg=$1
+  
+  echo $error_msg
+  echo " "
+  
+  usage 1
+}
+
+get_args() {
+  #Parse COMPSs Options
+  while getopts hgtm-: flag; do 
+    # Treat the argument
+    case "$flag" in
+      h)
+	# Display help
+	usage 0
+	;;
+      -)
+	# Check more complex arguments 
+	case "$OPTARG" in
+	  help)
+	    # Display help
+	    usage 0
+	    ;;
+	  exec_time=*)
+	    exec_time=$(echo $OPTARG | sed -e 's/exec_time=//g')
+	    ;;
+	  num_nodes=*)
+	    num_nodes=$(echo $OPTARG | sed -e 's/num_nodes=//g')
+	    ;;
+	  queue_system=*)
+	    queue_system=$(echo $OPTARG | sed -e 's/queue_system=//g')
+	    ;;
+	  tasks_per_node=*)
+	    tasks_per_node=$(echo $OPTARG | sed -e 's/tasks_per_node=//g')
+	    ;;
+	  master_working_dir=*)
+	    master_working_dir=$(echo $OPTARG | sed -e 's/master_working_dir=//g')
+	    ;;
+	  worker_working_dir=*)
+	    worker_working_dir=$(echo $OPTARG | sed -e 's/worker_working_dir=//g')
+	    ;; 
+          tasks_in_master=*)
+            tasks_in_master=$(echo $OPTARG | sed -e 's/tasks_in_master=//g')
+            ;;
+          network=*)
+            network=$(echo $OPTARG | sed -e 's/network=//g')
+            ;;
+          library_path=*)
+            library_path=$(echo $OPTARG | sed -e 's/library_path=//g')
+            #Keep it for runcompss (to add them to master)
+            args_pass="$args_pass --$OPTARG"
+            ;;
+          classpath=*)
+            cp=$(echo $OPTARG | sed -e 's/classpath=//g')
+            #Keep it for runcompss (to add them to master)
+            args_pass="$args_pass --$OPTARG"
+            ;;
+          debug=*)
+            debug=$(echo $OPTARG | sed -e 's/debug=//g')
+            #Keep it for runcompss (to add them to master)
+            args_pass="$args_pass --$OPTARG"
+            ;;
+          comm=*)
+            comm=$(echo $OPTARG | sed -e 's/comm=//g')
+            #Keep it for runcompss (to add them to master)
+            args_pass="$args_pass --$OPTARG"
+            ;;
+	  *)
+	    # Flag didn't match any patern. Raise exception 
+	    args_pass="$args_pass --$OPTARG"
+	    ;;
+	esac
+	;;
+      *)
+	# Flag didn't match any patern. End of COMPSs flags
+	args_pass="$args_pass -$flag"
+	;; 
+    esac
+  done
+  #Shift COMPSs arguments
+  shift $((OPTIND-1))
+
+  #Pass application name and args
+  args_pass="$args_pass $*" 
+}
+
+check_args() {
+  if [ -z "${queue_system}" ]; then
+    queue_system=${DEFAULT_QUEUE_SYSTEM}
+  fi
+
+  if [ -z "${exec_time}" ]; then
+    exec_time=${DEFAULT_EXEC_TIME}
+  fi
+  
+  if [ -z "${num_nodes}" ]; then
+    num_nodes=${DEFAULT_NUM_NODES}
+  fi
+  
+  if [ -z "${tasks_per_node}" ]; then
+    tasks_per_node=${DEFAULT_TASKS_PER_NODE}
+  fi
+  
+  if [ -z "${master_working_dir}" ]; then
+    master_working_dir=${DEFAULT_MASTER_WORKING_DIR}
+  fi
+  
+  if [ -z "${worker_working_dir}" ]; then
+    worker_working_dir=${DEFAULT_WORKER_WORKING_DIR}
+  elif [ "${worker_working_dir}" != "scratch" ] && [ "${worker_working_dir}" != "gpfs" ]; then
+    display_error "${ERROR_WORKER_WD}"
+  fi
+
+  if [ -z "${tasks_in_master}" ]; then
+    tasks_in_master=${DEFAULT_TASKS_IN_MASTER}
+  fi
+
+  if [ -z "${network}" ]; then
+    network=${DEFAULT_NETWORK}
+  elif [ "${network}" != "default" && "${network}" != "infiniband" && "${network}" != "data" ]; then
+    display_error "${ERROR_NETWORK}"
+  fi
+
+  if [ -z "${library_path}" ]; then
+    library_path=${DEFAULT_LIBRARY_PATH}
+  fi
+
+  if [ -z "${cp}" ]; then
+    cp=${DEFAULT_CLASSPATH}
+  fi
+
+  if [ -z "${debug}" ]; then
+    debug=${DEFAULT_DEBUG}
+  fi
+
+  if [ -z "${comm}" ]; then
+    comm=${DEFAULT_COMMUNICATION_ADAPTOR}
+  fi
+
+}
+
+#---------------------------------------------------
+# MAIN EXECUTION
+#---------------------------------------------------
+  scriptDir=$(dirname $0)
+  get_args $*
+  check_args
+
+  ${scriptDir}/../queues/${queue_system}/submit.sh ${exec_time} ${num_nodes} ${tasks_per_node} ${master_working_dir} ${worker_working_dir} ${tasks_in_master} ${network} ${library_path} ${cp} ${debug} ${comm} ${args_pass}
