@@ -54,7 +54,7 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
     private HostDataSource source = null;
     private DatabaseConnector database = null;
     private boolean considerIdleEnergy = true;
-    private WorkloadEstimator workloadEstimator = new CpuRecentHistoryWorkloadPredictor();
+    private WorkloadEstimator workloadEstimator = null;
 
     private EnergyShareRule energyShareRule = new DefaultEnergyShareRule();
     private static final String DEFAULT_ENERGY_SHARE_RULE_PACKAGE
@@ -153,14 +153,17 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
                 workloadPredictor = DEFAULT_WORKLOAD_PREDICTOR_PACKAGE + "." + workloadPredictor;
             }
             workloadEstimator = (WorkloadEstimator) (Class.forName(workloadPredictor).newInstance());
+            workloadEstimator.setDataSource(source);
         } catch (ClassNotFoundException ex) {
             if (workloadEstimator == null) {
                 workloadEstimator = new CpuRecentHistoryWorkloadPredictor();
+                workloadEstimator.setDataSource(source);
             }
             Logger.getLogger(AbstractEnergyPredictor.class.getName()).log(Level.WARNING, "The workload predictor specified was not found", ex);
         } catch (InstantiationException | IllegalAccessException ex) {
             if (workloadEstimator == null) {
                 workloadEstimator = new CpuRecentHistoryWorkloadPredictor();
+                workloadEstimator.setDataSource(source);
             }
             Logger.getLogger(AbstractEnergyPredictor.class.getName()).log(Level.WARNING, "The workload predictor did not work", ex);
         }
