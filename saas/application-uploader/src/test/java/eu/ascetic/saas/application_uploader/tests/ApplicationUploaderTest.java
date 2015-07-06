@@ -138,9 +138,9 @@ public class ApplicationUploaderTest {
 	public void getEventEnergyConsumptionInVM() throws ApplicationUploaderException {
 		ApplicationUploader uploader = new ApplicationUploader("http://10.4.0.16/application-manager");
 		String applicationID = "JEPlus";
-		String deploymentID = "53";
-		String eventID = "CoreEvent";
-		String vmID = "81";
+		String deploymentID = "121";
+		String eventID = "coreOImpl0";
+		String vmID = "342";
 		Double meas = uploader.getEventEnergyEstimationInVM(applicationID, deploymentID, eventID, vmID);
 		System.out.println("Energy measurement for app " + applicationID + " deployment "+ deploymentID+ " vm "+ vmID + " event " + eventID +" is "+ meas.toString());		
 	}
