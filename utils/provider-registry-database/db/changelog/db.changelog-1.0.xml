@@ -14,7 +14,10 @@
             <column name="name" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="endpoint" type="varchar(255)">
+            <column name="vmm_url" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="slam_url" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
