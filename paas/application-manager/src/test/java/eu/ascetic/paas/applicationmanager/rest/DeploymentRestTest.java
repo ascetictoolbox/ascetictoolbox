@@ -350,11 +350,6 @@ public class DeploymentRestTest extends AbstractTest {
 	@Test
 	@SuppressWarnings(value = { "static-access", "unchecked" })
 	public void deleteDeployment() throws Exception {
-		// We manually modify the configuration object to be able to use personally for this test
-		Configuration.amqpAddress = "localhost:7672";
-		Configuration.amqpUsername = "guest";
-		Configuration.amqpPassword = "guest";
-		
 		// We set a listener to get the sent message from the MessageQueue
 		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword,  "APPLICATION.>", true);
 		AmqpListListener listener = new AmqpListListener();
@@ -488,11 +483,6 @@ public class DeploymentRestTest extends AbstractTest {
 	
 	@Test
 	public void postANewDeploymentInDB() throws Exception {
-		// We manually modify the configuration object to be able to use personally for this test
-		Configuration.amqpAddress = "localhost:7672";
-		Configuration.amqpUsername = "guest";
-		Configuration.amqpPassword = "guest";
-		
 		// We set a listener to get the sent message from the MessageQueue
 		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword,  "APPLICATION.>", true);
 		AmqpListListener listener = new AmqpListListener();
@@ -557,11 +547,6 @@ public class DeploymentRestTest extends AbstractTest {
 	
 	@Test
 	public void postANewDeploymentInDBManualNegotiationTest() throws Exception {
-		// We manually modify the configuration object to be able to use personally for this test
-		Configuration.amqpAddress = "localhost:7672";
-		Configuration.amqpUsername = "guest";
-		Configuration.amqpPassword = "guest";
-		
 		// We set a listener to get the sent message from the MessageQueue
 		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword,  "APPLICATION.>", true);
 		AmqpListListener listener = new AmqpListListener();

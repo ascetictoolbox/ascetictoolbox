@@ -62,7 +62,6 @@ import reactor.spring.annotation.Selector;
 @Consumer
 public class DeployEventHandler {
 	private static Logger logger = Logger.getLogger(DeployEventHandler.class);
-	
 	@Autowired
 	protected ApplicationDAO applicationDAO;
 	@Autowired

@@ -36,13 +36,9 @@ import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
  *
  */
 public class AmqpProducerTest extends AbstractTest {
-
+	
 	@Test
 	public void sendMessageTest() throws Exception {
-		// We manually modify the configuration object to be able to use personally for this test
-		Configuration.amqpAddress = "localhost:7672";
-		Configuration.amqpUsername = "guest";
-		Configuration.amqpPassword = "guest";
 		
 		// We create the message to be sent
 		ApplicationManagerMessage messageToBeSent = new ApplicationManagerMessage();
@@ -75,11 +71,6 @@ public class AmqpProducerTest extends AbstractTest {
 	
 	@Test
 	public void sendNewApplicationMessageTest() throws Exception {
-		// We manually modify the configuration object to be able to use personally for this test
-		Configuration.amqpAddress = "localhost:7672";
-		Configuration.amqpUsername = "guest";
-		Configuration.amqpPassword = "guest";
-		
 		// We set a listener to get the sent message from the MessageQueue
 		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword,  "APPLICATION.pepito.ADDED", true);
 		AmqpBasicListener listener = new AmqpBasicListener();
@@ -106,11 +97,6 @@ public class AmqpProducerTest extends AbstractTest {
 	
 	@Test
 	public void sendDeploymentSubmittedMessageTest() throws Exception {
-		// We manually modify the configuration object to be able to use personally for this test
-		Configuration.amqpAddress = "localhost:7672";
-		Configuration.amqpUsername = "guest";
-		Configuration.amqpPassword = "guest";
-		
 		// We set a listener to get the sent message from the MessageQueue
 		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, 
 				                                               Configuration.amqpUsername, 
@@ -148,11 +134,6 @@ public class AmqpProducerTest extends AbstractTest {
 	
 	@Test
 	public void sendDeploymentNegotiatingMessageTest() throws Exception {
-		// We manually modify the configuration object to be able to use personally for this test
-		Configuration.amqpAddress = "localhost:7672";
-		Configuration.amqpUsername = "guest";
-		Configuration.amqpPassword = "guest";
-		
 		// We set a listener to get the sent message from the MessageQueue
 		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, 
 				                                               Configuration.amqpUsername, 
@@ -185,11 +166,6 @@ public class AmqpProducerTest extends AbstractTest {
 	
 	@Test
 	public void sendDeploymentNegotiatedMessageTest() throws Exception {
-		// We manually modify the configuration object to be able to use personally for this test
-		Configuration.amqpAddress = "localhost:7672";
-		Configuration.amqpUsername = "guest";
-		Configuration.amqpPassword = "guest";
-		
 		// We set a listener to get the sent message from the MessageQueue
 		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, 
 				                                               Configuration.amqpUsername, 
@@ -222,11 +198,6 @@ public class AmqpProducerTest extends AbstractTest {
 	
 	@Test
 	public void sendDeploymentContextualizingMessageTest() throws Exception {
-		// We manually modify the configuration object to be able to use personally for this test
-		Configuration.amqpAddress = "localhost:7672";
-		Configuration.amqpUsername = "guest";
-		Configuration.amqpPassword = "guest";
-
 		// We set a listener to get the sent message from the MessageQueue
 		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, 
 				Configuration.amqpUsername, 
@@ -259,11 +230,6 @@ public class AmqpProducerTest extends AbstractTest {
 	
 	@Test
 	public void sendDeploymentContextualizedMessageTest() throws Exception {
-		// We manually modify the configuration object to be able to use personally for this test
-		Configuration.amqpAddress = "localhost:7672";
-		Configuration.amqpUsername = "guest";
-		Configuration.amqpPassword = "guest";
-
 		// We set a listener to get the sent message from the MessageQueue
 		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, 
 				Configuration.amqpUsername, 
@@ -296,11 +262,6 @@ public class AmqpProducerTest extends AbstractTest {
 	
 	@Test
 	public void sendDeploymentDeployingMessageTest() throws Exception {
-		// We manually modify the configuration object to be able to use personally for this test
-		Configuration.amqpAddress = "localhost:7672";
-		Configuration.amqpUsername = "guest";
-		Configuration.amqpPassword = "guest";
-
 		// We set a listener to get the sent message from the MessageQueue
 		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, 
 				Configuration.amqpUsername, 
@@ -333,11 +294,6 @@ public class AmqpProducerTest extends AbstractTest {
 	
 	@Test
 	public void sendDeploymentDeployedMessageTest() throws Exception {
-		// We manually modify the configuration object to be able to use personally for this test
-		Configuration.amqpAddress = "localhost:7672";
-		Configuration.amqpUsername = "guest";
-		Configuration.amqpPassword = "guest";
-
 		// We set a listener to get the sent message from the MessageQueue
 		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, 
 				Configuration.amqpUsername, 
@@ -370,11 +326,6 @@ public class AmqpProducerTest extends AbstractTest {
 	
 	@Test
 	public void sendDeploymentErrorMessageTest() throws Exception {
-		// We manually modify the configuration object to be able to use personally for this test
-		Configuration.amqpAddress = "localhost:7672";
-		Configuration.amqpUsername = "guest";
-		Configuration.amqpPassword = "guest";
-
 		// We set a listener to get the sent message from the MessageQueue
 		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, 
 				Configuration.amqpUsername, 
@@ -407,11 +358,6 @@ public class AmqpProducerTest extends AbstractTest {
 	
 	@Test
 	public void sendDeploymentDeletedMessageTest() throws Exception {
-		// We manually modify the configuration object to be able to use personally for this test
-		Configuration.amqpAddress = "localhost:7672";
-		Configuration.amqpUsername = "guest";
-		Configuration.amqpPassword = "guest";
-
 		// We set a listener to get the sent message from the MessageQueue
 		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, 
 				Configuration.amqpUsername, 
@@ -444,11 +390,6 @@ public class AmqpProducerTest extends AbstractTest {
 	
 	@Test
 	public void sendVMDeployingMessageTest() throws Exception {
-		// We manually modify the configuration object to be able to use personally for this test
-		Configuration.amqpAddress = "localhost:7672";
-		Configuration.amqpUsername = "guest";
-		Configuration.amqpPassword = "guest";
-
 		// We set a listener to get the sent message from the MessageQueue
 		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, 
 				Configuration.amqpUsername, 
@@ -496,11 +437,6 @@ public class AmqpProducerTest extends AbstractTest {
 	
 	@Test
 	public void sendVMDeployedMessageTest() throws Exception {
-		// We manually modify the configuration object to be able to use personally for this test
-		Configuration.amqpAddress = "localhost:7672";
-		Configuration.amqpUsername = "guest";
-		Configuration.amqpPassword = "guest";
-
 		// We set a listener to get the sent message from the MessageQueue
 		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, 
 				Configuration.amqpUsername, 
@@ -548,11 +484,6 @@ public class AmqpProducerTest extends AbstractTest {
 	
 	@Test
 	public void sendVMDeletedMessageTest() throws Exception {
-		// We manually modify the configuration object to be able to use personally for this test
-		Configuration.amqpAddress = "localhost:7672";
-		Configuration.amqpUsername = "guest";
-		Configuration.amqpPassword = "guest";
-
 		// We set a listener to get the sent message from the MessageQueue
 		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, 
 				Configuration.amqpUsername, 

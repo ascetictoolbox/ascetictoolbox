@@ -193,11 +193,6 @@ public class ApplicationRestTest extends AbstractTest {
 	
 	@Test
 	public void postAnApplicationInDB() throws Exception {
-		// We manually modify the configuration object to be able to use personally for this test
-		Configuration.amqpAddress = "localhost:7672";
-		Configuration.amqpUsername = "guest";
-		Configuration.amqpPassword = "guest";
-		
 		// We set a listener to get the sent message from the MessageQueue
 		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword,  "APPLICATION.>", true);
 		AmqpListListener listener = new AmqpListListener();
@@ -264,11 +259,6 @@ public class ApplicationRestTest extends AbstractTest {
 	
 	@Test
 	public void postAnApplicationInDBNoAutonomicNegotiationTest() throws Exception {
-		// We manually modify the configuration object to be able to use personally for this test
-		Configuration.amqpAddress = "localhost:7672";
-		Configuration.amqpUsername = "guest";
-		Configuration.amqpPassword = "guest";
-		
 		// We set a listener to get the sent message from the MessageQueue
 		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword,  "APPLICATION.>", true);
 		AmqpListListener listener = new AmqpListListener();
@@ -335,11 +325,6 @@ public class ApplicationRestTest extends AbstractTest {
 	
 	@Test
 	public void postAnApplicationNotInDB() throws Exception {
-		// We manually modify the configuration object to be able to use personally for this test
-		Configuration.amqpAddress = "localhost:7672";
-		Configuration.amqpUsername = "guest";
-		Configuration.amqpPassword = "guest";
-		
 		// We set a listener to get the sent message from the MessageQueue
 		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword,  "APPLICATION.>", true);
 		AmqpListListener listener = new AmqpListListener();

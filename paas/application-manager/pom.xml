@@ -202,7 +202,7 @@
 		<dependency>
 			<groupId>eu.ascetic.paas</groupId>
 			<artifactId>application-manager-datamodel</artifactId>
-			<version>0.17-SNAPSHOT</version>
+			<version>0.18-SNAPSHOT</version>
 		</dependency>
 		
 		<!-- ASCETiC BSC VMM Client -->
@@ -244,6 +244,12 @@
 			<groupId>eu.ascetic.paas</groupId>
 			<artifactId>paas-energy-modeller</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+			                <groupId>org.apache.activemq</groupId>
+					<artifactId>activemq-core</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		
 		    <!-- PaaS SLAM -->
