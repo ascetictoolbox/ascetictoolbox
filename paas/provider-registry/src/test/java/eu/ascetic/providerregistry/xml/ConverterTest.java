@@ -46,7 +46,8 @@ public class ConverterTest {
 		String providerXML = "<provider xmlns=\"" + PROVIDER_REGISTRY_NAMESPACE + "\" href=\"href...\">" +
 								"<id>111</id>" +
 								"<name>Name</name>" +
-								"<endpoint>http...</endpoint>" + 
+								"<vmm-url>http...</vmm-url>" + 
+								"<slam-url>http2...</slam-url>" +
 								"<link rel=\"parent\" href=\"/\" type=\"application/xml\" />" +
 								"<link rel=\"self\" href=\"/111\" type=\"application/xml\" />" +
 							  "</provider>";
@@ -55,7 +56,8 @@ public class ConverterTest {
 		
 		assertEquals(111l, provider.getId());
 		assertEquals("Name", provider.getName());
-		assertEquals("http...", provider.getEndpoint());
+		assertEquals("http...", provider.getVmmUrl());
+		assertEquals("http2...", provider.getSlamUrl());
 		assertEquals("href...", provider.getHref());
 		assertEquals(2, provider.getLinks().size());
 		assertEquals("self", provider.getLinks().get(1).getRel());
@@ -72,7 +74,7 @@ public class ConverterTest {
 		provider.setHref("/11");
 		provider.setId(11);
 		provider.setName("Nome");
-		provider.setEndpoint("Punto final");
+		provider.setVmmUrl("Punto final");
 		Link linkParent = new Link();
 		linkParent.setRel("parent");
 		linkParent.setHref("/");
@@ -111,7 +113,7 @@ public class ConverterTest {
 		element = (Element) listxpathName.get(0);
 		assertEquals("Nome", element.getValue());
 		
-		xpathName = XPath.newInstance("//bnf:endpoint");
+		xpathName = XPath.newInstance("//bnf:vmm-url");
 		xpathName.addNamespace("bnf", PROVIDER_REGISTRY_NAMESPACE);
 		listxpathName = xpathName.selectNodes(xmldoc);
 		assertEquals(1, listxpathName.size());
@@ -132,12 +134,12 @@ public class ConverterTest {
 		Provider provider1 = new Provider();
 		provider1.setId(1);
 		provider1.setName("provider1");
-		provider1.setEndpoint("http://1");
+		provider1.setVmmUrl("http://1");
 		providers.add(provider1);
 		Provider provider2 = new Provider();
 		provider2.setId(2);
 		provider2.setName("provider2");
-		provider2.setEndpoint("http://2");
+		provider2.setVmmUrl("http://2");
 		providers.add(provider2);
 		
 		String xml = Converter.getRootCollectionXML(providers);
@@ -184,7 +186,7 @@ public class ConverterTest {
 		element = (Element) listxpathName.get(1);
 		assertEquals("provider2", element.getValue());
 		
-		xpathName = XPath.newInstance("//bnf:endpoint");
+		xpathName = XPath.newInstance("//bnf:vmm-url");
 		xpathName.addNamespace("bnf", PROVIDER_REGISTRY_NAMESPACE);
 		listxpathName = xpathName.selectNodes(xmldoc);
 		assertEquals(2, listxpathName.size());
@@ -229,7 +231,7 @@ public class ConverterTest {
 		listxpathName = xpathName.selectNodes(xmldoc);
 		assertEquals(0, listxpathName.size());
 		
-		xpathName = XPath.newInstance("//bnf:endpoint");
+		xpathName = XPath.newInstance("//bnf:vmm-url");
 		xpathName.addNamespace("bnf", PROVIDER_REGISTRY_NAMESPACE);
 		listxpathName = xpathName.selectNodes(xmldoc);
 		assertEquals(0, listxpathName.size());

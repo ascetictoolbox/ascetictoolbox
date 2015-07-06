@@ -134,7 +134,7 @@ public class ProviderAPI {
 			
 			if(provider != null) {
 				provider.setName(newProviderInfo.getName());
-				provider.setEndpoint(newProviderInfo.getEndpoint());
+				provider.setVmmUrl(newProviderInfo.getVmmUrl());
 				providerDAO.update(provider);
 				
 				newProviderInfo.setId(id);

@@ -56,11 +56,13 @@ public class ProviderAPITest extends AbstractTransactionalJUnit4SpringContextTes
 	public void setUp() {
 		Provider provider1 = new Provider();
 		provider1.setName("Provider 1");
-		provider1.setEndpoint("http://provider1.ascetic.com");
+		provider1.setVmmUrl("http://provider1.ascetic.com");
+		provider1.setSlamUrl("http21...");
 		
 		Provider provider2 = new Provider();
 		provider2.setName("Provider 2");
-		provider2.setEndpoint("http://provider2.ascetic.com");
+		provider2.setVmmUrl("http://provider2.ascetic.com");
+		provider2.setSlamUrl("http22...");
 		
 		boolean saved = providerDAO.save(provider1);
 		assertTrue(saved);
@@ -91,10 +93,10 @@ public class ProviderAPITest extends AbstractTransactionalJUnit4SpringContextTes
 		assertEquals(0, collection.getItems().getOffset());
 		assertEquals(2, collection.getItems().getTotal());
 		assertEquals("Provider 1", collection.getItems().getProviders().get(0).getName());
-		assertEquals("http://provider1.ascetic.com", collection.getItems().getProviders().get(0).getEndpoint());
+		assertEquals("http://provider1.ascetic.com", collection.getItems().getProviders().get(0).getVmmUrl());
 		assertEquals(2, collection.getItems().getProviders().get(0).getLinks().size());
 		assertEquals("Provider 2", collection.getItems().getProviders().get(1).getName());
-		assertEquals("http://provider2.ascetic.com", collection.getItems().getProviders().get(1).getEndpoint());
+		assertEquals("http://provider2.ascetic.com", collection.getItems().getProviders().get(1).getVmmUrl());
 		assertEquals(2, collection.getItems().getProviders().get(1).getLinks().size());
 		assertEquals("self", collection.getItems().getProviders().get(0).getLinks().get(1).getRel());
 		assertEquals(CONTENT_TYPE_XML, collection.getItems().getProviders().get(0).getLinks().get(1).getType());
@@ -126,7 +128,7 @@ public class ProviderAPITest extends AbstractTransactionalJUnit4SpringContextTes
 		Provider provider = (Provider) jaxbUnmarshaller.unmarshal(new StringReader(providerXML));
 		assertEquals("/" + id, provider.getHref());
 		assertEquals("Provider 1", provider.getName());
-		assertEquals("http://provider1.ascetic.com", provider.getEndpoint());
+		assertEquals("http://provider1.ascetic.com", provider.getVmmUrl());
 		assertEquals(2, provider.getLinks().size());
 		assertEquals("self", provider.getLinks().get(0).getRel());
 		assertEquals(CONTENT_TYPE_XML, provider.getLinks().get(0).getType());
@@ -145,7 +147,8 @@ public class ProviderAPITest extends AbstractTransactionalJUnit4SpringContextTes
 	public void postProviderTest() throws Exception {
 		String providerRequestXML = "<provider xmlns=\"" + PROVIDER_REGISTRY_NAMESPACE + "\" >" +
 										"<name>Name</name>" +
-										"<endpoint>http...</endpoint>" + 
+										"<vmm-url>http...</vmm-url>" + 
+										"<slam-url>http2...</slam-url>" +
 									"</provider>";
 		
 		List<Provider> providers = providerDAO.getAll();
@@ -164,7 +167,7 @@ public class ProviderAPITest extends AbstractTransactionalJUnit4SpringContextTes
 		Provider provider = (Provider) jaxbUnmarshaller.unmarshal(new StringReader(providerXML));
 		assertEquals("/" + id, provider.getHref());
 		assertEquals("Name", provider.getName());
-		assertEquals("http...", provider.getEndpoint());
+		assertEquals("http...", provider.getVmmUrl());
 		assertEquals(2, provider.getLinks().size());
 		assertEquals("self", provider.getLinks().get(0).getRel());
 		assertEquals(CONTENT_TYPE_XML, provider.getLinks().get(0).getType());
@@ -182,7 +185,8 @@ public class ProviderAPITest extends AbstractTransactionalJUnit4SpringContextTes
 	public void putProviderTest() throws Exception {
 		String providerRequestXML = "<provider xmlns=\"" + PROVIDER_REGISTRY_NAMESPACE + "\" >" +
 										"<name>Name</name>" +
-										"<endpoint>http...</endpoint>" + 
+										"<vmm-url>http...</vmm-url>" + 
+										"<slam-url>http2...</slam-url>" +
 									"</provider>";
 		
 		ProviderAPI providerAPI = new ProviderAPI();
@@ -200,7 +204,8 @@ public class ProviderAPITest extends AbstractTransactionalJUnit4SpringContextTes
 		Provider provider = (Provider) jaxbUnmarshaller.unmarshal(new StringReader(providerXML));
 		assertEquals("/" + id, provider.getHref());
 		assertEquals("Name", provider.getName());
-		assertEquals("http...", provider.getEndpoint());
+		assertEquals("http...", provider.getVmmUrl());
+		assertEquals("http2...", provider.getSlamUrl());
 		assertEquals(2, provider.getLinks().size());
 		assertEquals("self", provider.getLinks().get(0).getRel());
 		assertEquals(CONTENT_TYPE_XML, provider.getLinks().get(0).getType());

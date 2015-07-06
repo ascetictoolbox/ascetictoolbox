@@ -57,8 +57,10 @@ public class Provider {
 	private int id;
 	@XmlElement(name="name", namespace=PROVIDER_REGISTRY_NAMESPACE)
 	private String name;
-	@XmlElement(name="endpoint", namespace=PROVIDER_REGISTRY_NAMESPACE)
-	private String endpoint;
+	@XmlElement(name="vmm-url", namespace=PROVIDER_REGISTRY_NAMESPACE)
+	private String vmmUrl;
+	@XmlElement(name="slam-url", namespace=PROVIDER_REGISTRY_NAMESPACE)
+	private String slamUrl;
 	@XmlElement(name="link", namespace = PROVIDER_REGISTRY_NAMESPACE)
 	private List<Link> links;
 
@@ -80,12 +82,20 @@ public class Provider {
 		this.id = id;
 	}
 	
-	@Column(name = "endpoint", nullable = false)
-	public String getEndpoint() {
-		return endpoint;
+	@Column(name = "vmm_url", nullable = false)
+	public String getVmmUrl() {
+		return vmmUrl;
 	}
-	public void setEndpoint(String endpoint) {
-		this.endpoint = endpoint;
+	public void setVmmUrl(String vmmUrl) {
+		this.vmmUrl = vmmUrl;
+	}
+	
+	@Column(name = "slam_url", nullable = false)
+	public String getSlamUrl() {
+		return slamUrl;
+	}
+	public void setSlamUrl(String slamUrl) {
+		this.slamUrl = slamUrl;
 	}
 	
 	@Column(name = "name", nullable = false)

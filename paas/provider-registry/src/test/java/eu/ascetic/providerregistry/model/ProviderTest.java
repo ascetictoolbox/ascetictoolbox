@@ -35,14 +35,14 @@ public class ProviderTest {
 		provider.setHref("href");
 		provider.setId(10);
 		provider.setName("Name");
-		provider.setEndpoint("http...");
+		provider.setVmmUrl("http...");
 		List<Link> links = new ArrayList<Link>();
 		provider.setLinks(links);
 		
 		assertEquals("href", provider.getHref());
 		assertEquals(10l, provider.getId());
 		assertEquals("Name", provider.getName());
-		assertEquals("http...", provider.getEndpoint());
+		assertEquals("http...", provider.getVmmUrl());
 		assertEquals(links, provider.getLinks());
 	}
 	
