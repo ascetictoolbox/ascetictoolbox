@@ -160,13 +160,14 @@
 					</execution>
 				</executions>
 			</plugin>
+			<!-- Forces tests to run one by one and not in parallel -->
 			<plugin>
   				<groupId>org.apache.maven.plugins</groupId>
   				<artifactId>maven-surefire-plugin</artifactId>
   				<configuration>
     				<forkMode>always</forkMode>
   				</configuration>
-			</plugin>	
+			</plugin>
 		</plugins>
 	</build>
 	
@@ -244,12 +245,12 @@
 			<groupId>eu.ascetic.paas</groupId>
 			<artifactId>paas-energy-modeller</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-			<exclusions>
+			<!-- <exclusions>
 				<exclusion>
 			                <groupId>org.apache.activemq</groupId>
 					<artifactId>activemq-core</artifactId>
 				</exclusion>
-			</exclusions>
+			</exclusions> -->
 		</dependency>
 		
 		    <!-- PaaS SLAM -->
