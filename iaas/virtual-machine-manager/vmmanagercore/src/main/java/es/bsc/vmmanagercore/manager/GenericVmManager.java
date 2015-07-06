@@ -515,7 +515,7 @@ public class GenericVmManager implements VmManager {
             case "ascetic":
                 energyModeller = new AsceticEnergyModellerAdapter();
                 pricingModeller = new AsceticPricingModellerAdapter(
-                        (eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller) energyModeller);
+                        AsceticEnergyModellerAdapter.getEnergyModeller());
                 break;
             default:
                 energyModeller = new DummyEnergyModeller();

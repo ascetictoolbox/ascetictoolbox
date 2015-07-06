@@ -59,6 +59,10 @@ public class AsceticEnergyModellerAdapter implements es.bsc.vmmanagercore.modell
                 .getAvgPowerUsed();
     }
 
+    public static EnergyModeller getEnergyModeller() {
+        return energyModeller;
+    }
+
     /**
      * Returns the energy usage predicted for a VM if it was deployed in a specific host.
      *
