@@ -49,6 +49,11 @@ public class AsceticProperties {
 	private static final String APP_SSH_PUBKEY = "app.ssh.public.key.path";
 	private static final String APP_SSH_PRIVKEY = "app.ssh.private.key.path";
 	private static final String APP_MON_LOC = "app.mon.location";
+	
+	private static final String POWER_BOUNDARY = "power.boundary";
+	private static final String PRICE_BOUNDARY = "price.boundary";
+	private static final String OPTIMIZATION_PARAMETER = "optimization.parameter";
+	
 	private PropertiesConfiguration config;
 
 	public AsceticProperties(String pathToConfigFile)
@@ -186,6 +191,30 @@ public class AsceticProperties {
 
 	public void setMonitorLocation(String location) {
 		config.setProperty(APP_MON_LOC, location);
-		
 	}
+
+	public Double getPowerBoundary() {
+		return config.getDouble(POWER_BOUNDARY);
+	}
+	
+	public void setPowerBoundary(double pow) {
+		config.setProperty(POWER_BOUNDARY, pow);
+	}
+	
+	public Double getPriceBoundary() {
+		return config.getDouble(PRICE_BOUNDARY);
+	}
+	
+	public void setPriceBoundary(double price) {
+		config.setProperty(PRICE_BOUNDARY, price);
+	}
+	
+	public String getOptimizationParameter() {
+		return config.getString(OPTIMIZATION_PARAMETER, "");
+	}
+	
+	public void setOptimizationParameter(String param) {
+		config.setProperty(OPTIMIZATION_PARAMETER, param);
+	}
+	
 }

@@ -387,12 +387,13 @@ public class AsceticDeployer extends Deployer {
 					if (monLoc != null && !monLoc.isEmpty()) {
 
 						manifest.setApplicationMonitorEPR(monLoc);
-						manifest.setImageCaching(deploymentSection.getImageCaching());
+						deploymentSection.setDeploymentOptionsInManifest(manifest);
 						final int vms = manifest.getVMsToDeploy();
 						deploymentSection.setApplicationSecurityInManifest(manifest);
 						
 							manifest.setApplicationMangerEPR(location);
 							final String ovf = manifest.getString();
+							System.out.println(ovf);
 							final boolean ex = executable;
 							final AsceticDeployer deployer = this;
 							//String deploymentID = "116";
@@ -653,8 +654,16 @@ public class AsceticDeployer extends Deployer {
 	 * Open the current service manifest file for editing
 	 */
 	protected void openServiceManifest() {
+		
 		generating = true;
 		try {
+			if (manifest==null){
+				final String serviceID = editor.getProject().getProject().getName();
+				if (MessageDialog.openQuestion(getShell(), CREATE_PACKS_DEF_TITLE, 
+						serviceID + CREATE_PACKS_DEF_QUESTION)){
+					packSection.generate();
+				}
+			}
 			manifest.toFile();
 			IFile sm = getProject().getProject()
 					.getFolder(OUTPUT_FOLDER)
@@ -662,6 +671,7 @@ public class AsceticDeployer extends Deployer {
 					.getFile(AsceticProperties.SERVICE_MANIFEST);
 			IDE.openEditor(this.getWorkbenchPage(), sm);
 			generating = false;
+			
 		} catch (Exception e) {
 			generating = false;
 			log.error("Exception opening manifest", e);

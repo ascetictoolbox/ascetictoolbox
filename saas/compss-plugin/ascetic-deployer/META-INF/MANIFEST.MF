@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Ascetic-Deployer
 Bundle-SymbolicName: ascetic.deployer.plugin;singleton:=true
 Bundle-Version: 0.0.1.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: COMPSs-IDE;bundle-version="1.2.0",
  org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -39,5 +39,5 @@ Bundle-ClassPath: .,
  lib/log4j-1.2.17.jar,
  lib/commons-codec-1.8.jar,
  lib/jsch-0.1.42.jar,
- lib/application-manager-datamodel-0.9-SNAPSHOT.jar,
- lib/hibernate-jpa-2.1-api-1.0.0.Final.jar
+ lib/hibernate-jpa-2.1-api-1.0.0.Final.jar,
+ lib/application-manager-datamodel-0.17-SNAPSHOT.jar

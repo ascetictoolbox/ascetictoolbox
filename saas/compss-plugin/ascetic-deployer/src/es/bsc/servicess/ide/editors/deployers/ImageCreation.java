@@ -431,9 +431,9 @@ public class ImageCreation {
 	private static void createProperties(File file, String packageName, String schedulerPackage) throws ConfigurationException {
 		RuntimeConfigManager config = new RuntimeConfigManager(file);
 		config.setLog4jConfiguration(IMAGE_DEPLOYMENT_FOLDER + "/it-log4j");
-		config.setGraph(true);
+		/*config.setGraph(true);
 		config.setTracing(false);
-		config.setMonitorInterval(2000);
+		config.setMonitorInterval(2000);*/
 		config.setGATBrokerAdaptor("sshtrilead");
 		config.setGATFileAdaptor("sshtrilead");
 		config.setProjectFile(IMAGE_DEPLOYMENT_FOLDER + "/project.xml");
@@ -442,11 +442,11 @@ public class ImageCreation {
 		config.setResourcesSchema(IMAGE_DEPLOYMENT_FOLDER
 				+ "/resource_schema.xsd");
 		config.setContext(CONTEXT_FOLDER);
-		config.setManifestLocation(CONTEXT_FOLDER + "/ovf.xml");
+		//config.setManifestLocation(CONTEXT_FOLDER + "/ovf.xml");
 		config.setGATAdaptor(IMAGE_DEPLOYMENT_FOLDER +"/adaptors");
-		config.setComponent(Manifest.generateManifestName(packageName));
+		/*config.setComponent(Manifest.generateManifestName(packageName));
 		config.setSchedulerComponent(Manifest.generateManifestName(schedulerPackage));
-		config.setMonitorLocation(TMP_FOLDER);
+		config.setMonitorLocation(TMP_FOLDER);*/
 		config.setWorkerCP(IMAGE_DEPLOYMENT_FOLDER);
 		config.save();
 	}

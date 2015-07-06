@@ -1080,7 +1080,25 @@ public class Manifest {
 		}
 		
 	}
+
+
+	public void setPowerBoundary(String power) {
+		ProductSection ps = getOrCreateGlobalProductSection();
+		ps.setEnergyOptimizationBoundary(power);
+		
+	}
 	
+	public void setPriceBoundary(String price) {
+		ProductSection ps = getOrCreateGlobalProductSection();
+		ps.setCostOptimizationBoundary(price);
+		
+	}
+	
+	public void setOptimizationParameter(String param) {
+		ProductSection ps = getOrCreateGlobalProductSection();
+		ps.setOptimizationParameter(param);
+		
+	}
 	
 	
 }
