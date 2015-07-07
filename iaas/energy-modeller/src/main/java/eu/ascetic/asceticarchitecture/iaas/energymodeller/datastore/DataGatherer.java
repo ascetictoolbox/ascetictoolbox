@@ -277,7 +277,11 @@ public class DataGatherer implements Runnable {
                     return; //This guards against not having a Watt meter attached.                    
                 }
             }
-            database.writeHostHistoricData(host, measurement.getClock(), power, measurement.getEnergy());
+            double energy = 0; 
+            if (measurement.getEnergyMetricExist()) {
+                energy = measurement.getEnergy();
+            }
+            database.writeHostHistoricData(host, measurement.getClock(), power, energy);
             Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Obtaining list of vms on host {0}", host.getHostName());
             ArrayList<VmDeployed> vms = getVMsOnHost(host, vmList);
             if (!vms.isEmpty()) {
