@@ -9,9 +9,9 @@
                 <property name="hibernate.archive.autodetection" value="class, hbm"/>
                 <property name="hibernate.show_sql" value="true"/>
                 <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
-                <property name="hibernate.connection.password" value="registry"/>
-                <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3000/provider_registry"/>
-                <property name="hibernate.connection.username" value="provider"/>
+                <property name="hibernate.connection.password" value="ascetic-secret"/>
+                <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/provider_registry"/>
+                <property name="hibernate.connection.username" value="provider-reg"/>
                 <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
                 <property name="hibernate.hbm2ddl.auto" value="validate"/>
                 <property name="hibernate.c3p0.acquire_increment" value="1" />

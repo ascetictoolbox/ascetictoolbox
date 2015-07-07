@@ -20,7 +20,7 @@
 		class="org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager">
 		<property name="persistenceXmlLocations">
 			<list>
-			    <value>classpath*:META-INF/persistence.mysql.xml</value>
+			    <value>file:/etc/ascetic/paas/provider-registry/persistence.mysql.xml</value>
 			</list>
 		</property>
 		<!--  comment dataSourceLooup to use jndi -->
@@ -47,8 +47,8 @@
 	<bean id="dataSource" 
     	      class="org.springframework.jdbc.datasource.DriverManagerDataSource"
 			  p:driverClassName="com.mysql.jdbc.Driver" 
-			  p:url="jdbc:mysql://localhost:3000/provider_registry"
-		      p:username="provider" p:password="registry" />
+			  p:url="jdbc:mysql://localhost:3306/provider_registry"
+		      p:username="provider-reg" p:password="ascetic-secret" />
 	
 	<bean id="transactionManager" 
 		  class="org.springframework.orm.jpa.JpaTransactionManager"
