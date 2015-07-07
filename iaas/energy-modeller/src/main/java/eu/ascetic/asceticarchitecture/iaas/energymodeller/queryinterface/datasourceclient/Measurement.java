@@ -231,7 +231,15 @@ public abstract class Measurement {
      * @param item a metric to add to this measurement dataset
      */
     public void addMetric(MetricValue item) {
-        metrics.put(item.getKey(), item);
+        if (!metrics.containsKey(item.getKey())) {
+            metrics.put(item.getKey(), item);
+        } else {
+            MetricValue existing = metrics.get(item.getKey());
+            // Add only the newer of the two items.
+            if (item.getClock() > existing.getClock()) {
+                metrics.put(item.getKey(), item);
+            }
+        }
     }
 
     /**
@@ -243,15 +251,15 @@ public abstract class Measurement {
     public MetricValue getMetric(String key) {
         return metrics.get(key);
     }
-   
+
     /**
      * This indicates if an item exits that represents a given metric
      *
      * @param key The key that is used to identify a given measurement
      * @return If a value for the metric exists or not.
-     */    
+     */
     public boolean metricExists(String key) {
-       return metrics.containsKey(key);
+        return metrics.containsKey(key);
     }
 
     /**
@@ -355,7 +363,7 @@ public abstract class Measurement {
     public double getCpuIdle() {
         if (metrics.containsKey(CPU_SPOT_USAGE_KPI_NAME)) {
             return 1 - this.getMetric(CPU_SPOT_USAGE_KPI_NAME).getClock();
-        }        
+        }
         return this.getMetric(CPU_IDLE_KPI_NAME).getValue() / 100;
     }
 
