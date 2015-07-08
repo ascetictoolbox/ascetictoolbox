@@ -27,6 +27,7 @@ import eu.ascetic.utils.ovf.api.Disk;
 import eu.ascetic.utils.ovf.api.File;
 import eu.ascetic.utils.ovf.api.Item;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
+import eu.ascetic.utils.ovf.api.ProductSection;
 import eu.ascetic.utils.ovf.api.VirtualHardwareSection;
 import eu.ascetic.utils.ovf.api.VirtualSystem;
 import eu.ascetic.utils.ovf.api.VirtualSystemCollection;
@@ -73,6 +74,8 @@ public class DeployEventHandler {
 	@Autowired
 	protected ImageDAO imageDAO;
 	protected VmManagerClient vmManagerClient = new VmManagerClientBSSC();
+	protected long minNumberVMs = 0;
+	protected long maxNumberVMs = 0;
 
 	@Selector(value="topic.deployment.status", reactor="@rootReactor")
 	public void deployDeployment(Event<DeploymentEvent> event) {
@@ -130,7 +133,8 @@ public class DeployEventHandler {
 
 					//Now we have the image... lets see what it is the rest to build the VM to Upload...
 					String ovfVirtualSystemID = virtualSystem.getId();
-					int asceticUpperBound = virtualSystem.getProductSectionAtIndex(0).getUpperBound();
+					// We determine how many VMs of this type we need to create
+					determineMinAndMaxNumberOfVMs(virtualSystem.getProductSectionAtIndex(0));
 					
 					String vmName = virtualSystem.getName();
 					int cpus = virtualSystem.getVirtualHardwareSection().getNumberOfVirtualCPUs();
@@ -141,9 +145,9 @@ public class DeployEventHandler {
 					// We force to refresh the image from the DB... 
 					image = imageDAO.getById(image.getId());
 					
-					for(int j = 0; j < asceticUpperBound; j++) {
+					for(int j = 0; j < minNumberVMs; j++) {
 
-						logger.debug(" OVF-ID: " + ovfVirtualSystemID + " #VMs: " + asceticUpperBound + " Name: " + vmName + " CPU: " + cpus + " RAM: " + ramMb + " Disk capacity: " + capacity + " ISO Path: " + isoPath);
+						logger.debug(" OVF-ID: " + ovfVirtualSystemID + " #VMs: " + minNumberVMs + " Name: " + vmName + " CPU: " + cpus + " RAM: " + ramMb + " Disk capacity: " + capacity + " ISO Path: " + isoPath);
 
 						int suffixInt = j + 1;
 						String suffix = "_" + suffixInt;
@@ -170,6 +174,8 @@ public class DeployEventHandler {
 							vmToDB.setProviderVmId(id);
 							// TODO I need to update this to get it from the table Agreements... 
 							//vmToDB.setSlaAgreement(deployment.getSlaAgreement());
+							vmToDB.setNumberVMsMax(maxNumberVMs);
+							vmToDB.setNumberVMsMin(minNumberVMs);
 							vmDAO.save(vmToDB);
 							
 							vmToDB.addImage(image);
@@ -212,6 +218,17 @@ public class DeployEventHandler {
 			//We notify that the deployment has been modified
 			deploymentEventService.fireDeploymentEvent(deploymentEvent);
 		}	
+	}
+	
+	protected void determineMinAndMaxNumberOfVMs(ProductSection productSection) {
+		
+		try {
+			minNumberVMs = productSection.getLowerBound();
+			maxNumberVMs = productSection.getUpperBound();
+		} catch(NullPointerException ex) {
+			minNumberVMs = productSection.getUpperBound();
+			maxNumberVMs = productSection.getUpperBound();
+		}
 	}
 	
 	private Image uploadImage(String urlImg, String fileId, boolean demo, String applicationName) {

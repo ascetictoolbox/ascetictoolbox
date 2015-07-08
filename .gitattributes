@@ -853,6 +853,7 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/s
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/SLATest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/vmmanager/VmManagerTest2IT.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/vmmanager/client/VmManagerClientBSCCTest.java -text
+paas/application-manager/src/test/resources/3tier-webapp.ovf-only-upper-bounds.xml -text
 paas/application-manager/src/test/resources/3tier-webapp.ovf.vmc.xml -text
 paas/application-manager/src/test/resources/3tier-webapp.ovf.xml -text
 paas/application-manager/src/test/resources/META-INF/persistence.mysql.test.xml -text
@@ -867,6 +868,7 @@ paas/application-manager/src/test/resources/jndi.properties -text
 paas/application-manager/src/test/resources/mysql-jpa-test-configuration.xml -text
 paas/application-manager/src/test/resources/saas.ovf -text
 paas/application-manager/src/test/resources/sla-agreement.xml -text
+paas/application-manager/src/test/resources/slat-y2.xml -text
 paas/application-manager/velocity.log -text
 paas/application-monitor/LICENSE -text
 paas/application-monitor/README.md -text

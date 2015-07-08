@@ -77,7 +77,7 @@ public class NegotiationEventHandler {
 				// First we create the SLA template from the OVF
 				OvfDefinition ovfDefinition = OVFUtils.getOvfDefinition(deployment.getOvf());
 				SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, Configuration.applicationManagerUrl + "/application-manager" + deployment.getHref() + "/ovf");
-				logger.debug("Initial SLA Template document: " + slaTemplate);
+				logger.info("Initial SLA Template document: " + slaTemplate);
 
 				// We create a client to the SLAM
 				NegotiationWsClient client = new NegotiationWsClient();

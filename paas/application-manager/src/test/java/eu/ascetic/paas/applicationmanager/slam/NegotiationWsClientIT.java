@@ -51,7 +51,8 @@ public class NegotiationWsClientIT {
 	private String threeTierWebAppOvfFile = "3tier-webapp.ovf.xml";
 	private String threeTierWebAppOvfString;
 	
-//	private String slatFile = "ascetic-basic-slat.xml";
+	private String slatFile = "slat-y2.xml";
+	private String slatXml = "";
 	
 	private static final String serverAddress = "localhost";//"10.4.0.15";
 
@@ -76,8 +77,8 @@ public class NegotiationWsClientIT {
 		File file = new File(this.getClass().getResource( "/" + threeTierWebAppOvfFile ).toURI());		
 		threeTierWebAppOvfString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
 //		
-//		file = new File(this.getClass().getResource( "/" + slatFile ).toURI());		
-//		String slatXml = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
+		file = new File(this.getClass().getResource( "/" + slatFile ).toURI());		
+		slatXml = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
 		
 		negotiationClient = new NegotiationWsClient();
 		SlaTranslator slaTranslator = new SlaTranslatorImplNoOsgi();
@@ -101,12 +102,13 @@ public class NegotiationWsClientIT {
 
 	private String testInitiateNegotiationWs() throws Exception {
 		
-//		SLASOITemplateParser slasoieTemplatParser = new SLASOITemplateParser();
-//		SLATemplate slat = slasoieTemplatParser.parseTemplate(slatXml);
+		SLASOITemplateParser slasoieTemplatParser = new SLASOITemplateParser();
+		SLATemplate slaTemplate = slasoieTemplatParser.parseTemplate(slatXml);
 		
-		OvfDefinition ovfDefinition = OVFUtils.getOvfDefinition(threeTierWebAppOvfString);
-		SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "http://10.4.0.16/application-manager/applications/threeTierWebApp/deployments/31/ovf");
-
+//		OvfDefinition ovfDefinition = OVFUtils.getOvfDefinition(threeTierWebAppOvfString);
+//		SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "http://10.4.0.16/application-manager/applications/threeTierWebApp/deployments/31/ovf");
+		System.out.println("Template: " + slaTemplate);
+		
 		System.out.println("Sending initiateNegotiation SOAP request...");
 		String negId = negotiationClient.initiateNegotiation(endpoint, slaTemplate);
 

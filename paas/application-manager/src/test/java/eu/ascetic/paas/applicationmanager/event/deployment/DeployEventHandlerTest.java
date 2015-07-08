@@ -47,7 +47,10 @@ import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
+import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
+import eu.ascetic.utils.ovf.api.OvfDefinition;
+import eu.ascetic.utils.ovf.api.ProductSection;
 
 /**
  * 
@@ -78,6 +81,8 @@ public class DeployEventHandlerTest extends AbstractTest {
 	private String threeTierWebAppOvfString;
 	private String threeTierWebAppDEMOOvfFile = "3tier-webapp.ovf.vmc.xml";
 	private String threeTierWebAppDEMOOvfString;
+	private String threeTierWebAppWithUpperLimitsFile = "3tier-webapp.ovf-only-upper-bounds.xml";
+	private String threeTierWebAppWithUpperLimitsString;
 	
 	/**
 	 * We just read an ovf example... 
@@ -92,6 +97,10 @@ public class DeployEventHandlerTest extends AbstractTest {
 		// Reading the OVF file with DEMO tags...
 		file = new File(this.getClass().getResource( "/" + threeTierWebAppDEMOOvfFile ).toURI());		
 		threeTierWebAppDEMOOvfString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
+		
+		// Reading the OVF file with DEMO tags...
+		file = new File(this.getClass().getResource( "/" + threeTierWebAppWithUpperLimitsFile ).toURI());		
+		threeTierWebAppWithUpperLimitsString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
 	}
 
 	@Test
@@ -492,10 +501,13 @@ public class DeployEventHandlerTest extends AbstractTest {
 		assertEquals("haproxy", deploymentCaptor.getValue().getVms().get(0).getOvfId());
 		assertEquals("10.0.0.1", deploymentCaptor.getValue().getVms().get(0).getIp());
 		assertEquals("haproxy-vm1", deploymentCaptor.getValue().getVms().get(0).getProviderVmId());
+		assertEquals(2, deploymentCaptor.getValue().getVms().get(0).getNumberVMsMax());
+		assertEquals(1, deploymentCaptor.getValue().getVms().get(0).getNumberVMsMin());
 		assertEquals("ACTIVE", deploymentCaptor.getValue().getVms().get(0).getStatus());
 		assertEquals(1, deploymentCaptor.getValue().getVms().get(0).getImages().size());
 		assertEquals("/DFS/ascetic/vm-images/threeTierWebApp/haproxy.img", deploymentCaptor.getValue().getVms().get(0).getImages().get(0).getOvfHref());
 		assertEquals("haproxy-img", deploymentCaptor.getValue().getVms().get(0).getImages().get(0).getOvfId());
+		assertEquals("haproxy-uuid", deploymentCaptor.getValue().getVms().get(0).getImages().get(0).getProviderImageId());
 		assertEquals("haproxy-uuid", deploymentCaptor.getValue().getVms().get(0).getImages().get(0).getProviderImageId());
 		assertFalse(deploymentCaptor.getValue().getVms().get(0).getImages().get(0).isDemo());
 		
@@ -503,6 +515,8 @@ public class DeployEventHandlerTest extends AbstractTest {
 		assertEquals("10.0.0.2", deploymentCaptor.getValue().getVms().get(1).getIp());
 		assertEquals("jboss-vm1", deploymentCaptor.getValue().getVms().get(1).getProviderVmId());
 		assertEquals("ACTIVE", deploymentCaptor.getValue().getVms().get(1).getStatus());
+		assertEquals(2, deploymentCaptor.getValue().getVms().get(1).getNumberVMsMax());
+		assertEquals(2, deploymentCaptor.getValue().getVms().get(1).getNumberVMsMin());
 		assertEquals(1, deploymentCaptor.getValue().getVms().get(1).getImages().size());
 		assertEquals("/DFS/ascetic/vm-images/threeTierWebApp/jboss.img", deploymentCaptor.getValue().getVms().get(1).getImages().get(0).getOvfHref());
 		assertEquals("jboss-img", deploymentCaptor.getValue().getVms().get(1).getImages().get(0).getOvfId());
@@ -513,6 +527,8 @@ public class DeployEventHandlerTest extends AbstractTest {
 		assertEquals("10.0.0.2", deploymentCaptor.getValue().getVms().get(2).getIp());
 		assertEquals("jboss-vm2", deploymentCaptor.getValue().getVms().get(2).getProviderVmId());
 		assertEquals("ACTIVE", deploymentCaptor.getValue().getVms().get(2).getStatus());
+		assertEquals(2, deploymentCaptor.getValue().getVms().get(2).getNumberVMsMax());
+		assertEquals(2, deploymentCaptor.getValue().getVms().get(2).getNumberVMsMin());
 		assertEquals(1, deploymentCaptor.getValue().getVms().get(2).getImages().size());
 		assertEquals("/DFS/ascetic/vm-images/threeTierWebApp/jboss.img", deploymentCaptor.getValue().getVms().get(2).getImages().get(0).getOvfHref());
 		assertEquals("jboss-img", deploymentCaptor.getValue().getVms().get(2).getImages().get(0).getOvfId());
@@ -522,6 +538,8 @@ public class DeployEventHandlerTest extends AbstractTest {
 		assertEquals("10.0.0.3", deploymentCaptor.getValue().getVms().get(3).getIp());
 		assertEquals("mysql-vm1", deploymentCaptor.getValue().getVms().get(3).getProviderVmId());
 		assertEquals("ACTIVE", deploymentCaptor.getValue().getVms().get(3).getStatus());
+		assertEquals(1, deploymentCaptor.getValue().getVms().get(3).getNumberVMsMax());
+		assertEquals(1, deploymentCaptor.getValue().getVms().get(3).getNumberVMsMin());
 		assertEquals(1, deploymentCaptor.getValue().getVms().get(3).getImages().size());
 		assertEquals(1, deploymentCaptor.getValue().getVms().get(3).getImages().size());
 		assertEquals("/DFS/ascetic/vm-images/threeTierWebApp/mysql.img", deploymentCaptor.getValue().getVms().get(3).getImages().get(0).getOvfHref());
@@ -536,6 +554,8 @@ public class DeployEventHandlerTest extends AbstractTest {
 		assertEquals("ACTIVE", deploymentCaptor.getValue().getVms().get(4).getStatus());
 		assertEquals(1, deploymentCaptor.getValue().getVms().get(4).getImages().size());
 		assertEquals(1, deploymentCaptor.getValue().getVms().get(4).getImages().size());
+		assertEquals(1, deploymentCaptor.getValue().getVms().get(4).getNumberVMsMax());
+		assertEquals(1, deploymentCaptor.getValue().getVms().get(4).getNumberVMsMin());
 		assertEquals("/DFS/ascetic/vm-images/threeTierWebApp/jmeter.img", deploymentCaptor.getValue().getVms().get(4).getImages().get(0).getOvfHref());
 		assertEquals("jmeter-img", deploymentCaptor.getValue().getVms().get(4).getImages().get(0).getOvfId());
 		assertEquals("jmeter-uuid", deploymentCaptor.getValue().getVms().get(4).getImages().get(0).getProviderImageId());
@@ -550,6 +570,29 @@ public class DeployEventHandlerTest extends AbstractTest {
 		
 		assertEquals(22, argument.getValue().getDeploymentId());
 		assertEquals(Dictionary.APPLICATION_STATUS_DEPLOYED, argument.getValue().getDeploymentStatus());
+	}
+	
+	@Test
+	public void determineMinAndMaxNumberOfVMsTest() {
+		// Without lowerBound
+		OvfDefinition ovfDocument = OVFUtils.getOvfDefinition(threeTierWebAppWithUpperLimitsString);
+		ProductSection productSection = ovfDocument.getVirtualSystemCollection().getVirtualSystemAtIndex(0).getProductSectionAtIndex(0);
+		
+		DeployEventHandler deploymentEventHandler = new DeployEventHandler();
+		deploymentEventHandler.determineMinAndMaxNumberOfVMs(productSection);
+		
+		assertEquals(1, deploymentEventHandler.maxNumberVMs);
+		assertEquals(1, deploymentEventHandler.minNumberVMs);
+		
+		// With lowerBound
+		ovfDocument = OVFUtils.getOvfDefinition(threeTierWebAppDEMOOvfString);
+		productSection = ovfDocument.getVirtualSystemCollection().getVirtualSystemAtIndex(0).getProductSectionAtIndex(0);
+		
+		DeployEventHandler deploymentEventHandler2 = new DeployEventHandler();
+		deploymentEventHandler2.determineMinAndMaxNumberOfVMs(productSection);
+		
+		assertEquals(2, deploymentEventHandler2.maxNumberVMs);
+		assertEquals(1, deploymentEventHandler2.minNumberVMs);
 	}
 	
 	/**
