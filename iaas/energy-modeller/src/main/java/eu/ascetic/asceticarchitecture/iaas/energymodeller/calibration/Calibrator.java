@@ -42,10 +42,10 @@ public class Calibrator implements Runnable {
     private static int calibratorMaxDurationSec = 240; //for 2 minutes.
     private static final String CONFIG_FILE = "energy-modeller-calibrator.properties";    
     private static final String DEFAULT_LOAD_GEN_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration";
-    private static String loadGeneratorName = "DefaultLoadGenerator"; //the name of the load generator class to load    
+    private static String loadGeneratorName = "DummyLoadGenerator"; //the name of the load generator class to load    
     private Class<?> loadGenerator; //The class instance to load, see the variable defaultLoadGenerator
     private String loadGeneratorDomain = ".cit.tu-berlin.de:8080/energy-modeller-load-calibration-tool-0.0.1-SNAPSHOT/";
-    private boolean logCalibrationDataRemotely = false;
+    private boolean logCalibrationDataHere = false;
 
     /**
      * This creates a new calibrator.
@@ -75,8 +75,8 @@ public class Calibrator implements Runnable {
             setGenerator(loadGeneratorName);
             loadGeneratorDomain = config.getString("iaas.energy.modeller.calibrator.load.generator.domain", loadGeneratorDomain);
             config.setProperty("iaas.energy.modeller.calibrator.load.generator.domain", loadGeneratorDomain);
-            logCalibrationDataRemotely = config.getBoolean("iaas.energy.modeller.calibrator.remote.logging", logCalibrationDataRemotely);
-            config.setProperty("iaas.energy.modeller.calibrator.remote.logging", logCalibrationDataRemotely);
+            logCalibrationDataHere = config.getBoolean("iaas.energy.modeller.calibrator.remote.logging", logCalibrationDataHere);
+            config.setProperty("iaas.energy.modeller.calibrator.remote.logging", logCalibrationDataHere);
 
         } catch (ConfigurationException ex) {
             Logger.getLogger(Calibrator.class.getName()).log(Level.INFO, "Error loading the configuration of the IaaS energy modeller", ex);
@@ -126,7 +126,7 @@ public class Calibrator implements Runnable {
         //Gather basic data
         host = readLowestboundForHost(host);
         //Perform the full logging
-        if (logCalibrationDataRemotely) {
+        if (logCalibrationDataHere) {
             CalibratorDataLogger logger = new CalibratorDataLogger(host, datasource, database, calibratorWaitSec, calibratorMaxDurationSec);
             Thread dataLoggerThread = new Thread(logger);
             dataLoggerThread.setDaemon(true);
@@ -175,7 +175,7 @@ public class Calibrator implements Runnable {
                  * that the generator specified was not found
                  */
                 this.loadGenerator = DummyLoadGenerator.class;
-                logCalibrationDataRemotely = false;
+                logCalibrationDataHere = false;
             }
             Logger.getLogger(Calibrator.class.getName()).log(Level.WARNING, "The load generator specified was not found", ex);
         }

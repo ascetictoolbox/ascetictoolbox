@@ -22,7 +22,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
  * benchmarks test on them in order, to generate a profile of energy usage on
  * the given host.
  *
- * @author Richard
+ * @author Richard Kavanagh
  */
 public class DummyLoadGenerator implements LoadGenerator {
 
