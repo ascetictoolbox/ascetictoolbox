@@ -176,6 +176,18 @@ public class DeployEventHandler {
 							//vmToDB.setSlaAgreement(deployment.getSlaAgreement());
 							vmToDB.setNumberVMsMax(maxNumberVMs);
 							vmToDB.setNumberVMsMin(minNumberVMs);
+							vmToDB.setCpuMin(cpus);
+							vmToDB.setCpuActual(cpus);
+							vmToDB.setCpuMax(cpus);
+							vmToDB.setDiskMin(capacity);
+							vmToDB.setDiskActual(capacity);
+							vmToDB.setDiskMax(capacity);
+							vmToDB.setRamMin(ramMb);
+							vmToDB.setRamActual(ramMb);
+							vmToDB.setRamMax(ramMb);
+							vmToDB.setSwapMax(0);
+							vmToDB.setSwapActual(0);
+							vmToDB.setSwapMin(0);
 							vmDAO.save(vmToDB);
 							
 							vmToDB.addImage(image);

@@ -82,6 +82,7 @@ public class SLATemplateCreator {
 		
 		STND stndProperties = new STND("ProvidersList");
 		
+		// TODO this needs to be by configuration
 		String value = "{\"ProvidersList\": [ \n " +
 							"{\"provider-uuid\":\"1\", \"p-slam-url\":\"http://10.4.0.15:8080/services/asceticNegotiation?wsdl\"}\n" +
 						"]}";

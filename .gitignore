@@ -19,6 +19,7 @@ iaas/iaas-slamanager/provisioning-adjustment/.classpath
 iaas/iaas-slamanager/provisioning-adjustment/.project
 iaas/iaas-slamanager/provisioning-adjustment/.settings
 iaas/iaas-slamanager/provisioning-adjustment/target
+paas/application-manager/doc/doc
 paas/application-monitor/logs
 paas/application-monitor/target
 paas/virtual-machine-contextualizer/logs/vmc.log.1

@@ -717,6 +717,10 @@ paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmana
 paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmanager/model/converter/ModelConverterTest.java -text
 paas/application-manager-datamodel/src/test/resources/log4j.properties -text
 paas/application-manager/LICENSE.TXT -text
+paas/application-manager/doc/Makefile -text
+paas/application-manager/doc/make.bat -text
+paas/application-manager/doc/source/conf.py -text
+paas/application-manager/doc/source/index.rst -text
 paas/application-manager/pom.xml -text
 paas/application-manager/src/main/java/eu/ascetic/applicationmanager/slam/stub/BZNegotiationCallbackHandler.java -text
 paas/application-manager/src/main/java/eu/ascetic/applicationmanager/slam/stub/BZNegotiationStub.java -text
@@ -864,7 +868,9 @@ paas/application-manager/src/test/resources/application-manager.properties -text
 paas/application-manager/src/test/resources/ascetic-basic-slat.xml -text
 paas/application-manager/src/test/resources/b.xml -text
 paas/application-manager/src/test/resources/davidg-test.ovf.vmc.xml -text
+paas/application-manager/src/test/resources/davidgp-ovf.xml -text
 paas/application-manager/src/test/resources/jndi.properties -text
+paas/application-manager/src/test/resources/log4j.properties -text
 paas/application-manager/src/test/resources/mysql-jpa-test-configuration.xml -text
 paas/application-manager/src/test/resources/saas.ovf -text
 paas/application-manager/src/test/resources/sla-agreement.xml -text

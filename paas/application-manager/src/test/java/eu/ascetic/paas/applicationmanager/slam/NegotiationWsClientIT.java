@@ -20,6 +20,7 @@ import org.slasoi.gslam.syntaxconverter.SLASOITemplateRenderer;
 import org.slasoi.slamodel.sla.SLA;
 import org.slasoi.slamodel.sla.SLATemplate;
 
+import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
 import eu.ascetic.paas.applicationmanager.slam.NegotiationWsClient;
 import eu.ascetic.paas.applicationmanager.slam.translator.SlaTranslator;
@@ -48,7 +49,7 @@ import eu.ascetic.utils.ovf.api.OvfDefinition;
 public class NegotiationWsClientIT {
 	private static Logger logger = Logger.getLogger(NegotiationWsClientIT.class);
 
-	private String threeTierWebAppOvfFile = "3tier-webapp.ovf.xml";
+	private String threeTierWebAppOvfFile = "davidgp-ovf.xml";//"3tier-webapp.ovf.xml";
 	private String threeTierWebAppOvfString;
 	
 	private String slatFile = "slat-y2.xml";
@@ -74,6 +75,8 @@ public class NegotiationWsClientIT {
 
 	@Before
 	public void setUp() throws Exception {
+		Configuration.slamURL = "http://10.4.0.16:8080/services/asceticNegotiation?wsdl"; 
+				
 		File file = new File(this.getClass().getResource( "/" + threeTierWebAppOvfFile ).toURI());		
 		threeTierWebAppOvfString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
 //		
@@ -102,12 +105,19 @@ public class NegotiationWsClientIT {
 
 	private String testInitiateNegotiationWs() throws Exception {
 		
-		SLASOITemplateParser slasoieTemplatParser = new SLASOITemplateParser();
-		SLATemplate slaTemplate = slasoieTemplatParser.parseTemplate(slatXml);
+//		SLASOITemplateParser slasoieTemplatParser = new SLASOITemplateParser();
+//		SLATemplate slaTemplate = slasoieTemplatParser.parseTemplate(slatXml);
 		
-//		OvfDefinition ovfDefinition = OVFUtils.getOvfDefinition(threeTierWebAppOvfString);
-//		SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "http://10.4.0.16/application-manager/applications/threeTierWebApp/deployments/31/ovf");
-		System.out.println("Template: " + slaTemplate);
+		System.out.println(endpoint);
+		
+		OvfDefinition ovfDefinition = OVFUtils.getOvfDefinition(threeTierWebAppOvfString);
+		SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "http://10.4.0.16/application-manager/applications/davidgpTestApp/deployments/460/ovf");
+		
+		//SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "http://10.4.0.16/application-manager/applications/threeTierWebApp/deployments/31/ovf");
+		
+		SLASOITemplateRenderer rend = new SLASOITemplateRenderer();
+		String xmlRetSlat = rend.renderSLATemplate(slaTemplate);
+		System.out.println(xmlRetSlat);
 		
 		System.out.println("Sending initiateNegotiation SOAP request...");
 		String negId = negotiationClient.initiateNegotiation(endpoint, slaTemplate);
