@@ -38,7 +38,7 @@ public class TimeSeriesLineChart extends LineChartPanelSupport<ConcurrentHashMap
      * @param hosts The list of host names
      */
     public TimeSeriesLineChart(ConcurrentHashMap<String, TimeSeries> data, Collection<String> hosts) {
-        super("Power Consumption", "Power Consumption (W)", data, 2);
+        super("Power Consumption on the Testbed", "Power Consumption (W)", data, 2);
         setRangeAxisRange(Configuration.lowerMain, Configuration.upperMain);
         this.setDefaultLineStroke(new BasicStroke(50));
         this.hosts.addAll(hosts);
@@ -49,7 +49,7 @@ public class TimeSeriesLineChart extends LineChartPanelSupport<ConcurrentHashMap
      * @param host The hosts name
      */
     public TimeSeriesLineChart(ConcurrentHashMap<String, TimeSeries> data, String host) {
-        super("Energy Consumed on the Testbed", "Energy Consumption (W)", data, 2);
+        super("Power Consumption on the Testbed", "Power Consumption (W)", data, 2);
         this.host = host;
         if (host == null) {
             setRangeAxisRange(Configuration.lowerMain, Configuration.upperMain);
@@ -66,7 +66,7 @@ public class TimeSeriesLineChart extends LineChartPanelSupport<ConcurrentHashMap
      * @param maxEnergy The maximum amount of energy to be plotted.
      */
     public TimeSeriesLineChart(ConcurrentHashMap<String, TimeSeries> data, int maxEnergy) {
-        super("Energy Consumed on the Testbed", "Energy Consumption (W)", data, 2);
+        super("Power Consumption on the Testbed", "Power Consumption (W)", data, 2);
         setRangeAxisRange(0, maxEnergy);
         this.setDefaultLineStroke(new BasicStroke(50));
     }
