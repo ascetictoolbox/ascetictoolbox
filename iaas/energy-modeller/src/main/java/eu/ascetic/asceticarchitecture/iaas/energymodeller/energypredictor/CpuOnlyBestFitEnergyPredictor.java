@@ -33,6 +33,7 @@ public class CpuOnlyBestFitEnergyPredictor extends AbstractEnergyPredictor {
 
     private final CpuOnlyEnergyPredictor linear = new CpuOnlyEnergyPredictor();
     private final CpuOnlyPolynomialEnergyPredictor polynomial = new CpuOnlyPolynomialEnergyPredictor();
+    private final CpuOnlySplinePolynomialEnergyPredictor splinePolynomial = new CpuOnlySplinePolynomialEnergyPredictor();
     private final ArrayList<EnergyPredictorInterface>predictors = new ArrayList<>();
     
     /**
@@ -42,6 +43,7 @@ public class CpuOnlyBestFitEnergyPredictor extends AbstractEnergyPredictor {
         super();
         predictors.add(linear);
         predictors.add(polynomial);
+        predictors.add(splinePolynomial);
     }
     
     @Override
