@@ -21,6 +21,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DefaultDatab
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.AbstractEnergyPredictor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.CpuOnlyEnergyPredictor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.CpuOnlyPolynomialEnergyPredictor;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.CpuOnlySplinePolynomialEnergyPredictor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.EnergyPredictorInterface;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostMeasurement;
@@ -170,9 +171,11 @@ public class HostPowerEmulator implements Runnable {
         EnergyPredictorInterface predictor;
         CpuOnlyEnergyPredictor linearPredictor = new CpuOnlyEnergyPredictor();
         CpuOnlyPolynomialEnergyPredictor polyPredictor = new CpuOnlyPolynomialEnergyPredictor();
+        CpuOnlySplinePolynomialEnergyPredictor splinePolynomialPredictor = new CpuOnlySplinePolynomialEnergyPredictor();
         ArrayList<EnergyPredictorInterface> predictors = new ArrayList<>();
         predictors.add(linearPredictor);
         predictors.add(polyPredictor);
+        predictors.add(splinePolynomialPredictor);
         Host host = source.getHostByName(hostname);
         HostPowerLogger logger = new HostPowerLogger(new File("EstimatedHostPowerData.txt"), true);
         logger.setMetricName(outputName);
@@ -202,10 +205,9 @@ public class HostPowerEmulator implements Runnable {
         }
         predictor = AbstractEnergyPredictor.getBestPredictor(host, predictors);
         System.out.println("Using the " + predictor.toString());
-        System.out.println("Linear SSE: " + linearPredictor.getSumOfSquareError(host));
-        System.out.println("Polynomial SSE: " + polyPredictor.getSumOfSquareError(host));
-        System.out.println("Linear RMSE: " + linearPredictor.getRootMeanSquareError(host));
-        System.out.println("Polynomial RMSE: " + polyPredictor.getRootMeanSquareError(host));
+        System.out.println("Linear - SSE: " + linearPredictor.getSumOfSquareError(host) + " RMSE: " + linearPredictor.getRootMeanSquareError(host));
+        System.out.println("Polynomial - SSE: " + polyPredictor.getSumOfSquareError(host)  + " RMSE: " + polyPredictor.getRootMeanSquareError(host));
+        System.out.println("Polynomial Spline - SSE: " + splinePolynomialPredictor.getSumOfSquareError(host)  + " RMSE: " + splinePolynomialPredictor.getRootMeanSquareError(host));
 
         /**
          * The second phase is to monitor the host and to report its estimated
