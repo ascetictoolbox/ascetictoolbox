@@ -11,12 +11,15 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   user_doc/user_doc
+   rest_api/rest_api
+   amqp_api/amqp_api
 
 
 Indices and tables
 ==================
 
-* :ref:`genindex`
-* :ref:`modindex`
+.. * :ref:`genindex`
+.. * :ref:`modindex`
 * :ref:`search`
 

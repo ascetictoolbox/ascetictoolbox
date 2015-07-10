@@ -19,6 +19,7 @@ import es.bsc.vmmclient.models.ImageToUpload;
 import eu.ascetic.utils.ovf.api.Disk;
 import eu.ascetic.utils.ovf.api.Item;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
+import eu.ascetic.utils.ovf.api.ProductSection;
 import eu.ascetic.utils.ovf.api.VirtualHardwareSection;
 import eu.ascetic.utils.ovf.api.VirtualSystem;
 import eu.ascetic.utils.ovf.api.VirtualSystemCollection;
@@ -50,6 +51,8 @@ public class OVFUtilsTest {
 	private String threeTierWebAppOvfString;
 	private String threeTierWebAppDEMOOvfFile = "3tier-webapp.ovf.vmc.xml";
 	private String threeTierWebAppDEMOOvfString;
+	private String threeTierWebAppWithUpperLimitsFile = "3tier-webapp.ovf-only-upper-bounds.xml";
+	private String threeTierWebAppWithUpperLimitsString;
 	private OvfDefinition ovfDocument;
 	
 	/**
@@ -64,6 +67,9 @@ public class OVFUtilsTest {
 		// Reading the OVF file with DEMO tags...
 		file = new File(this.getClass().getResource( "/" + threeTierWebAppDEMOOvfFile ).toURI());		
 		threeTierWebAppDEMOOvfString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
+		// Reading the OVF file with DEMO tags...
+		file = new File(this.getClass().getResource( "/" + threeTierWebAppWithUpperLimitsFile ).toURI());		
+		threeTierWebAppWithUpperLimitsString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
 	}
 	
 	@Test
@@ -251,6 +257,85 @@ public class OVFUtilsTest {
 		
 		name = OVFUtils.getApplicationName("sdadad");
 		assertEquals(null, name);
+	}
+	
+	@Test
+	public void containsVMWithThatOvfIdTest() {
+		boolean response = OVFUtils.containsVMWithThatOvfId(threeTierWebAppOvfString, "haproxy");
+		assertTrue(response);
+		
+		response = OVFUtils.containsVMWithThatOvfId(threeTierWebAppOvfString, "pepito");
+		assertFalse(response);
+		
+		response = OVFUtils.containsVMWithThatOvfId(threeTierWebAppOvfString, null);
+		assertFalse(response);
+	}
+	
+	@Test
+	public void determineVMLimits() {
+		// Without lowerBound
+		OvfDefinition ovfDocument = OVFUtils.getOvfDefinition(threeTierWebAppWithUpperLimitsString);
+		ProductSection productSection = ovfDocument.getVirtualSystemCollection().getVirtualSystemAtIndex(0).getProductSectionAtIndex(0);
+		
+		VMLimits vmLimits = OVFUtils.getUpperAndLowerVMlimits(productSection);
+		
+		assertEquals(1, vmLimits.getUpperNumberOfVMs());
+		assertEquals(1, vmLimits.getLowerNumberOfVMs());
+		
+		// With lowerBound
+		ovfDocument = OVFUtils.getOvfDefinition(threeTierWebAppDEMOOvfString);
+		productSection = ovfDocument.getVirtualSystemCollection().getVirtualSystemAtIndex(0).getProductSectionAtIndex(0);
+		
+		vmLimits = OVFUtils.getUpperAndLowerVMlimits(productSection);
+		
+		assertEquals(2, vmLimits.getUpperNumberOfVMs());
+		assertEquals(1, vmLimits.getLowerNumberOfVMs());
+	}
+	
+	@Test
+	public void getProductionSectionForOvfIDTest() {
+		ProductSection productSection = OVFUtils.getProductionSectionForOvfID(threeTierWebAppOvfString, "XXX");
+		assertEquals(null, productSection);
+		
+		productSection = OVFUtils.getProductionSectionForOvfID(threeTierWebAppOvfString, "haproxy");
+		assertEquals(1, productSection.getUpperBound());
+		
+		productSection = OVFUtils.getProductionSectionForOvfID(threeTierWebAppOvfString, null);
+		assertEquals(null, productSection);
+	}
+	
+	@Test
+	public void getDiskIdTest() {
+		OvfDefinition ovfDocument = OVFUtils.getOvfDefinition(threeTierWebAppWithUpperLimitsString);
+		String diskId = OVFUtils.getDiskId(ovfDocument.getVirtualSystemCollection().getVirtualSystemAtIndex(0).getVirtualHardwareSection());
+		assertEquals("haproxy-img-disk", diskId);
+	}
+	
+	@Test
+	public void getCapacityTest() {
+		OvfDefinition ovfDocument = OVFUtils.getOvfDefinition(threeTierWebAppWithUpperLimitsString);
+		String diskId = OVFUtils.getDiskId(ovfDocument.getVirtualSystemCollection().getVirtualSystemAtIndex(0).getVirtualHardwareSection());
+		int capacity = OVFUtils.getCapacity(ovfDocument, diskId);
+		assertEquals(20, capacity);
+	}
+	
+	@Test
+	public void getFileIdTest() {
+		OvfDefinition ovfDocument = OVFUtils.getOvfDefinition(threeTierWebAppWithUpperLimitsString);
+		String diskId = OVFUtils.getDiskId(ovfDocument.getVirtualSystemCollection().getVirtualSystemAtIndex(0).getVirtualHardwareSection());
+		
+		String fileId = OVFUtils.getFileId(diskId, ovfDocument.getDiskSection().getDiskArray());
+		assertEquals("haproxy-img", fileId);
+	}
+	
+	@Test
+	public void getUrlImgTest() {
+		OvfDefinition ovfDocument = OVFUtils.getOvfDefinition(threeTierWebAppWithUpperLimitsString);
+		String diskId = OVFUtils.getDiskId(ovfDocument.getVirtualSystemCollection().getVirtualSystemAtIndex(0).getVirtualHardwareSection());
+		String fileId = OVFUtils.getFileId(diskId, ovfDocument.getDiskSection().getDiskArray());
+		String url = OVFUtils.getUrlImg(ovfDocument, fileId);
+		
+		assertEquals("/DFS/ascetic/vm-images/threeTierWebApp/haproxy.img", url);
 	}
 	
 	/**

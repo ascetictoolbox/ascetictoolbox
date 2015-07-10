@@ -3,6 +3,7 @@ package eu.ascetic.paas.applicationmanager.dao.jpa;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static eu.ascetic.paas.applicationmanager.Dictionary.STATE_VM_DELETED;
 
 import java.util.List;
 
@@ -13,8 +14,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.dao.ImageDAO;
 import eu.ascetic.paas.applicationmanager.dao.VMDAO;
+import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.VM;
 
@@ -42,6 +45,8 @@ import eu.ascetic.paas.applicationmanager.model.VM;
 public class VMDAOJpaTest extends AbstractTransactionalJUnit4SpringContextTests {
 	@Autowired
 	protected VMDAO vmDAO;
+	@Autowired
+	protected DeploymentDAO deploymentDAO;
 	@Autowired
 	protected ImageDAO imageDAO;
 	
@@ -263,6 +268,100 @@ public class VMDAOJpaTest extends AbstractTransactionalJUnit4SpringContextTests 
 		
 		assertEquals(1, vms1.size());
 		assertEquals(0, vms2.size());
+	}
+	
+	@Test
+	public void getNumberOfVMsWithOVfIdForDeploymentNotDeletedTest() {
+		// Prior
+		Deployment deployment1 = new Deployment();
+		deployment1.setStatus("RUNNING");
+		deployment1.setPrice("expensive");
+
+		VM vm1 = new VM();
+		vm1.setIp("127.0.0.1");
+		vm1.setOvfId("ovf-id2");
+		vm1.setProviderId("provider-id");
+		vm1.setProviderVmId("provider-vm-id");
+		vm1.setSlaAgreement("sla-agreement");
+		vm1.setStatus("RUNNING");
+
+		VM vm2 = new VM();
+		vm2.setIp("127.0.0.1");
+		vm2.setOvfId("ovf-id");
+		vm2.setProviderId("provider-id");
+		vm2.setProviderVmId("provider-vm-id");
+		vm2.setSlaAgreement("sla-agreement");
+		vm2.setStatus("RUNNING");
+		
+		VM vm3 = new VM();
+		vm3.setIp("127.0.0.1");
+		vm3.setOvfId("ovf-id1");
+		vm3.setProviderId("provider-id");
+		vm3.setProviderVmId("provider-vm-id");
+		vm3.setSlaAgreement("sla-agreement");
+		vm3.setStatus("RUNNING");
+
+		deployment1.addVM(vm1);
+		deployment1.addVM(vm2);
+		deployment1.addVM(vm3);
+		
+		Deployment deployment2 = new Deployment();
+		deployment2.setStatus("RUNNING");
+		deployment2.setPrice("expensive");
+
+		VM vm4 = new VM();
+		vm4.setIp("127.0.0.1");
+		vm4.setOvfId("ovf-id");
+		vm4.setProviderId("provider-id");
+		vm4.setProviderVmId("provider-vm-id");
+		vm4.setSlaAgreement("sla-agreement");
+		vm4.setStatus("RUNNING");
+
+		VM vm5 = new VM();
+		vm5.setIp("127.0.0.1");
+		vm5.setOvfId("ovf-id");
+		vm5.setProviderId("provider-id");
+		vm5.setProviderVmId("provider-vm-id");
+		vm5.setSlaAgreement("sla-agreement");
+		vm5.setStatus("RUNNING");
+		
+		VM vm6 = new VM();
+		vm6.setIp("127.0.0.1");
+		vm6.setOvfId("ovf-id1");
+		vm6.setProviderId("provider-id");
+		vm6.setProviderVmId("provider-vm-id");
+		vm6.setSlaAgreement("sla-agreement");
+		vm6.setStatus("RUNNING");
+		
+		VM vm7 = new VM();
+		vm7.setIp("127.0.0.1");
+		vm7.setOvfId("ovf-id");
+		vm7.setProviderId("provider-id");
+		vm7.setProviderVmId("provider-vm-id");
+		vm7.setSlaAgreement("sla-agreement");
+		vm7.setStatus(STATE_VM_DELETED);
+
+		deployment2.addVM(vm4);
+		deployment2.addVM(vm5);
+		deployment2.addVM(vm6);
+		deployment2.addVM(vm7);
+		
+		int size = deploymentDAO.getAll().size();
+		
+		boolean saved = deploymentDAO.save(deployment1);
+		assertTrue(saved);
+		Deployment deploymentFromDatabase = deploymentDAO.getAll().get(size);
+		int deploymentId1 = deploymentFromDatabase.getId();
+		saved = deploymentDAO.save(deployment2);
+		deploymentFromDatabase = deploymentDAO.getAll().get(size + 1);
+		int deploymentId2 = deploymentFromDatabase.getId();
+		assertTrue(saved);
+		
+		// Test
+		List<VM> vms = vmDAO.getVMsWithOVfIdForDeploymentNotDeleted("ovf-id", deploymentId2);
+		assertEquals(2, vms.size());
+		vms = vmDAO.getVMsWithOVfIdForDeploymentNotDeleted("ovf-id", deploymentId1);
+		assertEquals(1, vms.size());
 	}
 }
 

@@ -33,4 +33,7 @@ public class Dictionary {
 	
 	// Events
 	public static String DEPLOYMENT_EVENT_TOPIC = "topic.deployment.status";
+	
+	// VM States
+	public static String STATE_VM_DELETED = "DELETED";
 }

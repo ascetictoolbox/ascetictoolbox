@@ -74,4 +74,13 @@ public interface VMDAO extends DAO<VM> {
 	 * @return
 	 */
 	public List<VM> getNotDeletedVMsWithImage(Image image);
+	
+	/**
+	 * Returns how many VMs are in not DELETED state in the DB for
+	 * an specific ovfId and an specific deployment
+	 * @param ovfId Of the VMs we are looking for
+	 * @param deploymentId deploymentId to which the VMs belogn
+	 * @return list of VMs registered in the DB
+	 */
+	public List<VM> getVMsWithOVfIdForDeploymentNotDeleted(String ovfId, int deploymentId);
 }

@@ -4,7 +4,9 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
@@ -15,15 +17,30 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import es.bsc.vmmclient.models.Vm;
+import es.bsc.vmmclient.models.VmDeployed;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EventSample;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Unit;
+import eu.ascetic.paas.applicationmanager.amqp.AmqpProducer;
+import eu.ascetic.paas.applicationmanager.dao.ImageDAO;
+import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
+import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.VM;
+import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
+import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
+import eu.ascetic.paas.applicationmanager.ovf.VMLimits;
 import eu.ascetic.paas.applicationmanager.rest.util.EnergyModellerConverter;
 import eu.ascetic.paas.applicationmanager.rest.util.XMLBuilder;
+import eu.ascetic.paas.applicationmanager.vmmanager.client.ImageUploader;
+import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
+import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientBSSC;
+import eu.ascetic.utils.ovf.api.OvfDefinition;
+import eu.ascetic.utils.ovf.api.VirtualSystem;
 
 /**
  * 
@@ -52,10 +69,17 @@ import eu.ascetic.paas.applicationmanager.rest.util.XMLBuilder;
 @Scope("request")
 public class VMRest extends AbstractRest {
 	private static Logger logger = Logger.getLogger(VMRest.class);
+	protected VmManagerClient vmManagerClient = new VmManagerClientBSSC();
+	@Autowired
+	protected ImageDAO imageDAO;
+	
+
 	
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getVMs(@PathParam("application_name") String applicationName, @PathParam("deployment_id") String deploymentId) {
+		logger.info("GET request to /applications/" + applicationName + "/deployments/" + deploymentId + "/vms");
+		
 		List<VM> vms = deploymentDAO.getById(Integer.parseInt(deploymentId)).getVms();
 		
 		String xml = XMLBuilder.getCollectionOfVMs(vms, applicationName, Integer.parseInt(deploymentId));
@@ -63,10 +87,146 @@ public class VMRest extends AbstractRest {
 		return buildResponse(Status.OK, xml);
 	}
 	
+	@POST
+	@Consumes(MediaType.APPLICATION_XML)
+	@Produces(MediaType.APPLICATION_XML)
+	public Response postVM(@PathParam("application_name") String applicationName, @PathParam("deployment_id") String deploymentId, String payload) {
+		logger.info("POST request to /applications/" + applicationName + "/deployments/" + deploymentId + "/vms");
+		logger.info("With payload: " + payload);
+		
+		// I need to verify the payload it is the correct one. Or return a malformed message. Return 400 Bad Request
+		VM vm = ModelConverter.xmlVMToObject(payload);
+
+		if(vm == null) {
+			return buildResponse(Status.BAD_REQUEST, "Malformed XML request!!!");
+		} else if (vm.getOvfId() == null) {
+			return buildResponse(Status.BAD_REQUEST, "Missing ovf-id!!!");
+		}
+		
+		int deploymentIdInt = 0;
+		// I need to get the OVF definition
+		try {
+			deploymentIdInt = Integer.parseInt(deploymentId);
+		} catch(NumberFormatException ex) {
+			return buildResponse(Status.BAD_REQUEST, "Invalid deploymentID number!!!");
+		}
+		
+		Deployment deployment = deploymentDAO.getById(deploymentIdInt);
+		
+		if(deployment == null) {
+			return buildResponse(Status.BAD_REQUEST, "No deployment by that ID in the DB!!!");
+		}
+		
+		String ovf = deployment.getOvf();
+		
+		boolean ovfIdPresentInOvf = OVFUtils.containsVMWithThatOvfId(ovf, vm.getOvfId());
+		
+		if(!ovfIdPresentInOvf) {
+			return buildResponse(Status.BAD_REQUEST, "No VM avaiblabe by that ovf-id for this deployment!!!");
+		}
+		
+		// Now we determine if we are inside the limtis to create a new VM
+		VMLimits vmLimits = OVFUtils.getUpperAndLowerVMlimits(OVFUtils.getProductionSectionForOvfID(ovf,  vm.getOvfId()));
+		List<VM> vms = vmDAO.getVMsWithOVfIdForDeploymentNotDeleted(vm.getOvfId(), deploymentIdInt);
+		
+		if(vms.size() >= vmLimits.getUpperNumberOfVMs()) {
+			return buildResponse(Status.BAD_REQUEST, vm.getOvfId() + " number of VMs already at its maximum!!!");
+		}
+		
+		OvfDefinition ovfDocument = OVFUtils.getOvfDefinition(ovf);
+		VirtualSystem virtualSystem = OVFUtils.getVirtualSystemForOvfId(ovf, vm.getOvfId());
+		String diskId = OVFUtils.getDiskId(virtualSystem.getVirtualHardwareSection());
+		// We find the file id and for each resource // ovfId
+		String fileId = OVFUtils.getFileId(diskId, ovfDocument.getDiskSection().getDiskArray());
+		// We get the images urls... // ovfHref 
+		String urlImg = OVFUtils.getUrlImg(ovfDocument, fileId);
+		
+		Image image = null;
+		
+		if(vms.size() > 0 ) {
+			image = vms.get(0).getImages().get(0);
+		} else {
+			// We need to upload the image first.
+			if(OVFUtils.usesACacheImage(virtualSystem)) {
+				logger.info("This virtual system uses a cache demo image");
+				image = imageDAO.getDemoCacheImage(fileId, urlImg);
+				if(image == null) {
+					logger.info("The image was not cached, we need to uplaod first");
+					image = ImageUploader.uploadImage(urlImg, fileId, true, applicationName, vmManagerClient, applicationDAO, imageDAO);
+				}
+			} else {
+				image = ImageUploader.uploadImage(urlImg, fileId, false, applicationName, vmManagerClient, applicationDAO, imageDAO);
+			}
+		}
+		
+		// VM variables:
+		String vmName = virtualSystem.getName();
+		int cpus = virtualSystem.getVirtualHardwareSection().getNumberOfVirtualCPUs();
+		int ramMb = virtualSystem.getVirtualHardwareSection().getMemorySize();
+		String isoPath = OVFUtils.getIsoPathFromVm(virtualSystem.getVirtualHardwareSection(), ovfDocument);
+		int capacity = OVFUtils.getCapacity(ovfDocument, diskId);
+		
+		int suffixCounter = vms.size() + 1;
+		String suffix = "_" + suffixCounter;
+		String iso = "";
+		if(isoPath != null) iso = isoPath + suffix;
+		
+		// We create the VM to Deploy
+		Vm virtMachine = new Vm(vmName + suffix, image.getProviderImageId(), cpus, ramMb, capacity, 0, iso , ovfDocument.getVirtualSystemCollection().getId(), vm.getOvfId(), ""/*deployment.getSlaAgreement()*/ );
+		logger.debug("virtMachine: " + virtMachine);
+		
+		// We deploy the VM
+		List<Vm> vmsToDeploy = new ArrayList<Vm>();
+		vmsToDeploy.add(virtMachine);
+		List<String> vmIds = vmManagerClient.deployVMs(vmsToDeploy);
+		
+		VM vmToDB = null;
+		
+		for(String id : vmIds) {
+			VmDeployed vmDeployed = vmManagerClient.getVM(id);
+			
+			vmToDB = new VM();
+			vmToDB.setIp(vmDeployed.getIpAddress());
+			vmToDB.setOvfId(vm.getOvfId());
+			vmToDB.setStatus(vmDeployed.getState());
+			vmToDB.setProviderVmId(id);
+			// TODO I need to update this to get it from the table Agreements... 
+			//vmToDB.setSlaAgreement(deployment.getSlaAgreement());
+			vmToDB.setNumberVMsMax(vmLimits.getUpperNumberOfVMs());
+			vmToDB.setNumberVMsMin(vmLimits.getLowerNumberOfVMs());
+			vmToDB.setCpuMin(cpus);
+			vmToDB.setCpuActual(cpus);
+			vmToDB.setCpuMax(cpus);
+			vmToDB.setDiskMin(capacity);
+			vmToDB.setDiskActual(capacity);
+			vmToDB.setDiskMax(capacity);
+			vmToDB.setRamMin(ramMb);
+			vmToDB.setRamActual(ramMb);
+			vmToDB.setRamMax(ramMb);
+			vmToDB.setSwapMax(0);
+			vmToDB.setSwapActual(0);
+			vmToDB.setSwapMin(0);
+			vmDAO.save(vmToDB);
+			
+			vmToDB.addImage(image);
+			vmDAO.update(vmToDB);
+			
+			deployment.addVM(vmToDB);
+			deploymentDAO.update(deployment);
+			//deployment = deploymentDAO.getById(deployment.getId());
+			
+			AmqpProducer.sendVMDeployedMessage(applicationName, deployment, vmToDB);
+		}
+		
+		return buildResponse(Status.OK, ModelConverter.objectVMToXML(vmToDB));
+	}
+	
 	@GET
 	@Path("{vm_id}")
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getVM(@PathParam("application_name") String applicationName,  @PathParam("deployment_id") String deploymentId, @PathParam("vm_id") String vmId) {
+		logger.info("POST request to /applications/" + applicationName + "/deployments/" + deploymentId + "/vms/" + vmId);
+		
 		VM vm = vmDAO.getById(Integer.parseInt(vmId));
 		
 		String xml = XMLBuilder.getVMXML(vm, applicationName, Integer.parseInt(deploymentId));

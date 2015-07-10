@@ -47,10 +47,7 @@ import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
-import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
-import eu.ascetic.utils.ovf.api.OvfDefinition;
-import eu.ascetic.utils.ovf.api.ProductSection;
 
 /**
  * 
@@ -81,8 +78,7 @@ public class DeployEventHandlerTest extends AbstractTest {
 	private String threeTierWebAppOvfString;
 	private String threeTierWebAppDEMOOvfFile = "3tier-webapp.ovf.vmc.xml";
 	private String threeTierWebAppDEMOOvfString;
-	private String threeTierWebAppWithUpperLimitsFile = "3tier-webapp.ovf-only-upper-bounds.xml";
-	private String threeTierWebAppWithUpperLimitsString;
+
 	
 	/**
 	 * We just read an ovf example... 
@@ -97,10 +93,6 @@ public class DeployEventHandlerTest extends AbstractTest {
 		// Reading the OVF file with DEMO tags...
 		file = new File(this.getClass().getResource( "/" + threeTierWebAppDEMOOvfFile ).toURI());		
 		threeTierWebAppDEMOOvfString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
-		
-		// Reading the OVF file with DEMO tags...
-		file = new File(this.getClass().getResource( "/" + threeTierWebAppWithUpperLimitsFile ).toURI());		
-		threeTierWebAppWithUpperLimitsString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
 	}
 
 	@Test
@@ -570,29 +562,6 @@ public class DeployEventHandlerTest extends AbstractTest {
 		
 		assertEquals(22, argument.getValue().getDeploymentId());
 		assertEquals(Dictionary.APPLICATION_STATUS_DEPLOYED, argument.getValue().getDeploymentStatus());
-	}
-	
-	@Test
-	public void determineMinAndMaxNumberOfVMsTest() {
-		// Without lowerBound
-		OvfDefinition ovfDocument = OVFUtils.getOvfDefinition(threeTierWebAppWithUpperLimitsString);
-		ProductSection productSection = ovfDocument.getVirtualSystemCollection().getVirtualSystemAtIndex(0).getProductSectionAtIndex(0);
-		
-		DeployEventHandler deploymentEventHandler = new DeployEventHandler();
-		deploymentEventHandler.determineMinAndMaxNumberOfVMs(productSection);
-		
-		assertEquals(1, deploymentEventHandler.maxNumberVMs);
-		assertEquals(1, deploymentEventHandler.minNumberVMs);
-		
-		// With lowerBound
-		ovfDocument = OVFUtils.getOvfDefinition(threeTierWebAppDEMOOvfString);
-		productSection = ovfDocument.getVirtualSystemCollection().getVirtualSystemAtIndex(0).getProductSectionAtIndex(0);
-		
-		DeployEventHandler deploymentEventHandler2 = new DeployEventHandler();
-		deploymentEventHandler2.determineMinAndMaxNumberOfVMs(productSection);
-		
-		assertEquals(2, deploymentEventHandler2.maxNumberVMs);
-		assertEquals(1, deploymentEventHandler2.minNumberVMs);
 	}
 	
 	/**

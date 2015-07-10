@@ -720,8 +720,11 @@ paas/application-manager-datamodel/src/test/resources/log4j.properties -text
 paas/application-manager/LICENSE.TXT -text
 paas/application-manager/doc/Makefile -text
 paas/application-manager/doc/make.bat -text
+paas/application-manager/doc/source/amqp_api/amqp_api.rst -text
 paas/application-manager/doc/source/conf.py -text
 paas/application-manager/doc/source/index.rst -text
+paas/application-manager/doc/source/rest_api/rest_api.rst -text
+paas/application-manager/doc/source/user_doc/user_doc.rst -text
 paas/application-manager/pom.xml -text
 paas/application-manager/src/main/java/eu/ascetic/applicationmanager/slam/stub/BZNegotiationCallbackHandler.java -text
 paas/application-manager/src/main/java/eu/ascetic/applicationmanager/slam/stub/BZNegotiationStub.java -text
@@ -763,6 +766,7 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/event/
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/event/reactor/ReactorConfig.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/http/Client.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/ovf/OVFUtils.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/ovf/VMLimits.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/pm/PriceModellerClient.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/AbstractRest.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/AgreementRest.java -text
@@ -791,6 +795,7 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/s
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/translator/SlaTranslator.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/translator/SlaTranslatorImpl.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/translator/SlaTranslatorImplNoOsgi.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/vmmanager/client/ImageUploader.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/vmmanager/client/VmManagerClient.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/vmmanager/client/VmManagerClientBSSC.java -text
 paas/application-manager/src/main/resources/META-INF/persistence.mysql.xml -text
@@ -833,6 +838,7 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/reactor/TestService.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/ovf/OVFThingsIT.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/ovf/OVFUtilsTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/ovf/VMLimitsTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/AgreementRestTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/ApplicationRestTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/CacheImageRestTest.java -text

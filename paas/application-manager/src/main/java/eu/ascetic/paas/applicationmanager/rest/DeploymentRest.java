@@ -1,5 +1,7 @@
 package eu.ascetic.paas.applicationmanager.rest;
 
+import static eu.ascetic.paas.applicationmanager.Dictionary.STATE_VM_DELETED;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -241,7 +243,7 @@ public class DeploymentRest extends AbstractRest {
 			
 			vmManagerClient.deleteVM(vm.getProviderVmId());
 				
-			vm.setStatus("DELETED");
+			vm.setStatus(STATE_VM_DELETED);
 			
 			images.addAll(vm.getImages());
 			

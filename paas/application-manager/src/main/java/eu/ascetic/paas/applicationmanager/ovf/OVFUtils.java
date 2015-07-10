@@ -15,8 +15,10 @@ import eu.ascetic.utils.ovf.api.File;
 import eu.ascetic.utils.ovf.api.Item;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
 import eu.ascetic.utils.ovf.api.ProductProperty;
+import eu.ascetic.utils.ovf.api.ProductSection;
 import eu.ascetic.utils.ovf.api.VirtualHardwareSection;
 import eu.ascetic.utils.ovf.api.VirtualSystem;
+import eu.ascetic.utils.ovf.api.VirtualSystemCollection;
 //import eu.ascetic.utils.ovf.api.VirtualSystem;
 //import eu.ascetic.utils.ovf.api.VirtualSystemCollection;
 import eu.ascetic.utils.ovf.api.utils.OvfRuntimeException;
@@ -85,148 +87,6 @@ public class OVFUtils {
 		}
 	}
 	
-	
-//	/**
-//	 * Gets the vms from ovf and upload to VM manager the images in order to be able to deploy the VMs later.
-//	 *
-//	 * @param deployment the deployment
-//	 * @param vmManagerClient the vm manager client
-//	 * @return the vms from ovf
-//	 */
-//	public static List<Vm> getVmsFromOvf(Deployment deployment, VmManagerClientHC2 vmManagerClient){
-//		List<Vm> vmList = null;
-//		OvfDefinition ovfDocument = getOvfDefinition(deployment.getOvf());
-//		if (ovfDocument != null){
-//			VirtualSystemCollection vsc = ovfDocument.getVirtualSystemCollection();
-//			int index = 0;
-//			vmList = new ArrayList<Vm>();
-//			VirtualSystem virtSystem = null;
-//			String appId = OVFUtils.getApplicationName(deployment.getOvf());
-//			while (index < vsc.getVirtualSystemArray().length){
-//				//Retrieve data from every VM
-//				virtSystem = vsc.getVirtualSystemAtIndex(index);
-//				String ovfID = virtSystem.getId();
-//				
-//				int asceticUpperBound = virtSystem.getProductSectionAtIndex(0).getUpperBound();
-//				
-//				String vmName = virtSystem.getName();
-//				int cpus = virtSystem.getVirtualHardwareSection().getNumberOfVirtualCPUs();
-//				int ramMb = virtSystem.getVirtualHardwareSection().getMemorySize();
-//				int diskSize = OVFUtils.getDiskSizeFromVm(getDiskId(virtSystem.getVirtualHardwareSection()), ovfDocument);
-//				String isoPath = OVFUtils.getIsoPathFromVm(virtSystem.getVirtualHardwareSection(), ovfDocument);
-//				
-//				ImageToUpload imgToUpload = OVFUtils.getImageToUpload(getImgFileRefOvfDocument(virtSystem.getVirtualHardwareSection(), 
-//						ovfDocument));
-//				
-//				String imgId = vmManagerClient.uploadImage(imgToUpload);
-//				
-//				if (imgId != null && !imgId.equalsIgnoreCase("")){	
-//					//Create new VMs and add it to VM list to deploy
-//					if (asceticUpperBound == 1){
-//						//ISO names in /DFS/... ends with _1
-//						String suffix = "_1";
-//						Vm virtMachine = new Vm(vmName + suffix, imgId, cpus, ramMb, diskSize, isoPath + suffix , appId);
-//						virtMachine.setOvfId(ovfID);
-//						logger.debug("ADDING NEW VM TO THE LIST: ovf-id: " + virtMachine.getOvfId() + " name: " + virtMachine.getName());
-//						vmList.add(virtMachine);	
-//					}
-//					else if (asceticUpperBound <= 0){
-//						logger.info("AsceticUpperBound for " + vmName + " is " + asceticUpperBound + ". No VMs will be created");
-//					}
-//					else if (asceticUpperBound > 1){
-//						//Create many VMs as asceticUpperBound values with different names and differents ISO files every VM
-//						//example: 3 VMs
-//						//			names: 		vm_1, vm_2, vm_3
-//						//			isoPath:	/DFS/myIso.iso_1, /DFS/myIso.iso_2, /DFS/myIso.iso_3
-//						Vm virtMachine = null;
-//						String suffix = "";
-//						int iteraction = 0;
-//						for (int i=0;i<asceticUpperBound;i++){
-//							iteraction = i+1;
-//							suffix = "_" + iteraction;
-//							virtMachine = new Vm(vmName + suffix, imgId, cpus, ramMb, diskSize, isoPath + suffix, appId);
-//							vmList.add(virtMachine);
-//						}
-//					}
-//					
-//				}
-//				
-//				index++;
-//			}
-//			
-//		}
-//		return vmList;
-//	}
-
-
-//	/**
-//	 * Gets the image to upload.
-//	 *
-//	 * @param imgFileRefOvfDocument the img file ref ovf document
-//	 * @return the image to upload
-//	 */
-//	private static ImageToUpload getImageToUpload(String imgFileRefOvfDocument) {
-//		ImageToUpload imgToUpload = null;
-//		if (!imgFileRefOvfDocument.equalsIgnoreCase("")){
-//			String name = imgFileRefOvfDocument.substring(imgFileRefOvfDocument.lastIndexOf("/")+1, imgFileRefOvfDocument.length());
-//			imgToUpload = new ImageToUpload(name, imgFileRefOvfDocument);
-//		}
-//		return imgToUpload;
-//	}
-
-
-//	/**
-//	 * Gets the disk id.
-//	 *
-//	 * @param virtHwSection the virt hw section
-//	 * @return the disk id
-//	 */
-//	private static String getDiskId(VirtualHardwareSection virtHwSection){
-//		String diskId = "";
-//		Item item = null;
-//		for (int i=0; i<virtHwSection.getItemArray().length; i++){
-//			item = virtHwSection.getItemAtIndex(i);
-//			if (item.getResourceType().getNumber() == 17){
-//				String list[] = item.getHostResourceArray();
-//				String hostResource = "";
-//				if (list!=null && list.length >0){
-//					hostResource = list[0];
-//					diskId = hostResource.substring(hostResource.lastIndexOf("/")+1, hostResource.length());
-//					return diskId;
-//				}				
-//			}
-//		}
-//		return diskId;
-//	}
-	
-//	/**
-//	 * Gets the disk size from vm.
-//	 *
-//	 * @param diskId the disk id
-//	 * @param ovfDocument the ovf document
-//	 * @return the disk size from vm
-//	 */
-//	private static int getDiskSizeFromVm(String diskId, OvfDefinition ovfDocument){
-//		int diskSize = 0;
-//		Disk[] diskList = ovfDocument.getDiskSection().getDiskArray();
-//		if (diskList != null && diskList.length>0){
-//			Disk disk = null;
-//			for (int i = 0; i<diskList.length; i++){
-//				disk = diskList[i];
-//				if (disk.getDiskId().equalsIgnoreCase(diskId)){
-//					String units = disk.getCapacityAllocationUnits();
-//					int capacity = Integer.parseInt(disk.getCapacity());
-//					return getDiskCapacityInGb(capacity, units);
-//				}
-//			}
-//		}
-//		else {
-//			logger.debug("No disk section available in OVF!!");
-//		}
-//		return diskSize;
-//	}
-	
-	
 	/**
 	 * Gets the disk capacity in gb with the info retrieved from OVF.
 	 *
@@ -252,36 +112,6 @@ public class OVFUtils {
 		}
 		return diskCapacity;
 	}
-	
-	
-//	/**
-//	 * Gets the img file ref ovf document.
-//	 *
-//	 * @param virtualHardwareSection the virtual hardware section
-//	 * @param ovfDefinition the ovf definition
-//	 * @return the img file ref ovf document
-//	 */
-//	private static String getImgFileRefOvfDocument(VirtualHardwareSection virtualHardwareSection, 
-//			OvfDefinition ovfDefinition) {
-//		String urlImg = null;
-//		String fileId = getFileIdFromDiskId(getDiskId(virtualHardwareSection), ovfDefinition);
-//		File[] files = ovfDefinition.getReferences().getFileArray();
-//		if (files != null && files.length>0){
-//			File file = null;
-//			for (int i = 0; i<files.length; i++){
-//				file = files[i];
-//				if (file.getId().equalsIgnoreCase(fileId)){
-//					return file.getHref();
-//				}
-//			}
-//		}
-//		else {
-//			logger.debug("No references section available in OVF!!");
-//		}
-//		
-//		return urlImg;
-//	}
-	
 	
 	/**
 	 * Gets the file id from disk id.
@@ -377,5 +207,191 @@ public class OVFUtils {
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * Returns true if the OVF contains a VM with that specific ovf-id
+	 * @param ovf Ovf to be checked
+	 * @param ovfId ovf-id to see if it exits in the ovf file
+	 * @return true if the ovf contains a VM with that specific ovf id, false otherwise.
+	 */
+	public static boolean containsVMWithThatOvfId(String ovf, String ovfId) {
+		
+		if(ovfId == null) {
+			return false;
+		}
+		
+		try {
+			OvfDefinition ovfDocument = OvfDefinition.Factory.newInstance(ovf);
+			
+			VirtualSystemCollection vsc = ovfDocument.getVirtualSystemCollection();
+			// We check all the Virtual Systems in the OVF file
+			for(int i = 0; i < vsc.getVirtualSystemArray().length; i++) {
+				VirtualSystem virtualSystem = vsc.getVirtualSystemAtIndex(i);
+				String ovfVirtualSystemID = virtualSystem.getId();
+				
+				if(ovfId.equals(ovfVirtualSystemID)) {
+					return true;
+				}
+			}
+			
+		} catch(OvfRuntimeException ex) {
+			logger.info("Error parsing OVF file: " + ex.getMessage());
+			ex.printStackTrace();
+			return false;
+		}
+		
+		return false;
+	}
+	
+	public static VMLimits getUpperAndLowerVMlimits(ProductSection productSection) {
+		
+		VMLimits vmLimits = new VMLimits();
+		
+		try {
+			vmLimits.setLowerNumberOfVMs(productSection.getLowerBound());
+			vmLimits.setUpperNumberOfVMs(productSection.getUpperBound());
+		} catch(NullPointerException ex) {
+			vmLimits.setLowerNumberOfVMs(productSection.getUpperBound());
+			vmLimits.setUpperNumberOfVMs(productSection.getUpperBound());
+		}
+		
+		return vmLimits;
+	}
+	
+	/**
+	 * Returns the ProductSection for an specific ovfID
+	 * @param ovf String representing the ovf file where to look
+	 * @param ovfId Ovf ID of the wanted product section
+	 * @return Returns a ProductSection object if the sections exits or null otherwise
+	 */
+	public static ProductSection getProductionSectionForOvfID(String ovf, String ovfId) {
+		
+		VirtualSystem virtualSystem = getVirtualSystemForOvfId(ovf, ovfId);
+				
+		if(virtualSystem != null) {
+			return virtualSystem.getProductSectionAtIndex(0);
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Returns the VirtualSystem object representation for an specific ovf, null if does not exits
+	 * @param ovf
+	 * @param ovfId
+	 * @return
+	 */
+	public static VirtualSystem getVirtualSystemForOvfId(String ovf, String ovfId) {
+		OvfDefinition ovfDocument = OvfDefinition.Factory.newInstance(ovf);
+		VirtualSystemCollection vsc = ovfDocument.getVirtualSystemCollection();
+		
+		for(int i = 0; i < vsc.getVirtualSystemArray().length; i++) {
+			VirtualSystem virtualSystem = vsc.getVirtualSystemAtIndex(i);
+			String ovfID = virtualSystem.getId();
+			
+			if(ovfID.equals(ovfId)) {
+				return virtualSystem;
+			}
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Returns the disc id for an specifc virtual Hardware section
+	 * @param virtualHardwareSection
+	 * @return
+	 */
+	public static String getDiskId(VirtualHardwareSection virtualHardwareSection) {
+		String diskId = "";
+		
+		for (int j=0; j<virtualHardwareSection.getItemArray().length; j++) {
+			Item item = virtualHardwareSection.getItemAtIndex(j);
+			if (item.getResourceType().getNumber() == 17){
+				String list[] = item.getHostResourceArray();
+				
+				if (list!=null && list.length >0) {
+					String hostResource = list[0];
+					logger.debug("Host Resource: " + hostResource);
+					diskId = hostResource.substring(hostResource.lastIndexOf("/")+1, hostResource.length());
+					logger.debug("Disk Id: " + diskId);
+				}				
+			}
+		}
+		
+		return diskId;
+	}
+	
+	/**
+	 * Determines the capacity of a Disk
+	 * @param ovfDocument
+	 * @param diskId
+	 * @return
+	 */
+	public static int getCapacity(OvfDefinition ovfDocument, String diskId) {
+		// This method needs to have its own unit test... 
+		int capacity = 0;
+		// We find the file id for each resource
+		Disk[] diskList = ovfDocument.getDiskSection().getDiskArray();
+		if (diskList != null && diskList.length>0) {
+			for (int k = 0; k<diskList.length; k++) {
+				Disk disk = diskList[k];
+				if (disk.getDiskId().equalsIgnoreCase(diskId)) {
+					String units = disk.getCapacityAllocationUnits();
+					capacity = Integer.parseInt(disk.getCapacity());
+					capacity = OVFUtils.getDiskCapacityInGb(capacity, units);
+				}
+			}
+		}
+		
+		return capacity;
+	}
+	
+	/**
+	 * Returns the fileID for an specific Disk in an OVF document.
+	 * @param diskId
+	 * @param diskList
+	 * @return
+	 */
+	public static String getFileId(String diskId, Disk[] diskList) {
+		String fileId = "";
+		
+		if (diskList != null && diskList.length>0) {
+			for (int k = 0; k<diskList.length; k++) {
+				Disk disk = diskList[k];
+				if (disk.getDiskId().equalsIgnoreCase(diskId)) {
+					fileId = disk.getFileRef();
+					logger.debug("Disk reference: " + fileId);
+				}
+			}
+		}
+		
+		return fileId;
+	}
+	
+	/**
+	 * Returns the URL of an image in the OVF
+	 * @param ovfDocument
+	 * @param fileId
+	 * @return
+	 */
+	public static String getUrlImg(OvfDefinition ovfDocument, String fileId) {
+		String urlImg = "";
+		
+		File[] files = ovfDocument.getReferences().getFileArray();
+		if (files != null && files.length>0){
+			for (int j = 0; j < files.length; j++){
+				File file = files[j];
+				if (file.getId().equalsIgnoreCase(fileId)){
+					urlImg = file.getHref();
+				}
+			}
+		}
+		else {
+			logger.debug("No references section available in OVF!!");
+		}
+	
+		return urlImg;
 	}
 }
