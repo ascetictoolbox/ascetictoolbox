@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn; 
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -25,6 +26,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * 
@@ -107,6 +109,8 @@ public class VM {
 	private long numberVMsMin;
 	@XmlElement(name="link", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private List<Link> links;
+	@XmlTransient
+	private Deployment deployment;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -311,5 +315,14 @@ public class VM {
 	}
 	public void setNumberVMsMin(long numberVMsMin) {
 		this.numberVMsMin = numberVMsMin;
+	}
+	
+	@ManyToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="deployment_id")
+	public Deployment getDeployment() {
+		return deployment;
+	}
+	public void setDeployment(Deployment deployment) {
+		this.deployment = deployment;
 	}
 }
