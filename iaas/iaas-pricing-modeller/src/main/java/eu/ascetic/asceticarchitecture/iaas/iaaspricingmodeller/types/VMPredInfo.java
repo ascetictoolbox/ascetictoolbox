@@ -24,6 +24,11 @@ public class VMPredInfo {
 	
 	double predictedCharges; //coming from IaaS scheme
 	
+	public VMPredInfo (){
+		this.predictedDuration = 0;
+		this.predictedEnergy = 0;
+	}
+	
 	public VMPredInfo (long predictedDuration, double predictedEnergy){
 		this.predictedDuration = predictedDuration;
 		this.predictedEnergy = predictedEnergy;

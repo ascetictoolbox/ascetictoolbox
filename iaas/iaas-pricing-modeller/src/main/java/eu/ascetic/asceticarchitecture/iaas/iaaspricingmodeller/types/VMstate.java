@@ -29,7 +29,7 @@ public class VMstate {
 	
 	String VMid;
 	
-	VMPredInfo predictedInformation;
+	VMPredInfo predictedInformation = new VMPredInfo();
 	
 	/* The pricing scheme according to which this VM is charged*/
 	IaaSPricingModellerPricingScheme pricingScheme; 
@@ -47,6 +47,7 @@ public class VMstate {
 	
 
 	TimeParameters time;
+	
 	
 
 

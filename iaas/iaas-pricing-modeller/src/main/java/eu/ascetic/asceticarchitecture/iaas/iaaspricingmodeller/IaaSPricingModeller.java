@@ -70,14 +70,18 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
 
 	public double getVMChargesPrediction(int CPU, int RAM, double storage, int schemeId,  long duration, String hostname){
 		VMinfo vm = new VMinfo (RAM, CPU, storage);
+		
 		IaaSPricingModellerPricingScheme scheme = null;
+		
 		if (schemeId==0){
 			scheme = new PricingSchemeA(schemeId);
 		}
 		if (schemeId==1){
 			scheme = new PricingSchemeB(schemeId);
 		}
+		
 		VMstate Vm = new VMstate(vm, energyProvider, scheme);
+		
 		scheme.setEnergyModeller(energyModeller);
 		
 		Vm.getPredictedInformation().setDuration(duration);
@@ -85,12 +89,19 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
 		VM newVM = new VM(CPU, RAM, storage);
 		
 		Host host = energyModeller.getHost(hostname);
+		System.out.println("ok8");
 		Collection <VmDeployed> collection =  energyModeller.getVMsOnHost(host);
+		
 		Collection <VM> col = castCollection(collection);
+		
 		TimeParameters dur = new TimeParameters(duration);
+		
 		TimePeriod dura = new TimePeriod(dur.getStartTime(), dur.getEndTime());
+		
 		double energyPredicted = energyModeller.getPredictedEnergyForVM(newVM, col, host, dura).getTotalEnergyUsed();
+		
 		Vm.getPredictedInformation().setPredictedEnergy(energyPredicted);
+		
 		
 		return billing.predictVMCharges(Vm);
 	}

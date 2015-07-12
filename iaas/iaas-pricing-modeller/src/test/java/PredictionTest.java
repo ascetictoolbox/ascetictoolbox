@@ -62,12 +62,12 @@ public class PredictionTest
     public void testPrediction() throws InterruptedException {
         System.out.println("test prediction");
         IaaSPricingModeller prModeller = new IaaSPricingModeller(null);
-     //   System.out.println("Energy Provider: " +prModeller.getEnergyProvider().getId());
-     //   System.out.println("IaaS Provider: " +prModeller.getIaaSId());
-     //   System.out.println("Dynamic Energy Price: " +prModeller.getEnergyProvider().getDynamicEnergyPrice().getEnergyPriceOnly());
-     //   System.out.println("Average Dynamic Energy Price: " +prModeller.getBilling().getAverageDynamicEnergyPrice().getEnergyPriceOnly());
+        System.out.println("Energy Provider: " +prModeller.getEnergyProvider().getId());
+        System.out.println("IaaS Provider: " +prModeller.getIaaSId());
+        System.out.println("Dynamic Energy Price: " +prModeller.getEnergyProvider().getNewDynamicEnergyPrice().getPriceOnly());
+        System.out.println("Average Dynamic Energy Price: " +prModeller.getBilling().getAverageDynamicEnergyPrice().getPriceOnly());
        ///prediction for Pricing Scheme A
-      // System.out.println("Predicted value:" + prModeller.getVMChargesPrediction(1, 20, 8, 500, 0, 1000, 2));  
+       //System.out.println("Predicted value:" + prModeller.getVMChargesPrediction(2, 2, 20.0, 1, 360L, "a1"));  
         
       //Prediction for Pricing Scheme B
      //  System.out.println("Predicted value:" + prModeller.getVMChargesPrediction(1, 20, 8, 500, 1, 1000, 2));  

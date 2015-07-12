@@ -17,7 +17,7 @@
 
 package eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesrepository;
 
-import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.cost.IaaSPricingModellerCost;
+
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.Price;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.ResourceDistribution;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.VMstate;
