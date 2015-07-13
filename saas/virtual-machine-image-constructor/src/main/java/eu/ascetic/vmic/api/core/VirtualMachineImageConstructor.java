@@ -533,10 +533,11 @@ public class VirtualMachineImageConstructor implements Runnable {
 
             LOGGER.info("Starting image generation for: " + newImagePath);
 
+            String virtualMachineAddress = null;
             try {
                 // TODO: 1) Boot up the image and wait for completion (TODO: use
                 // libvirt instead of virsh system call)
-                bootImage();
+                virtualMachineAddress = bootImage();
                 vmicApi.getGlobalState()
                         .setProgressPercentage(
                                 ovfDefinitionId,
@@ -545,9 +546,10 @@ public class VirtualMachineImageConstructor implements Runnable {
                                         + (100.0 / ovfDefinitionParser
                                                 .getImageNumber()) * i);
 
-                // TODO: 2) Bootstrap the image to chef via a remote system call
+                // TODO: 2) Bootstrap the VM with chef agent via a remote system
+                // call
                 // to knife.
-                boostrapImage();
+                bootstrapVirtualMachine(virtualMachineAddress);
                 vmicApi.getGlobalState()
                         .setProgressPercentage(
                                 ovfDefinitionId,
@@ -558,7 +560,7 @@ public class VirtualMachineImageConstructor implements Runnable {
 
                 // TODO: 3) Upload the chef cookbook(s) to the chef workspace
                 // (using rsync)
-                uploadCookbooks();
+                uploadCookbooks(virtualMachineAddress);
                 vmicApi.getGlobalState()
                         .setProgressPercentage(
                                 ovfDefinitionId,
@@ -569,7 +571,7 @@ public class VirtualMachineImageConstructor implements Runnable {
 
                 // TODO: 4) Deploy the chef cookbooks(s) via a remote system
                 // call to knife.
-                deployCookbooks();
+                deployCookbooks(virtualMachineAddress);
                 vmicApi.getGlobalState()
                         .setProgressPercentage(
                                 ovfDefinitionId,
@@ -580,7 +582,7 @@ public class VirtualMachineImageConstructor implements Runnable {
 
                 // TODO: 5) Shutdown the VM (TODO: use libvirt instead of virsh
                 // system call)
-                shutdownVirtualMachine();
+                shutdownVirtualMachine(virtualMachineAddress);
                 vmicApi.getGlobalState()
                         .setProgressPercentage(
                                 ovfDefinitionId,
@@ -590,7 +592,7 @@ public class VirtualMachineImageConstructor implements Runnable {
                                                 .getImageNumber()) * i);
 
                 // TODO: 6) Remove the node from the chef server
-                cleanChefServer();
+                cleanChefServer(virtualMachineAddress);
                 vmicApi.getGlobalState()
                         .setProgressPercentage(
                                 ovfDefinitionId,
@@ -603,7 +605,7 @@ public class VirtualMachineImageConstructor implements Runnable {
 
                 // Try to clean up if something failed:
                 try {
-                    onlineCleanUpOnError();
+                    onlineCleanUpOnError(virtualMachineAddress);
                 } catch (ProgressException e1) {
                     // Do nothing
                 }
@@ -623,58 +625,240 @@ public class VirtualMachineImageConstructor implements Runnable {
 
     /**
      * Boots an image and waits for the OS initialisation process to finish.
+     * 
+     * @return The IP address of the VM created.
      */
-    private void bootImage() throws ProgressException {
-        // TODO Auto-generated method stub
+    private String bootImage() throws ProgressException {
 
+        SystemCallRemote systemCallRemote = new SystemCallRemote(
+                System.getProperty("user.home"), vmicApi.getGlobalState()
+                        .getConfiguration());
+
+        // TODO: Formulate sys call
+        String commandName = "echo '1.2.3.4';";
+        ArrayList<String> arguments = new ArrayList<String>();
+        arguments.add("exit 0");
+        try {
+            systemCallRemote.runCommand(commandName, arguments);
+        } catch (SystemCallException e) {
+            throw new ProgressException("Booting image failed", e);
+        }
+
+        if (systemCallRemote.getReturnValue() != 0) {
+            throw new ProgressException(
+                    "Booting image failed, return value != 0 instead got: "
+                            + systemCallRemote.getReturnValue());
+        }
+
+        String virtualMachineAddress = systemCallRemote.getOutput().get(1);
+
+        LOGGER.info("Image booted with IP: " + virtualMachineAddress);
+
+        return virtualMachineAddress;
     }
 
     /**
      * Install chef client via SHH into a Virtual Machine.
+     * 
+     * @param virtualMachineAddress
+     *            The IP address of the VM.
      */
-    private void boostrapImage() throws ProgressException {
-        // TODO Auto-generated method stub
+    private void bootstrapVirtualMachine(String virtualMachineAddress)
+            throws ProgressException {
 
+        SystemCallRemote systemCallRemote = new SystemCallRemote(
+                System.getProperty("user.home"), vmicApi.getGlobalState()
+                        .getConfiguration());
+
+        // TODO: Formulate sys call
+        String commandName = "echo 'This is a test';";
+        ArrayList<String> arguments = new ArrayList<String>();
+        arguments.add("exit 0");
+
+        try {
+            systemCallRemote.runCommand(commandName, arguments);
+        } catch (SystemCallException e) {
+            throw new ProgressException(
+                    "Bootstrapping VM with chef agent failed", e);
+        }
+
+        if (systemCallRemote.getReturnValue() != 0) {
+            throw new ProgressException(
+                    "Bootstrapping VM failed, return value != 0 instead got: "
+                            + systemCallRemote.getReturnValue());
+        }
+
+        LOGGER.info("VM bootstrapped with IP: " + virtualMachineAddress);
     }
 
     /**
      * Uploads the chef cookbook(s) to the chef workspace
+     * 
+     * @param virtualMachineAddress
+     *            The IP address of the VM.
      */
-    private void uploadCookbooks() throws ProgressException {
-        // TODO Auto-generated method stub
+    private void uploadCookbooks(String virtualMachineAddress)
+            throws ProgressException {
+
+        SystemCallRemote systemCallRemote = new SystemCallRemote(
+                System.getProperty("user.home"), vmicApi.getGlobalState()
+                        .getConfiguration());
+
+        // TODO: Formulate sys call
+        String commandName = "echo 'This is a test';";
+        ArrayList<String> arguments = new ArrayList<String>();
+        arguments.add("exit 0");
+
+        try {
+            systemCallRemote.runCommand(commandName, arguments);
+        } catch (SystemCallException e) {
+            throw new ProgressException(
+                    "Uploading cookbooks to VM via chef agent failed", e);
+        }
+
+        if (systemCallRemote.getReturnValue() != 0) {
+            throw new ProgressException(
+                    "Uploading cookbooks to VM via chef agent failed, return value != 0 instead got: "
+                            + systemCallRemote.getReturnValue());
+        }
+
+        LOGGER.info("Uploaded cookbooks to VM with IP: "
+                + virtualMachineAddress);
 
     }
 
     /**
-     * Deploys chef cookbook(s) to server and agent deployed in a Virtual Machine,
-     * installing required software for image.
+     * Deploys chef cookbook(s) to server and agent deployed in a Virtual
+     * Machine, installing required software for image.
+     * 
+     * @param virtualMachineAddress
+     *            The IP address of the VM.
      */
-    private void deployCookbooks() throws ProgressException {
-        // TODO Auto-generated method stub
+    private void deployCookbooks(String virtualMachineAddress)
+            throws ProgressException {
+
+        SystemCallRemote systemCallRemote = new SystemCallRemote(
+                System.getProperty("user.home"), vmicApi.getGlobalState()
+                        .getConfiguration());
+
+        // TODO: Formulate sys call
+        String commandName = "echo 'This is a test';";
+        ArrayList<String> arguments = new ArrayList<String>();
+        arguments.add("exit 0");
+
+        try {
+            systemCallRemote.runCommand(commandName, arguments);
+        } catch (SystemCallException e) {
+            throw new ProgressException(
+                    "Deploying cookbooks to VM via chef agent failed", e);
+        }
+
+        if (systemCallRemote.getReturnValue() != 0) {
+            throw new ProgressException(
+                    "Deploying cookbooks to VM via chef agent failed, return value != 0 instead got: "
+                            + systemCallRemote.getReturnValue());
+        }
+
+        LOGGER.info("Deployed cookbooks to VM with IP: "
+                + virtualMachineAddress);
 
     }
 
     /**
      * Cleanly shuts down a Virtual Machine.
+     * 
+     * @param virtualMachineAddress
+     *            The IP address of the VM.
      */
-    private void shutdownVirtualMachine() throws ProgressException {
-        // TODO Auto-generated method stub
+    private void shutdownVirtualMachine(String virtualMachineAddress)
+            throws ProgressException {
+
+        SystemCallRemote systemCallRemote = new SystemCallRemote(
+                System.getProperty("user.home"), vmicApi.getGlobalState()
+                        .getConfiguration());
+
+        // TODO: Formulate sys call
+        String commandName = "echo 'This is a test';";
+        ArrayList<String> arguments = new ArrayList<String>();
+        arguments.add("exit 0");
+
+        try {
+            systemCallRemote.runCommand(commandName, arguments);
+        } catch (SystemCallException e) {
+            throw new ProgressException("Shutting down VM failed", e);
+        }
+
+        if (systemCallRemote.getReturnValue() != 0) {
+            throw new ProgressException(
+                    "Shutting down VM failed, return value != 0 instead got: "
+                            + systemCallRemote.getReturnValue());
+        }
+
+        LOGGER.info("Shutdown VM with IP: " + virtualMachineAddress);
 
     }
 
     /**
-     * Removes uploaded cookbook(s) from workspace and server in addition to removing registration of node.
+     * Removes uploaded cookbook(s) from workspace and server in addition to
+     * removing registration of node.
+     * 
+     * @param virtualMachineAddress
+     *            The IP address of the VM.
      */
-    private void cleanChefServer() throws ProgressException {
-        // TODO Auto-generated method stub
+    private void cleanChefServer(String virtualMachineAddress)
+            throws ProgressException {
+
+        SystemCallRemote systemCallRemote = new SystemCallRemote(
+                System.getProperty("user.home"), vmicApi.getGlobalState()
+                        .getConfiguration());
+
+        // TODO: Formulate sys call
+        String commandName = "echo 'This is a test';";
+        ArrayList<String> arguments = new ArrayList<String>();
+        arguments.add("exit 0");
+
+        try {
+            systemCallRemote.runCommand(commandName, arguments);
+        } catch (SystemCallException e) {
+            throw new ProgressException("Cleaning up chef failed", e);
+        }
+
+        if (systemCallRemote.getReturnValue() != 0) {
+            throw new ProgressException(
+                    "Cleaning up chef failed, return value != 0 instead got: "
+                            + systemCallRemote.getReturnValue());
+        }
+
+        LOGGER.info("Shutdown VM with IP: " + virtualMachineAddress);
 
     }
 
     /**
      * Attempts to clean up after a failure during online image generation.
+     * 
+     * @param virtualMachineAddress
+     *            The IP address of the VM.
      */
-    private void onlineCleanUpOnError() throws ProgressException {
-        // TODO Auto-generated method stub
+    private void onlineCleanUpOnError(String virtualMachineAddress)
+            throws ProgressException {
+        if (virtualMachineAddress != null) {
+            // Try to clean up: shutdown VM and clean chef server
+            try {
+                shutdownVirtualMachine(virtualMachineAddress);
+            } catch (ProgressException e) {
+                LOGGER.info("Clean up on error - failed shutdown of VM: "
+                        + virtualMachineAddress);
+            }
 
+            try {
+                cleanChefServer(virtualMachineAddress);
+            } catch (ProgressException e) {
+                LOGGER.info("Clean up on error - failed clean of chef server for VM: "
+                        + virtualMachineAddress);
+            }
+
+        } else {
+            LOGGER.info("Clean up on error - nothing to clean up");
+        }
     }
 }

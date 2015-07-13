@@ -1,0 +1,190 @@
+<ovf:Envelope xsi:schemaLocation="http://schemas.dmtf.org/ovf/envelope/1 ../dsp8023.xsd"
+    xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:rasd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData">
+    <ovf:References />
+    <ovf:DiskSection>
+        <ovf:Info>List of the virtual disks used.</ovf:Info>
+        <ovf:Disk ovf:diskId="HAProxy-img-disk" ovf:fileRef="HAProxy-img"
+            ovf:format="http://www.gnome.org/~markmc/qcow-image-format.html"
+            ovf:capacityAllocationUnits="byte * 2^30" ovf:capacity="20" />
+        <ovf:Disk ovf:diskId="MySql-img-disk" ovf:fileRef="MySql-img"
+            ovf:format="http://www.gnome.org/~markmc/qcow-image-format.html"
+            ovf:capacityAllocationUnits="byte * 2^30" ovf:capacity="10" />
+        <ovf:Disk ovf:diskId="JBoss-img-disk" ovf:fileRef="JBoss-img"
+            ovf:format="http://www.gnome.org/~markmc/qcow-image-format.html"
+            ovf:capacityAllocationUnits="byte * 2^30" ovf:capacity="80" />
+    </ovf:DiskSection>
+    <ovf:VirtualSystemCollection ovf:id="PhotoAlbum">
+        <ovf:Info>test description.</ovf:Info>
+        <ovf:ProductSection>
+            <ovf:Info>Product configuration for then entire
+                VirtualSystemCollection.</ovf:Info>
+            <ovf:Product>product</ovf:Product>
+            <ovf:Version>1.0</ovf:Version>
+            <ovf:Property ovf:key="asceticVmicMode" ovf:type="uint32"
+                ovf:value="online" />
+        </ovf:ProductSection>
+        <ovf:VirtualSystem ovf:id="HAProxy">
+            <ovf:Info>HAProxyTest Virtual System</ovf:Info>
+            <ovf:OperatingSystemSection ovf:id="36"
+                ovf:version="centos-6.6">
+                <ovf:Info>Description of HAProxy Operating System.</ovf:Info>
+            </ovf:OperatingSystemSection>
+            <ovf:ProductSection>
+                <ovf:Info>Product configuration for the HAProxy VirtualSystem.
+                </ovf:Info>
+                <ovf:Product>HAProxy</ovf:Product>
+                <ovf:Version>2.0</ovf:Version>
+                <ovf:Property ovf:key="asceticLowerBound" ovf:type="uint32"
+                    ovf:value="1" />
+                <ovf:Property ovf:key="asceticUpperBound" ovf:type="uint32"
+                    ovf:value="1" />
+            </ovf:ProductSection>
+            <ovf:VirtualHardwareSection>
+                <ovf:Info>Description of virtual hardware requirements.
+                </ovf:Info>
+                <ovf:Item>
+                    <rasd:Description>Number of virtual CPUs</rasd:Description>
+                    <rasd:ElementName>virtual CPU</rasd:ElementName>
+                    <rasd:InstanceID>1</rasd:InstanceID>
+                    <rasd:ResourceType>3</rasd:ResourceType>
+                    <rasd:VirtualQuantity>0</rasd:VirtualQuantity>
+                </ovf:Item>
+                <ovf:Item>
+                    <rasd:AllocationUnits>hertz * 2^20</rasd:AllocationUnits>
+                    <rasd:Description>CPU Speed</rasd:Description>
+                    <rasd:ElementName>1200MHz CPU speed reservation
+                    </rasd:ElementName>
+                    <rasd:InstanceID>1</rasd:InstanceID>
+                    <rasd:Reservation>1200</rasd:Reservation>
+                    <rasd:ResourceSubType>cpuspeed</rasd:ResourceSubType>
+                    <rasd:ResourceType>3</rasd:ResourceType>
+                </ovf:Item>
+                <ovf:Item>
+                    <rasd:AllocationUnits>byte * 2^30</rasd:AllocationUnits>
+                    <rasd:Description>Memory Size</rasd:Description>
+                    <rasd:ElementName>1GB of memory</rasd:ElementName>
+                    <rasd:InstanceID>2</rasd:InstanceID>
+                    <rasd:ResourceType>4</rasd:ResourceType>
+                    <rasd:VirtualQuantity>1</rasd:VirtualQuantity>
+                </ovf:Item>
+                <ovf:Item>
+                    <rasd:Description>VM Disk</rasd:Description>
+                    <rasd:ElementName>VM Disk Drive 1</rasd:ElementName>
+                    <rasd:HostResource>ovf:/disk/HAProxy-img-disk
+                    </rasd:HostResource>
+                    <rasd:InstanceID>4</rasd:InstanceID>
+                    <rasd:ResourceType>17</rasd:ResourceType>
+                </ovf:Item>
+            </ovf:VirtualHardwareSection>
+        </ovf:VirtualSystem>
+        <ovf:VirtualSystem ovf:id="MySql">
+            <ovf:Info>MySqlTest Virtual System</ovf:Info>
+            <ovf:OperatingSystemSection ovf:id="36"
+                ovf:version="centos-6.6">
+                <ovf:Info>Description of MySql Operating System.</ovf:Info>
+            </ovf:OperatingSystemSection>
+            <ovf:ProductSection>
+                <ovf:Info>Product configuration for the MySql VirtualSystem.
+                </ovf:Info>
+                <ovf:Product>MySql</ovf:Product>
+                <ovf:Version>2.0</ovf:Version>
+                <ovf:Property ovf:key="asceticLowerBound" ovf:type="uint32"
+                    ovf:value="1" />
+                <ovf:Property ovf:key="asceticUpperBound" ovf:type="uint32"
+                    ovf:value="1" />
+            </ovf:ProductSection>
+            <ovf:VirtualHardwareSection>
+                <ovf:Info>Description of virtual hardware requirements.
+                </ovf:Info>
+                <ovf:Item>
+                    <rasd:Description>Number of virtual CPUs</rasd:Description>
+                    <rasd:ElementName>virtual CPU</rasd:ElementName>
+                    <rasd:InstanceID>1</rasd:InstanceID>
+                    <rasd:ResourceType>3</rasd:ResourceType>
+                    <rasd:VirtualQuantity>0</rasd:VirtualQuantity>
+                </ovf:Item>
+                <ovf:Item>
+                    <rasd:AllocationUnits>hertz * 2^20</rasd:AllocationUnits>
+                    <rasd:Description>CPU Speed</rasd:Description>
+                    <rasd:ElementName>1.2GHz CPU speed reservation
+                    </rasd:ElementName>
+                    <rasd:InstanceID>1</rasd:InstanceID>
+                    <rasd:Reservation>1200</rasd:Reservation>
+                    <rasd:ResourceSubType>cpuspeed</rasd:ResourceSubType>
+                    <rasd:ResourceType>3</rasd:ResourceType>
+                </ovf:Item>
+                <ovf:Item>
+                    <rasd:AllocationUnits>byte * 2^30</rasd:AllocationUnits>
+                    <rasd:Description>Memory Size</rasd:Description>
+                    <rasd:ElementName>4GB of memory</rasd:ElementName>
+                    <rasd:InstanceID>2</rasd:InstanceID>
+                    <rasd:ResourceType>4</rasd:ResourceType>
+                    <rasd:VirtualQuantity>4</rasd:VirtualQuantity>
+                </ovf:Item>
+                <ovf:Item>
+                    <rasd:Description>VM Disk</rasd:Description>
+                    <rasd:ElementName>VM Disk Drive 1</rasd:ElementName>
+                    <rasd:HostResource>ovf:/disk/MySql-img-disk
+                    </rasd:HostResource>
+                    <rasd:InstanceID>4</rasd:InstanceID>
+                    <rasd:ResourceType>17</rasd:ResourceType>
+                </ovf:Item>
+            </ovf:VirtualHardwareSection>
+        </ovf:VirtualSystem>
+        <ovf:VirtualSystem ovf:id="JBoss">
+            <ovf:Info>JBossTest Virtual System</ovf:Info>
+            <ovf:OperatingSystemSection ovf:id="36"
+                ovf:version="centos-6.6">
+                <ovf:Info>Description of JBoss Operating System.</ovf:Info>
+            </ovf:OperatingSystemSection>
+            <ovf:ProductSection>
+                <ovf:Info>Product configuration for the JBoss VirtualSystem.
+                </ovf:Info>
+                <ovf:Product>JBoss</ovf:Product>
+                <ovf:Version>2.0</ovf:Version>
+                <ovf:Property ovf:key="asceticLowerBound" ovf:type="uint32"
+                    ovf:value="1" />
+                <ovf:Property ovf:key="asceticUpperBound" ovf:type="uint32"
+                    ovf:value="5" />
+            </ovf:ProductSection>
+            <ovf:VirtualHardwareSection>
+                <ovf:Info>Description of virtual hardware requirements.
+                </ovf:Info>
+                <ovf:Item>
+                    <rasd:Description>Number of virtual CPUs</rasd:Description>
+                    <rasd:ElementName>virtual CPU</rasd:ElementName>
+                    <rasd:InstanceID>1</rasd:InstanceID>
+                    <rasd:ResourceType>3</rasd:ResourceType>
+                    <rasd:VirtualQuantity>0</rasd:VirtualQuantity>
+                </ovf:Item>
+                <ovf:Item>
+                    <rasd:AllocationUnits>hertz * 2^20</rasd:AllocationUnits>
+                    <rasd:Description>CPU Speed</rasd:Description>
+                    <rasd:ElementName>1.2GHz CPU speed reservation
+                    </rasd:ElementName>
+                    <rasd:InstanceID>1</rasd:InstanceID>
+                    <rasd:Reservation>1200</rasd:Reservation>
+                    <rasd:ResourceSubType>cpuspeed</rasd:ResourceSubType>
+                    <rasd:ResourceType>3</rasd:ResourceType>
+                </ovf:Item>
+                <ovf:Item>
+                    <rasd:AllocationUnits>byte * 2^30</rasd:AllocationUnits>
+                    <rasd:Description>Memory Size</rasd:Description>
+                    <rasd:ElementName>8GB of memory</rasd:ElementName>
+                    <rasd:InstanceID>2</rasd:InstanceID>
+                    <rasd:ResourceType>4</rasd:ResourceType>
+                    <rasd:VirtualQuantity>8</rasd:VirtualQuantity>
+                </ovf:Item>
+                <ovf:Item>
+                    <rasd:Description>VM Disk</rasd:Description>
+                    <rasd:ElementName>VM Disk Drive 1</rasd:ElementName>
+                    <rasd:HostResource>ovf:/disk/JBoss-img-disk
+                    </rasd:HostResource>
+                    <rasd:InstanceID>4</rasd:InstanceID>
+                    <rasd:ResourceType>17</rasd:ResourceType>
+                </ovf:Item>
+            </ovf:VirtualHardwareSection>
+        </ovf:VirtualSystem>
+    </ovf:VirtualSystemCollection>
+</ovf:Envelope>

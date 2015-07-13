@@ -153,9 +153,9 @@ public class VmicApiTest extends TestCase {
     }
 
     /**
-     * Tests the workflow of image generation.
+     * Tests the workflow of OFFLINE image generation.
      */
-    public void testGenerateImageWorkflow() {
+    public void testOfflineGenerateImageWorkflow() {
         LOGGER.info("### TEST: " + getCurrentMethodName() + " STARTED ###");
 
         try {
@@ -248,7 +248,118 @@ public class VmicApiTest extends TestCase {
 
             java.io.File file = new java.io.File(targetDir
                     + java.io.File.separator + java.io.File.separator
-                    + "3tier-webapp.ovf.vmic.xml");
+                    + "gpf-ovf.vmic.xml");
+            FileWriter fstream = new FileWriter(file);
+            BufferedWriter out = new BufferedWriter(fstream);
+
+            out.write(ovfDefinition2.toString());
+            // Close the output stream
+            out.close();
+            
+        } catch (Exception e) {
+            LOGGER.error("TEST: Test Failed! Cause: " + e.getCause(), e);
+        }
+
+        LOGGER.warn("### TEST: " + getCurrentMethodName() + " COMPLETE ###");
+    }
+    
+    /**
+     * Tests the workflow of ONLINE image generation.
+     */
+    public void testOnlineGenerateImageWorkflow() {
+        LOGGER.info("### TEST: " + getCurrentMethodName() + " STARTED ###");
+
+        try {
+            ProgressDataImage progressDataImage = null;
+
+            // Initialise the VMIC's configuration
+            GlobalConfiguration globalConfiguration = new GlobalConfiguration();
+            VmicApi vmicApi = new VmicApi(globalConfiguration);
+
+            // Read the testing OVF
+            URL url = getClass().getClassLoader().getResource("atc-ovf.xml");
+            String ovfDefinitionAsString = null;
+            try {
+                ovfDefinitionAsString = new String(Files.readAllBytes(Paths
+                        .get(url.toURI())));
+                LOGGER.info(ovfDefinitionAsString);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+
+            OvfDefinition ovfDefinition = OvfDefinition.Factory
+                    .newInstance(ovfDefinitionAsString);
+
+            String ovfDefinitionId = ovfDefinition.getVirtualSystemCollection()
+                    .getId();
+
+            vmicApi.generateImage(ovfDefinition);
+
+            // Wait until the file upload has been registered with the VMIC
+            // before polling the progress data...
+            while (true) {
+                try {
+                    LOGGER.info("TEST: Trying to fetch progress data...");
+                    vmicApi.progressCallback(ovfDefinitionId, null);
+                    LOGGER.info("TEST: No ProgressException...");
+                    break;
+                } catch (ProgressException e) {
+                    LOGGER.warn("TEST: Caught ProgressException due to: "
+                            + e.getMessage());
+                    Thread.sleep(250);
+                }
+            }
+
+            // Poll the progress data until completion...
+            while (true) {
+
+                // We have progress data, do something with it...
+                progressDataImage = (ProgressDataImage) vmicApi
+                        .progressCallback(ovfDefinitionId, null);
+
+                // We have an error so stop everything!
+                if (progressDataImage.isError()) {
+                    // Say what the error is...
+                    LOGGER.error(progressDataImage.getException().getMessage(),
+                            progressDataImage.getException());
+                    // For test case to report failure correctly
+                    assertFalse(progressDataImage.isError());
+                    return;
+                } else {
+                    LOGGER.info("TEST: progressDataImageObject total progress is: "
+                            + progressDataImage.getTotalProgress());
+                    LOGGER.info("TEST: progressDataImageObject history of Phase with ID: "
+                            + progressDataImage.getPhaseName(progressDataImage
+                                    .getCurrentPhaseId())
+                            + ", % is: "
+                            + progressDataImage.getHistory().get(
+                                    progressDataImage.getCurrentPhaseId()));
+                }
+
+                // 250ms delay between polling...
+                Thread.sleep(250);
+
+                // Test to see if upload has finished...
+                if (vmicApi.progressCallback(ovfDefinitionId, null)
+                        .isComplete()) {
+                    LOGGER.warn("TEST: Detected image generation as completed!");
+                    break;
+                }
+            }
+
+            //Test the manifest that was altered
+            OvfDefinition ovfDefinition2 = ((ProgressDataImage) (vmicApi.progressCallback(
+                    ovfDefinitionId, null))).getOvfDefinition();
+                    
+            assertFalse(ovfDefinition2.hasErrors());
+            
+            String targetDir = System.getProperty("ovfSampleDir", "target");
+
+            java.io.File file = new java.io.File(targetDir
+                    + java.io.File.separator + java.io.File.separator
+                    + "atc-ovf.vmic.xml");
             FileWriter fstream = new FileWriter(file);
             BufferedWriter out = new BufferedWriter(fstream);
 
