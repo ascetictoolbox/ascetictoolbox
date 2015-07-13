@@ -22,6 +22,7 @@ import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddleware;
 import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
 import es.bsc.vmmanagercore.db.VmManagerDb;
 import es.bsc.vmmanagercore.logging.VMMLogger;
+import es.bsc.vmmanagercore.message_queue.MessageQueue;
 import es.bsc.vmmanagercore.modellers.energy.EnergyModeller;
 import es.bsc.vmmanagercore.modellers.price.PricingModeller;
 import es.bsc.vmmanagercore.models.scheduling.*;
@@ -155,15 +156,17 @@ public class VmsManager {
      * @param vmId the ID of the VM
      */
     public void deleteVm(String vmId) {
-        String hostname = getVm(vmId).getHostName(); // We need to get the hostname before we delete the VM
+        VmDeployed vmToBeDeleted = getVm(vmId);
+
         cloudMiddleware.destroy(vmId);
         db.deleteVm(vmId);
 
         // If the monitoring system is Zabbix, then we need to delete the VM from Zabbix
         if (usingZabbix()) {
-            ZabbixConnector.deleteVmFromZabbix(vmId, hostname);
+            ZabbixConnector.deleteVmFromZabbix(vmId, vmToBeDeleted.getHostName());
         }
 
+        MessageQueue.publishMessageVmDestroyed(vmToBeDeleted);
         performAfterVmDeleteSelfAdaptation();
     }
 
@@ -220,6 +223,8 @@ public class VmsManager {
         for (Vm vm: vms) {
             idsDeployedVms.add(ids.get(vm));
         }
+
+        queueDeployedVmsMessages(idsDeployedVms);
         return idsDeployedVms;
     }
 
@@ -412,6 +417,12 @@ public class VmsManager {
     private boolean isoReceivedInInitScript(Vm vm) {
         return vm.getInitScript() != null && !vm.getInitScript().equals("")
                 && (vm.getInitScript().contains(".iso_") || vm.getInitScript().endsWith(".iso"));
+    }
+
+    private void queueDeployedVmsMessages(List<String> deployedVmsIds) {
+        for (String idDeployedVm: deployedVmsIds) {
+            MessageQueue.publishMessageVmDeployed(getVm(idDeployedVm));
+        }
     }
     
 }

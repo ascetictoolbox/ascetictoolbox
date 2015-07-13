@@ -562,6 +562,8 @@ iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/ma
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/manager/components/SelfAdaptationOptsManager.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/manager/components/VmPlacementManager.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/manager/components/VmsManager.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/message_queue/ActiveMqAdapter.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/message_queue/MessageQueue.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/modellers/energy/EnergyModeller.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/modellers/energy/ascetic/AsceticEnergyModellerAdapter.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/modellers/energy/ascetic/VMMToEMConversor.java -text
