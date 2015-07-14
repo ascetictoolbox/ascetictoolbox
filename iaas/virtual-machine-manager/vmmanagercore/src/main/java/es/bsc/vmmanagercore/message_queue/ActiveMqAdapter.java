@@ -18,6 +18,7 @@
 
 package es.bsc.vmmanagercore.message_queue;
 
+import es.bsc.vmmanagercore.logging.VMMLogger;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 import javax.jms.*;
@@ -34,7 +35,6 @@ public class ActiveMqAdapter {
      * @param message the message
      */
     public void publishMessage(String topic, String message) {
-
         try {
             // Create a Connection
             Connection connection = connectionFactory.createConnection();
@@ -55,7 +55,7 @@ public class ActiveMqAdapter {
             session.close();
             connection.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            VMMLogger.logCouldNotSendToMessageQueue(topic);
         }
     }
 

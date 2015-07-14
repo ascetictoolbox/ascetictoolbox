@@ -110,5 +110,9 @@ public class VMMLogger {
     public static void logServerTurnedOff(String hostname) {
         logger.debug("[VMM] Server " + hostname + " has been turned off");
     }
-    
+
+    public static void logCouldNotSendToMessageQueue(String topic) {
+        logger.warn("[VMM] Could not send topic " + topic + " to the message queue");
+    }
+
 }
