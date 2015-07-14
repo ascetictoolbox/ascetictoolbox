@@ -257,6 +257,7 @@ public class VmsManager {
             default:
                 throw new IllegalArgumentException("The action selected is not supported.");
         }
+        MessageQueue.publishMessageVmChangedState(getVm(vmId), action);
     }
 
     /**

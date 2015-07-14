@@ -42,6 +42,10 @@ public class MessageQueue {
         publishMessage("virtual-machine-manager.vm." + vm.getId() + ".destroyed", vm);
     }
 
+    public static void publishMessageVmChangedState(VmDeployed vm, String action) {
+        publishMessage("virtual-machine-manager.vm." + vm.getId() + "." + action, vm);
+    }
+
     private static void publishMessage(String topic, Object messageObject) {
         activeMqAdapter.publishMessage(topic, gson.toJson(messageObject));
     }
