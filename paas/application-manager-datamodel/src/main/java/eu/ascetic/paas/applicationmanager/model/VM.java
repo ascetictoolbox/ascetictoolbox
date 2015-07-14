@@ -5,7 +5,6 @@ import static eu.ascetic.paas.applicationmanager.model.Dictionary.APPLICATION_MA
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -174,7 +173,7 @@ public class VM {
 		if(images == null) images = new ArrayList<Image>(); 
 		images.add(image);
 	}
-	@ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+	@ManyToMany(fetch = FetchType.EAGER/*, cascade = {CascadeType.ALL}*/)
 	@JoinTable(name = "vms_images", joinColumns = { 
 			@JoinColumn(name = "vm_id", nullable = false) }, 
 			inverseJoinColumns = { @JoinColumn(name = "image_id", nullable = false) })
