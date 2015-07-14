@@ -51,6 +51,7 @@ import eu.ascetic.paas.applicationmanager.event.deployment.matchers.VmWithEquals
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Collection;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
+import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
 import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.VM;
@@ -500,12 +501,201 @@ public class VMRestTest extends AbstractTest {
 	}
 	
 	@Test
+	public void postVMDeploymentWrongState() {
+		// Pre
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		
+		Deployment deployment = new Deployment();
+		deployment.setOvf(threeTierWebAppOvfString);
+		deployment.setStatus(Dictionary.APPLICATION_STATUS_CONTEXTUALIZING);
+		
+		when(deploymentDAO.getById(11)).thenReturn(deployment);
+		
+		String vmRequest = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" 
+						+ "<vm xmlns=\"http://application_manager.ascetic.eu/doc/schemas/xml\" >"
+							+ "<ovf-id>haproxy1</ovf-id>"
+						+ "</vm>";
+		
+		// Test
+		VMRest vmRest = new VMRest();
+		vmRest.deploymentDAO = deploymentDAO;
+		
+		Response response = vmRest.postVM("", "11", vmRequest);
+		assertEquals(400, response.getStatus());
+		assertEquals("No Active deployment!!!", (String) response.getEntity());
+	}
+	
+	@Test
+	public void deleteVMBadDeploymentID() {
+		// Pre
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		
+		Deployment deployment = new Deployment();
+		deployment.setOvf(threeTierWebAppOvfString);
+		deployment.setStatus(Dictionary.APPLICATION_STATUS_CONTEXTUALIZING);
+		
+		when(deploymentDAO.getById(11)).thenReturn(deployment);
+		
+		
+		// Test
+		VMRest vmRest = new VMRest();
+		vmRest.deploymentDAO = deploymentDAO;
+		
+		Response response = vmRest.deleteVM("", "aa", "33");
+		assertEquals(400, response.getStatus());
+		assertEquals("Invalid deploymentID number!!!", (String) response.getEntity());
+	}
+	
+	@Test
+	public void deleteVMDeploymentWrongState() {
+		// Pre
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		
+		Deployment deployment = new Deployment();
+		deployment.setOvf(threeTierWebAppOvfString);
+		deployment.setStatus(Dictionary.APPLICATION_STATUS_CONTEXTUALIZING);
+		
+		when(deploymentDAO.getById(11)).thenReturn(deployment);
+		
+		
+		// Test
+		VMRest vmRest = new VMRest();
+		vmRest.deploymentDAO = deploymentDAO;
+		
+		Response response = vmRest.deleteVM("", "11", "33");
+		assertEquals(400, response.getStatus());
+		assertEquals("No Active deployment!!!", (String) response.getEntity());
+	}
+	
+	@Test
+	public void deleteVMVmIdType() {
+		// Pre
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		
+		Deployment deployment = new Deployment();
+		deployment.setOvf(threeTierWebAppOvfString);
+		deployment.setStatus(Dictionary.APPLICATION_STATUS_DEPLOYED);
+		
+		when(deploymentDAO.getById(11)).thenReturn(deployment);
+		
+		
+		// Test
+		VMRest vmRest = new VMRest();
+		vmRest.deploymentDAO = deploymentDAO;
+		
+		Response response = vmRest.deleteVM("", "11", "a3");
+		assertEquals(400, response.getStatus());
+		assertEquals("Invalid vmId number!!!", (String) response.getEntity());
+	}
+	
+	@Test
+	public void deleteVMNoInDB() {
+		// Pre
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		
+		Deployment deployment = new Deployment();
+		deployment.setOvf(threeTierWebAppOvfString);
+		deployment.setStatus(Dictionary.APPLICATION_STATUS_DEPLOYED);
+		
+		when(deploymentDAO.getById(11)).thenReturn(deployment);
+		
+		VMDAO vmDAO = mock(VMDAO.class);
+		when(vmDAO.getById(33)).thenReturn(null);
+		
+		
+		// Test
+		VMRest vmRest = new VMRest();
+		vmRest.deploymentDAO = deploymentDAO;
+		vmRest.vmDAO = vmDAO;
+		
+		Response response = vmRest.deleteVM("", "11", "33");
+		assertEquals(400, response.getStatus());
+		assertEquals("No VM by that Id in the database!!!", (String) response.getEntity());
+	}
+	
+	@Test
+	public void deleteVMNoPossibleToDeleteMoreVMs() {
+		// Pre
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		
+		Deployment deployment = new Deployment();
+		deployment.setOvf(threeTierWebAppOvfString);
+		deployment.setStatus(Dictionary.APPLICATION_STATUS_DEPLOYED);
+		
+		when(deploymentDAO.getById(11)).thenReturn(deployment);
+		
+		VM vm = new VM();
+		vm.setOvfId("haproxy");
+		
+		VMDAO vmDAO = mock(VMDAO.class);
+		when(vmDAO.getById(33)).thenReturn(vm);
+		
+		List<VM> vms = new ArrayList<VM>();
+		vms.add(vm);
+		when(vmDAO.getVMsWithOVfIdForDeploymentNotDeleted("haproxy", 11)).thenReturn(vms);
+		
+		
+		// Test
+		VMRest vmRest = new VMRest();
+		vmRest.deploymentDAO = deploymentDAO;
+		vmRest.vmDAO = vmDAO;
+		
+		Response response = vmRest.deleteVM("", "11", "33");
+		assertEquals(400, response.getStatus());
+		assertEquals("haproxy number of VMs already at its minimum!!!", (String) response.getEntity());
+	}
+	
+	@Test
+	public void deleteVM() {
+		// Pre
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		
+		Deployment deployment = new Deployment();
+		deployment.setOvf(threeTierWebAppOvfString);
+		deployment.setStatus(Dictionary.APPLICATION_STATUS_DEPLOYED);
+		
+		when(deploymentDAO.getById(11)).thenReturn(deployment);
+		
+		VM vm = new VM();
+		vm.setOvfId("haproxy");
+		vm.setProviderVmId("provider-id");
+		
+		VMDAO vmDAO = mock(VMDAO.class);
+		when(vmDAO.getById(33)).thenReturn(vm);
+		
+		List<VM> vms = new ArrayList<VM>();
+		vms.add(vm);
+		vms.add(new VM());
+		when(vmDAO.getVMsWithOVfIdForDeploymentNotDeleted("haproxy", 11)).thenReturn(vms);
+		
+		VmManagerClient vmMaClient = mock(VmManagerClient.class);
+		
+		// Test
+		VMRest vmRest = new VMRest();
+		vmRest.deploymentDAO = deploymentDAO;
+		vmRest.vmDAO = vmDAO;
+		vmRest.vmManagerClient = vmMaClient;
+		
+		Response response = vmRest.deleteVM("", "11", "33");
+		assertEquals(204, response.getStatus());
+		assertEquals("", (String) response.getEntity());
+		
+		//verify
+		verify(vmMaClient).deleteVM("provider-id");
+		ArgumentCaptor<VM> vmCaptor = ArgumentCaptor.forClass(VM.class);
+		verify(vmDAO, times(1)).update(vmCaptor.capture());
+		assertEquals(vm.getOvfId(), vmCaptor.getValue().getOvfId());
+		assertEquals(vm.getProviderVmId(), vmCaptor.getValue().getProviderVmId());
+	}
+	
+	@Test
 	public void postVMOvfIdDoesNotExits() {
 		// Pre
 		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
 		
 		Deployment deployment = new Deployment();
 		deployment.setOvf(threeTierWebAppOvfString);
+		deployment.setStatus(Dictionary.APPLICATION_STATUS_DEPLOYED);
 		
 		when(deploymentDAO.getById(11)).thenReturn(deployment);
 		
@@ -555,6 +745,7 @@ public class VMRestTest extends AbstractTest {
 		
 		Deployment deployment = new Deployment();
 		deployment.setOvf(threeTierWebAppOvfString);
+		deployment.setStatus(Dictionary.APPLICATION_STATUS_DEPLOYED);
 		
 		when(deploymentDAO.getById(11)).thenReturn(deployment);
 		
@@ -607,10 +798,15 @@ public class VMRestTest extends AbstractTest {
 						+ "</vm>";
 		
 		Image image = new Image();
+		image.setId(22);
 		image.setOvfId("haproxy-img");
 		image.setOvfHref("/DFS/ascetic/vm-images/threeTierWebApp/haproxy.img");
 		image.setProviderId("haproxy-uuid");
 		image.setProviderImageId("haproxy-uuid");
+		
+		ImageDAO imageDAO = mock(ImageDAO.class);
+		when(imageDAO.getById(22)).thenReturn(image);
+		
 		VM vm1 = new VM();
 		vm1.addImage(image);
 		List<VM> vms = new ArrayList<VM>();
@@ -638,6 +834,7 @@ public class VMRestTest extends AbstractTest {
 		vmRest.deploymentDAO = deploymentDAO;
 		vmRest.vmDAO = vmDAO;
 		vmRest.vmManagerClient = vmMaClient;
+		vmRest.imageDAO = imageDAO;
 		
 		Response response = vmRest.postVM("threeTierWebApp", "11", vmRequest);
 		assertEquals(200, response.getStatus());

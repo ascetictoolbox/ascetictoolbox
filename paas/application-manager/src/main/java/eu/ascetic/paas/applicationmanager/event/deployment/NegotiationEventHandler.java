@@ -3,6 +3,7 @@ package eu.ascetic.paas.applicationmanager.event.deployment;
 import java.sql.Timestamp;
 
 import org.apache.log4j.Logger;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.slasoi.gslam.syntaxconverter.SLASOITemplateRenderer;
 import org.slasoi.slamodel.sla.SLATemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +74,11 @@ public class NegotiationEventHandler {
 			AmqpProducer.sendDeploymentNegotiatingMessage(deploymentEvent.getApplicationName(), deployment);
 			
 			if(Configuration.enableSLAM.equals("yes")) {
+				// Configuring the XML previously... 
+				XMLUnit.setIgnoreWhitespace(true);
+				XMLUnit.setIgnoreComments(true);
+				XMLUnit.setIgnoreAttributeOrder(true);
+				XMLUnit.setNormalizeWhitespace(true);
 
 				// First we create the SLA template from the OVF
 				OvfDefinition ovfDefinition = OVFUtils.getOvfDefinition(deployment.getOvf());
@@ -93,6 +99,8 @@ public class NegotiationEventHandler {
 				// After the negotiation it is initiated, we get and negotiation ID, we use it to start the actual negotiation process
 				logger.debug("Sending negotiate SOAP request...");
 				logger.debug("Negotiation ID: " + negId);
+				// The generation again of the template it is the only difference between my unit test and the failure I'm seeing
+				slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, Configuration.applicationManagerUrl + "/application-manager" + deployment.getHref() + "/ovf");
 				SLATemplate[] slats = client.negotiate(Configuration.slamURL, slaTemplate, negId);
 
 				//					SLASOITemplateRenderer rend = new SLASOITemplateRenderer();

@@ -3,6 +3,7 @@ package eu.ascetic.paas.applicationmanager.slam;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.slasoi.slamodel.sla.SLA;
 import org.slasoi.slamodel.sla.SLATemplate;
 
@@ -39,6 +40,7 @@ import eu.ascetic.applicationmanager.slam.stub.BZNegotiationStub.NegotiateRespon
  *
  */
 public class NegotiationWsClient implements NegotiationClient {
+	private static Logger logger = Logger.getLogger(NegotiationWsClient.class);
 	private SlaTranslator slaTranslator;
 	
 	public NegotiationWsClient() {
@@ -81,8 +83,10 @@ public class NegotiationWsClient implements NegotiationClient {
 			Negotiate doc = getNegotiationDoc(negotiationId, slaTemplate);
 			
 			NegotiateResponse resp = stub.negotiate(doc);
+			logger.info("RESPONSE: " + resp);
 			
 			String[] xmlSlats = resp.get_return();
+			logger.info("STATS: " + xmlSlats);
 			
 			for(String xmlSlat : xmlSlats) {
 				SLATemplate slat = (xmlSlat == null) ? null : slaTranslator.parseSlaTemplate(xmlSlat);

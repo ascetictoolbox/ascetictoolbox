@@ -9,17 +9,16 @@ Welcome to ASCETiC Application Manager's documentation!
 Contents:
 
 .. toctree::
-   :maxdepth: 2
 
    user_doc/user_doc
    rest_api/rest_api
    amqp_api/amqp_api
 
 
-Indices and tables
-==================
+.. Indices and tables
+.. ==================
 
 .. * :ref:`genindex`
 .. * :ref:`modindex`
-* :ref:`search`
+.. * :ref:`search`
 

@@ -1,10 +1,14 @@
 package eu.ascetic.paas.applicationmanager.rest;
 
+import static eu.ascetic.paas.applicationmanager.Dictionary.STATE_VM_DELETED;
+import static eu.ascetic.paas.applicationmanager.model.Dictionary.APPLICATION_STATUS_DEPLOYED; 
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -117,6 +121,10 @@ public class VMRest extends AbstractRest {
 			return buildResponse(Status.BAD_REQUEST, "No deployment by that ID in the DB!!!");
 		}
 		
+		if(!deployment.getStatus().equals(APPLICATION_STATUS_DEPLOYED)) {
+			return buildResponse(Status.BAD_REQUEST, "No Active deployment!!!");
+		}
+		
 		String ovf = deployment.getOvf();
 		
 		boolean ovfIdPresentInOvf = OVFUtils.containsVMWithThatOvfId(ovf, vm.getOvfId());
@@ -145,6 +153,9 @@ public class VMRest extends AbstractRest {
 		
 		if(vms.size() > 0 ) {
 			image = vms.get(0).getImages().get(0);
+			logger.info("IMAGE 1 " + image);
+			//image = imageDAO.getById(image.getId());
+			//logger.info("IMAGE 2 " + image);
 		} else {
 			// We need to upload the image first.
 			if(OVFUtils.usesACacheImage(virtualSystem)) {
@@ -208,17 +219,79 @@ public class VMRest extends AbstractRest {
 			vmToDB.setSwapMin(0);
 			vmDAO.save(vmToDB);
 			
+			logger.info("IMAGE 3 " + image);
+			
 			vmToDB.addImage(image);
 			vmDAO.update(vmToDB);
+			
+			logger.info("After the VM update");
 			
 			deployment.addVM(vmToDB);
 			deploymentDAO.update(deployment);
 			//deployment = deploymentDAO.getById(deployment.getId());
 			
+			logger.info("After the Deployment update");
+			
 			AmqpProducer.sendVMDeployedMessage(applicationName, deployment, vmToDB);
 		}
 		
 		return buildResponse(Status.OK, ModelConverter.objectVMToXML(vmToDB));
+	}
+	
+	@DELETE
+	@Path("{vm_id}")
+	public Response deleteVM(@PathParam("application_name") String applicationName, @PathParam("deployment_id") String deploymentId, @PathParam("vm_id") String vmId) {
+		
+		int deploymentIdInt = 0;
+		// I need to get the OVF definition
+		try {
+			deploymentIdInt = Integer.parseInt(deploymentId);
+		} catch(NumberFormatException ex) {
+			return buildResponse(Status.BAD_REQUEST, "Invalid deploymentID number!!!");
+		}
+		
+		Deployment deployment = deploymentDAO.getById(deploymentIdInt);
+		
+		if(deployment == null) {
+			return buildResponse(Status.BAD_REQUEST, "No deployment by that ID in the DB!!!");
+		}
+		
+		if(!deployment.getStatus().equals(APPLICATION_STATUS_DEPLOYED)) {
+			return buildResponse(Status.BAD_REQUEST, "No Active deployment!!!");
+		}
+		
+		int vmIdInt = 0;
+		try {
+			vmIdInt = Integer.parseInt(vmId);
+		} catch(NumberFormatException ex) {
+			return buildResponse(Status.BAD_REQUEST, "Invalid vmId number!!!");
+		}
+		
+		VM vm = vmDAO.getById(vmIdInt);
+		
+		if(vm == null) {
+			return buildResponse(Status.BAD_REQUEST, "No VM by that Id in the database!!!");
+		}
+		
+		// Now we determine if we are inside the limtis to create a new VM
+		VMLimits vmLimits = OVFUtils.getUpperAndLowerVMlimits(OVFUtils.getProductionSectionForOvfID(deployment.getOvf(), vm.getOvfId()));
+		List<VM> vms = vmDAO.getVMsWithOVfIdForDeploymentNotDeleted(vm.getOvfId(), deploymentIdInt);
+		
+		if(vms.size() <= vmLimits.getLowerNumberOfVMs()) {
+			return buildResponse(Status.BAD_REQUEST, vm.getOvfId() + " number of VMs already at its minimum!!!");
+		}
+		
+		logger.info("DELETING VM: " + vm.getProviderVmId());
+		
+		vmManagerClient.deleteVM(vm.getProviderVmId());
+			
+		vm.setStatus(STATE_VM_DELETED);
+		
+		vmDAO.update(vm);
+		
+		AmqpProducer.sendVMDeletedMessage(applicationName, deployment, vm);
+		
+		return buildResponse(Status.NO_CONTENT, "");
 	}
 	
 	@GET

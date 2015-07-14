@@ -39,7 +39,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jersey-version>1.18.1</jersey-version>
 		<spring-version>3.2.9.RELEASE</spring-version>
-		<hibernate-version>4.3.5.Final</hibernate-version>
+		<hibernate-version>4.3.10.Final</hibernate-version>
 	</properties>
 
 

@@ -184,6 +184,10 @@ public class VMDAOJpaTest extends AbstractTransactionalJUnit4SpringContextTests 
 		image.setProviderImageId("providerId");
 		image.setOvfId("ovf-id11");
 		
+		int sizeImages = imageDAO.getAll().size();
+		imageDAO.save(image);
+		image = imageDAO.getAll().get(sizeImages);
+		
 		vm.addImage(image);
 		
 		boolean saved = vmDAO.save(vm);

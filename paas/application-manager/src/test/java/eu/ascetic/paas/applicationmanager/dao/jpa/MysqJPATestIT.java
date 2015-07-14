@@ -272,6 +272,7 @@ public class MysqJPATestIT {
 //		
 //	}
 	
+	
 	public static void main(String args[]) throws InterruptedException {
 		// Load Spring configuration
 		@SuppressWarnings("resource")
@@ -359,6 +360,9 @@ public class MysqJPATestIT {
 		System.out.println("We create second VM");
 		
 		//deploymentFrDeployment = deploymentFrDeployment2;
+		
+		image = deploymentFrDeployment2.getVms().get(0).getImages().get(0);
+		image = imageDAO.getById(image.getId());
 		
 		VM vm2 = new VM();
 		vm2.setIp("127.0.0.1");
