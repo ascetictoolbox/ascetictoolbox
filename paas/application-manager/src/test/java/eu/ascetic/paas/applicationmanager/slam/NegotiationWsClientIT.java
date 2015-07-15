@@ -49,7 +49,7 @@ import eu.ascetic.utils.ovf.api.OvfDefinition;
 public class NegotiationWsClientIT {
 	private static Logger logger = Logger.getLogger(NegotiationWsClientIT.class);
 
-	private String threeTierWebAppOvfFile = "davidgp-ovf.xml";//"3tier-webapp.ovf.xml";
+	private String threeTierWebAppOvfFile = "davidg-test.ovf.vmc.xml"; //"davidgp-ovf.xml";//"3tier-webapp.ovf.xml";
 	private String threeTierWebAppOvfString;
 	
 	private String slatFile = "slat-y2.xml";
@@ -111,7 +111,7 @@ public class NegotiationWsClientIT {
 		System.out.println(endpoint);
 		
 		OvfDefinition ovfDefinition = OVFUtils.getOvfDefinition(threeTierWebAppOvfString);
-		SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "http://10.4.0.16/application-manager/applications/davidgpTestApp/deployments/460/ovf");
+		SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "http://10.4.0.16/application-manager/applications/davidgpTestApp/deployments/478/ovf");
 		
 		//SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "http://10.4.0.16/application-manager/applications/threeTierWebApp/deployments/31/ovf");
 		
@@ -133,7 +133,7 @@ public class NegotiationWsClientIT {
 //		SLATemplate slat = slasoieTemplatParser.parseTemplate(slatXml);
 		
 		OvfDefinition ovfDefinition = OVFUtils.getOvfDefinition(threeTierWebAppOvfString);
-		SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "http://10.4.0.16/application-manager/applications/threeTierWebApp/deployments/31/ovf");
+		SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "http://10.4.0.16/application-manager/applications/davidgpTestApp/deployments/478/ovf");
 		
 		logger.debug("Sending negotiate SOAP request...");
 		logger.debug("Negotiation ID: " + negotiationId);

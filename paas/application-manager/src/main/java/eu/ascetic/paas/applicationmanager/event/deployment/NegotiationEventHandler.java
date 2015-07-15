@@ -82,7 +82,12 @@ public class NegotiationEventHandler {
 
 				// First we create the SLA template from the OVF
 				OvfDefinition ovfDefinition = OVFUtils.getOvfDefinition(deployment.getOvf());
-				SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, Configuration.applicationManagerUrl + "/application-manager" + deployment.getHref() + "/ovf");
+				SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, Configuration.applicationManagerUrl + 
+																							    "/application-manager/applications/" + 
+																							    deploymentEvent.getApplicationName() + 
+																							    "/deployments/" + 
+																							    deployment.getId() + 
+																							    "/ovf");
 				logger.info("Initial SLA Template document: " + slaTemplate);
 
 				// We create a client to the SLAM
@@ -100,7 +105,13 @@ public class NegotiationEventHandler {
 				logger.debug("Sending negotiate SOAP request...");
 				logger.debug("Negotiation ID: " + negId);
 				// The generation again of the template it is the only difference between my unit test and the failure I'm seeing
-				slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, Configuration.applicationManagerUrl + "/application-manager" + deployment.getHref() + "/ovf");
+				slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, Configuration.applicationManagerUrl + 
+					    															"/application-manager/applications/" + 
+					    															deploymentEvent.getApplicationName() + 
+					    															"/deployments/" + 
+					    															deployment.getId() + 
+					    															"/ovf");
+				
 				SLATemplate[] slats = client.negotiate(Configuration.slamURL, slaTemplate, negId);
 
 				//					SLASOITemplateRenderer rend = new SLASOITemplateRenderer();
