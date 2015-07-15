@@ -60,6 +60,19 @@
             <artifactId>okhttp</artifactId>
             <version>2.3.0</version>
         </dependency>
+        <!-- aggiunto da luka -->
+        <dependency>
+	<groupId>com.fasterxml.jackson.core</groupId>
+	<artifactId>jackson-core</artifactId>
+	<version>2.5.4</version>
+</dependency>
+<!-- aggiunto da luka -->
+   <dependency>
+	<groupId>com.fasterxml.jackson.core</groupId>
+	<artifactId>jackson-databind</artifactId>
+	<version>2.5.4</version>
+</dependency>
+
 	   <dependency>
 	     <groupId>org.slasoi.generic-slamanager.provisioning-adjustment</groupId>
 	     <artifactId>gslam-provisioning-adjustment</artifactId>
@@ -202,6 +215,7 @@
 								org.antlr.runtime.*,
 								org.antlr.stringtemplate,
 								org.antlr.stringtemplate.language,
+								com.fasterxml.jackson.*,
 								antlr.*
 						  </Export-Package>
 						  <Import-Package>

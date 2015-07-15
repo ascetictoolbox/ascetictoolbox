@@ -35,6 +35,7 @@ package eu.ascetic.iaas.slamanager.pac;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Iterator;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -46,7 +47,6 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 import javax.jms.Topic;
 
-import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -58,6 +58,11 @@ import org.slasoi.gslam.pac.ProvisioningAndAdjustment;
 
 import eu.ascetic.iaas.slamanager.pac.vmm.VmManagerClient;
 import eu.ascetic.iaas.slamanager.pac.vmm.models.VmDeployed;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * DOMAIN SPECIFIC PAC.
@@ -75,6 +80,11 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
     private static String ACTIVEMQ_CHANNEL = "activemq_channel";
     private static String DEPLOYED_VMS_QUEUE = "deployed_vms_queue";
     private static String VMMANAGER_URL = "vmmanager_url";
+    
+    
+    public static final String FIELD_VM_ID = "id";
+	public static final String FIELD_OVF_ID = "ovfId";
+	public static final String FIELD_SLA_ID = "slaId";
 
 	// private SlaParser slaParser=null;
 
@@ -198,16 +208,44 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
                         logger.info("ACTIVEMQ: Received message in the VM deployed topic: "
                                 + textMessage.getText());
                         
-                        /*
-                         * TODO
-                         * what I retrieve from VMM messages? vmId and ovfId?
-                         */
+                        
+                        ObjectMapper mapper = new ObjectMapper(); 
+						ObjectNode msgBody = null;
+						try {
+							msgBody = (ObjectNode) mapper.readTree(textMessage.getText());
+						} catch (JsonProcessingException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+						String vmId = "";
+						String ovfId = "";
+						String slaId = "";
+						
+						Iterator<String> rootNames = msgBody.fieldNames();
+						while(rootNames.hasNext()){
+							String fieldName = rootNames.next();
+							String fieldValue = msgBody.get(fieldName).asText();
+							if (fieldName.equalsIgnoreCase(FIELD_VM_ID)) {
+								vmId = fieldValue;
+							}
+							if (fieldName.equalsIgnoreCase(FIELD_OVF_ID)) {
+								ovfId = fieldValue;
+							}
+							if (fieldName.equalsIgnoreCase(FIELD_SLA_ID)) {
+								slaId = fieldValue;
+							}
+						}
+                        logger.debug("VM details: id "+vmId+", ovfId "+ovfId+", slaId "+slaId);
                         
                         logger.info("Retrieving VM Details from the VM Manager...");
-                        String slaId = retrieveVmDetails(null,null);
+//                        String slaId = retrieveVmDetails(null,null);
                         
                         logger.info("Creating an instance of Iaas Violation Checker...");
-                        new Thread(new IaasViolationChecker(properties, "infrastructure-monitor.monitoring.measurement", textMessage.getText(), textMessage.getText(), slaId)).start();
+                        new Thread(new IaasViolationChecker(properties, "infrastructure-monitor.monitoring.measurement", vmId, ovfId, slaId)).start();
                         
                     }
                 } catch (JMSException e) {
@@ -363,8 +401,4 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 		return configurationFileImpl;
 	}
 
-	public static void main(String[] args) {
-		ProvisioningAdjustmentImpl pai = new ProvisioningAdjustmentImpl();
-		pai.retrieveVmDetails("", "");
-	}
 }

@@ -1,6 +1,8 @@
 package eu.ascetic.iaas.slamanager.pac;
 
+import java.io.IOException;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -18,6 +20,10 @@ import javax.jms.Topic;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.log4j.Logger;
 import org.slasoi.slamodel.sla.SLA;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import eu.ascetic.iaas.slamanager.pac.events.Value;
 import eu.ascetic.iaas.slamanager.pac.events.ViolationMessage;
@@ -42,6 +48,10 @@ public class IaasViolationChecker implements Runnable {
 	private Connection measurementsConnection;
 	private Connection vmEventsConnection;
 
+    public static final String FIELD_VM_ID = "id";
+	public static final String FIELD_OVF_ID = "ovfId";
+	public static final String FIELD_SLA_ID = "slaId";
+	
 	public IaasViolationChecker(Properties properties, String topicId, String vmId, String ovfId, String slaId) {
 		super();
 		this.topicId = topicId;
@@ -96,12 +106,45 @@ public class IaasViolationChecker implements Runnable {
 							TextMessage textMessage = (TextMessage) message;
 							logger.info("ACTIVEMQ: Received message in the terminated vms queue: '"
 									+ textMessage.getText());
+							
+							ObjectMapper mapper = new ObjectMapper(); 
+							ObjectNode msgBody = null;
+							try {
+								msgBody = (ObjectNode) mapper.readTree(textMessage.getText());
+							} catch (JsonProcessingException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							
+							String messageVmId = "";
+							String messageOvfId = "";
+							String messageSlaId = "";
+							
+							Iterator<String> rootNames = msgBody.fieldNames();
+							while(rootNames.hasNext()){
+								String fieldName = rootNames.next();
+								String fieldValue = msgBody.get(fieldName).asText();
+								if (fieldName.equalsIgnoreCase(FIELD_VM_ID)) {
+									messageVmId = fieldValue;
+								}
+								if (fieldName.equalsIgnoreCase(FIELD_OVF_ID)) {
+									messageOvfId = fieldValue;
+								}
+								if (fieldName.equalsIgnoreCase(FIELD_SLA_ID)) {
+									messageSlaId = fieldValue;
+								}
+							}
+	                        logger.debug("VM details: id "+vmId+", ovfId "+ovfId+", slaId "+slaId);
 
-							//se il messaggio riguarda vmId,slaId e ovfId relativi a questo ViolationChecker, interrompo il monitoring
-							/*
-							 * TODO
-							 */
-							if (vmId.equalsIgnoreCase(textMessage.getText())) {
+	                        if (vmId.equalsIgnoreCase(messageVmId) &&
+									ovfId.equalsIgnoreCase(messageOvfId) &&
+									slaId.equalsIgnoreCase(messageSlaId)) {
+								/*
+								 * TODO: confronto anche su slaId?
+								 */
 								logger.info("Closing message queue connections and stopping the monitoring...");
 								measurementsConnection.close();
 								vmEventsConnection.close();
