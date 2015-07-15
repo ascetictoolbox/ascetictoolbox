@@ -549,13 +549,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * @return The energy optimization boundary
      */
     public String getEnergyOptimizationBoundary() {
-        ProductProperty property = getPropertyByKey(ASCETIC_ENERGY_OPTIMIZATION_BOUNDARY);
-        if (property != null) {
-            return new String(Base64.decodeBase64(property.getValue()
-                    .getBytes()));
-        } else {
-            return null;
-        }
+        return getPropertyByKey(ASCETIC_ENERGY_OPTIMIZATION_BOUNDARY).getValue();
     }
 
     /**
@@ -567,15 +561,12 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            The energy boundary
      */
     public void setEnergyOptimizationBoundary(String energyBoundary) {
-        String encodedBytes = new String(Base64.encodeBase64(energyBoundary
-                .getBytes()));
-
         ProductProperty productProperty = getPropertyByKey(ASCETIC_ENERGY_OPTIMIZATION_BOUNDARY);
         if (productProperty == null) {
             addNewProperty(ASCETIC_ENERGY_OPTIMIZATION_BOUNDARY,
-                    ProductPropertyType.STRING, encodedBytes);
+                    ProductPropertyType.STRING, energyBoundary);
         } else {
-            productProperty.setValue(encodedBytes);
+            productProperty.setValue(energyBoundary);
         }
     }
 
@@ -587,13 +578,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * @return The cost optimization boundary
      */
     public String getCostOptimizationBoundary() {
-        ProductProperty property = getPropertyByKey(ASCETIC_COST_OPTIMIZATION_BOUNDARY);
-        if (property != null) {
-            return new String(Base64.decodeBase64(property.getValue()
-                    .getBytes()));
-        } else {
-            return null;
-        }
+        return getPropertyByKey(ASCETIC_COST_OPTIMIZATION_BOUNDARY).getValue();
     }
 
     /**
@@ -605,15 +590,12 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            The cost boundary
      */
     public void setCostOptimizationBoundary(String costBoundary) {
-        String encodedBytes = new String(Base64.encodeBase64(costBoundary
-                .getBytes()));
-
         ProductProperty productProperty = getPropertyByKey(ASCETIC_COST_OPTIMIZATION_BOUNDARY);
         if (productProperty == null) {
             addNewProperty(ASCETIC_COST_OPTIMIZATION_BOUNDARY,
-                    ProductPropertyType.STRING, encodedBytes);
+                    ProductPropertyType.STRING, costBoundary);
         } else {
-            productProperty.setValue(encodedBytes);
+            productProperty.setValue(costBoundary);
         }
     }
 
@@ -625,13 +607,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * @return The performance optimization boundary
      */
     public String getPerformanceOptimizationBoundary() {
-        ProductProperty property = getPropertyByKey(ASCETIC_PERFORMANCE_OPTIMIZATION_BOUNDARY);
-        if (property != null) {
-            return new String(Base64.decodeBase64(property.getValue()
-                    .getBytes()));
-        } else {
-            return null;
-        }
+        return getPropertyByKey(ASCETIC_PERFORMANCE_OPTIMIZATION_BOUNDARY).getValue();
     }
 
     /**
@@ -643,15 +619,12 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            The performance boundary
      */
     public void setPerformanceOptimizationBoundary(String performanceBoundary) {
-        String encodedBytes = new String(
-                Base64.encodeBase64(performanceBoundary.getBytes()));
-
         ProductProperty productProperty = getPropertyByKey(ASCETIC_PERFORMANCE_OPTIMIZATION_BOUNDARY);
         if (productProperty == null) {
             addNewProperty(ASCETIC_PERFORMANCE_OPTIMIZATION_BOUNDARY,
-                    ProductPropertyType.STRING, encodedBytes);
+                    ProductPropertyType.STRING, performanceBoundary);
         } else {
-            productProperty.setValue(encodedBytes);
+            productProperty.setValue(performanceBoundary);
         }
     }
 
@@ -663,13 +636,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * @return The optimization parameter
      */
     public String getOptimizationParameter() {
-        ProductProperty property = getPropertyByKey(ASCETIC_OPTIMIZATION_PARAMETER);
-        if (property != null) {
-            return new String(Base64.decodeBase64(property.getValue()
-                    .getBytes()));
-        } else {
-            return null;
-        }
+        return getPropertyByKey(ASCETIC_OPTIMIZATION_PARAMETER).getValue();
     }
 
     /**
@@ -681,15 +648,12 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            The parameter
      */
     public void setOptimizationParameter(String parameter) {
-        String encodedBytes = new String(Base64.encodeBase64(parameter
-                .getBytes()));
-
         ProductProperty productProperty = getPropertyByKey(ASCETIC_OPTIMIZATION_PARAMETER);
         if (productProperty == null) {
             addNewProperty(ASCETIC_OPTIMIZATION_PARAMETER,
-                    ProductPropertyType.STRING, encodedBytes);
+                    ProductPropertyType.STRING, parameter);
         } else {
-            productProperty.setValue(encodedBytes);
+            productProperty.setValue(parameter);
         }
     }
 

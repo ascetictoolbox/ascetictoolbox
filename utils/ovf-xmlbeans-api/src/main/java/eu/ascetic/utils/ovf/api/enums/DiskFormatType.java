@@ -34,6 +34,7 @@ public enum DiskFormatType {
     VMDK("http://www.vmware.com/interfaces/specifications/vmdk.html#streamOptimized"),
     VHD("http://technet.microsoft.com/en-us/library/bb676673.aspx"),
     QCOW2("http://www.gnome.org/~markmc/qcow-image-format.html"),
+    RAW("raw"),
     ISO9660("http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-119.pdf");
     // TODO: Add others here?
     // @formatter:on
