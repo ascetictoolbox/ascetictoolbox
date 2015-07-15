@@ -12,23 +12,21 @@ import org.junit.Test;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.messages.GenericEnergyMessage;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.messages.GenericEnergyMessage.Unit;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.queue.MessageParserUtility;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.queue.QueueManager;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.queue.client.AmqpClient;
 
 
 public class QueuePEM {
 	
-	private static QueueManager qm;
+	private static AmqpClient qm;
 	
 	@BeforeClass
 	public static void setup() {
-		qm = new QueueManager();
+		qm = new AmqpClient();
 		try {
 			qm.setup("tcp://10.15.5.55:61616", "admin", "admin", "TEST");
-			qm.createConsumers();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 	}
 	
 	@Test
@@ -46,7 +44,6 @@ public class QueuePEM {
 		Date data = new Date();
 		message.setGenerattiontimestamp(data.toGMTString());
 		message.setReferredtimestamp(data.toGMTString());
-		
 		qm.sendMessage("prediction",MessageParserUtility.buildStringMessage(message));
 		qm.sendMessage("measurement",MessageParserUtility.buildStringMessage(message));
 		try {
@@ -55,6 +52,5 @@ public class QueuePEM {
 			e.printStackTrace();
 		}
 	}
-	
 
 }

@@ -1,7 +1,7 @@
 /**
 * Copyright 2014 Hewlett-Packard Development Company, L.P.                                         
  */
-package eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.model.interpolator;
+package eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.model.interpolator.impl;
 
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;

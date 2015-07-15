@@ -9,14 +9,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
-import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.HistoryItem;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.ApplicationSample;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EventSample;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Unit;
@@ -25,14 +23,16 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.P
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.PaaSEMDatabaseManager;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.dao.EMSettings;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.DataEvent;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.queue.MessageParserUtility;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.ApplicationRegistry;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.EnergyDataAggregatorService;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.EventDataAggregatorService;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.MonitoringDataService;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.ZabbixDataCollectorService;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.loadinjector.LoadInjectorService;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.model.interpolator.old.GenericValuesInterpolator;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.queue.QueueManager;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.model.PredictorBuilder;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.model.predictor.PredictorInterface;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.queue.EnergyModellerQueueServiceManager;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.queue.client.AmqpClient;
 
 /**
  * @author davide sommacampagna
@@ -49,8 +49,15 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	private LoadInjectorService loadInjector;	
 	private ZabbixDataCollectorService datacollector;
 	private MonitoringDataService monitoringDataService;
+	private PredictorInterface predictor;
+	// provides access to the registry by mean of session with mappers
 	
-	private QueueManager queueManager;
+	
+	// amqp client allows publishing messages, while queue manager handle scheduling of measurement publishing and subscribe to special topics
+	//private AmqpClient messageClient;
+	private ApplicationRegistry appRegistry;
+	private EnergyModellerQueueServiceManager queueManager;
+	private AmqpClient queueclient;
 	private String monitoringTopic="monitoring";
 	private String predictionTopic="prediction";
 	private Boolean queueEnabled = false;
@@ -121,15 +128,9 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 
 	@Override
 	public double estimate(String providerid, String applicationid,	List<String> vmids, String eventid, Unit unit, long window) {
-		
-		// call measurement, this updates values and also ensure data is loaded
-		double currentval = this.measure(providerid, applicationid, vmids, eventid, unit, null, null);
-		
-		
-		
-		
-		// not yet estimating
-		
+		LOGGER.info("Forecasting instant power"); 
+		double currentval = predictor.estimate(providerid,applicationid, vmids, eventid, unit, window);	
+		sendToQueue(predictionTopic, providerid, applicationid, vmids, eventid, GenericEnergyMessage.Unit.WATT, null, currentval);
 		return currentval;
 	}
 
@@ -413,32 +414,21 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	public EnergyModellerService(String propertyFile) {
 		this.propertyFile=propertyFile;
 		LOGGER.info("EM Initialization ongoing");
-		initializeProperty();
-		initializeLoadInjector();
+		configureProperty();
+		// Not yet implemented this workflow
+		//initializeLoadInjector();
 		initializeDataConnectors();
-		initializeQueueService();
+		initializePrediction();
+		initializeQueueServiceManager();
 		LOGGER.info("EM Initialization complete");
 	}
-	
-	/**
-	 * @return the emsettings of the Energy Modeller. It allows to get the current settings loaded from file
-	 */
-	public EMSettings getEmsettings() {
-		return emsettings;
-	}
 
-	/**
-	 * @param emsettings allows to inject settings in to the PaaS Energy Modeller
-	 */
-	public void setEmsettings(EMSettings emsettings) {
-		this.emsettings = emsettings;
-	}
 	
 	/**
 	 * private methods for initialization and configuration of this component
 	 */
 	
-	private void initializeProperty(){
+	private void configureProperty(){
 		LOGGER.debug("Configuring settings and EM PaaS Database");
 		InputStream inputStream;
 		try {
@@ -477,26 +467,25 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		eventService.setDaoEvent(dbmanager.getDataEventDAOImpl());
 		monitoringDataService = new MonitoringDataService();
 		monitoringDataService.setDataDAO(dbmanager.getMonitoringData());
+		if (emsettings.getEnableQueue()=="true" )appRegistry = ApplicationRegistry.getRegistry(emsettings.getPaasdriver(),emsettings.getPaasurl(),emsettings.getPaasdbuser(),emsettings.getPaasdbpassword());
 		LOGGER.debug("Configured ");
 	}
-	
-	private void initializeQueueService(){
-		if (emsettings.getEnableQueue()=="true"){
-			queueManager = new QueueManager();
-			try {
-				queueManager.setup(emsettings);
-				LOGGER.info("Initialized queue manager ");
-			} catch (Exception e) {
-				LOGGER.error("Issue while configuring the queue manager ");
-				e.printStackTrace();
-			}
+		
+	private void initializeQueueServiceManager(){
+		
+		if (emsettings.getEnableQueue()=="true") {
+			queueManager = new EnergyModellerQueueServiceManager(queueclient,appRegistry);
 		}
+		
+	}
+	
+	private void initializePrediction(){
+		predictor= PredictorBuilder.getPredictor();
 	}
 	
 	/**
 	 * private methods for collecting data
 	 */
-
 	
 	private void loadEventData(String appid,List<String> vms,String eventid){
 		LOGGER.debug("Loading event data");
@@ -511,86 +500,6 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		LOGGER.debug("Loaded power data");
 	}
 	
-	/**
-	 * 
-	 * 
-	 * Math internal functions
-	 * 
-	 */
-	
-//	private double integrate(double powera,double powerb, long timea,long timeb){
-//		return 	Math.abs((timeb-timea)*(powera+powerb)*0.5)/3600;
-//	}
-
-	/**
-	 * those methods are legacy or for future implementation and here only temporarly 
-	 */
-	
-//	private List<HistoryItem> buildenergyHistory (List<HistoryItem> power){
-//		if (power==null)return null;
-//		List<HistoryItem> results = new Vector<HistoryItem>();
-//		HistoryItem previous=null;
-//		for (int i=0;i<power.size();i++){
-//			HistoryItem item = power.get(i);
-//			HistoryItem energyitem = new HistoryItem();
-//			if (previous!=null){
-//				Double energy = integrate(new Double(previous.getValue()).doubleValue(),new Double(item.getValue()).doubleValue(),previous.getClock(),item.getClock());
-//				energyitem.setValue(energy.toString());
-//				energyitem.setClock(item.getClock());
-//				results.add(energyitem);
-//			} else {
-//				Double energy = integrate(0,new Double(item.getValue()).doubleValue(),0,0);
-//				energyitem.setValue(energy.toString());
-//				energyitem.setClock(item.getClock());
-//				results.add(energyitem);
-//			}
-//			
-//			
-//			previous = item;
-//		}
-//		return results;
-//		
-//	}
-	
-//	private GenericValuesInterpolator getInterpolator (List<HistoryItem> items){
-//		if (items==null){
-//			LOGGER.info(" Samples not available");
-//			return null;
-//		}
-//		if (items.size()<=0){
-//			LOGGER.info(" Samples empty");
-//			return null;
-//		}
-//		GenericValuesInterpolator genInt = new GenericValuesInterpolator();
-//		double[] timeseries = new double[items.size()];
-//		double[] dataseries = new double[items.size()];
-//		HistoryItem item;
-//		genInt.setLasttime(items.get(0).getClock());
-//		genInt.setStarttime(items.get(items.size()-1).getClock());
-//		int count=0;
-//		for (int i=items.size()-1;i>=0;i--){
-//			item = items.get(i);
-//			timeseries[count]=(item.getClock()-genInt.getStarttime());
-//			dataseries[count]=Double.parseDouble(item.getValue());
-//			//LOGGER.info(" Sample: "+count+";"+timeseries[count]+";"+dataseries[count]);
-//			count++;
-//		}
-//		
-//		genInt.buildmodel(timeseries, dataseries); 
-//		return genInt;
-//		
-//	}	
-//
-//	private double energsyEstimation(String providerid, String applicationid,	List<String> vmids, String eventid) {
-//		double energy = energyConsumption(providerid,applicationid,vmids,eventid,null,null);
-//		if (eventid==null){
-//			LOGGER.info("Application consumed " +String.format( "%.2f", energy ));
-//		} else {
-//			LOGGER.info("Event consumed " +String.format( "%.2f", energy ));
-//		}
-//		return energy;
-//	}
-
 
 	@Override
 	public void manageComponent(String token, String command) {
@@ -608,5 +517,20 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		monitoringDataService.stopMonitoring(applicationid, deploymentid);
 		return false;
 	}	
+	
+	
+	/**
+	 * @return the emsettings of the Energy Modeller. It allows to get the current settings loaded from file
+	 */
+	public EMSettings getEmsettings() {
+		return emsettings;
+	}
+
+	/**
+	 * @param emsettings allows to inject settings in to the PaaS Energy Modeller
+	 */
+	public void setEmsettings(EMSettings emsettings) {
+		this.emsettings = emsettings;
+	}
 		
 }

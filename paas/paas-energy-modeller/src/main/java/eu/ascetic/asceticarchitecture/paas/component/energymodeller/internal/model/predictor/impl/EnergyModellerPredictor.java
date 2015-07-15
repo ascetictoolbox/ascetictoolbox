@@ -16,7 +16,7 @@ import weka.core.Instances;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.ApplicationSample;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Unit;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.EnergyDataAggregatorService;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.model.interpolator.DataInterpolator;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.model.interpolator.impl.DataInterpolator;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.model.predictor.PredictorInterface;
 
 
