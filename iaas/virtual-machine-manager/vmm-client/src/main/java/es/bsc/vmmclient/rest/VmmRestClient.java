@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 public class VmmRestClient {
 
     private final VmmService service;
-    private static final int TIMEOUT_SECONDS = 120; // Our testbed can be SLOW sometimes
+    private static final int TIMEOUT_SECONDS = 900; // Our testbed can be SLOW sometimes
 
     public VmmRestClient(String url) {
         // Define our own okHttpClient to increase the timeout
