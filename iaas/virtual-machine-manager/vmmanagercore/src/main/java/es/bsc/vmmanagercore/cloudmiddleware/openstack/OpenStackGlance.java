@@ -72,7 +72,8 @@ public class OpenStackGlance {
                     "--os-tenant-id " + openStackCredentials.getKeyStoneTenantId() + " " +
                     "--os-auth-url http://" + openStackCredentials.getOpenStackIP() + ":35357/v2.0 " +
                     "image-create --name=" + imageToUpload.getName() + " " +
-                    "--disk-format=qcow2 --container-format=bare --is-public=True " +
+                    "--disk-format=" + getImageFormat(imageToUpload.getUrl()) + " " +
+                    "--container-format=bare --is-public=True " +
                     "--file " + imageToUpload.getUrl());
             String outputIdLine = glanceCommandOutput.split(System.getProperty("line.separator"))[9];
             String id = outputIdLine.split("\\|")[2]; // Get the line where that specifies the ID
@@ -96,6 +97,7 @@ public class OpenStackGlance {
             result.put("x-image-meta-location", imageToUpload.getUrl());
         }
         result.put("Content-Type", "application/octet-stream");
+        // For the moment, assume that if the image comes from a URL the format is qcow2
         result.put("x-image-meta-disk_format", "qcow2");
         result.put("x-image-meta-name", imageToUpload.getName());
         return result;
@@ -241,6 +243,21 @@ public class OpenStackGlance {
             throw new RuntimeException("Could not login to the Glance service.");
         }
         return tokenJson.asText();
+    }
+
+    /**
+     * Returns the format of an image
+     *
+     * @param path the path of the image
+     * @return the format of the image
+     */
+    private String getImageFormat(String path) {
+        // This uses qemu-utils. The host where the VMM is running needs to have qemu-utils installed.
+        // Is there any way we can get rid of this dependency?
+
+        String qemuInfoOutput = CommandExecutor.executeCommand("qemu-img info " + path);
+        // The result of the qemu-img command executed contains in the second line "file format: <format>"
+        return qemuInfoOutput.split(System.getProperty("line.separator"))[1].split(":")[1].substring(1);
     }
 
 }
