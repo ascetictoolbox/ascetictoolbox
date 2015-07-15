@@ -30,6 +30,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -78,7 +79,8 @@ public class ProviderManagerImpl implements ProviderManager {
 		ArrayList<String> endpoints = new ArrayList<String>();
 		try {
 			ConfigManager cm = ConfigManager.getInstance();
-			HttpClient client = HttpClientBuilder.create().build();
+//			HttpClient client = HttpClientBuilder.create().build();
+			HttpClient client = new DefaultHttpClient();
 			
 			//provider registry endpoint taken from configuration file
 			HttpGet request = new HttpGet(cm.getRegistryEndpoint());
@@ -91,9 +93,10 @@ public class ProviderManagerImpl implements ProviderManager {
 			Document d = builder.parse(is);
 
 			if (d!=null) {
-				NodeList nl = d.getElementsByTagName("endpoint");
+				NodeList nl = d.getElementsByTagName("slam-url");
 				for(int i=0; i<nl.getLength(); i++){
 					Node childNode = nl.item(i);
+					LOGGER.debug("Found endpoint "+childNode.getTextContent());
 					endpoints.add(childNode.getTextContent());
 				}
 			}

@@ -271,9 +271,9 @@ public class PlanningOptimizationImpl implements PlanningOptimization, SLAMConte
 			assert (negotiationID != null && !negotiationID.equals("") && slaTemplate != null) : "negotiate method requires an negotiationID != null or not empty and an slaTemplate != null.";
 
 			/*** 1. call provider registry the get the provider list ***/
-			//String[] providerEndpoints = providerManager.getProvidersList(slaTemplate);
-			System.out.println("Endpoint IaaS da file di configurazione...");
-			String[] providerEndpoints = {ConfigManager.getInstance().getDefaultIaasProvider()};
+			String[] providerEndpoints = providerManager.getProvidersList(slaTemplate);
+//			System.out.println("Endpoint IaaS da file di configurazione...");
+//			String[] providerEndpoints = {ConfigManager.getInstance().getDefaultIaasProvider()};
 			
 			List<SLATemplate[]> providerSlats = new ArrayList<SLATemplate[]>();
 
