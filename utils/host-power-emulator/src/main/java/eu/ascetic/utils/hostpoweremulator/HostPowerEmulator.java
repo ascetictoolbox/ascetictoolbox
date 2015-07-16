@@ -46,6 +46,7 @@ public class HostPowerEmulator implements Runnable {
     private final DatabaseConnector database = new DefaultDatabaseConnector();
     private String hostname = "";
     private String cloneHostname = "";
+    private boolean stopOnClone = false;
     private boolean running = true;
     private int pollInterval = 1;
     private String outputName = "power";
@@ -69,13 +70,18 @@ public class HostPowerEmulator implements Runnable {
         } else {
             System.out.println("The first argument provided to this application"
                     + " should be the hostname, the second if needed should "
-                    + "be the hostname to clone the calibration data from.");
+                    + "be the hostname to clone the calibration data from."
+                    + " An optional last argument of stop_on_clone will allow "
+                    + "the power emulator to be used for cloning calibration data.");
             System.exit(0);
         }
         if (args.length >= 2) {
             cloneHostname = args[1];
         }
         HostPowerEmulator emulator = new HostPowerEmulator(hostname, cloneHostname);
+        if (args.length >= 3 && "stop_on_clone".equals(args[2])) {
+            emulator.setStopOnClone(true);
+        }        
         emulatorThread = new Thread(emulator);
         emulatorThread.setDaemon(false);
         emulatorThread.start();
@@ -129,6 +135,9 @@ public class HostPowerEmulator implements Runnable {
             clone = database.getHostCalibrationData(clone);
             host.setCalibrationData(clone.getCalibrationData());
             database.setHostCalibrationData(host);
+        }
+        if (stopOnClone == true) {
+            running = false;
         }
     }
 
@@ -206,8 +215,8 @@ public class HostPowerEmulator implements Runnable {
         predictor = AbstractEnergyPredictor.getBestPredictor(host, predictors);
         System.out.println("Using the " + predictor.toString());
         System.out.println("Linear - SSE: " + linearPredictor.getSumOfSquareError(host) + " RMSE: " + linearPredictor.getRootMeanSquareError(host));
-        System.out.println("Polynomial - SSE: " + polyPredictor.getSumOfSquareError(host)  + " RMSE: " + polyPredictor.getRootMeanSquareError(host));
-        System.out.println("Polynomial Spline - SSE: " + splinePolynomialPredictor.getSumOfSquareError(host)  + " RMSE: " + splinePolynomialPredictor.getRootMeanSquareError(host));
+        System.out.println("Polynomial - SSE: " + polyPredictor.getSumOfSquareError(host) + " RMSE: " + polyPredictor.getRootMeanSquareError(host));
+        System.out.println("Polynomial Spline - SSE: " + splinePolynomialPredictor.getSumOfSquareError(host) + " RMSE: " + splinePolynomialPredictor.getRootMeanSquareError(host));
 
         /**
          * The second phase is to monitor the host and to report its estimated
@@ -278,5 +287,22 @@ public class HostPowerEmulator implements Runnable {
      */
     public void stop() {
         this.running = false;
+    }
+
+    /**
+     * This checks to see if the emulator will stop on cloning data, 
+     * thus it acts as a cloning tool.
+     * @return the stopOnClone
+     */
+    public boolean isStopOnClone() {
+        return stopOnClone;
+    }
+
+    /**
+     * This stops the emulator on cloning data, thus it acts as a cloning tool.
+     * @param stopOnClone the stopOnClone to set
+     */
+    public void setStopOnClone(boolean stopOnClone) {
+        this.stopOnClone = stopOnClone;
     }
 }
