@@ -215,20 +215,12 @@ public class CpuOnlySplinePolynomialEnergyPredictor extends AbstractEnergyPredic
     private ArrayList<HostEnergyCalibrationData> cleanData(ArrayList<HostEnergyCalibrationData> data) {
         ArrayList<HostEnergyCalibrationData> answer = new ArrayList<>();
         Collections.sort(data, new CpuOnlySplinePolynomialEnergyPredictor.CpuOrder());
-        System.out.println("Post Sort");
-        for (HostEnergyCalibrationData current : data) {
-            System.out.println(current.getCpuUsage());
-        }
         HostEnergyCalibrationData previous = null;
         for (HostEnergyCalibrationData current : data) {
             if (previous == null || (current.getCpuUsage() > previous.getCpuUsage()) && current.getCpuUsage() != 1.0) {
                 answer.add(current);
             }
             previous = current;
-        }
-        System.out.println("Post Dullness");
-        for (HostEnergyCalibrationData current : answer) {
-            System.out.println(current.getCpuUsage());
         }
         return answer;
     }
