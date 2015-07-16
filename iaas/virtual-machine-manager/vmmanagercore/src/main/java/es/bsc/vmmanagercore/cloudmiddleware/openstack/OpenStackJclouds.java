@@ -391,7 +391,7 @@ public class OpenStackJclouds implements CloudMiddleware {
                 .sourceType("image")
                 .uuid(imageId)
                 .destinationType("volume")
-                .bootIndex(1)
+                .bootIndex(0)
                 .build();
         blockDeviceMappingSet.add(blockDeviceMapping);
         options.blockDeviceMappings(blockDeviceMappingSet);
