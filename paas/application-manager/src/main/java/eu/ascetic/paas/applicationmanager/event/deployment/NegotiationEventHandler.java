@@ -65,7 +65,7 @@ public class NegotiationEventHandler {
 			
 			// We need first to read the deployment from the DB:
 			Deployment deployment = deploymentDAO.getById(deploymentEvent.getDeploymentId());
-			
+						
 			deployment.setStatus(Dictionary.APPLICATION_STATUS_NEGOTIATING);
 			// We save the changes to the DB
 			deploymentDAO.update(deployment);
@@ -119,13 +119,20 @@ public class NegotiationEventHandler {
 				//					logger.debug("SLA Template:");
 				//					logger.debug(xmlRetSlat);
 				
+				logger.info("Deployment: " + deployment + " id: " + deployment.getId()); 
+				logger.info(" agreements: " + deployment.getAgreements());
 				
 				// New Y2 - We store all the templates in the database
 				storeTemplatesInDB(slats, negId, deployment);
 			}
 			
+			System.out.println("#### <- 3");
 			deployment.setStatus(Dictionary.APPLICATION_STATUS_NEGOTIATIED);
+			System.out.println("#### <- 4");
 			deploymentEvent.setDeploymentStatus(deployment.getStatus());
+			
+			System.out.println("#### <- 5");
+			logger.info("about to save to the db");
 			
 			// We save the changes to the DB
 			deploymentDAO.update(deployment);
@@ -140,21 +147,35 @@ public class NegotiationEventHandler {
 	
 	//TODO add the price estimation here and multiprovider
 	protected void storeTemplatesInDB(SLATemplate[] slats, String negotiationId, Deployment deployment) throws Exception {
+		logger.info("SLATS: " + slats);
+		logger.info("Deployment: " + deployment + " agreements: " + deployment.getAgreements());
+	
 		
 		if(slats != null) {
+			
+			logger.info("slats length: " + slats.length);
+			logger.info("Time: " +  Long.parseLong(Configuration.slaAgreementExpirationTime));
 
 			// Calculating when the agreement it is going to expire
 			// TODO this needs to be converted into multiprovider
 			long  minutesToExpire = Long.parseLong(Configuration.slaAgreementExpirationTime);
 			long timeToExpire = System.currentTimeMillis() + minutesToExpire * 60* 1000;
 			
+			logger.info("Time To Expire: " + timeToExpire);
+			
 			for(int i=0; i<slats.length; i++) {
+				logger.info("Reading the " + i + " SLAT");
 				Agreement agreement = new Agreement(); 
 				agreement.setAccepted(false);
 				agreement.setDeployment(deployment);
 				
+				logger.info("Agreement craeted for SLAT " + i);
+				
 				SLASOITemplateRenderer rend = new SLASOITemplateRenderer();
 				String xmlRetSlat = rend.renderSLATemplate(slats[i]);
+				
+				logger.info("Agreement rendered for SLAT " + i);
+				logger.info(xmlRetSlat);
 				
 				agreement.setSlaAgreement(xmlRetSlat);
 				agreement.setNegotiationId(negotiationId);
@@ -162,10 +183,17 @@ public class NegotiationEventHandler {
 				agreement.setOrderInArray(i);
 				agreement.setValidUntil(new Timestamp(timeToExpire));
 				
+				logger.info("agreement " + agreement + " neg id " + agreement.getNegotiationId());
+				
 				deployment.addAgreement(agreement);
+				
+				logger.info("Deployment Id: " + deployment.getId());
+				
+				System.out.println("#### <- 1");
 			}
 			
-			deploymentDAO.update(deployment);
+			System.out.println("#### <- 2");
+			//deploymentDAO.update(deployment);
 		}
 	}
 }

@@ -69,7 +69,8 @@ public class AgreementRest extends AbstractRest {
 	protected AgreementDAO agreementDAO;
 	protected SLASOIRenderer rendeder = new SLASOIRenderer();
 	protected NegotiationWsClient client = new NegotiationWsClient();
-	protected DeploymentEventService deploymentEventService = new DeploymentEventService();
+	@Autowired
+	protected DeploymentEventService deploymentEventService;
 
 	/**
 	 * Returns the different agreements for a deployment
@@ -158,8 +159,12 @@ public class AgreementRest extends AbstractRest {
 						double price = PriceModellerClient.calculatePrice(1, deployment.getId(), 100.0);
 						deployment.setPrice("" + price);
 						
+						// TODO remove this when it is not null
 						// We store the new agreement in the db:
-						String slaAgreementString = rendeder.renderSLA(slaAgreement);
+						String slaAgreementString = "";
+						if(slaAgreement != null) {
+							slaAgreementString = rendeder.renderSLA(slaAgreement);
+						}
 						
 						agreementInDB.setAccepted(true);
 						agreementInDB.setSlaAgreement(slaAgreementString);

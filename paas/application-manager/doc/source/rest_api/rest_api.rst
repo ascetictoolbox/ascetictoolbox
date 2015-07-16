@@ -1027,7 +1027,7 @@ Payload:
 .. code-block:: xml
   :emphasize-lines: 1,2
 
-	202 (CREATED)
+	201 (CREATED)
 	Content-Type: application/xml
 
 	<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -1148,14 +1148,174 @@ Deletes a VM inside the limits defined in the ovf file.
 /applications/{application-id}/deployments/{deployment-id}/agreements
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-TODO
+**GET**
+
+Returns the agreements for a deployment
+
+**Request**::
+
+	GET /applications/{application-id}/deployments/{deployment-id}/agreements HTTP/1.1
+
+.. csv-table:: GET /applications/{application-id}/cache-images
+   :header: "Parameter", "Optional", "Description"
+   :widths: 10, 10, 20
+
+   "application-id", "no", "Name of the application from which we want to get the information."
+   "deployment-id", "no", "Id of the deployment from which we want to accept an agreement"
+
+**Response**:
+
+.. code-block:: xml
+  :emphasize-lines: 1,2
+
+  200 (OK)
+	Content-Type: application/xml
+
+	<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+	<collection xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" 
+		href="/applications/davidgpTestApp/deployments/498/agreements">
+    <items offset="0" total="1">
+    	<agreement href="/applications/davidgpTestApp/deployments/498/agreements/3">
+      	<id>3</id>
+        <sla-agreement-id>ASCETiC-SLaTemplate-Example-01</sla-agreement-id>
+        <negotiation-id>7dba188a-57e0-4782-9cd3-ffa24e2011db</negotiation-id>
+        <valid-until>2015-07-16T14:08:28Z</valid-until>
+        <accepted>false</accepted>
+        <link rel="parent" href="/applications/davidgpTestApp/deployments/498/agreements" 
+        	type="application/xml"/>
+        <link rel="self" href="/applications/davidgpTestApp/deployments/498/agreements/3" 
+        	type="application/xml"/>
+      </agreement>
+    </items>
+    <link rel="parent" href="/applications/davidgpTestApp/deployments/498" 
+    	type="application/xml"/>
+    <link rel="self" href="/applications/davidgpTestApp/deployments/498/agreements" 
+    	type="application/xml"/>
+	</collection>
+
+/applications/{application-id}/deployments/{deployment-id}/agreements/{agreement-id}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**GET**
+
+Returns the information about an specific agreement
+
+**Request**::
+
+	GET /applications/{application-id}/deployments/{deployment-id}/agreements/{agreement-id} HTTP/1.1
+
+.. csv-table:: GET /applications/{application-id}/cache-images
+   :header: "Parameter", "Optional", "Description"
+   :widths: 10, 10, 20
+
+   "application-id", "no", "Name of the application from which we want to get the information."
+   "deployment-id", "no", "Id of the deployment from which we want to accept an agreement"
+   "agreement-id", "no", "Id of the agreement"
+
+**Response**:
+
+.. code-block:: xml
+  :emphasize-lines: 1,2
+
+  200 (OK)
+	Content-Type: application/xml
+
+	<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+	<agreement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" 
+		href="/applications/davidgpTestApp/deployments/498/agreements/3">
+    <id>3</id>
+    <sla-agreement-id>ASCETiC-SLaTemplate-Example-01</sla-agreement-id>
+    <negotiation-id>7dba188a-57e0-4782-9cd3-ffa24e2011db</negotiation-id>
+    <valid-until>2015-07-16T14:08:28Z</valid-until>
+    <accepted>false</accepted>
+    <link rel="parent" href="/applications/davidgpTestApp/deployments/498/agreements" 
+    	type="application/xml"/>
+    <link rel="self" href="/applications/davidgpTestApp/deployments/498/agreements/3" 
+    	type="application/xml"/>
+	</agreement>
+
+**PUT**
+
+To accept an agreement we need to do an update over one using the PUT command. It is only necessary to modify the field accepted. Beware that if a previous agreement was already accepted this will be ingored. Also, if the agreement is already expired this will also be ignored
+
+**Request**::
+
+	PUI /applications/{application-id}/deployments/{deployment-id}/agreements/{agreement-id} HTTP/1.1
+
+.. csv-table:: GET /applications/{application-id}/deployments
+   :header: "Parameter", "Optional", "Description"
+   :widths: 10, 10, 20
+
+   "application-id", "no", "Name of the application from which we want to get the information."
+   "deployment-id", "no", "Deployment if of the application we want to know the information."
+   "agreement-id", "no", "Id of the agreement"
+
+Payload:
+
+.. code-block:: xml
+
+	<agreement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml">
+    <accepted>true</accepted>
+	</agreement>
+
+**Response**:
+
+.. code-block:: xml
+  :emphasize-lines: 1,2
+
+	202 (ACEPTED)
+	Content-Type: application/xml
+
+	<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+	<agreement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" 
+		href="/applications/davidgpTestApp/deployments/499/agreements/4">
+    <id>4</id>
+    <price>120.0</price>
+    <sla-agreement-id>ASCETiC-SLaTemplate-Example-01</sla-agreement-id>
+    <negotiation-id>16341a1c-7c6f-40c0-82e8-c3d54b5e884c</negotiation-id>
+    <valid-until>2015-07-16T14:42:59Z</valid-until>
+    <accepted>true</accepted>
+    <link rel="parent" href="/applications/davidgpTestApp/deployments/499/agreements" 
+    	type="application/xml"/>
+    <link rel="self" href="/applications/davidgpTestApp/deployments/499/agreements/4" 
+    	type="application/xml"/>
+	</agreement>
+
+/applications/{application-id}/deployments/{deployment-id}/agreements/{agreement-id}/sla
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**GET**
+
+Returns the SLA information about an specific agreement
+
+**Request**::
+
+	GET /applications/{application-id}/deployments/{deployment-id}/agreements/{agreement-id}/sla HTTP/1.1
+
+.. csv-table:: GET /applications/{application-id}/cache-images
+   :header: "Parameter", "Optional", "Description"
+   :widths: 10, 10, 20
+
+   "application-id", "no", "Name of the application from which we want to get the information."
+   "deployment-id", "no", "Id of the deployment from which we want to accept an agreement"
+   "agreement-id", "no", "Id of the agreement"
+
+**Response**:
+
+.. code-block:: xml
+  :emphasize-lines: 1,2
+
+  200 (OK)
+	Content-Type: application/xml
+
+	SLA DOCUMENT...
 
 /applications/{application-id}/cache-images
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **GET**
 
-Returns the cache images for a deployment
+Returns the cache images for a application
 
 **Request**::
 

@@ -66,6 +66,7 @@ private static Logger logger = Logger.getLogger(AcceptAgreementEventHandler.clas
 	@Selector(value="topic.deployment.status", reactor="@rootReactor")
 	public void acceptAgreement(Event<DeploymentEvent> event) throws Exception {
 		DeploymentEvent deploymentEvent = event.getData();
+		logger.info("Deployment " + deploymentEvent.getDeploymentId() + " NEGOTIATED, checking if it automatica agreement");
 
 		if(deploymentEvent.getDeploymentStatus().equals(Dictionary.APPLICATION_STATUS_NEGOTIATIED) && deploymentEvent.isAutomaticNegotiation() == true) {
 			
@@ -91,19 +92,20 @@ private static Logger logger = Logger.getLogger(AcceptAgreementEventHandler.clas
 						
 						logger.debug("Sending create agreement SOAP request...");
 						SLA slaAgreement = client.createAgreement(Configuration.slamURL, slat, agreement.getNegotiationId());
-						logger.debug("SLA:");
-						logger.debug(slaAgreement);  
+						logger.info("SLA:");
+						logger.info(slaAgreement);  
 						
 						// We calculate the new price, since we are not updating the SLATemplate Price I'm doing this here:
 						double price = PriceModellerClient.calculatePrice(1, deployment.getId(), 100.0);
 						deployment.setPrice("" + price);
 						
+						// TODO uncomment this lines when the slaAgreement it is not null
 						// We store the new agreement in the db:
-						SLASOIRenderer rendeder = new SLASOIRenderer();
-						String slaAgreementString = rendeder.renderSLA(slaAgreement);
+						//SLASOIRenderer rendeder = new SLASOIRenderer();
+						//String slaAgreementString = rendeder.renderSLA(slaAgreement);
 						
 						agreement.setAccepted(true);
-						agreement.setSlaAgreement(slaAgreementString);
+						//agreement.setSlaAgreement(slaAgreementString);
 						agreement.setPrice("" + price);
 						
 						agreementDAO.update(agreement);

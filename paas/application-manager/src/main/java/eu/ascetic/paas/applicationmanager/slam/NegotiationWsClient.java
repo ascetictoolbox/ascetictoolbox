@@ -89,6 +89,7 @@ public class NegotiationWsClient implements NegotiationClient {
 			logger.info("STATS: " + xmlSlats);
 			
 			for(String xmlSlat : xmlSlats) {
+				logger.info("SLATS: " + xmlSlat);
 				SLATemplate slat = (xmlSlat == null) ? null : slaTranslator.parseSlaTemplate(xmlSlat);
 				slats.add(slat);
 			}
@@ -96,7 +97,11 @@ public class NegotiationWsClient implements NegotiationClient {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return (slats.toArray(new SLATemplate[slats.size()]));
+		
+		SLATemplate[] templates = slats.toArray(new SLATemplate[slats.size()]);
+		logger.info("Templates: " + templates);
+		
+		return templates;
 	}
 	
 	
