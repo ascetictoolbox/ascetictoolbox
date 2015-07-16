@@ -197,7 +197,19 @@ public class VmsManager {
             // that mounts it
             String vmScriptName = setAsceticInitScript(vmToDeploy);
 
-            String vmId = deployVm(vmToDeploy, hostForDeployment);
+
+            // This is a quick fix for the Ascetic project.
+            // I do not have enough information to decide when a VM needs to boot using a volume or an image.
+            // Therefore, I am just going to check the destination hostname. If it is a host for Ascetic Y2 (wallyX),
+            /// then deploy using a volume.
+            String vmId;
+            if (hostForDeployment.getHostname().contains("wally")) {
+                vmId = deployVmWithVolume(vmToDeploy, hostForDeployment);
+            }
+            else {
+                vmId = deployVm(vmToDeploy, hostForDeployment);
+            }
+
             db.insertVm(vmId, vmToDeploy.getApplicationId(), vmToDeploy.getOvfId(), vmToDeploy.getSlaId());
             ids.put(vmToDeploy, vmId);
 
@@ -298,6 +310,21 @@ public class VmsManager {
             }
         }
         return cloudMiddleware.deploy(vm, host.getHostname());
+    }
+
+    private String deployVmWithVolume(Vm vm, Host host) {
+        // If the host is not on, turn it on and wait
+        if (!host.isOn()) {
+            hostsManager.pressHostPowerButton(host.getHostname());
+            while (!host.isOn()) { // Find a better way to do this
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return cloudMiddleware.deployWithVolume(vm, host.getHostname());
     }
 
     private void performAfterVmDeleteSelfAdaptation() {
