@@ -34,7 +34,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Class that performs requests to OpenStack using the JClouds library.
@@ -88,7 +90,20 @@ public class OpenStackJclouds implements CloudMiddleware {
                 vm.getName(),
                 getImageIdForDeployment(vm),
                 getFlavorIdForDeployment(vm),
-                getDeploymentOptionsForVm(vm, hostname, securityGroups));
+                getDeploymentOptionsForVm(vm, hostname, securityGroups, false));
+
+        blockUntilVmIsDeployed(server.getId());
+        return server.getId();
+    }
+
+    @Override
+    public String deployWithVolume(Vm vm, String hostname) {
+        // Deploy the VM
+        ServerCreated server = openStackJcloudsApis.getServerApi().create(
+                vm.getName(),
+                getImageIdForDeployment(vm),
+                getFlavorIdForDeployment(vm),
+                getDeploymentOptionsForVm(vm, hostname, securityGroups, true));
 
         blockUntilVmIsDeployed(server.getId());
         return server.getId();
@@ -299,12 +314,16 @@ public class OpenStackJclouds implements CloudMiddleware {
      *
      * @return the deployment options
      */
-    private CreateServerOptions getDeploymentOptionsForVm(Vm vm, String hostname, String[] securityGroups) {
+    private CreateServerOptions getDeploymentOptionsForVm(Vm vm, String hostname, String[] securityGroups,
+                                                          boolean useVolume) {
         CreateServerOptions options = new CreateServerOptions();
         includeDstNodeInDeploymentOption(hostname, options);
         includeInitScriptInDeploymentOptions(vm, options);
         includeSecurityGroupInDeploymentOption(options, securityGroups);
         includeNetworkInDeploymentOptions(options, hostname);
+        if (useVolume) {
+            includeVolumeInDeploymentOptions(vm.getImage(), options);
+        }
         return options;
     }
 
@@ -364,6 +383,18 @@ public class OpenStackJclouds implements CloudMiddleware {
 
             options.networks(networks);
         }
+    }
+
+    private void includeVolumeInDeploymentOptions(String imageId, CreateServerOptions options) {
+        Set<BlockDeviceMapping> blockDeviceMappingSet = new HashSet<>();
+        BlockDeviceMapping blockDeviceMapping = BlockDeviceMapping.builder()
+                .sourceType("image")
+                .uuid(imageId)
+                .destinationType("volume")
+                .bootIndex(1)
+                .build();
+        blockDeviceMappingSet.add(blockDeviceMapping);
+        options.blockDeviceMappings(blockDeviceMappingSet);
     }
 
     /**

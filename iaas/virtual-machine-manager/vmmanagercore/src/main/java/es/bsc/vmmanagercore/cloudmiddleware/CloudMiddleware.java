@@ -42,7 +42,16 @@ public interface CloudMiddleware {
      * @return the ID of the deployed VM
      */
     String deploy(Vm vm, String hostname);
-    
+
+    /**
+     * Deploys a virtual machine in a specific host and using a volume
+     *
+     * @param vm the vm
+     * @param hostname the hostname
+     * @return the ID of the deployed VM
+     */
+    String deployWithVolume(Vm vm, String hostname);
+
     /**
      * Destroys a Virtual Machine.
      *

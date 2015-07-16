@@ -98,6 +98,12 @@ public class FakeCloudMiddleware implements CloudMiddleware {
     }
 
     @Override
+    public String deployWithVolume(Vm vm, String hostname) {
+        // Not used in the fake cloud. Simply do a standard deployment
+        return deploy(vm, hostname);
+    }
+
+    @Override
     public void destroy(String vmId) {
         for (int i = 0; i < deployedVms.size(); ++i) {
             if (vmId.equals(deployedVms.get(i).getId())) {
