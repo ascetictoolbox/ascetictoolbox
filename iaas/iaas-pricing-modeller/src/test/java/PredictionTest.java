@@ -66,13 +66,15 @@ public class PredictionTest
         System.out.println("IaaS Provider: " +prModeller.getIaaSId());
         System.out.println("Dynamic Energy Price: " +prModeller.getEnergyProvider().getNewDynamicEnergyPrice().getPriceOnly());
         System.out.println("Average Dynamic Energy Price: " +prModeller.getBilling().getAverageDynamicEnergyPrice().getPriceOnly());
-       ///prediction for Pricing Scheme A
-       //System.out.println("Predicted value:" + prModeller.getVMChargesPrediction(2, 2, 20.0, 1, 360L, "a1"));  
-        
-      //Prediction for Pricing Scheme B
-     //  System.out.println("Predicted value:" + prModeller.getVMChargesPrediction(1, 20, 8, 500, 1, 1000, 2));  
-       Thread.sleep(2000);
-   //    System.out.println("Predicted value:" + prModeller.getVMChargesPrediction(2, 20, 8, 500, 1, 1000, 2));  
+       ///prediction for Pricing Scheme 1
+       System.out.println("Predicted value for scheme 1:" + prModeller.getVMChargesPrediction(2, 2, 20.0, 1, 360L, "a1"));  
+
+      //Prediction for Pricing Scheme 0
+     System.out.println("Predicted value for scheme 0:" + prModeller.getVMChargesPrediction(2, 2, 20.0, 0, 360L, "a1"));  
+       Thread.sleep(6000);
+       System.out.println("Average Dynamic Energy Price: " +prModeller.getBilling().getAverageDynamicEnergyPrice().getPriceOnly());
+      System.out.println("Predicted value for scheme 1:" + prModeller.getVMChargesPrediction(2, 2, 20.0, 1, 360L, "a1"));  
+      System.out.println("Predicted value for scheme 0:" + prModeller.getVMChargesPrediction(2, 2, 20.0, 0, 360L, "a1"));  
     }
 	
 

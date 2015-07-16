@@ -139,6 +139,7 @@ public class TimeParameters {
             return -1;
         }
         long end = endTime.getTime().getTime();
+
         long start = startTime.getTime().getTime();
         return TimeUnit.MILLISECONDS.toSeconds(end - start);
     }

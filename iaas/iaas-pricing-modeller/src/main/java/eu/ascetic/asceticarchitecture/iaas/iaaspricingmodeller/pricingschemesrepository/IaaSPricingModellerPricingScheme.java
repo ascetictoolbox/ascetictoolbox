@@ -33,8 +33,7 @@ import java.util.Calendar;
  */
 
 public abstract class IaaSPricingModellerPricingScheme implements IaaSPricingModellerPricingSchemeRepositoryInterface{
-	
-	//private static final int E = 0;
+
 
 	private EnergyModeller EnergyModeller = null;
 	
@@ -59,19 +58,16 @@ public abstract class IaaSPricingModellerPricingScheme implements IaaSPricingMod
 	
 
 /////////////// UPDATE THE AVERAGE ENERGY PRICE ////////////////////	
-
-///check this.....
 	public double updateAverageEnergyPrice(EnergyProvider provider, Price oldAverage){
-		Calendar startTime = oldAverage.getChaneTimeOnly();
-		Calendar endTime = provider.getNewDynamicEnergyPrice().getChaneTimeOnly();
+		Calendar startTime = oldAverage.getChangeTimeOnly();
+		Calendar endTime = provider.getNewDynamicEnergyPrice().getChangeTimeOnly();
 		TimeParameters temp = new TimeParameters(startTime, endTime);
 		long dur = temp.getTotalDuration();
 		double a = 1;
-		System.out.println("Pr: The old average price is " + oldAverage.getPriceOnly() + "the new is " +provider.getNewDynamicEnergyPrice().getPriceOnly());
-		double price = (1-Math.exp(-a*(dur))*oldAverage.getPriceOnly())+Math.exp(-a*(dur))*provider.getNewDynamicEnergyPrice().getPriceOnly();
-		System.out.println("Pr: The old average price is " + oldAverage.getPriceOnly() + "the new is " +provider.getNewDynamicEnergyPrice().getPriceOnly());
-		System.out.println("Pr: and the new avg " + price); 
+		double b =Math.exp(-a*(dur/3600));
+		double price = ((1-b)*oldAverage.getPriceOnly())+b*provider.getNewDynamicEnergyPrice().getPriceOnly();
 		return price;
+		
 	}
 	
 	
@@ -83,6 +79,11 @@ public abstract class IaaSPricingModellerPricingScheme implements IaaSPricingMod
 	
 	public int getSchemeId(){
 		return scheme;
+	}
+
+	public Price getResourcePrice() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	

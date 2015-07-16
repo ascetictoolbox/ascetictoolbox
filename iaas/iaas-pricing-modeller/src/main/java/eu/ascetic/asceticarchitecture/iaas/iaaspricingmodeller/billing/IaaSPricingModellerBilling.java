@@ -41,24 +41,11 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
 
 	Price averageDynamicEnergyPrice = new StaticEnergyPrice();
 
-	// Price staticEnergyPrice;
-
-	// Price dynamicEnergyPrice;
-
 	EnergyProvider energyProvider;
-	//EnergyModeller energyModeller;
-
+	
 	public IaaSPricingModellerBilling(EnergyProvider provider) {
 		this.energyProvider = provider;
-		//this.energyModeller = null;
-		
-		// staticEnergyPrice = provider.getStaticEnergyPrice();
-		// dynamicEnergyPrice = provider.getDynamicEnergyPrice();
 	}
-	
-	//public void setEnergyModeller(EnergyModeller energyModeller){
-	//	this.energyModeller = energyModeller;
-	//}
 	
 
 	// ///////////////////////////// VM REGISTRATION////////////////////////////////
@@ -67,10 +54,8 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
 		if ((vm.getPricingScheme().getSchemeId() == 0)) {
 			registeredStaticEnergyPricesVMs.put(vm.getVMid(), vm);
 			vm.setStartTime();
-			System.out.println("VM registered in static VMs");
 		} else {
 			registeredDynamicEnergyPricesVMs.put(vm.getVMid(), vm);
-			System.out.println("VM registered in dynamic VMs");
 			vm.setStartTime();
 		}
 	}
@@ -84,11 +69,11 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
 			if (vm.getVMid().matches(VMid)) {
 				if ((vm.getPricingScheme().getSchemeId() == 0)) {
 					registeredStaticEnergyPricesVMs.put(vm.getVMid(), vm);
-					System.out.println("VM registered in static VMs");
+					
 					vm.setStartTime();
 				} else {
 					registeredDynamicEnergyPricesVMs.put(vm.getVMid(), vm);
-					System.out.println("VM registered in dynamic VMs");
+					
 					vm.setStartTime();
 				}
 				found = true;
@@ -121,12 +106,9 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
 		if (queue.size() > 10)
 			queue.pollLast();
 		IaaSPricingModellerPricingScheme scheme = VM.getPricingScheme();
-		System.out.println("The scheme is " + scheme.getSchemeId());
-
+		
 		VM.setPredictedCharges(scheme.predictCharges(VM,
 				averageDynamicEnergyPrice));
-		System.out.println("The total predicted price is "
-				+ VM.getPredictedCharges());
 		return VM.getPredictedCharges();
 	}
 
@@ -156,7 +138,6 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
 	// //////////////////////////// FOR DYNAMIC ENERGY PRICES  // /////////////////////////
 
 	public void updateVMCharges(Price price) {
-		System.out.println("Bil: The new energy price is "  + price.getPriceOnly());
 		updateAverageEnergyPrice();
 		for (String key : registeredDynamicEnergyPricesVMs.keySet()) {
 			registeredDynamicEnergyPricesVMs.get(key).getPricingScheme()
@@ -168,11 +149,8 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
 	public void updateAverageEnergyPrice() {
 		IaaSPricingModellerPricingScheme scheme = new PricingSchemeB(1);
 		averageDynamicEnergyPrice.setPrice(scheme.updateAverageEnergyPrice(
-				energyProvider, averageDynamicEnergyPrice));
-		System.out.println("Bil: and the new avg "
-				+ averageDynamicEnergyPrice.getPriceOnly());
-		System.out.println("Bil: and the new dynamic price is "
-				+ energyProvider.getNewDynamicEnergyPrice().getPriceOnly());
+				energyProvider, averageDynamicEnergyPrice)); 
+	
 	}
 	
 	public Price getAverageDynamicEnergyPrice() {

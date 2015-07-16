@@ -22,18 +22,18 @@ import java.util.Calendar;
 public class Charges {
 	
 	double charges;
-	
-	//Price price;
+
 	
 	TimeParameters time;
 	
 	public Charges() {
 		charges=0.0;
+		time = new TimeParameters();
 	 }
 	
 	
 	public void setCharges(double charges){
-		this.charges = charges;
+		this.charges = (double) Math.round(charges * 1000) / 1000;
 		time.setLastChangeTime();
 	}
 	

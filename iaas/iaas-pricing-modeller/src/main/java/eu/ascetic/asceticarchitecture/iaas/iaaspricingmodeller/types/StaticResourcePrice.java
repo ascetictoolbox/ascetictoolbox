@@ -20,21 +20,18 @@ import java.util.Calendar;
 
 
 public class StaticResourcePrice extends Price{
-	
-	double Price;
+
 	
 	
 	
 	public StaticResourcePrice() {
 		Price = 0.14; //per hour all included based on Amazon m3 large 2CPU 15GB memory 2*32 SSD
-		timeOfPriceRequest = Calendar.getInstance();
-		lastPriceChange=timeOfPriceRequest;
+
 	 }
 	
 	public StaticResourcePrice(double price) {
 		Price = price; //per hour all included based on Amazon m3 large 2CPU 15GB memory 2*32 SSD
-		timeOfPriceRequest = Calendar.getInstance();
-		lastPriceChange=timeOfPriceRequest;
+
 	 }
 	
 	public void setPrice(double price){

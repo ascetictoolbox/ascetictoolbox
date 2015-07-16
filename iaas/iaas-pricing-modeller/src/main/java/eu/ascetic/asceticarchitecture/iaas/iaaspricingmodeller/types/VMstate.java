@@ -34,7 +34,6 @@ public class VMstate {
 	/* The pricing scheme according to which this VM is charged*/
 	IaaSPricingModellerPricingScheme pricingScheme; 
 	
-	//EnergyProvider provider;
 	
 	Charges energyCharges;
 	
@@ -48,11 +47,6 @@ public class VMstate {
 
 	TimeParameters time;
 	
-	
-
-
-	double alpha; // the alpha parameter in the long term energy price estimator
-	double beta; // the beta parameter in the long term resources price estimator
 
 
 	
@@ -64,7 +58,6 @@ public class VMstate {
 		energyCharges = new Charges();
 		resourceCharges = new Charges();
 		TotalCharges = new Charges();
-		//pricingScheme.getTotalCharges(this);
 		time = new TimeParameters();
 
 	}
@@ -76,7 +69,6 @@ public class VMstate {
 		energyCharges = new Charges();
 		resourceCharges = new Charges();
 		TotalCharges = new Charges();
-		//pricingScheme.getTotalCharges(this);
 		time = new TimeParameters();
 		
 

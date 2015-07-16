@@ -60,17 +60,21 @@ public class IaaSPricingModellerTest
 
 	@Test
     public void testIaaSPricingModeller() throws InterruptedException {
-        System.out.println("test IaaS Pricing Modeller");
+      //  System.out.println("test IaaS Pricing Modeller");
         IaaSPricingModeller prModeller = new IaaSPricingModeller(null);
-      //  System.out.println("Energy Provider: " +prModeller.getEnergyProvider().getId());
-       // System.out.println("IaaS Provider: " +prModeller.getIaaSId());
-     //  System.out.println("Dynamic Energy Price: " +prModeller.getEnergyProvider().getDynamicEnergyPrice().getEnergyPriceOnly());
-      //  System.out.println("Dynamic Time: " +prModeller.getEnergyProvider().getDynamicEnergyPrice().getTimeOnly().getTime());
+      
+       // System.out.println("Dynamic Energy Price: " +prModeller.getEnergyProvider().getNewDynamicEnergyPrice().getPriceOnly());
+        System.out.println("Predicted value for scheme 0:" + prModeller.getVMChargesPrediction(2, 2, 20.0, 1, 360L, "2a"));  
         
-     //  prModeller.initializeVM(1, 1.0, 2.0, 250.0, 0);
+      System.out.println("Initialize VM");
+       prModeller.initializeVM("sm", 1);        
+        Thread.sleep(10000);
+        prModeller.getVMCurrentCharges("sm");
+     //   Thread.sleep(10000);
+     //   prModeller.getVMCurrentCharges("sm");
      //  prModeller.initializeVM(2, 2.0, 2.0, 250.0, 1);
     //   prModeller.getVMCurrentEnergyCharges(2);
-        Thread.sleep(22000);
+        
         //to test the billing
       //  prModeller.getVMCurrentEnergyCharges(2);
         

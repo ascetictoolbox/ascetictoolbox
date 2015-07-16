@@ -18,16 +18,14 @@
 package eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesrepository;
 
 import java.util.Calendar;
-import java.util.concurrent.TimeUnit;
 
-import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.cost.IaaSPricingModellerCost;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.Charges;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.DynamicEnergyPrice;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.Price;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.ResourceDistribution;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.StaticResourcePrice;
-import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.VMinfo;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.VMstate;
+
 
 
 /**
@@ -40,38 +38,36 @@ public class PricingSchemeB extends IaaSPricingModellerPricingScheme implements 
 	StaticResourcePrice price;
 	
 	DynamicEnergyPrice energyPrice;
-	Price average;
+
 	
 	ResourceDistribution distribution = new ResourceDistribution();
+
 	
 	public PricingSchemeB(int id) {
 		super(id);
-		price = new StaticResourcePrice(0.7);
-		energyPrice = new DynamicEnergyPrice();
+		price = new StaticResourcePrice(0.1);
 		distribution.setDistribution(0.6, 0.3, 0.2);
 	}
 
 /////////////////////////PREDICT CHARGES ///////////////////////////////
 	public double predictCharges(VMstate vm, Price average){
 		Charges a = predictEnergyCharges(vm, average);
-		System.out.println("B: The energy charges are " + a);
 		Charges b = predictResourcesCharges(vm);
-		System.out.println("B: The resource charges are " + b); 
-		return (a.getChargesOnly()+b.getChargesOnly());
+		double temp = (double) Math.round((a.getChargesOnly()+b.getChargesOnly()) * 1000) / 1000;
+		return temp;
 	}
 	
 	public Charges predictEnergyCharges(VMstate VM, Price average){
+		
 		Charges charges = new Charges();
 			charges.setCharges(VM.getPredictedInformation().getPredictedEnergy()*average.getPriceOnly());
-			this.average = average;
 			return charges;
 	}
 	
 	
 	public Charges predictResourcesCharges(VMstate vm) {
-		//System.out.println("B: The resource price is " + VM.getResourcePrice() + " and the duration is " + VM.getVMinfo().getPredictedDuration());
 		Charges b = new Charges();
-		b.setCharges(distribution.getDistribution(vm)*price.getPriceOnly()*vm.getPredictedInformation().getPredictedDuration());
+		b.setCharges(distribution.getDistribution(vm)*price.getPriceOnly()*(vm.getPredictedInformation().getPredictedDuration()/3600));
 		return b;
 	}
 
@@ -82,21 +78,18 @@ public class PricingSchemeB extends IaaSPricingModellerPricingScheme implements 
 		updateVMResourceCharges(VM);
 		VM.setChangeTime(VM.getResourcesChangeTime());
 		VM.setTotalCharges(VM.getEnergyCharges()+VM.getResourcesCharges());
-		
 	}
 
-	public void updateVMEnergyCharges(VMstate VM){
-		System.out.println("Pr: The VMid is "+VM.getVMid() +"and the old energy price is " +VM.getProvider().getOldDynamicEnergyPrice().getPriceOnly());
-		double energycharges = cost.updateEnergyCharges(VM);
+	public void updateVMEnergyCharges(VMstate VM){		
+		double energycharges = (double) Math.round(cost.updateEnergyCharges(VM) * 1000) / 1000;
 		VM.updateEnergyCharges(energycharges);
 	}
 
 	public void updateVMResourceCharges(VMstate VM){
-		System.out.println("Pr: The VMid is "+VM.getVMid() +"and the static price is " + price);
 		Calendar time = Calendar.getInstance();
 		Calendar starttime = (VM.getChangeTime());
 		long duration = VM.getDuration(starttime, time);
-		double Resourcecharges = distribution.getDistribution(VM)*price.getPriceOnly()*duration;
+		double Resourcecharges = (double) Math.round(distribution.getDistribution(VM)*price.getPriceOnly()*duration*1000)/1000;
 		VM.updateResourcesCharges(Resourcecharges);
 
 	}
@@ -116,15 +109,9 @@ public class PricingSchemeB extends IaaSPricingModellerPricingScheme implements 
 	}
 
 	@Override
-	public Price getPrice() {
+	public Price getResourcePrice() {
 		return price;
 	}
 	
-	public Price getDynamicEnergyPrice() {
-		return energyPrice;
-	}
-	
-	public Price getAveragePrice() {
-		return average;
-	}
+
 }

@@ -39,10 +39,6 @@ import org.omg.CORBA.ValueMemberHelper;
 
 public class  IaaSPricingModellerCost implements IaaSPricingModellerCostInterface {
 	
-	//ArrayList <EnergyProvider> arrayOfProviders = new ArrayList <EnergyProvider>();
-	
-	//Map mapOfProviders = new HashMap();
-
 	Price price;
 	EnergyModeller energyModeller;
 
@@ -55,35 +51,29 @@ public class  IaaSPricingModellerCost implements IaaSPricingModellerCostInterfac
 	/////////////////////////////UPDATE OF COSTS ////////////////////////////////
 	
 	public double updateEnergyCharges(VMstate VM){
-		//System.out.println("Cost: The VMid is "+VM.getVMid() +"and the price is " +VM.getProvider().getDynamicEnergyPrice().getEnergyPrice().getEnergyPriceOnly());
 		price=getEnergyPrice(VM.getProvider(), VM.getPricingScheme().getSchemeId());
 		//the energy charges for the past period
 		double energyCharges = updateEnergy(VM)*price.getPriceOnly();
-		System.out.println("New energy Charges "+energyCharges);
 		return energyCharges;
 	}
 	
 	
 	private Price getEnergyPrice(EnergyProvider provider, int scheme){
 		if (scheme == 0){
-			System.out.println("Static Cost: The price is "+provider.getStaticEnergyPrice().getPriceOnly());
 			return provider.getStaticEnergyPrice();
 		}
 		else {
-			System.out.println("Dynamic Cost: The price is "+provider.getOldDynamicEnergyPrice().getPriceOnly());
-			return provider.getOldDynamicEnergyPrice();
+		    return provider.getOldDynamicEnergyPrice();
 			}
 	}
-	
-	///to be implemented
+
 	private double updateEnergy(VMstate VM){
-		///what do I take back???based on VMid....
 		
 		VmDeployed vm = energyModeller.getVM(VM.getVMid());
 		TimePeriod timePeriod = new TimePeriod(VM.getStartTime(), VM.getChangeTime());
 		double newEnergyValue = energyModeller.getEnergyRecordForVM(vm, timePeriod).getTotalEnergyUsed();
-		System.out.println("VM's last energy consumption "+VM.getEnergy());
 		return newEnergyValue-VM.getEnergy();
+
 	}
 	
 	

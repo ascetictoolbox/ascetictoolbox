@@ -37,10 +37,16 @@ public abstract class Price {
 	 }
 	
 	
+	public void setPrice(Price price){
+		Price=price.getPriceOnly();
+		lastPriceChange=price.getChangeTimeOnly();
+	}
+	
 	public void setPrice(double price){
 		Price=price;
-		timeOfPriceRequest =Calendar.getInstance();
+		lastPriceChange=Calendar.getInstance();
 	}
+	
 	
 	public Price getPrice(){
 		return this;
@@ -51,7 +57,7 @@ public abstract class Price {
 		return this.Price;
 	}
 	
-	public Calendar getChaneTimeOnly(){
+	public Calendar getChangeTimeOnly(){
 		return lastPriceChange;
 	}
 	

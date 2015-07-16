@@ -37,6 +37,6 @@ public interface IaaSPricingModellerPricingSchemeRepositoryInterface{
 
 	public ResourceDistribution getDistribution();
 	
-	public Price getPrice();
+	public Price getResourcePrice();
 	
 }

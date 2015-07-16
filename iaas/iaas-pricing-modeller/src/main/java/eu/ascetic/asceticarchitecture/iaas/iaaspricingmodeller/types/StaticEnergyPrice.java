@@ -21,15 +21,13 @@ import java.util.Calendar;
 
 public class StaticEnergyPrice extends Price{
 	
-	double Price;
+	
 	
 
 	 
 	
 	public StaticEnergyPrice() {
 		Price = 0.07; //per Watt per hour 
-		timeOfPriceRequest = Calendar.getInstance();
-		lastPriceChange=timeOfPriceRequest;
 	 }
 	
 	

@@ -32,7 +32,6 @@ public class EnergyPriceSetter extends TimerTask{
 	@Override
 	public void run() {
 		price.changePrice();
-		System.out.println("Price is about to change for provider " + provider.getId());
 		provider.updateDynamicEnergyPrice(price);
 		
 		

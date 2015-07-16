@@ -32,13 +32,7 @@ import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.*;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.billing.*;
 
 /**
- * This is the main interface of the pricing modeller of IaaS layer. 
- * Functionality:
- * 1. The ability to provide a cost estimation of a VM per hour, given the energy consumed of this VM and the host that
- * this VM is deployed.
- *
- * 2. The ability to provide a price estimation of a VM per hour, given the energy consumed of this VM and the host that
- * this VM is deployed.
+
  * @author E. Agiatzidou
  */
 
@@ -51,7 +45,6 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
 	
 	public IaaSPricingModeller(EnergyModeller energyModeller) {
 		this.energyModeller = energyModeller;
-		//billing.setEnergyModeller(energyModeller);
 		idIaaSP=idIaaSP+1;
 		
     }
@@ -70,39 +63,24 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
 
 	public double getVMChargesPrediction(int CPU, int RAM, double storage, int schemeId,  long duration, String hostname){
 		VMinfo vm = new VMinfo (RAM, CPU, storage);
-		
 		IaaSPricingModellerPricingScheme scheme = null;
-		
 		if (schemeId==0){
 			scheme = new PricingSchemeA(schemeId);
 		}
 		if (schemeId==1){
 			scheme = new PricingSchemeB(schemeId);
 		}
-		
 		VMstate Vm = new VMstate(vm, energyProvider, scheme);
-		
 		scheme.setEnergyModeller(energyModeller);
-		
 		Vm.getPredictedInformation().setDuration(duration);
-		
 		VM newVM = new VM(CPU, RAM, storage);
-		
 		Host host = energyModeller.getHost(hostname);
-		System.out.println("ok8");
 		Collection <VmDeployed> collection =  energyModeller.getVMsOnHost(host);
-		
 		Collection <VM> col = castCollection(collection);
-		
 		TimeParameters dur = new TimeParameters(duration);
-		
 		TimePeriod dura = new TimePeriod(dur.getStartTime(), dur.getEndTime());
-		
 		double energyPredicted = energyModeller.getPredictedEnergyForVM(newVM, col, host, dura).getTotalEnergyUsed();
-		
 		Vm.getPredictedInformation().setPredictedEnergy(energyPredicted);
-		
-		
 		return billing.predictVMCharges(Vm);
 	}
     
@@ -124,7 +102,6 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
 		int RAM = energyModeller.getVM(VMid).getRamMb();
 		double storage = energyModeller.getVM(VMid).getDiskGb();
 		VMinfo vm = new VMinfo (RAM, CPU, storage);
-
 		IaaSPricingModellerPricingScheme scheme = null;
 		if (schemeId==0){
 			scheme = new PricingSchemeA(schemeId);

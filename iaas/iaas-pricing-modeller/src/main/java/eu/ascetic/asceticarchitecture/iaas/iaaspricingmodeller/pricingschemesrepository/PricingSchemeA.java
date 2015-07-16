@@ -60,15 +60,14 @@ public class PricingSchemeA extends IaaSPricingModellerPricingScheme implements 
 	@Override
 	public double predictCharges(VMstate vm, Price average) {
 		Charges b = predictResourcesCharges(vm);
-		System.out.println("B: The resource charges are " + b); 
-		return b.getChargesOnly();
+		double temp = (double) Math.round(b.getChargesOnly()*1000)/1000;
+		return temp;
 	}
 	
 	
 	public Charges predictResourcesCharges(VMstate vm) {
-		//System.out.println("B: The resource price is " + VM.getResourcePrice() + " and the duration is " + VM.getVMinfo().getPredictedDuration());
 		Charges b = new Charges();
-		b.setCharges(distribution.getDistribution(vm)*price.getPriceOnly()*vm.getPredictedInformation().getPredictedDuration());
+		b.setCharges(distribution.getDistribution(vm)*price.getPriceOnly()*(vm.getPredictedInformation().getPredictedDuration()/3600));
 		return b;
 	}
 	
@@ -89,20 +88,17 @@ public class PricingSchemeA extends IaaSPricingModellerPricingScheme implements 
 	public double getTotalCharges(VMstate VM) {
 		updateVMResourceCharges(VM);
 		VM.setChangeTime(VM.getResourcesChangeTime());
-		//return (VM.getResourcesCharges()+VM.getEnergyCharges());
 		return (VM.getResourcesCharges());
 		
 	}
 
 	public void updateVMResourceCharges(VMstate VM){
-		System.out.println("Pr: The VMid is "+VM.getVMid() +"and the static price is " + price);
 		Calendar endtime = Calendar.getInstance();
 		Calendar starttime = VM.getChangeTime();
 		long duration = VM.getDuration(starttime, endtime);
 		double Resourcecharges = distribution.getDistribution(VM)*price.getPriceOnly()*duration;
 		VM.updateResourcesCharges(Resourcecharges);
-
-	}
+		}
 
 
 

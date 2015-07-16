@@ -18,12 +18,6 @@
 package eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.energyprovider;
 
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.IaaSPricingModeller;
-
-import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.DynamicEnergyPrice;
-import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.EnergyPriceSetter;
-import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.StaticEnergyPrice;
-
-
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.*;
 
 import java.util.Timer;
@@ -48,7 +42,7 @@ public class EnergyProvider implements EnergyProviderInterface{
 	
 	Timer timer;
 	
-	long delay = 10;
+	long delay = 15;
 	
 	public EnergyProvider(IaaSPricingModeller iaasprovider){
 		idEP=idEP+1;
@@ -60,7 +54,7 @@ public class EnergyProvider implements EnergyProviderInterface{
 	public EnergyProvider(){
 		idEP=idEP+1;
 		timer = new Timer (true);
-		timer.scheduleAtFixedRate(new EnergyPriceSetter(this), TimeUnit.SECONDS.toMillis(delay), TimeUnit.SECONDS.toMillis(20));
+		timer.scheduleAtFixedRate(new EnergyPriceSetter(this), TimeUnit.SECONDS.toMillis(delay), TimeUnit.SECONDS.toMillis(5));
 	}
 	
 	public int getId(){
@@ -91,10 +85,7 @@ public class EnergyProvider implements EnergyProviderInterface{
 	}
 
 	public void updateDynamicEnergyPrice(DynamicEnergyPrice price){
-		System.out.print("The price was "+dynamicEnergyPriceOld.getPriceOnly());
-		dynamicEnergyPriceNew = price;
-		System.out.println(" The price now is "+dynamicEnergyPriceNew.getPriceOnly());
-		
+		dynamicEnergyPriceNew.setPrice(price);
 		iaasprovider.getBilling().updateVMCharges(dynamicEnergyPriceOld);
 	}
 	
