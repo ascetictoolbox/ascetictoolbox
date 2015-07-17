@@ -1,12 +1,11 @@
 package eu.ascetic.paas.applicationmanager.em;
 
 import org.apache.log4j.Logger;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.builder.EnergyModellerFactory;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.PaaSEnergyModeller;
-import eu.ascetic.paas.applicationmanager.dao.jpa.Service;
+
 
 /**
  * 
