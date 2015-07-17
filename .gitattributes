@@ -758,6 +758,7 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/jp
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/jpa/ImageDAOJpa.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/jpa/VMDAOJpa.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/datamodel/convert/ApplicationConverter.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/em/EnergyModellerBean.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/event/DeploymentEvent.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/event/deployment/AcceptAgreementEventHandler.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/event/deployment/ContextualizationEventHandler.java -text
@@ -877,6 +878,7 @@ paas/application-manager/src/test/resources/application-manager.properties -text
 paas/application-manager/src/test/resources/ascetic-basic-slat.xml -text
 paas/application-manager/src/test/resources/b.xml -text
 paas/application-manager/src/test/resources/davidg-test.ovf.vmc.xml -text
+paas/application-manager/src/test/resources/davidg-test.ovf.vmc.xml.old -text
 paas/application-manager/src/test/resources/davidgp-ovf.xml -text
 paas/application-manager/src/test/resources/jndi.properties -text
 paas/application-manager/src/test/resources/log4j.properties -text

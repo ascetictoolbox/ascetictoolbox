@@ -9,13 +9,13 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.builder.EnergyModellerFactory;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.PaaSEnergyModeller;
 import eu.ascetic.paas.applicationmanager.amqp.AmqpProducer;
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.dao.VMDAO;
 import eu.ascetic.paas.applicationmanager.datamodel.convert.ApplicationConverter;
+import eu.ascetic.paas.applicationmanager.em.EnergyModellerBean;
 import eu.ascetic.paas.applicationmanager.event.DeploymentEvent;
 import eu.ascetic.paas.applicationmanager.event.deployment.DeploymentEventService;
 import eu.ascetic.paas.applicationmanager.model.Application;
@@ -57,6 +57,8 @@ public abstract class AbstractRest {
 	protected VMDAO vmDAO;
 	@Autowired
 	protected DeploymentEventService deploymentEventService;
+	@Autowired
+	protected static EnergyModellerBean energyModellerBean;
 	protected static PaaSEnergyModeller energyModeller;
 	
 	protected Response buildResponse(Response.Status status, String payload) {
@@ -71,9 +73,9 @@ public abstract class AbstractRest {
 	 */
 	protected static PaaSEnergyModeller getEnergyModeller() {
 		if(energyModeller == null) {
-			logger.debug("Initializing Energy Modeller...");
+			logger.debug("Getting Energy Modeller...");
 			// TODO this path here looks ugly, move it to the configuration file...
-			return EnergyModellerFactory.getEnergyModeller("/etc/ascetic/paas/em/config.properties");
+			return energyModellerBean.getEnergyModeller();
 		}
 		else {
 			return energyModeller;
