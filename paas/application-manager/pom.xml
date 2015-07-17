@@ -195,7 +195,7 @@
                         <enabled>false</enabled>
                 </snapshots>
         </repository>
-	</repositories>	
+	</repositories>	 
 
 	<dependencies>
 
@@ -203,7 +203,7 @@
 		<dependency>
 			<groupId>eu.ascetic.paas</groupId>
 			<artifactId>application-manager-datamodel</artifactId>
-			<version>0.18-SNAPSHOT</version>
+			<version>0.19-SNAPSHOT</version>
 		</dependency>
 		
 		<!-- ASCETiC BSC VMM Client -->

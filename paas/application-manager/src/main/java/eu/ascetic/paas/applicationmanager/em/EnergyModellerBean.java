@@ -1,13 +1,12 @@
 package eu.ascetic.paas.applicationmanager.em;
 
-import javax.annotation.PostConstruct;
-
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.builder.EnergyModellerFactory;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.PaaSEnergyModeller;
+import eu.ascetic.paas.applicationmanager.dao.jpa.Service;
 
 /**
  * 
@@ -31,8 +30,7 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.P
  * SpringBean to create the EnergyModeller
  *
  */
-@Component
-@Scope("request")
+@Service("EnergyModellerService")
 public class EnergyModellerBean {
 	private static Logger logger = Logger.getLogger(EnergyModellerBean.class);
 	private PaaSEnergyModeller energyModeller;
@@ -46,10 +44,4 @@ public class EnergyModellerBean {
 	public PaaSEnergyModeller getEnergyModeller() {
 		return energyModeller;
 	}
-	
-	// To force the construction of the bean... 
-	@PostConstruct
-    public void init() {
-
-    }
 }
