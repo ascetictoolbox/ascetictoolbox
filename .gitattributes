@@ -1681,6 +1681,8 @@ saas/programming_model/compss/runtime/engine/src/main/java/integratedtoolkit/com
 saas/programming_model/compss/runtime/engine/src/main/java/integratedtoolkit/components/impl/debug/AccessProcessorDebug.java -text
 saas/programming_model/compss/runtime/engine/src/main/java/integratedtoolkit/components/impl/debug/TaskDispatcherDebug.java -text
 saas/programming_model/compss/runtime/engine/src/main/java/integratedtoolkit/components/scheduler/SchedulerPolicies.java -text
+saas/programming_model/compss/runtime/engine/src/main/java/integratedtoolkit/components/scheduler/impl/AsceticPolicies.java -text
+saas/programming_model/compss/runtime/engine/src/main/java/integratedtoolkit/components/scheduler/impl/AsceticScheduler.java -text
 saas/programming_model/compss/runtime/engine/src/main/java/integratedtoolkit/components/scheduler/impl/CostPolicies.java -text
 saas/programming_model/compss/runtime/engine/src/main/java/integratedtoolkit/components/scheduler/impl/DefaultSchedulerPolicies.java -text
 saas/programming_model/compss/runtime/engine/src/main/java/integratedtoolkit/components/scheduler/impl/DefaultTaskScheduler.java -text
