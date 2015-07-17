@@ -123,7 +123,7 @@ public class CpuOnlySplinePolynomialEnergyPredictor extends AbstractEnergyPredic
     public EnergyUsagePrediction predictTotalEnergy(Host host, double usageCPU, TimePeriod timePeriod) {
         EnergyUsagePrediction answer = new EnergyUsagePrediction(host);
         PolynomialSplineFunction model = retrieveModel(host).getFunction();
-        double powerUsed = model.value(usageCPU);
+        double powerUsed = model.value(getCpuUsageValue(model, getCpuUsageValue(model, usageCPU)));
         answer.setAvgPowerUsed(powerUsed);
         answer.setTotalEnergyUsed(powerUsed * ((double) TimeUnit.SECONDS.toHours(timePeriod.getDuration())));
         answer.setDuration(timePeriod);
@@ -139,11 +139,10 @@ public class CpuOnlySplinePolynomialEnergyPredictor extends AbstractEnergyPredic
      */
     @Override
     public double predictPowerUsed(Host host) {
-        PolynomialSplineFunction model = retrieveModel(host).getFunction();
         if (getDefaultAssumedCpuUsage() == -1) {
-            return model.value(getCpuUtilisation(host));
+            return predictPowerUsed(host, getCpuUtilisation(host));
         } else {
-            return model.value(getDefaultAssumedCpuUsage());
+            return predictPowerUsed(host, getDefaultAssumedCpuUsage());
         }
     }
 
@@ -157,7 +156,7 @@ public class CpuOnlySplinePolynomialEnergyPredictor extends AbstractEnergyPredic
     @Override
     public double predictPowerUsed(Host host, double usageCPU) {
         PolynomialSplineFunction model = retrieveModel(host).getFunction();
-        return model.value(usageCPU);
+        return model.value(getCpuUsageValue(model, usageCPU));
     }
 
     /**
@@ -192,6 +191,28 @@ public class CpuOnlySplinePolynomialEnergyPredictor extends AbstractEnergyPredic
         answer = new PredictorFunction<>(function, sse, rmse);
         modelCache.put(host, answer);
         return answer;
+    }
+    
+    /**
+     * This ensures the CPU usage provided to the model is in the acceptable 
+     * range.
+     * @param model The model to get the cpu usage for
+     * @param usageCPU The amount of CPU load placed on the host
+     * @return The cpu usage that is within the acceptable range.
+     */
+    private double getCpuUsageValue(PolynomialSplineFunction model, double usageCPU) {
+        /**
+         * Interpolation is the process of fitting a line of best fit directly
+         * to the datapoints gathered. The lowest value possible value to predict 
+         * from is therefore not likely to be 0.
+         */
+        if (usageCPU < model.getKnots()[0]) {
+            return model.getKnots()[0];
+        }
+        if (usageCPU > model.getKnots()[model.getKnots().length - 1]) {
+            return model.getKnots()[model.getKnots().length - 1];
+        }        
+        return usageCPU;
     }
 
     /**

@@ -28,8 +28,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- *
- * @author Richard
+ * The test class of the CPU Only energy predictor
+ * @author Richard Kavanagh
  */
 public class CpuOnlyEnergyPredictorTest {
 
@@ -37,7 +37,7 @@ public class CpuOnlyEnergyPredictorTest {
 
     }
 
-    public Host host = new Host(10105, "asok12");
+    public Host host = new Host(10115, "wally160");
     public VM vm1 = new VM(2, 1548, 128);
     public VM vm2 = new VM(4, 1524, 256);
     public Collection<VM> vms = new ArrayList<>();
