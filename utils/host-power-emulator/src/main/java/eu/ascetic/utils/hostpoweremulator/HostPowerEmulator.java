@@ -18,10 +18,7 @@ package eu.ascetic.utils.hostpoweremulator;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DatabaseConnector;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DefaultDatabaseConnector;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.AbstractEnergyPredictor;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.CpuOnlyEnergyPredictor;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.CpuOnlyPolynomialEnergyPredictor;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.CpuOnlySplinePolynomialEnergyPredictor;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.CpuOnlyBestFitEnergyPredictor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.EnergyPredictorInterface;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostMeasurement;
@@ -30,7 +27,6 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasou
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.ioutils.Settings;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,9 +46,11 @@ public class HostPowerEmulator implements Runnable {
     private boolean running = true;
     private int pollInterval = 1;
     private String outputName = "power";
+    private String predictorName = "CpuOnlyBestFitEnergyPredictor";
     private final Settings settings = new Settings(PROPS_FILE_NAME);
     private static final String PROPS_FILE_NAME = "watt-meter-emulator.properties";
     private static final String DEFAULT_DATA_SOURCE_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient";
+    private static final String DEFAULT_PREDICTOR_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor";
 
     /**
      * This runs the emulation tool.
@@ -99,6 +97,7 @@ public class HostPowerEmulator implements Runnable {
         this.cloneHostname = cloneHostname;
         pollInterval = settings.getInt("poll_interval", pollInterval);
         outputName = settings.getString("output_name", outputName);
+        predictorName = settings.getString("predictor", predictorName);
         if (settings.isChanged()) {
             settings.save(PROPS_FILE_NAME);
         }
@@ -114,10 +113,38 @@ public class HostPowerEmulator implements Runnable {
         this.cloneHostname = null;
         pollInterval = settings.getInt("poll_interval", pollInterval);
         outputName = settings.getString("output_name", outputName);
+        predictorName = settings.getString("predictor", predictorName);
         if (settings.isChanged()) {
             settings.save(PROPS_FILE_NAME);
         }
     }
+    
+    /**
+     * This allows the power estimator to be set
+     *
+     * @param powerUtilisationPredictor The name of the predictor to use
+     * @return The predictor to use.
+     */
+    public EnergyPredictorInterface getPredictor(String powerUtilisationPredictor) {
+        EnergyPredictorInterface answer = null;
+        try {
+            if (!powerUtilisationPredictor.startsWith(DEFAULT_PREDICTOR_PACKAGE)) {
+                powerUtilisationPredictor = DEFAULT_PREDICTOR_PACKAGE + "." + powerUtilisationPredictor;
+            }
+            answer = (EnergyPredictorInterface) (Class.forName(powerUtilisationPredictor).newInstance());
+        } catch (ClassNotFoundException ex) {
+            if (answer == null) {
+                answer = new CpuOnlyBestFitEnergyPredictor();
+            }
+            Logger.getLogger(HostPowerEmulator.class.getName()).log(Level.WARNING, "The predictor specified was not found");
+        } catch (InstantiationException | IllegalAccessException ex) {
+            if (answer == null) {
+                answer = new CpuOnlyBestFitEnergyPredictor();
+            }
+            Logger.getLogger(HostPowerEmulator.class.getName()).log(Level.WARNING, "The predictor specified did not work", ex);
+        }
+        return answer;
+    }    
 
     /**
      * This clones a host's calibration data in the event the first host named
@@ -177,14 +204,7 @@ public class HostPowerEmulator implements Runnable {
 
     @Override
     public void run() {
-        EnergyPredictorInterface predictor;
-        CpuOnlyEnergyPredictor linearPredictor = new CpuOnlyEnergyPredictor();
-        CpuOnlyPolynomialEnergyPredictor polyPredictor = new CpuOnlyPolynomialEnergyPredictor();
-        CpuOnlySplinePolynomialEnergyPredictor splinePolynomialPredictor = new CpuOnlySplinePolynomialEnergyPredictor();
-        ArrayList<EnergyPredictorInterface> predictors = new ArrayList<>();
-        predictors.add(linearPredictor);
-        predictors.add(polyPredictor);
-        predictors.add(splinePolynomialPredictor);
+        EnergyPredictorInterface predictor = getPredictor(predictorName);
         Host host = source.getHostByName(hostname);
         HostPowerLogger logger = new HostPowerLogger(new File("EstimatedHostPowerData.txt"), true);
         logger.setMetricName(outputName);
@@ -212,11 +232,7 @@ public class HostPowerEmulator implements Runnable {
             System.out.println("Please specify where to clone the calibration data from.");
             System.exit(0);
         }
-        predictor = AbstractEnergyPredictor.getBestPredictor(host, predictors);
-        System.out.println("Using the " + predictor.toString());
-        System.out.println("Linear - SSE: " + linearPredictor.getSumOfSquareError(host) + " RMSE: " + linearPredictor.getRootMeanSquareError(host));
-        System.out.println("Polynomial - SSE: " + polyPredictor.getSumOfSquareError(host) + " RMSE: " + polyPredictor.getRootMeanSquareError(host));
-        System.out.println("Polynomial Spline - SSE: " + splinePolynomialPredictor.getSumOfSquareError(host) + " RMSE: " + splinePolynomialPredictor.getRootMeanSquareError(host));
+        predictor.printFitInformation(host);
 
         /**
          * The second phase is to monitor the host and to report its estimated
