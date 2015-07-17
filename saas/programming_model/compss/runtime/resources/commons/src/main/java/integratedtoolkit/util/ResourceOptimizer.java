@@ -65,6 +65,7 @@ public class ResourceOptimizer extends Thread {
                     redo = false;
                     workload = resUser.getWorkload();
                     resourcesLogger.info(workload.toString());
+                    
                     if (ResourceManager.useCloud()) {
                         applyPolicies(workload);
                     }

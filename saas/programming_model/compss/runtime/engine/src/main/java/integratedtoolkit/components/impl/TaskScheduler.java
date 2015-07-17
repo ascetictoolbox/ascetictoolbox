@@ -9,6 +9,7 @@ import integratedtoolkit.log.Loggers;
 import integratedtoolkit.types.Implementation;
 
 import integratedtoolkit.types.Task;
+import integratedtoolkit.types.job.Job;
 import integratedtoolkit.types.resources.Worker;
 
 import integratedtoolkit.util.CoreManager;
@@ -319,8 +320,8 @@ public abstract class TaskScheduler {
      */
     public String getCoresMonitoringData(String prefix) {
         StringBuilder sb = new StringBuilder(prefix + "<CoresInfo>" + "\n");
-        for (java.util.Map.Entry<String, Integer> entry : CoreManager.SIGNATURE_TO_ID.entrySet()) {
-            int core = entry.getValue();
+        for (java.util.Map.Entry<String, Implementation> entry : CoreManager.SIGNATURE_TO_IMPL.entrySet()) {
+            int core = entry.getValue().getCoreId();
             String signature = entry.getKey();
             sb.append(prefix + "\t").append("<Core id=\"").append(core).append("\" signature=\"" + signature + "\">").append("\n");
             long stats[] = getCoreStats(core, 0);

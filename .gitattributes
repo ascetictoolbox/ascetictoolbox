@@ -1681,8 +1681,11 @@ saas/programming_model/compss/runtime/engine/src/main/java/integratedtoolkit/com
 saas/programming_model/compss/runtime/engine/src/main/java/integratedtoolkit/components/impl/debug/AccessProcessorDebug.java -text
 saas/programming_model/compss/runtime/engine/src/main/java/integratedtoolkit/components/impl/debug/TaskDispatcherDebug.java -text
 saas/programming_model/compss/runtime/engine/src/main/java/integratedtoolkit/components/scheduler/SchedulerPolicies.java -text
+saas/programming_model/compss/runtime/engine/src/main/java/integratedtoolkit/components/scheduler/impl/CostPolicies.java -text
 saas/programming_model/compss/runtime/engine/src/main/java/integratedtoolkit/components/scheduler/impl/DefaultSchedulerPolicies.java -text
 saas/programming_model/compss/runtime/engine/src/main/java/integratedtoolkit/components/scheduler/impl/DefaultTaskScheduler.java -text
+saas/programming_model/compss/runtime/engine/src/main/java/integratedtoolkit/components/scheduler/impl/EnergyPolicies.java -text
+saas/programming_model/compss/runtime/engine/src/main/java/integratedtoolkit/components/scheduler/impl/PerformancePolicies.java -text
 saas/programming_model/compss/runtime/engine/src/main/java/integratedtoolkit/types/data/AccessParams.java -text
 saas/programming_model/compss/runtime/engine/src/main/java/integratedtoolkit/types/data/DataInfo.java -text
 saas/programming_model/compss/runtime/engine/src/main/java/integratedtoolkit/types/data/FileInfo.java -text
@@ -1726,6 +1729,7 @@ saas/programming_model/compss/runtime/engine/src/main/java/integratedtoolkit/typ
 saas/programming_model/compss/runtime/engine/src/main/java/integratedtoolkit/types/request/td/ShutdownRequest.java -text
 saas/programming_model/compss/runtime/engine/src/main/java/integratedtoolkit/types/request/td/TDRequest.java -text
 saas/programming_model/compss/runtime/engine/src/main/java/integratedtoolkit/types/request/td/UpdateLocalCEIRequest.java -text
+saas/programming_model/compss/runtime/engine/src/main/java/integratedtoolkit/types/request/td/UpdatedWorkerConsumption.java -text
 saas/programming_model/compss/runtime/engine/src/main/java/integratedtoolkit/types/request/td/WorkerUpdateRequest.java -text
 saas/programming_model/compss/runtime/engine/src/main/java/integratedtoolkit/types/request/td/debug/TDDebugRequest.java -text
 saas/programming_model/compss/runtime/engine/src/main/java/integratedtoolkit/util/CEIParser.java -text
@@ -1791,6 +1795,15 @@ saas/programming_model/compss/runtime/scripts/user/gengraph -text
 saas/programming_model/compss/runtime/scripts/user/instrument -text
 saas/programming_model/compss/runtime/scripts/user/pre_instrument -text
 saas/programming_model/compss/runtime/scripts/user/runcompss -text
+saas/programming_model/compss/runtime/toolkit-interaction/nbactions.xml -text
+saas/programming_model/compss/runtime/toolkit-interaction/pom.xml -text
+saas/programming_model/compss/runtime/toolkit-interaction/src/main/java/integratedtoolkit/ascetic/AppManager.java -text
+saas/programming_model/compss/runtime/toolkit-interaction/src/main/java/integratedtoolkit/ascetic/ApplicationMonitor.java -text
+saas/programming_model/compss/runtime/toolkit-interaction/src/main/java/integratedtoolkit/ascetic/Ascetic.java -text
+saas/programming_model/compss/runtime/toolkit-interaction/src/main/java/integratedtoolkit/ascetic/Configuration.java -text
+saas/programming_model/compss/runtime/toolkit-interaction/src/main/java/integratedtoolkit/ascetic/VM.java -text
+saas/programming_model/compss/runtime/toolkit-interaction/src/main/java/integratedtoolkit/ascetic/WorkerStarter.java -text
+saas/programming_model/compss/runtime/toolkit-interaction/src/test/java/integratedtoolkit/ascetic/test/Test.java -text
 saas/programming_model/compss/tools/monitor/pom.xml -text
 saas/programming_model/compss/tools/monitor/scripts/compss-monitor -text
 saas/programming_model/compss/tools/monitor/scripts/reinstall.sh -text

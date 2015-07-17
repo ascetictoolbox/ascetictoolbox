@@ -88,9 +88,10 @@ public class JobManager {
     }
 
     private void processJob(Task task, Implementation impl, Worker res, JobHistory history) {
+        Job job = null;
         try {
             JobStatusListener listener = new JobStatusListener(res, this);
-            Job job = res.newJob(task, impl, listener);
+            job = res.newJob(task, impl, listener);
             job.setHistory(history);
             if (task.getEnforcingData() != null && !task.isSchedulingStrongForced()) { // First operation of the chain registers target service
                 enfDataToService.put(task.getEnforcingData().getDataId(), res);

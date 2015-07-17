@@ -71,6 +71,7 @@ public class TaskDispatcher implements Runnable, ResourceUser {
 
         try {
             String schedulerPath = System.getProperty(ITConstants.IT_SCHEDULER);
+            System.err.println("SCHEDULER:"+schedulerPath);
             if (schedulerPath == null || schedulerPath.compareTo("default") == 0) {
                 scheduler = new DefaultTaskScheduler();
             } else {
@@ -272,5 +273,10 @@ public class TaskDispatcher implements Runnable, ResourceUser {
             sem.acquire();
         } catch (InterruptedException e) {
         }
+    }
+
+    @Override
+    public void updatedConsumptions(Worker worker) {
+         addRequest(new UpdatedWorkerConsumption(worker));
     }
 }

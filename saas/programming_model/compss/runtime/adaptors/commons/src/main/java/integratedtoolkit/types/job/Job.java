@@ -61,6 +61,8 @@ public abstract class Job<T extends COMPSsNode> {
     protected final Resource worker;
     protected final JobListener listener;
 
+    protected String eventId;
+
     protected JobHistory history;
     protected int transferId;
     protected static final Boolean workerDebug = Logger.getLogger(Loggers.WORKER).isDebugEnabled();
@@ -151,4 +153,13 @@ public abstract class Job<T extends COMPSsNode> {
         void jobFailed(Job job, JobEndStatus endStatus);
 
     }
+
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
+    }
+
+    public String getEventId() {
+        return eventId;
+    }
+
 }

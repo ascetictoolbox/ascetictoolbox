@@ -1,5 +1,6 @@
 package integratedtoolkit.components.scheduler.impl;
 
+import integratedtoolkit.ascetic.Ascetic;
 import integratedtoolkit.components.ResourceUser.WorkloadStatus;
 import integratedtoolkit.components.impl.TaskScheduler;
 import integratedtoolkit.components.scheduler.SchedulerPolicies;
@@ -96,7 +97,11 @@ public class DefaultTaskScheduler extends TaskScheduler {
             logger.info("Task " + currentTask.getId() + " forced to run in " + chosenResource.getName());
             LinkedList<Implementation> runnable = chosenResource.getRunnableImplementations(coreId);
             if (runnable.isEmpty()) {
-                taskSets.newRegularTask(currentTask);
+                if (currentTask.getTaskParams().hasPriority()) {
+                    taskSets.newPriorityTask(currentTask);
+                } else {
+                    taskSets.newRegularTask(currentTask);
+                }
                 logger.info("Pending: Task(" + currentTask.getId() + ", "
                         + currentTask.getTaskParams().getName() + ") "
                         + "Resource(" + chosenResource.getName() + ")");
@@ -181,8 +186,7 @@ public class DefaultTaskScheduler extends TaskScheduler {
         LinkedList<Implementation>[] executableCoreImpls = resource.getRunnableImplementations();
 
         for (int coreId = 0; coreId < executableCoreImpls.length; ++coreId) {
-            fittingImplementations[coreId]
-                    = schedulerPolicies.sortImplementationsForResource(resource.getRunnableImplementations(coreId), resource, profile);
+            fittingImplementations[coreId] = schedulerPolicies.sortImplementationsForResource(resource.getRunnableImplementations(coreId), resource, profile);
         }
 
         // First check if there is some task to reschedule
@@ -262,7 +266,7 @@ public class DefaultTaskScheduler extends TaskScheduler {
 
         while (!executableCores.isEmpty()) {
             Integer coreId = null;
-            int maxValue = Integer.MIN_VALUE;
+            double maxValue = Double.MIN_VALUE;
             for (Integer i : executableCores) {
                 if (sortedTasks[i].peek().value > maxValue) {
                     maxValue = sortedTasks[i].peek().value;

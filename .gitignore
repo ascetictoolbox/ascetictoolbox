@@ -26,6 +26,15 @@ paas/virtual-machine-contextualizer/logs/vmc.log.1
 paas/virtual-machine-contextualizer/velocity.log.1
 saas/compss-plugin/ascetic-deployer/.classpath
 saas/compss-plugin/ascetic-deployer/lib/ant-antlr.jar
+saas/programming_model/compss/programming_model/annotations/target
+saas/programming_model/compss/runtime/.pom.xml.kate-swp
+saas/programming_model/compss/runtime/adaptors/commons/target
+saas/programming_model/compss/runtime/commons/target
+saas/programming_model/compss/runtime/engine/.pom.xml.kate-swp
+saas/programming_model/compss/runtime/engine/target
+saas/programming_model/compss/runtime/loader/target
+saas/programming_model/compss/runtime/resources/commons/target
+saas/programming_model/compss/tools/monitor/target
 saas/virtual-machine-image-constructor/logs
 utils/energy-modeller-benchtest/energymodeller.properties
 utils/energy-modeller-benchtest/energymodeller_calibrator.properties

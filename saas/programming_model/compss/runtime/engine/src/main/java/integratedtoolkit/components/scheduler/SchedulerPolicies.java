@@ -37,15 +37,16 @@ public abstract class SchedulerPolicies {
     public class ObjectValue<T> implements Comparable<ObjectValue<T>> {
 
         public T o;
-        public int value;
+        public double value;
 
-        public ObjectValue(T o, int value) {
+        public ObjectValue(T o, double value) {
             this.o = o;
             this.value = value;
         }
 
+        @Override
         public int compareTo(ObjectValue<T> o) {
-            return o.value - this.value;
+            return Double.compare(o.value, this.value);
         }
     }
 

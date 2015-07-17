@@ -58,6 +58,8 @@ public class Task implements Comparable<Task> {
 
     // Execution info
     private long initialTimeStamp;
+    private String eventId;
+
     // Task ID management
     private static final int FIRST_TASK_ID = 1;
     private static AtomicInteger nextTaskId = new AtomicInteger(FIRST_TASK_ID);
@@ -141,6 +143,14 @@ public class Task implements Comparable<Task> {
 
     public long getInitialTimeStamp() {
         return initialTimeStamp;
+    }
+
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
+    }
+
+    public String getEventId() {
+        return eventId;
     }
 
     public String getDotDescription() {

@@ -20,7 +20,7 @@ public class CoreManager {
 
     private static ITConstants.Lang lang = ITConstants.Lang.JAVA;
 
-    public static final Map<String, Integer> SIGNATURE_TO_ID = new HashMap<String, Integer>();
+    public static final Map<String, Implementation> SIGNATURE_TO_IMPL = new HashMap<String, Implementation>();
     private static int coreCount = 0;
     private static int nextId = 0;
 
@@ -40,6 +40,10 @@ public class CoreManager {
 
     private CoreManager() {
         throw new NonInstantiableException("CoreManager");
+    }
+
+    public static Implementation getImplementation(String signature) {
+        return SIGNATURE_TO_IMPL.get(signature);
     }
 
     public static void increaseCoreCount() {
@@ -64,47 +68,54 @@ public class CoreManager {
         }
     }
 
-    public static void registerImplementations(int coreId, Implementation[] impls) {
+    public static void registerImplementations(int coreId, Implementation[] impls, String[] signatures) {
         implementations[coreId] = impls;
+        for (int i = 0; i < signatures.length; i++) {
+            SIGNATURE_TO_IMPL.put(signatures[i], impls[i]);
+        }
     }
 
     public static Integer getCoreId(String declaringClass, String methodName, boolean hasTarget, boolean hasReturn, integratedtoolkit.types.parameter.Parameter[] parameters) {
-        Integer methodId = null;
+        Implementation impl = null;
         String signature = MethodImplementation.getSignature(declaringClass, methodName, hasTarget, hasReturn, parameters);
-        methodId = SIGNATURE_TO_ID.get(signature);
-        if (methodId == null) {
+        impl = SIGNATURE_TO_IMPL.get(signature);
+        Integer methodId = null;
+        if (impl == null) {
             methodId = nextId++;
-            SIGNATURE_TO_ID.put(signature, methodId);
             if (lang == ITConstants.Lang.PYTHON) {
                 MethodResourceDescription rd = new MethodResourceDescription();
                 rd.setProcessorCoreCount(1);
                 ((MethodImplementation) implementations[methodId][0]).setDeclaringClass(declaringClass);
             }
+        } else {
+            methodId = impl.getCoreId();
         }
         return methodId;
     }
 
     public static Integer getCoreId(String namespace, String serviceName, String portName, String operation, boolean hasTarget, boolean hasReturn, integratedtoolkit.types.parameter.Parameter[] parameters) {
-        Integer methodId = null;
+        Implementation impl = null;
         String signature = ServiceImplementation.getSignature(namespace, serviceName, portName, operation, hasTarget, hasReturn, parameters);
-        methodId = SIGNATURE_TO_ID.get(signature);
-        if (methodId == null) {
+        impl = SIGNATURE_TO_IMPL.get(signature);
+        Integer methodId = null;
+        if (impl == null) {
             methodId = nextId++;
-            SIGNATURE_TO_ID.put(signature, methodId);
+        } else {
+            methodId = impl.getCoreId();
         }
         return methodId;
     }
 
     public static Integer getCoreId(String[] signatures) {
+        Implementation impl = null;
         Integer methodId = null;
         for (int i = 0; i < signatures.length && methodId == null; i++) {
-            methodId = SIGNATURE_TO_ID.get(signatures[i]);
+            impl = SIGNATURE_TO_IMPL.get(signatures[i]);
         }
-        if (methodId == null) {
+        if (impl == null) {
             methodId = nextId++;
-        }
-        for (String signature : signatures) {
-            SIGNATURE_TO_ID.put(signature, methodId);
+        } else {
+            methodId = impl.getCoreId();
         }
         return methodId;
     }

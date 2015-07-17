@@ -29,7 +29,8 @@ public abstract class TDRequest extends Request {
         SET_STATE,
         MONITOR_DATA,
         SHUTDOWN,
-        DEBUG
+        DEBUG,
+        UPDATED_WORKER_CONSUMPTIONS
     }
 
     // Logging

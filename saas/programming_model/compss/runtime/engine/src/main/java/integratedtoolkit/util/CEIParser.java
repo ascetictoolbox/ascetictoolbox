@@ -45,13 +45,6 @@ public class CEIParser {
                     throw new CoreManager.UndefinedConstraintsSourceException(appName + "Itf class cannot be found.");
                 }
                 break;
-            case C:
-                String constraintsFile = System.getProperty(ITConstants.IT_CONSTR_FILE);
-                updatedCores = loadC(constraintsFile);
-                break;
-            case PYTHON:
-                updatedCores = loadPython();
-                break;
             default:
                 throw new CoreManager.LangNotDefinedException();
         }
@@ -135,7 +128,7 @@ public class CEIParser {
                     }
                 }
                 for (int i = 0; i < implementationCount; i++) {
-                    loadMethodConstraints(methodId, implementationCount, declaringClasses, implConstraints);
+                    loadMethodConstraints(methodId, implementationCount, declaringClasses, implConstraints, signatures);
                 }
             } else { // Service
                 integratedtoolkit.types.annotations.Service serviceAnnot = m.getAnnotation(integratedtoolkit.types.annotations.Service.class);
@@ -146,7 +139,7 @@ public class CEIParser {
                     CoreManager.increaseCoreCount();
                     updatedMethods.add(methodId);
                 }
-                loadServiceConstraints(methodId, serviceAnnot);
+                loadServiceConstraints(methodId, serviceAnnot, new String[]{signature});
             }
 
         }
@@ -160,10 +153,10 @@ public class CEIParser {
      * @param coreId identifier for that core
      * @param service Servive annotation describing the core
      */
-    private static void loadServiceConstraints(int coreId, integratedtoolkit.types.annotations.Service service) {
+    private static void loadServiceConstraints(int coreId, integratedtoolkit.types.annotations.Service service, String[] signatures) {
         Implementation[] implementations = new Implementation[1];
         implementations[0] = new ServiceImplementation(coreId, service.namespace(), service.name(), service.port(), service.operation());
-        CoreManager.registerImplementations(coreId, implementations);
+        CoreManager.registerImplementations(coreId, implementations, signatures);
     }
 
     /**
@@ -173,7 +166,7 @@ public class CEIParser {
      * @param coreId identifier for that core
      * @param service Method annotation describing the core
      */
-    private static void loadMethodConstraints(int coreId, int implementationCount, String[] declaringClasses, MethodResourceDescription[] cts) {
+    private static void loadMethodConstraints(int coreId, int implementationCount, String[] declaringClasses, MethodResourceDescription[] cts, String[] signatures) {
         Implementation[] implementations = new Implementation[implementationCount];
         for (int i = 0; i < implementationCount; i++) {
             if (cts[i].getProcessorCoreCount() == 0) {
@@ -181,118 +174,7 @@ public class CEIParser {
             }
             implementations[i] = new MethodImplementation(declaringClasses[i], coreId, i, cts[i]);
         }
-        CoreManager.registerImplementations(coreId, implementations);
-    }
-
-    // C constructor
-    private static LinkedList<Integer> loadC(String constraintsFile) {
-        LinkedList<Integer> updatedMethods = new LinkedList<Integer>();
-        HashMap<Integer, MethodImplementation> readMethods = new HashMap<Integer, MethodImplementation>();
-        MethodResourceDescription defaultCtr = new MethodResourceDescription();
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(constraintsFile));
-
-            String line;
-            int coreCount = 0;
-            while ((line = br.readLine()) != null) {
-                line = line.trim();
-                if (line.startsWith("//")) {
-                    continue;
-                }
-                StringBuilder buffer = new StringBuilder();
-                if (line.matches(".*[(].*[)].*;")) {
-                    line = line.replaceAll("[(|)|,|;]", " ");
-                    String[] splits = line.split("\\s+");
-                    String returnType = splits[0];
-                    String methodName = splits[1];
-                    //String methodName = String.valueOf(n);                    
-                    //Computes the method's signature                    
-                    buffer.append(methodName).append("(");
-                    for (int i = 2; i < splits.length; i++) {
-                        String paramDirection = splits[i++];
-                        String paramType = splits[i++];
-                        String type = "OBJECT_T";
-                        if (paramDirection.toUpperCase().compareTo("INOUT") == 0) {
-                            type = "FILE_T";
-                        } else if (paramDirection.toUpperCase().compareTo("OUT") == 0) {
-                            type = "FILE_T";
-                        } else if (paramType.toUpperCase().compareTo("FILE") == 0) {
-                            type = "FILE_T";
-                        } else if (paramType.compareTo("boolean") == 0) {
-                            type = "BOOLEAN_T";
-                        } else if (paramType.compareTo("char") == 0) {
-                            type = "CHAR_T";
-                        } else if (paramType.compareTo("int") == 0) {
-                            type = "INT_T";
-                        } else if (paramType.compareTo("float") == 0) {
-                            type = "FLOAT_T";
-                        } else if (paramType.compareTo("double") == 0) {
-                            type = "DOUBLE_T";
-                        } else if (paramType.compareTo("byte") == 0) {
-                            type = "BYTE_T";
-                        } else if (paramType.compareTo("short") == 0) {
-                            type = "SHORT_T";
-                        } else if (paramType.compareTo("long") == 0) {
-                            type = "LONG_T";
-                        } else if (paramType.compareTo("string") == 0) {
-                            type = "STRING_T";
-                        }
-                        buffer.append(type).append(",");
-                        String paramName = splits[i];
-                    }
-                    buffer.deleteCharAt(buffer.lastIndexOf(","));
-                    buffer.append(")");
-                    String declaringClass = "NULL";
-                    buffer.append(declaringClass);
-
-                    String signature = buffer.toString();
-                    //Adds a new Signature-Id if not exists in the TreeMap
-                    Integer methodId = CoreManager.getCoreId(new String[]{signature});
-                    updatedMethods.add(methodId);
-                    MethodImplementation m = new MethodImplementation(declaringClass, methodId, 0, new MethodResourceDescription(defaultCtr));
-                    readMethods.put(methodId, m);
-                    coreCount++;
-                }
-            }
-            CoreManager.resizeStructures(coreCount);
-            for (int i = 0; i < coreCount; i++) {
-                Implementation[] implementations = new Implementation[1];
-                implementations[0] = readMethods.get(i);
-                CoreManager.registerImplementations(i, implementations);
-            }
-            CoreManager.setCoreCount(coreCount);
-            br.close();
-        } catch (Exception e) {
-            logger.fatal(CONSTR_LOAD_ERR, e);
-        }
-        return updatedMethods;
-    }
-
-    // Python constructor
-    private static LinkedList<Integer> loadPython() {
-
-        String countProp = System.getProperty(ITConstants.IT_CORE_COUNT);
-        Integer coreCount;
-        if (countProp == null) {
-            coreCount = 50;
-            if (debug) {
-                logger.debug("Warning: using " + coreCount + " as default for number of task types");
-            }
-        } else {
-            coreCount = Integer.parseInt(countProp);
-        }
-        CoreManager.resizeStructures(coreCount);
-        for (int i = 0; i < coreCount; i++) {
-            Implementation[] implementations = new Implementation[1];
-            implementations[0] = new MethodImplementation("", i, 0, new MethodResourceDescription());
-            CoreManager.registerImplementations(i, implementations);
-        }
-        CoreManager.setCoreCount(coreCount);
-        LinkedList<Integer> updatedMethods = new LinkedList<Integer>();
-        for (int i = 0; i < coreCount; i++) {
-            updatedMethods.add(i);
-        }
-        return updatedMethods;
+        CoreManager.registerImplementations(coreId, implementations, signatures);
     }
 
     /**

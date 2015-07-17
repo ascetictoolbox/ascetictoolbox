@@ -1,0 +1,71 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+ 
+    <!-- GENERAL INFORMATION -->
+    <groupId>eu.ascetic.saas.programming-model.runtime</groupId>
+    <artifactId>interaction</artifactId>
+    <packaging>jar</packaging>
+	
+    <parent>
+        <groupId>eu.ascetic.saas.programming-model</groupId>
+        <artifactId>runtime</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>..</relativePath>
+    </parent>
+
+
+    <!-- PROJECT INFORMATION -->
+    <name>COMPSs Ascetic Interactions</name>
+    <description>Programming model interactions with  ASCETiC Project Components</description>
+    <url>http://www.bsc.es</url>
+  
+    <!-- BUILD -->
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+        
+    <!-- DEPENDENCIES -->
+    <!-- Runtime dependencies -->
+    <dependencies>
+        <dependency>
+            <groupId>eu.ascetic.saas.programming-model.runtime</groupId>
+            <artifactId>commons</artifactId>
+            <version>${project.version}</version>
+        </dependency>    
+        <dependency>
+            <groupId>eu.ascetic.saas.programming-model.runtime.resources</groupId>
+            <artifactId>commons</artifactId>
+            <version>${project.version}</version>
+        </dependency>   
+        <!--dependency>
+            <groupId>eu.ascetic.saas</groupId>
+            <artifactId>application-uploader</artifactId>
+            <version>${project.version}</version>
+        </dependency-->   
+        <dependency>
+            <groupId>eu.ascetic.utils</groupId>
+            <artifactId>ovf-xmlbeans-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>  
+        <!--dependency>
+            <groupId>eu.ascetic.paas</groupId>
+            <artifactId>application-manager</artifactId>
+            <version>0.3-SNAPSHOT</version>
+        </dependency-->   
+        <dependency>
+            <groupId>eu.ascetic.paas</groupId>
+            <artifactId>application-manager-datamodel</artifactId>
+            <version>0.17-SNAPSHOT</version>
+        </dependency>  
+    </dependencies>
+</project>

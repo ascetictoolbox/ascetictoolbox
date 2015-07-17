@@ -767,4 +767,8 @@ public class ResourceManager {
      }
      */
 
+    public static void updatedConsumptions(Worker worker) {
+        resourceUser.updatedConsumptions(worker);
+    }
+
 }

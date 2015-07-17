@@ -54,6 +54,7 @@ public class Comm {
             File[] fList = directory.listFiles();
             for (File f : fList) {
                 File adaptorMasterDir = new File(f.getAbsolutePath() + File.separator + "master");
+                logger.info("Buscant Adaptors a "+adaptorMasterDir.getAbsolutePath());
                 File[] jarList = adaptorMasterDir.listFiles();
                 for (File jar : jarList) {
                     try {
@@ -77,6 +78,7 @@ public class Comm {
     }
 
     public static COMPSsWorker initWorker(String adaptorName, String name, HashMap<String, String> properties) throws Exception {
+        logger.info("Starting worker "+name+" with adaptor "+adaptorName);
         if (adaptorName == null) {
             adaptorName = defaultAdaptor;
         }

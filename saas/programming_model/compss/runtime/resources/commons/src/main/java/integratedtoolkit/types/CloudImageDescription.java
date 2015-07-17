@@ -21,6 +21,17 @@ public class CloudImageDescription {
 
     private final HashMap<String, String> sharedDisks;
 
+    public CloudImageDescription(String name, String provider, HashMap<String, String> properties) {
+        this.name = name;
+        this.providerName = provider;
+        this.operativeSystem = "Linux";
+        this.adaptor = "integratedtoolkit.nio.master.NIOAdaptor";
+        this.properties = properties;
+        this.packages = new LinkedList<String[]>();
+        softwareApps = new TreeSet<String>();
+        sharedDisks = new HashMap<String, String>();
+    }
+
     public CloudImageDescription(String cloudProviderName, Node resourcesNode, Node projectNode, HashMap<String, String> providerProperties) {
         providerName = cloudProviderName;
         name = projectNode.getAttributes().getNamedItem("name").getTextContent();
