@@ -32,6 +32,7 @@ public class EnergyModellerQueueServiceManager {
 		
 		this.queuePublisher = queuePublisher;
 		this.registry = registry;
+		LOGGER.info("EM queue manager set");
 	
 	}
 

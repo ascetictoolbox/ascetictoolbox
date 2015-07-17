@@ -36,16 +36,18 @@ public class EnergyModellerDataZabbix {
 	
 	@BeforeClass
 	public static void setup() {
+		System.out.println("Preparing test");
 		dbmanager = new PaaSEMDatabaseManager();
 		dbmanager.setup("springtest.xml");
 		dcollector = new ZabbixDataCollectorService();
 		dcollector.setDataconumption(dbmanager.getDataConsumptionDAOImpl());
 		dcollector.setup();
+		System.out.println("Prepared test");
 	}
 	
 	@Test
 	public void searchHost() {
-		
+		System.out.println("Running test");
 		List<String> hosts = dcollector.getHostsnames();
 		for (String hst : hosts)System.out.println("HST "+hst);
 		String result = dcollector.searchFullHostsname(HOST);
@@ -70,15 +72,15 @@ public class EnergyModellerDataZabbix {
 //		dcollector.getHistoryForItemSamples("apptest","deptest","Power", dcollector.searchFullHostsname(HOST), 100);
 //	}
 //	
-	@Test
-	public void testVMInterval() {
-		System.out.println("################################## ");
-		System.out.println("### INTERVAL DATA FOR "+dcollector.searchFullHostsname(HOST));
-		System.out.println("################################## ");
-		dcollector.getHistoryForItemInterval("apptest","deptest","Power", dcollector.searchFullHostsname(HOST), beginlong, endlong);
-		 
-	}
-	
+//	@Test
+//	public void testVMInterval() {
+//		System.out.println("################################## ");
+//		System.out.println("### INTERVAL DATA FOR "+dcollector.searchFullHostsname(HOST));
+//		System.out.println("################################## ");
+//		dcollector.getHistoryForItemInterval("apptest","deptest","Power", dcollector.searchFullHostsname(HOST), beginlong, endlong);
+//		 
+//	}
+//	
 //	@Test
 //	public void testVMCPU() {
 //		System.out.println("################################## ");

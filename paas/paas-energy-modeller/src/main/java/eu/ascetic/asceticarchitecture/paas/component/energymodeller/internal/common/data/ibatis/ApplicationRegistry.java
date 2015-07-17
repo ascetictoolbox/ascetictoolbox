@@ -33,6 +33,7 @@ public class ApplicationRegistry {
 		Configuration configuration = new Configuration(environment);
 		configuration.addMapper(AppRegistryMapper.class);
 		sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
+		LOGGER.info("Registry set up complete");
 	}
 	
 	public static ApplicationRegistry getRegistry(String driver,String url,String uname,String pwd){

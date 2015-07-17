@@ -472,14 +472,17 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	}
 		
 	private void initializeQueueServiceManager(){
-		
-		if (emsettings.getEnableQueue()=="true") {
+		LOGGER.info("Loading Queue service manager "+emsettings.getEnableQueue() +emsettings.getAmanagertopic());
+		if (emsettings.getEnableQueue().equals("true")) {
+			LOGGER.info("Enabled");
 			queueManager = new EnergyModellerQueueServiceManager(queueclient,appRegistry);
+			queueManager.createConsumers(emsettings.getAmanagertopic());
 		}
-		
+		LOGGER.info("Loaded");
 	}
 	
 	private void initializePrediction(){
+		LOGGER.info("EM predictor module loaded");
 		predictor= PredictorBuilder.getPredictor();
 	}
 	

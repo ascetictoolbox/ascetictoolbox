@@ -132,11 +132,11 @@
 			<artifactId>jackson-databind</artifactId>
 			<version>${paasem.jackson}</version>
 		</dependency>	
-		<dependency>
-			<groupId>org.apache.qpid</groupId>
-			<artifactId>qpid-jms-client</artifactId>
-			<version>${paasem.qpid}</version>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.apache.qpid</groupId> -->
+<!-- 			<artifactId>qpid-jms-client</artifactId> -->
+<!-- 			<version>${paasem.qpid}</version> -->
+<!-- 		</dependency> -->
 		<dependency>
 			<groupId>nz.ac.waikato.cms.weka</groupId>
 			<artifactId>weka-dev</artifactId>

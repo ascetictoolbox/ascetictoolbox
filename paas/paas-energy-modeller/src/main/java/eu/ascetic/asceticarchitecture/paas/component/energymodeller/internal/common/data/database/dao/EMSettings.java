@@ -35,6 +35,8 @@ public class EMSettings {
 	private String amqpPassword="admin";
 	private String amqpUrl="tcp://localhost:61616";
 	
+	private String amanagertopic="APPLICATION.*.DEPLOYMENT.*.VM.*.*";
+	
 	
 
 	public EMSettings() {
@@ -62,6 +64,7 @@ public class EMSettings {
 		this.setAmqpUrl(props.getProperty("amqpUrl"));
 		this.setMonitoringQueueTopic(props.getProperty("monitoringQueueTopic"));
 		this.setEnableQueue(props.getProperty("enableQueue"));
+		this.setAmanagertopic(props.getProperty("amanagertopic"));
 	}
 
 	public String getIaasdbuser() {
@@ -79,8 +82,6 @@ public class EMSettings {
 	public void setIaasdbpassword(String iaasdbpassword) {
 		this.iaasdbpassword = iaasdbpassword;
 	}
-
-
 
 	public String getPaasdbuser() {
 		return paasdbuser;
@@ -235,6 +236,16 @@ public class EMSettings {
 
 	public void setEnableQueue(String enableQueue) {
 		this.enableQueue = enableQueue;
+	}
+
+
+	public String getAmanagertopic() {
+		return amanagertopic;
+	}
+
+
+	public void setAmanagertopic(String amanagertopic) {
+		this.amanagertopic = amanagertopic;
 	}
 
 	

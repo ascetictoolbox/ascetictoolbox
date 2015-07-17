@@ -20,14 +20,14 @@
      
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-        <property name="url" value="jdbc:mysql://localhost:3306/ascetic_paas_em" />
+        <property name="url" value="jdbc:mysql://10.15.5.55:3306/ascetic_paas_em" />
         <property name="username" value="root" />
         <property name="password" value="root" />
     </bean>
    
    <bean id="instance" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-        <property name="url" value="jdbc:mysql://localhost:3306/" />
+        <property name="url" value="jdbc:mysql://10.15.5.55:3306/" />
         <property name="username" value="root" />
         <property name="password" value="root" />
     </bean>

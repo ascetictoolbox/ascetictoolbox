@@ -44,14 +44,14 @@ public class EnergyModellerData {
 	
 	@BeforeClass
 	public static void setup() {
-		serviceEM = (EnergyModellerService) EnergyModellerFactory.getEnergyModeller("c:/test/testconfig.properties");
+		serviceEM = (EnergyModellerService) EnergyModellerFactory.getEnergyModeller("c:/dev-env/ascetic-conf/testconfig.properties");
 		
 	}
 	
 	
-//	@Test
-//	public void testEnergyForEvent() {
-//		System.out.println("Testing energy estimation");
+	@Test
+	public void testEnergyForEvent() {
+		System.out.println("Testing energy estimation");
 //		List<String> vmids = new Vector<String>();
 //		vmids.add(HOST);
 //		vmids.add(HOST2);
@@ -59,7 +59,7 @@ public class EnergyModellerData {
 //		double energy  = serviceEM.energyEstimation(null, APP, vmids, EVENT);
 //		System.out.println("--------------------------------------------RESULT:"+energy);
 //		Assert.assertNotNull(energy);
-//	}
+	}
 	
 //	@Test
 //	public void testEnergyForApp() {
