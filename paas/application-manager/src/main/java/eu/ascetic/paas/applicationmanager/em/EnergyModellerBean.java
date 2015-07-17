@@ -1,5 +1,7 @@
 package eu.ascetic.paas.applicationmanager.em;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -44,4 +46,10 @@ public class EnergyModellerBean {
 	public PaaSEnergyModeller getEnergyModeller() {
 		return energyModeller;
 	}
+	
+	// To force the construction of the bean... 
+	@PostConstruct
+    public void init() {
+
+    }
 }
