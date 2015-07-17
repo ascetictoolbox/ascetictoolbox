@@ -111,4 +111,10 @@ public interface EnergyPredictorInterface {
      * @return The root mean square error
      */
     public double getRootMeanSquareError(Host host);
+    
+    /**
+     * This outputs information about how good a fit is provided the predictor.
+     * @param host The host to check the fit for.
+     */    
+    public void printFitInformation(Host host);
 }

@@ -96,5 +96,15 @@ public class DummyEnergyPredictor extends AbstractEnergyPredictor {
     public double getRootMeanSquareError(Host host) {
         return Double.NaN;
     }
+    
+    @Override
+    public String toString() {
+        return "Dummy energy predictor";
+    }
+
+    @Override
+    public void printFitInformation(Host host) {
+        System.out.println(this.toString() + " - SSE: NaN RMSE: NaN");
+    }          
 
 }

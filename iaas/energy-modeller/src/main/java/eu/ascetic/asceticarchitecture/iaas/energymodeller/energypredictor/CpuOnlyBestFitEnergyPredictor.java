@@ -21,6 +21,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 
 /**
  * This predictor automatically selects between a polynomial or linear
@@ -35,6 +36,7 @@ public class CpuOnlyBestFitEnergyPredictor extends AbstractEnergyPredictor {
     private final CpuOnlyPolynomialEnergyPredictor polynomial = new CpuOnlyPolynomialEnergyPredictor();
     private final CpuOnlySplinePolynomialEnergyPredictor splinePolynomial = new CpuOnlySplinePolynomialEnergyPredictor();
     private final ArrayList<EnergyPredictorInterface>predictors = new ArrayList<>();
+    private final HashMap<Host, EnergyPredictorInterface> predictorMap = new HashMap<>();
     
     /**
      * This creates a new CPU Only Best fit energy predictor
@@ -78,12 +80,30 @@ public class CpuOnlyBestFitEnergyPredictor extends AbstractEnergyPredictor {
      * @return The best predictor for the host specified.
      */
     public EnergyPredictorInterface getBestFit(Host host) {
-        return getBestPredictor(host, predictors);
+        EnergyPredictorInterface answer = predictorMap.get(host);
+        if (answer == null) {
+            answer = getBestPredictor(host, predictors);
+            predictorMap.put(host, answer);
+        }
+        return answer;
     }
 
     @Override
     public double getRootMeanSquareError(Host host) {
         return getBestFit(host).getRootMeanSquareError(host);
+    }
+    
+    /**
+     * This outputs information about how good a fit is provided by each of the
+     * predictors in use.
+     * @param host The host to check the fit for.
+     */
+    @Override
+    public void printFitInformation(Host host) {
+        System.out.println("Using the " + AbstractEnergyPredictor.getBestPredictor(host, predictors).toString());
+        System.out.println("Linear - SSE: " + linear.getSumOfSquareError(host) + " RMSE: " + linear.getRootMeanSquareError(host));
+        System.out.println("Polynomial - SSE: " + polynomial.getSumOfSquareError(host) + " RMSE: " + polynomial.getRootMeanSquareError(host));
+        System.out.println("Polynomial Spline - SSE: " + splinePolynomial.getSumOfSquareError(host) + " RMSE: " + splinePolynomial.getRootMeanSquareError(host));
     }
     
     @Override

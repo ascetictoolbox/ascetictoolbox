@@ -204,12 +204,12 @@ public class EnergyModeller {
             if (predictor == null) {
                 predictor = new CpuOnlyEnergyPredictor();
             }
-            Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The scheduling algorithm specified was not found");
+            Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The energy predictor specified was not found");
         } catch (InstantiationException | IllegalAccessException ex) {
             if (predictor == null) {
                 predictor = new CpuOnlyEnergyPredictor();
             }
-            Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The scheduling algorithm did not work", ex);
+            Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The energy predictor did not work", ex);
         }
     }
 

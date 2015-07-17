@@ -193,6 +193,13 @@ public class CpuOnlyEnergyPredictor extends AbstractEnergyPredictor {
     }
     
     @Override
+    public void printFitInformation(Host host) {
+        System.out.println(this.toString() + " - SSE: " + 
+                this.retrieveModel(host).getSumOfSquareError() + 
+                " RMSE: " + this.retrieveModel(host).getRootMeanSquareError());
+    }       
+    
+    @Override
     public String toString() {
         return "CPU only linear energy predictor";
     }    

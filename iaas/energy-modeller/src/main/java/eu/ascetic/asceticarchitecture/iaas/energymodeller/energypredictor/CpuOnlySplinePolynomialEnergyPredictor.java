@@ -261,11 +261,18 @@ public class CpuOnlySplinePolynomialEnergyPredictor extends AbstractEnergyPredic
     @Override
     public double getRootMeanSquareError(Host host) {
         return retrieveModel(host).getRootMeanSquareError();
-    }
+    } 
 
     @Override
     public String toString() {
         return "CPU only spline polynomial energy predictor";
     }
 
+    @Override
+    public void printFitInformation(Host host) {
+        System.out.println(this.toString() + " - SSE: " + 
+                this.retrieveModel(host).getSumOfSquareError() + 
+                " RMSE: " + this.retrieveModel(host).getRootMeanSquareError());
+    }       
+    
 }
