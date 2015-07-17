@@ -29,7 +29,7 @@ import java.util.logging.Logger;
  * This thus eliminates some overheads of using the API but allows it as a 
  * fallback method.
  *
- * @author Richard
+ * @author Richard Kavanagh
  */
 public class FastDataSourceAdaptor implements HostDataSource {
 

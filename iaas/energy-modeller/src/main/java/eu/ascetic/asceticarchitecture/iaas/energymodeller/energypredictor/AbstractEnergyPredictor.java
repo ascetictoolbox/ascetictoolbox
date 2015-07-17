@@ -47,12 +47,12 @@ import org.apache.commons.configuration.PropertiesConfiguration;
  */
 public abstract class AbstractEnergyPredictor implements EnergyPredictorInterface {
 
-    private static final String CONFIG_FILE = "energy-modeller-predictor.properties";
+    protected static final String CONFIG_FILE = "energy-modeller-predictor.properties";
     private static final String DEFAULT_DATA_SOURCE_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient";
     private static final String DEFAULT_WORKLOAD_PREDICTOR_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.workloadpredictor";
     private double defaultAssumedCpuUsage = 0.6; //assumed 60 percent usage, by default
     private HostDataSource source = null;
-    private DatabaseConnector database = null;
+    protected DatabaseConnector database = null;
     private boolean considerIdleEnergy = true;
     private WorkloadEstimator workloadEstimator = null;
 
@@ -113,7 +113,7 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
      * @param dataSource The name of the data source to use for this energy
      * predictor
      */
-    private void setDataSource(String dataSource) {
+    protected void setDataSource(String dataSource) {
         try {
             if (!dataSource.startsWith(DEFAULT_DATA_SOURCE_PACKAGE)) {
                 dataSource = DEFAULT_DATA_SOURCE_PACKAGE + "." + dataSource;

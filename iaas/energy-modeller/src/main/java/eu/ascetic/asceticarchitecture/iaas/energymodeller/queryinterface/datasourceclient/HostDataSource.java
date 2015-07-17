@@ -136,11 +136,11 @@ public interface HostDataSource {
     public double getHighestHostPowerUsage(eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host);
     
     /**
-     * This finds the cpu utilisation of a host, over the last n minutes.
+     * This finds the cpu utilisation of a host, over the last n seconds.
      * @param host The host to get the cpu utilisation data for.
      * @param durationSeconds The amount of seconds to get the data for
      * @return The average utilisation of the host.
      */
-    public double getCpuUtilisation(eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host, int durationSeconds); 
+    public double getCpuUtilisation(eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host, int durationSeconds);    
     
 }
