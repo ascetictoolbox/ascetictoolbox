@@ -153,7 +153,7 @@ public class Deployment {
 		vms.add(vm);
 	}
 	
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "deployment_id", referencedColumnName="deployment_id", nullable = true)
 	public List<Agreement> getAgreements() {
 		return agreements;
