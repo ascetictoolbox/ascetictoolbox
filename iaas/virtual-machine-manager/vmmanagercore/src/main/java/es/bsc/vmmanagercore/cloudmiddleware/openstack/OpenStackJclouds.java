@@ -394,6 +394,7 @@ public class OpenStackJclouds implements CloudMiddleware {
                 .bootIndex(0)
                 .deviceName("vda")
                 .volumeSize(vm.getDiskGb())
+                .deleteOnTermination(true)
                 .build();
         blockDeviceMappingSet.add(blockDeviceMapping);
         options.blockDeviceMappings(blockDeviceMappingSet);
