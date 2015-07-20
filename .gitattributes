@@ -25,6 +25,7 @@ iaas/energy-modeller-standalone-calibration-tool/Read[!!-~]Me.txt -text
 iaas/energy-modeller-standalone-calibration-tool/nbactions.xml -text
 iaas/energy-modeller-standalone-calibration-tool/pom.xml -text
 iaas/energy-modeller-standalone-calibration-tool/src/main/java/eu/ascetic/iaas/energy/modeller/standalone/calibration/tool/CalibrationRunManager.java -text
+iaas/energy-modeller-standalone-calibration-tool/src/main/java/eu/ascetic/iaas/energy/modeller/standalone/calibration/tool/MeasurementLogger.java -text
 iaas/energy-modeller-standalone-calibration-tool/src/main/java/eu/ascetic/iaas/energy/modeller/standalone/calibration/tool/ResourceExtractor.java -text
 iaas/energy-modeller-standalone-calibration-tool/src/main/java/eu/ascetic/iaas/energy/modeller/standalone/calibration/tool/StandaloneCalibrationTool.java -text
 iaas/energy-modeller-standalone-calibration-tool/src/main/resources/libsigar-amd64-linux.so -text

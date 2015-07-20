@@ -19,6 +19,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DatabaseConn
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostMeasurement;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.POWER_KPI_NAME;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.MetricValue;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostEnergyCalibrationData;
 import eu.ascetic.ioutils.ResultsStore;
@@ -52,6 +53,7 @@ public class CalibrationRunManager implements ManagedProcessListener {
     private final ResultsStore appsToExecute;
     private final ArrayList<ManagedProcessCommandData> commandSet = new ArrayList<>();
     private ManagedProcessLogger logger = null;
+    private MeasurementLogger measurementLogger = null;
     private Actioner actioner = new Actioner();
     private int counter = 0;
     private final CompletedListener sender;
@@ -101,6 +103,10 @@ public class CalibrationRunManager implements ManagedProcessListener {
             Thread loggerThread = new Thread(logger);
             loggerThread.setDaemon(true);
             loggerThread.start();
+            measurementLogger = new MeasurementLogger(new File(workingDir + "MeasurementsLog.csv"), false);
+            Thread measurementLoggerThread = new Thread(measurementLogger);
+            measurementLoggerThread.setDaemon(true);
+            measurementLoggerThread.start();
         }
         Logger.getLogger(Actioner.class.getName()).log(Level.INFO, "FILE LOCATION: {0}", new File(workingDir + TO_EXECUTE_SETTINGS_FILE).getAbsolutePath());
         getApplicationListFromFile(appsToExecute);
@@ -240,17 +246,21 @@ public class CalibrationRunManager implements ManagedProcessListener {
                     && dataEntry.isContemporary(POWER_KPI_NAME,
                             dataEntry.getCpuUtilisationTimeStamp(), 3)
                     && absdifference(currentPower, lastPowerValue) < 0.1) {
+                printDataValueToFile(dataEntry, "New Datapoint Generated");
                 System.out.println("New Datapoint Generated!");
                 return dataEntry;
             } else {
                 if (!(currentClock > lastClock)) {
+                    printDataValueToFile(dataEntry, "Clock did not increment");
                     System.out.println("No New Datapoint: Clock not incrementing");
                 }
                 if (!dataEntry.isContemporary(POWER_KPI_NAME,
                         dataEntry.getCpuUtilisationTimeStamp(), 3)) {
+                    printDataValueToFile(dataEntry, "CPU and power clock values out of sync");
                     System.out.println("No New Datapoint: CPU and power clock values out of sync");
                 }
                 if (!(absdifference(currentPower, lastPowerValue) < 0.1)) {
+                    printDataValueToFile(dataEntry, "No power values plateau detected");
                     System.out.println("No New Datapoint: No power values plateau detected");
                 }
             }
@@ -260,6 +270,20 @@ public class CalibrationRunManager implements ManagedProcessListener {
             Logger.getLogger(CalibrationRunManager.class.getName()).log(Level.SEVERE, "The calibrator's data logger had a problem.", ex);
         }
         return null;
+    }
+
+    /**
+     * This checks to see if data entry values should be written to disk and
+     * then writes them to disk if required.
+     *
+     * @param dataEntry The data entry to write to disk.
+     * @param status The status of the data entry value.
+     */
+    private void printDataValueToFile(HostMeasurement dataEntry, String status) {
+        if (logging == true) {
+            dataEntry.addMetric(new MetricValue("Calibration Status", "Calibration Status", status, dataEntry.getClock()));
+            measurementLogger.printToFile(dataEntry);
+        }
     }
 
     /**
@@ -402,6 +426,15 @@ public class CalibrationRunManager implements ManagedProcessListener {
                         HostMeasurement measurement = readEnergyDataForHost(host);
                         if (measurement != null) {
                             measurements.add(measurement);
+                        }
+                    } else {
+                        if (logging == true) {
+                            HostMeasurement dataEntry = datasource.getHostData(host);
+                            if (counter == 0) {
+                                printDataValueToFile(dataEntry, "No Stress Load Induced");
+                            } else {
+                                printDataValueToFile(dataEntry, "Not in Measurement Period");
+                            }
                         }
                     }
                 } catch (Exception ex) { //outer most try statement
