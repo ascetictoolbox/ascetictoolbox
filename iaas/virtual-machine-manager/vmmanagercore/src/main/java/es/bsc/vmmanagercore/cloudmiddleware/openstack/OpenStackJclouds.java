@@ -392,6 +392,7 @@ public class OpenStackJclouds implements CloudMiddleware {
                 .uuid(imageId)
                 .destinationType("volume")
                 .bootIndex(0)
+                .deviceName("vda")
                 .build();
         blockDeviceMappingSet.add(blockDeviceMapping);
         options.blockDeviceMappings(blockDeviceMappingSet);
