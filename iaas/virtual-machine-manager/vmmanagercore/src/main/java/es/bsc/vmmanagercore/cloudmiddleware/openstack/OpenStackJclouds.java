@@ -101,7 +101,7 @@ public class OpenStackJclouds implements CloudMiddleware {
         // Deploy the VM
         ServerCreated server = openStackJcloudsApis.getServerApi().create(
                 vm.getName(),
-                null,
+                getImageIdForDeployment(vm),
                 getFlavorIdForDeployment(vm),
                 getDeploymentOptionsForVm(vm, hostname, securityGroups, true));
 
@@ -322,7 +322,7 @@ public class OpenStackJclouds implements CloudMiddleware {
         includeSecurityGroupInDeploymentOption(options, securityGroups);
         includeNetworkInDeploymentOptions(options, hostname);
         if (useVolume) {
-            includeVolumeInDeploymentOptions(vm.getImage(), options);
+            includeVolumeInDeploymentOptions(vm, options);
         }
         return options;
     }
@@ -385,14 +385,15 @@ public class OpenStackJclouds implements CloudMiddleware {
         }
     }
 
-    private void includeVolumeInDeploymentOptions(String imageId, CreateServerOptions options) {
+    private void includeVolumeInDeploymentOptions(Vm vm, CreateServerOptions options) {
         Set<BlockDeviceMapping> blockDeviceMappingSet = new HashSet<>();
         BlockDeviceMapping blockDeviceMapping = BlockDeviceMapping.builder()
                 .sourceType("image")
-                .uuid(imageId)
+                .uuid(vm.getImage())
                 .destinationType("volume")
                 .bootIndex(0)
                 .deviceName("vda")
+                .volumeSize(vm.getDiskGb())
                 .build();
         blockDeviceMappingSet.add(blockDeviceMapping);
         options.blockDeviceMappings(blockDeviceMappingSet);
