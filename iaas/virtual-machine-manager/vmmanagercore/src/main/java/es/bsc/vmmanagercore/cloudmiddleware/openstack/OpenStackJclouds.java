@@ -226,8 +226,6 @@ public class OpenStackJclouds implements CloudMiddleware {
     public List<ImageUploaded> getVmImages() {
         List<ImageUploaded> vmImages = new ArrayList<>();
         for (Image image: openStackJcloudsApis.getImageApi().listInDetail().concat()) {
-            System.out.println(image);
-
             vmImages.add(new ImageUploaded(image.getId(), image.getName(), image.getStatus().toString()));
         }
         return vmImages;
