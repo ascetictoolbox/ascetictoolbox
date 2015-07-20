@@ -101,7 +101,7 @@ public class OpenStackJclouds implements CloudMiddleware {
         // Deploy the VM
         ServerCreated server = openStackJcloudsApis.getServerApi().create(
                 vm.getName(),
-                getImageIdForDeployment(vm),
+                null,
                 getFlavorIdForDeployment(vm),
                 getDeploymentOptionsForVm(vm, hostname, securityGroups, true));
 
