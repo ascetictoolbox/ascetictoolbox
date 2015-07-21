@@ -186,9 +186,16 @@ public class Vm {
         return applicationId != null && !applicationId.equals("") && !applicationId.equals(" ");
     }
 
+    /**
+     * This is only relevant to the Ascetic project. In Ascetic it was decided to send the ISO images that
+     * need to be mounted in the virtual machine using the init script field. Probably not a good choice but
+     * we'll stick with it for now.
+     * This function checks whether the init script field contains a path to an ISO image.
+     *
+     * @return True if the init script contains a path to an ISO image, False otherwise.
+     */
     public boolean isoReceivedInInitScript() {
-        return initScript != null && !initScript.equals("")
-                && (initScript.contains(".iso_") || initScript.endsWith(".iso"));
+        return initScript != null && (initScript.contains(".iso_") || initScript.endsWith(".iso"));
     }
 
     @Override
