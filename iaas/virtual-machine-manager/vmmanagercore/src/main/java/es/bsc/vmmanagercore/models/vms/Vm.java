@@ -186,6 +186,11 @@ public class Vm {
         return applicationId != null && !applicationId.equals("") && !applicationId.equals(" ");
     }
 
+    public boolean isoReceivedInInitScript() {
+        return initScript != null && !initScript.equals("")
+                && (initScript.contains(".iso_") || initScript.endsWith(".iso"));
+    }
+
     @Override
     public String toString() {
         return ReflectionToStringBuilder.toString(this);

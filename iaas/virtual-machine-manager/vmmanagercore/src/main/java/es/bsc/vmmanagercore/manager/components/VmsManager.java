@@ -386,7 +386,7 @@ public class VmsManager {
     private String setAsceticInitScript(Vm vmToDeploy) {
         String vmScriptName = null;
         if (usingZabbix()) { // It would be more correct to check whether the VMM is running for the Ascetic project.
-            if (isoReceivedInInitScript(vmToDeploy)) {
+            if (vmToDeploy.isoReceivedInInitScript()) {
                 try {
                     // Copy the Zabbix agents script
                     vmScriptName = "vm_" + vmToDeploy.getName() +
@@ -440,11 +440,6 @@ public class VmsManager {
             }
         }
         return null;
-    }
-
-    private boolean isoReceivedInInitScript(Vm vm) {
-        return vm.getInitScript() != null && !vm.getInitScript().equals("")
-                && (vm.getInitScript().contains(".iso_") || vm.getInitScript().endsWith(".iso"));
     }
 
     private void queueDeployedVmsMessages(List<String> deployedVmsIds) {
