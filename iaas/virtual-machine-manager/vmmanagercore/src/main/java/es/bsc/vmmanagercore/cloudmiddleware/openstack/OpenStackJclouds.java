@@ -397,7 +397,29 @@ public class OpenStackJclouds implements CloudMiddleware {
                 .deleteOnTermination(true)
                 .build();
         blockDeviceMappingSet.add(blockDeviceMapping);
+
+        // If the VM needs to mount an ISO, first we need to upload that ISO to glance, and then add it
+        // to the set of block device mappings
+        if (vm.isoReceivedInInitScript()) {
+            String imageId = createVmImage(new ImageToUpload(
+                    vm.getInitScript().split("/")[vm.getInitScript().split("/").length - 1],
+                    vm.getInitScript()));
+            blockDeviceMappingSet.add(getBlockDeviceMappingIso(imageId));
+        }
+
         options.blockDeviceMappings(blockDeviceMappingSet);
+    }
+
+    private BlockDeviceMapping getBlockDeviceMappingIso(String imageId) {
+        return BlockDeviceMapping.builder()
+                .sourceType("image")
+                .uuid(imageId)
+                .destinationType("volume")
+                .bootIndex(0)
+                .deviceName("vdb")
+                .volumeSize(1) // 1GB. Not sure if this will always be enough.
+                .deleteOnTermination(true)
+                .build();
     }
 
     /**

@@ -195,7 +195,8 @@ public class VmsManager {
             // If the monitoring system is Zabbix, we need to make sure that the script that sets up the Zabbix
             // agents is executed. Also, if an ISO is received, we need to make sure that we execute a script
             // that mounts it
-            String vmScriptName = setAsceticInitScript(vmToDeploy);
+            //String vmScriptName = setAsceticInitScript(vmToDeploy);
+            setAsceticInitScript(vmToDeploy);
 
 
             // This is a quick fix for the Ascetic project.
@@ -223,9 +224,9 @@ public class VmsManager {
             }
 
             // Delete the script if one was created
-            if (vmScriptName != null) {
+            /*if (vmScriptName != null) {
                 FileSystem.deleteFile(ASCETIC_SCRIPTS_PATH + vmScriptName);
-            }
+            }*/
         }
 
         performAfterVmsDeploymentSelfAdaptation();
@@ -383,10 +384,18 @@ public class VmsManager {
         }
     }
 
-    private String setAsceticInitScript(Vm vmToDeploy) {
-        String vmScriptName = null;
+    private void setAsceticInitScript(Vm vmToDeploy) {
+        //String vmScriptName = null;
         if (usingZabbix()) { // It would be more correct to check whether the VMM is running for the Ascetic project.
-            if (vmToDeploy.isoReceivedInInitScript()) {
+            Path zabbixAgentsScriptPath = FileSystems.getDefault().getPath(ASCETIC_ZABBIX_SCRIPT_PATH);
+            if (Files.exists(zabbixAgentsScriptPath)) {
+                vmToDeploy.setInitScript(ASCETIC_ZABBIX_SCRIPT_PATH);
+            }
+            else { // This is for when I perform tests locally and do not have access to the script (and
+                // do not need it)
+                vmToDeploy.setInitScript(null);
+            }
+            /*if (vmToDeploy.isoReceivedInInitScript()) {
                 try {
                     // Copy the Zabbix agents script
                     vmScriptName = "vm_" + vmToDeploy.getName() +
@@ -417,9 +426,9 @@ public class VmsManager {
                     // do not need it)
                     vmToDeploy.setInitScript(null);
                 }
-            }
+            }*/
         }
-        return vmScriptName;
+        //return vmScriptName;
     }
 
     private boolean repeatedNameInVmList(List<Vm> vms) {
