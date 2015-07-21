@@ -400,7 +400,7 @@ public class OpenStackJclouds implements CloudMiddleware {
 
         // If the VM needs to mount an ISO, first we need to upload that ISO to glance, and then add it
         // to the set of block device mappings
-        if (isoPath != null) {
+        if (isoPath != null && (isoPath.contains(".iso_") || isoPath.endsWith(".iso"))) {
             String imageId = createVmImage(new ImageToUpload(
                     isoPath.split("/")[isoPath.split("/").length - 1],
                     isoPath));
