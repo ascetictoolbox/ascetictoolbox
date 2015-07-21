@@ -400,7 +400,9 @@ public class OpenStackJclouds implements CloudMiddleware {
 
         // If the VM needs to mount an ISO, first we need to upload that ISO to glance, and then add it
         // to the set of block device mappings
+        System.out.println(vm.getInitScript());
         if (vm.isoReceivedInInitScript()) {
+            System.out.println("HOLA");
             String imageId = createVmImage(new ImageToUpload(
                     vm.getInitScript().split("/")[vm.getInitScript().split("/").length - 1],
                     vm.getInitScript()));
@@ -416,7 +418,7 @@ public class OpenStackJclouds implements CloudMiddleware {
                 .uuid(imageId)
                 .destinationType("volume")
                 .bootIndex(0)
-                .deviceName("vdb")
+                .deviceName("vdc")
                 .volumeSize(1) // 1GB. Not sure if this will always be enough.
                 .deleteOnTermination(true)
                 .build();
