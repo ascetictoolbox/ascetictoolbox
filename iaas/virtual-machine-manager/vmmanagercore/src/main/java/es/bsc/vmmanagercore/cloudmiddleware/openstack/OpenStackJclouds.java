@@ -405,6 +405,15 @@ public class OpenStackJclouds implements CloudMiddleware {
                     isoPath.split("/")[isoPath.split("/").length - 1],
                     isoPath));
             blockDeviceMappingSet.add(getBlockDeviceMappingIso(imageId));
+
+            // Block until the image is uploaded
+            while (!glanceConnector.imageIsActive(imageId)) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         options.blockDeviceMappings(blockDeviceMappingSet);
