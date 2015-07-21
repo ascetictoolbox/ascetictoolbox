@@ -98,7 +98,7 @@ public class FakeCloudMiddleware implements CloudMiddleware {
     }
 
     @Override
-    public String deployWithVolume(Vm vm, String hostname) {
+    public String deployWithVolume(Vm vm, String hostname, String isoPath) {
         // Not used in the fake cloud. Simply do a standard deployment
         return deploy(vm, hostname);
     }

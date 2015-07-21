@@ -48,9 +48,10 @@ public interface CloudMiddleware {
      *
      * @param vm the vm
      * @param hostname the hostname
+     * @param isoPath path of the ISO that the VM needs to mount. Can be null.
      * @return the ID of the deployed VM
      */
-    String deployWithVolume(Vm vm, String hostname);
+    String deployWithVolume(Vm vm, String hostname, String isoPath);
 
     /**
      * Destroys a Virtual Machine.

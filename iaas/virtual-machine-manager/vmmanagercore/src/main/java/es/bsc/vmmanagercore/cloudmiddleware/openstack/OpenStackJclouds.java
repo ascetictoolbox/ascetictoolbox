@@ -90,20 +90,20 @@ public class OpenStackJclouds implements CloudMiddleware {
                 vm.getName(),
                 getImageIdForDeployment(vm),
                 getFlavorIdForDeployment(vm),
-                getDeploymentOptionsForVm(vm, hostname, securityGroups, false));
+                getDeploymentOptionsForVm(vm, hostname, securityGroups, false, null));
 
         blockUntilVmIsDeployed(server.getId());
         return server.getId();
     }
 
     @Override
-    public String deployWithVolume(Vm vm, String hostname) {
+    public String deployWithVolume(Vm vm, String hostname, String isoPath) {
         // Deploy the VM
         ServerCreated server = openStackJcloudsApis.getServerApi().create(
                 vm.getName(),
                 getImageIdForDeployment(vm),
                 getFlavorIdForDeployment(vm),
-                getDeploymentOptionsForVm(vm, hostname, securityGroups, true));
+                getDeploymentOptionsForVm(vm, hostname, securityGroups, true, isoPath));
 
         blockUntilVmIsDeployed(server.getId());
         return server.getId();
@@ -315,14 +315,14 @@ public class OpenStackJclouds implements CloudMiddleware {
      * @return the deployment options
      */
     private CreateServerOptions getDeploymentOptionsForVm(Vm vm, String hostname, String[] securityGroups,
-                                                          boolean useVolume) {
+                                                          boolean useVolume, String isoPath) {
         CreateServerOptions options = new CreateServerOptions();
         includeDstNodeInDeploymentOption(hostname, options);
         includeInitScriptInDeploymentOptions(vm, options);
         includeSecurityGroupInDeploymentOption(options, securityGroups);
         includeNetworkInDeploymentOptions(options, hostname);
         if (useVolume) {
-            includeVolumeInDeploymentOptions(vm, options);
+            includeVolumeInDeploymentOptions(vm, options, isoPath);
         }
         return options;
     }
@@ -385,7 +385,7 @@ public class OpenStackJclouds implements CloudMiddleware {
         }
     }
 
-    private void includeVolumeInDeploymentOptions(Vm vm, CreateServerOptions options) {
+    private void includeVolumeInDeploymentOptions(Vm vm, CreateServerOptions options, String isoPath) {
         Set<BlockDeviceMapping> blockDeviceMappingSet = new HashSet<>();
         BlockDeviceMapping blockDeviceMapping = BlockDeviceMapping.builder()
                 .sourceType("image")
@@ -400,10 +400,10 @@ public class OpenStackJclouds implements CloudMiddleware {
 
         // If the VM needs to mount an ISO, first we need to upload that ISO to glance, and then add it
         // to the set of block device mappings
-        if (vm.isoReceivedInInitScript()) {
+        if (isoPath != null) {
             String imageId = createVmImage(new ImageToUpload(
-                    vm.getInitScript().split("/")[vm.getInitScript().split("/").length - 1],
-                    vm.getInitScript()));
+                    isoPath.split("/")[isoPath.split("/").length - 1],
+                    isoPath));
             blockDeviceMappingSet.add(getBlockDeviceMappingIso(imageId));
         }
 

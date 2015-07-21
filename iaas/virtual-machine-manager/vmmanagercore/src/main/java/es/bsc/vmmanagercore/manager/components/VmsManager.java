@@ -196,6 +196,7 @@ public class VmsManager {
             // agents is executed. Also, if an ISO is received, we need to make sure that we execute a script
             // that mounts it
             //String vmScriptName = setAsceticInitScript(vmToDeploy);
+            String originalVmInitScript = vmToDeploy.getInitScript();
             setAsceticInitScript(vmToDeploy);
 
 
@@ -205,7 +206,7 @@ public class VmsManager {
             /// then deploy using a volume.
             String vmId;
             if (hostForDeployment.getHostname().contains("wally")) {
-                vmId = deployVmWithVolume(vmToDeploy, hostForDeployment);
+                vmId = deployVmWithVolume(vmToDeploy, hostForDeployment, originalVmInitScript);
             }
             else {
                 vmId = deployVm(vmToDeploy, hostForDeployment);
@@ -313,7 +314,7 @@ public class VmsManager {
         return cloudMiddleware.deploy(vm, host.getHostname());
     }
 
-    private String deployVmWithVolume(Vm vm, Host host) {
+    private String deployVmWithVolume(Vm vm, Host host, String isoPath) {
         // If the host is not on, turn it on and wait
         if (!host.isOn()) {
             hostsManager.pressHostPowerButton(host.getHostname());
@@ -325,7 +326,7 @@ public class VmsManager {
                 }
             }
         }
-        return cloudMiddleware.deployWithVolume(vm, host.getHostname());
+        return cloudMiddleware.deployWithVolume(vm, host.getHostname(), isoPath);
     }
 
     private void performAfterVmDeleteSelfAdaptation() {
