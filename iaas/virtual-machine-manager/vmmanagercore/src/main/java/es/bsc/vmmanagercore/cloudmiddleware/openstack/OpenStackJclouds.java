@@ -415,7 +415,7 @@ public class OpenStackJclouds implements CloudMiddleware {
                 .sourceType("image")
                 .uuid(imageId)
                 .destinationType("volume")
-                .bootIndex(0)
+                .bootIndex(1)
                 .deviceName("vdc")
                 .volumeSize(1) // 1GB. Not sure if this will always be enough.
                 .deleteOnTermination(true)
