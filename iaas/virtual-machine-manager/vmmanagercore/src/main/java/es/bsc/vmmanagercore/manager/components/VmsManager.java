@@ -34,21 +34,12 @@ import es.bsc.vmmanagercore.scheduler.Scheduler;
 import es.bsc.vmmanagercore.selfadaptation.AfterVmDeleteSelfAdaptationRunnable;
 import es.bsc.vmmanagercore.selfadaptation.AfterVmsDeploymentSelfAdaptationRunnable;
 import es.bsc.vmmanagercore.selfadaptation.SelfAdaptationManager;
-import es.bsc.vmmanagercore.utils.FileSystem;
 import es.bsc.vmmanagercore.utils.TimeUtils;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.*;
-
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 /**
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
@@ -61,8 +52,6 @@ public class VmsManager {
     private final SelfAdaptationManager selfAdaptationManager;
     private final Scheduler scheduler;
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss");
-    private static final String ASCETIC_SCRIPTS_PATH = "/DFS/ascetic/vm-scripts/";
     private static final String ASCETIC_ZABBIX_SCRIPT_PATH = "/DFS/ascetic/vm-scripts/zabbix_agents.sh";
     
     public VmsManager(HostsManager hostsManager, CloudMiddleware cloudMiddleware, VmManagerDb db, 
@@ -195,15 +184,13 @@ public class VmsManager {
             // If the monitoring system is Zabbix, we need to make sure that the script that sets up the Zabbix
             // agents is executed. Also, if an ISO is received, we need to make sure that we execute a script
             // that mounts it
-            //String vmScriptName = setAsceticInitScript(vmToDeploy);
             String originalVmInitScript = vmToDeploy.getInitScript();
             setAsceticInitScript(vmToDeploy);
-
 
             // This is a quick fix for the Ascetic project.
             // I do not have enough information to decide when a VM needs to boot using a volume or an image.
             // Therefore, I am just going to check the destination hostname. If it is a host for Ascetic Y2 (wallyX),
-            /// then deploy using a volume.
+            // then deploy using a volume.
             String vmId;
             if (hostForDeployment.getHostname().contains("wally")) {
                 vmId = deployVmWithVolume(vmToDeploy, hostForDeployment, originalVmInitScript);
@@ -223,11 +210,6 @@ public class VmsManager {
             if (usingZabbix()) {
                 ZabbixConnector.registerVmInZabbix(vmId, getVm(vmId).getHostName(), getVm(vmId).getIpAddress());
             }
-
-            // Delete the script if one was created
-            /*if (vmScriptName != null) {
-                FileSystem.deleteFile(ASCETIC_SCRIPTS_PATH + vmScriptName);
-            }*/
         }
 
         performAfterVmsDeploymentSelfAdaptation();
@@ -386,7 +368,6 @@ public class VmsManager {
     }
 
     private void setAsceticInitScript(Vm vmToDeploy) {
-        //String vmScriptName = null;
         if (usingZabbix()) { // It would be more correct to check whether the VMM is running for the Ascetic project.
             Path zabbixAgentsScriptPath = FileSystems.getDefault().getPath(ASCETIC_ZABBIX_SCRIPT_PATH);
             if (Files.exists(zabbixAgentsScriptPath)) {
@@ -396,40 +377,7 @@ public class VmsManager {
                 // do not need it)
                 vmToDeploy.setInitScript(null);
             }
-            /*if (vmToDeploy.isoReceivedInInitScript()) {
-                try {
-                    // Copy the Zabbix agents script
-                    vmScriptName = "vm_" + vmToDeploy.getName() +
-                            "_" + DATE_FORMAT.format(Calendar.getInstance().getTime()) + ".sh";
-                    Files.copy(Paths.get(ASCETIC_ZABBIX_SCRIPT_PATH),
-                            Paths.get(ASCETIC_SCRIPTS_PATH + vmScriptName), REPLACE_EXISTING);
-
-                    // Append the instruction to mount the ISO
-                    try (PrintWriter out = new PrintWriter(new BufferedWriter(
-                            new FileWriter(ASCETIC_SCRIPTS_PATH + vmScriptName, true)))) {
-                        out.println("/usr/local/sbin/set_iso_path " + vmToDeploy.getInitScript());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                    // Assign the new script to the VM
-                    vmToDeploy.setInitScript(ASCETIC_SCRIPTS_PATH + vmScriptName);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            else {
-                Path zabbixAgentsScriptPath = FileSystems.getDefault().getPath(ASCETIC_ZABBIX_SCRIPT_PATH);
-                if (Files.exists(zabbixAgentsScriptPath)) {
-                    vmToDeploy.setInitScript(ASCETIC_ZABBIX_SCRIPT_PATH);
-                }
-                else { // This is for when I perform tests locally and do not have access to the script (and
-                    // do not need it)
-                    vmToDeploy.setInitScript(null);
-                }
-            }*/
         }
-        //return vmScriptName;
     }
 
     private boolean repeatedNameInVmList(List<Vm> vms) {
