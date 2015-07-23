@@ -19,6 +19,7 @@ package eu.ascetic.paas.self.adaptation.manager.rules.datatypes;
  *
  * @author Richard Kavanagh
  */
+@Deprecated
 public class FiringCriteria {
 
     public FiringCriteria() {

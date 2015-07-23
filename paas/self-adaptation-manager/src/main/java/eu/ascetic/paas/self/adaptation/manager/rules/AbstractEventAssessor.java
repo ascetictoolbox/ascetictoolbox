@@ -30,7 +30,7 @@ import java.util.logging.Logger;
  * The abstract class event assessor provides the generic routines for
  * assessment of adaptation events. These events are assessed by concrete
  * implementations of this class. Adaption is then implemented based upon the
- * outcomes rules associated with the assessor.
+ * outcome of rules associated with the assessor.
  *
  * @author Richard Kavanagh
  */

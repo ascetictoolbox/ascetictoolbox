@@ -15,8 +15,12 @@
  */
 package eu.ascetic.paas.self.adaptation.manager.activemq.actuator;
 
+import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.self.adaptation.manager.ActuatorInvoker;
 import eu.ascetic.paas.self.adaptation.manager.activemq.ActiveMQBase;
+import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
+import java.util.HashSet;
+import java.util.List;
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.JMSException;
@@ -37,6 +41,7 @@ public class ActionRequester extends ActiveMQBase implements Runnable, ActuatorI
     private final MessageProducer producer;
     private final Destination queue;
     private static final String QUEUE_NAME = "";
+    //Rank adaptation?? i.e. 1, consolidate, 2, scale, 3 redeploy ??
 
     /**
      * This creates a new action requester.
@@ -81,6 +86,36 @@ public class ActionRequester extends ActiveMQBase implements Runnable, ActuatorI
             System.out.println("Caught: " + ex);
             ex.printStackTrace();
         }
+    }
+
+    @Override
+    public HashSet<String> getVmTypesAvailableToAdd(String applicationId, String deploymentId) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public HashSet<String> getVmTypesAvailableToRemove(String applicationId, String deploymentId) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public int getVMsOfGivenType(List<VM> vms, String type) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void addVM(String applicationId, String deploymentId, String ovfId) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void deleteVM(String application, String deployment, String vmID) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void actuate(Response response) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

@@ -24,9 +24,14 @@ import eu.ascetic.paas.self.adaptation.manager.ActuatorInvoker;
  */
 public class Response implements Comparable<Response> {
 
-    private ActuatorInvoker actuator;
-    private EventData cause;
-    private String message;
+    private final ActuatorInvoker actuator;
+    private final EventData cause;
+    private AdaptationType actionType; //Make Enumeration
+    private String adapationDetails;
+    
+    public enum AdaptationType {
+    ADD_VM, REMOVE_VM, ADD_CPU, REMOVE_CPU,
+    ADD_MEMORY, REMOVE_MEMORY}
 
     /**
      * This creates a standard response object. It indicates which actuator
@@ -34,12 +39,12 @@ public class Response implements Comparable<Response> {
      * @param actuator The actuator used to invoke the change.
      * @param cause A copy of the incoming event that caused the response to 
      * fire.
-     * @param message 
+     * @param actionType The description of the type of action to take
      */
-    public Response(ActuatorInvoker actuator, EventData cause, String message) {
+    public Response(ActuatorInvoker actuator, EventData cause, AdaptationType actionType) {
         this.actuator = actuator;
         this.cause = cause;
-        this.message = message;
+        this.actionType = actionType;
     }
     
     /**
@@ -65,5 +70,60 @@ public class Response implements Comparable<Response> {
         //This sequences responses in cronlogical order.
         return Long.compare(this.getTime(), response.getTime());
     }   
+
+    /**
+     * @return the actionType
+     */
+    public AdaptationType getActionType() {
+        return actionType;
+    }
+
+    /**
+     * @param actionType the actionType to set
+     */
+    public void setActionType(AdaptationType actionType) {
+        this.actionType = actionType;
+    }
+
+    /**
+     * @return the adapationDetails
+     */
+    public String getAdapationDetails() {
+        return adapationDetails;
+    }
+
+    /**
+     * @param adapationDetails the adapationDetails to set
+     */
+    public void setAdapationDetails(String adapationDetails) {
+        this.adapationDetails = adapationDetails;
+    }
+    
+    /**
+     * This returns the deployment id associated with the event that 
+     * caused the response.
+     * @return 
+     */
+    public String getApplicationId() {
+        return ""; //TODO
+    }
+    
+    /**
+     * This returns the deployment id associated with the event that 
+     * caused the response.
+     * @return 
+     */
+    public String getDeploymentId() {
+        return ""; //TODO
+    }
+    
+    /**
+     * This returns the VM id associated with the event. This is the VM that is
+     * to be adapted. i.e. change size, delete etc
+     * @return 
+     */
+    public String getVMId() {
+        return ""; //TODO
+    }
     
 }
