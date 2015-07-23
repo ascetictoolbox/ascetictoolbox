@@ -29,6 +29,9 @@ public class EventData implements Comparable<EventData> {
     private EventData.Type type; //breach vs warning
     private EventData.Operator guranteeOperator; // threshold direction
     private String slaUuid; //sla id
+    private String applicationId;
+    private String deploymentId;
+    private String vmId;
     private String guaranteeid; //sla gurantee id
 
     /**
@@ -36,7 +39,7 @@ public class EventData implements Comparable<EventData> {
      */
     public EventData() {
     }
-    
+   
     /**
      * 
      * @param time
@@ -45,17 +48,23 @@ public class EventData implements Comparable<EventData> {
      * @param type
      * @param guranteeOperator
      * @param slaUuid
+     * @param applicationId
+     * @param deploymentId
+     * @param vmId
      * @param guaranteeid 
      */
-    public EventData(long time, double rawValue, double guranteedValue, Type type, Operator guranteeOperator, String slaUuid, String guaranteeid) {
+    public EventData(long time, double rawValue, double guranteedValue, Type type, Operator guranteeOperator, String slaUuid, String applicationId, String deploymentId, String vmId, String guaranteeid) {
         this.time = time;
         this.rawValue = rawValue;
         this.guranteedValue = guranteedValue;
         this.type = type;
         this.guranteeOperator = guranteeOperator;
         this.slaUuid = slaUuid;
+        this.applicationId = applicationId;
+        this.deploymentId = deploymentId;
+        this.vmId = vmId;
         this.guaranteeid = guaranteeid;
-    }
+    }    
 
     /**
      * @return the guranteeOperator
@@ -72,6 +81,8 @@ public class EventData implements Comparable<EventData> {
     }
 
     /**
+     * This gets the value of the SLA Id that is associated with the 
+     * notification event
      * @return the slaUuid
      */
     public String getSlaUuid() {
@@ -79,6 +90,8 @@ public class EventData implements Comparable<EventData> {
     }
 
     /**
+     * This sets the value of the SLA Id that is associated with the 
+     * notification event
      * @param slaUuid the slaUuid to set
      */
     public void setSlaUuid(String slaUuid) {
@@ -155,6 +168,54 @@ public class EventData implements Comparable<EventData> {
         this.guranteedValue = guranteedValue;
     }
 
+    /**
+     * This gets the application id associated with the origin of the event.
+     * @return the applicationId
+     */
+    public String getApplicationId() {
+        return applicationId;
+    }
+
+    /**
+     * This sets the application id associated with the origin of the event.
+     * @param applicationId the applicationId to set
+     */
+    public void setApplicationId(String applicationId) {
+        this.applicationId = applicationId;
+    }
+
+    /**
+     * This gets the deployment id associated with the origin of the event.
+     * @return the deploymentId
+     */
+    public String getDeploymentId() {
+        return deploymentId;
+    }
+
+    /**
+     * This sets the deployment id associated with the origin of the event.
+     * @param deploymentId the deploymentId to set
+     */
+    public void setDeploymentId(String deploymentId) {
+        this.deploymentId = deploymentId;
+    }
+
+    /**
+     * This gets the vm id associated with the origin of the event.
+     * @return the vmId
+     */
+    public String getVmId() {
+        return vmId;
+    }
+
+    /**
+     * This sets the vm id associated with the origin of the event.
+     * @param vmId the vmId to set
+     */
+    public void setVmId(String vmId) {
+        this.vmId = vmId;
+    }    
+    
     @Override
     public int compareTo(EventData event) {
         //This sequences event data in cronlogical order.

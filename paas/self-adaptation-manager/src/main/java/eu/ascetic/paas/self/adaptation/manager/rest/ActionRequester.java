@@ -233,6 +233,11 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
         this.stop = true;
     }
     
+    /**
+     * This executes a given action for a response that has been placed in the
+     * actuator's queue for deployment.
+     * @param response The response object to launch the action for
+     */
     private void launchAction(Response response) {
         switch (response.getActionType()) {
             case ADD_VM:
@@ -241,7 +246,8 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
             case REMOVE_VM:
                 deleteVM(response.getApplicationId(), response.getDeploymentId(), response.getVMId());
                 break;
-        }    
+        }
+        response.setPerformed(true);
     }
     
     @Override

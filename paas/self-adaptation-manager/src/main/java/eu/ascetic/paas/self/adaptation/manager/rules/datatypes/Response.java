@@ -26,8 +26,9 @@ public class Response implements Comparable<Response> {
 
     private final ActuatorInvoker actuator;
     private final EventData cause;
-    private AdaptationType actionType; //Make Enumeration
+    private AdaptationType actionType;
     private String adapationDetails;
+    private boolean performed = false;
     
     public enum AdaptationType {
     ADD_VM, REMOVE_VM, ADD_CPU, REMOVE_CPU,
@@ -100,12 +101,30 @@ public class Response implements Comparable<Response> {
     }
     
     /**
+     * This indicates if the action associated with the response has been 
+     * performed.
+     * @return the performed
+     */
+    public boolean isPerformed() {
+        return performed;
+    }
+
+    /**
+     * This sets the flag to indicate if the action associated with this 
+     * response has been performed.
+     * @param performed the performed to set
+     */
+    public void setPerformed(boolean performed) {
+        this.performed = performed;
+    }    
+    
+    /**
      * This returns the deployment id associated with the event that 
      * caused the response.
      * @return 
      */
     public String getApplicationId() {
-        return ""; //TODO
+        return cause.getApplicationId();
     }
     
     /**
@@ -114,7 +133,7 @@ public class Response implements Comparable<Response> {
      * @return 
      */
     public String getDeploymentId() {
-        return ""; //TODO
+        return cause.getDeploymentId();
     }
     
     /**
@@ -123,7 +142,7 @@ public class Response implements Comparable<Response> {
      * @return 
      */
     public String getVMId() {
-        return ""; //TODO
+        return cause.getVmId();
     }
     
 }
