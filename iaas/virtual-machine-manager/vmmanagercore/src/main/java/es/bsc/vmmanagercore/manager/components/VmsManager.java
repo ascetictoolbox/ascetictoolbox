@@ -25,6 +25,7 @@ import es.bsc.vmmanagercore.logging.VMMLogger;
 import es.bsc.vmmanagercore.message_queue.MessageQueue;
 import es.bsc.vmmanagercore.modellers.energy.EnergyModeller;
 import es.bsc.vmmanagercore.modellers.price.PricingModeller;
+import es.bsc.vmmanagercore.modellers.price.ascetic.AsceticPricingModellerAdapter;
 import es.bsc.vmmanagercore.models.scheduling.*;
 import es.bsc.vmmanagercore.models.vms.Vm;
 import es.bsc.vmmanagercore.models.vms.VmDeployed;
@@ -51,6 +52,7 @@ public class VmsManager {
     private final VmManagerDb db;
     private final SelfAdaptationManager selfAdaptationManager;
     private final Scheduler scheduler;
+    private final PricingModeller pricingModeller;
 
     private static final String ASCETIC_ZABBIX_SCRIPT_PATH = "/DFS/ascetic/vm-scripts/zabbix_agents.sh";
     
@@ -61,6 +63,7 @@ public class VmsManager {
         this.cloudMiddleware = cloudMiddleware;
         this.db = db;
         this.selfAdaptationManager = selfAdaptationManager;
+        this.pricingModeller = pricingModeller;
         scheduler = new Scheduler(db.getCurrentSchedulingAlg(), getAllVms(), energyModeller, pricingModeller);
     }
     
@@ -208,6 +211,10 @@ public class VmsManager {
             // the Zabbix agents. To register the VM we agreed to use the name <vmId>_<hostWhereTheVmIsDeployed>
             if (usingZabbix()) {
                 ZabbixConnector.registerVmInZabbix(vmId, getVm(vmId).getHostName(), getVm(vmId).getIpAddress());
+            }
+
+            if (pricingModeller instanceof AsceticPricingModellerAdapter) {
+                ((AsceticPricingModellerAdapter) pricingModeller).initializeVmBilling(vmId);
             }
         }
 
