@@ -182,8 +182,7 @@ public class VmsManager {
 
             // Note: this is only valid for the Ascetic project
             // If the monitoring system is Zabbix, we need to make sure that the script that sets up the Zabbix
-            // agents is executed. Also, if an ISO is received, we need to make sure that we execute a script
-            // that mounts it
+            // agents is executed.
             String originalVmInitScript = vmToDeploy.getInitScript();
             setAsceticInitScript(vmToDeploy);
 
