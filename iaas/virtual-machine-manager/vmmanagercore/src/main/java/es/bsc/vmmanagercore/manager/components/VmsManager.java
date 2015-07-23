@@ -213,11 +213,11 @@ public class VmsManager {
                 ZabbixConnector.registerVmInZabbix(vmId, getVm(vmId).getHostName(), getVm(vmId).getIpAddress());
             }
 
-            // TODO: do this in a separated thread.
-            if (pricingModeller instanceof AsceticPricingModellerAdapter) {
+            // TODO: do this in a separated thread. Comment for now because it does not seem to work.
+            /*if (pricingModeller instanceof AsceticPricingModellerAdapter) {
                 ((AsceticPricingModellerAdapter) pricingModeller).initializeVmBilling(
                         vmId + "_" + hostForDeployment.getHostname());
-            }
+            }*/
         }
 
         performAfterVmsDeploymentSelfAdaptation();
