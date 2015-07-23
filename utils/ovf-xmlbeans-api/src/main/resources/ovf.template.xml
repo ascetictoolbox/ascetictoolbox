@@ -55,6 +55,8 @@
             <ovf:Version>${applicationVersion}</ovf:Version>
             <!-- Product Properties that stores variables such as workload description, 
                 deployment ID etc. -->
+            <ovf:Property ovf:key="asceticDeploymentId" ovf:type="string"
+                ovf:value="100" />
             <ovf:Property ovf:key="asceticSshPublicKey" ovf:type="string"
                 ovf:value="c3NoLXJzYSBBQUFBQjNOemFDMXljMkVBQUFBREFRQUJBQUFBZ1FEL1RLSzhIMVRtbGJkQVZGVlJKM0NabzZMdThaUnpKeS9qdFRwUTgzWWZqaDhyRmlmT1UxdDM5ZTlRWm5iVnJaOWV6NU5BNjNXSmgvRndmMnFFaWFWQmV6ODBGYU5SM3hWVlBsNXhiWngxRCtzZlBKYW9MNFk2Sko5MFpleStaTzdGZWI0YkhwZkdGbTcyZTcybU5nOG5TMGRiVUpySnNNQ2RtRjdDRnNLbFNRPT0gYXNjZXRpYy1wdWJsaWMta2V5" />
             <ovf:Property ovf:key="asceticSshPrivateKey" ovf:type="string"

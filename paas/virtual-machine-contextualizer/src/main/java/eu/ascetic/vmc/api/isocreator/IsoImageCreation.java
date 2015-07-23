@@ -133,6 +133,43 @@ public class IsoImageCreation {
     }
 
     /**
+     * 0) Store the INSTANCE_ID and SERVICE_ID files
+     */
+    private void storeIds() {
+        
+        String instanceId = virtualMachine.getComponentId() + "_" + iso.getImageId();
+        File instanceIdFile = new File(isoDataDirectory + File.separator
+                + "INSTANCE_ID");
+        try {
+            FileOutputStream fos = new FileOutputStream(instanceIdFile);
+            fos.write(instanceId.getBytes());
+            fos.close();
+            LOGGER.debug("Writing instance ID: \"" + instanceId + "\" complete!");
+
+        } catch (FileNotFoundException e) {
+            LOGGER.error(FILE_NOT_FOUND_EXCEPTION + e);
+        } catch (IOException e) {
+            LOGGER.error(IO_EXCEPTION + e);
+        }
+        
+        String serviceId = ovfDefinition.getVirtualSystemCollection().getProductSectionAtIndex(0).getDeploymentId();
+        File serviceIdFile = new File(isoDataDirectory + File.separator
+                + "SERVICE_ID");
+        try {
+            FileOutputStream fos = new FileOutputStream(serviceIdFile);
+            fos.write(serviceId.getBytes());
+            fos.close();
+            LOGGER.debug("Writing service ID: \"" + serviceId + "\" complete!");
+
+        } catch (FileNotFoundException e) {
+            LOGGER.error(FILE_NOT_FOUND_EXCEPTION + e);
+        } catch (IOException e) {
+            LOGGER.error(IO_EXCEPTION + e);
+        }
+        
+    }
+    
+    /**
      * 1) Store the security keys if the are to be added to this VM instance
      */
     private void storeSecurityKeys() {
@@ -589,6 +626,8 @@ public class IsoImageCreation {
         // Create the directory
         new File(isoDataDirectory).mkdirs();
 
+        storeIds();
+        
         storeSecurityKeys();
 
         storeEndpoints();
