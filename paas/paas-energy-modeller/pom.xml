@@ -155,6 +155,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-client</artifactId>
+			<version>${paasem.activemq}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-amqp</artifactId>
 			<version>${paasem.activemq}</version>
 		</dependency>
