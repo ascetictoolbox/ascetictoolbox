@@ -212,12 +212,10 @@ public class VmsManager {
             if (usingZabbix()) {
                 ZabbixConnector.registerVmInZabbix(vmId, getVm(vmId).getHostName(), getVm(vmId).getIpAddress());
             }
-
-            // TODO: do this in a separated thread. Comment for now because it does not seem to work.
-            /*if (pricingModeller instanceof AsceticPricingModellerAdapter) {
-                ((AsceticPricingModellerAdapter) pricingModeller).initializeVmBilling(
-                        vmId + "_" + hostForDeployment.getHostname());
-            }*/
+            
+            if (pricingModeller instanceof AsceticPricingModellerAdapter) {
+                initializeVmBilling(vmId, hostForDeployment.getHostname());
+            }
         }
 
         performAfterVmsDeploymentSelfAdaptation();
@@ -412,6 +410,15 @@ public class VmsManager {
         for (String idDeployedVm: deployedVmsIds) {
             MessageQueue.publishMessageVmDeployed(getVm(idDeployedVm));
         }
+    }
+
+    private void initializeVmBilling(final String vmId, final String hostname) {
+        Thread thread = new Thread("Initialize VM billing. VM ID = " + vmId + "; Hostname = " + hostname) {
+            public void run(){
+                ((AsceticPricingModellerAdapter) pricingModeller).initializeVmBilling(vmId + "_" + hostname);
+            }
+        };
+        thread.start();
     }
     
 }
