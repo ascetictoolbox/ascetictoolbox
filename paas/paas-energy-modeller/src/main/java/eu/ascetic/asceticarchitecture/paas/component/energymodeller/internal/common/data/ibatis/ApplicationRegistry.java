@@ -37,9 +37,10 @@ public class ApplicationRegistry {
 	}
 	
 	public static ApplicationRegistry getRegistry(String driver,String url,String uname,String pwd){
+		LOGGER.info("Returning the registry");
 		if (instance==null) {
 			instance = new ApplicationRegistry(driver,url,uname,pwd);
-			LOGGER.info("Built the instance");
+			LOGGER.info("Returned the registry instance");
 		}
 		
 		return instance;

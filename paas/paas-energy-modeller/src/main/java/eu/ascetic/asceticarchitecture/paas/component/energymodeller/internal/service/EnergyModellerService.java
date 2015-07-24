@@ -467,16 +467,32 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		eventService.setDaoEvent(dbmanager.getDataEventDAOImpl());
 		monitoringDataService = new MonitoringDataService();
 		monitoringDataService.setDataDAO(dbmanager.getMonitoringData());
-		if (emsettings.getEnableQueue()=="true" )appRegistry = ApplicationRegistry.getRegistry(emsettings.getPaasdriver(),emsettings.getPaasurl(),emsettings.getPaasdbuser(),emsettings.getPaasdbpassword());
 		LOGGER.debug("Configured ");
 	}
 		
 	private void initializeQueueServiceManager(){
 		LOGGER.info("Loading Queue service manager "+emsettings.getEnableQueue() +emsettings.getAmanagertopic());
 		if (emsettings.getEnableQueue().equals("true")) {
-			LOGGER.info("Enabled");
-			queueManager = new EnergyModellerQueueServiceManager(queueclient,appRegistry);
-			queueManager.createConsumers(emsettings.getAmanagertopic());
+			
+			
+			try {
+				queueclient = new AmqpClient();
+				queueclient.setup(emsettings.getAmqpUrl(), emsettings.getAmqpUser(), emsettings.getAmqpPassword(), emsettings.getMonitoringQueueTopic());
+				appRegistry = ApplicationRegistry.getRegistry(emsettings.getPaasdriver(),emsettings.getPaasurl(),emsettings.getPaasdbuser(),emsettings.getPaasdbpassword());
+				
+				LOGGER.info("Enabled");
+				queueManager = new EnergyModellerQueueServiceManager(queueclient,appRegistry);
+				LOGGER.debug("Enabled"+queueclient);
+				LOGGER.debug("Enabled"+appRegistry);
+				queueManager.createConsumers(emsettings.getAmanagertopic());
+				
+			} catch (Exception e) {
+				LOGGER.error("ERROR initializing queue disabling the component..");
+				emsettings.setEnableQueue("false");
+				e.printStackTrace();
+			}
+			
+			
 		}
 		LOGGER.info("Loaded");
 	}

@@ -110,8 +110,10 @@ public class EnergyModellerQueueServiceManager {
 	            }
 	        }
 	    };		
-			
 		
+	    LOGGER.debug("Received "+appTopic);
+	    LOGGER.debug("Received "+appListener);
+	    LOGGER.debug("Received "+queuePublisher);
 		queuePublisher.registerListener(appTopic,appListener);
 		
 		
