@@ -24,8 +24,21 @@ import eu.ascetic.paas.self.adaptation.manager.rules.EventAssessor;
  */
 public interface EventListener {
     
+    /**
+     * This sets the event assessor that is used once an event has occurred.
+     * @param assessor 
+     */
     public void setEventAssessor(EventAssessor assessor);
     
+    /**
+     * This gets the event assessor that is used once an event has occurred.
+     * @return 
+     */
     public EventAssessor getEventAssessor();
+    
+    /**
+     * This stops the event listener from listening.
+     */
+    public void stopListening();
     
 }

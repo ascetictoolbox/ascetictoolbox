@@ -41,7 +41,7 @@ public class SlaManagerListener extends ActiveMQBase implements Runnable, EventL
     // Create a MessageConsumer from the Session to the Topic or Queue
     private final MessageConsumer consumer;
     private EventAssessor eventAssessor;
-    private ViolationMessageTranslator translator = new ViolationMessageTranslator();
+    private final ViolationMessageTranslator translator = new ViolationMessageTranslator();
     private boolean running = true;
 
     public SlaManagerListener() throws JMSException, NamingException {
@@ -82,5 +82,10 @@ public class SlaManagerListener extends ActiveMQBase implements Runnable, EventL
     public EventAssessor getEventAssessor() {
         return eventAssessor;
     }
+    
+    @Override
+    public void stopListening() {
+        running = false;
+    }    
 
 }

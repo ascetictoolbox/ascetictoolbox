@@ -39,51 +39,54 @@ public class EventHistoryListener extends ActiveMQBase implements Runnable, Even
     // Create a MessageConsumer from the Session to the Topic or Queue
     private final MessageConsumer consumer;
     private EventAssessor eventAssessor;
+    private boolean running = true;
 
     /**
-     * 
+     *
      * @throws JMSException
-     * @throws NamingException 
+     * @throws NamingException
      */
     public EventHistoryListener() throws JMSException, NamingException {
         super();
         queue = getMessageQueue(QUEUE_NAME);
-        consumer = session.createConsumer(queue);        
+        consumer = session.createConsumer(queue);
     }
 
     /**
-     * 
+     *
      * @param user
      * @param password
      * @throws NamingException
-     * @throws JMSException 
+     * @throws JMSException
      */
     public EventHistoryListener(String user, String password) throws NamingException, JMSException {
         super(user, password);
         queue = getMessageQueue(QUEUE_NAME);
-        consumer = session.createConsumer(queue);        
+        consumer = session.createConsumer(queue);
     }
 
     @Override
     public void run() {
-try {
-            // Wait for a message
-            Message message = consumer.receive(1000);
+        while (running) {
+            try {
+                // Wait for a message
+                Message message = consumer.receive(1000);
 
-            if (message instanceof TextMessage) {
-                TextMessage textMessage = (TextMessage) message;
-                String text = textMessage.getText();
-                textMessage.acknowledge();
-                System.out.println("Received: " + text);
-            } else {
-                System.out.println("Received: " + message);
+                if (message instanceof TextMessage) {
+                    TextMessage textMessage = (TextMessage) message;
+                    String text = textMessage.getText();
+                    textMessage.acknowledge();
+                    System.out.println("Received: " + text);
+                } else {
+                    System.out.println("Received: " + message);
+                }
+                //TODO finish event history notification
+                eventAssessor.addRemoteAdaptationEvent(null);
+                consumer.close();
+                close();
+            } catch (JMSException ex) {
+                ex.printStackTrace();
             }
-            //TODO finish here
-            eventAssessor.addRemoteAdaptationEvent(null);
-            consumer.close();
-            close();
-        } catch (JMSException ex) {
-            ex.printStackTrace();
         }
     }
 
@@ -95,6 +98,11 @@ try {
     @Override
     public EventAssessor getEventAssessor() {
         return eventAssessor;
+    }
+
+    @Override
+    public void stopListening() {
+        running = false;
     }
 
 }

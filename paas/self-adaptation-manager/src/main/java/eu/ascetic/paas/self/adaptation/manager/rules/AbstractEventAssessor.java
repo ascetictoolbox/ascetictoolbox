@@ -64,14 +64,16 @@ public abstract class AbstractEventAssessor implements EventAssessor {
         Response answer = assessEvent(event, eventData, adaptations);
         if (answer != null) {
             adaptations.add(answer);
+            //TODO Execute the response here
         }
         return answer;
     }
-    
+
     /**
      * This allows the ability to record adaptations that haven't been performed
-     * by this event assessor. It thus prevents the event assessor overturning
-     * a change made by another soon after the change has occurred.
+     * by this event assessor. It thus prevents the event assessor overturning a
+     * change made by another soon after the change has occurred.
+     *
      * @param response The response to add into the modeller's history.
      */
     @Override
@@ -100,6 +102,10 @@ public abstract class AbstractEventAssessor implements EventAssessor {
         this.listeners = listeners;
         for (EventListener listener : listeners) {
             listener.setEventAssessor(this);
+            if (listener instanceof Runnable) {
+                Thread thread = new Thread((Runnable) listener);
+                thread.start();
+            }
         }
     }
 
@@ -113,6 +119,10 @@ public abstract class AbstractEventAssessor implements EventAssessor {
     public void addListeners(EventListener listener) {
         listeners.add(listener);
         listener.setEventAssessor(this);
+        if (listener instanceof Runnable) {
+            Thread thread = new Thread((Runnable) listener);
+            thread.start();
+        }
     }
 
     /**
@@ -120,6 +130,9 @@ public abstract class AbstractEventAssessor implements EventAssessor {
      */
     @Override
     public void clearListeners() {
+        for (EventListener listener : listeners) {
+            listener.stopListening();
+        }
         listeners.clear();
     }
 

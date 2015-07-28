@@ -53,7 +53,6 @@ public class SelfAdaptationManager {
                     "The event assessor rule file was not found", ex);
         }
         EventListener listener = new SlaManagerListener();
-        
         listeners.add(listener);
         actuators.add(new ActionRequester());
         eventAssessor.setActuators(actuators);
