@@ -87,6 +87,10 @@ public class FuzzyEventAssessor extends AbstractEventAssessor {
             if (rule.getDegreeOfSupport() == 1.0) {
                 //This creates the new response
                 /**
+                 * The rule should determine the type of response, i.e. scale up
+                 * down in or out. The adaptor should then decide how, add 128mb
+                 * ram add a vm remove a vm (and if so which one) etc.
+                 * 
                  * TODO consider if a test is needed to see if adaptation is 
                  * possible and if so which one?
                  */

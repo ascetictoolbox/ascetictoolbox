@@ -1209,7 +1209,6 @@ paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manag
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rest/generated/RestDeploymentClient.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rest/generated/RestVMClient.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/AbstractEventAssessor.java -text
-paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/AdaptationRule.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/EventAssessor.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/EventDataAggregator.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/EventDataConverter.java -text

@@ -53,7 +53,6 @@ public abstract class AbstractEventAssessor implements EventAssessor {
     public AbstractEventAssessor() {
     }
 
-    //TODO add methods here
     @Override
     public Response assessEvent(EventData event) {
         //Add the current event into the sequence of all events.

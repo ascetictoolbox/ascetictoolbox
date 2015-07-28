@@ -18,11 +18,14 @@ package eu.ascetic.paas.self.adaptation.manager.activemq.listener;
 import eu.ascetic.paas.self.adaptation.manager.EventListener;
 import eu.ascetic.paas.self.adaptation.manager.activemq.ActiveMQBase;
 import eu.ascetic.paas.self.adaptation.manager.rules.EventAssessor;
+import eu.ascetic.paas.self.adaptation.manager.rules.EventDataConverter;
+import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.EventData;
+import eu.ascetic.paas.slam.pac.events.ViolationMessage;
+import eu.ascetic.paas.slam.pac.events.ViolationMessageTranslator;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
-import javax.jms.TextMessage;
 import javax.naming.NamingException;
 
 /**
@@ -38,6 +41,8 @@ public class SlaManagerListener extends ActiveMQBase implements Runnable, EventL
     // Create a MessageConsumer from the Session to the Topic or Queue
     private final MessageConsumer consumer;
     private EventAssessor eventAssessor;
+    private ViolationMessageTranslator translator = new ViolationMessageTranslator();
+    private boolean running = true;
 
     public SlaManagerListener() throws JMSException, NamingException {
         super();
@@ -52,18 +57,15 @@ public class SlaManagerListener extends ActiveMQBase implements Runnable, EventL
     public void run() {
         try {
             // Wait for a message
-            Message message = consumer.receive(1000);
+            while (running) {
+                Message message = consumer.receive(1000);
 
-            if (message instanceof TextMessage) {
-                TextMessage textMessage = (TextMessage) message;
-                String text = textMessage.getText();
-                textMessage.acknowledge();
-                System.out.println("Received: " + text);
-            } else {
-                System.out.println("Received: " + message);
+                if (message instanceof ViolationMessage) {
+                    ViolationMessage violation = (ViolationMessage) message;
+                    EventData data = EventDataConverter.convertEventData(violation);
+                    eventAssessor.assessEvent(data);
+                }
             }
-            //TODO finish code here
-            eventAssessor.assessEvent(null);
             consumer.close();
             close();
         } catch (JMSException ex) {
@@ -80,5 +82,5 @@ public class SlaManagerListener extends ActiveMQBase implements Runnable, EventL
     public EventAssessor getEventAssessor() {
         return eventAssessor;
     }
-    
+
 }
