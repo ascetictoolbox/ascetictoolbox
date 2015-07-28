@@ -6,7 +6,7 @@ $(document).ready(function() {
                        + "#" /*json[i].url*/ + "'>" + json[i].title + "</a></li>" );            
         }
         $("#paas-components").append(items.join(""));
-        $("#component-view").attr("src",json[0].url);
+        $("#component-view").attr("src","http://finofilipino.org");
         $(".navitem").click(function(event) {
             $(".navitem").removeClass("active");
             $(event.currentTarget).addClass("active");
