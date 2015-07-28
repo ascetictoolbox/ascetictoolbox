@@ -98,6 +98,9 @@ public abstract class AbstractEventAssessor implements EventAssessor {
     @Override
     public void setListeners(ArrayList<EventListener> listeners) {
         this.listeners = listeners;
+        for (EventListener listener : listeners) {
+            listener.setEventAssessor(this);
+        }
     }
 
     /**
@@ -109,6 +112,7 @@ public abstract class AbstractEventAssessor implements EventAssessor {
     @Override
     public void addListeners(EventListener listener) {
         listeners.add(listener);
+        listener.setEventAssessor(this);
     }
 
     /**

@@ -15,8 +15,8 @@
  */
 package eu.ascetic.paas.self.adaptation.manager;
 
-import eu.ascetic.paas.self.adaptation.manager.activemq.actuator.ActionRequester;
 import eu.ascetic.paas.self.adaptation.manager.activemq.listener.SlaManagerListener;
+import eu.ascetic.paas.self.adaptation.manager.rest.ActionRequester;
 import eu.ascetic.paas.self.adaptation.manager.rules.EventAssessor;
 import eu.ascetic.paas.self.adaptation.manager.rules.FuzzyEventAssessor;
 import java.io.FileNotFoundException;
@@ -47,13 +47,6 @@ public class SelfAdaptationManager {
      */
     public SelfAdaptationManager() throws JMSException, NamingException {
         try {
-            //TODO load the actuator and listeners list in from file.
-            /**
-             * These should be threads that will keep the application persistent.
-             * They should be given a copy of the event assessor in order to 
-             * invoke change, as required.
-             * 
-             */
             eventAssessor = new FuzzyEventAssessor();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(SelfAdaptationManager.class.getName()).log(Level.SEVERE, 
