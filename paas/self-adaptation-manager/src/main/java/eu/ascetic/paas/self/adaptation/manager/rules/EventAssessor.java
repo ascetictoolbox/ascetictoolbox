@@ -104,13 +104,6 @@ public interface EventAssessor {
     public void setActuator(ActuatorInvoker actuator);
 
     /**
-     * This adds an actuator to the event assessors internal list of actuators
-     *
-     * @param actuator The actuator to add
-     */
-    public void addActuators(ActuatorInvoker actuator);
-
-    /**
      * This deletes the event assessors actuator
      */
     public void deleteActuator();

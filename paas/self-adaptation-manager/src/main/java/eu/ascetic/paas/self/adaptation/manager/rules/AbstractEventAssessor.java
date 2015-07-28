@@ -64,7 +64,7 @@ public abstract class AbstractEventAssessor implements EventAssessor {
         Response answer = assessEvent(event, eventData, adaptations);
         if (answer != null) {
             adaptations.add(answer);
-            //TODO Execute the response here
+            actuator.actuate(answer);
         }
         return answer;
     }
