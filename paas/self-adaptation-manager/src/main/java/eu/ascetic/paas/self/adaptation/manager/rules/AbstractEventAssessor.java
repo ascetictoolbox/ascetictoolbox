@@ -37,7 +37,7 @@ import java.util.logging.Logger;
 public abstract class AbstractEventAssessor implements EventAssessor {
 
     private ArrayList<EventListener> listeners = new ArrayList<>();
-    private ArrayList<ActuatorInvoker> actuators = new ArrayList<>();
+    private ActuatorInvoker actuator;
     private List<EventData> sequence;
     private List<Response> adaptations;
     //duration a history item can stay alive
@@ -137,41 +137,31 @@ public abstract class AbstractEventAssessor implements EventAssessor {
     }
 
     /**
-     * This gets the event assessors internal list of actuators
+     * This gets the event assessors actuator
      *
-     * @return the list of actuators the event assessor uses
+     * @return the actuator the event assessor uses
      */
     @Override
-    public ArrayList<ActuatorInvoker> getActuators() {
-        return actuators;
+    public ActuatorInvoker getActuator() {
+        return actuator;
     }
 
     /**
-     * This sets the event assessors internal list of actuators
+     * This sets the event assessors actuator
      *
-     * @param actuators the actuators to set
+     * @param actuator the actuators to set
      */
     @Override
-    public void setActuators(ArrayList<ActuatorInvoker> actuators) {
-        this.actuators = actuators;
+    public void setActuator(ActuatorInvoker actuator) {
+        this.actuator = actuator;
     }
 
     /**
-     * This adds an actuator to the event assessors internal list of actuators
-     *
-     * @param actuator The actuator to add
+     * This deletes the event assessors actuator
      */
     @Override
-    public void addActuators(ActuatorInvoker actuator) {
-        actuators.add(actuator);
-    }
-
-    /**
-     * This clears the event assessors internal list of actuators
-     */
-    @Override
-    public void clearActuators() {
-        actuators.clear();
+    public void deleteActuator() {
+        actuator = null;
     }
 
     /**

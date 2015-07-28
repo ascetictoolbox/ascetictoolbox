@@ -37,7 +37,7 @@ public class SelfAdaptationManager {
      * should fire or not.
      */
     private ArrayList<EventListener> listeners = new ArrayList<>();
-    private ArrayList<ActuatorInvoker> actuators = new ArrayList<>();
+    private ActuatorInvoker actuator = null;
     private EventAssessor eventAssessor = null;
 
     /**
@@ -54,8 +54,8 @@ public class SelfAdaptationManager {
         }
         EventListener listener = new SlaManagerListener();
         listeners.add(listener);
-        actuators.add(new ActionRequester());
-        eventAssessor.setActuators(actuators);
+        actuator = new ActionRequester();
+        eventAssessor.setActuator(actuator);
         eventAssessor.setListeners(listeners);
     }
 

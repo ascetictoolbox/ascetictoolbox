@@ -90,18 +90,18 @@ public interface EventAssessor {
     public void clearListeners();
 
     /**
-     * This gets the event assessors internal list of actuators
+     * This gets the event assessors actuator
      *
-     * @return the list of actuators the event assessor uses
+     * @return the actuator that the event assessor uses
      */
-    public ArrayList<ActuatorInvoker> getActuators();
+    public ActuatorInvoker getActuator();
 
     /**
-     * This sets the event assessors internal list of actuators
+     * This sets the event assessors actuator
      *
-     * @param actuators the actuators to set
+     * @param actuator the actuator to set
      */
-    public void setActuators(ArrayList<ActuatorInvoker> actuators);
+    public void setActuator(ActuatorInvoker actuator);
 
     /**
      * This adds an actuator to the event assessors internal list of actuators
@@ -111,9 +111,9 @@ public interface EventAssessor {
     public void addActuators(ActuatorInvoker actuator);
 
     /**
-     * This clears the event assessors internal list of actuators
+     * This deletes the event assessors actuator
      */
-    public void clearActuators();
+    public void deleteActuator();
 
     /**
      * This starts the event history maintenance routines in the event assessor.
