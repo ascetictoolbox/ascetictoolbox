@@ -409,7 +409,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
         ProductProperty productProperty = getPropertyByKey(ASCETIC_VIRTUAL_SYSTEM_PUBLIC_IP);
         if (productProperty == null) {
             addNewProperty(ASCETIC_VIRTUAL_SYSTEM_PUBLIC_IP,
-                    ProductPropertyType.UINT32, associate.toString());
+                    ProductPropertyType.STRING, associate.toString());
         } else {
             productProperty.setValue(associate.toString());
         }
