@@ -15,7 +15,6 @@
  */
 package eu.ascetic.paas.self.adaptation.manager.rules.decisionengine;
 
-import eu.ascetic.paas.self.adaptation.manager.ActuatorInvoker;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
 import java.util.Collections;
 import java.util.List;
@@ -31,10 +30,6 @@ import java.util.List;
  * @author Richard Kavanagh
  */
 public class RandomDecisionEngine extends AbstractDecisionEngine {
-
-    public RandomDecisionEngine(ActuatorInvoker actuator) {
-        super(actuator);
-    }
 
     @Override
     public Response decide(Response response) {

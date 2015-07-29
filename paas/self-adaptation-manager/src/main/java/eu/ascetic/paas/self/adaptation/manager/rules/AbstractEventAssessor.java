@@ -21,12 +21,15 @@ import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.EventData;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
 import eu.ascetic.paas.self.adaptation.manager.rules.decisionengine.DecisionEngine;
 import eu.ascetic.paas.self.adaptation.manager.rules.decisionengine.RandomDecisionEngine;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 
 /**
  * The abstract class event assessor provides the generic routines for
@@ -40,34 +43,85 @@ public abstract class AbstractEventAssessor implements EventAssessor {
 
     private ArrayList<EventListener> listeners = new ArrayList<>();
     private ActuatorInvoker actuator;
-    private List<EventData> sequence;
-    private DecisionEngine desisionEngine = new RandomDecisionEngine(actuator);
+    private List<EventData> eventHistory;
+    private DecisionEngine decisionEngine;
+    private String decisionEngineName;
     private List<Response> adaptations;
     //duration a history item can stay alive
-    private final int historyLengthSeconds = (int) TimeUnit.MINUTES.toSeconds(5);
+    private int historyLengthSeconds = (int) TimeUnit.MINUTES.toSeconds(5);
     //The rate at how often history items are checked to be still in date
-    private final int pollInterval = 5; //TODO Make this configurable
+    private int pollInterval = 5;
     private Thread historyClearerThread = null;
     private HistoryClearer historyClearer = null;
+    private static final String CONFIG_FILE = "paas-self-adapation-manager.properties";
+    private static final String DEFAULT_DECISION_ENGINE_PACKAGE = 
+            "eu.ascetic.paas.self.adaptation.manager.rules.decisionengine";
 
     /**
      * This launches a new event assessor.
      */
     public AbstractEventAssessor() {
+        decisionEngine = new RandomDecisionEngine();
+        decisionEngine.setActuator(actuator);
+        try {
+            PropertiesConfiguration config;
+            if (new File(CONFIG_FILE).exists()) {
+                config = new PropertiesConfiguration(CONFIG_FILE);
+            } else {
+                config = new PropertiesConfiguration();
+                config.setFile(new File(CONFIG_FILE));
+            }
+            config.setAutoSave(true); //This will save the configuration file back to disk. In case the defaults need setting.
+            historyLengthSeconds = config.getInt("paas.self.adaptation.manager.history.length", historyLengthSeconds);
+            config.setProperty("paas.self.adaptation.manager.history.length", historyLengthSeconds);
+            pollInterval = config.getInt("paas.self.adaptation.manager.history.poll.interval", pollInterval);
+            config.setProperty("paas.self.adaptation.manager.history.poll.interval", pollInterval);
+            decisionEngineName = config.getString("paas.self.adaptation.manager.decision.engine", decisionEngineName);
+            config.setProperty("paas.self.adaptation.manager.decision.engine", decisionEngineName);
+            setDecisionEngine(decisionEngineName);
+        } catch (ConfigurationException ex) {
+            Logger.getLogger(AbstractEventAssessor.class.getName()).log(Level.INFO, "Error loading the configuration of the PaaS Self adaptation manager", ex);
+        }
     }
+    
+    /**
+     * This allows the decision engine to be set
+     * Decision engines are used to decide the scale and location of an 
+     * adaptation.
+     *
+     * @param decisionEngineName The name of the algorithm to set
+     */
+    public void setDecisionEngine(String decisionEngineName) {
+        try {
+            if (!decisionEngineName.startsWith(DEFAULT_DECISION_ENGINE_PACKAGE)) {
+                decisionEngineName = DEFAULT_DECISION_ENGINE_PACKAGE + "." + decisionEngineName;
+            }
+            decisionEngine = (DecisionEngine) (Class.forName(decisionEngineName).newInstance());
+        } catch (ClassNotFoundException ex) {
+            if (decisionEngine == null) {
+                decisionEngine = new RandomDecisionEngine();
+            }
+            Logger.getLogger(AbstractEventAssessor.class.getName()).log(Level.WARNING, "The decision engine specified was not found");
+        } catch (InstantiationException | IllegalAccessException ex) {
+            if (decisionEngine == null) {
+                decisionEngine = new RandomDecisionEngine();
+            }
+            Logger.getLogger(AbstractEventAssessor.class.getName()).log(Level.WARNING, "The setting of the decision engine did not work", ex);
+        }
+    }    
 
     @Override
     public Response assessEvent(EventData event) {
         //Add the current event into the sequence of all events.
-        sequence.add(event);
+        eventHistory.add(event);
         //filter event sequence for only relevent data    
-        List<EventData> eventData = EventDataAggregator.filterEventData(sequence, event.getSlaUuid(), event.getGuaranteeid());
+        List<EventData> eventData = EventDataAggregator.filterEventData(eventHistory, event.getSlaUuid(), event.getGuaranteeid());
         //Purge old event map data
         eventData = EventDataAggregator.filterEventDataByTime(eventData, historyLengthSeconds);
         Response answer = assessEvent(event, eventData, adaptations);
         if (answer != null) {
             adaptations.add(answer);
-            answer = desisionEngine.decide(answer);
+            answer = decisionEngine.decide(answer);
             actuator.actuate(answer);
         }
         return answer;
@@ -206,8 +260,8 @@ public abstract class AbstractEventAssessor implements EventAssessor {
         @SuppressWarnings("SleepWhileInLoop")
         public void run() {
             while (running) {
-                if (!sequence.isEmpty()) {
-                    sequence = EventDataAggregator.filterEventDataByTime(sequence, historyLengthSeconds);
+                if (!eventHistory.isEmpty()) {
+                    eventHistory = EventDataAggregator.filterEventDataByTime(eventHistory, historyLengthSeconds);
                     adaptations = filterAdaptationHistory();
                 }
                 try {

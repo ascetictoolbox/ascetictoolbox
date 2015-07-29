@@ -35,8 +35,7 @@ public abstract class AbstractDecisionEngine implements DecisionEngine {
      */
     private ActuatorInvoker actuator;
 
-    public AbstractDecisionEngine(ActuatorInvoker actuator) {
-        this.actuator = actuator;
+    public AbstractDecisionEngine() {
     }
 
     @Override
