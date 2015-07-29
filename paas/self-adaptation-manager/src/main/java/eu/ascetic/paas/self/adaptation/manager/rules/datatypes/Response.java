@@ -30,6 +30,7 @@ public class Response implements Comparable<Response> {
     private String adapationDetails;
     private String vmId;
     private boolean performed = false;
+    private boolean possibleToAdapt = true;
     
     public enum AdaptationType {
     ADD_VM, REMOVE_VM, ADD_CPU, REMOVE_CPU,
@@ -100,6 +101,23 @@ public class Response implements Comparable<Response> {
     public void setAdapationDetails(String adapationDetails) {
         this.adapationDetails = adapationDetails;
     }
+    
+    /**
+     * This indicates if on deciding to adapt if a possible solution was found.
+     * @return the possibleToAdapt
+     */
+    public boolean isPossibleToAdapt() {
+        return possibleToAdapt;
+    }
+
+    /**
+     * This sets the flag to say if on deciding to adapt if a possible solution 
+     * was able to be found.
+     * @param possibleToAdapt the possibleToAdapt to set
+     */
+    public void setPossibleToAdapt(boolean possibleToAdapt) {
+        this.possibleToAdapt = possibleToAdapt;
+    }    
     
     /**
      * This indicates if the action associated with the response has been 

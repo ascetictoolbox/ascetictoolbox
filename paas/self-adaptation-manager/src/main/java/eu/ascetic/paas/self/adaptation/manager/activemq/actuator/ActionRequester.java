@@ -19,7 +19,6 @@ import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.self.adaptation.manager.ActuatorInvoker;
 import eu.ascetic.paas.self.adaptation.manager.activemq.ActiveMQBase;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
-import java.util.HashSet;
 import java.util.List;
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
@@ -89,14 +88,19 @@ public class ActionRequester extends ActiveMQBase implements Runnable, ActuatorI
     }
 
     @Override
-    public HashSet<String> getVmTypesAvailableToAdd(String applicationId, String deploymentId) {
+    public List<String> getVmTypesAvailableToAdd(String applicationId, String deploymentId) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public HashSet<String> getVmTypesAvailableToRemove(String applicationId, String deploymentId) {
+    public List<String> getVmTypesAvailableToRemove(String applicationId, String deploymentId) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
+    @Override
+    public List<Integer> getVmIdsAvailableToRemove(String applicationId, String deploymentId) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }    
 
     @Override
     public int getVMsOfGivenType(List<VM> vms, String type) {

@@ -17,7 +17,6 @@ package eu.ascetic.paas.self.adaptation.manager;
 
 import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -35,7 +34,17 @@ public interface ActuatorInvoker {
      * @param deploymentId The deployment ID
      * @return The OVF ids that can be used to scale the named deployment
      */
-    public abstract HashSet<String> getVmTypesAvailableToAdd(String applicationId, String deploymentId);
+    public abstract List<String> getVmTypesAvailableToAdd(String applicationId, String deploymentId);
+
+    /**
+     * This lists which VMs can be added to a deployment in order to make it
+     * scale.
+     *
+     * @param applicationId The application ID
+     * @param deploymentId The deployment ID
+     * @return The VM ids that can be used to down size the named deployment
+     */
+    public abstract List<Integer> getVmIdsAvailableToRemove(String applicationId, String deploymentId);
 
     /**
      * This lists which VMs can be added to a deployment in order to make it
@@ -45,8 +54,8 @@ public interface ActuatorInvoker {
      * @param deploymentId The deployment ID
      * @return The OVF ids that can be used to down size the named deployment
      */
-    public abstract HashSet<String> getVmTypesAvailableToRemove(String applicationId, String deploymentId);
-
+    public abstract List<String> getVmTypesAvailableToRemove(String applicationId, String deploymentId);    
+    
     /**
      * This counts how many VMs have a given deployment type in a set of VMs
      *

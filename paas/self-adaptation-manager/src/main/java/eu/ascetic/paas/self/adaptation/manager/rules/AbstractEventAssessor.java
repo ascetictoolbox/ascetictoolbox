@@ -19,6 +19,8 @@ import eu.ascetic.paas.self.adaptation.manager.ActuatorInvoker;
 import eu.ascetic.paas.self.adaptation.manager.EventListener;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.EventData;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
+import eu.ascetic.paas.self.adaptation.manager.rules.decisionengine.DecisionEngine;
+import eu.ascetic.paas.self.adaptation.manager.rules.decisionengine.RandomDecisionEngine;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -39,6 +41,7 @@ public abstract class AbstractEventAssessor implements EventAssessor {
     private ArrayList<EventListener> listeners = new ArrayList<>();
     private ActuatorInvoker actuator;
     private List<EventData> sequence;
+    private DecisionEngine desisionEngine = new RandomDecisionEngine(actuator);
     private List<Response> adaptations;
     //duration a history item can stay alive
     private final int historyLengthSeconds = (int) TimeUnit.MINUTES.toSeconds(5);
@@ -64,10 +67,7 @@ public abstract class AbstractEventAssessor implements EventAssessor {
         Response answer = assessEvent(event, eventData, adaptations);
         if (answer != null) {
             adaptations.add(answer);
-            /**
-             * TODO add the specifics here of how to select where the adaptation
-             * occurs and by how much.
-             */
+            answer = desisionEngine.decide(answer);
             actuator.actuate(answer);
         }
         return answer;

@@ -23,7 +23,6 @@ import eu.ascetic.paas.self.adaptation.manager.rest.generated.RestVMClient;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
@@ -102,8 +101,8 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
      * @return The OVF ids that can be used to scale the named deployment
      */
     @Override
-    public HashSet<String> getVmTypesAvailableToAdd(String applicationId, String deploymentId) {
-        HashSet<String> answer = new HashSet<>();
+    public List<String> getVmTypesAvailableToAdd(String applicationId, String deploymentId) {
+        ArrayList<String> answer = new ArrayList<>();
         List<VM> vms = getVMs(applicationId, deploymentId);
         for (VM vm : vms) {
             if (vm.getNumberVMsMax() > 0 && getVMsOfGivenType(vms, vm.getOvfId()) < vm.getNumberVMsMax()) {
@@ -120,12 +119,24 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
      * @return The OVF ids that can be used to down size the named deployment
      */    
     @Override
-    public HashSet<String> getVmTypesAvailableToRemove(String applicationId, String deploymentId) {
-        HashSet<String> answer = new HashSet<>();
+    public List<String> getVmTypesAvailableToRemove(String applicationId, String deploymentId) {
+        ArrayList<String> answer = new ArrayList<>();
         List<VM> vms = getVMs(applicationId, deploymentId);
         for (VM vm : vms) {
             if (vm.getNumberVMsMin() > 0 && getVMsOfGivenType(vms, vm.getOvfId()) > vm.getNumberVMsMin()) {
                 answer.add(vm.getOvfId());
+            }
+        }
+        return answer;
+    }
+    
+    @Override
+    public List<Integer> getVmIdsAvailableToRemove(String applicationId, String deploymentId) {
+        ArrayList<Integer> answer = new ArrayList<>();
+        List<VM> vms = getVMs(applicationId, deploymentId);
+        for (VM vm : vms) {
+            if (vm.getNumberVMsMin() > 0 && getVMsOfGivenType(vms, vm.getOvfId()) > vm.getNumberVMsMin()) {
+                answer.add(vm.getId());
             }
         }
         return answer;
