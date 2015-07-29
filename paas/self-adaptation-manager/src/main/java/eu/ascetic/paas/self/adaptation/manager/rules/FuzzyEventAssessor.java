@@ -21,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import net.sourceforge.jFuzzyLogic.FIS;
 import net.sourceforge.jFuzzyLogic.rule.Rule;
+import net.sourceforge.jFuzzyLogic.rule.RuleBlock;
 
 /**
  * This event assessor when faced with deciding if corrective action should be
@@ -35,14 +36,15 @@ public class FuzzyEventAssessor extends AbstractEventAssessor {
 
     /**
      * This creates a new event assessor that utilises fuzzy logic.
-     * @throws java.io.FileNotFoundException In cases where the rules file is not
-     * found.
+     *
+     * @throws java.io.FileNotFoundException In cases where the rules file is
+     * not found.
      */
     public FuzzyEventAssessor() throws FileNotFoundException {
         fis = FIS.load(ruleFile, true);
         if (fis == null) { // Error while loading?
             throw new FileNotFoundException("Can't load file: '" + ruleFile + "'");
-        }        
+        }
     }
 
     /**
@@ -54,7 +56,6 @@ public class FuzzyEventAssessor extends AbstractEventAssessor {
      * http://jfuzzylogic.sourceforge.net/html/fcl.html
      * http://jfuzzylogic.sourceforge.net/html/example_fcl.html
      */
-    
     /**
      * This prints out the current fuzzy data for analysis.
      */
@@ -74,7 +75,7 @@ public class FuzzyEventAssessor extends AbstractEventAssessor {
             System.out.println(rule);
         }
     }
-    
+
     @Override
     public Response assessEvent(EventData event, List<EventData> sequence, List<Response> recentAdaptation) {
         Response answer = null;
@@ -82,24 +83,54 @@ public class FuzzyEventAssessor extends AbstractEventAssessor {
         fis.setVariable("currentDifference", event.getDeviationBetweenRawAndGuarantee());
         fis.setVariable("trendDifference", trendValue);
         fis.evaluate();
-        for (Rule rule : fis.getFunctionBlock("adaptor").getFuzzyRuleBlock("No1").getRules()) {
-            System.out.println(rule);
-            if (rule.getDegreeOfSupport() == 1.0) {
-                //This creates the new response
-                /**
-                 * The rule should determine the type of response, i.e. scale up
-                 * down in or out. The adaptor should then decide how, add 128mb
-                 * ram add a vm remove a vm (and if so which one) etc.
-                 * 
-                 * TODO consider if a test is needed to see if adaptation is 
-                 * possible and if so which one?
-                 */
-                answer = new Response(null, event, null);
-                return answer;
+        for (RuleBlock ruleBlock : fis.getFunctionBlock("adaptor").getRuleBlocks().values()) {
+            for (Rule rule : ruleBlock.getRules()) {
+                System.out.println(rule);
+                if (rule.getDegreeOfSupport() == 1.0) {
+                    /**
+                     * The rule should determine the type of response, i.e.
+                     * scale up down in or out. The adaptor should then decide
+                     * how, add 128mb ram add a vm remove a vm (and if so which
+                     * one) etc.
+                     *
+                     * The rule block name should be the name of the response
+                     * type.
+                     *
+                     * TODO consider if a test is needed to see if adaptation is
+                     * possible and if so which one?
+                     */
+                    answer = new Response(getActuator(), event, getAdaptationType(ruleBlock.getName()));
+                    return answer;
+                }
             }
         }
         return answer;
-    }    
+    }
+
+    /**
+     * This provides the mapping between rule names and the adaptation type
+     * associated with the rule.
+     *
+     * @param ruleName The name of the rule.
+     * @return The Adaptation type required.
+     */
+    private Response.AdaptationType getAdaptationType(String ruleName) {
+        switch (ruleName) {
+            case "ADD_VM":
+                return Response.AdaptationType.ADD_VM;
+            case "ADD_CPU":
+                return Response.AdaptationType.ADD_CPU;
+            case "ADD_MEMORY":
+                return Response.AdaptationType.ADD_MEMORY;
+            case "REMOVE_VM":
+                return Response.AdaptationType.REMOVE_VM;
+            case "REMOVE_CPU":
+                return Response.AdaptationType.REMOVE_CPU;
+            case "REMOVE_MEMORY":
+                return Response.AdaptationType.REMOVE_MEMORY;
+        }
+        return Response.AdaptationType.ADD_VM;
+    }
 
     /**
      * This indicates which file to load in order to get the fuzzy logic rules
