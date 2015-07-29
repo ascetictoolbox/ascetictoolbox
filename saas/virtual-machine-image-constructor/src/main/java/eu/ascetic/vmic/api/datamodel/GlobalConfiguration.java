@@ -107,7 +107,7 @@ public class GlobalConfiguration {
 
             // Set the hostAddress IP for testing currently the private IP for
             // the ip of the host "saas-vm-dev" on the TUB testbed
-            properties.setProperty(HOST_ADDRESS_PROPERTY_KEY, "10.4.0.19");
+            properties.setProperty(HOST_ADDRESS_PROPERTY_KEY, "192.168.3.15");
 
             // Set repositoryPath URI for testing
             properties.setProperty(REPOSITORY_PROPERTY_KEY, vmicTemp);
