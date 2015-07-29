@@ -365,7 +365,7 @@ public class OvfDefinitionParser {
         // FIXME: Using hard coded image URI, for Y2 select using OVF operating
         // system section
         LOGGER.warn("Using hardcoded base image path: /DFS/ascetic/vm-images/Ubuntu.qcow2");
-        return "/DFS/ascetic/vm-images/Ubuntu.qcow2";
+        return "/DFS/ascetic/vm-images/ubuntu.raw.img";
     }
 
     /**
