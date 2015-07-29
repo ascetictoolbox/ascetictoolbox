@@ -101,7 +101,8 @@ public class NegotiationWsClient implements NegotiationClient {
 			
 			String xmlSla = resp.get_return();
 			
-			sla = (xmlSla == null) ? null : slaTranslator.parseSla(xmlSla);
+//			sla = (xmlSla == null) ? null : slaTranslator.parseSla(xmlSla);
+			sla = (xmlSla == null) ? null : new SlaTranslatorImpl().parseSla(xmlSla);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
