@@ -31,6 +31,7 @@ public class EventDataConverter {
     /**
      * This converts from an XML representation of an event into the internal
      * representation of the event.
+     *
      * @param eventXml The event in XML format
      * @return The object representation of the event
      */
@@ -38,8 +39,7 @@ public class EventDataConverter {
         Message message = new ViolationMessageTranslator().fromXML(eventXml);
         return convertEventData((ViolationMessage) message);
     }
-    
-    
+
     /**
      * @param event The incoming event to convert into the self-adaptation
      * managers internal representation
@@ -48,6 +48,10 @@ public class EventDataConverter {
      */
     public static EventData convertEventData(ViolationMessage event) {
         EventData answer = new EventData();
+
+        answer.setApplicationId(event.getAppId());
+        answer.setDeploymentId(event.getDeploymentId());
+
         answer.setTime(event.getTime().getTimeInMillis() / 1000);
         if (event.getAlert().getType().equals("violation")) {
             answer.setType(EventData.Type.SLA_BREACH);
@@ -65,8 +69,9 @@ public class EventDataConverter {
     }
 
     /**
-     * This converts a violation messages guarantee state's operator into an 
+     * This converts a violation messages guarantee state's operator into an
      * event type operator.
+     *
      * @param event The event type to convert.
      * @return The enumerated type for the operator
      */

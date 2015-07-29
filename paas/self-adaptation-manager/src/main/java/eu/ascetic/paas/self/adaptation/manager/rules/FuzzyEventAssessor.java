@@ -96,8 +96,6 @@ public class FuzzyEventAssessor extends AbstractEventAssessor {
                      * The rule block name should be the name of the response
                      * type.
                      *
-                     * TODO consider if a test is needed to see if adaptation is
-                     * possible and if so which one?
                      */
                     answer = new Response(getActuator(), event, getAdaptationType(ruleBlock.getName()));
                     return answer;

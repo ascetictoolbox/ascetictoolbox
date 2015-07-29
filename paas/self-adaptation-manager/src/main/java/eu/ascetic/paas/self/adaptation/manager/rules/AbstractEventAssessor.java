@@ -43,7 +43,7 @@ public abstract class AbstractEventAssessor implements EventAssessor {
     //duration a history item can stay alive
     private final int historyLengthSeconds = (int) TimeUnit.MINUTES.toSeconds(5);
     //The rate at how often history items are checked to be still in date
-    private final int pollInterval = 5;
+    private final int pollInterval = 5; //TODO Make this configurable
     private Thread historyClearerThread = null;
     private HistoryClearer historyClearer = null;
 
@@ -64,6 +64,10 @@ public abstract class AbstractEventAssessor implements EventAssessor {
         Response answer = assessEvent(event, eventData, adaptations);
         if (answer != null) {
             adaptations.add(answer);
+            /**
+             * TODO add the specifics here of how to select where the adaptation
+             * occurs and by how much.
+             */
             actuator.actuate(answer);
         }
         return answer;

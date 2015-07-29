@@ -31,7 +31,6 @@ public class EventData implements Comparable<EventData> {
     private String slaUuid; //sla id
     private String applicationId;
     private String deploymentId;
-    private String vmId;
     private String guaranteeid; //sla gurantee id
 
     /**
@@ -50,10 +49,9 @@ public class EventData implements Comparable<EventData> {
      * @param slaUuid
      * @param applicationId
      * @param deploymentId
-     * @param vmId
      * @param guaranteeid 
      */
-    public EventData(long time, double rawValue, double guranteedValue, Type type, Operator guranteeOperator, String slaUuid, String applicationId, String deploymentId, String vmId, String guaranteeid) {
+    public EventData(long time, double rawValue, double guranteedValue, Type type, Operator guranteeOperator, String slaUuid, String applicationId, String deploymentId, String guaranteeid) {
         this.time = time;
         this.rawValue = rawValue;
         this.guranteedValue = guranteedValue;
@@ -62,7 +60,6 @@ public class EventData implements Comparable<EventData> {
         this.slaUuid = slaUuid;
         this.applicationId = applicationId;
         this.deploymentId = deploymentId;
-        this.vmId = vmId;
         this.guaranteeid = guaranteeid;
     }    
 
@@ -199,22 +196,6 @@ public class EventData implements Comparable<EventData> {
     public void setDeploymentId(String deploymentId) {
         this.deploymentId = deploymentId;
     }
-
-    /**
-     * This gets the vm id associated with the origin of the event.
-     * @return the vmId
-     */
-    public String getVmId() {
-        return vmId;
-    }
-
-    /**
-     * This sets the vm id associated with the origin of the event.
-     * @param vmId the vmId to set
-     */
-    public void setVmId(String vmId) {
-        this.vmId = vmId;
-    }    
     
     @Override
     public int compareTo(EventData event) {

@@ -28,6 +28,7 @@ public class Response implements Comparable<Response> {
     private final EventData cause;
     private AdaptationType actionType;
     private String adapationDetails;
+    private String vmId;
     private boolean performed = false;
     
     public enum AdaptationType {
@@ -137,12 +138,21 @@ public class Response implements Comparable<Response> {
     }
     
     /**
-     * This returns the VM id associated with the event. This is the VM that is
+     * This returns the VM id associated with the response. This is the VM that is
      * to be adapted. i.e. change size, delete etc
-     * @return 
+     * @return The vm id of the vm to be adapted.
      */
-    public String getVMId() {
-        return cause.getVmId();
+    public String getVmId() {
+        return vmId;
+    }
+
+    /**
+     * This sets the VM id associated with the response. This is the VM that is
+     * to be adapted. i.e. change size, delete etc
+     * @param vmId The vm id of the vm to be adapted.
+     */
+    public void setVmId(String vmId) {
+        this.vmId = vmId;
     }
     
 }
