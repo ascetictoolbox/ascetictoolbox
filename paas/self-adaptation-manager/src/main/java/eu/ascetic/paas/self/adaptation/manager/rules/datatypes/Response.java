@@ -51,6 +51,31 @@ public class Response implements Comparable<Response> {
     }
     
     /**
+     * This provides the mapping between the string representation of a
+     * response type and the adaptation type.
+     *
+     * @param ruleName The name of the rule.
+     * @return The Adaptation type required.
+     */
+    public static Response.AdaptationType getAdaptationType(String ruleName) {
+        switch (ruleName) {
+            case "ADD_VM":
+                return Response.AdaptationType.ADD_VM;
+            case "ADD_CPU":
+                return Response.AdaptationType.ADD_CPU;
+            case "ADD_MEMORY":
+                return Response.AdaptationType.ADD_MEMORY;
+            case "REMOVE_VM":
+                return Response.AdaptationType.REMOVE_VM;
+            case "REMOVE_CPU":
+                return Response.AdaptationType.REMOVE_CPU;
+            case "REMOVE_MEMORY":
+                return Response.AdaptationType.REMOVE_MEMORY;
+        }
+        return Response.AdaptationType.ADD_VM;
+    }    
+    
+    /**
      * This gets the time of arrival of the event that caused the response.
      * @return 
      */

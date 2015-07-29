@@ -89,45 +89,20 @@ public class FuzzyEventAssessor extends AbstractEventAssessor {
                 if (rule.getDegreeOfSupport() == 1.0) {
                     /**
                      * The rule should determine the type of response, i.e.
-                     * scale up down in or out. The adaptor should then decide
-                     * how, add 128mb ram add a vm remove a vm (and if so which
-                     * one) etc.
+                     * scale up down in or out. The decision engine should then 
+                     * decide how, add 128mb ram add a vm remove a vm 
+                     * (and if so which one) etc.
                      *
                      * The rule block name should be the name of the response
                      * type.
                      *
                      */
-                    answer = new Response(getActuator(), event, getAdaptationType(ruleBlock.getName()));
+                    answer = new Response(getActuator(), event, Response.getAdaptationType(ruleBlock.getName()));
                     return answer;
                 }
             }
         }
         return answer;
-    }
-
-    /**
-     * This provides the mapping between rule names and the adaptation type
-     * associated with the rule.
-     *
-     * @param ruleName The name of the rule.
-     * @return The Adaptation type required.
-     */
-    private Response.AdaptationType getAdaptationType(String ruleName) {
-        switch (ruleName) {
-            case "ADD_VM":
-                return Response.AdaptationType.ADD_VM;
-            case "ADD_CPU":
-                return Response.AdaptationType.ADD_CPU;
-            case "ADD_MEMORY":
-                return Response.AdaptationType.ADD_MEMORY;
-            case "REMOVE_VM":
-                return Response.AdaptationType.REMOVE_VM;
-            case "REMOVE_CPU":
-                return Response.AdaptationType.REMOVE_CPU;
-            case "REMOVE_MEMORY":
-                return Response.AdaptationType.REMOVE_MEMORY;
-        }
-        return Response.AdaptationType.ADD_VM;
     }
 
     /**

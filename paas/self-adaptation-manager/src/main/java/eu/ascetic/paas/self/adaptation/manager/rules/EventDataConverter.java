@@ -64,6 +64,7 @@ public class EventDataConverter {
 
         answer.setSlaUuid(event.getAlert().getSlaUUID());
         answer.setGuaranteeid(event.getAlert().getSlaGuaranteedState().getGuaranteedId());
+        answer.setAgreementTerm(event.getAlert().getSlaAgreementTerm());
         return answer;
 
     }

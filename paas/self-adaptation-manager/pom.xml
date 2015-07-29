@@ -107,6 +107,11 @@
             <groupId>commons-configuration</groupId>
             <artifactId>commons-configuration</artifactId>
             <version>1.10</version>
-        </dependency>        
+        </dependency>
+        <dependency>
+            <groupId>eu.ascetic.utils</groupId>
+            <artifactId>io-utils</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

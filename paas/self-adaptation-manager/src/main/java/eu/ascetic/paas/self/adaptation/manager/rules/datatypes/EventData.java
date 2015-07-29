@@ -31,6 +31,7 @@ public class EventData implements Comparable<EventData> {
     private String slaUuid; //sla id
     private String applicationId;
     private String deploymentId;
+    private String agreementTerm;
     private String guaranteeid; //sla gurantee id
 
     /**
@@ -50,8 +51,11 @@ public class EventData implements Comparable<EventData> {
      * @param applicationId
      * @param deploymentId
      * @param guaranteeid 
+     * @param agreementTerm
      */
-    public EventData(long time, double rawValue, double guranteedValue, Type type, Operator guranteeOperator, String slaUuid, String applicationId, String deploymentId, String guaranteeid) {
+    public EventData(long time, double rawValue, double guranteedValue, Type type, 
+            Operator guranteeOperator, String slaUuid, String applicationId, 
+            String deploymentId, String guaranteeid, String agreementTerm) {
         this.time = time;
         this.rawValue = rawValue;
         this.guranteedValue = guranteedValue;
@@ -61,6 +65,7 @@ public class EventData implements Comparable<EventData> {
         this.applicationId = applicationId;
         this.deploymentId = deploymentId;
         this.guaranteeid = guaranteeid;
+        this.agreementTerm = agreementTerm;
     }    
 
     /**
@@ -107,6 +112,14 @@ public class EventData implements Comparable<EventData> {
      */
     public void setGuaranteeid(String guranteeid) {
         this.guaranteeid = guranteeid;
+    }
+
+    public void setAgreementTerm(String agreementTerm) {
+        this.agreementTerm = agreementTerm;
+    }
+
+    public String getAgreementTerm() {
+        return agreementTerm;
     }
 
     /**
@@ -219,6 +232,29 @@ public class EventData implements Comparable<EventData> {
 
         LT, LTE, EQ, GT, GTE
     }
+    
+    /**
+     * This provides the mapping between the string representation of a
+     * operator and the operator.
+     *
+     * @param operator The string representation of the operator.
+     * @return The operator required.
+     */
+    public static Operator getOperator(String operator) {
+        switch (operator) {
+            case "LT":
+                return EventData.Operator.LT;
+            case "LTE":
+                return EventData.Operator.LTE;
+            case "EQ":
+                return EventData.Operator.EQ;
+            case "GT":
+                return EventData.Operator.GT;
+            case "GTE":
+                return EventData.Operator.GTE;
+        }
+        return EventData.Operator.GTE;
+    }     
 
     /**
      * This returns the absolute difference between the raw value and the

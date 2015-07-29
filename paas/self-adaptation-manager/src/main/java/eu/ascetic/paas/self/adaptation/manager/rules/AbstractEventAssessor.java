@@ -91,7 +91,7 @@ public abstract class AbstractEventAssessor implements EventAssessor {
      *
      * @param decisionEngineName The name of the algorithm to set
      */
-    public void setDecisionEngine(String decisionEngineName) {
+    public final void setDecisionEngine(String decisionEngineName) {
         try {
             if (!decisionEngineName.startsWith(DEFAULT_DECISION_ENGINE_PACKAGE)) {
                 decisionEngineName = DEFAULT_DECISION_ENGINE_PACKAGE + "." + decisionEngineName;
