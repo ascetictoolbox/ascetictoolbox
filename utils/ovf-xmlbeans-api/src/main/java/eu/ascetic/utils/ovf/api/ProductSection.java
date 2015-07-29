@@ -51,6 +51,12 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     public static ProductSectionFactory Factory = new ProductSectionFactory();
 
     /**
+     * The static KEY used to associate a public IP to a {@link VirtualSystem} once
+     * instantiated.
+     */
+    private static final String ASCETIC_VIRTUAL_SYSTEM_PUBLIC_IP = "asceticAssociatePublicIp";
+
+    /**
      * The static KEY used to get and set the upper bound on the number of
      * {@link VirtualSystem}s to instantiate.
      */
@@ -382,6 +388,34 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     // Start of ASCETiC specific helper functions
 
     /**
+     * Test whether a public IP is to be associated with a {@link VirtualSystem}
+     * after instantiation.
+     * 
+     * @return The association of a public IP.
+     */
+    public boolean isAssociatePublicIp() {
+        return Boolean.parseBoolean(getPropertyByKey(
+                ASCETIC_VIRTUAL_SYSTEM_PUBLIC_IP).getValue());
+    }
+
+    /**
+     * Sets whether a {@link VirtualSystem} should have a public IP associated
+     * with it.
+     * 
+     * @param associate
+     *            The association of a public IP.
+     */
+    public void setAssociatePublicIp(Boolean associate) {
+        ProductProperty productProperty = getPropertyByKey(ASCETIC_VIRTUAL_SYSTEM_PUBLIC_IP);
+        if (productProperty == null) {
+            addNewProperty(ASCETIC_VIRTUAL_SYSTEM_PUBLIC_IP,
+                    ProductPropertyType.UINT32, associate.toString());
+        } else {
+            productProperty.setValue(associate.toString());
+        }
+    }
+
+    /**
      * Gets the upper bound on the number of virtual machines to instantiate on
      * a per {@link VirtualSystem} basis.
      * 
@@ -549,7 +583,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * @return The energy optimization boundary
      */
     public String getEnergyOptimizationBoundary() {
-        return getPropertyByKey(ASCETIC_ENERGY_OPTIMIZATION_BOUNDARY).getValue();
+        return getPropertyByKey(ASCETIC_ENERGY_OPTIMIZATION_BOUNDARY)
+                .getValue();
     }
 
     /**
@@ -607,7 +642,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * @return The performance optimization boundary
      */
     public String getPerformanceOptimizationBoundary() {
-        return getPropertyByKey(ASCETIC_PERFORMANCE_OPTIMIZATION_BOUNDARY).getValue();
+        return getPropertyByKey(ASCETIC_PERFORMANCE_OPTIMIZATION_BOUNDARY)
+                .getValue();
     }
 
     /**
