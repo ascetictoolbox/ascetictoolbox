@@ -1029,7 +1029,7 @@ paas/application-monitor/test-amqp/AMQPTestClient/src/test/java/es/bsc/amon/amqp
 paas/application-monitor/test-amqp/AMQPTestClient/src/test/resources/jndi.properties -text
 paas/gui/app/css/styles.css -text
 paas/gui/app/index.html -text
-paas/gui/app/js/components.js -text
+paas/gui/app/js/components.json -text
 paas/gui/app/js/gui.js -text
 paas/gui/app/lib/css/bootstrap-theme.css -text
 paas/gui/app/lib/css/bootstrap-theme.css.map -text
