@@ -1,7 +1,7 @@
 [
 	{
 		"title" : "App Monitor",
-		"http" : "http://10.4.0.16:9000/gui"
+		"url" : "http://10.4.0.16:9000/gui"
 	},
     {
         "title": "Example",
