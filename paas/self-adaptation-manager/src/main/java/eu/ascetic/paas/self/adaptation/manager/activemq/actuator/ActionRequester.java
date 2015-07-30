@@ -19,7 +19,10 @@ import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.self.adaptation.manager.ActuatorInvoker;
 import eu.ascetic.paas.self.adaptation.manager.activemq.ActiveMQBase;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
+import java.io.File;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.JMSException;
@@ -28,6 +31,8 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 import javax.naming.NamingException;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 
 /**
  * This requests adaptation actions to be performed in order to perform
@@ -39,7 +44,8 @@ public class ActionRequester extends ActiveMQBase implements Runnable, ActuatorI
 
     private final MessageProducer producer;
     private final Destination queue;
-    private static final String QUEUE_NAME = "";
+    private static String queueName = "";
+    private static final String CONFIG_FILE = "paas-self-adapation-manager.properties";
     //Rank adaptation?? i.e. 1, consolidate, 2, scale, 3 redeploy ??
 
     /**
@@ -48,12 +54,26 @@ public class ActionRequester extends ActiveMQBase implements Runnable, ActuatorI
      * @throws NamingException 
      */
     public ActionRequester() throws JMSException, NamingException {
+        try {
+            PropertiesConfiguration config;
+            if (new File(CONFIG_FILE).exists()) {
+                config = new PropertiesConfiguration(CONFIG_FILE);
+            } else {
+                config = new PropertiesConfiguration();
+                config.setFile(new File(CONFIG_FILE));
+            }
+            config.setAutoSave(true); //This will save the configuration file back to disk. In case the defaults need setting.
+            queueName = config.getString("paas.self.adaptation.manager.sla.event.queue.name", queueName);
+            config.setProperty("paas.self.adaptation.manager.sla.event.queue.name", queueName);
+        } catch (ConfigurationException ex) {
+            Logger.getLogger(ActionRequester.class.getName()).log(Level.INFO, "Error loading the configuration of the PaaS Self adaptation manager", ex);
+        }        
         connection = getConnection();
         // Create a Session
         session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
         // Create the destination (Topic or Queue)
 //        queue = session.createQueue(QUEUE_NAME);
-        queue = getMessageQueue(QUEUE_NAME);
+        queue = getMessageQueue(queueName);
         producer = getMessageProducer(session, queue);
     }
 

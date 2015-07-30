@@ -16,20 +16,15 @@
 package eu.ascetic.paas.self.adaptation.manager.rules.decisionengine;
 
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
-import java.util.Collections;
 import java.util.List;
 
 /**
- * The aim of this class is to decide given an event that has been assessed what
- * the magnitude of an adaptation should be used will be. It may also have to
- * decide to which VM this adaptation should occur.
- *
- * The random decision engine will pick VMs and VM types to adapt randomly
- * without any further guidance from outside data sources.
- *
+ * This decision engine uses a more system aware approach to better decide
+ * what the magnitude of an adaptation should be used will be. It may also
+ * have to decide to which VM this adaptation should occur.
  * @author Richard Kavanagh
  */
-public class RandomDecisionEngine extends AbstractDecisionEngine {
+public class ApplicationMonitorAwareDecisionEngine extends AbstractDecisionEngine {
 
     @Override
     public Response decide(Response response) {
@@ -50,8 +45,8 @@ public class RandomDecisionEngine extends AbstractDecisionEngine {
     public Response deleteVM(Response response) {
         List<Integer> vmIds = getActuator().getVmIdsAvailableToRemove(response.getApplicationId(), response.getDeploymentId());
         if (!vmIds.isEmpty()) {
-            Collections.shuffle(vmIds);
-            response.setVmId(vmIds.get(0) + "");
+            //TODO find the least busy VM and then delete it
+//            response.setVmId(vmIds.get(0) + "");
             return response;
         } else {
             response.setAdapationDetails("Could not find a VM to delete");            
@@ -69,14 +64,14 @@ public class RandomDecisionEngine extends AbstractDecisionEngine {
     public Response addVM(Response response) {
         List<String> vmOvfTypes = getActuator().getVmTypesAvailableToAdd(response.getApplicationId(), response.getDeploymentId());
         if (!vmOvfTypes.isEmpty()) {
-            Collections.shuffle(vmOvfTypes);
-            response.setAdapationDetails(vmOvfTypes.get(0));
+            //TODO select VM type that is currently the busiest
+//            response.setAdapationDetails(vmOvfTypes.get(0));            
             return response;
         } else {
             response.setAdapationDetails("Could not find a VM OVF type to add");
             response.setPossibleToAdapt(false);
             return response;
         }
-    }
-
+    }    
+    
 }
