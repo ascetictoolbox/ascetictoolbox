@@ -67,7 +67,7 @@ public class SelfAdaptationManager {
             eventAssessorName = config.getString("paas.self.adaptation.manager.event.assessor", eventAssessorName);
             config.setProperty("paas.self.adaptation.manager.event.assessor", eventAssessorName);
         } catch (ConfigurationException ex) {
-            Logger.getLogger(AbstractEventAssessor.class.getName()).log(Level.INFO, "Error loading the configuration of the PaaS Self adaptation manager", ex);
+            Logger.getLogger(SelfAdaptationManager.class.getName()).log(Level.INFO, "Error loading the configuration of the PaaS Self adaptation manager", ex);
         }        
         setEventAssessor(eventAssessorName);
         EventListener listener = new SlaManagerListener();

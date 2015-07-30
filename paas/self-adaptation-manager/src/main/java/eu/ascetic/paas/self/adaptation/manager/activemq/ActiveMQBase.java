@@ -16,6 +16,9 @@
 package eu.ascetic.paas.self.adaptation.manager.activemq;
 
 import eu.ascetic.amqp.client.AmqpExceptionListener;
+import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.DeliveryMode;
@@ -26,6 +29,8 @@ import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 
 /**
  * This is a set of helper procedures for creating either producers or consumers
@@ -37,25 +42,47 @@ public abstract class ActiveMQBase {
 
     protected String user = "guest";
     protected String password = "guest";
+    protected String factoryLookupName = "myFactoryLookup";
     protected AmqpExceptionListener amqpExceptionListener = new AmqpExceptionListener();
     protected Connection connection;
     protected Session session;
     protected Context context;
+    private static final String CONFIG_FILE = "paas-self-adapation-manager.properties";
 
     /**
      * This is the constructor for the ActiveMQBase class. It establishes the
      * connection and the session for derived classes. It uses the default
      * guest:guest username and password.
+     *
      * @throws JMSException
-     * @throws NamingException 
+     * @throws NamingException
      */
     public ActiveMQBase() throws JMSException, NamingException {
+        try {
+            PropertiesConfiguration config;
+            if (new File(CONFIG_FILE).exists()) {
+                config = new PropertiesConfiguration(CONFIG_FILE);
+            } else {
+                config = new PropertiesConfiguration();
+                config.setFile(new File(CONFIG_FILE));
+            }
+            config.setAutoSave(true); //This will save the configuration file back to disk. In case the defaults need setting.
+            user = config.getString("paas.self.adaptation.manager.activemq.username", user);
+            config.setProperty("paas.self.adaptation.manager.activemq.username", user);
+            password = config.getString("paas.self.adaptation.manager.activemq.password", password);
+            config.setProperty("paas.self.adaptation.manager.activemq.password", password);
+            factoryLookupName = config.getString("paas.self.adaptation.manager.activemq.factory.name", factoryLookupName);
+            config.setProperty("paas.self.adaptation.manager.activemq.factory.name", factoryLookupName);            
+        } catch (ConfigurationException ex) {
+            Logger.getLogger(ActiveMQBase.class.getName()).log(Level.INFO, "Error loading the configuration of the PaaS Self adaptation manager", ex);
+        }        
         initialise();
     }
-    
+
     /**
      * This is the constructor for the ActiveMQBase class. It establishes the
      * connection and the session for derived classes.
+     *
      * @param user The username to connect with
      * @param password The password to connect with
      * @throws javax.naming.NamingException
@@ -70,18 +97,19 @@ public abstract class ActiveMQBase {
         }
         initialise();
     }
-    
+
     /**
      * This is the generic code code from the ActiveMQBase's constructors.
+     *
      * @throws NamingException
-     * @throws JMSException 
+     * @throws JMSException
      */
     private void initialise() throws NamingException, JMSException {
         context = new InitialContext();
 
-        ConnectionFactory factory = (ConnectionFactory) context.lookup("myFactoryLookup");
+        ConnectionFactory factory = (ConnectionFactory) context.lookup(factoryLookupName);
 
-        connection = factory.createConnection(this.user, this.password);
+        connection = factory.createConnection(user, password);
         connection.setExceptionListener(amqpExceptionListener);
         connection.start();
 
@@ -108,10 +136,11 @@ public abstract class ActiveMQBase {
 
     /**
      * This gets a message producer for a given session's queue.
+     *
      * @param session The session to get the message producer for
      * @param queue The queue to create the message producer for
      * @return The message producer which is ready to send messages.
-     * @throws JMSException 
+     * @throws JMSException
      */
     protected MessageProducer getMessageProducer(Session session, Destination queue) throws JMSException {
         // Create a MessageProducer from the Session to the Topic or Queue
@@ -122,9 +151,10 @@ public abstract class ActiveMQBase {
 
     /**
      * This gets a queue from the current context
+     *
      * @param queue The name of the queue to get
      * @return The queue for messages to be sent to
-     * @throws NamingException 
+     * @throws NamingException
      */
     protected Destination getMessageQueue(String queue) throws NamingException {
         context = new InitialContext();

@@ -21,12 +21,16 @@ import eu.ascetic.paas.self.adaptation.manager.rules.EventAssessor;
 import eu.ascetic.paas.self.adaptation.manager.rules.EventDataConverter;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.EventData;
 import eu.ascetic.paas.slam.pac.events.ViolationMessage;
-import eu.ascetic.paas.slam.pac.events.ViolationMessageTranslator;
+import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.naming.NamingException;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 
 /**
  * This listens to the SLA manager as a source of events to monitor for
@@ -37,16 +41,30 @@ import javax.naming.NamingException;
 public class SlaManagerListener extends ActiveMQBase implements Runnable, EventListener {
 
     private final Destination queue;
-    private static final String QUEUE_NAME = "";
+    private static String queue_name = "";
     // Create a MessageConsumer from the Session to the Topic or Queue
     private final MessageConsumer consumer;
     private EventAssessor eventAssessor;
-    private final ViolationMessageTranslator translator = new ViolationMessageTranslator();
     private boolean running = true;
+    private static final String CONFIG_FILE = "paas-self-adapation-manager.properties";
 
     public SlaManagerListener() throws JMSException, NamingException {
         super();
-        queue = getMessageQueue(QUEUE_NAME);
+        try {
+            PropertiesConfiguration config;
+            if (new File(CONFIG_FILE).exists()) {
+                config = new PropertiesConfiguration(CONFIG_FILE);
+            } else {
+                config = new PropertiesConfiguration();
+                config.setFile(new File(CONFIG_FILE));
+            }
+            config.setAutoSave(true); //This will save the configuration file back to disk. In case the defaults need setting.
+            queue_name = config.getString("paas.self.adaptation.manager.sla.event.queue.name", queue_name);
+            config.setProperty("paas.self.adaptation.manager.sla.event.queue.name", queue_name);
+        } catch (ConfigurationException ex) {
+            Logger.getLogger(SlaManagerListener.class.getName()).log(Level.INFO, "Error loading the configuration of the PaaS Self adaptation manager", ex);
+        }
+        queue = getMessageQueue(queue_name);
         consumer = session.createConsumer(queue);
     }
 
@@ -82,10 +100,10 @@ public class SlaManagerListener extends ActiveMQBase implements Runnable, EventL
     public EventAssessor getEventAssessor() {
         return eventAssessor;
     }
-    
+
     @Override
     public void stopListening() {
         running = false;
-    }    
+    }
 
 }
