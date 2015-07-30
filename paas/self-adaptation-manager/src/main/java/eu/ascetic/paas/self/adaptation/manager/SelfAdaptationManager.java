@@ -17,14 +17,18 @@ package eu.ascetic.paas.self.adaptation.manager;
 
 import eu.ascetic.paas.self.adaptation.manager.activemq.listener.SlaManagerListener;
 import eu.ascetic.paas.self.adaptation.manager.rest.ActionRequester;
+import eu.ascetic.paas.self.adaptation.manager.rules.AbstractEventAssessor;
 import eu.ascetic.paas.self.adaptation.manager.rules.EventAssessor;
 import eu.ascetic.paas.self.adaptation.manager.rules.FuzzyEventAssessor;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.jms.JMSException;
 import javax.naming.NamingException;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 
 /**
  * This is the main backbone of the self adaptation manager.
@@ -39,19 +43,33 @@ public class SelfAdaptationManager {
     private ArrayList<EventListener> listeners = new ArrayList<>();
     private ActuatorInvoker actuator = null;
     private EventAssessor eventAssessor = null;
+    private static final String CONFIG_FILE = "paas-self-adapation-manager.properties";
+    private static final String DEFAULT_EVENT_ASSESSOR_PACKAGE
+            = "eu.ascetic.paas.self.adaptation.manager.rules";
+    private String eventAssessorName = "FuzzyEventAssessor";
 
     /**
      * This creates a new instance of the self-adaptation manager.
+     *
      * @throws JMSException
-     * @throws NamingException 
+     * @throws NamingException
      */
     public SelfAdaptationManager() throws JMSException, NamingException {
         try {
-            eventAssessor = new FuzzyEventAssessor();
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(SelfAdaptationManager.class.getName()).log(Level.SEVERE, 
-                    "The event assessor rule file was not found", ex);
-        }
+            PropertiesConfiguration config;
+            if (new File(CONFIG_FILE).exists()) {
+                config = new PropertiesConfiguration(CONFIG_FILE);
+            } else {
+                config = new PropertiesConfiguration();
+                config.setFile(new File(CONFIG_FILE));
+            }
+            config.setAutoSave(true); //This will save the configuration file back to disk. In case the defaults need setting.
+            eventAssessorName = config.getString("paas.self.adaptation.manager.event.assessor", eventAssessorName);
+            config.setProperty("paas.self.adaptation.manager.event.assessor", eventAssessorName);
+        } catch (ConfigurationException ex) {
+            Logger.getLogger(AbstractEventAssessor.class.getName()).log(Level.INFO, "Error loading the configuration of the PaaS Self adaptation manager", ex);
+        }        
+        setEventAssessor(eventAssessorName);
         EventListener listener = new SlaManagerListener();
         listeners.add(listener);
         actuator = new ActionRequester();
@@ -59,6 +77,37 @@ public class SelfAdaptationManager {
         eventAssessor.setListeners(listeners);
     }
 
+    /**
+     * This allows the event assessor to be set. Event assessors are used to
+     * decide the which form of adaptation to take.
+     *
+     * @param eventAssessorName The name of the algorithm to set
+     */
+    public final void setEventAssessor(String eventAssessorName) {
+        try {
+            try {
+                if (!eventAssessorName.startsWith(DEFAULT_EVENT_ASSESSOR_PACKAGE)) {
+                    eventAssessorName = DEFAULT_EVENT_ASSESSOR_PACKAGE + "." + eventAssessorName;
+                }
+                eventAssessor = (EventAssessor) (Class.forName(eventAssessorName).newInstance());
+            } catch (ClassNotFoundException ex) {
+                if (eventAssessor == null) {
+                    eventAssessor = new FuzzyEventAssessor();
+                }
+                Logger.getLogger(AbstractEventAssessor.class.getName()).log(Level.WARNING, "The decision engine specified was not found");
+            } catch (InstantiationException | IllegalAccessException ex) {
+                if (eventAssessor == null) {
+                    eventAssessor = new FuzzyEventAssessor();
+                }
+                Logger.getLogger(AbstractEventAssessor.class.getName()).log(Level.WARNING, "The setting of the decision engine did not work", ex);
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(SelfAdaptationManager.class.getName()).log(Level.SEVERE,
+                    "The event assessor rule file was not found", ex);
+            System.exit(-1);
+        }
+    }
+    
     public static void main(String[] args) {
         try {
             new SelfAdaptationManager();
