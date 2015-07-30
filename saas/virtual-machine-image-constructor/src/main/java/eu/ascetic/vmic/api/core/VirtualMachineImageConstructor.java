@@ -427,7 +427,7 @@ public class VirtualMachineImageConstructor implements Runnable {
         // Add mount command
         // FIXME: Should detect which partition to mount and what file system is
         // in use
-        arguments.add("sudo mount -t ext4 " + nbdDevicePath + "p1 "
+        arguments.add("sudo mount -t ext3 " + nbdDevicePath + "p1 "
                 + mountPointPath);
         try {
             systemCallRemote.runCommand(commandName, arguments);

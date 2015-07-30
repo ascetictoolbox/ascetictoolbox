@@ -364,8 +364,8 @@ public class OvfDefinitionParser {
     public String getBaseImagePath(int i) {
         // FIXME: Using hard coded image URI, for Y2 select using OVF operating
         // system section
-        LOGGER.warn("Using hardcoded base image path: /DFS/ascetic/vm-images/ubuntu.raw.img");
-        return "/DFS/ascetic/vm-images/ubuntu.raw.img";
+        LOGGER.warn("Using hardcoded base image path: /DFS/ascetic/vm-images/vmic/base-images/linux/deb-wheezy.raw.img");
+        return "/DFS/ascetic/vm-images/vmic/base-images/linux/deb-wheezy.raw.img";
     }
 
     /**
