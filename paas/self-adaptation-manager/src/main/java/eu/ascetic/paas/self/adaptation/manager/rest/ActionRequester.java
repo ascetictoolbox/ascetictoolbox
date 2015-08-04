@@ -43,32 +43,6 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
     private final LinkedBlockingDeque<Response> queue = new LinkedBlockingDeque<>();
     private boolean stop = false;    
     
-    public static void main(String[] args) {
-        VM vm = getVM("threeTierWebApp", "100", "1686");
-        printVM(vm);
-        System.out.println("----");
-        List<VM> vms = getVMs("threeTierWebApp", "100");
-        for (VM vm1 : vms) {
-            printVM(vm1);
-        }
-    }
-
-    /**
-     * 
-     * @param vm 
-     */
-    private static void printVM(VM vm) {
-        System.out.println("---- VM ----");
-        System.out.println("VM ID: " + vm.getId());
-        System.out.println("IP: " + vm.getIp());
-        System.out.println("Status: " + vm.getStatus());
-        System.out.println("CPU Min: " + vm.getCpuMin()
-                + " Max: " + vm.getCpuMax()
-                + " Actual: " + vm.getCpuActual());
-        System.out.println("OVF ID: " + vm.getOvfId());
-        System.out.println("---- VM END ----");
-    }
-
     /**
      * This gets a VM given its application, deployment and VM ids.
      *
@@ -165,7 +139,7 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
      * @param deploymentId The deployment ID
      * @return The VM given the id values specified.
      */
-    public static List<VM> getVMs(String applicationId, String deploymentId) {
+    public List<VM> getVMs(String applicationId, String deploymentId) {
         /**
          * An example url is:
          * http://192.168.3.16/application-manager/applications/threeTierWebApp/deployments/100/vms/
@@ -232,6 +206,7 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
                     } 
                 }
             } catch (InterruptedException ex) {
+                Logger.getLogger(ActionRequester.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
