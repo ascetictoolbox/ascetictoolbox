@@ -133,9 +133,9 @@ public class ImageCreation {
 		log.debug("Uploading " + f.getLocation().toOSString());
 		uploadFile(resource, f.getLocation().toFile(), image_id);
 		monitor.worked(1);*/
-		
+		String logLevel = RuntimeConfigurationSection.getProjectITConfigManager(project).getLog4jConfiguration();
 		File file = new File(pr_meta.getRuntimeLocation()
-				+ COMPSS_RT_LOG_PATH+ COMPSS_LOG4J_DEFAULT_NAME);
+				+ COMPSS_RT_LOG_PATH+ COMPSS_LOG4J_DEFAULT_NAME+"."+logLevel);
 		if (f != null && f.exists()) {
 			uploadAndCopy(vmic, file, manifest, is, monitor);
 		}
@@ -433,7 +433,7 @@ public class ImageCreation {
 	private static void createProperties(File file, String packageName, String schedulerPackage, IJavaProject project) throws ConfigurationException, CoreException {
 		RuntimeConfigManager config = new RuntimeConfigManager(file);
 		RuntimeConfigManager oldConfig = RuntimeConfigurationSection.getProjectITConfigManager(project);
-		config.setLog4jConfiguration(IMAGE_DEPLOYMENT_FOLDER + "/it-log4j");
+		config.setLog4jConfiguration(IMAGE_DEPLOYMENT_FOLDER + File.separator+COMPSS_LOG4J_DEFAULT_NAME+"."+oldConfig.getLog4jConfiguration());
 		config.setGraph(oldConfig.isGraph());
 		config.setTracing(oldConfig.isTracing());
 		config.setMonitorInterval(oldConfig.getMonitorInterval());
