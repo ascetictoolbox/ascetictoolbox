@@ -1425,6 +1425,7 @@ saas/compss-plugin/ascetic-deployer/src/es/bsc/servicess/ide/editors/deployers/J
 saas/compss-plugin/ascetic-deployer/src/es/bsc/servicess/ide/editors/deployers/Manifest.java -text
 saas/compss-plugin/ascetic-deployer/src/es/bsc/servicess/ide/editors/deployers/PackagesSection.java -text
 saas/compss-plugin/ascetic-deployer/src/es/bsc/servicess/ide/editors/deployers/SectionSaveResetButtonComposite.java -text
+saas/compss-plugin/ascetic-deployer/src/es/bsc/servicess/ide/editors/deployers/dialogs/AgreementSelectionDialog.java -text
 saas/compss-plugin/ascetic-deployer/src/es/bsc/servicess/ide/editors/deployers/log4j.properties -text
 saas/compss-plugin/ascetic-deployer/src/es/bsc/servicess/ide/editors/deployers/sm_default.properties -text
 saas/compss-plugin/pom.xml -text
