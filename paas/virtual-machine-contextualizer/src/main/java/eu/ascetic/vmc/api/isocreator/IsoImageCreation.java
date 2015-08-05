@@ -451,6 +451,8 @@ public class IsoImageCreation {
                     + "  cat /mnt/context/securitykeys/ssh-public.key >> /root/.ssh/authorized_keys\n"
                     + "  chmod 700 /root/.ssh\n"
                     + "  chmod 600 /root/.ssh/authorized_keys\n"
+                    + "  cat /mnt/context/securitykeys/ssh-public.key > /root/.ssh/id_rsa.pub\n"
+                    + "  chmod 600 /root/.ssh/id_rsa.pub\n"
                     + "  #Get the private SSH key:\n"
                     + "  cat /mnt/context/securitykeys/ssh-private.key > /root/.ssh/id_rsa\n"
                     + "  chmod 700 /root/.ssh/id_rsa\n"
