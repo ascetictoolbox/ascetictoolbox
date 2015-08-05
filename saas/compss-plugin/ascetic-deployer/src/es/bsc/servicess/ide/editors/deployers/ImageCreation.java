@@ -437,6 +437,7 @@ public class ImageCreation {
 		config.setGraph(oldConfig.isGraph());
 		config.setTracing(oldConfig.isTracing());
 		config.setMonitorInterval(oldConfig.getMonitorInterval());
+		config.setScheduler("integratedtoolkit.components.scheduler.impl.AsceticScheduler");
 		String commAdaptor = oldConfig.getCommAdaptor();
 		if (commAdaptor!=null && !commAdaptor.isEmpty())
 			config.setCommAdaptor(commAdaptor);
