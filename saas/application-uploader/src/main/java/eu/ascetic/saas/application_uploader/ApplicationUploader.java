@@ -19,6 +19,7 @@ package eu.ascetic.saas.application_uploader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.HashSet;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -29,6 +30,7 @@ import com.sun.jersey.api.client.WebResource;
 
 import eu.ascetic.paas.applicationmanager.model.Agreement;
 import eu.ascetic.paas.applicationmanager.model.Application;
+import eu.ascetic.paas.applicationmanager.model.Collection;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
 import eu.ascetic.paas.applicationmanager.model.VM;
@@ -36,7 +38,7 @@ import eu.ascetic.paas.applicationmanager.model.VM;
 public class ApplicationUploader {
 	public static final String APPLICATIONS_PATH = "applications";
 	public static final String DEPLOYMENTS_PATH = "deployments";
-	public static final String AGREEMENT_PATH = "agreement";
+	public static final String AGREEMENTS_PATH = "agreements";
 	public static final String ACCEPT_QP = "accept";
 	public static final String YES_VALUE = "yes";
 	public static final String NO_VALUE = "no";
@@ -62,9 +64,12 @@ public class ApplicationUploader {
 	 * @return DeploymentID
 	 * @throws ApplicationUploaderException
 	 */
-	public int createAndDeployAplication(String ovf) throws ApplicationUploaderException{
-		ClientResponse response = resource.path(APPLICATIONS_PATH)
-				.header(HttpHeaders.CONTENT_TYPE,MediaType.APPLICATION_XML).post(ClientResponse.class, ovf);
+	public int createAndDeployAplication(String ovf, boolean manual) throws ApplicationUploaderException{
+		WebResource apps = resource.path(APPLICATIONS_PATH);
+		if (manual){
+			apps = apps.queryParam("negotiation","manual");
+		}
+		ClientResponse response = apps.header(HttpHeaders.CONTENT_TYPE,MediaType.APPLICATION_XML).post(ClientResponse.class, ovf);
 		if (response.getStatus() == ClientResponse.Status.CREATED.getStatusCode()) {
 			List<Deployment> deployments = response.getEntity(Application.class).getDeployments();
 			if (deployments.size()-1>=0){
@@ -121,17 +126,23 @@ public class ApplicationUploader {
 			throw new ApplicationUploaderException("Error getting deployment energy measurement. Returned code is "+ response.getStatus());
 	}
 	
-	/** Get deployment agreement
+	/** Get deployment agreements
 	 * @param applicationID Application Identifier
 	 * @param deploymentID Deployment Identifier
 	 * @return deployment status
 	 * @throws ApplicationUploaderException
 	 */
-	public String getDeploymentAgreement(String applicationID, String deploymentID) throws ApplicationUploaderException{
+	public List<Agreement> getDeploymentAgreements(String applicationID, String deploymentID) throws ApplicationUploaderException{
 		ClientResponse response = resource.path(APPLICATIONS_PATH).path(applicationID)
-				.path(DEPLOYMENTS_PATH).path(deploymentID).path(AGREEMENT_PATH).accept(MediaType.APPLICATION_XML_TYPE).get(ClientResponse.class);
+				.path(DEPLOYMENTS_PATH).path(deploymentID).path(AGREEMENTS_PATH).accept(MediaType.APPLICATION_XML_TYPE).get(ClientResponse.class);
 		if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
-			return response.getEntity(Agreement.class).getSlaAgreement();
+			Collection agreemsCollection = response.getEntity(eu.ascetic.paas.applicationmanager.model.Collection.class);
+			List<Agreement> agrs = agreemsCollection.getItems().getAgreements();
+			if (agrs !=null){
+				return agrs;
+			}else{
+				throw new ApplicationUploaderException("No aggreements found");
+			}
 		}else
 			throw new ApplicationUploaderException("Error getting deployment agreement. Returned code is "+ response.getStatus());
 	}
@@ -171,12 +182,15 @@ public class ApplicationUploader {
 	/** Accept deployment agreement
 	 * @param applicationID Application Identifier
 	 * @param deploymentID Deployment Identifier
+	 * @param agreementID Agreement Identifier
 	 * @return deployment status
 	 * @throws ApplicationUploaderException
 	 */
-	public void acceptAgreement(String applicationID, String deploymentID) throws ApplicationUploaderException{
+	public void acceptAgreement(String applicationID, String deploymentID, String agreementID) throws ApplicationUploaderException{
+		Agreement ag = new Agreement();
+		ag.setAccepted(true);
 		ClientResponse response = resource.path(APPLICATIONS_PATH).path(applicationID)
-				.path(DEPLOYMENTS_PATH).path(deploymentID).path(AGREEMENT_PATH).queryParam(ACCEPT_QP, YES_VALUE).put(ClientResponse.class);
+				.path(DEPLOYMENTS_PATH).path(deploymentID).path(AGREEMENTS_PATH).path(agreementID).put(ClientResponse.class, ag);
 		if (response.getStatus() != ClientResponse.Status.ACCEPTED.getStatusCode()) {
 			throw new ApplicationUploaderException("Error accepting deployment agreement. Returned code is "+ response.getStatus());
 		}
@@ -189,8 +203,9 @@ public class ApplicationUploader {
 	 * @throws ApplicationUploaderException
 	 */
 	public void rejectAgreement(String applicationID, String deploymentID) throws ApplicationUploaderException{
+		
 		ClientResponse response = resource.path(APPLICATIONS_PATH).path(applicationID)
-				.path(DEPLOYMENTS_PATH).path(deploymentID).path(AGREEMENT_PATH)
+				.path(DEPLOYMENTS_PATH).path(deploymentID).path(AGREEMENTS_PATH)
 				.queryParam(ACCEPT_QP, NO_VALUE).put(ClientResponse.class);
 		if (response.getStatus() != ClientResponse.Status.ACCEPTED.getStatusCode()) {
 			throw new ApplicationUploaderException("Error accepting deployment agreement. Returned code is "+ response.getStatus());
