@@ -33,9 +33,10 @@ public class COMPSsMaster extends COMPSsNode {
             InetAddress localHost = InetAddress.getLocalHost();
             hostName = localHost.getCanonicalHostName();
         } catch (UnknownHostException e) {
-            logger.fatal(ERROR_UNKNOWN_HOST, e);
-            hostName = "";
-            System.exit(1);
+        	System.err.println(ERROR_UNKNOWN_HOST);
+            e.printStackTrace();
+            hostName = "master";
+            //System.exit(1);
 
         }
         name = hostName;
