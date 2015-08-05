@@ -192,6 +192,7 @@ public class Manifest {
 			signatures = generateElementSignatures(els);
 			log.debug("Seting element signatures: "+ signatures);
 		}
+		ps.setAssociatePublicIp(true);
 		ps.addNewProperty(PM_ELEMENTS_CONSTRAINT, ProductPropertyType.STRING, signatures);
 		ps.addNewProperty(PM_INSTALL_DIR_CONSTRAINT, ProductPropertyType.STRING, ImageCreation.IMAGE_DEPLOYMENT_FOLDER+COMPSS_SCRIPTS_PATH+COMPSS_SYSTEM_PATH);
 		ps.addNewProperty(PM_APP_DIR_CONSTRAINT, ProductPropertyType.STRING, ImageCreation.IMAGE_DEPLOYMENT_FOLDER);

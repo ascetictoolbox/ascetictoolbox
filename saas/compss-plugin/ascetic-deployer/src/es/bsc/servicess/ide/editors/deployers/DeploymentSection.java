@@ -353,5 +353,9 @@ public class DeploymentSection extends ServiceEditorSection{
 		manifest.setPriceBoundary(maxPrice.getText().trim());
 		manifest.setOptimizationParameter(optParam.getText().trim());
 	}
+	
+	public boolean isManual(){
+		return !autoNegotiation.getSelection();
+	}
 
 }

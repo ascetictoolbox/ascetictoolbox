@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -36,6 +37,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
@@ -69,11 +71,13 @@ import es.bsc.servicess.ide.editors.BuildingDeploymentFormPage;
 import es.bsc.servicess.ide.editors.CommonFormPage;
 import es.bsc.servicess.ide.editors.Deployer;
 import es.bsc.servicess.ide.editors.ServiceFormEditor;
+import es.bsc.servicess.ide.editors.deployers.dialogs.AgreementSelectionDialog;
 import es.bsc.servicess.ide.model.ServiceElement;
 import es.bsc.servicess.ide.views.DeployedApplicationSection;
 import es.bsc.servicess.ide.views.DeploymentChecker;
 import es.bsc.servicess.ide.views.ServiceDataComposite;
 import es.bsc.servicess.ide.views.ServiceManagerView;
+import eu.ascetic.paas.applicationmanager.model.Agreement;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.saas.application_uploader.ApplicationUploader;
@@ -391,15 +395,16 @@ public class AsceticDeployer extends Deployer {
 						final int vms = manifest.getVMsToDeploy();
 						deploymentSection.setApplicationSecurityInManifest(manifest);
 						
-							manifest.setApplicationMangerEPR(location);
-							final String ovf = manifest.getString();
-							System.out.println(ovf);
-							final boolean ex = executable;
-							final AsceticDeployer deployer = this;
-							//String deploymentID = "116";
-							/*ProgressMonitorDialog dialog = new ProgressMonitorDialog(getShell());
-							dialog.setBlockOnOpen(false);
-							dialog.setCancelable(true);
+						manifest.setApplicationMangerEPR(location);
+						final String ovf = manifest.getString();
+						System.out.println(ovf);
+						final boolean manual = deploymentSection.isManual();
+						final boolean ex = executable;
+						final AsceticDeployer deployer = this;
+						//String deploymentID = "116";
+						/*ProgressMonitorDialog dialog = new ProgressMonitorDialog(getShell());
+						dialog.setBlockOnOpen(false);
+						dialog.setCancelable(true);
 							try {
 								dialog.run(true, true, new IRunnableWithProgress() {*/
 							
@@ -408,16 +413,16 @@ public class AsceticDeployer extends Deployer {
 									public IStatus run(IProgressMonitor monitor){
 										//throws InvocationTargetException, InterruptedException {
 										try {
-											String deploymentID = Integer.toString(appUploader.createAndDeployAplication(ovf));
+											String deploymentID = Integer.toString(appUploader.createAndDeployAplication(ovf, manual));
 											
-											monitorProgress(appUploader, serviceID, deploymentID, vms, monitor);
-									
+											monitorProgress(appUploader, serviceID, deploymentID, vms, manual, monitor);
+											
 											openSMView(appUploader, serviceID, deploymentID, mainClass, ex, deployer);
 											generating = false;
 											return Status.OK_STATUS;
 										} catch (ApplicationUploaderException e) {
 											generating = false;
-											String message = "Deployment error:  " + e.getMessage();
+											String message = "Creation error:  " + e.getMessage();
 											log.debug(message);
 											return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error contacting the Application Manager", e );
 										} catch (InterruptedException e) {
@@ -425,10 +430,10 @@ public class AsceticDeployer extends Deployer {
 											String message = "Deployment interrumped:  " + e.getMessage();
 											log.debug(message);
 											return Status.CANCEL_STATUS;
-										} catch (InvocationTargetException e) {
+										} catch (AsceticDeploymentException e) {
 											generating = false;
 											String message = e.getCause().getMessage();
-											log.error("Error message: " + message,e.getCause());
+											log.error("Error monitoring: " + message,e.getCause());
 											return new Status(IStatus.ERROR,Activator.PLUGIN_ID,
 															message, e.getCause());
 										}
@@ -525,9 +530,10 @@ public class AsceticDeployer extends Deployer {
 	 * @param monitor Progress monitor
 	 * @throws InterruptedException
 	 * @throws AsceticDeploymentException
+	 * @throws ApplicationUploaderException 
 	 */
 	private void monitorProgress(final ApplicationUploader appUploader, final String applicationID,
-			final String deploymentID, final int vms, IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+			final String deploymentID, final int vms, final boolean manual, IProgressMonitor monitor) throws InterruptedException, AsceticDeploymentException, ApplicationUploaderException {
 		
 		
 		/*ProgressMonitorDialog dialog = new ProgressMonitorDialog(getShell());
@@ -540,7 +546,7 @@ public class AsceticDeployer extends Deployer {
 					monitor.beginTask("Deploying application", 100);
 					int retries = 0;
 					int progress = 0;
-
+					boolean accepted = false;
 					while (progress >= 0 && progress < 100 & retries < 30) {
 						if (monitor.isCanceled()){
 							appUploader.undeploy(applicationID, deploymentID);
@@ -555,12 +561,24 @@ public class AsceticDeployer extends Deployer {
 							throw (new AsceticDeploymentException("Deployment was canceled"));
 						} else if (resp.contains(Dictionary.APPLICATION_STATUS_SUBMITTED)) {
 							new_progress = 5;
-						} else if (resp.contains(Dictionary.APPLICATION_STATUS_NEGOTIATION)) {
+						} else if (resp.contains(Dictionary.APPLICATION_STATUS_NEGOTIATING)) {
 							new_progress = 10;
-							//TODO: In some place we have to ask for accepting or rejecting the agreement
+							
+							//TODO: Check if it is the place to ask for accepting or rejecting the agreements
 						} else if (resp.contains(Dictionary.APPLICATION_STATUS_NEGOTIATIED)) {
 							new_progress = 15;
-							//TODO: In some place we have to ask for accepting or rejecting the agreement
+							if(manual){
+								if (!accepted){
+									accepted = handleManualAgreement(appUploader, applicationID, deploymentID);
+										if (!accepted){
+											//TODO: Maybe this doesn't work
+											//appUploader.undeploy(applicationID, deploymentID);
+											return;
+										}
+								}									
+								
+							}
+							log.debug("Agreement at negotiated:"+ appUploader.getDeploymentAgreements(applicationID, deploymentID));
 						} else if (resp.contains(Dictionary.APPLICATION_STATUS_CONTEXTUALIZING)) {
 							new_progress = 20;
 						} else if (resp.contains(Dictionary.APPLICATION_STATUS_CONTEXTUALIZATION)) {
@@ -568,7 +586,7 @@ public class AsceticDeployer extends Deployer {
 						} else if (resp.contains(Dictionary.APPLICATION_STATUS_CONTEXTUALIZED)) {
 							new_progress = 30;	
 						} else if (resp.contains(Dictionary.APPLICATION_STATUS_DEPLOYING)) {
-							new_progress = calculateProgress(appUploader, applicationID, deploymentID, vms, progress);
+							new_progress = calculateProgress(appUploader, applicationID, deploymentID, vms);
 
 						} else if (resp.contains(Dictionary.APPLICATION_STATUS_DEPLOYED)) {
 							new_progress = 100;
@@ -583,24 +601,81 @@ public class AsceticDeployer extends Deployer {
 						if (progress >= 100)
 							monitor.done();
 					}
-				} catch (Exception e) {
-					throw (new InvocationTargetException(e));
+				} catch (ApplicationUploaderException e) {
+					//appUploader.undeploy(applicationID, deploymentID);
+					throw (e);
+					
 				}
 	/*		}
 		});*/
 	}
 
+	private class ManualAgreementHandler implements Runnable{
+		ApplicationUploader appUploader;
+		String applicationID; 
+		String deploymentID;
+		boolean accepted = false;
+		
+		public ManualAgreementHandler(ApplicationUploader appUploader, String applicationID, String deploymentID){
+			this.appUploader = appUploader;
+			this.applicationID = applicationID;
+			this.deploymentID = deploymentID;
+		}
+		@Override
+		public void run() {
+			try {
+				List<Agreement> agrs = appUploader.getDeploymentAgreements(applicationID, deploymentID);
+				AgreementSelectionDialog agreementSelection = new AgreementSelectionDialog(getShell(), agrs);
+				agreementSelection.open();
+				String selectedAgreement = agreementSelection.getSelectedAgreement();
+				while(selectedAgreement == null){
+					if (MessageDialog.openQuestion(getShell(), "No agreement selected", 
+							" No agreement has been selected for acceptance it implies that the application "
+									+ "deployment will be canceled. Do you want to proceed with the cancelation?")){
+						accepted =false;
+					}else{
+						agreementSelection = new AgreementSelectionDialog(getShell(), agrs);
+						agreementSelection.open();
+						selectedAgreement = agreementSelection.getSelectedAgreement();
+					}
+				}
+			
+				appUploader.acceptAgreement(applicationID, deploymentID,Integer.toString(agrs.iterator().next().getId()));
+				accepted = true;
+			} catch (ApplicationUploaderException e) {
+				log.error("Exception handling agreement.", e);
+				e.printStackTrace();
+				accepted = false;
+			}
+			
+		}
+		public boolean isAccepted() {
+			return accepted;
+		}
+	}
+	
+	private boolean handleManualAgreement(final ApplicationUploader appUploader,
+			final String applicationID, final String deploymentID) throws ApplicationUploaderException {
+		
+		ManualAgreementHandler mah = new ManualAgreementHandler(appUploader, applicationID, deploymentID);
+		Display.getDefault().syncExec(mah); 
+		return mah.isAccepted();
+		
+	}
+	
+	
 	private int calculateProgress(ApplicationUploader appUploader,
-			String applicationID, String deploymentID, int vms, int progress) {
+			String applicationID, String deploymentID, int vms) {
 		float vmIncrement = 70/vms;
 		try{
 			List<VM> vmDescs = appUploader.getDeploymentVMDescriptions(applicationID, deploymentID);
 			if (vmDescs == null || vmDescs.isEmpty())
-				return progress;
+				return 30;
 			log.debug("Deployed " + vmDescs.size() + " of " + vms+ " VMs");
 			return (int) (30 +(vmIncrement*vmDescs.size()));
 		}catch(Exception e){
-			return progress;
+			log.warn("Exception getting VMs");
+			return 30;
 		}
 		
 	}

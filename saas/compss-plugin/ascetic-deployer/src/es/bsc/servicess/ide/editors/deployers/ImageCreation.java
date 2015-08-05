@@ -54,6 +54,7 @@ import es.bsc.servicess.ide.PackagingUtils;
 import es.bsc.servicess.ide.ProjectMetadata;
 import es.bsc.servicess.ide.editors.BuildingDeploymentFormPage;
 import es.bsc.servicess.ide.editors.CommonFormPage;
+import es.bsc.servicess.ide.editors.RuntimeConfigurationSection;
 import es.bsc.servicess.ide.model.Dependency;
 import es.bsc.servicess.ide.model.ServiceElement;
 import eu.ascetic.vmic.api.VmicApi;
@@ -77,10 +78,10 @@ public class ImageCreation {
 	
 	public static void uploadOrchestrationPackages(VmicApi vmic,
 			String packName, String schPackage, String[] packs, IFolder packageFolder,
-			ProjectMetadata pr_meta, PackageMetadata packMeta, Manifest manifest, IProgressMonitor monitor ) 
+			ProjectMetadata pr_meta, PackageMetadata packMeta, Manifest manifest, IJavaProject project, IProgressMonitor monitor ) 
 					throws InterruptedException, Exception {
 		InstallationScript is = new InstallationScript(MOUNT_POINT_VAR+IMAGE_DEPLOYMENT_FOLDER);
-		generatePropertiesFile(packName, schPackage, packs, packageFolder, monitor);
+		generatePropertiesFile(packName, schPackage, packs, packageFolder, project, monitor);
 		if (monitor.isCanceled()){
 			throw new InterruptedException("Creation Cancelled");
 		}
@@ -255,7 +256,7 @@ public class ImageCreation {
 	private static void deployMonitoring(VmicApi vmic, String runtimeLocation, 
 			Manifest manifest, InstallationScript is, IProgressMonitor monitor) 
 				throws 	Exception {
-		File f = new File(runtimeLocation+"/Monitor/"+COMPSS_WAR_NAME);
+		File f = new File(runtimeLocation+"/Tools/monitor/apache-tomcat/webapps/"+COMPSS_WAR_NAME);
 		if (f.exists()){
 			uploadWar(vmic, f, manifest, is, monitor);
 		}else
@@ -349,7 +350,7 @@ public class ImageCreation {
 	 */
 	public static void generatePropertiesFile(String ownPack,
 			String schPack, final String[] packs, IFolder outFolder,
-			IProgressMonitor monitor) throws Exception {
+			IJavaProject project, IProgressMonitor monitor) throws Exception {
 		
 		IFile properties = outFolder.getFile(ownPack + "-it.properties");
 		if (properties != null && properties.exists()) {
@@ -357,7 +358,7 @@ public class ImageCreation {
 		}
 		properties.create(new ByteArrayInputStream(new String("").getBytes()),
 				true, monitor);
-		createProperties(properties.getLocation().toFile(), ownPack, schPack);
+		createProperties(properties.getLocation().toFile(), ownPack, schPack, project);
 
 	}
 	
@@ -427,13 +428,18 @@ public class ImageCreation {
 	 * 
 	 * @param file Properties file
 	 * @throws ConfigurationException
+	 * @throws CoreException 
 	 */
-	private static void createProperties(File file, String packageName, String schedulerPackage) throws ConfigurationException {
+	private static void createProperties(File file, String packageName, String schedulerPackage, IJavaProject project) throws ConfigurationException, CoreException {
 		RuntimeConfigManager config = new RuntimeConfigManager(file);
+		RuntimeConfigManager oldConfig = RuntimeConfigurationSection.getProjectITConfigManager(project);
 		config.setLog4jConfiguration(IMAGE_DEPLOYMENT_FOLDER + "/it-log4j");
-		/*config.setGraph(true);
-		config.setTracing(false);
-		config.setMonitorInterval(2000);*/
+		config.setGraph(oldConfig.isGraph());
+		config.setTracing(oldConfig.isTracing());
+		config.setMonitorInterval(oldConfig.getMonitorInterval());
+		String commAdaptor = oldConfig.getCommAdaptor();
+		if (commAdaptor!=null && !commAdaptor.isEmpty())
+			config.setCommAdaptor(commAdaptor);
 		config.setGATBrokerAdaptor("sshtrilead");
 		config.setGATFileAdaptor("sshtrilead");
 		config.setProjectFile(IMAGE_DEPLOYMENT_FOLDER + "/project.xml");

@@ -430,12 +430,12 @@ public class ImagesSection extends ServiceEditorSection {
 		if (oePacks != null && oePacks.length > 0) {
 			for (String p : oePacks) {
 				ImageCreation.uploadOrchestrationPackages(vmic, p, oePacks[0], allPacks,
-						packageFolder, prMeta, packMeta, manifest, monitor);
+						packageFolder, prMeta, packMeta, manifest, editor.getProject(), monitor);
 			}
 		}else{
 			String projectName = editor.getProject().getProject().getName();
 			ImageCreation.uploadOrchestrationPackages(vmic, projectName, projectName,
-					allPacks, packageFolder, prMeta, packMeta, manifest, monitor);
+					allPacks, packageFolder, prMeta, packMeta, manifest,  editor.getProject(), monitor);
 		}
 		log.debug("Orchestration Files uploaded: "+ manifest.getString());
 		if (cePacks != null && cePacks.length > 0) {

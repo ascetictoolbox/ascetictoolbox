@@ -66,6 +66,7 @@ import es.bsc.servicess.ide.PackagingUtils;
 import es.bsc.servicess.ide.ProjectMetadata;
 import es.bsc.servicess.ide.dialogs.PackageDialog;
 import es.bsc.servicess.ide.editors.CommonFormPage;
+import es.bsc.servicess.ide.editors.RuntimeConfigurationSection;
 import es.bsc.servicess.ide.editors.ServiceEditorSection;
 import es.bsc.servicess.ide.editors.ServiceFormEditor;
 import es.bsc.servicess.ide.model.MethodCoreElement;
@@ -790,7 +791,9 @@ public class PackagesSection extends ServiceEditorSection{
 			dialog.run(true, true, new IRunnableWithProgress() {
 				public void run(IProgressMonitor monitor)throws InvocationTargetException {
 					try {
-						PackagingUtils.buildPackages(editor.getProject(), prMetadata, packMetadata, monitor);
+						String adaptor = PackagingUtils.getAdaptorFromConfig(
+								RuntimeConfigurationSection.getProjectITConfigManager(editor.getProject()));
+						PackagingUtils.buildPackages(editor.getProject(), prMetadata, packMetadata, adaptor, monitor);
 					} catch (Exception e) {
 						redoingPackages = false;
 						throw (new InvocationTargetException(e));
