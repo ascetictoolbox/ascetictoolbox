@@ -68,13 +68,28 @@ public class ThresholdEventAssessor extends AbstractEventAssessor {
      * @param rulesFile The list of rules on disk to load
      * @return If the defaults settings have been written out to disk or not.
      */
-    private boolean writeOutDefaults(ResultsStore rulesFile) {
+    public boolean writeOutDefaults(ResultsStore rulesFile) {
         boolean answer = false;
         //Agreement Term, Guarantee Direction and Response Type
+        if (!workingDir.endsWith("/")) {
+            workingDir = workingDir + "/";
+        }
         if (!new File(workingDir + RULES_FILE).exists()) {
             rulesFile.add("Agreement Term");
             rulesFile.append("Direction");
             rulesFile.append("Response Type");
+            rulesFile.add("energy_usage_per_app");
+            rulesFile.append("GT");
+            rulesFile.append("REMOVE_VM");
+            rulesFile.add("power_usage_per_app");
+            rulesFile.append("GT");
+            rulesFile.append("REMOVE_VM");
+            rulesFile.add("energy_usage_per_app");
+            rulesFile.append("GTE");
+            rulesFile.append("REMOVE_VM");
+            rulesFile.add("power_usage_per_app");
+            rulesFile.append("GTE");
+            rulesFile.append("REMOVE_VM");
             rulesFile.save();
             answer = true;
         }
@@ -136,6 +151,24 @@ public class ThresholdEventAssessor extends AbstractEventAssessor {
             }
         }
         return null;
+    }
+
+    /**
+     * This gets the amount of events of a given type that need to occur before
+     * the event fires.
+     * @return the threshold
+     */
+    public int getThreshold() {
+        return threshold;
+    }
+
+    /**
+     * This sets the amount of events of a given type that need to occur before
+     * the event fires.
+     * @param threshold the threshold to set
+     */
+    public void setThreshold(int threshold) {
+        this.threshold = threshold;
     }
 
 }

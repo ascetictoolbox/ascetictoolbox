@@ -42,10 +42,10 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 public abstract class AbstractEventAssessor implements EventAssessor {
 
     private ArrayList<EventListener> listeners = new ArrayList<>();
-    private ActuatorInvoker actuator;
+    private ActuatorInvoker actuator = null;
     private List<EventData> eventHistory;
     private DecisionEngine decisionEngine;
-    private String decisionEngineName;
+    private String decisionEngineName = "RandomDecisionEngine";
     private List<Response> adaptations;
     //duration a history item can stay alive
     private int historyLengthSeconds = (int) TimeUnit.MINUTES.toSeconds(5);
@@ -54,15 +54,13 @@ public abstract class AbstractEventAssessor implements EventAssessor {
     private Thread historyClearerThread = null;
     private HistoryClearer historyClearer = null;
     private static final String CONFIG_FILE = "paas-self-adapation-manager.properties";
-    private static final String DEFAULT_DECISION_ENGINE_PACKAGE = 
-            "eu.ascetic.paas.self.adaptation.manager.rules.decisionengine";
+    private static final String DEFAULT_DECISION_ENGINE_PACKAGE
+            = "eu.ascetic.paas.self.adaptation.manager.rules.decisionengine";
 
     /**
      * This launches a new event assessor.
      */
     public AbstractEventAssessor() {
-        decisionEngine = new RandomDecisionEngine();
-        decisionEngine.setActuator(actuator);
         try {
             PropertiesConfiguration config;
             if (new File(CONFIG_FILE).exists()) {
@@ -83,11 +81,10 @@ public abstract class AbstractEventAssessor implements EventAssessor {
             Logger.getLogger(AbstractEventAssessor.class.getName()).log(Level.INFO, "Error loading the configuration of the PaaS Self adaptation manager", ex);
         }
     }
-    
+
     /**
-     * This allows the decision engine to be set
-     * Decision engines are used to decide the scale and location of an 
-     * adaptation.
+     * This allows the decision engine to be set Decision engines are used to
+     * decide the scale and location of an adaptation.
      *
      * @param decisionEngineName The name of the algorithm to set
      */
@@ -108,7 +105,7 @@ public abstract class AbstractEventAssessor implements EventAssessor {
             }
             Logger.getLogger(AbstractEventAssessor.class.getName()).log(Level.WARNING, "The setting of the decision engine did not work", ex);
         }
-    }    
+    }
 
     @Override
     public Response assessEvent(EventData event) {
@@ -122,7 +119,9 @@ public abstract class AbstractEventAssessor implements EventAssessor {
         if (answer != null) {
             adaptations.add(answer);
             answer = decisionEngine.decide(answer);
-            actuator.actuate(answer);
+            if (actuator != null) {
+                actuator.actuate(answer);
+            }
         }
         return answer;
     }

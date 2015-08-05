@@ -6,6 +6,9 @@ VAR_INPUT
     currentDifference : REAL;
     trendDifference : REAL;
 	//GURANTEE IDs/types will need adding here to form the rules
+	energyPerApp : REAL;
+	powerPerApp: REAL;
+	
 END_VAR
 
 // Define output variable
