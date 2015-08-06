@@ -52,12 +52,15 @@ public class FuzzyEventAssessorTest {
     public void testAssessEvent() {
         try {
             System.out.println("assessEvent");
-            EventData event = null;
+            EventData event = new EventData(0, 400, 800, EventData.Type.SLA_BREACH, 
+                EventData.Operator.GT, "SLAID", "AppID", "DeplyID", "GurID", "power_usage_per_app");
             List<EventData> sequence = new ArrayList<>();
             List<Response> recentAdaptation = new ArrayList<>();
             FuzzyEventAssessor instance = new FuzzyEventAssessor();
             Response result = instance.assessEvent(event, sequence, recentAdaptation);
-//            assert(result != null);
+            assert(result != null);
+            System.out.println(result.getActionType());
+            assert(result.getActionType().equals(Response.AdaptationType.REMOVE_VM));
         } catch (FileNotFoundException ex) {
             Logger.getLogger(FuzzyEventAssessorTest.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -35,13 +35,13 @@ public class EventData implements Comparable<EventData> {
     private String guaranteeid; //sla gurantee id
 
     /**
-     * 
+     *
      */
     public EventData() {
     }
-   
+
     /**
-     * 
+     *
      * @param time
      * @param rawValue
      * @param guranteedValue
@@ -50,11 +50,11 @@ public class EventData implements Comparable<EventData> {
      * @param slaUuid
      * @param applicationId
      * @param deploymentId
-     * @param guaranteeid 
+     * @param guaranteeid
      * @param agreementTerm
      */
-    public EventData(long time, double rawValue, double guranteedValue, Type type, 
-            Operator guranteeOperator, String slaUuid, String applicationId, 
+    public EventData(long time, double rawValue, double guranteedValue, Type type,
+            Operator guranteeOperator, String slaUuid, String applicationId,
             String deploymentId, String guaranteeid, String agreementTerm) {
         this.time = time;
         this.rawValue = rawValue;
@@ -66,7 +66,7 @@ public class EventData implements Comparable<EventData> {
         this.deploymentId = deploymentId;
         this.guaranteeid = guaranteeid;
         this.agreementTerm = agreementTerm;
-    }    
+    }
 
     /**
      * @return the guranteeOperator
@@ -83,8 +83,9 @@ public class EventData implements Comparable<EventData> {
     }
 
     /**
-     * This gets the value of the SLA Id that is associated with the 
+     * This gets the value of the SLA Id that is associated with the
      * notification event
+     *
      * @return the slaUuid
      */
     public String getSlaUuid() {
@@ -92,8 +93,9 @@ public class EventData implements Comparable<EventData> {
     }
 
     /**
-     * This sets the value of the SLA Id that is associated with the 
+     * This sets the value of the SLA Id that is associated with the
      * notification event
+     *
      * @param slaUuid the slaUuid to set
      */
     public void setSlaUuid(String slaUuid) {
@@ -180,6 +182,7 @@ public class EventData implements Comparable<EventData> {
 
     /**
      * This gets the application id associated with the origin of the event.
+     *
      * @return the applicationId
      */
     public String getApplicationId() {
@@ -188,6 +191,7 @@ public class EventData implements Comparable<EventData> {
 
     /**
      * This sets the application id associated with the origin of the event.
+     *
      * @param applicationId the applicationId to set
      */
     public void setApplicationId(String applicationId) {
@@ -196,6 +200,7 @@ public class EventData implements Comparable<EventData> {
 
     /**
      * This gets the deployment id associated with the origin of the event.
+     *
      * @return the deploymentId
      */
     public String getDeploymentId() {
@@ -204,12 +209,13 @@ public class EventData implements Comparable<EventData> {
 
     /**
      * This sets the deployment id associated with the origin of the event.
+     *
      * @param deploymentId the deploymentId to set
      */
     public void setDeploymentId(String deploymentId) {
         this.deploymentId = deploymentId;
     }
-    
+
     @Override
     public int compareTo(EventData event) {
         //This sequences event data in cronlogical order.
@@ -232,10 +238,10 @@ public class EventData implements Comparable<EventData> {
 
         LT, LTE, EQ, GT, GTE
     }
-    
+
     /**
-     * This provides the mapping between the string representation of a
-     * operator and the operator.
+     * This provides the mapping between the string representation of a operator
+     * and the operator.
      *
      * @param operator The string representation of the operator.
      * @return The operator required.
@@ -254,22 +260,37 @@ public class EventData implements Comparable<EventData> {
                 return EventData.Operator.GTE;
         }
         return EventData.Operator.GTE;
-    }     
+    }
 
     /**
-     * This returns the absolute difference between the raw value and the
-     * absolute value.
+     * This returns the difference between the guaranteed value and the raw
+     * value.
      *
      * @return
      */
     public double getDeviationBetweenRawAndGuarantee() {
-        return Math.abs(rawValue - guranteedValue);
+        return guranteedValue - rawValue;
     }
 
     /**
-     * This returns the difference between the raw value and the
-     * absolute value, in terms of how much slack is present before the guarantee
-     * has been breached.
+     * This returns the difference between the guaranteed value and the raw
+     * value.
+     *
+     * @param absolute If the absolute difference should be shown or not
+     * @return
+     */
+    public double getDeviationBetweenRawAndGuarantee(boolean absolute) {
+        double answer = guranteedValue - rawValue;
+        if (absolute) {
+            return Math.abs(answer);
+        }
+        return answer;
+    }
+
+    /**
+     * This returns the difference between the raw value and the absolute value,
+     * in terms of how much slack is present before the guarantee has been
+     * breached.
      *
      * @return The slack associated with the guarantee
      */
@@ -280,7 +301,7 @@ public class EventData implements Comparable<EventData> {
             case GT:
             case GTE:
                 return rawValue - guranteedValue;
-            case LT: 
+            case LT:
             case LTE:
                 return guranteedValue - rawValue;
         }
@@ -296,19 +317,19 @@ public class EventData implements Comparable<EventData> {
      * @return The change in deviation between the raw and guaranteed value.
      */
     public static double getDifferenceBetweenDeviations(EventData earlier, EventData later) {
-        return earlier.getDeviationBetweenRawAndGuarantee() - later.getDeviationBetweenRawAndGuarantee();
+        return Math.abs(earlier.getDeviationBetweenRawAndGuarantee()) - Math.abs(later.getDeviationBetweenRawAndGuarantee());
     }
-    
+
     /**
-     * This checks to see if the deviation between two events amount of available 
-     * slack is increasing or decreasing.
-     * 
+     * This checks to see if the deviation between two events amount of
+     * available slack is increasing or decreasing.
+     *
      * @param earlier The earlier event
      * @param later The later event
-     * @return  The change in available SLA slack.
+     * @return The change in available SLA slack.
      */
     public static double getChangeInSlack(EventData earlier, EventData later) {
         return earlier.getGuaranteeSlack() - later.getGuaranteeSlack();
-    }    
+    }
 
 }
