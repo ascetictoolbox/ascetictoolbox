@@ -71,17 +71,25 @@ public class FuzzyEventAssessor extends AbstractEventAssessor {
         System.out.println(fis);
         System.out.println("----------------- Rule Block -----------------");
         //http://jfuzzylogic.sourceforge.net/html/faq.html
-        for (Rule rule : fis.getFunctionBlock("adaptor").getFuzzyRuleBlock("No1").getRules()) {
+        for (Rule rule : fis.getFunctionBlock("adaptor").getFuzzyRuleBlock("ADD_VM").getRules()) {
             System.out.println(rule);
         }
+        for (Rule rule : fis.getFunctionBlock("adaptor").getFuzzyRuleBlock("REMOVE_VM").getRules()) {
+            System.out.println(rule);
+        }        
     }
 
     @Override
     public Response assessEvent(EventData event, List<EventData> sequence, List<Response> recentAdaptation) {
         Response answer = null;
+        if (event == null | sequence == null | recentAdaptation == null) {
+            return answer;
+        }
         double trendValue = EventDataAggregator.analyseEventData(sequence);
         fis.setVariable("currentDifference", event.getDeviationBetweenRawAndGuarantee());
-        fis.setVariable("trendDifference", trendValue);
+        fis.setVariable("trendDifference", trendValue);       
+        fis.setVariable("energy_usage_per_app", EventDataAggregator.filterEventData(sequence, event.getSlaUuid(), "energy_usage_per_app").size());
+        fis.setVariable("power_usage_per_app", EventDataAggregator.filterEventData(sequence, event.getSlaUuid(), "power_usage_per_app").size());
         fis.evaluate();
         for (RuleBlock ruleBlock : fis.getFunctionBlock("adaptor").getRuleBlocks().values()) {
             for (Rule rule : ruleBlock.getRules()) {

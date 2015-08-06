@@ -118,7 +118,7 @@ public class ThresholdEventAssessor extends AbstractEventAssessor {
     @Override
     public Response assessEvent(EventData event, List<EventData> sequence, List<Response> recentAdaptation) {
         Response answer = null;
-        List<EventData> previousData = EventDataAggregator.filterEventData(sequence, event.getSlaUuid(), event.getGuaranteeid());
+        List<EventData> previousData = EventDataAggregator.filterEventData(sequence, event.getSlaUuid(), event.getAgreementTerm());
         if (previousData.size() >= threshold) {
             /**
              * The rule should determine the type of response, i.e. scale up

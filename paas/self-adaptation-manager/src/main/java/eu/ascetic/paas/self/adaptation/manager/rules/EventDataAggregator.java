@@ -55,14 +55,14 @@ public class EventDataAggregator {
      * single guarantee of a named SLA.
      * @param events The list of events to filter
      * @param slaUuid The SLA identifier to filter against
-     * @param guaranteeid The guarantee id to filter against.
+     * @param agreementTerm The agreement term to filter against.
      * @return The list of events associated with a given guarantee of an SLA, in
      * ascending chronological order. i.e. earliest first.
      */
-    public static List<EventData> filterEventData(List<EventData> events, String slaUuid, String guaranteeid) {
+    public static List<EventData> filterEventData(List<EventData> events, String slaUuid, String agreementTerm) {
         ArrayList<EventData> answer = new ArrayList<>();
         for (EventData eventData : events) {
-            if (eventData.getSlaUuid().equals(slaUuid) && eventData.getGuaranteeid().equals(guaranteeid)) {
+            if (eventData.getSlaUuid().equals(slaUuid) && eventData.getAgreementTerm().equals(agreementTerm)) {
                 answer.add(eventData);
             }
         }

@@ -1150,6 +1150,7 @@ paas/provider-registry/src/test/java/eu/ascetic/providerregistry/service/jpa/Pro
 paas/provider-registry/src/test/java/eu/ascetic/providerregistry/xml/ConverterTest.java -text
 paas/provider-registry/src/test/resources/META-INF/persistence.test.xml -text
 paas/provider-registry/src/test/resources/provider-registry-db-JPA-test-context.xml -text
+paas/self-adaptation-manager/adapt.fcl -text
 paas/self-adaptation-manager/fcl/Fcl.g -text
 paas/self-adaptation-manager/fcl/QoS/LarsenQoSFewRules.fcl -text
 paas/self-adaptation-manager/fcl/QoS/LarsenQoSManyRules.fcl -text
@@ -1195,7 +1196,10 @@ paas/self-adaptation-manager/fcl/trust/TSManyRules.fcl -text
 paas/self-adaptation-manager/fcl/z.fcl -text
 paas/self-adaptation-manager/nb-configuration.xml -text
 paas/self-adaptation-manager/nbactions.xml -text
+paas/self-adaptation-manager/paas-self-adapation-manager-threshold.properties -text
+paas/self-adaptation-manager/paas-self-adapation-manager.properties -text
 paas/self-adaptation-manager/pom.xml -text
+paas/self-adaptation-manager/rules.csv -text
 paas/self-adaptation-manager/src/jax-ws-catalog.xml -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/ActuatorInvoker.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/EventListener.java -text
@@ -1226,6 +1230,7 @@ paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manag
 paas/self-adaptation-manager/src/main/resources/adapt.fcl -text
 paas/self-adaptation-manager/src/test/java/eu/ascetic/paas/self/adaptation/manager/rest/ActionRequesterTest.java -text
 paas/self-adaptation-manager/src/test/java/eu/ascetic/paas/self/adaptation/manager/rest/generated/RestVMClientTest.java -text
+paas/self-adaptation-manager/src/test/java/eu/ascetic/paas/self/adaptation/manager/rules/FuzzyEventAssessorTest.java -text
 paas/self-adaptation-manager/src/test/java/eu/ascetic/paas/self/adaptation/manager/rules/ThresholdEventAssessorTest.java -text
 paas/self-adaptation-manager/tests/junit1.fcl -text
 paas/self-adaptation-manager/tests/junit2.fcl -text

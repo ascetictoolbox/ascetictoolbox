@@ -1,0 +1,5 @@
+Agreement Term,Direction,Response Type
+energy_usage_per_app,GT,REMOVE_VM
+power_usage_per_app,GT,REMOVE_VM
+energy_usage_per_app,GTE,REMOVE_VM
+power_usage_per_app,GTE,REMOVE_VM
