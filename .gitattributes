@@ -3627,6 +3627,14 @@ utils/ascetic-load-generator-app/pom.xml -text
 utils/ascetic-load-generator-app/src/main/java/eu/ascetic/ascetic/load/generator/app/Main.java -text
 utils/ascetic-load-generator-app/src/main/java/eu/ascetic/ascetic/load/generator/app/MemoryLoadGenerator.java -text
 utils/ascetic-load-generator-app/src/main/java/eu/ascetic/ascetic/load/generator/app/MemoryWriteGenerator.java -text
+utils/ascetic-metric-pusher/LICENSE.TXT -text
+utils/ascetic-metric-pusher/pom.xml -text
+utils/ascetic-metric-pusher/src/main/java/eu/ascetic/utils/metricpusher/amqp/AmqpProducer.java -text
+utils/ascetic-metric-pusher/src/main/java/eu/ascetic/utils/metricpusher/collector/CurrentMetricPusherFactory.java -text
+utils/ascetic-metric-pusher/src/main/java/eu/ascetic/utils/metricpusher/conf/Configuration.java -text
+utils/ascetic-metric-pusher/src/main/java/eu/ascetic/utils/metricpusher/pusher/MetricPusher.java -text
+utils/ascetic-metric-pusher/src/main/resources/log4j.properties -text
+utils/ascetic-metric-pusher/src/main/resources/metric-pusher.properties -text
 utils/ascetic-qpid-amqp-client/LICENSE.TXT -text
 utils/ascetic-qpid-amqp-client/pom.xml -text
 utils/ascetic-qpid-amqp-client/src/main/java/eu/ascetic/amqp/client/AmqpAbstract.java -text
