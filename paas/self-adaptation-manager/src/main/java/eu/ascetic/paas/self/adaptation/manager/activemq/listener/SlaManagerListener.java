@@ -63,8 +63,37 @@ public class SlaManagerListener extends ActiveMQBase implements Runnable, EventL
             config.setProperty("paas.self.adaptation.manager.sla.event.queue.name", queue_name);
         } catch (ConfigurationException ex) {
             Logger.getLogger(SlaManagerListener.class.getName()).log(Level.INFO, "Error loading the configuration of the PaaS Self adaptation manager", ex);
-        }
+        }     
         queue = getMessageQueue(queue_name);
+        consumer = session.createConsumer(queue);
+    }
+
+    /**
+     * This creates an SLA manager listener that can have its configuration 
+     * information set.
+     * @param user The user name to use
+     * @param password the password to use
+     * @param url The factory used to lookup the message queue.
+     * @param topicName The queue name to use
+     * @throws JMSException
+     * @throws NamingException 
+     */
+    public SlaManagerListener(String user, String password, String url, String topicName) throws JMSException, NamingException {
+        super(user, password, url);       
+        queue = getTopic(topicName);
+        consumer = session.createConsumer(queue);
+    }
+    
+    
+    /**
+     * This creates an SLA manager listener that can have its queue set.
+     * @param queueName The queue name to use
+     * @throws JMSException
+     * @throws NamingException 
+     */
+    public SlaManagerListener(String queueName) throws JMSException, NamingException {
+        super();
+        queue = getMessageQueue(queueName);
         consumer = session.createConsumer(queue);
     }
 
@@ -84,7 +113,9 @@ public class SlaManagerListener extends ActiveMQBase implements Runnable, EventL
                     eventAssessor.assessEvent(data);
                 }
             }
-            consumer.close();
+            if (consumer != null) {
+                consumer.close();
+            }
             close();
         } catch (JMSException ex) {
             ex.printStackTrace();

@@ -17,6 +17,9 @@ package eu.ascetic.paas.self.adaptation.manager.activemq;
 
 import eu.ascetic.amqp.client.AmqpExceptionListener;
 import java.io.File;
+import java.util.Properties;
+import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.jms.Connection;
@@ -29,6 +32,9 @@ import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import org.apache.activemq.advisory.DestinationSource;
+import org.apache.activemq.command.ActiveMQQueue;
+import org.apache.activemq.command.ActiveMQTopic;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
@@ -47,6 +53,12 @@ public abstract class ActiveMQBase {
     protected Connection connection;
     protected Session session;
     protected Context context;
+    protected boolean useURL = true;
+    /**
+     * Example urls: Y2: Stable: 192.168.3.222:5673 Y2: Testing:
+     * 192.168.3.16:5673 Y1: 10.4.0.16:5672
+     */
+    protected String url = "192.168.3.16:5673";
     private static final String CONFIG_FILE = "paas-self-adapation-manager.properties";
 
     /**
@@ -71,12 +83,39 @@ public abstract class ActiveMQBase {
             config.setProperty("paas.self.adaptation.manager.activemq.username", user);
             password = config.getString("paas.self.adaptation.manager.activemq.password", password);
             config.setProperty("paas.self.adaptation.manager.activemq.password", password);
-            factoryLookupName = config.getString("paas.self.adaptation.manager.activemq.factory.name", factoryLookupName);
-            config.setProperty("paas.self.adaptation.manager.activemq.factory.name", factoryLookupName);            
+            useURL = config.getBoolean("paas.self.adaptation.manager.activemq.use.url", useURL);
+            config.setProperty("paas.self.adaptation.manager.activemq.use.url", useURL);
+            url = config.getString("paas.self.adaptation.manager.activemq.url", url);
+            config.setProperty("paas.self.adaptation.manager.activemq.url", url);
+            if (useURL == false) {
+                factoryLookupName = config.getString("paas.self.adaptation.manager.activemq.factory.name", factoryLookupName);
+                config.setProperty("paas.self.adaptation.manager.activemq.factory.name", factoryLookupName);
+                initialise();
+            } else {
+                initialise(url);
+            }
         } catch (ConfigurationException ex) {
             Logger.getLogger(ActiveMQBase.class.getName()).log(Level.INFO, "Error loading the configuration of the PaaS Self adaptation manager", ex);
-        }        
-        initialise();
+        }
+
+    }
+
+    /**
+     * This is the constructor for the ActiveMQBase class. It establishes the
+     * connection and the session for derived classes. It uses the specified
+     * username password and factory lookup name.
+     *
+     * @param user The user name to use
+     * @param password the password to use
+     * @param url The url used to connect to ActiveMQ
+     * @throws JMSException
+     * @throws NamingException
+     */
+    public ActiveMQBase(String user, String password, String url) throws JMSException, NamingException {
+        this.user = user;
+        this.password = password;
+        this.url = url;
+        initialise(url);
     }
 
     /**
@@ -95,7 +134,34 @@ public abstract class ActiveMQBase {
         if (password != null) {
             this.password = password;
         }
-        initialise();
+        if (useURL) {
+            initialise(url);
+        } else {
+            initialise();
+        }
+    }
+
+    private void initialise(String url) throws NamingException, JMSException {
+
+        String initialContextFactory = "org.apache.qpid.jms.jndi.JmsInitialContextFactory";
+        String connectionJNDIName = UUID.randomUUID().toString();
+        String connectionURL = "amqp://" + this.user + ":" + this.password + "@" + url;
+
+        // Set the properties ...
+        Properties properties = new Properties();
+        properties.put(Context.INITIAL_CONTEXT_FACTORY, initialContextFactory);
+        properties.put("connectionfactory." + connectionJNDIName, connectionURL);
+
+        // Now we have the context already configured... 
+        // Create the initial context
+        context = new InitialContext(properties);
+
+        ConnectionFactory factory = (ConnectionFactory) context.lookup(connectionJNDIName);
+
+        connection = factory.createConnection(this.user, this.password);
+        connection.setExceptionListener(amqpExceptionListener);
+        session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
     }
 
     /**
@@ -157,8 +223,78 @@ public abstract class ActiveMQBase {
      * @throws NamingException
      */
     protected Destination getMessageQueue(String queue) throws NamingException {
-        context = new InitialContext();
+        if (context == null) {
+            context = new InitialContext();
+        }
+        String queueOrTopic = queue.replaceAll("\\.", "");
+        context.addToEnvironment("queue." + queueOrTopic, queue);
         return (Destination) context.lookup(queue);
+    }
+
+    /**
+     * This gets a topic from the current context
+     *
+     * @param topic The name of the topic to get
+     * @return The topic for messages to be sent to
+     * @throws NamingException
+     */
+    protected Destination getTopic(String topic) throws NamingException {
+        String queueOrTopic = topic.replaceAll("\\.", "");
+        context.addToEnvironment("topic." + queueOrTopic, topic);
+        return (Destination) context.lookup(topic);
+    }
+
+    /**
+     * This lists the available queues on the server.
+     *
+     * @return
+     */
+    public Set<ActiveMQQueue> getQueues() {
+        DestinationSource source;
+        try {
+            source = new DestinationSource(connection);
+            return source.getQueues();
+        } catch (JMSException ex) {
+            Logger.getLogger(ActiveMQBase.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    /**
+     * This lists the available queues on the server.
+     *
+     * @return
+     */
+    public Set<ActiveMQTopic> getTopics() {
+        DestinationSource source;
+        try {
+            source = new DestinationSource(connection);
+            return source.getTopics();
+        } catch (JMSException ex) {
+            Logger.getLogger(ActiveMQBase.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public void printQueueAndTopicInformation() {
+        Set<ActiveMQQueue> queues = getQueues();
+        for (ActiveMQQueue queue1 : queues) {
+            try {
+                System.out.println("Queue Name: " + queue1.getQueueName());
+                System.out.println("Queue Physical: " + queue1.getPhysicalName());
+            } catch (JMSException ex) {
+                Logger.getLogger(ActiveMQBase.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        Set<ActiveMQTopic> topics = getTopics();
+        for (ActiveMQTopic topics1 : topics) {
+            try {
+                System.out.println("Topic Name: " + topics1.getTopicName());
+                System.out.println("Topic Physical: " + topics1.getPhysicalName());
+            } catch (JMSException ex) {
+                Logger.getLogger(ActiveMQBase.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     /**

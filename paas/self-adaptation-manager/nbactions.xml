@@ -7,6 +7,7 @@
             </packagings>
             <goals>
                 <goal>install</goal>
+                <goal>-e</goal>
             </goals>
             <properties>
                 <skipTests>true</skipTests>
@@ -21,6 +22,7 @@
             <goals>
                 <goal>clean</goal>
                 <goal>install</goal>
+                <goal>-e</goal>
                 
             </goals>
             <properties>
@@ -36,11 +38,38 @@
             </packagings>
             <goals>
                 <goal>install</goal>
+                <goal>-e</goal>
                 
             </goals>
             <properties>
                 <skipTests>true</skipTests>
                 <maven.javadoc.skip>true</maven.javadoc.skip>
+            </properties>
+        </action>
+        <action>
+            <actionName>test</actionName>
+            <packagings>
+                <packaging>*</packaging>
+            </packagings>
+            <goals>
+                <goal>test</goal>
+                <goal>-e</goal>
+                <goal>-X</goal>
+            </goals>
+        </action>
+        <action>
+            <actionName>test.single</actionName>
+            <packagings>
+                <packaging>*</packaging>
+            </packagings>
+            <goals>
+                <goal>test-compile</goal>
+                <goal>surefire:test</goal>
+                <goal>-e</goal>
+                <goal>-X</goal>
+            </goals>
+            <properties>
+                <test>${packageClassName}</test>
             </properties>
         </action>
     </actions>
