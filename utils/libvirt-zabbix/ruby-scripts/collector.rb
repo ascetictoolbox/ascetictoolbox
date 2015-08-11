@@ -69,7 +69,7 @@ while true
 
     if metrics[:percentage_cpu] > 0
       zabbix_sender_string<<"\n"
-      zabbix_sender_string<<"#{uuid} percentage.cpu #{metrics[:timestamp]} #{metrics[:percentage_cpu]}"
+      zabbix_sender_string<<"#{uuid} cpu.measured #{metrics[:timestamp]} #{metrics[:percentage_cpu]}"
     end
 
     if metrics[:wr_bytes] > 0

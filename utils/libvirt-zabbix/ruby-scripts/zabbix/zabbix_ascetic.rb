@@ -69,7 +69,7 @@ class ZabbixAscetic
     check_create_item("cpu_time", "Libvirt CPU time for the VM", "cpu.time", 3, application)
     check_create_item("user_time", "Libvirt CPU User time for the VM", "user.time", 3, application)
     check_create_item("system_time", "Libvirt CPU System time for the VM", "system.time", 3, application)
-    check_create_item("percentage_cpu", "Libvirt % HOST CPU for the VM", "percentage.cpu", 0, application)
+    check_create_item("cpu-measured", "Libvirt % HOST CPU for the VM", "cpu.measured", 0, application)
     
     # Memory metrics
     application = @zbx.applications.get_id(
