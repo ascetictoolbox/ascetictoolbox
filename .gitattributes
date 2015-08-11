@@ -684,6 +684,14 @@ iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/sc
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/selfadaptation/options/AfterVmDeleteSelfAdaptationOpsTest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/utils/TimeUtilsTest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/vmplacement/CloplaConversorTest.java -text
+paas/application-manager-client/LICENSE.TXT -text
+paas/application-manager-client/pom.xml -text
+paas/application-manager-client/src/main/java/eu/ascetic/saas/applicationmanager/client/AppManagerClient.java -text
+paas/application-manager-client/src/main/java/eu/ascetic/saas/applicationmanager/client/AppManagerClientHC.java -text
+paas/application-manager-client/src/main/java/eu/ascetic/saas/applicationmanager/client/conf/Configuration.java -text
+paas/application-manager-client/src/main/java/eu/ascetic/saas/applicationmanager/client/http/Client.java -text
+paas/application-manager-client/src/main/java/eu/ascetic/saas/applicationmanager/client/utils/Dictionary.java -text
+paas/application-manager-client/src/test/java/eu/ascetic/paas/AppTest.java -text
 paas/application-manager-datamodel/LICENSE.TXT -text
 paas/application-manager-datamodel/pom.xml -text
 paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/amqp/model/ApplicationManagerMessage.java -text
