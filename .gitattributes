@@ -3975,6 +3975,11 @@ utils/kwapi-patch/LICENSE -text
 utils/kwapi-patch/make.sh -text
 utils/kwapi-patch/patches/001-gembird_driver.patch -text
 utils/kwapi-patch/pom.xml -text
+utils/libvirt-zabbix/README.md -text
+utils/libvirt-zabbix/ruby-scripts/collector.rb -text
+utils/libvirt-zabbix/ruby-scripts/libvirt/libvirt_metrics_collector.rb -text
+utils/libvirt-zabbix/ruby-scripts/zabbix/test.rb -text
+utils/libvirt-zabbix/ruby-scripts/zabbix/zabbix_ascetic.rb -text
 utils/libvirt/AUTHORS -text
 utils/libvirt/ChangeLog -text
 utils/libvirt/LICENSE -text
