@@ -46,7 +46,7 @@ public class SlaManagerListener extends ActiveMQBase implements Runnable, EventL
     private final MessageConsumer consumer;
     private EventAssessor eventAssessor;
     private boolean running = true;
-    private static final String CONFIG_FILE = "paas-self-adapation-manager.properties";
+    private static final String CONFIG_FILE = "paas-self-adaptation-manager.properties";
 
     public SlaManagerListener() throws JMSException, NamingException {
         super();

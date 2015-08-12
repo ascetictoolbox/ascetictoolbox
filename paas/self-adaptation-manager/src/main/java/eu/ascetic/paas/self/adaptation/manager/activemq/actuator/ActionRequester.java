@@ -52,7 +52,7 @@ public class ActionRequester extends ActiveMQBase implements Runnable, ActuatorI
     private final LinkedBlockingDeque<Response> queue = new LinkedBlockingDeque<>();
     private boolean stop = false;
     private static String queueName = "";
-    private static final String CONFIG_FILE = "paas-self-adapation-manager.properties";
+    private static final String CONFIG_FILE = "paas-self-adaptation-manager.properties";
 
     /**
      * This creates a new action requester.

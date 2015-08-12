@@ -43,7 +43,7 @@ public class SelfAdaptationManager {
     private ArrayList<EventListener> listeners = new ArrayList<>();
     private ActuatorInvoker actuator = null;
     private EventAssessor eventAssessor = null;
-    private static final String CONFIG_FILE = "paas-self-adapation-manager.properties";
+    private static final String CONFIG_FILE = "paas-self-adaptation-manager.properties";
     private static final String DEFAULT_EVENT_ASSESSOR_PACKAGE
             = "eu.ascetic.paas.self.adaptation.manager.rules";
     private String eventAssessorName = "FuzzyEventAssessor";

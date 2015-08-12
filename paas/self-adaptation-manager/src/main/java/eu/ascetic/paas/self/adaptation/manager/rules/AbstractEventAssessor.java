@@ -53,7 +53,7 @@ public abstract class AbstractEventAssessor implements EventAssessor {
     private int pollInterval = 5;
     private Thread historyClearerThread = null;
     private HistoryClearer historyClearer = null;
-    private static final String CONFIG_FILE = "paas-self-adapation-manager.properties";
+    private static final String CONFIG_FILE = "paas-self-adaptation-manager.properties";
     private static final String DEFAULT_DECISION_ENGINE_PACKAGE
             = "eu.ascetic.paas.self.adaptation.manager.rules.decisionengine";
 

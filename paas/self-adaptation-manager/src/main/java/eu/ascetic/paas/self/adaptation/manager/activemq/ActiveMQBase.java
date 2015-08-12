@@ -59,7 +59,7 @@ public abstract class ActiveMQBase {
      * 192.168.3.16:5673 Y1: 10.4.0.16:5672
      */
     protected String url = "192.168.3.16:5673";
-    private static final String CONFIG_FILE = "paas-self-adapation-manager.properties";
+    private static final String CONFIG_FILE = "paas-self-adaptation-manager.properties";
 
     /**
      * This is the constructor for the ActiveMQBase class. It establishes the
