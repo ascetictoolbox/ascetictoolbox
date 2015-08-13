@@ -56,15 +56,15 @@ public interface AppManagerClient {
 	
 	public Collection getApplications();
 	
-	public Application getApplication(String appId);
+	public Application getApplication(String appName);
 	
-	public Collection getDeployments(String appId);
+	public Collection getDeployments(String appName);
 	
-	public Deployment getDeployment(String appId, String deploymentId);
+	public Deployment getDeployment(String appName, String deploymentId);
 	
-	public Agreement getAgreement(String appId, String deploymentId);
+	public Agreement getAgreement(String appName, String deploymentId);
 	
-	public Deployment createDeployment(String appId, String ovf);
+	public Deployment createDeployment(String appName, String ovf);
 	
 	//public void deleteApplication(String appId);
 	//public void deleteDeployment(String appId, String deploymentId);

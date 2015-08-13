@@ -119,10 +119,10 @@ public class AppManagerClientHC implements AppManagerClient {
 	}
 
 	@Override
-	public Application getApplication(String appId) {
+	public Application getApplication(String appName) {
 		Application application  = null;
 		Boolean exception = false;
-		String targetUrl = url + "/applications/" + appId;
+		String targetUrl = url + "/applications/" + appName;
 		logger.info("URL build: " + targetUrl);
 		
 		try {
@@ -139,10 +139,10 @@ public class AppManagerClientHC implements AppManagerClient {
 	}
 
 	@Override
-	public Collection getDeployments(String appId) {
+	public Collection getDeployments(String appName) {
 		Collection collection  = null;
 		Boolean exception = false;
-		String targetUrl = url + "/application/" + appId + "/deployments";
+		String targetUrl = url + "/applications/" + appName + "/deployments";
 		logger.info("URL build: " + targetUrl);
 		
 		try {
@@ -159,10 +159,10 @@ public class AppManagerClientHC implements AppManagerClient {
 	}
 
 	@Override
-	public Deployment getDeployment(String appId, String deploymentId) {
+	public Deployment getDeployment(String appName, String deploymentId) {
 		Deployment deployment  = null;
 		Boolean exception = false;
-		String targetUrl = url + "/applications/" + appId + "/deployments/" + deploymentId;
+		String targetUrl = url + "/applications/" + appName + "/deployments/" + deploymentId;
 		logger.info("URL build: " + targetUrl);
 		
 		try {
@@ -179,10 +179,10 @@ public class AppManagerClientHC implements AppManagerClient {
 	}
 
 	@Override
-	public Agreement getAgreement(String appId, String deploymentId) {
+	public Agreement getAgreement(String appName, String deploymentId) {
 		Agreement agreement  = null;
 		Boolean exception = false;
-		String targetUrl = url + "/applications/" + appId + "/deployments/" + deploymentId + "/aggreement";
+		String targetUrl = url + "/applications/" + appName + "/deployments/" + deploymentId + "/aggreement";
 		logger.info("URL build: " + targetUrl);
 		
 		try {
@@ -199,10 +199,10 @@ public class AppManagerClientHC implements AppManagerClient {
 	}
 
 	@Override
-	public Deployment createDeployment(String appId, String ovf) {
+	public Deployment createDeployment(String appName, String ovf) {
 		Deployment deployment  = null;
 		Boolean exception = false;
-		String targetUrl = url + "/application/" + appId + "/deployments";
+		String targetUrl = url + "/application/" + appName + "/deployments";
 		logger.info("URL build: " + targetUrl);
 		
 		try {
