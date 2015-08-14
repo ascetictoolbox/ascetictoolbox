@@ -18,6 +18,7 @@ package eu.ascetic.paas.self.adaptation.manager.activemq.listener;
 import eu.ascetic.paas.self.adaptation.manager.rules.EventAssessor;
 import javax.jms.JMSException;
 import javax.naming.NamingException;
+import org.apache.activemq.ActiveMQConnection;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -43,15 +44,22 @@ public class SlaManagerListenerTest {
      */
     @Test
     public void testRun() {
-        try {
+        try { //"10.4.0.16:5672" "http://192.168.3.16:5673", //vm:localhost:5673
+            SLAManagerMessageGenerator generator = new SLAManagerMessageGenerator(
+                    "guest", "guest", "192.168.3.16:5673",
+                    "paas-slam.monitoring.f28d4719-5f98-4c87-9365-6be602da9a4a.DavidgpTestApp.violationNotified");
+            Thread genThread = new Thread(generator);
+            genThread.setDaemon(true);
+            genThread.start();
             System.out.println("run"); //"password"   //"192.168.3.16:5673"
                 SlaManagerListener instance = new SlaManagerListener(
-                    "guest", "guest", "10.4.0.16:5672",
+                    "guest", "guest", "192.168.3.16:5673",
                     "paas-slam.monitoring.f28d4719-5f98-4c87-9365-6be602da9a4a.DavidgpTestApp.violationNotified");
-            instance.run();
+            Thread instThread = new Thread(instance);
+            instThread.start();
             //An event should arrive in this period of time.
             instance.printQueueAndTopicInformation();
-            Thread.sleep(20000);
+            Thread.sleep(60000);
             instance.stopListening();
         }catch (InterruptedException ex) {
             ex.printStackTrace();

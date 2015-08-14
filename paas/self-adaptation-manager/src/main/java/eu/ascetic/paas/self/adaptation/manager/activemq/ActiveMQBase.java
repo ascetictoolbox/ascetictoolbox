@@ -52,7 +52,6 @@ public abstract class ActiveMQBase {
     protected AmqpExceptionListener amqpExceptionListener = new AmqpExceptionListener();
     protected Connection connection;
     protected Session session;
-    protected Context context;
     protected boolean useURL = true;
     /**
      * Example urls: Y2: Stable: 192.168.3.222:5673 Y2: Testing:
@@ -154,14 +153,14 @@ public abstract class ActiveMQBase {
 
         // Now we have the context already configured... 
         // Create the initial context
-        context = new InitialContext(properties);
+        Context context = new InitialContext(properties);
 
         ConnectionFactory factory = (ConnectionFactory) context.lookup(connectionJNDIName);
 
         connection = factory.createConnection(this.user, this.password);
         connection.setExceptionListener(amqpExceptionListener);
         session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-
+        connection.start();
     }
 
     /**
@@ -171,7 +170,7 @@ public abstract class ActiveMQBase {
      * @throws JMSException
      */
     private void initialise() throws NamingException, JMSException {
-        context = new InitialContext();
+        Context context = new InitialContext();
 
         ConnectionFactory factory = (ConnectionFactory) context.lookup(factoryLookupName);
 
@@ -191,12 +190,14 @@ public abstract class ActiveMQBase {
         this.amqpExceptionListener = amqpExceptionListener;
     }
 
+    /**
+     * This returns the current connection for Active MQ
+     *
+     * @return
+     * @throws JMSException
+     * @throws NamingException
+     */
     protected Connection getConnection() throws JMSException, NamingException {
-        // Create a ConnectionFactory
-        ConnectionFactory factory = (ConnectionFactory) context.lookup("myFactoryLookup");
-        // Create a Connection
-        connection = factory.createConnection();
-        connection.start();
         return connection;
     }
 
@@ -221,14 +222,11 @@ public abstract class ActiveMQBase {
      * @param queue The name of the queue to get
      * @return The queue for messages to be sent to
      * @throws NamingException
+     * @throws javax.jms.JMSException
      */
-    protected Destination getMessageQueue(String queue) throws NamingException {
-        if (context == null) {
-            context = new InitialContext();
-        }
+    protected Destination getMessageQueue(String queue) throws NamingException, JMSException {
         String queueOrTopic = queue.replaceAll("\\.", "");
-        context.addToEnvironment("queue." + queueOrTopic, queue);
-        return (Destination) context.lookup(queue);
+        return (Destination) session.createTopic(queueOrTopic);
     }
 
     /**
@@ -237,11 +235,11 @@ public abstract class ActiveMQBase {
      * @param topic The name of the topic to get
      * @return The topic for messages to be sent to
      * @throws NamingException
+     * @throws javax.jms.JMSException
      */
-    protected Destination getTopic(String topic) throws NamingException {
+    protected Destination getTopic(String topic) throws NamingException, JMSException {
         String queueOrTopic = topic.replaceAll("\\.", "");
-        context.addToEnvironment("topic." + queueOrTopic, topic);
-        return (Destination) context.lookup(topic);
+        return (Destination) session.createTopic(queueOrTopic);
     }
 
     /**
@@ -300,11 +298,24 @@ public abstract class ActiveMQBase {
     /**
      * Closes the connection to the message queue backbone.
      *
-     * @throws JMSException
      */
-    public void close() throws JMSException {
-        session.close();
-        connection.close();
+    public void close() {
+        if (session != null) {
+            try {
+                session.close();
+            } catch (JMSException ex) {
+                Logger.getLogger(ActiveMQBase.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            session = null;
+        }
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (JMSException ex) {
+                Logger.getLogger(ActiveMQBase.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            connection = null;
+        }
     }
 
 }

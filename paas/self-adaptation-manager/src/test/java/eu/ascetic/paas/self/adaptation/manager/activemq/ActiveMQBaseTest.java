@@ -19,7 +19,6 @@ import eu.ascetic.amqp.client.AmqpExceptionListener;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.jms.Connection;
 import javax.jms.Destination;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
@@ -66,6 +65,7 @@ public class ActiveMQBaseTest {
 
     /**
      * Test of getMessageProducer method, of class ActiveMQBase.
+     * @throws java.lang.Exception
      */
     @Test
     public void testGetMessageProducer() throws Exception {
@@ -80,6 +80,7 @@ public class ActiveMQBaseTest {
 
     /**
      * Test of getMessageQueue method, of class ActiveMQBase.
+     * @throws java.lang.Exception
      */
     @Test
     public void testGetMessageQueue() throws Exception {
@@ -92,6 +93,7 @@ public class ActiveMQBaseTest {
 
     /**
      * Test of getTopic method, of class ActiveMQBase.
+     * @throws java.lang.Exception
      */
     @Test
     public void testGetTopic() throws Exception {
@@ -141,6 +143,7 @@ public class ActiveMQBaseTest {
             System.out.println("printQueueAndTopicInformation");
             ActiveMQBase instance = new ActiveMQBaseImpl();
             instance.printQueueAndTopicInformation();
+            instance.close();
         } catch (Exception ex) {
             Logger.getLogger(ActiveMQBaseTest.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -148,6 +151,7 @@ public class ActiveMQBaseTest {
 
     /**
      * Test of close method, of class ActiveMQBase.
+     * @throws java.lang.Exception
      */
     @Test
     public void testClose() throws Exception {
@@ -158,8 +162,8 @@ public class ActiveMQBaseTest {
 
     public class ActiveMQBaseImpl extends ActiveMQBase {
 
-        public ActiveMQBaseImpl() throws Exception {
-            super();
+        public ActiveMQBaseImpl() throws Exception { //"failover:(udp://192.168.3.16:5673,http://192.168.3.16:5673,ssl://192.168.3.16:5673)
+            super("guest", "guest", "192.168.3.16:5673");
         }
     }
 

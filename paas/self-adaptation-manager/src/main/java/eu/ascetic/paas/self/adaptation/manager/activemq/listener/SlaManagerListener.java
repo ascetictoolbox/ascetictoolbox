@@ -21,6 +21,7 @@ import eu.ascetic.paas.self.adaptation.manager.rules.EventAssessor;
 import eu.ascetic.paas.self.adaptation.manager.rules.EventDataConverter;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.EventData;
 import eu.ascetic.paas.slam.pac.events.ViolationMessage;
+import eu.ascetic.paas.slam.pac.events.ViolationMessageTranslator;
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,6 +29,7 @@ import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
+import javax.jms.TextMessage;
 import javax.naming.NamingException;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -41,12 +43,13 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 public class SlaManagerListener extends ActiveMQBase implements Runnable, EventListener {
 
     private final Destination queue;
-    private static String queue_name = "";
+    private static String queue_name = "slamanager";
     // Create a MessageConsumer from the Session to the Topic or Queue
     private final MessageConsumer consumer;
     private EventAssessor eventAssessor;
     private boolean running = true;
     private static final String CONFIG_FILE = "paas-self-adaptation-manager.properties";
+    private ViolationMessageTranslator converter = new ViolationMessageTranslator();
 
     public SlaManagerListener() throws JMSException, NamingException {
         super();
@@ -63,33 +66,34 @@ public class SlaManagerListener extends ActiveMQBase implements Runnable, EventL
             config.setProperty("paas.self.adaptation.manager.sla.event.queue.name", queue_name);
         } catch (ConfigurationException ex) {
             Logger.getLogger(SlaManagerListener.class.getName()).log(Level.INFO, "Error loading the configuration of the PaaS Self adaptation manager", ex);
-        }     
+        }
         queue = getMessageQueue(queue_name);
         consumer = session.createConsumer(queue);
     }
 
     /**
-     * This creates an SLA manager listener that can have its configuration 
+     * This creates an SLA manager listener that can have its configuration
      * information set.
+     *
      * @param user The user name to use
      * @param password the password to use
      * @param url The factory used to lookup the message queue.
      * @param topicName The queue name to use
      * @throws JMSException
-     * @throws NamingException 
+     * @throws NamingException
      */
     public SlaManagerListener(String user, String password, String url, String topicName) throws JMSException, NamingException {
-        super(user, password, url);       
+        super(user, password, url);
         queue = getTopic(topicName);
         consumer = session.createConsumer(queue);
     }
-    
-    
+
     /**
      * This creates an SLA manager listener that can have its queue set.
+     *
      * @param queueName The queue name to use
      * @throws JMSException
-     * @throws NamingException 
+     * @throws NamingException
      */
     public SlaManagerListener(String queueName) throws JMSException, NamingException {
         super();
@@ -107,10 +111,16 @@ public class SlaManagerListener extends ActiveMQBase implements Runnable, EventL
             while (running) {
                 Message message = consumer.receive(1000);
 
-                if (message instanceof ViolationMessage) {
-                    ViolationMessage violation = (ViolationMessage) message;
+                if (message instanceof TextMessage) {
+                    TextMessage textMessage = (TextMessage) message;
+                    ViolationMessage violation = (ViolationMessage) converter.fromXML(textMessage.getText());
                     EventData data = EventDataConverter.convertEventData(violation);
                     eventAssessor.assessEvent(data);
+                }
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(SlaManagerListener.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (consumer != null) {
@@ -135,6 +145,7 @@ public class SlaManagerListener extends ActiveMQBase implements Runnable, EventL
     @Override
     public void stopListening() {
         running = false;
+        close();
     }
 
 }

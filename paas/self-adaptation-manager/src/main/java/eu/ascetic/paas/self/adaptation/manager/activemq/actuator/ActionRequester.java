@@ -70,8 +70,8 @@ public class ActionRequester extends ActiveMQBase implements Runnable, ActuatorI
                 config.setFile(new File(CONFIG_FILE));
             }
             config.setAutoSave(true); //This will save the configuration file back to disk. In case the defaults need setting.
-            queueName = config.getString("paas.self.adaptation.manager.sla.event.queue.name", queueName);
-            config.setProperty("paas.self.adaptation.manager.sla.event.queue.name", queueName);
+            queueName = config.getString("paas.self.adaptation.manager.app.manager.queue.name", queueName);
+            config.setProperty("paas.self.adaptation.manager.app.manager.queue.name", queueName);
         } catch (ConfigurationException ex) {
             Logger.getLogger(ActionRequester.class.getName()).log(Level.INFO, "Error loading the configuration of the PaaS Self adaptation manager", ex);
         }
@@ -116,11 +116,7 @@ public class ActionRequester extends ActiveMQBase implements Runnable, ActuatorI
                 Logger.getLogger(ActionRequester.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        try {
-            close();
-        } catch (JMSException ex) {
-            Logger.getLogger(ActionRequester.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        close();
     }
 
     /**
