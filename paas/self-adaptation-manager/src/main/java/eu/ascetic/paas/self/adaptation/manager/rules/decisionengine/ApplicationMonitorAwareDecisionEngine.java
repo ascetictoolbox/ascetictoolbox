@@ -15,19 +15,43 @@
  */
 package eu.ascetic.paas.self.adaptation.manager.rules.decisionengine;
 
+import eu.ascetic.paas.self.adaptation.manager.activemq.listener.ApplicationManagerListener;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.jms.JMSException;
+import javax.naming.NamingException;
 
 /**
- * This decision engine uses a more system aware approach to better decide
- * what the magnitude of an adaptation should be used will be. It may also
- * have to decide to which VM this adaptation should occur.
+ * This decision engine uses a more system aware approach to better decide what
+ * the magnitude of an adaptation should be used will be. It may also have to
+ * decide to which VM this adaptation should occur.
+ *
  * @author Richard Kavanagh
  */
 public class ApplicationMonitorAwareDecisionEngine extends AbstractDecisionEngine {
 
+    ApplicationManagerListener datasource;
+
+    public ApplicationMonitorAwareDecisionEngine() {
+        try {
+            this.datasource = new ApplicationManagerListener();
+        } catch (JMSException ex) {
+            Logger.getLogger(ApplicationMonitorAwareDecisionEngine.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NamingException ex) {
+            Logger.getLogger(ApplicationMonitorAwareDecisionEngine.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     @Override
     public Response decide(Response response) {
+        /**
+         * The app needs to be registered with the listener. 
+         * the earlier this is done the more likely it can get the information
+         * needed.
+         */
+        datasource.listenToApp(response.getApplicationId());
         if (response.getActionType().equals(Response.AdaptationType.ADD_VM)) {
             response = addVM(response);
         } else if (response.getActionType().equals(Response.AdaptationType.REMOVE_VM)) {
@@ -45,11 +69,12 @@ public class ApplicationMonitorAwareDecisionEngine extends AbstractDecisionEngin
     public Response deleteVM(Response response) {
         List<Integer> vmIds = getActuator().getVmIdsAvailableToRemove(response.getApplicationId(), response.getDeploymentId());
         if (!vmIds.isEmpty()) {
-            //TODO find the least busy VM and then delete it
-//            response.setVmId(vmIds.get(0) + "");
+            String vmID = datasource.getLeastBusiestVmInApp(response.getApplicationId());
+            response.setActionType(Response.AdaptationType.REMOVE_VM);
+            response.setVmId(vmID + "");
             return response;
         } else {
-            response.setAdapationDetails("Could not find a VM to delete");            
+            response.setAdapationDetails("Could not find a VM to delete");
             response.setPossibleToAdapt(false);
         }
         return response;
@@ -64,14 +89,15 @@ public class ApplicationMonitorAwareDecisionEngine extends AbstractDecisionEngin
     public Response addVM(Response response) {
         List<String> vmOvfTypes = getActuator().getVmTypesAvailableToAdd(response.getApplicationId(), response.getDeploymentId());
         if (!vmOvfTypes.isEmpty()) {
-            //TODO select VM type that is currently the busiest
-//            response.setAdapationDetails(vmOvfTypes.get(0));            
+            String vmOvfType = datasource.getBusiestVmTypeInApp(response.getApplicationId());
+            response.setActionType(Response.AdaptationType.ADD_VM);
+            response.setAdapationDetails(vmOvfType);
             return response;
         } else {
             response.setAdapationDetails("Could not find a VM OVF type to add");
             response.setPossibleToAdapt(false);
             return response;
         }
-    }    
-    
+    }
+
 }
