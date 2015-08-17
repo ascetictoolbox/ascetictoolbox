@@ -128,7 +128,8 @@ public class ThresholdEventAssessor extends AbstractEventAssessor {
              * and to what scale.
              */
             FiringCriteria rule = getFirstMatchingFiringCriteria(event);
-            if (rule != null) {
+            int previousActionCount = ResponseHistoryAggregator.filterResponseHistory(recentAdaptation, event.getSlaUuid(), event.getAgreementTerm()).size();
+            if (rule != null && previousActionCount == 0) {
                 answer = new Response(getActuator(), event, rule.getResponseType());
             }
             return answer;
@@ -156,6 +157,7 @@ public class ThresholdEventAssessor extends AbstractEventAssessor {
     /**
      * This gets the amount of events of a given type that need to occur before
      * the event fires.
+     *
      * @return the threshold
      */
     public int getThreshold() {
@@ -165,6 +167,7 @@ public class ThresholdEventAssessor extends AbstractEventAssessor {
     /**
      * This sets the amount of events of a given type that need to occur before
      * the event fires.
+     *
      * @param threshold the threshold to set
      */
     public void setThreshold(int threshold) {

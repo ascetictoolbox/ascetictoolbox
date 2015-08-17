@@ -36,20 +36,41 @@ public class ResponseHistoryAggregator {
      *
      * @param responses The list of responses records to filter
      * @param slaUuid The SLA identifier to filter against
-     * @param guaranteeid The guarantee id to filter against.
+     * @param agreementTerm The agreement term to filter against.
+     * @param onlyActionable This filters out any responses that were not possible
+     * to perform.
      * @return The list of responses associated with a given guarantee of an
      * SLA, in ascending chronological order. i.e. earliest first.
      */
     public static List<Response> filterResponseHistory(List<Response> responses,
-            String slaUuid, String guaranteeid) {
+            String slaUuid, String agreementTerm, boolean onlyActionable) {
         ArrayList<Response> answer = new ArrayList<>();
         for (Response response : responses) {
-            if (response.getCause().getSlaUuid().equals(slaUuid) && response.getCause().getGuaranteeid().equals(guaranteeid)) {
+            if (response.getCause().getSlaUuid().equals(slaUuid) && 
+                    response.getCause().getAgreementTerm().equals(agreementTerm)) {
+                if (onlyActionable == true && response.isPossibleToAdapt() == false) {
+                    continue;
+                }
                 answer.add(response);
             }
         }
         Collections.sort(answer);
         return answer;
+    }    
+    
+    /**
+     * This takes a list of responses and provides a list of responses for a 
+     * single guarantee of a named SLA.
+     *
+     * @param responses The list of responses records to filter
+     * @param slaUuid The SLA identifier to filter against
+     * @param agreementTerm The agreement term to filter against.
+     * @return The list of responses associated with a given guarantee of an
+     * SLA, in ascending chronological order. i.e. earliest first.
+     */
+    public static List<Response> filterResponseHistory(List<Response> responses,
+            String slaUuid, String agreementTerm) {
+        return filterResponseHistory(responses, slaUuid, agreementTerm, false);
     }
 
     /**

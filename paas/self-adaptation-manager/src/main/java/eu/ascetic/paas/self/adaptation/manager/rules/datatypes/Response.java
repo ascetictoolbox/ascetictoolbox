@@ -160,6 +160,15 @@ public class Response implements Comparable<Response> {
      */
     public void setPerformed(boolean performed) {
         this.performed = performed;
+    }
+    
+    /**
+     * This indicates if the action associated with the response has been 
+     * completed. i.e. its either been performed or is un-actionable.
+     * @return the performed
+     */
+    public boolean isComplete() {
+        return performed || possibleToAdapt;
     }    
     
     /**
