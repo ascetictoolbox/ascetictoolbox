@@ -1219,6 +1219,7 @@ paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manag
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/activemq/listener/EventHistoryListener.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/activemq/listener/SlaManagerListener.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rest/ActionRequester.java -text
+paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rest/generated/EventHistoryLogger.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rest/generated/RestDeploymentClient.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rest/generated/RestVMClient.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/AbstractEventAssessor.java -text
@@ -1228,6 +1229,7 @@ paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manag
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/FuzzyEventAssessor.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/IdleEventAssessor.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/ResponseHistoryAggregator.java -text
+paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/ResponseHistoryLogger.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/ThresholdEventAssessor.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/datatypes/EventData.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/datatypes/FiringCriteria.java -text

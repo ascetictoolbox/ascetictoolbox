@@ -17,6 +17,7 @@ package eu.ascetic.paas.self.adaptation.manager.rules;
 
 import eu.ascetic.paas.self.adaptation.manager.ActuatorInvoker;
 import eu.ascetic.paas.self.adaptation.manager.EventListener;
+import eu.ascetic.paas.self.adaptation.manager.rest.generated.EventHistoryLogger;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.EventData;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
 import eu.ascetic.paas.self.adaptation.manager.rules.decisionengine.DecisionEngine;
@@ -46,6 +47,11 @@ public abstract class AbstractEventAssessor implements EventAssessor {
     private List<EventData> eventHistory = new ArrayList<>();
     private DecisionEngine decisionEngine;
     private String decisionEngineName = "RandomDecisionEngine";
+    private boolean logging = true;
+    private ResponseHistoryLogger responseHistoryLogger = null;
+    private Thread responseHistoryLoggerThread = null;
+    private EventHistoryLogger eventHistoryLogger = null;
+    private Thread eventHistoryLoggerThread = null;    
     private List<Response> adaptations = new ArrayList<>();
     //duration a history item can stay alive
     private int historyLengthSeconds = (int) TimeUnit.MINUTES.toSeconds(5);
@@ -77,6 +83,18 @@ public abstract class AbstractEventAssessor implements EventAssessor {
             decisionEngineName = config.getString("paas.self.adaptation.manager.decision.engine", decisionEngineName);
             config.setProperty("paas.self.adaptation.manager.decision.engine", decisionEngineName);
             setDecisionEngine(decisionEngineName);
+            logging = config.getBoolean("paas.self.adaptation.manager.logging", logging);
+            config.setProperty("paas.self.adaptation.manager.logging", logging);
+            if (logging) {
+                responseHistoryLogger = new ResponseHistoryLogger(new File("ResponseLog.csv"), true);
+                responseHistoryLoggerThread = new Thread(responseHistoryLogger);
+                responseHistoryLoggerThread.setDaemon(true);
+                responseHistoryLoggerThread.start();
+                eventHistoryLogger = new EventHistoryLogger(new File("EventLog.csv"), true);
+                eventHistoryLoggerThread = new Thread(eventHistoryLogger);
+                eventHistoryLoggerThread.setDaemon(true);
+                eventHistoryLoggerThread.start();                
+            }
         } catch (ConfigurationException ex) {
             Logger.getLogger(AbstractEventAssessor.class.getName()).log(Level.INFO, "Error loading the configuration of the PaaS Self adaptation manager", ex);
         }
@@ -111,12 +129,18 @@ public abstract class AbstractEventAssessor implements EventAssessor {
     public Response assessEvent(EventData event) {
         //Add the current event into the sequence of all events.
         eventHistory.add(event);
+        if (logging) {
+            eventHistoryLogger.printToFile(event);
+        }        
         //filter event sequence for only relevent data    
         List<EventData> eventData = EventDataAggregator.filterEventData(eventHistory, event.getSlaUuid(), event.getAgreementTerm());
         //Purge old event map data
         eventData = EventDataAggregator.filterEventDataByTime(eventData, historyLengthSeconds);
         Response answer = assessEvent(event, eventData, adaptations);
         if (answer != null) {
+            if (logging) {
+                responseHistoryLogger.printToFile(answer);
+            }
             adaptations.add(answer);
             answer = decisionEngine.decide(answer);
             if (actuator != null) {

@@ -48,6 +48,11 @@ public class RandomDecisionEngine extends AbstractDecisionEngine {
      * @return The finalised response object
      */
     public Response deleteVM(Response response) {
+        if (getActuator() == null) {
+            response.setAdapationDetails("Unable to find actuator.");
+            response.setPossibleToAdapt(false);
+            return response;
+        }
         List<Integer> vmIds = getActuator().getVmIdsAvailableToRemove(response.getApplicationId(), response.getDeploymentId());
         if (!vmIds.isEmpty()) {
             Collections.shuffle(vmIds);
