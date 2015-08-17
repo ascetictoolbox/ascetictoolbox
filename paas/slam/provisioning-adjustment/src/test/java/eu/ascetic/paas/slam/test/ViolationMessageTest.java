@@ -44,6 +44,9 @@ public class ViolationMessageTest {
 		String xml = vmt.toXML(violationMessage);
 		System.out.println(xml);
 		Assert.assertNotNull(xml);
+        ViolationMessage message = (ViolationMessage) vmt.fromXML(xml);
+        System.out.println(message.getAppId());
+                
 	}
 
 
