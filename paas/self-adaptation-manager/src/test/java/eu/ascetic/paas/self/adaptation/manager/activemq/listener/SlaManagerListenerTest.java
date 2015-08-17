@@ -16,6 +16,7 @@
 package eu.ascetic.paas.self.adaptation.manager.activemq.listener;
 
 import eu.ascetic.paas.self.adaptation.manager.rules.EventAssessor;
+import eu.ascetic.paas.self.adaptation.manager.rules.IdleEventAssessor;
 import javax.jms.JMSException;
 import javax.naming.NamingException;
 import org.apache.activemq.ActiveMQConnection;
@@ -55,7 +56,8 @@ public class SlaManagerListenerTest {
                 SlaManagerListener instance = new SlaManagerListener(
                     "guest", "guest", "192.168.3.16:5673",
                     "paas-slam.monitoring.f28d4719-5f98-4c87-9365-6be602da9a4a.DavidgpTestApp.violationNotified");
-            Thread instThread = new Thread(instance);
+            instance.setEventAssessor(new IdleEventAssessor());
+                Thread instThread = new Thread(instance);
             instThread.start();
             //An event should arrive in this period of time.
             instance.printQueueAndTopicInformation();

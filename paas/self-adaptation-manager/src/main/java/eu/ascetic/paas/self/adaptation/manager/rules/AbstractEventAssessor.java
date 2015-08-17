@@ -43,10 +43,10 @@ public abstract class AbstractEventAssessor implements EventAssessor {
 
     private ArrayList<EventListener> listeners = new ArrayList<>();
     private ActuatorInvoker actuator = null;
-    private List<EventData> eventHistory;
+    private List<EventData> eventHistory = new ArrayList<>();
     private DecisionEngine decisionEngine;
     private String decisionEngineName = "RandomDecisionEngine";
-    private List<Response> adaptations;
+    private List<Response> adaptations = new ArrayList<>();
     //duration a history item can stay alive
     private int historyLengthSeconds = (int) TimeUnit.MINUTES.toSeconds(5);
     //The rate at how often history items are checked to be still in date
