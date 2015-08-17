@@ -227,7 +227,7 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
     private void launchAction(Response response) {
         switch (response.getActionType()) {
             case ADD_VM:
-                addVM(response.getApplicationId(), response.getDeploymentId(), response.getAdapationDetails());
+                addVM(response.getApplicationId(), response.getDeploymentId(), response.getAdaptationDetails());
                 break;
             case REMOVE_VM:
                 deleteVM(response.getApplicationId(), response.getDeploymentId(), response.getVmId());

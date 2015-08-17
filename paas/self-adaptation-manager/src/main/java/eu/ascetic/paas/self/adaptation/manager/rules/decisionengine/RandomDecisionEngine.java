@@ -49,7 +49,7 @@ public class RandomDecisionEngine extends AbstractDecisionEngine {
      */
     public Response deleteVM(Response response) {
         if (getActuator() == null) {
-            response.setAdapationDetails("Unable to find actuator.");
+            response.setAdaptationDetails("Unable to find actuator.");
             response.setPossibleToAdapt(false);
             return response;
         }
@@ -59,7 +59,7 @@ public class RandomDecisionEngine extends AbstractDecisionEngine {
             response.setVmId(vmIds.get(0) + "");
             return response;
         } else {
-            response.setAdapationDetails("Could not find a VM to delete");            
+            response.setAdaptationDetails("Could not find a VM to delete");            
             response.setPossibleToAdapt(false);
         }
         return response;
@@ -75,10 +75,10 @@ public class RandomDecisionEngine extends AbstractDecisionEngine {
         List<String> vmOvfTypes = getActuator().getVmTypesAvailableToAdd(response.getApplicationId(), response.getDeploymentId());
         if (!vmOvfTypes.isEmpty()) {
             Collections.shuffle(vmOvfTypes);
-            response.setAdapationDetails(vmOvfTypes.get(0));
+            response.setAdaptationDetails(vmOvfTypes.get(0));
             return response;
         } else {
-            response.setAdapationDetails("Could not find a VM OVF type to add");
+            response.setAdaptationDetails("Could not find a VM OVF type to add");
             response.setPossibleToAdapt(false);
             return response;
         }

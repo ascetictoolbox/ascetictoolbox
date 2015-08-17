@@ -74,7 +74,7 @@ public class ApplicationMonitorAwareDecisionEngine extends AbstractDecisionEngin
             response.setVmId(vmID + "");
             return response;
         } else {
-            response.setAdapationDetails("Could not find a VM to delete");
+            response.setAdaptationDetails("Could not find a VM to delete");
             response.setPossibleToAdapt(false);
         }
         return response;
@@ -91,10 +91,10 @@ public class ApplicationMonitorAwareDecisionEngine extends AbstractDecisionEngin
         if (!vmOvfTypes.isEmpty()) {
             String vmOvfType = datasource.getBusiestVmTypeInApp(response.getApplicationId());
             response.setActionType(Response.AdaptationType.ADD_VM);
-            response.setAdapationDetails(vmOvfType);
+            response.setAdaptationDetails(vmOvfType);
             return response;
         } else {
-            response.setAdapationDetails("Could not find a VM OVF type to add");
+            response.setAdaptationDetails("Could not find a VM OVF type to add");
             response.setPossibleToAdapt(false);
             return response;
         }

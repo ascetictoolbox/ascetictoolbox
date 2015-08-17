@@ -37,7 +37,7 @@ public class ThresholdEventAssessor extends AbstractEventAssessor {
 
     private int threshold = 2;
     private ArrayList<FiringCriteria> rules = new ArrayList<>();
-    private static final String CONFIG_FILE = "paas-self-adapation-manager-threshold.properties";
+    private static final String CONFIG_FILE = "paas-self-adaptation-manager-threshold.properties";
     private static final String RULES_FILE = "rules.csv";
     private String workingDir;
     private ResultsStore rulesFile;

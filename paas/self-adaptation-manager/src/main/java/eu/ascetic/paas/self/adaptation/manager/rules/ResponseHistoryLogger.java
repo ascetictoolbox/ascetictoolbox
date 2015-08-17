@@ -61,7 +61,7 @@ public class ResponseHistoryLogger extends GenericLogger<Response> {
         store.append(response.getDeploymentId());
         store.append(response.getVmId());
         store.append(response.getActionType().toString());
-        store.append(response.getAdapationDetails());
+        store.append(response.getAdaptationDetails());
         store.append(response.getCause().getSlaUuid());
         store.append(response.getCause().getAgreementTerm());
         store.append(response.getCause().getGuranteedValue());          

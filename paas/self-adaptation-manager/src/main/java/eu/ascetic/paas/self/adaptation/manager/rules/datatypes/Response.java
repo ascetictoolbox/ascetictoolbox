@@ -27,7 +27,7 @@ public class Response implements Comparable<Response> {
     private final ActuatorInvoker actuator;
     private final EventData cause;
     private AdaptationType actionType;
-    private String adapationDetails;
+    private String adaptationDetails;
     private String vmId;
     private boolean performed = false;
     private boolean possibleToAdapt = true;
@@ -114,17 +114,17 @@ public class Response implements Comparable<Response> {
     }
 
     /**
-     * @return the adapationDetails
+     * @return the adaptationDetails
      */
-    public String getAdapationDetails() {
-        return adapationDetails;
+    public String getAdaptationDetails() {
+        return adaptationDetails;
     }
 
     /**
-     * @param adapationDetails the adapationDetails to set
+     * @param adaptationDetails the adaptationDetails to set
      */
-    public void setAdapationDetails(String adapationDetails) {
-        this.adapationDetails = adapationDetails;
+    public void setAdaptationDetails(String adaptationDetails) {
+        this.adaptationDetails = adaptationDetails;
     }
     
     /**
