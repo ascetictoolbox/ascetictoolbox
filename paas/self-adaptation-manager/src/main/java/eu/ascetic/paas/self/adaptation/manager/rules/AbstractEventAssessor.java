@@ -203,6 +203,7 @@ public abstract class AbstractEventAssessor implements EventAssessor {
         listener.setEventAssessor(this);
         if (listener instanceof Runnable) {
             Thread thread = new Thread((Runnable) listener);
+            thread.setDaemon(true);            
             thread.start();
         }
     }
@@ -237,6 +238,11 @@ public abstract class AbstractEventAssessor implements EventAssessor {
     public void setActuator(ActuatorInvoker actuator) {
         this.actuator = actuator;
         decisionEngine.setActuator(actuator);
+        if (this.actuator instanceof Runnable) {
+            Thread actuatorThread = new Thread((Runnable) this.actuator);
+            actuatorThread.setDaemon(true);
+            actuatorThread.start();
+        }        
     }
 
     /**
