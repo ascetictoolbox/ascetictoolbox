@@ -41,8 +41,8 @@ import javax.xml.bind.Unmarshaller;
 public class ActionRequester implements Runnable, ActuatorInvoker {
 
     private final LinkedBlockingDeque<Response> queue = new LinkedBlockingDeque<>();
-    private boolean stop = false;    
-    
+    private boolean stop = false;
+
     /**
      * This gets a VM given its application, deployment and VM ids.
      *
@@ -69,7 +69,9 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
     }
 
     /**
-     * This lists which VMs can be added to a deployment in order to make it scale.
+     * This lists which VMs can be added to a deployment in order to make it
+     * scale.
+     *
      * @param applicationId The application ID
      * @param deploymentId The deployment ID
      * @return The OVF ids that can be used to scale the named deployment
@@ -85,13 +87,15 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
         }
         return answer;
     }
-    
+
     /**
-     * This lists which VMs can be added to a deployment in order to make it scale.
+     * This lists which VMs can be added to a deployment in order to make it
+     * scale.
+     *
      * @param applicationId The application ID
      * @param deploymentId The deployment ID
      * @return The OVF ids that can be used to down size the named deployment
-     */    
+     */
     @Override
     public List<String> getVmTypesAvailableToRemove(String applicationId, String deploymentId) {
         ArrayList<String> answer = new ArrayList<>();
@@ -103,7 +107,7 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
         }
         return answer;
     }
-    
+
     @Override
     public List<Integer> getVmIdsAvailableToRemove(String applicationId, String deploymentId) {
         ArrayList<Integer> answer = new ArrayList<>();
@@ -114,10 +118,11 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
             }
         }
         return answer;
-    }    
-    
+    }
+
     /**
      * This counts how many VMs have a given deployment type in a set of VMs
+     *
      * @param vms The vms to look count
      * @param type The ovf Id of the type of VMs to look for
      */
@@ -131,7 +136,7 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
         }
         return answer;
     }
-    
+
     /**
      * This gets a VM given its application, deployment and VM ids.
      *
@@ -164,7 +169,7 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
      * @param deploymentId The deployment ID
      * @param ovfId The OVF id that indicates which VM type to instantiate
      */
-    @Override    
+    @Override
     public void addVM(String applicationId, String deploymentId, String ovfId) {
         RestVMClient client = new RestVMClient(applicationId, deploymentId);
         client.postVM(ovfId);
@@ -177,7 +182,7 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
      * @param deployment The id of the deployment instance of the VM
      * @param vmID The id of the VM to delete
      */
-    @Override    
+    @Override
     public void deleteVM(String application, String deployment, String vmID) {
         RestVMClient client = new RestVMClient(application, deployment);
         client.deleteVM(vmID);
@@ -203,28 +208,33 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
                     queue.drainTo(actions);
                     for (Response action : actions) {
                         launchAction(action);
-                    } 
+                    }
                 }
             } catch (InterruptedException ex) {
                 Logger.getLogger(ActionRequester.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
-    
+
     /**
-     * This permanently stops the action requester from working. It will however 
+     * This permanently stops the action requester from working. It will however
      * perform all queued work, before quitting.
      */
     public void stop() {
         this.stop = true;
     }
-    
+
     /**
      * This executes a given action for a response that has been placed in the
      * actuator's queue for deployment.
+     *
      * @param response The response object to launch the action for
      */
     private void launchAction(Response response) {
+        if (!response.isPossibleToAdapt()) {
+            response.setPerformed(true);
+            return;
+        }
         switch (response.getActionType()) {
             case ADD_VM:
                 addVM(response.getApplicationId(), response.getDeploymentId(), response.getAdaptationDetails());
@@ -235,7 +245,7 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
         }
         response.setPerformed(true);
     }
-    
+
     @Override
     public void actuate(Response response) {
         queue.add(response);
