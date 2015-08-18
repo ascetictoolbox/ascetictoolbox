@@ -51,7 +51,7 @@ public abstract class AbstractEventAssessor implements EventAssessor {
     private ResponseHistoryLogger responseHistoryLogger = null;
     private Thread responseHistoryLoggerThread = null;
     private EventHistoryLogger eventHistoryLogger = null;
-    private Thread eventHistoryLoggerThread = null;    
+    private Thread eventHistoryLoggerThread = null;
     private List<Response> adaptations = new ArrayList<>();
     //duration a history item can stay alive
     private int historyLengthSeconds = (int) TimeUnit.MINUTES.toSeconds(5);
@@ -93,7 +93,7 @@ public abstract class AbstractEventAssessor implements EventAssessor {
                 eventHistoryLogger = new EventHistoryLogger(new File("EventLog.csv"), true);
                 eventHistoryLoggerThread = new Thread(eventHistoryLogger);
                 eventHistoryLoggerThread.setDaemon(true);
-                eventHistoryLoggerThread.start();                
+                eventHistoryLoggerThread.start();
             }
         } catch (ConfigurationException ex) {
             Logger.getLogger(AbstractEventAssessor.class.getName()).log(Level.INFO, "Error loading the configuration of the PaaS Self adaptation manager", ex);
@@ -123,6 +123,7 @@ public abstract class AbstractEventAssessor implements EventAssessor {
             }
             Logger.getLogger(AbstractEventAssessor.class.getName()).log(Level.WARNING, "The setting of the decision engine did not work", ex);
         }
+        decisionEngine.setActuator(actuator);
     }
 
     @Override
@@ -131,21 +132,21 @@ public abstract class AbstractEventAssessor implements EventAssessor {
         eventHistory.add(event);
         if (logging) {
             eventHistoryLogger.printToFile(event);
-        }        
+        }
         //filter event sequence for only relevent data    
         List<EventData> eventData = EventDataAggregator.filterEventData(eventHistory, event.getSlaUuid(), event.getAgreementTerm());
         //Purge old event map data
         eventData = EventDataAggregator.filterEventDataByTime(eventData, historyLengthSeconds);
         Response answer = assessEvent(event, eventData, adaptations);
         if (answer != null) {
-            if (logging) {
-                responseHistoryLogger.printToFile(answer);
-            }
             adaptations.add(answer);
             answer = decisionEngine.decide(answer);
             if (actuator != null) {
                 actuator.actuate(answer);
             }
+            if (logging) {
+                responseHistoryLogger.printToFile(answer);
+            }            
         }
         return answer;
     }
@@ -235,6 +236,7 @@ public abstract class AbstractEventAssessor implements EventAssessor {
     @Override
     public void setActuator(ActuatorInvoker actuator) {
         this.actuator = actuator;
+        decisionEngine.setActuator(actuator);
     }
 
     /**

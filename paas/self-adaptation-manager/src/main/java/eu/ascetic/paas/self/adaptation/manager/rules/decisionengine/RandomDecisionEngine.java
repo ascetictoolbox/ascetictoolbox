@@ -72,6 +72,11 @@ public class RandomDecisionEngine extends AbstractDecisionEngine {
      * @return The finalised response object
      */
     public Response addVM(Response response) {
+        if (getActuator() == null) {
+            response.setAdaptationDetails("Unable to find actuator.");
+            response.setPossibleToAdapt(false);
+            return response;
+        }        
         List<String> vmOvfTypes = getActuator().getVmTypesAvailableToAdd(response.getApplicationId(), response.getDeploymentId());
         if (!vmOvfTypes.isEmpty()) {
             Collections.shuffle(vmOvfTypes);

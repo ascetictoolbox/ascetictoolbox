@@ -48,7 +48,7 @@ public class ThresholdEventAssessorTest {
     public void testAssessEvent() {
         System.out.println("assessEvent");
         EventData event = new EventData(0, 10, 4, EventData.Type.SLA_BREACH, 
-                EventData.Operator.GT, "SLAID", "AppID", "DeplyID", "GurID", "power_usage_per_app");
+                EventData.Operator.LT, "SLAID", "AppID", "DeplyID", "GurID", "power_usage_per_app");
         List<EventData> sequence = new ArrayList<>();
         List<Response> recentAdaptation = new ArrayList<>();
         ThresholdEventAssessor instance = new ThresholdEventAssessor();

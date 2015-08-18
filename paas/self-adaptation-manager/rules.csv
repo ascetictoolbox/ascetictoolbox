@@ -3,3 +3,7 @@ energy_usage_per_app,LT,REMOVE_VM
 power_usage_per_app,LT,REMOVE_VM
 energy_usage_per_app,LTE,REMOVE_VM
 power_usage_per_app,LTE,REMOVE_VM
+energy_usage_per_app,GT,ADD_VM
+power_usage_per_app,GT,ADD_VM
+energy_usage_per_app,GTE,ADD_VM
+power_usage_per_app,GTE,ADD_VM

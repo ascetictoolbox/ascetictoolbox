@@ -39,7 +39,8 @@ public class SLAManagerMessageGenerator extends ActiveMQBase implements Runnable
 
     private final MessageProducer producer;
     private final Destination messageQueue;
-    private final static String queueName = "slamanager";
+    private final static String queueName = "paas-slam.monitoring.f28d4719-5f98-4c87-9365-6be602da9a4a.DavidgpTestApp.violationNotified";
+    private int messageCount = 10;
 
     /**
      * This creates a new action requester.
@@ -77,28 +78,64 @@ public class SLAManagerMessageGenerator extends ActiveMQBase implements Runnable
         producer = getMessageProducer(session, messageQueue);
     }
 
+    /**
+     * Creates the default violation message.
+     *
+     * @return
+     * @throws Exception
+     */
     public String createViolationMessage() throws Exception {
-        ViolationMessage violationMessage = new ViolationMessage(Calendar.getInstance(), "sampleApp", "sampleDep");
+        return createViolationMessage("sampleApp", "sampleDep", "sampleSlaUUID", 10.0, 11.0);
+    }
+
+    /**
+     * This creates and sends a text SLA violation message
+     * @param appId
+     * @param deploymentId
+     * @param slaUuid
+     * @param value
+     * @param guranteedValue
+     * @throws Exception 
+     */
+    public void createAndSendViolationMessage(String appId, String deploymentId, String slaUuid, double value, double guranteedValue) throws Exception {
+        String textMessage = createViolationMessage(appId, deploymentId, slaUuid, value, guranteedValue);
+        TextMessage message = session.createTextMessage(textMessage);
+        producer.send(message);
+    }
+
+    /**
+     * This creates a custom message to be sent to the PaaS Self-Adaptation
+     * Manager
+     *
+     * @param appId The application ID
+     * @param deploymentId The deployment ID
+     * @param slaUuid the SLA UUID
+     * @param value The value obtained
+     * @param guranteedValue
+     * @return
+     * @throws Exception
+     */
+    public String createViolationMessage(String appId, String deploymentId, String slaUuid, double value, double guranteedValue) throws Exception {
+        ViolationMessage violationMessage = new ViolationMessage(Calendar.getInstance(), appId, deploymentId);
         ViolationMessage.Alert alert = violationMessage.new Alert();
         alert.setType("violation");
-        alert.setSlaUUID("sampleSlaUUID");
-        Value v = new Value("free", "11");
+        alert.setSlaUUID(slaUuid);
+        Value v = new Value("free", value + "");
         violationMessage.setValue(v);
         alert.setSlaAgreementTerm("power_usage_per_app");
         ViolationMessage.Alert.SlaGuaranteedState sgs = alert.new SlaGuaranteedState();
         sgs.setGuaranteedId("power_usage_per_app");
-        sgs.setGuaranteedValue(10.0);
-        sgs.setOperator("less_than_or_equals");
+        sgs.setGuaranteedValue(guranteedValue);
+        sgs.setOperator("greater_than_or_equals");
         alert.setSlaGuaranteedState(sgs);
         violationMessage.setAlert(alert);
         ViolationMessageTranslator vmt = new ViolationMessageTranslator();
-        String xml = vmt.toXML(violationMessage);
-        return xml;
+        return vmt.toXML(violationMessage);
     }
 
     @Override
     public void run() {
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < messageCount; i++) {
             try {
                 TextMessage message = session.createTextMessage(createViolationMessage());
                 producer.send(message);
@@ -119,6 +156,20 @@ public class SLAManagerMessageGenerator extends ActiveMQBase implements Runnable
         } catch (JMSException ex) {
             Logger.getLogger(SLAManagerMessageGenerator.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    /**
+     * @return the messageCount
+     */
+    public int getMessageCount() {
+        return messageCount;
+    }
+
+    /**
+     * @param messageCount the messageCount to set
+     */
+    public void setMessageCount(int messageCount) {
+        this.messageCount = messageCount;
     }
 
 }

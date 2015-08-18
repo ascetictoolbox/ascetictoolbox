@@ -43,7 +43,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 public class SlaManagerListener extends ActiveMQBase implements Runnable, EventListener {
 
     private final Destination queue;
-    private static String queue_name = "paas-slam.monitoring.*";
+    private static String queue_name = "paas-slam.monitoring.>";
     // Create a MessageConsumer from the Session to the Topic or Queue
     private final MessageConsumer consumer;
     private EventAssessor eventAssessor;

@@ -16,6 +16,8 @@
 package eu.ascetic.paas.self.adaptation.manager.activemq.listener;
 
 import eu.ascetic.paas.self.adaptation.manager.rules.ThresholdEventAssessor;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.jms.JMSException;
 import javax.naming.NamingException;
 import org.junit.AfterClass;
@@ -25,6 +27,7 @@ import org.junit.Test;
 
 /**
  * This is the unit test for the SLA manager
+ *
  * @author Richard Kavanagh
  */
 public class SlaManagerListenerTest {
@@ -35,6 +38,26 @@ public class SlaManagerListenerTest {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+    }
+
+    @Test
+    public void standaloneRun() {
+        System.out.println("Sending Messages into Queue");
+        try {
+            SLAManagerMessageGenerator generator = new SLAManagerMessageGenerator("guest", "guest", "192.168.3.16:5673", "paas-slam.monitoring.test");
+            generator.setMessageCount(10);
+//            generator.createViolationMessage("appID", "deployID", "slauuid", 11.0, 10.0);
+            for (int i = 0; i < 10; i++) {
+                generator.createAndSendViolationMessage("davidgpTestApp", "453", "slauuid", 11.0, 10.0);
+            }
+            Thread.sleep(30000);
+        } catch (JMSException ex) {
+            Logger.getLogger(SlaManagerListenerTest.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NamingException ex) {
+            Logger.getLogger(SlaManagerListenerTest.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(SlaManagerListenerTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -50,17 +73,17 @@ public class SlaManagerListenerTest {
             genThread.setDaemon(true);
             genThread.start();
             System.out.println("run"); //"password"   //"192.168.3.16:5673"
-                SlaManagerListener instance = new SlaManagerListener(
+            SlaManagerListener instance = new SlaManagerListener(
                     "guest", "guest", "192.168.3.16:5673",
                     "paas-slam.monitoring.f28d4719-5f98-4c87-9365-6be602da9a4a.DavidgpTestApp.violationNotified");
             instance.setEventAssessor(new ThresholdEventAssessor());
-                Thread instThread = new Thread(instance);
+            Thread instThread = new Thread(instance);
             instThread.start();
             //An event should arrive in this period of time.
             instance.printQueueAndTopicInformation();
             Thread.sleep(60000);
             instance.stopListening();
-        }catch (InterruptedException ex) {
+        } catch (InterruptedException ex) {
             ex.printStackTrace();
             fail("An interrupted exception was thrown");
         } catch (JMSException ex) {
@@ -122,5 +145,4 @@ public class SlaManagerListenerTest {
 //            fail("An exception was thrown");
 //        }
 //    }
-
 }
