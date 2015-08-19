@@ -109,11 +109,11 @@ public class ActionRequesterTest {
     public void testGetVMsOfGivenType() {
         System.out.println("getVMsOfGivenType");
 
-        String type = "";
+        String type = "mysqlA";
         ActionRequester instance = new ActionRequester();
-        List<VM> vms = instance.getVMs("threeTierWebApp", "100");
-        int expResult = 0;
-        int result = instance.getVMsOfGivenType(vms, type);
+        List<VM> vms = instance.getVMs("davidgpTestApp", "453");
+        int expResult = 1;
+        int result = instance.getVmCountOfGivenType(vms, type);
         assertEquals(expResult, result);
     }
 

@@ -63,7 +63,7 @@ public interface ActuatorInvoker {
      * @param type The ovf Id of the type of VMs to look for
      * @return The amount of VMs which have a given OVF id
      */
-    public int getVMsOfGivenType(List<VM> vms, String type);
+    public int getVmCountOfGivenType(List<VM> vms, String type);
     
     /**
      * This adds a vm of a given ovf type to named deployment.

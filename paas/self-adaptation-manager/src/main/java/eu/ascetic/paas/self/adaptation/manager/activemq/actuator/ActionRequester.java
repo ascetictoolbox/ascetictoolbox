@@ -142,7 +142,7 @@ public class ActionRequester extends ActiveMQBase implements Runnable, ActuatorI
         ArrayList<String> answer = new ArrayList<>();
         List<VM> vms = getVMs(applicationId, deploymentId);
         for (VM vm : vms) {
-            if (vm.getNumberVMsMax() > 0 && getVMsOfGivenType(vms, vm.getOvfId()) < vm.getNumberVMsMax()) {
+            if (vm.getNumberVMsMax() > 0 && getVmCountOfGivenType(vms, vm.getOvfId()) < vm.getNumberVMsMax()) {
                 answer.add(vm.getOvfId());
             }
         }
@@ -154,7 +154,7 @@ public class ActionRequester extends ActiveMQBase implements Runnable, ActuatorI
         ArrayList<String> answer = new ArrayList<>();
         List<VM> vms = getVMs(applicationId, deploymentId);
         for (VM vm : vms) {
-            if (vm.getNumberVMsMin() > 0 && getVMsOfGivenType(vms, vm.getOvfId()) > vm.getNumberVMsMin()) {
+            if (vm.getNumberVMsMin() > 0 && getVmCountOfGivenType(vms, vm.getOvfId()) > vm.getNumberVMsMin()) {
                 answer.add(vm.getOvfId());
             }
         }
@@ -166,7 +166,7 @@ public class ActionRequester extends ActiveMQBase implements Runnable, ActuatorI
         ArrayList<Integer> answer = new ArrayList<>();
         List<VM> vms = getVMs(applicationId, deploymentId);
         for (VM vm : vms) {
-            if (vm.getNumberVMsMin() > 0 && getVMsOfGivenType(vms, vm.getOvfId()) > vm.getNumberVMsMin()) {
+            if (vm.getNumberVMsMin() > 0 && getVmCountOfGivenType(vms, vm.getOvfId()) > vm.getNumberVMsMin()) {
                 answer.add(vm.getId());
             }
         }
@@ -174,7 +174,7 @@ public class ActionRequester extends ActiveMQBase implements Runnable, ActuatorI
     }
 
     @Override
-    public int getVMsOfGivenType(List<VM> vms, String type) {
+    public int getVmCountOfGivenType(List<VM> vms, String type) {
         int answer = 0;
         for (VM vm : vms) {
             if (vm.getOvfId().equals(type)) {
