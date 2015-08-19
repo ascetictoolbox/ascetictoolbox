@@ -172,7 +172,50 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
     @Override
     public void addVM(String applicationId, String deploymentId, String ovfId) {
         RestVMClient client = new RestVMClient(applicationId, deploymentId);
-        client.postVM(ovfId);
+        VM vm = cloneVm(getVm(applicationId, deploymentId, ovfId));
+        client.postVM(vm);
+    }
+
+    /**
+     * This clones a VM except for its identifying information
+     *
+     * @param vm The VM to clone
+     * @return The cloned VM.
+     */
+    public VM cloneVm(VM vm) {
+        VM answer = new VM();
+        answer.setImages(vm.getImages());
+        answer.setLinks(vm.getLinks());
+        answer.setCpuActual(vm.getCpuActual());
+        answer.setCpuMax(vm.getCpuMax());
+        answer.setCpuMin(vm.getCpuMin());
+        answer.setDeployment(vm.getDeployment());
+        answer.setDiskActual(vm.getDiskActual());
+        answer.setDiskMax(vm.getDiskMax());
+        answer.setDiskMin(vm.getDiskMin());
+        answer.setHref(vm.getHref());
+        answer.setNumberVMsMax(vm.getNumberVMsMax());
+        answer.setNumberVMsMin(vm.getNumberVMsMin());
+        answer.setOvfId(vm.getOvfId());
+        return answer;
+    }
+
+    /**
+     * This provides details of a VM of the same ovf type as specified.
+     *
+     * @param applicationId The application id to get the VM for
+     * @param deploymentId The deployment id to get the VM for
+     * @param ovfId The ovf id to get the VM for
+     * @return The VM type
+     */
+    private VM getVm(String applicationId, String deploymentId, String ovfId) {
+        List<VM> vms = getVMs(applicationId, deploymentId);
+        for (VM vm : vms) {
+            if (vm.getOvfId().equals(ovfId)) {
+                return vm;
+            }
+        }
+        return null;
     }
 
     /**

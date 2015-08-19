@@ -22,13 +22,15 @@ import org.junit.Test;
 
 /**
  * A test class for the rest interface to the Application Manager.
+ *
  * @author Richard Kavanagh
  */
 public class ActionRequesterTest {
 
     /**
      * This prints out a VM object to standard out
-     * @param vm 
+     *
+     * @param vm
      */
     private static void printVM(VM vm) {
         System.out.println("---- VM ----");
@@ -40,8 +42,8 @@ public class ActionRequesterTest {
                 + " Actual: " + vm.getCpuActual());
         System.out.println("OVF ID: " + vm.getOvfId());
         System.out.println("---- VM END ----");
-    }    
-    
+    }
+
     /**
      * Test of getVM method, of class ActionRequester.
      */
@@ -52,7 +54,7 @@ public class ActionRequesterTest {
         String deployment = "100";
         String vmID = "1686";
         VM result = ActionRequester.getVM(application, deployment, vmID);
-        assert(result != null);
+        assert (result != null);
         printVM(result);
     }
 
@@ -62,8 +64,8 @@ public class ActionRequesterTest {
     @Test
     public void testGetVmTypesAvailableToAdd() {
         System.out.println("getVmTypesAvailableToAdd");
-        String applicationId = "threeTierWebApp";
-        String deploymentId = "100";
+        String applicationId = "davidgpTestApp";
+        String deploymentId = "453";
         ActionRequester instance = new ActionRequester();
         List<String> result = instance.getVmTypesAvailableToAdd(applicationId, deploymentId);
         System.out.println("Types Available to Add");
@@ -85,7 +87,7 @@ public class ActionRequesterTest {
         System.out.println("Types Available to Add");
         for (String type : result) {
             System.out.println(type);
-        }        
+        }
     }
 
     /**
@@ -94,8 +96,8 @@ public class ActionRequesterTest {
     @Test
     public void testGetVmIdsAvailableToRemove() {
         System.out.println("getVmIdsAvailableToRemove");
-        String applicationId = "threeTierWebApp";
-        String deploymentId = "100";
+        String applicationId = "davidgpTestApp";
+        String deploymentId = "453";
         ActionRequester instance = new ActionRequester();
         List<Integer> result = instance.getVmIdsAvailableToRemove(applicationId, deploymentId);
     }
@@ -121,14 +123,14 @@ public class ActionRequesterTest {
     @Test
     public void testGetVMs() {
         System.out.println("getVMs");
-        String applicationId = "threeTierWebApp";
-        String deploymentId = "100";
+        String applicationId = "davidgpTestApp";
+        String deploymentId = "453";
         ActionRequester instance = new ActionRequester();
         List<VM> result = instance.getVMs(applicationId, deploymentId);
         for (VM vm : result) {
-            assert(vm != null);
+            assert (vm != null);
             printVM(vm);
         }
     }
-    
+
 }
