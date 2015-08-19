@@ -242,6 +242,12 @@ public class ModelConverterTest {
 		String xml = ModelConverter.objectApplicationToXML(null);
 		assertEquals(null, xml);
 	}
+	
+	@Test
+	public void objectApplicationToJSONNullTest() {
+		String json = ModelConverter.objectApplicationToJSON(null);
+		assertEquals(null, json);
+	}
 
 	@Test
 	@SuppressWarnings(value = { "rawtypes" }) 
@@ -379,6 +385,116 @@ public class ModelConverterTest {
 		assertEquals("/applications/101/deployments/1/vms/33", element.getAttributeValue("href"));
 	}
 	
+	@Test
+	public void objectApplicationToJSONTest() throws JDOMException, IOException, ParseException {
+		Application application = new Application();
+		application.setHref("/applications/101");
+		application.setId(101);
+		application.setName("SaaS Application");
+		
+		Deployment deployment1 = new Deployment();
+		deployment1.setId(1);
+		deployment1.setHref("/applications/101/deployments/1");
+		deployment1.setPrice("222");
+		deployment1.setStatus("DELETED");
+		Link linkSelf = new Link();
+		linkSelf.setRel("self");
+		linkSelf.setType("application/xml");
+		linkSelf.setHref("/applications/101/deployments/1");
+		deployment1.addLink(linkSelf);
+		Link linkApplication = new Link();
+		linkApplication.setRel("application");
+		linkApplication.setType("application/xml");
+		linkApplication.setHref("/applications/101");
+		deployment1.addLink(linkApplication);
+	
+		application.addDeployment(deployment1);
+		
+		Link link = new Link();
+		link.setRel("self");
+		link.setType("application/xml");
+		link.setHref("/applications/101");
+		application.addLink(link);
+		Link linkParent = new Link();
+		linkParent.setRel("parent");
+		linkParent.setType("application/xml");
+		linkParent.setHref("/applications");
+		application.addLink(linkParent);
+		
+		VM vm1 = new VM();
+		vm1.setId(33);
+		vm1.setHref("/applications/101/deployments/1/vms/33");
+		vm1.setOvfId("vm ovf id");
+		vm1.setProviderId("IaaS vm Id");
+		vm1.setProviderVmId("IaaS provider Id");
+		vm1.setStatus("IaaS status of the VM");
+		vm1.setIp("172.0.0.1");
+		Image image1 = new Image();
+		image1.setHref("hrefImage1");
+		image1.setId(111);
+		image1.setOvfId("333");
+		image1.setProviderImageId("444");
+		image1.setOvfHref("dfs//");
+		image1.setProviderId("provider-id");
+		vm1.addImage(image1);
+		vm1.setSlaAgreement("sla agreement reference");
+		Link linkVm1Self = new Link();
+		linkVm1Self.setRel("self");
+		linkVm1Self.setType("application/xml");
+		linkVm1Self.setHref("/applications/101/deployments/1/vms/33");
+		vm1.addLink(linkVm1Self);
+		Link linkVm1Parent = new Link();
+		linkVm1Parent.setRel("deployment");
+		linkVm1Parent.setType("application/xml");
+		linkVm1Parent.setHref("/applications/101/deployments/1");
+		vm1.addLink(linkVm1Parent);
+		deployment1.addVM(vm1);
+		
+		VM vm2 = new VM();
+		vm2.setId(44);
+		vm2.setHref("/applications/101/deployments/1/vms/44");
+		vm2.setOvfId("vm ovf id");
+		vm2.setProviderId("IaaS vm Id");
+		vm2.setProviderVmId("IaaS provider Id");
+		vm2.setStatus("IaaS status of the VM");
+		vm2.setIp("172.0.0.2");
+		vm2.setSlaAgreement("sla agreement reference");
+		Image image2 = new Image();
+		image2.setHref("hrefImage2");
+		image2.setId(111);
+		image2.setOvfId("333");
+		image2.setProviderImageId("444");
+		vm2.addImage(image2);
+		Link linkVm2Self = new Link();
+		linkVm2Self.setRel("self");
+		linkVm2Self.setType("application/xml");
+		linkVm2Self.setHref("/applications/101/deployments/1/vms/44");
+		vm2.addLink(linkVm2Self);
+		Link linkVm2Parent = new Link();
+		linkVm2Parent.setRel("deployment");
+		linkVm2Parent.setType("application/xml");
+		linkVm2Parent.setHref("/applications/101/deployments/1");
+		vm2.addLink(linkVm2Parent);
+		deployment1.addVM(vm2);
+		
+		String json = ModelConverter.objectApplicationToJSON(application);
+		
+		//We verify the output format
+		JSONParser parser = new JSONParser();
+		Object obj = parser.parse(json);
+		JSONObject jsonObject = (JSONObject) obj;
+		//jsonObject = (JSONObject) jsonObject.get("application");
+		
+		assertEquals("/applications/101", (String) jsonObject.get("href"));
+		assertEquals(101l, jsonObject.get("id"));
+		assertEquals("SaaS Application", (String) jsonObject.get("name"));
+		
+		jsonObject = (JSONObject) jsonObject.get("deployments");
+		JSONArray deployments = (JSONArray) jsonObject.get("deployment");
+		jsonObject = (JSONObject) deployments.get(0);
+		assertEquals("/applications/101/deployments/1", (String) jsonObject.get("href"));
+	}
+	
 
 	@Test
 	public void xmlApplicationToObjectNullTest() {
@@ -389,7 +505,50 @@ public class ModelConverterTest {
 	}
 	
 	@Test
-	public void xmlCApplicationToObjectTest() {
+	public void jsonApplicationToObjectTest() {
+		String applicationJSON = "{" +
+									//"\"application\": {" +
+										"\"href\": \"/applications/101\"," +
+										"\"id\": 101," +
+										"\"name\": \"SaaS Application\"," +
+										"\"deployments\": {" +
+											"\"deployment\": [ {" +
+												"\"href\": \"/applications/101/deployments/1\"," +
+												"\"id\": 1," +
+												"\"status\": \"DELETED\"," +
+												"\"price\": \"222\"" +
+											"} ]" + 
+            							"}," +
+      									"\"link\": [ {" +
+      										"\"rel\": \"self\"," +
+      										"\"href\": \"/applications/101\"," +
+      										"\"type\": \"application/xml\"" +
+      									"}, {" +
+      										"\"rel\": \"parent\","+
+      										"\"href\": \"/applications\"," +
+      										"\"type\": \"application/xml\"" +
+      									"} ]" +
+									//"}" +
+								"}";	
+		
+		Application application = ModelConverter.jsonApplicationToObject(applicationJSON);
+		assertEquals("/applications/101", application.getHref());
+		assertEquals(101, application.getId());
+		assertEquals("SaaS Application", application.getName());
+		assertEquals(1, application.getDeployments().size());
+		assertEquals("/applications/101/deployments/1", application.getDeployments().get(0).getHref());
+		assertEquals(1, application.getDeployments().get(0).getId());
+		assertEquals(2, application.getLinks().size());
+		assertEquals("parent", application.getLinks().get(1).getRel());
+		assertEquals("/applications", application.getLinks().get(1).getHref());
+		assertEquals("application/xml", application.getLinks().get(1).getType());
+		assertEquals("self", application.getLinks().get(0).getRel());
+		assertEquals("/applications/101", application.getLinks().get(0).getHref());
+		assertEquals("application/xml", application.getLinks().get(0).getType());
+	}
+	
+	@Test
+	public void xmlApplicationToObjectTest() {
 		String applicationXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 								+ "<application xmlns=\"http://application_manager.ascetic.eu/doc/schemas/xml\" href=\"/applications/101\">"
 									+ "<id>101</id>"

@@ -9,6 +9,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.log4j.Logger;
+import org.eclipse.persistence.jaxb.JAXBContextProperties;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.eclipse.persistence.jaxb.UnmarshallerProperties;
 
@@ -76,12 +77,30 @@ public class ModelConverter {
 	}
 	
 	/**
+	 * Converts a Application object to its String JSON representation
+	 * @param application object to be converted
+	 * @return XML representation
+	 */
+	public static String objectApplicationToJSON(Application application) {
+		return toJSON(Application.class, application);
+	}
+	
+	/**
 	 * Converts an Application XML to object representation
 	 * @param xml to be converted
 	 * @return an application object or null in case the XML is mal-formatted
 	 */
 	public static Application xmlApplicationToObject(String xml) {
 		return toObject(Application.class, xml);
+	}
+	
+	/**
+	 * Converts an Application JSON to object representation
+	 * @param xml to be converted
+	 * @return an application object or null in case the JSON is mal-formatted
+	 */
+	public static Application jsonApplicationToObject(String jsonString) {
+		return fromJSONToObject(Application.class, jsonString);
 	}
 	
 	/**
@@ -118,6 +137,7 @@ public class ModelConverter {
 			Marshaller marshaller = jc.createMarshaller();
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 			marshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
+			marshaller.setProperty(JAXBContextProperties.JSON_INCLUDE_ROOT, false);
 			
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			marshaller.marshal(t, out);
