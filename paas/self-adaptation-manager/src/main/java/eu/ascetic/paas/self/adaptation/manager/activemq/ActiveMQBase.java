@@ -225,8 +225,7 @@ public abstract class ActiveMQBase {
      * @throws javax.jms.JMSException
      */
     protected Destination getMessageQueue(String queue) throws NamingException, JMSException {
-        String queueOrTopic = queue.replaceAll("\\.", "");
-        return (Destination) session.createTopic(queueOrTopic);
+        return (Destination) session.createTopic(queue);
     }
 
     /**
@@ -238,8 +237,7 @@ public abstract class ActiveMQBase {
      * @throws javax.jms.JMSException
      */
     protected Destination getTopic(String topic) throws NamingException, JMSException {
-        String queueOrTopic = topic.replaceAll("\\.", "");
-        return (Destination) session.createTopic(queueOrTopic);
+        return (Destination) session.createTopic(topic);
     }
 
     /**
