@@ -818,6 +818,7 @@ paas/application-manager/src/main/resources/ProviderNegotiation.wsdl -text
 paas/application-manager/src/main/resources/application-manager.properties -text
 paas/application-manager/src/main/resources/applicationContext.xml -text
 paas/application-manager/src/main/resources/config.properties -text
+paas/application-manager/src/main/resources/em.config.properties -text
 paas/application-manager/src/main/resources/log4j.properties -text
 paas/application-manager/src/main/webapp/META-INF/MANIFEST.MF -text
 paas/application-manager/src/main/webapp/WEB-INF/web.xml -text
@@ -892,6 +893,7 @@ paas/application-manager/src/test/resources/b.xml -text
 paas/application-manager/src/test/resources/davidg-test.ovf.vmc.xml -text
 paas/application-manager/src/test/resources/davidg-test.ovf.vmc.xml.old -text
 paas/application-manager/src/test/resources/davidgp-ovf.xml -text
+paas/application-manager/src/test/resources/em.config.properties -text
 paas/application-manager/src/test/resources/jndi.properties -text
 paas/application-manager/src/test/resources/log4j.properties -text
 paas/application-manager/src/test/resources/mysql-jpa-test-configuration.xml -text

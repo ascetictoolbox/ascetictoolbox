@@ -56,7 +56,7 @@ public class ApplicationRest extends AbstractRest {
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getApplications() {
-		logger.info("GET request to path: /applications");
+		logger.info("GET request to path: /applications  in XML format");
 		// TODO it is necessary to implement a lot of query params here
 		
 		// We get the applications from the DB
@@ -66,6 +66,28 @@ public class ApplicationRest extends AbstractRest {
 		String xml = XMLBuilder.getCollectionApplicationsXML(applications);
 		
 		return buildResponse(Status.OK, xml);
+	}
+	
+	private List<Application> getApplicationsFromDB() {
+		// We get the applications from the DB
+		return applicationDAO.getAllWithOutDeployments();
+	}
+	
+	/**
+	 * @return a list of applications stored in the database fitting the respective query params, by default this does not return the terminated applications
+	 * in json format
+	 */
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getApplicationsJSON() {
+		logger.info("GET request to path: /applications in JSON format");
+		
+		List<Application> applications = getApplicationsFromDB();
+
+		// We create the XMl response
+		String json = XMLBuilder.getCollectionApplicationsJSON(applications);
+		
+		return buildResponse(Status.OK, json);
 	}
 	
 	/**
@@ -93,18 +115,35 @@ public class ApplicationRest extends AbstractRest {
 	/**
 	 * Returns the application information stored inside the Application Manager for an specific application
 	 * @param id of the application in the database
-	 * @return the stored application information 
+	 * @return the stored application information in XML format
 	 */
 	@GET
 	@Path("{application_name}")
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getApplication(@PathParam("application_name") String applicationName) {
-		logger.info("GET request to path: /applications/" + applicationName);
+		logger.info("GET request to path: /applications/" + applicationName + " in XML format");
 		
 		Application application = applicationDAO.getByNameWithoutDeployments(applicationName);
 		String xml = XMLBuilder.getApplicationXML(application);
 		
 		return buildResponse(Status.OK, xml);
+	}
+	
+	/**
+	 * Returns the application information stored inside the Application Manager for an specific application
+	 * @param id of the application in the database
+	 * @return the stored application information in JSON format
+	 */
+	@GET
+	@Path("{application_name}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getApplicationJSON(@PathParam("application_name") String applicationName) {
+		logger.info("GET request to path: /applications/" + applicationName + " in JSON format");
+		
+		Application application = applicationDAO.getByNameWithoutDeployments(applicationName);
+		String json = XMLBuilder.getApplicationJSON(application);
+		
+		return buildResponse(Status.OK, json);
 	}
 	
 	/**

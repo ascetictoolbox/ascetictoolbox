@@ -203,7 +203,7 @@
 		<dependency>
 			<groupId>eu.ascetic.paas</groupId>
 			<artifactId>application-manager-datamodel</artifactId>
-			<version>0.19-SNAPSHOT</version>
+			<version>0.20-SNAPSHOT</version>
 		</dependency>
 		
 		<!-- ASCETiC BSC VMM Client -->
@@ -329,7 +329,7 @@
 					<artifactId>hamcrest-core</artifactId>
         		</exclusion>
       		</exclusions> 
-		</dependency>
+		</dependency> 
 		
 		<dependency>
 			<groupId>xmlunit</groupId>
@@ -430,6 +430,12 @@
 			<version>5.11.1</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.sun.net.httpserver</groupId>
+			<artifactId>http</artifactId>
+			<version>20070405</version>
+		</dependency>
+		
 		
 		<!-- VM manager -->
 		<dependency>

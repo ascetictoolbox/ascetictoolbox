@@ -94,6 +94,16 @@ public class XMLBuilder {
 		application = addApplicationXMLInfo(application);
 		return ModelConverter.objectApplicationToXML(application);
 	}
+	
+	/**
+	 * Adds the necessary fields to an Application object to be able to send it as a reply by JSON
+	 * @param application object that needs the extra fiels
+	 * @return the XML representation
+	 */
+	public static String getApplicationJSON(Application application) {
+		application = addApplicationXMLInfo(application);
+		return ModelConverter.objectApplicationToJSON(application);
+	}
 
 	/**
 	 * Adds the necessary fields to a Deployment object to get a fully XML object...
@@ -204,6 +214,23 @@ public class XMLBuilder {
 	 * @return String with the XML representation
 	 */
 	public static String getCollectionApplicationsXML(List<Application> applications) {
+		Collection collection = getCollectionApplications(applications);
+		
+		return ModelConverter.objectCollectionToXML(collection);
+	}
+	
+	/**
+	 * Returns the collection JSON representation of a collection of applications
+	 * @param applications list of applications to be returned as collection
+	 * @return String with the JSON representation
+	 */
+	public static String getCollectionApplicationsJSON(List<Application> applications) {
+		Collection collection = getCollectionApplications(applications);
+		
+		return ModelConverter.objectCollectionToJSON(collection);
+	}
+	
+	private static Collection getCollectionApplications(List<Application> applications) {
 		Collection collection = new Collection();
 		collection.setHref("/applications");
 		
@@ -234,7 +261,7 @@ public class XMLBuilder {
 			items.setTotal(0);
 		}
 		
-		return ModelConverter.objectCollectionToXML(collection);
+		return collection;
 	}
 	
 	/**

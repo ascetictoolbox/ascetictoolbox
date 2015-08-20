@@ -42,6 +42,7 @@ public class Configuration {
 	public static String amqpUsername = "guest";
 	public static String amqpPassword = "guest";
 	public static String emCalculateEnergyWhenDeletion = "yes";
+	public static String emConfigurationFile = "/etc/ascetic/paas/em/config.properties";
 	
 	// TODO to remove this parameter, this configuration needs to be collected from the Provider Registry
 	public static String vmManagerServiceUrl = "http://10.4.0.15:34372/vmmanager";
@@ -52,8 +53,10 @@ public class Configuration {
         	String propertiesFile = "application-manager.properties";
         	
         	File f = new File(applicationManagerConfigurationFile);
-        	if(f.exists()) { 
+        	if(f.exists()) {
+        		logger.debug("Application Manager Propertires file: " + f.getAbsolutePath());
         		propertiesFile = applicationManagerConfigurationFile; 
+        		logger.debug("Application Manager Propertires file loaded: " + propertiesFile);
         	}
         	
         	org.apache.commons.configuration.Configuration config = new PropertiesConfiguration(propertiesFile);
@@ -67,6 +70,7 @@ public class Configuration {
         	amqpUsername = config.getString("amqp.username");
         	amqpPassword = config.getString("amqp.password");
         	emCalculateEnergyWhenDeletion = config.getString("em.calculate.energy.when.deletion");
+        	emConfigurationFile = config.getString("em.configuration.file");
         	
         	// TODO to change this to be collected by the Provider Registry
         	vmManagerServiceUrl = config.getString("vm-manager.url");

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.builder.EnergyModellerFactory;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.PaaSEnergyModeller;
+import eu.ascetic.paas.applicationmanager.conf.Configuration;
 
 
 /**
@@ -36,8 +37,14 @@ public class EnergyModellerBean {
 
 	public EnergyModellerBean() {
 		logger.debug("Initializing Energy Modeller...");
-		// TODO this path here looks ugly, move it to the configuration file...
-		energyModeller = EnergyModellerFactory.getEnergyModeller("/etc/ascetic/paas/em/config.properties");
+		logger.debug("Config file for EM: " + Configuration.emConfigurationFile);
+    	
+		try {
+			energyModeller = EnergyModellerFactory.getEnergyModeller(Configuration.emConfigurationFile);
+		} catch(Exception e) {
+			logger.info("Not possible to load Energy Modeller");
+			energyModeller = null;
+		}
 	}
 
 	public PaaSEnergyModeller getEnergyModeller() {

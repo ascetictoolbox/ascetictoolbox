@@ -10,7 +10,9 @@ import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.stream.StreamSource;
 
+import org.eclipse.persistence.jaxb.UnmarshallerProperties;
 import org.junit.Test;
 
 import eu.ascetic.paas.applicationmanager.model.Agreement;
@@ -21,6 +23,7 @@ import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
 import eu.ascetic.paas.applicationmanager.model.EventSample;
 import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.VM;
+import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
 
 /**
  * 
@@ -206,16 +209,18 @@ public class XMLBuilderTest {
 	}
 	
 	@Test
-	public void getXMLApplicationTest() throws JAXBException {
+	public void getXMLApplicationTest() {
 		Application applicationBeforeXML = new Application();
 		applicationBeforeXML.setId(1);
 		applicationBeforeXML.setName("name");
 		String xml = XMLBuilder.getApplicationXML(applicationBeforeXML);
 		
-		JAXBContext jaxbContext = JAXBContext.newInstance(Application.class);
-		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-		Application application = (Application) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		Application application = ModelConverter.xmlApplicationToObject(xml);
 		
+		verifyGetApplication(application);
+	}
+	
+	private void verifyGetApplication(Application application) {
 		assertEquals(1, application.getId());
 		assertEquals("/applications/name", application.getHref());
 		assertEquals(4, application.getLinks().size());
@@ -231,6 +236,18 @@ public class XMLBuilderTest {
 		assertEquals("/applications/name/cache-images", application.getLinks().get(3).getHref());
 		assertEquals("cache-image",application.getLinks().get(3).getRel());
 		assertEquals(MediaType.APPLICATION_XML, application.getLinks().get(3).getType());
+	}
+	
+	@Test
+	public void getJSONLApplicationTest() {
+		Application applicationBefore = new Application();
+		applicationBefore.setId(1);
+		applicationBefore.setName("name");
+		String json = XMLBuilder.getApplicationJSON(applicationBefore);
+		
+		Application application = ModelConverter.jsonApplicationToObject(json);
+		
+		verifyGetApplication(application);
 	}
 	
 	@Test
@@ -370,6 +387,48 @@ public class XMLBuilderTest {
 		JAXBContext jaxbContext = JAXBContext.newInstance(Collection.class);
 		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 		Collection collection = (Collection) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals("/applications", collection.getHref());
+		assertEquals(0, collection.getItems().getOffset());
+		assertEquals(2, collection.getItems().getTotal());
+		assertEquals("/applications/name-1", collection.getItems().getApplications().get(0).getHref());
+		assertEquals(4, collection.getItems().getApplications().get(0).getLinks().size());
+		assertEquals("/applications/name-2", collection.getItems().getApplications().get(1).getHref());
+		assertEquals(4, collection.getItems().getApplications().get(1).getLinks().size());
+		assertEquals(2, collection.getLinks().size());
+		assertEquals("/", collection.getLinks().get(0).getHref());
+		assertEquals("parent", collection.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, collection.getLinks().get(0).getType());
+		assertEquals("/applications", collection.getLinks().get(1).getHref());
+		assertEquals("self",collection.getLinks().get(1).getRel());
+	}
+	
+	@Test
+	public void getCollectionApplicationsJSONTest() throws JAXBException  {
+		Application application1 = new Application();
+		application1.setId(1);
+		application1.setName("name-1");
+
+		Application application2 = new Application();
+		application2.setId(2);
+		application2.setName("name-2");
+		
+		List<Application> applications = new ArrayList<Application>();
+		applications.add(application1);
+		applications.add(application2);
+		
+		String json = XMLBuilder.getCollectionApplicationsJSON(applications);
+		
+        // Create a JaxBContext
+		JAXBContext jc = org.eclipse.persistence.jaxb.JAXBContextFactory.createContext(new Class[] {Collection.class}, null);
+        
+        // Create the Unmarshaller Object using the JaxB Context
+        Unmarshaller unmarshaller = jc.createUnmarshaller();
+        unmarshaller.setProperty(UnmarshallerProperties.MEDIA_TYPE, "application/json");
+        unmarshaller.setProperty(UnmarshallerProperties.JSON_INCLUDE_ROOT, false);
+        
+        StreamSource jsonSource = new StreamSource(new StringReader(json));  
+        Collection collection = unmarshaller.unmarshal(jsonSource, Collection.class).getValue();
 		
 		assertEquals("/applications", collection.getHref());
 		assertEquals(0, collection.getItems().getOffset());

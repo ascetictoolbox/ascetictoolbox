@@ -84,6 +84,19 @@ public class ApplicationRestTest extends AbstractTest {
 
 	@Test
 	public void getApplicationsTest() throws JAXBException {
+		ApplicationRest applicationRest = prepareApplicationRestForGetApplicationsTest();
+		
+		Response response = applicationRest.getApplications();
+		
+		assertEquals(200, response.getStatus());
+		String xml = (String) response.getEntity();
+		
+		Collection collection = ModelConverter.xmlCollectionToObject(xml);
+		
+		evaluateResutlsOfGetCollectionsOfApplications(collection);
+	}
+	
+	private ApplicationRest prepareApplicationRestForGetApplicationsTest() {
 		ApplicationDAO applicationDAO = mock(ApplicationDAO.class);
 		
 		Application application1 = new Application();
@@ -103,16 +116,10 @@ public class ApplicationRestTest extends AbstractTest {
 		ApplicationRest applicationRest = new ApplicationRest();
 		applicationRest.applicationDAO = applicationDAO;
 		
-		Response response = applicationRest.getApplications();
-		
-		assertEquals(200, response.getStatus());
-		
-		String xml = (String) response.getEntity();
-		
-		JAXBContext jaxbContext = JAXBContext.newInstance(Collection.class);
-		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-		Collection collection = (Collection) jaxbUnmarshaller.unmarshal(new StringReader(xml));
-		
+		return applicationRest;
+	}
+	
+	private void evaluateResutlsOfGetCollectionsOfApplications(Collection collection) {
 		//Collection
 		assertEquals("/applications", collection.getHref());
 		assertEquals(0, collection.getItems().getOffset());
@@ -154,7 +161,36 @@ public class ApplicationRestTest extends AbstractTest {
 	}
 	
 	@Test
-	public void getApplicationTest() throws JAXBException {
+	public void getApplicationsJSONTest() {
+		ApplicationRest applicationRest = prepareApplicationRestForGetApplicationsTest();
+		
+		Response response = applicationRest.getApplicationsJSON();
+		
+		assertEquals(200, response.getStatus());
+		
+		String json = (String) response.getEntity();
+		
+		Collection collection = ModelConverter.jsonCollectionToObject(json);
+		
+		evaluateResutlsOfGetCollectionsOfApplications(collection);
+	}
+	
+	@Test
+	public void getApplicationTest() {
+		ApplicationRest applicationRest = getApplicationRestForGetApplicationTests();
+		
+		Response response = applicationRest.getApplication("1");
+		
+		assertEquals(200, response.getStatus());
+		
+		String xml = (String) response.getEntity();
+		
+		Application applicationResponse = ModelConverter.xmlApplicationToObject(xml);
+		
+		verifyGetApplicationTests(applicationResponse);
+	}
+	
+	private ApplicationRest getApplicationRestForGetApplicationTests() {
 		ApplicationDAO applicationDAO = mock(ApplicationDAO.class);
 		
 		Application application = new Application();
@@ -166,16 +202,10 @@ public class ApplicationRestTest extends AbstractTest {
 		ApplicationRest applicationRest = new ApplicationRest();
 		applicationRest.applicationDAO = applicationDAO;
 		
-		Response response = applicationRest.getApplication("1");
-		
-		assertEquals(200, response.getStatus());
-		
-		String xml = (String) response.getEntity();
-		
-		JAXBContext jaxbContext = JAXBContext.newInstance(Application.class);
-		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-		Application applicationResponse = (Application) jaxbUnmarshaller.unmarshal(new StringReader(xml));
-		
+		return applicationRest;
+	}
+	
+	private void verifyGetApplicationTests(Application applicationResponse) {
 		assertEquals(1, applicationResponse.getId());
 		assertEquals("/applications/name", applicationResponse.getHref());
 		assertEquals(4, applicationResponse.getLinks().size());
@@ -188,6 +218,20 @@ public class ApplicationRestTest extends AbstractTest {
 		assertEquals("/applications/name/deployments", applicationResponse.getLinks().get(2).getHref());
 		assertEquals("deployments",applicationResponse.getLinks().get(2).getRel());
 		assertEquals(MediaType.APPLICATION_XML, applicationResponse.getLinks().get(2).getType());
+	}
+	
+	@Test
+	public void getApplicationJSONTest() {
+		ApplicationRest applicationRest = getApplicationRestForGetApplicationTests();
+		Response response = applicationRest.getApplicationJSON("1");
+		
+		assertEquals(200, response.getStatus());
+		
+		String json = (String) response.getEntity();
+
+		Application applicationResponse = ModelConverter.jsonApplicationToObject(json);
+		
+		verifyGetApplicationTests(applicationResponse);
 	}
 	
 	
