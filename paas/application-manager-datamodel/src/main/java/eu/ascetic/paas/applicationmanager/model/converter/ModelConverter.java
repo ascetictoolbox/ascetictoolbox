@@ -59,12 +59,30 @@ public class ModelConverter {
 	}
 	
 	/**
+	 * Converts a Collection object to its String JSON representation
+	 * @param collection object to be converted
+	 * @return JSON representation
+	 */
+	public static String objectCollectionToJSON(Collection collection) {	
+		return toJSON(Collection.class, collection);
+	}
+	
+	/**
 	 * Converts an XML to a Collection object
 	 * @param xml Representation of an Collection of Applications
 	 * @return the Collection object or null if the xml is mal-formatted
 	 */
 	public static Collection xmlCollectionToObject(String xml) {
 		return toObject(Collection.class, xml);
+	}
+	
+	/**
+	 * Converts an JSON to a Collection object
+	 * @param json Representation of an Collection of Applications
+	 * @return the Collection object or null if the json is mal-formatted
+	 */
+	public static Collection jsonCollectionToObject(String xml) {
+		return fromJSONToObject(Collection.class, xml);
 	}
 	
 	/**

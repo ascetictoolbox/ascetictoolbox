@@ -119,6 +119,12 @@ public class ModelConverterTest {
 		String xml = ModelConverter.objectCollectionToXML(null);
 		assertEquals(null, xml);
 	}
+	
+	@Test
+	public void objectCollectionToJSONNullTest() {
+		String xml = ModelConverter.objectCollectionToJSON(null);
+		assertEquals(null, xml);
+	}
 
 	@Test
 	@SuppressWarnings(value = { "rawtypes" }) 
@@ -191,11 +197,83 @@ public class ModelConverterTest {
 	}
 	
 	@Test
+	public void objectCollectionToJSONTest() throws JDOMException, IOException, ParseException {
+		Application application = new Application();
+		application.setHref("href");
+		application.setId(1);
+		
+		Items items = new Items();
+		items.setOffset(1);
+		items.setTotal(2);
+		items.addApplication(application);
+		
+		Collection collection = new Collection();
+		collection.setHref("href1");
+		collection.setItems(items);
+		
+		Link link = new Link();
+		link.setRel("self");
+		link.setType("application/xml");
+		link.setHref("href2");
+		collection.addLink(link);
+		
+		String json = ModelConverter.objectCollectionToJSON(collection);
+		
+		//We verify the output format
+		JSONParser parser = new JSONParser();
+		Object obj = parser.parse(json);
+		JSONObject jsonObject = (JSONObject) obj;
+		
+		assertEquals("href1", (String) jsonObject.get("href"));
+		jsonObject = (JSONObject) jsonObject.get("items");
+		assertEquals(1l, jsonObject.get("offset"));
+		assertEquals(2l, jsonObject.get("total"));
+		JSONArray applications = (JSONArray) jsonObject.get("application");
+		jsonObject = (JSONObject) applications.get(0);
+		assertEquals("href", (String) jsonObject.get("href"));
+		assertEquals(1l, jsonObject.get("id"));
+	}
+	
+	@Test
 	public void xmlCollectionToObjectNullTest() {
 		String collectionXML = "<something_else />";
 		
 		Collection collection = ModelConverter.xmlCollectionToObject(collectionXML);
 		assertEquals(null, collection);
+	}
+	
+	@Test
+	public void jsonCollectionToObjectNullTest() {
+		String collectionXML = "<something_else />";
+		
+		Collection collection = ModelConverter.xmlCollectionToObject(collectionXML);
+		assertEquals(null, collection);
+	}
+	
+	@Test
+	public void jsonCollectionToObjectTest() {
+		String jsonCollection = "{"+
+									"\"href\": \"href1\"," +
+									"\"items\" : {" +
+													"\"offset\": 1," +
+													"\"total\": 2," +
+													"\"application\": [ {" +
+																		"\"href\": \"href\"," +
+																		"\"id\": 1" +
+		      														  "} ]" +
+		   										  "},"+
+		   							"\"link\": [ {" +
+		   											"\"rel\": \"self \"," +
+		   											"\"href\": \"href2\"," +
+		   											"\"type\": \"application/json\"" +
+		   										"} ]" +
+								"}";	
+				
+		Collection collection = ModelConverter.jsonCollectionToObject(jsonCollection);
+		assertEquals(1, collection.getItems().getApplications().size());
+		assertEquals(1, collection.getItems().getApplications().get(0).getId());
+		assertEquals(2, collection.getItems().getTotal());
+		assertEquals("application/json", collection.getLinks().get(0).getType());
 	}
 	
 	@Test
