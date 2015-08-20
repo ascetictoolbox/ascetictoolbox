@@ -17,6 +17,7 @@ package eu.ascetic.paas.self.adaptation.manager.rest;
 
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.VM;
+import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
 import eu.ascetic.paas.self.adaptation.manager.ActuatorInvoker;
 import eu.ascetic.paas.self.adaptation.manager.rest.generated.RestDeploymentClient;
 import eu.ascetic.paas.self.adaptation.manager.rest.generated.RestVMClient;
@@ -81,7 +82,9 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
         ArrayList<String> answer = new ArrayList<>();
         List<VM> vms = getVMs(applicationId, deploymentId);
         for (VM vm : vms) {
-            if (vm.getNumberVMsMax() > 0 && getVmCountOfGivenType(vms, vm.getOvfId()) < vm.getNumberVMsMax()) {
+            if (vm.getNumberVMsMax() > 0
+                    && getVmCountOfGivenType(vms, vm.getOvfId()) < vm.getNumberVMsMax()
+                    && !answer.contains(vm.getOvfId())) {
                 answer.add(vm.getOvfId());
             }
         }
@@ -101,7 +104,9 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
         ArrayList<String> answer = new ArrayList<>();
         List<VM> vms = getVMs(applicationId, deploymentId);
         for (VM vm : vms) {
-            if (vm.getNumberVMsMin() > 0 && getVmCountOfGivenType(vms, vm.getOvfId()) > vm.getNumberVMsMin()) {
+            if (vm.getNumberVMsMin() > 0
+                    && getVmCountOfGivenType(vms, vm.getOvfId()) > vm.getNumberVMsMin()
+                    && !answer.contains(vm.getOvfId())) {
                 answer.add(vm.getOvfId());
             }
         }
@@ -109,7 +114,8 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
     }
 
     @Override
-    public List<Integer> getVmIdsAvailableToRemove(String applicationId, String deploymentId) {
+    public List<Integer> getVmIdsAvailableToRemove(String applicationId, String deploymentId
+    ) {
         ArrayList<Integer> answer = new ArrayList<>();
         List<VM> vms = getVMs(applicationId, deploymentId);
         for (VM vm : vms) {
@@ -128,14 +134,14 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
      * @param type The ovf Id of the type of VMs to look for
      */
     @Override
-    public int getVmCountOfGivenType(List<VM> vms, String type) {
+    public int getVmCountOfGivenType(List<VM> vms, String type
+    ) {
         int answer = 0;
         for (VM vm : vms) {
             if (vm.getOvfId().equals(type)
                     && !vm.getStatus().equals("ERROR")
-                    && !vm.getStatus().equals("TERMINATED") &&
-                    !vm.getStatus().equals("DELETED")) {
-                System.out.println(vm.getStatus());
+                    && !vm.getStatus().equals("TERMINATED")
+                    && !vm.getStatus().equals("DELETED")) {
                 answer = answer + 1;
             }
         }
@@ -178,7 +184,16 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
     public void addVM(String applicationId, String deploymentId, String ovfId) {
         RestVMClient client = new RestVMClient(applicationId, deploymentId);
         VM vm = cloneVm(getVm(applicationId, deploymentId, ovfId));
-        client.postVM(vm);
+        if (vm == null) {
+            return;
+        }
+        //TOD Remove temporary debug code here
+        System.out.println("Application ID: " + applicationId);
+        System.out.println("Deployment ID: " + deploymentId);
+        System.out.println("OVF ID: " + ovfId);
+        System.out.println("VM: " + vm);
+        System.out.println("Post CONV: " + ModelConverter.objectVMToXML(vm));
+        client.postVM(ModelConverter.objectVMToXML(vm));
     }
 
     /**
@@ -194,6 +209,13 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
         answer.setCpuActual(vm.getCpuActual());
         answer.setCpuMax(vm.getCpuMax());
         answer.setCpuMin(vm.getCpuMin());
+        answer.setRamActual(vm.getRamActual());
+        answer.setRamMin(vm.getRamMin());
+        answer.setRamMax(vm.getRamMax());
+        answer.setSwapActual(vm.getSwapActual());
+        answer.setSwapMin(vm.getSwapMin());
+        answer.setSwapMax(vm.getSwapMax());
+        answer.setSlaAgreement(vm.getSlaAgreement());
         answer.setDeployment(vm.getDeployment());
         answer.setDiskActual(vm.getDiskActual());
         answer.setDiskMax(vm.getDiskMax());
@@ -255,7 +277,18 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
                     actions.add(currentItem);
                     queue.drainTo(actions);
                     for (Response action : actions) {
-                        launchAction(action);
+                        try {
+                            launchAction(action);
+                        } catch (Exception ex) {
+                            /**
+                             * This prevents exceptions when messaging the
+                             * server from propagating and stopping the thread
+                             * from running.
+                             */
+                            Logger.getLogger(ActionRequester.class.getName()).log(Level.SEVERE, null, ex);
+                            action.setPerformed(true);
+                            action.setPossibleToAdapt(false);
+                        }
                     }
                 }
             } catch (InterruptedException ex) {
