@@ -18,6 +18,7 @@
 
 package es.bsc.vmmanagercore.cloudmiddleware.openstack;
 
+import com.google.common.collect.FluentIterable;
 import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddleware;
 import es.bsc.vmmanagercore.models.images.ImageToUpload;
 import es.bsc.vmmanagercore.models.images.ImageUploaded;
@@ -249,7 +250,14 @@ public class OpenStackJclouds implements CloudMiddleware {
 
     @Override
     public void assignFloatingIp(String vmId) {
-        // TODO
+        FluentIterable<FloatingIP> floatingIps = openStackJcloudsApis
+                .getNovaApi()
+                .getFloatingIPExtensionForZone(zone)
+                .get()
+                .list();
+        for (FloatingIP floatingIp : floatingIps) {
+            System.out.println(floatingIp);
+        }
     }
 
     /**
