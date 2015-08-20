@@ -247,6 +247,11 @@ public class OpenStackJclouds implements CloudMiddleware {
         glanceConnector.deleteImage(id);
     }
 
+    @Override
+    public void assignFloatingIp(String vmId) {
+        // TODO
+    }
+
     /**
      * @return the zone
      */

@@ -34,7 +34,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * This class simulates a fake middleware. It stores all the information about hosts and VMs in memory, without
- * using a middleware such as OpenStack or OpenNebula.
+ * using a middleware such as OpenStack or OpenNebula. This 'fake' middleware can be useful to perform some
+ * tests or simulations.
  *
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  */
@@ -220,6 +221,11 @@ public class FakeCloudMiddleware implements CloudMiddleware {
                 return;
             }
         }
+    }
+
+    @Override
+    public void assignFloatingIp(String vmId) {
+        // Does not apply
     }
 
     public void deleteAllVmImages() {

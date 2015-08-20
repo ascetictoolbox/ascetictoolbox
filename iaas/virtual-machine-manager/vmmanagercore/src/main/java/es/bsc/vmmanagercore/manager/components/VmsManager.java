@@ -216,6 +216,10 @@ public class VmsManager {
             if (pricingModeller instanceof AsceticPricingModellerAdapter) {
                 initializeVmBilling(vmId, hostForDeployment.getHostname());
             }
+
+            if (vmToDeploy.needsFloatingIp()) {
+                cloudMiddleware.assignFloatingIp(vmId);
+            }
         }
 
         performAfterVmsDeploymentSelfAdaptation();

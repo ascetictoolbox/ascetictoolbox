@@ -33,6 +33,7 @@ public class Vm {
     protected final String ovfId;
     protected final String slaId;
     protected String preferredHost = null; // Where we want the VM to be deployed
+    protected boolean needsFloatingIp = false;
 
     // Use builder pattern here...
 
@@ -63,6 +64,21 @@ public class Vm {
         this.ovfId = ovfId;
         this.slaId = slaId;
         this.preferredHost = preferredHost;
+    }
+
+    public Vm(String name, String image, int cpus, int ramMb, int diskGb, int swapMb,
+              String initScript, String applicationId, String ovfId, String slaId, boolean needsFloatingIp) {
+        this.name = name;
+        this.image = image;
+        this.cpus = cpus;
+        this.ramMb = ramMb;
+        this.diskGb = diskGb;
+        this.swapMb = swapMb;
+        this.initScript = initScript;
+        this.applicationId = applicationId;
+        this.ovfId = ovfId;
+        this.slaId = slaId;
+        this.needsFloatingIp = needsFloatingIp;
     }
 
     public String getName() {
@@ -109,6 +125,10 @@ public class Vm {
         return preferredHost;
     }
 
+    public boolean needsFloatingIp() {
+        return needsFloatingIp;
+    }
+
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
@@ -123,6 +143,7 @@ public class Vm {
                 .add("ovfId", ovfId)
                 .add("slaId", slaId)
                 .add("preferredHost", preferredHost)
+                .add("needsFloatingIp", needsFloatingIp)
                 .toString();
     }
 

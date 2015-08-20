@@ -39,14 +39,16 @@ public class Vm {
     private String initScript;
     private String applicationId;
 
-    // The next two parameters are just valid within the Ascetic project.
+    // The next three parameters are just valid within the Ascetic project.
     // It would be better to put them in a subclass
     private String ovfId = "";
     private String slaId = "";
+    private boolean needsFloatingIp = false;
 
     private String preferredHost;
 
     // TODO: apply builder pattern instead of having several constructors.
+    // This really needs a refactoring, although several classes will be affected.
 
     /**
      * Class constructor.
@@ -84,7 +86,7 @@ public class Vm {
     }
 
     public Vm(String name, String image, int cpus, int ramMb, int diskGb, String initScript, String applicationId,
-              String ovfId, String slaId) {
+              String ovfId, String slaId, boolean needsFloatingIp) {
         validateConstructorParams(cpus, ramMb, diskGb, 0);
         this.name = name;
         this.image = image;
@@ -96,6 +98,7 @@ public class Vm {
         this.applicationId = applicationId;
         this.ovfId = ovfId;
         this.slaId = slaId;
+        this.needsFloatingIp = needsFloatingIp;
     }
 
     public Vm(String name, String image, int cpus, int ramMb, int diskGb, String initScript, String applicationId,
@@ -180,6 +183,10 @@ public class Vm {
 
     public String getPreferredHost() {
         return preferredHost;
+    }
+
+    public boolean needsFloatingIp() {
+        return needsFloatingIp;
     }
 
     public boolean belongsToAnApp() {

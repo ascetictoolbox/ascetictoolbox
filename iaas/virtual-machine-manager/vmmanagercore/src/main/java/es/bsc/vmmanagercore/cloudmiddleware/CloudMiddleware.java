@@ -169,4 +169,12 @@ public interface CloudMiddleware {
      * @param id the ID of the image to be deleted
      */
     void deleteVmImage(String id);
+
+    /**
+     * Assigns a floating IP to the VM with the given ID.
+     *
+     * @param vmId the ID of the VM
+     */
+    void assignFloatingIp(String vmId);
+
 }
