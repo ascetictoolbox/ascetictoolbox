@@ -1239,6 +1239,7 @@ paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manag
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/decisionengine/AbstractDecisionEngine.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/decisionengine/ApplicationMonitorAwareDecisionEngine.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/decisionengine/DecisionEngine.java -text
+paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/decisionengine/LastVMCreatedDecisionEngine.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/decisionengine/RandomDecisionEngine.java -text
 paas/self-adaptation-manager/src/main/resources/adapt.fcl -text
 paas/self-adaptation-manager/src/test/java/eu/ascetic/paas/self/adaptation/manager/activemq/ActiveMQBaseTest.java -text
