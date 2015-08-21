@@ -60,7 +60,7 @@ public class LastVMCreatedDecisionEngine extends AbstractDecisionEngine {
             Collections.sort(vmIds);
             Collections.reverse(vmIds);
             //Remove the last VM to be created from the list of possible VMs
-            response.setVmId(vmIds.get(vmIds.get(0)) + "");
+            response.setVmId(vmIds.get(0) + "");
             return response;
         } else {
             response.setAdaptationDetails("Could not find a VM to delete");            
