@@ -18,7 +18,6 @@
 
 package es.bsc.vmmanagercore.cloudmiddleware.openstack;
 
-import com.google.common.collect.FluentIterable;
 import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddleware;
 import es.bsc.vmmanagercore.models.images.ImageToUpload;
 import es.bsc.vmmanagercore.models.images.ImageUploaded;
@@ -29,6 +28,7 @@ import org.apache.commons.validator.UrlValidator;
 import org.jclouds.openstack.neutron.v2.NeutronApi;
 import org.jclouds.openstack.nova.v2_0.NovaApi;
 import org.jclouds.openstack.nova.v2_0.domain.*;
+import org.jclouds.openstack.nova.v2_0.extensions.FloatingIPApi;
 import org.jclouds.openstack.nova.v2_0.options.CreateServerOptions;
 
 import java.io.FileInputStream;
@@ -66,6 +66,9 @@ public class OpenStackJclouds implements CloudMiddleware {
     private final OpenStackGlance glanceConnector; // Connector for OS Glance
 
     private final int BLOCKING_TIME_SEC_DEPLOY_AND_DESTROY = 1000;
+
+    // Ascetic specific
+    private static final String FLOATING_IP_POOL = "external";
 
     /**
      * Class constructor. It performs the connection to the infrastructure and initializes
@@ -250,13 +253,9 @@ public class OpenStackJclouds implements CloudMiddleware {
 
     @Override
     public void assignFloatingIp(String vmId) {
-        FluentIterable<FloatingIP> floatingIps = openStackJcloudsApis
-                .getNovaApi()
-                .getFloatingIPExtensionForZone(zone)
-                .get()
-                .list();
-        for (FloatingIP floatingIp : floatingIps) {
-            System.out.println(floatingIp);
+        FloatingIPApi floatingIPApi = openStackJcloudsApis.getFloatingIpApi();
+        if (floatingIPApi != null) {
+            floatingIPApi.addToServer(floatingIPApi.allocateFromPool(FLOATING_IP_POOL).getFixedIp(), vmId);
         }
     }
 

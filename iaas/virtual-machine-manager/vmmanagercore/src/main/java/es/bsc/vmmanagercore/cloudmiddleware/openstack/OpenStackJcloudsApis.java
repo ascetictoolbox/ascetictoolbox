@@ -5,6 +5,7 @@ import org.jclouds.openstack.neutron.v2.NeutronApi;
 import org.jclouds.openstack.neutron.v2.NeutronApiMetadata;
 import org.jclouds.openstack.nova.v2_0.NovaApi;
 import org.jclouds.openstack.nova.v2_0.NovaApiMetadata;
+import org.jclouds.openstack.nova.v2_0.extensions.FloatingIPApi;
 import org.jclouds.openstack.nova.v2_0.extensions.ServerAdminApi;
 import org.jclouds.openstack.nova.v2_0.features.FlavorApi;
 import org.jclouds.openstack.nova.v2_0.features.ImageApi;
@@ -23,6 +24,7 @@ public class OpenStackJcloudsApis {
     private final ImageApi imageApi;
     private final FlavorApi flavorApi;
     private final ServerAdminApi serverAdminApi;
+    private final FloatingIPApi floatingIpApi;
 
     public OpenStackJcloudsApis(OpenStackCredentials openStackCredentials) {
         this.openStackCredentials = openStackCredentials;
@@ -37,6 +39,12 @@ public class OpenStackJcloudsApis {
         imageApi = novaApi.getImageApiForZone(zone);
         flavorApi = novaApi.getFlavorApiForZone(zone);
         serverAdminApi = novaApi.getServerAdminExtensionForZone(zone).get();
+        if (novaApi.getFloatingIPExtensionForZone(zone).isPresent()) {
+            floatingIpApi = novaApi.getFloatingIPExtensionForZone(zone).get();
+        }
+        else {
+            floatingIpApi = null;
+        }
     }
 
     public NovaApi getNovaApi() {
@@ -57,6 +65,10 @@ public class OpenStackJcloudsApis {
 
     public ServerAdminApi getServerAdminApi() {
         return serverAdminApi;
+    }
+
+    public FloatingIPApi getFloatingIpApi() {
+        return floatingIpApi;
     }
 
     // Not always available. For now, call this function in OpenStack installations with Neutron enabled
