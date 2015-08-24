@@ -36,7 +36,7 @@ public class Configuration {
     /**
      * The driver to be used to contact the database.
      */
-    public static String databaseDriver = "com.mysql.jdbc.Driver";
+    public static String databaseDriver = "org.mariadb.jdbc.Driver";
     /**
      * The user details to contact the database.
      */
