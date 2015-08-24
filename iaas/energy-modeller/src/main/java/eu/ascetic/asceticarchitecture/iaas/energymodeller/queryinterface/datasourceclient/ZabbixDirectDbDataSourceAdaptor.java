@@ -123,7 +123,7 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
     /**
      * The driver to be used to contact the database.
      */
-    private static String databaseDriver = "com.mysql.jdbc.Driver";
+    private static String databaseDriver = "org.mariadb.jdbc.Driver";
     /**
      * The user details to contact the database.
      */
