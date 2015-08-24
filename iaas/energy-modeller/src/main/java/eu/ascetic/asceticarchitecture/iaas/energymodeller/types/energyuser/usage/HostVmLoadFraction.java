@@ -133,12 +133,23 @@ public class HostVmLoadFraction implements Comparable<HostVmLoadFraction> {
     public static HashMap<VmDeployed, Double> getFraction(List<VmMeasurement> load) {
         HashMap<VmDeployed, Double> answer = new HashMap<>();
         double totalLoad = 0.0;
-        for (VmMeasurement loadMeasure : load) {
-            totalLoad = totalLoad + loadMeasure.getCpuUtilisation();
+        try {
+            for (VmMeasurement loadMeasure : load) {
+                totalLoad = totalLoad + loadMeasure.getCpuUtilisation();
+            }
+        } catch (NullPointerException ex) {
+            /**
+             * This occurs if Zabbix provides no CPU utilisation information for
+             * a VM.
+             */
+            for (VmMeasurement loadMeasure : load) {
+                answer.put(loadMeasure.getVm(), 1.0);
+            }
+            return answer;
         }
         /**
-         * This is an error handling state. If no data is been presented from
-         * Zabbix.
+         * This is an error handling state, if the data indicates no load
+         * was induced whatsoever. Avoids divide by zero errors.
          */
         if (totalLoad == 0) {
             double count = load.size();

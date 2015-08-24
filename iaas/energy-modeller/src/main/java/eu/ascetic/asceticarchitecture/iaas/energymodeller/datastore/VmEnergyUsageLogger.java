@@ -15,7 +15,9 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore;
 
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.DefaultEnergyShareRule;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.EnergyDivision;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.EnergyShareRule;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.LoadFractionShareRule;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostMeasurement;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
@@ -35,7 +37,7 @@ import java.util.ArrayList;
  */
 public class VmEnergyUsageLogger extends GenericLogger<VmEnergyUsageLogger.Pair> {
 
-    private final LoadFractionShareRule rule = new LoadFractionShareRule();
+    private EnergyShareRule rule = new DefaultEnergyShareRule();
     private boolean considerIdleEnergy = true;
 
     /**
@@ -70,9 +72,11 @@ public class VmEnergyUsageLogger extends GenericLogger<VmEnergyUsageLogger.Pair>
         store.setDelimeter(" ");
         ArrayList<VM> vmsArr = new ArrayList<>();
         vmsArr.addAll(vmLoadFraction.getVMs());
-        ArrayList<HostVmLoadFraction> loadFractionData = new ArrayList<>();
-        loadFractionData.add(vmLoadFraction);
-        rule.setFractions(loadFractionData.get(0).getFraction());
+        if (rule.getClass().equals(LoadFractionShareRule.class)) {
+            ArrayList<HostVmLoadFraction> loadFractionData = new ArrayList<>();
+            loadFractionData.add(vmLoadFraction);
+            ((LoadFractionShareRule) rule).setFractions(loadFractionData.get(0).getFraction());
+        }
         EnergyDivision division = rule.getEnergyUsage(hostMeasurement.getHost(), vmsArr);
         division.setConsiderIdleEnergy(considerIdleEnergy);
 
@@ -118,6 +122,15 @@ public class VmEnergyUsageLogger extends GenericLogger<VmEnergyUsageLogger.Pair>
      */
     public static double formatDouble(double number, int decimalPlaces) {
         return BigDecimal.valueOf(number).setScale(decimalPlaces, RoundingMode.HALF_UP).doubleValue();
+    }
+
+    /**
+     * This allows the energy share rule to be set.
+     *
+     * @param rule the rule to set
+     */
+    public void setRule(EnergyShareRule rule) {
+        this.rule = rule;
     }
 
     /**

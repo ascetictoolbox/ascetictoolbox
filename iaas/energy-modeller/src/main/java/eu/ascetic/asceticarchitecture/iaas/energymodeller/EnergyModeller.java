@@ -267,9 +267,11 @@ public class EnergyModeller {
                 divisionRule = DEFAULT_ENERGY_DIVISION_RULE_PACKAGE + "." + divisionRule;
             }
             currentEnergyDivisionMethod = (Class.forName(divisionRule));
-        } catch (ClassNotFoundException ex) {
+            dataGatherer.setRule((EnergyShareRule) currentEnergyDivisionMethod.newInstance());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             if (currentEnergyDivisionMethod == null) {
                 currentEnergyDivisionMethod = DefaultEnergyShareRule.class;
+                dataGatherer.setRule(new DefaultEnergyShareRule());
             }
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The energy division rule specified was not found", ex);
         }
@@ -468,9 +470,7 @@ public class EnergyModeller {
         EnergyShareRule rule;
         try {
             rule = (EnergyShareRule) currentEnergyDivisionMethod.newInstance();
-        } catch (InstantiationException ex) {
-            rule = new DefaultEnergyShareRule();
-        } catch (IllegalAccessException ex) {
+        } catch (InstantiationException | IllegalAccessException ex) {
             rule = new DefaultEnergyShareRule();
         }
         Host host = vm.getAllocatedTo();

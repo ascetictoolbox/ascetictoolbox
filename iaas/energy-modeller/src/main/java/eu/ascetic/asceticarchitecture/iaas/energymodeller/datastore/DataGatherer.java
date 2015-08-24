@@ -16,6 +16,7 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.calibration.Calibrator;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.EnergyShareRule;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostMeasurement;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.VmMeasurement;
@@ -39,7 +40,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
  * The data gatherer takes data from the data source and writes them into the
  * database for further usage.
  *
- * @author Richard
+ * @author Richard Kavanagh
  */
 public class DataGatherer implements Runnable {
 
@@ -55,6 +56,7 @@ public class DataGatherer implements Runnable {
     private boolean logVmsToDisk = false;
     private boolean performDataGathering = false;
     private boolean loggerConsiderIdleEnergy = true;
+    private VmEnergyUsageLogger vmUsageLogger = null;
 
     /**
      * This creates a data gather component for the energy modeller.
@@ -187,7 +189,6 @@ public class DataGatherer implements Runnable {
 
     @Override
     public void run() {
-        VmEnergyUsageLogger vmUsageLogger = null;
         if (logVmsToDisk && performDataGathering) {
             vmUsageLogger = new VmEnergyUsageLogger(new File("VmEnergyUsageData.txt"), true);
             vmUsageLogger.setConsiderIdleEnergy(loggerConsiderIdleEnergy);
@@ -257,14 +258,14 @@ public class DataGatherer implements Runnable {
      * @param host The host to gather data for
      * @param measurement The measurement data to write to disk.
      * @param vmList The list of VMs that are currently running
-     * @param logger The logger that is used to write VM data to disk.
+     * @param vmUsageLogger The logger that is used to write VM data to disk.
      */
-    private void gatherMeasurements(Host host, HostMeasurement measurement, List<VmDeployed> vmList, VmEnergyUsageLogger logger) {
+    private void gatherMeasurements(Host host, HostMeasurement measurement, List<VmDeployed> vmList, VmEnergyUsageLogger vmUsageLogger) {
         if (lastTimeStampSeen.get(host) == null || measurement.getClock() > lastTimeStampSeen.get(host)) {
             lastTimeStampSeen.put(host, measurement.getClock());
             Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Writing out host information");
             double power;
-            if (measurement.getPowerAndEnergyMetricsExist()) {
+            if (measurement.getPowerMetricExist() && measurement.getPower() >= 0) {
                 power = measurement.getPower();
             } else {
                 /**
@@ -291,13 +292,21 @@ public class DataGatherer implements Runnable {
                 fraction.setFraction(vmMeasurements);
                 Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Writing out vm information");
                 database.writeHostVMHistoricData(host, measurement.getClock(), fraction);
-                if (logger != null) {
+                if (vmUsageLogger != null) {
                     Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Logging out to Zabbix file");
-                    logger.printToFile(logger.new Pair(measurement, fraction));
+                    vmUsageLogger.printToFile(vmUsageLogger.new Pair(measurement, fraction));
                 }
             }
         }
     }
+    
+    /**
+     * This allows the energy share rule to be set.
+     * @param rule the rule to set
+     */
+    public void setRule(EnergyShareRule rule) {
+        vmUsageLogger.setRule(rule);
+    }    
 
     /**
      * The hash map gives a faster way to find a specific host. This converts
