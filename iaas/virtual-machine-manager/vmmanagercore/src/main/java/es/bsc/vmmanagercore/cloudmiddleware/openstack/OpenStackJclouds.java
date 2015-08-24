@@ -255,7 +255,7 @@ public class OpenStackJclouds implements CloudMiddleware {
     public void assignFloatingIp(String vmId) {
         FloatingIPApi floatingIPApi = openStackJcloudsApis.getFloatingIpApi();
         if (floatingIPApi != null) {
-            floatingIPApi.addToServer(floatingIPApi.allocateFromPool(FLOATING_IP_POOL).getFixedIp(), vmId);
+            floatingIPApi.addToServer(floatingIPApi.allocateFromPool(FLOATING_IP_POOL).getIp(), vmId);
         }
     }
 
