@@ -67,9 +67,6 @@ public class OpenStackJclouds implements CloudMiddleware {
 
     private final int BLOCKING_TIME_SEC_DEPLOY_AND_DESTROY = 1000;
 
-    // Ascetic specific
-    private static final String FLOATING_IP_POOL = "external";
-
     /**
      * Class constructor. It performs the connection to the infrastructure and initializes
      * JClouds attributes.
@@ -255,8 +252,10 @@ public class OpenStackJclouds implements CloudMiddleware {
     public void assignFloatingIp(String vmId) {
         FloatingIPApi floatingIPApi = openStackJcloudsApis.getFloatingIpApi();
         if (floatingIPApi != null) {
-            System.out.println(floatingIPApi.allocateFromPool(FLOATING_IP_POOL));
-            floatingIPApi.addToServer(floatingIPApi.allocateFromPool(FLOATING_IP_POOL).getIp(), vmId);
+            String unassignedFloatingIp = selectUnassignedFloatingIp();
+            if (unassignedFloatingIp != null) {
+                floatingIPApi.addToServer(unassignedFloatingIp, vmId);
+            }
         }
     }
 
@@ -532,6 +531,18 @@ public class OpenStackJclouds implements CloudMiddleware {
                 e.printStackTrace();
             }
         }
+    }
+
+    private String selectUnassignedFloatingIp() {
+        FloatingIPApi floatingIPApi = openStackJcloudsApis.getFloatingIpApi();
+        if (floatingIPApi != null) {
+            for (FloatingIP floatingIp : floatingIPApi.list()) {
+                if (floatingIp.getInstanceId() == null) {
+                    return floatingIp.getIp();
+                }
+            }
+        }
+        return null;
     }
 
 }
