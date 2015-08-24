@@ -60,6 +60,12 @@ public class Configuration {
             databaseURL = config.getString("iaas.energy.modeller.db.url", databaseURL);
             config.setProperty("iaas.energy.modeller.db.url", databaseURL);
             databaseDriver = config.getString("iaas.energy.modeller.db.driver", databaseDriver);
+            try {
+                Class.forName(databaseDriver);
+            } catch (ClassNotFoundException ex) {
+                //If the driver is not found on the class path revert to MariaDB.
+                databaseDriver = "org.mariadb.jdbc.Driver";
+            }     
             config.setProperty("iaas.energy.modeller.db.driver", databaseDriver);
             databasePassword = config.getString("iaas.energy.modeller.db.password", databasePassword);
             config.setProperty("iaas.energy.modeller.db.password", databasePassword);
