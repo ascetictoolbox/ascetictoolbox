@@ -3584,6 +3584,11 @@ utils/JFuzzyLogic/tests/on_line_variable_5.txt -text
 utils/JFuzzyLogic/tests/on_line_variable_6.txt -text
 utils/JFuzzyLogic/tests/tipper.fcl -text
 utils/JFuzzyLogic/tests/tipper.txt -text
+utils/PaaSSAMEventInjectionTool/nbactions.xml -text
+utils/PaaSSAMEventInjectionTool/pom.xml -text
+utils/PaaSSAMEventInjectionTool/src/main/java/eu/ascetic/utils/paassameventinjectiontool/PaaSSamEventSubmitterTool.form -text
+utils/PaaSSAMEventInjectionTool/src/main/java/eu/ascetic/utils/paassameventinjectiontool/PaaSSamEventSubmitterTool.java -text
+utils/PaaSSAMEventInjectionTool/src/main/java/eu/ascetic/utils/paassameventinjectiontool/SLAManagerMessageGenerator.java -text
 utils/SciMark2/pom.xml -text
 utils/SciMark2/src/main/java/README -text
 utils/SciMark2/src/main/java/jnt/scimark2/Benchmark.java -text
