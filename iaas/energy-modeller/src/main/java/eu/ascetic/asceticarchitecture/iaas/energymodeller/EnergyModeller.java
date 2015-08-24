@@ -21,7 +21,9 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DatabaseConn
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.DefaultDatabaseConnector;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.CpuOnlyEnergyPredictor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.EnergyPredictorInterface;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.DefaultEnergyShareRule;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.EnergyDivision;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.EnergyShareRule;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.LoadFractionShareRule;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.historic.HistoricLoadBasedDivision;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.historic.LoadBasedDivision;
@@ -74,6 +76,7 @@ public class EnergyModeller {
     private static final String DEFAULT_PREDICTOR_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor";
     private static final String DEFAULT_DATA_SOURCE_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient";
     private static final String DEFAULT_HISTORIC_ENERGY_DIVISION_RULE_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.historic";
+    private static final String DEFAULT_ENERGY_DIVISION_RULE_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare";
     private EnergyPredictorInterface predictor = new CpuOnlyEnergyPredictor();
     private HostDataSource datasource;
     private final DatabaseConnector database;
@@ -82,6 +85,7 @@ public class EnergyModeller {
     private DataGatherer dataGatherer;
     private Thread dataGatherThread;
     private Class<?> historicEnergyDivisionMethod = LoadBasedDivision.class;
+    private Class<?> currentEnergyDivisionMethod = DefaultEnergyShareRule.class;
     private boolean considerIdleEnergyCurrentVm = true;
 
     /**
@@ -250,6 +254,27 @@ public class EnergyModeller {
         }
     }
 
+    /**
+     * This allows the energy modellers energy division rule be set for current
+     * data.
+     *
+     * @param divisionRule The name of the divisionRule to use for the energy
+     * modeller
+     */
+    public void setCurrentEnergyDivisionRule(String divisionRule) {
+        try {
+            if (!divisionRule.startsWith(DEFAULT_ENERGY_DIVISION_RULE_PACKAGE)) {
+                divisionRule = DEFAULT_ENERGY_DIVISION_RULE_PACKAGE + "." + divisionRule;
+            }
+            currentEnergyDivisionMethod = (Class.forName(divisionRule));
+        } catch (ClassNotFoundException ex) {
+            if (currentEnergyDivisionMethod == null) {
+                currentEnergyDivisionMethod = DefaultEnergyShareRule.class;
+            }
+            Logger.getLogger(EnergyModeller.class.getName()).log(Level.WARNING, "The energy division rule specified was not found", ex);
+        }
+    }    
+    
     /**
      * This allows the energy modellers energy division rule be set for historic
      * data.
@@ -440,16 +465,25 @@ public class EnergyModeller {
      *
      */
     public CurrentUsageRecord getCurrentEnergyForVM(VmDeployed vm) {
-        LoadFractionShareRule rule = new LoadFractionShareRule();
+        EnergyShareRule rule;
+        try {
+            rule = (EnergyShareRule) currentEnergyDivisionMethod.newInstance();
+        } catch (InstantiationException ex) {
+            rule = new DefaultEnergyShareRule();
+        } catch (IllegalAccessException ex) {
+            rule = new DefaultEnergyShareRule();
+        }
         Host host = vm.getAllocatedTo();
         ArrayList<VmDeployed> otherVms = dataGatherer.getVMsOnHost(host);
         ArrayList<VmDeployed> vmsDeployedOnHost = new ArrayList<>();
         ArrayList<VM> vmsOnHost = new ArrayList<>();
-        vmsDeployedOnHost.addAll(otherVms);
-        vmsDeployedOnHost.add(vm);
         vmsOnHost.addAll(otherVms);
         vmsOnHost.add(vm);
-        rule.setVmMeasurements(datasource.getVmData(vmsDeployedOnHost));
+        if (rule.getClass().equals(LoadFractionShareRule.class)) {
+            vmsDeployedOnHost.addAll(otherVms);
+            vmsDeployedOnHost.add(vm);
+            ((LoadFractionShareRule) rule).setVmMeasurements(datasource.getVmData(vmsDeployedOnHost));
+        }
         CurrentUsageRecord hostAnswer = datasource.getCurrentEnergyUsage(host);
         EnergyDivision divider = rule.getEnergyUsage(host, vmsOnHost);
         divider.setConsiderIdleEnergy(considerIdleEnergyCurrentVm);
@@ -540,7 +574,7 @@ public class EnergyModeller {
         }
         return predictor.getVMPredictedEnergy(vmImage, vMsOnHost, host);
     }
-    
+
     /**
      * This provides the amount of energy predicted to be used by the placement
      * of a VM.
@@ -566,32 +600,32 @@ public class EnergyModeller {
             vMsOnHost.add(vmImage);
         }
         return predictor.getVMPredictedEnergy(vmImage, vMsOnHost, host, duration);
-    }    
+    }
 
     /**
      * This provides the amount of energy predicted to be used by a given host.
      *
      * @param host The host that the energy prediction is for
      * @param virtualMachines The VMs that are on the host.
-     * @return the predicted average power and total energy usage for a physical 
+     * @return the predicted average power and total energy usage for a physical
      * host.
      */
     public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines) {
         return predictor.getHostPredictedEnergy(host, virtualMachines);
     }
-    
+
     /**
      * This provides the amount of energy predicted to be used by a given host.
      *
      * @param host The host that the energy prediction is for
      * @param virtualMachines The VMs that are on the host.
      * @param duration The period of time the estimate should run for.
-     * @return the predicted average power and total energy usage for a physical 
+     * @return the predicted average power and total energy usage for a physical
      * host.
      */
     public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines, TimePeriod duration) {
         return predictor.getHostPredictedEnergy(host, virtualMachines, duration);
-    }    
+    }
 
     //Use a program called stress, benchmarking tool to test this
     /**
@@ -599,7 +633,7 @@ public class EnergyModeller {
      * of this host.
      *
      * @param hostname The set of hosts to return.
-     * @return The host objects of the hosts that were requested by name. 
+     * @return The host objects of the hosts that were requested by name.
      */
     public Collection<Host> getHost(Collection<String> hostname) {
         Collection<Host> answer = new ArrayList<>();
@@ -636,7 +670,7 @@ public class EnergyModeller {
      * This gets the list of hosts that the energy modeller knows about.
      *
      * @param sort The sort order for the list of hosts. A list of prefabricated
-     * comparators are available in the energy user comparators package. If the 
+     * comparators are available in the energy user comparators package. If the
      * sort comparator is null the natural order of hosts will be provided.
      * @see
      * eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.comparators;
@@ -675,10 +709,11 @@ public class EnergyModeller {
     public static Collection<VM> getVMs(OvfDefinition deploymentOVF) {
         return OVFConverterFactory.getVMs(deploymentOVF);
     }
-    
+
     /**
-     * This gets the list of VMs on a named host that the energy modeller 
-     * knows about.
+     * This gets the list of VMs on a named host that the energy modeller knows
+     * about.
+     *
      * @param host The host to get the VMs for
      * @return The list of VMs that are currently running on the named host.
      */
@@ -687,8 +722,8 @@ public class EnergyModeller {
     }
 
     /**
-     * This given a name of a VM provides the object representation of it.
-     * Note: This will only return the representation of a VM if the VM has been
+     * This given a name of a VM provides the object representation of it. Note:
+     * This will only return the representation of a VM if the VM has been
      * deployed and reported by the monitoring infrastructure.
      *
      * @param name The name of the VM
@@ -700,8 +735,8 @@ public class EnergyModeller {
     }
 
     /**
-     * This given a name of a VM provides the object representation of it.
-     * Note: This will only return the representation of a VM if the VM has been
+     * This given a name of a VM provides the object representation of it. Note:
+     * This will only return the representation of a VM if the VM has been
      * deployed and reported by the monitoring infrastructure.
      *
      * @param vmId The name of the VM
@@ -710,11 +745,12 @@ public class EnergyModeller {
      */
     public VmDeployed getVM(int vmId) {
         return dataGatherer.getVm(vmId);
-    }    
-    
+    }
+
     /**
-     * This sets information about the VM that describes the applications,
-     * that are inside it.
+     * This sets information about the VM that describes the applications, that
+     * are inside it.
+     *
      * @param vm The VM that is to be deployed.
      */
     public void setVMProfileData(VmDeployed vm) {
@@ -727,56 +763,61 @@ public class EnergyModeller {
         database.setVms(vms);
         database.setVMProfileData(vm);
     }
-    
+
     /**
      * This gets the total current power consumption of all VMs that are known
      * to the energy modeller.
+     *
      * @return The total power consumption allocated to all known Vms.
      */
     public double getVmTotalCurrentPowerConsumption() {
         double answer = 0;
         HashSet<CurrentUsageRecord> vmData = getCurrentEnergyForVM(datasource.getVmList());
         for (CurrentUsageRecord current : vmData) {
-                answer = answer + current.getPower();
-        }        
+            answer = answer + current.getPower();
+        }
         return answer;
     }
-    
+
     /**
-     * This gets the total current power consumption of all physical hosts that 
+     * This gets the total current power consumption of all physical hosts that
      * are known to the energy modeller. This is a notion of how efficient the
-     * cloud data centre is currently. It is sensitive to physical hosts that 
+     * cloud data centre is currently. It is sensitive to physical hosts that
      * have no VMs but are still powered.
+     *
      * @return The total power consumption of all physical hosts.
      */
-     public double getHostsTotalCurrentPowerConsumption() {
+    public double getHostsTotalCurrentPowerConsumption() {
         double answer = 0;
         HashSet<CurrentUsageRecord> hostData = getCurrentEnergyForHost(datasource.getHostList());
         for (CurrentUsageRecord current : hostData) {
-                answer = answer + current.getPower();
-        }        
+            answer = answer + current.getPower();
+        }
         return answer;
-    }   
-    
+    }
+
     /**
-     * This provides the current fraction VM power consumption is of the overall 
+     * This provides the current fraction VM power consumption is of the overall
      * host power consumption.
-     * @return The total VM power consumption / total physical power consumption.
+     *
+     * @return The total VM power consumption / total physical power
+     * consumption.
      */
     public double getVMToHostPowerRatio() {
         return getVmTotalCurrentPowerConsumption() / getHostsTotalCurrentPowerConsumption();
     }
 
     /**
-     * This provides the current amount of host power that has not been allocated
-     * to a running VM.
-     * @return The total physical host power consumption - total VM allocated 
+     * This provides the current amount of host power that has not been
+     * allocated to a running VM.
+     *
+     * @return The total physical host power consumption - total VM allocated
      * power consumption.
      */
     public double getHostPowerUnallocatedToVMs() {
         return getHostsTotalCurrentPowerConsumption() - getVmTotalCurrentPowerConsumption();
-    }    
-    
+    }
+
     /**
      * This calibrates all hosts that are known to the energy modeller, that
      * currently are uncalibrated i.e. energy values for the host is unknown.
