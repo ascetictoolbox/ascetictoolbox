@@ -336,10 +336,10 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
     public void setVMProfileData(VmDeployed vm) {
         //set the list of app tags
         setVMAppTags(vm);
-        //assign the tags to the given vm
-        setVMAppTagArray(vm);
         //set the list of disks
         setDiskInformation(vm);
+        //assign the tags to the given vm
+        setVMAppTagArray(vm);
         //set the references to each disk for the VM
         setDiskInformationArray(vm);
     }
@@ -351,7 +351,7 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
      */
     private void setVMAppTagArray(VmDeployed vm) {
         connection = getConnection(connection);
-        if (connection == null) {
+        if (connection == null || vm == null) {
             return;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
@@ -375,7 +375,7 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
      */
     private void setDiskInformationArray(VmDeployed vm) {
         connection = getConnection(connection);
-        if (connection == null) {
+        if (connection == null || vm == null) {
             return;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
@@ -399,7 +399,7 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
      */
     private void setVMAppTags(VmDeployed vm) {
         connection = getConnection(connection);
-        if (connection == null) {
+        if (connection == null || vm == null) {
             return;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
@@ -421,7 +421,7 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
      */
     private void setDiskInformation(VmDeployed vm) {
         connection = getConnection(connection);
-        if (connection == null) {
+        if (connection == null || vm == null) {
             return;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
@@ -443,7 +443,7 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
     @Override
     public void setHostCalibrationData(Host host) {
         connection = getConnection(connection);
-        if (connection == null) {
+        if (connection == null || host == null) {
             return;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
@@ -465,7 +465,7 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
     @Override
     public void setHostProfileData(Host host) {
         connection = getConnection(connection);
-        if (connection == null) {
+        if (connection == null || host == null) {
             return;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
@@ -496,7 +496,7 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
     @Override
     public void writeHostHistoricData(Host host, long time, double power, double energy) {
         connection = getConnection(connection);
-        if (connection == null) {
+        if (connection == null || host == null) {
             return;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
@@ -523,7 +523,7 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
     @Override
     public List<HostEnergyRecord> getHostHistoryData(Host host, TimePeriod timePeriod) {
         connection = getConnection(connection);
-        if (connection == null) {
+        if (connection == null || host == null) {
             return null;
         }
         List<HostEnergyRecord> answer = new ArrayList<>();
@@ -570,7 +570,7 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
     @Override
     public void writeHostVMHistoricData(Host host, long time, HostVmLoadFraction load) {
         connection = getConnection(connection);
-        if (connection == null) {
+        if (connection == null || host == null) {
             return;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
@@ -611,7 +611,7 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
     public Collection<HostVmLoadFraction> getHostVmHistoryLoadData(Host host, TimePeriod timePeriod) {
         HashMap<String, VmDeployed> vmCache = new HashMap<>();
         connection = getConnection(connection);
-        if (connection == null) {
+        if (connection == null || host == null) {
             return null;
         }
         List<HostVmLoadFraction> answer = new ArrayList<>();
@@ -814,7 +814,7 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
     @Override
     public double getVMCurrentBootTraceIndex(VmDeployed vm, int windowSize) {
         connection = getConnection(connection);
-        if (connection == null) {
+        if (connection == null || vm == null) {
             return Double.NaN;
         }
         try (Statement statement = connection.createStatement();

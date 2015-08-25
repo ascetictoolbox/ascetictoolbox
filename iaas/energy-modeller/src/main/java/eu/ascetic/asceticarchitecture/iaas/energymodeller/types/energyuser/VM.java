@@ -224,7 +224,9 @@ public class VM extends EnergyUsageSource {
      * @param diskImages the diskImages to set
      */
     public void setDiskImages(HashSet<VmDiskImage> diskImages) {
-        this.diskImages = diskImages;
+        if (diskImages != null) {
+            this.diskImages = diskImages;
+        }
     }
 
     /**
@@ -233,7 +235,9 @@ public class VM extends EnergyUsageSource {
      * @param image The disk image to add
      */
     public void addDiskImage(String image) {
-        diskImages.add(new VmDiskImage(image));
+        if (image != null) {
+            diskImages.add(new VmDiskImage(image));
+        }
     }
 
     /**
@@ -288,14 +292,17 @@ public class VM extends EnergyUsageSource {
      * that generate a workload on the VM.
      */
     public void setApplicationTags(HashSet<String> applicationTags) {
-        this.applicationTags = applicationTags;
+        if (applicationTags != null) {
+            this.applicationTags = applicationTags;
+        }
     }
 
     /**
-     * This allows an application tags to be added to this VM.  
-     * Application Tags are intended as unique tags that can be set to
-     * identify the applications on the VM. 
-     * @param tag 
+     * This allows an application tags to be added to this VM. Application Tags
+     * are intended as unique tags that can be set to identify the applications
+     * on the VM.
+     *
+     * @param tag
      */
     public void addApplicationTag(String tag) {
         if (tag != null) {
