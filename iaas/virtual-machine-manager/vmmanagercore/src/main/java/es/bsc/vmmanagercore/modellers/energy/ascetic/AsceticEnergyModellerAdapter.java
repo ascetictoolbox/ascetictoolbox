@@ -59,6 +59,10 @@ public class AsceticEnergyModellerAdapter implements es.bsc.vmmanagercore.modell
                 .getAvgPowerUsed();
     }
 
+    public void initializeVmInEnergyModellerSystem(String vmId) {
+        energyModeller.setVMProfileData(energyModeller.getVM(vmId));
+    }
+
     public static EnergyModeller getEnergyModeller() {
         return energyModeller;
     }

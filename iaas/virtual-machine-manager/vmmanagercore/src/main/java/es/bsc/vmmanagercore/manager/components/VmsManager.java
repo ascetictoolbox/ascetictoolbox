@@ -24,6 +24,7 @@ import es.bsc.vmmanagercore.db.VmManagerDb;
 import es.bsc.vmmanagercore.logging.VMMLogger;
 import es.bsc.vmmanagercore.message_queue.MessageQueue;
 import es.bsc.vmmanagercore.modellers.energy.EnergyModeller;
+import es.bsc.vmmanagercore.modellers.energy.ascetic.AsceticEnergyModellerAdapter;
 import es.bsc.vmmanagercore.modellers.price.PricingModeller;
 import es.bsc.vmmanagercore.modellers.price.ascetic.AsceticPricingModellerAdapter;
 import es.bsc.vmmanagercore.models.scheduling.*;
@@ -53,6 +54,7 @@ public class VmsManager {
     private final SelfAdaptationManager selfAdaptationManager;
     private final Scheduler scheduler;
     private final PricingModeller pricingModeller;
+    private final EnergyModeller energyModeller;
 
     private static final String ASCETIC_ZABBIX_SCRIPT_PATH = "/DFS/ascetic/vm-scripts/zabbix_agents.sh";
     
@@ -64,6 +66,7 @@ public class VmsManager {
         this.db = db;
         this.selfAdaptationManager = selfAdaptationManager;
         this.pricingModeller = pricingModeller;
+        this.energyModeller = energyModeller;
         scheduler = new Scheduler(db.getCurrentSchedulingAlg(), getAllVms(), energyModeller, pricingModeller);
     }
     
@@ -215,6 +218,10 @@ public class VmsManager {
             
             if (pricingModeller instanceof AsceticPricingModellerAdapter) {
                 initializeVmBilling(vmId, hostForDeployment.getHostname());
+            }
+
+            if (energyModeller instanceof AsceticEnergyModellerAdapter) {
+                ((AsceticEnergyModellerAdapter) energyModeller).initializeVmInEnergyModellerSystem(vmId);
             }
 
             if (vmToDeploy.needsFloatingIp()) {
