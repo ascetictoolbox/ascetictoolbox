@@ -341,7 +341,7 @@ public class AsceticScheduler extends TaskScheduler {
         }
 
         while (!executableCores.isEmpty()) {
-            Integer coreId = null;
+            Integer coreId = executableCores.getFirst();
             double maxValue = Double.MIN_VALUE;
             for (Integer i : executableCores) {
                 if (sortedTasks[i].peek().value > maxValue) {

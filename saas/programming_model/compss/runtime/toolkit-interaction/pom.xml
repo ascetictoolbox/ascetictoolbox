@@ -47,11 +47,11 @@
             <artifactId>commons</artifactId>
             <version>${project.version}</version>
         </dependency>   
-        <!--dependency>
+        <dependency>
             <groupId>eu.ascetic.saas</groupId>
             <artifactId>application-uploader</artifactId>
             <version>${project.version}</version>
-        </dependency-->   
+        </dependency>   
         <dependency>
             <groupId>eu.ascetic.utils</groupId>
             <artifactId>ovf-xmlbeans-api</artifactId>

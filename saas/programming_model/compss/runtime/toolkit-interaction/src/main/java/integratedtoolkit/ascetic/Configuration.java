@@ -40,8 +40,8 @@ public class Configuration {
     private final static HashMap<String, HashMap<String, String>> componentProperties;
     private final static HashMap<String, MethodResourceDescription> componentDescription;
     private final static HashMap<String, LinkedList<Implementation>> componentImplementations;
-    private final static int energyBoundary;
-    private final static int economicalBoundary;
+    private final static float energyBoundary;
+    private final static float economicalBoundary;
     private final static String optimizationParameter;
 
     static {
@@ -73,9 +73,9 @@ public class Configuration {
         componentImplementations = new HashMap<String, LinkedList<Implementation>>();
         componentProperties = new HashMap<String, HashMap<String, String>>();
         pp = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getPropertyByKey("asceticEnergyOptimizationBoundary");
-        energyBoundary = Integer.parseInt(pp.getValue());
+        energyBoundary = Float.parseFloat(pp.getValue());
         pp = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getPropertyByKey("asceticCostOptimizationBoundary");
-        economicalBoundary = Integer.parseInt(pp.getValue());
+        economicalBoundary = Float.parseFloat(pp.getValue());
         pp = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getPropertyByKey("asceticOptimizationParameter");
         optimizationParameter = pp.getValue();
         parseComponents(ovf);
@@ -199,11 +199,11 @@ public class Configuration {
         return componentProperties.get(component);
     }
 
-    public static int getEnergyBoundary() {
+    public static float getEnergyBoundary() {
         return energyBoundary;
     }
 
-    public static int getEconomicalBoundary() {
+    public static float getEconomicalBoundary() {
         return economicalBoundary;
     }
 

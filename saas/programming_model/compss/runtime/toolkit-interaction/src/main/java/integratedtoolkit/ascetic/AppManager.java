@@ -15,11 +15,12 @@
  */
 package integratedtoolkit.ascetic;
 
-/*import eu.ascetic.saas.application_uploader.ApplicationUploader;
- import eu.ascetic.saas.application_uploader.ApplicationUploaderException;*/
+import eu.ascetic.saas.application_uploader.ApplicationUploader;
+import eu.ascetic.saas.application_uploader.ApplicationUploaderException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 
 public class AppManager {
 
@@ -27,12 +28,15 @@ public class AppManager {
     private static final String deploymentId;
 
     private static final HashMap<String, VM> detectedVMs;
-    //public static final ApplicationUploader uploader;
+    public static final ApplicationUploader uploader;
 
     static {
         applicationId = Configuration.getApplicationId();
         deploymentId = Configuration.getDeploymentId();
-        //  uploader = new ApplicationUploader(Configuration.getApplicationManagerEndpoint());
+        uploader = new ApplicationUploader(Configuration.getApplicationManagerEndpoint());
+        System.out.println("ApplicationID: " + applicationId);
+        System.out.println("deploymentId: " + deploymentId);
+        System.out.println("AppManagerEndpoint: " + Configuration.getApplicationManagerEndpoint());
         detectedVMs = new HashMap<String, VM>();
     }
 
@@ -42,27 +46,35 @@ public class AppManager {
      return uploader.getEventEnergyEstimationInVM(applicationId, deploymentId, eventId, id);
      }
      */
-    
-    public static Collection<VM> getNewResources() {
+    public static Collection<VM> getNewResources() throws ApplicationUploaderException {
+        System.out.println("Obtianing new Resources from AM:");
         LinkedList<VM> newResources = new LinkedList<VM>();
-        LinkedList<eu.ascetic.paas.applicationmanager.model.VM> vms = new LinkedList();
-        eu.ascetic.paas.applicationmanager.model.VM fakeVM = new eu.ascetic.paas.applicationmanager.model.VM();
-        fakeVM.setIp("127.0.0.1");
-        fakeVM.setOvfId("ascetic-pm-autoMethod");
-        vms.add(fakeVM);
-        fakeVM = new eu.ascetic.paas.applicationmanager.model.VM();
-        fakeVM.setIp("127.0.0.2");
-        fakeVM.setOvfId("ascetic-pm-autoMethod");
-        vms.add(fakeVM);
-
-        for (eu.ascetic.paas.applicationmanager.model.VM rvm : vms) {
-            String IPv4 = rvm.getIp();
-            VM vm = detectedVMs.get(IPv4);
-            if (vm == null) {
-                vm = new VM(rvm);
-                detectedVMs.put(IPv4, vm);
-                newResources.add(vm);
+        try {
+            List<eu.ascetic.paas.applicationmanager.model.VM> vms = uploader.getDeploymentVMDescriptions(applicationId, deploymentId);
+            /*List<eu.ascetic.paas.applicationmanager.model.VM> vms= new LinkedList();
+            
+            System.out.println("vms: " + vms);
+            eu.ascetic.paas.applicationmanager.model.VM fakeVM = new eu.ascetic.paas.applicationmanager.model.VM();
+            fakeVM.setIp("10.0.12.14");
+            fakeVM.setOvfId("ascetic-pm-autoMethod");
+            vms.add(fakeVM);
+            fakeVM = new eu.ascetic.paas.applicationmanager.model.VM();
+            fakeVM.setIp("10.0.12.13");
+            fakeVM.setOvfId("ascetic-pm-JEPlus");
+            vms.add(fakeVM);
+*/
+            for (eu.ascetic.paas.applicationmanager.model.VM rvm : vms) {
+                String IPv4 = rvm.getIp();
+                System.out.println("IPv4: " + IPv4);
+                VM vm = detectedVMs.get(IPv4);
+                if (vm == null) {
+                    vm = new VM(rvm);
+                    detectedVMs.put(IPv4, vm);
+                    newResources.add(vm);
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return newResources;
     }
