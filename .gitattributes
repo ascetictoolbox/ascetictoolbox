@@ -545,6 +545,7 @@ iaas/virtual-machine-manager/vmmanager-frontend/scripts/highcharts.js -text
 iaas/virtual-machine-manager/vmmanager-frontend/scripts/jquery.min.js -text
 iaas/virtual-machine-manager/vmmanager-frontend/scripts/spin.min.js -text
 iaas/virtual-machine-manager/vmmanager-frontend/scripts/toastr.min.js -text
+iaas/virtual-machine-manager/vmmanagercore/README -text
 iaas/virtual-machine-manager/vmmanagercore/pom.xml -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/cloudmiddleware/CloudMiddleware.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/cloudmiddleware/fake/FakeCloudMiddleware.java -text
