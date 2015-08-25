@@ -220,9 +220,10 @@ public class VmsManager {
                 initializeVmBilling(vmId, hostForDeployment.getHostname());
             }
 
-            if (energyModeller instanceof AsceticEnergyModellerAdapter) {
+            // Commented because the EM crashes
+            /*if (energyModeller instanceof AsceticEnergyModellerAdapter) {
                 ((AsceticEnergyModellerAdapter) energyModeller).initializeVmInEnergyModellerSystem(vmId);
-            }
+            }*/
 
             if (vmToDeploy.needsFloatingIp()) {
                 cloudMiddleware.assignFloatingIp(vmId);
