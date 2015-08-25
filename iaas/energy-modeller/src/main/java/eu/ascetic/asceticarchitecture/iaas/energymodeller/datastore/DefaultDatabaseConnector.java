@@ -162,7 +162,7 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
     @Override
     public Host getHostCalibrationData(Host host) {
         connection = getConnection(connection);
-        if (connection == null) {
+        if (connection == null || host == null) {
             return null;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
@@ -186,7 +186,7 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
     @Override
     public Host getHostProfileData(Host host) {
         connection = getConnection(connection);
-        if (connection == null) {
+        if (connection == null || host == null) {
             return null;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
@@ -215,7 +215,7 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
     @Override
     public void setHosts(Collection<Host> hosts) {
         connection = getConnection(connection);
-        if (connection == null) {
+        if (connection == null || hosts == null) {
             return;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
@@ -240,7 +240,7 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
     @Override
     public void setVms(Collection<VmDeployed> vms) {
         connection = getConnection(connection);
-        if (connection == null) {
+        if (connection == null || vms == null) {
             return;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
@@ -282,7 +282,7 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
      */
     private VmDeployed getVmAppTags(VmDeployed vm) {
         connection = getConnection(connection);
-        if (connection == null) {
+        if (connection == null || vm == null) {
             return null;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
@@ -311,7 +311,7 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
      */
     private VmDeployed getVmDisks(VmDeployed vm) {
         connection = getConnection(connection);
-        if (connection == null) {
+        if (connection == null || vm == null) {
             return null;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
