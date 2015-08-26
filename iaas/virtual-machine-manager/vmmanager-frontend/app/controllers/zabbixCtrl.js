@@ -25,7 +25,57 @@
     /* @ngInject */
     function ZabbixCtrl($route) {
         var zabbixCtrl = this;
-        zabbixCtrl.hosts = ['Asok09', 'Asok10', 'Asok11', 'Asok12']; // TODO: this should not be hardcoded
+
+        // These arrays contains the hosts for each of the clusters that we use and their Zabbix IDs.
+        // It is not a good solution to have these values hardcoded here, but it will be enough for now.
+        var y1Hosts = {
+            'Asok09' : 608,
+            'Asok10' : 611,
+            'Asok11' : 612,
+            'Asok12' : 613
+        };
+        var y2TestingHosts = {
+            'wally152' : 10140,
+            'wally153' : 10141,
+            'wally154' : 10142
+        };
+        var y2StableHosts = {
+            'wally155' : 10143,
+            'wally157' : 10112,
+            'wally158' : 10113,
+            'wally159' : 10114,
+            'wally160' : 10115,
+            'wally161' : 10116,
+            'wally162' : 10117,
+            'wally163' : 10118,
+            'wally164' : 10119,
+            'wally165' : 10120,
+            'wally166' : 10121,
+            'wally167' : 10122,
+            'wally168' : 10123,
+            'wally169' : 10124,
+            'wally170' : 10125,
+            'wally171' : 10126,
+            'wally172' : 10127,
+            'wally173' : 10128,
+            'wally174' : 10129,
+            'wally175' : 10130,
+            'wally176' : 10131,
+            'wally177' : 10132,
+            'wally178' : 10133,
+            'wally179' : 10134,
+            'wally180' : 10135,
+            'wally181' : 10136,
+            'wally182' : 10137,
+            'wally193' : 10111,
+            'wally195' : 10110,
+            'wally196' : 10109,
+            'wally197' : 10108,
+            'wally198' : 10107
+        };
+        var zabbixIp = '192.168.3.199'; // This should not be hardcoded...
+
+        zabbixCtrl.hosts = Object.keys(y2TestingHosts); // This should not be hardcoded...
         zabbixCtrl.tab = zabbixCtrl.hosts[0];
 
         zabbixCtrl.tabIsActive = tabIsActive;
@@ -51,9 +101,11 @@
             return zabbixCtrl.tab === tab;
         }
 
+        // TODO: it seems that for y2 this URL does not longer work because there is not a chart with power vs cpu
+        // usage configured in Zabbix. chart2.php should be changed to the new one once it is configured.
         function getGraphLink(hostname, width, height, seconds) {
-            return 'http://10.4.0.15/zabbix/chart2.php?graphid=' + getZabbixId(hostname).toString() +
-                    '&width=' + width.toString() + '&height=' + height.toString() + '&period=' + seconds.toString();
+            return 'http://' + zabbixIp + '/zabbix/chart2.php?graphid=' + getZabbixId(hostname).toString() +
+                '&width=' + width.toString() + '&height=' + height.toString() + '&period=' + seconds.toString();
         }
 
         /**
@@ -61,18 +113,13 @@
          * This is specific for Ascetic's case.
          */
         function getZabbixId(hostname) {
-            switch(hostname) {
-                case 'Asok09':
-                    return 608;
-                case 'Asok10':
-                    return 611;
-                case 'Asok11':
-                    return 612;
-                case 'Asok12':
-                    return 613;
-                default:
-                    return null;
+            if (y1Hosts[hostname]) {
+                return y1Hosts[hostname];
             }
+            if (y2TestingHosts[hostname]) {
+                return y2TestingHosts[hostname];
+            }
+            return y2StableHosts[hostname];
         }
     }
     ZabbixCtrl.$inject = ['$route'];
