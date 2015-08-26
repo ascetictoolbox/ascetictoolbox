@@ -2,8 +2,10 @@ package eu.ascetic.iaas.slamanager.pac;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.jms.Connection;
@@ -30,6 +32,7 @@ import eu.ascetic.iaas.slamanager.pac.events.ViolationMessage;
 import eu.ascetic.iaas.slamanager.pac.events.ViolationMessage.Alert;
 import eu.ascetic.iaas.slamanager.pac.events.ViolationMessage.Alert.SlaGuaranteedState;
 import eu.ascetic.iaas.slamanager.pac.provider.reporting.GetSLAClient;
+import eu.ascetic.iaas.slamanager.pac.provider.translation.AsceticAgreementTerm;
 import eu.ascetic.iaas.slamanager.pac.provider.translation.MeasurableAgreementTerm;
 
 public class IaasViolationChecker implements Runnable {
@@ -40,6 +43,7 @@ public class IaasViolationChecker implements Runnable {
 	private static String ACTIVEMQ_CHANNEL = "activemq_channel";
 	private static String TERMINATED_VMS_QUEUE = "terminated_vms_queue";
 	private static String BUSINESS_REPORTING_URL = "business_reporting_url";
+	private static String MONITORABLE_TERMS = "monitorable_terms";
 
 	private String topicId;
 	private String slaId;
@@ -51,6 +55,7 @@ public class IaasViolationChecker implements Runnable {
     public static final String FIELD_VM_ID = "id";
 	public static final String FIELD_OVF_ID = "ovfId";
 	public static final String FIELD_SLA_ID = "slaId";
+	
 	
 	public IaasViolationChecker(Properties properties, String topicId, String vmId, String ovfId, String slaId) {
 		super();
@@ -202,6 +207,51 @@ public class IaasViolationChecker implements Runnable {
 							TextMessage textMessage = (TextMessage) message;
 							logger.info("ACTIVEMQ: Received measurement '"
 									+ textMessage.getText() + "' in the topic "+topicId);
+							
+							
+//							{              
+//				                “name”:<String>,             //energy or power
+//				                “value”: <double>,
+//				                “units”:<String>,
+//				                “timestamp”:<long>
+//							}
+							ObjectMapper mapper = new ObjectMapper(); 
+							ObjectNode msgBody = null;
+							try {
+								msgBody = (ObjectNode) mapper.readTree(textMessage.getText());
+							} catch (JsonProcessingException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							
+							//TODO: prendere dal nome topic
+							String measuredApplicationId = "";
+							String measuredTimestamp = "";
+							String measuredTerm = "";
+							Map<String,String> measuredTerms = new HashMap<String,String>();
+
+							Iterator<String> rootNames = msgBody.fieldNames();
+							while(rootNames.hasNext()){
+								String fieldName = rootNames.next();
+								String fieldValue = msgBody.get(fieldName).asText();
+								
+								if (fieldName.equalsIgnoreCase("timestamp")) {
+									measuredTimestamp = fieldValue;
+								}
+								if (fieldName.equalsIgnoreCase("name")) {
+									if ("energy".equalsIgnoreCase(fieldValue)) measuredTerm = "energy_usage_per_vm";
+									else if ("power".equalsIgnoreCase(fieldValue)) measuredTerm = "power_usage_per_vm";
+								}
+								if (fieldName.equalsIgnoreCase("value")) {
+									measuredTerms.put(measuredTerm, fieldValue);
+									logger.debug("Measurement --> "+measuredTerm+" : "+fieldValue);
+								}
+
+							}
+
 
 							logger.info("Getting SLA...");
 							SLA sla = null;
@@ -216,31 +266,70 @@ public class IaasViolationChecker implements Runnable {
 							if (sla!=null) {
 								logger.info("Comparing measurement with the threshold...");
 								List<MeasurableAgreementTerm> terms = gsc.getMeasurableTerms(sla);
-								/*
-								 * TODO
-								 */
-							}
-							logger.info("Notifying violation...");                        
-							/*
-							 * dummy message, replace with real one
-							 */
-							//String violationMessage = "<ViolationMessage xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" appId=\"XXX\" deploymentId=\"4\"><time>2015-02-25T09:30:47.0Z</time>  <value id=\"free\">11</value>  <alert>    <type>violation</type>    <slaUUID>f28d4719-5f98-4c87-9365-6be602da9a4a</slaUUID>    <slaAgreementTerm>power_usage_per_app</slaAgreementTerm>    <slaGuaranteedState>      <guaranteedId>power_usage_per_app</guaranteedId>      <operator>less_than_or_equals</operator>      <guaranteedValue>10</guaranteedValue>    </slaGuaranteedState>  </alert></ViolationMessage>";
-							ViolationMessage violationMessage = new ViolationMessage(Calendar.getInstance(),vmId,ovfId);
-							Alert alert = violationMessage.new Alert();
-							alert.setType("violation");
-							alert.setSlaUUID(slaId);
-							Value v = new Value("free", "11");
-							violationMessage.setValue(v);
-							alert.setSlaAgreementTerm(textMessage.getText());
-							SlaGuaranteedState sgs = alert.new SlaGuaranteedState();
-							sgs.setGuaranteedId(textMessage.getText());
-							sgs.setGuaranteedValue(10.0);
-							sgs.setOperator("less_than_or_equals");
-							alert.setSlaGuaranteedState(sgs);
-							violationMessage.setAlert(alert);
+								
+								
+								
+								for (MeasurableAgreementTerm m:terms) {
+									boolean violated = false;
+									
+									
+									String[] monitorableTerms = properties.getProperty(MONITORABLE_TERMS).split(",");
+									
+									for (String monitorableTerm:monitorableTerms) {
+										if (m.getName().equalsIgnoreCase(monitorableTerm)) {
+											if (measuredTerms.containsKey(monitorableTerm)) {
+											if (m.getOperator().equals(AsceticAgreementTerm.operatorType.EQUALS)) {
+												if (!m.getValue().equals(new Double(measuredTerms.get(monitorableTerm)))) {
+													logger.debug("Violation detected. Value: "+measuredTerms.get(monitorableTerm)+" Condition: "+m); violated = true;
+												}
+											}
+											else if (m.getOperator().equals(AsceticAgreementTerm.operatorType.GREATER)) {
+												if (!(m.getValue()<(new Double(measuredTerms.get(monitorableTerm))))) {
+													logger.debug("Violation detected. Value: "+measuredTerms.get(monitorableTerm)+" Condition: "+m); violated = true;
+												}
+											}
+											else if (m.getOperator().equals(AsceticAgreementTerm.operatorType.GREATER_EQUAL)) {
+												if (!(m.getValue()<=(new Double(measuredTerms.get(monitorableTerm))))) {
+													logger.debug("Violation detected. Value: "+measuredTerms.get(monitorableTerm)+" Condition: "+m); violated = true;
+												}
+											}
+											else if (m.getOperator().equals(AsceticAgreementTerm.operatorType.LESS)) {
+												if (!(m.getValue()>(new Double(measuredTerms.get(monitorableTerm))))) {
+													logger.debug("Violation detected. Value: "+measuredTerms.get(monitorableTerm)+" Condition: "+m); violated = true;
+												}
+											}
+											else if (m.getOperator().equals(AsceticAgreementTerm.operatorType.LESS_EQUAL)) {
+												if (!(m.getValue()>=(new Double(measuredTerms.get(monitorableTerm))))) {
+													logger.debug("Violation detected. Value: "+measuredTerms.get(monitorableTerm)+" Condition: "+m); violated = true;
+												}
+											}
+										}
+											if (violated) {
+												logger.info("Notifying violation...");  
+												
+												//String violationMessage = "<ViolationMessage xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" appId=\"XXX\" deploymentId=\"4\"><time>2015-02-25T09:30:47.0Z</time>  <value id=\"free\">11</value>  <alert>    <type>violation</type>    <slaUUID>f28d4719-5f98-4c87-9365-6be602da9a4a</slaUUID>    <slaAgreementTerm>power_usage_per_app</slaAgreementTerm>    <slaGuaranteedState>      <guaranteedId>power_usage_per_app</guaranteedId>      <operator>less_than_or_equals</operator>      <guaranteedValue>10</guaranteedValue>    </slaGuaranteedState>  </alert></ViolationMessage>";
+												ViolationMessage violationMessage = new ViolationMessage(Calendar.getInstance(),vmId,ovfId);
+												Alert alert = violationMessage.new Alert();
+												alert.setType("violation");
+												alert.setSlaUUID(slaId);
+												Value v = new Value("usage", measuredTerms.get(monitorableTerm));
+												violationMessage.setValue(v);
+												alert.setSlaAgreementTerm(monitorableTerm);
+												SlaGuaranteedState sgs = alert.new SlaGuaranteedState();
+												sgs.setGuaranteedId(monitorableTerm);
+												sgs.setGuaranteedValue(m.getValue());
+												sgs.setOperator(m.getOperator().toString());
+												alert.setSlaGuaranteedState(sgs);
+												violationMessage.setAlert(alert);
 
-							ViolationMessageTranslator vmt = new ViolationMessageTranslator();
-							notifyViolation(vmt.toXML(violationMessage));
+												ViolationMessageTranslator vmt = new ViolationMessageTranslator();
+												notifyViolation(vmt.toXML(violationMessage));
+											}
+										}
+									}
+									
+								}
+							}
 						}
 					} catch (JMSException e) {
 						logger.error("Caught:" + e);
