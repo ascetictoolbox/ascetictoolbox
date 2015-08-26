@@ -187,4 +187,31 @@ public abstract class GenericLogger<T> implements Runnable {
     public void stop() {
         this.stop = true;
     }
+    
+    /**
+     * This indicates if the logger is still in a working state. It is considered
+     * to be still working if it hasn't been told to stop and the queue is not
+     * empty.
+     * @return If the logger is busy or not. 
+     */
+    public boolean stillWorking() {
+        return (isStopped() == false && !queue.isEmpty());
+    }
+    
+    /**
+     * This indicates if the stop method has been called.
+     * @return If the stop method has been called or not
+     */
+    public boolean isStopped() {
+        return stop;
+    }
+    
+    /**
+     * This indicates if this logger has any further work to perform.
+     * @return if the queue of items to write to file is empty or not
+     */
+    public boolean isPrintQueueEmpty() {
+        return queue.isEmpty();
+    }
+    
 }
