@@ -35,17 +35,13 @@ public class LogFileGenerator {
     private static final DataCollector collector = new DataCollector(new DefaultDatabaseConnector());
 
     public static void main(String[] args) throws ParseException {
-        DateFormat format = new SimpleDateFormat("E, dd MMM yyyy hh:mm:ss Z");
         Settings settings = new Settings("energymodeller_dump.properties");
-        int durationSeconds = settings.getInt("duration_seconds", (int) TimeUnit.HOURS.toSeconds(1));
         GregorianCalendar defaultStart = new GregorianCalendar();
         long durationMills = TimeUnit.HOURS.toMillis(1);
         defaultStart.setTimeInMillis(defaultStart.getTimeInMillis() - durationMills);
-        String dateString = settings.getString("start_time", format.format(defaultStart.getTime()));
-        Date parsed = format.parse(dateString);
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(parsed);
-        TimePeriod period = new TimePeriod(cal, durationSeconds);
+        int start = settings.getInt("start-unix-time", 0);
+        int end = settings.getInt("end-unix-time", 0);
+        TimePeriod period = new TimePeriod(start, end);
         if (settings.isChanged()) {
             settings.save("energymodeller_dump.properties");
         }

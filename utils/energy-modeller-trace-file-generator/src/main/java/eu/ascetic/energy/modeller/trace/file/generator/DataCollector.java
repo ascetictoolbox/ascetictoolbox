@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * This data collector displays energy data for the IaaS Energy Modeller.
  *
- * @author Richard
+ * @author Richard Kavanagh
  */
 public class DataCollector {
 
@@ -66,6 +66,12 @@ public class DataCollector {
                 for (Pair vmData : hostToVmDataMap) {
                     vmLogger.printToFile(vmData);
                 }
+            }
+        }
+        while (vmLogger.stillWorking() && logger.stillWorking()) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
             }
         }
         connector.closeConnection();
@@ -108,16 +114,18 @@ public class DataCollector {
     }
 
     /**
-     * This binds a host energy record to VM load fraction information. Thus 
+     * This binds a host energy record to VM load fraction information. Thus
      * allowing for the calculations to take place.
      */
     public class Pair {
+
         private final HostEnergyRecord host;
         private final HostVmLoadFraction vmLoadFraction;
 
         /**
-         * This create a pair of data items linking host energy records to VM 
+         * This create a pair of data items linking host energy records to VM
          * load fraction information.
+         *
          * @param host The host record
          * @param vmLoadFraction The vm load fraction record.
          */
@@ -125,9 +133,10 @@ public class DataCollector {
             this.host = host;
             this.vmLoadFraction = vmLoadFraction;
         }
-        
+
         /**
          * This returns the host data for the paired data items.
+         *
          * @return the host
          */
         public HostEnergyRecord getHost() {
@@ -136,6 +145,7 @@ public class DataCollector {
 
         /**
          * This returns the vm load fraction data for the paired data items.
+         *
          * @return the vmLoadFraction
          */
         public HostVmLoadFraction getVmLoadFraction() {
