@@ -41,11 +41,11 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 public class RestDeploymentClient {
 
     private WebResource webResource;
-    private Client client;
+    private final Client client;
     private static final String CONFIG_FILE = "paas-self-adaptation-manager.properties";
     private static String baseUri = "http://192.168.3.16/application-manager/";
 
-    public RestDeploymentClient(String application_name) {
+    public RestDeploymentClient(String applicationName) {
         try {
             PropertiesConfiguration config;
             if (new File(CONFIG_FILE).exists()) {
@@ -62,44 +62,44 @@ public class RestDeploymentClient {
         }
         com.sun.jersey.api.client.config.ClientConfig config = new com.sun.jersey.api.client.config.DefaultClientConfig();
         client = Client.create(config);
-        String resourcePath = java.text.MessageFormat.format("applications/{0}/deployments", new Object[]{application_name});
+        String resourcePath = java.text.MessageFormat.format("applications/{0}/deployments", new Object[]{applicationName});
         webResource = client.resource(baseUri).path(resourcePath);
     }
 
-    public void setResourcePath(String application_name) {
-        String resourcePath = java.text.MessageFormat.format("applications/{0}/deployments", new Object[]{application_name});
+    public void setResourcePath(String applicationName) {
+        String resourcePath = java.text.MessageFormat.format("applications/{0}/deployments", new Object[]{applicationName});
         webResource = client.resource(baseUri).path(resourcePath);
     }
 
-    public <T> T getDeployment(Class<T> responseType, String deployment_id) throws UniformInterfaceException {
+    public <T> T getDeployment(Class<T> responseType, String deploymentId) throws UniformInterfaceException {
         WebResource resource = webResource;
-        resource = resource.path(java.text.MessageFormat.format("{0}", new Object[]{deployment_id}));
+        resource = resource.path(java.text.MessageFormat.format("{0}", new Object[]{deploymentId}));
         return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
-    public <T> T getEnergyEstimationForEvent(Class<T> responseType, String deployment_id, String event_id) throws UniformInterfaceException {
+    public <T> T getEnergyEstimationForEvent(Class<T> responseType, String deploymentId, String eventId) throws UniformInterfaceException {
         WebResource resource = webResource;
-        resource = resource.path(java.text.MessageFormat.format("{0}/events/{1}/energy-estimation", new Object[]{deployment_id, event_id}));
+        resource = resource.path(java.text.MessageFormat.format("{0}/events/{1}/energy-estimation", new Object[]{deploymentId, eventId}));
         return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
-    public ClientResponse deleteDeployment(String deployment_id) throws UniformInterfaceException {
-        return webResource.path(java.text.MessageFormat.format("{0}", new Object[]{deployment_id})).delete(ClientResponse.class);
+    public ClientResponse deleteDeployment(String deploymentId) throws UniformInterfaceException {
+        return webResource.path(java.text.MessageFormat.format("{0}", new Object[]{deploymentId})).delete(ClientResponse.class);
     }
 
     public ClientResponse postDeployment(Object requestEntity) throws UniformInterfaceException {
         return webResource.type(javax.ws.rs.core.MediaType.APPLICATION_XML).post(ClientResponse.class, requestEntity);
     }
 
-    public <T> T getEnergyConsumption(Class<T> responseType, String deployment_id) throws UniformInterfaceException {
+    public <T> T getEnergyConsumption(Class<T> responseType, String deploymentId) throws UniformInterfaceException {
         WebResource resource = webResource;
-        resource = resource.path(java.text.MessageFormat.format("{0}/energy-consumption", new Object[]{deployment_id}));
+        resource = resource.path(java.text.MessageFormat.format("{0}/energy-consumption", new Object[]{deploymentId}));
         return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
-    public <T> T getDeploymentOvf(Class<T> responseType, String deployment_id) throws UniformInterfaceException {
+    public <T> T getDeploymentOvf(Class<T> responseType, String deploymentId) throws UniformInterfaceException {
         WebResource resource = webResource;
-        resource = resource.path(java.text.MessageFormat.format("{0}/ovf", new Object[]{deployment_id}));
+        resource = resource.path(java.text.MessageFormat.format("{0}/ovf", new Object[]{deploymentId}));
         return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
@@ -111,9 +111,9 @@ public class RestDeploymentClient {
         return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
-    public <T> T getDeploymentAgreement(Class<T> responseType, String deployment_id) throws UniformInterfaceException {
+    public <T> T getDeploymentAgreement(Class<T> responseType, String deploymentId) throws UniformInterfaceException {
         WebResource resource = webResource;
-        resource = resource.path(java.text.MessageFormat.format("{0}/agreement", new Object[]{deployment_id}));
+        resource = resource.path(java.text.MessageFormat.format("{0}/agreement", new Object[]{deploymentId}));
         return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
