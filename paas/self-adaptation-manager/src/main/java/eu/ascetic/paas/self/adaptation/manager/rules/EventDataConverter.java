@@ -18,6 +18,8 @@ package eu.ascetic.paas.self.adaptation.manager.rules;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.EventData;
 import eu.ascetic.paas.slam.pac.events.ViolationMessage;
 import eu.ascetic.paas.slam.pac.events.ViolationMessageTranslator;
+import java.util.HashMap;
+import java.util.Map;
 import org.slasoi.gslam.pac.events.Message;
 
 /**
@@ -27,6 +29,19 @@ import org.slasoi.gslam.pac.events.Message;
  * @author Richard Kavanagh
  */
 public class EventDataConverter {
+
+    private static final Map<String, EventData.Operator> operatorMapping
+            = new HashMap<>();
+
+    static {
+        operatorMapping.put("less_than", EventData.Operator.LT);
+        operatorMapping.put("less_than_or_equals", EventData.Operator.LTE);
+        operatorMapping.put("equals", EventData.Operator.EQ);
+        operatorMapping.put("greater_than", EventData.Operator.GT);
+        operatorMapping.put("greater_than_or_equals", EventData.Operator.GTE);
+        operatorMapping.put(null, null);
+        operatorMapping.put("", null);
+    }
 
     /**
      * This converts from an XML representation of an event into the internal
@@ -77,20 +92,7 @@ public class EventDataConverter {
      * @return The enumerated type for the operator
      */
     public static EventData.Operator getOperator(ViolationMessage event) {
-        switch (event.getAlert().getSlaGuaranteedState().getOperator()) {
-            case "less_than_or_equals":
-                return EventData.Operator.LTE;
-            case "less_than":
-                return EventData.Operator.LT;
-            case "equals":
-                return EventData.Operator.EQ;
-            case "greater_than_or_equals":
-                return EventData.Operator.GTE;
-            case "greater_than":
-                return EventData.Operator.GT;
-        }
-
-        return EventData.Operator.LTE;
+        return operatorMapping.get(event.getAlert().getSlaGuaranteedState().getOperator());
     }
 
 }

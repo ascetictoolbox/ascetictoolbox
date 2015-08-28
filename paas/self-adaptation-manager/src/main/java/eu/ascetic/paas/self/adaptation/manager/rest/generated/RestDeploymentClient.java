@@ -117,8 +117,8 @@ public class RestDeploymentClient {
         return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
-    public ClientResponse putDeploymentAgreement(Object requestEntity, String deployment_id) throws UniformInterfaceException {
-        return webResource.path(java.text.MessageFormat.format("{0}/agreement", new Object[]{deployment_id})).type(javax.ws.rs.core.MediaType.APPLICATION_XML).put(ClientResponse.class, requestEntity);
+    public ClientResponse putDeploymentAgreement(Object requestEntity, String deploymentId) throws UniformInterfaceException {
+        return webResource.path(java.text.MessageFormat.format("{0}/agreement", new Object[]{deploymentId})).type(javax.ws.rs.core.MediaType.APPLICATION_XML).put(ClientResponse.class, requestEntity);
     }
 
     public void close() {

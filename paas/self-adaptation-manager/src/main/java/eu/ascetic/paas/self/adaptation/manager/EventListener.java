@@ -26,13 +26,13 @@ public interface EventListener {
     
     /**
      * This sets the event assessor that is used once an event has occurred.
-     * @param assessor 
+     * @param assessor The event assessor to set
      */
     public void setEventAssessor(EventAssessor assessor);
     
     /**
      * This gets the event assessor that is used once an event has occurred.
-     * @return 
+     * @return  The event assessor that this event listener is using
      */
     public EventAssessor getEventAssessor();
     

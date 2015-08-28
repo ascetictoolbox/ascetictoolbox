@@ -15,6 +15,9 @@
  */
 package eu.ascetic.paas.self.adaptation.manager.rules.datatypes;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * This class represents an event that arrives at self-adaptation manager for
  * assessment.
@@ -34,24 +37,60 @@ public class EventData implements Comparable<EventData> {
     private String agreementTerm;
     private String guaranteeid; //sla gurantee id
 
+    private static final Map<String, Operator> operatorMapping
+            = new HashMap<>();
+
+    static {
+        operatorMapping.put("LT", EventData.Operator.LT);
+        operatorMapping.put("LTE", EventData.Operator.LTE);
+        operatorMapping.put("EQ", EventData.Operator.EQ);
+        operatorMapping.put("GT", EventData.Operator.GT);
+        operatorMapping.put("GTE", EventData.Operator.GTE);
+        operatorMapping.put(null, null);
+        operatorMapping.put("", null);
+    }
+
     /**
-     *
+     * This is an enumeration that indicates if the event notification is of a
+     * breach or a proximity warning
+     */
+    public enum Type {
+
+        SLA_BREACH, WARNING
+    }
+
+    /**
+     * The operator used to say what the nature of the guarantee is.
+     */
+    public enum Operator {
+
+        LT, LTE, EQ, GT, GTE
+    }
+
+    /**
+     * The no-args constructor for event Data.
      */
     public EventData() {
     }
 
     /**
+     * This creates a new event data object.
      *
-     * @param time
-     * @param rawValue
-     * @param guranteedValue
-     * @param type
-     * @param guranteeOperator
-     * @param slaUuid
-     * @param applicationId
-     * @param deploymentId
-     * @param guaranteeid
-     * @param agreementTerm
+     * @param time The time of the event (Unix time).
+     * @param rawValue The raw value reported by the SLA manager, for the metric
+     * that breached its guarantee.
+     * @param guranteedValue The value for the threshold that forms the
+     * guarantee placed upon the value that breached.
+     * @param type This indicates if the event notifies of a breach or a warning
+     * of a potential future breach.
+     * @param guranteeOperator The operator that defines the threshold placed
+     * upon the guarantee. e.g. greater_than, less_than ...
+     * @param slaUuid The uuid for the SLA
+     * @param applicationId The id of the application that caused the breach
+     * @param deploymentId The id of the specific deployment that caused the
+     * breach
+     * @param guaranteeid The id of the guarantee that was breached
+     * @param agreementTerm The type of guarantee that was breached.
      */
     public EventData(long time, double rawValue, double guranteedValue, Type type,
             Operator guranteeOperator, String slaUuid, String applicationId,
@@ -223,23 +262,6 @@ public class EventData implements Comparable<EventData> {
     }
 
     /**
-     * This is an enumeration that indicates if the event notification is of a
-     * breach or a proximity warning
-     */
-    public enum Type {
-
-        SLA_BREACH, WARNING
-    }
-
-    /**
-     * The operator used to say what the nature of the guarantee is.
-     */
-    public enum Operator {
-
-        LT, LTE, EQ, GT, GTE
-    }
-
-    /**
      * This provides the mapping between the string representation of a operator
      * and the operator.
      *
@@ -247,19 +269,7 @@ public class EventData implements Comparable<EventData> {
      * @return The operator required.
      */
     public static Operator getOperator(String operator) {
-        switch (operator) {
-            case "LT":
-                return EventData.Operator.LT;
-            case "LTE":
-                return EventData.Operator.LTE;
-            case "EQ":
-                return EventData.Operator.EQ;
-            case "GT":
-                return EventData.Operator.GT;
-            case "GTE":
-                return EventData.Operator.GTE;
-        }
-        return EventData.Operator.GTE;
+        return operatorMapping.get(operator);
     }
 
     /**
