@@ -46,6 +46,12 @@ public class AveragePowerEnergyPredictor extends AbstractEnergyPredictor {
     private int powerObservationTimeSec = 0;
     private int observationTime = 0;
 
+    /**
+     * This creates a new average power energy predictor. The predictor when
+     * running takes the last power reading and makes the assumption no change
+     * will occur. An observation time window is used for taking the measurement,
+     * which is set via a configuration file.
+     */
     public AveragePowerEnergyPredictor() {
         try {
             if (database == null) {
