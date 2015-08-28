@@ -34,18 +34,18 @@ public class Response implements Comparable<Response> {
     private String vmId;
     private boolean performed = false;
     private boolean possibleToAdapt = true;
-    private static final Map<String, Response.AdaptationType> adaptationMapping
+    private static final Map<String, Response.AdaptationType> ADAPTATION_TYPE_MAPPING
             = new HashMap<>();
 
     static {
-        adaptationMapping.put("ADD_VM", Response.AdaptationType.ADD_VM);
-        adaptationMapping.put("ADD_CPU", Response.AdaptationType.ADD_CPU);
-        adaptationMapping.put("ADD_MEMORY", Response.AdaptationType.ADD_MEMORY);
-        adaptationMapping.put("REMOVE_VM", Response.AdaptationType.REMOVE_VM);
-        adaptationMapping.put("REMOVE_CPU", Response.AdaptationType.REMOVE_CPU);
-        adaptationMapping.put("REMOVE_MEMORY", Response.AdaptationType.ADD_VM);
-        adaptationMapping.put(null, null);
-        adaptationMapping.put("", null);
+        ADAPTATION_TYPE_MAPPING.put("ADD_VM", Response.AdaptationType.ADD_VM);
+        ADAPTATION_TYPE_MAPPING.put("ADD_CPU", Response.AdaptationType.ADD_CPU);
+        ADAPTATION_TYPE_MAPPING.put("ADD_MEMORY", Response.AdaptationType.ADD_MEMORY);
+        ADAPTATION_TYPE_MAPPING.put("REMOVE_VM", Response.AdaptationType.REMOVE_VM);
+        ADAPTATION_TYPE_MAPPING.put("REMOVE_CPU", Response.AdaptationType.REMOVE_CPU);
+        ADAPTATION_TYPE_MAPPING.put("REMOVE_MEMORY", Response.AdaptationType.ADD_VM);
+        ADAPTATION_TYPE_MAPPING.put(null, null);
+        ADAPTATION_TYPE_MAPPING.put("", null);
     }
 
     /**
@@ -80,7 +80,7 @@ public class Response implements Comparable<Response> {
      * @return The Adaptation type required.
      */
     public static Response.AdaptationType getAdaptationType(String ruleName) {
-        return adaptationMapping.get(ruleName);
+        return ADAPTATION_TYPE_MAPPING.get(ruleName);
     }
 
     /**

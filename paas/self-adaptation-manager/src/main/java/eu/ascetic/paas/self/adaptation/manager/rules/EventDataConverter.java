@@ -30,17 +30,17 @@ import org.slasoi.gslam.pac.events.Message;
  */
 public class EventDataConverter {
 
-    private static final Map<String, EventData.Operator> operatorMapping
+    private static final Map<String, EventData.Operator> OPERATOR_MAPPING
             = new HashMap<>();
 
     static {
-        operatorMapping.put("less_than", EventData.Operator.LT);
-        operatorMapping.put("less_than_or_equals", EventData.Operator.LTE);
-        operatorMapping.put("equals", EventData.Operator.EQ);
-        operatorMapping.put("greater_than", EventData.Operator.GT);
-        operatorMapping.put("greater_than_or_equals", EventData.Operator.GTE);
-        operatorMapping.put(null, null);
-        operatorMapping.put("", null);
+        OPERATOR_MAPPING.put("less_than", EventData.Operator.LT);
+        OPERATOR_MAPPING.put("less_than_or_equals", EventData.Operator.LTE);
+        OPERATOR_MAPPING.put("equals", EventData.Operator.EQ);
+        OPERATOR_MAPPING.put("greater_than", EventData.Operator.GT);
+        OPERATOR_MAPPING.put("greater_than_or_equals", EventData.Operator.GTE);
+        OPERATOR_MAPPING.put(null, null);
+        OPERATOR_MAPPING.put("", null);
     }
 
     /**
@@ -92,7 +92,7 @@ public class EventDataConverter {
      * @return The enumerated type for the operator
      */
     public static EventData.Operator getOperator(ViolationMessage event) {
-        return operatorMapping.get(event.getAlert().getSlaGuaranteedState().getOperator());
+        return OPERATOR_MAPPING.get(event.getAlert().getSlaGuaranteedState().getOperator());
     }
 
 }

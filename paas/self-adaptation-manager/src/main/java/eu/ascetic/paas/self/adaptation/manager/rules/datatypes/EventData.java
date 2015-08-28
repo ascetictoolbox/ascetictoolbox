@@ -37,17 +37,17 @@ public class EventData implements Comparable<EventData> {
     private String agreementTerm;
     private String guaranteeid; //sla gurantee id
 
-    private static final Map<String, Operator> operatorMapping
+    private static final Map<String, Operator> OPERATOR_MAPPING
             = new HashMap<>();
 
     static {
-        operatorMapping.put("LT", EventData.Operator.LT);
-        operatorMapping.put("LTE", EventData.Operator.LTE);
-        operatorMapping.put("EQ", EventData.Operator.EQ);
-        operatorMapping.put("GT", EventData.Operator.GT);
-        operatorMapping.put("GTE", EventData.Operator.GTE);
-        operatorMapping.put(null, null);
-        operatorMapping.put("", null);
+        OPERATOR_MAPPING.put("LT", EventData.Operator.LT);
+        OPERATOR_MAPPING.put("LTE", EventData.Operator.LTE);
+        OPERATOR_MAPPING.put("EQ", EventData.Operator.EQ);
+        OPERATOR_MAPPING.put("GT", EventData.Operator.GT);
+        OPERATOR_MAPPING.put("GTE", EventData.Operator.GTE);
+        OPERATOR_MAPPING.put(null, null);
+        OPERATOR_MAPPING.put("", null);
     }
 
     /**
@@ -269,7 +269,7 @@ public class EventData implements Comparable<EventData> {
      * @return The operator required.
      */
     public static Operator getOperator(String operator) {
-        return operatorMapping.get(operator);
+        return OPERATOR_MAPPING.get(operator);
     }
 
     /**
