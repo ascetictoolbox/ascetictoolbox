@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package eu.ascetic.paas.self.adaptation.manager.rules;
+package eu.ascetic.paas.self.adaptation.manager.rules.loggers;
 
 import eu.ascetic.ioutils.GenericLogger;
 import eu.ascetic.ioutils.ResultsStore;
@@ -29,9 +29,8 @@ public class ResponseHistoryLogger extends GenericLogger<Response> {
     /**
      * This creates a new response history data logger
      *
-     * @param file The file to write the log out to.
-     * @param overwrite If the file should be overwritten on starting the energy
-     * modeller.
+     * @param file The file to write the log out to
+     * @param overwrite If the file should be overwritten on starting the logger
      */
     public ResponseHistoryLogger(File file, boolean overwrite) {
         super(file, overwrite);

@@ -65,8 +65,10 @@ public abstract class ActiveMQBase {
      * connection and the session for derived classes. It uses the default
      * guest:guest username and password.
      *
-     * @throws JMSException
-     * @throws NamingException
+     * @throws JMSException An exception thrown in the event of an ActiveMQ
+     * error.
+     * @throws NamingException An exception thrown in the event of an ActiveMQ
+     * error.
      */
     public ActiveMQBase() throws JMSException, NamingException {
         try {
@@ -107,8 +109,10 @@ public abstract class ActiveMQBase {
      * @param user The user name to use
      * @param password the password to use
      * @param url The url used to connect to ActiveMQ
-     * @throws JMSException
-     * @throws NamingException
+     * @throws JMSException An exception thrown in the event of an ActiveMQ
+     * error.
+     * @throws NamingException An exception thrown in the event of an ActiveMQ
+     * error.
      */
     public ActiveMQBase(String user, String password, String url) throws JMSException, NamingException {
         this.user = user;
@@ -123,8 +127,10 @@ public abstract class ActiveMQBase {
      *
      * @param user The username to connect with
      * @param password The password to connect with
-     * @throws javax.naming.NamingException
-     * @throws javax.jms.JMSException
+     * @throws JMSException An exception thrown in the event of an ActiveMQ
+     * error.
+     * @throws NamingException An exception thrown in the event of an ActiveMQ
+     * error.
      */
     public ActiveMQBase(String user, String password) throws NamingException, JMSException {
         if (user != null) {
@@ -140,6 +146,15 @@ public abstract class ActiveMQBase {
         }
     }
 
+    /**
+     * This initialises the ActiveMQ base.
+     *
+     * @param url The url that points to the Apache Active MQ server.
+     * @throws JMSException An exception thrown in the event of an ActiveMQ
+     * error.
+     * @throws NamingException An exception thrown in the event of an ActiveMQ
+     * error.
+     */
     private void initialise(String url) throws NamingException, JMSException {
 
         String initialContextFactory = "org.apache.qpid.jms.jndi.JmsInitialContextFactory";
@@ -164,10 +179,13 @@ public abstract class ActiveMQBase {
     }
 
     /**
-     * This is the generic code code from the ActiveMQBase's constructors.
+     * This is the generic code code from the ActiveMQBase's constructors, this
+     * initialises the ActiveMQ base based upon a lookup discovery mechanism.
      *
-     * @throws NamingException
-     * @throws JMSException
+     * @throws JMSException An exception thrown in the event of an ActiveMQ
+     * error.
+     * @throws NamingException An exception thrown in the event of an ActiveMQ
+     * error.
      */
     private void initialise() throws NamingException, JMSException {
         Context context = new InitialContext();
@@ -193,9 +211,11 @@ public abstract class ActiveMQBase {
     /**
      * This returns the current connection for Active MQ
      *
-     * @return
-     * @throws JMSException
-     * @throws NamingException
+     * @return This returns a new connection.
+     * @throws JMSException An exception thrown in the event of an ActiveMQ
+     * error.
+     * @throws NamingException An exception thrown in the event of an ActiveMQ
+     * error.
      */
     protected Connection getConnection() throws JMSException, NamingException {
         return connection;
@@ -207,7 +227,8 @@ public abstract class ActiveMQBase {
      * @param session The session to get the message producer for
      * @param queue The queue to create the message producer for
      * @return The message producer which is ready to send messages.
-     * @throws JMSException
+     * @throws JMSException An exception thrown in the event of an ActiveMQ
+     * error.
      */
     protected MessageProducer getMessageProducer(Session session, Destination queue) throws JMSException {
         // Create a MessageProducer from the Session to the Topic or Queue
@@ -221,8 +242,10 @@ public abstract class ActiveMQBase {
      *
      * @param queue The name of the queue to get
      * @return The queue for messages to be sent to
-     * @throws NamingException
-     * @throws javax.jms.JMSException
+     * @throws JMSException An exception thrown in the event of an ActiveMQ
+     * error.
+     * @throws NamingException An exception thrown in the event of an ActiveMQ
+     * error.
      */
     protected Destination getMessageQueue(String queue) throws NamingException, JMSException {
         return (Destination) session.createTopic(queue);
@@ -233,17 +256,22 @@ public abstract class ActiveMQBase {
      *
      * @param topic The name of the topic to get
      * @return The topic for messages to be sent to
-     * @throws NamingException
-     * @throws javax.jms.JMSException
+     * @throws JMSException An exception thrown in the event of an ActiveMQ
+     * error.
+     * @throws NamingException An exception thrown in the event of an ActiveMQ
+     * error.
      */
     protected Destination getTopic(String topic) throws NamingException, JMSException {
         return (Destination) session.createTopic(topic);
     }
 
     /**
-     * This lists the available queues on the server.
+     * This lists the available queues on the server. Queues have a single
+     * message that will be received by exactly one consumer. If there are no
+     * consumers available at the time the message is sent it will be kept until
+     * a consumer is available to process the message.
      *
-     * @return
+     * @return The list of queues on the server.
      */
     public Set<ActiveMQQueue> getQueues() {
         DestinationSource source;
@@ -259,7 +287,11 @@ public abstract class ActiveMQBase {
     /**
      * This lists the available queues on the server.
      *
-     * @return
+     * Topics operates with a publish and subscribe mechanism. When you publish
+     * a message is sent to all subscribers. Only subscribers who had an active
+     * subscription at the time the broker receives a message will get a copy.
+     *
+     * @return The list of topics on the server.
      */
     public Set<ActiveMQTopic> getTopics() {
         DestinationSource source;
@@ -272,6 +304,9 @@ public abstract class ActiveMQBase {
         return null;
     }
 
+    /**
+     * This method prints to standard out a list of all queues and topics.
+     */
     public void printQueueAndTopicInformation() {
         Set<ActiveMQQueue> queues = getQueues();
         for (ActiveMQQueue queue1 : queues) {
@@ -295,7 +330,6 @@ public abstract class ActiveMQBase {
 
     /**
      * Closes the connection to the message queue backbone.
-     *
      */
     public void close() {
         if (session != null) {

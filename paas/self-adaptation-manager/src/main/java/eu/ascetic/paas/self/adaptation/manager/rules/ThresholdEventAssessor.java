@@ -42,6 +42,10 @@ public class ThresholdEventAssessor extends AbstractEventAssessor {
     private String workingDir;
     private ResultsStore rulesFile;
 
+    /**
+     * This creates a new threshold event assessor. Configuration settings are
+     * taken from file.
+     */
     public ThresholdEventAssessor() {
         try {
             PropertiesConfiguration config;

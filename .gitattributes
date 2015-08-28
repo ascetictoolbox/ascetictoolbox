@@ -1215,14 +1215,12 @@ paas/self-adaptation-manager/src/jax-ws-catalog.xml -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/ActuatorInvoker.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/EventListener.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/SelfAdaptationManager.java -text
-paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/Test.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/activemq/ActiveMQBase.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/activemq/actuator/ActionRequester.java -text
-paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/activemq/listener/ApplicationManagerListener.java -text
+paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/activemq/listener/ApplicationMonitorListener.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/activemq/listener/EventHistoryListener.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/activemq/listener/SlaManagerListener.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rest/ActionRequester.java -text
-paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rest/generated/EventHistoryLogger.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rest/generated/RestDeploymentClient.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rest/generated/RestVMClient.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/AbstractEventAssessor.java -text
@@ -1232,7 +1230,6 @@ paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manag
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/FuzzyEventAssessor.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/IdleEventAssessor.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/ResponseHistoryAggregator.java -text
-paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/ResponseHistoryLogger.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/ThresholdEventAssessor.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/datatypes/EventData.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/datatypes/FiringCriteria.java -text
@@ -1242,6 +1239,8 @@ paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manag
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/decisionengine/DecisionEngine.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/decisionengine/LastVMCreatedDecisionEngine.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/decisionengine/RandomDecisionEngine.java -text
+paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/loggers/EventHistoryLogger.java -text
+paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/loggers/ResponseHistoryLogger.java -text
 paas/self-adaptation-manager/src/main/resources/adapt.fcl -text
 paas/self-adaptation-manager/src/test/java/eu/ascetic/paas/self/adaptation/manager/activemq/ActiveMQBaseTest.java -text
 paas/self-adaptation-manager/src/test/java/eu/ascetic/paas/self/adaptation/manager/activemq/listener/SLAManagerMessageGenerator.java -text

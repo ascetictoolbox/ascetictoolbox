@@ -35,11 +35,6 @@ import org.apache.commons.configuration.PropertiesConfiguration;
  */
 public class SelfAdaptationManager {
 
-    /**
-     * TODO populate the list of listeners and actuators. Once is this done,
-     * attach the listeners to the decision logic that decides if an actuator
-     * should fire or not.
-     */
     private ArrayList<EventListener> listeners = new ArrayList<>();
     private ActuatorInvoker actuator = null;
     private EventAssessor eventAssessor = null;
@@ -51,8 +46,10 @@ public class SelfAdaptationManager {
     /**
      * This creates a new instance of the self-adaptation manager.
      *
-     * @throws JMSException
-     * @throws NamingException
+     * @throws JMSException An exception thrown in the event of an ActiveMQ
+     * error.
+     * @throws NamingException An exception thrown in the event of an ActiveMQ
+     * error.
      */
     public SelfAdaptationManager() throws JMSException, NamingException {
         try {
@@ -108,6 +105,11 @@ public class SelfAdaptationManager {
         }
     }
     
+    /**
+     * This creates a new self-adaptation manager and is the main entry point
+     * for the program.
+     * @param args The args are not used.
+     */
     public static void main(String[] args) {
         try {
             new SelfAdaptationManager();

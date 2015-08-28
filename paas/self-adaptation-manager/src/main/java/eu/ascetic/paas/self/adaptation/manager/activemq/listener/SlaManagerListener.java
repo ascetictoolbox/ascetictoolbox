@@ -51,6 +51,12 @@ public class SlaManagerListener extends ActiveMQBase implements Runnable, EventL
     private static final String CONFIG_FILE = "paas-self-adaptation-manager.properties";
     private ViolationMessageTranslator converter = new ViolationMessageTranslator();
 
+    /**
+     * This creates a new SLA manager listener. Settings are taken from a 
+     * configuration file.
+     * @throws JMSException An exception thrown in the event of an ActiveMQ error.
+     * @throws NamingException An exception thrown in the event of an ActiveMQ error.
+     */
     public SlaManagerListener() throws JMSException, NamingException {
         super();
         try {

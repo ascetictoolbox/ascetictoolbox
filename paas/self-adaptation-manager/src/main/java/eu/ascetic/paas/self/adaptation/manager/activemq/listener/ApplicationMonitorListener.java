@@ -32,17 +32,22 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 
 /**
  * This listens to the application monitor as a data source.
- *
+ * TODO this is a partial implementation of this class.
  * @author Richard Kavanagh
  */
-public class ApplicationManagerListener extends ActiveMQBase implements Runnable {
+public class ApplicationMonitorListener extends ActiveMQBase implements Runnable {
 
     private HashMap<String, MessageConsumer> consumers = new HashMap<>();
     private HashMap<String, Destination> destinations = new HashMap<>();
     private boolean running = true;
     private static final String CONFIG_FILE = "paas-self-adaptation-manager.properties";
 
-    public ApplicationManagerListener() throws JMSException, NamingException {
+    /**
+     * This creates a new Application monitor listener.
+     * @throws JMSException An exception thrown in the event of an ActiveMQ error.
+     * @throws NamingException An exception thrown in the event of an ActiveMQ error.
+     */
+    public ApplicationMonitorListener() throws JMSException, NamingException {
         super();
         try {
             PropertiesConfiguration config;
@@ -54,30 +59,42 @@ public class ApplicationManagerListener extends ActiveMQBase implements Runnable
             }
             config.setAutoSave(true); //This will save the configuration file back to disk. In case the defaults need setting.
         } catch (ConfigurationException ex) {
-            Logger.getLogger(ApplicationManagerListener.class.getName()).log(Level.INFO, "Error loading the configuration of the PaaS Self adaptation manager", ex);
+            Logger.getLogger(ApplicationMonitorListener.class.getName()).log(Level.INFO, "Error loading the configuration of the PaaS Self adaptation manager", ex);
         }
     }
 
     /**
-     * This creates an application manager listener that can have its
+     * This creates an application monitor listener that can have its
      * configuration information set.
      *
      * @param user The user name to use
      * @param password the password to use
      * @param url The factory used to lookup the message queue.
-     * @throws JMSException
-     * @throws NamingException
+     * @throws JMSException An exception thrown in the event of an ActiveMQ error.
+     * @throws NamingException An exception thrown in the event of an ActiveMQ error.
      */
-    public ApplicationManagerListener(String user, String password, String url) throws JMSException, NamingException {
+    public ApplicationMonitorListener(String user, String password, String url) throws JMSException, NamingException {
         super(user, password, url);
     }
 
+    /**
+     * This returns the busiest vm type with the aim of enhancing adaptation, 
+     * by specifically targeting which VM type to add. 
+     * @param applicationID The id of the application to test for adaptation.
+     * @return The vm type that was the busiest.
+     */
     public String getBusiestVmTypeInApp(String applicationID) {
         String answer = "";
         //TODO get value from store
         return answer;
     }
 
+    /**
+     * This returns the least busiest vm type with the aim of enhancing adaptation, 
+     * by specifically targeting which VM type to remove. 
+     * @param applicationID The id of the application to test for adaptation.
+     * @return The vm type that was the busiest and is available to be removed.
+     */
     public String getLeastBusiestVmInApp(String applicationID) {
         String answer = "";
         //TODO get value from store
@@ -98,9 +115,9 @@ public class ApplicationManagerListener extends ActiveMQBase implements Runnable
             destinations.put("application-monitor.monitoring." + applicationId + ".measurement", destination);
             consumers.put("application-monitor.monitoring." + applicationId + ".measurement", session.createConsumer(destination));
         } catch (NamingException ex) {
-            Logger.getLogger(ApplicationManagerListener.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ApplicationMonitorListener.class.getName()).log(Level.SEVERE, null, ex);
         } catch (JMSException ex) {
-            Logger.getLogger(ApplicationManagerListener.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ApplicationMonitorListener.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

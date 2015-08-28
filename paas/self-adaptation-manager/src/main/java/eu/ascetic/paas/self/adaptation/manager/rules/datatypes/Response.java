@@ -32,6 +32,9 @@ public class Response implements Comparable<Response> {
     private boolean performed = false;
     private boolean possibleToAdapt = true;
     
+    /**
+     * Adaptation types are the forms of adaptation that can be made to occur.
+     */
     public enum AdaptationType {
     ADD_VM, REMOVE_VM, ADD_CPU, REMOVE_CPU,
     ADD_MEMORY, REMOVE_MEMORY}
@@ -100,13 +103,17 @@ public class Response implements Comparable<Response> {
     }   
 
     /**
-     * @return the actionType
+     * This returns the type of adaptation that the response specifies to give
+     * to the event.
+     * @return the type of action to perform to respond to the event
      */
     public AdaptationType getActionType() {
         return actionType;
     }
 
     /**
+     * This sets the type of adaptation that the response specifies to give
+     * to the event.
      * @param actionType the actionType to set
      */
     public void setActionType(AdaptationType actionType) {
@@ -114,6 +121,7 @@ public class Response implements Comparable<Response> {
     }
 
     /**
+     * This returns additional information about the adaptation.
      * @return the adaptationDetails
      */
     public String getAdaptationDetails() {
@@ -121,6 +129,7 @@ public class Response implements Comparable<Response> {
     }
 
     /**
+     * This sets additional information about the adaptation, that might be needed.
      * @param adaptationDetails the adaptationDetails to set
      */
     public void setAdaptationDetails(String adaptationDetails) {

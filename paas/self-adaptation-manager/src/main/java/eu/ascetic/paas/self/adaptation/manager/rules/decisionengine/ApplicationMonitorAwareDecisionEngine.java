@@ -15,7 +15,7 @@
  */
 package eu.ascetic.paas.self.adaptation.manager.rules.decisionengine;
 
-import eu.ascetic.paas.self.adaptation.manager.activemq.listener.ApplicationManagerListener;
+import eu.ascetic.paas.self.adaptation.manager.activemq.listener.ApplicationMonitorListener;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
 import java.util.List;
 import java.util.logging.Level;
@@ -32,11 +32,14 @@ import javax.naming.NamingException;
  */
 public class ApplicationMonitorAwareDecisionEngine extends AbstractDecisionEngine {
 
-    ApplicationManagerListener datasource;
+    ApplicationMonitorListener datasource;
 
+    /**
+     * This creates a new application monitor aware decision engine.
+     */
     public ApplicationMonitorAwareDecisionEngine() {
         try {
-            this.datasource = new ApplicationManagerListener();
+            this.datasource = new ApplicationMonitorListener();
         } catch (JMSException ex) {
             Logger.getLogger(ApplicationMonitorAwareDecisionEngine.class.getName()).log(Level.SEVERE, null, ex);
         } catch (NamingException ex) {

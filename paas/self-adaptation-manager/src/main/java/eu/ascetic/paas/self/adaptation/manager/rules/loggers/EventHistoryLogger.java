@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package eu.ascetic.paas.self.adaptation.manager.rest.generated;
+package eu.ascetic.paas.self.adaptation.manager.rules.loggers;
 
 import eu.ascetic.ioutils.GenericLogger;
 import eu.ascetic.ioutils.ResultsStore;
@@ -27,6 +27,11 @@ import java.io.File;
  */
 public class EventHistoryLogger extends GenericLogger<EventData> {
 
+    /**
+     * This creates a new logger that is used to write out to disk event data.
+     * @param file The file to write the log out to
+     * @param overwrite If the file should be overwritten on starting the logger
+     */
     public EventHistoryLogger(File file, boolean overwrite) {
         super(file, overwrite);
     }    
