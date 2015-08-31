@@ -39,6 +39,8 @@ class LibvirtMetricsCollector
 
   def get_disk_and_network_ids(uuid)
     check_connection
+
+    cephs_disk_volume=true
     
     begin
       domain = @conn.lookup_domain_by_uuid(uuid)
@@ -46,7 +48,13 @@ class LibvirtMetricsCollector
       xml=domain.xml_desc
       doc = Nokogiri::XML(xml)
 
-      disk_path=doc.xpath("//disk/source").first["file"]
+      # For cephs
+      if cephs_disk_volume
+        disk_path=doc.xpath("//disk/source").first["name"]
+      else
+        disk_path=doc.xpath("//disk/source").first["file"]
+      end
+
       if_path=doc.xpath("//interface/target").first["dev"]
 
       DiskNetworkID.new(disk_path, if_path)
