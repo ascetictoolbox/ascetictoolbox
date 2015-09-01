@@ -215,10 +215,11 @@ public class VmsManager {
             if (usingZabbix()) {
                 ZabbixConnector.registerVmInZabbix(vmId, getVm(vmId).getHostName(), getVm(vmId).getIpAddress());
             }
-            
-            if (pricingModeller instanceof AsceticPricingModellerAdapter) {
+
+            // This call is not working. I will comment if for now
+            /*if (pricingModeller instanceof AsceticPricingModellerAdapter) {
                 initializeVmBilling(vmId, hostForDeployment.getHostname());
-            }
+            }*/
 
             // Commented code because the Energy Modeller crashes.
             /*if (energyModeller instanceof AsceticEnergyModellerAdapter) {
