@@ -16,9 +16,18 @@
 
 package eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Properties;
+
+import org.apache.log4j.*;
+
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
@@ -28,6 +37,7 @@ import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.energyprovider.En
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesrepository.IaaSPricingModellerPricingScheme;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesrepository.PricingSchemeA;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesrepository.PricingSchemeB;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesrepository.PricingSchemeC;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.*;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.billing.*;
 
@@ -43,9 +53,23 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
 	IaaSPricingModellerBilling billing = new IaaSPricingModellerBilling(energyProvider);
 	private static int idIaaSP=0;
 	
+	static Logger logger = null;
+
+
+
 	public IaaSPricingModeller(EnergyModeller energyModeller) {
 		this.energyModeller = energyModeller;
 		idIaaSP=idIaaSP+1;
+		DateFormat df = new SimpleDateFormat("ddMMyy_HHmmss");
+		Date today = Calendar.getInstance().getTime();     
+		String reportDate = df.format(today);
+		//Properties log4jProperties = new Properties();
+		String name = "logs/" + reportDate;
+		System.setProperty("logfile.name",name);
+		logger = Logger.getLogger(IaaSPricingModeller.class);
+		//PropertyConfigurator.configure(log4jProperties);
+		//BasicConfigurator.configure();
+		logger.info("IaaS Pricing Modeller initiallized");
 		
     }
 	
@@ -60,7 +84,7 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
      * ram mb
      * disk gb
      */
-
+	
 	public double getVMChargesPrediction(int CPU, int RAM, double storage, int schemeId,  long duration, String hostname){
 		VMinfo vm = new VMinfo (RAM, CPU, storage);
 		IaaSPricingModellerPricingScheme scheme = null;
@@ -70,18 +94,25 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
 		if (schemeId==1){
 			scheme = new PricingSchemeB(schemeId);
 		}
+		if (schemeId==2){
+			scheme = new PricingSchemeC(schemeId);
+		}
 		VMstate Vm = new VMstate(vm, energyProvider, scheme);
 		scheme.setEnergyModeller(energyModeller);
 		Vm.getPredictedInformation().setDuration(duration);
 		VM newVM = new VM(CPU, RAM, storage);
+		TimeParameters dur = new TimeParameters(duration);
+		TimePeriod dura = new TimePeriod(dur.getStartTime(), dur.getEndTime());
 		Host host = energyModeller.getHost(hostname);
 		Collection <VmDeployed> collection =  energyModeller.getVMsOnHost(host);
 		Collection <VM> col = castCollection(collection);
-		TimeParameters dur = new TimeParameters(duration);
-		TimePeriod dura = new TimePeriod(dur.getStartTime(), dur.getEndTime());
 		double energyPredicted = energyModeller.getPredictedEnergyForVM(newVM, col, host, dura).getTotalEnergyUsed();
 		Vm.getPredictedInformation().setPredictedEnergy(energyPredicted);
-		return billing.predictVMCharges(Vm);
+		Vm.getPredictedInformation().setPredictedPowerPerHour(energyPredicted/dura.getDuration());
+		double predictedPrice = billing.predictVMCharges(Vm);
+		logger.info("Prediction,"+hostname+","+String.valueOf(CPU)+","+String.valueOf(RAM)+","+String.valueOf(storage)+","+String.valueOf(duration)
+				+","+String.valueOf(schemeId)+","+String.valueOf(energyPredicted)+","+String.valueOf(predictedPrice));
+		return predictedPrice;
 	}
     
 	private Collection <VM> castCollection(Collection<VmDeployed> collection){
@@ -95,8 +126,7 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
 	}
 	
 	///////////////////////////////////////////BILLING/////////////////////////////////////////////
-	
-	
+		
 	public void initializeVM(String VMid, int schemeId){
 		int CPU = energyModeller.getVM(VMid).getCpus();
 		int RAM = energyModeller.getVM(VMid).getRamMb();
@@ -108,6 +138,9 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
 		}
 		if (schemeId==1){
 			scheme = new PricingSchemeB(schemeId);
+		}
+		if (schemeId==2){
+			scheme = new PricingSchemeC(schemeId);
 		}
 		scheme.setEnergyModeller(energyModeller);
 		VMstate VM = new VMstate(VMid, vm, energyProvider, scheme);

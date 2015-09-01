@@ -20,6 +20,8 @@
  * @author E. Agiatzidou
  */
 
+import java.util.HashMap;
+
 import org.junit.After;
 import org.junit.AfterClass;
 
@@ -29,6 +31,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+
+
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.IaaSPricingModeller;
 
 
@@ -36,6 +40,7 @@ public class IaaSPricingModellerTest
 {
    
 
+  	
 	public IaaSPricingModellerTest() {
 		
 	}
@@ -60,16 +65,11 @@ public class IaaSPricingModellerTest
 
 	@Test
     public void testIaaSPricingModeller() throws InterruptedException {
-      //  System.out.println("test IaaS Pricing Modeller");
         IaaSPricingModeller prModeller = new IaaSPricingModeller(null);
-      
-       // System.out.println("Dynamic Energy Price: " +prModeller.getEnergyProvider().getNewDynamicEnergyPrice().getPriceOnly());
-        System.out.println("Predicted value for scheme 0:" + prModeller.getVMChargesPrediction(2, 2, 20.0, 1, 360L, "2a"));  
-        
-      System.out.println("Initialize VM");
-       prModeller.initializeVM("sm", 1);        
-        Thread.sleep(10000);
-        prModeller.getVMCurrentCharges("sm");
+        System.out.println("Initialize VM");
+     //  prModeller.initializeVM("sm", 2);        
+      // Thread.sleep(10000);
+      // System.out.println("current charges = " + prModeller.getVMCurrentCharges("sm"));
      //   Thread.sleep(10000);
      //   prModeller.getVMCurrentCharges("sm");
      //  prModeller.initializeVM(2, 2.0, 2.0, 250.0, 1);
@@ -77,6 +77,9 @@ public class IaaSPricingModellerTest
         
         //to test the billing
       //  prModeller.getVMCurrentEnergyCharges(2);
+      
+
+
         
     }
 	

@@ -67,7 +67,7 @@ public class  IaaSPricingModellerCost implements IaaSPricingModellerCostInterfac
 			}
 	}
 
-	private double updateEnergy(VMstate VM){
+	public double updateEnergy(VMstate VM){
 		
 		VmDeployed vm = energyModeller.getVM(VM.getVMid());
 		TimePeriod timePeriod = new TimePeriod(VM.getStartTime(), VM.getChangeTime());

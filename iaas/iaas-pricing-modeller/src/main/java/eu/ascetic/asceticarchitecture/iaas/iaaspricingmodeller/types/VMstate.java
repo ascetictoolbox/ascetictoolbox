@@ -104,9 +104,10 @@ public class VMstate {
 	
 
 	//////////////////////PREDICTION //////////////////////////
-	public void setPrediction(long duration, double energy){
+	public void setPrediction(long duration, double energy, double power){
 		predictedInformation.setDuration(duration);
 		predictedInformation.setPredictedEnergy(energy);
+		predictedInformation.setPredictedPowerPerHour(power);
 	}
 	
 	public void setPredictedCharges(double charges){

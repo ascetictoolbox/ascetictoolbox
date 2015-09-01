@@ -23,6 +23,8 @@ public class VMPredInfo {
 	double predictedEnergy;
 	
 	double predictedCharges; //coming from IaaS scheme
+
+	double predictedPower;
 	
 	public VMPredInfo (){
 		this.predictedDuration = 0;
@@ -39,7 +41,7 @@ public class VMPredInfo {
 		predictedDuration = duration;
 	}
 	
-	public double getPredictedDuration(){
+	public long getPredictedDuration(){
 		return predictedDuration;
 	}
 	
@@ -57,6 +59,14 @@ public class VMPredInfo {
 	
 	public double getPredictedEnergy(){
 		return predictedEnergy;
+	}
+	
+	public void setPredictedPowerPerHour(double power){
+		this.predictedPower = power;
+	}
+	
+	public double getPredictedPowerPerHour(){
+		return this.predictedPower;
 	}
 	
 }

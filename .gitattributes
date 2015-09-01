@@ -152,6 +152,7 @@ iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaa
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/pricingschemesrepository/IaaSPricingModellerPricingSchemeRepositoryInterface.java -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/pricingschemesrepository/PricingSchemeA.java -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/pricingschemesrepository/PricingSchemeB.java -text
+iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/pricingschemesrepository/PricingSchemeC.java -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/Charges.java -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/DynamicEnergyPrice.java -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/DynamicResourcePrice.java -text
@@ -164,6 +165,7 @@ iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaa
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/VMPredInfo.java -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/VMinfo.java -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/VMstate.java -text
+iaas/iaas-pricing-modeller/src/main/resources/log4j.properties -text
 iaas/iaas-pricing-modeller/src/test/java/EnergyProviderTest.java -text
 iaas/iaas-pricing-modeller/src/test/java/IaaSPricingModellerTest.java -text
 iaas/iaas-pricing-modeller/src/test/java/PredictionTest.java -text
@@ -181,6 +183,7 @@ iaas/iaas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/iaas/ia
 iaas/iaas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/pricingschemesrepository/IaaSPricingModellerPricingSchemeRepositoryInterface.class -text
 iaas/iaas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/pricingschemesrepository/PricingSchemeA.class -text
 iaas/iaas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/pricingschemesrepository/PricingSchemeB.class -text
+iaas/iaas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/pricingschemesrepository/PricingSchemeC.class -text
 iaas/iaas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/Charges.class -text
 iaas/iaas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/DynamicEnergyPrice.class -text
 iaas/iaas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/DynamicResourcePrice.class -text
@@ -194,6 +197,7 @@ iaas/iaas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/iaas/ia
 iaas/iaas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/VMPredInfo.class -text
 iaas/iaas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/VMinfo.class -text
 iaas/iaas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/VMstate.class -text
+iaas/iaas-pricing-modeller/target/classes/log4j.properties -text
 iaas/iaas-pricing-modeller/target/test-classes/EnergyProviderTest.class -text
 iaas/iaas-pricing-modeller/target/test-classes/IaaSPricingModellerTest.class -text
 iaas/iaas-pricing-modeller/target/test-classes/PredictionTest.class -text
