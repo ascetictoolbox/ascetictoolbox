@@ -13,10 +13,10 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.App
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Unit;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.dao.impl.DataConsumptionDAOImpl;
 
-public class EnergyDataAggregatorService {
+public class EnergyDataAggregatorServiceZabbix {
 
 	private DataConsumptionDAOImpl dataDAO;
-	private static final Logger logger = Logger.getLogger(EnergyDataAggregatorService.class);
+	private static final Logger logger = Logger.getLogger(EnergyDataAggregatorServiceZabbix.class);
 	
 	public void setDataDAO(DataConsumptionDAOImpl dataDAO) {
 		this.dataDAO = dataDAO;

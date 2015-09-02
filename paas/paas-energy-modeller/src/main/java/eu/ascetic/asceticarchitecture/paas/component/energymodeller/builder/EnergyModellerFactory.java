@@ -5,6 +5,7 @@ package eu.ascetic.asceticarchitecture.paas.component.energymodeller.builder;
 
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.PaaSEnergyModeller;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.service.EnergyModellerService;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.service.EnergyModellerServiceY1;
 
 public class EnergyModellerFactory {
 	
@@ -12,7 +13,7 @@ public class EnergyModellerFactory {
 	
 	public static PaaSEnergyModeller getEnergyModeller(String propertyFile){
 		if (theEnergyModeller==null) {
-			theEnergyModeller = (PaaSEnergyModeller) new EnergyModellerService(propertyFile);
+			theEnergyModeller = (PaaSEnergyModeller) new EnergyModellerServiceY1(propertyFile);
 			return theEnergyModeller;
 		} else {
 			return theEnergyModeller;

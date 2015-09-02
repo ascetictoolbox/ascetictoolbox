@@ -1,30 +1,28 @@
 package eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.queue.client;
 
-import java.util.Date;
-import java.util.List;
+import java.util.Properties;
+import java.util.UUID;
 
 import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
+import javax.jms.ExceptionListener;
 import javax.jms.JMSException;
-import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
-import javax.jms.Topic;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 
-import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.log4j.Logger;
-
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.messages.GenericEnergyMessage;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.dao.EMSettings;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.queue.MessageParserUtility;
 
 
 public class AmqpClient {
 
    
+	
 	private MessageProducer producerMeasurement;
 	private MessageProducer producerPrediction;
 	private Destination destinationPrediction;
@@ -33,8 +31,8 @@ public class AmqpClient {
 	private String monitoringTopic="MEASUREMENTS";
 	private String predictionTopic="PREDICTION";
 	private String monitoringQueueTopic="PEM.ENERGY";
-	private String startTopic = "APPLICATION.*.DEPLOYMENT.*.VM.*.DEPLOYED";
-	private String stopTopic = "APPLICATION.*.DEPLOYMENT.*.VM.*.DELETED";
+
+	 private ConnectionFactory factory;
 	private Connection connection;
 	private String user = "admin";
 	private String password = "admin";
@@ -42,7 +40,7 @@ public class AmqpClient {
 	
 	private final static Logger LOGGER = Logger.getLogger(AmqpClient.class.getName());
 	
-	private String url = "tcp://10.15.5.55:61616";
+	private String url = "10.15.5.55:61616";
 	
 	
 	public void setup(String url, String username, String password,  String monitoringQueueTopic) throws Exception {
@@ -64,22 +62,67 @@ public class AmqpClient {
 		}
 		
 		// Create a ConnectionFactory
-		ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(this.user,this.password,this.url);
+		//ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(this.user,this.password,this.url);
 
-		// Create a Connection
-		connection = connectionFactory.createConnection();
+		
+		String initialContextFactory = "org.apache.qpid.jms.jndi.JmsInitialContextFactory";
+		String connectionJNDIName = UUID.randomUUID().toString();
+		String connectionURL = "amqp://" + this.user + ":" + this.password + "@" + this.url;
+		this.monitoringQueueTopic = monitoringQueueTopic.replaceAll("\\.", "");
+		String topicName = monitoringQueueTopic;
+		
+		// Set the properties ...
+		Properties properties = new Properties();
+		properties.put(Context.INITIAL_CONTEXT_FACTORY, initialContextFactory);
+		properties.put("connectionfactory."+connectionJNDIName , connectionURL);
+
+		properties.put("topic"+"."+monitoringQueueTopic+"."+monitoringTopic , monitoringTopic);
+		properties.put("topic"+"."+monitoringQueueTopic+"."+predictionTopic , predictionTopic);
+		
+		LOGGER.info("Connection param "+"topic"+"."+monitoringQueueTopic+"."+monitoringTopic);
+		LOGGER.info("Connection param"+topicName);
+		
+    
+		// Now we have the context already configured... 
+		// Create the initial context
+		//InitialContext context = new InitialContext(properties);
+		javax.naming.Context context = new InitialContext(properties);
+
+        factory = (ConnectionFactory) context.lookup(connectionJNDIName);
+        connection = factory.createConnection(this.user, this.password);
+        connection.setExceptionListener(new MyExceptionListener());
+        connection.start();
+		session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+		
+		LOGGER.info("Connection topic "+this.monitoringQueueTopic+"."+this.monitoringTopic);
+	
 		
 		// Create a Session for each queue
-		session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        destinationPrediction = session.createTopic(this.monitoringQueueTopic+"."+this.predictionTopic);
-        destinationMeasurement = session.createTopic(this.monitoringQueueTopic+"."+this.monitoringTopic);
+	
+        destinationPrediction = (Destination) context.lookup(this.monitoringQueueTopic+"."+this.predictionTopic);
+        destinationMeasurement = (Destination) context.lookup(this.monitoringQueueTopic+"."+this.monitoringTopic);
         
 		// Create a MessageProducer from the Session to the Queue
 		producerPrediction = session.createProducer(destinationPrediction);
 		producerMeasurement = session.createProducer(destinationMeasurement);
-		
+
 		// Start the connection
-		connection.start();
+		
+
+		// Create a Connection
+		//connection = connectionFactory.createConnection();
+		
+//		// Create a Session for each queue
+//		//session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+//        destinationPrediction = session.createTopic(this.monitoringQueueTopic+"."+this.predictionTopic);
+//        destinationMeasurement = session.createTopic(this.monitoringQueueTopic+"."+this.monitoringTopic);
+//        
+//		// Create a MessageProducer from the Session to the Queue
+//		producerPrediction = session.createProducer(destinationPrediction);
+//		producerMeasurement = session.createProducer(destinationMeasurement);
+//		
+//		// Start the connection
+
 		LOGGER.info("Connection started");
 		
 	}
@@ -127,92 +170,21 @@ public class AmqpClient {
 		}
 	}
 	
-//	public void sendToQueue(String queue,String providerid,String applicationid, List<String> vms, String eventid, GenericEnergyMessage.Unit unit, String referenceTime,double value){
-//		
-//		GenericEnergyMessage message= new GenericEnergyMessage();
-//		message.setProvider(providerid);
-//		message.setApplicationid(applicationid);
-//		message.setEventid(eventid);
-//		Date data = new Date();
-//		message.setGenerattiontimestamp(data.toGMTString());
-//		// used to specify the time the forecast is referred to, 
-//		// but if refers to a measurement it is the same as the reference time (becayse it referes to the same time it has bee generated
-//		if (referenceTime==null){
-//			message.setReferredtimestamp(data.toGMTString());
-//		} else {
-//			message.setReferredtimestamp(referenceTime);
-//		}
-//		message.setVms(vms);
-//		message.setUnit(unit);
-//		message.setValue(value);
-//		sendMessage(queue, MessageParserUtility.buildStringMessage(message));
-//		LOGGER.info("EM queue manager has sent a message to "+queue);
-//		LOGGER.debug("EM queue manager built this message "+MessageParserUtility.buildStringMessage(message));
-//		
-//		
-//	}
-		
-//	public void createConsumers(){
-//		//APPLICATION.davidgpTestApp.DEPLOYMENT.456.SUBMITTED
-//		//APPLICATION.davidgpTestApp.DEPLOYMENT.456.VM.1711.DEPLOYED
-//		//APPLICATION.davidgpTestApp.DEPLOYMENT.456.VM.1712.DELETED
-//		//APPLICATION.davidgpTestApp.DEPLOYMENT.456.TERMINATED
-//		
-//		
-//		
-//		MessageConsumer consumerStart;
-//		MessageConsumer consumerStop;
-//		try {
-//			Destination topic = session.createTopic(startTopic);
-//			consumerStart = session.createConsumer(startDestination);
-//			Destination stopDestination = session.createTopic(stopTopic);
-//			consumerStop = session.createConsumer(stopDestination);
-//			
-//	        startListner = new MessageListener() {
-//	            public void onMessage(Message message) {
-//	                try {
-//	                    if (message instanceof TextMessage) {
-//	                        TextMessage textMessage = (TextMessage) message;
-//	                        System.out.println("Received start message"
-//	                                + textMessage.getText() + "'");
-//	                    }
-//	                } catch (JMSException e) {
-//	                    System.out.println("Caught:" + e);
-//	                    e.printStackTrace();
-//	                }
-//	            }
-//	        };
-//	        
-//	        stopListener = new MessageListener() {
-//	            public void onMessage(Message message) {
-//	                try {
-//	                    if (message instanceof TextMessage) {
-//	                        TextMessage textMessage = (TextMessage) message;
-//	                        System.out.println("Received stop message"
-//	                                + textMessage.getText() + "'");
-//	                    }
-//	                } catch (JMSException e) {
-//	                    System.out.println("Caught:" + e);
-//	                    e.printStackTrace();
-//	                }
-//	            }
-//	        };
-//	
-//	        consumerStart.setMessageListener(startListner);
-//	        consumerStop.setMessageListener(stopListener);
-//		
-//		} catch (JMSException e1) {
-//			e1.printStackTrace();
-//		}
-//
-//	}
-
     public void destroy() throws JMSException {
 
     	producerMeasurement.close();
     	producerPrediction.close();
         session.close();
         connection.close();
+    }
+
+    private static class MyExceptionListener implements ExceptionListener {
+        @Override
+        public void onException(JMSException exception) {
+            System.out.println("Connection ExceptionListener fired, exiting.");
+            exception.printStackTrace(System.out);
+            System.exit(1);
+        }
     }
 
 }

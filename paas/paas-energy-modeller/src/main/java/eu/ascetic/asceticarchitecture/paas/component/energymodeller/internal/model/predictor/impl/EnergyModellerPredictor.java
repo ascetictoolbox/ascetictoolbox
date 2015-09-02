@@ -15,7 +15,7 @@ import weka.core.Instance;
 import weka.core.Instances;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.ApplicationSample;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Unit;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.EnergyDataAggregatorService;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.EnergyDataAggregatorServiceZabbix;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.model.interpolator.impl.DataInterpolator;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.model.predictor.PredictorInterface;
 
@@ -25,7 +25,7 @@ public class EnergyModellerPredictor implements PredictorInterface {
 
 	
 	private final static Logger LOGGER = Logger.getLogger(PredictorInterface.class.getName());
-	private EnergyDataAggregatorService service;
+	private EnergyDataAggregatorServiceZabbix service;
 	
 	@Override
 	public double estimate(String providerid, String applicationid,	List<String> vmids, String eventid, Unit unit, long timelater) {
@@ -110,7 +110,7 @@ public class EnergyModellerPredictor implements PredictorInterface {
 	}
 
 	@Override
-	public void setEnergyService(EnergyDataAggregatorService service) {
+	public void setEnergyService(EnergyDataAggregatorServiceZabbix service) {
 		this.service = service;
 	}
 

@@ -12,7 +12,7 @@ import org.springframework.util.Assert;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.builder.EnergyModellerFactory;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.PaaSEMDatabaseManager;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.ZabbixDataCollectorService;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.service.EnergyModellerService;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.service.EnergyModellerServiceY1;
 
 public class EnergyModellerDataZabbix {
 
@@ -24,10 +24,10 @@ public class EnergyModellerDataZabbix {
 	 * 
 	 */
 	
-	private static String HOST = "48f2dd77-9818-46e5-b79d-58b5e2d80613";
-	private static String HOST2 = "59d2ae8d-1ea0-46df-993f-fddbdd48c830";
-	private static String HOST3 = "8f805a34-4ef1-4a9a-93e8-028651de28cc";
-	private static String hst ="asok10";
+	private static String HOST = "47d3b87d-536f-4769-9b02-c6c6b528dd08";
+	private static String HOST2 = "eb60a3b8-7904-4ef1-bcc4-2a25fca8d8ff";
+	private static String HOST3 = "cbd14f4b-09dc-4d03-a6b2-f5d4e3ecc502";
+	private static String hstr ="wally152";
 	private static ZabbixDataCollectorService dcollector;
 	private static PaaSEMDatabaseManager dbmanager;
 	
@@ -52,18 +52,18 @@ public class EnergyModellerDataZabbix {
 		for (String hst : hosts)System.out.println("HST "+hst);
 		String result = dcollector.searchFullHostsname(HOST);
 		System.out.println("HST "+result);
-		Assert.notNull(result);
+//		Assert.notNull(result);
 		
 	}
 	
-//	@Test
-//	public void testVMDataAll() {
-//		System.out.println("################################## ");
-//		System.out.println("### ALL DATA FOR "+dcollector.searchFullHostsname(HOST));
-//		System.out.println("################################## ");
-//		dcollector.getHistoryForItem("apptest","deptest","Power", dcollector.searchFullHostsname(HOST),30);
-//	}
-//	
+	@Test
+	public void testVMDataAll() {
+		System.out.println("################################## ");
+		System.out.println("### ALL DATA FOR "+dcollector.searchFullHostsname(HOST));
+		System.out.println("################################## ");
+		dcollector.getHistoryForItemFrom("apptest","Power", dcollector.searchFullHostsname(HOST),0);
+	}
+	
 //	@Test
 //	public void testVMDataSamples() {
 //		System.out.println("################################## ");

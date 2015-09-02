@@ -1,11 +1,6 @@
 package eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.Reader;
-
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
-import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -14,33 +9,32 @@ import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.apache.log4j.Logger;
 
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.mapper.AppRegistryMapper;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.mapper.DataConsumptionMapper;
 
 
-public class ApplicationRegistry {
+public class DataConsumptionHandler {
 
 	private static SqlSessionFactory sqlSessionFactory;
+	private static DataConsumptionMapper mapper;
+	private static DataConsumptionHandler instance;
 	
-	private static AppRegistryMapper mapper;
-	private static ApplicationRegistry instance;
-	
-	private final static Logger LOGGER = Logger.getLogger(ApplicationRegistry.class.getName());
+	private final static Logger LOGGER = Logger.getLogger(DataConsumptionHandler.class.getName());
 	
 	
-	private ApplicationRegistry(String driver,String url,String uname,String pwd){
+	private DataConsumptionHandler(String driver,String url,String uname,String pwd){
 		TransactionFactory transactionFactory = new JdbcTransactionFactory();
 		Environment environment = new Environment("development", transactionFactory, getDataSource(driver,url,uname,pwd));
 		Configuration configuration = new Configuration(environment);
-		configuration.addMapper(AppRegistryMapper.class);
+		configuration.addMapper(DataConsumptionMapper.class);
 		sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
-		LOGGER.info("Registry set up complete");
+		LOGGER.info("Data collector set up complete");
 	}
 	
-	public static ApplicationRegistry getRegistry(String driver,String url,String uname,String pwd){
-		LOGGER.info("Returning the registry");
+	public static DataConsumptionHandler getHandler(String driver,String url,String uname,String pwd){
+		LOGGER.info("Returning the handler");
 		if (instance==null) {
-			instance = new ApplicationRegistry(driver,url,uname,pwd);
-			LOGGER.info("Returned the registry instance");
+			instance = new DataConsumptionHandler(driver,url,uname,pwd);
+			LOGGER.info("Returned the handler instance");
 		}
 		
 		return instance;
@@ -56,21 +50,21 @@ public class ApplicationRegistry {
 	 
 	public void initializeTable(UnpooledDataSource uds){
 		
-		ScriptRunner sr;
-		try {
-			sr = new ScriptRunner(uds.getConnection());
-			Reader reader = new BufferedReader(new FileReader("createRegistry.sql"));
-			sr.runScript(reader);
-			LOGGER.info("Initialize the registry");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+//		ScriptRunner sr;
+//		try {
+//			sr = new ScriptRunner(uds.getConnection());
+//			Reader reader = new BufferedReader(new FileReader("createRegistry.sql"));
+//			sr.runScript(reader);
+//			LOGGER.info("Initialize the registry");
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
 	}
 	
-	public AppRegistryMapper getMapper(){
-		if (mapper==null) mapper = sqlSessionFactory.openSession(true).getMapper(AppRegistryMapper.class);
+	public DataConsumptionMapper getMapper(){
+		if (mapper==null) mapper = sqlSessionFactory.openSession(true).getMapper(DataConsumptionMapper.class);
 		LOGGER.info("Returning the mapper");
 		return mapper;
 	}

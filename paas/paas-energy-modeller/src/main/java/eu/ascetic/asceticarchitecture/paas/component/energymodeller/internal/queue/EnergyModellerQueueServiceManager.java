@@ -1,7 +1,9 @@
 package eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.queue;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.jms.JMSException;
@@ -11,9 +13,14 @@ import javax.jms.TextMessage;
 
 import org.apache.log4j.Logger;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.messages.GenericEnergyMessage;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.DataConsumption;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.ApplicationRegistry;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.DataConsumptionHandler;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.mapper.AppRegistryMapper;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.mapper.DataConsumptionMapper;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.mapper.VirtualMachine;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.queue.MessageParserUtility;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.queue.client.AmqpClient;
@@ -23,15 +30,17 @@ public class EnergyModellerQueueServiceManager {
 	private AmqpClient queuePublisher;
  
 	private ApplicationRegistry registry;
+	private DataConsumptionHandler dataConsumptionHandler;
 	
 	
 	private final static Logger LOGGER = Logger.getLogger(EnergyModellerQueueServiceManager.class.getName());
 	
 		
-	public EnergyModellerQueueServiceManager(AmqpClient queuePublisher, ApplicationRegistry registry) {
+	public EnergyModellerQueueServiceManager(AmqpClient queuePublisher, ApplicationRegistry registry,DataConsumptionHandler dataConsumptionHandler) {
 		
 		this.queuePublisher = queuePublisher;
 		this.registry = registry;
+		this.dataConsumptionHandler = dataConsumptionHandler;
 		LOGGER.info("EM queue manager set");
 	
 	}
@@ -59,16 +68,10 @@ public class EnergyModellerQueueServiceManager {
 		
 	}	
 	
-	// required to monitor application deployment and undeployment for registry creation
-	public void createConsumers(String appTopic){
-		//APPLICATION.davidgpTestApp.DEPLOYMENT.456.SUBMITTED
-		//APPLICATION.davidgpTestApp.DEPLOYMENT.456.VM.1711.DEPLOYED
-		//APPLICATION.davidgpTestApp.DEPLOYMENT.456.VM.1712.DELETED
-		//APPLICATION.davidgpTestApp.DEPLOYMENT.456.TERMINATED
-//		private String startTopic = "APPLICATION.*.DEPLOYMENT.*.VM.*.*";
-//		private String stopTopic = "APPLICATION.*.DEPLOYMENT.*.VM.*.*";
-		//String topic = "APPLICATION.*.DEPLOYMENT.*.VM.*.*";
-		LOGGER.info("Registering consumer for " +appTopic);
+
+	public void createConsumers(String appTopic, String measurementsTopic){
+
+		LOGGER.info("Registering consumer for application " + appTopic + " and for energy measurements "+measurementsTopic);
 		
         MessageListener appListener = new MessageListener() {
         
@@ -110,13 +113,79 @@ public class EnergyModellerQueueServiceManager {
 	            }
 	        }
 	    };		
+	    
+	    
 		
 	    LOGGER.debug("Received "+appTopic);
 	    LOGGER.debug("Received "+appListener);
 	    LOGGER.debug("Received "+queuePublisher);
 		queuePublisher.registerListener(appTopic,appListener);
 		
+//		Topic name: vm.<VMid>.item.<itemId> (for example: vm.wally159.item.energy)
+//		-          Message structure:
+//		{              
+//		                “name”:<String>,             //energy or power
+//		                “value”: <double>,
+//		                “units”:<String>,       //W for power and KWh or Wh for energy
+//		                “timestamp”:<long>
+//		}
 		
+		MessageListener measureListener = new MessageListener(){
+			DataConsumptionMapper mapper = dataConsumptionHandler.getMapper();
+        	
+	        public void onMessage(Message message) {
+		            try {
+		            	
+		                if (message instanceof TextMessage) {
+		                	 
+		                    TextMessage textMessage = (TextMessage) message;
+		                    LOGGER.info("Received start message" + textMessage.getText() + "'"+textMessage.getJMSDestination());
+		                    String dest = message.getJMSDestination().toString();
+		                    String payload = textMessage.getText();
+		                    String[] topic = dest.split("\\.");
+		                    LOGGER.info("Received " +topic[3]+topic[1] );
+		                    
+		                    int i =0;
+		                    LOGGER.info(i);
+		                    DataConsumption dc= new DataConsumption();
+		                    ObjectMapper jmapper = new ObjectMapper();
+		                    Map<String,Object> userData = jmapper.readValue(payload, Map.class);
+		                    double value = (double) userData.get("value");
+		                    long ts = (long) userData.get("timestamp");
+		                    dc.setVmid(topic[1] );
+		                    if (ts <=0){
+		                    	LOGGER.info("Received non valid measure" +ts );
+		                    	return;
+		                    }
+		                    if (value <0){
+		                    	LOGGER.info("Received non valid measure" +value);
+		                    	return;
+		                    }
+		                    if (topic[3].equals("energy")){
+			                    dc.setVmenergy(value);
+			                    dc.setTime(ts);		                    	
+		                    	LOGGER.info("Received energy reading");
+		                    }
+		                    if (topic[3].equals("power")){
+			                    dc.setVmpower(value);
+			                    dc.setTime(ts);	                    	
+		                    	LOGGER.info("Received power reading");
+		                    }
+		                    
+		                    
+		                	 
+		                }
+		            } catch (Exception e) {
+		                System.out.println("Caught:" + e);
+		                e.printStackTrace();
+		            }
+		        }
+		};
+		
+		LOGGER.debug("Received "+measurementsTopic);
+	    LOGGER.debug("Received "+measureListener);
+	    LOGGER.debug("Received "+queuePublisher);
+		queuePublisher.registerListener(measurementsTopic,measureListener);
 		
 	}
 	

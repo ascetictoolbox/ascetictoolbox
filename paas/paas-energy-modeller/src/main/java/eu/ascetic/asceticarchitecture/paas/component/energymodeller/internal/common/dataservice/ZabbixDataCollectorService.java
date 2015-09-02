@@ -347,7 +347,9 @@ public class ZabbixDataCollectorService  {
 	
 	public String searchFullHostsname(String hosttbs){
 		List<String> hosts = getHostsnames() ;
+		logger.info("searching this "+hosttbs);
 		for(String host : hosts){
+			logger.info("got this "+host);
 			if(host.contains(hosttbs))return host;
 		}
 		logger.info("Not found this host");

@@ -1083,10 +1083,13 @@ paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/comp
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/data/database/table/DataEvent.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/data/database/table/EnergyModellerMonitoring.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/data/ibatis/ApplicationRegistry.java -text
+paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/data/ibatis/DataConsumptionHandler.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/data/ibatis/mapper/AppRegistryMapper.java -text
+paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/data/ibatis/mapper/DataConsumptionMapper.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/data/ibatis/mapper/VirtualMachine.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/data/queue/MessageParserUtility.java -text
-paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/dataservice/EnergyDataAggregatorService.java -text
+paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/dataservice/EnergyDataAggregatorServiceQueue.java -text
+paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/dataservice/EnergyDataAggregatorServiceZabbix.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/dataservice/EventDataAggregatorService.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/dataservice/MonitoringDataService.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/dataservice/ZabbixDataCollectorService.java -text
@@ -1102,7 +1105,10 @@ paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/comp
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/model/predictor/impl/EnergyModellerPredictor.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/queue/EnergyModellerQueueServiceManager.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/queue/client/AmqpClient.java -text
+paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/queue/client/JNIAmqpClient.java -text
+paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/service/EnergyModellerServiceY1.java -text
 paas/paas-energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/test/AppRegistry.java -text
+paas/paas-energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/test/DataConsumptionData.java -text
 paas/paas-energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/test/EMQueuePEM.java -text
 paas/paas-energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/test/QueuePEM.java -text
 paas/paas-pricing-modeller/LICENSE.TXT -text

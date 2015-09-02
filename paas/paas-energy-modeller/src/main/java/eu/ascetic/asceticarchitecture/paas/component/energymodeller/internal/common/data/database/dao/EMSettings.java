@@ -5,8 +5,6 @@ package eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.co
 
 import java.util.Properties;
 
-import javax.jms.Session;
-
 public class EMSettings {
 
 	private String iaasdriver="com.mysql.jdbc.Driver";
@@ -37,6 +35,7 @@ public class EMSettings {
 	
 	private String amanagertopic="APPLICATION.*.DEPLOYMENT.*.VM.*.*";
 	
+	private String powertopic="vm.*.item.*";
 	
 
 	public EMSettings() {
@@ -65,6 +64,7 @@ public class EMSettings {
 		this.setMonitoringQueueTopic(props.getProperty("monitoringQueueTopic"));
 		this.setEnableQueue(props.getProperty("enableQueue"));
 		this.setAmanagertopic(props.getProperty("amanagertopic"));
+		this.setPowertopic(props.getProperty("energytopic"));
 	}
 
 	public String getIaasdbuser() {
@@ -246,6 +246,16 @@ public class EMSettings {
 
 	public void setAmanagertopic(String amanagertopic) {
 		this.amanagertopic = amanagertopic;
+	}
+
+
+	public String getPowertopic() {
+		return powertopic;
+	}
+
+
+	public void setPowertopic(String powertopic) {
+		this.powertopic = powertopic;
 	}
 
 	

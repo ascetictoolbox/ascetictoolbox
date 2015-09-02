@@ -7,13 +7,13 @@
 	http://www.springframework.org/schema/jdbc 
 	http://www.springframework.org/schema/jdbc/spring-jdbc-3.2.xsd">
 	
-    <bean id="dataConsumptionDAO" class="eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.DataConsumptionDAOImpl">
+    <bean id="dataConsumptionDAO" class="eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.dao.impl.DataConsumptionDAOImpl">
         <property name="dataSource" ref="dataSource" />
     </bean>
-    <bean id="dataEventDAO" class="eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.DataEventDAOImpl">
+    <bean id="dataEventDAO" class="eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.dao.impl.DataEventDAOImpl">
         <property name="dataSource" ref="dataSource" />
     </bean>
-    <bean id="emModelDAO" class="eu.ascetic.asceticarchitecture.paas.component.common.dao.impl.EnergyModellerMonitoringDAOImpl">
+    <bean id="emModelDAO" class="eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.dao.impl.EnergyModellerMonitoringDAOImpl">
         <property name="dataSource" ref="dataSource" />
     </bean>
     
@@ -25,12 +25,12 @@
         <property name="password" value="root" />
     </bean>
    
-   <bean id="instance" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-        <property name="url" value="jdbc:mysql://10.15.5.55:3306/" />
-        <property name="username" value="root" />
-        <property name="password" value="root" />
-    </bean>
+<!--    <bean id="instance" class="org.springframework.jdbc.datasource.DriverManagerDataSource"> -->
+<!--         <property name="driverClassName" value="com.mysql.jdbc.Driver" /> -->
+<!--         <property name="url" value="jdbc:mysql://10.15.5.55:3306/" /> -->
+<!--         <property name="username" value="root" /> -->
+<!--         <property name="password" value="root" /> -->
+<!--     </bean> -->
     
 
 <!-- 	<jdbc:initialize-database data-source="instance"> -->

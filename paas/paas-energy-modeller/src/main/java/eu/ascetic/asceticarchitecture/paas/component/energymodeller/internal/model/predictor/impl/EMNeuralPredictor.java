@@ -3,7 +3,7 @@ package eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.mo
 import java.util.List;
 
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Unit;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.EnergyDataAggregatorService;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.EnergyDataAggregatorServiceZabbix;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.model.predictor.PredictorInterface;
 
 public class EMNeuralPredictor implements PredictorInterface{
@@ -15,7 +15,7 @@ public class EMNeuralPredictor implements PredictorInterface{
 	}
 
 	@Override
-	public void setEnergyService(EnergyDataAggregatorService service) {
+	public void setEnergyService(EnergyDataAggregatorServiceZabbix service) {
 		// TODO Auto-generated method stub
 		
 	}

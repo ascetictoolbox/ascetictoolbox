@@ -22,9 +22,12 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.mes
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.PaaSEnergyModeller;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.PaaSEMDatabaseManager;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.dao.EMSettings;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.DataConsumption;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.DataEvent;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.ApplicationRegistry;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.EnergyDataAggregatorService;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.DataConsumptionHandler;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.EnergyDataAggregatorServiceQueue;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.EnergyDataAggregatorServiceZabbix;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.EventDataAggregatorService;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.MonitoringDataService;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.ZabbixDataCollectorService;
@@ -47,8 +50,9 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	
 	private PaaSEMDatabaseManager dbmanager;
 	private LoadInjectorService loadInjector;	
-	private ZabbixDataCollectorService datacollector;
+	//private ZabbixDataCollectorService datacollector;
 	private MonitoringDataService monitoringDataService;
+	private DataConsumptionHandler dataCollectorHandler;
 	private PredictorInterface predictor;
 	// provides access to the registry by mean of session with mappers
 	
@@ -61,7 +65,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	private String monitoringTopic="monitoring";
 	private String predictionTopic="prediction";
 	private Boolean queueEnabled = false;
-	private EnergyDataAggregatorService energyService;
+	private EnergyDataAggregatorServiceQueue energyService;
 	private EventDataAggregatorService eventService;
 
 	
@@ -171,8 +175,6 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	
 	@Override
 	public List<EventSample> eventsData(String providerid,String applicationid, List<String> vmids, String eventid,Timestamp start, Timestamp end) {
-		this.loadEventData(applicationid, vmids,eventid);
-		this.loadEnergyData(applicationid, vmids);
 		List<EventSample> results = new Vector<EventSample>();
 		for (String vm : vmids){
 			results.addAll(eventsSamplesInInterval( providerid, applicationid,  vm,  eventid,start, end));
@@ -189,11 +191,24 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	
 	@Override
 	public List<ApplicationSample> applicationData( String providerid, String applicationid,List<String> vmids, long samplingperiod,Timestamp start, Timestamp end){
+		List<DataConsumption> resultssamples = new Vector<DataConsumption>();
 		List<ApplicationSample> results = new Vector<ApplicationSample>();
 		for(String vm : vmids){
-			List<ApplicationSample> estim_sample = energyService.sampleMeasurements(applicationid, vm, start.getTime(),end.getTime(),samplingperiod);
-			if (estim_sample!=null)results.addAll(estim_sample);
+			List<DataConsumption> estim_sample = energyService.sampleMeasurements("app",applicationid, vm, start.getTime(),end.getTime(),samplingperiod);
+			if (estim_sample!=null)resultssamples.addAll(estim_sample);
 		}
+		for(DataConsumption dc : resultssamples){
+			ApplicationSample as = new ApplicationSample();
+			as.setAppid(dc.getApplicationid());
+			as.setVmid(dc.getVmid());
+			as.setP_value(dc.getVmpower());
+			as.setTime(dc.getTime());
+			as.setC_value(dc.getCpu());
+			as.setE_value(dc.getVmpower());
+			results.add(as);
+		}
+		
+		
 		return results;
 	}
 
@@ -216,7 +231,6 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 				LOGGER.info("Application consumed " + String.format( "%.2f", total_energy ));
 			} else {
 				LOGGER.debug("Analytzing event");
-				this.loadEventData(applicationid, vmids,eventid);
 				for (String vm : vmids) {
 					LOGGER.debug("Analyzing events on VM "+vm); 
 					total_energy = total_energy + energyForVM(providerid, applicationid, vm, eventid,null,null);
@@ -234,11 +248,9 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	 */	
 	
 	private double averagePower(String providerid, String applicationid, List<String> vmids, String eventid, Timestamp start, Timestamp end) {
-		this.loadEnergyData(applicationid, vmids);
 		if((start==null)&&(end==null)){
 			if (eventid!=null){
 				LOGGER.info("Measuring event average instant power (W)"); 
-				this.loadEventData(applicationid, vmids,eventid);
 				double totalPower = 0;
 				double countEvents = 0;
 				for (String vm : vmids) {
@@ -278,7 +290,6 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 				}
 				return tot_power;
 			}else{
-				loadEventData(applicationid, vmids,eventid);
 				for (String vm : vmids) {
 					List<DataEvent> events = eventService.getEvents(applicationid, applicationid, vm, eventid,start,end);
 					for (DataEvent de: events){
@@ -314,13 +325,11 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	private double energyForVM(String providerid, String applicationid, String vmid, String eventid, Timestamp start, Timestamp end) {
 		List<String> vmids = new Vector<String>();
 		vmids.add(vmid);
-		this.loadEnergyData(applicationid, vmids);
 		if((start==null)&&(end==null)){
 			if (eventid==null){
 				LOGGER.info("Application energy estimation for " + applicationid );
-				return energyService.getEnergyFromVM(applicationid, "deployment1", vmid, eventid);
+				return energyService.getEnergyFromVM(applicationid, vmid, eventid);
 			} else {
-				this.loadEventData(applicationid, vmids,eventid);
 				LOGGER.info("Energy estimation for " + applicationid + " and its event " + eventid);
 				int eventcount =0;
 				double energyAverage = 0;
@@ -456,13 +465,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	
 	private void initializeDataConnectors(){
 		LOGGER.debug("Setting connection to data sources for events and energy ");
-		datacollector = new ZabbixDataCollectorService();
-		datacollector.setAMPath(emsettings.getAppmonitor());
-		datacollector.setup();
-		datacollector.setDataconumption(dbmanager.getDataConsumptionDAOImpl());
-		datacollector.setDataevent(dbmanager.getDataEventDAOImpl());
-		energyService = new EnergyDataAggregatorService();
-		energyService.setDataDAO(dbmanager.getDataConsumptionDAOImpl());
+		energyService = new EnergyDataAggregatorServiceQueue();
 		eventService = new EventDataAggregatorService();
 		eventService.setDaoEvent(dbmanager.getDataEventDAOImpl());
 		monitoringDataService = new MonitoringDataService();
@@ -474,25 +477,23 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		LOGGER.info("Loading Queue service manager "+emsettings.getEnableQueue() +emsettings.getAmanagertopic());
 		if (emsettings.getEnableQueue().equals("true")) {
 			
-			
 			try {
 				queueclient = new AmqpClient();
 				queueclient.setup(emsettings.getAmqpUrl(), emsettings.getAmqpUser(), emsettings.getAmqpPassword(), emsettings.getMonitoringQueueTopic());
 				appRegistry = ApplicationRegistry.getRegistry(emsettings.getPaasdriver(),emsettings.getPaasurl(),emsettings.getPaasdbuser(),emsettings.getPaasdbpassword());
-				
+				dataCollectorHandler = DataConsumptionHandler.getHandler(emsettings.getPaasdriver(),emsettings.getPaasurl(),emsettings.getPaasdbuser(),emsettings.getPaasdbpassword());
+				energyService.setDataMapper(dataCollectorHandler.getMapper());
 				LOGGER.info("Enabled");
-				queueManager = new EnergyModellerQueueServiceManager(queueclient,appRegistry);
+				queueManager = new EnergyModellerQueueServiceManager(queueclient,appRegistry,dataCollectorHandler);
 				LOGGER.debug("Enabled"+queueclient);
 				LOGGER.debug("Enabled"+appRegistry);
-				queueManager.createConsumers(emsettings.getAmanagertopic());
+				queueManager.createConsumers(emsettings.getAmanagertopic(),emsettings.getPowertopic());
 				
 			} catch (Exception e) {
 				LOGGER.error("ERROR initializing queue disabling the component..");
 				emsettings.setEnableQueue("false");
 				e.printStackTrace();
 			}
-			
-			
 		}
 		LOGGER.info("Loaded");
 	}
@@ -505,20 +506,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	/**
 	 * private methods for collecting data
 	 */
-	
-	private void loadEventData(String appid,List<String> vms,String eventid){
-		LOGGER.debug("Loading event data");
-		datacollector.handleEventData(appid, "deployment1", vms, eventid);
-		LOGGER.debug("Loaded event data");
-	}
-	
-	
-	private void loadEnergyData(String appid, List<String> vm){
-		LOGGER.debug("Loading power data");
-		datacollector.handleConsumptionData(appid, vm);
-		LOGGER.debug("Loaded power data");
-	}
-	
+		
 
 	@Override
 	public void manageComponent(String token, String command) {
@@ -536,7 +524,6 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		monitoringDataService.stopMonitoring(applicationid, deploymentid);
 		return false;
 	}	
-	
 	
 	/**
 	 * @return the emsettings of the Energy Modeller. It allows to get the current settings loaded from file
