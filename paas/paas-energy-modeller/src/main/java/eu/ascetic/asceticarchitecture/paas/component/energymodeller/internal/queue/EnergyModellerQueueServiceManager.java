@@ -91,7 +91,7 @@ public class EnergyModellerQueueServiceManager {
 	                    int i =0;
 	                    LOGGER.info(i);
 	                    VirtualMachine vm = new VirtualMachine();
-	                    vm.setApp_id( Integer.parseInt(topic[1]));
+	                    vm.setApp_id( topic[1]);
 	                    vm.setDeploy_id(Integer.parseInt(topic[3]));
 	                    vm.setVm_id(Integer.parseInt(topic[5]));
 	                    Date date = new Date();

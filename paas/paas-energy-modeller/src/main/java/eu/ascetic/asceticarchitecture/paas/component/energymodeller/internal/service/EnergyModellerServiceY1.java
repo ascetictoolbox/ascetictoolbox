@@ -50,11 +50,6 @@ public class EnergyModellerServiceY1 implements PaaSEnergyModeller {
 	private ZabbixDataCollectorService datacollector;
 	private MonitoringDataService monitoringDataService;
 	private PredictorInterface predictor;
-	// provides access to the registry by mean of session with mappers
-	
-	
-	// amqp client allows publishing messages, while queue manager handle scheduling of measurement publishing and subscribe to special topics
-	//private AmqpClient messageClient;
 	private ApplicationRegistry appRegistry;
 	private EnergyModellerQueueServiceManager queueManager;
 	private AmqpClient queueclient;

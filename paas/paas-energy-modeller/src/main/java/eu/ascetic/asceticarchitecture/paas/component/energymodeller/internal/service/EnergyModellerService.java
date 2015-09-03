@@ -27,10 +27,8 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.com
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.ApplicationRegistry;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.DataConsumptionHandler;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.EnergyDataAggregatorServiceQueue;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.EnergyDataAggregatorServiceZabbix;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.EventDataAggregatorService;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.MonitoringDataService;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.ZabbixDataCollectorService;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.loadinjector.LoadInjectorService;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.model.PredictorBuilder;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.model.predictor.PredictorInterface;
@@ -50,14 +48,10 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	
 	private PaaSEMDatabaseManager dbmanager;
 	private LoadInjectorService loadInjector;	
-	//private ZabbixDataCollectorService datacollector;
 	private MonitoringDataService monitoringDataService;
 	private DataConsumptionHandler dataCollectorHandler;
 	private PredictorInterface predictor;
 	// provides access to the registry by mean of session with mappers
-	
-	
-	// amqp client allows publishing messages, while queue manager handle scheduling of measurement publishing and subscribe to special topics
 	//private AmqpClient messageClient;
 	private ApplicationRegistry appRegistry;
 	private EnergyModellerQueueServiceManager queueManager;

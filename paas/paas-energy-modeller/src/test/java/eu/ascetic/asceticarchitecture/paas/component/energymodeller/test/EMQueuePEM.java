@@ -28,7 +28,6 @@ public class EMQueuePEM {
 	public static void setup() {
 		qm = new AmqpClient();
 		try {
-			//qm.setup("tcp://10.15.5.55:61616", "admin", "admin", "");
 			qm.setup("10.15.5.55:32772", "admin", "admin", "PEMENERGY");
 			registry = ApplicationRegistry.getRegistry("com.mysql.jdbc.Driver","jdbc:mysql://10.15.5.55:3306/ascetic_paas_em","root","root");
 			dataCollectorHandler = DataConsumptionHandler.getHandler("com.mysql.jdbc.Driver","jdbc:mysql://10.15.5.55:3306/ascetic_paas_em","root","root");

@@ -25,7 +25,7 @@ public class AppRegistry {
 	@Test
 	public void testCreate() {
 		VirtualMachine vm = new VirtualMachine();
-		vm.setApp_id(123);
+		vm.setApp_id("123app");
 		vm.setDeploy_id(234);
 		vm.setVm_id(345);
 		vm.setIaas_id("ab013-11");
@@ -36,7 +36,7 @@ public class AppRegistry {
 		
 		
 		VirtualMachine vm2 = new VirtualMachine();
-		vm2.setApp_id(123);
+		vm2.setApp_id("123app");
 		vm2.setDeploy_id(234);
 		vm2.setVm_id(890);
 		vm2.setIaas_id("ab013-12");

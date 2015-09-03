@@ -32,7 +32,7 @@ public class AmqpClient {
 	private String predictionTopic="PREDICTION";
 	private String monitoringQueueTopic="PEM.ENERGY";
 
-	 private ConnectionFactory factory;
+	private ConnectionFactory factory;
 	private Connection connection;
 	private String user = "admin";
 	private String password = "admin";
@@ -41,7 +41,6 @@ public class AmqpClient {
 	private final static Logger LOGGER = Logger.getLogger(AmqpClient.class.getName());
 	
 	private String url = "10.15.5.55:61616";
-	
 	
 	public void setup(String url, String username, String password,  String monitoringQueueTopic) throws Exception {
 		
@@ -61,10 +60,6 @@ public class AmqpClient {
 			this.monitoringQueueTopic = monitoringQueueTopic;
 		}
 		
-		// Create a ConnectionFactory
-		//ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(this.user,this.password,this.url);
-
-		
 		String initialContextFactory = "org.apache.qpid.jms.jndi.JmsInitialContextFactory";
 		String connectionJNDIName = UUID.randomUUID().toString();
 		String connectionURL = "amqp://" + this.user + ":" + this.password + "@" + this.url;
@@ -78,14 +73,9 @@ public class AmqpClient {
 
 		properties.put("topic"+"."+monitoringQueueTopic+"."+monitoringTopic , monitoringTopic);
 		properties.put("topic"+"."+monitoringQueueTopic+"."+predictionTopic , predictionTopic);
-		
 		LOGGER.info("Connection param "+"topic"+"."+monitoringQueueTopic+"."+monitoringTopic);
 		LOGGER.info("Connection param"+topicName);
 		
-    
-		// Now we have the context already configured... 
-		// Create the initial context
-		//InitialContext context = new InitialContext(properties);
 		javax.naming.Context context = new InitialContext(properties);
 
         factory = (ConnectionFactory) context.lookup(connectionJNDIName);
@@ -93,35 +83,14 @@ public class AmqpClient {
         connection.setExceptionListener(new MyExceptionListener());
         connection.start();
 		session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-		
 		LOGGER.info("Connection topic "+this.monitoringQueueTopic+"."+this.monitoringTopic);
-	
 		
 		// Create a Session for each queue
-	
         destinationPrediction = (Destination) context.lookup(this.monitoringQueueTopic+"."+this.predictionTopic);
         destinationMeasurement = (Destination) context.lookup(this.monitoringQueueTopic+"."+this.monitoringTopic);
         
-		// Create a MessageProducer from the Session to the Queue
 		producerPrediction = session.createProducer(destinationPrediction);
 		producerMeasurement = session.createProducer(destinationMeasurement);
-
-		// Start the connection
-		
-
-		// Create a Connection
-		//connection = connectionFactory.createConnection();
-		
-//		// Create a Session for each queue
-//		//session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-//        destinationPrediction = session.createTopic(this.monitoringQueueTopic+"."+this.predictionTopic);
-//        destinationMeasurement = session.createTopic(this.monitoringQueueTopic+"."+this.monitoringTopic);
-//        
-//		// Create a MessageProducer from the Session to the Queue
-//		producerPrediction = session.createProducer(destinationPrediction);
-//		producerMeasurement = session.createProducer(destinationMeasurement);
-//		
-//		// Start the connection
 
 		LOGGER.info("Connection started");
 		

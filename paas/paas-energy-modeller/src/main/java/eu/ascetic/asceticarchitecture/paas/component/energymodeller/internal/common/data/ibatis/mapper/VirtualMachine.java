@@ -2,7 +2,7 @@ package eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.co
 
 public class VirtualMachine {
 	
-	private int app_id;
+	private String app_id;
 	private int deploy_id;
 	private int vm_id;
 	private long start;
@@ -11,10 +11,10 @@ public class VirtualMachine {
 	private int model_id;
 	private String iaas_id;
 	
-	public int getApp_id() {
+	public String getApp_id() {
 		return app_id;
 	}
-	public void setApp_id(int app_id) {
+	public void setApp_id(String app_id) {
 		this.app_id = app_id;
 	}
 	public int getDeploy_id() {
