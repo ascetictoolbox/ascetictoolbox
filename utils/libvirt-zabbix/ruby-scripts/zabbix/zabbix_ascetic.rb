@@ -55,7 +55,7 @@ class ZabbixAscetic
     end
 
     # We check that the Applications are associated to the template
-    ["CPU", "MEMORY", "DISK", "NETWORK"].each { |application| check_create_application(application)}
+    ["CPU", "MEMORY", "DISK", "NETWORK", "HOST"].each { |application| check_create_application(application)}
 
     # Now we need to verify that the necessary items are there or create them
     #    value_type = 3 -> integer
@@ -105,6 +105,13 @@ class ZabbixAscetic
     check_create_item("tx_drop", "Libvirt tx_drop metrics for the first disk of the VM", "tx.drop", 3, application)
     check_create_item("tx_packets", "Libvirt tx_packets metrics for the first disk of the VM", "tx.packets", 3, application)
     check_create_item("tx_errs", "Libvirt tx_errs metrics for the first disk of the VM", "tx.errs", 3, application)
+
+    #PHYSICAL HOST Metrics
+    application = @zbx.applications.get_id(
+                            :name => "HOST",
+                            :hostid => @template_id
+                          )
+    check_create_item("physical_host", "Name of the physical host where the virtual machine is", "physical.host", 4, application)
   end
 
   def add_host_to_template(create, hostname)

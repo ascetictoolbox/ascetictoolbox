@@ -66,6 +66,8 @@ class LibvirtMetricsCollector
   end
 
   def get_metrics(old_vms, host_cpu_cores, disk_network_ids)
+    collect_disk_metrics=false
+    
     check_connection
 
     vms = Hash.new
@@ -98,12 +100,15 @@ class LibvirtMetricsCollector
         end
 
         unless disk_network_ids[uuid].nil?
-          # We retrive the disk stats
-          block_stats = domain.block_stats_flags(disk_network_ids[uuid][:disk_id],0)
+
           # We retrieve network stats
           if_stats=domain.ifinfo(disk_network_ids[uuid][:network_id])
 
-          metrics_new = Metrics.new(now, cpu_time, user_time, system_time, percentage,
+          if collect_disk_metrics
+            # We retrive the disk stats
+            block_stats = domain.block_stats_flags(disk_network_ids[uuid][:disk_id],0)
+            metrics_new = Metrics.new(now, 
+                                    cpu_time, user_time, system_time, percentage,
                                     info.memory,
                                     block_stats['wr_bytes'], block_stats['wr_operations'],
                                     block_stats['rd_bytes'], block_stats['rd_operations'], 
@@ -112,9 +117,20 @@ class LibvirtMetricsCollector
                                     if_stats.rx_bytes, if_stats.rx_drop, if_stats.rx_errs, if_stats.rx_packets,
                                     if_stats.tx_bytes, if_stats.tx_drop, if_stats.tx_errs, if_stats.tx_packets)
                                     
-          vms[uuid] = metrics_new
+            vms[uuid] = metrics_new
+          else
+            metrics_new = Metrics.new(now, 
+                                    cpu_time, user_time, system_time, percentage,
+                                    info.memory,
+                                    -1, -1, -1, -1, -1, -1, -1, -1,
+                                    if_stats.rx_bytes, if_stats.rx_drop, if_stats.rx_errs, if_stats.rx_packets,
+                                    if_stats.tx_bytes, if_stats.tx_drop, if_stats.tx_errs, if_stats.tx_packets)
+                                    
+            vms[uuid] = metrics_new
+          end
         else
-          metrics_new = Metrics.new(now, cpu_time, user_time, system_time, percentage,
+          metrics_new = Metrics.new(now, 
+                                    cpu_time, user_time, system_time, percentage,
                                     info.memory,
                                     -1, -1, -1, -1, -1, -1, -1, -1,
                                     -1, -1, -1, -1, -1, -1, -1, -1)

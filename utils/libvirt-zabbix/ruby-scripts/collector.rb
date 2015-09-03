@@ -36,6 +36,9 @@ zabbix_client.setup(zabbix_hostgroup, zabbix_template, sleep_time)
 metrics_collector = LibvirtMetricsCollector.new
 host_cpu_cores = metrics_collector.get_number_cores_host
 
+# We determine the name of the host
+hostname=`hostname`
+
 #We start the bucle of measurments for CPU
 vms=Hash.new
 
@@ -62,7 +65,8 @@ while true
       uuids_new[uuid]=uuids_old[uuid]
     end
 
-    zabbix_sender_string="#{uuid} cpu.time #{metrics[:timestamp]} #{metrics[:cpu_time]} \n"
+    zabbix_sender_string="#{uuid} physical.host #{metrics[:timestamp]} #{hostname}"
+    zabbix_sender_string<<"#{uuid} cpu.time #{metrics[:timestamp]} #{metrics[:cpu_time]} \n"
     zabbix_sender_string<<"#{uuid} user.time #{metrics[:timestamp]} #{metrics[:user_time]} \n"
     zabbix_sender_string<<"#{uuid} system.time #{metrics[:timestamp]} #{metrics[:system_time]} \n"
     zabbix_sender_string<<"#{uuid} memory #{metrics[:timestamp]} #{metrics[:memory]} "
@@ -82,7 +86,11 @@ while true
       zabbix_sender_string<<"#{uuid} flush.operations #{metrics[:timestamp]} #{metrics[:flush_operations]} \n"
       zabbix_sender_string<<"#{uuid} wr.total.times #{metrics[:timestamp]} #{metrics[:wr_total_times]} \n"
       zabbix_sender_string<<"#{uuid} rd.total.times #{metrics[:timestamp]} #{metrics[:rd_total_times]} \n"
-      zabbix_sender_string<<"#{uuid} flush.total.times #{metrics[:timestamp]} #{metrics[:flush_total_times]} \n"
+      zabbix_sender_string<<"#{uuid} flush.total.times #{metrics[:timestamp]} #{metrics[:flush_total_times]}"
+    end
+
+    if metrics[:rx_bytes] > 0
+      zabbix_sender_string<<"\n"
       #Network Metrics
       zabbix_sender_string<<"#{uuid} rx.bytes #{metrics[:timestamp]} #{metrics[:rx_bytes]} \n"
       zabbix_sender_string<<"#{uuid} rx.drop #{metrics[:timestamp]} #{metrics[:rx_drop]} \n"
@@ -93,6 +101,9 @@ while true
       zabbix_sender_string<<"#{uuid} tx.errs #{metrics[:timestamp]} #{metrics[:tx_errs]} \n"
       zabbix_sender_string<<"#{uuid} tx.packets #{metrics[:timestamp]} #{metrics[:tx_packets]}"
     end
+
+    puts zabbix_sender_string
+
     output=`echo '#{zabbix_sender_string}' |  zabbix_sender -vv --zabbix-server #{zabbix_ip_address} -T --input-file - > /dev/null 2>&1`      
   end
 
