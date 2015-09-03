@@ -40,7 +40,7 @@ public class EnergyModellerQueueServiceManager {
 		
 		this.queuePublisher = queuePublisher;
 		this.registry = registry;
-		this.dataConsumptionHandler = dataConsumptionHandler;
+		//this.dataConsumptionHandler = dataConsumptionHandler;
 		LOGGER.info("EM queue manager set");
 	
 	}
@@ -131,7 +131,7 @@ public class EnergyModellerQueueServiceManager {
 //		}
 		
 		MessageListener measureListener = new MessageListener(){
-			DataConsumptionMapper mapper = dataConsumptionHandler.getMapper();
+			//DataConsumptionMapper mapper = dataConsumptionHandler.getMapper();
         	
 	        public void onMessage(Message message) {
 		            try {
@@ -150,28 +150,41 @@ public class EnergyModellerQueueServiceManager {
 		                    DataConsumption dc= new DataConsumption();
 		                    ObjectMapper jmapper = new ObjectMapper();
 		                    Map<String,Object> userData = jmapper.readValue(payload, Map.class);
-		                    double value = (double) userData.get("value");
-		                    long ts = (long) userData.get("timestamp");
-		                    dc.setVmid(topic[1] );
-		                    if (ts <=0){
-		                    	LOGGER.info("Received non valid measure" +ts );
+		                    
+		                    if (!(topic[3].equals("energy"))){
+		                    	LOGGER.debug("The topic is energy");
 		                    	return;
 		                    }
-		                    if (value <0){
-		                    	LOGGER.info("Received non valid measure" +value);
+		                    if (!(topic[3].equals("power"))){
+		                    	LOGGER.debug("The topic is power");
 		                    	return;
-		                    }
-		                    if (topic[3].equals("energy")){
-			                    dc.setVmenergy(value);
-			                    dc.setTime(ts);		                    	
-		                    	LOGGER.info("Received energy reading");
-		                    }
-		                    if (topic[3].equals("power")){
-			                    dc.setVmpower(value);
-			                    dc.setTime(ts);	                    	
-		                    	LOGGER.info("Received power reading");
 		                    }
 		                    
+		                    return;
+		                    
+//		                    double value = (double) userData.get("value");
+//		                    long ts = (long) userData.get("timestamp");
+//		                    dc.setVmid(topic[1] );
+		                    
+//		                    if (ts <=0){
+//		                    	LOGGER.info("Received non valid measure" +ts );
+//		                    	return;
+//		                    }
+//		                    if (value <0){
+//		                    	LOGGER.info("Received non valid measure" +value);
+//		                    	return;
+//		                    }
+//		                    if (topic[3].equals("energy")){
+//			                    dc.setVmenergy(value);
+//			                    dc.setTime(ts);		                    	
+//		                    	LOGGER.info("Received energy reading");
+//		                    }
+//		                    if (topic[3].equals("power")){
+//			                    dc.setVmpower(value);
+//			                    dc.setTime(ts);	                    	
+//		                    	LOGGER.info("Received power reading");
+//		                    }
+//		                    
 		                    
 		                	 
 		                }

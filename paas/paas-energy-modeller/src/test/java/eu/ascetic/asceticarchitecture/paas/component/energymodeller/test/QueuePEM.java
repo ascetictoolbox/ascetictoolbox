@@ -23,7 +23,7 @@ public class QueuePEM {
 	public static void setup() {
 		qm = new AmqpClient();
 		try {
-			qm.setup("10.15.5.55:32772", "admin", "admin", "TEST");
+			qm.setup("10.15.5.55:32772", "admin", "admin", "PEMENERGY");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
