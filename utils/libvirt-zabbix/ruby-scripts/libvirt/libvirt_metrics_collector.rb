@@ -104,7 +104,7 @@ class LibvirtMetricsCollector
           # We retrieve network stats
           if_stats=domain.ifinfo(disk_network_ids[uuid][:network_id])
 
-          if collect_disk_metrics
+          if $send_disk
             # We retrive the disk stats
             block_stats = domain.block_stats_flags(disk_network_ids[uuid][:disk_id],0)
             metrics_new = Metrics.new(now, 
