@@ -15,10 +15,7 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodellerdatalogger;
 
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.SigarDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDirectDbDataSourceAdaptor;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.WattsUpMeterDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import java.io.File;
@@ -61,9 +58,7 @@ public class Logger {
 //        HostDataSource adaptor = WattsUpMeterDataSourceAdaptor.getInstance();
         Host host = adaptor.getHostByName(hostname);
         VmDeployed vm = null;
-        if (host == null) {
-            System.out.println("Hostname: " + host.getHostName());
-            System.out.println("HostID: " + host.getHostName());            
+        if (host == null) {           
             vm = adaptor.getVmByName(hostname);
         }
         while (running) {
