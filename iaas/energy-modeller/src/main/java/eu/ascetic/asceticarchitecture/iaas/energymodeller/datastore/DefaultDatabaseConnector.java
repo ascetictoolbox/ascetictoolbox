@@ -355,12 +355,12 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
             return;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
-                "INSERT INTO vm_app_tag_arr (?, vm_app_tag_arr.vm_app_tag_id) "
-                + "SELECT 1 as vm_id, vm_app_tag.vm_app_tag_id "
+                "INSERT INTO vm_app_tag_arr (vm_app_tag_arr.vm_id, vm_app_tag_arr.vm_app_tag_id) "
+                + "SELECT ? as vm_id, vm_app_tag.vm_app_tag_id "
                 + "FROM vm_app_tag WHERE vm_app_tag.tag_name = ?")) {
             for (String appTag : vm.getApplicationTags()) {
-                preparedStatement.setString(1, appTag);
-                preparedStatement.setInt(2, vm.getId());
+                preparedStatement.setInt(1, vm.getId());                
+                preparedStatement.setString(2, appTag);
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException ex) {
@@ -379,12 +379,12 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
             return;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
-                "INSERT INTO vm_disk_arr (?, vm_disk_arr.vm_disk_id) "
-                + "SELECT 1 as vm_id, vm_disk.vm_disk_id "
+                "INSERT INTO vm_disk_arr (vm_disk.vm_id, vm_disk_arr.vm_disk_id) "
+                + "SELECT ? as vm_id, vm_disk.vm_disk_id "
                 + "FROM vm_disk WHERE vm_disk.disk_name = ?")) {
             for (VmDiskImage diskImage : vm.getDiskImages()) {
-                preparedStatement.setString(1, diskImage.toString());
-                preparedStatement.setInt(2, vm.getId());
+                preparedStatement.setInt(1, vm.getId());                
+                preparedStatement.setString(2, diskImage.toString());
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException ex) {
