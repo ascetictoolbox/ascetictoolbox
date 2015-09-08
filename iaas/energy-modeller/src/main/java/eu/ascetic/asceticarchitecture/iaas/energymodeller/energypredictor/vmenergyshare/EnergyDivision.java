@@ -27,7 +27,7 @@ import java.util.HashMap;
  * data is not available, hence fractioning energy usage cannot simply use
  * measured values.
  *
- * @author Richard
+ * @author Richard Kavanagh
  */
 public class EnergyDivision {
 
@@ -112,7 +112,7 @@ public class EnergyDivision {
      * @return The amount of energy used by the given VM.
      */
     public double getEnergyUsage(double hostEnergyUsage, VM vm) {
-        double vmsWeight = vmWeight.get(vm).doubleValue();
+        double vmsWeight = vmWeight.get(vm);
         if (considerIdleEnergy) {
             //active energy usage of a VM
             double activeEnergy = (hostEnergyUsage - host.getIdlePowerConsumption());

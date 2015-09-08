@@ -108,6 +108,32 @@ public class HostMeasurement extends Measurement {
      */
     public boolean getEstimatedPowerMetricExist() {
         return this.metricExists(ESTIMATED_POWER_KPI_NAME);
+    }
+    
+    /**
+     * This gets the power or substitute power from host measurements.
+     * @param safe If true estimated power will be used as a substitute in cases
+     * where the power value is not found or is negative.
+     * @return This returns the power value for a host measurement or the 
+     * estimated power if that does not exist. In the event neither exist it will
+     * return -1.
+     */
+    public double getPower(boolean safe) {
+        if (!safe) {
+            return getPower();
+        }
+        if (getPowerMetricExist() && getPower() >= 0) {
+            return getPower();
+        } else {
+            /**
+             * This is a fall back to estimated values from the emulated watt
+             * meter.
+             */
+            if (getEstimatedPowerMetricExist()) {
+                return getEstimatedPower();
+            }
+        }
+        return -1;
     }    
 
     /**

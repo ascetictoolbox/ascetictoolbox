@@ -30,6 +30,7 @@ import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.MEMORY_TOTAL_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.POWER_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.VM_PHYSICAL_HOST_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.VM_PHYSICAL_HOST_NAME_2;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.hostvmfilter.NameBeginsFilter;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.hostvmfilter.ZabbixHostVMFilter;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.EnergyUsageSource;
@@ -212,6 +213,9 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
             if (item.getKey().equals(VM_PHYSICAL_HOST_NAME)) {
                 answer.setAllocatedTo(getHostByName(item.getLastValue(), allHosts));
             }
+            if (item.getKey().equals(VM_PHYSICAL_HOST_NAME_2)) {
+                answer.setAllocatedTo(getHostByName(item.getLastValue(), allHosts));
+            }                
             if (item.getKey().equals(CPU_COUNT_KPI_NAME)) {
                 answer.setCpus(Integer.valueOf(item.getLastValue()));
             }

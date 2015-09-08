@@ -84,9 +84,12 @@ public class VmEnergyUsageLogger extends GenericLogger<VmEnergyUsageLogger.Pair>
             if (vm.getAllocatedTo() == null) {
                 vm.setAllocatedTo(hostMeasurement.getHost());
             }
-            store.add(vm.getName());
-            store.append("power");
-            store.append(division.getEnergyUsage(formatDouble(hostMeasurement.getPower(), 1), vm));
+            double powerVal = division.getEnergyUsage(formatDouble(hostMeasurement.getPower(true), 1), vm);
+            if (!Double.isNaN(powerVal) && powerVal > 0) {
+                store.add(vm.getName());
+                store.append("power");
+                store.append(powerVal);
+            }
         }
     }
 

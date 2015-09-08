@@ -264,19 +264,9 @@ public class DataGatherer implements Runnable {
         if (lastTimeStampSeen.get(host) == null || measurement.getClock() > lastTimeStampSeen.get(host)) {
             lastTimeStampSeen.put(host, measurement.getClock());
             Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Writing out host information");
-            double power;
-            if (measurement.getPowerMetricExist() && measurement.getPower() >= 0) {
-                power = measurement.getPower();
-            } else {
-                /**
-                 * This is a fall back to estimated values from the emulated
-                 * watt meter.
-                 */
-                if (measurement.getEstimatedPowerMetricExist()) {
-                    power = measurement.getEstimatedPower();
-                } else {
+            double power = measurement.getPower(true);
+            if (power == -1) {
                     return; //This guards against not having a Watt meter attached.                    
-                }
             }
             double energy = 0; 
             if (measurement.getEnergyMetricExist()) {

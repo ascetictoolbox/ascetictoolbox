@@ -24,6 +24,7 @@ import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.MEMORY_TOTAL_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.POWER_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.VM_PHYSICAL_HOST_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.VM_PHYSICAL_HOST_NAME_2;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.EnergyUsageSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
@@ -324,6 +325,9 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
             if (item.getKey().equals(VM_PHYSICAL_HOST_NAME)) {
                 vm.setAllocatedTo(getHostByName(item.getValueAsString()));
             }
+            if (item.getKey().equals(VM_PHYSICAL_HOST_NAME_2)) {
+                vm.setAllocatedTo(getHostByName(item.getValueAsString()));
+            }            
             if (item.getKey().equals(CPU_COUNT_KPI_NAME)) {
                 vm.setCpus(Integer.valueOf(item.getValueAsString()));
             }
