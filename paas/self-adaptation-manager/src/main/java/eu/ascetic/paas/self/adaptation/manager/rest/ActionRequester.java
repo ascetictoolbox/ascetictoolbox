@@ -257,6 +257,21 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
         RestVMClient client = new RestVMClient(application, deployment);
         client.deleteVM(vmID);
     }
+    
+    /**
+     * This deletes all VMs of an application
+     *
+     * @param applicationId The application the VM is part of
+     * @param deploymentId The id of the deployment instance of the VM
+     */
+    @Override
+    public void hardShutdown(String applicationId, String deploymentId) {
+        RestVMClient client = new RestVMClient(applicationId, deploymentId);
+        List<VM> vms = getVMs(applicationId, deploymentId);
+        for (VM vm : vms) {
+            client.deleteVM(vm.getId() + "");
+        }
+    }    
 
     /**
      * The things that are needed to invoke an action are:
@@ -322,6 +337,9 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
                 break;
             case REMOVE_VM:
                 deleteVM(response.getApplicationId(), response.getDeploymentId(), response.getVmId());
+                break;
+            case HARD_SHUTDOWN_APP:
+                hardShutdown(response.getApplicationId(), response.getDeploymentId());
                 break;
         }
         response.setPerformed(true);

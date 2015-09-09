@@ -84,6 +84,14 @@ public interface ActuatorInvoker {
     public void deleteVM(String application, String deployment, String vmID);    
 
     /**
+     * This deletes all VMs of an application
+     *
+     * @param applicationId The application the VM is part of
+     * @param deploymentId The id of the deployment instance of the VM
+     */
+    public void hardShutdown(String applicationId, String deploymentId);    
+    
+    /**
      * This causes the actuator to invoke a given action
      * @param response 
      */

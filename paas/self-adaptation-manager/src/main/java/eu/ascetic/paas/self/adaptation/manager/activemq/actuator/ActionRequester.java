@@ -222,6 +222,25 @@ public class ActionRequester extends ActiveMQBase implements Runnable, ActuatorI
         }
     }
 
+    /**
+     * This deletes all VMs of an application
+     *
+     * @param applicationId The application the VM is part of
+     * @param deploymentId The id of the deployment instance of the VM
+     */
+    @Override
+    public void hardShutdown(String applicationId, String deploymentId) {
+        // Create a messages
+        ApplicationManagerMessage message = new ApplicationManagerMessage();
+        message.setApplicationId(applicationId);
+        message.setDeploymentId(deploymentId);
+        //TODO, complete the code here!!!!       
+        List<VM> vms = getVMs(applicationId, deploymentId);
+        for (VM vm : vms) {
+            //Send delete message here
+        }
+    }
+
     @Override
     public void actuate(Response response) {
         queue.add(response);
