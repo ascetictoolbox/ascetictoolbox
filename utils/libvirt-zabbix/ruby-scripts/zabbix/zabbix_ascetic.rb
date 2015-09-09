@@ -146,6 +146,17 @@ class ZabbixAscetic
     end
   end
 
+  def delete_host(hostname)
+    host_id = @zbx.hosts.get_id( :host => hostname )
+
+    unless host_id.nil?
+      response = @zbx.query(
+        :method => "host.delete",
+        :params => [ host_id ]
+      )
+    end
+  end
+
   private
 
     def check_create_application(name)

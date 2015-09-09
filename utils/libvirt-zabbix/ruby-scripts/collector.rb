@@ -155,11 +155,17 @@ while true
         end
     else
       uuids_new[uuid]=uuids_old[uuid]
+      uuids_old.delete(uuid)
     end
 
     # start send data to zabbix
     zabbix_send_data(uuid,metrics)
   end
+
+  uuids_old.each do |uuid, metrics|
+    zabbix_client.delete_host(uuid)
+  end
+
   uuids_old=uuids_new
   sleep(sleep_time)
 end
