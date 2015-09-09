@@ -379,7 +379,7 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
             return;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
-                "INSERT INTO vm_disk_arr (vm_disk.vm_id, vm_disk_arr.vm_disk_id) "
+                "INSERT INTO vm_disk_arr (vm_disk_arr.vm_id, vm_disk_arr.vm_disk_id) "
                 + "SELECT ? as vm_id, vm_disk.vm_disk_id "
                 + "FROM vm_disk WHERE vm_disk.disk_name = ?")) {
             for (VmDiskImage diskImage : vm.getDiskImages()) {
