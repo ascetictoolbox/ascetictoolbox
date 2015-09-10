@@ -891,14 +891,14 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
                 + "WHEN @vm_id = mesu.vm_id THEN @row_number + 1 ELSE 1 END) as start_idx, "
                 + "sum(cpu_load) as sum_cpu_load_val, "
                 + "count(cpu_load) as count_cpu_load_val, "
-                + "UNIX_TIMESTAMP(clock) as time_val "
+                + "clock as time_val "
                 + "FROM vm_measurement as mesu, "
                 + "vm_app_tag_arr AS arr, "
                 + "vm_app_tag AS tag "
                 + "WHERE tag.vm_app_tag_id = arr.vm_app_tag_id "
                 + "AND arr.vm_id = mesu.vm_id "
                 + "AND tag.tag_name = ? "
-                + "GROUP BY vm_id, UNIX_TIMESTAMP(clock) DIV ?) AS per_vm "
+                + "GROUP BY vm_id, clock DIV ?) AS per_vm "
                 + "GROUP BY start_idx;", tagName, windowSize);
     }
 
@@ -919,14 +919,14 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
                 + "WHEN @vm_id = mesu.vm_id THEN @row_number + 1 ELSE 1 END) as start_idx, "
                 + "sum(cpu_load) as sum_cpu_load_val, "
                 + "count(cpu_load) as count_cpu_load_val, "
-                + "UNIX_TIMESTAMP(clock) as time_val "
+                + "clock as time_val "
                 + "FROM vm_measurement as mesu, "
                 + "vm_disk_arr AS arr, "
                 + "vm_disk AS disk "
                 + "WHERE disk.vm_disk_id = arr.vm_disk_id "
                 + "AND arr.vm_id = mesu.vm_id "
                 + "AND disk.disk_name = ? "
-                + "GROUP BY vm_id, UNIX_TIMESTAMP(clock) DIV ?) AS per_vm "
+                + "GROUP BY vm_id, clock DIV ?) AS per_vm "
                 + "GROUP BY start_idx;", diskName, windowSize);
     }
 
