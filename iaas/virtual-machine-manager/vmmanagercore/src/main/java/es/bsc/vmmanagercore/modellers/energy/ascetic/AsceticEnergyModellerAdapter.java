@@ -59,8 +59,15 @@ public class AsceticEnergyModellerAdapter implements es.bsc.vmmanagercore.modell
                 .getAvgPowerUsed();
     }
 
-    public void initializeVmInEnergyModellerSystem(String vmId) {
-        energyModeller.setVMProfileData(energyModeller.getVM(vmId));
+    public void initializeVmInEnergyModellerSystem(String vmId, String appId, String diskId) {
+        eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed deployed = energyModeller.getVM(vmId);
+        if (deployed != null) {
+            //Currently the deployment ID from the PaaS layer is not known
+//            deployed.setDeploymentID(??);
+            deployed.addApplicationTag(appId);
+            deployed.addDiskImage(diskId);
+            energyModeller.setVMProfileData(deployed);
+        }
     }
 
     public static EnergyModeller getEnergyModeller() {

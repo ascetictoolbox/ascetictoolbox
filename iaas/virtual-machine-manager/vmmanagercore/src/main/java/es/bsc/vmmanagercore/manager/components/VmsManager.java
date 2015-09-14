@@ -221,11 +221,12 @@ public class VmsManager {
                 initializeVmBilling(vmId, hostForDeployment.getHostname());
             }*/
 
-            // Commented code because the Energy Modeller crashes.
-            /*if (energyModeller instanceof AsceticEnergyModellerAdapter) {
-                ((AsceticEnergyModellerAdapter) energyModeller).initializeVmInEnergyModellerSystem(vmId);
-            }*/
-
+            if (energyModeller instanceof AsceticEnergyModellerAdapter) {
+                ((AsceticEnergyModellerAdapter) energyModeller).initializeVmInEnergyModellerSystem(
+                        vmId, 
+                        vmToDeploy.getApplicationId(), 
+                        vmToDeploy.getImage());
+            }
             if (vmToDeploy.needsFloatingIp()) {
                 cloudMiddleware.assignFloatingIp(vmId);
             }

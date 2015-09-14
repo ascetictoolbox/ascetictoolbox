@@ -18,8 +18,7 @@ public class DeleteZabbixVmRunnable implements Runnable {
 
     @Override
     public void run() {
-        // The ID of a VM in Zabbix is: vm_id + _ + hostname_where_vm_is_deployed (agreed in Ascetic)
-        ZabbixConnector.getZabbixClient().deleteVM(vmId + "_" + hostname);
+        ZabbixConnector.getZabbixClient().deleteVM(vmId);
     }
 
 }
