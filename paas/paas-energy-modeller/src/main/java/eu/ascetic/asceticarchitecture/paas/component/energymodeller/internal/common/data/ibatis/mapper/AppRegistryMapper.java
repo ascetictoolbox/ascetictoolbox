@@ -10,13 +10,13 @@ import org.apache.ibatis.annotations.Update;
 public interface AppRegistryMapper {
 
 	  @Select("SELECT * FROM APPLICATION_REGISTRY WHERE app_id = #{app_id}")
-	  List<VirtualMachine> selectByApp(@Param("app_id")int app_id);
+	  List<VirtualMachine> selectByApp(@Param("app_id") String app_id);
 
 	  @Select("SELECT * FROM APPLICATION_REGISTRY WHERE app_id = #{app_id} and deploy_id = #{deploy_id}")
-	  List<VirtualMachine> selectByDeploy(@Param("app_id")int app_id,@Param("deploy_id") int deploy);
+	  List<VirtualMachine> selectByDeploy(@Param("app_id") String app_id,@Param("deploy_id") int deploy);
 	  
 	  @Select("SELECT * FROM APPLICATION_REGISTRY WHERE app_id = #{app_id} and deploy_id = #{deploy_id} and vm_id = #{vm_id} ")
-	  VirtualMachine selectByVmp(@Param("app_id") int app_id,@Param("deploy_id") int deploy_id,@Param("vm_id") int vm_id);
+	  VirtualMachine selectByVmp(@Param("app_id") String app_id,@Param("deploy_id") int deploy_id,@Param("vm_id") int vm_id);
 	  
 	  @Select("SELECT * FROM APPLICATION_REGISTRY WHERE iaas_id = #{iaas_id} ")
 	  VirtualMachine selectByIaaSId(@Param("iaas_id") String iaas_id);
@@ -32,5 +32,10 @@ public interface AppRegistryMapper {
 	  
 	  @Update("UPDATE APPLICATION_REGISTRY set profile_id=#{profile_id} WHERE #{app_id} and deploy_id = #{deploy_id} and vm_id = #{vm_id} ")
 	  void setProfile(VirtualMachine vm);
+	  
+	  @Insert("SELECT COUNT(*) FROM APPLICATION_REGISTRY WHERE app_id = #{app_id} and deploy_id = #{deploy_id} and vm_id = #{vm_id} ")
+	  int checkVM(@Param("app_id") String app_id,@Param("deploy_id") int deploy_id,@Param("vm_id") int vm_id);
 	
+	  @Select("SELECT iaas_id FROM APPLICATION_REGISTRY WHERE deploy_id = #{deploy_id} and vm_id = #{vm_id} ")
+	  String selectFromIaaSID(@Param("deploy_id") String deploy_id,@Param("vm_id") String vm_id);	  
 }

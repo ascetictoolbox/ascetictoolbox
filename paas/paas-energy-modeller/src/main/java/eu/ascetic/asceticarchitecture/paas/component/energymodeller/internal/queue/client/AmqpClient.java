@@ -65,7 +65,7 @@ public class AmqpClient {
 		String connectionURL = "amqp://" + this.user + ":" + this.password + "@" + this.url;
 		this.monitoringQueueTopic = monitoringQueueTopic.replaceAll("\\.", "");
 		String topicName = monitoringQueueTopic;
-		
+		LOGGER.info("Connection url "+connectionURL);
 		// Set the properties ...
 		Properties properties = new Properties();
 		properties.put(Context.INITIAL_CONTEXT_FACTORY, initialContextFactory);
@@ -96,6 +96,41 @@ public class AmqpClient {
 		
 	}
 	
+	public void setup(String url, String username, String password) throws Exception {
+		
+		if(username != null) {
+			this.user = username;
+		} 
+		
+		if(password != null) {
+			this.password = password;
+		}
+		
+		if(url != null) {
+			this.url = url;
+		}
+				
+		String initialContextFactory = "org.apache.qpid.jms.jndi.JmsInitialContextFactory";
+		String connectionJNDIName = UUID.randomUUID().toString();
+		String connectionURL = "amqp://" + this.user + ":" + this.password + "@" + this.url;
+		LOGGER.info("Connection url "+connectionURL);
+		Properties properties = new Properties();
+		properties.put(Context.INITIAL_CONTEXT_FACTORY, initialContextFactory);
+		properties.put("connectionfactory."+connectionJNDIName , connectionURL);
+
+		javax.naming.Context context = new InitialContext(properties);
+
+        factory = (ConnectionFactory) context.lookup(connectionJNDIName);
+        connection = factory.createConnection(this.user, this.password);
+        connection.setExceptionListener(new MyExceptionListener());
+        connection.start();
+		session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+		LOGGER.info("Connection topic "+this.monitoringQueueTopic+"."+this.monitoringTopic);
+
+		LOGGER.info("Connection started without topics registration");		
+		
+	}
+	
 	public void sendMessage(String queue, String message){
 		LOGGER.info("Sending Message");
 		try {
@@ -111,21 +146,7 @@ public class AmqpClient {
 		}
 		 
 	}
-	
-	public void sendMessageTopic(String topic, String message){
-		LOGGER.info("Sending Message");
-		try {
-			Destination destination = session.createTopic(topic);
-			MessageProducer producer = session.createProducer(destination);
-			TextMessage messagetext = session.createTextMessage(message);
-			producer.send( messagetext);
-			producer.close();
-		
-		} catch (JMSException e) {
-			e.printStackTrace();
-		}
-		 
-	}
+	 
 	
 	public void registerListener(String topic, MessageListener listener){
 		LOGGER.info("Registering listener");
@@ -155,5 +176,10 @@ public class AmqpClient {
             System.exit(1);
         }
     }
+
+	public void sendMessageTopic(String string, String gmtString) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

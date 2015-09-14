@@ -7,37 +7,48 @@ import java.util.Properties;
 
 public class EMSettings {
 
+	// Deprecated for Y1 backward compatibility
 	private String iaasdriver="com.mysql.jdbc.Driver";
 	private String iaasurl="jdbc:mysql://localhost/paasemdb";
 	private String iaasdbuser="user";
 	private String iaasdbpassword="user";
 	
+	
+	// PaaS DB params
 	private String paasdriver="com.mysql.jdbc.Driver";
 	private String paasurl="jdbc:mysql://localhost/iaasemdb";
 	private String paasdbuser="user";
 	private String paasdbpassword="user";
 	
+	// config for JMETER
 	private String serverPath="C:/Users/sommacam/Desktop/apache-jmeter-2.11";
 	private String serverurl="10.15.5.110";
 	private String propertyFile="C:/Users/sommacam/Desktop/apache-jmeter-2.11/bin/jmeter.properties";
 	private String jmxFilePath="c:/test";
 	
+	// app monitor setting
 	private String appmonitor="http://localhost:9000/query";
 	
-	// Queue management
+	// PaaS activemq queue management
 	private String enableQueue="false";
-	
-	private String monitoringQueueTopic="PEM.ENERGY";
-	
+		
 	private String amqpUser="admin";
 	private String amqpPassword="admin";
 	private String amqpUrl="tcp://localhost:61616";
-	
+	// EM topic I publish
+	private String monitoringQueueTopic="PEM.ENERGY";
+	// AM topics I subscribe
 	private String amanagertopic="APPLICATION.*.DEPLOYMENT.*.VM.*.*";
-	
+	// PaaS energy measurement I subscribe
 	private String powertopic="vm.*.item.*";
 	
-
+	// 	temporarly for IaaS connection
+	private String enableIaasQueue="false";
+	private String iaasAmqpUser="admin";
+	private String iaasAmqpPassword="admin";
+	private String iaasAmqpUrl="tcp://localhost:61616";
+	
+	
 	public EMSettings() {
 		
 	}
@@ -65,6 +76,11 @@ public class EMSettings {
 		this.setEnableQueue(props.getProperty("enableQueue"));
 		this.setAmanagertopic(props.getProperty("amanagertopic"));
 		this.setPowertopic(props.getProperty("energytopic"));
+		// temp
+		this.setEnableIaasQueue(props.getProperty("enableIaasQueue"));
+		this.setIaasAmqpUser(props.getProperty("iaasAmqpUser"));
+		this.setIaasAmqpPassword(props.getProperty("iaasAmqpPassword"));
+		this.setIaasAmqpUrl(props.getProperty("iaasAmqpUrl"));
 	}
 
 	public String getIaasdbuser() {
@@ -256,6 +272,46 @@ public class EMSettings {
 
 	public void setPowertopic(String powertopic) {
 		this.powertopic = powertopic;
+	}
+
+
+	public String getEnableIaasQueue() {
+		return enableIaasQueue;
+	}
+
+
+	public void setEnableIaasQueue(String enableIaasQueue) {
+		this.enableIaasQueue = enableIaasQueue;
+	}
+
+
+	public String getIaasAmqpUser() {
+		return iaasAmqpUser;
+	}
+
+
+	public void setIaasAmqpUser(String iaasAmqpUser) {
+		this.iaasAmqpUser = iaasAmqpUser;
+	}
+
+
+	public String getIaasAmqpPassword() {
+		return iaasAmqpPassword;
+	}
+
+
+	public void setIaasAmqpPassword(String iaasAmqpPassword) {
+		this.iaasAmqpPassword = iaasAmqpPassword;
+	}
+
+
+	public String getIaasAmqpUrl() {
+		return iaasAmqpUrl;
+	}
+
+
+	public void setIaasAmqpUrl(String iaasAmqpUrl) {
+		this.iaasAmqpUrl = iaasAmqpUrl;
 	}
 
 	

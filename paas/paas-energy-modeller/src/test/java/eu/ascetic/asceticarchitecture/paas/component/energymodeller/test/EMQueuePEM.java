@@ -1,9 +1,5 @@
 package eu.ascetic.asceticarchitecture.paas.component.energymodeller.test;
 
-import java.util.Date;
-
-import javax.jms.JMSException;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -15,7 +11,8 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.que
 
 public class EMQueuePEM {
 	
-	private static AmqpClient qm;
+	private static AmqpClient paasQm;
+	private static AmqpClient iaasQm;
 	private static ApplicationRegistry registry;
 	private static DataConsumptionHandler dataCollectorHandler;
 	static EnergyModellerQueueServiceManager queueManager;
@@ -26,13 +23,15 @@ public class EMQueuePEM {
 	
 	@BeforeClass
 	public static void setup() {
-		qm = new AmqpClient();
+		paasQm = new AmqpClient();
+		iaasQm =  new AmqpClient();
 		try {
-			qm.setup("10.15.5.55:32772", "admin", "admin", "PEMENERGY");
+			paasQm.setup("192.168.3.16:5673", "guest", "guest", "PEMENERGY");
+			iaasQm.setup("192.168.3.17:5673", "guest", "guest");
 			registry = ApplicationRegistry.getRegistry("com.mysql.jdbc.Driver","jdbc:mysql://10.15.5.55:3306/ascetic_paas_em","root","root");
 			dataCollectorHandler = DataConsumptionHandler.getHandler("com.mysql.jdbc.Driver","jdbc:mysql://10.15.5.55:3306/ascetic_paas_em","root","root");
-			queueManager = new EnergyModellerQueueServiceManager(qm,registry,dataCollectorHandler);
-			queueManager.createConsumers("APPLICATION.*.DEPLOYMENT.*.VM.*.*","vm.*.item.* ");
+			queueManager = new EnergyModellerQueueServiceManager(iaasQm,paasQm,registry,dataCollectorHandler);
+			queueManager.createTwoLayersConsumers("APPLICATION.*.DEPLOYMENT.*.VM.*.*","vm.*.item.power");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -42,23 +41,12 @@ public class EMQueuePEM {
 	@Test
 	public void sendMessagePrediction() throws Exception {
 		
-		Date data = new Date();
-		AmqpClient am = new AmqpClient();
-		am.setup("10.15.5.55:32772", "admin", "admin", "");
-		am.sendMessageTopic("APPLICATION.1.DEPLOYMENT.2.VM.3.DEPLOYED", data.toGMTString());
-		am.sendMessageTopic("APPLICATION.1.DEPLOYMENT.2.VM.4.TERMINATED", data.toGMTString());
-		am.sendMessageTopic("APPLICATION.1.DEPLOYMENT.2.VM.4.COMMAND", data.toGMTString());
-		am.sendMessageTopic("vm.3.item.energy", "{}");
 		
 		while (true){
 			
 		}
 		
-//		try {
-//			qm.destroy();
-//		} catch (JMSException e) {
-//			e.printStackTrace();
-//		}
+
 	}
 	
 

@@ -44,14 +44,14 @@ public class AppRegistry {
 		vm2.setStart(date.getTime());
 		mapper.createVM(vm2);
 		
-		VirtualMachine vmext = mapper.selectByVmp(123, 234, 345);
+		VirtualMachine vmext = mapper.selectByVmp("123", 234, 345);
 		System.out.println(vmext.toString());
 		List<VirtualMachine> machines;
-		machines = mapper.selectByApp(123);
+		machines = mapper.selectByApp("123");
 		
 		System.out.println(machines.size());
 		
-		machines = mapper.selectByDeploy(123,234);
+		machines = mapper.selectByDeploy("123",234);
 		
 		System.out.println(machines.size());
 		

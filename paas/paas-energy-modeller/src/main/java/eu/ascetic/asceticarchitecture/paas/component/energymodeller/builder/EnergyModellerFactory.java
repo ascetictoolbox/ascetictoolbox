@@ -13,6 +13,17 @@ public class EnergyModellerFactory {
 	
 	public static PaaSEnergyModeller getEnergyModeller(String propertyFile){
 		if (theEnergyModeller==null) {
+			theEnergyModeller = (PaaSEnergyModeller) new EnergyModellerService(propertyFile);
+			return theEnergyModeller;
+		} else {
+			return theEnergyModeller;
+		}
+	}
+	
+	// DEPRECATED: just for backword compatibility, but going to be removed soon
+	@Deprecated
+	public static PaaSEnergyModeller getY1EnergyModeller(String propertyFile){
+		if (theEnergyModeller==null) {
 			theEnergyModeller = (PaaSEnergyModeller) new EnergyModellerServiceY1(propertyFile);
 			return theEnergyModeller;
 		} else {

@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Properties;
+import java.util.TimeZone;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
@@ -47,15 +48,15 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	private EMSettings emsettings;
 	
 	private PaaSEMDatabaseManager dbmanager;
+	
 	private LoadInjectorService loadInjector;	
 	private MonitoringDataService monitoringDataService;
 	private DataConsumptionHandler dataCollectorHandler;
 	private PredictorInterface predictor;
-	// provides access to the registry by mean of session with mappers
-	//private AmqpClient messageClient;
 	private ApplicationRegistry appRegistry;
 	private EnergyModellerQueueServiceManager queueManager;
-	private AmqpClient queueclient;
+	private AmqpClient paasQueueclient;
+	private AmqpClient iaasQueueclient;
 	private String monitoringTopic="monitoring";
 	private String predictionTopic="prediction";
 	private Boolean queueEnabled = false;
@@ -86,11 +87,13 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 				LOGGER.info("Measuring average instant power"); 
 				double result = averagePower(providerid,applicationid, vmids,  eventid,null,null);
 				sendToQueue(monitoringTopic, providerid, applicationid, vmids, eventid, GenericEnergyMessage.Unit.WATT, null, result);
-				LOGGER.info("Sending to queue"); 
+				LOGGER.info("Sending to queue power "+result); 
 				return result;
 			}
 		}else {
 			LOGGER.info("Checking the timestamps"); 
+			LOGGER.info(start); 
+			LOGGER.info(end); 
 			if (start==null){
 				Calendar calendar = Calendar.getInstance();
 				long now = calendar.getTime().getTime();
@@ -99,7 +102,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 					now = end.getTime()-(86400000);
 				}
 				Timestamp currentTimestamp = new Timestamp(now);
-				end = currentTimestamp;
+				start = currentTimestamp;
 				LOGGER.info("Going to get data from the last 24h :  "+now);
 			}
 			if (end==null){
@@ -108,6 +111,9 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 				end = currentTimestamp;
 				LOGGER.info("Going to get data untill now :  "+end.getTime());
 			}
+			LOGGER.info("Checking the timestamps"); 
+			LOGGER.info(start); 
+			LOGGER.info(end);
 			if (unit==Unit.ENERGY){
 				LOGGER.info("Measuring energy consumption");
 				double result =  energyConsumption( providerid, applicationid, vmids,  eventid,  start,  end);
@@ -242,6 +248,9 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	 */	
 	
 	private double averagePower(String providerid, String applicationid, List<String> vmids, String eventid, Timestamp start, Timestamp end) {
+		
+		
+		
 		if((start==null)&&(end==null)){
 			if (eventid!=null){
 				LOGGER.info("Measuring event average instant power (W)"); 
@@ -276,8 +285,28 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		}else{
 			double tot_power=0;
 			double countevents=0;
+			if (end==null){
+				Calendar calendar = Calendar.getInstance();
+				Timestamp currentTimestamp = new Timestamp(calendar.getTime().getTime());
+				end = currentTimestamp;
+				LOGGER.info("Going to get data untill now :  "+end.getTime());
+			}
+			if (start==null){
+				Calendar calendar = Calendar.getInstance();
+				//TimeZone tz = TimeZone.getTimeZone("GMT");
+				calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
+				long now = calendar.getTime().getTime();
+				now = now - (86400000);
+				start = new Timestamp(now);
+				LOGGER.info("Going to get data from the last 24h :  "+start);
+				
+			}
+			
+			
 			if (eventid==null){
 				for (String vm : vmids) {
+					LOGGER.info("Going to use start  :  "+start.getTime());
+					LOGGER.info("Going to use end :  "+end.getTime());
 					double power  = energyService.getMeasureInIntervalFromVM(Unit.POWER, applicationid, vm,  start.getTime(), end.getTime());
 					LOGGER.info("Avg power for VM "+ vm + " was " + String.format( "%.2f", power ));
 					if (power>0)tot_power = tot_power + power;
@@ -416,7 +445,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	
 	public EnergyModellerService(String propertyFile) {
 		this.propertyFile=propertyFile;
-		LOGGER.info("EM Initialization ongoing");
+		LOGGER.info("EM Initialization ongoing" + propertyFile);
 		configureProperty();
 		// Not yet implemented this workflow
 		//initializeLoadInjector();
@@ -468,23 +497,33 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	}
 		
 	private void initializeQueueServiceManager(){
-		LOGGER.info("Loading Queue service manager "+emsettings.getEnableQueue() +emsettings.getAmanagertopic());
+		LOGGER.info("Loading Queue service manager "+emsettings.getEnableQueue() +emsettings.getAmanagertopic()+emsettings.getIaasAmqpUrl());
 		if (emsettings.getEnableQueue().equals("true")) {
 			
 			try {
-				queueclient = new AmqpClient();
-				queueclient.setup(emsettings.getAmqpUrl(), emsettings.getAmqpUser(), emsettings.getAmqpPassword(), emsettings.getMonitoringQueueTopic());
+				paasQueueclient = new AmqpClient();
+				paasQueueclient.setup(emsettings.getAmqpUrl(), emsettings.getAmqpUser(), emsettings.getAmqpPassword(), emsettings.getMonitoringQueueTopic());
+				
+				// TODO Hack to IaaS queue to be removed
+				LOGGER.info("Enabling IaaS QUEUE TMP Workaround");
+				iaasQueueclient = new AmqpClient();
+				iaasQueueclient.setup(emsettings.getIaasAmqpUrl(), emsettings.getIaasAmqpUser(), emsettings.getIaasAmqpPassword());
+				
 				appRegistry = ApplicationRegistry.getRegistry(emsettings.getPaasdriver(),emsettings.getPaasurl(),emsettings.getPaasdbuser(),emsettings.getPaasdbpassword());
 				dataCollectorHandler = DataConsumptionHandler.getHandler(emsettings.getPaasdriver(),emsettings.getPaasurl(),emsettings.getPaasdbuser(),emsettings.getPaasdbpassword());
 				energyService.setDataMapper(dataCollectorHandler.getMapper());
-				LOGGER.info("Enabled");
-				queueManager = new EnergyModellerQueueServiceManager(queueclient,appRegistry,dataCollectorHandler);
-				LOGGER.debug("Enabled"+queueclient);
-				LOGGER.debug("Enabled"+appRegistry);
-				queueManager.createConsumers(emsettings.getAmanagertopic(),emsettings.getPowertopic());
+				energyService.setRegistryMapper(appRegistry.getMapper());
+				LOGGER.info("Enabling queue service");
+				// TODO remove iaas queue when data will be sent directly to paas
+				queueManager = new EnergyModellerQueueServiceManager(iaasQueueclient,paasQueueclient,appRegistry,dataCollectorHandler);
+				LOGGER.debug("Enabled");
+				
+				// TODO remove iaas queue when data will be sent directly to paas
+				queueManager.createTwoLayersConsumers(emsettings.getAmanagertopic(),emsettings.getPowertopic());
+				LOGGER.debug("PaaS EM activemq connections are now Ready");
 				
 			} catch (Exception e) {
-				LOGGER.error("ERROR initializing queue disabling the component..");
+				LOGGER.error("ERROR initializing queues, now disabling the component..");
 				emsettings.setEnableQueue("false");
 				e.printStackTrace();
 			}
@@ -496,11 +535,6 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		LOGGER.info("EM predictor module loaded");
 		predictor= PredictorBuilder.getPredictor();
 	}
-	
-	/**
-	 * private methods for collecting data
-	 */
-		
 
 	@Override
 	public void manageComponent(String token, String command) {
@@ -532,5 +566,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	public void setEmsettings(EMSettings emsettings) {
 		this.emsettings = emsettings;
 	}
+	
+
 		
 }

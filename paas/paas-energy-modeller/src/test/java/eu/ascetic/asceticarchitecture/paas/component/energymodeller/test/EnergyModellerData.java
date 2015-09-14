@@ -7,54 +7,83 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Vector;
 
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.builder.EnergyModellerFactory;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.ApplicationSample;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EventSample;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Unit;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.service.EnergyModellerServiceY1;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.service.EnergyModellerService;
+
 
 public class EnergyModellerData {
 
-//	
-//	HST 4c097560-9381-4356-bcae-687719725da7_asok12
-//	HST 07027d74-dcfa-455d-b2b9-8b7a2471b1bd_asok12
-//	HST 7c8a3fc0-393d-4124-856e-05aedb2d23ca_asok12
 	
-	private static EnergyModellerServiceY1 serviceEM;
-//	private static String HOST = "c0fcc44e-b29f-4fcc-b1e3-b9c017b7865f";
-//	private static String HOST2 = "d9864885-77db-4a92-ab6b-feec3e5eded6";
-//	private static String HOST3 = "708834af-4e90-424b-9dc2-c2fe1542918f";
-//	private static String EVENT = "core0impl0";
-//	private static String APP = "JEPlus";
-	// for 
-	private static String HOST = "c0fcc44e-b29f-4fcc-b1e3-b9c017b7865f";
-	private static String HOST2 = "2d915d73-8999-420c-b2b0-2ac853052b7e";
-	private static String HOST3 = "b52da74d-585c-404d-8f29-4de0d93cfe5e";
+	private static EnergyModellerService serviceEM;
+	private static String HOST = "1";
+	private static String HOST1 = "2";
+	//private static String HOST3 = "b52da74d-585c-404d-8f29-4de0d93cfe5e";
 
 	private static String EVENT = "TestScript15-oracle";
-	private static String APP = "NewsAsset";
-	
-	long beginlong = 1419246350742L;
-	long endlong = 1419246415273L;
+	private static String APP = "testApp";
+	private static String DEP = "123";
+	long beginlong = 1441964241000L;
+	long endlong = 1441982279000L;
 	
 	
 	@BeforeClass
 	public static void setup() {
-		serviceEM = (EnergyModellerServiceY1) EnergyModellerFactory.getEnergyModeller("c:/dev-env/ascetic-conf/testconfig.properties");
+		serviceEM = (EnergyModellerService) EnergyModellerFactory.getEnergyModeller("c:/dev-env/ascetic-conf/testconfig.properties");
 		
 	}
 	
-		
+	// test for power consumption
+	
+//	@Test
+//	public void testMeasurePowerInterface() {
+//		System.out.println("Testing power estimation between two defined timestamps");
+//		List<String> vmids = new Vector<String>();
+//		vmids.add(HOST);
+//		vmids.add(HOST1);
+//		
+//		double result = serviceEM.measure(APP, DEP, vmids, null, Unit.POWER, new Timestamp(beginlong),new Timestamp(endlong));
+//		System.out.println("Average Power is:  "+result);
+//	}	
+//	@Test
+//	public void testMeasureAllPowerInterface() {
+//		System.out.println("Testing power estimation with not time specified");
+//		List<String> vmids = new Vector<String>();
+//		vmids.add(HOST);
+//		vmids.add(HOST1);
+//		
+//		double result = serviceEM.measure(APP, DEP, vmids, null, Unit.POWER, null,null);
+//		System.out.println("Average Power is:  "+result);
+//	}
+//	
+//	@Test
+//	public void testMeasureSincePowerInterface() {
+//		System.out.println("Testing power estimation with only a limit in time");
+//		List<String> vmids = new Vector<String>();
+//		vmids.add(HOST);
+//		vmids.add(HOST1);
+//		double result = serviceEM.measure(APP, DEP, vmids, null, Unit.POWER, null,new Timestamp(endlong));
+//		System.out.println("Average Power is:  "+result);
+//	}
+	
+//	@Test
+//	public void testMeasureUpToPowerInterface() {
+//		System.out.println("Testing power estimation with a start time");
+//		List<String> vmids = new Vector<String>();
+//		vmids.add(HOST);
+//		vmids.add(HOST1);
+//		double result = serviceEM.measure(APP, DEP, vmids, null, Unit.POWER, new Timestamp(beginlong),null);
+//		System.out.println("Average Power is:  "+result);
+//	}		
 //	@Test
 //	public void testAppSample() {
 //		System.out.println("Test Sample");
 //		List<String> vmids = new Vector<String>();
 //		vmids.add(HOST);
-//		vmids.add(HOST2);
+//		vmids.add(HOST1);
 //		vmids.add(HOST3);
 //		List<ApplicationSample> energy = serviceEM.applicationData(null, APP, vmids, 10 , new Timestamp(beginlong),new Timestamp(endlong) );
 //		for (ApplicationSample as : energy){
@@ -63,14 +92,77 @@ public class EnergyModellerData {
 //		Assert.assertNotNull(energy);
 //	}
 	
+	// test energy estimation
+	
+	@Test
+	public void testMeasurePowerInterface() {
+		System.out.println("Testing energy estimation between two defined timestamps");
+		List<String> vmids = new Vector<String>();
+		vmids.add(HOST);
+		vmids.add(HOST1);
+		
+		double result = serviceEM.measure(APP, DEP, vmids, null, Unit.ENERGY, new Timestamp(beginlong),new Timestamp(endlong));
+		System.out.println("Energy is:  "+result);
+	}	
+	@Test
+	public void testMeasureAllEnergyInterface() {
+		System.out.println("Testing energy estimation with not time specified");
+		List<String> vmids = new Vector<String>();
+		vmids.add(HOST);
+		vmids.add(HOST1);
+		
+		double result = serviceEM.measure(APP, DEP, vmids, null, Unit.ENERGY, null,null);
+		System.out.println("Energy is:  "+result);
+	}
+	
+	@Test
+	public void testMeasureSincePowerInterface() {
+		System.out.println("Testing energy estimation with only a limit in time");
+		List<String> vmids = new Vector<String>();
+		vmids.add(HOST);
+		vmids.add(HOST1);
+		double result = serviceEM.measure(APP, DEP, vmids, null, Unit.ENERGY, null,new Timestamp(endlong));
+		System.out.println("Energy is:  "+result);
+	}
+	@Test
+	public void testMeasureUpToPowerInterface() {
+		System.out.println("Testing energy estimation with a start time");
+		List<String> vmids = new Vector<String>();
+		vmids.add(HOST);
+		vmids.add(HOST1);
+		double result = serviceEM.measure(APP, DEP, vmids, null, Unit.ENERGY, new Timestamp(beginlong),null);
+		System.out.println("Energy is:  "+result);
+	}	
+	
+	
+	// test events consumption
+	
+	// other tests
+	
+	
+//	@Test
+//	public void testAppSample() {
+//		System.out.println("Test Sample");
+//		List<String> vmids = new Vector<String>();
+//		vmids.add(HOST);
+//		vmids.add(HOST1);
+//		vmids.add(HOST3);
+//		List<ApplicationSample> energy = serviceEM.applicationData(null, APP, vmids, 10 , new Timestamp(beginlong),new Timestamp(endlong) );
+//		for (ApplicationSample as : energy){
+//			System.out.println(as.export());
+//		}
+//		Assert.assertNotNull(energy);
+//	}	
+	
+	
+	
 	
 //	@Test
 //	public void testEnergyWithinInterval() {
 //		System.out.println("Testing energy estimation");
 //		List<String> vmids = new Vector<String>();
 //		vmids.add(HOST);
-//		vmids.add(HOST2);
-//		vmids.add(HOST3);
+//		vmids.add(HOST1);
 //
 //		List<EventSample> results = serviceEM.eventsData( null, APP,vmids, EVENT,new Timestamp(beginlong),new Timestamp(endlong));	
 //		

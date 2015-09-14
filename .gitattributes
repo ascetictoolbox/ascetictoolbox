@@ -1107,6 +1107,9 @@ paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/comp
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/queue/client/AmqpClient.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/queue/client/JNIAmqpClient.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/service/EnergyModellerServiceY1.java -text
+paas/paas-energy-modeller/src/main/resources/cratedb.sql -text
+paas/paas-energy-modeller/src/main/resources/createRegistry.sql -text
+paas/paas-energy-modeller/src/main/resources/createdb.sql -text
 paas/paas-energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/test/AppRegistry.java -text
 paas/paas-energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/test/DataConsumptionData.java -text
 paas/paas-energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/test/EMQueuePEM.java -text
