@@ -22,6 +22,7 @@ import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
+import eu.ascetic.paas.applicationmanager.rest.util.ApplicationContextHolder;
 import eu.ascetic.paas.applicationmanager.rest.util.DateUtil;
 import eu.ascetic.paas.applicationmanager.rest.util.XMLBuilder;
 
@@ -57,9 +58,10 @@ public abstract class AbstractRest {
 	protected VMDAO vmDAO;
 	@Autowired
 	protected DeploymentEventService deploymentEventService;
-	@Autowired
-	protected static EnergyModellerBean energyModellerBean;
+	//@Autowired
+	//protected static EnergyModellerBean energyModellerBean;
 	protected static PaaSEnergyModeller energyModeller;
+	
 	
 	protected Response buildResponse(Response.Status status, String payload) {
 		ResponseBuilder builder = Response.status(status);
@@ -75,6 +77,7 @@ public abstract class AbstractRest {
 	 */
 	protected static PaaSEnergyModeller getEnergyModeller() {
 		if(energyModeller == null) {
+			EnergyModellerBean energyModellerBean = ApplicationContextHolder.getContext().getBean(EnergyModellerBean.class);
 			logger.debug("Getting Energy Modeller...");
 			logger.info("EnergyModellerBean: " + energyModellerBean);
 			energyModeller = energyModellerBean.getEnergyModeller();
