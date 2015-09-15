@@ -14,7 +14,7 @@
         <module>wattsup-java-sdk</module>
         <module>wattsup</module>
         <module>libvirt</module>
-        <module>kwapi-patch</module>
+        <!-- Not used and broken <module>kwapi-patch</module> -->
         <module>openstack-patch</module>
         <module>ascetic-dfs</module>
         <module>ascetic-zabbix-api</module>
