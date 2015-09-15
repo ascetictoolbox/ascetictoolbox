@@ -132,6 +132,12 @@ public class DeployEventHandler {
 					long minNumberVMs = vmLimits.getLowerNumberOfVMs();
 					long maxNumberVMs = vmLimits.getUpperNumberOfVMs();
 					
+					//We determine if it needs a public IP/Floating IP
+					boolean publicIP = false;	
+					try {
+						publicIP = virtualSystem.getProductSectionAtIndex(0).isAssociatePublicIp();
+					} catch(NullPointerException ex) {}
+					
 					String vmName = virtualSystem.getName();
 					int cpus = virtualSystem.getVirtualHardwareSection().getNumberOfVirtualCPUs();
 					int ramMb = virtualSystem.getVirtualHardwareSection().getMemorySize();
@@ -143,7 +149,7 @@ public class DeployEventHandler {
 					
 					for(int j = 0; j < minNumberVMs; j++) {
 
-						logger.debug(" OVF-ID: " + ovfVirtualSystemID + " #VMs: " + minNumberVMs + " Name: " + vmName + " CPU: " + cpus + " RAM: " + ramMb + " Disk capacity: " + capacity + " ISO Path: " + isoPath);
+						logger.debug(" OVF-ID: " + ovfVirtualSystemID + " #VMs: " + minNumberVMs + " Name: " + vmName + " CPU: " + cpus + " RAM: " + ramMb + " Disk capacity: " + capacity + " ISO Path: " + isoPath + " PUBLIC IP: " + publicIP);
 
 						int suffixInt = j + 1;
 						String suffix = "_" + suffixInt;
@@ -151,7 +157,8 @@ public class DeployEventHandler {
 						if(isoPath != null) iso = isoPath + suffix ;
 						
 						// TOOD I need to add here the slaagreement id. 
-						Vm virtMachine = new Vm(vmName + suffix, image.getProviderImageId(), cpus, ramMb, capacity, 0, iso , ovfDocument.getVirtualSystemCollection().getId(), ovfID, ""/*deployment.getSlaAgreement()*/ );
+						Vm virtMachine = new Vm(vmName + suffix, image.getProviderImageId(), cpus, ramMb, capacity, 0, iso , ovfDocument.getVirtualSystemCollection().getId(), ovfID, ""/*deployment.getSlaAgreement()*/, publicIP );
+						
 						logger.debug("virtMachine: " + virtMachine);
 						
 						List<Vm> vms = new ArrayList<Vm>();

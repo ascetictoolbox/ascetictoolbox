@@ -885,6 +885,7 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/s
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/SLATest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/vmmanager/VmManagerTest2IT.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/vmmanager/client/VmManagerClientBSCCTest.java -text
+paas/application-manager/src/test/resources/3tier-webapp-public-ips.ovf.xml -text
 paas/application-manager/src/test/resources/3tier-webapp.ovf-only-upper-bounds.xml -text
 paas/application-manager/src/test/resources/3tier-webapp.ovf.vmc.xml -text
 paas/application-manager/src/test/resources/3tier-webapp.ovf.xml -text

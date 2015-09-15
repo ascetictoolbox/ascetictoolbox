@@ -818,7 +818,7 @@ public class VMRestTest extends AbstractTest {
 		VmManagerClient vmMaClient = mock(VmManagerClient.class);
 		
 		List<Vm> vms1 = new ArrayList<Vm>();
-		VmWithEquals vm1e = new VmWithEquals("HAProxy_2","haproxy-uuid",1,1024,20, 0,"/DFS/ascetic/vm-images/threeTierWebApp/haproxy.iso_2","threeTierWebApp", "haproxy", "sla-id");
+		VmWithEquals vm1e = new VmWithEquals("HAProxy_2","haproxy-uuid",1,1024,20, 0,"/DFS/ascetic/vm-images/threeTierWebApp/haproxy.iso_2","threeTierWebApp", "haproxy", "sla-id", false);
 		System.out.println("VM with equals: " + vm1e);
 		vms1.add(vm1e);
 		List<String> ids1 = new ArrayList<String>();
@@ -905,7 +905,7 @@ public class VMRestTest extends AbstractTest {
 		when(vmMaClient.uploadImage(eq(new ImageToUploadWithEquals("haproxy.img","/DFS/ascetic/vm-images/threeTierWebApp/haproxy.img")))).thenReturn("haproxy-uuid");
 		
 		List<Vm> vms1 = new ArrayList<Vm>();
-		VmWithEquals vm1e = new VmWithEquals("HAProxy_1","haproxy-uuid",1,1024,20, 0,"/DFS/ascetic/vm-images/threeTierWebApp/haproxy.iso_1","threeTierWebApp", "haproxy", "sla-id");
+		VmWithEquals vm1e = new VmWithEquals("HAProxy_1","haproxy-uuid",1,1024,20, 0,"/DFS/ascetic/vm-images/threeTierWebApp/haproxy.iso_1","threeTierWebApp", "haproxy", "sla-id", false);
 		System.out.println("VM with equals: " + vm1e);
 		vms1.add(vm1e);
 		List<String> ids1 = new ArrayList<String>();

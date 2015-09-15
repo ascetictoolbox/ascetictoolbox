@@ -15,8 +15,9 @@ public class VmWithEquals extends Vm {
 			            String initScript,
 			            String applicationId,
 			            String ovfId,
-			            String slaId) {
-		super(name, image, cpus, ramMb, diskGb, swapMb, initScript, applicationId, ovfId, slaId);
+			            String slaId,
+			            boolean floatingIp) {
+		super(name, image, cpus, ramMb, diskGb, swapMb, initScript, applicationId, ovfId, slaId, floatingIp);
 	}
 
 	@Override
@@ -84,7 +85,8 @@ public class VmWithEquals extends Vm {
         if(this.cpus == vm.getCpus()
            && this.ramMb == vm.getRamMb()
            && this.diskGb == vm.getDiskGb()
-           && this.swapMb == vm.getSwapMb()) {
+           && this.swapMb == vm.getSwapMb()
+           && this.needsFloatingIp == vm.needsFloatingIp()) {
         	return true;
         } else {
         	return false;

@@ -100,7 +100,7 @@ A POST over this path allows to deploy an application. In this case it could hap
 
 	POST /applications?{negotiation} HTTP/1.1
 
-.. csv-table:: Description of parameters for POST /applications
+.. csv-table:: Description of query parameters for POST /applications
    :header: "Parameter", "Optional", "Description"
    :widths: 10, 10, 20
 
@@ -1073,7 +1073,7 @@ Returns the information about a VM
 
 	GET /applications/{application-id}/deployments/{deployment-id}/vms/{vm_id} HTTP/1.1
 
-.. csv-table:: GET /applications/{application-id}/deployments
+.. csv-table:: GET /applications/{application-id}/deployments/vms/{vm-id}
    :header: "Parameter", "Optional", "Description"
    :widths: 10, 10, 20
 
@@ -1143,6 +1143,162 @@ Deletes a VM inside the limits defined in the ovf file.
   :emphasize-lines: 1,2
 
 	204 (NO CONTENT)
+
+
+/applications/{application-id}/deployments/{deployment-id}/vms/{vm-id}/events/{event_id}/energy-estimation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**GET**
+
+Returns the information about a VM
+
+**Request**::
+
+	GET /applications/{application-id}/deployments/{deployment-id}/vms/{vm_id}/
+	    events/{event_id}/energy-estimation HTTP/1.1
+
+Path parameters:
+
+.. csv-table:: GET /applications/{application-id}/deployments/vms/{vm-id}/events/{event_id}/energy-estimation
+   :header: "Parameter", "Optional", "Description"
+   :widths: 10, 10, 20
+
+   "application-id", "no", "Name of the application from which we want to get the information."
+   "deployment-id", "no", "Deployment if of the application we want to know the information."
+   "vm-id", "no", "Application Manager VM id."
+   "event-id", "no", "Event ID from which we want to know how much energy it is going to cost to be executed"
+
+
+**Response**:
+
+.. code-block:: xml
+  :emphasize-lines: 1,2
+
+	200 (OK)
+	Content-Type: application/xml
+
+	<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" 
+			href="/applications/111/deployments/333/vms/444/
+			      events/eventX/energy-estimation">
+    <value>22.0</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" 
+    	href="/applications/111/deployments/333/vms/444/events/eventX" 
+    	type="application/xml"/>
+    <link rel="self" 
+    	href="/applications/111/deployments/333/vms/444/events/eventX/energy-estimation" 
+    	type="application/xml"/>
+	</energy-measurement>
+
+/applications/{application-id}/deployments/{deployment-id}/vms/{vm-id}/events/{event_id}/energy-consumption
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**GET**
+
+Returns the information about a VM
+
+**Request**::
+
+	GET /applications/{application-id}/deployments/{deployment-id}/vms/{vm_id}/
+		  events/{event_id}/energy-consumption HTTP/1.1
+
+Path parameters:
+
+.. csv-table:: GET /applications/{application-id}/deployments/vms/{vm-id}/events/{event_id}/energy-consumption
+   :header: "Parameter", "Optional", "Description"
+   :widths: 10, 10, 20
+
+   "application-id", "no", "Name of the application from which we want to get the information."
+   "deployment-id", "no", "Deployment if of the application we want to know the information."
+   "vm-id", "no", "Application Manager VM id."
+   "event-id", "no", "Event ID from which we want to know how much energy it is going to cost to be executed"
+
+Query parameters:
+
+.. csv-table:: GET /applications/{application-id}/deployments/vms/{vm-id}/events/{event_id}/energy-consumption
+   :header: "Parameter", "Optional", "Description"
+   :widths: 10, 10, 20
+
+   "startTime", "yes", "Start time from which the user wants the measurement. If not specified the App Manager will assume from the creation of the VM."
+   "endTime", "yes", "End Time until we want to measure the energy consumption of the VM. If not specified the componet will asume now."
+
+
+**Response**:
+
+.. code-block:: xml
+  :emphasize-lines: 1,2
+
+	200 (OK)
+	Content-Type: application/xml
+
+	<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" 
+			href="/applications/111/deployments/333/vms/444/
+			  events/eventX/energy-consumption">
+    <value>22.0</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" 
+    	href="/applications/111/deployments/333/vms/444/events/eventX" 
+    	type="application/xml"/>
+    <link rel="self" 
+    	href="/applications/111/deployments/333/vms/444/events/eventX/energy-consumption" 
+    	type="application/xml"/>
+	</energy-measurement>
+
+/applications/{application-id}/deployments/{deployment-id}/vms/{vm-id}/events/{event_id}/energy-sample
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**GET**
+
+Returns the information about a VM
+
+**Request**::
+
+	GET /applications/{application-id}/deployments/{deployment-id}/vms/{vm_id}/
+	    events/{event_id}/energy-sample HTTP/1.1
+
+Path parameters:
+
+.. csv-table:: GET /applications/{application-id}/deployments/vms/{vm-id}/events/{event_id}/energy-sample
+   :header: "Parameter", "Optional", "Description"
+   :widths: 10, 10, 20
+
+   "application-id", "no", "Name of the application from which we want to get the information."
+   "deployment-id", "no", "Deployment if of the application we want to know the information."
+   "vm-id", "no", "Application Manager VM id."
+   "event-id", "no", "Event ID from which we want to know how much energy it is going to cost to be executed"
+
+Query parameters:
+
+.. csv-table:: GET /applications/{application-id}/deployments/vms/{vm-id}/events/{event_id}/energy-sample
+   :header: "Parameter", "Optional", "Description"
+   :widths: 10, 10, 20
+
+   "startTime", "yes", "Start time from which the user wants the measurement. If not specified the App Manager will assume from the creation of the VM."
+   "endTime", "yes", "End Time until we want to measure the energy consumption of the VM. If not specified the componet will asume now."
+   "interval", "yes", "Interval for the enery sample, if not specified the App-Manager will assume 0."
+
+
+**Response**:
+
+.. code-block:: xml
+  :emphasize-lines: 1,2
+
+	200 (OK)
+	Content-Type: application/xml
+
+	<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" 
+			href="/applications/111/deployments/333/vms/444/
+			      events/eventX/energy-sample">
+    <value>22.0</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" 
+    	href="/applications/111/deployments/333/vms/444/events/eventX" 
+    	type="application/xml"/>
+    <link rel="self" 
+    	href="/applications/111/deployments/333/vms/444/events/eventX/energy-sample" 
+    	type="application/xml"/>
+	</energy-measurement>
+
 
 
 /applications/{application-id}/deployments/{deployment-id}/agreements

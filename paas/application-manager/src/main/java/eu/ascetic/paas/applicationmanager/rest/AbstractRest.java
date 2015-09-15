@@ -64,6 +64,8 @@ public abstract class AbstractRest {
 	protected Response buildResponse(Response.Status status, String payload) {
 		ResponseBuilder builder = Response.status(status);
 		builder.entity(payload);
+		// To Allow Javascripts apps to connect to the server
+		builder.header("Access-Control-Allow-Origin", "*"); 
 		return builder.build();
 	}
 	
@@ -74,8 +76,9 @@ public abstract class AbstractRest {
 	protected static PaaSEnergyModeller getEnergyModeller() {
 		if(energyModeller == null) {
 			logger.debug("Getting Energy Modeller...");
-			// TODO this path here looks ugly, move it to the configuration file...
-			return energyModellerBean.getEnergyModeller();
+			logger.info("EnergyModellerBean: " + energyModellerBean);
+			energyModeller = energyModellerBean.getEnergyModeller();
+			return energyModeller;
 		}
 		else {
 			return energyModeller;
