@@ -78,9 +78,7 @@ public abstract class AbstractRest {
 	protected static PaaSEnergyModeller getEnergyModeller() {
 		if(energyModeller == null) {
 			EnergyModellerBean energyModellerBean = ApplicationContextHolder.getContext().getBean(EnergyModellerBean.class);
-			System.out.println("############################################## " + energyModellerBean);
 			logger.info("Getting Energy Modeller...");
-			logger.info("EnergyModellerBean: " + energyModellerBean);
 			energyModeller = energyModellerBean.getEnergyModeller();
 			return energyModeller;
 		}
