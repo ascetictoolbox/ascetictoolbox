@@ -70,6 +70,8 @@ public class AgreementUtil {
 			return AsceticAgreementTerm.minimum_loa;
 		if (metric.equals("power_usage_per_vm"))
 			return AsceticAgreementTerm.power_usage_per_vm;
+		if (metric.equals("energy_usage_per_vm"))
+			return AsceticAgreementTerm.energy_usage_per_vm;
 		return null;
 	}
 
@@ -117,6 +119,9 @@ public class AgreementUtil {
 			break;
 		case power_usage_per_vm:
 			metric = "power_usage_per_vm";
+			break;
+		case energy_usage_per_vm:
+			metric = "energy_usage_per_vm";
 			break;
 		default:
 			break;
@@ -169,6 +174,11 @@ public class AgreementUtil {
 		case power_usage_per_vm:
 			resource = resources.power_usage_per_vm;
 			break;
+		case energy_usage_per_vm:
+			//TODO: Gestire
+			resource = new STND("http://www.slaatsoi.org/resources#energy_usage_per_vm");
+//			resource = resources.energy_usage_per_vm;
+			break;
 		default:
 			break;
 		}
@@ -210,6 +220,7 @@ public class AgreementUtil {
 		genericTerms.add("not_co_location_host");
 		genericTerms.add("reliability");
 		genericTerms.add("power_usage_per_vm");
+		genericTerms.add("energy_usage_per_vm");
 	}
 
 	public static String getStringTerm(Guaranteed.State gs) {
