@@ -39,7 +39,7 @@ public class EMDatabase {
 		data.setVmid("vm1");
 		Timestamp ts = Timestamp.valueOf("2014-09-27 03:23:34");
 		data.setTime(ts.getTime());
-		data.setCpu(50.5);
+		data.setVmcpu(50.5);
 		data.setVmpower(100);
 		data.setVmenergy(15);
 		

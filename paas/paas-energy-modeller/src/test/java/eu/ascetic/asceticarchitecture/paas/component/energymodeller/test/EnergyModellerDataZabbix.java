@@ -11,7 +11,7 @@ import org.springframework.util.Assert;
 
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.builder.EnergyModellerFactory;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.PaaSEMDatabaseManager;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.ZabbixDataCollectorService;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.legacy.ZabbixDataCollectorService;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.service.EnergyModellerServiceY1;
 
 public class EnergyModellerDataZabbix {

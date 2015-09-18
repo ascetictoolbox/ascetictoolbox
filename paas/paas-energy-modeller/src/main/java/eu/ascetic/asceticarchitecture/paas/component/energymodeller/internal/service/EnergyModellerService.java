@@ -73,20 +73,20 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	 */	
 	
 	@Override
-	public double measure(String providerid, String applicationid,List<String> vmids, String eventid, Unit unit,Timestamp start, Timestamp end) {
+	public double measure(String providerid, String applicationid, String deploymentid,List<String> vmids, String eventid, Unit unit,Timestamp start, Timestamp end) {
 		
 		
 		if((start==null)&&(end==null)){
 			LOGGER.info("Measuring from all available data since both timestamps are not specified");
 			if (unit==Unit.ENERGY){
-				LOGGER.info("Measuring energy consumption");
-				double result = energyConsumption(providerid,applicationid,vmids,eventid,null,null);
-				sendToQueue(monitoringTopic, providerid, applicationid, vmids, eventid, GenericEnergyMessage.Unit.WATTHOUR, null, result);
+				LOGGER.info("Measuring all energy consumption");
+				double result = aggregateVMenergyConsumption(providerid,applicationid,deploymentid, vmids,eventid,null,null);
+				if (result>=0)sendToQueue(monitoringTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATTHOUR, null, result);
 				return result;
 			} else {
 				LOGGER.info("Measuring average instant power"); 
-				double result = averagePower(providerid,applicationid, vmids,  eventid,null,null);
-				sendToQueue(monitoringTopic, providerid, applicationid, vmids, eventid, GenericEnergyMessage.Unit.WATT, null, result);
+				double result = averagePower(providerid,applicationid, deploymentid, vmids,  eventid,null,null);
+				if (result>=0)sendToQueue(monitoringTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATT, null, result);
 				LOGGER.info("Sending to queue power "+result); 
 				return result;
 			}
@@ -116,13 +116,14 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 			LOGGER.info(end);
 			if (unit==Unit.ENERGY){
 				LOGGER.info("Measuring energy consumption");
-				double result =  energyConsumption( providerid, applicationid, vmids,  eventid,  start,  end);
-				sendToQueue(monitoringTopic, providerid, applicationid, vmids, eventid, GenericEnergyMessage.Unit.WATTHOUR, null, result);
+				double result =  aggregateVMenergyConsumption( providerid, applicationid, deploymentid, vmids,  eventid,  start,  end);
+				LOGGER.info("Sending to queue");
+				if (result>=0)sendToQueue(monitoringTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATTHOUR, null, result);
 				return result;
 			} else {
 				LOGGER.info("Measuring average instant power"); 
-				double result =  averagePower(providerid,applicationid, vmids,  eventid,start,end);
-				sendToQueue(monitoringTopic, providerid, applicationid, vmids, eventid, GenericEnergyMessage.Unit.WATT, null, result);
+				double result =  averagePower(providerid,applicationid, deploymentid, vmids,  eventid,start,end);
+				if (result>=0)sendToQueue(monitoringTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATT, null, result);
 				return result;
 			}
 			
@@ -131,10 +132,12 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	}
 
 	@Override
-	public double estimate(String providerid, String applicationid,	List<String> vmids, String eventid, Unit unit, long window) {
+	public double estimate(String providerid, String applicationid,  String deploymentid,	List<String> vmids, String eventid, Unit unit, long window) {
 		LOGGER.info("Forecasting instant power"); 
-		double currentval = predictor.estimate(providerid,applicationid, vmids, eventid, unit, window);	
-		sendToQueue(predictionTopic, providerid, applicationid, vmids, eventid, GenericEnergyMessage.Unit.WATT, null, currentval);
+		double currentval = predictor.estimate(providerid,applicationid, deploymentid, vmids, eventid, unit, window);	
+		
+		//predictor
+		sendToQueue(predictionTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATT, null, currentval);
 		return currentval;
 	}
 
@@ -174,10 +177,10 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	 */	
 	
 	@Override
-	public List<EventSample> eventsData(String providerid,String applicationid, List<String> vmids, String eventid,Timestamp start, Timestamp end) {
+	public List<EventSample> eventsData(String providerid,String applicationid,  String deploymentid, List<String> vmids, String eventid,Timestamp start, Timestamp end) {
 		List<EventSample> results = new Vector<EventSample>();
 		for (String vm : vmids){
-			results.addAll(eventsSamplesInInterval( providerid, applicationid,  vm,  eventid,start, end));
+			results.addAll(eventsSamplesInInterval( providerid, applicationid, deploymentid, vm,  eventid,start, end));
 		}
 		return results;
 	}
@@ -190,11 +193,11 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	 */	
 	
 	@Override
-	public List<ApplicationSample> applicationData( String providerid, String applicationid,List<String> vmids, long samplingperiod,Timestamp start, Timestamp end){
+	public List<ApplicationSample> applicationData( String providerid, String applicationid, String deploymentid, List<String> vmids, long samplingperiod,Timestamp start, Timestamp end){
 		List<DataConsumption> resultssamples = new Vector<DataConsumption>();
 		List<ApplicationSample> results = new Vector<ApplicationSample>();
 		for(String vm : vmids){
-			List<DataConsumption> estim_sample = energyService.sampleMeasurements("app",applicationid, vm, start.getTime(),end.getTime(),samplingperiod);
+			List<DataConsumption> estim_sample = energyService.sampleMeasurements(applicationid, deploymentid, vm, start.getTime(),end.getTime(),samplingperiod);
 			if (estim_sample!=null)resultssamples.addAll(estim_sample);
 		}
 		for(DataConsumption dc : resultssamples){
@@ -203,7 +206,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 			as.setVmid(dc.getVmid());
 			as.setP_value(dc.getVmpower());
 			as.setTime(dc.getTime());
-			as.setC_value(dc.getCpu());
+			as.setC_value(dc.getVmcpu());
 			as.setE_value(dc.getVmpower());
 			results.add(as);
 		}
@@ -215,16 +218,16 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	
 	/**
 	 * 
-	 * GET ENERGY CONSUMED BY AN APPLICATION IF EVENT ID IS NULL  , OR THE TOTAL ENERGY CONSUMED BY THE SAME EVENT TYPE IF ITs ID IS PROVIDED
+	 * GET ENERGY CONSUMED BY AN APPLICATION IF EVENT ID IS NULL  , OR THE TOTAL ENERGY CONSUMED BY THE SAME EVENT TYPE IF ITs ID IS PROVIDED, AGGREGATE FOR ALL VMS SPECCIFIED
 	 * 
 	 */
-	private double energyConsumption(String providerid,String applicationid, List<String> vmids, String eventid,Timestamp start,Timestamp end) {
-		
+	private double aggregateVMenergyConsumption(String providerid,String applicationid, String deploymentid, List<String> vmids, String eventid,Timestamp start,Timestamp end) {
+			
 			double total_energy=0;
 			if (eventid==null){
 				LOGGER.debug("Analytzing application");
 				for (String vm : vmids) {
-					double energy = energyForVM(providerid, applicationid, vm, eventid,null,null);
+					double energy = energyForVM(providerid, applicationid, deploymentid, vm, eventid,start,end);
 					LOGGER.info("This VM "+ vm + " consumed " + String.format( "%.2f", energy ));
 					total_energy = total_energy +energy;
 				}			
@@ -233,7 +236,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 				LOGGER.debug("Analytzing event");
 				for (String vm : vmids) {
 					LOGGER.debug("Analyzing events on VM "+vm); 
-					total_energy = total_energy + energyForVM(providerid, applicationid, vm, eventid,null,null);
+					total_energy = total_energy + energyForVM(providerid, applicationid, deploymentid, vm, eventid,start,end);
 				}
 				LOGGER.info("Event energy Wh " +String.format( "%.2f", total_energy ));
 			}
@@ -247,9 +250,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	 * 
 	 */	
 	
-	private double averagePower(String providerid, String applicationid, List<String> vmids, String eventid, Timestamp start, Timestamp end) {
-		
-		
+	private double averagePower(String providerid, String applicationid, String deploymentid, List<String> vmids, String eventid, Timestamp start, Timestamp end) {
 		
 		if((start==null)&&(end==null)){
 			if (eventid!=null){
@@ -257,10 +258,15 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 				double totalPower = 0;
 				double countEvents = 0;
 				for (String vm : vmids) {
-					List<DataEvent> events = eventService.getEvents(applicationid, applicationid, vm, eventid,null,null);
+					LOGGER.info("Measuring event average instant power (W) for vm "+vm); 
+					// TODO workaround 
+					String translated = energyService.translatePaaSFromIaasID(deploymentid, vm);
+					List<DataEvent> events = eventService.getEvents(applicationid, deploymentid, translated, eventid,null,null);
+					LOGGER.info("Got events: "+events.size()); 
 					for (DataEvent de: events){
+						LOGGER.info("Event start "+de.getBegintime()+" and terminates  "+ de.getEndtime()); 
 						countEvents++;
-						double power  = energyService.getMeasureInIntervalFromVM(Unit.POWER, applicationid, vm, de.getBegintime(), de.getEndtime());
+						double power  = energyService.getMeasureInIntervalFromVM(Unit.POWER, applicationid, deploymentid, vm, de.getBegintime(), de.getEndtime());
 						LOGGER.info("This event power :  "+power);
 						totalPower = totalPower + power;
 					}
@@ -275,7 +281,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 				
 				for (String vm : vmids) {
 					countEvents++;
-					double power  = energyService.getMeasureInIntervalFromVM(Unit.POWER, applicationid, vm, (c_tiemstamp.getTimeInMillis()-(86400*1000)), c_tiemstamp.getTimeInMillis());
+					double power  = energyService.getMeasureInIntervalFromVM(Unit.POWER, applicationid, deploymentid, vm, (c_tiemstamp.getTimeInMillis()-(86400*1000)), c_tiemstamp.getTimeInMillis());
 					LOGGER.info("This vm power since one day :  "+power);
 					totalPower = totalPower + power;
 				}
@@ -307,17 +313,19 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 				for (String vm : vmids) {
 					LOGGER.info("Going to use start  :  "+start.getTime());
 					LOGGER.info("Going to use end :  "+end.getTime());
-					double power  = energyService.getMeasureInIntervalFromVM(Unit.POWER, applicationid, vm,  start.getTime(), end.getTime());
+					double power  = energyService.getMeasureInIntervalFromVM(Unit.POWER, applicationid, deploymentid, vm,  start.getTime(), end.getTime());
 					LOGGER.info("Avg power for VM "+ vm + " was " + String.format( "%.2f", power ));
 					if (power>0)tot_power = tot_power + power;
 				}
 				return tot_power;
 			}else{
 				for (String vm : vmids) {
-					List<DataEvent> events = eventService.getEvents(applicationid, applicationid, vm, eventid,start,end);
+					// TODO workaround
+					String translated = energyService.translatePaaSFromIaasID(deploymentid, vm);
+					List<DataEvent> events = eventService.getEvents( applicationid, deploymentid, translated, eventid,start,end);
 					for (DataEvent de: events){
 						
-						double power  = energyService.getMeasureInIntervalFromVM(Unit.POWER, applicationid, vm,  de.getBegintime(), de.getEndtime());
+						double power  = energyService.getMeasureInIntervalFromVM(Unit.POWER, applicationid, deploymentid, vm,  de.getBegintime(), de.getEndtime());
 						if (power > 0){
 							LOGGER.info("This event power :  "+power);
 						}
@@ -345,20 +353,18 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	 * 
 	 */
 
-	private double energyForVM(String providerid, String applicationid, String vmid, String eventid, Timestamp start, Timestamp end) {
-		List<String> vmids = new Vector<String>();
-		vmids.add(vmid);
+	private double energyForVM(String providerid, String applicationid, String deploymentid, String vmid, String eventid, Timestamp start, Timestamp end) {
 		if((start==null)&&(end==null)){
 			if (eventid==null){
-				LOGGER.info("Application energy estimation for " + applicationid );
-				return energyService.getEnergyFromVM(applicationid, vmid, eventid);
+				LOGGER.info("Application energy estimation for " + deploymentid );
+				return energyService.getEnergyFromVM(applicationid, deploymentid, vmid, eventid);
 			} else {
 				LOGGER.info("Energy estimation for " + applicationid + " and its event " + eventid);
 				int eventcount =0;
 				double energyAverage = 0;
-				List<DataEvent> events = eventService.getEvents(applicationid, applicationid, vmid, eventid, null, null);
+				List<DataEvent> events = eventService.getEvents(applicationid, deploymentid, vmid, eventid, null, null);
 				for (DataEvent de: events){
-					double energy = energyService.getMeasureInIntervalFromVM(Unit.ENERGY, de.getApplicationid(),de.getVmid(),de.getBegintime(),de.getEndtime());
+					double energy = energyService.getMeasureInIntervalFromVM(Unit.ENERGY, de.getApplicationid(), de.getDeploymentid(), de.getVmid(),de.getBegintime(),de.getEndtime());
 					LOGGER.debug("This event : "+ de.getBegintime() + " and " +de.getEndtime() + " energy "+energy);
 					if (energy >0){
 						eventcount++;
@@ -374,9 +380,9 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 			if (eventid!=null){
 				double energyAverage = 0;
 				int eventcount =0;
-				List<DataEvent> events = eventService.getEvents(applicationid, applicationid, vmid, eventid,start,end);
+				List<DataEvent> events = eventService.getEvents( applicationid, deploymentid , vmid, eventid,start,end);
 				for (DataEvent de: events){
-					double energy = energyService.getMeasureInIntervalFromVM(Unit.ENERGY, de.getApplicationid(),de.getVmid(),de.getBegintime(),de.getEndtime());
+					double energy = energyService.getMeasureInIntervalFromVM(Unit.ENERGY, de.getApplicationid(),de.getVmid() , de.getVmid(),de.getBegintime(),de.getEndtime());
 					if (energy >0){
 						eventcount++;
 						energyAverage = energyAverage + energy;
@@ -387,7 +393,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 				return (energyAverage/eventcount );			
 				
 			}else {
-				return energyService.getMeasureInIntervalFromVM(Unit.ENERGY, applicationid, vmid, start.getTime(), end.getTime());
+				return energyService.getMeasureInIntervalFromVM(Unit.ENERGY, applicationid, deploymentid, vmid, start.getTime(), end.getTime());
 			}
 				
 		}	
@@ -395,17 +401,17 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		
 
 	
-	private List<EventSample> eventsSamplesInInterval(String providerid,String applicationid, String vmid, String eventid,Timestamp start, Timestamp endtime) {
+	private List<EventSample> eventsSamplesInInterval(String providerid,String applicationid, String deploymentid, String vmid, String eventid,Timestamp start, Timestamp endtime) {
 		
 		List<EventSample> eSamples = new Vector<EventSample>();
 		
 		EventSample es = new EventSample();
-		List<DataEvent> events = eventService.getEvents(applicationid, applicationid, vmid, eventid,start,endtime);
+		List<DataEvent> events = eventService.getEvents(applicationid, deploymentid, vmid, eventid,start,endtime);
 		for (DataEvent de: events){
 			
 			es = new EventSample();
-			double power  = energyService.getMeasureInIntervalFromVM(Unit.ENERGY,applicationid, vmid, start.getTime(), endtime.getTime());
-			double energy = energyService.getMeasureInIntervalFromVM(Unit.POWER, de.getApplicationid(),vmid,de.getBegintime(),de.getEndtime());
+			double power  = energyService.getMeasureInIntervalFromVM(Unit.ENERGY,applicationid, deploymentid, vmid, start.getTime(), endtime.getTime());
+			double energy = energyService.getMeasureInIntervalFromVM(Unit.POWER, de.getApplicationid(), de.getDeploymentid(), vmid,de.getBegintime(),de.getEndtime());
 			if (energy > 0){
 				LOGGER.info("This event :  "+energy);
 				es.setTimestampBeging(de.getBegintime());
@@ -431,13 +437,14 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	 *  
 	 */
 	
-	
-	private void sendToQueue(String queue,String providerid,String applicationid, List<String> vms, String eventid, GenericEnergyMessage.Unit unit, String referenceTime,double value){
-		
-		if (queueEnabled) queueManager.sendToQueue(queue, providerid, applicationid, vms, eventid, unit, referenceTime, value);
-		
+	private void sendToQueue(String queue,String providerid,String applicationid, String deploymentid, List<String> vms, String eventid, GenericEnergyMessage.Unit unit, String referenceTime,double value){
+		LOGGER.info("EM queue enabled is "+queueEnabled);
+		if (queueEnabled){
+			LOGGER.info("EM publish message of energy");
+			queueManager.sendToQueue(queue, providerid, applicationid, deploymentid, vms, eventid, unit, referenceTime, value);
+			LOGGER.info("EM Publication complete");
+		}
 	}
-		
 	
 	/**
 	 * Constructor, settings loader 
@@ -488,9 +495,11 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	
 	private void initializeDataConnectors(){
 		LOGGER.debug("Setting connection to data sources for events and energy ");
+		
 		energyService = new EnergyDataAggregatorServiceQueue();
 		eventService = new EventDataAggregatorService();
 		eventService.setDaoEvent(dbmanager.getDataEventDAOImpl());
+		eventService.setupApplicationMonitor(emsettings.getAppmonitor());
 		monitoringDataService = new MonitoringDataService();
 		monitoringDataService.setDataDAO(dbmanager.getMonitoringData());
 		LOGGER.debug("Configured ");
@@ -498,8 +507,9 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		
 	private void initializeQueueServiceManager(){
 		LOGGER.info("Loading Queue service manager "+emsettings.getEnableQueue() +emsettings.getAmanagertopic()+emsettings.getIaasAmqpUrl());
+		
 		if (emsettings.getEnableQueue().equals("true")) {
-			
+			this.queueEnabled = true;
 			try {
 				paasQueueclient = new AmqpClient();
 				paasQueueclient.setup(emsettings.getAmqpUrl(), emsettings.getAmqpUser(), emsettings.getAmqpPassword(), emsettings.getMonitoringQueueTopic());
@@ -533,7 +543,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	
 	private void initializePrediction(){
 		LOGGER.info("EM predictor module loaded");
-		predictor= PredictorBuilder.getPredictor();
+		predictor= PredictorBuilder.getPredictor("basic");
 	}
 
 	@Override
@@ -542,13 +552,13 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	}
 
 	@Override
-	public boolean subscribeMonitoring(String applicationid, String deploymentid, String eventid, long timewindow, Unit unit) {
+	public boolean subscribeMonitoring(String providerid, String applicationid, String deploymentid, String eventid, long timewindow, Unit unit) {
 		monitoringDataService.startMonitoring(applicationid, deploymentid, eventid);
 		return true;
 	}
 
 	@Override
-	public boolean unsubscribeMonitoring(String applicationid,String deploymentid, String eventid, long timewindow, Unit unit) {
+	public boolean unsubscribeMonitoring(String providerid,String applicationid,String deploymentid, String eventid, long timewindow, Unit unit) {
 		monitoringDataService.stopMonitoring(applicationid, deploymentid);
 		return false;
 	}	
@@ -565,6 +575,51 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	 */
 	public void setEmsettings(EMSettings emsettings) {
 		this.emsettings = emsettings;
+	}
+
+	@Override
+	public double estimate(String providerid, String applicationid,
+			List<String> vmids, String eventid, Unit unit, long window) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public boolean subscribeMonitoring(String applicationid,
+			String deploymentid, String eventid, long timewindow, Unit unit) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean unsubscribeMonitoring(String applicationid,
+			String deploymentid, String eventid, long timewindow, Unit unit) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public double measure(String providerid, String applicationid,
+			List<String> vmids, String eventid, Unit unit, Timestamp start,
+			Timestamp end) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public List<EventSample> eventsData(String providerid,
+			String applicationid, List<String> vmids, String eventid,
+			Timestamp start, Timestamp end) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<ApplicationSample> applicationData(String providerid,
+			String applicationid, List<String> vmids, long samplingperiod,
+			Timestamp start, Timestamp end) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 

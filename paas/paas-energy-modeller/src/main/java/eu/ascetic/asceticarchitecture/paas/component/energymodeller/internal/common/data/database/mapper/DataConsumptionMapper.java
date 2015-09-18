@@ -23,7 +23,7 @@ public class DataConsumptionMapper implements RowMapper<DataConsumption>{
 		data.setTime(result.getLong("time"));
 		data.setVmenergy(result.getDouble("vmenergy"));
 		data.setVmpower(result.getDouble("vmpower"));
-		data.setCpu(result.getDouble("vmcpu"));
+		data.setVmcpu(result.getDouble("vmcpu"));
 		
 		return data;
 	}

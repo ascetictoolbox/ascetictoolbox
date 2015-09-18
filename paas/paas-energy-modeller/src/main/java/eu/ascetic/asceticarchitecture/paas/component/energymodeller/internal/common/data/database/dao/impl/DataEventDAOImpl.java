@@ -24,7 +24,9 @@ public class DataEventDAOImpl implements DataeEventDAO {
 			+ "vmid varchar(50), eventid varchar(50), data varchar(100), starttime bigint,endtime bigint, energy double)";
 	private static String SQL_INSERT="insert into DATAEVENT (applicationid,deploymentid,vmid, data, starttime,endtime, energy,eventid ) values (?,?,?, ?, ?, ?, ?,?) ";
 	private static String SQL_Q_APPID="select * from DATAEVENT where applicationid = ? and vmid = ? and eventid = ?";
+	private static String SQL_Q_DEPID="select * from DATAEVENT where applicationid = ? and deploymentid = ? and vmid = ? and eventid = ?";
 	private static String SQL_Q_APPIDTime="select * from DATAEVENT where applicationid = ? and vmid = ? and eventid = ? and starttime >= ? and starttime <= ?";
+	private static String SQL_Q_DEPIDTime="select * from DATAEVENT where applicationid = ? and deploymentid = ? and vmid = ? and eventid = ? and starttime >= ? and starttime <= ?";
 	private static String SQL_CLEAN="DELETE FROM DATAEVENT";
 	
 	@Override
@@ -70,6 +72,32 @@ public class DataEventDAOImpl implements DataeEventDAO {
 		String delete = "DELETE FROM DATAEVENT WHERE applicationid = \""+appid+"\" and vmid=\""+vmid+"\" and eventid=\""+eventid+"\"";
 		LOGGER.info("delete "+delete);
 		jdbcTemplate.execute(delete);
+	}
+	
+	// TODO workaround
+	public void purgeWorkarounddata(String eventid){
+		String delete = "DELETE FROM DATAEVENT WHERE eventid=\""+eventid+"\"";
+		LOGGER.info("delete "+delete);
+		jdbcTemplate.execute(delete);
+	}
+
+	@Override
+	public List<DataEvent> getByDeployIdTime(String applicationid, String deploymentid,  String vmid,	String eventid, Timestamp start, Timestamp end) {
+		try{
+			LOGGER.info("times "+start.getTime()+" " + end.getTime());
+			return jdbcTemplate.query(SQL_Q_DEPIDTime,new Object[]{applicationid,deploymentid,vmid,eventid,start.getTime(),end.getTime()}, new DataEventMapper());
+		}catch (Exception e){
+			return null;
+		}
+	}
+
+	@Override
+	public List<DataEvent> getByDeployId(String applicationid, String deploymentid, String vmid, String eventid) {
+		try{
+			return jdbcTemplate.query(SQL_Q_DEPID,new Object[]{applicationid, deploymentid,vmid,eventid}, new DataEventMapper());
+		}catch (Exception e){
+			return null;
+		}
 	}
 
 //	private static String SQL_Q_DEPID="select * from DATAEVENT where deploymentid = ? and vmid = ? and eventid = ?";

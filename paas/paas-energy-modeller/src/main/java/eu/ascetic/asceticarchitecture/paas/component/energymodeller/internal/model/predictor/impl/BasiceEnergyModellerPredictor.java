@@ -22,7 +22,7 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.mod
 
 
 
-public class EnergyModellerPredictor implements PredictorInterface {
+public class BasiceEnergyModellerPredictor implements PredictorInterface {
 
 	
 	private final static Logger LOGGER = Logger.getLogger(PredictorInterface.class.getName());
@@ -116,10 +116,71 @@ public class EnergyModellerPredictor implements PredictorInterface {
 	}
 
 	@Override
-	public double estimate(List<DataConsumption> samples, Unit unit,
-			long timelater) {
-		// TODO Auto-generated method stub
-		return 0;
+	public double estimate(List<DataConsumption> samples, Unit unit, long timelater) {
+		
+		// only power then from power get energy estimation
+		double estimation=0;
+		Date current = new Date();
+		// from one week
+		long begin = current.getTime()-604800000;
+		// to now
+		long end = current.getTime();
+		
+		// add after millisec conversion the time of the forecast
+		long forecasttime = end + (timelater*1000);
+		LOGGER.info("Samples "+samples.size());
+		//DataInterpolator interpolator;
+		Attribute time = new Attribute("Time");
+		//Attribute memory =  new Attribute("Memory");
+		Attribute power = new Attribute("Power");
+		
+		FastVector fvWekaAttributes = new FastVector(2);
+		fvWekaAttributes.addElement(time);
+		//fvWekaAttributes.addElement(memory);
+		fvWekaAttributes.addElement(power);
+		
+		Instances isTrainingSet = new Instances("Powermodel", fvWekaAttributes, 0);
+
+		 isTrainingSet.setClassIndex(1);
+		 
+		 Instance iExample;
+		 
+		 double[] timestamps= new double[samples.size()];
+		 double[] data=new double[samples.size()];
+		
+		int i=0;
+		for (DataConsumption dc : samples){
+			
+				 iExample = new DenseInstance(1);
+				 iExample.setValue((Attribute)fvWekaAttributes.elementAt(0), new Float(dc.getTime()));
+				 //iExample.setValue((Attribute)fvWekaAttributes.elementAt(2), new Float(samples.get(i).getPower()));
+				 isTrainingSet.add(iExample);
+				 timestamps[i]=dc.getTime();
+				 data[i]=dc.getVmpower();
+				 i++;
+	    }
+		iExample = new DenseInstance(2);
+		iExample.setValue((Attribute)fvWekaAttributes.elementAt(0),forecasttime);
+    	isTrainingSet.add(iExample);
+			 
+		 LinearRegression model = new LinearRegression();
+		 try {
+			 model.buildClassifier(isTrainingSet);
+		
+			 LOGGER.info("Model "+model);
+	
+			 Instance ukPower = isTrainingSet.lastInstance();
+			 double powerest = model.classifyInstance(ukPower);
+			 LOGGER.info("Power ("+ukPower+"): "+powerest);
+			 return powerest;
+		 } catch (Exception e) {
+				e.printStackTrace();
+		 }
+			
+		
+		return estimation;
 	}
+
+	
 
 }

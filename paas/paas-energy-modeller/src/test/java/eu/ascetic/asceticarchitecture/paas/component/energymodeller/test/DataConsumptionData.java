@@ -25,7 +25,7 @@ public class DataConsumptionData {
 	public void testCreate() {
 		DataConsumption dc = new DataConsumption();
 		dc.setApplicationid("123");
-		dc.setCpu(0.6);
+		dc.setVmcpu(0.6);
 		dc.setDeploymentid("345");
 		dc.setVmenergy(50);
 		dc.setVmpower(5);
@@ -36,7 +36,7 @@ public class DataConsumptionData {
 		
 		dc = new DataConsumption();
 		dc.setApplicationid("123");
-		dc.setCpu(15);
+		dc.setVmcpu(15);
 		dc.setDeploymentid("345");
 		dc.setVmenergy(55);
 		dc.setVmpower(5);
@@ -46,7 +46,7 @@ public class DataConsumptionData {
 		
 		dc = new DataConsumption();
 		dc.setApplicationid("123");
-		dc.setCpu(50);
+		dc.setVmcpu(50);
 		dc.setDeploymentid("345");
 		dc.setVmenergy(60);
 		dc.setVmpower(15);

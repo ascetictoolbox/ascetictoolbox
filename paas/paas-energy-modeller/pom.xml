@@ -142,7 +142,6 @@
 			<artifactId>weka-dev</artifactId>
 			<version>${paasem.weka}</version>
 		</dependency>
-		
 		<dependency>
 			<groupId>org.mybatis</groupId>
 			<artifactId>mybatis</artifactId>
@@ -152,29 +151,12 @@
 		<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-broker</artifactId>
 			<version>${paasem.activemq}</version>
-		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.apache.activemq</groupId> -->
-<!-- 			<artifactId>activemq-client</artifactId> -->
-<!-- 			<version>${paasem.activemq}</version> -->
-<!-- 		</dependency> -->
-		
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.apache.qpid</groupId> -->
-<!-- 			<artifactId>qpid-jms-client</artifactId> -->
-<!-- 			<version>0.1.0</version> -->
-<!-- 		</dependency> -->
-		
+		</dependency>	
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-amqp</artifactId>
 			<version>${paasem.activemq}</version>
 		</dependency>
-<!-- 		<dependency> -->
-<!-- 	      <groupId>org.neuroph</groupId> -->
-<!-- 	      <artifactId>neuroph-core</artifactId> -->
-<!-- 	      <version>2.9</version> -->
-<!-- 	    </dependency>	 -->
 	</dependencies>
 
 	<build>

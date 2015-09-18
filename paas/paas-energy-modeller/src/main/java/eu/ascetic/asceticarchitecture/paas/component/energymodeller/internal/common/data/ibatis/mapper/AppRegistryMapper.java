@@ -37,5 +37,13 @@ public interface AppRegistryMapper {
 	  int checkVM(@Param("app_id") String app_id,@Param("deploy_id") int deploy_id,@Param("vm_id") int vm_id);
 	
 	  @Select("SELECT iaas_id FROM APPLICATION_REGISTRY WHERE deploy_id = #{deploy_id} and vm_id = #{vm_id} ")
-	  String selectFromIaaSID(@Param("deploy_id") String deploy_id,@Param("vm_id") String vm_id);	  
+	  String selectFromIaaSID(@Param("deploy_id") String deploy_id,@Param("vm_id") String vm_id);
+	  
+	  @Update("UPDATE APPLICATION_REGISTRY set energy=#{energy} WHERE #{app_id} and deploy_id = #{deploy_id} and vm_id = #{vm_id} ")
+	  void updateEnergy(@Param("app_id") String app_id, @Param("deploy_id") String deploy_id,@Param("vm_id") String vm_id,@Param("energy") double energy);
+
+	  @Update("UPDATE APPLICATION_REGISTRY set power=#{power} WHERE #{app_id} and deploy_id = #{deploy_id} and vm_id = #{vm_id}  ")
+	  void updatePower(@Param("app_id") String app_id, @Param("deploy_id") String deploy_id,@Param("vm_id") String vm_id,@Param("energy") double power);
+
+	  
 }

@@ -3,7 +3,6 @@
  */
 package eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table;
 
-import java.sql.Timestamp;
 
 //application id | deployment id | start time | end time | event load (cpu/ram usage) | total energy consumed | min | max | avg
 
@@ -13,10 +12,12 @@ public class DataConsumption {
 	private String deploymentid;
 	private String vmid;
 	private String eventid;
+	private String metrictype;
 	private long time;
-	private double cpu;
+	private double vmcpu;
 	private double vmenergy;
 	private double vmpower;
+	private double vmmemory;
 	
 		
 	public String getApplicationid() {
@@ -50,11 +51,11 @@ public class DataConsumption {
 	public void setTime(long time) {
 		this.time = time;
 	}
-	public double getCpu() {
-		return cpu;
+	public double getVmcpu() {
+		return vmcpu;
 	}
-	public void setCpu(double cpu) {
-		this.cpu = cpu;
+	public void setVmcpu(double vmcpu) {
+		this.vmcpu = vmcpu;
 	}
 
 	public double getVmenergy() {
@@ -70,8 +71,19 @@ public class DataConsumption {
 	public void setVmpower(double vmpower) {
 		this.vmpower = vmpower;
 	}
+	public double getVmmemory() {
+		return vmmemory;
+	}
+	public void setVmmemory(double vmmemory) {
+		this.vmmemory = vmmemory;
+	}
+	public String getMetrictype() {
+		return metrictype;
+	}
+	public void setMetrictype(String metrictype) {
+		this.metrictype = metrictype;
+	}
 
-	
 }
 
 

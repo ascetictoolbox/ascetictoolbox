@@ -3,7 +3,6 @@
  */
 package eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Vector;
 
@@ -27,49 +26,22 @@ public class EnergyDataAggregatorServiceQueue {
 	
 	public void setDataMapper(DataConsumptionMapper dataConsumptionMapper) {
 		this.dataConsumptionMapper = dataConsumptionMapper;
-		 
 	}
 
-	public double getEnergyFromVM(String deployment, String vmid, String event) {
+	public double getEnergyFromVM(String applicationid, String deployment, String vmid, String event) {
 		vmid = translatePaaSFromIaasID(deployment,vmid);
 		if (vmid == null ){
 			logger.info("No PaaS ID found from IaaS ID");
 			return -1;
 		}
-		
-		// integrate the missing function 
 		logger.info("Start computing for"+deployment+" "+ vmid);
-		List<DataConsumption> consumptionList = dataConsumptionMapper.selectByVm(deployment, vmid);
-		DataConsumption previousSample=null;
-		double accumulatedEnergy = 0;
-		logger.info("Start computing Wh "+consumptionList.size());
-		double partial = 0;
-		for (DataConsumption sample: consumptionList){
-			//logger.info("TIME  "+sample.getTime());
-			//logger.info("WATT  "+sample.getVmpower());
-			if (previousSample!=null){
-				//logger.info("now is "+" "+previousSample.getVmpower()+" "+sample.getVmenergy()+" "+previousSample.getTime()+" "+sample.getTime());
-				
-				partial = integrate(previousSample.getVmpower(),sample.getVmenergy(),previousSample.getTime(),sample.getTime());
-				accumulatedEnergy = accumulatedEnergy + partial;
-				//logger.info("accumulated Wh "+accumulatedEnergy);
-				//logger.info("delta W "+(previousSample.getVmpower()-sample.getVmenergy()));
-				//logger.info("delta time "+(previousSample.getTime()-sample.getTime()));
-				
-			} else {
-				//logger.info("Start computing ");
-				
-			}
-			
-			previousSample = sample;
-			
-		}
-		logger.info("total Wh "+accumulatedEnergy);
-		return accumulatedEnergy;
+		return integrateSamples(deployment, vmid, -1,-1);
 	}
 
-	public double getMeasureInIntervalFromVM(Unit unit,String deployment, String vmid, long start, long end) {
+	public double getMeasureInIntervalFromVM(Unit unit,String applictionid, String deployment, String vmid, long start, long end) {
+		
 		vmid = translatePaaSFromIaasID(deployment,vmid);
+		
 		if (vmid == null ){
 			logger.info("No PaaS ID found from IaaS ID");
 			return -1;
@@ -123,14 +95,8 @@ public class EnergyDataAggregatorServiceQueue {
 			
 		}
 		if (unit == Unit.ENERGY){
-			double result = dataConsumptionMapper.getTotalEnergyForVMTime(deployment, vmid,start,end);
-			
-			logger.debug("Whole energy (Wh) is "+result);
-			double diff = end - start;
-			logger.debug("from "+start + " to "+end);
-			diff = diff / 3600000;
-			if (result>0)logger.info("Total is "+result + " over "+diff);
-			return result;
+
+			return integrateSamples(deployment, vmid, start, end);
 			
 		} else {
 			double result = dataConsumptionMapper.getPowerInIntervalForVM(deployment, vmid, start/1000, end/1000);
@@ -141,9 +107,34 @@ public class EnergyDataAggregatorServiceQueue {
 		
 	}
 	
-	public List<DataConsumption> getSamplesInInterval(String depl, String vmid, Timestamp start, Timestamp end) {
-		return dataConsumptionMapper.getDataSamplesVM(depl, vmid, start.getTime(), end.getTime());
+	private double integrateSamples(String deployment, String vmid, long start, long end){
+		List<DataConsumption> consumptionList;
+		if (start>0){
+			logger.info("Start computing Wh over a period of time");
+			consumptionList = dataConsumptionMapper.getDataSamplesVM(deployment, vmid, start/1000, end/1000);
+			
+		}else {
+			logger.info("Start computing Wh overall samples");
+			consumptionList = dataConsumptionMapper.selectByVm(deployment, vmid);
+		}
+		DataConsumption previousSample=null;
+		double accumulatedEnergy = 0;
+		logger.info("Start computing Wh "+consumptionList.size());
+		double partial = 0;
+		for (DataConsumption sample: consumptionList){
+			if (previousSample!=null){
+				partial = integrate(previousSample.getVmpower(),sample.getVmpower(),previousSample.getTime(),sample.getTime());
+				accumulatedEnergy = accumulatedEnergy + partial;
+				
+			} 
+			previousSample = sample;
+			
+		}
+		logger.info("total Wh is "+accumulatedEnergy);
+		return accumulatedEnergy;
+			
 	}
+	
 	
 	public List<DataConsumption> sampleMeasurements(String applicationid, String deployment, String vmid, long start,long end,long interval){
 		vmid = translatePaaSFromIaasID(deployment,vmid);
@@ -165,7 +156,7 @@ public class EnergyDataAggregatorServiceQueue {
 		while (currenttime < end){
 			if (iteration == 0){
 				DataConsumption as = new DataConsumption();
-				as.setCpu(result.get(0).getCpu());
+				as.setVmcpu(result.get(0).getVmcpu());
 				as.setVmpower(result.get(0).getVmpower());
 				as.setVmenergy(0);
 				as.setTime(start);
@@ -181,7 +172,7 @@ public class EnergyDataAggregatorServiceQueue {
 					if (pointer==result.size())break;
 				}
 				if (pointer<result.size()){
-					as.setCpu(result.get(pointer).getCpu());
+					as.setVmcpu(result.get(pointer).getVmcpu());
 					as.setVmpower(result.get(pointer).getVmpower());
 					as.setTime(currenttime);
 					as.setVmid(vmid);
@@ -202,7 +193,7 @@ public class EnergyDataAggregatorServiceQueue {
 	}
 	
 	// TODO to be removed
-	private String translatePaaSFromIaasID(String deployid, String paasvmid){
+	public String translatePaaSFromIaasID(String deployid, String paasvmid){
 		logger.info(" I translated the iaas id " + paasvmid);
 		String iaasVmId = registryMapper.selectFromIaaSID(deployid,paasvmid);
 		logger.info(" I translated to " + paasvmid + " the iaas id " + iaasVmId);

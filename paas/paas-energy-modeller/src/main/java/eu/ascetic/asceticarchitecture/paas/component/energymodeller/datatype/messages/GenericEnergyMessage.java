@@ -1,6 +1,5 @@
 package eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.messages;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class GenericEnergyMessage {
@@ -10,6 +9,7 @@ public class GenericEnergyMessage {
 	private String provider;
 	private String applicationid;
 	private String eventid;
+	private String deploymentid;
 	private List<String> vms;
 	private Unit unit;
 	private String generattiontimestamp;
@@ -64,6 +64,13 @@ public class GenericEnergyMessage {
 	public void setValue(double value) {
 		this.value = value;
 	}
+	public String getDeploymentid() {
+		return deploymentid;
+	}
+	public void setDeploymentid(String deploymentid) {
+		this.deploymentid = deploymentid;
+	}
+	
 	
 	
 }

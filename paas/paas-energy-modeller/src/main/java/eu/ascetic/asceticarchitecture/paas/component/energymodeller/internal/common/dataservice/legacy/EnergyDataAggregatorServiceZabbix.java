@@ -1,7 +1,7 @@
 /**
 * Copyright 2014 Hewlett-Packard Development Company, L.P.                                         
  */
-package eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice;
+package eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.legacy;
 
 import java.sql.Timestamp;
 import java.util.List;

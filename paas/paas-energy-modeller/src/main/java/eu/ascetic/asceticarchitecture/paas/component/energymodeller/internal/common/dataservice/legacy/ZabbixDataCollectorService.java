@@ -1,7 +1,7 @@
 /**
 * Copyright 2014 Hewlett-Packard Development Company, L.P.                                         
  */
-package eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice;
+package eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.legacy;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,12 +29,13 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.com
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.dao.impl.DataEventDAOImpl;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.DataConsumption;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.DataEvent;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.ApplicationMonitoringDataService;
 
 public class ZabbixDataCollectorService  {
 	
 	private static int MILLIS_IN_A_DAY = 86400000;
 	private static int SECS_IN_A_DAY = 86400;
-	private static final Logger logger = Logger.getLogger(ZabbixDataCollectorService.class);
+	private static final Logger logger = Logger.getLogger(ApplicationMonitoringDataService.class);
 	private DataConsumptionDAOImpl dataconsumption;
 	private DataEventDAOImpl dataevent;
 
@@ -267,7 +268,7 @@ public class ZabbixDataCollectorService  {
 
 				dc.setApplicationid(appid);
 				dc.setVmid(vmid);
-				dc.setCpu(0);
+				dc.setVmcpu(0);
 				dc.setVmenergy(energy);
 				if ((item.getClock()-previous.getClock())>1800){
 					logger.warn("Machine has been shutted down");
@@ -283,7 +284,7 @@ public class ZabbixDataCollectorService  {
 				if (energy > 10) logger.info(" HighEnergy is: " + energy +	"Power is : "+item.getValue()+ "Clock is : "+item.getClock());
 				dc.setApplicationid(appid);
 				dc.setVmid(vmid);
-				dc.setCpu(0);
+				dc.setVmcpu(0);
 				dc.setVmenergy(energy);
 				dc.setEventid(eventid);
 				dc.setVmpower(Double.parseDouble(item.getValue()));
@@ -395,6 +396,8 @@ public class ZabbixDataCollectorService  {
 	public void setDataevent(DataEventDAOImpl dataevent) {
 		this.dataevent = dataevent;
 	}
+	
+
 	
 
 	

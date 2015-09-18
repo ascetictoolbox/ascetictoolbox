@@ -48,21 +48,7 @@ public class DataConsumptionHandler {
         return uds;
     }
 	 
-	public void initializeTable(UnpooledDataSource uds){
-		
-//		ScriptRunner sr;
-//		try {
-//			sr = new ScriptRunner(uds.getConnection());
-//			Reader reader = new BufferedReader(new FileReader("createRegistry.sql"));
-//			sr.runScript(reader);
-//			LOGGER.info("Initialize the registry");
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		
-	}
-	
+
 	public DataConsumptionMapper getMapper(){
 		if (mapper==null) mapper = sqlSessionFactory.openSession(true).getMapper(DataConsumptionMapper.class);
 		LOGGER.info("Returning the mapper");

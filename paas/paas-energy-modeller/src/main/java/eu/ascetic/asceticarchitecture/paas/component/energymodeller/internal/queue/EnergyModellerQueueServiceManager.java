@@ -13,6 +13,7 @@ import javax.jms.TextMessage;
 
 import org.apache.log4j.Logger;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.messages.GenericEnergyMessage;
@@ -43,7 +44,6 @@ public class EnergyModellerQueueServiceManager {
 		this.paasQueuePublisher = paasQueuePublisher;
 		
 		this.registry = registry;
-		//this.dataConsumptionHandler = dataConsumptionHandler;
 		LOGGER.info("EM queue manager set");
 	
 	}
@@ -54,16 +54,16 @@ public class EnergyModellerQueueServiceManager {
 		this.iaasQueuePublisher = iaasQueuePublisher;
 		this.dataConsumptionHandler = dataConsumptionHandler;
 		this.registry = registry;
-		//this.dataConsumptionHandler = dataConsumptionHandler;
 		LOGGER.info("EM queue manager set");
 	
 	}
 
-	public void sendToQueue(String queue,String providerid,String applicationid, List<String> vms, String eventid, GenericEnergyMessage.Unit unit, String referenceTime,double value){
+	public void sendToQueue(String queue,String providerid,String applicationid, String deploymentid, List<String> vms, String eventid, GenericEnergyMessage.Unit unit, String referenceTime,double value){
 		GenericEnergyMessage message= new GenericEnergyMessage();
 		message.setProvider(providerid);
 		message.setApplicationid(applicationid);
 		message.setEventid(eventid);
+		message.setDeploymentid(deploymentid);
 		Date data = new Date();
 		message.setGenerattiontimestamp(data.toGMTString());
 		// used to specify the time the forecast is referred to, 
@@ -255,10 +255,45 @@ public class EnergyModellerQueueServiceManager {
 	                    		
 	                    		return;
 	                    	}
+	                    	// compute the iaas id
+	                    	
+	                    	
+//	                    	> Topic:: APPLICATION.davidgpTestApp.DEPLOYMENT.456.VM.1711.DEPLOYED
+//	                    	> Message:
+//	                    	>
+//	                    	> {
+//	                    	>    "applicationId" : "davidgpTestApp",
+//	                    	>    "deploymentId" : "456",
+//	                    	>    "status" : "DEPLOYING",
+//	                    	>    "vms" : [ {
+//	                    	>       "vmId" : "1711",
+//	                    	>       "iaasVmId" : "eee5aecd-3a67-49f5-8fad-faaba74a2684",
+//	                    	>       "ovfId" : "mysqlA",
+//	                    	>       "status" : "ACTIVE"
+//	                    	>    } ]
+//	                    	> }
+	                    	
+	                    	
+	                    	String payload = textMessage.getText();
+		                    ObjectMapper jmapper = new ObjectMapper();
+		                    JsonNode jsontext = jmapper.readValue(payload, JsonNode.class);
+	                        
+	                		System.out.println("Received DEPLOYED message for iaas id"+ jsontext.findValue("iaasVmId"));
+		        
+	                    	if (jsontext.findValue("iaasVmId")==null){
+	                    		LOGGER.info("Unable to parse AMQP deployment message, missing iaas id");
+	                    		return;
+	                    	}
+		                    
+		                    
+		                    String iaasid = jsontext.findValue("iaasVmId").textValue();
+	                    	vm.setIaas_id(iaasid);
+	                    	
 	                    	mapper.createVM(vm);
 	                    	LOGGER.info("Received DEPLOYED message");
 	                    }
 	                    if (topic[6].equals("TERMINATED")){
+		                    
 	                    	VirtualMachine vm = new VirtualMachine();
 		                    vm.setApp_id( topic[1]);
 		                    vm.setDeploy_id(Integer.parseInt(topic[3]));
@@ -303,8 +338,7 @@ public class EnergyModellerQueueServiceManager {
 		                    String payload = textMessage.getText();
 		                    String[] topic = dest.split("\\.");
 		                    //LOGGER.info("Received " +topic[3]+topic[1] );
-		                    
-
+		  
 		                    DataConsumption dc= new DataConsumption();
 		                    ObjectMapper jmapper = new ObjectMapper();
 		                    Map<String,Object> userData = jmapper.readValue(payload, Map.class);
@@ -330,7 +364,54 @@ public class EnergyModellerQueueServiceManager {
 			                    //LOGGER.info("The vmid is "+topic[1]);
 			                    dc.setVmpower(value);
 			                    dc.setTime(ts);	
+			                    dc.setMetrictype("power");
 		                    	mapper.createMeasurement(dc);
+		                    }
+		                    if ((topic[3].equals("cpu"))){
+		                    	double value = (double) userData.get("value");
+		                    	LOGGER.info("Received cpu measure" +value);
+		                    	long ts =  Long.valueOf(userData.get("timestamp").toString());
+			                    if (ts <=0){
+			                    	LOGGER.info("Received non valid measure" +ts );
+			                    	return;
+			                    }
+			                    if (value <0){
+			                    	LOGGER.info("Received non valid measure" +value);
+			                    	return;
+			                    }
+			                    // TODO now is iaas vm id later this will be the real paas id a	
+			                    dc.setVmid(topic[1] );
+			                    //LOGGER.info("The power is "+value);
+			                    //LOGGER.info("The time is "+ts);
+			                    //LOGGER.info("The vmid is "+topic[1]);
+			                    dc.setVmcpu(value);
+			                    dc.setTime(ts);	
+			                    dc.setMetrictype("cpu");
+		                    	mapper.createMeasurement(dc);
+		                    }
+		                    
+		                    if ((topic[3].equals("memory"))){
+		                    	double value = Double.valueOf(userData.get("value").toString());
+		                    	LOGGER.info("Received memory measure" +value);
+		                    	long ts =  Long.valueOf(userData.get("timestamp").toString());
+			                    if (ts <=0){
+			                    	LOGGER.info("Received non valid measure" +ts );
+			                    	return;
+			                    }
+			                    if (value <0){
+			                    	LOGGER.info("Received non valid measure" +value);
+			                    	return;
+			                    }
+			                    // TODO now is iaas vm id later this will be the real paas id a	
+			                    dc.setVmid(topic[1] );
+			                    //LOGGER.info("The power is "+value);
+			                    //LOGGER.info("The time is "+ts);
+			                    //LOGGER.info("The vmid is "+topic[1]);
+			                    dc.setVmmemory(value);
+			                    dc.setTime(ts);	
+			                    dc.setMetrictype("memory");
+		                    	mapper.createMeasurement(dc);
+		                    	
 		                    }
 		                    
 		                	 

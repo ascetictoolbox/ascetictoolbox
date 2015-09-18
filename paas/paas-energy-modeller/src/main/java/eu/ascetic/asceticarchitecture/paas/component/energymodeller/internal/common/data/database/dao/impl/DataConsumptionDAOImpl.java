@@ -54,7 +54,7 @@ public class DataConsumptionDAOImpl implements DataConsumptionDAO {
 	@Override
 	public void save(DataConsumption data) {
 		 LOGGER.debug("Inserting into table DATACONSUMPTION");
-		 Object[] params = new Object[] { data.getApplicationid() , data.getDeploymentid() , data.getVmid(), data.getEventid(), data.getTime() ,  data.getVmenergy(),data.getVmpower() ,data.getCpu() };
+		 Object[] params = new Object[] { data.getApplicationid() , data.getDeploymentid() , data.getVmid(), data.getEventid(), data.getTime() ,  data.getVmenergy(),data.getVmpower() ,data.getVmcpu() };
 		 int[] types = new int[] { Types.VARCHAR,Types.VARCHAR,Types.VARCHAR,Types.VARCHAR,Types.BIGINT, Types.DOUBLE, Types.DOUBLE,Types.DOUBLE};
 		 jdbcTemplate.update(SQL_INSERT, params, types);
 		 LOGGER.debug("Inserted");
@@ -193,7 +193,7 @@ public class DataConsumptionDAOImpl implements DataConsumptionDAO {
 			    ps.setLong(5, sample.getTime());
 			    ps.setDouble(6, sample.getVmenergy());
 			    ps.setDouble(7, sample.getVmpower());
-			    ps.setDouble(8, sample.getCpu());
+			    ps.setDouble(8, sample.getVmcpu());
 			    ps.addBatch();
 			}
 			ps.executeBatch();
