@@ -136,6 +136,19 @@ class ZabbixAscetic
 
     # We continue if the host is not nill
     unless host.nil?
+      ## We delete first other templates to which this host is assigned
+      templates = @zbx.templates.get_ids_by_host( :hostids => [@zbx.hosts.get_id(:host => hostname)] )
+
+      templates.each do |template_to_remove|
+        @zbx.query(
+          :method => "host.update",
+          :params => {
+            :hostid => host,
+            :templates_clear => [ :templateid => template_to_remove]
+          }
+        )
+      end
+
       @zbx.query(
         :method => "host.update",
         :params => {
