@@ -365,7 +365,6 @@ iaas/virtual-machine-manager/clopla-benchmarking/src/test/java/es/bsc/clopla_ben
 iaas/virtual-machine-manager/clopla/LICENSE -text
 iaas/virtual-machine-manager/clopla/NOTICE -text
 iaas/virtual-machine-manager/clopla/README.md -text
-iaas/virtual-machine-manager/clopla/clopla.iml -text
 iaas/virtual-machine-manager/clopla/data/vmplacement/unsolved/vmplacement.xml -text
 iaas/virtual-machine-manager/clopla/data/vmplacement/unsolved/vmplacement2.xml -text
 iaas/virtual-machine-manager/clopla/data/vmplacement/unsolved/vmplacement3.xml -text
