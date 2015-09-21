@@ -43,6 +43,7 @@ public class Configuration {
 	public static String amqpPassword = "guest";
 	public static String emCalculateEnergyWhenDeletion = "yes";
 	public static String emConfigurationFile = "/etc/ascetic/paas/em/config.properties";
+	public static String providerRegistryEndpoint = "http://localhost/provider-registry";
 	
 	// TODO to remove this parameter, this configuration needs to be collected from the Provider Registry
 	public static String vmManagerServiceUrl = "http://10.4.0.15:34372/vmmanager";
@@ -71,10 +72,12 @@ public class Configuration {
         	amqpPassword = config.getString("amqp.password");
         	emCalculateEnergyWhenDeletion = config.getString("em.calculate.energy.when.deletion");
         	emConfigurationFile = config.getString("em.configuration.file");
+        	providerRegistryEndpoint = config.getString("provider-registry-endpoint");
         	
         	// TODO to change this to be collected by the Provider Registry
         	vmManagerServiceUrl = config.getString("vm-manager.url");
         	slaAgreementExpirationTime = config.getString("sla-agreement-expiration-time");
+        	
         }
         catch (Exception e) {
             logger.info("Error loading Application Manager configuration file");
