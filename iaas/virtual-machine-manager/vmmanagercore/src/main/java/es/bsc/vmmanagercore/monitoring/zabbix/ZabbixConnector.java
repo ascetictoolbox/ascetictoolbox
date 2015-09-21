@@ -153,11 +153,14 @@ public class ZabbixConnector {
                 resultSet.close();
             }
             catch (Exception e) {
-                System.out.println("Could not get data from Zabbix");
+				if(!doNotSpam)
+                	System.out.println("Could not get data from Zabbix");
+				doNotSpam = true;
             }
         }
         return result;
     }
+	private static boolean doNotSpam = false;
 
     /**
      * Registers a VM in Zabbix. A client who makes a deployment request should not wait
