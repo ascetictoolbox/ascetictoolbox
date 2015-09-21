@@ -23,9 +23,9 @@
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
-  <changeSet author="davidgp" id="addColumn-amqp-href-to-providers-table">
+  <changeSet author="davidgp" id="addColumn-amqp-url-to-providers-table">
       <addColumn tableName="providers">
-            <column name="amqp_endpoint" type="varchar(255)">
+            <column name="amqp_url" type="varchar(255)">
                 <constraints nullable="true"/>
             </column>
       </addColumn>
