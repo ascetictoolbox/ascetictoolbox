@@ -787,6 +787,11 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/http/C
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/ovf/OVFUtils.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/ovf/VMLimits.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/pm/PriceModellerClient.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/providerregistry/PRClient.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/providerregistry/model/Collection.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/providerregistry/model/Items.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/providerregistry/model/Link.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/providerregistry/model/Provider.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/AbstractRest.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/AgreementRest.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/ApplicationRest.java -text
@@ -860,6 +865,11 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/ovf/OVFThingsIT.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/ovf/OVFUtilsTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/ovf/VMLimitsTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/providerregistry/PRClientTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/providerregistry/model/CollectionTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/providerregistry/model/ItemTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/providerregistry/model/LinkTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/providerregistry/model/ProviderTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/AgreementRestTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/ApplicationRestTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/rest/CacheImageRestTest.java -text
