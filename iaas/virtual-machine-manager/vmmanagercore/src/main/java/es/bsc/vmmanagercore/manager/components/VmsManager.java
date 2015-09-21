@@ -221,12 +221,12 @@ public class VmsManager {
                 initializeVmBilling(vmId, hostForDeployment.getHostname());
             }*/
 
-            /*if (energyModeller instanceof AsceticEnergyModellerAdapter) {
+            if (energyModeller instanceof AsceticEnergyModellerAdapter) {
                 ((AsceticEnergyModellerAdapter) energyModeller).initializeVmInEnergyModellerSystem(
                         vmId, 
                         vmToDeploy.getApplicationId(), 
                         vmToDeploy.getImage());
-            }*/
+            }
             if (vmToDeploy.needsFloatingIp()) {
                 cloudMiddleware.assignFloatingIp(vmId);
             }

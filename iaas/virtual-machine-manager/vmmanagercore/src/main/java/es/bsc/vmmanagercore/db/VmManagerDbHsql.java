@@ -57,7 +57,8 @@ public class VmManagerDbHsql implements VmManagerDb {
             // Connect to the database. This will load the DB files and start the DB if it is not already running
             conn = DriverManager.getConnection("jdbc:hsqldb:file:db/" + dbFileNamePrefix, "sa", "");
         } catch (Exception e) {
-            System.out.println(ERROR_DB_CONNECTION);
+            System.out.println(ERROR_DB_CONNECTION + "jdbc:hsqldb:file:db/" + dbFileNamePrefix +" --> " + e.getMessage());
+			e.printStackTrace();
         }
         setupDb();
     }
