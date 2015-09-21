@@ -226,7 +226,7 @@ public class VMRestTest extends AbstractTest {
 		
 		List<String> ids = new ArrayList<String>();
 		ids.add("abab");
-		when(energyModeller.measure(null,  "111", ids, "eventX", Unit.ENERGY, null, null)).thenReturn(22.0);
+		when(energyModeller.measure(null,  "111", "333", ids, "eventX", Unit.ENERGY, null, null)).thenReturn(22.0);
 		//when(energyModeller.energyEstimation(null, "111", ids, "eventX")).thenReturn(22.0);
 		
 		Response response = vmRest.getEnergyEstimation("111", "333", "444", "eventX");
@@ -266,7 +266,7 @@ public class VMRestTest extends AbstractTest {
 		
 		List<String> ids = new ArrayList<String>();
 		ids.add("abab");
-		when(energyModeller.measure(null, "111", ids, "eventX",  Unit.ENERGY, null, null)).thenReturn(22.0);
+		when(energyModeller.measure(null, "111", "333", ids, "eventX",  Unit.ENERGY, null, null)).thenReturn(22.0);
 		
 		Response response = vmRest.getEnergyConsumption("111", "333", "444", "eventX", 0, 0);
 		assertEquals(200, response.getStatus());
@@ -306,7 +306,7 @@ public class VMRestTest extends AbstractTest {
 		List<String> ids = new ArrayList<String>();
 		ids.add("abab");
 		
-		when(energyModeller.measure(any(String.class), eq("111"), eq(ids), eq("eventX"), eq(Unit.ENERGY), eq(new Timestamp(20l)), any(Timestamp.class))).thenReturn(33.0);
+		when(energyModeller.measure(any(String.class), eq("111"), eq("333"), eq(ids), eq("eventX"), eq(Unit.ENERGY), eq(new Timestamp(20l)), any(Timestamp.class))).thenReturn(33.0);
 		
 		Response response = vmRest.getEnergyConsumption("111", "333", "444", "eventX", 20l, 0l);
 		assertEquals(200, response.getStatus());
@@ -345,7 +345,7 @@ public class VMRestTest extends AbstractTest {
 		
 		List<String> ids = new ArrayList<String>();
 		ids.add("abab");
-		when(energyModeller.measure(any(String.class), eq("111"), eq(ids), eq("eventX"), eq(Unit.ENERGY), eq(new Timestamp(20l)), eq(new Timestamp(33l)))).thenReturn(44.0);
+		when(energyModeller.measure(any(String.class), eq("111"), eq("333"), eq(ids), eq("eventX"), eq(Unit.ENERGY), eq(new Timestamp(20l)), eq(new Timestamp(33l)))).thenReturn(44.0);
 		
 		Response response = vmRest.getEnergyConsumption("111", "333", "444", "eventX", 20l, 33l);
 		assertEquals(200, response.getStatus());
@@ -408,7 +408,7 @@ public class VMRestTest extends AbstractTest {
 		List<String> vmIds = new ArrayList<String>();
 		vmIds.add(vm.getProviderVmId());
 		
-		when(energyModeller.eventsData(null, "", vmIds, "eventX", new Timestamp(2l), new Timestamp(3l))).thenReturn(eventSamples);
+		when(energyModeller.eventsData(null, "", "", vmIds, "eventX", new Timestamp(2l), new Timestamp(3l))).thenReturn(eventSamples);
 		
 		// We perform the action
 		Response response = vmRest.getEnergySample("", "", "444", "eventX", 2l, 3l, 0l);
@@ -453,7 +453,7 @@ public class VMRestTest extends AbstractTest {
 		
 		// We verify the calls to the mocks
 		verify(vmDAO, times(1)).getById(444);
-		verify(energyModeller, times(1)).eventsData(null, "", vmIds, "eventX", new Timestamp(2l), new Timestamp(3l));
+		verify(energyModeller, times(1)).eventsData(null, "", "", vmIds, "eventX", new Timestamp(2l), new Timestamp(3l));
 	}
 	
 	@Test

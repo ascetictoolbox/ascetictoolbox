@@ -324,7 +324,7 @@ public class VMRest extends AbstractRest {
 		
 		logger.debug("Connecting to Energy Modeller");
 
-		double energyConsumed = energyModeller.measure(null,  applicationName, ids, eventId, Unit.ENERGY, null, null);
+		double energyConsumed = energyModeller.measure(null,  applicationName, deploymentId, ids, eventId, Unit.ENERGY, null, null);
 		
 		EnergyMeasurement energyMeasurement = new EnergyMeasurement();
 		energyMeasurement.setValue(energyConsumed);
@@ -364,17 +364,18 @@ public class VMRest extends AbstractRest {
 		logger.debug("Connecting to Energy Modeller");
 		
 		if(startTime == 0) {
-			energyConsumed = energyModeller.measure(null,  applicationName, ids, eventId, Unit.ENERGY, null, null); 
+			energyConsumed = energyModeller.measure(null,  applicationName, deploymentId , ids, eventId, Unit.ENERGY, null, null); 
+			
 		} else if(endTime == 0) {
 			Timestamp startStamp = new Timestamp(startTime);
 			Timestamp endStamp = new Timestamp(System.currentTimeMillis());
 			
-			energyConsumed = energyModeller.measure(null,  applicationName, ids, eventId, Unit.ENERGY, startStamp, endStamp); 
+			energyConsumed = energyModeller.measure(null,  applicationName, deploymentId, ids, eventId, Unit.ENERGY, startStamp, endStamp); 
 		} else {
 			Timestamp startStamp = new Timestamp(startTime);
 			Timestamp endStamp = new Timestamp(endTime);
 			
-			energyConsumed = energyModeller.measure(null,  applicationName, ids, eventId, Unit.ENERGY, startStamp, endStamp); 
+			energyConsumed = energyModeller.measure(null,  applicationName, deploymentId, ids, eventId, Unit.ENERGY, startStamp, endStamp); 
 		}
 		
 		energyMeasurement.setValue(energyConsumed);
@@ -473,7 +474,7 @@ public class VMRest extends AbstractRest {
 			if(interval == 0) {
 				List<eu.ascetic.paas.applicationmanager.model.EventSample> samples = null;
 				// Going for energyApplicationConsumptionData
-				List<EventSample> eSamples = energyModeller.eventsData(null, applicationName, vmIds, eventId, startStamp, endStamp);
+				List<EventSample> eSamples = energyModeller.eventsData(null, applicationName, deploymentId, vmIds, eventId, startStamp, endStamp);
 				
 				samples = EnergyModellerConverter.convertList(eSamples);
 				
