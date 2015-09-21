@@ -110,6 +110,7 @@ public class VMResourceManager implements ResourceManager {
 	public ClientResponse estimates(JSONObject request) {
 		ClientResponse response = null;
 		logger.debug("Create Estimates Request: ");
+		logger.debug("VM Manager path: "+ resourceRootWeb.path("estimates").getURI());
 		logger.debug("Request to VM Manager: " + request.toString());
 		response = resourceRootWeb.path("estimates").type(MediaType.APPLICATION_JSON_TYPE).post(ClientResponse.class, request.toString());
 		return response;
