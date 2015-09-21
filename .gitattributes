@@ -4088,6 +4088,7 @@ utils/ovf-xmlbeans/src/main/xsdconfig/ovf.xsdconfig -text
 utils/provider-registry-database/LICENSE.TXT -text
 utils/provider-registry-database/README.TXT -text
 utils/provider-registry-database/db/changelog/db.changelog-1.0.xml -text
+utils/provider-registry-database/db/changelog/db.changelog-1.1.xml -text
 utils/provider-registry-database/db/changelog/db.changelog-master.xml -text
 utils/provider-registry-database/liquibase/LICENSE.txt -text
 utils/provider-registry-database/liquibase/lib/README.txt -text
