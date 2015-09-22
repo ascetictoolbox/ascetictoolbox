@@ -33,12 +33,18 @@ public class Configuration {
 	private static Logger logger = Logger.getLogger(Configuration.class);
 	
 	/** The zabbix user. */
-//	public static String zabbixUser = "Admin";
+
 	public static String zabbixUser = "admin";
 //	public static String zabbixPassword = "zabbix";
-	public static String zabbixPassword = "73046447cce977b10167";
+//	public static String zabbixUser = "Admin";	//Y1
+//	public static String zabbixPassword = "73046447cce977b10167"; //Y1
+// 	public static String zabbixUrl = "https://10.4.0.15/zabbix/api_jsonrpc.php";	//Y1	
 //	public static String zabbixUrl = "http://172.24.76.124/zabbix/api_jsonrpc.php";
-	public static String zabbixUrl = "https://10.4.0.15/zabbix/api_jsonrpc.php";
+	
+	public static String zabbixUrl = "http://192.168.3.199/zabbix/api_jsonrpc.php";	//Y2
+	public static String zabbixPassword = "Brandmeldeanlage104"; //Y2
+
+	
 	public static String virtualMachinesGroupName = "Virtual Machines";
 	public static String osLinuxTemplateName = "Template OS Linux";
 	public static Integer zabbixAutoLogoutTime = 990;
