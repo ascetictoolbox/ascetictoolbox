@@ -160,7 +160,7 @@ public class ModelConverter {
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			marshaller.marshal(t, out);
 			String output = out.toString();
-			logger.debug("Converting object to XML: ");
+			logger.debug("Converting object to JSON: ");
 			logger.debug(output);
 			
 			return output;

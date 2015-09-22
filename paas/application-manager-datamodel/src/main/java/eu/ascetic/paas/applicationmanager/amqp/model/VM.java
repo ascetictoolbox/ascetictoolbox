@@ -35,6 +35,9 @@ public class VM {
 	private String iaasMonitoringVmId;
 	private String ovfId;
 	private String status;
+	private String metricName;
+	private String value;
+	private String units;
 	
 	public String getVmId() {
 		return vmId;
@@ -69,5 +72,26 @@ public class VM {
 	}
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	
+	public String getMetricName() {
+		return metricName;
+	}
+	public void setMetricName(String metricName) {
+		this.metricName = metricName;
+	}
+	
+	public String getValue() {
+		return value;
+	}
+	public void setValue(String value) {
+		this.value = value;
+	}
+	
+	public String getUnits() {
+		return units;
+	}
+	public void setUnits(String units) {
+		this.units = units;
 	}
 }

@@ -36,11 +36,17 @@ public class VMTest {
 		vm.setOvfId("ccc");
 		vm.setStatus("ddd");
 		vm.setVmId("xxx");
+		vm.setMetricName("metric");
+		vm.setValue("1.0");
+		vm.setUnits("W");
 		
 		assertEquals("aaa", vm.getIaasMonitoringVmId());
 		assertEquals("bbb", vm.getIaasVmId());
 		assertEquals("ccc", vm.getOvfId());
 		assertEquals("ddd", vm.getStatus());
 		assertEquals("xxx", vm.getVmId());
+		assertEquals("metric", vm.getMetricName());
+		assertEquals("1.0", vm.getValue());
+		assertEquals("W", vm.getUnits());
 	}
 }
