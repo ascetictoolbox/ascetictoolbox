@@ -36,6 +36,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -422,9 +424,9 @@ public class AsceticDeployer extends Deployer {
 											return Status.OK_STATUS;
 										} catch (ApplicationUploaderException e) {
 											generating = false;
-											String message = "Creation error:  " + e.getMessage();
+											String message = "Deployment error:  " + e.getMessage();
 											log.debug(message);
-											return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error contacting the Application Manager", e );
+											return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Exception returned by the Application Uploader", e );
 										} catch (InterruptedException e) {
 											generating = false;
 											String message = "Deployment interrumped:  " + e.getMessage();
@@ -442,6 +444,42 @@ public class AsceticDeployer extends Deployer {
 							
 								job.setUser(true);
 								job.schedule();
+								job.addJobChangeListener(new IJobChangeListener(){
+
+									@Override
+									public void aboutToRun(IJobChangeEvent arg0) {
+										// Nothing to do		
+									}
+
+									@Override
+									public void awake(IJobChangeEvent arg0) {
+										// Nothing to do
+									}
+
+									@Override
+									public void done(IJobChangeEvent arg0) {
+										IStatus status = arg0.getResult();
+										if (!status.isOK()){
+											ErrorDialog.openError(getShell(), "Error deploying the application",
+													"An error has occurred during the application deployment", status);		
+										}
+									}
+
+									@Override
+									public void running(IJobChangeEvent arg0) {
+										// Nothing to do
+									}
+
+									@Override
+									public void scheduled(IJobChangeEvent arg0) {
+										// Nothing to do
+									}
+
+									@Override
+									public void sleeping(IJobChangeEvent arg0) {
+										// Nothing to do
+									}
+								});;
 							/*} catch (InterruptedException e) {
 									generating = false;
 									String message = "Deployment interrumped:  " + e.getMessage();
@@ -569,6 +607,7 @@ public class AsceticDeployer extends Deployer {
 							new_progress = 15;
 							if(manual){
 								if (!accepted){
+									log.debug("Handling manual agreement");
 									accepted = handleManualAgreement(appUploader, applicationID, deploymentID);
 										if (!accepted){
 											//TODO: Maybe this doesn't work
@@ -615,6 +654,8 @@ public class AsceticDeployer extends Deployer {
 		String applicationID; 
 		String deploymentID;
 		boolean accepted = false;
+		boolean error = false;
+		ApplicationUploaderException ex = null;
 		
 		public ManualAgreementHandler(ApplicationUploader appUploader, String applicationID, String deploymentID){
 			this.appUploader = appUploader;
@@ -644,13 +685,23 @@ public class AsceticDeployer extends Deployer {
 				accepted = true;
 			} catch (ApplicationUploaderException e) {
 				log.error("Exception handling agreement.", e);
-				e.printStackTrace();
+				ex= e;
+				error = true;
 				accepted = false;
 			}
 			
 		}
+		
 		public boolean isAccepted() {
 			return accepted;
+		}
+		
+		public boolean hasError(){
+			return error;
+		}
+		
+		public ApplicationUploaderException getException(){
+			return ex;
 		}
 	}
 	
@@ -658,7 +709,9 @@ public class AsceticDeployer extends Deployer {
 			final String applicationID, final String deploymentID) throws ApplicationUploaderException {
 		
 		ManualAgreementHandler mah = new ManualAgreementHandler(appUploader, applicationID, deploymentID);
-		Display.getDefault().syncExec(mah); 
+		Display.getDefault().syncExec(mah);
+		if (mah.hasError())
+			throw mah.getException();
 		return mah.isAccepted();
 		
 	}

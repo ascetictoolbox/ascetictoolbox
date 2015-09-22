@@ -451,6 +451,7 @@ public class ImageCreation {
 		config.setContext(CONTEXT_FOLDER);
 		//config.setManifestLocation(CONTEXT_FOLDER + "/ovf.xml");
 		config.setGATAdaptor(IMAGE_DEPLOYMENT_FOLDER +"/adaptors");
+		config.setScheduler("integratedtoolkit.components.scheduler.impl.AsceticScheduler");
 		/*config.setComponent(Manifest.generateManifestName(packageName));
 		config.setSchedulerComponent(Manifest.generateManifestName(schedulerPackage));
 		config.setMonitorLocation(TMP_FOLDER);*/
