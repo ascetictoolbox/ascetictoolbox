@@ -735,6 +735,8 @@ paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmana
 paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmanager/model/VMTest.java -text
 paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmanager/model/converter/ModelConverterTest.java -text
 paas/application-manager-datamodel/src/test/resources/log4j.properties -text
+paas/application-manager-portal/index.html -text
+paas/application-manager-portal/js/app.js -text
 paas/application-manager/LICENSE.TXT -text
 paas/application-manager/doc/Makefile -text
 paas/application-manager/doc/make.bat -text
