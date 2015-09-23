@@ -29,6 +29,12 @@
         <filter class="org.apache.log4j.varia.DenyAllFilter" />
     </appender>
 
+	<logger name="eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore">
+		<level value="warn"/>
+		<appender-ref ref="default.console"/>
+		<appender-ref ref="default.file"/>
+	</logger>
+
     <root>
         <priority value="debug" />
         <appender-ref ref="default.console" />
