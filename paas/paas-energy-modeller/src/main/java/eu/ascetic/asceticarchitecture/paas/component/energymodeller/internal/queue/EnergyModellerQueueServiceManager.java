@@ -83,141 +83,140 @@ public class EnergyModellerQueueServiceManager {
 	}	
 	
 
-	public void createConsumers(String appTopic, String measurementsTopic){
-
-		LOGGER.info("Registering consumer for application " + appTopic + " and for energy measurements "+measurementsTopic);
-		
-        MessageListener appListener = new MessageListener() {
-        
-        AppRegistryMapper mapper = registry.getMapper();
-        	
-        public void onMessage(Message message) {
-	            try {
-	            	
-	                if (message instanceof TextMessage) {
-	                	 
-	                    TextMessage textMessage = (TextMessage) message;
-	                    LOGGER.info("Received start message" + textMessage.getText() + "'"+textMessage.getJMSDestination());
-	                    String dest = message.getJMSDestination().toString();
-	                    String[] topic = dest.split("\\.");
-	                    
-	                    if (topic.length<6){
-	                    	LOGGER.debug("Received a message of no interest for the EM");
-	                    	return;
-	                    }
-	                    
-	                    LOGGER.info("Received " +topic[6] + topic[5]+topic[3]+topic[1] );
-	                    
-	                    
-	                    if (topic[6].equals("DEPLOYED")){
-	                    	VirtualMachine vm = new VirtualMachine();
-		                    vm.setApp_id( topic[1]);
-		                    vm.setDeploy_id(Integer.parseInt(topic[3]));
-		                    vm.setVm_id(Integer.parseInt(topic[5]));
-		                    Date date = new Date();
-	                    	vm.setStart(date.getTime());
-	                    	int checkvm = mapper.checkVM(vm.getApp_id(), vm.getDeploy_id(), vm.getVm_id());
-	                    	if (checkvm>0){
-	                    		LOGGER.warn("Received again a deployd message for an app already registered");
-	                    		return;
-	                    	}
-	                    	mapper.createVM(vm);
-	                    	LOGGER.info("Received DEPLOYED message");
-	                    }
-	                    if (topic[6].equals("DELETED")){
-	                    	VirtualMachine vm = new VirtualMachine();
-		                    vm.setApp_id( topic[1]);
-		                    vm.setDeploy_id(Integer.parseInt(topic[3]));
-		                    vm.setVm_id(Integer.parseInt(topic[5]));
-		                    Date date = new Date();
-	                    	vm.setStop(date.getTime());
-	                    	int checkvm = mapper.checkVM(vm.getApp_id(), vm.getDeploy_id(), vm.getVm_id());
-	                    	if (checkvm==0){
-	                    		LOGGER.warn("Received a message for an app not being created before");
-	                    		return;
-	                    	}
-	                    	mapper.stopVM(vm);
-	                    	LOGGER.info("Received TERMINATED stop");
-	                    }
-	                    
-	                    if (topic[6].equals("TERMINATED")){
-	                    		           
-	                    	LOGGER.info("Received TERMINATED stop");
-	                    }
-	                	 
-	                }
-	            } catch (Exception e) {
-	                System.out.println("Caught:" + e);
-	                e.printStackTrace();
-	            }
-	        }
-	    };		
-	    
-	    
-		
-	    LOGGER.debug("Received "+appTopic);
-	    LOGGER.debug("Received "+appListener);
-	    LOGGER.debug("Received "+paasQueuePublisher);
-	    paasQueuePublisher.registerListener(appTopic,appListener);
-		
-//		Topic name: vm.<VMid>.item.<itemId> (for example: vm.wally159.item.energy)
-//		-          Message structure:
-//		{              
-//		                “name”:<String>,             //energy or power
-//		                “value”: <double>,
-//		                “units”:<String>,       //W for power and KWh or Wh for energy
-//		                “timestamp”:<long>
-//		}
-		
-		MessageListener measureListener = new MessageListener(){
-			//DataConsumptionMapper mapper = dataConsumptionHandler.getMapper();
-        	
-	        public void onMessage(Message message) {
-		            try {
-		            	
-		                if (message instanceof TextMessage) {
-		                	 
-		                    TextMessage textMessage = (TextMessage) message;
-		                    LOGGER.info("Received start message" + textMessage.getText() + "'"+textMessage.getJMSDestination());
-		                    String dest = message.getJMSDestination().toString();
-		                    String payload = textMessage.getText();
-		                    String[] topic = dest.split("\\.");
-		                    LOGGER.info("Received " +topic[3]+topic[1] );
-		                    
-		                    int i =0;
-		                    LOGGER.info(i);
-		                    DataConsumption dc= new DataConsumption();
-		                    ObjectMapper jmapper = new ObjectMapper();
-		                    Map<String,Object> userData = jmapper.readValue(payload, Map.class);
-		                    
-		                    if (!(topic[3].equals("energy"))){
-		                    	LOGGER.debug("The topic is energy");
-		                    	return;
-		                    }
-		                    if (!(topic[3].equals("power"))){
-		                    	LOGGER.debug("The topic is power");
-		                    	return;
-		                    }
-		                    
-		                    return;
-		                    
-		                }
-		            } catch (Exception e) {
-		                System.out.println("Caught:" + e);
-		                e.printStackTrace();
-		            }
-		        }
-		};
-		
-		LOGGER.debug("Received "+measurementsTopic);
-	    LOGGER.debug("Received "+measureListener);
-	    LOGGER.debug("Received "+paasQueuePublisher);
-	    paasQueuePublisher.registerListener(measurementsTopic,measureListener);
-		
-	}
+//	public void createConsumers(String appTopic, String measurementsTopic){
+//		LOGGER.info("PaaS only queue data connected");
+//		LOGGER.info("Registering consumer for application " + appTopic + " and for energy measurements "+measurementsTopic);
+//		
+//        MessageListener appListener = new MessageListener() {
+//        
+//        AppRegistryMapper mapper = registry.getMapper();
+//        	
+//        public void onMessage(Message message) {
+//	            try {
+//	            	
+//	                if (message instanceof TextMessage) {
+//	                	 
+//	                    TextMessage textMessage = (TextMessage) message;
+//	                    LOGGER.info("Received start message" + textMessage.getText() + "'"+textMessage.getJMSDestination());
+//	                    String dest = message.getJMSDestination().toString();
+//	                    String[] topic = dest.split("\\.");
+//	                    
+//	                    if (topic.length<6){
+//	                    	LOGGER.debug("Received a message of no interest for the EM");
+//	                    	return;
+//	                    }
+//	                    
+//	                    LOGGER.info("Received " +topic[6] + topic[5]+topic[3]+topic[1] );
+//	                    
+//	                    
+//	                    if (topic[6].equals("DEPLOYED")){
+//	                    	VirtualMachine vm = new VirtualMachine();
+//		                    vm.setApp_id( topic[1]);
+//		                    vm.setDeploy_id(Integer.parseInt(topic[3]));
+//		                    vm.setVm_id(Integer.parseInt(topic[5]));
+//		                    Date date = new Date();
+//	                    	vm.setStart(date.getTime());
+//	                    	int checkvm = mapper.checkVM(vm.getApp_id(), vm.getDeploy_id(), vm.getVm_id());
+//	                    	if (checkvm>0){
+//	                    		LOGGER.warn("Received again a deployd message for an app already registered");
+//	                    		return;
+//	                    	}
+//	                    	mapper.createVM(vm);
+//	                    	LOGGER.info("Received DEPLOYED message");
+//	                    }
+//	                    if (topic[6].equals("DELETED")){
+//	                    	VirtualMachine vm = new VirtualMachine();
+//		                    vm.setApp_id( topic[1]);
+//		                    vm.setDeploy_id(Integer.parseInt(topic[3]));
+//		                    vm.setVm_id(Integer.parseInt(topic[5]));
+//		                    Date date = new Date();
+//	                    	vm.setStop(date.getTime());
+//	                    	int checkvm = mapper.checkVM(vm.getApp_id(), vm.getDeploy_id(), vm.getVm_id());
+//	                    	if (checkvm==0){
+//	                    		LOGGER.warn("Received a message for an app not being created before");
+//	                    		return;
+//	                    	}
+//	                    	mapper.stopVM(vm);
+//	                    	LOGGER.info("Received TERMINATED stop");
+//	                    }
+//	                    
+//	                    if (topic[6].equals("TERMINATED")){
+//	                    		           
+//	                    	LOGGER.info("Received TERMINATED stop");
+//	                    }
+//	                	 
+//	                }
+//	            } catch (Exception e) {
+//	                System.out.println("Caught:" + e);
+//	                e.printStackTrace();
+//	            }
+//	        }
+//	    };		
+//	    
+//	    
+//		
+//	    LOGGER.debug("Received "+appTopic);
+//	    LOGGER.debug("Received "+appListener);
+//	    LOGGER.debug("Received "+paasQueuePublisher);
+//	    paasQueuePublisher.registerListener(appTopic,appListener);
+//		
+////		Topic name: vm.<VMid>.item.<itemId> (for example: vm.wally159.item.energy)
+////		-          Message structure:
+////		{              
+////		                “name”:<String>,             //energy or power
+////		                “value”: <double>,
+////		                “units”:<String>,       //W for power and KWh or Wh for energy
+////		                “timestamp”:<long>
+////		}
+//		
+//		MessageListener measureListener = new MessageListener(){
+//			//DataConsumptionMapper mapper = dataConsumptionHandler.getMapper();
+//        	
+//	        public void onMessage(Message message) {
+//		            try {
+//		            	
+//		                if (message instanceof TextMessage) {
+//		                	 
+//		                    TextMessage textMessage = (TextMessage) message;
+//		                    LOGGER.info("Received start message" + textMessage.getText() + "'"+textMessage.getJMSDestination());
+//		                    String dest = message.getJMSDestination().toString();
+//		                    String payload = textMessage.getText();
+//		                    String[] topic = dest.split("\\.");
+//		                    LOGGER.info("Received " +topic[3]+topic[1] );
+//		                    
+//		                    int i =0;
+//		                    LOGGER.info(i);
+//		                    DataConsumption dc= new DataConsumption();
+//		                    ObjectMapper jmapper = new ObjectMapper();
+//		                    Map<String,Object> userData = jmapper.readValue(payload, Map.class);
+//		                    
+//		                    if (!(topic[3].equals("energy"))){
+//		                    	LOGGER.debug("The topic is energy");
+//		                    	return;
+//		                    }
+//		                    if (!(topic[3].equals("power"))){
+//		                    	LOGGER.debug("The topic is power");
+//		                    	return;
+//		                    }
+//		                    
+//		                    return;
+//		                    
+//		                }
+//		            } catch (Exception e) {
+//		                System.out.println("Caught:" + e);
+//		                e.printStackTrace();
+//		            }
+//		        }
+//		};
+//		
+//		LOGGER.debug("Registering "+measurementsTopic);
+//	    paasQueuePublisher.registerListener(measurementsTopic,measureListener);
+//		
+//	}
+	
 
 	public void createTwoLayersConsumers(String appTopic, String measurementsTopic){
-
+		LOGGER.info("PaaS/IaaS queue data connected");
 		LOGGER.info("Registering consumer for application " + appTopic + " and for energy measurements "+measurementsTopic);
 		
         MessageListener appListener = new MessageListener() {
@@ -228,7 +227,7 @@ public class EnergyModellerQueueServiceManager {
 	            try {
 	            	
 	                if (message instanceof TextMessage) {
-	                	 
+	                	AppRegistryMapper mapper = registry.getMapper(); 
 	                    TextMessage textMessage = (TextMessage) message;
 	                    LOGGER.info("Received start message" + textMessage.getText() + "'"+textMessage.getJMSDestination());
 	                    String dest = message.getJMSDestination().toString();
@@ -255,24 +254,7 @@ public class EnergyModellerQueueServiceManager {
 	                    		
 	                    		return;
 	                    	}
-	                    	// compute the iaas id
-	                    	
-	                    	
-//	                    	> Topic:: APPLICATION.davidgpTestApp.DEPLOYMENT.456.VM.1711.DEPLOYED
-//	                    	> Message:
-//	                    	>
-//	                    	> {
-//	                    	>    "applicationId" : "davidgpTestApp",
-//	                    	>    "deploymentId" : "456",
-//	                    	>    "status" : "DEPLOYING",
-//	                    	>    "vms" : [ {
-//	                    	>       "vmId" : "1711",
-//	                    	>       "iaasVmId" : "eee5aecd-3a67-49f5-8fad-faaba74a2684",
-//	                    	>       "ovfId" : "mysqlA",
-//	                    	>       "status" : "ACTIVE"
-//	                    	>    } ]
-//	                    	> }
-	                    	
+	                    	// compute the iaas id                   	
 	                    	
 	                    	String payload = textMessage.getText();
 		                    ObjectMapper jmapper = new ObjectMapper();
@@ -319,25 +301,23 @@ public class EnergyModellerQueueServiceManager {
 	    
 	    
 		
-	    LOGGER.debug("Received "+appTopic);
-	    LOGGER.debug("Received "+appListener);
-	    LOGGER.debug("Received "+paasQueuePublisher);
+	    LOGGER.debug("Registering  "+appTopic);
 	    paasQueuePublisher.registerListener(appTopic,appListener);
 		
 		MessageListener measureListener = new MessageListener(){
 			DataConsumptionMapper mapper = dataConsumptionHandler.getMapper();
-        	
+			AppRegistryMapper appregistry = registry.getMapper();
 	        public void onMessage(Message message) {
 		            try {
 		            	
 		                if (message instanceof TextMessage) {
 		                	 
 		                    TextMessage textMessage = (TextMessage) message;
-		                    LOGGER.info("Received message" + textMessage.getText() + "'"+textMessage.getJMSDestination());
+		                    LOGGER.debug("Received message" + textMessage.getText() + "'"+textMessage.getJMSDestination());
 		                    String dest = message.getJMSDestination().toString();
 		                    String payload = textMessage.getText();
 		                    String[] topic = dest.split("\\.");
-		                    //LOGGER.info("Received " +topic[3]+topic[1] );
+		                   
 		  
 		                    DataConsumption dc= new DataConsumption();
 		                    ObjectMapper jmapper = new ObjectMapper();
@@ -345,31 +325,37 @@ public class EnergyModellerQueueServiceManager {
 		                    
 		                    if ((topic[3].equals("power"))){
 		                    	//LOGGER.info("The topic is power");
-		                    	
+		                    	LOGGER.debug("Received power " +topic[3]+topic[1] );
 			                    double value = (double) userData.get("value");
 			                    //LOGGER.info("Received ts" +Long.valueOf(userData.get("timestamp").toString() ));
 			                    long ts =  Long.valueOf(userData.get("timestamp").toString());
 			                    if (ts <=0){
-			                    	LOGGER.info("Received non valid measure" +ts );
+			                    	LOGGER.warn("Received non valid measure" +ts );
 			                    	return;
 			                    }
 			                    if (value <0){
-			                    	LOGGER.info("Received non valid measure" +value);
+			                    	LOGGER.warn("Received non valid measure" +value);
 			                    	return;
 			                    }
 			                    // TODO now is iaas vm id later this will be the real paas id a	
+			                    int count = appregistry.checkIaaSVM(topic[1]);
+			                    if (count==0){
+			                    	LOGGER.info("Received  valid measure for a vm not in the registry"+topic[1]);
+			                    	return;
+			                    }
+			                    LOGGER.info("Received power " +topic[3]+topic[1] );
 			                    dc.setVmid(topic[1] );
-			                    //LOGGER.info("The power is "+value);
-			                    //LOGGER.info("The time is "+ts);
-			                    //LOGGER.info("The vmid is "+topic[1]);
+			                    
+			                    
+			                    
 			                    dc.setVmpower(value);
 			                    dc.setTime(ts);	
 			                    dc.setMetrictype("power");
 		                    	mapper.createMeasurement(dc);
-		                    }
+		                    } 
 		                    if ((topic[3].equals("cpu"))){
 		                    	double value = (double) userData.get("value");
-		                    	LOGGER.info("Received cpu measure" +value);
+		                    	LOGGER.debug("Received cpu measure " +value);
 		                    	long ts =  Long.valueOf(userData.get("timestamp").toString());
 			                    if (ts <=0){
 			                    	LOGGER.info("Received non valid measure" +ts );
@@ -380,10 +366,13 @@ public class EnergyModellerQueueServiceManager {
 			                    	return;
 			                    }
 			                    // TODO now is iaas vm id later this will be the real paas id a	
+			                    int count = appregistry.checkIaaSVM(topic[1]);
+			                    if (count==0){
+			                    	LOGGER.info("Received  valid measure for a vm not in the registry"+topic[1]);
+			                    	return;
+			                    }
+			                    // TODO now is iaas vm id later this will be the real paas id a	
 			                    dc.setVmid(topic[1] );
-			                    //LOGGER.info("The power is "+value);
-			                    //LOGGER.info("The time is "+ts);
-			                    //LOGGER.info("The vmid is "+topic[1]);
 			                    dc.setVmcpu(value);
 			                    dc.setTime(ts);	
 			                    dc.setMetrictype("cpu");
@@ -392,21 +381,25 @@ public class EnergyModellerQueueServiceManager {
 		                    
 		                    if ((topic[3].equals("memory"))){
 		                    	double value = Double.valueOf(userData.get("value").toString());
-		                    	LOGGER.info("Received memory measure" +value);
+		                    	LOGGER.debug("Received memory measure " +value);
 		                    	long ts =  Long.valueOf(userData.get("timestamp").toString());
 			                    if (ts <=0){
-			                    	LOGGER.info("Received non valid measure" +ts );
+			                    	LOGGER.warn("Received non valid measure" +ts );
 			                    	return;
 			                    }
 			                    if (value <0){
-			                    	LOGGER.info("Received non valid measure" +value);
+			                    	LOGGER.warn("Received non valid measure" +value);
+			                    	return;
+			                    }
+			                    // TODO now is iaas vm id later this will be the real paas id a	
+			                    int count = appregistry.checkIaaSVM(topic[1]);
+			                    if (count==0){
+			                    	LOGGER.info("Received  valid measure for a vm not in the registry"+topic[1]);
 			                    	return;
 			                    }
 			                    // TODO now is iaas vm id later this will be the real paas id a	
 			                    dc.setVmid(topic[1] );
-			                    //LOGGER.info("The power is "+value);
-			                    //LOGGER.info("The time is "+ts);
-			                    //LOGGER.info("The vmid is "+topic[1]);
+
 			                    dc.setVmmemory(value);
 			                    dc.setTime(ts);	
 			                    dc.setMetrictype("memory");

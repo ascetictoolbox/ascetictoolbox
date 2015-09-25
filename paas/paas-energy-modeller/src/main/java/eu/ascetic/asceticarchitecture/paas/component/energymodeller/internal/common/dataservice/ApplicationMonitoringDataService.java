@@ -48,15 +48,17 @@ public class ApplicationMonitoringDataService  {
 
 	public void handleEventData(String applicationid, String deploymentid,String vmid, String eventid) {
 		// TODO deployment id shoudl be used and in case to filter only some events. 
-			logger.info("vm " + vmid);
+			logger.info("Now getting events for app " + applicationid);
+			logger.info("Now getting events for dep " + deploymentid);
+			logger.info("Now getting events for vm " + vmid);
 			String requestEntity;
-			requestEntity = "FROM events MATCH appId=\""+applicationid+"\" AND eventType=\""+eventid+"\" AND nodeId=\""+vmid+"\"";
+			requestEntity = "FROM events MATCH appId=\""+applicationid+"\" AND data.eventType=\""+eventid+"\" AND nodeId=\""+vmid+"\"";
 			if (eventid==null){
 				logger.warn("No event id supplied. I will load all events for the application");
 				requestEntity = "FROM events MATCH appId=\""+applicationid+"\"";
 			}
 			// TODO workaround use eventType even if it is risky for id issues
-			requestEntity = "FROM events MATCH eventType=\""+eventid+"\" ";
+			//requestEntity = "FROM events MATCH data.eventType=\""+eventid+"\" ";
 			
 			
 			HttpURLConnection connection;

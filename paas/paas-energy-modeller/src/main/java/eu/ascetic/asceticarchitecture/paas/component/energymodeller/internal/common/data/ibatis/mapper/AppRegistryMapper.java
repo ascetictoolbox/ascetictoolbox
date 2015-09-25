@@ -33,8 +33,11 @@ public interface AppRegistryMapper {
 	  @Update("UPDATE APPLICATION_REGISTRY set profile_id=#{profile_id} WHERE #{app_id} and deploy_id = #{deploy_id} and vm_id = #{vm_id} ")
 	  void setProfile(VirtualMachine vm);
 	  
-	  @Insert("SELECT COUNT(*) FROM APPLICATION_REGISTRY WHERE app_id = #{app_id} and deploy_id = #{deploy_id} and vm_id = #{vm_id} ")
+	  @Select("SELECT COUNT(*) FROM APPLICATION_REGISTRY WHERE app_id = #{app_id} and deploy_id = #{deploy_id} and vm_id = #{vm_id} ")
 	  int checkVM(@Param("app_id") String app_id,@Param("deploy_id") int deploy_id,@Param("vm_id") int vm_id);
+	  
+	  @Select("SELECT COUNT(*) FROM APPLICATION_REGISTRY WHERE iaas_id = #{iaas_id} ")
+	  int checkIaaSVM(@Param("iaas_id") String iaas_id);
 	
 	  @Select("SELECT iaas_id FROM APPLICATION_REGISTRY WHERE deploy_id = #{deploy_id} and vm_id = #{vm_id} ")
 	  String selectFromIaaSID(@Param("deploy_id") String deploy_id,@Param("vm_id") String vm_id);

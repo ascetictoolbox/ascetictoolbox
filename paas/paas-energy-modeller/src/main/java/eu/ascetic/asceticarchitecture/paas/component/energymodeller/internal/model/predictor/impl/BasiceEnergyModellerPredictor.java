@@ -30,7 +30,7 @@ public class BasiceEnergyModellerPredictor implements PredictorInterface {
 	
 	@Override
 	public double estimate(String providerid, String applicationid,	String deploymentid, List<String> vmids, String eventid, Unit unit, long timelater) {
-		
+		LOGGER.info("Forecaster for "+timelater);
 		// only power then from power get energy estimation
 		double estimation=0;
 		Date current = new Date();

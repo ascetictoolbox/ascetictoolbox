@@ -63,7 +63,7 @@ public interface DataConsumptionMapper {
 	  @Select("select IFNULL(max(time),0) from DATACONSUMPTION WHERE vmid = #{vmid}  and metrictype = 'power' and time <= #{time}")
 	  long getSampleTimeBefore(@Param("deploymentid")String deploymentid,@Param("vmid") String vmid, @Param("time") long time);
 	  
-	  @Select("select IFNULL(max(time),0) from DATACONSUMPTION WHERE metrictype = 'power' and vmid = #{vmid} and time >= #{time}")
+	  @Select("select IFNULL(min(time),0) from DATACONSUMPTION WHERE metrictype = 'power' and vmid = #{vmid} and time >= #{time}")
 	  long getSampleTimeAfter(@Param("deploymentid")String deploymentid,@Param("vmid") String vmid, @Param("time") long time);
 	  
 

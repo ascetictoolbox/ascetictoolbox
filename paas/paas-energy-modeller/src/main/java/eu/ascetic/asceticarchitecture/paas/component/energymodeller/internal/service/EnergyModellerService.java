@@ -137,7 +137,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		double currentval = predictor.estimate(providerid,applicationid, deploymentid, vmids, eventid, unit, window);	
 		
 		//predictor
-		sendToQueue(predictionTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATT, null, currentval);
+		if (currentval>0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATT, null, currentval);
 		return currentval;
 	}
 
@@ -362,16 +362,18 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 				LOGGER.info("Energy estimation for " + applicationid + " and its event " + eventid);
 				int eventcount =0;
 				double energyAverage = 0;
-				List<DataEvent> events = eventService.getEvents(applicationid, deploymentid, vmid, eventid, null, null);
+				String translated = energyService.translatePaaSFromIaasID(deploymentid, vmid);
+				List<DataEvent> events = eventService.getEvents(applicationid, deploymentid, translated, eventid, null, null);
+				LOGGER.info("events "+events.size());
 				for (DataEvent de: events){
-					double energy = energyService.getMeasureInIntervalFromVM(Unit.ENERGY, de.getApplicationid(), de.getDeploymentid(), de.getVmid(),de.getBegintime(),de.getEndtime());
-					LOGGER.debug("This event : "+ de.getBegintime() + " and " +de.getEndtime() + " energy "+energy);
+					double energy = energyService.getMeasureInIntervalFromVM(Unit.ENERGY, de.getApplicationid(), de.getDeploymentid(),vmid,de.getBegintime(),de.getEndtime());
+					LOGGER.info("This event : "+ de.getBegintime() + " and " +de.getEndtime() + " energy "+energy+de.getVmid());
 					if (energy >0){
 						eventcount++;
 						energyAverage = energyAverage + energy;
 					}
 				}
-				if (eventcount==0)return -1;
+				if (eventcount==0)return 0;
 				LOGGER.info("Wh : "+ energyAverage + " over "+eventcount+" events");
 				
 				return (energyAverage/eventcount );
@@ -380,7 +382,8 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 			if (eventid!=null){
 				double energyAverage = 0;
 				int eventcount =0;
-				List<DataEvent> events = eventService.getEvents( applicationid, deploymentid , vmid, eventid,start,end);
+				String translated = energyService.translatePaaSFromIaasID(deploymentid, vmid);
+				List<DataEvent> events = eventService.getEvents( applicationid, deploymentid , translated, eventid,start,end);
 				for (DataEvent de: events){
 					double energy = energyService.getMeasureInIntervalFromVM(Unit.ENERGY, de.getApplicationid(),de.getVmid() , de.getVmid(),de.getBegintime(),de.getEndtime());
 					if (energy >0){
@@ -388,7 +391,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 						energyAverage = energyAverage + energy;
 					}
 				}
-				if (eventcount==0)return -1;
+				if (eventcount==0)return 0;
 				LOGGER.info("Wh : "+ energyAverage + " over "+eventcount+" events in the specified interval");
 				return (energyAverage/eventcount );			
 				
@@ -406,7 +409,8 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		List<EventSample> eSamples = new Vector<EventSample>();
 		
 		EventSample es = new EventSample();
-		List<DataEvent> events = eventService.getEvents(applicationid, deploymentid, vmid, eventid,start,endtime);
+		String translated = energyService.translatePaaSFromIaasID(deploymentid, vmid);
+		List<DataEvent> events = eventService.getEvents(applicationid, deploymentid, translated, eventid,start,endtime);
 		for (DataEvent de: events){
 			
 			es = new EventSample();
@@ -577,51 +581,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		this.emsettings = emsettings;
 	}
 
-	@Override
-	public double estimate(String providerid, String applicationid,
-			List<String> vmids, String eventid, Unit unit, long window) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
-	@Override
-	public boolean subscribeMonitoring(String applicationid,
-			String deploymentid, String eventid, long timewindow, Unit unit) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean unsubscribeMonitoring(String applicationid,
-			String deploymentid, String eventid, long timewindow, Unit unit) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public double measure(String providerid, String applicationid,
-			List<String> vmids, String eventid, Unit unit, Timestamp start,
-			Timestamp end) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public List<EventSample> eventsData(String providerid,
-			String applicationid, List<String> vmids, String eventid,
-			Timestamp start, Timestamp end) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<ApplicationSample> applicationData(String providerid,
-			String applicationid, List<String> vmids, long samplingperiod,
-			Timestamp start, Timestamp end) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 
 		
 }

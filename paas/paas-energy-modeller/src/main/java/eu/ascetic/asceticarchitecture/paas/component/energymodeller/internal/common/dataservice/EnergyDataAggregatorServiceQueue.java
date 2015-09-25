@@ -43,24 +43,26 @@ public class EnergyDataAggregatorServiceQueue {
 		vmid = translatePaaSFromIaasID(deployment,vmid);
 		
 		if (vmid == null ){
-			logger.info("No PaaS ID found from IaaS ID");
+			logger.info("No PaaS ID found from IaaS ID" +vmid);
 			return -1;
 		}
 		int samples = dataConsumptionMapper.getSamplesBetweenTime( deployment, vmid, start/1000, end/1000);
 		logger.info("Samples used for calculating "+vmid+" on this "+deployment + " value: "+samples+ " between "+start +" and "+end);
 		if (samples == 0){
 			logger.info("No samples available for the given interval "+start+ " to "+end+" estimating consumption from closest samples");
-			long previoussampletime = dataConsumptionMapper.getSampleTimeBefore(deployment, vmid, start);
+			long previoussampletime = dataConsumptionMapper.getSampleTimeBefore(deployment, vmid, start/1000);
 			
-			long aftersampletime = dataConsumptionMapper.getSampleTimeAfter(deployment, vmid, end);
+			long aftersampletime = dataConsumptionMapper.getSampleTimeAfter(deployment, vmid, end/1000);
 			if (previoussampletime == 0){
-				logger.info("Not enough samples - before the event interval");
-				return 0;
+				logger.info("Not enough samples - before the event interval" +start/1000);
+				return -1;
 			}
 			if (aftersampletime == 0){
-				logger.info("Not enough samples - after the event interval");
-				return 0;
+				logger.info("Not enough samples - after the event interval"+end/1000);
+				return -1;
 			}
+			logger.info(previoussampletime);
+			logger.info(aftersampletime);
 			DataConsumption esfirst = dataConsumptionMapper.getSampleAtTime(deployment,vmid,previoussampletime);
 			DataConsumption eslast = dataConsumptionMapper.getSampleAtTime(deployment, vmid, aftersampletime);
 			

@@ -23,7 +23,7 @@ public class EventDataAggregatorService {
 		if((start==null)&&(end==null)){
 			List<DataEvent> events = daoEvent.getByDeployId(app,depl,vmid,event);
 			if (events==null)return null;
-			logger.info("##################### Total events "+events.size()+"from " + vmid + " event" + event);
+			logger.info("##################### Total events "+events.size()+" from " + vmid + " event" + event);
 			return events;
 		} else {
 			List<DataEvent> events = daoEvent.getByDeployIdTime(app,depl,vmid,event,start,end);

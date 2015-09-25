@@ -363,6 +363,7 @@ public class EnergyModellerServiceY1 implements PaaSEnergyModeller {
 		List<EventSample> eSamples = new Vector<EventSample>();
 		
 		EventSample es = new EventSample();
+		
 		List<DataEvent> events = eventService.getEvents(applicationid, applicationid, vmid, eventid,start,endtime);
 		for (DataEvent de: events){
 			
@@ -478,7 +479,7 @@ public class EnergyModellerServiceY1 implements PaaSEnergyModeller {
 				queueManager = new EnergyModellerQueueServiceManager(queueclient,appRegistry,null);
 				LOGGER.debug("Enabled"+queueclient);
 				LOGGER.debug("Enabled"+appRegistry);
-				queueManager.createConsumers(emsettings.getAmanagertopic(),emsettings.getPowertopic());
+				queueManager.createTwoLayersConsumers(emsettings.getAmanagertopic(),emsettings.getPowertopic());
 				
 			} catch (Exception e) {
 				LOGGER.error("ERROR initializing queue disabling the component..");
@@ -543,49 +544,5 @@ public class EnergyModellerServiceY1 implements PaaSEnergyModeller {
 		this.emsettings = emsettings;
 	}
 
-	@Override
-	public double estimate(String providerid, String applicationid,
-			List<String> vmids, String eventid, Unit unit, long window) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public boolean subscribeMonitoring(String applicationid,
-			String deploymentid, String eventid, long timewindow, Unit unit) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean unsubscribeMonitoring(String applicationid,
-			String deploymentid, String eventid, long timewindow, Unit unit) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public double measure(String providerid, String applicationid,
-			List<String> vmids, String eventid, Unit unit, Timestamp start,
-			Timestamp end) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public List<EventSample> eventsData(String providerid,
-			String applicationid, List<String> vmids, String eventid,
-			Timestamp start, Timestamp end) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<ApplicationSample> applicationData(String providerid,
-			String applicationid, List<String> vmids, long samplingperiod,
-			Timestamp start, Timestamp end) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 		
 }
