@@ -103,6 +103,9 @@ public interface PaaSEnergyModeller {
 	 */
 	public void manageComponent(String token, String command);
 	
+	@Deprecated
+	public double measure( String providerid, String applicationid,List<String> vmids, String eventid, Unit unit,Timestamp start, Timestamp end);	
+
 
 
 }

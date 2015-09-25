@@ -581,6 +581,18 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		this.emsettings = emsettings;
 	}
 
+	@Override
+	public double measure(String providerid, String applicationid,
+			List<String> vmids, String eventid, Unit unit, Timestamp start,
+			Timestamp end) {
+		
+		LOGGER.info("Requested Provider"+providerid+ " now application ");
+		LOGGER.info("Requested Application "+applicationid+" now deployment");
+		LOGGER.info("This is just a workadount of a deprecated IF");
+		return this.measure(null, providerid, applicationid,vmids, eventid, unit, start,  end);
+			
+	}
+
 
 
 		
