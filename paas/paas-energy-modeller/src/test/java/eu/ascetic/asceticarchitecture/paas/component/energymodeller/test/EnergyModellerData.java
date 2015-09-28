@@ -1,5 +1,5 @@
 /**
-* Copyright 2014 Hewlett-Packard Development Company, L.P.                                         
+55* Copyright 2014 Hewlett-Packard Development Company, L.P.                                         
  */
 package eu.ascetic.asceticarchitecture.paas.component.energymodeller.test;
 

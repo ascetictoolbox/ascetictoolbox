@@ -275,7 +275,7 @@ public class EnergyModellerQueueServiceManager {
 	                    	mapper.createVM(vm);
 	                    	LOGGER.info("Received DEPLOYED message");
 	                    }
-	                    if (topic[6].equals("TERMINATED")){
+	                    if (topic[6].equals("DELETED")){
 		                    
 	                    	VirtualMachine vm = new VirtualMachine();
 		                    vm.setApp_id( topic[1]);
@@ -289,7 +289,7 @@ public class EnergyModellerQueueServiceManager {
 	                    		return;
 	                    	}
 	                    	mapper.stopVM(vm);
-	                    	LOGGER.info("Received TERMINATED stop");
+	                    	LOGGER.info("Received DELETED stop recorded");
 	                    }
 	                	 
 	                }
@@ -319,7 +319,7 @@ public class EnergyModellerQueueServiceManager {
 		                    String payload = textMessage.getText();
 		                    String[] topic = dest.split("\\.");
 		                   
-		  
+		                    LOGGER.info("this is for "+topic[3]);
 		                    DataConsumption dc= new DataConsumption();
 		                    ObjectMapper jmapper = new ObjectMapper();
 		                    Map<String,Object> userData = jmapper.readValue(payload, Map.class);

@@ -35,6 +35,8 @@ public class DataEventDAOImpl implements DataeEventDAO {
 	    LOGGER.debug("Created table DATAEVENT");
 	}
 	
+	
+	
 	@Override
 	public void save(DataEvent data) {
 		LOGGER.debug("Inserting into table DATAEVENT");
@@ -99,6 +101,8 @@ public class DataEventDAOImpl implements DataeEventDAO {
 			return null;
 		}
 	}
+	
+
 
 //	private static String SQL_Q_DEPID="select * from DATAEVENT where deploymentid = ? and vmid = ? and eventid = ?";
 //	private static String SQL_Q_VMID="select * from DATAEVENT where vmid = ? and eventid = ?";

@@ -134,8 +134,30 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	@Override
 	public double estimate(String providerid, String applicationid,  String deploymentid,	List<String> vmids, String eventid, Unit unit, long window) {
 		LOGGER.info("Forecasting instant power"); 
-		double currentval = predictor.estimate(providerid,applicationid, deploymentid, vmids, eventid, unit, window);	
-		
+		double currentval = 0;
+		if (eventid==null){
+			// instant power estimation
+			currentval = predictor.estimate(providerid,applicationid, deploymentid, vmids, eventid, unit, window);	
+		} else {
+			// average event power
+			currentval = averagePower(providerid,applicationid, deploymentid, vmids,  eventid,null,null);
+			
+			LOGGER.info("Forecasting instant power" + currentval); 
+			if (unit==Unit.ENERGY){
+				
+				long duration = averageDuration(providerid,applicationid, deploymentid, vmids,  eventid);
+				LOGGER.info("Forecasting duration " + duration); 
+				
+				if (duration>0){
+					currentval = currentval*duration;
+					LOGGER.info("Forecasting consumption " + currentval); 
+				}else{
+					LOGGER.warn("Something wrong with this values, check calculation");
+				}
+				
+			}
+			
+		}
 		//predictor
 		if (currentval>0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATT, null, currentval);
 		return currentval;
@@ -243,6 +265,43 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 			return total_energy;
 			
 	}
+	
+	private long averageDuration(String providerid, String applicationid, String deploymentid, List<String> vmids, String eventid){
+		long duration=0;
+		long vmwithevent=0;
+		
+		for (String vm : vmids) {
+			LOGGER.info("Measuring event average instant power (W) for vm "+vm); 
+			// TODO workaround 
+			String translated = energyService.translatePaaSFromIaasID(deploymentid, vm);
+			List<DataEvent> events = eventService.getEvents(applicationid, deploymentid, translated, eventid,null,null);
+			if (events.size()>0){
+				vmwithevent++;
+			}
+			long vmavg =0;
+			int totalevent=0;
+			for (DataEvent de: events){
+				long delta = (de.getEndtime() - de.getEndtime()); 
+				totalevent++;
+				LOGGER.info("Event elapsed time "+delta); 
+				vmavg = vmavg +delta;
+			}
+			
+			if (totalevent>0){
+				
+				vmavg = vmavg/totalevent;
+				duration = duration+vmavg;
+			} 
+			LOGGER.info("This VM " + vm + " has events  " + totalevent + " avg duration " + vmavg  );
+			
+		}
+		if (vmwithevent>0){
+			duration = duration/vmwithevent;
+		}
+		LOGGER.info("This event has been reported by vms  " + vmwithevent + " with an avg " + duration  );
+		return duration;
+	}
+	//List<DataEvent> events = eventService.getEvents(applicationid, deploymentid, translated, eventid,null,null);
 
 	/**
 	 * 
