@@ -27,12 +27,15 @@ import java.util.concurrent.TimeUnit;
 public class VmmRestClient {
 
     private final VmmService service;
-    private static final int TIMEOUT_SECONDS = 900; // Our testbed can be SLOW sometimes
+    private static final int DEFAULT_TIMEOUT_SECONDS = 9000; // Our testbed can be SLOW sometimes
+	private OkHttpClient okHttpClient = new OkHttpClient();
 
-    public VmmRestClient(String url) {
+	public VmmRestClient(String url) {
+		this(url,DEFAULT_TIMEOUT_SECONDS);
+	}
+	public VmmRestClient(String url, long timeout) {
         // Define our own okHttpClient to increase the timeout
-        OkHttpClient okHttpClient = new OkHttpClient();
-        okHttpClient.setReadTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        okHttpClient.setReadTimeout(timeout, TimeUnit.SECONDS);
 
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(url)
