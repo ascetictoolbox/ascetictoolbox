@@ -1,6 +1,6 @@
 package eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis;
 
-import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
+import org.apache.ibatis.datasource.pooled.PooledDataSource;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -42,10 +42,10 @@ public class DataConsumptionHandler {
 		
 	}
 
-	private static UnpooledDataSource getDataSource(String driver,String url,String uname,String pwd) {
-		UnpooledDataSource uds = new UnpooledDataSource(driver,url,uname,pwd);
-		uds.setAutoCommit(true);
-        return uds;
+	private static PooledDataSource getDataSource(String driver,String url,String uname,String pwd) {
+		PooledDataSource pds = new PooledDataSource(driver,url,uname,pwd);
+		pds.setDefaultAutoCommit(true);
+        return pds;
     }
 	 
 

@@ -221,12 +221,13 @@ public class EnergyModellerQueueServiceManager {
 		
         MessageListener appListener = new MessageListener() {
         
-        AppRegistryMapper mapper = registry.getMapper();
+        
         	
         public void onMessage(Message message) {
 	            try {
 	            	
 	                if (message instanceof TextMessage) {
+	                	
 	                	AppRegistryMapper mapper = registry.getMapper(); 
 	                    TextMessage textMessage = (TextMessage) message;
 	                    LOGGER.info("Received start message" + textMessage.getText() + "'"+textMessage.getJMSDestination());
@@ -260,7 +261,7 @@ public class EnergyModellerQueueServiceManager {
 		                    ObjectMapper jmapper = new ObjectMapper();
 		                    JsonNode jsontext = jmapper.readValue(payload, JsonNode.class);
 	                        
-	                		System.out.println("Received DEPLOYED message for iaas id"+ jsontext.findValue("iaasVmId"));
+		                    LOGGER.info("Received DEPLOYED message for iaas id"+ jsontext.findValue("iaasVmId"));
 		        
 	                    	if (jsontext.findValue("iaasVmId")==null){
 	                    		LOGGER.info("Unable to parse AMQP deployment message, missing iaas id");

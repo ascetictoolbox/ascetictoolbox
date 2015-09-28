@@ -44,7 +44,7 @@ public class EnergyDataAggregatorServiceQueue {
 		
 		if (vmid == null ){
 			logger.info("No PaaS ID found from IaaS ID" +vmid);
-			return -1;
+			return 0;
 		}
 		int samples = dataConsumptionMapper.getSamplesBetweenTime( deployment, vmid, start/1000, end/1000);
 		logger.info("Samples used for calculating "+vmid+" on this "+deployment + " value: "+samples+ " between "+start +" and "+end);
@@ -55,11 +55,11 @@ public class EnergyDataAggregatorServiceQueue {
 			long aftersampletime = dataConsumptionMapper.getSampleTimeAfter(deployment, vmid, end/1000);
 			if (previoussampletime == 0){
 				logger.info("Not enough samples - before the event interval" +start/1000);
-				return -1;
+				return 0;
 			}
 			if (aftersampletime == 0){
 				logger.info("Not enough samples - after the event interval"+end/1000);
-				return -1;
+				return 0;
 			}
 			logger.info(previoussampletime);
 			logger.info(aftersampletime);

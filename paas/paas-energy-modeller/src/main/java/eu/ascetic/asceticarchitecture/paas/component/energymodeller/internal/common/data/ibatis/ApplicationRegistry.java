@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.Reader;
 
-import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
@@ -13,6 +12,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.apache.log4j.Logger;
+import org.apache.ibatis.datasource.pooled.PooledDataSource;
 
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.mapper.AppRegistryMapper;
 
@@ -48,17 +48,21 @@ public class ApplicationRegistry {
 		
 	}
 
-	private static UnpooledDataSource getDataSource(String driver,String url,String uname,String pwd) {
-		UnpooledDataSource uds = new UnpooledDataSource(driver,url,uname,pwd);
-		uds.setAutoCommit(true);
-        return uds;
+	private static PooledDataSource getDataSource(String driver,String url,String uname,String pwd) {
+		
+		PooledDataSource pooledConnection = new PooledDataSource(driver,url,uname,pwd);
+		pooledConnection.setDefaultAutoCommit(true);
+		//UnpooledDataSource uds = new UnpooledDataSource(driver,url,uname,pwd);
+		//uds.setAutoCommit(true);
+		//uds.setDriverProperties(driverProperties);
+        return pooledConnection;
     }
 	 
-	public void initializeTable(UnpooledDataSource uds){
+	public void initializeTable(PooledDataSource pooledConnection){
 		
 		ScriptRunner sr;
 		try {
-			sr = new ScriptRunner(uds.getConnection());
+			sr = new ScriptRunner(pooledConnection.getConnection());
 			Reader reader = new BufferedReader(new FileReader("createRegistry.sql"));
 			sr.runScript(reader);
 			LOGGER.info("Initialize the registry");
@@ -70,7 +74,7 @@ public class ApplicationRegistry {
 	}
 	
 	public AppRegistryMapper getMapper(){
-		if (mapper==null) mapper = sqlSessionFactory.openSession(true).getMapper(AppRegistryMapper.class);
+		mapper = sqlSessionFactory.openSession(true).getMapper(AppRegistryMapper.class);
 		LOGGER.info("Returning the mapper");
 		return mapper;
 	}

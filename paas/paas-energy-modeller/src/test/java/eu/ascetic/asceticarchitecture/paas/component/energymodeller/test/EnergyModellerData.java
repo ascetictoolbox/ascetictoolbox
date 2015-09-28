@@ -19,14 +19,14 @@ public class EnergyModellerData {
 
 	
 	private static EnergyModellerService serviceEM;
-	private static String HOST = "1811";
-	private static String HOST1 = "1812";
-	private static String HOST2 = "1813";
+	private static String HOST = "1860";
+	private static String HOST1 = "1861";
+	private static String HOST2 = "1862";
 	//private static String HOST3 = "b52da74d-585c-404d-8f29-4de0d93cfe5e";
 	private static String PROVIDER = "provider1";
 	private static String EVENT = "core0impl0";
-	private static String APP = "JEPlus";
-	private static String DEP = "524";
+	private static String APP = "newsAsset";
+	private static String DEP = "556";
 	long beginlong = 1442494327000L;
 	long endlong = 1442496787000L;
 	
@@ -46,7 +46,7 @@ public class EnergyModellerData {
 		vmids.add(HOST1);
 		vmids.add(HOST2);
 		PROVIDER=null;
-		
+		EVENT=null;
 		double result = serviceEM.measure(PROVIDER, APP, DEP, vmids, EVENT, Unit.POWER, null,null);
 		System.out.println("Average Power from all samples is:  "+result);
 	}
@@ -58,6 +58,7 @@ public class EnergyModellerData {
 		vmids.add(HOST);
 		vmids.add(HOST1);
 		vmids.add(HOST2);
+		EVENT=null;
 		//vmids.add(HOST1);
 		PROVIDER=null;
 		double result = serviceEM.measure(PROVIDER, APP, DEP, vmids, EVENT, Unit.ENERGY, null,null);
