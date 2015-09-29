@@ -6,7 +6,7 @@
         <param name="target" value="System.out" />
         <param name="threshold" value="debug" />
         <layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%d{ISO8601} %-6p - %C{2}%n%m%n" />
+			<param name="ConversionPattern" value="%d{ISO8601} %-6p - %C%n%m%n" />
         </layout>
         <!--<filter class="org.apache.log4j.varia.LevelMatchFilter">-->
             <!--<param name="LevelToMatch" value="ERROR" />-->
@@ -20,7 +20,7 @@
         <param name="append" value="true" />
         <param name="threshold" value="debug" />
         <layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%d{ISO8601} %-6p - %C{2}%n%m%n" />
+			<param name="ConversionPattern" value="%d{ISO8601} %-6p - %C%n%m%n" />
         </layout>
         <!--<filter class="org.apache.log4j.varia.StringMatchFilter">-->
             <!--<param name="StringToMatch" value="[VMM]" />-->

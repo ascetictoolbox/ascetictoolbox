@@ -46,12 +46,6 @@ public class VmManagerConfiguration {
     public String keyStoneTenantId;
     public String keyStonePassword;
 
-    // OpenStack login credentials for testing
-    public String keyStoneUserTesting;
-    public String keyStoneTenantTesting;
-    public String keyStoneTenantIdTesting;
-    public String keyStonePasswordTesting;
-
     // Testing configuration
     public String testingImageId;
     public String testingImageUrl;
@@ -121,10 +115,7 @@ public class VmManagerConfiguration {
         keyStoneTenant = prop.getProperty("keyStoneTenant");
         keyStoneTenantId = prop.getProperty("keyStoneTenantId");
         keyStonePassword = prop.getProperty("keyStonePassword");
-        keyStoneUserTesting = prop.getProperty("keyStoneUserTesting");
-        keyStoneTenantTesting = prop.getProperty("keyStoneTenantTesting");
-        keyStoneTenantIdTesting = prop.getProperty("keyStoneTenantIdTesting");
-        keyStonePasswordTesting = prop.getProperty("keyStonePasswordTesting");
+
         testingImageId = prop.getProperty("testingImageId");
         testingImageUrl = prop.getProperty("testingImageUrl");
         testingImageName = prop.getProperty("testingImageName");
