@@ -853,11 +853,8 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
         if (connection == null) {
             return answer;
         }
-        try (Statement statement = connection.createStatement();
-                PreparedStatement preparedStatement = connection.prepareStatement(
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
                         query)) {
-            statement.executeUpdate("set @row_number =0");
-            statement.executeUpdate("set @vm_id =0");
             preparedStatement.setString(1, queryItem);
             preparedStatement.setInt(2, windowSize);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -885,21 +882,18 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
      */
     @Override
     public List<VmLoadHistoryBootRecord> getAverageCPUUtilisationBootTraceForTag(String tagName, int windowSize) {
+        
         return getAverageCPUUtilisationBootTrace(
-                "SELECT start_idx, sum_cpu_load_val / count_cpu_load_val as average "
-                + "FROM (SELECT @vm_id:= mesu.vm_id as vm_id, (@row_number:=CASE "
-                + "WHEN @vm_id = mesu.vm_id THEN @row_number + 1 ELSE 1 END) as start_idx, "
-                + "sum(cpu_load) as sum_cpu_load_val, "
-                + "count(cpu_load) as count_cpu_load_val, "
-                + "clock as time_val "
-                + "FROM vm_measurement as mesu, "
-                + "vm_app_tag_arr AS arr, "
-                + "vm_app_tag AS tag "
-                + "WHERE tag.vm_app_tag_id = arr.vm_app_tag_id "
-                + "AND arr.vm_id = mesu.vm_id "
-                + "AND tag.tag_name = ? "
-                + "GROUP BY vm_id, clock DIV ?) AS per_vm "
-                + "GROUP BY start_idx;", tagName, windowSize);
+            "SELECT (vm_data.clock - start_time) as start_clock, avg(vm_data.cpu_load) as cpu_load " + 
+            "FROM vm_measurement as vm_data, " + 
+                "(SELECT valid_vm.vm_id as valid_vm, min(valid_vm.clock) as start_time " + 
+                "FROM vm_measurement as valid_vm, vm_app_tag_arr AS arr, vm_app_tag AS tag " +
+                "WHERE tag.vm_app_tag_id = arr.vm_app_tag_id " + 
+                "AND arr.vm_id = valid_vm.vm_id AND tag.tag_name = ? " + 
+                "GROUP BY valid_vm.vm_id) as valid_vms " + 
+                "WHERE vm_data.vm_id = valid_vm " +
+                "GROUP BY start_clock DIV ?", 
+                tagName, windowSize);
     }
 
     /**
@@ -914,20 +908,15 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
     @Override
     public List<VmLoadHistoryBootRecord> getAverageCPUUtilisationBootTraceForDisk(String diskName, int windowSize) {
         return getAverageCPUUtilisationBootTrace(
-                "SELECT start_idx, sum_cpu_load_val / count_cpu_load_val as average "
-                + "FROM (SELECT @vm_id:= mesu.vm_id as vm_id, (@row_number:=CASE "
-                + "WHEN @vm_id = mesu.vm_id THEN @row_number + 1 ELSE 1 END) as start_idx, "
-                + "sum(cpu_load) as sum_cpu_load_val, "
-                + "count(cpu_load) as count_cpu_load_val, "
-                + "clock as time_val "
-                + "FROM vm_measurement as mesu, "
-                + "vm_disk_arr AS arr, "
-                + "vm_disk AS disk "
-                + "WHERE disk.vm_disk_id = arr.vm_disk_id "
-                + "AND arr.vm_id = mesu.vm_id "
-                + "AND disk.disk_name = ? "
-                + "GROUP BY vm_id, clock DIV ?) AS per_vm "
-                + "GROUP BY start_idx;", diskName, windowSize);
+            "SELECT (vm_data.clock - start_time) as start_clock, avg(vm_data.cpu_load) as cpu_load " + 
+            "FROM vm_measurement as vm_data, " + 
+                "(SELECT valid_vm.vm_id  as valid_vm, min(valid_vm.clock) as start_time " + 
+                "FROM vm_measurement as valid_vm, vm_disk_arr AS arr, vm_disk AS disk " +
+                "WHERE disk.vm_disk_id = arr.vm_disk_id " + 
+                "AND arr.vm_id = valid_vm.vm_id AND disk.disk_name = ? " + 
+                "GROUP BY valid_vm.vm_id) as valid_vms " + 
+                "WHERE vm_data.vm_id = valid_vm " +
+                "GROUP BY start_clock DIV ?", diskName, windowSize);
     }
 
     /**
