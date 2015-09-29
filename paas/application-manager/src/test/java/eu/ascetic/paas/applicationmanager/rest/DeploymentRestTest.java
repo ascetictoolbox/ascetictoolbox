@@ -412,6 +412,7 @@ public class DeploymentRestTest extends AbstractTest {
 		
 		when(modeller.measure(isNull(String.class), 
 				              eq("app-name"), 
+				              eq("1"),
 				              argThat(new BaseMatcher<List<String>>() {
  
 																				@Override
@@ -634,6 +635,7 @@ public class DeploymentRestTest extends AbstractTest {
 		
 		when(energyModeller.measure(isNull(String.class), 
 				                    eq("111"), 
+				                    eq("1"),
 				                    argThat(new BaseMatcher<List<String>>() {
  
 																				@Override
@@ -696,7 +698,7 @@ public class DeploymentRestTest extends AbstractTest {
 		deploymentRest.deploymentDAO = deploymentDAO;
 		when(deploymentDAO.getById(1)).thenReturn(deployment);
 				
-		when(energyModeller.measure(isNull(String.class),  eq("111"),  argThat(new BaseMatcher<List<String>>() {
+		when(energyModeller.measure(isNull(String.class),  eq("111"), eq("1"),  argThat(new BaseMatcher<List<String>>() {
 			 
 			@Override
 			public boolean matches(Object arg0) {
