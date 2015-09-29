@@ -313,9 +313,9 @@ public class OVFUtils {
 				
 				if (list!=null && list.length >0) {
 					String hostResource = list[0];
-					logger.debug("Host Resource: " + hostResource);
+					logger.debug("Host Resource: " + hostResource + "####");
 					diskId = hostResource.substring(hostResource.lastIndexOf("/")+1, hostResource.length());
-					logger.debug("Disk Id: " + diskId);
+					logger.debug("Disk Id: " + diskId + "####");
 				}				
 			}
 		}

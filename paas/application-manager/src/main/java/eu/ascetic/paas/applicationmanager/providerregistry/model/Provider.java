@@ -5,15 +5,6 @@ import static eu.ascetic.paas.applicationmanager.Dictionary.PROVIDER_REGISTRY_NA
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.Table;
-import javax.persistence.NamedQuery;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -44,12 +35,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 //XML Annotations:
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name="provider", namespace=PROVIDER_REGISTRY_NAMESPACE)
-// JPA Annotations:
-@Entity
-@Table(name="providers")
-@NamedQueries( { 
-  @NamedQuery(name="Provider.findAll", query="SELECT p FROM Provider p")
-} )
 public class Provider {
 	@XmlAttribute
 	private String href;
@@ -66,7 +51,7 @@ public class Provider {
 	@XmlElement(name="link", namespace = PROVIDER_REGISTRY_NAMESPACE)
 	private List<Link> links;
 
-	@Transient
+
 	public String getHref() {
 		return href;
 	}
@@ -74,9 +59,6 @@ public class Provider {
 		this.href = href;
 	}
 	
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name = "id", unique = true, nullable = false)
 	public int getId() {
 		return id;
 	}
@@ -84,38 +66,34 @@ public class Provider {
 		this.id = id;
 	}
 	
-	@Column(name = "vmm_url", nullable = false)
 	public String getVmmUrl() {
 		return vmmUrl;
 	}
 	public void setVmmUrl(String vmmUrl) {
 		this.vmmUrl = vmmUrl;
 	}
-	
-	@Column(name = "slam_url", nullable = false)
+
 	public String getSlamUrl() {
 		return slamUrl;
 	}
 	public void setSlamUrl(String slamUrl) {
 		this.slamUrl = slamUrl;
 	}
-	
-	@Column(name = "name", nullable = false)
+
 	public String getName() {
 		return name;
 	}
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	@Column(name = "amqp_url", nullable = true)
+
 	public String getAmqpUrl() {
 		return amqpUrl;
 	}
 	public void setAmqpUrl(String amqpUrl) {
 		this.amqpUrl = amqpUrl;
 	}
-	@Transient
+
 	public List<Link> getLinks() {
 		return links;
 	}

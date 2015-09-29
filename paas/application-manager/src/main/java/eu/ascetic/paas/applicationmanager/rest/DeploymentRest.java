@@ -279,7 +279,7 @@ public class DeploymentRest extends AbstractRest {
 		
 		try {
 			logger.debug("Connecting to Energy Modeller");
-			energyConsumed = energyModeller.measure(null,  applicationName, ids, null, Unit.ENERGY, null, null);
+			energyConsumed = energyModeller.measure(null,  applicationName, "" + deployment.getId(), ids, null, Unit.ENERGY, null, null);
 		}
 		catch(Exception e) {
 			energyConsumed = -1.0;
@@ -329,7 +329,7 @@ public class DeploymentRest extends AbstractRest {
 		List<String> ids = getVmsProviderIds(deployment);
 		
 		logger.debug("Connecting to Energy Modeller");
-		double energyConsumed = energyModeller.measure(null,  applicationName, ids, eventId, Unit.ENERGY, null, null);
+		double energyConsumed = energyModeller.measure(null,  applicationName, deploymentId, ids, eventId, Unit.ENERGY, null, null);
 		
 		EnergyMeasurement energyMeasurement = new EnergyMeasurement();
 		energyMeasurement.setValue(energyConsumed);

@@ -53,6 +53,8 @@ public class OVFUtilsTest {
 	private String threeTierWebAppDEMOOvfString;
 	private String threeTierWebAppWithUpperLimitsFile = "3tier-webapp.ovf-only-upper-bounds.xml";
 	private String threeTierWebAppWithUpperLimitsString;
+	private String atcOVFFile="atc-ovf.xml";
+	private String atcOVFString;
 	private OvfDefinition ovfDocument;
 	
 	/**
@@ -70,6 +72,9 @@ public class OVFUtilsTest {
 		// Reading the OVF file with DEMO tags...
 		file = new File(this.getClass().getResource( "/" + threeTierWebAppWithUpperLimitsFile ).toURI());		
 		threeTierWebAppWithUpperLimitsString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
+		// Reading the OVF file with ATC OVF ...
+		file = new File(this.getClass().getResource( "/" + atcOVFFile ).toURI());		
+		atcOVFString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
 	}
 	
 	@Test
@@ -312,6 +317,13 @@ public class OVFUtilsTest {
 	}
 	
 	@Test
+	public void getDiskIdATCUCTest() {
+		OvfDefinition ovfDocument = OVFUtils.getOvfDefinition(atcOVFString);
+		String diskId  = OVFUtils.getDiskId(ovfDocument.getVirtualSystemCollection().getVirtualSystemAtIndex(0).getVirtualHardwareSection());
+		assertEquals("NA-HAProxy-img-disk", diskId);
+	}
+	
+	@Test
 	public void getCapacityTest() {
 		OvfDefinition ovfDocument = OVFUtils.getOvfDefinition(threeTierWebAppWithUpperLimitsString);
 		String diskId = OVFUtils.getDiskId(ovfDocument.getVirtualSystemCollection().getVirtualSystemAtIndex(0).getVirtualHardwareSection());
@@ -323,9 +335,23 @@ public class OVFUtilsTest {
 	public void getFileIdTest() {
 		OvfDefinition ovfDocument = OVFUtils.getOvfDefinition(threeTierWebAppWithUpperLimitsString);
 		String diskId = OVFUtils.getDiskId(ovfDocument.getVirtualSystemCollection().getVirtualSystemAtIndex(0).getVirtualHardwareSection());
+
 		
 		String fileId = OVFUtils.getFileId(diskId, ovfDocument.getDiskSection().getDiskArray());
 		assertEquals("haproxy-img", fileId);
+	}
+	
+	@Test
+	public void getFileATCUCTest() {
+		OvfDefinition ovfDocument = OVFUtils.getOvfDefinition(atcOVFString);
+		String diskId = OVFUtils.getDiskId(ovfDocument.getVirtualSystemCollection().getVirtualSystemAtIndex(0).getVirtualHardwareSection());
+		
+		VirtualSystem virtualSystem = ovfDocument.getVirtualSystemCollection().getVirtualSystemAtIndex(0);
+		String vmName = virtualSystem.getName();
+		System.out.println("VM NAME: " + vmName);
+		
+		String fileId = OVFUtils.getFileId(diskId, ovfDocument.getDiskSection().getDiskArray());
+		assertEquals("NA-HAProxy-img", fileId);
 	}
 	
 	@Test
@@ -336,6 +362,16 @@ public class OVFUtilsTest {
 		String url = OVFUtils.getUrlImg(ovfDocument, fileId);
 		
 		assertEquals("/DFS/ascetic/vm-images/threeTierWebApp/haproxy.img", url);
+	}
+	
+	@Test
+	public void getUrlImgATCTest() {
+		OvfDefinition ovfDocument = OVFUtils.getOvfDefinition(atcOVFString);
+		String diskId = OVFUtils.getDiskId(ovfDocument.getVirtualSystemCollection().getVirtualSystemAtIndex(0).getVirtualHardwareSection());
+		String fileId = OVFUtils.getFileId(diskId, ovfDocument.getDiskSection().getDiskArray());
+		String url = OVFUtils.getUrlImg(ovfDocument, fileId);
+		
+		assertEquals("/mnt/cephfs/ascetic/vmic/base-images/test/news-asset/na-haproxy.raw.img", url);
 	}
 	
 	/**
