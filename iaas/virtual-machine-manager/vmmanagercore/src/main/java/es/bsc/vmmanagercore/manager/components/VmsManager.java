@@ -37,6 +37,8 @@ import es.bsc.vmmanagercore.selfadaptation.AfterVmDeleteSelfAdaptationRunnable;
 import es.bsc.vmmanagercore.selfadaptation.AfterVmsDeploymentSelfAdaptationRunnable;
 import es.bsc.vmmanagercore.selfadaptation.SelfAdaptationManager;
 import es.bsc.vmmanagercore.utils.TimeUtils;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -48,6 +50,7 @@ import java.util.*;
  */
 public class VmsManager {
 
+	private final Logger log = LogManager.getLogger(VmsManager.class);
     private final HostsManager hostsManager;
     private final CloudMiddleware cloudMiddleware;
     private final VmManagerDb db;
@@ -151,6 +154,8 @@ public class VmsManager {
      * @param vmId the ID of the VM
      */
     public void deleteVm(String vmId) {
+		long now = System.currentTimeMillis();
+		log.debug("Destroying VM: " + vmId);
         VmDeployed vmToBeDeleted = getVm(vmId);
 
         cloudMiddleware.destroy(vmId);
@@ -160,7 +165,7 @@ public class VmsManager {
         if (usingZabbix()) {
             ZabbixConnector.deleteVmFromZabbix(vmId, vmToBeDeleted.getHostName());
         }
-
+		log.debug(vmId + " destruction took " + (System.currentTimeMillis()/1000.0) + " seconds");
         MessageQueue.publishMessageVmDestroyed(vmToBeDeleted);
         performAfterVmDeleteSelfAdaptation();
     }

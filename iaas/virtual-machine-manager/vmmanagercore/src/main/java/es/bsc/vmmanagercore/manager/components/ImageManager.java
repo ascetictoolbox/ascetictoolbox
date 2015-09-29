@@ -21,6 +21,8 @@ package es.bsc.vmmanagercore.manager.components;
 import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddleware;
 import es.bsc.vmmanagercore.models.images.ImageToUpload;
 import es.bsc.vmmanagercore.models.images.ImageUploaded;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +33,8 @@ import java.util.List;
 public class ImageManager {
 
     private final CloudMiddleware cloudMiddleware;
-    
+	private final Logger log = LogManager.getLogger(ImageManager.class);
+
     public ImageManager(CloudMiddleware cloudMiddleware) {
         this.cloudMiddleware = cloudMiddleware;
     }
@@ -52,7 +55,8 @@ public class ImageManager {
      * @return the ID of the image
      */
     public String createVmImage(ImageToUpload imageToUpload) {
-        return cloudMiddleware.createVmImage(imageToUpload);
+		log.debug("CreateVMImage: " + imageToUpload.getName());
+		return cloudMiddleware.createVmImage(imageToUpload);
     }
 
     /**
@@ -71,6 +75,7 @@ public class ImageManager {
      * @param id the ID of the VM image
      */
     public void deleteVmImage(String id) {
+		log.debug("DeleteVMImage: " + id);
         cloudMiddleware.deleteVmImage(id);
     }
 

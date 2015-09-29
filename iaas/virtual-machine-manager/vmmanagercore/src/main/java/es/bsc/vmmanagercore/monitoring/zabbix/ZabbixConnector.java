@@ -21,6 +21,7 @@ package es.bsc.vmmanagercore.monitoring.zabbix;
 import com.google.common.collect.ImmutableMap;
 import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.client.ZabbixClient;
+import org.apache.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -154,7 +155,7 @@ public class ZabbixConnector {
             }
             catch (Exception e) {
 				if(!doNotSpam)
-                	System.out.println("Could not get data from Zabbix");
+					Logger.getLogger(ZabbixConnector.class).warn("Could not get data from Zabbix",e);
 				doNotSpam = true;
             }
         }

@@ -18,6 +18,9 @@
 
 package es.bsc.vmmanagercore.configuration;
 
+import org.apache.log4j.Logger;
+
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -28,9 +31,9 @@ import java.util.Properties;
  *
  */
 public class VmManagerConfiguration {
-
-    // Configuration file
-    private static final String CONF_FILE_LOCATION = "configTUB.properties";
+	// Configuration file
+	private static final String PROPNAME_CONF_FILE = "config.file";
+    private static final String DEFAULT_CONF_FILE = "vmmconfig.properties";
 
     // OpenStack configuration
     public String openStackIP;
@@ -92,8 +95,14 @@ public class VmManagerConfiguration {
     private Properties getPropertiesObjectFromConfigFile() {
         Properties prop = new Properties();
         try {
-            prop.load(VmManagerConfiguration.class.getClassLoader().getResourceAsStream(CONF_FILE_LOCATION));
+			String customFile = System.getenv(PROPNAME_CONF_FILE);
+			if(customFile != null) {
+				prop.load(new FileReader(customFile));
+			} else {
+            	prop.load(VmManagerConfiguration.class.getClassLoader().getResourceAsStream(DEFAULT_CONF_FILE));
+			}
         } catch (IOException e) {
+			Logger.getLogger(getClass()).error("Error loading properties file", e);
             e.printStackTrace();
         }
         return prop;

@@ -652,12 +652,12 @@ iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/vm
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/vmplacement/CloplaEnergyModeller.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/vmplacement/CloplaHostFactory.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/vmplacement/CloplaPriceModeller.java -text
-iaas/virtual-machine-manager/vmmanagercore/src/main/resources/configTUB.properties -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/resources/hostsFakeMonitoring.json -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/resources/init-scripts/hello.sh -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/resources/init-scripts/mount_isos.sh -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/resources/init-scripts/zabbix_agents.sh -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/resources/log4j.xml -text
+iaas/virtual-machine-manager/vmmanagercore/src/main/resources/vmmconfig.properties -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/webapp/META-INF/context.xml -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/webapp/index.jsp -text
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/cloudmiddleware/fake/FakeCloudMiddlewareTest.java -text

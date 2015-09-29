@@ -21,6 +21,7 @@ package es.bsc.vmmanagercore.db;
 import com.google.gson.Gson;
 import es.bsc.vmmanagercore.models.scheduling.SchedulingAlgorithm;
 import es.bsc.vmmanagercore.selfadaptation.options.SelfAdaptationOptions;
+import org.apache.log4j.Logger;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ public class VmManagerDbHsql implements VmManagerDb {
     // This class needs a refactor. I should probably use something like jOOQ.
 
     private Connection conn;
+	private Logger log;
 
     private final Gson gson = new Gson(); // Using JSON provisionally
 
@@ -51,13 +53,14 @@ public class VmManagerDbHsql implements VmManagerDb {
     private static final String ERROR_GET_VMS_OF_APP = "There was an error while getting the VMs IDs from the DB.";
 
     public VmManagerDbHsql(String dbFileNamePrefix) {
+		log = Logger.getLogger(getClass());
         try {
             // Load the HSQL Database Engine JDBC driver
             Class.forName("org.hsqldb.jdbcDriver");
             // Connect to the database. This will load the DB files and start the DB if it is not already running
             conn = DriverManager.getConnection("jdbc:hsqldb:file:db/" + dbFileNamePrefix, "sa", "");
         } catch (Exception e) {
-            System.out.println(ERROR_DB_CONNECTION + "jdbc:hsqldb:file:db/" + dbFileNamePrefix +" --> " + e.getMessage());
+            log.error(ERROR_DB_CONNECTION + "jdbc:hsqldb:file:db/" + dbFileNamePrefix +" --> " + e.getMessage(),e);
 			e.printStackTrace();
         }
         setupDb();
@@ -80,7 +83,7 @@ public class VmManagerDbHsql implements VmManagerDb {
         Statement st = conn.createStatement();
         int i = st.executeUpdate(expression);
         if (i == -1) {
-            System.out.println("db error : " + expression);
+			log.error("db error : " + expression);
         }
         st.close();
     }
@@ -116,7 +119,7 @@ public class VmManagerDbHsql implements VmManagerDb {
             update("CREATE TABLE IF NOT EXISTS self_adaptation_options "
                     + "(options LONGVARCHAR) ");
         } catch (SQLException e) {
-            System.out.println(ERROR_SETUP_DB);
+			log.error(ERROR_SETUP_DB, e);
         }
     }
     
@@ -126,7 +129,7 @@ public class VmManagerDbHsql implements VmManagerDb {
             conn.createStatement().execute("SHUTDOWN"); // DB writes out to files and performs clean shuts down
             conn.close(); // if there are no other open connections
         } catch (SQLException e) {
-            System.out.println(ERROR_CLOSE_CONNECTION);
+			log.error(ERROR_CLOSE_CONNECTION, e);
         }
     }
     
@@ -135,7 +138,7 @@ public class VmManagerDbHsql implements VmManagerDb {
             update("DROP TABLE virtual_machines");
             update("DROP TABLE current_scheduling_alg");
         } catch (SQLException e) {
-            System.out.println(ERROR_CLEAN_DB);
+			log.error(ERROR_CLEAN_DB, e);
         }
     }
     
@@ -145,7 +148,7 @@ public class VmManagerDbHsql implements VmManagerDb {
             update("INSERT INTO virtual_machines (id, appId, ovfId, slaId) "
                     + "VALUES ('" + vmId + "', '" + appId + "', '" + ovfId + "', '" + slaId + "')");
         } catch (SQLException e) {
-            System.out.println(ERROR_INSERT_VM);
+			log.error(ERROR_INSERT_VM, e);
         }
     }
 
@@ -154,7 +157,7 @@ public class VmManagerDbHsql implements VmManagerDb {
         try {
             update("DELETE FROM virtual_machines WHERE id = '" + vmId + "'");
         } catch (SQLException e) {
-            System.out.println(ERROR_DELETE_VM);
+			log.error(ERROR_DELETE_VM,e);
         }
     }
     
@@ -163,7 +166,7 @@ public class VmManagerDbHsql implements VmManagerDb {
         try {
             update("DELETE FROM virtual_machines");
         } catch (SQLException e) {
-            System.out.println(ERROR_DELETE_ALL_VMS);
+			log.error(ERROR_DELETE_ALL_VMS, e);
         }
     }
     
@@ -272,6 +275,7 @@ public class VmManagerDbHsql implements VmManagerDb {
         } catch (SQLException e) {
             // I think the INSERT may violate the PRIMARY_KEY restriction because the time it takes the DB to
             // execute the instructions, but it does not affect us
+			log.error(e.getMessage(),e);
         }
     }
 
@@ -284,7 +288,7 @@ public class VmManagerDbHsql implements VmManagerDb {
             update("DELETE FROM self_adaptation_options");
             update("INSERT INTO self_adaptation_options (options) VALUES ('" + optionsJson + "')");
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(),e);
         }
 
     }
