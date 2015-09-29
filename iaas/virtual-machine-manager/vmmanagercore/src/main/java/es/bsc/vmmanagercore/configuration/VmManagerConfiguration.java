@@ -18,6 +18,7 @@
 
 package es.bsc.vmmanagercore.configuration;
 
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import java.io.FileReader;
@@ -32,7 +33,7 @@ import java.util.Properties;
  */
 public class VmManagerConfiguration {
 	// Configuration file
-	private static final String PROPNAME_CONF_FILE = "config.file";
+	private static final String PROPNAME_CONF_FILE = "config";
     private static final String DEFAULT_CONF_FILE = "vmmconfig.properties";
 
     // OpenStack configuration
@@ -87,16 +88,27 @@ public class VmManagerConfiguration {
      * @return the properties file
      */
     private Properties getPropertiesObjectFromConfigFile() {
-        Properties prop = new Properties();
+		Properties prop = new Properties();
+		Logger log = LogManager.getLogger(VmManagerConfiguration.class);
         try {
-			String customFile = System.getenv(PROPNAME_CONF_FILE);
+			System.out.println("**********************************************************");
+			System.out.println("**********************************************************");
+			System.out.println("**********************************************************");
+			System.out.println("**********************************************************");
+			System.out.println("*************** " + System.getenv(PROPNAME_CONF_FILE) + " ********");
+			System.out.println("**********************************************************");
+			System.out.println("**********************************************************");
+			System.out.println("**********************************************************");
+			System.out.println("**********************************************************");			String customFile = System.getenv(PROPNAME_CONF_FILE);
 			if(customFile != null) {
+				log.info("Found a custom file in system property '"+PROPNAME_CONF_FILE+"': " + customFile);
 				prop.load(new FileReader(customFile));
 			} else {
+				log.info("Loading default properties");
             	prop.load(VmManagerConfiguration.class.getClassLoader().getResourceAsStream(DEFAULT_CONF_FILE));
 			}
         } catch (IOException e) {
-			Logger.getLogger(getClass()).error("Error loading properties file", e);
+			log.error("Error loading properties file", e);
             e.printStackTrace();
         }
         return prop;
