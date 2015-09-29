@@ -201,13 +201,13 @@ public class DataGatherer implements Runnable {
          */
         while (running) {
             try {
-                Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Obtaining online host and vm list");
+                Logger.getLogger(DataGatherer.class.getName()).log(Level.FINE, "Data gatherer: Obtaining online host and vm list");
                 List<EnergyUsageSource> energyConsumers = datasource.getHostAndVmList();
                 List<Host> hostList = getHostList(energyConsumers);
                 refreshKnownHostList(hostList);
                 List<VmDeployed> vmList = getVMList(energyConsumers);
                 refreshKnownVMList(vmList);
-                Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Obtaining specific host information");
+                Logger.getLogger(DataGatherer.class.getName()).log(Level.FINE, "Data gatherer: Obtaining specific host information");
                 List<HostMeasurement> measurements = datasource.getHostData(hostList);
                 for (HostMeasurement measurement : measurements) {
                     Host host = knownHosts.get(measurement.getHost().getHostName());
