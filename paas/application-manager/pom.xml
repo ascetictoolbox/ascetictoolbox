@@ -138,6 +138,7 @@
 					<target>1.7</target>
 				</configuration>
 			</plugin>
+			
 			<plugin>
 				<groupId>org.apache.axis2</groupId>
 				<artifactId>axis2-wsdl2code-maven-plugin</artifactId>
@@ -198,6 +199,13 @@
 	</repositories>	 
 
 	<dependencies>
+
+		<dependency>
+    <groupId>xerces</groupId>
+    <artifactId>xercesImpl</artifactId>
+    <version>2.11.0</version>
+    <scope>test</scope>
+</dependency>
 
 		<!-- ASCETiC Application Manager Datamodel -->
 		<dependency>

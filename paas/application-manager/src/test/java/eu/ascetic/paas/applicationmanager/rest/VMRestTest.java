@@ -227,7 +227,7 @@ public class VMRestTest extends AbstractTest {
 		
 		List<String> ids = new ArrayList<String>();
 		ids.add("2");
-		when(energyModeller.measure(null,  "111", "333", ids, "eventX", Unit.ENERGY, null, null)).thenReturn(22.0);
+		when(energyModeller.estimate(null,  "111", "333", ids, "eventX", Unit.ENERGY, 0l)).thenReturn(22.0);
 		//when(energyModeller.energyEstimation(null, "111", ids, "eventX")).thenReturn(22.0);
 		
 		Response response = vmRest.getEnergyEstimation("111", "333", "444", "eventX");

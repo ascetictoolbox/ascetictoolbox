@@ -43,6 +43,8 @@ public class Configuration {
 	public static String amqpPassword = "guest";
 	public static String emCalculateEnergyWhenDeletion = "yes";
 	public static String emConfigurationFile = "/etc/ascetic/paas/em/config.properties";
+	public static String emMeasurementsTopic = "MEASUREMENTS";
+	public static String emPredictionsTopic = "PREDICTION";
 	public static String providerRegistryEndpoint = "http://localhost/provider-registry";
 	
 	// TODO to remove this parameter, this configuration needs to be collected from the Provider Registry
@@ -72,6 +74,8 @@ public class Configuration {
         	amqpPassword = config.getString("amqp.password");
         	emCalculateEnergyWhenDeletion = config.getString("em.calculate.energy.when.deletion");
         	emConfigurationFile = config.getString("em.configuration.file");
+        	emMeasurementsTopic = config.getString("em.measurements.topic");
+        	emPredictionsTopic = config.getString("em.predictions.topic");
         	providerRegistryEndpoint = config.getString("provider-registry-endpoint");
         	
         	// TODO to change this to be collected by the Provider Registry

@@ -779,6 +779,9 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/jp
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/dao/jpa/VMDAOJpa.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/datamodel/convert/ApplicationConverter.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/em/EnergyModellerBean.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/em/amqp/EnergyModellerMessage.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/em/amqp/EnergyModellerMessageListener.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/em/amqp/EnergyModellerQueueController.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/event/DeploymentEvent.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/event/deployment/AcceptAgreementEventHandler.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/event/deployment/ContextualizationEventHandler.java -text
@@ -827,6 +830,7 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/s
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/translator/SlaTranslator.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/translator/SlaTranslatorImpl.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/translator/SlaTranslatorImplNoOsgi.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/util/EqualsUtil.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/vmmanager/client/ImageUploader.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/vmmanager/client/VmManagerClient.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/vmmanager/client/VmManagerClientBSSC.java -text
@@ -834,6 +838,7 @@ paas/application-manager/src/main/resources/META-INF/persistence.mysql.xml -text
 paas/application-manager/src/main/resources/ProviderNegotiation.wsdl -text
 paas/application-manager/src/main/resources/application-manager.properties -text
 paas/application-manager/src/main/resources/applicationContext.xml -text
+paas/application-manager/src/main/resources/asceticNegotiation.wsdl -text
 paas/application-manager/src/main/resources/config.properties -text
 paas/application-manager/src/main/resources/em.config.properties -text
 paas/application-manager/src/main/resources/log4j.properties -text
@@ -856,6 +861,9 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/jp
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/jpa/VMDAOJpaTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/testUtil/MockWebServer.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/datamodel/convert/ApplicationConverterTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/em/amqp/EnergyModellerMessageListenerTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/em/amqp/EnergyModellerMessageTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/em/amqp/EnergyModellerQueueControllerTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/DeploymentStatusTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/deployment/AcceptAgreementEventHandlerTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/deployment/ContextualizationEventHandlerTest.java -text
