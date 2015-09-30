@@ -18,23 +18,25 @@ package eu.ascetic.asceticarchitecture.paas.type;
 
 public class DeploymPredInfo {
 	
-	double predictedDuration;
+	long predictedDuration;
 	
 	
 	double predictedIaaSCharges; //coming from IaaS scheme
 	
 	double TotalPredictedCharges;
 	
-	public DeploymPredInfo (double predictedDuration, double predictedEnergy){
+	double predictedPrice;
+	
+	public DeploymPredInfo (long predictedDuration, double predictedEnergy){
 		this.predictedDuration = predictedDuration;
 	}
 
 		
-	public void setDuration(double duration){
+	public void setDuration(long duration){
 		predictedDuration = duration;
 	}
 	
-	public double getPredictedDuration(){
+	public long getPredictedDuration(){
 		return predictedDuration;
 	}
 	
@@ -55,5 +57,11 @@ public class DeploymPredInfo {
 		TotalPredictedCharges = price;
 	}
 
-
+	public void setPredictedPrice(double price) {
+		predictedPrice = price;
+	}
+	
+	public double getPredictedPrice() {
+		return predictedPrice;
+	}
 }

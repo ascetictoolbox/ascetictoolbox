@@ -15,10 +15,15 @@
  */
 package eu.ascetic.asceticarchitecture.paas.paaspricingmodeller;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.io.IOException;
+
+import org.apache.log4j.Logger;
+
+
 import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.billing.PaaSPricingModellerBilling;
 import eu.ascetic.asceticarchitecture.paas.type.DeploymentInfo;
 import eu.ascetic.asceticarchitecture.paas.type.VMinfo;
@@ -40,32 +45,109 @@ import eu.ascetic.asceticarchitecture.paas.type.VMinfo;
 public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 
 	PaaSPricingModellerBilling billing = new PaaSPricingModellerBilling();
-	
+	static Logger logger = null;
 	
 	public PaaSPricingModeller(){
+		DateFormat df = new SimpleDateFormat("ddMMyy_HHmmss");
+		Date today = Calendar.getInstance().getTime();     
+		String reportDate = df.format(today);
+		//Properties log4jProperties = new Properties();
+		String name = "logs/" + reportDate;
+		System.setProperty("logfile.name",name);
+		logger = Logger.getLogger(PaaSPricingModeller.class);
+		//PropertyConfigurator.configure(log4jProperties);
+		//BasicConfigurator.configure();
+		logger.info("PaaS Pricing Modeller initiallized");
 	}
 	
-	public void initializeApp(int deplID, int schemeId){
-		DeploymentInfo deployment = new DeploymentInfo(deplID, schemeId);
-		billing.registerApp(deployment);
-	}
-	
-	public void initializeApp(int deplID){
-		billing.registerApp(deplID);
-	}
-	
-	
+
 	
 /////////////////////////////////////////BASED ON CALCULATIONS FROM IAAS LAYER///////////////////////////////////
+	/**
+	 * This function returns the predicted charges for an application based on the IaaS charges. 
+	 * @param deplID
+	 * @param schemeID: the pricing scheme followed
+	 * @param IaaSCharges: the charges coming from the IaaS Provider
+	 * @return
+	 */
 	public double getAppPredictedCharges(int deplID, int schemeID, double IaaSCharges){
 		DeploymentInfo deployment = new DeploymentInfo(deplID, schemeID);
 		deployment.setIaaSPredictedCharges(IaaSCharges);
 		double charges = billing.predictCharges(deployment);
 		return charges;
-		
 	}
 	
+	/**
+	 * This function returns the price of the application  per hour
+	 * @param deplID
+	 * @param schemeID: the pricing scheme followed
+	 * @param IaaSCharges the charges coming from the IaaS Provider
+	 * @param duration: The duration of the application in seconds
+	 * @return
+	 */
+	public double getAppPredictedPrice(int deplID, int schemeID, double IaaSCharges, long duration){
+		DeploymentInfo deployment = new DeploymentInfo(deplID, schemeID);
+		deployment.setIaaSPredictedCharges(IaaSCharges);
+		deployment.getPredictedInformation().setDuration(duration);
+		double charges = billing.predictPrice(deployment);
+		return charges;
+	}
+	
+	/**
+	 * This function initialized the application in order for the Pricing Modeller to initiate the billing of the app
+	 * @param deplID
+	 * @param schemeId: the pricing scheme followed
+	 */
+	public void initializeApp(int deplID, int schemeId){
+		DeploymentInfo deployment = new DeploymentInfo(deplID, schemeId);
+		billing.registerApp(deployment);
+	}
+	
+	/**
+	 * This function returns the total charges of the application based on the IaaS Charges
+	 * @param deplID
+	 * @param schemeId: the pricing scheme followed
+	 */
 	public double getAppTotalCharges(int deplID, int schemeID, double IaaSCharges){
 		return billing.getAppCurrentTotalCharges(deplID, IaaSCharges);
 	}
+	
+//////////////////////Based on the layer's calculations////////////////////////////
+	//currently not working
+	public double getAppPredictedCharges(int deplID, int schemeID){
+		DeploymentInfo deployment = new DeploymentInfo(deplID, schemeID);
+		double IaaSCharges = 0;
+		deployment.setIaaSProvider(1);
+		deployment.setIaaSPredictedCharges(IaaSCharges); 
+		double charges = billing.predictCharges(deployment);
+		return charges;
+	}
+	
+	
+/////////////////////////Event Based/////////////////////////////////////////
+	/**
+	 * This function returns the total charges for an event 
+	 * @param deplID
+	 * @param CPU
+	 * @param RAM
+	 * @param storage
+	 * @param energy: the predicted energy from EM
+	 * @param schemeId
+	 * @param duration: the duration of the event in seconds
+	 * @param numberOfevents: the number of the events on the same VM (given from EM)
+	 * @return
+	 */
+	public double getEventPredictedCharges(int deplID, int CPU, int RAM, double storage, double energy, int schemeId, long duration, int numberOfevents){
+		DeploymentInfo deployment = new DeploymentInfo(deplID, schemeId);
+		deployment.setIaaSProvider(1);
+		VMinfo VM = new VMinfo(RAM, CPU, storage);
+		VM.setEnergyPredicted(energy);
+		VM.setNumberOfEvents(numberOfevents);
+		deployment.addVM(VM);
+		deployment.getPredictedInformation().setDuration(duration);
+		double charges = billing.predictEventCharges(deployment);
+		return charges;
+		
+	}
+	
 }

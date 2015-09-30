@@ -26,10 +26,9 @@ import eu.ascetic.asceticarchitecture.paas.type.Time;
  * been used.
  * 
  * @author E. Agiatzidou
- * @param <AppPredInfo>
  */
 
-public class DeploymentInfo<AppPredInfo> {
+public class DeploymentInfo {
 
 	int deploymentId;
 	
@@ -52,6 +51,8 @@ public class DeploymentInfo<AppPredInfo> {
 	Charges totalIaaSCharges;
 
 	LinkedList<VMinfo> VMs = new LinkedList<VMinfo>();
+	
+	IaaSProvider IaaS;
 
 	public DeploymentInfo(int deploymentId, int schemeID) {
 		this.deploymentId=deploymentId;
@@ -63,8 +64,20 @@ public class DeploymentInfo<AppPredInfo> {
 		VMs.add(vm);
 	}
 	
+	public VMinfo getVM(){
+		return VMs.pop();
+	}
+	
 	public int getId(){
 		return deploymentId;
+	}
+	
+	public void setIaaSProvider(int IaaSID){
+		IaaS = new IaaSProvider(IaaSID);
+	}
+	
+	public IaaSProvider getIaaSProvider(){
+		return IaaS;
 	}
 	
 	public void setIaaSTotalCurrentCharges(double charges){
@@ -99,10 +112,14 @@ public class DeploymentInfo<AppPredInfo> {
 		return schemeId;
 	}
 	
-	public void setPrediction(double amount) {
+	public void setPredictedCharges(double amount) {
 		predictedInfo.setPredictedCharges(amount);
 	}
 
+	public void setPredictedPrice(double amount) {
+		predictedInfo.setPredictedPrice(amount);
+	}
+	
 	public void setIaaSPredictedCharges(double amount) {
 		predictedInfo.setIaaSPredictedCharges(amount);
 	}
@@ -115,5 +132,6 @@ public class DeploymentInfo<AppPredInfo> {
 		return predictedInfo.getPredictedCharges();
 	}
 
+	
 
 }

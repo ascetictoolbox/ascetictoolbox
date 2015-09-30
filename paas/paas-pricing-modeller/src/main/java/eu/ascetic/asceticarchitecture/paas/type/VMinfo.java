@@ -26,6 +26,7 @@ public class VMinfo {
 	
 	double currentEnergy;
 	
+	int numberOfEvents;
 	
 	public VMinfo (double RAM, double CPU, double storage){
 		this.RAM = RAM;
@@ -36,6 +37,22 @@ public class VMinfo {
 	
 	public double getRAM(){
 		return RAM;
+	}
+	
+	public double getEnergyPredicted(){
+		return energyPredicted;
+	}
+	
+	public void setNumberOfEvents(int number){
+		numberOfEvents=number;
+	}
+	
+	public void setEnergyPredicted(double energy){
+		energyPredicted = energy;
+	}
+	
+	public int getNumberOfEvents(){
+		return numberOfEvents;
 	}
 	
 	public double getCPU(){

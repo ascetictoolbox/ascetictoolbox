@@ -15,19 +15,11 @@
  */
 package eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.billing;
 
-import java.util.ArrayList;
-import java.util.Collection;
+
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.ListIterator;
-import java.io.IOException;
-import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.pricingschemes.PaaSPricingModellerPricingScheme;
-import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.pricingschemes.PricingSchemeA;
-import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.pricingschemes.PricingSchemeB;
-import eu.ascetic.asceticarchitecture.paas.type.DeploymPredInfo;
 import eu.ascetic.asceticarchitecture.paas.type.DeploymentInfo;
-import eu.ascetic.asceticarchitecture.paas.type.VMinfo;
+
+
 
 
 /**
@@ -44,8 +36,6 @@ import eu.ascetic.asceticarchitecture.paas.type.VMinfo;
 
 
 public class PaaSPricingModellerBilling implements PaaSPricingModellerBillingInterface{
-
-	LinkedList<DeploymentInfo> queue = new LinkedList<DeploymentInfo>();
 	
 	static HashMap<Integer,DeploymentInfo> registeredStaticApps = new HashMap<Integer,DeploymentInfo>();
 	static HashMap<Integer,DeploymentInfo> registeredDynamicApps = new HashMap<Integer,DeploymentInfo>();
@@ -55,33 +45,13 @@ public class PaaSPricingModellerBilling implements PaaSPricingModellerBillingInt
 	double averagePrice=1;
 	
 	public void registerApp(DeploymentInfo app) {
-		if (app.getSchemeId()==0)
+		if (app.getSchemeId()==0||app.getSchemeId()==2)
 			registeredStaticApps.put(app.getId(), app);
 		else
 			registeredDynamicApps.put(app.getId(), app);
 		
 	}
 	
-	
-	public void registerApp(int id) {
-		ListIterator<DeploymentInfo> listIterator = queue.listIterator();
-		DeploymentInfo app;
-		boolean found = false;
-        while (listIterator.hasNext()) {
-        	app = listIterator.next();
-            if (app.getSchemeId()==id){
-            	if ((app.getSchemeId()==0)){
-            		registeredStaticApps.put(app.getId(), app);
-        		}
-        		else {
-        			registeredDynamicApps.put(app.getId(), app);
-        		}
-            	found =true;
-            }
-		}
-        if (found==false)
-        	System.out.println("App has not been found");
-	}
 	
 	public void unregisterApp(DeploymentInfo app) {
 		if ((app.getSchemeId()==0)){
@@ -102,13 +72,37 @@ public class PaaSPricingModellerBilling implements PaaSPricingModellerBillingInt
 	////////////////////////////////// Based on IaaS Calculations//////////////////////
 	
 	public double predictCharges(DeploymentInfo deploy){
-		queue.push(deploy);
-		if (queue.size() > 10)
-			queue.pollLast();
 		double charges = deploy.getPredictedInformation().getIaaSPredictedCharges();
 		charges = charges+0.2*charges;
-		deploy.setPrediction(charges);
+		deploy.setPredictedCharges(charges);
 		return deploy.getPredictedCharges();
+	}
+	
+	public double predictPrice(DeploymentInfo deploy){
+		double charges = deploy.getPredictedInformation().getIaaSPredictedCharges();
+		charges = (charges+0.2*charges)/(deploy.getPredictedInformation().getPredictedDuration()/3600);
+		deploy.setPredictedPrice(charges);
+		return deploy.getPredictedInformation().getPredictedPrice();
+	}
+	
+	public double predictEventCharges(DeploymentInfo deploy){
+		if (deploy.getSchemeId()==0||deploy.getSchemeId()==2){
+			double charges = deploy.getIaaSProvider().predictResourcesCharges(deploy.getVM(), deploy.getPredictedInformation().getPredictedDuration(), deploy.getIaaSProvider().getStaticResoucePrice(), deploy.getVM().getNumberOfEvents());
+			charges= charges+0.2*charges;
+			deploy.setPredictedCharges(charges);
+			return deploy.getPredictedCharges();
+		}
+		
+		if (deploy.getSchemeId()==1){
+			double a = deploy.getIaaSProvider().predictResourcesCharges(deploy.getVM(), deploy.getPredictedInformation().getPredictedDuration(), deploy.getIaaSProvider().getResoucePrice(), deploy.getVM().getNumberOfEvents());
+			double b = deploy.getIaaSProvider().predictEnergyCharges(deploy.getVM().getEnergyPredicted(), deploy.getIaaSProvider().getAverageEnergyPrice());;
+			double charges = a+b;
+			charges= charges+0.2*charges;
+			deploy.setPredictedCharges(charges);
+			return deploy.getPredictedCharges();
+		}
+		
+		return 0.0;		
 	}
 
 	public double getAppCurrentTotalCharges(int depl, double charges){
@@ -126,5 +120,7 @@ public class PaaSPricingModellerBilling implements PaaSPricingModellerBillingInt
 		else
 			return registeredStaticApps.get(depl);
 	}
+	
+	
 
 }
