@@ -158,25 +158,36 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 				total_power_estim = total_power_estim + currentval;
 				if (unit==Unit.ENERGY){
 					double current_consumption = energyService.getEnergyFromVM(applicationid, deploymentid, vm, eventid);
-					LOGGER.info("Current vm consumption "+current_consumption);
+					LOGGER.info("############ Current vm consumption "+current_consumption);
 					DataConsumption dc = energyService.getLastPowerSampleFromVM(applicationid, deploymentid, vm);
-					LOGGER.info("Last vm power "+dc.getVmpower()+" at time "+dc.getTime());
-					double predicted_consumption = (0.5)*((currentval + dc.getVmpower()) / (dc.getTime()-window));
-					LOGGER.info("Estimated increased consumption for this vm "+predicted_consumption);
-					total_energy_estim = total_energy_estim + predicted_consumption + current_consumption;
-					LOGGER.info("New  consumption for this vm "+predicted_consumption);
-					if (predicted_consumption>0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, thisvm, eventid, GenericEnergyMessage.Unit.WATTHOUR, null, predicted_consumption+current_consumption);
+					if (dc!=null){
+						LOGGER.info("######## ENERGY ESTIMATION SUMMARY");
+						
+						LOGGER.info("############ Last vm power "+dc.getVmpower()+" at time "+dc.getTime());
+						LOGGER.info("############ Estimated vm power "+currentval+" at time ");
+						double predicted_consumption = (0.5)*((currentval + dc.getVmpower()) / (window/3600));
+						LOGGER.info("############ Estimated increased consumption for this vm "+predicted_consumption);
+						total_energy_estim = total_energy_estim + predicted_consumption + current_consumption;
+						LOGGER.info("############ New  consumption for this vm "+predicted_consumption);
+						double partial = predicted_consumption + current_consumption;
+						LOGGER.info("############ Added to the previously counsumption on this vm "+partial);
+						if (predicted_consumption>0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, thisvm, eventid, GenericEnergyMessage.Unit.WATTHOUR, null, partial);
+					}
+					
 				}else{
+					LOGGER.info("############ Predicted power "+currentval );
 					if (currentval>0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, thisvm, eventid, GenericEnergyMessage.Unit.WATT, null, currentval);
 				}
 			}	
 			if (unit==Unit.ENERGY){
-				LOGGER.info("Forecast of consumption for the whole app "+total_energy_estim);
+				LOGGER.info("############ Forecast of consumption for the whole app "+total_energy_estim);
 				if (total_energy_estim>0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATTHOUR, null, total_energy_estim);
+				return total_energy_estim;
 			} else if (count_vm>0) {
-				total_power_estim = total_power_estim / count_vm;
-				LOGGER.info("Forecast of power for the whole app "+total_energy_estim);
+
+				LOGGER.info("############ Forecast of power for the whole app "+total_power_estim);
 				if (total_power_estim>0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATT, null, total_power_estim);
+				return total_power_estim;
 			}
 			
 			
@@ -184,23 +195,24 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		} else {
 			// average event power
 			currentval = averagePower(providerid,applicationid, deploymentid, vmids,  eventid,null,null);
-			LOGGER.info("Forecasted instant power, now set to queue " + currentval); 
+			LOGGER.info("############Forecasted instant power, now set to queue " + currentval); 
 			if (currentval>0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATT, null, currentval);
 			
 			if (unit==Unit.ENERGY){
 				
 				long duration = averageDuration(providerid,applicationid, deploymentid, vmids,  eventid);
-				LOGGER.info("Forecasting duration " + duration); 
+				LOGGER.info("############Forecasting duration " + duration); 
 				
 				if (duration>0){
 					currentval = currentval/duration;
-					LOGGER.info("Forecasted consumption " + currentval); 
+					LOGGER.info("############Forecasted consumption " + currentval); 
 				}else{
-					LOGGER.warn("Something wrong with this values, check calculation");
+					LOGGER.warn("############Something wrong with this values, check calculation");
 				}
 			}
 		}
 		//predictor
+		
 		if (currentval>0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATTHOUR, null, currentval);
 		return currentval;
 	}
@@ -293,7 +305,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		long vmwithevent=0;
 		
 		for (String vm : vmids) {
-			LOGGER.info("Measuring event average instant power (W) for vm "+vm); 
+			LOGGER.info("############ Measuring event average instant power (W) for vm "+vm); 
 			// TODO workaround 
 			String translated = energyService.translatePaaSFromIaasID(deploymentid, vm);
 			List<DataEvent> events = eventService.getEvents(applicationid, deploymentid, translated, eventid,null,null);
@@ -305,7 +317,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 			for (DataEvent de: events){
 				long delta = (de.getEndtime() - de.getEndtime()); 
 				totalevent++;
-				LOGGER.info("Event elapsed time "+delta); 
+				LOGGER.info("############ Event elapsed time "+delta); 
 				vmavg = vmavg +delta;
 			}
 			
@@ -314,10 +326,10 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 				vmavg = vmavg/totalevent;
 				duration = duration+vmavg;
 			} 
-			LOGGER.info("This VM " + vm + " has events  " + totalevent + " avg duration " + vmavg  );
+			LOGGER.info("############ This VM " + vm + " has events  " + totalevent + " avg duration " + vmavg  );
 			List<String> vms = new Vector<String>();
 			vms.add(vm);
-			LOGGER.info("Sending to queue event statistics for this VM ");
+			LOGGER.info("############ Sending to queue event statistics for this VM ");
 			if (vmavg>=0)sendToQueue(monitoringTopic, providerid, applicationid, deploymentid, vms, eventid, GenericEnergyMessage.Unit.SEC, null, vmavg);
 			if (totalevent>=0)sendToQueue(monitoringTopic, providerid, applicationid, deploymentid, vms, eventid, GenericEnergyMessage.Unit.COUNT, null, totalevent);
 			

@@ -37,8 +37,6 @@ public class EnergyModellerPredictor implements PredictorInterface {
 		for (String vmid :vmids){
 			count++;
 			cur_power = cur_power + estimate( providerid,  applicationid,	 deploymentid,  vmid,  eventid,  unit,  timelater) ;
-		
-			
 		}
 		
 		if (count>0)return cur_power/count;
@@ -86,13 +84,16 @@ public class EnergyModellerPredictor implements PredictorInterface {
 			
 				 iExample = new DenseInstance(1);
 				 iExample.setValue((Attribute)fvWekaAttributes.elementAt(0), new Float(dc.getTime()));
-				 //iExample.setValue((Attribute)fvWekaAttributes.elementAt(2), new Float(samples.get(i).getPower()));
+				 iExample.setValue((Attribute)fvWekaAttributes.elementAt(1), new Float(dc.getVmpower()));
 				 isTrainingSet.add(iExample);
 				 timestamps[i]=dc.getTime();
 				 data[i]=dc.getVmpower();
 				 i++;
 	    }
-		iExample = new DenseInstance(2);
+		
+		
+		
+		iExample = new DenseInstance(1);
 		iExample.setValue((Attribute)fvWekaAttributes.elementAt(0),forecasttime);
     	isTrainingSet.add(iExample);
 			 
@@ -124,13 +125,15 @@ public class EnergyModellerPredictor implements PredictorInterface {
 		long begin = current.getTime()-604800000;
 		// to now
 		long end = current.getTime();
-		
+		LOGGER.info("Forecaster now is "+end);
 		// add after millisec conversion the time of the forecast
-		long forecasttime = end + (timelater*1000);
+		long forecasttime = end/1000 + (timelater);
 		
 	
-		LOGGER.info("Forecaster "+applicationid + " VM "+vm);
-		DataInterpolator interpolator;
+		LOGGER.info("Forecaster "+applicationid + " VM "+vm + " at time "+forecasttime);
+		LOGGER.info("############ Forecasting STARTED FOR "+applicationid + " VM "+vm+ "############");
+		DataInterpolator cpuinterpolator;
+		DataInterpolator meminterpolator;
 		Attribute cpu = new Attribute("CPU");
 		Attribute memory =  new Attribute("Memory");
 		Attribute power = new Attribute("Power");
@@ -145,10 +148,10 @@ public class EnergyModellerPredictor implements PredictorInterface {
 		List<DataConsumption> powerSample = service.samplePower(applicationid, deploymentid, vm);
 			
 			
-		LOGGER.info("Samples for the analysis ");
-		LOGGER.info("Samples for mem "+memSample.size());
-		LOGGER.info("Samples for cpu "+cpuSample.size());
-		LOGGER.info("Samples for mem "+powerSample.size());
+		LOGGER.debug("Samples for the analysis ");
+		LOGGER.debug("Samples for mem "+memSample.size());
+		LOGGER.debug("Samples for cpu "+cpuSample.size());
+		LOGGER.debug("Samples for mem "+powerSample.size());
 			
 		
 		Instances isTrainingSet = new Instances("Powermodel", fvWekaAttributes, 0);
@@ -178,44 +181,57 @@ public class EnergyModellerPredictor implements PredictorInterface {
 		double[] mem_data=new double[min_set];
 		
 		 
-		System.out.println("Samples of analysis for model will be "+min_set);
+		LOGGER.info("Samples of analysis for model will be "+min_set);
+		if (min_set==0){
+			LOGGER.warn("Not enought samples "+min_set);
+			return 0;
+		}
 		for (int i = 0; i<min_set;i++) {
 			 iExample = new DenseInstance(3);
+			 LOGGER.info("Sample CPU "+cpuSample.get(i).getVmcpu() + " MEM " + memSample.get(i).getVmmemory() + " POWER "+ powerSample.get(i).getVmpower() + " time "+ cpuSample.get(i).getTime());
 			 iExample.setValue((Attribute)fvWekaAttributes.elementAt(0), new Float(cpuSample.get(i).getVmcpu()));
 			 iExample.setValue((Attribute)fvWekaAttributes.elementAt(1), new Float(memSample.get(i).getVmmemory()));
 			 iExample.setValue((Attribute)fvWekaAttributes.elementAt(2), new Float(powerSample.get(i).getVmpower()));
 			 isTrainingSet.add(iExample);
 			 cpu_timestamps[i]=cpuSample.get(i).getTime();
-			 //cpu_data[i]=memSample.get(i).getVmpcpu();
+			 cpu_data[i]=cpuSample.get(i).getVmcpu();
+			 mem_timestamps[i]=memSample.get(i).getTime();
+			 mem_data[i]=memSample.get(i).getVmmemory();
 			 
 		}
 
-		interpolator = new DataInterpolator();
-		//interpolator.buildmodel(timestamps, data);
+		cpuinterpolator = new DataInterpolator();
+		cpuinterpolator.buildmodel(cpu_timestamps, cpu_data);
 		 
-		double valueforecast =  interpolator.estimate(forecasttime);
-		LOGGER.info("Forecasted CPU"+valueforecast+" at time "+forecasttime);
-		iExample = new DenseInstance(2);
-		iExample.setValue((Attribute)fvWekaAttributes.elementAt(0),valueforecast);
-		iExample.setValue((Attribute)fvWekaAttributes.elementAt(1), 1024);
+		meminterpolator = new DataInterpolator();
+		meminterpolator.buildmodel(mem_timestamps, mem_data);
+		
+		double valuecpuforecast =  cpuinterpolator.estimate(forecasttime);
+		LOGGER.info("Forecasted CPU"+valuecpuforecast+" at time "+forecasttime);
+		double valuememforecast =  meminterpolator.estimate(forecasttime);
+		LOGGER.info("Forecasted MEMORY"+valuememforecast+" at time "+forecasttime);
+		iExample = new DenseInstance(3);
+		iExample.setValue((Attribute)fvWekaAttributes.elementAt(0),valuecpuforecast);
+		iExample.setValue((Attribute)fvWekaAttributes.elementAt(1), valuememforecast);
 
-		 isTrainingSet.add(iExample);
+		isTrainingSet.add(iExample);
 		 
 		 LinearRegression model = new LinearRegression();
 		 try {
 			 model.buildClassifier(isTrainingSet);
 		
-			 LOGGER.info("Model "+model);
+			 LOGGER.debug("Model "+model);
 	
 			 Instance ukPower = isTrainingSet.lastInstance();
 			 double powerest = model.classifyInstance(ukPower);
 			 LOGGER.info("Power ("+ukPower+"): "+powerest);
+			 LOGGER.info("############ Forecasting TERMINATED POWER WILL BE "+powerest + " at "+forecasttime+ "############");
 			 return powerest;
 		 } catch (Exception e) {
 				e.printStackTrace();
 		 }
 	
-		
+		 LOGGER.info("############ Forecasting not performed on "+applicationid + " VM "+vm+ "############");
 	
 		 return estimation;
 		

@@ -19,14 +19,22 @@ public class EnergyModellerData {
 
 	
 	private static EnergyModellerService serviceEM;
-	private static String HOST = "1860";
-	private static String HOST1 = "1861";
-	private static String HOST2 = "1862";
+	private static String HOST = "1764";
+	private static String HOST1 = "1765";
+	private static String HOST2 = "1766";
+	private static String HOST3 = "1767";
+	private static String HOST4 = "1768";
+	private static String DEP = "569";
+	private static String APP = "davidgpTestApp";
+	private static String EVENT = "loquesea";
+	
+	private static String TEST= "1899";
 	//private static String HOST3 = "b52da74d-585c-404d-8f29-4de0d93cfe5e";
 	private static String PROVIDER = "provider1";
-	private static String EVENT = "core0impl0";
-	private static String APP = "newsAsset";
-	private static String DEP = "556";
+	//private static String EVENT = "core0impl0";
+	//private static String APP = "newsAsset";
+	
+	//private static String DEP = "490";
 	long beginlong = 1442494327000L;
 	long endlong = 1442496787000L;
 	
@@ -36,35 +44,173 @@ public class EnergyModellerData {
 	public static void setup() {
 		serviceEM = (EnergyModellerService) EnergyModellerFactory.getEnergyModeller("c:/dev-env/ascetic-conf/testconfig.properties");
 	}
-	// test for power consumption
 	
-	@Test
-	public void testMeasureAllPoweryInterface() {
-		System.out.println("Testing power measurement");
-		List<String> vmids = new Vector<String>();
-		vmids.add(HOST);
-		vmids.add(HOST1);
-		vmids.add(HOST2);
-		PROVIDER=null;
-		EVENT=null;
-		double result = serviceEM.measure(PROVIDER, APP, DEP, vmids, EVENT, Unit.POWER, null,null);
-		System.out.println("Average Power from all samples is:  "+result);
-	}
+//	@Test
+//	public void eventPowerInterface() {
+//		System.out.println("Testing power measurement over a time range");
+//		List<String> vmids = new Vector<String>();
+//		vmids.add(TEST);		
+//		PROVIDER=null;
+//		double result = serviceEM.estimate(PROVIDER, APP, DEP, vmids, EVENT, Unit.POWER,3600);
+//		System.out.println("################################ TEST Average Power estimated is:  "+result);
+//	}
+//	
+//	@Test
+//	public void eventEnergyInterface() {
+//		System.out.println("Testing power measurement over a time range");
+//		List<String> vmids = new Vector<String>();
+//		vmids.add(TEST);		
+//		PROVIDER=null;
+//		double result = serviceEM.estimate(PROVIDER, APP, DEP, vmids, EVENT, Unit.ENERGY,3600);
+//		System.out.println("################################ TEST Average Energy estimated is:  "+result);
+//	}
+
+	
+//	@Test
+//	public void eventMPowerInterface() {
+//		System.out.println("Testing power measurement over a time range");
+//		List<String> vmids = new Vector<String>();
+//		vmids.add(TEST);		
+//		PROVIDER=null;
+//		double result = serviceEM.measure(PROVIDER, APP, DEP, vmids, EVENT, Unit.POWER, null,null);
+//		System.out.println("################################ TEST Average Power estimated is:  "+result);
+//	}
+//	
+//	@Test
+//	public void eventMEnergyInterface() {
+//		System.out.println("Testing power measurement over a time range");
+//		List<String> vmids = new Vector<String>();
+//		vmids.add(TEST);		
+//		PROVIDER=null;
+//		double result = serviceEM.measure(PROVIDER, APP, DEP, vmids, EVENT, Unit.ENERGY, null,null);
+//		System.out.println("################################ TEST Average Energy estimated is:  "+result);
+//	}
 
 	@Test
-	public void testMeasureAllEnergyInterface() {
-		System.out.println("Testing energy estimationfrom all samples");
+	public void estMPowerInterface() {
+		System.out.println("Testing power measurement over a time range");
 		List<String> vmids = new Vector<String>();
-		vmids.add(HOST);
-		vmids.add(HOST1);
-		vmids.add(HOST2);
-		EVENT=null;
-		//vmids.add(HOST1);
+		vmids.add(TEST);		
 		PROVIDER=null;
-		double result = serviceEM.measure(PROVIDER, APP, DEP, vmids, EVENT, Unit.ENERGY, null,null);
-		System.out.println("Energy Wh from all samples is:  "+result);
+		double result = serviceEM.estimate(PROVIDER, APP, DEP, vmids, EVENT, Unit.POWER,3600);
+		System.out.println("################################ TEST Average Power estimated is:  "+result);
 	}
+	
+	@Test
+	public void estMEnergyInterface() {
+		System.out.println("Testing power measurement over a time range");
+		List<String> vmids = new Vector<String>();
+		vmids.add(TEST);		
+		PROVIDER=null;
+		double result = serviceEM.estimate(PROVIDER, APP, DEP, vmids, EVENT, Unit.ENERGY,3600);
+		System.out.println("################################ TEST Average Energy estimated is:  "+result);
+	}
+	
+	// test for power consumption
+	
+//	@Test
+//	public void testMeasurePoweryInterface() {
+//		System.out.println("Testing power measurement");
+//		List<String> vmids = new Vector<String>();
+//		vmids.add(HOST);
+//		vmids.add(HOST1);
+//		vmids.add(HOST2);
+//		vmids.add(HOST3);
+//		vmids.add(HOST4);
+//		//vmids.add(TEST);
+//		PROVIDER=null;
+//		EVENT=null;
+//		double result = serviceEM.measure(PROVIDER, APP, DEP, vmids, EVENT, Unit.POWER, null,null);
+//		System.out.println("############################# TEST Average Power from all samples is:  "+result);
+//	}
 //	
+//	@Test
+//	public void testEstimPowerInterface() {
+//		System.out.println("Testing power measurement over a time range");
+//		List<String> vmids = new Vector<String>();
+//		vmids.add(HOST);
+//		vmids.add(HOST1);
+//		vmids.add(HOST2);
+//		vmids.add(HOST3);
+//		vmids.add(HOST4);		
+//		PROVIDER=null;
+//		double result = serviceEM.estimate(PROVIDER, APP, DEP, vmids, null, Unit.POWER,3600);
+//		System.out.println("################################ TEST Average Power estimated is:  "+result);
+//	}	
+//
+//	
+//	@Test
+//	public void testEnergyMeasureInterface() {
+//		System.out.println("Testing power measurement");
+//		List<String> vmids = new Vector<String>();
+//		vmids.add(HOST);
+//		vmids.add(HOST1);
+//		vmids.add(HOST2);
+//		vmids.add(HOST3);
+//		vmids.add(HOST4);
+//		//vmids.add(TEST);
+//		PROVIDER=null;
+//		EVENT=null;
+//		double result = serviceEM.measure(PROVIDER, APP, DEP, vmids, EVENT, Unit.ENERGY, null,null);
+//		System.out.println("############################# TEST Energy from all samples is:  "+result);
+//	}
+//	
+//	@Test
+//	public void testEstimEnergyInterface() {
+//		System.out.println("Testing power measurement over a time range");
+//		List<String> vmids = new Vector<String>();
+//		vmids.add(HOST);
+//		vmids.add(HOST1);
+//		vmids.add(HOST2);
+//		vmids.add(HOST3);
+//		vmids.add(HOST4);		
+//		PROVIDER=null;
+//		double result = serviceEM.estimate(PROVIDER, APP, DEP, vmids, null, Unit.ENERGY,3600);
+//		System.out.println("################################ TEST Energy estimated is:  "+result);
+//	}
+	
+//	
+//	@Test
+//	public void superPlot() {
+//		System.out.println("Testing power measurement over a time range");
+//		List<String> vmids = new Vector<String>();
+//		vmids.add(HOST);
+//		vmids.add(HOST1);
+//		vmids.add(HOST2);
+//		vmids.add(HOST3);
+//		vmids.add(HOST4);		
+//		PROVIDER=null;
+//		int time=0;
+//		int delta = 60;
+//		for (int i=1;i<60;i++){
+//			time =  (delta * i);
+//			double result = serviceEM.estimate(PROVIDER, APP, DEP, vmids, null, Unit.ENERGY,time);
+//			System.out.println("################################ ");
+//			System.out.println("################################ ");
+//			System.out.println("################################  ");
+//			System.out.println("################################ TEST Energy after "+time+" seconds estimated is:  "+result);
+//		}
+//		
+//	}
+//	
+//
+//	@Test
+//	public void testMeasureAllEnergyInterface() {
+//		System.out.println("Testing energy estimationfrom all samples");
+//		List<String> vmids = new Vector<String>();
+////		vmids.add(HOST);
+////		vmids.add(HOST1);
+////		vmids.add(HOST2);
+////		vmids.add(HOST3);
+////		vmids.add(HOST4);
+//		//vmids.add(TEST);
+//		EVENT=null;
+//		//vmids.add(HOST1);
+//		PROVIDER=null;
+//		double result = serviceEM.measure(PROVIDER, APP, DEP, vmids, EVENT, Unit.ENERGY, null,null);
+//		System.out.println("Energy Wh from all samples is:  "+result);
+//	}
+	
 //	@Test
 //	public void testMeasureRangePoweryInterface() {
 //		System.out.println("Testing power measurement over a time range");
@@ -75,6 +221,24 @@ public class EnergyModellerData {
 //		double result = serviceEM.measure(PROVIDER, APP, DEP, vmids, null, Unit.POWER,new Timestamp(beginlong),new Timestamp(endlong));
 //		System.out.println("Average Power in the time range is:  "+result);
 //	}
+	
+	
+//	@Test
+//	public void testPredizioneRangePoweryInterface() {
+//		System.out.println("Testing power measurement over a time range");
+//		List<String> vmids = new Vector<String>();
+//		vmids.add(HOST);
+//		vmids.add(HOST1);
+//		vmids.add(HOST2);
+//		vmids.add(HOST3);
+//		vmids.add(HOST4);		
+//		PROVIDER=null;
+//		double result = serviceEM.estimate(PROVIDER, APP, DEP, vmids, null, Unit.POWER,10000);
+//		System.out.println("Average Power in the time range is:  "+result);
+//	}
+//
+
+	
 //
 //	@Test
 //	public void testMeasureRangeEnergyInterface() {
