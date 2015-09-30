@@ -4,7 +4,7 @@ import java.util.List;
 
 public class GenericEnergyMessage {
 
-	public enum Unit { WATT, WATTHOUR };
+	public enum Unit { WATT, WATTHOUR, COUNT, SEC };
 	
 	private String provider;
 	private String applicationid;

@@ -51,11 +51,17 @@ public interface DataConsumptionMapper {
 	  @Select("select count(*) from DATACONSUMPTION WHERE vmid = #{vmid}  and metrictype = 'power' and time > #{starttime} and time <= #{endtime}")
 	  int getSamplesBetweenTime(@Param("deploymentid")String deploymentid,@Param("vmid") String vmid,@Param("starttime")long starttime,@Param("endtime") long endtime);
 	  
-	  @Select("select count(*) from DATACONSUMPTION WHERE vmid = #{vmid}  and metrictype = 'cpu' ")
+	  @Select("select * from DATACONSUMPTION WHERE vmid = #{vmid}  and metrictype = 'cpu' ")
 	  List<DataConsumption> getCPUs(@Param("deploymentid")String deploymentid,@Param("vmid") String vmid);
 	 
-	  @Select("select count(*) from DATACONSUMPTION WHERE vmid = #{vmid}  and metrictype = 'memory' ")
+	  @Select("select * from DATACONSUMPTION WHERE vmid = #{vmid}  and metrictype = 'memory' ")
 	  List<DataConsumption> getMemory(@Param("deploymentid")String deploymentid,@Param("vmid") String vmid);
+	  
+	  @Select("select * from DATACONSUMPTION WHERE vmid = #{vmid}  and metrictype = 'power' ")
+	  List<DataConsumption> getPower(@Param("deploymentid")String deploymentid,@Param("vmid") String vmid);
+
+	  @Select("select * from DATACONSUMPTION WHERE vmid = #{vmid}  and metrictype = 'power' ORDER BY applicationid,deploymentid,vmid DESC LIMIT 1")
+	  DataConsumption getLastSample(@Param("deploymentid")String deploymentid,@Param("vmid") String vmid);
 	 
 	  @Select("select * from DATACONSUMPTION WHERE metrictype = 'power' and vmid = #{vmid} and time = #{time}")
 	  DataConsumption getSampleAtTime(@Param("deploymentid")String deploymentid,@Param("vmid") String vmid, @Param("time") long time);

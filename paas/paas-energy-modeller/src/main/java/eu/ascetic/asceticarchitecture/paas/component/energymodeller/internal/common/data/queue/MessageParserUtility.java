@@ -17,8 +17,6 @@ public class MessageParserUtility {
 	
 	public static String buildStringMessage(GenericEnergyMessage message){
 		try {
-			
-			
 			Writer strWriter = new StringWriter();
 			mapper.writeValue(strWriter, message);
 			return strWriter.toString();

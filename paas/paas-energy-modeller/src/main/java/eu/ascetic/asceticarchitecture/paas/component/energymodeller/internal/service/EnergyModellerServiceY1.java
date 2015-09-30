@@ -544,13 +544,13 @@ public class EnergyModellerServiceY1 implements PaaSEnergyModeller {
 		this.emsettings = emsettings;
 	}
 
-	@Override
-	public double measure(String providerid, String applicationid,
-			List<String> vmids, String eventid, Unit unit, Timestamp start,
-			Timestamp end) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+//	@Override
+//	public double measure(String providerid, String applicationid,
+//			List<String> vmids, String eventid, Unit unit, Timestamp start,
+//			Timestamp end) {
+//		// TODO Auto-generated method stub
+//		return 0;
+//	}
 
 		
 }

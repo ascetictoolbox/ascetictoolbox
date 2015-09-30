@@ -32,7 +32,7 @@ public class EnergyDataAggregatorServiceQueue {
 		vmid = translatePaaSFromIaasID(deployment,vmid);
 		if (vmid == null ){
 			logger.info("No PaaS ID found from IaaS ID");
-			return -1;
+			return 0;
 		}
 		logger.info("Start computing for"+deployment+" "+ vmid);
 		return integrateSamples(deployment, vmid, -1,-1);
@@ -94,17 +94,25 @@ public class EnergyDataAggregatorServiceQueue {
 					return avgpower;
 				}
 			}
-			
 		}
 		if (unit == Unit.ENERGY){
-
 			return integrateSamples(deployment, vmid, start, end);
-			
 		} else {
 			double result = dataConsumptionMapper.getPowerInIntervalForVM(deployment, vmid, start/1000, end/1000);
 			logger.info("######### Avg power is "+result);
 			return result;
 		}
+		
+		
+	}
+	
+	public DataConsumption getLastPowerSampleFromVM(String applicationid, String deployment, String vmid) {
+		vmid = translatePaaSFromIaasID(deployment,vmid);
+		if (vmid == null ){
+			logger.info("No PaaS ID found from IaaS ID");
+			return null;
+		}
+		return dataConsumptionMapper.getLastSample(deployment,vmid);
 		
 		
 	}
@@ -136,6 +144,41 @@ public class EnergyDataAggregatorServiceQueue {
 		return accumulatedEnergy;
 			
 	}
+	
+	public List<DataConsumption> sampleMemory(String applicationid, String deployment, String vmid){
+		
+		vmid = translatePaaSFromIaasID(deployment,vmid);
+		if (vmid == null ){
+			logger.info("No PaaS ID found from IaaS ID");
+			return null;
+		}
+		return  dataConsumptionMapper.getMemory(deployment, vmid);
+		
+		
+	}
+
+	
+	public List<DataConsumption> sampleCPU(String applicationid, String deployment, String vmid){
+		
+		vmid = translatePaaSFromIaasID(deployment,vmid);
+		if (vmid == null ){
+			logger.info("No PaaS ID found from IaaS ID");
+			return null;
+		}
+		return  dataConsumptionMapper.getCPUs(deployment, vmid);
+		
+	}	
+	
+	public List<DataConsumption> samplePower(String applicationid, String deployment, String vmid){
+		
+		vmid = translatePaaSFromIaasID(deployment,vmid);
+		if (vmid == null ){
+			logger.info("No PaaS ID found from IaaS ID");
+			return null;
+		}
+		return  dataConsumptionMapper.getPower(deployment, vmid);
+		
+	}	
 	
 	
 	public List<DataConsumption> sampleMeasurements(String applicationid, String deployment, String vmid, long start,long end,long interval){
@@ -194,7 +237,7 @@ public class EnergyDataAggregatorServiceQueue {
 		return resampledresult;
 	}
 	
-	// TODO to be removed
+	// TODO to be removed, for the moment is the only way to map the IaaS VM with the PaaS VM
 	public String translatePaaSFromIaasID(String deployid, String paasvmid){
 		logger.info(" I translated the iaas id " + paasvmid);
 		String iaasVmId = registryMapper.selectFromIaaSID(deployid,paasvmid);

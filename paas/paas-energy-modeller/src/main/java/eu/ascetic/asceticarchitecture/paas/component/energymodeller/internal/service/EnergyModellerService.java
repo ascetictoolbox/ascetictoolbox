@@ -131,66 +131,108 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 
 	}
 
+	/**
+	 * 
+	 * 
+	 * ESTIMATE: estimate a future value from available samples, 
+	 * 			Unit tells if the method should compute future value of instant power or the future accumulated energy consumption
+	 * 
+	 */	
+	
 	@Override
 	public double estimate(String providerid, String applicationid,  String deploymentid,	List<String> vmids, String eventid, Unit unit, long window) {
-		LOGGER.info("Forecasting instant power"); 
+		LOGGER.info("Forecasting requested"); 
 		double currentval = 0;
 		if (eventid==null){
 			// instant power estimation
-			currentval = predictor.estimate(providerid,applicationid, deploymentid, vmids, eventid, unit, window);	
+			double total_power_estim=0;
+			double total_energy_estim=0;
+			double count_vm=0;
+			for(String vm : vmids){
+				count_vm++;
+				LOGGER.info("Forecasting this vm power "+vm);
+				currentval = predictor.estimate(providerid,applicationid, deploymentid, vm, eventid, unit, window);	
+				List<String> thisvm = new Vector<String>();
+				thisvm.add(vm);
+				LOGGER.info("is  "+currentval);
+				total_power_estim = total_power_estim + currentval;
+				if (unit==Unit.ENERGY){
+					double current_consumption = energyService.getEnergyFromVM(applicationid, deploymentid, vm, eventid);
+					LOGGER.info("Current vm consumption "+current_consumption);
+					DataConsumption dc = energyService.getLastPowerSampleFromVM(applicationid, deploymentid, vm);
+					LOGGER.info("Last vm power "+dc.getVmpower()+" at time "+dc.getTime());
+					double predicted_consumption = (0.5)*((currentval + dc.getVmpower()) / (dc.getTime()-window));
+					LOGGER.info("Estimated increased consumption for this vm "+predicted_consumption);
+					total_energy_estim = total_energy_estim + predicted_consumption + current_consumption;
+					LOGGER.info("New  consumption for this vm "+predicted_consumption);
+					if (predicted_consumption>0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, thisvm, eventid, GenericEnergyMessage.Unit.WATTHOUR, null, predicted_consumption+current_consumption);
+				}else{
+					if (currentval>0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, thisvm, eventid, GenericEnergyMessage.Unit.WATT, null, currentval);
+				}
+			}	
+			if (unit==Unit.ENERGY){
+				LOGGER.info("Forecast of consumption for the whole app "+total_energy_estim);
+				if (total_energy_estim>0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATTHOUR, null, total_energy_estim);
+			} else if (count_vm>0) {
+				total_power_estim = total_power_estim / count_vm;
+				LOGGER.info("Forecast of power for the whole app "+total_energy_estim);
+				if (total_power_estim>0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATT, null, total_power_estim);
+			}
+			
+			
+				
 		} else {
 			// average event power
 			currentval = averagePower(providerid,applicationid, deploymentid, vmids,  eventid,null,null);
+			LOGGER.info("Forecasted instant power, now set to queue " + currentval); 
+			if (currentval>0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATT, null, currentval);
 			
-			LOGGER.info("Forecasting instant power" + currentval); 
 			if (unit==Unit.ENERGY){
 				
 				long duration = averageDuration(providerid,applicationid, deploymentid, vmids,  eventid);
 				LOGGER.info("Forecasting duration " + duration); 
 				
 				if (duration>0){
-					currentval = currentval*duration;
-					LOGGER.info("Forecasting consumption " + currentval); 
+					currentval = currentval/duration;
+					LOGGER.info("Forecasted consumption " + currentval); 
 				}else{
 					LOGGER.warn("Something wrong with this values, check calculation");
 				}
-				
 			}
-			
 		}
 		//predictor
-		if (currentval>0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATT, null, currentval);
+		if (currentval>0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATTHOUR, null, currentval);
 		return currentval;
 	}
 
-
 	/**
 	 * 
+	 * GET ENERGY CONSUMED BY AN APPLICATION IF EVENT ID IS NULL  , OR THE TOTAL ENERGY CONSUMED BY THE SAME EVENT TYPE IF ITs ID IS PROVIDED, AGGREGATE FOR ALL VMS SPECCIFIED
 	 * 
-	 * TRAINING function to be fully implemented in Y2
-	 * 
-	 */	
-	
-	@Override
-	public boolean trainApplication(String providerid, String applicationid,String deploymentid, String eventid) {
-		// TODO Y2 Implementation
-		LOGGER.info("Starting to train application " + applicationid + " for this deployment " + deploymentid);
-		LOGGER.info("Registering training");
-		dbmanager.getMonitoringData().createTraining(applicationid, deploymentid, eventid);
-		if (eventid==null){
-			LOGGER.info("Application training");
-			dbmanager.getMonitoringData().createMonitoring(applicationid, deploymentid, "");
-			loadInjector.deployTrainingForApplication(applicationid, deploymentid);
-		} else {
-			LOGGER.info("Event training");
-			loadInjector.deployTrainingForApplicationEvent(applicationid, deploymentid, eventid);
-		}
-		LOGGER.info("Training terminated");
-		dbmanager.getMonitoringData().terminateTraining(applicationid, deploymentid);
-		dbmanager.getMonitoringData().terminateMonitoring(applicationid, deploymentid);	
-		return true;
+	 */
+	private double aggregateVMenergyConsumption(String providerid,String applicationid, String deploymentid, List<String> vmids, String eventid,Timestamp start,Timestamp end) {
+			
+			double total_energy=0;
+			if (eventid==null){
+				LOGGER.debug("Analytzing application");
+				for (String vm : vmids) {
+					double energy = energyForVM(providerid, applicationid, deploymentid, vm, eventid,start,end);
+					LOGGER.info("This VM "+ vm + " consumed " + String.format( "%.2f", energy ));
+					total_energy = total_energy +energy;
+				}			
+				LOGGER.info("Application consumed " + String.format( "%.2f", total_energy ));
+			} else {
+				LOGGER.debug("Analytzing event");
+				for (String vm : vmids) {
+					LOGGER.debug("Analyzing events on VM "+vm); 
+					total_energy = total_energy + energyForVM(providerid, applicationid, deploymentid, vm, eventid,start,end);
+				}
+				LOGGER.info("Event energy Wh " +String.format( "%.2f", total_energy ));
+			}
+			return total_energy;
+			
 	}
-
+	
 	/**
 	 * 
 	 * 
@@ -232,39 +274,19 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 			as.setE_value(dc.getVmpower());
 			results.add(as);
 		}
-		
-		
 		return results;
 	}
-
+	
+	/**
+	 * PRIVATE METHOD SECTION
+	 */	
 	
 	/**
 	 * 
-	 * GET ENERGY CONSUMED BY AN APPLICATION IF EVENT ID IS NULL  , OR THE TOTAL ENERGY CONSUMED BY THE SAME EVENT TYPE IF ITs ID IS PROVIDED, AGGREGATE FOR ALL VMS SPECCIFIED
 	 * 
-	 */
-	private double aggregateVMenergyConsumption(String providerid,String applicationid, String deploymentid, List<String> vmids, String eventid,Timestamp start,Timestamp end) {
-			
-			double total_energy=0;
-			if (eventid==null){
-				LOGGER.debug("Analytzing application");
-				for (String vm : vmids) {
-					double energy = energyForVM(providerid, applicationid, deploymentid, vm, eventid,start,end);
-					LOGGER.info("This VM "+ vm + " consumed " + String.format( "%.2f", energy ));
-					total_energy = total_energy +energy;
-				}			
-				LOGGER.info("Application consumed " + String.format( "%.2f", total_energy ));
-			} else {
-				LOGGER.debug("Analytzing event");
-				for (String vm : vmids) {
-					LOGGER.debug("Analyzing events on VM "+vm); 
-					total_energy = total_energy + energyForVM(providerid, applicationid, deploymentid, vm, eventid,start,end);
-				}
-				LOGGER.info("Event energy Wh " +String.format( "%.2f", total_energy ));
-			}
-			return total_energy;
-			
-	}
+	 * Returns an Application Sample for each sample in the give interval, sampled at the samplingperiod time
+	 * 
+	 */	
 	
 	private long averageDuration(String providerid, String applicationid, String deploymentid, List<String> vmids, String eventid){
 		long duration=0;
@@ -293,19 +315,27 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 				duration = duration+vmavg;
 			} 
 			LOGGER.info("This VM " + vm + " has events  " + totalevent + " avg duration " + vmavg  );
+			List<String> vms = new Vector<String>();
+			vms.add(vm);
+			LOGGER.info("Sending to queue event statistics for this VM ");
+			if (vmavg>=0)sendToQueue(monitoringTopic, providerid, applicationid, deploymentid, vms, eventid, GenericEnergyMessage.Unit.SEC, null, vmavg);
+			if (totalevent>=0)sendToQueue(monitoringTopic, providerid, applicationid, deploymentid, vms, eventid, GenericEnergyMessage.Unit.COUNT, null, totalevent);
 			
 		}
 		if (vmwithevent>0){
 			duration = duration/vmwithevent;
 		}
 		LOGGER.info("This event has been reported by vms  " + vmwithevent + " with an avg " + duration  );
+		LOGGER.info("Sending to queue event statistics for the whole application ");
+		if (vmwithevent>=0)sendToQueue(monitoringTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.SEC, null, duration);
+		if (vmwithevent>=0)sendToQueue(monitoringTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.COUNT, null, vmwithevent);
+		
 		return duration;
 	}
-	//List<DataEvent> events = eventService.getEvents(applicationid, deploymentid, translated, eventid,null,null);
-
+	
 	/**
 	 * 
-	 * GET THE AVERAGE OF INSTANT POWER MEASURED FOR AN APPLICATION IF EVENT ID IS NULL, OR EVENT IF IT IS PROVIDED
+	 * GET THE AVERAGE INSTANT POWER MEASURED FOR AN APPLICATION IF EVENT ID IS NULL, OR EVENT IF IT IS PROVIDED
 	 * 
 	 */	
 	
@@ -323,12 +353,14 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 					List<DataEvent> events = eventService.getEvents(applicationid, deploymentid, translated, eventid,null,null);
 					LOGGER.info("Got events: "+events.size()); 
 					for (DataEvent de: events){
+						
 						LOGGER.info("Event start "+de.getBegintime()+" and terminates  "+ de.getEndtime()); 
 						countEvents++;
 						double power  = energyService.getMeasureInIntervalFromVM(Unit.POWER, applicationid, deploymentid, vm, de.getBegintime(), de.getEndtime());
 						LOGGER.info("This event power :  "+power);
 						totalPower = totalPower + power;
 					}
+					//if (events.size()>0)averageDuration(providerid,applicationid, deploymentid, vmids,  eventid);
 				}
 				if (countEvents<=0) return 0;
 				return totalPower/countEvents;
@@ -364,9 +396,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 				now = now - (86400000);
 				start = new Timestamp(now);
 				LOGGER.info("Going to get data from the last 24h :  "+start);
-				
 			}
-			
 			
 			if (eventid==null){
 				for (String vm : vmids) {
@@ -408,7 +438,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	
 	/**
 	 * 
-	 * PRIVATE INTERNAL METHOD
+	 * PRIVATE INTERNAL METHOD to get energy consumption per vm
 	 * 
 	 */
 
@@ -461,7 +491,11 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		}	
 	}
 		
-
+	/**
+	 * 
+	 * Extracts events from the database of the EM
+	 *  
+	 */
 	
 	private List<EventSample> eventsSamplesInInterval(String providerid,String applicationid, String deploymentid, String vmid, String eventid,Timestamp start, Timestamp endtime) {
 		
@@ -517,11 +551,9 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		this.propertyFile=propertyFile;
 		LOGGER.info("EM Initialization ongoing" + propertyFile);
 		configureProperty();
-		// Not yet implemented this workflow
-		//initializeLoadInjector();
 		initializeDataConnectors();
-		initializePrediction();
 		initializeQueueServiceManager();
+		initializePrediction();
 		LOGGER.info("EM Initialization complete");
 	}
 
@@ -549,16 +581,9 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		}
 	}
 	
-	private void initializeLoadInjector(){
-		LOGGER.debug("Configuring load injector");
-		loadInjector = new LoadInjectorService();
-		loadInjector.configureLoadInjector(emsettings.getServerPath(), emsettings.getServerurl(), emsettings.getPropertyFile(), emsettings.getJmxFilePath());
-		LOGGER.debug("Configured");
-	}
-	
+
 	private void initializeDataConnectors(){
 		LOGGER.debug("Setting connection to data sources for events and energy ");
-		
 		energyService = new EnergyDataAggregatorServiceQueue();
 		eventService = new EventDataAggregatorService();
 		eventService.setDaoEvent(dbmanager.getDataEventDAOImpl());
@@ -607,11 +632,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	private void initializePrediction(){
 		LOGGER.info("EM predictor module loaded");
 		predictor= PredictorBuilder.getPredictor("basic");
-	}
-
-	@Override
-	public void manageComponent(String token, String command) {
-		
+		predictor.setEnergyService(energyService);
 	}
 
 	@Override
@@ -639,18 +660,66 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	public void setEmsettings(EMSettings emsettings) {
 		this.emsettings = emsettings;
 	}
+	
 
+	/**
+	 * 
+	 * 
+	 * TRAINING function not planned for Y2
+	 * 
+	 */	
+	
 	@Override
-	public double measure(String providerid, String applicationid,
-			List<String> vmids, String eventid, Unit unit, Timestamp start,
-			Timestamp end) {
-		
-		LOGGER.info("Requested Provider"+providerid+ " now application ");
-		LOGGER.info("Requested Application "+applicationid+" now deployment");
-		LOGGER.info("This is just a workadount of a deprecated IF");
-		return this.measure(null, providerid, applicationid,vmids, eventid, unit, start,  end);
-			
+	public boolean trainApplication(String providerid, String applicationid,String deploymentid, String eventid) {
+		// TODO Y2 Implementation
+		LOGGER.info("Starting to train application " + applicationid + " for this deployment " + deploymentid);
+		LOGGER.info("Registering training");
+		dbmanager.getMonitoringData().createTraining(applicationid, deploymentid, eventid);
+		if (eventid==null){
+			LOGGER.info("Application training");
+			dbmanager.getMonitoringData().createMonitoring(applicationid, deploymentid, "");
+			loadInjector.deployTrainingForApplication(applicationid, deploymentid);
+		} else {
+			LOGGER.info("Event training");
+			loadInjector.deployTrainingForApplicationEvent(applicationid, deploymentid, eventid);
+		}
+		LOGGER.info("Training terminated");
+		dbmanager.getMonitoringData().terminateTraining(applicationid, deploymentid);
+		dbmanager.getMonitoringData().terminateMonitoring(applicationid, deploymentid);	
+		return true;
 	}
+	
+	/*
+	 * 
+	 * Interface Y3
+	 * 
+	 */
+	
+	@Override
+	public void manageComponent(String token, String command) {
+		
+	}
+	
+	// TODO: partially implemented during Y1
+	private void initializeLoadInjector(){
+		LOGGER.debug("Configuring load injector");
+		loadInjector = new LoadInjectorService();
+		loadInjector.configureLoadInjector(emsettings.getServerPath(), emsettings.getServerurl(), emsettings.getPropertyFile(), emsettings.getJmxFilePath());
+		LOGGER.debug("Configured");
+	}
+	
+// 
+//	@Override
+//	public double measure(String providerid, String applicationid,
+//			List<String> vmids, String eventid, Unit unit, Timestamp start,
+//			Timestamp end) {
+//		
+//		LOGGER.info("Requested Provider"+providerid+ " now application ");
+//		LOGGER.info("Requested Application "+applicationid+" now deployment");
+//		LOGGER.info("This is just a workadount of a deprecated IF");
+//		return this.measure(null, providerid, applicationid,vmids, eventid, unit, start,  end);
+//			
+//	}
 
 
 
