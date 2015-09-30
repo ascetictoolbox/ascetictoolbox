@@ -220,12 +220,13 @@ public class VMRestTest extends AbstractTest {
 		vmRest.vmDAO = vmDAO;
 		
 		VM vm = new VM();
+		vm.setId(2);
 		vm.setProviderVmId("abab");
 		
 		when(vmDAO.getById(444)).thenReturn(vm);
 		
 		List<String> ids = new ArrayList<String>();
-		ids.add("abab");
+		ids.add("2");
 		when(energyModeller.measure(null,  "111", "333", ids, "eventX", Unit.ENERGY, null, null)).thenReturn(22.0);
 		//when(energyModeller.energyEstimation(null, "111", ids, "eventX")).thenReturn(22.0);
 		
@@ -260,12 +261,13 @@ public class VMRestTest extends AbstractTest {
 		vmRest.vmDAO = vmDAO;
 		
 		VM vm = new VM();
+		vm.setId(3);
 		vm.setProviderVmId("abab");
 		
 		when(vmDAO.getById(444)).thenReturn(vm);
 		
 		List<String> ids = new ArrayList<String>();
-		ids.add("abab");
+		ids.add("3");
 		when(energyModeller.measure(null, "111", "333", ids, "eventX",  Unit.ENERGY, null, null)).thenReturn(22.0);
 		
 		Response response = vmRest.getEnergyConsumption("111", "333", "444", "eventX", 0, 0);
@@ -299,12 +301,13 @@ public class VMRestTest extends AbstractTest {
 		vmRest.vmDAO = vmDAO;
 		
 		VM vm = new VM();
+		vm.setId(1);
 		vm.setProviderVmId("abab");
 		
 		when(vmDAO.getById(444)).thenReturn(vm);
 		
 		List<String> ids = new ArrayList<String>();
-		ids.add("abab");
+		ids.add("1");
 		
 		when(energyModeller.measure(any(String.class), eq("111"), eq("333"), eq(ids), eq("eventX"), eq(Unit.ENERGY), eq(new Timestamp(20l)), any(Timestamp.class))).thenReturn(33.0);
 		
@@ -339,12 +342,13 @@ public class VMRestTest extends AbstractTest {
 		vmRest.vmDAO = vmDAO;
 		
 		VM vm = new VM();
+		vm.setId(3);
 		vm.setProviderVmId("abab");
 		
 		when(vmDAO.getById(444)).thenReturn(vm);
 		
 		List<String> ids = new ArrayList<String>();
-		ids.add("abab");
+		ids.add("3");
 		when(energyModeller.measure(any(String.class), eq("111"), eq("333"), eq(ids), eq("eventX"), eq(Unit.ENERGY), eq(new Timestamp(20l)), eq(new Timestamp(33l)))).thenReturn(44.0);
 		
 		Response response = vmRest.getEnergyConsumption("111", "333", "444", "eventX", 20l, 33l);
@@ -402,11 +406,12 @@ public class VMRestTest extends AbstractTest {
 		vmRest.vmDAO = vmDAO;
 		
 		VM vm = new VM();
+		vm.setId(4);
 		vm.setProviderVmId("abab");
 		when(vmDAO.getById(444)).thenReturn(vm);
 		
 		List<String> vmIds = new ArrayList<String>();
-		vmIds.add(vm.getProviderVmId());
+		vmIds.add("4");
 		
 		when(energyModeller.eventsData(null, "", "", vmIds, "eventX", new Timestamp(2l), new Timestamp(3l))).thenReturn(eventSamples);
 		

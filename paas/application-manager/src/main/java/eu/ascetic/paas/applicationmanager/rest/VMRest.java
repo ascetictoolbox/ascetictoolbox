@@ -320,11 +320,11 @@ public class VMRest extends AbstractRest {
 		
 		VM vm = vmDAO.getById(Integer.parseInt(vmId));
 		List<String> ids = new ArrayList<String>();
-		ids.add(vm.getProviderVmId());
+		ids.add("" + vm.getId());
 		
 		logger.debug("Connecting to Energy Modeller");
 
-		double energyConsumed = energyModeller.measure(null,  applicationName, deploymentId, ids, eventId, Unit.ENERGY, null, null);
+		double energyConsumed = energyModeller.estimate(null,  applicationName, deploymentId, ids, eventId, Unit.ENERGY, 0l);
 		
 		EnergyMeasurement energyMeasurement = new EnergyMeasurement();
 		energyMeasurement.setValue(energyConsumed);
@@ -359,7 +359,7 @@ public class VMRest extends AbstractRest {
 		
 		VM vm = vmDAO.getById(Integer.parseInt(vmId));
 		List<String> ids = new ArrayList<String>();
-		ids.add(vm.getProviderVmId());
+		ids.add("" + vm.getId());
 		
 		logger.debug("Connecting to Energy Modeller");
 		
@@ -464,9 +464,8 @@ public class VMRest extends AbstractRest {
 			String payload = null;
 			// We get the id of the VM
 			VM vm = vmDAO.getById(Integer.parseInt(vmId));
-			String providerVMId = vm.getProviderVmId();
 			List<String> vmIds = new ArrayList<String>();
-			vmIds.add(providerVMId);
+			vmIds.add("" + vm.getId());
 			
 			Timestamp startStamp = new Timestamp(startTime);
 			Timestamp endStamp = new Timestamp(endTime);

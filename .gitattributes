@@ -788,6 +788,9 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/event/
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/event/deployment/NegotiationEventHandler.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/event/reactor/ReactorConfig.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/http/Client.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/monitoring/IaaSAMQPTopicListener.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/monitoring/MonitoringBean.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/monitoring/VMData.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/ovf/OVFUtils.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/ovf/VMLimits.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/pm/PriceModellerClient.java -text
@@ -866,6 +869,8 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/reactor/HandlerBean.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/reactor/HandlerBean2.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/reactor/TestService.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/monitoring/MonitoringBeanTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/monitoring/VMDataTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/ovf/OVFThingsIT.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/ovf/OVFUtilsTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/ovf/VMLimitsTest.java -text

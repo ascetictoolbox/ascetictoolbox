@@ -311,7 +311,8 @@ public class DeploymentRest extends AbstractRest {
 		List<String> ids = new ArrayList<String>();
 		
 		for(VM vm : deployment.getVms()) {
-			ids.add(vm.getProviderVmId());
+			//ids.add(vm.getProviderVmId());
+			ids.add("" + vm.getId());
 		}
 		
 		return ids;

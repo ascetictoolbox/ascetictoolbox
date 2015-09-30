@@ -424,9 +424,9 @@ public class DeploymentRestTest extends AbstractTest {
 																					
 																					if(!(ids.size() == 2)) isTheList = false; 
 																					
-																					if(!(ids.get(0).equals("aaaa-bbbb-1"))) isTheList = false;
+																					if(!(ids.get(0).equals("1"))) isTheList = false;
 																					
-																					if(!(ids.get(1).equals("aaaa-bbbb-2"))) isTheList = false;
+																					if(!(ids.get(1).equals("2"))) isTheList = false;
 
 																					return isTheList;
 																				}
@@ -617,10 +617,12 @@ public class DeploymentRestTest extends AbstractTest {
 		deployment.setId(1);
 		
 		VM vm1 = new VM();
+		vm1.setId(1);
 		vm1.setProviderVmId("X1");
 		deployment.addVM(vm1);
 		
 		VM vm2 = new VM();
+		vm2.setId(2);
 		vm2.setProviderVmId("X2");
 		deployment.addVM(vm2);
 		
@@ -647,9 +649,9 @@ public class DeploymentRestTest extends AbstractTest {
 																					
 																					if(!(ids.size() == 2)) isTheList = false; 
 																					
-																					if(!(ids.get(0).equals("X1"))) isTheList = false;
+																					if(!(ids.get(0).equals("1"))) isTheList = false;
 																					
-																					if(!(ids.get(1).equals("X2"))) isTheList = false;
+																					if(!(ids.get(1).equals("2"))) isTheList = false;
 
 																					return isTheList;
 																				}
@@ -682,10 +684,12 @@ public class DeploymentRestTest extends AbstractTest {
 		deployment.setId(1);
 		
 		VM vm1 = new VM();
+		vm1.setId(1);
 		vm1.setProviderVmId("X1");
 		deployment.addVM(vm1);
 		
 		VM vm2 = new VM();
+		vm2.setId(2);
 		vm2.setProviderVmId("X2");
 		deployment.addVM(vm2);
 		
@@ -709,9 +713,9 @@ public class DeploymentRestTest extends AbstractTest {
 				
 				if(!(ids.size() == 2)) isTheList = false; 
 				
-				if(!(ids.get(0).equals("X1"))) isTheList = false;
+				if(!(ids.get(0).equals("1"))) isTheList = false;
 				
-				if(!(ids.get(1).equals("X2"))) isTheList = false;
+				if(!(ids.get(1).equals("2"))) isTheList = false;
 
 				return isTheList;
 			}
@@ -738,10 +742,12 @@ public class DeploymentRestTest extends AbstractTest {
 		Deployment deployment = new Deployment();
 		
 		VM vm1 = new VM();
+		vm1.setId(1);
 		vm1.setProviderVmId("X1");
 		deployment.addVM(vm1);
 		
 		VM vm2 = new VM();
+		vm2.setId(2);
 		vm2.setProviderVmId("X2");
 		deployment.addVM(vm2);
 		
@@ -750,8 +756,8 @@ public class DeploymentRestTest extends AbstractTest {
 		List<String> ids = rest.getVmsProviderIds(deployment);
 		
 		assertEquals(2, ids.size());
-		assertEquals("X1", ids.get(0));
-		assertEquals("X2", ids.get(1));
+		assertEquals("1", ids.get(0));
+		assertEquals("2", ids.get(1));
 	}
 	
 	/**
