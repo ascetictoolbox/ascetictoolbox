@@ -53,6 +53,8 @@ public class ApplicationMonitoringDataService  {
 			logger.info("Now getting events for vm " + vmid);
 			String requestEntity;
 			requestEntity = "FROM events MATCH appId=\""+applicationid+"\" AND data.eventType=\""+eventid+"\" AND nodeId=\""+vmid+"\"";
+			
+			requestEntity = "FROM events MATCH appId=\""+applicationid+"\" AND data.eventType=\""+eventid+"\" ";
 			if (eventid==null){
 				logger.warn("No event id supplied. I will load all events for the application");
 				requestEntity = "FROM events MATCH appId=\""+applicationid+"\"";
@@ -60,7 +62,7 @@ public class ApplicationMonitoringDataService  {
 			// TODO workaround use eventType even if it is risky for id issues
 			//requestEntity = "FROM events MATCH data.eventType=\""+eventid+"\" ";
 			
-			
+			logger.info("This query " + requestEntity);
 			HttpURLConnection connection;
 			try {
 				logger.info("App monitor connection on "+url.getHost() + url.getPort() + url.getPath() + url.getProtocol());
@@ -129,10 +131,7 @@ public class ApplicationMonitoringDataService  {
 			    		valid_data = false;
 			    		logger.warn("app id is null"+jo.getAsJsonObject("_id"));
 			    	}
-			    	if (jo.getAsJsonPrimitive("nodeId")==null) 	{
-			    		valid_data = false;
-			    		logger.warn("app id is null"+jo.getAsJsonObject("_id"));
-			    	}
+
 			    	if (jo.getAsJsonPrimitive("timestamp")==null) 	{
 			    		valid_data = false;
 			    		logger.warn("begin ts null"+jo.getAsJsonObject("_id"));
@@ -141,8 +140,37 @@ public class ApplicationMonitoringDataService  {
 			    		valid_data = false;
 			    		logger.warn("end ts null"+jo.getAsJsonObject("_id"));
 			    	}
+			    	if (jo.getAsJsonPrimitive("nodeId")==null) 	{
+			    		
+			    		logger.warn("node id is null"+jo.getAsJsonObject("_id"));
+			    		
+			    		if (valid_data){
+			    			logger.info("This event has no nodeid, but has correct data, will be calculated for the whole application");
+			    			
+			    		}
+			    		
+			    		
+			    	} else {
+			    		String eventNodeId = jo.getAsJsonPrimitive("nodeId").getAsString();
+			    		logger.info("This event has a nodeid "+eventNodeId+", checking if it match "+vmid);
+			    		if (eventNodeId.equals(vmid)){
+			    			logger.info("This event is from this vm");
+			    			
+			    		}else {
+			    			logger.info("This event refers to another vm");
+			    			valid_data = false;
+			    		}
+			    		
+			    	}
 			    	if (valid_data){
-			    		data.setVmid(jo.getAsJsonPrimitive("nodeId").getAsString());
+			    		if (jo.getAsJsonPrimitive("nodeId")!=null){
+			    			data.setVmid(jo.getAsJsonPrimitive("nodeId").getAsString());
+			    		} else {
+			    			logger.info("This eventi is globally assigned also to this vm");
+			    			data.setData("GLOBAL");
+			    			data.setVmid(vmid);
+			    		}
+			    		
 			    		time=jo.getAsJsonPrimitive("timestamp").getAsLong();
 			    		data.setBegintime(time);
 			    		time=jo.getAsJsonPrimitive("endtime").getAsLong();

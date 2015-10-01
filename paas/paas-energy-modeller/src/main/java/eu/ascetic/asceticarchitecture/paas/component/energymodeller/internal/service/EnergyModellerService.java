@@ -357,23 +357,49 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 				LOGGER.info("Measuring event average instant power (W)"); 
 				double totalPower = 0;
 				double countEvents = 0;
+				double countVM = 0;
+				boolean isGlobaEvent = false;
 				for (String vm : vmids) {
 					LOGGER.info("Measuring event average instant power (W) for vm "+vm); 
 					// TODO workaround 
 					String translated = energyService.translatePaaSFromIaasID(deploymentid, vm);
 					List<DataEvent> events = eventService.getEvents(applicationid, deploymentid, translated, eventid,null,null);
-					LOGGER.info("Got events: "+events.size()); 
+					LOGGER.info("Got events: "+events.size());
+					double accumulatedpowerpervm = 0;
 					for (DataEvent de: events){
 						
 						LOGGER.info("Event start "+de.getBegintime()+" and terminates  "+ de.getEndtime()); 
 						countEvents++;
+						if (de.getData()!=null){
+							LOGGER.info("Event global"+de.getData());
+							isGlobaEvent = true;
+						} else {
+							LOGGER.info("Event local");
+							
+						}
 						double power  = energyService.getMeasureInIntervalFromVM(Unit.POWER, applicationid, deploymentid, vm, de.getBegintime(), de.getEndtime());
-						LOGGER.info("This event power :  "+power);
-						totalPower = totalPower + power;
+						LOGGER.info("##### This event power :  "+power);
+						if (power>0)countEvents++;
+						accumulatedpowerpervm = accumulatedpowerpervm + power;
 					}
+	
+					LOGGER.info("##### average for this vm power was :  "+totalPower);
+					totalPower = totalPower + accumulatedpowerpervm;
+					if (accumulatedpowerpervm>0){
+						LOGGER.info("##### This has meaningfull event data and now is:  "+totalPower);
+						LOGGER.info("##### power:  "+accumulatedpowerpervm);
+						countVM++;
+					} else {
+						LOGGER.info("##### This has no event data or power for this event:  "+accumulatedpowerpervm);
+					}
+					
 					//if (events.size()>0)averageDuration(providerid,applicationid, deploymentid, vmids,  eventid);
 				}
+				LOGGER.info("##### This VM counts? :  "+totalPower + " now the count is "+countVM);
+				LOGGER.info("##### This event is global ? " + isGlobaEvent);
+				
 				if (countEvents<=0) return 0;
+				if (isGlobaEvent) return totalPower;
 				return totalPower/countEvents;
 			}else{
 				LOGGER.info("Measuring application average instant power (W) in the last 24 hours"); 
