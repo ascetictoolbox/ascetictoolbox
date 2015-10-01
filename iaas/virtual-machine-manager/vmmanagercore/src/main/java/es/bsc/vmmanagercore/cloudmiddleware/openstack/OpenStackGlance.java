@@ -22,6 +22,8 @@ import es.bsc.vmmanagercore.models.images.ImageToUpload;
 import es.bsc.vmmanagercore.utils.CommandExecutor;
 import es.bsc.vmmanagercore.utils.HttpUtils;
 import org.apache.commons.validator.UrlValidator;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -37,6 +39,7 @@ import java.util.Map;
 public class OpenStackGlance {
 
     private final OpenStackCredentials openStackCredentials;
+	private final Logger log = LogManager.getLogger(OpenStackGlance.class);
 
     // I have not implemented a mechanism to reuse tokens.
     // This might make things a bit slower.
@@ -63,6 +66,7 @@ public class OpenStackGlance {
                             openStackCredentials.getGlancePort(),
                             "/v1/images"),
                     getHeadersForCreateImageRequest(imageToUpload), "");
+			log.debug("Creating image from Valid URL " + imageToUpload.getUrl()+ " :\n"+ responseContent);
             return getIdFromCreateImageImageResponse(responseContent);
         }
         else {
@@ -75,6 +79,8 @@ public class OpenStackGlance {
                     "--disk-format=" + getImageFormat(imageToUpload.getUrl()) + " " +
                     "--container-format=bare --is-public=True " +
                     "--file " + imageToUpload.getUrl());
+
+			log.debug("Creating image from non-valid URL. Glance command:\n"+glanceCommandOutput);
             String outputIdLine = glanceCommandOutput.split(System.getProperty("line.separator"))[9];
             String id = outputIdLine.split("\\|")[2]; // Get the line where that specifies the ID
             return id.substring(1, id.length() - 1); // Remove first and last characters (spaces)
