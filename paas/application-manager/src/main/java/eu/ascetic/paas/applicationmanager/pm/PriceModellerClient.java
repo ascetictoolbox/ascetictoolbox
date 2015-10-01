@@ -29,10 +29,10 @@ import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.PaaSPricingModell
 public class PriceModellerClient {
 	private static Logger logger = Logger.getLogger(PriceModellerClient.class);
 	private static PriceModellerClient instance = null;
-	public PaaSPricingModeller priceModeller =  new PaaSPricingModeller();
+	protected PaaSPricingModeller priceModeller =  new PaaSPricingModeller();
 	
-	protected PriceModellerClient() {
-		// Exists only to defeat instantiation.
+	private PriceModellerClient() {
+		logger.info("PriceModeller has been created for the first time...");
 	}
 	
 	public static PriceModellerClient getInstance() {
@@ -41,13 +41,31 @@ public class PriceModellerClient {
 		}
 		return instance;
 	}
-
-	public static double calculatePrice(int applicationId, int deploymentId, double iaasPrice) {
-		logger.debug("Connecting to Price Modeller using fixed IaaSPrice: " + iaasPrice);
-		//double paasPrice = PriceModellerClient.getInstance().priceModeller.getAppPriceEstimation(deploymentId, applicationId, 0, iaasPrice);
-		// TODO Change this to the new Price Modeller interface
-		double paasPrice = 120;
-		logger.debug("New price from the Price Modeller : " + paasPrice);
-		return paasPrice;
+	
+	public void initializeApplication(int deploymentId, int schemeId) {
+		priceModeller.initializeApp(deploymentId, schemeId);
+	}
+	
+	public double getAppPredictedCharges(int deploymentId, int schemeID, double iaaSCharges) {
+		return priceModeller.getAppPredictedCharges(deploymentId, schemeID, iaaSCharges);
+	}
+	
+	public double getAppPredictedPrice(int deploymentId, int schemeID, double iaaSCharges, long duration) {
+		return priceModeller.getAppPredictedPrice(deploymentId, schemeID, iaaSCharges, duration);
+	}
+	
+	public double getAppTotalCharges(int deploymentId, int schemeID, double iaaSCharges) {
+		return priceModeller.getAppTotalCharges(deploymentId, schemeID, iaaSCharges);
+	}
+	
+	public double getEventPredictedCharges(int deploymentId, 
+			                               int cpu, 
+			                               int ram, 
+			                               double storage, 
+			                               double energy, 
+			                               int schemeId, 
+			                               long duration, 
+			                               int numberOfevents) {
+		return priceModeller.getEventPredictedCharges(deploymentId, cpu, ram, storage, energy, schemeId, duration, numberOfevents);
 	}
 }

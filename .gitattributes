@@ -882,6 +882,7 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/monito
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/ovf/OVFThingsIT.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/ovf/OVFUtilsTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/ovf/VMLimitsTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/pm/PriceModellerClientTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/providerregistry/PRClientTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/providerregistry/model/CollectionTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/providerregistry/model/ItemTest.java -text

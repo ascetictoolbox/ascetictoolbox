@@ -4,6 +4,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 
 import eu.ascetic.amqp.client.AmqpMessageProducer;
@@ -42,7 +45,7 @@ public class EnergyModellerMessageListenerTest extends AbstractTest {
 		// Configuration of the listener
 		Configuration.emMeasurementsTopic = "MEASUREMENTS";
 		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword,  Configuration.emMeasurementsTopic, true);
-		EnergyModellerMessageListener emListener = new EnergyModellerMessageListener(controller);
+		EnergyModellerMessageListener emListener = new EnergyModellerMessageListener(controller, "aaa");
 		receiver.setMessageConsumer(emListener);
 		
 		// We send a message to the queue
@@ -76,7 +79,10 @@ public class EnergyModellerMessageListenerTest extends AbstractTest {
 		emMessage.setGenerattiontimestamp("30 Sep 2015 16:29:35 GMT");
 		emMessage.setReferredtimestamp("30 Sep 2015 16:29:35 GMT");
 		emMessage.setValue("0.0");
-		verify(controller, times(1)).addMessage(emMessage);
+		List<String> vms = new ArrayList<String>();
+		vms.add("1899");
+		emMessage.setVms(vms);
+		verify(controller, times(1)).addMessage(emMessage, "aaa");
 		
 		// We clean at the end
 		receiver.close();

@@ -156,8 +156,8 @@ public class AgreementRest extends AbstractRest {
 						
 						// TODO for new workflow of Price Modeller... 
 						// We calculate the new price, since we are not updating the SLATemplate Price I'm doing this here:
-						double price = PriceModellerClient.calculatePrice(1, deployment.getId(), 100.0);
-						deployment.setPrice("" + price);
+						//double price = PriceModellerClient.calculatePrice(1, deployment.getId(), 100.0);
+						//deployment.setPrice("" + price);
 						
 						// TODO remove this when it is not null
 						// We store the new agreement in the db:
@@ -168,7 +168,7 @@ public class AgreementRest extends AbstractRest {
 						
 						agreementInDB.setAccepted(true);
 						agreementInDB.setSlaAgreement(slaAgreementString);
-						agreementInDB.setPrice("" + price);
+						//agreementInDB.setPrice("" + price);
 						
 						agreementDAO.update(agreementInDB);
 						

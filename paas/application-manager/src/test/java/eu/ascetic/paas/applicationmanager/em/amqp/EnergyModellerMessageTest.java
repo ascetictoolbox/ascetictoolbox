@@ -5,6 +5,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -65,7 +67,10 @@ public class EnergyModellerMessageTest {
 							"\"applicationid\":\"davidgpTestApp\"," + 
 							"\"eventid\":\"loquesea\"," + 
 							"\"deploymentid\":\"569\"," + 
-							"\"vms\":[\"1899\"]," + 
+							"\"vms\":[" +
+								"\"1899\", " +
+								"\"333\"" +
+							"]," + 
 							"\"unit\":\"SEC\"," + 
 							"\"generattiontimestamp\":\"30 Sep 2015 16:29:35 GMT\"," + 
 							"\"referredtimestamp\":\"30 Sep 2015 16:29:35 GMT\"," + 
@@ -90,10 +95,19 @@ public class EnergyModellerMessageTest {
 		assertEquals("30 Sep 2015 16:29:35 GMT", emMessage.getReferredtimestamp());
 		assertEquals("SEC", emMessage.getUnit());
 		assertEquals("0.0", emMessage.getValue());
+		assertEquals(2, emMessage.getVms().size());
+		assertEquals("1899", emMessage.getVms().get(0));
+		assertEquals("333", emMessage.getVms().get(1));
 	}
 	
 	@Test
 	public void equalsTest() {
+		List<String> vms1 = new ArrayList<String>();
+		vms1.add("a");
+		
+		List<String> vms2 = new ArrayList<String>();
+		vms2.add("a");
+		
 		EnergyModellerMessage message1 = new EnergyModellerMessage();
 		message1.setApplicationid("0");
 		message1.setDeploymentid("1");
@@ -103,6 +117,7 @@ public class EnergyModellerMessageTest {
 		message1.setUnit("5");
 		message1.setValue("6");
 		message1.setProvider("7");
+		message1.setVms(vms1);
 		
 		assertFalse(message1.equals(null));
 		assertFalse(message1.equals(new Object()));
@@ -116,6 +131,7 @@ public class EnergyModellerMessageTest {
 		message2.setUnit("5");
 		message2.setValue("6");
 		message2.setProvider("7");
+		message2.setVms(vms2);
 		
 		assertTrue(message1.equals(message2));
 		
@@ -128,6 +144,7 @@ public class EnergyModellerMessageTest {
 		message2.setUnit("5");
 		message2.setValue("6");
 		message2.setProvider("7");
+		message2.setVms(vms2);
 		
 		assertFalse(message1.equals(message2));
 		
@@ -140,6 +157,7 @@ public class EnergyModellerMessageTest {
 		message2.setUnit("5");
 		message2.setValue("6");
 		message2.setProvider("7");
+		message2.setVms(vms2);
 		
 		assertFalse(message1.equals(message2));
 		
@@ -152,6 +170,7 @@ public class EnergyModellerMessageTest {
 		message2.setUnit("5");
 		message2.setValue("6");
 		message2.setProvider("7");
+		message2.setVms(vms2);
 		
 		assertFalse(message1.equals(message2));
 		
@@ -164,6 +183,7 @@ public class EnergyModellerMessageTest {
 		message2.setUnit("5");
 		message2.setValue("6");
 		message2.setProvider("7");
+		message2.setVms(vms2);
 		
 		assertFalse(message1.equals(message2));
 		
@@ -176,6 +196,7 @@ public class EnergyModellerMessageTest {
 		message2.setUnit("5");
 		message2.setValue("6");
 		message2.setProvider("7");
+		message2.setVms(vms2);
 		
 		assertFalse(message1.equals(message2));
 		
@@ -188,6 +209,7 @@ public class EnergyModellerMessageTest {
 		message2.setUnit("6");
 		message2.setValue("6");
 		message2.setProvider("7");
+		message2.setVms(vms2);
 		
 		assertFalse(message1.equals(message2));
 		
@@ -200,6 +222,7 @@ public class EnergyModellerMessageTest {
 		message2.setUnit("5");
 		message2.setValue("7");
 		message2.setProvider("7");
+		message2.setVms(vms2);
 		
 		assertFalse(message1.equals(message2));
 		
@@ -212,6 +235,21 @@ public class EnergyModellerMessageTest {
 		message2.setUnit("5");
 		message2.setValue("6");
 		message2.setProvider("8");
+		message2.setVms(vms2);
+		
+		assertFalse(message1.equals(message2));
+		
+		vms2.add("b");
+		message2 = new EnergyModellerMessage();
+		message2.setApplicationid("0");
+		message2.setDeploymentid("1");
+		message2.setEventid("2");
+		message2.setGenerattiontimestamp("3");
+		message2.setReferredtimestamp("4");
+		message2.setUnit("5");
+		message2.setValue("6");
+		message2.setProvider("7");
+		message2.setVms(vms2);
 		
 		assertFalse(message1.equals(message2));
 	}

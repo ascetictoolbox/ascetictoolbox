@@ -39,9 +39,11 @@ import org.eclipse.persistence.jaxb.UnmarshallerProperties;
 public class EnergyModellerMessageListener implements MessageListener {
 	private static Logger logger = Logger.getLogger(EnergyModellerMessageListener.class);
 	private EnergyModellerQueueController controller;
+	private String type;
 	
-	public EnergyModellerMessageListener(EnergyModellerQueueController controller) {
+	public EnergyModellerMessageListener(EnergyModellerQueueController controller, String type) {
 		this.controller = controller;
+		this.type = type;
 	}
 
 	@Override
@@ -59,7 +61,7 @@ public class EnergyModellerMessageListener implements MessageListener {
 			StreamSource jsonSource = new StreamSource(new StringReader(textMessage.getText()));  
 			EnergyModellerMessage emMessage = unmarshaller.unmarshal(jsonSource, EnergyModellerMessage.class).getValue();
 			
-			controller.addMessage(emMessage);
+			controller.addMessage(emMessage, type);
 			
 		} catch(JAXBException exception) {
 			logger.info("Error parsing message from Energy Modeller");

@@ -96,8 +96,8 @@ private static Logger logger = Logger.getLogger(AcceptAgreementEventHandler.clas
 						logger.info(slaAgreement);  
 						
 						// We calculate the new price, since we are not updating the SLATemplate Price I'm doing this here:
-						double price = PriceModellerClient.calculatePrice(1, deployment.getId(), 100.0);
-						deployment.setPrice("" + price);
+						//double price = PriceModellerClient.calculatePrice(1, deployment.getId(), 100.0);
+						//deployment.setPrice("" + price);
 						
 						// TODO uncomment this lines when the slaAgreement it is not null
 						// We store the new agreement in the db:
@@ -106,7 +106,7 @@ private static Logger logger = Logger.getLogger(AcceptAgreementEventHandler.clas
 						
 						agreement.setAccepted(true);
 						//agreement.setSlaAgreement(slaAgreementString);
-						agreement.setPrice("" + price);
+						//agreement.setPrice("" + price);
 						
 						agreementDAO.update(agreement);
 				

@@ -126,13 +126,13 @@ public class NegotiationEventHandler {
 				storeTemplatesInDB(slats, negId, deployment);
 			}
 			
-			System.out.println("#### <- 3");
+
 			deployment.setStatus(Dictionary.APPLICATION_STATUS_NEGOTIATIED);
-			System.out.println("#### <- 4");
+
 			deploymentEvent.setDeploymentStatus(deployment.getStatus());
 			
 			System.out.println("#### <- 5");
-			logger.info("about to save to the db");
+
 			
 			// We save the changes to the DB
 			deploymentDAO.update(deployment);

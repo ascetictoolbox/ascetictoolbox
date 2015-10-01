@@ -1,5 +1,7 @@
 package eu.ascetic.paas.applicationmanager.em.amqp;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
@@ -32,6 +34,7 @@ public class EnergyModellerMessage {
 	private String applicationid;
 	private String eventid;
 	private String deploymentid;
+	private List<String> vms;
 	private String unit;
 	private String generattiontimestamp;
 	private String referredtimestamp;
@@ -56,6 +59,13 @@ public class EnergyModellerMessage {
 	}
 	public void setEventid(String eventid) {
 		this.eventid = eventid;
+	}
+	
+	public List<String> getVms() {
+		return vms;
+	}
+	public void setVms(List<String> vms) {
+		this.vms = vms;
 	}
 	
 	public String getDeploymentid() {
@@ -109,7 +119,8 @@ public class EnergyModellerMessage {
 		   EqualsUtil.areEqual(this.generattiontimestamp, that.generattiontimestamp) &&
 		   EqualsUtil.areEqual(this.referredtimestamp, that.referredtimestamp) &&
 		   EqualsUtil.areEqual(this.value, that.value) && 
-		   EqualsUtil.areEqual(this.unit, that.unit)) {
+		   EqualsUtil.areEqual(this.unit, that.unit) &&
+		   EqualsUtil.areEqual(this.vms, that.vms)) {
 			return true;
 		} else {
 			return false;
