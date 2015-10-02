@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.Reader;
 
+
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
@@ -50,8 +51,16 @@ public class ApplicationRegistry {
 
 	private static PooledDataSource getDataSource(String driver,String url,String uname,String pwd) {
 		
+		
+		
 		PooledDataSource pooledConnection = new PooledDataSource(driver,url,uname,pwd);
 		pooledConnection.setDefaultAutoCommit(true);
+		pooledConnection.setPoolPingQuery("SELECT 1");
+		pooledConnection.setPoolPingConnectionsNotUsedFor(1500000);
+		pooledConnection.setPoolPingEnabled(true);
+		
+		
+		
 		//UnpooledDataSource uds = new UnpooledDataSource(driver,url,uname,pwd);
 		//uds.setAutoCommit(true);
 		//uds.setDriverProperties(driverProperties);

@@ -45,6 +45,7 @@
 		<paasem.qpid>0.1.0</paasem.qpid>
 		<paasem.weka>3.7.12</paasem.weka>
 		<paasem.ibatis>3.3.0</paasem.ibatis>
+		<paasem.pool>2.3</paasem.pool>
 	</properties>
 <!-- 	 <repositories> -->
 <!-- 	    <repository> -->
@@ -157,6 +158,13 @@
 			<artifactId>activemq-amqp</artifactId>
 			<version>${paasem.activemq}</version>
 		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.apache.commons</groupId> -->
+<!-- 			<artifactId>commons-pool2</artifactId> -->
+<!-- 			<version>${paasem.pool}</version> -->
+
+<!-- 		</dependency> -->
+		
 	</dependencies>
 
 	<build>

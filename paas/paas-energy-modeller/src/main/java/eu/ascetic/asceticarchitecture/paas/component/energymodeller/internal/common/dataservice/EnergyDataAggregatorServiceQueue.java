@@ -83,9 +83,9 @@ public class EnergyDataAggregatorServiceQueue {
 		} else{
 			logger.info("Samples available for the given interval " + samples);
 			if (samples ==1){
-				logger.debug("Only one sample available for the given interval "+start+ " to "+end+" estimating consumption from available samples");
-				double avgpower = dataConsumptionMapper.getPowerInIntervalForVM(deployment, vmid, start,  end);
-				logger.debug("Power  "+avgpower);
+				logger.info("Only one sample available for the given interval "+start+ " to "+end+" estimating consumption from available samples");
+				double avgpower = dataConsumptionMapper.getPowerInIntervalForVM(deployment, vmid, start/1000,  end/1000);
+				logger.info("Power  "+avgpower);
 				if (unit == Unit.ENERGY){
 					double energy = avgpower * ((end-start))/3600000;
 					logger.info("This interval has consumed energy Wh "+energy);

@@ -45,6 +45,9 @@ public class DataConsumptionHandler {
 	private static PooledDataSource getDataSource(String driver,String url,String uname,String pwd) {
 		PooledDataSource pds = new PooledDataSource(driver,url,uname,pwd);
 		pds.setDefaultAutoCommit(true);
+		pds.setPoolPingQuery("SELECT 1");
+		pds.setPoolPingConnectionsNotUsedFor(1500000);
+		pds.setPoolPingEnabled(true);
         return pds;
     }
 	 
