@@ -17,6 +17,7 @@ import eu.ascetic.paas.applicationmanager.amqp.model.ApplicationManagerMessage;
 import eu.ascetic.paas.applicationmanager.model.Agreement;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Collection;
+import eu.ascetic.paas.applicationmanager.model.Cost;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
 import eu.ascetic.paas.applicationmanager.model.PowerMeasurement;
@@ -309,5 +310,23 @@ public class ModelConverter {
 	 */
 	public static PowerMeasurement xmlPowerMeasurementToObject(String xml) {
 		return toObject(PowerMeasurement.class, xml);
+	}
+	
+	/**
+	 * Converts a Cost object to its String XML representation
+	 * @param cost object to be converted
+	 * @return XML representation
+	 */
+	public static String objectCostToXML(Cost cost) {	
+		return toXML(Cost.class, cost);
+	}
+	
+	/**
+	 * Converts an XML to a Cost object
+	 * @param xml Representation of an Cost of Applications
+	 * @return the Cost object or null if the xml is mal-formatted
+	 */
+	public static Cost xmlCostToObject(String xml) {
+		return toObject(Cost.class, xml);
 	}
 }

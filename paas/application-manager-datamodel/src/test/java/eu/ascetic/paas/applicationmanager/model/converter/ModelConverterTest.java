@@ -7,6 +7,7 @@ import static org.junit.Assert.assertFalse;
 import java.io.IOException;
 import java.io.StringReader;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jdom.Document;
@@ -24,6 +25,7 @@ import eu.ascetic.paas.applicationmanager.amqp.model.ApplicationManagerMessage;
 import eu.ascetic.paas.applicationmanager.model.Agreement;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Collection;
+import eu.ascetic.paas.applicationmanager.model.Cost;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
 import eu.ascetic.paas.applicationmanager.model.Image;
@@ -1152,5 +1154,112 @@ public class ModelConverterTest {
 		assertEquals("zzz", amMessage.getVms().get(1).getIaasMonitoringVmId());
 		assertEquals("xxx", amMessage.getVms().get(1).getOvfId());
 		assertEquals("ttt", amMessage.getVms().get(1).getStatus());
+	}
+	
+	@Test
+	@SuppressWarnings(value = { "rawtypes" }) 
+	public void objectCostToXMLTest() throws JDOMException, IOException {
+		Cost cost = new Cost();
+		cost.setCharges(1.0d);
+		cost.setChargesDescription("a");
+		cost.setEnergyDescription("b");
+		cost.setEnergyValue(2.0d);
+		cost.setPowerDescription("c");
+		cost.setPowerValue(3.0d);
+		List<Link> links = new ArrayList<Link>();
+		cost.setLinks(links);
+		cost.setHref("/href");
+		
+		Link link = new Link();
+		link.setRel("self");
+		link.setType("application/xml");
+		link.setHref("/applications/101/deployments/2/vms/111");
+		links.add(link);
+		
+		String xml = ModelConverter.objectCostToXML(cost);
+		System.out.println(xml);
+		
+		//We now verify the XML has the right format... a bit a pain in the a**...
+		SAXBuilder builder = new SAXBuilder();
+		builder.setValidation(false);
+		builder.setIgnoringElementContentWhitespace(true);
+		Document xmldoc = builder.build(new StringReader(xml));
+		XPath xpath = XPath.newInstance("//bnf:cost");
+		xpath.addNamespace("bnf", APPLICATION_MANAGER_NAMESPACE);
+		List listxpath = xpath.selectNodes(xmldoc);
+		assertEquals(1, listxpath.size());
+		Element element = (Element) listxpath.get(0);
+		assertEquals("/href", element.getAttributeValue("href"));
+		
+		XPath xpathName = XPath.newInstance("//bnf:charges");
+		xpathName.addNamespace("bnf", APPLICATION_MANAGER_NAMESPACE);
+		List listxpathName = xpathName.selectNodes(xmldoc);
+		assertEquals(1, listxpathName.size());
+		element = (Element) listxpathName.get(0);
+		assertEquals("1.0", element.getValue());
+		
+		xpathName = XPath.newInstance("//bnf:charges-description");
+		xpathName.addNamespace("bnf", APPLICATION_MANAGER_NAMESPACE);
+		listxpathName = xpathName.selectNodes(xmldoc);
+		assertEquals(1, listxpathName.size());
+		element = (Element) listxpathName.get(0);
+		assertEquals("a", element.getValue());
+		
+		xpathName = XPath.newInstance("//bnf:energy-value");
+		xpathName.addNamespace("bnf", APPLICATION_MANAGER_NAMESPACE);
+		listxpathName = xpathName.selectNodes(xmldoc);
+		assertEquals(1, listxpathName.size());
+		element = (Element) listxpathName.get(0);
+		assertEquals("2.0", element.getValue());
+		
+		xpathName = XPath.newInstance("//bnf:energy-description");
+		xpathName.addNamespace("bnf", APPLICATION_MANAGER_NAMESPACE);
+		listxpathName = xpathName.selectNodes(xmldoc);
+		assertEquals(1, listxpathName.size());
+		element = (Element) listxpathName.get(0);
+		assertEquals("b", element.getValue());
+		
+		xpathName = XPath.newInstance("//bnf:power-value");
+		xpathName.addNamespace("bnf", APPLICATION_MANAGER_NAMESPACE);
+		listxpathName = xpathName.selectNodes(xmldoc);
+		assertEquals(1, listxpathName.size());
+		element = (Element) listxpathName.get(0);
+		assertEquals("3.0", element.getValue());
+		
+		xpathName = XPath.newInstance("//bnf:power-description");
+		xpathName.addNamespace("bnf", APPLICATION_MANAGER_NAMESPACE);
+		listxpathName = xpathName.selectNodes(xmldoc);
+		assertEquals(1, listxpathName.size());
+		element = (Element) listxpathName.get(0);
+		assertEquals("c", element.getValue());
+		
+		xpathName = XPath.newInstance("//bnf:link");
+		xpathName.addNamespace("bnf", APPLICATION_MANAGER_NAMESPACE);
+		listxpathName = xpathName.selectNodes(xmldoc);
+		assertEquals(1, listxpathName.size());
+	}
+	
+	@Test
+	public void fromXMLToCostTest() {
+		String xml = "<cost xmlns=\"http://application_manager.ascetic.eu/doc/schemas/xml\" href=\"/href\">" +
+						"<energy-value>2.0</energy-value>" +
+						"<energy-description>b</energy-description>" +
+						"<power-value>3.0</power-value>" +
+						"<power-description>c</power-description>" +
+						"<charges>1.0</charges>" +
+						"<charges-description>a</charges-description>" +
+						"<link rel=\"self\" href=\"/applications/101/deployments/2/vms/111\" type=\"application/xml\"/>" +
+					"</cost>";
+		
+		Cost cost = ModelConverter.xmlCostToObject(xml);
+		
+		assertEquals(1.0, cost.getCharges().doubleValue(), 0.001);	
+		assertEquals("a", cost.getChargesDescription());
+		assertEquals("b", cost.getEnergyDescription());
+		assertEquals(2.0, cost.getEnergyValue().doubleValue(), 0.001);
+		assertEquals("c", cost.getPowerDescription());
+		assertEquals(3.0d, cost.getPowerValue().doubleValue(), 0.001);
+		assertEquals(1, cost.getLinks().size());
+		assertEquals("/href", cost.getHref());
 	}
 }
