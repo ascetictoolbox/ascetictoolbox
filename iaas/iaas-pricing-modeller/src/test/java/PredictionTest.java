@@ -63,7 +63,7 @@ public class PredictionTest
         System.out.println("test prediction");
         IaaSPricingModeller prModeller = new IaaSPricingModeller(null);
         System.out.println("Energy Provider: " +prModeller.getEnergyProvider().getId());
-        System.out.println("IaaS Provider: " +prModeller.getIaaSId());
+        //System.out.println("IaaS Provider: " +prModeller.getIaaSId());
         System.out.println("Dynamic Energy Price: " +prModeller.getEnergyProvider().getNewDynamicEnergyPrice().getPriceOnly());
         System.out.println("Average Dynamic Energy Price: " +prModeller.getBilling().getAverageDynamicEnergyPrice().getPriceOnly());
        ///prediction for Pricing Scheme 1

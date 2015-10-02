@@ -156,7 +156,9 @@ iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaa
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/Charges.java -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/DynamicEnergyPrice.java -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/DynamicResourcePrice.java -text
+iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/EnergyPrediction.java -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/EnergyPriceSetter.java -text
+iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/PredictedCharges.java -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/Price.java -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/ResourceDistribution.java -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/StaticEnergyPrice.java -text
@@ -187,7 +189,9 @@ iaas/iaas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/iaas/ia
 iaas/iaas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/Charges.class -text
 iaas/iaas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/DynamicEnergyPrice.class -text
 iaas/iaas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/DynamicResourcePrice.class -text
+iaas/iaas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/EnergyPrediction.class -text
 iaas/iaas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/EnergyPriceSetter.class -text
+iaas/iaas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/PredictedCharges.class -text
 iaas/iaas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/Price.class -text
 iaas/iaas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/ResourceDistribution.class -text
 iaas/iaas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/StaticEnergyPrice.class -text

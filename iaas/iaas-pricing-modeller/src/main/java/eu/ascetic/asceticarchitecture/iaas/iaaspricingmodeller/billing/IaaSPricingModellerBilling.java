@@ -25,19 +25,20 @@ import java.util.ListIterator;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.IaaSPricingModeller;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.energyprovider.EnergyProvider;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesrepository.IaaSPricingModellerPricingScheme;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesrepository.PricingSchemeA;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesrepository.PricingSchemeB;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesrepository.PricingSchemeC;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.*;
 
 /**
- * This is the standard interface for any pricing module to be loaded into the
- * ASCETiC architecture. This interface includes all the methods that another
- * component from the architecture may call.
+ * This is the main function that enables the prediction and the calculation of the charges and the prices of the VMs. 
  * 
  * @author E. Agiatzidou
  */
 
 public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInterface {
-	LinkedList<VMstate> queue = new LinkedList<VMstate>();
+
+	//LinkedList<VMstate> queue = new LinkedList<VMstate>();
 
 	static HashMap<String, VMstate> registeredStaticEnergyPricesVMs = new HashMap<String, VMstate>();
 	static HashMap<String, VMstate> registeredDynamicEnergyPricesVMs = new HashMap<String, VMstate>();
@@ -53,6 +54,14 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
 		logger = Logger.getLogger(IaaSPricingModellerBilling.class);
 	}
 	
+	// ////////////////////////////// FOR PREDICTION // /////////////////////////////////
+		public PredictedCharges predictVMCharges(VMstate VM) {
+			IaaSPricingModellerPricingScheme scheme = VM.getPricingScheme();
+			double charges = scheme.predictCharges(VM,averageDynamicEnergyPrice);
+			VM.setPredictedCharges(charges);
+			VM.setPredictedPrice(charges/Math.ceil(VM.getPredictedInformation().getPredictedDuration()));
+			return VM.getPredictedCharges();
+		}
 
 	// ///////////////////////////// VM REGISTRATION////////////////////////////////
 	@Override
@@ -64,41 +73,9 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
 			registeredDynamicEnergyPricesVMs.put(vm.getVMid(), vm);
 			vm.setStartTime();
 		}
-		
-		if (vm.getPricingScheme().getSchemeId() == 2){
-			ListIterator<VMstate> listIterator = queue.listIterator();
-			VMstate temp;
-			boolean found = false;
-			while (listIterator.hasNext()) {
-				temp = listIterator.next();
-				if (temp.getVMinfo().getCPU()==vm.getVMinfo().getCPU()&&temp.getVMinfo().getRAM()==vm.getVMinfo().getRAM()&&temp.getVMinfo().getStorage()==vm.getVMinfo().getStorage()){
-					vm.setPrediction(temp.getPredictedInformation().getPredictedDuration(), temp.getPredictedInformation().getPredictedEnergy(), temp.getPredictedInformation().getPredictedPowerPerHour());
-				}
-			}
-		}
 	}
-	public void registerVM(String VMid) {
-		ListIterator<VMstate> listIterator = queue.listIterator();
-		VMstate vm;
-		boolean found = false;
-		while (listIterator.hasNext()) {
-			vm = listIterator.next();
-			if (vm.getVMid().matches(VMid)) {
-				if ((vm.getPricingScheme().getSchemeId() == 0)) {
-					registeredStaticEnergyPricesVMs.put(vm.getVMid(), vm);
-					
-					vm.setStartTime();
-				} else {
-					registeredDynamicEnergyPricesVMs.put(vm.getVMid(), vm);
-					
-					vm.setStartTime();
-				}
-				found = true;
-			}
-		}
-		if (found == false)
-			System.out.println("VM has not been found");
-	}
+	
+	
 
 	@Override
 	public void unregisterVM(VMstate vm) {
@@ -117,18 +94,7 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
 
 	}
 
-	// ////////////////////////////// FOR PREDICTION // /////////////////////////////////
-	public double predictVMCharges(VMstate VM) {
-		if (VM.getPricingScheme().getSchemeId()==2) {
-			queue.push(VM);
-			if (queue.size() > 10)
-				queue.pollLast();
-		}
-		IaaSPricingModellerPricingScheme scheme = VM.getPricingScheme();
-		VM.setPredictedCharges(scheme.predictCharges(VM,
-				averageDynamicEnergyPrice));
-		return VM.getPredictedCharges();
-	}
+	
 
 	
 	
@@ -137,15 +103,13 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
 	
 	@Override
 	public double getVMCharges(String VMid) {
-		IaaSPricingModellerPricingScheme scheme = getVM(VMid)
-				.getPricingScheme();
+		IaaSPricingModellerPricingScheme scheme = getVM(VMid).getPricingScheme();
 		return scheme.getTotalCharges(getVM(VMid));
 	}
 
 	public double getVMCharges(String VMid, boolean b) {
 		
-		IaaSPricingModellerPricingScheme scheme = getVM(VMid)
-				.getPricingScheme();
+		IaaSPricingModellerPricingScheme scheme = getVM(VMid).getPricingScheme();
 		double charges = scheme.getTotalCharges(getVM(VMid));
 		if (b)
 			unregisterVM(getVM(VMid));
@@ -156,8 +120,8 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
 				+","+String.valueOf(scheme.getSchemeId())+","+String.valueOf(getVM(VMid).getEnergy())+","+String.valueOf(getVM(VMid).getTotalCharges()));
 		else
 			logger.info("Billing,"+String.valueOf(VMid)+","+String.valueOf(getVM(VMid).getVMinfo().getCPU())+","+String.valueOf(getVM(VMid).getVMinfo().getRAM())+","+String.valueOf(getVM(VMid).getVMinfo().getStorage())+","+String.valueOf(getVM(VMid).getTotalDuration())
-					+","+String.valueOf(scheme.getSchemeId())+","+String.valueOf(getVM(VMid).getEnergy())+","+String.valueOf(getVM(VMid).getTotalCharges())+","+String.valueOf(getVM(VMid).getPredictedInformation().getPredictedDuration())+","+String.valueOf(getVM(VMid).getPredictedInformation().getPredictedEnergy())+","
-			+String.valueOf(getVM(VMid).getPredictedInformation().getPredictedCharges()));
+					+","+String.valueOf(scheme.getSchemeId())+","+String.valueOf(getVM(VMid).getEnergy())+","+String.valueOf(getVM(VMid).getTotalCharges())+","+","+String.valueOf(getVM(VMid).getPredictedInformation().getPredictedPowerPerHour()+","
+			+String.valueOf(getVM(VMid).getPredictedInformation().getPredictedCharges())));
 		
 		return charges;
 	}
@@ -167,8 +131,7 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
 	public void updateVMCharges(Price price) {
 		updateAverageEnergyPrice();
 		for (String key : registeredDynamicEnergyPricesVMs.keySet()) {
-			registeredDynamicEnergyPricesVMs.get(key).getPricingScheme()
-					.updateVMCharges(getVM(key));
+			registeredDynamicEnergyPricesVMs.get(key).getPricingScheme().updateVMCharges(getVM(key));
 		}
 
 	}
@@ -185,16 +148,13 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
 	}
 
 
-	// //////////////////// FOR DYNAMIC VM Characteristics//////////////////
-	/*
-	 * 
-	 * public void updateVMcharacteristics(VMinfo vm, int VMid){
-	 * IaaSPricingModellerCost cost = new IaaSPricingModellerCost();
-	 * cost.updateDynamicResourcesCharges(getVM(VMid), vm);; }
-	 */
-
+	
+	
+	
 	// ///////////////////////// GENERAL //////////////////////////
 
+	
+	
 	public void printStaticVMs() {
 		for (String i : registeredStaticEnergyPricesVMs.keySet()) {
 			VMstate value = registeredStaticEnergyPricesVMs.get(i);
@@ -218,5 +178,45 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
 		else
 			return registeredStaticEnergyPricesVMs.get(VMid);
 	}
+	
+	public IaaSPricingModellerPricingScheme initializeScheme(int schemeId){
+    	IaaSPricingModellerPricingScheme scheme = null;
+		if (schemeId==0){
+			scheme = new PricingSchemeA(schemeId);
+		}
+		if (schemeId==1){
+			scheme = new PricingSchemeB(schemeId);
+		}
+		if (schemeId==2){
+			scheme = new PricingSchemeC(schemeId);
+		}
+		return scheme;
+    }
 
+	
+	////////////////////////////////////////not used//////////////////////////////////////////////
+	/**
+	public void registerVM(String VMid) {
+		ListIterator<VMstate> listIterator = queue.listIterator();
+		VMstate vm;
+		boolean found = false;
+		while (listIterator.hasNext()) {
+			vm = listIterator.next();
+			if (vm.getVMid().matches(VMid)) {
+				if ((vm.getPricingScheme().getSchemeId() == 0)) {
+					registeredStaticEnergyPricesVMs.put(vm.getVMid(), vm);
+					
+					vm.setStartTime();
+				} else {
+					registeredDynamicEnergyPricesVMs.put(vm.getVMid(), vm);
+					
+					vm.setStartTime();
+				}
+				found = true;
+			}
+		}
+		if (found == false)
+			System.out.println("VM has not been found");
+	}
+	**/
 }

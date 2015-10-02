@@ -15,24 +15,47 @@
 
 package eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types;
 
-
-import java.util.TimerTask;
-import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.energyprovider.EnergyProvider;
+import java.util.Calendar;
 
 
-public class EnergyPriceSetter extends TimerTask{
-	EnergyProvider provider;
-	DynamicEnergyPrice price = new DynamicEnergyPrice();
-	public EnergyPriceSetter(EnergyProvider provider) {
-		this.provider = provider;
+
+public class PredictedCharges {
+	
+	double charges;
+	double pricePerHour;
+	
+	
+	public PredictedCharges() {
+		charges=0.0;
+		pricePerHour=0.0;
+	 }
+	
+	
+	public void setCharges(double charges){
+		this.charges = (double) Math.round(charges * 1000) / 1000;
+		
 	}
 	
-	@Override
-	public void run() {
-		price.changePriceBinary();
-		provider.updateDynamicEnergyPrice(price);
-		
-		
+	public PredictedCharges getCharges(){
+		return this;
+	}
+	
+	
+	public double getChargesOnly(){
+		return this.charges;
+	}
+	
+	public double getPriceOnly(){
+		return pricePerHour;
+	}
+	
+	public void setPrice(double price){
+		pricePerHour=price;
+	}
+	
+	public void setCharges(PredictedCharges one){
+		this.charges = one.getChargesOnly();
+		this.pricePerHour = one.getPriceOnly();
 	}
 	
 	

@@ -15,25 +15,32 @@
 
 package eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types;
 
-
-import java.util.TimerTask;
-import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.energyprovider.EnergyProvider;
+import org.codehaus.jackson.map.introspect.BasicClassIntrospector.GetterMethodFilter;
 
 
-public class EnergyPriceSetter extends TimerTask{
-	EnergyProvider provider;
-	DynamicEnergyPrice price = new DynamicEnergyPrice();
-	public EnergyPriceSetter(EnergyProvider provider) {
-		this.provider = provider;
+
+
+public class EnergyPrediction {
+	
+	double totalEnergyPredicted;
+	double avrgEnergyPredicted;
+	
+	public EnergyPrediction() {
+	 }
+	
+	public void setTotalEnergy(double energy){
+		totalEnergyPredicted=energy;
 	}
 	
-	@Override
-	public void run() {
-		price.changePriceBinary();
-		provider.updateDynamicEnergyPrice(price);
-		
-		
+	public void setAvergPower(double power){
+		avrgEnergyPredicted=power;
 	}
 	
+	public double getTotalEnergy(){
+		return totalEnergyPredicted;
+	}
 	
+	public double getAvrgPower(){
+		return avrgEnergyPredicted;
+	}
 }

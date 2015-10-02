@@ -46,59 +46,35 @@ public class PricingSchemeB extends IaaSPricingModellerPricingScheme implements 
 	public PricingSchemeB(int id) {
 		super(id);
 		price = new StaticResourcePrice(0.1);
-		distribution.setDistribution(0.6, 0.3, 0.2);
 	}
 
 /////////////////////////PREDICT CHARGES ///////////////////////////////
 	public double predictCharges(VMstate vm, Price average){
 		Charges a = predictEnergyCharges(vm, average);
-		Charges b = predictResourcesCharges(vm);
+		Charges b = predictResourcesCharges(vm, price);
 		double temp = (double) Math.round((a.getChargesOnly()+b.getChargesOnly()) * 1000) / 1000;
 		return temp;
 	}
 	
-	public Charges predictEnergyCharges(VMstate VM, Price average){
-		
-		Charges charges = new Charges();
-			charges.setCharges(VM.getPredictedInformation().getPredictedEnergy()*average.getPriceOnly());
-			return charges;
-	}
-	
-	
-	public Charges predictResourcesCharges(VMstate vm) {
-		Charges b = new Charges();
-		b.setCharges(distribution.getDistribution(vm)*price.getPriceOnly()*(vm.getPredictedInformation().getPredictedDuration()/3600));
-		return b;
-	}
+
+
 
 ///////////////////////////// UPDATE CHARGES BASED ON ENERGY CHANGES ////////////////
-	@Override
 	public void updateVMCharges(VMstate VM) {
 		updateVMEnergyCharges(VM);
-		updateVMResourceCharges(VM);
+		updateVMResourceCharges(VM, price);
 		VM.setChangeTime(VM.getResourcesChangeTime());
 		VM.setTotalCharges(VM.getEnergyCharges()+VM.getResourcesCharges());
 	}
 
-	public void updateVMEnergyCharges(VMstate VM){		
-		double energycharges = (double) Math.round(cost.updateEnergyCharges(VM) * 1000) / 1000;
-		VM.updateEnergyCharges(energycharges);
-	}
+	
 
-	public void updateVMResourceCharges(VMstate VM){
-		Calendar time = Calendar.getInstance();
-		Calendar starttime = (VM.getChangeTime());
-		long duration = VM.getDuration(starttime, time);
-		double Resourcecharges = (double) Math.round(distribution.getDistribution(VM)*price.getPriceOnly()*duration*1000)/1000;
-		VM.updateResourcesCharges(Resourcecharges);
-
-	}
 	
 	/////////////////////////// GET CHARGES /////////////////////////
 	@Override
 	public double getTotalCharges(VMstate VM) {
 		updateVMEnergyCharges(VM);
-		updateVMResourceCharges(VM);
+		updateVMResourceCharges(VM, price);
 		VM.setChangeTime(VM.getResourcesChangeTime());
 		return (VM.getResourcesCharges()+VM.getEnergyCharges());
 	}

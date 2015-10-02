@@ -21,17 +21,22 @@ public class VMinfo {
 	double RAM;
 	double CPU;
 	double storage;
+	String hostname;
 	
-	
-	public VMinfo (double RAM, double CPU, double storage){
+	public VMinfo (double RAM, double CPU, double storage, String hostname){
 		this.RAM = RAM;
 		this.CPU = CPU;
 		this.storage = storage;
+		this.hostname = hostname;
 	}
 
 	
 	public double getRAM(){
 		return RAM;
+	}
+	
+	public String gethostname(){
+		return hostname;
 	}
 	
 	public double getCPU(){

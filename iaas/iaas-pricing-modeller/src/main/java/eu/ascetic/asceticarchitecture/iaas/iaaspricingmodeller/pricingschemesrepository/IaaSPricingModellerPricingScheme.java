@@ -20,7 +20,9 @@ package eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesre
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.cost.IaaSPricingModellerCost;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.energyprovider.EnergyProvider;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.Charges;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.Price;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.ResourceDistribution;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.TimeParameters;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.VMstate;
 
@@ -39,26 +41,42 @@ public abstract class IaaSPricingModellerPricingScheme implements IaaSPricingMod
 	
 	int scheme;
 	
+	ResourceDistribution distribution = new ResourceDistribution();
 	
 	IaaSPricingModellerCost cost = new IaaSPricingModellerCost(EnergyModeller);
 	
+	public IaaSPricingModellerPricingScheme(int id){
+		scheme=id;
+		distribution.setDistribution(0.6, 0.3, 0.1); 	
+	}
+	
 	public void setEnergyModeller(EnergyModeller energyModeller){
 		EnergyModeller = energyModeller;
+	
 	}
-
-	//////////////////////////////UPDATE THE CHARGES OF VM ////////////////////////////
-	public abstract void updateVMCharges(VMstate VM);
-		
-
 	
-	//public void updateVMStaticCharges(VMstate VM){
-	//	cost.updateResourcesCharges(VM);
-	//}
+	/**
+	 * This function calculated the total charges of a VM based on total duration in hours. 
+	 * It is like the current methods. Rounds up to the next hour.
+	 * @param vm
+	 * @return the total charges of a VM depending on the total hours that it will run
+	 */
+	public Charges predictResourcesCharges(VMstate vm, Price price) {
+		Charges b = new Charges();
+		b.setCharges(distribution.getDistribution(vm)*price.getPriceOnly()*(Math.ceil(vm.getPredictedInformation().getPredictedDuration()/3600)));
+		return b;
+	}
 	
 	
+	public Charges predictEnergyCharges(VMstate VM, Price average){
+		Charges charges = new Charges();
+		charges.setCharges(VM.getPredictedInformation().getTotalPredictedEnergy()*average.getPriceOnly());
+		return charges;
+	}
 
 /////////////// UPDATE THE AVERAGE ENERGY PRICE ////////////////////	
 	public double updateAverageEnergyPrice(EnergyProvider provider, Price oldAverage){
+		/**
 		Calendar startTime = oldAverage.getChangeTimeOnly();
 		Calendar endTime = provider.getNewDynamicEnergyPrice().getChangeTimeOnly();
 		TimeParameters temp = new TimeParameters(startTime, endTime);
@@ -66,16 +84,32 @@ public abstract class IaaSPricingModellerPricingScheme implements IaaSPricingMod
 		double a = 1;
 		double b =Math.exp(-a*(dur/3600));
 		double price = ((1-b)*oldAverage.getPriceOnly())+b*provider.getNewDynamicEnergyPrice().getPriceOnly();
+		**/
+		double price =0.007;
 		return price;
 		
 	}
 	
 	
-	//////////////////GENERAL //////////////////////////////////
-	public IaaSPricingModellerPricingScheme(int id){
-		scheme=id;
+	public void updateVMResourceCharges(VMstate VM, Price price){
+		Calendar endtime = Calendar.getInstance();
+		Calendar starttime = VM.getChangeTime();
+		long duration = VM.getDuration(starttime, endtime);
+		double Resourcecharges = (double) Math.round(distribution.getDistribution(VM)*price.getPriceOnly()*Math.ceil(duration/3600)*1000)/1000;
+		VM.updateResourcesCharges(Resourcecharges);
+		}
+	
+	public void updateVMEnergyCharges(VMstate VM){		
+		double energycharges = (double) Math.round(cost.updateEnergyCharges(VM) * 1000) / 1000;
+		VM.updateEnergyCharges(energycharges);
+	}
+	
+	
+	public void updateVMCharges(VMstate VM){
 		
 	}
+	//////////////////GENERAL //////////////////////////////////
+	
 	
 	public int getSchemeId(){
 		return scheme;

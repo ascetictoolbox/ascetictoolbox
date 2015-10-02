@@ -20,18 +20,17 @@ public class VMPredInfo {
 	
 	long predictedDuration;
 	
-	double predictedEnergy;
+	EnergyPrediction predictedEnergy;
 	
-	double predictedCharges; //coming from IaaS scheme
+	PredictedCharges predictedCharges; //coming from IaaS scheme
 
-	double predictedPower;
 	
 	public VMPredInfo (){
 		this.predictedDuration = 0;
-		this.predictedEnergy = 0;
+		this.predictedEnergy = null;
 	}
 	
-	public VMPredInfo (long predictedDuration, double predictedEnergy){
+	public VMPredInfo (long predictedDuration, EnergyPrediction predictedEnergy){
 		this.predictedDuration = predictedDuration;
 		this.predictedEnergy = predictedEnergy;
 	}
@@ -45,28 +44,51 @@ public class VMPredInfo {
 		return predictedDuration;
 	}
 	
-	public double getPredictedCharges(){
+	public PredictedCharges getPredictedCharges(){
 		return predictedCharges;
 	}
 	
-	public void setPredictedCharges(double price) {
+	public void setPredictedCharges(PredictedCharges price) {
 		predictedCharges = price;
 	}
 	
-	public void setPredictedEnergy(double energy){
-		this.predictedEnergy = energy;
+	public double getPredictedChargesOnly(){
+		return predictedCharges.getChargesOnly();
 	}
 	
-	public double getPredictedEnergy(){
-		return predictedEnergy;
+	public void setPredictedCharges(double price) {
+		predictedCharges.setCharges(price);
+	}
+	
+	public double getPredictedPrice(){
+		return predictedCharges.getPriceOnly();
+	}
+	
+	public void setPredictedPrice(double price) {
+		predictedCharges.setPrice(price);
+	}
+	
+	public void setPredictedTotalEnergy(double predictedEnergy){
+		this.predictedEnergy.setTotalEnergy(predictedEnergy); 
+	}
+	
+	public double getTotalPredictedEnergy(){
+		return predictedEnergy.getTotalEnergy();
 	}
 	
 	public void setPredictedPowerPerHour(double power){
-		this.predictedPower = power;
+		this.predictedEnergy.setAvergPower(power); 
 	}
 	
 	public double getPredictedPowerPerHour(){
-		return this.predictedPower;
+		return this.predictedEnergy.getAvrgPower();
 	}
 	
+	public EnergyPrediction getPredictionsOfEnergy(){
+		return this.predictedEnergy;
+	}
+	
+	public void setPredictionOfEnergy(EnergyPrediction energy){
+		this.predictedEnergy=energy;
+	}
 }

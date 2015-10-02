@@ -38,14 +38,10 @@ public class PricingSchemeA extends IaaSPricingModellerPricingScheme implements 
 	
 	StaticResourcePrice price;
 	
-	ResourceDistribution distribution = new ResourceDistribution();
-
 	
 	public PricingSchemeA(int id) {
 		super(id);
 		price = new StaticResourcePrice();
-		distribution.setDistribution(0.6, 0.3, 0.2);
-		
 	}
 
 	public ResourceDistribution getDistribution(){
@@ -59,26 +55,11 @@ public class PricingSchemeA extends IaaSPricingModellerPricingScheme implements 
 	/////////////////////////PREDICTION/////////////////////////
 	@Override
 	public double predictCharges(VMstate vm, Price average) {
-		Charges b = predictResourcesCharges(vm);
-		double temp = (double) Math.round(b.getChargesOnly()*1000)/1000;
+		Charges b = predictResourcesCharges(vm, price);
+		double temp = (double) Math.round(b.getChargesOnly()*1000)/1000; //to change to two decimals
 		return temp;
 	}
 	
-	
-	public Charges predictResourcesCharges(VMstate vm) {
-		Charges b = new Charges();
-		b.setCharges(distribution.getDistribution(vm)*price.getPriceOnly()*(vm.getPredictedInformation().getPredictedDuration()/3600));
-		return b;
-	}
-	
-	
-	//////////// UPDATE CHARGES AFTER ENERGY CHANGE //////////////////
-	
-	@Override
-	public void updateVMCharges(VMstate VM) {
-		// TODO Auto-generated method stub
-		
-	}
 
 
 ////////////////////////////////// BILLING //////////////////////////
@@ -86,19 +67,13 @@ public class PricingSchemeA extends IaaSPricingModellerPricingScheme implements 
 	
 	@Override
 	public double getTotalCharges(VMstate VM) {
-		updateVMResourceCharges(VM);
+		updateVMResourceCharges(VM, price);
 		VM.setChangeTime(VM.getResourcesChangeTime());
 		return (VM.getResourcesCharges());
 		
 	}
 
-	public void updateVMResourceCharges(VMstate VM){
-		Calendar endtime = Calendar.getInstance();
-		Calendar starttime = VM.getChangeTime();
-		long duration = VM.getDuration(starttime, endtime);
-		double Resourcecharges = distribution.getDistribution(VM)*price.getPriceOnly()*duration;
-		VM.updateResourcesCharges(Resourcecharges);
-		}
+	
 
 
 
