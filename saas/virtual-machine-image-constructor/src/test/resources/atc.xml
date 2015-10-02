@@ -1,35 +1,26 @@
-<application-config name="NewsAssetMultitenantSmallMedium" mode="production" chef-server-url="https://localhost/"
-    <node type="vm" name="NA-HAProxy" 
-        minNumCore="2" maxCoreMin="2" prefNumCore="2"
-        minCPUfreq="500MHz" maxCPUfreq="2100MHz" prefCPUfreq="1GHz"
-        minSizeMin="1GB" maxMemSize="4GB" prefMemSize="2GB"
-        minDiskSize="10GB" maxDiskSize="20GB" prefDiskSize="10GB" 
-        minInstance="1" maxInstance="1" prefInstance="1">
-        <base-dependency OS="Linux"/>
-        <software_install name="HAProxy" chefURI="http://localhost:8080/haproxy.tar.gz">
-            <attribute name="test1" value="value1"/>
-        </software_install>
-    </node>
-    <node type="vm" name="NA-Oracle" 
-        minNumCoreM="2" maxNumCore="4" prefNumCore="2"
-        minCPUfreq="2GHz" maxCPUfreq="2GHz" prefCPUfreq="2GHz"
-        minMemSize="8GB" maxMemSize="16GB" prefMemSize="8GB" 
-        minDiskSize="80GB" maxDiskSize="120GB" prefDiskSize="80GB"
-        minInstance="1" maxInstance="1" prefInstance="1">
-        <base-dependency OS="Windows"/>
-        <software_install name="NewsAssetOracle" chefURI="http://localhost:8080/na-oracle.tar.gz">
-            <attribute name="test2" value="value2"/>
-        </software_install>
-    </node>
-    <node type="vm" name="NA-Server" 
-        minNumCore="2" maxNumCore="4" prefNumCore="2
-        minCPUfreq="1GHz" maxCPUfreq="2GHz" prefCPUfreq="2GHz"
-        minMemSize="4GB" maxMemSize="8GB" prefMemSize="8GB"
-        minDiskSize="40GB" maxDiskSize="80GB" prefDiskSize="40GB"
-        minInstance="1" maxInstance="10" prefInstance="2">
-        <base-dependency OS="Windows"/>
-        <software_install name="NewsAssetServer" chefURI="http://localhost:8080/na-server.tar.gz">
-            <attribute name="test3" value="value3"/>
-        </software_install>
-    </node>
+<application-config name="NewsAssetMultitenantSmallMedium" mode="production" chef-server-url="https://localhost/">
+  <node type="vm" name="NA-HAProxy" minNumCore="2" maxCoreMin="2" prefNumCore="2" minCPUfreq="500MHz" maxCPUfreq="2100MHz" prefCPUfreq="1GHz" minSizeMin="1024MB" maxMemSize="4096MB" prefMemSize="2048MB" minDiskSize="10GB" maxDiskSize="20GB" prefDiskSize="10GB" minInstance="1" maxInstance="1" prefInstance="1">
+    <base-dependency OS="Linux" />
+    <software_install name="HAProxy" chefURI="http://localhost:8080/haproxy.tar.gz">
+      <attribute name="test1" value="value1" />
+    </software_install>
+  </node>
+  <node type="vm" name="NA-Oracle" minNumCoreM="2" maxNumCore="4" prefNumCore="2" minCPUfreq="2GHz" maxCPUfreq="2GHz" prefCPUfreq="2GHz" minMemSize="8192MB" maxMemSize="16384MB" prefMemSize="8192MB" minDiskSize="80GB" maxDiskSize="120GB" prefDiskSize="80GB" minInstance="1" maxInstance="1" prefInstance="1">
+    <base-dependency OS="Windows" />
+    <software_install name="NewsAssetOracle" chefURI="http://localhost:8080/na-oracle.tar.gz">
+      <attribute name="test2" value="value2" />
+    </software_install>
+  </node>
+  <node type="vm" name="NA-Files" minNumCoreM="2" maxNumCore="4" prefNumCore="2" minCPUfreq="2GHz" maxCPUfreq="2GHz" prefCPUfreq="2GHz" minMemSize="8192MB" maxMemSize="16384MB" prefMemSize="8192MB" minDiskSize="80GB" maxDiskSize="120GB" prefDiskSize="80GB" minInstance="1" maxInstance="1" prefInstance="1">
+    <base-dependency OS="Windows" />
+    <software_install name="NewsAssetFiles" chefURI="http://localhost:8080/na-files.tar.gz">
+      <attribute name="test2" value="value2" />
+    </software_install>
+  </node>
+  <node type="vm" name="NA-Server" minNumCore="2" maxNumCore="4" prefNumCore="2" minCPUfreq="1GHz" maxCPUfreq="2GHz" prefCPUfreq="2GHz" minMemSize="4096MB" maxMemSize="8192MB" prefMemSize="8192MB" minDiskSize="40GB" maxDiskSize="80GB" prefDiskSize="40GB" minInstance="1" maxInstance="10" prefInstance="2">
+    <base-dependency OS="Windows" />
+    <software_install name="NewsAssetServer" chefURI="http://localhost:8080/na-server.tar.gz">
+      <attribute name="test3" value="value3" />
+    </software_install>
+  </node>
 </application-config>
