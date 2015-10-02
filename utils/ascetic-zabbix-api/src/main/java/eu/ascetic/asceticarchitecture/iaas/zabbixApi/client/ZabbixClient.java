@@ -602,7 +602,7 @@ public class ZabbixClient {
                     //With all data validated, we create the new VM
                     newHostId = createVM(hostName, ipAddress, vmsHostGroup, vmTemplate);
                 } else {
-                    log.error("The template " + Configuration.osLinuxTemplateName + " is not available in Zabbix");
+                    log.error("The template " + Configuration.libVirtTemplateName + " is not available in Zabbix");
                     return null;
                 }
             } else {
