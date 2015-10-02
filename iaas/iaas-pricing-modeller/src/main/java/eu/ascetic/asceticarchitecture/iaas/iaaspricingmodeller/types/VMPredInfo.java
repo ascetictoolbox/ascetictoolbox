@@ -28,11 +28,13 @@ public class VMPredInfo {
 	public VMPredInfo (){
 		this.predictedDuration = 0;
 		this.predictedEnergy = null;
+		this.predictedCharges=new PredictedCharges();
 	}
 	
 	public VMPredInfo (long predictedDuration, EnergyPrediction predictedEnergy){
 		this.predictedDuration = predictedDuration;
 		this.predictedEnergy = predictedEnergy;
+		this.predictedCharges=new PredictedCharges();
 	}
 
 		

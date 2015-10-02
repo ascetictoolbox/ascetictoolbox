@@ -51,14 +51,16 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
 	
 	public IaaSPricingModellerBilling(EnergyProvider provider) {
 		this.energyProvider = provider;
-		logger = Logger.getLogger(IaaSPricingModellerBilling.class);
+	//	logger = Logger.getLogger(IaaSPricingModellerBilling.class);
 	}
 	
 	// ////////////////////////////// FOR PREDICTION // /////////////////////////////////
 		public PredictedCharges predictVMCharges(VMstate VM) {
 			IaaSPricingModellerPricingScheme scheme = VM.getPricingScheme();
 			double charges = scheme.predictCharges(VM,averageDynamicEnergyPrice);
+			
 			VM.setPredictedCharges(charges);
+			System.out.println("edw");
 			VM.setPredictedPrice(charges/Math.ceil(VM.getPredictedInformation().getPredictedDuration()));
 			return VM.getPredictedCharges();
 		}

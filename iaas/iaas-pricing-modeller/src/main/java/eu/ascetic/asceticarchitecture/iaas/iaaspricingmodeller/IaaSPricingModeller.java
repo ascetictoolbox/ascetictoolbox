@@ -110,7 +110,9 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
 		
 		// This function calls the Energy Modeller: To be replaced by the AtiveMQ
 		EnergyPrediction energyVM = getEnergyPredicted(CPU, RAM, storage, duration, hostname);
-		
+		//EnergyPrediction energyVM = new EnergyPrediction();
+		//energyVM.setAvergPower(5);
+		//energyVM.setTotalEnergy(10);
 		Vm.getPredictedInformation().setPredictionOfEnergy(energyVM);
 		
 		//Vm.getPredictedInformation().setPredictedPowerPerHour(energyPredicted/dura.getDuration());
@@ -142,7 +144,9 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
 		
 		// This function calls the Energy Modeller: To be replaced by the AtiveMQ
 		EnergyPrediction energyVM = getEnergyPredicted(CPU, RAM, storage, duration, hostname);
-		
+		//EnergyPrediction energyVM = new EnergyPrediction();
+		//energyVM.setAvergPower(5);
+		//energyVM.setTotalEnergy(10);
 		Vm.getPredictedInformation().setPredictionOfEnergy(energyVM);
 		
 		double predictedPricePerHour = billing.predictVMCharges(Vm).getPriceOnly();

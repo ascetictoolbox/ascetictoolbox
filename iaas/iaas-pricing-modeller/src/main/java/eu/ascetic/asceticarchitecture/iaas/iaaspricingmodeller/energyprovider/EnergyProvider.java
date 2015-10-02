@@ -42,7 +42,7 @@ public class EnergyProvider implements EnergyProviderInterface{
 	
 	Timer timer;
 	
-	long delay = 0;
+	long delay = 3600;
 	
 	public EnergyProvider(IaaSPricingModeller iaasprovider){
 		idEP=idEP+1;
