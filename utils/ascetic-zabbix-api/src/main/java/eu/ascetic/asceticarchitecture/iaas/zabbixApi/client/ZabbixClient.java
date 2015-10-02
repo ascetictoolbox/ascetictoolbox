@@ -582,45 +582,42 @@ public class ZabbixClient {
         return historyItems;
     }
 	
-	/**
-	 * Creates a new VM in Zabbix.
-	 *
-	 * @param hostName the host name
-	 * @param ipAddress the ip address
-	 * @return the id of the new VM created in Zabbix
-	 */
-	public String createVM(String hostName, String ipAddress){
-		String newHostId = null;
+    /**
+     * Creates a new VM in Zabbix.
+     *
+     * @param hostName the host name
+     * @param ipAddress the ip address
+     * @return the id of the new VM created in Zabbix
+     */
+    public String createVM(String hostName, String ipAddress) {
+        String newHostId = null;
 
-		if (getHostByName(hostName) == null){
-			//hostGroup
-			HostGroup vmsHostGroup = getHostGroupByName(Configuration.virtualMachinesGroupName);
-			if (vmsHostGroup !=null){
-				//templates
-				Template linuxTemplate = getTemplateByName(Configuration.osLinuxTemplateName);
-				if (linuxTemplate != null){
-					//With all data validated, we create the new VM
-					newHostId = createVM(hostName,ipAddress,vmsHostGroup,linuxTemplate);
-				}
-				else {
-					log.error("The template " + Configuration.osLinuxTemplateName + " is not available in Zabbix");
-					return null;
-				}						
-			}
-			else {
-				log.error("The hostGroupName is null or empty");
-				return null;
-			}
+        if (getHostByName(hostName) == null) {
+            //hostGroup
+            HostGroup vmsHostGroup = getHostGroupByName(Configuration.virtualMachinesGroupName);
+            if (vmsHostGroup != null) {
+                //templates
+                Template vmTemplate = getTemplateByName(Configuration.libVirtTemplateName);
+                if (vmTemplate != null) {
+                    //With all data validated, we create the new VM
+                    newHostId = createVM(hostName, ipAddress, vmsHostGroup, vmTemplate);
+                } else {
+                    log.error("The template " + Configuration.osLinuxTemplateName + " is not available in Zabbix");
+                    return null;
+                }
+            } else {
+                log.error("The hostGroupName is null or empty");
+                return null;
+            }
 
-		}
-		else {
-			log.error("The host " + hostName + " already exists in the ASCETiC Zabbix environment. Please choose another hostname" );
-			return null;
-		}
-		
-		return newHostId;
-	}
-	
+        } else {
+            log.error("The host " + hostName + " already exists in the ASCETiC Zabbix environment. Please choose another hostname");
+            return null;
+        }
+
+        return newHostId;
+    }
+    
 	
 	/**
 	 * Creates the vm.
