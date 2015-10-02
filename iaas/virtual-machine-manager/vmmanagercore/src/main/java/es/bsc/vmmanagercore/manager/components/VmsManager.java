@@ -221,10 +221,14 @@ public class VmsManager {
                 ZabbixConnector.registerVmInZabbix(vmId, getVm(vmId).getHostName(), getVm(vmId).getIpAddress());
             }
 
-            // This call is not working. I will comment if for now
-            /*if (pricingModeller instanceof AsceticPricingModellerAdapter) {
-                initializeVmBilling(vmId, hostForDeployment.getHostname());
-            }*/
+
+            if (pricingModeller instanceof AsceticPricingModellerAdapter) {
+				try {
+                	initializeVmBilling(vmId, hostForDeployment.getHostname());
+				} catch(Exception e) {
+					log.error("Error when initializing vm billing: " + e.getMessage(), e);
+				}
+            }
 
             if (energyModeller instanceof AsceticEnergyModellerAdapter) {
                 ((AsceticEnergyModellerAdapter) energyModeller).initializeVmInEnergyModellerSystem(
@@ -434,7 +438,7 @@ public class VmsManager {
     private void initializeVmBilling(final String vmId, final String hostname) {
         Thread thread = new Thread("Initialize VM billing. VM ID = " + vmId + "; Hostname = " + hostname) {
             public void run(){
-                ((AsceticPricingModellerAdapter) pricingModeller).initializeVmBilling(vmId + "_" + hostname);
+                ((AsceticPricingModellerAdapter) pricingModeller).initializeVmBilling(vmId, hostname);
             }
         };
         thread.start();

@@ -49,8 +49,8 @@ public class AsceticPricingModellerAdapter implements PricingModeller {
                 cpus, ramMb, diskGb, getSchemeIdForVm(), FIXED_DURATION_MIN, hostname);
     }
 
-    public void initializeVmBilling(String vmId) {
-        pricingModeller.initializeVM(vmId, getSchemeIdForVm());
+    public void initializeVmBilling(String vmId, String hostname) {
+        pricingModeller.initializeVM(vmId, getSchemeIdForVm(), hostname);
     }
 
     // For now, return always 1. This will be changed once we get this information from the PaaS level.
