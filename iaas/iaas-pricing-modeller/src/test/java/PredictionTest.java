@@ -62,9 +62,17 @@ public class PredictionTest
     public void testPrediction() throws InterruptedException {
         System.out.println("test prediction");
         IaaSPricingModeller prModeller = new IaaSPricingModeller(null);
-        
-       //System.out.println("Predicted value for scheme 1:" + prModeller.getVMPricePerHourPrediction(2, 2, 20.0, 1, 7200L, "a1"));  
-         prModeller.initializeVM("el", 1, "2a"); 
+        /**
+        System.out.println("Predicted charges for scheme 0:" + prModeller.getVMChargesPrediction(2, 2, 20.0, 0, 3600L, "a1"));  
+        System.out.println("Predicted price for scheme 0:" + prModeller.getVMPricePerHourPrediction(2, 2, 20.0, 0, 3600L, "a1")); 
+        System.out.println("Predicted charges for scheme 1:" + prModeller.getVMChargesPrediction(2, 2, 20.0, 1, 3600L, "a1"));  
+        System.out.println("Predicted price for scheme 1:" + prModeller.getVMPricePerHourPrediction(2, 2, 20.0, 1, 3600L, "a1")); 
+         **/
+        System.out.println("Predicted charges for scheme 2:" + prModeller.getVMChargesPrediction(2, 2, 20.0, 2, 3600L, "a1"));  
+        System.out.println("Predicted price for scheme 2:" + prModeller.getVMPricePerHourPrediction(2, 2, 20.0, 2, 3600L, "a1")); 
+       
+       // prModeller.initializeVM("el", 2, "2a"); 
+       // System.out.println("Final charges:"+prModeller.getVMFinalCharges("el", true));
       //Prediction for Pricing Scheme 0
     
     

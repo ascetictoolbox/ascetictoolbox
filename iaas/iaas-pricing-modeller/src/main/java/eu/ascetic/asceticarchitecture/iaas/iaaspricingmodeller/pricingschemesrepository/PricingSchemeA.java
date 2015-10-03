@@ -69,7 +69,8 @@ public class PricingSchemeA extends IaaSPricingModellerPricingScheme implements 
 	public double getTotalCharges(VMstate VM) {
 		updateVMResourceCharges(VM, price);
 		VM.setChangeTime(VM.getResourcesChangeTime());
-		return (VM.getResourcesCharges());
+		VM.setTotalCharges(VM.getResourcesCharges());
+		return (VM.getTotalCharges());
 		
 	}
 

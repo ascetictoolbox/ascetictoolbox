@@ -102,6 +102,7 @@ public abstract class IaaSPricingModellerPricingScheme implements IaaSPricingMod
 	public void updateVMEnergyCharges(VMstate VM){		
 		double energycharges = (double) Math.round(cost.updateEnergyCharges(VM) * 1000) / 1000;
 		VM.updateEnergyCharges(energycharges);
+		
 	}
 	
 	

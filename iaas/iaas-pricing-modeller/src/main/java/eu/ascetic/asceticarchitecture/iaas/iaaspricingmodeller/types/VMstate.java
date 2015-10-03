@@ -42,8 +42,10 @@ public class VMstate {
 	Charges TotalCharges;
 
 	EnergyProvider provider;
+	
 	double energy;
 	
+	double totalEnergy;
 
 	TimeParameters time;
 	
@@ -59,6 +61,8 @@ public class VMstate {
 		resourceCharges = new Charges();
 		TotalCharges = new Charges();
 		time = new TimeParameters();
+		energy=0;
+		totalEnergy=0;
 
 	}
 	
@@ -70,7 +74,8 @@ public class VMstate {
 		resourceCharges = new Charges();
 		TotalCharges = new Charges();
 		time = new TimeParameters();
-		
+		energy=0;
+		totalEnergy=0;
 
 	}
 	
@@ -78,6 +83,8 @@ public class VMstate {
 	public VMstate (VMinfo vm, IaaSPricingModellerPricingScheme scheme){
 		this.VMid = "null";
 		this.pricingScheme = scheme;
+		energy=0;
+		totalEnergy=0;
 	}
 	
 	public void setStartTime(){
@@ -156,8 +163,20 @@ public class VMstate {
 		TotalCharges.setCharges(charges);
 	}
 	
-	public double getEnergy(){
+	public double getTotalEnergyConsumed(){
+		return totalEnergy;
+	}
+	
+	public void setTotalEnergyConsumed(double energy){
+		 this.totalEnergy=energy;
+	}
+	
+	public double getEnergyConsumedLast(){
 		return energy;
+	}
+	
+	public void setEnergyConsumedLast(double energy){
+		 this.energy=energy;
 	}
 	
 	public void setEnergyChangeTime(Calendar time){

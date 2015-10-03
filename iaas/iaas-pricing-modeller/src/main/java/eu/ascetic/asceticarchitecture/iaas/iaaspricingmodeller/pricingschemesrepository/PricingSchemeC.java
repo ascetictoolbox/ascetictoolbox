@@ -76,15 +76,23 @@ public class PricingSchemeC extends IaaSPricingModellerPricingScheme implements 
 		double reduction = 0;
 		double difference = 0;
 		double predEner = VM.getPredictedInformation().getPredictedPowerPerHour();
+		
 		long duration = VM.getTotalDuration();
+		
 		double realEner = cost.updateEnergy(VM);
+		
 		double predictedTotalEnergy = duration*predEner;
+
 		if (predictedTotalEnergy>realEner){
-				 difference = (predEner - realEner);
+				 difference = (predictedTotalEnergy - realEner);
+				 
 			}
-		reduction = (difference*100)/predEner;
+		reduction = (difference*100)/predictedTotalEnergy;
+		
 		double newCharges = VM.getResourcesCharges()-VM.getResourcesCharges()*reduction/100;
-		return (newCharges);
+		
+		VM.setTotalCharges(newCharges);
+		return (VM.getTotalCharges());
 		
 	}
 	

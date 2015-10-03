@@ -72,7 +72,12 @@ public class  IaaSPricingModellerCost implements IaaSPricingModellerCostInterfac
 		VmDeployed vm = energyModeller.getVM(VM.getVMid());
 		TimePeriod timePeriod = new TimePeriod(VM.getStartTime(), VM.getChangeTime());
 		double newEnergyValue = energyModeller.getEnergyRecordForVM(vm, timePeriod).getTotalEnergyUsed();
-		return newEnergyValue-VM.getEnergy();
+		VM.setTotalEnergyConsumed(newEnergyValue);
+		double difference = newEnergyValue-VM.getEnergyConsumedLast();
+		
+		VM.setEnergyConsumedLast(newEnergyValue);
+		
+		return difference;
 
 	}
 	

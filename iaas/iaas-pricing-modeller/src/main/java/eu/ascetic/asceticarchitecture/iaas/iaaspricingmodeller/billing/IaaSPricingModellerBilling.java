@@ -46,12 +46,12 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
 	Price averageDynamicEnergyPrice = new StaticEnergyPrice();
 
 	EnergyProvider energyProvider;
-	static Logger logger = null;
-
+	
 	
 	public IaaSPricingModellerBilling(EnergyProvider provider) {
 		this.energyProvider = provider;
-	//	logger = Logger.getLogger(IaaSPricingModellerBilling.class);
+		
+		
 	}
 	
 	// ////////////////////////////// FOR PREDICTION // /////////////////////////////////
@@ -60,8 +60,7 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
 			double charges = scheme.predictCharges(VM,averageDynamicEnergyPrice);
 			
 			VM.setPredictedCharges(charges);
-			System.out.println("edw");
-			VM.setPredictedPrice(charges/Math.ceil(VM.getPredictedInformation().getPredictedDuration()));
+			VM.setPredictedPrice(charges/Math.ceil(VM.getPredictedInformation().getPredictedDuration()/3600));
 			return VM.getPredictedCharges();
 		}
 
@@ -70,9 +69,11 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
 	public void registerVM(VMstate vm) {
 		if ((vm.getPricingScheme().getSchemeId() == 0)||(vm.getPricingScheme().getSchemeId() == 2)) {
 			registeredStaticEnergyPricesVMs.put(vm.getVMid(), vm);
+
 			vm.setStartTime();
 		} else {
 			registeredDynamicEnergyPricesVMs.put(vm.getVMid(), vm);
+
 			vm.setStartTime();
 		}
 	}
@@ -97,9 +98,6 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
 	}
 
 	
-
-	
-	
 		// ///////////////////////////////BILLING////////////////////////////////////
 
 	
@@ -109,24 +107,6 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
 		return scheme.getTotalCharges(getVM(VMid));
 	}
 
-	public double getVMCharges(String VMid, boolean b) {
-		
-		IaaSPricingModellerPricingScheme scheme = getVM(VMid).getPricingScheme();
-		double charges = scheme.getTotalCharges(getVM(VMid));
-		if (b)
-			unregisterVM(getVM(VMid));
-		else
-			stopChargingVM(getVM(VMid));
-		if (scheme.getSchemeId()!=2)
-		logger.info("Billing,"+String.valueOf(VMid)+","+String.valueOf(getVM(VMid).getVMinfo().getCPU())+","+String.valueOf(getVM(VMid).getVMinfo().getRAM())+","+String.valueOf(getVM(VMid).getVMinfo().getStorage())+","+String.valueOf(getVM(VMid).getTotalDuration())
-				+","+String.valueOf(scheme.getSchemeId())+","+String.valueOf(getVM(VMid).getEnergy())+","+String.valueOf(getVM(VMid).getTotalCharges()));
-		else
-			logger.info("Billing,"+String.valueOf(VMid)+","+String.valueOf(getVM(VMid).getVMinfo().getCPU())+","+String.valueOf(getVM(VMid).getVMinfo().getRAM())+","+String.valueOf(getVM(VMid).getVMinfo().getStorage())+","+String.valueOf(getVM(VMid).getTotalDuration())
-					+","+String.valueOf(scheme.getSchemeId())+","+String.valueOf(getVM(VMid).getEnergy())+","+String.valueOf(getVM(VMid).getTotalCharges())+","+","+String.valueOf(getVM(VMid).getPredictedInformation().getPredictedPowerPerHour()+","
-			+String.valueOf(getVM(VMid).getPredictedInformation().getPredictedCharges())));
-		
-		return charges;
-	}
 
 	// //////////////////////////// FOR DYNAMIC ENERGY PRICES  // /////////////////////////
 
@@ -174,7 +154,7 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
 		}
 	}
 	
-	private VMstate getVM(String VMid) {
+	public VMstate getVM(String VMid) {
 		if (registeredDynamicEnergyPricesVMs.containsKey(VMid))
 			return registeredDynamicEnergyPricesVMs.get(VMid);
 		else
