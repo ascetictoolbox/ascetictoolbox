@@ -74,6 +74,7 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 		DeploymentInfo deployment = new DeploymentInfo(deplID, schemeID);
 		deployment.setIaaSPredictedCharges(IaaSCharges);
 		double charges = billing.predictCharges(deployment);
+		logger.info("Prediction:"+deplID+","+schemeID+","+IaaSCharges+","+charges);
 		return charges;
 	}
 	
@@ -89,7 +90,9 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 		DeploymentInfo deployment = new DeploymentInfo(deplID, schemeID);
 		deployment.setIaaSPredictedCharges(IaaSCharges);
 		deployment.getPredictedInformation().setDuration(duration);
-		double charges = billing.predictPrice(deployment);
+		double price = billing.predictPrice(deployment);
+		double charges = billing.predictCharges(deployment);
+		logger.info("Prediction:"+deplID+","+schemeID+","+IaaSCharges+","+charges+","+price);
 		return charges;
 	}
 	
@@ -100,6 +103,7 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 	 */
 	public void initializeApp(int deplID, int schemeId){
 		DeploymentInfo deployment = new DeploymentInfo(deplID, schemeId);
+		
 		billing.registerApp(deployment);
 	}
 	
@@ -109,7 +113,9 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 	 * @param schemeId: the pricing scheme followed
 	 */
 	public double getAppTotalCharges(int deplID, int schemeID, double IaaSCharges){
-		return billing.getAppCurrentTotalCharges(deplID, IaaSCharges);
+		double charges = billing.getAppCurrentTotalCharges(deplID, IaaSCharges);
+		logger.info("Billing:"+deplID+","+schemeID+","+IaaSCharges+","+charges);
+		return charges;
 	}
 	
 //////////////////////Based on the layer's calculations////////////////////////////
@@ -146,6 +152,7 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 		deployment.addVM(VM);
 		deployment.getPredictedInformation().setDuration(duration);
 		double charges = billing.predictEventCharges(deployment);
+		logger.info("Event:"+deplID+","+CPU+","+RAM+","+storage+","+energy+","+schemeId+","+duration+","+numberOfevents+","+charges);
 		return charges;
 		
 	}

@@ -80,6 +80,9 @@ public class PaaSPricingModellerBilling implements PaaSPricingModellerBillingInt
 	
 	public double predictPrice(DeploymentInfo deploy){
 		double charges = deploy.getPredictedInformation().getIaaSPredictedCharges();
+		if (deploy.getPredictedInformation().getPredictedDuration()<3600){
+			deploy.getPredictedInformation().setDuration(3600);
+		}
 		charges = (charges+0.2*charges)/(deploy.getPredictedInformation().getPredictedDuration()/3600);
 		deploy.setPredictedPrice(charges);
 		return deploy.getPredictedInformation().getPredictedPrice();

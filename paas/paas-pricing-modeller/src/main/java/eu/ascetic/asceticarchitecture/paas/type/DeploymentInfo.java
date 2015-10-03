@@ -32,7 +32,7 @@ public class DeploymentInfo {
 
 	int deploymentId;
 	
-	DeploymPredInfo predictedInfo;
+	DeploymPredInfo predictedInfo=new DeploymPredInfo();
 	
 	int schemeId;
 	
@@ -61,11 +61,13 @@ public class DeploymentInfo {
 	}
 
 	public void addVM(VMinfo vm){
+		
 		VMs.add(vm);
+		
 	}
 	
 	public VMinfo getVM(){
-		return VMs.pop();
+		return VMs.getFirst();
 	}
 	
 	public int getId(){
@@ -121,6 +123,7 @@ public class DeploymentInfo {
 	}
 	
 	public void setIaaSPredictedCharges(double amount) {
+		
 		predictedInfo.setIaaSPredictedCharges(amount);
 	}
 

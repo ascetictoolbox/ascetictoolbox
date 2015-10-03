@@ -27,8 +27,11 @@ public class DeploymPredInfo {
 	
 	double predictedPrice;
 	
-	public DeploymPredInfo (long predictedDuration, double predictedEnergy){
-		this.predictedDuration = predictedDuration;
+	public DeploymPredInfo (){
+		predictedDuration=0;
+		predictedIaaSCharges=0;
+		TotalPredictedCharges=0;
+		predictedPrice=0;
 	}
 
 		
