@@ -196,13 +196,15 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
 	/**
 	 * When calling this function, the VM stops its operation and the final charges are returned	
 	 * @param VMid
-	 * @param deleteVM: boolean true when the VM stops operating and deleted false when VM pauses operation
+	 * @param deleteVM: boolean true when the VM stops operating and deleted else false
 	 * @return
 	 */
 	public double getVMFinalCharges(String VMid, boolean deleteVM){
 		double charges = billing.getVMCharges(VMid);
+		
 		if (billing.getVM(VMid).getPricingScheme().getSchemeId()==0)
 			billing.getVM(VMid).setTotalEnergyConsumed(0);
+		
 		if (billing.getVM(VMid).getPricingScheme().getSchemeId()!=2){
 		logger.info("Billing,"+VMid +","+String.valueOf(billing.getVM(VMid).getVMinfo().getCPU())+","+String.valueOf(billing.getVM(VMid).getVMinfo().getRAM())+","+String.valueOf(billing.getVM(VMid).getVMinfo().getStorage())+","+String.valueOf(billing.getVM(VMid).getTotalDuration())
 			+","+String.valueOf(billing.getVM(VMid).getPricingScheme().getSchemeId())+","+String.valueOf(billing.getVM(VMid).getTotalEnergyConsumed())+","+String.valueOf(billing.getVM(VMid).getTotalCharges()));
@@ -214,8 +216,8 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
 		
 		if (deleteVM)
 			billing.unregisterVM(billing.getVM(VMid));
-		else
-			billing.stopChargingVM(billing.getVM(VMid));
+		/*else
+			billing.stopChargingVM(billing.getVM(VMid));*/
 		return charges;
 	}
    
