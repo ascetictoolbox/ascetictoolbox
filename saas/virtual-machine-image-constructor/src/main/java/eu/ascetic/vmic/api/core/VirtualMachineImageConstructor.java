@@ -16,11 +16,13 @@
 package eu.ascetic.vmic.api.core;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
 import eu.ascetic.utils.ovf.api.OvfDefinition;
+import eu.ascetic.utils.ovf.api.enums.OperatingSystemType;
 import eu.ascetic.vmic.api.VmicApi;
 import eu.ascetic.vmic.api.datamodel.AbstractProgressData;
 import eu.ascetic.vmic.api.datamodel.ProgressDataImage;
@@ -41,6 +43,7 @@ public class VirtualMachineImageConstructor implements Runnable {
     private VmicApi vmicApi;
     private OvfDefinition ovfDefinition;
     private String ovfDefinitionId;
+    private String runtimePath;
 
     /**
      * Constructor
@@ -56,6 +59,8 @@ public class VirtualMachineImageConstructor implements Runnable {
         this.ovfDefinition = ovfDefinition;
         this.ovfDefinitionId = ovfDefinition.getVirtualSystemCollection()
                 .getId();
+        this.runtimePath = this.vmicApi.getGlobalState().getConfiguration()
+                .getRuntimePath();
     }
 
     /*
@@ -527,7 +532,7 @@ public class VirtualMachineImageConstructor implements Runnable {
         // Iterate over every virtual system image
         for (int i = 0; i < ovfDefinitionParser.getImageNumber(); i++) {
 
-            // TODO: Fetch parsed OVF attributes relevant for online image
+            // Fetch parsed OVF attributes relevant for online image
             // generation .
             String newImagePath = ovfDefinitionParser.getImagePath(i);
 
@@ -535,9 +540,10 @@ public class VirtualMachineImageConstructor implements Runnable {
 
             String virtualMachineAddress = null;
             try {
-                // TODO: 1) Boot up the image and wait for completion (TODO: use
+                // 1) Boot up the image and wait for completion (TODO: use
                 // libvirt instead of virsh system call)
-                virtualMachineAddress = bootImage();
+                virtualMachineAddress = bootImage(ovfDefinitionParser
+                        .getImageOperatingSystems(i));
                 vmicApi.getGlobalState()
                         .setProgressPercentage(
                                 ovfDefinitionId,
@@ -546,7 +552,7 @@ public class VirtualMachineImageConstructor implements Runnable {
                                         + (100.0 / ovfDefinitionParser
                                                 .getImageNumber()) * i);
 
-                // TODO: 2) Bootstrap the VM with chef agent via a remote system
+                // 2) Bootstrap the VM with chef agent via a remote system
                 // call
                 // to knife.
                 bootstrapVirtualMachine(virtualMachineAddress);
@@ -558,9 +564,11 @@ public class VirtualMachineImageConstructor implements Runnable {
                                         + (100.0 / ovfDefinitionParser
                                                 .getImageNumber()) * i);
 
-                // TODO: 3) Upload the chef cookbook(s) to the chef workspace
+                // 3) Upload the chef cookbook(s) to the chef workspace
                 // (using rsync)
-                uploadCookbooks(virtualMachineAddress);
+                uploadCookbooks(
+                        ovfDefinitionParser.getImageSoftwareDependencies(i),
+                        virtualMachineAddress);
                 vmicApi.getGlobalState()
                         .setProgressPercentage(
                                 ovfDefinitionId,
@@ -569,7 +577,7 @@ public class VirtualMachineImageConstructor implements Runnable {
                                         + (100.0 / ovfDefinitionParser
                                                 .getImageNumber()) * i);
 
-                // TODO: 4) Deploy the chef cookbooks(s) via a remote system
+                // 4) Deploy the chef cookbooks(s) via a remote system
                 // call to knife.
                 deployCookbooks(virtualMachineAddress);
                 vmicApi.getGlobalState()
@@ -580,7 +588,7 @@ public class VirtualMachineImageConstructor implements Runnable {
                                         + (100.0 / ovfDefinitionParser
                                                 .getImageNumber()) * i);
 
-                // TODO: 5) Shutdown the VM (TODO: use libvirt instead of virsh
+                // 5) Shutdown the VM (TODO: use libvirt instead of virsh
                 // system call)
                 shutdownVirtualMachine(virtualMachineAddress);
                 vmicApi.getGlobalState()
@@ -591,7 +599,7 @@ public class VirtualMachineImageConstructor implements Runnable {
                                         + (100.0 / ovfDefinitionParser
                                                 .getImageNumber()) * i);
 
-                // TODO: 6) Remove the node from the chef server
+                // 6) Remove the node from the chef server
                 cleanChefServer(virtualMachineAddress);
                 vmicApi.getGlobalState()
                         .setProgressPercentage(
@@ -626,18 +634,31 @@ public class VirtualMachineImageConstructor implements Runnable {
     /**
      * Boots an image and waits for the OS initialisation process to finish.
      * 
+     * @param operatingSystemType
+     *            The installed OS to select.
      * @return The IP address of the VM created.
+     * @throws ProgressException
+     *             Thrown on failure.
      */
-    private String bootImage() throws ProgressException {
+    private String bootImage(OperatingSystemType operatingSystemType)
+            throws ProgressException {
 
         SystemCallRemote systemCallRemote = new SystemCallRemote(
                 System.getProperty("user.home"), vmicApi.getGlobalState()
                         .getConfiguration());
 
-        // TODO: Formulate sys call
-        String commandName = "echo '1.2.3.4';";
+        // Remote System call executing boot-image.sh script
+        String commandName = runtimePath + "/scripts/boot-image.sh";
         ArrayList<String> arguments = new ArrayList<String>();
-        arguments.add("exit 0");
+        if (operatingSystemType.equals(OperatingSystemType.LINUX)) {
+            arguments.add("linux");
+        } else if (operatingSystemType
+                .equals(OperatingSystemType.MICROSOFT_WINDOWS_SERVER_2003)) {
+            arguments.add("windows");
+        } else {
+            throw new ProgressException("Unrecongnised OperatingSystemType");
+        }
+
         try {
             systemCallRemote.runCommand(commandName, arguments);
         } catch (SystemCallException e) {
@@ -658,10 +679,12 @@ public class VirtualMachineImageConstructor implements Runnable {
     }
 
     /**
-     * Install chef client via SHH into a Virtual Machine.
+     * Install chef client via SSH into a Virtual Machine.
      * 
      * @param virtualMachineAddress
      *            The IP address of the VM.
+     * @throws ProgressException
+     *             Thrown on failure.
      */
     private void bootstrapVirtualMachine(String virtualMachineAddress)
             throws ProgressException {
@@ -670,10 +693,11 @@ public class VirtualMachineImageConstructor implements Runnable {
                 System.getProperty("user.home"), vmicApi.getGlobalState()
                         .getConfiguration());
 
-        // TODO: Formulate sys call
-        String commandName = "echo 'This is a test';";
+        // Remote System call executing bootstrap-virtual-machine.sh script
+        String commandName = runtimePath
+                + "/scripts/bootstrap-virtual-machine.sh";
         ArrayList<String> arguments = new ArrayList<String>();
-        arguments.add("exit 0");
+        arguments.add(virtualMachineAddress);
 
         try {
             systemCallRemote.runCommand(commandName, arguments);
@@ -692,39 +716,62 @@ public class VirtualMachineImageConstructor implements Runnable {
     }
 
     /**
-     * Uploads the chef cookbook(s) to the chef workspace
+     * Uploads the chef cookbook(s) to the chef workspace.
      * 
+     * @param softwareDependencies
+     *            The software dependencies to be uploaded as chef cookbooks.
      * @param virtualMachineAddress
-     *            The IP address of the VM.
+     *            The IP of a VM the cookbooks are related to.
+     * @throws ProgressException
+     *             Thrown on failure.
      */
-    private void uploadCookbooks(String virtualMachineAddress)
-            throws ProgressException {
+    private void uploadCookbooks(
+            Map<String, Map<String, String>> softwareDependencies,
+            String virtualMachineAddress) throws ProgressException {
 
         SystemCallRemote systemCallRemote = new SystemCallRemote(
                 System.getProperty("user.home"), vmicApi.getGlobalState()
                         .getConfiguration());
 
-        // TODO: Formulate sys call
-        String commandName = "echo 'This is a test';";
-        ArrayList<String> arguments = new ArrayList<String>();
-        arguments.add("exit 0");
+        for (Map.Entry<String, Map<String, String>> softwareDependenciesEntry : softwareDependencies
+                .entrySet()) {
 
-        try {
-            systemCallRemote.runCommand(commandName, arguments);
-        } catch (SystemCallException e) {
-            throw new ProgressException(
-                    "Uploading cookbooks to VM via chef agent failed", e);
+            String packageUri = softwareDependenciesEntry.getKey();
+            Map<String, String> attributes = softwareDependenciesEntry
+                    .getValue();
+
+            // Remote System call executing upload-cookbooks script
+            String commandName = runtimePath + "/scripts/upload-cookbooks.sh";
+            ArrayList<String> arguments = new ArrayList<String>();
+            // Add the VMs IP
+            arguments.add(virtualMachineAddress);
+            // Add the cookbook URI
+            arguments.add(packageUri);
+
+            // Add the default cookbook attributes
+            for (Map.Entry<String, String> attributesEentry : attributes
+                    .entrySet()) {
+                String attributeName = attributesEentry.getKey();
+                String attributeValue = attributesEentry.getValue();
+                arguments.add(attributeName + ":" + attributeValue);
+            }
+
+            try {
+                systemCallRemote.runCommand(commandName, arguments);
+            } catch (SystemCallException e) {
+                throw new ProgressException(
+                        "Uploading cookbooks to VM via chef agent failed", e);
+            }
+
+            if (systemCallRemote.getReturnValue() != 0) {
+                throw new ProgressException(
+                        "Uploading cookbooks to VM via chef agent failed, return value != 0 instead got: "
+                                + systemCallRemote.getReturnValue());
+            }
+
+            LOGGER.info("Uploaded cookbook (" + packageUri
+                    + ") for VM with IP: " + virtualMachineAddress);
         }
-
-        if (systemCallRemote.getReturnValue() != 0) {
-            throw new ProgressException(
-                    "Uploading cookbooks to VM via chef agent failed, return value != 0 instead got: "
-                            + systemCallRemote.getReturnValue());
-        }
-
-        LOGGER.info("Uploaded cookbooks to VM with IP: "
-                + virtualMachineAddress);
-
     }
 
     /**
@@ -733,6 +780,8 @@ public class VirtualMachineImageConstructor implements Runnable {
      * 
      * @param virtualMachineAddress
      *            The IP address of the VM.
+     * @throws ProgressException
+     *             Thrown on failure.
      */
     private void deployCookbooks(String virtualMachineAddress)
             throws ProgressException {
@@ -741,10 +790,11 @@ public class VirtualMachineImageConstructor implements Runnable {
                 System.getProperty("user.home"), vmicApi.getGlobalState()
                         .getConfiguration());
 
-        // TODO: Formulate sys call
-        String commandName = "echo 'This is a test';";
+        // Remote System call executing deploy-cookbooks.sh script
+        String commandName = runtimePath + "/scripts/deploy-cookbooks.sh";
         ArrayList<String> arguments = new ArrayList<String>();
-        arguments.add("exit 0");
+        // Add the VMs IP
+        arguments.add(virtualMachineAddress);
 
         try {
             systemCallRemote.runCommand(commandName, arguments);
@@ -769,6 +819,8 @@ public class VirtualMachineImageConstructor implements Runnable {
      * 
      * @param virtualMachineAddress
      *            The IP address of the VM.
+     * @throws ProgressException
+     *             Thrown on failure.
      */
     private void shutdownVirtualMachine(String virtualMachineAddress)
             throws ProgressException {
@@ -777,10 +829,12 @@ public class VirtualMachineImageConstructor implements Runnable {
                 System.getProperty("user.home"), vmicApi.getGlobalState()
                         .getConfiguration());
 
-        // TODO: Formulate sys call
-        String commandName = "echo 'This is a test';";
+        // Remote System call executing shutdown-virtual-machine.sh script
+        String commandName = runtimePath
+                + "/scripts/shutdown-virtual-machine.sh";
         ArrayList<String> arguments = new ArrayList<String>();
-        arguments.add("exit 0");
+        // Add the VMs IP
+        arguments.add(virtualMachineAddress);
 
         try {
             systemCallRemote.runCommand(commandName, arguments);
@@ -804,6 +858,8 @@ public class VirtualMachineImageConstructor implements Runnable {
      * 
      * @param virtualMachineAddress
      *            The IP address of the VM.
+     * @throws ProgressException
+     *             Thrown on failure.
      */
     private void cleanChefServer(String virtualMachineAddress)
             throws ProgressException {
@@ -812,10 +868,11 @@ public class VirtualMachineImageConstructor implements Runnable {
                 System.getProperty("user.home"), vmicApi.getGlobalState()
                         .getConfiguration());
 
-        // TODO: Formulate sys call
-        String commandName = "echo 'This is a test';";
+        // Remote System call executing clean-chef-server.sh script
+        String commandName = runtimePath + "/scripts/clean-chef-server.sh";
         ArrayList<String> arguments = new ArrayList<String>();
-        arguments.add("exit 0");
+        // Add the VMs IP
+        arguments.add(virtualMachineAddress);
 
         try {
             systemCallRemote.runCommand(commandName, arguments);
@@ -829,7 +886,8 @@ public class VirtualMachineImageConstructor implements Runnable {
                             + systemCallRemote.getReturnValue());
         }
 
-        LOGGER.info("Shutdown VM with IP: " + virtualMachineAddress);
+        LOGGER.info("Removed Cookbooks deployed to VM with IP: "
+                + virtualMachineAddress);
 
     }
 

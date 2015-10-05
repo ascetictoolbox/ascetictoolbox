@@ -33,9 +33,11 @@ public class GlobalConfiguration {
             .getLogger(GlobalConfiguration.class);
     
     private static final String REPOSITORY_PROPERTY = "repository";
+    private static final String RUNTIME_PROPERTY = "runtime";
     
     private static final String HOST_ADDRESS_PROPERTY_KEY = "hostAddress";
     private static final String REPOSITORY_PROPERTY_KEY = "repositoryPath";
+    private static final String RUNTIME_PROPERTY_KEY = "runtimePath";
     private static final String RSYNC_PROPERTY_KEY = "rsyncPath";
     private static final String SSH_PROPERTY_KEY = "sshPath";
     private static final String SSH_KEY_PROPERTY_KEY = "sshKeyPath";
@@ -46,6 +48,7 @@ public class GlobalConfiguration {
 
     private String hostAddress;
     private String repositoryPath;
+    private String runtimePath;
     private String rsyncPath;
 
     private String sshPath;
@@ -102,15 +105,18 @@ public class GlobalConfiguration {
             // FIXME: this should detect if we are running on Jenkins and change
             // these default properties accordingly.
 
-            // Create a directory for testing
-            String vmicTemp = "/DFS/ascetic/vm-images/vmic";
+            // Default hardcoded VMIC directory (Y2 DFS)
+            String vmicDirectory = "/mnt/cephfs/ascetic/vmic";
 
             // Set the hostAddress IP for testing currently the private IP for
             // the ip of the host "saas-vm-dev" on the TUB testbed
             properties.setProperty(HOST_ADDRESS_PROPERTY_KEY, "192.168.3.15");
 
             // Set repositoryPath URI for testing
-            properties.setProperty(REPOSITORY_PROPERTY_KEY, vmicTemp);
+            properties.setProperty(REPOSITORY_PROPERTY_KEY, vmicDirectory);
+            
+            // Set runtimePath URI for testing
+            properties.setProperty(RUNTIME_PROPERTY_KEY, vmicDirectory);
 
             // Set rsyncPath URI for testing to local rsync binary
             properties.setProperty(RSYNC_PROPERTY_KEY,
@@ -145,6 +151,9 @@ public class GlobalConfiguration {
 
         this.repositoryPath = properties.getProperty(REPOSITORY_PROPERTY_KEY) + "/" + REPOSITORY_PROPERTY;
         LOGGER.info("Using repositoryPath dir: '" + repositoryPath + "'");
+        
+        this.runtimePath = properties.getProperty(RUNTIME_PROPERTY_KEY) + "/" + RUNTIME_PROPERTY;
+        LOGGER.info("Using runtimePath dir: '" + runtimePath + "'");
 
         this.rsyncPath = properties.getProperty(RSYNC_PROPERTY_KEY);
         LOGGER.info("Using rsyncPath: '" + rsyncPath + "'");
@@ -186,6 +195,16 @@ public class GlobalConfiguration {
     }
 
     /**
+     * Gets the repository path.
+     * 
+     * @param repositoryPath
+     *            the repositoryPath to set
+     */
+    public void setRepositoryPath(String repository) {
+        this.repositoryPath = repository;
+    }
+
+    /**
      * Sets the repository path.
      * 
      * @return the repositoryPath
@@ -195,13 +214,21 @@ public class GlobalConfiguration {
     }
 
     /**
-     * Gets the repository path.
+     * Gets the runtime path.
      * 
-     * @param repositoryPath
-     *            the repositoryPath to set
+     * @return the runtimePath
      */
-    public void setRepositoryPath(String repository) {
-        this.repositoryPath = repository;
+    public String getRuntimePath() {
+        return runtimePath;
+    }
+
+    /**
+     * Sets the runtime path.
+     * 
+     * @param runtimePath the runtimePath to set
+     */
+    public void setRuntimePath(String runtimePath) {
+        this.runtimePath = runtimePath;
     }
 
     /**
