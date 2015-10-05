@@ -46,16 +46,20 @@ import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.dao.ImageDAO;
 import eu.ascetic.paas.applicationmanager.dao.VMDAO;
+import eu.ascetic.paas.applicationmanager.em.amqp.EnergyModellerMessage;
+import eu.ascetic.paas.applicationmanager.em.amqp.EnergyModellerQueueController;
 import eu.ascetic.paas.applicationmanager.event.deployment.matchers.ImageToUploadWithEquals;
 import eu.ascetic.paas.applicationmanager.event.deployment.matchers.VmWithEquals;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Collection;
+import eu.ascetic.paas.applicationmanager.model.Cost;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
 import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
+import eu.ascetic.paas.applicationmanager.pm.PriceModellerClient;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
 
 /**
@@ -253,6 +257,184 @@ public class VMRestTest extends AbstractTest {
 	
 	@Test
 	@SuppressWarnings(value = { "static-access" }) 
+	public void testGetCostEstimationForAVMAndEvent() throws Exception {
+		VMRest vmRest = new VMRest();
+		PaaSEnergyModeller energyModeller = mock(PaaSEnergyModeller.class);
+		vmRest.energyModeller = energyModeller;
+		PriceModellerClient priceModellerClient = mock(PriceModellerClient.class);
+		vmRest.priceModellerClient = priceModellerClient;
+		EnergyModellerQueueController emController = mock(EnergyModellerQueueController.class);
+		vmRest.energyModellerQueueController = emController;
+		VMDAO vmDAO = mock(VMDAO.class);
+		vmRest.vmDAO = vmDAO;
+		
+		VM vm = new VM();
+		vm.setId(2);
+		vm.setProviderVmId("abab");
+		vm.setCpuActual(1);
+		vm.setRamActual(10);
+		
+		when(vmDAO.getById(2)).thenReturn(vm);
+		
+		List<String> ids = new ArrayList<String>();
+		ids.add("2");
+		when(energyModeller.estimate(null,  "app-name", "1", ids, "loquesea", Unit.ENERGY, 0l)).thenReturn(22.0);
+		when(energyModeller.estimate(null,  "app-name", "1", ids, "loquesea", Unit.POWER, 0l)).thenReturn(23.0);
+		
+		EnergyModellerMessage secMessage = new EnergyModellerMessage();
+		secMessage.setValue("10");
+		EnergyModellerMessage countMessage = new EnergyModellerMessage();
+		countMessage.setValue("22");
+		String secKey = EnergyModellerQueueController.generateKey("app-name", "loquesea", "1", ids, EnergyModellerQueueController.SEC);
+		String countKey = EnergyModellerQueueController.generateKey("app-name", "loquesea", "1", ids, EnergyModellerQueueController.COUNT);
+		when(emController.getPredictionMessage(secKey)).thenReturn(secMessage);
+		when(emController.getPredictionMessage(countKey)).thenReturn(countMessage);
+		
+		when(priceModellerClient.getEventPredictedCharges(1, 1, 10, 10000000d, 22.0d, 1, 10,22)).thenReturn(1.1d);
+		
+		Response response = vmRest.getCostEstimation("app-name", "1", "2", "loquesea");
+		assertEquals(200, response.getStatus());
+		
+		String xml = (String) response.getEntity();
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(Cost.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		Cost cost = (Cost) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals("/applications/app-name/deployments/1/vms/2/events/loquesea/cost-estimation", cost.getHref());
+		assertEquals(1.1d, cost.getCharges().doubleValue(), 0.0001);
+		assertEquals("Energy estimation in WATTHOURS", cost.getEnergyDescription());
+		assertEquals("Power estimation in WATTS", cost.getPowerDescription());
+		assertEquals(23.0d, cost.getPowerValue(), 0.0001);
+		assertEquals(22.0d, cost.getEnergyValue().doubleValue(), 0.0001);
+		assertEquals("Charges estimation in EUROS", cost.getChargesDescription());
+		assertEquals(2, cost.getLinks().size());
+		assertEquals("/applications/app-name/deployments/1/vms/2", cost.getLinks().get(0).getHref());
+		assertEquals("parent", cost.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, cost.getLinks().get(0).getType());
+		assertEquals("/applications/app-name/deployments/1/vms/2/events/loquesea/cost-estimation", cost.getLinks().get(1).getHref());
+		assertEquals("self", cost.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, cost.getLinks().get(1).getType());
+	}
+	
+	@Test
+	@SuppressWarnings(value = { "static-access" }) 
+	public void testGetCostEstimationForAVMAndEventNullSec() throws Exception {
+		VMRest vmRest = new VMRest();
+		PaaSEnergyModeller energyModeller = mock(PaaSEnergyModeller.class);
+		vmRest.energyModeller = energyModeller;
+		PriceModellerClient priceModellerClient = mock(PriceModellerClient.class);
+		vmRest.priceModellerClient = priceModellerClient;
+		EnergyModellerQueueController emController = mock(EnergyModellerQueueController.class);
+		vmRest.energyModellerQueueController = emController;
+		VMDAO vmDAO = mock(VMDAO.class);
+		vmRest.vmDAO = vmDAO;
+		
+		VM vm = new VM();
+		vm.setId(2);
+		vm.setProviderVmId("abab");
+		vm.setCpuActual(1);
+		vm.setRamActual(10);
+		
+		when(vmDAO.getById(2)).thenReturn(vm);
+		
+		List<String> ids = new ArrayList<String>();
+		ids.add("2");
+		when(energyModeller.estimate(null,  "app-name", "1", ids, "loquesea", Unit.ENERGY, 0l)).thenReturn(22.0);
+		when(energyModeller.estimate(null,  "app-name", "1", ids, "loquesea", Unit.POWER, 0l)).thenReturn(23.0);
+		
+		EnergyModellerMessage countMessage = new EnergyModellerMessage();
+		countMessage.setValue("22");
+		String secKey = EnergyModellerQueueController.generateKey("app-name", "loquesea", "1", ids, EnergyModellerQueueController.SEC);
+		String countKey = EnergyModellerQueueController.generateKey("app-name", "loquesea", "1", ids, EnergyModellerQueueController.COUNT);
+		when(emController.getPredictionMessage(secKey)).thenReturn(null);
+		when(emController.getPredictionMessage(countKey)).thenReturn(countMessage);
+		
+		Response response = vmRest.getCostEstimation("app-name", "1", "2", "loquesea");
+		assertEquals(200, response.getStatus());
+		
+		String xml = (String) response.getEntity();
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(Cost.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		Cost cost = (Cost) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals("/applications/app-name/deployments/1/vms/2/events/loquesea/cost-estimation", cost.getHref());
+		assertEquals(-1.0d, cost.getCharges().doubleValue(), 0.0001);
+		assertEquals("Energy estimation in WATTHOURS", cost.getEnergyDescription());
+		assertEquals("Power estimation in WATTS", cost.getPowerDescription());
+		assertEquals(23.0d, cost.getPowerValue(), 0.0001);
+		assertEquals(22.0d, cost.getEnergyValue().doubleValue(), 0.0001);
+		assertEquals("Charges estimation in EUROS", cost.getChargesDescription());
+		assertEquals(2, cost.getLinks().size());
+		assertEquals("/applications/app-name/deployments/1/vms/2", cost.getLinks().get(0).getHref());
+		assertEquals("parent", cost.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, cost.getLinks().get(0).getType());
+		assertEquals("/applications/app-name/deployments/1/vms/2/events/loquesea/cost-estimation", cost.getLinks().get(1).getHref());
+		assertEquals("self", cost.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, cost.getLinks().get(1).getType());
+	}
+	
+	@Test
+	@SuppressWarnings(value = { "static-access" }) 
+	public void testGetCostEstimationForAVMNullCountAndEvent() throws Exception {
+		VMRest vmRest = new VMRest();
+		PaaSEnergyModeller energyModeller = mock(PaaSEnergyModeller.class);
+		vmRest.energyModeller = energyModeller;
+		PriceModellerClient priceModellerClient = mock(PriceModellerClient.class);
+		vmRest.priceModellerClient = priceModellerClient;
+		EnergyModellerQueueController emController = mock(EnergyModellerQueueController.class);
+		vmRest.energyModellerQueueController = emController;
+		VMDAO vmDAO = mock(VMDAO.class);
+		vmRest.vmDAO = vmDAO;
+		
+		VM vm = new VM();
+		vm.setId(2);
+		vm.setProviderVmId("abab");
+		vm.setCpuActual(1);
+		vm.setRamActual(10);
+		
+		when(vmDAO.getById(2)).thenReturn(vm);
+		
+		List<String> ids = new ArrayList<String>();
+		ids.add("2");
+		when(energyModeller.estimate(null,  "app-name", "1", ids, "loquesea", Unit.ENERGY, 0l)).thenReturn(22.0);
+		when(energyModeller.estimate(null,  "app-name", "1", ids, "loquesea", Unit.POWER, 0l)).thenReturn(23.0);
+		
+		EnergyModellerMessage secMessage = new EnergyModellerMessage();
+		secMessage.setValue("10");
+		String secKey = EnergyModellerQueueController.generateKey("app-name", "loquesea", "1", ids, EnergyModellerQueueController.SEC);
+		String countKey = EnergyModellerQueueController.generateKey("app-name", "loquesea", "1", ids, EnergyModellerQueueController.COUNT);
+		when(emController.getPredictionMessage(secKey)).thenReturn(secMessage);
+		when(emController.getPredictionMessage(countKey)).thenReturn(null);
+		
+		Response response = vmRest.getCostEstimation("app-name", "1", "2", "loquesea");
+		assertEquals(200, response.getStatus());
+		
+		String xml = (String) response.getEntity();
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(Cost.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		Cost cost = (Cost) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals("/applications/app-name/deployments/1/vms/2/events/loquesea/cost-estimation", cost.getHref());
+		assertEquals(-1.0d, cost.getCharges().doubleValue(), 0.0001);
+		assertEquals("Energy estimation in WATTHOURS", cost.getEnergyDescription());
+		assertEquals("Power estimation in WATTS", cost.getPowerDescription());
+		assertEquals(23.0d, cost.getPowerValue(), 0.0001);
+		assertEquals(22.0d, cost.getEnergyValue().doubleValue(), 0.0001);
+		assertEquals("Charges estimation in EUROS", cost.getChargesDescription());
+		assertEquals(2, cost.getLinks().size());
+		assertEquals("/applications/app-name/deployments/1/vms/2", cost.getLinks().get(0).getHref());
+		assertEquals("parent", cost.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, cost.getLinks().get(0).getType());
+		assertEquals("/applications/app-name/deployments/1/vms/2/events/loquesea/cost-estimation", cost.getLinks().get(1).getHref());
+		assertEquals("self", cost.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, cost.getLinks().get(1).getType());
+	}
+	
+	@Test
+	@SuppressWarnings(value = { "static-access" }) 
 	public void testGetEnergyConsumptionForAVMAndEvent() throws Exception {
 		VMRest vmRest = new VMRest();
 		PaaSEnergyModeller energyModeller = mock(PaaSEnergyModeller.class);
@@ -292,7 +474,7 @@ public class VMRestTest extends AbstractTest {
 	}
 	
 	@Test
-	@SuppressWarnings(value = { "static-access" }) 
+	@SuppressWarnings(value = { "static-access"}) 
 	public void testGetEnergyConsumptionForAVMAndEventStarTimeUntilNow() throws Exception {
 		VMRest vmRest = new VMRest();
 		PaaSEnergyModeller energyModeller = mock(PaaSEnergyModeller.class);
@@ -333,7 +515,7 @@ public class VMRestTest extends AbstractTest {
 	}
 	
 	@Test
-	@SuppressWarnings(value = { "static-access" }) 
+	@SuppressWarnings(value = { "static-access"}) 
 	public void testGetEnergyConsumptionForAVMAndEventStarTimeUntilSecondTime() throws Exception {
 		VMRest vmRest = new VMRest();
 		PaaSEnergyModeller energyModeller = mock(PaaSEnergyModeller.class);

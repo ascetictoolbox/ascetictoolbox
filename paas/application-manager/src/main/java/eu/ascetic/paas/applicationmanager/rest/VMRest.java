@@ -31,6 +31,9 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Eve
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Unit;
 import eu.ascetic.paas.applicationmanager.amqp.AmqpProducer;
 import eu.ascetic.paas.applicationmanager.dao.ImageDAO;
+import eu.ascetic.paas.applicationmanager.em.amqp.EnergyModellerMessage;
+import eu.ascetic.paas.applicationmanager.em.amqp.EnergyModellerQueueController;
+import eu.ascetic.paas.applicationmanager.model.Cost;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
 import eu.ascetic.paas.applicationmanager.model.Image;
@@ -331,6 +334,60 @@ public class VMRest extends AbstractRest {
 		
 		// We create the XMl response
 		String xml = XMLBuilder.getEnergyEstimationForAnEventInAVMXMLInfo(energyMeasurement, applicationName, deploymentId, vmId, eventId);
+				
+		return buildResponse(Status.OK, xml);
+	}
+	
+	@GET
+	@Path("{vm_id}/events/{event_id}/cost-estimation")
+	@Produces(MediaType.APPLICATION_XML)
+	public Response getCostEstimation(@PathParam("application_name") String applicationName, 
+			                          @PathParam("deployment_id") String deploymentId,
+			                          @PathParam("vm_id") String vmId,
+			                          @PathParam("event_id") String eventId) throws InterruptedException {
+		logger.info("GET request to path: /applications/" + applicationName + "/deployments/" + deploymentId + "/vms/" + vmId + "/events/" + eventId + "/cost-estimation");
+				
+		energyModeller = getEnergyModeller();
+		
+		VM vm = vmDAO.getById(Integer.parseInt(vmId));
+		List<String> ids = new ArrayList<String>();
+		ids.add("" + vm.getId());
+		
+		logger.debug("Connecting to Energy Modeller");
+
+		double energyEstimated = energyModeller.estimate(null,  applicationName, deploymentId, ids, eventId, Unit.ENERGY, 0l);
+		double powerEstimated = energyModeller.estimate(null,  applicationName, deploymentId, ids, eventId, Unit.POWER, 0l);
+		
+		// Getting from the queue the necessary variables to query the Price Modeller
+		String secKey = EnergyModellerQueueController.generateKey(applicationName, eventId, deploymentId, ids, EnergyModellerQueueController.SEC);
+		String countKey = EnergyModellerQueueController.generateKey(applicationName, eventId, deploymentId, ids, EnergyModellerQueueController.COUNT);
+		
+		Thread.sleep(1000l);
+		
+		EnergyModellerMessage emMessageSec = getEnergyModellerQueueController().getPredictionMessage(secKey); 
+		EnergyModellerMessage emMessageCount = getEnergyModellerQueueController().getPredictionMessage(countKey); 
+		
+		Cost cost = new Cost();
+		cost.setEnergyValue(energyEstimated);
+		cost.setPowerValue(powerEstimated);
+		
+		if(emMessageSec != null && emMessageCount != null) {
+			long duration = Long.parseLong(emMessageSec.getValue());
+			int numberOfevents = Integer.parseInt(emMessageCount.getValue());
+			
+			int cpu = vm.getCpuActual();
+			int ram = (int) vm.getRamActual();
+			
+			double storage = 10000000d; // TODO this needs to be readed by the OVF
+			
+			double charges = priceModellerClient.getEventPredictedCharges(Integer.parseInt(deploymentId), cpu, ram, storage, energyEstimated, 1, duration, numberOfevents);
+			cost.setCharges(charges);
+		} else {
+			cost.setCharges(-1.0d);
+		}
+		
+		// We create the XMl response
+		String xml = XMLBuilder.getCostEstimationForAnEventInAVMXMLInfo(cost, applicationName, deploymentId, vmId, eventId);
 				
 		return buildResponse(Status.OK, xml);
 	}

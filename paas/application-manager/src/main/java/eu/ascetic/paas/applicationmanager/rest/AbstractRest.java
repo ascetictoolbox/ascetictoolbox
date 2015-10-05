@@ -16,12 +16,14 @@ import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.dao.VMDAO;
 import eu.ascetic.paas.applicationmanager.datamodel.convert.ApplicationConverter;
 import eu.ascetic.paas.applicationmanager.em.EnergyModellerBean;
+import eu.ascetic.paas.applicationmanager.em.amqp.EnergyModellerQueueController;
 import eu.ascetic.paas.applicationmanager.event.DeploymentEvent;
 import eu.ascetic.paas.applicationmanager.event.deployment.DeploymentEventService;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
+import eu.ascetic.paas.applicationmanager.pm.PriceModellerClient;
 import eu.ascetic.paas.applicationmanager.rest.util.ApplicationContextHolder;
 import eu.ascetic.paas.applicationmanager.rest.util.DateUtil;
 import eu.ascetic.paas.applicationmanager.rest.util.XMLBuilder;
@@ -61,6 +63,8 @@ public abstract class AbstractRest {
 	//@Autowired
 	//protected static EnergyModellerBean energyModellerBean;
 	protected static PaaSEnergyModeller energyModeller;
+	protected static EnergyModellerQueueController energyModellerQueueController;
+	protected static PriceModellerClient priceModellerClient;
 	
 	
 	protected Response buildResponse(Response.Status status, String payload) {
@@ -84,6 +88,36 @@ public abstract class AbstractRest {
 		}
 		else {
 			return energyModeller;
+		}
+	}
+	
+	/**
+	 * Constructs the EnergyModellerQueueController with an specific configuration if necessary
+	 * @return the new EnergyModellerQueueController or a previous created object
+	 */
+	protected static EnergyModellerQueueController getEnergyModellerQueueController() {
+		if(energyModellerQueueController == null) {
+			energyModellerQueueController = ApplicationContextHolder.getContext().getBean(EnergyModellerQueueController.class);
+
+			return energyModellerQueueController;
+		}
+		else {
+			return energyModellerQueueController;
+		}
+	}
+	
+	/**
+	 * Constructs the PriceModellerClient with an specific configuration if necessary
+	 * @return the new PriceModellerClient or a previous created object
+	 */
+	protected static PriceModellerClient getPriceModellerClient() {
+		if(priceModellerClient == null) {
+			priceModellerClient = PriceModellerClient.getInstance();
+
+			return priceModellerClient;
+		}
+		else {
+			return priceModellerClient;
 		}
 	}
 	

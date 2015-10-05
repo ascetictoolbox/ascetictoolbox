@@ -67,6 +67,9 @@ private static Logger logger = Logger.getLogger(AcceptAgreementEventHandler.clas
 	public void acceptAgreement(Event<DeploymentEvent> event) throws Exception {
 		DeploymentEvent deploymentEvent = event.getData();
 		logger.info("Deployment " + deploymentEvent.getDeploymentId() + " NEGOTIATED, checking if it automatica agreement");
+		
+		// TODO The schema ID needs to be entered by the REST API
+		PriceModellerClient.getInstance().initializeApplication(deploymentEvent.getDeploymentId(), 1);
 
 		if(deploymentEvent.getDeploymentStatus().equals(Dictionary.APPLICATION_STATUS_NEGOTIATIED) && deploymentEvent.isAutomaticNegotiation() == true) {
 			

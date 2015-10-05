@@ -1,5 +1,6 @@
 package eu.ascetic.paas.applicationmanager.rest.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.core.MediaType;
@@ -7,6 +8,7 @@ import javax.ws.rs.core.MediaType;
 import eu.ascetic.paas.applicationmanager.model.Agreement;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Collection;
+import eu.ascetic.paas.applicationmanager.model.Cost;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
 import eu.ascetic.paas.applicationmanager.model.EventSample;
@@ -636,5 +638,31 @@ public class XMLBuilder {
 		}
 		
 		return ModelConverter.objectCollectionToXML(collection);
+	}
+
+	public static String getCostEstimationForAnEventInAVMXMLInfo(Cost cost, String applicationName, String deploymentId, String vmId, String eventId) {
+		cost.setChargesDescription("Charges estimation in EUROS");
+		cost.setPowerDescription("Power estimation in WATTS");
+		cost.setEnergyDescription("Energy estimation in WATTHOURS");
+		
+		String parentHref = "/applications/" + applicationName + "/deployments/" + deploymentId + "/vms/" + vmId;
+		cost.setHref(parentHref + "/events/" + eventId + "/cost-estimation");
+		
+		List<Link> links = new ArrayList<Link>();
+		cost.setLinks(links);
+		
+		Link linkParent = new Link();
+		linkParent.setHref(parentHref);
+		linkParent.setRel("parent");
+		linkParent.setType(MediaType.APPLICATION_XML);
+		links.add(linkParent);
+		
+		Link linkSelf = new Link();
+		linkSelf.setHref(cost.getHref());
+		linkSelf.setRel("self");
+		linkSelf.setType(MediaType.APPLICATION_XML);
+		links.add(linkSelf);
+		
+		return ModelConverter.objectCostToXML(cost);
 	}
 }

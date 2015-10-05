@@ -18,6 +18,7 @@ import org.junit.Test;
 import eu.ascetic.paas.applicationmanager.model.Agreement;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Collection;
+import eu.ascetic.paas.applicationmanager.model.Cost;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
 import eu.ascetic.paas.applicationmanager.model.EventSample;
@@ -1015,5 +1016,34 @@ public class XMLBuilderTest {
 		assertEquals("/applications/app-id/deployments/223/vms/44", vm.getLinks().get(1).getHref());
 		assertEquals("self", vm.getLinks().get(1).getRel());
 		assertEquals(MediaType.APPLICATION_XML, vm.getLinks().get(1).getType());
+	}
+	
+	@Test
+	public void getCostEstimationForAnEventInAVMXMLInfoTest() throws JAXBException {
+		Cost cost = new Cost();
+		cost.setCharges(1.0d);
+		cost.setEnergyValue(2.0d);
+		cost.setPowerValue(1.0d);
+		
+		String xml = XMLBuilder.getCostEstimationForAnEventInAVMXMLInfo(cost, "app-name", "1", "3", "loquesea");
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(Cost.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		cost = (Cost) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals("/applications/app-name/deployments/1/vms/3/events/loquesea/cost-estimation", cost.getHref());
+		assertEquals(1.0d, cost.getCharges().doubleValue(), 0.0001);
+		assertEquals("Energy estimation in WATTHOURS", cost.getEnergyDescription());
+		assertEquals("Power estimation in WATTS", cost.getPowerDescription());
+		assertEquals(2.0d, cost.getEnergyValue().doubleValue(), 0.0001);
+		assertEquals(1.0d, cost.getPowerValue().doubleValue(), 0.0001);
+		assertEquals("Charges estimation in EUROS", cost.getChargesDescription());
+		assertEquals(2, cost.getLinks().size());
+		assertEquals("/applications/app-name/deployments/1/vms/3", cost.getLinks().get(0).getHref());
+		assertEquals("parent", cost.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, cost.getLinks().get(0).getType());
+		assertEquals("/applications/app-name/deployments/1/vms/3/events/loquesea/cost-estimation", cost.getLinks().get(1).getHref());
+		assertEquals("self", cost.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, cost.getLinks().get(1).getType());
 	}
 }

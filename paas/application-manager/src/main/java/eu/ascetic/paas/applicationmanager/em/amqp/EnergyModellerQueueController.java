@@ -56,6 +56,7 @@ public class EnergyModellerQueueController {
 	private AmqpMessageReceiver receiverPredictions;
 	
 	public EnergyModellerQueueController() {
+		logger.info("Starting service EnergyModellerQueueController...........................................");
 		// It is necessary to create two different queues to store the messages
 		measurementMessages = EnergyModellerQueueController.createLRUMap(MAX_ENTRIES_CACHE);
 		predictionsMessages = EnergyModellerQueueController.createLRUMap(MAX_ENTRIES_CACHE);
