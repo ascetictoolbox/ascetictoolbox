@@ -64,11 +64,13 @@ public class EnergyModellerQueueController {
 		// We get from the configuration the parameters to subscribe to the ActiveMQ message queue topics and
 		// We create two listeners to them.
 		try {
+			logger.info("Subscribing to the following queue: Address: " + Configuration.amqpAddress + " user: " + Configuration.amqpUsername + " password: " +  Configuration.amqpPassword + " measurements: " + Configuration.emMeasurementsTopic);
 			receiverMeasurements = new AmqpMessageReceiver(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword,  Configuration.emMeasurementsTopic, true);
 			emListenerMeasurements = new EnergyModellerMessageListener(this, MEASUREMENTS);
 			receiverMeasurements.setMessageConsumer(emListenerMeasurements);
 			
-			receiverPredictions = new AmqpMessageReceiver(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword,  Configuration.emMeasurementsTopic, true);
+			logger.info("Subscribing to the following queue: Address: " + Configuration.amqpAddress + " user: " + Configuration.amqpUsername + " password: " +  Configuration.amqpPassword + " measurements: " + Configuration.emPredictionsTopic);
+			receiverPredictions = new AmqpMessageReceiver(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword,  Configuration.emPredictionsTopic, true);
 			emListenerPredictions = new EnergyModellerMessageListener(this, PREDICTIONS);
 			receiverPredictions.setMessageConsumer(emListenerPredictions);
 			

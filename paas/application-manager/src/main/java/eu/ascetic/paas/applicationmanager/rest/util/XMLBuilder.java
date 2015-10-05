@@ -665,4 +665,66 @@ public class XMLBuilder {
 		
 		return ModelConverter.objectCostToXML(cost);
 	}
+
+	public static PowerMeasurement addPowerConsumptionForAnEventInAVMXMLInfo(PowerMeasurement powerMeasurement, 
+																			 String applicationId, 
+																			 String deploymentId,
+																			 String vmId, 
+																			 String eventId) {
+		
+		return addPowerConsumptionOrEstimationForAnEventInAVMXMLInfo(powerMeasurement, applicationId, deploymentId, vmId, eventId, "consumption");
+	}
+	
+	private static PowerMeasurement addPowerConsumptionOrEstimationForAnEventInAVMXMLInfo(PowerMeasurement powerMeasurement, 
+																						   String applicationId, 
+																						   String deploymentId, 
+																						   String vmId, 
+																						   String eventId,
+																						   String endURL) {
+		powerMeasurement.setDescription("Aggregated power " + endURL + " in Wh for an event in a specific VM");
+		powerMeasurement.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/vms/" + vmId + "/events/" + eventId + "/power-" + endURL);
+
+		Link linkParent = new Link();
+		linkParent.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/vms/" + vmId + "/events/" + eventId);
+		linkParent.setRel("parent");
+		linkParent.setType(MediaType.APPLICATION_XML);
+		powerMeasurement.addLink(linkParent);
+
+		Link linkSelf = new Link();
+		linkSelf.setHref(powerMeasurement.getHref());
+		linkSelf.setRel("self");
+		linkSelf.setType(MediaType.APPLICATION_XML);
+		powerMeasurement.addLink(linkSelf);
+
+		return powerMeasurement;
+	}
+
+	public static PowerMeasurement addPowerEstimationForAnEventInAVMXMLInfo(PowerMeasurement powerMeasurement, 
+																			String applicationId, 
+																			String deploymentId,
+																			String vmId,
+																			String eventId) {
+		
+		return addPowerConsumptionOrEstimationForAnEventInAVMXMLInfo(powerMeasurement, applicationId, deploymentId, vmId, eventId, "estimation");
+	}
+
+	public static String getPowerConsumptionForAnEventInAVMXMLInfo(PowerMeasurement powerMeasurement, 
+																   String applicationId, 
+																   String deploymentId,
+																   String vmId, 
+																   String eventId) {
+		
+		powerMeasurement = XMLBuilder.addPowerConsumptionForAnEventInAVMXMLInfo(powerMeasurement, applicationId, deploymentId, vmId, eventId);
+		return ModelConverter.objectPowerMeasurementToXML(powerMeasurement);
+	}
+
+	public static String getPowerEstimationForAnEventInAVMXMLInfo(PowerMeasurement powerMeasurement, 
+																  String applicationId, 
+																  String deploymentId,
+																  String vmId, 
+																  String eventId) {
+		
+		powerMeasurement = XMLBuilder.addPowerEstimationForAnEventInAVMXMLInfo(powerMeasurement, applicationId, deploymentId, vmId, eventId);
+		return ModelConverter.objectPowerMeasurementToXML(powerMeasurement);
+	}
 }

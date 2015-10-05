@@ -37,6 +37,7 @@ import eu.ascetic.paas.applicationmanager.model.Cost;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
 import eu.ascetic.paas.applicationmanager.model.Image;
+import eu.ascetic.paas.applicationmanager.model.PowerMeasurement;
 import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
 import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
@@ -401,6 +402,7 @@ public class VMRest extends AbstractRest {
 			                             @PathParam("event_id") String eventId,
 			                             @DefaultValue("0") @QueryParam("startTime") long startTime,
 			                             @DefaultValue("0") @QueryParam("endTime") long endTime) {
+		
 		logger.info("GET request to path: /applications/" + applicationName 
 				                            + "/deployments/" + deploymentId 
 				                            + "/vms/" + vmId 
@@ -409,31 +411,10 @@ public class VMRest extends AbstractRest {
 				                            + "startTime=" + startTime
 				                            + "&endTime=" + endTime);
 
-		// Make sure we have the right configuration
-		energyModeller = getEnergyModeller();
+
 		EnergyMeasurement energyMeasurement = new EnergyMeasurement();
-		double energyConsumed = 0.0;
 		
-		VM vm = vmDAO.getById(Integer.parseInt(vmId));
-		List<String> ids = new ArrayList<String>();
-		ids.add("" + vm.getId());
-		
-		logger.debug("Connecting to Energy Modeller");
-		
-		if(startTime == 0) {
-			energyConsumed = energyModeller.measure(null,  applicationName, deploymentId , ids, eventId, Unit.ENERGY, null, null); 
-			
-		} else if(endTime == 0) {
-			Timestamp startStamp = new Timestamp(startTime);
-			Timestamp endStamp = new Timestamp(System.currentTimeMillis());
-			
-			energyConsumed = energyModeller.measure(null,  applicationName, deploymentId, ids, eventId, Unit.ENERGY, startStamp, endStamp); 
-		} else {
-			Timestamp startStamp = new Timestamp(startTime);
-			Timestamp endStamp = new Timestamp(endTime);
-			
-			energyConsumed = energyModeller.measure(null,  applicationName, deploymentId, ids, eventId, Unit.ENERGY, startStamp, endStamp); 
-		}
+		double energyConsumed = getEnergyOrPowerMeasurement(null, applicationName, deploymentId, vmId, eventId, Unit.ENERGY, startTime, endTime);
 		
 		energyMeasurement.setValue(energyConsumed);
 		
@@ -443,55 +424,73 @@ public class VMRest extends AbstractRest {
 		return buildResponse(Status.OK, xml);
 	}
 	
-//	@GET
-//	@Path("{vm_id}/events/{event_id}/power-consumption")
-//	@Produces(MediaType.APPLICATION_XML)
-//	public Response getPowerConsumption(@PathParam("application_name") String applicationName, 
-//			                             @PathParam("deployment_id") String deploymentId,
-//			                             @PathParam("vm_id") String vmId,
-//			                             @PathParam("event_id") String eventId,
-//			                             @DefaultValue("0") @QueryParam("startTime") long startTime,
-//			                             @DefaultValue("0") @QueryParam("endTime") long endTime) {
-//		logger.info("GET request to path: /applications/" + applicationName 
-//				                            + "/deployments/" + deploymentId 
-//				                            + "/vms/" + vmId 
-//				                            + "/events/" + eventId 
-//				                            + "/energy-consumption?"
-//				                            + "startTime=" + startTime
-//				                            + "&endTime=" + endTime);
-//
-//		// Make sure we have the right configuration
-//		energyModeller = getEnergyModeller();
-//		EnergyMeasurement energyMeasurement = new EnergyMeasurement();
-//		double energyConsumed = 0.0;
-//		
-//		VM vm = vmDAO.getById(Integer.parseInt(vmId));
-//		List<String> ids = new ArrayList<String>();
-//		ids.add(vm.getProviderVmId());
-//		
-//		logger.debug("Connecting to Energy Modeller");
-//		
-//		if(startTime == 0) {
-//			energyConsumed = energyModeller.energyApplicationConsumption(null, applicationName, ids, eventId);
-//		} else if(endTime == 0) {
-//			Timestamp startStamp = new Timestamp(startTime);
-//			Timestamp endStamp = new Timestamp(System.currentTimeMillis());
-//			
-//			energyConsumed = energyModeller.applicationConsumptionInInterval(null, applicationName, ids, eventId, Unit.ENERGY, startStamp, endStamp);
-//		} else {
-//			Timestamp startStamp = new Timestamp(startTime);
-//			Timestamp endStamp = new Timestamp(endTime);
-//			
-//			energyConsumed = energyModeller.applicationConsumptionInInterval(null, applicationName, ids, eventId, Unit.ENERGY, startStamp, endStamp);
-//		}
-//		
-//		energyMeasurement.setValue(energyConsumed);
-//		
-//		// We create the XMl response
-//		String xml = XMLBuilder.getEnergyConsumptionForAnEventInAVMXMLInfo(energyMeasurement, applicationName, deploymentId, vmId, eventId);
-//				
-//		return buildResponse(Status.OK, xml);
-//	}
+	@GET
+	@Path("{vm_id}/events/{event_id}/power-consumption")
+	@Produces(MediaType.APPLICATION_XML)
+	public Response getPowerConsumption(@PathParam("application_name") String applicationName, 
+			                             @PathParam("deployment_id") String deploymentId,
+			                             @PathParam("vm_id") String vmId,
+			                             @PathParam("event_id") String eventId,
+			                             @DefaultValue("0") @QueryParam("startTime") long startTime,
+			                             @DefaultValue("0") @QueryParam("endTime") long endTime) {
+		
+		logger.info("GET request to path: /applications/" + applicationName 
+				                            + "/deployments/" + deploymentId 
+				                            + "/vms/" + vmId 
+				                            + "/events/" + eventId 
+				                            + "/energy-consumption?"
+				                            + "startTime=" + startTime
+				                            + "&endTime=" + endTime);
+
+
+		PowerMeasurement powerMeasurement = new PowerMeasurement();
+		
+		double energyConsumed = getEnergyOrPowerMeasurement(null, applicationName, deploymentId, vmId, eventId, Unit.POWER, startTime, endTime);
+		
+		powerMeasurement.setValue(energyConsumed);
+		
+		// We create the XMl response
+		String xml = XMLBuilder.getPowerConsumptionForAnEventInAVMXMLInfo(powerMeasurement, applicationName, deploymentId, vmId, eventId);
+				
+		return buildResponse(Status.OK, xml);
+	}
+	
+	private double getEnergyOrPowerMeasurement(String providerId, 
+											   String applicationName, 
+											   String deploymentId, 
+											   String vmId, 
+											   String eventId, 
+											   Unit unit,
+											   long startTime,
+											   long endTime) {
+		// Make sure we have the right configuration
+		energyModeller = getEnergyModeller();
+		
+		double energyConsumed = 0.0;
+		
+		VM vm = vmDAO.getById(Integer.parseInt(vmId));
+		List<String> ids = new ArrayList<String>();
+		ids.add("" + vm.getId());
+		
+		logger.debug("Connecting to Energy Modeller");
+		
+		if(startTime == 0) {
+			energyConsumed = energyModeller.measure(null,  applicationName, deploymentId , ids, eventId, unit, null, null); 
+			
+		} else if(endTime == 0) {
+			Timestamp startStamp = new Timestamp(startTime);
+			Timestamp endStamp = new Timestamp(System.currentTimeMillis());
+			
+			energyConsumed = energyModeller.measure(null,  applicationName, deploymentId, ids, eventId, unit, startStamp, endStamp); 
+		} else {
+			Timestamp startStamp = new Timestamp(startTime);
+			Timestamp endStamp = new Timestamp(endTime);
+			
+			energyConsumed = energyModeller.measure(null,  applicationName, deploymentId, ids, eventId, unit, startStamp, endStamp); 
+		}
+		
+		return energyConsumed;
+	}
 	
 	@GET
 	@Path("{vm_id}/events/{event_id}/energy-sample")

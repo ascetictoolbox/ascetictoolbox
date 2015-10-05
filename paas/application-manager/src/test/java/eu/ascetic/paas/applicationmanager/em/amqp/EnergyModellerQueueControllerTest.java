@@ -153,7 +153,7 @@ public class EnergyModellerQueueControllerTest extends AbstractTest {
 		AmqpMessageProducer producerMeasurements = new AmqpMessageProducer(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword, Configuration.emMeasurementsTopic, true);
 		producerMeasurements.sendMessage(message1);
 		
-		AmqpMessageProducer producerPredictions = new AmqpMessageProducer(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword, Configuration.emMeasurementsTopic, true);
+		AmqpMessageProducer producerPredictions = new AmqpMessageProducer(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword, Configuration.emPredictionsTopic, true);
 		producerPredictions.sendMessage(message1);
 		
 		// We wait one second just in case
