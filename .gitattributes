@@ -4060,6 +4060,8 @@ utils/host-power-emulator/associate[!!-~]scripts/host-power-push-exec.sh -text
 utils/host-power-emulator/associate[!!-~]scripts/host-power-push-kill.sh -text
 utils/host-power-emulator/associate[!!-~]scripts/start-host-power.sh -text
 utils/host-power-emulator/associate[!!-~]scripts/stop-host-power.sh -text
+utils/host-power-emulator/dependency-reduced-pom.xml -text
+utils/host-power-emulator/nbactions.xml -text
 utils/host-power-emulator/pom.xml -text
 utils/host-power-emulator/src/main/java/eu/ascetic/utils/hostpoweremulator/HostPowerEmulator.java -text
 utils/host-power-emulator/src/main/java/eu/ascetic/utils/hostpoweremulator/HostPowerLogger.java -text
