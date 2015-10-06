@@ -47,14 +47,14 @@ public class EnergyProvider implements EnergyProviderInterface{
 	public EnergyProvider(IaaSPricingModeller iaasprovider){
 		idEP=idEP+1;
 		this.iaasprovider = iaasprovider;
-		timer = new Timer (true);
-		timer.scheduleAtFixedRate(new EnergyPriceSetter(this), TimeUnit.SECONDS.toMillis(delay), TimeUnit.HOURS.toMillis(12));
+		//timer = new Timer (true);
+		//timer.scheduleAtFixedRate(new EnergyPriceSetter(this), TimeUnit.SECONDS.toMillis(delay), TimeUnit.HOURS.toMillis(12));
 	}
 	
 	public EnergyProvider(){
 		idEP=idEP+1;
-		timer = new Timer (true);
-		timer.scheduleAtFixedRate(new EnergyPriceSetter(this), TimeUnit.SECONDS.toMillis(delay), TimeUnit.HOURS.toMillis(12));
+		//timer = new Timer (true);
+		//timer.scheduleAtFixedRate(new EnergyPriceSetter(this), TimeUnit.SECONDS.toMillis(delay), TimeUnit.HOURS.toMillis(12));
 	}
 	
 	public int getId(){
