@@ -195,12 +195,16 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		} else {
 			// average event power
 			currentval = averagePower(providerid,applicationid, deploymentid, vmids,  eventid,null,null);
-			LOGGER.info("############ EVENT Forecasted instant power, now set to queue " + currentval); 
+			LOGGER.info("############ EVENTs Forecasted instant power, now set to queue " + currentval); 
 			if (currentval>0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATT, null, currentval);
-			long duration = averageDuration(providerid,applicationid, deploymentid, vmids,  eventid);
+			double duration = averageDuration(providerid,applicationid, deploymentid, vmids,  eventid);
 			
 			LOGGER.info("############ EVENT Forecasting duration (sec) " + duration); 
+			LOGGER.info("############ EVENT val is " + currentval); 
 			if (unit==Unit.ENERGY){
+				LOGGER.info("############ EVENT statistics");
+				LOGGER.info("############ EVENT duration (sec) "+duration+ " in hour "+duration/3600);
+				LOGGER.info("############ EVENT power "+currentval);
 				
 				if (duration>0){
 					double douration_in_hour = duration/3600;
@@ -302,8 +306,8 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	 * 
 	 */	
 	
-	private long averageDuration(String providerid, String applicationid, String deploymentid, List<String> vmids, String eventid){
-		long duration=0;
+	private double averageDuration(String providerid, String applicationid, String deploymentid, List<String> vmids, String eventid){
+		double duration=0;
 		long vmwithevent=0;
 		
 		for (String vm : vmids) {
@@ -311,9 +315,6 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 			// TODO workaround 
 			String translated = energyService.translatePaaSFromIaasID(deploymentid, vm);
 			List<DataEvent> events = eventService.getEvents(applicationid, deploymentid, translated, eventid,null,null);
-			if (events.size()>0){
-				vmwithevent++;
-			}
 			long vmavg =0;
 			int totalevent=0;
 			for (DataEvent de: events){
@@ -326,8 +327,9 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 			if (totalevent>0){
 				vmavg = vmavg/totalevent;
 				duration = duration+vmavg;
+				if(vmavg>0)vmwithevent++;
 			} 
-			LOGGER.info("############ This VM " + vm + " has events  " + totalevent + " avg duration " + vmavg  );
+			LOGGER.info("############ This VM " + vm + " has events  " + totalevent + " avg duration " + vmavg + " vms with events are "+vmwithevent );
 			List<String> vms = new Vector<String>();
 			vms.add(vm);
 			LOGGER.info("############ Sending to queue event statistics for this VM ");
