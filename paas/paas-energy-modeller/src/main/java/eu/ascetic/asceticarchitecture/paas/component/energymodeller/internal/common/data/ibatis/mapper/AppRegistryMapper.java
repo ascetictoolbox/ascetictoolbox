@@ -24,7 +24,7 @@ public interface AppRegistryMapper {
 	  @Insert("INSERT INTO APPLICATION_REGISTRY (app_id,deploy_id,vm_id,start,stop,profile_id,model_id,iaas_id) VALUES(#{app_id},#{deploy_id},#{vm_id},#{start},#{stop},#{profile_id},#{model_id},#{iaas_id})")
 	  void createVM(VirtualMachine vm);
 	  
-	  @Update("UPDATE APPLICATION_REGISTRY set stop=#{stop} WHERE #{app_id} and deploy_id = #{deploy_id} and vm_id = #{vm_id} ")
+	  @Update("UPDATE APPLICATION_REGISTRY set stop=#{stop} WHERE app_id=#{app_id}  and deploy_id = #{deploy_id} and vm_id = #{vm_id} ")
 	  void stopVM(VirtualMachine vm);
 	  
 	  @Update("UPDATE APPLICATION_REGISTRY set model_id=#{model_id} WHERE #{app_id} and deploy_id = #{deploy_id} and vm_id = #{vm_id} ")

@@ -198,11 +198,13 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 			LOGGER.info("############ EVENT Forecasted instant power, now set to queue " + currentval); 
 			if (currentval>0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATT, null, currentval);
 			long duration = averageDuration(providerid,applicationid, deploymentid, vmids,  eventid);
-			LOGGER.info("############ EVENT Forecasting duration " + duration); 
+			
+			LOGGER.info("############ EVENT Forecasting duration (sec) " + duration); 
 			if (unit==Unit.ENERGY){
 				
 				if (duration>0){
-					currentval = currentval/duration;
+					double douration_in_hour = duration/3600;
+					currentval = currentval*douration_in_hour;
 					LOGGER.info("############ EVENT Forecasted consumption " + currentval); 
 				}else{
 					LOGGER.warn("############ EVENT Something wrong with this values, check calculation");
@@ -226,7 +228,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 			
 			double total_energy=0;
 			if (eventid==null){
-				LOGGER.debug("Analytzing application");
+				LOGGER.debug("Analyzing application");
 				for (String vm : vmids) {
 					double energy = energyForVM(providerid, applicationid, deploymentid, vm, eventid,start,end);
 					LOGGER.info("This VM "+ vm + " consumed " + String.format( "%.2f", energy ));
@@ -234,7 +236,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 				}			
 				LOGGER.info("Application consumed " + String.format( "%.2f", total_energy ));
 			} else {
-				LOGGER.debug("Analytzing event");
+				LOGGER.debug("Analyzing event");
 				for (String vm : vmids) {
 					LOGGER.debug("Analyzing events on VM "+vm); 
 					total_energy = total_energy + energyForVM(providerid, applicationid, deploymentid, vm, eventid,start,end);

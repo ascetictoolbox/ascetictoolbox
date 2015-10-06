@@ -276,7 +276,7 @@ public class EnergyModellerQueueServiceManager {
 	                    	LOGGER.info("Received DEPLOYED message");
 	                    }
 	                    if (topic[6].equals("DELETED")){
-		                    
+	                    	
 	                    	VirtualMachine vm = new VirtualMachine();
 		                    vm.setApp_id( topic[1]);
 		                    vm.setDeploy_id(Integer.parseInt(topic[3]));
@@ -284,6 +284,7 @@ public class EnergyModellerQueueServiceManager {
 		                    Date date = new Date();
 	                    	vm.setStop(date.getTime());
 	                    	int checkvm = mapper.checkVM(vm.getApp_id(), vm.getDeploy_id(), vm.getVm_id());
+	                    	LOGGER.info("Received DELETED for VM"+vm.getApp_id()+ vm.getDeploy_id()+ vm.getVm_id());
 	                    	if (checkvm==0){
 	                    		LOGGER.warn("Received a message for an app not being created");
 	                    		return;

@@ -132,7 +132,7 @@ public class AmqpClient {
 	}
 	
 	public void sendMessage(String queue, String message){
-		LOGGER.info("Sending Message");
+		LOGGER.info("Sending Message to queue "+queue);
 		try {
 			if (queue=="prediction"){
 				TextMessage messagetext = session.createTextMessage(message);
