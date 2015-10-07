@@ -39,6 +39,6 @@ public class ReactorConfig {
   @Bean
   public Reactor rootReactor(Environment env) {
     // implicit Environment is injected into bean def method
-    return Reactors.reactor().env(env).get();
+    return Reactors.reactor().env(env).dispatcher(Environment.THREAD_POOL).get();
   }
 }

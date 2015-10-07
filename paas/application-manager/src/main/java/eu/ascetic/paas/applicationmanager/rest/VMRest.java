@@ -42,6 +42,7 @@ import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
 import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
 import eu.ascetic.paas.applicationmanager.ovf.VMLimits;
+import eu.ascetic.paas.applicationmanager.pm.PriceModellerClient;
 import eu.ascetic.paas.applicationmanager.rest.util.EnergyModellerConverter;
 import eu.ascetic.paas.applicationmanager.rest.util.XMLBuilder;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.ImageUploader;
@@ -373,13 +374,20 @@ public class VMRest extends AbstractRest {
 		cost.setPowerValue(powerEstimated);
 		
 		if(emMessageSec != null && emMessageCount != null) {
-			long duration = Long.parseLong(emMessageSec.getValue());
-			int numberOfevents = Integer.parseInt(emMessageCount.getValue());
+			logger.info("Parsing duration value of: " + emMessageSec.getValue());
+			logger.info("Parsig number events: " + emMessageCount.getValue());
+			
+			long duration = (long) Double.parseDouble(emMessageSec.getValue());
+			int numberOfevents = (int) Double.parseDouble(emMessageCount.getValue());
 			
 			int cpu = vm.getCpuActual();
 			int ram = (int) vm.getRamActual();
 			
 			double storage = 10000000d; // TODO this needs to be readed by the OVF
+			
+			if(priceModellerClient == null) {
+				priceModellerClient = PriceModellerClient.getInstance();
+			}
 			
 			double charges = priceModellerClient.getEventPredictedCharges(Integer.parseInt(deploymentId), cpu, ram, storage, energyEstimated, 1, duration, numberOfevents);
 			cost.setCharges(charges);
