@@ -46,6 +46,8 @@ import es.bsc.vmmanagercore.monitoring.hosts.HostType;
 import es.bsc.vmmanagercore.selfadaptation.PeriodicSelfAdaptationRunnable;
 import es.bsc.vmmanagercore.selfadaptation.SelfAdaptationManager;
 import es.bsc.vmmanagercore.selfadaptation.options.SelfAdaptationOptions;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +83,7 @@ public class GenericVmManager implements VmManager {
     private static boolean periodicSelfAdaptationThreadRunning = false;
 
     private static final VmManagerConfiguration conf = VmManagerConfiguration.getInstance();
+	private Logger log = LogManager.getLogger(GenericVmManager.class);
 
     /**
      * Constructs a VmManager with the name of the database to be used.
@@ -478,6 +481,7 @@ public class GenericVmManager implements VmManager {
 
     private void generateZabbixHosts(String[] hostnames) {
         for (String hostname: hostnames) {
+			log.debug("Generating zabbix host for host: " + hostname);
             hosts.add(HostFactory.getHost(hostname, HostType.ZABBIX, null));
         }
     }

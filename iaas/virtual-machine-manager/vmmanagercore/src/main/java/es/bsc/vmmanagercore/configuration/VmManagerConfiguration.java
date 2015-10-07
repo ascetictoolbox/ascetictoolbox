@@ -23,6 +23,7 @@ import org.apache.log4j.Logger;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Properties;
 
 /**
@@ -169,6 +170,8 @@ public class VmManagerConfiguration {
         else {
             throw new IllegalArgumentException("The cloud middleware selected is not supported");
         }
+		
+		LogManager.getLogger(VmManagerConfiguration.class).debug("Loading configuration: " + toString());
     }
 
     /**
@@ -195,4 +198,33 @@ public class VmManagerConfiguration {
         return SingletonHolder.CONF_INSTANCE;
     }
 
+
+	@Override
+	public String toString() {
+		return "VmManagerConfiguration{" +
+				"\n\topenStackIP='" + openStackIP + '\'' +
+				"\n\tkeyStonePort=" + keyStonePort +
+				"\n\tglancePort=" + glancePort +
+				"\n\tkeyStoneUser='" + keyStoneUser + '\'' +
+				"\n\tkeyStoneTenant='" + keyStoneTenant + '\'' +
+				"\n\tkeyStoneTenantId='" + keyStoneTenantId + '\'' +
+				"\n\tkeyStonePassword='" + keyStonePassword + '\'' +
+				"\n\ttestingImageId='" + testingImageId + '\'' +
+				"\n\ttestingImageUrl='" + testingImageUrl + '\'' +
+				"\n\ttestingImageName='" + testingImageName + '\'' +
+				"\n\ttestingDeploymentBaseUrl='" + testingDeploymentBaseUrl + '\'' +
+				"\n\thosts=" + Arrays.toString(hosts) +
+				"\n\tdeployBaseUrl='" + deployBaseUrl + '\'' +
+				"\n\tdeployPackage='" + deployPackage + '\'' +
+				"\n\tdeploymentEngine='" + deploymentEngine + '\'' +
+				"\n\tmonitoring=" + monitoring +
+				"\n\tmiddleware=" + middleware +
+				"\n\tproject='" + project + '\'' +
+				"\n\tdefaultServerTurnOnDelaySeconds=" + defaultServerTurnOnDelaySeconds +
+				"\n\tdefaultServerTurnOffDelaySeconds=" + defaultServerTurnOffDelaySeconds +
+				"\n\tzabbixDbIp='" + zabbixDbIp + '\'' +
+				"\n\tzabbixDbUser='" + zabbixDbUser + '\'' +
+				"\n\tzabbixDbPassword='" + zabbixDbPassword + '\'' +
+				"\n}";
+	}
 }
