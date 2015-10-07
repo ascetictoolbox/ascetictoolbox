@@ -77,10 +77,11 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
     private Connection connection;
     /**
      * This query lists all hosts data items. status <> 3 excludes templates
-     * available = 0 is for templates, available = 1 = true available = 2 =
-     * false
+     * 0 - not available (templates are in this category), 1 - available, 2 - unknown. 
+     * 
+     * see: https://www.zabbix.com/documentation/2.0/manual/config/items/itemtypes/internal
      */
-    private static final String ALL_ZABBIX_HOSTS = "SELECT hostid, host FROM hosts WHERE status <> 3 AND available = 1";
+    private static String ALL_ZABBIX_HOSTS = "SELECT hostid, host FROM hosts WHERE status <> 3";
     /**
      * This query searches for a named host and provides it's current latest
      * items.
@@ -120,7 +121,7 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
     /**
      * The url to contact the database.
      */
-    private static String databaseURL = "jdbc:mysql://localhost/zabbix";
+    private static String databaseURL = "jdbc:mysql://192.168.3.199:3306/zabbix";
     /**
      * The driver to be used to contact the database.
      */
@@ -132,13 +133,14 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
     /**
      * The user's password to contact the database.
      */
-    private static String databasePassword = "yxCHARvjZRJi";
+    private static String databasePassword = "Ezei3ib6";
     /**
      * The filter string, if a host/VM begins with this then it is a host, if
      * isHost equals true.
      */
-    private static String begins = "asok";
+    private static String begins = "wally";
     private static boolean isHost = true;
+    private static boolean onlyAvailableHosts = false;
     private static final String CONFIG_FILE = "energy-modeller-db-zabbix.properties";
     private static final Logger DB_LOGGER = Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName());
 
@@ -179,6 +181,11 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
             config.setProperty("iaas.energy.modeller.filter.begins", begins);
             isHost = config.getBoolean("iaas.energy.modeller.filter.isHost", isHost);
             config.setProperty("iaas.energy.modeller.filter.isHost", isHost);
+            onlyAvailableHosts = config.getBoolean("iaas.energy.zabbix.only.available.hosts", onlyAvailableHosts);
+            config.setProperty("iaas.energy.zabbix.only.available.hosts", onlyAvailableHosts);
+            if (onlyAvailableHosts) {
+                ALL_ZABBIX_HOSTS = ALL_ZABBIX_HOSTS + " AND available = 1";
+            }
 
         } catch (ConfigurationException ex) {
             DB_LOGGER.log(Level.SEVERE, "Error loading the configuration of the IaaS energy modeller", ex);
