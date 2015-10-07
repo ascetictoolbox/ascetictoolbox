@@ -597,12 +597,12 @@ public class ZabbixClient {
             HostGroup vmsHostGroup = getHostGroupByName(Configuration.virtualMachinesGroupName);
             if (vmsHostGroup != null) {
                 //templates
-                Template vmTemplate = getTemplateByName(Configuration.libVirtTemplateName);
+                Template vmTemplate = getTemplateByName(Configuration.vmTemplateName);
                 if (vmTemplate != null) {
                     //With all data validated, we create the new VM
                     newHostId = createVM(hostName, ipAddress, vmsHostGroup, vmTemplate);
                 } else {
-                    log.error("The template " + Configuration.libVirtTemplateName + " is not available in Zabbix");
+                    log.error("The template " + Configuration.vmTemplateName + " is not available in Zabbix");
                     return null;
                 }
             } else {

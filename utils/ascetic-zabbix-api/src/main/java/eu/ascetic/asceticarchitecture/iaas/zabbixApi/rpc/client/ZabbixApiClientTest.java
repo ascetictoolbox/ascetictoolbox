@@ -337,7 +337,7 @@ public class ZabbixApiClientTest {
 	 */
 	public static void testGetTemplateByName(ZabbixClient client){	
 //		String hostGroupName = "Virtual Machines";
-		String templateName = Configuration.osLinuxTemplateName;
+		String templateName = Configuration.vmTemplateName;
 		Template t = client.getTemplateByName(templateName);
 		if (t != null){
 			System.out.println("Template " + templateName + ":");

@@ -1,7 +1,6 @@
 package eu.ascetic.asceticarchitecture.iaas.zabbixApi.conf;
 
 import java.io.File;
-
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 
@@ -46,11 +45,56 @@ public class Configuration {
 
 	
     public static String virtualMachinesGroupName = "Virtual Machines";
-    public static String osLinuxTemplateName = "Template OS Linux";
-    public static String libVirtTemplateName = "Template.Virt.Libvirt";
+    public static String vmTemplateName = "Template.Virt.Libvirt";
     public static Integer zabbixAutoLogoutTime = 990;
 
     private static final String zabbixConfigurationFile = "ascetic-zabbix-api.properties";
+
+    /**
+     * This reads a value from the config file, if it isn't found a default will
+     * be used instead.
+     *
+     * @param config The config file to use.
+     * @param key The key used to get the setting from the file.
+     * @param defaultValue The default value to use in the event the value is
+     * missing.
+     * @return The new value read from file, or the default in the event this
+     * value was not found.
+     */
+    private static String readValue(
+            org.apache.commons.configuration.Configuration config,
+            String key,
+            String defaultValue) {
+        if (config.containsKey(key)) {
+            return config.getString(key);
+        } else {
+            config.setProperty("zabbix.server.url", defaultValue);
+        }
+        return defaultValue;
+    }
+
+    /**
+     * This reads a value from the config file, if it isn't found a default will
+     * be used instead.
+     *
+     * @param config The config file to use.
+     * @param key The key used to get the setting from the file.
+     * @param defaultValue The default value to use in the event the value is
+     * missing.
+     * @return The new value read from file, or the default in the event this
+     * value was not found.
+     */
+    private static Integer readValue(
+            org.apache.commons.configuration.Configuration config,
+            String key,
+            Integer defaultValue) {
+        if (config.containsKey(key)) {
+            return config.getInt(key);
+        } else {
+            config.setProperty("zabbix.server.url", defaultValue);
+        }
+        return defaultValue;
+    }
 
     static {
         try {
@@ -61,15 +105,15 @@ public class Configuration {
                 propertiesFile = zabbixConfigurationFile;
             }
 
-            org.apache.commons.configuration.Configuration config = new PropertiesConfiguration(propertiesFile);
-            zabbixUrl = config.getString("zabbix.server.url");
-            zabbixPassword = config.getString("zabbix.password");
-            zabbixUser = config.getString("zabbix.user");
-            zabbixAutoLogoutTime = config.getInt("zabbix.user.auto.logout.time");
-            virtualMachinesGroupName = config.getString("zabbix.group.vm");
-            osLinuxTemplateName = config.getString("zabbix.template.linux");
-        	}
-        catch (Exception e) {
+            PropertiesConfiguration config = new PropertiesConfiguration(propertiesFile);
+            config.setAutoSave(true);            
+            zabbixUrl = readValue(config, "zabbix.server.url", zabbixUrl);
+            zabbixPassword = readValue(config, "zabbix.password", zabbixPassword);
+            zabbixUser = readValue(config, "zabbix.user", zabbixUser);
+            zabbixAutoLogoutTime = readValue(config, "zabbix.user.auto.logout.time", zabbixAutoLogoutTime);
+            virtualMachinesGroupName = readValue(config, "zabbix.group.vm", virtualMachinesGroupName);
+            vmTemplateName = readValue(config, "zabbix.vm.template", vmTemplateName);
+        } catch (Exception e) {
             logger.info("Error loading the configuration of the Zabbix server");
             logger.info("Exception " + e);
         }
