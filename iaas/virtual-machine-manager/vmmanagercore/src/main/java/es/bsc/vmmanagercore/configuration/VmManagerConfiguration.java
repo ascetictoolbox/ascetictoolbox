@@ -95,11 +95,12 @@ public class VmManagerConfiguration {
 			System.out.println("**********************************************************");
 			System.out.println("**********************************************************");
 			System.out.println("**********************************************************");
-			System.out.println("*************** " + System.getenv(PROPNAME_CONF_FILE) + " ********");
+			System.out.println("*************** " + System.getProperty(PROPNAME_CONF_FILE) + " ********");
 			System.out.println("**********************************************************");
 			System.out.println("**********************************************************");
 			System.out.println("**********************************************************");
-			System.out.println("**********************************************************");			String customFile = System.getenv(PROPNAME_CONF_FILE);
+			System.out.println("**********************************************************");
+			String customFile = System.getProperty(PROPNAME_CONF_FILE);
 			if(customFile != null) {
 				log.info("Found a custom file in system property '"+PROPNAME_CONF_FILE+"': " + customFile);
 				prop.load(new FileReader(customFile));
