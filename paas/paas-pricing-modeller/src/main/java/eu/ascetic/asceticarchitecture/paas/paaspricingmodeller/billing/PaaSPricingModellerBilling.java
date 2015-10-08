@@ -98,7 +98,7 @@ public class PaaSPricingModellerBilling implements PaaSPricingModellerBillingInt
 		
 		if (deploy.getSchemeId()==1){
 			double a = deploy.getIaaSProvider().predictResourcesCharges(deploy.getVM(), deploy.getPredictedInformation().getPredictedDuration(), deploy.getIaaSProvider().getResoucePrice(), deploy.getVM().getNumberOfEvents());
-			double b = deploy.getIaaSProvider().predictEnergyCharges(deploy.getVM().getEnergyPredicted(), deploy.getIaaSProvider().getAverageEnergyPrice());;
+			double b = deploy.getIaaSProvider().predictEnergyCharges(deploy.getVM().getEnergyPredicted(), deploy.getIaaSProvider().getAverageEnergyPrice());
 			double charges = a+b;
 			charges= charges+0.2*charges;
 			deploy.setPredictedCharges(charges);
