@@ -5,9 +5,11 @@ import java.io.FileReader;
 import java.io.Reader;
 
 
+
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
@@ -21,11 +23,19 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.com
 public class ApplicationRegistry {
 
 	private static SqlSessionFactory sqlSessionFactory;
-	
-	private static AppRegistryMapper mapper;
+	//private static AppRegistryMapper mapper;
 	private static ApplicationRegistry instance;
-	
 	private final static Logger LOGGER = Logger.getLogger(ApplicationRegistry.class.getName());
+
+	
+	public static ApplicationRegistry getRegistry(String driver,String url,String uname,String pwd){
+		LOGGER.info("Returning the registry");
+		if (instance==null) {
+			instance = new ApplicationRegistry(driver,url,uname,pwd);
+			LOGGER.info("Returned the registry instance");
+		}
+		return instance;
+	}
 	
 	
 	private ApplicationRegistry(String driver,String url,String uname,String pwd){
@@ -36,55 +46,27 @@ public class ApplicationRegistry {
 		sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
 		LOGGER.info("Registry set up complete");
 	}
-	
-	public static ApplicationRegistry getRegistry(String driver,String url,String uname,String pwd){
-		LOGGER.info("Returning the registry");
-		if (instance==null) {
-			instance = new ApplicationRegistry(driver,url,uname,pwd);
-			LOGGER.info("Returned the registry instance");
-		}
-		
-		return instance;
-		
-		
-	}
 
 	private static PooledDataSource getDataSource(String driver,String url,String uname,String pwd) {
-		
-		
 		
 		PooledDataSource pooledConnection = new PooledDataSource(driver,url,uname,pwd);
 		pooledConnection.setDefaultAutoCommit(true);
 		pooledConnection.setPoolPingQuery("SELECT 1");
 		pooledConnection.setPoolPingConnectionsNotUsedFor(1500000);
 		pooledConnection.setPoolPingEnabled(true);
-		
-		
-		
-		//UnpooledDataSource uds = new UnpooledDataSource(driver,url,uname,pwd);
-		//uds.setAutoCommit(true);
-		//uds.setDriverProperties(driverProperties);
         return pooledConnection;
     }
 	 
-	public void initializeTable(PooledDataSource pooledConnection){
-		
-		ScriptRunner sr;
-		try {
-			sr = new ScriptRunner(pooledConnection.getConnection());
-			Reader reader = new BufferedReader(new FileReader("createRegistry.sql"));
-			sr.runScript(reader);
-			LOGGER.info("Initialize the registry");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+	public SqlSession getSession(){
+		return sqlSessionFactory.openSession(true);
 	}
 	
-	public AppRegistryMapper getMapper(){
-		mapper = sqlSessionFactory.openSession(true).getMapper(AppRegistryMapper.class);
-		LOGGER.info("Returning the mapper");
-		return mapper;
-	}
+//	public AppRegistryMapper getMapper(){
+//	mapper = sqlSessionFactory.openSession(true).getMapper(AppRegistryMapper.class);
+//	LOGGER.info("Returning the mapper");
+//	
+//	
+//	
+//	return mapper;
+//}
 }

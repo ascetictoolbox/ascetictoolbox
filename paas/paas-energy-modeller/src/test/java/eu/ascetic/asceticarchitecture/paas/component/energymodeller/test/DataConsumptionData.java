@@ -17,7 +17,7 @@ public class DataConsumptionData {
 	@BeforeClass
 	public static void setup() {
 		manager = DataConsumptionHandler.getHandler("com.mysql.jdbc.Driver","jdbc:mysql://10.15.5.55:3306/ascetic_paas_em","root","root");
-		mapper = manager.getMapper();
+		mapper = manager.getSession().getMapper(DataConsumptionMapper.class);
 	}
 	
 	

@@ -3,6 +3,7 @@ package eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.co
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
@@ -52,9 +53,13 @@ public class DataConsumptionHandler {
     }
 	 
 
-	public DataConsumptionMapper getMapper(){
-		if (mapper==null) mapper = sqlSessionFactory.openSession(true).getMapper(DataConsumptionMapper.class);
-		LOGGER.info("Returning the mapper");
-		return mapper;
+//	public DataConsumptionMapper getMapper(){
+//		if (mapper==null) mapper = sqlSessionFactory.openSession(true).getMapper(DataConsumptionMapper.class);
+//		LOGGER.info("Returning the mapper");
+//		return mapper;
+//	}
+	
+	public SqlSession getSession(){
+		return sqlSessionFactory.openSession(true);
 	}
 }

@@ -6,26 +6,47 @@ package eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.co
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.ibatis.session.SqlSession;
 import org.apache.log4j.Logger;
 
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Unit;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.DataConsumption;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.ApplicationRegistry;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.DataConsumptionHandler;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.mapper.AppRegistryMapper;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.mapper.DataConsumptionMapper;
 
 public class EnergyDataAggregatorServiceQueue {
+	
+	private static int MILLISEC=1000;
 
-	private DataConsumptionMapper dataConsumptionMapper;
-	private AppRegistryMapper registryMapper;
+	//private DataConsumptionMapper dataConsumptionMapper;
+	//private AppRegistryMapper registryMapper;
+	
+	// TODO bugfix working with session and not just mappers
+	
+	
+	private ApplicationRegistry applicationRegistry;
+	private DataConsumptionHandler dataConsumptionHandler;
+	
+	
 	
 	private static final Logger logger = Logger.getLogger(EnergyDataAggregatorServiceQueue.class);
 	
-	public void setRegistryMapper( AppRegistryMapper mapper){
-		this.registryMapper = mapper;
+//	public void setRegistryMapper( AppRegistryMapper mapper){
+//		this.registryMapper = mapper;
+//	}
+//	
+//	public void setDataMapper(DataConsumptionMapper dataConsumptionMapper) {
+//		this.dataConsumptionMapper = dataConsumptionMapper;
+//	}
+	
+	public void setApplicationRegistry( ApplicationRegistry applicationRegistry){
+		this.applicationRegistry = applicationRegistry;
 	}
 	
-	public void setDataMapper(DataConsumptionMapper dataConsumptionMapper) {
-		this.dataConsumptionMapper = dataConsumptionMapper;
+	public void setDataRegistry(DataConsumptionHandler dataConsumptionHandler) {
+		this.dataConsumptionHandler = dataConsumptionHandler;
 	}
 
 	public double getEnergyFromVM(String applicationid, String deployment, String vmid, String event) {
@@ -46,19 +67,23 @@ public class EnergyDataAggregatorServiceQueue {
 			logger.info("No PaaS ID found from IaaS ID" +vmid);
 			return 0;
 		}
-		int samples = dataConsumptionMapper.getSamplesBetweenTime( deployment, vmid, start/1000, end/1000);
+		SqlSession session = dataConsumptionHandler.getSession();
+		DataConsumptionMapper dataConsumptionMapper = session.getMapper(DataConsumptionMapper.class);
+		int samples = dataConsumptionMapper.getSamplesBetweenTime( deployment, vmid, start/MILLISEC, end/MILLISEC);
 		logger.info("Samples used for calculating "+vmid+" on this "+deployment + " value: "+samples+ " between "+start +" and "+end);
 		if (samples == 0){
 			logger.info("No samples available for the given interval "+start+ " to "+end+" estimating consumption from closest samples");
-			long previoussampletime = dataConsumptionMapper.getSampleTimeBefore(deployment, vmid, start/1000);
+			long previoussampletime = dataConsumptionMapper.getSampleTimeBefore(deployment, vmid, start/MILLISEC);
 			
-			long aftersampletime = dataConsumptionMapper.getSampleTimeAfter(deployment, vmid, end/1000);
+			long aftersampletime = dataConsumptionMapper.getSampleTimeAfter(deployment, vmid, end/MILLISEC);
 			if (previoussampletime == 0){
-				logger.info("Not enough samples - before the event interval" +start/1000);
+				logger.info("Not enough samples - before the event interval" +start/MILLISEC);
+				session.close();
 				return 0;
 			}
 			if (aftersampletime == 0){
-				logger.info("Not enough samples - after the event interval"+end/1000);
+				logger.info("Not enough samples - after the event interval"+end/MILLISEC);
+				session.close();
 				return 0;
 			}
 			logger.info(previoussampletime);
@@ -74,32 +99,41 @@ public class EnergyDataAggregatorServiceQueue {
 				double energy = avgpower * ((end-start))/3600000;
 				// TODO refine better this value 
 				logger.info("This interval has consumed energy (Wh) "+energy);
+				session.close();
 				return energy;
 			}else {
 				double avgpower = (esfirst.getVmpower()+eslast.getVmpower())/2;
 				logger.info("In this interval the average power (W) is "+avgpower);
+				session.close();
 				return avgpower;
 			}
 		} else{
 			logger.info("Samples available for the given interval " + samples);
 			if (samples ==1){
 				logger.info("Only one sample available for the given interval "+start+ " to "+end+" estimating consumption from available samples");
-				double avgpower = dataConsumptionMapper.getPowerInIntervalForVM(deployment, vmid, start/1000,  end/1000);
+				double avgpower = dataConsumptionMapper.getPowerInIntervalForVM(deployment, vmid, start/MILLISEC,  end/MILLISEC);
 				logger.info("Power  "+avgpower);
 				if (unit == Unit.ENERGY){
 					double energy = avgpower * ((end-start))/3600000;
 					logger.info("This interval has consumed energy Wh "+energy);
+					session.close();
 					return energy;
 				}else {
+					session.close();
 					return avgpower;
 				}
 			}
 		}
 		if (unit == Unit.ENERGY){
+			session.close();
 			return integrateSamples(deployment, vmid, start, end);
 		} else {
-			double result = dataConsumptionMapper.getPowerInIntervalForVM(deployment, vmid, start/1000, end/1000);
+			
+			double result = dataConsumptionMapper.getPowerInIntervalForVM(deployment, vmid, start/MILLISEC, end/MILLISEC);
+			
+			
 			logger.info("######### Avg power is "+result);
+			session.close();
 			return result;
 		}
 		
@@ -112,7 +146,12 @@ public class EnergyDataAggregatorServiceQueue {
 			logger.info("No PaaS ID found from IaaS ID");
 			return null;
 		}
-		return dataConsumptionMapper.getLastSample(deployment,vmid);
+		logger.info("Start computing Wh over a period of time");
+		SqlSession session = dataConsumptionHandler.getSession();
+		DataConsumptionMapper dataConsumptionMapper = session.getMapper(DataConsumptionMapper.class);
+		DataConsumption dc = dataConsumptionMapper.getLastSample(deployment,vmid);
+		session.close();
+		return dc;
 		
 		
 	}
@@ -121,11 +160,17 @@ public class EnergyDataAggregatorServiceQueue {
 		List<DataConsumption> consumptionList;
 		if (start>0){
 			logger.info("Start computing Wh over a period of time");
-			consumptionList = dataConsumptionMapper.getDataSamplesVM(deployment, vmid, start/1000, end/1000);
+			SqlSession session = dataConsumptionHandler.getSession();
+			DataConsumptionMapper dataConsumptionMapper = session.getMapper(DataConsumptionMapper.class);
+			consumptionList = dataConsumptionMapper.getDataSamplesVM(deployment, vmid, start/MILLISEC, end/MILLISEC);
+			session.close();
 			
 		}else {
 			logger.info("Start computing Wh overall samples");
+			SqlSession session = dataConsumptionHandler.getSession();
+			DataConsumptionMapper dataConsumptionMapper = session.getMapper(DataConsumptionMapper.class);
 			consumptionList = dataConsumptionMapper.selectByVm(deployment, vmid);
+			session.close();
 		}
 		DataConsumption previousSample=null;
 		double accumulatedEnergy = 0;
@@ -152,7 +197,11 @@ public class EnergyDataAggregatorServiceQueue {
 			logger.info("No PaaS ID found from IaaS ID");
 			return null;
 		}
-		return  dataConsumptionMapper.getMemory(deployment, vmid);
+		SqlSession session = dataConsumptionHandler.getSession();
+		DataConsumptionMapper dataConsumptionMapper = session.getMapper(DataConsumptionMapper.class);
+		List<DataConsumption> dc = dataConsumptionMapper.getMemory(deployment, vmid);
+		session.close();
+		return  dc;
 		
 		
 	}
@@ -165,7 +214,11 @@ public class EnergyDataAggregatorServiceQueue {
 			logger.info("No PaaS ID found from IaaS ID");
 			return null;
 		}
-		return  dataConsumptionMapper.getCPUs(deployment, vmid);
+		SqlSession session = dataConsumptionHandler.getSession();
+		DataConsumptionMapper dataConsumptionMapper = session.getMapper(DataConsumptionMapper.class);
+		List<DataConsumption> dc = dataConsumptionMapper.getCPUs(deployment, vmid);
+		session.close();
+		return  dc;
 		
 	}	
 	
@@ -176,7 +229,11 @@ public class EnergyDataAggregatorServiceQueue {
 			logger.info("No PaaS ID found from IaaS ID");
 			return null;
 		}
-		return  dataConsumptionMapper.getPower(deployment, vmid);
+		SqlSession session = dataConsumptionHandler.getSession();
+		DataConsumptionMapper dataConsumptionMapper = session.getMapper(DataConsumptionMapper.class);
+		List<DataConsumption> dc = dataConsumptionMapper.getPower(deployment, vmid);
+		session.close();
+		return  dc;
 		
 	}	
 	
@@ -187,7 +244,10 @@ public class EnergyDataAggregatorServiceQueue {
 			logger.info("No PaaS ID found from IaaS ID");
 			return null;
 		}
+		SqlSession session = dataConsumptionHandler.getSession();
+		DataConsumptionMapper dataConsumptionMapper = session.getMapper(DataConsumptionMapper.class);
 		List<DataConsumption>  result = dataConsumptionMapper.getDataSamplesVM(deployment, vmid, start, end);
+		session.close();
 		List<DataConsumption> resampledresult = new Vector<DataConsumption>(); 
 		if (result==null)return resampledresult;
 		if (result.size()==0)return resampledresult;
@@ -240,8 +300,12 @@ public class EnergyDataAggregatorServiceQueue {
 	// TODO to be removed, for the moment is the only way to map the IaaS VM with the PaaS VM
 	public String translatePaaSFromIaasID(String deployid, String paasvmid){
 		logger.info(" I translated the iaas id " + paasvmid);
+		
+		SqlSession session = applicationRegistry.getSession();
+		AppRegistryMapper registryMapper = session.getMapper(AppRegistryMapper.class);
 		String iaasVmId = registryMapper.selectFromIaaSID(deployid,paasvmid);
 		logger.info(" I translated to " + paasvmid + " the iaas id " + iaasVmId);
+		session.close();
 		return iaasVmId;
 	}
 	
@@ -256,6 +320,8 @@ public class EnergyDataAggregatorServiceQueue {
 		
 		
 	}
+	
+
 	
 
 }

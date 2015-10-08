@@ -54,6 +54,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	private DataConsumptionHandler dataCollectorHandler;
 	private PredictorInterface predictor;
 	private ApplicationRegistry appRegistry;
+	
 	private EnergyModellerQueueServiceManager queueManager;
 	private AmqpClient paasQueueclient;
 	private AmqpClient iaasQueueclient;
@@ -367,8 +368,11 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 					LOGGER.info("Measuring event average instant power (W) for vm "+vm); 
 					// TODO workaround 
 					String translated = energyService.translatePaaSFromIaasID(deploymentid, vm);
+					if (translated==null){
+						LOGGER.warn("Error cannot match this PaaS ID with the IaaS ID not found");
+					} 
 					List<DataEvent> events = eventService.getEvents(applicationid, deploymentid, translated, eventid,null,null);
-					LOGGER.info("Got events: "+events.size());
+					if (translated!=null)LOGGER.info("Got events: "+events.size());
 					double accumulatedpowerpervm = 0;
 					for (DataEvent de: events){
 						
@@ -387,20 +391,20 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 						accumulatedpowerpervm = accumulatedpowerpervm + power;
 					}
 	
-					LOGGER.info("##### average for this vm power was :  "+totalPower);
+					if (translated!=null) LOGGER.info("##### average for this vm power was :  "+totalPower);
 					totalPower = totalPower + accumulatedpowerpervm;
 					if (accumulatedpowerpervm>0){
-						LOGGER.info("##### This has meaningfull event data and now is:  "+totalPower);
-						LOGGER.info("##### power:  "+accumulatedpowerpervm);
+						LOGGER.info("##### This vm has relevant event data and now is:  "+totalPower);
+						LOGGER.info("##### Accumulated power from this iteration:  "+accumulatedpowerpervm);
 						countVM++;
 					} else {
-						LOGGER.info("##### This has no event data or power for this event:  "+accumulatedpowerpervm);
+						LOGGER.info("##### This vm has no event data or power measurements for this event:  "+accumulatedpowerpervm);
 					}
 					
 					//if (events.size()>0)averageDuration(providerid,applicationid, deploymentid, vmids,  eventid);
 				}
-				LOGGER.info("##### This VM counts? :  "+totalPower + " now the count is "+countVM);
-				LOGGER.info("##### This event is global ? " + isGlobaEvent);
+				LOGGER.info("#####  VM counts before this iteration :  "+totalPower + " now the count is "+countVM);
+				LOGGER.info("##### This event is globally computer for all VMs " + isGlobaEvent);
 				
 				if (countEvents<=0) return 0;
 				if (isGlobaEvent) return totalPower;
@@ -650,8 +654,8 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 				
 				appRegistry = ApplicationRegistry.getRegistry(emsettings.getPaasdriver(),emsettings.getPaasurl(),emsettings.getPaasdbuser(),emsettings.getPaasdbpassword());
 				dataCollectorHandler = DataConsumptionHandler.getHandler(emsettings.getPaasdriver(),emsettings.getPaasurl(),emsettings.getPaasdbuser(),emsettings.getPaasdbpassword());
-				energyService.setDataMapper(dataCollectorHandler.getMapper());
-				energyService.setRegistryMapper(appRegistry.getMapper());
+				energyService.setDataRegistry(dataCollectorHandler);
+				energyService.setApplicationRegistry(appRegistry);
 				LOGGER.info("Enabling queue service");
 				// TODO remove iaas queue when data will be sent directly to paas
 				queueManager = new EnergyModellerQueueServiceManager(iaasQueueclient,paasQueueclient,appRegistry,dataCollectorHandler);
