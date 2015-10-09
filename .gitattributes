@@ -153,6 +153,7 @@ iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaa
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/pricingschemesrepository/PricingSchemeA.java -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/pricingschemesrepository/PricingSchemeB.java -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/pricingschemesrepository/PricingSchemeC.java -text
+iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/AppInfo.java -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/Charges.java -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/DynamicEnergyPrice.java -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/DynamicResourcePrice.java -text
@@ -186,6 +187,7 @@ iaas/iaas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/iaas/ia
 iaas/iaas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/pricingschemesrepository/PricingSchemeA.class -text
 iaas/iaas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/pricingschemesrepository/PricingSchemeB.class -text
 iaas/iaas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/pricingschemesrepository/PricingSchemeC.class -text
+iaas/iaas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/AppInfo.class -text
 iaas/iaas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/Charges.class -text
 iaas/iaas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/DynamicEnergyPrice.class -text
 iaas/iaas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/DynamicResourcePrice.class -text

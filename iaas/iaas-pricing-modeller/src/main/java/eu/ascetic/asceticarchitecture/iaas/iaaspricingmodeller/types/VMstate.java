@@ -34,6 +34,7 @@ public class VMstate {
 	/* The pricing scheme according to which this VM is charged*/
 	IaaSPricingModellerPricingScheme pricingScheme; 
 	
+	int appID;
 	
 	Charges energyCharges;
 	
@@ -63,6 +64,21 @@ public class VMstate {
 		time = new TimeParameters();
 		energy=0;
 		totalEnergy=0;
+
+	}
+	
+	public VMstate (String VMid, VMinfo vm, EnergyProvider provider, IaaSPricingModellerPricingScheme scheme,int appID){
+		changesToCharacteristics.push(vm);
+		this.VMid = VMid;
+		this.provider = provider;
+		this.pricingScheme = scheme;
+		energyCharges = new Charges();
+		resourceCharges = new Charges();
+		TotalCharges = new Charges();
+		time = new TimeParameters();
+		energy=0;
+		totalEnergy=0;
+		this.appID = appID;
 
 	}
 	
@@ -108,7 +124,13 @@ public class VMstate {
 		return provider;
 	}
 	
+	public void setAppID(int id){
+		this.appID=id;
+	}
 	
+	public int getAppID(){
+		return appID;
+	}
 
 	//////////////////////PREDICTION //////////////////////////
 	public void setPrediction(long duration, EnergyPrediction energy, double power){

@@ -20,6 +20,7 @@ import org.apache.log4j.*;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.ListIterator;
 
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.IaaSPricingModeller;
@@ -38,7 +39,7 @@ import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.*;
 
 public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInterface {
 
-	//LinkedList<VMstate> queue = new LinkedList<VMstate>();
+	HashMap<Integer, AppInfo> apps = new HashMap<Integer, AppInfo>();
 
 	static HashMap<String, VMstate> registeredStaticEnergyPricesVMs = new HashMap<String, VMstate>();
 	static HashMap<String, VMstate> registeredDynamicEnergyPricesVMs = new HashMap<String, VMstate>();
@@ -69,13 +70,31 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
 	public void registerVM(VMstate vm) {
 		if ((vm.getPricingScheme().getSchemeId() == 0)||(vm.getPricingScheme().getSchemeId() == 2)) {
 			registeredStaticEnergyPricesVMs.put(vm.getVMid(), vm);
-
+				if (apps.containsKey(vm.getAppID())){
+					apps.get(vm.getAppID()).addVM(vm);
+				}
+				else{
+					AppInfo app = new AppInfo(vm.getAppID());
+					app.addVM(vm);
+					apps.put(vm.getAppID(), app);
+				}
+					
+			
 			vm.setStartTime();
 		} else {
 			registeredDynamicEnergyPricesVMs.put(vm.getVMid(), vm);
-
+			
+				if (apps.containsKey(vm.getAppID())){
+					apps.get(vm.getAppID()).addVM(vm);
+				}
+				else{
+					AppInfo app = new AppInfo(vm.getAppID());
+					app.addVM(vm);
+					apps.put(vm.getAppID(), app);
+				}
+					
+			}
 			vm.setStartTime();
-		}
 	}
 	
 	
@@ -174,6 +193,38 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
 		}
 		return scheme;
     }
+
+	public double getAppCharges(int appID) {
+		double charges=0;
+			if (apps.containsKey(appID)){
+				LinkedList<VMstate> temp = apps.get(appID).getList();
+				 ListIterator<VMstate> listIterator = temp.listIterator();
+				 while(listIterator.hasNext()){
+					 String VMid = listIterator.next().getVMid();
+					 
+					 charges = charges+getVMCharges(VMid);
+				 }
+				
+				return charges;
+			}
+			else{
+				
+				return 0;
+			}
+	}
+
+	public void unregisterApp(int appID) {
+		if (apps.containsKey(appID)){
+			LinkedList<VMstate> temp = apps.get(appID).getList();
+			 ListIterator<VMstate> listIterator = temp.listIterator();
+			 while(listIterator.hasNext()){
+				 unregisterVM(listIterator.next());
+			 }
+		}
+		
+		apps.remove(appID);
+	}
+				
 
 	
 	////////////////////////////////////////not used//////////////////////////////////////////////

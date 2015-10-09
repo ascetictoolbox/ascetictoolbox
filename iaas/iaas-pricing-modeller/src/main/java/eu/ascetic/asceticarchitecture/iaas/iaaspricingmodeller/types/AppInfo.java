@@ -15,40 +15,31 @@
 
 package eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types;
 
+import java.util.LinkedList;
 
-public class VMinfo {
 
-	int RAM;
-	int CPU;
-	double storage;
-	String hostname;
-	
-	public VMinfo (int RAM, int CPU, double storage, String hostname){
-		this.RAM = RAM/1024;
-		this.CPU = CPU;
-		this.storage = storage;
-		this.hostname = hostname;
-	}
+public class AppInfo {
 
+	int appID;
 	
-	public int getRAM(){
-		return RAM;
+	LinkedList<VMstate> vms;
+	
+	public AppInfo(int appID){
+		this.appID=appID;
+		vms = new LinkedList<VMstate>();
 	}
 	
-	public String gethostname(){
-		return hostname;
+	
+	public int getAppID(){
+		return appID;
 	}
 	
-	public int getCPU(){
-		return CPU;
+	public LinkedList<VMstate> getList(){
+		return vms;
 	}
 	
-	public double getStorage(){
-		return storage;
+	public void addVM(VMstate VM){
+		vms.add(VM);
 	}
-	
-	public String getVMCharacteristics(){
-		String toPrint = "RAM: " + RAM + "CPU: " + CPU + "Storage: " + storage;
-	    return toPrint;
-	}
+		
 }
