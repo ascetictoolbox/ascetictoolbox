@@ -428,8 +428,6 @@ iaas/virtual-machine-manager/clopla/src/test/java/es/bsc/clopla/placement/scorec
 iaas/virtual-machine-manager/clopla/src/test/java/es/bsc/clopla/placement/scorecalculators/ScoreCalculatorPriceTest.java -text
 iaas/virtual-machine-manager/clopla/src/test/java/es/bsc/clopla/placement/scorecalculators/ScoreCalculatorRandomTest.java -text
 iaas/virtual-machine-manager/clopla/src/test/java/es/bsc/clopla/placement/solver/VmPlacementSolverFactoryTest.java -text
-iaas/virtual-machine-manager/etc/configTUBstable.properties -text
-iaas/virtual-machine-manager/etc/vmm-installer.sh -text
 iaas/virtual-machine-manager/pom.xml -text
 iaas/virtual-machine-manager/power-button-presser/pom.xml -text
 iaas/virtual-machine-manager/power-button-presser/src/main/java/Main.java -text
