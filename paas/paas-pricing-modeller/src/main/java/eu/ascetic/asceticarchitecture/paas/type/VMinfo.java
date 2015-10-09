@@ -31,7 +31,7 @@ public class VMinfo {
 	public VMinfo (double RAM, double CPU, double storage){
 		this.RAM = RAM/1024;
 		this.CPU = CPU;
-		this.storage = storage;
+		this.storage = storage/1000;
 	}
 
 	

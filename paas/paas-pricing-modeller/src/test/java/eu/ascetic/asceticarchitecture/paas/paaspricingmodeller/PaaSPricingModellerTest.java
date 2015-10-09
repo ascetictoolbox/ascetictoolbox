@@ -62,6 +62,6 @@ public class PaaSPricingModellerTest
     	//prmodeller.getAppPredictedCharges(1, 0, 10);
     	prmodeller.getAppPredictedPrice(1, 0, 10,7200);
     	prmodeller.initializeApp(1, 0);
-    	prmodeller.getEventPredictedCharges(1, 2, 2, 2.0, 10, 0, 7200, 2);
+    	prmodeller.getEventPredictedCharges(1, 2, 2048, 40000.0, 51.7, 1, 7200, 2);
     }
 }
