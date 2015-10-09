@@ -317,6 +317,7 @@ public class VMRestTest extends AbstractTest {
 		vm.setProviderVmId("abab");
 		vm.setCpuActual(1);
 		vm.setRamActual(10);
+		vm.setDiskActual(1);
 		
 		when(vmDAO.getById(2)).thenReturn(vm);
 		
@@ -334,7 +335,7 @@ public class VMRestTest extends AbstractTest {
 		when(emController.getPredictionMessage(secKey)).thenReturn(secMessage);
 		when(emController.getPredictionMessage(countKey)).thenReturn(countMessage);
 		
-		when(priceModellerClient.getEventPredictedCharges(1, 1, 10, 10000000d, 22.0d, 1, 10,22)).thenReturn(1.1d);
+		when(priceModellerClient.getEventPredictedCharges(1, 1, 10, 1024d, 22.0d, 1, 10,22)).thenReturn(1.1d);
 		
 		Response response = vmRest.getCostEstimation("app-name", "1", "2", "loquesea");
 		assertEquals(200, response.getStatus());

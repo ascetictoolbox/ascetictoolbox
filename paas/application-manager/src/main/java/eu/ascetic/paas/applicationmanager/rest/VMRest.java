@@ -407,7 +407,7 @@ public class VMRest extends AbstractRest {
 			int cpu = vm.getCpuActual();
 			int ram = (int) vm.getRamActual();
 			
-			double storage = 10000000d; // TODO this needs to be readed by the OVF
+			double storage = (double) vm.getDiskActual() * 1024l;
 			
 			if(priceModellerClient == null) {
 				priceModellerClient = PriceModellerClient.getInstance();
