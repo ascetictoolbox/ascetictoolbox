@@ -26,7 +26,7 @@ public class VMinfo {
 	public VMinfo (int RAM, int CPU, double storage, String hostname){
 		this.RAM = RAM/1024;
 		this.CPU = CPU;
-		this.storage = storage;
+		this.storage = storage/1000;
 		this.hostname = hostname;
 	}
 
