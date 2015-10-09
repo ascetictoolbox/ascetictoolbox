@@ -489,11 +489,21 @@ public class XMLBuilder {
 	 * @param eventId Type of event for which we want the energy measurement
 	 * @return the updated object with all its XML fields
 	 */
-	public static EnergyMeasurement addEnergyEstimationForDeploymentXMLInfo(
-			EnergyMeasurement energyMeasurement, String applicationId, String deploymentId, String eventId) {
+	public static EnergyMeasurement addEnergyEstimationForDeploymentXMLInfo(EnergyMeasurement energyMeasurement, 
+																			String applicationId, 
+																			String deploymentId, 
+																			String eventId) {
 		
-		energyMeasurement.setDescription("Aggregated energy estimation for this aplication deployment and specific event");
-		energyMeasurement.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/events/" + eventId + "/energy-estimation");
+		return addEnergyConsumptionForDeploymentXMLInfo(energyMeasurement, applicationId, deploymentId, eventId, "estimation");
+	}
+	
+	private static EnergyMeasurement addEnergyConsumptionForDeploymentXMLInfo(EnergyMeasurement energyMeasurement, 
+			 																  String applicationId, 
+			 																  String deploymentId, 
+			 																  String eventId,
+			 																  String endUrl) {
+		energyMeasurement.setDescription("Aggregated energy " + endUrl + " for this aplication deployment and specific event");
+		energyMeasurement.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/events/" + eventId + "/energy-" + endUrl);
 		
 		Link linkParent = new Link();
 		linkParent.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/events/" + eventId);
@@ -510,11 +520,85 @@ public class XMLBuilder {
 		return energyMeasurement;
 	}
 	
+	/**
+	 * Adds the necessary fields to build the XML of an Energy Estimation aggregated for all the VMs of an Application
+	 * @param energyMeasurement the object to be updated
+	 * @param applicationId application id from which the calculation is made
+	 * @param deploymentId from which the calculation is made
+	 * @param eventId Type of event for which we want the energy measurement
+	 * @return the updated object with all its XML fields
+	 */
+	public static EnergyMeasurement addEnergyConsumptionForDeploymentXMLInfo(EnergyMeasurement energyMeasurement, 
+																			 String applicationId, 
+																			 String deploymentId, 
+																			 String eventId) {
+		
+		return addEnergyConsumptionForDeploymentXMLInfo(energyMeasurement, applicationId, deploymentId, eventId, "consumption");
+	}
+	
+	/**
+	 * Adds the necessary fields to build the XML of an Power Estimation aggregated for all the VMs of an Application
+	 * @param energyMeasurement the object to be updated
+	 * @param applicationId application id from which the calculation is made
+	 * @param deploymentId from which the calculation is made
+	 * @param eventId Type of event for which we want the energy measurement
+	 * @return the updated object with all its XML fields
+	 */
+	public static PowerMeasurement addPowerEstimationForDeploymentXMLInfo(PowerMeasurement powerMeasurement, String applicationId, String deploymentId, String eventId) {
+		
+		return addPowerEstimationOrConsumptionForDeploymentXMLInfo(powerMeasurement, applicationId, deploymentId, eventId, "estimation");
+	}
+	
+	private static PowerMeasurement addPowerEstimationOrConsumptionForDeploymentXMLInfo(
+																						PowerMeasurement powerMeasurement, 
+																						String applicationId, 
+																						String deploymentId, 
+																						String eventId,
+																						String endUrl) {
+		
+		powerMeasurement.setDescription("Aggregated power " + endUrl + " for this aplication deployment and specific event");
+		powerMeasurement.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/events/" + eventId + "/power-" + endUrl);
+		
+		Link linkParent = new Link();
+		linkParent.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/events/" + eventId);
+		linkParent.setRel("parent");
+		linkParent.setType(MediaType.APPLICATION_XML);
+		powerMeasurement.addLink(linkParent);
+		
+		Link linkSelf = new Link();
+		linkSelf.setHref(powerMeasurement.getHref());
+		linkSelf.setRel("self");
+		linkSelf.setType(MediaType.APPLICATION_XML);
+		powerMeasurement.addLink(linkSelf);
+		
+		return powerMeasurement;
+	}
+	
+	/**
+	 * Adds the necessary fields to build the XML of an Power Estimation aggregated for all the VMs of an Application
+	 * @param energyMeasurement the object to be updated
+	 * @param applicationId application id from which the calculation is made
+	 * @param deploymentId from which the calculation is made
+	 * @param eventId Type of event for which we want the energy measurement
+	 * @return the updated object with all its XML fields
+	 */
+	public static PowerMeasurement addPowerConsumptionForDeploymentXMLInfo(PowerMeasurement powerMeasurement, String applicationId, String deploymentId, String eventId) {
+		
+		return addPowerEstimationOrConsumptionForDeploymentXMLInfo(powerMeasurement, applicationId, deploymentId, eventId, "consumption");
+	}
+	
 	public static String getEnergyEstimationForDeploymentXMLInfo(EnergyMeasurement energyMeasurement, String applicationId, String deploymentId, String eventId) {
 		energyMeasurement = XMLBuilder.addEnergyEstimationForDeploymentXMLInfo(energyMeasurement, applicationId, deploymentId, eventId);
 		
 		return ModelConverter.objectEnergyMeasurementToXML(energyMeasurement);
 	}
+	
+	public static String getPowerEstimationForDeploymentXMLInfo(PowerMeasurement powerMeasurement, String applicationId, String deploymentId, String eventId) {
+		powerMeasurement = XMLBuilder.addPowerEstimationForDeploymentXMLInfo(powerMeasurement, applicationId, deploymentId, eventId);
+		
+		return ModelConverter.objectPowerMeasurementToXML(powerMeasurement);
+	}
+	
 	
 	public static String getEventSampleCollectionXMLInfo(List<EventSample> eventSamples, String applicationId, String deploymentId, String vmId, String eventId) {
 		Collection collection = new Collection();
@@ -726,5 +810,15 @@ public class XMLBuilder {
 		
 		powerMeasurement = XMLBuilder.addPowerEstimationForAnEventInAVMXMLInfo(powerMeasurement, applicationId, deploymentId, vmId, eventId);
 		return ModelConverter.objectPowerMeasurementToXML(powerMeasurement);
+	}
+
+	public static String getPowerConsumptionForDeploymentXMLInfo(PowerMeasurement powerMeasurement, String applicationName,	String deploymentId, String eventId) {
+		powerMeasurement = XMLBuilder.addPowerConsumptionForDeploymentXMLInfo(powerMeasurement, applicationName, deploymentId, eventId);
+		return ModelConverter.objectPowerMeasurementToXML(powerMeasurement);
+	}
+	
+	public static String getEnergyConsumptionForDeploymentXMLInfo(EnergyMeasurement energyMeasurement, String applicationName,	String deploymentId, String eventId) {
+		energyMeasurement = XMLBuilder.addEnergyConsumptionForDeploymentXMLInfo(energyMeasurement, applicationName, deploymentId, eventId);
+		return ModelConverter.objectEnergyMeasurementToXML(energyMeasurement);
 	}
 }

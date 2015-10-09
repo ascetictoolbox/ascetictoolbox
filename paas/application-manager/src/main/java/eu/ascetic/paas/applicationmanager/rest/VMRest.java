@@ -321,15 +321,7 @@ public class VMRest extends AbstractRest {
 			                             @PathParam("event_id") String eventId) {
 		logger.info("GET request to path: /applications/" + applicationName + "/deployments/" + deploymentId + "/vms/" + vmId + "/events/" + eventId + "/energy-estimation");
 				
-		energyModeller = getEnergyModeller();
-		
-		VM vm = vmDAO.getById(Integer.parseInt(vmId));
-		List<String> ids = new ArrayList<String>();
-		ids.add("" + vm.getId());
-		
-		logger.debug("Connecting to Energy Modeller");
-
-		double energyConsumed = energyModeller.estimate(null,  applicationName, deploymentId, ids, eventId, Unit.ENERGY, 0l);
+		double energyConsumed = getEnergyOrPowerEstimation(applicationName, deploymentId, vmId, eventId, Unit.ENERGY, 0l);
 		
 		EnergyMeasurement energyMeasurement = new EnergyMeasurement();
 		energyMeasurement.setValue(energyConsumed);
@@ -338,6 +330,38 @@ public class VMRest extends AbstractRest {
 		String xml = XMLBuilder.getEnergyEstimationForAnEventInAVMXMLInfo(energyMeasurement, applicationName, deploymentId, vmId, eventId);
 				
 		return buildResponse(Status.OK, xml);
+	}
+	
+	@GET
+	@Path("{vm_id}/events/{event_id}/power-estimation")
+	@Produces(MediaType.APPLICATION_XML)
+	public Response getPowerEstimation(@PathParam("application_name") String applicationName, 
+			                             @PathParam("deployment_id") String deploymentId,
+			                             @PathParam("vm_id") String vmId,
+			                             @PathParam("event_id") String eventId) {
+		logger.info("GET request to path: /applications/" + applicationName + "/deployments/" + deploymentId + "/vms/" + vmId + "/events/" + eventId + "/energy-estimation");
+				
+		double energyConsumed = getEnergyOrPowerEstimation(applicationName, deploymentId, vmId, eventId, Unit.POWER, 0l);
+		
+		PowerMeasurement powerMeasurement = new PowerMeasurement();
+		powerMeasurement.setValue(energyConsumed);
+		
+		// We create the XMl response
+		String xml = XMLBuilder.getPowerEstimationForAnEventInAVMXMLInfo(powerMeasurement, applicationName, deploymentId, vmId, eventId);
+				
+		return buildResponse(Status.OK, xml);
+	}
+	
+	private double getEnergyOrPowerEstimation(String applicationName, String deploymentId, String vmId, String eventId, Unit unit, long duration) {
+		energyModeller = getEnergyModeller();
+		
+		VM vm = vmDAO.getById(Integer.parseInt(vmId));
+		List<String> ids = new ArrayList<String>();
+		ids.add("" + vm.getId());
+		
+		logger.debug("Connecting to Energy Modeller");
+
+		return energyModeller.estimate(null,  applicationName, deploymentId, ids, eventId, unit, duration);
 	}
 	
 	@GET

@@ -630,6 +630,44 @@ public class XMLBuilderTest {
 	}
 	
 	@Test
+	public void addPowerEstimationForDeploymentXMLInfoTest() {
+		PowerMeasurement powerMeasurement = new PowerMeasurement();
+		powerMeasurement.setValue(22.0);
+		
+		powerMeasurement = XMLBuilder.addPowerEstimationForDeploymentXMLInfo(powerMeasurement, "111", "333","eventX");
+		
+		assertEquals("/applications/111/deployments/333/events/eventX/power-estimation", powerMeasurement.getHref());
+		assertEquals(22.0, powerMeasurement.getValue(), 0.00001);
+		assertEquals("Aggregated power estimation for this aplication deployment and specific event", powerMeasurement.getDescription());
+		assertEquals(2, powerMeasurement.getLinks().size());
+		assertEquals("/applications/111/deployments/333/events/eventX", powerMeasurement.getLinks().get(0).getHref());
+		assertEquals("parent", powerMeasurement.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, powerMeasurement.getLinks().get(0).getType());
+		assertEquals("/applications/111/deployments/333/events/eventX/power-estimation", powerMeasurement.getLinks().get(1).getHref());
+		assertEquals("self",powerMeasurement.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, powerMeasurement.getLinks().get(1).getType());
+	}
+	
+	@Test
+	public void addPowerConsumptionForDeploymentXMLInfoTest() {
+		PowerMeasurement powerMeasurement = new PowerMeasurement();
+		powerMeasurement.setValue(22.0);
+		
+		powerMeasurement = XMLBuilder.addPowerConsumptionForDeploymentXMLInfo(powerMeasurement, "111", "333","eventX");
+		
+		assertEquals("/applications/111/deployments/333/events/eventX/power-consumption", powerMeasurement.getHref());
+		assertEquals(22.0, powerMeasurement.getValue(), 0.00001);
+		assertEquals("Aggregated power consumption for this aplication deployment and specific event", powerMeasurement.getDescription());
+		assertEquals(2, powerMeasurement.getLinks().size());
+		assertEquals("/applications/111/deployments/333/events/eventX", powerMeasurement.getLinks().get(0).getHref());
+		assertEquals("parent", powerMeasurement.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, powerMeasurement.getLinks().get(0).getType());
+		assertEquals("/applications/111/deployments/333/events/eventX/power-consumption", powerMeasurement.getLinks().get(1).getHref());
+		assertEquals("self",powerMeasurement.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, powerMeasurement.getLinks().get(1).getType());
+	}
+	
+	@Test
 	public void getEnergyEstimationForDeploymentXMLInfoTest() throws Exception {
 		EnergyMeasurement energyMeasurement = new EnergyMeasurement();
 		energyMeasurement.setValue(22.0);
@@ -650,6 +688,75 @@ public class XMLBuilderTest {
 		assertEquals("/applications/111/deployments/333/events/eventX/energy-estimation", energyMeasurement.getLinks().get(1).getHref());
 		assertEquals("self",energyMeasurement.getLinks().get(1).getRel());
 		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(1).getType());
+	}
+	
+	@Test
+	public void getEnergyComsumptionForDeploymentXMLInfoTest() throws Exception {
+		EnergyMeasurement energyMeasurement = new EnergyMeasurement();
+		energyMeasurement.setValue(22.0);
+		
+		String xml = XMLBuilder.getEnergyConsumptionForDeploymentXMLInfo(energyMeasurement, "111", "333", "eventX");
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(EnergyMeasurement.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		energyMeasurement = (EnergyMeasurement) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals("/applications/111/deployments/333/events/eventX/energy-consumption", energyMeasurement.getHref());
+		assertEquals(22.0, energyMeasurement.getValue(), 0.00001);
+		assertEquals("Aggregated energy consumption for this aplication deployment and specific event", energyMeasurement.getDescription());
+		assertEquals(2, energyMeasurement.getLinks().size());
+		assertEquals("/applications/111/deployments/333/events/eventX", energyMeasurement.getLinks().get(0).getHref());
+		assertEquals("parent", energyMeasurement.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(0).getType());
+		assertEquals("/applications/111/deployments/333/events/eventX/energy-consumption", energyMeasurement.getLinks().get(1).getHref());
+		assertEquals("self",energyMeasurement.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(1).getType());
+	}
+	
+	@Test
+	public void getPowerEstimationForDeploymentXMLInfoTest() throws Exception {
+		PowerMeasurement powerMeasurement = new PowerMeasurement();
+		powerMeasurement.setValue(22.0);
+		
+		String xml = XMLBuilder.getPowerEstimationForDeploymentXMLInfo(powerMeasurement, "111", "333", "eventX");
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(PowerMeasurement.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		powerMeasurement = (PowerMeasurement) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals("/applications/111/deployments/333/events/eventX/power-estimation", powerMeasurement.getHref());
+		assertEquals(22.0, powerMeasurement.getValue(), 0.00001);
+		assertEquals("Aggregated power estimation for this aplication deployment and specific event", powerMeasurement.getDescription());
+		assertEquals(2, powerMeasurement.getLinks().size());
+		assertEquals("/applications/111/deployments/333/events/eventX", powerMeasurement.getLinks().get(0).getHref());
+		assertEquals("parent", powerMeasurement.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, powerMeasurement.getLinks().get(0).getType());
+		assertEquals("/applications/111/deployments/333/events/eventX/power-estimation", powerMeasurement.getLinks().get(1).getHref());
+		assertEquals("self",powerMeasurement.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, powerMeasurement.getLinks().get(1).getType());
+	}
+	
+	@Test
+	public void getPowerConsumptionForDeploymentXMLInfoTest() throws Exception {
+		PowerMeasurement powerMeasurement = new PowerMeasurement();
+		powerMeasurement.setValue(22.0);
+		
+		String xml = XMLBuilder.getPowerConsumptionForDeploymentXMLInfo(powerMeasurement, "111", "333", "eventX");
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(PowerMeasurement.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		powerMeasurement = (PowerMeasurement) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals("/applications/111/deployments/333/events/eventX/power-consumption", powerMeasurement.getHref());
+		assertEquals(22.0, powerMeasurement.getValue(), 0.00001);
+		assertEquals("Aggregated power consumption for this aplication deployment and specific event", powerMeasurement.getDescription());
+		assertEquals(2, powerMeasurement.getLinks().size());
+		assertEquals("/applications/111/deployments/333/events/eventX", powerMeasurement.getLinks().get(0).getHref());
+		assertEquals("parent", powerMeasurement.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, powerMeasurement.getLinks().get(0).getType());
+		assertEquals("/applications/111/deployments/333/events/eventX/power-consumption", powerMeasurement.getLinks().get(1).getHref());
+		assertEquals("self",powerMeasurement.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, powerMeasurement.getLinks().get(1).getType());
 	}
 	
 	@Test

@@ -52,6 +52,7 @@ import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
 import eu.ascetic.paas.applicationmanager.model.Image;
+import eu.ascetic.paas.applicationmanager.model.PowerMeasurement;
 import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
@@ -679,7 +680,194 @@ public class DeploymentRestTest extends AbstractTest {
 	
 	@Test
 	@SuppressWarnings(value = { "static-access", "unchecked" }) 
+	public void getPowerConsumptionTest() throws JAXBException {
+		Deployment deployment = new Deployment();
+		deployment.setId(1);
+		
+		VM vm1 = new VM();
+		vm1.setId(1);
+		vm1.setProviderVmId("X1");
+		deployment.addVM(vm1);
+		
+		VM vm2 = new VM();
+		vm2.setId(2);
+		vm2.setProviderVmId("X2");
+		deployment.addVM(vm2);
+		
+		PaaSEnergyModeller energyModeller = mock(PaaSEnergyModeller.class);
+		DeploymentRest deploymentRest = new DeploymentRest();
+		
+		deploymentRest.energyModeller = energyModeller;
+		
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		deploymentRest.deploymentDAO = deploymentDAO;
+		when(deploymentDAO.getById(1)).thenReturn(deployment);
+		
+		when(energyModeller.measure(isNull(String.class), 
+				                    eq("111"), 
+				                    eq("1"),
+				                    argThat(new BaseMatcher<List<String>>() {
+ 
+																				@Override
+																				public boolean matches(Object arg0) {
+																					
+																					List<String> ids = (List<String>) arg0;
+																					
+																					boolean isTheList = true;
+																					
+																					if(!(ids.size() == 2)) isTheList = false; 
+																					
+																					if(!(ids.get(0).equals("1"))) isTheList = false;
+																					
+																					if(!(ids.get(1).equals("2"))) isTheList = false;
+
+																					return isTheList;
+																				}
+ 
+																				@Override
+																				public void describeTo(Description arg0) {}
+        																	
+																			}), 
+								     isNull(String.class), 
+								     eq(Unit.POWER), 
+								     isNull(Timestamp.class), 
+								     isNull(Timestamp.class))).thenReturn(22.0);
+
+		Response response = deploymentRest.getPowerConsumption("111", "1");
+		assertEquals(200, response.getStatus());
+		
+		String xml = (String) response.getEntity();
+		JAXBContext jaxbContext = JAXBContext.newInstance(PowerMeasurement.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		PowerMeasurement powerMeasurement = (PowerMeasurement) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals(22.0, powerMeasurement.getValue(), 0.000001);
+		assertEquals("Aggregated power consumption in W for this aplication deployment", powerMeasurement.getDescription());
+	}
+	
+	@Test
+	@SuppressWarnings(value = { "static-access", "unchecked" }) 
 	public void getEnergyEstimationForEventTest() throws JAXBException {
+		Deployment deployment = new Deployment();
+		deployment.setId(1);
+		
+		VM vm1 = new VM();
+		vm1.setId(1);
+		vm1.setProviderVmId("X1");
+		deployment.addVM(vm1);
+		
+		VM vm2 = new VM();
+		vm2.setId(2);
+		vm2.setProviderVmId("X2");
+		deployment.addVM(vm2);
+		
+		PaaSEnergyModeller energyModeller = mock(PaaSEnergyModeller.class);
+		DeploymentRest deploymentRest = new DeploymentRest();
+		
+		deploymentRest.energyModeller = energyModeller;
+		
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		deploymentRest.deploymentDAO = deploymentDAO;
+		when(deploymentDAO.getById(1)).thenReturn(deployment);
+				
+		when(energyModeller.estimate(isNull(String.class),  eq("111"), eq("1"),  argThat(new BaseMatcher<List<String>>() {
+			 
+			@Override
+			public boolean matches(Object arg0) {
+				
+				List<String> ids = (List<String>) arg0;
+				
+				boolean isTheList = true;
+				
+				if(!(ids.size() == 2)) isTheList = false; 
+				
+				if(!(ids.get(0).equals("1"))) isTheList = false;
+				
+				if(!(ids.get(1).equals("2"))) isTheList = false;
+
+				return isTheList;
+			}
+
+			@Override
+			public void describeTo(Description arg0) {}
+		
+		}), eq("eventX"), eq(Unit.ENERGY), eq(0l))).thenReturn(22.0);
+		
+		
+		Response response = deploymentRest.getEnergyEstimationForEvent("111", "1", "eventX");
+		
+		String xml = (String) response.getEntity();
+		JAXBContext jaxbContext = JAXBContext.newInstance(EnergyMeasurement.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		EnergyMeasurement energyMeasurement = (EnergyMeasurement) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals(22.0, energyMeasurement.getValue(), 0.000001);
+		assertEquals("Aggregated energy estimation for this aplication deployment and specific event", energyMeasurement.getDescription());
+	}
+	
+	@Test
+	@SuppressWarnings(value = { "static-access", "unchecked" }) 
+	public void getPowerEstimationForEventTest() throws JAXBException {
+		Deployment deployment = new Deployment();
+		deployment.setId(1);
+		
+		VM vm1 = new VM();
+		vm1.setId(1);
+		vm1.setProviderVmId("X1");
+		deployment.addVM(vm1);
+		
+		VM vm2 = new VM();
+		vm2.setId(2);
+		vm2.setProviderVmId("X2");
+		deployment.addVM(vm2);
+		
+		PaaSEnergyModeller energyModeller = mock(PaaSEnergyModeller.class);
+		DeploymentRest deploymentRest = new DeploymentRest();
+		
+		deploymentRest.energyModeller = energyModeller;
+		
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		deploymentRest.deploymentDAO = deploymentDAO;
+		when(deploymentDAO.getById(1)).thenReturn(deployment);
+				
+		when(energyModeller.estimate(isNull(String.class),  eq("111"), eq("1"),  argThat(new BaseMatcher<List<String>>() {
+			 
+			@Override
+			public boolean matches(Object arg0) {
+				
+				List<String> ids = (List<String>) arg0;
+				
+				boolean isTheList = true;
+				
+				if(!(ids.size() == 2)) isTheList = false; 
+				
+				if(!(ids.get(0).equals("1"))) isTheList = false;
+				
+				if(!(ids.get(1).equals("2"))) isTheList = false;
+
+				return isTheList;
+			}
+
+			@Override
+			public void describeTo(Description arg0) {}
+		
+		}), eq("eventX"), eq(Unit.POWER), eq(0l))).thenReturn(22.0);
+		
+		
+		Response response = deploymentRest.getPowerEstimationForEvent("111", "1", "eventX");
+		
+		String xml = (String) response.getEntity();
+		JAXBContext jaxbContext = JAXBContext.newInstance(PowerMeasurement.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		PowerMeasurement powerMeasurement = (PowerMeasurement) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals(22.0, powerMeasurement.getValue(), 0.000001);
+		assertEquals("Aggregated power estimation for this aplication deployment and specific event", powerMeasurement.getDescription());
+	}
+	
+	@Test
+	@SuppressWarnings(value = { "static-access", "unchecked" }) 
+	public void getEnergyConsumptionForEventTest() throws JAXBException {
 		Deployment deployment = new Deployment();
 		deployment.setId(1);
 		
@@ -726,7 +914,7 @@ public class DeploymentRestTest extends AbstractTest {
 		}), eq("eventX"), eq(Unit.ENERGY), isNull(Timestamp.class), isNull(Timestamp.class))).thenReturn(22.0);
 		
 		
-		Response response = deploymentRest.getEnergyEstimationForEvent("111", "1", "eventX");
+		Response response = deploymentRest.getEnergyMeasurementForEvent("111", "1", "eventX");
 		
 		String xml = (String) response.getEntity();
 		JAXBContext jaxbContext = JAXBContext.newInstance(EnergyMeasurement.class);
@@ -734,7 +922,67 @@ public class DeploymentRestTest extends AbstractTest {
 		EnergyMeasurement energyMeasurement = (EnergyMeasurement) jaxbUnmarshaller.unmarshal(new StringReader(xml));
 		
 		assertEquals(22.0, energyMeasurement.getValue(), 0.000001);
-		assertEquals("Aggregated energy estimation for this aplication deployment and specific event", energyMeasurement.getDescription());
+		assertEquals("Aggregated energy consumption for this aplication deployment and specific event", energyMeasurement.getDescription());
+	}
+	
+	@Test
+	@SuppressWarnings(value = { "static-access", "unchecked" }) 
+	public void getPowerMeasurementForEventTest() throws JAXBException {
+		Deployment deployment = new Deployment();
+		deployment.setId(1);
+		
+		VM vm1 = new VM();
+		vm1.setId(1);
+		vm1.setProviderVmId("X1");
+		deployment.addVM(vm1);
+		
+		VM vm2 = new VM();
+		vm2.setId(2);
+		vm2.setProviderVmId("X2");
+		deployment.addVM(vm2);
+		
+		PaaSEnergyModeller energyModeller = mock(PaaSEnergyModeller.class);
+		DeploymentRest deploymentRest = new DeploymentRest();
+		
+		deploymentRest.energyModeller = energyModeller;
+		
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		deploymentRest.deploymentDAO = deploymentDAO;
+		when(deploymentDAO.getById(1)).thenReturn(deployment);
+				
+		when(energyModeller.measure(isNull(String.class),  eq("111"), eq("1"),  argThat(new BaseMatcher<List<String>>() {
+			 
+			@Override
+			public boolean matches(Object arg0) {
+				
+				List<String> ids = (List<String>) arg0;
+				
+				boolean isTheList = true;
+				
+				if(!(ids.size() == 2)) isTheList = false; 
+				
+				if(!(ids.get(0).equals("1"))) isTheList = false;
+				
+				if(!(ids.get(1).equals("2"))) isTheList = false;
+
+				return isTheList;
+			}
+
+			@Override
+			public void describeTo(Description arg0) {}
+		
+		}), eq("eventX"), eq(Unit.POWER), isNull(Timestamp.class), isNull(Timestamp.class))).thenReturn(22.0);
+		
+		
+		Response response = deploymentRest.getPowerConsumptionForEvent("111", "1", "eventX");
+		
+		String xml = (String) response.getEntity();
+		JAXBContext jaxbContext = JAXBContext.newInstance(PowerMeasurement.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		PowerMeasurement powerMeasurement = (PowerMeasurement) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals(22.0, powerMeasurement.getValue(), 0.000001);
+		assertEquals("Aggregated power consumption for this aplication deployment and specific event", powerMeasurement.getDescription());
 	}
 	
 	@Test
