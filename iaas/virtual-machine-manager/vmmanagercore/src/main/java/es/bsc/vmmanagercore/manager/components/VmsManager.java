@@ -19,6 +19,7 @@
 package es.bsc.vmmanagercore.manager.components;
 
 import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddleware;
+import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddlewareException;
 import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
 import es.bsc.vmmanagercore.db.VmManagerDb;
 import es.bsc.vmmanagercore.logging.VMMLogger;
@@ -176,7 +177,7 @@ public class VmsManager {
      * @param vms the VMs to deploy
      * @return the IDs of the VMs deployed in the same order that they were received
      */
-    public List<String> deployVms(List<Vm> vms) {
+    public List<String> deployVms(List<Vm> vms) throws CloudMiddlewareException {
         // Get current time to know how much each VM has to wait until it is deployed.
         Calendar calendarDeployRequestReceived = Calendar.getInstance();
 
@@ -197,12 +198,9 @@ public class VmsManager {
             String originalVmInitScript = vmToDeploy.getInitScript();
             setAsceticInitScript(vmToDeploy);
 
-            // This is a quick fix for the Ascetic project.
-            // I do not have enough information to decide when a VM needs to boot using a volume or an image.
-            // Therefore, I am just going to check the destination hostname. If it is a host for Ascetic Y2 (wallyX),
-            // then deploy using a volume.
+
             String vmId;
-            if (hostForDeployment.getHostname().contains("wally")) {
+            if (VmManagerConfiguration.getInstance().deployVmWithVolume) {
                 vmId = deployVmWithVolume(vmToDeploy, hostForDeployment, originalVmInitScript);
             }
             else {
@@ -310,7 +308,7 @@ public class VmsManager {
         return VmManagerConfiguration.getInstance().monitoring.equals(VmManagerConfiguration.Monitoring.ZABBIX);
     }
 
-    private String deployVm(Vm vm, Host host) {
+    private String deployVm(Vm vm, Host host) throws CloudMiddlewareException {
         // If the host is not on, turn it on and wait
         if (!host.isOn()) {
             hostsManager.pressHostPowerButton(host.getHostname());
@@ -325,7 +323,7 @@ public class VmsManager {
         return cloudMiddleware.deploy(vm, host.getHostname());
     }
 
-    private String deployVmWithVolume(Vm vm, Host host, String isoPath) {
+    private String deployVmWithVolume(Vm vm, Host host, String isoPath) throws CloudMiddlewareException {
         // If the host is not on, turn it on and wait
         if (!host.isOn()) {
             hostsManager.pressHostPowerButton(host.getHostname());

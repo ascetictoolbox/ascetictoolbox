@@ -36,7 +36,7 @@ public class OpenStackGlanceTest {
 
     //This test only checks that the create and delete operations do not raise exceptions.
     @Test
-    public void canCreateAndDelete() {
+    public void canCreateAndDelete() throws Exception {
         ImageToUpload imageToUpload = new ImageToUpload("testImage",
                 VmManagerConfiguration.getInstance().testingImageUrl);
         String imageId = glance.createImageFromUrl(imageToUpload);

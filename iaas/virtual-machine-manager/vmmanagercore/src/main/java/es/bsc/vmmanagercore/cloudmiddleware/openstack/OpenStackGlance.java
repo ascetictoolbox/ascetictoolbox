@@ -18,6 +18,8 @@
 
 package es.bsc.vmmanagercore.cloudmiddleware.openstack;
 
+import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddleware;
+import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddlewareException;
 import es.bsc.vmmanagercore.models.images.ImageToUpload;
 import es.bsc.vmmanagercore.utils.CommandExecutor;
 import es.bsc.vmmanagercore.utils.HttpUtils;
@@ -27,6 +29,7 @@ import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,7 +60,7 @@ public class OpenStackGlance {
      * @param imageToUpload the image to upload
      * @return the ID of the image just created. This ID is the same as the ID assigned in OpenStack.
      */
-    public String createImageFromUrl(ImageToUpload imageToUpload) {
+    public String createImageFromUrl(ImageToUpload imageToUpload) throws CloudMiddlewareException {
         String responseContent;
 		log.debug("Validating URL: " + imageToUpload.getUrl());
 
@@ -72,20 +75,26 @@ public class OpenStackGlance {
             return getIdFromCreateImageImageResponse(responseContent);
         }
         else {
-            String glanceCommandOutput = CommandExecutor.executeCommand(
-                    "glance --os-username " + openStackCredentials.getKeyStoneUser() +
-                    " --os-password " + openStackCredentials.getKeyStonePassword() + " " +
-                    "--os-tenant-id " + openStackCredentials.getKeyStoneTenantId() + " " +
-                    "--os-auth-url http://" + openStackCredentials.getOpenStackIP() + ":35357/v2.0 " +
-                    "image-create --name=" + imageToUpload.getName() + " " +
-                    "--disk-format=" + getImageFormat(imageToUpload.getUrl()) + " " +
-                    "--container-format=bare --is-public=True " +
-                    "--file " + imageToUpload.getUrl());
 
-			log.debug("Creating image from non-valid URL. Glance command:\n"+glanceCommandOutput);
-            String outputIdLine = glanceCommandOutput.split(System.getProperty("line.separator"))[9];
-            String id = outputIdLine.split("\\|")[2]; // Get the line where that specifies the ID
-            return id.substring(1, id.length() - 1); // Remove first and last characters (spaces)
+
+            try {
+                String glanceCommandOutput = CommandExecutor.executeCommand(
+                        "glance --os-username " + openStackCredentials.getKeyStoneUser() +
+                        " --os-password " + openStackCredentials.getKeyStonePassword() + " " +
+                        "--os-tenant-id " + openStackCredentials.getKeyStoneTenantId() + " " +
+                        "--os-auth-url http://" + openStackCredentials.getOpenStackIP() + ":35357/v2.0 " +
+                        "image-create --name=" + imageToUpload.getName() + " " +
+                        "--disk-format=" + getImageFormat(imageToUpload.getUrl()) + " " +
+                        "--container-format=bare --is-public=True " +
+                        "--file " + imageToUpload.getUrl());
+
+                log.debug("Creating image from non-valid URL. Glance command:\n"+glanceCommandOutput);
+                String outputIdLine = glanceCommandOutput.split(System.getProperty("line.separator"))[9];
+                String id = outputIdLine.split("\\|")[2]; // Get the line where that specifies the ID
+                return id.substring(1, id.length() - 1); // Remove first and last characters (spaces)
+            } catch (Exception e) {
+                throw new CloudMiddlewareException("Error creating image from " + imageToUpload.getUrl()+ ": " + e.getMessage(),e);
+            }
         }
     }
 
@@ -259,13 +268,17 @@ public class OpenStackGlance {
      * @param path the path of the image
      * @return the format of the image
      */
-    private String getImageFormat(String path) {
+    private String getImageFormat(String path) throws CloudMiddlewareException {
         // This uses qemu-utils. The host where the VMM is running needs to have qemu-utils installed.
         // Is there any way we can get rid of this dependency?
 
-        String qemuInfoOutput = CommandExecutor.executeCommand("qemu-img info " + path);
-        // The result of the qemu-img command executed contains in the second line "file format: <format>"
-        return qemuInfoOutput.split(System.getProperty("line.separator"))[1].split(":")[1].substring(1);
+        try {
+            String qemuInfoOutput = CommandExecutor.executeCommand("qemu-img info " + path);
+            // The result of the qemu-img command executed contains in the second line "file format: <format>"
+            return qemuInfoOutput.split(System.getProperty("line.separator"))[1].split(":")[1].substring(1);
+        } catch(Exception e) {
+            throw new CloudMiddlewareException(e.getMessage(), e);
+        }
     }
 
 }

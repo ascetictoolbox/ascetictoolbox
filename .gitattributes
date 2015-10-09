@@ -557,8 +557,12 @@ iaas/virtual-machine-manager/vmmanager-frontend/scripts/jquery.min.js -text
 iaas/virtual-machine-manager/vmmanager-frontend/scripts/spin.min.js -text
 iaas/virtual-machine-manager/vmmanager-frontend/scripts/toastr.min.js -text
 iaas/virtual-machine-manager/vmmanagercore/README -text
+iaas/virtual-machine-manager/vmmanagercore/etc/configTUBstable.properties -text
+iaas/virtual-machine-manager/vmmanagercore/etc/configTUBtest.properties -text
+iaas/virtual-machine-manager/vmmanagercore/etc/vmm-installer.sh -text
 iaas/virtual-machine-manager/vmmanagercore/pom.xml -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/cloudmiddleware/CloudMiddleware.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/cloudmiddleware/CloudMiddlewareException.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/cloudmiddleware/fake/FakeCloudMiddleware.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/cloudmiddleware/openstack/OpenStackCredentials.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/cloudmiddleware/openstack/OpenStackGlance.java -text
@@ -665,7 +669,6 @@ iaas/virtual-machine-manager/vmmanagercore/src/main/resources/init-scripts/hello
 iaas/virtual-machine-manager/vmmanagercore/src/main/resources/init-scripts/mount_isos.sh -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/resources/init-scripts/zabbix_agents.sh -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/resources/log4j.xml -text
-iaas/virtual-machine-manager/vmmanagercore/src/main/resources/vmmconfig.properties -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/webapp/META-INF/context.xml -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/webapp/index.jsp -text
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/cloudmiddleware/fake/FakeCloudMiddlewareTest.java -text

@@ -18,13 +18,13 @@
 
 package es.bsc.vmmanagercore.configuration;
 
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.Arrays;
-import java.util.Properties;
 
 /**
  * Singleton class that contains all the configuration parameters.
@@ -33,15 +33,17 @@ import java.util.Properties;
  *
  */
 public class VmManagerConfiguration {
+
 	// Configuration file
 	private static final String PROPNAME_CONF_FILE = "config";
-    private static final String DEFAULT_CONF_FILE = "vmmconfig.properties";
+
+    private static final String DEFAULT_CONF_FILE_LOCATION = "/etc/ascetic/vmm/vmmconfig.properties";
 
     // OpenStack configuration
     public String openStackIP;
     public int keyStonePort;
     public int glancePort;
-
+    public boolean deployVmWithVolume;
     // OpenStack login credentials
     public String keyStoneUser;
     public String keyStoneTenant;
@@ -88,32 +90,19 @@ public class VmManagerConfiguration {
      *
      * @return the properties file
      */
-    private Properties getPropertiesObjectFromConfigFile() {
-		Properties prop = new Properties();
+    private Configuration getPropertiesObjectFromConfigFile() {
+		Configuration config;
 		Logger log = LogManager.getLogger(VmManagerConfiguration.class);
         try {
-			System.out.println("**********************************************************");
-			System.out.println("**********************************************************");
-			System.out.println("**********************************************************");
-			System.out.println("**********************************************************");
-			System.out.println("*************** " + System.getProperty(PROPNAME_CONF_FILE) + " ********");
-			System.out.println("**********************************************************");
-			System.out.println("**********************************************************");
-			System.out.println("**********************************************************");
-			System.out.println("**********************************************************");
-			String customFile = System.getProperty(PROPNAME_CONF_FILE);
-			if(customFile != null) {
-				log.info("Found a custom file in system property '"+PROPNAME_CONF_FILE+"': " + customFile);
-				prop.load(new FileReader(customFile));
-			} else {
-				log.info("Loading default properties");
-            	prop.load(VmManagerConfiguration.class.getClassLoader().getResourceAsStream(DEFAULT_CONF_FILE));
-			}
-        } catch (IOException e) {
+			String customFileLocation = System.getProperty(PROPNAME_CONF_FILE,DEFAULT_CONF_FILE_LOCATION);
+
+            log.info("Loading configuration file: " + customFileLocation);
+            return new PropertiesConfiguration(customFileLocation);
+        } catch (ConfigurationException e) {
 			log.error("Error loading properties file", e);
             e.printStackTrace();
         }
-        return prop;
+        return null;
     }
 
     /**
@@ -121,29 +110,30 @@ public class VmManagerConfiguration {
      *
      * @param prop properties file that contains the configuration parameters
      */
-    private void initializeClassAttributes(Properties prop) {
-        openStackIP = prop.getProperty("openStackIP");
-        keyStonePort = Integer.parseInt(prop.getProperty("keyStonePort"));
-        glancePort = Integer.parseInt(prop.getProperty("glancePort"));
-        keyStoneUser = prop.getProperty("keyStoneUser");
-        keyStoneTenant = prop.getProperty("keyStoneTenant");
-        keyStoneTenantId = prop.getProperty("keyStoneTenantId");
-        keyStonePassword = prop.getProperty("keyStonePassword");
+    private void initializeClassAttributes(Configuration prop) {
+        openStackIP = prop.getString("openStackIP");
+        keyStonePort = prop.getInt("keyStonePort");
+        glancePort = prop.getInt("glancePort");
+        keyStoneUser = prop.getString("keyStoneUser");
+        keyStoneTenant = prop.getString("keyStoneTenant");
+        keyStoneTenantId = prop.getString("keyStoneTenantId");
+        keyStonePassword = prop.getString("keyStonePassword");
 
-        testingImageId = prop.getProperty("testingImageId");
-        testingImageUrl = prop.getProperty("testingImageUrl");
-        testingImageName = prop.getProperty("testingImageName");
-        testingDeploymentBaseUrl = prop.getProperty("testingDeploymentBaseUrl");
-        deployBaseUrl = prop.getProperty("deployBaseUrl");
-        deployPackage = prop.getProperty("deployPackage");
-        hosts = prop.getProperty("hosts").split(",");
-        deploymentEngine = prop.getProperty("deploymentEngine");
-        project = prop.getProperty("project");
-        defaultServerTurnOnDelaySeconds = Integer.parseInt(prop.getProperty("defaultServerTurnOnDelaySeconds"));
-        defaultServerTurnOffDelaySeconds = Integer.parseInt(prop.getProperty("defaultServerTurnOffDelaySeconds"));
-        zabbixDbIp = prop.getProperty("zabbixDbIp");
-        zabbixDbUser = prop.getProperty("zabbixDbUser");
-        zabbixDbPassword = prop.getProperty("zabbixDbPassword");
+        testingImageId = prop.getString("testingImageId");
+        testingImageUrl = prop.getString("testingImageUrl");
+        testingImageName = prop.getString("testingImageName");
+        testingDeploymentBaseUrl = prop.getString("testingDeploymentBaseUrl");
+        deployBaseUrl = prop.getString("deployBaseUrl");
+        deployPackage = prop.getString("deployPackage");
+        hosts = prop.getStringArray("hosts");
+        deploymentEngine = prop.getString("deploymentEngine");
+        project = prop.getString("project");
+        defaultServerTurnOnDelaySeconds = prop.getInt("defaultServerTurnOnDelaySeconds");
+        defaultServerTurnOffDelaySeconds = prop.getInt("defaultServerTurnOffDelaySeconds");
+        zabbixDbIp = prop.getString("zabbixDbIp");
+        zabbixDbUser = prop.getString("zabbixDbUser");
+        zabbixDbPassword = prop.getString("zabbixDbPassword");
+        deployVmWithVolume = prop.getBoolean("deployVmWithVolume", false);
 
         if (prop.getProperty("monitoring").equals("openstack")) {
             monitoring = Monitoring.OPENSTACK;
@@ -225,6 +215,7 @@ public class VmManagerConfiguration {
 				"\n\tzabbixDbIp='" + zabbixDbIp + '\'' +
 				"\n\tzabbixDbUser='" + zabbixDbUser + '\'' +
 				"\n\tzabbixDbPassword='" + zabbixDbPassword + '\'' +
+                "\n\tdeployVmWithVolume='" + deployVmWithVolume + '\'' +
 				"\n}";
 	}
 }

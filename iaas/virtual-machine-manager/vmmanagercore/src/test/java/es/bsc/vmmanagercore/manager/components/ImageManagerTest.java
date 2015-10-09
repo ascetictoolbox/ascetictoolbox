@@ -57,7 +57,7 @@ public class ImageManagerTest {
     }
     
     @Test
-    public void createVmImage() {
+    public void createVmImage() throws Exception {
         // Mock cloud middleware response
         String mockedCloudMiddlewareResponse = "NewImageId";
         ImageToUpload imageToBeCreated = new ImageToUpload("newImageName", "http://fakeUrl.com");

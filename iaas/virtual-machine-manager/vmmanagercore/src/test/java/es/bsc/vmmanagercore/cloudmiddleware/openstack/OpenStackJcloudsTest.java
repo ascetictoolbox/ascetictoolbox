@@ -112,7 +112,7 @@ public class OpenStackJcloudsTest {
 	}
 
     @Test
-    public void deployVmWithNonExistingFlavor() {
+    public void deployVmWithNonExistingFlavor() throws Exception {
         //deploy a VM
         Vm vmDescription = new Vm("TestVM", testingImageId, 1, 1024, 2, null, "app1");
         String instanceId = openStackJclouds.deploy(vmDescription, null);
@@ -132,7 +132,7 @@ public class OpenStackJcloudsTest {
 	}
 	
 	@Test
-    public void deployVmWithExistingFlavor() {
+    public void deployVmWithExistingFlavor() throws Exception {
         //This test can only be performed if there is at least one flavor registered in OpenStack
         if (OpenStackJclouds.DEFAULT_FLAVORS.length > 0) {
             //get the ID of one of the default flavors
@@ -161,14 +161,14 @@ public class OpenStackJcloudsTest {
 	}
 	
 	@Test
-	public void cannotDeployVmWithoutExistingImageId() {
+	public void cannotDeployVmWithoutExistingImageId() throws Exception {
 		Vm vmDescription = new Vm("TestVM", "nonExistingImageId", 1, 1024, 2, null, "app1");
 		exception.expect(IllegalArgumentException.class);
 		openStackJclouds.deploy(vmDescription, null);
 	}
 	
 	@Test
-	public void destroy() {
+	public void destroy() throws Exception {
 		//deploy a VM
 		Vm vmDescription = new Vm("TestVM", testingImageId, 1, 1024, 2, null, "app1");
 		String instanceId = openStackJclouds.deploy(vmDescription, null);
@@ -182,7 +182,7 @@ public class OpenStackJcloudsTest {
 	}
 	
 	@Test
-	public void getAllVMs() {
+	public void getAllVMs() throws Exception {
 		//deploy two VMs
 		Vm vmDescription1 = new Vm("TestVM1", testingImageId, 1, 1024, 1, null, "app1");
 		String instanceId1 = openStackJclouds.deploy(vmDescription1, null);
@@ -201,7 +201,7 @@ public class OpenStackJcloudsTest {
 	}
 	
 	@Test
-	public void getVMInfo() {
+	public void getVMInfo() throws Exception {
 		//deploy a VM
 		String instanceId = openStackJclouds.deploy(new Vm("TestVM1", testingImageId, 1, 1024, 2, null, "app1"), null);
 		

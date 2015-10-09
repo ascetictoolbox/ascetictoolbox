@@ -19,11 +19,16 @@
 package es.bsc.vmmanagercore.rest;
 
 import com.sun.jersey.spi.resource.Singleton;
+import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddlewareException;
 import es.bsc.vmmanagercore.manager.GenericVmManager;
 import es.bsc.vmmanagercore.manager.VmManager;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 /**
  * REST interface for the VM Manager.
@@ -49,6 +54,8 @@ public class VmManagerRest {
     private VmPlacementCallsManager vmPlacementCallsManager = new VmPlacementCallsManager(vmManager);
     private SelfAdaptationCallsManager selfAdaptationCallsManager = new SelfAdaptationCallsManager(vmManager);
 
+    private Logger log = LogManager.getLogger(VmManagerRest.class);
+
 
     //================================================================================
     // VM Methods
@@ -66,7 +73,12 @@ public class VmManagerRest {
     @Consumes("application/json")
     @Produces(MediaType.APPLICATION_JSON)
     public String deployVMs(String vmDescriptions) {
-        return vmCallsManager.deployVMs(vmDescriptions);
+        try {
+            return vmCallsManager.deployVMs(vmDescriptions);
+        } catch (final CloudMiddlewareException e) {
+            log.error("Error deploying VMs: " + e.getMessage(), e);
+            throw new ErrorHandler(e, Response.Status.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GET
@@ -119,7 +131,11 @@ public class VmManagerRest {
     @Consumes("application/json")
     @Produces(MediaType.APPLICATION_JSON)
     public String uploadImage(String imageInfo) {
-        return imageCallsManager.uploadImage(imageInfo);
+        try {
+            return imageCallsManager.uploadImage(imageInfo);
+        } catch (CloudMiddlewareException e) {
+            throw new ErrorHandler(e, Response.Status.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GET
@@ -263,4 +279,25 @@ public class VmManagerRest {
         return estimatesCallsManager.getEstimates(vms);
     }
 
+
+
+    private class ErrorHandler extends WebApplicationException {
+        private Response.Status status;
+        public ErrorHandler(Throwable cause, Response.Status status) {
+            super(cause, status);
+            this.status = status;
+        }
+
+        @Override
+        public Response getResponse() {
+            StringBuilder sb = new StringBuilder("Error deploying VMs: ");
+            Throwable th = getCause();
+            while(th != null) {
+                sb.append("\n\tCaused by ").append(th.getClass().getName()).append(": ").append(th.getMessage());
+                th = th.getCause();
+            }
+            return Response.status(status)
+                    .entity(sb.toString()).type(MediaType.TEXT_PLAIN_TYPE).build();
+        }
+    };
 }

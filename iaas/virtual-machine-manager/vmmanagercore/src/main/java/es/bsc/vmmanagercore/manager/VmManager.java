@@ -1,5 +1,6 @@
 package es.bsc.vmmanagercore.manager;
 
+import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddlewareException;
 import es.bsc.vmmanagercore.models.estimates.ListVmEstimates;
 import es.bsc.vmmanagercore.models.estimates.VmToBeEstimated;
 import es.bsc.vmmanagercore.models.images.ImageToUpload;
@@ -66,7 +67,7 @@ public interface VmManager {
      * @param vms the VMs to deploy
      * @return the IDs of the VMs deployed in the same order that they were received
      */
-    List<String> deployVms(List<Vm> vms);
+    List<String> deployVms(List<Vm> vms) throws CloudMiddlewareException;
 
     /**
      * Performs an action on a VM (reboot, suspend, etc.).
@@ -109,7 +110,7 @@ public interface VmManager {
      * @param imageToUpload the image to be created/uploaded in the system
      * @return the ID of the image
      */
-    String createVmImage(ImageToUpload imageToUpload);
+    String createVmImage(ImageToUpload imageToUpload) throws CloudMiddlewareException;
 
     /**
      * Returns an image with the ID.

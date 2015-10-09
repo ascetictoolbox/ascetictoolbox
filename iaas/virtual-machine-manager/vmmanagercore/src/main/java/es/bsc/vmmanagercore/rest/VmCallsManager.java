@@ -21,6 +21,7 @@ package es.bsc.vmmanagercore.rest;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddlewareException;
 import es.bsc.vmmanagercore.manager.VmManager;
 import es.bsc.vmmanagercore.models.vms.ListVms;
 import es.bsc.vmmanagercore.models.vms.ListVmsDeployed;
@@ -63,7 +64,7 @@ public class VmCallsManager {
      * @param vms the JSON document containing the VMs to be deployed
      * @return a JSON document that contains, for each VM deployed, its ID
      */
-    public String deployVMs(String vms) {
+    public String deployVMs(String vms) throws CloudMiddlewareException {
         inputValidator.checkVmDescriptions(gson.fromJson(vms, JsonObject.class));
         List<String> idsVmsDeployed = vmManager.deployVms(gson.fromJson(vms, ListVms.class).getVms());
         return getJsonResponseFromListOfVmsIds(idsVmsDeployed).toString();

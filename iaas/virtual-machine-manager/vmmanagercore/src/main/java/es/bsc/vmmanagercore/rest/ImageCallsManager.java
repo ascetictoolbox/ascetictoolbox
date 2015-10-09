@@ -20,6 +20,7 @@ package es.bsc.vmmanagercore.rest;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddlewareException;
 import es.bsc.vmmanagercore.manager.VmManager;
 import es.bsc.vmmanagercore.models.images.ImageToUpload;
 import es.bsc.vmmanagercore.models.images.ListImagesUploaded;
@@ -59,7 +60,7 @@ public class ImageCallsManager {
      * @param imageInfo the JSON document that contains the description of the image to be uploaded.
      * @return the ID of the image
      */
-    public String uploadImage(String imageInfo) {
+    public String uploadImage(String imageInfo) throws CloudMiddlewareException {
         inputValidator.checkImageDescription(gson.fromJson(imageInfo, ImageToUpload.class));
         String imageId = vmManager.createVmImage(gson.fromJson(imageInfo, ImageToUpload.class));
         return getJsonWithImageId(imageId);

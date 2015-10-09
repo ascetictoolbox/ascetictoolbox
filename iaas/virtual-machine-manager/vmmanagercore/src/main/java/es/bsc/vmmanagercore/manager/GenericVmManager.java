@@ -19,6 +19,7 @@
 package es.bsc.vmmanagercore.manager;
 
 import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddleware;
+import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddlewareException;
 import es.bsc.vmmanagercore.cloudmiddleware.fake.FakeCloudMiddleware;
 import es.bsc.vmmanagercore.cloudmiddleware.openstack.OpenStackCredentials;
 import es.bsc.vmmanagercore.cloudmiddleware.openstack.OpenStackJclouds;
@@ -181,7 +182,7 @@ public class GenericVmManager implements VmManager {
      * @return the IDs of the VMs deployed in the same order that they were received
      */
     @Override
-    public List<String> deployVms(List<Vm> vms) {
+    public List<String> deployVms(List<Vm> vms) throws CloudMiddlewareException {
         return vmsManager.deployVms(vms);
     }
 
@@ -240,7 +241,7 @@ public class GenericVmManager implements VmManager {
      * @return the ID of the image
      */
     @Override
-    public String createVmImage(ImageToUpload imageToUpload) {
+    public String createVmImage(ImageToUpload imageToUpload) throws CloudMiddlewareException {
         return imageManager.createVmImage(imageToUpload);
     }
 

@@ -41,7 +41,7 @@ public interface CloudMiddleware {
      * @param hostname the hostname
      * @return the ID of the deployed VM
      */
-    String deploy(Vm vm, String hostname);
+    String deploy(Vm vm, String hostname) throws CloudMiddlewareException;
 
     /**
      * Deploys a virtual machine in a specific host and using a volume
@@ -51,7 +51,7 @@ public interface CloudMiddleware {
      * @param isoPath path of the ISO that the VM needs to mount. Can be null.
      * @return the ID of the deployed VM
      */
-    String deployWithVolume(Vm vm, String hostname, String isoPath);
+    String deployWithVolume(Vm vm, String hostname, String isoPath) throws CloudMiddlewareException;
 
     /**
      * Destroys a Virtual Machine.
@@ -153,7 +153,7 @@ public interface CloudMiddleware {
      * @param imageToUpload the image to be created
      * @return the ID of the image created
      */
-    String createVmImage(ImageToUpload imageToUpload);
+    String createVmImage(ImageToUpload imageToUpload) throws CloudMiddlewareException;
 
     /**
      * Retrieves an image from the infrastructure.

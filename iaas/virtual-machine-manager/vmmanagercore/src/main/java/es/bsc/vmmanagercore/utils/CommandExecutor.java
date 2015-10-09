@@ -18,9 +18,13 @@
 
 package es.bsc.vmmanagercore.utils;
 
+import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddlewareException;
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 
 /**
@@ -31,6 +35,8 @@ import java.io.InputStreamReader;
  * @author David Ortiz Lopez (david.ortiz@bsc.es).
  */
 public class CommandExecutor {
+
+    private static Logger log = LogManager.getLogger(CommandExecutor.class);
 
     // Suppress default constructor for non-instantiability
     private CommandExecutor() {
@@ -43,7 +49,7 @@ public class CommandExecutor {
      * @param command the command
      * @return the result of executing the command
      */
-    public static String executeCommand(String command) {
+    public static String executeCommand(String command) throws IOException, InterruptedException {
         StringBuilder result = new StringBuilder();
         Process p;
         BufferedReader reader = null;
@@ -56,12 +62,10 @@ public class CommandExecutor {
                 result.append(line);
                 result.append(System.getProperty("line.separator"));
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            return result.toString();
         } finally {
             IOUtils.closeQuietly(reader);
         }
-        return result.toString();
     }
 
 }

@@ -19,6 +19,7 @@
 package es.bsc.vmmanagercore.cloudmiddleware.openstack;
 
 import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddleware;
+import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddlewareException;
 import es.bsc.vmmanagercore.models.images.ImageToUpload;
 import es.bsc.vmmanagercore.models.images.ImageUploaded;
 import es.bsc.vmmanagercore.models.vms.Vm;
@@ -85,29 +86,37 @@ public class OpenStackJclouds implements CloudMiddleware {
     // This function is blocking. The thread execution blocks until the VM is deployed.
     // I would prefer to see this blocking in the VmManager class. I need to block the execution because
     // I need to return the ID of the deployed VM to the Application Manager.
-    public String deploy(Vm vm, String hostname) {
+    public String deploy(Vm vm, String hostname) throws CloudMiddlewareException {
         // Deploy the VM
-        ServerCreated server = openStackJcloudsApis.getServerApi().create(
-                vm.getName(),
-                getImageIdForDeployment(vm),
-                getFlavorIdForDeployment(vm),
-                getDeploymentOptionsForVm(vm, hostname, securityGroups, false, null));
+        try {
+            ServerCreated server = openStackJcloudsApis.getServerApi().create(
+                    vm.getName(),
+                    getImageIdForDeployment(vm),
+                    getFlavorIdForDeployment(vm),
+                    getDeploymentOptionsForVm(vm, hostname, securityGroups, false, null));
 
-        blockUntilVmIsDeployed(server.getId());
-        return server.getId();
+            blockUntilVmIsDeployed(server.getId());
+            return server.getId();
+        } catch(Exception e) {
+            throw new CloudMiddlewareException(e.getMessage(),e);
+        }
     }
 
     @Override
-    public String deployWithVolume(Vm vm, String hostname, String isoPath) {
+    public String deployWithVolume(Vm vm, String hostname, String isoPath)  throws CloudMiddlewareException {
         // Deploy the VM
-        ServerCreated server = openStackJcloudsApis.getServerApi().create(
-                vm.getName(),
-                getImageIdForDeployment(vm),
-                getFlavorIdForDeployment(vm),
-                getDeploymentOptionsForVm(vm, hostname, securityGroups, true, isoPath));
+        try {
+            ServerCreated server = openStackJcloudsApis.getServerApi().create(
+                    vm.getName(),
+                    getImageIdForDeployment(vm),
+                    getFlavorIdForDeployment(vm),
+                    getDeploymentOptionsForVm(vm, hostname, securityGroups, true, isoPath));
 
-        blockUntilVmIsDeployed(server.getId());
-        return server.getId();
+            blockUntilVmIsDeployed(server.getId());
+            return server.getId();
+        } catch (Exception e) {
+            throw new CloudMiddlewareException(e.getMessage(),e);
+        }
     }
 
     @Override
@@ -233,7 +242,7 @@ public class OpenStackJclouds implements CloudMiddleware {
     }
 
     @Override
-    public String createVmImage(ImageToUpload imageToUpload) {
+    public String createVmImage(ImageToUpload imageToUpload) throws CloudMiddlewareException {
         return glanceConnector.createImageFromUrl(imageToUpload);
     }
 
@@ -300,7 +309,7 @@ public class OpenStackJclouds implements CloudMiddleware {
      * @param vm the VM to be deployed
      * @return the ID of the image
      */
-    private String getImageIdForDeployment(Vm vm) {
+    private String getImageIdForDeployment(Vm vm) throws CloudMiddlewareException {
         // If the vm description contains a URL, create the image using Glance and return its ID
         if (new UrlValidator().isValid(vm.getImage())) {
             return glanceConnector.createImageFromUrl(new ImageToUpload(vm.getImage(), vm.getImage()));
@@ -327,7 +336,7 @@ public class OpenStackJclouds implements CloudMiddleware {
      * @return the deployment options
      */
     private CreateServerOptions getDeploymentOptionsForVm(Vm vm, String hostname, String[] securityGroups,
-                                                          boolean useVolume, String isoPath) {
+                                                          boolean useVolume, String isoPath) throws CloudMiddlewareException {
         CreateServerOptions options = new CreateServerOptions();
         includeDstNodeInDeploymentOption(hostname, options);
         includeInitScriptInDeploymentOptions(vm, options);
@@ -397,7 +406,7 @@ public class OpenStackJclouds implements CloudMiddleware {
         }
     }
 
-    private void includeVolumeInDeploymentOptions(Vm vm, CreateServerOptions options, String isoPath) {
+    private void includeVolumeInDeploymentOptions(Vm vm, CreateServerOptions options, String isoPath) throws CloudMiddlewareException {
         Set<BlockDeviceMapping> blockDeviceMappingSet = new HashSet<>();
         BlockDeviceMapping blockDeviceMapping = BlockDeviceMapping.builder()
                 .sourceType("image")
