@@ -30,6 +30,7 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.com
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.DataConsumption;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.DataEvent;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.ApplicationMonitoringDataService;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.EventDataService;
 
 public class ZabbixDataCollectorService  {
 	
@@ -38,6 +39,7 @@ public class ZabbixDataCollectorService  {
 	private static final Logger logger = Logger.getLogger(ApplicationMonitoringDataService.class);
 	private DataConsumptionDAOImpl dataconsumption;
 	private DataEventDAOImpl dataevent;
+	
 
 	private String AMPath = "http://localhost:9000/query";
 	private URL url;

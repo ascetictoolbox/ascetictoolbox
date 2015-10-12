@@ -60,32 +60,6 @@ public class EMDatabase {
 		
 	}
 	
-	@Test
-	public void testDataEvent() {
-		DataEventDAOImpl dataEventDAO = dbmanager.getDataEventDAOImpl();
-		DataEvent data = new DataEvent();
-		data.setApplicationid("test1");
-		data.setDeploymentid("deployment1");
-		data.setEventid("event1");
-		data.setEnergy(50);
-		data.setEnergy(100.5);
-		Timestamp tsbeg = Timestamp.valueOf("2014-09-27 03:23:34");
-		data.setBegintime(tsbeg.getTime());
-		Timestamp ts = Timestamp.valueOf("2014-09-27 03:25:34");
-		data.setEndtime(ts.getTime());
-		data.setData("generic data");
-		data.setVmid("vm1");
-		dataEventDAO.save(data);
-//		List<DataEvent> result = dataEventDAO.getByApplicationId("test1","vm1","event1");
-//		Assert.assertEquals(result.size(),1);
-//		result = dataEventDAO.getByDeploymentId("deployment1","vm1","event1");
-//		Assert.assertEquals(result.size(),1);
-//		result = dataEventDAO.getByVMId("vm1","event1");
-//		Assert.assertEquals(result.size(),1);
-//		Timestamp tsev = dataEventDAO.getLastEventForVM("test1", "vm1", "event1");
-//		Assert.assertEquals(tsev,tsbeg);
-		
-	}
 	
 	@Test
 	public void testMonitoringData() {

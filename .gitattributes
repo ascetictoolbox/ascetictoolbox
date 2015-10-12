@@ -1128,6 +1128,7 @@ paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/comp
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/dataservice/ApplicationMonitoringDataService.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/dataservice/EnergyDataAggregatorServiceQueue.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/dataservice/EventDataAggregatorService.java -text
+paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/dataservice/EventDataService.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/dataservice/MonitoringDataService.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/dataservice/legacy/EnergyDataAggregatorServiceZabbix.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/dataservice/legacy/ZabbixDataCollectorService.java -text

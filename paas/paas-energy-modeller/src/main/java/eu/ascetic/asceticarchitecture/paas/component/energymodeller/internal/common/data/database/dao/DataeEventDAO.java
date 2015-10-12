@@ -12,10 +12,6 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.com
 
 public interface DataeEventDAO {
 
-	public void initialize();
-	
-	public void setDataSource(DataSource dataSource);
-	
     public void save(DataEvent data);
 
 	List<DataEvent> getByApplicationIdTime(String applicationid, String vmid,String eventid, Timestamp start, Timestamp end);
@@ -25,28 +21,5 @@ public interface DataeEventDAO {
 	List<DataEvent> getByDeployIdTime(String applicationid, String deploymentid, String vmid,String eventid, Timestamp start, Timestamp end);
 
 	List<DataEvent> getByDeployId(String applicationid, String deploymentid, String vmid, String eventid);
-
-	
-	
-    
-//    public List<DataEvent> getByApplicationId(String applicationid,String vmid,String eventid);
-//    
-//    public Timestamp getLastByApplicationId(String applicationid);
-//    
-//    public List<DataEvent> getByDeploymentId(String deploymentyid,String vmid, String eventid);
-//    
-//    public List<DataEvent> getByVMId(String vmid,String eventid);
-//    
-//    public Timestamp getLastEventForVM(String applicationid, String vmid, String eventid);
-//	
-//	public Timestamp getFirstEventTimeVM(String applicationid, String deploymentid,String vmid, String eventid);
-//
-////	public Timestamp getLastEventTimeVM(String applicationid, String deploymentid,String vmid, String eventid);
-//	
-//	public int getEventCountVM(String applicationid,String deploymentid, String vmid, String eventid);
-//
-//	List<DataEvent> getByApplicationIdTime(String applicationid,String vmid,String eventid,Timestamp start, Timestamp end);
-	
-	
     
 }

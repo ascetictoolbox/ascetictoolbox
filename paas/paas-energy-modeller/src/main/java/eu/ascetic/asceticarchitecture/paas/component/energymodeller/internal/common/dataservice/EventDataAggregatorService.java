@@ -8,26 +8,26 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.dao.impl.DataEventDAOImpl;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.DataEvent;
 
 public class EventDataAggregatorService {
 
-	private DataEventDAOImpl daoEvent;
+	//private DataEventDAOImpl daoEvent;
 	private ApplicationMonitoringDataService eventCollectorService;
+	private EventDataService eventDataManager;
+	
+	
 	private static final Logger logger = Logger.getLogger(EventDataAggregatorService.class);
 
 
 	public List<DataEvent> getEvents(String app, String depl, String vmid, String event, Timestamp start,Timestamp end) {
-		eventCollectorService.handleEventData(app, depl, vmid, event);
+		eventDataManager = new EventDataService(eventCollectorService.generateEventData(app, depl, vmid, event));
 		if((start==null)&&(end==null)){
-			List<DataEvent> events = daoEvent.getByDeployId(app,depl,vmid,event);
-			if (events==null)return null;
+			List<DataEvent> events = eventDataManager.getByDeployId(app,depl,vmid,event);
 			logger.info("##################### Total events "+events.size()+" from " + vmid + " event" + event);
 			return events;
 		} else {
-			List<DataEvent> events = daoEvent.getByDeployIdTime(app,depl,vmid,event,start,end);
-			if (events==null)return null;
+			List<DataEvent> events = eventDataManager.getByDeployIdTime(app,depl,vmid,event,start,end);
 			logger.info("##################### Total is "+events.size());
 			return events;
 		}
@@ -40,16 +40,10 @@ public class EventDataAggregatorService {
 		// set path url
 		eventCollectorService.setAMPath(url);
 		logger.info("# setting path of AMonitor " +url); 
-		// set dao
-		eventCollectorService.setDataevent(daoEvent);
-		logger.info("#set the event dao");
 		// setup
 		eventCollectorService.setup();
 		logger.info("#setup of event collector completed!");
 	}
 	
-	public void setDaoEvent(DataEventDAOImpl daoEvent) {
-		this.daoEvent = daoEvent;
-	}
 
 }

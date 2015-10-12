@@ -631,7 +631,6 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		LOGGER.debug("Setting connection to data sources for events and energy ");
 		energyService = new EnergyDataAggregatorServiceQueue();
 		eventService = new EventDataAggregatorService();
-		eventService.setDaoEvent(dbmanager.getDataEventDAOImpl());
 		eventService.setupApplicationMonitor(emsettings.getAppmonitor());
 		monitoringDataService = new MonitoringDataService();
 		monitoringDataService.setDataDAO(dbmanager.getMonitoringData());

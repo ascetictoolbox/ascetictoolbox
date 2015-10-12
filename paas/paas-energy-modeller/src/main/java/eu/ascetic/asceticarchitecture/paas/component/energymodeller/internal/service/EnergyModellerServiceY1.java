@@ -456,11 +456,11 @@ public class EnergyModellerServiceY1 implements PaaSEnergyModeller {
 		datacollector.setAMPath(emsettings.getAppmonitor());
 		datacollector.setup();
 		datacollector.setDataconumption(dbmanager.getDataConsumptionDAOImpl());
-		datacollector.setDataevent(dbmanager.getDataEventDAOImpl());
+		//datacollector.setDataevent(dbmanager.getDataEventDAOImpl());
 		energyService = new EnergyDataAggregatorServiceZabbix();
 		energyService.setDataDAO(dbmanager.getDataConsumptionDAOImpl());
 		eventService = new EventDataAggregatorService();
-		eventService.setDaoEvent(dbmanager.getDataEventDAOImpl());
+		//eventService.setDaoEvent(dbmanager.getDataEventDAOImpl());
 		monitoringDataService = new MonitoringDataService();
 		monitoringDataService.setDataDAO(dbmanager.getMonitoringData());
 		LOGGER.debug("Configured ");
