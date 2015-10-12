@@ -16,6 +16,7 @@
 package eu.ascetic.vmic.api.core;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -533,17 +534,31 @@ public class VirtualMachineImageConstructor implements Runnable {
         for (int i = 0; i < ovfDefinitionParser.getImageNumber(); i++) {
 
             // Fetch parsed OVF attributes relevant for online image
-            // generation .
+            // generation.
             String newImagePath = ovfDefinitionParser.getImagePath(i);
 
             LOGGER.info("Starting image generation for: " + newImagePath);
 
-            String virtualMachineAddress = null;
+            String operatingSystem = "";
+            String virtualMachineAddress = "";
+
             try {
+                // Find out what OS is required
+                OperatingSystemType operatingSystemType = ovfDefinitionParser
+                        .getImageOperatingSystems(i);
+                if (operatingSystemType.equals(OperatingSystemType.LINUX)) {
+                    operatingSystem = "linux";
+                } else if (operatingSystemType
+                        .equals(OperatingSystemType.MICROSOFT_WINDOWS_SERVER_2003)) {
+                    operatingSystem = "windows";
+                } else {
+                    throw new ProgressException(
+                            "Unrecongnised OperatingSystemType");
+                }
+
                 // 1) Boot up the image and wait for completion (TODO: use
                 // libvirt instead of virsh system call)
-                virtualMachineAddress = bootImage(ovfDefinitionParser
-                        .getImageOperatingSystems(i));
+                virtualMachineAddress = bootImage(newImagePath, operatingSystem);
                 vmicApi.getGlobalState()
                         .setProgressPercentage(
                                 ovfDefinitionId,
@@ -553,9 +568,8 @@ public class VirtualMachineImageConstructor implements Runnable {
                                                 .getImageNumber()) * i);
 
                 // 2) Bootstrap the VM with chef agent via a remote system
-                // call
-                // to knife.
-                bootstrapVirtualMachine(virtualMachineAddress);
+                // call to knife.
+                bootstrapVirtualMachine(virtualMachineAddress, operatingSystem);
                 vmicApi.getGlobalState()
                         .setProgressPercentage(
                                 ovfDefinitionId,
@@ -566,9 +580,8 @@ public class VirtualMachineImageConstructor implements Runnable {
 
                 // 3) Upload the chef cookbook(s) to the chef workspace
                 // (using rsync)
-                uploadCookbooks(
-                        ovfDefinitionParser.getImageSoftwareDependencies(i),
-                        virtualMachineAddress);
+                uploadCookbooks(virtualMachineAddress,
+                        ovfDefinitionParser.getImageSoftwareDependencies(i));
                 vmicApi.getGlobalState()
                         .setProgressPercentage(
                                 ovfDefinitionId,
@@ -579,7 +592,7 @@ public class VirtualMachineImageConstructor implements Runnable {
 
                 // 4) Deploy the chef cookbooks(s) via a remote system
                 // call to knife.
-                deployCookbooks(virtualMachineAddress);
+                deployCookbooks(virtualMachineAddress, operatingSystem);
                 vmicApi.getGlobalState()
                         .setProgressPercentage(
                                 ovfDefinitionId,
@@ -588,7 +601,17 @@ public class VirtualMachineImageConstructor implements Runnable {
                                         + (100.0 / ovfDefinitionParser
                                                 .getImageNumber()) * i);
 
-                // 5) Shutdown the VM (TODO: use libvirt instead of virsh
+                // 5) Remove the node from the chef server
+                cleanChefServer(virtualMachineAddress);
+                vmicApi.getGlobalState()
+                        .setProgressPercentage(
+                                ovfDefinitionId,
+                                ((100.0 / ovfDefinitionParser.getImageNumber()) / 6)
+                                        * 6
+                                        + (100.0 / ovfDefinitionParser
+                                                .getImageNumber()) * i);
+
+                // 6) Shutdown the VM (TODO: use libvirt instead of virsh
                 // system call)
                 shutdownVirtualMachine(virtualMachineAddress);
                 vmicApi.getGlobalState()
@@ -596,16 +619,6 @@ public class VirtualMachineImageConstructor implements Runnable {
                                 ovfDefinitionId,
                                 ((100.0 / ovfDefinitionParser.getImageNumber()) / 6)
                                         * 5
-                                        + (100.0 / ovfDefinitionParser
-                                                .getImageNumber()) * i);
-
-                // 6) Remove the node from the chef server
-                cleanChefServer(virtualMachineAddress);
-                vmicApi.getGlobalState()
-                        .setProgressPercentage(
-                                ovfDefinitionId,
-                                ((100.0 / ovfDefinitionParser.getImageNumber()) / 6)
-                                        * 6
                                         + (100.0 / ovfDefinitionParser
                                                 .getImageNumber()) * i);
 
@@ -634,13 +647,15 @@ public class VirtualMachineImageConstructor implements Runnable {
     /**
      * Boots an image and waits for the OS initialisation process to finish.
      * 
+     * @param imagePath
+     *            The image path to use when booting.
      * @param operatingSystemType
      *            The installed OS to select.
      * @return The IP address of the VM created.
      * @throws ProgressException
      *             Thrown on failure.
      */
-    private String bootImage(OperatingSystemType operatingSystemType)
+    private String bootImage(String imagePath, String operatingSystem)
             throws ProgressException {
 
         SystemCallRemote systemCallRemote = new SystemCallRemote(
@@ -650,14 +665,9 @@ public class VirtualMachineImageConstructor implements Runnable {
         // Remote System call executing boot-image.sh script
         String commandName = runtimePath + "/scripts/boot-image.sh";
         ArrayList<String> arguments = new ArrayList<String>();
-        if (operatingSystemType.equals(OperatingSystemType.LINUX)) {
-            arguments.add("linux");
-        } else if (operatingSystemType
-                .equals(OperatingSystemType.MICROSOFT_WINDOWS_SERVER_2003)) {
-            arguments.add("windows");
-        } else {
-            throw new ProgressException("Unrecongnised OperatingSystemType");
-        }
+        arguments.add(runtimePath);
+        arguments.add(imagePath);
+        arguments.add(operatingSystem);
 
         try {
             systemCallRemote.runCommand(commandName, arguments);
@@ -671,7 +681,9 @@ public class VirtualMachineImageConstructor implements Runnable {
                             + systemCallRemote.getReturnValue());
         }
 
-        String virtualMachineAddress = systemCallRemote.getOutput().get(1);
+        // Last string is the IP address of the VM
+        List<String> output = systemCallRemote.getOutput();
+        String virtualMachineAddress = output.get(output.size() - 1);
 
         LOGGER.info("Image booted with IP: " + virtualMachineAddress);
 
@@ -683,11 +695,14 @@ public class VirtualMachineImageConstructor implements Runnable {
      * 
      * @param virtualMachineAddress
      *            The IP address of the VM.
+     * @param operatingSystemType
+     *            The installed OS to select.
+     * @param operatingSystem
      * @throws ProgressException
      *             Thrown on failure.
      */
-    private void bootstrapVirtualMachine(String virtualMachineAddress)
-            throws ProgressException {
+    private void bootstrapVirtualMachine(String virtualMachineAddress,
+            String operatingSystem) throws ProgressException {
 
         SystemCallRemote systemCallRemote = new SystemCallRemote(
                 System.getProperty("user.home"), vmicApi.getGlobalState()
@@ -698,6 +713,7 @@ public class VirtualMachineImageConstructor implements Runnable {
                 + "/scripts/bootstrap-virtual-machine.sh";
         ArrayList<String> arguments = new ArrayList<String>();
         arguments.add(virtualMachineAddress);
+        arguments.add(operatingSystem);
 
         try {
             systemCallRemote.runCommand(commandName, arguments);
@@ -725,9 +741,9 @@ public class VirtualMachineImageConstructor implements Runnable {
      * @throws ProgressException
      *             Thrown on failure.
      */
-    private void uploadCookbooks(
-            Map<String, Map<String, String>> softwareDependencies,
-            String virtualMachineAddress) throws ProgressException {
+    private void uploadCookbooks(String virtualMachineAddress,
+            Map<String, Map<String, String>> softwareDependencies)
+            throws ProgressException {
 
         SystemCallRemote systemCallRemote = new SystemCallRemote(
                 System.getProperty("user.home"), vmicApi.getGlobalState()
@@ -783,8 +799,8 @@ public class VirtualMachineImageConstructor implements Runnable {
      * @throws ProgressException
      *             Thrown on failure.
      */
-    private void deployCookbooks(String virtualMachineAddress)
-            throws ProgressException {
+    private void deployCookbooks(String virtualMachineAddress,
+            String operatingSystem) throws ProgressException {
 
         SystemCallRemote systemCallRemote = new SystemCallRemote(
                 System.getProperty("user.home"), vmicApi.getGlobalState()
@@ -811,44 +827,6 @@ public class VirtualMachineImageConstructor implements Runnable {
 
         LOGGER.info("Deployed cookbooks to VM with IP: "
                 + virtualMachineAddress);
-
-    }
-
-    /**
-     * Cleanly shuts down a Virtual Machine.
-     * 
-     * @param virtualMachineAddress
-     *            The IP address of the VM.
-     * @throws ProgressException
-     *             Thrown on failure.
-     */
-    private void shutdownVirtualMachine(String virtualMachineAddress)
-            throws ProgressException {
-
-        SystemCallRemote systemCallRemote = new SystemCallRemote(
-                System.getProperty("user.home"), vmicApi.getGlobalState()
-                        .getConfiguration());
-
-        // Remote System call executing shutdown-virtual-machine.sh script
-        String commandName = runtimePath
-                + "/scripts/shutdown-virtual-machine.sh";
-        ArrayList<String> arguments = new ArrayList<String>();
-        // Add the VMs IP
-        arguments.add(virtualMachineAddress);
-
-        try {
-            systemCallRemote.runCommand(commandName, arguments);
-        } catch (SystemCallException e) {
-            throw new ProgressException("Shutting down VM failed", e);
-        }
-
-        if (systemCallRemote.getReturnValue() != 0) {
-            throw new ProgressException(
-                    "Shutting down VM failed, return value != 0 instead got: "
-                            + systemCallRemote.getReturnValue());
-        }
-
-        LOGGER.info("Shutdown VM with IP: " + virtualMachineAddress);
 
     }
 
@@ -892,6 +870,45 @@ public class VirtualMachineImageConstructor implements Runnable {
     }
 
     /**
+     * Cleanly shuts down a Virtual Machine.
+     * 
+     * @param virtualMachineAddress
+     *            The IP address of the VM.
+     * @throws ProgressException
+     *             Thrown on failure.
+     */
+    private void shutdownVirtualMachine(String virtualMachineAddress)
+            throws ProgressException {
+
+        SystemCallRemote systemCallRemote = new SystemCallRemote(
+                System.getProperty("user.home"), vmicApi.getGlobalState()
+                        .getConfiguration());
+
+        // Remote System call executing shutdown-virtual-machine.sh script
+        String commandName = runtimePath
+                + "/scripts/shutdown-virtual-machine.sh";
+        ArrayList<String> arguments = new ArrayList<String>();
+        arguments.add(runtimePath);
+        // Add the VMs IP
+        arguments.add(virtualMachineAddress);
+
+        try {
+            systemCallRemote.runCommand(commandName, arguments);
+        } catch (SystemCallException e) {
+            throw new ProgressException("Shutting down VM failed", e);
+        }
+
+        if (systemCallRemote.getReturnValue() != 0) {
+            throw new ProgressException(
+                    "Shutting down VM failed, return value != 0 instead got: "
+                            + systemCallRemote.getReturnValue());
+        }
+
+        LOGGER.info("Shutdown VM with IP: " + virtualMachineAddress);
+
+    }
+
+    /**
      * Attempts to clean up after a failure during online image generation.
      * 
      * @param virtualMachineAddress
@@ -902,16 +919,16 @@ public class VirtualMachineImageConstructor implements Runnable {
         if (virtualMachineAddress != null) {
             // Try to clean up: shutdown VM and clean chef server
             try {
-                shutdownVirtualMachine(virtualMachineAddress);
+                cleanChefServer(virtualMachineAddress);
             } catch (ProgressException e) {
-                LOGGER.info("Clean up on error - failed shutdown of VM: "
+                LOGGER.info("Clean up on error - failed clean of chef server for VM: "
                         + virtualMachineAddress);
             }
 
             try {
-                cleanChefServer(virtualMachineAddress);
+                shutdownVirtualMachine(virtualMachineAddress);
             } catch (ProgressException e) {
-                LOGGER.info("Clean up on error - failed clean of chef server for VM: "
+                LOGGER.info("Clean up on error - failed shutdown of VM: "
                         + virtualMachineAddress);
             }
 
