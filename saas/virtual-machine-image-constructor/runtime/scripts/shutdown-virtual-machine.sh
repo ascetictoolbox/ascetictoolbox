@@ -1,9 +1,19 @@
 #!/bin/bash
 
-CHEF_CLIENT_IP=$1
+RUNTIME_DIR=$1
+IP=$2
 
-# TODO: Script to 1) Shutdown the VM 2) Create a new unique image from
-# the snapshot (qemu-img convert -p -f qcow2 -O raw ...) and return its
-# URI for inclusion in OVF
+# Shutdown VM
+virsh shutdown $IP
+if [ $? -ne 0 ]
+then
+  echo "Error shutting down VM with IP $IP"
+  exit 1
+fi
+
+# TODO Poll to see if VM has been shutdown, after timeout destroy
+
+# Return MAC/IP pair so that it can be used by another VM
+$RUNTIME_DIR/scripts/utils/rm-mac-ip.sh $RUNTIME_DIR $IP
 
 exit 0
