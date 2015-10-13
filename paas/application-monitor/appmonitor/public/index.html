@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
+	<title>ASCETiC Application Monitor</title>
+	<meta name="generator" content="Bootply" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+    <link href="bower_components/bootstrap/dist/css/bootstrap-theme.css" rel="stylesheet">
+	<link href="css/bsc.css" rel="stylesheet">
+</head>
+<body ng-app="ApplicationMonitor" ng-controller="PageController">
+<nav class="navbar navbar-inverse navbar-fixed-top" role="banner">
+	<div class="container">
+		<div class="navbar-header">
+			<button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a href="/gui" class="navbar-brand">Application Monitor v0.1</a>
+		</div>
+		<nav class="collapse navbar-collapse" role="navigation">
+			<ul class="nav navbar-nav">
+				<li>
+					<a href="#sec" ng-click="setPage('global.html')">System Status</a>
+				</li>
+				<li>
+					<a href="#sec" ng-click="setPage('metrics.html')">App Metrics</a>
+				</li>
+			</ul>
+		</nav>
+	</div>
+</nav>
+
+<div class="container" style="margin-top: 60px" ng-include="page"></div>
+
+<footer>
+	<img src="img/bsc.png"/>
+	<img src="img/ascetic.png"/>
+</footer>
+
+
+
+<!-- script references -->
+<script src="bower_components/jquery/dist/jquery.js"></script>
+<script src="bower_components/d3/d3.js"></script>
+<script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
+<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+<script src="bower_components/underscore/underscore.js"></script>
+<script src="bower_components/highcharts/highcharts.js"></script>
+<script src="bower_components/highcharts/highcharts-more.js"></script>
+<script src="bower_components/highcharts/modules/solid-gauge.js"></script>
+
+<!-- AngularJS scripts -->
+<script src="js/ang/metrics.js"></script>
+<script src="js/ang/global-view.js"></script>
+<script src="js/ang/application-monitor.js"></script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+{
+  "name": "application-monitor",
+  "version": "0.0.1",
+  "authors": [
+    "Mario Macias"
+  ],
+  "description": "Application Monitor",
+  "license": "LGPL 2.1",
+  "homepage": "http://mario.site.ac.upc.edu",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-bootstrap": "~0.11.0",
+    "bootstrap": "~3.2.0",
+    "d3": "~3.4.11",
+    "highcharts-ng": "~0.0.7",
+    "highcharts": "~4.0.4",
+    "jquery": "~2.1.1",
+    "underscore": "~1.7.0"
+  }
+}

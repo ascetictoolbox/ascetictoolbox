@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.2-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/geronimo/specs/geronimo-jms_1.1_spec/1.1.2-SNAPSHOT/geronimo-jms_1.1_spec-1.1.2-20140722.195945-116.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/geronimo/specs/geronimo-jms_1.1_spec/1.1.2-SNAPSHOT/geronimo-jms_1.1_spec-1.1.2-20140722.195945-116-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/geronimo/specs/geronimo-jms_1.1_spec/1.1.2-SNAPSHOT/geronimo-jms_1.1_spec-1.1.2-20140722.195945-116-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

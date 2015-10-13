@@ -1,0 +1,32 @@
+[
+
+"SLAM -> AppMonitor subscription",
+
+{
+	"Command" : "initiateMonitoring",
+	"SLAId" : "alskdfj",
+	"ApplicationId" : "lkasdfjlkj",
+	"DeploymentId" : "lasdkjf",
+	"Terms" : ["list", "of", "terms", "to", "monitor" ],
+	"Frequency" : 12039
+},
+
+"AppMonitor -> Topic (SLAM): application-monitor. monitoring.<appID>. measurement ",
+
+{
+	"ApplicationId" : "klajsdflk",
+	"DeploymentId" : "lskadjflasd",
+	"SLAId" : "alskdfj",
+	"Timestamp" : 214431241321423
+	"Terms" : {
+		"term1" : 13241,
+		"term2" : 12341,
+		"term3" : 12343
+	}
+},
+
+"TO DO " : [
+	"subscribe to APPManager topics for undeployment of applications"
+]
+
+]
