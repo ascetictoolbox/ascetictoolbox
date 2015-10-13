@@ -713,6 +713,59 @@ public class ModelConverterTest {
 	}
 	
 	@Test
+	public void objectDeploymentToJSONTest() throws Exception {
+		Deployment deployment = new Deployment();
+		deployment.setHref("/applications/101/deployments/2");
+		deployment.setId(2);
+		deployment.setPrice("222");
+		deployment.setOvf("<ovf>assdasdf</ovf>");
+		deployment.setStatus("RUNNING");
+		Link link = new Link();
+		link.setRel("self");
+		link.setType("application/xml");
+		link.setHref("/applications/101/deployments/2");
+		deployment.addLink(link);
+		
+		String json = ModelConverter.objectDeploymentToJSON(deployment);
+		
+		//We verify the output format
+		JSONParser parser = new JSONParser();
+		Object obj = parser.parse(json);
+		JSONObject jsonObject = (JSONObject) obj;
+		//jsonObject = (JSONObject) jsonObject.get("application");
+		
+		assertEquals("/applications/101/deployments/2", (String) jsonObject.get("href"));
+		assertEquals(2l, jsonObject.get("id"));
+		assertEquals("RUNNING", (String) jsonObject.get("status"));
+	}
+	
+	
+	@Test
+	public void jsonDeploymentToObjectTest() {
+		String json = "{" +
+							"\"href\" : \"/applications/101/deployments/2\"," +
+							"\"id\" : 2," +
+							"\"status\" : \"RUNNING\"," +
+							"\"price\" : \"222\"," +
+							"\"ovf\" : \"<ovf>assdasdf</ovf>\"," +
+							"\"link\" : [ { " +
+								"\"rel\" : \"self\"," +
+								"\"href\" : \"/applications/101/deployments/2\"," +
+								"\"type\" : \"application/xml\" " +
+		   					"} ]" +
+						"}";
+		
+		Deployment deployment = ModelConverter.jsonDeploymentToObject(json);
+		assertEquals("/applications/101/deployments/2", deployment.getHref());
+		assertEquals(2, deployment.getId());
+		assertEquals("RUNNING", deployment.getStatus());
+		assertEquals(1, deployment.getLinks().size());
+		assertEquals("self", deployment.getLinks().get(0).getRel());
+		assertEquals("/applications/101/deployments/2", deployment.getLinks().get(0).getHref());
+		assertEquals("application/xml", deployment.getLinks().get(0).getType());
+	}
+	
+	@Test
 	@SuppressWarnings(value = { "rawtypes" }) 
 	public void objectDeploymentToXMLTest() throws Exception {
 		Deployment deployment = new Deployment();

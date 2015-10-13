@@ -230,7 +230,25 @@ public class ModelConverter {
 	public static Deployment xmlDeploymentToObject(String xml) {
 		return toObject(Deployment.class, xml);
 	}
+	
+	/**
+	 * Converts an json Deployment represetnation to object
+	 * @param xml to be converted to object
+	 * @return the object representation of the deployment, <code>null</code> otherwise
+	 */
+	public static Deployment jsonDeploymentToObject(String json) {
+		return fromJSONToObject(Deployment.class, json);
+	}
 
+	/**
+	 * Converts an object Deployment to its XML representation
+	 * @param deployment object to be converted to XML
+	 * @return the XML representation of the Deployment object
+	 */
+	public static String objectDeploymentToJSON(Deployment deployment) {
+		return toJSON(Deployment.class, deployment);
+	}
+	
 	/**
 	 * Converts an object Deployment to its XML representation
 	 * @param deployment object to be converted to XML
