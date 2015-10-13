@@ -299,10 +299,6 @@ public abstract class AbstractEventAssessor implements EventAssessor {
                     eventHistory = EventDataAggregator.filterEventDataByTime(eventHistory, historyLengthSeconds);
                     synchronized (this) {
                         adaptations = filterAdaptationHistory();
-                        System.out.println("History Size: " + adaptations.size());
-                        System.out.println("Event History Size: " + eventHistory.size());
-                        System.out.println("Poll Interval: " + pollInterval);
-                        System.out.println("Timeout: " + historyLengthSeconds);
                     }
                 }
                 try {
@@ -324,7 +320,6 @@ public abstract class AbstractEventAssessor implements EventAssessor {
             long now = System.currentTimeMillis();
             now = now / 1000;
             long filterTime = now - historyLengthSeconds;
-            System.out.println("FilterTime: " + filterTime);
             synchronized (this) {
                 for (Response response : adaptations) {
                     if (response.getTime() >= filterTime) {
