@@ -1,4 +1,0 @@
-The main location of Application Monitor has been moved to github.
-
-This is just a mirror from the main copy at http://github.com/mariomac/appmon
-

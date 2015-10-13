@@ -22,8 +22,6 @@ iaas/iaas-slamanager/provisioning-adjustment/target
 iaas/virtual-machine-manager/vmmanagercore/*.iml
 iaas/virtual-machine-manager/vmmanagercore/.idea
 paas/application-manager/doc/doc
-paas/application-monitor/logs
-paas/application-monitor/target
 paas/virtual-machine-contextualizer/logs/vmc.log.1
 paas/virtual-machine-contextualizer/velocity.log.1
 saas/compss-plugin/ascetic-deployer/.classpath
