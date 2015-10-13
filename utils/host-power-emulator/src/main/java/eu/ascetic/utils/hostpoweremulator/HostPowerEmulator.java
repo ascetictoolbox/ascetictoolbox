@@ -34,6 +34,8 @@ import java.util.logging.Logger;
 /**
  * The aim of this application is to clone another's calibration profile so that
  * it can estimate the amount of energy used by the host.
+ * 
+ * @author Richard Kavanagh
  *
  */
 public class HostPowerEmulator implements Runnable {

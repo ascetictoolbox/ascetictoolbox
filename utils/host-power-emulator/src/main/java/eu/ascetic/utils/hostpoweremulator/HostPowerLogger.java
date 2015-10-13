@@ -21,8 +21,9 @@ import eu.ascetic.ioutils.ResultsStore;
 import java.io.File;
 
 /**
- *
- * @author Richard
+ * This logs power meter readings for a host and writes them to disk, ready 
+ * to be published in Zabbix.
+ * @author Richard Kavanagh
  */
 public class HostPowerLogger extends GenericLogger<HostPowerLogger.Pair> {
 
