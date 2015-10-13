@@ -7,6 +7,8 @@ IMAGE_PATH="$2"
 OS="$3"
 INSTALL_DIR="$(dirname $RUNTIME_DIR)"
 
+INIT_TIMEOUT=180
+
 if [ "$OS" == "windows" ]
 then
   cd $INSTALL_DIR/base-images/windows
@@ -39,18 +41,43 @@ then
   if [ $? -ne 0 ]
   then
     echo "Error instantiating VM via libvirt"
+    echo $IP # Needed for clean up
     exit 1
   fi
 
   # 4) Confirm that VM has booted into OS
   cd ../../runtime/chef-repo
+  START_TIME=$(date +%s)
+  REBOOT=0
   while true
   do
     knife wsman test $IP -m > /dev/null 2>&1
     if [ $? -ne 0 ]
     then
-      echo "Waiting for VM OS to initialise"
-      sleep 2
+      TIME_NOW=$(date +%s)
+      TIME=$((TIME_NOW - START_TIME))
+      if [ $TIME -gt $INIT_TIMEOUT ]
+      then
+        # Timeout reached
+        if [ $REBOOT -eq 1 ]
+        then
+          # Reboot didn't work so error out
+          echo "OS init failed after reboot"
+          echo $IP # Needed for clean up
+          exit 1
+        else
+          # First time we've reached the timeout so try rebooting
+          echo "OS init timeout reached, rebooting VM with IP $IP"
+          virsh reboot $IP
+          REBOOT=1
+          # Reset the start time
+          START_TIME=$(date +%s)
+        fi
+      else
+        # Keep waiting...
+        echo "Waiting for VM OS to initialise (Time waiting: $TIME)"
+        sleep 1
+      fi
     else
       echo "Connected successfully to $IP at http://$IP:5985/wsman."
       break
@@ -92,17 +119,42 @@ then
   if [ $? -ne 0 ]
   then
     echo "Error instantiating VM via libvirt"
+    echo $IP # Needed for clean up
     exit 1
   fi
 
   # 4) Confirm that VM has booted into OS
+  START_TIME=$(date +%s)
+  REBOOT=0
   while true
   do
     sshpass -p "password" ssh -q -o "StrictHostKeyChecking no" -o "ConnectTimeout=1" root@$IP exit
     if [ $? -ne 0 ]
     then
-      echo "Waiting for VM OS to initialise"
-      sleep 1
+      TIME_NOW=$(date +%s)
+      TIME=$((TIME_NOW - START_TIME))
+      if [ $TIME -gt $INIT_TIMEOUT ]
+      then
+        # Timeout reached
+        if [ $REBOOT -eq 1 ]
+        then
+          # Reboot didn't work so error out
+          echo "OS init failed after reboot"
+          echo $IP # Needed for clean up
+          exit 1
+        else
+          # First time we've reached the timeout so try rebooting
+          echo "OS init timeout reached, rebooting VM with IP $IP"
+          virsh reboot $IP
+          REBOOT=1
+          # Reset the start time
+          START_TIME=$(date +%s)
+        fi
+      else
+        # Keep waiting...
+        echo "Waiting for VM OS to initialise (Time waiting: $TIME)"
+        sleep 1
+      fi
     else
       echo "Connected successfully to $IP via SSH"
       break
@@ -111,6 +163,7 @@ then
 
   # 5) Return IP
   echo "$IP"
+
 fi
 
 exit 0
