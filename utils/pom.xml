@@ -29,7 +29,9 @@
 	<module>host-power-emulator</module>
 	<module>SciMark2</module>
 	<module>JFuzzyLogic</module>
-  </modules>
+    <module>PaaSSAMEventInjectionTool</module>
+    <module>opennebula-connector-oca</module>
+    </modules>
 
     <url>http://www.ascetic.eu</url>
     <parent>
