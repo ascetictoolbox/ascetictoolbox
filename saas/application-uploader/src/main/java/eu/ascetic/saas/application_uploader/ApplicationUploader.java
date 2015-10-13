@@ -1,5 +1,5 @@
 /*
- *  Copyright 2013-2014 Barcelona Supercomputing Center (www.bsc.es)
+ *  Copyright 2013-2015 Barcelona Supercomputing Center (www.bsc.es)
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import com.sun.jersey.api.client.WebResource;
 import eu.ascetic.paas.applicationmanager.model.Agreement;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Collection;
+import eu.ascetic.paas.applicationmanager.model.Cost;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
 import eu.ascetic.paas.applicationmanager.model.VM;
@@ -44,6 +45,7 @@ public class ApplicationUploader {
 	public static final String NO_VALUE = "no";
 	private static final String ENERGY_CONSUM = "energy-consumption";
 	private static final String ENERGY_ESTIM = "energy-estimation";
+	private static final String COST_ESTIM = "cost-estimation";
 	private static final String EVENTS = "events";
 	private static final String VMS = "vms";
 	
@@ -124,6 +126,19 @@ public class ApplicationUploader {
 			return measurement.getValue();
 		}else
 			throw new ApplicationUploaderException("Error getting deployment energy measurement. Returned code is "+ response.getStatus());
+	}
+	
+	public Cost getEventCostEstimationInVM(String applicationID, String deploymentID, String eventID, String vmID) throws ApplicationUploaderException{
+		ClientResponse response = resource.path(APPLICATIONS_PATH).path(applicationID)
+				.path(DEPLOYMENTS_PATH).path(deploymentID).path(VMS).path(vmID)
+				.path(EVENTS).path(eventID).path(COST_ESTIM)
+				.accept(MediaType.APPLICATION_XML_TYPE).get(ClientResponse.class);
+		if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
+			 Cost measurement = response.getEntity(Cost.class);
+			return measurement;
+		}else
+			throw new ApplicationUploaderException("Error getting deployment energy measurement. Returned code is "+ response.getStatus());
+
 	}
 	
 	/** Get deployment agreements
