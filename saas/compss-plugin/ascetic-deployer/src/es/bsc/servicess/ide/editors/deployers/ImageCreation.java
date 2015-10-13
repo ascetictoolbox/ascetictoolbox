@@ -80,7 +80,9 @@ public class ImageCreation {
 			String packName, String schPackage, String[] packs, IFolder packageFolder,
 			ProjectMetadata pr_meta, PackageMetadata packMeta, Manifest manifest, IJavaProject project, IProgressMonitor monitor ) 
 					throws InterruptedException, Exception {
-		InstallationScript is = new InstallationScript(MOUNT_POINT_VAR+IMAGE_DEPLOYMENT_FOLDER);
+		InstallationScript is = manifest.getVMICExecutionForComponent(Manifest.generateManifestName(packName));
+		if (is ==null)
+				is = new InstallationScript(MOUNT_POINT_VAR+IMAGE_DEPLOYMENT_FOLDER);
 		generatePropertiesFile(packName, schPackage, packs, packageFolder, project, monitor);
 		if (monitor.isCanceled()){
 			throw new InterruptedException("Creation Cancelled");
@@ -185,7 +187,7 @@ public class ImageCreation {
 			throw new InterruptedException("Creation Cancelled");
 		}
 		monitor.subTask("Setting file permissions in core elements installations");
-		settingExecutablePermissions(new String[] { MOUNT_POINT_VAR+IMAGE_DEPLOYMENT_FOLDER + "*.sh" },is);
+		settingExecutablePermissions(new String[] { MOUNT_POINT_VAR+IMAGE_DEPLOYMENT_FOLDER + "*" },is);
 		monitor.worked(1);
 		if (monitor.isCanceled()){
 			throw new InterruptedException("Creation Cancelled");
@@ -552,10 +554,12 @@ public class ImageCreation {
 			IFolder packageFolder, ProjectMetadata prMeta, PackageMetadata packMeta, 
 			Manifest manifest, IJavaProject project, IProgressMonitor monitor) 
 					throws InterruptedException, Exception{
-		InstallationScript is = new InstallationScript(MOUNT_POINT_VAR + IMAGE_DEPLOYMENT_FOLDER);
+		InstallationScript is = manifest.getVMICExecutionForComponent(Manifest.generateManifestName(pack));
+		if (is ==null)
+			is = new InstallationScript(MOUNT_POINT_VAR + IMAGE_DEPLOYMENT_FOLDER);
 		monitor.beginTask("Uploading packages for " + pack, 5);
 		
-		IFile f = packageFolder.getFile(pack + ".jar");
+		IFile f = packageFolder.getFile(pack +CORE_SUFFIX+ ".jar");
 		monitor.subTask("Uploading and unziping core elements");
 		uploadAndUnzip(vmic, f.getLocation().toFile(), manifest, is, monitor);
 		monitor.worked(1);
@@ -563,7 +567,7 @@ public class ImageCreation {
 			throw new InterruptedException("Creation Cancelled");
 		}	
 		monitor.subTask("Uploading dependencies");
-		f = packageFolder.getFile(pack + "_deps.zip");
+		f = packageFolder.getFile(pack +CORE_SUFFIX+ DEPS_EXT+".zip");
 		if (f != null && f.exists()) {
 			uploadAndUnzip(vmic, f.getLocation().toFile(), manifest, is, monitor);
 		}

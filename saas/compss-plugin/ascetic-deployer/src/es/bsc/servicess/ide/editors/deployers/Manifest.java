@@ -871,6 +871,42 @@ public class Manifest {
 		refs.addFile(f);
 	}
 	
+	public InstallationScript getVMICExecutionForComponent(String componentID) throws Exception{
+		VirtualSystem component = getComponent(componentID);
+		if (component.getProductSectionArray() == null || component.getProductSectionArray().length<1){
+			log.debug("No VMICScript because no section array");
+			return null;
+		}
+		ProductSection ps = component.getProductSectionAtIndex(0);
+		if (ps.getPropertyByKey("asceticVmicScript")!= null){
+			String script =ps.getVmicScript();
+			if (script!=null && !script.isEmpty()){
+				InstallationScript is = new InstallationScript();
+				is.setScript(script);
+				return is;
+			}else{
+				log.debug("No VMICScript because no property defined or empty");
+				return null;
+			}
+		}else{
+			log.debug("No VMICScript because no product section");
+			return null;
+		}
+	}
+	
+	public void cleanScripts(){
+		VirtualSystemCollection vsc =  ovf.getVirtualSystemCollection();
+		if (vsc != null)
+			for (VirtualSystem vs : vsc.getVirtualSystemArray()){
+				if (vs.getProductSectionArray() == null || vs.getProductSectionArray().length<1){
+					ProductSection ps = vs.getProductSectionAtIndex(0);
+					if (ps.getPropertyByKey("asceticVmiccript")!= null){
+						ps.removePropertyByKey("asceticVmicScript");
+					}
+				}
+		}
+	}
+	
 	public void addVMICExecutionInComponent(String componentID, String commands) throws Exception{
 		VirtualSystem component = getComponent(componentID);
 		ProductSection ps;
@@ -914,15 +950,22 @@ public class Manifest {
 	private void addNewComponent(String p, ProjectMetadata prMeta, PackageMetadata packMeta, IJavaProject project,
 			HashMap<String, ServiceElement> allEls, boolean master,
 			AsceticProperties ascProp) throws Exception{
-		log.debug("Creating Component for package " + p );
+		
 		String componentID = Manifest.generateManifestName(p);
-		VirtualSystem component = VirtualSystem.Factory.newInstance();
-		component.setId(componentID);
-		component.setName(componentID);
-		component.setInfo("Description of component "+ componentID);
-		setComponentDescription(component, prMeta, packMeta, p, project, 
-			allEls, master, ascProp);
-		addComponent(component);
+		try{
+			VirtualSystem component = this.getComponent(componentID);
+			log.debug("Component "+ componentID + " already exists");
+		}catch(Exception e){
+			log.debug("Creating Component for package " + p );
+			VirtualSystem component = VirtualSystem.Factory.newInstance();
+			component.setId(componentID);
+			component.setName(componentID);
+			component.setInfo("Description of component "+ componentID);
+			setComponentDescription(component, prMeta, packMeta, p, project, 
+					allEls, master, ascProp);
+			addComponent(component);
+		}
+		
 	}
 
 	private static void addComponentDisk(DiskSection ds, String id) {

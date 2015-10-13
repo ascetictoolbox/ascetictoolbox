@@ -20,6 +20,10 @@ public class InstallationScript {
 
 	private String script;
 	
+	public InstallationScript(){
+		script = new String("#!/bin/sh\n");
+	}
+	
 	public InstallationScript(String imageDeploymentFolder) {
 		script = new String("#!/bin/sh\n");
 		script = script.concat("sudo mkdir -p "+ imageDeploymentFolder + ";");		
@@ -41,6 +45,10 @@ public class InstallationScript {
 
 	public String getCommand() {
 		return script;
+	}
+	
+	public void setScript(String script){
+		this.script = script;
 	}
 	
 	

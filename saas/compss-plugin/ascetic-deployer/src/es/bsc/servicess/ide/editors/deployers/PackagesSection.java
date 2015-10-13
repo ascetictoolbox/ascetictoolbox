@@ -884,7 +884,7 @@ public class PackagesSection extends ServiceEditorSection{
 		
 	}
 
-	@Override
+	@Override 
 	protected void resetSectionProperties() {
 		// TODO Auto-generated method stub
 		

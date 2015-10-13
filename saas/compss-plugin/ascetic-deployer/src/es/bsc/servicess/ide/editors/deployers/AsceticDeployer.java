@@ -434,7 +434,10 @@ public class AsceticDeployer extends Deployer {
 											return Status.CANCEL_STATUS;
 										} catch (AsceticDeploymentException e) {
 											generating = false;
-											String message = e.getCause().getMessage();
+											String message = e.getMessage();
+											if (e.getCause()!=null){
+												message = e.getCause().getMessage();
+											}
 											log.error("Error monitoring: " + message,e.getCause());
 											return new Status(IStatus.ERROR,Activator.PLUGIN_ID,
 															message, e.getCause());
@@ -458,10 +461,14 @@ public class AsceticDeployer extends Deployer {
 
 									@Override
 									public void done(IJobChangeEvent arg0) {
-										IStatus status = arg0.getResult();
+										final IStatus status = arg0.getResult();
 										if (!status.isOK()){
-											ErrorDialog.openError(getShell(), "Error deploying the application",
-													"An error has occurred during the application deployment", status);		
+											Display.getDefault().syncExec(new Runnable() {
+												public void run() {
+													ErrorDialog.openError(getShell(), "Error deploying the application",
+													"An error has occurred during the application deployment", status);
+												}
+											});
 										}
 									}
 

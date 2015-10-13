@@ -417,6 +417,7 @@ public class ImagesSection extends ServiceEditorSection {
 			ProjectMetadata prMeta, PackageMetadata packMeta,
 			IProgressMonitor monitor) throws Exception {
 		manifest.cleanFiles();
+		manifest.cleanScripts();
 		log.debug("Files cleaned: "+ manifest.getString());
 		String[] allPacks = packMeta.getPackages();
 		String[] oePacks = packMeta.getPackagesWithOrchestration();
