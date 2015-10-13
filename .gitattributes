@@ -1482,6 +1482,7 @@ saas/ascetic-application-packager/build.properties -text
 saas/ascetic-application-packager/icons/sample.gif -text
 saas/ascetic-application-packager/plugin.xml -text
 saas/ascetic-application-packager/pom.xml -text
+saas/ascetic-application-packager/readme.md -text
 saas/ascetic-application-packager/src/main/java/eu/ascetic/saas/applicationpackager/Dictionary.java -text
 saas/ascetic-application-packager/src/main/java/eu/ascetic/saas/applicationpackager/OvfAppTest.java -text
 saas/ascetic-application-packager/src/main/java/eu/ascetic/saas/applicationpackager/VmicTest.java -text
