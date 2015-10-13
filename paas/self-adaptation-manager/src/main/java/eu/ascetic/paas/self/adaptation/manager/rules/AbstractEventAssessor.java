@@ -96,6 +96,7 @@ public abstract class AbstractEventAssessor implements EventAssessor {
                 eventHistoryLoggerThread.setDaemon(true);
                 eventHistoryLoggerThread.start();
             }
+            start();
         } catch (ConfigurationException ex) {
             Logger.getLogger(AbstractEventAssessor.class.getName()).log(Level.INFO, "Error loading the configuration of the PaaS Self adaptation manager", ex);
         }
@@ -138,18 +139,20 @@ public abstract class AbstractEventAssessor implements EventAssessor {
         List<EventData> eventData = EventDataAggregator.filterEventData(eventHistory, event.getSlaUuid(), event.getAgreementTerm());
         //Purge old event map data
         eventData = EventDataAggregator.filterEventDataByTime(eventData, historyLengthSeconds);
-        Response answer = assessEvent(event, eventData, adaptations);
-        if (answer != null) {
-            adaptations.add(answer);
-            answer = decisionEngine.decide(answer);
-            if (actuator != null) {
-                actuator.actuate(answer);
+        synchronized (this) {
+            Response answer = assessEvent(event, eventData, adaptations);
+            if (answer != null) {
+                adaptations.add(answer);
+                answer = decisionEngine.decide(answer);
+                if (actuator != null) {
+                    actuator.actuate(answer);
+                }
+                if (logging) {
+                    responseHistoryLogger.printToFile(answer);
+                }
             }
-            if (logging) {
-                responseHistoryLogger.printToFile(answer);
-            }            
+            return answer;
         }
-        return answer;
     }
 
     /**
@@ -160,7 +163,7 @@ public abstract class AbstractEventAssessor implements EventAssessor {
      * @param response The response to add into the modeller's history.
      */
     @Override
-    public void addRemoteAdaptationEvent(Response response) {
+    public synchronized void addRemoteAdaptationEvent(Response response) {
         adaptations.add(response);
         Collections.sort(adaptations);
     }
@@ -204,7 +207,7 @@ public abstract class AbstractEventAssessor implements EventAssessor {
         listener.setEventAssessor(this);
         if (listener instanceof Runnable) {
             Thread thread = new Thread((Runnable) listener);
-            thread.setDaemon(true);            
+            thread.setDaemon(true);
             thread.start();
         }
     }
@@ -243,7 +246,7 @@ public abstract class AbstractEventAssessor implements EventAssessor {
             Thread actuatorThread = new Thread((Runnable) this.actuator);
             actuatorThread.setDaemon(true);
             actuatorThread.start();
-        }        
+        }
     }
 
     /**
@@ -294,7 +297,13 @@ public abstract class AbstractEventAssessor implements EventAssessor {
             while (running) {
                 if (!eventHistory.isEmpty()) {
                     eventHistory = EventDataAggregator.filterEventDataByTime(eventHistory, historyLengthSeconds);
-                    adaptations = filterAdaptationHistory();
+                    synchronized (this) {
+                        adaptations = filterAdaptationHistory();
+                        System.out.println("History Size: " + adaptations.size());
+                        System.out.println("Event History Size: " + eventHistory.size());
+                        System.out.println("Poll Interval: " + pollInterval);
+                        System.out.println("Timeout: " + historyLengthSeconds);
+                    }
                 }
                 try {
                     Thread.sleep(TimeUnit.SECONDS.toMillis(pollInterval));
@@ -315,9 +324,12 @@ public abstract class AbstractEventAssessor implements EventAssessor {
             long now = System.currentTimeMillis();
             now = now / 1000;
             long filterTime = now - historyLengthSeconds;
-            for (Response response : adaptations) {
-                if (response.getTime() >= filterTime) {
-                    answer.add(response);
+            System.out.println("FilterTime: " + filterTime);
+            synchronized (this) {
+                for (Response response : adaptations) {
+                    if (response.getTime() >= filterTime) {
+                        answer.add(response);
+                    }
                 }
             }
             return answer;

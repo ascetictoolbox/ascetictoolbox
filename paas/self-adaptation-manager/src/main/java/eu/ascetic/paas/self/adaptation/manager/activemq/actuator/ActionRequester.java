@@ -230,14 +230,12 @@ public class ActionRequester extends ActiveMQBase implements Runnable, ActuatorI
      */
     @Override
     public void hardShutdown(String applicationId, String deploymentId) {
-        // Create a messages
         ApplicationManagerMessage message = new ApplicationManagerMessage();
         message.setApplicationId(applicationId);
-        message.setDeploymentId(deploymentId);
-        //TODO, complete the code here!!!!       
+        message.setDeploymentId(deploymentId);     
         List<VM> vms = getVMs(applicationId, deploymentId);
         for (VM vm : vms) {
-            //Send delete message here
+            deleteVM(applicationId, deploymentId, vm.getId() + "");
         }
     }
 
