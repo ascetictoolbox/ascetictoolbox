@@ -6,10 +6,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import eu.ascetic.amqp.client.AmqpMessageProducer;
-import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Item;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.json.JsonCurrentItem;
-import eu.ascetic.asceticarchitecture.iaas.zabbixApi.utils.Dictionary;
+import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.json.JsonLongCurrentItem;
 import eu.ascetic.utils.metricpusher.conf.Configuration;
+import eu.ascetic.utils.metricpusher.pusher.MetricPusher;
 
 /**
  * 
@@ -62,25 +62,51 @@ public class AmqpProducer {
 			}
 		}
 	}
-	public static void sendCurrentValueForItemInHostMessage(String hostId, String item, double value, String units, 
+	public static void sendCurrentDoubleValueForItemInHostMessage(String vmId, String item, double value, String units, 
 			long lastClock) {
 		
-		JsonCurrentItem jsonMessage = new JsonCurrentItem(hostId);
+		JsonCurrentItem jsonMessage = new JsonCurrentItem(vmId);
 		jsonMessage.setName(item);
 		jsonMessage.setValue(value);
 		jsonMessage.setUnits(units);
 		jsonMessage.setTimestamp(lastClock);
 		
 		//Remove the _host from hostId string which is allocated at the final of the String
-		String[] aux = hostId.split(Configuration.hostFilterBegins);
-		String vmId = aux[0];
+		//		String[] aux = hostId.split(Configuration.hostFilterBegins);
+		//		String vmId = aux[0];
 		
 		//publish the message
 		String mpMessage = gson.toJson(jsonMessage);
 		
-		//AmqpProducer.sendMessage("vm." + vmId + ".item." + item, mpMessage);
-		System.out.println("Sending message to: " + "vm." + vmId + ".item." + item);
-		System.out.println("Message sent: \n" + mpMessage);
+		AmqpProducer.sendMessage("vm." + vmId + ".item." + item, mpMessage);
+		if (MetricPusher.SHOW_DEBUG_TRACES){
+			System.out.println("Sending message to: " + "vm." + vmId + ".item." + item);
+			System.out.println("Message sent: \n" + mpMessage);
+		}
+	}
+
+	
+	public static void sendCurrentLongValueForItemInHostMessage(String vmId, String item, long value, String units, 
+			long lastClock) {
+		
+		JsonLongCurrentItem jsonMessage = new JsonLongCurrentItem(vmId);
+		jsonMessage.setName(item);
+		jsonMessage.setValue(value);
+		jsonMessage.setUnits(units);
+		jsonMessage.setTimestamp(lastClock);
+		
+		//Remove the _host from hostId string which is allocated at the final of the String
+		//		String[] aux = hostId.split(Configuration.hostFilterBegins);
+		//		String vmId = aux[0];
+		
+		//publish the message
+		String mpMessage = gson.toJson(jsonMessage);
+		
+		AmqpProducer.sendMessage("vm." + vmId + ".item." + item, mpMessage);
+		if (MetricPusher.SHOW_DEBUG_TRACES){
+			System.out.println("Sending message to: " + "vm." + vmId + ".item." + item);
+			System.out.println("Message sent: \n" + mpMessage);
+		}
 	}
 
 }
