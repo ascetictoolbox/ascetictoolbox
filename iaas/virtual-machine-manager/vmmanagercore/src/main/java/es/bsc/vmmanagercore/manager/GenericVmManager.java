@@ -73,6 +73,8 @@ public class GenericVmManager implements VmManager {
     
     private CloudMiddleware cloudMiddleware;
     private SelfAdaptationManager selfAdaptationManager;
+
+
     private List<Host> hosts = new ArrayList<>();
 
     public static EnergyModeller energyModeller;
@@ -483,7 +485,11 @@ public class GenericVmManager implements VmManager {
     private void generateZabbixHosts(String[] hostnames) {
         for (String hostname: hostnames) {
 			log.debug("Generating zabbix host for host: " + hostname);
-            hosts.add(HostFactory.getHost(hostname, HostType.ZABBIX, null));
+			try {
+            	hosts.add(HostFactory.getHost(hostname, HostType.ZABBIX, null));
+			} catch(Exception e) {
+				log.error("Ignoring host due to the next error: " + e.getMessage(), e);
+			}
         }
     }
 
