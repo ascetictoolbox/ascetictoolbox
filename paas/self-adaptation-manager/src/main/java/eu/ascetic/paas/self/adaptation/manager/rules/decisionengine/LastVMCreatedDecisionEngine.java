@@ -56,6 +56,11 @@ public class LastVMCreatedDecisionEngine extends AbstractDecisionEngine {
             return response;
         }
         List<Integer> vmIds = getActuator().getVmIdsAvailableToRemove(response.getApplicationId(), response.getDeploymentId());
+        if (vmIds == null) {
+            System.out.println("Internal Error list of deleteable VM Ids equals null.");
+            response.setPossibleToAdapt(false);
+            return response;            
+        }
         if (!vmIds.isEmpty()) {
             Collections.sort(vmIds);
             Collections.reverse(vmIds);
