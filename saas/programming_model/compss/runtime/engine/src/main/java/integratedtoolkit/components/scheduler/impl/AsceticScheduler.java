@@ -1,18 +1,20 @@
-/*
- *  Copyright 2002-2012 Barcelona Supercomputing Center (www.bsc.es)
+/**
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ *   Copyright 2015-2015 Barcelona Supercomputing Center (www.bsc.es) All rights reserved.
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
  */
+
 package integratedtoolkit.components.scheduler.impl;
 
 import integratedtoolkit.ascetic.Ascetic;
@@ -33,20 +35,23 @@ import java.util.PriorityQueue;
 public class AsceticScheduler extends TaskScheduler {
 
     // Max number of tasks to examine when scheduling
-    private static final int MAX_TASK = 10;
+    private static final int MAX_TASK = 50;
 
     // Object that stores the information about the current project
     private final TaskSets taskSets;
 
     public AsceticScheduler() {
         super();
-        System.err.println("Loading Ascetic Scheduler");
+        logger.info("Loading Ascetic Scheduler");
         taskSets = new TaskSets();
         if (Ascetic.getSchedulerOptimization().equals("Energy")) {
-            schedulerPolicies = new EnergyPolicies();
+            logger.info("Setting Energy optimization policy");
+        	schedulerPolicies = new EnergyPolicies();
         } else if (Ascetic.getSchedulerOptimization().equals("Cost")) {
+        	logger.info("Setting Cost optimization policy");
             schedulerPolicies = new CostPolicies();
         } else {
+        	logger.info("Setting Performance optimization policy");
             schedulerPolicies = new PerformancePolicies();
         }
         logger.info("Initialization finished");
@@ -164,7 +169,11 @@ public class AsceticScheduler extends TaskScheduler {
 
                 // Request the creation of a job for the task
                 logger.info("Sending job " + task + ", to res name " + chosenResource.getName() + ", resource " + chosenResource + ", with impl " + run.getFirst());
-                sendJob(task, chosenResource, run.getFirst());
+                Implementation impl = run.getFirst();
+                if (sendJob(task, chosenResource, impl)){
+                	System.out.println("Job sended. Registering event");
+                	Ascetic.startEvent(chosenResource, task, impl);
+                }
             }
         } else {
             // Schedule task
@@ -187,7 +196,9 @@ public class AsceticScheduler extends TaskScheduler {
                     logger.info("Match: Task(" + task.getId() + ", " + task.getTaskParams().getName() + ") " + "Resource(" + chosenResource.getName() + ")");
                     Implementation impl = orderedImpls.getFirst();
                     if (sendJob(task, chosenResource, impl)) {
-                        Ascetic.startEvent(chosenResource, task, impl);
+                        System.out.println("Job sended. Registering event");
+                    	Ascetic.startEvent(chosenResource, task, impl);
+                    	
                         return;
                     }
                 }
@@ -227,8 +238,11 @@ public class AsceticScheduler extends TaskScheduler {
                 // Request the creation of a job for the task
                 LinkedList<Implementation> orderedImpls = schedulerPolicies.sortImplementationsForResource(resourceToImpls.get(chosenResource), chosenResource, profile);
                 logger.info("Match: Task(" + task.getId() + ", " + task.getTaskParams().getName() + ") " + "Resource(" + chosenResource.getName() + ")");
-                if (sendJobRescheduled(task, chosenResource, orderedImpls.getFirst())) {
-                    return;
+                Implementation impl = orderedImpls.getFirst();
+                if (sendJobRescheduled(task, chosenResource, impl)) {
+                	System.out.println("Job sended. Registering event");
+                	Ascetic.startEvent(chosenResource, task, impl);
+                	return;
                 }
             }
             task.setLastResource(failedResource.getName());
@@ -306,8 +320,10 @@ public class AsceticScheduler extends TaskScheduler {
     private LinkedList<Implementation> checkBoundaries(LinkedList<Implementation> candidates, Worker worker) {
         LinkedList<Implementation> runnables = new LinkedList<Implementation>();
         for (Implementation impl : candidates) {
-            if (Ascetic.executionWithinBoundaries(worker, impl)) {
+        	if (Ascetic.executionWithinBoundaries(worker, impl)) {
                 runnables.add(impl);
+            }else{
+            	logger.debug("Core "+ impl.getCoreId()+" Implementation " + impl.getImplementationId() +" not added because it is exceeding boundaries");
             }
         }
         return runnables;
@@ -366,9 +382,11 @@ public class AsceticScheduler extends TaskScheduler {
                     taskSets.regularTaskScheduled(t);
                 }
             }
-
-            if (sendJob(t, resource, fittingImplementations[coreId].get(0))) {
-                assigned = true;
+            Implementation impl = fittingImplementations[coreId].get(0);
+            if (sendJob(t, resource, impl)) {
+            	System.out.println("Job sended. Registering event");
+            	Ascetic.startEvent(resource, t, impl);
+            	assigned = true;
                 if (sortedTasks[coreId].isEmpty()) {
                     executableCores.remove(coreId);
                 }

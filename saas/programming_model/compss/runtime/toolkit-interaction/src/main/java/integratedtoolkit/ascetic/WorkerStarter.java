@@ -1,18 +1,20 @@
-/*
- *  Copyright 2002-2012 Barcelona Supercomputing Center (www.bsc.es)
+/**
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ *   Copyright 2013-2015 Barcelona Supercomputing Center (www.bsc.es) All rights reserved.
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
  */
+
 package integratedtoolkit.ascetic;
 
 import integratedtoolkit.ITConstants;
@@ -43,7 +45,11 @@ public class WorkerStarter extends Thread {
         MethodWorker worker = null;
         try {
             MethodResourceDescription desc = (MethodResourceDescription) vm.getDescription();
-            worker = new MethodWorker(vm.getIPv4(), desc, "integratedtoolkit.nio.master.NIOAdaptor", vm.getProperties(), desc.getProcessorCoreCount());
+            String adaptor = System.getProperty(ITConstants.COMM_ADAPTOR);
+            if (adaptor==null){
+            	adaptor = "integratedtoolkit.nio.master.NIOAdaptor";
+            }
+            worker = new MethodWorker(vm.getIPv4(), desc, adaptor, vm.getProperties(), desc.getProcessorCoreCount());
         } catch (Exception e) {
             System.out.println("Could not turn on the VM");
             e.printStackTrace();

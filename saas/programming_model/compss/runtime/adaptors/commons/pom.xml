@@ -16,7 +16,6 @@
 	<name>COMPSs Back-end Commons</name>
 	<description>Common classes shared among the runtime engine and every adaptor implementation to communicate the engine with the workers.</description>
 	<url>http://www.bsc.es</url>
-	<inceptionYear>2015</inceptionYear>
 	<licenses>
 		<license>
 			<name>Apache License, Version 2.0</name>

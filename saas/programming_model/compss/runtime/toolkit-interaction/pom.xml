@@ -56,16 +56,21 @@
             <groupId>eu.ascetic.utils</groupId>
             <artifactId>ovf-xmlbeans-api</artifactId>
             <version>${project.version}</version>
-        </dependency>  
+        </dependency>
+        <dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+		</dependency>
         <!--dependency>
             <groupId>eu.ascetic.paas</groupId>
             <artifactId>application-manager</artifactId>
             <version>0.3-SNAPSHOT</version>
         </dependency-->   
-        <dependency>
+        <!-- dependency>
             <groupId>eu.ascetic.paas</groupId>
             <artifactId>application-manager-datamodel</artifactId>
             <version>0.17-SNAPSHOT</version>
-        </dependency>  
+        </dependency-->  
     </dependencies>
 </project>

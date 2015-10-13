@@ -89,7 +89,6 @@
   echo "- Copy trunk to tmpdir"
   rm -rf ${tmpDir}
   mkdir -p ${tmpDir}
-  cp ${sourcesDir}/changelog ${tmpDir}
   cp -r ${sourcesDir}/compss ${tmpDir}
   cp -r ${sourcesDir}/dependencies ${tmpDir}
   cp -r ${sourcesDir}/doc ${tmpDir}
@@ -98,7 +97,6 @@
   cp ${sourcesDir}/NOTICE ${tmpDir}
   cp ${sourcesDir}/pom.xml ${tmpDir}
   cp ${sourcesDir}/README ${tmpDir}
-  cp ${sourcesDir}/RELEASE_NOTES ${tmpDir}
   find . -name .svn | xargs rm -rf  #Cleans svn files
 
   # COMPILE
@@ -131,20 +129,18 @@
   echo "--- Copy docs"
   find ${tmpDir}/doc/ -name *.html | xargs rm -rf
   cp -r ${tmpDir}/doc/* ${targetDir}/Doc
-  cp ${tmpDir}/changelog ${targetDir}
   cp ${tmpDir}/LICENSE ${targetDir}
   cp ${tmpDir}/NOTICE ${targetDir}
   cp ${tmpDir}/README ${targetDir}
-  cp ${tmpDir}/RELEASE_NOTES ${targetDir}
   #Dependencies
   echo "--- Copy dependencies"
   cp -r ${tmpDir}/dependencies/JAVA_GAT ${targetDir}/Dependencies/
   cp -r ${tmpDir}/files/paraver ${targetDir}/Dependencies/
-  cd ${tmpDir}/dependencies/extrae
-  ./install ${targetDir}/Dependencies/extrae
-  if [ $? -ne 0 ]; then
-    echo "ERROR: Failed to install extrae dependency"
-  fi
+  #cd ${tmpDir}/dependencies/extrae
+  #./install ${targetDir}/Dependencies/extrae
+  #if [ $? -ne 0 ]; then
+  #  echo "ERROR: Failed to install extrae dependency"
+  #fi
   cd ${scriptDir}
   #Config
   echo "--- Copy configuration"
@@ -189,7 +185,7 @@
   done
   #Engine
   echo "--- Copy engine"
-  cp ${tmpDir}/compss/runtime/compss-engine.jar ${targetDir}/Runtime/
+  cp ${tmpDir}/compss/runtime/engine.jar ${targetDir}/Runtime/compss-engine.jar
  
   # TOOLS DEPLOYMENT
   echo "- Deploying COMPSs Tools"
@@ -202,26 +198,16 @@
   mv ${tmpDir}/apache-tomcat-$TOMCAT_VER ${targetDir}/Tools/monitor/apache-tomcat/
   rm -rf ${targetDir}/Tools/monitor/apache-tomcat/webapps/*
   rm -f ${targetDir}/Tools/monitor/apache-tomcat/conf/server.xml
-  cp -r ${tmpDir}/compss/tools/monitor/target/*.war ${targetDir}/Tools/monitor/apache-tomcat/webapps/
+  cp -r ${tmpDir}/compss/tools/monitor/target/monitor.war ${targetDir}/Tools/monitor/apache-tomcat/webapps/compss-monitor.war
   cp ${tmpDir}/compss/tools/monitor/target/classes/compss-monitor.conf ${targetDir}/Tools/monitor/apache-tomcat/conf/
   cp ${tmpDir}/compss/tools/monitor/target/classes/server.xml ${targetDir}/Tools/monitor/apache-tomcat/conf/
   cp ${tmpDir}/compss/tools/monitor/target/classes/log4j.properties ${targetDir}/Tools/monitor/
 
   #BINDINGS DEPLOYMENT
-  echo "- Deploying bindings-common files"
-  cd ${tmpDir}/compss/programming_model/bindings/bindings-common
-  ./install_common ${targetDir}/Bindings/bindings-common
-  echo "- Deploying c-binding files"
-  cd ${tmpDir}/compss/programming_model/bindings/c
-  ./install ${targetDir}/Bindings/c
-  echo "- Deploying python-binding files"
-  cd ${tmpDir}/compss/programming_model/bindings/python
-  ./install ${targetDir}/Bindings/python
-  cd ${scriptDir}
 
   # ADD RUNCOMPSS TO PROFILE
-  echo "- Add runcompss to profile"
-  echo "export PATH=\$PATH:${targetDir}/Runtime/scripts/user:${targetDir}/Bindings/c/bin" > /etc/profile.d/compss.sh
+  #echo "- Add runcompss to profile"
+  #echo "export PATH=\$PATH:${targetDir}/Runtime/scripts/user:${targetDir}/Bindings/c/bin" > /etc/profile.d/compss.sh
 
   # ADD MONITOR SCRIPT TO ETC
   if [ "$monitor" == "true" ]; then 

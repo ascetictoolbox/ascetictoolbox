@@ -1,18 +1,20 @@
-/*
- *  Copyright 2002-2012 Barcelona Supercomputing Center (www.bsc.es)
+/**
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ *   Copyright 2015-2015 Barcelona Supercomputing Center (www.bsc.es) All rights reserved.
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
  */
+
 package integratedtoolkit.components.scheduler.impl;
 
 import integratedtoolkit.api.ITExecution;
@@ -215,24 +217,28 @@ public abstract class AsceticPolicies extends SchedulerPolicies {
     public LinkedList<Implementation> sortImplementationsForResource(LinkedList<Implementation> runnable, Worker resource, ExecutionProfile[][] profiles) {
         LinkedList<Implementation> sorted = new LinkedList<Implementation>();
         PriorityQueue<ObjectValue<Implementation>> pq = new PriorityQueue<ObjectValue<Implementation>>();
+        String IPv4 = resource.getName();
         if (!runnable.isEmpty()) {
-            int coreId = runnable.getFirst().getCoreId();
-            String IPv4 = resource.getName();
-
+        	//int coreId = runnable.getFirst().getCoreId();
             for (Implementation impl : runnable) {
                 pq.add(new ObjectValue<Implementation>(impl, getValue(resource, impl, profiles)));
+            	
             }
         }
+        logger.debug("Sorted list of implementations for "+IPv4);
         for (SchedulerPolicies.ObjectValue<Implementation> impl : pq) {
-            sorted.addLast(impl.o);
+        	logger.debug(" - Implementation: core"+impl.o.getCoreId()+"impl"+impl.o.getImplementationId() +" value: "+impl.value);
+        	sorted.addLast(impl.o);
         }
         return sorted;
     }
 
     private double getValue(Worker w, Implementation impl, ExecutionProfile[][] profiles) {
-        double cost = Ascetic.getCost(w, impl);
+    	logger.debug("Values for core"+impl.getCoreId()+"impl"+impl.getImplementationId()+":");
+    	double cost = Ascetic.getCost(w, impl);
         double power = Ascetic.getPower(w, impl);
-        double time = profiles[impl.getCoreId()][impl.getImplementationId()].getAverageExecutionTime(100l);
+        double time = profiles[impl.getCoreId()][impl.getImplementationId()].getAverageExecutionTime(1l); 
+        logger.debug(" - Cost = "+ cost +" ("+costWeight+") Energy: "+ power +" ("+energyWeight+") Time: "+time+" (" + timeWeight+ ")");
         return -(timeWeight * time) - (costWeight * cost) - (energyWeight * power);
     }
 }

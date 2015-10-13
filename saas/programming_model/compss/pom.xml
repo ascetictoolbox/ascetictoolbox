@@ -6,7 +6,6 @@
 		<groupId>eu.ascetic</groupId>
 		<artifactId>saas</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../..</relativePath>
 	</parent>
 
 	<groupId>eu.ascetic.saas</groupId>
@@ -15,7 +14,7 @@
 
 	<name>Programming Model</name>
 
-	<inceptionYear>2014</inceptionYear>
+	<inceptionYear>2013</inceptionYear>
 
 	<licenses>
 		<license>
@@ -269,6 +268,20 @@
 			<name>BSC Grid computing and Clusters group</name>
 			<url>http://compss.bsc.es/artifactory/grid-devel-repo</url>
 		</repository>
+		<repository>
+                        <id>ascetic-repository</id>
+                        <snapshots>
+                                <enabled>true</enabled>
+                                <updatePolicy>daily</updatePolicy>
+                        </snapshots>
+                        <releases>
+                                <enabled>true</enabled>
+                                <updatePolicy>never</updatePolicy>
+                        </releases>
+                        <name>repo</name>
+                        <url>https://ascetic-artifactory.cit.tu-berlin.de/artifactory/repo</url>
+                </repository>
+	
 	</repositories>
 
 	<pluginRepositories>
@@ -293,7 +306,36 @@
 			<url>http://compss.bsc.es/artifactory/grid-devel-repo</url>
 		</repository>
 	</distributionManagement>
-	
+	<build><plugins>
+                <plugin>
+                        <groupId>com.mycila.maven-license-plugin</groupId>
+                        <artifactId>maven-license-plugin</artifactId>
+                        <version>1.8.0</version>
+                        <configuration>
+                                <!-- Template location -->
+                                <header>fileHeader.txt</header>
+                                <properties>
+                                        <!-- Values to be substituted in template -->
+                                        <h_inceptionYear>${inceptionYear}</h_inceptionYear>
+                                        <h_currentYear>2015</h_currentYear>
+                                        <h_copyrightOwner>Barcelona Supercomputing Center (www.bsc.es)</h_copyrightOwner>
+                                </properties>
+                                <strictCheck>true</strictCheck>
+                                <includes>
+                                        <include>**/*.java</include>
+                                </includes>
+                        </configuration>
+                        <executions>
+                                <execution>
+                                        <phase>validate</phase>
+                                        <goals>
+                                                <goal>format</goal>
+                                        </goals>
+                                </execution>
+                        </executions>
+                </plugin>
+        </plugins>
+        </build>	
 	<!-- SUB-MODULES -->
 	<modules>
 		<module>tools</module>

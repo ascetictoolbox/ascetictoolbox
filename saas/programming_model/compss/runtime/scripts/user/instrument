@@ -15,17 +15,17 @@ destDir=$4
 isWs=$5
 isMainClass=$6
 
-libDir=$runtimeInstDir/Runtime/rt
+libDir=$runtimeInstDir/Runtime/
 export IT_HOME=$runtimeInstDir/Runtime/
 
 echo -e "\n----------------- Instrumenting $fullAppName (isWs=$isWs, isMain=$isMainClass) --------------------------\n"
 
 cd $destDir
 
-runtimeClassPath=$libDir/compss-rt.jar
+runtimeClassPath=$libDir/compss-engine.jar
 
 java \
--Dlog4j.configuration=$runtimeInstDir/Runtime/log/it-log4j \
+-Dlog4j.configuration=$runtimeInstDir/Runtime/configuration/log/it-log4j.instrument \
 -Dit.to.file=true \
 -Dit.is.ws=$isWs \
 -Dit.is.mainclass=$isMainClass \

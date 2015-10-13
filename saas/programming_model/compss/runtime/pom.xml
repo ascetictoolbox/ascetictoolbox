@@ -20,7 +20,6 @@
 	<name>COMPSs Runtime</name>
 	<description>COMPSs Runtime</description>
 	<url>http://www.bsc.es</url>
-	<inceptionYear>2014</inceptionYear>
 	<licenses>
 		<license>
 			<name>Apache License, Version 2.0</name>

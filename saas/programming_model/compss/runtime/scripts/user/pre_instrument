@@ -16,16 +16,16 @@ runtimeInstDir=$2
 destDir=$3
 fullAppName=$4
 shift 4
-libDir=$runtimeInstDir/Runtime/rt/
+libDir=$runtimeInstDir/Runtime/
 
 echo -e "\n----------------- Instrumenting $fullAppName --------------------------\n"
 
 cd $destDir
 
-runtimeClassPath=$libDir/compss-rt.jar
+runtimeClassPath=$libDir/compss-engine.jar
 
 java \
--Dlog4j.configuration=$runtimeInstDir/Runtime/log/it-log4j \
+-Dlog4j.configuration=$runtimeInstDir/Runtime/configuration/log/it-log4j.instrument \
 -Dit.to.file=true \
 -classpath $appClassPath:$runtimeClassPath \
 integratedtoolkit.loader.AddOrchestration $fullAppName $@ 

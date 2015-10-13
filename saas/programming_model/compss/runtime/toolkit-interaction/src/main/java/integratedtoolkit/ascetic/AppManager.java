@@ -1,22 +1,26 @@
-/*
- *  Copyright 2002-2014 Barcelona Supercomputing Center (www.bsc.es)
+/**
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ *   Copyright 2013-2015 Barcelona Supercomputing Center (www.bsc.es) All rights reserved.
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
  */
+
 package integratedtoolkit.ascetic;
 
+import eu.ascetic.paas.applicationmanager.model.Cost;
 import eu.ascetic.saas.application_uploader.ApplicationUploader;
 import eu.ascetic.saas.application_uploader.ApplicationUploaderException;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -40,12 +44,21 @@ public class AppManager {
         detectedVMs = new HashMap<String, VM>();
     }
 
-    /* 
-     public static double getConsumption(String id, String eventId) throws ApplicationUploaderException {
-     //return Math.random()*100d;               
-     return uploader.getEventEnergyEstimationInVM(applicationId, deploymentId, eventId, id);
-     }
-     */
+    
+    public static double getPower(String id, String eventId) throws ApplicationUploaderException {
+    	 //return Math.random()*100d;               
+    	 return uploader.getEventEnergyEstimationInVM(applicationId, deploymentId, eventId, id);
+    }
+    
+   public static double getPrice(String id, String eventId) throws ApplicationUploaderException {
+   	 //return Math.random()*100d;               
+   	 return uploader.getEventEnergyEstimationInVM(applicationId, deploymentId, eventId, id)*1.2;
+   }
+   
+   public static Cost getEstimations(String id, String eventId)throws ApplicationUploaderException {
+	   return uploader.getEventCostEstimationInVM(applicationId, deploymentId, eventId, id);
+   }
+    
     public static Collection<VM> getNewResources() throws ApplicationUploaderException {
         System.out.println("Obtianing new Resources from AM:");
         LinkedList<VM> newResources = new LinkedList<VM>();

@@ -1,3 +1,20 @@
+/**
+ *
+ *   Copyright 2015-2015 Barcelona Supercomputing Center (www.bsc.es) All rights reserved.
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ */
+
 package integratedtoolkit.components.impl;
 
 import org.apache.log4j.Logger;
@@ -411,10 +428,13 @@ public abstract class TaskScheduler {
     private void startsExecution(Task t, Worker resource, int implId) {
         List<Task> tasks = nodeToRunningTasks.get(resource);
         tasks.add(t);
-
-        t.setInitialTimeStamp(System.currentTimeMillis());
-        if (profile[t.getTaskParams().getId()][implId].firstExecution == null) {
-            profile[t.getTaskParams().getId()][implId].firstExecution = t;
+        int coreId = t.getTaskParams().getId();
+        long initTime = System.currentTimeMillis();
+        logger.debug("Task intialized at "+ initTime +" (core"+coreId+"impl"+implId+")");
+        t.setInitialTimeStamp(initTime);
+        
+        if (profile[coreId][implId].firstExecution == null) {
+            profile[coreId][implId].firstExecution = t;
         }
     }
 
@@ -422,7 +442,10 @@ public abstract class TaskScheduler {
         nodeToRunningTasks.get(resource).remove(task);
         int core = task.getTaskParams().getId();
         if (success) {
-            profile[core][implId].executionEnded(task);
+            logger.debug("Task ended at"+System.currentTimeMillis()+" (core"+core+"impl"+implId+")");
+        	profile[core][implId].executionEnded(task);
+            logger.debug("New average: "+profile[core][implId].getAverageExecutionTime(1l));
+            
         } else {
             if (profile[core][implId].firstExecution == task) {
 
@@ -462,6 +485,7 @@ public abstract class TaskScheduler {
         public void executionEnded(Task task) {
             long initialTime = task.getInitialTimeStamp();
             long duration = System.currentTimeMillis() - initialTime;
+            logger.debug("Execution duration for "+task.getTaskParams().getId()+" is "+ duration);
             Long mean = avgExecutionTime;
             if (mean == null) {
                 mean = 0l;

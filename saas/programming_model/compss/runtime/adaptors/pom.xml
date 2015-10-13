@@ -17,7 +17,6 @@
 	<name>COMPSs Back-end Adaptors</name>
 	<description>Collection of available adaptors to execute tasks on remote workers.</description>
 	<url>http://www.bsc.es</url>
-	<inceptionYear>2015</inceptionYear>
 	<licenses>
 		<license>
 			<name>Apache License, Version 2.0</name>
