@@ -1,7 +1,17 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Copyright 2015 University of Leeds
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package eu.ascetic.utils.paassameventinjectiontool;
 
@@ -12,8 +22,9 @@ import javax.jms.JMSException;
 import javax.naming.NamingException;
 
 /**
- *
- * @author Richard
+ * The aim of this tool is to manually inject SLA violation events in the queue
+ * in order to create adaptation events.
+ * @author Richard Kavanagh
  */
 public class PaaSSamEventSubmitterTool extends javax.swing.JFrame {
 
@@ -167,6 +178,10 @@ public class PaaSSamEventSubmitterTool extends javax.swing.JFrame {
     private void buttonOnceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonOnceActionPerformed
         try {
             SLAManagerMessageGenerator generator = new SLAManagerMessageGenerator("guest", "guest", "192.168.3.16:5673", messageQueue.getText());
+            generator.setAppId(appId.getText());
+            generator.setDeploymentId(deploymentId.getText());
+            generator.setSlaUuid(slauuid.getText());
+            generator.setArrivalInterval((int) arrivalRate.getValue());            
             generator.createAndSendViolationMessage((double) actualValue.getValue(),
                     (double) guaranteedValue.getValue(),
                     agreementTerm.getItemAt(agreementTerm.getSelectedIndex()).toString(),
@@ -183,6 +198,10 @@ public class PaaSSamEventSubmitterTool extends javax.swing.JFrame {
     private void buttonSubmitEventsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSubmitEventsActionPerformed
         try {
             SLAManagerMessageGenerator generator = new SLAManagerMessageGenerator("guest", "guest", "192.168.3.16:5673", messageQueue.getText());
+            generator.setAppId(appId.getText());
+            generator.setDeploymentId(deploymentId.getText());
+            generator.setSlaUuid(slauuid.getText());
+            generator.setArrivalInterval((int) arrivalRate.getValue());
             for (int i = 0; i < ((int) messageCount.getValue()); i++) {
                 generator.createAndSendViolationMessage((double) actualValue.getValue(),
                         (double) guaranteedValue.getValue(),
