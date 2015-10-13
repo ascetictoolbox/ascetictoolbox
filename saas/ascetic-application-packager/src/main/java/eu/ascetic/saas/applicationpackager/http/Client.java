@@ -21,7 +21,7 @@ import eu.ascetic.saas.applicationpackager.Dictionary;
 
 /**
  * 
- * Copyright 2014 ATOS SPAIN S.A. 
+ * Copyright 2015 ATOS SPAIN S.A. 
  * 
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.

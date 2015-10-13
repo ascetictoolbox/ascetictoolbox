@@ -9,7 +9,7 @@ import eu.ascetic.paas.applicationmanager.model.Deployment;
 // TODO: Auto-generated Javadoc
 /**
  * 
- * Copyright 2014 ATOS SPAIN S.A. 
+ * Copyright 2015 ATOS SPAIN S.A. 
  * 
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -49,10 +49,18 @@ public interface AppManagerClient {
 	/**
 	 * Adds the application.
 	 *
+	 * @param ovf the ovf
 	 * @return the string
 	 */
 	public Application postApplication(String ovf);
 	
+	/**
+	 * Gets the deployment.
+	 *
+	 * @param appId the app id
+	 * @param deploymentId the deployment id
+	 * @return the deployment
+	 */
 	public Deployment getDeployment(String appId, String deploymentId);
 	
 	

@@ -1,13 +1,5 @@
 package eu.ascetic.saas.applicationpackager.vmic;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 import org.apache.log4j.Logger;
 
 import eu.ascetic.utils.ovf.api.OvfDefinition;
@@ -16,14 +8,42 @@ import eu.ascetic.vmic.api.core.ProgressException;
 import eu.ascetic.vmic.api.datamodel.GlobalConfiguration;
 import eu.ascetic.vmic.api.datamodel.ProgressDataImage;
 
+// TODO: Auto-generated Javadoc
+/**
+ * 
+ * Copyright 2015 ATOS SPAIN S.A. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the License);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * @author David Rojo Antona. Atos Research and Innovation, Atos SPAIN SA
+ * e-mail david.rojoa@atos.net 
+ * 
+ * This class implements a client to communicate with Virtual Image Constructor component
+ *
+ */
+
 public class VmicClient {
 	
+	/**
+	 * Instantiates a new vmic client.
+	 */
 	public VmicClient(){
 		
 	}
+    
     /**
-     * Get current method name
-     * 
+     * Get current method name.
+     *
      * @return Method Name
      */
     public String getCurrentMethodName() {
@@ -32,8 +52,15 @@ public class VmicClient {
         return stackTraceElements[1].toString();
     }
     
+	/** The Constant LOGGER. */
 	protected final static Logger LOGGER = Logger.getLogger(VmicClient.class);
 
+	/**
+	 * Test generate image workflow.
+	 *
+	 * @param ovfDefinitionAsString the ovf definition as string
+	 * @return the string
+	 */
 	public String testGenerateImageWorkflow(String ovfDefinitionAsString) {
         
 		String ovfResult = null;

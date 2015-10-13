@@ -13,9 +13,10 @@ import eu.ascetic.saas.applicationpackager.Dictionary;
 import eu.ascetic.saas.applicationpackager.conf.Configuration;
 import eu.ascetic.saas.applicationpackager.http.Client;
 
+// TODO: Auto-generated Javadoc
 /**
  * 
- * Copyright 2014 ATOS SPAIN S.A. 
+ * Copyright 2015 ATOS SPAIN S.A. 
  * 
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -35,8 +36,11 @@ import eu.ascetic.saas.applicationpackager.http.Client;
  * The Apache HTTP Client implementation of the VM Manager ASCETiC Client
  */
 public class AppManagerClientHC implements AppManagerClient {
+	
+	/** The logger. */
 	private static Logger logger = Logger.getLogger(AppManagerClientHC.class);
 	
+	/** The url. */
 	private String url;
 	
 	/**
@@ -48,16 +52,25 @@ public class AppManagerClientHC implements AppManagerClient {
 		this.url = Configuration.applicationManagerUrl;
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.ascetic.saas.applicationpackager.appmanager.client.AppManagerClient#getURL()
+	 */
 	@Override
 	public String getURL() {
 		return url;
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.ascetic.saas.applicationpackager.appmanager.client.AppManagerClient#setURL(java.lang.String)
+	 */
 	@Override
 	public void setURL(String url) {
 		this.url = url;
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.ascetic.saas.applicationpackager.appmanager.client.AppManagerClient#postApplication(java.lang.String)
+	 */
 	@Override
 	public Application postApplication(String ovf) {
 		
@@ -109,6 +122,9 @@ public class AppManagerClientHC implements AppManagerClient {
 
 	
 	
+	/* (non-Javadoc)
+	 * @see eu.ascetic.saas.applicationpackager.appmanager.client.AppManagerClient#getDeployment(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public Deployment getDeployment(String appName, String deploymentId) {
 		Deployment deployment  = null;

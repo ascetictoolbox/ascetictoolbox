@@ -17,8 +17,10 @@ import eu.ascetic.utils.ovf.api.File;
 import eu.ascetic.utils.ovf.api.Item;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
 import eu.ascetic.utils.ovf.api.ProductProperty;
+import eu.ascetic.utils.ovf.api.ProductSection;
 import eu.ascetic.utils.ovf.api.VirtualHardwareSection;
 import eu.ascetic.utils.ovf.api.VirtualSystem;
+import eu.ascetic.utils.ovf.api.VirtualSystemCollection;
 //import eu.ascetic.utils.ovf.api.VirtualSystem;
 //import eu.ascetic.utils.ovf.api.VirtualSystemCollection;
 import eu.ascetic.utils.ovf.api.utils.OvfRuntimeException;
@@ -85,6 +87,37 @@ public class OVFUtils {
 			ex.printStackTrace();
 			return null;
 		}
+	}
+	
+	
+	public static String removeSoftwareDependencyElements(String ovf) {
+		if (ovf != null){
+			try {
+				OvfDefinition ovfDocument = OvfDefinition.Factory.newInstance(ovf);
+				if (ovfDocument != null){
+					VirtualSystemCollection vsc = ovfDocument.getVirtualSystemCollection();
+					VirtualSystem[] vsList = vsc.getVirtualSystemArray();
+					for (VirtualSystem vs : vsList){
+						ProductSection[] psList = vs.getProductSectionArray();
+						for (ProductSection ps : psList){
+							int num = ps.getSoftwareDependencyNumber();
+							for (int i=0; i<num; i++){
+								ps.removeSoftwareDependencyProperties(i);
+							}
+							ps.removePropertyByKey("asceticSoftwareDependencyNumber");
+//							ps.removeSoftwareDependencyProperties(index);ps.getSoftwareDependency
+//							addSoftwareDependencyProperties
+						}
+					}
+				}
+				return ovfDocument.toString();
+			} catch(OvfRuntimeException ex) {
+				logger.info("Error parsing OVF file: " + ex.getMessage());
+				ex.printStackTrace();
+				return null;
+			}
+		}
+		return ovf;
 	}
 	
 	

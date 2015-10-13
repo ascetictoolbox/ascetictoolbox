@@ -16,13 +16,42 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+// TODO: Auto-generated Javadoc
+/**
+ * 
+ * Copyright 2015 ATOS SPAIN S.A. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the License);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * @author David Rojo Antona. Atos Research and Innovation, Atos SPAIN SA
+ * e-mail david.rojoa@atos.net 
+ * 
+ * This class allow to the user to select an XML file as input for Application Packager wizard
+ *
+ */
 
 public class XmlFileSelectorWizardPage extends WizardPage {
 	
+	/** The text1. */
 	private Text text1;
+	
+	/** The container. */
 	private Composite container;
 
 	
+	/**
+	 * Instantiates a new xml file selector wizard page.
+	 */
 	public XmlFileSelectorWizardPage() {
 		super("XML to Import");
 		setTitle("XML to Import");
@@ -31,6 +60,9 @@ public class XmlFileSelectorWizardPage extends WizardPage {
 	}
 
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
+	 */
 	@Override
 	public void createControl(Composite parent) {
 		container = new Composite(parent, SWT.NONE);
@@ -126,6 +158,11 @@ public class XmlFileSelectorWizardPage extends WizardPage {
 	}
 
 	
+	/**
+	 * Gets the text1.
+	 *
+	 * @return the text1
+	 */
 	public String getText1() {
 		return text1.getText();
 	}

@@ -12,15 +12,48 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
+import eu.ascetic.saas.applicationpackager.ovf.OVFUtils;
 import eu.ascetic.saas.applicationpackager.utils.Xml2OvfTranslator;
 import eu.ascetic.saas.applicationpackager.vmic.VmicClient;
 
+// TODO: Auto-generated Javadoc
+/**
+ * 
+ * Copyright 2015 ATOS SPAIN S.A. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the License);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * @author David Rojo Antona. Atos Research and Innovation, Atos SPAIN SA
+ * e-mail david.rojoa@atos.net 
+ * 
+ * This class shows the OVF code generated viewer page
+ *
+ */
+
 public class OvfCodeGeneratedViewerWizardPage extends WizardPage {
 
+	/** The container. */
 	private Composite container;
+	
+	/** The styled text. */
 	private StyledText styledText;
+	
+	/** The called from checkbox. */
 	private boolean calledFromCheckbox;
 	
+	/**
+	 * Instantiates a new ovf code generated viewer wizard page.
+	 */
 	protected OvfCodeGeneratedViewerWizardPage() {
 		super("OVF generated from XML file provided");
 		setTitle("OVF generated from XML file provided");
@@ -28,6 +61,9 @@ public class OvfCodeGeneratedViewerWizardPage extends WizardPage {
 		setControl(styledText);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
+	 */
 	@Override
 	public void createControl(Composite parent) {
 		container = new Composite(parent, SWT.NONE);
@@ -88,6 +124,11 @@ public class OvfCodeGeneratedViewerWizardPage extends WizardPage {
 		
 	}
 
+	/**
+	 * Sets the content.
+	 *
+	 * @param xmlPath the new content
+	 */
 	public void setContent(String xmlPath) {
 		// TODO Auto-generated method stub
 		Xml2OvfTranslator xml2ovf = new Xml2OvfTranslator(xmlPath);
@@ -95,13 +136,25 @@ public class OvfCodeGeneratedViewerWizardPage extends WizardPage {
 		styledText.setText(ovfCode);		
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.wizard.WizardPage#getNextPage()
+	 */
 	@Override
 	public IWizardPage getNextPage() {			
 		IWizardPage nextPage = super.getNextPage();	
 		if (calledFromCheckbox){	
 			VmicClient vmicClient = new VmicClient();
 			String ovfVmicResponse = vmicClient.testGenerateImageWorkflow(styledText.getText());
-			((OvfResponseVmicViewerWizardPage) nextPage).setContent(ovfVmicResponse);
+//			((OvfResponseVmicViewerWizardPage) nextPage).setContent(ovfVmicResponse);
+			System.out.println("VMIC response: ");
+			System.out.println(ovfVmicResponse);
+			String msg = OVFUtils.removeSoftwareDependencyElements(ovfVmicResponse);
+			System.out.println("Post remove software dependencies: ");
+			System.out.println(msg);
+			if (msg == null){
+				msg = "";
+			}
+			((OvfResponseVmicViewerWizardPage) nextPage).setContent(msg);
 			calledFromCheckbox = false;
 		}
 		return nextPage;

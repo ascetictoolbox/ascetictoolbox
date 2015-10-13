@@ -5,6 +5,29 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
+ * 
+ * Copyright 2015 ATOS SPAIN S.A. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the License);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * @author David Rojo Antona. Atos Research and Innovation, Atos SPAIN SA
+ * e-mail david.rojoa@atos.net 
+ * 
+ * The activator class controls the plugin life ciycle
+ *
+ */
+
+/**
  * The activator class controls the plug-in life cycle
  */
 public class Activator extends AbstractUIPlugin {

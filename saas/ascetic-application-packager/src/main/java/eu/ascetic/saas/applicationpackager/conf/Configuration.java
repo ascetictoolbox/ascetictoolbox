@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 
 /**
  * 
- * Copyright 2014 ATOS SPAIN S.A. 
+ * Copyright 2015 ATOS SPAIN S.A. 
  * 
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@ import org.apache.log4j.Logger;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * 
- * @author David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
- * e-mail david.garciaperez@atos.net 
+ * @author David Rojo Antona. Atos Research and Innovation, Atos SPAIN SA
+ * e-mail david.rojoa@atos.net 
  */
 public class Configuration {
 	private static Logger logger = Logger.getLogger(Configuration.class);

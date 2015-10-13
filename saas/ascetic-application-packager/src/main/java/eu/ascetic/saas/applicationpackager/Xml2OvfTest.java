@@ -15,6 +15,7 @@ import eu.ascetic.saas.applicationpackager.utils.Utils;
 import eu.ascetic.saas.applicationpackager.xml.model.ApplicationConfig;
 import eu.ascetic.saas.applicationpackager.xml.model.CpuSpeed;
 import eu.ascetic.saas.applicationpackager.xml.model.Node;
+import eu.ascetic.saas.applicationpackager.xml.model.SoftwareInstall;
 import eu.ascetic.saas.applicationpackager.xml.model.StorageResource;
 import eu.ascetic.utils.ovf.api.Disk;
 import eu.ascetic.utils.ovf.api.DiskSection;
@@ -31,6 +32,29 @@ import eu.ascetic.utils.ovf.api.enums.DiskFormatType;
 import eu.ascetic.utils.ovf.api.enums.OperatingSystemType;
 import eu.ascetic.utils.ovf.api.enums.ProductPropertyType;
 import eu.ascetic.utils.ovf.api.enums.ResourceType;
+
+/**
+ * 
+ * Copyright 2015 ATOS SPAIN S.A. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the License);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * @author David Rojo Antona. Atos Research and Innovation, Atos SPAIN SA
+ * e-mail david.rojoa@atos.net 
+ * 
+ * This class is a test of translation from XML to OVF code
+ *
+ */
 
 public class Xml2OvfTest {
 
@@ -79,9 +103,16 @@ public class Xml2OvfTest {
 		        virtualSystem.setInfo(n.getName() + "Test Virtual System");
 		        OperatingSystem operatingSystem = OperatingSystem.Factory.newInstance();
 		        operatingSystem.setInfo("Description of " + n.getName() + " Operating System.");
-		        operatingSystem
-		                .setId(OperatingSystemType.LINUX);
-		        operatingSystem.setVersion(n.getBaseDependency().getOs());
+		        if (n.getBaseDependency().getOs().equalsIgnoreCase("Linux")){
+			        operatingSystem
+			                .setId(OperatingSystemType.LINUX);
+			        //operatingSystem.setVersion(n.getBaseDependency().getOs());
+		        }
+		        else {
+		        	 operatingSystem
+		                .setId(OperatingSystemType.MICROSOFT_WINDOWS_SERVER_2003);
+//		        	 operatingSystem.setVersion(n.getBaseDependency().getOs());
+		        }
 		        virtualSystem.setOperatingSystem(operatingSystem);
 
 		        // Product Section
@@ -91,6 +122,15 @@ public class Xml2OvfTest {
 		        productSection2.setVersion("2.0");
 		        productSection2.setLowerBound(Integer.parseInt(n.getMinInstance()));
 		        productSection2.setUpperBound(Integer.parseInt(n.getMaxInstance()));
+		        
+		        List<SoftwareInstall> swList = n.getSoftwareInstalls();
+		        if (swList != null){
+		        	for (SoftwareInstall sw : n.getSoftwareInstalls()){
+		        		 productSection2.addSoftwareDependencyProperties(sw.getName(), "chef-cookbok", sw.getChefUri(), "");
+			        }
+			       
+		        }
+		        
 		        Vector<ProductSection> productSections = new Vector<ProductSection>();
 		        productSections.add(productSection2);
 		        virtualSystem.setProductSectionArray(productSections
@@ -115,18 +155,18 @@ public class Xml2OvfTest {
 		        itemCpuNumber.setElementName("virtual CPU");
 		        itemCpuNumber.setInstanceId("1");
 		        itemCpuNumber.setResourceType(ResourceType.PROCESSOR);
-		        itemCpuNumber.setVirtualQuantity(new BigInteger("" + n.getNumCore()));
+		        itemCpuNumber.setVirtualQuantity(new BigInteger("" + n.getPrefNumCore()));
 		        virtualHardwareSection.addItem(itemCpuNumber);
 
 		        // CPU Speed
 		        if (!virtualHardwareSection.setCPUSpeed(2000)) {
 		            Item itemCpuSpeed = Item.Factory.newInstance();
 		            itemCpuSpeed.setDescription("CPU Speed");
-		            itemCpuSpeed.setElementName(n.getCpuFreq() + " CPU speed reservation");
+		            itemCpuSpeed.setElementName(n.getPrefCpuFreq() + " CPU speed reservation");
 		            itemCpuSpeed.setInstanceId("1");
 		            itemCpuSpeed.setResourceType(ResourceType.PROCESSOR);
 		            itemCpuSpeed.setResourceSubType("cpuspeed");
-		            CpuSpeed cpu = OVFUtils.getCpuSpeedFormatted(n.getCpuFreq());
+		            CpuSpeed cpu = OVFUtils.getCpuSpeedFormatted(n.getPrefCpuFreq());
 			        if (cpu != null){
 			        	itemCpuSpeed.setAllocationUnits(cpu.getAllocationUnits());
 			        	itemCpuSpeed.setReservation(new BigInteger("" + cpu.getSpeed()));
@@ -140,10 +180,10 @@ public class Xml2OvfTest {
 		        // Memory
 		        Item itemMemory = Item.Factory.newInstance();
 		        itemMemory.setDescription("Memory Size");
-		        itemMemory.setElementName(n.getMemSize() + " of memory");
+		        itemMemory.setElementName(n.getPrefMemSize() + " of memory");
 		        itemMemory.setInstanceId("2");
 		        itemMemory.setResourceType(ResourceType.MEMORY);
-		        StorageResource m = OVFUtils.getStorageResourceFormatted(n.getMemSize());
+		        StorageResource m = OVFUtils.getStorageResourceFormatted(n.getPrefMemSize());
 		        if (m != null){
 		        	itemMemory.setAllocationUnits(m.getUnits());
 		        	itemMemory.setVirtualQuantity(new BigInteger("" + m.getCapacity()));
@@ -174,7 +214,7 @@ public class Xml2OvfTest {
 		        disk.setDiskId(n.getName() + "-img-disk");
 		        disk.setFileRef(n.getName() + "-img");
 		        disk.setFormat(DiskFormatType.QCOW2);
-		        StorageResource d = OVFUtils.getStorageResourceFormatted(n.getDiskSize());
+		        StorageResource d = OVFUtils.getStorageResourceFormatted(n.getPrefDiskSize());
 		        if (d != null){
 		        	disk.setCapacityAllocationUnits(d.getUnits());
 			        disk.setCapacity("" + d.getCapacity());
@@ -205,7 +245,7 @@ public class Xml2OvfTest {
 	private static ApplicationConfig getXml() {
     	String xmlFileTxt = "";
     	try {
-    		xmlFileTxt = Utils.readFile("C:/tests/app-packager/xmlToTest.txt");
+    		xmlFileTxt = Utils.readFile("C:/tests/app-packager/xmlToTest_sept2015.xml");
     	} catch (IOException e1) {
     		// TODO Auto-generated catch block
     		e1.printStackTrace();
