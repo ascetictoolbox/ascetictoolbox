@@ -24,8 +24,7 @@ curl -k 'https://ascetic-jenkins.cit.tu-berlin.de/job/ASCETiC%20Reference%20Arch
 cat > start.sh << EOF
 #! /bin/sh
 cd $home/vmmanager
-export config=/home/ubuntu/vmmanager/vmmconfig.properties
-exec java -cp uber-vmmanagercore-0.0.1-SNAPSHOT.jar es.bsc.vmmanagercore.rest.Main -Dconfig.file=/home/ubuntu/vmmanager/vmmconfig.properties
+exec java -cp uber-vmmanagercore-0.0.1-SNAPSHOT.jar es.bsc.vmmanagercore.rest.Main
 EOF
 chmod 755 start.sh
 
