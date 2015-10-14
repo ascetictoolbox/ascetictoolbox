@@ -15,7 +15,6 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore;
 
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.DefaultEnergyShareRule;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.EnergyDivision;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.EnergyShareRule;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.vmenergyshare.LoadFractionShareRule;
@@ -37,7 +36,7 @@ import java.util.ArrayList;
  */
 public class VmEnergyUsageLogger extends GenericLogger<VmEnergyUsageLogger.Pair> {
 
-    private EnergyShareRule rule = new DefaultEnergyShareRule();
+    private EnergyShareRule rule = new LoadFractionShareRule();
     private boolean considerIdleEnergy = true;
 
     /**
