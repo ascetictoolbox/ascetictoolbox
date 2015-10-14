@@ -67,6 +67,11 @@ public class VM {
         for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
             price[coreId] = new double[implCount[coreId]];
         }
+        energy = new double[CoreManager.getCoreCount()][];
+        for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
+            energy[coreId] = new double[implCount[coreId]];
+        }
+        
         System.out.println("Updating consumptions");
         updateConsumptions();
     }
