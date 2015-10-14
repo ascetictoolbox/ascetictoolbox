@@ -752,6 +752,7 @@ paas/application-manager-portal/js/app.js -text
 paas/application-manager-portal/js/controllers.js -text
 paas/application-manager-portal/js/services.js -text
 paas/application-manager-portal/partials/applications_list.html -text
+paas/application-manager-portal/partials/deployments_list.html -text
 paas/application-manager-portal/test-server.py -text
 paas/application-manager/LICENSE.TXT -text
 paas/application-manager/doc/Makefile -text

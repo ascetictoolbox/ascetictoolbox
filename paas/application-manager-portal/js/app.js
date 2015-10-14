@@ -26,6 +26,10 @@ angular.module('asceticApplicationManagerPortalApp', ['ngRoute', 'ngResource', '
       templateUrl: 'partials/applications_list.html'//,
       //controller: 'MainCtrl as ctrl'
     })
+    .when('/applications/:applicationName/deployments', {
+      templateUrl: 'partials/deployments_list.html',
+      controller: 'DeploymentsController as deploymentsCtrl'
+    })
    .otherwise({redirectTo: '/'});
   }]);
   

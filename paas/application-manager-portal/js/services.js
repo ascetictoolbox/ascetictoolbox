@@ -23,7 +23,20 @@ angular.module('asceticApplicationManagerPortalApp.services', [])
   
   .factory('ApplicationService', ['$resource', function($resource) {
 
-    var service = $resource('http://localhost:8080/application-manager/applications/:application',{application: "@name"},  {
+    var service = $resource('http://localhost:8080/application-manager/applications/:name',{name: "@name"},  {
+      query: {
+        isArray: false,
+        method: 'GET',
+        headers: {'Accept': 'application/json'}
+      }
+    });
+
+    return service;
+  }])
+
+  .factory('DeploymentService', ['$resource', function($resource) {
+
+    var service = $resource('http://localhost:8080/application-manager/applications/:name/deployments/:id',{name: "@name", id: "@id"},  {
       query: {
         isArray: false,
         method: 'GET',

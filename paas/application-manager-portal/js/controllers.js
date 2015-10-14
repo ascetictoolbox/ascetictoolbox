@@ -30,6 +30,18 @@ angular.module('asceticApplicationManagerPortalApp.controllers', [])
       $scope.applications = data.items.application; //Changed data.data.topics to data.topics
     });
 
-    console.log(response);
-  
-  }]);
+    //console.log(response);
+  }])
+
+  .controller('DeploymentsController', [ '$scope', '$routeParams', 'DeploymentService', function($scope, $routeParams, DeploymentService) {
+      var self = this;
+      self.applicationName = $routeParams.applicationName; 
+
+      var response = DeploymentService.query({name: self.applicationName, status: 'DEPLOYED'});
+
+      response.$promise.then(function(data) {
+        $scope.deployments = data.items.deployment; //Changed data.data.topics to data.topics
+      });
+
+      //console.log(response);
+    }]);
