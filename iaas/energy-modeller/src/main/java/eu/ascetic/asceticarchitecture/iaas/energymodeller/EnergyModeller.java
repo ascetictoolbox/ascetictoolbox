@@ -85,7 +85,7 @@ public class EnergyModeller {
     private DataGatherer dataGatherer;
     private Thread dataGatherThread;
     private Class<?> historicEnergyDivisionMethod = LoadBasedDivision.class;
-    private Class<?> currentEnergyDivisionMethod = DefaultEnergyShareRule.class;
+    private Class<?> currentEnergyDivisionMethod = LoadFractionShareRule.class;
     private boolean considerIdleEnergyCurrentVm = true;
 
     /**
