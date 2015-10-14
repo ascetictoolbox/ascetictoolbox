@@ -1,0 +1,7 @@
+<h1>List of applications:</h1>
+
+<ul ng-controller="AppsCtrl as ctrl">
+  <li ng-repeat="application in applications">
+      <span ng-bind="application.name"></span>, (deployments)
+  </li>
+</ul>

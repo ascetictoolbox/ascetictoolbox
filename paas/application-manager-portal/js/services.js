@@ -17,17 +17,19 @@
 // @author David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
 // e-mail david.garciaperez@atos.net 
 // 
-//  Configuration of the Portal that defines the workflow and layout
+//  Services to communicate with the Application Manager
 
-angular.module('asceticApplicationManagerPortalApp', ['ngRoute', 'ngResource', 'asceticApplicationManagerPortalApp.services', 'asceticApplicationManagerPortalApp.controllers'])
-
-  .config(['$routeProvider', function($routeProvider) {
-    $routeProvider.when('/', {
-      templateUrl: 'partials/applications_list.html'//,
-      //controller: 'MainCtrl as ctrl'
-    })
-   .otherwise({redirectTo: '/'});
-  }]);
+angular.module('asceticApplicationManagerPortalApp.services', [])
   
+  .factory('ApplicationService', ['$resource', function($resource) {
 
+    var service = $resource('http://localhost:8080/application-manager/applications/:application',{application: "@name"},  {
+      query: {
+        isArray: false,
+        method: 'GET',
+        headers: {'Accept': 'application/json'}
+      }
+    });
 
+    return service;
+  }]);
