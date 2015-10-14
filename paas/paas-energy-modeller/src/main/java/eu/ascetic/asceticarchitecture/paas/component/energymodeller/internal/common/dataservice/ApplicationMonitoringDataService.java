@@ -108,9 +108,9 @@ public class ApplicationMonitoringDataService  {
 			    List<DataEvent> resultSet = new Vector<DataEvent>();
 			    for (JsonElement el : entries){
 			    	JsonObject jo = (JsonObject) el;
-			    	logger.info("id" + jo.getAsJsonObject("_id"));
+			    	logger.debug("id" + jo.getAsJsonObject("_id"));
 			    	logger.debug("appId" + jo.getAsJsonPrimitive("appId"));
-			    	logger.info("nodeId" + jo.getAsJsonPrimitive("nodeId"));
+			    	logger.debug("nodeId" + jo.getAsJsonPrimitive("nodeId"));
 			    	logger.debug("data" + jo.getAsJsonObject("data"));
 			    	logger.debug("timestamp" + jo.getAsJsonPrimitive("timestamp"));
 			    	logger.debug("endtime" + jo.getAsJsonPrimitive("endtime"));
@@ -124,15 +124,15 @@ public class ApplicationMonitoringDataService  {
 			    		data.setEventid(jo.getAsJsonPrimitive("eventType").getAsString());
 			    	} else {
 			    		valid_data = false;
-			    		logger.warn("Event id is null looking into non standard location within the data");
+			    		logger.debug("Event id is null looking into non standard location within the data");
 			    		if (jo.getAsJsonObject("data")!=null){
 			    			if (jo.getAsJsonObject("data").getAsJsonPrimitive("eventType")!=null){
-			    				logger.warn("Document Event id was in legacy location"+jo.getAsJsonObject("_id"));
+			    				logger.debug("Document Event id was in legacy location"+jo.getAsJsonObject("_id"));
 			    				valid_data = true;
 			    				data.setEventid(jo.getAsJsonObject("data").getAsJsonPrimitive("eventType").getAsString());
 			    			}
 			    			if (jo.getAsJsonObject("data").getAsJsonPrimitive("eventtype")!=null){
-			    				logger.warn("Document Event id was in legacy location"+jo.getAsJsonObject("_id"));
+			    				logger.debug("Document Event id was in legacy location"+jo.getAsJsonObject("_id"));
 			    				data.setEventid(jo.getAsJsonObject("data").getAsJsonPrimitive("eventtype").getAsString());	
 			    				valid_data = true;
 			    			}
@@ -154,16 +154,16 @@ public class ApplicationMonitoringDataService  {
 			    	if (jo.getAsJsonPrimitive("nodeId")==null) 	{
 			    		logger.warn("node id is null"+jo.getAsJsonObject("_id"));
 			    		if (valid_data){
-			    			logger.info("This event has no nodeid, but has correct data, will be calculated for the whole application");
+			    			logger.debug("This event has no nodeid, but has correct data, will be calculated for the whole application");
 			    		}
 			    	} else {
 			    		String eventNodeId = jo.getAsJsonPrimitive("nodeId").getAsString();
-			    		logger.info("This event has a nodeid "+eventNodeId+", checking if it match "+vmid);
+			    		logger.debug("This event has a nodeid "+eventNodeId+", checking if it match "+vmid);
 			    		if (eventNodeId.equals(vmid)){
 			    			logger.info("This event is from this vm");
 			    			
 			    		}else {
-			    			logger.info("This event refers to another vm");
+			    			logger.debug("This event refers to another vm");
 			    			valid_data = false;
 			    		}
 			    	}
@@ -171,7 +171,7 @@ public class ApplicationMonitoringDataService  {
 			    		if (jo.getAsJsonPrimitive("nodeId")!=null){
 			    			data.setVmid(jo.getAsJsonPrimitive("nodeId").getAsString());
 			    		} else {
-			    			logger.info("This eventi is globally assigned also to this vm");
+			    			logger.debug("This event is globally assigned also to this vm");
 			    			data.setData("GLOBAL");
 			    			data.setVmid(vmid);
 			    		}

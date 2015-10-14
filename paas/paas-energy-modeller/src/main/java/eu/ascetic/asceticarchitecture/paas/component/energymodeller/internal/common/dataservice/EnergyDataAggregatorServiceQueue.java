@@ -140,10 +140,7 @@ public class EnergyDataAggregatorServiceQueue {
 			session.close();
 			return integrateSamples(deployment, vmid, start, end);
 		} else {
-			
 			double result = dataConsumptionMapper.getPowerInIntervalForVM(deployment, vmid, start/MILLISEC, end/MILLISEC);
-			
-			
 			logger.info("######### Avg power is "+result);
 			session.close();
 			return result;

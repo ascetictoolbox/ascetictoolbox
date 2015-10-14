@@ -45,6 +45,13 @@ public class EventDataAggregatorService {
 		}
 	}
 	
+	public int getEventsNumber(String app, String vmid, String event, long start,long end) {
+		
+		return eventDataManager.getEventsInTimeFrame(app, vmid, event, start, end);
+		
+		
+	}
+	
 	public void setupApplicationMonitor(String url){
 		// crea
 		logger.info("# initializing the event collector component");

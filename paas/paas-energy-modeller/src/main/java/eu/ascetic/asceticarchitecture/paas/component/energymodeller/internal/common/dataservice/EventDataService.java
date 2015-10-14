@@ -106,6 +106,29 @@ public class EventDataService implements DataeEventDAO {
 		
 		return resultSet;
 	}
+
+	@Override
+	public int getEventsInTimeFrame(String applicationid, String vmid, String eventid, long tstart, long tend) {
+		// TODO Auto-generated method stub
+		int count = 0;
+		
+		
+		
+		for (DataEvent de : eventData){
+			
+			if ( (de.getApplicationid().equals(applicationid))&& (de.getVmid().equals(vmid))&& (de.getEventid().equals(eventid))){
+				// ok events referred to the right app/vm/dep
+				if ((de.getBegintime()<tend)&&(de.getEndtime()>tstart)){
+					count++;
+				}
+				
+			}
+		}
+
+		
+		
+		return count;
+	}
 	
 
 }

@@ -257,6 +257,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 				for (String vm : vmids) {
 					LOGGER.debug("Analyzing events on VM "+vm); 
 					total_energy = total_energy + energyForVM(providerid, applicationid, deploymentid, vm, eventid,start,end);
+					LOGGER.info("energy is "+total_energy); 
 				}
 				LOGGER.info("Event energy Wh " +String.format( "%.2f", total_energy ));
 			}
@@ -384,12 +385,14 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 						LOGGER.warn("Error cannot match this PaaS ID with the IaaS ID not found");
 					} 
 					List<DataEvent> events = eventService.getEvents(applicationid, deploymentid, translated, eventid,null,null);
+					
 					if (translated!=null)LOGGER.info("Got events: "+events.size());
 					double accumulatedpowerpervm = 0;
 					for (DataEvent de: events){
 						
-						LOGGER.info("Event start "+de.getBegintime()+" and terminates  "+ de.getEndtime()); 
-						countEvents++;
+						LOGGER.info("Event start "+de.getBegintime()+" and terminates  "+ de.getEndtime());
+						
+
 						if (de.getData()!=null){
 							LOGGER.info("Event global"+de.getData());
 							isGlobaEvent = true;
@@ -397,9 +400,17 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 							LOGGER.info("Event local");
 							
 						}
+						
 						double power  = energyService.getMeasureInIntervalFromVM(Unit.POWER, applicationid, deploymentid, vm, de.getBegintime(), de.getEndtime());
-						LOGGER.info("##### This event power :  "+power);
+						int count = eventService.getEventsNumber(applicationid, translated, eventid, de.getBegintime(), de.getEndtime());
+						LOGGER.info("it has been executed with other "+count);
+						if (count>0){
+							power = power/count;
+							LOGGER.info(power+"the power has been split between "+count + "events" );
+						}
+						LOGGER.info("##### This event "+countEvents+" power :  "+power);
 						if (power>0)countEvents++;
+						
 						accumulatedpowerpervm = accumulatedpowerpervm + power;
 					}
 	
@@ -408,6 +419,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 					if (accumulatedpowerpervm>0){
 						LOGGER.info("##### This vm has relevant event data and now is:  "+totalPower);
 						LOGGER.info("##### Accumulated power from this iteration:  "+accumulatedpowerpervm);
+						LOGGER.info("##### Accumulated events:  "+countEvents);
 						countVM++;
 					} else {
 						LOGGER.info("##### This vm has no event data or power measurements for this event:  "+accumulatedpowerpervm);
@@ -420,6 +432,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 				
 				if (countEvents<=0) return 0;
 				if (isGlobaEvent) return totalPower;
+				LOGGER.info("##### Accumulated events:  "+countEvents);
 				return totalPower/countEvents;
 			}else{
 				LOGGER.info("Measuring application average instant power (W) in the last 24 hours"); 
@@ -472,10 +485,15 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 					for (DataEvent de: events){
 						
 						double power  = energyService.getMeasureInIntervalFromVM(Unit.POWER, applicationid, deploymentid, vm,  de.getBegintime(), de.getEndtime());
-						if (power > 0){
-							LOGGER.info("This event power :  "+power);
-						}
+
 						if (power>0){
+							LOGGER.info("This event power :  "+power);
+							int count = eventService.getEventsNumber(applicationid, translated, eventid, de.getBegintime(), de.getEndtime());
+							LOGGER.info(power+"it has been executed with other "+count);
+							if (count>0){
+								power = power/count;
+								LOGGER.info("the power has been split between "+count + "events" );
+							}
 							tot_power = tot_power + power;
 							countevents++;
 						}
@@ -513,6 +531,12 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 				LOGGER.info("events "+events.size());
 				for (DataEvent de: events){
 					double energy = energyService.getMeasureInIntervalFromVM(Unit.ENERGY, de.getApplicationid(), de.getDeploymentid(),vmid,de.getBegintime(),de.getEndtime());
+					int count = eventService.getEventsNumber(applicationid, translated, eventid, de.getBegintime(), de.getEndtime());
+					LOGGER.info(energy+"it has been with other "+count);
+					if (count>0){
+						energy = energy/count;
+						LOGGER.info(energy +"the energy has been split between "+count + "events" );
+					}
 					LOGGER.info("This event : "+ de.getBegintime() + " and " +de.getEndtime() + " energy "+energy+de.getVmid());
 					if (energy >0){
 						eventcount++;
@@ -522,7 +546,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 				if (eventcount==0)return 0;
 				LOGGER.info("Wh : "+ energyAverage + " over "+eventcount+" events");
 				
-				return (energyAverage/eventcount );
+				return (energyAverage );
 			}
 		} else {
 			if (eventid!=null){
@@ -533,6 +557,12 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 				for (DataEvent de: events){
 					double energy = energyService.getMeasureInIntervalFromVM(Unit.ENERGY, de.getApplicationid(),de.getVmid() , de.getVmid(),de.getBegintime(),de.getEndtime());
 					if (energy >0){
+						int count = eventService.getEventsNumber(applicationid, translated, eventid, de.getBegintime(), de.getEndtime());
+						LOGGER.info(energy+"it has been with other "+count);
+						if (count>0){
+							energy = energy/count;
+							LOGGER.info("the energy has been split between "+count + "events" );
+						}
 						eventcount++;
 						energyAverage = energyAverage + energy;
 					}
@@ -566,7 +596,17 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 			es = new EventSample();
 			double power  = energyService.getMeasureInIntervalFromVM(Unit.ENERGY,applicationid, deploymentid, vmid, start.getTime(), endtime.getTime());
 			double energy = energyService.getMeasureInIntervalFromVM(Unit.POWER, de.getApplicationid(), de.getDeploymentid(), vmid,de.getBegintime(),de.getEndtime());
+			
+			
 			if (energy > 0){
+				int count = eventService.getEventsNumber(applicationid, translated, eventid, de.getBegintime(), de.getEndtime());
+				LOGGER.info(energy+"it has been with other "+count);
+				if (count>0){
+					energy = energy/count;
+					power=power/count;
+					LOGGER.info("the energy has been split between "+count + "events" );
+					LOGGER.info("the power has been split between "+count + "events" );
+				}
 				LOGGER.info("This event :  "+energy);
 				es.setTimestampBeging(de.getBegintime());
 				es.setTimestampEnd(de.getEndtime());
