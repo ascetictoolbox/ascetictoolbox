@@ -321,6 +321,40 @@ public class XMLBuilderTest {
 	}
 	
 	@Test
+	public void getJSONDeploymentTest() throws JAXBException {
+		Deployment deploymentBeforeXML = new Deployment();
+		deploymentBeforeXML.setId(1);
+		deploymentBeforeXML.setStatus("RUNNIG");
+		deploymentBeforeXML.setPrice("expensive");
+		
+		String json = XMLBuilder.getDeploymentJSON(deploymentBeforeXML, "22");
+		
+		Deployment deployment = ModelConverter.jsonDeploymentToObject(json);
+		
+		assertEquals(1, deployment.getId());
+		assertEquals("/applications/22/deployments/1", deployment.getHref());
+		assertEquals(6, deployment.getLinks().size());
+		assertEquals("/applications/22/deployments", deployment.getLinks().get(0).getHref());
+		assertEquals("parent", deployment.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment.getLinks().get(0).getType());
+		assertEquals("/applications/22/deployments/1", deployment.getLinks().get(1).getHref());
+		assertEquals("self",deployment.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment.getLinks().get(1).getType());
+		assertEquals("/applications/22/deployments/1/ovf", deployment.getLinks().get(2).getHref());
+		assertEquals("ovf",deployment.getLinks().get(2).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment.getLinks().get(2).getType());
+		assertEquals("/applications/22/deployments/1/vms", deployment.getLinks().get(3).getHref());
+		assertEquals("vms",deployment.getLinks().get(3).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment.getLinks().get(3).getType());
+		assertEquals("/applications/22/deployments/1/energy-consumption", deployment.getLinks().get(4).getHref());
+		assertEquals("energy-consumption",deployment.getLinks().get(4).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment.getLinks().get(4).getType());
+		assertEquals("/applications/22/deployments/1/agreements", deployment.getLinks().get(5).getHref());
+		assertEquals("agreements",deployment.getLinks().get(5).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment.getLinks().get(5).getType());
+	}
+	
+	@Test
 	public void addVMXMLInfoTest() {
 		VM vm = new VM();
 		vm.setId(44);
@@ -539,6 +573,78 @@ public class XMLBuilderTest {
 		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 		Collection collection = (Collection) jaxbUnmarshaller.unmarshal(new StringReader(xml));
 		
+		assertEquals("/applications/1/deployments", collection.getHref());
+		assertEquals(0, collection.getItems().getOffset());
+		assertEquals(2, collection.getItems().getTotal());
+		//Links
+		assertEquals(2, collection.getLinks().size());
+		assertEquals("/applications/1", collection.getLinks().get(0).getHref());
+		assertEquals("parent", collection.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, collection.getLinks().get(0).getType());
+		assertEquals("/applications/1/deployments", collection.getLinks().get(1).getHref());
+		assertEquals("self", collection.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, collection.getLinks().get(1).getType());
+		// Deployments
+		assertEquals(2, collection.getItems().getDeployments().size());
+		//     Deployment 1
+		deployment1 = collection.getItems().getDeployments().get(0);
+		assertEquals("/applications/1/deployments/1", deployment1.getLinks().get(1).getHref());
+		assertEquals("self", deployment1.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment1.getLinks().get(1).getType());
+		assertEquals("/applications/1/deployments", deployment1.getLinks().get(0).getHref());
+		assertEquals("parent", deployment1.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment1.getLinks().get(0).getType());
+		assertEquals("/applications/1/deployments/1/ovf", deployment1.getLinks().get(2).getHref());
+		assertEquals("ovf", deployment1.getLinks().get(2).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment1.getLinks().get(2).getType());
+		assertEquals("/applications/1/deployments/1/vms", deployment1.getLinks().get(3).getHref());
+		assertEquals("vms", deployment1.getLinks().get(3).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment1.getLinks().get(3).getType());
+		assertEquals("ovf1", deployment1.getOvf());
+		assertEquals("price1", deployment1.getPrice());
+		assertEquals("Status1", deployment1.getStatus());
+		//      Deployment 2
+		deployment2 = collection.getItems().getDeployments().get(1);
+		assertEquals("/applications/1/deployments/2", deployment2.getLinks().get(1).getHref());
+		assertEquals("self", deployment2.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment1.getLinks().get(1).getType());
+		assertEquals("/applications/1/deployments", deployment2.getLinks().get(0).getHref());
+		assertEquals("parent", deployment1.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment2.getLinks().get(0).getType());
+		assertEquals("/applications/1/deployments/2/ovf", deployment2.getLinks().get(2).getHref());
+		assertEquals("ovf", deployment2.getLinks().get(2).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment2.getLinks().get(2).getType());
+		assertEquals("/applications/1/deployments/2/vms", deployment2.getLinks().get(3).getHref());
+		assertEquals("vms", deployment2.getLinks().get(3).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment1.getLinks().get(3).getType());
+		assertEquals("ovf2", deployment2.getOvf());
+		assertEquals("price2", deployment2.getPrice());
+		assertEquals("Status2", deployment2.getStatus());
+	}
+	
+	@Test
+	public void getCollectionOfDeploymentsJSONTest() throws JAXBException {
+		
+		Deployment deployment1 = new Deployment();
+		deployment1.setId(1);
+		deployment1.setOvf("ovf1");
+		deployment1.setPrice("price1");
+		deployment1.setStatus("Status1");
+		
+		Deployment deployment2 = new Deployment();
+		deployment2.setId(2);
+		deployment2.setOvf("ovf2");
+		deployment2.setPrice("price2");
+		deployment2.setStatus("Status2");
+		
+		List<Deployment> deployments = new ArrayList<Deployment>();
+		deployments.add(deployment1);
+		deployments.add(deployment2);
+		
+		String json = XMLBuilder.getCollectionOfDeploymentsJSON(deployments, "1");
+		
+		Collection collection = ModelConverter.jsonCollectionToObject(json);
+
 		assertEquals("/applications/1/deployments", collection.getHref());
 		assertEquals(0, collection.getItems().getOffset());
 		assertEquals(2, collection.getItems().getTotal());

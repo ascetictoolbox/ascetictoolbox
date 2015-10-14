@@ -175,6 +175,83 @@ public class DeploymentRestTest extends AbstractTest {
 	}
 	
 	@Test
+	public void getDeploymentsJSON() throws Exception {
+		DeploymentRest deploymentRest = new DeploymentRest();
+	
+		Application application = new Application();
+		application.setId(1);
+		application.setName("Application Name");
+		
+		Deployment deployment1 = new Deployment();
+		deployment1.setId(1);
+		deployment1.setOvf("ovf1");
+		deployment1.setPrice("price1");
+		deployment1.setStatus("Status1");
+		
+		Deployment deployment2 = new Deployment();
+		deployment2.setId(2);
+		deployment2.setOvf("ovf2");
+		deployment2.setPrice("price2");
+		deployment2.setStatus("Status2");
+		
+		application.addDeployment(deployment1);
+		application.addDeployment(deployment2);
+		
+		ApplicationDAO applicationDAO = mock(ApplicationDAO.class);
+		deploymentRest.applicationDAO = applicationDAO;
+		
+		when(applicationDAO.getByName("1")).thenReturn(application);
+		
+		Response response = deploymentRest.getDeploymentsJSON("1", "");
+		
+		assertEquals(200, response.getStatus());
+		
+		String json = (String) response.getEntity();
+		
+		Collection collection = ModelConverter.jsonCollectionToObject(json);
+		
+		//Collection
+		assertEquals("/applications/1/deployments", collection.getHref());
+		assertEquals(0, collection.getItems().getOffset());
+		assertEquals(2, collection.getItems().getTotal());
+		assertEquals(2, collection.getItems().getDeployments().size());
+		//     Deployment 1
+		deployment1 = collection.getItems().getDeployments().get(0);
+		assertEquals("/applications/1/deployments/1", deployment1.getLinks().get(1).getHref());
+		assertEquals("self", deployment1.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment1.getLinks().get(1).getType());
+		assertEquals("/applications/1/deployments", deployment1.getLinks().get(0).getHref());
+		assertEquals("parent", deployment1.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment1.getLinks().get(0).getType());
+		assertEquals("/applications/1/deployments/1/ovf", deployment1.getLinks().get(2).getHref());
+		assertEquals("ovf", deployment1.getLinks().get(2).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment1.getLinks().get(2).getType());
+		assertEquals("/applications/1/deployments/1/vms", deployment1.getLinks().get(3).getHref());
+		assertEquals("vms", deployment1.getLinks().get(3).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment1.getLinks().get(3).getType());
+		assertEquals("ovf1", deployment1.getOvf());
+		assertEquals("price1", deployment1.getPrice());
+		assertEquals("Status1", deployment1.getStatus());
+		//      Deployment 2
+		deployment2 = collection.getItems().getDeployments().get(1);
+		assertEquals("/applications/1/deployments/2", deployment2.getLinks().get(1).getHref());
+		assertEquals("self", deployment2.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment1.getLinks().get(1).getType());
+		assertEquals("/applications/1/deployments", deployment2.getLinks().get(0).getHref());
+		assertEquals("parent", deployment1.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment2.getLinks().get(0).getType());
+		assertEquals("/applications/1/deployments/2/ovf", deployment2.getLinks().get(2).getHref());
+		assertEquals("ovf", deployment2.getLinks().get(2).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment2.getLinks().get(2).getType());
+		assertEquals("/applications/1/deployments/2/vms", deployment2.getLinks().get(3).getHref());
+		assertEquals("vms", deployment2.getLinks().get(3).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment1.getLinks().get(3).getType());
+		assertEquals("ovf2", deployment2.getOvf());
+		assertEquals("price2", deployment2.getPrice());
+		assertEquals("Status2", deployment2.getStatus());
+	}
+	
+	@Test
 	public void getDeploymentsWithStatusRunning() throws Exception {
 		DeploymentRest deploymentRest = new DeploymentRest();
 	
@@ -283,6 +360,45 @@ public class DeploymentRestTest extends AbstractTest {
 		JAXBContext jaxbContext = JAXBContext.newInstance(Deployment.class);
 		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 		deployment = (Deployment) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals("/applications/2/deployments/1", deployment.getLinks().get(1).getHref());
+		assertEquals("self", deployment.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment.getLinks().get(1).getType());
+		assertEquals("/applications/2/deployments", deployment.getLinks().get(0).getHref());
+		assertEquals("parent", deployment.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment.getLinks().get(0).getType());
+		assertEquals("/applications/2/deployments/1/ovf", deployment.getLinks().get(2).getHref());
+		assertEquals("ovf", deployment.getLinks().get(2).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment.getLinks().get(2).getType());
+		assertEquals("/applications/2/deployments/1/vms", deployment.getLinks().get(3).getHref());
+		assertEquals("vms", deployment.getLinks().get(3).getRel());
+		assertEquals(MediaType.APPLICATION_XML, deployment.getLinks().get(3).getType());
+		assertEquals("ovf1", deployment.getOvf());
+		assertEquals("price1", deployment.getPrice());
+		assertEquals("Status1", deployment.getStatus());
+	}
+	
+	@Test
+	public void getDeploymentJSONTest() throws Exception {
+		Deployment deployment = new Deployment();
+		deployment.setId(1);
+		deployment.setOvf("ovf1");
+		deployment.setPrice("price1");
+		deployment.setStatus("Status1");
+		
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		when(deploymentDAO.getById(1)).thenReturn(deployment);
+		
+		DeploymentRest deploymentRest = new DeploymentRest();
+		deploymentRest.deploymentDAO = deploymentDAO;
+		
+		Response response = deploymentRest.getDeploymentJSON("2", "1");
+		
+		assertEquals(200, response.getStatus());
+		
+		String json = (String) response.getEntity();
+
+		deployment = ModelConverter.jsonDeploymentToObject(json);
 		
 		assertEquals("/applications/2/deployments/1", deployment.getLinks().get(1).getHref());
 		assertEquals("self", deployment.getLinks().get(1).getRel());

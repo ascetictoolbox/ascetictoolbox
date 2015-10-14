@@ -81,7 +81,17 @@ public class DeploymentRest extends AbstractRest {
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getDeployments(@PathParam("application_name") String applicationName, @DefaultValue("")@QueryParam("status") String status) {
-		logger.info("GET request to paht: /applications/" + applicationName + "/deployments?status=" + status);
+		logger.info("GET request to paht: /applications/" + applicationName + "/deployments?status=" + status + " [XML]");
+		
+		List<Deployment> deployments = getDeploymentsList(applicationName, status);
+		
+		// We create the XMl response
+		String xml = XMLBuilder.getCollectionOfDeploymentsXML(deployments, applicationName);
+		
+		return buildResponse(Status.OK, xml);
+	}
+	
+	private List<Deployment> getDeploymentsList(String applicationName, String status) {
 		List<Deployment> deployments = null;
 		
 		if(status.equals("")) {
@@ -92,10 +102,24 @@ public class DeploymentRest extends AbstractRest {
 			 deployments = deploymentDAO.getDeploymentsForApplicationWithStatus(application, status);
 		}
 		
-		// We create the XMl response
-		String xml = XMLBuilder.getCollectionOfDeploymentsXML(deployments, applicationName);
+		return deployments;
+	}
+	
+	/**
+	 * @param applicationName the name of the application for which we want to know the deployments
+	 * @return a list of deployments for an application stored in the database fitting the respective query params.
+	 */
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getDeploymentsJSON(@PathParam("application_name") String applicationName, @DefaultValue("")@QueryParam("status") String status) {
+		logger.info("GET request to paht: /applications/" + applicationName + "/deployments?status=" + status + " [JSON]");
 		
-		return buildResponse(Status.OK, xml);
+		List<Deployment> deployments = getDeploymentsList(applicationName, status);
+		
+		// We create the JSON response
+		String json = XMLBuilder.getCollectionOfDeploymentsJSON(deployments, applicationName);
+		
+		return buildResponse(Status.OK, json);
 	}
 	
 	/**
@@ -131,13 +155,33 @@ public class DeploymentRest extends AbstractRest {
 	@Path("{deployment_id}")
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getDeployment(@PathParam("application_name") String applicationName, @PathParam("deployment_id") String deploymentId) {
-		logger.info("GET request to path: /applications/" + applicationName + "/deployments/" + deploymentId);
+		logger.info("GET request to path: /applications/" + applicationName + "/deployments/" + deploymentId + " [in XML]");
 		
 		Deployment deployment = deploymentDAO.getById(Integer.parseInt(deploymentId));
 		
 		String xml = XMLBuilder.getDeploymentXML(deployment, applicationName);
 		
 		return buildResponse(Status.OK, xml);
+	}
+	
+	
+	/**
+	 * Returns the information of an specific deployment in JSON format
+	 * @param applicationName of name the application in the database
+	 * @return deploymentId of the Deployment for the previously specify application
+	 * @return the stored deployment information 
+	 */
+	@GET
+	@Path("{deployment_id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getDeploymentJSON(@PathParam("application_name") String applicationName, @PathParam("deployment_id") String deploymentId) {
+		logger.info("GET request to path: /applications/" + applicationName + "/deployments/" + deploymentId + " [in JSON]");
+		
+		Deployment deployment = deploymentDAO.getById(Integer.parseInt(deploymentId));
+		
+		String json = XMLBuilder.getDeploymentJSON(deployment, applicationName);
+		
+		return buildResponse(Status.OK, json);
 	}
 	
 	/**

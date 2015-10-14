@@ -172,6 +172,18 @@ public class XMLBuilder {
 		deployment = addDeploymentXMLInfo(deployment, applicationId);
 		return ModelConverter.objectDeploymentToXML(deployment);
 	}
+	
+	
+	/**
+	 * Adds the necessary fields to a Deployment object to get a fully JSON object...
+	 * @param deployment object to be converted to JSON
+	 * @param applicationId Application ID of the associated Deployment Object
+	 * @return the deployment XML representation
+	 */
+	public static String getDeploymentJSON(Deployment deployment, String applicationName) {
+		deployment = addDeploymentXMLInfo(deployment, applicationName);
+		return ModelConverter.objectDeploymentToJSON(deployment);
+	}
 
 	/**
 	 * Adds the necessary fields to a VM object to get a fully XML object representation
@@ -311,6 +323,24 @@ public class XMLBuilder {
 	 * @return the XML representation of tha list of deployments
 	 */
 	public static String getCollectionOfDeploymentsXML(List<Deployment> deployments, String applicationId) {
+		Collection collection = addCollectionOfDeploymentsInfo(deployments, applicationId);
+		
+		return ModelConverter.objectCollectionToXML(collection);
+	}
+	
+	/**
+	 * Adds all the JSON information for creating a collection of Deployments
+	 * @param deployments List containing all the deployments for an application
+	 * @param applicationId from which the deployments belong
+	 * @return the XML representation of tha list of deployments
+	 */
+	public static String getCollectionOfDeploymentsJSON(List<Deployment> deployments, String applicationId) {
+		Collection collection = addCollectionOfDeploymentsInfo(deployments, applicationId);
+		
+		return ModelConverter.objectCollectionToJSON(collection);
+	}
+	
+	private static Collection addCollectionOfDeploymentsInfo(List<Deployment> deployments, String applicationId) {
 		Collection collection = new Collection();
 		collection.setHref("/applications/" + applicationId + "/deployments");
 		
@@ -339,7 +369,7 @@ public class XMLBuilder {
 			}
 		}
 		
-		return ModelConverter.objectCollectionToXML(collection);
+		return collection;
 	}
 
 	/**
@@ -821,4 +851,6 @@ public class XMLBuilder {
 		energyMeasurement = XMLBuilder.addEnergyConsumptionForDeploymentXMLInfo(energyMeasurement, applicationName, deploymentId, eventId);
 		return ModelConverter.objectEnergyMeasurementToXML(energyMeasurement);
 	}
+
+
 }
