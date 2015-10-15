@@ -50,4 +50,6 @@ public interface VmManager {
 
     List<VmEstimate> getEstimates(List<VmToBeEstimated> vms);
 
+	List<VmCost> getCosts(List<String> vmIds);
+
 }

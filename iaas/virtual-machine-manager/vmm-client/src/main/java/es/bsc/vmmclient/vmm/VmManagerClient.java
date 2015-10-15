@@ -85,4 +85,8 @@ public class VmManagerClient implements VmManager {
         return vmmRestClient.getVmmService().getEstimates(new VmsToBeEstimatedList(vms)).getEstimates();
     }
 
+	@Override
+	public List<VmCost> getCosts(List<String> vmIds) {
+		return vmmRestClient.getVmmService().getCosts(vmIds);
+	}
 }

@@ -27,8 +27,11 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import es.bsc.vmmanagercore.rest.error.ErrorHandler;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+
+import java.util.List;
 
 /**
  * REST interface for the VM Manager.
@@ -279,25 +282,16 @@ public class VmManagerRest {
         return estimatesCallsManager.getEstimates(vms);
     }
 
-
-
-    private class ErrorHandler extends WebApplicationException {
-        private Response.Status status;
-        public ErrorHandler(Throwable cause, Response.Status status) {
-            super(cause, status);
-            this.status = status;
-        }
-
-        @Override
-        public Response getResponse() {
-            StringBuilder sb = new StringBuilder("Error deploying VMs: ");
-            Throwable th = getCause();
-            while(th != null) {
-                sb.append("\n\tCaused by ").append(th.getClass().getName()).append(": ").append(th.getMessage());
-                th = th.getCause();
-            }
-            return Response.status(status)
-                    .entity(sb.toString()).type(MediaType.TEXT_PLAIN_TYPE).build();
-        }
-    };
+	@POST
+	@Path("/cost")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String getVmCost(List<String> vmIds) {
+		try {
+			return vmManager.getVmsCost(vmIds);
+		} catch(Exception e) {
+			log.warn("Error getting vms cost: " + e.getMessage());
+			throw new ErrorHandler(e, Response.Status.NOT_FOUND);
+		}
+	}
 }

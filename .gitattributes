@@ -481,6 +481,7 @@ iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/Up
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/Vm.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/VmAction.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/VmActionQuery.java -text
+iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/VmCost.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/VmDeployed.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/VmEstimate.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/models/VmToBeEstimated.java -text
@@ -635,6 +636,7 @@ iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/re
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/rest/VmManagerRest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/rest/VmPlacementCallsManager.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/rest/VmmRestInputValidator.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/rest/error/ErrorHandler.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/scheduler/DeploymentPlanFilterer.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/scheduler/DeploymentPlanGenerator.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/java/es/bsc/vmmanagercore/scheduler/EstimatesGenerator.java -text

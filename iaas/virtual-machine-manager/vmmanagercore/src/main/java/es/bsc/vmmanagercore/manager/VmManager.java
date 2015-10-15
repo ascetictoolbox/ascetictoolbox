@@ -256,4 +256,11 @@ public interface VmManager {
      */
     ListVmEstimates getVmEstimates(List<VmToBeEstimated> vmsToBeEstimated);
 
+	/**
+	 * Returns cost for a given vm
+	 * @param vmIds
+	 * @return a JSON with the next fields: 'vmId' as the id of the requested machine. 'cost' as the cost for the vm
+	 */
+	String getVmsCost(List<String> vmIds) throws Exception;
+
 }

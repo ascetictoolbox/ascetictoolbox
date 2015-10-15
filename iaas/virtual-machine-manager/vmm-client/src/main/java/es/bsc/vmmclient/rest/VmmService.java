@@ -22,6 +22,8 @@ import es.bsc.vmmclient.models.*;
 import retrofit.client.Response;
 import retrofit.http.*;
 
+import java.util.List;
+
 public interface VmmService {
 
     /*
@@ -70,5 +72,9 @@ public interface VmmService {
 
     @POST("/estimates")
     EstimatesResponse getEstimates(@Body VmsToBeEstimatedList vms);
+
+	@POST("/cost")
+	List<VmCost> getCosts(@Body List<String> vmIds);
+
 
 }

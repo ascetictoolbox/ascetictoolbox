@@ -440,6 +440,27 @@ public class GenericVmManager implements VmManager {
         return estimatesManager.getVmEstimates(vmsToBeEstimated);
     }
 
+	@Override
+	public String getVmsCost(List<String> vmIds) throws Exception {
+		StringBuilder sb = new StringBuilder("[");
+		boolean first = true;
+		for(String vmid : vmIds) {
+			VmDeployed vm = vmsManager.getVm(vmid);
+			if(vm == null) {
+				throw new Exception("VM '"+vmid+"' does not exist");
+			}
+			if(first) {
+				first = false;
+			} else {
+				sb.append(',');
+			}
+			sb.append("{\"vmId\":\"").append(vmid)
+					.append("\",\"cost\":")
+					.append(pricingModeller.getVmCost(vm.getCpus(),vm.getRamMb(),vm.getDiskGb(),vm.getHostName()))
+					.append('}');
+		}
+		return sb.append(']').toString();
+	}
 
     //================================================================================
     // Private Methods
@@ -555,5 +576,4 @@ public class GenericVmManager implements VmManager {
                 conf.glancePort,
                 conf.keyStoneTenantId);
     }
-
 }
