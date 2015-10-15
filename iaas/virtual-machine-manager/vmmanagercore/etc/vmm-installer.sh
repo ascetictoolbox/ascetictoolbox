@@ -1,4 +1,9 @@
-#! /bin/sh
+#!/bin/bash
+
+if [ "$1" == "--debug" ]
+then
+	export JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=54321"
+fi
 
 user=$(id -un)
 home=$(getent passwd | grep $user | awk -F: '{print $6}')
