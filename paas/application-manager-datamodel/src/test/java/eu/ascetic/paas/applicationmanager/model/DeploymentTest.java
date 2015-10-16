@@ -54,6 +54,11 @@ public class DeploymentTest {
 		assertEquals(vms, deployment.getVms());
 		assertEquals("aaa", deployment.getStartDate());
 		assertEquals("bbb", deployment.getEndDate());
+		
+		// We test the default value first and then we set it to something different
+		assertEquals(1, deployment.getSchema());
+		deployment.setSchema(3);
+		assertEquals(3, deployment.getSchema());
 	}
 	
 	@Test

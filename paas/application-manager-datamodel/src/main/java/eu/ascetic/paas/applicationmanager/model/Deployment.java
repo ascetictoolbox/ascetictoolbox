@@ -76,6 +76,8 @@ public class Deployment {
 	private String endDate;
 	@XmlElement(name = "ovf", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private String ovf;
+	@XmlElement(name = "schema", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private int schema=1;
 	@XmlElementWrapper(name = "vms", namespace = APPLICATION_MANAGER_NAMESPACE)
 	@XmlElement(name = "vm", namespace = APPLICATION_MANAGER_NAMESPACE )
 	private List<VM> vms;
@@ -118,6 +120,14 @@ public class Deployment {
 	}
 	public void setPrice(String price) {
 		this.price = price;
+	}
+	
+	@Column(name = "price_schema", nullable = true)
+	public int getSchema() {
+		return schema;
+	}
+	public void setSchema(int schema) {
+		this.schema = schema;
 	}
 	
 	@Transient
