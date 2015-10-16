@@ -34,7 +34,7 @@ then
   IP="$(echo $MAC_IP | cut -d ' ' -f2)"
   # Output the new XML here
   truncate -s 0 $IMAGE_PATH.xml
-  cat win-2k3.raw.img.xml | sed -e "s|<name>win-2k3.raw.img</name>|<name>$IP</name>|" | sed -e "s|$INSTALL_DIR/base-images/windows/win-2k3.raw.img|$IMAGE_PATH|" | sed -e "s|02:00:0a:0a:ef:fe|$MAC|" >> $IMAGE_PATH.xml
+  cat win-2k3.raw.img.xml | sed -e "s|port='5910' ||" | sed -e "s|<name>win-2k3.raw.img</name>|<name>$IP</name>|" | sed -e "s|$INSTALL_DIR/base-images/windows/win-2k3.raw.img|$IMAGE_PATH|" | sed -e "s|02:00:0a:0a:ef:fe|$MAC|" >> $IMAGE_PATH.xml
  
   # 3) Create the VM
   virsh create $IMAGE_PATH.xml
@@ -112,7 +112,7 @@ then
   IP="$(echo $MAC_IP | cut -d ' ' -f2)"
   # Output the new XML here
   truncate -s 0 $IMAGE_PATH.xml
-  cat deb-wheezy.raw.img.xml | sed -e "s|<name>deb-wheezy.raw.img</name>|<name>$IP</name>|" | sed -e "s|$INSTALL_DIR/base-images/linux/deb-wheezy.raw.img|$IMAGE_PATH|" | sed -e "s|02:00:0a:0a:ef:fe|$MAC|" >> $IMAGE_PATH.xml
+  cat deb-wheezy.raw.img.xml | sed -e "s|port='5910' ||" | sed -e "s|<name>deb-wheezy.raw.img</name>|<name>$IP</name>|" | sed -e "s|$INSTALL_DIR/base-images/linux/deb-wheezy.raw.img|$IMAGE_PATH|" | sed -e "s|02:00:0a:0a:ef:fe|$MAC|" >> $IMAGE_PATH.xml
 
   # 3) Create the VM
   virsh create $IMAGE_PATH.xml
