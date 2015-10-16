@@ -17,6 +17,7 @@
     </ovf:ProductSection>
     <ovf:VirtualSystem ovf:id="NA-HAProxy">
       <ovf:Info>HAProxyTest Virtual System</ovf:Info>
+      <ovf:Name>NA-HAProxy</ovf:Name>
       <ovf:OperatingSystemSection ovf:id="36" ovf:version="debian-7">
         <ovf:Info>Description of NA-HAProxy Operating System.</ovf:Info>
       </ovf:OperatingSystemSection>
@@ -75,6 +76,7 @@
     </ovf:VirtualSystem>
     <ovf:VirtualSystem ovf:id="NA-Oracle">
       <ovf:Info>NA-Oracle Virtual System</ovf:Info>
+      <ovf:Name>NA-Oracle</ovf:Name>
       <ovf:OperatingSystemSection ovf:id="69" ovf:version="2003">
         <ovf:Info>Description of NA-Oracle Operating System.</ovf:Info>
       </ovf:OperatingSystemSection>
@@ -133,6 +135,7 @@
     </ovf:VirtualSystem>
     <ovf:VirtualSystem ovf:id="NA-Files">
       <ovf:Info>NA-Files Virtual System</ovf:Info>
+      <ovf:Name>NA-Files</ovf:Name>
       <ovf:OperatingSystemSection ovf:id="69" ovf:version="2003">
         <ovf:Info>Description of NA-Files Operating System.</ovf:Info>
       </ovf:OperatingSystemSection>
@@ -191,6 +194,7 @@
     </ovf:VirtualSystem>
     <ovf:VirtualSystem ovf:id="NA-Server">
       <ovf:Info>NA-Server Virtual System</ovf:Info>
+      <ovf:Name>NA-Server</ovf:Name>
       <ovf:OperatingSystemSection ovf:id="69" ovf:version="2003">
         <ovf:Info>Description of NA-Server Operating System.</ovf:Info>
       </ovf:OperatingSystemSection>
