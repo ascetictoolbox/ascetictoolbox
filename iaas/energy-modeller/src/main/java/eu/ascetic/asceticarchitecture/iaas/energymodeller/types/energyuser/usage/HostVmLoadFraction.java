@@ -22,12 +22,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This is a record of what fraction of the load on a host was caused by a given
  * VM.
  *
- * @author Richard
+ * @author Richard Kavanagh
  */
 public class HostVmLoadFraction implements Comparable<HostVmLoadFraction> {
 
@@ -136,8 +138,10 @@ public class HostVmLoadFraction implements Comparable<HostVmLoadFraction> {
         try {
             for (VmMeasurement loadMeasure : load) {
                 totalLoad = totalLoad + loadMeasure.getCpuUtilisation();
+                Logger.getLogger(HostVmLoadFraction.class.getName()).log(Level.FINE, "VM: {0} CPU: {1}", new Object[]{loadMeasure.getVm().getName(), loadMeasure.getCpuUtilisation()});
             }
         } catch (NullPointerException ex) {
+            Logger.getLogger(HostVmLoadFraction.class.getName()).log(Level.WARNING, "Using fallback due to no CPU load information.");
             /**
              * This occurs if Zabbix provides no CPU utilisation information for
              * a VM.
@@ -152,6 +156,7 @@ public class HostVmLoadFraction implements Comparable<HostVmLoadFraction> {
          * was induced whatsoever. Avoids divide by zero errors.
          */
         if (totalLoad == 0) {
+            Logger.getLogger(HostVmLoadFraction.class.getName()).log(Level.WARNING, "Using fallback due to no CPU total load been equal to zero.");
             double count = load.size();
             for (VmMeasurement loadMeasure : load) {
                 answer.put(loadMeasure.getVm(), (1 / count));

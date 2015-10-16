@@ -21,6 +21,7 @@ import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_NICE_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_SOFT_IRQ_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_SPOT_USAGE_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_SPOT_USAGE_KPI_NAME2;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_STEAL_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_SYSTEM_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_USER_KPI_NAME;
@@ -290,6 +291,9 @@ public abstract class Measurement {
         if (metrics.containsKey(CPU_SPOT_USAGE_KPI_NAME)) {
             return this.getMetric(CPU_SPOT_USAGE_KPI_NAME).getValue() / 100;
         }
+        if (metrics.containsKey(CPU_SPOT_USAGE_KPI_NAME2)) {
+            return this.getMetric(CPU_SPOT_USAGE_KPI_NAME2).getValue() / 100;
+        }        
         double interrupt = 0.0;
         double iowait = 0.0;
         double nice = 0.0;

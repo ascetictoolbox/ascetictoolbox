@@ -1,5 +1,5 @@
 /**
- * Copyright 2014 University of Leeds
+ * Copyright 2015 University of Leeds
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -28,6 +28,8 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This provides logging facilities for VM energy usage data.
@@ -75,6 +77,9 @@ public class VmEnergyUsageLogger extends GenericLogger<VmEnergyUsageLogger.Pair>
             ArrayList<HostVmLoadFraction> loadFractionData = new ArrayList<>();
             loadFractionData.add(vmLoadFraction);
             ((LoadFractionShareRule) rule).setFractions(loadFractionData.get(0).getFraction());
+            Logger.getLogger(VmEnergyUsageLogger.class.getName()).log(Level.FINE, "Using Load Fraction Share Rule");
+        } else {
+            Logger.getLogger(VmEnergyUsageLogger.class.getName()).log(Level.FINE, "Using Share Rule Class: {0}", rule.getClass());
         }
         EnergyDivision division = rule.getEnergyUsage(hostMeasurement.getHost(), vmsArr);
         division.setConsiderIdleEnergy(considerIdleEnergy);

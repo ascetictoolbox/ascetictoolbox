@@ -37,6 +37,7 @@ public abstract class KpiList {
     public static final String CPU_SYSTEM_KPI_NAME = "system.cpu.util[,system]";
     public static final String CPU_USER_KPI_NAME = "system.cpu.util[,user]";
     public static final String CPU_SPOT_USAGE_KPI_NAME = "cpu-measured";
+    public static final String CPU_SPOT_USAGE_KPI_NAME2 = "cpu.measured";
     public static final String CPU_LOAD_LAST_1_MIN_KPI_NAME = "system.cpu.load[percpu,avg1]";
     public static final String CPU_LOAD_LAST_5_MIN_KPI_NAME = "system.cpu.load[percpu,avg5]";
     public static final String CPU_LOAD_LAST_15_MIN_KPI_NAME = "system.cpu.load[percpu,avg15]";    

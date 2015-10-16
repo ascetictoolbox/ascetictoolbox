@@ -23,6 +23,8 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This looks at the fraction of load placed on each VM and determines the 
@@ -35,11 +37,14 @@ public class LoadFractionShareRule implements EnergyShareRule {
     
     @Override
     public EnergyDivision getEnergyUsage(Host host, Collection<VM> vms) {
+        Logger.getLogger(LoadFractionShareRule.class.getName()).log(Level.INFO, "Start of Get Energy Usage");
         EnergyDivision answer = new EnergyDivision(host);
         for (VM vm : vms) {
             VmDeployed deployed = (VmDeployed) vm;
             answer.addVmWeight(vm, fractions.get(deployed));
+            Logger.getLogger(LoadFractionShareRule.class.getName()).log(Level.INFO, "VM: {0} Ratio: {1}", new Object[]{deployed.getName(), fractions.get(deployed)});
         }
+        Logger.getLogger(LoadFractionShareRule.class.getName()).log(Level.INFO, "End of Get Energy Usage");
         return answer;
     }
 

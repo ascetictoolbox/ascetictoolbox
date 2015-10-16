@@ -263,7 +263,7 @@ public class DataGatherer implements Runnable {
     private void gatherMeasurements(Host host, HostMeasurement measurement, List<VmDeployed> vmList, VmEnergyUsageLogger vmUsageLogger) {
         if (lastTimeStampSeen.get(host) == null || measurement.getClock() > lastTimeStampSeen.get(host)) {
             lastTimeStampSeen.put(host, measurement.getClock());
-            Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Writing out host information");
+            Logger.getLogger(DataGatherer.class.getName()).log(Level.FINE, "Data gatherer: Writing out host information");
             double power = measurement.getPower(true);
             if (power == -1) {
                     return; //This guards against not having a Watt meter attached.                    
@@ -273,17 +273,17 @@ public class DataGatherer implements Runnable {
                 energy = measurement.getEnergy();
             }
             database.writeHostHistoricData(host, measurement.getClock(), power, energy);
-            Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Obtaining list of vms on host {0}", host.getHostName());
+            Logger.getLogger(DataGatherer.class.getName()).log(Level.FINE, "Data gatherer: Obtaining list of vms on host {0}", host.getHostName());
             ArrayList<VmDeployed> vms = getVMsOnHost(host, vmList);
             if (!vms.isEmpty()) {
                 HostVmLoadFraction fraction = new HostVmLoadFraction(host, measurement.getClock());
-                Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Obtaining specific vm information");
+                Logger.getLogger(DataGatherer.class.getName()).log(Level.FINE, "Data gatherer: Obtaining specific vm information");
                 List<VmMeasurement> vmMeasurements = datasource.getVmData(vms);
                 fraction.setFraction(vmMeasurements);
-                Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Writing out vm information");
+                Logger.getLogger(DataGatherer.class.getName()).log(Level.FINE, "Data gatherer: Writing out vm information");
                 database.writeHostVMHistoricData(host, measurement.getClock(), fraction);
                 if (vmUsageLogger != null) {
-                    Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Data gatherer: Logging out to Zabbix file");
+                    Logger.getLogger(DataGatherer.class.getName()).log(Level.FINE, "Data gatherer: Logging out to Zabbix file");
                     vmUsageLogger.printToFile(vmUsageLogger.new Pair(measurement, fraction));
                 }
             }
