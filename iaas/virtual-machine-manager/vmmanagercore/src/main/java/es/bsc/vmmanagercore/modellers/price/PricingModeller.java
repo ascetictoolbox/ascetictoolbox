@@ -18,12 +18,18 @@
 
 package es.bsc.vmmanagercore.modellers.price;
 
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.IaaSPricingModeller;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.billing.IaaSPricingModellerBilling;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.energyprovider.EnergyProvider;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesrepository.IaaSPricingModellerPricingScheme;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.EnergyPrediction;
+
 /**
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  */
 public interface PricingModeller {
 
-    /**
+    /*
      * Returns the predicted cost on a given host for a given VM size
      *
      * @param cpus the cpus of the VM
@@ -32,6 +38,26 @@ public interface PricingModeller {
      * @param hostname the hostname
      * @return the predicted cost of the VM
      */
-    double getVmCost(int cpus, int ramMb, int diskGb, String hostname);
+//    double getVmCost(int cpus, int ramMb, int diskGb, String hostname);
+
+	double getVMChargesPrediction(int cpus, int ramMb, double diskGb, String hostname);
+
+	IaaSPricingModeller getIaaSprovider(int id);
+
+	EnergyProvider getEnergyProvider();
+
+	IaaSPricingModellerPricingScheme initializeScheme(int schemeId);
+
+	double getVMPricePerHourPrediction(int CPU, int RAM, double storage, int schemeId, long duration, String hostname);
+
+	double getVMFinalCharges(String VMid, boolean deleteVM);
+
+	EnergyPrediction getEnergyPredicted(int CPU, int RAM, double storage, long duration, String hostname);
+
+	EnergyPrediction getEnergyPredicted(int CPU, int RAM, double storage, String hostname);
+
+	void initializeVM(String VMid, int schemeId, String hostname);
+
+	IaaSPricingModellerBilling getBilling();
 
 }

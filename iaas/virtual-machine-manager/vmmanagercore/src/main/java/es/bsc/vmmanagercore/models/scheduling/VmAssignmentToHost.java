@@ -82,7 +82,7 @@ public class VmAssignmentToHost {
      * @return the predicted price
      */
     private double getPriceEstimate(PricingModeller pricingModeller) {
-        return pricingModeller.getVmCost(vm.getCpus(), vm.getRamMb(), vm.getDiskGb(), host.getHostname());
+        return pricingModeller.getVMChargesPrediction(vm.getCpus(), vm.getRamMb(), vm.getDiskGb(), host.getHostname());
     }
 
     @Override

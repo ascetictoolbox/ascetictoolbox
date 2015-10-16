@@ -456,7 +456,7 @@ public class GenericVmManager implements VmManager {
 			}
 			sb.append("{\"vmId\":\"").append(vmid)
 					.append("\",\"cost\":")
-					.append(pricingModeller.getVmCost(vm.getCpus(),vm.getRamMb(),vm.getDiskGb(),vm.getHostName()))
+					.append(pricingModeller.getVMFinalCharges(vmid,false))
 					.append('}');
 		}
 		return sb.append(']').toString();

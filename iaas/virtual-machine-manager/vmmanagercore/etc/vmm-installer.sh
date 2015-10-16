@@ -2,7 +2,7 @@
 
 if [ "$1" == "--debug" ]
 then
-	export JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=54321"
+	export DEBUG="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=54321"
 fi
 
 user=$(id -un)
@@ -29,7 +29,8 @@ curl -k 'https://ascetic-jenkins.cit.tu-berlin.de/job/ASCETiC%20Reference%20Arch
 cat > start.sh << EOF
 #! /bin/sh
 cd $home/vmmanager
-exec java -cp uber-vmmanagercore-0.0.1-SNAPSHOT.jar es.bsc.vmmanagercore.rest.Main
+echo "Running java with debug options: $DEBUG"
+exec java $DEBUG -cp uber-vmmanagercore-0.0.1-SNAPSHOT.jar es.bsc.vmmanagercore.rest.Main
 EOF
 chmod 755 start.sh
 

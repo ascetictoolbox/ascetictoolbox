@@ -21,6 +21,10 @@ package es.bsc.vmmanagercore.modellers.price.ascetic;
 import es.bsc.vmmanagercore.modellers.price.PricingModeller;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.IaaSPricingModeller;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.billing.IaaSPricingModellerBilling;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.energyprovider.EnergyProvider;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesrepository.IaaSPricingModellerPricingScheme;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.EnergyPrediction;
 
 /**
  * Connector for the pricing modeller developed in the Ascetic project by AUEB.
@@ -43,11 +47,10 @@ public class AsceticPricingModellerAdapter implements PricingModeller {
         pricingModeller = new IaaSPricingModeller(energyModeller);
     }
 
-    @Override
+	/*
     public double getVmCost(int cpus, int ramMb, int diskGb, String hostname) {
-        return pricingModeller.getVMChargesPrediction(
-                cpus, ramMb, diskGb, getSchemeIdForVm(), FIXED_DURATION_MIN, hostname);
-    }
+
+    }*/
 
     public void initializeVmBilling(String vmId, String hostname) {
         pricingModeller.initializeVM(vmId, getSchemeIdForVm(), hostname);
@@ -58,4 +61,44 @@ public class AsceticPricingModellerAdapter implements PricingModeller {
         return 1;
     }
 
+	public double getVMChargesPrediction(int cpus, int ramMb, double diskGb, String hostname) {
+		return pricingModeller.getVMChargesPrediction(
+				cpus, ramMb, diskGb, getSchemeIdForVm(), FIXED_DURATION_MIN, hostname);
+	}
+
+	public IaaSPricingModeller getIaaSprovider(int id) {
+		return pricingModeller.getIaaSprovider(id);
+	}
+
+	public EnergyProvider getEnergyProvider() {
+		return pricingModeller.getEnergyProvider();
+	}
+
+	public IaaSPricingModellerPricingScheme initializeScheme(int schemeId) {
+		return pricingModeller.initializeScheme(schemeId);
+	}
+
+	public double getVMPricePerHourPrediction(int CPU, int RAM, double storage, int schemeId, long duration, String hostname) {
+		return pricingModeller.getVMPricePerHourPrediction(CPU, RAM, storage, schemeId, duration, hostname);
+	}
+
+	public double getVMFinalCharges(String VMid, boolean deleteVM) {
+		return pricingModeller.getVMFinalCharges(VMid, deleteVM);
+	}
+
+	public EnergyPrediction getEnergyPredicted(int CPU, int RAM, double storage, long duration, String hostname) {
+		return pricingModeller.getEnergyPredicted(CPU, RAM, storage, duration, hostname);
+	}
+
+	public EnergyPrediction getEnergyPredicted(int CPU, int RAM, double storage, String hostname) {
+		return pricingModeller.getEnergyPredicted(CPU, RAM, storage, hostname);
+	}
+
+	public void initializeVM(String VMid, int schemeId, String hostname) {
+		pricingModeller.initializeVM(VMid, schemeId, hostname);
+	}
+
+	public IaaSPricingModellerBilling getBilling() {
+		return pricingModeller.getBilling();
+	}
 }

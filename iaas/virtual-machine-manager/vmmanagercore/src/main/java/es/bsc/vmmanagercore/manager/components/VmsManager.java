@@ -154,7 +154,7 @@ public class VmsManager {
      *
      * @param vmId the ID of the VM
      */
-    public void deleteVm(String vmId) {
+    public void deleteVm(final String vmId) {
 		long now = System.currentTimeMillis();
 		log.debug("Destroying VM: " + vmId);
         VmDeployed vmToBeDeleted = getVm(vmId);
@@ -169,7 +169,19 @@ public class VmsManager {
 		log.debug(vmId + " destruction took " + (System.currentTimeMillis()/1000.0) + " seconds");
         MessageQueue.publishMessageVmDestroyed(vmToBeDeleted);
         performAfterVmDeleteSelfAdaptation();
-    }
+
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					// indicating vm has been stopped
+					pricingModeller.getVMFinalCharges(vmId,true);
+				} catch (Exception e) {
+					log.warn("Error closing pricing Modeler for VM " + vmId + ": " + e.getMessage());
+				}
+			}
+		}).start();
+	}
 
     /**
      * Deploys a list of VMs and returns its IDs.

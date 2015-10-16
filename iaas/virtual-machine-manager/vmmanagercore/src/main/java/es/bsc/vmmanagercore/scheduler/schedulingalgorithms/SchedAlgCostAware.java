@@ -56,7 +56,7 @@ public class SchedAlgCostAware implements SchedAlgorithm {
         for (VmAssignmentToHost vmAssignmentToHost: deploymentPlan.getVmsAssignationsToHosts()) {
             Vm vm = vmAssignmentToHost.getVm();
             Host host = vmAssignmentToHost.getHost();
-            result += pricingModeller.getVmCost(
+            result += pricingModeller.getVMChargesPrediction(
                     vm.getCpus(), vm.getRamMb(), vm.getDiskGb(),
                     host.getHostname());
         }

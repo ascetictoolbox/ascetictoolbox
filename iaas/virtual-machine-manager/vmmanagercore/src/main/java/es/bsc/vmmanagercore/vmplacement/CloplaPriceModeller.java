@@ -45,7 +45,7 @@ public class CloplaPriceModeller implements PriceModeller {
     public double getCost(Host host, List<Vm> vmsDeployedInHost) {
         double result = 0.0;
         for (Vm vm: vmsDeployedInHost) {
-            result += pricingModeller.getVmCost(vm.getNcpus(), vm.getRamMb(), vm.getDiskGb(), host.getHostname());
+            result += pricingModeller.getVMChargesPrediction(vm.getNcpus(), vm.getRamMb(), vm.getDiskGb(), host.getHostname());
         }
         return result;
     }

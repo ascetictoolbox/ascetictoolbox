@@ -19,6 +19,11 @@
 package es.bsc.vmmanagercore.modellers.price.dummy;
 
 import es.bsc.vmmanagercore.modellers.price.PricingModeller;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.IaaSPricingModeller;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.billing.IaaSPricingModellerBilling;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.energyprovider.EnergyProvider;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesrepository.IaaSPricingModellerPricingScheme;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.EnergyPrediction;
 
 /**
  * This is a dummy Pricing Modeller. It always returns 0, but it can be helpful in cases where there is not any
@@ -29,9 +34,53 @@ import es.bsc.vmmanagercore.modellers.price.PricingModeller;
  */
 public class DummyPricingModeller implements PricingModeller {
 
-    @Override
-    public double getVmCost(int cpus, int ramMb, int diskGb, String hostname) {
-        return 0;
-    }
+	@Override
+	public double getVMChargesPrediction(int cpus, int ramMb, double diskGb, String hostname) {
+		return 0;
+	}
 
+	@Override
+	public IaaSPricingModeller getIaaSprovider(int id) {
+		return null;
+	}
+
+	@Override
+	public EnergyProvider getEnergyProvider() {
+		return null;
+	}
+
+	@Override
+	public IaaSPricingModellerPricingScheme initializeScheme(int schemeId) {
+		return null;
+	}
+
+	@Override
+	public double getVMPricePerHourPrediction(int CPU, int RAM, double storage, int schemeId, long duration, String hostname) {
+		return 0;
+	}
+
+	@Override
+	public double getVMFinalCharges(String VMid, boolean deleteVM) {
+		return 0;
+	}
+
+	@Override
+	public EnergyPrediction getEnergyPredicted(int CPU, int RAM, double storage, long duration, String hostname) {
+		return null;
+	}
+
+	@Override
+	public EnergyPrediction getEnergyPredicted(int CPU, int RAM, double storage, String hostname) {
+		return null;
+	}
+
+	@Override
+	public void initializeVM(String VMid, int schemeId, String hostname) {
+
+	}
+
+	@Override
+	public IaaSPricingModellerBilling getBilling() {
+		return null;
+	}
 }
