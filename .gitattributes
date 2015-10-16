@@ -3322,6 +3322,7 @@ saas/virtual-machine-image-constructor/LICENCE.TXT -text
 saas/virtual-machine-image-constructor/runtime/chef-repo/.chef/admin.pem -text
 saas/virtual-machine-image-constructor/runtime/chef-repo/.chef/chef-validator.pem -text
 saas/virtual-machine-image-constructor/runtime/chef-repo/.chef/knife.rb -text
+saas/virtual-machine-image-constructor/runtime/chef-repo/.chef/trusted_certs/saas-vm-dev.crt -text
 saas/virtual-machine-image-constructor/runtime/chef-repo/.chef/vmic.pem -text
 saas/virtual-machine-image-constructor/runtime/chef-repo/LICENSE -text
 saas/virtual-machine-image-constructor/runtime/chef-repo/README.md -text
