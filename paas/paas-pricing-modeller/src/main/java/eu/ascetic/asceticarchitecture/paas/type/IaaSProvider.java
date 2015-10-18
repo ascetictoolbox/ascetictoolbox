@@ -57,7 +57,7 @@ public class IaaSProvider {
 	
 	
 	
-	public double predictResourcesCharges(VMinfo vm, long duration, double price, int numberOfEvents) {
+	public double predictResourcesCharges(VMinfo vm, long duration, double price) {
 		Charges b = new Charges();
 		b.setCharges((distribution.getDistribution(vm)*price*(Math.ceil(duration/3600))));
 		return b.getChargesOnly();

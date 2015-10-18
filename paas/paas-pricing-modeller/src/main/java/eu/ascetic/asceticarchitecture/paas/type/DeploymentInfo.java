@@ -17,6 +17,7 @@ package eu.ascetic.asceticarchitecture.paas.type;
 
 
 import java.util.LinkedList;
+import java.util.ListIterator;
 
 import eu.ascetic.asceticarchitecture.paas.type.Time;
 
@@ -53,6 +54,8 @@ public class DeploymentInfo {
 	LinkedList<VMinfo> VMs = new LinkedList<VMinfo>();
 	
 	IaaSProvider IaaS;
+	
+	double totalEnergy;//used for events;
 
 	public DeploymentInfo(int deploymentId, int schemeID) {
 		this.deploymentId=deploymentId;
@@ -60,10 +63,24 @@ public class DeploymentInfo {
 
 	}
 
+
+	public void setVMs(LinkedList<VMinfo>VMs){
+		ListIterator<VMinfo> iterator = VMs.listIterator();
+		while (iterator.hasNext()){
+			this.VMs.add(iterator.next());
+		}
+	}
+	
 	public void addVM(VMinfo vm){
-		
 		VMs.add(vm);
-		
+	}
+	
+	public void setEnergy(double energy){
+		this.totalEnergy=energy;
+	}
+	
+	public double getEnergy(){
+		return totalEnergy;
 	}
 	
 	public VMinfo getVM(){

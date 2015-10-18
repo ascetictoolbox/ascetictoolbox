@@ -17,11 +17,15 @@ package eu.ascetic.asceticarchitecture.paas.paaspricingmodeller;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
+
+
 
 
 import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.billing.PaaSPricingModellerBilling;
@@ -146,13 +150,23 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 	public double getEventPredictedCharges(int deplID, int CPU, int RAM, double storage, double energy, int schemeId, long duration, int numberOfevents){
 		DeploymentInfo deployment = new DeploymentInfo(deplID, schemeId);
 		deployment.setIaaSProvider(1); 
-		VMinfo VM = new VMinfo(RAM, CPU, storage);
+		VMinfo VM = new VMinfo(RAM, CPU, storage,duration);
 		VM.setEnergyPredicted(energy);
 		VM.setNumberOfEvents(numberOfevents);
 		deployment.addVM(VM);
 		deployment.getPredictedInformation().setDuration(duration);
 		double charges = billing.predictEventCharges(deployment);
 		logger.info("Event:"+deplID+","+CPU+","+RAM+","+storage+","+energy+","+schemeId+","+duration+","+numberOfevents+","+charges);
+		return charges;
+	}
+	
+	public double getEventPredictedChargesOfApp(int deplID, LinkedList<VMinfo> VMs, double energy,int schemeId){
+		DeploymentInfo deployment = new DeploymentInfo(deplID, schemeId);
+		deployment.setIaaSProvider(1); 
+		deployment.setVMs(VMs);
+		deployment.setEnergy(energy);
+		double charges = billing.predictAppEventCharges(deployment);
+		logger.info("Event:"+deplID+","+energy+","+schemeId+","+charges);
 		return charges;
 		
 	}

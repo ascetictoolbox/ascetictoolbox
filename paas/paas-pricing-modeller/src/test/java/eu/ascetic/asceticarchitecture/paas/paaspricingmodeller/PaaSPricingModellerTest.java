@@ -21,6 +21,10 @@ package eu.ascetic.asceticarchitecture.paas.paaspricingmodeller;
 * @author E. Agiatzidou
 */
 
+import eu.ascetic.asceticarchitecture.paas.type.*;
+
+import java.util.LinkedList;
+
 import org.junit.After;
 import org.junit.AfterClass;
 
@@ -60,8 +64,15 @@ public class PaaSPricingModellerTest
     	System.out.println("test PaaS");
     	PaaSPricingModeller prmodeller = new PaaSPricingModeller();
     	//prmodeller.getAppPredictedCharges(1, 0, 10);
-    	prmodeller.getAppPredictedPrice(1, 0, 10,7200);
-    	prmodeller.initializeApp(1, 0);
-    	prmodeller.getEventPredictedCharges(1, 2, 2048, 40000.0, 51.7, 1, 7200, 2);
-    }
+    	//prmodeller.getAppPredictedPrice(1, 0, 10,7200);
+    	//prmodeller.initializeApp(1, 0);
+    	//prmodeller.getEventPredictedCharges(1, 2, 2048, 40000.0, 51.7, 1, (long)6635.77, 2);
+    	//VMinfo vm1 = new VMinfo(1024, 2, 50000, 3600);
+    	//VMinfo vm2 = new VMinfo(1024, 1, 50000, 3600);
+       // LinkedList<VMinfo> test = new LinkedList<>();
+       // test.add(vm1);
+       // test.add(vm2);
+      //  System.out.println(prmodeller.getEventPredictedChargesOfApp(1, test, 10, 0));
+    
+   }
 }

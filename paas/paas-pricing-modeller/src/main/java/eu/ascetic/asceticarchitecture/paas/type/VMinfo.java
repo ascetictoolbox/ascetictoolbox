@@ -28,10 +28,17 @@ public class VMinfo {
 	
 	int numberOfEvents;
 	
-	public VMinfo (double RAM, double CPU, double storage){
+	int schemeID; //not supported for this year
+	
+	long predictedDuration;
+	
+	long actualDuration;
+	
+	public VMinfo (double RAM, double CPU, double storage, long duration){
 		this.RAM = RAM/1024;
 		this.CPU = CPU;
 		this.storage = storage/1000;
+		this.actualDuration=duration;
 	}
 
 	
@@ -66,5 +73,9 @@ public class VMinfo {
 	public String getVMCharacteristics(){
 		String toPrint = "RAM: " + RAM + "CPU: " + CPU + "Storage: " + storage;
 	    return toPrint;
+	}
+	
+	public long getActualDuration(){
+		return actualDuration;
 	}
 }
