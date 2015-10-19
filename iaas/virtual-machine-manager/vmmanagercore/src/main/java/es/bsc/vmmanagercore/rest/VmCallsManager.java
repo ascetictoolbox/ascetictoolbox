@@ -76,7 +76,7 @@ public class VmCallsManager {
      * @param vmId the ID of the VM
      * @return the JSON document
      */
-    public String getVm(String vmId) {
+    public String getVm(String vmId) throws CloudMiddlewareException {
         inputValidator.checkVmExists(vmManager.existsVm(vmId));
         return gson.toJson(vmManager.getVm(vmId));
     }
@@ -87,7 +87,7 @@ public class VmCallsManager {
      * @param vmId the VM ID
      * @param actionJson the JSON document that contains the action to perform
      */
-    public void changeStateVm(String vmId, String actionJson) {
+    public void changeStateVm(String vmId, String actionJson) throws CloudMiddlewareException {
         inputValidator.checkVmExists(vmManager.existsVm(vmId));
         JsonObject actionJsonObject = gson.fromJson(actionJson, JsonObject.class);
         inputValidator.checkJsonActionFormat(actionJsonObject);
@@ -109,8 +109,7 @@ public class VmCallsManager {
      *
      * @param vmId the VM ID
      */
-    public void destroyVm(String vmId) {
-        inputValidator.checkVmExists(vmManager.existsVm(vmId));
+    public void destroyVm(String vmId) throws CloudMiddlewareException {
         vmManager.deleteVm(vmId);
     }
 

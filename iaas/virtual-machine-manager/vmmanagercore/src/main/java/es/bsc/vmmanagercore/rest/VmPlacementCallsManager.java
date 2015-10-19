@@ -19,6 +19,7 @@
 package es.bsc.vmmanagercore.rest;
 
 import com.google.gson.Gson;
+import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddlewareException;
 import es.bsc.vmmanagercore.manager.VmManager;
 import es.bsc.vmmanagercore.models.scheduling.RecommendedPlanRequest;
 import es.bsc.vmmanagercore.models.scheduling.VmPlacement;
@@ -48,12 +49,12 @@ public class VmPlacementCallsManager {
         return gson.toJson(vmManager.getLocalSearchAlgorithms());
     }
 
-    public String getRecommendedPlan(String recommendedPlanRequest) {
+    public String getRecommendedPlan(String recommendedPlanRequest) throws CloudMiddlewareException {
         return gson.toJson(vmManager.getRecommendedPlan(gson.fromJson(recommendedPlanRequest,
                 RecommendedPlanRequest.class), false, new ArrayList<Vm>()));
     }
 
-    public void executeDeploymentPlan(String deploymentPlan) {
+    public void executeDeploymentPlan(String deploymentPlan) throws CloudMiddlewareException {
         vmManager.executeDeploymentPlan(gson.fromJson(deploymentPlan, VmPlacement[].class));
     }
 

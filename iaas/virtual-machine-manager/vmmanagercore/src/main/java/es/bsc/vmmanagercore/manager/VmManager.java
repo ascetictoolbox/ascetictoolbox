@@ -37,7 +37,7 @@ public interface VmManager {
      * @param vmId the ID of the VM
      * @return the VM
      */
-    VmDeployed getVm(String vmId);
+    VmDeployed getVm(String vmId) throws CloudMiddlewareException;
 
     /**
      * Returns all the VMs deployed that belong to a specific application.
@@ -59,7 +59,7 @@ public interface VmManager {
      *
      * @param vmId the ID of the VM
      */
-    void deleteVm(String vmId);
+    void deleteVm(String vmId) throws CloudMiddlewareException;
 
     /**
      * Deploys a list of VMs and returns its IDs.
@@ -75,7 +75,7 @@ public interface VmManager {
      * @param vmId the Id of the VM
      * @param action the action to perform
      */
-    void performActionOnVm(String vmId, String action);
+    void performActionOnVm(String vmId, String action) throws CloudMiddlewareException;
 
     /**
      * Migrates a VM to a specific host.
@@ -83,7 +83,7 @@ public interface VmManager {
      * @param vmId the ID of the VM
      * @param destinationHostName the host where the VM will be migrated to
      */
-    void migrateVm(String vmId, String destinationHostName);
+    void migrateVm(String vmId, String destinationHostName) throws CloudMiddlewareException;
 
     /**
      * Checks whether a VM exists.
@@ -189,7 +189,7 @@ public interface VmManager {
      */
     RecommendedPlan getRecommendedPlan(RecommendedPlanRequest recommendedPlanRequest,
                                        boolean assignVmsToCurrentHosts,
-                                       List<Vm> vmsToDeploy);
+                                       List<Vm> vmsToDeploy) throws CloudMiddlewareException;
 
     /**
      * This function executes a deployment plan. This means that each of the VMs of the deployment plan are migrated
@@ -197,7 +197,7 @@ public interface VmManager {
      *
      * @param deploymentPlan the deployment plan
      */
-    void executeDeploymentPlan(VmPlacement[] deploymentPlan);
+    void executeDeploymentPlan(VmPlacement[] deploymentPlan) throws CloudMiddlewareException;
 
 
     //================================================================================

@@ -88,21 +88,36 @@ public class VmManagerRest {
     @Path("/vms/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public String getVm(@PathParam("id") String vmId) {
-        return vmCallsManager.getVm(vmId);
-    }
+		try {
+			return vmCallsManager.getVm(vmId);
+		} catch (CloudMiddlewareException e) {
+			log.error("error getting vm info: " + e.getMessage(), e);
+			throw new ErrorHandler(e, Response.Status.NOT_FOUND);
+		}
+	}
 
     @PUT
     @Path("/vms/{id}")
     @Consumes("application/json")
     public void changeStateVm(@PathParam("id") String vmId, String actionJson) {
-        vmCallsManager.changeStateVm(vmId, actionJson);
-    }
+		try {
+			vmCallsManager.changeStateVm(vmId, actionJson);
+		} catch (CloudMiddlewareException e) {
+			log.error("changeStateVm: " + e.getMessage(), e);
+			throw new ErrorHandler(e, Response.Status.NOT_FOUND);
+		}
+	}
 
     @DELETE
     @Path("/vms/{id}")
     public void destroyVm(@PathParam("id") String vmId) {
-        vmCallsManager.destroyVm(vmId);
-    }
+		try {
+			vmCallsManager.destroyVm(vmId);
+		} catch (CloudMiddlewareException e) {
+			log.error("destroyVm: " + e.getMessage(), e);
+			throw new ErrorHandler(e, Response.Status.NOT_FOUND);
+		}
+	}
 
     @GET
     @Path("/vmsapp/{appId}")
@@ -204,15 +219,25 @@ public class VmManagerRest {
     @Consumes("application/json")
     @Produces(MediaType.APPLICATION_JSON)
     public String getRecommendedPlan(String recommendedPlanRequest) {
-        return vmPlacementCallsManager.getRecommendedPlan(recommendedPlanRequest);
-    }
+		try {
+			return vmPlacementCallsManager.getRecommendedPlan(recommendedPlanRequest);
+		} catch (CloudMiddlewareException e) {
+			log.error("Error getting deployment plan cost: " + e.getMessage(), e);
+			throw new ErrorHandler(e, Response.Status.INTERNAL_SERVER_ERROR);
+		}
+	}
 
     @PUT
     @Path("/vm_placement/execute_deployment_plan")
     @Consumes("application/json")
     public void executeDeploymentPlan(String deploymentPlan) {
-        vmPlacementCallsManager.executeDeploymentPlan(deploymentPlan);
-    }
+		try {
+			vmPlacementCallsManager.executeDeploymentPlan(deploymentPlan);
+		} catch (CloudMiddlewareException e) {
+			log.error("Error executing deployment plan: " + e.getMessage(), e);
+			throw new ErrorHandler(e, Response.Status.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 
     //================================================================================

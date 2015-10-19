@@ -82,7 +82,11 @@ public class VmsManager {
     public List<VmDeployed> getAllVms() {
         List<VmDeployed> result = new ArrayList<>();
         for (String vmId: cloudMiddleware.getAllVMsIds()) {
-            result.add(getVm(vmId));
+			try {
+            	result.add(getVm(vmId));
+			} catch(CloudMiddlewareException ex) {
+				log.warn("Ignoring this exception, which should never happen: " + ex.getMessage(), ex);
+			}
         }
         return result;
     }
@@ -92,7 +96,7 @@ public class VmsManager {
      *
      * @return the list of VMs that have been scheduled, but not deployed
      */
-    public List<VmDeployed> getScheduledNonDeployedVms() {
+    public List<VmDeployed> getScheduledNonDeployedVms() throws CloudMiddlewareException {
         // It might seem confusing that this function returns a list of VmDeployed instead of Vm.
         // The reason is that the Vm class does not have a host assigned whereas VmDeployed does.
         // This is a temporary solution. I need to create a new 'ScheduledNonDeployedVm' class separated from
@@ -111,7 +115,7 @@ public class VmsManager {
      * @param vmId the ID of the VM
      * @return the VM
      */
-    public VmDeployed getVm(String vmId) {
+    public VmDeployed getVm(String vmId) throws CloudMiddlewareException {
         // We need to set the state information of the VM that is not managed by the cloud middleware here.
         // Currently, we need to set the Application ID, the OVF ID, and the SLA ID.
         // The OVF and the SLA IDs are specific for Ascetic.
@@ -133,8 +137,12 @@ public class VmsManager {
     public List<VmDeployed> getVmsOfApp(String appId) {
         List<VmDeployed> result = new ArrayList<>();
         for (String vmId: db.getVmsOfApp(appId)) {
-            result.add(getVm(vmId));
-        }
+			try {
+				result.add(getVm(vmId));
+			} catch (CloudMiddlewareException e) {
+				log.error(e.getMessage(),e);
+			}
+		}
         return result;
     }
 
@@ -145,7 +153,12 @@ public class VmsManager {
      */
     public void deleteVmsOfApp(String appId) {
         for (VmDeployed vmDeployed: getVmsOfApp(appId)) {
-            deleteVm(vmDeployed.getId());
+			try {
+            	deleteVm(vmDeployed.getId());
+			} catch(CloudMiddlewareException ex) {
+				log.error(ex.getMessage(), ex);
+
+			}
         }
     }
 
@@ -154,7 +167,7 @@ public class VmsManager {
      *
      * @param vmId the ID of the VM
      */
-    public void deleteVm(final String vmId) {
+    public void deleteVm(final String vmId) throws CloudMiddlewareException {
 		long now = System.currentTimeMillis();
 		log.debug("Destroying VM: " + vmId);
         VmDeployed vmToBeDeleted = getVm(vmId);
@@ -269,7 +282,7 @@ public class VmsManager {
      * @param vmId the Id of the VM
      * @param action the action to perform
      */
-    public void performActionOnVm(String vmId, String action) {
+    public void performActionOnVm(String vmId, String action) throws CloudMiddlewareException {
         switch (action) {
             case "rebootHard":
                 cloudMiddleware.rebootHardVm(vmId);
@@ -301,7 +314,7 @@ public class VmsManager {
      * @param vmId the ID of the VM
      * @param destinationHostName the host where the VM will be migrated to
      */
-    public void migrateVm(String vmId, String destinationHostName) {
+    public void migrateVm(String vmId, String destinationHostName) throws CloudMiddlewareException {
         VMMLogger.logMigration(vmId, destinationHostName);
         cloudMiddleware.migrate(vmId, destinationHostName);
     }
@@ -366,7 +379,7 @@ public class VmsManager {
         thread.start();
     }
 
-    private DeploymentPlan chooseBestDeploymentPlan(List<Vm> vms, String deploymentEngine) {
+    private DeploymentPlan chooseBestDeploymentPlan(List<Vm> vms, String deploymentEngine) throws CloudMiddlewareException {
         switch (deploymentEngine) {
             case "legacy":
                 // The scheduling algorithm could have been changed. Therefore, we need to set it again.
@@ -439,7 +452,7 @@ public class VmsManager {
         return null;
     }
 
-    private void queueDeployedVmsMessages(List<String> deployedVmsIds) {
+    private void queueDeployedVmsMessages(List<String> deployedVmsIds) throws CloudMiddlewareException {
         for (String idDeployedVm: deployedVmsIds) {
             MessageQueue.publishMessageVmDeployed(getVm(idDeployedVm));
         }

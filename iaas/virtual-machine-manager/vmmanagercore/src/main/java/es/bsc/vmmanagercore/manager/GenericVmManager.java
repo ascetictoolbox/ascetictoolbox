@@ -142,7 +142,7 @@ public class GenericVmManager implements VmManager {
      * @return the VM
      */
     @Override
-    public VmDeployed getVm(String vmId) {
+    public VmDeployed getVm(String vmId) throws CloudMiddlewareException {
         return vmsManager.getVm(vmId);
     }
 
@@ -173,7 +173,7 @@ public class GenericVmManager implements VmManager {
      * @param vmId the ID of the VM
      */
     @Override
-    public void deleteVm(String vmId) {
+    public void deleteVm(String vmId) throws CloudMiddlewareException {
         vmsManager.deleteVm(vmId);
     }
 
@@ -195,7 +195,7 @@ public class GenericVmManager implements VmManager {
      * @param action the action to perform
      */
     @Override
-    public void performActionOnVm(String vmId, String action) {
+    public void performActionOnVm(String vmId, String action) throws CloudMiddlewareException {
         vmsManager.performActionOnVm(vmId, action);
     }
 
@@ -206,7 +206,7 @@ public class GenericVmManager implements VmManager {
      * @param destinationHostName the host where the VM will be migrated to
      */
     @Override
-    public void migrateVm(String vmId, String destinationHostName) {
+    public void migrateVm(String vmId, String destinationHostName) throws CloudMiddlewareException {
         vmsManager.migrateVm(vmId, destinationHostName);
     }
 
@@ -349,7 +349,7 @@ public class GenericVmManager implements VmManager {
     @Override
     public RecommendedPlan getRecommendedPlan(RecommendedPlanRequest recommendedPlanRequest,
                                               boolean assignVmsToCurrentHosts,
-                                              List<Vm> vmsToDeploy) {
+                                              List<Vm> vmsToDeploy) throws CloudMiddlewareException {
         return vmPlacementManager.getRecommendedPlan(recommendedPlanRequest, assignVmsToCurrentHosts, vmsToDeploy);
     }
 
@@ -360,7 +360,7 @@ public class GenericVmManager implements VmManager {
      * @param deploymentPlan the deployment plan
      */
     @Override
-    public void executeDeploymentPlan(VmPlacement[] deploymentPlan) {
+    public void executeDeploymentPlan(VmPlacement[] deploymentPlan) throws CloudMiddlewareException {
         vmPlacementManager.executeDeploymentPlan(deploymentPlan);
     }
 
@@ -532,7 +532,7 @@ public class GenericVmManager implements VmManager {
                 if (usingZabbix()) { // I should check whether the VMM is configured for the Ascetic project
                     securityGroups = ASCETIC_DEFAULT_SEC_GROUPS;
                 }
-                cloudMiddleware = new OpenStackJclouds(getOpenStackCredentials(), securityGroups);
+                cloudMiddleware = new OpenStackJclouds(getOpenStackCredentials(), securityGroups, conf.hosts);
                 break;
             case FAKE:
                 cloudMiddleware = new FakeCloudMiddleware(new ArrayList<HostFake>());

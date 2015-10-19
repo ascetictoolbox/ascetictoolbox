@@ -23,6 +23,7 @@ import es.bsc.clopla.domain.LocalSearchHeuristic;
 import es.bsc.clopla.domain.LocalSearchHeuristicOption;
 import es.bsc.clopla.lib.Clopla;
 import es.bsc.clopla.lib.IClopla;
+import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddlewareException;
 import es.bsc.vmmanagercore.modellers.energy.EnergyModeller;
 import es.bsc.vmmanagercore.modellers.price.PricingModeller;
 import es.bsc.vmmanagercore.models.scheduling.*;
@@ -102,7 +103,7 @@ public class VmPlacementManager {
      */
     public RecommendedPlan getRecommendedPlan(RecommendedPlanRequest recommendedPlanRequest,
                                               boolean assignVmsToCurrentHosts,
-                                              List<Vm> vmsToDeploy) {
+                                              List<Vm> vmsToDeploy) throws CloudMiddlewareException {
         List<Host> hosts = hostsManager.getHosts();
         ClusterState clusterStateRecommendedPlan = clopla.getBestSolution(
                 CloplaConversor.getCloplaHosts(hosts),
@@ -125,7 +126,7 @@ public class VmPlacementManager {
      *
      * @param deploymentPlan the deployment plan
      */
-    public void executeDeploymentPlan(VmPlacement[] deploymentPlan) {
+    public void executeDeploymentPlan(VmPlacement[] deploymentPlan) throws CloudMiddlewareException {
         for (VmPlacement vmPlacement: deploymentPlan) {
 
             // We need to check that the VM is still deployed.
@@ -142,7 +143,7 @@ public class VmPlacementManager {
         }
     }
 
-    private List<VmDeployed> getVmsDeployedAndScheduledNonDeployed() {
+    private List<VmDeployed> getVmsDeployedAndScheduledNonDeployed() throws CloudMiddlewareException {
         List<VmDeployed> result = new ArrayList<>();
 
         // I think that the VMs that are scheduled but not deployed should be gotten before the scheduled ones.

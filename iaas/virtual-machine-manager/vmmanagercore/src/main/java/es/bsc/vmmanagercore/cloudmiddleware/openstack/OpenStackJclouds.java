@@ -35,10 +35,7 @@ import org.jclouds.openstack.nova.v2_0.options.CreateServerOptions;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Class that performs requests to OpenStack using the JClouds library.
@@ -68,6 +65,8 @@ public class OpenStackJclouds implements CloudMiddleware {
 
     private final int BLOCKING_TIME_SEC_DEPLOY_AND_DESTROY = 1000;
 
+	private Set<String> hostNames = new TreeSet<>();
+
     /**
      * Class constructor. It performs the connection to the infrastructure and initializes
      * JClouds attributes.
@@ -75,12 +74,28 @@ public class OpenStackJclouds implements CloudMiddleware {
      * @param openStackCredentials OpenStack credentials
      * @param securityGroups the security groups to which the VM will be part of
      */
-    public OpenStackJclouds(OpenStackCredentials openStackCredentials, String[] securityGroups) {
+    public OpenStackJclouds(OpenStackCredentials openStackCredentials, String[] securityGroups, String[] hostNames) {
         openStackJcloudsApis = new OpenStackJcloudsApis(openStackCredentials);
         zone = openStackJcloudsApis.getNovaApi().getConfiguredZones().toArray()[0].toString();
         this.securityGroups = securityGroups;
         glanceConnector = new OpenStackGlance(openStackCredentials);
+		this.hostNames.addAll(Arrays.asList(hostNames));
     }
+
+	private void assertHostName(String hostname) throws CloudMiddlewareException {
+		if(!hostNames.contains(hostname)) throw new CloudMiddlewareException("Host " + hostname + " is not registered in this VMM");
+	}
+	private void assertVmId(String vmId) throws CloudMiddlewareException {
+		Server server = openStackJcloudsApis.getServerApi().get(vmId);
+		if (server == null ) {
+			throw new CloudMiddlewareException("Unexistent VM ID: " + vmId);
+		} else {
+			String vmHost = server.getExtendedAttributes().get().getHostName();
+			if(!hostNames.contains(vmHost)) {
+				throw new CloudMiddlewareException("The VM " + vmId + " exists in the middleware but its node ("+vmHost+") is not registered within this VMM");
+			}
+		}
+	}
 
     @Override
     // This function is blocking. The thread execution blocks until the VM is deployed.
@@ -88,6 +103,7 @@ public class OpenStackJclouds implements CloudMiddleware {
     // I need to return the ID of the deployed VM to the Application Manager.
     public String deploy(Vm vm, String hostname) throws CloudMiddlewareException {
         // Deploy the VM
+		assertHostName(hostname);
         try {
             ServerCreated server = openStackJcloudsApis.getServerApi().create(
                     vm.getName(),
@@ -105,7 +121,8 @@ public class OpenStackJclouds implements CloudMiddleware {
     @Override
     public String deployWithVolume(Vm vm, String hostname, String isoPath)  throws CloudMiddlewareException {
         // Deploy the VM
-        try {
+		assertHostName(hostname);
+		try {
             ServerCreated server = openStackJcloudsApis.getServerApi().create(
                     vm.getName(),
                     getImageIdForDeployment(vm),
@@ -121,7 +138,8 @@ public class OpenStackJclouds implements CloudMiddleware {
 
     @Override
     // This function is also blocking. The reason is the same as in the deploy function.
-    public void destroy(String vmId) {
+    public void destroy(String vmId) throws CloudMiddlewareException {
+		assertVmId(vmId);
         Server server = openStackJcloudsApis.getServerApi().get(vmId);
         if (server != null) { // If the VM is in the zone
             openStackJcloudsApis.getServerApi().delete(vmId);
@@ -130,7 +148,9 @@ public class OpenStackJclouds implements CloudMiddleware {
     }
 
     @Override
-    public void migrate(String vmId, String destinationNodeHostName) {
+    public void migrate(String vmId, String destinationNodeHostName) throws CloudMiddlewareException {
+		assertHostName(destinationNodeHostName);
+		assertVmId(vmId);
         if (openStackJcloudsApis.getServerApi().get(vmId) != null) {
             openStackJcloudsApis.getServerAdminApi().liveMigrate(vmId, destinationNodeHostName, false, false);
         }
@@ -139,13 +159,15 @@ public class OpenStackJclouds implements CloudMiddleware {
     @Override
     public List<String> getAllVMsIds() {
         List<String> vmIds = new ArrayList<>();
+
         for (Server server: openStackJcloudsApis.getServerApi().listInDetail().concat()) {
             ServerExtendedStatus vmStatus = server.getExtendedStatus().get();
+
 
             // Add the VM to the result if it is active and it is not being deleted
             boolean vmIsActive = ACTIVE.equals(vmStatus.getVmState());
             boolean vmIsBeingDeleted = DELETING.equals(vmStatus.getTaskState());
-            if (vmIsActive && !vmIsBeingDeleted) {
+            if (vmIsActive && !vmIsBeingDeleted && hostNames.contains(server.getHostId())) {
                 vmIds.add(server.getId());
             }
         }
@@ -162,7 +184,7 @@ public class OpenStackJclouds implements CloudMiddleware {
             // Explore why and add the appropriate constant.
             boolean vmIsBuilding = vmStatus.getVmState().equals("building");
             boolean vmIsBeingDeleted = DELETING.equals(vmStatus.getTaskState());
-            if (vmIsBuilding && !vmIsBeingDeleted) {
+            if (vmIsBuilding && !vmIsBeingDeleted && hostNames.contains(server.getHostId())) {
                 result.add(server.getId());
             }
         }
@@ -170,10 +192,11 @@ public class OpenStackJclouds implements CloudMiddleware {
     }
 
     @Override
-    public VmDeployed getVM(String vmId) {
+    public VmDeployed getVM(String vmId) throws CloudMiddlewareException {
         VmDeployed vm = null;
-        Server server = openStackJcloudsApis.getServerApi().get(vmId);
+		assertVmId(vmId);
 
+        Server server = openStackJcloudsApis.getServerApi().get(vmId);
         // If the VM is in the zone
         if (server != null ) {
             // Get the information of the VM if it is active and it is not being deleted
@@ -193,42 +216,52 @@ public class OpenStackJclouds implements CloudMiddleware {
                         server.getExtendedAttributes().get().getHostName());
             }
         }
-
         return vm;
     }
 
     @Override
     public boolean existsVm(String vmId) {
-        return openStackJcloudsApis.getServerApi().get(vmId) != null;
+		try {
+			assertVmId(vmId);
+		} catch(CloudMiddlewareException ex) {
+			return false;
+		}
+		return true;
     }
 
     @Override
-    public void rebootHardVm(String vmId) {
+    public void rebootHardVm(String vmId) throws CloudMiddlewareException {
+		assertVmId(vmId);
         openStackJcloudsApis.getServerApi().reboot(vmId, RebootType.HARD);
     }
     
     @Override
-    public void rebootSoftVm(String vmId) {
+    public void rebootSoftVm(String vmId) throws CloudMiddlewareException {
+		assertVmId(vmId);
         openStackJcloudsApis.getServerApi().reboot(vmId, RebootType.SOFT);
     }
     
     @Override
-    public void startVm(String vmId) {
+    public void startVm(String vmId) throws CloudMiddlewareException {
+		assertVmId(vmId);
         openStackJcloudsApis.getServerApi().start(vmId);
     }
 
     @Override
-    public void stopVm(String vmId) {
+    public void stopVm(String vmId) throws CloudMiddlewareException {
+		assertVmId(vmId);
         openStackJcloudsApis.getServerApi().stop(vmId);
     }
 
     @Override
-    public void suspendVm(String vmId) {
+    public void suspendVm(String vmId) throws CloudMiddlewareException {
+		assertVmId(vmId);
         openStackJcloudsApis.getServerAdminApi().suspend(vmId);
     }
 
     @Override
-    public void resumeVm(String vmId) {
+    public void resumeVm(String vmId) throws CloudMiddlewareException {
+		assertVmId(vmId);
         openStackJcloudsApis.getServerAdminApi().resume(vmId);
     }
 
@@ -258,7 +291,8 @@ public class OpenStackJclouds implements CloudMiddleware {
     }
 
     @Override
-    public void assignFloatingIp(String vmId) {
+    public void assignFloatingIp(String vmId) throws CloudMiddlewareException {
+		assertVmId(vmId);
         FloatingIPApi floatingIPApi = openStackJcloudsApis.getFloatingIpApi();
         if (floatingIPApi != null) {
             String unassignedFloatingIp = selectUnassignedFloatingIp();
@@ -337,6 +371,7 @@ public class OpenStackJclouds implements CloudMiddleware {
      */
     private CreateServerOptions getDeploymentOptionsForVm(Vm vm, String hostname, String[] securityGroups,
                                                           boolean useVolume, String isoPath) throws CloudMiddlewareException {
+		assertHostName(hostname);
         CreateServerOptions options = new CreateServerOptions();
         includeDstNodeInDeploymentOption(hostname, options);
         includeInitScriptInDeploymentOptions(vm, options);
@@ -354,7 +389,8 @@ public class OpenStackJclouds implements CloudMiddleware {
      * @param dstNode the node where to deploy the VM
      * @param options VM deployment options
      */
-    private void includeDstNodeInDeploymentOption(String dstNode, CreateServerOptions options) {
+    private void includeDstNodeInDeploymentOption(String dstNode, CreateServerOptions options) throws CloudMiddlewareException {
+		assertHostName(dstNode);
         if (dstNode != null) {
             options.availabilityZone("nova:" + dstNode);
         }
@@ -504,7 +540,8 @@ public class OpenStackJclouds implements CloudMiddleware {
      * @param server the VM
      * @return the IP of the VM
      */
-    private String getVmIp(Server server) {
+    private String getVmIp(Server server) throws CloudMiddlewareException {
+		assertHostName(server.getExtendedAttributes().get().getHostName());
         // IMPORTANT: this returns only 1 IP, but VMs can have more than 1.
         // For now, I return just 1 to avoid breaking VMM clients.
         // Also, when a VM is scheduled but not deployed, it might not have an IP.ç
@@ -517,7 +554,8 @@ public class OpenStackJclouds implements CloudMiddleware {
      *
      * @param vmId the ID of the VM
      */
-    private void blockUntilVmIsDeployed(String vmId) {
+    private void blockUntilVmIsDeployed(String vmId) throws CloudMiddlewareException {
+		assertVmId(vmId);
         while (openStackJcloudsApis.getServerApi().get(vmId).getStatus().toString().equals(BUILD)) {
             try {
                 Thread.sleep(BLOCKING_TIME_SEC_DEPLOY_AND_DESTROY);
@@ -532,7 +570,8 @@ public class OpenStackJclouds implements CloudMiddleware {
      *
      * @param vmId the ID of the VM
      */
-    private void blockUntilVmIsDeleted(String vmId) {
+    private void blockUntilVmIsDeleted(String vmId) throws CloudMiddlewareException {
+		assertVmId(vmId);
         while (openStackJcloudsApis.getServerApi().get(vmId).getStatus().toString().equals(DELETING)) {
             try {
                 Thread.sleep(BLOCKING_TIME_SEC_DEPLOY_AND_DESTROY);

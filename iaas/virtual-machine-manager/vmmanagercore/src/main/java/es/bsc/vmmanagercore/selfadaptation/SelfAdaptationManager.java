@@ -18,6 +18,7 @@
 
 package es.bsc.vmmanagercore.selfadaptation;
 
+import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddlewareException;
 import es.bsc.vmmanagercore.db.VmManagerDb;
 import es.bsc.vmmanagercore.db.VmManagerDbFactory;
 import es.bsc.vmmanagercore.manager.VmManager;
@@ -30,6 +31,8 @@ import es.bsc.vmmanagercore.selfadaptation.options.AfterVmDeleteSelfAdaptationOp
 import es.bsc.vmmanagercore.selfadaptation.options.AfterVmDeploymentSelfAdaptationOps;
 import es.bsc.vmmanagercore.selfadaptation.options.PeriodicSelfAdaptationOps;
 import es.bsc.vmmanagercore.selfadaptation.options.SelfAdaptationOptions;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +46,7 @@ public class SelfAdaptationManager {
 
     private VmManager vmManager;
     private VmManagerDb db;
+	private Logger logger = LogManager.getLogger(SelfAdaptationManager.class);
 
     /**
      * Class constructor.
@@ -83,7 +87,7 @@ public class SelfAdaptationManager {
      *
      * @return the recommended plan
      */
-    public RecommendedPlan getRecommendedPlanForDeployment(List<Vm> vmsToDeploy) {
+    public RecommendedPlan getRecommendedPlanForDeployment(List<Vm> vmsToDeploy) throws CloudMiddlewareException {
         AfterVmDeploymentSelfAdaptationOps options = getSelfAdaptationOptions().getAfterVmDeploymentSelfAdaptationOps();
         String constrHeuristicName = options.getConstructionHeuristic().getName();
 
@@ -115,9 +119,13 @@ public class SelfAdaptationManager {
                 localSearchAlg);
 
         if (localSearchAlg != null) {
-            vmManager.executeDeploymentPlan(
-                    vmManager.getRecommendedPlan(recommendedPlanRequest, true, new ArrayList<Vm>()).getVMPlacements());
-        }
+			try {
+				vmManager.executeDeploymentPlan(
+						vmManager.getRecommendedPlan(recommendedPlanRequest, true, new ArrayList<Vm>()).getVMPlacements());
+			} catch (CloudMiddlewareException e) {
+				logger.error(e.getMessage(),e);
+			}
+		}
     }
 
     /**
@@ -130,26 +138,34 @@ public class SelfAdaptationManager {
             RecommendedPlanRequest recommendedPlanRequest = new RecommendedPlanRequest(
                     options.getMaxExecTimeSeconds(), null, options.getLocalSearchAlgorithm());
 
-            vmManager.executeDeploymentPlan(
-                    vmManager.getRecommendedPlan(recommendedPlanRequest, true, new ArrayList<Vm>()).getVMPlacements());
-        }
+			try {
+				vmManager.executeDeploymentPlan(
+						vmManager.getRecommendedPlan(recommendedPlanRequest, true, new ArrayList<Vm>()).getVMPlacements());
+			} catch (CloudMiddlewareException e) {
+				logger.error(e.getMessage(),e);
+			}
+		}
     }
 
     /**
      * Applies the self-adaptation configured to take place periodically.
      */
     public void applyPeriodicSelfAdaptation() {
-        PeriodicSelfAdaptationOps options = getSelfAdaptationOptions().getPeriodicSelfAdaptationOps();
+		try {
+			PeriodicSelfAdaptationOps options = getSelfAdaptationOptions().getPeriodicSelfAdaptationOps();
 
-        if (options.getLocalSearchAlgorithm() != null && options.getMaxExecTimeSeconds() > 0) {
-            // The construction heuristic is set to first fit, but anyone could be selected because in this case,
-            // all the VMs are already assigned to a host. Therefore, it is not needed to apply a construction heuristic
-            RecommendedPlanRequest recommendedPlanRequest = new RecommendedPlanRequest(
-                    options.getMaxExecTimeSeconds(), null, options.getLocalSearchAlgorithm());
+			if (options.getLocalSearchAlgorithm() != null && options.getMaxExecTimeSeconds() > 0) {
+				// The construction heuristic is set to first fit, but anyone could be selected because in this case,
+				// all the VMs are already assigned to a host. Therefore, it is not needed to apply a construction heuristic
+				RecommendedPlanRequest recommendedPlanRequest = new RecommendedPlanRequest(
+						options.getMaxExecTimeSeconds(), null, options.getLocalSearchAlgorithm());
 
-            vmManager.executeDeploymentPlan(
-                    vmManager.getRecommendedPlan(recommendedPlanRequest, true, new ArrayList<Vm>()).getVMPlacements());
-        }
+				vmManager.executeDeploymentPlan(
+						vmManager.getRecommendedPlan(recommendedPlanRequest, true, new ArrayList<Vm>()).getVMPlacements());
+			}
+		} catch(CloudMiddlewareException ex) {
+
+		}
     }
 
     /**

@@ -58,7 +58,7 @@ public interface CloudMiddleware {
      *
      * @param vmId ID of the VM to be destroyed
      */
-    void destroy(String vmId);
+    void destroy(String vmId) throws CloudMiddlewareException;
     
     /**
      * Migrates a VM from its current node to another.
@@ -66,7 +66,7 @@ public interface CloudMiddleware {
      * @param vmId ID of the VM to be migrated
      * @param destinationNodeHostName hostname of the node where the VM will be migrated
      */
-    void migrate(String vmId, String destinationNodeHostName);
+    void migrate(String vmId, String destinationNodeHostName) throws CloudMiddlewareException;
     
     /**
      * Retrieves the IDs of all the VMs that are running.
@@ -88,7 +88,7 @@ public interface CloudMiddleware {
      * @param vmId the ID of the VM
      * @return The VM or NULL if there is not a VM with the given ID
      */
-    VmDeployed getVM(String vmId);
+    VmDeployed getVM(String vmId) throws CloudMiddlewareException;
 
     /**
      * Checks whether a VM with the given ID exists in the system.
@@ -103,42 +103,42 @@ public interface CloudMiddleware {
      *
      * @param vmId the ID of the VM to be rebooted
      */
-    void rebootHardVm(String vmId);
+    void rebootHardVm(String vmId) throws CloudMiddlewareException;
 
     /**
      * Performs a soft reboot on a VM.
      *
      * @param vmId the ID of the VM to reboot
      */
-    void rebootSoftVm(String vmId);
+    void rebootSoftVm(String vmId) throws CloudMiddlewareException;
 
     /**
      * Starts a VM.
      *
      * @param vmId the ID of the VM to be started
      */
-    void startVm(String vmId);
+    void startVm(String vmId) throws CloudMiddlewareException;
 
     /**
      * Stops a VM.
      *
      * @param vmId the ID of the VM to be stopped
      */
-    void stopVm(String vmId);
+    void stopVm(String vmId) throws CloudMiddlewareException;
 
     /**
      * Suspends a VM.
      *
      * @param vmId the ID of the VM to be suspended
      */
-    void suspendVm(String vmId);
+    void suspendVm(String vmId) throws CloudMiddlewareException;
 
     /**
      * Resumes a VM.
      *
      * @param vmId the ID of the VM to be resumed
      */
-    void resumeVm(String vmId);
+    void resumeVm(String vmId) throws CloudMiddlewareException;
 
     /**
      * Gets the images uploaded to an infrastructure. This images are the ones used to deploy VMs.
@@ -175,6 +175,6 @@ public interface CloudMiddleware {
      *
      * @param vmId the ID of the VM
      */
-    void assignFloatingIp(String vmId);
+    void assignFloatingIp(String vmId) throws CloudMiddlewareException;
 
 }
