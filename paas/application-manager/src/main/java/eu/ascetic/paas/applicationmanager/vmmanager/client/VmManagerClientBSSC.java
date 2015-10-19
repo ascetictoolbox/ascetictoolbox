@@ -5,6 +5,7 @@ import java.util.List;
 import es.bsc.vmmclient.models.ImageToUpload;
 import es.bsc.vmmclient.models.ImageUploaded;
 import es.bsc.vmmclient.models.Vm;
+import es.bsc.vmmclient.models.VmCost;
 import es.bsc.vmmclient.models.VmDeployed;
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
 
@@ -99,5 +100,11 @@ public class VmManagerClientBSSC implements VmManagerClient {
 	public void deleteImage(String id) {
 		es.bsc.vmmclient.vmm.VmManagerClient vmm = new es.bsc.vmmclient.vmm.VmManagerClient(url);
 		vmm.destroyImage(id);
+	}
+
+	@Override
+	public List<VmCost> getVMCosts(List<String> ids) {
+		es.bsc.vmmclient.vmm.VmManagerClient vmm = new es.bsc.vmmclient.vmm.VmManagerClient(url);
+		return vmm.getCosts(ids);
 	}
 }

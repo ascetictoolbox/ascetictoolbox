@@ -258,7 +258,7 @@ public class ApplicationRestTest extends AbstractTest {
 		applicationRest.applicationDAO = applicationDAO;
 		applicationRest.deploymentEventService = deploymentEventService;
 		
-		Response response = applicationRest.postApplication("automatic", threeTierWebAppOvfString);
+		Response response = applicationRest.postApplication("automatic", null, threeTierWebAppOvfString);
 		assertEquals(201, response.getStatus());
 		
 		String xml = (String) response.getEntity();
@@ -273,6 +273,7 @@ public class ApplicationRestTest extends AbstractTest {
 		assertEquals("threeTierWebApp", applicationResponse.getName());
 		assertEquals(1, applicationResponse.getDeployments().size());
 		assertEquals(threeTierWebAppOvfString, applicationResponse.getDeployments().get(0).getOvf());
+		assertEquals(1, applicationResponse.getDeployments().get(0).getSchema());
 		assertEquals(Dictionary.APPLICATION_STATUS_SUBMITTED, applicationResponse.getDeployments().get(0).getStatus());
 		Pattern p = Pattern.compile("\\d\\d/\\d\\d/\\d\\d\\d\\d:\\d\\d:\\d\\d:\\d\\d \\+\\d\\d\\d\\d");
 		Matcher m = p.matcher(applicationResponse.getDeployments().get(0).getStartDate());
@@ -324,7 +325,7 @@ public class ApplicationRestTest extends AbstractTest {
 		applicationRest.applicationDAO = applicationDAO;
 		applicationRest.deploymentEventService = deploymentEventService;
 		
-		Response response = applicationRest.postApplication("manual", threeTierWebAppOvfString);
+		Response response = applicationRest.postApplication("manual", "2", threeTierWebAppOvfString);
 		assertEquals(201, response.getStatus());
 		
 		String xml = (String) response.getEntity();
@@ -339,6 +340,7 @@ public class ApplicationRestTest extends AbstractTest {
 		assertEquals("threeTierWebApp", applicationResponse.getName());
 		assertEquals(1, applicationResponse.getDeployments().size());
 		assertEquals(threeTierWebAppOvfString, applicationResponse.getDeployments().get(0).getOvf());
+		assertEquals(2, applicationResponse.getDeployments().get(0).getSchema());
 		assertEquals(Dictionary.APPLICATION_STATUS_SUBMITTED, applicationResponse.getDeployments().get(0).getStatus());
 		Pattern p = Pattern.compile("\\d\\d/\\d\\d/\\d\\d\\d\\d:\\d\\d:\\d\\d:\\d\\d \\+\\d\\d\\d\\d");
 		Matcher m = p.matcher(applicationResponse.getDeployments().get(0).getStartDate());
@@ -395,7 +397,7 @@ public class ApplicationRestTest extends AbstractTest {
 		applicationRest.applicationDAO = applicationDAO;
 		applicationRest.deploymentEventService = deploymentEventService;
 		
-		Response response = applicationRest.postApplication("automatic", threeTierWebAppOvfString);
+		Response response = applicationRest.postApplication("automatic", null, threeTierWebAppOvfString);
 		assertEquals(201, response.getStatus());
 		
 		String xml = (String) response.getEntity();
@@ -438,11 +440,22 @@ public class ApplicationRestTest extends AbstractTest {
 	public void postInvalidOVFTest() {
 		ApplicationRest applicationRest = new ApplicationRest();
 		
-		Response response = applicationRest.postApplication("automatic", "XXX");
+		Response response = applicationRest.postApplication("automatic", null, "XXX");
 		assertEquals(400, response.getStatus());
 		
 		String message = (String) response.getEntity();
 		assertEquals("Invalid OVF", message);
+	}
+	
+	@Test
+	public void postInvalidPriceSchema() {
+		ApplicationRest applicationRest = new ApplicationRest();
+		
+		Response response = applicationRest.postApplication("automatic", "a", "XXX");
+		assertEquals(400, response.getStatus());
+		
+		String message = (String) response.getEntity();
+		assertEquals("Invalid price schema format: a. Please enter an integer value", message);
 	}
 	
 	@Test

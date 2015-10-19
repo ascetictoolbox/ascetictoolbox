@@ -20,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.ws.rs.core.MediaType;
@@ -34,9 +35,11 @@ import org.mockito.ArgumentCaptor;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 
+import es.bsc.vmmclient.models.VmCost;
 import eu.ascetic.amqp.client.AmqpMessageReceiver;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Unit;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.PaaSEnergyModeller;
+import eu.ascetic.asceticarchitecture.paas.type.VMinfo;
 import eu.ascetic.paas.applicationmanager.amonitor.ApplicationMonitorClient;
 import eu.ascetic.paas.applicationmanager.amonitor.model.EnergyCosumed;
 import eu.ascetic.paas.applicationmanager.amqp.AbstractTest;
@@ -44,10 +47,14 @@ import eu.ascetic.paas.applicationmanager.amqp.AmqpListListener;
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
+import eu.ascetic.paas.applicationmanager.dao.VMDAO;
+import eu.ascetic.paas.applicationmanager.em.amqp.EnergyModellerMessage;
+import eu.ascetic.paas.applicationmanager.em.amqp.EnergyModellerQueueController;
 import eu.ascetic.paas.applicationmanager.event.DeploymentEvent;
 import eu.ascetic.paas.applicationmanager.event.deployment.DeploymentEventService;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Collection;
+import eu.ascetic.paas.applicationmanager.model.Cost;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
@@ -55,6 +62,7 @@ import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.PowerMeasurement;
 import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
+import eu.ascetic.paas.applicationmanager.pm.PriceModellerClient;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
 
 /**
@@ -622,7 +630,7 @@ public class DeploymentRestTest extends AbstractTest {
 		deploymentRest.applicationDAO = applicationDAO;
 		deploymentRest.deploymentEventService = deploymentEventService;
 		
-		Response response = deploymentRest.postDeployment("1", "automatic", threeTierWebAppOvfString);
+		Response response = deploymentRest.postDeployment("1", "automatic", null, threeTierWebAppOvfString);
 		assertEquals(201, response.getStatus());
 		
 		String xml = (String) response.getEntity();
@@ -686,7 +694,7 @@ public class DeploymentRestTest extends AbstractTest {
 		deploymentRest.applicationDAO = applicationDAO;
 		deploymentRest.deploymentEventService = deploymentEventService;
 		
-		Response response = deploymentRest.postDeployment("1", "manual", threeTierWebAppOvfString);
+		Response response = deploymentRest.postDeployment("1", "manual", "3", threeTierWebAppOvfString);
 		assertEquals(201, response.getStatus());
 		
 		String xml = (String) response.getEntity();
@@ -701,6 +709,7 @@ public class DeploymentRestTest extends AbstractTest {
 		assertEquals("threeTierWebApp", applicationResponse.getName());
 		assertEquals(1, applicationResponse.getDeployments().size());
 		assertEquals(threeTierWebAppOvfString, applicationResponse.getDeployments().get(0).getOvf());
+		assertEquals(3, applicationResponse.getDeployments().get(0).getSchema());
 		assertEquals(Dictionary.APPLICATION_STATUS_SUBMITTED, applicationResponse.getDeployments().get(0).getStatus());
 		
 		// We verify the number of calls to the DAO
@@ -1102,7 +1111,30 @@ public class DeploymentRestTest extends AbstractTest {
 	}
 	
 	@Test
-	public void getVmsProviderIdsTest() {
+	public void getVmsIdsTest() {
+		Deployment deployment = new Deployment();
+		
+		VM vm1 = new VM();
+		vm1.setId(1);
+		vm1.setProviderVmId("X1");
+		deployment.addVM(vm1);
+		
+		VM vm2 = new VM();
+		vm2.setId(2);
+		vm2.setProviderVmId("X2");
+		deployment.addVM(vm2);
+		
+		DeploymentRest rest = new DeploymentRest();
+		
+		List<String> ids = rest.getVmsIds(deployment);
+		
+		assertEquals(2, ids.size());
+		assertEquals("1", ids.get(0));
+		assertEquals("2", ids.get(1));
+	}
+	
+	@Test
+	public void getVmProvidersIdsTest() {
 		Deployment deployment = new Deployment();
 		
 		VM vm1 = new VM();
@@ -1120,8 +1152,133 @@ public class DeploymentRestTest extends AbstractTest {
 		List<String> ids = rest.getVmsProviderIds(deployment);
 		
 		assertEquals(2, ids.size());
-		assertEquals("1", ids.get(0));
-		assertEquals("2", ids.get(1));
+		assertEquals("X1", ids.get(0));
+		assertEquals("X2", ids.get(1));
+	}
+	
+	@Test
+	@SuppressWarnings(value = { "static-access", "unchecked" }) 
+	public void getCostTest() throws JAXBException {
+		Deployment deployment = new Deployment();
+		deployment.setId(1);
+		deployment.setSchema(3);
+		
+		VM vm1 = new VM();
+		vm1.setId(1);
+		vm1.setProviderVmId("X1");
+		deployment.addVM(vm1);
+		
+		VM vm2 = new VM();
+		vm2.setId(2);
+		vm2.setProviderVmId("X2");
+		deployment.addVM(vm2);
+		
+		DeploymentRest deploymentRest = new DeploymentRest();
+		
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		deploymentRest.deploymentDAO = deploymentDAO;
+		when(deploymentDAO.getById(1)).thenReturn(deployment);
+		
+		VmManagerClient vmManagerClient = mock(VmManagerClient.class);
+		deploymentRest.vmManagerClient = vmManagerClient;
+		
+		List<String> ids = new ArrayList<String>();
+		ids.add("X1");
+		ids.add("X2");
+		List<VmCost> vmCosts = new ArrayList<VmCost>();
+		vmCosts.add(new VmCost("X1", 2.1));
+		vmCosts.add(new VmCost("X2", 3.2));
+		when(vmManagerClient.getVMCosts(ids)).thenReturn(vmCosts);
+		
+		PriceModellerClient pmClient = mock(PriceModellerClient.class);
+		deploymentRest.priceModellerClient = pmClient;
+		
+		when(pmClient.getAppTotalCharges(1, 3, 5.300000000000001)).thenReturn(6.7);
+		
+		Response response = deploymentRest.getCost("111", "1");
+		
+		String xml = (String) response.getEntity();
+		JAXBContext jaxbContext = JAXBContext.newInstance(Cost.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		Cost cost = (Cost) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals(6.7, cost.getCharges(), 0.0001);
+		assertEquals(-1.0, cost.getPowerValue(), 0.0001);
+		assertEquals(-1.0, cost.getEnergyValue(), 0.0001);
+	}
+	
+	@Test
+	@SuppressWarnings(value = { "static-access" }) 
+	public void testGetCostEstimationForDeploymentAndEvent() throws Exception {
+		DeploymentRest deploymentRest = new DeploymentRest();
+		PaaSEnergyModeller energyModeller = mock(PaaSEnergyModeller.class);
+		deploymentRest.energyModeller = energyModeller;
+		PriceModellerClient priceModellerClient = mock(PriceModellerClient.class);
+		deploymentRest.priceModellerClient = priceModellerClient;
+		EnergyModellerQueueController emController = mock(EnergyModellerQueueController.class);
+		deploymentRest.energyModellerQueueController = emController;
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		deploymentRest.deploymentDAO = deploymentDAO;
+		
+		VM vm = new VM();
+		vm.setId(2);
+		vm.setProviderVmId("abab");
+		vm.setCpuActual(1);
+		vm.setRamActual(10);
+		vm.setDiskActual(1);
+		
+		Deployment deployment = new Deployment();
+		deployment.setSchema(2);
+		deployment.addVM(vm);
+		
+		when(deploymentDAO.getById(2)).thenReturn(deployment);
+		
+		
+		List<String> ids = new ArrayList<String>();
+		ids.add("2");
+		when(energyModeller.estimate(null,  "app-name", "2", ids, "loquesea", Unit.ENERGY, 0l)).thenReturn(22.0);
+		when(energyModeller.estimate(null,  "app-name", "2", ids, "loquesea", Unit.POWER, 0l)).thenReturn(23.0);
+		
+		EnergyModellerMessage secMessage = new EnergyModellerMessage();
+		secMessage.setValue("10");
+		String secKey = EnergyModellerQueueController.generateKey("app-name", "loquesea", "2", ids, EnergyModellerQueueController.SEC);
+		when(emController.getPredictionMessage(secKey)).thenReturn(secMessage);
+		
+		LinkedList<VMinfo> vmInfos = new LinkedList<VMinfo>();
+		for(VM vmFromList : deployment.getVms()) {
+			 VMinfo vmInfo = new VMinfo(vmFromList.getRamActual(), 
+					 					vmFromList.getCpuActual(), 
+					 					vmFromList.getDiskActual() * 1024l,
+					 					10l);
+			 
+			 vmInfos.add(vmInfo);
+		}
+		
+		when(priceModellerClient.getEventPredictedChargesOfApp(eq(2), any(vmInfos.getClass()), eq(22.0), eq(deployment.getSchema()))).thenReturn(1.1d);
+		
+		Response response = deploymentRest.getCostEstimation("app-name", "2", "loquesea");
+		assertEquals(200, response.getStatus());
+		
+		String xml = (String) response.getEntity();
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(Cost.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		Cost cost = (Cost) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals("/applications/app-name/deployments/2/events/loquesea/cost-estimation", cost.getHref());
+		assertEquals(1.1d, cost.getCharges().doubleValue(), 0.0001);
+		assertEquals("Energy estimation in WATTHOURS", cost.getEnergyDescription());
+		assertEquals("Power estimation in WATTS", cost.getPowerDescription());
+		assertEquals(23.0d, cost.getPowerValue(), 0.0001);
+		assertEquals(22.0d, cost.getEnergyValue().doubleValue(), 0.0001);
+		assertEquals("Charges estimation in EUROS", cost.getChargesDescription());
+		assertEquals(2, cost.getLinks().size());
+		assertEquals("/applications/app-name/deployments/2", cost.getLinks().get(0).getHref());
+		assertEquals("parent", cost.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, cost.getLinks().get(0).getType());
+		assertEquals("/applications/app-name/deployments/2/events/loquesea/cost-estimation", cost.getLinks().get(1).getHref());
+		assertEquals("self", cost.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, cost.getLinks().get(1).getType());
 	}
 	
 	/**

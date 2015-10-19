@@ -99,17 +99,11 @@ public class ApplicationRest extends AbstractRest {
 	@POST
 	@Consumes(MediaType.APPLICATION_XML)
 	@Produces(MediaType.APPLICATION_XML)
-	public Response postApplication(@QueryParam("negotiation") String negotiation, String payload) {
+	public Response postApplication(@QueryParam("negotiation") String negotiation, @QueryParam("schema") String schema, String payload) {
 		logger.info("POST request to path: /applications?negotiation=" + negotiation);
 		logger.info("      PAYLOAD: " + payload);
 		
-		boolean automaticaNegotiation = true;
-		
-		if(negotiation != null && negotiation.equals("manual")) {
-			automaticaNegotiation = false;
-		}
-		
-		return createNewDeployment(payload, automaticaNegotiation);
+		return createNewDeployment(payload, negotiation, schema);
 	}
 	
 	/**

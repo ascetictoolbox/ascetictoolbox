@@ -1340,4 +1340,62 @@ public class XMLBuilderTest {
 		assertEquals("self", cost.getLinks().get(1).getRel());
 		assertEquals(MediaType.APPLICATION_XML, cost.getLinks().get(1).getType());
 	}
+	
+	@Test
+	public void getCostEstimationForAnEventInADeploymentXMLInfoTest() throws JAXBException {
+		Cost cost = new Cost();
+		cost.setCharges(1.0d);
+		cost.setEnergyValue(2.0d);
+		cost.setPowerValue(1.0d);
+		
+		String xml = XMLBuilder.getCostEstimationForAnEventInADeploymentXMLInfo(cost, "app-name", "1", "loquesea");
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(Cost.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		cost = (Cost) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals("/applications/app-name/deployments/1/events/loquesea/cost-estimation", cost.getHref());
+		assertEquals(1.0d, cost.getCharges().doubleValue(), 0.0001);
+		assertEquals("Energy estimation in WATTHOURS", cost.getEnergyDescription());
+		assertEquals("Power estimation in WATTS", cost.getPowerDescription());
+		assertEquals(2.0d, cost.getEnergyValue().doubleValue(), 0.0001);
+		assertEquals(1.0d, cost.getPowerValue().doubleValue(), 0.0001);
+		assertEquals("Charges estimation in EUROS", cost.getChargesDescription());
+		assertEquals(2, cost.getLinks().size());
+		assertEquals("/applications/app-name/deployments/1", cost.getLinks().get(0).getHref());
+		assertEquals("parent", cost.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, cost.getLinks().get(0).getType());
+		assertEquals("/applications/app-name/deployments/1/events/loquesea/cost-estimation", cost.getLinks().get(1).getHref());
+		assertEquals("self", cost.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, cost.getLinks().get(1).getType());
+	}
+	
+	@Test
+	public void getCostConsumptionForADeploymentTest() throws JAXBException {
+		Cost cost = new Cost();
+		cost.setCharges(1.0d);
+		cost.setEnergyValue(2.0d);
+		cost.setPowerValue(1.0d);
+		
+		String xml = XMLBuilder.getCostConsumptionForADeployment(cost, "app-name", "1");
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(Cost.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		cost = (Cost) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals("/applications/app-name/deployments/1/cost-consumption", cost.getHref());
+		assertEquals(1.0d, cost.getCharges().doubleValue(), 0.0001);
+		assertEquals("N/A", cost.getEnergyDescription());
+		assertEquals("N/A", cost.getPowerDescription());
+		assertEquals(2.0d, cost.getEnergyValue().doubleValue(), 0.0001);
+		assertEquals(1.0d, cost.getPowerValue().doubleValue(), 0.0001);
+		assertEquals("Charges estimation in EUROS", cost.getChargesDescription());
+		assertEquals(2, cost.getLinks().size());
+		assertEquals("/applications/app-name/deployments/1", cost.getLinks().get(0).getHref());
+		assertEquals("parent", cost.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, cost.getLinks().get(0).getType());
+		assertEquals("/applications/app-name/deployments/1/cost-consumption", cost.getLinks().get(1).getHref());
+		assertEquals("self", cost.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, cost.getLinks().get(1).getType());
+	}
 }

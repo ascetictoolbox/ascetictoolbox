@@ -311,6 +311,8 @@ public class VMRestTest extends AbstractTest {
 		vmRest.energyModellerQueueController = emController;
 		VMDAO vmDAO = mock(VMDAO.class);
 		vmRest.vmDAO = vmDAO;
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		vmRest.deploymentDAO = deploymentDAO;
 		
 		VM vm = new VM();
 		vm.setId(2);
@@ -335,7 +337,11 @@ public class VMRestTest extends AbstractTest {
 		when(emController.getPredictionMessage(secKey)).thenReturn(secMessage);
 		when(emController.getPredictionMessage(countKey)).thenReturn(countMessage);
 		
-		when(priceModellerClient.getEventPredictedCharges(1, 1, 10, 1024d, 22.0d, 1, 10,22)).thenReturn(1.1d);
+		Deployment deployment = new Deployment();
+		deployment.setSchema(2);
+		when(deploymentDAO.getById(1)).thenReturn(deployment);
+		
+		when(priceModellerClient.getEventPredictedCharges(1, 1, 10, 1024d, 22.0d, 2, 10,22)).thenReturn(1.1d);
 		
 		Response response = vmRest.getCostEstimation("app-name", "1", "2", "loquesea");
 		assertEquals(200, response.getStatus());

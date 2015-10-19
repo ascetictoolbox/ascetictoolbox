@@ -68,15 +68,14 @@ private static Logger logger = Logger.getLogger(AcceptAgreementEventHandler.clas
 		DeploymentEvent deploymentEvent = event.getData();
 		logger.info("Deployment " + deploymentEvent.getDeploymentId() + " NEGOTIATED, checking if it automatica agreement");
 		
-		// TODO The schema ID needs to be entered by the REST API
-		PriceModellerClient.getInstance().initializeApplication(deploymentEvent.getDeploymentId(), 1);
+		// We need first to read the deployment from the DB:
+		Deployment deployment = deploymentDAO.getById(deploymentEvent.getDeploymentId());
+		
+		PriceModellerClient.getInstance().initializeApplication(deploymentEvent.getDeploymentId(), deployment.getSchema());
 
 		if(deploymentEvent.getDeploymentStatus().equals(Dictionary.APPLICATION_STATUS_NEGOTIATIED) && deploymentEvent.isAutomaticNegotiation() == true) {
 			
 			logger.info(" Moving deployment id: " + deploymentEvent.getDeploymentId()  + " to " + Dictionary.APPLICATION_STATUS_NEGOTIATIED + " state");
-			
-			// We need first to read the deployment from the DB:
-			Deployment deployment = deploymentDAO.getById(deploymentEvent.getDeploymentId());
 			
 			if(Configuration.enableSLAM.equals("yes")) {
 				// We get the list of agreements

@@ -413,7 +413,9 @@ public class VMRest extends AbstractRest {
 				priceModellerClient = PriceModellerClient.getInstance();
 			}
 			
-			double charges = priceModellerClient.getEventPredictedCharges(Integer.parseInt(deploymentId), cpu, ram, storage, energyEstimated, 1, duration, numberOfevents);
+			int deploymentIdInt = Integer.parseInt(deploymentId);
+			Deployment deployment = deploymentDAO.getById(deploymentIdInt);
+			double charges = priceModellerClient.getEventPredictedCharges(deploymentIdInt, cpu, ram, storage, energyEstimated, deployment.getSchema(), duration, numberOfevents);
 			cost.setCharges(charges);
 		} else {
 			cost.setCharges(-1.0d);

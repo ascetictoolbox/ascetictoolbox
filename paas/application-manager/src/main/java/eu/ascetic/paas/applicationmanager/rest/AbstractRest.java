@@ -2,6 +2,7 @@ package eu.ascetic.paas.applicationmanager.rest;
 
 import java.util.Date;
 
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
@@ -72,6 +73,7 @@ public abstract class AbstractRest {
 		builder.entity(payload);
 		// To Allow Javascripts apps to connect to the server
 		builder.header("Access-Control-Allow-Origin", "*"); 
+		builder.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT");
 		return builder.build();
 	}
 	
@@ -143,7 +145,25 @@ public abstract class AbstractRest {
 	 * @param ovf
 	 * @return the XML response of the new deployment
 	 */
-	protected Response createNewDeployment(String ovf, boolean automaticNegotiation) {
+	protected Response createNewDeployment(String ovf, String negotiation, String schema) {
+		
+		boolean automaticNegotiation = true;
+		
+		if(negotiation != null && negotiation.equals("manual")) {
+			automaticNegotiation = false;
+		}
+		
+		int priceSchema = 1;
+		
+		// We check the price schema
+		if(schema != null) {
+			try {
+				priceSchema = Integer.parseInt(schema);
+			} catch (NumberFormatException e) {
+				return buildResponse(Status.BAD_REQUEST, "Invalid price schema format: " + schema + ". Please enter an integer value");
+			}
+		}
+		
 		// We get the name of the application:
 		String name = OVFUtils.getApplicationName(ovf);
 		
@@ -168,6 +188,7 @@ public abstract class AbstractRest {
 
 		// We add a new deployment to the application
 		Deployment deployment = createDeploymentToApplication(ovf);
+		deployment.setSchema(priceSchema);
 		application.addDeployment(deployment);
 
 		if(alreadyInDB) {
@@ -196,5 +217,20 @@ public abstract class AbstractRest {
 		AmqpProducer.sendDeploymentSubmittedMessage(applicationToBeShown);
 		
 		return buildResponse(Status.CREATED, XMLBuilder.getApplicationXML(application));
+	}
+	
+	/**
+	 * It returns the CORS options for AJAX based applications... 
+	 * @return
+	 */
+	@OPTIONS
+	public Response options() {
+	    return Response
+	            .status(Response.Status.OK)
+	            .header("Access-Control-Allow-Origin", "*")
+	            .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+	            .header("Access-Control-Allow-Credentials",true)
+	            .header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+	            .build();
 	}
 }

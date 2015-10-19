@@ -43,7 +43,7 @@ public class ContextualizationEventHandlerTest {
 		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
 		DeploymentEventService deploymentEventService = mock(DeploymentEventService.class);
 		
-		AcceptAgreementEventHandler acceptAgreementEvent = new AcceptAgreementEventHandler();
+		ContextualizationEventHandler acceptAgreementEvent = new ContextualizationEventHandler();
 		acceptAgreementEvent.deploymentDAO = deploymentDAO;
 		acceptAgreementEvent.deploymentEventService = deploymentEventService;
 		
@@ -51,7 +51,7 @@ public class ContextualizationEventHandlerTest {
 		deploymentEvent.setDeploymentId(22);
 		deploymentEvent.setDeploymentStatus("1111");
 		
-		acceptAgreementEvent.acceptAgreement(Event.wrap(deploymentEvent));
+		acceptAgreementEvent.contextualizeImagesOfADeployment(Event.wrap(deploymentEvent));
 		
 		verify(deploymentDAO, never()).getById(deploymentEvent.getDeploymentId());
 		verify(deploymentDAO, never()).update(any(Deployment.class));

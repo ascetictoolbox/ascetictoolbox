@@ -1,8 +1,11 @@
 package eu.ascetic.paas.applicationmanager.pm;
 
+import java.util.LinkedList;
+
 import org.apache.log4j.Logger;
 
 import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.PaaSPricingModeller;
+import eu.ascetic.asceticarchitecture.paas.type.VMinfo;
 
 /**
  * 
@@ -67,5 +70,9 @@ public class PriceModellerClient {
 			                               long duration, 
 			                               int numberOfevents) {
 		return priceModeller.getEventPredictedCharges(deploymentId, cpu, ram, storage, energy, schemeId, duration, numberOfevents);
+	}
+	
+	public double getEventPredictedChargesOfApp(int deplID, LinkedList<VMinfo> VMs, double energy,int schemeId) {
+		return priceModeller.getEventPredictedChargesOfApp(deplID, VMs, energy, schemeId);
 	}
 }

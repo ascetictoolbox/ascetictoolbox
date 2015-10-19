@@ -5,6 +5,7 @@ import java.util.List;
 import es.bsc.vmmclient.models.ImageToUpload;
 import es.bsc.vmmclient.models.ImageUploaded;
 import es.bsc.vmmclient.models.Vm;
+import es.bsc.vmmclient.models.VmCost;
 import es.bsc.vmmclient.models.VmDeployed;
 
 
@@ -62,11 +63,18 @@ public interface VmManagerClient {
 	public ImageUploaded getImage(String id);
 	
 	/**
-	 * Gets the all v ms.
+	 * Gets the all vms.
 	 *
 	 * @return the all v ms
 	 */
 	public List<VmDeployed> getAllVMs();
+	
+	/**
+	 * It gets the costs of the specified VMs
+	 * @param ids provider VM Id
+	 * @return a list with the costs per VM
+	 */
+	public List<VmCost> getVMCosts(List<String> ids);
 	
 	/**
 	 * Gets the vm.

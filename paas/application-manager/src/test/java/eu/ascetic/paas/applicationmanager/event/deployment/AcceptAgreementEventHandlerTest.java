@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -55,9 +56,15 @@ public class AcceptAgreementEventHandlerTest {
 		deploymentEvent.setDeploymentId(22);
 		deploymentEvent.setDeploymentStatus("1111");
 		
+		Deployment deployment = new Deployment();
+		deployment.setId(22);
+		deployment.setStatus("UNKNOWN");
+		
+		when(deploymentDAO.getById(22)).thenReturn(deployment);
+		
 		acceptAgreementEvent.acceptAgreement(Event.wrap(deploymentEvent));
 		
-		verify(deploymentDAO, never()).getById(deploymentEvent.getDeploymentId());
+		verify(deploymentDAO, times(1)).getById(deploymentEvent.getDeploymentId());
 		verify(deploymentDAO, never()).update(any(Deployment.class));
 		verify(deploymentEventService, never()).fireDeploymentEvent(any(DeploymentEvent.class));
 	}
@@ -81,6 +88,7 @@ public class AcceptAgreementEventHandlerTest {
 		Deployment deployment = new Deployment();
 		deployment.setId(22);
 		deployment.setStatus("UNKNOWN");
+		deployment.setSchema(3);
 		
 		when(deploymentDAO.getById(22)).thenReturn(deployment);
 		when(deploymentDAO.update(deployment)).thenReturn(true);

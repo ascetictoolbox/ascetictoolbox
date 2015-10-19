@@ -4,6 +4,7 @@ import static eu.ascetic.paas.applicationmanager.Dictionary.STATE_VM_DELETED;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -24,20 +25,26 @@ import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import es.bsc.vmmclient.models.VmCost;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Unit;
+import eu.ascetic.asceticarchitecture.paas.type.VMinfo;
 import eu.ascetic.paas.applicationmanager.amonitor.ApplicationMonitorClient;
 import eu.ascetic.paas.applicationmanager.amonitor.ApplicationMonitorClientHC;
 import eu.ascetic.paas.applicationmanager.amonitor.model.Data;
 import eu.ascetic.paas.applicationmanager.amonitor.model.EnergyCosumed;
 import eu.ascetic.paas.applicationmanager.amqp.AmqpProducer;
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
+import eu.ascetic.paas.applicationmanager.em.amqp.EnergyModellerMessage;
+import eu.ascetic.paas.applicationmanager.em.amqp.EnergyModellerQueueController;
 import eu.ascetic.paas.applicationmanager.model.Application;
+import eu.ascetic.paas.applicationmanager.model.Cost;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
 import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.PowerMeasurement;
 import eu.ascetic.paas.applicationmanager.model.VM;
+import eu.ascetic.paas.applicationmanager.pm.PriceModellerClient;
 import eu.ascetic.paas.applicationmanager.rest.util.DateUtil;
 import eu.ascetic.paas.applicationmanager.rest.util.XMLBuilder;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
@@ -132,17 +139,11 @@ public class DeploymentRest extends AbstractRest {
 	@POST
 	@Consumes(MediaType.APPLICATION_XML)
 	@Produces(MediaType.APPLICATION_XML)
-	public Response postDeployment(@PathParam("application_name") String applicationName, @QueryParam("negotiation") String negotiation, String payload) {
+	public Response postDeployment(@PathParam("application_name") String applicationName, @QueryParam("negotiation") String negotiation,  @QueryParam("schema") String schema, String payload) {
 		logger.info("POST request to path: /applications/" + applicationName + "/deployments?negotiation=" + negotiation);
 		logger.info("      PAYLOAD: " + payload);
 		
-		boolean automaticaNegotiation = true;
-		
-		if(negotiation != null && negotiation.equals("manual")) {
-			automaticaNegotiation = false;
-		}
-		
-		return createNewDeployment(payload, automaticaNegotiation);
+		return createNewDeployment(payload, negotiation, schema);
 	}
 	
 	/**
@@ -327,7 +328,7 @@ public class DeploymentRest extends AbstractRest {
 		// Make sure we have the right configuration
 		energyModeller = getEnergyModeller();
 
-		List<String> ids = getVmsProviderIds(deployment);
+		List<String> ids = getVmsIds(deployment);
 
 		double energyOrPowerConsumed = 0.0;
 
@@ -349,6 +350,41 @@ public class DeploymentRest extends AbstractRest {
 		powerMeasurement.setValue(powerConsumed);
 		
 		return powerMeasurement;
+	}
+	
+	@GET
+	@Path("{deployment_id}/cost-consumption")
+	@Produces(MediaType.APPLICATION_XML)
+	public Response getCost(@PathParam("application_name") String applicationName, @PathParam("deployment_id") String deploymentId) {
+		logger.info("GET request to path: /applications/" + applicationName + "/deployments/" + deploymentId + "/cost-consumption");
+		
+		int deploymentIdInt = Integer.parseInt(deploymentId);
+		
+		Deployment deployment = deploymentDAO.getById(deploymentIdInt);
+		
+		List<String> vmProviderIds = getVmsProviderIds(deployment);
+		
+		for(String id : vmProviderIds) logger.info("Getting costs for the following VMs: " + id);
+		
+		List<VmCost> vmCosts = vmManagerClient.getVMCosts(vmProviderIds);
+		
+		double totalCost = 0.0;
+		
+		for(VmCost vmCost : vmCosts) {
+			logger.info("IaaS Cost for VM: " + vmCost.getVmId() + " = " + vmCost.getCost());
+			totalCost = totalCost + vmCost.getCost();
+		}
+		
+		totalCost = getPriceModellerClient().getAppTotalCharges(deploymentIdInt, deployment.getSchema(), totalCost);
+		
+		Cost cost = new Cost();
+		cost.setCharges(totalCost);
+		cost.setEnergyValue(-1.0);
+		cost.setPowerValue(-1.0);
+		
+		String xml = XMLBuilder.getCostConsumptionForADeployment(cost, applicationName, deploymentId);
+		
+		return  buildResponse(Status.OK, xml);
 	}
 	
 	@GET
@@ -383,12 +419,22 @@ public class DeploymentRest extends AbstractRest {
 		return buildResponse(Status.OK, xml);
 	}
 	
-	protected List<String> getVmsProviderIds(Deployment deployment) {
+	protected List<String> getVmsIds(Deployment deployment) {
 		List<String> ids = new ArrayList<String>();
 		
 		for(VM vm : deployment.getVms()) {
 			//ids.add(vm.getProviderVmId());
 			ids.add("" + vm.getId());
+		}
+		
+		return ids;
+	}
+	
+	protected List<String> getVmsProviderIds(Deployment deployment) {
+		List<String> ids = new ArrayList<String>();
+		
+		for(VM vm : deployment.getVms()) {
+			ids.add(vm.getProviderVmId());
 		}
 		
 		return ids;
@@ -415,7 +461,7 @@ public class DeploymentRest extends AbstractRest {
 		energyModeller = getEnergyModeller();
 		
 		Deployment deployment = deploymentDAO.getById(Integer.parseInt(deploymentId));
-		List<String> ids = getVmsProviderIds(deployment);
+		List<String> ids = getVmsIds(deployment);
 		
 		logger.debug("Connecting to Energy Modeller");
 		return energyModeller.estimate(null,  applicationName, deploymentId, ids, eventId, unit, duration);
@@ -458,7 +504,7 @@ public class DeploymentRest extends AbstractRest {
 		energyModeller = getEnergyModeller();
 		
 		Deployment deployment = deploymentDAO.getById(Integer.parseInt(deploymentId));
-		List<String> ids = getVmsProviderIds(deployment);
+		List<String> ids = getVmsIds(deployment);
 		
 		logger.debug("Connecting to Energy Modeller");
 		return energyModeller.measure(null,  applicationName, deploymentId, ids, eventId, unit, null, null);
@@ -478,5 +524,68 @@ public class DeploymentRest extends AbstractRest {
 		String xml = XMLBuilder.getPowerConsumptionForDeploymentXMLInfo(powerMeasurement, applicationName, deploymentId, eventId);
 				
 		return buildResponse(Status.OK, xml);
-	}	
+	}
+	
+	@GET
+	@Path("/events/{event_id}/cost-estimation")
+	@Produces(MediaType.APPLICATION_XML)
+	public Response getCostEstimation(@PathParam("application_name") String applicationName, 
+			                          @PathParam("deployment_id") String deploymentId,
+			                          @PathParam("event_id") String eventId) throws InterruptedException {
+		logger.info("GET request to path: /applications/" + applicationName + "/deployments/" + deploymentId + "/events/" + eventId + "/cost-estimation");
+				
+		energyModeller = getEnergyModeller();
+		
+		int deploymentIdInt = Integer.parseInt(deploymentId);
+		Deployment deployment = deploymentDAO.getById(deploymentIdInt);
+		List<String> ids = getVmsIds(deployment);
+		
+		logger.debug("Connecting to Energy Modeller");
+
+		double energyEstimated = energyModeller.estimate(null,  applicationName, deploymentId, ids, eventId, Unit.ENERGY, 0l);
+		double powerEstimated = energyModeller.estimate(null,  applicationName, deploymentId, ids, eventId, Unit.POWER, 0l);
+		
+		// Getting from the queue the necessary variables to query the Price Modeller
+		String secKey = EnergyModellerQueueController.generateKey(applicationName, eventId, deploymentId, ids, EnergyModellerQueueController.SEC);
+		
+		Thread.sleep(1000l);
+		
+		EnergyModellerMessage emMessageSec = getEnergyModellerQueueController().getPredictionMessage(secKey); 
+		
+		Cost cost = new Cost();
+		cost.setEnergyValue(energyEstimated);
+		cost.setPowerValue(powerEstimated);
+		
+		if(emMessageSec != null) {
+			logger.info("Parsing duration value of: " + emMessageSec.getValue());
+			
+			long duration = (long) Double.parseDouble(emMessageSec.getValue());
+			
+			LinkedList<VMinfo> vmInfos = new LinkedList<VMinfo>();
+			for(VM vm : deployment.getVms()) {
+				 VMinfo vmInfo = new VMinfo(vm.getRamActual(), 
+						 					vm.getCpuActual(), 
+						 					vm.getDiskActual() * 1024l,
+						 					duration);
+				 
+				 vmInfos.add(vmInfo);
+			}
+						
+			if(priceModellerClient == null) {
+				priceModellerClient = PriceModellerClient.getInstance();
+			}
+			
+			System.out.println("######## deploymentId: " + deploymentIdInt + " energyEstimated: " + energyEstimated + " schema: " + deployment.getSchema() + " duration: " + duration);
+			
+			double charges = priceModellerClient.getEventPredictedChargesOfApp(deploymentIdInt, vmInfos, energyEstimated, deployment.getSchema());
+			cost.setCharges(charges);
+		} else {
+			cost.setCharges(-1.0d);
+		}
+		
+		// We create the XMl response
+		String xml = XMLBuilder.getCostEstimationForAnEventInADeploymentXMLInfo(cost, applicationName, deploymentId, eventId);
+				
+		return buildResponse(Status.OK, xml);
+	}
 }

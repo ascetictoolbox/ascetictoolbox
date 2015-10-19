@@ -6,10 +6,13 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.LinkedList;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.PaaSPricingModeller;
+import eu.ascetic.asceticarchitecture.paas.type.VMinfo;
 
 /**
  * 
@@ -87,6 +90,15 @@ public class PriceModellerClientTest {
 		when(ppm.getEventPredictedCharges(111, 22, 33, 3.0, 1.2, 2, 3, 3)).thenReturn(3.2);
 		
 		double charges = pmc.getEventPredictedCharges(111, 22, 33, 3.0, 1.2, 2, 3, 3);
+		assertEquals(3.2, charges, 0.00001);
+	}
+	
+	@Test
+	public void getEventPredictedChargesOfAppTest() {
+		LinkedList<VMinfo> vmInfos = new LinkedList<VMinfo>();
+		
+		when(ppm.getEventPredictedChargesOfApp(111, vmInfos, 33, 3)).thenReturn(3.2);
+		double charges = pmc.getEventPredictedChargesOfApp(111, vmInfos, 33, 3);
 		assertEquals(3.2, charges, 0.00001);
 	}
 }

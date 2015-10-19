@@ -11,6 +11,7 @@ import org.junit.Test;
 import es.bsc.vmmclient.models.ImageToUpload;
 import es.bsc.vmmclient.models.ImageUploaded;
 import es.bsc.vmmclient.models.Vm;
+import es.bsc.vmmclient.models.VmCost;
 import es.bsc.vmmclient.models.VmDeployed;
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.dao.testUtil.MockWebServer;
@@ -198,5 +199,27 @@ public class VmManagerClientBSCCTest {
 		
 		String method = mServer.getMethod();
 		assertEquals("DELETE", method);
+	}
+	
+	@Test
+	public void getVMCosts() {
+		Configuration.vmManagerServiceUrl = mBaseURL;
+		
+		String listOfVmsString = "[{\"vmId\":\"5bca1bfd-da97-4411-93e8-e35e8dcf2f07\",\"cost\":\"1.1\"}," + 
+								   "{\"vmId\":\"fd73bcb6-ea46-46ba-837f-0ea056e992ef\",\"cost\":\"2.2\"}]";
+		
+		mServer.addPath("/cost", listOfVmsString);
+		
+		List<String> ids = new ArrayList<String>();
+		ids.add("5bca1bfd-da97-4411-93e8-e35e8dcf2f07");
+		ids.add("fd73bcb6-ea46-46ba-837f-0ea056e992ef");
+		
+		VmManagerClientBSSC vmManager = new VmManagerClientBSSC();
+		List<VmCost> vmCosts = vmManager.getVMCosts(ids);
+		assertEquals(2, vmCosts.size());
+		assertEquals("5bca1bfd-da97-4411-93e8-e35e8dcf2f07", vmCosts.get(0).getVmId());
+		assertEquals(1.1, vmCosts.get(0).getCost(), 0.0001);
+		assertEquals("fd73bcb6-ea46-46ba-837f-0ea056e992ef", vmCosts.get(1).getVmId());
+		assertEquals(2.2, vmCosts.get(1).getCost(), 0.0001);
 	}
 }
