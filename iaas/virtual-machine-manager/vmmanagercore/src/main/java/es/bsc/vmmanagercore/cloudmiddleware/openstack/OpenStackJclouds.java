@@ -163,11 +163,10 @@ public class OpenStackJclouds implements CloudMiddleware {
         for (Server server: openStackJcloudsApis.getServerApi().listInDetail().concat()) {
             ServerExtendedStatus vmStatus = server.getExtendedStatus().get();
 
-
             // Add the VM to the result if it is active and it is not being deleted
             boolean vmIsActive = ACTIVE.equals(vmStatus.getVmState());
             boolean vmIsBeingDeleted = DELETING.equals(vmStatus.getTaskState());
-            if (vmIsActive && !vmIsBeingDeleted && hostNames.contains(server.getHostId())) {
+            if (vmIsActive && !vmIsBeingDeleted && hostNames.contains(server.getExtendedAttributes().get().getHostName())) {
                 vmIds.add(server.getId());
             }
         }
@@ -184,7 +183,7 @@ public class OpenStackJclouds implements CloudMiddleware {
             // Explore why and add the appropriate constant.
             boolean vmIsBuilding = vmStatus.getVmState().equals("building");
             boolean vmIsBeingDeleted = DELETING.equals(vmStatus.getTaskState());
-            if (vmIsBuilding && !vmIsBeingDeleted && hostNames.contains(server.getHostId())) {
+            if (vmIsBuilding && !vmIsBeingDeleted && hostNames.contains(server.getExtendedAttributes().get().getHostName())) {
                 result.add(server.getId());
             }
         }
