@@ -244,6 +244,12 @@ public class VmsManager {
                 ZabbixConnector.registerVmInZabbix(vmId, getVm(vmId).getHostName(), getVm(vmId).getIpAddress());
             }
 
+			if (energyModeller instanceof AsceticEnergyModellerAdapter) {
+				((AsceticEnergyModellerAdapter) energyModeller).initializeVmInEnergyModellerSystem(
+						vmId,
+						vmToDeploy.getApplicationId(),
+						vmToDeploy.getImage());
+			}
 
             if (pricingModeller instanceof AsceticPricingModellerAdapter) {
 				try {
@@ -253,12 +259,6 @@ public class VmsManager {
 				}
             }
 
-            if (energyModeller instanceof AsceticEnergyModellerAdapter) {
-                ((AsceticEnergyModellerAdapter) energyModeller).initializeVmInEnergyModellerSystem(
-                        vmId, 
-                        vmToDeploy.getApplicationId(), 
-                        vmToDeploy.getImage());
-            }
             if (vmToDeploy.needsFloatingIp()) {
                 cloudMiddleware.assignFloatingIp(vmId);
             }
