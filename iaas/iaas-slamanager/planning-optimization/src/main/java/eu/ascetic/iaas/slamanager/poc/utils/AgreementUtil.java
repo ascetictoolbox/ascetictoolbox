@@ -72,6 +72,10 @@ public class AgreementUtil {
 			return AsceticAgreementTerm.power_usage_per_vm;
 		if (metric.equals("energy_usage_per_vm"))
 			return AsceticAgreementTerm.energy_usage_per_vm;
+		if (metric.equals("power_usage_per_app"))
+			return AsceticAgreementTerm.power_usage_per_app;
+		if (metric.equals("energy_usage_per_app"))
+			return AsceticAgreementTerm.energy_usage_per_app;
 		return null;
 	}
 
@@ -122,6 +126,12 @@ public class AgreementUtil {
 			break;
 		case energy_usage_per_vm:
 			metric = "energy_usage_per_vm";
+			break;
+		case power_usage_per_app:
+			metric = "power_usage_per_app";
+			break;
+		case energy_usage_per_app:
+			metric = "energy_usage_per_app";
 			break;
 		default:
 			break;
@@ -179,6 +189,13 @@ public class AgreementUtil {
 			resource = new STND("http://www.slaatsoi.org/resources#energy_usage_per_vm");
 //			resource = resources.energy_usage_per_vm;
 			break;
+		case power_usage_per_app:
+			resource = new STND("http://www.slaatsoi.org/resources#power_usage_per_app");
+			break;
+		case energy_usage_per_app:
+			//TODO: Gestire
+			resource = new STND("http://www.slaatsoi.org/resources#energy_usage_per_app");
+			break;
 		default:
 			break;
 		}
@@ -221,6 +238,8 @@ public class AgreementUtil {
 		genericTerms.add("reliability");
 		genericTerms.add("power_usage_per_vm");
 		genericTerms.add("energy_usage_per_vm");
+		genericTerms.add("power_usage_per_app");
+		genericTerms.add("energy_usage_per_app");
 	}
 
 	public static String getStringTerm(Guaranteed.State gs) {
