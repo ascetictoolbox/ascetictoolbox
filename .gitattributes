@@ -492,7 +492,7 @@ iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/rest/VmmR
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/rest/VmmService.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/vmm/VmManager.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/vmm/VmManagerClient.java -text
-iaas/virtual-machine-manager/vmm-client/src/test/java/ScratchTest.java -text
+iaas/virtual-machine-manager/vmm-client/src/test/java/D41TEST.java -text
 iaas/virtual-machine-manager/vmmanager-frontend/LICENSE.md -text
 iaas/virtual-machine-manager/vmmanager-frontend/README.md -text
 iaas/virtual-machine-manager/vmmanager-frontend/app/app.js -text

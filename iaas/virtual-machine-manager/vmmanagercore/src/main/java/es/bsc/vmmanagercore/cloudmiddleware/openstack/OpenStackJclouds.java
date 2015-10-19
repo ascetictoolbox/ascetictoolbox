@@ -26,6 +26,8 @@ import es.bsc.vmmanagercore.models.vms.Vm;
 import es.bsc.vmmanagercore.models.vms.VmDeployed;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.validator.UrlValidator;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.jclouds.openstack.neutron.v2.NeutronApi;
 import org.jclouds.openstack.nova.v2_0.NovaApi;
 import org.jclouds.openstack.nova.v2_0.domain.*;
@@ -67,6 +69,9 @@ public class OpenStackJclouds implements CloudMiddleware {
 
 	private Set<String> hostNames = new TreeSet<>();
 
+	private Logger logger = LogManager.getLogger(OpenStackJclouds.class);
+
+
     /**
      * Class constructor. It performs the connection to the infrastructure and initializes
      * JClouds attributes.
@@ -83,7 +88,7 @@ public class OpenStackJclouds implements CloudMiddleware {
     }
 
 	private void assertHostName(String hostname) throws CloudMiddlewareException {
-		if(!hostNames.contains(hostname)) throw new CloudMiddlewareException("Host " + hostname + " is not registered in this VMM");
+		if(hostname != null && !hostNames.contains(hostname)) throw new CloudMiddlewareException("Host " + hostname + " is not registered in this VMM");
 	}
 	private void assertVmId(String vmId) throws CloudMiddlewareException {
 		Server server = openStackJcloudsApis.getServerApi().get(vmId);
@@ -91,7 +96,7 @@ public class OpenStackJclouds implements CloudMiddleware {
 			throw new CloudMiddlewareException("Unexistent VM ID: " + vmId);
 		} else {
 			String vmHost = server.getExtendedAttributes().get().getHostName();
-			if(!hostNames.contains(vmHost)) {
+			if(vmHost != null && !hostNames.contains(vmHost)) {
 				throw new CloudMiddlewareException("The VM " + vmId + " exists in the middleware but its node ("+vmHost+") is not registered within this VMM");
 			}
 		}
@@ -166,7 +171,15 @@ public class OpenStackJclouds implements CloudMiddleware {
             // Add the VM to the result if it is active and it is not being deleted
             boolean vmIsActive = ACTIVE.equals(vmStatus.getVmState());
             boolean vmIsBeingDeleted = DELETING.equals(vmStatus.getTaskState());
-            if (vmIsActive && !vmIsBeingDeleted && hostNames.contains(server.getExtendedAttributes().get().getHostName())) {
+
+			// if the host is null, proceed
+			boolean containsHost = true;
+			try {
+				containsHost = hostNames.contains(server.getExtendedAttributes().get().getHostName());
+			} catch(Exception e) {
+				logger.warn("Error checking if vm is in host: " + e.getMessage(), e);
+			}
+            if (vmIsActive && !vmIsBeingDeleted && containsHost) {
                 vmIds.add(server.getId());
             }
         }
@@ -183,8 +196,15 @@ public class OpenStackJclouds implements CloudMiddleware {
             // Explore why and add the appropriate constant.
             boolean vmIsBuilding = vmStatus.getVmState().equals("building");
             boolean vmIsBeingDeleted = DELETING.equals(vmStatus.getTaskState());
-            if (vmIsBuilding && !vmIsBeingDeleted && hostNames.contains(server.getExtendedAttributes().get().getHostName())) {
-                result.add(server.getId());
+			// if the host is null, proceed
+			boolean containsHost = true;
+			try {
+				containsHost = hostNames.contains(server.getExtendedAttributes().get().getHostName());
+			} catch(Exception e) {
+				logger.warn("Error checking if vm is in host: " + e.getMessage(), e);
+			}
+			if (vmIsBuilding && !vmIsBeingDeleted && containsHost) {
+				result.add(server.getId());
             }
         }
         return result;
