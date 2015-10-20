@@ -87,6 +87,24 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     private static final String ASCETIC_PRIVATE_SSH_KEY = "asceticSshPrivateKey";
 
     /**
+     * The static KEY used to get and set energy requirement.
+     */
+    private static final String ASCETIC_ENERGY_REQUIREMENT = "asceticEnergyRequirement";
+    /**
+     * The static KEY used to get and set power requirement.
+     */
+    private static final String ASCETIC_POWER_REQUIREMENT = "asceticPowerRequirement";
+    /**
+     * The static KEY used to get and set charges requirement.
+     */
+    private static final String ASCETIC_CHARGES_REQUIREMENT = "asceticChargesRequirement";
+    /**
+     * The static KEY used to get and set price requirement.
+     */
+    private static final String ASCETIC_PRICE_REQUIREMENT = "asceticPriceRequirement";
+
+    
+    /**
      * The static KEY used to get and set energy optimization boundary.
      */
     private static final String ASCETIC_ENERGY_OPTIMIZATION_BOUNDARY = "asceticEnergyOptimizationBoundary";
@@ -575,6 +593,118 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
         }
     }
 
+    /**
+     * Gets the energy requirement on a per {@link VirtualSystem} or
+     * {@link VirtualSystemCollection} basis.
+     * 
+     * @return The energy requirement boundary
+     */
+    public String getEnergyRequirement() {
+        return getPropertyByKey(ASCETIC_ENERGY_REQUIREMENT)
+                .getValue();
+    }
+
+    /**
+     * Sets the energy requirement on a per {@link VirtualSystem} or
+     * {@link VirtualSystemCollection} basis.
+     * 
+     * @param energyRequirement
+     *            The energy requirement
+     */
+    public void setEnergyRequirement(String energyRequirement) {
+        ProductProperty productProperty = getPropertyByKey(ASCETIC_ENERGY_REQUIREMENT);
+        if (productProperty == null) {
+            addNewProperty(ASCETIC_ENERGY_REQUIREMENT,
+                    ProductPropertyType.STRING, energyRequirement);
+        } else {
+            productProperty.setValue(energyRequirement);
+        }
+    }
+    
+    /**
+     * Gets the power requirement on a per {@link VirtualSystem} or
+     * {@link VirtualSystemCollection} basis.
+     * 
+     * @return The power requirement boundary
+     */
+    public String getPowerRequirement() {
+        return getPropertyByKey(ASCETIC_POWER_REQUIREMENT)
+                .getValue();
+    }
+
+    /**
+     * Sets the power requirement on a per {@link VirtualSystem} or
+     * {@link VirtualSystemCollection} basis.
+     * 
+     * @param powerRequirement
+     *            The power requirement
+     */
+    public void setPowerRequirement(String powerRequirement) {
+        ProductProperty productProperty = getPropertyByKey(ASCETIC_POWER_REQUIREMENT);
+        if (productProperty == null) {
+            addNewProperty(ASCETIC_POWER_REQUIREMENT,
+                    ProductPropertyType.STRING, powerRequirement);
+        } else {
+            productProperty.setValue(powerRequirement);
+        }
+    }
+    
+    /**
+     * Gets the charges requirement on a per {@link VirtualSystem} or
+     * {@link VirtualSystemCollection} basis.
+     * 
+     * @return The charges requirement boundary
+     */
+    public String getChargesRequirement() {
+        return getPropertyByKey(ASCETIC_CHARGES_REQUIREMENT)
+                .getValue();
+    }
+
+    /**
+     * Sets the charges requirement on a per {@link VirtualSystem} or
+     * {@link VirtualSystemCollection} basis.
+     * 
+     * @param chargesRequirement
+     *            The charges requirement
+     */
+    public void setChargesRequirement(String chargesRequirement) {
+        ProductProperty productProperty = getPropertyByKey(ASCETIC_CHARGES_REQUIREMENT);
+        if (productProperty == null) {
+            addNewProperty(ASCETIC_CHARGES_REQUIREMENT,
+                    ProductPropertyType.STRING, chargesRequirement);
+        } else {
+            productProperty.setValue(chargesRequirement);
+        }
+    }
+    
+    /**
+     * Gets the price requirement on a per {@link VirtualSystem} or
+     * {@link VirtualSystemCollection} basis.
+     * 
+     * @return The price requirement boundary
+     */
+    public String getPriceRequirement() {
+        return getPropertyByKey(ASCETIC_PRICE_REQUIREMENT)
+                .getValue();
+    }
+
+    /**
+     * Sets the price requirement on a per {@link VirtualSystem} or
+     * {@link VirtualSystemCollection} basis.
+     * 
+     * @param priceRequirement
+     *            The price requirement
+     */
+    public void setPriceRequirement(String priceRequirement) {
+        ProductProperty productProperty = getPropertyByKey(ASCETIC_PRICE_REQUIREMENT);
+        if (productProperty == null) {
+            addNewProperty(ASCETIC_PRICE_REQUIREMENT,
+                    ProductPropertyType.STRING, priceRequirement);
+        } else {
+            productProperty.setValue(priceRequirement);
+        }
+    }
+    
     /**
      * Gets the energy optimization boundary on a per {@link VirtualSystem} or
      * {@link VirtualSystemCollection} basis. Used by the PM runtime and to
