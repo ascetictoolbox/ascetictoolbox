@@ -3,6 +3,7 @@ import es.bsc.vmmclient.vmm.VmManagerClient;
 import junit.framework.TestCase;
 import org.junit.Ignore;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,10 +18,10 @@ public class D41TEST extends TestCase {
 	public void testGetVMMInfo() {
 		VmManagerClient vmm = new VmManagerClient(URL_D41);
 
-//		System.out.println("* Uploaded images");
-//		for(ImageUploaded img : vmm.getImages()) {
-//			System.out.println("\t"+img.toString());
-//		}
+		System.out.println("* Uploaded images");
+		for(ImageUploaded img : vmm.getImages()) {
+			System.out.println("\t"+img.toString());
+		}
 //
 //		System.out.println("* Nodes");
 //		for(Node node : vmm.getNodes()) {
@@ -39,30 +40,33 @@ public class D41TEST extends TestCase {
 		}
 
 
-			// deploy vms
+//
+//		System.out.println("* deploying new vms");
+//			// deploy vms
+//		List<Vm> toDeploy = new ArrayList<>();
 //		for(int i = 1 ; i <= 4 ; i++) {
-//			System.out.println("deploying vm " + i);
 //			Vm vm = new Vm("d41vm"+i,
 //					"db040522-e744-40e2-af4d-e9ee6c21f18b",
-//					2,1024,512,512,null,null,null,null,false);
+//					2,1024,3,512,null,null,null,null,false);
 //
-//			List<String> vmId = vmm.deployVms(Arrays.asList(vm));
+//			toDeploy.add(vm);
+//		}
 //
-//			VmDeployed d = vmm.getVm(vmId.get(0));
-//			System.out.println("\tdeployed: " + d.toString());
+//		List<String> vmIds = vmm.deployVms(toDeploy);
+//		for(String id : vmIds) {
+//			System.out.println("\tdeployed: " + vmm.getVm(id).toString());
 //		}
 
 	}
 
-//	@Ignore
-//	public void testScratch() {
-//		VmManagerClient vmm = new VmManagerClient("http://iaas-stable:34373/vmmanager");
-//
-//		for(VmCost vc : vmm.getCosts(Arrays.asList(
-//				"8eb729dc-6d17-454c-a0ae-deab5f35280a",
-//				"467b6957-491a-4419-b6ef-21834f2b25c4"))) {
-//			System.out.println("vc = " + vc);
-//		}
-//
-//	}
+	@Ignore
+	public void testScratch() {
+		VmManagerClient vmm = new VmManagerClient("http://iaas-test:34372/vmmanager");
+
+		for(VmCost vc : vmm.getCosts(Arrays.asList(
+				"1c80ec76-4827-4616-b042-46441ac2acc2","d3ed569c-89c8-470e-b0a2-9f051115f3e3"))) {
+			System.out.println("vc = " + vc);
+		}
+
+	}
 }

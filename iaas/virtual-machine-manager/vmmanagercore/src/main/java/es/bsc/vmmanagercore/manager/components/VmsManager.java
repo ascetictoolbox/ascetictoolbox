@@ -61,7 +61,7 @@ public class VmsManager {
     private final EnergyModeller energyModeller;
 
     private static final String ASCETIC_ZABBIX_SCRIPT_PATH = "/DFS/ascetic/vm-scripts/zabbix_agents.sh";
-    
+
     public VmsManager(HostsManager hostsManager, CloudMiddleware cloudMiddleware, VmManagerDb db, 
                       SelfAdaptationManager selfAdaptationManager, 
                       EnergyModeller energyModeller, PricingModeller pricingModeller) {
@@ -459,9 +459,16 @@ public class VmsManager {
     }
 
     private void initializeVmBilling(final String vmId, final String hostname) {
-        Thread thread = new Thread("Initialize VM billing. VM ID = " + vmId + "; Hostname = " + hostname) {
+        Thread thread = new Thread() {
             public void run(){
-                ((AsceticPricingModellerAdapter) pricingModeller).initializeVmBilling(vmId, hostname);
+				//
+				try {
+					log.info("Waiting 10 seconds before initializing VM billing. VM ID = " + vmId + "; Hostname = " + hostname);
+					Thread.sleep(10000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				((AsceticPricingModellerAdapter) pricingModeller).initializeVmBilling(vmId, hostname);
             }
         };
         thread.start();
