@@ -238,12 +238,13 @@ public class VmicApiTest extends TestCase {
                 }
             }
 
-            //Test the manifest that was altered
-            OvfDefinition ovfDefinition2 = ((ProgressDataImage) (vmicApi.progressCallback(
-                    ovfDefinitionId, null))).getOvfDefinition();
-                    
+            // Test the manifest that was altered
+            OvfDefinition ovfDefinition2 = ((ProgressDataImage) (vmicApi
+                    .progressCallback(ovfDefinitionId, null)))
+                    .getOvfDefinition();
+
             assertFalse(ovfDefinition2.hasErrors());
-            
+
             String targetDir = System.getProperty("ovfSampleDir", "target");
 
             java.io.File file = new java.io.File(targetDir
@@ -255,14 +256,14 @@ public class VmicApiTest extends TestCase {
             out.write(ovfDefinition2.toString());
             // Close the output stream
             out.close();
-            
+
         } catch (Exception e) {
             LOGGER.error("TEST: Test Failed! Cause: " + e.getCause(), e);
         }
 
         LOGGER.warn("### TEST: " + getCurrentMethodName() + " COMPLETE ###");
     }
-    
+
     /**
      * Tests the workflow of ONLINE image generation.
      */
@@ -312,6 +313,8 @@ public class VmicApiTest extends TestCase {
                 }
             }
 
+            //
+            double previousProgess = -1.0;
             // Poll the progress data until completion...
             while (true) {
 
@@ -328,14 +331,20 @@ public class VmicApiTest extends TestCase {
                     assertFalse(progressDataImage.isError());
                     return;
                 } else {
-                    LOGGER.info("TEST: progressDataImageObject total progress is: "
-                            + progressDataImage.getTotalProgress());
-                    LOGGER.info("TEST: progressDataImageObject history of Phase with ID: "
-                            + progressDataImage.getPhaseName(progressDataImage
-                                    .getCurrentPhaseId())
-                            + ", % is: "
-                            + progressDataImage.getHistory().get(
-                                    progressDataImage.getCurrentPhaseId()));
+                    double currentProgress = progressDataImage
+                            .getTotalProgress();
+                    if (currentProgress > previousProgess) {
+                        LOGGER.info("TEST: progressDataImageObject total progress is: "
+                                + currentProgress);
+                        LOGGER.info("TEST: progressDataImageObject history of Phase with ID: "
+                                + progressDataImage
+                                        .getPhaseName(progressDataImage
+                                                .getCurrentPhaseId())
+                                + ", % is: "
+                                + progressDataImage.getHistory().get(
+                                        progressDataImage.getCurrentPhaseId()));
+                        previousProgess = currentProgress;
+                    }
                 }
 
                 // 250ms delay between polling...
@@ -349,12 +358,13 @@ public class VmicApiTest extends TestCase {
                 }
             }
 
-            //Test the manifest that was altered
-            OvfDefinition ovfDefinition2 = ((ProgressDataImage) (vmicApi.progressCallback(
-                    ovfDefinitionId, null))).getOvfDefinition();
-                    
+            // Test the manifest that was altered
+            OvfDefinition ovfDefinition2 = ((ProgressDataImage) (vmicApi
+                    .progressCallback(ovfDefinitionId, null)))
+                    .getOvfDefinition();
+
             assertFalse(ovfDefinition2.hasErrors());
-            
+
             String targetDir = System.getProperty("ovfSampleDir", "target");
 
             java.io.File file = new java.io.File(targetDir
@@ -366,7 +376,7 @@ public class VmicApiTest extends TestCase {
             out.write(ovfDefinition2.toString());
             // Close the output stream
             out.close();
-            
+
         } catch (Exception e) {
             LOGGER.error("TEST: Test Failed! Cause: " + e.getCause(), e);
         }
