@@ -820,7 +820,7 @@ public class VirtualMachineImageConstructor implements Runnable {
                             + systemCallRemote.getReturnValue());
         }
 
-        LOGGER.info("Deployed cookbooks to VM with IP: "
+        LOGGER.info("Deployed cookbooks to chef server and VM with IP: "
                 + virtualMachineAddress);
 
     }
@@ -856,7 +856,7 @@ public class VirtualMachineImageConstructor implements Runnable {
                             + systemCallRemote.getReturnValue());
         }
 
-        LOGGER.info("Removed Cookbooks deployed to VM with IP: "
+        LOGGER.info("Removed Cookbooks from chef server deployed to VM with IP: "
                 + virtualMachineAddress);
 
     }
