@@ -49,10 +49,14 @@
 
 package eu.ascetic.paas.slam.pac.impl;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Properties;
+import java.util.Scanner;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -163,6 +167,30 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 		}
 
 		logger.debug("Properties file loaded...");
+		
+		//recover old monitorings...
+		logger.debug("Recovering old monitorings...");
+		String monitoringPath = confPath + sepr	+ "ascetic-slamanager" + sepr + "provisioning-adjustment" + sepr + "activeMonitorings";
+		File monitoringFile = new File(monitoringPath);
+		Scanner scanner = null;
+		try {
+			scanner = new Scanner(monitoringFile);
+
+			while (scanner.hasNextLine()) 
+			{
+				String lineFromFile = scanner.nextLine();
+				String[] parameters = lineFromFile.split("%%%");
+				
+				logger.info("PaaS Violation Checker - recovering an active monitoring with this parameters: topicId "+parameters[0]+", appId "+parameters[1]+", deploymentId "+parameters[2]+", slaId "+parameters[3]);
+				new Thread(new PaasViolationChecker(properties, parameters[0], parameters[1], parameters[2], parameters[3], true)).start();
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			if (scanner!=null) scanner.close();
+		}
+		if (scanner!=null) scanner.close();
+		//end
 	}
 
 	/**
@@ -214,7 +242,7 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 							String topicId = initiateMonitoring(amMessage.getApplicationId(), amMessage.getDeploymentId(), slaId);
 
 							logger.info("Creating an instance of Paas Violation Checker...");
-							new Thread(new PaasViolationChecker(properties, topicId, amMessage.getApplicationId(), amMessage.getDeploymentId(), slaId)).start();
+							new Thread(new PaasViolationChecker(properties, topicId, amMessage.getApplicationId(), amMessage.getDeploymentId(), slaId, false)).start();
 
 						}
 					} catch (Exception e) {
@@ -239,7 +267,7 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 	 * "application starting" event is catched
 	 */
 	private String retrieveApplicationDetails(String appId, String deploymentId) {
-		String slaId = "";
+		String slaId = "UNKNOWN";
 
 		try {
 			HttpClient client = new DefaultHttpClient();
@@ -263,6 +291,7 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			slaId = "UNKNOWN";
 		}
 
 		return slaId;
@@ -321,8 +350,8 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 					"\t\"Command\" : \"initiateMonitoring\",\n" +
 					"\t\"ApplicationId\" : \""+ appId + "\",\n" +
 					"\t\"DeploymentId\" : \""+ deploymentId + "\",\n" +
-					"\t\"SlaId\" : \""+ deploymentId + "\",\n" +
-					"\t\"Terms\" : [\"metric\" ],\n" +
+					"\t\"SlaId\" : \""+ slaId + "\",\n" +
+					"\t\"Terms\" : [\"power_usage_per_app\", \"energy_usage_per_app\" ],\n" +
 					"\t\"Frequency\" : 10000\n" +
 					"}");
 			messageProducer.send(message);
