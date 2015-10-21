@@ -493,6 +493,8 @@ iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/rest/VmmS
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/vmm/VmManager.java -text
 iaas/virtual-machine-manager/vmm-client/src/main/java/es/bsc/vmmclient/vmm/VmManagerClient.java -text
 iaas/virtual-machine-manager/vmm-client/src/test/java/D41TEST.java -text
+iaas/virtual-machine-manager/vmm-client/src/test/resources/fork-bomb.sh -text
+iaas/virtual-machine-manager/vmm-client/src/test/resources/webapp-ovf.xml -text
 iaas/virtual-machine-manager/vmmanager-frontend/LICENSE.md -text
 iaas/virtual-machine-manager/vmmanager-frontend/README.md -text
 iaas/virtual-machine-manager/vmmanager-frontend/app/app.js -text

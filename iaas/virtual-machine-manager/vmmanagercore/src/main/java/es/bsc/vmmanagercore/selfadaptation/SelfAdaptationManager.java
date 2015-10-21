@@ -104,6 +104,7 @@ public class SelfAdaptationManager {
      * Applies the self-adaptation configured to take place after a deployment request.
      */
     public void applyAfterVmsDeploymentSelfAdaptation() {
+        logger.info("Executing after vm deployment self-adaptation");
         AfterVmDeploymentSelfAdaptationOps options = getSelfAdaptationOptions().getAfterVmDeploymentSelfAdaptationOps();
 
         // Decide local search algorithm
@@ -132,6 +133,7 @@ public class SelfAdaptationManager {
      * Applies the self-adaptation configured to take place after deleting a VM.
      */
     public void applyAfterVmDeleteSelfAdaptation() {
+        logger.info("Executing Self-adaptation after VM deletion");
         AfterVmDeleteSelfAdaptationOps options = getSelfAdaptationOptions().getAfterVmDeleteSelfAdaptationOps();
 
         if (options.getLocalSearchAlgorithm() != null && options.getMaxExecTimeSeconds() > 0) {
@@ -151,6 +153,7 @@ public class SelfAdaptationManager {
      * Applies the self-adaptation configured to take place periodically.
      */
     public void applyPeriodicSelfAdaptation() {
+        logger.info("Executing periodic self-adaptation");
 		try {
 			PeriodicSelfAdaptationOps options = getSelfAdaptationOptions().getPeriodicSelfAdaptationOps();
 

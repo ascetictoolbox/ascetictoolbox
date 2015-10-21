@@ -163,6 +163,7 @@ public class OpenStackJclouds implements CloudMiddleware {
 
     @Override
     public List<String> getAllVMsIds() {
+        logger.debug("OpenStackJclouds.getAllVMsIds");
         List<String> vmIds = new ArrayList<>();
 
         for (Server server: openStackJcloudsApis.getServerApi().listInDetail().concat()) {
@@ -177,8 +178,10 @@ public class OpenStackJclouds implements CloudMiddleware {
 			try {
 				containsHost = hostNames.contains(server.getExtendedAttributes().get().getHostName());
 			} catch(Exception e) {
-				logger.warn("Error checking if vm is in host: " + e.getMessage(), e);
-			}
+                if(server != null) {
+                    logger.debug("Vm " + server.getId() + " is in the Testbed but not managed by this VMM. Ignoring");
+                }
+            }
             if (vmIsActive && !vmIsBeingDeleted && containsHost) {
                 vmIds.add(server.getId());
             }

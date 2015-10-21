@@ -5,8 +5,16 @@
     <artifactId>vmm-client</artifactId>
     <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
+    <repositories>
+        <repository>
+            <id>central</id>
+            <name>Maven Central</name>
+            <url>http://repo1.maven.org/maven2/</url>
+        </repository>
+    </repositories>
     <name>vmm-client</name>
     <url>http://maven.apache.org</url>
+
     <dependencies>
         <dependency>
             <groupId>com.squareup.retrofit</groupId>
