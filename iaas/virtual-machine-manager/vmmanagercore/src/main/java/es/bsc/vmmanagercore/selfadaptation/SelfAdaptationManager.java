@@ -167,7 +167,7 @@ public class SelfAdaptationManager {
 						vmManager.getRecommendedPlan(recommendedPlanRequest, true, new ArrayList<Vm>()).getVMPlacements());
 			}
 		} catch(CloudMiddlewareException ex) {
-
+            logger.error(ex.getMessage(),ex);
 		}
     }
 
