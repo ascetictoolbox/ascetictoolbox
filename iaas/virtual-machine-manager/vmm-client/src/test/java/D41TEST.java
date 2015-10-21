@@ -49,7 +49,7 @@ public class D41TEST extends TestCase {
 	@Ignore
 	public void testDeleteVMs() {
 		System.out.println("* deleting all vms");
-		for (VmDeployed vm : vmm.getVms()) {
+		for (VmDeployed vm : getVMsFromThisTest()) {
 			System.out.println("deleting " + vm.getName() + "... ");
 			vmm.destroyVm(vm.getId());
 		}
@@ -61,7 +61,7 @@ public class D41TEST extends TestCase {
 		System.out.println("* deploying new vms");
 			// deploy vms
 		List<Vm> toDeploy = new ArrayList<>();
-		for(int i = 1 ; i <= 10 ; i++) {
+		for(int i = 1 ; i <= 12 ; i++) {
 			Vm vm = new Vm("d41vm"+i,
 					"d967c216-cbc5-4dc7-b197-cc2a4e0752f8",
 					2,1024,1,6*512,
@@ -90,7 +90,7 @@ public class D41TEST extends TestCase {
 							"}\n" +
 							"\n" +
 							"forkfunc & forkfunc & forkfunc & forkfunc",
-					"test-id",null,null,true);
+					"test-id",null,null,false);
 
 			toDeploy.add(vm);
 		}
@@ -104,42 +104,66 @@ public class D41TEST extends TestCase {
 	}
 
 	@Ignore
-	public void testDistributionScenario() {
+	public void testConsolidationScenario() {
 
-		long WAIT_MS = 1 * 60 * 1000; // every 5 minutes
+		long WAIT_MS = 5 * 60 * 1000; // every 5 minutes
 
-		testDeleteVMs();
-		testDeployVms();
+		List<String> hosts = new ArrayList<>(Arrays.asList("wally159","wally162","wally163"));
+		int hostIndex = 2;
+
+//		testDeleteVMs();
+//		testDeployVms();
 
 		// eliminate VMs ordered by HOST (so always we are deleting)
-		List<VmDeployed> deployed = new ArrayList<>(vmm.getVms());
+		List<VmDeployed> deployed = getVMsFromThisTest();
 		Collections.sort(deployed, new VmDeployedComparatorByHost());
 
-		System.out.println("deployed.size() = " + deployed.size());
-
-		vmm.destroyVm(deployed.get(0).getId());
+		boolean first = true;
 		while(deployed.size() > 3) {
 
-			try {
-				Thread.sleep(WAIT_MS);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			deployed = new ArrayList<>(vmm.getVms());
-			Collections.sort(deployed, new VmDeployedComparatorByHost());
-
-			boolean first = true;
-			for (VmDeployed v : vmm.getVms()) {
-				System.out.println(v.getName() + "\t" + v.getHostName());
-				if (first) {
-					System.out.println(" (Destroying)");
-					vmm.destroyVm(v.getId());
-				}
+			if(first) {
 				first = false;
+			} else {
+				try {
+					Thread.sleep(WAIT_MS);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
-			System.out.println();
 
+			deployed = getVMsFromThisTest();
+			Collections.sort(deployed,new VmDeployedComparatorByHost());
+			for (VmDeployed v : deployed) {
+				System.out.println(v.getName() + "\t" + v.getHostName());
+			}
+
+			VmDeployed vmToDestroy = null;
+			boolean found = false;
+			while(!found) {
+				String hostToDestroy = hosts.get(hostIndex);
+				for(VmDeployed vm : deployed) {
+					if(hostToDestroy.equalsIgnoreCase(vm.getHostName())) {
+						found = true;
+						vmToDestroy = vm;
+						break;
+					}
+				}
+				hostIndex = (hostIndex + 1) % hosts.size();
+			}
+			System.out.println("Destroying " + vmToDestroy.getName() + " from " + vmToDestroy.getHostName());
+			vmm.destroyVm(vmToDestroy.getId());
 		}
+	}
+
+	private List<VmDeployed> getVMsFromThisTest() {
+		List<VmDeployed> all = vmm.getVms();
+		ArrayList<VmDeployed> test = new ArrayList<>();
+		for(VmDeployed a : all) {
+			if(a.getName().startsWith("d41vm")) {
+				test.add(a);
+			}
+		}
+		return test;
 	}
 
 	private class VmDeployedComparatorByHost implements Comparator<VmDeployed> {
@@ -150,3 +174,30 @@ public class D41TEST extends TestCase {
 	}
 
 }
+
+
+//d41vm12	wally159
+//d41vm11	wally159
+//d41vm7	wally159
+//d41vm4	wally159
+//d41vm9	wally162
+//d41vm8	wally162
+//d41vm5	wally162
+//d41vm3	wally162
+//d41vm10	wally163
+//d41vm6	wally163
+//d41vm2	wally163
+//d41vm1	wally163
+//Destroying d41vm12 from wally159
+//d41vm11	wally159
+//d41vm7	wally159
+//d41vm4	wally159
+//d41vm9	wally162
+//d41vm8	wally162
+//d41vm5	wally162
+//d41vm3	wally162
+//d41vm10	wally163
+//d41vm6	wally163
+//d41vm2	wally163
+//d41vm1	wally163
+//Destroying d41vm9 from wally162
