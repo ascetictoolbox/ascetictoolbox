@@ -20,6 +20,7 @@ package es.bsc.vmmanagercore.rest;
 
 import com.sun.jersey.spi.resource.Singleton;
 import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddlewareException;
+import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
 import es.bsc.vmmanagercore.manager.GenericVmManager;
 import es.bsc.vmmanagercore.manager.VmManager;
 
@@ -45,8 +46,7 @@ at every request. This increases performance greatly.*/
 @Path("/vmmanager")
 public class VmManagerRest {
 
-    private static final String DB_NAME = "VmManagerDb";
-    private VmManager vmManager = new GenericVmManager(DB_NAME);
+    private VmManager vmManager = new GenericVmManager(VmManagerConfiguration.getInstance().dbName);
 
     private VmCallsManager vmCallsManager = new VmCallsManager(vmManager);
     private ImageCallsManager imageCallsManager = new ImageCallsManager(vmManager);

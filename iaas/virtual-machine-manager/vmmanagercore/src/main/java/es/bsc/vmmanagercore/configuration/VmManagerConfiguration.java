@@ -38,6 +38,9 @@ public class VmManagerConfiguration {
 	private static final String PROPNAME_CONF_FILE = "config";
 
     private static final String DEFAULT_CONF_FILE_LOCATION = "/etc/ascetic/vmm/vmmconfig.properties";
+    private static final String DEFAULT_DB_NAME = "VmManagerDb";
+
+    public String dbName;
 
     // OpenStack configuration
     public String openStackIP;
@@ -111,6 +114,7 @@ public class VmManagerConfiguration {
      * @param prop properties file that contains the configuration parameters
      */
     private void initializeClassAttributes(Configuration prop) {
+        dbName = prop.getString("dbName", DEFAULT_DB_NAME);
         openStackIP = prop.getString("openStackIP");
         keyStonePort = prop.getInt("keyStonePort");
         glancePort = prop.getInt("glancePort");
@@ -192,6 +196,7 @@ public class VmManagerConfiguration {
 	@Override
 	public String toString() {
 		return "VmManagerConfiguration{" +
+                "\n\tdbName='" + dbName + '\'' +
 				"\n\topenStackIP='" + openStackIP + '\'' +
 				"\n\tkeyStonePort=" + keyStonePort +
 				"\n\tglancePort=" + glancePort +
