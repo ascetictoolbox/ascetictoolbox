@@ -3,10 +3,7 @@ import es.bsc.vmmclient.vmm.VmManagerClient;
 import junit.framework.TestCase;
 import org.junit.Ignore;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class D41TEST extends TestCase {
 
@@ -64,7 +61,7 @@ public class D41TEST extends TestCase {
 		System.out.println("* deploying new vms");
 			// deploy vms
 		List<Vm> toDeploy = new ArrayList<>();
-		for(int i = 1 ; i <= 12 ; i++) {
+		for(int i = 1 ; i <= 10 ; i++) {
 			Vm vm = new Vm("d41vm"+i,
 					"d967c216-cbc5-4dc7-b197-cc2a4e0752f8",
 					2,1024,1,6*512,
@@ -108,20 +105,47 @@ public class D41TEST extends TestCase {
 
 	@Ignore
 	public void testDistributionScenario() {
+
+		long WAIT_MS = 1 * 60 * 1000; // every 5 minutes
+
 		testDeleteVMs();
 		testDeployVms();
 
 		// eliminate VMs ordered by HOST (so always we are deleting)
-//		Set<VmDeployed>
-//
+		List<VmDeployed> deployed = new ArrayList<>(vmm.getVms());
+		Collections.sort(deployed, new VmDeployedComparatorByHost());
 
-		String nodeToDelete = "wally162";
+		System.out.println("deployed.size() = " + deployed.size());
 
-		for(VmDeployed vm : vmm.getVms()) {
-			if(nodeToDelete.equals(vm.getHostName())) {
-				System.out.println("\tDeleting " + vm.getIpAddress());
-				vmm.destroyVm(vm.getId());
+		vmm.destroyVm(deployed.get(0).getId());
+		while(deployed.size() > 3) {
+
+			try {
+				Thread.sleep(WAIT_MS);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
+			deployed = new ArrayList<>(vmm.getVms());
+			Collections.sort(deployed, new VmDeployedComparatorByHost());
+
+			boolean first = true;
+			for (VmDeployed v : vmm.getVms()) {
+				System.out.println(v.getName() + "\t" + v.getHostName());
+				if (first) {
+					System.out.println(" (Destroying)");
+					vmm.destroyVm(v.getId());
+				}
+				first = false;
+			}
+			System.out.println();
+
+		}
+	}
+
+	private class VmDeployedComparatorByHost implements Comparator<VmDeployed> {
+		@Override
+		public int compare(VmDeployed o1, VmDeployed o2) {
+			return o1.getHostName().compareTo(o2.getHostName());
 		}
 	}
 

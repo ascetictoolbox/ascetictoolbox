@@ -177,7 +177,11 @@ public class VmsManager {
 
         // If the monitoring system is Zabbix, then we need to delete the VM from Zabbix
         if (usingZabbix()) {
-            ZabbixConnector.deleteVmFromZabbix(vmId, vmToBeDeleted.getHostName());
+            try {
+                ZabbixConnector.deleteVmFromZabbix(vmId, vmToBeDeleted.getHostName());
+            } catch(Exception e) {
+                log.error(e.getMessage(),e);
+            }
         }
 		log.debug(vmId + " destruction took " + (System.currentTimeMillis()/1000.0) + " seconds");
         MessageQueue.publishMessageVmDestroyed(vmToBeDeleted);
