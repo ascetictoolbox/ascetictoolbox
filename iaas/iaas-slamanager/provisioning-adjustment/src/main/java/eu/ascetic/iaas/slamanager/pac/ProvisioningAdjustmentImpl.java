@@ -32,10 +32,12 @@
 
 package eu.ascetic.iaas.slamanager.pac;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Scanner;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -56,13 +58,12 @@ import org.slasoi.gslam.pac.Event;
 import org.slasoi.gslam.pac.EventType;
 import org.slasoi.gslam.pac.ProvisioningAndAdjustment;
 
-import eu.ascetic.iaas.slamanager.pac.vmm.VmManagerClient;
-import eu.ascetic.iaas.slamanager.pac.vmm.models.VmDeployed;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import eu.ascetic.iaas.slamanager.pac.vmm.VmManagerClient;
+import eu.ascetic.iaas.slamanager.pac.vmm.models.VmDeployed;
 
 /**
  * DOMAIN SPECIFIC PAC.
@@ -162,6 +163,32 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 		}
 
 		logger.debug("Properties file loaded...");
+		
+		//recover old monitorings...
+				logger.debug("Recovering old monitorings...");
+				String monitoringPath = confPath + sepr	+ "ascetic-iaas-slamanager" + sepr + "provisioning-adjustment" + sepr + "activeMonitorings";
+				File monitoringFile = new File(monitoringPath);
+				Scanner scanner = null;
+				try {
+					scanner = new Scanner(monitoringFile);
+
+					while (scanner.hasNextLine()) 
+					{
+						String lineFromFile = scanner.nextLine();
+						String[] parameters = lineFromFile.split("%%%");
+						
+						logger.info("IaaS Violation Checker - recovering an active monitoring with this parameters: topicId "+parameters[0]+", vmId "+parameters[1]+", ovfId "+parameters[2]+", slaId "+parameters[3]);
+						new Thread(new IaasViolationChecker(properties, parameters[0], parameters[1], parameters[2], parameters[3], true)).start();
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					if (scanner!=null) scanner.close();
+				}
+				if (scanner!=null) scanner.close();
+				//end
+		
+		
 
 //		// SharedKnowledgePlane.getInstance(this.pacID).initKnowledgeBase(properties.getProperty(LOG_MODE_DROOLS));
 //		String rules_path = configurationFilesPath + properties.getProperty(INITIAL_RULES_FILE);
@@ -245,7 +272,7 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 //                        String slaId = retrieveVmDetails(null,null);
                         
                         logger.info("Creating an instance of Iaas Violation Checker...");
-                        new Thread(new IaasViolationChecker(properties, "infrastructure-monitor.monitoring.measurement", vmId, ovfId, slaId)).start();
+                        new Thread(new IaasViolationChecker(properties, "infrastructure-monitor.monitoring.measurement", vmId, ovfId, slaId, false)).start();
                         
                     }
                 } catch (JMSException e) {

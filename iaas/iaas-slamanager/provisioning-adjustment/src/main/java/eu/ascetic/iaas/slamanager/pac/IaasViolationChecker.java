@@ -16,13 +16,20 @@
 
 package eu.ascetic.iaas.slamanager.pac;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Scanner;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -67,23 +74,74 @@ public class IaasViolationChecker implements Runnable {
 	private String vmId;
 	private Connection measurementsConnection;
 	private Connection vmEventsConnection;
+	private boolean recovered;
 
     public static final String FIELD_VM_ID = "id";
 	public static final String FIELD_OVF_ID = "ovfId";
 	public static final String FIELD_SLA_ID = "slaId";
 	
 	
-	public IaasViolationChecker(Properties properties, String topicId, String vmId, String ovfId, String slaId) {
+	public IaasViolationChecker(Properties properties, String topicId, String vmId, String ovfId, String slaId, boolean recovered) {
 		super();
 		this.topicId = topicId;
 		this.vmId = vmId;
 		this.ovfId = ovfId;
 		this.slaId = slaId;
 		this.properties = properties;
+		this.recovered = recovered;
 	}
 
 	public void run() {
-		logger.info("New IaaS Violation Checker instantiated: topicId "+topicId+", vmId "+vmId+", slaId "+slaId);
+		logger.info("New IaaS Violation Checker instantiated: topicId "+topicId+", vmId "+vmId+", ovfId "+ovfId+", slaId "+slaId);
+		
+		//write monitoring info to file
+				String monitoringString = topicId + "%%%" + vmId + "%%%" + ovfId + "%%%"+slaId;
+
+				String sepr = System.getProperty("file.separator");
+				String confPath = System.getenv("SLASOI_HOME");
+				String monitoringPath = confPath + sepr	+ "ascetic-slamanager" + sepr + "provisioning-adjustment" + sepr + "activeMonitorings";
+				File monitoringFile = new File(monitoringPath);
+
+				Scanner scanner = null;
+				PrintWriter writer = null;
+				try {
+					scanner = new Scanner(monitoringFile);
+					writer = new PrintWriter(new FileWriter(monitoringFile,true));
+
+					boolean found = false;
+					while (scanner.hasNextLine()) 
+					{
+						String lineFromFile = scanner.nextLine();
+						if (monitoringString.equals(lineFromFile))
+						{
+							found = true;
+							break;
+						}
+					}
+
+					if (!found) {
+						writer.write(monitoringString+ System.getProperty("line.separator"));
+						writer.close();
+						scanner.close();
+					}
+					else {
+						if (!recovered) {
+						logger.info("IaaS Violation Checker : topicId "+topicId+", vmId "+vmId+", ovfId "+ovfId+", slaId "+slaId + " is still being monitored. Exiting...");
+						if (writer!=null) writer.close();
+						if (scanner!=null) scanner.close();
+						return;
+						}
+						if (writer!=null) writer.close();
+						if (scanner!=null) scanner.close();
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					if (writer!=null) writer.close();
+					if (scanner!=null) scanner.close();
+				}
+				//end
+		
 		logger.info("Retrieving VM events from the message queue...");
 		retrieveVmEvents();
 
@@ -169,6 +227,46 @@ public class IaasViolationChecker implements Runnable {
 								logger.info("Closing message queue connections and stopping the monitoring...");
 								measurementsConnection.close();
 								vmEventsConnection.close();
+								
+								//remove monitoring info to file
+								String monitoringString = topicId + "%%%" + vmId + "%%%" + ovfId + "%%%"+slaId;
+								logger.info("Removing monitoring info from file, entry: "+monitoringString );
+								
+								String sepr = System.getProperty("file.separator");
+								String confPath = System.getenv("SLASOI_HOME");
+								String monitoringPath = confPath + sepr	+ "ascetic-iaas-slamanager" + sepr + "provisioning-adjustment" + sepr + "activeMonitorings";
+								String tempPath = confPath + sepr	+ "ascetic-iaas-slamanager" + sepr + "provisioning-adjustment" + sepr + "temp";
+								File monitoringFile = new File(monitoringPath);
+								File tempFile = new File(tempPath);
+								try {
+									BufferedReader reader = new BufferedReader(new FileReader(monitoringFile));
+									BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+
+									String currentLine;
+
+									while((currentLine = reader.readLine()) != null) {
+										// trim newline when comparing with lineToRemove
+										String trimmedLine = currentLine.trim();
+										if(trimmedLine.equals(monitoringString)) {
+
+											continue;
+										}
+										writer.write(currentLine + System.getProperty("line.separator"));
+									}
+									reader.close(); 
+									writer.close(); 
+									monitoringFile.setWritable(true);
+									boolean rimozione = monitoringFile.delete();
+									if (rimozione) {
+										boolean successful = tempFile.renameTo(monitoringFile);
+									}
+								} catch (Exception ex) {
+									ex.printStackTrace();
+									logger.error(ex.getMessage());
+								}
+								//end
+								
+								
 								return;
 							}
 
