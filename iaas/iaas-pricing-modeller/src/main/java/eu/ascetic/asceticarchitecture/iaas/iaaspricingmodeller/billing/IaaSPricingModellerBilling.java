@@ -86,11 +86,14 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
 			
 				if (apps.containsKey(vm.getAppID())){
 					apps.get(vm.getAppID()).addVM(vm);
+					System.out.println("in old");
 				}
 				else{
 					AppInfo app = new AppInfo(vm.getAppID());
 					app.addVM(vm);
 					apps.put(vm.getAppID(), app);
+					System.out.println("in new");
+					 System.out.println("in" + vm.getVMid());
 				}
 					
 			}
@@ -122,6 +125,7 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
 	
 	@Override
 	public double getVMCharges(String VMid) {
+		 System.out.println("charges"+VMid);
 		IaaSPricingModellerPricingScheme scheme = getVM(VMid).getPricingScheme();
 		return scheme.getTotalCharges(getVM(VMid));
 	}
@@ -195,13 +199,15 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
     }
 
 	public double getAppCharges(int appID) {
-		double charges=0;
+		
 			if (apps.containsKey(appID)){
+				double charges=0;
 				LinkedList<VMstate> temp = apps.get(appID).getList();
 				 ListIterator<VMstate> listIterator = temp.listIterator();
+				 System.out.println(apps.size());
 				 while(listIterator.hasNext()){
 					 String VMid = listIterator.next().getVMid();
-					 
+					 System.out.println("second"+VMid);
 					 charges = charges+getVMCharges(VMid);
 				 }
 				

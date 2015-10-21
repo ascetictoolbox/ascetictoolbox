@@ -20,6 +20,8 @@
  * @author E. Agiatzidou
  */
 
+import java.util.LinkedList;
+
 import org.junit.After;
 import org.junit.AfterClass;
 
@@ -29,8 +31,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.IaaSPricingModeller;
 
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.*;
 
 public class PredictionTest 
 {
@@ -68,14 +70,15 @@ public class PredictionTest
         System.out.println("Predicted charges for scheme 1:" + prModeller.getVMChargesPrediction(2, 2, 20.0, 1, 3600L, "a1"));  
         System.out.println("Predicted price for scheme 1:" + prModeller.getVMPricePerHourPrediction(2, 2, 20.0, 1, 3600L, "a1")); 
          **/
-        System.out.println("Predicted charges for scheme 2:" + prModeller.getVMChargesPrediction(2, 2, 20.0, 2, 3600L, "a1"));  
-        System.out.println("Predicted price for scheme 2:" + prModeller.getVMPricePerHourPrediction(2, 2, 20.0, 2, 3600L, "a1")); 
+       // System.out.println("Predicted charges for scheme 2:" + prModeller.getVMChargesPrediction(2, 2, 20.0, 2, 3600L, "a1"));  
+        //System.out.println("Predicted price for scheme 2:" + prModeller.getVMPricePerHourPrediction(2, 2, 20.0, 2, 3600L, "a1")); 
        
-       // prModeller.initializeVM("el", 2, "2a"); 
-       // System.out.println("Final charges:"+prModeller.getVMFinalCharges("el", true));
+       // prModeller.initializeVM("el", 2, 1024, 50000, 1, "435e", 1);
+       // prModeller.initializeVM("el2", 2, 1024, 50000, 1, "435e", 1);
+     // System.out.println("Final charges for VM:"+prModeller.getVMFinalCharges("el", false));
+      //  System.out.println("Final charges for APP:"+prModeller.getAppFinalCharges(1, true));
       //Prediction for Pricing Scheme 0
-    
-    
+        
     }
 	
 

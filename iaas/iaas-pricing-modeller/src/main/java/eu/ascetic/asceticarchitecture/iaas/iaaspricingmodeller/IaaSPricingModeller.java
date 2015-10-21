@@ -96,6 +96,39 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
     }
 	
 	
+	
+public void initializeVM(String VMid, int CPU, int RAM, double storage, int schemeId, String hostname, int appID){
+		
+	
+		VMinfo vm = new VMinfo (RAM, CPU, storage, hostname);
+				
+		IaaSPricingModellerPricingScheme scheme = initializeScheme(schemeId);
+		VMstate VM = new VMstate(VMid, vm, energyProvider, scheme, appID);
+		
+		if (schemeId== 2){
+			EnergyPrediction energyVM = getEnergyPredicted(CPU, RAM, storage, hostname);
+			VM.getPredictedInformation().setPredictionOfEnergy(energyVM);
+			VM.setPredictedCharges(billing.predictVMCharges(VM).getPriceOnly());
+
+		}
+		scheme.setEnergyModeller(energyModeller);
+		
+		
+		billing.registerVM(VM);
+	}
+	
+	
+	
+
+public double getAppFinalCharges(int appID, boolean deleteApp){
+	double charges = billing.getAppCharges(appID);
+	if (deleteApp)
+		billing.unregisterApp(appID);
+	return charges;
+}
+	
+	
+	
 	//////////////////////////NEW///////////////////////////////////////
 	public double getAppPredictedCharges(int appID, LinkedList<VMinfo> VMs, int schemeId,  long duration){
 		LinkedList<VMstate> AppVMs = new LinkedList<>();
@@ -227,12 +260,21 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
 	 * 	In order to start billing a VM this function has to be called first. 
 	 * @param VMid: the ID of the VM, the same used with the Energy Modeller.
 	 * @param schemeId: the Pricing scheme of the VM
-	 */
+	
 	public void initializeVM(String VMid, int schemeId, String hostname){
+		int CPU=-1;
+		int RAM =1;
+		double storage=-1;
 		
-		int CPU = energyModeller.getVM(VMid).getCpus();
-		int RAM = energyModeller.getVM(VMid).getRamMb();
-	   double storage = energyModeller.getVM(VMid).getDiskGb();
+		try {
+			CPU = energyModeller.getVM(VMid).getCpus();
+			RAM = energyModeller.getVM(VMid).getRamMb();
+			storage = energyModeller.getVM(VMid).getDiskGb();
+			
+			} catch (NullPointerException ex) {
+			   logger.info("The VM with VMid "+VMid+"Has not been registered");
+			}
+
 		
 		VMinfo vm = new VMinfo (RAM, CPU, storage, hostname);
 				
@@ -254,12 +296,22 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
 	 * 	In order to start billing a VM this function has to be called first. 
 	 * @param VMid: the ID of the VM, the same used with the Energy Modeller.
 	 * @param schemeId: the Pricing scheme of the VM
-	 */
+	 
 	public void initializeVM(String VMid, int schemeId, String hostname, int appID){
 		
-		int CPU = energyModeller.getVM(VMid).getCpus();
-		int RAM = energyModeller.getVM(VMid).getRamMb();
-	    double storage = energyModeller.getVM(VMid).getDiskGb();
+		int CPU=-1;
+		int RAM =1;
+		double storage=-1;
+		
+		try {
+			CPU = energyModeller.getVM(VMid).getCpus();
+			RAM = energyModeller.getVM(VMid).getRamMb();
+			storage = energyModeller.getVM(VMid).getDiskGb();
+			
+			
+			} catch (NullPointerException ex) {
+				
+			}
 		
 		VMinfo vm = new VMinfo (RAM, CPU, storage, hostname);
 				
@@ -274,15 +326,11 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
 		}
 		scheme.setEnergyModeller(energyModeller);
 		
+		
 		billing.registerVM(VM);
 	}
 	
-	public double getAppFinalCharges(int appID, boolean deleteApp){
-		double charges = billing.getAppCharges(appID);
-		if (deleteApp)
-			billing.unregisterApp(appID);
-		return charges;
-	}
+	
 	/**
 	 * When calling this function, the VM stops its operation and the final charges are returned	
 	 * @param VMid
@@ -346,28 +394,43 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
     }
     
     public EnergyPrediction getEnergyPredicted(int CPU, int RAM, double storage, long duration, String hostname){
+    	EnergyPrediction energyVM = new EnergyPrediction();
+    	try{
     	VM newVM = new VM(CPU, RAM, storage);
 		TimeParameters dur = new TimeParameters(duration);
 		TimePeriod dura = new TimePeriod(dur.getStartTime(), dur.getEndTime());
 		Host host = energyModeller.getHost(hostname);
 		Collection <VmDeployed> collection =  energyModeller.getVMsOnHost(host);
 		Collection <VM> col = castCollection(collection);
-		EnergyPrediction energyVM = new EnergyPrediction();
+		
 		energyVM.setTotalEnergy(energyModeller.getPredictedEnergyForVM(newVM, col, host, dura).getTotalEnergyUsed());
 		energyVM.setAvergPower(energyModeller.getPredictedEnergyForVM(newVM, col, host, dura).getAvgPowerUsed());
+    	}
+    	catch (NullPointerException ex){
+    		
+    		energyVM.setTotalEnergy(100);
+    		energyVM.setAvergPower(100);
+    	}
 		return energyVM;
 
 		
     }
     
     public EnergyPrediction getEnergyPredicted(int CPU, int RAM, double storage, String hostname){
+    	EnergyPrediction energyVM = new EnergyPrediction();
+    	try{
     	VM newVM = new VM(CPU, RAM, storage);
 		Host host = energyModeller.getHost(hostname);
 		Collection <VmDeployed> collection =  energyModeller.getVMsOnHost(host);
 		Collection <VM> col = castCollection(collection);
-		EnergyPrediction energyVM = new EnergyPrediction();
+		
 		energyVM.setTotalEnergy(energyModeller.getPredictedEnergyForVM(newVM, col, host).getTotalEnergyUsed());
 		energyVM.setAvergPower(energyModeller.getPredictedEnergyForVM(newVM, col, host).getAvgPowerUsed());
+    	}
+    	catch (NullPointerException ex){
+    		energyVM.setTotalEnergy(100);
+    		energyVM.setAvergPower(100);
+    	}
 		return energyVM;
     }
     

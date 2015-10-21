@@ -68,15 +68,19 @@ public class  IaaSPricingModellerCost implements IaaSPricingModellerCostInterfac
 	}
 
 	public double updateEnergy(VMstate VM){
-		
+		double difference = 0;
+		try{
 		VmDeployed vm = energyModeller.getVM(VM.getVMid());
 		TimePeriod timePeriod = new TimePeriod(VM.getStartTime(), VM.getChangeTime());
 		double newEnergyValue = energyModeller.getEnergyRecordForVM(vm, timePeriod).getTotalEnergyUsed();
 		VM.setTotalEnergyConsumed(newEnergyValue);
-		double difference = newEnergyValue-VM.getEnergyConsumedLast();
+		difference = newEnergyValue-VM.getEnergyConsumedLast();
 		
 		VM.setEnergyConsumedLast(newEnergyValue);
-		
+		}
+		catch (NullPointerException ex){
+			difference = 100;
+		}
 		return difference;
 
 	}
