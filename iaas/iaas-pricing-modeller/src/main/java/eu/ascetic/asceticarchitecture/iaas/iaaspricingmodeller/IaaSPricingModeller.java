@@ -428,8 +428,8 @@ public double getAppFinalCharges(int appID, boolean deleteApp){
 		energyVM.setAvergPower(energyModeller.getPredictedEnergyForVM(newVM, col, host).getAvgPowerUsed());
     	}
     	catch (NullPointerException ex){
-    		energyVM.setTotalEnergy(100);
-    		energyVM.setAvergPower(100);
+    		energyVM.setTotalEnergy(0);
+    		energyVM.setAvergPower(0);
     	}
 		return energyVM;
     }

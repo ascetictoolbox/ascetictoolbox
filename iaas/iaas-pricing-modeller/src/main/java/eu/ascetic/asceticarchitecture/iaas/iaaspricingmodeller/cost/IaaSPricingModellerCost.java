@@ -79,7 +79,7 @@ public class  IaaSPricingModellerCost implements IaaSPricingModellerCostInterfac
 		VM.setEnergyConsumedLast(newEnergyValue);
 		}
 		catch (NullPointerException ex){
-			difference = 100;
+			difference = 0;
 		}
 		return difference;
 
