@@ -257,7 +257,7 @@ public class VmsManager {
 
             if (pricingModeller instanceof AsceticPricingModellerAdapter) {
 				try {
-                	initializeVmBilling(vmId, hostForDeployment.getHostname());
+                	initializeVmBilling(vmId, hostForDeployment.getHostname(), vmToDeploy.getApplicationId());
 				} catch(Exception e) {
 					log.error("Error when initializing vm billing: " + e.getMessage(), e);
 				}
@@ -462,7 +462,7 @@ public class VmsManager {
         }
     }
 
-    private void initializeVmBilling(final String vmId, final String hostname) {
+    private void initializeVmBilling(final String vmId, final String hostname, final String appId) {
         Thread thread = new Thread() {
             public void run(){
 				//
@@ -472,7 +472,7 @@ public class VmsManager {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				((AsceticPricingModellerAdapter) pricingModeller).initializeVmBilling(vmId, hostname);
+				pricingModeller.initializeVM(vmId,  hostname, appId);
             }
         };
         thread.start();

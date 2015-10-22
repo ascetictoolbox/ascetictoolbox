@@ -56,7 +56,7 @@ public interface PricingModeller {
 
 	EnergyPrediction getEnergyPredicted(int CPU, int RAM, double storage, String hostname);
 
-	void initializeVM(String VMid, int schemeId, String hostname);
+	void initializeVM(String VMid, String hostname, String appId);
 
 	IaaSPricingModellerBilling getBilling();
 

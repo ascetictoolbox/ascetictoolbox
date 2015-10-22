@@ -75,7 +75,7 @@ public class DummyPricingModeller implements PricingModeller {
 	}
 
 	@Override
-	public void initializeVM(String VMid, int schemeId, String hostname) {
+	public void initializeVM(String VMid, String hostname, String appId) {
 
 	}
 

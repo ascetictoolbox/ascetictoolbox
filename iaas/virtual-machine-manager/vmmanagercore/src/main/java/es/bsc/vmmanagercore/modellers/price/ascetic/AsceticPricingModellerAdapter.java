@@ -52,52 +52,59 @@ public class AsceticPricingModellerAdapter implements PricingModeller {
 
     }*/
 
-    public void initializeVmBilling(String vmId, String hostname) {
-        pricingModeller.initializeVM(vmId, getSchemeIdForVm(), hostname);
-    }
 
     // For now, return always 1. This will be changed once we get this information from the PaaS level.
     private int getSchemeIdForVm() {
         return 1;
     }
 
+	@Override
 	public double getVMChargesPrediction(int cpus, int ramMb, double diskGb, String hostname) {
 		return pricingModeller.getVMChargesPrediction(
 				cpus, ramMb, diskGb, getSchemeIdForVm(), FIXED_DURATION_MIN, hostname);
 	}
 
+	@Override
 	public IaaSPricingModeller getIaaSprovider(int id) {
 		return pricingModeller.getIaaSprovider(id);
 	}
 
+	@Override
 	public EnergyProvider getEnergyProvider() {
 		return pricingModeller.getEnergyProvider();
 	}
 
+	@Override
 	public IaaSPricingModellerPricingScheme initializeScheme(int schemeId) {
 		return pricingModeller.initializeScheme(schemeId);
 	}
 
+	@Override
 	public double getVMPricePerHourPrediction(int CPU, int RAM, double storage, int schemeId, long duration, String hostname) {
 		return pricingModeller.getVMPricePerHourPrediction(CPU, RAM, storage, schemeId, duration, hostname);
 	}
 
+	@Override
 	public double getVMFinalCharges(String VMid, boolean deleteVM) {
 		return pricingModeller.getVMFinalCharges(VMid, deleteVM);
 	}
 
+	@Override
 	public EnergyPrediction getEnergyPredicted(int CPU, int RAM, double storage, long duration, String hostname) {
 		return pricingModeller.getEnergyPredicted(CPU, RAM, storage, duration, hostname);
 	}
 
+	@Override
 	public EnergyPrediction getEnergyPredicted(int CPU, int RAM, double storage, String hostname) {
 		return pricingModeller.getEnergyPredicted(CPU, RAM, storage, hostname);
 	}
 
-	public void initializeVM(String VMid, int schemeId, String hostname) {
-		pricingModeller.initializeVM(VMid, schemeId, hostname);
+	@Override
+	public void initializeVM(String VMid, String hostname, String appId ) {
+		pricingModeller.initializeVM(VMid, getSchemeIdForVm(), hostname, appId);
 	}
 
+	@Override
 	public IaaSPricingModellerBilling getBilling() {
 		return pricingModeller.getBilling();
 	}
