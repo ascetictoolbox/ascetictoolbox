@@ -39,7 +39,7 @@ import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.*;
 
 public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInterface {
 
-	HashMap<Integer, AppInfo> apps = new HashMap<Integer, AppInfo>();
+	HashMap<String, AppInfo> apps = new HashMap<String, AppInfo>();
 
 	static HashMap<String, VMstate> registeredStaticEnergyPricesVMs = new HashMap<String, VMstate>();
 	static HashMap<String, VMstate> registeredDynamicEnergyPricesVMs = new HashMap<String, VMstate>();

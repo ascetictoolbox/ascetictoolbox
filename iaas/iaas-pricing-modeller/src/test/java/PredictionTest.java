@@ -73,7 +73,7 @@ public class PredictionTest
        // System.out.println("Predicted charges for scheme 2:" + prModeller.getVMChargesPrediction(2, 2, 20.0, 2, 3600L, "a1"));  
         //System.out.println("Predicted price for scheme 2:" + prModeller.getVMPricePerHourPrediction(2, 2, 20.0, 2, 3600L, "a1")); 
        
-        prModeller.initializeVM("el", 2, 1024, 50000, 1, "435e", 1);
+        prModeller.initializeVM("el", 2, 1024, 50000, 1, "435e", "1");
        // prModeller.initializeVM("el2", 2, 1024, 50000, 1, "435e", 1);
      // System.out.println("Final charges for VM:"+prModeller.getVMFinalCharges("el", false));
         System.out.println("Final charges for APP:"+prModeller.getAppFinalCharges(1, true));

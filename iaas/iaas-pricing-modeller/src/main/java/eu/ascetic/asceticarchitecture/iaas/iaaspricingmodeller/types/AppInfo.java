@@ -20,17 +20,17 @@ import java.util.LinkedList;
 
 public class AppInfo {
 
-	int appID;
+	String appID;
 	
 	LinkedList<VMstate> vms;
 	
-	public AppInfo(int appID){
+	public AppInfo(String appID){
 		this.appID=appID;
 		vms = new LinkedList<VMstate>();
 	}
 	
 	
-	public int getAppID(){
+	public String getAppID(){
 		return appID;
 	}
 	

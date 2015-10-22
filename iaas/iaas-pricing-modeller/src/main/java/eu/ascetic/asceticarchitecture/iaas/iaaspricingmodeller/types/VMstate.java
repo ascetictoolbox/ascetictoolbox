@@ -34,7 +34,7 @@ public class VMstate {
 	/* The pricing scheme according to which this VM is charged*/
 	IaaSPricingModellerPricingScheme pricingScheme; 
 	
-	int appID;
+	String appID;
 	
 	Charges energyCharges;
 	
@@ -67,7 +67,7 @@ public class VMstate {
 
 	}
 	
-	public VMstate (String VMid, VMinfo vm, EnergyProvider provider, IaaSPricingModellerPricingScheme scheme,int appID){
+	public VMstate (String VMid, VMinfo vm, EnergyProvider provider, IaaSPricingModellerPricingScheme scheme,String appID){
 		changesToCharacteristics.push(vm);
 		this.VMid = VMid;
 		this.provider = provider;
@@ -124,11 +124,11 @@ public class VMstate {
 		return provider;
 	}
 	
-	public void setAppID(int id){
+	public void setAppID(String id){
 		this.appID=id;
 	}
 	
-	public int getAppID(){
+	public String getAppID(){
 		return appID;
 	}
 

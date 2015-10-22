@@ -98,7 +98,7 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface{
 	
 	
 	
-public void initializeVM(String VMid, int CPU, int RAM, double storage, int schemeId, String hostname, int appID){
+public void initializeVM(String VMid, int CPU, int RAM, double storage, int schemeId, String hostname, String appID){
 		
 	
 		VMinfo vm = new VMinfo (RAM, CPU, storage, hostname);
@@ -126,7 +126,7 @@ public void initializeVM(String VMid, int CPU, int RAM, double storage, int sche
 * @param VMid: the ID of the VM, the same used with the Energy Modeller.
 * @param schemeId: the Pricing scheme of the VM
 */
-public void initializeVM(String VMid, int schemeId, String hostname, int appID){
+public void initializeVM(String VMid, int schemeId, String hostname, String appID){
 
 	int CPU=0;
 	int RAM =0;
@@ -171,7 +171,7 @@ public double getAppFinalCharges(int appID, boolean deleteApp){
 	
 	
 	//////////////////////////NEW///////////////////////////////////////
-	public double getAppPredictedCharges(int appID, LinkedList<VMinfo> VMs, int schemeId,  long duration){
+	public double getAppPredictedCharges(String appID, LinkedList<VMinfo> VMs, int schemeId,  long duration){
 		LinkedList<VMstate> AppVMs = new LinkedList<>();
 		IaaSPricingModellerPricingScheme scheme = initializeScheme(schemeId);
 		scheme.setEnergyModeller(energyModeller);
@@ -197,7 +197,7 @@ public double getAppFinalCharges(int appID, boolean deleteApp){
 	}
 	
 	
-	public double getAppPredictedPricePerHour(int appID, LinkedList<VMinfo> VMs, int schemeId,  long duration){
+	public double getAppPredictedPricePerHour(String appID, LinkedList<VMinfo> VMs, int schemeId,  long duration){
 		LinkedList<VMstate> AppVMs = new LinkedList<>();
 		IaaSPricingModellerPricingScheme scheme = initializeScheme(schemeId);
 		scheme.setEnergyModeller(energyModeller);
