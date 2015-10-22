@@ -266,9 +266,9 @@ public class DataGatherer implements Runnable {
             Logger.getLogger(DataGatherer.class.getName()).log(Level.FINE, "Data gatherer: Writing out host information");
             double power = measurement.getPower(true);
             if (power == -1) {
-                    return; //This guards against not having a Watt meter attached.                    
+                return; //This guards against not having a Watt meter attached.                    
             }
-            double energy = 0; 
+            double energy = 0;
             if (measurement.getEnergyMetricExist()) {
                 energy = measurement.getEnergy();
             }
@@ -289,14 +289,15 @@ public class DataGatherer implements Runnable {
             }
         }
     }
-    
+
     /**
      * This allows the energy share rule to be set.
+     *
      * @param rule the rule to set
      */
     public void setRule(EnergyShareRule rule) {
         vmUsageLogger.setRule(rule);
-    }    
+    }
 
     /**
      * The hash map gives a faster way to find a specific host. This converts
@@ -482,6 +483,12 @@ public class DataGatherer implements Runnable {
      * @return The VM that has the name specified.
      */
     public VmDeployed getVm(String name) {
+        VmDeployed answer = knownVms.get(name);
+        if (answer != null) {
+            return answer;
+        }
+        List<VmDeployed> vmList = datasource.getVmList();
+        refreshKnownVMList(vmList);
         return knownVms.get(name);
     }
 
@@ -492,6 +499,13 @@ public class DataGatherer implements Runnable {
      * @return The VM that has the vm id specified.
      */
     public VmDeployed getVm(int vmId) {
+        for (VmDeployed current : knownVms.values()) {
+            if (current.getId() == vmId) {
+                return current;
+            }
+        }
+        List<VmDeployed> vmList = datasource.getVmList();
+        refreshKnownVMList(vmList);
         for (VmDeployed current : knownVms.values()) {
             if (current.getId() == vmId) {
                 return current;
