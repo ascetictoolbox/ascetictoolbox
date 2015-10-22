@@ -43,13 +43,13 @@ public class DeploymentInfo {
 
 	Time endTime;
 	
-	Charges TotalCharges;
+	Charges TotalCharges = new Charges();
 	
-	Charges energyCharges;
+	Charges energyCharges= new Charges();;
 	
-	Charges resourceCharges;
+	Charges resourceCharges= new Charges();;
 	
-	Charges totalIaaSCharges;
+	Charges totalIaaSCharges= new Charges();;
 
 	LinkedList<VMinfo> VMs = new LinkedList<VMinfo>();
 	
@@ -60,6 +60,12 @@ public class DeploymentInfo {
 	public DeploymentInfo(int deploymentId, int schemeID) {
 		this.deploymentId=deploymentId;
 		this.schemeId = schemeID;
+
+	}
+	
+	public DeploymentInfo(int deploymentId) {
+		this.deploymentId=deploymentId;
+		
 
 	}
 

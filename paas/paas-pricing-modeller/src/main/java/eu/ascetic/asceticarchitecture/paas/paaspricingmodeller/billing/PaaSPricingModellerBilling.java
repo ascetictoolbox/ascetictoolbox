@@ -113,11 +113,21 @@ public class PaaSPricingModellerBilling implements PaaSPricingModellerBillingInt
 	}
 
 	public double getAppCurrentTotalCharges(int depl, double charges){
+		
 		DeploymentInfo deploy = getApp(depl);
+		if (deploy ==null){
+		deploy = new DeploymentInfo(depl);	
+		}
+		
+		//DeploymentInfo deploy =new DeploymentInfo(depl);
 		deploy.setIaaSTotalCurrentCharges(charges);
 		double totalcharges = charges + 0.2*charges;
 		deploy.setTotalCurrentCharges(totalcharges);
 		return deploy.getTotalCurrentCharges();
+	
+		
+		//return 0.0;
+		
 	}
 	
 	
@@ -158,7 +168,35 @@ public class PaaSPricingModellerBilling implements PaaSPricingModellerBillingInt
 		
 		return 0.0;		
 	}
-	
-	
+
+
+	public double predictAppEventChargesVMbased(DeploymentInfo deploy) {
+		double temp =0;
+		
+		for (int i=0; i<deploy.getNumberOfVMs(); i++){
+		if (deploy.getVM(i).getSchemeID()==0||deploy.getVM(i).getSchemeID()==2){
+			 	double charges=0;
+				temp = deploy.getIaaSProvider().predictResourcesCharges(deploy.getVM(i), deploy.getVM(i).getActualDuration(),  deploy.getIaaSProvider().getStaticResoucePrice());
+				charges = charges+temp;
+			charges= charges+0.2*charges;
+			deploy.setPredictedCharges(charges);
+			return deploy.getPredictedCharges();
+		}
+		
+		if (deploy.getVM(i).getSchemeID()==1){
+			double charges =0;
+			double a = deploy.getIaaSProvider().predictResourcesCharges(deploy.getVM(i), deploy.getVM(i).getActualDuration(), deploy.getIaaSProvider().getResoucePrice());
+			charges = charges+a;
+			double b = deploy.getIaaSProvider().predictEnergyCharges(deploy.getEnergy(), deploy.getIaaSProvider().getAverageEnergyPrice());
+			charges = charges +b;
+			charges= charges+0.2*charges;
+			deploy.setPredictedCharges(charges);
+			return deploy.getPredictedCharges();
+		}
+		
+			
+		}
+		return 0.0;	
+	}	
 
 }

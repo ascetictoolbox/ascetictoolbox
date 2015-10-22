@@ -171,4 +171,16 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 		
 	}
 	
+	////////////////not for year 2//////////////////////////
+	/*public double getEventPredictedChargesOfApp(int deplID, LinkedList<VMinfo> VMs, double energy){
+		DeploymentInfo deployment = new DeploymentInfo(deplID);
+		deployment.setIaaSProvider(1); 
+		deployment.setVMs(VMs);
+		deployment.setEnergy(energy);
+		double charges = billing.predictAppEventChargesVMbased(deployment);
+		//logger.info("Event:"+deplID+","+energy+","+schemeId+","+charges);
+		return charges;
+		
+	}*/
+	
 }

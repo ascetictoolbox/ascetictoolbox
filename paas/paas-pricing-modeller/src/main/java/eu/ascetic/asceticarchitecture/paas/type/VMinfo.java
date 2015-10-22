@@ -28,7 +28,7 @@ public class VMinfo {
 	
 	int numberOfEvents;
 	
-	int schemeID; //not supported for this year
+	int schemeID; 
 	
 	long predictedDuration;
 	
@@ -41,6 +41,13 @@ public class VMinfo {
 		this.actualDuration=duration;
 	}
 
+	public VMinfo (double RAM, double CPU, double storage, long duration, int scheme){
+		this.RAM = RAM/1024;
+		this.CPU = CPU;
+		this.storage = storage/1000;
+		this.actualDuration=duration;
+		this.schemeID = scheme;
+	}
 	
 	public double getRAM(){
 		return RAM;
@@ -64,6 +71,10 @@ public class VMinfo {
 	
 	public double getCPU(){
 		return CPU;
+	}
+	
+	public int getSchemeID(){
+		return schemeID;
 	}
 	
 	public double getStorage(){
