@@ -33,6 +33,7 @@ import org.jclouds.openstack.nova.v2_0.NovaApi;
 import org.jclouds.openstack.nova.v2_0.domain.*;
 import org.jclouds.openstack.nova.v2_0.extensions.FloatingIPApi;
 import org.jclouds.openstack.nova.v2_0.options.CreateServerOptions;
+import org.jclouds.openstack.v2_0.domain.Resource;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -231,10 +232,12 @@ public class OpenStackJclouds implements CloudMiddleware {
                 if (flavor.getSwap().isPresent() && !flavor.getSwap().get().equals("")) {
                     swapMb = Integer.parseInt(flavor.getSwap().get());
                 }
+                Resource image = server.getImage();
+                Server.Status status = server.getStatus();
                 vm = new VmDeployed(server.getName(),
-                        server.getImage().getId(), flavor.getVcpus(), flavor.getRam(),
+                        image == null ? null : server.getImage().getId(), flavor.getVcpus(), flavor.getRam(),
                         flavor.getDisk(), swapMb, null, null, vmId,
-                        vmIp, server.getStatus().toString(), server.getCreated(),
+                        vmIp, status == null ? null : status.toString(), server.getCreated(),
                         server.getExtendedAttributes().get().getHostName());
             }
         }
