@@ -48,4 +48,12 @@ public class PeriodicSelfAdaptationOps {
         return maxExecTimeSeconds;
     }
 
+    @Override
+    public String toString() {
+        return "{" +
+                "localSearchAlgorithm=" + localSearchAlgorithm +
+                ", timeIntervalMinutes=" + timeIntervalMinutes +
+                ", maxExecTimeSeconds=" + maxExecTimeSeconds +
+                '}';
+    }
 }

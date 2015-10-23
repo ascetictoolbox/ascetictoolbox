@@ -38,4 +38,12 @@ public class LocalSearchAlgorithmOptionsSet extends LocalSearchAlgorithm {
         return Collections.unmodifiableMap(options);
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("{");
+        for(Map.Entry<String,Integer> m : options.entrySet()) {
+            sb.append(m.getKey()).append("->").append(m.getValue()).append(",");
+        }
+        return sb.toString();
+    }
 }

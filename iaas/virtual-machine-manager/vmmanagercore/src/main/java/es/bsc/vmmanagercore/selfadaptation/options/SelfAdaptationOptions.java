@@ -47,4 +47,12 @@ public class SelfAdaptationOptions {
         return periodicSelfAdaptationOps;
     }
 
+    @Override
+    public String toString() {
+        return "{" +
+                "afterVmDeploymentSelfAdaptationOps=" + afterVmDeploymentSelfAdaptationOps +
+                ", afterVmDeleteSelfAdaptationOps=" + afterVmDeleteSelfAdaptationOps +
+                ", periodicSelfAdaptationOps=" + periodicSelfAdaptationOps +
+                '}';
+    }
 }

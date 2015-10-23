@@ -50,4 +50,12 @@ public class AfterVmDeploymentSelfAdaptationOps {
         return maxExecTimeSeconds;
     }
 
+    @Override
+    public String toString() {
+        return "{" +
+                "constructionHeuristic=" + constructionHeuristic +
+                ", localSearchAlgorithm=" + localSearchAlgorithm +
+                ", maxExecTimeSeconds=" + maxExecTimeSeconds +
+                '}';
+    }
 }

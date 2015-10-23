@@ -41,4 +41,11 @@ public class AfterVmDeleteSelfAdaptationOps {
         return maxExecTimeSeconds;
     }
 
+    @Override
+    public String toString() {
+        return "{" +
+                "localSearchAlgorithm=" + localSearchAlgorithm +
+                ", maxExecTimeSeconds=" + maxExecTimeSeconds +
+                '}';
+    }
 }

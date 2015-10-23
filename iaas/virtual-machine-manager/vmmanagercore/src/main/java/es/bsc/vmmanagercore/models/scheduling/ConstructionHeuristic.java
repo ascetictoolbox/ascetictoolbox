@@ -33,4 +33,8 @@ public class ConstructionHeuristic {
         return name;
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
 }

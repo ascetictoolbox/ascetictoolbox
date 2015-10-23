@@ -21,6 +21,8 @@ package es.bsc.vmmanagercore.rest;
 import com.sun.jersey.spi.resource.Singleton;
 import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddlewareException;
 import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
+import es.bsc.vmmanagercore.db.VmManagerDb;
+import es.bsc.vmmanagercore.db.VmManagerDbFactory;
 import es.bsc.vmmanagercore.manager.GenericVmManager;
 import es.bsc.vmmanagercore.manager.VmManager;
 
@@ -28,6 +30,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import es.bsc.vmmanagercore.models.scheduling.SchedulingAlgorithm;
 import es.bsc.vmmanagercore.rest.error.ErrorHandler;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -319,4 +322,30 @@ public class VmManagerRest {
 			throw new ErrorHandler(e, Response.Status.NOT_FOUND);
 		}
 	}
+
+    //================================================================================
+    // Debug DB
+    //================================================================================
+    @GET
+    @Path("/db")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getDbInfo() {
+        StringBuilder sb = new StringBuilder("**********\nDB contents\n********\n");
+        VmManagerDb db = VmManagerDbFactory.getDb(VmManagerConfiguration.getInstance().dbName);
+        List<String> vmIds = db.getAllVmIds();
+        if(vmIds != null && vmIds.size() > 0) {
+            sb.append("== Virtual Machines ==\n");
+            for (String vm : vmIds) {
+                sb.append(vm)
+                        .append("\n\tappId: ").append(db.getAppIdOfVm(vm))
+                        .append("\n\tslaId: ").append(db.getSlaIdOfVm(vm))
+                        .append("\n\tovfId: ").append(db.getOvfIdOfVm(vm)).append('\n');
+            }
+        }
+        sb.append("== Self-adaptation options ==\n");
+        sb.append("Current").append(db.getCurrentSchedulingAlg().getName());
+        sb.append("\nSelf-adaptation options:\n").append(db.getSelfAdaptationOptions());
+        return sb.toString();
+    }
+
 }
