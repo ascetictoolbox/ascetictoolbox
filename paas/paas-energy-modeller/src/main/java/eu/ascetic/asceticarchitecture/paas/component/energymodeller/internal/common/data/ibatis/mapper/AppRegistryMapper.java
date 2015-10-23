@@ -26,6 +26,9 @@ public interface AppRegistryMapper {
 
 	  @Select("SELECT * FROM APPLICATION_REGISTRY WHERE app_id = #{app_id}")
 	  List<VirtualMachine> selectByApp(@Param("app_id") String app_id);
+	  
+	  @Select("SELECT app_id FROM APPLICATION_REGISTRY WHERE deploy_id = #{deploy_id} GROUP BY app_id")
+	  String selectAppByDeploy(@Param("deploy_id") String deploy_id);
 
 	  @Select("SELECT * FROM APPLICATION_REGISTRY WHERE app_id = #{app_id} and deploy_id = #{deploy_id}")
 	  List<VirtualMachine> selectByDeploy(@Param("app_id") String app_id,@Param("deploy_id") int deploy);
@@ -63,5 +66,10 @@ public interface AppRegistryMapper {
 	  @Update("UPDATE APPLICATION_REGISTRY set power=#{power} WHERE #{app_id} and deploy_id = #{deploy_id} and vm_id = #{vm_id}  ")
 	  void updatePower(@Param("app_id") String app_id, @Param("deploy_id") String deploy_id,@Param("vm_id") String vm_id,@Param("energy") double power);
 
+	  @Select("SELECT deploy_id FROM APPLICATION_REGISTRY where stop = 0 GROUP BY deploy_id")
+	  List<String> selectDeployments();
 	  
+	  @Select("SELECT vm_id FROM APPLICATION_REGISTRY where stop = 0 and deploy_id = #{deploy_id} GROUP BY deploy_id,vm_id")
+	  List<String> selectVMperDeployment(@Param("deploy_id") String deploy_id);
+
 }

@@ -24,7 +24,11 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Properties;
 import java.util.TimeZone;
+import java.util.Timer;
 import java.util.Vector;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 
@@ -45,6 +49,7 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.com
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.loadinjector.LoadInjectorService;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.model.PredictorBuilder;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.model.predictor.PredictorInterface;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.monitor.EnergyModellerMonitor;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.queue.EnergyModellerQueueServiceManager;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.queue.client.AmqpClient;
 
@@ -67,6 +72,8 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	private PredictorInterface predictor;
 	private ApplicationRegistry appRegistry;
 	
+	private EnergyModellerMonitor monitorThread;
+	
 	private EnergyModellerQueueServiceManager queueManager;
 	private AmqpClient paasQueueclient;
 	private AmqpClient iaasQueueclient;
@@ -75,6 +82,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	private Boolean queueEnabled = false;
 	private EnergyDataAggregatorServiceQueue energyService;
 	private EventDataAggregatorService eventService;
+	private ScheduledExecutorService service;
 
 	
 	/**
@@ -402,7 +410,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 						}
 						
 						double power  = energyService.getMeasureInIntervalFromVM(Unit.POWER, applicationid, deploymentid, vm, de.getBegintime(), de.getEndtime());
-						int count = eventService.getEventsNumber(applicationid, translated, eventid, de.getBegintime(), de.getEndtime());
+						int count = eventService.getAllEventsNumber(applicationid, translated, eventid, de.getBegintime(), de.getEndtime());
 						LOGGER.info("it has been executed with other "+count);
 						if (count>0){
 							power = power/count;
@@ -485,10 +493,9 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 					for (DataEvent de: events){
 						
 						double power  = energyService.getMeasureInIntervalFromVM(Unit.POWER, applicationid, deploymentid, vm,  de.getBegintime(), de.getEndtime());
-
 						if (power>0){
 							LOGGER.info("This event power :  "+power);
-							int count = eventService.getEventsNumber(applicationid, translated, eventid, de.getBegintime(), de.getEndtime());
+							int count = eventService.getAllEventsNumber(applicationid, translated, eventid, de.getBegintime(), de.getEndtime());
 							LOGGER.info(power+"it has been executed with other "+count);
 							if (count>0){
 								power = power/count;
@@ -531,7 +538,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 				LOGGER.info("events "+events.size());
 				for (DataEvent de: events){
 					double energy = energyService.getMeasureInIntervalFromVM(Unit.ENERGY, de.getApplicationid(), de.getDeploymentid(),vmid,de.getBegintime(),de.getEndtime());
-					int count = eventService.getEventsNumber(applicationid, translated, eventid, de.getBegintime(), de.getEndtime());
+					int count = eventService.getAllEventsNumber(applicationid, translated, eventid, de.getBegintime(), de.getEndtime());
 					LOGGER.info(energy+"it has been with other "+count);
 					if (count>0){
 						energy = energy/count;
@@ -557,7 +564,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 				for (DataEvent de: events){
 					double energy = energyService.getMeasureInIntervalFromVM(Unit.ENERGY, de.getApplicationid(),de.getVmid() , de.getVmid(),de.getBegintime(),de.getEndtime());
 					if (energy >0){
-						int count = eventService.getEventsNumber(applicationid, translated, eventid, de.getBegintime(), de.getEndtime());
+						int count = eventService.getAllEventsNumber(applicationid, translated, eventid, de.getBegintime(), de.getEndtime());
 						LOGGER.info(energy+"it has been with other "+count);
 						if (count>0){
 							energy = energy/count;
@@ -599,7 +606,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 			
 			
 			if (energy > 0){
-				int count = eventService.getEventsNumber(applicationid, translated, eventid, de.getBegintime(), de.getEndtime());
+				int count = eventService.getAllEventsNumber(applicationid, translated, eventid, de.getBegintime(), de.getEndtime());
 				LOGGER.info(energy+"it has been with other "+count);
 				if (count>0){
 					energy = energy/count;
@@ -686,6 +693,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		eventService.setupApplicationMonitor(emsettings.getAppmonitor());
 		monitoringDataService = new MonitoringDataService();
 		monitoringDataService.setDataDAO(dbmanager.getMonitoringData());
+		
 		LOGGER.debug("Configured ");
 	}
 		
@@ -715,7 +723,10 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 				// TODO remove iaas queue when data will be sent directly to paas
 				queueManager.createTwoLayersConsumers(emsettings.getAmanagertopic(),emsettings.getPowertopic());
 				LOGGER.debug("PaaS EM activemq connections are now Ready");
-				
+				// TODO uncomment
+//				LOGGER.info("PaaS EM starting monitor thread");
+//				initializeMonitoring(60,emsettings.getAppmonitor(),energyService,appRegistry);
+//				LOGGER.info("PaaS EM started monitor thread");
 			} catch (Exception e) {
 				LOGGER.error("ERROR initializing queues, now disabling the component..");
 				emsettings.setEnableQueue("false");
@@ -725,24 +736,24 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		LOGGER.info("Loaded");
 	}
 	
+	private void initializeMonitoring(long delay,String app_man_url,EnergyDataAggregatorServiceQueue energyService, ApplicationRegistry registry){
+		monitorThread = new EnergyModellerMonitor();
+		monitorThread.setup(app_man_url);
+		monitorThread.setEnergyService(energyService);
+		monitorThread.setAppRegistry(appRegistry);
+		
+		service = Executors.newSingleThreadScheduledExecutor();
+		service.scheduleAtFixedRate(monitorThread, 0, 60, TimeUnit.SECONDS);
+		
+		
+	}
+	
 	private void initializePrediction(){
 		LOGGER.info("EM predictor module loaded");
 		predictor= PredictorBuilder.getPredictor("basic");
 		predictor.setEnergyService(energyService);
 	}
 
-	@Override
-	public boolean subscribeMonitoring(String providerid, String applicationid, String deploymentid, String eventid, long timewindow, Unit unit) {
-		monitoringDataService.startMonitoring(applicationid, deploymentid, eventid);
-		return true;
-	}
-
-	@Override
-	public boolean unsubscribeMonitoring(String providerid,String applicationid,String deploymentid, String eventid, long timewindow, Unit unit) {
-		monitoringDataService.stopMonitoring(applicationid, deploymentid);
-		return false;
-	}	
-	
 	/**
 	 * @return the emsettings of the Energy Modeller. It allows to get the current settings loaded from file
 	 */
@@ -802,6 +813,23 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		loadInjector = new LoadInjectorService();
 		loadInjector.configureLoadInjector(emsettings.getServerPath(), emsettings.getServerurl(), emsettings.getPropertyFile(), emsettings.getJmxFilePath());
 		LOGGER.debug("Configured");
+	}
+
+	@Override
+	public boolean subscribeMonitoring(String providerid, String applicationid,
+			String deploymentid, List<String> vmids, String eventid,
+			long timewindow, Unit unit) {
+		// TODO Auto-generated method stub
+		
+		return false;
+	}
+
+	@Override
+	public boolean unsubscribeMonitoring(String providerid,
+			String applicationid, String deploymentid, List<String> vmids,
+			String eventid, long timewindow, Unit unit) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 

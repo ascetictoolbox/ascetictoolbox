@@ -31,7 +31,6 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.com
 public class DataConsumptionHandler {
 
 	private static SqlSessionFactory sqlSessionFactory;
-	private static DataConsumptionMapper mapper;
 	private static DataConsumptionHandler instance;
 	
 	private final static Logger LOGGER = Logger.getLogger(DataConsumptionHandler.class.getName());
@@ -68,12 +67,6 @@ public class DataConsumptionHandler {
     }
 	 
 
-//	public DataConsumptionMapper getMapper(){
-//		if (mapper==null) mapper = sqlSessionFactory.openSession(true).getMapper(DataConsumptionMapper.class);
-//		LOGGER.info("Returning the mapper");
-//		return mapper;
-//	}
-	
 	public SqlSession getSession(){
 		return sqlSessionFactory.openSession(true);
 	}

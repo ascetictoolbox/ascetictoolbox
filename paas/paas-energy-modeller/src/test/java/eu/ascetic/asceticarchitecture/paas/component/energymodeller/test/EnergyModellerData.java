@@ -97,13 +97,13 @@ public class EnergyModellerData {
 	public void eventMPowerInterface() {
 		System.out.println("Testing power measurement over a time range");
 		List<String> vmids = new Vector<String>();
-		vmids.add(HOST);
+		//vmids.add(HOST);
 		vmids.add(HOST1);
 
 		//EVENT = null;
 		PROVIDER=null;
 		//EVENT=null;
-		double result = serviceEM.measure(PROVIDER, APP, DEP, vmids, EVENT, Unit.ENERGY, null,null);
+		double result = serviceEM.measure(PROVIDER, APP, DEP, vmids, EVENT, Unit.POWER, null,null);
 		System.out.println("################################ TEST Average Power estimated is:  "+result);
 	}
 	

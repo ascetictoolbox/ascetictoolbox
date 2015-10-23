@@ -1114,6 +1114,7 @@ paas/gui/lib/js/npm-debug.log -text
 paas/gui/lib/js/npm.js -text
 paas/paas-energy-modeller/paas-energy-modeller.iml -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/datatype/messages/GenericEnergyMessage.java -text
+paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/datatype/messages/MetricMessage.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/data/database/PaaSEMDatabaseManager.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/data/database/dao/DataConsumptionDAO.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/data/database/dao/DataeEventDAO.java -text
@@ -1152,7 +1153,9 @@ paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/comp
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/model/interpolator/impl/WorkLoadEnergyInterpolator.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/model/predictor/PredictorInterface.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/model/predictor/impl/EMNeuralPredictor.java -text
+paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/model/predictor/impl/EnergyModellerPredictor.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/model/predictor/impl/readme.txt -text
+paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/monitor/EnergyModellerMonitor.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/queue/EnergyModellerQueueServiceManager.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/queue/client/AmqpClient.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/queue/client/JNIAmqpClient.java -text
@@ -1161,6 +1164,7 @@ paas/paas-energy-modeller/src/main/resources/createdb.sql -text
 paas/paas-energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/test/AppRegistry.java -text
 paas/paas-energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/test/DataConsumptionData.java -text
 paas/paas-energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/test/EMQueuePEM.java -text
+paas/paas-energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/test/EnergyModellerMonitor.java -text
 paas/paas-energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/test/MessageParser.java -text
 paas/paas-energy-modeller/src/test/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/test/QueuePEM.java -text
 paas/paas-pricing-modeller/LICENSE.TXT -text

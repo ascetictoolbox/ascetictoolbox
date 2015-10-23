@@ -138,7 +138,12 @@
 			<artifactId>qpid-jms-client</artifactId>
 			<version>${paasem.qpid}</version>
 		</dependency>
-
+		<dependency>
+			<groupId>nz.ac.waikato.cms.weka</groupId>
+			<artifactId>weka-dev</artifactId>
+			<version>${paasem.weka}</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.mybatis</groupId>
 			<artifactId>mybatis</artifactId>

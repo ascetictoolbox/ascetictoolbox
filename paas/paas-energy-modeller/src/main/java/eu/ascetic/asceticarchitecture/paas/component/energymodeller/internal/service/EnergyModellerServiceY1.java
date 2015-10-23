@@ -530,18 +530,6 @@ public class EnergyModellerServiceY1 implements PaaSEnergyModeller {
 		
 	}
 
-	@Override
-	public boolean subscribeMonitoring(String providerid, String applicationid, String deploymentid, String eventid, long timewindow, Unit unit) {
-		monitoringDataService.startMonitoring(applicationid, deploymentid, eventid);
-		return true;
-	}
-
-	@Override
-	public boolean unsubscribeMonitoring(String providerid, String applicationid,String deploymentid, String eventid, long timewindow, Unit unit) {
-		monitoringDataService.stopMonitoring(applicationid, deploymentid);
-		return false;
-	}	
-	
 	/**
 	 * @return the emsettings of the Energy Modeller. It allows to get the current settings loaded from file
 	 */
@@ -554,6 +542,22 @@ public class EnergyModellerServiceY1 implements PaaSEnergyModeller {
 	 */
 	public void setEmsettings(EMSettings emsettings) {
 		this.emsettings = emsettings;
+	}
+
+	@Override
+	public boolean subscribeMonitoring(String providerid, String applicationid,
+			String deploymentid, List<String> vmids, String eventid,
+			long timewindow, Unit unit) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean unsubscribeMonitoring(String providerid,
+			String applicationid, String deploymentid, List<String> vmids,
+			String eventid, long timewindow, Unit unit) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 //	@Override

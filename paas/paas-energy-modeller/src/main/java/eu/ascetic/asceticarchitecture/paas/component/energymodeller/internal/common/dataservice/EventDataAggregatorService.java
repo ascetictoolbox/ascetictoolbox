@@ -45,9 +45,16 @@ public class EventDataAggregatorService {
 		}
 	}
 	
-	public int getEventsNumber(String app, String vmid, String event, long start,long end) {
+//	public int getEventsNumber(String app, String vmid, String event, long start,long end) {
+//		
+//		return eventDataManager.getEventsInTimeFrame(app, vmid, event, start, end);
+//		
+//		
+//	}
+	
+	public int getAllEventsNumber(String app, String vmid, String event, long start,long end) {
 		
-		return eventDataManager.getEventsInTimeFrame(app, vmid, event, start, end);
+		return eventDataManager.getAllEventsInTimeFrame(app, vmid, event, start, end);
 		
 		
 	}

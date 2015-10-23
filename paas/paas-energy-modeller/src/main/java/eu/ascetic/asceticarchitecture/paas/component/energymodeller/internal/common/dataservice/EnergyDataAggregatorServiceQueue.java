@@ -32,26 +32,10 @@ public class EnergyDataAggregatorServiceQueue {
 	
 	private static int MILLISEC=1000;
 
-	//private DataConsumptionMapper dataConsumptionMapper;
-	//private AppRegistryMapper registryMapper;
-	
-	// TODO bugfix working with session and not just mappers
-	
-	
 	private ApplicationRegistry applicationRegistry;
 	private DataConsumptionHandler dataConsumptionHandler;
 	
-	
-	
 	private static final Logger logger = Logger.getLogger(EnergyDataAggregatorServiceQueue.class);
-	
-//	public void setRegistryMapper( AppRegistryMapper mapper){
-//		this.registryMapper = mapper;
-//	}
-//	
-//	public void setDataMapper(DataConsumptionMapper dataConsumptionMapper) {
-//		this.dataConsumptionMapper = dataConsumptionMapper;
-//	}
 	
 	public void setApplicationRegistry( ApplicationRegistry applicationRegistry){
 		this.applicationRegistry = applicationRegistry;
@@ -145,7 +129,6 @@ public class EnergyDataAggregatorServiceQueue {
 			session.close();
 			return result;
 		}
-		
 		
 	}
 	
@@ -246,7 +229,6 @@ public class EnergyDataAggregatorServiceQueue {
 		
 	}	
 	
-	
 	public List<DataConsumption> sampleMeasurements(String applicationid, String deployment, String vmid, long start,long end,long interval){
 		vmid = translatePaaSFromIaasID(deployment,vmid);
 		if (vmid == null ){
@@ -306,9 +288,24 @@ public class EnergyDataAggregatorServiceQueue {
 		return resampledresult;
 	}
 	
+	
+	public double getPowerPerVM(String deployment, String vmid){
+		vmid = translatePaaSFromIaasID(deployment,vmid);
+		if (vmid == null ){
+			logger.info("No PaaS ID found from IaaS ID");
+			return 0;
+		}
+		logger.info("Start computing Wh over a period of time");
+		SqlSession session = dataConsumptionHandler.getSession();
+		DataConsumptionMapper dataConsumptionMapper = session.getMapper(DataConsumptionMapper.class);
+		double power = dataConsumptionMapper.getAvgPowerForVM(deployment, vmid);
+		session.close();
+		return power;
+	}
+	
 	// TODO to be removed, for the moment is the only way to map the IaaS VM with the PaaS VM
 	public String translatePaaSFromIaasID(String deployid, String paasvmid){
-		logger.info(" I translated the iaas id " + paasvmid);
+		logger.info(" I will translate for this "+deployid+" the paas id " + paasvmid);
 		
 		SqlSession session = applicationRegistry.getSession();
 		AppRegistryMapper registryMapper = session.getMapper(AppRegistryMapper.class);

@@ -33,5 +33,7 @@ public interface DataeEventDAO {
 	List<DataEvent> getByDeployId(String applicationid, String deploymentid, String vmid, String eventid);
 	
 	int getEventsInTimeFrame(String applicationid, String vmid, String eventid, long tstart, long tend);
+	
+	int getAllEventsInTimeFrame(String applicationid, String vmid, String eventid, long tstart, long tend);
     
 }
