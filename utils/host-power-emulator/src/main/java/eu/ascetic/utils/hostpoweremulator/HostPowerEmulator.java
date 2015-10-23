@@ -47,6 +47,7 @@ public class HostPowerEmulator implements Runnable {
     private boolean stopOnClone = false;
     private boolean running = true;
     private int pollInterval = 1;
+    private String loggerOutputFile = "EstimatedHostPowerData.txt";
     private String outputName = "power";
     private String predictorName = "CpuOnlyBestFitEnergyPredictor";
     private final Settings settings = new Settings(PROPS_FILE_NAME);
@@ -98,6 +99,7 @@ public class HostPowerEmulator implements Runnable {
         this.hostname = hostname;
         this.cloneHostname = cloneHostname;
         pollInterval = settings.getInt("poll_interval", pollInterval);
+        loggerOutputFile = settings.getString("output_filename", loggerOutputFile);
         outputName = settings.getString("output_name", outputName);
         predictorName = settings.getString("predictor", predictorName);
         if (settings.isChanged()) {
@@ -114,6 +116,7 @@ public class HostPowerEmulator implements Runnable {
         this.hostname = hostname;
         this.cloneHostname = null;
         pollInterval = settings.getInt("poll_interval", pollInterval);
+        loggerOutputFile = settings.getString("output_filename", loggerOutputFile);        
         outputName = settings.getString("output_name", outputName);
         predictorName = settings.getString("predictor", predictorName);
         if (settings.isChanged()) {
@@ -208,7 +211,7 @@ public class HostPowerEmulator implements Runnable {
     public void run() {
         EnergyPredictorInterface predictor = getPredictor(predictorName);
         Host host = source.getHostByName(hostname);
-        HostPowerLogger logger = new HostPowerLogger(new File("EstimatedHostPowerData.txt"), true);
+        HostPowerLogger logger = new HostPowerLogger(new File(loggerOutputFile), true);
         logger.setMetricName(outputName);
         Thread loggerThread = new Thread(logger);
         loggerThread.setDaemon(true);

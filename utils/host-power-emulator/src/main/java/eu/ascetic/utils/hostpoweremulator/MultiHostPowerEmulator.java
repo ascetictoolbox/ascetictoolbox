@@ -47,6 +47,7 @@ public class MultiHostPowerEmulator implements Runnable {
     private final DatabaseConnector database = new DefaultDatabaseConnector();
     private boolean running = true;
     private int pollInterval = 1;
+    private String loggerOutputFile = "EstimatedHostPowerData.txt";    
     private String outputName = "estimated-power";
     private String predictorName = "CpuOnlyBestFitEnergyPredictor";    
     private final Settings settings = new Settings(PROPS_FILE_NAME);
@@ -61,6 +62,7 @@ public class MultiHostPowerEmulator implements Runnable {
      */
     public MultiHostPowerEmulator() {
         pollInterval = settings.getInt("poll_interval", pollInterval);
+        loggerOutputFile = settings.getString("output_filename", loggerOutputFile);        
         outputName = settings.getString("output_name", outputName);
         predictorName = settings.getString("predictor", predictorName);
         if (settings.isChanged()) {
@@ -147,7 +149,7 @@ public class MultiHostPowerEmulator implements Runnable {
     @Override
     public void run() {
         List<Host> hosts = source.getHostList();
-        HostPowerLogger logger = new HostPowerLogger(new File("EstimatedHostPowerData.txt"), true);
+        HostPowerLogger logger = new HostPowerLogger(new File(loggerOutputFile), true);
         logger.setMetricName(outputName);
         Thread loggerThread = new Thread(logger);
         loggerThread.setDaemon(true);
