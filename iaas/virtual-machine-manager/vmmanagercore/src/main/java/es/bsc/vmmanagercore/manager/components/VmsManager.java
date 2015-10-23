@@ -23,6 +23,7 @@ import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddlewareException;
 import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
 import es.bsc.vmmanagercore.db.VmManagerDb;
 import es.bsc.vmmanagercore.logging.VMMLogger;
+import es.bsc.vmmanagercore.manager.DeploymentEngine;
 import es.bsc.vmmanagercore.message_queue.MessageQueue;
 import es.bsc.vmmanagercore.modellers.energy.EnergyModeller;
 import es.bsc.vmmanagercore.modellers.energy.ascetic.AsceticEnergyModellerAdapter;
@@ -45,6 +46,9 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+
+import static es.bsc.vmmanagercore.manager.DeploymentEngine.LEGACY;
+import static es.bsc.vmmanagercore.manager.DeploymentEngine.OPTAPLANNER;
 
 /**
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
@@ -383,18 +387,17 @@ public class VmsManager {
         thread.start();
     }
 
-    private DeploymentPlan chooseBestDeploymentPlan(List<Vm> vms, String deploymentEngine) throws CloudMiddlewareException {
+    private DeploymentPlan chooseBestDeploymentPlan(List<Vm> vms, DeploymentEngine deploymentEngine) throws CloudMiddlewareException {
         switch (deploymentEngine) {
-            case "legacy":
+            case LEGACY:
                 // The scheduling algorithm could have been changed. Therefore, we need to set it again.
                 // This is a quick fix. I need to find a way of telling the system to update properly the
                 // scheduling algorithm when using the legacy deployment engine. This does not occur when using
                 // the optaplanner deployment engine.
-                SchedulingAlgorithm currentSchedulingAlg = db.getCurrentSchedulingAlg();
-                scheduler.setSchedAlgorithmName(currentSchedulingAlg);
+                SchedAlgorithmNameEnum currentSchedulingAlg = db.getCurrentSchedulingAlg();
                 scheduler.setSchedAlgorithm(currentSchedulingAlg);
                 return scheduler.chooseBestDeploymentPlan(vms, hostsManager.getHosts());
-            case "optaPlanner":
+            case OPTAPLANNER:
                 if (repeatedNameInVmList(vms)) {
                     throw new IllegalArgumentException("There was an error while choosing a deployment plan.");
                 }

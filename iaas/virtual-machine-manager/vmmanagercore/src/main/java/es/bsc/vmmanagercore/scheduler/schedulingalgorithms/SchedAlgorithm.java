@@ -19,6 +19,7 @@
 package es.bsc.vmmanagercore.scheduler.schedulingalgorithms;
 
 import es.bsc.vmmanagercore.models.scheduling.DeploymentPlan;
+import es.bsc.vmmanagercore.models.scheduling.SchedAlgorithmNameEnum;
 import es.bsc.vmmanagercore.monitoring.hosts.Host;
 
 import java.util.List;
@@ -41,4 +42,9 @@ public interface SchedAlgorithm {
     DeploymentPlan chooseBestDeploymentPlan(List<DeploymentPlan> deploymentPlans, List<Host> hosts, 
                                             String deploymentId);
 
+    /**
+     * Returns the enumerated name of the scheduling algorithm
+     * @return
+     */
+    SchedAlgorithmNameEnum getNameEnum();
 }

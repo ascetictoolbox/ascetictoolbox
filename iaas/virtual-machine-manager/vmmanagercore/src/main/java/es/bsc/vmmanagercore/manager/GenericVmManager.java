@@ -289,7 +289,7 @@ public class GenericVmManager implements VmManager {
      * @return the list of scheduling algorithms
      */
     @Override
-    public List<SchedulingAlgorithm> getAvailableSchedulingAlgorithms() {
+    public List<SchedAlgorithmNameEnum> getAvailableSchedulingAlgorithms() {
         return schedulingAlgorithmsManager.getAvailableSchedulingAlgorithms();
     }
 
@@ -299,7 +299,7 @@ public class GenericVmManager implements VmManager {
      * @return the scheduling algorithm being used
      */
     @Override
-    public SchedulingAlgorithm getCurrentSchedulingAlgorithm() {
+    public SchedAlgorithmNameEnum getCurrentSchedulingAlgorithm() {
         return schedulingAlgorithmsManager.getCurrentSchedulingAlgorithm();
     }
 
@@ -309,7 +309,7 @@ public class GenericVmManager implements VmManager {
      * @param schedulingAlg the scheduling algorithm to be used
      */
     @Override
-    public void setSchedulingAlgorithm(SchedulingAlgorithm schedulingAlg) {
+    public void setSchedulingAlgorithm(SchedAlgorithmNameEnum schedulingAlg) {
         schedulingAlgorithmsManager.setSchedulingAlgorithm(schedulingAlg);
     }
 

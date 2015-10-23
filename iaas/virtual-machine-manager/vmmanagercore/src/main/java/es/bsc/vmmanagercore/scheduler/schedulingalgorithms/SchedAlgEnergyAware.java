@@ -21,6 +21,7 @@ package es.bsc.vmmanagercore.scheduler.schedulingalgorithms;
 import es.bsc.vmmanagercore.logging.VMMLogger;
 import es.bsc.vmmanagercore.modellers.energy.EnergyModeller;
 import es.bsc.vmmanagercore.models.scheduling.DeploymentPlan;
+import es.bsc.vmmanagercore.models.scheduling.SchedAlgorithmNameEnum;
 import es.bsc.vmmanagercore.models.scheduling.VmAssignmentToHost;
 import es.bsc.vmmanagercore.models.vms.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.hosts.Host;
@@ -76,6 +77,11 @@ public class SchedAlgEnergyAware implements SchedAlgorithm {
             }
         }
         return bestDeploymentPlan;
+    }
+
+    @Override
+    public SchedAlgorithmNameEnum getNameEnum() {
+        return SchedAlgorithmNameEnum.ENERGY_AWARE;
     }
 
 }

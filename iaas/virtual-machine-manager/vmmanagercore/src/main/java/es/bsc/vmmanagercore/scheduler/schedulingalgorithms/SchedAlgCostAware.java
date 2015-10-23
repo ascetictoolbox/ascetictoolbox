@@ -22,6 +22,7 @@ import es.bsc.vmmanagercore.logging.VMMLogger;
 import es.bsc.vmmanagercore.modellers.energy.EnergyModeller;
 import es.bsc.vmmanagercore.modellers.price.PricingModeller;
 import es.bsc.vmmanagercore.models.scheduling.DeploymentPlan;
+import es.bsc.vmmanagercore.models.scheduling.SchedAlgorithmNameEnum;
 import es.bsc.vmmanagercore.models.scheduling.VmAssignmentToHost;
 import es.bsc.vmmanagercore.models.vms.Vm;
 import es.bsc.vmmanagercore.models.vms.VmDeployed;
@@ -83,6 +84,11 @@ public class SchedAlgCostAware implements SchedAlgorithm {
             }
         }
         return bestDeploymentPlan;
+    }
+
+    @Override
+    public SchedAlgorithmNameEnum getNameEnum() {
+        return SchedAlgorithmNameEnum.COST_AWARE;
     }
 
 }

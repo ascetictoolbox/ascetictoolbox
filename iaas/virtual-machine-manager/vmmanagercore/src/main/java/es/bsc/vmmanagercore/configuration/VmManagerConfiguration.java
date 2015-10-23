@@ -18,6 +18,7 @@
 
 package es.bsc.vmmanagercore.configuration;
 
+import es.bsc.vmmanagercore.manager.DeploymentEngine;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -67,7 +68,7 @@ public class VmManagerConfiguration {
     public String deployPackage;
 
     // VM deployments
-    public String deploymentEngine;
+    public DeploymentEngine deploymentEngine;
 
     // Software used
     public enum Monitoring { OPENSTACK, GANGLIA, ZABBIX, FAKE }
@@ -114,6 +115,7 @@ public class VmManagerConfiguration {
      * @param prop properties file that contains the configuration parameters
      */
     private void initializeClassAttributes(Configuration prop) {
+        Logger logger = LogManager.getLogger(VmManagerConfiguration.class);
         dbName = prop.getString("dbName", DEFAULT_DB_NAME);
         openStackIP = prop.getString("openStackIP");
         keyStonePort = prop.getInt("keyStonePort");
@@ -130,7 +132,12 @@ public class VmManagerConfiguration {
         deployBaseUrl = prop.getString("deployBaseUrl");
         deployPackage = prop.getString("deployPackage");
         hosts = prop.getStringArray("hosts");
-        deploymentEngine = prop.getString("deploymentEngine");
+        try {
+            deploymentEngine = DeploymentEngine.fromName(prop.getString("deploymentEngine"));
+        } catch(Exception e) {
+            logger.error("Deployment Engine null or unknown. Assuming LEGACY: " + e.getMessage());
+            deploymentEngine = DeploymentEngine.LEGACY;
+        }
         project = prop.getString("project");
         defaultServerTurnOnDelaySeconds = prop.getInt("defaultServerTurnOnDelaySeconds");
         defaultServerTurnOffDelaySeconds = prop.getInt("defaultServerTurnOffDelaySeconds");
@@ -165,7 +172,7 @@ public class VmManagerConfiguration {
             throw new IllegalArgumentException("The cloud middleware selected is not supported");
         }
 
-		LogManager.getLogger(VmManagerConfiguration.class).debug("Loading configuration: " + toString());
+		logger.debug("Loading configuration: " + toString());
     }
 
     /**

@@ -18,7 +18,7 @@
 
 package es.bsc.vmmanagercore.db;
 
-import es.bsc.vmmanagercore.models.scheduling.SchedulingAlgorithm;
+import es.bsc.vmmanagercore.models.scheduling.SchedAlgorithmNameEnum;
 import es.bsc.vmmanagercore.selfadaptation.options.SelfAdaptationOptions;
 
 import java.util.List;
@@ -111,14 +111,14 @@ public interface VmManagerDb {
      *
      * @return the scheduling algorithm
      */
-    SchedulingAlgorithm getCurrentSchedulingAlg();
+    SchedAlgorithmNameEnum getCurrentSchedulingAlg();
 
     /**
      * Changes the current scheduling algorithm.
      *
      * @param alg the scheduling algorithm to be used
      */
-    void setCurrentSchedulingAlg(SchedulingAlgorithm alg);
+    void setCurrentSchedulingAlg(SchedAlgorithmNameEnum alg);
 
     /**
      * Changes the options for the self-adaptation capabilities.

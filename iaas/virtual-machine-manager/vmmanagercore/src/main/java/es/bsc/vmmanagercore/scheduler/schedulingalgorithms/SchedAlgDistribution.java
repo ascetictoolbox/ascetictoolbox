@@ -21,6 +21,7 @@ package es.bsc.vmmanagercore.scheduler.schedulingalgorithms;
 import es.bsc.vmmanagercore.logging.VMMLogger;
 import es.bsc.vmmanagercore.models.hosts.ServerLoad;
 import es.bsc.vmmanagercore.models.scheduling.DeploymentPlan;
+import es.bsc.vmmanagercore.models.scheduling.SchedAlgorithmNameEnum;
 import es.bsc.vmmanagercore.monitoring.hosts.Host;
 import es.bsc.vmmanagercore.scheduler.Scheduler;
 
@@ -112,6 +113,11 @@ public class SchedAlgDistribution implements SchedAlgorithm {
             }
         }
         return bestDeploymentPlan;
+    }
+
+    @Override
+    public SchedAlgorithmNameEnum getNameEnum() {
+        return SchedAlgorithmNameEnum.DISTRIBUTION;
     }
 
 }

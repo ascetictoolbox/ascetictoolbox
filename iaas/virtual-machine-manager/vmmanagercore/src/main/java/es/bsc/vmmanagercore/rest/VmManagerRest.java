@@ -30,7 +30,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import es.bsc.vmmanagercore.models.scheduling.SchedulingAlgorithm;
 import es.bsc.vmmanagercore.rest.error.ErrorHandler;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;

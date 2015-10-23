@@ -19,7 +19,7 @@
 package es.bsc.vmmanagercore.db;
 
 import com.google.gson.Gson;
-import es.bsc.vmmanagercore.models.scheduling.SchedulingAlgorithm;
+import es.bsc.vmmanagercore.models.scheduling.SchedAlgorithmNameEnum;
 import es.bsc.vmmanagercore.selfadaptation.options.SelfAdaptationOptions;
 import org.apache.log4j.Logger;
 
@@ -238,7 +238,7 @@ public class VmManagerDbHsql implements VmManagerDb {
     }
     
     @Override
-    public SchedulingAlgorithm getCurrentSchedulingAlg() {
+    public SchedAlgorithmNameEnum getCurrentSchedulingAlg() {
         List<String> schedulingAlgorithms;
         try {
             schedulingAlgorithms = query("SELECT algorithm FROM current_scheduling_alg");
@@ -246,29 +246,14 @@ public class VmManagerDbHsql implements VmManagerDb {
             return null;
         }
         if (schedulingAlgorithms.size() != 0) {
-            switch (schedulingAlgorithms.get(0)) { // There can be only one, so get the elem with index 0
-                case "consolidation":
-                    return SchedulingAlgorithm.CONSOLIDATION;
-                case "costAware":
-                    return SchedulingAlgorithm.COST_AWARE;
-                case "distribution":
-                    return SchedulingAlgorithm.DISTRIBUTION;
-                case "energyAware":
-                    return SchedulingAlgorithm.ENERGY_AWARE;
-                case "groupByApp":
-                    return SchedulingAlgorithm.GROUP_BY_APP;
-                case "random":
-                    return SchedulingAlgorithm.RANDOM;
-                default:
-                    break;
-            }
+            return SchedAlgorithmNameEnum.fromName(schedulingAlgorithms.get(0));
         }
         // If a scheduling alg. has not been selected, return Distribution by default
-        return SchedulingAlgorithm.DISTRIBUTION;
+        return SchedAlgorithmNameEnum.DISTRIBUTION;
     }
     
     @Override
-    public void setCurrentSchedulingAlg(SchedulingAlgorithm alg) {
+    public void setCurrentSchedulingAlg(SchedAlgorithmNameEnum alg) {
         try {
             update("DELETE FROM current_scheduling_alg");
             update("INSERT INTO current_scheduling_alg (algorithm) VALUES ('" + alg.getName() + "')");

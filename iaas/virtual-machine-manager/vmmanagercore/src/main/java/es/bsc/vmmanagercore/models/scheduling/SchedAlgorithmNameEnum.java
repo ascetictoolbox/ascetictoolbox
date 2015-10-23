@@ -24,14 +24,14 @@ package es.bsc.vmmanagercore.models.scheduling;
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  *
  */
-public enum SchedulingAlgorithm {
+public enum SchedAlgorithmNameEnum {
 
     CONSOLIDATION("consolidation"), COST_AWARE("costAware"), DISTRIBUTION("distribution"),
     ENERGY_AWARE("energyAware"), GROUP_BY_APP("groupByApp"), RANDOM("random");
 
     private String name;
 
-    private SchedulingAlgorithm(String name) {
+    private SchedAlgorithmNameEnum(String name) {
         this.name = name;
     }
 
@@ -39,4 +39,23 @@ public enum SchedulingAlgorithm {
         return name;
     }
 
+    public static SchedAlgorithmNameEnum fromName(String name) {
+        switch (name) { // There can be only one, so get the elem with index 0
+            case "consolidation":
+                return SchedAlgorithmNameEnum.CONSOLIDATION;
+            case "costAware":
+                return SchedAlgorithmNameEnum.COST_AWARE;
+            case "distribution":
+                return SchedAlgorithmNameEnum.DISTRIBUTION;
+            case "energyAware":
+                return SchedAlgorithmNameEnum.ENERGY_AWARE;
+            case "groupByApp":
+                return SchedAlgorithmNameEnum.GROUP_BY_APP;
+            case "random":
+                return SchedAlgorithmNameEnum.RANDOM;
+            default:
+                // Presumably Throws an exception
+                return SchedAlgorithmNameEnum.valueOf(name);
+        }
+    }
 }

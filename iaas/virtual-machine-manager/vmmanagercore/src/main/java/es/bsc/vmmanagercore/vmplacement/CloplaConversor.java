@@ -27,7 +27,7 @@ import es.bsc.vmmanagercore.modellers.energy.EnergyModeller;
 import es.bsc.vmmanagercore.modellers.price.PricingModeller;
 import es.bsc.vmmanagercore.models.scheduling.RecommendedPlan;
 import es.bsc.vmmanagercore.models.scheduling.RecommendedPlanRequest;
-import es.bsc.vmmanagercore.models.scheduling.SchedulingAlgorithm;
+import es.bsc.vmmanagercore.models.scheduling.SchedAlgorithmNameEnum;
 import es.bsc.vmmanagercore.models.vms.Vm;
 import es.bsc.vmmanagercore.models.vms.VmDeployed;
 import es.bsc.vmmanagercore.monitoring.hosts.Host;
@@ -93,11 +93,11 @@ public class CloplaConversor {
     /**
      * Returns a configuration object for the VM Placement performed by the VM placement library.
      *
-     * @param schedulingAlgorithm the scheduling algorithm
+     * @param schedAlgorithmNameEnum the scheduling algorithm
      * @param recommendedPlanRequest the recommended plan request
      * @return the placement configuration for the VM placement library
      */
-    public static VmPlacementConfig getCloplaConfig(SchedulingAlgorithm schedulingAlgorithm,
+    public static VmPlacementConfig getCloplaConfig(SchedAlgorithmNameEnum schedAlgorithmNameEnum,
                                                     RecommendedPlanRequest recommendedPlanRequest,
                                                     EnergyModeller energyModeller, PricingModeller pricingModeller) {
         int timeLimitSec = recommendedPlanRequest.getTimeLimitSeconds();
@@ -107,7 +107,7 @@ public class CloplaConversor {
         }
 
         return new VmPlacementConfig.Builder(
-                getPolicy(schedulingAlgorithm),
+                getPolicy(schedAlgorithmNameEnum),
                 timeLimitSec,
                 getConstructionHeuristic(recommendedPlanRequest.getConstructionHeuristicName()),
                 getLocalSearch(recommendedPlanRequest),
@@ -193,11 +193,11 @@ public class CloplaConversor {
     /**
      * Gets a Policy as defined in the VM placement library from a Scheduling Algorithm as defined in the VMM core.
      *
-     * @param schedulingAlgorithm the scheduling algorithm
+     * @param schedAlgorithmNameEnum the scheduling algorithm
      * @return the policy
      */
-    private static Policy getPolicy(SchedulingAlgorithm schedulingAlgorithm) {
-        switch (schedulingAlgorithm) {
+    private static Policy getPolicy(SchedAlgorithmNameEnum schedAlgorithmNameEnum) {
+        switch (schedAlgorithmNameEnum) {
             case CONSOLIDATION:
                 return Policy.CONSOLIDATION;
             case COST_AWARE:

@@ -144,21 +144,21 @@ public interface VmManager {
      *
      * @return the list of scheduling algorithms
      */
-    List<SchedulingAlgorithm> getAvailableSchedulingAlgorithms();
+    List<SchedAlgorithmNameEnum> getAvailableSchedulingAlgorithms();
 
     /**
      * Returns the scheduling algorithm that is being used now.
      *
      * @return the scheduling algorithm being used
      */
-    SchedulingAlgorithm getCurrentSchedulingAlgorithm();
+    SchedAlgorithmNameEnum getCurrentSchedulingAlgorithm();
 
     /**
      * Changes the scheduling algorithm.
      *
      * @param schedulingAlg the scheduling algorithm to be used
      */
-    void setSchedulingAlgorithm(SchedulingAlgorithm schedulingAlg);
+    void setSchedulingAlgorithm(SchedAlgorithmNameEnum schedulingAlg);
 
 
     //================================================================================

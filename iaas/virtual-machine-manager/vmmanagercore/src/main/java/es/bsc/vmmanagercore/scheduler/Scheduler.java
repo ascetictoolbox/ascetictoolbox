@@ -23,7 +23,7 @@ import es.bsc.vmmanagercore.modellers.energy.EnergyModeller;
 import es.bsc.vmmanagercore.modellers.price.PricingModeller;
 import es.bsc.vmmanagercore.models.hosts.ServerLoad;
 import es.bsc.vmmanagercore.models.scheduling.DeploymentPlan;
-import es.bsc.vmmanagercore.models.scheduling.SchedulingAlgorithm;
+import es.bsc.vmmanagercore.models.scheduling.SchedAlgorithmNameEnum;
 import es.bsc.vmmanagercore.models.scheduling.VmAssignmentToHost;
 import es.bsc.vmmanagercore.models.vms.Vm;
 import es.bsc.vmmanagercore.models.vms.VmDeployed;
@@ -45,7 +45,6 @@ public class Scheduler {
 
     private SchedAlgorithm schedAlgorithm;
     private List<VmDeployed> vmsDeployed;
-    private String schedAlgorithmName;
     private EnergyModeller energyModeller;
     private PricingModeller pricingModeller;
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss.SSS"); // Useful for logs
@@ -56,13 +55,12 @@ public class Scheduler {
      * @param schedAlg scheduling algorithm used
      * @param vmsDeployed list of VMs deployed in the infrastructure
      */
-    public Scheduler(SchedulingAlgorithm schedAlg, List<VmDeployed> vmsDeployed,
+    public Scheduler(SchedAlgorithmNameEnum schedAlg, List<VmDeployed> vmsDeployed,
                      EnergyModeller energyModeller, PricingModeller pricingModeller) {
         this.vmsDeployed = vmsDeployed;
         this.energyModeller = energyModeller;
         this.pricingModeller = pricingModeller;
         setSchedAlgorithm(schedAlg);
-        schedAlgorithmName = schedAlg.getName();
     }
 
     /**
@@ -70,7 +68,7 @@ public class Scheduler {
      *
      * @param schedAlg scheduling algorithm to be used
      */
-    public synchronized void setSchedAlgorithm(SchedulingAlgorithm schedAlg) {
+    public synchronized void setSchedAlgorithm(SchedAlgorithmNameEnum schedAlg) {
         switch (schedAlg) {
             case CONSOLIDATION:
                 schedAlgorithm = new SchedAlgConsolidation();
@@ -91,10 +89,6 @@ public class Scheduler {
                 schedAlgorithm = new SchedAlgRandom();
                 break;
         }
-    }
-
-    public synchronized void setSchedAlgorithmName(SchedulingAlgorithm schedAlg) {
-        schedAlgorithmName = schedAlg.getName();
     }
 
     /**
@@ -310,7 +304,7 @@ public class Scheduler {
      */
     public DeploymentPlan chooseBestDeploymentPlan(List<Vm> vms, List<Host> hosts) {
         String deploymentId = getDeploymentIdForLogMessages();
-        VMMLogger.logStartOfDeploymentPlansEvaluation(schedAlgorithmName, deploymentId);
+        VMMLogger.logStartOfDeploymentPlansEvaluation(schedAlgorithm.getNameEnum().getName(), deploymentId);
 
         // Get all the possible plans that do not use overbooking
         List<DeploymentPlan> possibleDeploymentPlans =
@@ -338,7 +332,7 @@ public class Scheduler {
             VMMLogger.logOverbookingNeeded(deploymentId);
         }
 
-        VMMLogger.logEndOfDeploymentPlansEvaluation(schedAlgorithmName, deploymentId);
+        VMMLogger.logEndOfDeploymentPlansEvaluation(schedAlgorithm.getNameEnum().getName(), deploymentId);
 
         return bestDeploymentPlan;
     }
