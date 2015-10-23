@@ -57,7 +57,7 @@ public interface PaaSEnergyModeller {
 	 * @param vmids
 	 * @return subscribe the publishing of measurement for an appl/event, if timewindow is >0 then is a forecast subscription referred to forecast window
 	 */
-	public boolean subscribeMonitoring(String providerid, String applicationid, String deploymentid,List<String> vmids, String eventid,long timewindow, Unit unit);
+	public boolean subscribeMonitoring(String providerid, String applicationid, String deploymentid);
 	
 	/**
 	 * @param providerid
@@ -65,7 +65,7 @@ public interface PaaSEnergyModeller {
 	 * @param vmids
 	 * @return unsubscribe the publishing of prediction for an appl/event
 	 */
-	public boolean unsubscribeMonitoring(String providerid, String applicationid, String deploymentid, List<String> vmids, String eventid, long timewindow, Unit unit);
+	public boolean unsubscribeMonitoring(String providerid, String applicationid, String deploymentid);
 
 	
 	// Y2 new Interfaces to support training 

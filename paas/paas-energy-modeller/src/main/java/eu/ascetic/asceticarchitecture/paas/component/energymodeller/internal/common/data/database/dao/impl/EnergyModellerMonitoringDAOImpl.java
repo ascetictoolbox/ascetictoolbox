@@ -39,6 +39,7 @@ public class EnergyModellerMonitoringDAOImpl implements EnergyModellerMonitoring
 			+ "type varchar(20), started timestamp DEFAULT '2014-01-01 00:00:00', ended timestamp DEFAULT  '2014-01-01 00:00:00', status boolean, events varchar(50), PRIMARY KEY (monitoringid))";
 	private static String SQL_INSERT="insert into EMONITORING (applicationid,deploymentid,type, started, status , events ) values (?, ?, ?, ?, ?, ?) ";
 	private static String SQL_Q_UPDATE_TIME="UPDATE EMONITORING SET status = ?, ended = ? WHERE applicationid = ? and deploymentid = ? and type = ?";
+	private static String SQL_DELETE="DELETE FROM EMONITORING WHERE applicationid = ? and deploymentid = ? and type = ?";
 	private static String SQL_Q_DEPID="select * from EMONITORING where applicationid = ? and deploymentid = ?";
 	private static String SQL_Q_DEPID_monitoring="select * from EMONITORING where status=true and type='MONITORING'";
 	private static String SQL_Q_DEPID_training="select * from EMONITORING where status=true and type='TRAINING'";
@@ -75,6 +76,7 @@ public class EnergyModellerMonitoringDAOImpl implements EnergyModellerMonitoring
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Calendar cal = Calendar.getInstance();
 		Timestamp ts = Timestamp.valueOf(dateFormat.format(cal.getTime()));
+		terminateMonitoring(applicationid, deploymentid);
 		Object[] params = new Object[] { applicationid , deploymentid , "MONITORING" , ts , Boolean.TRUE , events };
 		int[] types = new int[] { Types.VARCHAR,Types.VARCHAR,Types.VARCHAR,Types.TIMESTAMP, Types.BOOLEAN ,Types.VARCHAR};
 		jdbcTemplate.update(SQL_INSERT, params, types);
@@ -84,11 +86,10 @@ public class EnergyModellerMonitoringDAOImpl implements EnergyModellerMonitoring
 	
 	@Override
 	public void terminateMonitoring(String applicationid, String deploymentid) {
-		int[] types = new int[] { Types.BOOLEAN,Types.TIMESTAMP,Types.VARCHAR,Types.VARCHAR, Types.VARCHAR };
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Calendar cal = Calendar.getInstance();
-		Timestamp ts = Timestamp.valueOf(dateFormat.format(cal.getTime()));
-		jdbcTemplate.update(SQL_Q_UPDATE_TIME,new Object[]{false, ts, applicationid, deploymentid,"MONITORING"}, types);
+		int[] types = new int[] { Types.VARCHAR,Types.VARCHAR, Types.VARCHAR };
+
+		//jdbcTemplate.update(SQL_Q_UPDATE_TIME,new Object[]{false, ts, applicationid, deploymentid,"MONITORING"}, types);
+		jdbcTemplate.update(SQL_DELETE,new Object[]{applicationid, deploymentid,"MONITORING"}, types);
 		LOGGER.info("terminated monitoring");
 		
 	}

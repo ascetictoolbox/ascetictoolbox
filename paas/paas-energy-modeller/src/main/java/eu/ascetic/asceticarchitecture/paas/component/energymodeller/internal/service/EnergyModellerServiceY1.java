@@ -546,16 +546,14 @@ public class EnergyModellerServiceY1 implements PaaSEnergyModeller {
 
 	@Override
 	public boolean subscribeMonitoring(String providerid, String applicationid,
-			String deploymentid, List<String> vmids, String eventid,
-			long timewindow, Unit unit) {
+			String deploymentid) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean unsubscribeMonitoring(String providerid,
-			String applicationid, String deploymentid, List<String> vmids,
-			String eventid, long timewindow, Unit unit) {
+			String applicationid, String deploymentid) {
 		// TODO Auto-generated method stub
 		return false;
 	}

@@ -16,6 +16,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.PaaSEMDatabaseManager;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.dao.impl.EnergyModellerMonitoringDAOImpl;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.EnergyModellerMonitoring;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.ApplicationRegistry;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.mapper.AppRegistryMapper;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.EnergyDataAggregatorServiceQueue;
@@ -28,6 +31,7 @@ public class EnergyModellerMonitor implements Runnable {
 	
 	private EnergyDataAggregatorServiceQueue energyService;
 	private ApplicationRegistry appRegistry;
+	private EnergyModellerMonitoringDAOImpl dbmanager;
 //	private AmqpClient destinationQueueclient;
 	
 	// SLA MESSAGES
@@ -50,6 +54,16 @@ public class EnergyModellerMonitor implements Runnable {
 	}
 	
 	
+	public EnergyModellerMonitoringDAOImpl getDbmanager() {
+		return dbmanager;
+	}
+
+
+	public void setDbmanager(PaaSEMDatabaseManager dbmanager) {
+		this.dbmanager = dbmanager.getMonitoringData();
+	}
+
+
 	public void setEnergyService(EnergyDataAggregatorServiceQueue energyService){
 		this.energyService=energyService;
 	}
@@ -78,9 +92,15 @@ public class EnergyModellerMonitor implements Runnable {
 	@Override
 	public void run() {
 		AppRegistryMapper registryMapper = appRegistry.getSession().getMapper(AppRegistryMapper.class);
-		List<String> deployments = registryMapper.selectDeployments();
-		logger.info("monitoring data for "+deployments.size());
-		for(String deployment : deployments){
+		//List<String> deployments = registryMapper.selectDeployments();
+		//logger.info("monitoring data for "+deployments.size());
+		logger.info("monitoring data ..");
+		List<EnergyModellerMonitoring> monitoredInstances = dbmanager.getMonitoringActive();
+		logger.info("monitoring data for "+monitoredInstances.size());
+		//for(String deployment : deployments){
+		for(EnergyModellerMonitoring monitoring : monitoredInstances){
+			String deployment = monitoring.getDeploymentid();
+		
 			logger.info("monitoring deployment "+deployment);
 			double total_deployment_energy=0;
 			double deployment_power=0;
@@ -95,8 +115,8 @@ public class EnergyModellerMonitor implements Runnable {
 				logger.info("monitoring energy "+partial_energy);
 				double partial_power = energyService.getPowerPerVM(deployment, vmid);
 				logger.info("monitoring power "+partial_power);
-				sentToApplicationManager(buildJSONDATA(appid,vmid,VM_CONSUMPTION_ENERGY, partial_energy));
-				sentToApplicationManager(buildJSONDATA(appid,vmid,VM_CONSUMPTION_POWER, partial_energy));
+				if (partial_energy>0)sentToApplicationManager(buildJSONDATA(appid,vmid,VM_CONSUMPTION_ENERGY, partial_energy));
+				if (partial_power>0)sentToApplicationManager(buildJSONDATA(appid,vmid,VM_CONSUMPTION_POWER, partial_power));
 				logger.info("monitoring has sent data ");
 				total_deployment_energy = total_deployment_energy + partial_energy;
 				deployment_power=deployment_power+partial_power;

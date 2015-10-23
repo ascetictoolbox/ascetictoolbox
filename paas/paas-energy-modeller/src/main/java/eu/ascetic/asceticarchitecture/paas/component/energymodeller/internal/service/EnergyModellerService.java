@@ -41,6 +41,7 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.com
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.dao.EMSettings;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.DataConsumption;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.DataEvent;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.EnergyModellerMonitoring;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.ApplicationRegistry;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.DataConsumptionHandler;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.EnergyDataAggregatorServiceQueue;
@@ -724,9 +725,9 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 				queueManager.createTwoLayersConsumers(emsettings.getAmanagertopic(),emsettings.getPowertopic());
 				LOGGER.debug("PaaS EM activemq connections are now Ready");
 				// TODO uncomment
-//				LOGGER.info("PaaS EM starting monitor thread");
-//				initializeMonitoring(60,emsettings.getAppmonitor(),energyService,appRegistry);
-//				LOGGER.info("PaaS EM started monitor thread");
+				LOGGER.info("PaaS EM starting monitor thread");
+				initializeMonitoring(60,emsettings.getAppmonitor(),energyService,appRegistry);
+				LOGGER.info("PaaS EM started monitor thread");
 			} catch (Exception e) {
 				LOGGER.error("ERROR initializing queues, now disabling the component..");
 				emsettings.setEnableQueue("false");
@@ -741,9 +742,10 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		monitorThread.setup(app_man_url);
 		monitorThread.setEnergyService(energyService);
 		monitorThread.setAppRegistry(appRegistry);
-		
+		monitorThread.setDbmanager(dbmanager);
 		service = Executors.newSingleThreadScheduledExecutor();
 		service.scheduleAtFixedRate(monitorThread, 0, 60, TimeUnit.SECONDS);
+		LOGGER.info("PaaS EM thread on for monitoring");
 		
 		
 	}
@@ -816,19 +818,16 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	}
 
 	@Override
-	public boolean subscribeMonitoring(String providerid, String applicationid,
-			String deploymentid, List<String> vmids, String eventid,
-			long timewindow, Unit unit) {
-		// TODO Auto-generated method stub
+	public boolean subscribeMonitoring(String providerid, String applicationid,	String deploymentid) {
+		dbmanager.getMonitoringData().createMonitoring(applicationid, deploymentid, "");
 		
 		return false;
 	}
 
 	@Override
-	public boolean unsubscribeMonitoring(String providerid,
-			String applicationid, String deploymentid, List<String> vmids,
-			String eventid, long timewindow, Unit unit) {
+	public boolean unsubscribeMonitoring(String providerid,	String applicationid, String deploymentid) {
 		// TODO Auto-generated method stub
+		dbmanager.getMonitoringData().terminateMonitoring(applicationid, deploymentid);	
 		return false;
 	}
 	

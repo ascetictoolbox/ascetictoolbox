@@ -38,11 +38,13 @@ public class EnergyModellerMonitor {
 		serviceEM = (EnergyModellerService) EnergyModellerFactory.getEnergyModeller("c:/dev-env/ascetic-conf/testconfig.properties");
 	}
 	
-	@Test
-	public void monitoringInterface() {
-		while(true);
-	
-	}
+//	@Test
+//	public void monitoringInterface() {
+//		
+//		serviceEM.subscribeMonitoring("", "JEPlus", "610");
+//		while(true);
+//	
+//	}
 	
 
 }
