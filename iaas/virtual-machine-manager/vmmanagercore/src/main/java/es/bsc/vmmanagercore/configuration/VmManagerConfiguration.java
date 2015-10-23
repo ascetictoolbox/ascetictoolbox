@@ -164,7 +164,7 @@ public class VmManagerConfiguration {
         else {
             throw new IllegalArgumentException("The cloud middleware selected is not supported");
         }
-		
+
 		LogManager.getLogger(VmManagerConfiguration.class).debug("Loading configuration: " + toString());
     }
 

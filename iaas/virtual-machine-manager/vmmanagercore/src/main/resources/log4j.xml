@@ -8,11 +8,6 @@
         <layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d{ISO8601} %-6p - %C%n%m%n" />
         </layout>
-        <!--<filter class="org.apache.log4j.varia.LevelMatchFilter">-->
-            <!--<param name="LevelToMatch" value="ERROR" />-->
-            <!--<param name="AcceptOnMatch" value="true" />-->
-        <!--</filter>-->
-        <!--<filter class="org.apache.log4j.varia.DenyAllFilter" />-->
     </appender>
 
     <appender name="default.file" class="org.apache.log4j.FileAppender">
@@ -22,19 +17,14 @@
         <layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d{ISO8601} %-6p - %C%n%m%n" />
         </layout>
-        <!--<filter class="org.apache.log4j.varia.StringMatchFilter">-->
-            <!--<param name="StringToMatch" value="[VMM]" />-->
-            <!--<param name="AcceptOnMatch" value="true" />-->
-        <!--</filter>-->
-        <!--<filter class="org.apache.log4j.varia.DenyAllFilter" />-->
     </appender>
 
-	<logger name="eu.ascetic">
+	<logger name="eu.ascetic" additivity="false">
 		<level value="debug"/>
 		<appender-ref ref="default.console"/>
 		<appender-ref ref="default.file"/>
 	</logger>
-	<logger name="es.bsc">
+	<logger name="es.bsc" additivity="false">
 		<level value="debug"/>
 		<appender-ref ref="default.console"/>
 		<appender-ref ref="default.file"/>

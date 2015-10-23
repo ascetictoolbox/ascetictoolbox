@@ -18,7 +18,6 @@
 
 package es.bsc.vmmanagercore.cloudmiddleware.openstack;
 
-import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddleware;
 import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddlewareException;
 import es.bsc.vmmanagercore.models.images.ImageToUpload;
 import es.bsc.vmmanagercore.utils.CommandExecutor;
@@ -29,7 +28,6 @@ import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
