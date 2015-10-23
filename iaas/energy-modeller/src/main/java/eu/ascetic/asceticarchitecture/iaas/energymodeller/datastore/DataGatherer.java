@@ -54,6 +54,7 @@ public class DataGatherer implements Runnable {
     private final HashMap<Host, Long> lastTimeStampSeen = new HashMap<>();
     private static final String CONFIG_FILE = "energy-modeller-data-gatherer.properties";
     private boolean logVmsToDisk = false;
+    private String loggerOutputFile = "VmEnergyUsageData.txt";    
     private boolean performDataGathering = false;
     private boolean loggerConsiderIdleEnergy = true;
     private VmEnergyUsageLogger vmUsageLogger = null;
@@ -85,6 +86,8 @@ public class DataGatherer implements Runnable {
             config.setAutoSave(true); //This will save the configuration file back to disk. In case the defaults need setting.
             logVmsToDisk = config.getBoolean("iaas.energy.modeller.data.gatherer.log.vms", logVmsToDisk);
             config.setProperty("iaas.energy.modeller.data.gatherer.log.vms", logVmsToDisk);
+            loggerOutputFile = config.getString("iaas.energy.modeller.data.gatherer.log.vms.filename", loggerOutputFile);
+            config.setProperty("iaas.energy.modeller.data.gatherer.log.vms.filename", loggerOutputFile);            
             loggerConsiderIdleEnergy = config.getBoolean("iaas.energy.modeller.data.gatherer.log.consider_idle_energy", loggerConsiderIdleEnergy);
             config.setProperty("iaas.energy.modeller.data.gatherer.log.consider_idle_energy", loggerConsiderIdleEnergy);
 
@@ -190,7 +193,7 @@ public class DataGatherer implements Runnable {
     @Override
     public void run() {
         if (logVmsToDisk && performDataGathering) {
-            vmUsageLogger = new VmEnergyUsageLogger(new File("VmEnergyUsageData.txt"), true);
+            vmUsageLogger = new VmEnergyUsageLogger(new File(loggerOutputFile), true);
             vmUsageLogger.setConsiderIdleEnergy(loggerConsiderIdleEnergy);
             Thread vmUsageLoggerThread = new Thread(vmUsageLogger);
             vmUsageLoggerThread.setDaemon(true);
