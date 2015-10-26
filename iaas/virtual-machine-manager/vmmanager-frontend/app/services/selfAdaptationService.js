@@ -39,7 +39,7 @@
         }
 
 		function engageManual() {
-			return $http({method: PUT, url: BASE_URL + 'self_adaptation/ondemand'});
+			return $http({method: 'PUT', url: BASE_URL + 'self_adaptation/ondemand'});
 		}
 
     }
