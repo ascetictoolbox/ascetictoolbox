@@ -47,9 +47,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-import static es.bsc.vmmanagercore.manager.DeploymentEngine.LEGACY;
-import static es.bsc.vmmanagercore.manager.DeploymentEngine.OPTAPLANNER;
-
 /**
  * @author David Ortiz Lopez (david.ortiz@bsc.es)
  */
@@ -180,7 +177,7 @@ public class VmsManager {
         db.deleteVm(vmId);
 
         // If the monitoring system is Zabbix, then we need to delete the VM from Zabbix
-        if (usingZabbix()) {
+        if (isUsingZabbix()) {
             try {
                 ZabbixConnector.deleteVmFromZabbix(vmId, vmToBeDeleted.getHostName());
             } catch(Exception e) {
@@ -248,7 +245,7 @@ public class VmsManager {
 
             // If the monitoring system is Zabbix, then we need to call the Zabbix wrapper to initialize
             // the Zabbix agents. To register the VM we agreed to use the name <vmId>_<hostWhereTheVmIsDeployed>
-            if (usingZabbix()) {
+            if (isUsingZabbix()) {
                 ZabbixConnector.registerVmInZabbix(vmId, getVm(vmId).getHostName(), getVm(vmId).getIpAddress());
             }
 
@@ -325,6 +322,9 @@ public class VmsManager {
     public void migrateVm(String vmId, String destinationHostName) throws CloudMiddlewareException {
         VMMLogger.logMigration(vmId, destinationHostName);
         cloudMiddleware.migrate(vmId, destinationHostName);
+		if(isUsingZabbix()) {
+			ZabbixConnector.migrateVmInZabbix(vmId, getVm(vmId).getIpAddress());
+		}
     }
 
     /**
@@ -337,7 +337,7 @@ public class VmsManager {
         return cloudMiddleware.existsVm(vmId);
     }
 
-    private boolean usingZabbix() {
+    private boolean isUsingZabbix() {
         return VmManagerConfiguration.getInstance().monitoring.equals(VmManagerConfiguration.Monitoring.ZABBIX);
     }
 
@@ -427,7 +427,7 @@ public class VmsManager {
     }
 
     private void setAsceticInitScript(Vm vmToDeploy) {
-        if (usingZabbix()) { // It would be more correct to check whether the VMM is running for the Ascetic project.
+        if (isUsingZabbix()) { // It would be more correct to check whether the VMM is running for the Ascetic project.
             Path zabbixAgentsScriptPath = FileSystems.getDefault().getPath(ASCETIC_ZABBIX_SCRIPT_PATH);
             if (Files.exists(zabbixAgentsScriptPath)) {
                 vmToDeploy.setInitScript(ASCETIC_ZABBIX_SCRIPT_PATH);

@@ -123,6 +123,18 @@
             return result;
         }
 
+		function engageManual() {
+			SelfAdaptationService.engageManual()
+				.then(
+				function() {
+					toastr.success('Self adaptation manually triggered');
+				},
+				function() {
+					toastr.error('Error triggering self-adaptation manually');
+				}
+			);
+		}
+
         function saveOptions() {
             toastr.info('Saving self-adaptation options...');
             var selfAdaptationOpts = { // Create empty self-adaptation options object

@@ -22,10 +22,7 @@ import es.bsc.vmmanagercore.cloudmiddleware.CloudMiddlewareException;
 import es.bsc.vmmanagercore.db.VmManagerDb;
 import es.bsc.vmmanagercore.db.VmManagerDbFactory;
 import es.bsc.vmmanagercore.manager.VmManager;
-import es.bsc.vmmanagercore.models.scheduling.ConstructionHeuristic;
-import es.bsc.vmmanagercore.models.scheduling.LocalSearchAlgorithmOptionsSet;
-import es.bsc.vmmanagercore.models.scheduling.RecommendedPlan;
-import es.bsc.vmmanagercore.models.scheduling.RecommendedPlanRequest;
+import es.bsc.vmmanagercore.models.scheduling.*;
 import es.bsc.vmmanagercore.models.vms.Vm;
 import es.bsc.vmmanagercore.selfadaptation.options.AfterVmDeleteSelfAdaptationOps;
 import es.bsc.vmmanagercore.selfadaptation.options.AfterVmDeploymentSelfAdaptationOps;
@@ -35,6 +32,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -148,6 +146,19 @@ public class SelfAdaptationManager {
 			}
 		}
     }
+
+	private static final String ON_DEMAND_ALGORITHM = "Hill Climbing";
+	private static final int ON_DEMAND_TIME_LIMIT_SECONDS = 10;
+	public void applyOnDemandSelfAdaptation() throws CloudMiddlewareException {
+		RecommendedPlanRequest recommendedPlanRequest = new RecommendedPlanRequest(
+				ON_DEMAND_TIME_LIMIT_SECONDS,ON_DEMAND_ALGORITHM,new LocalSearchAlgorithmOptionsSet(ON_DEMAND_ALGORITHM,new HashMap<String, Integer>()));
+
+		VmPlacement[] deploymentPlan = vmManager.getRecommendedPlan(recommendedPlanRequest,
+				true,
+				new ArrayList<Vm>()
+			).getVMPlacements();
+		vmManager.executeDeploymentPlan(deploymentPlan);
+	}
 
     /**
      * Applies the self-adaptation configured to take place periodically.

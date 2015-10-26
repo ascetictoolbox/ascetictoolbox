@@ -21,6 +21,7 @@ package es.bsc.vmmanagercore.monitoring.zabbix;
 import com.google.common.collect.ImmutableMap;
 import es.bsc.vmmanagercore.configuration.VmManagerConfiguration;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.client.ZabbixClient;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import java.sql.Connection;
@@ -191,5 +192,17 @@ public class ZabbixConnector {
                 "deleteVmFromZabbixThread");
         thread.start();
     }
+
+	public static void migrateVmInZabbix(final String vmId, final String ipAddress) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				LogManager.getLogger(getClass()).warn("TO DO: Zabbix should refresh quicker: " + vmId);
+
+//				zabbixClient.deleteVM(vmId);
+//				zabbixClient.createVM(vmId, ipAddress);
+			}
+		}, "migrateVmInZabbixThread").start();
+	}
 
 }

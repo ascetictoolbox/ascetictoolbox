@@ -26,7 +26,8 @@
     function SelfAdaptationService($http, BASE_URL) {
         return {
             getSelfAdaptationOptions: getSelfAdaptationOptions,
-            saveSelfAdaptationOptions: saveSelfAdaptationOptions
+            saveSelfAdaptationOptions: saveSelfAdaptationOptions,
+			engageManual: engageManual
         };
 
         function getSelfAdaptationOptions() {
@@ -36,6 +37,11 @@
         function saveSelfAdaptationOptions(options) {
             return $http({method: 'PUT', url: BASE_URL + 'self_adaptation/options', data: options});
         }
+
+		function engageManual() {
+			return $http({method: PUT, url: BASE_URL + 'self_adaptation/ondemand'});
+		}
+
     }
     SelfAdaptationService.$inject = ['$http', 'BASE_URL'];
 

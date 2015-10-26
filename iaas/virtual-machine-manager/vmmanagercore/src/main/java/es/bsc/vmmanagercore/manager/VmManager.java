@@ -263,4 +263,5 @@ public interface VmManager {
 	 */
 	String getVmsCost(List<String> vmIds) throws Exception;
 
+	void executeOnDemandSelfAdaptation() throws CloudMiddlewareException ;
 }

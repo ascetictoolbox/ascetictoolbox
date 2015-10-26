@@ -578,4 +578,8 @@ public class GenericVmManager implements VmManager {
                 conf.keyStoneTenantId);
     }
 
+	@Override
+	public void executeOnDemandSelfAdaptation() throws CloudMiddlewareException {
+		selfAdaptationManager.applyOnDemandSelfAdaptation();
+	}
 }

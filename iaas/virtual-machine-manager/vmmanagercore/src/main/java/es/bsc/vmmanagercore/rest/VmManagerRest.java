@@ -260,6 +260,15 @@ public class VmManagerRest {
         selfAdaptationCallsManager.saveSelfAdaptationOptions(options);
     }
 
+	@PUT
+	@Path("/self_adaptation/ondemand")
+	public void executeOnDemandSelfAdaptation() {
+		try {
+			vmManager.executeOnDemandSelfAdaptation();
+		}  catch (Exception e) {
+			throw new ErrorHandler(e, Response.Status.INTERNAL_SERVER_ERROR);
+		}
+	}
 
     //================================================================================
     // Node Methods
