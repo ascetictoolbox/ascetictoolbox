@@ -148,10 +148,11 @@ public class SelfAdaptationManager {
     }
 
 	private static final String ON_DEMAND_ALGORITHM = "Hill Climbing";
+	private static final String ON_DEMAND_CONSTRUCTION_HEURISTIC = "BEST_FIT";
 	private static final int ON_DEMAND_TIME_LIMIT_SECONDS = 10;
 	public void applyOnDemandSelfAdaptation() throws CloudMiddlewareException {
 		RecommendedPlanRequest recommendedPlanRequest = new RecommendedPlanRequest(
-				ON_DEMAND_TIME_LIMIT_SECONDS,ON_DEMAND_ALGORITHM,new LocalSearchAlgorithmOptionsSet(ON_DEMAND_ALGORITHM,new HashMap<String, Integer>()));
+				ON_DEMAND_TIME_LIMIT_SECONDS,ON_DEMAND_CONSTRUCTION_HEURISTIC,new LocalSearchAlgorithmOptionsSet(ON_DEMAND_ALGORITHM,new HashMap<String, Integer>()));
 
 		VmPlacement[] deploymentPlan = vmManager.getRecommendedPlan(recommendedPlanRequest,
 				true,

@@ -460,7 +460,11 @@ public class GenericVmManager implements VmManager {
 					.append(pricingModeller.getVMFinalCharges(vmid,false))
 					.append('}');
 		}
-		return sb.append(']').toString();
+		String retJson = sb.append(']').toString();
+
+		log.debug("getVMscost returned: " + retJson);
+
+		return retJson;
 	}
 
     //================================================================================
