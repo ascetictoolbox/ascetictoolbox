@@ -145,7 +145,7 @@ public abstract class AbstractRest {
 	 * @param ovf
 	 * @return the XML response of the new deployment
 	 */
-	protected Response createNewDeployment(String ovf, String negotiation, String schema) {
+	protected Response createNewDeployment(String ovf, String negotiation, String schema, boolean isXML) {
 		
 		boolean automaticNegotiation = true;
 		
@@ -216,7 +216,11 @@ public abstract class AbstractRest {
 		// We notify to the AMQP that the deployment has been created
 		AmqpProducer.sendDeploymentSubmittedMessage(applicationToBeShown);
 		
-		return buildResponse(Status.CREATED, XMLBuilder.getApplicationXML(application));
+		if(isXML) {
+			return buildResponse(Status.CREATED, XMLBuilder.getApplicationXML(applicationToBeShown));
+		} else {
+			return buildResponse(Status.CREATED, XMLBuilder.getApplicationJSON(applicationToBeShown));
+		}
 	}
 	
 	/**
