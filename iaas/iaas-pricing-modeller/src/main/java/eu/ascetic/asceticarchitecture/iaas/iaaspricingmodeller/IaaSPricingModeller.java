@@ -139,7 +139,7 @@ public void initializeVM(String VMid, int schemeId, String hostname, String appI
 
 
 	} catch (NullPointerException ex) {
-
+		logger.info("The VM with VMid "+VMid+"Has not been registered");
 	}
 
 VMinfo vm = new VMinfo (RAM, CPU, storage, hostname);
@@ -163,6 +163,7 @@ billing.registerVM(VM);
 
 public double getAppFinalCharges(int appID, boolean deleteApp){
 	double charges = billing.getAppCharges(appID);
+	
 	if (deleteApp)
 		billing.unregisterApp(appID);
 	return charges;

@@ -80,6 +80,7 @@ public class  IaaSPricingModellerCost implements IaaSPricingModellerCostInterfac
 		}
 		catch (NullPointerException ex){
 			difference = 0;
+			
 		}
 		return difference;
 
