@@ -56,6 +56,7 @@
         selfAdaptation.showOptions = showOptions;
         selfAdaptation.saveOptions = saveOptions;
         selfAdaptation.getLocalSearchAlgNames = getLocalSearchAlgNames;
+		selfAdaptation.engageManual = engageManual;
 
         /* Every scheduling algorithm has different configuration options (size, accepted count limit, etc.).
            The following constants define those options.*/
