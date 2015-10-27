@@ -40,7 +40,7 @@ public class AsceticPricingModellerAdapter implements PricingModeller {
     with more available resources will take less time to complete its execution.
      */
 
-    private static final long FIXED_DURATION_MIN = 60;
+    private static final long FIXED_DURATION_SEC = 3600;
     private static IaaSPricingModeller pricingModeller;
 
     public AsceticPricingModellerAdapter(EnergyModeller energyModeller) {
@@ -61,7 +61,7 @@ public class AsceticPricingModellerAdapter implements PricingModeller {
 	@Override
 	public double getVMChargesPrediction(int cpus, int ramMb, double diskGb, String hostname) {
 		return pricingModeller.getVMChargesPrediction(
-				cpus, ramMb, diskGb, getSchemeIdForVm(), FIXED_DURATION_MIN, hostname);
+				cpus, ramMb, diskGb, getSchemeIdForVm(), FIXED_DURATION_SEC, hostname);
 	}
 
 	@Override
