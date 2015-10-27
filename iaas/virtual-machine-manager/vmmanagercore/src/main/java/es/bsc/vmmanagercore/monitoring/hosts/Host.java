@@ -249,4 +249,21 @@ public abstract class Host {
         return !turnedOff.get();
     }
 
+
+	@Override
+	public String toString() {
+		return "Host{" +
+				"hostname='" + hostname + '\'' +
+				", totalCpus=" + totalCpus +
+				", totalMemoryMb=" + totalMemoryMb +
+				", totalDiskGb=" + totalDiskGb +
+				", assignedCpus=" + assignedCpus +
+				", assignedMemoryMb=" + assignedMemoryMb +
+				", assignedDiskGb=" + assignedDiskGb +
+				", currentPower=" + currentPower +
+				", turnedOff=" + turnedOff +
+				", turnOnDelaySeconds=" + turnOnDelaySeconds +
+				", turnOffDelaySeconds=" + turnOffDelaySeconds +
+				'}';
+	}
 }

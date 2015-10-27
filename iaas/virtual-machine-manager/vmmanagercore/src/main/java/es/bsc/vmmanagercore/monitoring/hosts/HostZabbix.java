@@ -19,6 +19,7 @@
 package es.bsc.vmmanagercore.monitoring.hosts;
 
 import es.bsc.vmmanagercore.monitoring.zabbix.ZabbixConnector;
+import org.apache.log4j.LogManager;
 
 import java.util.Map;
 
@@ -97,7 +98,9 @@ public class HostZabbix extends Host {
         if (latestMetricValues.get(POWER_KEY) != null) {
             currentPower = latestMetricValues.get(POWER_KEY);
         }
-
+		//LogManager.getLogger(HostZabbix.class).trace(
+		//		"Updated host metrics: " + toString()
+		//);
     }
 
     @Override
@@ -105,4 +108,10 @@ public class HostZabbix extends Host {
         updateMetrics();
     }
 
+	@Override
+	public String toString() {
+		return "HostZabbix{" +
+				"zabbixId=" + zabbixId +
+				"} " + super.toString();
+	}
 }

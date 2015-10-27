@@ -71,6 +71,7 @@ public class EstimatesManager {
      */
     // Note: this function would not be needed if VmToBeEstimated inherited from Vm
     private List<Vm> vmsToBeEstimatedToVms(List<VmToBeEstimated> vmsToBeEstimated) {
+
         List<Vm> result = new ArrayList<>();
         for (VmToBeEstimated vmToBeEstimated: vmsToBeEstimated) {
             result.add(vmToBeEstimated.toVm());
