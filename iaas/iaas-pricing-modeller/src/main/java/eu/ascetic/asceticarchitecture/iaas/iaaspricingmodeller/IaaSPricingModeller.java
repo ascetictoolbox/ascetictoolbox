@@ -38,6 +38,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsagePrediction;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.billing.IaaSPricingModellerBilling;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.energyprovider.EnergyProvider;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesrepository.IaaSPricingModellerPricingScheme;
@@ -133,9 +134,10 @@ public void initializeVM(String VMid, int schemeId, String hostname, String appI
 	double storage=0;
 
 	try {
-			CPU = energyModeller.getVM(VMid).getCpus();
-			RAM = energyModeller.getVM(VMid).getRamMb();
-			storage = energyModeller.getVM(VMid).getDiskGb();
+            VmDeployed vm = energyModeller.getVM(VMid);
+            CPU = vm.getCpus();
+            RAM = vm.getRamMb();
+            storage = vm.getDiskGb();
 
 
 	} catch (NullPointerException ex) {
@@ -307,9 +309,10 @@ public double getAppFinalCharges(int appID, boolean deleteApp){
 	double storage=0;
 
 	try {
-	CPU = energyModeller.getVM(VMid).getCpus();
-	RAM = energyModeller.getVM(VMid).getRamMb();
-	storage = energyModeller.getVM(VMid).getDiskGb();
+            VmDeployed vm = energyModeller.getVM(VMid);
+            CPU = vm.getCpus();
+            RAM = vm.getRamMb();
+            storage = vm.getDiskGb();
 
 	} catch (NullPointerException ex) {
 	logger.info("The VM with VMid "+VMid+"Has not been registered");
@@ -404,8 +407,9 @@ public double getAppFinalCharges(int appID, boolean deleteApp){
 		Collection <VmDeployed> collection =  energyModeller.getVMsOnHost(host);
 		Collection <VM> col = castCollection(collection);
 		
-		energyVM.setTotalEnergy(energyModeller.getPredictedEnergyForVM(newVM, col, host, dura).getTotalEnergyUsed());
-		energyVM.setAvergPower(energyModeller.getPredictedEnergyForVM(newVM, col, host, dura).getAvgPowerUsed());
+            EnergyUsagePrediction energyPrediction = energyModeller.getPredictedEnergyForVM(newVM, col, host, dura);
+            energyVM.setTotalEnergy(energyPrediction.getTotalEnergyUsed());
+            energyVM.setAvergPower(energyPrediction.getAvgPowerUsed());
     	}
     	catch (NullPointerException ex){
     		
