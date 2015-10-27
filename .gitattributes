@@ -420,6 +420,7 @@ iaas/virtual-machine-manager/clopla/src/test/java/es/bsc/clopla/domain/VmTest.ja
 iaas/virtual-machine-manager/clopla/src/test/java/es/bsc/clopla/domain/comparators/HostStrengthComparatorTest.java -text
 iaas/virtual-machine-manager/clopla/src/test/java/es/bsc/clopla/domain/comparators/VmDifficultyComparatorTest.java -text
 iaas/virtual-machine-manager/clopla/src/test/java/es/bsc/clopla/lib/CloplaTest.java -text
+iaas/virtual-machine-manager/clopla/src/test/java/es/bsc/clopla/migration/MigrationsTest.java -text
 iaas/virtual-machine-manager/clopla/src/test/java/es/bsc/clopla/placement/scorecalculators/ScoreCalculatorCommonTest.java -text
 iaas/virtual-machine-manager/clopla/src/test/java/es/bsc/clopla/placement/scorecalculators/ScoreCalculatorConsolidationTest.java -text
 iaas/virtual-machine-manager/clopla/src/test/java/es/bsc/clopla/placement/scorecalculators/ScoreCalculatorDistributionTest.java -text

@@ -42,7 +42,7 @@ public class ScoreCalculatorEnergy implements SimpleScoreCalculator<ClusterState
         return HardMediumSoftScore.valueOf(
                 calculateHardScore(solution),
                 calculateMediumScore(solution),
-                VmPlacementConfig.initialClusterState.get().countVmMigrationsNeeded(solution));
+                -VmPlacementConfig.initialClusterState.get().countVmMigrationsNeeded(solution));
     }
 
     private int calculateHardScore(ClusterState solution) {

@@ -43,7 +43,7 @@ public class ScoreCalculatorDistribution implements SimpleScoreCalculator<Cluste
         int[] softScores = {
                 solution.countNonIdleHosts(),
                 - (int) Math.round(solution.calculateStdDevCpuPercUsedPerHost()), 
-                VmPlacementConfig.initialClusterState.get().countVmMigrationsNeeded(solution)};
+                - VmPlacementConfig.initialClusterState.get().countVmMigrationsNeeded(solution)};
         return BendableScore.valueOf(hardScores, softScores);
     }
 
