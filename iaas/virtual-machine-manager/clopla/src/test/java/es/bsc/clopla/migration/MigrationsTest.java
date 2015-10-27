@@ -3,6 +3,7 @@ package es.bsc.clopla.migration;
 import es.bsc.clopla.domain.Host;
 import es.bsc.clopla.domain.Vm;
 import org.junit.Before;
+import org.junit.Ignore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 /**
  * Created by mmacias on 26/10/15.
  */
+@Ignore
 public class MigrationsTest {
 	private List<Vm> vms;
 	private List<Host> hosts;
