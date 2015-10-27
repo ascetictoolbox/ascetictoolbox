@@ -197,8 +197,6 @@ public class ZabbixConnector {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				LogManager.getLogger(getClass()).warn("TO DO: Zabbix should refresh quicker: " + vmId);
-
 //				zabbixClient.deleteVM(vmId);
 //				zabbixClient.createVM(vmId, ipAddress);
 			}

@@ -100,7 +100,7 @@ public class VmManagerConfiguration {
         try {
 			String customFileLocation = System.getProperty(PROPNAME_CONF_FILE,DEFAULT_CONF_FILE_LOCATION);
 
-            log.info("Loading configuration file: " + customFileLocation);
+            log.debug("Loading configuration file: " + customFileLocation);
             return new PropertiesConfiguration(customFileLocation);
         } catch (ConfigurationException e) {
 			log.error("Error loading properties file", e);

@@ -60,8 +60,6 @@ public class OpenStackGlance {
      */
     public String createImageFromUrl(ImageToUpload imageToUpload) throws CloudMiddlewareException {
         String responseContent;
-		log.debug("Validating URL: " + imageToUpload.getUrl());
-
         if (new UrlValidator().isValid(imageToUpload.getUrl())) {
             responseContent = HttpUtils.executeHttpRequest("POST",
                     HttpUtils.buildURI("http",

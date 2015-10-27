@@ -470,7 +470,7 @@ public class VmsManager {
             public void run(){
 				//
 				try {
-					log.info("Waiting 10 seconds before initializing VM billing. VM ID = " + vmId + "; Hostname = " + hostname);
+					log.debug("Waiting 10 seconds before initializing VM billing. VM ID = " + vmId + "; Hostname = " + hostname);
 					Thread.sleep(10000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
