@@ -414,9 +414,23 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 						int count = eventService.getAllEventsNumber(applicationid, translated, eventid, de.getBegintime(), de.getEndtime());
 						LOGGER.info("it has been executed with other "+count);
 						if (count>0){
-							power = power/count;
-							LOGGER.info(power+"the power has been split between "+count + "events" );
+							double event_delta = de.getEndtime() - de.getBegintime();
+							List<Long> split = eventService.getAllDeltas(applicationid, translated, eventid, de.getBegintime(), de.getEndtime());
+							double split_factor = 0;
+							LOGGER.info("## total "+count);
+							for (Long delta : split){
+								double coeff = delta/event_delta;
+								LOGGER.info("## this event split "+coeff + " from its duration "+ delta +"and the original "+ event_delta);
+								split_factor = split_factor + coeff;
+				
+							}
+							//power = power/split_factor;
+							LOGGER.info("accurate split factor "+ (power/split_factor) + " split alone" +split_factor );
+							LOGGER.info("generic split factor "+ (power/count)  );
+							power = power/split_factor;
+							
 						}
+						
 						LOGGER.info("##### This event "+countEvents+" power :  "+power);
 						if (power>0)countEvents++;
 						
@@ -499,9 +513,23 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 							int count = eventService.getAllEventsNumber(applicationid, translated, eventid, de.getBegintime(), de.getEndtime());
 							LOGGER.info(power+"it has been executed with other "+count);
 							if (count>0){
+								double event_delta = de.getEndtime() - de.getBegintime();
+								List<Long> split = eventService.getAllDeltas(applicationid, translated, eventid, de.getBegintime(), de.getEndtime());
+								double split_factor = 0;
+								LOGGER.info("## total "+count);
+								for (Long delta : split){
+									
+									double coeff = delta/event_delta;
+									LOGGER.info("## this event split "+coeff + " from its duration "+ delta +"and the original "+ event_delta);
+									split_factor = split_factor + coeff;
+								}
+								//power = power/split_factor;
+								LOGGER.info("accurate split factor "+ power/split_factor );
 								power = power/count;
-								LOGGER.info("the power has been split between "+count + "events" );
+								//LOGGER.info(power+"the power has been split between "+count + "events" );
+								LOGGER.info("uniform split "+power );
 							}
+
 							tot_power = tot_power + power;
 							countevents++;
 						}
@@ -542,7 +570,16 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 					int count = eventService.getAllEventsNumber(applicationid, translated, eventid, de.getBegintime(), de.getEndtime());
 					LOGGER.info(energy+"it has been with other "+count);
 					if (count>0){
-						energy = energy/count;
+						double event_delta = de.getEndtime() - de.getBegintime();
+						List<Long> split = eventService.getAllDeltas(applicationid, vmid, eventid, de.getBegintime(), de.getEndtime());
+						double split_factor = 0;
+						for (Long delta : split){
+							double coeff = delta/event_delta;
+							split_factor = split_factor + coeff;
+						}
+						energy = energy/split_factor;
+						//OLD WAY
+						//energy = energy/count;
 						LOGGER.info(energy +"the energy has been split between "+count + "events" );
 					}
 					LOGGER.info("This event : "+ de.getBegintime() + " and " +de.getEndtime() + " energy "+energy+de.getVmid());
@@ -568,7 +605,15 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 						int count = eventService.getAllEventsNumber(applicationid, translated, eventid, de.getBegintime(), de.getEndtime());
 						LOGGER.info(energy+"it has been with other "+count);
 						if (count>0){
-							energy = energy/count;
+							double event_delta = de.getEndtime() - de.getBegintime();
+							List<Long> split = eventService.getAllDeltas(applicationid, vmid, eventid, de.getBegintime(), de.getEndtime());
+							double split_factor = 0;
+							for (Long delta : split){
+								double coeff = delta/event_delta;
+								split_factor = split_factor + coeff;
+							}
+							energy = energy/split_factor;
+							//energy = energy/count;
 							LOGGER.info("the energy has been split between "+count + "events" );
 						}
 						eventcount++;
@@ -726,7 +771,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 				LOGGER.debug("PaaS EM activemq connections are now Ready");
 				// TODO uncomment
 				LOGGER.info("PaaS EM starting monitor thread");
-				initializeMonitoring(60,emsettings.getAppmonitor(),energyService,appRegistry);
+				initializeMonitoring(180,emsettings.getAppmonitor(),energyService,appRegistry);
 				LOGGER.info("PaaS EM started monitor thread");
 			} catch (Exception e) {
 				LOGGER.error("ERROR initializing queues, now disabling the component..");
@@ -744,7 +789,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		monitorThread.setAppRegistry(appRegistry);
 		monitorThread.setDbmanager(dbmanager);
 		service = Executors.newSingleThreadScheduledExecutor();
-		service.scheduleAtFixedRate(monitorThread, 0, 60, TimeUnit.SECONDS);
+		service.scheduleAtFixedRate(monitorThread, 0, delay, TimeUnit.SECONDS);
 		LOGGER.info("PaaS EM thread on for monitoring");
 		
 		

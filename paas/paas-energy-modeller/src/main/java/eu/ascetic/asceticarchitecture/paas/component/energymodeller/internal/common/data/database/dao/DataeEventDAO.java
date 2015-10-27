@@ -35,5 +35,7 @@ public interface DataeEventDAO {
 	int getEventsInTimeFrame(String applicationid, String vmid, String eventid, long tstart, long tend);
 	
 	int getAllEventsInTimeFrame(String applicationid, String vmid, String eventid, long tstart, long tend);
+
+	List<Long> getAllDeltas(String applicationid, String vmid, String eventid,long tstart, long tend);
     
 }

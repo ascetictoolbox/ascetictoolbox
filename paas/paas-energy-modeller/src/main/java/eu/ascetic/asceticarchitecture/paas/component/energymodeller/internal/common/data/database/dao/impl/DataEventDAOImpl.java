@@ -125,6 +125,15 @@ public class DataEventDAOImpl implements DataeEventDAO {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+
+
+	@Override
+	public List<Long> getAllDeltas(String applicationid, String vmid,
+			String eventid, long tstart, long tend) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 
 }

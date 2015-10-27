@@ -57,7 +57,16 @@ public class EventDataAggregatorService {
 		return eventDataManager.getAllEventsInTimeFrame(app, vmid, event, start, end);
 		
 		
+		
 	}
+	
+	public List<Long> getAllDeltas(String app, String vmid, String event, long start,long end) {
+		
+		return eventDataManager.getAllDeltas(app, vmid, event, start, end);
+		
+		
+	}
+	
 	
 	public void setupApplicationMonitor(String url){
 		// crea

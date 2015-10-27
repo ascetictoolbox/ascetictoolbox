@@ -43,11 +43,11 @@ public class EMQueuePEM {
 		try {
 			
 			// dev enb
-			paasQm.setup("192.168.3.16:5673", "guest", "guest", "PEMENERGY");
-			iaasQm.setup("192.168.3.17:5673", "guest", "guest");
+			//paasQm.setup("192.168.3.16:5673", "guest", "guest", "PEMENERGY");
+			//iaasQm.setup("192.168.3.17:5673", "guest", "guest");
 			// stable env
-			//paasQm.setup("192.168.3.222:5673", "guest", "guest", "PEMENERGY");
-			//iaasQm.setup("192.168.3.223:5673", "guest", "guest");
+			paasQm.setup("192.168.3.222:5673", "guest", "guest", "PEMENERGY");
+			iaasQm.setup("192.168.3.223:5673", "guest", "guest");
 			registry = ApplicationRegistry.getRegistry("com.mysql.jdbc.Driver","jdbc:mysql://192.168.99.100:3306/ascetic_paas_em","root","root");
 			dataCollectorHandler = DataConsumptionHandler.getHandler("com.mysql.jdbc.Driver","jdbc:mysql://192.168.99.100:3306/ascetic_paas_em","root","root");
 			queueManager = new EnergyModellerQueueServiceManager(iaasQm,paasQm,registry,dataCollectorHandler);

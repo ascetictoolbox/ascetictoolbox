@@ -92,25 +92,24 @@ public class EnergyModellerMonitor implements Runnable {
 	@Override
 	public void run() {
 		AppRegistryMapper registryMapper = appRegistry.getSession().getMapper(AppRegistryMapper.class);
-		//List<String> deployments = registryMapper.selectDeployments();
-		//logger.info("monitoring data for "+deployments.size());
 		logger.info("monitoring data ..");
 		List<EnergyModellerMonitoring> monitoredInstances = dbmanager.getMonitoringActive();
 		logger.info("monitoring data for "+monitoredInstances.size());
-		//for(String deployment : deployments){
 		for(EnergyModellerMonitoring monitoring : monitoredInstances){
 			String deployment = monitoring.getDeploymentid();
-		
 			logger.info("monitoring deployment "+deployment);
 			double total_deployment_energy=0;
 			double deployment_power=0;
 			double deployment_machines=0;
-			List<String> vms = registryMapper.selectVMperDeployment(deployment);
-			logger.info("monitoring deployment size"+vms.size());
+			List<String> vmsactive = registryMapper.selectVMActiveperDeployment(deployment);
+			List<String> vmsterminated = registryMapper.selectVMTerminatedperDeployment(deployment);
+			logger.info("monitoring deployment size"+ (vmsactive.size()+ vmsterminated.size()));
 			String appid = registryMapper.selectAppByDeploy(deployment);
-			logger.info("monitoring deployment "+deployment + " with VMs "+vms.size()+" on app "+appid);
-			for(String vmid : vms){
-				logger.info("monitoring this vm "+vmid);
+			logger.info("monitoring deployment "+deployment + " with active VMs "+vmsactive.size()+" on app "+appid);
+			logger.info("monitoring deployment "+deployment + " with terminated VMs "+vmsterminated.size()+" on app "+appid);
+			for(String vmid : vmsactive){
+				// active so contribute to consumption and to power
+				logger.info("monitoring this active vm "+vmid);
 				double partial_energy = energyService.getEnergyFromVM(appid, deployment, vmid, null);
 				logger.info("monitoring energy "+partial_energy);
 				double partial_power = energyService.getPowerPerVM(deployment, vmid);
@@ -120,6 +119,14 @@ public class EnergyModellerMonitor implements Runnable {
 				logger.info("monitoring has sent data ");
 				total_deployment_energy = total_deployment_energy + partial_energy;
 				deployment_power=deployment_power+partial_power;
+			}
+			for(String vmid : vmsterminated){
+				// terminated so contribute to consumption but not avg power
+				logger.info("monitoring this terminated  vm "+vmid);
+				double partial_energy = energyService.getEnergyFromVM(appid, deployment, vmid, null);
+				logger.info("monitoring energy "+partial_energy);
+				if (partial_energy>0)sentToApplicationManager(buildJSONDATA(appid,vmid,VM_CONSUMPTION_ENERGY, partial_energy));
+				total_deployment_energy = total_deployment_energy + partial_energy;
 			}
 			logger.info("total energy "+total_deployment_energy);
 			logger.info("total power pre split "+deployment_power);

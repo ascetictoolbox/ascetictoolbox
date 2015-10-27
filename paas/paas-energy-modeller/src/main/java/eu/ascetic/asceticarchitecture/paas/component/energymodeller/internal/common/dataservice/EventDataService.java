@@ -19,11 +19,13 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
+
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.dao.DataeEventDAO;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.DataEvent;
 
 public class EventDataService implements DataeEventDAO {
-
+	private static final Logger logger = Logger.getLogger(EventDataService.class);
 	private List<DataEvent> eventData;
 
 	public EventDataService() {
@@ -96,7 +98,7 @@ public class EventDataService implements DataeEventDAO {
 	@Override
 	public List<DataEvent> getByDeployId(String applicationid, String deploymentid, String vmid, String eventid) {
 		List<DataEvent> resultSet = new Vector<DataEvent>();
-		
+		if (vmid==null) return resultSet;
 		for (DataEvent de : eventData){
 			
 			if ( (de.getApplicationid().equals(applicationid))&& (de.getVmid().equals(vmid)) && (de.getEventid().equals(eventid)) && (de.getDeploymentid().equals(deploymentid)) && (de.getEventid().equals(eventid))){
@@ -112,7 +114,7 @@ public class EventDataService implements DataeEventDAO {
 		// TODO Auto-generated method stub
 		int count = 0;
 		
-		
+		if (vmid==null) return 0;
 		
 		for (DataEvent de : eventData){
 			
@@ -153,5 +155,51 @@ public class EventDataService implements DataeEventDAO {
 		return count;
 	}
 	
+	@Override
+	public List<Long> getAllDeltas(String applicationid, String vmid, String eventid, long tstart, long tend) {
+		// TODO Auto-generated method stub
+		Vector<Long> results= new Vector<Long>();
+		
+		logger.info("$$$ Analysis of coefficients");
+		logger.info("$$$ Event start "+tstart);
+		logger.info("$$$ Event end "+tend);
+		logger.info("$$$ Event duration "+(tend-tstart));
+		
+		for (DataEvent de : eventData){
+			
+			if ( (de.getApplicationid().equals(applicationid))&& (de.getVmid().equals(vmid))){
+				logger.info("$$$ This Event on the same machine "+de.getEndtime()+"-"+de.getBegintime());
+				logger.info("$$$ This Event duration "+(de.getEndtime()-de.getBegintime()));
+				
+				// ok events referred to the right app/vm/dep
+				Long delta=new Long(0);
+				long lowerbtime=0;
+				long upperbtime=0;
+				if ( (de.getBegintime()<tend) && (de.getEndtime()>tstart)){
+					if ( (de.getBegintime()<tstart) ){
+						logger.info("$$$ Event start before ");
+						lowerbtime = tstart;
+					} else {
+						logger.info("$$$ Event start after the reference event ");
+						lowerbtime = de.getBegintime();
+					}
+					if ( (de.getEndtime()>tend) ){
+						logger.info("$$$ Event end after ");
+						upperbtime = tend;
+					} else {
+						logger.info("$$$ Event end before the reference event ");
+						upperbtime = de.getEndtime();
+					}
+					delta = upperbtime - lowerbtime;
+					logger.info("$$$ Event delta "+delta);
+					results.add(delta);
+				}
+				
+			}
+		}
 
+		
+		
+		return results;
+	}
 }

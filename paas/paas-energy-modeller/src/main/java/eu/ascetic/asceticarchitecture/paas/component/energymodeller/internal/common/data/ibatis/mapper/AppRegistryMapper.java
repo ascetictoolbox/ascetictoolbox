@@ -70,6 +70,9 @@ public interface AppRegistryMapper {
 	  List<String> selectDeployments();
 	  
 	  @Select("SELECT vm_id FROM APPLICATION_REGISTRY where stop = 0 and deploy_id = #{deploy_id} GROUP BY deploy_id,vm_id")
-	  List<String> selectVMperDeployment(@Param("deploy_id") String deploy_id);
+	  List<String> selectVMActiveperDeployment(@Param("deploy_id") String deploy_id);
+	  
+	  @Select("SELECT vm_id FROM APPLICATION_REGISTRY where stop > 0 and deploy_id = #{deploy_id} GROUP BY deploy_id,vm_id")
+	  List<String> selectVMTerminatedperDeployment(@Param("deploy_id") String deploy_id);
 
 }
