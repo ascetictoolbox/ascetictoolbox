@@ -40,7 +40,7 @@ public class ZabbixConnector {
     private final static ZabbixClient zabbixClient = new ZabbixClient();
 
     private static final String DB_URL = "jdbc:mysql://" + VmManagerConfiguration.getInstance().zabbixDbIp + "/zabbix";
-    private static final String DB_DRIVER = "org.mariadb.jdbc.Driver";
+    private static final String DB_DRIVER = "com.mysql.jdbc.Driver";
     private static final String DB_USER = VmManagerConfiguration.getInstance().zabbixDbUser;
     private static final String DB_PASSWORD = VmManagerConfiguration.getInstance().zabbixDbPassword;
     private static final String[] ZABBIX_TABLES = {"history", "history_uint"}; /* Zabbix stores values in several

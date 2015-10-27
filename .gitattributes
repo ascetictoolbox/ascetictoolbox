@@ -677,6 +677,7 @@ iaas/virtual-machine-manager/vmmanagercore/src/main/resources/init-scripts/zabbi
 iaas/virtual-machine-manager/vmmanagercore/src/main/resources/log4j.xml -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/webapp/META-INF/context.xml -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/webapp/index.jsp -text
+iaas/virtual-machine-manager/vmmanagercore/src/test/java/ScratchTest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/cloudmiddleware/fake/FakeCloudMiddlewareTest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/cloudmiddleware/openstack/OpenStackGlanceTest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/cloudmiddleware/openstack/OpenStackJcloudsTest.java -text
@@ -705,6 +706,7 @@ iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/sc
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/selfadaptation/options/AfterVmDeleteSelfAdaptationOpsTest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/utils/TimeUtilsTest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/vmplacement/CloplaConversorTest.java -text
+iaas/virtual-machine-manager/vmmanagercore/src/test/resources/configTest.properties -text
 paas/application-manager-client/LICENSE.TXT -text
 paas/application-manager-client/pom.xml -text
 paas/application-manager-client/src/main/java/eu/ascetic/saas/applicationmanager/client/AppManagerClient.java -text
