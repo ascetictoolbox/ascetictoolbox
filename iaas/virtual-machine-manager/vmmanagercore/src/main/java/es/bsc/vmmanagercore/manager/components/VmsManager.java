@@ -254,6 +254,7 @@ public class VmsManager {
 						vmId,
 						vmToDeploy.getApplicationId(),
 						vmToDeploy.getImage());
+                                ((AsceticEnergyModellerAdapter) energyModeller).setStaticVMInformation(vmId, vmToDeploy);
 			}
 
             if (pricingModeller instanceof AsceticPricingModellerAdapter) {

@@ -58,6 +58,15 @@ public class AsceticEnergyModellerAdapter implements es.bsc.vmmanagercore.modell
                 VMMToEMConversor.getVmsEnergyModFromVms(vms))
                 .getAvgPowerUsed();
     }
+    
+    public void setStaticVMInformation(String vmId, Vm vm) {
+            eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed deployed = energyModeller.getVM(vmId);
+            if (deployed != null && vm != null) {
+                deployed.setRamMb(vm.getRamMb());
+                deployed.setDiskGb(vm.getDiskGb());
+                deployed.setCpus(vm.getCpus());
+            }
+    }
 
     public void initializeVmInEnergyModellerSystem(String vmId, String appId, String diskId) {
         eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed deployed = energyModeller.getVM(vmId);
