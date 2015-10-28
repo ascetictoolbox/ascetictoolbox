@@ -4055,7 +4055,10 @@ utils/kwapi-patch/patches/001-gembird_driver.patch -text
 utils/kwapi-patch/pom.xml -text
 utils/libvirt-zabbix/README.md -text
 utils/libvirt-zabbix/ruby-scripts/collector.rb -text
+utils/libvirt-zabbix/ruby-scripts/libvirt/libvirt_events_listener.rb -text
 utils/libvirt-zabbix/ruby-scripts/libvirt/libvirt_metrics_collector.rb -text
+utils/libvirt-zabbix/ruby-scripts/zabbix/add_vm_to_zabbix.rb -text
+utils/libvirt-zabbix/ruby-scripts/zabbix/delete_vm_from_zabbix.rb -text
 utils/libvirt-zabbix/ruby-scripts/zabbix/test.rb -text
 utils/libvirt-zabbix/ruby-scripts/zabbix/zabbix_ascetic.rb -text
 utils/libvirt/AUTHORS -text

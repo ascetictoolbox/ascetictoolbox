@@ -19,23 +19,36 @@ require "zabbixapi"
 
 class ZabbixAscetic
 
-  def initialize(ip_address, usename, password)
+  # Configuration
+  # ATOS
+  # ZABBIX_IP_ADDRESS="192.168.252.40"
+  # ZABBIX_PASSWORD="zabbix"
+  # TUB
+  ZABBIX_IP_ADDRESS="192.168.3.199"
+  ZABBIX_PASSWORD="Brandmeldeanlage104"
+  ZABBIX_USERNAME="Admin"
+  ZABBIX_HOSTGROUP="Virtual machines"
+  ZABBIX_TEMPLATE="Template.Virt.Libvirt"
+  ZABBIX_CLIENT_CREATE_HOST=true
+  SLEEP_TIME=10
+
+  def initialize
     
-    url = 'http://' + ip_address + '/zabbix/api_jsonrpc.php'
+    url = 'http://' + ZABBIX_IP_ADDRESS + '/zabbix/api_jsonrpc.php'
     
     @zbx = ZabbixApi.connect(
       :url => url,
-      :user => usename,
-      :password => password,
-      :http_password => usename,
-      :http_user => password
+      :user => ZABBIX_USERNAME,
+      :password => ZABBIX_PASSWORD,
+      :http_password => ZABBIX_USERNAME,
+      :http_user => ZABBIX_PASSWORD
     )
   end
 
-  def setup(hostgroup, template, delay)
-    @hostgroup=hostgroup
-    @template=template
-    @delay=delay
+  def setup
+    @hostgroup=ZABBIX_HOSTGROUP
+    @template=ZABBIX_TEMPLATE
+    @delay=SLEEP_TIME
 
     # If the host group does not exists it is created
     @hostgroup_id = @zbx.hostgroups.get_id(:name => @hostgroup)
@@ -114,10 +127,10 @@ class ZabbixAscetic
     check_create_item("physical_host", "Name of the physical host where the virtual machine is", "physical.host", 4, application)
   end
 
-  def add_host_to_template(create, hostname)
+  def add_host_to_template(hostname)
     host = @zbx.hosts.get_id( :host => hostname )
 
-    if host.nil? && create
+    if host.nil? && ZABBIX_CLIENT_CREATE_HOST
         host = @zbx.hosts.create(
           :host => hostname,
           :interfaces => [
@@ -139,23 +152,26 @@ class ZabbixAscetic
       ## We delete first other templates to which this host is assigned
       templates = @zbx.templates.get_ids_by_host( :hostids => [@zbx.hosts.get_id(:host => hostname)] )
 
-      templates.each do |template_to_remove|
+      # If it not includes the right templates... we delete all and add them again...
+      unless templates.include?(@template_id.to_s)
+        templates.each do |template_to_remove|
+          @zbx.query(
+            :method => "host.update",
+            :params => {
+              :hostid => host,
+              :templates_clear => [ :templateid => template_to_remove]
+            }
+          )
+        end
+
         @zbx.query(
-          :method => "host.update",
+         :method => "host.update",
           :params => {
             :hostid => host,
-            :templates_clear => [ :templateid => template_to_remove]
+            :templates => [ :templateid => @template_id]
           }
         )
       end
-
-      @zbx.query(
-        :method => "host.update",
-        :params => {
-          :hostid => host,
-          :templates => [ :templateid => @template_id]
-        }
-      )
     end
   end
 
