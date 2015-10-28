@@ -18,7 +18,6 @@
 require '/opt/ruby-scripts/libvirt/libvirt_metrics_collector.rb'
 require '/opt/ruby-scripts/zabbix/zabbix_ascetic.rb'
 require '/opt/ruby-scripts/libvirt/libvirt_events_listener.rb'
-require 'logger'
 require 'libvirt'
 
 # Configuration
@@ -39,10 +38,15 @@ $zabbix_ip_address = ZabbixAscetic::ZABBIX_IP_ADDRESS
 
 sleep_time=10
 
-logger = Logger.new(STDOUT)
-logger.level = Logger::DEBUG
-
 $hostname=`hostname -s`
+
+# def log messages
+def log(text)
+  t = Time::now.to_s + " => " + text
+  puts t
+end
+
+log("Starting libvirt monitoring script...")
 
 # send network content to zabbix
 def zabbix_send_network(uuid,metrics,zabbix_sender_string)
@@ -200,139 +204,136 @@ VIR_DOMAIN_EVENT_CRASHED_PANICKED = 0
 def dom_event_callback_lifecycle(conn, dom, event, detail, opaque)
   $uuid = dom.uuid
 
-  logger = Logger.new(STDOUT)
-  logger.level = Logger::DEBUG
-
   case event
   when VIR_DOMAIN_EVENT_DEFINED
-    logger.info("Domain #{$uuid} has been defined")
+    log("Domain #{$uuid} has been defined")
 
     case detail
       when VIR_DOMAIN_EVENT_DEFINED_ADDED
-        logger.info(" it has been added to libvirt")
+        log(" it has been added to libvirt")
       when VIR_DOMAIN_EVENT_DEFINED_UPDATED
-        logger.info("it has been updated in libvirt")
+        log("it has been updated in libvirt")
       when VIR_DOMAIN_EVENT_DEFINED_RENAMED
-        logger.info("it has been renamed in libvirt")
+        log("it has been renamed in libvirt")
     end
   when VIR_DOMAIN_EVENT_UNDEFINED
-    logger.info("Domain #{$uuid} has been undefined")
+    log("Domain #{$uuid} has been undefined")
 
     case detail
     when VIR_DOMAIN_EVENT_UNDEFINED_REMOVED
-      logger.info("it has been removed in libvirt")
+      log("it has been removed in libvirt")
     when VIR_DOMAIN_EVENT_UNDEFINED_RENAMED
-      logger.info("it has been renamed in libvirt")
+      log("it has been renamed in libvirt")
     end
   when VIR_DOMAIN_EVENT_STARTED
-    logger.info("Domain #{$uuid} has been started")
+    log("Domain #{$uuid} has been started")
 
     case detail
     when VIR_DOMAIN_EVENT_STARTED_BOOTED
-      logger.info("it has been booted in libvirt")
-      logger.info("VM that needs to be check if already exits in zabbix, otherwise add it.")
+      log("it has been booted in libvirt")
+      log("VM that needs to be check if already exits in zabbix, otherwise add it.")
       fork do
         ENV['UUID_ADD'] = $uuid
         exec "ruby2.0 /opt/ruby-scripts/zabbix/add_vm_to_zabbix.rb $UUID_ADD"
       end
     when VIR_DOMAIN_EVENT_STARTED_MIGRATED
-      logger.info("it has been migrated in libvirt")
+      log("it has been migrated in libvirt")
     when VIR_DOMAIN_EVENT_STARTED_RESTORED
-      logger.info("it has been restored in libvirt")
+      log("it has been restored in libvirt")
     when VIR_DOMAIN_EVENT_STARTED_FROM_SNAPSHOT
-      logger.info("it has been started from snapshot in libvirt")
+      log("it has been started from snapshot in libvirt")
     when VIR_DOMAIN_EVENT_STARTED_WAKEUP
-      logger.info("it has been wakeup in libvirt")
+      log("it has been wakeup in libvirt")
     end
   when VIR_DOMAIN_EVENT_SUSPENDED
-    logger.info("Domain #{$uuid} has been suspended")
+    log("Domain #{$uuid} has been suspended")
 
     case detail
     when VIR_DOMAIN_EVENT_SUSPENDED_PAUSED
-        logger.info("it has been paused by libvirt")
+        log("it has been paused by libvirt")
     when VIR_DOMAIN_EVENT_SUSPENDED_MIGRATED
-      logger.info("it has been migrated by libvirt")
+      log("it has been migrated by libvirt")
     when VIR_DOMAIN_EVENT_SUSPENDED_IOERROR
-      logger.info("it has reporterd and IO Error libvirt" )
+      log("it has reporterd and IO Error libvirt" )
     when VIR_DOMAIN_EVENT_SUSPENDED_WATCHDOG
-      logger.info("it has been suspended by watchdog in libvirt")
+      log("it has been suspended by watchdog in libvirt")
     when VIR_DOMAIN_EVENT_SUSPENDED_RESTORED 
-      logger.info("it has been restored in libvirt")
+      log("it has been restored in libvirt")
     when VIR_DOMAIN_EVENT_SUSPENDED_FROM_SNAPSHOT
-      logger.info("it has been suspended from snapshoot in libvirt" )
+      log("it has been suspended from snapshoot in libvirt" )
     when VIR_DOMAIN_EVENT_SUSPENDED_API_ERROR 
-      logger.info("it has been due to api error in libvirt")
+      log("it has been due to api error in libvirt")
     end
   when VIR_DOMAIN_EVENT_RESUMED
-    logger.info("Domain #{$uuid} has been resumed")
+    log("Domain #{$uuid} has been resumed")
 
     case detail
     when VIR_DOMAIN_EVENT_RESUMED_UNPAUSED
-      logger.info("it has been resumed from unpaused error in libvirt")
+      log("it has been resumed from unpaused error in libvirt")
     when VIR_DOMAIN_EVENT_RESUMED_MIGRATED
-      logger.info("it has been resumed after migration in libvirt")
+      log("it has been resumed after migration in libvirt")
     when VIR_DOMAIN_EVENT_RESUMED_FROM_SNAPSHOT
-      logger.info("it has been resumed from snapshot in libvirt")
+      log("it has been resumed from snapshot in libvirt")
     else
-      logger.info("unknown detail reason: #{detail}")
+      log("unknown detail reason: #{detail}")
     end
   when VIR_DOMAIN_EVENT_STOPPED
-    logger.info("Domain #{$uuid} has been stopped")
+    log("Domain #{$uuid} has been stopped")
 
     case detail
     when VIR_DOMAIN_EVENT_STOPPED_SHUTDOWN
-      logger.info("it has been stopped from shutdown in libvirt")
+      log("it has been stopped from shutdown in libvirt")
     when VIR_DOMAIN_EVENT_STOPPED_DESTROYED
-      logger.info("it has been destroyed in libvirt")
-      logger.info("VM is deleted from Zabbix.")
+      log("it has been destroyed in libvirt")
+      log("VM is deleted from Zabbix.")
       fork do
         ENV['UUID_DELETE'] = $uuid
         exec "ruby2.0 /opt/ruby-scripts/zabbix/delete_vm_from_zabbix.rb $UUID_DELETE"
       end
     when VIR_DOMAIN_EVENT_STOPPED_CRASHED
-      logger.info("it crashed in libvirt")
+      log("it crashed in libvirt")
     when VIR_DOMAIN_EVENT_STOPPED_MIGRATED
-      logger.info("it has been stopped by migrationg in libvirt")
+      log("it has been stopped by migrationg in libvirt")
     when VIR_DOMAIN_EVENT_STOPPED_SAVED
-      logger.info("it has been stopped and saved in libvirt")
+      log("it has been stopped and saved in libvirt")
     when VIR_DOMAIN_EVENT_STOPPED_FAILED
-      logger.info("it has failed in libvirt")
+      log("it has failed in libvirt")
     when VIR_DOMAIN_EVENT_STOPPED_FROM_SNAPSHOT
-      logger.info("it has been stopped from snapshot in libvirt")
+      log("it has been stopped from snapshot in libvirt")
     else
-      logger.info("unknown detail reason: #{detail}")
+      log("unknown detail reason: #{detail}")
     end
   when VIR_DOMAIN_EVENT_SHUTDOWN
-    logger.info("Domain #{$uuid} has been shutdown")
+    log("Domain #{$uuid} has been shutdown")
 
     case detail
     when VIR_DOMAIN_EVENT_SHUTDOWN_FINISHED
-      logger.info("it has been finished by libvirt")
+      log("it has been finished by libvirt")
     else
-      logger.info("unknown detail reason: #{detail}")
+      log("unknown detail reason: #{detail}")
     end
   when VIR_DOMAIN_EVENT_PMSUSPENDED
-    logger.info("Domain #{$uuid} has been pmshuspended")
+    log("Domain #{$uuid} has been pmshuspended")
 
     case detail
     when VIR_DOMAIN_EVENT_PMSUSPENDED_MEMORY
-      logger.info("Guest domain has been suspended to memory")
+      log("Guest domain has been suspended to memory")
     when VIR_DOMAIN_EVENT_PMSUSPENDED_DISK
-      logger.info("Guest domain has been suspended to disk")
+      log("Guest domain has been suspended to disk")
     else
-      logger.info("unknown detail reason: #{detail}")
+      log("unknown detail reason: #{detail}")
     end
   when VIR_DOMAIN_EVENT_CRASHED
-    logger.info("Domain #{$uuid} has been crashed")
+    log("Domain #{$uuid} has been crashed")
 
     case detail
     when VIR_DOMAIN_EVENT_CRASHED_PANICKED
-      logger.info("Guest domain has panicked")
+      log("Guest domain has panicked")
     else
-      logger.info("unknown detail reason: #{detail}")
+      log("unknown detail reason: #{detail}")
     end
   else 
-    puts "Not recognize event for domain: #{$uuid} and event: #{event}"
+    log("Not recognize event for domain: #{$uuid} and event: #{event}")
   end
 end
 
@@ -355,7 +356,7 @@ end
 
 # We add then to Zabbix if necessary
 uuids.each do |uuid|
-    logger.info("VM that needs to be check if already exits in zabbix, otherwise add it: #{uuid}")
+    log("VM that needs to be check if already exits in zabbix, otherwise add it: " + uuid)
     zabbix_client.add_host_to_template(uuid)
 end
 
