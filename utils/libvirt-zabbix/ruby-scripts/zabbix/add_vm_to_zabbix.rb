@@ -1,4 +1,4 @@
-require './zabbix/zabbix_ascetic.rb'
+require '/opt/ruby-scripts/zabbix/zabbix_ascetic.rb'
 
 uuid = ARGV[0]
 
