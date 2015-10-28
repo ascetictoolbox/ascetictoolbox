@@ -15,9 +15,9 @@
 # David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
 # david.garciaperez@atos.net
 
-require './libvirt/libvirt_metrics_collector.rb'
-require './zabbix/zabbix_ascetic.rb'
-require './libvirt/libvirt_events_listener.rb'
+require '/opt/ruby-scripts/libvirt/libvirt_metrics_collector.rb'
+require '/opt/ruby-scripts/zabbix/zabbix_ascetic.rb'
+require '/opt/ruby-scripts/libvirt/libvirt_events_listener.rb'
 require 'logger'
 require 'libvirt'
 
@@ -233,7 +233,7 @@ def dom_event_callback_lifecycle(conn, dom, event, detail, opaque)
       logger.info("VM that needs to be check if already exits in zabbix, otherwise add it.")
       fork do
         ENV['UUID_ADD'] = $uuid
-        exec "ruby2.0 zabbix/add_vm_to_zabbix.rb $UUID_ADD"
+        exec "ruby2.0 /opt/ruby-scripts/zabbix/add_vm_to_zabbix.rb $UUID_ADD"
       end
     when VIR_DOMAIN_EVENT_STARTED_MIGRATED
       logger.info("it has been migrated in libvirt")
@@ -287,7 +287,7 @@ def dom_event_callback_lifecycle(conn, dom, event, detail, opaque)
       logger.info("VM is deleted from Zabbix.")
       fork do
         ENV['UUID_DELETE'] = $uuid
-        exec "ruby2.0 zabbix/delete_vm_from_zabbix.rb $UUID_DELETE"
+        exec "ruby2.0 /opt/ruby-scripts/zabbix/delete_vm_from_zabbix.rb $UUID_DELETE"
       end
     when VIR_DOMAIN_EVENT_STOPPED_CRASHED
       logger.info("it crashed in libvirt")
