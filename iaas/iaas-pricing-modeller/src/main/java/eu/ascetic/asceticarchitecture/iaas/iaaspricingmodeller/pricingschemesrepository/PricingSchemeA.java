@@ -56,7 +56,7 @@ public class PricingSchemeA extends IaaSPricingModellerPricingScheme implements 
 	@Override
 	public double predictCharges(VMstate vm, Price average) {
 		Charges b = predictResourcesCharges(vm, price);
-		double temp = (double) Math.round(b.getChargesOnly()*1000)/1000; //to change to two decimals
+		double temp = (double) Math.round(b.getChargesOnly()*1000)/1000; 
 		return temp;
 	}
 	

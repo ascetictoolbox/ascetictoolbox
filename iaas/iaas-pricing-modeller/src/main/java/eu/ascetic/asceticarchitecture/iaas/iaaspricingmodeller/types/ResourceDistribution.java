@@ -34,6 +34,7 @@ public class ResourceDistribution {
 	}
 	
 	public double getDistribution(VMstate vm){
+		
 		return vm.getVMinfo().getRAM()*ramPer+vm.getVMinfo().getCPU()*cpuPer+vm.getVMinfo().getStorage()*storPer;
 	}
 	

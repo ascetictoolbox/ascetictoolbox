@@ -23,6 +23,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.IaaSPricingModeller;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.energyprovider.EnergyProvider;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesrepository.IaaSPricingModellerPricingScheme;
@@ -102,9 +104,20 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
     @Override
     public void unregisterVM(VMstate vm) {
         if ((vm.getPricingScheme().getSchemeId() == 0)) {
+        	 if (apps.containsKey(vm.getAppID())) {
+        		 apps.get(vm.getAppID()).getList().remove(vm);
+        		 if (apps.get(vm.getAppID()).getList().isEmpty())
+        			 apps.remove(vm.getAppID());
+        	 }
+        	
             registeredStaticEnergyPricesVMs.remove(vm.getVMid());
             vm.setEndTime();
         } else {
+        	 if (apps.containsKey(vm.getAppID())) {
+        		 apps.get(vm.getAppID()).getList().remove(vm);
+        		 if (apps.get(vm.getAppID()).getList().isEmpty())
+        			 apps.remove(vm.getAppID());
+        	 }
             registeredDynamicEnergyPricesVMs.remove(vm.getVMid());
             vm.setEndTime();
         }
@@ -197,22 +210,37 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
         return scheme;
     }
 
-    public double getAppCharges(int appID) {
+    public double getAppCharges(int appID, EnergyModeller energyModeller) {
 
         if (apps.containsKey(appID)) {
             double charges = 0;
             LinkedList<VMstate> temp = apps.get(appID).getList();
+           
             ListIterator<VMstate> listIterator = temp.listIterator();
 
             while (listIterator.hasNext()) {
-                String VMid = listIterator.next().getVMid();
+                VMstate VM = listIterator.next();
+            	String VMid = VM.getVMid();
+                
+                if (VM.getVMinfo().getRAM()==0||VM.getVMinfo().getStorage()==0.0){
+    		  		
+            		try {
+            			VmDeployed vm = energyModeller.getVM(VMid);
+            			int CPU = vm.getCpus();
+            			int RAM = vm.getRamMb();
+            			double storage = vm.getDiskGb();
+            			
 
+            		} catch (NullPointerException ex) {
+            			
+            		}
+            	}
+            	
                 charges = charges + getVMCharges(VMid);
             }
 
             return charges;
         } else {
-
             return 0;
         }
     }
