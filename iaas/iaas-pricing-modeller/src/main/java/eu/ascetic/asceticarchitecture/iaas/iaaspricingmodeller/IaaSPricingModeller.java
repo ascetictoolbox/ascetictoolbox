@@ -1,13 +1,13 @@
 /**
- *  Copyright 2014 Athens University of Economics and Business
+ * Copyright 2014 Athens University of Economics and Business
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
+ * Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
@@ -50,7 +50,7 @@ import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.*;
 
 /**
  * This is the interface of the IaaS Pricing Modeller with the other components of the IaaS Layer.
- * 
+ *
  * It provides the following operations
  * 1. estimation of the price per hour and the total charges of a VM
  * 2. Total charges of a VM after the end of its operation
@@ -59,175 +59,178 @@ import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.*;
  * 1. Static pricing scheme (with schemeID = 0)
  * 2. Two tariffs pricing scheme (with schemeID = 1)
  * 3. Two tariffs pricing scheme employing discounts (with schemeID = 2)
- * 
+ *
  * To start the billing of a VM, first the initiallizeVM function should be called.
- * 
+ *
  * @author E. Agiatzidou
  */
 
-public class IaaSPricingModeller implements IaaSPricingModellerInterface{
+public class IaaSPricingModeller implements IaaSPricingModellerInterface {
 
-	/** 
+    /**
 	 * The IaaS Pricing Modeler should be connected with the Energy Provider that is deployed
 	 * within this component as well as with the Energy Modeler. 
-	 */
-	EnergyProvider energyProvider = new EnergyProvider(this);
-	EnergyModeller energyModeller;
-	IaaSPricingModellerBilling billing = new IaaSPricingModellerBilling(energyProvider);
-	//private static int idIaaSP=0;
-	
-	static Logger logger = null;
+     */
+    EnergyProvider energyProvider = new EnergyProvider(this);
+    EnergyModeller energyModeller;
+    IaaSPricingModellerBilling billing = new IaaSPricingModellerBilling(energyProvider);
+    //private static int idIaaSP=0;
 
-	DateFormat df = new SimpleDateFormat("ddMMyy_HHmmss");
-	Date today = Calendar.getInstance().getTime();     
-	String reportDate = df.format(today);
-	String name = "logs/" + reportDate;
-	
+    static Logger logger = null;
+
+    DateFormat df = new SimpleDateFormat("ddMMyy_HHmmss");
+    Date today = Calendar.getInstance().getTime();
+    String reportDate = df.format(today);
+    String name = "logs/" + reportDate;
+
 	
 
-	/** Constructor
-	 * @param energyModeller
-	 */
-	public IaaSPricingModeller(EnergyModeller energyModeller) {
-		this.energyModeller = energyModeller;
-		//idIaaSP=idIaaSP+1;
-		System.setProperty("logfile.name",name);
-		logger = Logger.getLogger(IaaSPricingModeller.class);
-		logger.info("IaaS Pricing Modeller initiallized");
-		
+	/** 
+	 * Constructor
+     * @param energyModeller
+     */
+    public IaaSPricingModeller(EnergyModeller energyModeller) {
+        this.energyModeller = energyModeller;
+        //idIaaSP=idIaaSP+1;
+        System.setProperty("logfile.name", name);
+        logger = Logger.getLogger(IaaSPricingModeller.class);
+        logger.info("IaaS Pricing Modeller initiallized");
+
     }
-	
-	
-	
-public void initializeVM(String VMid, int CPU, int RAM, double storage, int schemeId, String hostname, String appID){
-		
-	
-		VMinfo vm = new VMinfo (RAM, CPU, storage, hostname);
-				
-		IaaSPricingModellerPricingScheme scheme = initializeScheme(schemeId);
-		VMstate VM = new VMstate(VMid, vm, energyProvider, scheme, appID);
-		
-		if (schemeId== 2){
-			EnergyPrediction energyVM = getEnergyPredicted(CPU, RAM, storage, hostname);
-			VM.getPredictedInformation().setPredictionOfEnergy(energyVM);
-			VM.setPredictedCharges(billing.predictVMCharges(VM).getPriceOnly());
 
-		}
-		scheme.setEnergyModeller(energyModeller);
-		
-		
-		billing.registerVM(VM);
-	}
 	
+	
+    public void initializeVM(String VMid, int CPU, int RAM, double storage, int schemeId, String hostname, String appID) {
+
+	
+        VMinfo vm = new VMinfo(RAM, CPU, storage, hostname);
+
+        IaaSPricingModellerPricingScheme scheme = initializeScheme(schemeId);
+        VMstate VM = new VMstate(VMid, vm, energyProvider, scheme, appID);
+
+        if (schemeId == 2) {
+            EnergyPrediction energyVM = getEnergyPredicted(CPU, RAM, storage, hostname);
+            VM.getPredictedInformation().setPredictionOfEnergy(energyVM);
+            VM.setPredictedCharges(billing.predictVMCharges(VM).getPriceOnly());
+
+        }
+        scheme.setEnergyModeller(energyModeller);
+
+		
+        billing.registerVM(VM);
+    }
+
 ///////////////////////////////////////////BILLING/////////////////////////////////////////////
 
 
-/*
-* 	In order to start billing a VM this function has to be called first. 
-* @param VMid: the ID of the VM, the same used with the Energy Modeller.
-* @param schemeId: the Pricing scheme of the VM
-*/
-public void initializeVM(String VMid, int schemeId, String hostname, String appID){
+    /*
+     * 	In order to start billing a VM this function has to be called first. 
+     * @param VMid: the ID of the VM, the same used with the Energy Modeller.
+     * @param schemeId: the Pricing scheme of the VM
+     */
+    public void initializeVM(String VMid, int schemeId, String hostname, String appID) {
 
-	int CPU=0;
-	int RAM =0;
-	double storage=0;
+        int CPU = 0;
+        int RAM = 0;
+        double storage = 0;
 
-	try {
+        try {
             VmDeployed vm = energyModeller.getVM(VMid);
             CPU = vm.getCpus();
             RAM = vm.getRamMb();
             storage = vm.getDiskGb();
+            logger.info("The VM with VMid " + VMid + "has been registered, with values CPU: " + CPU + ", RAM: " + RAM + ", STORAGE: " + storage);
+
+        } catch (NullPointerException ex) {
+            logger.error("The VM with VMid " + VMid + "Has not been registered");
+        }
+
+        VMinfo vm = new VMinfo(RAM, CPU, storage, hostname);
+
+        IaaSPricingModellerPricingScheme scheme = initializeScheme(schemeId);
+        VMstate VM = new VMstate(VMid, vm, energyProvider, scheme, appID);
+
+        if (schemeId == 2) {
+            EnergyPrediction energyVM = getEnergyPredicted(CPU, RAM, storage, hostname);
+            VM.getPredictedInformation().setPredictionOfEnergy(energyVM);
+            VM.setPredictedCharges(billing.predictVMCharges(VM).getPriceOnly());
+
+        }
+        scheme.setEnergyModeller(energyModeller);
 
 
-	} catch (NullPointerException ex) {
-		logger.info("The VM with VMid "+VMid+"Has not been registered");
-	}
+        billing.registerVM(VM);
+    }
 
-VMinfo vm = new VMinfo (RAM, CPU, storage, hostname);
-
-IaaSPricingModellerPricingScheme scheme = initializeScheme(schemeId);
-VMstate VM = new VMstate(VMid, vm, energyProvider, scheme, appID);
-
-if (schemeId== 2){
-EnergyPrediction energyVM = getEnergyPredicted(CPU, RAM, storage, hostname);
-VM.getPredictedInformation().setPredictionOfEnergy(energyVM);
-VM.setPredictedCharges(billing.predictVMCharges(VM).getPriceOnly());
-
-}
-scheme.setEnergyModeller(energyModeller);
-
-
-billing.registerVM(VM);
-}
-	
 	
 
-public double getAppFinalCharges(int appID, boolean deleteApp){
-	double charges = billing.getAppCharges(appID);
-	
-	if (deleteApp)
-		billing.unregisterApp(appID);
-	return charges;
-}
-	
-	
-	
-	//////////////////////////NEW///////////////////////////////////////
-	public double getAppPredictedCharges(String appID, LinkedList<VMinfo> VMs, int schemeId,  long duration){
-		LinkedList<VMstate> AppVMs = new LinkedList<>();
-		IaaSPricingModellerPricingScheme scheme = initializeScheme(schemeId);
-		scheme.setEnergyModeller(energyModeller);
-		 ListIterator<VMinfo> listIterator = VMs.listIterator();
-		  while (listIterator.hasNext()){
-			  VMinfo vm = listIterator.next();
-			  VMstate Vm = new VMstate(vm, energyProvider, scheme);
-			  Vm.setAppID(appID);
-			  Vm.getPredictedInformation().setDuration(duration);
-			  EnergyPrediction energyVM = getEnergyPredicted(vm.getCPU(), vm.getRAM(), vm.getStorage(), duration, vm.gethostname());
-			  Vm.getPredictedInformation().setPredictionOfEnergy(energyVM);
-			 billing.predictVMCharges(Vm);
-			  logger.info("Prediction,"+vm.gethostname()+","+String.valueOf(vm.getCPU())+","+String.valueOf(vm.getRAM())+","+String.valueOf(vm.getStorage())+","+String.valueOf(duration)
-						+","+String.valueOf(schemeId)+","+String.valueOf(energyVM.getTotalEnergy())+","+String.valueOf(Vm.getPredictedCharges().getChargesOnly())+","+appID);
-		  AppVMs.add(Vm);
-		  }
-		  ListIterator<VMstate> listIt = AppVMs.listIterator();
-		  double totalCharges=0;
-		  while (listIt.hasNext()){
-			  totalCharges = totalCharges + listIt.next().getPredictedCharges().getChargesOnly();
-		  }
-		  return totalCharges;
-	}
+    public double getAppFinalCharges(int appID, boolean deleteApp) {
+        double charges = billing.getAppCharges(appID);
+
+        if (deleteApp) {
+			logger.info("Deleting app id = " + appID);
+            billing.unregisterApp(appID);
+        }
+        return charges;
+    }
+
 	
 	
-	public double getAppPredictedPricePerHour(String appID, LinkedList<VMinfo> VMs, int schemeId,  long duration){
-		LinkedList<VMstate> AppVMs = new LinkedList<>();
-		IaaSPricingModellerPricingScheme scheme = initializeScheme(schemeId);
-		scheme.setEnergyModeller(energyModeller);
-		 ListIterator<VMinfo> listIterator = VMs.listIterator();
-		  while (listIterator.hasNext()){
-			  VMinfo vm = listIterator.next();
-			  VMstate Vm = new VMstate(vm, energyProvider, scheme);
-			  Vm.setAppID(appID);
-			  Vm.getPredictedInformation().setDuration(duration);
-			  EnergyPrediction energyVM = getEnergyPredicted(vm.getCPU(), vm.getRAM(), vm.getStorage(), duration, vm.gethostname());
-			  Vm.getPredictedInformation().setPredictionOfEnergy(energyVM);
-			 billing.predictVMCharges(Vm);
-			  logger.info("Prediction,"+vm.gethostname()+","+String.valueOf(vm.getCPU())+","+String.valueOf(vm.getRAM())+","+String.valueOf(vm.getStorage())+","+String.valueOf(duration)
-						+","+String.valueOf(schemeId)+","+String.valueOf(energyVM.getTotalEnergy())+","+String.valueOf(Vm.getPredictedCharges().getChargesOnly())+","+appID);
-		  AppVMs.add(Vm);
-		  }
-		  ListIterator<VMstate> listIt = AppVMs.listIterator();
-		  double totalPrice=0;
-		  while (listIt.hasNext()){
-			  totalPrice = totalPrice + listIt.next().getPredictedCharges().getPriceOnly();
-		  }
-		  return totalPrice;
-		  
-	}
+    //////////////////////////NEW///////////////////////////////////////
+    public double getAppPredictedCharges(String appID, LinkedList<VMinfo> VMs, int schemeId, long duration) {
+        LinkedList<VMstate> AppVMs = new LinkedList<>();
+        IaaSPricingModellerPricingScheme scheme = initializeScheme(schemeId);
+        scheme.setEnergyModeller(energyModeller);
+        ListIterator<VMinfo> listIterator = VMs.listIterator();
+        while (listIterator.hasNext()) {
+            VMinfo vm = listIterator.next();
+            VMstate Vm = new VMstate(vm, energyProvider, scheme);
+            Vm.setAppID(appID);
+            Vm.getPredictedInformation().setDuration(duration);
+            EnergyPrediction energyVM = getEnergyPredicted(vm.getCPU(), vm.getRAM(), vm.getStorage(), duration, vm.gethostname());
+            Vm.getPredictedInformation().setPredictionOfEnergy(energyVM);
+            billing.predictVMCharges(Vm);
+            logger.info("Prediction," + vm.gethostname() + "," + String.valueOf(vm.getCPU()) + "," + String.valueOf(vm.getRAM()) + "," + String.valueOf(vm.getStorage()) + "," + String.valueOf(duration)
+                    + "," + String.valueOf(schemeId) + "," + String.valueOf(energyVM.getTotalEnergy()) + "," + String.valueOf(Vm.getPredictedCharges().getChargesOnly()) + "," + appID);
+            AppVMs.add(Vm);
+        }
+        ListIterator<VMstate> listIt = AppVMs.listIterator();
+        double totalCharges = 0;
+        while (listIt.hasNext()) {
+            totalCharges = totalCharges + listIt.next().getPredictedCharges().getChargesOnly();
+        }
+        return totalCharges;
+    }
+
 	
-	///////////////////////////////////////PREDICTION////////////////////////////////////////////
-	 /**
+    public double getAppPredictedPricePerHour(String appID, LinkedList<VMinfo> VMs, int schemeId, long duration) {
+        LinkedList<VMstate> AppVMs = new LinkedList<>();
+        IaaSPricingModellerPricingScheme scheme = initializeScheme(schemeId);
+        scheme.setEnergyModeller(energyModeller);
+        ListIterator<VMinfo> listIterator = VMs.listIterator();
+        while (listIterator.hasNext()) {
+            VMinfo vm = listIterator.next();
+            VMstate Vm = new VMstate(vm, energyProvider, scheme);
+            Vm.setAppID(appID);
+            Vm.getPredictedInformation().setDuration(duration);
+            EnergyPrediction energyVM = getEnergyPredicted(vm.getCPU(), vm.getRAM(), vm.getStorage(), duration, vm.gethostname());
+            Vm.getPredictedInformation().setPredictionOfEnergy(energyVM);
+            billing.predictVMCharges(Vm);
+            logger.info("Prediction," + vm.gethostname() + "," + String.valueOf(vm.getCPU()) + "," + String.valueOf(vm.getRAM()) + "," + String.valueOf(vm.getStorage()) + "," + String.valueOf(duration)
+                    + "," + String.valueOf(schemeId) + "," + String.valueOf(energyVM.getTotalEnergy()) + "," + String.valueOf(Vm.getPredictedCharges().getChargesOnly()) + "," + appID);
+            AppVMs.add(Vm);
+        }
+        ListIterator<VMstate> listIt = AppVMs.listIterator();
+        double totalPrice = 0;
+        while (listIt.hasNext()) {
+            totalPrice = totalPrice + listIt.next().getPredictedCharges().getPriceOnly();
+        }
+        return totalPrice;
+
+    }
+
+    ///////////////////////////////////////PREDICTION////////////////////////////////////////////
+    /**
      * This function returns the charges estimated for a VM under the specified scheme
      * @param CPU: integer
      * @param RAM: integer
@@ -237,30 +240,30 @@ public double getAppFinalCharges(int appID, boolean deleteApp){
      * @param hostname: String
      */
 	
-	public double getVMChargesPrediction(int CPU, int RAM, double storage, int schemeId,  long duration, String hostname){
-		VMinfo vm = new VMinfo (RAM, CPU, storage, hostname);
-		IaaSPricingModellerPricingScheme scheme = initializeScheme(schemeId);
-		VMstate Vm = new VMstate(vm, energyProvider, scheme);
-		scheme.setEnergyModeller(energyModeller);
-		Vm.getPredictedInformation().setDuration(duration);
-		
-		// This function calls the Energy Modeller: To be replaced by the AtiveMQ
-		EnergyPrediction energyVM = getEnergyPredicted(CPU, RAM, storage, duration, hostname);
+    public double getVMChargesPrediction(int CPU, int RAM, double storage, int schemeId, long duration, String hostname) {
+        VMinfo vm = new VMinfo(RAM, CPU, storage, hostname);
+        IaaSPricingModellerPricingScheme scheme = initializeScheme(schemeId);
+        VMstate Vm = new VMstate(vm, energyProvider, scheme);
+        scheme.setEnergyModeller(energyModeller);
+        Vm.getPredictedInformation().setDuration(duration);
 
-		Vm.getPredictedInformation().setPredictionOfEnergy(energyVM);
-		
-		//Vm.getPredictedInformation().setPredictedPowerPerHour(energyPredicted/dura.getDuration());
+        // This function calls the Energy Modeller: To be replaced by the AtiveMQ
+        EnergyPrediction energyVM = getEnergyPredicted(CPU, RAM, storage, duration, hostname);
+
+        Vm.getPredictedInformation().setPredictionOfEnergy(energyVM);
+
+        //Vm.getPredictedInformation().setPredictedPowerPerHour(energyPredicted/dura.getDuration());
 	
 		
-		double predictedTotalCharges = billing.predictVMCharges(Vm).getChargesOnly();
-		
-		logger.info("Prediction,"+hostname+","+String.valueOf(CPU)+","+String.valueOf(RAM)+","+String.valueOf(storage)+","+String.valueOf(duration)
-				+","+String.valueOf(schemeId)+","+String.valueOf(energyVM.getTotalEnergy())+","+String.valueOf(predictedTotalCharges));
+        double predictedTotalCharges = billing.predictVMCharges(Vm).getChargesOnly();
 
-		return predictedTotalCharges;
-	}
-    
-	/**
+        logger.info("Prediction," + hostname + "," + String.valueOf(CPU) + "," + String.valueOf(RAM) + "," + String.valueOf(storage) + "," + String.valueOf(duration)
+                + "," + String.valueOf(schemeId) + "," + String.valueOf(energyVM.getTotalEnergy()) + "," + String.valueOf(predictedTotalCharges));
+
+        return predictedTotalCharges;
+    }
+
+    /**
      * This function returns the price estimated for a VM under the specified scheme
      * @param CPU: integer
      * @param RAM: integer
@@ -269,176 +272,194 @@ public double getAppFinalCharges(int appID, boolean deleteApp){
      * @param duration: long in seconds
      * @param hostname: String
      */
-	public double getVMPricePerHourPrediction(int CPU, int RAM, double storage, int schemeId,  long duration, String hostname){
-		VMinfo vm = new VMinfo (RAM, CPU, storage, hostname);
-		IaaSPricingModellerPricingScheme scheme = initializeScheme(schemeId);
-		VMstate Vm = new VMstate(vm, energyProvider, scheme);
-		scheme.setEnergyModeller(energyModeller);
-		Vm.getPredictedInformation().setDuration(duration);
-		
-		// This function calls the Energy Modeller: To be replaced by the AtiveMQ
-		EnergyPrediction energyVM = getEnergyPredicted(CPU, RAM, storage, duration, hostname);
+    public double getVMPricePerHourPrediction(int CPU, int RAM, double storage, int schemeId, long duration, String hostname) {
+        VMinfo vm = new VMinfo(RAM, CPU, storage, hostname);
+        IaaSPricingModellerPricingScheme scheme = initializeScheme(schemeId);
+        VMstate Vm = new VMstate(vm, energyProvider, scheme);
+        scheme.setEnergyModeller(energyModeller);
+        Vm.getPredictedInformation().setDuration(duration);
 
-		Vm.getPredictedInformation().setPredictionOfEnergy(energyVM);
-		
-		double predictedPricePerHour = billing.predictVMCharges(Vm).getPriceOnly();
-		
-		logger.info("Prediction,"+hostname+","+String.valueOf(CPU)+","+String.valueOf(RAM)+","+String.valueOf(storage)+","+String.valueOf(duration)
-				+","+String.valueOf(schemeId)+","+String.valueOf(energyVM.getAvrgPower())+","+String.valueOf(predictedPricePerHour));
-		return predictedPricePerHour;
-	}
-	
-	private Collection <VM> castCollection(Collection<VmDeployed> collection){
-		Collection<VM> col = new ArrayList<VM>();
-		Iterator<VmDeployed> itr = collection.iterator();
-	      while(itr.hasNext()) {
-	         VmDeployed element = itr.next();
-	         col.add((VM)element);
-	      }
-	      return col;
-	}
-	
-	/**
-	* 	In order to start billing a VM this function has to be called first. 
-	* @param VMid: the ID of the VM, the same used with the Energy Modeller.
-	* @param schemeId: the Pricing scheme of the VM
-	**/
-	public void initializeVM(String VMid, int schemeId, String hostname){
-	int CPU=0;
-	int RAM =0;
-	double storage=0;
+        // This function calls the Energy Modeller: To be replaced by the AtiveMQ
+        EnergyPrediction energyVM = getEnergyPredicted(CPU, RAM, storage, duration, hostname);
 
-	try {
+        Vm.getPredictedInformation().setPredictionOfEnergy(energyVM);
+
+        double predictedPricePerHour = billing.predictVMCharges(Vm).getPriceOnly();
+
+        logger.info("Prediction," + hostname + "," + String.valueOf(CPU) + "," + String.valueOf(RAM) + "," + String.valueOf(storage) + "," + String.valueOf(duration)
+                + "," + String.valueOf(schemeId) + "," + String.valueOf(energyVM.getAvrgPower()) + "," + String.valueOf(predictedPricePerHour));
+        return predictedPricePerHour;
+    }
+
+    private Collection<VM> castCollection(Collection<VmDeployed> collection) {
+        Collection<VM> col = new ArrayList<VM>();
+        Iterator<VmDeployed> itr = collection.iterator();
+        while (itr.hasNext()) {
+            VmDeployed element = itr.next();
+            col.add((VM) element);
+        }
+        return col;
+    }
+
+    /**
+     * In order to start billing a VM this function has to be called first.
+     *
+     * @param VMid: the ID of the VM, the same used with the Energy Modeller.
+     * @param schemeId: the Pricing scheme of the VM
+     *
+     */
+    public void initializeVM(String VMid, int schemeId, String hostname) {
+        int CPU = 0;
+        int RAM = 0;
+        double storage = 0;
+
+        try {
             VmDeployed vm = energyModeller.getVM(VMid);
             CPU = vm.getCpus();
             RAM = vm.getRamMb();
             storage = vm.getDiskGb();
+            logger.info("The VM with VMid " + VMid + "has been registered, with values CPU: " + CPU + ", RAM: " + RAM + ", STORAGE: " + storage);
 
-	} catch (NullPointerException ex) {
-	logger.info("The VM with VMid "+VMid+"Has not been registered");
-	}
+        } catch (NullPointerException ex) {
+            logger.error("The VM with VMid " + VMid + "Has not been registered");
+        }
 
 
-	VMinfo vm = new VMinfo (RAM, CPU, storage, hostname);
+        VMinfo vm = new VMinfo(RAM, CPU, storage, hostname);
 
-	IaaSPricingModellerPricingScheme scheme = initializeScheme(schemeId);
-	VMstate VM = new VMstate(VMid, vm, energyProvider, scheme);
+        IaaSPricingModellerPricingScheme scheme = initializeScheme(schemeId);
+        VMstate VM = new VMstate(VMid, vm, energyProvider, scheme);
 
-	if (schemeId== 2){
-	EnergyPrediction energyVM = getEnergyPredicted(CPU, RAM, storage, hostname);
-	VM.getPredictedInformation().setPredictionOfEnergy(energyVM);
-	VM.setPredictedCharges(billing.predictVMCharges(VM).getPriceOnly());
+        if (schemeId == 2) {
+            EnergyPrediction energyVM = getEnergyPredicted(CPU, RAM, storage, hostname);
+            VM.getPredictedInformation().setPredictionOfEnergy(energyVM);
+            VM.setPredictedCharges(billing.predictVMCharges(VM).getPriceOnly());
 
-	}
-	scheme.setEnergyModeller(energyModeller);
+        }
+        scheme.setEnergyModeller(energyModeller);
 
-	billing.registerVM(VM);
-	}
+        billing.registerVM(VM);
+    }
+
+    /**
+     * When calling this function, the VM stops its operation and the final
+     * charges are returned
+     *
+     * @param VMid
+     * @param deleteVM: boolean true when the VM stops operating and deleted
+     * else false
+     * @return
+     */
+    public double getVMFinalCharges(String VMid, boolean deleteVM) {
+        double charges = billing.getVMCharges(VMid);
+
+        logger.info("Billing scheme used for getting VM final charges was scheme ." + billing.getVM(VMid).getPricingScheme().getSchemeId());
+
+        if (billing.getVM(VMid).getPricingScheme().getSchemeId() == 0) {
+            billing.getVM(VMid).setTotalEnergyConsumed(0);
+        }
+
+        if (billing.getVM(VMid).getPricingScheme().getSchemeId() != 2) {
+            logger.info("Billing," + VMid + ","
+                    + String.valueOf(billing.getVM(VMid).getVMinfo().getCPU()) + ","
+                    + String.valueOf(billing.getVM(VMid).getVMinfo().getRAM()) + ","
+                    + String.valueOf(billing.getVM(VMid).getVMinfo().getStorage()) + ","
+                    + String.valueOf(billing.getVM(VMid).getTotalDuration())
+                    + "," + String.valueOf(billing.getVM(VMid).getPricingScheme().getSchemeId()) + ","
+                    + String.valueOf(billing.getVM(VMid).getTotalEnergyConsumed()) + ","
+                    + String.valueOf(billing.getVM(VMid).getTotalCharges()));
+        } else {
+            logger.info("Billing," + String.valueOf(VMid) + "," + String.valueOf(billing.getVM(VMid).getVMinfo().getCPU()) + "," + String.valueOf(billing.getVM(VMid).getVMinfo().getRAM()) + "," + String.valueOf(billing.getVM(VMid).getVMinfo().getStorage()) + "," + String.valueOf(billing.getVM(VMid).getTotalDuration())
+                    + "," + String.valueOf(billing.getVM(VMid).getPricingScheme().getSchemeId()) + "," + String.valueOf(billing.getVM(VMid).getTotalEnergyConsumed()) + "," + String.valueOf(billing.getVM(VMid).getTotalCharges()) + "," + String.valueOf(billing.getVM(VMid).getPredictedInformation().getPredictedPowerPerHour()) + ","
+                    + String.valueOf(billing.getVM(VMid).getPredictedInformation().getPredictedCharges().getChargesOnly()) + "," + String.valueOf(billing.getVM(VMid).getPredictedInformation().getTotalPredictedEnergy()));
+        }
+
+        if (deleteVM) {
+            logger.info("VM: " + VMid + " was unregistered from the pricing modeller.");
+            billing.unregisterVM(billing.getVM(VMid));
+        }
+        /*else
+         billing.stopChargingVM(billing.getVM(VMid));*/
+        return charges;
+    }
+
 	
-	/**
-	 * When calling this function, the VM stops its operation and the final charges are returned	
-	 * @param VMid
-	 * @param deleteVM: boolean true when the VM stops operating and deleted else false
-	 * @return
-	 */
-	public double getVMFinalCharges(String VMid, boolean deleteVM){
-		double charges = billing.getVMCharges(VMid);
-		
-		if (billing.getVM(VMid).getPricingScheme().getSchemeId()==0)
-			billing.getVM(VMid).setTotalEnergyConsumed(0);
-		
-		if (billing.getVM(VMid).getPricingScheme().getSchemeId()!=2){
-		logger.info("Billing,"+VMid +","+String.valueOf(billing.getVM(VMid).getVMinfo().getCPU())+","+String.valueOf(billing.getVM(VMid).getVMinfo().getRAM())+","+String.valueOf(billing.getVM(VMid).getVMinfo().getStorage())+","+String.valueOf(billing.getVM(VMid).getTotalDuration())
-			+","+String.valueOf(billing.getVM(VMid).getPricingScheme().getSchemeId())+","+String.valueOf(billing.getVM(VMid).getTotalEnergyConsumed())+","+String.valueOf(billing.getVM(VMid).getTotalCharges()));
-		}
-		else
-		logger.info("Billing,"+String.valueOf(VMid)+","+String.valueOf(billing.getVM(VMid).getVMinfo().getCPU())+","+String.valueOf(billing.getVM(VMid).getVMinfo().getRAM())+","+String.valueOf(billing.getVM(VMid).getVMinfo().getStorage())+","+String.valueOf(billing.getVM(VMid).getTotalDuration())
-				+","+String.valueOf(billing.getVM(VMid).getPricingScheme().getSchemeId())+","+String.valueOf(billing.getVM(VMid).getTotalEnergyConsumed())+","+String.valueOf(billing.getVM(VMid).getTotalCharges())+","+String.valueOf(billing.getVM(VMid).getPredictedInformation().getPredictedPowerPerHour())+","
-			+String.valueOf(billing.getVM(VMid).getPredictedInformation().getPredictedCharges().getChargesOnly())+","+String.valueOf(billing.getVM(VMid).getPredictedInformation().getTotalPredictedEnergy()));
-		
-		if (deleteVM)
-			billing.unregisterVM(billing.getVM(VMid));
-		/*else
-			billing.stopChargingVM(billing.getVM(VMid));*/
-		return charges;
-	}
-   
-	
-	///////////////////////Basic functions///////////////////////////////
-	/**
+    ///////////////////////Basic functions///////////////////////////////
+    /**
 	public int getIaaSId(){
 		return idIaaSP;
 	}
 	**/
 	
-    public EnergyProvider getEnergyProvider(){
-    	return this.energyProvider;
+    public EnergyProvider getEnergyProvider() {
+        return this.energyProvider;
     }
-    
-    public IaaSPricingModellerBilling getBilling(){
-    	return this.billing;
+
+    public IaaSPricingModellerBilling getBilling() {
+        return this.billing;
     }
-    
-    public IaaSPricingModeller getIaaSprovider(int id){
-    	return this;
+
+    public IaaSPricingModeller getIaaSprovider(int id) {
+        return this;
     }
-    
-    public IaaSPricingModellerPricingScheme initializeScheme(int schemeId){
-    	IaaSPricingModellerPricingScheme scheme = null;
-		if (schemeId==0){
-			scheme = new PricingSchemeA(schemeId);
-		}
-		if (schemeId==1){
-			scheme = new PricingSchemeB(schemeId);
-		}
-		if (schemeId==2){
-			scheme = new PricingSchemeC(schemeId);
-		}
-		return scheme;
+
+    public IaaSPricingModellerPricingScheme initializeScheme(int schemeId) {
+        IaaSPricingModellerPricingScheme scheme = null;
+        if (schemeId == 0) {
+            scheme = new PricingSchemeA(schemeId);
+        }
+        if (schemeId == 1) {
+            scheme = new PricingSchemeB(schemeId);
+        }
+        if (schemeId == 2) {
+            scheme = new PricingSchemeC(schemeId);
+        }
+        return scheme;
     }
-    
-    public EnergyPrediction getEnergyPredicted(int CPU, int RAM, double storage, long duration, String hostname){
-    	EnergyPrediction energyVM = new EnergyPrediction();
-    	try{
-    	VM newVM = new VM(CPU, RAM, storage);
-		TimeParameters dur = new TimeParameters(duration);
-		TimePeriod dura = new TimePeriod(dur.getStartTime(), dur.getEndTime());
-		Host host = energyModeller.getHost(hostname);
-		Collection <VmDeployed> collection =  energyModeller.getVMsOnHost(host);
-		Collection <VM> col = castCollection(collection);
-		
+
+    public EnergyPrediction getEnergyPredicted(int CPU, int RAM, double storage, long duration, String hostname) {
+        EnergyPrediction energyVM = new EnergyPrediction();
+        try {
+            logger.info("The pricing modeller is obtaining an energy estimation for CPU: " 
+                    + CPU + ", RAM: " + RAM + ", STORAGE: " + storage + ", duration: " + duration  + ", hostname: " + hostname);
+            VM newVM = new VM(CPU, RAM, storage);
+            TimeParameters dur = new TimeParameters(duration);
+            TimePeriod dura = new TimePeriod(dur.getStartTime(), dur.getEndTime());
+            Host host = energyModeller.getHost(hostname);
+            Collection<VmDeployed> collection = energyModeller.getVMsOnHost(host);
+            Collection<VM> col = castCollection(collection);
+
             EnergyUsagePrediction energyPrediction = energyModeller.getPredictedEnergyForVM(newVM, col, host, dura);
             energyVM.setTotalEnergy(energyPrediction.getTotalEnergyUsed());
             energyVM.setAvergPower(energyPrediction.getAvgPowerUsed());
-    	}
-    	catch (NullPointerException ex){
-    		
-    		energyVM.setTotalEnergy(100);
-    		energyVM.setAvergPower(100);
-    	}
-		return energyVM;
+        } catch (NullPointerException ex) {
+            logger.error("Obtaining the predicted energy for " + hostname + "failed.", ex);
+            energyVM.setTotalEnergy(100);
+            energyVM.setAvergPower(100);
+        }
+        return energyVM;
 
 		
     }
-    
-    public EnergyPrediction getEnergyPredicted(int CPU, int RAM, double storage, String hostname){
-    	EnergyPrediction energyVM = new EnergyPrediction();
-    	try{
-    	VM newVM = new VM(CPU, RAM, storage);
-		Host host = energyModeller.getHost(hostname);
-		Collection <VmDeployed> collection =  energyModeller.getVMsOnHost(host);
-		Collection <VM> col = castCollection(collection);
-		
-		energyVM.setTotalEnergy(energyModeller.getPredictedEnergyForVM(newVM, col, host).getTotalEnergyUsed());
-		energyVM.setAvergPower(energyModeller.getPredictedEnergyForVM(newVM, col, host).getAvgPowerUsed());
-    	}
-    	catch (NullPointerException ex){
-    		energyVM.setTotalEnergy(0);
-    		energyVM.setAvergPower(0);
-    	}
-		return energyVM;
+
+    public EnergyPrediction getEnergyPredicted(int CPU, int RAM, double storage, String hostname) {
+        EnergyPrediction energyVM = new EnergyPrediction();
+        try {
+            VM newVM = new VM(CPU, RAM, storage);
+            Host host = energyModeller.getHost(hostname);
+            Collection<VmDeployed> collection = energyModeller.getVMsOnHost(host);
+            Collection<VM> col = castCollection(collection);
+
+            energyVM.setTotalEnergy(energyModeller.getPredictedEnergyForVM(newVM, col, host).getTotalEnergyUsed());
+            energyVM.setAvergPower(energyModeller.getPredictedEnergyForVM(newVM, col, host).getAvgPowerUsed());
+        } catch (NullPointerException ex) {
+            logger.error("Obtaining the predicted energy for " + hostname + "failed.", ex);
+            energyVM.setTotalEnergy(0);
+            energyVM.setAvergPower(0);
+        }
+        return energyVM;
     }
-    
+
     
     
     ///////////////////not used /////////////////////////////
@@ -446,6 +467,6 @@ public double getAppFinalCharges(int appID, boolean deleteApp){
     public double getVMCurrentCharges(String VMid){
 		return billing.getVMCharges(VMid);
 		
-	}
+}
 	**/
 }
