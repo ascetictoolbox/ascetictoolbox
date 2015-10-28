@@ -250,11 +250,16 @@ public class VmsManager {
             }
 
 			if (energyModeller instanceof AsceticEnergyModellerAdapter) {
+                                /**
+                                 * The first call sets static host information. The second
+                                 * writes extra profiling data for VMs. The second also 
+                                 * writes this data to the EM's database (including the static information.
+                                 */
+                                ((AsceticEnergyModellerAdapter) energyModeller).setStaticVMInformation(vmId, vmToDeploy);
 				((AsceticEnergyModellerAdapter) energyModeller).initializeVmInEnergyModellerSystem(
 						vmId,
 						vmToDeploy.getApplicationId(),
 						vmToDeploy.getImage());
-                                ((AsceticEnergyModellerAdapter) energyModeller).setStaticVMInformation(vmId, vmToDeploy);
 			}
 
             if (pricingModeller instanceof AsceticPricingModellerAdapter) {
