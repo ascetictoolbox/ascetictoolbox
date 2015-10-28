@@ -19,6 +19,7 @@ require '/opt/ruby-scripts/libvirt/libvirt_metrics_collector.rb'
 require '/opt/ruby-scripts/zabbix/zabbix_ascetic.rb'
 require '/opt/ruby-scripts/libvirt/libvirt_events_listener.rb'
 require 'libvirt'
+require 'logger'
 
 # Configuration
 #$zabbix_ip_address="192.168.3.199"
@@ -40,10 +41,14 @@ sleep_time=10
 
 $hostname=`hostname -s`
 
+$logger = Logger.new('/opt/ruby-scripts/collector.log')
+$logger.level = Logger::DEBUG
+
 # def log messages
 def log(text)
-  t = Time::now.to_s + " => " + text
-  puts t
+  #t = Time::now.to_s + " => " + text
+  #puts t
+  $logger.info(text)
 end
 
 log("Starting libvirt monitoring script...")

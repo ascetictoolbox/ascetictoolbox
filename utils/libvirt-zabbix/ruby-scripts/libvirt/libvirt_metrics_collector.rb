@@ -17,6 +17,7 @@
 
 require 'libvirt'
 require 'nokogiri'
+require 'logger'
 
 class LibvirtMetricsCollector
   Metrics = Struct.new(:timestamp, :cpu_time, :user_time, :system_time, :percentage_cpu, 
@@ -27,11 +28,14 @@ class LibvirtMetricsCollector
 
   def initialize
     @conn = Libvirt::open('qemu:///system')
+    @logger = Logger.new('/opt/ruby-scripts/collector_metrics.log')
+    @logger.level = Logger::DEBUG
   end
 
   def log(text)
-    t = Time::now.to_s + " => " + text
-    puts t
+    #t = Time::now.to_s + " => " + text
+    #puts t
+    @logger.info(text)
   end
 
   def get_number_cores_host
