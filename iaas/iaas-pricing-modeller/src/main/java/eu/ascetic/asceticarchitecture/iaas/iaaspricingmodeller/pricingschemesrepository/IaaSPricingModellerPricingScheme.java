@@ -95,12 +95,14 @@ public abstract class IaaSPricingModellerPricingScheme implements IaaSPricingMod
 		Calendar endtime = Calendar.getInstance();
 		Calendar starttime = VM.getChangeTime();
 		long duration = VM.getDuration(starttime, endtime);
-		double Resourcecharges = (double) Math.round(distribution.getDistribution(VM)*price.getPriceOnly()*Math.ceil(duration/3600)*1000)/1000;
+		//double Resourcecharges = (double) Math.round(distribution.getDistribution(VM)*price.getPriceOnly()*Math.ceil(duration/3600)*1000)/1000;
+		double Resourcecharges = distribution.getDistribution(VM)*price.getPriceOnly()*Math.ceil(duration/3600);
 		VM.updateResourcesCharges(Resourcecharges);
 		}
 	
 	public void updateVMEnergyCharges(VMstate VM){		
-		double energycharges = (double) Math.round(cost.updateEnergyCharges(VM) * 1000) / 1000;
+		//double energycharges = (double) Math.round(cost.updateEnergyCharges(VM) * 1000) / 1000;
+		double energycharges = cost.updateEnergyCharges(VM);
 		VM.updateEnergyCharges(energycharges);
 		
 	}
