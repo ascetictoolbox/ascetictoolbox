@@ -739,7 +739,7 @@ public class EnergyModeller {
      * This will only return the representation of a VM if the VM has been
      * deployed and reported by the monitoring infrastructure.
      *
-     * @param vmId The name of the VM
+     * @param vmId The id of the VM
      * @return The VM with the specified name, null if not known to the energy
      * modeller.
      */

@@ -22,6 +22,7 @@ import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.CPU_SPOT_USAGE_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.DISK_TOTAL_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.MEMORY_TOTAL_KPI_NAME;
+import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.MEMORY_TOTAL_KPI_NAME2;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.POWER_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.VM_PHYSICAL_HOST_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.VM_PHYSICAL_HOST_NAME_2;
@@ -52,7 +53,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
  * This directly connects to a Zabbix database and scavenges the data required
  * directly. This thus eliminates overhead and improves overall performance.
  *
- * @author Richard
+ * @author Richard Kavanagh
  */
 public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector implements HostDataSource {
 
@@ -76,10 +77,12 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
      */
     private Connection connection;
     /**
-     * This query lists all hosts data items. status <> 3 excludes templates
-     * 0 - not available (templates are in this category), 1 - available, 2 - unknown. 
-     * 
-     * see: https://www.zabbix.com/documentation/2.0/manual/config/items/itemtypes/internal
+     * This query lists all hosts data items. status <> 3 excludes templates 0 -
+     * not available (templates are in this category), 1 - available, 2 -
+     * unknown.
+     *
+     * see:
+     * https://www.zabbix.com/documentation/2.0/manual/config/items/itemtypes/internal
      */
     private static String ALL_ZABBIX_HOSTS = "SELECT hostid, host FROM hosts WHERE status <> 3";
     /**
@@ -171,7 +174,7 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
             } catch (ClassNotFoundException ex) {
                 //If the driver is not found on the class path revert to MariaDB.
                 databaseDriver = "org.mariadb.jdbc.Driver";
-            }             
+            }
             config.setProperty("iaas.energy.modeller.zabbix.db.driver", databaseDriver);
             databasePassword = config.getString("iaas.energy.modeller.zabbix.db.password", databasePassword);
             config.setProperty("iaas.energy.modeller.zabbix.db.password", databasePassword);
@@ -314,6 +317,28 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
      * @return The vm object with more information attached.
      */
     private VmDeployed fullyDescribeVM(VmDeployed vm, Collection<MetricValue> items) {
+        vm = fullyDescribeVmZabbix(vm, items);
+        vm = fullyDescribeVmLibVirt(vm, items);
+        //A fall back incase the information is not available!
+        if (vm.getCpus() == 0) {
+            vm.setCpus(Integer.valueOf(1));
+        }
+        //TODO set the information correctly below!
+        vm.setIpAddress("127.0.0.1");
+        vm.setState("Work in Progress");
+        return vm;
+    }
+
+    /**
+     * This gathers more information about a vm than is available by querying
+     * the host list table directly. This is geared towards default Zabbix
+     * values.
+     *
+     * @param vm The vm to populate with more information
+     * @param items The data for a given vm.
+     * @return The vm object with more information attached.
+     */
+    private VmDeployed fullyDescribeVmZabbix(VmDeployed vm, Collection<MetricValue> items) {
         for (MetricValue item : items) {
             if (item.getKey().equals(MEMORY_TOTAL_KPI_NAME)) { //Convert to Mb
                 //Original value given in bytes. 1024 * 1024 = 1048576
@@ -332,20 +357,37 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
             if (item.getKey().equals(VM_PHYSICAL_HOST_NAME)) {
                 vm.setAllocatedTo(getHostByName(item.getValueAsString()));
             }
-            if (item.getKey().equals(VM_PHYSICAL_HOST_NAME_2)) {
-                vm.setAllocatedTo(getHostByName(item.getValueAsString()));
-            }            
-            if (item.getKey().equals(CPU_COUNT_KPI_NAME)) {
-                vm.setCpus(Integer.valueOf(item.getValueAsString()));
-            }
-            //TODO set the information correctly below!
-            vm.setIpAddress("127.0.0.1");
-            vm.setState("Work in Progress");
+        }
+        return vm;
+    }
 
+    /**
+     * This gathers more information about a vm than is available by querying
+     * the host list table directly. This is geared towards default values
+     * provided by the aSCETiC libvirt connector.
+     *
+     * @param vm The vm to populate with more information
+     * @param items The data for a given vm.
+     * @return The vm object with more information attached.
+     */
+    private VmDeployed fullyDescribeVmLibVirt(VmDeployed vm, Collection<MetricValue> items) {
+       //TODO fix this here, with real values.
+        if (vm.getRamMb() == 0) { //Convert to Mb
+            //Original value given in bytes. 1024 * 1024 = 1048576
+            vm.setRamMb(4096);
+        }
+        if (vm.getDiskGb() == 0) { //covert to Gb
+            //Original value given in bytes. 1024 * 1024 * 1024 = 1073741824
+            vm.setDiskGb(40);
         }
         //A fall back incase the information is not available!
         if (vm.getCpus() == 0) {
-            vm.setCpus(Integer.valueOf(1));
+            vm.setCpus(2);
+        }        
+        for (MetricValue item : items) {
+            if (item.getKey().equals(VM_PHYSICAL_HOST_NAME_2)) {
+                vm.setAllocatedTo(getHostByName(item.getValueAsString()));
+            }
         }
         return vm;
     }
@@ -371,8 +413,8 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
             DB_LOGGER.log(Level.SEVERE, null, ex);
         }
         return answer;
-    } 
-    
+    }
+
     @Override
     public List<EnergyUsageSource> getHostAndVmList() {
         List<EnergyUsageSource> answer = new ArrayList<>();
