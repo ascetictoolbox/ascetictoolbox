@@ -62,22 +62,22 @@ public class EnergyModellerData {
 	
 	//private static String DEP = "540";
 	private static String DEP = "560";
-	private static String TEST= "1871";
+	private static String TEST= "1872";
 	
 	@BeforeClass
 	public static void setup() {
 		serviceEM = (EnergyModellerService) EnergyModellerFactory.getEnergyModeller("c:/dev-env/ascetic-conf/testconfig.properties");
 	}
-//	
-//	@Test
-//	public void eventPowerInterface() {
-//		List<String> vmids = new Vector<String>();
-//		vmids.add(TEST);		
-//		PROVIDER=null;
-//		double result = serviceEM.estimate(PROVIDER, APP, DEP, vmids, EVENT, Unit.ENERGY,3600);
-//		System.out.println("################################ TEST "+TEST+"Average Power "+EVENT+" estimated is:  "+result);
-//	}
-//	
+	
+	@Test
+	public void eventPowerInterface() {
+		List<String> vmids = new Vector<String>();
+		vmids.add(TEST);		
+		PROVIDER=null;
+		double result = serviceEM.estimate(PROVIDER, APP, DEP, vmids, EVENT, Unit.ENERGY,3600);
+		System.out.println("################################ TEST "+TEST+"Average Power "+EVENT+" estimated is:  "+result);
+	}
+	
 	
 //	@Test
 //	public void eventPowerInterface() {

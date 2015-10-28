@@ -97,9 +97,8 @@ public class ApplicationMonitoringDataService  {
 			logger.info("Now getting events for vm " + vmid);
 			String requestEntity;
 			// TODO this is the original query replaced 
-			requestEntity = "FROM events MATCH appId=\""+applicationid+"\" AND data.eventType=\""+eventid+"\" AND nodeId=\""+vmid+"\"";
-			
-			//requestEntity = "FROM events MATCH appId=\""+applicationid+"\" AND data.eventType=\""+eventid+"\" ";
+			requestEntity = "FROM events MATCH appId=\""+applicationid+"\"AND nodeId=\""+vmid+"\"";
+			//requestEntity = "FROM events MATCH appId=\""+applicationid+"\" AND data.eventType=\""+eventid+"\" AND nodeId=\""+vmid+"\"";
 			if (eventid==null){
 				logger.warn("No event id supplied. I will load all events for the application");
 				requestEntity = "FROM events MATCH appId=\""+applicationid+"\"";
