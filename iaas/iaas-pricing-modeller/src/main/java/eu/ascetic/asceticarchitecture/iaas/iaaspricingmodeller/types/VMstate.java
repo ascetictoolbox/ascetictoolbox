@@ -50,6 +50,7 @@ public class VMstate {
 
 	TimeParameters time;
 	
+	double duration;
 
 
 	
@@ -131,7 +132,14 @@ public class VMstate {
 	public String getAppID(){
 		return appID;
 	}
+	
+	public void setDuration(double dur){
+		duration=dur;
+	}
 
+	public double getDuration(){
+		return duration;
+	}
 	//////////////////////PREDICTION //////////////////////////
 	public void setPrediction(long duration, EnergyPrediction energy, double power){
 		predictedInformation.setDuration(duration);

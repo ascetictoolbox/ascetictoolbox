@@ -141,6 +141,7 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
 
 
         billing.registerVM(VM);
+        logger.info("The VM with VMid " + VMid + "has been registered at: " + VM.getStartTime());
     }
 
     /**
@@ -177,6 +178,7 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
         
 
         logger.info("Billing scheme used for getting VM final charges was scheme ." + billing.getVM(VMid).getPricingScheme().getSchemeId());
+        logger.info("Duration for VM " + VMid +" is: " + billing.getVM(VMid).getDuration());
 
         if (billing.getVM(VMid).getPricingScheme().getSchemeId() == 0) {
             billing.getVM(VMid).setTotalEnergyConsumed(0);
