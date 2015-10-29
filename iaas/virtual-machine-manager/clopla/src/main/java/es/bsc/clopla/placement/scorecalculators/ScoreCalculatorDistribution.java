@@ -22,6 +22,7 @@ package es.bsc.clopla.placement.scorecalculators;
 import es.bsc.clopla.domain.ClusterState;
 import es.bsc.clopla.placement.config.VmPlacementConfig;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
 
 /**
@@ -38,13 +39,14 @@ import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
 public class ScoreCalculatorDistribution implements SimpleScoreCalculator<ClusterState> {
 
     @Override
-    public BendableScore calculateScore(ClusterState solution) {
-        int[] hardScores = { calculateHardScore(solution) };
-        int[] softScores = {
-                solution.countNonIdleHosts(),
-                - (int) Math.round(solution.calculateStdDevCpuPercUsedPerHost()), 
-                - VmPlacementConfig.initialClusterState.get().countVmMigrationsNeeded(solution)};
-        return BendableScore.valueOf(hardScores, softScores);
+    public HardMediumSoftScore calculateScore(ClusterState solution) {
+        int hardScore = calculateHardScore(solution);
+		int mediumScore = - (solution.countOffHosts() + solution.countIdleHosts());
+
+		int migrations = VmPlacementConfig.initialClusterState.get().countVmMigrationsNeeded(solution);
+		int stdevCpuPerc = (int)(100 * solution.calculateStdDevCpuPercUsedPerHost());
+		int softScore = -stdevCpuPerc - migrations;
+		return HardMediumSoftScore.valueOf(hardScore, mediumScore, softScore);
     }
 
     private int calculateHardScore(ClusterState solution) {

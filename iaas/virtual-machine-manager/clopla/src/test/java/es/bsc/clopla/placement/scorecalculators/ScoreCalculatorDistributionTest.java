@@ -55,9 +55,9 @@ public class ScoreCalculatorDistributionTest {
     @Test
     public void scoreTest() {
         ClusterState clusterState = getTestClusterState();
-        assertEquals(-4, scoreCalculatorDistribution.calculateScore(clusterState).getHardScore(0));
-        assertEquals(2, scoreCalculatorDistribution.calculateScore(clusterState).getSoftScore(0));
-        assertEquals(-1, scoreCalculatorDistribution.calculateScore(clusterState).getSoftScore(1)); // rounding
+        assertEquals(-4, scoreCalculatorDistribution.calculateScore(clusterState).getHardScore());
+        assertEquals(-67, scoreCalculatorDistribution.calculateScore(clusterState).getSoftScore());
+        assertEquals(-67, scoreCalculatorDistribution.calculateScore(clusterState).getSoftScore()); // rounding
     }
 
     private ClusterState getTestClusterState() {

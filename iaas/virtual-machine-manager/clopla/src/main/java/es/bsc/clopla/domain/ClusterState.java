@@ -24,6 +24,8 @@ import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.value.ValueRangeProvider;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.hardmediumsoft.HardMediumSoftScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.persistence.xstream.XStreamScoreConverter;
@@ -45,7 +47,7 @@ public class ClusterState extends AbstractPersistable implements Solution<Score>
 
     public ClusterState () { } // OptaPlanner needs no arg constructor to clone
     
-    @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftScoreDefinition.class})
+    @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftScoreDefinition.class, BendableScoreDefinition.class, HardMediumSoftScoreDefinition.class})
     private Score score;
 
     /**
@@ -278,7 +280,8 @@ public class ClusterState extends AbstractPersistable implements Solution<Score>
         double temp = 0;
         double avgCpuPercUsed = avgCpuPercUsedPerHost();
         for (Host host: hosts) {
-            temp += Math.pow(avgCpuPercUsed - (cpusAssignedInHost(host))/(host.getNcpus()/1.0), 2);
+			double dif = avgCpuPercUsed - (cpusAssignedInHost(host))/(host.getNcpus()/1.0);
+            temp += dif * dif;
         }
         return temp/(hosts.size());
     }

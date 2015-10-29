@@ -20,8 +20,11 @@
 package es.bsc.clopla.placement.scorecalculators;
 
 import es.bsc.clopla.domain.ClusterState;
+import es.bsc.clopla.domain.Host;
+import es.bsc.clopla.domain.Vm;
 import es.bsc.clopla.placement.config.VmPlacementConfig;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
 
 /**
@@ -39,14 +42,35 @@ import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
 public class ScoreCalculatorConsolidation implements SimpleScoreCalculator<ClusterState> {
 
     @Override
-    public BendableScore calculateScore(ClusterState solution) {
-        int[] hardScores = { calculateHardScore(solution) };
-        int[] softScores = {
-                solution.countOffHosts(),
-                solution.countIdleHosts(),
-                -solution.calculateCumulativeUnusedCpuPerc(),
-                -VmPlacementConfig.initialClusterState.get().countVmMigrationsNeeded(solution)};
-        return BendableScore.valueOf(hardScores, softScores);
+    public HardMediumSoftScore calculateScore(ClusterState solution) {
+        int hardScore = calculateHardScore(solution);
+		int mediumScore = solution.countOffHosts() + solution.countIdleHosts();
+        int softScore = -VmPlacementConfig.initialClusterState.get().countVmMigrationsNeeded(solution);
+
+		if("1".equals(System.getenv("CLOPLA_DEBUG"))) {
+			boolean sameHosts = true;
+			Long firstHost = null;
+			for(Vm vm : solution.getVms()) {
+				if(firstHost == null) {
+					firstHost = vm.getHost().getId();
+				} else {
+					if(vm.getHost().getId() != firstHost) {
+						sameHosts = false;
+						break;
+					}
+				}
+			}
+
+			if(sameHosts || softScore > 0 || mediumScore > 0) {
+				System.out.println("****** SOLUTION " + solution.toString());
+				System.out.println("Hard score: " + hardScore);
+				System.out.println("medium score: " + mediumScore);
+				System.out.print("soft score: " + softScore);
+				System.out.println();
+			}
+		}
+
+		return HardMediumSoftScore.valueOf(hardScore,mediumScore,softScore);
     }
 
     private int calculateHardScore(ClusterState solution) {

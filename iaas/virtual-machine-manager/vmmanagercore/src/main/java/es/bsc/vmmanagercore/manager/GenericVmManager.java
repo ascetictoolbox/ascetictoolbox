@@ -584,6 +584,19 @@ public class GenericVmManager implements VmManager {
 
 	@Override
 	public void executeOnDemandSelfAdaptation() throws CloudMiddlewareException {
-		selfAdaptationManager.applyOnDemandSelfAdaptation();
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					log.debug("Starting new Thread for self-adaptaion");
+					selfAdaptationManager.applyOnDemandSelfAdaptation();
+					log.debug("Self-adaptation thread ended");
+
+				} catch (CloudMiddlewareException e) {
+					log.error(e.getMessage(),e);
+				}
+			}
+		},"onDemandSelfAdaptationThread").start();
+
 	}
 }

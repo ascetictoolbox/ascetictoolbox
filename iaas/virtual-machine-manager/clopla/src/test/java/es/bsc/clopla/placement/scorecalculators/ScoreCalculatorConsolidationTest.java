@@ -55,10 +55,8 @@ public class ScoreCalculatorConsolidationTest {
     @Test
     public void scoreTest() {
         ClusterState clusterState = getTestClusterState();
-        assertEquals(-4, scoreCalculatorConsolidation.calculateScore(clusterState).getHardScore(0));
-        assertEquals(1, scoreCalculatorConsolidation.calculateScore(clusterState).getSoftScore(0));
-        assertEquals(2, scoreCalculatorConsolidation.calculateScore(clusterState).getSoftScore(1));
-        assertEquals(-275, scoreCalculatorConsolidation.calculateScore(clusterState).getSoftScore(2));
+        assertEquals(-4, scoreCalculatorConsolidation.calculateScore(clusterState).getHardScore());
+        assertEquals(0, scoreCalculatorConsolidation.calculateScore(clusterState).getSoftScore());
     }
 
     private ClusterState getTestClusterState() {
