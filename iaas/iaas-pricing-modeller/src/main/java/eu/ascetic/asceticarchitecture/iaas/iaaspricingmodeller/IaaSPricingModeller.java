@@ -16,23 +16,6 @@
 
 package eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-
-
-
-
-
-import java.util.LinkedList;
-import java.util.ListIterator;
-
-import org.apache.log4j.*;
-
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
@@ -45,8 +28,20 @@ import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesrep
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesrepository.PricingSchemeA;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesrepository.PricingSchemeB;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesrepository.PricingSchemeC;
-import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.*;
-
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.EnergyPrediction;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.TimeParameters;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.VMinfo;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.VMstate;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.ListIterator;
+import org.apache.log4j.Logger;
 
 /**
  * This is the interface of the IaaS Pricing Modeller with the other components of the IaaS Layer.
@@ -54,7 +49,7 @@ import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.*;
  * It provides the following operations
  * 1. estimation of the price per hour and the total charges of a VM
  * 2. Total charges of a VM after the end of its operation
- * 
+ *
  * Three different pricing schemes are provided
  * 1. Static pricing scheme (with schemeID = 0)
  * 2. Two tariffs pricing scheme (with schemeID = 1)
@@ -64,12 +59,11 @@ import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.*;
  *
  * @author E. Agiatzidou
  */
-
 public class IaaSPricingModeller implements IaaSPricingModellerInterface {
 
     /**
-	 * The IaaS Pricing Modeler should be connected with the Energy Provider that is deployed
-	 * within this component as well as with the Energy Modeler. 
+	 * The IaaS Pricing Modeller should be connected with the Energy Provider that is deployed
+	 * within this component as well as with the Energy Modeller. 
      */
     EnergyProvider energyProvider = new EnergyProvider(this);
     EnergyModeller energyModeller;
@@ -85,8 +79,8 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
 
 	
 
-	/** 
-	 * Constructor
+    /**
+     * Constructor
      * @param energyModeller
      */
     public IaaSPricingModeller(EnergyModeller energyModeller) {
@@ -120,10 +114,10 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
             CPU = vm.getCpus();
             RAM = vm.getRamMb();
             storage = vm.getDiskGb();
-            logger.info("The VM with VMid " + VMid + "has been registered, with values CPU: " + CPU + ", RAM: " + RAM + ", STORAGE: " + storage);
+            logger.info("The VM with VMid " + VMid + " has been registered, with values CPU: " + CPU + ", RAM: " + RAM + ", storage: " + storage);
 
         } catch (NullPointerException ex) {
-            logger.error("The VM with VMid " + VMid + "Has not been registered");
+            logger.error("The VM with VMid " + VMid + " has not been registered");
         }
 
         VMinfo vm = new VMinfo(RAM, CPU, storage, hostname);
@@ -154,63 +148,73 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
      * @return
      */
     public double getVMFinalCharges(String VMid, boolean deleteVM) {
-    	try{
-    	VMstate VM = billing.getVM(VMid);
-    	if (VM.getVMinfo().getRAM()==0||VM.getVMinfo().getStorage()==0.0){
-	  		
-    		try {
-    			VmDeployed vm = energyModeller.getVM(VMid);
-    			int CPU = vm.getCpus();
-    			int RAM = vm.getRamMb();
-    			double storage = vm.getDiskGb();
-    			logger.info("The VM with VMid " + VMid + "has requested new values for CPU: " + CPU + ", RAM: " + RAM + ", STORAGE: " + storage);
+        try {
+            VMstate VM = billing.getVM(VMid);
+            if (VM.getVMinfo().getRAM() == 0 || VM.getVMinfo().getStorage() == 0.0) {
 
-    		} catch (NullPointerException ex) {
-    			logger.error("The VM with VMid " + VMid + "has not taken the values from the energy modeller");
-    		}
-    	}
-    	
-    	if (VM.getVMinfo().getRAM()==0||VM.getVMinfo().getStorage()==0.0){
-    		logger.error("The VM with VMid " + VMid + "has taken zero values from the energy modeller for the CPU, RAM, storage");
-    	}
-    	
-    	double charges = billing.getVMCharges(VMid);
-        
+                try {
+                    VmDeployed vm = energyModeller.getVM(VMid);
+                    int CPU = vm.getCpus();
+                    int RAM = vm.getRamMb();
+                    double storage = vm.getDiskGb();
+                    logger.info("The VM with VMid " + VMid + "has requested new values for CPU: " + CPU + ", RAM: " + RAM + ", STORAGE: " + storage);
 
-        logger.info("Billing scheme used for getting VM final charges was scheme ." + billing.getVM(VMid).getPricingScheme().getSchemeId());
+                } catch (NullPointerException ex) {
+                    logger.error("The VM with VMid " + VMid + "has not taken the values from the energy modeller");
+                }
+            }
+            logger.info("Duration for VM " + VMid + " is: " + billing.getVM(VMid).getDuration());
+
+            if (VM.getVMinfo().getRAM() == 0 || VM.getVMinfo().getStorage() == 0.0) {
+                logger.error("The VM with VMid " + VMid + "has taken zero values from the energy modeller for the CPU, RAM, storage");
+            }
+
+            double charges = billing.getVMCharges(VMid);
+
+
+            logger.info("Billing scheme used for getting VM final charges was scheme ." + billing.getVM(VMid).getPricingScheme().getSchemeId());
         logger.info("Duration for VM " + VMid +" is: " + billing.getVM(VMid).getDuration());
 
-        if (billing.getVM(VMid).getPricingScheme().getSchemeId() == 0) {
-            billing.getVM(VMid).setTotalEnergyConsumed(0);
+            if (billing.getVM(VMid).getPricingScheme().getSchemeId() == 0) {
+                billing.getVM(VMid).setTotalEnergyConsumed(0);
+            }
+
+            if (billing.getVM(VMid).getPricingScheme().getSchemeId() != 2) {
+                logger.info("Billing," + VMid + ","
+                        + billing.getVM(VMid).getVMinfo().getCPU() + ","
+                        + billing.getVM(VMid).getVMinfo().getRAM() + ","
+                        + billing.getVM(VMid).getVMinfo().getStorage() + ","
+                        + billing.getVM(VMid).getTotalDuration() + ","
+                        + billing.getVM(VMid).getPricingScheme().getSchemeId() + ","
+                        + billing.getVM(VMid).getTotalEnergyConsumed() + ","
+                        + billing.getVM(VMid).getTotalCharges());
+            } else {
+                logger.info(
+                        "Billing," + VMid 
+                                + "," + billing.getVM(VMid).getVMinfo().getCPU()
+                        + "," + billing.getVM(VMid).getVMinfo().getRAM()
+                        + "," + billing.getVM(VMid).getVMinfo().getStorage() 
+                        + "," + billing.getVM(VMid).getTotalDuration()
+                        + "," + billing.getVM(VMid).getPricingScheme().getSchemeId() 
+                        + "," + billing.getVM(VMid).getTotalEnergyConsumed()
+                        + "," + billing.getVM(VMid).getTotalCharges() 
+                        + "," + billing.getVM(VMid).getPredictedInformation().getPredictedPowerPerHour() 
+                        + "," + billing.getVM(VMid).getPredictedInformation().getPredictedCharges().getChargesOnly() 
+                        + "," + billing.getVM(VMid).getPredictedInformation().getTotalPredictedEnergy());
+            }
+
+            if (deleteVM) {
+                logger.info("VM: " + VMid + " was unregistered from the pricing modeller.");
+                billing.unregisterVM(billing.getVM(VMid));
+            }
+            /*else
+             billing.stopChargingVM(billing.getVM(VMid));*/
+            return charges;
+        } catch (NullPointerException ex) {
+            logger.error("The VM with VMid " + VMid + " is no longer valid");
         }
 
-        if (billing.getVM(VMid).getPricingScheme().getSchemeId() != 2) {
-            logger.info("Billing," + VMid + ","
-                    + String.valueOf(billing.getVM(VMid).getVMinfo().getCPU()) + ","
-                    + String.valueOf(billing.getVM(VMid).getVMinfo().getRAM()) + ","
-                    + String.valueOf(billing.getVM(VMid).getVMinfo().getStorage()) + ","
-                    + String.valueOf(billing.getVM(VMid).getTotalDuration())
-                    + "," + String.valueOf(billing.getVM(VMid).getPricingScheme().getSchemeId()) + ","
-                    + String.valueOf(billing.getVM(VMid).getTotalEnergyConsumed()) + ","
-                    + String.valueOf(billing.getVM(VMid).getTotalCharges()));
-        } else {
-            logger.info("Billing," + String.valueOf(VMid) + "," + String.valueOf(billing.getVM(VMid).getVMinfo().getCPU()) + "," + String.valueOf(billing.getVM(VMid).getVMinfo().getRAM()) + "," + String.valueOf(billing.getVM(VMid).getVMinfo().getStorage()) + "," + String.valueOf(billing.getVM(VMid).getTotalDuration())
-                    + "," + String.valueOf(billing.getVM(VMid).getPricingScheme().getSchemeId()) + "," + String.valueOf(billing.getVM(VMid).getTotalEnergyConsumed()) + "," + String.valueOf(billing.getVM(VMid).getTotalCharges()) + "," + String.valueOf(billing.getVM(VMid).getPredictedInformation().getPredictedPowerPerHour()) + ","
-                    + String.valueOf(billing.getVM(VMid).getPredictedInformation().getPredictedCharges().getChargesOnly()) + "," + String.valueOf(billing.getVM(VMid).getPredictedInformation().getTotalPredictedEnergy()));
-        }
-
-        if (deleteVM) {
-            logger.info("VM: " + VMid + " was unregistered from the pricing modeller.");
-            billing.unregisterVM(billing.getVM(VMid));
-        }
-        /*else
-         billing.stopChargingVM(billing.getVM(VMid));*/
-        return charges;
-    	}catch (NullPointerException ex) {
-    		logger.error("The VM with VMid " + VMid + " is no longer valid");
-    	}
-    	
-    	return 0.0;
+        return 0.0;
 
     }
 
@@ -220,7 +224,7 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
         double charges = billing.getAppCharges(appID, energyModeller);
 
         if (deleteApp) {
-			logger.info("Deleting app id = " + appID);
+            logger.info("Deleting app id = " + appID);
             billing.unregisterApp(appID);
         }
         return charges;
@@ -287,11 +291,10 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
      * @param CPU: integer
      * @param RAM: integer
      * @param storage: double
-     * @param schemeID: integer
+     * @param schemeId: integer
      * @param duration: long in seconds
      * @param hostname: String
      */
-	
     public double getVMChargesPrediction(int CPU, int RAM, double storage, int schemeId, long duration, String hostname) {
         VMinfo vm = new VMinfo(RAM, CPU, storage, hostname);
         IaaSPricingModellerPricingScheme scheme = initializeScheme(schemeId);
@@ -320,7 +323,7 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
      * @param CPU: integer
      * @param RAM: integer
      * @param storage: double
-     * @param schemeID: integer
+     * @param schemeId: integer
      * @param duration: long in seconds
      * @param hostname: String
      */
@@ -361,39 +364,39 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
      *
      */
     /*
-    public void initializeVM(String VMid, int schemeId, String hostname) {
-        int CPU = 0;
-        int RAM = 0;
-        double storage = 0;
+     public void initializeVM(String VMid, int schemeId, String hostname) {
+     int CPU = 0;
+     int RAM = 0;
+     double storage = 0;
 
-        try {
-            VmDeployed vm = energyModeller.getVM(VMid);
-            CPU = vm.getCpus();
-            RAM = vm.getRamMb();
-            storage = vm.getDiskGb();
-            logger.info("The VM with VMid " + VMid + "has been registered, with values CPU: " + CPU + ", RAM: " + RAM + ", STORAGE: " + storage);
+     try {
+     VmDeployed vm = energyModeller.getVM(VMid);
+     CPU = vm.getCpus();
+     RAM = vm.getRamMb();
+     storage = vm.getDiskGb();
+     logger.info("The VM with VMid " + VMid + "has been registered, with values CPU: " + CPU + ", RAM: " + RAM + ", STORAGE: " + storage);
 
-        } catch (NullPointerException ex) {
-            logger.error("The VM with VMid " + VMid + "Has not been registered");
-        }
+     } catch (NullPointerException ex) {
+     logger.error("The VM with VMid " + VMid + "Has not been registered");
+     }
 
 
-        VMinfo vm = new VMinfo(RAM, CPU, storage, hostname);
+     VMinfo vm = new VMinfo(RAM, CPU, storage, hostname);
 
-        IaaSPricingModellerPricingScheme scheme = initializeScheme(schemeId);
-        VMstate VM = new VMstate(VMid, vm, energyProvider, scheme);
+     IaaSPricingModellerPricingScheme scheme = initializeScheme(schemeId);
+     VMstate VM = new VMstate(VMid, vm, energyProvider, scheme);
 
-        if (schemeId == 2) {
-            EnergyPrediction energyVM = getEnergyPredicted(CPU, RAM, storage, hostname);
-            VM.getPredictedInformation().setPredictionOfEnergy(energyVM);
-            VM.setPredictedCharges(billing.predictVMCharges(VM).getPriceOnly());
+     if (schemeId == 2) {
+     EnergyPrediction energyVM = getEnergyPredicted(CPU, RAM, storage, hostname);
+     VM.getPredictedInformation().setPredictionOfEnergy(energyVM);
+     VM.setPredictedCharges(billing.predictVMCharges(VM).getPriceOnly());
 
-        }
-        scheme.setEnergyModeller(energyModeller);
+     }
+     scheme.setEnergyModeller(energyModeller);
 
-        billing.registerVM(VM);
-    }
-*/
+     billing.registerVM(VM);
+     }
+     */
     
     ///////////////////////Basic functions///////////////////////////////
     /**
@@ -431,8 +434,8 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
     public EnergyPrediction getEnergyPredicted(int CPU, int RAM, double storage, long duration, String hostname) {
         EnergyPrediction energyVM = new EnergyPrediction();
         try {
-            logger.info("The pricing modeller is obtaining an energy estimation for CPU: " 
-                    + CPU + ", RAM: " + RAM + ", STORAGE: " + storage + ", duration: " + duration  + ", hostname: " + hostname);
+            logger.info("The pricing modeller is obtaining an energy estimation for CPU: "
+                    + CPU + ", RAM: " + RAM + ", STORAGE: " + storage + ", duration: " + duration + ", hostname: " + hostname);
             VM newVM = new VM(CPU, RAM, storage);
             TimeParameters dur = new TimeParameters(duration);
             TimePeriod dura = new TimePeriod(dur.getStartTime(), dur.getEndTime());

@@ -35,12 +35,7 @@ public class Charges {
 	public void setCharges(double charges){
 		this.charges = (double) Math.round(charges * 1000) / 1000;
 		time.setLastChangeTime();
-	}
-	
-	public Charges getCharges(){
-		return this;
-	}
-	
+	}	
 	
 	public double getChargesOnly(){
 		return this.charges;
