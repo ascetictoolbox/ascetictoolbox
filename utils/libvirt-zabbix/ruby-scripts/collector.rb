@@ -20,14 +20,7 @@ require '/opt/ruby-scripts/zabbix/zabbix_ascetic.rb'
 require '/opt/ruby-scripts/libvirt/libvirt_events_listener.rb'
 require 'libvirt'
 require 'logger'
-
-# Configuration
-#$zabbix_ip_address="192.168.3.199"
-#zabbix_username="Admin"
-#zabbix_password="Brandmeldeanlage104"
-#zabbix_hostgroup="Virtual machines"
-#zabbix_template="Template.Virt.Libvirt"
-#zabbix_client_create_host=true
+require 'pty'
 
 $send_disk=false
 $send_network=true
@@ -44,14 +37,7 @@ $hostname=`hostname -s`
 $logger = Logger.new('/opt/ruby-scripts/collector.log')
 $logger.level = Logger::DEBUG
 
-# def log messages
-def log(text)
-  #t = Time::now.to_s + " => " + text
-  #puts t
-  $logger.info(text)
-end
-
-log("Starting libvirt monitoring script...")
+$logger.info("\n Starting libvirt monitoring script...")
 
 # send network content to zabbix
 def zabbix_send_network(uuid,metrics,zabbix_sender_string)
@@ -140,216 +126,19 @@ def zabbix_send_data(uuid,metrics)
     output=`echo '#{zabbix_sender_string}' |  zabbix_sender -vv --zabbix-server #{$zabbix_ip_address} -T --input-file - > /dev/null 2>&1`      
 end
 
+# We connect to Libvirt    
+uri = "qemu:///system"
+conn = Libvirt::open(uri)
+
 # We create de Zabbix Client
 # We configure the Zabbix Client
 zabbix_client=ZabbixAscetic.new
 zabbix_client.setup
 
-# Libvirt lifecycle events codes
-VIR_DOMAIN_EVENT_DEFINED = 0
-VIR_DOMAIN_EVENT_UNDEFINED = 1
-VIR_DOMAIN_EVENT_STARTED = 2
-VIR_DOMAIN_EVENT_SUSPENDED = 3
-VIR_DOMAIN_EVENT_RESUMED = 4
-VIR_DOMAIN_EVENT_STOPPED = 5
-VIR_DOMAIN_EVENT_SHUTDOWN = 6
-VIR_DOMAIN_EVENT_PMSUSPENDED = 7
-VIR_DOMAIN_EVENT_CRASHED = 8
-
-# Defined details
-VIR_DOMAIN_EVENT_DEFINED_ADDED = 0
-VIR_DOMAIN_EVENT_DEFINED_UPDATED = 1
-VIR_DOMAIN_EVENT_DEFINED_RENAMED = 2
-
-# Undefined details events
-VIR_DOMAIN_EVENT_UNDEFINED_REMOVED = 0
-VIR_DOMAIN_EVENT_UNDEFINED_RENAMED = 1
-
-# Start details events
-VIR_DOMAIN_EVENT_STARTED_BOOTED = 0
-VIR_DOMAIN_EVENT_STARTED_MIGRATED = 1
-VIR_DOMAIN_EVENT_STARTED_RESTORED = 2
-VIR_DOMAIN_EVENT_STARTED_FROM_SNAPSHOT = 3
-VIR_DOMAIN_EVENT_STARTED_WAKEUP = 4
-
-# Suspended detail events
-VIR_DOMAIN_EVENT_SUSPENDED_PAUSED = 0
-VIR_DOMAIN_EVENT_SUSPENDED_MIGRATED = 1
-VIR_DOMAIN_EVENT_SUSPENDED_IOERROR = 2
-VIR_DOMAIN_EVENT_SUSPENDED_WATCHDOG = 3
-VIR_DOMAIN_EVENT_SUSPENDED_RESTORED = 4
-VIR_DOMAIN_EVENT_SUSPENDED_FROM_SNAPSHOT = 5
-VIR_DOMAIN_EVENT_SUSPENDED_API_ERROR = 6
-
-# Resumed detail events
-VIR_DOMAIN_EVENT_RESUMED_UNPAUSED = 0
-VIR_DOMAIN_EVENT_RESUMED_MIGRATED = 1
-VIR_DOMAIN_EVENT_RESUMED_FROM_SNAPSHOT = 2
-
-# Stopped detail events
-VIR_DOMAIN_EVENT_STOPPED_SHUTDOWN = 0
-VIR_DOMAIN_EVENT_STOPPED_DESTROYED = 1
-VIR_DOMAIN_EVENT_STOPPED_CRASHED = 2
-VIR_DOMAIN_EVENT_STOPPED_MIGRATED = 3
-VIR_DOMAIN_EVENT_STOPPED_SAVED = 4
-VIR_DOMAIN_EVENT_STOPPED_FAILED = 5
-VIR_DOMAIN_EVENT_STOPPED_FROM_SNAPSHOT = 6
-
-# Shutdown detail events
-VIR_DOMAIN_EVENT_SHUTDOWN_FINISHED = 0
-
-# PMSuspended detail events
-VIR_DOMAIN_EVENT_PMSUSPENDED_MEMORY = 0
-VIR_DOMAIN_EVENT_PMSUSPENDED_DISK = 1
-
-# Panic detail events
-VIR_DOMAIN_EVENT_CRASHED_PANICKED = 0
-
-# It process the incomming events for the lifecycle
-def dom_event_callback_lifecycle(conn, dom, event, detail, opaque)
-  $uuid = dom.uuid
-
-  case event
-  when VIR_DOMAIN_EVENT_DEFINED
-    log("Domain #{$uuid} has been defined")
-
-    case detail
-      when VIR_DOMAIN_EVENT_DEFINED_ADDED
-        log(" it has been added to libvirt")
-      when VIR_DOMAIN_EVENT_DEFINED_UPDATED
-        log("it has been updated in libvirt")
-      when VIR_DOMAIN_EVENT_DEFINED_RENAMED
-        log("it has been renamed in libvirt")
-    end
-  when VIR_DOMAIN_EVENT_UNDEFINED
-    log("Domain #{$uuid} has been undefined")
-
-    case detail
-    when VIR_DOMAIN_EVENT_UNDEFINED_REMOVED
-      log("it has been removed in libvirt")
-    when VIR_DOMAIN_EVENT_UNDEFINED_RENAMED
-      log("it has been renamed in libvirt")
-    end
-  when VIR_DOMAIN_EVENT_STARTED
-    log("Domain #{$uuid} has been started")
-
-    case detail
-    when VIR_DOMAIN_EVENT_STARTED_BOOTED
-      log("it has been booted in libvirt")
-      log("VM that needs to be check if already exits in zabbix, otherwise add it.")
-      fork do
-        ENV['UUID_ADD'] = $uuid
-        exec "ruby2.0 /opt/ruby-scripts/zabbix/add_vm_to_zabbix.rb $UUID_ADD"
-      end
-    when VIR_DOMAIN_EVENT_STARTED_MIGRATED
-      log("it has been migrated in libvirt")
-    when VIR_DOMAIN_EVENT_STARTED_RESTORED
-      log("it has been restored in libvirt")
-    when VIR_DOMAIN_EVENT_STARTED_FROM_SNAPSHOT
-      log("it has been started from snapshot in libvirt")
-    when VIR_DOMAIN_EVENT_STARTED_WAKEUP
-      log("it has been wakeup in libvirt")
-    end
-  when VIR_DOMAIN_EVENT_SUSPENDED
-    log("Domain #{$uuid} has been suspended")
-
-    case detail
-    when VIR_DOMAIN_EVENT_SUSPENDED_PAUSED
-        log("it has been paused by libvirt")
-    when VIR_DOMAIN_EVENT_SUSPENDED_MIGRATED
-      log("it has been migrated by libvirt")
-    when VIR_DOMAIN_EVENT_SUSPENDED_IOERROR
-      log("it has reporterd and IO Error libvirt" )
-    when VIR_DOMAIN_EVENT_SUSPENDED_WATCHDOG
-      log("it has been suspended by watchdog in libvirt")
-    when VIR_DOMAIN_EVENT_SUSPENDED_RESTORED 
-      log("it has been restored in libvirt")
-    when VIR_DOMAIN_EVENT_SUSPENDED_FROM_SNAPSHOT
-      log("it has been suspended from snapshoot in libvirt" )
-    when VIR_DOMAIN_EVENT_SUSPENDED_API_ERROR 
-      log("it has been due to api error in libvirt")
-    end
-  when VIR_DOMAIN_EVENT_RESUMED
-    log("Domain #{$uuid} has been resumed")
-
-    case detail
-    when VIR_DOMAIN_EVENT_RESUMED_UNPAUSED
-      log("it has been resumed from unpaused error in libvirt")
-    when VIR_DOMAIN_EVENT_RESUMED_MIGRATED
-      log("it has been resumed after migration in libvirt")
-    when VIR_DOMAIN_EVENT_RESUMED_FROM_SNAPSHOT
-      log("it has been resumed from snapshot in libvirt")
-    else
-      log("unknown detail reason: #{detail}")
-    end
-  when VIR_DOMAIN_EVENT_STOPPED
-    log("Domain #{$uuid} has been stopped")
-
-    case detail
-    when VIR_DOMAIN_EVENT_STOPPED_SHUTDOWN
-      log("it has been stopped from shutdown in libvirt")
-    when VIR_DOMAIN_EVENT_STOPPED_DESTROYED
-      log("it has been destroyed in libvirt")
-      log("VM is deleted from Zabbix.")
-      fork do
-        ENV['UUID_DELETE'] = $uuid
-        exec "ruby2.0 /opt/ruby-scripts/zabbix/delete_vm_from_zabbix.rb $UUID_DELETE"
-      end
-    when VIR_DOMAIN_EVENT_STOPPED_CRASHED
-      log("it crashed in libvirt")
-    when VIR_DOMAIN_EVENT_STOPPED_MIGRATED
-      log("it has been stopped by migrationg in libvirt")
-    when VIR_DOMAIN_EVENT_STOPPED_SAVED
-      log("it has been stopped and saved in libvirt")
-    when VIR_DOMAIN_EVENT_STOPPED_FAILED
-      log("it has failed in libvirt")
-    when VIR_DOMAIN_EVENT_STOPPED_FROM_SNAPSHOT
-      log("it has been stopped from snapshot in libvirt")
-    else
-      log("unknown detail reason: #{detail}")
-    end
-  when VIR_DOMAIN_EVENT_SHUTDOWN
-    log("Domain #{$uuid} has been shutdown")
-
-    case detail
-    when VIR_DOMAIN_EVENT_SHUTDOWN_FINISHED
-      log("it has been finished by libvirt")
-    else
-      log("unknown detail reason: #{detail}")
-    end
-  when VIR_DOMAIN_EVENT_PMSUSPENDED
-    log("Domain #{$uuid} has been pmshuspended")
-
-    case detail
-    when VIR_DOMAIN_EVENT_PMSUSPENDED_MEMORY
-      log("Guest domain has been suspended to memory")
-    when VIR_DOMAIN_EVENT_PMSUSPENDED_DISK
-      log("Guest domain has been suspended to disk")
-    else
-      log("unknown detail reason: #{detail}")
-    end
-  when VIR_DOMAIN_EVENT_CRASHED
-    log("Domain #{$uuid} has been crashed")
-
-    case detail
-    when VIR_DOMAIN_EVENT_CRASHED_PANICKED
-      log("Guest domain has panicked")
-    else
-      log("unknown detail reason: #{detail}")
-    end
-  else 
-    log("Not recognize event for domain: #{$uuid} and event: #{event}")
-  end
-end
-
-# We connect to Libvirt    
-uri = "qemu:///system"
-@conn = Libvirt::open(uri)
-
 # We get a list of all active VMs and determine if needed to be added to Zabbix
 uuids = Array.new
 
-domains = @conn.list_all_domains
+domains = conn.list_all_domains
 domains.each do |domain|
   active = domain.active?
 
@@ -359,25 +148,27 @@ domains.each do |domain|
   end
 end
 
+# We close the connection to libvirt after startup process of the script
+conn.close
+
 # We add then to Zabbix if necessary
 uuids.each do |uuid|
-    log("VM that needs to be check if already exits in zabbix, otherwise add it: " + uuid)
+    $logger.info("VM that needs to be check if already exits in zabbix, otherwise add it: " + uuid)
     zabbix_client.add_host_to_template(uuid)
 end
 
-# We start a new Thread to monitor the creation and delation of VMs.
+# We setup Libvirt connector
+metrics_collector = LibvirtMetricsCollector.new
+host_cpu_cores = metrics_collector.get_number_cores_host
+
+#We start the bucle of measurments for CPU
+vms=Hash.new
+
+uuids_old=Hash.new
+
 t = Thread.new {
-
-  # We setup Libvirt connector
-  metrics_collector = LibvirtMetricsCollector.new
-  host_cpu_cores = metrics_collector.get_number_cores_host
-
-  #We start the bucle of measurments for CPU
-  vms=Hash.new
-
-  uuids_old=Hash.new
-
-  while true 
+$logger.info("Starting to collect metrics...")
+while true 
    
     vms=metrics_collector.get_metrics(vms, host_cpu_cores, uuids_old)
     uuids_new=Hash.new
@@ -412,15 +203,36 @@ t = Thread.new {
   end
 }
 
-# We activate the event listeners...
-virEventLoopStart
+# It listen to events in libvirt and adds or deletes VMs to Zabbix when necessary
+$logger.info("Starting to listen to events in libvirt...")
 
-# We register a listner... needs to be done quick if not a core_dump exception is rising
-@conn2 = Libvirt::open(uri)
-cb2 = @conn2.domain_event_register_any(Libvirt::Connect::DOMAIN_EVENT_ID_LIFECYCLE, :dom_event_callback_lifecycle, nil, "sweet")
+cmd = "python /opt/ruby-scripts/libvirt-python/event-listener.py" 
+begin
+  PTY.spawn( cmd ) do |stdout, stdin, pid|
+    begin
+      # Do stuff with the output here. Just printing to show it works
+      stdout.each do |line| 
+        uuid = line[/[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}/]
+        array = line.split(/\W+/)
+        state = array[-2]
+        reason = array[-1]
 
-while true
-  sleep 1
+        $logger.info("VM: #{uuid} new state: #{state} reason: #{reason}")
+
+        if state == 'Started' && reason == "Booted"
+          $logger.info("VM needs to be added to Zabbix")
+          zabbix_client.add_host_to_template(uuid)
+        elsif state == "Stopped" && reason == "Destroyed"
+          $logger.info("VM needs to be removed from Zabbix")
+          zabbix_client.delete_host(uuid)
+        end
+      end
+    rescue Errno::EIO
+      $logger.info("Errno:EIO error, but this probably just means that the process has finished giving output")
+    end
+  end
+rescue PTY::ChildExited
+  $logger.info("The child process exited!")
 end
 
 t.join
