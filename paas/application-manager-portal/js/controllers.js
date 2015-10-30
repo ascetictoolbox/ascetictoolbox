@@ -43,5 +43,36 @@ angular.module('asceticApplicationManagerPortalApp.controllers', [])
         $scope.deployments = data.items.deployment; //Changed data.data.topics to data.topics
       });
 
+      console.log(response);
+  }])
+
+  .controller('CreateDeploymentController', [ '$scope', '$location', 'ApplicationService', 
+                                              function($scope, $location, ApplicationService) {
+    var self = this;
+    $scope.data = '<xml/>';
+    
+    $scope.add = function() {
+      var f = document.getElementById('file').files[0],
+      r = new FileReader();
+      r.onloadend = function(e) {
+        $scope.data = e.target.result;
+      }
+      r.readAsBinaryString(f);
+    }
+
+    $scope.post = function() {
+
+      console.log($scope.data)
+
+      var response = ApplicationService.save($scope.data);
+
+      response.$promise.then(function(data) {
+
+        // TODO I should add some error handling here... 
+        $location.path("/applications/" + data.name + "/deployments/" + data.deployments.deployment[0].id);
+      });
+
       //console.log(response);
-    }]);
+      
+    }
+  }]); 

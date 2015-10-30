@@ -26,12 +26,31 @@ angular.module('asceticApplicationManagerPortalApp', ['ngRoute', 'ngResource', '
       templateUrl: 'partials/applications_list.html'//,
       //controller: 'MainCtrl as ctrl'
     })
+    .when('/new_deployment', {
+      templateUrl: 'partials/new_deployment.html',
+      controller: 'CreateDeploymentController as createDeploymentController'
+    })
     .when('/applications/:applicationName/deployments', {
       templateUrl: 'partials/deployments_list.html',
       controller: 'DeploymentsController as deploymentsCtrl'
     })
+    .when('/applications/:applicationName/deployments/:deploymentId', {
+      templateUrl: 'partials/deployment.html',
+      controller: 'DeploymentController as deploymentCtrl'
+    })
    .otherwise({redirectTo: '/'});
-  }]);
+  }])
+
+  .directive('prettyprint', function() {
+    return {
+        restrict: 'xml',
+        link: function postLink(scope, element, attrs) {
+              var str1 = String(element.html());
+              str1.replace(/\n/g,"<br/>");
+              element.html(prettyPrintOne(str1,'',true));
+        }
+    };
+  });
   
 
 

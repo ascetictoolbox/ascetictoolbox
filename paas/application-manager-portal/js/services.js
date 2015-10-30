@@ -28,6 +28,15 @@ angular.module('asceticApplicationManagerPortalApp.services', [])
         isArray: false,
         method: 'GET',
         headers: {'Accept': 'application/json'}
+      },
+      
+      save: {
+        isArray: false,
+        method: "POST",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type':'application/xml; charset=UTF-8'
+        }
       }
     });
 

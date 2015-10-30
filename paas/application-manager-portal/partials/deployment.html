@@ -20,24 +20,4 @@
  *  HTML Component that list the applications inside the Application Manager.
 -->
 
-<h1>List of deployments for: <span ng-bind="deploymentsCtrl.applicationName"></span></h1>
-
-<ul>
-  <li ng-repeat="deployment in deployments">
-      ID: <span ng-bind="deployment.id"></span><br/>
-      STATUS: <span ng-bind="deployment.status"></span><br/>
-      START DATE: <span ng-bind="deployment.start-date"></span><br/>
-      VMS:
-      <ul>
-        <li ng-repeat="vm in deployment.vms.vm">
-          ID: <span ng-bind="vm.id"></span><br/>
-          STATUS: <span ng-bind="vm.status"></span><br/>
-          PROVIDER-ID: {{vm['provider-vm-id']}}<br/>
-          OVF-ID: {{vm['ovf-id']}}<br/>
-          # CPU: {{vm['cpu-actual']}}<br/>
-          RAM: {{vm['ram-actual']}}<br/>
-          IP: <span ng-bind="vm.ip"></span>
-        </li>
-      </ul>
-  </li>
-</ul>
+<h1>Deployment</h1>

@@ -23,6 +23,8 @@
 
 <h1>List of applications:</h1>
 
+[<a href="#/new_deployment">Deploy an existant or new application</a>]
+
 <ul ng-controller="AppsCtrl as ctrl">
   <li ng-repeat="application in applications">
       <span ng-bind="application.name"></span>, (<a href="#/applications/{{application.name}}/deployments">deployments</a>)
