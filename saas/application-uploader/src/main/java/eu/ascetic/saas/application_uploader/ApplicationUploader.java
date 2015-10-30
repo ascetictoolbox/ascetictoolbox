@@ -44,6 +44,7 @@ public class ApplicationUploader {
 	public static final String YES_VALUE = "yes";
 	public static final String NO_VALUE = "no";
 	private static final String ENERGY_CONSUM = "energy-consumption";
+	private static final String COST_CONSUM = "cost-consumption";
 	private static final String ENERGY_ESTIM = "energy-estimation";
 	private static final String COST_ESTIM = "cost-estimation";
 	private static final String EVENTS = "events";
@@ -103,7 +104,18 @@ public class ApplicationUploader {
 			EnergyMeasurement measurement = response.getEntity(EnergyMeasurement.class);
 			return measurement.getValue();
 		}else
-			throw new ApplicationUploaderException("Error getting deployment energy measurement. Returned code is "+ response.getStatus());
+			throw new ApplicationUploaderException("Error getting deployment energy measurement. \nReturned code is "+ response.getStatus()+"\nEntity:"+response.getEntity(String.class));
+	}
+	
+	public Double getDeploymentCostConsumption(String applicationID, String deploymentID) throws ApplicationUploaderException{
+		ClientResponse response = resource.path(APPLICATIONS_PATH).path(applicationID)
+				.path(DEPLOYMENTS_PATH).path(deploymentID).path(COST_CONSUM).accept(MediaType.APPLICATION_XML_TYPE).get(ClientResponse.class);
+		if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
+			Cost measurement = response.getEntity(Cost.class);
+			return measurement.getCharges();
+		}else
+			throw new ApplicationUploaderException("Error getting deployment cost measurement."
+					+ "\nReturned code is "+ response.getStatus()+"\nEntity:"+response.getEntity(String.class));
 	}
 	
 	public Double getEventEnergyEstimation(String applicationID, String deploymentID, String eventID) throws ApplicationUploaderException{
@@ -113,7 +125,8 @@ public class ApplicationUploader {
 			EnergyMeasurement measurement = response.getEntity(EnergyMeasurement.class);
 			return measurement.getValue();
 		}else
-			throw new ApplicationUploaderException("Error getting deployment energy measurement. Returned code is "+ response.getStatus());
+			throw new ApplicationUploaderException("Error getting deployment energy estimation."
+					+ "\nReturned code is "+ response.getStatus()+"\nEntity:"+response.getEntity(String.class));
 	}
 	
 	public Double getEventEnergyEstimationInVM(String applicationID, String deploymentID, String eventID, String vmID) throws ApplicationUploaderException{
@@ -125,7 +138,8 @@ public class ApplicationUploader {
 			EnergyMeasurement measurement = response.getEntity(EnergyMeasurement.class);
 			return measurement.getValue();
 		}else
-			throw new ApplicationUploaderException("Error getting deployment energy measurement. Returned code is "+ response.getStatus());
+			throw new ApplicationUploaderException("Error getting deployment energy estimation for event "+eventID+" in VM "+vmID+". "
+					+ "\nReturned code is "+ response.getStatus()+"\nEntity:"+response.getEntity(String.class));
 	}
 	
 	public Cost getEventCostEstimationInVM(String applicationID, String deploymentID, String eventID, String vmID) throws ApplicationUploaderException{
@@ -137,7 +151,8 @@ public class ApplicationUploader {
 			 Cost measurement = response.getEntity(Cost.class);
 			return measurement;
 		}else
-			throw new ApplicationUploaderException("Error getting deployment energy measurement. Returned code is "+ response.getStatus());
+			throw new ApplicationUploaderException("Error getting deployment cost estimation for event "+eventID+"in VM "+vmID+"."
+					+ "\nReturned code is "+ response.getStatus()+"\nEntity:"+response.getEntity(String.class));			
 
 	}
 	
@@ -159,7 +174,8 @@ public class ApplicationUploader {
 				throw new ApplicationUploaderException("No aggreements found");
 			}
 		}else
-			throw new ApplicationUploaderException("Error getting deployment agreement. Returned code is "+ response.getStatus());
+			throw new ApplicationUploaderException("Error getting deployment agreement."
+					+ "\nReturned code is "+ response.getStatus()+"\nEntity:"+response.getEntity(String.class));
 	}
 	
 	/** Get deployed vms
@@ -207,7 +223,8 @@ public class ApplicationUploader {
 		ClientResponse response = resource.path(APPLICATIONS_PATH).path(applicationID)
 				.path(DEPLOYMENTS_PATH).path(deploymentID).path(AGREEMENTS_PATH).path(agreementID).put(ClientResponse.class, ag);
 		if (response.getStatus() != ClientResponse.Status.ACCEPTED.getStatusCode()) {
-			throw new ApplicationUploaderException("Error accepting deployment agreement. Returned code is "+ response.getStatus());
+			throw new ApplicationUploaderException("Error accepting deployment agreement."
+					+ "\nReturned code is "+ response.getStatus()+"\nEntity:"+response.getEntity(String.class));
 		}
 	}
 	

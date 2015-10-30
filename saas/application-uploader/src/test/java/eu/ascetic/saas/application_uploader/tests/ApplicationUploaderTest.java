@@ -34,8 +34,8 @@ import eu.ascetic.saas.application_uploader.ApplicationUploader;
 import eu.ascetic.saas.application_uploader.ApplicationUploaderException;
 
 public class ApplicationUploaderTest {
-	private static String DEPLOYMENT_ID= "600";
-	private static String VM_ID= "1958";
+	private static String DEPLOYMENT_ID= "630";
+	private static String VM_ID= "2005";
 	/*@Test
 	public void uploadApptest() throws ApplicationUploaderException {
 		ApplicationUploader uploader = new ApplicationUploader("http://10.4.0.16/application-manager");
@@ -131,9 +131,12 @@ public class ApplicationUploaderTest {
 		ApplicationUploader uploader = new ApplicationUploader("http://192.168.3.16/application-manager");
 		String applicationID = "JEPlus";
 		String deploymentID = DEPLOYMENT_ID;
-		String eventID = "coreOImpl0";
+		String eventID = "core0impl0";
 		Double meas = uploader.getEventEnergyEstimation(applicationID, deploymentID, eventID);
-		System.out.println("Energy estimation for app " + applicationID + " deployment "+ deploymentID+ " event " + eventID +" is "+ meas.toString());		
+		System.out.println("Energy estimation for app " + applicationID + " deployment "+ deploymentID+ " event " + eventID +" is "+ meas.toString());	
+		eventID = "core0impl1";
+		meas = uploader.getEventEnergyEstimation(applicationID, deploymentID, eventID);
+		System.out.println("Energy estimation for app " + applicationID + " deployment "+ deploymentID+ " event " + eventID +" is "+ meas.toString());
 	}
 	
 	@Test
@@ -141,10 +144,13 @@ public class ApplicationUploaderTest {
 		ApplicationUploader uploader = new ApplicationUploader("http://192.168.3.16/application-manager");
 		String applicationID = "JEPlus";
 		String deploymentID = DEPLOYMENT_ID;
-		String eventID = "coreOImpl0";
-		String vmID = "VM_ID";
+		String eventID = "core0impl0";
+		String vmID = VM_ID;
 		Double meas = uploader.getEventEnergyEstimationInVM(applicationID, deploymentID, eventID, vmID);
-		System.out.println("Energy estimation for app " + applicationID + " deployment "+ deploymentID+ " vm "+ vmID + " event " + eventID +" is "+ meas.toString());		
+		System.out.println("Energy estimation for app " + applicationID + " deployment "+ deploymentID+ " vm "+ vmID + " event " + eventID +" is "+ meas.toString());
+		eventID = "core0impl1";
+		meas = uploader.getEventEnergyEstimationInVM(applicationID, deploymentID, eventID, vmID);
+		System.out.println("Energy estimation for app " + applicationID + " deployment "+ deploymentID+ " vm "+ vmID + " event " + eventID +" is "+ meas.toString());
 	}
 	
 	@Test
@@ -152,10 +158,13 @@ public class ApplicationUploaderTest {
 		ApplicationUploader uploader = new ApplicationUploader("http://192.168.3.16/application-manager");
 		String applicationID = "JEPlus";
 		String deploymentID = DEPLOYMENT_ID;
-		String eventID = "coreOImpl0";
-		String vmID = "1812";
+		String eventID = "core0impl0";
+		String vmID = VM_ID;
 		Cost cost = uploader.getEventCostEstimationInVM(applicationID, deploymentID, eventID, vmID);
-		System.out.println("Estimations for app " + applicationID + " deployment "+ deploymentID+ " vm "+ vmID + " event " + eventID +" are: Energy-> "+ cost.getEnergyValue().toString()+" Power-> "+ cost.getPowerValue().toString()+ " Charges-> "+ cost.getCharges().toString());		
+		System.out.println("Estimations for app " + applicationID + " deployment "+ deploymentID+ " vm "+ vmID + " event " + eventID +" are: Energy-> "+ cost.getEnergyValue().toString()+" Power-> "+ cost.getPowerValue().toString()+ " Charges-> "+ cost.getCharges().toString());
+		eventID = "core0impl1";
+		cost = uploader.getEventCostEstimationInVM(applicationID, deploymentID, eventID, vmID);
+		System.out.println("Estimations for app " + applicationID + " deployment "+ deploymentID+ " vm "+ vmID + " event " + eventID +" are: Energy-> "+ cost.getEnergyValue().toString()+" Power-> "+ cost.getPowerValue().toString()+ " Charges-> "+ cost.getCharges().toString());
 	}
 
 }
