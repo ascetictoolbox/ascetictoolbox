@@ -220,7 +220,7 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
 
 	
 
-    public double getAppFinalCharges(int appID, boolean deleteApp) {
+    public double getAppFinalCharges(String appID, boolean deleteApp) {
         double charges = billing.getAppCharges(appID, energyModeller);
 
         if (deleteApp) {

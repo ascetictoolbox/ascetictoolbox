@@ -210,7 +210,7 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
         return scheme;
     }
 
-    public double getAppCharges(int appID, EnergyModeller energyModeller) {
+    public double getAppCharges(String appID, EnergyModeller energyModeller) {
 
         if (apps.containsKey(appID)) {
             double charges = 0;
@@ -245,7 +245,7 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
         }
     }
 
-    public void unregisterApp(int appID) {
+    public void unregisterApp(String appID) {
         if (apps.containsKey(appID)) {
             LinkedList<VMstate> temp = apps.get(appID).getList();
             ListIterator<VMstate> listIterator = temp.listIterator();
