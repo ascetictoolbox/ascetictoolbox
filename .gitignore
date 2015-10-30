@@ -19,6 +19,8 @@ iaas/iaas-slamanager/provisioning-adjustment/.classpath
 iaas/iaas-slamanager/provisioning-adjustment/.project
 iaas/iaas-slamanager/provisioning-adjustment/.settings
 iaas/iaas-slamanager/provisioning-adjustment/target
+iaas/virtual-machine-manager/clopla/.idea
+iaas/virtual-machine-manager/clopla/clopla.iml
 iaas/virtual-machine-manager/vmm-client/.idea
 iaas/virtual-machine-manager/vmm-client/vmm-client.iml
 iaas/virtual-machine-manager/vmmanager-frontend/.idea

@@ -200,9 +200,13 @@
 						<transformer
 								implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
 					</transformers>
+                     <archive>
+                         <compress>false</compress>
+                    </archive>
 				</configuration>
 			</plugin>
 		</plugins>
+
 	</build>
 
 	<parent>

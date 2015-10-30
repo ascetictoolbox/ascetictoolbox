@@ -44,30 +44,24 @@ public class ScoreCalculatorConsolidation implements SimpleScoreCalculator<Clust
     @Override
     public HardMediumSoftScore calculateScore(ClusterState solution) {
         int hardScore = calculateHardScore(solution);
-		int mediumScore = solution.countOffHosts() + solution.countIdleHosts();
-        int softScore = -VmPlacementConfig.initialClusterState.get().countVmMigrationsNeeded(solution);
 
-		if("1".equals(System.getenv("CLOPLA_DEBUG"))) {
-			boolean sameHosts = true;
-			Long firstHost = null;
-			for(Vm vm : solution.getVms()) {
-				if(firstHost == null) {
-					firstHost = vm.getHost().getId();
-				} else {
-					if(vm.getHost().getId() != firstHost) {
-						sameHosts = false;
-						break;
-					}
-				}
-			}
+		//temporary solution: limit softscore to 0,-1 (migrations, no migrations) and
+		// multiply by 100 to allow that penalize 2 migrations when there is only few hosts
+		// e.g. 2 migrations in a testbed with 2 hosts look "too much" migrations
 
-			if(sameHosts || softScore > 0 || mediumScore > 0) {
-				System.out.println("****** SOLUTION " + solution.toString());
-				System.out.println("Hard score: " + hardScore);
-				System.out.println("medium score: " + mediumScore);
-				System.out.print("soft score: " + softScore);
-				System.out.println();
-			}
+		int mediumScore = 100 * (solution.countOffHosts() + solution.countIdleHosts());
+
+////////////////////////////////////////////////////////////////////
+		int softScore = 0;
+////////////////////////////////////////////////////////////////////
+//		int migrations = VmPlacementConfig.initialClusterState.get().countVmMigrationsNeeded(solution);
+//		int stdevCpuPerc = (int)(100 * solution.calculateStdDevCpuPercUsedPerHost());
+//      int softScore = stdevCpuPerc - migrations;
+////////////////////////////////////////////////////////////////////
+//		int softScore = VmPlacementConfig.initialClusterState.get().countVmMigrationsNeeded(solution) == 0 ? 0 : -1;
+////////////////////////////////////////////////////////////////////
+		if("1".equals(System.getenv("CLOPLA_DEBUG")) && hardScore < 0 ) {
+			System.out.println("with " + (-softScore) + " migrations. Hard, medium, soft: " + hardScore + ", " + mediumScore + ", " + softScore);
 		}
 
 		return HardMediumSoftScore.valueOf(hardScore,mediumScore,softScore);

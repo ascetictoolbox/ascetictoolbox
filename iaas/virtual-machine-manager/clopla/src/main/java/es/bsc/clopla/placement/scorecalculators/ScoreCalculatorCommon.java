@@ -46,6 +46,9 @@ public abstract class ScoreCalculatorCommon {
                 result -= PENALTY_FOR_MOVING_FIXED_VMS;
             }
         }
+        if(result < 0) {
+            System.out.println("getClusterPenaltyScoreForFixedVms: " + result);
+        }
         return result;
     }
 

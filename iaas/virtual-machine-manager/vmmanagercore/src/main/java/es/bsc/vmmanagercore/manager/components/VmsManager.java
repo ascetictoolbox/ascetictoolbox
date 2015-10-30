@@ -387,6 +387,7 @@ public class VmsManager {
     }
 
     private void performAfterVmsDeploymentSelfAdaptation() {
+        Logger.getLogger(VmsManager.class).warn("**** AFTER VMs DEPLOYMENT SELF-ADAPTATION IS DISABLED ***");
         Thread thread = new Thread(
                 new AfterVmsDeploymentSelfAdaptationRunnable(selfAdaptationManager),
                 "afterVmsDeploymentSelfAdaptationThread");

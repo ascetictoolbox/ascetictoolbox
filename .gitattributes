@@ -413,6 +413,7 @@ iaas/virtual-machine-manager/clopla/src/main/java/es/bsc/clopla/placement/solver
 iaas/virtual-machine-manager/clopla/src/main/java/es/bsc/clopla/placement/solver/VmPlacementSolverFactory.java -text
 iaas/virtual-machine-manager/clopla/src/main/resources/logback.xml -text
 iaas/virtual-machine-manager/clopla/src/main/resources/vmplacementSolverConfig.xml -text
+iaas/virtual-machine-manager/clopla/src/test/java/es/bsc/clopla/TestSmallTestbed.java -text
 iaas/virtual-machine-manager/clopla/src/test/java/es/bsc/clopla/domain/ClusterStateTest.java -text
 iaas/virtual-machine-manager/clopla/src/test/java/es/bsc/clopla/domain/HostTest.java -text
 iaas/virtual-machine-manager/clopla/src/test/java/es/bsc/clopla/domain/HostUsageTest.java -text
@@ -677,7 +678,6 @@ iaas/virtual-machine-manager/vmmanagercore/src/main/resources/init-scripts/zabbi
 iaas/virtual-machine-manager/vmmanagercore/src/main/resources/log4j.xml -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/webapp/META-INF/context.xml -text
 iaas/virtual-machine-manager/vmmanagercore/src/main/webapp/index.jsp -text
-iaas/virtual-machine-manager/vmmanagercore/src/test/java/ScratchTest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/cloudmiddleware/fake/FakeCloudMiddlewareTest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/cloudmiddleware/openstack/OpenStackGlanceTest.java -text
 iaas/virtual-machine-manager/vmmanagercore/src/test/java/es/bsc/vmmanagercore/cloudmiddleware/openstack/OpenStackJcloudsTest.java -text

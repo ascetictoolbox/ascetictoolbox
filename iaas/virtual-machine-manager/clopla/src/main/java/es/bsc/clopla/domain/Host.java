@@ -136,8 +136,15 @@ public class Host extends AbstractPersistable {
         return "Host - ID:" + id.toString() + ", cpus:" + ncpus + ", ram:" + ramMb + ", disk:" + diskGb;
     }
 
+    /*
+     * Originally (ncpus - ncpusused) < 0?
+     */
     private double getCpuOverCapacityScore(HostUsage hostUsage) {
-        return ((ncpus - hostUsage.getNcpusUsed()) < 0) ? - (hostUsage.getNcpusUsed()/(double)ncpus) : 0.0;
+        if(ncpus < hostUsage.getNcpusUsed()) {
+            return (hostUsage.getNcpusUsed()/(double)ncpus);
+        } else {
+            return 0;
+        }
     }
 
     private double getRamOverCapacityScore(HostUsage hostUsage) {
