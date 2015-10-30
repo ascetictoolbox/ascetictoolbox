@@ -187,7 +187,8 @@ public class ImageCreation {
 			throw new InterruptedException("Creation Cancelled");
 		}
 		monitor.subTask("Setting file permissions in core elements installations");
-		settingExecutablePermissions(new String[] { MOUNT_POINT_VAR+IMAGE_DEPLOYMENT_FOLDER + "*" },is);
+		settingPermissions(new String[] { MOUNT_POINT_VAR+IMAGE_DEPLOYMENT_FOLDER + "*" },"+x",true,is);
+		settingPermissions(new String[] { MOUNT_POINT_VAR+"/root" },"+rx",false, is);
 		monitor.worked(1);
 		if (monitor.isCanceled()){
 			throw new InterruptedException("Creation Cancelled");
@@ -594,7 +595,7 @@ public class ImageCreation {
 		}	
 		// Setting file permissions
 		monitor.subTask("Setting file permissions in core elements installations");
-		settingExecutablePermissions(new String[] { MOUNT_POINT_VAR + IMAGE_DEPLOYMENT_FOLDER + "*" },is);
+		settingPermissions(new String[] { MOUNT_POINT_VAR + IMAGE_DEPLOYMENT_FOLDER + "*" },"+x", true, is);
 		monitor.worked(1);
 		if (monitor.isCanceled()){
 			throw new InterruptedException("Creation Cancelled");
@@ -612,9 +613,9 @@ public class ImageCreation {
 	 * @throws AsceticDeploymentException
 	 * @throws InterruptedException
 	 */
-	private static void settingExecutablePermissions(	String[] files, InstallationScript is) {
+	private static void settingPermissions(	String[] files, String permission, boolean recursive, InstallationScript is) {
 		for (String f : files) {
-			is.addExecutablePermission(f);
+			is.addPermission(f, permission, recursive);
 		}
 
 	}

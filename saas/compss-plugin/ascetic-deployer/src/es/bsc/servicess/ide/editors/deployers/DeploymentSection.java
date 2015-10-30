@@ -97,6 +97,7 @@ public class DeploymentSection extends ServiceEditorSection{
 		
 		imageCache = toolkit.createButton(comp, "Enable Image Caching", SWT.CHECK);
 		autoNegotiation = toolkit.createButton(comp, "Automatic Negotiation", SWT.CHECK);
+		autoNegotiation.setSelection(true);
 		
 	}
 	

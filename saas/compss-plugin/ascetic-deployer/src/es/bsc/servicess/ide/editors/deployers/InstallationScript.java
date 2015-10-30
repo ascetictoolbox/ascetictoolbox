@@ -29,9 +29,15 @@ public class InstallationScript {
 		script = script.concat("sudo mkdir -p "+ imageDeploymentFolder + ";");		
 	}
 
-	public void addExecutablePermission(String file) {
-		script = script.concat("sudo chmod -R +x "+ file + ";");
+	public void addPermission(String file, String permission, boolean recursive) {
+		script = script.concat("sudo chmod ");
+		if (recursive){
+			script = script.concat("-R ");
+		}
+		script = script.concat(permission +" "+ file + ";");
+		
 	}
+	
 
 	public void addUnZip(String file, String imageDeploymentFolder) {
 		script = script.concat("sudo unzip "+ file +" -d "+imageDeploymentFolder+";");
