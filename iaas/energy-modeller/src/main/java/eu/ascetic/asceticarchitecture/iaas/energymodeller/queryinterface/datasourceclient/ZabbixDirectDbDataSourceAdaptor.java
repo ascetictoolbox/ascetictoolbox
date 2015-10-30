@@ -126,7 +126,7 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
     /**
      * The driver to be used to contact the database.
      */
-    private static String databaseDriver = "org.mariadb.jdbc.Driver";
+    private static String databaseDriver = "com.mysql.jdbc.Driver";
     /**
      * The user details to contact the database.
      */
@@ -171,7 +171,7 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
                 Class.forName(databaseDriver);
             } catch (ClassNotFoundException ex) {
                 //If the driver is not found on the class path revert to MariaDB.
-                databaseDriver = "org.mariadb.jdbc.Driver";
+                databaseDriver = "com.mysql.jdbc.Driver";
             }
             config.setProperty("iaas.energy.modeller.zabbix.db.driver", databaseDriver);
             databasePassword = config.getString("iaas.energy.modeller.zabbix.db.password", databasePassword);

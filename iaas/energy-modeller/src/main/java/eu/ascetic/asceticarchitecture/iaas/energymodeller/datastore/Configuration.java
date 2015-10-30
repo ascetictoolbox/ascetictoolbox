@@ -36,7 +36,7 @@ public class Configuration {
     /**
      * The driver to be used to contact the database.
      */
-    public static String databaseDriver = "org.mariadb.jdbc.Driver";
+    public static String databaseDriver = "com.mysql.jdbc.Driver";
     /**
      * The user details to contact the database.
      */
@@ -64,7 +64,7 @@ public class Configuration {
                 Class.forName(databaseDriver);
             } catch (ClassNotFoundException ex) {
                 //If the driver is not found on the class path revert to MariaDB.
-                databaseDriver = "org.mariadb.jdbc.Driver";
+                databaseDriver = "com.mysql.jdbc.Driver";
             }     
             config.setProperty("iaas.energy.modeller.db.driver", databaseDriver);
             databasePassword = config.getString("iaas.energy.modeller.db.password", databasePassword);
