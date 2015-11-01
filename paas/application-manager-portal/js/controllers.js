@@ -32,6 +32,7 @@ angular.module('asceticApplicationManagerPortalApp.controllers', [])
     var self = this;
     $scope.hideAllUrl = true;
     $rootScope.applicationNameUrl = $routeParams.applicationName;
+    $rootScope.deploymentId = $routeParams.deploymentId;
 
     var response = ApplicationService.query();
     
@@ -47,6 +48,7 @@ angular.module('asceticApplicationManagerPortalApp.controllers', [])
       var self = this;
       $scope.applicationName = $routeParams.applicationName;
       $rootScope.applicationNameUrl = $routeParams.applicationName;
+      $rootScope.deploymentId = $routeParams.deploymentId;
 
       var response = DeploymentService.query({name: $scope.applicationName, status: 'DEPLOYED'});
 
@@ -77,10 +79,12 @@ angular.module('asceticApplicationManagerPortalApp.controllers', [])
     })();
   }])
 
-  .controller('CreateDeploymentController', [ '$scope', '$location', 'ApplicationService',
-                                              function($scope, $location, ApplicationService) {
+  .controller('CreateDeploymentController', [ '$scope', '$rootScope', '$routeParams', '$location', 'ApplicationService',
+                                              function($scope, $rootScpe, $routeParams, $location, ApplicationService) {
     var self = this;
     $scope.data = '<xml/>';
+    $rootScope.applicationNameUrl = $routeParams.applicationName;
+    $rootScope.deploymentId = $routeParams.deploymentId;
     
     $scope.add = function() {
       var f = document.getElementById('file').files[0],
