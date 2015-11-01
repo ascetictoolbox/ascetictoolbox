@@ -35,15 +35,33 @@ angular.module('asceticApplicationManagerPortalApp.controllers', [])
 
   .controller('DeploymentsController', [ '$scope', '$routeParams', 'DeploymentService', function($scope, $routeParams, DeploymentService) {
       var self = this;
-      self.applicationName = $routeParams.applicationName; 
+      $scope.applicationName = $routeParams.applicationName; 
 
-      var response = DeploymentService.query({name: self.applicationName, status: 'DEPLOYED'});
+      var response = DeploymentService.query({name: $scope.applicationName, status: 'DEPLOYED'});
 
       response.$promise.then(function(data) {
         $scope.deployments = data.items.deployment; //Changed data.data.topics to data.topics
       });
 
       console.log(response);
+  }])
+
+  .controller('DeploymentController', [ '$scope', '$routeParams', '$timeout', 'DeploymentService', 
+                                        function($scope, $routeParams, $timeout, DeploymentService) {
+    var self = this;
+    self.applicationName = $routeParams.applicationName; 
+    self.deploymentId = $routeParams.deploymentId; 
+
+    $scope.deployment = [];
+
+    (function tick() {
+         DeploymentService.query(
+          {name: self.applicationName, id: self.deploymentId, status: 'DEPLOYED'}, 
+          function(deployment){
+             $scope.deployment = deployment;
+             $timeout(tick, 10000);
+         });
+    })();
   }])
 
   .controller('CreateDeploymentController', [ '$scope', '$location', 'ApplicationService', 

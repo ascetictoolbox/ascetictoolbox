@@ -24,9 +24,9 @@
 
 <ul>
   <li ng-repeat="deployment in deployments">
-      ID: <span ng-bind="deployment.id"></span><br/>
+      ID: <span ng-bind="deployment.id"></span> - (<a href="#/applications/{{applicationName}}/deployments/{{deployment.id}}">view</a>)<br/>
       STATUS: <span ng-bind="deployment.status"></span><br/>
-      START DATE: <span ng-bind="deployment.start-date"></span><br/>
+      START DATE: {{deployment['start-date']}}<br/>
       VMS:
       <ul>
         <li ng-repeat="vm in deployment.vms.vm">
@@ -41,3 +41,4 @@
       </ul>
   </li>
 </ul>
+
