@@ -47,7 +47,7 @@
     <!-- Menú for App Manager -->
     <div class="container">
       <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
-        <p class="text-left"><a href="#/">Applications</a> <span class="glyphicon glyphicon-chevron-right"></span></p>
+        <p class="text-left"><a href="#/">Applications</a> <span class="ng-show" ng-show="applicationNameUrl"> <span class="glyphicon glyphicon-chevron-right"></span> {{applicationNameUrl}} <span class="glyphicon glyphicon-chevron-right"></span> deployments </span> <span class="ng-show" ng-show="deploymentId">  <span class="glyphicon glyphicon-chevron-right"></span> {{deploymentId}}</span></p>
       </div>
       <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
         <p class="text-right"><a href="#/new_deployment" class="btn btn-primary btn-sm">New Application</a></p>

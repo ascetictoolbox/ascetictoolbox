@@ -20,9 +20,18 @@
 //  Controllers to show the different infortmation in the Portal
 
 angular.module('asceticApplicationManagerPortalApp.controllers', [])
+
+  //.controller('MainCtrl', ['$scope', function($scope) {
+  //  var self = this;
+
+  //  $scope.applicationNameUrl;
+  //}])
   
-  .controller('AppsCtrl', ['$scope','ApplicationService', function($scope, ApplicationService) {
+  .controller('AppsCtrl', ['$scope', '$rootScope', '$routeParams', 'ApplicationService', 
+                            function($scope, $rootScope, $routeParams, ApplicationService) {
     var self = this;
+    $scope.hideAllUrl = true;
+    $rootScope.applicationNameUrl = $routeParams.applicationName;
 
     var response = ApplicationService.query();
     
@@ -33,9 +42,11 @@ angular.module('asceticApplicationManagerPortalApp.controllers', [])
     //console.log(response);
   }])
 
-  .controller('DeploymentsController', [ '$scope', '$routeParams', 'DeploymentService', function($scope, $routeParams, DeploymentService) {
+  .controller('DeploymentsController', [ '$scope', '$rootScope', '$routeParams', 'DeploymentService', 
+                                          function($scope, $rootScope, $routeParams, DeploymentService) {
       var self = this;
-      $scope.applicationName = $routeParams.applicationName; 
+      $scope.applicationName = $routeParams.applicationName;
+      $rootScope.applicationNameUrl = $routeParams.applicationName;
 
       var response = DeploymentService.query({name: $scope.applicationName, status: 'DEPLOYED'});
 
@@ -46,17 +57,19 @@ angular.module('asceticApplicationManagerPortalApp.controllers', [])
       console.log(response);
   }])
 
-  .controller('DeploymentController', [ '$scope', '$routeParams', '$timeout', 'DeploymentService', 
-                                        function($scope, $routeParams, $timeout, DeploymentService) {
+  .controller('DeploymentController', [ '$scope', '$rootScope', '$routeParams', '$timeout', 'DeploymentService',
+                                        function($scope, $rootScope, $routeParams, $timeout, DeploymentService) {
     var self = this;
-    self.applicationName = $routeParams.applicationName; 
-    self.deploymentId = $routeParams.deploymentId; 
+    self.applicationName = $routeParams.applicationName;
+    self.deploymentId = $routeParams.deploymentId;
+    $rootScope.applicationNameUrl = self.applicationName;
+    $rootScope.deploymentId = self.deploymentId;
 
     $scope.deployment = [];
 
     (function tick() {
          DeploymentService.query(
-          {name: self.applicationName, id: self.deploymentId, status: 'DEPLOYED'}, 
+          {name: self.applicationName, id: self.deploymentId, status: 'DEPLOYED'},
           function(deployment){
              $scope.deployment = deployment;
              $timeout(tick, 10000);
@@ -64,7 +77,7 @@ angular.module('asceticApplicationManagerPortalApp.controllers', [])
     })();
   }])
 
-  .controller('CreateDeploymentController', [ '$scope', '$location', 'ApplicationService', 
+  .controller('CreateDeploymentController', [ '$scope', '$location', 'ApplicationService',
                                               function($scope, $location, ApplicationService) {
     var self = this;
     $scope.data = '<xml/>';
@@ -75,6 +88,7 @@ angular.module('asceticApplicationManagerPortalApp.controllers', [])
       r.onloadend = function(e) {
         $scope.data = e.target.result;
       }
+
       r.readAsBinaryString(f);
     }
 
@@ -93,4 +107,5 @@ angular.module('asceticApplicationManagerPortalApp.controllers', [])
       //console.log(response);
       
     }
+    
   }]); 

@@ -23,20 +23,20 @@ angular.module('asceticApplicationManagerPortalApp', ['ngRoute', 'ngResource', '
 
   .config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/', {
-      templateUrl: 'partials/applications_list.html'//,
-      //controller: 'MainCtrl as ctrl'
+      templateUrl: 'partials/applications_list.html',
+      controller: 'AppsCtrl as ctrl'
     })
     .when('/new_deployment', {
       templateUrl: 'partials/new_deployment.html',
-      controller: 'CreateDeploymentController as createDeploymentController'
+      controller: 'CreateDeploymentController as ctrl'
     })
     .when('/applications/:applicationName/deployments', {
       templateUrl: 'partials/deployments_list.html',
-      controller: 'DeploymentsController as deploymentsCtrl'
+      controller: 'DeploymentsController as ctrl'
     })
     .when('/applications/:applicationName/deployments/:deploymentId', {
       templateUrl: 'partials/deployment.html',
-      controller: 'DeploymentController as deploymentCtrl'
+      controller: 'DeploymentController as ctrl'
     })
    .otherwise({redirectTo: '/'});
   }])
