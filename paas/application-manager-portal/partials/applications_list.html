@@ -20,13 +20,25 @@
  *  HTML Component that list the applications inside the Application Manager.
 -->
 
+<div class="row">
+	<div class="col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1">
+		<table class="table table-striped" ng-controller="AppsCtrl as ctrl">
+			<!-- Head -->
+			<thead>
+				<tr>
+					<th>Name:</th>
+					<th>&nbsp;</th>
+				</tr>
+			</thead>
 
-<h1>List of applications:</h1>
+			<!-- Content -->
+			<tbody>
+				<tr ng-repeat="application in applications">
+					<td><span ng-bind="application.name"></span></td>
+					<td><a href="#/applications/{{application.name}}/deployments">deployments</a></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
 
-[<a href="#/new_deployment">Deploy an existant or new application</a>]
-
-<ul ng-controller="AppsCtrl as ctrl">
-  <li ng-repeat="application in applications">
-      <span ng-bind="application.name"></span>, (<a href="#/applications/{{application.name}}/deployments">deployments</a>)
-  </li>
-</ul>
