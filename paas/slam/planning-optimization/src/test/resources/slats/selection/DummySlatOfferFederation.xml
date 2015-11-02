@@ -1,0 +1,337 @@
+<slam:SLATemplate xmlns:slam="http://www.slaatsoi.eu/slamodel" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.slaatsoi.eu/slamodel file:///C:/SLA@SOI/slasoi.xsd">
+	<slam:Text />
+	
+	<slam:Properties>
+		<slam:Entry>
+			<slam:Key>ProvidersList</slam:Key>
+			<slam:Value>
+				{[
+					{"provider-uuid":"42", "p-slam-url":"http://10.15.8.2:8080/services/contrailNegotiation?wsdl"}
+				]}
+			</slam:Value>
+		</slam:Entry>
+	</slam:Properties>
+	
+	
+	<slam:UUID>Contrail-SLAT-NewFeatures-01</slam:UUID>
+	<slam:ModelVersion>sla_at_soi_sla_model_v1.0</slam:ModelVersion>
+	
+	<slam:Party>
+		<slam:Text />
+		<slam:Properties>
+			<slam:Entry>
+				<slam:Key>http://www.slaatsoi.org/slamodel#gslam_epr</slam:Key>
+				<slam:Value>http://localhost:8080/services/contrailNegotiation?wsdl
+				</slam:Value>
+			</slam:Entry>
+		</slam:Properties>
+		<slam:ID>ContrailProvider</slam:ID>
+		<slam:Role>http://www.slaatsoi.org/slamodel#provider</slam:Role>
+	</slam:Party>
+	<slam:Party>
+		<slam:Text />
+		<slam:Properties>
+			<slam:Entry>
+				<slam:Key>http://www.slaatsoi.org/slamodel#gslam_epr</slam:Key>
+				<slam:Value>http://localhost:8080/services/ISNegotiation?wsdl
+				</slam:Value>
+			</slam:Entry>
+		</slam:Properties>
+		<slam:ID>333</slam:ID>
+		<slam:Role>http://www.slaatsoi.org/slamodel#customer</slam:Role>
+	</slam:Party>
+
+	<slam:InterfaceDeclr>
+		<slam:Text>Interface to specific OVF item</slam:Text>
+		<slam:Properties>
+			<slam:Entry>
+				<slam:Key>OVF_URL</slam:Key>
+				<slam:Value>/hom/contrail/VEP-SLAM-PM/lamp-multi-vm.ovf
+				</slam:Value>
+			</slam:Entry>
+			<slam:Entry>
+				<slam:Key>CEE-ID</slam:Key>
+				<slam:Value>1234567890</slam:Value>
+			</slam:Entry>
+		</slam:Properties>
+		<slam:ID>OVF-Item-AppServer</slam:ID>
+		<slam:ProviderRef>ContrailProvider</slam:ProviderRef>
+		<slam:Endpoint>
+			<slam:Text />
+			<slam:Properties>
+				<slam:Entry>
+					<slam:Key>OVF_VirtualSystem_ID</slam:Key>
+					<slam:Value>AppServer</slam:Value>
+				</slam:Entry>
+			</slam:Properties>
+			<slam:ID>AppServer-VM-Type</slam:ID>
+			<slam:Location>VEP-ID</slam:Location>
+			<slam:Protocol>http://www.slaatsoi.org/slamodel#HTTP</slam:Protocol>
+		</slam:Endpoint>
+		<slam:Interface>
+			<slam:InterfaceResourceType>
+				<slam:Text />
+				<slam:Properties />
+				<slam:Name>OVFAppliance</slam:Name>
+			</slam:InterfaceResourceType>
+		</slam:Interface>
+	</slam:InterfaceDeclr>
+
+
+	<slam:AgreementTerm>
+		<slam:Text />
+		<slam:Properties />
+		<slam:ID>AppServer_Guarantees</slam:ID>
+		
+		<slam:VariableDeclr>
+			<slam:Text />
+			<slam:Properties />
+			<slam:Var>VM_of_type_AppServer</slam:Var>
+			<slam:Expr>
+				<slam:ValueExpr>
+					<slam:FuncExpr>
+						<slam:Text />
+						<slam:Properties />
+						<slam:Operator>http://www.slaatsoi.org/coremodel#subset_of
+						</slam:Operator>
+						<slam:Parameter>
+							<slam:ID>OVF-Item-AppServer</slam:ID>
+						</slam:Parameter>
+					</slam:FuncExpr>
+				</slam:ValueExpr>
+			</slam:Expr>
+		</slam:VariableDeclr>
+		
+		<slam:Guaranteed>
+			<slam:Text />
+			<slam:Properties />
+			<slam:State>
+				<slam:ID>CPU_SPEED_for_AppServer</slam:ID>
+				<slam:Priority xsi:nil="true"
+					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+				<slam:Constraint>
+					<slam:TypeConstraintExpr>
+						<slam:Value>
+							<slam:FuncExpr>
+								<slam:Text />
+								<slam:Properties />
+								<slam:Operator>http://www.slaatsoi.org/resources#cpu_speed
+								</slam:Operator>
+								<slam:Parameter>
+									<slam:ID>VM_of_type_AppServer</slam:ID>
+								</slam:Parameter>
+							</slam:FuncExpr>
+						</slam:Value>
+						<slam:Domain>
+							<slam:SimpleDomainExpr>
+								<slam:ComparisonOp>http://www.slaatsoi.org/coremodel#equals
+								</slam:ComparisonOp>
+								<slam:Value>
+									<slam:CONST>
+										<slam:Value>1800</slam:Value>
+										<slam:Datatype>http://www.slaatsoi.org/coremodel/units#MHz
+										</slam:Datatype>
+									</slam:CONST>
+								</slam:Value>
+							</slam:SimpleDomainExpr>
+						</slam:Domain>
+					</slam:TypeConstraintExpr>
+				</slam:Constraint>
+			</slam:State>
+		</slam:Guaranteed>
+		
+		<slam:Guaranteed>
+			<slam:Text />
+			<slam:Properties />
+			<slam:State>
+				<slam:ID>CPU_CORES_for_AppServer</slam:ID>
+				<slam:Priority xsi:nil="true"
+					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+				<slam:Constraint>
+					<slam:TypeConstraintExpr>
+						<slam:Value>
+							<slam:FuncExpr>
+								<slam:Text />
+								<slam:Properties />
+								<slam:Operator>http://www.slaatsoi.org/resources#vm_cores
+								</slam:Operator>
+								<slam:Parameter>
+									<slam:ID>VM_of_type_AppServer</slam:ID>
+								</slam:Parameter>
+							</slam:FuncExpr>
+						</slam:Value>
+						<slam:Domain>
+							<slam:SimpleDomainExpr>
+								<slam:ComparisonOp>http://www.slaatsoi.org/coremodel#equals
+								</slam:ComparisonOp>
+								<slam:Value>
+									<slam:CONST>
+										<slam:Value>4</slam:Value>
+										<slam:Datatype>http://www.w3.org/2001/XMLSchema#integer
+										</slam:Datatype>
+									</slam:CONST>
+								</slam:Value>
+							</slam:SimpleDomainExpr>
+						</slam:Domain>
+					</slam:TypeConstraintExpr>
+				</slam:Constraint>
+			</slam:State>
+		</slam:Guaranteed>
+		
+		<slam:Guaranteed>
+			<slam:Text />
+			<slam:Properties />
+			<slam:State>
+				<slam:ID>MEMORY_for_AppServer</slam:ID>
+				<slam:Priority xsi:nil="true"
+					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+				<slam:Constraint>
+					<slam:TypeConstraintExpr>
+						<slam:Value>
+							<slam:FuncExpr>
+								<slam:Text />
+								<slam:Properties />
+								<slam:Operator>http://www.slaatsoi.org/resources#memory
+								</slam:Operator>
+								<slam:Parameter>
+									<slam:ID>VM_of_type_AppServer</slam:ID>
+								</slam:Parameter>
+							</slam:FuncExpr>
+						</slam:Value>
+						<slam:Domain>
+							<slam:SimpleDomainExpr>
+								<slam:ComparisonOp>http://www.slaatsoi.org/coremodel#equals
+								</slam:ComparisonOp>
+								<slam:Value>
+									<slam:CONST>
+										<slam:Value>2048</slam:Value>
+										<slam:Datatype>http://www.slaatsoi.org/coremodel/units#MB
+										</slam:Datatype>
+									</slam:CONST>
+								</slam:Value>
+							</slam:SimpleDomainExpr>
+						</slam:Domain>
+					</slam:TypeConstraintExpr>
+				</slam:Constraint>
+			</slam:State>
+		</slam:Guaranteed>
+		
+		<slam:Guaranteed>
+			<slam:Text />
+			<slam:Properties />
+			<slam:State>
+				<slam:ID>Location_for_AppServer</slam:ID>
+				<slam:Priority xsi:nil="true"
+					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+				<slam:Constraint>
+					<slam:TypeConstraintExpr>
+						<slam:Value>
+							<slam:FuncExpr>
+								<slam:Text />
+								<slam:Properties />
+								<slam:Operator>http://www.slaatsoi.org/resources#location
+								</slam:Operator>
+								<slam:Parameter>
+									<slam:ID>VM_of_type_AppServer</slam:ID>
+								</slam:Parameter>
+							</slam:FuncExpr>
+						</slam:Value>
+						<slam:Domain>
+							<slam:CompoundDomainExpr>
+								<slam:Subexpression>
+									<slam:SimpleDomainExpr>
+										<slam:ComparisonOp>http://www.slaatsoi.org/coremodel#equals
+										</slam:ComparisonOp>
+										<slam:Value>
+											<slam:CONST>
+												<slam:Value>SI</slam:Value>
+												<slam:Datatype>http://www.w3.org/2001/XMLSchema#string
+												</slam:Datatype>
+											</slam:CONST>
+										</slam:Value>
+									</slam:SimpleDomainExpr>
+								</slam:Subexpression>
+								<slam:Subexpression>
+									<slam:SimpleDomainExpr>
+										<slam:ComparisonOp>http://www.slaatsoi.org/coremodel#equals
+										</slam:ComparisonOp>
+										<slam:Value>
+											<slam:CONST>
+												<slam:Value>IT</slam:Value>
+												<slam:Datatype>http://www.w3.org/2001/XMLSchema#string
+												</slam:Datatype>
+											</slam:CONST>
+										</slam:Value>
+									</slam:SimpleDomainExpr>
+								</slam:Subexpression>
+								<slam:LogicalOp>http://www.slaatsoi.org/coremodel#or
+								</slam:LogicalOp>
+							</slam:CompoundDomainExpr>
+						</slam:Domain>
+					</slam:TypeConstraintExpr>
+				</slam:Constraint>
+			</slam:State>
+		</slam:Guaranteed>
+	</slam:AgreementTerm>
+	
+	<slam:AgreementTerm>
+		<slam:Text />
+		<slam:Properties />
+		<slam:ID>InsfrastructurePriceOF AppServer</slam:ID>
+		<slam:Guaranteed>
+			<slam:Text />
+			<slam:Properties />
+			<slam:Action>
+				<slam:ID>PriceOF AppServer</slam:ID>
+				<slam:ActorRef>http://www.slaatsoi.org/slamodel#provider
+				</slam:ActorRef>
+				<slam:Policy>http://www.slaatsoi.org/slamodel#mandatory
+				</slam:Policy>
+				<slam:Precondition>
+					<slam:Text />
+					<slam:Properties />
+					<slam:Operator>http://www.slaatsoi.org/coremodel#invocation
+					</slam:Operator>
+					<slam:Parameter>
+						<slam:ValueExpr>
+							<slam:ID>AppServer</slam:ID>
+						</slam:ValueExpr>
+					</slam:Parameter>
+				</slam:Precondition>
+				<slam:Postcondition>
+					<slam:Text />
+					<slam:Properties>
+						<slam:Entry>
+							<slam:Key>Guarantees applied:</slam:Key>
+							<slam:Value>location</slam:Value>
+						</slam:Entry>
+					</slam:Properties>
+					<slam:ProductOfferingPrice>
+						<slam:ID>PriceOF AppServer</slam:ID>
+						<slam:Name />
+						<slam:Description />
+						<slam:BillingFrequency>http://www.slaatsoi.org/business#per_month
+						</slam:BillingFrequency>
+						<slam:ValidFrom>2013-01-01T00:00:00.000+01:00</slam:ValidFrom>
+						<slam:ValidUntil>2014-12-31T00:00:00.000+01:00</slam:ValidUntil>
+						<slam:ComponentProdOfferingPrice>
+							<slam:ID>PriceOF AppServer</slam:ID>
+							<slam:PriceType>http://www.slaatsoi.org/business#per_hour
+							</slam:PriceType>
+							<slam:Price>
+								<slam:Value>1.353964</slam:Value>
+								<slam:Datatype>http://www.slaatsoi.org/coremodel/units#EUR
+								</slam:Datatype>
+							</slam:Price>
+							<slam:Quantity>
+								<slam:Value>1</slam:Value>
+								<slam:Datatype>http://www.slaatsoi.org/coremodel/units#vm
+								</slam:Datatype>
+							</slam:Quantity>
+						</slam:ComponentProdOfferingPrice>
+					</slam:ProductOfferingPrice>
+				</slam:Postcondition>
+			</slam:Action>
+		</slam:Guaranteed>
+	</slam:AgreementTerm>
+</slam:SLATemplate>

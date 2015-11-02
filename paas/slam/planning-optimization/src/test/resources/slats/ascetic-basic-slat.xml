@@ -1,0 +1,139 @@
+<slasoi:SLATemplate xmlns:slasoi="http://www.slaatsoi.eu/slamodel"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.slaatsoi.eu/slamodel file:///C:/SLA@SOI/slasoi.xsd">
+	<!-- This example references an OVF file (ascetic-ovf-example.ovf) including 
+		- a single VirtualSystem (OVF id: ubu1, SLA id: OVF-Item-ubu1, var: VM_of_type_ubu1) -->
+	<slasoi:Text/>
+	<slasoi:Properties>
+		<slasoi:Entry>
+			<slasoi:Key>ProvidersList</slasoi:Key>
+			<slasoi:Value>
+				{"ProvidersList": [
+					{"provider-uuid":"1", "p-slam-url":"http://10.4.0.15:8080/services/asceticNegotiation?wsdl"}
+				]}
+			</slasoi:Value>
+		</slasoi:Entry>
+	</slasoi:Properties>
+	<slasoi:UUID>ASCETiC-SLaTemplate-Example-01</slasoi:UUID>
+	<slasoi:ModelVersion>1</slasoi:ModelVersion>
+	<slasoi:Party>
+		<slasoi:Text/>
+		<slasoi:Properties>
+			<slasoi:Entry>
+				<slasoi:Key>http://www.slaatsoi.org/slamodel#gslam_epr</slasoi:Key>
+				<slasoi:Value>http://10.4.0.16:8080/services/asceticNegotiation?wsdl
+				</slasoi:Value>
+			</slasoi:Entry>
+		</slasoi:Properties>
+		<slasoi:ID>AsceticProvider</slasoi:ID>
+		<slasoi:Role>http://www.slaatsoi.org/slamodel#provider</slasoi:Role>
+	</slasoi:Party>
+	<slasoi:Party>
+		<slasoi:Text/>
+		<slasoi:Properties>
+			<slasoi:Entry>
+				<slasoi:Key>http://www.slaatsoi.org/slamodel#gslam_epr</slasoi:Key>
+				<slasoi:Value>http://10.4.0.16:8080/services/asceticNegotiation?wsdl
+				</slasoi:Value>
+			</slasoi:Entry>
+		</slasoi:Properties>
+		<!-- This is the SLA@SOI user ID -->
+		<slasoi:ID>333</slasoi:ID>
+		<slasoi:Role>http://www.slaatsoi.org/slamodel#customer</slasoi:Role>
+	</slasoi:Party>
+	<slasoi:InterfaceDeclr>
+		<slasoi:Text>Interface to specific OVF item</slasoi:Text>
+		<slasoi:Properties>
+			<slasoi:Entry>
+				<slasoi:Key>OVF_URL</slasoi:Key>
+				<!-- URL of the OVF file containing the OVF item indicated by this Interface 
+					Declaration -->
+				<slasoi:Value>ascetic-ovf-example.ovf</slasoi:Value>
+			</slasoi:Entry>
+		</slasoi:Properties>
+		<slasoi:ID>OVF-Item-ubu1</slasoi:ID>
+		<slasoi:ProviderRef>AsceticProvider</slasoi:ProviderRef>
+		<slasoi:Endpoint>
+			<slasoi:Text/>
+			<slasoi:Properties>
+				<slasoi:Entry>
+				<!-- id of OVF VirtualSystem as specified into the OVF file -->
+					<slasoi:Key>OVF_VirtualSystem_ID</slasoi:Key>
+					<slasoi:Value>ubu1</slasoi:Value>
+				</slasoi:Entry>
+			</slasoi:Properties>
+			<slasoi:ID>ubu1-VM-Type</slasoi:ID>
+			<slasoi:Location>VM-Manager ID</slasoi:Location>
+			<slasoi:Protocol>http://www.slaatsoi.org/slamodel#HTTP
+			</slasoi:Protocol>
+		</slasoi:Endpoint>
+		<slasoi:Interface>
+			<slasoi:InterfaceResourceType>
+				<slasoi:Text/>
+				<slasoi:Properties/>
+				<slasoi:Name>OVFAppliance</slasoi:Name>
+			</slasoi:InterfaceResourceType>
+		</slasoi:Interface>
+	</slasoi:InterfaceDeclr>
+	<slasoi:AgreementTerm>
+		<slasoi:Text/>
+		<slasoi:Properties/>
+		<slasoi:ID>ubu1_Guarantees</slasoi:ID>
+		<!-- this variable inside the SLA Template refer to the OVF VirtualSystem 
+			with id "ubu1" -->
+		<slasoi:VariableDeclr>
+			<slasoi:Text/>
+			<slasoi:Properties/>
+			<slasoi:Var>VM_of_type_ubu1</slasoi:Var>
+			<slasoi:Expr>
+				<slasoi:ValueExpr>
+					<slasoi:FuncExpr>
+						<slasoi:Text/>
+						<slasoi:Properties/>
+						<slasoi:Operator>http://www.slaatsoi.org/coremodel#subset_of
+						</slasoi:Operator>
+						<slasoi:Parameter>
+							<slasoi:ID>OVF-Item-ubu1</slasoi:ID>
+						</slasoi:Parameter>
+					</slasoi:FuncExpr>
+				</slasoi:ValueExpr>
+			</slasoi:Expr>
+		</slasoi:VariableDeclr>
+		<slasoi:Guaranteed>
+			<slasoi:Text/>
+			<slasoi:Properties/>
+			<slasoi:State>
+				<slasoi:ID>Power_Usage_for_ubu1</slasoi:ID>
+				<slasoi:Priority xsi:nil="true"/>
+				<slasoi:Constraint>
+					<slasoi:TypeConstraintExpr>
+						<slasoi:Value>
+							<slasoi:FuncExpr>
+								<slasoi:Text/>
+								<slasoi:Properties/>
+								<slasoi:Operator>http://www.slaatsoi.org/resources#power_usage_per_vm
+								</slasoi:Operator>
+								<slasoi:Parameter>
+									<slasoi:ID>VM_of_type_ubu1</slasoi:ID>
+								</slasoi:Parameter>
+							</slasoi:FuncExpr>
+						</slasoi:Value>
+						<slasoi:Domain>
+							<slasoi:SimpleDomainExpr>
+								<slasoi:ComparisonOp>http://www.slaatsoi.org/coremodel#less_than_or_equals
+								</slasoi:ComparisonOp>
+								<slasoi:Value>
+									<slasoi:CONST>
+										<slasoi:Value>10</slasoi:Value>
+										<slasoi:Datatype>http://www.w3.org/2001/XMLSchema#watt
+										</slasoi:Datatype>
+									</slasoi:CONST>
+								</slasoi:Value>
+							</slasoi:SimpleDomainExpr>
+						</slasoi:Domain>
+					</slasoi:TypeConstraintExpr>
+				</slasoi:Constraint>
+			</slasoi:State>
+		</slasoi:Guaranteed>
+	</slasoi:AgreementTerm>
+</slasoi:SLATemplate>

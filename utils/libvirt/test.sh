@@ -1,0 +1,1 @@
+/usr/local/src/jre1.7.0_13/bin/java -classpath .:/root/.m2/repository/log4j/log4j/1.2.16/log4j-1.2.16.jar:/root/.m2/repository/net/java/dev/jna/jna/3.3.0/jna-3.3.0.jar:target/libvirt-0.4.9-SNAPSHOT.jar test

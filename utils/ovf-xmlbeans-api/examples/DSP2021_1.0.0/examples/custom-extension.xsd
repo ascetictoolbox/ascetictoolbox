@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema 
+    targetNamespace="http://schemas.customextension.org/1"
+    xmlns:custom="http://schemas.customextension.org/1"
+    xmlns="http://schemas.customextension.org/1"
+    xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    attributeFormDefault="qualified" 
+    elementFormDefault="qualified">
+    
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="http://www.w3.org/2001/xml.xsd"/>
+    <xs:import namespace="http://schemas.dmtf.org/ovf/envelope/1" schemaLocation="../dsp8023.xsd"/>
+
+    <!-- This example reference a local schema file, to validate against online schema use:
+    schemaLocation="http://schemas.dmtf.org/ovf/envelope/1/dsp8023_1.0.0.xsd"
+    -->
+    
+    <!-- Define a custom member of the ovf:Section substitution group -->
+    <xs:element name="CustomSection" type="custom:CustomSection_Type" substitutionGroup="ovf:Section"/>
+ 
+    <xs:complexType name="CustomSection_Type">
+        <xs:complexContent>
+            <xs:extension base="ovf:Section_Type">
+                <xs:sequence>
+                    <xs:element name="Data" type="xs:string"/>
+                </xs:sequence>
+                <xs:anyAttribute namespace="##any" processContents="lax"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <!-- Define other custom type -->
+    <xs:complexType name="CustomOther_Type">
+        <xs:sequence>
+            <xs:element name="Data" type="xs:string"/>
+        </xs:sequence>
+        <xs:attribute ref="ovf:required"/>
+        <xs:anyAttribute namespace="##any" processContents="lax"/>
+    </xs:complexType>
+
+</xs:schema>

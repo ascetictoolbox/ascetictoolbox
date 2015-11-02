@@ -1,0 +1,179 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>eu.ascetic</groupId>
+		<artifactId>paas</artifactId>
+		<relativePath>..</relativePath>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<groupId>eu.ascetic.paas</groupId>
+	<artifactId>paas-energy-modeller</artifactId>
+	<name>ASCETiC PaaS Energy Modeller</name>
+	<packaging>jar</packaging>
+	<description>ASCETiC PaaS Energy Modeller </description>
+	<url>http://www.ascetic.eu</url>
+
+	<ciManagement>
+		<system>hudson</system>
+		<url>https://ascetic-jenkins.cit.tu-berlin.de/job/${jenkins.project.name}</url>
+		<notifiers>
+			<notifier>
+				<type>mail</type>
+				<configuration>
+					<recipients>davide.sommacampagna@hp.com christian.temporale@hp.com</recipients>
+				</configuration>
+				<sendOnError>true</sendOnError>
+				<sendOnFailure>true</sendOnFailure>
+				<sendOnSuccess>false</sendOnSuccess>
+				<sendOnWarning>false</sendOnWarning>
+			</notifier>
+		</notifiers>
+	</ciManagement>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<paasem.jersey>1.8</paasem.jersey>
+		<paasem.jscience>4.3.1</paasem.jscience>
+		<paasem.mysql>5.1.31</paasem.mysql>
+		<paasem.jackson>2.4.0</paasem.jackson>
+		<paasem.spring>3.2.9.RELEASE</paasem.spring>
+		<paasem.jmeter>2.11</paasem.jmeter>
+		<paasem.jersey>2.5.1</paasem.jersey>
+		<paasem.activemq>5.11.1</paasem.activemq>
+		<paasem.jackson>2.5.4</paasem.jackson>
+		<paasem.qpid>0.1.0</paasem.qpid>
+		<paasem.weka>3.7.12</paasem.weka>
+		<paasem.ibatis>3.3.0</paasem.ibatis>
+		<paasem.pool>2.3</paasem.pool>
+	</properties>
+<!-- 	 <repositories> -->
+<!-- 	    <repository> -->
+<!-- 	      <id>neuroph.sourceforge.net</id> -->
+<!-- 	      <url>http://neuroph.sourceforge.net/maven2/</url> -->
+<!-- 	    </repository> -->
+<!-- 	 </repositories> -->
+	<dependencies>
+		
+		<dependency>
+			<groupId>org.jscience</groupId>
+			<artifactId>jscience</artifactId>
+			<version>${paasem.jscience}</version>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.3.4</version>
+        </dependency>
+		<dependency>
+			<groupId>org.apache.jmeter</groupId>
+			<artifactId>ApacheJMeter_core</artifactId>
+			<version>${paasem.jmeter}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.jmeter</groupId>
+			<artifactId>ApacheJMeter_http</artifactId>
+			<version>${paasem.jmeter}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.jmeter</groupId>
+			<artifactId>jorphan</artifactId>
+			<version>${paasem.jmeter}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${paasem.spring}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${paasem.spring}</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.2.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math3</artifactId>
+			<version>3.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.jmeter</groupId>
+			<artifactId>jorphan</artifactId>
+			<version>${paasem.jmeter}</version>
+		</dependency>
+		<dependency>
+			<groupId>eu.ascetic.utils</groupId>
+			<artifactId>zabbix-api</artifactId>
+			<version>0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>${paasem.jackson}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${paasem.jackson}</version>
+		</dependency>	
+		<dependency>
+			<groupId>org.apache.qpid</groupId>
+			<artifactId>qpid-jms-client</artifactId>
+			<version>${paasem.qpid}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+			<version>${paasem.ibatis}</version>
+		</dependency>
+				<dependency>
+		<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-broker</artifactId>
+			<version>${paasem.activemq}</version>
+		</dependency>	
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-amqp</artifactId>
+			<version>${paasem.activemq}</version>
+		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.apache.commons</groupId> -->
+<!-- 			<artifactId>commons-pool2</artifactId> -->
+<!-- 			<version>${paasem.pool}</version> -->
+
+<!-- 		</dependency> -->
+		
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+		</plugins>
+
+	</build>
+</project>

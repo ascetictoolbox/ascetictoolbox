@@ -1,0 +1,118 @@
+// Block definition (there may be more than one block per file)
+FUNCTION_BLOCK adaptor
+
+// Define input variables
+VAR_INPUT
+    currentDifference : REAL;
+    trendDifference : REAL;
+	//Count of how many times an event type occurs
+	energy_usage_per_app : REAL;
+	power_usage_per_app: REAL;
+	
+END_VAR
+
+// Define output variable
+VAR_OUTPUT
+    urgency : REAL;
+END_VAR
+
+// Fuzzify input variable 'currentDifference'
+FUZZIFY currentDifference
+    TERM LTsmall := (-4, 0) (0, 1); 
+    TERM LTmedium := (-15, 0) (-6, 1) (-4, 1) (1, 0);
+    TERM LTlarge := (-1000000, 1) (-9, 1) (-6, 0);
+    TERM GTsmall := (0, 1) (4, 0); 
+    TERM GTmedium := (1, 0) (4,1) (6,1) (9,0);
+    TERM GTlarge := (6, 0) (9, 1) (1000000, 1);
+END_FUZZIFY
+
+// Fuzzify input variable 'trendDifference' indicates if the trend is getting worse or not
+FUZZIFY trendDifference
+    TERM worse := (-1000000,1) (-10,1) (0,0);
+    TERM better := (0,0) (10,1) (1000000,1);
+END_FUZZIFY
+
+// Fuzzify input variable 'energy_usage_per_app' indicates how large the event count is
+FUZZIFY energy_usage_per_app
+    TERM small := (0, 1) (4, 0); 
+    TERM medium := (1, 0) (4, 1) (6, 1) (9, 0);
+    TERM large := (4, 0) (9, 1) (10000, 1);
+END_FUZZIFY
+
+// Fuzzify input variable 'power_usage_per_app' indicates how large the event count is
+FUZZIFY power_usage_per_app
+    TERM small := (0, 1) (4, 0); 
+    TERM medium := (1, 0) (4, 1) (6, 1) (9, 0);
+    TERM large := (4, 0) (9, 1) (10000, 1);
+END_FUZZIFY
+
+// Defzzzify output variable 'urgency'
+DEFUZZIFY urgency
+    TERM low := (0,0) (5,1) (10,0);
+    TERM medium := (10,0) (15,1) (20,0);
+    TERM immediate := (20,0) (25,1) (30,0);
+    // Use 'Center Of Gravity' defuzzification method
+    METHOD : COG;
+    // Default value is 0 (if no rule activates defuzzifier)
+    DEFAULT := 0;
+END_DEFUZZIFY
+
+RULEBLOCK ADD_VM
+    // Use 'min' for 'and' (also implicit use 'max'
+    // for 'or' to fulfill DeMorgan's Law)
+    AND : MIN;
+    // Use 'min' activation method
+    ACT : MIN;
+    // Use 'max' accumulation method
+    ACCU : MAX;
+
+    RULE 1 : IF currentDifference IS LTsmall OR trendDifference IS better 
+                THEN urgency IS low;
+
+    RULE 2 : IF currentDifference IS LTmedium 
+                THEN urgency IS medium; 
+
+    RULE 3 : IF currentDifference IS LTlarge
+                THEN urgency is immediate;
+				
+	RULE 4 : IF currentDifference IS LTmedium AND trendDifference IS worse 
+                THEN urgency is immediate;
+
+	RULE 5 : IF energy_usage_per_app IS medium OR energy_usage_per_app IS large 
+                THEN urgency is immediate;
+				
+	RULE 6 : IF power_usage_per_app IS medium OR power_usage_per_app IS large 
+                THEN urgency is immediate;	
+				
+END_RULEBLOCK
+
+RULEBLOCK REMOVE_VM
+    // Use 'min' for 'and' (also implicit use 'max'
+    // for 'or' to fulfill DeMorgan's Law)
+    AND : MIN;
+    // Use 'min' activation method
+    ACT : MIN;
+    // Use 'max' accumulation method
+    ACCU : MAX;
+
+    RULE 1 : IF currentDifference IS GTsmall OR trendDifference IS better 
+                THEN urgency IS low;
+
+    RULE 2 : IF currentDifference IS GTmedium 
+                THEN urgency IS medium; 
+
+    RULE 3 : IF currentDifference IS GTlarge
+                THEN urgency is immediate;
+				
+	RULE 4 : IF currentDifference IS GTmedium AND trendDifference IS worse 
+                THEN urgency is immediate;
+
+	RULE 5 : IF energy_usage_per_app IS medium OR energy_usage_per_app IS large 
+                THEN urgency is immediate;
+				
+	RULE 6 : IF power_usage_per_app IS medium OR power_usage_per_app IS large 
+                THEN urgency is immediate;				
+				
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK

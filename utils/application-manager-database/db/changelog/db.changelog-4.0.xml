@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright 2014 ATOS SPAIN S.A. 
+ 
+ Licensed under the Apache License, Version 2.0 (the License);
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+ 
+ http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ 
+ @author David Garcia Perez. David Rojo, Atos Research and Innovation, Atos SPAIN SA
+ @email david.garciaperez@atos.net david.rojoa@atos.net
+-->
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+  <changeSet author="davidgp" id="addColumns-to-vm-table">
+      <!--cpu-->
+      <addColumn tableName="vms">
+            <column name="cpu_max" type="INT">
+                <constraints nullable="true"/>
+            </column>
+      </addColumn>
+      <addColumn tableName="vms">
+            <column name="cpu_actual" type="INT">
+                <constraints nullable="true"/>
+            </column>
+      </addColumn>
+      <addColumn tableName="vms">
+            <column name="cpu_min" type="INT">
+                <constraints nullable="true"/>
+            </column>
+      </addColumn>
+      
+      <!--ram-->
+      <addColumn tableName="vms">
+            <column name="ram_max" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+      </addColumn>
+      <addColumn tableName="vms">
+            <column name="ram_actual" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+      </addColumn>
+      <addColumn tableName="vms">
+            <column name="ram_min" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+      </addColumn>
+
+      <!--swap-->
+      <addColumn tableName="vms">
+            <column name="swap_max" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+      </addColumn>
+      <addColumn tableName="vms">
+            <column name="swap_actual" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+      </addColumn>
+      <addColumn tableName="vms">
+            <column name="swap_min" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+      </addColumn>
+
+      <!--disk-->
+      <addColumn tableName="vms">
+            <column name="disk_max" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+      </addColumn>
+      <addColumn tableName="vms">
+            <column name="disk_actual" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+      </addColumn>
+      <addColumn tableName="vms">
+            <column name="disk_min" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+      </addColumn>
+
+      <!--#vms-->
+      <addColumn tableName="vms">
+            <column name="number_vms_max" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+      </addColumn>
+      <addColumn tableName="vms">
+            <column name="number_vms_min" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+      </addColumn>
+  </changeSet>
+  
+</databaseChangeLog>

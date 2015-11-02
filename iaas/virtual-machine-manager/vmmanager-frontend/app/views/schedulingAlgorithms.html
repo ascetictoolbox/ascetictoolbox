@@ -1,0 +1,140 @@
+<!--
+Copyright (C) 2013-2014  Barcelona Supercomputing Center
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+-->
+
+<h1 class="page-header">Scheduling Algorithms</h1>
+<div ng-if="!schedulingAlgorithms.loading">
+    <p>Current scheduling algorithm: {{schedulingAlgorithms.currentAlgorithm}}</p>
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+        Select algorithm <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" role="menu">
+        <li ng-repeat="algorithm in schedulingAlgorithms.algorithms">
+            <a href="#scheduling_algorithms" ng-click='schedulingAlgorithms.changeSchedulingAlg(algorithm.name)'>
+                {{algorithm.name}}</a>
+        </li>
+    </ul>
+    <br>
+</div>
+
+<div ng-if="!schedulingAlgorithms.loading" ng-controller="VmPlacementCtrl as vmPlacement">
+
+    <h3>VM Placement</h3>
+    <div>
+        <button type="button" class="btn btn-primary" data-toggle="modal"
+                data-target="#vmPlacementModal">Get Recommended Deployment Plan</button>
+    </div>
+    <br>
+    <div>
+        <ul>
+            <li ng-repeat="(vm, host) in vmPlacement.recommendedPlan">
+                {{"vm: " + vm + " - host: " + host}}
+            </li>
+        </ul>
+        <button ng-if="vmPlacement.recommendedPlan" type="button" class="btn btn-primary"
+                ng-click='vmPlacement.executeVmPlacement()'>Execute Plan</button>
+    </div>
+
+
+    <!-- Modal Ask for New Vm Placement -->
+
+
+        <div class="modal fade" id="vmPlacementModal" tabindex="-1" role="dialog" aria-labelledby="myVmPlacementLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="modal-title" id="myVmPlacementLabel">Get VM Placement</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <form role="form" id="vmPlacementForm">
+                            <!-- Time Limit text box -->
+                            <div>
+                                Time limit in seconds:
+                                <input type="number" class="form-control" min="0" step="1" value="10"
+                                        ng-model="timeLimit">
+                            </div>
+
+                            <!-- Construction Heuristic Selector -->
+                            <div>
+                                Construction Heuristic:
+                                <select class="form-control" ng-model="constrHeuristic"
+                                        ng-options="heuristic.name for heuristic in vmPlacement.constructionHeuristics">
+                                </select>
+                            </div>
+
+                            <!-- Local Search Algorithm Selector -->
+                            <div>
+                                Local Search Algorithm:
+                                <select class="form-control" ng-model="localSearchAlg"
+                                            ng-options="algorithm.name for algorithm in vmPlacement.localSearchAlgs">
+                                </select>
+                            </div>
+
+                            <!-- Local Search Algorithm options selector -->
+                            <div>
+                                <div ng-if="vmPlacement.showOptions(localSearchAlg)">
+                                    Local Search Algorithm Options:
+                                </div>
+                                <div>
+                                    <label for="optionSize" ng-if="vmPlacement.inputOptionIsActive(
+                                            localSearchAlg.name, 'size')">Size</label>
+                                    <input type="number" class="form-control" min="0" step="1" id="optionSize"
+                                           ng-model="optionSize"
+                                           ng-if="vmPlacement.inputOptionIsActive(localSearchAlg.name, 'size')">
+                                    <label for="optionAcceptedCountLimit" ng-if="vmPlacement.inputOptionIsActive(
+                                            localSearchAlg.name, 'acceptedCountLimit')">Accepted Count Limit</label>
+                                    <input type="number" class="form-control" min="0" step="1"
+                                           id="optionAcceptedCountLimit" ng-if="vmPlacement.inputOptionIsActive(
+                                           localSearchAlg.name, 'acceptedCountLimit')"
+                                           ng-model="optionAcceptedCountLimit">
+                                    <label for="optionInitialHardTemp" ng-if="vmPlacement.inputOptionIsActive(
+                                            localSearchAlg.name, 'initialHardTemp')">Initial Hard Temp</label>
+                                    <input type="number" class="form-control" min="0" step="1"
+                                           id="optionInitialHardTemp" ng-if="vmPlacement.inputOptionIsActive(
+                                            localSearchAlg.name, 'initialHardTemp')" ng-model="optionInitialHardTemp">
+                                    <label for="optionInitialSoftTemp" ng-if="vmPlacement.inputOptionIsActive(
+                                            localSearchAlg.name, 'initialSoftTemp')">Initial Soft Temp</label>
+                                    <input type="number" class="form-control" min="0" step="1"
+                                           id="optionInitialSoftTemp" ng-if="vmPlacement.inputOptionIsActive(
+                                            localSearchAlg.name, 'initialSoftTemp')" ng-model="optionInitialSoftTemp">
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary"
+                                ng-click="vmPlacement.getVmPlacement(
+                                        timeLimit, constrHeuristic.name, localSearchAlg.name,
+                                        optionSize, optionAcceptedCountLimit, optionInitialHardTemp,
+                                        optionInitialSoftTemp)">
+                            Get new Placement
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+<br/>
+<div loading-spinner="schedulingAlgorithms.loading"></div>

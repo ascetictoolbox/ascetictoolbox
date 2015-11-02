@@ -1,0 +1,614 @@
+<?xml version="1.0" encoding="UTF-8"?><wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://org.apache.axis2/xsd" xmlns:ns="http://webservice.syntaxconverter.gslam.slasoi.org" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:ax225="http://negotiation.core.gslam.slasoi.org/xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://webservice.syntaxconverter.gslam.slasoi.org">
+    <wsdl:types>
+        <xs:schema xmlns:ax226="http://webservice.syntaxconverter.gslam.slasoi.org" attributeFormDefault="qualified" elementFormDefault="unqualified" targetNamespace="http://negotiation.core.gslam.slasoi.org/xsd">
+            <xs:import namespace="http://webservice.syntaxconverter.gslam.slasoi.org"/>
+            <xs:complexType name="NegotiationException">
+                <xs:complexContent>
+                    <xs:extension base="ax226:Exception">
+                        <xs:sequence>
+                            <xs:element minOccurs="0" name="cause" nillable="true" type="xs:anyType"/>
+                        </xs:sequence>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="SLANotFoundException">
+                <xs:complexContent>
+                    <xs:extension base="ax225:NegotiationException">
+                        <xs:sequence/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="OperationNotPossibleException">
+                <xs:complexContent>
+                    <xs:extension base="ax225:NegotiationException">
+                        <xs:sequence/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="ProvisioningException">
+                <xs:complexContent>
+                    <xs:extension base="ax225:NegotiationException">
+                        <xs:sequence/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="OperationInProgressException">
+                <xs:complexContent>
+                    <xs:extension base="ax225:NegotiationException">
+                        <xs:sequence/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="InvalidNegotiationIDException">
+                <xs:complexContent>
+                    <xs:extension base="ax225:NegotiationException">
+                        <xs:sequence/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="SLACreationException">
+                <xs:complexContent>
+                    <xs:extension base="ax225:NegotiationException">
+                        <xs:sequence/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+        </xs:schema>
+        <xs:schema xmlns:ax227="http://negotiation.core.gslam.slasoi.org/xsd" attributeFormDefault="qualified" elementFormDefault="unqualified" targetNamespace="http://webservice.syntaxconverter.gslam.slasoi.org">
+            <xs:import namespace="http://negotiation.core.gslam.slasoi.org/xsd"/>
+            <xs:complexType name="Exception">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="Exception" nillable="true" type="xs:anyType"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="SLANotFoundException">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="SLANotFoundException" nillable="true" type="ax225:SLANotFoundException"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="terminate">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="slaID" nillable="true" type="xs:string"/>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="terminationReason" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="terminateResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" type="xs:boolean"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OperationNotPossibleException">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="OperationNotPossibleException" nillable="true" type="ax225:OperationNotPossibleException"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="renegotiate">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="slaID" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="renegotiateResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="ProvisioningException">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="ProvisioningException" nillable="true" type="ax225:ProvisioningException"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="provision">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="slaID" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="provisionResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OperationInProgressException">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="OperationInProgressException" nillable="true" type="ax225:OperationInProgressException"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="InvalidNegotiationIDException">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="InvalidNegotiationIDException" nillable="true" type="ax225:InvalidNegotiationIDException"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="negotiate">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="negotiationID" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="slaTemplate" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="negotiateResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="initiateNegotiation">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="slaTemplate" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="initiateNegotiationResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="SLACreationException">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="SLACreationException" nillable="true" type="ax225:SLACreationException"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="createAgreement">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="negotiationID" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="slaTemplate" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="createAgreementResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="cancelNegotiation">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="negotiationID" nillable="true" type="xs:string"/>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="cancellationReason" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="cancelNegotiationResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" type="xs:boolean"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:message name="createAgreementRequest">
+        <wsdl:part name="parameters" element="ns:createAgreement"/>
+    </wsdl:message>
+    <wsdl:message name="createAgreementResponse">
+        <wsdl:part name="parameters" element="ns:createAgreementResponse"/>
+    </wsdl:message>
+    <wsdl:message name="OperationInProgressException">
+        <wsdl:part name="parameters" element="ns:OperationInProgressException"/>
+    </wsdl:message>
+    <wsdl:message name="SLACreationException">
+        <wsdl:part name="parameters" element="ns:SLACreationException"/>
+    </wsdl:message>
+    <wsdl:message name="InvalidNegotiationIDException">
+        <wsdl:part name="parameters" element="ns:InvalidNegotiationIDException"/>
+    </wsdl:message>
+    <wsdl:message name="initiateNegotiationRequest">
+        <wsdl:part name="parameters" element="ns:initiateNegotiation"/>
+    </wsdl:message>
+    <wsdl:message name="initiateNegotiationResponse">
+        <wsdl:part name="parameters" element="ns:initiateNegotiationResponse"/>
+    </wsdl:message>
+    <wsdl:message name="OperationNotPossibleException">
+        <wsdl:part name="parameters" element="ns:OperationNotPossibleException"/>
+    </wsdl:message>
+    <wsdl:message name="renegotiateRequest">
+        <wsdl:part name="parameters" element="ns:renegotiate"/>
+    </wsdl:message>
+    <wsdl:message name="renegotiateResponse">
+        <wsdl:part name="parameters" element="ns:renegotiateResponse"/>
+    </wsdl:message>
+    <wsdl:message name="SLANotFoundException">
+        <wsdl:part name="parameters" element="ns:SLANotFoundException"/>
+    </wsdl:message>
+    <wsdl:message name="provisionRequest">
+        <wsdl:part name="parameters" element="ns:provision"/>
+    </wsdl:message>
+    <wsdl:message name="provisionResponse">
+        <wsdl:part name="parameters" element="ns:provisionResponse"/>
+    </wsdl:message>
+    <wsdl:message name="ProvisioningException">
+        <wsdl:part name="parameters" element="ns:ProvisioningException"/>
+    </wsdl:message>
+    <wsdl:message name="cancelNegotiationRequest">
+        <wsdl:part name="parameters" element="ns:cancelNegotiation"/>
+    </wsdl:message>
+    <wsdl:message name="cancelNegotiationResponse">
+        <wsdl:part name="parameters" element="ns:cancelNegotiationResponse"/>
+    </wsdl:message>
+    <wsdl:message name="terminateRequest">
+        <wsdl:part name="parameters" element="ns:terminate"/>
+    </wsdl:message>
+    <wsdl:message name="terminateResponse">
+        <wsdl:part name="parameters" element="ns:terminateResponse"/>
+    </wsdl:message>
+    <wsdl:message name="negotiateRequest">
+        <wsdl:part name="parameters" element="ns:negotiate"/>
+    </wsdl:message>
+    <wsdl:message name="negotiateResponse">
+        <wsdl:part name="parameters" element="ns:negotiateResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="asceticNegotiationPortType">
+        <wsdl:operation name="createAgreement">
+            <wsdl:input message="ns:createAgreementRequest" wsaw:Action="urn:createAgreement"/>
+            <wsdl:output message="ns:createAgreementResponse" wsaw:Action="urn:createAgreementResponse"/>
+            <wsdl:fault message="ns:OperationInProgressException" name="OperationInProgressException" wsaw:Action="urn:createAgreementOperationInProgressException"/>
+            <wsdl:fault message="ns:SLACreationException" name="SLACreationException" wsaw:Action="urn:createAgreementSLACreationException"/>
+            <wsdl:fault message="ns:InvalidNegotiationIDException" name="InvalidNegotiationIDException" wsaw:Action="urn:createAgreementInvalidNegotiationIDException"/>
+        </wsdl:operation>
+        <wsdl:operation name="initiateNegotiation">
+            <wsdl:input message="ns:initiateNegotiationRequest" wsaw:Action="urn:initiateNegotiation"/>
+            <wsdl:output message="ns:initiateNegotiationResponse" wsaw:Action="urn:initiateNegotiationResponse"/>
+            <wsdl:fault message="ns:OperationNotPossibleException" name="OperationNotPossibleException" wsaw:Action="urn:initiateNegotiationOperationNotPossibleException"/>
+        </wsdl:operation>
+        <wsdl:operation name="renegotiate">
+            <wsdl:input message="ns:renegotiateRequest" wsaw:Action="urn:renegotiate"/>
+            <wsdl:output message="ns:renegotiateResponse" wsaw:Action="urn:renegotiateResponse"/>
+            <wsdl:fault message="ns:SLANotFoundException" name="SLANotFoundException" wsaw:Action="urn:renegotiateSLANotFoundException"/>
+            <wsdl:fault message="ns:OperationNotPossibleException" name="OperationNotPossibleException" wsaw:Action="urn:renegotiateOperationNotPossibleException"/>
+        </wsdl:operation>
+        <wsdl:operation name="provision">
+            <wsdl:input message="ns:provisionRequest" wsaw:Action="urn:provision"/>
+            <wsdl:output message="ns:provisionResponse" wsaw:Action="urn:provisionResponse"/>
+            <wsdl:fault message="ns:SLANotFoundException" name="SLANotFoundException" wsaw:Action="urn:provisionSLANotFoundException"/>
+            <wsdl:fault message="ns:ProvisioningException" name="ProvisioningException" wsaw:Action="urn:provisionProvisioningException"/>
+        </wsdl:operation>
+        <wsdl:operation name="cancelNegotiation">
+            <wsdl:input message="ns:cancelNegotiationRequest" wsaw:Action="urn:cancelNegotiation"/>
+            <wsdl:output message="ns:cancelNegotiationResponse" wsaw:Action="urn:cancelNegotiationResponse"/>
+            <wsdl:fault message="ns:OperationInProgressException" name="OperationInProgressException" wsaw:Action="urn:cancelNegotiationOperationInProgressException"/>
+            <wsdl:fault message="ns:OperationNotPossibleException" name="OperationNotPossibleException" wsaw:Action="urn:cancelNegotiationOperationNotPossibleException"/>
+            <wsdl:fault message="ns:InvalidNegotiationIDException" name="InvalidNegotiationIDException" wsaw:Action="urn:cancelNegotiationInvalidNegotiationIDException"/>
+        </wsdl:operation>
+        <wsdl:operation name="terminate">
+            <wsdl:input message="ns:terminateRequest" wsaw:Action="urn:terminate"/>
+            <wsdl:output message="ns:terminateResponse" wsaw:Action="urn:terminateResponse"/>
+            <wsdl:fault message="ns:SLANotFoundException" name="SLANotFoundException" wsaw:Action="urn:terminateSLANotFoundException"/>
+        </wsdl:operation>
+        <wsdl:operation name="negotiate">
+            <wsdl:input message="ns:negotiateRequest" wsaw:Action="urn:negotiate"/>
+            <wsdl:output message="ns:negotiateResponse" wsaw:Action="urn:negotiateResponse"/>
+            <wsdl:fault message="ns:OperationInProgressException" name="OperationInProgressException" wsaw:Action="urn:negotiateOperationInProgressException"/>
+            <wsdl:fault message="ns:OperationNotPossibleException" name="OperationNotPossibleException" wsaw:Action="urn:negotiateOperationNotPossibleException"/>
+            <wsdl:fault message="ns:InvalidNegotiationIDException" name="InvalidNegotiationIDException" wsaw:Action="urn:negotiateInvalidNegotiationIDException"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="NegotiationImplSoap11Binding" type="ns:asceticNegotiationPortType">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="createAgreement">
+            <soap:operation soapAction="urn:createAgreement" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="OperationInProgressException">
+                <soap:fault use="literal" name="OperationInProgressException"/>
+            </wsdl:fault>
+            <wsdl:fault name="SLACreationException">
+                <soap:fault use="literal" name="SLACreationException"/>
+            </wsdl:fault>
+            <wsdl:fault name="InvalidNegotiationIDException">
+                <soap:fault use="literal" name="InvalidNegotiationIDException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="initiateNegotiation">
+            <soap:operation soapAction="urn:initiateNegotiation" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="OperationNotPossibleException">
+                <soap:fault use="literal" name="OperationNotPossibleException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="renegotiate">
+            <soap:operation soapAction="urn:renegotiate" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="OperationNotPossibleException">
+                <soap:fault use="literal" name="OperationNotPossibleException"/>
+            </wsdl:fault>
+            <wsdl:fault name="SLANotFoundException">
+                <soap:fault use="literal" name="SLANotFoundException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="provision">
+            <soap:operation soapAction="urn:provision" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="ProvisioningException">
+                <soap:fault use="literal" name="ProvisioningException"/>
+            </wsdl:fault>
+            <wsdl:fault name="SLANotFoundException">
+                <soap:fault use="literal" name="SLANotFoundException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="cancelNegotiation">
+            <soap:operation soapAction="urn:cancelNegotiation" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="OperationInProgressException">
+                <soap:fault use="literal" name="OperationInProgressException"/>
+            </wsdl:fault>
+            <wsdl:fault name="OperationNotPossibleException">
+                <soap:fault use="literal" name="OperationNotPossibleException"/>
+            </wsdl:fault>
+            <wsdl:fault name="InvalidNegotiationIDException">
+                <soap:fault use="literal" name="InvalidNegotiationIDException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="terminate">
+            <soap:operation soapAction="urn:terminate" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="SLANotFoundException">
+                <soap:fault use="literal" name="SLANotFoundException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="negotiate">
+            <soap:operation soapAction="urn:negotiate" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="OperationInProgressException">
+                <soap:fault use="literal" name="OperationInProgressException"/>
+            </wsdl:fault>
+            <wsdl:fault name="OperationNotPossibleException">
+                <soap:fault use="literal" name="OperationNotPossibleException"/>
+            </wsdl:fault>
+            <wsdl:fault name="InvalidNegotiationIDException">
+                <soap:fault use="literal" name="InvalidNegotiationIDException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="NegotiationImplSoap12Binding" type="ns:asceticNegotiationPortType">
+        <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="createAgreement">
+            <soap12:operation soapAction="urn:createAgreement" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="OperationInProgressException">
+                <soap12:fault use="literal" name="OperationInProgressException"/>
+            </wsdl:fault>
+            <wsdl:fault name="SLACreationException">
+                <soap12:fault use="literal" name="SLACreationException"/>
+            </wsdl:fault>
+            <wsdl:fault name="InvalidNegotiationIDException">
+                <soap12:fault use="literal" name="InvalidNegotiationIDException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="initiateNegotiation">
+            <soap12:operation soapAction="urn:initiateNegotiation" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="OperationNotPossibleException">
+                <soap12:fault use="literal" name="OperationNotPossibleException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="renegotiate">
+            <soap12:operation soapAction="urn:renegotiate" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="OperationNotPossibleException">
+                <soap12:fault use="literal" name="OperationNotPossibleException"/>
+            </wsdl:fault>
+            <wsdl:fault name="SLANotFoundException">
+                <soap12:fault use="literal" name="SLANotFoundException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="provision">
+            <soap12:operation soapAction="urn:provision" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="ProvisioningException">
+                <soap12:fault use="literal" name="ProvisioningException"/>
+            </wsdl:fault>
+            <wsdl:fault name="SLANotFoundException">
+                <soap12:fault use="literal" name="SLANotFoundException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="cancelNegotiation">
+            <soap12:operation soapAction="urn:cancelNegotiation" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="OperationInProgressException">
+                <soap12:fault use="literal" name="OperationInProgressException"/>
+            </wsdl:fault>
+            <wsdl:fault name="OperationNotPossibleException">
+                <soap12:fault use="literal" name="OperationNotPossibleException"/>
+            </wsdl:fault>
+            <wsdl:fault name="InvalidNegotiationIDException">
+                <soap12:fault use="literal" name="InvalidNegotiationIDException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="terminate">
+            <soap12:operation soapAction="urn:terminate" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="SLANotFoundException">
+                <soap12:fault use="literal" name="SLANotFoundException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="negotiate">
+            <soap12:operation soapAction="urn:negotiate" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="OperationInProgressException">
+                <soap12:fault use="literal" name="OperationInProgressException"/>
+            </wsdl:fault>
+            <wsdl:fault name="OperationNotPossibleException">
+                <soap12:fault use="literal" name="OperationNotPossibleException"/>
+            </wsdl:fault>
+            <wsdl:fault name="InvalidNegotiationIDException">
+                <soap12:fault use="literal" name="InvalidNegotiationIDException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="NegotiationImplHttpBinding" type="ns:asceticNegotiationPortType">
+        <http:binding verb="POST"/>
+        <wsdl:operation name="createAgreement">
+            <http:operation location="asceticNegotiation/createAgreement"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="createAgreement"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="createAgreement"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="initiateNegotiation">
+            <http:operation location="asceticNegotiation/initiateNegotiation"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="initiateNegotiation"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="initiateNegotiation"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="renegotiate">
+            <http:operation location="asceticNegotiation/renegotiate"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="renegotiate"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="renegotiate"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="provision">
+            <http:operation location="asceticNegotiation/provision"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="provision"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="provision"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="cancelNegotiation">
+            <http:operation location="asceticNegotiation/cancelNegotiation"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="cancelNegotiation"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="cancelNegotiation"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="terminate">
+            <http:operation location="asceticNegotiation/terminate"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="terminate"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="terminate"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="negotiate">
+            <http:operation location="asceticNegotiation/negotiate"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="negotiate"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="negotiate"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="asceticNegotiation">
+        <wsdl:port name="NegotiationImplHttpSoap11Endpoint" binding="ns:NegotiationImplSoap11Binding">
+            <soap:address location="http://10.4.0.16:8080axis2/services/asceticNegotiation.NegotiationImplHttpSoap11Endpoint/"/>
+        </wsdl:port>
+        <wsdl:port name="NegotiationImplHttpSoap12Endpoint" binding="ns:NegotiationImplSoap12Binding">
+            <soap12:address location="http://10.4.0.16:8080axis2/services/asceticNegotiation.NegotiationImplHttpSoap12Endpoint/"/>
+        </wsdl:port>
+        <wsdl:port name="NegotiationImplHttpEndpoint" binding="ns:NegotiationImplHttpBinding">
+            <http:address location="http://10.4.0.16:8080axis2/services/asceticNegotiation.NegotiationImplHttpEndpoint/"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

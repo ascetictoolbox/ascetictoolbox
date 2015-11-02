@@ -1,0 +1,55 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>eu.ascetic</groupId>
+  <artifactId>ascetic-energymodeller-ilo-plugin</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>Plugin for EM to collect data from iLO via script</name>
+  <properties>
+  	<jpmml.version>1.1.18</jpmml.version>
+  </properties>
+  
+  <dependencies>
+    <dependency>
+		<groupId>org.fusesource</groupId>
+		<artifactId>sigar</artifactId>
+		<version>1.6.4</version>
+	</dependency>
+	<!-- Class model annotations -->
+	<dependency>
+	    <groupId>org.jpmml</groupId>
+	    <artifactId>pmml-schema</artifactId>
+	    <version>1.2.0</version>
+	</dependency>
+<!-- 	<dependency> -->
+<!-- 		<groupId>nz.ac.waikato.cms.weka</groupId> -->
+<!-- 		<artifactId>weka-stable</artifactId> -->
+<!-- 		<version>3.6.12</version> -->
+<!-- 	</dependency> -->
+	
+	<dependency>
+		<groupId>nz.ac.waikato.cms.weka</groupId>
+		<artifactId>weka-dev</artifactId>
+		<version>3.7.12</version>
+	</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+
+	<dependency>
+		<groupId>com.h2database</groupId>
+		<artifactId>h2</artifactId>
+		<version>1.4.187</version>
+	</dependency>
+	<dependency>
+        <groupId>openforecast</groupId>
+        <artifactId>net.sourceforge.openforecast</artifactId>
+        <version>1.0</version>
+        <scope>system</scope>
+        <systemPath>${basedir}/src/lib/OpenForecast-0.5.0.jar</systemPath>
+    </dependency>
+	
+  </dependencies>
+</project>

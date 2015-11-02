@@ -1,0 +1,113 @@
+[comment encoding = UTF-8 /]
+[module generate('http://www.eclipse.org/uml2/4.0.0/Types', 'http://www.eclipse.org/uml2/4.0.0/UML', 'http://www.eclipse.org/uml2/4.0.0/UML/Profile/L2', 'http://www.eclipse.org/uml2/4.0.0/UML/Profile/L3')]
+
+
+[template public generateKPISpecs(aModel : Model)]
+[comment @main/]
+
+[file (aModel.name.concat('.kpi'), false, 'UTF-8')]
+[comment 
+TEST - Applied Stereotype
+[aModel.getAppliedStereotype('KPIProfile::preparedForMeasurement')/]
+[comment 
+TEST - Applied Stereotype Value for GQMsetup
+[aModel.getValue(aModel.getAppliedStereotype('KPIProfile::preparedForMeasurement'), 'MonitoringGoals')/]
+[comment 
+Test below does not work with array of Monitoring Goals in Stereotype
+TEST - Applied Stereotype Value for GQMsetup eContents
+[aModel.getValue(aModel.getAppliedStereotype('KPIProfile::preparedForMeasurement'), 'MonitoringGoals').eContents()/]
+[comment 
+Test below does not work with array of Monitoring Goals in Stereotype
+Applied Stereotype Value for GQMsetup eContents inspection - GoalIDs array
+[aModel.getValue(aModel.getAppliedStereotype('KPIProfile::preparedForMeasurement'), 'MonitoringGoals').eGet('GoalID')/]
+[comment 
+Test below does not work with array of Monitoring Goals in Stereotype
+Applied Stereotype Value for GQMsetup eContents inspection - Descriptions array
+[aModel.getValue(aModel.getAppliedStereotype('KPIProfile::preparedForMeasurement'), 'MonitoringGoals').eGet('Description')/]
+GQM Setup
+[for (g:KPIProfile::MonitoringGoal | aModel.getValue(aModel.getAppliedStereotype('KPIProfile::preparedForMeasurement'), 'MonitoringGoals') )  separator('\n')]
+	Goal = [g.GoalID/] : [g.Description/]
+	[for (q:KPIProfile::QualityQuestion | g.QualityQuestions)]
+		Question = [q.QuestionID/] : [q.QuestionText/]
+	[/for]
+[/for]
+
+Global KPI Definition
+[for (k:KPIProfile::GlobalKPIDefInput | aModel.getValue(aModel.getAppliedStereotype('KPIProfile::preparedForMeasurement'), 'GlobalKPIDef') )  separator('\n')]
+ [if ( not (k.oclIsUndefined() or k.oclIsInvalid()) )]
+  [if ( not (k.GlobalMeasurementDef.oclIsUndefined() or k.GlobalMeasurementDef.oclIsInvalid()) )]
+	ProbeRepositoryURL : [k.GlobalMeasurementDef.ProbeRepositoryURL/]
+	GeneralMeasurementFrequencyInMillisecond : [k.GlobalMeasurementDef.preferredMeasurementFrequencyInMillisecond/]
+	applicationSrcRoot : [k.GlobalMeasurementDef.applicationSrcRoot/]
+	applicationBinRoot : [k.GlobalMeasurementDef.applicationBinRoot/]
+  [/if]
+  [if ( not (k.GlobalWorkloadDef.oclIsUndefined() or k.GlobalWorkloadDef.oclIsInvalid()) )]
+	WorkloadRepositoryURL : [k.GlobalWorkloadDef.WorkloadRepositoryURL/]
+	GlobalInvocationCommand : [k.GlobalWorkloadDef.GlobalInvocationCommand/]
+  [/if]
+  [if ( not (k.GlobalVisualizationDef.oclIsUndefined() or k.GlobalVisualizationDef.oclIsInvalid()) )]
+	VisualizationRepositoryURL : [k.GlobalVisualizationDef.VisualizationRepositoryURL/]
+	GlobalVisualizationMode : [k.GlobalVisualizationDef.Mode/]
+  [/if]
+ [/if]
+[/for]
+
+List of Elements to Measure
+[for (e : Element | aModel.ownedElement ) ]
+[comment Before Check :   [e/]
+  [if ( not (e.getAppliedStereotype('KPIProfile::forMeasurement').oclIsUndefined() or e.getAppliedStereotype('KPIProfile::forMeasurement').oclIsInvalid()) )]
+Single Element to Measure : 
+	ElementType: [e.eClass().name/]
+	ElementName: [e.eGet('name')/]
+	[toStringTechnologies(e)/]
+[for (k : KPIProfile::KPIDefInput | e.getValue(e.getAppliedStereotype('KPIProfile::forMeasurement'), 'KPIs') )]
+	[toStringKPIDef(k)/]
+[/for]
+  [/if]	
+  [comment Explore all sub elements of e/]   
+  [for (f : Element | e.eAllContents(Element) ) ]
+	[comment Sub Elements : [f/]
+	[if ( not (f.getAppliedStereotype('KPIProfile::forMeasurement').oclIsUndefined() or f.getAppliedStereotype('KPIProfile::forMeasurement').oclIsInvalid()) )]
+Single Element to Measure : 
+	ElementType: [f.eClass().name/]
+[toStringTechnologies(f)/]
+[for (l : KPIProfile::KPIDefInput | f.getValue(f.getAppliedStereotype('KPIProfile::forMeasurement'), 'KPIs') )]
+	[toStringKPIDef(l)/]
+[/for]
+ 	[/if]	
+  [/for]		
+[/for]
+[/file]
+[/template]
+
+[template public toStringTechnologies(e : Element)]
+	Technologies:
+	[for (t : String | e.getValue(e.getAppliedStereotype('KPIProfile::forMeasurement'), 'TechnologiesSpecification') ) ]
+		[t/]
+	[/for]
+[/template]
+
+[template public toStringKPIDef(k : KPIProfile::KPIDefInput)]
+	KPI Definition:
+		KPI Name : [k.KPIName/]
+		KPI Specific Repository URL [k.KPIRepositoryURL/]
+		Answer Quality Questions : [k.QualityQuestionIDRefs/]
+		Measurement Definition:
+			[k.MeasurementDef.fullname/]
+			[k.MeasurementDef.ElementContainerScope/]
+			[k.MeasurementDef.ElementMeasureScope/]
+			[k.MeasurementDef.preferredMeasurementFrequencyInMillisecond/]
+		Workload List
+			[for (w : KPIProfile::KPIWorkloadDefInput | k.WorkloadDef ) ]
+			Workload Definition
+				[w.ShortName/]
+				[w.Description/]
+				[w.InvocationCommand/]
+			[/for]
+		Visualization Item List
+			[for (v : KPIProfile::KPIVisualizationDefInput | k.VisualizationDef) ]
+			Visualization Item Definition
+				Properties TBD
+			[/for]
+
+[/template]

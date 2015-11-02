@@ -1,0 +1,12 @@
+Install the energy-modeller-load-calibration-tool-0.0.1-SNAPSHOT.war into a tomcat container.
+
+In catalina.properties set the values seen below, catalina.properties can be found in $tomcat_base\conf\catalina.properties:
+
+ascetic.log.executions=false
+ascetic.working.directory=//var//lib//tomcat7//ascetic-tmp//
+
+Specifiying a directory that tomcat has read/write/execute privlidges to.
+
+Fill in the configuration file (Apps.csv) specifiying the correct working directories for the application. 
+Place this file in the working directory.
+A test application can be found under utils\ascetic-load-generator-app.

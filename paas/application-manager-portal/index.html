@@ -1,0 +1,17 @@
+<html ng-app="asceticApplicationManagerPortalApp">
+  <head/>
+
+  <body ng-controller="MainCtrl as ctrl">
+    <h1>List of applications:</h1>
+
+    <ul>
+      <li ng-repeat="application in applications">
+          <span ng-bind="application.name"></span>
+      </li>
+    </ul>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular-resource.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>

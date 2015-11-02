@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright 2014 ATOS SPAIN S.A. 
+ 
+ Licensed under the Apache License, Version 2.0 (the License);
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+ 
+ http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ 
+ @author David Garcia Perez. David Rojo, Atos Research and Innovation, Atos SPAIN SA
+ @email david.garciaperez@atos.net david.rojoa@atos.net
+-->
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet author="davidgp" id="addDefaultValues-to-vm-table">
+        <addDefaultValue columnName="number_vms_max" defaultValueNumeric="-1" tableName="vms"/>
+        <addDefaultValue columnName="number_vms_min" defaultValueNumeric="-1" tableName="vms"/>
+
+        <addDefaultValue columnName="cpu_max" defaultValueNumeric="-1" tableName="vms"/>
+        <addDefaultValue columnName="cpu_actual" defaultValueNumeric="-1" tableName="vms"/>
+        <addDefaultValue columnName="cpu_min" defaultValueNumeric="-1" tableName="vms"/>
+
+        <addDefaultValue columnName="ram_max" defaultValueNumeric="-1" tableName="vms"/>
+        <addDefaultValue columnName="ram_actual" defaultValueNumeric="-1" tableName="vms"/>
+        <addDefaultValue columnName="ram_min" defaultValueNumeric="-1" tableName="vms"/>
+
+        <addDefaultValue columnName="swap_max" defaultValueNumeric="-1" tableName="vms"/>
+        <addDefaultValue columnName="swap_actual" defaultValueNumeric="-1" tableName="vms"/>
+        <addDefaultValue columnName="swap_min" defaultValueNumeric="-1" tableName="vms"/>
+
+        <addDefaultValue columnName="disk_max" defaultValueNumeric="-1" tableName="vms"/>
+        <addDefaultValue columnName="disk_actual" defaultValueNumeric="-1" tableName="vms"/>
+        <addDefaultValue columnName="disk_min" defaultValueNumeric="-1" tableName="vms"/>
+    </changeSet>
+    
+</databaseChangeLog>

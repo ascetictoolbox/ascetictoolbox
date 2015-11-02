@@ -1,0 +1,18 @@
+[
+	{
+		"title" : "App Monitor",
+		"url" : "http://10.4.0.16:9000/gui"
+	},
+    {
+        "title": "Example",
+        "url": "http://www.example.org"
+    },
+    {
+        "title": "Macias.info",
+        "url": "http://macias.info"
+    }, 
+    {
+        "title": "Mario Macias home page",
+        "url": "http://mario.site.ac.upc.edu"
+    }
+]

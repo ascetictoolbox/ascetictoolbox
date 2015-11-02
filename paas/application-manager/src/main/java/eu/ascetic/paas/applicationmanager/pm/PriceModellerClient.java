@@ -1,0 +1,71 @@
+package eu.ascetic.paas.applicationmanager.pm;
+
+import org.apache.log4j.Logger;
+
+import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.PaaSPricingModeller;
+
+/**
+ * 
+ * Copyright 2014 ATOS SPAIN S.A. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the License);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * @author David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
+ * e-mail david.garciaperez@atos.net 
+ * 
+ * Class responsible to connecting to the Price Modeller
+ *
+ */
+public class PriceModellerClient {
+	private static Logger logger = Logger.getLogger(PriceModellerClient.class);
+	private static PriceModellerClient instance = null;
+	protected PaaSPricingModeller priceModeller =  new PaaSPricingModeller();
+	
+	private PriceModellerClient() {
+		logger.info("PriceModeller has been created for the first time...");
+	}
+	
+	public static PriceModellerClient getInstance() {
+		if(instance == null) {
+			instance = new PriceModellerClient();
+		}
+		return instance;
+	}
+	
+	public void initializeApplication(int deploymentId, int schemeId) {
+		priceModeller.initializeApp(deploymentId, schemeId);
+	}
+	
+	public double getAppPredictedCharges(int deploymentId, int schemeID, double iaaSCharges) {
+		return priceModeller.getAppPredictedCharges(deploymentId, schemeID, iaaSCharges);
+	}
+	
+	public double getAppPredictedPrice(int deploymentId, int schemeID, double iaaSCharges, long duration) {
+		return priceModeller.getAppPredictedPrice(deploymentId, schemeID, iaaSCharges, duration);
+	}
+	
+	public double getAppTotalCharges(int deploymentId, int schemeID, double iaaSCharges) {
+		return priceModeller.getAppTotalCharges(deploymentId, schemeID, iaaSCharges);
+	}
+	
+	public double getEventPredictedCharges(int deploymentId, 
+			                               int cpu, 
+			                               int ram, 
+			                               double storage, 
+			                               double energy, 
+			                               int schemeId, 
+			                               long duration, 
+			                               int numberOfevents) {
+		return priceModeller.getEventPredictedCharges(deploymentId, cpu, ram, storage, energy, schemeId, duration, numberOfevents);
+	}
+}

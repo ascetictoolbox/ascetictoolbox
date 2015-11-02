@@ -1,0 +1,8 @@
+Time From Start,Command,stdOut,stdError,Working Directory,Output To Screen
+0,sleep 50,/opt/energy-modeller-calibrator/test.out,/opt/energy-modeller-calibrator/error.out,/opt/energy-modeller-calibrator/,TRUE,50
+60,/opt/energy-modeller-calibrator/run-stress-point.sh 10 4 60,/opt/energy-modeller-calibrator/test.out,/opt/energy-modeller-calibrator/error.out,/opt/energy-modeller-calibrator/,TRUE,120
+160,/opt/energy-modeller-calibrator/run-stress-point.sh 20 4 60,/opt/energy-modeller-calibrator/test1.out,/opt/energy-modeller-calibrator/error1.out,/opt/energy-modeller-calibrator/,TRUE,220
+260,/opt/energy-modeller-calibrator/run-stress-point.sh 40 4 60,/opt/energy-modeller-calibrator/test2.out,/opt/energy-modeller-calibrator/error2.out,/opt/energy-modeller-calibrator/,TRUE,320
+360,/opt/energy-modeller-calibrator/run-stress-point.sh 60 4 60,/opt/energy-modeller-calibrator/test3.out,/opt/energy-modeller-calibrator/error3.out,/opt/energy-modeller-calibrator/,TRUE,420
+460,/opt/energy-modeller-calibrator/run-stress-point.sh 80 4 60,/opt/energy-modeller-calibrator/test4.out,/opt/energy-modeller-calibrator/error4.out,/opt/energy-modeller-calibrator/,TRUE,520
+560,/opt/energy-modeller-calibrator/run-stress-point.sh 100 4 60,/opt/energy-modeller-calibrator/test5.out,/opt/energy-modeller-calibrator/error5.out,/opt/energy-modeller-calibrator/,TRUE,620

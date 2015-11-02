@@ -1,0 +1,8 @@
+The emulated Watt meter is a tool that is designed to emulate the presence of a Watt meter been attached to a physical host inside a Zabbix based environment. Its usage is as follows: 
+
+java –jar host-power-emulator-0.0.1-SNAPSHOT.jar [hostname] [host-name-to-clone]
+
+<hostname>: This is an optional argument that states which host to emulate the Watt meter for.
+[host-name-to-clone]: This is an optional argument that allows the named host to have its data cloned for the purpose of emulating the named host.
+If no hostname is specified the tool will work for all calibrated hosts. 
+[stop-on-clone]: This parameter stops the emulated Watt meter as soon as the cloning of the host calibration data has been completed. Thus it may be used to simply copy calibration data for one host to another.

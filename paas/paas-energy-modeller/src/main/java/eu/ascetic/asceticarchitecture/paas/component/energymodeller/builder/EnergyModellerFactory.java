@@ -1,0 +1,47 @@
+/**
+   Copyright 2014-2015 Hewlett-Packard Development Company, L.P.  
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+ */                                     
+package eu.ascetic.asceticarchitecture.paas.component.energymodeller.builder;
+
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.PaaSEnergyModeller;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.service.EnergyModellerService;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.service.EnergyModellerServiceY1;
+
+public class EnergyModellerFactory {
+	
+	private static PaaSEnergyModeller theEnergyModeller;
+	
+	public static PaaSEnergyModeller getEnergyModeller(String propertyFile){
+		if (theEnergyModeller==null) {
+			theEnergyModeller = (PaaSEnergyModeller) new EnergyModellerService(propertyFile);
+			return theEnergyModeller;
+		} else {
+			return theEnergyModeller;
+		}
+	}
+	
+	// DEPRECATED: just for backword compatibility, but going to be removed soon
+	@Deprecated
+	public static PaaSEnergyModeller getY1EnergyModeller(String propertyFile){
+		if (theEnergyModeller==null) {
+			theEnergyModeller = (PaaSEnergyModeller) new EnergyModellerServiceY1(propertyFile);
+			return theEnergyModeller;
+		} else {
+			return theEnergyModeller;
+		}
+	}
+	
+
+}

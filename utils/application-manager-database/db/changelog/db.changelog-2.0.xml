@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright 2014 ATOS SPAIN S.A. 
+ 
+ Licensed under the Apache License, Version 2.0 (the License);
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+ 
+ http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ 
+ @author David Garcia Perez. David Rojo, Atos Research and Innovation, Atos SPAIN SA
+ @email david.garciaperez@atos.net david.rojoa@atos.net
+-->
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<changeSet id="creation-images-table" author="davidgp">
+        <createTable tableName="images">
+            <column name="image_id" type="int">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="ovf_id" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="provider_image_id" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <modifySql dbms="mysql">
+            <append value=" engine innodb charset=utf8"/>
+        </modifySql>
+  </changeSet>
+
+  <changeSet author="davidgp" id="autoincriment-images">
+    <addAutoIncrement 
+          columnDataType="int"
+            columnName="image_id"
+            incrementBy="1"
+            startWith="1"
+            tableName="images"/>
+  </changeSet>
+
+  <changeSet id="creation-vms-images-table" author="davidgp">
+        <createTable tableName="vms_images">
+            <column name="vms_image_id" type="int">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="vm_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="image_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <modifySql dbms="mysql">
+            <append value=" engine innodb charset=utf8"/>
+        </modifySql>
+  </changeSet>
+
+  <changeSet author="davidgp" id="autoincriment-vms-images">
+    <addAutoIncrement 
+          columnDataType="int"
+            columnName="vms_image_id"
+            incrementBy="1"
+            startWith="1"
+            tableName="vms_images"/>
+  </changeSet>
+
+  <changeSet author="davidgp" id="add_foreign_key_for_vms_images_table_1">
+        <addForeignKeyConstraint 
+            baseColumnNames="vm_id"
+            baseTableName="vms_images"
+            constraintName="fk_vms_images_1"
+            referencedColumnNames="vm_id"
+            referencedTableName="vms"/>
+  </changeSet>
+
+  <changeSet author="davidgp" id="add_foreign_key_for_vms_images_table_2">
+        <addForeignKeyConstraint 
+            baseColumnNames="image_id"
+            baseTableName="vms_images"
+            constraintName="fk_vms_images_2"
+            referencedColumnNames="image_id"
+            referencedTableName="images"/>
+  </changeSet>
+	
+</databaseChangeLog>

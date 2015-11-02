@@ -1,0 +1,29 @@
+#!/bin/bash -e
+
+  action=$1
+
+  if [ "$action" == "remove" ]; then
+    # Remove software
+  elif [ "$action" == "purge" ]; then
+    # Purge config files
+  elif [ "$action" == "upgrade" ]; then
+    # Upgrade software
+    newversion=$2
+  elif [ "$action" == "disappear" ]; then
+    # Disappear
+    overwriter=$2
+    overwriterversion=$3
+  elif [ "$action" == "failed-upgrade" ]; then
+    # Revert on failed upgrade
+    oldversion=$2
+  elif [ "$action" == "abort-install" ]; then
+    if [ $# -eq 1 ]; then
+      # Abort generic installation
+    else
+      # Abort reverting to previous version
+      oldversion=$2
+    fi
+  elif [ "$action" == "abort-upgrade" ]; then
+    # Abort upgrade reverting to previous version
+    oldversion=$2
+  fi

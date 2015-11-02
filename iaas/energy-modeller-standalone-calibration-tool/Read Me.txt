@@ -1,0 +1,13 @@
+The standalone calibration tool is designed to calibrate the model that is used for physical hosts. Its usage is as follows: 
+
+java –jar energy-modeller-standalone-calibration-tool-0.0.1-SNAPSHOT.jar <hostname> [halt-on-calibrated] [benchmark-only] [no-benchmark] [use-watts-up-meter]
+
+<hostname>: This is an non-optional argument that states which host to emulate the Watt meter for. If no hostname is specified the tool will work for all calibrated hosts.
+
+[halt-on-calibrated]: The halt-on-calibrated flag will prevent calibration in cases where the data has already been gathered.
+
+[benchmark-only]: The benchmark-only flag skips the calibration run and performs a benchmark run only.
+
+[no-benchmark]: The no-benchmark flag skips the benchmarking.
+
+[use-watts-up-meter]: The use-watts-up-meter flag can be used so that Zabbix is not used for calibration but local measurements are performed instead. This requires a Watts Up Meter.

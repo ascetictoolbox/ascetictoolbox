@@ -1,0 +1,52 @@
+-----------------------------
+ COMP SUPERSCALAR FRAMEWORK
+-----------------------------
+
+* COMP Superscalar framework packages can be found on builders/packages/ directory.
+
+* COMPSs Documentation (doc/):
+
+  * The COMP Superscalar installation guide:
+    - installation-guide.html
+
+  * The COMP Superscalar manual:
+    - compss-manual.pdf
+
+-------------------------
+ BUILDING THE FRAMEWORK
+-------------------------
+
+* Build command: 
+      
+     $ cd compss; mvn package
+
+  (IMPORTANT: Requires Maven 3.0.x version)
+
+
+* Building packages on Debian based machine:
+
+  In order to be able to build Debian & Red-Hat packages the following packages should be installed:
+
+    - sudo apt-get install build-essential autoconf automake autotools-dev\ 
+           dh-make debhelper devscripts fakeroot xutils lintian pbuilder rpm
+
+* Building packages on Red-Hat based machine:
+
+  In order to be able to build Debian & Red-Hat packages the following packages should be installed:
+    - yast2 -i deb
+
+* Prepare Debian & Red-Hat packages:
+
+     - Both:
+	$ cd builders/; ./buildall
+
+     - Only Debian:
+         $ cd builders/specs/deb/; ./builddeb
+
+     - Only Red-Hat:
+         $ cd builders/specs/rpm/; ./buildrpm
+
+
+Department of Computer Science
+Barcelona Supercomputing Center
+

@@ -1,0 +1,112 @@
+ src/main/java/eu/optimis/vc/libvirt/Connect.java     |   41 ++++++++++++++++++++++++++++
+ src/main/java/eu/optimis/vc/libvirt/Domain.java      |   17 ++++++++++++
+ src/main/java/eu/optimis/vc/libvirt/jna/Libvirt.java |    6 ++++
+ 3 files changed, 64 insertions(+)
+
+diff --git a/src/main/java/eu/optimis/vc/libvirt/Connect.java
+b/src/main/java/eu/optimis/vc/libvirt/Connect.java
+index 84cb0df..50a9524 100644
+--- a/src/main/java/eu/optimis/vc/libvirt/Connect.java
++++ b/src/main/java/eu/optimis/vc/libvirt/Connect.java
+@@ -87,6 +87,12 @@ public class Connect {
+                                    Event event,
+                                    int detail);
+         }
++
++        public interface PMWakeupCallback {
++            final int eventID = DomainEventID.PMWAKEUP;
++
++            void onPMWakeup(Connect connect, Domain domain, int reason);
++        }
+     }
+
+     /**
+@@ -525,6 +531,41 @@ public class Connect {
+         return domainEventRegister(null, cb);
+     }
+
++    int domainEventRegister(Domain domain, final DomainEvent.PMWakeupCallback cb) throws LibvirtException {
++        if (cb == null)
++            throw new IllegalArgumentException("PMWakeupCallback cannot be null");
++
++        Libvirt.VirDomainEventCallback virCB =
++            new Libvirt.VirConnectDomainEventPMChangeCallback() {
++                @Override
++                public void eventCallback(ConnectionPointer virConnectPtr, DomainPointer virDomainPointer,
++                                          int reason, com.sun.jna.Pointer opaque) {
++                    assert(VCP.equals(virConnectPtr));
++                    Domain d = new Domain(Connect.this, virDomainPointer);
++                    cb.onPMWakeup(Connect.this, d, reason);
++                }
++            };
++
++        return domainEventRegister(domain, cb.eventID, virCB);
++    }
++
++    /**
++     * Adds a callback to receive notifications of PMWakeup events
++     * occurring on some domain.
++     *
++     * @see <a
++     * href="http://www.libvirt.org/html/libvirt-libvirt.html#virConnectDomainEventRegisterAny">Libvirt
++     *      Documentation</a>
++     * @param cb
++     *            the PMWakeupCallback instance
++     * @return The return value from this method is a positive integer identifier for the callback.
++     * @throws LibvirtException on failure
++     */
++    public int domainEventRegister(final DomainEvent.PMWakeupCallback cb) throws LibvirtException
++    {
++        return domainEventRegister(null, cb);
++    }
++
+     /**
+      * Adds a callback to receive notifications of Reboot domain events
+      * occurring on an arbitrary domain.
+diff --git a/src/main/java/eu/optimis/vc/libvirt/Domain.java
+b/src/main/java/eu/optimis/vc/libvirt/Domain.java
+index e6ffaa0..30184ad 100644
+--- a/src/main/java/eu/optimis/vc/libvirt/Domain.java
++++ b/src/main/java/eu/optimis/vc/libvirt/Domain.java
+@@ -916,6 +916,23 @@ public class Domain {
+     }
+
+     /**
++     * Adds a callback to receive notifications of PMWakeup events
++     * occurring on some domain.
++     *
++     * @see <a
++     * href="http://www.libvirt.org/html/libvirt-libvirt.html#virConnectDomainEventRegisterAny">Libvirt
++     *      Documentation</a>
++     * @param cb
++     *            the PMWakeupCallback instance
++     * @return The return value from this method is a positive integer identifier for the callback.
++     * @throws LibvirtException on failure
++     */
++    public int register(final Connect.DomainEvent.PMWakeupCallback cb) throws LibvirtException
++    {
++        return virConnect.domainEventRegister(this, cb);
++    }
++
++    /**
+      * Revert the domain to a given snapshot.
+      *
+      * @see <a href=
+diff --git a/src/main/java/eu/optimis/vc/libvirt/jna/Libvirt.java
+b/src/main/java/eu/optimis/vc/libvirt/jna/Libvirt.java
+index 210a471..1e35202 100644
+--- a/src/main/java/eu/optimis/vc/libvirt/jna/Libvirt.java
++++ b/src/main/java/eu/optimis/vc/libvirt/jna/Libvirt.java
+@@ -96,6 +96,12 @@ public interface Libvirt extends Library {
+                           Pointer opaque);
+     }
+
++    // PMWakeup and PMSuspend have the same callback interface.
++    interface VirConnectDomainEventPMChangeCallback extends VirDomainEventCallback {
++        void eventCallback(ConnectionPointer virConnectPtr, DomainPointer virDomainPointer,
++                           int reason, Pointer opaque);
++    }
++
+     /**
+      * Error callback
+      */

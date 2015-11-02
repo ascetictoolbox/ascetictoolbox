@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Environment xmlns="http://schemas.dmtf.org/ovf/environment/1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ovfenv="http://schemas.dmtf.org/ovf/environment/1"
+    xsi:schemaLocation="http://schemas.dmtf.org/ovf/environment/1 ../dsp8027.xsd"
+    ovfenv:id="DB1">
+    
+    <!-- This example reference a local schema file, to validate against online schema use:
+    xsi:schemaLocation="http://schemas.dmtf.org/ovf/envelope/1 http://schemas.dmtf.org/ovf/envelope/1/dsp8027_1.0.0.xsd"
+    -->
+    
+    <!-- Information about hypervisor platform -->
+    <PlatformSection>
+        <Kind>ESX Server</Kind>
+        <Version>3.0.1</Version>
+        <Vendor>VMware, Inc.</Vendor>
+        <Locale>en_US</Locale>
+    </PlatformSection>
+
+    <!--- Properties defined for this virtual machine -->
+    <PropertySection>
+        <Property ovfenv:key="com.mydb.db.vm1" ovfenv:value="10.20.132.102"/>
+        <Property ovfenv:key="com.mydb.db.vm2" ovfenv:value="10.20.132.103"/>
+        <Property ovfenv:key="com.mydb.db.log" ovfenv:value="warning"/>
+        <Property ovfenv:key="com.mydb.db.ip" ovfenv:value="10.20.132.102"/>
+        <Property ovfenv:key="com.mydb.db.ip2" ovfenv:value="10.20.132.103"/>
+        <Property ovfenv:key="com.mydb.db.primaryAtBoot" ovfenv:value="yes"/>
+    </PropertySection>
+
+    <Entity ovfenv:id="DB2">
+        <PropertySection>
+            <Property ovfenv:key="com.mydb.db.vm1" ovfenv:value="10.20.132.102"/>
+            <Property ovfenv:key="com.mydb.db.vm2" ovfenv:value="10.20.132.103"/>
+            <Property ovfenv:key="com.mydb.db.log" ovfenv:value="warning"/>
+            <Property ovfenv:key="com.mydb.db.ip" ovfenv:value="10.20.132.103"/>
+            <Property ovfenv:key="com.mydb.db.ip2" ovfenv:value="10.20.132.102"/>
+            <Property ovfenv:key="com.mydb.db.primaryAtBoot" ovfenv:value="no"/>
+        </PropertySection>
+    </Entity>
+</Environment>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+  <changeSet id="creation-providers-table" author="davidgp">
+        <createTable tableName="providers">
+            <column name="id" type="int">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="vmm_url" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="slam_url" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <modifySql dbms="mysql">
+          	<append value=" engine innodb charset=utf8"/>
+        </modifySql>
+  </changeSet>
+
+  <changeSet author="davidgp" id="autoincriment-providers">
+    <addAutoIncrement 
+    	    columnDataType="int"
+            columnName="id"
+            incrementBy="1"
+            startWith="1"
+            tableName="providers"/>
+  </changeSet>
+
+</databaseChangeLog>

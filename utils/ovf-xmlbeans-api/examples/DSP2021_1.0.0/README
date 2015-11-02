@@ -1,0 +1,3 @@
+All schemas and examples validate using Oxygen XML editor 10 (http://www.oxygenxml.com/).  The Oxygen project file ovf-schemas-examples.xpr is included.
+
+Location of schemas and examples is position independent, as long as directory structure is preserved.

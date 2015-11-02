@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:vssd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData"
+    xmlns:rasd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData"
+    xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"
+    xmlns="http://schemas.dmtf.org/ovf/envelope/1"
+    xsi:schemaLocation="http://schemas.dmtf.org/ovf/envelope/1 ../dsp8023.xsd http://schemas.customextension.org/1 custom-extension.xsd"
+    xmlns:custom="http://schemas.customextension.org/1">
+    
+    <!-- This example reference a local schema file, to validate against online schema use:
+    xsi:schemaLocation="http://schemas.dmtf.org/ovf/envelope/1 http://schemas.dmtf.org/ovf/envelope/1/dsp8023_1.0.0.xsd"
+    -->
+    
+    <!-- References to all external files -->
+    <References>
+        <File ovf:id="custom" ovf:href="custom.vmdk" ovf:size="180114671"/>
+    </References>
+
+    <!-- EXTENSION EXAMPLE -->
+    <!-- Optional custom section element with validation against custom schema -->
+    <custom:CustomSection ovf:required="false">
+        <Info>Description of custom extension</Info>
+        <custom:Data>somevalue</custom:Data>
+    </custom:CustomSection>
+
+    <!-- Describes meta-information about all virtual disks in the package  -->
+    <DiskSection>
+        <Info>List of the virtual disks used in the package</Info>
+        <Disk ovf:diskId="custom" ovf:fileRef="custom" ovf:capacity="4294967296"
+            ovf:format="http://www.vmware.com/interfaces/specifications/vmdk.html#streamOptimized"/>
+     </DiskSection>
+
+    <!-- Describes all networks used in the package -->
+    <NetworkSection>
+        <Info>Logical networks used in the package</Info>
+        <!-- EXTENSION EXAMPLE -->
+        <!-- Optional custom attribute -->
+        <Network ovf:name="VM Network" custom:desiredCapacity="1 Gbit/s"/>
+        
+        <!-- EXTENSION EXAMPLE -->
+        <!-- Optional custom meta-data inserted at extension point, with validation against custom schema -->
+        <custom:CustomOther xsi:type="custom:CustomOther_Type" ovf:required="false">
+            <custom:Data>somevalue</custom:Data>
+        </custom:CustomOther>
+        
+    </NetworkSection>
+    
+    <!-- Single VM content -->
+    <VirtualSystem ovf:id="CustomService">
+        <Info>Small single-VM example with OVF extensibility</Info>
+        <VirtualHardwareSection>
+            <Info>Virtual Hardware Requirements: 256MB, 1 CPU, 1 disk, 1 NIC</Info>
+            <Item>
+                <rasd:Description>Number of virtual CPUs</rasd:Description>
+                <rasd:ElementName>1 virtual CPU</rasd:ElementName>
+                <rasd:InstanceID>1</rasd:InstanceID>
+                <rasd:ResourceType>3</rasd:ResourceType>
+                <rasd:VirtualQuantity>1</rasd:VirtualQuantity>
+            </Item>
+            <Item>
+                <rasd:AllocationUnits>byte * 2^20</rasd:AllocationUnits>
+                <rasd:Description>Memory Size</rasd:Description>
+                <rasd:ElementName>256 MB of memory</rasd:ElementName>
+                <rasd:InstanceID>2</rasd:InstanceID>
+                <rasd:ResourceType>4</rasd:ResourceType>
+                <rasd:VirtualQuantity>256</rasd:VirtualQuantity>
+            </Item>
+            <Item>
+                <rasd:AutomaticAllocation>true</rasd:AutomaticAllocation>
+                <rasd:Connection>VM Network</rasd:Connection>
+                <rasd:ElementName>Ethernet adapter on "VM Network"</rasd:ElementName>
+                <rasd:InstanceID>3</rasd:InstanceID>
+                <rasd:ResourceType>10</rasd:ResourceType>
+            </Item>
+            <Item>
+                <rasd:ElementName>SCSI Controller 0 - LSI Logic</rasd:ElementName>
+                <rasd:InstanceID>4</rasd:InstanceID>
+                <rasd:ResourceSubType>LsiLogic</rasd:ResourceSubType>
+                <rasd:ResourceType>6</rasd:ResourceType>
+            </Item>
+            <Item>
+                <rasd:ElementName>Harddisk 1</rasd:ElementName>
+                <rasd:HostResource>ovf:/disk/custom</rasd:HostResource>
+                <rasd:InstanceID>5</rasd:InstanceID>
+                <rasd:Parent>4</rasd:Parent>
+                <rasd:ResourceType>17</rasd:ResourceType>
+            </Item>
+        </VirtualHardwareSection>
+    </VirtualSystem>
+</Envelope>

@@ -1,0 +1,111 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+        <groupId>eu.ascetic</groupId>
+        <artifactId>utils</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+  <groupId>eu.ascetic.utils</groupId>
+  <artifactId>ascetic-metric-pusher</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>Ascetic Metric Pusher</name>
+  <url>http://www.ascetic.eu</url>
+  
+  <ciManagement>
+		<system>hudson</system>
+		<url>https://ascetic-jenkins.cit.tu-berlin.de/job/${jenkins.project.name}</url>
+		<notifiers>
+			<notifier>
+				<type>mail</type>
+				<configuration>
+					<recipients>david.garciaperez@atos.net david.rojoa@atos.net</recipients>
+				</configuration>
+				<sendOnError>true</sendOnError>
+				<sendOnFailure>true</sendOnFailure>
+				<sendOnSuccess>false</sendOnSuccess>
+				<sendOnWarning>false</sendOnWarning>
+			</notifier>
+		</notifiers>
+	</ciManagement>
+	
+	<build>
+	<plugins>
+		<plugin>
+			<artifactId>maven-assembly-plugin</artifactId>
+			<configuration>
+				<archive>
+					<manifest>
+						<mainClass>eu.ascetic.utils.metricpusher.pusher.MetricPusher</mainClass>
+					</manifest>
+				</archive>
+				<descriptorRefs>
+					<descriptorRef>jar-with-dependencies</descriptorRef>
+				</descriptorRefs>
+			</configuration>
+		</plugin>
+
+		<plugin>
+			<!-- Build an executable JAR -->
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-jar-plugin</artifactId>
+			<version>2.4</version>
+			<configuration>
+				<archive>
+					<manifest>
+						<addClasspath>true</addClasspath>
+						<mainClass>eu.ascetic.utils.metricpusher.pusher.MetricPusher</mainClass>
+					</manifest>
+				</archive>
+				<descriptorRefs>
+					<descriptorRef>jar-with-dependencies</descriptorRef>
+				</descriptorRefs>
+			</configuration>
+
+		</plugin>
+	</plugins>
+</build>
+	
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+	<dependency>
+		<groupId>log4j</groupId>
+		<artifactId>log4j</artifactId>
+		<version>1.2.16</version>
+	</dependency>
+	<dependency>
+		<groupId>eu.ascetic.iaas</groupId>
+		<artifactId>energy-modeller</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</dependency>
+	<dependency>
+		<groupId>eu.ascetic.utils</groupId>
+		<artifactId>io-utils</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	</dependency>
+	<!-- ASCETiC AMQP 1.0 Client -->
+	<dependency>
+		<groupId>eu.ascetic.utils</groupId>
+		<artifactId>ascetic-qpid-amqp-client</artifactId>
+		<version>0.2-SNAPSHOT</version>
+	</dependency>
+	<!-- Zabbix API -->
+	<dependency>
+		<groupId>eu.ascetic.utils</groupId>
+		<artifactId>zabbix-api</artifactId>
+		<version>0.1-SNAPSHOT</version>
+	</dependency>
+	<!-- gson -->
+	<dependency>
+		<groupId>com.google.code.gson</groupId>
+		<artifactId>gson</artifactId>
+		<version>2.2.4</version>
+	</dependency>
+  </dependencies>
+</project>

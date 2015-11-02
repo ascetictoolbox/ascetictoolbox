@@ -1,0 +1,11 @@
+<xb:config xmlns:xb="http://www.bea.com/2002/09/xbean/config">
+    <xb:namespace uri="http://schemas.dmtf.org/ovf/envelope/1">
+        <xb:prefix>XmlBean</xb:prefix>
+    </xb:namespace>
+    <xb:namespace uri="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData">
+        <xb:prefix>XmlBean</xb:prefix>
+    </xb:namespace>
+    <xb:namespace uri="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData">
+        <xb:prefix>XmlBean</xb:prefix>
+    </xb:namespace>  
+</xb:config>

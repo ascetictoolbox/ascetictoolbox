@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+    <system systemId="http://192.168.3.16/application-manager?wadl" uri="wsdl/192.168.3.16/application-manager.wadl.xml"/>
+    <system systemId="http://192.168.3.16/application-manager" uri="wsdl/192.168.3.16/application-manager.xml"/>
+</catalog>
