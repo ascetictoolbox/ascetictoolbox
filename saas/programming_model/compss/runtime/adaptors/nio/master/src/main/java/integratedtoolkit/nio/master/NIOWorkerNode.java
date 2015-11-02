@@ -264,6 +264,6 @@ public class NIOWorkerNode extends COMPSsWorker {
 
     @Override
     public void deleteTemporary() {
-        System.out.println("NIOWorkerNode hauria d'eliminar " + workingDir + " a " + getName());
+        //System.out.println("NIOWorkerNode hauria d'eliminar " + workingDir + " a " + getName());
     }
 }

@@ -264,7 +264,7 @@ public class GATWorkerNode extends COMPSsWorker {
 
     @Override
     public void deleteTemporary() {
-        System.out.println("GATWorkerNode hauria d'eliminar " + workingDir + " a " + getName());
+        //System.out.println("GATWorkerNode hauria d'eliminar " + workingDir + " a " + getName());
     }
 
 }
