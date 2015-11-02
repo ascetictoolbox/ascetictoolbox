@@ -190,8 +190,8 @@
   # TOOLS DEPLOYMENT
   echo "- Deploying COMPSs Tools"
   cd ${tmpDir}
-  TOMCAT_VER="`curl http://ftp.cixug.es/apache/tomcat/tomcat-7/ | grep "v7" | tail -1 | awk '{print $5}' | cut -c 18-23`"
-  TOMCAT_URL="http://ftp.cixug.es/apache/tomcat/tomcat-7/v$TOMCAT_VER/bin/apache-tomcat-$TOMCAT_VER.tar.gz"
+  TOMCAT_VER="`curl http://apache.rediris.es/tomcat/tomcat-7/ | grep "v7" | tail -1 | awk '{print $5}' | cut -c 18-23`"
+  TOMCAT_URL="http://apache.rediris.es/tomcat/tomcat-7/v$TOMCAT_VER/bin/apache-tomcat-$TOMCAT_VER.tar.gz"
   wget $TOMCAT_URL
   tar xzf apache-tomcat-$TOMCAT_VER.tar.gz
   cd ${scriptDir}
