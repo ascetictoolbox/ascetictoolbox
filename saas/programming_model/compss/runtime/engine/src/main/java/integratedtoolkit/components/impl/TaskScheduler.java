@@ -19,16 +19,15 @@ package integratedtoolkit.components.impl;
 
 import org.apache.log4j.Logger;
 
+import integratedtoolkit.ascetic.VM;
 import integratedtoolkit.components.scheduler.SchedulerPolicies;
 import integratedtoolkit.ITConstants;
 import integratedtoolkit.components.ResourceUser.WorkloadStatus;
 import integratedtoolkit.log.Loggers;
 import integratedtoolkit.types.Implementation;
-
 import integratedtoolkit.types.Task;
 import integratedtoolkit.types.job.Job;
 import integratedtoolkit.types.resources.Worker;
-
 import integratedtoolkit.util.CoreManager;
 
 import java.util.HashMap;
@@ -329,6 +328,54 @@ public abstract class TaskScheduler {
         }
         return result;
     }
+    
+    private long[] getImplementationStats(int coreId, int implId, long defaultValue) {
+        long[] result = new long[4];
+
+        int counter = 0;
+        long maxTime = Long.MIN_VALUE;
+        long minTime = Long.MAX_VALUE;
+        long avgTime = 0l;
+        
+            if (profile[coreId][implId].executionCount > 0) {//Implementation has been executed
+                counter = profile[coreId][implId].executionCount;
+                avgTime = profile[coreId][implId].avgExecutionTime;
+                maxTime = profile[coreId][implId].maxExecutionTime;
+                minTime = profile[coreId][implId].minExecutionTime;
+            }
+        if (counter > 0) {
+            result[0] = counter;
+            result[1] = minTime;
+            result[2] = avgTime;
+            result[3] = maxTime;
+        } else {
+            Task earlier = null;
+
+          
+                if (profile[coreId][implId].firstExecution != null) {
+                    if (earlier == null) {
+                        earlier = profile[coreId][implId].firstExecution;
+                    } else {
+                        if (earlier.getInitialTimeStamp() > profile[coreId][implId].firstExecution.getInitialTimeStamp()) {
+                            earlier = profile[coreId][implId].firstExecution;
+                        }
+                    }
+                }
+            if (earlier == null) {
+                result[0] = 0;
+                result[1] = defaultValue;
+                result[2] = defaultValue;
+                result[3] = defaultValue;
+            } else {
+                result[0] = 0;
+                long difference = System.currentTimeMillis() - earlier.getInitialTimeStamp();
+                result[1] = difference;
+                result[2] = difference;
+                result[3] = difference;
+            }
+        }
+        return result;
+    }
 
     /**
      * Returns the current core status data
@@ -339,9 +386,10 @@ public abstract class TaskScheduler {
         StringBuilder sb = new StringBuilder(prefix + "<CoresInfo>" + "\n");
         for (java.util.Map.Entry<String, Implementation> entry : CoreManager.SIGNATURE_TO_IMPL.entrySet()) {
             int core = entry.getValue().getCoreId();
+            int implId = entry.getValue().getImplementationId();
             String signature = entry.getKey();
             sb.append(prefix + "\t").append("<Core id=\"").append(core).append("\" signature=\"" + signature + "\">").append("\n");
-            long stats[] = getCoreStats(core, 0);
+            long stats[] = getImplementationStats(core, implId, 0);
             sb.append(prefix + "\t\t").append("<MeanExecutionTime>").append(stats[2]).append("</MeanExecutionTime>\n");
             sb.append(prefix + "\t\t").append("<MinExecutionTime>").append(stats[1]).append("</MinExecutionTime>\n");
             sb.append(prefix + "\t\t").append("<MaxExecutionTime>").append(stats[3]).append("</MaxExecutionTime>\n");
@@ -541,4 +589,27 @@ public abstract class TaskScheduler {
         }
 
     }
+
+	public String getProfileMetrics(VM vm, String prefix) {
+		StringBuilder sb = new StringBuilder();
+        for (java.util.Map.Entry<String, Implementation> entry : CoreManager.SIGNATURE_TO_IMPL.entrySet()) {
+            int core = entry.getValue().getCoreId();
+            int implId = entry.getValue().getImplementationId();
+            String signature = entry.getKey();
+            int pos = signature.indexOf("(");
+    		int posfin = signature.indexOf(")");
+    		String className = signature.substring(posfin+1);
+    		signature = className+"."+signature.substring(0, pos);
+            long stats[] = getImplementationStats(core, implId, 0);
+            long time = stats[2]/1000;
+            double power = vm.getPower(core, implId);
+            double price  = vm.getPrice(core, implId);
+            double cost = (price*time)/(3600);
+            double energy = (power * time)/(3600);
+            sb.append(prefix ).append("<StatisticParameter id=\"").append("Estimations "+vm.getIPv4()+" "+signature).append("\">")
+            .append("Time: "+time+"s").append(" \nAvg.Power: "+power+"W \nEnergy: "+ energy+"Wh").append("\nPrice: "+price+ "€/h\nCost: "+cost+"€")
+            .append("</StatisticParameter>").append("\n");
+        }
+        return sb.toString();
+	}
 }

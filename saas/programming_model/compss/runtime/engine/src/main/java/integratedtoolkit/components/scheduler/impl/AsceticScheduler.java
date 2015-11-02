@@ -171,7 +171,7 @@ public class AsceticScheduler extends TaskScheduler {
                 logger.info("Sending job " + task + ", to res name " + chosenResource.getName() + ", resource " + chosenResource + ", with impl " + run.getFirst());
                 Implementation impl = run.getFirst();
                 if (sendJob(task, chosenResource, impl)){
-                	System.out.println("Job sended. Registering event");
+                	logger.debug("Job sended. Registering event");
                 	Ascetic.startEvent(chosenResource, task, impl);
                 }
             }
@@ -240,7 +240,7 @@ public class AsceticScheduler extends TaskScheduler {
                 logger.info("Match: Task(" + task.getId() + ", " + task.getTaskParams().getName() + ") " + "Resource(" + chosenResource.getName() + ")");
                 Implementation impl = orderedImpls.getFirst();
                 if (sendJobRescheduled(task, chosenResource, impl)) {
-                	System.out.println("Job sended. Registering event");
+                	logger.debug("Job sended. Registering event");
                 	Ascetic.startEvent(chosenResource, task, impl);
                 	return;
                 }
@@ -384,7 +384,7 @@ public class AsceticScheduler extends TaskScheduler {
             }
             Implementation impl = fittingImplementations[coreId].get(0);
             if (sendJob(t, resource, impl)) {
-            	System.out.println("Job sended. Registering event");
+            	logger.debug("Job sended. Registering event");
             	Ascetic.startEvent(resource, t, impl);
             	assigned = true;
                 if (sortedTasks[coreId].isEmpty()) {

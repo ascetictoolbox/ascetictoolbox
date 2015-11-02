@@ -17,11 +17,15 @@
 
 package integratedtoolkit.types.request.td;
 
+import integratedtoolkit.ascetic.Ascetic;
 import integratedtoolkit.components.impl.JobManager;
 import integratedtoolkit.components.impl.TaskScheduler;
 import integratedtoolkit.types.resources.Worker;
 import integratedtoolkit.util.ResourceManager;
+
 import java.util.concurrent.Semaphore;
+
+import eu.ascetic.paas.applicationmanager.amqp.model.VM;
 
 /**
  * The MonitoringDataRequest class represents a request to obtain the current
@@ -113,8 +117,15 @@ public class MonitoringDataRequest extends TDRequest {
             monitorData.append(prefix + "\t").append("</Resource>").append("\n");
         }
         monitorData.append(prefix).append("</ResourceInfo>").append("\n");
-
-        monitorData.append(prefix).append("<AccumulatedCost>" + ResourceManager.getTotalCost() + "</AccumulatedCost>").append("\n");
+        
+        monitorData.append(prefix).append("<StatisticParameter id=\"AccumulatedTime\">" + Ascetic.getAccumulatedTime() +" s </StatisticParameter>").append("\n");
+        monitorData.append(prefix).append("<StatisticParameter id=\"AccumulatedCost\">" + Ascetic.getAccumulatedCost() + " € </StatisticParameter>").append("\n");
+        monitorData.append(prefix).append("<StatisticParameter id=\"AccumulatedEnergy\">" + Ascetic.getAccumulatedEnergy() + " Wh </StatisticParameter>").append("\n");
+        
+        for (integratedtoolkit.ascetic.VM vm : Ascetic.getResources()) {
+        	monitorData.append(ts.getProfileMetrics(vm, prefix));
+        	
+        }
         response = monitorData.toString();
         sem.release();
     }

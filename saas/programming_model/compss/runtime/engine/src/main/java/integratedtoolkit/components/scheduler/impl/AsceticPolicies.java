@@ -235,10 +235,13 @@ public abstract class AsceticPolicies extends SchedulerPolicies {
 
     private double getValue(Worker w, Implementation impl, ExecutionProfile[][] profiles) {
     	logger.debug("Values for core"+impl.getCoreId()+"impl"+impl.getImplementationId()+":");
-    	double cost = Ascetic.getCost(w, impl);
+    	double price = Ascetic.getPrice(w, impl);
         double power = Ascetic.getPower(w, impl);
         double time = profiles[impl.getCoreId()][impl.getImplementationId()].getAverageExecutionTime(1l); 
-        logger.debug(" - Cost = "+ cost +" ("+costWeight+") Energy: "+ power +" ("+energyWeight+") Time: "+time+" (" + timeWeight+ ")");
-        return -(timeWeight * time) - (costWeight * cost) - (energyWeight * power);
+        double cost = (price*time)/(3600*1000);
+        double energy = (power * time)/(3600*1000);
+        
+        logger.debug(" - Cost = "+ cost +" ("+costWeight+") Energy: "+ energy +" ("+energyWeight+") Time: "+time+" (" + timeWeight+ ")");
+        return -(timeWeight * time) - (costWeight * cost) - (energyWeight * energy);
     }
 }
