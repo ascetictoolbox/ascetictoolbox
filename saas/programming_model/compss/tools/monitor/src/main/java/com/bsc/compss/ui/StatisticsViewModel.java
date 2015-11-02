@@ -36,8 +36,8 @@ public class StatisticsViewModel {
     	statistics = new LinkedList<StatisticParameter>();
     	
     	//Add accumulated cost
-    	StatisticParameter accumulatedCost = new StatisticParameter("Accumulated Cost", "0.0", "0.0");
-    	statistics.add(accumulatedCost);
+    	//StatisticParameter accumulatedCost = new StatisticParameter("Accumulated Cost", "0.0", "0.0");
+    	//statistics.add(accumulatedCost);
     }
     
     public List<StatisticParameter> getStatistics () {
@@ -46,18 +46,11 @@ public class StatisticsViewModel {
   
     @Command
     @NotifyChange("statistics")
-    public void update (String[] statisticsParameters) {
+    public void update (List<StatisticParameter> statisticsParameters) {
     	logger.debug("Updating Statistics ViewModel...");
-    	//Erase all current resources
-    	for (StatisticParameter param : statistics) {
-    		param.reset();
-    	}
-    	
-    	//Import new values
-    	for (int i = 0; i < statistics.size(); ++i) {
-    		statistics.get(i).setValue(statisticsParameters[i]);
-    	}
-    	
+    
+    		statistics=statisticsParameters;
+       	
     	logger.debug("Statistics ViewModel updated");
     }
     

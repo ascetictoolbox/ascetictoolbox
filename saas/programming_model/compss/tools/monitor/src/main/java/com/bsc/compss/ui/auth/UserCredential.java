@@ -73,6 +73,17 @@ public class UserCredential {
     		loadDefaultOrEnvironmentLogFolder();
     		this.authenticated = true;
     		logger.debug(Constants.USER_ENVIRONMENT + "user credentials loaded");
+    	}else if (this.username.startsWith("/")) {
+                // Loading direct folder without user
+                if (this.username.endsWith(".COMPSs") || this.username.endsWith(".COMPSs/")) {
+                        this.COMPSs_BASE_LOG = this.username;
+                } else {
+                        this.COMPSs_BASE_LOG = this.username + RELATIVE_LOG_LOCATION;
+                }
+                this.username = Constants.USER_DIRECT_PATH;
+                this.authenticated = true;
+                logger.debug("Direct location detected. Path loaded.");
+
     	} else {
     		//Create command to obtain user home
         	String[] cmd = {File.separator + "bin" + File.separator + "sh", "-c", "echo ~" + username};

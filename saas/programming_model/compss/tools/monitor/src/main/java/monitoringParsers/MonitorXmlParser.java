@@ -29,12 +29,13 @@ import org.apache.log4j.Logger;
 
 import com.bsc.compss.ui.Constants;
 import com.bsc.compss.ui.Properties;
+import com.bsc.compss.ui.StatisticParameter;
 
 
 public class MonitorXmlParser {
 	private static List<String[]> WorkersDataArray;
 	private static List<String[]> CoresDataArray;
-	private static String[] statisticsParameters;
+	private static List<StatisticParameter> statisticsParameters;
 	private static final Logger logger = Logger.getLogger("compssMonitor.monitoringParser");
 	
 	public static List<String[]> getWorkersDataArray() {
@@ -47,7 +48,7 @@ public class MonitorXmlParser {
 		return CoresDataArray;
 	}
 	
-	public static String[] getStatisticsParameters() {
+	public static List<StatisticParameter> getStatisticsParameters() {
 		return statisticsParameters;
 	}
 	
@@ -142,7 +143,7 @@ public class MonitorXmlParser {
 		String monitorLocation = Properties.BASE_PATH + Constants.MONITOR_XML_FILE;
 		logger.debug("Parsing XML file for statistics...");
 		//Reset attribute
-		statisticsParameters = new String[1];
+		statisticsParameters = new ArrayList<StatisticParameter>();
 
 		//Show monitor location
 		logger.debug("Monitor Location : " + monitorLocation);
@@ -169,8 +170,8 @@ public class MonitorXmlParser {
 			nl = COMPSs.getChildNodes();
 			for (int i = 0; i < nl.getLength(); i++) {
 				Node n = nl.item(i);
-				if (n.getNodeName().equals("AccumulatedCost")) {
-					statisticsParameters[0] = n.getTextContent();
+				if (n.getNodeName().equals("StatisticParameter")) {
+					statisticsParameters.add(new StatisticParameter(n.getAttributes().getNamedItem("id").getTextContent(),n.getTextContent()));
 				}
 			}
 		} catch (Exception e) {
@@ -248,7 +249,8 @@ public class MonitorXmlParser {
 		String signature = cores.getAttributes().getNamedItem("signature").getTextContent();
 		int pos = signature.indexOf("(");
 		int posfin = signature.indexOf(")");
-		data[1] = signature.substring(0, pos);
+		String className = signature.substring(posfin+1);
+		data[1] = className+"."+signature.substring(0, pos);
 		data[2] = signature.substring(pos + 1, posfin);
 		NodeList nl = cores.getChildNodes();
 		for (int i = 0; i < nl.getLength(); i++) {

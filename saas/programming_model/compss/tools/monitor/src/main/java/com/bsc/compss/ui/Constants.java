@@ -48,6 +48,7 @@ public class Constants {
 	//Default & environment usernames
 	public static final String USER_DEFAULT = "default";
 	public static final String USER_ENVIRONMENT = "environment";
+	public static final String USER_DIRECT_PATH = "path";
 	
 	//Resource status
 	public static final String STATUS_CREATION = "On Creation";

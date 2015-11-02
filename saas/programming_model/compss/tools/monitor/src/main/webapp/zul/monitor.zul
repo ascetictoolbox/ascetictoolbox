@@ -277,14 +277,14 @@
 			         
 			         <tabpanel fulfill="statisticsTab.onSelect">
 					     <div vflex="1" hflex="1" align="center">
-					        <grid width="30%" model="@bind(vm.statisticsViewModel.statistics) @template('statisticParameter')" emptyMessage="There are no statistics.">
+					        <grid width="70%" model="@bind(vm.statisticsViewModel.statistics) @template('statisticParameter')" emptyMessage="There are no statistics.">
 								<auxhead>
 									<auxheader label="Name" />
 									<auxheader label="Value" />
 								</auxhead>
 					            <columns visible="false">
-					                <column></column>
-					                <column></column>
+					                <column width="50%"></column>
+					                <column width="50%"></column>
 					            </columns>
 					            
 					            <template name="statisticParameter">
