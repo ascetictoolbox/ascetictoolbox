@@ -86,8 +86,7 @@ public class DeploymentSection extends ServiceEditorSection{
 	@Override
 	protected void createSectionWidgets(Composite comp) {
 		
-		GridData rd = new GridData(GridData.FILL_HORIZONTAL
-				| GridData.VERTICAL_ALIGN_BEGINNING);
+		GridData rd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);//|GridData.FILL_HORIZONTAL
 		rd.grabExcessHorizontalSpace = true;
 		comp.setLayout(new GridLayout(1, false));
 		comp.setLayoutData(rd);
@@ -103,11 +102,11 @@ public class DeploymentSection extends ServiceEditorSection{
 	
 	private void createDeploymentPropertiesWidgets(Composite comp) {
 		Group secComp = new Group(comp, SWT.BORDER);
-		GridData rd = new GridData(GridData.FILL_HORIZONTAL
-				| GridData.VERTICAL_ALIGN_BEGINNING);
+		GridData rd = new GridData();
+				//| GridData.FILL_HORIZONTAL);
 		rd.grabExcessHorizontalSpace = true;
 		secComp.setLayoutData(rd);
-		secComp.setLayout(new GridLayout(2, false));
+		secComp.setLayout(new GridLayout(3, false));
 		secComp.setText("Deployment Properties");
 		toolkit.createLabel(secComp, "Max. Power Boundary", SWT.NONE);
 		maxPower = toolkit.createText(secComp, "",
@@ -132,6 +131,7 @@ public class DeploymentSection extends ServiceEditorSection{
 			}
 	
 		});
+		toolkit.createLabel(secComp, "W", SWT.NONE);
 		toolkit.createLabel(secComp, "Max. Price Boundary", SWT.NONE);
 		maxPrice = toolkit.createText(secComp, "",
 				SWT.SINGLE | SWT.BORDER);
@@ -155,9 +155,11 @@ public class DeploymentSection extends ServiceEditorSection{
 			}
 	
 		});
+		toolkit.createLabel(secComp, "€/h", SWT.NONE);
+		
 		toolkit.createLabel(secComp, "Optimization Parameter", SWT.NONE);
 		optParam = new Combo(secComp, SWT.NONE);
-		rd = new GridData(GridData.FILL_HORIZONTAL);
+		//rd = new GridData(GridData.FILL_HORIZONTAL);
 		rd.grabExcessHorizontalSpace = true;
 		rd.minimumWidth = 400;
 		optParam.setLayoutData(rd);
@@ -179,8 +181,8 @@ public class DeploymentSection extends ServiceEditorSection{
 
 	private void createApplicationSecurityWidgets(Composite comp) {
 		Group secComp = new Group(comp, SWT.BORDER);
-		GridData rd = new GridData(GridData.FILL_HORIZONTAL
-				| GridData.VERTICAL_ALIGN_BEGINNING);
+		GridData rd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING); //GridData.FILL_HORIZONTAL
+			 
 		rd.grabExcessHorizontalSpace = true;
 		secComp.setLayoutData(rd);
 		secComp.setLayout(new GridLayout(2, false));
