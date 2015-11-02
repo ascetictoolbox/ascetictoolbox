@@ -72,11 +72,11 @@ public class IaaSPricingModellerCost implements IaaSPricingModellerCostInterface
                     + difference + " with a total energy consumed of: " + newEnergyValue);
             VM.setEnergyConsumedLast(newEnergyValue);
         } catch (NullPointerException ex) {
-            if (VM == null)  {
+            if (VM == null || VM.getVMid() == null)  {
                 logger.error("The update to the energy value failed for VM: UNKNOWN");
             } else {
                 logger.error("The update to the energy value failed for VM: " + VM.getVMid() + ". "
-                        + "The start time for the energy usage query is: " + VM.getStartTime().getTimeInMillis() + " and the end time is: " + VM.getStartTime().getTimeInMillis(), ex);
+                        + "The start time for the energy usage query is: " + VM.getStartTime().getTimeInMillis() + " and the end time is: " + VM.getChangeTime().getTimeInMillis(), ex);
             }
             difference = 0;
 
