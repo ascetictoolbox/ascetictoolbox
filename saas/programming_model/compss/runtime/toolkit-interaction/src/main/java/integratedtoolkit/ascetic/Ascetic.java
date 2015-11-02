@@ -21,7 +21,14 @@ import integratedtoolkit.types.Implementation;
 import integratedtoolkit.types.Task;
 import integratedtoolkit.types.resources.Worker;
 import integratedtoolkit.util.ResourceManager;
+import integratedtoolkit.log.Loggers;
+
+import java.util.Collection;
 import java.util.HashMap;
+
+import org.apache.log4j.Logger;
+
+import eu.ascetic.saas.application_uploader.ApplicationUploaderException;
 
 public class Ascetic {
 
@@ -32,13 +39,35 @@ public class Ascetic {
 
     private static double currentCost = 0;
     private static double currentPower = 0;
-
+    
+    private static double accumulatedEnergy = 0d;
+    private static double accumulatedCost = 0d;
+    private static double initEnergy = 0d;
+    private static double initCost = 0d;
+    private static long initTime = System.currentTimeMillis();
+    
+    protected static final Logger logger = Logger.getLogger(Loggers.TS_COMP);
+    protected static final boolean debug = logger.isDebugEnabled();
+    private static boolean realValues = false; 
     private Ascetic() {
 
     }
 
     static {
-        monitor = new AsceticMonitor();
+    	String real = System.getProperty("realValues");
+		if (real!= null){
+			realValues = Boolean.parseBoolean(real);
+		}
+		if (realValues){
+			try {
+				initEnergy = AppManager.getAccumulatedEnergy();
+				initCost = AppManager.getAccumulatedCost();
+			}catch (Exception e) {
+				logger.error("Error getting accumulated energy");
+			}
+		}
+    	
+    	monitor = new AsceticMonitor();
         monitor.setName("Ascetic Monitor");
         monitor.start();
     }
@@ -50,41 +79,97 @@ public class Ascetic {
                 (new WorkerStarter(vm)).start();
             }
         } catch (Exception e) {
-
+        	logger.error("Error getting resources");
         }
     }
 
     public static void updateConsumptions() {
-        for (VM vm : resources.values()) {
-            double costStart = vm.getCurrentCost();
+    	if (realValues){
+    		try {
+    			accumulatedCost = AppManager.getAccumulatedCost();
+    		} catch (ApplicationUploaderException e) {
+    			logger.error("Error updating accumulated cost", e);
+			
+    		}
+    		try {
+    			accumulatedEnergy = AppManager.getAccumulatedEnergy();
+    		} catch (ApplicationUploaderException e) {
+    			logger.error("Error updating accumulated energy", e);
+    		}
+    	}
+		
+    	for (VM vm : resources.values()) {
+            double priceStart = vm.getCurrentPrice();
             double powerStart = vm.getCurrentPower();
             vm.updateConsumptions();
-            double costEnd = vm.getCurrentCost();
+            double priceEnd = vm.getCurrentPrice();
             double powerEnd = vm.getCurrentPower();
-            currentCost += costEnd - costStart;
+            currentCost += priceEnd - priceStart;
             currentPower += powerEnd - powerStart;
-            if (powerEnd != powerStart || costEnd != costStart) {
+            if (powerEnd != powerStart || priceEnd != priceStart) {
                 ResourceManager.updatedConsumptions(vm.getWorker());
             }
         }
     }
+    
+    public static Collection<VM> getResources(){
+    	return resources.values();
+    	
+    }
 
+    public static String getAccumulatedCost(){
+    	if (realValues){
+    		return Double.toString(accumulatedCost-initCost);
+    	}else{
+    		double cost = accumulatedCost;
+    		//System.out.println("accumulated cost is "+ cost);
+    		 for (VM vm : Ascetic.getResources()) {
+    			 cost += vm.getCurrentCost();
+    		 }
+    		 //System.out.println("total cost is "+ cost);
+    		 return Double.toString(cost);
+    		 //return String.format("%.5g%n", cost);
+    	}
+    }
+    
+    public static String getAccumulatedEnergy(){
+    	if (realValues){
+    		return Double.toString(accumulatedEnergy-initEnergy);
+    	}else{
+    		double energy = accumulatedEnergy;
+    		for (VM vm : Ascetic.getResources()) {
+   			 	energy += vm.getCurrentEnergy();
+    		}
+    		return Double.toString(energy);
+    		//return String.format("%.5g%n", energy);
+   		}
+    }
+    
+    public static String getAccumulatedTime(){
+    	long time = (System.currentTimeMillis()-initTime)/1000;
+    	//return String.format("%.4g%n", time);
+    	return Long.toString(time);
+    }
+    
     public static boolean executionWithinBoundaries(Worker r, Implementation impl) {
         String IPv4 = r.getName();
         VM vm = resources.get(IPv4);
-        double cost = vm.getCost(impl.getCoreId(), impl.getImplementationId());
+        double cost = vm.getPrice(impl.getCoreId(), impl.getImplementationId());
         double power = vm.getPower(impl.getCoreId(), impl.getImplementationId());
-        return ((currentCost + cost < Configuration.getEconomicalBoundary())
-                && (currentPower + power < Configuration.getEnergyBoundary()));
+        double nextCost = currentCost + cost;
+        double nextPower = currentPower + power;
+        logger.debug("nextCost = " + nextCost + "("+Configuration.getEconomicalBoundary()+") nextPower="+nextPower +"("+Configuration.getEnergyBoundary()+")");
+        return ((nextCost < Configuration.getEconomicalBoundary())
+                && (nextPower < Configuration.getEnergyBoundary()));
     }
 
     public static void startEvent(Worker resource, Task t, Implementation impl) {
         String IPv4 = resource.getName();
         VM vm = resources.get(IPv4);
-        vm.startJob(impl);
+        vm.startJob(impl, t.getId());
         int coreId = impl.getCoreId();
         int implId = impl.getImplementationId();
-        currentCost += vm.getCost(coreId, implId);
+        currentCost += vm.getPrice(coreId, implId);
         currentPower += vm.getPower(coreId, implId);
         String eventType = "core" + coreId + "impl" + implId;
         String eventId = ApplicationMonitor.startEvent(vm, eventType);
@@ -98,9 +183,14 @@ public class Ascetic {
         int coreId = impl.getCoreId();
         int implId = impl.getImplementationId();
         VM vm = resources.get(IPv4);
-        vm.endJob(impl);
-        currentCost -= vm.getCost(coreId, implId);
-        currentPower -= vm.getPower(coreId, implId);
+        
+        double[] measurements = vm.endJob(impl, t.getId());
+        if (!realValues){
+        		accumulatedEnergy += measurements[0];
+        		accumulatedCost += measurements[1];
+        }
+        currentCost -= vm.getPrice(coreId, implId);
+        currentPower -= vm.getPower(coreId, implId); 
         ApplicationMonitor.stopEvent(t.getEventId());
         changes = true;
     }
@@ -117,12 +207,12 @@ public class Ascetic {
         return Configuration.getEconomicalBoundary();
     }
 
-    public static double getCost(Worker w, Implementation impl) {
+    public static double getPrice(Worker w, Implementation impl) {
         String IPv4 = w.getName();
         int coreId = impl.getCoreId();
         int implId = impl.getImplementationId();
         VM vm = resources.get(IPv4);
-        return vm.getCost(coreId, implId);
+        return vm.getPrice(coreId, implId);
     }
 
     public static double getEnergyBoundary() {
@@ -154,4 +244,8 @@ public class Ascetic {
             }
         }
     }
+
+	public static boolean isReal() {
+		return realValues;
+	}
 }

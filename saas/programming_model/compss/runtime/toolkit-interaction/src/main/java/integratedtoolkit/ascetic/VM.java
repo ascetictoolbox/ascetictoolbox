@@ -17,6 +17,7 @@
 
 package integratedtoolkit.ascetic;
 
+import integratedtoolkit.log.Loggers;
 import integratedtoolkit.types.Implementation;
 import integratedtoolkit.types.resources.MethodResourceDescription;
 import integratedtoolkit.types.resources.MethodWorker;
@@ -27,14 +28,17 @@ import integratedtoolkit.util.CoreManager;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import org.apache.log4j.Logger;
+
 import eu.ascetic.paas.applicationmanager.model.Cost;
 import eu.ascetic.saas.application_uploader.ApplicationUploaderException;
 
 public class VM {
-
+	protected static final Logger logger = Logger.getLogger(Loggers.TS_COMP);
+    protected static final boolean debug = logger.isDebugEnabled();
     private static final long UPDATE_FREQ = 30000;
     private long lastUpdate = 0l;
-    private LinkedList<Implementation> runningJobs = new LinkedList<Implementation>();
+    private HashMap<Integer,JobExecution> runningJobs = new HashMap<Integer,JobExecution>();
 
     private final static int[] implCount = new int[CoreManager.getCoreCount()];
 
@@ -51,10 +55,11 @@ public class VM {
     private final HashMap<String, String> properties;
     private double[][] power;
     private double[][] price;
-    private double[][] energy;
+    //private double[][] energy;
+    private boolean[][] executed;
 
     public VM(eu.ascetic.paas.applicationmanager.model.VM vm) {
-        System.out.println("Creating a new VM");
+        logger.info("Creating a new VM");
         this.vm = vm;
         MethodResourceDescription rd = Configuration.getComponentDescriptions(vm.getOvfId());
         description = new MethodResourceDescription(rd);
@@ -67,12 +72,19 @@ public class VM {
         for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
             price[coreId] = new double[implCount[coreId]];
         }
-        energy = new double[CoreManager.getCoreCount()][];
+        /*energy = new double[CoreManager.getCoreCount()][];
         for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
             energy[coreId] = new double[implCount[coreId]];
+        }*/
+        executed = new boolean[CoreManager.getCoreCount()][];
+        for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
+            executed[coreId] = new boolean[implCount[coreId]];
+            for (int implId = 0; implId < implCount[coreId]; implId++) {
+            	executed[coreId][implId] = false;
+            }
         }
         
-        System.out.println("Updating consumptions");
+        logger.debug("Updating consumptions");
         updateConsumptions();
     }
 
@@ -94,47 +106,59 @@ public class VM {
 
     public void updateConsumptions() {
         if (System.currentTimeMillis() - lastUpdate > UPDATE_FREQ) {
-            System.out.println(System.currentTimeMillis() + ": Updating Consumptions for VM " + getIPv4());
-            //REAL SOLUTION
-            for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
-                for (int implId = 0; implId < implCount[coreId]; implId++) {
-                    String eventType = "core" + coreId + "impl" + implId;
-                    try {
-                    	Cost c = AppManager.getEstimations("" + vm.getId(), eventType);
-                    	price[coreId][implId] = c.getCharges();
-                    	power[coreId][implId] = c.getPowerValue();
-                    	energy[coreId][implId] = c.getEnergyValue();
-                     } catch (ApplicationUploaderException ex) {
-                    	 power[coreId][implId] = 0;
-                    	 price[coreId][implId] = 0;
-                    	 energy[coreId][implId] = 0;
-                     	System.err.println("Could not update the energy consumtion for " + eventType + " in " + vm.getIp());
-                     	ex.printStackTrace(System.err);
-                     }
-                    System.out.println("\t\t OBTAINED : Core " + coreId + " impl " + implId + " Power:  " + power[coreId][implId]+" Charges: "+ price[coreId][implId]+ " Energy: "+ price[coreId][implId]);
-                }
-            }
+            if (Ascetic.isReal()){
+				for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
+					for (int implId = 0; implId < implCount[coreId]; implId++) {
+						String eventType = "core" + coreId + "impl" + implId;
+						try {
 
-            //HARDCODED SOLUTION
-            /*Ascetic.changes = false;
-             for (int coreId = 0; coreId < CoreManager.coreCount; coreId++) {
-             for (Implementation impl : CoreManager.getCoreImplementations(coreId)) {
-             String definingClass = "";
-             if (impl.getType() == Implementation.Type.SERVICE) {
-             Service s = (Service) impl;
-             definingClass = s.getNamespace() + "." + s.getServiceName() + "." + s.getPortName();
-             } else {
-             Method m = (Method) impl;
-             definingClass = m.getDeclaringClass();
-             }
-             if (definingClass.compareTo("jeplus.worker.JEPlusImplOptimized") == 0) {
-             consumption[coreId][impl.getImplementationId()] = 160.00 + Math.random();
-             } else {
-             consumption[coreId][impl.getImplementationId()] = 172.00 + Math.random();
-             }
-             }
-             }*/
-            //COMMON CODE
+							Cost c = AppManager.getEstimations("" + vm.getId(),
+									eventType);
+							if (price[coreId][implId] <= 0) {
+								price[coreId][implId] = c.getCharges();
+							}
+							if (power[coreId][implId] <= 0) {
+								power[coreId][implId] = c.getPowerValue();
+							}
+							/*
+							 * if (energy[coreId][implId] <= 0){
+							 * energy[coreId][implId] = c.getEnergyValue(); }
+							 */
+						} catch (ApplicationUploaderException ex) {
+							if (power[coreId][implId] < 0) {
+								power[coreId][implId] = 0;
+							}
+							if (price[coreId][implId] < 0) {
+								price[coreId][implId] = 0;
+							}
+							/*
+							 * if (energy[coreId][implId] < 0){
+							 * energy[coreId][implId] = 0; }
+							 */
+							System.err
+									.println("Could not update the energy consumtion for "
+											+ eventType + " in " + vm.getIp());
+							ex.printStackTrace(System.err);
+						}
+						logger.debug("\t\t CURRENT VALUES for " + getIPv4()
+								+ ": Core " + coreId + " impl " + implId
+								+ " Power:  " + power[coreId][implId]
+								+ " Price: " + price[coreId][implId]);
+					}
+				}
+            }else{
+				for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
+					for (int implId = 0; implId < implCount[coreId]; implId++) {
+
+						if (implId == 1) {
+							power[coreId][implId] = 25.00 + (Math.random() * 1.5);
+						} else {
+							power[coreId][implId] = 13.00 + (Math.random() * 1.5);
+						}
+						price[coreId][implId] = 0.085 + (0.0002 * power[coreId][implId]);
+					}
+				}
+            }
             lastUpdate = System.currentTimeMillis();
         }
     }
@@ -143,37 +167,73 @@ public class VM {
         return this.properties;
     }
 
-    public void startJob(Implementation impl) {
-        runningJobs.add(impl);
+    public void startJob(Implementation impl, int taskId) {
+        runningJobs.put(taskId,new JobExecution(taskId,impl));
+        executed[impl.getCoreId()][impl.getImplementationId()] = true;
     }
 
-    public void endJob(Implementation impl) {
-        runningJobs.remove(impl);
+    public double[] endJob(Implementation impl, int taskId) {
+    	long currentTime = System.currentTimeMillis();
+    	double[] measurements = new double[2];
+    	JobExecution je = runningJobs.get(taskId);
+    	int coreId = je.impl.getCoreId();
+        int implId = je.impl.getImplementationId();
+        measurements[0] = power[coreId][implId]*(currentTime-je.startTime)/(3600*1000);
+        measurements[1] = price[coreId][implId]*(currentTime-je.startTime)/(3600*1000);
+    	runningJobs.remove(taskId);
+    	return measurements;
     }
 
+    public double getCurrentPrice() {
+        double currentPrice = 0d;
+        for (JobExecution je : runningJobs.values()) {
+            int coreId = je.impl.getCoreId();
+            int implId = je.impl.getImplementationId();
+            currentPrice += price[coreId][implId];
+        }
+        return currentPrice;
+    }
+    
     public double getCurrentCost() {
-        double cost = 0d;
-        for (Implementation impl : runningJobs) {
-            int coreId = impl.getCoreId();
-            int implId = impl.getImplementationId();
-            cost += price[coreId][implId];
+        long currentTime = System.currentTimeMillis();
+    	double cost = 0d;
+        for (JobExecution je : runningJobs.values()) {
+            int coreId = je.impl.getCoreId();
+            int implId = je.impl.getImplementationId();
+            cost += price[coreId][implId]*(currentTime-je.startTime)/(3600*1000);
         }
         return cost;
     }
+    
+    public double getCurrentEnergy() {
+        long currentTime = System.currentTimeMillis();
+    	double energy = 0d;
+        for (JobExecution je : runningJobs.values()) {
+            int coreId = je.impl.getCoreId();
+            int implId = je.impl.getImplementationId();
+            energy += power[coreId][implId]*(currentTime-je.startTime)/(3600*1000);
+        }
+        return energy;
+    }
 
-    public double[] getCost(int coreId) {
+    public double[] getPrice(int coreId) {
         return price[coreId];
     }
 
-    public double getCost(int coreId, int implId) {
-        return price[coreId][implId];
+    public double getPrice(int coreId, int implId) {
+        double c = price[coreId][implId];
+        if (c <= 0){
+        	return 0.0001;
+        }else{
+        	return c;
+        }
     }
 
     public double getCurrentPower() {
         double currentPower = 0d;
-        for (Implementation impl : runningJobs) {
-            int coreId = impl.getCoreId();
-            int implId = impl.getImplementationId();
+        for (JobExecution je : runningJobs.values()) {
+        	int coreId = je.impl.getCoreId();
+            int implId = je.impl.getImplementationId();
             currentPower += power[coreId][implId];
         }
         return currentPower;
@@ -184,7 +244,12 @@ public class VM {
     }
 
     public double getPower(int coreId, int implId) {
-        return power[coreId][implId];
+    	double pw = power[coreId][implId];
+        if (pw <= 0 ){
+        	return 0.1;
+        }else{
+        	return pw;
+        }
     }
 
     public void setWorker(MethodWorker worker) {
@@ -194,4 +259,22 @@ public class VM {
     public Worker getWorker() {
         return this.worker;
     }
+    
+    public boolean isrunning(int coreId, int implId){
+    	return executed[coreId][implId];
+    }
+  
+    private class JobExecution{
+	int taskId;
+	Implementation impl;
+	long startTime;
+	
+	JobExecution(int taskId, Implementation impl){
+		this.taskId = taskId;
+		this.impl = impl;
+		this.startTime = System.currentTimeMillis();
+	}
+}  
 }
+
+

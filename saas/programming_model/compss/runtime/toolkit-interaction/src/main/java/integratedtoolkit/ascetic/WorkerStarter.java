@@ -40,7 +40,7 @@ public class WorkerStarter extends Thread {
                 //DO NOTHING AND CHECK AGAIN IF NODE IS AVAILABLE
             }
         }
-        System.out.println("El worker " + vm.getIPv4() + " ja està disponible, intentem encendre'l");
+        //System.out.println("El worker " + vm.getIPv4() + " ja està disponible, intentem encendre'l");
 
         MethodWorker worker = null;
         try {
@@ -58,7 +58,7 @@ public class WorkerStarter extends Thread {
         vm.setWorker(worker);
         ResourceManager.addStaticWorker(worker);
 
-        System.out.println("La màquina " + vm.getIPv4() + " ja està disponible");
+        //System.out.println("La màquina " + vm.getIPv4() + " ja està disponible");
     }
 
     private static boolean connectionAvailable(String resourceName, String user) {

@@ -30,18 +30,20 @@ public class AppManager {
 
     private static final String applicationId;
     private static final String deploymentId;
-
+    
     private static final HashMap<String, VM> detectedVMs;
     public static final ApplicationUploader uploader;
+
 
     static {
         applicationId = Configuration.getApplicationId();
         deploymentId = Configuration.getDeploymentId();
         uploader = new ApplicationUploader(Configuration.getApplicationManagerEndpoint());
-        System.out.println("ApplicationID: " + applicationId);
-        System.out.println("deploymentId: " + deploymentId);
-        System.out.println("AppManagerEndpoint: " + Configuration.getApplicationManagerEndpoint());
+        //System.out.println("ApplicationID: " + applicationId);
+        //System.out.println("deploymentId: " + deploymentId);
+        //System.out.println("AppManagerEndpoint: " + Configuration.getApplicationManagerEndpoint());
         detectedVMs = new HashMap<String, VM>();
+        
     }
 
     
@@ -58,9 +60,12 @@ public class AppManager {
    public static Cost getEstimations(String id, String eventId)throws ApplicationUploaderException {
 	   return uploader.getEventCostEstimationInVM(applicationId, deploymentId, eventId, id);
    }
-    
+   
+   public static double getAccumulatedEnergy() throws ApplicationUploaderException{
+	   return uploader.getDeploymentEnergyConsumption(applicationId, deploymentId);
+   }
     public static Collection<VM> getNewResources() throws ApplicationUploaderException {
-        System.out.println("Obtianing new Resources from AM:");
+        //System.out.println("Obtianing new Resources from AM:");
         LinkedList<VM> newResources = new LinkedList<VM>();
         try {
             List<eu.ascetic.paas.applicationmanager.model.VM> vms = uploader.getDeploymentVMDescriptions(applicationId, deploymentId);
@@ -78,7 +83,7 @@ public class AppManager {
 */
             for (eu.ascetic.paas.applicationmanager.model.VM rvm : vms) {
                 String IPv4 = rvm.getIp();
-                System.out.println("IPv4: " + IPv4);
+                //System.out.println("IPv4: " + IPv4);
                 VM vm = detectedVMs.get(IPv4);
                 if (vm == null) {
                     vm = new VM(rvm);
@@ -91,4 +96,9 @@ public class AppManager {
         }
         return newResources;
     }
+
+	public static double getAccumulatedCost() throws ApplicationUploaderException {
+		return uploader.getDeploymentCostConsumption(applicationId, deploymentId);
+		
+	}
 }
