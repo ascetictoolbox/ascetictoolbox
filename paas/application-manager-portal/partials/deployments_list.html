@@ -20,13 +20,44 @@
  *  HTML Component that list the applications inside the Application Manager.
 -->
 
-<h1>List of deployments for: <span ng-bind="ctrl.applicationName"></span></h1>
 
-<ul>
-  <li ng-repeat="deployment in deployments">
-      ID: <span ng-bind="deployment.id"></span> - (<a href="#/applications/{{applicationName}}/deployments/{{deployment.id}}">view</a>)<br/>
-      STATUS: <span ng-bind="deployment.status"></span><br/>
-      START DATE: {{deployment['start-date']}}<br/>
+<div class="row">
+  <div class="col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1">
+    <table class="table table-striped">
+      <!-- Head -->
+      <thead>
+        <tr>
+          <th>id:</th>
+          <th>Status:</th>
+          <th>OVF:</th>
+          <th>Start Date:</th>
+          <th>End Date:</th>
+          <th>&nbsp;</th>
+          <th>&nbsp;</th>
+        </tr>
+      </thead>
+
+      <!-- Content -->
+      <tbody>
+        <tr ng-repeat="deployment in deployments">
+          <td><span ng-bind="deployment.id"></span></td>
+          <td><span ng-bind="deployment.status"></span></td>
+          <td>OVF</td>
+          <td>{{deployment['start-date']}}</td>
+          <td>{{deployment['end-date']}}</td>
+          <td><a href="#/applications/{{applicationName}}/deployments/{{deployment.id}}" class="btn btn-primary btn-sm">View</a></td>
+          <!-- TODO -->
+          <td><a href="#/applications/{{applicationName}}/deployments/" class="btn btn-danger btn-sm">Delete</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<!--  ID: </span> - (<a href="#/applications/{{applicationName}}/deployments/{{deployment.id}}">view</a>)<br/>
+      STATUS: <br/>
+      START DATE: <br/>
       VMS:
       <ul>
         <li ng-repeat="vm in deployment.vms.vm">
@@ -40,5 +71,5 @@
         </li>
       </ul>
   </li>
-</ul>
+</ul> -->
 

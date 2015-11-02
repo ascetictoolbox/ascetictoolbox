@@ -22,10 +22,13 @@
 
 <h1>New Deployment</h1>
 
+
+   
+
+
 <div>
-  <input type="file" id="file" name="file"/>
+   <input type="file" on-read-file="showContent($fileContent)" />
   <br/>
-  <button ng-click="add()">Add</button>
   <button ng-click="post()">POST</button>
   <br/>
   <pre class="prettyprint">{{data}}</pre>

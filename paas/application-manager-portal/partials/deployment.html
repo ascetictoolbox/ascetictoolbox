@@ -20,20 +20,104 @@
  *  HTML Component that list the applications inside the Application Manager.
 -->
 
-<h1>Deployment</h1>
 
-      ID: <span ng-bind="deployment.id"></span><br/>
-      STATUS: <span ng-bind="deployment.status"></span><br/>
-      START DATE: {{deployment['start-date']}}<br/>
-      VMS:
-      <ul>
-        <li ng-repeat="vm in deployment.vms.vm">
-          ID: <span ng-bind="vm.id"></span><br/>
-          STATUS: <span ng-bind="vm.status"></span><br/>
-          PROVIDER-ID: {{vm['provider-vm-id']}}<br/>
-          OVF-ID: {{vm['ovf-id']}}<br/>
-          # CPU: {{vm['cpu-actual']}}<br/>
-          RAM: {{vm['ram-actual']}}<br/>
-          IP: <span ng-bind="vm.ip"></span>
-        </li>
-      </ul>
+<div class="row">
+  <div class="col-md-8 col-md-offset-1 col-lg-8 col-lg-offset-1">
+    <p><strong>Application:</strong> {{applicationNameUrl}}<br/>
+    <strong>Deployment id:</strong> <span ng-bind="deployment.id"></span><br/>
+    <strong>Status:</strong> <span ng-bind="deployment.status"></span><br/>
+    <strong>Start date:</strong> {{deployment['start-date']}}<br/>
+    <strong>End date:</strong> {{deployment['end-date']}}<br/>
+    <strong>Price schema:</strong> <span ng-bind="deployment.schema"></span> </p>
+  </div>
+  <div class="col-md-3 col-lg-3">
+      <p><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#ovf">View OVF</button></p>
+      <!-- TODO -->
+      <p><a href="#/applications/{{applicationName}}/deployments/{{deployment.id}}" class="btn btn-danger btn-sm">Delete</a></p>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1">
+    <h3>Virtual Machines:</h3>
+    <table class="table table-striped">
+      <!-- Head -->
+      <thead>
+        <tr>
+          <th>id:</th>
+          <th>Status:</th>
+          <th>OVF id:</th>
+          <th>Provider VM Id:</th>
+          <th>IP:<th>
+          <th>&nbsp;</th>
+          <th>&nbsp;</th>
+        </tr>
+      </thead>
+
+      <!-- Content -->
+      <tbody>
+        <tr ng-repeat="vm in deployment.vms.vm">
+          <td><span ng-bind="vm.id"></span></td>
+          <td><span ng-bind="vm.status"></span></td>
+          <td>{{vm['ovf-id']}}</td>
+          <td>{{vm['provider-vm-id']}}</td>
+          <td><span ng-bind="vm.ip"></span></td>
+          <td><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#vmModal{{vm.id}}">Details</button></td>
+          <!-- TODO -->
+          <td><a href="#/applications/{{applicationNameUrl}}/deployments/{{deployment.id}}" class="btn btn-danger btn-sm">Delete</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div ng-repeat="vm in deployment.vms.vm">
+  <div class="modal fade" id="vmModal{{vm.id}}" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          Details of the Virtual Machine
+        </div>
+        <div class="modal-body">
+          <p><strong>Id:</strong> <span ng-bind="vm.id"></span><br/>
+             <strong>Status:</strong> <span ng-bind="vm.status"></span><br/>
+             <strong>OVF Id:</strong> {{vm['ovf-id']}}<br/>
+             <strong>Provider VM Id:</strong> {{vm['provider-vm-id']}}<br/>
+             <strong>IP:</strong> <span ng-bind="vm.ip"></span><br/>
+             <span class="divider"></span><br/>
+             <strong># CPU:</strong> {{vm['cpu-actual']}}<br/>
+             <strong>RAM:</strong> {{vm['ram-actual']}} MB<br/>
+             <strong>Swap Disk:</strong> {{vm['swap-actual']}} MB<br/>
+             <strong>Disk size:</strong> {{vm['disk-actual']}} GB<br/>
+          </p>
+          <p ng-repeat="image in vm.images.image"><strong>Id:</strong> <span ng-bind="image.id"></span><br/>
+                                                  <strong>Image OVF Id:</strong> {{image['ovf-id']}}<br/>
+                                                  <strong>Provider Image Id:</strong> {{image['provider-image-id']}}<br/>
+          </p>
+          <p><strong>Minimum number VMs of this type:</strong> {{vm['number-vms-min']}} <br/>
+             <strong>Maximum number VMs of this type:</strong> {{vm['number-vms-max']}} <br/>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="modal fade" id="ovf" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          Deployment OVF
+        </div>
+        <div class="modal-body">
+          <pre class="prettyprint">{{deployment.ovf}}</pre>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>

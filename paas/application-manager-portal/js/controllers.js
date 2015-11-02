@@ -80,21 +80,15 @@ angular.module('asceticApplicationManagerPortalApp.controllers', [])
   }])
 
   .controller('CreateDeploymentController', [ '$scope', '$rootScope', '$routeParams', '$location', 'ApplicationService',
-                                              function($scope, $rootScpe, $routeParams, $location, ApplicationService) {
+                                              function($scope, $rootScope, $routeParams, $location, ApplicationService) {
     var self = this;
     $scope.data = '<xml/>';
     $rootScope.applicationNameUrl = $routeParams.applicationName;
     $rootScope.deploymentId = $routeParams.deploymentId;
-    
-    $scope.add = function() {
-      var f = document.getElementById('file').files[0],
-      r = new FileReader();
-      r.onloadend = function(e) {
-        $scope.data = e.target.result;
-      }
 
-      r.readAsBinaryString(f);
-    }
+    $scope.showContent = function($fileContent){
+        $scope.data = $fileContent;
+    };
 
     $scope.post = function() {
 
@@ -107,9 +101,7 @@ angular.module('asceticApplicationManagerPortalApp.controllers', [])
         // TODO I should add some error handling here... 
         $location.path("/applications/" + data.name + "/deployments/" + data.deployments.deployment[0].id);
       });
-
       //console.log(response);
-      
     }
     
   }]); 
