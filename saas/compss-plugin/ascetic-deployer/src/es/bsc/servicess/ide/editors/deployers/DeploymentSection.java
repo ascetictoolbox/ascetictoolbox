@@ -238,8 +238,7 @@ public class DeploymentSection extends ServiceEditorSection{
 
 	private void createCloudPlatformWidgets(Composite comp) {
 		Group options = new Group(comp, SWT.BORDER);
-		GridData rd = new GridData(GridData.FILL_HORIZONTAL
-				| GridData.VERTICAL_ALIGN_BEGINNING);
+		GridData rd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);//GridData.FILL_HORIZONTAL
 		rd.grabExcessHorizontalSpace = true;
 		options.setLayout(new GridLayout(2, false));
 		options.setLayoutData(rd);
