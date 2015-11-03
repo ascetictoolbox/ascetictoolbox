@@ -757,6 +757,10 @@ paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmana
 paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmanager/model/converter/ModelConverterTest.java -text
 paas/application-manager-datamodel/src/test/resources/log4j.properties -text
 paas/application-manager-portal/LICENSE.TXT -text
+paas/application-manager-portal/css/custom.css -text
+paas/application-manager-portal/images/ascetic.jpg -text
+paas/application-manager-portal/images/atos.jpg -text
+paas/application-manager-portal/images/atos.xcf -text
 paas/application-manager-portal/index.html -text
 paas/application-manager-portal/js/app.js -text
 paas/application-manager-portal/js/controllers.js -text

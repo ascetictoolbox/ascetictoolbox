@@ -42,7 +42,7 @@
         <tr ng-repeat="deployment in deployments">
           <td><span ng-bind="deployment.id"></span></td>
           <td><span ng-bind="deployment.status"></span></td>
-          <td>OVF</td>
+          <td><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#ovf{{deployment.id}}">OVF</button></td>
           <td>{{deployment['start-date']}}</td>
           <td>{{deployment['end-date']}}</td>
           <td><a href="#/applications/{{applicationName}}/deployments/{{deployment.id}}" class="btn btn-primary btn-sm">View</a></td>
@@ -55,21 +55,20 @@
 </div>
 
 
-<!--  ID: </span> - (<a href="#/applications/{{applicationName}}/deployments/{{deployment.id}}">view</a>)<br/>
-      STATUS: <br/>
-      START DATE: <br/>
-      VMS:
-      <ul>
-        <li ng-repeat="vm in deployment.vms.vm">
-          ID: <span ng-bind="vm.id"></span><br/>
-          STATUS: <span ng-bind="vm.status"></span><br/>
-          PROVIDER-ID: {{vm['provider-vm-id']}}<br/>
-          OVF-ID: {{vm['ovf-id']}}<br/>
-          # CPU: {{vm['cpu-actual']}}<br/>
-          RAM: {{vm['ram-actual']}}<br/>
-          IP: <span ng-bind="vm.ip"></span>
-        </li>
-      </ul>
-  </li>
-</ul> -->
-
+<div ng-repeat="deployment in deployments">
+  <div class="modal fade" id="ovf{{deployment.id}}" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          Deployment OVF
+        </div>
+        <div class="modal-body">
+          <pre class="prettyprint">{{deployment.ovf}}</pre>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

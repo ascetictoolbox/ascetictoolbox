@@ -20,16 +20,30 @@
  *  HTML Component that list the applications inside the Application Manager.
 -->
 
-<h1>New Deployment</h1>
 
+<div class="row">
+  <div class="col-md-8 col-md-offset-1 col-lg-8 col-lg-offset-1">
+    <h3>Create a new deployment</h3>
+  </div>
+</div>
 
+<div class="row">
+  <div class="col-md-6 col-md-offset-1 col-lg-6 col-lg-offset-1">
+    <div class="input-group">
+        <span class="input-group-btn">
+          <span class="btn btn-primary btn-file btn-sm">
+            Select file&hellip; <input type="file" on-read-file="showContent($fileContent)">
+          </span>
+        </span>
+    </div>
+  </div>
+  <div class="col-md-2 col-lg-2">
+    <p class="text-right"><button class="btn btn-primary btn-sm" ng-click="post()">Create</button></p>
+  </div>
+</div>
    
-
-
-<div>
-   <input type="file" on-read-file="showContent($fileContent)" />
-  <br/>
-  <button ng-click="post()">POST</button>
-  <br/>
-  <pre class="prettyprint">{{data}}</pre>
+<div class="row">
+  <div class="col-md-8 col-md-offset-1 col-lg-8 col-lg-offset-1">
+    <pre class="prettyprint">{{data}}</pre>
+  </div>
 </div>
