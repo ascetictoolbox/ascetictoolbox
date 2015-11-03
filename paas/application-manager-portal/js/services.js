@@ -50,6 +50,12 @@ angular.module('asceticApplicationManagerPortalApp.services', [])
         isArray: false,
         method: 'GET',
         headers: {'Accept': 'application/json'}
+      },
+
+      deleteDeployment: {
+        isArray: false,
+        method: 'DELETE',
+        headers: {'Accept': 'application/json'}
       }
     });
 

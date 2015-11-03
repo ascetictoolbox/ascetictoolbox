@@ -43,20 +43,31 @@ angular.module('asceticApplicationManagerPortalApp.controllers', [])
     //console.log(response);
   }])
 
-  .controller('DeploymentsController', [ '$scope', '$rootScope', '$routeParams', 'DeploymentService', 
-                                          function($scope, $rootScope, $routeParams, DeploymentService) {
+  .controller('DeploymentsController', [ '$scope', '$rootScope', '$routeParams', '$timeout', 'DeploymentService', 
+                                          function($scope, $rootScope, $routeParams, $timeout, DeploymentService) {
       var self = this;
       $scope.applicationName = $routeParams.applicationName;
       $rootScope.applicationNameUrl = $routeParams.applicationName;
       $rootScope.deploymentId = $routeParams.deploymentId;
 
-      var response = DeploymentService.query({name: $scope.applicationName, status: 'DEPLOYED'});
+      $scope.loadDeployments = function() {
+        var response = DeploymentService.query({name: $scope.applicationName, status: 'DEPLOYED'});
 
-      response.$promise.then(function(data) {
-        $scope.deployments = data.items.deployment; //Changed data.data.topics to data.topics
-      });
+        response.$promise.then(function(data) {
+          $scope.deployments = data.items.deployment; //Changed data.data.topics to data.topics
+        });
+      };
 
-      console.log(response);
+      $scope.deleteDeployment = function(id) {
+        console.log(id);
+        DeploymentService.deleteDeployment({name: $scope.applicationName, id: id});
+        $timeout(function() { 
+          $scope.loadDeployments(); 
+        }, 10000);
+        
+      }
+      
+      $scope.loadDeployments();
   }])
 
   .controller('DeploymentController', [ '$scope', '$rootScope', '$routeParams', '$timeout', 'DeploymentService',
@@ -103,5 +114,6 @@ angular.module('asceticApplicationManagerPortalApp.controllers', [])
       });
       //console.log(response);
     }
-    
+
   }]); 
+

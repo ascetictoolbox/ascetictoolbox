@@ -47,7 +47,7 @@
           <td>{{deployment['end-date']}}</td>
           <td><a href="#/applications/{{applicationName}}/deployments/{{deployment.id}}" class="btn btn-primary btn-sm">View</a></td>
           <!-- TODO -->
-          <td><a href="#/applications/{{applicationName}}/deployments/" class="btn btn-danger btn-sm">Delete</a></td>
+          <td><button type="button" class="btn btn-danger btn-sm" data-toggle="modal" class="btn btn-danger btn-sm" data-target="#delete{{deployment.id}}">Delete</button></td>
         </tr>
       </tbody>
     </table>
@@ -67,6 +67,21 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div ng-repeat="deployment in deployments">
+  <div class="modal fade" id="delete{{deployment.id}}" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+          are you sure you want to delete deployment {{deployment.id}}?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="deleteDeployment(deployment.id)">Delete</button>
         </div>
       </div>
     </div>
