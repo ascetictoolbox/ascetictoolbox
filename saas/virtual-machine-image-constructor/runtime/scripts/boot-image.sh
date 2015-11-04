@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# TODO: make VNC port match last octet
-
 RUNTIME_DIR="$1"
 IMAGE_PATH="$2"
 OS="$3"
@@ -15,7 +13,8 @@ then
   
   # 1) Copy the base image reporting progress / performance
   mkdir -p "$(dirname $IMAGE_PATH)"
-  rsync -avzPh win-2k3.raw.img $IMAGE_PATH
+  echo "Copying windows base image via efficient inplace partial file delta encoding"
+  sudo su - root -c "rsync -avPh --inplace --no-whole-file $INSTALL_DIR/base-images/windows/win-2k3.raw.img $IMAGE_PATH"
   if [ $? -ne 0 ]
   then
     echo "Error copying windows base image"
@@ -34,6 +33,7 @@ then
   IP="$(echo $MAC_IP | cut -d ' ' -f2)"
   # Output the new XML here
   truncate -s 0 $IMAGE_PATH.xml
+  echo "Creating libvirt domain XML definition"
   cat win-2k3.raw.img.xml | sed -e "s|port='5910' ||" | sed -e "s|<name>win-2k3.raw.img</name>|<name>$IP</name>|" | sed -e "s|$INSTALL_DIR/base-images/windows/win-2k3.raw.img|$IMAGE_PATH|" | sed -e "s|02:00:0a:0a:ef:fe|$MAC|" >> $IMAGE_PATH.xml
  
   # 3) Create the VM
@@ -93,7 +93,8 @@ then
 
   # 1) Copy the base image reporting progress / performance
   mkdir -p "$(dirname $IMAGE_PATH)"
-  rsync -avzPh deb-wheezy.raw.img $IMAGE_PATH
+  echo "Copying linux base image via efficient inplace partial file delta encoding"
+  sudo su - root -c "rsync -avPh --inplace --no-whole-file $INSTALL_DIR/base-images/linux/deb-wheezy.raw.img $IMAGE_PATH"
   if [ $? -ne 0 ]
   then
     echo "Error copying linux base image"
@@ -112,6 +113,7 @@ then
   IP="$(echo $MAC_IP | cut -d ' ' -f2)"
   # Output the new XML here
   truncate -s 0 $IMAGE_PATH.xml
+  echo "Creating libvirt domain XML definition"
   cat deb-wheezy.raw.img.xml | sed -e "s|port='5910' ||" | sed -e "s|<name>deb-wheezy.raw.img</name>|<name>$IP</name>|" | sed -e "s|$INSTALL_DIR/base-images/linux/deb-wheezy.raw.img|$IMAGE_PATH|" | sed -e "s|02:00:0a:0a:ef:fe|$MAC|" >> $IMAGE_PATH.xml
 
   # 3) Create the VM
