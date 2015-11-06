@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
  * This represents a duration of time/a time period, it is to be used as part of
  * the ASCETiC energy modellers query system.
  *
- * @author Richard
+ * @author Richard Kavanagh
  */
 public class TimePeriod implements Comparable<TimePeriod> {
 
@@ -37,7 +37,7 @@ public class TimePeriod implements Comparable<TimePeriod> {
      *
      * @param startTime The time that represents the start of the query's
      * dataset, as represented in Unix time.
-     * @param endTime The time that represents the end of the query's dataset, 
+     * @param endTime The time that represents the end of the query's dataset,
      * as represented in Unix time.
      */
     public TimePeriod(long startTime, long endTime) {
@@ -45,8 +45,8 @@ public class TimePeriod implements Comparable<TimePeriod> {
         this.startTime.setTimeInMillis(TimeUnit.SECONDS.toMillis(startTime));
         this.endTime = new GregorianCalendar();
         this.endTime.setTimeInMillis(TimeUnit.SECONDS.toMillis(endTime));
-    }    
-    
+    }
+
     /**
      * This creates an object that represents a duration of time/a time period,
      * it is to be used as part of the ASCETiC energy modellers query system.
@@ -56,6 +56,10 @@ public class TimePeriod implements Comparable<TimePeriod> {
      * @param endTime The time that represents the end of the query's dataset
      */
     public TimePeriod(Calendar startTime, Calendar endTime) {
+        if (startTime == null || endTime == null) {
+            throw new NullPointerException("The start and end times of a "
+                    + "time period cannot be null");
+        }
         this.startTime = startTime;
         this.endTime = endTime;
     }
@@ -155,7 +159,7 @@ public class TimePeriod implements Comparable<TimePeriod> {
     public Calendar getStartTime() {
         return startTime;
     }
-    
+
     /**
      * The start time for the duration the query represents.
      *
@@ -163,7 +167,7 @@ public class TimePeriod implements Comparable<TimePeriod> {
      */
     public long getStartTimeInSeconds() {
         return TimeUnit.MILLISECONDS.toSeconds(startTime.getTimeInMillis());
-    }    
+    }
 
     /**
      * The end time for the duration the query represents.
@@ -173,7 +177,7 @@ public class TimePeriod implements Comparable<TimePeriod> {
     public Calendar getEndTime() {
         return endTime;
     }
-    
+
     /**
      * The start time for the duration the query represents.
      *
@@ -181,8 +185,8 @@ public class TimePeriod implements Comparable<TimePeriod> {
      */
     public long getEndTimeInSeconds() {
         return TimeUnit.MILLISECONDS.toSeconds(endTime.getTimeInMillis());
-    }    
-    
+    }
+
 
     @Override
     public boolean equals(Object obj) {
@@ -205,17 +209,33 @@ public class TimePeriod implements Comparable<TimePeriod> {
 
     @Override
     public int compareTo(TimePeriod other) {
-            int start = startTime.compareTo(other.startTime);
-            if (start != 0) {
-                return start;
-            }
-            int end = endTime.compareTo(other.endTime);
-            return end;
+        int start = startTime.compareTo(other.startTime);
+        if (start != 0) {
+            return start;
+        }
+        int end = endTime.compareTo(other.endTime);
+        return end;
     }
 
     @Override
     public String toString() {
-        return "Start: " + startTime.getTime() + " End: " + endTime.getTime();
+        return "Start: " + (startTime != null ? startTime.getTime() : "NULL")
+                + " End: " + (endTime != null ? endTime.getTime() : "NULL");
     }
-    
+
+    /**
+     * This is a validity check for the time period. It ensures that the start
+     * and end times are not null and that the end time is not before the start
+     * time.
+     *
+     * @return True only if the start time is < end time and the start and end
+     * times are not null.
+     */
+    public boolean isValid() {
+        if (startTime == null || endTime == null) {
+            return false;
+        }
+        return !startTime.after(endTime);
+    }
+
 }
