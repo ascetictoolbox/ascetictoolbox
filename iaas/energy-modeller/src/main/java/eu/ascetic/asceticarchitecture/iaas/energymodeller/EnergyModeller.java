@@ -319,7 +319,7 @@ public class EnergyModeller {
      * (useful??) kWh of energy used since instantiation
      */
     public HistoricUsageRecord getEnergyRecordForVM(VmDeployed vm, TimePeriod timePeriod) {
-        if (!timePeriod.isValid()) {
+        if (timePeriod != null && !timePeriod.isValid()) {
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.SEVERE,
                     "The time period passed to the energy modeller was invalid. " +
             " Please check the start and end times used. {0}", timePeriod.toString());
@@ -369,7 +369,7 @@ public class EnergyModeller {
      * (useful??) kWh of energy used since instantiation
      */
     public HashSet<HistoricUsageRecord> getEnergyRecordForVM(Collection<VmDeployed> vms, TimePeriod timePeriod) {
-        if (!timePeriod.isValid()) {
+        if (timePeriod != null && !timePeriod.isValid()) {
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.SEVERE,
                     "The time period passed to the energy modeller was invalid. " +
             " Please check the start and end times used. {0}", timePeriod.toString());       
@@ -426,7 +426,7 @@ public class EnergyModeller {
      *
      */
     public HistoricUsageRecord getEnergyRecordForHost(Host host, TimePeriod timePeriod) {
-        if (!timePeriod.isValid()) {
+        if (timePeriod != null && !timePeriod.isValid()) {
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.SEVERE,
                     "The time period passed to the energy modeller was invalid. " +
             " Please check the start and end times used. {0}", timePeriod.toString());
@@ -475,7 +475,7 @@ public class EnergyModeller {
      */
     public HashSet<HistoricUsageRecord> getEnergyRecordForHost(Collection<Host> hosts, TimePeriod timePeriod) {
         HashSet<HistoricUsageRecord> answer = new HashSet<>();
-        if (!timePeriod.isValid()) {
+        if (timePeriod != null && !timePeriod.isValid()) {
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.SEVERE,
                     "The time period passed to the energy modeller was invalid. " +
             " Please check the start and end times used. {0}", timePeriod.toString());
@@ -620,7 +620,7 @@ public class EnergyModeller {
      * used (kWh) during life of VM
      */
     public EnergyUsagePrediction getPredictedEnergyForVM(VM vmImage, Collection<VM> vMsOnHost, Host host, TimePeriod duration) {
-        if (!duration.isValid()) {
+        if (duration == null || !duration.isValid()) {
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.SEVERE,
                     "The time period passed to the energy modeller was invalid. " +
             " Please check the start and end times used. {0}", duration.toString());
@@ -660,7 +660,7 @@ public class EnergyModeller {
      * host.
      */
     public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines, TimePeriod duration) {
-        if (!duration.isValid()) {
+        if (duration == null || !duration.isValid()) {
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.SEVERE,
                     "The time period passed to the energy modeller was invalid. " +
             " Please check the start and end times used. {0}", duration.toString());
