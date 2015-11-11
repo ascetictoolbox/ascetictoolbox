@@ -229,13 +229,13 @@ public class TimePeriod implements Comparable<TimePeriod> {
      * time.
      *
      * @return True only if the start time is < end time and the start and end
-     * times are not null.
+     * times are not null or the exact same time.
      */
     public boolean isValid() {
         if (startTime == null || endTime == null) {
             return false;
         }
-        return !startTime.after(endTime);
+        return !startTime.after(endTime) && !startTime.equals(endTime);
     }
 
 }

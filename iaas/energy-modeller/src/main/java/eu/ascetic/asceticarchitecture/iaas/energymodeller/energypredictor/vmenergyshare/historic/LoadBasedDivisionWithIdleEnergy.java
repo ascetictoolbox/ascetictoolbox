@@ -87,7 +87,7 @@ public class LoadBasedDivisionWithIdleEnergy extends AbstractHistoricLoadBasedDi
                 double deltaEnergy = Math.abs((((double) timePeriod) / 3600d) * (energy1.getPower() + energy2.getPower()) * 0.5);
                 double activeEnergyUsed = deltaEnergy - idleEnergy;
                 double avgLoadFraction = (load1.getFraction(deployed) + load2.getFraction(deployed)) / 2;
-                //Add previous to previous energy idle energy + fraction of active energy associated with VM.
+                //Add previous energy value to idle energy + fraction of active energy associated with VM.
                 vmEnergy = vmEnergy + idleVMEnergy + (activeEnergyUsed * avgLoadFraction);
             }
         }
