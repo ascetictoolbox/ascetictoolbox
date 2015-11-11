@@ -141,6 +141,9 @@ public abstract class AbstractHistoricLoadBasedDivision implements HistoricLoadB
      */
     @Override
     public long getDuration() {
+        if (energyUsage.isEmpty()) {
+            return 0;
+        }
         HostEnergyRecord first = energyUsage.get(0);
         HostEnergyRecord last = energyUsage.get(energyUsage.size() - 1);
         return last.getTime() - first.getTime();
