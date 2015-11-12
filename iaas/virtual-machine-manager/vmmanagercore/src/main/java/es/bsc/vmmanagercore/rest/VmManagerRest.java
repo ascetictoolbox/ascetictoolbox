@@ -325,7 +325,7 @@ public class VmManagerRest {
 		try {
 			return vmManager.getVmsCost(vmIds);
 		} catch(Exception e) {
-			log.warn("Error getting vms cost: " + e.getMessage());
+			log.warn("Error getting vms cost: " + e.getMessage(), e);
 			throw new ErrorHandler(e, Response.Status.NOT_FOUND);
 		}
 	}
