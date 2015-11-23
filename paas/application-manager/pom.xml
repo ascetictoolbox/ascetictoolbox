@@ -7,7 +7,7 @@
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 		<artifactId>paas</artifactId>
-	</parent> 
+	</parent>
 
 
 	<groupId>eu.ascetic.paas</groupId>
@@ -196,6 +196,17 @@
                         <enabled>false</enabled>
                 </snapshots>
         </repository>
+        
+        <!-- <repository>
+      		<id>central</id>
+      		<name>Maven Repository Switchboard</name>
+      		<layout>default</layout>
+      		<url>http://repo1.maven.org/maven2</url>
+      		<snapshots>
+        		<enabled>false</enabled>
+      		</snapshots>
+    	</repository> -->
+
 	</repositories>	 
 
 	<dependencies>
@@ -451,7 +462,7 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.1</version>
         </dependency>
-        		<dependency>
+       <dependency>
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>
 			<version>3.1</version>
@@ -578,14 +589,8 @@
         	<groupId>org.projectreactor</groupId>
             <artifactId>reactor-spring</artifactId>
             <version>1.0.1.RELEASE</version>
-        </dependency>
-        
-        <!-- <dependency>
-			<groupId>org.projectreactor</groupId>
-			<artifactId>reactor-core</artifactId>
-			<version>1.1.5.RELEASE</version>
-		</dependency> -->
-        
+        </dependency> 
+       
 		
 		<!-- Hibernate -->
 

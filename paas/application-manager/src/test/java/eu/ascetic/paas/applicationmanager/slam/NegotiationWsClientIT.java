@@ -55,7 +55,7 @@ public class NegotiationWsClientIT {
 	private String slatFile = "slat-y2.xml";
 	private String slatXml = "";
 	
-	private static final String serverAddress = "localhost";//"10.4.0.15";
+	private static final String serverAddress = "localhost";
 
 	private static final int serverPort = 8080;
 
@@ -75,7 +75,7 @@ public class NegotiationWsClientIT {
 
 	@Before
 	public void setUp() throws Exception {
-		Configuration.slamURL = "http://10.4.0.16:8080/services/asceticNegotiation?wsdl"; 
+		Configuration.slamURL = "http://192.168.3.16:8080/services/asceticNegotiation?wsdl"; 
 				
 		File file = new File(this.getClass().getResource( "/" + threeTierWebAppOvfFile ).toURI());		
 		threeTierWebAppOvfString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
@@ -111,7 +111,7 @@ public class NegotiationWsClientIT {
 		System.out.println(endpoint);
 		
 		OvfDefinition ovfDefinition = OVFUtils.getOvfDefinition(threeTierWebAppOvfString);
-		SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "http://10.4.0.16/application-manager/applications/davidgpTestApp/deployments/478/ovf");
+		SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "http://192.168.3.16/application-manager/applications/davidgpTestApp/deployments/478/ovf");
 		
 		//SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "http://10.4.0.16/application-manager/applications/threeTierWebApp/deployments/31/ovf");
 		
@@ -133,7 +133,7 @@ public class NegotiationWsClientIT {
 //		SLATemplate slat = slasoieTemplatParser.parseTemplate(slatXml);
 		
 		OvfDefinition ovfDefinition = OVFUtils.getOvfDefinition(threeTierWebAppOvfString);
-		SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "http://10.4.0.16/application-manager/applications/davidgpTestApp/deployments/478/ovf");
+		SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "http://192.168.3.16/application-manager/applications/davidgpTestApp/deployments/478/ovf");
 		
 		logger.debug("Sending negotiate SOAP request...");
 		logger.debug("Negotiation ID: " + negotiationId);

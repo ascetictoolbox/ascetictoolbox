@@ -249,6 +249,9 @@ public class DeployEventHandlerTest extends AbstractTest {
 		//We start the task
 		deploymentEventHandler.deployDeployment(Event.wrap(deploymentEvent));
 		
+		// We give time to the new thread to run... 
+		Thread.sleep(4000l);
+		
 		// We verify the mock calls
 		//verify(vmMaClient, times(1)).uploadImage(imageToUploadWithArguments("haproxy.img","/DFS/ascetic/vm-images/threeTierWebApp/haproxy.img"));
 		verify(imageDAO, times(1)).save(eq(image1));
@@ -315,7 +318,6 @@ public class DeployEventHandlerTest extends AbstractTest {
 		assertEquals(Dictionary.APPLICATION_STATUS_DEPLOYED, argument.getValue().getDeploymentStatus());
 		
 		// We verify that the right messages were sent to the AMQP
-		Thread.sleep(500l);
 		assertEquals(6, listener.getTextMessages().size());
 		
 		assertEquals("APPLICATION.threeTierWebApp.DEPLOYMENT.22.DEPLOYING", listener.getTextMessages().get(0).getJMSDestination().toString());
@@ -400,7 +402,7 @@ public class DeployEventHandlerTest extends AbstractTest {
 	}
 	
 	@Test
-	public void testDeployVMsUsingDEMOImages() {		
+	public void testDeployVMsUsingDEMOImages() throws InterruptedException {		
 		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
 		
 		Deployment deployment = new Deployment();
@@ -527,6 +529,8 @@ public class DeployEventHandlerTest extends AbstractTest {
 		
 		//We start the task
 		deploymentEventHandler.deployDeployment(Event.wrap(deploymentEvent));
+		//We give time to the thread to do its business... ugly code... 
+		Thread.sleep(4000l);
 
 		// We verify the mock calls
 		verify(imageDAO, times(1)).save(eq(image1));

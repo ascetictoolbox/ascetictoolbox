@@ -11,6 +11,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -164,6 +165,16 @@ public class DeploymentRest extends AbstractRest {
 	}
 	
 	/**
+	 * Returns compatible angularJS options for that deployment... 
+	 * @return
+	 */
+	@OPTIONS
+	@Path("{deployment_id}")
+	public Response optionsForSpecificDeployment() {
+		return options();
+	}
+	
+	/**
 	 * Returns the information of an specific deployment
 	 * @param applicationName of name the application in the database
 	 * @return deploymentId of the Deployment for the previously specify application
@@ -262,6 +273,7 @@ public class DeploymentRest extends AbstractRest {
 	 */
 	@DELETE
 	@Path("{deployment_id}")
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.TEXT_PLAIN })
 	public Response deleteDeployment(@PathParam("application_name") String applicationName, @PathParam("deployment_id") String deploymentId) {
 		logger.info("DELETE request to path: /applications/" + applicationName + "/deployments/" + deploymentId);
 
