@@ -305,13 +305,6 @@
 			<url>http://ftp.cica.es/mirrors/maven2</url>
 		</repository>
 
-
-
-		<repository>
-			<id>codehaus</id>
-			<name>Codehaus repository</name>
-			<url>http://repository.codehaus.org//</url>
-		</repository>
 		<repository>
 			<id>glassfish</id>
 			<name>Glassfish repository</name>
