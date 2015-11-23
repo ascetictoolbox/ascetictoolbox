@@ -124,9 +124,9 @@
       		<snapshots>
         		<enabled>false</enabled>
       		</snapshots>
-    	</repository> -->
+    	</repository> 
 
-	</repositories>	
+	</repositories>	-->
 
 	<dependencies>
 
