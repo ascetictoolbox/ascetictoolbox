@@ -2,6 +2,8 @@ iaas/energy-modeller/energymodeller.properties
 iaas/energy-modeller/energymodeller_calibrator.properties
 iaas/energy-modeller/energymodeller_cpu_predictor.properties
 iaas/energy-modeller/src/main/.sigar_shellrc
+iaas/iaas-pricing-modeller/target/classes
+iaas/iaas-pricing-modeller/target/test-classes
 iaas/iaas-slamanager/core/.classpath
 iaas/iaas-slamanager/core/.project
 iaas/iaas-slamanager/core/.settings
