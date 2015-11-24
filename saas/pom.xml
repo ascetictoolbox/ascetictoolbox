@@ -14,16 +14,15 @@
 	</parent>
 
 	<modules>
-	    <!-- SaaS Modules -->
-	    <!--<module>my-module-name</module>-->
-	    
-	    <module>virtual-machine-image-constructor</module>
-	    <module>application-uploader</module>
-	    <module>application-packager</module>
-	    <module>compss-plugin</module>
-	    <module>programming_model/compss</module>
-	    <module>ascetic-eclipse-site</module>
-	    <module>ascetic-app-packager</module>
+		<!-- SaaS Modules -->
+		<!--<module>my-module-name</module>-->
+
+		<module>virtual-machine-image-constructor</module>
+		<module>application-uploader</module>
+		<module>compss-plugin</module>
+		<module>programming_model/compss</module>
+		<module>ascetic-eclipse-site</module>
+		<module>ascetic-application-packager</module>
 	</modules>
 	<url>http://www.ascetic.eu</url>
 	<version>0.0.1-SNAPSHOT</version>
