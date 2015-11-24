@@ -153,7 +153,8 @@ public class ZabbixClient {
             if (token != null) {
 				String jsonRequest = 
 						"{\"jsonrpc\":\"" + Dictionary.JSON_RPC_VERSION + "\","
-                        + "\"params\":{\"output\":\"extend\"},"
+                        + "\"params\":{\"output\":\"extend\",\"selectGroups\":\"extend\"},"
+                                        
                         + "\"method\":\"host.get\","
                         + "\"auth\":\"" + token + "\",\"id\": 0}";
 
@@ -210,7 +211,7 @@ public class ZabbixClient {
 
                 if (result != null && !result.isEmpty()) {
                     host = Json2ObjectMapper.getHost((HashMap<String, String>) result.get(0));
-                    log.debug("Host " + hostName + " finded in Zabbix");
+                    log.debug("Host " + hostName + " found in Zabbix");
                     return host;
                 }
             }
@@ -725,7 +726,7 @@ public class ZabbixClient {
 
                     if (result != null) {
                         hostGroup = Json2ObjectMapper.getHostGroup((HashMap<String, String>) result.get(0));
-						log.debug("HostGroup " + hostGroupName + " finded in Zabbix");
+						log.debug("HostGroup " + hostGroupName + " found in Zabbix");
                         return hostGroup;
                     }
                 }
@@ -772,7 +773,7 @@ public class ZabbixClient {
 
                     if (result != null) {
                         template = Json2ObjectMapper.getTemplate((HashMap<String, String>) result.get(0));
-						log.debug("Template " + templateName + " finded in Zabbix");
+						log.debug("Template " + templateName + " found in Zabbix");
                         return template;
                     }
                 }

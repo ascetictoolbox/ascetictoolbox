@@ -1,5 +1,7 @@
 package eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel;
 
+import java.util.HashSet;
+
 
 /**
  *
@@ -38,6 +40,9 @@ public class Host {
 	
 	/** The name. */
 	private String name;
+        
+    /** The name of the groups the host is attached to */
+    private HashSet<String> groups;
 	
 	/**
 	 * Instantiates a new host.
@@ -107,5 +112,19 @@ public class Host {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+    /**
+     * @return the groups
+     */
+    public HashSet<String> getGroups() {
+        return groups;
+    }
+
+    /**
+     * @param groups the groups to set
+     */
+    public void setGroups(HashSet<String> groups) {
+        this.groups = groups;
+    }
 	
 }

@@ -1,13 +1,14 @@
 package eu.ascetic.asceticarchitecture.iaas.zabbixApi.utils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.HistoryItem;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Host;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.HostGroup;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Item;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Template;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 
 /**
 *
@@ -46,7 +47,23 @@ public class Json2ObjectMapper {
 		host.setHost(hmJsonHost.get(Dictionary.HOST_HOST));
 		host.setAvailable(hmJsonHost.get(Dictionary.HOST_AVAILABLE));
 		host.setName(hmJsonHost.get(Dictionary.HOST_NAME));
+		Object hostGroups = (Object) hmJsonHost.get("groups");
+		ArrayList<LinkedHashMap<String, String>> parsedHosts = (ArrayList<LinkedHashMap<String, String>>) hostGroups;
+		host.setGroups(getHostGroups(parsedHosts));
 		return host;
+	}
+        
+	/**
+	 * This gets the groups associated with a host.
+	 * @param hostGroups
+	 * @return 
+	*/
+	private static HashSet<String> getHostGroups(ArrayList<LinkedHashMap<String, String>> hostGroups) {
+		HashSet<String> answer = new HashSet<String>();            
+		for (LinkedHashMap<String, String> hostGroup : hostGroups) {
+			answer.add(hostGroup.get("name"));
+		}          
+		return answer;
 	}
 	
 	/**
