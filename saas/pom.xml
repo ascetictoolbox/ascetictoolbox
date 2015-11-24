@@ -20,7 +20,6 @@
 	    <module>virtual-machine-image-constructor</module>
 	    <module>application-uploader</module>
 	    <module>application-packager</module>
-	    <module>application-descriptor-tool</module>
 	    <module>compss-plugin</module>
 	    <module>programming_model/compss</module>
 	    <module>ascetic-eclipse-site</module>

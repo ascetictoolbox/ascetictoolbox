@@ -1417,26 +1417,6 @@ saas/SaaSMonitorController/src/eu/ascetic/saas/monitorcontroller/UserInfo.java -
 saas/SaaSMonitorController/src/eu/ascetic/saas/monitorcontroller/WinPowerShell.java -text svneol=unset#text/plain
 saas/SaaSVisualization/SaaSDB/saasdbcreatetable.sql -text
 saas/SaaSVisualization/SaaSDB/saasdbexample2.sql -text
-saas/application-descriptor-tool/pom.xml -text
-saas/application-packager/.classpath -text
-saas/application-packager/.project -text
-saas/application-packager/.settings/org.eclipse.jdt.core.prefs -text
-saas/application-packager/.settings/org.eclipse.m2e.core.prefs -text
-saas/application-packager/LICENSE.TXT -text
-saas/application-packager/META-INF/MANIFEST.MF -text
-saas/application-packager/bin/application_packager/Activator.class -text
-saas/application-packager/bin/eu/ascetic/saas/application/actions/SampleAction.class -text
-saas/application-packager/build.properties -text
-saas/application-packager/icons/sample.gif -text
-saas/application-packager/plugin.xml -text
-saas/application-packager/pom.xml -text
-saas/application-packager/src/application_packager/Activator.java.keep -text
-saas/application-packager/src/eu/ascetic/saas/application/actions/SampleAction.java.keep -text
-saas/application-packager/target/classes/META-INF/MANIFEST.MF -text
-saas/application-packager/target/classes/META-INF/maven/application-packager/application-packager/pom.properties -text
-saas/application-packager/target/classes/META-INF/maven/application-packager/application-packager/pom.xml -text
-saas/application-packager/target/classes/application_packager/Activator.class -text
-saas/application-packager/target/classes/eu/ascetic/saas/application/actions/SampleAction.class -text
 saas/application-uploader/.classpath -text
 saas/application-uploader/.project -text
 saas/application-uploader/.settings/org.eclipse.core.resources.prefs -text

@@ -13,7 +13,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	<artifactId>ascetic-app-packager</artifactId>
 	<packaging>eclipse-plugin</packaging>
 	<version>1.0.0-SNAPSHOT</version>
-	<name>Ascetic Application Packager plugin</name>
+	<name>Application Packager Plug-in</name>
 	<url>http://www.ascetic.eu</url>
 
 	<ciManagement>

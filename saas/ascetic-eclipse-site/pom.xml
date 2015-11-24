@@ -3,6 +3,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.ascetic.saas</groupId>
 	<artifactId>site</artifactId>
+	<name>Eclipse Site</name>
+	<url>http://www.ascetic.eu</url>
 	<packaging>eclipse-repository</packaging>
 	<parent>
 		<groupId>eu.ascetic</groupId>
