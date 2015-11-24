@@ -106,6 +106,40 @@ public class ApplicationUploaderTest {
 	}*/
 	
 	@Test
+	public void testThreads() throws InterruptedException{
+		long init = System.currentTimeMillis();
+		int N_THREADS = 2;
+		Thread[] threads = new Thread[N_THREADS];
+        for ( int i= 0; i<N_THREADS; i++){
+        	final int run = i;
+        	
+    		threads[i] = new Thread(){
+    			public void run(){
+       
+    				long st = System.currentTimeMillis();
+    				long diff = 0l;
+    				while(diff<30000){
+    					for (int i=0; i<200;i++){
+    						Math.atan(Math.tan(Math.atan(Math.tan(0.5))));
+    					}
+    					diff = System.currentTimeMillis()-st;
+    				}
+    			}
+    		};
+    	
+    		System.out.println("Thread "+ i + " started...");
+    		threads[i].start();
+        }
+    	for ( int i= 0; i<N_THREADS; i++){
+	           	System.out.println("Waiting for thread "+ i + " started...");
+	           	threads[i].join();
+	    }
+    	long total = System.currentTimeMillis()- init;
+    	System.out.println("Total time :" + total);
+    
+	}
+	
+	@Test
 	public void getVMDescriptions() throws ApplicationUploaderException {
 		ApplicationUploader uploader = new ApplicationUploader("http://192.168.3.16/application-manager");
 		String applicationID = "JEPlus";
