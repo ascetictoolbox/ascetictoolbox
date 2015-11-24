@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: ascetic-app-packager
-Bundle-SymbolicName: ascetic-app-packager;singleton:=true
+Bundle-Name: ascetic-application-packager
+Bundle-SymbolicName: ascetic-application-packager;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: eu.ascetic.saas.applicationpackager.ide.Activator
 Require-Bundle: org.eclipse.ui,
