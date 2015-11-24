@@ -23,6 +23,7 @@
 	    <module>compss-plugin</module>
 	    <module>programming_model/compss</module>
 	    <module>ascetic-eclipse-site</module>
+	    <module>ascetic-app-packager</module>
 	</modules>
 	<url>http://www.ascetic.eu</url>
 	<version>0.0.1-SNAPSHOT</version>
