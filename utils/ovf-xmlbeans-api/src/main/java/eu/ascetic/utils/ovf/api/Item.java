@@ -303,7 +303,8 @@ public class Item extends AbstractElement<XmlBeanRASDType> {
             cimString.setStringValue(connectionArray[i]);
             newConnectionArray.add(cimString);
         }
-        delegate.setConnectionArray((CimString[]) newConnectionArray.toArray());
+        delegate.setConnectionArray(newConnectionArray
+                .toArray(new CimString[newConnectionArray.size()]));
     }
 
     /**
@@ -415,8 +416,8 @@ public class Item extends AbstractElement<XmlBeanRASDType> {
             cimString.setStringValue(hostResourceArray[i]);
             newHostResourceArray.add(cimString);
         }
-        delegate.setHostResourceArray((CimString[]) newHostResourceArray
-                .toArray());
+        delegate.setHostResourceArray(newHostResourceArray
+                .toArray(new CimString[newHostResourceArray.size()]));
     }
 
     /**
@@ -479,7 +480,8 @@ public class Item extends AbstractElement<XmlBeanRASDType> {
      */
     public String findHostRosourceId(String hostResource) {
         if (hostResource.lastIndexOf('/') != -1) {
-            return hostResource.substring(hostResource.lastIndexOf('/') + 1).replace("\n", "").trim();
+            return hostResource.substring(hostResource.lastIndexOf('/') + 1)
+                    .replace("\n", "").trim();
         } else {
             return null;
         }
