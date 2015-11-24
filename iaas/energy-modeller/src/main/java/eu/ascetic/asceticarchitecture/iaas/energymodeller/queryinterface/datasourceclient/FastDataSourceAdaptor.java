@@ -67,6 +67,16 @@ public class FastDataSourceAdaptor implements HostDataSource {
     }
 
     @Override
+    public List<Host> getHostList(String groupName) {
+        try {
+            return zabbixDbRoute.getHostList(groupName);
+        } catch (Exception ex) {
+            Logger.getLogger(FastDataSourceAdaptor.class.getName()).log(Level.INFO, "Performing fallback to Zabbix API", ex);
+            return zabbixAPI.getHostList(groupName);
+        }
+    }
+
+    @Override
     public List<EnergyUsageSource> getHostAndVmList() {
         try {
             return zabbixDbRoute.getHostAndVmList();
@@ -85,6 +95,18 @@ public class FastDataSourceAdaptor implements HostDataSource {
             return zabbixAPI.getVmList();
         }
     }
+
+    @Override
+    public List<VmDeployed> getVmList(String groupName) {
+        try {
+            return zabbixDbRoute.getVmList(groupName);
+        } catch (Exception ex) {
+            Logger.getLogger(FastDataSourceAdaptor.class.getName()).log(Level.INFO, "Performing fallback to Zabbix API", ex);
+            return zabbixAPI.getVmList(groupName);
+        }
+    }
+    
+    
 
     @Override
     public HostMeasurement getHostData(Host host) {

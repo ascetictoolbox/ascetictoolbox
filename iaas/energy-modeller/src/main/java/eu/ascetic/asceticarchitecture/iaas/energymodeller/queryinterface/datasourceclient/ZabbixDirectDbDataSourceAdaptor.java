@@ -83,6 +83,11 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
      * https://www.zabbix.com/documentation/2.0/manual/config/items/itemtypes/internal
      */
     private static String ALL_ZABBIX_HOSTS = "SELECT hostid, host FROM hosts WHERE status <> 3";
+    private static String ALL_ZABBIX_TEMPLATE_HOSTS = "SELECT hosts.hostid, hosts.host FROM "
+            + "groups, hosts_groups, hosts WHERE groups.groupid = hosts_groups.groupid "
+            + "AND groups.name = ? AND hosts.hostid = hosts_groups.hostid "
+            + "AND hosts.status <> 3";
+    
     /**
      * This query searches for a named host and provides it's current latest
      * items.
@@ -186,6 +191,7 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
             config.setProperty("iaas.energy.zabbix.only.available.hosts", onlyAvailableHosts);
             if (onlyAvailableHosts) {
                 ALL_ZABBIX_HOSTS = ALL_ZABBIX_HOSTS + " AND available = 1";
+                ALL_ZABBIX_TEMPLATE_HOSTS = ALL_ZABBIX_TEMPLATE_HOSTS + " AND h.available = 1";
             }
 
         } catch (ConfigurationException ex) {
@@ -319,7 +325,7 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
         vm = fullyDescribeVmLibVirt(vm, items);
         //A fall back incase the information is not available!
         if (vm.getCpus() == 0) {
-            vm.setCpus(Integer.valueOf(1));
+            vm.setCpus(1);
         }
         //TODO set the information correctly below!
         vm.setIpAddress("127.0.0.1");
@@ -369,7 +375,7 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
      * @return The vm object with more information attached.
      */
     private VmDeployed fullyDescribeVmLibVirt(VmDeployed vm, Collection<MetricValue> items) {
-       //TODO fix this here, with real values.
+        //TODO fix this here, with real values.
         if (vm.getRamMb() == 0) { //Convert to Mb
             //Original value given in bytes. 1024 * 1024 = 1048576
             vm.setRamMb(4096);
@@ -381,7 +387,7 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
         //A fall back incase the information is not available!
         if (vm.getCpus() == 0) {
             vm.setCpus(2);
-        }        
+        }
         for (MetricValue item : items) {
             if (item.getKey().equals(VM_PHYSICAL_HOST_NAME_2)) {
                 vm.setAllocatedTo(getHostByName(item.getValueAsString()));
@@ -406,6 +412,33 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
                     host = fullyDescribeHost(host, getHostData(host).getMetrics().values());
                     answer.add(host);
                 }
+            }
+        } catch (SQLException ex) {
+            DB_LOGGER.log(Level.SEVERE, null, ex);
+        }
+        return answer;
+    }
+
+    @Override
+    public List<Host> getHostList(String groupName) {
+        List<Host> answer = new ArrayList<>();
+        connection = getConnection(connection);
+        if (connection == null) {
+            return null;
+        }
+        try (PreparedStatement preparedStatement = connection.prepareStatement(ALL_ZABBIX_TEMPLATE_HOSTS);) {
+            preparedStatement.setString(1, groupName);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
+                for (ArrayList<Object> hostData : results) {
+                    if (isHost((String) hostData.get(1))) {
+                        Host host = new Host(((Long) hostData.get(0)).intValue(), (String) hostData.get(1));
+                        host = fullyDescribeHost(host, getHostData(host).getMetrics().values());
+                        answer.add(host);
+                    }
+                }
+            } catch (SQLException ex) {
+                DB_LOGGER.log(Level.SEVERE, null, ex);
             }
         } catch (SQLException ex) {
             DB_LOGGER.log(Level.SEVERE, null, ex);
@@ -456,6 +489,33 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
                     vm = fullyDescribeVM(vm, getVmData(vm).getMetrics().values());
                     answer.add(vm);
                 }
+            }
+        } catch (SQLException ex) {
+            DB_LOGGER.log(Level.SEVERE, null, ex);
+        }
+        return answer;
+    }
+
+    @Override
+    public List<VmDeployed> getVmList(String groupName) {
+        List<VmDeployed> answer = new ArrayList<>();
+        connection = getConnection(connection);
+        if (connection == null) {
+            return null;
+        }
+        try (PreparedStatement preparedStatement = connection.prepareStatement(ALL_ZABBIX_TEMPLATE_HOSTS)) {
+            preparedStatement.setString(1, groupName);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
+                for (ArrayList<Object> hostData : results) {
+                    if (!isHost((String) hostData.get(1))) {
+                        VmDeployed vm = new VmDeployed(((Long) hostData.get(0)).intValue(), (String) hostData.get(1));
+                        vm = fullyDescribeVM(vm, getVmData(vm).getMetrics().values());
+                        answer.add(vm);
+                    }
+                }
+            } catch (SQLException ex) {
+                DB_LOGGER.log(Level.SEVERE, null, ex);
             }
         } catch (SQLException ex) {
             DB_LOGGER.log(Level.SEVERE, null, ex);

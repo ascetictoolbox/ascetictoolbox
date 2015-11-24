@@ -292,7 +292,19 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
     }
 
     @Override
+    public List<Host> getHostList(String groupName) {
+        List<Host> answer = new ArrayList<>();
+        answer.add(host);
+        return answer;
+    }
+    
+    @Override
     public List<VmDeployed> getVmList() {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<VmDeployed> getVmList(String groupName) {
         return new ArrayList<>();
     }
 

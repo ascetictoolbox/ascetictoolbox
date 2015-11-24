@@ -52,7 +52,7 @@ import java.util.concurrent.TimeUnit;
  * The aim of this class is initially to take data from the Zabbix Client and to
  * place it into a format that is suitable for the Energy modeller.
  *
- * @author Richard
+ * @author Richard Kavanagh
  */
 public class ZabbixDataSourceAdaptor implements HostDataSource {
 
@@ -126,6 +126,18 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         return hosts;
     }
 
+    @Override
+    public List<eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host> getHostList(String groupName) {
+        List<Host> hostsList = client.getAllHosts();
+        ArrayList<eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host> hosts = new ArrayList<>();
+        for (Host host : hostsList) {
+            if (hostFilter.isHost(host) && host.getGroups().contains(groupName)) {
+                hosts.add(convert(host));
+            }
+        }
+        return hosts;
+    }
+
     /**
      * This provides a list of VMs for the energy modeller
      *
@@ -137,6 +149,18 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         ArrayList<VmDeployed> vms = new ArrayList<>();
         for (Host host : hostsList) {
             if (!hostFilter.isHost(host)) {
+                vms.add(convertToVm(host, client.getItemsFromHost(host.getHost()), hostsList));
+            }
+        }
+        return vms;
+    }
+
+    @Override
+    public List<VmDeployed> getVmList(String groupName) {
+        List<Host> hostsList = client.getAllHosts();
+        ArrayList<VmDeployed> vms = new ArrayList<>();
+        for (Host host : hostsList) {
+            if (!hostFilter.isHost(host) && host.getGroups().contains(groupName)) {
                 vms.add(convertToVm(host, client.getItemsFromHost(host.getHost()), hostsList));
             }
         }
@@ -170,14 +194,16 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host answer = new eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host(hostId, hostname);
         answer.setAvailable("1".equals(host.getAvailable()));
         List<Item> items = client.getItemsFromHost(host.getHost());
-        for (Item item : items) {
-            if (item.getKey().equals(MEMORY_TOTAL_KPI_NAME)) { //Convert to Mb
-                //Original value given in bytes. 1024 * 1024 = 1048576
-                answer.setRamMb((int) (Double.valueOf(item.getLastValue()) / 1048576));
-            }
-            if (item.getKey().equals(DISK_TOTAL_KPI_NAME)) { //Convert to Mb            
-                //Original value given in bytes. 1024 * 1024 * 1024 = 1073741824
-                answer.setDiskGb((Double.valueOf(item.getLastValue()) / 1073741824));
+        if (items != null) {
+            for (Item item : items) {
+                if (item.getKey().equals(MEMORY_TOTAL_KPI_NAME)) { //Convert to Mb
+                    //Original value given in bytes. 1024 * 1024 = 1048576
+                    answer.setRamMb((int) (Double.valueOf(item.getLastValue()) / 1048576));
+                }
+                if (item.getKey().equals(DISK_TOTAL_KPI_NAME)) { //Convert to Mb            
+                    //Original value given in bytes. 1024 * 1024 * 1024 = 1073741824
+                    answer.setDiskGb((Double.valueOf(item.getLastValue()) / 1073741824));
+                }
             }
         }
         return answer;
@@ -195,34 +221,36 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         String hostname = host.getHost();
         int hostId = Integer.parseInt(host.getHostid());
         VmDeployed answer = new VmDeployed(hostId, hostname);
-        for (Item item : items) {
-            if (item.getKey().equals(MEMORY_TOTAL_KPI_NAME)) { //Convert to Mb
-                //Original value given in bytes. 1024 * 1024 = 1048576
-                answer.setRamMb((int) (Double.valueOf(item.getLastValue()) / 1048576));
-            }
-            if (item.getKey().equals(DISK_TOTAL_KPI_NAME)) { //covert to Gb
-                //Original value given in bytes. 1024 * 1024 * 1024 = 1073741824
-                answer.setDiskGb((Double.valueOf(item.getLastValue()) / 1073741824));
-            }
-            if (item.getKey().equals(BOOT_TIME_KPI_NAME)) {
-                Calendar cal = new GregorianCalendar();
-                //This converts from milliseconds into the correct time value
-                cal.setTimeInMillis(TimeUnit.SECONDS.toMillis(Long.valueOf(item.getLastValue())));
-                answer.setCreated(cal);
-            }
-            if (item.getKey().equals(VM_PHYSICAL_HOST_NAME)) {
-                answer.setAllocatedTo(getHostByName(item.getLastValue(), allHosts));
-            }
-            if (item.getKey().equals(VM_PHYSICAL_HOST_NAME_2)) {
-                answer.setAllocatedTo(getHostByName(item.getLastValue(), allHosts));
-            }                
-            if (item.getKey().equals(CPU_COUNT_KPI_NAME)) {
-                answer.setCpus(Integer.valueOf(item.getLastValue()));
-            }
-            //TODO set the information correctly below!
-            answer.setIpAddress("127.0.0.1");
-            answer.setState("Work in Progress");
+        if (items != null) {
+            for (Item item : items) {
+                if (item.getKey().equals(MEMORY_TOTAL_KPI_NAME)) { //Convert to Mb
+                    //Original value given in bytes. 1024 * 1024 = 1048576
+                    answer.setRamMb((int) (Double.valueOf(item.getLastValue()) / 1048576));
+                }
+                if (item.getKey().equals(DISK_TOTAL_KPI_NAME)) { //convert to Gb
+                    //Original value given in bytes. 1024 * 1024 * 1024 = 1073741824
+                    answer.setDiskGb((Double.valueOf(item.getLastValue()) / 1073741824));
+                }
+                if (item.getKey().equals(BOOT_TIME_KPI_NAME)) {
+                    Calendar cal = new GregorianCalendar();
+                    //This converts from milliseconds into the correct time value
+                    cal.setTimeInMillis(TimeUnit.SECONDS.toMillis(Long.valueOf(item.getLastValue())));
+                    answer.setCreated(cal);
+                }
+                if (item.getKey().equals(VM_PHYSICAL_HOST_NAME)) {
+                    answer.setAllocatedTo(getHostByName(item.getLastValue(), allHosts));
+                }
+                if (item.getKey().equals(VM_PHYSICAL_HOST_NAME_2)) {
+                    answer.setAllocatedTo(getHostByName(item.getLastValue(), allHosts));
+                }
+                if (item.getKey().equals(CPU_COUNT_KPI_NAME)) {
+                    answer.setCpus(Integer.valueOf(item.getLastValue()));
+                }
+                //TODO set the information correctly below!
+                answer.setIpAddress("127.0.0.1");
+                answer.setState("Work in Progress");
 
+            }
         }
         //A fall back incase the information is not available!
         if (answer.getCpus() == 0) {
