@@ -15,6 +15,7 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient;
 
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.EnergyUsageSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
@@ -29,24 +30,55 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * This is the test class for the data source adaptor that connects directly into
- * the Zabbix Database for its information.
- * @author Richard
+ * This is the test class for the data source adaptor that connects directly
+ * into the Zabbix Database for its information.
+ *
+ * @author Richard Kavanagh
  */
 public class ZabbixDataSourceDbAdaptorTest {
 
     private final List<Host> hostList = new ArrayList<>();
-    private final Host CHOSEN_HOST = new Host(10084, "asok10");
+    private final Host CHOSEN_HOST = new Host(10140, "Wally152");
     private final String VM_NAME = "IaaS_VM_Dev"; //CloudSuite - Data Analytics
     private final ZabbixDirectDbDataSourceAdaptor instance = new ZabbixDirectDbDataSourceAdaptor();
 
     public ZabbixDataSourceDbAdaptorTest() {
 
-        hostList.add(new Host(10105, "asok09"));
-        hostList.add(new Host(10084, "asok10"));
-        hostList.add(new Host(10107, "asok11"));
-        hostList.add(new Host(10106, "asok12"));
-
+        hostList.add(new Host(10107, "wally198"));
+        hostList.add(new Host(10108, "wally197"));
+        hostList.add(new Host(10109, "wally196"));
+        hostList.add(new Host(10110, "wally195"));
+        hostList.add(new Host(10111, "wally193"));
+        hostList.add(new Host(10112, "wally157"));
+        hostList.add(new Host(10113, "wally158"));
+        hostList.add(new Host(10114, "wally159"));
+        hostList.add(new Host(10115, "wally160"));
+        hostList.add(new Host(10116, "wally161"));
+        hostList.add(new Host(10117, "wally162"));
+        hostList.add(new Host(10118, "wally163"));
+        hostList.add(new Host(10119, "wally164"));
+        hostList.add(new Host(10120, "wally165"));
+        hostList.add(new Host(10121, "wally166"));
+        hostList.add(new Host(10122, "wally167"));
+        hostList.add(new Host(10123, "wally168"));
+        hostList.add(new Host(10124, "wally169"));
+        hostList.add(new Host(10125, "wally170"));
+        hostList.add(new Host(10126, "wally171"));
+        hostList.add(new Host(10127, "wally172"));
+        hostList.add(new Host(10128, "wally173"));
+        hostList.add(new Host(10129, "wally174"));
+        hostList.add(new Host(10130, "wally175"));
+        hostList.add(new Host(10131, "wally176"));
+        hostList.add(new Host(10132, "wally177"));
+        hostList.add(new Host(10133, "wally178"));
+        hostList.add(new Host(10134, "wally179"));
+        hostList.add(new Host(10135, "wally180"));
+        hostList.add(new Host(10136, "wally181"));
+        hostList.add(new Host(10137, "wally182"));
+        hostList.add(new Host(10140, "wally152"));
+        hostList.add(new Host(10141, "wally153"));
+        hostList.add(new Host(10142, "wally154"));
+        hostList.add(new Host(10143, "wally155"));
     }
 
     @BeforeClass
@@ -71,7 +103,7 @@ public class ZabbixDataSourceDbAdaptorTest {
     @Test
     public void testGetHostByName() {
         System.out.println("getHostByName");
-        String hostname = "asok10";
+        String hostname = "Wally152";
         Host expResult = CHOSEN_HOST;
         Host result = instance.getHostByName(hostname);
         assertEquals(expResult, result);
@@ -86,7 +118,7 @@ public class ZabbixDataSourceDbAdaptorTest {
         List<Host> expResult = new ArrayList<>();
         expResult.addAll(hostList);
         List<Host> result = instance.getHostList();
-        assertEquals(result.size(), 2);
+        assertEquals(result.size(), 31);
         for (Host host : expResult) {
             assert (result.contains(host));
             System.out.println("Host name: " + host.getHostName());
@@ -99,6 +131,52 @@ public class ZabbixDataSourceDbAdaptorTest {
             System.out.println("Host disk: " + host.getDiskGb());
         }
         assertEquals(expResult.size(), result.size());
+    }
+
+    /**
+     * Test of getHostList method, of class ZabbixDirectDbDataSourceAdaptor.
+     */
+    @Test
+    public void testGetHostListNamedGroup() {
+        System.out.println("getHostList");
+        List<Host> expResult = new ArrayList<>();
+        expResult.addAll(hostList);
+        List<Host> result = instance.getHostList("Hypervisors"); //Virtual Machines
+        assertEquals(result.size(), 31);
+        for (Host host : expResult) {
+            assert (result.contains(host));
+            System.out.println("Host name: " + host.getHostName());
+            System.out.println("Host id: " + host.getId());
+        }
+        for (Host host : result) {
+            assert (host.getRamMb() >= 0);
+            assert (host.getDiskGb() >= 0);
+            System.out.println("Host: " + host.getHostName());
+            System.out.println("Host ram: " + host.getRamMb());
+            System.out.println("Host disk: " + host.getDiskGb());
+        }
+//        assertEquals(expResult.size(), result.size());
+    }
+
+    /**
+     * Test of getHostAndVmList method, of class
+     * ZabbixDirectDbDataSourceAdaptor.
+     */
+    @Test
+    public void testGetHostAndVmList() {
+        System.out.println("getHostAndVmList");
+        List<EnergyUsageSource> result = instance.getHostAndVmList();
+        for (EnergyUsageSource source : result) {
+            if (source instanceof Host) {
+                Host host = (Host) source;
+                System.out.println("Host name: " + host.getHostName());
+                System.out.println("Host id: " + host.getId());
+            } else {
+                VmDeployed vm = (VmDeployed) source;
+                System.out.println("VM Name: " + vm.getName());
+                System.out.println("VM Id: " + vm.getId());
+            }
+        }
     }
 
     /**
@@ -216,7 +294,7 @@ public class ZabbixDataSourceDbAdaptorTest {
         assert (!result.isEmpty());
         for (VmDeployed vmDeployed : result) {
             assert (vmDeployed.getName() != null);
-            assert (vmDeployed.getId() > 0); 
+            assert (vmDeployed.getId() > 0);
             System.out.println("VM Name: " + vmDeployed.getName());
             System.out.println("VM Id: " + vmDeployed.getId());
             System.out.println("Created: " + vmDeployed.getCreated());
@@ -307,7 +385,7 @@ public class ZabbixDataSourceDbAdaptorTest {
         System.out.println("getHighestHostPowerUsage");
         Host host = CHOSEN_HOST;
         double result = instance.getHighestHostPowerUsage(host);
-        assert(result > 0.0);
+        assert (result > 0.0);
         System.out.println("Highest Host Power Usage: " + result);
     }
 
@@ -321,9 +399,9 @@ public class ZabbixDataSourceDbAdaptorTest {
         Host host = CHOSEN_HOST;
         int duration = (int) TimeUnit.MINUTES.toSeconds(2); //time unit in seconds so run for 2 minutes.
         double result = instance.getCpuUtilisation(host, duration);
-        assert(result >= 0);
-        assert(result <= 1.0);
-        System.out.println("CPU Utilisation Last " + duration + " minutes: " + result);    
+        assert (result >= 0);
+        assert (result <= 1.0);
+        System.out.println("CPU Utilisation Last " + duration + " minutes: " + result);
     }
 
 }
