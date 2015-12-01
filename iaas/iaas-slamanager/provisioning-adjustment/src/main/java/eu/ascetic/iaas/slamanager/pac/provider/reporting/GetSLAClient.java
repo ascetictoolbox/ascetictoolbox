@@ -62,6 +62,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import eu.ascetic.iaas.slamanager.pac.provider.translation.AsceticAgreementTerm;
 import eu.ascetic.iaas.slamanager.pac.provider.translation.MeasurableAgreementTerm;
 import eu.ascetic.iaas.slamanager.pac.provider.translation.SlaTranslator;
 import eu.ascetic.iaas.slamanager.pac.provider.translation.SlaTranslatorImpl;
@@ -100,7 +101,7 @@ public class GetSLAClient {
 		ByteArrayOutputStream bout = new ByteArrayOutputStream();
 		
 		//testing purposes, remove...
-		String slaId = "cbf1f8e2-4d90-46f4-be60-7a198f4def39";
+		String slaId = "641bfdc1-528b-494d-9fe2-aa023ce2ec51";
 		
 		String xmlInput =
 				" <soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:rep=\"http://reportingWS.businessManager.slasoi.org\">"+
@@ -165,14 +166,14 @@ public class GetSLAClient {
 
 	
 	
-	public List<MeasurableAgreementTerm> getMeasurableTerms(SLA sla) {
+	public List<MeasurableAgreementTerm> getMeasurableTerms(SLA sla, String ovfId) {
 		guarantees = new ArrayList<MeasurableAgreementTerm>();
 		if (sla!=null) {
 			AgreementTerm[] terms = sla.getAgreementTerms();
 			if (terms!=null) {
 				for (AgreementTerm term:terms) {
 					parseVariables(term);
-
+					
 
 					if (term.getGuarantees()!=null) {
 						for (Guaranteed guarantee : term.getGuarantees()) {
@@ -196,8 +197,15 @@ public class GetSLAClient {
 									if (parameters == null || parameters.length == 0)
 										continue;
 									vsName = parameters[0].toString();
+//									System.out.println("***"+vsName);
+									if (!vsName.equalsIgnoreCase(ovfId)) {
+										logger.debug("VM Type "+vsName+" different from OVFID "+ovfId+ " : skipping... ");
+										continue;
+									}
+									else {
+										logger.debug("VM Type "+vsName+" equals to OVFID "+ovfId+ " : analyzing... ");
+									}
 								}
-
 								String termName = ssTermName.substring(ssTermName.indexOf('#') + 1);
 
 
@@ -302,21 +310,62 @@ public class GetSLAClient {
 					variablesVs.put(v.getVar().getValue(), ovfId);
 				}
 			}
+			//System.out.println(ovfId);
 		}
 	}
 	
 
 	public static void main(String[] args) {
-		GetSLAClient gsc = new GetSLAClient("http://10.4.0.16:8080/services/BusinessManager_Reporting?wsdl",null);
+		logger.info("Getting SLA...");
+		SLA sla = null;
+		GetSLAClient gsc = new GetSLAClient("http://192.168.3.17:8080/services/BusinessManager_Reporting?wsdl",null);
 		try {
-			gsc.getSLA();
-		} catch (MalformedURLException e) {
+			sla = gsc.getSLA();
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+		} 
+
+		if (sla!=null) {
+			logger.info("Comparing measurement with the threshold...");
+			List<MeasurableAgreementTerm> terms = gsc.getMeasurableTerms(sla, "VM_of_type_ubu1");
+			//System.out.println(sla);
+
+			
+			for (MeasurableAgreementTerm m:terms) {
+				boolean violated = false;
+				
+				
+				String[] monitorableTerms = "power_usage_per_vm".split(",");
+				
+				for (String monitorableTerm:monitorableTerms) {
+					if (m.getName().equalsIgnoreCase(monitorableTerm)) {
+						if (m.getOperator().equals(AsceticAgreementTerm.operatorType.EQUALS)) {
+							if (!m.getValue().equals(new Double("10"))) {
+								logger.debug("Violation detected. Value: "+"10"+" Condition: "+m); violated = true;
+							}
+						}
+						else if (m.getOperator().equals(AsceticAgreementTerm.operatorType.GREATER)) {
+							if (!(m.getValue()<(new Double("10")))) {
+								logger.debug("Violation detected. Value: "+"10"+" Condition: "+m); violated = true;
+							}
+						}
+						else if (m.getOperator().equals(AsceticAgreementTerm.operatorType.GREATER_EQUAL)) {
+							if (!(m.getValue()<=(new Double("10")))) {
+								logger.debug("Violation detected. Value: "+"10"+" Condition: "+m); violated = true;
+							}
+						}
+						else if (m.getOperator().equals(AsceticAgreementTerm.operatorType.LESS)) {
+							if (!(m.getValue()>(new Double("10")))) {
+								logger.debug("Violation detected. Value: "+"10"+" Condition: "+m); violated = true;
+							}
+						}
+						else if (m.getOperator().equals(AsceticAgreementTerm.operatorType.LESS_EQUAL)) {
+							if (!(m.getValue()>=(new Double("10")))) {
+								logger.debug("Violation detected. Value: "+"10"+" Condition: "+m); violated = true;
+							}
+						}
+					
 
 }
+}}}}}

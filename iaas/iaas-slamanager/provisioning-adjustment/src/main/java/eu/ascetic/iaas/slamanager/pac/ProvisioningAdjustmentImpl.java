@@ -102,6 +102,8 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 		// configurationFileImpl=configFile;
 		logger.debug("Constructor ASCETIC PAC - file config=" + configFile);
 		logger.info("Creating Skeleton PAC...");
+		logger.info("Searching for VM Startup Events on ActiveMQ...");
+		retrieveVmEvents();
 	}
 
 	/**

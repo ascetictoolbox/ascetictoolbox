@@ -67,6 +67,7 @@ public class IaasViolationChecker implements Runnable {
 	private static String TERMINATED_VMS_QUEUE = "terminated_vms_queue";
 	private static String BUSINESS_REPORTING_URL = "business_reporting_url";
 	private static String MONITORABLE_TERMS = "monitorable_terms";
+	private static String NOTIFICATION_INTERVAL = "notification_interval";
 
 	private String topicId;
 	private String slaId;
@@ -79,7 +80,7 @@ public class IaasViolationChecker implements Runnable {
     public static final String FIELD_VM_ID = "id";
 	public static final String FIELD_OVF_ID = "ovfId";
 	public static final String FIELD_SLA_ID = "slaId";
-	
+	public long violationNotificationTime = 0;
 	
 	public IaasViolationChecker(Properties properties, String topicId, String vmId, String ovfId, String slaId, boolean recovered) {
 		super();
@@ -379,7 +380,7 @@ public class IaasViolationChecker implements Runnable {
 
 							if (sla!=null) {
 								logger.info("Comparing measurement with the threshold...");
-								List<MeasurableAgreementTerm> terms = gsc.getMeasurableTerms(sla);
+								List<MeasurableAgreementTerm> terms = gsc.getMeasurableTerms(sla, ovfId);
 								
 								
 								
@@ -467,6 +468,21 @@ public class IaasViolationChecker implements Runnable {
 	 * 3. Writes a violation to the message queue
 	 */
 	private void notifyViolation(String violationMessage) {
+		/*
+		 * verify if the same violation has been notified recently
+		 */
+		long millis = System.currentTimeMillis() % 1000;
+		if (violationNotificationTime!=0) {	
+			if (millis-violationNotificationTime<new Long(properties.getProperty(NOTIFICATION_INTERVAL))) {
+				logger.info("The violation has already been notified recently, skipping...");
+				return;
+			}
+		}
+		violationNotificationTime = millis;
+		/*
+		 * 
+		 */
+		
 		try{
 
 			ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(properties.getProperty(ACTIVEMQ_URL));
