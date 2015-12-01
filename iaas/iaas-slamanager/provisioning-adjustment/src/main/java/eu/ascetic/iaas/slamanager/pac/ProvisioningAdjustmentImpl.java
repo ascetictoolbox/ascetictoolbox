@@ -274,7 +274,7 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 //                        String slaId = retrieveVmDetails(null,null);
                         
                         logger.info("Creating an instance of Iaas Violation Checker...");
-                        new Thread(new IaasViolationChecker(properties, "infrastructure-monitor.monitoring.measurement", vmId, ovfId, slaId, false)).start();
+                        new Thread(new IaasViolationChecker(properties, "vm."+vmId+".item.*", vmId, ovfId, slaId, false)).start();
                         
                     }
                 } catch (JMSException e) {

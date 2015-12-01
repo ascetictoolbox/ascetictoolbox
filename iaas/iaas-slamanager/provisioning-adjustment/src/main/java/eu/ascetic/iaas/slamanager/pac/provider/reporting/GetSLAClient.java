@@ -101,7 +101,7 @@ public class GetSLAClient {
 		ByteArrayOutputStream bout = new ByteArrayOutputStream();
 		
 		//testing purposes, remove...
-		String slaId = "641bfdc1-528b-494d-9fe2-aa023ce2ec51";
+//		String slaId = "641bfdc1-528b-494d-9fe2-aa023ce2ec51";
 		
 		String xmlInput =
 				" <soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:rep=\"http://reportingWS.businessManager.slasoi.org\">"+

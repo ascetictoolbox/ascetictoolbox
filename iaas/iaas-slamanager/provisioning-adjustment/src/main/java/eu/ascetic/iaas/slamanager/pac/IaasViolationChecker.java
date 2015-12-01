@@ -222,9 +222,7 @@ public class IaasViolationChecker implements Runnable {
 	                        if (vmId.equalsIgnoreCase(messageVmId) &&
 									ovfId.equalsIgnoreCase(messageOvfId) &&
 									slaId.equalsIgnoreCase(messageSlaId)) {
-								/*
-								 * TODO: confronto anche su slaId?
-								 */
+
 								logger.info("Closing message queue connections and stopping the monitoring...");
 								measurementsConnection.close();
 								vmEventsConnection.close();
