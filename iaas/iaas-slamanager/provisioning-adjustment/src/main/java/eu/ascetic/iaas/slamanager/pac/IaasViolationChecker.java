@@ -493,7 +493,7 @@ public class IaasViolationChecker implements Runnable {
 			Session session = connection.createSession(false,
 					Session.AUTO_ACKNOWLEDGE);
 
-			Topic topic = session.createTopic("iaas-slam.monitoring"+slaId+"."+vmId+".violationNotified");
+			Topic topic = session.createTopic("iaas-slam.monitoring."+slaId+"."+vmId+".violationNotified");
 
 			MessageProducer producer = session.createProducer(topic);
 
