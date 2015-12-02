@@ -238,6 +238,8 @@
 								org.antlr.stringtemplate,
 								org.antlr.stringtemplate.language,
 								com.fasterxml.jackson.*,
+								org.apache.qpid.*,
+								org.apache.activemq.*,
 								antlr.*
 						  </Export-Package>
 						  <Import-Package>
