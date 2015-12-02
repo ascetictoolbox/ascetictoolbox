@@ -100,7 +100,7 @@ public class IaasViolationChecker implements Runnable {
 
 				String sepr = System.getProperty("file.separator");
 				String confPath = System.getenv("SLASOI_HOME");
-				String monitoringPath = confPath + sepr	+ "ascetic-slamanager" + sepr + "provisioning-adjustment" + sepr + "activeMonitorings";
+				String monitoringPath = confPath + sepr	+ "ascetic-iaas-slamanager" + sepr + "provisioning-adjustment" + sepr + "activeMonitorings";
 				File monitoringFile = new File(monitoringPath);
 
 				Scanner scanner = null;
