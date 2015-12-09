@@ -44,9 +44,8 @@ public class ViolationMessageTranslator extends EventTranslator {
 		xstream.registerConverter(new ValueConverter());
 
 		xstream.alias(ViolationMessage.class.getSimpleName(), ViolationMessage.class);
-		xstream.useAttributeFor(ViolationMessage.class, "sid");
+		xstream.useAttributeFor(ViolationMessage.class, "vmId");
 		xstream.useAttributeFor(ViolationMessage.class, "ovfId");
-		xstream.useAttributeFor(ViolationMessage.class, "vepId");
 
 		return (Message) xstream.fromXML(messageStr);
 	}
@@ -55,6 +54,7 @@ public class ViolationMessageTranslator extends EventTranslator {
 		logger.debug("ViolationAgentMessage to XML");
 		logger.debug(message);
 
+		
 		XStream xstream = new XStream();
 		// xstream.processAnnotations(ViolationMessage.class);
 
@@ -62,13 +62,17 @@ public class ViolationMessageTranslator extends EventTranslator {
 
 		xstream.registerConverter(new ValueConverter());
 
-		xstream.useAttributeFor(ViolationMessage.class, "sid");
+		
 		xstream.useAttributeFor(ViolationMessage.class, "ovfId");
-		xstream.useAttributeFor(ViolationMessage.class, "vepId");
+		xstream.useAttributeFor(ViolationMessage.class, "vmId");
 
+		
 		xstream.alias(ViolationMessage.class.getSimpleName(), ViolationMessage.class);
 
+		
 		String messageStr = xstream.toXML(message);
+		
+		
 		logger.debug(messageStr);
 
 		return messageStr;

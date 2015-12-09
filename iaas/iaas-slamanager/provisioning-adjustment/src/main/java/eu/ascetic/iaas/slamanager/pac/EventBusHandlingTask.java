@@ -76,7 +76,6 @@ import org.slasoi.gslam.pac.config.TaskConfiguration;
 import org.slasoi.gslam.pac.events.Message;
 
 import eu.ascetic.iaas.slamanager.pac.events.ViolationMessage;
-import eu.ascetic.iaas.slamanager.pac.events.ViolationMessageTranslator;
 
 /**
  * @author Beatriz Fuentes (TID)

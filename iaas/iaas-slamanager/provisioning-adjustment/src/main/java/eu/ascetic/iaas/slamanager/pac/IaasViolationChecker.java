@@ -379,16 +379,14 @@ public class IaasViolationChecker implements Runnable {
 							if (sla!=null) {
 								logger.info("Comparing measurement with the threshold...");
 								List<MeasurableAgreementTerm> terms = gsc.getMeasurableTerms(sla, ovfId);
-								
-								
-								
+															
 								for (MeasurableAgreementTerm m:terms) {
 									boolean violated = false;
-									
-									
+										
 									String[] monitorableTerms = properties.getProperty(MONITORABLE_TERMS).split(",");
 									
 									for (String monitorableTerm:monitorableTerms) {
+										
 										if (m.getName().equalsIgnoreCase(monitorableTerm)) {
 											if (measuredTerms.containsKey(monitorableTerm)) {
 											if (m.getOperator().equals(AsceticAgreementTerm.operatorType.EQUALS)) {
@@ -416,6 +414,14 @@ public class IaasViolationChecker implements Runnable {
 													logger.debug("Violation detected. Value: "+measuredTerms.get(monitorableTerm)+" Condition: "+m); violated = true;
 												}
 											}
+											
+											else {
+												logger.debug("Strange behaviour...");
+												logger.debug("m.getName: "+m.getName());
+												logger.debug("m.getOperator: "+m.getOperator());
+												logger.debug("m.getValue: "+m.getValue());
+												logger.debug("new Double(measuredTerms.get(monitorableTerm): "+new Double(measuredTerms.get(monitorableTerm)));
+											}
 										}
 											if (violated) {
 												logger.info("Notifying violation...");  
@@ -436,7 +442,8 @@ public class IaasViolationChecker implements Runnable {
 												violationMessage.setAlert(alert);
 
 												ViolationMessageTranslator vmt = new ViolationMessageTranslator();
-												notifyViolation(vmt.toXML(violationMessage));
+												String xml = vmt.toXML(violationMessage);
+												notifyViolation(xml);
 											}
 										}
 									}
@@ -466,6 +473,7 @@ public class IaasViolationChecker implements Runnable {
 	 * 3. Writes a violation to the message queue
 	 */
 	private void notifyViolation(String violationMessage) {
+		
 		/*
 		 * verify if the same violation has been notified recently
 		 */
@@ -501,6 +509,7 @@ public class IaasViolationChecker implements Runnable {
 			TextMessage message = session.createTextMessage();
 
 			message.setText(violationMessage);
+			
 			// Here we are sending the message!
 			producer.send(message);
 			logger.info("Sent message '" + message.getText() + "'");
