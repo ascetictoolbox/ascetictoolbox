@@ -73,6 +73,7 @@ public class PaasViolationChecker implements Runnable {
 	private static String TERMINATED_APPS_QUEUE = "terminated_apps_queue";
 	private static String BUSINESS_REPORTING_URL = "business_reporting_url";
 	private static String MONITORABLE_TERMS = "monitorable_terms";
+	private static String NOTIFICATION_INTERVAL = "notification_interval";
 
 	public static final String FIELD_APP_ID = "ApplicationId";
 	public static final String FIELD_DEPLOYMENT_ID = "DeploymentId";
@@ -88,7 +89,9 @@ public class PaasViolationChecker implements Runnable {
 	private Connection measurementsConnection;
 	private Connection applicationEventsConnection;
 	private boolean recovered;
-
+	
+	public long violationNotificationTime = 0;
+	
 	public PaasViolationChecker(Properties properties, String topicId, String appId, String deploymentId, String slaId, boolean recovered) {
 		super();
 		this.properties = properties;
@@ -444,6 +447,21 @@ public class PaasViolationChecker implements Runnable {
 	 * 3. Writes a violation to the message queue
 	 */
 	private void notifyViolation(String violationMessage) {
+		/*
+		 * verify if the same violation has been notified recently
+		 */
+		long millis = System.currentTimeMillis() % 1000;
+		if (violationNotificationTime!=0) {	
+			if (millis-violationNotificationTime<new Long(properties.getProperty(NOTIFICATION_INTERVAL))) {
+				logger.info("The violation has already been notified recently, skipping...");
+				return;
+			}
+		}
+		violationNotificationTime = millis;
+		/*
+		 * 
+		 */
+		
 		try{
 
 			ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(properties.getProperty(ACTIVEMQ_URL));
