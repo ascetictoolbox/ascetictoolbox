@@ -72,26 +72,15 @@
 	<artifactId>jackson-databind</artifactId>
 	<version>2.5.4</version>
 </dependency>
-<!-- amqp aggiunti da luca -->
-	       <dependency>
-           <groupId>org.apache.qpid</groupId>
-<artifactId>qpid-amqp-1-0-client-jms</artifactId>
-           <version>[0.32,)</version>
-       </dependency>
-       <dependency>
-           <groupId>org.apache.qpid</groupId>
-           <artifactId>qpid-amqp-1-0-client</artifactId>
-           <version>[0.32,)</version>
-       </dependency>
-       <dependency>
-           <groupId>org.apache.qpid</groupId>
-           <artifactId>qpid-amqp-1-0-common</artifactId>
-           <version>[0.32,)</version>
-       </dependency>
 <dependency>
-	<groupId>org.apache.activemq</groupId>
-	<artifactId>activemq-all</artifactId>
-	<version>5.3.0</version>
+  <groupId>org.apache.qpid</groupId>
+  <artifactId>qpid-jms-client</artifactId>
+  <version>0.1.0</version>
+</dependency>
+<dependency>
+  <groupId>org.slf4j</groupId>
+ <artifactId>slf4j-log4j12</artifactId>
+ <version>1.7.5</version>
 </dependency>
 
 
@@ -239,6 +228,8 @@
 								org.antlr.stringtemplate.language,
 								com.fasterxml.jackson.*,
 								org.apache.qpid.*,
+								org.apache.qpid.jms.*,
+								org.apache.qpid.jms.jndi.*,
 								org.apache.activemq.*,
 								antlr.*
 						  </Export-Package>

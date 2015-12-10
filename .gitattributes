@@ -261,6 +261,9 @@ iaas/iaas-slamanager/provisioning-adjustment/src/main/java/eu/ascetic/iaas/slama
 iaas/iaas-slamanager/provisioning-adjustment/src/main/java/eu/ascetic/iaas/slamanager/pac/ViolationMessageTranslator.java -text
 iaas/iaas-slamanager/provisioning-adjustment/src/main/java/eu/ascetic/iaas/slamanager/pac/action/ActionInvocation.java -text
 iaas/iaas-slamanager/provisioning-adjustment/src/main/java/eu/ascetic/iaas/slamanager/pac/action/ViolationAction.java -text
+iaas/iaas-slamanager/provisioning-adjustment/src/main/java/eu/ascetic/iaas/slamanager/pac/amqp/AmqpAbstract.java -text
+iaas/iaas-slamanager/provisioning-adjustment/src/main/java/eu/ascetic/iaas/slamanager/pac/amqp/AmqpExceptionListener.java -text
+iaas/iaas-slamanager/provisioning-adjustment/src/main/java/eu/ascetic/iaas/slamanager/pac/amqp/AmqpMessageReceiver.java -text
 iaas/iaas-slamanager/provisioning-adjustment/src/main/java/eu/ascetic/iaas/slamanager/pac/events/EventHandler.java -text
 iaas/iaas-slamanager/provisioning-adjustment/src/main/java/eu/ascetic/iaas/slamanager/pac/events/Value.java -text
 iaas/iaas-slamanager/provisioning-adjustment/src/main/java/eu/ascetic/iaas/slamanager/pac/events/ViolationMessage.java -text

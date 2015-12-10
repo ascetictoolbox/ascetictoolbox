@@ -50,6 +50,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import eu.ascetic.iaas.slamanager.pac.amqp.AmqpMessageReceiver;
 import eu.ascetic.iaas.slamanager.pac.events.Value;
 import eu.ascetic.iaas.slamanager.pac.events.ViolationMessage;
 import eu.ascetic.iaas.slamanager.pac.events.ViolationMessage.Alert;
@@ -291,27 +292,28 @@ public class IaasViolationChecker implements Runnable {
 	 */
 	private void retrieveMeasurements() {
 		try{
-
-			// Getting JMS connection from the server
-
-			ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(properties.getProperty(ACTIVEMQ_URL));
-			measurementsConnection = connectionFactory.createConnection();
-
-			// need to setClientID value, any string value you wish
-			measurementsConnection.setClientID("IaaS Violation Checker "+System.currentTimeMillis());
-
-
-			measurementsConnection.start();
-
-			Session session = measurementsConnection.createSession(false,
-					Session.AUTO_ACKNOWLEDGE);
-
-			Topic topic = session.createTopic(topicId);
-
-			//need to use createDurableSubscriber() method instead of createConsumer() for topic
-			// MessageConsumer consumer = session.createConsumer(topic);
-			MessageConsumer consumer = session.createDurableSubscriber(topic,
-					properties.getProperty(ACTIVEMQ_CHANNEL));
+			AmqpMessageReceiver receiver = new AmqpMessageReceiver("192.168.3.17:5673", "guest", "guest",  topicId, true);
+				
+//			// Getting JMS connection from the server
+//
+//			ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(properties.getProperty(ACTIVEMQ_URL));
+//			measurementsConnection = connectionFactory.createConnection();
+//
+//			// need to setClientID value, any string value you wish
+//			measurementsConnection.setClientID("IaaS Violation Checker "+System.currentTimeMillis());
+//
+//
+//			measurementsConnection.start();
+//
+//			Session session = measurementsConnection.createSession(false,
+//					Session.AUTO_ACKNOWLEDGE);
+//
+//			Topic topic = session.createTopic(topicId);
+//
+//			//need to use createDurableSubscriber() method instead of createConsumer() for topic
+//			// MessageConsumer consumer = session.createConsumer(topic);
+//			MessageConsumer consumer = session.createDurableSubscriber(topic,
+//					properties.getProperty(ACTIVEMQ_CHANNEL));
 
 			MessageListener listener = new MessageListener() {
 				public void onMessage(Message message) {
@@ -458,7 +460,8 @@ public class IaasViolationChecker implements Runnable {
 				}
 			};
 
-			consumer.setMessageListener(listener);
+			receiver.setMessageConsumer(listener);
+//			consumer.setMessageListener(listener);
 			//connection.close();
 		}catch(Exception e){
 			e.printStackTrace();
@@ -468,6 +471,11 @@ public class IaasViolationChecker implements Runnable {
 	}
 
 
+	
+	
+	
+	
+	
 
 	/**
 	 * 3. Writes a violation to the message queue
@@ -521,6 +529,62 @@ public class IaasViolationChecker implements Runnable {
 			//            System.err.println("NOT CONNECTED!!!");
 		}
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	private static void retrieveMeasurementsTest() {
+		try{
+			System.out.println("1");
+			AmqpMessageReceiver receiver = new AmqpMessageReceiver("192.168.3.17:5673", "guest", "guest",  "vm.36246d0b-1b1d-4e2e-b5ef-8c7e561d518f.item.power", true);
+				
+			System.out.println("2");
+			
 
+			MessageListener listener = new MessageListener() {
+				public void onMessage(Message message) {
+					try {
+						
+							
+					        	TextMessage textMessage = (TextMessage) message;
+					        	System.out.println("   ");
+					        	System.out.println("####################################");
+					            System.out.println("   Message received for destination: " + textMessage.getJMSDestination());
+					            System.out.println("   Message:");
+					            System.out.println("   ");
+					            System.out.println(textMessage.getText());
+					            System.out.println("   ");
+					        
+						
+					} catch (JMSException e) {
+						logger.error("Caught:" + e);
+						e.printStackTrace();
+					}
+				}
+			};
+
+			receiver.setMessageConsumer(listener);
+			System.out.println("ok");
+//			consumer.setMessageListener(listener);
+			//connection.close();
+		}catch(Exception e){
+			e.printStackTrace();
+			logger.error(e.getMessage());
+			//            System.err.println("NOT CONNECTED!!!");
+		}
+	}
+	
+	
+	public static void main(String[] args) {
+		retrieveMeasurementsTest();
+	}
+	
 
 }
