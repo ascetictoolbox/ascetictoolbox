@@ -191,14 +191,16 @@
 							<instructions>
 								<Bundle-Name>iaas-slam4osgi</Bundle-Name>
 								<Bundle-SymbolicName>iaas-slam4osgi</Bundle-SymbolicName>
-								<Export-Package>eu.ascetic.iaas.slamanager.main.beans*;version="${__slam-version}"</Export-Package>
+								<Export-Package>
+									org.apache.qpid.*,
+									eu.ascetic.iaas.slamanager.main.beans*;version="${__slam-version}"
+								</Export-Package>
 								<Embed-Transitive>false</Embed-Transitive>
 								<Embed-Dependency>iaas-core;inline=true</Embed-Dependency>
 								<Import-Package>
 									org.osgi.framework;resolution:=optional,
 									org.slasoi.gslam.syntaxconverter.webservice,
 									org.apache.log4j;resolution:=optional,
-									org.apache.qpid;resolution:=optional,
 									*;resolution:=optional
 								</Import-Package>
 								<Require-Bundle>${slam.required.bundles}</Require-Bundle>
