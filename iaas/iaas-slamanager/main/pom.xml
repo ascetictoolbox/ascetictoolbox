@@ -165,6 +165,11 @@
 			<artifactId>qpid-jms-client</artifactId>
 			<version>0.1.0</version>
 		</dependency>
+		<dependency>
+  			<groupId>org.slf4j</groupId>
+ 			<artifactId>slf4j-log4j12</artifactId>
+ 			<version>1.7.5</version>
+		</dependency>
 
 	</dependencies>
 
@@ -193,6 +198,7 @@
 								<Bundle-SymbolicName>iaas-slam4osgi</Bundle-SymbolicName>
 								<Export-Package>
 									org.apache.qpid.*,
+									org.slf4j.*,
 									eu.ascetic.iaas.slamanager.main.beans*;version="${__slam-version}"
 								</Export-Package>
 								<Embed-Transitive>false</Embed-Transitive>
