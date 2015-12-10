@@ -292,28 +292,28 @@ public class IaasViolationChecker implements Runnable {
 	 */
 	private void retrieveMeasurements() {
 		try{
-			AmqpMessageReceiver receiver = new AmqpMessageReceiver("192.168.3.17:5673", "guest", "guest",  topicId, true);
+//			AmqpMessageReceiver receiver = new AmqpMessageReceiver("192.168.3.17:5673", "guest", "guest",  topicId, true);
 				
-//			// Getting JMS connection from the server
-//
-//			ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(properties.getProperty(ACTIVEMQ_URL));
-//			measurementsConnection = connectionFactory.createConnection();
-//
-//			// need to setClientID value, any string value you wish
-//			measurementsConnection.setClientID("IaaS Violation Checker "+System.currentTimeMillis());
-//
-//
-//			measurementsConnection.start();
-//
-//			Session session = measurementsConnection.createSession(false,
-//					Session.AUTO_ACKNOWLEDGE);
-//
-//			Topic topic = session.createTopic(topicId);
-//
-//			//need to use createDurableSubscriber() method instead of createConsumer() for topic
-//			// MessageConsumer consumer = session.createConsumer(topic);
-//			MessageConsumer consumer = session.createDurableSubscriber(topic,
-//					properties.getProperty(ACTIVEMQ_CHANNEL));
+			// Getting JMS connection from the server
+
+			ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(properties.getProperty(ACTIVEMQ_URL));
+			measurementsConnection = connectionFactory.createConnection();
+
+			// need to setClientID value, any string value you wish
+			measurementsConnection.setClientID("IaaS Violation Checker "+System.currentTimeMillis());
+
+
+			measurementsConnection.start();
+
+			Session session = measurementsConnection.createSession(false,
+					Session.AUTO_ACKNOWLEDGE);
+
+			Topic topic = session.createTopic(topicId);
+
+			//need to use createDurableSubscriber() method instead of createConsumer() for topic
+			// MessageConsumer consumer = session.createConsumer(topic);
+			MessageConsumer consumer = session.createDurableSubscriber(topic,
+					properties.getProperty(ACTIVEMQ_CHANNEL));
 
 			MessageListener listener = new MessageListener() {
 				public void onMessage(Message message) {
@@ -460,8 +460,8 @@ public class IaasViolationChecker implements Runnable {
 				}
 			};
 
-			receiver.setMessageConsumer(listener);
-//			consumer.setMessageListener(listener);
+//			receiver.setMessageConsumer(listener);
+			consumer.setMessageListener(listener);
 			//connection.close();
 		}catch(Exception e){
 			e.printStackTrace();
