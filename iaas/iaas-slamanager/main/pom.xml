@@ -159,6 +159,12 @@
 			<artifactId>commons-codec</artifactId>
 			<version>1.3</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.qpid</groupId>
+			<artifactId>qpid-jms-client</artifactId>
+			<version>0.1.0</version>
+		</dependency>
 
 	</dependencies>
 
@@ -192,6 +198,7 @@
 									org.osgi.framework;resolution:=optional,
 									org.slasoi.gslam.syntaxconverter.webservice,
 									org.apache.log4j;resolution:=optional,
+									org.apache.qpid;resolution:=optional,
 									*;resolution:=optional
 								</Import-Package>
 								<Require-Bundle>${slam.required.bundles}</Require-Bundle>
