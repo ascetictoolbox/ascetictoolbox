@@ -5,6 +5,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.io.StringReader;
+
+import org.json.simple.parser.ParseException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +16,9 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.xpath.XPath;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.junit.Test;
 
 import eu.ascetic.providerregistry.model.Link;
@@ -66,6 +72,61 @@ public class ConverterTest {
 		providerXML = "<xml/>";
 		provider = Converter.getProviderObject(providerXML);
 		assertEquals(null, provider);
+	}
+	
+	@Test
+	public void getProviderObjectFromJSONTest() {
+		String json = "{" +
+						 "\"href\" : \"/11\"," + 
+						 "\"id\" : 11," +
+						 "\"name\" : \"Nome\", " +
+						 "\"vmm-url\" : \"Punto final\", " +
+						 "\"link\" : [ { " +
+						 	"\"rel\" : \"self\"," +
+						 	"\"href\" : \"/11\"," +
+						 	"\"type\" : \"http://provider-registry.ascetic.eu/doc/schemas/xml\"" +
+						"}, {" +
+							"\"rel\" : \"parent\"," +
+							"\"href\" : \"/\"," +
+							"\"type\" : \"http://provider-registry.ascetic.eu/doc/schemas/xml\"" +
+						"} ]" +
+					"}";
+		
+		Provider provider = Converter.getProviderFromJSON(json);
+		
+		assertEquals(11l, provider.getId());
+		assertEquals("Nome", provider.getName());
+		assertEquals("Punto final", provider.getVmmUrl());
+	}
+	
+	@Test
+	public void getProviderJSON() throws ParseException {
+		Provider provider = new Provider();
+		provider.setHref("/11");
+		provider.setId(11);
+		provider.setName("Nome");
+		provider.setVmmUrl("Punto final");
+		Link linkParent = new Link();
+		linkParent.setRel("parent");
+		linkParent.setHref("/");
+		linkParent.setType(PROVIDER_REGISTRY_NAMESPACE);
+		Link linkSelf = new Link();
+		linkSelf.setRel("self");
+		linkSelf.setHref("/11");
+		linkSelf.setType(PROVIDER_REGISTRY_NAMESPACE);
+		provider.addLink(linkSelf);
+		provider.addLink(linkParent);
+		
+		String json = Converter.getProviderJSON(provider);
+		
+		System.out.println(json);
+		
+		//We verify the output format
+		JSONParser parser = new JSONParser();
+		Object obj = parser.parse(json);
+		JSONObject jsonObject = (JSONObject) obj;
+		assertEquals("/11", (String) jsonObject.get("href"));
+		assertEquals("Punto final", (String) jsonObject.get("vmm-url"));
 	}
 	
 	@Test
@@ -126,6 +187,37 @@ public class ConverterTest {
 		assertEquals(2, listxpathName.size());
 		element = (Element) listxpathName.get(0);
 		assertEquals("self", element.getAttributeValue("rel"));
+	}
+	
+	@Test
+	public void getCollectionJSONTest() throws Exception {
+		List<Provider> providers = new ArrayList<Provider>();
+		Provider provider1 = new Provider();
+		provider1.setId(1);
+		provider1.setName("provider1");
+		provider1.setVmmUrl("http://1");
+		providers.add(provider1);
+		Provider provider2 = new Provider();
+		provider2.setId(2);
+		provider2.setName("provider2");
+		provider2.setVmmUrl("http://2");
+		providers.add(provider2);
+		
+		String json = Converter.getRootCollectionJSON(providers);
+		
+		System.out.println(json);
+		
+		//We verify the output format
+		JSONParser parser = new JSONParser();
+		Object obj = parser.parse(json);
+		JSONObject jsonObject = (JSONObject) obj;
+		
+		jsonObject = (JSONObject) jsonObject.get("items");
+		JSONArray providersArray = (JSONArray) jsonObject.get("provider");
+		jsonObject = (JSONObject) providersArray.get(0);
+		assertEquals("provider1", jsonObject.get("name"));
+		jsonObject = (JSONObject) providersArray.get(1);
+		assertEquals("provider2", jsonObject.get("name"));
 	}
 	
 	@Test

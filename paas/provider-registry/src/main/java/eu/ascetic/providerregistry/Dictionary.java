@@ -22,5 +22,6 @@ package eu.ascetic.providerregistry;
  */
 public class Dictionary {
 	public static final String CONTENT_TYPE_XML = "application/xml";
+	public static final String CONTENT_TYPE_JSON = "application/json";
 	public static final String PROVIDER_REGISTRY_NAMESPACE = "http://provider-registry.ascetic.eu/doc/schemas/xml";
 }

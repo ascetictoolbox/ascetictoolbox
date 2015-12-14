@@ -1,6 +1,7 @@
 package eu.ascetic.providerregistry.rest;
 
 import static eu.ascetic.providerregistry.Dictionary.CONTENT_TYPE_XML;
+import static eu.ascetic.providerregistry.Dictionary.CONTENT_TYPE_JSON;
 
 import java.util.List;
 
@@ -60,28 +61,64 @@ public class ProviderAPI {
 	@Path("/")
 	@Produces(CONTENT_TYPE_XML)
 	public Response getProviders() {
-		logger.info("GET /");
-		List<Provider> providers = providerDAO.getAll();
-		String xmlRepresentation = Converter.getRootCollectionXML(providers);
+		logger.info("GET / [XML]");
+
+		String xmlRepresentation = Converter.getRootCollectionXML(getProvidersFromDB());
 		logger.debug("RESPONSE: " + xmlRepresentation);
 		return buildResponse(Status.OK, xmlRepresentation);
+	}
+	
+	private List<Provider> getProvidersFromDB() {
+		return providerDAO.getAll();
+	}
+	
+	@GET
+	@Path("/")
+	@Produces(CONTENT_TYPE_JSON)
+	public Response getProvidersJSON() {
+		logger.info("GET / [JSON]");
+		String jsonRepresentation = Converter.getRootCollectionJSON(getProvidersFromDB());
+		logger.debug("RESPONSE: " + jsonRepresentation);
+		return buildResponse(Status.OK, jsonRepresentation);
 	}
 	
 	@GET
 	@Path("/{id}")
 	@Produces(CONTENT_TYPE_XML)
 	public Response getProvider(@PathParam("id") int id) {
-		logger.info("GET /" + id);
+		logger.info("GET /" + id + " [XML]");
+
+		return prepareProviderResponse(id, false);
+	}
+	
+	private Response prepareProviderResponse(int id, boolean json) {
 		Provider provider = providerDAO.getById(id);
 		if( provider != null) {
 			setProviderExtraInfo(provider);
-			String xml = Converter.getProviderXML(provider);
-			logger.debug("RESPONSE: " + xml);
-			return buildResponse(Status.OK, xml);
+			
+			String text; 
+			
+			if(json) {
+				text = Converter.getProviderJSON(provider);
+			} else {
+				text = Converter.getProviderXML(provider);
+			}
+			
+			logger.debug("RESPONSE: " + text);
+			return buildResponse(Status.OK, text);
 		} else {
 			logger.debug("RESPONSE: 404");
 			return buildResponse(Status.NOT_FOUND, "No provider by that id found in the databae.");
 		}
+	}
+	
+	@GET
+	@Path("/{id}")
+	@Produces(CONTENT_TYPE_JSON)
+	public Response getProviderJSON(@PathParam("id") int id) {
+		logger.info("GET /" + id + " [JSON]");
+		
+		return prepareProviderResponse(id, true);
 	}
 	
 	@POST

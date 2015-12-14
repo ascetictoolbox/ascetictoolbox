@@ -36,6 +36,7 @@ public class ProviderTest {
 		provider.setId(10);
 		provider.setName("Name");
 		provider.setVmmUrl("http...");
+		provider.setAmqpUrl("...");
 		List<Link> links = new ArrayList<Link>();
 		provider.setLinks(links);
 		
@@ -43,6 +44,7 @@ public class ProviderTest {
 		assertEquals(10l, provider.getId());
 		assertEquals("Name", provider.getName());
 		assertEquals("http...", provider.getVmmUrl());
+		assertEquals("...", provider.getAmqpUrl());
 		assertEquals(links, provider.getLinks());
 	}
 	

@@ -12,6 +12,10 @@ import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,6 +27,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import eu.ascetic.providerregistry.model.Collection;
 import eu.ascetic.providerregistry.model.Provider;
 import eu.ascetic.providerregistry.service.ProviderDAO;
+import eu.ascetic.providerregistry.xml.Converter;
 
 /**
  * 
@@ -71,7 +76,31 @@ public class ProviderAPITest extends AbstractTransactionalJUnit4SpringContextTes
 	}
 	
 	@Test
-	public void getExperimentsTest() throws Exception {
+	public void getProvidersJSONTest() throws ParseException {
+		ProviderAPI providerAPI = new ProviderAPI();
+		providerAPI.providerDAO = providerDAO;
+		
+		Response response = providerAPI.getProvidersJSON();
+		
+		assertEquals(200, response.getStatus());
+		
+		String providersJSON = (String) response.getEntity();
+		
+		//We verify the output format
+		JSONParser parser = new JSONParser();
+		Object obj = parser.parse(providersJSON);
+		JSONObject jsonObject = (JSONObject) obj;
+		
+		jsonObject = (JSONObject) jsonObject.get("items");
+		JSONArray providersArray = (JSONArray) jsonObject.get("provider");
+		jsonObject = (JSONObject) providersArray.get(0);
+		assertEquals("Provider 1", jsonObject.get("name"));
+		jsonObject = (JSONObject) providersArray.get(1);
+		assertEquals("Provider 2", jsonObject.get("name"));
+	}
+	
+	@Test
+	public void getProvidersTest() throws Exception {
 		ProviderAPI providerAPI = new ProviderAPI();
 		providerAPI.providerDAO = providerDAO;
 		
@@ -108,6 +137,27 @@ public class ProviderAPITest extends AbstractTransactionalJUnit4SpringContextTes
 		assertEquals("parent", collection.getItems().getProviders().get(1).getLinks().get(0).getRel());
 		assertEquals(CONTENT_TYPE_XML, collection.getItems().getProviders().get(1).getLinks().get(0).getType());
 		assertEquals("/", collection.getItems().getProviders().get(1).getLinks().get(0).getHref());
+	}
+	
+	@Test
+	public void getProviderJSONTest() throws Exception {
+		ProviderAPI providerAPI = new ProviderAPI();
+		providerAPI.providerDAO = providerDAO;
+		
+		List<Provider> providers = providerDAO.getAll();
+		int id = providers.get(0).getId();
+		
+		Response response = providerAPI.getProviderJSON(id);
+		
+		assertEquals(200, response.getStatus());
+		String providerJSON = (String) response.getEntity();
+		
+		//We verify the output format
+		JSONParser parser = new JSONParser();
+		Object obj = parser.parse(providerJSON);
+		JSONObject jsonObject = (JSONObject) obj;
+		
+		assertEquals("Provider 1", jsonObject.get("name"));
 	}
 	
 	@Test

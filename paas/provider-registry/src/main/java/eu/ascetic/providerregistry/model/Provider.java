@@ -61,6 +61,8 @@ public class Provider {
 	private String vmmUrl;
 	@XmlElement(name="slam-url", namespace=PROVIDER_REGISTRY_NAMESPACE)
 	private String slamUrl;
+	@XmlElement(name="amqp-url", namespace=PROVIDER_REGISTRY_NAMESPACE)
+	private String amqpUrl;
 	@XmlElement(name="link", namespace = PROVIDER_REGISTRY_NAMESPACE)
 	private List<Link> links;
 
@@ -106,6 +108,13 @@ public class Provider {
 		this.name = name;
 	}
 	
+	@Column(name = "amqp_url", nullable = true)
+	public String getAmqpUrl() {
+		return amqpUrl;
+	}
+	public void setAmqpUrl(String amqpUrl) {
+		this.amqpUrl = amqpUrl;
+	}
 	@Transient
 	public List<Link> getLinks() {
 		return links;

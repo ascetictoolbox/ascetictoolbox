@@ -55,6 +55,7 @@ public class ProviderDAOJpaTest extends AbstractTransactionalJUnit4SpringContext
 		provider.setName("name");
 		provider.setVmmUrl("http://...");
 		provider.setSlamUrl("http2...");
+		provider.setAmqpUrl("...");
 		
 		boolean saved = providerDAO.save(provider);
 		assertTrue(saved);
@@ -66,6 +67,7 @@ public class ProviderDAOJpaTest extends AbstractTransactionalJUnit4SpringContext
 		Provider providerFromDatabase = providers.get(size-1);
 		assertEquals("name", providerFromDatabase.getName());
 		assertEquals("http://...", providerFromDatabase.getVmmUrl());
+		assertEquals("...", providerFromDatabase.getAmqpUrl());
 	}
 	
 	@Test

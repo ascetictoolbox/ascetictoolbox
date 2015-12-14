@@ -7,11 +7,14 @@ import java.io.StringReader;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.log4j.Logger;
+import org.eclipse.persistence.jaxb.JAXBContextProperties;
+import org.eclipse.persistence.jaxb.MarshallerProperties;
+import org.eclipse.persistence.jaxb.UnmarshallerProperties;
 
 import eu.ascetic.providerregistry.model.Collection;
 import eu.ascetic.providerregistry.model.Items;
@@ -48,15 +51,8 @@ public class Converter {
 	 * @return the Provider object or null if any error occurs...
 	 */
 	public static Provider getProviderObject(String xml) {	
-		try {
-			JAXBContext jaxbContext = JAXBContext.newInstance(Provider.class);
-			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-			Provider provider = (Provider) jaxbUnmarshaller.unmarshal(new StringReader(xml));
-			return provider;
-		} catch(JAXBException exception) {
-			logger.info("Error parsing XML of provider: " + exception.getMessage());
-			return null;
-		}
+		
+		return toObject(Provider.class, xml);
 	}
 	
 	/**
@@ -64,31 +60,18 @@ public class Converter {
 	 * @param provider object to be converted to XML
 	 * @return XML string in case any exception in the conversion, it will return null
 	 */
-	public static String getProviderXML(Provider provider) {		
-		try {
-			JAXBContext jaxbContext = JAXBContext.newInstance(Provider.class);
-			Marshaller marshaller = jaxbContext.createMarshaller();
-			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-			
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			marshaller.marshal(provider, out);
-			String output = out.toString();
-			logger.debug("Converting provider object to XML: ");
-			logger.debug(output);
-			
-			return output;
-		} catch(JAXBException exception) {
-			logger.info("Error converting Provider object to XML: " + exception.getMessage());
-			return null;
-		}
+	public static String getProviderXML(Provider provider) {	
+		
+		return toXML(Provider.class, provider);
 	}
 	
-	/**
-	 * Returns an XML representing a Collection of Providers
-	 * @param providers list of providers to build the XML file
-	 * @return the XML string
-	 */
-	public static String getRootCollectionXML(List<Provider> providers) {
+	public static String getRootCollectionJSON(List<Provider> providers) {
+		Collection collection = prepareCollection(providers);
+		
+		return toJSON(Collection.class, collection);
+	}
+	
+	private static Collection prepareCollection(List<Provider> providers) {
 		Collection collection = new Collection();
 		collection.setHref("/");
 		
@@ -124,21 +107,98 @@ public class Converter {
 			collection.setItems(items);
 		}
 		
-		try {
-			JAXBContext jaxbContext = JAXBContext.newInstance(Collection.class);
-			Marshaller marshaller = jaxbContext.createMarshaller();
+		return collection;
+	}
+	
+	/**
+	 * Returns an XML representing a Collection of Providers
+	 * @param providers list of providers to build the XML file
+	 * @return the XML string
+	 */
+	public static String getRootCollectionXML(List<Provider> providers) {
+		Collection collection = prepareCollection(providers);
+		
+		return toXML(Collection.class, collection);
+	}
+	
+	private static <T> String toXML(Class<T> clazz, T t) {
+	    try {
+	        JAXBContext jaxbContext = JAXBContext.newInstance(clazz);
+	        Marshaller marshaller = jaxbContext.createMarshaller();
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 			
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			marshaller.marshal(collection, out);
+			marshaller.marshal(t, out);
 			String output = out.toString();
-			logger.debug("Converting collection of providers object to XML: ");
+			logger.debug("Converting object to XML: ");
 			logger.debug(output);
 			
 			return output;
-		} catch(JAXBException exception) {
-			logger.info("Error converting collection of providers object to XML: " + exception.getMessage());
+		} catch(Exception exception) {
+			logger.info("Error converting object to XML: " + exception.getMessage());
 			return null;
-		}
+		}      
+	}
+	
+	private static <T> String toJSON(Class<T> clazz, T t) {
+	    try {
+			JAXBContext jc = org.eclipse.persistence.jaxb.JAXBContextFactory.createContext(new Class[] {clazz}, null);
+			Marshaller marshaller = jc.createMarshaller();
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+			marshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
+			marshaller.setProperty(JAXBContextProperties.JSON_INCLUDE_ROOT, false);
+			
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			marshaller.marshal(t, out);
+			String output = out.toString();
+			logger.debug("Converting object to JSON: ");
+			logger.debug(output);
+			
+			return output;
+		} catch(Exception exception) {
+			logger.info("Error converting object to XML: " + exception.getMessage());
+			return null;
+		}      
+	}
+	
+	private static <T> T toObject(Class<T> clazz, String xml) {
+		try {
+			JAXBContext jaxbContext = JAXBContext.newInstance(clazz);
+			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+			Object obj = jaxbUnmarshaller.unmarshal(new StringReader(xml));
+			
+			return clazz.cast(obj);
+		} catch(Exception exception) {
+			logger.info("Error parsing XML: " + exception.getMessage());
+			return null;
+		}    
+	}
+	
+	private static <T> T fromJSONToObject(Class<T> clazz, String json) {
+		try {
+	        // Create a JaxBContext
+			JAXBContext jc = org.eclipse.persistence.jaxb.JAXBContextFactory.createContext(new Class[] {clazz}, null);
+	        
+	        // Create the Unmarshaller Object using the JaxB Context
+	        Unmarshaller unmarshaller = jc.createUnmarshaller();
+	        unmarshaller.setProperty(UnmarshallerProperties.MEDIA_TYPE, "application/json");
+	        unmarshaller.setProperty(UnmarshallerProperties.JSON_INCLUDE_ROOT, false);
+	        
+	        StreamSource jsonSource = new StreamSource(new StringReader(json));  
+	        T object = unmarshaller.unmarshal(jsonSource, clazz).getValue();
+			
+			return object;
+		} catch(Exception exception) {
+			logger.info("Error parsing XML: " + exception.getMessage());
+			return null;
+		}    
+	}
+
+	public static String getProviderJSON(Provider provider) {
+		return toJSON(Provider.class, provider);
+	}
+	
+	public static Provider getProviderFromJSON(String json) {
+		return fromJSONToObject(Provider.class, json);
 	}
 }
