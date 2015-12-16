@@ -2,6 +2,8 @@ package eu.ascetic.paas.applicationmanager.vmmanager.client;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import es.bsc.vmmclient.models.ImageToUpload;
 import es.bsc.vmmclient.models.ImageUploaded;
 import es.bsc.vmmclient.models.Vm;
@@ -33,10 +35,12 @@ import eu.ascetic.paas.applicationmanager.conf.Configuration;
  * David Ortiz in the BSC.
  */
 public class VmManagerClientBSSC implements VmManagerClient {
+	private static Logger logger = Logger.getLogger(VmManagerClientBSSC.class);
 	private String url;
 	
 	public VmManagerClientBSSC() {
 		this.url = Configuration.vmManagerServiceUrl;
+		logger.info("Connecting to URL for VMM: " + url);
 	}
 
 	public String getURL() {

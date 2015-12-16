@@ -77,6 +77,7 @@ public class DeployEventHandler {
 		DeploymentEvent deploymentEvent = event.getData();
 
 		logger.info("Creating a new thread to deploy in infrastructure the deployment: " + deploymentEvent.getDeploymentId());
+		logger.info("Connecting to the VMM: " + vmManagerClient.getURL());
 		
 		DeployEventHandlerRunner runner = new DeployEventHandlerRunner(applicationDAO,
 																	   deploymentDAO,
