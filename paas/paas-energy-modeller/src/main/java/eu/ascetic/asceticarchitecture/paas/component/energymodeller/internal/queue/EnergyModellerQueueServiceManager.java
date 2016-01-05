@@ -15,13 +15,10 @@
  */
 package eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.queue;
 
-import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 
-import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
@@ -34,11 +31,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.messages.GenericEnergyMessage;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.DataConsumption;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.VirtualMachine;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.ApplicationRegistry;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.DataConsumptionHandler;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.mapper.AppRegistryMapper;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.mapper.DataConsumptionMapper;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.mapper.VirtualMachine;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.queue.MessageParserUtility;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.queue.client.AmqpClient;
 
@@ -54,7 +51,11 @@ public class EnergyModellerQueueServiceManager {
 	
 	private final static Logger LOGGER = Logger.getLogger(EnergyModellerQueueServiceManager.class.getName());
 	
-		
+	/**
+	 * Initialize the component by getting a queuePublisher where messages are sent to the queue, it needs the application registry that
+	 * allows to store data into db about application, data consumption handler that handle consumption information
+	 * 
+	 */
 	public EnergyModellerQueueServiceManager(AmqpClient paasQueuePublisher, ApplicationRegistry registry,DataConsumptionHandler dataConsumptionHandler) {
 		
 		this.paasQueuePublisher = paasQueuePublisher;
@@ -63,6 +64,10 @@ public class EnergyModellerQueueServiceManager {
 	
 	}
 	
+	/**
+	 * 
+	 * another version of the builder class that handler two client for sending and receiving messages from IaaS and PaaS queue
+	 */
 	public EnergyModellerQueueServiceManager(AmqpClient iaasQueuePublisher, AmqpClient paasQueuePublisher, ApplicationRegistry registry,DataConsumptionHandler dataConsumptionHandler) {
 		
 		this.paasQueuePublisher = paasQueuePublisher;
@@ -72,7 +77,12 @@ public class EnergyModellerQueueServiceManager {
 		LOGGER.info("EM queue manager set");
 	
 	}
-
+	
+	
+	/**
+	 * method that sends a message to a queue, the message is a metric and has a specific structure that is built by te MessageParserUtility by
+	 * parsing an object like GenericEnergyMessage and it generated the correstpondign JSON string
+	 */
 	public void sendToQueue(String queue,String providerid,String applicationid, String deploymentid, List<String> vms, String eventid, GenericEnergyMessage.Unit unit, String referenceTime,double value){
 		GenericEnergyMessage message= new GenericEnergyMessage();
 		message.setProvider(providerid);
@@ -98,138 +108,12 @@ public class EnergyModellerQueueServiceManager {
 	}	
 	
 
-//	public void createConsumers(String appTopic, String measurementsTopic){
-//		LOGGER.info("PaaS only queue data connected");
-//		LOGGER.info("Registering consumer for application " + appTopic + " and for energy measurements "+measurementsTopic);
-//		
-//        MessageListener appListener = new MessageListener() {
-//        
-//        AppRegistryMapper mapper = registry.getMapper();
-//        	
-//        public void onMessage(Message message) {
-//	            try {
-//	            	
-//	                if (message instanceof TextMessage) {
-//	                	 
-//	                    TextMessage textMessage = (TextMessage) message;
-//	                    LOGGER.info("Received start message" + textMessage.getText() + "'"+textMessage.getJMSDestination());
-//	                    String dest = message.getJMSDestination().toString();
-//	                    String[] topic = dest.split("\\.");
-//	                    
-//	                    if (topic.length<6){
-//	                    	LOGGER.debug("Received a message of no interest for the EM");
-//	                    	return;
-//	                    }
-//	                    
-//	                    LOGGER.info("Received " +topic[6] + topic[5]+topic[3]+topic[1] );
-//	                    
-//	                    
-//	                    if (topic[6].equals("DEPLOYED")){
-//	                    	VirtualMachine vm = new VirtualMachine();
-//		                    vm.setApp_id( topic[1]);
-//		                    vm.setDeploy_id(Integer.parseInt(topic[3]));
-//		                    vm.setVm_id(Integer.parseInt(topic[5]));
-//		                    Date date = new Date();
-//	                    	vm.setStart(date.getTime());
-//	                    	int checkvm = mapper.checkVM(vm.getApp_id(), vm.getDeploy_id(), vm.getVm_id());
-//	                    	if (checkvm>0){
-//	                    		LOGGER.warn("Received again a deployd message for an app already registered");
-//	                    		return;
-//	                    	}
-//	                    	mapper.createVM(vm);
-//	                    	LOGGER.info("Received DEPLOYED message");
-//	                    }
-//	                    if (topic[6].equals("DELETED")){
-//	                    	VirtualMachine vm = new VirtualMachine();
-//		                    vm.setApp_id( topic[1]);
-//		                    vm.setDeploy_id(Integer.parseInt(topic[3]));
-//		                    vm.setVm_id(Integer.parseInt(topic[5]));
-//		                    Date date = new Date();
-//	                    	vm.setStop(date.getTime());
-//	                    	int checkvm = mapper.checkVM(vm.getApp_id(), vm.getDeploy_id(), vm.getVm_id());
-//	                    	if (checkvm==0){
-//	                    		LOGGER.warn("Received a message for an app not being created before");
-//	                    		return;
-//	                    	}
-//	                    	mapper.stopVM(vm);
-//	                    	LOGGER.info("Received TERMINATED stop");
-//	                    }
-//	                    
-//	                    if (topic[6].equals("TERMINATED")){
-//	                    		           
-//	                    	LOGGER.info("Received TERMINATED stop");
-//	                    }
-//	                	 
-//	                }
-//	            } catch (Exception e) {
-//	                System.out.println("Caught:" + e);
-//	                e.printStackTrace();
-//	            }
-//	        }
-//	    };		
-//	    
-//	    
-//		
-//	    LOGGER.debug("Received "+appTopic);
-//	    LOGGER.debug("Received "+appListener);
-//	    LOGGER.debug("Received "+paasQueuePublisher);
-//	    paasQueuePublisher.registerListener(appTopic,appListener);
-//		
-////		Topic name: vm.<VMid>.item.<itemId> (for example: vm.wally159.item.energy)
-////		-          Message structure:
-////		{              
-////		                “name”:<String>,             //energy or power
-////		                “value”: <double>,
-////		                “units”:<String>,       //W for power and KWh or Wh for energy
-////		                “timestamp”:<long>
-////		}
-//		
-//		MessageListener measureListener = new MessageListener(){
-//			//DataConsumptionMapper mapper = dataConsumptionHandler.getMapper();
-//        	
-//	        public void onMessage(Message message) {
-//		            try {
-//		            	
-//		                if (message instanceof TextMessage) {
-//		                	 
-//		                    TextMessage textMessage = (TextMessage) message;
-//		                    LOGGER.info("Received start message" + textMessage.getText() + "'"+textMessage.getJMSDestination());
-//		                    String dest = message.getJMSDestination().toString();
-//		                    String payload = textMessage.getText();
-//		                    String[] topic = dest.split("\\.");
-//		                    LOGGER.info("Received " +topic[3]+topic[1] );
-//		                    
-//		                    int i =0;
-//		                    LOGGER.info(i);
-//		                    DataConsumption dc= new DataConsumption();
-//		                    ObjectMapper jmapper = new ObjectMapper();
-//		                    Map<String,Object> userData = jmapper.readValue(payload, Map.class);
-//		                    
-//		                    if (!(topic[3].equals("energy"))){
-//		                    	LOGGER.debug("The topic is energy");
-//		                    	return;
-//		                    }
-//		                    if (!(topic[3].equals("power"))){
-//		                    	LOGGER.debug("The topic is power");
-//		                    	return;
-//		                    }
-//		                    
-//		                    return;
-//		                    
-//		                }
-//		            } catch (Exception e) {
-//		                System.out.println("Caught:" + e);
-//		                e.printStackTrace();
-//		            }
-//		        }
-//		};
-//		
-//		LOGGER.debug("Registering "+measurementsTopic);
-//	    paasQueuePublisher.registerListener(measurementsTopic,measureListener);
-//		
-//	}
-	
-
+	/**
+	 * 
+	 * creates subscription to the iaas queue for consuming messages of power and paas queue for consuming messages about applocation deployment
+	 * is very critical to map iaas id with paas id as the consumption is not published the the paas id 
+	 * subscription is based on topic provided by configuration files at the PaaS EM initialization
+	 */
 	public void createTwoLayersConsumers(String appTopic, String measurementsTopic){
 		LOGGER.info("PaaS/IaaS queue data connected");
 		LOGGER.info("Registering consumer for application " + appTopic + " and for energy measurements "+measurementsTopic);

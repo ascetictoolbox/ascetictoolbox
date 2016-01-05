@@ -21,10 +21,9 @@ import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.dao.DataeEventDAO;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.DataEvent;
 
-public class EventDataService implements DataeEventDAO {
+public class EventDataService {
 	private static final Logger logger = Logger.getLogger(EventDataService.class);
 	private List<DataEvent> eventData;
 
@@ -37,12 +36,12 @@ public class EventDataService implements DataeEventDAO {
 	}
 	
 	
-	@Override
+
 	public void save(DataEvent data) {
 		eventData.add(data);
 	}
 	
-	@Override
+
 	public List<DataEvent> getByApplicationIdTime(String applicationid,String vmid, String eventid, Timestamp start, Timestamp end) {
 		List<DataEvent> resultSet = new Vector<DataEvent>();
 		
@@ -60,7 +59,7 @@ public class EventDataService implements DataeEventDAO {
 		return resultSet;
 	}
 
-	@Override
+
 	public List<DataEvent> getByApplicationId(String applicationid, String vmid, String eventid) {
 		List<DataEvent> resultSet = new Vector<DataEvent>();
 		
@@ -77,7 +76,7 @@ public class EventDataService implements DataeEventDAO {
 		
 	}
 
-	@Override
+
 	public List<DataEvent> getByDeployIdTime(String applicationid, String deploymentid, String vmid, String eventid, Timestamp start, Timestamp end) {
 		List<DataEvent> resultSet = new Vector<DataEvent>();
 		
@@ -95,7 +94,7 @@ public class EventDataService implements DataeEventDAO {
 		return resultSet;
 	}
 	
-	@Override
+
 	public List<DataEvent> getByDeployId(String applicationid, String deploymentid, String vmid, String eventid) {
 		List<DataEvent> resultSet = new Vector<DataEvent>();
 		if (vmid==null) return resultSet;
@@ -109,7 +108,7 @@ public class EventDataService implements DataeEventDAO {
 		return resultSet;
 	}
 
-	@Override
+
 	public int getEventsInTimeFrame(String applicationid, String vmid, String eventid, long tstart, long tend) {
 		// TODO Auto-generated method stub
 		int count = 0;
@@ -132,7 +131,7 @@ public class EventDataService implements DataeEventDAO {
 		return count;
 	}
 	
-	@Override
+
 	public int getAllEventsInTimeFrame(String applicationid, String vmid, String eventid, long tstart, long tend) {
 		// TODO Auto-generated method stub
 		int count = 0;
@@ -155,7 +154,7 @@ public class EventDataService implements DataeEventDAO {
 		return count;
 	}
 	
-	@Override
+
 	public List<Long> getAllDeltas(String applicationid, String vmid, String eventid, long tstart, long tend) {
 		// TODO Auto-generated method stub
 		Vector<Long> results= new Vector<Long>();

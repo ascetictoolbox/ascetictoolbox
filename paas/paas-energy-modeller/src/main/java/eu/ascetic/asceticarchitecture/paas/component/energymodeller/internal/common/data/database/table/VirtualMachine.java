@@ -13,8 +13,13 @@
    limitations under the License.
 
  */
-package eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.mapper;
+package eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table;
 
+/**
+ * 
+ * @author sommacam
+ * represent data stored inside the database about a vm
+ */
 public class VirtualMachine {
 	
 	private String app_id;

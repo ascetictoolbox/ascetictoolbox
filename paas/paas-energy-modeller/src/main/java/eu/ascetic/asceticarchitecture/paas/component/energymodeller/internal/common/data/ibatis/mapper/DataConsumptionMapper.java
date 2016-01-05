@@ -22,7 +22,11 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.DataConsumption;
-
+/**
+ * 
+ * @author sommacam
+ * represent data stored inside the database about consumption
+ */
 public interface DataConsumptionMapper {
 	
 	// TODO when restored add deploymentid = #{deploymentid}

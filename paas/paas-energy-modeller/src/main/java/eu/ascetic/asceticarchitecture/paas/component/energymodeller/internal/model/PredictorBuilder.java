@@ -17,13 +17,20 @@ package eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.mo
 
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.model.predictor.PredictorInterface;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.model.predictor.impl.EMNeuralPredictor;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.model.predictor.impl.EnergyModellerPredictor;
 
+/**
+ * 
+ * @author sommacam
+ * generic class that builds a predictor based and return it as a generic predictorinterface class, if not options are privided it builds a predictor based on the Weka library
+ */
 public class PredictorBuilder {
 
-	private static EMNeuralPredictor predictor;
+	
+	private static PredictorInterface predictor;
 	
 	public static PredictorInterface getPredictor(){
-		if (predictor == null) predictor = new EMNeuralPredictor();
+		if (predictor == null) predictor = (PredictorInterface) new EnergyModellerPredictor();
 		return (PredictorInterface)predictor ;
 	}
 	
@@ -32,8 +39,6 @@ public class PredictorBuilder {
 		return (PredictorInterface)predictor ;
 
 	}
-	
-	
-	
+
 	
 }

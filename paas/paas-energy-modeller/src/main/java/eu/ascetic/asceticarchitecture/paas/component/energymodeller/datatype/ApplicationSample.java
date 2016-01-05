@@ -17,6 +17,14 @@ package eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype;
 
 public class ApplicationSample {
 
+	/**
+	 * 
+	 *  THis class represent a generic sample where e_value is the energy accumulated, p instant power and c cpu percentage, the sample referes to the time specified
+	 *  by the variable time
+	 * 
+	 */
+	
+	
 	private int orderID;
 	private String vmid;
 	private String appid;

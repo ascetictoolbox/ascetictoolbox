@@ -22,7 +22,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Vector;
 
@@ -33,15 +32,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import eu.ascetic.asceticarchitecture.iaas.zabbixApi.client.ZabbixClient;
-import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.HistoryItem;
-import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Host;
-import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Item;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.dao.impl.DataConsumptionDAOImpl;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.dao.impl.DataEventDAOImpl;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.DataConsumption;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.DataEvent;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.legacy.ZabbixDataCollectorService;
 
 public class ApplicationMonitoringDataService  {
 	private static int MILLIS_IN_A_DAY = 86400000;
@@ -89,7 +80,11 @@ public class ApplicationMonitoringDataService  {
 		
 	}
 	
-
+	/**
+	 * 
+	 * retrieves values from the application manager about an event by using a rest interface, if not event are supplied it retrieves all events of the same application
+	 * it is possible that events have missing vmid in that case they are assinged to the current vm as they are global events assigned to all vms belonging to the same application
+	 */
 	public List<DataEvent> generateEventData(String applicationid, String deploymentid,String vmid, String eventid) {
 		// TODO deployment id shoudl be used and in case to filter only some events. 
 			logger.info("Now getting events for app " + applicationid);
@@ -103,45 +98,13 @@ public class ApplicationMonitoringDataService  {
 				logger.warn("No event id supplied. I will load all events for the application");
 				requestEntity = "FROM events MATCH appId=\""+applicationid+"\"";
 			}
-			// TODO workaround use eventType even if it is risky for id issues
-			//requestEntity = "FROM events MATCH data.eventType=\""+eventid+"\" ";
-			
-			 
+
 			
 			logger.info("This query " + requestEntity);
-//			HttpURLConnection connection;
-//			try {
-//				logger.debug("App monitor connection on "+url.getHost() + url.getPort() + url.getPath() + url.getProtocol());
-//				connection = (HttpURLConnection) url.openConnection();
-//				connection.setDoOutput(true);
-//				connection.setDoInput(true);
-//				connection.setRequestMethod("POST");
-//				connection.setRequestProperty("Content-Type", "text/plain");
-//				OutputStream response = connection.getOutputStream();
-//				response.write(requestEntity.getBytes());
-//				response.flush();
-//				logger.debug("Connected !");
-//				if (connection.getResponseCode() >= 400) {
-//					logger.info("App monitor connection error");
-//					logger.info("code "+connection.getResponseCode());
-//				}
-//				BufferedReader reader = new BufferedReader(new InputStreamReader((connection.getInputStream())));
-//				String jsonres="";
-//				String line;
-//				while ((line = reader.readLine()) != null) {
-//					jsonres=jsonres+line;
-//		        }
-//				logger.info("getting result");
-//				connection.disconnect();
-//				
-//			    JsonArray entries = (JsonArray) new JsonParser().parse(jsonres);
+
 			    long time;
-			    // TODO workaround purgeWorkarounddata
-			    
 			    JsonArray entries = checkEvents(requestEntity);
-			    
 			    if ((entries==null)){
-			    	
 			    }else if (entries.size()==0) {
 			    	logger.info("specifi events for only this VM not found, looking global events");
 			    	requestEntity = "FROM events MATCH appId=\""+applicationid+"\" AND data.eventType=\""+eventid+"\" ";
@@ -238,11 +201,7 @@ public class ApplicationMonitoringDataService  {
 			    }
 			    logger.info("Built a result set of "+resultSet.size());
 			    return resultSet;
-//			} catch (IOException e) {
-//				 logger.error("#problem occurred");
-//				e.printStackTrace();
-//				return null;
-//			}
+
 	}
 	
 	public void setup() {

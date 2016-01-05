@@ -25,19 +25,12 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Uni
 
 /**
  * @author davide sommacampagna
- 	 * This interface provides:
+ 	 * This interface provides methods for estimating power consumption of application and events at PaaS layer
 	 * 
-	 * Y2 new Interfaces to support Estimation
-	 * Y2 new Interfaces to support active monitoring 
-	 * Y2 new Interfaces to support training 
-	 * Y1 measure interface to get current accumulated consumption
-	 * Y1 interfaces to collect data samples about application and its consumption
  */
 
 public interface PaaSEnergyModeller {
 
-	// Y2 new Interfaces to support Estimation	
-	
 	/**
 	 * @param providerid
 	 * @param applicationid
@@ -46,10 +39,6 @@ public interface PaaSEnergyModeller {
 	 * @return the value for average energy estimation of the provided application,running on the vm list provided. eventid can be specified 
 	 */
 	public double estimate( String providerid, String applicationid, String deploymentid, List<String> vmids, String eventid, Unit unit, long window);	
-	
-	
-	
-	// Y2 new Interfaces to support active monitoring 	
 	
 	/**
 	 * @param providerid
@@ -66,19 +55,6 @@ public interface PaaSEnergyModeller {
 	 * @return unsubscribe the publishing of prediction for an appl/event
 	 */
 	public boolean unsubscribeMonitoring(String providerid, String applicationid, String deploymentid);
-
-	
-	// Y2 new Interfaces to support training 
-	
-	/**
-	 * @param providerid
-	 * @param applicationid
-	 * @param deploymentid
-	 * @return will train application model in future
-	 */	
-	boolean trainApplication(String providerid, String applicationid,String deploymentid, String eventid);
-
-	// Y1 measure interface to get current accumulated consumption	
 
 	/**
 	 * @param providerid
@@ -111,13 +87,19 @@ public interface PaaSEnergyModeller {
 	/**
 	 * @param token
 	 * @param command
-	 * @return it asks the PEM to perform management operation (whipe data...) to be used for internal purpose
+	 * @return it asks the PEnergyModeller to perform management operation (whipe data...) to be used for internal purpose in Y3
 	 */
 	public void manageComponent(String token, String command);
+		
+	// not planned
 	
-//	@Deprecated
-//	public double measure( String providerid, String applicationid,List<String> vmids, String eventid, Unit unit,Timestamp start, Timestamp end);	
-//
+	/**
+	 * @param providerid
+	 * @param applicationid
+	 * @param deploymentid
+	 * @return will train application model in future
+	 */	
+	boolean trainApplication(String providerid, String applicationid,String deploymentid, String eventid);
 
 
 }

@@ -15,6 +15,12 @@
  */
 package eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype;
 
+ /**
+  * 
+  * @author sommacam
+  * represent the unit of a measure, energy for energy consumpion (Wh) and power for instant power (W)
+  */
+
 public enum Unit {
 	POWER,ENERGY
 }

@@ -17,6 +17,13 @@ package eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype;
 
 public class EventSample {
 
+	/**
+	 * 
+	 * This class represent an event registered by the applciation monitor with additional information such as the energy accumulated (e_value), the average instant power (p_value) and the average cpu load (c_value)
+	 * it also include the time it begun and the time it ended
+	 * 
+	 */
+	
 	private String vmid;
 	private String appid;
 	private String eventid;

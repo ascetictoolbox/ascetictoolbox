@@ -22,6 +22,13 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.VirtualMachine;
+
+/**
+ * 
+ * @author sommacam
+ * represent data stored inside the database about application
+ */
 public interface AppRegistryMapper {
 
 	  @Select("SELECT * FROM APPLICATION_REGISTRY WHERE app_id = #{app_id}")

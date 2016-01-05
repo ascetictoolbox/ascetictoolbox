@@ -21,7 +21,13 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Uni
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.DataConsumption;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.EnergyDataAggregatorServiceQueue;
 
+/**
+ * 
+ * @author sommacam
+ * generic predictor interface there are methods for estimating with different inputs
+ */
 public interface PredictorInterface {
+	
 	
 	double estimate(String providerid, String applicationid, String deploymentid, List<String> vmids, String eventid, Unit unit, long timelater);
 	
@@ -30,7 +36,5 @@ public interface PredictorInterface {
 	double estimate(List<DataConsumption> samples, Unit unit, long timelater);
 	
 	void setEnergyService(EnergyDataAggregatorServiceQueue service);
-	
-	
 	
 }

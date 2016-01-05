@@ -25,53 +25,52 @@ import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.apache.log4j.Logger;
 
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.mapper.DataConsumptionMapper;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.mapper.MonitoringMapper;
 
 /**
  * 
  * @author sommacam
- * build a connection with the databse to store and retrieve data about events
+ * build a connection with the databse to store and retrieve data about application
  */
-public class DataConsumptionHandler {
+public class MonitoringRegistry {
 
 	private static SqlSessionFactory sqlSessionFactory;
-	private static DataConsumptionHandler instance;
+	//private static AppRegistryMapper mapper;
+	private static MonitoringRegistry instance;
+	private final static Logger LOGGER = Logger.getLogger(MonitoringRegistry.class.getName());
+
 	
-	private final static Logger LOGGER = Logger.getLogger(DataConsumptionHandler.class.getName());
+	public static MonitoringRegistry getRegistry(String driver,String url,String uname,String pwd){
+		LOGGER.info("Returning the registry");
+		if (instance==null) {
+			instance = new MonitoringRegistry(driver,url,uname,pwd);
+			LOGGER.info("Returned the registry instance");
+		}
+		return instance;
+	}
 	
 	
-	private DataConsumptionHandler(String driver,String url,String uname,String pwd){
+	private MonitoringRegistry(String driver,String url,String uname,String pwd){
 		TransactionFactory transactionFactory = new JdbcTransactionFactory();
 		Environment environment = new Environment("development", transactionFactory, getDataSource(driver,url,uname,pwd));
 		Configuration configuration = new Configuration(environment);
-		configuration.addMapper(DataConsumptionMapper.class);
+		configuration.addMapper(MonitoringMapper.class);
 		sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
-		LOGGER.info("Data collector set up complete");
-	}
-	
-	public static DataConsumptionHandler getHandler(String driver,String url,String uname,String pwd){
-		LOGGER.info("Returning the handler");
-		if (instance==null) {
-			instance = new DataConsumptionHandler(driver,url,uname,pwd);
-			LOGGER.info("Returned the handler instance");
-		}
-		
-		return instance;
-		
-		
+		LOGGER.info("Registry set up complete");
 	}
 
 	private static PooledDataSource getDataSource(String driver,String url,String uname,String pwd) {
-		PooledDataSource pds = new PooledDataSource(driver,url,uname,pwd);
-		pds.setDefaultAutoCommit(true);
-		pds.setPoolPingQuery("SELECT 1");
-		pds.setPoolPingConnectionsNotUsedFor(1500000);
-		pds.setPoolPingEnabled(true);
-        return pds;
+		
+		PooledDataSource pooledConnection = new PooledDataSource(driver,url,uname,pwd);
+		pooledConnection.setDefaultAutoCommit(true);
+		pooledConnection.setPoolPingQuery("SELECT 1");
+		pooledConnection.setPoolPingConnectionsNotUsedFor(1500000);
+		pooledConnection.setPoolPingEnabled(true);
+        return pooledConnection;
     }
 	 
-
 	public SqlSession getSession(){
 		return sqlSessionFactory.openSession(true);
 	}
+	
 }

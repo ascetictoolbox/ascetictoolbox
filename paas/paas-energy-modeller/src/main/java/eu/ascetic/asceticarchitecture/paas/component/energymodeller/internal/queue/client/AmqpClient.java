@@ -57,6 +57,10 @@ public class AmqpClient {
 	
 	private String url = "10.15.5.55:61616";
 	
+	
+	/**
+	 * generic initialization class for an AMQP queue, it uses the Java JNI library, it requires a topic to subscribe 
+	 */
 	public void setup(String url, String username, String password,  String monitoringQueueTopic) throws Exception {
 		
 		if(username != null) {
@@ -111,6 +115,9 @@ public class AmqpClient {
 		
 	}
 	
+	/**
+	 * generic initialization class for an AMQP queue, it has no topic
+	 */
 	public void setup(String url, String username, String password) throws Exception {
 		
 		if(username != null) {
@@ -146,6 +153,9 @@ public class AmqpClient {
 		
 	}
 	
+	/**
+	 * send a message to the queue with two option, sending it with the prediction topic or with the monitoring topic
+	 */
 	public void sendMessage(String queue, String message){
 		LOGGER.info("Sending Message to queue "+queue);
 		try {
@@ -162,7 +172,9 @@ public class AmqpClient {
 		 
 	}
 	 
-	
+	/**
+	 * register a listener of a specific topic
+	 */
 	public void registerListener(String topic, MessageListener listener){
 		LOGGER.info("Registering listener");
 		try {

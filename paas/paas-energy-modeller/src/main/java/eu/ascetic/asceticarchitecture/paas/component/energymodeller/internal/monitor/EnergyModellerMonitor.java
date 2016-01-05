@@ -6,9 +6,13 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
-import java.util.Vector;
 
+import org.apache.ibatis.session.SqlSession;
 import org.apache.log4j.Logger;
 
 import com.google.gson.FieldNamingPolicy;
@@ -16,14 +20,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.PaaSEMDatabaseManager;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.dao.impl.EnergyModellerMonitoringDAOImpl;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.EnergyModellerMonitoring;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.ApplicationRegistry;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.MonitoringRegistry;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.mapper.AppRegistryMapper;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.mapper.MonitoringMapper;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.EnergyDataAggregatorServiceQueue;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.EventDataAggregatorService;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.queue.client.AmqpClient;
 
 public class EnergyModellerMonitor implements Runnable {
 
@@ -31,8 +33,7 @@ public class EnergyModellerMonitor implements Runnable {
 	
 	private EnergyDataAggregatorServiceQueue energyService;
 	private ApplicationRegistry appRegistry;
-	private EnergyModellerMonitoringDAOImpl dbmanager;
-//	private AmqpClient destinationQueueclient;
+	private MonitoringRegistry monitoringRegistry;
 	
 	// SLA MESSAGES
 	private static String VM_CONSUMPTION_POWER="power_usage_per_vm";
@@ -53,14 +54,9 @@ public class EnergyModellerMonitor implements Runnable {
 		
 	}
 	
-	
-	public EnergyModellerMonitoringDAOImpl getDbmanager() {
-		return dbmanager;
-	}
 
-
-	public void setDbmanager(PaaSEMDatabaseManager dbmanager) {
-		this.dbmanager = dbmanager.getMonitoringData();
+	public void setMonitoring(MonitoringRegistry monitoringRegistry) {
+		this.monitoringRegistry = monitoringRegistry;
 	}
 
 
@@ -76,24 +72,44 @@ public class EnergyModellerMonitor implements Runnable {
 		this.appRegistry = appRegistry;
 	}
 
-//	public AmqpClient getDestinationQueueclient() {
-//		return destinationQueueclient;
-//	}
-//
-//	public void setDestinationQueueclient(AmqpClient destinationQueueclient) {
-//		this.destinationQueueclient = destinationQueueclient;
-//	}
-
 
 	public EnergyDataAggregatorServiceQueue getEnergyService() {
 		return energyService;
 	}
+	
+	public boolean subscribeMonitoring(String providerid, String applicationid,	String deploymentid) {
+		SqlSession session = monitoringRegistry.getSession();
+		MonitoringMapper monitoringMapper = session.getMapper(MonitoringMapper.class);
+		EnergyModellerMonitoring energyModellerMonitoring = new EnergyModellerMonitoring();
+		energyModellerMonitoring.setApplicationid(applicationid);
+		energyModellerMonitoring.setDeploymentid(deploymentid);
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Calendar cal = Calendar.getInstance();
+		Timestamp ts = Timestamp.valueOf(dateFormat.format(cal.getTime()));
+		energyModellerMonitoring.setStarted(ts);
+		monitoringMapper.createMonitoring(energyModellerMonitoring);
+	
+		return false;
+	}
+	
+	public boolean unsubscribeMonitoring(String providerid,	String applicationid, String deploymentid) {
+		SqlSession session = monitoringRegistry.getSession();
+		MonitoringMapper monitoringMapper = session.getMapper(MonitoringMapper.class);
+		monitoringMapper.terminateMonitoring(applicationid, deploymentid);
+		return true;
+	}
 
+	/**
+	 * starts a thread that at regular intervals check via database DAO dbmanager the application, if any, that are reigstered to monitoring, then it calculates the consumption or the prediction and pushes it to the queue
+	 * in thi case the monitoring information are sent to the application monitor via rest interface becuase it will then inform other components of the available monitoring information
+	 */
 	@Override
 	public void run() {
 		AppRegistryMapper registryMapper = appRegistry.getSession().getMapper(AppRegistryMapper.class);
 		logger.info("monitoring data ..");
-		List<EnergyModellerMonitoring> monitoredInstances = dbmanager.getMonitoringActive();
+		SqlSession session = monitoringRegistry.getSession();
+		MonitoringMapper monitoringMapper = session.getMapper(MonitoringMapper.class);
+		List<EnergyModellerMonitoring> monitoredInstances = monitoringMapper.getMonitoringActive();
 		logger.info("monitoring data for "+monitoredInstances.size());
 		for(EnergyModellerMonitoring monitoring : monitoredInstances){
 			String deployment = monitoring.getDeploymentid();
@@ -137,6 +153,10 @@ public class EnergyModellerMonitor implements Runnable {
 		
 	}
 	
+	/**
+	 * 
+	 * send a metric to the application manager 
+	 */
 	private void sentToApplicationManager(String message){
 		
 		
@@ -176,6 +196,10 @@ public class EnergyModellerMonitor implements Runnable {
 		
 	}
 	
+	/**
+	 * 
+	 * build a json representation of the monitoring data around a JSON formatted text
+	 */
 	private String buildJSONDATA(String app,String node,String message,double value){
 		// create the albums object
 		logger.info("monitoring building data ");

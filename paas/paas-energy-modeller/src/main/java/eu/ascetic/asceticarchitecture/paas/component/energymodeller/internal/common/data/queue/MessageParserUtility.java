@@ -19,12 +19,16 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.messages.GenericEnergyMessage;
-
+/**
+ * 
+ * @author sommacam
+ * utility to parse a class of type GenericEnergyMessage and convert it to a JSON format to be sent to queue as byte payload
+ */
 public class MessageParserUtility {
 
 	

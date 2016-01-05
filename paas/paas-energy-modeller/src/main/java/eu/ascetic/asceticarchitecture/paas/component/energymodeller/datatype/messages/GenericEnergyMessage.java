@@ -17,6 +17,14 @@ package eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.me
 
 import java.util.List;
 
+ /**
+  * 
+  * @author sommacam
+  *  this interface represent a generic message published over the AMQP queue by the PaaS EM, it contains different fields that are parsed by the
+  *  class MessageParserUtility from and to a JSON string (in order to be pushed and retrieved from the queue). The message allows to specify the Unit which the values represents
+  *  the list of vms of which the measure refers and the time it refers when it was taken (referredtimestamp)
+  */
+
 public class GenericEnergyMessage {
 
 	public enum Unit { WATT, WATTHOUR, COUNT, SEC, APP_DURATION, APP_COUNT };

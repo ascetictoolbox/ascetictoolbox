@@ -54,12 +54,6 @@
 <!-- 	    </repository> -->
 <!-- 	 </repositories> -->
 	<dependencies>
-		
-		<dependency>
-			<groupId>org.jscience</groupId>
-			<artifactId>jscience</artifactId>
-			<version>${paasem.jscience}</version>
-		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
@@ -119,11 +113,6 @@
 			<version>${paasem.jmeter}</version>
 		</dependency>
 		<dependency>
-			<groupId>eu.ascetic.utils</groupId>
-			<artifactId>zabbix-api</artifactId>
-			<version>0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
 			<version>${paasem.jackson}</version>
@@ -159,12 +148,6 @@
 			<artifactId>activemq-amqp</artifactId>
 			<version>${paasem.activemq}</version>
 		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.apache.commons</groupId> -->
-<!-- 			<artifactId>commons-pool2</artifactId> -->
-<!-- 			<version>${paasem.pool}</version> -->
-
-<!-- 		</dependency> -->
 		
 	</dependencies>
 

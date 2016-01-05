@@ -17,26 +17,23 @@ package eu.ascetic.asceticarchitecture.paas.component.energymodeller.builder;
 
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.PaaSEnergyModeller;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.service.EnergyModellerService;
-import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.service.EnergyModellerServiceY1;
 
 public class EnergyModellerFactory {
 	
 	private static PaaSEnergyModeller theEnergyModeller;
 	
+	/**
+	 * 
+	 * @param propertyFile path to retrieve environment settings
+	 * @return a static instance implementing the generic paas energy modeller service, this builder is used to decouple different implementation of energy modeller, in fact different implementation are returned by this builder
+	 * 			as objects implementing the generic PaaSEnergyModeller interface. It has been used in Y2 to choose between the EM impleemnted for Y1 and the new one of Y2, now not anymore Y1 is available as it was based on zabbix iaas data
+	 * 			the Application Monitor expects to get the generic interface PaaSEnergyModeller
+	 * 
+	 */
+	
 	public static PaaSEnergyModeller getEnergyModeller(String propertyFile){
 		if (theEnergyModeller==null) {
 			theEnergyModeller = (PaaSEnergyModeller) new EnergyModellerService(propertyFile);
-			return theEnergyModeller;
-		} else {
-			return theEnergyModeller;
-		}
-	}
-	
-	// DEPRECATED: just for backword compatibility, but going to be removed soon
-	@Deprecated
-	public static PaaSEnergyModeller getY1EnergyModeller(String propertyFile){
-		if (theEnergyModeller==null) {
-			theEnergyModeller = (PaaSEnergyModeller) new EnergyModellerServiceY1(propertyFile);
 			return theEnergyModeller;
 		} else {
 			return theEnergyModeller;

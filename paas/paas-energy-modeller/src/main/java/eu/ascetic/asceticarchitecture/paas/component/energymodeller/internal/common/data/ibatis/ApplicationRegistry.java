@@ -34,7 +34,11 @@ import org.apache.ibatis.datasource.pooled.PooledDataSource;
 
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.mapper.AppRegistryMapper;
 
-
+/**
+ * 
+ * @author sommacam
+ * build a connection with the databse to store and retrieve data about application
+ */
 public class ApplicationRegistry {
 
 	private static SqlSessionFactory sqlSessionFactory;
@@ -76,12 +80,4 @@ public class ApplicationRegistry {
 		return sqlSessionFactory.openSession(true);
 	}
 	
-//	public AppRegistryMapper getMapper(){
-//	mapper = sqlSessionFactory.openSession(true).getMapper(AppRegistryMapper.class);
-//	LOGGER.info("Returning the mapper");
-//	
-//	
-//	
-//	return mapper;
-//}
 }
