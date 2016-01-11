@@ -3262,6 +3262,8 @@ saas/virtual-machine-image-constructor/runtime/scripts/utils/add-mac-ip.sh -text
 saas/virtual-machine-image-constructor/runtime/scripts/utils/available-mac-ips.list -text
 saas/virtual-machine-image-constructor/runtime/scripts/utils/rm-mac-ip.sh -text
 saas/virtual-machine-image-constructor/runtime/scripts/utils/used-mac-ips.list -text
+tests/README.md -text
+tests/pom.xml -text
 use-cases/atc/newsasset/kpi-modelling/.project -text
 use-cases/atc/newsasset/kpi-modelling/LICENSE.TXT -text
 use-cases/atc/newsasset/kpi-modelling/NewsAsset-model.di -text

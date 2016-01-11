@@ -66,6 +66,7 @@
 		<module>iaas</module>
 		<module>paas</module>
 		<module>saas</module>
+		<module>tests</module>
 	</modules>
 
 	<distributionManagement>
