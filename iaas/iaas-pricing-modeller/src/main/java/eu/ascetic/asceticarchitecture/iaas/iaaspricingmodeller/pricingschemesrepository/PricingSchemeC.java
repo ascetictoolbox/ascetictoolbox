@@ -70,9 +70,8 @@ public class PricingSchemeC extends IaaSPricingModellerPricingScheme implements 
 	
 	@Override
 	public double getTotalCharges(VMstate VM) {
+		VM.setChangeTime();
 		updateVMResourceCharges(VM, price);
-		VM.setChangeTime(VM.getResourcesChangeTime());
-		VM.setEndTime(VM.getResourcesChangeTime());
 		double reduction = 0;
 		double difference = 0;
 		double predEner = VM.getPredictedInformation().getPredictedPowerPerHour();

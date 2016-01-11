@@ -81,7 +81,7 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
             }
 
 			
-            vm.setStartTime();
+          //  vm.setStartTime();
         } else {
             registeredDynamicEnergyPricesVMs.put(vm.getVMid(), vm);
 
@@ -96,7 +96,7 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
             }
 
         }
-        vm.setStartTime();
+      //  vm.setStartTime();
     }
 
 	

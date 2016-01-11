@@ -61,9 +61,9 @@ public class PricingSchemeB extends IaaSPricingModellerPricingScheme implements 
 
 ///////////////////////////// UPDATE CHARGES BASED ON ENERGY CHANGES ////////////////
 	public void updateVMCharges(VMstate VM) {
+		VM.setChangeTime();
 		updateVMEnergyCharges(VM);
 		updateVMResourceCharges(VM, price);
-		VM.setChangeTime(VM.getResourcesChangeTime());
 		VM.setTotalCharges(VM.getEnergyCharges()+VM.getResourcesCharges());
 	}
 
@@ -73,9 +73,10 @@ public class PricingSchemeB extends IaaSPricingModellerPricingScheme implements 
 	/////////////////////////// GET CHARGES /////////////////////////
 	@Override
 	public double getTotalCharges(VMstate VM) {
+		VM.setChangeTime();
+		//System.out.println("Set change time to " +VM.getChangeTime().getTimeInMillis());
 		updateVMEnergyCharges(VM);
 		updateVMResourceCharges(VM, price);
-		VM.setChangeTime(VM.getResourcesChangeTime());
 		VM.setTotalCharges(VM.getResourcesCharges()+VM.getEnergyCharges());
 		return (VM.getTotalCharges());
 	}

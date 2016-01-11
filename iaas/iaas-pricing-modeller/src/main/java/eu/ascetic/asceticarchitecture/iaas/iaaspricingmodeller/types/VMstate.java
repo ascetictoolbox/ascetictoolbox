@@ -52,17 +52,20 @@ public class VMstate {
 	
 	double duration;
 
-
+	int chargingHours;
+	
+	int hoursChanged;
 	
 	public VMstate (String VMid, VMinfo vm, EnergyProvider provider, IaaSPricingModellerPricingScheme scheme){
 		changesToCharacteristics.push(vm);
 		this.VMid = VMid;
 		this.provider = provider;
 		this.pricingScheme = scheme;
+		time = new TimeParameters();
 		energyCharges = new Charges();
 		resourceCharges = new Charges();
 		TotalCharges = new Charges();
-		time = new TimeParameters();
+		chargingHours=1;
 		energy=0;
 		totalEnergy=0;
 
@@ -73,10 +76,11 @@ public class VMstate {
 		this.VMid = VMid;
 		this.provider = provider;
 		this.pricingScheme = scheme;
+		time = new TimeParameters();
 		energyCharges = new Charges();
 		resourceCharges = new Charges();
 		TotalCharges = new Charges();
-		time = new TimeParameters();
+		chargingHours=1;
 		energy=0;
 		totalEnergy=0;
 		this.appID = appID;
@@ -87,10 +91,11 @@ public class VMstate {
 		changesToCharacteristics.push(vm);
 		this.provider = provider;
 		this.pricingScheme = scheme;
+		time = new TimeParameters();
 		energyCharges = new Charges();
 		resourceCharges = new Charges();
 		TotalCharges = new Charges();
-		time = new TimeParameters();
+		chargingHours=1;
 		energy=0;
 		totalEnergy=0;
 
@@ -102,11 +107,12 @@ public class VMstate {
 		this.pricingScheme = scheme;
 		energy=0;
 		totalEnergy=0;
+		chargingHours=1;
 	}
 	
-	public void setStartTime(){
+	/*public void setStartTime(){
 		time.setStartTime();
-	}
+	}*/
 	
 	public void setEndTime(long endTime){
 		time.setEndTime(endTime);
@@ -137,6 +143,9 @@ public class VMstate {
 		duration=dur;
 	}
 
+	public long getVMDuration(){
+		return getTotalDuration();
+	}
 	public double getDuration(){
 		return duration;
 	}
@@ -166,12 +175,14 @@ public class VMstate {
 	/////////////////////// UPDATE CHARGES /////////////////////////////
 	
 	public void updateEnergyCharges(double energyCharges){
-		this.energyCharges.updateCharges(energyCharges);
+		this.energyCharges.updateCharges(time.getEndTime(), energyCharges);
+		
 	}
 	
 	
 	public void updateResourcesCharges(double resourcesCharges){
-		this.resourceCharges.updateCharges(resourcesCharges);
+		this.resourceCharges.updateCharges(time.getEndTime(),resourcesCharges);
+		
 	}
 	
 
@@ -185,12 +196,21 @@ public class VMstate {
 		return resourceCharges.getChargesOnly();
 	}
 	
+	public Charges getEnergyChargesAll(){
+		return energyCharges;
+	}
+	
+	public Charges getResourcesChargesAll(){
+		return resourceCharges;
+	}
+	
 	public double getTotalCharges(){
 		return TotalCharges.getChargesOnly();
 	}
 	
 	public void setTotalCharges(double charges){
-		TotalCharges.setCharges(charges);
+		TotalCharges.setCharges(time.getEndTime(), charges);
+		
 	}
 	
 	public double getTotalEnergyConsumed(){
@@ -209,9 +229,9 @@ public class VMstate {
 		 this.energy=energy;
 	}
 	
-	public void setEnergyChangeTime(Calendar time){
+	/*public void setEnergyChangeTime(Calendar time){
 		energyCharges.setTime(time);
-	}
+	}*/
 	
 	public VMinfo getVMinfo(){
 		return changesToCharacteristics.peek();
@@ -222,20 +242,20 @@ public class VMstate {
 		
 	}
 	
-	public long getResourcesChangeTime(){
+	/*public long getResourcesChangeTime(){
 		return resourceCharges.getTimeOnly();
 	}
 	
 	public void setResourcesChangeTime(Calendar time){
 		resourceCharges.setTime(time);
-	}
+	}*/
 	
 	public Calendar getChangeTime(){
-		return time.getLastChangeTime();
+		return time.getEndTime();
 	}
 	
 	public void setChangeTime(){
-		time.setLastChangeTime();
+		time.setEndTime();
 		
 	}
 	
@@ -244,7 +264,7 @@ public class VMstate {
 		
 	}
 	
-	public void setChangeTime(Calendar time){
+	/*public void setChangeTime(Calendar time){
 		this.time.setLastChangeTime(time);
 		
 	}
@@ -252,7 +272,7 @@ public class VMstate {
 	public void setChangeTime(long time){
 		this.time.setLastChangeTime(time);
 	}
-	
+	*/
 	public Calendar getStartTime(){
 		return time.getStartTime();
 	}
@@ -271,5 +291,24 @@ public class VMstate {
 		return time.getDuration(start, end);
 	}
 
+	public void setHours(int hour){
+		chargingHours=hour;
+	}
+	
+	public int getHours(){
+		return chargingHours;
+	}
+	
+	public void setHoursCounter(){
+		hoursChanged++;
+	}
+	
+	public void resetHoursCounter(){
+		hoursChanged=0;
+	}
+	
+	public int getHoursCounter(){
+		return hoursChanged;
+	}
 	
 }

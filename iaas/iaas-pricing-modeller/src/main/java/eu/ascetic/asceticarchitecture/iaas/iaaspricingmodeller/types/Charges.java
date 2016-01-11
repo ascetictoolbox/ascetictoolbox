@@ -24,17 +24,23 @@ public class Charges {
 	double charges;
 
 	
-	TimeParameters time;
+	Calendar lastChange;
 	
-	public Charges() {
+	public Charges(Calendar time) {
 		charges=0.0;
-		time = new TimeParameters();
+		lastChange=time;
 	 }
 	
 	
-	public void setCharges(double charges){
+	public Charges() {
+		charges=0.0;
+		lastChange=Calendar.getInstance();
+	}
+
+
+	public void setCharges(Calendar time, double charges){
 		this.charges = (double) Math.round(charges * 1000) / 1000;
-		time.setLastChangeTime();
+		lastChange=time;
 	}	
 	
 	public double getChargesOnly(){
@@ -42,25 +48,30 @@ public class Charges {
 	}
 	
 	public long getTimeOnly(){
-		return time.getLastChangeTimeinSec();
+		return lastChange.getTimeInMillis();
 	}
 	
-	public void changeTime(){
-		time.setLastChangeTime();
+	public Calendar getTime(){
+		return lastChange;
 	}
 	
-	public Charges addCharges(Charges one, Charges two){
+	/*public void changeTime(){
+		time.setEndTime();
+	}*/
+	
+	public Charges addCharges(Calendar time, Charges one, Charges two){
 		charges = one.getChargesOnly()+two.getChargesOnly();
-		time.setLastChangeTime();
+		lastChange=time;
 		return this;
 	}
 	
-	public void updateCharges(double charges){
-		this.charges = this.charges + charges;
-		time.setLastChangeTime();
+	public void updateCharges(Calendar time, double charges){
+		this.charges =this.charges + charges;
+		lastChange=time;
+		
 	}
 	
-	public void setTime(Calendar time){
-		this.time.setLastChangeTime(time);
+	public void setTime(){
+		lastChange=Calendar.getInstance();
 	}
 }

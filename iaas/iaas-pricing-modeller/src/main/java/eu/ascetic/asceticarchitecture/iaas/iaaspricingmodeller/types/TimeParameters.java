@@ -20,6 +20,10 @@ import java.util.GregorianCalendar;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.log4j.Logger;
+
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.cost.IaaSPricingModellerCost;
+
 /**
  * This represents a duration of time/a time period, it is to be used as part of
  * the ASCETiC energy modellers query system.
@@ -30,19 +34,26 @@ public class TimeParameters {
 
     private Calendar startTime;
     private Calendar endTime;
-    private Calendar lastChange;
+  //  private Calendar lastChange;
+    
+    static Logger logger = null;
     
     public TimeParameters (){
     	startTime = Calendar.getInstance();
-    	this.endTime = (Calendar) startTime.clone();
-    	lastChange = (Calendar) startTime.clone();
+    	//System.out.println("start time " +startTime.getTimeInMillis());
+    	this.endTime = Calendar.getInstance();
+    	//System.out.println("End time " +endTime.getTimeInMillis());
+    	//lastChange =  Calendar.getInstance();
+    	//System.out.println("last time " +lastChange.getTimeInMillis());
+    	logger = Logger.getLogger(TimeParameters.class);
     }
     
     public TimeParameters (long duration){
     	startTime = Calendar.getInstance();
-    	this.endTime = (Calendar) startTime.clone();
-    	 endTime.setTimeInMillis(endTime.getTimeInMillis() + TimeUnit.SECONDS.toMillis(duration));
-    	 lastChange = (Calendar) startTime.clone();
+    	this.endTime = Calendar.getInstance();
+    	endTime.setTimeInMillis(endTime.getTimeInMillis() + TimeUnit.SECONDS.toMillis(duration));
+    	// lastChange = Calendar.getInstance();
+    	logger = Logger.getLogger(TimeParameters.class);
     }
     
     /**
@@ -59,7 +70,8 @@ public class TimeParameters {
         this.startTime.setTimeInMillis(TimeUnit.SECONDS.toMillis(startTime));
         this.endTime = new GregorianCalendar();
         this.endTime.setTimeInMillis(TimeUnit.SECONDS.toMillis(endTime));
-        this.lastChange = this.startTime;
+       // this.lastChange = this.startTime;
+        logger = Logger.getLogger(TimeParameters.class);
     }    
     
     /**
@@ -73,7 +85,8 @@ public class TimeParameters {
     public TimeParameters(Calendar startTime, Calendar endTime) {
         this.startTime = startTime;
         this.endTime = endTime;
-        this.lastChange = (Calendar) startTime.clone();
+        //this.lastChange = (Calendar) startTime.clone();
+        logger = Logger.getLogger(TimeParameters.class);
     }
 
     /**
@@ -88,7 +101,8 @@ public class TimeParameters {
         this.startTime = startTime;
         this.endTime = (Calendar) startTime.clone();
         endTime.setTimeInMillis(endTime.getTimeInMillis() + TimeUnit.SECONDS.toMillis(seconds));
-        this.lastChange = (Calendar) startTime.clone();
+        //this.lastChange = (Calendar) startTime.clone();
+        logger = Logger.getLogger(TimeParameters.class);
     }
 
     /**
@@ -102,8 +116,9 @@ public class TimeParameters {
      */
     public TimeParameters(Calendar startTime, int time, TimeUnit sourceUnit) {
         this.startTime = startTime;
-        this.endTime = (Calendar) startTime.clone();
+        this.endTime = startTime;
         endTime.setTimeInMillis(endTime.getTimeInMillis() + sourceUnit.toMillis(time));
+        logger = Logger.getLogger(TimeParameters.class);
     }
 
     /**
@@ -115,8 +130,9 @@ public class TimeParameters {
      */
     public TimeParameters(int time, TimeUnit sourceUnit) {
         this.startTime = Calendar.getInstance();
-        this.endTime = (Calendar) startTime.clone();
+        this.endTime = Calendar.getInstance();
         endTime.setTimeInMillis(endTime.getTimeInMillis() - sourceUnit.toMillis(time));
+        logger = Logger.getLogger(TimeParameters.class);
     }
 
     /**
@@ -129,9 +145,20 @@ public class TimeParameters {
         if (getStartTime() == null || getEndTime() == null) {
             return -1;
         }
-        long end = getEndTime().getTime().getTime();
-        long start = getStartTime().getTime().getTime();
-        return TimeUnit.MILLISECONDS.toSeconds(end - start);
+        if (getEndTime().getTimeInMillis()>=getStartTime().getTimeInMillis()){
+        	long end = getEndTime().getTimeInMillis();
+        	//System.out.println("end: " +end);
+        	long start = getStartTime().getTimeInMillis();
+        	//System.out.println("start: " +start);
+        	//System.out.println("Diff: " +(end-start));
+        	return TimeUnit.MILLISECONDS.toSeconds(end - start);
+        	
+        }
+        else{
+        	logger.info("End time is less than start time");
+        	return -1;
+        }
+        	
     }
     
     public long getDuration(Calendar startTime, Calendar endTime) {
@@ -184,9 +211,9 @@ public class TimeParameters {
         return startTime;
     }
     
-    public void setStartTime(){
+   /* public void setStartTime(){
     	startTime = Calendar.getInstance();
-    }
+    }*/
     
     /**
      * The start time for the duration the query represents.
@@ -246,7 +273,7 @@ public class TimeParameters {
         return "Start: " + startTime.getTime() + " End: " + endTime.getTime();
     }
     
-    public long getLastChangeTimeinSec(){
+  /*  public long getLastChangeTimeinSec(){
     	return TimeUnit.MILLISECONDS.toSeconds(lastChange.getTimeInMillis());
     }
     
@@ -256,6 +283,9 @@ public class TimeParameters {
     
     public void setLastChangeTime(){
     	this.lastChange = Calendar.getInstance();
+    	System.out.println("start " + startTime.getTimeInMillis());
+    	System.out.println("end " + endTime.getTimeInMillis());
+    	System.out.println("last " + lastChange.getTimeInMillis());
     }
     
     public void setLastChangeTime(Calendar time){
@@ -266,7 +296,8 @@ public class TimeParameters {
     	 this.lastChange.setTimeInMillis(TimeUnit.SECONDS.toMillis(time));
     	
     }
-    
+   
+    */
     public void setEndTime(){
     	this.endTime = Calendar.getInstance();
     }

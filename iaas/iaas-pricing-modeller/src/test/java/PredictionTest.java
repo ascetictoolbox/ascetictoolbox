@@ -75,9 +75,12 @@ public class PredictionTest
        
         prModeller.initializeVM("el", 1, "435e", "1");
         prModeller.initializeVM("el2", 1, "435e", "1");
-      System.out.println("Final charges for VM:"+prModeller.getVMFinalCharges("el", true));
-      System.out.println("Final charges for VM:"+prModeller.getVMFinalCharges("el", true));
-        System.out.println("Final charges for APP:"+prModeller.getAppFinalCharges("1", true));
+      Thread.sleep(22000);
+        
+     System.out.println("Initial charges for VM:"+prModeller.getVMFinalCharges("el", false));
+   //  Thread.sleep(22000);
+     // System.out.println("Final charges for VM:"+prModeller.getVMFinalCharges("el", true));
+       System.out.println("Final charges for APP:"+prModeller.getAppFinalCharges("1", true));
       //Prediction for Pricing Scheme 0
         
     }

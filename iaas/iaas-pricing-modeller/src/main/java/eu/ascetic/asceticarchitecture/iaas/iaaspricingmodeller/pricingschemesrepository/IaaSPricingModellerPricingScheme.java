@@ -41,6 +41,8 @@ public abstract class IaaSPricingModellerPricingScheme implements IaaSPricingMod
 	
 	int scheme;
 	
+
+	
 	ResourceDistribution distribution = new ResourceDistribution();
 	
 	IaaSPricingModellerCost cost = new IaaSPricingModellerCost(EnergyModeller);
@@ -63,14 +65,14 @@ public abstract class IaaSPricingModellerPricingScheme implements IaaSPricingMod
 	 */
 	public Charges predictResourcesCharges(VMstate vm, Price price) {
 		Charges b = new Charges();
-		b.setCharges(distribution.getDistribution(vm)*price.getPriceOnly()*(Math.ceil(vm.getPredictedInformation().getPredictedDuration()/3600)));
+		b.setCharges(vm.getChangeTime(), distribution.getDistribution(vm)*price.getPriceOnly()*(Math.ceil(vm.getPredictedInformation().getPredictedDuration()/3600)));
 		return b;
 	}
 	
 	
 	public Charges predictEnergyCharges(VMstate VM, Price average){
 		Charges charges = new Charges();
-		charges.setCharges(VM.getPredictedInformation().getTotalPredictedEnergy()*average.getPriceOnly());
+		charges.setCharges(VM.getChangeTime(), VM.getPredictedInformation().getTotalPredictedEnergy()*average.getPriceOnly());
 		return charges;
 	}
 
@@ -92,13 +94,42 @@ public abstract class IaaSPricingModellerPricingScheme implements IaaSPricingMod
 	
 	
 	public void updateVMResourceCharges(VMstate VM, Price price){
-		Calendar endtime = Calendar.getInstance();
-		Calendar starttime = VM.getChangeTime();
-		long duration = VM.getDuration(starttime, endtime);
+		long duration = VM.getDuration(VM.getResourcesChargesAll().getTime(), VM.getChangeTime());
+		long totalDuration = VM.getDuration(VM.getStartTime(),VM.getChangeTime());
+		//System.out.println("Last change time is: "+ VM.getResourcesChargesAll().getTime().getTimeInMillis()+"Now is: "+VM.getChangeTime().getTimeInMillis()+"and the diff is "+duration);
 		VM.setDuration(duration);
+		double Resourcecharges = distribution.getDistribution(VM)*price.getPriceOnly();
+		
+		//for changes during operation. To recheck
+		/*
+		if (VM.getResourcesCharges()!=Resourcecharges){
+			if (totalDuration>3600){
+				VM.setHours((int)(Math.ceil(totalDuration)/3600));
+			}
+				
+			if (VM.getHoursCounter()<VM.getHours()){
+				VM.updateResourcesCharges(Resourcecharges*(VM.getHours()-VM.getHoursCounter()));
+				VM.setHoursCounter();
+			}
+			VM.setHours(1);
+			VM.resetHoursCounter();
+		}
+		*/
+		if (totalDuration>3600){
+			VM.setHours((int)(Math.ceil(totalDuration)/3600));
+		}
+			
+		if (VM.getHoursCounter()<VM.getHours()){
+			VM.updateResourcesCharges(Resourcecharges*(VM.getHours()-VM.getHoursCounter()));
+			VM.setHoursCounter();
+		}
+		
+		
+		
 		//double Resourcecharges = (double) Math.round(distribution.getDistribution(VM)*price.getPriceOnly()*Math.ceil(duration)*1000)/1000;
-		double Resourcecharges = distribution.getDistribution(VM)*price.getPriceOnly()*Math.ceil(duration/3600);
-		VM.updateResourcesCharges(Resourcecharges);
+         //  Resourcecharges = distribution.getDistribution(VM)*price.getPriceOnly()*Math.ceil(duration/3600);
+		
+		
 		}
 	
 	public void updateVMEnergyCharges(VMstate VM){		

@@ -105,19 +105,28 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
      */
     public void initializeVM(String VMid, int schemeId, String hostname, String appID) {
 
-        int CPU = 0;
-        int RAM = 0;
-        double storage = 0;
-
+    	/*should all be zero!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        int CPU = 1;
+        int RAM = 4;
+        double storage = 100000; 
+        */
+    	
+    	int CPU = 1;
+        int RAM = 4096;
+        double storage = 50000; 
+        
+        
         try {
             VmDeployed vm = energyModeller.getVM(VMid);
             CPU = vm.getCpus();
             RAM = vm.getRamMb();
             storage = vm.getDiskGb();
             logger.info("The VM with VMid " + VMid + " has been registered, with values CPU: " + CPU + ", RAM: " + RAM + ", storage: " + storage);
+           
 
         } catch (NullPointerException ex) {
             logger.error("The VM with VMid " + VMid + " has not been registered");
+            
         }
 
         VMinfo vm = new VMinfo(RAM, CPU, storage, hostname);
@@ -135,7 +144,7 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
 
 
         billing.registerVM(VM);
-        logger.info("The VM with VMid " + VMid + "has been registered at: " + VM.getStartTime());
+        logger.info("The VM with VMid " + VMid + "has been registered at: " + VM.getStartTime().getTimeInMillis()+" with RAM "+RAM+" CPU "+CPU+" storage "+storage);
     }
 
     /**
@@ -149,7 +158,9 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
      */
     public double getVMFinalCharges(String VMid, boolean deleteVM) {
         try {
+        	
             VMstate VM = billing.getVM(VMid);
+           
             if (VM.getVMinfo().getRAM() == 0 || VM.getVMinfo().getStorage() == 0.0) {
 
                 try {
@@ -158,22 +169,26 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
                     int RAM = vm.getRamMb();
                     double storage = vm.getDiskGb();
                     logger.info("The VM with VMid " + VMid + "has requested new values for CPU: " + CPU + ", RAM: " + RAM + ", STORAGE: " + storage);
-
+                    
                 } catch (NullPointerException ex) {
                     logger.error("The VM with VMid " + VMid + "has not taken the values from the energy modeller");
+                    
                 }
             }
-            logger.info("Duration for VM " + VMid + " is: " + billing.getVM(VMid).getDuration());
-
+            //changes!!!!!!!!!!!
+         //   VM.setChangeTime();
+            
+           // System.out.println("Duration for VM " + VMid + " is: " + VM.getVMDuration());
             if (VM.getVMinfo().getRAM() == 0 || VM.getVMinfo().getStorage() == 0.0) {
                 logger.error("The VM with VMid " + VMid + "has taken zero values from the energy modeller for the CPU, RAM, storage");
             }
 
-            double charges = billing.getVMCharges(VMid);
+            
+             double charges = billing.getVMCharges(VMid);
 
 
             logger.info("Billing scheme used for getting VM final charges was scheme ." + billing.getVM(VMid).getPricingScheme().getSchemeId());
-        logger.info("Duration for VM " + VMid +" is: " + billing.getVM(VMid).getDuration());
+            logger.info("Duration for VM " + VMid +" is: " + billing.getVM(VMid).getVMDuration());
 
             if (billing.getVM(VMid).getPricingScheme().getSchemeId() == 0) {
                 billing.getVM(VMid).setTotalEnergyConsumed(0);
