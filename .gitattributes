@@ -3269,6 +3269,7 @@ tests/src/main/resources/config.stable.properties -text
 tests/src/main/resources/config.test.properties -text
 tests/src/test/java/eu/ascetic/test/conf/Configuration.java -text
 tests/src/test/java/eu/ascetic/test/paas/applicationmanager/ApplicationManagerTest.java -text
+tests/src/test/java/eu/ascetic/test/paas/applicationmanager/client/ApplicationManagerClient.java -text
 use-cases/atc/newsasset/kpi-modelling/.project -text
 use-cases/atc/newsasset/kpi-modelling/LICENSE.TXT -text
 use-cases/atc/newsasset/kpi-modelling/NewsAsset-model.di -text

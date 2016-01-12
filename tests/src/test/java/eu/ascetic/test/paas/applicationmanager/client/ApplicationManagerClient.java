@@ -1,11 +1,9 @@
-package eu.ascetic.test.paas.applicationmanager;
+package eu.ascetic.test.paas.applicationmanager.client;
 
-import static org.junit.Assert.assertEquals;
+import org.springframework.web.client.RestTemplate;
 
-import org.junit.Test;
-
+import eu.ascetic.paas.applicationmanager.model.Root;
 import eu.ascetic.test.conf.Configuration;
-import eu.ascetic.test.paas.applicationmanager.client.ApplicationManagerClient;
 
 /**
  * 
@@ -27,18 +25,16 @@ import eu.ascetic.test.paas.applicationmanager.client.ApplicationManagerClient;
  * e-mail david.garciaperez@atos.net
  * 
  *  
- *  It contains all the Integration/System Tests for the Application Manager
+ * REST Client to the Application Manager
  */
+public class ApplicationManagerClient {
 
-public class ApplicationManagerTest {
-
-	/*
-	 * If verifies if the Application Manager is active
-	 * It performs a GET over the /application-manager path
+	/**
+	 * @return returns the actual application manager version
 	 */
-	@Test
-	public void isAppManagerRunning() {
-		String version = ApplicationManagerClient.getApplicationManagerVersion();
-		assertEquals("It is impossible to connect to the Application Manager in this address: " + Configuration.applicationManagerURL, "0.1-SNAPSHOT", version);
+	public static String getApplicationManagerVersion() {
+		RestTemplate restTemplate = new RestTemplate();
+		Root root = restTemplate.getForObject(Configuration.applicationManagerURL, Root.class);
+		return root.getVersion();
 	}
 }

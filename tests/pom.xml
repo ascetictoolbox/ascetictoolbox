@@ -272,6 +272,18 @@
 			<artifactId>commons-configuration</artifactId>
 			<version>1.7</version>
 		</dependency>
+		<dependency>
+   			<groupId>org.springframework</groupId>
+   			<artifactId>spring-webmvc</artifactId>
+   			<version>4.1.0.RELEASE</version>
+		</dependency>
+		
+		<!-- ASCETiC Dependencies -->
+		<dependency>
+			<groupId>eu.ascetic.paas</groupId>
+			<artifactId>application-manager-datamodel</artifactId>
+			<version>0.22-SNAPSHOT</version>
+		</dependency>
 
 		<!-- Test -->
 		<dependency>
