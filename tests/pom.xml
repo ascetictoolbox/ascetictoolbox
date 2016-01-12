@@ -58,6 +58,100 @@
 			</notifier>
 		</notifiers>
 	</ciManagement>
+	
+	<!-- Configures the different profiles to build the test for the different ASCETiC environments -->
+ 	<profiles>
+ 		<!-- Testing environment profile -->
+   		<profile>
+     		<id>test</id>
+	     	<build>
+		       	<plugins>
+		        	 <plugin>
+		           		<artifactId>maven-antrun-plugin</artifactId>
+		           		<executions>
+		             		<execution>
+		               			<phase>test</phase>
+		               			<goals>
+		                 			<goal>run</goal>
+		               			</goals>
+		               			<configuration>
+		                 			<tasks>
+		                   				<delete file="${project.build.outputDirectory}/configuration.properties"/>
+		                   				<copy file="src/main/resources/configuration.test.properties" tofile="${project.build.outputDirectory}/configuration.properties"/>
+		                 			</tasks>
+		               			</configuration>
+		             		</execution>
+		           		</executions>
+		         	</plugin>
+		         	<plugin>
+		           		<artifactId>maven-surefire-plugin</artifactId>
+		           		<configuration>
+		             		<skip>true</skip>
+		           		</configuration>
+		         	</plugin>
+		         	<plugin>
+		           		<artifactId>maven-jar-plugin</artifactId>
+		           		<executions>
+		             		<execution>
+		               			<phase>package</phase>
+		               			<goals>
+		                 			<goal>jar</goal>
+		               			</goals>
+		               			<configuration>
+		                 			<classifier>test</classifier>
+		               			</configuration>
+		             		</execution>
+		           		</executions>
+		         	</plugin>
+		       	</plugins>
+	     	</build>
+   		</profile>
+   		<!-- Stable environment profile -->
+   		<profile>
+     		<id>stable</id>
+	     	<build>
+		       	<plugins>
+		        	 <plugin>
+		           		<artifactId>maven-antrun-plugin</artifactId>
+		           		<executions>
+		             		<execution>
+		               			<phase>test</phase>
+		               			<goals>
+		                 			<goal>run</goal>
+		               			</goals>
+		               			<configuration>
+		                 			<tasks>
+		                   				<delete file="${project.build.outputDirectory}/configuration.properties"/>
+		                   				<copy file="src/main/resources/configuration.stable.properties" tofile="${project.build.outputDirectory}/configuration.properties"/>
+		                 			</tasks>
+		               			</configuration>
+		             		</execution>
+		           		</executions>
+		         	</plugin>
+		         	<plugin>
+		           		<artifactId>maven-surefire-plugin</artifactId>
+		           		<configuration>
+		             		<skip>true</skip>
+		           		</configuration>
+		         	</plugin>
+		         	<plugin>
+		           		<artifactId>maven-jar-plugin</artifactId>
+		           		<executions>
+		             		<execution>
+		               			<phase>package</phase>
+		               			<goals>
+		                 			<goal>jar</goal>
+		               			</goals>
+		               			<configuration>
+		                 			<classifier>test</classifier>
+		               			</configuration>
+		             		</execution>
+		           		</executions>
+		         	</plugin>
+		       	</plugins>
+	     	</build>
+   		</profile>
+	 </profiles>
 
 	<build>
 		<plugins>
