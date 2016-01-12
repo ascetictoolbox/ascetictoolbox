@@ -61,105 +61,156 @@
 	
 	<!-- Configures the different profiles to build the test for the different ASCETiC environments -->
  	<profiles>
- 		<!-- Testing environment profile -->
-   		<profile>
-     		<id>test</id>
-	     	<build>
-		       	<plugins>
-		        	 <plugin>
-		           		<artifactId>maven-antrun-plugin</artifactId>
-		           		<executions>
-		             		<execution>
-		               			<phase>test</phase>
-		               			<goals>
-		                 			<goal>run</goal>
-		               			</goals>
-		               			<configuration>
-		                 			<tasks>
-		                   				<delete file="${project.build.outputDirectory}/configuration.properties"/>
-		                   				<copy file="src/main/resources/configuration.test.properties" tofile="${project.build.outputDirectory}/configuration.properties"/>
-		                 			</tasks>
-		               			</configuration>
-		             		</execution>
-		           		</executions>
-		         	</plugin>
-		         	<plugin>
-		           		<artifactId>maven-surefire-plugin</artifactId>
-		           		<configuration>
-		             		<skip>true</skip>
-		           		</configuration>
-		         	</plugin>
-		         	<plugin>
-		           		<artifactId>maven-jar-plugin</artifactId>
-		           		<executions>
-		             		<execution>
-		               			<phase>package</phase>
-		               			<goals>
-		                 			<goal>jar</goal>
-		               			</goals>
-		               			<configuration>
-		                 			<classifier>test</classifier>
-		               			</configuration>
-		             		</execution>
-		           		</executions>
-		         	</plugin>
-		       	</plugins>
-	     	</build>
+ 		<!--  Development profile -->
+    	<profile>
+     		<id>dev</id>
+     		<activation>
+	            <activeByDefault>true</activeByDefault>
+	        </activation>
+     		<build>
+       		<plugins>
+         		<plugin>
+           			<artifactId>maven-antrun-plugin</artifactId>
+           			<executions>
+             			<execution>
+               				<phase>compile</phase>
+               				<goals>
+                 				<goal>run</goal>
+               				</goals>
+               				<configuration>
+                 				<tasks>
+                   					<delete file="${project.build.outputDirectory}/config.properties"/>
+                   					<copy file="src/main/resources/config.properties"
+                         				tofile="${project.build.outputDirectory}/config.properties"/>
+                 				</tasks>
+               				</configuration>
+             			</execution>
+           			</executions>
+         		</plugin>
+         		<plugin>
+           			<artifactId>maven-surefire-plugin</artifactId>
+           				<configuration>
+             				<skip>false</skip>
+           				</configuration>
+         		</plugin>
+         		<plugin>
+           			<artifactId>maven-jar-plugin</artifactId>
+           			<executions>
+             			<execution>
+               				<phase>package</phase>
+               				<goals>
+                 				<goal>jar</goal>
+               				</goals>
+               				<configuration>
+                 				<classifier>test</classifier>
+               				</configuration>	
+             			</execution>
+           			</executions>
+         		</plugin>
+       		</plugins>
+     		</build>
    		</profile>
-   		<!-- Stable environment profile -->
-   		<profile>
+    	<!-- The configuration of the stable profile -->
+    	<profile>
      		<id>stable</id>
-	     	<build>
-		       	<plugins>
-		        	 <plugin>
-		           		<artifactId>maven-antrun-plugin</artifactId>
-		           		<executions>
-		             		<execution>
-		               			<phase>test</phase>
-		               			<goals>
-		                 			<goal>run</goal>
-		               			</goals>
-		               			<configuration>
-		                 			<tasks>
-		                   				<delete file="${project.build.outputDirectory}/configuration.properties"/>
-		                   				<copy file="src/main/resources/configuration.stable.properties" tofile="${project.build.outputDirectory}/configuration.properties"/>
-		                 			</tasks>
-		               			</configuration>
-		             		</execution>
-		           		</executions>
-		         	</plugin>
-		         	<plugin>
-		           		<artifactId>maven-surefire-plugin</artifactId>
-		           		<configuration>
-		             		<skip>true</skip>
-		           		</configuration>
-		         	</plugin>
-		         	<plugin>
-		           		<artifactId>maven-jar-plugin</artifactId>
-		           		<executions>
-		             		<execution>
-		               			<phase>package</phase>
-		               			<goals>
-		                 			<goal>jar</goal>
-		               			</goals>
-		               			<configuration>
-		                 			<classifier>test</classifier>
-		               			</configuration>
-		             		</execution>
-		           		</executions>
-		         	</plugin>
-		       	</plugins>
-	     	</build>
+     		<build>
+       		<plugins>
+         		<plugin>
+           			<artifactId>maven-antrun-plugin</artifactId>
+           			<executions>
+             			<execution>
+               				<phase>compile</phase>
+               				<goals>
+                 				<goal>run</goal>
+               				</goals>
+               				<configuration>
+                 				<tasks>
+                   					<delete file="${project.build.outputDirectory}/config.properties"/>
+                   					<copy file="src/main/resources/config.stable.properties"
+                         				tofile="${project.build.outputDirectory}/config.properties"/>
+                 				</tasks>
+               				</configuration>
+             			</execution>
+           			</executions>
+         		</plugin>
+         		<plugin>
+           			<artifactId>maven-surefire-plugin</artifactId>
+           				<configuration>
+             				<skip>false</skip>
+           				</configuration>
+         		</plugin>
+         		<plugin>
+           			<artifactId>maven-jar-plugin</artifactId>
+           			<executions>
+             			<execution>
+               				<phase>package</phase>
+               				<goals>
+                 				<goal>jar</goal>
+               				</goals>
+               				<configuration>
+                 				<classifier>test</classifier>
+               				</configuration>	
+             			</execution>
+           			</executions>
+         		</plugin>
+       		</plugins>
+     		</build>
    		</profile>
-	 </profiles>
+    	<!-- The configuration of the test profile -->   	
+    	<profile>
+     		<id>test</id>
+     		<build>
+       		<plugins>
+         		<plugin>
+           			<artifactId>maven-antrun-plugin</artifactId>
+           			<executions>
+             			<execution>
+               				<phase>compile</phase>
+               				<goals>
+                 				<goal>run</goal>
+               				</goals>
+               				<configuration>
+                 				<tasks>
+                   					<delete file="${project.build.outputDirectory}/config.properties"/>
+                   					<copy file="src/main/resources/config.test.properties"
+                         				tofile="${project.build.outputDirectory}/config.properties"/>
+                 				</tasks>
+               				</configuration>
+             			</execution>
+           			</executions>
+         		</plugin>
+         		<plugin>
+           			<artifactId>maven-surefire-plugin</artifactId>
+           				<configuration>
+             				<skip>false</skip>
+           				</configuration>
+         		</plugin>
+         		<plugin>
+           			<artifactId>maven-jar-plugin</artifactId>
+           			<executions>
+             			<execution>
+               				<phase>package</phase>
+               				<goals>
+                 				<goal>jar</goal>
+               				</goals>
+               				<configuration>
+                 				<classifier>test</classifier>
+               				</configuration>	
+             			</execution>
+           			</executions>
+         		</plugin>
+       		</plugins>
+     		</build>
+   		</profile>
+	</profiles>
 
-	<build>
+	<build>       
 		<plugins>
 			<plugin>
 				<!-- Default jar with main method to run unit tests on testbed. -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.4</version>
+				<version>2.5</version>
 				<executions>
 					<execution>
 						<goals>
@@ -215,6 +266,11 @@
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-configuration</groupId>
+			<artifactId>commons-configuration</artifactId>
+			<version>1.7</version>
 		</dependency>
 
 		<!-- Test -->
