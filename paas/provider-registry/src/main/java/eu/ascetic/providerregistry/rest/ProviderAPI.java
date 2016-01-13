@@ -59,7 +59,7 @@ public class ProviderAPI {
 	
 	@GET
 	@Path("/")
-	@Produces(CONTENT_TYPE_XML)
+	@Produces(CONTENT_TYPE_XML + ";qs=1")
 	public Response getProviders() {
 		logger.info("GET / [XML]");
 
@@ -74,7 +74,7 @@ public class ProviderAPI {
 	
 	@GET
 	@Path("/")
-	@Produces(CONTENT_TYPE_JSON)
+	@Produces(CONTENT_TYPE_JSON + ";qs=.5")
 	public Response getProvidersJSON() {
 		logger.info("GET / [JSON]");
 		String jsonRepresentation = Converter.getRootCollectionJSON(getProvidersFromDB());
@@ -84,7 +84,7 @@ public class ProviderAPI {
 	
 	@GET
 	@Path("/{id}")
-	@Produces(CONTENT_TYPE_XML)
+	@Produces(CONTENT_TYPE_XML + ";qs=1")
 	public Response getProvider(@PathParam("id") int id) {
 		logger.info("GET /" + id + " [XML]");
 
@@ -114,7 +114,7 @@ public class ProviderAPI {
 	
 	@GET
 	@Path("/{id}")
-	@Produces(CONTENT_TYPE_JSON)
+	@Produces(CONTENT_TYPE_JSON + ";qs=.5")
 	public Response getProviderJSON(@PathParam("id") int id) {
 		logger.info("GET /" + id + " [JSON]");
 		
