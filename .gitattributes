@@ -1174,10 +1174,6 @@ paas/provider-registry-datamodel/src/test/java/eu/ascetic/providerregistry/model
 paas/provider-registry/LICENSE.TXT -text
 paas/provider-registry/pom.xml -text
 paas/provider-registry/src/main/java/eu/ascetic/providerregistry/Dictionary.java -text
-paas/provider-registry/src/main/java/eu/ascetic/providerregistry/model/Collection.java -text
-paas/provider-registry/src/main/java/eu/ascetic/providerregistry/model/Items.java -text
-paas/provider-registry/src/main/java/eu/ascetic/providerregistry/model/Link.java -text
-paas/provider-registry/src/main/java/eu/ascetic/providerregistry/model/Provider.java -text
 paas/provider-registry/src/main/java/eu/ascetic/providerregistry/rest/ProviderAPI.java -text
 paas/provider-registry/src/main/java/eu/ascetic/providerregistry/service/DAO.java -text
 paas/provider-registry/src/main/java/eu/ascetic/providerregistry/service/ProviderDAO.java -text
@@ -1188,10 +1184,6 @@ paas/provider-registry/src/main/resources/applicationContext.xml -text
 paas/provider-registry/src/main/resources/log4j.properties -text
 paas/provider-registry/src/main/webapp/META-INF/MANIFEST.MF -text
 paas/provider-registry/src/main/webapp/WEB-INF/web.xml -text
-paas/provider-registry/src/test/java/eu/ascetic/providerregistry/model/CollectionTest.java -text
-paas/provider-registry/src/test/java/eu/ascetic/providerregistry/model/ItemTest.java -text
-paas/provider-registry/src/test/java/eu/ascetic/providerregistry/model/LinkTest.java -text
-paas/provider-registry/src/test/java/eu/ascetic/providerregistry/model/ProviderTest.java -text
 paas/provider-registry/src/test/java/eu/ascetic/providerregistry/rest/ProviderAPITest.java -text
 paas/provider-registry/src/test/java/eu/ascetic/providerregistry/service/jpa/ProviderDAOJpaTest.java -text
 paas/provider-registry/src/test/java/eu/ascetic/providerregistry/xml/ConverterTest.java -text
