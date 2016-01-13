@@ -52,32 +52,37 @@ public class VmManagerClientBSSC implements VmManagerClient {
 	}
 
 	public List<ImageUploaded> getAllImages() {
-		
+		logger.info("Requesting a list of images. Connecting to URL for VMM: " + url);
 		es.bsc.vmmclient.vmm.VmManagerClient vmm = new es.bsc.vmmclient.vmm.VmManagerClient(url);
 		return vmm.getImages();
 	}
 
 	public ImageUploaded getImage(String id) {
+		logger.info("Getting an image: " + id  + ". Connecting to URL for VMM: " + url);
 		es.bsc.vmmclient.vmm.VmManagerClient vmm = new es.bsc.vmmclient.vmm.VmManagerClient(url);
 		return vmm.getImage(id);
 	}
 
 	public List<VmDeployed> getAllVMs() {
+		logger.info("Getting all VMse. Connecting to URL for VMM: " + url);
 		es.bsc.vmmclient.vmm.VmManagerClient vmm = new es.bsc.vmmclient.vmm.VmManagerClient(url);
 		return vmm.getVms();
 	}
 
 	public VmDeployed getVM(String id) {
+		logger.info("Getting a VM "  + id + ". Connecting to URL for VMM: " + url);
 		es.bsc.vmmclient.vmm.VmManagerClient vmm = new es.bsc.vmmclient.vmm.VmManagerClient(url);
 		return vmm.getVm(id);
 	}
 
 	public List<VmDeployed> getVmsOfApp(String appId) {
+		logger.info("Getting al VMs of an App "  + appId + ". Connecting to URL for VMM: " + url);
 		es.bsc.vmmclient.vmm.VmManagerClient vmm = new es.bsc.vmmclient.vmm.VmManagerClient(url);
 		return vmm.getAppVms(appId);
 	}
 
 	public List<String> deployVMs(List<Vm> vms) {
+		logger.info("Deploying a group of VMS. Connecting to URL for VMM: " + url);
 		es.bsc.vmmclient.vmm.VmManagerClient vmm = new es.bsc.vmmclient.vmm.VmManagerClient(url);
 		return vmm.deployVms(vms);
 	}
@@ -88,6 +93,7 @@ public class VmManagerClientBSSC implements VmManagerClient {
 	}
 
 	public void deleteVM(String vmId) {
+		logger.info("Deleting a VM " + vmId + ". Connecting to URL for VMM: " + url);
 		es.bsc.vmmclient.vmm.VmManagerClient vmm = new es.bsc.vmmclient.vmm.VmManagerClient(url);
 		vmm.destroyVm(vmId);
 	}
@@ -97,17 +103,20 @@ public class VmManagerClientBSSC implements VmManagerClient {
 	}
 
 	public String uploadImage(ImageToUpload imageInfo) {
+		logger.info("Uploading an image. Connecting to URL for VMM: " + url);
 		es.bsc.vmmclient.vmm.VmManagerClient vmm = new es.bsc.vmmclient.vmm.VmManagerClient(url);
 		return vmm.uploadImage(imageInfo);
 	}
 
 	public void deleteImage(String id) {
+		logger.info("Deleting an image: " + id + ". Connecting to URL for VMM: " + url);
 		es.bsc.vmmclient.vmm.VmManagerClient vmm = new es.bsc.vmmclient.vmm.VmManagerClient(url);
 		vmm.destroyImage(id);
 	}
 
 	@Override
 	public List<VmCost> getVMCosts(List<String> ids) {
+		logger.info("Getting costs for several VMs. Connecting to URL for VMM: " + url);
 		es.bsc.vmmclient.vmm.VmManagerClient vmm = new es.bsc.vmmclient.vmm.VmManagerClient(url);
 		return vmm.getCosts(ids);
 	}

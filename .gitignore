@@ -29,6 +29,8 @@ iaas/virtual-machine-manager/vmmanager-frontend/.idea
 iaas/virtual-machine-manager/vmmanagercore/*.iml
 iaas/virtual-machine-manager/vmmanagercore/*.ipr
 iaas/virtual-machine-manager/vmmanagercore/.idea
+paas/.git
+paas/README.md
 paas/application-manager/doc/doc
 paas/paas-pricing-modeller/target/classes
 paas/paas-pricing-modeller/target/test-classes

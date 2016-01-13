@@ -82,6 +82,8 @@ public class NegotiationWsClientIT {
 //		
 		file = new File(this.getClass().getResource( "/" + slatFile ).toURI());		
 		slatXml = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
+		System.out.println("SLAT FILE READED FROM DISK: ");
+		System.out.println(slatXml);
 		
 		negotiationClient = new NegotiationWsClient();
 		SlaTranslator slaTranslator = new SlaTranslatorImplNoOsgi();
@@ -117,6 +119,7 @@ public class NegotiationWsClientIT {
 		
 		SLASOITemplateRenderer rend = new SLASOITemplateRenderer();
 		String xmlRetSlat = rend.renderSLATemplate(slaTemplate);
+		System.out.println("####### SLAT TO START NEGOTIATION....");
 		System.out.println(xmlRetSlat);
 		
 		System.out.println("Sending initiateNegotiation SOAP request...");
@@ -134,6 +137,11 @@ public class NegotiationWsClientIT {
 		
 		OvfDefinition ovfDefinition = OVFUtils.getOvfDefinition(threeTierWebAppOvfString);
 		SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "http://192.168.3.16/application-manager/applications/davidgpTestApp/deployments/478/ovf");
+		
+		System.out.println("SLA Template: " + slaTemplate.toString());
+		SLASOITemplateRenderer rend2 = new SLASOITemplateRenderer();
+		String xmlRetSlat2 = rend2.renderSLATemplate(slaTemplate);
+		System.out.println("SLA Template: " + xmlRetSlat2);
 		
 		logger.debug("Sending negotiate SOAP request...");
 		logger.debug("Negotiation ID: " + negotiationId);

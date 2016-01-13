@@ -123,7 +123,10 @@ public class NegotiationWsClient implements NegotiationClient {
 			System.out.println("########################################");
 			System.out.println(xmlSla);
 			
-			sla = (xmlSla == null) ? null : slaTranslator.parseSla(xmlSla);
+			//sla = (xmlSla == null) ? null : slaTranslator.parseSla(xmlSla);
+			sla = (xmlSla == null) ? null : new SlaTranslatorImpl().parseSla(xmlSla);
+			
+		
 			
 		} catch (Exception e) {
 			e.printStackTrace();

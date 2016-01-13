@@ -88,6 +88,11 @@ angular.module('asceticApplicationManagerPortalApp.controllers', [])
              $timeout(tick, 10000);
          });
     })();
+
+    $scope.deleteDeployment = function(id) {
+        console.log(id);
+        DeploymentService.deleteDeployment({name: self.applicationName, id: id});
+    }
   }])
 
   .controller('CreateDeploymentController', [ '$scope', '$rootScope', '$routeParams', '$location', 'ApplicationService',

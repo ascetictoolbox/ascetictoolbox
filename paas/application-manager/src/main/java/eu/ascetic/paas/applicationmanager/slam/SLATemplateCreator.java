@@ -84,7 +84,7 @@ public class SLATemplateCreator {
 		
 		// TODO this needs to be by configuration
 		String value = "{\"ProvidersList\": [ \n " +
-							"{\"provider-uuid\":\"1\", \"p-slam-url\":\"http://10.4.0.15:8080/services/asceticNegotiation?wsdl\"}\n" +
+							"{\"provider-uuid\":\"1\", \"p-slam-url\":\"http://192.168.3.17:8080/services/asceticNegotiation?wsdl\"}\n" +
 						"]}";
 		
 		slaTemplate.setPropertyValue(stndProperties, value);

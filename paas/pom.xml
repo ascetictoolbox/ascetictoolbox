@@ -21,6 +21,7 @@
 	    <!-- PaaS Modules -->
 		<module>virtual-machine-contextualizer</module>
 		<module>provider-registry</module>
+		<module>provider-registry-datamodel</module>
 		<module>paas-energy-modeller</module>
 		<module>slam</module>
                 <module>paas-pricing-modeller</module>
