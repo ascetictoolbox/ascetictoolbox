@@ -810,7 +810,11 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	
 	private void initializePrediction(){
 		LOGGER.info("EM predictor module loaded");
-		predictor= PredictorBuilder.getPredictor("basic");
+		// M. Fontanella - 08 Jan 2016 - begin
+		// predictor= PredictorBuilder.getPredictor("basic");
+		predictor= PredictorBuilder.getPredictor(emsettings.getPredictorType());
+		// M. Fontanella - 08 Jan 2016 - end
+	
 		predictor.setEnergyService(energyService);
 	}
 	

@@ -48,6 +48,12 @@ public class EMSettings {
 	private String iaasAmqpPassword="admin";
 	private String iaasAmqpUrl="tcp://localhost:61616";
 	
+	// M. Fontanella - 08 Jan 2016 - begin
+	// PaaS Predictor
+	private String predictorType="basic";
+	// M. Fontanella - 08 Jan 2016 - end
+	
+
 	
 	public EMSettings() {
 		
@@ -72,6 +78,9 @@ public class EMSettings {
 		this.setIaasAmqpUser(props.getProperty("iaasAmqpUser"));
 		this.setIaasAmqpPassword(props.getProperty("iaasAmqpPassword"));
 		this.setIaasAmqpUrl(props.getProperty("iaasAmqpUrl"));
+		// M. Fontanella - 08 Jan 2016 - begin
+		this.setPredictorType(props.getProperty("predictorType"));
+		// M. Fontanella - 08 Jan 2016 - end
 	}
 
 
@@ -231,6 +240,16 @@ public class EMSettings {
 	}
 
 	
+	// M. Fontanella - 08 Jan 2016 - begin
+	public String getPredictorType() {
+		return predictorType;
+	}
+
+
+	public void setPredictorType(String predictorType) {
+		this.predictorType = predictorType;
+	}
+
 	
-	
+	// M. Fontanella - 08 Jan 2016 - end
 }
