@@ -68,21 +68,6 @@
             <version>4.3.4</version>
         </dependency>
 		<dependency>
-			<groupId>org.apache.jmeter</groupId>
-			<artifactId>ApacheJMeter_core</artifactId>
-			<version>${paasem.jmeter}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.jmeter</groupId>
-			<artifactId>ApacheJMeter_http</artifactId>
-			<version>${paasem.jmeter}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.jmeter</groupId>
-			<artifactId>jorphan</artifactId>
-			<version>${paasem.jmeter}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 			<version>${paasem.spring}</version>
