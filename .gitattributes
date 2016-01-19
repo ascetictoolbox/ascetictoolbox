@@ -144,6 +144,7 @@ iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaa
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/IaaSPricingModellerInterface.java -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/billing/IaaSPricingModellerBilling.java -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/billing/IaaSPricingModellerBillingInterface.java -text
+iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/cost/IaaSPricingModellerCost.java -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/cost/IaaSPricingModellerCostInterface.java -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/energyprovider/EnergyProvider.java -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/energyprovider/EnergyProviderInterface.java -text
