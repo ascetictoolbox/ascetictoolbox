@@ -924,6 +924,7 @@ paas/application-manager/src/test/resources/davidg-test.ovf.vmc.xml -text
 paas/application-manager/src/test/resources/davidg-test.ovf.vmc.xml.old -text
 paas/application-manager/src/test/resources/davidgp-ovf.xml -text
 paas/application-manager/src/test/resources/em.config.properties -text
+paas/application-manager/src/test/resources/generic-slamanager/syntax-converter/broker.properties -text
 paas/application-manager/src/test/resources/jndi.properties -text
 paas/application-manager/src/test/resources/log4j.properties -text
 paas/application-manager/src/test/resources/mysql-jpa-test-configuration.xml -text
