@@ -13,7 +13,7 @@ import org.junit.Test;
 
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.dao.testUtil.MockWebServer;
-import eu.ascetic.paas.applicationmanager.providerregistry.model.Provider;
+import eu.ascetic.providerregistry.model.Provider;
 
 /**
  * 

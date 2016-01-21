@@ -225,6 +225,13 @@
 			<version>0.22-SNAPSHOT</version>
 		</dependency>
 		
+		<!-- ASCETiC Provider Registry Datamodel -->
+		<dependency>
+			<groupId>eu.ascetic.paas</groupId>
+			<artifactId>provider-registry-datamodel</artifactId>
+			<version>0.01-SNAPSHOT</version>
+		</dependency>
+		
 		<!-- ASCETiC BSC VMM Client -->
 		<dependency>
 			<groupId>es.bsc</groupId>

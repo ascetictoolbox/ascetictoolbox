@@ -2,6 +2,7 @@ package eu.ascetic.paas.applicationmanager.slam;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -10,6 +11,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+
+import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.slasoi.gslam.syntaxconverter.SLASOITemplateRenderer;
@@ -17,7 +22,11 @@ import org.slasoi.slamodel.primitives.STND;
 import org.slasoi.slamodel.sla.SLATemplate;
 
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
+import eu.ascetic.paas.applicationmanager.dao.testUtil.MockWebServer;
 import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
+import eu.ascetic.providerregistry.model.Collection;
+import eu.ascetic.providerregistry.model.Items;
+import eu.ascetic.providerregistry.model.Provider;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
 import eu.slaatsoi.slamodel.SLATemplateDocument;
 
@@ -43,9 +52,11 @@ import eu.slaatsoi.slamodel.SLATemplateDocument;
  */
 
 public class SLATemplateCreatorTest {
-
+	private static Logger logger = Logger.getLogger(SLATemplateCreatorTest.class);
 	private String threeTierWebAppOvfFile = "3tier-webapp.ovf.xml";
 	private String threeTierWebAppOvfString;
+	private MockWebServer mServer;
+	private String mBaseURL = "http://localhost:";
 	
 	/**
 	 * We just read an ovf example... 
@@ -56,14 +67,49 @@ public class SLATemplateCreatorTest {
 	public void setup() throws IOException, URISyntaxException {
 		File file = new File(this.getClass().getResource( "/" + threeTierWebAppOvfFile ).toURI());		
 		threeTierWebAppOvfString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
+		mServer = new MockWebServer();
+		mServer.start();
+		mBaseURL = mBaseURL + mServer.getPort();
 	}
 	
 	@Test
 	public void addPropertiesTest() {
+		//Setting up a fake provider registry
+		Provider provider1 = new Provider();
+		provider1.setId(1);
+		provider1.setSlamUrl("http://192.168.3.17:8080/services/asceticNegotiation?wsdl");
+		Provider provider2 = new Provider();
+		provider2.setId(2);
+		provider2.setSlamUrl("http://192.168.3.18:8080/services/asceticNegotiation?wsdl");
+		Items items = new Items();
+		items.addProvider(provider1);
+		items.addProvider(provider2);
+		Collection collection = new Collection();
+		collection.setItems(items);
+		String output = "";
+		
+	    try {
+	        JAXBContext jaxbContext = JAXBContext.newInstance(Collection.class);
+	        Marshaller marshaller = jaxbContext.createMarshaller();
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+			
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			marshaller.marshal(collection, out);
+			output = out.toString();
+		} catch(Exception exception) {
+			logger.info("Error converting object to XML: " + exception.getMessage());
+		}
+		
+		mServer.addPath("/provider-registry", output);
+		
+		Configuration.providerRegistryEndpoint = mBaseURL + "/provider-registry";
+		
+		// Now the test starts
 		SLATemplate slaTemplate = new SLATemplate();
-		String value = "{\"ProvidersList\": [ \n " +
-				"{\"provider-uuid\":\"1\", \"p-slam-url\":\"http://10.4.0.15:8080/services/asceticNegotiation?wsdl\"}\n" +
-			"]}";
+		String value = "{\"ProvidersList\": [ \n" + 
+							"  {\"provider-uuid\":\"1\", \"p-slam-url\":\"http://192.168.3.17:8080/services/asceticNegotiation?wsdl\"}\n" +
+							"  {\"provider-uuid\":\"2\", \"p-slam-url\":\"http://192.168.3.18:8080/services/asceticNegotiation?wsdl\"}\n" +
+						"]}";
 		
 		SLATemplateCreator.addProperties(slaTemplate);
 		

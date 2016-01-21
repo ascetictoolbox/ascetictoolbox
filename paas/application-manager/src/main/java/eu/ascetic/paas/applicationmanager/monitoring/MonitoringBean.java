@@ -3,10 +3,9 @@ package eu.ascetic.paas.applicationmanager.monitoring;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.springframework.stereotype.Service;
 
 import eu.ascetic.paas.applicationmanager.providerregistry.PRClient;
-import eu.ascetic.paas.applicationmanager.providerregistry.model.Provider;
+import eu.ascetic.providerregistry.model.Provider;
 
 /**
  * 
@@ -30,7 +29,6 @@ import eu.ascetic.paas.applicationmanager.providerregistry.model.Provider;
  * SpringBean to create the EnergyModeller
  *
  */
-//@Service("EnergyModellerService")
 public class MonitoringBean {
 	private static Logger logger = Logger.getLogger(MonitoringBean.class);
 	protected List<Provider> providers;

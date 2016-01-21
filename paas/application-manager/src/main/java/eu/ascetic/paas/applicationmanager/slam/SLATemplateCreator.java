@@ -2,6 +2,7 @@ package eu.ascetic.paas.applicationmanager.slam;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.slasoi.slamodel.core.FunctionalExpr;
 import org.slasoi.slamodel.core.SimpleDomainExpr;
@@ -21,6 +22,8 @@ import org.slasoi.slamodel.sla.SLATemplate;
 import org.slasoi.slamodel.sla.VariableDeclr;
 
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
+import eu.ascetic.paas.applicationmanager.providerregistry.PRClient;
+import eu.ascetic.providerregistry.model.Provider;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
 import eu.ascetic.utils.ovf.api.VirtualSystem;
 
@@ -78,14 +81,17 @@ public class SLATemplateCreator {
 	 * @param slaTemplate
 	 */
 	protected static void addProperties(SLATemplate slaTemplate) {
-		// TODO this needs to be done connecting to the Provider Registry in the future.
+		PRClient prClient = new PRClient();
+		List<Provider> providers = prClient.getProviders();
 		
 		STND stndProperties = new STND("ProvidersList");
 		
-		// TODO this needs to be by configuration
-		String value = "{\"ProvidersList\": [ \n " +
-							"{\"provider-uuid\":\"1\", \"p-slam-url\":\"http://192.168.3.17:8080/services/asceticNegotiation?wsdl\"}\n" +
-						"]}";
+		// We create the provider list
+		String value = "{\"ProvidersList\": [ \n";
+		for(Provider provider : providers) {
+			value =	value +	"  {\"provider-uuid\":\"" + provider.getId() + "\", \"p-slam-url\":\"" + provider.getSlamUrl() + "\"}\n";
+		}
+		value = value + "]}";
 		
 		slaTemplate.setPropertyValue(stndProperties, value);
 	}
