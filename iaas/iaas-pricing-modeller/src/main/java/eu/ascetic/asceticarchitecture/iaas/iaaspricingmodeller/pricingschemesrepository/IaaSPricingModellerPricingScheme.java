@@ -37,7 +37,7 @@ import java.util.Calendar;
 public abstract class IaaSPricingModellerPricingScheme implements IaaSPricingModellerPricingSchemeRepositoryInterface{
 
 
-	private EnergyModeller EnergyModeller = null;
+	private EnergyModeller EnergyModeller = EnergyModeller.getInstance();
 	
 	int scheme;
 	
