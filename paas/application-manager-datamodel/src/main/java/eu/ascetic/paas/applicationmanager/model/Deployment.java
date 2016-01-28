@@ -78,6 +78,8 @@ public class Deployment {
 	private String ovf;
 	@XmlElement(name = "schema", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private int schema=1;
+	@XmlElement(name = "slauuid", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private String slaUUID;
 	@XmlElementWrapper(name = "vms", namespace = APPLICATION_MANAGER_NAMESPACE)
 	@XmlElement(name = "vm", namespace = APPLICATION_MANAGER_NAMESPACE )
 	private List<VM> vms;
@@ -104,6 +106,14 @@ public class Deployment {
 	}
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	
+	@Column(name = "sla_uuid", nullable = true)
+	public String getSlaUUID() {
+		return slaUUID;
+	}
+	public void setSlaUUID(String slaUUID) {
+		this.slaUUID = slaUUID;
 	}
 	
 	@Transient
