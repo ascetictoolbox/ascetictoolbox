@@ -37,7 +37,7 @@ import java.util.Calendar;
 public abstract class IaaSPricingModellerPricingScheme implements IaaSPricingModellerPricingSchemeRepositoryInterface{
 
 
-	private EnergyModeller EnergyModeller = EnergyModeller.getInstance();
+	private EnergyModeller energyModeller = EnergyModeller.getInstance();
 	
 	int scheme;
 	
@@ -45,7 +45,7 @@ public abstract class IaaSPricingModellerPricingScheme implements IaaSPricingMod
 	
 	ResourceDistribution distribution = new ResourceDistribution();
 	
-	IaaSPricingModellerCost cost = new IaaSPricingModellerCost(EnergyModeller);
+	IaaSPricingModellerCost cost = new IaaSPricingModellerCost(energyModeller);
 	
 	public IaaSPricingModellerPricingScheme(int id){
 		scheme=id;
@@ -53,7 +53,7 @@ public abstract class IaaSPricingModellerPricingScheme implements IaaSPricingMod
 	}
 	
 	public void setEnergyModeller(EnergyModeller energyModeller){
-		EnergyModeller = energyModeller;
+		this.energyModeller = energyModeller;
 	
 	}
 	
