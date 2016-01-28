@@ -32,10 +32,20 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "SLA", namespace = SLA_XMLNS)
+@XmlRootElement(name="SLA", namespace=SLA_XMLNS)
 public class SLA {
-	@XmlElement(name = "AgreementTerm", namespace = SLA_XMLNS )
+	@XmlElement(name="AgreementTerm", namespace=SLA_XMLNS)
 	private List<AgreementTerm> agreementTerms;
+	@XmlElement(name="UUID", namespace=SLA_XMLNS)
+	private String uuid;
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
 
 	public List<AgreementTerm> getAgreementTerms() {
 		return agreementTerms;

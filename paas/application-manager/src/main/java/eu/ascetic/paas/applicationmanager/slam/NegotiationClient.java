@@ -1,7 +1,8 @@
 package eu.ascetic.paas.applicationmanager.slam;
 
-import org.slasoi.slamodel.sla.SLA;
 import org.slasoi.slamodel.sla.SLATemplate;
+
+import eu.ascetic.paas.applicationmanager.slam.sla.model.SLA;
 
 /**
  * 

@@ -16,7 +16,6 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.log4j.Logger;
 import org.slasoi.gslam.syntaxconverter.SLASOIRenderer;
 import org.slasoi.gslam.syntaxconverter.SLASOITemplateParser;
-import org.slasoi.slamodel.sla.SLA;
 import org.slasoi.slamodel.sla.SLATemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -34,6 +33,7 @@ import eu.ascetic.paas.applicationmanager.pm.PriceModellerClient;
 import eu.ascetic.paas.applicationmanager.rest.util.TimeStampComparator;
 import eu.ascetic.paas.applicationmanager.rest.util.XMLBuilder;
 import eu.ascetic.paas.applicationmanager.slam.NegotiationWsClient;
+import eu.ascetic.paas.applicationmanager.slam.sla.model.SLA;
 import eu.ascetic.paas.applicationmanager.slam.translator.SlaTranslator;
 import eu.ascetic.paas.applicationmanager.slam.translator.SlaTranslatorImplNoOsgi;
 
@@ -164,13 +164,9 @@ public class AgreementRest extends AbstractRest {
 						
 						// TODO remove this when it is not null
 						// We store the new agreement in the db:
-						String slaAgreementString = "";
-						if(slaAgreement != null) {
-							slaAgreementString = rendeder.renderSLA(slaAgreement);
-						}
 						
 						agreementInDB.setAccepted(true);
-						agreementInDB.setSlaAgreement(slaAgreementString);
+						agreementInDB.setSlaAgreement(slaAgreement.getUuid());
 						//agreementInDB.setPrice("" + price);
 						
 						agreementDAO.update(agreementInDB);

@@ -29,9 +29,7 @@ import javax.xml.bind.Unmarshaller;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.slasoi.gslam.syntaxconverter.SLASOIRenderer;
 import org.slasoi.gslam.syntaxconverter.SLASOITemplateParser;
-import org.slasoi.slamodel.sla.SLA;
 import org.slasoi.slamodel.sla.SLATemplate;
 
 import eu.ascetic.paas.applicationmanager.amqp.AbstractTest;
@@ -46,6 +44,7 @@ import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
 import eu.ascetic.paas.applicationmanager.slam.NegotiationWsClient;
+import eu.ascetic.paas.applicationmanager.slam.sla.model.SLA;
 
 /**
  * 
@@ -473,10 +472,8 @@ public class AgreementRestTest extends AbstractTest {
 		
 		NegotiationWsClient negotiationClient = mock(NegotiationWsClient.class);
 		SLA sla = new SLA();
+		sla.setUuid("uuid");
 		when(negotiationClient.createAgreement(eq(Configuration.slamURL), any(SLATemplate.class), eq(agreement1.getNegotiationId()))).thenReturn(sla);
-		
-		SLASOIRenderer renderer = mock(SLASOIRenderer.class);
-		when(renderer.renderSLA(sla)).thenReturn("sla");
 		
 		AgreementDAO agreementDAO = mock(AgreementDAO.class);
 		when(agreementDAO.update(agreement1)).thenReturn(true);
@@ -486,7 +483,6 @@ public class AgreementRestTest extends AbstractTest {
 		AgreementRest agreementRest = new AgreementRest();
 		agreementRest.deploymentDAO = deploymentDAO;
 		agreementRest.client = negotiationClient;
-		agreementRest.rendeder = renderer;
 		agreementRest.agreementDAO = agreementDAO;
 		agreementRest.deploymentEventService = deploymentEventService; 
 
@@ -496,7 +492,7 @@ public class AgreementRestTest extends AbstractTest {
 		String xmlAgreement = (String) response.getEntity();
 		Agreement agreement = ModelConverter.xmlAgreementToObject(xmlAgreement);
 		assertTrue(agreement.isAccepted());
-		assertEquals("sla", agreement1.getSlaAgreement());
+		assertEquals("uuid", agreement1.getSlaAgreement());
 		
 		assertEquals(Dictionary.APPLICATION_STATUS_CONTEXTUALIZATION, deployment.getStatus());
 		

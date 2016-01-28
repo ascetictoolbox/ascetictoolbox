@@ -75,51 +75,11 @@ public class DeployEventHandler {
 	public void deployDeployment(Event<DeploymentEvent> event) {
 
 		DeploymentEvent deploymentEvent = event.getData();
-
-		logger.info("Creating a new thread to deploy in infrastructure the deployment: " + deploymentEvent.getDeploymentId());
-		logger.info("Connecting to the VMM: " + vmManagerClient.getURL());
 		
-		DeployEventHandlerRunner runner = new DeployEventHandlerRunner(applicationDAO,
-																	   deploymentDAO,
-																	   deploymentEventService,
-																	   vmDAO,
-																	   imageDAO,
-																	   deploymentEvent,
-																	   vmManagerClient);
-		runner.start();
-	}
-}
-
-
-class DeployEventHandlerRunner extends Thread {
-	private static Logger logger = Logger.getLogger(DeployEventHandlerRunner.class);
-	private ApplicationDAO applicationDAO;
-	private DeploymentDAO deploymentDAO;
-	private DeploymentEventService deploymentEventService;
-	private VMDAO vmDAO;
-	private ImageDAO imageDAO;
-	private VmManagerClient vmManagerClient;
-	private DeploymentEvent deploymentEvent;
-	
-	public DeployEventHandlerRunner(ApplicationDAO applicationDAO, 
-									DeploymentDAO deploymentDAO, 
-									DeploymentEventService deploymentEventService, 
-									VMDAO vmDAO, 
-									ImageDAO imageDAO, 
-									DeploymentEvent deploymentEvent,
-									VmManagerClient vmManagerClient) {
-		this.applicationDAO = applicationDAO; 
-		this.deploymentDAO = deploymentDAO;
-		this.deploymentEventService = deploymentEventService;
-		this.vmDAO = vmDAO;
-		this.imageDAO = imageDAO;
-		this.deploymentEvent = deploymentEvent;
-		this.vmManagerClient = vmManagerClient;
-	}
-	
-	public void run() {
 		if(deploymentEvent.getDeploymentStatus().equals(Dictionary.APPLICATION_STATUS_CONTEXTUALIZED)) {
-			logger.info(" Moving deployment id: " + deploymentEvent.getDeploymentId()  + " to " + Dictionary.APPLICATION_STATUS_DEPLOYING + " state");
+
+			logger.info("Creating a new thread to deploy in infrastructure the deployment: " + deploymentEvent.getDeploymentId());
+			logger.info("Connecting to the VMM: " + vmManagerClient.getURL());
 			
 			// We need first to read the deployment from the DB:
 			Deployment deployment = deploymentDAO.getById(deploymentEvent.getDeploymentId());
@@ -274,6 +234,55 @@ class DeployEventHandlerRunner extends Thread {
 					
 			//We notify that the deployment has been modified
 			deploymentEventService.fireDeploymentEvent(deploymentEvent);
-		}	
+		
+		
+//			DeployEventHandlerRunner runner = new DeployEventHandlerRunner(applicationDAO,
+//																	   	   deploymentDAO,
+//																	   	   deploymentEventService,
+//																	   	   vmDAO,
+//																	   	   imageDAO,
+//																	   	   deploymentEvent,
+//																	   	   vmManagerClient);
+//			runner.start();
+		}
 	}
 }
+
+
+//class DeployEventHandlerRunner extends Thread {
+//	private static Logger logger = Logger.getLogger(DeployEventHandlerRunner.class);
+//	private ApplicationDAO applicationDAO;
+//	private DeploymentDAO deploymentDAO;
+//	private DeploymentEventService deploymentEventService;
+//	private VMDAO vmDAO;
+//	private ImageDAO imageDAO;
+//	private VmManagerClient vmManagerClient;
+//	private DeploymentEvent deploymentEvent;
+//	
+//	public DeployEventHandlerRunner(ApplicationDAO applicationDAO, 
+//									DeploymentDAO deploymentDAO, 
+//									DeploymentEventService deploymentEventService, 
+//									VMDAO vmDAO, 
+//									ImageDAO imageDAO, 
+//									DeploymentEvent deploymentEvent,
+//									VmManagerClient vmManagerClient) {
+//		this.applicationDAO = applicationDAO; 
+//		this.deploymentDAO = deploymentDAO;
+//		this.deploymentEventService = deploymentEventService;
+//		this.vmDAO = vmDAO;
+//		this.imageDAO = imageDAO;
+//		this.deploymentEvent = deploymentEvent;
+//		this.vmManagerClient = vmManagerClient;
+//	}
+//	
+//	public void run() {
+//		if(deploymentEvent.getDeploymentStatus().equals(Dictionary.APPLICATION_STATUS_CONTEXTUALIZED)) {
+//			logger.info(" Moving deployment id: " + deploymentEvent.getDeploymentId()  + " to " + Dictionary.APPLICATION_STATUS_DEPLOYING + " state");
+//			
+//			// We need first to read the deployment from the DB:
+//			Deployment deployment = deploymentDAO.getById(deploymentEvent.getDeploymentId());
+//						
+//			
+//		}	
+//	}
+//}

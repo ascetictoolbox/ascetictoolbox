@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import org.junit.Before;
@@ -44,7 +45,9 @@ import org.junit.Test;
 
 public class SLATest {
 	private String slaTemplateFile = "sla-agreement.xml";
+	private String slaAgreementFile = "test-sla.xml";
 	private String slaTemplateString;
+	private String slaAgreementString;
 
 	/**
 	 * We just read an SLA agreement example... 
@@ -55,6 +58,8 @@ public class SLATest {
 	public void setup() throws IOException, URISyntaxException {
 		File file = new File(this.getClass().getResource( "/" + slaTemplateFile ).toURI());		
 		slaTemplateString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
+		file = new File(this.getClass().getResource( "/" + slaAgreementFile ).toURI());		
+		slaAgreementString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
 	}
 	
 	@Test
@@ -62,8 +67,19 @@ public class SLATest {
 		SLA sla = new SLA();
 		List<AgreementTerm> agreementTerms = new ArrayList<AgreementTerm>();
 		sla.setAgreementTerms(agreementTerms);
+		sla.setUuid("uuid");
 		
 		assertEquals(agreementTerms, sla.getAgreementTerms());
+		assertEquals("uuid", sla.getUuid());
+	}
+	
+	@Test
+	public void testUUID() throws JAXBException {
+		JAXBContext jaxbContext = JAXBContext.newInstance(SLA.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		SLA slaAgreement = (SLA) jaxbUnmarshaller.unmarshal(new StringReader(slaAgreementString));
+		
+		assertEquals("95f718dd-3665-461a-b6c2-e89a0f98c473", slaAgreement.getUuid());
 	}
 	
 	@Test

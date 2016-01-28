@@ -931,6 +931,8 @@ paas/application-manager/src/test/resources/mysql-jpa-test-configuration.xml -te
 paas/application-manager/src/test/resources/saas.ovf -text
 paas/application-manager/src/test/resources/sla-agreement.xml -text
 paas/application-manager/src/test/resources/slat-y2.xml -text
+paas/application-manager/src/test/resources/test-sla.pretty.xml -text
+paas/application-manager/src/test/resources/test-sla.xml -text
 paas/application-manager/velocity.log -text
 paas/application-monitor/LICENSE -text
 paas/application-monitor/README.md -text

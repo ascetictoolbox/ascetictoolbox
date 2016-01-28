@@ -222,7 +222,7 @@
 		<dependency>
 			<groupId>eu.ascetic.paas</groupId>
 			<artifactId>application-manager-datamodel</artifactId>
-			<version>0.22-SNAPSHOT</version>
+			<version>0.23-SNAPSHOT</version>
 		</dependency>
 		
 		<!-- ASCETiC Provider Registry Datamodel -->

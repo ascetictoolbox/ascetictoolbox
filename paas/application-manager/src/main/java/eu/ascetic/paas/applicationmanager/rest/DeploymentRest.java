@@ -87,7 +87,7 @@ public class DeploymentRest extends AbstractRest {
 	 * @return a list of deployments for an application stored in the database fitting the respective query params.
 	 */
 	@GET
-	@Produces(MediaType.APPLICATION_XML)
+	@Produces(MediaType.APPLICATION_XML + ";qs=1")
 	public Response getDeployments(@PathParam("application_name") String applicationName, @DefaultValue("")@QueryParam("status") String status) {
 		logger.info("GET request to paht: /applications/" + applicationName + "/deployments?status=" + status + " [XML]");
 		
@@ -118,7 +118,7 @@ public class DeploymentRest extends AbstractRest {
 	 * @return a list of deployments for an application stored in the database fitting the respective query params.
 	 */
 	@GET
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON + ";qs=0.5")
 	public Response getDeploymentsJSON(@PathParam("application_name") String applicationName, @DefaultValue("")@QueryParam("status") String status) {
 		logger.info("GET request to paht: /applications/" + applicationName + "/deployments?status=" + status + " [JSON]");
 		

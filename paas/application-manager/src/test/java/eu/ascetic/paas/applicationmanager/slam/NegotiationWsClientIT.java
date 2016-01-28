@@ -17,12 +17,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slasoi.gslam.syntaxconverter.SLASOITemplateParser;
 import org.slasoi.gslam.syntaxconverter.SLASOITemplateRenderer;
-import org.slasoi.slamodel.sla.SLA;
 import org.slasoi.slamodel.sla.SLATemplate;
 
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
 import eu.ascetic.paas.applicationmanager.slam.NegotiationWsClient;
+import eu.ascetic.paas.applicationmanager.slam.sla.model.SLA;
 import eu.ascetic.paas.applicationmanager.slam.translator.SlaTranslator;
 import eu.ascetic.paas.applicationmanager.slam.translator.SlaTranslatorImplNoOsgi;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
@@ -76,6 +76,7 @@ public class NegotiationWsClientIT {
 	@Before
 	public void setUp() throws Exception {
 		Configuration.slamURL = "http://192.168.3.16:8080/services/asceticNegotiation?wsdl"; 
+		Configuration.providerRegistryEndpoint = "http://localhost:9090/provider-registry";
 				
 		File file = new File(this.getClass().getResource( "/" + threeTierWebAppOvfFile ).toURI());		
 		threeTierWebAppOvfString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
@@ -100,8 +101,8 @@ public class NegotiationWsClientIT {
 		
 		String slat = testNegotiationWs(negId);
 		
-		SLA sla = testCreateAgreementWs(negId, slat);
-		assertNotNull(sla);
+		String slaUUID = testCreateAgreementWs(negId, slat);
+		assertNotNull(slaUUID);
 		System.out.println("TEST FINISHED!");
 	}
 
@@ -155,15 +156,15 @@ public class NegotiationWsClientIT {
 		return xmlRetSlat;
 	}
 
-	private SLA testCreateAgreementWs(String negId, String slatXml) throws Exception {
+	private String testCreateAgreementWs(String negId, String slatXml) throws Exception {
 		SLASOITemplateParser parser = new SLASOITemplateParser();
 		SLATemplate slat = parser.parseTemplate(slatXml);
 		System.out.println("Sending create agreement SOAP request...");
 		SLA sla = negotiationClient.createAgreement(endpoint, slat, negId);
 		System.out.println("SLA:");
-		System.out.println(sla);
-		assertNotNull(sla);
-		return sla;
+		System.out.println(sla.getUuid());
+		assertNotNull(sla.getUuid());
+		return sla.getUuid();
 	}
 
 	/**

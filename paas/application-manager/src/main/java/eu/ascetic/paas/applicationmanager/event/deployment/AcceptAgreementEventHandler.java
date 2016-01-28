@@ -5,7 +5,6 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.slasoi.gslam.syntaxconverter.SLASOIRenderer;
 import org.slasoi.gslam.syntaxconverter.SLASOITemplateParser;
-import org.slasoi.slamodel.sla.SLA;
 import org.slasoi.slamodel.sla.SLATemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,6 +20,7 @@ import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.pm.PriceModellerClient;
 import eu.ascetic.paas.applicationmanager.slam.NegotiationWsClient;
+import eu.ascetic.paas.applicationmanager.slam.sla.model.SLA;
 import eu.ascetic.paas.applicationmanager.slam.translator.SlaTranslator;
 import eu.ascetic.paas.applicationmanager.slam.translator.SlaTranslatorImplNoOsgi;
 
@@ -109,6 +109,11 @@ private static Logger logger = Logger.getLogger(AcceptAgreementEventHandler.clas
 						agreement.setAccepted(true);
 						//agreement.setSlaAgreement(slaAgreementString);
 						//agreement.setPrice("" + price);
+						
+						// We set the SLA UUID in the document... 
+						deployment = deploymentDAO.getById(deploymentEvent.getDeploymentId());
+						deployment.setSlaUUID(slaAgreement.getUuid());
+						deploymentDAO.update(deployment);
 						
 						agreementDAO.update(agreement);
 				

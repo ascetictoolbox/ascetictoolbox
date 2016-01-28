@@ -1,12 +1,16 @@
 package eu.ascetic.paas.applicationmanager.slam;
 
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+
 import org.apache.log4j.Logger;
-import org.slasoi.slamodel.sla.SLA;
 import org.slasoi.slamodel.sla.SLATemplate;
 
+import eu.ascetic.paas.applicationmanager.slam.sla.model.SLA;
 import eu.ascetic.paas.applicationmanager.slam.translator.SlaTranslator;
 import eu.ascetic.paas.applicationmanager.slam.translator.SlaTranslatorImpl;
 import eu.ascetic.applicationmanager.slam.stub.BZNegotiationStub;
@@ -124,10 +128,11 @@ public class NegotiationWsClient implements NegotiationClient {
 			System.out.println(xmlSla);
 			
 			//sla = (xmlSla == null) ? null : slaTranslator.parseSla(xmlSla);
-			sla = (xmlSla == null) ? null : new SlaTranslatorImpl().parseSla(xmlSla);
+			//sla = (xmlSla == null) ? null : new SlaTranslatorImpl().parseSla(xmlSla);
 			
-		
-			
+			JAXBContext jaxbContext = JAXBContext.newInstance(SLA.class);
+			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+			sla = (SLA) jaxbUnmarshaller.unmarshal(new StringReader(xmlSla));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

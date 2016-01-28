@@ -23,7 +23,7 @@ import org.slasoi.slamodel.sla.VariableDeclr;
 
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.providerregistry.PRClient;
-import eu.ascetic.providerregistry.model.Provider;
+import eu.ascetic.paas.applicationmanager.providerregistry.model.Provider;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
 import eu.ascetic.utils.ovf.api.VirtualSystem;
 
@@ -81,16 +81,18 @@ public class SLATemplateCreator {
 	 * @param slaTemplate
 	 */
 	protected static void addProperties(SLATemplate slaTemplate) {
-		PRClient prClient = new PRClient();
-		List<Provider> providers = prClient.getProviders();
+		PRClient client = new PRClient();
+		List<Provider> providers = client.getProviders();
 		
 		STND stndProperties = new STND("ProvidersList");
 		
-		// We create the provider list
-		String value = "{\"ProvidersList\": [ \n";
+		// TODO this needs to be by configuration
+		String value = "{\"ProvidersList\": [ \n ";
+		
 		for(Provider provider : providers) {
-			value =	value +	"  {\"provider-uuid\":\"" + provider.getId() + "\", \"p-slam-url\":\"" + provider.getSlamUrl() + "\"}\n";
+			value = value + "{\"provider-uuid\":\"" + provider.getId() + "\", \"p-slam-url\":\"" + provider.getSlamUrl() + "\"}\n";
 		}
+		
 		value = value + "]}";
 		
 		slaTemplate.setPropertyValue(stndProperties, value);
