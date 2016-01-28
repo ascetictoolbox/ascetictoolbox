@@ -23,7 +23,7 @@ import org.slasoi.slamodel.sla.VariableDeclr;
 
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.providerregistry.PRClient;
-import eu.ascetic.paas.applicationmanager.providerregistry.model.Provider;
+import eu.ascetic.providerregistry.model.Provider;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
 import eu.ascetic.utils.ovf.api.VirtualSystem;
 

@@ -58,6 +58,8 @@ public class ApplicationMonitorHCTest {
 	public void postFinalEnergyConsumptionTest() throws Exception {
 		Configuration.applicationMonitorUrl = mBaseURL;
 		
+		System.out.println("##################### " + Configuration.applicationMonitorUrl);
+		
 		mServer.addPath("/apps", "");
 		
 		EnergyCosumed energyConsumed = new EnergyCosumed();

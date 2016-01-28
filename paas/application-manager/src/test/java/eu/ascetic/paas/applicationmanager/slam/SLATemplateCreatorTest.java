@@ -58,13 +58,6 @@ public class SLATemplateCreatorTest {
 	private MockWebServer mServer;
 	private String mBaseURL = "http://localhost:";
 	
-	@Before
-	public void before() {
-		mServer = new MockWebServer();
-		mServer.start();
-		mBaseURL = mBaseURL + mServer.getPort();
-	}
-	
 	/**
 	 * We just read an ovf example... 
 	 * @throws IOException
@@ -76,13 +69,17 @@ public class SLATemplateCreatorTest {
 		threeTierWebAppOvfString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
 		mServer = new MockWebServer();
 		mServer.start();
+		mBaseURL = "http://localhost:";
 		mBaseURL = mBaseURL + mServer.getPort();
+		System.out.println("######### " + mBaseURL);
 	}
 	
 	@Test
 	public void addPropertiesTest() {
 		// We configure the mocked Provider Registry
-		Configuration.providerRegistryEndpoint = mBaseURL;
+		Configuration.providerRegistryEndpoint = mBaseURL + "/";
+		
+		System.out.println("######### configuration " + Configuration.providerRegistryEndpoint);
 		
 		String collection = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
 							"<collection xmlns=\"http://provider-registry.ascetic.eu/doc/schemas/xml\" href=\"/\">" +
@@ -122,7 +119,7 @@ public class SLATemplateCreatorTest {
 		
 		STND[] propertiesKeys = slaTemplate.getPropertyKeys();
 		assertEquals(1, propertiesKeys.length);
-		assertEquals(value, slaTemplate.getPropertyValue(propertiesKeys[0]));
+		assertEquals(value, slaTemplate.getPropertyValue(propertiesKeys[0])); 
 	}
 	
 	@Test
