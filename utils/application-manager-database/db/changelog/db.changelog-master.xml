@@ -53,4 +53,7 @@
   <include file="db/changelog/db.changelog-4.2.xml"/>
   <include file="db/changelog/db.changelog-4.3.xml"/>
 
+  <!-- It adds SLA-UUID field to the deployments table -->
+  <include file="db/changelog/db.changelog-4.4.xml"/>
+
 </databaseChangeLog>
