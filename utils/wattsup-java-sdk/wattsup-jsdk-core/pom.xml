@@ -18,7 +18,7 @@
 	<properties>
 		<license-header-file>${basedir}/../LICENSE</license-header-file>
 		<checkstyle.file>${project.basedir}/../checkstyle.xml</checkstyle.file>
-		<nrjavaserial.version>3.8.8</nrjavaserial.version>
+		<nrjavaserial.version>3.11.0</nrjavaserial.version>
 		<dropwizard.version>0.6.2</dropwizard.version>
 		<jdbi.version>2.51</jdbi.version>
 		<joda-time.version>2.2</joda-time.version>
