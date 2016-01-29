@@ -1,0 +1,44 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:util="http://www.springframework.org/schema/util" xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<!-- VERY IMPORTANT! If you are buinding your project with Maven Shade plugin, you need to add the
+	next lines to the shade configuration in your pom.xml (section <transformers>):
+
+	<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+		<resource>META-INF/spring.handlers</resource>
+	</transformer>
+	<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+		<resource>META-INF/spring.schemas</resource>
+	</transformer>
+-->
+
+    <bean id="monitoring" class="es.bsc.demiurge.monitoring.ganglia.GangliaMonitoring"/>
+    <bean id="cloudMiddleware" class="es.bsc.demiurge.openstackjclouds.OpenStackJclouds"/>
+
+    <bean id="vmManager" class="es.bsc.demiurge.core.manager.GenericVmManager"/>
+
+    <bean id="energyModeller" class="es.bsc.demiurge.renewit.modellers.PowerModeller"/>
+
+	<util:set id="estimators" value-type="es.bsc.demiurge.core.drivers.Estimator">
+		<ref bean="energyModeller"/>
+	</util:set>
+
+	<!-- Values must be subclasses of optaplanners' SimpleScoreCalculator -->
+	<util:map id="placementPolicies" key-type="java.lang.String" value-type="java.lang.Class">
+		<entry key="consolidation" value-type="java.lang.Class" value="es.bsc.demiurge.core.clopla.placement.scorecalculators.ScoreCalculatorConsolidation"/>
+		<entry key="distribution" value-type="java.lang.Class" value="es.bsc.demiurge.core.clopla.placement.scorecalculators.ScoreCalculatorDistribution"/>
+		<entry key="random" value-type="java.lang.Class" value="es.bsc.demiurge.core.clopla.placement.scorecalculators.ScoreCalculatorRandom"/>
+		<entry key="powerAware" value-type="java.lang.Class" value="es.bsc.demiurge.renewit.scheduler.clopla.ScoreCalculatorPowerAware"/>
+	</util:map>
+
+	<util:list id="vmmListeners" value-type="es.bsc.demiurge.core.drivers.VmmListener">
+		<!-- TODO: make VmmConfig to not throw exception when this list does not exist -->
+	</util:list>
+
+	<util:list id="vmmGlobalListeners" value-type="es.bsc.demiurge.core.VmmGlobalListener">
+		<!-- TODO: make VmmConfig to not throw exception when this list does not exist -->
+	</util:list>
+</beans>

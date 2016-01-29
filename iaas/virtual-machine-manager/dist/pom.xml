@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+		<artifactId>parent</artifactId>
+		<groupId>es.bsc.demiurge</groupId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>dist</artifactId>
+
+	<properties>
+		<artifact.name>demiurge</artifact.name>
+		<jar.file>${artifact.name}</jar.file>
+	</properties>
+
+	<profiles>
+		<profile>
+			<id>ascetic</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<artifact.name>vmmanagercore</artifact.name>
+				<jar.file>uber-${artifact.name}-${version}</jar.file>
+				<brand.basedir>${project.parent.basedir}/assemblies/ascetic/etc</brand.basedir>
+			</properties>
+			<dependencies>
+				<dependency>
+					<groupId>es.bsc.demiurge.assemblies</groupId>
+					<artifactId>ascetic</artifactId>
+					<version>0.0.1-SNAPSHOT</version>
+				</dependency>
+			</dependencies>
+			<distributionManagement>
+				<repository>
+					<id>artifactory.ascetic-dev.cit.tu-berlin.de</id>
+					<name>artifactory.ascetic-dev.cit.tu-berlin.de-releases</name>
+					<url>http://ascetic-artifactory.cit.tu-berlin.de/artifactory/libs-release-local</url>
+				</repository>
+				<snapshotRepository>
+					<id>artifactory.ascetic-dev.cit.tu-berlin.de</id>
+					<name>artifactory.ascetic-dev.cit.tu-berlin.de-snapshots</name>
+					<url>http://ascetic-artifactory.cit.tu-berlin.de/artifactory/libs-snapshot-local</url>
+					<uniqueVersion>false</uniqueVersion>
+				</snapshotRepository>
+			</distributionManagement>
+		</profile>
+		<profile>
+			<id>renewit</id>
+			<properties>
+				<brand.basedir>${project.parent.basedir}/assemblies/renewit/etc</brand.basedir>
+			</properties>
+			<dependencies>
+				<dependency>
+					<groupId>es.bsc.demiurge.assemblies</groupId>
+					<artifactId>renewit</artifactId>
+					<version>0.0.1-SNAPSHOT</version>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
+
+	<dependencies>
+		<dependency>
+			<groupId>es.bsc.demiurge</groupId>
+			<artifactId>frontend</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+				<plugin>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>2.3</version>
+					<executions>
+						<execution>
+							<id>copy-brand-resources</id>
+							<phase>generate-resources</phase>
+							<goals>
+								<goal>copy-resources</goal>
+							</goals>
+							<configuration>
+								<!-- this is important -->
+								<overwrite>true</overwrite>
+								<!-- target -->
+								<outputDirectory>${basedir}/target/classes/webapp/images</outputDirectory>
+								<resources>
+									<resource>
+										<!-- source -->
+										<directory>${brand.basedir}</directory>
+										<includes>
+											<include>project_brand.png</include>
+										</includes>
+									</resource>
+								</resources>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<configuration>
+					<finalName>${jar.file}</finalName>
+					<filters>
+						<filter>
+							<artifact>*:*</artifact>
+							<excludes>
+								<exclude>META-INF/*.SF</exclude>
+								<exclude>META-INF/*.DSA</exclude>
+								<exclude>META-INF/*.RSA</exclude>
+							</excludes>
+						</filter>
+					</filters>
+					<transformers>
+						<transformer
+								implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+						<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+							<resource>META-INF/spring.handlers</resource>
+						</transformer>
+						<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+							<resource>META-INF/spring.schemas</resource>
+						</transformer>
+						<transformer
+								implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+						<transformer
+								implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+							<manifestEntries>
+								<Main-Class>es.bsc.demiurge.rest.Main</Main-Class>
+							</manifestEntries>
+						</transformer>
+					</transformers>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

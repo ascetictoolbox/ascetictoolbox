@@ -1,37 +1,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<artifactId>iaas</artifactId>
-		<groupId>eu.ascetic</groupId>
-		<version>0.0.1-SNAPSHOT</version>
-	</parent>
-	<groupId>eu.ascetic.iaas</groupId>
-	<artifactId>virtual-machine-manager</artifactId>
+
+	<groupId>es.bsc.demiurge</groupId>
+	<artifactId>parent</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+
 	<packaging>pom</packaging>
-	<ciManagement>
-		<system>hudson</system>
-		<url>
-			https://ascetic-jenkins.cit.tu-berlin.de/job/${jenkins.project.name}
-		</url>
-		<notifiers>
-			<notifier>
-				<type>mail</type>
-				<configuration>
-					<recipients>mario.macias@bsc.es david.ortiz@bsc.es</recipients>
-				</configuration>
-				<sendOnError>true</sendOnError>
-				<sendOnFailure>true</sendOnFailure>
-				<sendOnSuccess>false</sendOnSuccess>
-				<sendOnWarning>false</sendOnWarning>
-			</notifier>
-		</notifiers>
-	</ciManagement>
+
 	<modules>
-		<module>GangliaMonitoring</module>
-		<module>vmmanagercore</module>
-		<module>clopla</module>
-		<module>power-button-presser</module>
-		<module>vmm-client</module>
+		<!--<module>rest-client</module>-->
+		<module>core</module>
+		<module>drivers</module>
+		<!--module>power-button-presser</module-->
+		<module>rest-client</module>
+		<module>frontend</module>
+		<module>assemblies</module>
+		<module>dist</module>
 	</modules>
 </project>

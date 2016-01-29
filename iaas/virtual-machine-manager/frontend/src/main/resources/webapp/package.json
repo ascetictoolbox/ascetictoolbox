@@ -1,0 +1,38 @@
+{
+    "name": "Demiurge GUI",
+    "version": "0.1.0",
+    "description": "Front End for Demiurge",
+    "main": "app.js",
+    "devDependencies": {
+        "glob": "~3.2.9",
+        "gulp": "^3.5.5",
+        "gulp-concat": "^2.1.7",
+        "gulp-uglify": "^0.2.1",
+        "gulp-jshint": "^1.5.0",
+        "gulp-if": "0.0.5",
+        "gulp-imagemin": "^0.1.5",
+        "gulp-notify": "^1.1.0",
+        "gulp-minify-css": "^0.3.0",
+        "gulp-clean": "^0.2.4",
+        "gulp-size": "^0.1.3",
+        "jshint-stylish": "^0.1.5",
+        "gulp-cache": "^0.1.3",
+        "gulp-header": "^1.0.2",
+        "gulp-load-plugins": "^0.4.0",
+        "gulp-load-utils": "0.0.4",
+        "chalk": "^0.4.0",
+        "dateformat": "^1.0.7-1.2.3",
+        "minimist": "0.0.8"
+    },
+    "readmeFilename": "README.md",
+    "dest": "../build-gulp/dev/",
+    "paths": {
+        "source": {
+            "js": ["./app/**/*.js"]
+        },
+        "dest": {
+            "base": "./scripts/",
+            "js": "./scripts/js/"
+        }
+    }
+}

@@ -27,14 +27,6 @@ iaas/old-vmm/vmmanager-frontend/.idea
 iaas/old-vmm/vmmanagercore/*.iml
 iaas/old-vmm/vmmanagercore/*.ipr
 iaas/old-vmm/vmmanagercore/.idea
-iaas/virtual-machine-manager/clopla/.idea
-iaas/virtual-machine-manager/clopla/clopla.iml
-iaas/virtual-machine-manager/vmm-client/.idea
-iaas/virtual-machine-manager/vmm-client/vmm-client.iml
-iaas/virtual-machine-manager/vmmanager-frontend/.idea
-iaas/virtual-machine-manager/vmmanagercore/*.iml
-iaas/virtual-machine-manager/vmmanagercore/*.ipr
-iaas/virtual-machine-manager/vmmanagercore/.idea
 paas/.git
 paas/README.md
 paas/application-manager/doc/doc

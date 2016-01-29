@@ -1,0 +1,52 @@
+<!--
+Copyright (C) 2013-2014  Barcelona Supercomputing Center
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+-->
+
+<div class="col-sm-3 col-md-2 sidebar" ng-controller="SidebarCtrl as sidebar">
+    <ul class="nav nav-sidebar">
+        <li ng-class="{active: sidebar.sectionIsActive('dashboard')}">
+            <a href="#">Dashboard</a>
+        </li>
+        <li ng-class="{active: sidebar.sectionIsActive('vms')}">
+            <a href="#virtual_machines">Virtual Machines</a>
+        </li>
+        <li ng-class="{active: sidebar.sectionIsActive('images')}">
+            <a href="#images">Images</a>
+        </li>
+        <li ng-class="{active: sidebar.sectionIsActive('scheduling_algorithms')}">
+            <a href="#scheduling_algorithms">Scheduling Algorithms</a>
+        </li>
+        <li ng-class="{active: sidebar.sectionIsActive('self_adaptation')}">
+            <a href="#self_adaptation">Self Adaptation</a>
+        </li>
+        <li ng-class="{active: sidebar.sectionIsActive('hosts')}">
+            <a href="#hosts">Hosts</a>
+        </li>
+        <li ng-class="{active: sidebar.sectionIsActive('zabbix')}">
+            <a href="#zabbix">Zabbix Info</a>
+        </li>
+        <li ng-class="{active: sidebar.sectionIsActive('logs')}">
+            <a href="#logs">Logs</a>
+        </li>
+    </ul>
+    <div style="position: absolute; bottom:20px; background-color: transparent;">
+        <a href="http://www.bsc.es">
+            <img height="66" width="73" ng-src="images/bsc.png" align="center"/>
+        </a>
+		<img height="60" width="95" ng-src="images/project_brand.png" align="center"/>
+    </div>
+</div>

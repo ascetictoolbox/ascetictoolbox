@@ -1,0 +1,55 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:util="http://www.springframework.org/schema/util" xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<!-- VERY IMPORTANT! If you are buinding your project with Maven Shade plugin, you need to add the
+	next lines to the shade configuration in your pom.xml (section <transformers>):
+
+	<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+		<resource>META-INF/spring.handlers</resource>
+	</transformer>
+	<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+		<resource>META-INF/spring.schemas</resource>
+	</transformer>
+-->
+
+    <bean id="monitoring" class="es.bsc.demiurge.monitoring.zabbix.ZabbixConnector"/>
+    <bean id="cloudMiddleware" class="es.bsc.demiurge.openstackjclouds.OpenStackJclouds"/>
+
+    <bean id="vmManager" class="es.bsc.demiurge.core.manager.GenericVmManager"/>
+
+    <bean id="energyModeller" class="es.bsc.vmm.ascetic.modellers.energy.ascetic.AsceticEnergyModellerAdapter"/>
+    <bean id="pricingModeller" class="es.bsc.vmm.ascetic.modellers.price.ascetic.AsceticPricingModellerAdapter">
+        <constructor-arg ref="energyModeller"/>
+    </bean>
+
+	<util:set id="estimators" value-type="es.bsc.demiurge.core.drivers.Estimator">
+		<ref bean="energyModeller"/>
+		<ref bean="pricingModeller"/>
+	</util:set>
+
+	<!-- Values must be subclasses of optaplanners' SimpleScoreCalculator -->
+	<util:map id="placementPolicies" key-type="java.lang.String" value-type="java.lang.Class">
+		<entry key="consolidation" value-type="java.lang.Class" value="es.bsc.demiurge.core.clopla.placement.scorecalculators.ScoreCalculatorConsolidation"/>
+		<entry key="distribution" value-type="java.lang.Class" value="es.bsc.demiurge.core.clopla.placement.scorecalculators.ScoreCalculatorDistribution"/>
+		<entry key="groupByApp" value-type="java.lang.Class" value="es.bsc.demiurge.core.clopla.placement.scorecalculators.ScoreCalculatorGroupByApp"/>
+		<entry key="random" value-type="java.lang.Class" value="es.bsc.demiurge.core.clopla.placement.scorecalculators.ScoreCalculatorRandom"/>
+		<entry key="energyAware" value-type="java.lang.Class" value="es.bsc.vmm.ascetic.scheduler.clopla.ScoreCalculatorAsceticEnergyAware"/>
+		<entry key="costAware" value-type="java.lang.Class" value="es.bsc.vmm.ascetic.scheduler.clopla.ScoreCalculatorAsceticEnergyAware"/>
+	</util:map>
+
+	<bean id="mqEventNotificator" class="es.bsc.vmm.ascetic.mq.MqEventsManager"/>
+
+	<util:list id="vmmListeners" value-type="es.bsc.demiurge.core.drivers.VmmListener">
+		<ref bean="energyModeller"/>
+		<ref bean="pricingModeller"/>
+		<bean class="es.bsc.demiurge.monitoring.zabbix.ZabbixListener"/>
+		<ref bean="mqEventNotificator"/>
+	</util:list>
+
+	<util:list id="vmmGlobalListeners" value-type="es.bsc.demiurge.core.VmmGlobalListener">
+		<ref bean="mqEventNotificator"/>
+	</util:list>
+</beans>
