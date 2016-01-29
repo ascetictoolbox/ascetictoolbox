@@ -1,0 +1,278 @@
+<!--
+Copyright (C) 2013-2014  Barcelona Supercomputing Center
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+-->
+
+<!-- TODO I should separate the options of the local search algorithms into their own file -->
+
+<h1 class="page-header">Self Adaptation</h1>
+<form role="form" id="selfAdaptationForm" >
+    <div class="col-sm-9">
+        <div class="panel panel-primary" ng-if="!selfAdaptation.loading">
+            <div class="panel-heading">Configuration</div>
+            <div class="panel-body">
+                <div class="col-sm-4" >
+                    <div class="panel panel-info" >
+                        <div class="panel-heading">After VM Deployment</div>
+                        <div class="panel-body">
+
+                            <!-- Select construction heuristic -->
+                            <select class="form-control"
+                                    ng-model="selfAdaptation.options.vmDeployedOpts.constrHeuristic"
+                                    ng-options="heuristic.name for heuristic in selfAdaptation.constructionHeuristics">
+                            </select>
+
+                            <br>
+
+                            <!-- Select local search algorithm -->
+                            <select class="form-control"
+                                    ng-model="selfAdaptation.options.vmDeployedOpts.localSearchAlg.name"
+                                    ng-options="name as name for name in selfAdaptation.getLocalSearchAlgNames()">
+                            </select>
+
+                            <br>
+
+                            <!-- Local Search Algorithm options selector -->
+                            <div>
+                                <div ng-if="selfAdaptation.showOptions(
+                                    selfAdaptation.options.vmDeployedOpts.localSearchAlg.name)">
+                                        Local Search Algorithm Options:
+                                </div>
+
+                                <!--Local Search Algorithm options -->
+                                <div>
+                                    <label for="selfAdaptation.options.vmDeployedOpts.localSearchAlg.options.size"
+                                           ng-if="selfAdaptation.inputOptionIsActive(
+                                           selfAdaptation.options.vmDeployedOpts.localSearchAlg.name, 'size')">
+                                        Size</label>
+                                    <input type="number" class="form-control" min="0" step="1"
+                                           id="selfAdaptation.options.vmDeployedOpts.localSearchAlg.options.size"
+                                           ng-model="selfAdaptation.options.vmDeployedOpts.localSearchAlg.options.size"
+                                           ng-if="selfAdaptation.inputOptionIsActive(
+                                           selfAdaptation.options.vmDeployedOpts.localSearchAlg.name, 'size')">
+                                    <label for="selfAdaptation.options.vmDeployedOpts.localSearchAlg.options.acceptedCountLimit"
+                                           ng-if="selfAdaptation.inputOptionIsActive(
+                                           selfAdaptation.options.vmDeployedOpts.localSearchAlg.name, 'acceptedCountLimit')">
+                                        Accepted Count Limit</label>
+                                    <input type="number" class="form-control" min="0" step="1"
+                                           id="selfAdaptation.options.vmDeployedOpts.localSearchAlg.options.acceptedCountLimit"
+                                           ng-if="selfAdaptation.inputOptionIsActive(
+                                           selfAdaptation.options.vmDeployedOpts.localSearchAlg.name, 'acceptedCountLimit')"
+                                           ng-model="selfAdaptation.options.vmDeployedOpts.localSearchAlg.options.acceptedCountLimit">
+                                    <label for="selfAdaptation.options.vmDeployedOpts.localSearchAlg.options.initialHardTemp"
+                                           ng-if="selfAdaptation.inputOptionIsActive(
+                                            selfAdaptation.options.vmDeployedOpts.localSearchAlg.name, 'initialHardTemp')">
+                                        Initial Hard Temp</label>
+                                    <input type="number" class="form-control" min="0" step="1"
+                                           id="selfAdaptation.options.vmDeployedOpts.localSearchAlg.options.initialHardTemp"
+                                           ng-if="selfAdaptation.inputOptionIsActive(
+                                            selfAdaptation.options.vmDeployedOpts.localSearchAlg.name, 'initialHardTemp')"
+                                           ng-model="selfAdaptation.options.vmDeployedOpts.localSearchAlg.options.initialHardTemp">
+                                    <label for="selfAdaptation.options.vmDeployedOpts.localSearchAlg.options.initialSoftTemp"
+                                           ng-if="selfAdaptation.inputOptionIsActive(
+                                            selfAdaptation.options.vmDeployedOpts.localSearchAlg.name, 'initialSoftTemp')">
+                                        Initial Soft Temp</label>
+                                    <input type="number" class="form-control" min="0" step="1"
+                                           id="selfAdaptation.options.vmDeployedOpts.localSearchAlg.options.initialSoftTemp"
+                                           ng-if="selfAdaptation.inputOptionIsActive(
+                                            selfAdaptation.options.vmDeployedOpts.localSearchAlg.name, 'initialSoftTemp')"
+                                           ng-model="selfAdaptation.options.vmDeployedOpts.localSearchAlg.options.initialSoftTemp">
+                                </div>
+                            </div>
+
+                            <!-- Select rebalancing max execution time -->
+                            <div>
+                                <p ng-if="selfAdaptation.options.vmDeployedOpts.localSearchAlg.name &&
+                                        selfAdaptation.options.vmDeployedOpts.localSearchAlg.name != 'None'">
+                                    Max execution time (seconds): <input class="form-control" type="text"
+                                        ng-model="selfAdaptation.options.vmDeployedOpts.maxExecTimeSeconds">
+                                </p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-4">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">After VM Destroy</div>
+                        <div class="panel-body">
+
+                            <!-- Select local search algorithm -->
+                            <select class="form-control" ng-model="selfAdaptation.options.vmDestroyedOpts.localSearchAlg.name"
+                                    ng-options="name as name for name in selfAdaptation.getLocalSearchAlgNames()">
+                            </select>
+
+                            <br>
+
+                            <!-- Local Search Algorithm options selector -->
+                            <div>
+                                <div ng-if="selfAdaptation.showOptions(selfAdaptation.options.vmDestroyedOpts.localSearchAlg.name)">
+                                    Local Search Algorithm Options:
+                                </div>
+
+                                <div>
+                                    <label for="selfAdaptation.options.vmDestroyedOpts.localSearchAlg.options.size" ng-if="selfAdaptation.inputOptionIsActive(
+                                               selfAdaptation.options.vmDestroyedOpts.localSearchAlg.name, 'size')">Size</label>
+                                    <input type="number" class="form-control" min="0" step="1"
+                                           id="selfAdaptation.options.vmDestroyedOpts.localSearchAlg.options.size"
+                                           ng-model="selfAdaptation.options.vmDestroyedOpts.localSearchAlg.options.size"
+                                           ng-if="selfAdaptation.inputOptionIsActive(
+                                               selfAdaptation.options.vmDestroyedOpts.localSearchAlg.name, 'size')">
+                                    <label for="selfAdaptation.options.vmDestroyedOpts.localSearchAlg.options.acceptedCountLimit"
+                                           ng-if="selfAdaptation.inputOptionIsActive(
+                                               selfAdaptation.options.vmDestroyedOpts.localSearchAlg.name, 'acceptedCountLimit')">
+                                        Accepted Count Limit</label>
+                                    <input type="number" class="form-control" min="0" step="1"
+                                           id="selfAdaptation.options.vmDestroyedOpts.localSearchAlg.options.acceptedCountLimit"
+                                           ng-if="selfAdaptation.inputOptionIsActive(
+                                               selfAdaptation.options.vmDestroyedOpts.localSearchAlg.name, 'acceptedCountLimit')"
+                                           ng-model="selfAdaptation.options.vmDestroyedOpts.localSearchAlg.options.acceptedCountLimit">
+                                    <label for="selfAdaptation.options.vmDestroyedOpts.localSearchAlg.options.initialHardTemp"
+                                           ng-if="selfAdaptation.inputOptionIsActive(
+                                                selfAdaptation.options.vmDestroyedOpts.localSearchAlg.name, 'initialHardTemp')">
+                                        Initial Hard Temp</label>
+                                    <input type="number" class="form-control" min="0" step="1"
+                                           id="selfAdaptation.options.vmDestroyedOpts.localSearchAlg.options.initialHardTemp"
+                                           ng-if="selfAdaptation.inputOptionIsActive(
+                                                selfAdaptation.options.vmDestroyedOpts.localSearchAlg.name, 'initialHardTemp')"
+                                           ng-model="selfAdaptation.options.vmDestroyedOpts.localSearchAlg.options.initialHardTemp">
+                                    <label for="selfAdaptation.options.vmDestroyedOpts.localSearchAlg.options.initialSoftTemp"
+                                           ng-if="selfAdaptation.inputOptionIsActive(
+                                                selfAdaptation.options.vmDestroyedOpts.localSearchAlg.name, 'initialSoftTemp')">
+                                        Initial Soft Temp</label>
+                                    <input type="number" class="form-control" min="0" step="1"
+                                           id="selfAdaptation.options.vmDestroyedOpts.localSearchAlg.options.initialSoftTemp"
+                                           ng-if="selfAdaptation.inputOptionIsActive(
+                                                selfAdaptation.options.vmDestroyedOpts.localSearchAlg.name, 'initialSoftTemp')"
+                                           ng-model="selfAdaptation.options.vmDestroyedOpts.localSearchAlg.options.initialSoftTemp">
+                                </div>
+
+                            </div>
+
+                            <!-- Select rebalancing max execution time -->
+                            <div>
+                                <p ng-if="selfAdaptation.options.vmDestroyedOpts.localSearchAlg.name &&
+                                        selfAdaptation.options.vmDestroyedOpts.localSearchAlg.name != 'None'">
+                                    Max execution time (seconds): <input class="form-control" type="text"
+                                    ng-model="selfAdaptation.options.vmDestroyedOpts.maxExecTimeSeconds">
+                                </p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-4">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">Periodic</div>
+                        <div class="panel-body">
+
+                            <!-- Select local search algorithm -->
+                            <select class="form-control" ng-model="selfAdaptation.options.periodicOpts.localSearchAlg.name"
+                                    ng-options="name as name for name in selfAdaptation.getLocalSearchAlgNames()">
+                            </select>
+
+                            <!-- Select time interval -->
+                            <div>
+                                <br />
+                                <p ng-if="selfAdaptation.options.periodicOpts.localSearchAlg.name &&
+                                        selfAdaptation.options.periodicOpts.localSearchAlg.name != 'None'">
+                                    Time interval (minutes): <input class="form-control" type="text"
+                                            ng-model="selfAdaptation.options.periodicOpts.timeIntervalMinutes">
+                                </p>
+                            </div>
+
+                            <!-- Local Search Algorithm options selector -->
+                            <div>
+                                <div ng-if="selfAdaptation.showOptions(selfAdaptation.options.periodicOpts.localSearchAlg.name)">
+                                    Local Search Algorithm Options:
+                                </div>
+
+                                <div>
+                                    <label for="selfAdaptation.options.periodicOpts.localSearchAlg.options.size"
+                                           ng-if="selfAdaptation.inputOptionIsActive(
+                                               selfAdaptation.options.periodicOpts.localSearchAlg.name, 'size')">Size</label>
+                                    <input type="number" class="form-control" min="0" step="1"
+                                           id="selfAdaptation.options.periodicOpts.localSearchAlg.options.size"
+                                           ng-model="selfAdaptation.options.periodicOpts.localSearchAlg.options.size"
+                                           ng-if="selfAdaptation.inputOptionIsActive(
+                                               selfAdaptation.options.periodicOpts.localSearchAlg.name, 'size')">
+                                    <label for="selfAdaptation.options.periodicOpts.localSearchAlg.options.acceptedCountLimit"
+                                           ng-if="selfAdaptation.inputOptionIsActive(
+                                               selfAdaptation.options.periodicOpts.localSearchAlg.name, 'acceptedCountLimit')">
+                                        Accepted Count Limit</label>
+                                    <input type="number" class="form-control" min="0" step="1"
+                                           id="selfAdaptation.options.periodicOpts.localSearchAlg.options.acceptedCountLimit"
+                                           ng-if="selfAdaptation.inputOptionIsActive(
+                                               selfAdaptation.options.periodicOpts.localSearchAlg.name, 'acceptedCountLimit')"
+                                           ng-model="selfAdaptation.options.periodicOpts.localSearchAlg.options.acceptedCountLimit">
+                                    <label for="selfAdaptation.options.periodicOpts.localSearchAlg.options.initialHardTemp"
+                                           ng-if="selfAdaptation.inputOptionIsActive(
+                                                selfAdaptation.options.periodicOpts.localSearchAlg.name, 'initialHardTemp')">
+                                        Initial Hard Temp</label>
+                                    <input type="number" class="form-control" min="0" step="1"
+                                           id="selfAdaptation.options.periodicOpts.localSearchAlg.options.initialHardTemp"
+                                           ng-if="selfAdaptation.inputOptionIsActive(
+                                                selfAdaptation.options.periodicOpts.localSearchAlg.name, 'initialHardTemp')"
+                                           ng-model="selfAdaptation.options.periodicOpts.localSearchAlg.options.initialHardTemp">
+                                    <label for="selfAdaptation.options.periodicOpts.localSearchAlg.options.initialSoftTemp"
+                                           ng-if="selfAdaptation.inputOptionIsActive(
+                                                selfAdaptation.options.periodicOpts.localSearchAlg.name, 'initialSoftTemp')">
+                                        Initial Soft Temp</label>
+                                    <input type="number" class="form-control" min="0" step="1"
+                                           id="selfAdaptation.options.periodicOpts.localSearchAlg.options.initialSoftTemp"
+                                           ng-if="selfAdaptation.inputOptionIsActive(
+                                                selfAdaptation.options.periodicOpts.localSearchAlg.name, 'initialSoftTemp')"
+                                           ng-model="selfAdaptation.options.periodicOpts.localSearchAlg.options.initialSoftTemp">
+                                </div>
+
+                                <!-- Select rebalancing max execution time -->
+                                <div>
+                                    <p ng-if="selfAdaptation.options.periodicOpts.localSearchAlg.name &&
+                                        selfAdaptation.options.periodicOpts.localSearchAlg.name != 'None'">
+                                        Max execution time (seconds): <input class="form-control" type="text"
+                                        ng-model="selfAdaptation.options.periodicOpts.maxExecTimeSeconds">
+                                    </p>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-right">
+                    <button type="button" class="btn btn-primary" ng-click="selfAdaptation.saveOptions()">
+                        Save
+                    </button>
+                </div>
+
+            </div>
+
+
+        </div>
+		<div class="panel panel-warning">
+			<div class="panel-heading">Demo feature</div>
+			<div class="panel-body">
+				<button type="button" class="btn btn-primary" ng-click="selfAdaptation.engageManual()">
+					Manually start self-adaptation
+				</button>
+			</div>
+    </div>
+</form>
+<br>
+<div loading-spinner="selfAdaptation.loading"></div>

@@ -1,0 +1,20 @@
+[
+  {
+    "hostname":"asok09",
+    "totalCpus":4,
+    "totalMemoryMb":4096,
+    "totalDiskGb":40
+  },
+  {
+    "hostname":"asok10",
+    "totalCpus":8,
+    "totalMemoryMb":8192,
+    "totalDiskGb":80
+  },
+  {
+    "hostname":"asok12",
+    "totalCpus":2,
+    "totalMemoryMb":2048,
+    "totalDiskGb":20
+  }
+]

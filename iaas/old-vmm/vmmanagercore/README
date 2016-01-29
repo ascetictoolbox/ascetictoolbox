@@ -1,0 +1,53 @@
+The project is organized as follows:
+
+-cloudmiddleware: contains the code that communicates with the supported cloud middlewares. For the moment,
+the only one is OpenStack. This packages also includes the code to construct a simulated cloud middleware.
+
+-configuration: contains the configuration parameters used by the VMM. The configuration is read from
+a properties file located in the resources directory.
+
+-db: everything related with the DB connection. Right now we are using a simple HSQL DB because we do not need
+to store much information and do not have important performance requirements.
+
+-logging: everything related with logs.
+
+-manager: contains the main functionality of the VMM. I have divided the VMM in several 'managers'. Each one of
+those is responsible for part of the functionality offered by the VMM. For example, everything that is related with the
+self-adaptation engine is included in the 'SelfAdaptationOptsManager', everything that has to do with VM images is
+handled by the 'ImageManager', etc.
+
+-message_queue: the code necessary to publish messages to the messaging queue. We are using ActiveMQ.
+
+-modellers: the modellers (price and energy) used by the scheduling algorithms. Apart from the code that communicates
+with the modellers developed by other partners in Ascetic, this package include a couple of trivial implementations
+of 'fake' modellers, just for testing purposes.
+
+-models: all the models used in the VMM, VM, host, image, etc.
+
+-monitoring: the code that allows the VMM to communicate with monitoring systems. Right now, Ganglia and Zabbix
+are supported.
+
+-rest: all the REST calls that the VMM accepts are defined in the VmManagerRest class. The code that handles the
+REST calls is divided into the different classes that are part of the 'rest' package.
+
+-scheduler: this is the scheduler used before we changed to the library that is based on OptaPlanner.
+
+-selfadaptation: includes everything related with the self-adaptation engine.
+
+-utils: util classes.
+
+-vmplacement: interface with the library based on OptaPlanner.
+
+
+If you want to know how a particular REST call is implemented, what I would do is:
+1) look at the class that handles the request inside the 'rest' package
+2) see the component inside the 'manager' package that is called from the code that handles the REST request.
+Should be more or less clear from there.
+
+
+Regarding the tests, there are typical unit tests, but also integration tests.
+I need integration tests to verify that all the operations that interact with OpenStack work correctly. This means
+that I have written test to deploy VMs, delete VMs, change the status of VMs, etc. These tests are slow because
+operations like deploying a VM can take 30s or so tu run (depends on the testbed and its configuration). There
+are integration tests like this in two test packages: cloudmiddleware and rest. All the other test are typical unit
+tests and should run pretty fast.

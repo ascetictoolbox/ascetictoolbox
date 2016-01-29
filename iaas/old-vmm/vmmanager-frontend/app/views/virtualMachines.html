@@ -1,0 +1,122 @@
+<!--
+Copyright (C) 2013-2014  Barcelona Supercomputing Center
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+-->
+
+<h1 class="page-header">Virtual Machines</h1>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th ng-repeat="vmAttribute in vms.vmAttributes">
+                    <a style="color: black" ng-click="vms.changeColumnSort($index, !vms.columnSort.reverse)">
+                        {{vmAttribute}}
+                    </a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="vm in vms.vms | orderBy:vms.columnSort.criteria:vms.columnSort.reverse"
+                ng-init="url = '#zabbix/' + vm.hostName.charAt(0).toUpperCase() + vm.hostName.slice(1)">
+                <td>{{vm.name}}</td>
+                <td>{{vm.id}}</td>
+                <td>{{vm.image}}</td>
+                <td>{{vm.cpus}}</td>
+                <td>{{vm.ramMb}}</td>
+                <td>{{vm.diskGb}}</td>
+                <td>{{vm.state}}</td>
+                <td>{{vm.ipAddress}}</td>
+                <td><a href={{url}}>{{vm.hostName}}</a></td>
+                <td>{{vm.created | date:'medium'}}</td>
+                <td>{{vm.applicationId}}</td>
+                <td>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            Actions <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li ng-repeat="vmAction in vms.vmActions">
+                                <a href='#virtual_machines' ng-click="vms.performAction(vm.id, vmAction)">
+                                    {{vmAction}}
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="btn-toolbar" role="toolbar">
+        <button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#myModal">
+            Launch VM
+        </button>
+        <button type="button" class="btn btn-default pull-right" ng-click="vms.refreshVmList()">Refresh</button>
+    </div>
+    <div loading-spinner="vms.loading"></div>
+
+    <!-- Modal Launch VM -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">Launch VM</h4>
+                </div>
+                <div class="modal-body">
+
+                    <form role="form" id="newVmForm">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input class="form-control" id="name" ng-model="vmName">
+                        </div>
+                        <div class="form-group">
+                            <label for="image">Image</label>
+                            <input class="form-control" id="image" ng-model="vmImage">
+                        </div>
+                        <div class="form-group">
+                            <label for="image">CPUs</label>
+                            <input class="form-control" id="cpus" ng-model="vmCpus">
+                        </div>
+                        <div class="form-group">
+                            <label for="image">RAM(MB)</label>
+                            <input class="form-control" id="ramMb" ng-model="ramMb">
+                        </div>
+                        <div class="form-group">
+                            <label for="image">Disk(GB)</label>
+                            <input class="form-control" id="diskGb" ng-model="diskGb">
+                        </div>
+                        <div class="form-group">
+                            <label for="image">Application ID</label>
+                            <input class="form-control" id="appId" value="" ng-model="appId">
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary"
+                            ng-click="vms.newVm(vmName, vmImage, vmCpus, ramMb, diskGb, appId)">
+                        Launch VM
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
