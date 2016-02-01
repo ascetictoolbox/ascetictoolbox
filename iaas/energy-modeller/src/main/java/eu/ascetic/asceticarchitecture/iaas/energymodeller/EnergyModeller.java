@@ -46,6 +46,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -504,6 +505,13 @@ public class EnergyModeller {
             rule = new DefaultEnergyShareRule();
         }
         Host host = vm.getAllocatedTo();
+        if (host == null) {
+            CurrentUsageRecord answer = new CurrentUsageRecord(vm);
+            answer.setTime(Calendar.getInstance());
+            answer.setPower(0);
+            Logger.getLogger(EnergyModeller.class.getName()).log(Level.SEVERE,
+                    "The VM {0} host was not correctly detected!", vm.getName());
+        }
         ArrayList<VmDeployed> otherVms = dataGatherer.getVMsOnHost(host);
         ArrayList<VmDeployed> vmsDeployedOnHost = new ArrayList<>();
         ArrayList<VM> vmsOnHost = new ArrayList<>();

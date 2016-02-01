@@ -54,7 +54,7 @@ public class DataGatherer implements Runnable {
     private final HashMap<Host, Long> lastTimeStampSeen = new HashMap<>();
     private static final String CONFIG_FILE = "energy-modeller-data-gatherer.properties";
     private boolean logVmsToDisk = false;
-    private String loggerOutputFile = "VmEnergyUsageData.txt";    
+    private String loggerOutputFile = "VmEnergyUsageData.txt";
     private boolean performDataGathering = false;
     private boolean loggerConsiderIdleEnergy = true;
     private VmEnergyUsageLogger vmUsageLogger = null;
@@ -87,7 +87,7 @@ public class DataGatherer implements Runnable {
             logVmsToDisk = config.getBoolean("iaas.energy.modeller.data.gatherer.log.vms", logVmsToDisk);
             config.setProperty("iaas.energy.modeller.data.gatherer.log.vms", logVmsToDisk);
             loggerOutputFile = config.getString("iaas.energy.modeller.data.gatherer.log.vms.filename", loggerOutputFile);
-            config.setProperty("iaas.energy.modeller.data.gatherer.log.vms.filename", loggerOutputFile);            
+            config.setProperty("iaas.energy.modeller.data.gatherer.log.vms.filename", loggerOutputFile);
             loggerConsiderIdleEnergy = config.getBoolean("iaas.energy.modeller.data.gatherer.log.consider_idle_energy", loggerConsiderIdleEnergy);
             config.setProperty("iaas.energy.modeller.data.gatherer.log.consider_idle_energy", loggerConsiderIdleEnergy);
 
@@ -473,7 +473,7 @@ public class DataGatherer implements Runnable {
         HashSet<VmDeployed> answer = new HashSet<>();
         for (VmDeployed vmDeployed : knownVms.values()) {
             if (deploymentId.equals(vmDeployed.getDeploymentID())) {
-                answer.add(vmDeployed);
+                answer.add(validateVMInformation(vmDeployed));
             }
         }
         return answer;
@@ -488,11 +488,11 @@ public class DataGatherer implements Runnable {
     public VmDeployed getVm(String name) {
         VmDeployed answer = knownVms.get(name);
         if (answer != null) {
-            return answer;
+            return validateVMInformation(answer);
         }
         List<VmDeployed> vmList = datasource.getVmList();
         refreshKnownVMList(vmList);
-        return knownVms.get(name);
+        return validateVMInformation(knownVms.get(name));
     }
 
     /**
@@ -504,17 +504,34 @@ public class DataGatherer implements Runnable {
     public VmDeployed getVm(int vmId) {
         for (VmDeployed current : knownVms.values()) {
             if (current.getId() == vmId) {
-                return current;
+                return validateVMInformation(current);
             }
         }
         List<VmDeployed> vmList = datasource.getVmList();
         refreshKnownVMList(vmList);
         for (VmDeployed current : knownVms.values()) {
             if (current.getId() == vmId) {
-                return current;
+                return validateVMInformation(current);
             }
         }
         return null;
+    }
+
+    /**
+     * This checks the VM data for issues, principally null pointers for the
+     * Host.
+     *
+     * @param vm The VM
+     * @return The validated and corrected VM
+     */
+    private VmDeployed validateVMInformation(VmDeployed vm) {
+        if (vm == null) {
+            return null;
+        }
+        if (vm.getAllocatedTo() == null) {
+            vm.setAllocatedTo(getVMsHost(vm));
+        }
+        return vm;
     }
 
     /**
