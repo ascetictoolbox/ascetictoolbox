@@ -522,9 +522,9 @@ public class GenericVmManager implements VmManager {
 			} else {
 				sb.append(',');
 			}
-			sb.append("{\"vmId\":\"").append(vmid);
+			sb.append("{\"vmId\":\"").append(vmid).append('\"');
 			for(Estimator estimator : estimatesManager) {
-				sb.append("\",\"");
+				sb.append(",\"");
 				sb.append(estimator.getLabel());
 				sb.append("\":");
 				Map<String,Object> options = new HashMap<>();
