@@ -1220,6 +1220,7 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/s
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/translator/SlaTranslator.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/translator/SlaTranslatorImpl.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/translator/SlaTranslatorImplNoOsgi.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/spreader/model/Converter.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/spreader/model/IaaSMessage.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/util/EqualsUtil.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/vmmanager/client/ImageUploader.java -text
@@ -1298,6 +1299,7 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/s
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/ProductOfferingPriceTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/QuantityTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/SLATest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/spreader/model/ConverterTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/spreader/model/IaaSMessageTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/vmmanager/VmManagerTest2IT.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/vmmanager/client/VmManagerClientBSCCTest.java -text
