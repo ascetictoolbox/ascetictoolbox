@@ -135,8 +135,12 @@ public class DataGatherer implements Runnable {
         if (vm.getAllocatedTo() != null) {
             return vm.getAllocatedTo();
         }
-        //TODO consider using the VM property for this mapping here
-        //TODO consider adding a file based map system here.
+        //This will perform a full description of the VM (including its deployed host).
+        VmDeployed vmQueried = datasource.getVmByName(vm.getName());
+        vm.setAllocatedTo(vmQueried.getAllocatedTo());
+        if (vm.getAllocatedTo() != null) {
+            return vm.getAllocatedTo();
+        }
         /**
          * This block of code takes the agreed assumption that the host name
          * ends with "_<hostname>" and that "_" exist nowhere else in the name.
@@ -572,6 +576,7 @@ public class DataGatherer implements Runnable {
         currentVMs.addAll(activeVMs);
         ArrayList<VmDeployed> answer = new ArrayList<>();
         for (VmDeployed vm : knownVms.values()) {
+            validateVMInformation(vm);
             if (host.equals(vm.getAllocatedTo()) && currentVMs.contains(vm)) {
                 answer.add(vm);
             }
