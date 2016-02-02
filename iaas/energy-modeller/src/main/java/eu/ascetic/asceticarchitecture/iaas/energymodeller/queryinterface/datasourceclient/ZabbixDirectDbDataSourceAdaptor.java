@@ -618,7 +618,7 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
     public CurrentUsageRecord getCurrentEnergyUsage(Host host) {
         CurrentUsageRecord answer = new CurrentUsageRecord(host);
         HostMeasurement measurement = getHostData(host);
-        answer.setPower(measurement.getMetric(POWER_KPI_NAME).getValue());
+        answer.setPower(measurement.getPower(true));
         answer.setVoltage(-1);
         answer.setCurrent(-1);
         return answer;
