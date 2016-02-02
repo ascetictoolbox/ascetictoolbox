@@ -89,6 +89,10 @@ public class NegotiationEventHandler {
 																							    deployment.getId() + 
 																							    "/ovf");
 				logger.info("Initial SLA Template document: " + slaTemplate);
+				SLASOITemplateRenderer rend = new SLASOITemplateRenderer();
+				String xmlRetSlat = rend.renderSLATemplate(slaTemplate);
+				logger.info("####### SLAT TO START NEGOTIATION....");
+				logger.info(xmlRetSlat);
 
 				// We create a client to the SLAM
 				NegotiationWsClient client = new NegotiationWsClient();
@@ -102,8 +106,8 @@ public class NegotiationEventHandler {
 				logger.info("  Negotiation ID: " + negId);
 
 				// After the negotiation it is initiated, we get and negotiation ID, we use it to start the actual negotiation process
-				logger.debug("Sending negotiate SOAP request...");
-				logger.debug("Negotiation ID: " + negId);
+				logger.info("Sending negotiate SOAP request...");
+				logger.info("Negotiation ID: " + negId);
 				// The generation again of the template it is the only difference between my unit test and the failure I'm seeing
 				slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, Configuration.applicationManagerUrl + 
 					    															"/application-manager/applications/" + 
@@ -111,6 +115,11 @@ public class NegotiationEventHandler {
 					    															"/deployments/" + 
 					    															deployment.getId() + 
 					    															"/ovf");
+				
+				logger.info("SLA Template: " + slaTemplate.toString());
+				SLASOITemplateRenderer rend2 = new SLASOITemplateRenderer();
+				String xmlRetSlat2 = rend2.renderSLATemplate(slaTemplate);
+				logger.info("SLA Template: " + xmlRetSlat2);
 				
 				SLATemplate[] slats = client.negotiate(Configuration.slamURL, slaTemplate, negId);
 

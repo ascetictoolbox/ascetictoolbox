@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.slasoi.slamodel.core.FunctionalExpr;
 import org.slasoi.slamodel.core.SimpleDomainExpr;
 import org.slasoi.slamodel.core.TypeConstraintExpr;
@@ -51,6 +52,7 @@ import eu.ascetic.utils.ovf.api.VirtualSystem;
  */
 
 public class SLATemplateCreator {
+	private static Logger logger = Logger.getLogger(SLATemplateCreator.class);
 	
 	/**
 	 * Generates and slaTemplate from an OVF file
@@ -224,6 +226,7 @@ public class SLATemplateCreator {
 
 			// We set the properties
 			interfaceDeclaration.setPropertyValue(new STND("OVF_URL"), ovfURL);
+			logger.info("OVF_URL: " + ovfURL);
 
 			// We create the Endpoint:
 			STND protocol = new STND("http://www.slaatsoi.org/slamodel#HTTP");
