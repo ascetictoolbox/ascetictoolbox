@@ -630,5 +630,18 @@
 			<artifactId>mysql-connector-java</artifactId>
 		</dependency>
 		
+		<!-- JAXB and JSON -->
+		<dependency>
+    		<groupId>org.eclipse.persistence</groupId>
+    		<artifactId>org.eclipse.persistence.moxy</artifactId>
+  		    <version>2.5.2</version>
+		</dependency>
+		
+		<dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>eclipselink</artifactId>
+            <version>2.5.2</version>
+        </dependency>
+		
 	</dependencies>
 </project>
