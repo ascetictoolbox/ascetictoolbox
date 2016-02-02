@@ -163,7 +163,7 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
     public Host getHostCalibrationData(Host host) {
         connection = getConnection(connection);
         if (connection == null || host == null) {
-            return null;
+            return host;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
                 "SELECT calibration_id, host_id, cpu, memory, energy FROM host_calibration_data WHERE host_id = ?")) {
@@ -187,7 +187,7 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
     public Host getHostProfileData(Host host) {
         connection = getConnection(connection);
         if (connection == null || host == null) {
-            return null;
+            return host;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
                 "SELECT host_profile_id, host_id, type, value FROM host_profile_data WHERE host_id = ?")) {
@@ -283,7 +283,7 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
     private VmDeployed getVmAppTags(VmDeployed vm) {
         connection = getConnection(connection);
         if (connection == null || vm == null) {
-            return null;
+            return vm;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
                 "SELECT vm.vm_id, vm_app_tag.tag_name "
@@ -312,7 +312,7 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
     private VmDeployed getVmDisks(VmDeployed vm) {
         connection = getConnection(connection);
         if (connection == null || vm == null) {
-            return null;
+            return vm;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
                 "SELECT vm.vm_id, vm_disk.disk_name "
@@ -523,10 +523,10 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
     @Override
     public List<HostEnergyRecord> getHostHistoryData(Host host, TimePeriod timePeriod) {
         connection = getConnection(connection);
-        if (connection == null || host == null) {
-            return null;
-        }
         List<HostEnergyRecord> answer = new ArrayList<>();
+        if (connection == null || host == null) {
+            return answer;
+        }
         PreparedStatement preparedStatement = null;
         try {
             if (timePeriod != null) {
@@ -610,11 +610,11 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
     @Override
     public Collection<HostVmLoadFraction> getHostVmHistoryLoadData(Host host, TimePeriod timePeriod) {
         HashMap<String, VmDeployed> vmCache = new HashMap<>();
+        List<HostVmLoadFraction> answer = new ArrayList<>();
         connection = getConnection(connection);
         if (connection == null || host == null) {
-            return null;
+            return answer;
         }
-        List<HostVmLoadFraction> answer = new ArrayList<>();
         PreparedStatement preparedStatement = null;
         try {
             if (timePeriod != null) {
