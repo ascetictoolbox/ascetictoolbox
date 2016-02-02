@@ -36,8 +36,8 @@ public class EnergyModellerBean {
 	private PaaSEnergyModeller energyModeller;
 
 	public EnergyModellerBean() {
-		logger.debug("Initializing Energy Modeller...");
-		logger.debug("Config file for EM: " + Configuration.emConfigurationFile);
+		logger.info("Initializing Energy Modeller...");
+		logger.info("Config file for EM: " + Configuration.emConfigurationFile);
     	
 		try {
 			energyModeller = EnergyModellerFactory.getEnergyModeller(Configuration.emConfigurationFile);

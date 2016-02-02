@@ -1220,6 +1220,7 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/s
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/translator/SlaTranslator.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/translator/SlaTranslatorImpl.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/translator/SlaTranslatorImplNoOsgi.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/spreader/SpreaderBean.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/spreader/model/Converter.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/spreader/model/IaaSMessage.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/util/EqualsUtil.java -text
