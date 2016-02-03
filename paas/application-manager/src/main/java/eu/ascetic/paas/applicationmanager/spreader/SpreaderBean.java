@@ -1,6 +1,12 @@
 package eu.ascetic.paas.applicationmanager.spreader;
 
+import java.util.List;
+
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
+
+import eu.ascetic.paas.applicationmanager.providerregistry.PRClient;
+import eu.ascetic.providerregistry.model.Provider;
 
 /**
  * 
@@ -26,6 +32,15 @@ import org.springframework.stereotype.Service;
  */
 @Service("SpreaderBeanService")
 public class SpreaderBean {
-
+	private static Logger logger = Logger.getLogger(SpreaderBean.class);
+	
+	public SpreaderBean() {
+		logger.info("Initializing the Spreader IaaS Monitoring Bean");
+		
+		//Getting an initial list of providers
+		PRClient prClient = new PRClient();
+		List<Provider> providers = prClient.getProviders();
+		
+	}
 	
 }

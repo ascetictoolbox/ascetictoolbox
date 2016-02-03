@@ -80,7 +80,12 @@ public class IaaSMessageTest {
 			marshaller.marshal(im, out);
 			String output = out.toString();
 			
-			assertEquals(json, output);
+			im = Converter.iaasMessageFromJSONToObject(output);
+			
+			assertEquals("name", im.getName());
+			assertEquals("units", im.getUnits());
+			assertEquals(22l, im.getTimestamp());
+			assertEquals(0.1, im.getValue(), 0.00001);
 			
 		} catch(Exception exception) {
 			System.out.println(exception.toString());

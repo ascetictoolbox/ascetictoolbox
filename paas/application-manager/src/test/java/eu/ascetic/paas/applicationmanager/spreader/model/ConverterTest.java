@@ -57,7 +57,10 @@ public class ConverterTest {
 		im.setValue(0.1);
 		
 		String out = Converter.iaasMessageToJSON(im);
-		
-		assertEquals(json, out);
+		im = Converter.iaasMessageFromJSONToObject(json);
+		assertEquals("name", im.getName());
+		assertEquals("units", im.getUnits());
+		assertEquals(22l, im.getTimestamp());
+		assertEquals(0.1, im.getValue(), 0.00001);
 	}
 }

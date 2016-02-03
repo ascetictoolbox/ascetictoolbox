@@ -218,6 +218,14 @@
     <scope>test</scope>
 </dependency>
 
+<!--  <dependency>
+    <groupId>xml-apis</groupId>
+    <artifactId>xml-apis</artifactId>
+    <version>1.4.01</version>
+    <scope>runtime</scope>
+</dependency> -->
+
+
 		<!-- ASCETiC Application Manager Datamodel -->
 		<dependency>
 			<groupId>eu.ascetic.paas</groupId>
