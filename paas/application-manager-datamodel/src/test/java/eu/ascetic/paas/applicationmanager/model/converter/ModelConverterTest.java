@@ -1134,8 +1134,9 @@ public class ModelConverterTest {
 		vm2.setStatus("ttt");
 		vm2.setVmId("www");
 		vm2.setMetricName("power");
-		vm2.setValue("1.0");
+		vm2.setValue(2.0);
 		vm2.setUnits("W");
+		vm2.setTimestamp(111l);
 		
 		amMessage.addVM(vm1);
 		amMessage.addVM(vm2);
@@ -1165,7 +1166,8 @@ public class ModelConverterTest {
 		assertEquals("xxx", (String) jsonObject.get("ovfId"));
 		assertEquals("ttt", (String) jsonObject.get("status"));
 		assertEquals("power", (String) jsonObject.get("metricName"));
-		assertEquals("1.0", (String) jsonObject.get("value"));
+		assertEquals(2.0, (double) jsonObject.get("value"), 0.00001);
+		assertEquals(111l, (long) jsonObject.get("timestamp"));
 		assertEquals("W", (String) jsonObject.get("units"));
 	}
 	

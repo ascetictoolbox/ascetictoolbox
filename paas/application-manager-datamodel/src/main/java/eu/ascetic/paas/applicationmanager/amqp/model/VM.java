@@ -36,8 +36,9 @@ public class VM {
 	private String ovfId;
 	private String status;
 	private String metricName;
-	private String value;
+	private double value;
 	private String units;
+	private long timestamp;
 	
 	public String getVmId() {
 		return vmId;
@@ -81,10 +82,10 @@ public class VM {
 		this.metricName = metricName;
 	}
 	
-	public String getValue() {
+	public double getValue() {
 		return value;
 	}
-	public void setValue(String value) {
+	public void setValue(double value) {
 		this.value = value;
 	}
 	
@@ -93,5 +94,12 @@ public class VM {
 	}
 	public void setUnits(String units) {
 		this.units = units;
+	}
+	
+	public long getTimestamp() {
+		return timestamp;
+	}
+	public void setTimestamp(long timestamp) {
+		this.timestamp = timestamp;
 	}
 }

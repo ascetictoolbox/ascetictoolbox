@@ -37,8 +37,9 @@ public class VMTest {
 		vm.setStatus("ddd");
 		vm.setVmId("xxx");
 		vm.setMetricName("metric");
-		vm.setValue("1.0");
+		vm.setValue(2.0);
 		vm.setUnits("W");
+		vm.setTimestamp(111l);
 		
 		assertEquals("aaa", vm.getIaasMonitoringVmId());
 		assertEquals("bbb", vm.getIaasVmId());
@@ -46,7 +47,8 @@ public class VMTest {
 		assertEquals("ddd", vm.getStatus());
 		assertEquals("xxx", vm.getVmId());
 		assertEquals("metric", vm.getMetricName());
-		assertEquals("1.0", vm.getValue());
+		assertEquals(2.0, vm.getValue(), 0.0001);
+		assertEquals(111l, vm.getTimestamp());
 		assertEquals("W", vm.getUnits());
 	}
 }
