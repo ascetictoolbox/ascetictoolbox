@@ -78,7 +78,7 @@ public class Deployment {
 	private String ovf;
 	@XmlElement(name = "schema", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private int schema=1;
-	@XmlElement(name = "slauuid", namespace = APPLICATION_MANAGER_NAMESPACE)
+	@XmlElement(name = "sla_agreement", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private String slaUUID;
 	@XmlElementWrapper(name = "vms", namespace = APPLICATION_MANAGER_NAMESPACE)
 	@XmlElement(name = "vm", namespace = APPLICATION_MANAGER_NAMESPACE )
